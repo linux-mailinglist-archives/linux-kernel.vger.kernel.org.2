@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4E4B420BCD
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:58:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57BC7420D11
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:09:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234490AbhJDNAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:00:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32834 "EHLO mail.kernel.org"
+        id S235765AbhJDNLi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:11:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45770 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234039AbhJDM6g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 08:58:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5AFDF6124C;
-        Mon,  4 Oct 2021 12:56:47 +0000 (UTC)
+        id S234825AbhJDNJD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:09:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4AFBD61994;
+        Mon,  4 Oct 2021 13:03:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352207;
-        bh=dVvtqKomkEAw1WZxplDiM7/ZBQF1VHn42z+2bN8P/vk=;
+        s=korg; t=1633352588;
+        bh=w024JYmk37nlZKIhVLjWq93WQ8YuWdThbroRM4d3+w4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VFbkqUcgCo72fEp8qwax6nnd4Dtha5vwuqgIf5Zsxp2OP4JG1IMvMTYWxHuzGxPj7
-         BG9MwULQyqTK7/EM0FxSoBCng5Q5gH6g2S6rlpDuM8Fs4jsCb6YKDaYk/n4Zv4QdnG
-         g8O3mlG2G9dGjphkr6e+DrrQ5gcl72xT2kzsPF/8=
+        b=LpM4s9BnJNDborEpcURdg0+TOtPaXELRw3a3fYTfK4VDn61sTT0rjELKbNyESAaXY
+         dMhU+QgoUiLztTq3mQ3s7iD8dIfPdakp7eguSx98QQgTnldadlC/h3EP6pfbChmQnk
+         BwC2oCDRJHu/T9yETJdaGndKHpiCkf18Bs+i3jw4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        Gregory CLEMENT <gregory.clement@bootlin.com>
-Subject: [PATCH 4.9 30/57] arm64: dts: marvell: armada-37xx: Extend PCIe MEM space
+        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 44/95] alpha: Declare virt_to_phys and virt_to_bus parameter as pointer to volatile
 Date:   Mon,  4 Oct 2021 14:52:14 +0200
-Message-Id: <20211004125029.888285274@linuxfoundation.org>
+Message-Id: <20211004125035.018927608@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125028.940212411@linuxfoundation.org>
-References: <20211004125028.940212411@linuxfoundation.org>
+In-Reply-To: <20211004125033.572932188@linuxfoundation.org>
+References: <20211004125033.572932188@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,69 +41,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pali Rohár <pali@kernel.org>
+From: Guenter Roeck <linux@roeck-us.net>
 
-commit 514ef1e62d6521c2199d192b1c71b79d2aa21d5a upstream.
+[ Upstream commit 35a3f4ef0ab543daa1725b0c963eb8c05e3376f8 ]
 
-Current PCIe MEM space of size 16 MB is not enough for some combination
-of PCIe cards (e.g. NVMe disk together with ath11k wifi card). ARM Trusted
-Firmware for Armada 3700 platform already assigns 128 MB for PCIe window,
-so extend PCIe MEM space to the end of 128 MB PCIe window which allows to
-allocate more PCIe BARs for more PCIe cards.
+Some drivers pass a pointer to volatile data to virt_to_bus() and
+virt_to_phys(), and that works fine.  One exception is alpha.  This
+results in a number of compile errors such as
 
-Without this change some combination of PCIe cards cannot be used and
-kernel show error messages in dmesg during initialization:
+  drivers/net/wan/lmc/lmc_main.c: In function 'lmc_softreset':
+  drivers/net/wan/lmc/lmc_main.c:1782:50: error:
+	passing argument 1 of 'virt_to_bus' discards 'volatile'
+	qualifier from pointer target type
 
-    pci 0000:00:00.0: BAR 8: no space for [mem size 0x01800000]
-    pci 0000:00:00.0: BAR 8: failed to assign [mem size 0x01800000]
-    pci 0000:00:00.0: BAR 6: assigned [mem 0xe8000000-0xe80007ff pref]
-    pci 0000:01:00.0: BAR 8: no space for [mem size 0x01800000]
-    pci 0000:01:00.0: BAR 8: failed to assign [mem size 0x01800000]
-    pci 0000:02:03.0: BAR 8: no space for [mem size 0x01000000]
-    pci 0000:02:03.0: BAR 8: failed to assign [mem size 0x01000000]
-    pci 0000:02:07.0: BAR 8: no space for [mem size 0x00100000]
-    pci 0000:02:07.0: BAR 8: failed to assign [mem size 0x00100000]
-    pci 0000:03:00.0: BAR 0: no space for [mem size 0x01000000 64bit]
-    pci 0000:03:00.0: BAR 0: failed to assign [mem size 0x01000000 64bit]
+  drivers/atm/ambassador.c: In function 'do_loader_command':
+  drivers/atm/ambassador.c:1747:58: error:
+	passing argument 1 of 'virt_to_bus' discards 'volatile'
+	qualifier from pointer target type
 
-Due to bugs in U-Boot port for Turris Mox, the second range in Turris Mox
-kernel DTS file for PCIe must start at 16 MB offset. Otherwise U-Boot
-crashes during loading of kernel DTB file. This bug is present only in
-U-Boot code for Turris Mox and therefore other Armada 3700 devices are not
-affected by this bug. Bug is fixed in U-Boot version 2021.07.
+Declare the parameter of virt_to_phys and virt_to_bus as pointer to
+volatile to fix the problem.
 
-To not break booting new kernels on existing versions of U-Boot on Turris
-Mox, use first 16 MB range for IO and second range with rest of PCIe window
-for MEM.
-
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Fixes: 76f6386b25cc ("arm64: dts: marvell: Add Aardvark PCIe support for Armada 3700")
-Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Acked-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/marvell/armada-37xx.dtsi |   11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ arch/alpha/include/asm/io.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
-+++ b/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
-@@ -186,8 +186,15 @@
- 			#interrupt-cells = <1>;
- 			msi-parent = <&pcie0>;
- 			msi-controller;
--			ranges = <0x82000000 0 0xe8000000   0 0xe8000000 0 0x1000000 /* Port 0 MEM */
--				  0x81000000 0 0xe9000000   0 0xe9000000 0 0x10000>; /* Port 0 IO*/
-+			/*
-+			 * The 128 MiB address range [0xe8000000-0xf0000000] is
-+			 * dedicated for PCIe and can be assigned to 8 windows
-+			 * with size a power of two. Use one 64 KiB window for
-+			 * IO at the end and the remaining seven windows
-+			 * (totaling 127 MiB) for MEM.
-+			 */
-+			ranges = <0x82000000 0 0xe8000000   0 0xe8000000   0 0x07f00000   /* Port 0 MEM */
-+				  0x81000000 0 0xefff0000   0 0xefff0000   0 0x00010000>; /* Port 0 IO */
- 			interrupt-map-mask = <0 0 0 7>;
- 			interrupt-map = <0 0 0 1 &pcie_intc 0>,
- 					<0 0 0 2 &pcie_intc 1>,
+diff --git a/arch/alpha/include/asm/io.h b/arch/alpha/include/asm/io.h
+index 0bba9e991189..d4eab4f20249 100644
+--- a/arch/alpha/include/asm/io.h
++++ b/arch/alpha/include/asm/io.h
+@@ -61,7 +61,7 @@ extern inline void set_hae(unsigned long new_hae)
+  * Change virtual addresses to physical addresses and vv.
+  */
+ #ifdef USE_48_BIT_KSEG
+-static inline unsigned long virt_to_phys(void *address)
++static inline unsigned long virt_to_phys(volatile void *address)
+ {
+ 	return (unsigned long)address - IDENT_ADDR;
+ }
+@@ -71,7 +71,7 @@ static inline void * phys_to_virt(unsigned long address)
+ 	return (void *) (address + IDENT_ADDR);
+ }
+ #else
+-static inline unsigned long virt_to_phys(void *address)
++static inline unsigned long virt_to_phys(volatile void *address)
+ {
+         unsigned long phys = (unsigned long)address;
+ 
+@@ -112,7 +112,7 @@ static inline dma_addr_t __deprecated isa_page_to_bus(struct page *page)
+ extern unsigned long __direct_map_base;
+ extern unsigned long __direct_map_size;
+ 
+-static inline unsigned long __deprecated virt_to_bus(void *address)
++static inline unsigned long __deprecated virt_to_bus(volatile void *address)
+ {
+ 	unsigned long phys = virt_to_phys(address);
+ 	unsigned long bus = phys + __direct_map_base;
+-- 
+2.33.0
+
 
 
