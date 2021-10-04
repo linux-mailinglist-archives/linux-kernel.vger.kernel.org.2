@@ -2,176 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF8EC4210C4
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:53:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC68642107F
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:43:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237375AbhJDNzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:55:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39236 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233553AbhJDNzf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:55:35 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80F9CC0F0B11
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 06:42:15 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id v25so20161123wra.2
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 06:42:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=mtz35q9ABuFN+CK5hf2AG1t0ykowpejibjVVWQeLpP0=;
-        b=Hzq5mvML2A0agWPVEdD0xmYlGsiiUHds44RNX5TZOo3ahI4uNEEDrvCeaglWRGfx2w
-         B0TuKivDPHuxH1NVbXrfIZq/xlKtVdt1F3geJJop/Xszj0S/KHOPSqLlSEjfIeHQzYVZ
-         Hkcl5QYQlel0QpgGLrcDXolzYRbUIaCJCU3D1Me6+0CUHM+coqtYCGg38EkAsH+59KEh
-         yeo8+bPANMxa3f8VEKTY2TsfdiZLefPqsdBKdifOTMQDac/qsX4vNwnMotk27PskDhgQ
-         7N3qijpg0kXwhbR7j0OvPxzmYujJKfeWvWWAYCVrdDTDJ3SdGZD5mDd9OWqC3dyDe1i1
-         0Yog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=mtz35q9ABuFN+CK5hf2AG1t0ykowpejibjVVWQeLpP0=;
-        b=HbZz/yMs9BOi4X2r3Wu+yLmjfAI16+urkhdDXQJT9RGkh6mrQf8MtP+zIWajcQk1NJ
-         wWaPN2QeneMUBW1J8Dq/R998PL11eexgujo/D93qySBP3AsVj260wqNtg2uk3d0a+lfw
-         RMZ1qj/lWaes6MifGZ+zmZI4wc6XhuXc7fSCuUaXB/Nqj3UefBctbBetMupIkoebV0Wi
-         HZWu5Zl5KcMmmouRcf4FW//puyNc38xQ0SifHpnhQDN3o86cmxasd1NC31ZELtQnZwSB
-         1YbMxKYU7UBguaSEQ8/eJa73W6Lwp6VNRaFtuc/bpJfXE8rhXxf5mbimSWupIQYjxWV/
-         s92g==
-X-Gm-Message-State: AOAM531u6cWbiSGIIFWsj05ZEx1vkBysBJxqdC21bSz0hFavjx/2TC6h
-        hPBZbB6qqeWuo777s3gRsTNDsw==
-X-Google-Smtp-Source: ABdhPJyqMowfZo4n6GIWwaewsjxxOPvjBdEZo4kthIj+8BcqLY8VgCjHMTEcDvZrUp8Mvig5Ab0+Sg==
-X-Received: by 2002:a5d:4882:: with SMTP id g2mr13990446wrq.399.1633354933923;
-        Mon, 04 Oct 2021 06:42:13 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:d626:282a:6f9d:3f57? ([2a01:e34:ed2f:f020:d626:282a:6f9d:3f57])
-        by smtp.googlemail.com with ESMTPSA id y10sm4418338wrw.5.2021.10.04.06.42.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Oct 2021 06:42:13 -0700 (PDT)
-Subject: Re: [PATCH v2 0/2] Add a generic virtual thermal sensor
-To:     Alexandre Bailon <abailon@baylibre.com>, rui.zhang@intel.com,
-        amitk@kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ben.tseng@mediatek.com, khilman@baylibre.com, mka@chromium.org
-References: <20210917072732.611140-1-abailon@baylibre.com>
- <bd347d14-0b42-f9ed-bf15-080c929e1cb7@linaro.org>
- <7cddcdb7-4efd-bfdb-3d86-f5862ea0b7fe@baylibre.com>
- <8a9e5f13-6253-2d0d-35a8-789090af4521@linaro.org>
- <c395abad-598b-c06a-9252-c8e62c977188@baylibre.com>
- <794e62ea-d867-3827-de5f-24ddc86c3524@linaro.org>
- <4446577e-c7fa-daeb-e0fe-8a530633ef5d@baylibre.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <d24ce6ec-eced-4e16-eb59-7c87f596ccca@linaro.org>
-Date:   Mon, 4 Oct 2021 15:42:12 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S238385AbhJDNpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:45:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58658 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238453AbhJDNoS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:44:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D129B61131;
+        Mon,  4 Oct 2021 13:42:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633354949;
+        bh=/8iZzTtmsHYUkmsxL8GSKc9qVHlbpx/Af92XUl8iCso=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pvoGvGQOTW9ULseoyvoIXaUUN8QFTb9gvg6l//174Uf4QuP6uP++UlBx7VlAAXELH
+         yCCfuA2ozOEq3blvhIXFebe6glcVw6uhQx4L0vdYzrtYEA3/4zGe+BMFwwUA+jDNFF
+         IwFy0NNxXf9GxpRk0zB4AC0bSFChKfbAfH2Iq3zNJqag3xNuT0CeDPogIpHnFt245l
+         Zm32c61wY6OTNrw6vZJqYmGF52XMjGnv2Wddv5imsWLJIhizqvTu+N8EIye2upxzhm
+         8AKQEy6O6rw+IVXIh1XjlgNmWHBk3DvE4cgJUwXDIKbP9Ws0qX5M5BLRoFkSdrQSfn
+         qc/pAFlvs0hZQ==
+Date:   Mon, 4 Oct 2021 15:42:27 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
+Subject: Re: [PATCH 08/11] rcu/nocb: Limit number of softirq callbacks only
+ on softirq
+Message-ID: <20211004134227.GC273854@lothringen>
+References: <20210929221012.228270-1-frederic@kernel.org>
+ <20210929221012.228270-9-frederic@kernel.org>
+ <877dewmy5v.mognet@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <4446577e-c7fa-daeb-e0fe-8a530633ef5d@baylibre.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <877dewmy5v.mognet@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/10/2021 12:24, Alexandre Bailon wrote:
+On Fri, Oct 01, 2021 at 06:51:08PM +0100, Valentin Schneider wrote:
+> On 30/09/21 00:10, Frederic Weisbecker wrote:
+> > The current condition to limit the number of callbacks executed in a
+> > row checks the offloaded state of the rdp. Not only is it volatile
+> > but it is also misleading: the rcu_core() may well be executing
+> > callbacks concurrently with NOCB kthreads, and the offloaded state
+> > would then be verified on both cases. As a result the limit would
+> > spuriously not apply anymore on softirq while in the middle of
+> > (de-)offloading process.
+> >
+> > Another issue with the condition is that rcu_is_callbacks_kthread()
+> > doesn't check if we are actually running callbacks from rcuc itself or
+> > from a softirq interrupting rcuc.
+> >
 > 
-> On 9/22/21 10:10 AM, Daniel Lezcano wrote:
->> On 20/09/2021 15:12, Alexandre Bailon wrote:
->>> On 9/17/21 4:03 PM, Daniel Lezcano wrote:
->>>> On 17/09/2021 15:33, Alexandre Bailon wrote:
->>>>> Hi Daniel,
->>>>>
->>>>> On 9/17/21 2:41 PM, Daniel Lezcano wrote:
->>>>>> On 17/09/2021 09:27, Alexandre Bailon wrote:
->>>>>>> This series add a virtual thermal sensor.
->>>>>>> It could be used to get a temperature using some thermal sensors.
->>>>>>> Currently, the supported operations are max, min and avg.
->>>>>>> The virtual sensor could be easily extended to support others
->>>>>>> operations.
->>>>>>>
->>>>>>> Note:
->>>>>>> Currently, thermal drivers must explicitly register their sensors to
->>>>>>> make them
->>>>>>> available to the virtual sensor.
->>>>>>> This doesn't seem a good solution to me and I think it would be
->>>>>>> preferable to
->>>>>>> update the framework to register the list of each available sensors.
->>>>>> Why must the drivers do that ?
->>>>> Because there are no central place where thermal sensor are
->>>>> registered.
->>>>> The only other way I found was to update thermal_of.c,
->>>>> to register the thermal sensors and make them available later to the
->>>>> virtual thermal sensor.
->>>>>
->>>>> To work, the virtual thermal need to get the sensor_data the ops from
->>>>> the thermal sensor.
->>>>> And as far I know, this is only registered in thermal_of.c, in the
->>>>> thermal zone data
->>>>> but I can't access it directly from the virtual thermal sensor.
->>>>>
->>>>> How would you do it ?
->>>> Via the phandles when registering the virtual sensor ?
->>> As far I know, we can't get the ops or the sensor_data from the phandle
->>> of a thermal sensor.
->>> The closest solution I found so far would be to aggregate the thermal
->>> zones instead of thermal sensors.
->>> thermal_zone_device has the data needed and a thermal zone could be find
->>> easily using its name.
->> Yeah, the concept of the thermal zone and the sensor are very close.
->>
->> There is the function in thermal_core.h:
->>
->>   -> for_each_thermal_zone()
->>
->> You should be able for each 'slave' sensor, do a lookup to find the
->> corresponding thermal_zone_device_ops.
->>
->>> But, using a thermal_zone_device, I don't see how to handle module
->>> unloading.
->> I think try_module_get() / module_put() are adequate for this situation
->> as it is done on an external module and we can not rely on the exported
->> symbols.
-> I don't see how it would be possible to use these functions.
-> The thermal zone doesn't have the data required to use it.
+> Doesn't rcutree.use_softirq imply rcuc is never woken, in which case
+> RCU_SOFTIRQ can't interrupt rcuc (e.g. while run atop an IRQ exit)?
+> I suppose during the (de)offload sequence we could have RCU_SOFTIRQ running
+> atop the NOCB CB kthread, but that's not something
+> rcu_is_callbacks_kthread() detects.
 
-Actually I was able to crash the kernel by doing:
+Yes good point, I don't know if rcuc can be ever be interrupted by
+irq_exit() -> do_softirq() -> rcu_core() itself after all.
 
-console 1:
+Paul can probably confirm your point?
 
-while $(true); do insmod <module> && rmmod <module>; done
-
-console 2:
-
-while $(true); cat /sys/class/thermal/thermal_zone0/temp; done
-
-So there is something wrong already in the thermal framework.
-
-IMO, the first thing would be to fix this critical issue by getting the
-sensor module refcount when the thermal zone is enabled and dropping it
-when it is disabled.
-
-With that fixed, perhaps it will possible to get the device associated
-with the sensor and then try_module_get(dev->driver->owner)
-
-> Maybe a more easier way is to use the thermal_zone_device mutex.
-> If I get a lock before to use the thermal_zone_device ops, I have the
-> guaranty that module won't be unloaded.
 > 
-> When a "thermal of sensor" is unloaded, it calls
-> thermal_zone_of_sensor_unregister which takes a lock before
-> update ops.
+> Also, why is rcu_is_callbacks_kthread() hardcoded to false for
+> !CONFIG_RCU_BOOST? Isn't it relevant for do_rcu_batch() ratelimiting
+> regardless (at least before your patches)?
 
-I'm not sure to understand. The goal is to have the refcount on the
-modules to be incremented when the virtual sensor is using them.
-
-Until the virtual sensor is registered, it will prevent the other
-modules to be unloaded.
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+I believe rcuc is only used on CONFIG_RCU_BOOST?
