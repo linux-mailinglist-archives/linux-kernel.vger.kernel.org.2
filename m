@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1DA3420BEE
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:59:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F18E420C43
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:02:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234622AbhJDNBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:01:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60936 "EHLO mail.kernel.org"
+        id S234417AbhJDNEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:04:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60618 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234232AbhJDM7i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 08:59:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EE3B561425;
-        Mon,  4 Oct 2021 12:57:31 +0000 (UTC)
+        id S234786AbhJDNCW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:02:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B02A61A35;
+        Mon,  4 Oct 2021 12:59:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352252;
-        bh=oOiKDlFbuWZmdynbxMwkSVSJ3PrCJoVgN6O7BwsAt7c=;
+        s=korg; t=1633352343;
+        bh=T+RJFP0DSxJst0qW7wvU2PBpr13mJPz/ZE3yRJR1riI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DnkE0fo+PwhvwQixYa5ZUzCS214lVIsNYal/s0dXNWNimZvFUqwGG2Y1CZMvtn/vG
-         2cEVhT6K2XCBwcTC3P1Xswcp595iQ1Rp7VeK1KKyPKsBdDTdd/Tt7Gg/hmmZAhEDF9
-         IJCIHLf+4Kn2Or+WoqpufPUpGkbIAMf7Te+6PMJ8=
+        b=zz8RkMM9gM+5RJvMvE+62uTvpx3VJTHbGeYrELt14v26M5o+TFLjRkxInMigNLZp1
+         mnW2IAAZ+Qkbn3TWtMcCluGm/b0PLYYah8qVkllKK3g/fdCFO30SEx9/xZcOYv8y7K
+         feG+x9em2VJmkkWIV64k/joKXxQead+yc8SdqGYg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.9 15/57] net: hso: fix muxed tty registration
+        stable@vger.kernel.org,
+        Nicolas Ferre <Nicolas.Ferre@microchip.com>,
+        Tong Zhang <ztong0001@gmail.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 24/75] net: macb: fix use after free on rmmod
 Date:   Mon,  4 Oct 2021 14:51:59 +0200
-Message-Id: <20211004125029.415102900@linuxfoundation.org>
+Message-Id: <20211004125032.319062998@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125028.940212411@linuxfoundation.org>
-References: <20211004125028.940212411@linuxfoundation.org>
+In-Reply-To: <20211004125031.530773667@linuxfoundation.org>
+References: <20211004125031.530773667@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,59 +43,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Tong Zhang <ztong0001@gmail.com>
 
-commit e8f69b16ee776da88589b5271e3f46020efc8f6c upstream.
+[ Upstream commit d82d5303c4c539db86588ffb5dc5b26c3f1513e8 ]
 
-If resource allocation and registration fail for a muxed tty device
-(e.g. if there are no more minor numbers) the driver should not try to
-deregister the never-registered (or already-deregistered) tty.
+plat_dev->dev->platform_data is released by platform_device_unregister(),
+use of pclk and hclk is a use-after-free. Since device unregister won't
+need a clk device we adjust the function call sequence to fix this issue.
 
-Fix up the error handling to avoid dereferencing a NULL pointer when
-attempting to remove the character device.
+[   31.261225] BUG: KASAN: use-after-free in macb_remove+0x77/0xc6 [macb_pci]
+[   31.275563] Freed by task 306:
+[   30.276782]  platform_device_release+0x25/0x80
 
-Fixes: 72dc1c096c70 ("HSO: add option hso driver")
-Cc: stable@vger.kernel.org	# 2.6.27
-Signed-off-by: Johan Hovold <johan@kernel.org>
+Suggested-by: Nicolas Ferre <Nicolas.Ferre@microchip.com>
+Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/usb/hso.c |   12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
+ drivers/net/ethernet/cadence/macb_pci.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/usb/hso.c
-+++ b/drivers/net/usb/hso.c
-@@ -2715,14 +2715,14 @@ struct hso_device *hso_create_mux_serial
+diff --git a/drivers/net/ethernet/cadence/macb_pci.c b/drivers/net/ethernet/cadence/macb_pci.c
+index 248a8fc45069..f06fddf9919b 100644
+--- a/drivers/net/ethernet/cadence/macb_pci.c
++++ b/drivers/net/ethernet/cadence/macb_pci.c
+@@ -123,9 +123,9 @@ static void macb_remove(struct pci_dev *pdev)
+ 	struct platform_device *plat_dev = pci_get_drvdata(pdev);
+ 	struct macb_platform_data *plat_data = dev_get_platdata(&plat_dev->dev);
  
- 	serial = kzalloc(sizeof(*serial), GFP_KERNEL);
- 	if (!serial)
--		goto exit;
-+		goto err_free_dev;
+-	platform_device_unregister(plat_dev);
+ 	clk_unregister(plat_data->pclk);
+ 	clk_unregister(plat_data->hclk);
++	platform_device_unregister(plat_dev);
+ }
  
- 	hso_dev->port_data.dev_serial = serial;
- 	serial->parent = hso_dev;
- 
- 	if (hso_serial_common_create
- 	    (serial, 1, CTRL_URB_RX_SIZE, CTRL_URB_TX_SIZE))
--		goto exit;
-+		goto err_free_serial;
- 
- 	serial->tx_data_length--;
- 	serial->write_data = hso_mux_serial_write_data;
-@@ -2738,11 +2738,9 @@ struct hso_device *hso_create_mux_serial
- 	/* done, return it */
- 	return hso_dev;
- 
--exit:
--	if (serial) {
--		tty_unregister_device(tty_drv, serial->minor);
--		kfree(serial);
--	}
-+err_free_serial:
-+	kfree(serial);
-+err_free_dev:
- 	kfree(hso_dev);
- 	return NULL;
- 
+ static const struct pci_device_id dev_id_table[] = {
+-- 
+2.33.0
+
 
 
