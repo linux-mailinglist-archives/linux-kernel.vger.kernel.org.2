@@ -2,101 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C08CA4205C3
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 08:18:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 256634205DD
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 08:27:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232636AbhJDGUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 02:20:15 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:52464
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232131AbhJDGUO (ORCPT
+        id S232706AbhJDG2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 02:28:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50590 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232131AbhJDG2d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 02:20:14 -0400
-Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com [209.85.167.69])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id C94F1402D2
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 06:18:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1633328299;
-        bh=6rhTGdQXINmijpkcPrHK0rvBN904JsfzhP/R1ITG3yQ=;
-        h=Subject:To:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=tSiAxL/trZSnqDnQI98Bf/95bYqCMn+OAvwTf0d64/r94qjxGWvF1oS1pJFak5SEk
-         6kj+jh6U2G94zig7kDQs2UmhOwz/WjHnW6M3YS5pfVaW27zle8pegCuavUQd3UBXuA
-         OM/fFpPTJX6+o6AgS+IsMTk6u7ktoCS7lhjXvx0U8iKZj621+4H+eS3UC3ECgd3+Tr
-         k3UbqMVFW8PKPiNnQy502WWTMzHtNopyNi3M/7KNJ085rkoenhoWK2geZO6fBq7pqP
-         1oQ3KmHn6tJ6q+21JanGhhwCy4WhkTZw4IewH3tBAcj2vB5SqDw+XvMBo3G2OMWMD6
-         vdsjjb+s3f5cw==
-Received: by mail-lf1-f69.google.com with SMTP id c42-20020a05651223aa00b003fd328cfeccso2074290lfv.4
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Oct 2021 23:18:19 -0700 (PDT)
+        Mon, 4 Oct 2021 02:28:33 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E324C0613EC
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Oct 2021 23:26:45 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id u7so13569453pfg.13
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Oct 2021 23:26:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=lldwxdk4W1G3ywdj9msOYMypt5nPXO6LwPIxOMZiJgk=;
+        b=raZ1JvI9opcJPgs8LXMlbhlqCAFgxPZ8zzJ2jEYWBsC6RkkXnNRMk00fh/m1ma9WAa
+         9y+DH469cv9USNSMLUSxn9bqi0Wt5Wc9jNfnC87joGL+sVXYk65k7ReWKs9xUi2+aerp
+         ODQoygniZ4/xEMjFwLo3IKhAVcsOKf8X7Q/Shl/lleinwKze6a14VKYwv5guT67/159E
+         4bJfhtxot7jKDuexro9M7EpavYgz9lnwN/1Jw4SNT1y0evXvBATF8PcbDmi6ApSec9sr
+         CXp54+iTSv3pZ1MIOgOPMOZd9qL98cr0Rp8yGUc3y7yl73cCaWdhDDcvkqrQC0sgcQZF
+         Cr0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=6rhTGdQXINmijpkcPrHK0rvBN904JsfzhP/R1ITG3yQ=;
-        b=p0i4GTJctOWE/rtDTAqZNWn1Tl7apVt9RXi7y1RsfmyXwIMf3pBtnqJYOndBmLCmve
-         pYgYSKL/ANCU2JmyVLsmk6BRpuLJDpkkNg30p/1lsgPUoaWAQZK3hvy9hqvB4JebUzrU
-         nM/VXL3QnR8KQ38OtTtoggp2Aw8JJJ6xRGjHhx9agXguSn6f1Qw5GueU2Gr8aK7hZuHV
-         Y43F8LjMWagHhFqHOtx3HlXlmY3DIbzq4npHsUq6Y8s12zVhFs/ptXCLKBG/BdjDF42V
-         iMAuz4azH42SSOXpMdRPjKW4+I949lM2rEnDGI5MD66eEczMXIiwMDOtocjg2eMxYtX8
-         Qb7Q==
-X-Gm-Message-State: AOAM5311TfAA4m3HBZYjTwN1xUpxd+lVuqMG5AJhcI2X92urv36agkBA
-        TzAL0c8AdK4GDb68JFl9hIIE25brZFHsySD6OcNTvRjawE5tB0I0yhtMJDqo7zPsS11sDd+oVqV
-        Q4CavMivxz9ex6o6w4pVY4mDWSnB0RKnohWBB9/4L1w==
-X-Received: by 2002:a05:6512:3341:: with SMTP id y1mr13304240lfd.496.1633328299266;
-        Sun, 03 Oct 2021 23:18:19 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwtlfzjHtJZ1tlXP9FwF40sLemJaJymCby0Kw0vhaAlQc4a2km708y5CoSpfeHPWMuPuKw0Lg==
-X-Received: by 2002:a05:6512:3341:: with SMTP id y1mr13304224lfd.496.1633328299032;
-        Sun, 03 Oct 2021 23:18:19 -0700 (PDT)
-Received: from [192.168.0.197] ([193.178.187.25])
-        by smtp.gmail.com with ESMTPSA id j18sm1518879lfu.84.2021.10.03.23.18.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 03 Oct 2021 23:18:18 -0700 (PDT)
-Subject: Re: [PATCH] i2c: pxa: drop unneeded MODULE_ALIAS
-To:     Wolfram Sang <wsa@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-i2c@vger.kernel.org
-References: <20210916170517.138035-1-krzysztof.kozlowski@canonical.com>
- <YVgKu5IEr3kvdM1n@kunai>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <b94447ca-aa7f-661c-a0dc-8e7b244df5e3@canonical.com>
-Date:   Mon, 4 Oct 2021 08:18:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lldwxdk4W1G3ywdj9msOYMypt5nPXO6LwPIxOMZiJgk=;
+        b=PHaC2tg6VMPg75Licvn1rAd4g3dQJ9hb8DItHib+Ak9a2UzBBBAGjllwCXmrYtiSyO
+         kTMCb6qCT7CFlardBce402sy5EWhpARgVXJhkBuILs67617W1UCqCntQurpyTwPHHAG7
+         n7MttqLoFNEl1vZkb9/xXxBMB/msQTDjGDXFtOJz3SztYYCniPOopZDg0nV4s9+m6n7N
+         70oeiYV+N3Umsl5Gy3y7AyRp9v2GlbmNI0IYrbkP0GJ7CCw7ZHz6SNjtul2W5fknDxxA
+         rVXh3cX+e5kyEhxIOIrdFyUsiFSYimv27aBCsPXhk6VTvman/ITYzOIv5irD8SMTV/eD
+         neug==
+X-Gm-Message-State: AOAM5313wR04vQoC/F3VSp8VotLXZHHRfhi6hA9l75y3dgyG9fHby/6t
+        yAdBiIdKrUgrSIzk3IntqrKifw==
+X-Google-Smtp-Source: ABdhPJxcg4Fq/d465AxP95ZTo/FTkvMJ0NGcXsZ3jm/rVY++k8s2enNOL/MTAmgZ5faGDq3QQQiJaA==
+X-Received: by 2002:a65:404d:: with SMTP id h13mr9514277pgp.130.1633328804244;
+        Sun, 03 Oct 2021 23:26:44 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s ([204.124.181.210])
+        by smtp.gmail.com with ESMTPSA id g8sm13237805pfv.51.2021.10.03.23.26.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 03 Oct 2021 23:26:43 -0700 (PDT)
+Date:   Mon, 4 Oct 2021 14:26:38 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     James Clark <james.clark@arm.com>
+Cc:     Namhyung Kim <namhyung@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>, german.gomez@arm.com
+Subject: Re: [RFC] perf arm-spe: Track task context switch for cpu-mode events
+Message-ID: <20211004062638.GB174271@leoy-ThinkPad-X240s>
+References: <20210916001748.1525291-1-namhyung@kernel.org>
+ <20210916135418.GA383600@leoy-ThinkPad-X240s>
+ <CAM9d7chQjzEm7=UpjtTBbsob7kT+=9v16P30hWxnna7mbHu=2g@mail.gmail.com>
+ <20210923142305.GA603008@leoy-ThinkPad-X240s>
+ <363c4107-fc6f-51d0-94d8-a3f579c8f5a2@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <YVgKu5IEr3kvdM1n@kunai>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <363c4107-fc6f-51d0-94d8-a3f579c8f5a2@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/10/2021 09:31, Wolfram Sang wrote:
-> On Thu, Sep 16, 2021 at 07:05:17PM +0200, Krzysztof Kozlowski wrote:
->> The MODULE_DEVICE_TABLE already creates proper alias for platform
->> driver.  Having another MODULE_ALIAS causes the alias to be duplicated.
->>
->> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Hi James,
+
+On Thu, Sep 30, 2021 at 04:08:52PM +0100, James Clark wrote:
+> On 23/09/2021 15:23, Leo Yan wrote:
+> > On Thu, Sep 16, 2021 at 02:01:21PM -0700, Namhyung Kim wrote:
+
+[...]
+
+> >>> We also considered to use PERF_RECORD_SWITCH_CPU_WIDE event for setting
+> >>> pid/tid, the Intel PT implementation uses two things to set sample's
+> >>> pid/tid: one is PERF_RECORD_SWITCH_CPU_WIDE event and another is to detect
+> >>> the branch instruction is the symbol "__switch_to".  Since the trace
+> >>> event PERF_RECORD_SWITCH_CPU_WIDE is coarse, so it only uses the new
+> >>> pid/tid after the branch instruction for "__switch_to".  Arm SPE is
+> >>> 'statistical', thus it cannot promise the trace data must contain the
+> >>> branch instruction for "__switch_to", please see details [2].
+> >>
+> >> I can see the need in the Intel PT as it needs to trace all (branch)
+> >> instructions, but is it really needed for ARM SPE too?
+> >> Maybe I am missing something, but it seems enough to have a
+> >> coarse-grained context switch for sampling events..
+> > 
+> > The issue is that the coarse-grained context switch if introduces any
+> > inaccuracy in the reported result.  If we can run some workloads and
+> > prove the coarse-grained context switch doesn't cause significant bias,
+> > it will be great and can give us the confidence for this approach.
 > 
-> Applied to for-next, thanks!
-> 
-> Good catch. Do you want to fix all of these duplicates in the tree? I
-> found two handful of the same pattern and could assist you in removing
-> themt. But I also don't want to steal your credits. Let me know if I can
-> help.
-> 
+> It sounds like it's worth testing. Do you think the inaccuracy would only
+> apply to code in the kernel around the time of the switch? Or do you think
+> it could affect userspace as well?
 
-I think I fixed all of platform aliases. I also removed duplicates for
-few USB and ACPI (some others seems to be not an actual duplicate or
-intentional).
+The inaccuracy should only apply to the kernel code.  There would be
+some samples will be wrongly accounted for the next task between the
+function prepare_task_switch() and switch_to().
 
-All patches:
-https://lore.kernel.org/lkml/?q=f%3Akozlowski+MODULE_ALIAS
+> It seems to me that the switch event
+> would have a timestamp that would precede _all_ userspace code, but I'm not
+> 100% sure on that.
 
-If you see something not fixed, go ahead.
+Yes, the switch event is generated in the scheduler which precede
+exiting to userspace:
 
-Best regards,
-Krzysztof
+  __schedule()
+    `> context_switch()
+         `> prepare_task_switch()
+              `> perf_event_task_sched_out()
+
+> I suppose it's easy to test.
+
+I'd like to use the comparison method for the test:
+We should enable PID tracing and capture in the perf.data, when decode
+the trace data, we can based on context packet and based on the switch
+events to generate out two results, so we can check how the difference
+between these results.
+
+> German Gomez actually starting looking into the switch events for SPE at the
+> same time, so I've CCd him and maybe he can do some testing of the patch.
+
+Cool!  German is welcome to continue the related work; since I am in
+holiday this week, I will try this as well, if I have any conclusion
+will get back to you guys.
+
+If the test result shows good enough, I personally think we need finish
+below items:
+
+- Enable PID tracing and decode with context packets;
+- Provide interface to user space so perf tool knows if should use
+  hardware PID or rollback to context switch events;
+- Merge Namhyung's patch for using switch events for samples.
+
+Thanks,
+Leo
