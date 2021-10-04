@@ -2,118 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6B904214E6
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 19:12:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09A2E4214EA
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 19:13:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235451AbhJDROg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 13:14:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60606 "EHLO
+        id S236443AbhJDROy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 13:14:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229981AbhJDROf (ORCPT
+        with ESMTP id S236127AbhJDROw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 13:14:35 -0400
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7536AC061745
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 10:12:45 -0700 (PDT)
-Received: by mail-oi1-x22b.google.com with SMTP id s24so22517095oij.8
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 10:12:45 -0700 (PDT)
+        Mon, 4 Oct 2021 13:14:52 -0400
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87FBBC061746
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 10:13:03 -0700 (PDT)
+Received: by mail-qt1-x829.google.com with SMTP id d8so6375785qtd.5
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 10:13:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=a+ErGJ+VGql1p2hYj8IB8VzyrOn66LWzrHaFsKIvDKc=;
-        b=h3oETci+oft1UmX7a75PmczGicHfNM5s7F1GFBCDQAi2EkNVdjUq790hKUp30ANFFB
-         VyrGByJzeZyminQFTMyMDLeLWiLWn0YYTgy/Eu9n88lHJh1Fi/M1vBf4/4eVqSgZKDRy
-         ju5U30zZfx3TzeOig6VKJQYkuqmr6D2kRvJrrJ4wDzbUT/kgQ3q7E9lBVhpmjTwHuhF+
-         /xHIwFAh0IyB9k4+YRnCvq7uLa54RD6q1ZEZb9fBuRnaeorCLkgAi91kVZPSVVH1mj2q
-         Q7OyirHgV0SPFP3Nloc2CC8YfmIDiov3hLTpL77SAUKONdca4EAZznblaoem1xstXZxn
-         H8AA==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=cOKjddDH5+4xS9V6U2CWaH8D4d1KqVMcYRtfQMaTs5c=;
+        b=GgvWKF+Qow1pRmPozvXwK2n6+vlzlAdHg6CBoGnUsGSCYEVdzLPd45F7dE6qGax55W
+         uIZXUFTGdekCCcreTwaTXheY/u4z2Htz1g2kRHKpkvOjcN7f9zK83dzPuh36ynHbAj5r
+         Q0khND2u9HtkPw+KjpvYUFBXWsR+ItBJjfAn2U2Zxrx3MEB63rzpJWoot7UvfQCk6YfW
+         IwQEebSORZ1pdAiMpCIg3xzfCmjRrNJlswM7uqD+Ei7mVjWfa3RP2U+6lKdPt4ub+2MK
+         vQUGdOTByuoOBxPzrJiOvrS8wxIeXzQoY3i9NFRVPcpqoDY3nsjb74rbLQb4AXYrn/6q
+         QCNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=a+ErGJ+VGql1p2hYj8IB8VzyrOn66LWzrHaFsKIvDKc=;
-        b=Z+4BAsrV9zjpSJggZKOdp3vjR2hnNDt1RvBBnNoUW8cnA2XC2LGbCYkbo7OSHKlGwL
-         i5MRWRabV7HsPXpacfHreFD2c3HNgARra08crznfRNMGLKFTf3fSLxae75bSXAKUqk8L
-         WAMOpIp67PtkeC4fvS8msBLkeErTQxRRVGLZuLRPDhtFBKfJV1mNtBEPGIs+ZoZML2yw
-         CAcxbHs6j/Tgj8o91QHtIRmQSJot9IZN6anlcsjFpLJLU7uEX7bP5yCjHB6ggxSAD/hF
-         V3t802knQobnuj0jjEp8WF2TOkLZ8CWpFz40j41M31y0AOMOjh+1o0D0BJ6UjQI0WcVH
-         CBGw==
-X-Gm-Message-State: AOAM532MIClt02riF4kNG3dLy2TLxXBoGohU8hH/9fsDITKlv9LKUowl
-        ctJ1bNDAv6h63oHg3sdbNrtUdbp+TRAXOu4qp30lvw==
-X-Google-Smtp-Source: ABdhPJzag2OrV2aOwtnwXxGEC4VTCSs3t51aHzUylqhKU0i/hVl2hLv/6niMCg7RcoueHw5ou6jKGxuaNmdDu8sY9jc=
-X-Received: by 2002:a05:6808:180a:: with SMTP id bh10mr14867864oib.6.1633367564474;
- Mon, 04 Oct 2021 10:12:44 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=cOKjddDH5+4xS9V6U2CWaH8D4d1KqVMcYRtfQMaTs5c=;
+        b=hyVhqYzZluaKDoj4iXmy0HIiNdnJv/zFUGH0ZnW4oU0+OSHIyl/TLudGDRBnwnPhAy
+         1OOlxLJKOV6WoXuAnbiRC7j/plhC3qbjcJFGBb2Tq5iV02MwSIQ3whMlwauUxlYAMYh/
+         Izhj6h2LLKhWuw6oeChI2w75yjn3IKJszfxC9S+heRvexG8seHranWUlg2t6HhaIzR+O
+         GW4T/3/VtidgchYKcVfkTnJMF0U4Amifuwzb2WgBIQbD8HT1Y4nQWQEWiqQz2O5zdfhy
+         BGNxJsilZpzb6KfDY911zp1wReM+M2GEmBaOB2u5sMSn4AXJZxU/EERqA3R+Df5eIJD5
+         s6wQ==
+X-Gm-Message-State: AOAM531Q6y9GzvO0XfVsw3foaMod57hrCnB+mtksufenp0ChT5m6H2O9
+        W2/Fg6lTQ9WQPjTt7r0FIGntPQ==
+X-Google-Smtp-Source: ABdhPJyHXh9xAEaI+chzKoDCbjRMjAzxAmOsUGwwrilg5S3YihxeXByibrc9cOiMrfCR5Vojnwty/g==
+X-Received: by 2002:ac8:709a:: with SMTP id y26mr14324507qto.142.1633367582734;
+        Mon, 04 Oct 2021 10:13:02 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
+        by smtp.gmail.com with ESMTPSA id h14sm8793364qkn.4.2021.10.04.10.13.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Oct 2021 10:13:02 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1mXRWP-00AXWA-O2; Mon, 04 Oct 2021 14:13:01 -0300
+Date:   Mon, 4 Oct 2021 14:13:01 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Lino Sanfilippo <LinoSanfilippo@gmx.de>, rjui@broadcom.com,
+        sbranden@broadcom.com, bcm-kernel-feedback-list@broadcom.com,
+        nsaenz@kernel.org, linux-spi@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        p.rosenberger@kunbus.com, linux-integrity@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] spi: bcm2835: do not unregister controller in shutdown
+ handler
+Message-ID: <20211004171301.GA3544071@ziepe.ca>
+References: <20211001175422.GA53652@sirena.org.uk>
+ <2c4d7115-7a02-f79e-c91b-3c2dd54051b2@gmx.de>
+ <YVr4USeiIoQJ0Pqh@sirena.org.uk>
+ <20211004131756.GW3544071@ziepe.ca>
+ <YVsLxHMCdXf4vS+i@sirena.org.uk>
+ <20211004154436.GY3544071@ziepe.ca>
+ <YVssWYaxuQDi8jI5@sirena.org.uk>
+ <e68b04ab-831b-0ed5-074a-0879194569f9@gmail.com>
+ <20211004165127.GZ3544071@ziepe.ca>
+ <f481f7cc-6734-59b3-6432-5c2049cd87ea@gmail.com>
 MIME-Version: 1.0
-References: <1446878298.170497.1633338512925@office.mailbox.org>
- <b6abc5a3-39ea-b463-9df5-f50bdcb16d08@redhat.com> <936688112.157288.1633339838738@office.mailbox.org>
- <c4773ecc-053f-9bc6-03af-5039397a4531@redhat.com> <CAKwvOd=rrM4fGdGMkD5+kdA49a6K+JcUiR4K2-go=MMt++ukPA@mail.gmail.com>
-In-Reply-To: <CAKwvOd=rrM4fGdGMkD5+kdA49a6K+JcUiR4K2-go=MMt++ukPA@mail.gmail.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Mon, 4 Oct 2021 10:12:33 -0700
-Message-ID: <CALMp9eRzadC50n=d=NFm7osVgKr+=UG7r2cWV2nOCfoPN41vvQ@mail.gmail.com>
-Subject: Re: [BUG] [5.15] Compilation error in arch/x86/kvm/mmu/spte.h with clang-14
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, torvic9@mailbox.org,
-        "seanjc@google.com" <seanjc@google.com>,
-        "vkuznets@redhat.com" <vkuznets@redhat.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "nathan@kernel.org" <nathan@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "bp@alien8.de" <bp@alien8.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f481f7cc-6734-59b3-6432-5c2049cd87ea@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 4, 2021 at 9:13 AM Nick Desaulniers <ndesaulniers@google.com> wrote:
->
-> On Mon, Oct 4, 2021 at 2:49 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
-> >
-> > On 04/10/21 11:30, torvic9@mailbox.org wrote:
-> > >
-> > >> Paolo Bonzini <pbonzini@redhat.com> hat am 04.10.2021 11:26 geschrieben:
-> > >>
-> > >>
-> > >> On 04/10/21 11:08, torvic9@mailbox.org wrote:
-> > >>> I encounter the following issue when compiling 5.15-rc4 with clang-14:
-> > >>>
-> > >>> In file included from arch/x86/kvm/mmu/mmu.c:27:
-> > >>> arch/x86/kvm/mmu/spte.h:318:9: error: use of bitwise '|' with boolean operands [-Werror,-Wbitwise-instead-of-logical]
-> > >>>           return __is_bad_mt_xwr(rsvd_check, spte) |
-> > >>>                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > >>>                                                    ||
-> > >>> arch/x86/kvm/mmu/spte.h:318:9: note: cast one or both operands to int to silence this warning
-> > >>
-> > >> The warning is wrong, as mentioned in the line right above:
+On Mon, Oct 04, 2021 at 09:55:32AM -0700, Florian Fainelli wrote:
+> On 10/4/21 9:51 AM, Jason Gunthorpe wrote:
+> > On Mon, Oct 04, 2021 at 09:36:37AM -0700, Florian Fainelli wrote:
+> > 
+> >> No please don't, I should have arguably justified the reasons why
+> >> better, but the main reason is that one of the platforms on which this
+> >> driver is used has received extensive power management analysis and
+> >> changes, and shutting down every bit of hardware, including something as
+> >> small as a SPI controller, and its clock (and its PLL) helped meet
+> >> stringent power targets.
+> > 
+> > Huh? for device shutdown? What would this matter if the next step is
+> > reboot or power off?
+> 
+> Power off, the device is put into a low power state (equivalent to ACPI
+> S5) and then a remote control key press, or a GPIO could wake-up the
+> device again. While it is in that mode, it consumes less than 0.5W(AC).
+> Imagine your stick/cast/broom behind your TV falling in that category.
 
-Casting the bool to an int doesn't seem that onerous.
+So really this is more of a very deep sleep that cannot be recovered
+from than what other platforms would call a shutdown - eg the
+powerdomain of the device under driver control will not loose
+power.
 
-> > > So it's an issue with clang-14 then?
-> > > (I add Nick and Nathan)
-> >
-> > My clang here doesn't have the option, so I'm going to ask---are you
-> > using W=1?  I can see why clang is warning for KVM's code, but in my
-> > opinion such a check should only be in -Wextra.
->
-> This is a newly added warning in top of tree clang.
->
-> >
-> > Paolo
-> >
-> > >>
-> > >>           /*
-> > >>            * Use a bitwise-OR instead of a logical-OR to aggregate the reserved
-> > >>            * bits and EPT's invalid memtype/XWR checks to avoid an extra Jcc
-> > >>            * (this is extremely unlikely to be short-circuited as true).
-> > >>            */
-> > >>
-> > >> Paolo
-> > >
-> >
->
->
-> --
-> Thanks,
-> ~Nick Desaulniers
+I'm kind of surprised a scheme like this didn't involve a FW call
+after Linux is done with the CPUs to quiet all the HW and let it
+sleep, I've built things that way before at least.
+
+> I am fairly sure that no driver write knows about the being bound in
+> time aspect.
+
+Well, it is a logical consequence. The system is shutting down, no
+driver should be designed to deadlock the shutdown forever.
+
+I suppose this is why I've occasionally seen Linux just hang at a
+black screen and no power off when told to shutdown :)
+
+Jason
