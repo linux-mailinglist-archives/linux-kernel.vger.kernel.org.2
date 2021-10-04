@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6BCA4210D2
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:56:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CB7D4210D3
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:56:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235118AbhJDN63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:58:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39878 "EHLO
+        id S238475AbhJDN6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:58:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238837AbhJDN6S (ORCPT
+        with ESMTP id S238850AbhJDN6S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 4 Oct 2021 09:58:18 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA749C04AED9
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 06:53:29 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id e7so16613393pgk.2
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 06:53:29 -0700 (PDT)
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18379C04AEDB
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 06:53:34 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id m5so1822482pfk.7
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 06:53:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=pG3mj4bKDd7l8ZFqHwjB1MgvpFgzE+2HiTROeiz4Dcw=;
-        b=Ek2T9nV9gQ8EWW8JDLZtRMeCCS4iAzWtRhmGo7yHHo6WzIsUsiRDuBFkc0ZL2A5JwW
-         wqYVIeN9ulfTvKJ5+EwL6nPlknmGh4JtbLi6Ql6q0xXPRK8kx1YgBD9LxXlEFQdVRtGC
-         mUqtbcO01o3VDHKhrV323LAhW1CTqF81ywr28vwBzxElPYywwVh2i5n8LVlx4EwggwuC
-         Qs2khDcDwteSaxo+vdGhUTks5JzBz3Y66YemKDinonJC6aTl6GHzaz0IRMYBAvt5G/6h
-         lcf5R8jJSc9rB4cmZdV53j6lHJaYjFDcjzfiI2OOzsrNW20KlPVXTVaa1/KH7AoiJamr
-         aScQ==
+        bh=FR6K5YUYcCv1FDH4y5DK0PhIoCQEDWlRf94cnPNCwds=;
+        b=m7Cii4O3QZLRYFRd30tuRa1ZGW5M1nO9R064AjZksMB9Vx2UcoVaHIPKQCoCpX+ab2
+         xxE5BgKLDZb0+xhrQH1YgdG4LisEAqX4cNSdHTyaDqk9I1QBxLGXsGie8FtGgeSoFxXn
+         QQiNcRbsZwcNAGpjW/E4nmrU3+Kf7dVizxU5cjmihNXPDWSNuQgiez8sI61FGn0OqBu6
+         AitsR5SoUvrPwOGHAoWpYb+itJUZr75vuT2EYNrhkM7WfNUHAti/qP//FRdpmFZQHAq2
+         obH22mG+VGLBeBSn7dGb8kMWwjIIJ6Q3OV/kZw6S/ny0IYyJvSK1lbfR4Sc6UTdmO2EU
+         RJTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=pG3mj4bKDd7l8ZFqHwjB1MgvpFgzE+2HiTROeiz4Dcw=;
-        b=KojhV+c9J7sl48Ef3Pl+LhwH90hKUEFZg2UajjXUyGJLKUWZBh8lv9rQ5ppEmyz+rs
-         +in+vav8UJI5n67cLQXtatvKkLcWF82s1H+jluQUxCdcWJJSAxCY7Rsyr+p5vyj19A4P
-         G8bjfj+kfOWIUM+tQLh+2rb8Pj9ZThO/Ics6QKrE8ie/eQaTqaL3SaCEytNPDFO10aN+
-         aapVYlqMLnEvR2Vk+3UaGyQ+NQ1TeVhzApH8YGR3R15Exyitw9l5RTKMpfrHJ5c2wme/
-         CJXNDA6pfoqUZnZZDh2DdVegsyR0s3m2Iwp8atOqV3qtka/RlM2xZGHRemlLw+0uJ+MT
-         jQRg==
-X-Gm-Message-State: AOAM533/9ndijPxTVYr5jRvzV1nAXkQi7ra/tcm1wlE28vwZkvYlDixs
-        pTz3cnCaYGLALFjLcMHx8rs=
-X-Google-Smtp-Source: ABdhPJyvIHilOe5lS9NntuhffkTCHZ//p5UWlaai74QhVdLHck17Mlcj4MWEODyY2W6dSYUSaLrhfA==
-X-Received: by 2002:a65:6389:: with SMTP id h9mr11100114pgv.83.1633355609139;
-        Mon, 04 Oct 2021 06:53:29 -0700 (PDT)
+        bh=FR6K5YUYcCv1FDH4y5DK0PhIoCQEDWlRf94cnPNCwds=;
+        b=66MItmG850rDF1TSuX5gla7oPG+iaZRcIgsMfXulxjGZm5RcfS8Oe/Wx5mHwxvjeVH
+         PdT4l0ftJuqNohFPrGgh4ZHUuWk3i2Mkm4d6RT8x8c6txQVZ7SsTEp2QLGZvtgcCdxpo
+         fdk/H0pumsJ1mFUWDXl/5d/GpwePok3tllLQMwI/PE/hUy8twUE5k5jyvX6TR6usaXL5
+         QzrMBdDGJuzmxBSUK649wDcytLaLdZYegIuE4LLLkyZoffMorF1EurLTbz9EoEb1lFrg
+         sQD24hWeRKG/amCaptz5EFZvNMbw9YbQbMgxgHjYDqPXiH9cAibWgLruIjW1yli96lHf
+         GZoQ==
+X-Gm-Message-State: AOAM533EEHZ3rw5PmfCsjTj3Zn+lWqM/e4wIta2sw6BMfn3KxHbVWys3
+        ppM/EFAUzpWAKIGt+nFo/mI=
+X-Google-Smtp-Source: ABdhPJwqgQQmy2bTDwBaFQ3GZmWyi+4O57N3AsLw3XYvg9TAQJSn+qRPsDk/VZ0CSFCVCv/AP5hqmw==
+X-Received: by 2002:aa7:8bd4:0:b0:44b:1f60:497 with SMTP id s20-20020aa78bd4000000b0044b1f600497mr24979664pfd.78.1633355613620;
+        Mon, 04 Oct 2021 06:53:33 -0700 (PDT)
 Received: from localhost.localdomain ([2406:7400:63:e8f0:c2a7:3579:5fe8:31d9])
-        by smtp.gmail.com with ESMTPSA id k17sm12209548pfu.82.2021.10.04.06.53.26
+        by smtp.gmail.com with ESMTPSA id k17sm12209548pfu.82.2021.10.04.06.53.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Oct 2021 06:53:28 -0700 (PDT)
+        Mon, 04 Oct 2021 06:53:33 -0700 (PDT)
 From:   Naveen Naidu <naveennaidu479@gmail.com>
 To:     bhelgaas@google.com, ruscur@russell.cc, oohall@gmail.com
 Cc:     Naveen Naidu <naveennaidu479@gmail.com>,
         linux-kernel-mentees@lists.linuxfoundation.org,
         skhan@linuxfoundation.org, linux-kernel@vger.kernel.org,
         linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH 1/8] PCI/AER: Remove ID from aer_agent_string[]
-Date:   Mon,  4 Oct 2021 19:22:36 +0530
-Message-Id: <b4c5a5005d4549420cf6e86f31a01d3fb2876731.1633353468.git.naveennaidu479@gmail.com>
+Subject: [PATCH 2/8] PCI: Cleanup struct aer_err_info
+Date:   Mon,  4 Oct 2021 19:22:37 +0530
+Message-Id: <247efb0e4168393f4aee5e267a9aa8b3a8adff0f.1633353468.git.naveennaidu479@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1633353468.git.naveennaidu479@gmail.com>
 References: <cover.1633353468.git.naveennaidu479@gmail.com>
@@ -66,67 +66,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Before 010caed4ccb6 ("PCI/AER: Decode Error Source RequesterID")
-the AER error logs looked like:
+The id, status and the mask fields of the struct aer_err_info comes
+directly from the registers, hence their sizes should be explicit.
 
-  pcieport 0000:00:03.0: AER: Corrected error received: id=0018
-  pcieport 0000:00:03.0: PCIe Bus Error: severity=Corrected, type=Data Link Layer, id=0018 (Receiver ID)
-  pcieport 0000:00:03.0:   device [1b36:000c] error status/mask=00000040/0000e000
-  pcieport 0000:00:03.0:    [ 6] BadTLP
+The length of these registers are:
+  - id: 16 bits - Represents the Error Source Requester ID
+  - status: 32 bits - COR/UNCOR Error Status
+  - mask: 32 bits - COR/UNCOR Error Mask
 
-In 010caed4ccb6 ("PCI/AER: Decode Error Source Requester ID"),
-the "id" field was removed from the AER error logs, so currently AER
-logs look like:
+Since the length of the above registers are even, use u16 and u32
+to represent their values.
 
-  pcieport 0000:00:03.0: AER: Corrected error received: 0000:00:03:0
-  pcieport 0000:00:03.0: PCIe Bus Error: severity=Corrected, type=Data Link Layer, (Receiver ID)
-  pcieport 0000:00:03.0:   device [1b36:000c] error status/mask=00000040/0000e000
-  pcieport 0000:00:03.0:    [ 6] BadTLP
+Also remove the __pad fields.
 
-The second line in the above logs prints "(Receiver ID)", even when
-there is no "id" in the log line. This is confusing.
-
-Remove the "ID" from the aer_agent_string[]. The error logs will
-look as follows (Sample from dummy error injected by aer-inject):
-
-  pcieport 0000:00:03.0: AER: Corrected error received: 0000:00:03.0
-  pcieport 0000:00:03.0: PCIe Bus Error: severity=Corrected, type=Data Link Layer, (Receiver)
-  pcieport 0000:00:03.0:   device [1b36:000c] error status/mask=00000040/0000e000
-  pcieport 0000:00:03.0:    [ 6] BadTLP
+"pahole" was run on the modified struct aer_err_info and the size
+remains unchanged.
 
 Signed-off-by: Naveen Naidu <naveennaidu479@gmail.com>
 ---
- drivers/pci/pcie/aer.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/pci/pci.h | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
-index 9784fdcf3006..241ff361b43c 100644
---- a/drivers/pci/pcie/aer.c
-+++ b/drivers/pci/pcie/aer.c
-@@ -516,10 +516,10 @@ static const char *aer_uncorrectable_error_string[] = {
+diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+index 1cce56c2aea0..9be7a966fda7 100644
+--- a/drivers/pci/pci.h
++++ b/drivers/pci/pci.h
+@@ -427,18 +427,16 @@ struct aer_err_info {
+ 	struct pci_dev *dev[AER_MAX_MULTI_ERR_DEVICES];
+ 	int error_dev_num;
+ 
+-	unsigned int id:16;
++	u16	id;
+ 
+ 	unsigned int severity:2;	/* 0:NONFATAL | 1:FATAL | 2:COR */
+-	unsigned int __pad1:5;
+ 	unsigned int multi_error_valid:1;
+ 
+ 	unsigned int first_error:5;
+-	unsigned int __pad2:2;
+ 	unsigned int tlp_header_valid:1;
+ 
+-	unsigned int status;		/* COR/UNCOR Error Status */
+-	unsigned int mask;		/* COR/UNCOR Error Mask */
++	u32 status;		/* COR/UNCOR Error Status */
++	u32 mask;		/* COR/UNCOR Error Mask */
+ 	struct aer_header_log_regs tlp;	/* TLP Header */
  };
  
- static const char *aer_agent_string[] = {
--	"Receiver ID",
--	"Requester ID",
--	"Completer ID",
--	"Transmitter ID"
-+	"Receiver",
-+	"Requester",
-+	"Completer",
-+	"Transmitter"
- };
- 
- #define aer_stats_dev_attr(name, stats_array, strings_array,		\
-@@ -703,7 +703,7 @@ void aer_print_error(struct pci_dev *dev, struct aer_err_info *info)
- 	const char *level;
- 
- 	if (!info->status) {
--		pci_err(dev, "PCIe Bus Error: severity=%s, type=Inaccessible, (Unregistered Agent ID)\n",
-+		pci_err(dev, "PCIe Bus Error: severity=%s, type=Inaccessible, (Unregistered Agent)\n",
- 			aer_error_severity_string[info->severity]);
- 		goto out;
- 	}
 -- 
 2.25.1
 
