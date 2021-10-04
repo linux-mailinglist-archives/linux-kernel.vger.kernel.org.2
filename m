@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9912B420D03
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:09:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F7EE420F7F
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:34:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235717AbhJDNLE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:11:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39512 "EHLO mail.kernel.org"
+        id S237959AbhJDNfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:35:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47278 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235609AbhJDNIo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:08:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 588E261A58;
-        Mon,  4 Oct 2021 13:02:38 +0000 (UTC)
+        id S237852AbhJDNdO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:33:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 06A5763225;
+        Mon,  4 Oct 2021 13:14:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352558;
-        bh=JykexGAPNf0ofLwIzVrFG6D+y1QB9Y5AeNY+sL7dlec=;
+        s=korg; t=1633353299;
+        bh=ulfYhLnRGR0H4Tuf9IAqTsHD++vvs7/IV7lUakyRJRg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QCviMaKVfh5p/tN1Tb1BAWQIvfv5hz0+IISV7P9AoMpofpb/fLd+BZ3TeYaxH1kF3
-         8Xd7mDv1FSTs5Mtovcy8nF42NG+RMwb/qadIJX2wVXWdnw1WQd2U2VuBulrcoDVlOb
-         6cxcqbqXV92V0ZjrWFDTR6sNw8zu6/w381fw2BsQ=
+        b=hcfEsYaN9WWlQDNNmk1/me7XxmC1cQ6B3rbtRevytRYSo2IN9EOwAP683tDIjWdnN
+         QYXmV9vQcKwMcyDI4ovGTF3nx5FU1m3D4noUYnE88IEQVmtlC5BnmCJz0uQyp1nu1i
+         9inaJSm1EzMqygfOYIMMS8F1O/02E/xWP1YZVN2w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jesper Nilsson <jesper.nilsson@axis.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Shawn Guo <shawn.guo@linaro.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Georgi Djakov <djakov@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 34/95] net: stmmac: allow CSR clock of 300MHz
+Subject: [PATCH 5.14 074/172] interconnect: qcom: sdm660: Correct NOC_QOS_PRIORITY shift and mask
 Date:   Mon,  4 Oct 2021 14:52:04 +0200
-Message-Id: <20211004125034.683950635@linuxfoundation.org>
+Message-Id: <20211004125047.384345284@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125033.572932188@linuxfoundation.org>
-References: <20211004125033.572932188@linuxfoundation.org>
+In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
+References: <20211004125044.945314266@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,57 +43,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jesper Nilsson <jesper.nilsson@axis.com>
+From: Shawn Guo <shawn.guo@linaro.org>
 
-[ Upstream commit 08dad2f4d541fcfe5e7bfda72cc6314bbfd2802f ]
+[ Upstream commit 5833c9b8766298e73c11766f9585d4ea4fa785ff ]
 
-The Synopsys Ethernet IP uses the CSR clock as a base clock for MDC.
-The divisor used is set in the MAC_MDIO_Address register field CR
-(Clock Rate)
+The NOC_QOS_PRIORITY shift and mask do not match what vendor kernel
+defines [1].  Correct them per vendor kernel.  As the result of
+NOC_QOS_PRIORITY_P0_SHIFT being 0, the definition can be dropped and
+regmap_update_bits() call on P0 can be simplified a bit.
 
-The divisor is there to change the CSR clock into a clock that falls
-below the IEEE 802.3 specified max frequency of 2.5MHz.
+[1] https://source.codeaurora.org/quic/la/kernel/msm-4.4/tree/drivers/soc/qcom/msm_bus/msm_bus_noc_adhoc.c?h=LA.UM.8.2.r1-04800-sdm660.0#n37
 
-If the CSR clock is 300MHz, the code falls back to using the reset
-value in the MAC_MDIO_Address register, as described in the comment
-above this code.
-
-However, 300MHz is actually an allowed value and the proper divider
-can be estimated quite easily (it's just 1Hz difference!)
-
-A CSR frequency of 300MHz with the maximum clock rate value of 0x5
-(STMMAC_CSR_250_300M, a divisor of 124) gives somewhere around
-~2.42MHz which is below the IEEE 802.3 specified maximum.
-
-For the ARTPEC-8 SoC, the CSR clock is this problematic 300MHz,
-and unfortunately, the reset-value of the MAC_MDIO_Address CR field
-is 0x0.
-
-This leads to a clock rate of zero and a divisor of 42, and gives an
-MDC frequency of ~7.14MHz.
-
-Allow CSR clock of 300MHz by making the comparison inclusive.
-
-Signed-off-by: Jesper Nilsson <jesper.nilsson@axis.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: f80a1d414328 ("interconnect: qcom: Add SDM660 interconnect provider driver")
+Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+Link: https://lore.kernel.org/r/20210902054915.28689-1-shawn.guo@linaro.org
+Signed-off-by: Georgi Djakov <djakov@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/interconnect/qcom/sdm660.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index af59761ddfa0..064e13bd2c8b 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -227,7 +227,7 @@ static void stmmac_clk_csr_set(struct stmmac_priv *priv)
- 			priv->clk_csr = STMMAC_CSR_100_150M;
- 		else if ((clk_rate >= CSR_F_150M) && (clk_rate < CSR_F_250M))
- 			priv->clk_csr = STMMAC_CSR_150_250M;
--		else if ((clk_rate >= CSR_F_250M) && (clk_rate < CSR_F_300M))
-+		else if ((clk_rate >= CSR_F_250M) && (clk_rate <= CSR_F_300M))
- 			priv->clk_csr = STMMAC_CSR_250_300M;
- 	}
+diff --git a/drivers/interconnect/qcom/sdm660.c b/drivers/interconnect/qcom/sdm660.c
+index ac13046537e8..99eef7e2d326 100644
+--- a/drivers/interconnect/qcom/sdm660.c
++++ b/drivers/interconnect/qcom/sdm660.c
+@@ -44,9 +44,9 @@
+ #define NOC_PERM_MODE_BYPASS		(1 << NOC_QOS_MODE_BYPASS)
  
+ #define NOC_QOS_PRIORITYn_ADDR(n)	(0x8 + (n * 0x1000))
+-#define NOC_QOS_PRIORITY_MASK		0xf
++#define NOC_QOS_PRIORITY_P1_MASK	0xc
++#define NOC_QOS_PRIORITY_P0_MASK	0x3
+ #define NOC_QOS_PRIORITY_P1_SHIFT	0x2
+-#define NOC_QOS_PRIORITY_P0_SHIFT	0x3
+ 
+ #define NOC_QOS_MODEn_ADDR(n)		(0xc + (n * 0x1000))
+ #define NOC_QOS_MODEn_MASK		0x3
+@@ -624,13 +624,12 @@ static int qcom_icc_noc_set_qos_priority(struct regmap *rmap,
+ 	/* Must be updated one at a time, P1 first, P0 last */
+ 	val = qos->areq_prio << NOC_QOS_PRIORITY_P1_SHIFT;
+ 	rc = regmap_update_bits(rmap, NOC_QOS_PRIORITYn_ADDR(qos->qos_port),
+-				NOC_QOS_PRIORITY_MASK, val);
++				NOC_QOS_PRIORITY_P1_MASK, val);
+ 	if (rc)
+ 		return rc;
+ 
+-	val = qos->prio_level << NOC_QOS_PRIORITY_P0_SHIFT;
+ 	return regmap_update_bits(rmap, NOC_QOS_PRIORITYn_ADDR(qos->qos_port),
+-				  NOC_QOS_PRIORITY_MASK, val);
++				  NOC_QOS_PRIORITY_P0_MASK, qos->prio_level);
+ }
+ 
+ static int qcom_icc_set_noc_qos(struct icc_node *src, u64 max_bw)
 -- 
 2.33.0
 
