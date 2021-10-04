@@ -2,161 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF94D421A56
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 00:55:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A9B5421A67
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 01:00:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236945AbhJDW4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 18:56:42 -0400
-Received: from mga17.intel.com ([192.55.52.151]:46069 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233501AbhJDW4k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 18:56:40 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10127"; a="206423269"
-X-IronPort-AV: E=Sophos;i="5.85,347,1624345200"; 
-   d="scan'208";a="206423269"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2021 15:54:51 -0700
-X-IronPort-AV: E=Sophos;i="5.85,347,1624345200"; 
-   d="scan'208";a="477402850"
-Received: from schen9-mobl.amr.corp.intel.com ([10.209.66.53])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2021 15:54:50 -0700
-Message-ID: <3a0f95cf5602e11fde0e21032e52aad6e137d940.camel@linux.intel.com>
-Subject: Re: [PATCH RESEND 0/3] Represent cluster topology and enable load
- balance between clusters
-From:   Tim Chen <tim.c.chen@linux.intel.com>
-To:     Barry Song <21cnbao@gmail.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Ben Segall <bsegall@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Guodong Xu <guodong.xu@linaro.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        "Cc: Len Brown" <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        LAK <linux-arm-kernel@lists.infradead.org>,
-        Linuxarm <linuxarm@huawei.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mel Gorman <mgorman@suse.de>, msys.mizuma@gmail.com,
-        "Zengtao (B)" <prime.zeng@hisilicon.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Will Deacon <will@kernel.org>, x86 <x86@kernel.org>,
-        yangyicong <yangyicong@huawei.com>
-Date:   Mon, 04 Oct 2021 15:54:50 -0700
-In-Reply-To: <CAGsJ_4wvLw=US1ddJr=Jrim1vs-F2hpcQ29LQyqDENd7Fk=ssA@mail.gmail.com>
-References: <20210924085104.44806-1-21cnbao@gmail.com>
-         <CAGsJ_4yW72mktbWjRfE9ngXoq9oXBXyAd_TPjKBNdGiRSoh9LA@mail.gmail.com>
-         <CAKfTPtAtfJRFBbo+kBCYf42hxcc2iP8kkmg3Wcr5aW7Rnf=rfw@mail.gmail.com>
-         <YVch0/R9PHzUwqea@hirez.programming.kicks-ass.net>
-         <ece8838d112840bf26adbb09f653babcf298eb28.camel@linux.intel.com>
-         <CAGsJ_4wvLw=US1ddJr=Jrim1vs-F2hpcQ29LQyqDENd7Fk=ssA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+        id S233504AbhJDXB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 19:01:56 -0400
+Received: from mail-mw2nam12on2068.outbound.protection.outlook.com ([40.107.244.68]:2272
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231575AbhJDXBz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 19:01:55 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AHleuXmMb5rIfjlx0i9wzai1EMjXPEq6EEjfZvPBnh+KrXqtXPj2agGMShqxPXS7fBbKeMgnzsw7bI1Kcvo/PWqhnUObszEdwjltu7E3k0ExHRX8tpg1yjpTzVjPHBLQtqUIXdQDfdVPvDkHl2nzv3yMCM+gPr+2hCiFEQIJZOpcwesADMb2cAjSCYyRG7VdR9hWFZwPPkr41ZskaJsZHo8EhQa1jUGDH+YM8xwuSouR02OqkTaVdFjPOVScWz88VZQwpA0mBUrhV2IQAZe1G1u0RAo3OZuT4VCUREu7ija4eXzYgMW+NUeEwFkF+HqgTAvJG0Q87prPF/D/2b4DLw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=bGE4MZcjBhjVWPTVvckXC2euwq85nDYtugetyNjhZTg=;
+ b=hiunBS9P3AzeiWGdkGW1yS9ctTq9oWYJPoCaElimQahooVuUSbl4499G4SuEAYIY4BYVpc4K1VgudE5NpKua4ZYgUcLm9oA8VEuf8To49/vJ1wD59KbgQ1l9D0rfSBvTIKi8GQ7T1hQxTEhjYs+ytJaEhWQ4K+Oe63jspD7vwxIr1Ex7VZhm6zyMNF4qkpnddPah5bSP9KgH6L6BuANCbsOnm+YU5kmW83alJU9Lc+3O2tW7vZpghpUn1S4wj+J2TmqhUi1txZQ7tSMD86HbSKBtJ22hL+SPGvbxrT/ORiO48PMHhYuBABVAbJwWul10HmJFUf+VWRR9bFQwe4cFhQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bGE4MZcjBhjVWPTVvckXC2euwq85nDYtugetyNjhZTg=;
+ b=nruKXEiWWyRUH9IDZwCnZIDg+Qt5b8LCST7GhzPKOLXeXv3yrub0vzTP8Q8n/4ozn4iT7xf7DrCDmXOjVDXIRHrGr0zxPtGhg32Q8ZGxtW5daONDP3ZSRkOkgrVtygBf0V1yxU7WqiV2zjZuhu35jm+rGMF0jaeUWR7SxldphXutuJtnhMWVbprQQuoH/4jCpYn/ee9d5tKB7fKrDjuQm4Z0+dK7k4OUkIED9ALiLArhx6hpn/M08+wcqJG8dy+4h8pil4UhHa5td3Qq7eiWeyCON0dzkiztcU1WEG3IiOiJkMyQQGVlBtBcbwvnchCPp8mZkPm4SfcXiNbmvM3OYQ==
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5110.namprd12.prod.outlook.com (2603:10b6:208:312::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.19; Mon, 4 Oct
+ 2021 23:00:04 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::e8af:232:915e:2f95%8]) with mapi id 15.20.4566.022; Mon, 4 Oct 2021
+ 23:00:04 +0000
+Date:   Mon, 4 Oct 2021 20:00:03 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Aharon Landau <aharonl@nvidia.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH rdma-next] RDMA/mlx5: Avoid taking MRs from larger MR
+ cache pools when a pool is empty
+Message-ID: <20211004230003.GA2602856@nvidia.com>
+References: <71af2770c737b936f7b10f457f0ef303ffcf7ad7.1632644527.git.leonro@nvidia.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <71af2770c737b936f7b10f457f0ef303ffcf7ad7.1632644527.git.leonro@nvidia.com>
+X-ClientProxiedBy: BLAPR03CA0135.namprd03.prod.outlook.com
+ (2603:10b6:208:32e::20) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Received: from mlx.ziepe.ca (142.162.113.129) by BLAPR03CA0135.namprd03.prod.outlook.com (2603:10b6:208:32e::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.15 via Frontend Transport; Mon, 4 Oct 2021 23:00:04 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mXWwF-00Av9b-Bl; Mon, 04 Oct 2021 20:00:03 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 20aa6b0c-bd3f-4c65-4f85-08d9878ab3ce
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5110:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL1PR12MB5110FB9924F0D3049EF20F10C2AE9@BL1PR12MB5110.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: glap9i/q9eoVmDK4zFQ5TMU4+MV1UI9zgrKca3KslXs10cqf7KYQERt5/w1N7aOEXDjIX27KUb6y0L6BgHf8rX4YoNdprjPT4G9eiVN/1h6SkIk6sujQjTBareDN3d5sJVphjTVG7a0odTwpv/efze/ORXnYdmFNVKHX/OmIbjC6Od1+rtIYLJfjPQIPLi5F+Z3pnDRtkyjEVkZ9rUeIh37iz0D5WzQ86TBbbVjFpy6I5NUgx22jLb4V5BtbSkjBYBgOGYRg36Asm7i9UkDDfWQ9u0Z17vhSxRUYCGMMH3JV1CUt5jLi4P2dOCKr0tAk+tnjmDOl4N0YUB0yt0PgYcUdNBWjGn5yjGN+NFG1ps4VzotbQ1nLIOnuUvZFNJZngQ/NlF9IYwwDuIrf+EyCsIxhvwhsxdkzrKJCK2P37hVGrt+RVUMhkxws8NW9JOm3GLzxv/RY3wUpXZROK+tiDiMC7Va8UzOmMsDUlNFapUOpASaUIv4FEXK3lvaH66k6TkE3PfwS0P7/txXW7wBD9RRsdD+CKZktp3JSAg+szDxt/nLhUUpQdlC1ftuR9iiL+9jp30YaRpSCaDYXfOB6Z7vAGYHYvIhOGbdcO/GVhsMQT3jKbXLVBkPvjv7LCUNuWgoiMI2It3RATPsuPLAPlw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(316002)(508600001)(66476007)(66556008)(6916009)(54906003)(38100700002)(26005)(186003)(2906002)(2616005)(426003)(4326008)(8936002)(5660300002)(66946007)(8676002)(83380400001)(36756003)(1076003)(33656002)(9786002)(86362001)(9746002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?DSQL1rDKUdZVw+OJrHFrPT+UUbHcH1hiESKSw2Ca9eDuuDtFvWh2pFW+qXS4?=
+ =?us-ascii?Q?d1Rt4uP05v0JqGYoZgTBTDp0gQQRu06CRREn25sDkm+O7hZQxwr4kbUhHGm1?=
+ =?us-ascii?Q?10CraNE7k2UXM6oN9ZBP5rv/l5MFQUGpq75xkv86Xo/E9aISpsrlulF4uYXs?=
+ =?us-ascii?Q?K0igvAr++KmFyTGI42Izb2qpNhM2UWZdJDT6IG3uswKBP0gfVRBq/tGCj1E4?=
+ =?us-ascii?Q?SgqPYiwCz0JOEr+tYKTa58mSpk7tXfQ4bL5IIVtknS0fs2ia2xQPoJrhwJiF?=
+ =?us-ascii?Q?8k9tPZL04m+gBctXwe8vBt1AqDSi8JfD19YsSHjhhJC3rY/GNzKIytLAPRgJ?=
+ =?us-ascii?Q?52S799cZ50VskPcxafuu0Wr8MLxDRUHd+vSN9Z//pF3RzqoK2NMsYGgljOF6?=
+ =?us-ascii?Q?t05LbTLEkxmrD3CC7U3L2qMj2SVK8a1XsR6JhAGNHPp3pACEknw/rdYCEtQB?=
+ =?us-ascii?Q?c9VVGIbbw4uDHj4zO1KI6vGU4VS9xG/2FzjQm1YoLIWW6sB9f8z8stcBHzlu?=
+ =?us-ascii?Q?KLQfNG31aDJOUtShP+S9ztbYRpXDwybHHQOJ2N1Nb/XS0bO0gU6k6hNSTPI8?=
+ =?us-ascii?Q?o52ojF9uUJzpLOo5zqmHkxEvRtRAfqjaHt0ajH5p1tFS5ykJ4Iqi6qm0WIfb?=
+ =?us-ascii?Q?GNrwdXONWFNokkli8X5tfP06XMroM92hz2sMqcloxl6Zg9ZlkIKH9k1edTxZ?=
+ =?us-ascii?Q?D3gwcx5oab7BXteIP03qU3ejVOWiU5VOFTVzHnNwnklQzIvx2Z8vZHO+qS16?=
+ =?us-ascii?Q?18UAp+W+unMYKLPX5F8lwvdLQuMsT/Y0l0PUZ52ZlVrfza6MIdc46kCIiW/L?=
+ =?us-ascii?Q?R4e4VBpzmCNlSgQghiSJmEhsMdogcVXzoMYeZZ2CkQdbdftIffd8HRstn4t1?=
+ =?us-ascii?Q?q5Uqip0oQtQEBTEO+sX+Px+AOJZkNVhphMMke7ymjU+dfBdpkfZbNPIwkunI?=
+ =?us-ascii?Q?LgGDCuzKvKeJvUszzmBi5MjwL1xmQIoFyx+ch9Gf3LPy1nphFreplM/uSJn9?=
+ =?us-ascii?Q?BH0dlyt2AmT0yZyRwCNeVQXL/0MmAOcO0BTbPpSQSlsPXJS4P4SlUNxeu8Cq?=
+ =?us-ascii?Q?6b41VNNgVOnF/DLqcHk5T3HkJJhyvQ1gZ/8Yan8t5r1wuq0LXa7RVK3+UdND?=
+ =?us-ascii?Q?6H2WvURnwrP87dYBM8flFGCUN6hc11NI/uSZIwbsbcN0HPYjf/CJCWIcccwA?=
+ =?us-ascii?Q?fNlmbEMGrzfJNhl108+LEgtOjpOSIiByFoQCmjQBY6MP4keIvqe/nfikjQyM?=
+ =?us-ascii?Q?qUe4XumQyZXdUGvwtXaOZ3/OgqSN6yGuvqF0QKJ6CrQBPZXQ07ghDlCBF8Mu?=
+ =?us-ascii?Q?w4huuAFi8XvW1YCJaq+CSZ527wECbX3/YqcRZQkIPf9W+g=3D=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 20aa6b0c-bd3f-4c65-4f85-08d9878ab3ce
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Oct 2021 23:00:04.3416
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: FJ75JHc/+NEbgE++aa76FJxq3iBPujTcDJRX926uxq/VXW5PrCBE+Vpfs5b27Gee
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5110
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2021-10-02 at 20:09 +1300, Barry Song wrote:
+On Sun, Sep 26, 2021 at 11:31:43AM +0300, Leon Romanovsky wrote:
+> From: Aharon Landau <aharonl@nvidia.com>
 > 
+> Currently, if a cache entry is empty, the driver will try to take MRs
+> from larger cache entries. This behavior consumes a lot of memory.
+> In addition, when searching for an mkey in an entry, the entry is locked.
+> When using a multithreaded application with the old behavior, the threads
+> will block each other more often, which can hurt performance as can be
+> seen in the table below.
 > 
-> Thanks, Tim, for your comments.
-> I am ok to make it default "Y" for x86 after having a better doc as
-> below:
-> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> index bd27b1cdac34..940eb1fe0abb 100644
-> --- a/arch/x86/Kconfig
-> +++ b/arch/x86/Kconfig
-> @@ -1002,12 +1002,17 @@ config NR_CPUS
->           to the kernel image.
+> Therefore, avoid it by creating a new mkey when the requested cache entry
+> is empty.
 > 
->  config SCHED_CLUSTER
-> -       bool "Cluster scheduler support"
-> -       default n
-> +       def_bool y
-> +       prompt "Cluster scheduler support"
->         help
->          Cluster scheduler support improves the CPU scheduler's
-> decision
-> -        making when dealing with machines that have clusters of CPUs
-> -        sharing L2 cache. If unsure say N here.
-> +        making when dealing with machines that have clusters of
-> CPUs.
-> +        Cluster usually means a couple of CPUs which are placed
-> closely
-> +        by sharing mid-level caches, last-level cache tags or
-> internal
-> +        busses. For example, on x86 Jacobsville, each 4 CPUs share
-> one
-> +        L2 cache. This feature isn't a universal win because it can
-> bring
-> +        a cost of slightly increased overhead in some places. If
-> unsure
-> +        say N here.
+> The test was performed on a machine with
+> Intel(R) Xeon(R) CPU E5-2699 v4 @ 2.20GHz 44 cores.
 > 
-> This also aligns well with SCHED_MC and SCHED_SMT in
-> arch/x86/kconfig:
-> config SCHED_MC
->     def_bool y
->     prompt "Multi-core scheduler support"
+> Here are the time measures for allocating MRs of 2^6 pages. The search in
+> the cache started from entry 6.
 > 
-> config SCHED_SMT
->     def_bool y if SMP
+> +------------+---------------------+---------------------+
+> |            |     Old behavior    |     New behavior    |
+> |            +----------+----------+----------+----------+
+> |            | 1 thread | 5 thread | 1 thread | 5 thread |
+> +============+==========+==========+==========+==========+
+> |  1,000 MRs |   14 ms  |   30 ms  |   14 ms  |   80 ms  |
+> +------------+----------+----------+----------+----------+
+> | 10,000 MRs |  135 ms  |   6 sec  |  173 ms  |  880 ms  |
+> +------------+----------+----------+----------+----------+
+> |100,000 MRs | 11.2 sec |  57 sec  | 1.74 sec |  8.8 sec |
+> +------------+----------+----------+----------+----------+
 > 
-> But ARM64 is running in a different tradition, arch/arm64/Kconfig has
-> SCHED_MC and SCHED_SMT as below:
->    config SCHED_MC
->    bool "Multi-core scheduler support"
->    help
->     ...
-> 
-> config SCHED_SMT
->   bool "SMT scheduler support"
->   help
->   ...
-> 
-> 
+> Signed-off-by: Aharon Landau <aharonl@nvidia.com>
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> ---
+>  drivers/infiniband/hw/mlx5/mr.c | 26 +++++++++-----------------
+>  1 file changed, 9 insertions(+), 17 deletions(-)
 
-Barry,
+I'm surprised the cost is so high, I assume this has alot to do with
+repeated calls to queue_adjust_cache_locked()? Maybe this should be
+further investigated?
 
-Found one minor fix to the x86 patch to take care of compile error for
-!CONFIG_SMP.
+Anyhow, applied to for-next, thanks
 
-Thanks.
-
-Tim
-
-diff --git a/arch/x86/include/asm/topology.h b/arch/x86/include/asm/topology.h
-index 2548d824f103..cc164777e661 100644
---- a/arch/x86/include/asm/topology.h
-+++ b/arch/x86/include/asm/topology.h
-@@ -109,12 +109,12 @@ extern const struct cpumask *cpu_clustergroup_mask(int cpu);
- #define topology_physical_package_id(cpu)	(cpu_data(cpu).phys_proc_id)
- #define topology_logical_die_id(cpu)		(cpu_data(cpu).logical_die_id)
- #define topology_die_id(cpu)			(cpu_data(cpu).cpu_die_id)
--#define topology_cluster_id(cpu)		(per_cpu(cpu_l2c_id, cpu))
- #define topology_core_id(cpu)			(cpu_data(cpu).cpu_core_id)
- 
- extern unsigned int __max_die_per_package;
- 
- #ifdef CONFIG_SMP
-+#define topology_cluster_id(cpu)		(per_cpu(cpu_l2c_id, cpu))
- #define topology_die_cpumask(cpu)		(per_cpu(cpu_die_map, cpu))
- #define topology_cluster_cpumask(cpu)		(cpu_clustergroup_mask(cpu))
- #define topology_core_cpumask(cpu)		(per_cpu(cpu_core_map, cpu))
-
+Jason
