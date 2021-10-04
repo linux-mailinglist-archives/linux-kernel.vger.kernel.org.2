@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57BC7420D11
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:09:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEF30420E22
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:20:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235765AbhJDNLi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:11:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45770 "EHLO mail.kernel.org"
+        id S236453AbhJDNVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:21:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55046 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234825AbhJDNJD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:09:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4AFBD61994;
-        Mon,  4 Oct 2021 13:03:08 +0000 (UTC)
+        id S236463AbhJDNTm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:19:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D41861A56;
+        Mon,  4 Oct 2021 13:08:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352588;
-        bh=w024JYmk37nlZKIhVLjWq93WQ8YuWdThbroRM4d3+w4=;
+        s=korg; t=1633352911;
+        bh=Q/vUP3Zmw8Yw1BXBMLQQwD4vLyUa1rkialpTJn41U54=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LpM4s9BnJNDborEpcURdg0+TOtPaXELRw3a3fYTfK4VDn61sTT0rjELKbNyESAaXY
-         dMhU+QgoUiLztTq3mQ3s7iD8dIfPdakp7eguSx98QQgTnldadlC/h3EP6pfbChmQnk
-         BwC2oCDRJHu/T9yETJdaGndKHpiCkf18Bs+i3jw4=
+        b=1+TJ5ge0gC4Lez2Zm06DCvK5mjQaZZDD60Y3fZsbos3z3jfwBZRMdWIUdSN/C2aHx
+         SOGecqtD/UpC6yleeds9Muh0a1VXPyGs3Nj+bPJ1CMhluJ26QYdRP5Kw670zduT/FC
+         w7DKnDP6YufmTLEtioR3MlECPkYB+LzVGw2Gx4so=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 44/95] alpha: Declare virt_to_phys and virt_to_bus parameter as pointer to volatile
+        stable@vger.kernel.org, Zelin Deng <zelin.deng@linux.alibaba.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 5.10 16/93] x86/kvmclock: Move this_cpu_pvti into kvmclock.h
 Date:   Mon,  4 Oct 2021 14:52:14 +0200
-Message-Id: <20211004125035.018927608@linuxfoundation.org>
+Message-Id: <20211004125035.109567155@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125033.572932188@linuxfoundation.org>
-References: <20211004125033.572932188@linuxfoundation.org>
+In-Reply-To: <20211004125034.579439135@linuxfoundation.org>
+References: <20211004125034.579439135@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,68 +39,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guenter Roeck <linux@roeck-us.net>
+From: Zelin Deng <zelin.deng@linux.alibaba.com>
 
-[ Upstream commit 35a3f4ef0ab543daa1725b0c963eb8c05e3376f8 ]
+commit ad9af930680bb396c87582edc172b3a7cf2a3fbf upstream.
 
-Some drivers pass a pointer to volatile data to virt_to_bus() and
-virt_to_phys(), and that works fine.  One exception is alpha.  This
-results in a number of compile errors such as
+There're other modules might use hv_clock_per_cpu variable like ptp_kvm,
+so move it into kvmclock.h and export the symbol to make it visiable to
+other modules.
 
-  drivers/net/wan/lmc/lmc_main.c: In function 'lmc_softreset':
-  drivers/net/wan/lmc/lmc_main.c:1782:50: error:
-	passing argument 1 of 'virt_to_bus' discards 'volatile'
-	qualifier from pointer target type
-
-  drivers/atm/ambassador.c: In function 'do_loader_command':
-  drivers/atm/ambassador.c:1747:58: error:
-	passing argument 1 of 'virt_to_bus' discards 'volatile'
-	qualifier from pointer target type
-
-Declare the parameter of virt_to_phys and virt_to_bus as pointer to
-volatile to fix the problem.
-
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Acked-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Zelin Deng <zelin.deng@linux.alibaba.com>
+Cc: <stable@vger.kernel.org>
+Message-Id: <1632892429-101194-2-git-send-email-zelin.deng@linux.alibaba.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/alpha/include/asm/io.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/x86/include/asm/kvmclock.h |   14 ++++++++++++++
+ arch/x86/kernel/kvmclock.c      |   13 ++-----------
+ 2 files changed, 16 insertions(+), 11 deletions(-)
 
-diff --git a/arch/alpha/include/asm/io.h b/arch/alpha/include/asm/io.h
-index 0bba9e991189..d4eab4f20249 100644
---- a/arch/alpha/include/asm/io.h
-+++ b/arch/alpha/include/asm/io.h
-@@ -61,7 +61,7 @@ extern inline void set_hae(unsigned long new_hae)
-  * Change virtual addresses to physical addresses and vv.
-  */
- #ifdef USE_48_BIT_KSEG
--static inline unsigned long virt_to_phys(void *address)
-+static inline unsigned long virt_to_phys(volatile void *address)
- {
- 	return (unsigned long)address - IDENT_ADDR;
- }
-@@ -71,7 +71,7 @@ static inline void * phys_to_virt(unsigned long address)
- 	return (void *) (address + IDENT_ADDR);
- }
- #else
--static inline unsigned long virt_to_phys(void *address)
-+static inline unsigned long virt_to_phys(volatile void *address)
- {
-         unsigned long phys = (unsigned long)address;
+--- a/arch/x86/include/asm/kvmclock.h
++++ b/arch/x86/include/asm/kvmclock.h
+@@ -2,6 +2,20 @@
+ #ifndef _ASM_X86_KVM_CLOCK_H
+ #define _ASM_X86_KVM_CLOCK_H
  
-@@ -112,7 +112,7 @@ static inline dma_addr_t __deprecated isa_page_to_bus(struct page *page)
- extern unsigned long __direct_map_base;
- extern unsigned long __direct_map_size;
++#include <linux/percpu.h>
++
+ extern struct clocksource kvm_clock;
  
--static inline unsigned long __deprecated virt_to_bus(void *address)
-+static inline unsigned long __deprecated virt_to_bus(volatile void *address)
- {
- 	unsigned long phys = virt_to_phys(address);
- 	unsigned long bus = phys + __direct_map_base;
--- 
-2.33.0
-
++DECLARE_PER_CPU(struct pvclock_vsyscall_time_info *, hv_clock_per_cpu);
++
++static inline struct pvclock_vcpu_time_info *this_cpu_pvti(void)
++{
++	return &this_cpu_read(hv_clock_per_cpu)->pvti;
++}
++
++static inline struct pvclock_vsyscall_time_info *this_cpu_hvclock(void)
++{
++	return this_cpu_read(hv_clock_per_cpu);
++}
++
+ #endif /* _ASM_X86_KVM_CLOCK_H */
+--- a/arch/x86/kernel/kvmclock.c
++++ b/arch/x86/kernel/kvmclock.c
+@@ -50,18 +50,9 @@ early_param("no-kvmclock-vsyscall", pars
+ static struct pvclock_vsyscall_time_info
+ 			hv_clock_boot[HVC_BOOT_ARRAY_SIZE] __bss_decrypted __aligned(PAGE_SIZE);
+ static struct pvclock_wall_clock wall_clock __bss_decrypted;
+-static DEFINE_PER_CPU(struct pvclock_vsyscall_time_info *, hv_clock_per_cpu);
+ static struct pvclock_vsyscall_time_info *hvclock_mem;
+-
+-static inline struct pvclock_vcpu_time_info *this_cpu_pvti(void)
+-{
+-	return &this_cpu_read(hv_clock_per_cpu)->pvti;
+-}
+-
+-static inline struct pvclock_vsyscall_time_info *this_cpu_hvclock(void)
+-{
+-	return this_cpu_read(hv_clock_per_cpu);
+-}
++DEFINE_PER_CPU(struct pvclock_vsyscall_time_info *, hv_clock_per_cpu);
++EXPORT_PER_CPU_SYMBOL_GPL(hv_clock_per_cpu);
+ 
+ /*
+  * The wallclock is the time of day when we booted. Since then, some time may
 
 
