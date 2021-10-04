@@ -2,125 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DF0942117B
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 16:33:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DB6E421185
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 16:34:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234465AbhJDOf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 10:35:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234490AbhJDOf0 (ORCPT
+        id S234595AbhJDOgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 10:36:14 -0400
+Received: from mail-ot1-f51.google.com ([209.85.210.51]:34474 "EHLO
+        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234538AbhJDOgM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 10:35:26 -0400
-Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [IPv6:2001:67c:2050::465:202])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39B27C061745;
-        Mon,  4 Oct 2021 07:33:37 -0700 (PDT)
-Received: from smtp202.mailbox.org (smtp202.mailbox.org [IPv6:2001:67c:2050:105:465:1:4:0])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4HNNW32xxLzQkhP;
-        Mon,  4 Oct 2021 16:33:35 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mailbox.org; h=
-        content-transfer-encoding:content-type:content-type:mime-version
-        :subject:subject:references:in-reply-to:message-id:from:from
-        :date:date:received; s=mail20150812; t=1633358011; bh=i464Ru14yK
-        p+tO7OJAFrwLQPSlMjtYA/mmJLgmITXH4=; b=OsmnW3zZynDb1Dgz8yOjPO8lYQ
-        NHLIkKDcdTUFZtwm0F+3KZA9Y2wIZMtW2rTawq+iEAy6MoOvCk56dZhIK1OXGqWG
-        D4jfqu41VLeOw4Eqi/32dr1C+n+xssb6C+3XtgAkcEsjNvgednC4/TEsqPWBWMXS
-        kTPFfQTtoEp5IIQuHOb6C3kERfslEEiYmfqpgjqzbwP3l21HzU3DBm6E0jO1oKga
-        PZfw1RSUVzhQ6qz7G42wDSuDLtaH2rJkNrJocUfZhfBDOAnybvziZUIcyTlKiCmT
-        ZVDS3QAaFZpvCAEZZyI0xS88niEVGXBcZdPvYwIGB+lVioJC8sH2vVwTyFWg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
-        t=1633358013;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rmjeYd7vcU5PyUKxcIasco2LgsFeZ5uHoTR73KzRdkU=;
-        b=qosJzPDRamsy1m8+HMsW6BkZ002WDNwtFpshGAY6fIZfXAMg5LGsAUzcjcp5eAbue7dYjZ
-        eD6qv80iabD/DDtaD6HsI7UcJnNFxTCm43z2DaBVUzDsKtW54PZTS1nEwHoQlhBgc/bMAC
-        I2wHuzSH8qFgLbff4NcipABC0mOrnEQupb4hfAXsCTzKcDznnLnNQbvIQCbnNCHTv+GAvQ
-        7aNFJevKbmaz4vxdMOZQpr/Ue6Y7Fmzanll8X/QWv0TUnPEWN0XX6mO4Vz05WWVHJFpeqX
-        1SITC32l6/SRNQJcVhS81k+iz7b/GHGEJ29f/MXvfeHIbtPUCjMDxIGT1I2p6A==
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-Date:   Mon, 4 Oct 2021 16:33:30 +0200 (CEST)
-From:   torvic9@mailbox.org
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        "seanjc@google.com" <seanjc@google.com>,
-        "vkuznets@redhat.com" <vkuznets@redhat.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "ndesaulniers@google.com" <ndesaulniers@google.com>,
-        "nathan@kernel.org" <nathan@kernel.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "bp@alien8.de" <bp@alien8.de>
-Message-ID: <1033024644.226.1633358010150@office.mailbox.org>
-In-Reply-To: <1723492337.161319.1633342255263@office.mailbox.org>
-References: <1446878298.170497.1633338512925@office.mailbox.org>
- <b6abc5a3-39ea-b463-9df5-f50bdcb16d08@redhat.com>
- <936688112.157288.1633339838738@office.mailbox.org>
- <c4773ecc-053f-9bc6-03af-5039397a4531@redhat.com>
- <1723492337.161319.1633342255263@office.mailbox.org>
-Subject: Re: [BUG] [5.15] Compilation error in arch/x86/kvm/mmu/spte.h with
- clang-14
+        Mon, 4 Oct 2021 10:36:12 -0400
+Received: by mail-ot1-f51.google.com with SMTP id g62-20020a9d2dc4000000b0054752cfbc59so21772822otb.1;
+        Mon, 04 Oct 2021 07:34:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=b7SYhJy+mmipGKEWts89mwAvqFvwTQpZ6vU+YVwAT8o=;
+        b=hEfPUw8gg/leMRQFlCol/1FSZwDYvupQHUGrIjti+C7+ANb59H5RuCu3KfPtEqYo5J
+         /ivxfciLxgKp+xMxWFNFHLtRNlllKAq3j/iROVVvf0yJsdB0xIS+FvhOQGF0VAOBWMXP
+         hmh+3VRCfbl2pR6kQMBNtAEOvgFZpa2aup1xKUoQTy9GNdUrjWBJiMpzkeRDvqWukJqh
+         38pVHutjSqq3oW/b9rbCArh6dYpcGxE2BuCvP8fMB9z8XbRFKl6T7xDKAHGRFjeVYAtA
+         WEQkitMOosXRkkZHhSBYDSHd75g9FukjIL5Mb+CbyL3MRvA8mo6pylmFQMqMtrS8zcG6
+         ycZA==
+X-Gm-Message-State: AOAM533f8SZTNtUSsBHvZzxRZjKoh9THt16B+Lj/7TMenWSeVFSvJOH7
+        v8HmkZknlmfmaerHGas4rw==
+X-Google-Smtp-Source: ABdhPJwe6rrb5Yj0sByabApe27Tf5QsGwm+3X2f6wO7rmX1hV++kaHkDeQNAQZwkdTxdaXrp5UzySA==
+X-Received: by 2002:a05:6830:2806:: with SMTP id w6mr9992892otu.238.1633358062874;
+        Mon, 04 Oct 2021 07:34:22 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id x8sm2441884otg.31.2021.10.04.07.34.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Oct 2021 07:34:22 -0700 (PDT)
+Received: (nullmailer pid 1251656 invoked by uid 1000);
+        Mon, 04 Oct 2021 14:34:21 -0000
+Date:   Mon, 4 Oct 2021 09:34:21 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Chanwoo Choi <cw00.choi@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 04/10] regulator: dt-bindings: samsung,s2m: convert to
+ dtschema
+Message-ID: <YVsQ7YRDzYgtfGJ7@robh.at.kernel.org>
+References: <20211001094106.52412-1-krzysztof.kozlowski@canonical.com>
+ <20211001094106.52412-5-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-Importance: Normal
-X-Rspamd-Queue-Id: C24A526A
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211001094106.52412-5-krzysztof.kozlowski@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-> torvic9@mailbox.org hat am 04.10.2021 12:10 geschrieben:
+On Fri, 01 Oct 2021 11:41:00 +0200, Krzysztof Kozlowski wrote:
+> Convert the regulators of Samsung
+> S2MPS11/S2MPS13/S2MPS14/S2MPS15/S2MPU02 family of PMICs to DT schema
+> format.
 > 
->  
-> > Paolo Bonzini <pbonzini@redhat.com> hat am 04.10.2021 11:49 geschrieben:
-> > 
-> >  
-> > On 04/10/21 11:30, torvic9@mailbox.org wrote:
-> > > 
-> > >> Paolo Bonzini <pbonzini@redhat.com> hat am 04.10.2021 11:26 geschrieben:
-> > >>
-> > >>   
-> > >> On 04/10/21 11:08, torvic9@mailbox.org wrote:
-> > >>> I encounter the following issue when compiling 5.15-rc4 with clang-14:
-> > >>>
-> > >>> In file included from arch/x86/kvm/mmu/mmu.c:27:
-> > >>> arch/x86/kvm/mmu/spte.h:318:9: error: use of bitwise '|' with boolean operands [-Werror,-Wbitwise-instead-of-logical]
-> > >>>           return __is_bad_mt_xwr(rsvd_check, spte) |
-> > >>>                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > >>>                                                    ||
-> > >>> arch/x86/kvm/mmu/spte.h:318:9: note: cast one or both operands to int to silence this warning
-> > >>
-> > >> The warning is wrong, as mentioned in the line right above:
-> > > 
-> > > So it's an issue with clang-14 then?
-> > > (I add Nick and Nathan)
-> > 
-> > My clang here doesn't have the option, so I'm going to ask---are you 
-> > using W=1?  I can see why clang is warning for KVM's code, but in my 
-> > opinion such a check should only be in -Wextra.
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> ---
+>  .../bindings/regulator/samsung,s2mps11.txt    | 102 ------------------
+>  .../bindings/regulator/samsung,s2mps11.yaml   |  52 +++++++++
+>  .../bindings/regulator/samsung,s2mps13.yaml   |  52 +++++++++
+>  .../bindings/regulator/samsung,s2mps14.yaml   |  52 +++++++++
+>  .../bindings/regulator/samsung,s2mps15.yaml   |  52 +++++++++
+>  .../bindings/regulator/samsung,s2mpu02.yaml   |  52 +++++++++
+>  MAINTAINERS                                   |   2 +-
+>  7 files changed, 261 insertions(+), 103 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/regulator/samsung,s2mps11.txt
+>  create mode 100644 Documentation/devicetree/bindings/regulator/samsung,s2mps11.yaml
+>  create mode 100644 Documentation/devicetree/bindings/regulator/samsung,s2mps13.yaml
+>  create mode 100644 Documentation/devicetree/bindings/regulator/samsung,s2mps14.yaml
+>  create mode 100644 Documentation/devicetree/bindings/regulator/samsung,s2mps15.yaml
+>  create mode 100644 Documentation/devicetree/bindings/regulator/samsung,s2mpu02.yaml
 > 
-> I don't use any options (not that I'm aware of).
-> Clang version 14.0.0 5f7a5353301b776ffb0e5fb048992898507bf7ee
 
-Probably the cause for this bug is this recent llvm commit:
-https://github.com/llvm/llvm-project/commit/f59cc9542bfb461d16ad12b2cc4be4abbfd9d96e
-
-> 
-> > 
-> > Paolo
-> > 
-> > >>
-> > >>           /*
-> > >>            * Use a bitwise-OR instead of a logical-OR to aggregate the reserved
-> > >>            * bits and EPT's invalid memtype/XWR checks to avoid an extra Jcc
-> > >>            * (this is extremely unlikely to be short-circuited as true).
-> > >>            */
-> > >>
-> > >> Paolo
-> > >
+Reviewed-by: Rob Herring <robh@kernel.org>
