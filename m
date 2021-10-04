@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B67D420C4D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:02:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34EFE420B49
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:54:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234810AbhJDNE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:04:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38546 "EHLO mail.kernel.org"
+        id S233443AbhJDM4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 08:56:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57502 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234653AbhJDNCx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:02:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DAACA61425;
-        Mon,  4 Oct 2021 12:59:27 +0000 (UTC)
+        id S233374AbhJDM4K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 08:56:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DB8F661391;
+        Mon,  4 Oct 2021 12:54:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352368;
-        bh=HvfpR91yjJvjBk152IC5FGWrsx+wFf6UOvOqNseZ3VA=;
+        s=korg; t=1633352061;
+        bh=c/++lReoUBO93KrlHuCl93uzYey4MEHKvTRuLnfqTA0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sUoYWrgbIF51tZvcXHlR5Os7Z1cAMKOfD+xumoTbHdvAku234R/dl74pxXf/pSrOS
-         SYZIyVbcVZWYao/ARbDZtDj6G/7JvTbKGwshEWOGgPNu+HHKMF6akS3cMmA0+gMhGI
-         8nkoVk4t9EMYc36p3TWCCaCoxvkVV69CCoFPfV3A=
+        b=UL2cUnHp/Q7OtzebRoQxJuFvscrYlEI+em+dUhQHht/LrjHU2kwIgHlM9BLvbK2XO
+         ND4ae2dlpRyQP+ngv6SW88lWG3irvrDw+6wIT6X6WyQhnspVOHzF8XNLxru1n29DqD
+         EbFK9cdCZAJV9UWV2SP7d4+r7/121bHhtWlGXQ1w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Li <ashimida@linux.alibaba.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
+        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 33/75] arm64: Mark __stack_chk_guard as __ro_after_init
+Subject: [PATCH 4.4 17/41] sparc: avoid stringop-overread errors
 Date:   Mon,  4 Oct 2021 14:52:08 +0200
-Message-Id: <20211004125032.626298996@linuxfoundation.org>
+Message-Id: <20211004125027.133211426@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125031.530773667@linuxfoundation.org>
-References: <20211004125031.530773667@linuxfoundation.org>
+In-Reply-To: <20211004125026.597501645@linuxfoundation.org>
+References: <20211004125026.597501645@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,40 +41,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Li <ashimida@linux.alibaba.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 
-[ Upstream commit 9fcb2e93f41c07a400885325e7dbdfceba6efaec ]
+[ Upstream commit fc7c028dcdbfe981bca75d2a7b95f363eb691ef3 ]
 
-__stack_chk_guard is setup once while init stage and never changed
-after that.
+The sparc mdesc code does pointer games with 'struct mdesc_hdr', but
+didn't describe to the compiler how that header is then followed by the
+data that the header describes.
 
-Although the modification of this variable at runtime will usually
-cause the kernel to crash (so does the attacker), it should be marked
-as __ro_after_init, and it should not affect performance if it is
-placed in the ro_after_init section.
+As a result, gcc is now unhappy since it does stricter pointer range
+tracking, and doesn't understand about how these things work.  This
+results in various errors like:
 
-Signed-off-by: Dan Li <ashimida@linux.alibaba.com>
-Acked-by: Mark Rutland <mark.rutland@arm.com>
-Link: https://lore.kernel.org/r/1631612642-102881-1-git-send-email-ashimida@linux.alibaba.com
-Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
+    arch/sparc/kernel/mdesc.c: In function ‘mdesc_node_by_name’:
+    arch/sparc/kernel/mdesc.c:647:22: error: ‘strcmp’ reading 1 or more bytes from a region of size 0 [-Werror=stringop-overread]
+      647 |                 if (!strcmp(names + ep[ret].name_offset, name))
+          |                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+which are easily avoided by just describing 'struct mdesc_hdr' better,
+and making the node_block() helper function look into that unsized
+data[] that follows the header.
+
+This makes the sparc64 build happy again at least for my cross-compiler
+version (gcc version 11.2.1).
+
+Link: https://lore.kernel.org/lkml/CAHk-=wi4NW3NC0xWykkw=6LnjQD6D_rtRtxY9g8gQAJXtQMi8A@mail.gmail.com/
+Cc: Guenter Roeck <linux@roeck-us.net>
+Cc: David S. Miller <davem@davemloft.net>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/kernel/process.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/sparc/kernel/mdesc.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
-index 2ff327651ebe..dac14125f8a2 100644
---- a/arch/arm64/kernel/process.c
-+++ b/arch/arm64/kernel/process.c
-@@ -61,7 +61,7 @@
+diff --git a/arch/sparc/kernel/mdesc.c b/arch/sparc/kernel/mdesc.c
+index 6f80936e0eea..75445ba7e237 100644
+--- a/arch/sparc/kernel/mdesc.c
++++ b/arch/sparc/kernel/mdesc.c
+@@ -37,6 +37,7 @@ struct mdesc_hdr {
+ 	u32	node_sz; /* node block size */
+ 	u32	name_sz; /* name block size */
+ 	u32	data_sz; /* data block size */
++	char	data[];
+ } __attribute__((aligned(16)));
  
- #ifdef CONFIG_CC_STACKPROTECTOR
- #include <linux/stackprotector.h>
--unsigned long __stack_chk_guard __read_mostly;
-+unsigned long __stack_chk_guard __ro_after_init;
- EXPORT_SYMBOL(__stack_chk_guard);
- #endif
+ struct mdesc_elem {
+@@ -369,7 +370,7 @@ out:
  
+ static struct mdesc_elem *node_block(struct mdesc_hdr *mdesc)
+ {
+-	return (struct mdesc_elem *) (mdesc + 1);
++	return (struct mdesc_elem *) mdesc->data;
+ }
+ 
+ static void *name_block(struct mdesc_hdr *mdesc)
 -- 
 2.33.0
 
