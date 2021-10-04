@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C008420F8D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:34:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98E48420CEE
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:08:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237994AbhJDNfr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:35:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47478 "EHLO mail.kernel.org"
+        id S235625AbhJDNKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:10:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39402 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237888AbhJDNdZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:33:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D6E816322D;
-        Mon,  4 Oct 2021 13:15:08 +0000 (UTC)
+        id S235504AbhJDNIb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:08:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3EBCB61B46;
+        Mon,  4 Oct 2021 13:02:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633353309;
-        bh=z6mYA0ABvX36KU1qCO5fuQKeKIbVOqQUA7VW++61n0I=;
+        s=korg; t=1633352545;
+        bh=Bu8svrsmivnGJVPTz01gE8C9v2qQNXvFCBohJ4RAK4M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WfoMA3tq7Kq/U/AHCzflCt05vrIGZmCpF8O2uG/YX/pqguK5sdazK0VewBN9OdXIs
-         ICRgzPgoNq8a+XShrEekRnYlNqzP59a+tNoVb2b2A/k9pRSLfbsPXWcZ9jJhK02usB
-         MzEqeUZ0KJmrOGI9EI1V8aFfOo2lViogjTnWPDT0=
+        b=jozgPYJP7gNS0J3ok4EjIhsyOQ6eOvlJnNH/BiZ8uKUJjegD/Vo+ZsDIocETc1qvq
+         vrY1m0ELNS29V4q7VooqsgHcn0SWutHiWYn8jVB2thqSs2t0oXpK1arheQDnxyCDCZ
+         7HQOFj7TNdWmIe5DMUSbag/zOc+MQNrt6SPDbeIM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chenyi Qiang <chenyi.qiang@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Xiaoyao Li <xiaoyao.li@intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.14 060/172] KVM: nVMX: Fix nested bus lock VM exit
-Date:   Mon,  4 Oct 2021 14:51:50 +0200
-Message-Id: <20211004125046.933779243@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 21/95] gpio: uniphier: Fix void functions to remove return value
+Date:   Mon,  4 Oct 2021 14:51:51 +0200
+Message-Id: <20211004125034.251386500@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
-References: <20211004125044.945314266@linuxfoundation.org>
+In-Reply-To: <20211004125033.572932188@linuxfoundation.org>
+References: <20211004125033.572932188@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,40 +41,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chenyi Qiang <chenyi.qiang@intel.com>
+From: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
 
-commit 24a996ade34d00deef5dee2c33aacd8fda91ec31 upstream.
+[ Upstream commit 2dd824cca3407bc9a2bd11b00f6e117b66fcfcf1 ]
 
-Nested bus lock VM exits are not supported yet. If L2 triggers bus lock
-VM exit, it will be directed to L1 VMM, which would cause unexpected
-behavior. Therefore, handle L2's bus lock VM exits in L0 directly.
+The return type of irq_chip.irq_mask() and irq_chip.irq_unmask() should
+be void.
 
-Fixes: fe6b6bc802b4 ("KVM: VMX: Enable bus lock VM exit")
-Signed-off-by: Chenyi Qiang <chenyi.qiang@intel.com>
-Reviewed-by: Sean Christopherson <seanjc@google.com>
-Reviewed-by: Xiaoyao Li <xiaoyao.li@intel.com>
-Message-Id: <20210914095041.29764-1-chenyi.qiang@intel.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: dbe776c2ca54 ("gpio: uniphier: add UniPhier GPIO controller driver")
+Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Signed-off-by: Bartosz Golaszewski <brgl@bgdev.pl>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kvm/vmx/nested.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/gpio/gpio-uniphier.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/arch/x86/kvm/vmx/nested.c
-+++ b/arch/x86/kvm/vmx/nested.c
-@@ -5898,6 +5898,12 @@ static bool nested_vmx_l0_wants_exit(str
- 	case EXIT_REASON_VMFUNC:
- 		/* VM functions are emulated through L2->L0 vmexits. */
- 		return true;
-+	case EXIT_REASON_BUS_LOCK:
-+		/*
-+		 * At present, bus lock VM exit is never exposed to L1.
-+		 * Handle L2's bus locks in L0 directly.
-+		 */
-+		return true;
- 	default:
- 		break;
- 	}
+diff --git a/drivers/gpio/gpio-uniphier.c b/drivers/gpio/gpio-uniphier.c
+index 7fdac9060979..c72ec3ddf90b 100644
+--- a/drivers/gpio/gpio-uniphier.c
++++ b/drivers/gpio/gpio-uniphier.c
+@@ -197,7 +197,7 @@ static void uniphier_gpio_irq_mask(struct irq_data *data)
+ 
+ 	uniphier_gpio_reg_update(priv, UNIPHIER_GPIO_IRQ_EN, mask, 0);
+ 
+-	return irq_chip_mask_parent(data);
++	irq_chip_mask_parent(data);
+ }
+ 
+ static void uniphier_gpio_irq_unmask(struct irq_data *data)
+@@ -207,7 +207,7 @@ static void uniphier_gpio_irq_unmask(struct irq_data *data)
+ 
+ 	uniphier_gpio_reg_update(priv, UNIPHIER_GPIO_IRQ_EN, mask, mask);
+ 
+-	return irq_chip_unmask_parent(data);
++	irq_chip_unmask_parent(data);
+ }
+ 
+ static int uniphier_gpio_irq_set_type(struct irq_data *data, unsigned int type)
+-- 
+2.33.0
+
 
 
