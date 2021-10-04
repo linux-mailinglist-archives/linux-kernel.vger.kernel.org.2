@@ -2,98 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E30E421520
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 19:25:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11A37421523
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 19:26:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234365AbhJDR1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 13:27:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35386 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233892AbhJDR1P (ORCPT
+        id S234410AbhJDR2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 13:28:45 -0400
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:41313 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234027AbhJDR2n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 13:27:15 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EBF3C061745
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 10:25:26 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id n8so19091969lfk.6
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 10:25:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gKBTIHZkFkwseGAi5II5oGVj0iBXe7h2uvt78kuBKSA=;
-        b=bBqGZLltEUDsR1PL9Qc1Y/XRczlTpQxaY5AFRGuodqngidy2xOtDflakPH5qdOqet0
-         ny3SMOeBMt2G4zr7THRWei1s9a9znFAqdy7l8EbjWtiqoCkmH5ZY6ewRFn6M+9PmOZh7
-         DV3FZ5a8xAC6Y04zmZqcJ48/Js2PEaa/0LC0yJn4nRk0oiYY1nAkGggkRnmPKxPlmVF4
-         GErOtqrFb2+A5BIZdLLgIsEZ4qDah8/7VyCTtKaFb4za+Tk32wmnsjxI6tTj1hVG+M3Q
-         gwNbLXdk/1YG8nhU32hxUc+vnh5/8TgxuzvkLfzzX5LYxFxLY+ygKfBQ5MSfZKEW90Ew
-         SAsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gKBTIHZkFkwseGAi5II5oGVj0iBXe7h2uvt78kuBKSA=;
-        b=pndVqeXjVb5ImYc1igfS8tetnHFRBNm6hgxY2Aw29AKQAuxONoAC5gCY3O2K3uZUWH
-         IL7BpXmPCBEsMXA2uhlmfATOqMDUhzm6gD2fqPoRTfjgxqlfCZL1ximjiRnD2BHf82/6
-         oHtZOh8zJbXvUr191fUeZuyEIAw4xKwKPTXiIJ6n21rvtJMv2cCZMgnKJF9Bb9GvUArA
-         0y+7T6vwHx6gUOwAVxrCTKmpzZzxmnFCs3XQ1d5ODEFWVnmM7hvSXMsO315Upa5URAd3
-         9f77XIvDY4AkzGCKy93kRMZYlKAmTHdwczKIGlBEX4EnJkbIc91F5XkLkV6ShpcbPmxr
-         dZ9Q==
-X-Gm-Message-State: AOAM5333b6kQ+s2HxXY8+n94tniu0S8DwpngSJ+oYS5q/vw5y0fYWxXP
-        jwBUo8YAyOF1AMhZlIY5v122e+lxAN0xw6bgEy+SEg==
-X-Google-Smtp-Source: ABdhPJzUTQp6h+Sb/2NzFKgUR2uR7Qc2dWO/JFqsIhiNclfxF49MzRER5nTGq/dvtBpWJX0w4hgl9SfOI8qSEhxVitk=
-X-Received: by 2002:a2e:a370:: with SMTP id i16mr16470454ljn.35.1633368323563;
- Mon, 04 Oct 2021 10:25:23 -0700 (PDT)
+        Mon, 4 Oct 2021 13:28:43 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R681e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=rongwei.wang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UqagJ8d_1633368411;
+Received: from 30.25.232.32(mailfrom:rongwei.wang@linux.alibaba.com fp:SMTPD_---0UqagJ8d_1633368411)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 05 Oct 2021 01:26:52 +0800
+Message-ID: <8d8fb192-bd8d-8a08-498d-ca7204d4a716@linux.alibaba.com>
+Date:   Tue, 5 Oct 2021 01:26:50 +0800
 MIME-Version: 1.0
-References: <20210929235936.2859271-1-shakeelb@google.com> <YVszNI97NAAYpHpm@slm.duckdns.org>
-In-Reply-To: <YVszNI97NAAYpHpm@slm.duckdns.org>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Mon, 4 Oct 2021 10:25:12 -0700
-Message-ID: <CALvZod5OKz=7pFpxCt1CONPyJO4wR5t+PH0nzdbFBT1SYpjrsg@mail.gmail.com>
-Subject: Re: [PATCH] cgroup: rstat: optimize flush through speculative test
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Cgroups <cgroups@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:93.0)
+ Gecko/20100101 Thunderbird/93.0
+Subject: Re: [PATCH v2 1/2] mm, thp: check page mapping when truncating page
+ cache
+Content-Language: en-US
+To:     Song Liu <song@kernel.org>, Matthew Wilcox <willy@infradead.org>,
+        Hugh Dickins <hughd@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        William Kucharski <william.kucharski@oracle.com>
+References: <BC145393-93AC-4DF4-9CF4-2FB1C736B70C@linux.alibaba.com>
+ <20210923194343.ca0f29e1c4d361170343a6f2@linux-foundation.org>
+ <9e41661d-9919-d556-8c49-610dae157553@linux.alibaba.com>
+ <CAPhsuW4cP4qV2c_wXP89-2fa+mALv-uEe+Qdqr_MD3Ptw03Wng@mail.gmail.com>
+ <68737431-01d2-e6e3-5131-7d7c731e49ae@linux.alibaba.com>
+ <CAPhsuW4x2UzMLwZyioWH4dXqrYwNT-XKgzvrm+6YeWk9EgQmCQ@mail.gmail.com>
+ <dde441c4-febe-cfa1-7729-b405fa331a4e@linux.alibaba.com>
+ <CAPhsuW5FONP=1rPh0oPLHsehjfGSDQWn8hKH4v=azdd=+WK2sA@mail.gmail.com>
+ <YVSopxYWegtQJ3iD@casper.infradead.org>
+ <CAPhsuW6_2_LxQRrs7xF3omgO22+6goDR=bEjKGRopaS-pHJB2Q@mail.gmail.com>
+ <YVT+KWFA8hfSKU+m@casper.infradead.org>
+ <CAPhsuW7tDh2cbA6QpZ993fuwOK=LKVsDYjymA4983riQw4QTkA@mail.gmail.com>
+From:   Rongwei Wang <rongwei.wang@linux.alibaba.com>
+In-Reply-To: <CAPhsuW7tDh2cbA6QpZ993fuwOK=LKVsDYjymA4983riQw4QTkA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 4, 2021 at 10:00 AM Tejun Heo <tj@kernel.org> wrote:
->
-> Hello, Shakeel.
->
-> On Wed, Sep 29, 2021 at 04:59:36PM -0700, Shakeel Butt wrote:
-> > Currently cgroup_rstat_updated() has a speculative already-on-list test
-> > to check if the given cgroup is already part of the rstat update tree.
-> > This helps in reducing the contention on the rstat cpu lock. This patch
-> > adds the similar speculative not-on-list test on the rstat flush
-> > codepath.
-> >
-> > Recently the commit aa48e47e3906 ("memcg: infrastructure to flush memcg
-> > stats") added periodic rstat flush. On a large system which is not much
-> > busy, most of the per-cpu rstat tree would be empty. So, the speculative
-> > not-on-list test helps in eliminating unnecessary work and potentially
-> > reducing contention on the rstat cpu lock. Please note this might
-> > introduce temporary inaccuracy but with the frequent and periodic flush
-> > this would not be an issue.
-> >
-> > To evaluate the impact of this patch, an 8 GiB tmpfs file is created on
-> > a system with swap-on-zram and the file was pushed to swap through
-> > memory.force_empty interface. On reading the whole file, the memcg stat
-> > flush in the refault code path is triggered. With this patch, we
-> > observed 38% reduction in the read time of 8 GiB file.
->
-> The patch looks fine to me but that's a lot of reduction in read time. Can
-> you elaborate a bit on why this makes such a huge difference? Who's hitting
-> on that lock so hard?
->
+Hi,
+I have run our cases these two days to stress test new Patch #1. The new 
+Patch #1 mainly add filemap_invalidate_{un}lock before and after 
+truncate_pagecache(), basing on original Patch #1. And the crash has not 
+happened.
 
-It was actually due to machine size. I ran a single threaded workload
-without any interference on a 112 cpus machine. So, most of the time
-the flush was acquiring and releasing the per-cpu rstat lock for empty
-trees.
+Now, I keep the original Patch #1, then adding the code below which 
+suggested by liu song (I'm not sure which one I should add in the next 
+version, Suggested-by or Signed-off-by? If you know, please remind me).
 
-Shakeel
+-               if (filemap_nr_thps(inode->i_mapping))
++               if (filemap_nr_thps(inode->i_mapping)) {
++                       filemap_invalidate_lock(inode->i_mapping);
+                         truncate_pagecache(inode, 0);
++                       filemap_invalidate_unlock(inode->i_mapping);
++               }
+
+And the reason for keeping the original Patch #1 is mainly to fix the 
+race between collapse_file and truncate_pagecache. It seems necessary. 
+Despite the two-day test, I did not reproduce this race any more.
+
+In addition, I also test the below method:
+
+diff --git a/mm/truncate.c b/mm/truncate.c
+index 3f47190f98a8..33604e4ce60a 100644
+--- a/mm/truncate.c
++++ b/mm/truncate.c
+@@ -210,8 +210,6 @@ invalidate_complete_page(struct address_space 
+*mapping, struct page *page)
+
+  int truncate_inode_page(struct address_space *mapping, struct page *page)
+  {
+-       VM_BUG_ON_PAGE(PageTail(page), page);
+-
+         if (page->mapping != mapping)
+                 return -EIO;
+
+I am not very sure this VM_BUG_ON_PAGE(PageTail) is what Hugh means. And
+the test results show that only removing this VM_BUG_ON_PAGE(PageTail) 
+has no effect. So, I still keep the original Patch #1 to fix one race.
+
+I plan to send Patch v3 after receiving your reply.
+
+Thanks!
+
+On 9/30/21 8:41 AM, Song Liu wrote:
+> On Wed, Sep 29, 2021 at 5:02 PM Matthew Wilcox <willy@infradead.org> wrote:
+>>
+>> On Wed, Sep 29, 2021 at 04:41:48PM -0700, Song Liu wrote:
+>>> The issue is NOT caused by concurrent khugepaged:collapse_file() and
+>>> truncate_pagecache(inode, 0). With some printks, we can see a clear
+>>> time gap (>2 second )  between collapse_file() finishes, and
+>>> truncate_pagecache() (which crashes soon). Therefore, my earlier
+>>> suggestion that adds deny_write_access() to collapse_file() does NOT
+>>> work.
+>>>
+>>> The crash is actually caused by concurrent truncate_pagecache(inode, 0).
+>>> If I change the number of write thread in stress_madvise_dso.c to one,
+>>> (IOW, one thread_read and one thread_write), I cannot reproduce the
+>>> crash anymore.
+>>>
+>>> I think this means we cannot fix this issue in collapse_file(), because it
+>>> finishes long before the crash.
+>>
+>> Ah!  So are we missing one or more of these locks:
+>>
+>>          inode_lock(inode);
+>>          filemap_invalidate_lock(mapping);
+>>
+>> in the open path?
+> 
+> The following fixes the crash in my test. But I am not sure whether this is the
+> best fix.
+> 
+> Rongwei, could you please run more tests on it?
+> 
+> Thanks,
+> Song
+> 
+> 
+> diff --git i/fs/open.c w/fs/open.c
+> index daa324606a41f..d13c4668b2e53 100644
+> --- i/fs/open.c
+> +++ w/fs/open.c
+> @@ -856,8 +856,11 @@ static int do_dentry_open(struct file *f,
+>                   * of THPs into the page cache will fail.
+>                   */
+>                  smp_mb();
+> -               if (filemap_nr_thps(inode->i_mapping))
+> +               if (filemap_nr_thps(inode->i_mapping)) {
+> +                       filemap_invalidate_lock(inode->i_mapping);
+>                          truncate_pagecache(inode, 0);
+> +                       filemap_invalidate_unlock(inode->i_mapping);
+> +               }
+>          }
+> 
+>          return 0;
+> 
