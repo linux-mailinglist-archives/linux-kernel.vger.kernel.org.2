@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7814420E0E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:19:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52624420BFE
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:00:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234856AbhJDNVR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:21:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32956 "EHLO mail.kernel.org"
+        id S234484AbhJDNBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:01:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60044 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236662AbhJDNSr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:18:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E745061A58;
-        Mon,  4 Oct 2021 13:08:01 +0000 (UTC)
+        id S234070AbhJDNAC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:00:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D343D60F9C;
+        Mon,  4 Oct 2021 12:57:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352882;
-        bh=drRi9+2S2CCwhJxrhLUTjAI/FG9ZDBzOhO7m5blFrsw=;
+        s=korg; t=1633352271;
+        bh=+8z6GtqFIsd5jiPx7zDa8kzi5V0UNHTXnf+8IYsEnlc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Kv5i2Ku71iEQcMataxU4rrGbzt/AuAKPRZgtaqwc4aEu2TC1MtESNjOuBmYY/KL6h
-         Z894T44xLqy7HJrjDIJEfEQlgzgIk0/W3LMqbVpyXcNsaoiLu48+7tbo2DsyFmqldK
-         JTSjTBCXiwLUPAiYso1bjKVdccM66okEPdTaphnc=
+        b=BZ1rNgm34eYx1mlvbJpm9ElyilPfQEokYYafRGpM/eGyKAF5l7cNid8wQdPaIAxDE
+         K88194jFxDhJBeMCjMErU1e/TvKbFNTIhYgyESh5edNjlyfw/rsGPPfxwX+uuRZEzl
+         K99JmI9OGeoogPU6B9pr8UD+6x66hWRrocNLinyc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+581aff2ae6b860625116@syzkaller.appspotmail.com,
-        Xin Long <lucien.xin@gmail.com>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 19/56] sctp: break out if skb_header_pointer returns NULL in sctp_rcv_ootb
+        syzbot+3493b1873fb3ea827986@syzkaller.appspotmail.com,
+        syzbot+2b8443c35458a617c904@syzkaller.appspotmail.com,
+        syzbot+ee5cb15f4a0e85e0d54e@syzkaller.appspotmail.com,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [PATCH 4.9 55/57] netfilter: ipset: Fix oversized kvmalloc() calls
 Date:   Mon,  4 Oct 2021 14:52:39 +0200
-Message-Id: <20211004125030.611943587@linuxfoundation.org>
+Message-Id: <20211004125030.684582174@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125030.002116402@linuxfoundation.org>
-References: <20211004125030.002116402@linuxfoundation.org>
+In-Reply-To: <20211004125028.940212411@linuxfoundation.org>
+References: <20211004125028.940212411@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,55 +43,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xin Long <lucien.xin@gmail.com>
+From: Jozsef Kadlecsik <kadlec@netfilter.org>
 
-[ Upstream commit f7e745f8e94492a8ac0b0a26e25f2b19d342918f ]
+commit 7bbc3d385bd813077acaf0e6fdb2a86a901f5382 upstream.
 
-We should always check if skb_header_pointer's return is NULL before
-using it, otherwise it may cause null-ptr-deref, as syzbot reported:
+The commit
 
-  KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
-  RIP: 0010:sctp_rcv_ootb net/sctp/input.c:705 [inline]
-  RIP: 0010:sctp_rcv+0x1d84/0x3220 net/sctp/input.c:196
-  Call Trace:
-  <IRQ>
-   sctp6_rcv+0x38/0x60 net/sctp/ipv6.c:1109
-   ip6_protocol_deliver_rcu+0x2e9/0x1ca0 net/ipv6/ip6_input.c:422
-   ip6_input_finish+0x62/0x170 net/ipv6/ip6_input.c:463
-   NF_HOOK include/linux/netfilter.h:307 [inline]
-   NF_HOOK include/linux/netfilter.h:301 [inline]
-   ip6_input+0x9c/0xd0 net/ipv6/ip6_input.c:472
-   dst_input include/net/dst.h:460 [inline]
-   ip6_rcv_finish net/ipv6/ip6_input.c:76 [inline]
-   NF_HOOK include/linux/netfilter.h:307 [inline]
-   NF_HOOK include/linux/netfilter.h:301 [inline]
-   ipv6_rcv+0x28c/0x3c0 net/ipv6/ip6_input.c:297
+commit 7661809d493b426e979f39ab512e3adf41fbcc69
+Author: Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed Jul 14 09:45:49 2021 -0700
 
-Fixes: 3acb50c18d8d ("sctp: delay as much as possible skb_linearize")
-Reported-by: syzbot+581aff2ae6b860625116@syzkaller.appspotmail.com
-Signed-off-by: Xin Long <lucien.xin@gmail.com>
-Acked-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+    mm: don't allow oversized kvmalloc() calls
+
+limits the max allocatable memory via kvmalloc() to MAX_INT. Apply the
+same limit in ipset.
+
+Reported-by: syzbot+3493b1873fb3ea827986@syzkaller.appspotmail.com
+Reported-by: syzbot+2b8443c35458a617c904@syzkaller.appspotmail.com
+Reported-by: syzbot+ee5cb15f4a0e85e0d54e@syzkaller.appspotmail.com
+Signed-off-by: Jozsef Kadlecsik <kadlec@netfilter.org>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/sctp/input.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/netfilter/ipset/ip_set_hash_gen.h |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/sctp/input.c b/net/sctp/input.c
-index 2aca37717ed1..9616b600a876 100644
---- a/net/sctp/input.c
-+++ b/net/sctp/input.c
-@@ -676,7 +676,7 @@ static int sctp_rcv_ootb(struct sk_buff *skb)
- 		ch = skb_header_pointer(skb, offset, sizeof(*ch), &_ch);
+--- a/net/netfilter/ipset/ip_set_hash_gen.h
++++ b/net/netfilter/ipset/ip_set_hash_gen.h
+@@ -102,11 +102,11 @@ htable_size(u8 hbits)
+ {
+ 	size_t hsize;
  
- 		/* Break out if chunk length is less then minimal. */
--		if (ntohs(ch->length) < sizeof(_ch))
-+		if (!ch || ntohs(ch->length) < sizeof(_ch))
- 			break;
+-	/* We must fit both into u32 in jhash and size_t */
++	/* We must fit both into u32 in jhash and INT_MAX in kvmalloc_node() */
+ 	if (hbits > 31)
+ 		return 0;
+ 	hsize = jhash_size(hbits);
+-	if ((((size_t)-1) - sizeof(struct htable)) / sizeof(struct hbucket *)
++	if ((INT_MAX - sizeof(struct htable)) / sizeof(struct hbucket *)
+ 	    < hsize)
+ 		return 0;
  
- 		ch_end = offset + SCTP_PAD4(ntohs(ch->length));
--- 
-2.33.0
-
 
 
