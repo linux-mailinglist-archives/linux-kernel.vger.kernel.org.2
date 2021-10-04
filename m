@@ -2,81 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ADBD421090
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:45:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7783E420D28
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:10:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238175AbhJDNr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:47:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37958 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237779AbhJDNrZ (ORCPT
+        id S235378AbhJDNMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:12:22 -0400
+Received: from hostingweb31-40.netsons.net ([89.40.174.40]:59145 "EHLO
+        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234399AbhJDNKN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:47:25 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD4FFC0D9436
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 06:07:38 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id r18so64501668edv.12
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 06:07:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=3xhITpFaVUHg+5EZbnzqRDgQ6Md69G0yDI6FlhB0FOw=;
-        b=F09w7RiqYBXkBGwnr5At93zYHtIIKiPh9AH8Nske5mly8osqqUGbxfHK6/LPXY/IiT
-         pp+L1qFfadseFfdgpRGkE6oYl0AuMP99FYtFEg7h6CGYyJiC3RnKG+dpKOe8l8LFu/6K
-         /whJFAdnSpWimFCLDY1wpG4cb/JHnLybJqc/c=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=3xhITpFaVUHg+5EZbnzqRDgQ6Md69G0yDI6FlhB0FOw=;
-        b=DdLnFid9VjgKhLKfgc352YoKJu7Uy/xRFTuwbDHMuqfqV2SQXRkJLb72ub2S4czhJ0
-         lalDlVOZX2szqO3z/CBQsolHFFKYMsBog4pOgsM1PLDWMJbeVkjNQjbfeD+mOTBOWy0O
-         RzU0U6h7zgtVc2GIfbLx9O5aQ/318/RJPJTLudJijO81mocivdOilstmflQ+YiMsPhRK
-         5xcJvdpMeEWewvLK5Igc+Gm2x4M9FBnuVJLBTpJ1rcnGKbQEODPvPYUZTLAszKsmzsjH
-         92Q/7lKmEUEOpWoeOe8YSF1cHzTEKn9vQFyUYNkfxerESx+bXz9MDwlecLiKUyoANjT2
-         Nhwg==
-X-Gm-Message-State: AOAM531NNXtiNhz2ThCU9U4EQHK+ML3bP6t7b2BcsHoN9ZTzFRjPzdf2
-        p77QQcEGjruNT6v7ClcwC+7zZA==
-X-Google-Smtp-Source: ABdhPJzmLt8RhT6JUaun/XGi1pRU4pNkGD1tiuHSoPjE5/52CHX5cEIi0LfauFOPb6Eos79FMQH7uw==
-X-Received: by 2002:a50:d84c:: with SMTP id v12mr17688714edj.203.1633352839921;
-        Mon, 04 Oct 2021 06:07:19 -0700 (PDT)
-Received: from miu.piliscsaba.redhat.com (catv-86-101-169-16.catv.broadband.hu. [86.101.169.16])
-        by smtp.gmail.com with ESMTPSA id d17sm2957548edv.58.2021.10.04.06.07.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Oct 2021 06:07:17 -0700 (PDT)
-Date:   Mon, 4 Oct 2021 15:07:14 +0200
-From:   Miklos Szeredi <miklos@szeredi.hu>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-unionfs@vger.kernel.org
-Subject: [GIT PULL] overlayfs fixes for 5.15-rc5
-Message-ID: <YVr8grJWnLDcBZFJ@miu.piliscsaba.redhat.com>
+        Mon, 4 Oct 2021 09:10:13 -0400
+Received: from [77.244.183.192] (port=65250 helo=melee.fritz.box)
+        by hostingweb31.netsons.net with esmtpa (Exim 4.94.2)
+        (envelope-from <luca@lucaceresoli.net>)
+        id 1mXNhd-004WfD-3W; Mon, 04 Oct 2021 15:08:21 +0200
+From:   Luca Ceresoli <luca@lucaceresoli.net>
+To:     linux-pm@vger.kernel.org
+Cc:     Sebastian Reichel <sre@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Luca Ceresoli <luca@lucaceresoli.net>
+Subject: [PATCH 1/2] dt-bindings: power: supply: add Maxim MAX77976 battery charger
+Date:   Mon,  4 Oct 2021 15:07:31 +0200
+Message-Id: <20211004130732.950512-1-luca@lucaceresoli.net>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lucaceresoli.net
+X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca+lucaceresoli.net/only user confirmed/virtual account not confirmed
+X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Add bindings for the Maxim MAX77976 I2C-controlled battery charger.
 
-Please pull from:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/vfs.git tags/ovl-fixes-5.15-rc5
-
-Fix two bugs, both of them corner cases not affecting most users.
-
-Thanks,
-Miklos
-
+Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
 ---
-Miklos Szeredi (1):
-      ovl: fix IOCB_DIRECT if underlying fs doesn't support direct IO
+ .../bindings/power/supply/maxim,max77976.yaml | 41 +++++++++++++++++++
+ MAINTAINERS                                   |  5 +++
+ 2 files changed, 46 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/power/supply/maxim,max77976.yaml
 
-Zheng Liang (1):
-      ovl: fix missing negative dentry check in ovl_rename()
+diff --git a/Documentation/devicetree/bindings/power/supply/maxim,max77976.yaml b/Documentation/devicetree/bindings/power/supply/maxim,max77976.yaml
+new file mode 100644
+index 000000000000..b508d9cc04a0
+--- /dev/null
++++ b/Documentation/devicetree/bindings/power/supply/maxim,max77976.yaml
+@@ -0,0 +1,41 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/power/supply/maxim,max77976.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Maxim Integrated MAX77976 Battery charger
++
++maintainers:
++  - Luca Ceresoli <luca@lucaceresoli.net>
++
++description: |
++  The Maxim MAX77976 is a 19Vin / 5.5A, 1-Cell Li+ battery charger
++  configured via I2C.
++
++properties:
++  compatible:
++    const: maxim,max77976
++
++  reg:
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++
++additionalProperties: false
++
++examples:
++  - |
++    i2c {
++      #address-cells = <1>;
++      #size-cells = <0>;
++
++      charger@6b {
++        compatible = "maxim,max77976";
++        reg = <0x6b>;
++      };
++    };
++
++...
+diff --git a/MAINTAINERS b/MAINTAINERS
+index eeb4c70b3d5b..b3a3667cef46 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -11388,6 +11388,11 @@ F:	Documentation/devicetree/bindings/*/*max77802.txt
+ F:	drivers/regulator/max77802-regulator.c
+ F:	include/dt-bindings/*/*max77802.h
+ 
++MAXIM MAX77976 BATTERY CHARGER
++M:	Luca Ceresoli <luca@lucaceresoli.net>
++S:	Supported
++F:	Documentation/devicetree/bindings/power/supply/maxim,max77976.yaml
++
+ MAXIM MUIC CHARGER DRIVERS FOR EXYNOS BASED BOARDS
+ M:	Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+ M:	Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+-- 
+2.25.1
 
----
- fs/overlayfs/dir.c  | 10 +++++++---
- fs/overlayfs/file.c | 15 ++++++++++++++-
- 2 files changed, 21 insertions(+), 4 deletions(-)
