@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA2C2420B50
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:54:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C08AD420C7C
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:04:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233558AbhJDM4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 08:56:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57690 "EHLO mail.kernel.org"
+        id S235243AbhJDNF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:05:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39808 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233452AbhJDM4S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 08:56:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B1A6B613A8;
-        Mon,  4 Oct 2021 12:54:28 +0000 (UTC)
+        id S234714AbhJDND7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:03:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5982B61B00;
+        Mon,  4 Oct 2021 13:00:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352069;
-        bh=LXB02JFs8bgi6dxze1zOCYnPyFndr88EFEvdb5wjlqM=;
+        s=korg; t=1633352416;
+        bh=3CbfnhaRsqjTMnTodKaC5u+H/RT0qZ50z34F6KstTaE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XvvlxqgHHRjmJ3gcLajM91Wnb+J/Mql6CN0piIiNtDlwtSvRyBoU1cCPKK7MMANJQ
-         +BiE86VSsE0RtPi54wt7IlSt74z1yy5jXK1AHYFHKOdr4efm79eKIDP6Dplkel2tXR
-         OSXrg48/NPEshOBWljeNLaimu7FrNSjgw3uB+PBQ=
+        b=xTv9iQd7pA4q4lalaC/kGcK7Hx9xuHFltlwDWoftCc7KkZvYEu0HRvQpRvVXBKB0y
+         Ravvnro+AZebEz7q32hxsLZVh5JWHy3H2nLYx1qHDXLZiq5ZGz8bZ8g1xy1TPrXjSe
+         xWW2uNzojdG3sAG2bseFYL8vsM1U0PcRk09kBGX4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Li <ashimida@linux.alibaba.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
+        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 20/41] arm64: Mark __stack_chk_guard as __ro_after_init
+Subject: [PATCH 4.14 36/75] spi: Fix tegra20 build with CONFIG_PM=n
 Date:   Mon,  4 Oct 2021 14:52:11 +0200
-Message-Id: <20211004125027.226245055@linuxfoundation.org>
+Message-Id: <20211004125032.725696066@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125026.597501645@linuxfoundation.org>
-References: <20211004125026.597501645@linuxfoundation.org>
+In-Reply-To: <20211004125031.530773667@linuxfoundation.org>
+References: <20211004125031.530773667@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,40 +40,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Li <ashimida@linux.alibaba.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 
-[ Upstream commit 9fcb2e93f41c07a400885325e7dbdfceba6efaec ]
+[ Upstream commit efafec27c5658ed987e720130772f8933c685e87 ]
 
-__stack_chk_guard is setup once while init stage and never changed
-after that.
+Without CONFIG_PM enabled, the SET_RUNTIME_PM_OPS() macro ends up being
+empty, and the only use of tegra_slink_runtime_{resume,suspend} goes
+away, resulting in
 
-Although the modification of this variable at runtime will usually
-cause the kernel to crash (so does the attacker), it should be marked
-as __ro_after_init, and it should not affect performance if it is
-placed in the ro_after_init section.
+  drivers/spi/spi-tegra20-slink.c:1200:12: error: ‘tegra_slink_runtime_resume’ defined but not used [-Werror=unused-function]
+   1200 | static int tegra_slink_runtime_resume(struct device *dev)
+        |            ^~~~~~~~~~~~~~~~~~~~~~~~~~
+  drivers/spi/spi-tegra20-slink.c:1188:12: error: ‘tegra_slink_runtime_suspend’ defined but not used [-Werror=unused-function]
+   1188 | static int tegra_slink_runtime_suspend(struct device *dev)
+        |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Signed-off-by: Dan Li <ashimida@linux.alibaba.com>
-Acked-by: Mark Rutland <mark.rutland@arm.com>
-Link: https://lore.kernel.org/r/1631612642-102881-1-git-send-email-ashimida@linux.alibaba.com
-Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
+mark the functions __maybe_unused to make the build happy.
+
+This hits the alpha allmodconfig build (and others).
+
+Reported-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/kernel/process.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/spi/spi-tegra20-slink.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
-index 10d6627673cb..6cd79888944e 100644
---- a/arch/arm64/kernel/process.c
-+++ b/arch/arm64/kernel/process.c
-@@ -55,7 +55,7 @@
- 
- #ifdef CONFIG_CC_STACKPROTECTOR
- #include <linux/stackprotector.h>
--unsigned long __stack_chk_guard __read_mostly;
-+unsigned long __stack_chk_guard __ro_after_init;
- EXPORT_SYMBOL(__stack_chk_guard);
+diff --git a/drivers/spi/spi-tegra20-slink.c b/drivers/spi/spi-tegra20-slink.c
+index c39bfcbda5f2..1548f7b738c1 100644
+--- a/drivers/spi/spi-tegra20-slink.c
++++ b/drivers/spi/spi-tegra20-slink.c
+@@ -1210,7 +1210,7 @@ static int tegra_slink_resume(struct device *dev)
+ }
  #endif
  
+-static int tegra_slink_runtime_suspend(struct device *dev)
++static int __maybe_unused tegra_slink_runtime_suspend(struct device *dev)
+ {
+ 	struct spi_master *master = dev_get_drvdata(dev);
+ 	struct tegra_slink_data *tspi = spi_master_get_devdata(master);
+@@ -1222,7 +1222,7 @@ static int tegra_slink_runtime_suspend(struct device *dev)
+ 	return 0;
+ }
+ 
+-static int tegra_slink_runtime_resume(struct device *dev)
++static int __maybe_unused tegra_slink_runtime_resume(struct device *dev)
+ {
+ 	struct spi_master *master = dev_get_drvdata(dev);
+ 	struct tegra_slink_data *tspi = spi_master_get_devdata(master);
 -- 
 2.33.0
 
