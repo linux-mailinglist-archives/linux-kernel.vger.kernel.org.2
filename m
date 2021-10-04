@@ -2,177 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 723114204F4
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 04:33:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C0404204F6
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 04:37:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232308AbhJDCfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Oct 2021 22:35:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56438 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230513AbhJDCfE (ORCPT
+        id S232327AbhJDCj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Oct 2021 22:39:28 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:22546 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230295AbhJDCj1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Oct 2021 22:35:04 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46DF1C0613EC
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Oct 2021 19:33:16 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id oa12-20020a17090b1bcc00b0019f715462a8so749842pjb.3
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Oct 2021 19:33:16 -0700 (PDT)
+        Sun, 3 Oct 2021 22:39:27 -0400
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 193N0xIh010779;
+        Mon, 4 Oct 2021 02:37:03 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2021-07-09;
+ bh=ZD4o45bYwW/KpbVBxzKIVqnOalxvsxJBiNYrZ+CE2rY=;
+ b=gLkRIuhwKVdvOyQuN38Sdz2ptxxvPQczBoC7gIWM+O3Hk9h4cdJBsEZSVRQiB8ILw7K/
+ I5h3YEkvRyx+lVlPyoig7gxathKLNjEyPvvJa9Kp/57ZaEdw+8KNv3JDy2qbPnXhaHj6
+ 5M7Vw4wl4jAAVnjjoQPdO1CSjOug0mT75h2NDZv9u1zMMl2g/q7TYmEPVs5JwcJmrQ6m
+ tfdwBhySkcKArgV1VJXwpLBeSWZ4q0mJfgtu5kFVzOUSaYNCrMXd9DyiDp6Fwa2i4LRK
+ LYcraAx3bvvP41fu2U3i9iaxyq8Q/NBrY49+h3U3HwKVWIYJBVcy8twI/J5IVpTDXA2m SA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3bfasksaph-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 04 Oct 2021 02:37:02 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1942YXO6164867;
+        Mon, 4 Oct 2021 02:37:01 GMT
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2172.outbound.protection.outlook.com [104.47.59.172])
+        by userp3030.oracle.com with ESMTP id 3bf0s48qah-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 04 Oct 2021 02:37:01 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZBv2rIHH5cxKhL1PB5X4UDDqmOrfZkKVFCZ3a7ubj8CdTU6tjtZpNVJl/Qxw9QkBp+RofopP2dDXw3fX4L5a5v6kfEptgmB9g7h681svxcU3aboz0la934z2q9yIIBFBx6txBKqmbzZEHBgdzy+FbutUAPdRLrEvDbBWy3F/x9bMMftQT7QPdBHQ/ncoxne8QWU6k7d2M6GeCcoMjITYLxTPAiG5YqACPj7r/4JIPAWRj24U67xQm+psJxh8CfhGuEjUsGW/NjLFCQegX/V/9Uy1dDC32BON2inPUJTUGGbn8x3JdZdE83Vyf/c6wFz+044xB1pVDFZuBLA0q1EIGw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ZD4o45bYwW/KpbVBxzKIVqnOalxvsxJBiNYrZ+CE2rY=;
+ b=JnoTTR483YmzgLO3l6oCsYlo9/JJnEs2EyuOftELK17ItJRJ1sBaRPYLd14cglmtOo1ngSXoB0DADFCGuvHRTnw5S86gc9DsDMCrAtyrj68dY57f5wIOpSPkPft/kugi/2VOoINc1VJ/9L6HEUwFhy42MxaqotIeee8XBM26KV0YK0lSPN5rPBYzn844vuALfkte/Zt2KoMI52KD3qcVwclJZKbKCQrKQUKZHmkxr6eUfzPoDX1kp6591uiibJiQbWzIaQgRIud6/WmcjPbOE0fHTTzF9/M9lG9nUOz7talYqVSCBRV80j/YMrazAN2kPZJNlbiuSBTTBhU+nFIN7g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=NwjZ+ijR7ZYck+W/2AQtq5znBvezS2dC7UcljgZuKFc=;
-        b=QYWAST7AsamTOKNiUYdlFr2YStxF1Img4AOKyC5WSbfctavHdpOJNbS0cjgVkR4RAG
-         KvQIfCnzTsxcz1PwPd1nbBfxCaYQ1/8vzDFlifb2HZAGiiJo1ueQ5io6++rA1rEBw84c
-         UZV16lx9Iu2fr8tX9IzDMN84qnNSXFog+1xKkbM6OfdlGhhQd3xw3ia8w0nHO07YygrX
-         X8kxbC9Y4aIvUNBM0MTKWdBfwLaMP6JSAWW8d/FGuzBvmfHL/TQs38VsCpmiCH76Rpbl
-         3ts1eNrTCkaTInx/dFk3nXG6xn0pLxB58W3C+pbpVa46upijOnw17ZpA2CfE0/TRG7cz
-         uubw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=NwjZ+ijR7ZYck+W/2AQtq5znBvezS2dC7UcljgZuKFc=;
-        b=YCZsdo6Ju24CSvukh1OzBxqE6u4jSd/Jhdjn8YXwD5adxLWZZsXIvEQhe4p2Ot1TzX
-         n2ZxPc1+yrzoXsa7GciZldGin6lHHYc78XOTyVArTiK5A+G/kBvUXJQJ4DymJrf6t6lk
-         VMLptp2CScS35KCCKJgkagWb6v4hk1yxE0DrJhJ1mCnSWwJeREjo/ZYh1MiOUI9HED1X
-         HnndcevVGoCsK1xJwjcR3rDSwS6Hb2KJ4aj86g9R6o0Kctgb5DZ2rX4AldsGw2pb6I9S
-         wojJ38MTqH6Zery2sAbeIOXli+83gNBHKIo+LEtNpsK03X1akQwa5CsmRKHhCY0DTSky
-         RfwQ==
-X-Gm-Message-State: AOAM530/sh7XgAx3QjG/yMD/Tq2mt9zyUYwUsSUoiCGJ9GuRv3jVdcCL
-        ArkDHUPcl+JHTTzP9GUZfHSoN4HJZF3dfg==
-X-Google-Smtp-Source: ABdhPJx0SeGkSwsqMPgXnVntrSbYm/NVzlAmiu2XIkLz491biuT08j0QdZrcvFq8JOdiSaZVT0bhig==
-X-Received: by 2002:a17:90a:19d2:: with SMTP id 18mr14892778pjj.62.1633314795656;
-        Sun, 03 Oct 2021 19:33:15 -0700 (PDT)
-Received: from dragon (80.251.214.228.16clouds.com. [80.251.214.228])
-        by smtp.gmail.com with ESMTPSA id c140sm486731pfc.31.2021.10.03.19.33.13
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sun, 03 Oct 2021 19:33:15 -0700 (PDT)
-Date:   Mon, 4 Oct 2021 10:33:09 +0800
-From:   Shawn Guo <shawn.guo@linaro.org>
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH] mmc: sdhci: Map more voltage level to SDHCI_POWER_330
-Message-ID: <20211004023309.GB13320@dragon>
-References: <20210926132847.22268-1-shawn.guo@linaro.org>
- <CAPDyKFoVJSkODW8bjHcTVywiNPMQndHhg2B9haQTP_3M3-B3hQ@mail.gmail.com>
- <20211003135822.GA13320@dragon>
- <68124891-469f-20ea-a1c8-87e9a865e8f7@intel.com>
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZD4o45bYwW/KpbVBxzKIVqnOalxvsxJBiNYrZ+CE2rY=;
+ b=uvFigZyFgTVTOfaj/LLfmX7713Caa5dEeB7mdL5FSck7PhZqXPaE5bGl/rwqUmlKVKcQm7b3zM1FlBkUE7uaXntj0dBwrXUZtYMN/Oto0aGwo1OMq9c+uOLpECwnlxjH7Kk6/NsF0+URFy4sIQtQWvhSUi8cHAZKHq8DL63dAFI=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
+Received: from BY5PR10MB4196.namprd10.prod.outlook.com (2603:10b6:a03:20d::23)
+ by BY5PR10MB4354.namprd10.prod.outlook.com (2603:10b6:a03:20c::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.15; Mon, 4 Oct
+ 2021 02:36:57 +0000
+Received: from BY5PR10MB4196.namprd10.prod.outlook.com
+ ([fe80::bc59:71de:1590:cbf5]) by BY5PR10MB4196.namprd10.prod.outlook.com
+ ([fe80::bc59:71de:1590:cbf5%6]) with mapi id 15.20.4566.022; Mon, 4 Oct 2021
+ 02:36:57 +0000
+Subject: Re: [PATCH] mm/hugetlb.c: remove dead store in demote_size_show()
+To:     Matthew Wilcox <willy@infradead.org>,
+        Nghia Le <nghialm78@gmail.com>
+Cc:     akpm@linux-foundation.org, nathan@kernel.org,
+        ndesaulniers@google.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        lukas.bulwahn@gmail.com, kernel-janitors@vger.kernel.org
+References: <20211003114113.109463-1-nghialm78@gmail.com>
+ <YVm2MHbhEU0b7HPM@casper.infradead.org>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <ccee8f63-f5dd-6231-5625-a67ad3b80a6d@oracle.com>
+Date:   Sun, 3 Oct 2021 19:36:54 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
+In-Reply-To: <YVm2MHbhEU0b7HPM@casper.infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MWHPR13CA0013.namprd13.prod.outlook.com
+ (2603:10b6:300:16::23) To BY5PR10MB4196.namprd10.prod.outlook.com
+ (2603:10b6:a03:20d::23)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <68124891-469f-20ea-a1c8-87e9a865e8f7@intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Received: from [192.168.2.123] (50.38.35.18) by MWHPR13CA0013.namprd13.prod.outlook.com (2603:10b6:300:16::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.7 via Frontend Transport; Mon, 4 Oct 2021 02:36:57 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 22862634-afbb-4a50-94bc-08d986dfd5e8
+X-MS-TrafficTypeDiagnostic: BY5PR10MB4354:
+X-Microsoft-Antispam-PRVS: <BY5PR10MB4354854F223DA4B070BB257DE2AE9@BY5PR10MB4354.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: RDOU/6CJjMFTlxzIAneFHufMA6VrqS86fxYwG/ABus2MxLJo8dxbfJJ91amnUDThCfUAokjwJtRLO9E7m26v3DmFF9nf8izjKTEVPxBcuuPjn7OIfl2eiI2nM6jxezaKJDb/YiltcN9bAzTBNah/LuEygfBIX6IxHD6Jiyid7J1A9LKLAX6nn4naGoi1i11bDzmmXVUqAeEKKDom2ktHvlbJcQxfb3zSSlmppeLhpF0AswERxWSn/gTWFS0oxL9IItESUTxr3lA/tBzNbw2DgtGkA+0m7v+Fvq0E4Zvc49fnqvzNGvz57HSKnrG2gP7cgZRU7pVU5YuguhnPocj7sJIZjm8ZXhYbZQbP5uU6UuC0Ae6ve/qvQHCRYAb4YbQH/EeBiSEIkcRStjHY2fNz/4zYXPPcpwixgQnh+nNhjLcHge226YSMHn6FFvDc8xJOteVFeufxs+Zvhd1IC8aSbpq5o70l6Wv1/s1BlDB1wVAbOVUSKQiyvbcBiiIFyfoIQNRoe3qx2nRutJwHliAG72y2HxtYCrQu20fGp1vHiRpvlJvy5WaHdKsMGUVDyFzauvsQgFlu5+r0C9duUuLpWnvrm78KzwkIuSgfJm3Fw7RZ/fn54OvBW1xz0/nCjoQJZIwlXfuGXxG2VVafauvzj/uLx6gOW6V4QJAM45eMWkgYPggBQZswXj9xa2+4muNFv2+R/ZD+SaC7tOe9duapDpP+W9k4FrDM7RByr+/td+YRgAHf3bNizdkaCuSPINAY5LH+n0reI5mLy2MGLpZLVA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4196.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(956004)(31696002)(508600001)(44832011)(4326008)(186003)(38350700002)(38100700002)(31686004)(36756003)(66946007)(2616005)(16576012)(86362001)(53546011)(8936002)(66476007)(316002)(4744005)(110136005)(66556008)(6666004)(8676002)(6486002)(26005)(83380400001)(52116002)(5660300002)(2906002)(7416002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?U0Y2L1JXano0SGc5TzJVNEdlR2JUZlRUanBUUFpKRHVtUEJKWWZyV0k0R1pB?=
+ =?utf-8?B?ZmViN1J3cjhwTmhMbnFuN3VXajJoaldmcmZiMmRrTFpKNmdOZVk4Y3JTbmN3?=
+ =?utf-8?B?ZVVOTmxFUTZYZWlUYUtpWjM3aDl6akJqNnBvL05CaXlZY1U1OStqK0x2MW5X?=
+ =?utf-8?B?TnR2SUNqQUVOMjRPOFhDR24xMU5ncVJQOXV5eHU5V1B4NUN2bXpxbjU3YlBV?=
+ =?utf-8?B?YjdEUHFqSVJJQmJTd0FVTlpxdlFtcDVEM3kxeWk3aTlCU1UvVmRzUWtjSXdM?=
+ =?utf-8?B?ZHRHeUdadVoxSG85R1Vud1hoaUE1cVZ1VExEbjBlU0lVaGo5YmJEMExhZXQz?=
+ =?utf-8?B?OW5qNERpYTkxRDlBV1IzUUdpQisxWTRJdE5JcThNZDNEL3c4RnlkYlBhZkNL?=
+ =?utf-8?B?LzBNOE1EOUlubWxmQzF3ZS9aZUFjS3hJNjFXMWpxVzBiaVNKM1hOemxsZDcw?=
+ =?utf-8?B?TzJrRVNCbVZxMzJVME42ODByZVY0ZHNvcXZYaXRUZ3VSQjdjRGN6dHVJV3N3?=
+ =?utf-8?B?Q0djYVJJYkVqZHJFNm1YMi9EYnhOTHN0S0o3aGJkaE1vRWpjYXVwUWkxd0Ni?=
+ =?utf-8?B?ZTU3RUVvRnRsMHpOV2VoY2ora29lYlNwMzgxc2UwVmZzeHZYMC9hVVQxK2Fx?=
+ =?utf-8?B?VElkYXMzVklUekdVejNEZ3pVWTc1S2VtNjIvUzN4SEMrZUlaVFVaWlI1ZGkv?=
+ =?utf-8?B?bkxCTlBMd0Vtczl2TStyYnI2bDV3WVZzY2EramlLaThqbjZvZnZ1YUZWVVNj?=
+ =?utf-8?B?TUVoeUtWZGR4ODV2dmZkc1FIdlhsY0N6VGIzZ3JlTHQxU3hFcUJWRmV0anV1?=
+ =?utf-8?B?Tk95YXQvaXM1bW9jTGYxWGpkTmhRbEpSM2t2OEQzY0RNb0RwWTBhcXRyM1JE?=
+ =?utf-8?B?N09iRzY0TG5NNk1JeXRNbmE2cjZCcDVqMldQZ3dKa0I2d2hBNk5rWksrRERs?=
+ =?utf-8?B?dUNORmFDYW9RQ0FkcW5HNEZBaFFsVFZMaWROV2N6UUMvNnVqb3MvVVE4empW?=
+ =?utf-8?B?OHI4dzNuZEZnOFp2S3QrUCtkR3czU1NKU1NqZXJZN2NJQysrVDVLYnlXZnFq?=
+ =?utf-8?B?MGMrUlBTWC9KRmk3ZWJkdWQ0MHFkSzhwYmpEY1FiNFkzZXM1TVVoYjdCek1T?=
+ =?utf-8?B?SlYzREs5VVNJVWlSK3g4WnVIaXpBMmNEcTVwcVVwUzNjRHk4c3BJb0N1SHVL?=
+ =?utf-8?B?WFBRSEZ1SFgzQ0t6Z05tL1diQXJZM3J0RG5CdTRkOUJ6WXMrU3BvV0RYYlU2?=
+ =?utf-8?B?YmpIV25DejYrb2dPMWFUQXVUY3pnT25hTm9mY3NjNkdGUVkzM1Y5Y0RaNHA1?=
+ =?utf-8?B?VWhqM1Y1TlpQWEZuK1dTbmtWeFNDOUFqYTd5YVU3QjFBWGI1bVVrbXFkUHNv?=
+ =?utf-8?B?SngwajFqMDZOTW5JTGp6WFBFK0hnd3lVR1Q1KzRwU3dLTVFVL1dUTTRWelNR?=
+ =?utf-8?B?RjlsL04veXAvalBUWUhUV0UzRnk2UHZocTN5RHJwRmJhOEJmQ1ZpaGJseG5D?=
+ =?utf-8?B?bHBsdGwxemRHSlBUR0l1bWNlVXFtWmdPOUVVRHlWVk1ZbCtsVldjaUI2T1Fy?=
+ =?utf-8?B?ZXJpRGNSSk5sK0ZpcFpteDhQN1N5bnJKRnduWHpEQ0kwT0szT3owM1FJNFBO?=
+ =?utf-8?B?TjRzY09OU0I5MHdwTFJPYVlOK1YxVHVHVytEUzgzdDBVRzJUUjhRd2pmNGJj?=
+ =?utf-8?B?NlM1VzZvcGZJaFRML1JybjFacjA4QkhhbU1iL2pmMmoxUENwQ0d4emxYc2pt?=
+ =?utf-8?Q?dpMg3aHTSCuhStEKwv0bCi9RTaCi3zWo6B+fX4X?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 22862634-afbb-4a50-94bc-08d986dfd5e8
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB4196.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Oct 2021 02:36:57.7111
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: F3iWWg329OUXSIg5wB94xBqDKtIaB2YAZElVlIK6GtPb5P5AdP+j1ahoHB9nkCBwQqQ5oYamsFiBVGWGCRepUQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB4354
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10126 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=0 adultscore=0
+ mlxscore=0 phishscore=0 bulkscore=0 mlxlogscore=999 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109230001
+ definitions=main-2110040018
+X-Proofpoint-ORIG-GUID: kn-V5KyN_peEPtboJcEQWVoSKLtbrRIG
+X-Proofpoint-GUID: kn-V5KyN_peEPtboJcEQWVoSKLtbrRIG
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 03, 2021 at 06:47:55PM +0300, Adrian Hunter wrote:
-> On 03/10/2021 16:58, Shawn Guo wrote:
-> > On Thu, Sep 30, 2021 at 01:00:03PM +0200, Ulf Hansson wrote:
-> >> On Sun, 26 Sept 2021 at 15:28, Shawn Guo <shawn.guo@linaro.org> wrote:
-> >>>
-> >>> On Thundercomm TurboX CM2290, the eMMC OCR reports vdd = 23 (3.5 ~ 3.6 V),
-> >>> which is being treated as an invalid value by sdhci_set_power_noreg().
-> >>> And thus eMMC is totally broken on the platform.
-> >>>
-> >>> [    1.436599] ------------[ cut here ]------------
-> >>> [    1.436606] mmc0: Invalid vdd 0x17
-> >>> [    1.436640] WARNING: CPU: 2 PID: 69 at drivers/mmc/host/sdhci.c:2048 sdhci_set_power_noreg+0x168/0x2b4
-> >>> [    1.436655] Modules linked in:
-> >>> [    1.436662] CPU: 2 PID: 69 Comm: kworker/u8:1 Tainted: G        W         5.15.0-rc1+ #137
-> >>> [    1.436669] Hardware name: Thundercomm TurboX CM2290 (DT)
-> >>> [    1.436674] Workqueue: events_unbound async_run_entry_fn
-> >>> [    1.436685] pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-> >>> [    1.436692] pc : sdhci_set_power_noreg+0x168/0x2b4
-> >>> [    1.436698] lr : sdhci_set_power_noreg+0x168/0x2b4
-> >>> [    1.436703] sp : ffff800010803a60
-> >>> [    1.436705] x29: ffff800010803a60 x28: ffff6a9102465f00 x27: ffff6a9101720a70
-> >>> [    1.436715] x26: ffff6a91014de1c0 x25: ffff6a91014de010 x24: ffff6a91016af280
-> >>> [    1.436724] x23: ffffaf7b1b276640 x22: 0000000000000000 x21: ffff6a9101720000
-> >>> [    1.436733] x20: ffff6a9101720370 x19: ffff6a9101720580 x18: 0000000000000020
-> >>> [    1.436743] x17: 0000000000000000 x16: 0000000000000004 x15: ffffffffffffffff
-> >>> [    1.436751] x14: 0000000000000000 x13: 00000000fffffffd x12: ffffaf7b1b84b0bc
-> >>> [    1.436760] x11: ffffaf7b1b720d10 x10: 000000000000000a x9 : ffff800010803a60
-> >>> [    1.436769] x8 : 000000000000000a x7 : 000000000000000f x6 : 00000000fffff159
-> >>> [    1.436778] x5 : 0000000000000000 x4 : 0000000000000000 x3 : 00000000ffffffff
-> >>> [    1.436787] x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffff6a9101718d80
-> >>> [    1.436797] Call trace:
-> >>> [    1.436800]  sdhci_set_power_noreg+0x168/0x2b4
-> >>> [    1.436805]  sdhci_set_ios+0xa0/0x7fc
-> >>> [    1.436811]  mmc_power_up.part.0+0xc4/0x164
-> >>> [    1.436818]  mmc_start_host+0xa0/0xb0
-> >>> [    1.436824]  mmc_add_host+0x60/0x90
-> >>> [    1.436830]  __sdhci_add_host+0x174/0x330
-> >>> [    1.436836]  sdhci_msm_probe+0x7c0/0x920
-> >>> [    1.436842]  platform_probe+0x68/0xe0
-> >>> [    1.436850]  really_probe.part.0+0x9c/0x31c
-> >>> [    1.436857]  __driver_probe_device+0x98/0x144
-> >>> [    1.436863]  driver_probe_device+0xc8/0x15c
-> >>> [    1.436869]  __device_attach_driver+0xb4/0x120
-> >>> [    1.436875]  bus_for_each_drv+0x78/0xd0
-> >>> [    1.436881]  __device_attach_async_helper+0xac/0xd0
-> >>> [    1.436888]  async_run_entry_fn+0x34/0x110
-> >>> [    1.436895]  process_one_work+0x1d0/0x354
-> >>> [    1.436903]  worker_thread+0x13c/0x470
-> >>> [    1.436910]  kthread+0x150/0x160
-> >>> [    1.436915]  ret_from_fork+0x10/0x20
-> >>> [    1.436923] ---[ end trace fcfac44cb045c3a8 ]---
-> >>>
-> >>> Fix the issue by mapping MMC_VDD_35_36 (and MMC_VDD_34_35) to
-> >>> SDHCI_POWER_330 as well.
-> >>>
-> >>> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
-> >>> ---
-> >>> I'm not sure if this is the right solution, as I do not have SDHCI
-> >>> specification.  Hence it's a RFC.
-> >>>
-> >>>  drivers/mmc/host/sdhci.c | 2 ++
-> >>>  1 file changed, 2 insertions(+)
-> >>>
-> >>> diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
-> >>> index 8eefa7d5fe85..2427481535a3 100644
-> >>> --- a/drivers/mmc/host/sdhci.c
-> >>> +++ b/drivers/mmc/host/sdhci.c
-> >>> @@ -2042,6 +2042,8 @@ void sdhci_set_power_noreg(struct sdhci_host *host, unsigned char mode,
-> >>>                         break;
-> >>>                 case MMC_VDD_32_33:
-> >>>                 case MMC_VDD_33_34:
-> >>> +               case MMC_VDD_34_35:
-> >>> +               case MMC_VDD_35_36:
-> >>>                         pwr = SDHCI_POWER_330;
-> >>
-> >> The SDHCI specification doesn't state exactly what level
-> >> SDHCI_POWER_330 corresponds to. It's 3.3V typically.
-> >>
-> >> I don't have any strong opinion about this change, although I am a
-> >> little bit puzzled over why this solves the problem for you.
-> >>
-> >> Unless the host (sdhci) announces that it supports MMC_VDD_34_35 or
-> >> MMC_VDD_35_36 through its mmc->ocr_avail mask, the mmc core shouldn't
-> >> try to use it. Can you perhaps check what value the mmc->ocr_avail
-> >> gets assigned to in sdhci_setup_host() for your mmc host?
-> > 
-> > Hi Ulf,
-> > 
-> > Thanks for the comment!
-> > 
-> > ocr_avail is 0xfff800, which is a result of mmc_regulator_get_ocrmask()
-> > call.  On this platform, the vmmc has a 3.6V max voltage.  I can enforce
-> > `regulator-max-microvolt` to be 3.3V to fix the problem, but I'm not
-> > sure it's more correct than this RFC change.
+On 10/3/21 6:54 AM, Matthew Wilcox wrote:
+> On Sun, Oct 03, 2021 at 06:41:13PM +0700, Nghia Le wrote:
+>>  {
+>>  	struct hstate *h;
+>> -	unsigned long demote_size;
+>>  	int nid;
+>>  
+>>  	h = kobj_to_hstate(kobj, &nid);
+>> -	demote_size = h->demote_order;
+>>  
+>>  	return sysfs_emit(buf, "%lukB\n",
+>>  			(unsigned long)(PAGE_SIZE << h->demote_order) / SZ_1K);
 > 
-> The host controller lines are not necessarily connected directly to the
-> card, and the 3.3V selection is not necessarily actually 3.3V either.
-> So I have no problem with the change, but the question of whether it is
-> right for you really depends on your hardware.  For the patch, I would
-> suggest adding a comment in the code, that the driver that allows
-> 3.4V-3.6V is assumed to know that the hardware supports it.
+> I'd suggest this function would look better written as:
+> 
+> 	int nid;
+> 	struct hstate *h = kobj_to_hstate(kobj, &nid);
+> 	unsigned long demote_size = (PAGE_SIZE << h->demote_order) / SZ_1K;
+> 
+> 	return sysfs_emit(buf, "%lukB\n", demote_size);
+> 
 
-Thanks for the suggestion, Adrian!  Will do.
+Thank you Nghia Le for spotting this, and thank you Matthew for the
+suggestion.
 
-Shawn
+This is still just in Andrew's tree and subject to modification before
+the next merge window.  I am still expecting additional comments on the
+series.
+
+If another version of the series is needed, I will include Matthew's
+suggestion.   If not, I will ask Andrew how he would prefer to fold in
+the changes.
+-- 
+Mike Kravetz
