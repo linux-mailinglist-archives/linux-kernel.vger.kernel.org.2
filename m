@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52624420BFE
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:00:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CE28420E58
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:23:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234484AbhJDNBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:01:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60044 "EHLO mail.kernel.org"
+        id S234103AbhJDNY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:24:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38150 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234070AbhJDNAC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:00:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D343D60F9C;
-        Mon,  4 Oct 2021 12:57:50 +0000 (UTC)
+        id S236482AbhJDNWI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:22:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 76A3960E0C;
+        Mon,  4 Oct 2021 13:09:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352271;
-        bh=+8z6GtqFIsd5jiPx7zDa8kzi5V0UNHTXnf+8IYsEnlc=;
+        s=korg; t=1633352977;
+        bh=spRyhHHVbHJmwfC0PVlQxTee47l0hg40iM+Ux+ViWOo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BZ1rNgm34eYx1mlvbJpm9ElyilPfQEokYYafRGpM/eGyKAF5l7cNid8wQdPaIAxDE
-         K88194jFxDhJBeMCjMErU1e/TvKbFNTIhYgyESh5edNjlyfw/rsGPPfxwX+uuRZEzl
-         K99JmI9OGeoogPU6B9pr8UD+6x66hWRrocNLinyc=
+        b=pmr6HTHvCfT8hN/pdmxLNQobri+fSo51SJBgnW9T6Bl7O9j1bi01uocbm6zKTHtw9
+         J+EYtGBbSfshBC7mdsT5TqC8xzPKGJoYbw+pJZpYD3iEvTLFiTAY0fdKlUP4aEjyv3
+         5WWJXtyqiXj8hoXg9JMD3HXwe2GorxhbzZjXPM6M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+3493b1873fb3ea827986@syzkaller.appspotmail.com,
-        syzbot+2b8443c35458a617c904@syzkaller.appspotmail.com,
-        syzbot+ee5cb15f4a0e85e0d54e@syzkaller.appspotmail.com,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [PATCH 4.9 55/57] netfilter: ipset: Fix oversized kvmalloc() calls
+        stable@vger.kernel.org, Aaro Koskinen <aaro.koskinen@iki.fi>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 41/93] smsc95xx: fix stalled rx after link change
 Date:   Mon,  4 Oct 2021 14:52:39 +0200
-Message-Id: <20211004125030.684582174@linuxfoundation.org>
+Message-Id: <20211004125035.920121801@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125028.940212411@linuxfoundation.org>
-References: <20211004125028.940212411@linuxfoundation.org>
+In-Reply-To: <20211004125034.579439135@linuxfoundation.org>
+References: <20211004125034.579439135@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,46 +40,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jozsef Kadlecsik <kadlec@netfilter.org>
+From: Aaro Koskinen <aaro.koskinen@iki.fi>
 
-commit 7bbc3d385bd813077acaf0e6fdb2a86a901f5382 upstream.
+[ Upstream commit 5ab8a447bcfee1ded709e7ff5dc7608ca9f66ae2 ]
 
-The commit
+After commit 05b35e7eb9a1 ("smsc95xx: add phylib support"), link changes
+are no longer propagated to usbnet. As a result, rx URB allocation won't
+happen until there is a packet sent out first (this might never happen,
+e.g. running just ssh server with a static IP). Fix by triggering usbnet
+EVENT_LINK_CHANGE.
 
-commit 7661809d493b426e979f39ab512e3adf41fbcc69
-Author: Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed Jul 14 09:45:49 2021 -0700
-
-    mm: don't allow oversized kvmalloc() calls
-
-limits the max allocatable memory via kvmalloc() to MAX_INT. Apply the
-same limit in ipset.
-
-Reported-by: syzbot+3493b1873fb3ea827986@syzkaller.appspotmail.com
-Reported-by: syzbot+2b8443c35458a617c904@syzkaller.appspotmail.com
-Reported-by: syzbot+ee5cb15f4a0e85e0d54e@syzkaller.appspotmail.com
-Signed-off-by: Jozsef Kadlecsik <kadlec@netfilter.org>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 05b35e7eb9a1 ("smsc95xx: add phylib support")
+Signed-off-by: Aaro Koskinen <aaro.koskinen@iki.fi>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/netfilter/ipset/ip_set_hash_gen.h |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/usb/smsc95xx.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/net/netfilter/ipset/ip_set_hash_gen.h
-+++ b/net/netfilter/ipset/ip_set_hash_gen.h
-@@ -102,11 +102,11 @@ htable_size(u8 hbits)
+diff --git a/drivers/net/usb/smsc95xx.c b/drivers/net/usb/smsc95xx.c
+index ea0d5f04dc3a..465e11dcdf12 100644
+--- a/drivers/net/usb/smsc95xx.c
++++ b/drivers/net/usb/smsc95xx.c
+@@ -1178,7 +1178,10 @@ static void smsc95xx_unbind(struct usbnet *dev, struct usb_interface *intf)
+ 
+ static void smsc95xx_handle_link_change(struct net_device *net)
  {
- 	size_t hsize;
++	struct usbnet *dev = netdev_priv(net);
++
+ 	phy_print_status(net->phydev);
++	usbnet_defer_kevent(dev, EVENT_LINK_CHANGE);
+ }
  
--	/* We must fit both into u32 in jhash and size_t */
-+	/* We must fit both into u32 in jhash and INT_MAX in kvmalloc_node() */
- 	if (hbits > 31)
- 		return 0;
- 	hsize = jhash_size(hbits);
--	if ((((size_t)-1) - sizeof(struct htable)) / sizeof(struct hbucket *)
-+	if ((INT_MAX - sizeof(struct htable)) / sizeof(struct hbucket *)
- 	    < hsize)
- 		return 0;
- 
+ static int smsc95xx_start_phy(struct usbnet *dev)
+-- 
+2.33.0
+
 
 
