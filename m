@@ -2,58 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AE97421405
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 18:24:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5D5E421408
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 18:26:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236944AbhJDQ0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 12:26:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49070 "EHLO
+        id S236955AbhJDQ1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 12:27:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234124AbhJDQ0o (ORCPT
+        with ESMTP id S235724AbhJDQ1r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 12:26:44 -0400
-Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D7C8C061745
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 09:24:55 -0700 (PDT)
-Received: by mail-il1-x136.google.com with SMTP id k13so18840297ilo.7
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 09:24:55 -0700 (PDT)
+        Mon, 4 Oct 2021 12:27:47 -0400
+Received: from mail-oo1-xc34.google.com (mail-oo1-xc34.google.com [IPv6:2607:f8b0:4864:20::c34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9E8FC061749
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 09:25:58 -0700 (PDT)
+Received: by mail-oo1-xc34.google.com with SMTP id h11-20020a4aa74b000000b002a933d156cbso5557601oom.4
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 09:25:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=E57tubdi4Kb+HoICFHf4HKGD0EgGpurJT1qek7rMtUQ=;
-        b=SSGYqV8eNufpehaJ1X6bhX0nNVncIifGjTotNGgqC5XkG2ia7SIE79Z7D1wo3joN7q
-         97LVvC7v39857TkH/Ap/Pg+O72RJ8xmBgqyGtg2Zto3lOPta+Yt8zkx7eMqjY0KO9+lL
-         A8+hLWNdgcQmkEoVUhop1ARIGSrhN/jz5MjeL5o1bhqbFmk+H0GL9VMdZkjVxBKtWpIu
-         QihIdwx49inSgaj94gqM9+XLC2UgJHEaM+sdJwxlNwmOLkfxhXEFCOhwo2q3a9+BbXqP
-         2WySAxrD6/8+h+IFgridxSBbvBS4dEYtXypP8AefGBzXa/8SOD7m/YTh8kLphLEx3kjR
-         JWAA==
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=mLc0Fek34odD1FMIzueqXa/78SBcfVgbP97vYrbJQc8=;
+        b=Und7ZT2O/QKy3PwHipvfFlrL0ZXnwp+KNFSVjJRK4dxcaDVmi+SV55EzF8r7LkEk6W
+         X63d2RnxGwTFTHWu6c9gqVTIQjfwxLOK4XTYlXFsZ841zkGIzqMbwV5QZ0ry2byFZNo0
+         WP20ZcFf1U0cZbpBV2ZxJW7oSXovwCWgpWSlmgQTo1VekaBNH//8UgX4HoIkaFtQxk+h
+         diIpg26bC56lO9sRUNv139RdyIVKDT0aNDEvKt/o3qu40zjcQ8m7bOXGv1l5XxiyH6s8
+         yOzos756ADqluoEIZZNMeJvjucoHbh+zk2slJ3wfIoaCK0VFaovdGdc7ebwPU73U7Gub
+         v1tg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=E57tubdi4Kb+HoICFHf4HKGD0EgGpurJT1qek7rMtUQ=;
-        b=1Ldp8AE9qM1h+12e/Vx28BHHb2j8/jZstRH5GVrvaQrBxMNz/R/PRbID5ia3KRaeKV
-         rULIDSSnr99RMTgpMbhhsuzTK/CKCAMlkckM0MgprTbfVnICWXs9gYk5X94Od7HajqeQ
-         V+ETtSnFUwH8nMP79mou+2+J1pUjYZkJ2RNJldDxJuir4PwZhSM26q12XzRLaUjciGc9
-         7WxqbBZl1/xxhxaWpQl2FDwCnrGcLtWhLKeOEgotqJZA9Tt+Lwy5Ng6qEyMmBfpnlB5H
-         ycE1uAYsSV++gGT548mlxSynOGqc2wFRhj44UGDK5k7jnaTizkAPRsijPoTlmuHHkXS3
-         fe1g==
-X-Gm-Message-State: AOAM532JVAyEsYtF0TvEYZYm+qYCBM/+HPpi4cvl1Lc1bBMUXbvN4qqk
-        +mSNQkxC/qowXfdkyfOEz/MnXUWOsJiTtt1U0jw=
-X-Google-Smtp-Source: ABdhPJz1jKEDjth1UTdoOk4lBycXdu+NDtY03E+THwaXzPHU7WM93KVz9opCjZpr8iIQMdoJ2dprvDlFXvuxPPJODjI=
-X-Received: by 2002:a92:1a4e:: with SMTP id z14mr10588159ill.78.1633364695045;
- Mon, 04 Oct 2021 09:24:55 -0700 (PDT)
+         :subject:to:content-transfer-encoding;
+        bh=mLc0Fek34odD1FMIzueqXa/78SBcfVgbP97vYrbJQc8=;
+        b=Fx/D8tBLlEDGXf3KkxuHl+kWkCEeFU/a1YBKqX4pgkW4ncRvjgpi3nmHt7kbTZE1KQ
+         V5ZThB40WOixqkDaKNzLUAxv2VHTgjgDDzhCwVc4dItlmP8OUMJQCPRDn/lj6lpKg03Z
+         Fr5dDNHn1Ye4Ipy5+bALhrIHNvFECQuuQiwi9mjMwxK0CPDhF26K1LuUAUbO2fdzrmtg
+         KsZdL+oEp+EN6uAqlic4WQanVTmpEpeODdZJkdNyIQvRMzQImkgpNrqR3NInyTivVGYz
+         f7KVL7y50KNMPU99O5a5sGZpcNDM4g0zNXh8YzYTmYTamAmVEK05/o58Ok5611Se+UEr
+         VxXw==
+X-Gm-Message-State: AOAM5329eh8e21sVKvzaA/qGxt0/oxMhyjg9eJQwrPfEOcb9lOAyDjbz
+        VBhYs4F8MDDalEvWItlIy7gQPf+RsJVvrCUPPQ==
+X-Google-Smtp-Source: ABdhPJz0q2XRr1Qfp6FLOFJNKbFVVBsAZTooPNituDqLrLvOFORJozZLLRR3CNunNc+pVqvoT8U5LfQRUAJw3Lw/IX0=
+X-Received: by 2002:a4a:c80b:: with SMTP id s11mr9722036ooq.65.1633364753033;
+ Mon, 04 Oct 2021 09:25:53 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a02:cc6c:0:0:0:0:0 with HTTP; Mon, 4 Oct 2021 09:24:54 -0700 (PDT)
-Reply-To: kaylamanthey022@gmail.com
-From:   Kayla Manthey <ginaasam4444@gmail.com>
-Date:   Mon, 4 Oct 2021 16:24:54 +0000
-Message-ID: <CALYmMvA1tLJ=GERibjASc3375bXZz-Y0pXP+w2an-fU2ewF1WA@mail.gmail.com>
-Subject: Hello
+Received: by 2002:a05:6808:2c4:0:0:0:0 with HTTP; Mon, 4 Oct 2021 09:25:52
+ -0700 (PDT)
+Reply-To: robertskelvin20211@gmail.com
+From:   Roberts Kelvin <skyprince20211@gmail.com>
+Date:   Mon, 4 Oct 2021 16:25:52 +0000
+Message-ID: <CAGZW7rXHbEHPHPh8nAWR6TKqzs2q3JQasRhM2f7qDETk+_a9tA@mail.gmail.com>
+Subject: HI
 To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greetings, My name is Kayla Manthey, please reply me back?
+--=20
+K=C3=A6ri herra/fr=C3=BA,
+
+Sk=C3=B3lastj=C3=B3rar m=C3=ADnir hafa n=C3=BA fengi=C3=B0 gjaldeyriskv=C3=
+=B3ta og sam=C3=BEykki
+=C3=BE.mt fj=C3=A1rmagn og undir reikninga, vi=C3=B0skiptapallur, fyrirt=C3=
+=A6kja
+reikninga og jafnvel einkareikninga.
+
+Ertu me=C3=B0 einhverja raunh=C3=A6fa vi=C3=B0skipta=C3=A1=C3=A6tlun sem =
+=C3=BEarfnast fj=C3=A1rmagns?
+=C3=9Ea=C3=B0 fer eftir
+vi=C3=B0skipta=C3=A1=C3=A6tlun/verkefni =C3=BEitt eru sk=C3=B3lastj=C3=B3ra=
+r okkar =C3=AD a=C3=B0st=C3=B6=C3=B0u til
+veita h=C3=B6fu=C3=B0borginni tilvalinn f=C3=A9lagi tilb=C3=BAinn til a=C3=
+=B0 vinna fyrir sameiginlega
+=C3=A1vinningi og fj=C3=A1rmagni=C3=B0 ver=C3=B0ur afhent =C3=BE=C3=A9r =C3=
+=A1n endurgjalds
+Fj=C3=A1rm=C3=A1lavettvangur.
+
+=C3=9Ea=C3=B0 ver=C3=B0ur skylda m=C3=ADn a=C3=B0 lei=C3=B0beina =C3=BE=C3=
+=A9r um a=C3=B0 tryggja fars=C3=A6lt fyrirt=C3=A6ki l=C3=ADti=C3=B0
+e=C3=B0a st=C3=B3rfj=C3=A1rfesting e=C3=B0a aukning einkafj=C3=A1rmagns.
+
+Fyrir frekari uppl=C3=BDsingar haf=C3=B0u samband vi=C3=B0 mig
+{robertskelvin20211@gmail.com}
+
+Kve=C3=B0ja,
+Roberts Kelvin
