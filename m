@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05E47420BF5
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:59:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAAA6420D70
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:13:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234447AbhJDNBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:01:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32834 "EHLO mail.kernel.org"
+        id S235325AbhJDNPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:15:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47394 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234195AbhJDM7o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 08:59:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B37A613D5;
-        Mon,  4 Oct 2021 12:57:39 +0000 (UTC)
+        id S235874AbhJDNLn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:11:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 227ED61B6F;
+        Mon,  4 Oct 2021 13:04:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352260;
-        bh=nSTmr121dkjbPIH6jZrbKOssLMtUrK4KbeQ23eg16U8=;
+        s=korg; t=1633352668;
+        bh=OCfoDgZA22Ou7+PqGJu7iFeST6hFCL3+nTaHZB+tMZI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0wVFSL2yooNZTx/fD5FpvLphAmwRTYbQteHBNLeXwyFz5NMin/f2iBs2VPPqkuwE6
-         WHxYyMNCTRtRnkUJtNMBstLZ73YTaPBh4h8sqnROAm39YOao7sTDxxeh7ilp5K+jgL
-         0vTro8m/ilEVRzBnvVWo/G2OBVS4VaQk3lkLwBeo=
+        b=KYhFaYW0G+H42OeSGdo0Mx+efvfMhkKk0ZGwnE5rEuWTs67jLP//w9ONfRfwIj5C9
+         memdcrLvqvi0by1hbpww6EtKlqsmiCngGIXeDpjz17wU0BbZ8MkHBcjP4dL0Wxc5ln
+         DAgCAd7vCznkhFZCVXnm3aWX9/TxbbRmGbhLZ3Ew=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.9 43/57] ipack: ipoctal: fix tty-registration error handling
+        stable@vger.kernel.org, Kevin Hao <haokexin@gmail.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 57/95] cpufreq: schedutil: Use kobject release() method to free sugov_tunables
 Date:   Mon,  4 Oct 2021 14:52:27 +0200
-Message-Id: <20211004125030.315472775@linuxfoundation.org>
+Message-Id: <20211004125035.432411192@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125028.940212411@linuxfoundation.org>
-References: <20211004125028.940212411@linuxfoundation.org>
+In-Reply-To: <20211004125033.572932188@linuxfoundation.org>
+References: <20211004125033.572932188@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,56 +41,130 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Kevin Hao <haokexin@gmail.com>
 
-commit cd20d59291d1790dc74248476e928f57fc455189 upstream.
+[ Upstream commit e5c6b312ce3cc97e90ea159446e6bfa06645364d ]
 
-Registration of the ipoctal tty devices is unlikely to fail, but if it
-ever does, make sure not to deregister a never registered tty device
-(and dereference a NULL pointer) when the driver is later unbound.
+The struct sugov_tunables is protected by the kobject, so we can't free
+it directly. Otherwise we would get a call trace like this:
+  ODEBUG: free active (active state 0) object type: timer_list hint: delayed_work_timer_fn+0x0/0x30
+  WARNING: CPU: 3 PID: 720 at lib/debugobjects.c:505 debug_print_object+0xb8/0x100
+  Modules linked in:
+  CPU: 3 PID: 720 Comm: a.sh Tainted: G        W         5.14.0-rc1-next-20210715-yocto-standard+ #507
+  Hardware name: Marvell OcteonTX CN96XX board (DT)
+  pstate: 40400009 (nZcv daif +PAN -UAO -TCO BTYPE=--)
+  pc : debug_print_object+0xb8/0x100
+  lr : debug_print_object+0xb8/0x100
+  sp : ffff80001ecaf910
+  x29: ffff80001ecaf910 x28: ffff00011b10b8d0 x27: ffff800011043d80
+  x26: ffff00011a8f0000 x25: ffff800013cb3ff0 x24: 0000000000000000
+  x23: ffff80001142aa68 x22: ffff800011043d80 x21: ffff00010de46f20
+  x20: ffff800013c0c520 x19: ffff800011d8f5b0 x18: 0000000000000010
+  x17: 6e6968207473696c x16: 5f72656d6974203a x15: 6570797420746365
+  x14: 6a626f2029302065 x13: 303378302f307830 x12: 2b6e665f72656d69
+  x11: ffff8000124b1560 x10: ffff800012331520 x9 : ffff8000100ca6b0
+  x8 : 000000000017ffe8 x7 : c0000000fffeffff x6 : 0000000000000001
+  x5 : ffff800011d8c000 x4 : ffff800011d8c740 x3 : 0000000000000000
+  x2 : ffff0001108301c0 x1 : ab3c90eedf9c0f00 x0 : 0000000000000000
+  Call trace:
+   debug_print_object+0xb8/0x100
+   __debug_check_no_obj_freed+0x1c0/0x230
+   debug_check_no_obj_freed+0x20/0x88
+   slab_free_freelist_hook+0x154/0x1c8
+   kfree+0x114/0x5d0
+   sugov_exit+0xbc/0xc0
+   cpufreq_exit_governor+0x44/0x90
+   cpufreq_set_policy+0x268/0x4a8
+   store_scaling_governor+0xe0/0x128
+   store+0xc0/0xf0
+   sysfs_kf_write+0x54/0x80
+   kernfs_fop_write_iter+0x128/0x1c0
+   new_sync_write+0xf0/0x190
+   vfs_write+0x2d4/0x478
+   ksys_write+0x74/0x100
+   __arm64_sys_write+0x24/0x30
+   invoke_syscall.constprop.0+0x54/0xe0
+   do_el0_svc+0x64/0x158
+   el0_svc+0x2c/0xb0
+   el0t_64_sync_handler+0xb0/0xb8
+   el0t_64_sync+0x198/0x19c
+  irq event stamp: 5518
+  hardirqs last  enabled at (5517): [<ffff8000100cbd7c>] console_unlock+0x554/0x6c8
+  hardirqs last disabled at (5518): [<ffff800010fc0638>] el1_dbg+0x28/0xa0
+  softirqs last  enabled at (5504): [<ffff8000100106e0>] __do_softirq+0x4d0/0x6c0
+  softirqs last disabled at (5483): [<ffff800010049548>] irq_exit+0x1b0/0x1b8
 
-Fixes: 2afb41d9d30d ("Staging: ipack/devices/ipoctal: Check tty_register_device return value.")
-Cc: stable@vger.kernel.org      # 3.7
-Acked-by: Samuel Iglesias Gonsalvez <siglesias@igalia.com>
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Link: https://lore.kernel.org/r/20210917114622.5412-4-johan@kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+So split the original sugov_tunables_free() into two functions,
+sugov_clear_global_tunables() is just used to clear the global_tunables
+and the new sugov_tunables_free() is used as kobj_type::release to
+release the sugov_tunables safely.
+
+Fixes: 9bdcb44e391d ("cpufreq: schedutil: New governor based on scheduler utilization data")
+Cc: 4.7+ <stable@vger.kernel.org> # 4.7+
+Signed-off-by: Kevin Hao <haokexin@gmail.com>
+Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/ipack/devices/ipoctal.c |    7 +++++++
- 1 file changed, 7 insertions(+)
+ kernel/sched/cpufreq_schedutil.c | 16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
 
---- a/drivers/ipack/devices/ipoctal.c
-+++ b/drivers/ipack/devices/ipoctal.c
-@@ -38,6 +38,7 @@ struct ipoctal_channel {
- 	unsigned int			pointer_read;
- 	unsigned int			pointer_write;
- 	struct tty_port			tty_port;
-+	bool				tty_registered;
- 	union scc2698_channel __iomem	*regs;
- 	union scc2698_block __iomem	*block_regs;
- 	unsigned int			board_id;
-@@ -402,9 +403,11 @@ static int ipoctal_inst_slot(struct ipoc
- 							i, NULL, channel, NULL);
- 		if (IS_ERR(tty_dev)) {
- 			dev_err(&ipoctal->dev->dev, "Failed to register tty device.\n");
-+			tty_port_free_xmit_buf(&channel->tty_port);
- 			tty_port_destroy(&channel->tty_port);
- 			continue;
- 		}
-+		channel->tty_registered = true;
- 	}
+diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
+index 1b7ec822dc75..60f0e0e048f0 100644
+--- a/kernel/sched/cpufreq_schedutil.c
++++ b/kernel/sched/cpufreq_schedutil.c
+@@ -591,9 +591,17 @@ static struct attribute *sugov_attributes[] = {
+ 	NULL
+ };
  
- 	/*
-@@ -705,6 +708,10 @@ static void __ipoctal_remove(struct ipoc
++static void sugov_tunables_free(struct kobject *kobj)
++{
++	struct gov_attr_set *attr_set = container_of(kobj, struct gov_attr_set, kobj);
++
++	kfree(to_sugov_tunables(attr_set));
++}
++
+ static struct kobj_type sugov_tunables_ktype = {
+ 	.default_attrs = sugov_attributes,
+ 	.sysfs_ops = &governor_sysfs_ops,
++	.release = &sugov_tunables_free,
+ };
  
- 	for (i = 0; i < NR_CHANNELS; i++) {
- 		struct ipoctal_channel *channel = &ipoctal->channel[i];
-+
-+		if (!channel->tty_registered)
-+			continue;
-+
- 		tty_unregister_device(ipoctal->tty_drv, i);
- 		tty_port_free_xmit_buf(&channel->tty_port);
- 		tty_port_destroy(&channel->tty_port);
+ /********************** cpufreq governor interface *********************/
+@@ -693,12 +701,10 @@ static struct sugov_tunables *sugov_tunables_alloc(struct sugov_policy *sg_polic
+ 	return tunables;
+ }
+ 
+-static void sugov_tunables_free(struct sugov_tunables *tunables)
++static void sugov_clear_global_tunables(void)
+ {
+ 	if (!have_governor_per_policy())
+ 		global_tunables = NULL;
+-
+-	kfree(tunables);
+ }
+ 
+ static int sugov_init(struct cpufreq_policy *policy)
+@@ -761,7 +767,7 @@ out:
+ fail:
+ 	kobject_put(&tunables->attr_set.kobj);
+ 	policy->governor_data = NULL;
+-	sugov_tunables_free(tunables);
++	sugov_clear_global_tunables();
+ 
+ stop_kthread:
+ 	sugov_kthread_stop(sg_policy);
+@@ -788,7 +794,7 @@ static void sugov_exit(struct cpufreq_policy *policy)
+ 	count = gov_attr_set_put(&tunables->attr_set, &sg_policy->tunables_hook);
+ 	policy->governor_data = NULL;
+ 	if (!count)
+-		sugov_tunables_free(tunables);
++		sugov_clear_global_tunables();
+ 
+ 	mutex_unlock(&global_tunables_lock);
+ 
+-- 
+2.33.0
+
 
 
