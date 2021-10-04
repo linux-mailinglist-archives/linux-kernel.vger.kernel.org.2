@@ -2,110 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0BDA4213B0
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 18:10:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 019054213B8
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 18:11:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236440AbhJDQMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 12:12:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45532 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235966AbhJDQMV (ORCPT
+        id S236568AbhJDQMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 12:12:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43193 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236566AbhJDQMi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 12:12:21 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E59A8C061745
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 09:10:31 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id j8so1307178wro.7
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 09:10:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=OtQuuX2brA5ZuBP583Q78Xbi4yhNeFENTEHNrqdTOBE=;
-        b=DP7u/QxlDl1spshoDmovH2MF4/zibEvWOMOsIEunFjZw3dOYafLTF299WsXQP1jsRa
-         TbucAY7TeQE8PlGyMRHMfv3/daOY6696DwBdU5KUTGLH1MvNO/84PCWWCStnAFtj7+Wi
-         eIHUD4cgY4MITOoTvn9s/7a80Y2Yf5IWQwCFa1kIwbi77vmf9cwu2pQgQzcpzB0tqBQp
-         S9CTTqFS4D72sJ7yKiNdV6mlcOeRRkDrEziWFqf+QGFh69m/Ei0HKc+XnXe856mw7dJ+
-         1Eg8RA4y3lO/tcAzjBPD6Z+FqRAXzfWUw56G9mM1Bt8crayp1Fj+fyIwwvBSNvMwlvEv
-         eHVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=OtQuuX2brA5ZuBP583Q78Xbi4yhNeFENTEHNrqdTOBE=;
-        b=YA/3gJFflAZ21gzYOZpazk4At+WE8LIDoDBtt5GfLfag5DKJsPnhXNvmXXGJPKcnYT
-         dmrgmFwR20zKbBDQBxC88W4afGyxi3U3+QTHjCwsZ9lb6C6XWhdYQg1yZ78biP7XkWcQ
-         ot8GqKC1DTco3B+7e0kFYbxEL6wFAQRUhrS7xpy8Z0S/sjR02oAUVN6ZOX0UzWE5tlEq
-         BOZUfIoiMrNyQ97MRp/43FCL48dMw20L7so8lwzm056GvbPuzzmWMMIu1GClV0/+xFc/
-         GNcgi+CPce/MwEWF9anm5/5jmbLKXSRAE/ksOeXbKP+kKjnDkbAn9sq9L5rPHRa9nvno
-         MjRA==
-X-Gm-Message-State: AOAM531RQM++6bmFPOfOd9+2l6mM0uKGM/AK2QEz2+jTzqWqnMasro6q
-        PKEMp/BZ3QKmvQpUZrRI4sAl1w==
-X-Google-Smtp-Source: ABdhPJz6OpGeL9GMpI27OU8V37E913SUaJl1BIluDq9g14WL6M81bM/Hth2fX4+FBfrBS1ABZHkeWQ==
-X-Received: by 2002:a5d:59a4:: with SMTP id p4mr14906542wrr.332.1633363830548;
-        Mon, 04 Oct 2021 09:10:30 -0700 (PDT)
-Received: from google.com ([95.148.6.233])
-        by smtp.gmail.com with ESMTPSA id r18sm8905395wrs.47.2021.10.04.09.10.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Oct 2021 09:10:30 -0700 (PDT)
-Date:   Mon, 4 Oct 2021 17:10:28 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Aditya Garg <gargaditya08@live.com>
-Cc:     Orlando Chamberlain <redecorating@protonmail.com>,
-        "andriy.shevchenko@linux.intel.com" 
-        <andriy.shevchenko@linux.intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCHv4] mfd: intel-lpss: Add support for MacBookPro16,2 ICL-N
- UART
-Message-ID: <YVsndMqaeJigZ9hV@google.com>
-References: <20211001084905.4133-1-redecorating@protonmail.com>
- <20211002111449.12674-1-redecorating@protonmail.com>
- <YVqqllKyNF4A424K@google.com>
- <F169C53D-C688-4F1C-B361-86885FD11F21@live.com>
+        Mon, 4 Oct 2021 12:12:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633363848;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=82aqORu4X0jW0D+kfrL0g73NrlwG85DFqcC1BOo70Kg=;
+        b=S+zGIn4qPhXWbbPGBYYp4TSOxrMPYIvOdkjxn0VRfmM9ZwsTxTe8gF2Zy5zw8ih8rB72BK
+        hWLfDMzOZMB5h5nZwC9uZ3kWwRPFCjecDrCrYO5JPPDn0BHlynEwcdDNcJcVFf0FtnraQA
+        ch5qjGJDmOK8yPJcFzGVcjIv8KC0BUc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-576-TET__3EHMAqaafAfnq4f8w-1; Mon, 04 Oct 2021 12:10:45 -0400
+X-MC-Unique: TET__3EHMAqaafAfnq4f8w-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B352610168C3;
+        Mon,  4 Oct 2021 16:10:44 +0000 (UTC)
+Received: from vitty.brq.redhat.com (unknown [10.40.194.218])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id AC4C2652AB;
+        Mon,  4 Oct 2021 16:10:40 +0000 (UTC)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 3/4] KVM: nVMX: Track whether changes in L0 require MSR bitmap for L2 to be rebuilt
+Date:   Mon,  4 Oct 2021 18:10:28 +0200
+Message-Id: <20211004161029.641155-4-vkuznets@redhat.com>
+In-Reply-To: <20211004161029.641155-1-vkuznets@redhat.com>
+References: <20211004161029.641155-1-vkuznets@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <F169C53D-C688-4F1C-B361-86885FD11F21@live.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 04 Oct 2021, Aditya Garg wrote:
+Introduce a flag to keep track of whether MSR bitmap for L2 needs to be
+rebuilt due to changes in MSR bitmap for L1 or switching to a different
+L2. This information will be used for Enlightened MSR Bitmap feature for
+Hyper-V guests.
 
-> Hi Lee
-> 
-> I request you to Backport this to 5.10 as well
+Note, setting msr_bitmap_changed to 'true' from set_current_vmptr() is
+not really needed for Enlightened MSR Bitmap as the feature can only
+be used in conjunction with Enlightened VMCS but let's keep tracking
+information complete, it's cheap and in the future similar PV feature can
+easily be implemented for KVM on KVM too.
 
-Please read:
+No functional change intended.
 
-  Documentation/process/stable-kernel-rules.rst
+Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+---
+ arch/x86/kvm/vmx/nested.c | 9 ++++++++-
+ arch/x86/kvm/vmx/vmx.c    | 2 ++
+ arch/x86/kvm/vmx/vmx.h    | 6 ++++++
+ 3 files changed, 16 insertions(+), 1 deletion(-)
 
-If you think this patches meets the criteria you can submit it for
-inclusion to the Stable kernel yourself using one of the documented
-'Options'.
-
-> > On 04-Oct-2021, at 12:47 PM, Lee Jones <lee.jones@linaro.org> wrote:
-> > 
-> > On Sat, 02 Oct 2021, Orlando Chamberlain wrote:
-> > 
-> >> Added 8086:38a8 to the intel_lpss_pci driver. It is an Intel Ice Lake
-> >> PCH-N UART controler present on the MacBookPro16,2.
-> >> 
-> >> Signed-off-by: Orlando Chamberlain <redecorating@protonmail.com>
-> >> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> >> ---
-> >> v3->v4: reviewed-by line
-> >> drivers/mfd/intel-lpss-pci.c | 2 ++
-> >> 1 file changed, 2 insertions(+)
-> > 
-> > Applied, thanks.
-> > 
-> 
-
+diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+index af1bbb73430a..34c580b5dbab 100644
+--- a/arch/x86/kvm/vmx/nested.c
++++ b/arch/x86/kvm/vmx/nested.c
+@@ -700,6 +700,8 @@ static inline bool nested_vmx_prepare_msr_bitmap(struct kvm_vcpu *vcpu,
+ 
+ 	kvm_vcpu_unmap(vcpu, &to_vmx(vcpu)->nested.msr_bitmap_map, false);
+ 
++	vmx->nested.msr_bitmap_changed = false;
++
+ 	return true;
+ }
+ 
+@@ -2054,10 +2056,13 @@ static enum nested_evmptrld_status nested_vmx_handle_enlightened_vmptrld(
+ 	 * Clean fields data can't be used on VMLAUNCH and when we switch
+ 	 * between different L2 guests as KVM keeps a single VMCS12 per L1.
+ 	 */
+-	if (from_launch || evmcs_gpa_changed)
++	if (from_launch || evmcs_gpa_changed) {
+ 		vmx->nested.hv_evmcs->hv_clean_fields &=
+ 			~HV_VMX_ENLIGHTENED_CLEAN_FIELD_ALL;
+ 
++		vmx->nested.msr_bitmap_changed = true;
++	}
++
+ 	return EVMPTRLD_SUCCEEDED;
+ }
+ 
+@@ -5274,6 +5279,7 @@ static void set_current_vmptr(struct vcpu_vmx *vmx, gpa_t vmptr)
+ 		vmx->nested.need_vmcs12_to_shadow_sync = true;
+ 	}
+ 	vmx->nested.dirty_vmcs12 = true;
++	vmx->nested.msr_bitmap_changed = true;
+ }
+ 
+ /* Emulate the VMPTRLD instruction */
+@@ -6400,6 +6406,7 @@ static int vmx_set_nested_state(struct kvm_vcpu *vcpu,
+ 		goto error_guest_mode;
+ 
+ 	vmx->nested.dirty_vmcs12 = true;
++	vmx->nested.msr_bitmap_changed = true;
+ 	ret = nested_vmx_enter_non_root_mode(vcpu, false);
+ 	if (ret)
+ 		goto error_guest_mode;
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index 3fdaaef291e8..d33eb53b7fc9 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -3735,6 +3735,8 @@ static void vmx_msr_bitmap_l01_changed(struct vcpu_vmx *vmx)
+ 	 */
+ 	if (static_branch_unlikely(&enable_evmcs))
+ 		evmcs_touch_msr_bitmap();
++
++	vmx->nested.msr_bitmap_changed = true;
+ }
+ 
+ void vmx_disable_intercept_for_msr(struct kvm_vcpu *vcpu, u32 msr, int type)
+diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
+index 592217fd7d92..eb7a1697bec2 100644
+--- a/arch/x86/kvm/vmx/vmx.h
++++ b/arch/x86/kvm/vmx/vmx.h
+@@ -148,6 +148,12 @@ struct nested_vmx {
+ 	bool need_vmcs12_to_shadow_sync;
+ 	bool dirty_vmcs12;
+ 
++	/*
++	 * Indicates whether MSR bitmap for L2 needs to be rebuilt due to
++	 * changes in MSR bitmap for L1 or switching to a different L2.
++	 */
++	bool msr_bitmap_changed;
++
+ 	/*
+ 	 * Indicates lazily loaded guest state has not yet been decached from
+ 	 * vmcs02.
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.31.1
+
