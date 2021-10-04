@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A312420D0F
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:09:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4FE6420B56
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:54:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235017AbhJDNLe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:11:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45730 "EHLO mail.kernel.org"
+        id S233293AbhJDM4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 08:56:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57754 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233374AbhJDNJD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:09:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 30C8961B61;
-        Mon,  4 Oct 2021 13:03:03 +0000 (UTC)
+        id S233387AbhJDM4U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 08:56:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 580746139F;
+        Mon,  4 Oct 2021 12:54:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352583;
-        bh=Ph40bzWZ+VYDS03XR1nO7k7kHctxU69Bi/ZMKB5DkMw=;
+        s=korg; t=1633352071;
+        bh=PIbSv5+aLo81YMPeqyWAtnVJitmVlGcjP8D8JKUBSBk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LUciJU+1eRsXWQH7KIkSQ/8HtnxApfiooMGA3GRW3MfmP7AoMl43iUv92wN08JniJ
-         Vq2ViW9vY9NfmUillPR3JOFAufKT6/xZvpulp23JjWMtgAUavqDZZh7ss3Yl3oBAIs
-         rbO9mZ1j5vI+0e8HxjWv2OP7pjtxpFmbXgYjpUrw=
+        b=se+tNMLIWhgA4VuXEQu0n/lXE1DySDunsA0yvLf/aUBsC4sDbC5i2pZumEez+Q8xz
+         cKyyBkq+VGZp0TCU/Fdu//Ymvdqpav5y12R5a2xECAD8wThFS8iITv+7Pzf4+8GEI5
+         0PnGpiDYR4E4H38nkpErVXTW/ca4diMJM6LFN+8c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Helge Deller <deller@gmx.de>,
+        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        Arnd Bergmann <arnd@arndb.de>,
         Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH 4.19 42/95] parisc: Use absolute_pointer() to define PAGE0
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 21/41] alpha: Declare virt_to_phys and virt_to_bus parameter as pointer to volatile
 Date:   Mon,  4 Oct 2021 14:52:12 +0200
-Message-Id: <20211004125034.959472600@linuxfoundation.org>
+Message-Id: <20211004125027.255850386@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125033.572932188@linuxfoundation.org>
-References: <20211004125033.572932188@linuxfoundation.org>
+In-Reply-To: <20211004125026.597501645@linuxfoundation.org>
+References: <20211004125026.597501645@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,36 +41,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Helge Deller <deller@gmx.de>
+From: Guenter Roeck <linux@roeck-us.net>
 
-[ Upstream commit 90cc7bed1ed19f869ae7221a6b41887fe762a6a3 ]
+[ Upstream commit 35a3f4ef0ab543daa1725b0c963eb8c05e3376f8 ]
 
-Use absolute_pointer() wrapper for PAGE0 to avoid this compiler warning:
+Some drivers pass a pointer to volatile data to virt_to_bus() and
+virt_to_phys(), and that works fine.  One exception is alpha.  This
+results in a number of compile errors such as
 
-  arch/parisc/kernel/setup.c: In function 'start_parisc':
-  error: '__builtin_memcmp_eq' specified bound 8 exceeds source size 0
+  drivers/net/wan/lmc/lmc_main.c: In function 'lmc_softreset':
+  drivers/net/wan/lmc/lmc_main.c:1782:50: error:
+	passing argument 1 of 'virt_to_bus' discards 'volatile'
+	qualifier from pointer target type
 
-Signed-off-by: Helge Deller <deller@gmx.de>
-Co-Developed-by: Guenter Roeck <linux@roeck-us.net>
-Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+  drivers/atm/ambassador.c: In function 'do_loader_command':
+  drivers/atm/ambassador.c:1747:58: error:
+	passing argument 1 of 'virt_to_bus' discards 'volatile'
+	qualifier from pointer target type
+
+Declare the parameter of virt_to_phys and virt_to_bus as pointer to
+volatile to fix the problem.
+
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Acked-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/parisc/include/asm/page.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/alpha/include/asm/io.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/parisc/include/asm/page.h b/arch/parisc/include/asm/page.h
-index af00fe9bf846..c631a8fd856a 100644
---- a/arch/parisc/include/asm/page.h
-+++ b/arch/parisc/include/asm/page.h
-@@ -179,7 +179,7 @@ extern int npmem_ranges;
- #include <asm-generic/getorder.h>
- #include <asm/pdc.h>
+diff --git a/arch/alpha/include/asm/io.h b/arch/alpha/include/asm/io.h
+index 355aec0867f4..e55a5e6ab460 100644
+--- a/arch/alpha/include/asm/io.h
++++ b/arch/alpha/include/asm/io.h
+@@ -60,7 +60,7 @@ extern inline void set_hae(unsigned long new_hae)
+  * Change virtual addresses to physical addresses and vv.
+  */
+ #ifdef USE_48_BIT_KSEG
+-static inline unsigned long virt_to_phys(void *address)
++static inline unsigned long virt_to_phys(volatile void *address)
+ {
+ 	return (unsigned long)address - IDENT_ADDR;
+ }
+@@ -70,7 +70,7 @@ static inline void * phys_to_virt(unsigned long address)
+ 	return (void *) (address + IDENT_ADDR);
+ }
+ #else
+-static inline unsigned long virt_to_phys(void *address)
++static inline unsigned long virt_to_phys(volatile void *address)
+ {
+         unsigned long phys = (unsigned long)address;
  
--#define PAGE0   ((struct zeropage *)__PAGE_OFFSET)
-+#define PAGE0   ((struct zeropage *)absolute_pointer(__PAGE_OFFSET))
+@@ -111,7 +111,7 @@ static inline dma_addr_t __deprecated isa_page_to_bus(struct page *page)
+ extern unsigned long __direct_map_base;
+ extern unsigned long __direct_map_size;
  
- /* DEFINITION OF THE ZERO-PAGE (PAG0) */
- /* based on work by Jason Eckhardt (jason@equator.com) */
+-static inline unsigned long __deprecated virt_to_bus(void *address)
++static inline unsigned long __deprecated virt_to_bus(volatile void *address)
+ {
+ 	unsigned long phys = virt_to_phys(address);
+ 	unsigned long bus = phys + __direct_map_base;
 -- 
 2.33.0
 
