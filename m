@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 688A3420CA0
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:06:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D380420FFB
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:38:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235167AbhJDNHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:07:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39512 "EHLO mail.kernel.org"
+        id S238051AbhJDNju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:39:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51850 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235192AbhJDNFs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:05:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B593D61528;
-        Mon,  4 Oct 2021 13:00:57 +0000 (UTC)
+        id S237873AbhJDNhE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:37:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7AD256120F;
+        Mon,  4 Oct 2021 13:16:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352458;
-        bh=aFPEiudTYDgimi1dqfBtkcSyKA4h3eJiLwQ8jRuSAF8=;
+        s=korg; t=1633353402;
+        bh=a6ZFMMWe7gwV5i/FMaeYi4FvW1cQbUUCRxS8J9SJy34=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0WzgAexremSSX2EY9/PZ/M71N62iBCNg/epocVaXCDkxor2yLlNlHCfkxyYIeYlnt
-         Rsyg38NLG8F3JsmNorW4mYiYZ48cI8JJh9O+Ikkw2Wjp0Rcjwvm3cxUF6xjVAc/JKl
-         bDHng/NgIv2T3u1ycIDH/tiagIinQEtcZfQGl4VI=
+        b=HVV2FczhEg1G3qh+y3+v7CJHyhCiXbQyW+yPcRvl6FW7Q9Vux9C0/hRQhntJWYOYA
+         YfGz7PRhZV2EjJuRT1n52WS+RErQS+SuEi9IB1ackZ3Wu/Yp+1DchMWz9moUcRjd8E
+         GM6frytai0Z6CdLNZ2KCb60Q+8tUz9VdbA8ZH8GE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+44d53c7255bb1aea22d2@syzkaller.appspotmail.com,
-        Dongliang Mu <mudongliangabcd@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Ovidiu Panait <ovidiu.panait@windriver.com>
-Subject: [PATCH 4.14 69/75] usb: hso: fix error handling code of hso_create_net_device
+        stable@vger.kernel.org, Lorenz Bauer <lmb@cloudflare.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 114/172] bpf: Exempt CAP_BPF from checks against bpf_jit_limit
 Date:   Mon,  4 Oct 2021 14:52:44 +0200
-Message-Id: <20211004125033.857394443@linuxfoundation.org>
+Message-Id: <20211004125048.661492042@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125031.530773667@linuxfoundation.org>
-References: <20211004125031.530773667@linuxfoundation.org>
+In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
+References: <20211004125044.945314266@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,111 +40,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dongliang Mu <mudongliangabcd@gmail.com>
+From: Lorenz Bauer <lmb@cloudflare.com>
 
-commit a6ecfb39ba9d7316057cea823b196b734f6b18ca upstream.
+[ Upstream commit 8a98ae12fbefdb583a7696de719a1d57e5e940a2 ]
 
-The current error handling code of hso_create_net_device is
-hso_free_net_device, no matter which errors lead to. For example,
-WARNING in hso_free_net_device [1].
+When introducing CAP_BPF, bpf_jit_charge_modmem() was not changed to treat
+programs with CAP_BPF as privileged for the purpose of JIT memory allocation.
+This means that a program without CAP_BPF can block a program with CAP_BPF
+from loading a program.
 
-Fix this by refactoring the error handling code of
-hso_create_net_device by handling different errors by different code.
+Fix this by checking bpf_capable() in bpf_jit_charge_modmem().
 
-[1] https://syzkaller.appspot.com/bug?id=66eff8d49af1b28370ad342787413e35bbe76efe
-
-Reported-by: syzbot+44d53c7255bb1aea22d2@syzkaller.appspotmail.com
-Fixes: 5fcfb6d0bfcd ("hso: fix bailout in error case of probe")
-Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Ovidiu Panait <ovidiu.panait@windriver.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 2c78ee898d8f ("bpf: Implement CAP_BPF")
+Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Link: https://lore.kernel.org/bpf/20210922111153.19843-1-lmb@cloudflare.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/usb/hso.c |   33 +++++++++++++++++++++++----------
- 1 file changed, 23 insertions(+), 10 deletions(-)
+ kernel/bpf/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/usb/hso.c
-+++ b/drivers/net/usb/hso.c
-@@ -2510,7 +2510,7 @@ static struct hso_device *hso_create_net
- 			   hso_net_init);
- 	if (!net) {
- 		dev_err(&interface->dev, "Unable to create ethernet device\n");
--		goto exit;
-+		goto err_hso_dev;
- 	}
- 
- 	hso_net = netdev_priv(net);
-@@ -2523,13 +2523,13 @@ static struct hso_device *hso_create_net
- 				      USB_DIR_IN);
- 	if (!hso_net->in_endp) {
- 		dev_err(&interface->dev, "Can't find BULK IN endpoint\n");
--		goto exit;
-+		goto err_net;
- 	}
- 	hso_net->out_endp = hso_get_ep(interface, USB_ENDPOINT_XFER_BULK,
- 				       USB_DIR_OUT);
- 	if (!hso_net->out_endp) {
- 		dev_err(&interface->dev, "Can't find BULK OUT endpoint\n");
--		goto exit;
-+		goto err_net;
- 	}
- 	SET_NETDEV_DEV(net, &interface->dev);
- 	SET_NETDEV_DEVTYPE(net, &hso_type);
-@@ -2538,18 +2538,18 @@ static struct hso_device *hso_create_net
- 	for (i = 0; i < MUX_BULK_RX_BUF_COUNT; i++) {
- 		hso_net->mux_bulk_rx_urb_pool[i] = usb_alloc_urb(0, GFP_KERNEL);
- 		if (!hso_net->mux_bulk_rx_urb_pool[i])
--			goto exit;
-+			goto err_mux_bulk_rx;
- 		hso_net->mux_bulk_rx_buf_pool[i] = kzalloc(MUX_BULK_RX_BUF_SIZE,
- 							   GFP_KERNEL);
- 		if (!hso_net->mux_bulk_rx_buf_pool[i])
--			goto exit;
-+			goto err_mux_bulk_rx;
- 	}
- 	hso_net->mux_bulk_tx_urb = usb_alloc_urb(0, GFP_KERNEL);
- 	if (!hso_net->mux_bulk_tx_urb)
--		goto exit;
-+		goto err_mux_bulk_rx;
- 	hso_net->mux_bulk_tx_buf = kzalloc(MUX_BULK_TX_BUF_SIZE, GFP_KERNEL);
- 	if (!hso_net->mux_bulk_tx_buf)
--		goto exit;
-+		goto err_free_tx_urb;
- 
- 	add_net_device(hso_dev);
- 
-@@ -2557,7 +2557,7 @@ static struct hso_device *hso_create_net
- 	result = register_netdev(net);
- 	if (result) {
- 		dev_err(&interface->dev, "Failed to register device\n");
--		goto exit;
-+		goto err_free_tx_buf;
- 	}
- 
- 	hso_log_port(hso_dev);
-@@ -2565,8 +2565,21 @@ static struct hso_device *hso_create_net
- 	hso_create_rfkill(hso_dev, interface);
- 
- 	return hso_dev;
--exit:
--	hso_free_net_device(hso_dev, true);
-+
-+err_free_tx_buf:
-+	remove_net_device(hso_dev);
-+	kfree(hso_net->mux_bulk_tx_buf);
-+err_free_tx_urb:
-+	usb_free_urb(hso_net->mux_bulk_tx_urb);
-+err_mux_bulk_rx:
-+	for (i = 0; i < MUX_BULK_RX_BUF_COUNT; i++) {
-+		usb_free_urb(hso_net->mux_bulk_rx_urb_pool[i]);
-+		kfree(hso_net->mux_bulk_rx_buf_pool[i]);
-+	}
-+err_net:
-+	free_netdev(net);
-+err_hso_dev:
-+	kfree(hso_dev);
- 	return NULL;
- }
- 
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index 0a28a8095d3e..c019611fbc8f 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -827,7 +827,7 @@ int bpf_jit_charge_modmem(u32 pages)
+ {
+ 	if (atomic_long_add_return(pages, &bpf_jit_current) >
+ 	    (bpf_jit_limit >> PAGE_SHIFT)) {
+-		if (!capable(CAP_SYS_ADMIN)) {
++		if (!bpf_capable()) {
+ 			atomic_long_sub(pages, &bpf_jit_current);
+ 			return -EPERM;
+ 		}
+-- 
+2.33.0
+
 
 
