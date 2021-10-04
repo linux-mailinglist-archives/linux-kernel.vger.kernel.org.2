@@ -2,89 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FDD042163E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 20:19:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C686B421701
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 21:06:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237968AbhJDSUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 14:20:52 -0400
-Received: from mga17.intel.com ([192.55.52.151]:40528 "EHLO mga17.intel.com"
+        id S236336AbhJDTIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 15:08:45 -0400
+Received: from mga17.intel.com ([192.55.52.151]:46637 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233716AbhJDSUq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 14:20:46 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10127"; a="206344020"
+        id S233226AbhJDTIo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 15:08:44 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10127"; a="206367250"
 X-IronPort-AV: E=Sophos;i="5.85,346,1624345200"; 
-   d="scan'208";a="206344020"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2021 09:36:21 -0700
+   d="scan'208";a="206367250"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2021 10:44:18 -0700
 X-IronPort-AV: E=Sophos;i="5.85,346,1624345200"; 
-   d="scan'208";a="558600272"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2021 09:36:21 -0700
-Date:   Mon, 4 Oct 2021 09:40:03 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     Barry Song <21cnbao@gmail.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>, iommu@lists.linux-foundation.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Tony Luck <tony.luck@intel.com>, mike.campin@intel.com,
-        Yi Liu <yi.l.liu@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>, jacob.jun.pan@linux.intel.com
-Subject: Re: [RFC 0/7] Support in-kernel DMA with PASID and SVA
-Message-ID: <20211004094003.527222e5@jacob-builder>
-In-Reply-To: <CAGsJ_4wfkrJp-eFKiXsLdiZCb3eS_zqZtJvXQTBafoTWY2yWKQ@mail.gmail.com>
-References: <1632256181-36071-1-git-send-email-jacob.jun.pan@linux.intel.com>
-        <CAGsJ_4z=2y2nVStXP-aAPnQrJJbMmv78mjaMwNc9P9Ec+gCtGw@mail.gmail.com>
-        <20211001123623.GM964074@nvidia.com>
-        <CAGsJ_4wfkrJp-eFKiXsLdiZCb3eS_zqZtJvXQTBafoTWY2yWKQ@mail.gmail.com>
-Organization: OTC
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+   d="scan'208";a="477275904"
+Received: from pmittal1-mobl.gar.corp.intel.com (HELO localhost) ([10.251.223.27])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2021 10:43:55 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Nathan Chancellor <nathan@kernel.org>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        Nathan Chancellor <nathan@kernel.org>
+Subject: Re: [PATCH v2] drm/i915: Clean up disabled warnings
+In-Reply-To: <20210914194944.4004260-1-nathan@kernel.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210914194944.4004260-1-nathan@kernel.org>
+Date:   Mon, 04 Oct 2021 20:43:41 +0300
+Message-ID: <87v92c1y9e.fsf@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Barry,
+On Tue, 14 Sep 2021, Nathan Chancellor <nathan@kernel.org> wrote:
+> i915 enables a wider set of warnings with '-Wall -Wextra' then disables
+> several with cc-disable-warning. If an unknown flag gets added to
+> KBUILD_CFLAGS when building with clang, all subsequent calls to
+> cc-{disable-warning,option} will fail, meaning that all of these
+> warnings do not get disabled [1].
+>
+> A separate series will address the root cause of the issue by not adding
+> these flags when building with clang [2]; however, the symptom of these
+> extra warnings appearing can be addressed separately by just removing
+> the calls to cc-disable-warning, which makes the build ever so slightly
+> faster because the compiler does not need to be called as much before
+> building.
+>
+> The following warnings are supported by GCC 4.9 and clang 10.0.1, which
+> are the minimum supported versions of these compilers so the call to
+> cc-disable-warning is not necessary. Masahiro cleaned this up for the
+> reset of the kernel in commit 4c8dd95a723d ("kbuild: add some extra
+> warning flags unconditionally").
+>
+> * -Wmissing-field-initializers
+> * -Wsign-compare
+> * -Wtype-limits
+> * -Wunused-parameter
+>
+> -Wunused-but-set-variable was implemented in clang 13.0.0 and
+> -Wframe-address was implemented in clang 12.0.0 so the
+> cc-disable-warning calls are kept for these two warnings.
+>
+> Lastly, -Winitializer-overrides is clang's version of -Woverride-init,
+> which is disabled for the specific files that are problematic. clang
+> added a compatibility alias in clang 8.0.0 so -Winitializer-overrides
+> can be removed.
+>
+> [1]: https://lore.kernel.org/r/202108210311.CBtcgoUL-lkp@intel.com/
+> [2]: https://lore.kernel.org/r/20210824022640.2170859-1-nathan@kernel.org/
+>
+> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 
-On Sat, 2 Oct 2021 01:45:59 +1300, Barry Song <21cnbao@gmail.com> wrote:
+Thanks for the patch, and sorry for the delay.
 
-> >  
-> > > I assume KVA mode can avoid this iotlb flush as the device is using
-> > > the page table of the kernel and sharing the whole kernel space. But
-> > > will users be glad to accept this mode?  
-> >
-> > You can avoid the lock be identity mapping the physical address space
-> > of the kernel and maping map/unmap a NOP.
-> >
-> > KVA is just a different way to achive this identity map with slightly
-> > different security properties than the normal way, but it doesn't
-> > reach to the same security level as proper map/unmap.
-> >
-> > I'm not sure anyone who cares about DMA security would see value in
-> > the slight difference between KVA and a normal identity map.  
-> 
-> yes. This is an important question. if users want a high security level,
-> kva might not their choice; if users don't want the security, they are
-> using iommu passthrough. So when will users choose KVA?
-Right, KVAs sit in the middle in terms of performance and security.
-Performance is better than IOVA due to IOTLB flush as you mentioned. Also
-not too far behind of pass-through.
-
-Security-wise, KVA respects kernel mapping. So permissions are better
-enforced than pass-through and identity mapping.
-To balance performance and security, we are proposing KVA is only supported
-on trusted devices. On an Intel platform, it would be based on ACPI SATC
-(SoC Integrated Address Translation Cache (SATC) reporting structure, VT-d
-spec. 8.2). I am also adding a kernel iommu parameter to allow user
-override.
+Exceptionally pushed to drm-intel-gt-next instead of drm-intel-next
+because some of the dependencies such as 43192617f781 ("drm/i915: Enable
+-Wsometimes-uninitialized") were queued there too.
 
 
-Thanks,
+BR,
+Jani.
 
-Jacob
+
+> ---
+>
+> v1 -> v2: https://lore.kernel.org/r/20210824232237.2085342-1-nathan@kernel.org/
+>
+> * Rebase on drm-intel-gt-next now that the prerequisite patch series has
+>   been merged: https://lore.kernel.org/r/87wnnj13t5.fsf@intel.com/
+>
+> * Add Nick's reviewed-by tag.
+>
+>  drivers/gpu/drm/i915/Makefile | 10 ++++------
+>  1 file changed, 4 insertions(+), 6 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/i915/Makefile b/drivers/gpu/drm/i915/Makefile
+> index c584188aa15a..fd99374583d5 100644
+> --- a/drivers/gpu/drm/i915/Makefile
+> +++ b/drivers/gpu/drm/i915/Makefile
+> @@ -13,13 +13,11 @@
+>  # will most likely get a sudden build breakage... Hopefully we will fix
+>  # new warnings before CI updates!
+>  subdir-ccflags-y := -Wall -Wextra
+> -subdir-ccflags-y += $(call cc-disable-warning, unused-parameter)
+> -subdir-ccflags-y += $(call cc-disable-warning, type-limits)
+> -subdir-ccflags-y += $(call cc-disable-warning, missing-field-initializers)
+> +subdir-ccflags-y += -Wno-unused-parameter
+> +subdir-ccflags-y += -Wno-type-limits
+> +subdir-ccflags-y += -Wno-missing-field-initializers
+> +subdir-ccflags-y += -Wno-sign-compare
+>  subdir-ccflags-y += $(call cc-disable-warning, unused-but-set-variable)
+> -# clang warnings
+> -subdir-ccflags-y += $(call cc-disable-warning, sign-compare)
+> -subdir-ccflags-y += $(call cc-disable-warning, initializer-overrides)
+>  subdir-ccflags-y += $(call cc-disable-warning, frame-address)
+>  subdir-ccflags-$(CONFIG_DRM_I915_WERROR) += -Werror
+>  
+>
+> base-commit: 43192617f7816bb74584c1df06f57363afd15337
+
+-- 
+Jani Nikula, Intel Open Source Graphics Center
