@@ -2,60 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2995E420753
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 10:29:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C358420758
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 10:30:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231329AbhJDIas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 04:30:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42020 "EHLO mail.kernel.org"
+        id S231474AbhJDIcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 04:32:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42406 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230448AbhJDIar (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 04:30:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 32F026124D;
-        Mon,  4 Oct 2021 08:28:58 +0000 (UTC)
+        id S230469AbhJDIcS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 04:32:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 639EC6124D;
+        Mon,  4 Oct 2021 08:30:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633336138;
-        bh=eI9K+FdEUc770AAGxrZZk//bSz1Abgk9hrD65ZUmRds=;
+        s=korg; t=1633336228;
+        bh=AGIgwoQNBBt0ACT2Oa703+VXilss9u/HArqWzTXe+jM=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lxbasZykJadj3uTomyBc9nHrTnV3nez6vl1UjbODrERf/EGPG0VKZQA3jXr8OmjBv
-         xeRZd88cBHoxsQ18qUJf/LP6CAy3MPoh9l7iIjGwh6EZBexhtss+1C3ardTw8zFcIA
-         jmgMQLQs8kLMTa2qgE/oLo5vik5mS3WfdQPu1m8E=
-Date:   Mon, 4 Oct 2021 10:28:56 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Oded Gabbay <ogabbay@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [git pull] habanalabs fixes for 5.15-rc4
-Message-ID: <YVq7SF3QRlPTKRIe@kroah.com>
-References: <20210929093039.GA108003@ogabbay-vm2.habana-labs.com>
+        b=Xu8068laLv4h09QdbkgWqg1+Hsrt2pB2Y69WPnlP903fWNJN40bLPIgUB8fTcTLUC
+         x4BGct5hBdnnFcBypf8x7utNBSs6iaKRodKX5yHA39OhoKUatmYRx9HNOrxSXBJi2M
+         GnVRK9NTnZXWHkEyIDE4zSMdlENcN2Uc92Wr0amA=
+Date:   Mon, 4 Oct 2021 10:30:25 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
+        netdev@vger.kernel.org,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: are device names part of sysfs ABI? (was Re: devicename part of
+ LEDs under ethernet MAC / PHY)
+Message-ID: <YVq7oTTv5URYKVJb@kroah.com>
+References: <20211001133057.5287f150@thinkpad>
+ <YVb/HSLqcOM6drr1@lunn.ch>
+ <20211001144053.3952474a@thinkpad>
+ <20211003225338.76092ec3@thinkpad>
+ <YVqhMeuDI0IZL/zY@kroah.com>
+ <20211004090438.588a8a89@thinkpad>
+ <YVqo64vS4ox9P9hk@kroah.com>
+ <20211004073841.GA20163@amd>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210929093039.GA108003@ogabbay-vm2.habana-labs.com>
+In-Reply-To: <20211004073841.GA20163@amd>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 12:30:39PM +0300, Oded Gabbay wrote:
-> Hi Greg,
+On Mon, Oct 04, 2021 at 09:38:41AM +0200, Pavel Machek wrote:
+> Hi!
 > 
-> One important fix for the habanalabs driver for 5.15.
-> It fixes an issue where we return -EINTR in the IOCTL that waits
-> on command submission completion, and the user-space will try
-> to immediately call that IOCTL again with the same
-> arguments structure it used in the previous call. More details
-> in the commit itself.
+> > > > > Are device names (as returned by dev_name() function) also part of
+> > > > > sysfs ABI? Should these names be stable across reboots / kernel
+> > > > > upgrades?  
+> > > > 
+> > > > Stable in what exact way?
+> > > 
+> > > Example:
+> > > - Board has an ethernet PHYs that is described in DT, and therefore
+> > >   has stable sysfs path (derived from DT path), something like
+> > >     /sys/devices/.../mdio_bus/f1072004.mdio-mii/f1072004.mdio-mii:01
+> > 
+> > None of the numbers there are "stable", right?
 > 
-> Thanks,
-> Oded
-> 
-> The following changes since commit bb8a4fcb2136508224c596a7e665bdba1d7c3c27:
-> 
->   ipack: ipoctal: fix module reference leak (2021-09-27 17:38:49 +0200)
-> 
-> are available in the Git repository at:
-> 
->   https://git.kernel.org/pub/scm/linux/kernel/git/ogabbay/linux.git tags/misc-habanalabs-fixes-2021-09-29
+> At least f1072004 part is stable (and probably whole path). DT has
+> advantages here, and we should provide stable paths when we can.
 
-Pulled and pushed out, thanks.
-
-greg k-h
+The kernel should enumerate the devices as best that it can, but it
+never has the requirement of always enumerating them in the same way
+each time as many busses are not deterministic.
