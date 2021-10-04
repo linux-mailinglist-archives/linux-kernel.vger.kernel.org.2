@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BECDC42104C
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:41:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57E05420EF1
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:27:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238699AbhJDNmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:42:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51998 "EHLO mail.kernel.org"
+        id S237236AbhJDN3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:29:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43540 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238367AbhJDNkV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:40:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 49B1263243;
-        Mon,  4 Oct 2021 13:18:31 +0000 (UTC)
+        id S236569AbhJDN1O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:27:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9DAE161B73;
+        Mon,  4 Oct 2021 13:12:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633353511;
-        bh=RFVMULWlW6WKVHE/aq1jPRvh16HMIOxjmD6igGeMCZI=;
+        s=korg; t=1633353121;
+        bh=jbUUksO8/O5l1DD79pf6fQNRbf0oU5EYVTc7R6A6ofM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0Q4RraG2CCgD6zkVNQaBiwjO0s2kE7fQEG+R/u6a5dwQcOh/7nMkb3Emu9wCpKskD
-         zL575tvEbJ9HbJoMjH224NVLpi0aO/ZRUyx+4BltW8nwLFEV1akypFQDoBUm6I/o4x
-         1eOkcbuRmyT960UY3bhbMJTNLVsZmxPCQoQBTbZo=
+        b=t5SO4AnZA5De5IZ5T009KbfU+CY0CrbkF2trD0UE8ads7RNoal0YJCEw7DQOCzA4r
+         SDOfg6RzDMVZq6JEKOBfcai9U+l1KVc1y0lr5vjrWPAmor6EhFPR7AlBNz9EBCn+xk
+         umNKpRDAdyzSHML4hLBXu1fQc0v08MZ5wmbFTzCE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, stable@kernel.org,
-        yangerkun <yangerkun@huawei.com>, Jan Kara <jack@suse.cz>,
-        Theodore Tso <tytso@mit.edu>
-Subject: [PATCH 5.14 157/172] ext4: fix potential infinite loop in ext4_dx_readdir()
-Date:   Mon,  4 Oct 2021 14:53:27 +0200
-Message-Id: <20211004125050.039072048@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+398e7dc692ddbbb4cfec@syzkaller.appspotmail.com,
+        Yanfei Xu <yanfei.xu@windriver.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.10 90/93] net: mdiobus: Fix memory leak in __mdiobus_register
+Date:   Mon,  4 Oct 2021 14:53:28 +0200
+Message-Id: <20211004125037.569805106@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
-References: <20211004125044.945314266@linuxfoundation.org>
+In-Reply-To: <20211004125034.579439135@linuxfoundation.org>
+References: <20211004125034.579439135@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,68 +42,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: yangerkun <yangerkun@huawei.com>
+From: Yanfei Xu <yanfei.xu@windriver.com>
 
-commit 42cb447410d024e9d54139ae9c21ea132a8c384c upstream.
+commit ab609f25d19858513919369ff3d9a63c02cd9e2e upstream.
 
-When ext4_htree_fill_tree() fails, ext4_dx_readdir() can run into an
-infinite loop since if info->last_pos != ctx->pos this will reset the
-directory scan and reread the failing entry.  For example:
+Once device_register() failed, we should call put_device() to
+decrement reference count for cleanup. Or it will cause memory
+leak.
 
-1. a dx_dir which has 3 block, block 0 as dx_root block, block 1/2 as
-   leaf block which own the ext4_dir_entry_2
-2. block 1 read ok and call_filldir which will fill the dirent and update
-   the ctx->pos
-3. block 2 read fail, but we has already fill some dirent, so we will
-   return back to userspace will a positive return val(see ksys_getdents64)
-4. the second ext4_dx_readdir will reset the world since info->last_pos
-   != ctx->pos, and will also init the curr_hash which pos to block 1
-5. So we will read block1 too, and once block2 still read fail, we can
-   only fill one dirent because the hash of the entry in block1(besides
-   the last one) won't greater than curr_hash
-6. this time, we forget update last_pos too since the read for block2
-   will fail, and since we has got the one entry, ksys_getdents64 can
-   return success
-7. Latter we will trapped in a loop with step 4~6
+BUG: memory leak
+unreferenced object 0xffff888114032e00 (size 256):
+  comm "kworker/1:3", pid 2960, jiffies 4294943572 (age 15.920s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 08 2e 03 14 81 88 ff ff  ................
+    08 2e 03 14 81 88 ff ff 90 76 65 82 ff ff ff ff  .........ve.....
+  backtrace:
+    [<ffffffff8265cfab>] kmalloc include/linux/slab.h:591 [inline]
+    [<ffffffff8265cfab>] kzalloc include/linux/slab.h:721 [inline]
+    [<ffffffff8265cfab>] device_private_init drivers/base/core.c:3203 [inline]
+    [<ffffffff8265cfab>] device_add+0x89b/0xdf0 drivers/base/core.c:3253
+    [<ffffffff828dd643>] __mdiobus_register+0xc3/0x450 drivers/net/phy/mdio_bus.c:537
+    [<ffffffff828cb835>] __devm_mdiobus_register+0x75/0xf0 drivers/net/phy/mdio_devres.c:87
+    [<ffffffff82b92a00>] ax88772_init_mdio drivers/net/usb/asix_devices.c:676 [inline]
+    [<ffffffff82b92a00>] ax88772_bind+0x330/0x480 drivers/net/usb/asix_devices.c:786
+    [<ffffffff82baa33f>] usbnet_probe+0x3ff/0xdf0 drivers/net/usb/usbnet.c:1745
+    [<ffffffff82c36e17>] usb_probe_interface+0x177/0x370 drivers/usb/core/driver.c:396
+    [<ffffffff82661d17>] call_driver_probe drivers/base/dd.c:517 [inline]
+    [<ffffffff82661d17>] really_probe.part.0+0xe7/0x380 drivers/base/dd.c:596
+    [<ffffffff826620bc>] really_probe drivers/base/dd.c:558 [inline]
+    [<ffffffff826620bc>] __driver_probe_device+0x10c/0x1e0 drivers/base/dd.c:751
+    [<ffffffff826621ba>] driver_probe_device+0x2a/0x120 drivers/base/dd.c:781
+    [<ffffffff82662a26>] __device_attach_driver+0xf6/0x140 drivers/base/dd.c:898
+    [<ffffffff8265eca7>] bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:427
+    [<ffffffff826625a2>] __device_attach+0x122/0x260 drivers/base/dd.c:969
+    [<ffffffff82660916>] bus_probe_device+0xc6/0xe0 drivers/base/bus.c:487
+    [<ffffffff8265cd0b>] device_add+0x5fb/0xdf0 drivers/base/core.c:3359
+    [<ffffffff82c343b9>] usb_set_configuration+0x9d9/0xb90 drivers/usb/core/message.c:2170
+    [<ffffffff82c4473c>] usb_generic_driver_probe+0x8c/0xc0 drivers/usb/core/generic.c:238
 
-Cc: stable@kernel.org
-Signed-off-by: yangerkun <yangerkun@huawei.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Link: https://lore.kernel.org/r/20210914111415.3921954-1-yangerkun@huawei.com
+BUG: memory leak
+unreferenced object 0xffff888116f06900 (size 32):
+  comm "kworker/0:2", pid 2670, jiffies 4294944448 (age 7.160s)
+  hex dump (first 32 bytes):
+    75 73 62 2d 30 30 31 3a 30 30 33 00 00 00 00 00  usb-001:003.....
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<ffffffff81484516>] kstrdup+0x36/0x70 mm/util.c:60
+    [<ffffffff814845a3>] kstrdup_const+0x53/0x80 mm/util.c:83
+    [<ffffffff82296ba2>] kvasprintf_const+0xc2/0x110 lib/kasprintf.c:48
+    [<ffffffff82358d4b>] kobject_set_name_vargs+0x3b/0xe0 lib/kobject.c:289
+    [<ffffffff826575f3>] dev_set_name+0x63/0x90 drivers/base/core.c:3147
+    [<ffffffff828dd63b>] __mdiobus_register+0xbb/0x450 drivers/net/phy/mdio_bus.c:535
+    [<ffffffff828cb835>] __devm_mdiobus_register+0x75/0xf0 drivers/net/phy/mdio_devres.c:87
+    [<ffffffff82b92a00>] ax88772_init_mdio drivers/net/usb/asix_devices.c:676 [inline]
+    [<ffffffff82b92a00>] ax88772_bind+0x330/0x480 drivers/net/usb/asix_devices.c:786
+    [<ffffffff82baa33f>] usbnet_probe+0x3ff/0xdf0 drivers/net/usb/usbnet.c:1745
+    [<ffffffff82c36e17>] usb_probe_interface+0x177/0x370 drivers/usb/core/driver.c:396
+    [<ffffffff82661d17>] call_driver_probe drivers/base/dd.c:517 [inline]
+    [<ffffffff82661d17>] really_probe.part.0+0xe7/0x380 drivers/base/dd.c:596
+    [<ffffffff826620bc>] really_probe drivers/base/dd.c:558 [inline]
+    [<ffffffff826620bc>] __driver_probe_device+0x10c/0x1e0 drivers/base/dd.c:751
+    [<ffffffff826621ba>] driver_probe_device+0x2a/0x120 drivers/base/dd.c:781
+    [<ffffffff82662a26>] __device_attach_driver+0xf6/0x140 drivers/base/dd.c:898
+    [<ffffffff8265eca7>] bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:427
+    [<ffffffff826625a2>] __device_attach+0x122/0x260 drivers/base/dd.c:969
+
+Reported-by: syzbot+398e7dc692ddbbb4cfec@syzkaller.appspotmail.com
+Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/ext4/dir.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/phy/mdio_bus.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/fs/ext4/dir.c
-+++ b/fs/ext4/dir.c
-@@ -551,7 +551,7 @@ static int ext4_dx_readdir(struct file *
- 	struct dir_private_info *info = file->private_data;
- 	struct inode *inode = file_inode(file);
- 	struct fname *fname;
--	int	ret;
-+	int ret = 0;
- 
- 	if (!info) {
- 		info = ext4_htree_create_dir_info(file, ctx->pos);
-@@ -599,7 +599,7 @@ static int ext4_dx_readdir(struct file *
- 						   info->curr_minor_hash,
- 						   &info->next_hash);
- 			if (ret < 0)
--				return ret;
-+				goto finished;
- 			if (ret == 0) {
- 				ctx->pos = ext4_get_htree_eof(file);
- 				break;
-@@ -630,7 +630,7 @@ static int ext4_dx_readdir(struct file *
+--- a/drivers/net/phy/mdio_bus.c
++++ b/drivers/net/phy/mdio_bus.c
+@@ -537,6 +537,7 @@ int __mdiobus_register(struct mii_bus *b
+ 	err = device_register(&bus->dev);
+ 	if (err) {
+ 		pr_err("mii_bus %s failed to register\n", bus->id);
++		put_device(&bus->dev);
+ 		return -EINVAL;
  	}
- finished:
- 	info->last_pos = ctx->pos;
--	return 0;
-+	return ret < 0 ? ret : 0;
- }
  
- static int ext4_release_dir(struct inode *inode, struct file *filp)
 
 
