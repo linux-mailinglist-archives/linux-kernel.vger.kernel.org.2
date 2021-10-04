@@ -2,131 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5A6A420C4E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:02:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3DDD420CEF
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:08:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234826AbhJDNEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:04:33 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:43104 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234829AbhJDNCw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:02:52 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 319A91FDE4;
-        Mon,  4 Oct 2021 13:01:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1633352462; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=OUdZ/nUYlMda2qgf/QTNrmYQhSZjUvD2BVvzV1p93qg=;
-        b=PlAvfOCalzYQ013C27JLg5Vy+Z/vf/uiwSxm/Bu7hjNt8wwEbE5U/Zfb4Q5zNo6sYv8ILY
-        C2BPI/WuFfsZ0g92iMgEb9/0NuTXgirsFWkBAwQenu8AN1XMDIFExA7ukjd7YB3pRyXBVb
-        CsCEXhrrDH6uOD1RH2MPnr7KI2MyyQM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1633352462;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=OUdZ/nUYlMda2qgf/QTNrmYQhSZjUvD2BVvzV1p93qg=;
-        b=j7d7WR2b8JODNDoPphHnSSXZWwz4S5Hp3n8mb1sh/dtyIw6HKEitN96ypyum4uBT9GH0X3
-        OIkN4WfZ7Tn5WBBQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5136313CEE;
-        Mon,  4 Oct 2021 13:01:01 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id wPEiDw37WmGKPAAAMHmgww
-        (envelope-from <osalvador@suse.de>); Mon, 04 Oct 2021 13:01:01 +0000
-Date:   Mon, 4 Oct 2021 15:00:59 +0200
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        David Hildenbrand <david@redhat.com>,
-        Michal Hocko <mhocko@suse.com>, Zi Yan <ziy@nvidia.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Naoya Horiguchi <naoya.horiguchi@linux.dev>,
-        David Rientjes <rientjes@google.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v3 1/5] hugetlb: add demote hugetlb page sysfs interfaces
-Message-ID: <YVr7C8ek1g9hKz4C@localhost.localdomain>
-References: <20211001175210.45968-1-mike.kravetz@oracle.com>
- <20211001175210.45968-2-mike.kravetz@oracle.com>
+        id S234115AbhJDNKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:10:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39400 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235498AbhJDNIb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:08:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D20A61425;
+        Mon,  4 Oct 2021 13:02:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633352543;
+        bh=VtcPaXR9dkDp4NIqjnvCK/gI/LxrXMTSniLXLU0DfHk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qrFZXdCNyZhqZt+0afA1Gx/mx7HB6ERk5cuD+2B3evuK+Z558+QXtpt9dTZ+LDAmI
+         UyFmhvyJgPDbdZYsW/BBAkoxaovGIaU21efU2k0C+ET0m1BKFprHaU7zWnCjs/XCvP
+         f9Y3G8leu0tSglFS19ydfOB8qlHEEAdU/hsnyPH+I9gPMJzOMM+ZQT0nZPzzUy0ahr
+         5LIt9K2kGN0xtkWmX1E/yYEMsylCt17zshVeb0CkHDUmKEPrsmWkUC5luewRqwSmo8
+         mXgKoWidg1Ouwm95506dJBpfbWoNM6ksNLEbtUYLEqSMDnvuM7UKDwBcYGxxzCl9o5
+         jFRI9y3jbKXoA==
+Date:   Mon, 4 Oct 2021 21:02:18 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Michael Walle <michael@walle.cc>
+Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Li Yang <leoyang.li@nxp.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>
+Subject: Re: [PATCH 0/7] arm64: dts: ls1028: GPU support and cleanups
+Message-ID: <20211004130218.GJ15650@dragon>
+References: <20210831134013.1625527-1-michael@walle.cc>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211001175210.45968-2-mike.kravetz@oracle.com>
+In-Reply-To: <20210831134013.1625527-1-michael@walle.cc>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 01, 2021 at 10:52:06AM -0700, Mike Kravetz wrote:
-> -which function as described above for the default huge page-sized case.
-> +The demote interfaces provide the ability to split a huge page into
-> +smaller huge pages.  For example, the x86 architecture supports both
-> +1GB and 2MB huge pages sizes.  A 1GB huge page can be split into 512
-> +2MB huge pages.  Demote interfaces are not available for the smallest
-> +huge page size.  The demote interfaces are:
-> +
-> +demote_size
-> +        is the size of demoted pages.  When a page is demoted a corresponding
-> +        number of huge pages of demote_size will be created.  By default,
-> +        demote_size is set to the next smaller huge page size.  If there are
-> +        multiple smaller huge page sizes, demote_size can be set to any of
-> +        these smaller sizes.  Only huge page sizes less then the current huge
+On Tue, Aug 31, 2021 at 03:40:06PM +0200, Michael Walle wrote:
+> In an attempt to unify u-boot's and linux' device tree for the LS1028A SoC
+> we first need to clean up some network related stuff. Vladimir suggested to
+> move the Ethernet PHYs into the MDIO controller node, which is already the
+> case for u-boot's device tree. Further we unify the use of phy-mode and
+> phy-connection-type. Both have the same meaning, but phy-mode is used more
+> often in the kernel and for the ls1028a both were used. Replace
+> phy-connection-type with phy-mode.
+> 
+> Further move all the nodes which belongs to the CCSR into the /soc node.
+> These are the Mali display conntroller and its associated pixel clock PLL.
+> Finally, add the GPU node for the etnaviv driver under /soc.
+> 
+> Michael Walle (7):
+>   arm64: dts: ls1028a: move pixel clock pll into /soc
+>   arm64: dts: ls1028a: move Mali DP500 node into /soc
+>   arm64: dts: ls1028a: add Vivante GPU node
+>   arm64: dts: freescale: fix arm,sp805 compatible string
+>   arm64: dts: ls1028a: disable usb controller by default
+>   arm64: dts: ls1028a: move PHY nodes to MDIO controller
+>   arm64: dts: ls1028a: use phy-mode instead of phy-connection-type
 
-s/then/than ?
+Applied all, except #4 which had been picked up separately.
 
->  static void __init hugetlb_init_hstates(void)
->  {
-> -	struct hstate *h;
-> +	struct hstate *h, *h2;
->  
->  	for_each_hstate(h) {
->  		if (minimum_order > huge_page_order(h))
-> @@ -2995,6 +2995,23 @@ static void __init hugetlb_init_hstates(void)
->  		/* oversize hugepages were init'ed in early boot */
->  		if (!hstate_is_gigantic(h))
->  			hugetlb_hstate_alloc_pages(h);
-> +
-> +		/*
-> +		 * Set demote order for each hstate.  Note that
-> +		 * h->demote_order is initially 0.
-> +		 * - We can not demote gigantic pages if runtime freeing
-> +		 *   is not supported.
-> +		 */
-> +		if (!hstate_is_gigantic(h) ||
-> +		    gigantic_page_runtime_supported()) {
-
-Based on the comment, I think that making the condition explicit looks
-better from my point of view.
-
-if (hstate_is_gigantic(h) && !gigantic_page_runtime_supported())
-    continue;
-
-> +			for_each_hstate(h2) {
-> +				if (h2 == h)
-> +					continue;
-> +				if (h2->order < h->order &&
-> +				    h2->order > h->demote_order)
-> +					h->demote_order = h2->order;
-> +			}
-> +		}
->  	}
->  	VM_BUG_ON(minimum_order == UINT_MAX);
->  }
-> @@ -3235,9 +3252,29 @@ static int set_max_huge_pages(struct hstate *h, unsigned long count, int nid,
->  	return 0;
->  }
->  
-
--- 
-Oscar Salvador
-SUSE L3
+Shawn
