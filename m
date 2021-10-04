@@ -2,156 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4686642164B
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 20:21:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5B4F42164F
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 20:23:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238247AbhJDSXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 14:23:41 -0400
-Received: from mail-dm3nam07on2053.outbound.protection.outlook.com ([40.107.95.53]:15840
-        "EHLO NAM02-DM3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S238103AbhJDSXj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 14:23:39 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QsV/l/r6m1jVvkuILTszfUV4bFd2Cq3zLzbSPkwXOcRLoZRoQzPzX9whYZEIrJHWG62jp0HgR5PwMJpRvaniWcwg7MIUAe+PFZfomza4uKtmakuP/kYRKLFz9FlorEnJ/0NMv693z0D4M1ZQ5hhPLKWkrgnOqa6aMsXDjA02zQfOLQzlvRsfo/4zlZZ200F6Y8I5Je8gw4BnNe1B+1KmfPgBdcLvrSOffOkc+z35xvc2990OsiTO2MQr4cDsSOWbG7BTIi5LL/rFS1d3tic09OrGfp3N9+iXv3Gx7mg49aPHiFcy3tXf6hgeN0Q9E7FPfnNHbCFOfMBV49SyhJiJOQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=EFS3rEME5CBuNnH5EIMOLij37qNMlyRfrug03ISptBE=;
- b=HvXCJ+agZLMy/RyLkz8SLU9hSo0eZU+zpiVpegm5YsT+gbX/3kz4//hdpQCt229cp3jzDV+iuVqL8EIj2RMfqMTXpsyR1C++/tjB7CoMyTanPFkuJTKly0Dxjbnw4HiMZeHg1PSFLMN296SBWbWiDQbnThMDyct17IIshw6d99kXtWiQaVol6RQXgeD/XrR0XS6ZnIzGlXk1mziqpQv1QR9MFadBbPPYEQg7+i97blLJUJ6WtWooCaOBzyGbnWPzLf+PcDuScixNiibZUmqkYPRlFhRhuyLvGyHkyOzlukNX4W3Aze3DvNh3ly8Vq8SymBYUpGZnpl08pI4BnyuRnA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EFS3rEME5CBuNnH5EIMOLij37qNMlyRfrug03ISptBE=;
- b=AXKxfTaQrfOlwhdlV7zd2dEWj++EpsL+PgQnXL7bjspwoNwV9F6MYl1PIMh33+NEHPUe350LW+0VXzEjhCvz6j0cVUHn13UeQ4P4vt4b8oLp143Dglt/wosTCTF+2AbieFKG/srriHWChLp6GWsulIzcF7VgGHObiO1iiTRqA7KOYecWLjNj9213b3DZLd+B4EmFPiMbCCj0CgcE/0xsTUMvY6XVKQVNDPSQmIuHmruNsC8MzkhyEzr4qIJFybXt4TspVXQUZadh3RaDJZWgRVcJxzjbIkGC7Xp6W0q5IpkcMJGAiQ9NW/Nc691nUSnri4iFyVWnAdYlYz88LYI6iQ==
-Authentication-Results: linux.intel.com; dkim=none (message not signed)
- header.d=none;linux.intel.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5064.namprd12.prod.outlook.com (2603:10b6:208:30a::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.19; Mon, 4 Oct
- 2021 18:21:43 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95%8]) with mapi id 15.20.4566.022; Mon, 4 Oct 2021
- 18:21:43 +0000
-Date:   Mon, 4 Oct 2021 15:21:42 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Jacob Pan <jacob.jun.pan@linux.intel.com>
-Cc:     Barry Song <21cnbao@gmail.com>, iommu@lists.linux-foundation.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Tony Luck <tony.luck@intel.com>, mike.campin@intel.com,
-        Yi Liu <yi.l.liu@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>
-Subject: Re: [RFC 0/7] Support in-kernel DMA with PASID and SVA
-Message-ID: <20211004182142.GM964074@nvidia.com>
-References: <1632256181-36071-1-git-send-email-jacob.jun.pan@linux.intel.com>
- <CAGsJ_4z=2y2nVStXP-aAPnQrJJbMmv78mjaMwNc9P9Ec+gCtGw@mail.gmail.com>
- <20211001123623.GM964074@nvidia.com>
- <CAGsJ_4wfkrJp-eFKiXsLdiZCb3eS_zqZtJvXQTBafoTWY2yWKQ@mail.gmail.com>
- <20211004094003.527222e5@jacob-builder>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211004094003.527222e5@jacob-builder>
-X-ClientProxiedBy: BL0PR03CA0026.namprd03.prod.outlook.com
- (2603:10b6:208:2d::39) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S238313AbhJDSZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 14:25:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49546 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238063AbhJDSZK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 14:25:10 -0400
+Received: from mail-ua1-x92d.google.com (mail-ua1-x92d.google.com [IPv6:2607:f8b0:4864:20::92d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBE37C061745;
+        Mon,  4 Oct 2021 11:23:20 -0700 (PDT)
+Received: by mail-ua1-x92d.google.com with SMTP id h4so4903767uaw.1;
+        Mon, 04 Oct 2021 11:23:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hK4OhSiTNsNfjE6KJ9kkf4rjTqcI5urGy7xo3IPDC3A=;
+        b=Q69CYp0o33+bNhPhgJw6tfQEU2jevmksNOnLa45BJW4J860ZLdd5As8XnBiijsgNxl
+         9fPQdXYUniDiNOBhPJuO7PUM16sHw4NDcviTLntp3swnZ8DAJywhF/lmbmrUSWqIZJNF
+         XMvzN8O0geUzG58BQFhfCMZPNXjRXZRTnOV/NM9zVAApRYCNrGV131CpOlTlfvfeMS9J
+         8S7/QdGD9jwNWl1W00hdv/q3B/EkrS3gIYF/3V7iUf6zDtjARM979ySKNfJT12HngGKU
+         Lf0IGu5hOQ6HwLNVwR+MLbt5KKe/IRnx2UJIAxZgrmmy4U/Mjkvep7lhg00ICW5yijUa
+         NZuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hK4OhSiTNsNfjE6KJ9kkf4rjTqcI5urGy7xo3IPDC3A=;
+        b=uTLaTA4t1W6xCNeimQhFW8PyM3W4jh4OP4vxmsRhDHzDPRyhBBpeVya3/3tbuJQf8+
+         pxqaNkDUweVeTb8KV0Wj2SrVzsZC4zoqlVl2LxaUIDHKiAc2sF2cSMN10A6E3ahQxZ4c
+         e0bKWiunJ4IgeSZR+a6GJvDfgBHbgJK7rhvnFinjs+8dnViTGaJmqxqPtblh/HDq9sfM
+         yCST1ovI5ZO3wXAxiekTggR+uFLHOsDqMxf4JgMgSx9Dkp5LeImq8IyhET8wl/jFAmg9
+         YmUgFS4gV/HsveRPrqNLY/oIJNGbksXzpB3ZYPfiYyskDQsAn7sCwQEW2GZmJ5gvAOIm
+         3Niw==
+X-Gm-Message-State: AOAM532TS1rvdR2BG/GgNU8pA/cO8PHmplnHfFLdNo+UHX9rBDA+9DQz
+        KFMrQCz5MtR5CikEgsLid2azUyw0IsA8031Hf5I=
+X-Google-Smtp-Source: ABdhPJwnjNUHh5SCs2J6EKDd+0hWKi+8Yf7wGYGlpYeVF/BzjvF24T+BLeEgDVKFumFPqVNBHKKdnwmMLny4AzCRO9A=
+X-Received: by 2002:ab0:5548:: with SMTP id u8mr8021640uaa.0.1633371799913;
+ Mon, 04 Oct 2021 11:23:19 -0700 (PDT)
 MIME-Version: 1.0
-Received: from mlx.ziepe.ca (142.162.113.129) by BL0PR03CA0026.namprd03.prod.outlook.com (2603:10b6:208:2d::39) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.17 via Frontend Transport; Mon, 4 Oct 2021 18:21:43 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mXSas-00AZBI-IE; Mon, 04 Oct 2021 15:21:42 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 2f47e43e-5c0c-4f89-c38e-08d98763d179
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5064:
-X-Microsoft-Antispam-PRVS: <BL1PR12MB5064E6D3A23C96E85E31FD6CC2AE9@BL1PR12MB5064.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 4nZy6YRyuSdeBFu74QtVNfOvR/Uonle7SJIydv9aj37n1PsU6KKuU+I14VBoq733efoBOoZ5P+uMk54IQkvUTmbU7HU4QLF8WboM91d7HXzaOVXPWTpCpbMHXa29A3dYrpdyGM/+L4ORSdlXRk7NJqkxkJ43IOSCIvRs2P/JbzrqwCbM5qAXAyUdJJoskWBGWuazjkI/zR3fZMVPQ4+dSs0nRFNf7l6LbV8acgU8wDXHpu7OMyXoSwSUo+EI+OkxJXW32WujVrue8/SXOCsUcjgEYx2jDG4wvMCqG2iheGQKpKUbKsWAo0ffdMm3+9AiPlpzUMJxPxbjJw30t33YyK2QkxvlFXGkmGfOxvg6FBl0tromu7zP/5iYyQZEGj6dcFslVoHNLg7++rI6LL4m6rKe95nk/CriAor33p+ORGf+X3BW3ORDLDjW3H4yvWQfzeLjCzY39sPrDrvFlsbdxY3reitZfKTERoxaw7vthB12jJwGP04/V5hzzdOsMgVdKymz5TVj6IAUX1nAiIC4YaGOSArvYZRElx52QUcpKbnQR5bGvv0zIPZ+uDxuJkq2RhGlszebwDXYIVLzRwHjvMEB4KXbpvwrPP8yaFRsSVSvgUmy65qqFeFDhff4FyLEAHVwbvwfRhZuEEV3jjv7uJetqt+FbZ8YQy8A5N8LccboSj8DU5g8ubsvFN6AQH56aLvjXX4QqZ1mjAmdvBLS+g==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(2906002)(9746002)(6916009)(8676002)(54906003)(9786002)(1076003)(36756003)(86362001)(4326008)(26005)(38100700002)(7416002)(83380400001)(66946007)(2616005)(5660300002)(426003)(66556008)(8936002)(33656002)(316002)(66476007)(508600001)(186003)(27376004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?g0x4PdhNbxK466WSy6lEzpWGsD2enYR2XW9lGQ8ar8MOhYKDLYZWX/KpMpg6?=
- =?us-ascii?Q?YhP5Zcd/QYtMpDga9y6urR6RDd0FkCw5RirGpdJb5L1wAvkFdq2bbraNl9YJ?=
- =?us-ascii?Q?ojLR0ecig4whs5DEcSCqMINxk6JSagGDScWkzQOYav4la3FysMwPxvxXnxBe?=
- =?us-ascii?Q?ZDMQaV6CMEhAvZozVy36GsO5wROQmRpKBbm72kMJzhxt+Ge0sinChgqulmh0?=
- =?us-ascii?Q?r/bd11wAFiXNbZ6yn7Vgt5mixcj1ulDbenwXZeYcR4+7O+UlPc1ZalCWKXa4?=
- =?us-ascii?Q?PrB0Ag4snYCc9/SPxgPHe+cIdk3oXnvhxdQvZ1XoGHkpyywa4eHHVsKfAzVx?=
- =?us-ascii?Q?tclTLDUYvHcs+bu0n9sA3t/KO0D6Ldqv8+AoduWRu8iTNSPfjrwzKJPlraK9?=
- =?us-ascii?Q?62KWcwWJh4ujniBsY5rjJrntBop5VcwDfuK51kZS65WKu3dJkHl47EWtC6wl?=
- =?us-ascii?Q?Q4z6v2UhUkC4x6hASq/hYGJMebu3DhHzXv+9QFg5Ivy/O+7jWc13zHBPJTQi?=
- =?us-ascii?Q?kgmtaL/AMtHHtZqSAe2105dIULzXyaJXQpmpf7EY7M4XXEfPphgA5g9ysz1G?=
- =?us-ascii?Q?tPNP4EVyNcJOuUMcNco+JBikgAmKPW9zPPii9Xt+NO3CSLjdglTDFY7VP7aM?=
- =?us-ascii?Q?L3nvBxfU0xQgLxhF7xvorjtOF+8bvhKhaOORnpE85RVudetFwd6gJCDOH2sJ?=
- =?us-ascii?Q?C9VYaXvZYWFy0x690efnNHBe69RXVkQaxpn5oKRWW1QuPuIGesawGz5fXTBI?=
- =?us-ascii?Q?NzX5VhqLejdkNJnoAkCI2985lW9qGKCsaBfvzf77KsDSliffcVgKTXL4VrBY?=
- =?us-ascii?Q?hIMF1Rpvwsrcdu7NPBK3TbN7oCuNBhTb3d1+Afv5VArzj/rlLiORYp0j+ddd?=
- =?us-ascii?Q?GQWDKzuC5jFib6/Cq1ERdL8Ng2oHtwfzVpLTVJ2cv+yIfOiAxaSLkZJJFnc8?=
- =?us-ascii?Q?SP5/imx41+DynrqncIBv9GPUuiOiu+FDTnImgFVBQhb9BF3rUi/P0xA0A+HO?=
- =?us-ascii?Q?XtAQvDeJs8FzurSC+DWCVdpfKNgqVm86XIPqSEf1yvR5OvbGxgX36M/XKNc1?=
- =?us-ascii?Q?u37JpXY4UdkLzeb4D5goXUdcF9Oy76vHF2sZUYuyMi8bz4ZIrHPOqkJ8vKo4?=
- =?us-ascii?Q?WqiuYKzfh5NcjpbgQ57MewERpfp/OkkvQax7Qrs0T9ps3OplY0Tc5Eql4KqO?=
- =?us-ascii?Q?O2WBCZXHSSf6SOa0u3KVNJemYIjjwkpHI20awsNENONVxw/dyVOJt4zIuGFW?=
- =?us-ascii?Q?YXkWfJgCC6F3GHjktx+PVZLrx/LsZhbCDyZxc2vt4bhRuCWy9a6NZ+bk1CUt?=
- =?us-ascii?Q?j6gpB9k4oKGhIIa7oTqlQtmN6gDhapfl9ddR7bZofP3G/Q=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2f47e43e-5c0c-4f89-c38e-08d98763d179
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Oct 2021 18:21:43.7208
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: OF8LpIkgKVgrylBDvOP5PItQRBVePhmHkxgbQST5ysYOjYCpVbhnpWNxOTKzrANd
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5064
+References: <20210926145931.14603-1-sergio.paracuellos@gmail.com>
+ <20210926145931.14603-3-sergio.paracuellos@gmail.com> <YVtCtGcLjNcO2NJ0@robh.at.kernel.org>
+In-Reply-To: <YVtCtGcLjNcO2NJ0@robh.at.kernel.org>
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Date:   Mon, 4 Oct 2021 20:23:08 +0200
+Message-ID: <CAMhs-H9TDEWEffDn7hBQxT127RNU4eUtPxaSciuiis0fPqTN_w@mail.gmail.com>
+Subject: Re: [PATCH 2/3] dt: bindings: add ralink RT2880 resets device tree
+ binding documentation
+To:     Rob Herring <robh@kernel.org>
+Cc:     linux-staging@lists.linux.dev, John Crispin <john@phrozen.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Greg KH <gregkh@linuxfoundation.org>,
+        NeilBrown <neil@brown.name>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 04, 2021 at 09:40:03AM -0700, Jacob Pan wrote:
-> Hi Barry,
-> 
-> On Sat, 2 Oct 2021 01:45:59 +1300, Barry Song <21cnbao@gmail.com> wrote:
-> 
-> > >  
-> > > > I assume KVA mode can avoid this iotlb flush as the device is using
-> > > > the page table of the kernel and sharing the whole kernel space. But
-> > > > will users be glad to accept this mode?  
-> > >
-> > > You can avoid the lock be identity mapping the physical address space
-> > > of the kernel and maping map/unmap a NOP.
-> > >
-> > > KVA is just a different way to achive this identity map with slightly
-> > > different security properties than the normal way, but it doesn't
-> > > reach to the same security level as proper map/unmap.
-> > >
-> > > I'm not sure anyone who cares about DMA security would see value in
-> > > the slight difference between KVA and a normal identity map.  
-> > 
-> > yes. This is an important question. if users want a high security level,
-> > kva might not their choice; if users don't want the security, they are
-> > using iommu passthrough. So when will users choose KVA?
-> Right, KVAs sit in the middle in terms of performance and security.
-> Performance is better than IOVA due to IOTLB flush as you mentioned. Also
-> not too far behind of pass-through.
+Hi Rob,
 
-The IOTLB flush is not on a DMA path but on a vmap path, so it is very
-hard to compare the two things.. Maybe vmap can be made to do lazy
-IOTLB flush or something and it could be closer
+On Mon, Oct 4, 2021 at 8:06 PM Rob Herring <robh@kernel.org> wrote:
+>
+> On Sun, Sep 26, 2021 at 04:59:30PM +0200, Sergio Paracuellos wrote:
+> > Adds device tree binding documentation for resets in the ralink RT2880 SoCs.
+> >
+> > Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> > ---
+> >  .../bindings/reset/ralink,rt2880-reset.yaml   | 39 +++++++++++++++++++
+> >  1 file changed, 39 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/reset/ralink,rt2880-reset.yaml
+> >
+> > diff --git a/Documentation/devicetree/bindings/reset/ralink,rt2880-reset.yaml b/Documentation/devicetree/bindings/reset/ralink,rt2880-reset.yaml
+> > new file mode 100644
+> > index 000000000000..88eddeb4ee45
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/reset/ralink,rt2880-reset.yaml
+> > @@ -0,0 +1,39 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/reset/ralink,rt2880-reset.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Ralink RT2880 Reset Controller Device Tree Bindings
+> > +
+> > +maintainers:
+> > +  - Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> > +
+> > +description: |
+> > +  Ralink RT2880 reset controller driver which supports the SoC
+> > +  system controller supplied reset registers for the various peripherals
+> > +  of the SoC.
+> > +
+> > +  See also:
+> > +  - dt-bindings/reset/ralink-rt2880.h
+> > +
+> > +properties:
+> > +  compatible:
+> > +    const: ralink,rt2880-reset
+> > +
+> > +  '#reset-cells':
+> > +    const: 1
+> > +
+> > +required:
+> > +  - '#reset-cells'
+> > +  - compatible
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    #include <dt-bindings/reset/ralink-rt2880.h>
+> > +    rstctrl: reset-controller {
+> > +      compatible = "ralink,rt2880-reset";
+> > +      #reset-cells = <1>;
+>
+> How is this h/w controlled? If this is part of a system controller, then
+> it needs to be documented as such. IOW, you need to document the binding
+> for the whole block.
+>
+> Do you really need a child node here? All you need to make a system
+> controller a reset provider is add '#reset-cells' to it.
 
-> Security-wise, KVA respects kernel mapping. So permissions are better
-> enforced than pass-through and identity mapping.
+I am just documenting what is already mainlined (see [0]) in order to
+get mt7621-dts out of staging at some point of my life. What am I
+supposed to do? Should I rewrite all already mainlined code? Because
+if that is the case we need to rewrite tons of things from the ralink
+platform...
 
-Is this meaningful? Isn't the entire physical map still in the KVA and
-isn't it entirely RW ?
+I'd also like to know what we should do with those nodes already added
+to the dtsi file that have not got associated compatible driver
+mainlined. Can we just get rid of them?
 
-Jason
+Thanks in advance for clarification.
+
+Best regards,
+    Sergio Paracuellos
+
+[0]: https://elixir.bootlin.com/linux/latest/source/arch/mips/ralink/reset.c
+
+>
+> Rob
