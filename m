@@ -2,181 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F728421478
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 18:54:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0D4042147B
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 18:54:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237638AbhJDQ4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 12:56:03 -0400
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:60401 "EHLO
-        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237561AbhJDQ4B (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 12:56:01 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 6E75B580B5C;
-        Mon,  4 Oct 2021 12:54:12 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Mon, 04 Oct 2021 12:54:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=JIxAuX
-        sS3WOdJAM05+0WBlHZHKSubxopXu0GVR1buSk=; b=QB4Fe61LHoLh0sc9SvUpMz
-        iW5D5+aAj7kIFd/iwTLGY4tzvI56+h3cH4GY/8STVdwBhQpOVgiUSDjXK/X5/6t4
-        t0YoK2zOtFf2zRto/OXMTVzAcjJgft2dAsjRMUwdAXeGgQekDxUCmCd/aasTRfIT
-        8ncAlf6Nusj+DWEYe1SuS22bZa+Kckxy0fOVUFjj0SvWuLYhdkMnzt8XwvVXemY3
-        CJ+lOGOjXw8SQVHRtZdoAWHENzPPIXmLntGnZfsU9IQL8QcbJaPGfnbZUHphJynv
-        OQxVtE4/f//0YZQSk+fWQtSoYzxnxf+Zfeumdjm3shpVQMVxA1PJkHhyQ3T+bhKA
-        ==
-X-ME-Sender: <xms:szFbYQLdsrzcgKNnmRexgm8L6tLWX5d6JtztEYogH2E96wl8nDGO9A>
-    <xme:szFbYQIChsxSavGZ8NWxdUrqisFeMs4bnVC-nYdTGW5Az-8RPnKL0i8zGnMZjIEHq
-    _wFArndHEJ1dss>
-X-ME-Received: <xmr:szFbYQv_FAi8Bg2VLAnSc_Pjnj2x34Kttdv-VfyMu3pdsP8Efcs9drLn48engdVY4vr1Ho5bUd9U6qiY5v9P7lNd8zYH1w>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudelvddguddtfecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepkfguohcu
-    ufgthhhimhhmvghluceoihguohhstghhsehiughoshgthhdrohhrgheqnecuggftrfgrth
-    htvghrnheptdffkeekfeduffevgeeujeffjefhtefgueeugfevtdeiheduueeukefhudeh
-    leetnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepih
-    guohhstghhsehiughoshgthhdrohhrgh
-X-ME-Proxy: <xmx:szFbYdblGzsrgC7dGsv88f2LYdYZTQjX1MMw481fRGD0buTK3ph5VA>
-    <xmx:szFbYXbk6uzinz5-5AE0F550BJeGorzPvDZJLpVg-bIrH6iE9a8agg>
-    <xmx:szFbYZDm81owxYr4Zi0SRRmrL0CzLEJH2_DQA0CeoZUyZ8OpP7s73Q>
-    <xmx:tDFbYdxjfw5OuBwdI7cV8Myr1M0jvGSkbVE-WaYjVbOeUVPhABm4XA>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 4 Oct 2021 12:54:10 -0400 (EDT)
-Date:   Mon, 4 Oct 2021 19:54:02 +0300
-From:   Ido Schimmel <idosch@idosch.org>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Ido Schimmel <idosch@nvidia.com>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Pirko <jiri@nvidia.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        mlxsw@nvidia.com, Moshe Shemesh <moshe@nvidia.com>,
-        netdev@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Shay Drory <shayd@nvidia.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>
-Subject: Re: [PATCH net-next v2 5/5] devlink: Delete reload enable/disable
- interface
-Message-ID: <YVsxqsEGkV0A5lvO@shredder>
-References: <cover.1633284302.git.leonro@nvidia.com>
- <06ebba9e115d421118b16ac4efda61c2e08f4d50.1633284302.git.leonro@nvidia.com>
- <YVsNfLzhGULiifw2@shredder>
- <YVshg3a9OpotmOQg@unreal>
+        id S237692AbhJDQ4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 12:56:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57784 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237646AbhJDQ4V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 12:56:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F74161381;
+        Mon,  4 Oct 2021 16:54:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633366472;
+        bh=TvvpjQdHQdhLT/lXbu5+Haobdd8e9Zwi1ru4E+zI7wI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QQZNB2sOslZIecnGF+eD4IyTpxYTRbfRMbD/U+SeJqOti2xoV+DA9fdiH85bcAKH8
+         csiv9beEQIu/f491XDdtQY997mWjReJ+R3fljw63ThoJv9akyTW8La2NTc6DBr73RM
+         2HxaJBPuMr6CohDFSI82HV+kLgfqz/WEoiQHcC/4JRFmgt5CBh9Q4fUuPmI41IIwzI
+         /cYLvWNP8ONCt7I6nuip/mx4BNtptQN8LC6REzXgRcG0Jhvt+pp3hz2qU+1/C3mW/Q
+         E00wf2b8E+hgVsreo78g1LWRXUm3Z2VOd+7cH2K2mhAWCzfd+CpyolrB+nr9r4Hg18
+         eQTfUVg0BSBuA==
+Date:   Mon, 4 Oct 2021 09:54:32 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Stephen <stephenackerman16@gmail.com>, kvm@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: kvm crash in 5.14.1?
+Message-ID: <20211004165432.GA24266@magnolia>
+References: <2b5ca6d3-fa7b-5e2f-c353-f07dcff993c1@gmail.com>
+ <16c7a433-6e58-4213-bc00-5f6196fe22f5@gmail.com>
+ <YVSEZTCbFZ+HD/f0@google.com>
+ <20210930175957.GA10573@magnolia>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <YVshg3a9OpotmOQg@unreal>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210930175957.GA10573@magnolia>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 04, 2021 at 06:45:07PM +0300, Leon Romanovsky wrote:
-> On Mon, Oct 04, 2021 at 05:19:40PM +0300, Ido Schimmel wrote:
-> > On Sun, Oct 03, 2021 at 09:12:06PM +0300, Leon Romanovsky wrote:
-> > > From: Leon Romanovsky <leonro@nvidia.com>
+On Thu, Sep 30, 2021 at 10:59:57AM -0700, Darrick J. Wong wrote:
+> On Wed, Sep 29, 2021 at 03:21:09PM +0000, Sean Christopherson wrote:
+> > On Tue, Sep 28, 2021, Stephen wrote:
+> > > Hello,
 > > > 
-> > > After changes to allow dynamically set the reload_up/_down callbacks,
-> > > we ensure that properly supported devlink ops are not accessible before
-> > > devlink_register, which is last command in the initialization sequence.
-> > > 
-> > > It makes devlink_reload_enable/_disable not relevant anymore and can be
-> > > safely deleted.
-> > > 
-> > > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> > > I got this crash again on 5.14.7 in the early morning of the 27th.
+> > > Things hung up shortly after I'd gone to bed. Uptime was 1 day 9 hours 9
+> > > minutes.
 > > 
-> > [...]
+> > ...
 > > 
-> > > diff --git a/drivers/net/netdevsim/dev.c b/drivers/net/netdevsim/dev.c
-> > > index cb6645012a30..09e48fb232a9 100644
-> > > --- a/drivers/net/netdevsim/dev.c
-> > > +++ b/drivers/net/netdevsim/dev.c
-> > > @@ -1512,7 +1512,6 @@ int nsim_dev_probe(struct nsim_bus_dev *nsim_bus_dev)
-> > >  
-> > >  	nsim_dev->esw_mode = DEVLINK_ESWITCH_MODE_LEGACY;
-> > >  	devlink_register(devlink);
-> > > -	devlink_reload_enable(devlink);
-> > >  	return 0;
-> > >  
-> > >  err_psample_exit:
-> > > @@ -1566,9 +1565,7 @@ void nsim_dev_remove(struct nsim_bus_dev *nsim_bus_dev)
-> > >  	struct nsim_dev *nsim_dev = dev_get_drvdata(&nsim_bus_dev->dev);
-> > >  	struct devlink *devlink = priv_to_devlink(nsim_dev);
-> > >  
-> > > -	devlink_reload_disable(devlink);
-> > >  	devlink_unregister(devlink);
-> > > -
-> > >  	nsim_dev_reload_destroy(nsim_dev);
-> > >  
-> > >  	nsim_bpf_dev_exit(nsim_dev);
+> > > BUG: kernel NULL pointer dereference, address: 0000000000000068
+> > > #PF: supervisor read access in kernel mode
+> > > #PF: error_code(0x0000) - not-present page
+> > > PGD 0 P4D 0
+> > > Oops: 0000 [#1] SMP NOPTI
+> > > CPU: 21 PID: 8494 Comm: CPU 7/KVM Tainted: G            E     5.14.7 #32
+> > > Hardware name: Gigabyte Technology Co., Ltd. X570 AORUS ELITE WIFI/X570
+> > > AORUS ELITE WIFI, BIOS F35 07/08/2021
+> > > RIP: 0010:internal_get_user_pages_fast+0x738/0xda0
+> > > Code: 84 24 a0 00 00 00 65 48 2b 04 25 28 00 00 00 0f 85 54 06 00 00 48
+> > > 81 c4 a8 00 00 00 44 89 e0 5b 5d 41 5c 41 5d 41 5e 41 5f c3 <48> 81 78
+> > > 68 a0 a3 >
 > > 
-> > I didn't remember why devlink_reload_{enable,disable}() were added in
-> > the first place so it was not clear to me from the commit message why
-> > they can be removed. It is described in commit a0c76345e3d3 ("devlink:
-> > disallow reload operation during device cleanup") with a reproducer.
-> 
-> It was added because devlink ops were accessible by the user space very
-> early in the driver lifetime. All my latest devlink patches are the
-> attempt to fix this arch/design/implementation issue.
-
-The reproducer in the commit message executed the reload after the
-device was fully initialized. IIRC, the problem there was that nothing
-prevented these two tasks from racing:
-
-devlink dev reload netdevsim/netdevsim10
-echo 10 > /sys/bus/netdevsim/del_device
-
-The title also talks about forbidding reload during device cleanup.
-
-> 
+> > I haven't reproduced the crash, but the code signature (CMP against an absolute
+> > address) is quite distinct, and is consistent across all three crashes.  I'm pretty
+> > sure the issue is that page_is_secretmem() doesn't check for a null page->mapping,
+> > e.g. if the page is truncated, which IIUC can happen in parallel since gup() doesn't
+> > hold the lock.
 > > 
-> > Tried the reproducer with this series and I cannot reproduce the issue.
-> > Wasn't quite sure why, but it does not seem to be related to "changes to
-> > allow dynamically set the reload_up/_down callbacks", as this seems to
-> > be specific to mlx5.
-> 
-> You didn't reproduce because of my series that moved
-> devlink_register()/devlink_unregister() to be last/first commands in
-> .probe()/.remove() flows.
-
-Agree, that is what I wrote in the next paragraph of my reply.
-
-> 
-> Patch to allow dynamically set ops was needed because mlx5 had logic
-> like this:
->  if(something)
->     devlink_reload_enable()
-> 
-> And I needed a way to keep this if ... condition.
-> 
+> > I think this should fix the problems?
 > > 
-> > IIUC, the reason that the race described in above mentioned commit can
-> > no longer happen is related to the fact that devlink_unregister() is
-> > called first in the device dismantle path, after your previous patches.
-> > Since both the reload operation and devlink_unregister() hold
-> > 'devlink_mutex', it is not possible for the reload operation to race
-> > with device dismantle.
+> > diff --git a/include/linux/secretmem.h b/include/linux/secretmem.h
+> > index 21c3771e6a56..988528b5da43 100644
+> > --- a/include/linux/secretmem.h
+> > +++ b/include/linux/secretmem.h
+> > @@ -23,7 +23,7 @@ static inline bool page_is_secretmem(struct page *page)
+> >         mapping = (struct address_space *)
+> >                 ((unsigned long)page->mapping & ~PAGE_MAPPING_FLAGS);
 > > 
-> > Agree? If so, I think it would be good to explain this in the commit
-> > message unless it's clear to everyone else.
+> > -       if (mapping != page->mapping)
+> > +       if (!mapping || mapping != page->mapping)
 > 
-> I don't agree for very simple reason that devlink_mutex is going to be
-> removed very soon and it is really not a reason why devlink reload is
-> safer now when before.
+> I'll roll this out on my vm host and try to re-run the mass fuzztest
+> overnight, though IT claims they're going to kill power to the whole
+> datacenter until Monday(!)...
+
+...which they did, 30 minutes after I sent this email. :(
+
+I'll hopefully be able to report back to the list in a day or two.
+
+--D
+
 > 
-> The reload can't race due to:
-> 1. devlink_unregister(), which works as a barrier to stop accesses
-> from the user space.
-> 2. reference counting that ensures that all in-flight commands are counted.
-> 3. wait_for_completion that blocks till all commands are done.
-
-So the wait_for_completion() is what prevents the race, not
-'devlink_mutex' that is taken later. This needs to be explained in the
-commit message to make it clear why the removal is safe.
-
-Thanks
+> --D
+> 
+> >                 return false;
+> > 
+> >         return mapping->a_ops == &secretmem_aops;
