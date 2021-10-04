@@ -2,101 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECA49420690
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 09:22:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E9DD420696
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 09:25:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229778AbhJDHYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 03:24:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35100 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229712AbhJDHYT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 03:24:19 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FCC4C061783
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 00:22:28 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id g14so13748028pfm.1
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 00:22:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=7mKXXe3kx7Xg5YaGiLWPR8pCdxsfsItgH8LVPO+KjDE=;
-        b=qVXhg8tF8dRzIKjnC2Jvyu3cK7Gy9wjYPsh5+baTMVFNAy5X0W8ldjw8pKbSde5vKf
-         OS4cb9ul4d5492JScITqJFV0RPf7We/VTsbdOpUX4TIM5tOwtLHhp5BozB7Jkt2qz6lN
-         ayre0eFOalNUaAIiGGmKmyMB4+vNPluQHd9SASkOa2GceZc4icghwY+MGH6ycMIJR4Xh
-         KJ2ybQvlgKWiJi+Sksxy1rLzmpNkF97y1hldmDLVglnwbGyZR5ivQoDDy5eguFrb2tch
-         ri7vOQ8LB9AZYvjrT+8k/GPYhNVJYI4wV5ekBcrHymVkOKhRISHmCuhyL8miWiKvEGRW
-         96Ew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=7mKXXe3kx7Xg5YaGiLWPR8pCdxsfsItgH8LVPO+KjDE=;
-        b=jeX4BVFoKyBKgQ/QCV0Ka9i5GKTzQia5w2mwpwtko1IWz/ye4+vT6zvocMwDm85s34
-         ce6WXT9/mjnmnPdsBBn/GMqxXjLnUdeBsQBAES5L0ccLqQukYuyMcI3q2PV+b5VvOSS5
-         UCF1EqLldg+OTzQOchT4I2afwnv/qDEXEeXsHNh/zoUwGB3OO0+5MYbHcHj7dAzJ4o8y
-         Ee8+D1k6RbLAJutN4MMFDv1Cw6mciqbPhW+In0zxoNS3HEPG/rTmOpuVMjEQrAVKfZBU
-         c4oULpAmVZt+QmGfuoidvjTDq21NI2SnYfUlebc5V5SrQYdThJQXTJOD5sAoiPu9kE/N
-         Jx/g==
-X-Gm-Message-State: AOAM533pLPl4dFD/gOzG1oYL5/6H6SS16C+G0lQ83a7MhlN0A8jpHAba
-        UYJPVguNy4edHLhuTiPz3KNe
-X-Google-Smtp-Source: ABdhPJyzUrzIuLl1SlLOxM85x7EgYuuRcpxtQ52/DgMsDAAiUVEKaKayeFC1Jc1FXMWEsma5IL2LOw==
-X-Received: by 2002:a63:724b:: with SMTP id c11mr9614019pgn.9.1633332147462;
-        Mon, 04 Oct 2021 00:22:27 -0700 (PDT)
-Received: from workstation ([120.138.13.170])
-        by smtp.gmail.com with ESMTPSA id z23sm13444807pgv.45.2021.10.04.00.22.24
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 04 Oct 2021 00:22:27 -0700 (PDT)
-Date:   Mon, 4 Oct 2021 12:52:22 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     rafael@kernel.org, robh+dt@kernel.org, bjorn.andersson@linaro.org,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH] dt-bindings: cpufreq: cpufreq-qcom-hw: Convert to YAML
- bindings
-Message-ID: <20211004072222.GE16442@workstation>
-References: <20211004044317.34809-1-manivannan.sadhasivam@linaro.org>
- <20211004070531.sexvnqmnkoe4j6a2@vireshk-i7>
+        id S229957AbhJDH1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 03:27:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48280 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229813AbhJDH1Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 03:27:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AF4E0611C0;
+        Mon,  4 Oct 2021 07:25:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633332328;
+        bh=/eBeLCUVqoopFCgbzYbnTztcfapAtM1l3KXDL1LkYLM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=amm8iGMm6beK+gsmV6+hBDRdYNrSXGGGrUwlMtOW34K3nzBZuEZ97+5mgDQa101LS
+         Dk92dNu6ZWFw1yxAwN41S+3T7M8EN4m/Zka3AuaGF9dS84z3lRwy1rfu0ZZOiOpIeU
+         YD5/HotvNQ0oGhPvnPY2KhSixqOgXSMMkfmaQBCR+YUpdZv9qz40QZtwSIOujKOWnl
+         0iidhlrmvsDvyqGjGLtnSiba5vvxGJHiM36dl1RhPxBr3gWB3uF6Cn1TiR58Dj7wlH
+         RAyMx4U0i/Q/MDjPdbMAC81MFR5GCWyqU5/0PPqYKFbV05PwGeZhrZnW8htT/7Va2Z
+         7hXAlxRgSoXSg==
+Date:   Mon, 4 Oct 2021 09:25:24 +0200
+From:   Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Andrew Lunn <andrew@lunn.ch>, Pavel Machek <pavel@ucw.cz>,
+        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
+        netdev@vger.kernel.org,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: are device names part of sysfs ABI? (was Re: devicename part of
+ LEDs under ethernet MAC / PHY)
+Message-ID: <20211004092524.023df950@thinkpad>
+In-Reply-To: <YVqo64vS4ox9P9hk@kroah.com>
+References: <20211001133057.5287f150@thinkpad>
+        <YVb/HSLqcOM6drr1@lunn.ch>
+        <20211001144053.3952474a@thinkpad>
+        <20211003225338.76092ec3@thinkpad>
+        <YVqhMeuDI0IZL/zY@kroah.com>
+        <20211004090438.588a8a89@thinkpad>
+        <YVqo64vS4ox9P9hk@kroah.com>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211004070531.sexvnqmnkoe4j6a2@vireshk-i7>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 04, 2021 at 12:35:31PM +0530, Viresh Kumar wrote:
-> On 04-10-21, 10:13, Manivannan Sadhasivam wrote:
-> > Convert Qualcomm cpufreq devicetree binding to YAML.
-> > 
-> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-> > Reviewed-by: Rob Herring <robh@kernel.org>
-> 
-> I am not sure if Rob ever gave this.
-> 
+On Mon, 4 Oct 2021 09:10:35 +0200
+Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
 
-I'm not fooling you :)
-https://patchwork.kernel.org/project/linux-pm/patch/20210701105730.322718-5-angelogioacchino.delregno@somainline.org/#24312445
+> On Mon, Oct 04, 2021 at 09:04:38AM +0200, Marek Beh=C3=BAn wrote:
+> > Hi Greg,
+> >=20
+> > On Mon, 4 Oct 2021 08:37:37 +0200
+> > Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> >  =20
+> > > On Sun, Oct 03, 2021 at 10:53:38PM +0200, Marek Beh=C3=BAn wrote: =20
+> > > > Hello Greg,
+> > > >=20
+> > > > could you give your opinion on this discussion?   =20
+> > >=20
+> > > What discussion?  Top posting ruins that :( =20
+> >=20
+> > Sorry, the discussion is here
+> > https://lore.kernel.org/linux-leds/20211001144053.3952474a@thinkpad/T/
+> > But the basic question is below, so you don't need to read the
+> > discussion.
+> >  =20
+> > > > Are device names (as returned by dev_name() function) also part of
+> > > > sysfs ABI? Should these names be stable across reboots / kernel
+> > > > upgrades?   =20
+> > >=20
+> > > Stable in what exact way? =20
+> >=20
+> > Example:
+> > - Board has an ethernet PHYs that is described in DT, and therefore
+> >   has stable sysfs path (derived from DT path), something like
+> >     /sys/devices/.../mdio_bus/f1072004.mdio-mii/f1072004.mdio-mii:01 =20
+>=20
+> None of the numbers there are "stable", right?
+>=20
+> > - The PHY has a subnode describing a LED.
+> >   The LED subsystem has a different naming scheme (it uses DT node name
+> >   as a last resort). When everything is okay, the dev_name() of the LED
+> >   will be something like
+> >     ethphy42:green:link =20
+>=20
+> Wonderful, but the "42" means nothing.
+>=20
+> > - Now suppose that the PHY driver is unloaded and loaded again. The PHY
+> >   sysfs path is unchanged, but the LED will now be named
+> >     ethphy43:green:link
+> >=20
+> > Is this OK? =20
+>=20
+> Yup!
+>=20
+> The "link" should point to the device it is associated with, right?  You
+> need to have some way to refer to the device.
+>=20
+> > > Numbering of devices (where a dynamic value is part of a name, like t=
+he
+> > > "42" in "usb42"), is never guaranteed to be stable, but the non-number
+> > > part of the name (like "usb" is in "usb42") is stable, as that is what
+> > > you have properly documented in the Documentation/ABI/ files defining
+> > > the bus and class devices, right? =20
+> >=20
+> > It does make sense for removable devices like USB. What I am asking
+> > is whether it is also OK for devices that have stable DT nodes. =20
+>=20
+> Any device can be "removed" from the system and added back thanks to the
+> joy of the driver model :)
+>=20
+> Also, what prevents your DT from renumbering things in an update to it
+> in the future?  The kernel doesn't care, and userspace should be able to
+> handle it.
+>=20
+> Again, any numbering scheme is NEVER stable, just because it feels like
+> it is at the moment for your device, you should NEVER rely on that, but
+> instead rely on the attributes of the device to determine what it is and
+> where it is in the device hierarchy (serial number, position location,
+> partition name, etc.) in order to know what it associated with.
+>=20
+> And again, this is 1/2 of the whole reason _why_ we created the unified
+> driver model in the kernel.  Don't try to go back to the nightmare that
+> we had in the 2.4 and earlier kernel days please.
 
-> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> 
-> Why double signed off ?
-> 
+OK, thanks Greg. This simplifies things. I shall send another version
+of LEDs under ethernet PHYs soon :)
 
-Ah, it came while I applied the patch from Angelo's series. If you want
-I can send a new version removing one or you can do that while applying.
-
-Let me know.
-
-Thanks,
-Mani
-
-> -- 
-> viresh
+Marek
