@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89341420EDF
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:27:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5294421054
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:41:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236877AbhJDN3L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:29:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43760 "EHLO mail.kernel.org"
+        id S238516AbhJDNm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:42:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52290 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236917AbhJDN13 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:27:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 825D661C15;
-        Mon,  4 Oct 2021 13:12:08 +0000 (UTC)
+        id S238489AbhJDNkd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:40:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 90D0A63257;
+        Mon,  4 Oct 2021 13:18:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633353129;
-        bh=LC4u59DajnY7qCHIrtUztguP3bj4eP8sydEVfQm05Jo=;
+        s=korg; t=1633353524;
+        bh=9a1cAP4z/EvByEgNLNZaOGNxAthBCtun9wgjHMIVnTc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=es+bk1+4RzJL7vIoLeG4y1Z2GBloFjtJXkyXJUrAYF21tIjM6AvL5sn8w97FmQ1xy
-         6aGo0ZP6OKxx39RmaGYj9cQGr/LNT6GhTMWd/20n8oOO44GvwHHhCr8LzHM5eW5cpi
-         vXCrQeblBLmYptSxIRfb9YMiVikWy5cBjKCsFt0s=
+        b=Q+hz55D9CIaJt+rtNKF8TftCfNHrPfIS3o0/GHUIy1OcMyXR0s3w+4pchQnFqErJo
+         DNXW3TvauqPjZPJVHXqt004OeDHxTEQBbeWtA/H90xvuZemAngPG3W+lWtYIPNqO+8
+         AyabTXc2eZLTl2iZHUT6g8rST0xHLasKGNHnxvaY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+cd43695a64bcd21b8596@syzkaller.appspotmail.com,
-        Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [PATCH 5.10 93/93] netfilter: nf_tables: Fix oversized kvmalloc() calls
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        kernel test robot <lkp@intel.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Andreas Oetken <andreas.oetken@siemens.com>,
+        Dinh Nguyen <dinguyen@kernel.org>
+Subject: [PATCH 5.14 161/172] NIOS2: setup.c: drop unused variable dram_start
 Date:   Mon,  4 Oct 2021 14:53:31 +0200
-Message-Id: <20211004125037.666201678@linuxfoundation.org>
+Message-Id: <20211004125050.171737048@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125034.579439135@linuxfoundation.org>
-References: <20211004125034.579439135@linuxfoundation.org>
+In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
+References: <20211004125044.945314266@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,30 +42,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pablo Neira Ayuso <pablo@netfilter.org>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-commit 45928afe94a094bcda9af858b96673d59bc4a0e9 upstream.
+commit 9523b33cc31cf8ce703f8facee9fd16cba36d5ad upstream.
 
-The commit 7661809d493b ("mm: don't allow oversized kvmalloc() calls")
-limits the max allocatable memory via kvmalloc() to MAX_INT.
+This is a nuisance when CONFIG_WERROR is set, so drop the variable
+declaration since the code that used it was removed.
 
-Reported-by: syzbot+cd43695a64bcd21b8596@syzkaller.appspotmail.com
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+../arch/nios2/kernel/setup.c: In function 'setup_arch':
+../arch/nios2/kernel/setup.c:152:13: warning: unused variable 'dram_start' [-Wunused-variable]
+  152 |         int dram_start;
+
+Fixes: 7f7bc20bc41a ("nios2: Don't use _end for calculating min_low_pfn")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Reviewed-by: Mike Rapoport <rppt@linux.ibm.com>
+Cc: Andreas Oetken <andreas.oetken@siemens.com>
+Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/netfilter/nf_tables_api.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/nios2/kernel/setup.c |    2 --
+ 1 file changed, 2 deletions(-)
 
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -4265,7 +4265,7 @@ static int nf_tables_newset(struct net *
- 	if (ops->privsize != NULL)
- 		size = ops->privsize(nla, &desc);
- 	alloc_size = sizeof(*set) + size + udlen;
--	if (alloc_size < size)
-+	if (alloc_size < size || alloc_size > INT_MAX)
- 		return -ENOMEM;
- 	set = kvzalloc(alloc_size, GFP_KERNEL);
- 	if (!set)
+--- a/arch/nios2/kernel/setup.c
++++ b/arch/nios2/kernel/setup.c
+@@ -149,8 +149,6 @@ static void __init find_limits(unsigned
+ 
+ void __init setup_arch(char **cmdline_p)
+ {
+-	int dram_start;
+-
+ 	console_verbose();
+ 
+ 	memory_start = memblock_start_of_DRAM();
 
 
