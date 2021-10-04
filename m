@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AFDA420D35
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:11:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21F67420BF8
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:59:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235678AbhJDNMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:12:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45800 "EHLO mail.kernel.org"
+        id S234446AbhJDNB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:01:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59900 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235664AbhJDNKm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:10:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B67E61AFF;
-        Mon,  4 Oct 2021 13:04:03 +0000 (UTC)
+        id S233446AbhJDM7q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 08:59:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6004761994;
+        Mon,  4 Oct 2021 12:57:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352644;
-        bh=viIZgotVEB/9pg0QOwfS4z21bbhSoxavr5XUnD4ivvo=;
+        s=korg; t=1633352265;
+        bh=iN6shAK1uMj87NTIcvDPLrlffVNZbrfpLNn2NEQRmkc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=n55/iYnebxx6OreCq7H+AKP+CfZFFTQLdlcwK2G8qgcLP6Fp5wiK7Y8PU30aRiWR/
-         xP8LtFxkKgyJJpL2+BpTV9YQNZi9kDes3i5MKk0rFTks9gpVTUNMegj+osAbpQNM5j
-         R8JmHCtdDondXX70vOL7qLbCyRXu+zr87ke62TJo=
+        b=R0wh3ISoiy2TDBlFUtr60fhMFjUeX30g8ZfEAWesnU0eadyWAVPPVckNJFhCjF/+S
+         7xwbsJYHYAxdOmy2LcKXZQ9AcO+fVz36UfN+XwTq8AHo2SuLMBtXd/mdchVulDMbzO
+         Z5dU+S4P+HwFhVIZrBX2pn6K1HBJ6TdUqJVdiW5c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+581aff2ae6b860625116@syzkaller.appspotmail.com,
-        Xin Long <lucien.xin@gmail.com>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 66/95] sctp: break out if skb_header_pointer returns NULL in sctp_rcv_ootb
-Date:   Mon,  4 Oct 2021 14:52:36 +0200
-Message-Id: <20211004125035.723652364@linuxfoundation.org>
+        stable@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Nanyong Sun <sunnanyong@huawei.com>
+Subject: [PATCH 4.9 53/57] arm64: Extend workaround for erratum 1024718 to all versions of Cortex-A55
+Date:   Mon,  4 Oct 2021 14:52:37 +0200
+Message-Id: <20211004125030.623951794@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125033.572932188@linuxfoundation.org>
-References: <20211004125033.572932188@linuxfoundation.org>
+In-Reply-To: <20211004125028.940212411@linuxfoundation.org>
+References: <20211004125028.940212411@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,55 +43,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xin Long <lucien.xin@gmail.com>
+From: Suzuki K Poulose <suzuki.poulose@arm.com>
 
-[ Upstream commit f7e745f8e94492a8ac0b0a26e25f2b19d342918f ]
+commit c0b15c25d25171db4b70cc0b7dbc1130ee94017d upstream.
 
-We should always check if skb_header_pointer's return is NULL before
-using it, otherwise it may cause null-ptr-deref, as syzbot reported:
+The erratum 1024718 affects Cortex-A55 r0p0 to r2p0. However
+we apply the work around for r0p0 - r1p0. Unfortunately this
+won't be fixed for the future revisions for the CPU. Thus
+extend the work around for all versions of A55, to cover
+for r2p0 and any future revisions.
 
-  KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
-  RIP: 0010:sctp_rcv_ootb net/sctp/input.c:705 [inline]
-  RIP: 0010:sctp_rcv+0x1d84/0x3220 net/sctp/input.c:196
-  Call Trace:
-  <IRQ>
-   sctp6_rcv+0x38/0x60 net/sctp/ipv6.c:1109
-   ip6_protocol_deliver_rcu+0x2e9/0x1ca0 net/ipv6/ip6_input.c:422
-   ip6_input_finish+0x62/0x170 net/ipv6/ip6_input.c:463
-   NF_HOOK include/linux/netfilter.h:307 [inline]
-   NF_HOOK include/linux/netfilter.h:301 [inline]
-   ip6_input+0x9c/0xd0 net/ipv6/ip6_input.c:472
-   dst_input include/net/dst.h:460 [inline]
-   ip6_rcv_finish net/ipv6/ip6_input.c:76 [inline]
-   NF_HOOK include/linux/netfilter.h:307 [inline]
-   NF_HOOK include/linux/netfilter.h:301 [inline]
-   ipv6_rcv+0x28c/0x3c0 net/ipv6/ip6_input.c:297
+Cc: stable@vger.kernel.org
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: James Morse <james.morse@arm.com>
+Cc: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+Link: https://lore.kernel.org/r/20210203230057.3961239-1-suzuki.poulose@arm.com
+[will: Update Kconfig help text]
+Signed-off-by: Will Deacon <will@kernel.org>
+[Nanyon: adjust for stable version below v4.16, which set TCR_HD earlier
+in assembly code]
+Signed-off-by: Nanyong Sun <sunnanyong@huawei.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Fixes: 3acb50c18d8d ("sctp: delay as much as possible skb_linearize")
-Reported-by: syzbot+581aff2ae6b860625116@syzkaller.appspotmail.com
-Signed-off-by: Xin Long <lucien.xin@gmail.com>
-Acked-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sctp/input.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm64/Kconfig   |    2 +-
+ arch/arm64/mm/proc.S |    4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/net/sctp/input.c b/net/sctp/input.c
-index 8b7c07fc66d4..64dc2923a21b 100644
---- a/net/sctp/input.c
-+++ b/net/sctp/input.c
-@@ -687,7 +687,7 @@ static int sctp_rcv_ootb(struct sk_buff *skb)
- 		ch = skb_header_pointer(skb, offset, sizeof(*ch), &_ch);
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -433,7 +433,7 @@ config ARM64_ERRATUM_1024718
+ 	help
+ 	  This option adds work around for Arm Cortex-A55 Erratum 1024718.
  
- 		/* Break out if chunk length is less then minimal. */
--		if (ntohs(ch->length) < sizeof(_ch))
-+		if (!ch || ntohs(ch->length) < sizeof(_ch))
- 			break;
- 
- 		ch_end = offset + SCTP_PAD4(ntohs(ch->length));
--- 
-2.33.0
-
+-	  Affected Cortex-A55 cores (r0p0, r0p1, r1p0) could cause incorrect
++	  Affected Cortex-A55 cores (all revisions) could cause incorrect
+ 	  update of the hardware dirty bit when the DBM/AP bits are updated
+ 	  without a break-before-make. The work around is to disable the usage
+ 	  of hardware DBM locally on the affected cores. CPUs not affected by
+--- a/arch/arm64/mm/proc.S
++++ b/arch/arm64/mm/proc.S
+@@ -442,8 +442,8 @@ ENTRY(__cpu_setup)
+ 	cmp	x9, #2
+ 	b.lt	1f
+ #ifdef CONFIG_ARM64_ERRATUM_1024718
+-	/* Disable hardware DBM on Cortex-A55 r0p0, r0p1 & r1p0 */
+-	cpu_midr_match MIDR_CORTEX_A55, MIDR_CPU_VAR_REV(0, 0), MIDR_CPU_VAR_REV(1, 0), x1, x2, x3, x4
++	/* Disable hardware DBM on Cortex-A55 all versions */
++	cpu_midr_match MIDR_CORTEX_A55, MIDR_CPU_VAR_REV(0, 0), MIDR_CPU_VAR_REV(0xf, 0xf), x1, x2, x3, x4
+ 	cbnz	x1, 1f
+ #endif
+ 	orr	x10, x10, #TCR_HD		// hardware Dirty flag update
 
 
