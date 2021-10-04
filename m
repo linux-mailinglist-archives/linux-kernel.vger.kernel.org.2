@@ -2,131 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C686B421701
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 21:06:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACBCF4215EB
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 20:02:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236336AbhJDTIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 15:08:45 -0400
-Received: from mga17.intel.com ([192.55.52.151]:46637 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233226AbhJDTIo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 15:08:44 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10127"; a="206367250"
-X-IronPort-AV: E=Sophos;i="5.85,346,1624345200"; 
-   d="scan'208";a="206367250"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2021 10:44:18 -0700
-X-IronPort-AV: E=Sophos;i="5.85,346,1624345200"; 
-   d="scan'208";a="477275904"
-Received: from pmittal1-mobl.gar.corp.intel.com (HELO localhost) ([10.251.223.27])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2021 10:43:55 -0700
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Nathan Chancellor <nathan@kernel.org>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        Nathan Chancellor <nathan@kernel.org>
-Subject: Re: [PATCH v2] drm/i915: Clean up disabled warnings
-In-Reply-To: <20210914194944.4004260-1-nathan@kernel.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20210914194944.4004260-1-nathan@kernel.org>
-Date:   Mon, 04 Oct 2021 20:43:41 +0300
-Message-ID: <87v92c1y9e.fsf@intel.com>
+        id S236275AbhJDSDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 14:03:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44222 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236419AbhJDSDn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 14:03:43 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA186C061783;
+        Mon,  4 Oct 2021 11:01:53 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id t11so439322plq.11;
+        Mon, 04 Oct 2021 11:01:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=GKIE676lAIQP3K8bm7VIPKhomAuX7+QEcMrA2aQJQD4=;
+        b=AugnioZW9Cfwp3G3sNl3PuDtrwA4HVrVhrt63Bz71r+RGC1t3iLk0OWnjXCn2HzCE6
+         5VLLw9uWj8X20O9E6kRZQVDSCzFySiieYyi1go8qwoMWFMlEYInBaj+UetkT5NuiFqF8
+         gA1+VS9y3JlY42eo2CfT5sLY4QqJs5cGD8wx+OzuRO6m2iSV0/+GQSoj2OdeM7QMG2fJ
+         k4YnZXRFoD+NYvwhBACyAT1vXcybc8AMlZlFQXQZ3uWF4zOcGbE7z2Uw2lfzGdSYT4EE
+         pX4uVbEG9xk0yVMjEHx4mXJw9RB3lw2+RDxii46mp35C4vOv2WwthkGOon3yCKWxKLaK
+         UrYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=GKIE676lAIQP3K8bm7VIPKhomAuX7+QEcMrA2aQJQD4=;
+        b=Tno29s8E9gqRjBItUbHE7xO3UWOEHTYjjnc9rn4euOOIViOuttGyFs2mSrCnpzqmd6
+         sJdPrBNxaKyqb4bMsbrmmKiZ/fmAAJ3+hfZE+gW0/mET7ZlZDYgPu6GMhif7uQtgvR22
+         iWObUkyinRpQOjqbSQQfITJKB+XEldYejsoVGq6WlEkXTYPQXWCm3NRuLdBzPeoR0+qJ
+         XnBVGGL6aFTuU/1qdgXSyyMYBPYgGSUwJmtcGlH0YWDMX94yItVAFD1AvkYQ8KSq8evQ
+         ztdCgPXSltuipfsHjsPY6klvR1Us9HdxZUEy2NE6bmyRL2HJQstW5fNM9RiJSoJ4/o2P
+         bj8A==
+X-Gm-Message-State: AOAM533eK+G7+dTXD2eJN90RjD99dt28rmtNCj/wrxX9cJV3RLdnLtt9
+        wjalzbJ8+2JiSNVQ+HqKMnM=
+X-Google-Smtp-Source: ABdhPJyBFAGowvpqQWLMH1+/Hh4N7CQei+7CS2x8RoVdpaytMm113MtrGmeFWEovPG7dbGJUjiueFQ==
+X-Received: by 2002:a17:902:ee93:b0:13e:c846:c902 with SMTP id a19-20020a170902ee9300b0013ec846c902mr972060pld.88.1633370513074;
+        Mon, 04 Oct 2021 11:01:53 -0700 (PDT)
+Received: from localhost.localdomain ([2406:7400:63:e8f0:c2a7:3579:5fe8:31d9])
+        by smtp.gmail.com with ESMTPSA id z2sm3641004pfe.210.2021.10.04.11.01.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Oct 2021 11:01:52 -0700 (PDT)
+From:   Naveen Naidu <naveennaidu479@gmail.com>
+To:     bhelgaas@google.com, tsbogend@alpha.franken.de
+Cc:     Naveen Naidu <naveennaidu479@gmail.com>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        skhan@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-mips@vger.kernel.org
+Subject: [PATCH 2/6] MIPS: OCTEON: Remove redundant clearing of AER status registers
+Date:   Mon,  4 Oct 2021 23:29:28 +0530
+Message-Id: <81597ce8ee30ad01da86fe1edf0fab76aa9b9710.1633369560.git.naveennaidu479@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1633369560.git.naveennaidu479@gmail.com>
+References: <cover.1633369560.git.naveennaidu479@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 14 Sep 2021, Nathan Chancellor <nathan@kernel.org> wrote:
-> i915 enables a wider set of warnings with '-Wall -Wextra' then disables
-> several with cc-disable-warning. If an unknown flag gets added to
-> KBUILD_CFLAGS when building with clang, all subsequent calls to
-> cc-{disable-warning,option} will fail, meaning that all of these
-> warnings do not get disabled [1].
->
-> A separate series will address the root cause of the issue by not adding
-> these flags when building with clang [2]; however, the symptom of these
-> extra warnings appearing can be addressed separately by just removing
-> the calls to cc-disable-warning, which makes the build ever so slightly
-> faster because the compiler does not need to be called as much before
-> building.
->
-> The following warnings are supported by GCC 4.9 and clang 10.0.1, which
-> are the minimum supported versions of these compilers so the call to
-> cc-disable-warning is not necessary. Masahiro cleaned this up for the
-> reset of the kernel in commit 4c8dd95a723d ("kbuild: add some extra
-> warning flags unconditionally").
->
-> * -Wmissing-field-initializers
-> * -Wsign-compare
-> * -Wtype-limits
-> * -Wunused-parameter
->
-> -Wunused-but-set-variable was implemented in clang 13.0.0 and
-> -Wframe-address was implemented in clang 12.0.0 so the
-> cc-disable-warning calls are kept for these two warnings.
->
-> Lastly, -Winitializer-overrides is clang's version of -Woverride-init,
-> which is disabled for the specific files that are problematic. clang
-> added a compatibility alias in clang 8.0.0 so -Winitializer-overrides
-> can be removed.
->
-> [1]: https://lore.kernel.org/r/202108210311.CBtcgoUL-lkp@intel.com/
-> [2]: https://lore.kernel.org/r/20210824022640.2170859-1-nathan@kernel.org/
->
-> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+e8635b484f64 ("MIPS: Add Cavium OCTEON PCI support.") added MIPS
+specific code to enable PCIe and AER error reporting (*irrespective
+of CONFIG_PCIEAER value*) because PCI core didn't do that at the time.
 
-Thanks for the patch, and sorry for the delay.
+Currently when CONFIG_PCIEAER=y, the Uncorrectable Error status,
+Correctable Error status and Root status registers are cleared
+during the PCI Bus enumeration path by pci_aer_init() via
+pci_init_capabilities()
 
-Exceptionally pushed to drm-intel-gt-next instead of drm-intel-next
-because some of the dependencies such as 43192617f781 ("drm/i915: Enable
--Wsometimes-uninitialized") were queued there too.
+It is now no longer necessary for Octeon code to clear AER status
+registers since it's done by PCI core.
 
+Signed-off-by: Naveen Naidu <naveennaidu479@gmail.com>
+---
+ arch/mips/pci/pci-octeon.c | 11 -----------
+ 1 file changed, 11 deletions(-)
 
-BR,
-Jani.
-
-
-> ---
->
-> v1 -> v2: https://lore.kernel.org/r/20210824232237.2085342-1-nathan@kernel.org/
->
-> * Rebase on drm-intel-gt-next now that the prerequisite patch series has
->   been merged: https://lore.kernel.org/r/87wnnj13t5.fsf@intel.com/
->
-> * Add Nick's reviewed-by tag.
->
->  drivers/gpu/drm/i915/Makefile | 10 ++++------
->  1 file changed, 4 insertions(+), 6 deletions(-)
->
-> diff --git a/drivers/gpu/drm/i915/Makefile b/drivers/gpu/drm/i915/Makefile
-> index c584188aa15a..fd99374583d5 100644
-> --- a/drivers/gpu/drm/i915/Makefile
-> +++ b/drivers/gpu/drm/i915/Makefile
-> @@ -13,13 +13,11 @@
->  # will most likely get a sudden build breakage... Hopefully we will fix
->  # new warnings before CI updates!
->  subdir-ccflags-y := -Wall -Wextra
-> -subdir-ccflags-y += $(call cc-disable-warning, unused-parameter)
-> -subdir-ccflags-y += $(call cc-disable-warning, type-limits)
-> -subdir-ccflags-y += $(call cc-disable-warning, missing-field-initializers)
-> +subdir-ccflags-y += -Wno-unused-parameter
-> +subdir-ccflags-y += -Wno-type-limits
-> +subdir-ccflags-y += -Wno-missing-field-initializers
-> +subdir-ccflags-y += -Wno-sign-compare
->  subdir-ccflags-y += $(call cc-disable-warning, unused-but-set-variable)
-> -# clang warnings
-> -subdir-ccflags-y += $(call cc-disable-warning, sign-compare)
-> -subdir-ccflags-y += $(call cc-disable-warning, initializer-overrides)
->  subdir-ccflags-y += $(call cc-disable-warning, frame-address)
->  subdir-ccflags-$(CONFIG_DRM_I915_WERROR) += -Werror
->  
->
-> base-commit: 43192617f7816bb74584c1df06f57363afd15337
-
+diff --git a/arch/mips/pci/pci-octeon.c b/arch/mips/pci/pci-octeon.c
+index fc29b85cfa92..8e8b282226cc 100644
+--- a/arch/mips/pci/pci-octeon.c
++++ b/arch/mips/pci/pci-octeon.c
+@@ -124,11 +124,6 @@ int pcibios_plat_dev_init(struct pci_dev *dev)
+ 	/* Find the Advanced Error Reporting capability */
+ 	pos = pci_find_ext_capability(dev, PCI_EXT_CAP_ID_ERR);
+ 	if (pos) {
+-		/* Clear Uncorrectable Error Status */
+-		pci_read_config_dword(dev, pos + PCI_ERR_UNCOR_STATUS,
+-				      &dconfig);
+-		pci_write_config_dword(dev, pos + PCI_ERR_UNCOR_STATUS,
+-				       dconfig);
+ 		/* Enable reporting of all uncorrectable errors */
+ 		/* Uncorrectable Error Mask - turned on bits disable errors */
+ 		pci_write_config_dword(dev, pos + PCI_ERR_UNCOR_MASK, 0);
+@@ -138,9 +133,6 @@ int pcibios_plat_dev_init(struct pci_dev *dev)
+ 		 * correctable, not if the error is reported.
+ 		 */
+ 		/* PCI_ERR_UNCOR_SEVER - Uncorrectable Error Severity */
+-		/* Clear Correctable Error Status */
+-		pci_read_config_dword(dev, pos + PCI_ERR_COR_STATUS, &dconfig);
+-		pci_write_config_dword(dev, pos + PCI_ERR_COR_STATUS, dconfig);
+ 		/* Enable reporting of all correctable errors */
+ 		/* Correctable Error Mask - turned on bits disable errors */
+ 		pci_write_config_dword(dev, pos + PCI_ERR_COR_MASK, 0);
+@@ -159,9 +151,6 @@ int pcibios_plat_dev_init(struct pci_dev *dev)
+ 				       PCI_ERR_ROOT_CMD_COR_EN |
+ 				       PCI_ERR_ROOT_CMD_NONFATAL_EN |
+ 				       PCI_ERR_ROOT_CMD_FATAL_EN);
+-		/* Clear the Root status register */
+-		pci_read_config_dword(dev, pos + PCI_ERR_ROOT_STATUS, &dconfig);
+-		pci_write_config_dword(dev, pos + PCI_ERR_ROOT_STATUS, dconfig);
+ 	}
+ 
+ 	return 0;
 -- 
-Jani Nikula, Intel Open Source Graphics Center
+2.25.1
+
