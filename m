@@ -2,105 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 327A9420B2D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:49:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34E2C420B31
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:50:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233226AbhJDMvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 08:51:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55764 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229836AbhJDMvN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 08:51:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B20396124C;
-        Mon,  4 Oct 2021 12:49:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633351764;
-        bh=+HwUhsuP6MVKRpgbKf+vXOZOCYCgZp8OBkYFKe3NbyE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=k2rzhQnyHr6jnh5xTvXNa+gPYf7uCWtdQFWsNzYolRM5TM7kOLAMEB7LcZbNLATU+
-         bKxpbxah0ol0M/TGU7dAGCKTyYZTtbqfEpP95HRHVv8bZvL+s8/Ad1XN1AJoYpbCek
-         8nGPkVECzAcDKAd/tUXPTEP9fLZ6hzNoD1G89zUmpaWqrMP3Ex23OPNLtHrMfwVzeQ
-         9oPxekGskiNYLVX3ehkEU70vmYdJB6dWnB2b7P0HKAKrMILX6c6B+eab2zbvbrGkth
-         hltyOBaIc+VW5NUL8yyfBZuNBCplwNEf9Tzv/YS4eWVoZaSp84W1HbteTRSK5Ryibq
-         sSCYFvbMBLtbA==
-Date:   Mon, 4 Oct 2021 13:49:21 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Lino Sanfilippo <LinoSanfilippo@gmx.de>
-Cc:     f.fainelli@gmail.com, rjui@broadcom.com, sbranden@broadcom.com,
-        bcm-kernel-feedback-list@broadcom.com, nsaenz@kernel.org,
-        linux-spi@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        jgg@ziepe.ca, p.rosenberger@kunbus.com,
-        linux-integrity@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] spi: bcm2835: do not unregister controller in shutdown
- handler
-Message-ID: <YVr4USeiIoQJ0Pqh@sirena.org.uk>
-References: <20210928195657.5573-1-LinoSanfilippo@gmx.de>
- <20211001175422.GA53652@sirena.org.uk>
- <2c4d7115-7a02-f79e-c91b-3c2dd54051b2@gmx.de>
+        id S233256AbhJDMwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 08:52:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54300 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231765AbhJDMwg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 08:52:36 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AB21C061745
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 05:50:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=w06njsaoptfGFZhduTTmP+jVNtUqi6f3nj+AGSbnhxc=; b=eTROU0Y4/l0j7/eY9ZOmYm4kJW
+        ckvlKG0vk21fEP1C2Mw61p4eFJ+1RPM645gR/FGNrAr/OGZMRH6DCaUayUyHFKhyl4i6D8zHBIsot
+        klKzYMe+HOLp9izRyZR+7Ev96RkpMs2YKOvdiuRDfN4QROKamHhY4hGMx+zrXY2YdnraFyg22/D9C
+        ZconhXr47ls2jWJW+7a9HMtuupBBQIP1gsHXPNs6tNA0QmDSw6lsiJ7zYYZ8I8oUIHb81Gz7lOnH0
+        rVYPmyfrP89DjSw63zfFK8WyHcFKRaGRkdAaXiT5CJDpnubHzJPGuyHNce2w5TBAcM3c9U9kNb2KV
+        YiH2H6aQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mXNPV-00GqoP-Ir; Mon, 04 Oct 2021 12:49:57 +0000
+Date:   Mon, 4 Oct 2021 13:49:37 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC] mm: Optimise put_pages_list()
+Message-ID: <YVr4YXpsPZtoxDtO@casper.infradead.org>
+References: <20210930163258.3114404-1-willy@infradead.org>
+ <20211004091037.GM3959@techsingularity.net>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="RcF28Bs204Ejhms1"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2c4d7115-7a02-f79e-c91b-3c2dd54051b2@gmx.de>
-X-Cookie: If it heals good, say it.
+In-Reply-To: <20211004091037.GM3959@techsingularity.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Oct 04, 2021 at 10:10:37AM +0100, Mel Gorman wrote:
+> On Thu, Sep 30, 2021 at 05:32:58PM +0100, Matthew Wilcox (Oracle) wrote:
+> > Instead of calling put_page() one page at a time, pop pages off
+> > the list if there are other refcounts and pass the remainder
+> > to free_unref_page_list().  This should be a speed improvement,
+> > but I have no measurements to support that.  It's also not very
+> > widely used today, so I can't say I've really tested it.  I'm only
+> > bothering with this patch because I'd like the IOMMU code to use it
+> > https://lore.kernel.org/lkml/20210930162043.3111119-1-willy@infradead.org/
+> > 
+> > Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> 
+> I see your motivation but you need to check that all users of
+> put_pages_list (current and future) handle destroy_compound_page properly
+> or handle it within put_pages_list. For example, the release_pages()
+> user of free_unref_page_list calls __put_compound_page directly before
+> freeing. put_pages_list as it stands will call dstroy_compound_page but
+> free_unref_page_list does not destroy compound pages in free_pages_prepare
 
---RcF28Bs204Ejhms1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Quite right.  I was really only thinking about order-zero pages because
+there aren't any users of compound pages that call this.  But of course,
+we should be robust against future callers.  So the obvious thing to do
+is to copy what release_pages() does:
 
-On Sun, Oct 03, 2021 at 05:25:47PM +0200, Lino Sanfilippo wrote:
++++ b/mm/swap.c
+@@ -144,6 +144,10 @@ void put_pages_list(struct list_head *pages)
+        list_for_each_entry_safe(page, next, pages, lru) {
+                if (!put_page_testzero(page))
+                        list_del(&page->lru);
++               if (PageCompound(page)) {
++                       list_del(&page->lru);
++                       __put_compound_page(page);
++               }
+        }
 
-> I see your point here. So what about narrowing down the shutdown handler
-> to only disable the hardware:
+        free_unref_page_list(pages);
 
-> static void bcm2835_spi_shutdown(struct platform_device *pdev)
-> {
-> 	struct spi_controller *ctlr =3D platform_get_drvdata(pdev);
-> 	struct bcm2835_spi *bs =3D spi_controller_get_devdata(ctlr);
->=20
-> 	if (ctlr->dma_tx)
-> 		dmaengine_terminate_sync(ctlr->dma_tx);
->=20
-> 	if (ctlr->dma_rx)
-> 		dmaengine_terminate_sync(ctlr->dma_rx);
->=20
-> 	/* Clear FIFOs, and disable the HW block */
-> 	bcm2835_wr(bs, BCM2835_SPI_CS,
-> 		   BCM2835_SPI_CS_CLEAR_RX | BCM2835_SPI_CS_CLEAR_TX);
->=20
-> 	clk_disable_unprepare(bs->clk);
-> }
+But would it be better to have free_unref_page_list() handle compound
+pages itself?
 
-This still leaves a potential race where something (eg, an interrupt
-handler) could come in and try to schedule more SPI transfers on the
-shut down hardware.  I'm really not sure we can do something that's
-totally robust here without also ensuring that all the client drivers
-also have effective shutdown implementations (which seems ambitious) or
-doing what we have now and unregistering the clients.  I am, however,
-wondering if we really need the shutdown callback at all - the commit
-adding it just describes what it's doing, it doesn't explain why it's
-particularly needed.  I guess there might be an issue on reboot with
-reset not completely resetting the hardware?
++++ b/mm/page_alloc.c
+@@ -3427,6 +3427,11 @@ void free_unref_page_list(struct list_head *list)
 
---RcF28Bs204Ejhms1
-Content-Type: application/pgp-signature; name="signature.asc"
+        /* Prepare pages for freeing */
+        list_for_each_entry_safe(page, next, list, lru) {
++               if (PageCompound(page)) {
++                       __put_compound_page(page);
++                       list_del(&page->lru);
++                       continue;
++               }
+                pfn = page_to_pfn(page);
+                if (!free_unref_page_prepare(page, pfn, 0)) {
+                        list_del(&page->lru);
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFa+FEACgkQJNaLcl1U
-h9Aw9wf/Q1ESD1wDdZcEiaAk3DV1WXkmfSTqsKkW5cXYRyNVoUNqBH6qZIDJWV9t
-l5qRi5zzy+yxR4mj1JKYTxidOe8N0SxRxqnGus6CQ9ZBjuGWOV9GK6gT+15eoLR4
-+g2ew8Kg6j1VBn5tvZyZYvqmKYwd5FxxF5hBE7NeIU8J8nbe5MHWl4jPkJ8SDvJb
-KofgwdfezKmkR6eioIJtYKKaxUxgK1JWb33TYGQvKXu5MeMoroR0BjoWJ6k/cOim
-+srK5/1OMyVMBXoHXj8rEHJ+uNEtvXcriwM5UkreCeMiLSpf1ayUehz1wxB0aAXq
-h5uj2fyE1BzNy1id1yqSDsutP49RkA==
-=yMkL
------END PGP SIGNATURE-----
-
---RcF28Bs204Ejhms1--
+(and delete the special handling from release_pages() in the same patch)
