@@ -2,193 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBBA74206AB
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 09:31:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 059114206AC
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 09:33:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229995AbhJDHdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 03:33:32 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:40410
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230004AbhJDHda (ORCPT
+        id S230163AbhJDHfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 03:35:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37610 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229741AbhJDHfK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 03:33:30 -0400
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com [209.85.208.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id C7335402C9
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 07:31:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1633332700;
-        bh=yMz7a2U4h7tYNWu8HY/sX3yR4RwoKAQESOaigGzONNc=;
-        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=GRDTCJT1m4fZbKTsLeOHaP3WHDe4BrsXV8VT2ghTEEuQ3WjywQEPILgdrohlzDQs/
-         SSQdJJYJkKZ2oMbn+Fbfhwp5WEibcZCo1yezaMbjO/Qsr9DoxfDI5LtqOEimDrpDKD
-         YR0ScX2/13n3BaYooN5Z2OfKIYJkUTw2oJV+tQpHlJHtSV3j0/Z9sSxeTtkIaLHgPp
-         L0F7EdFlunLfXAP3qHe44UCor6vFM5j5qLASEPjXmTrPttLyvpTfu25b/zWB4lyYpZ
-         8w5an+sRnuDlAPjsoYuP1KGV7AT2sGJ6a/inKCRug8Es5xKRKU4jPNf/TkAz9jEE9S
-         AjLic5mn+jLKA==
-Received: by mail-ed1-f70.google.com with SMTP id w8-20020a50c448000000b003dae8d38037so3196642edf.8
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 00:31:40 -0700 (PDT)
+        Mon, 4 Oct 2021 03:35:10 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D548C061745
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 00:33:21 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id x7so59776466edd.6
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 00:33:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cV11GKQpiiSfjsUTcqQtG5ZPcTMMGpjKKrTGh/xwTKw=;
+        b=ZB3e9lLY3b1ckvvg+8RSjH7XT6XaptWwSV9uvOV4cu3oHGaMZHQaBkqBXlvZPH/CGG
+         rMqCb5otZH36vpr54gCd/iOT0hh03eFZCR6ktllIiupJLvSZrdJU08/zVgNIdFHJBEIX
+         GaGmMV0DkYBddY+BS1HaFTiJUgLmTiEsF+SuayUg+wSqYI61UDzSwGVRMZ49tTAOG+xb
+         asmUw9I7vr9kkgnWdLCMyjXw9rAQ5ThM1rrwzU8vdZhDUvxioCXeiLZ3xVb0/HxCFVUS
+         ziLaDJLIYD9RawoebNYwJ+UVIl5yiYDIQJmVR2eFdC8fbfibP1buIYNK5cNDw72L1Go2
+         rnHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=yMz7a2U4h7tYNWu8HY/sX3yR4RwoKAQESOaigGzONNc=;
-        b=KDl0wlepc5NooAHyH6mqcD/OJsJw7d3GbuWVBEIzkVbGvFMmrWHmjzQZfGx7KrWpRE
-         QPE/RgSLLLeOGGFDlsbBtTYDqxOHcR0C8nQPScOfnYHaUz16ONzwnRksRj7bYB38PeWM
-         Y2NVk63guV6b0buxJA5LOjnGODCcM885IERgq+L24+tUl9Z94Wv3ReYKmUhVKSQLtb1G
-         ylXPl/DstVlb6CzKFNnLYWTcYi5TcpZz3S3r5bnI27FEJjzgMEbbs7DAYJYFZhUW+9Df
-         FRCftLeaOom27mnVOh6jBZ9QUEwnXvnqq8DbvjsgwbRQCMx3j9vJhr/omPEF2lWLpYfv
-         4Hvw==
-X-Gm-Message-State: AOAM532zhT7sA4ODN2yobK+pbepLB99x7kSJVp9I5DOjICG2FyeKmfze
-        FAJxwH8vXuf6YT8iw6ME92FsXjOaND/wNU2tiP7SbF3UPO4++3zpaDHnrsMK68tjAC1RR1MGoMx
-        rxcOSjIMIkPmlgk+UxHjquMEoMOjH0FtYwjZR3cpVBiIggolm6mfMyssGTw==
-X-Received: by 2002:a17:906:ed1:: with SMTP id u17mr16035058eji.304.1633332699389;
-        Mon, 04 Oct 2021 00:31:39 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzHAhKgffAcQ9Ok5Z/TiUwt7wu3AralX9OFoEmbqnI+tZ2U37Ef48COxQfqHUgegwirzhI9KM/V5gt3fvDAjXQ=
-X-Received: by 2002:a17:906:ed1:: with SMTP id u17mr16035032eji.304.1633332699195;
- Mon, 04 Oct 2021 00:31:39 -0700 (PDT)
+        bh=cV11GKQpiiSfjsUTcqQtG5ZPcTMMGpjKKrTGh/xwTKw=;
+        b=RcbMvQi/O+qMBy/j3aviQfcmly0zsVaqY9jRJ2XvS8PvnGoINLHnsF9xw8mLRVZkY/
+         I0uX78QD2GlPprbzU/+sI50q/M4DX7vGEIF5k2tmVLpZM5981T9OhNfJnIN5sUF+sZ3G
+         CX8dzfTHyqbmne5tlz9Vy9vR+CUkaQdFuSKMQYsNzg3kF4iEJpnZMTGSimkR6lzcT8uU
+         fW7PGGd6qiyHBv5LZDsg+MFvJODJVB0m+aqFsSBaOmwp0Q4JaT7NWHKA0qrFhHUZ2Oec
+         RvNz9asb6OQc+JuLHUsU7vyvr2Otyx8Uj0qCYpUy+pEkXPwn2qXIYNG0pmHjJrZpUryg
+         mSMA==
+X-Gm-Message-State: AOAM53312Xhl2NPfdWOUqnUZ49ItYE1ktuV6B+qcZX9Te6LM6ZYMDZWe
+        hWmThACngczq6TuNPIuGAQ3IXIIkn9SFTnNr9s7aRzDVWxU=
+X-Google-Smtp-Source: ABdhPJw8opFzwpe7dpLm4gPVrIl1QFUXEW3nNS2ue5ebQ1RgE+zU+brMkpBuU9QnczSm3nal7U1Hr3HLrkp+qcBxVtE=
+X-Received: by 2002:a17:906:5a47:: with SMTP id my7mr15059199ejc.128.1633332798510;
+ Mon, 04 Oct 2021 00:33:18 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210929145113.1935778-1-alexandre.ghiti@canonical.com>
- <20210929145113.1935778-5-alexandre.ghiti@canonical.com> <748a2c58-4d69-6457-0aa5-89797cb45a5c@sholland.org>
-In-Reply-To: <748a2c58-4d69-6457-0aa5-89797cb45a5c@sholland.org>
-From:   Alexandre Ghiti <alexandre.ghiti@canonical.com>
-Date:   Mon, 4 Oct 2021 09:31:26 +0200
-Message-ID: <CA+zEjCv-2ONyXykRLP2dabELimYbbCmREP5v6DfeV5zk5T+zRg@mail.gmail.com>
-Subject: Re: [PATCH v2 04/10] riscv: Implement sv48 support
-To:     Samuel Holland <samuel@sholland.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Zong Li <zong.li@sifive.com>, Anup Patel <anup@brainfault.org>,
-        Atish Patra <Atish.Patra@wdc.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Kees Cook <keescook@chromium.org>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Heinrich Schuchardt <heinrich.schuchardt@canonical.com>,
-        Mayuresh Chitale <mchitale@ventanamicro.com>,
-        linux-doc@vger.kernel.org,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        kasan-dev@googlegroups.com, linux-efi@vger.kernel.org,
-        linux-arch@vger.kernel.org
+References: <20211001150316.12545-1-andriy.shevchenko@linux.intel.com> <2bee95f7-d54d-5d65-3c9b-91d8db228b09@enneenne.com>
+In-Reply-To: <2bee95f7-d54d-5d65-3c9b-91d8db228b09@enneenne.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 4 Oct 2021 10:32:42 +0300
+Message-ID: <CAHp75VcP3DCQAbLNXvNzmdB3+sBNNu=_BfkbY5v1c1okX=wOdw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] pps: generators: pps_gen_parport: Switch to use module_parport_driver()
+To:     Rodolfo Giometti <giometti@enneenne.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alexander Gordeev <lasaine@lvk.cs.msu.su>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 4, 2021 at 3:34 AM Samuel Holland <samuel@sholland.org> wrote:
+On Mon, Oct 4, 2021 at 9:52 AM Rodolfo Giometti <giometti@enneenne.com> wrote:
 >
-> On 9/29/21 9:51 AM, Alexandre Ghiti wrote:
-> > By adding a new 4th level of page table, give the possibility to 64bit
-> > kernel to address 2^48 bytes of virtual address: in practice, that offers
-> > 128TB of virtual address space to userspace and allows up to 64TB of
-> > physical memory.
-> >
-> > If the underlying hardware does not support sv48, we will automatically
-> > fallback to a standard 3-level page table by folding the new PUD level into
-> > PGDIR level. In order to detect HW capabilities at runtime, we
-> > use SATP feature that ignores writes with an unsupported mode.
-> >
-> > Signed-off-by: Alexandre Ghiti <alexandre.ghiti@canonical.com>
-> > ---
-> >  arch/riscv/Kconfig                      |   4 +-
-> >  arch/riscv/include/asm/csr.h            |   3 +-
-> >  arch/riscv/include/asm/fixmap.h         |   1 +
-> >  arch/riscv/include/asm/kasan.h          |   2 +-
-> >  arch/riscv/include/asm/page.h           |  10 +
-> >  arch/riscv/include/asm/pgalloc.h        |  40 ++++
-> >  arch/riscv/include/asm/pgtable-64.h     | 108 ++++++++++-
-> >  arch/riscv/include/asm/pgtable.h        |  13 +-
-> >  arch/riscv/kernel/head.S                |   3 +-
-> >  arch/riscv/mm/context.c                 |   4 +-
-> >  arch/riscv/mm/init.c                    | 237 ++++++++++++++++++++----
-> >  arch/riscv/mm/kasan_init.c              |  91 +++++++--
-> >  drivers/firmware/efi/libstub/efi-stub.c |   2 +
-> >  13 files changed, 453 insertions(+), 65 deletions(-)
-> >
-> > diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> > index 13e9c4298fbc..69c5533955ed 100644
-> > --- a/arch/riscv/Kconfig
-> > +++ b/arch/riscv/Kconfig
-> > @@ -149,7 +149,7 @@ config PAGE_OFFSET
-> >       hex
-> >       default 0xC0000000 if 32BIT
-> >       default 0x80000000 if 64BIT && !MMU
-> > -     default 0xffffffe000000000 if 64BIT
-> > +     default 0xffffc00000000000 if 64BIT
-> >
-> >  config ARCH_FLATMEM_ENABLE
-> >       def_bool !NUMA
-> > @@ -197,7 +197,7 @@ config FIX_EARLYCON_MEM
-> >
-> >  config PGTABLE_LEVELS
-> >       int
-> > -     default 3 if 64BIT
-> > +     default 4 if 64BIT
-> >       default 2
-> >
-> >  config LOCKDEP_SUPPORT
-> > diff --git a/arch/riscv/include/asm/csr.h b/arch/riscv/include/asm/csr.h
-> > index 87ac65696871..3fdb971c7896 100644
-> > --- a/arch/riscv/include/asm/csr.h
-> > +++ b/arch/riscv/include/asm/csr.h
-> > @@ -40,14 +40,13 @@
-> >  #ifndef CONFIG_64BIT
-> >  #define SATP_PPN     _AC(0x003FFFFF, UL)
-> >  #define SATP_MODE_32 _AC(0x80000000, UL)
-> > -#define SATP_MODE    SATP_MODE_32
-> >  #define SATP_ASID_BITS       9
-> >  #define SATP_ASID_SHIFT      22
-> >  #define SATP_ASID_MASK       _AC(0x1FF, UL)
-> >  #else
-> >  #define SATP_PPN     _AC(0x00000FFFFFFFFFFF, UL)
-> >  #define SATP_MODE_39 _AC(0x8000000000000000, UL)
-> > -#define SATP_MODE    SATP_MODE_39
-> > +#define SATP_MODE_48 _AC(0x9000000000000000, UL)
-> >  #define SATP_ASID_BITS       16
-> >  #define SATP_ASID_SHIFT      44
-> >  #define SATP_ASID_MASK       _AC(0xFFFF, UL)
-> > diff --git a/arch/riscv/include/asm/fixmap.h b/arch/riscv/include/asm/fixmap.h
-> > index 54cbf07fb4e9..58a718573ad6 100644
-> > --- a/arch/riscv/include/asm/fixmap.h
-> > +++ b/arch/riscv/include/asm/fixmap.h
-> > @@ -24,6 +24,7 @@ enum fixed_addresses {
-> >       FIX_HOLE,
-> >       FIX_PTE,
-> >       FIX_PMD,
-> > +     FIX_PUD,
-> >       FIX_TEXT_POKE1,
-> >       FIX_TEXT_POKE0,
-> >       FIX_EARLYCON_MEM_BASE,
-> > diff --git a/arch/riscv/include/asm/kasan.h b/arch/riscv/include/asm/kasan.h
-> > index a2b3d9cdbc86..1dcf5fa93aa0 100644
-> > --- a/arch/riscv/include/asm/kasan.h
-> > +++ b/arch/riscv/include/asm/kasan.h
-> > @@ -27,7 +27,7 @@
-> >   */
-> >  #define KASAN_SHADOW_SCALE_SHIFT     3
-> >
-> > -#define KASAN_SHADOW_SIZE    (UL(1) << ((CONFIG_VA_BITS - 1) - KASAN_SHADOW_SCALE_SHIFT))
-> > +#define KASAN_SHADOW_SIZE    (UL(1) << ((VA_BITS - 1) - KASAN_SHADOW_SCALE_SHIFT))
+> On 01/10/21 17:03, Andy Shevchenko wrote:
+> > Switch to use module_parport_driver() to reduce boilerplate code.
+
+...
+
+> > -#define DRVDESC "parallel port PPS signal generator"
+> > -
 >
-> Does this change belong in patch 1, where you remove CONFIG_VA_BITS?
-
-Indeed, I fixed KASAN in this version and wrongly rebased the changes.
-
-Thanks!
-
-Alex
-
+> I suppose this is not so important to be able to switch to use
+> module_parport_driver(), isn't it?
 >
-> Regards,
-> Samuel
+> However, aprat this silly note, the patch is OK for me. :)
+
+Thanks! Can you give a formal tag?
+
+-- 
+With Best Regards,
+Andy Shevchenko
