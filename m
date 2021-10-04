@@ -2,259 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DABE42079F
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 10:54:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20AFC4207A3
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 10:55:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230238AbhJDIzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 04:55:49 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:43300
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229957AbhJDIzr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 04:55:47 -0400
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com [209.85.167.72])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id B60883F32F
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 08:53:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1633337637;
-        bh=71ELWtPpZZISf+1vUEjSA6ln2kWthmOsT7ZPHlj/b1k=;
-        h=To:Cc:References:From:Subject:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=npaVMrudcwvBas4aCE8vJHlV7tqTFgRvMvVL6GJH+eB6wF4qPkhrVlJSbZOdrtE8I
-         UpsuvMcBXxX683l0too7gKRBMu70UquPN+HQ+gMdaOZOP5DFqQuMrN80i1Esy0wJee
-         3MVQkT5H1dHPjkhq0LsCX12ZEHxhBce60+yvOoftoCSSuxkVLXuwhkWPVSEUtscnd6
-         wemWAJN7Az1Qhb+3FAF3lVLa0f9gwwTNQJYmqj0oAYi2vNwCreaTyxIXGOLfGijYp+
-         FPRY23Rf2z2peY3ENiBZ4gwyH9CeN4Mx1VCOOTWQ7nvyS47TS517QtAzQ1of4uoGO8
-         olDdeDkEoPuPQ==
-Received: by mail-lf1-f72.google.com with SMTP id i40-20020a0565123e2800b003f53da59009so13671363lfv.16
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 01:53:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=71ELWtPpZZISf+1vUEjSA6ln2kWthmOsT7ZPHlj/b1k=;
-        b=JL07ETt0R/i4vFlacDuehple3rmbqeaQmuYsSX2SaBcuge1JUXUHUlbL2Q6mvr0CPg
-         BDR6MrzBL0Mwup0IUSvUU+ZRkpwLhHv6UzuqjQF+UyaexqHnDDcHfBUdghD2oRF8jpYf
-         l68Zv4DaG2g1HzCleFdyttAPMvdJwK9W027NMiJIS56JpDYM6WCb7CGPUlY9CC1yXCW3
-         tyDUMLMHDJyc3Kji2CmuKxN5QRg7E63HuAesMNfOwEmYUvSzB8VBRaUh9uPTvObeVZ5a
-         EmZ917VJTJ5zMX82+pRO01/QdxefW4PJdREtp5zAMNRgQAg3o+hRqQfOzZeTf6jmSKJv
-         QCHA==
-X-Gm-Message-State: AOAM533YwCkKZwAwWEn11tn6yL1YYe02gW+HDWXTTSMh5TzmBXhLXFWo
-        F0RkU+17OdE0RWHC+15KZ4w+EALPzJQfH1pFGgTEUCZeSiCc4TfzWiK5f5yoJPqhv6JYU31VU8i
-        FMgl7OJgudvSjRZPD/3OQvIexvTcD6n4mwmO+9z8cnA==
-X-Received: by 2002:a2e:98c3:: with SMTP id s3mr15139254ljj.430.1633337637081;
-        Mon, 04 Oct 2021 01:53:57 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwfWdSl7B2R3oNBVCNp9YpdKqL28Kn2UfjHTQQDrfgBzJ0Tji2prhmuXItfwhgI0canmNE1Sw==
-X-Received: by 2002:a2e:98c3:: with SMTP id s3mr15139233ljj.430.1633337636857;
-        Mon, 04 Oct 2021 01:53:56 -0700 (PDT)
-Received: from [192.168.0.197] ([193.178.187.25])
-        by smtp.gmail.com with ESMTPSA id f10sm1556552ljp.55.2021.10.04.01.53.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Oct 2021 01:53:56 -0700 (PDT)
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-References: <20211003013235.2357-1-digetx@gmail.com>
- <20211003013235.2357-4-digetx@gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Subject: Re: [PATCH v3 3/4] memory: Add LPDDR2 configuration helpers
-Message-ID: <b1454c93-375c-f4e3-0da7-291bfcc53897@canonical.com>
-Date:   Mon, 4 Oct 2021 10:53:55 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S230408AbhJDI5D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 04:57:03 -0400
+Received: from first.geanix.com ([116.203.34.67]:37330 "EHLO first.geanix.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229631AbhJDI5C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 04:57:02 -0400
+Received: from skn-laptop (_gateway [172.25.0.1])
+        by first.geanix.com (Postfix) with ESMTPSA id 4AFDAB42F1;
+        Mon,  4 Oct 2021 08:55:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
+        t=1633337711; bh=sOyzdYHDj4ghiyZr/0ilGGXA7moAY6qAFtH09e2W4oc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=VGgEnq+fZA7uK9AK/O+vMbIK4PG4hi/vzPzwqkFIVaj+18/gOk199Fsrjc2WLB1Z5
+         ibP061jSX8xezrFXuUVPIq9y/TFwCrp4ge21V8kyk/E16EfrilJKbC91hQ3fgfki0M
+         UPX32uW/caehIgMlU5rHJR6LIYq2fGWuqylygm+qpHptALF/bXRfGYCoU0UlELr8Ol
+         Q6lKHuCKBw7m5FQR9GjZp0fFTk5+jYQZel930Icl+xMh887UhZeUQlPi2B38OFT4/S
+         N5FXJtwTZwxgMJJpKXigl9u7h/srTC8ORN7Ig2TEQoYslseJAy95ddIAen3ZnhLkLl
+         Oix9Iyw5gzxqQ==
+Date:   Mon, 4 Oct 2021 10:55:09 +0200
+From:   Sean Nyekjaer <sean@geanix.com>
+To:     Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] mtd: rawnand: use mutex to protect access while in
+ suspend
+Message-ID: <20211004085509.iikxtdvxpt6bri5c@skn-laptop>
+References: <20211004065608.3190348-1-sean@geanix.com>
+ <20211004104147.579f3b01@collabora.com>
 MIME-Version: 1.0
-In-Reply-To: <20211003013235.2357-4-digetx@gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Disposition: inline
+In-Reply-To: <20211004104147.579f3b01@collabora.com>
+X-Spam-Status: No, score=-3.1 required=4.0 tests=ALL_TRUSTED,BAYES_00,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,URIBL_BLOCKED
+        autolearn=disabled version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on 13e2a5895688
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/10/2021 03:32, Dmitry Osipenko wrote:
-> Add helpers for reading and parsing standard LPDDR2 properties.
+On Mon, Oct 04, 2021 at 10:41:47AM +0200, Boris Brezillon wrote:
+> On Mon,  4 Oct 2021 08:56:09 +0200
+> Sean Nyekjaer <sean@geanix.com> wrote:
 > 
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  drivers/memory/jedec_ddr.h      | 21 +++++++++++++++++
->  drivers/memory/jedec_ddr_data.c | 42 +++++++++++++++++++++++++++++++++
->  drivers/memory/of_memory.c      | 34 ++++++++++++++++++++++++++
->  drivers/memory/of_memory.h      |  9 +++++++
->  4 files changed, 106 insertions(+)
+> > This will prevent nand_get_device() from returning -EBUSY.
+> > It will force mtd_write()/mtd_read() to wait for the nand_resume() to unlock
+> > access to the mtd device.
+> > 
+> > Then we avoid -EBUSY is returned to ubifsi via mtd_write()/mtd_read(),
+> > that will in turn hard error on every error returened.
+> > We have seen during ubifs tries to call mtd_write before the mtd device
+> > is resumed.
 > 
-> diff --git a/drivers/memory/jedec_ddr.h b/drivers/memory/jedec_ddr.h
-> index e59ccbd982d0..14cef272559e 100644
-> --- a/drivers/memory/jedec_ddr.h
-> +++ b/drivers/memory/jedec_ddr.h
-> @@ -230,4 +230,25 @@ struct lpddr3_min_tck {
->  	u32 tMRD;
->  };
->  
-> +union lpddr2_basic_config4 {
-> +	u32 value;
-> +
-> +	struct {
-> +		unsigned int arch_type : 2;
-> +		unsigned int density : 4;
-> +		unsigned int io_width : 2;
-> +	} __packed;
-> +};
-> +
-> +struct lpddr2_configuration {
-> +	int arch_type;
-> +	int density;
-> +	int io_width;
-> +	int manufacturer_id;
-> +	int revision_id1;
-> +	int revision_id2;
-> +};
-> +
-> +const char *lpddr2_jedec_manufacturer(unsigned int manufacturer_id);
-> +
->  #endif /* __JEDEC_DDR_H */
-> diff --git a/drivers/memory/jedec_ddr_data.c b/drivers/memory/jedec_ddr_data.c
-> index ed601d813175..1f214716ac45 100644
-> --- a/drivers/memory/jedec_ddr_data.c
-> +++ b/drivers/memory/jedec_ddr_data.c
-> @@ -7,6 +7,7 @@
->   * Aneesh V <aneesh@ti.com>
->   */
->  
-> +#include <dt-bindings/memory/lpddr2.h>
->  #include <linux/export.h>
->  
->  #include "jedec_ddr.h"
-> @@ -131,3 +132,44 @@ const struct lpddr2_min_tck lpddr2_jedec_min_tck = {
->  	.tFAW		= 8
->  };
->  EXPORT_SYMBOL_GPL(lpddr2_jedec_min_tck);
-> +
-> +const char *lpddr2_jedec_manufacturer(unsigned int manufacturer_id)
-> +{
-> +	switch (manufacturer_id) {
-> +	case LPDDR2_MANID_SAMSUNG:
-> +		return "Samsung";
-> +	case LPDDR2_MANID_QIMONDA:
-> +		return "Qimonda";
-> +	case LPDDR2_MANID_ELPIDA:
-> +		return "Elpida";
-> +	case LPDDR2_MANID_ETRON:
-> +		return "Etron";
-> +	case LPDDR2_MANID_NANYA:
-> +		return "Nanya";
-> +	case LPDDR2_MANID_HYNIX:
-> +		return "Hynix";
-> +	case LPDDR2_MANID_MOSEL:
-> +		return "Mosel";
-> +	case LPDDR2_MANID_WINBOND:
-> +		return "Winbond";
-> +	case LPDDR2_MANID_ESMT:
-> +		return "ESMT";
-> +	case LPDDR2_MANID_SPANSION:
-> +		return "Spansion";
-> +	case LPDDR2_MANID_SST:
-> +		return "SST";
-> +	case LPDDR2_MANID_ZMOS:
-> +		return "ZMOS";
-> +	case LPDDR2_MANID_INTEL:
-> +		return "Intel";
-> +	case LPDDR2_MANID_NUMONYX:
-> +		return "Numonyx";
-> +	case LPDDR2_MANID_MICRON:
-> +		return "Micron";
-> +	default:
-> +		break;
-> +	}
-> +
-> +	return "invalid";
-> +}
-> +EXPORT_SYMBOL_GPL(lpddr2_jedec_manufacturer);
-> diff --git a/drivers/memory/of_memory.c b/drivers/memory/of_memory.c
-> index d9f5437d3bce..8aa777f2a090 100644
-> --- a/drivers/memory/of_memory.c
-> +++ b/drivers/memory/of_memory.c
-> @@ -298,3 +298,37 @@ const struct lpddr3_timings
->  	return NULL;
->  }
->  EXPORT_SYMBOL(of_lpddr3_get_ddr_timings);
-> +
-> +/**
-> + * of_lpddr2_get_config() - extracts the lpddr2 chip configuration.
-> + * @np: Pointer to device tree node containing configuration
-> + * @conf: Configuration updated by this function
-> + *
-> + * Populates lpddr2_configuration structure by extracting data from device
-> + * tree node. Returns 0 on success or error code on failure. If property
-> + * is missing in device-tree, then the corresponding @conf value is set to
-> + * -ENOENT.
-> + */
-> +int of_lpddr2_get_config(struct device_node *np,
-> +			 struct lpddr2_configuration *conf)
-> +{
-
-Interface should be rather like of_get_ddr_timings() - allocate memory
-for structure and return it. It's less error-prone.
-
-> +	int err, ret = -ENOENT;
-> +
-> +#define OF_LPDDR2_READ_U32(prop, dtprop) \
-> +	err = of_property_read_u32(np, dtprop, &conf->prop); \
-> +	if (err) \
-> +		conf->prop = -ENOENT; \
-> +	else \
-> +		ret = 0
-> +
-> +	/* at least one property should be parsed */
-> +	OF_LPDDR2_READ_U32(manufacturer_id, "jedec,lpddr2-manufacturer-id");
-> +	OF_LPDDR2_READ_U32(revision_id1, "jedec,lpddr2-revision-id1");
-> +	OF_LPDDR2_READ_U32(revision_id2, "jedec,lpddr2-revision-id2");
-> +	OF_LPDDR2_READ_U32(io_width, "jedec,lpddr2-io-width-bits");
-> +	OF_LPDDR2_READ_U32(density, "jedec,lpddr2-density-mbits");
-> +	OF_LPDDR2_READ_U32(arch_type, "jedec,lpddr2-type");
-
-density and io-width are required properties in existing bindings, so
-return code should not be overridden.
-
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL(of_lpddr2_get_config);
-> diff --git a/drivers/memory/of_memory.h b/drivers/memory/of_memory.h
-> index 4a99b232ab0a..95eccc251b04 100644
-> --- a/drivers/memory/of_memory.h
-> +++ b/drivers/memory/of_memory.h
-> @@ -20,6 +20,9 @@ const struct lpddr3_min_tck *of_lpddr3_get_min_tck(struct device_node *np,
->  const struct lpddr3_timings *
->  of_lpddr3_get_ddr_timings(struct device_node *np_ddr,
->  			  struct device *dev, u32 device_type, u32 *nr_frequencies);
-> +
-> +int of_lpddr2_get_config(struct device_node *np,
-> +			 struct lpddr2_configuration *conf);
->  #else
->  static inline const struct lpddr2_min_tck
->  	*of_get_min_tck(struct device_node *np, struct device *dev)
-> @@ -46,6 +49,12 @@ static inline const struct lpddr3_timings
->  {
->  	return NULL;
->  }
-> +
-> +static int of_lpddr2_get_config(struct device_node *np,
-> +				struct lpddr2_configuration *conf)
-> +{
-> +	return -ENOENT;
-> +}
->  #endif /* CONFIG_OF && CONFIG_DDR */
->  
->  #endif /* __LINUX_MEMORY_OF_REG_ */
+> I think the problem is here. Why would UBIFS/UBI try to write something
+> to a device that's not resumed yet (or has been suspended already, if
+> you hit this in the suspend path).
+> 
+> > 
+> > Exec_op[0] speed things up, so we see this race when the device is
+> > resuming. But it's actually "mtd: rawnand: Simplify the locking" that
+> > allows it to return -EBUSY, before that commit it would have waited for
+> > the mtd device to resume.
+> 
+> Uh, wait. If nand_resume() was called before any writes/reads this
+> wouldn't happen. IMHO, the problem is not that we return -EBUSY without
+> blocking, the problem is that someone issues a write/read before calling
+> mtd_resume().
 > 
 
+The commit msg from "mtd: rawnand: Simplify the locking" states this clearly.
 
-Best regards,
-Krzysztof
+"""
+Last important change to mention: we now return -EBUSY when someone
+tries to access a device that as been suspended, and propagate this
+error to the upper layer.
+"""
+
+IMHO "mtd: rawnand: Simplify the locking" should never had been merged
+before the upper layers was fixed to handle -EBUSY. ;)
+Which they still not are...
+
+Yes, guess there is data in the ubifs queue when going into suspend,
+then the ubifs kthread is starting writing when the cpu resumes.
+Before mtd_resume() and other pm_resume() handles are called.
+
+How would you have ubifs to wait for mtd_resume()? If you don't like
+this mutex solution?
+
+> > 
+> > Tested on a iMX6ULL.
+> > 
+> > [0]:
+> > ef347c0cfd61 ("mtd: rawnand: gpmi: Implement exec_op")
+> > 
+> > Fixes: 013e6292aaf5 ("mtd: rawnand: Simplify the locking")
+> > Signed-off-by: Sean Nyekjaer <sean@geanix.com>
+> > ---
+> > 
+> > I did this a RFC as we probably will need to remove the suspended
+> > variable as it's kinda made obsolute by this change.
+> > Should we introduce a new mutex? Or maybe a spin_lock?
+> > 
+> >  drivers/mtd/nand/raw/nand_base.c | 2 --
+> >  1 file changed, 2 deletions(-)
+> > 
+> > diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+> > index 3d6c6e880520..0ea343404cac 100644
+> > --- a/drivers/mtd/nand/raw/nand_base.c
+> > +++ b/drivers/mtd/nand/raw/nand_base.c
+> > @@ -4567,7 +4567,6 @@ static int nand_suspend(struct mtd_info *mtd)
+> >  		ret = chip->ops.suspend(chip);
+> >  	if (!ret)
+> >  		chip->suspended = 1;
+> > -	mutex_unlock(&chip->lock);
+> 
+> Hm, I'm not sure keeping the lock when you're in a suspended state
+> is a good idea. It just papers over another bug IMO (see above).
+> 
+> >  
+> >  	return ret;
+> >  }
+> > @@ -4580,7 +4579,6 @@ static void nand_resume(struct mtd_info *mtd)
+> >  {
+> >  	struct nand_chip *chip = mtd_to_nand(mtd);
+> >  
+> > -	mutex_lock(&chip->lock);
+> >  	if (chip->suspended) {
+> >  		if (chip->ops.resume)
+> >  			chip->ops.resume(chip);
+> 
