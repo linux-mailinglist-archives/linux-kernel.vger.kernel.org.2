@@ -2,113 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FA244208A5
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 11:46:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 186AD4208A4
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 11:46:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232462AbhJDJsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 05:48:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39916 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232364AbhJDJr7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S232417AbhJDJsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 05:48:00 -0400
+Received: from www.zeus03.de ([194.117.254.33]:55004 "EHLO mail.zeus03.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231849AbhJDJr7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 4 Oct 2021 05:47:59 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2C03C061746
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 02:46:10 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mXKXn-0005Lx-Cy; Mon, 04 Oct 2021 11:45:59 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mXKXk-00087w-4v; Mon, 04 Oct 2021 11:45:56 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mXKXk-00081G-2w; Mon, 04 Oct 2021 11:45:56 +0200
-Date:   Mon, 4 Oct 2021 11:45:55 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Eric Tremblay <etremblay@distech-controls.com>
-Cc:     gregkh@linuxfoundation.org, jslaby@suse.com,
-        andriy.shevchenko@linux.intel.com, matwey.kornilov@gmail.com,
-        giulio.benetti@micronovasrl.com, lukas@wunner.de,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        heiko@sntech.de, heiko.stuebner@theobroma-systems.com
-Subject: Re: [PATCH v2 1/3] serial: 8250: Handle UART without interrupt on
- TEMT using em485
-Message-ID: <20211004094555.26azbbzhzdzavjpf@pengutronix.de>
-References: <20210204161158.643-1-etremblay@distech-controls.com>
- <20210204161158.643-2-etremblay@distech-controls.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=k1; bh=WcOForZYX8JPRDJLYsCLMhVXUT5g
+        lzoQLUNU3NNBXbU=; b=rsYKgt6fLPxpP+GMPY2D9GGiqtvvSOmWzkaDkLEHEqf6
+        qIewT5z0KsBMps9PmZDByar/FprRH8x3WaDS7TKTwXZQuexCxASs/R7GFxdPrTNS
+        OdI8r1fc1xRAjwI3Jye+yK2m8fzphSr3U8HCdFvqn6qoZIZSYC0Ks+BSD7x6UC8=
+Received: (qmail 3384583 invoked from network); 4 Oct 2021 11:46:07 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 4 Oct 2021 11:46:07 +0200
+X-UD-Smtp-Session: l3s3148p1@wTU7yIPNIJ0gARa4Rcu8AdZm4bUzl/et
+Date:   Mon, 4 Oct 2021 11:46:07 +0200
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc:     "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Subject: Re: [PATCH RFC] ASoC: sh: rcar: dma: : use proper DMAENGINE API for
+ termination
+Message-ID: <YVrNX1lxnM9SKNbJ@shikoro>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        "linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+References: <20210623100545.3926-1-wsa+renesas@sang-engineering.com>
+ <TY2PR01MB3692889E1A7476C4322CC296D8AE9@TY2PR01MB3692.jpnprd01.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="pylzd3ugdvivstpl"
+        protocol="application/pgp-signature"; boundary="bJK+6kz71kOKZZMB"
 Content-Disposition: inline
-In-Reply-To: <20210204161158.643-2-etremblay@distech-controls.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <TY2PR01MB3692889E1A7476C4322CC296D8AE9@TY2PR01MB3692.jpnprd01.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---pylzd3ugdvivstpl
-Content-Type: text/plain; charset=iso-8859-1
+--bJK+6kz71kOKZZMB
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hello,
+Hi Shimoda-san, Morimoto-san,
 
-[dropped christoph.muellner@theobroma-systems.com from Cc: as the
-address doesn't seem to work any more]
+Thanks for the report and to the testing team!
 
-On Thu, Feb 04, 2021 at 11:11:56AM -0500, Eric Tremblay wrote:
-> The patch introduce the UART_CAP_NOTEMT capability. The capability
-> indicate that the UART doesn't have an interrupt available on TEMT.
->=20
-> In the case where the device does not support it, we calculate the
-> maximum time it could take for the transmitter to empty the
-> shift register. When we get in the situation where we get the
-> THRE interrupt, we check if the TEMT bit is set. If it's not, we start
-> the a timer and recall __stop_tx() after the delay.
->=20
-> The transmit sequence is a bit modified when the capability is set. The
-> new timer is used between the last interrupt(THRE) and a potential
-> stop_tx timer.
+> I'm afraid but, our test team detected an issue [1] on v5.15-rc2 with m3ulcb and ebusu.
+> # Our test team doesn't test this on salvator-xs yet...
+> I asked Morimoto-san locally, and he guess that using dmaengine_terminate_async() instead
+> of dmaengine_terminate_sync() could be resolved. But, what do you think?
 
-I wonder if the required change can be simplified by just increasing the
-stop_tx_timer timeout as there is nothing that has to happen when the
-shifter is empty apart from starting the stop_tx timer.
+I agree. As I wrote in the original mail, I wasn't too sure about this
+change because I don't know the driver well. While I didn't find code
+handling an async case, the driver still too complex so that might have
+missed some details. This is why the patch was marked RFC. So, I totally
+agree to drop this patch and handle the issue the async way. Is it
+possible that Morimoto-san takes care of it? I'd think this makes sense
+because he knows potential race conditions better than me. If it is not
+possible, I will try to have a look.
 
-This would require a good documentation because the semantic of the stop
-timer would change.
+All the best,
 
-@Eric: Do you plan to address the feedback comments here? I'd volunteer
-as a tester if yes. Otherwise there might be some incentive to work on
-this series myself.
+   Wolfram
 
-Best regards
-Uwe
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---pylzd3ugdvivstpl
+--bJK+6kz71kOKZZMB
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmFazUsACgkQwfwUeK3K
-7AmPowf+JkeIVicDG9Nv39f6Knk/CnoLyUdHesOXFHtpNs5rbnl3dyhTKAdNW2jf
-8te6Q/6dkT8PmVB2aMUmQKTWZxmTxRjbRWiLY1NAiSK07WF576rm9O9B6/V9Tnwf
-N1N0y8QYqKMOxGQ+4azCnPyzXinirhlJ8vddrv5FTKHMCTJhwuvthFdSywbc3k0J
-pLa5BHjkpFjdp0imSjOvDnFPE19XzCCGW+jina7nLfa/R5rHtNHQAnVE4el0xYiA
-zugLEhGjoDi7sbPicJd3y/lAVYJ2GqEffz521gg4CbdZ/vBnlmDfwwZ7Ix4l7rSK
-YcZPfcFOgS6RAq2VUamtu0J9jvyFrQ==
-=grO0
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmFazV4ACgkQFA3kzBSg
+KbaBoA/8CTtUYXXLysL2jzER56eMCkuRMndU15VDDDOYKXE4senEJe8p9RCBOnJz
+z+/PIrABxgtLzv1R8/6d3IMAtkgEh1xP7NQMbq2ymOznpPnRSxxOyfif5Gv/Mc0k
+o57pakjy/fZoYmU1uQ3l/+IffmYHIPExarW9M49WnKSIxalzIYF7C++Z1tnhLc84
+/wYzl59q7UJXy26cPx1Msdjz65vvaIZusKAEHS971G2Ky12CINlci9+bE4q23Ea4
+7BngLjcO4q01YYievrQQnn0bgEuzW+oCXswlbsS+Qg57sMN0Kig9m8zFw7P8CLlM
+FP988GbDQF80JzI0hH0a/AUWqsGA/KSZdubCQyDnZCKtGgnWktgn3F3ZsW8eOhuT
+N/6sz+V9/Jr9lSwRf2Y7rNkaQxqIofSUTAm4HJgN6JTaxa73fKuptD2ciDPEO3AU
+0nkpwK9B3XO1TA1L2ndXQTOjkgedNIvFowKA1XAKhYDGl2OQkEiv/pfk4SeAO42p
+/RakEgNBYXKlXgErGVDPMqKun/Q1NTpcVSraeLsZXpqrPE5YsnGFDqc7L4l0zWyF
+zSZ7HVkpZESa9ESZEflsbEH7JTnd2haMIyNrngUYRfLsHPigLr/PAfz0AL0mb68O
+SSqquKOTHGblqI0o4/2V3IzjhJSbNpAehDbs+pyjIw5hCx95Llw=
+=49aL
 -----END PGP SIGNATURE-----
 
---pylzd3ugdvivstpl--
+--bJK+6kz71kOKZZMB--
