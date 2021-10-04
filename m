@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2461420F61
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:32:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 642BD420C1C
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:00:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237320AbhJDNeH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:34:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47354 "EHLO mail.kernel.org"
+        id S234811AbhJDNCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:02:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32776 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237081AbhJDNbq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:31:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F19966321E;
-        Mon,  4 Oct 2021 13:14:18 +0000 (UTC)
+        id S234612AbhJDNBM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:01:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 57B7A61A4F;
+        Mon,  4 Oct 2021 12:58:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633353259;
-        bh=JRoqL4otUIGnStRHpXKpJPWH28/NtpXgHSdIf/lXCvE=;
+        s=korg; t=1633352306;
+        bh=pahcoJpLY321SdHyfwqWd+98iF93sNTPYOq0qwvcoDk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bp7yNDauNR59ecg6mAFRRR5TlisLaBeu6MNMzLwSLOGCET9DMWDeaxwjsgsEEbjzf
-         MojANW3lvaP28XYDT28IYUaAm84/lvJ2pdNznqDZW571z4/YfrrOzTt6n0ZkvKoodT
-         4kPQZ6aGLr1WDsSM/0iQDoMCPgDJYrPhQjEDzdrg=
+        b=n3/RgfkmHYWGFTd7iTWifFcrvzYXnHw5NXbdQQrV50rf90jJJc0zDkU+p3diRgXZE
+         fgyPTiTN9FrglnwDIAhwvQhQl5hEgidc407scgkJYX+M13xZiJB/2YhwqZJFAJbkob
+         to/RIqg8CV1CUN7cstF3DL0X7s1qgk5YPS61eOA0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Gonda <pgonda@google.com>,
-        Marc Orr <marcorr@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.14 056/172] KVM: SEV: Pin guest memory for write for RECEIVE_UPDATE_DATA
+        stable@vger.kernel.org, Carlo Lobrano <c.lobrano@gmail.com>,
+        Daniele Palmas <dnlplm@gmail.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.14 11/75] USB: serial: option: add Telit LN920 compositions
 Date:   Mon,  4 Oct 2021 14:51:46 +0200
-Message-Id: <20211004125046.804042551@linuxfoundation.org>
+Message-Id: <20211004125031.910407425@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
-References: <20211004125044.945314266@linuxfoundation.org>
+In-Reply-To: <20211004125031.530773667@linuxfoundation.org>
+References: <20211004125031.530773667@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,42 +40,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <seanjc@google.com>
+From: Carlo Lobrano <c.lobrano@gmail.com>
 
-commit 50c038018d6be20361e8a2890262746a4ac5b11f upstream.
+commit 7bb057134d609b9c038a00b6876cf0d37d0118ce upstream.
 
-Require the target guest page to be writable when pinning memory for
-RECEIVE_UPDATE_DATA.  Per the SEV API, the PSP writes to guest memory:
+This patch adds the following Telit LN920 compositions:
 
-  The result is then encrypted with GCTX.VEK and written to the memory
-  pointed to by GUEST_PADDR field.
+0x1060: tty, adb, rmnet, tty, tty, tty, tty
+0x1061: tty, adb, mbim, tty, tty, tty, tty
+0x1062: rndis, tty, adb, tty, tty, tty, tty
+0x1063: tty, adb, ecm, tty, tty, tty, tty
 
-Fixes: 15fb7de1a7f5 ("KVM: SVM: Add KVM_SEV_RECEIVE_UPDATE_DATA command")
+Signed-off-by: Carlo Lobrano <c.lobrano@gmail.com>
+Link: https://lore.kernel.org/r/20210903123913.1086513-1-c.lobrano@gmail.com
+Reviewed-by: Daniele Palmas <dnlplm@gmail.com>
 Cc: stable@vger.kernel.org
-Cc: Peter Gonda <pgonda@google.com>
-Cc: Marc Orr <marcorr@google.com>
-Cc: Tom Lendacky <thomas.lendacky@amd.com>
-Cc: Brijesh Singh <brijesh.singh@amd.com>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
-Message-Id: <20210914210951.2994260-2-seanjc@google.com>
-Reviewed-by: Brijesh Singh <brijesh.singh@amd.com>
-Reviewed-by: Peter Gonda <pgonda@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/kvm/svm/sev.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/serial/option.c |    8 ++++++++
+ 1 file changed, 8 insertions(+)
 
---- a/arch/x86/kvm/svm/sev.c
-+++ b/arch/x86/kvm/svm/sev.c
-@@ -1465,7 +1465,7 @@ static int sev_receive_update_data(struc
- 
- 	/* Pin guest memory */
- 	guest_page = sev_pin_memory(kvm, params.guest_uaddr & PAGE_MASK,
--				    PAGE_SIZE, &n, 0);
-+				    PAGE_SIZE, &n, 1);
- 	if (IS_ERR(guest_page)) {
- 		ret = PTR_ERR(guest_page);
- 		goto e_free_trans;
+--- a/drivers/usb/serial/option.c
++++ b/drivers/usb/serial/option.c
+@@ -1208,6 +1208,14 @@ static const struct usb_device_id option
+ 	  .driver_info = NCTRL(0) | RSVD(1) },
+ 	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x1056, 0xff),	/* Telit FD980 */
+ 	  .driver_info = NCTRL(2) | RSVD(3) },
++	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x1060, 0xff),	/* Telit LN920 (rmnet) */
++	  .driver_info = NCTRL(0) | RSVD(1) | RSVD(2) },
++	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x1061, 0xff),	/* Telit LN920 (MBIM) */
++	  .driver_info = NCTRL(0) | RSVD(1) },
++	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x1062, 0xff),	/* Telit LN920 (RNDIS) */
++	  .driver_info = NCTRL(2) | RSVD(3) },
++	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x1063, 0xff),	/* Telit LN920 (ECM) */
++	  .driver_info = NCTRL(0) | RSVD(1) },
+ 	{ USB_DEVICE(TELIT_VENDOR_ID, TELIT_PRODUCT_ME910),
+ 	  .driver_info = NCTRL(0) | RSVD(1) | RSVD(3) },
+ 	{ USB_DEVICE(TELIT_VENDOR_ID, TELIT_PRODUCT_ME910_DUAL_MODEM),
 
 
