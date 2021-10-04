@@ -2,69 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7071D42083F
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 11:27:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 012E0420848
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 11:30:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231526AbhJDJ3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 05:29:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35536 "EHLO
+        id S231179AbhJDJce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 05:32:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbhJDJ3S (ORCPT
+        with ESMTP id S230185AbhJDJcd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 05:29:18 -0400
-Received: from mail-vs1-xe2b.google.com (mail-vs1-xe2b.google.com [IPv6:2607:f8b0:4864:20::e2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 669BCC061746
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 02:27:29 -0700 (PDT)
-Received: by mail-vs1-xe2b.google.com with SMTP id g10so1225136vsb.8
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 02:27:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=x0pWExGBmrIq729IIlvOahOD2dMzv6RJizC7Zlt0vBc=;
-        b=Gx5xEvocZTu6U4pwn3n5ifZQrBUv4KIaxncopdSI7EW/5n7WFFZifjQTi3k6LXXYeU
-         KF8sempFYC05aN9vH8M95gIJ+eM7QLaUSS1UalXCyIsGO+urPX5Uu+4nmhStYwNyBep+
-         hXGfrl/MDDJpD8qMNBVSWIp6ozY3XboiRm7HIVIQQ8+hZ67DyKM5jvGR0rv30sLDkmrz
-         GFbQYqXAXVTNXGLCM+JsULHvKNjxISudD1wgg+slKG3Jh7aygCo50UoYwJAm9QP6hnFZ
-         MmYVx8Vd5APRY5JNWYS847hUCuHgn62YVXbmbJ/QDOtHw+4fTq+RRTuiQxVhH1TrQ5I5
-         mU1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=x0pWExGBmrIq729IIlvOahOD2dMzv6RJizC7Zlt0vBc=;
-        b=ud4Uazv+bHy7kULLSr1+DOgdcURDCIcN60vuCTmi5Ky/pKTOsm95pnimznRzewO6Qx
-         FtlO0atzMbY+/vzzU5x5+7KeA5Xg4m+1nryAnWrBD0DJ9qdClVF+PDD2/++aQiGX9/uI
-         BZ7FOFOnKxc/1uBxhAMXT4IVYWsiAyjwLLlM8aT+gI+855I+kOEfqrFnriTNBsRidCKo
-         HBZ116rZRrJnLx/10P2wfUxgS3nngwEzT9NSIrYzZ1UMLutYFFZZJi0niRIB9bz9s4LZ
-         Iic3I9ljbcm5koeIY+tf+xQdwroCRyzOy2fMpxaQrQpBTZIZrw7kekVzIXU90nDictCv
-         6Z1w==
-X-Gm-Message-State: AOAM532EjCLk8s91/WSEwJfdbRFPt0IQpDrpPZsQdHsqeJgkcXZep5Qm
-        Cp7PpkgLS/BbxhRU4hT6KqSbebFicSaAn8HqF/A=
-X-Google-Smtp-Source: ABdhPJxWTgCQfv2a88LT5BkVLQJ7iyv4nfXArKvfHSKOwYPRAS3Cggi7IEoN7d9tS/SRr0CJkjhLfvkrA+UQgoVLj6A=
-X-Received: by 2002:a67:e1cd:: with SMTP id p13mr2751159vsl.29.1633339648595;
- Mon, 04 Oct 2021 02:27:28 -0700 (PDT)
+        Mon, 4 Oct 2021 05:32:33 -0400
+Received: from mout-p-201.mailbox.org (mout-p-201.mailbox.org [IPv6:2001:67c:2050::465:201])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4989BC061745;
+        Mon,  4 Oct 2021 02:30:44 -0700 (PDT)
+Received: from smtp2.mailbox.org (smtp2.mailbox.org [80.241.60.241])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4HNFnZ3JgczQjXt;
+        Mon,  4 Oct 2021 11:30:42 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mailbox.org; h=
+        content-transfer-encoding:content-type:content-type:mime-version
+        :subject:subject:references:in-reply-to:message-id:from:from
+        :date:date:received; s=mail20150812; t=1633339839; bh=sbEfYmQ23Q
+        vu8D8/RZouroNeiIIWprZ9RTuGxdV0BSc=; b=eqRUGkp2yL1ikWCRHz8Pp+WnRD
+        0hVqOTG2tQJp52WM4V49maypqRWQiEKG20btW1eFInSEkMH5h01+IoM+qikCYGgZ
+        23SGPJfVrdNKHfbGfRbvRPwmn0f3k/MybfdRJLWp7pLp9kJ4o3tMH3rNfuryttiS
+        irDG9Q9F8MeAozq4790NvVuB/rKZn6eYygMqOpkTyGo9DaxwM1rMKJceWFcRN28t
+        bog2xHoAyQpjTlvL5YCLgMK5ZUD+kEfhm1quCKXeTxZ4Eox+XiVS5XGn0gmtvHIN
+        ha6jFQ5LqbgEeciGTdNq4Is9YdAC+8Wmh3e2+cUNo3mZAuevkqaOWXW8zaDg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
+        t=1633339840;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qDWb0AQbPRhLuuiVXOuwpRGrvAqOKBzlkNJRcCEystg=;
+        b=qum8pNN8AuJ/l/+XRPTRfr4C1+ucBBQXjR09LNuRJB38B/6YhqqUhjeN7NajZ1Z0V8hmb+
+        AeBAz4DI41IzUWP9uAIgmQ7K4ByYaKjLPAS2XuTKXZpOgGD0Bqx3yt77O6Msc7lr5sdOHV
+        F6gSnRsiLvmHSeWPazhCMIqAeizup5ySyeikiQvRnz1NhWYJcm1ha44yFyAzKxe4ecgn+/
+        qV/9UfQ3rrQeda1j7dGgeCuIHceACTmHpCoIC+69PzAruMycPLGWEvYv2S6imKRbvCV/OU
+        B+PFRXiOYdT/d1PcCEn1v6GJiPN24ZSl22ObbUui4mz3jP1XVgrIWGNvTb3GoQ==
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+Date:   Mon, 4 Oct 2021 11:30:38 +0200 (CEST)
+From:   torvic9@mailbox.org
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        "seanjc@google.com" <seanjc@google.com>,
+        "vkuznets@redhat.com" <vkuznets@redhat.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "ndesaulniers@google.com" <ndesaulniers@google.com>,
+        "nathan@kernel.org" <nathan@kernel.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "bp@alien8.de" <bp@alien8.de>
+Message-ID: <936688112.157288.1633339838738@office.mailbox.org>
+In-Reply-To: <b6abc5a3-39ea-b463-9df5-f50bdcb16d08@redhat.com>
+References: <1446878298.170497.1633338512925@office.mailbox.org>
+ <b6abc5a3-39ea-b463-9df5-f50bdcb16d08@redhat.com>
+Subject: Re: [BUG] [5.15] Compilation error in arch/x86/kvm/mmu/spte.h with
+ clang-14
 MIME-Version: 1.0
-Received: by 2002:a59:c48c:0:b0:22d:8d31:b57e with HTTP; Mon, 4 Oct 2021
- 02:27:28 -0700 (PDT)
-Reply-To: ms.lisahugh000@gmail.com
-From:   Ms Lisa Hugh <lisahugh531@gmail.com>
-Date:   Mon, 4 Oct 2021 11:27:28 +0200
-Message-ID: <CAFnQ+S604S0un+B=xgUrCWtX47tXxpS=VFwn=XuzhAMTXKuZGQ@mail.gmail.com>
-Subject: THE DETAILS LATER. >>MS LISA HUGH.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+Importance: Normal
+X-Rspamd-Queue-Id: 71A0F1839
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend,
 
-I am Ms Lisa Hugh accountant and files keeping with with the bank.
+> Paolo Bonzini <pbonzini@redhat.com> hat am 04.10.2021 11:26 geschrieben:
+> 
+>  
+> On 04/10/21 11:08, torvic9@mailbox.org wrote:
+> > I encounter the following issue when compiling 5.15-rc4 with clang-14:
+> > 
+> > In file included from arch/x86/kvm/mmu/mmu.c:27:
+> > arch/x86/kvm/mmu/spte.h:318:9: error: use of bitwise '|' with boolean operands [-Werror,-Wbitwise-instead-of-logical]
+> >          return __is_bad_mt_xwr(rsvd_check, spte) |
+> >                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> >                                                   ||
+> > arch/x86/kvm/mmu/spte.h:318:9: note: cast one or both operands to int to silence this warning
+> 
+> The warning is wrong, as mentioned in the line right above:
 
-I need Your help for this transfer($4,500,000,00 ,U.S.DOLLARS)to your
-bank account with your co-operation for both of us benefit.
+So it's an issue with clang-14 then?
+(I add Nick and Nathan)
 
-Please send the follow below,
-1)AGE....2)TELEPHONE NUMBER,,,,,...,3)COUNTRY.....4)OCCUPATION......
-Thanks.
-Ms Lisa Hugh
+> 
+>          /*
+>           * Use a bitwise-OR instead of a logical-OR to aggregate the reserved
+>           * bits and EPT's invalid memtype/XWR checks to avoid an extra Jcc
+>           * (this is extremely unlikely to be short-circuited as true).
+>           */
+> 
+> Paolo
