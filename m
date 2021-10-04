@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 368D6420E4F
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:22:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85EEE420C84
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:04:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236356AbhJDNYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:24:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37214 "EHLO mail.kernel.org"
+        id S234878AbhJDNGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:06:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38968 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235587AbhJDNV2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:21:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E7B0F61BB5;
-        Mon,  4 Oct 2021 13:09:16 +0000 (UTC)
+        id S233573AbhJDNEo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:04:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D49E761B05;
+        Mon,  4 Oct 2021 13:00:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352957;
-        bh=2OFygWrPdFqjXvujpA+E2LGyRXoPwVbU9xNY8uzohmU=;
+        s=korg; t=1633352426;
+        bh=nSTmr121dkjbPIH6jZrbKOssLMtUrK4KbeQ23eg16U8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=V5Tu5LATL1ds+gyelhsAwq806KQPk9l5GSOsRQ2+ImNJHcjArPQgaOk6flcO63k04
-         YiF7DnglRX4LG6RaXKbcWOw2ZZQM5gHQUXco2WPJVjtG0yIRGIec/xSewoIGIPv0nE
-         UVd6NxHQFF0m23fV52HKKfnq3kVIrRRqDD/2QOos=
+        b=SwYnljGhDPicHOfffqQvlIMKDhpGL0GXAF1nEmXthT+JVuM7o71Z4na4K/hFwnQ++
+         iqXgIoO6PjFQ7Tij6chO0YreBRvRDu6jOF6jW8r6yv5Zjab5PGT3Dv8ix1HLwwIgjZ
+         KZgTEQukcUkUgJO5BQkJVjB0y4Mtz0joERbsbGdM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        syzbot+0e964fad69a9c462bc1e@syzkaller.appspotmail.com,
-        Johannes Berg <johannes.berg@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 34/93] mac80211-hwsim: fix late beacon hrtimer handling
+        stable@vger.kernel.org,
+        Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.14 57/75] ipack: ipoctal: fix tty-registration error handling
 Date:   Mon,  4 Oct 2021 14:52:32 +0200
-Message-Id: <20211004125035.690145604@linuxfoundation.org>
+Message-Id: <20211004125033.445066630@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125034.579439135@linuxfoundation.org>
-References: <20211004125034.579439135@linuxfoundation.org>
+In-Reply-To: <20211004125031.530773667@linuxfoundation.org>
+References: <20211004125031.530773667@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,66 +40,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Johan Hovold <johan@kernel.org>
 
-[ Upstream commit 313bbd1990b6ddfdaa7da098d0c56b098a833572 ]
+commit cd20d59291d1790dc74248476e928f57fc455189 upstream.
 
-Thomas explained in https://lore.kernel.org/r/87mtoeb4hb.ffs@tglx
-that our handling of the hrtimer here is wrong: If the timer fires
-late (e.g. due to vCPU scheduling, as reported by Dmitry/syzbot)
-then it tries to actually rearm the timer at the next deadline,
-which might be in the past already:
+Registration of the ipoctal tty devices is unlikely to fail, but if it
+ever does, make sure not to deregister a never registered tty device
+(and dereference a NULL pointer) when the driver is later unbound.
 
- 1          2          3          N          N+1
- |          |          |   ...    |          |
-
- ^ intended to fire here (1)
-            ^ next deadline here (2)
-                                      ^ actually fired here
-
-The next time it fires, it's later, but will still try to schedule
-for the next deadline (now 3), etc. until it catches up with N,
-but that might take a long time, causing stalls etc.
-
-Now, all of this is simulation, so we just have to fix it, but
-note that the behaviour is wrong even per spec, since there's no
-value then in sending all those beacons unaligned - they should be
-aligned to the TBTT (1, 2, 3, ... in the picture), and if we're a
-bit (or a lot) late, then just resume at that point.
-
-Therefore, change the code to use hrtimer_forward_now() which will
-ensure that the next firing of the timer would be at N+1 (in the
-picture), i.e. the next interval point after the current time.
-
-Suggested-by: Thomas Gleixner <tglx@linutronix.de>
-Reported-by: Dmitry Vyukov <dvyukov@google.com>
-Reported-by: syzbot+0e964fad69a9c462bc1e@syzkaller.appspotmail.com
-Fixes: 01e59e467ecf ("mac80211_hwsim: hrtimer beacon")
-Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20210915112936.544f383472eb.I3f9712009027aa09244b65399bf18bf482a8c4f1@changeid
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 2afb41d9d30d ("Staging: ipack/devices/ipoctal: Check tty_register_device return value.")
+Cc: stable@vger.kernel.org      # 3.7
+Acked-by: Samuel Iglesias Gonsalvez <siglesias@igalia.com>
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Link: https://lore.kernel.org/r/20210917114622.5412-4-johan@kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/wireless/mac80211_hwsim.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/ipack/devices/ipoctal.c |    7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/net/wireless/mac80211_hwsim.c b/drivers/net/wireless/mac80211_hwsim.c
-index 4ca0b06d09ad..b793d61d15d2 100644
---- a/drivers/net/wireless/mac80211_hwsim.c
-+++ b/drivers/net/wireless/mac80211_hwsim.c
-@@ -1795,8 +1795,8 @@ mac80211_hwsim_beacon(struct hrtimer *timer)
- 		bcn_int -= data->bcn_delta;
- 		data->bcn_delta = 0;
+--- a/drivers/ipack/devices/ipoctal.c
++++ b/drivers/ipack/devices/ipoctal.c
+@@ -38,6 +38,7 @@ struct ipoctal_channel {
+ 	unsigned int			pointer_read;
+ 	unsigned int			pointer_write;
+ 	struct tty_port			tty_port;
++	bool				tty_registered;
+ 	union scc2698_channel __iomem	*regs;
+ 	union scc2698_block __iomem	*block_regs;
+ 	unsigned int			board_id;
+@@ -402,9 +403,11 @@ static int ipoctal_inst_slot(struct ipoc
+ 							i, NULL, channel, NULL);
+ 		if (IS_ERR(tty_dev)) {
+ 			dev_err(&ipoctal->dev->dev, "Failed to register tty device.\n");
++			tty_port_free_xmit_buf(&channel->tty_port);
+ 			tty_port_destroy(&channel->tty_port);
+ 			continue;
+ 		}
++		channel->tty_registered = true;
  	}
--	hrtimer_forward(&data->beacon_timer, hrtimer_get_expires(timer),
--			ns_to_ktime(bcn_int * NSEC_PER_USEC));
-+	hrtimer_forward_now(&data->beacon_timer,
-+			    ns_to_ktime(bcn_int * NSEC_PER_USEC));
- 	return HRTIMER_RESTART;
- }
  
--- 
-2.33.0
-
+ 	/*
+@@ -705,6 +708,10 @@ static void __ipoctal_remove(struct ipoc
+ 
+ 	for (i = 0; i < NR_CHANNELS; i++) {
+ 		struct ipoctal_channel *channel = &ipoctal->channel[i];
++
++		if (!channel->tty_registered)
++			continue;
++
+ 		tty_unregister_device(ipoctal->tty_drv, i);
+ 		tty_port_free_xmit_buf(&channel->tty_port);
+ 		tty_port_destroy(&channel->tty_port);
 
 
