@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EFA4420C6D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:03:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92A35420B94
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:56:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235101AbhJDNFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:05:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39430 "EHLO mail.kernel.org"
+        id S233950AbhJDM6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 08:58:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58688 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235048AbhJDNDk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:03:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C4FF60F9C;
-        Mon,  4 Oct 2021 12:59:58 +0000 (UTC)
+        id S233705AbhJDM5a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 08:57:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BBDA6613D5;
+        Mon,  4 Oct 2021 12:55:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352399;
-        bh=nUIhjs/QdPnTw7z7RL7Q6AysHV5W77yNY62NC+lmdwk=;
+        s=korg; t=1633352141;
+        bh=wyMY1huRCNbpoO8j0Fn8jm0T0PLjaIIMmNDIL1urKvM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mkDC0dqMCxxo8uKbVmTh4kIqlZtHweYq8b/hWQCANNQ667JfFLIhaTb/QglwJElq3
-         1PgggeTv8ZVCu/7qjA9McXCaCx+Z6thJ3PlLStQUsqEdn+9R7ape88SUuiBbbvFI2M
-         4Cw97EQhx9CqpmA0u1k3D11E8WBiHAQ9pspFxE6k=
+        b=TeX6dwhhHXBOjIfExGyaewM5tRdIdju0Sx/JGcEcxS9JunhD49fqNxcUJSTyCXNHb
+         7DrlmHqhu0TBj1+QmPCJzvDU+FFkgyd1GUDcyEZKKV/ID4PE0voEcs/szkiLFezcSj
+         VSWo1g3/oa2cElFknOWJeahP3tYcRmq8fjfmcm7I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chih-Kang Chang <gary.chang@realtek.com>,
-        Zong-Zhe Yang <kevin_yang@realtek.com>,
-        Ping-Ke Shih <pkshih@realtek.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 47/75] mac80211: Fix ieee80211_amsdu_aggregate frag_tail bug
+        stable@vger.kernel.org,
+        Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.4 31/41] ipack: ipoctal: fix tty registration race
 Date:   Mon,  4 Oct 2021 14:52:22 +0200
-Message-Id: <20211004125033.104326012@linuxfoundation.org>
+Message-Id: <20211004125027.568080308@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125031.530773667@linuxfoundation.org>
-References: <20211004125031.530773667@linuxfoundation.org>
+In-Reply-To: <20211004125026.597501645@linuxfoundation.org>
+References: <20211004125026.597501645@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,52 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chih-Kang Chang <gary.chang@realtek.com>
+From: Johan Hovold <johan@kernel.org>
 
-[ Upstream commit fe94bac626d9c1c5bc98ab32707be8a9d7f8adba ]
+commit 65c001df517a7bf9be8621b53d43c89f426ce8d6 upstream.
 
-In ieee80211_amsdu_aggregate() set a pointer frag_tail point to the
-end of skb_shinfo(head)->frag_list, and use it to bind other skb in
-the end of this function. But when execute ieee80211_amsdu_aggregate()
-->ieee80211_amsdu_realloc_pad()->pskb_expand_head(), the address of
-skb_shinfo(head)->frag_list will be changed. However, the
-ieee80211_amsdu_aggregate() not update frag_tail after call
-pskb_expand_head(). That will cause the second skb can't bind to the
-head skb appropriately.So we update the address of frag_tail to fix it.
+Make sure to set the tty class-device driver data before registering the
+tty to avoid having a racing open() dereference a NULL pointer.
 
-Fixes: 6e0456b54545 ("mac80211: add A-MSDU tx support")
-Signed-off-by: Chih-Kang Chang <gary.chang@realtek.com>
-Signed-off-by: Zong-Zhe Yang <kevin_yang@realtek.com>
-Signed-off-by: Ping-Ke Shih <pkshih@realtek.com>
-Link: https://lore.kernel.org/r/20210830073240.12736-1-pkshih@realtek.com
-[reword comment]
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 9c1d784afc6f ("Staging: ipack/devices/ipoctal: Get rid of ipoctal_list.")
+Cc: stable@vger.kernel.org      # 3.7
+Acked-by: Samuel Iglesias Gonsalvez <siglesias@igalia.com>
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Link: https://lore.kernel.org/r/20210917114622.5412-3-johan@kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/mac80211/tx.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/ipack/devices/ipoctal.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/mac80211/tx.c b/net/mac80211/tx.c
-index e7b63ba8c184..0b5171824338 100644
---- a/net/mac80211/tx.c
-+++ b/net/mac80211/tx.c
-@@ -3202,6 +3202,14 @@ static bool ieee80211_amsdu_aggregate(struct ieee80211_sub_if_data *sdata,
- 	if (!ieee80211_amsdu_prepare_head(sdata, fast_tx, head))
- 		goto out;
+--- a/drivers/ipack/devices/ipoctal.c
++++ b/drivers/ipack/devices/ipoctal.c
+@@ -398,13 +398,13 @@ static int ipoctal_inst_slot(struct ipoc
+ 		spin_lock_init(&channel->lock);
+ 		channel->pointer_read = 0;
+ 		channel->pointer_write = 0;
+-		tty_dev = tty_port_register_device(&channel->tty_port, tty, i, NULL);
++		tty_dev = tty_port_register_device_attr(&channel->tty_port, tty,
++							i, NULL, channel, NULL);
+ 		if (IS_ERR(tty_dev)) {
+ 			dev_err(&ipoctal->dev->dev, "Failed to register tty device.\n");
+ 			tty_port_destroy(&channel->tty_port);
+ 			continue;
+ 		}
+-		dev_set_drvdata(tty_dev, channel);
+ 	}
  
-+	/* If n == 2, the "while (*frag_tail)" loop above didn't execute
-+	 * and  frag_tail should be &skb_shinfo(head)->frag_list.
-+	 * However, ieee80211_amsdu_prepare_head() can reallocate it.
-+	 * Reload frag_tail to have it pointing to the correct place.
-+	 */
-+	if (n == 2)
-+		frag_tail = &skb_shinfo(head)->frag_list;
-+
  	/*
- 	 * Pad out the previous subframe to a multiple of 4 by adding the
- 	 * padding to the next one, that's being added. Note that head->len
--- 
-2.33.0
-
 
 
