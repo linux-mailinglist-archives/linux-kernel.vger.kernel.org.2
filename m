@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98FC3421016
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:38:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A1EB420C13
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:00:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238476AbhJDNkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:40:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51966 "EHLO mail.kernel.org"
+        id S234568AbhJDNC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:02:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60618 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238484AbhJDNig (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:38:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DD97561425;
-        Mon,  4 Oct 2021 13:17:35 +0000 (UTC)
+        id S234183AbhJDNA7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:00:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A105619E9;
+        Mon,  4 Oct 2021 12:58:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633353456;
-        bh=Wt+sMAr+8EWBwBlCy8flEu8hW9jDBkUc8TR4Jc87d98=;
+        s=korg; t=1633352291;
+        bh=p9uIb9QCVQcCBcNyFClCCJZkqdtnv8Dp7Lhw/LDdsZo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MN8kfICaXH7ipD2z4ciaHMGjc+ZjG/s0f7CB5HE3krefTT9uE3K/4KaMkNH44+jhO
-         tb15yCMsb0+lpiZFMuDTh0zFC5o/zp0AkwfOeR/1JweOep3pAXRlP3jXzGg/MxAin5
-         R1l/JjNWJvv5wbBDQ6CQZlXBbR+zo1yjC21WmCFo=
+        b=EZ0lJzmXQtTaaaq+mwJqb2QRS2mIri74TWEnscmv5yEyJi6KeP3Nbbjr+xWURYCBv
+         qGQBf9/qtWxakxwIFDzV4xC91n9JwgNb+wTdFNHltwwW9CP7Ox3X9Mu5Qb3I7GCqV7
+         HkZWI++8oP8al3YTm/3o6vGSpeAfU+GZAaWlpFXc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiao Liang <shaw.leon@gmail.com>,
-        David Ahern <dsahern@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 102/172] net: ipv4: Fix rtnexthop len when RTA_FLOW is present
-Date:   Mon,  4 Oct 2021 14:52:32 +0200
-Message-Id: <20211004125048.278818865@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Alexander Sverdlin <alexander.sverdlin@nokia.com>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        Florian Fainelli <f.fainelli@gmail.com>
+Subject: [PATCH 4.9 49/57] ARM: 9077/1: PLT: Move struct plt_entries definition to header
+Date:   Mon,  4 Oct 2021 14:52:33 +0200
+Message-Id: <20211004125030.502926792@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
-References: <20211004125044.945314266@linuxfoundation.org>
+In-Reply-To: <20211004125028.940212411@linuxfoundation.org>
+References: <20211004125028.940212411@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,116 +41,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiao Liang <shaw.leon@gmail.com>
+From: Alex Sverdlin <alexander.sverdlin@nokia.com>
 
-[ Upstream commit 597aa16c782496bf74c5dc3b45ff472ade6cee64 ]
+commit 4e271701c17dee70c6e1351c4d7d42e70405c6a9 upstream
 
-Multipath RTA_FLOW is embedded in nexthop. Dump it in fib_add_nexthop()
-to get the length of rtnexthop correct.
+No functional change, later it will be re-used in several files.
 
-Fixes: b0f60193632e ("ipv4: Refactor nexthop attributes in fib_dump_info")
-Signed-off-by: Xiao Liang <shaw.leon@gmail.com>
-Reviewed-by: David Ahern <dsahern@kernel.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/net/ip_fib.h     |  2 +-
- include/net/nexthop.h    |  2 +-
- net/ipv4/fib_semantics.c | 16 +++++++++-------
- net/ipv6/route.c         |  5 +++--
- 4 files changed, 14 insertions(+), 11 deletions(-)
+ arch/arm/include/asm/module.h |    9 +++++++++
+ arch/arm/kernel/module-plts.c |    9 ---------
+ 2 files changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/include/net/ip_fib.h b/include/net/ip_fib.h
-index 3ab2563b1a23..7fd7f6093612 100644
---- a/include/net/ip_fib.h
-+++ b/include/net/ip_fib.h
-@@ -597,5 +597,5 @@ int ip_valid_fib_dump_req(struct net *net, const struct nlmsghdr *nlh,
- int fib_nexthop_info(struct sk_buff *skb, const struct fib_nh_common *nh,
- 		     u8 rt_family, unsigned char *flags, bool skip_oif);
- int fib_add_nexthop(struct sk_buff *skb, const struct fib_nh_common *nh,
--		    int nh_weight, u8 rt_family);
-+		    int nh_weight, u8 rt_family, u32 nh_tclassid);
- #endif  /* _NET_FIB_H */
-diff --git a/include/net/nexthop.h b/include/net/nexthop.h
-index 10e1777877e6..28085b995ddc 100644
---- a/include/net/nexthop.h
-+++ b/include/net/nexthop.h
-@@ -325,7 +325,7 @@ int nexthop_mpath_fill_node(struct sk_buff *skb, struct nexthop *nh,
- 		struct fib_nh_common *nhc = &nhi->fib_nhc;
- 		int weight = nhg->nh_entries[i].weight;
- 
--		if (fib_add_nexthop(skb, nhc, weight, rt_family) < 0)
-+		if (fib_add_nexthop(skb, nhc, weight, rt_family, 0) < 0)
- 			return -EMSGSIZE;
- 	}
- 
-diff --git a/net/ipv4/fib_semantics.c b/net/ipv4/fib_semantics.c
-index 4c0c33e4710d..27fdd86b9cee 100644
---- a/net/ipv4/fib_semantics.c
-+++ b/net/ipv4/fib_semantics.c
-@@ -1663,7 +1663,7 @@ EXPORT_SYMBOL_GPL(fib_nexthop_info);
- 
- #if IS_ENABLED(CONFIG_IP_ROUTE_MULTIPATH) || IS_ENABLED(CONFIG_IPV6)
- int fib_add_nexthop(struct sk_buff *skb, const struct fib_nh_common *nhc,
--		    int nh_weight, u8 rt_family)
-+		    int nh_weight, u8 rt_family, u32 nh_tclassid)
- {
- 	const struct net_device *dev = nhc->nhc_dev;
- 	struct rtnexthop *rtnh;
-@@ -1681,6 +1681,9 @@ int fib_add_nexthop(struct sk_buff *skb, const struct fib_nh_common *nhc,
- 
- 	rtnh->rtnh_flags = flags;
- 
-+	if (nh_tclassid && nla_put_u32(skb, RTA_FLOW, nh_tclassid))
-+		goto nla_put_failure;
-+
- 	/* length of rtnetlink header + attributes */
- 	rtnh->rtnh_len = nlmsg_get_pos(skb) - (void *)rtnh;
- 
-@@ -1708,14 +1711,13 @@ static int fib_add_multipath(struct sk_buff *skb, struct fib_info *fi)
- 	}
- 
- 	for_nexthops(fi) {
--		if (fib_add_nexthop(skb, &nh->nh_common, nh->fib_nh_weight,
--				    AF_INET) < 0)
--			goto nla_put_failure;
-+		u32 nh_tclassid = 0;
- #ifdef CONFIG_IP_ROUTE_CLASSID
--		if (nh->nh_tclassid &&
--		    nla_put_u32(skb, RTA_FLOW, nh->nh_tclassid))
--			goto nla_put_failure;
-+		nh_tclassid = nh->nh_tclassid;
+--- a/arch/arm/include/asm/module.h
++++ b/arch/arm/include/asm/module.h
+@@ -18,6 +18,15 @@ enum {
+ };
  #endif
-+		if (fib_add_nexthop(skb, &nh->nh_common, nh->fib_nh_weight,
-+				    AF_INET, nh_tclassid) < 0)
-+			goto nla_put_failure;
- 	} endfor_nexthops(fi);
  
- mp_end:
-diff --git a/net/ipv6/route.c b/net/ipv6/route.c
-index 603340302101..0aeff2ce17b9 100644
---- a/net/ipv6/route.c
-+++ b/net/ipv6/route.c
-@@ -5700,14 +5700,15 @@ static int rt6_fill_node(struct net *net, struct sk_buff *skb,
- 			goto nla_put_failure;
++#define PLT_ENT_STRIDE		L1_CACHE_BYTES
++#define PLT_ENT_COUNT		(PLT_ENT_STRIDE / sizeof(u32))
++#define PLT_ENT_SIZE		(sizeof(struct plt_entries) / PLT_ENT_COUNT)
++
++struct plt_entries {
++	u32	ldr[PLT_ENT_COUNT];
++	u32	lit[PLT_ENT_COUNT];
++};
++
+ struct mod_plt_sec {
+ 	struct elf32_shdr	*plt;
+ 	int			plt_count;
+--- a/arch/arm/kernel/module-plts.c
++++ b/arch/arm/kernel/module-plts.c
+@@ -14,10 +14,6 @@
+ #include <asm/cache.h>
+ #include <asm/opcodes.h>
  
- 		if (fib_add_nexthop(skb, &rt->fib6_nh->nh_common,
--				    rt->fib6_nh->fib_nh_weight, AF_INET6) < 0)
-+				    rt->fib6_nh->fib_nh_weight, AF_INET6,
-+				    0) < 0)
- 			goto nla_put_failure;
+-#define PLT_ENT_STRIDE		L1_CACHE_BYTES
+-#define PLT_ENT_COUNT		(PLT_ENT_STRIDE / sizeof(u32))
+-#define PLT_ENT_SIZE		(sizeof(struct plt_entries) / PLT_ENT_COUNT)
+-
+ #ifdef CONFIG_THUMB2_KERNEL
+ #define PLT_ENT_LDR		__opcode_to_mem_thumb32(0xf8dff000 | \
+ 							(PLT_ENT_STRIDE - 4))
+@@ -26,11 +22,6 @@
+ 						    (PLT_ENT_STRIDE - 8))
+ #endif
  
- 		list_for_each_entry_safe(sibling, next_sibling,
- 					 &rt->fib6_siblings, fib6_siblings) {
- 			if (fib_add_nexthop(skb, &sibling->fib6_nh->nh_common,
- 					    sibling->fib6_nh->fib_nh_weight,
--					    AF_INET6) < 0)
-+					    AF_INET6, 0) < 0)
- 				goto nla_put_failure;
- 		}
- 
--- 
-2.33.0
-
+-struct plt_entries {
+-	u32	ldr[PLT_ENT_COUNT];
+-	u32	lit[PLT_ENT_COUNT];
+-};
+-
+ static bool in_init(const struct module *mod, unsigned long loc)
+ {
+ 	return loc - (u32)mod->init_layout.base < mod->init_layout.size;
 
 
