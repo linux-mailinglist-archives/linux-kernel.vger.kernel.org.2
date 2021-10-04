@@ -2,176 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF898421AD3
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 01:44:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32851421AD9
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 01:46:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234075AbhJDXqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 19:46:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36154 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229703AbhJDXqF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 19:46:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E7F3F61381;
-        Mon,  4 Oct 2021 23:44:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633391055;
-        bh=eXQTxp06FhapF/t+dZjCHKv+wufhogFdqMBNGl5+xd4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=pI2/QjWWUUNLdS9SbBBbh/vEB+DOUuqx2idvkn6QJNrMg7RFyrCqW84mY4g5gBe/o
-         TDMBXWyyWG7NinXQxd0FNp/ovLSPL38nKRQwLRtFQ+dRLuyTvu+yHuqZ1456hhe6uG
-         oNH6czZNRQXfYJN5P6ssFKuw+Np+WvNSQ/j9G0ZUutH97qsEaTtm8b7ggkZctuNabe
-         WsskH+BygFXCzC0vLamRofpcPJ5BqRG1XxA+GQgSvfAFBZ/wPk5N2TwClUT9YjrvVI
-         GPOXxUlY00bsxJbypwjfPv6wM7MVuHJHLo1QEBRSCzCR1XwKzFXz5xPoW+91xQUnPJ
-         VzK97iZYQusLw==
-Date:   Mon, 4 Oct 2021 16:44:13 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Ido Schimmel <idosch@nvidia.com>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Pirko <jiri@nvidia.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        mlxsw@nvidia.com, Moshe Shemesh <moshe@nvidia.com>,
-        netdev@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Shay Drory <shayd@nvidia.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>
-Subject: Re: [PATCH net-next v2 3/5] devlink: Allow set specific ops
- callbacks dynamically
-Message-ID: <20211004164413.60e9ce80@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <92971648bcad41d095d12f5296246fc44ab8f5c7.1633284302.git.leonro@nvidia.com>
-References: <cover.1633284302.git.leonro@nvidia.com>
-        <92971648bcad41d095d12f5296246fc44ab8f5c7.1633284302.git.leonro@nvidia.com>
+        id S234405AbhJDXsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 19:48:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39082 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234075AbhJDXsf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 19:48:35 -0400
+Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com [IPv6:2607:f8b0:4864:20::92e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75FCDC061745
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 16:46:45 -0700 (PDT)
+Received: by mail-ua1-x92e.google.com with SMTP id f13so7792626uan.6
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 16:46:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:user-agent:in-reply-to:references
+         :message-id:mime-version:content-transfer-encoding;
+        bh=2+1RgBjt2vk7uSWTomzj9kzb61LfSvUq3AulKll1874=;
+        b=Ot2zKwG4joir1YzF25Lf/jlEjNDhdUbV6WlQx0RdzZT9plefHzMG7ILFfxOQtNuZod
+         sADjRie14aM5Al4W3pgvvrcqoOKXfGt6qbdHaHXSIwPr15/z7Log6BW1P+zqKgVi33FH
+         8+RfNt1AdyM7/nnGsOLeBEzBrNNBnbvSu6PVi36jX1h6D9yHCb+V4W0Ftj2iwMxbfPaz
+         vpWP14e6GXF4WXF/Pz+/I8ZziKMIpiUsZFutbzoySwz7Tq78KpP4+ttn+/3f4ejp9vcH
+         YRFnpdBJ+losKyw1UCXqFbw5W7XLrW6vqXomIHVViTIvcdueP1ZKCQmIl5Z9Dnui2Y+i
+         gOrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:user-agent:in-reply-to
+         :references:message-id:mime-version:content-transfer-encoding;
+        bh=2+1RgBjt2vk7uSWTomzj9kzb61LfSvUq3AulKll1874=;
+        b=VEZJdsdcufhLaj1aiQWDFxmBVkxc0MknCsLsKZ4NFnO+6LH15OnyzHLW5tI1Piv+mi
+         Vm6O9yUE6oat3q8z5eDX5zthn0A2IMNs+wgb+TXf3YxG9JogRgEFYMQMrY9N7NOrwY4O
+         NdyWaT1AZsDouqwv+IMbQZaXL3yC9KU38zyu9gEuxAiXyf6Mp0srs7szHLAPzQRtTak/
+         Kw8saFlMahbQJlZf/RiOPB8sMHlnOReSYBoglHr+5FT4U0idTNI3MvK/axxnOS4IP1vq
+         Tmo/jrFK85KX5zEup0wFIrRY36Zo3jjKnTbWjmcOC7QKvirypE7Tqscpqb0WIbJnQ+OA
+         yE5w==
+X-Gm-Message-State: AOAM531pxnPWfT16jpfmnTldYZ9nF7CYevJ9tvAmgfZ3rs/tIVFh5RpS
+        6jgg+WAe59IzmpF4ujZa7do=
+X-Google-Smtp-Source: ABdhPJyClUXc4094wOCLpWQeZd56OQMSKZS6UCaHIXd/FP2simIGFRUNTK7rweuiMPxlPtFpjPFs4A==
+X-Received: by 2002:ab0:5bdb:: with SMTP id z27mr9805004uae.67.1633391204551;
+        Mon, 04 Oct 2021 16:46:44 -0700 (PDT)
+Received: from [127.0.0.1] ([179.97.37.151])
+        by smtp.gmail.com with ESMTPSA id b17sm7934796vka.27.2021.10.04.16.46.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Oct 2021 16:46:44 -0700 (PDT)
+Date:   Mon, 04 Oct 2021 20:44:47 -0300
+From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+To:     Kim Phillips <kim.phillips@amd.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Stephane Eranian <eranian@google.com>
+CC:     linux-kernel@vger.kernel.org, peterz@infradead.org,
+        acme@redhat.com, jolsa@redhat.com, namhyung@kernel.org,
+        irogers@google.com
+Subject: Re: [PATCH v1 11/13] perf tools: improve IBS error handling
+User-Agent: K-9 Mail for Android
+In-Reply-To: <aa40b532-0e95-76c0-6c9c-a91d45bf3468@amd.com>
+References: <20210909075700.4025355-1-eranian@google.com> <20210909075700.4025355-12-eranian@google.com> <YT+nwP3jrzgxEdmu@kernel.org> <aa40b532-0e95-76c0-6c9c-a91d45bf3468@amd.com>
+Message-ID: <25C12FFF-3F86-4733-B778-6C01A3138C25@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun,  3 Oct 2021 21:12:04 +0300 Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@nvidia.com>
-> 
-> Introduce new devlink call to set specific ops callback during
-> device initialization phase after devlink_alloc() is already
-> called.
-> 
-> This allows us to set specific ops based on device property which
-> is not known at the beginning of driver initialization.
-> 
-> For the sake of simplicity, this API lacks any type of locking and
-> needs to be called before devlink_register() to make sure that no
-> parallel access to the ops is possible at this stage.
 
-The fact that it's not registered does not mean that the callbacks
-won't be invoked. Look at uses of devlink_compat_flash_update().
 
-> diff --git a/net/core/devlink.c b/net/core/devlink.c
-> index 4e484afeadea..25c2aa2b35cd 100644
-> --- a/net/core/devlink.c
-> +++ b/net/core/devlink.c
-> @@ -53,7 +53,7 @@ struct devlink {
->  	struct list_head trap_list;
->  	struct list_head trap_group_list;
->  	struct list_head trap_policer_list;
-> -	const struct devlink_ops *ops;
-> +	struct devlink_ops ops;
+On October 4, 2021 6:57:09 PM GMT-03:00, Kim Phillips <kim=2Ephillips@amd=
+=2Ecom> wrote:
+>On 9/13/21 2:34 PM, Arnaldo Carvalho de Melo wrote:
+>> Em Thu, Sep 09, 2021 at 12:56:58AM -0700, Stephane Eranian escreveu:
+>>> From: Kim Phillips <kim=2Ephillips@amd=2Ecom>
+>>> +static void detect_amd(void)
+>>> +{
+>>> +	FILE *inf =3D fopen("/proc/cpuinfo", "r");
+>>> +	char *res;
+>>> +
+>>> +	if (!inf)
+>>> +		return;
+>>> +
+>>> +	res =3D fgrep(inf, "vendor_id");
+>>> +
+>>> +	if (res) {
+>>> +		char *s =3D strchr(res, ':');
+>>> +
+>>> +		is_amd =3D s && !strcmp(s, ": AuthenticAMD\n");
+>>> +		free(res);
+>>> +	}
+>>> +	fclose(inf);
+>>> +}
+>>> +
+>>=20
+>> We have perf_env for such details, for instance in
+>> tools/perf/util/sample-raw=2Ec we have:o
+>>=20
+>>          const char *arch_pf =3D perf_env__arch(evlist->env);
+>>          const char *cpuid =3D perf_env__cpuid(evlist->env);
+>>=20
+>> 	        else if (arch_pf && !strcmp("x86", arch_pf) &&
+>>                   cpuid && strstarts(cpuid, "AuthenticAMD") &&
+>>                   evlist__has_amd_ibs(evlist)) {
+>
+>OK, I've rebased this 11/13 patch onto the new perf_env__{arch,cpuid}=20
+>code, and posted it here:
+>
+>https://lore=2Ekernel=2Eorg/lkml/20211004214114=2E188477-1-kim=2Ephillips=
+@amd=2Ecom/T/#mc4c9c582e3816ab31af6d0187e6803de1a98ac84
+>
+>The following 12/13 patch in this series changes, too, but since it=20
+>depends on prior patches in the series, I'll reply-all to 12/13 with its=
+=20
+>new version=2E
+>
+>Arnaldo, would it be ok to apply the two new patches that replace this=20
+>11/13?  They don't depend on any others in this series, and it would=20
+>save Stephane from having to carry them=2E
 
-Security people like ops to live in read-only memory. You're making
-them r/w for every devlink instance now.
 
->  	struct xarray snapshot_ids;
->  	struct devlink_dev_stats stats;
->  	struct device *dev;
+I'll work in this tomorrow, thanks
 
-> +/**
-> + *	devlink_set_ops - Set devlink ops dynamically
-> + *
-> + *	@devlink: devlink
-> + *	@ops: devlink ops to set
-> + *
-> + *	This interface allows us to set ops based on device property
-> + *	which is known after devlink_alloc() was already called.
-> + *
-> + *	This call sets fields that are not initialized yet and ignores
-> + *	already set fields.
-> + *
-> + *	It should be called before devlink_register(), so doesn't have any
-> + *	protection from concurent access.
-> + */
-> +void devlink_set_ops(struct devlink *devlink, const struct devlink_ops *ops)
-> +{
-> +	struct devlink_ops *dev_ops = &devlink->ops;
-> +
-> +	WARN_ON(!devlink_reload_actions_valid(ops));
-> +	ASSERT_DEVLINK_NOT_REGISTERED(devlink);
-> +
-> +#define SET_DEVICE_OP(ptr, op, name)                                           \
-> +	do {                                                                   \
-> +		if ((op)->name)                                                \
-> +			if (!((ptr)->name))                                    \
-> +				(ptr)->name = (op)->name;                      \
-> +	} while (0)
-> +
-> +	/* Keep sorte alphabetically for readability */
-> +	SET_DEVICE_OP(dev_ops, ops, eswitch_encap_mode_get);
-> +	SET_DEVICE_OP(dev_ops, ops, eswitch_encap_mode_set);
-> +	SET_DEVICE_OP(dev_ops, ops, eswitch_inline_mode_get);
-> +	SET_DEVICE_OP(dev_ops, ops, eswitch_inline_mode_set);
-> +	SET_DEVICE_OP(dev_ops, ops, eswitch_mode_get);
-> +	SET_DEVICE_OP(dev_ops, ops, eswitch_mode_set);
-> +	SET_DEVICE_OP(dev_ops, ops, flash_update);
-> +	SET_DEVICE_OP(dev_ops, ops, info_get);
-> +	SET_DEVICE_OP(dev_ops, ops, port_del);
-> +	SET_DEVICE_OP(dev_ops, ops, port_fn_state_get);
-> +	SET_DEVICE_OP(dev_ops, ops, port_fn_state_set);
-> +	SET_DEVICE_OP(dev_ops, ops, port_function_hw_addr_get);
-> +	SET_DEVICE_OP(dev_ops, ops, port_function_hw_addr_set);
-> +	SET_DEVICE_OP(dev_ops, ops, port_new);
-> +	SET_DEVICE_OP(dev_ops, ops, port_split);
-> +	SET_DEVICE_OP(dev_ops, ops, port_type_set);
-> +	SET_DEVICE_OP(dev_ops, ops, port_unsplit);
-> +	SET_DEVICE_OP(dev_ops, ops, rate_leaf_parent_set);
-> +	SET_DEVICE_OP(dev_ops, ops, rate_leaf_tx_max_set);
-> +	SET_DEVICE_OP(dev_ops, ops, rate_leaf_tx_share_set);
-> +	SET_DEVICE_OP(dev_ops, ops, rate_node_del);
-> +	SET_DEVICE_OP(dev_ops, ops, rate_node_new);
-> +	SET_DEVICE_OP(dev_ops, ops, rate_node_parent_set);
-> +	SET_DEVICE_OP(dev_ops, ops, rate_node_tx_max_set);
-> +	SET_DEVICE_OP(dev_ops, ops, rate_node_tx_share_set);
-> +	SET_DEVICE_OP(dev_ops, ops, reload_actions);
-> +	SET_DEVICE_OP(dev_ops, ops, reload_down);
-> +	SET_DEVICE_OP(dev_ops, ops, reload_limits);
-> +	SET_DEVICE_OP(dev_ops, ops, reload_up);
-> +	SET_DEVICE_OP(dev_ops, ops, sb_occ_max_clear);
-> +	SET_DEVICE_OP(dev_ops, ops, sb_occ_port_pool_get);
-> +	SET_DEVICE_OP(dev_ops, ops, sb_occ_snapshot);
-> +	SET_DEVICE_OP(dev_ops, ops, sb_occ_tc_port_bind_get);
-> +	SET_DEVICE_OP(dev_ops, ops, sb_pool_get);
-> +	SET_DEVICE_OP(dev_ops, ops, sb_pool_set);
-> +	SET_DEVICE_OP(dev_ops, ops, sb_port_pool_get);
-> +	SET_DEVICE_OP(dev_ops, ops, sb_port_pool_set);
-> +	SET_DEVICE_OP(dev_ops, ops, sb_tc_pool_bind_get);
-> +	SET_DEVICE_OP(dev_ops, ops, sb_tc_pool_bind_set);
-> +	SET_DEVICE_OP(dev_ops, ops, supported_flash_update_params);
-> +	SET_DEVICE_OP(dev_ops, ops, trap_action_set);
-> +	SET_DEVICE_OP(dev_ops, ops, trap_drop_counter_get);
-> +	SET_DEVICE_OP(dev_ops, ops, trap_fini);
-> +	SET_DEVICE_OP(dev_ops, ops, trap_group_action_set);
-> +	SET_DEVICE_OP(dev_ops, ops, trap_group_init);
-> +	SET_DEVICE_OP(dev_ops, ops, trap_group_set);
-> +	SET_DEVICE_OP(dev_ops, ops, trap_init);
-> +	SET_DEVICE_OP(dev_ops, ops, trap_policer_counter_get);
-> +	SET_DEVICE_OP(dev_ops, ops, trap_policer_fini);
-> +	SET_DEVICE_OP(dev_ops, ops, trap_policer_init);
-> +	SET_DEVICE_OP(dev_ops, ops, trap_policer_set);
-> +
-> +#undef SET_DEVICE_OP
-> +}
-> +EXPORT_SYMBOL_GPL(devlink_set_ops);
-
-I still don't like this. IMO using feature bits to dynamically mask-off
-capabilities has much better properties. We already have static caps
-in devlink_ops (first 3 members), we should build on top of that. 
+- Arnaldo
+>
+>Thanks,
+>
+>Kim
