@@ -2,159 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2E4B4215E7
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 20:01:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FDD042163E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 20:19:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236336AbhJDSDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 14:03:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44144 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236250AbhJDSDa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 14:03:30 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07C9FC061746
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 11:01:41 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id f130so17346447qke.6
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 11:01:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CQjISX4cpePeXQAfVi2rLJCncJ5gVzXwhTOkI28aziE=;
-        b=fSXFDdNKvyMK/yaCgGoXJ6m72aKBTdReBKGveeCC29x6MdScWA111agI+MsjJ090+g
-         0DTYK3TyPADTYrrih61nPgTCVJtxE6pKAW07d7vWYFaBBtThsyoK9j2V+H4vnWeCsY8E
-         svpFmFYwQuEpR18LI75/EQZVeSJ8+d90tfH/O1eB8/KVf8l6ScA3eLd1pQAHrToxBC3+
-         /oEWXTW8Q4EO1A1X7HjNfzyr7Z+t+/n2JgSWq5mBTISjtGlyHZdCHsj79DqGGIlU2uqG
-         uHsGvv3Hf1QYn2cNPWYvlX2IyKJ/geE8eLgQnCXLL4QkFdTL/2Zj6FYEDEIyACQVlhui
-         eMZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=CQjISX4cpePeXQAfVi2rLJCncJ5gVzXwhTOkI28aziE=;
-        b=38EldMjynL/SA/BEpMPs5GLhiGIMP/7GmEN53muBl8gIj54xtmff7T47LF9+odwHbl
-         qf3bfTRRJPS0kVRD0le3Gh8Nb9QrDhGcuEhScVrv9I1tyE90O42fcv97Z6/pFsj3gfl+
-         KZebDEHGGMruLGHxzJsc0GLhKvNaLqG/00ar/Ts4u4zXjNzmcuqgNqUzjvcR6VGVjWdS
-         zrBW3ad6LW23ghyLX4rcSKMxlgpa5PhuHhy8q8FDz0YTC5YG+AZFukyZGMIYM7Nw5twR
-         t51O+sFVVnno5GwPHKc/2I5G1vKbiSHxlia5gSCPAunkyfB7F9lgX9DUwA+7S7rPYmML
-         tnvg==
-X-Gm-Message-State: AOAM5310wm4LCqOxTlEluOwpUmYhrJ48T8MrcJ3alh1EeGPQSDsh1YfT
-        S5wpJRPuKt5hk4CjJ3/CstLOdA==
-X-Google-Smtp-Source: ABdhPJyW3XAlloMgTj6KKo74FXq7cHjymNK0JudtpTQypDKmPZqhjg7xC61tUHm+paNlCQeO8fWElg==
-X-Received: by 2002:a37:6147:: with SMTP id v68mr11510781qkb.154.1633370499899;
-        Mon, 04 Oct 2021 11:01:39 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id v2sm9541297qtw.8.2021.10.04.11.01.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Oct 2021 11:01:39 -0700 (PDT)
-Date:   Mon, 04 Oct 2021 11:01:39 -0700 (PDT)
-X-Google-Original-Date: Mon, 04 Oct 2021 11:01:35 PDT (-0700)
-Subject:     Re: [PATCH v20 00/17] KVM RISC-V Support
-In-Reply-To: <5cadb0b3-5e8f-110b-c6ed-4adaea033e58@redhat.com>
-CC:     Anup Patel <Anup.Patel@wdc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, graf@amazon.com,
-        Atish Patra <Atish.Patra@wdc.com>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        Damien Le Moal <Damien.LeMoal@wdc.com>, anup@brainfault.org,
-        kvm@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-From:   Palmer Dabbelt <palmerdabbelt@google.com>
-To:     pbonzini@redhat.com
-Message-ID: <mhng-1bfcbce2-3da3-4490-bcc5-45173ad84285@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        id S237968AbhJDSUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 14:20:52 -0400
+Received: from mga17.intel.com ([192.55.52.151]:40528 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233716AbhJDSUq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 14:20:46 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10127"; a="206344020"
+X-IronPort-AV: E=Sophos;i="5.85,346,1624345200"; 
+   d="scan'208";a="206344020"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2021 09:36:21 -0700
+X-IronPort-AV: E=Sophos;i="5.85,346,1624345200"; 
+   d="scan'208";a="558600272"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2021 09:36:21 -0700
+Date:   Mon, 4 Oct 2021 09:40:03 -0700
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     Barry Song <21cnbao@gmail.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>, iommu@lists.linux-foundation.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Tony Luck <tony.luck@intel.com>, mike.campin@intel.com,
+        Yi Liu <yi.l.liu@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>, jacob.jun.pan@linux.intel.com
+Subject: Re: [RFC 0/7] Support in-kernel DMA with PASID and SVA
+Message-ID: <20211004094003.527222e5@jacob-builder>
+In-Reply-To: <CAGsJ_4wfkrJp-eFKiXsLdiZCb3eS_zqZtJvXQTBafoTWY2yWKQ@mail.gmail.com>
+References: <1632256181-36071-1-git-send-email-jacob.jun.pan@linux.intel.com>
+        <CAGsJ_4z=2y2nVStXP-aAPnQrJJbMmv78mjaMwNc9P9Ec+gCtGw@mail.gmail.com>
+        <20211001123623.GM964074@nvidia.com>
+        <CAGsJ_4wfkrJp-eFKiXsLdiZCb3eS_zqZtJvXQTBafoTWY2yWKQ@mail.gmail.com>
+Organization: OTC
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 04 Oct 2021 01:58:28 PDT (-0700), pbonzini@redhat.com wrote:
-> On 27/09/21 13:39, Anup Patel wrote:
->> This series adds initial KVM RISC-V support. Currently, we are able to boot
->> Linux on RV64/RV32 Guest with multiple VCPUs.
->>
->> Key aspects of KVM RISC-V added by this series are:
->> 1. No RISC-V specific KVM IOCTL
->> 2. Loadable KVM RISC-V module supported
->> 3. Minimal possible KVM world-switch which touches only GPRs and few CSRs
->> 4. Both RV64 and RV32 host supported
->> 5. Full Guest/VM switch is done via vcpu_get/vcpu_put infrastructure
->> 6. KVM ONE_REG interface for VCPU register access from user-space
->> 7. PLIC emulation is done in user-space
->> 8. Timer and IPI emuation is done in-kernel
->> 9. Both Sv39x4 and Sv48x4 supported for RV64 host
->> 10. MMU notifiers supported
->> 11. Generic dirtylog supported
->> 12. FP lazy save/restore supported
->> 13. SBI v0.1 emulation for KVM Guest available
->> 14. Forward unhandled SBI calls to KVM userspace
->> 15. Hugepage support for Guest/VM
->> 16. IOEVENTFD support for Vhost
->>
->> Here's a brief TODO list which we will work upon after this series:
->> 1. KVM unit test support
->> 2. KVM selftest support
->> 3. SBI v0.3 emulation in-kernel
->> 4. In-kernel PMU virtualization
->> 5. In-kernel AIA irqchip support
->> 6. Nested virtualizaiton
->> 7. ..... and more .....
->
-> Looks good, I prepared a tag "for-riscv" at
-> https://git.kernel.org/pub/scm/virt/kvm/kvm.git.  Palmer can pull it and
-> you can use it to send me a pull request.
+Hi Barry,
 
-Thanks.  I'm assuming "you" there is Anup?
+On Sat, 2 Oct 2021 01:45:59 +1300, Barry Song <21cnbao@gmail.com> wrote:
 
-Just to make sure we're on the same page here, I've got
+> >  
+> > > I assume KVA mode can avoid this iotlb flush as the device is using
+> > > the page table of the kernel and sharing the whole kernel space. But
+> > > will users be glad to accept this mode?  
+> >
+> > You can avoid the lock be identity mapping the physical address space
+> > of the kernel and maping map/unmap a NOP.
+> >
+> > KVA is just a different way to achive this identity map with slightly
+> > different security properties than the normal way, but it doesn't
+> > reach to the same security level as proper map/unmap.
+> >
+> > I'm not sure anyone who cares about DMA security would see value in
+> > the slight difference between KVA and a normal identity map.  
+> 
+> yes. This is an important question. if users want a high security level,
+> kva might not their choice; if users don't want the security, they are
+> using iommu passthrough. So when will users choose KVA?
+Right, KVAs sit in the middle in terms of performance and security.
+Performance is better than IOVA due to IOTLB flush as you mentioned. Also
+not too far behind of pass-through.
 
-    commit 6c341a285912ddb2894ef793a58ad4f8462f26f4 (HEAD -> for-next)
-    Merge: 08da1608a1ca 3f2401f47d29
-    Author: Palmer Dabbelt <palmerdabbelt@google.com>
-    Date:   Mon Oct 4 10:12:44 2021 -0700
-    
-        Merge tag 'for-riscv' of https://git.kernel.org/pub/scm/virt/kvm/kvm.git into for-next
-    
-        H extension definitions, shared by the KVM and RISC-V trees.
-    
-        * tag 'for-riscv' of ssh://gitolite.kernel.org/pub/scm/virt/kvm/kvm: (301 commits)
-          RISC-V: Add hypervisor extension related CSR defines
-          KVM: selftests: Ensure all migrations are performed when test is affined
-          KVM: x86: Swap order of CPUID entry "index" vs. "significant flag" checks
-          ptp: Fix ptp_kvm_getcrosststamp issue for x86 ptp_kvm
-          x86/kvmclock: Move this_cpu_pvti into kvmclock.h
-          KVM: s390: Function documentation fixes
-          selftests: KVM: Don't clobber XMM register when read
-          KVM: VMX: Fix a TSX_CTRL_CPUID_CLEAR field mask issue
-          selftests: KVM: Explicitly use movq to read xmm registers
-          selftests: KVM: Call ucall_init when setting up in rseq_test
-          KVM: Remove tlbs_dirty
-          KVM: X86: Synchronize the shadow pagetable before link it
-          KVM: X86: Fix missed remote tlb flush in rmap_write_protect()
-          KVM: x86: nSVM: don't copy virt_ext from vmcb12
-          KVM: x86: nSVM: test eax for 4K alignment for GP errata workaround
-          KVM: x86: selftests: test simultaneous uses of V_IRQ from L1 and L0
-          KVM: x86: nSVM: restore int_vector in svm_clear_vintr
-          kvm: x86: Add AMD PMU MSRs to msrs_to_save_all[]
-          KVM: x86: nVMX: re-evaluate emulation_required on nested VM exit
-          KVM: x86: nVMX: don't fail nested VM entry on invalid guest state if !from_vmentry
-          ...
+Security-wise, KVA respects kernel mapping. So permissions are better
+enforced than pass-through and identity mapping.
+To balance performance and security, we are proposing KVA is only supported
+on trusted devices. On an Intel platform, it would be based on ACPI SATC
+(SoC Integrated Address Translation Cache (SATC) reporting structure, VT-d
+spec. 8.2). I am also adding a kernel iommu parameter to allow user
+override.
 
-into ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/palmer/linux.git for-next
-(I know that's kind of a confusing name, but it's what I've been using 
-as my short-term staging branch so I can do all my tests before saying 
-"it's on for-next").
 
-If that looks OK I can make it a touch more official by putting into the 
-RISC-V tree.
+Thanks,
 
-> I look forward to the test support. :)  Would be nice to have selftest
-> support already in 5.16, since there are a few arch-independent
-> selftests that cover the hairy parts of the MMU.
-
-Me too ;).
-
-I'm happy to add some KVM-related stuff to my pre-push test set, just 
-LMK if there's anything specific I should be looking in to.
+Jacob
