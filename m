@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C7D5420D0E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:09:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A821420F8F
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:34:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234937AbhJDNLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:11:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45614 "EHLO mail.kernel.org"
+        id S238024AbhJDNfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:35:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48020 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234633AbhJDNJA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:09:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8DC6D613D5;
-        Mon,  4 Oct 2021 13:03:00 +0000 (UTC)
+        id S238074AbhJDNdp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:33:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 09C1461528;
+        Mon,  4 Oct 2021 13:15:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352581;
-        bh=2x/8C7RGicmM784+vbWKsqQcHRNQFf3C1wuczzZL2ss=;
+        s=korg; t=1633353321;
+        bh=G3bX64Pz/yxzO+NwfRrXq3ZcaGFuOEOTGDOjUvliiqM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=on2y/91Oh/GH13yqGkiSwhACJy9jZk3TaaJCSlg4iKG16HlyWcZ+mTfJgddD3Y0Ok
-         p1yywyjxR1gcrRG/KwuJLkYSY7kEPNP+Gx1xCSPziKOGUTazXIIJi1ZR/TxoYLaLqL
-         zgv8tDJWxat3YWBvAAFOPJXyAKbYohoZQCxI0XGU=
+        b=A5gFzw470DSQxXvl0T8rVBUjghUMp/9lQ184Nwpupz5wYES4Jv0IesO/yXpj3V5+Y
+         u0JYsmwzN9BSFii8JmQdlHSaNgbjjtNQXkL1cl9eqOgPJROTQynYSHTdBx+kXgn+17
+         3bcUW560NH8ly5+A+Ax0Z+6nDkEYefJjttDjIBnM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org, LiLiang <liali@redhat.com>,
+        Sindhu Devale <sindhu.devale@intel.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 41/95] qnx4: avoid stringop-overread errors
-Date:   Mon,  4 Oct 2021 14:52:11 +0200
-Message-Id: <20211004125034.921083317@linuxfoundation.org>
+Subject: [PATCH 5.14 082/172] RDMA/irdma: Skip CQP ring during a reset
+Date:   Mon,  4 Oct 2021 14:52:12 +0200
+Message-Id: <20211004125047.641140749@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125033.572932188@linuxfoundation.org>
-References: <20211004125033.572932188@linuxfoundation.org>
+In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
+References: <20211004125044.945314266@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,129 +42,138 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Torvalds <torvalds@linux-foundation.org>
+From: Sindhu Devale <sindhu.devale@intel.com>
 
-[ Upstream commit b7213ffa0e585feb1aee3e7173e965e66ee0abaa ]
+[ Upstream commit 5b1e985f7626307c451f98883f5e2665ee208e1c ]
 
-The qnx4 directory entries are 64-byte blocks that have different
-contents depending on the a status byte that is in the last byte of the
-block.
+Due to duplicate reset flags, CQP commands are processed during reset.
 
-In particular, a directory entry can be either a "link info" entry with
-a 48-byte name and pointers to the real inode information, or an "inode
-entry" with a smaller 16-byte name and the full inode information.
+This leads CQP failures such as below:
 
-But the code was written to always just treat the directory name as if
-it was part of that "inode entry", and just extend the name to the
-longer case if the status byte said it was a link entry.
+ irdma0: [Delete Local MAC Entry Cmd Error][op_code=49] status=-27 waiting=1 completion_err=0 maj=0x0 min=0x0
 
-That work just fine and gives the right results, but now that gcc is
-tracking data structure accesses much more, the code can trigger a
-compiler error about using up to 48 bytes (the long name) in a structure
-that only has that shorter name in it:
+Remove the redundant flag and set the correct reset flag so CPQ is paused
+during reset
 
-   fs/qnx4/dir.c: In function ‘qnx4_readdir’:
-   fs/qnx4/dir.c:51:32: error: ‘strnlen’ specified bound 48 exceeds source size 16 [-Werror=stringop-overread]
-      51 |                         size = strnlen(de->di_fname, size);
-         |                                ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-   In file included from fs/qnx4/qnx4.h:3,
-                    from fs/qnx4/dir.c:16:
-   include/uapi/linux/qnx4_fs.h:45:25: note: source object declared here
-      45 |         char            di_fname[QNX4_SHORT_NAME_MAX];
-         |                         ^~~~~~~~
-
-which is because the source code doesn't really make this whole "one of
-two different types" explicit.
-
-Fix this by introducing a very explicit union of the two types, and
-basically explaining to the compiler what is really going on.
-
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: 8498a30e1b94 ("RDMA/irdma: Register auxiliary driver and implement private channel OPs")
+Link: https://lore.kernel.org/r/20210916191222.824-2-shiraz.saleem@intel.com
+Reported-by: LiLiang <liali@redhat.com>
+Signed-off-by: Sindhu Devale <sindhu.devale@intel.com>
+Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/qnx4/dir.c | 51 ++++++++++++++++++++++++++++++++++-----------------
- 1 file changed, 34 insertions(+), 17 deletions(-)
+ drivers/infiniband/hw/irdma/cm.c       | 4 ++--
+ drivers/infiniband/hw/irdma/hw.c       | 6 +++---
+ drivers/infiniband/hw/irdma/i40iw_if.c | 2 +-
+ drivers/infiniband/hw/irdma/main.h     | 1 -
+ drivers/infiniband/hw/irdma/utils.c    | 2 +-
+ drivers/infiniband/hw/irdma/verbs.c    | 3 +--
+ 6 files changed, 8 insertions(+), 10 deletions(-)
 
-diff --git a/fs/qnx4/dir.c b/fs/qnx4/dir.c
-index a6ee23aadd28..2a66844b7ff8 100644
---- a/fs/qnx4/dir.c
-+++ b/fs/qnx4/dir.c
-@@ -15,13 +15,27 @@
- #include <linux/buffer_head.h>
- #include "qnx4.h"
+diff --git a/drivers/infiniband/hw/irdma/cm.c b/drivers/infiniband/hw/irdma/cm.c
+index 6b62299abfbb..6dea0a49d171 100644
+--- a/drivers/infiniband/hw/irdma/cm.c
++++ b/drivers/infiniband/hw/irdma/cm.c
+@@ -3496,7 +3496,7 @@ static void irdma_cm_disconn_true(struct irdma_qp *iwqp)
+ 	     original_hw_tcp_state == IRDMA_TCP_STATE_TIME_WAIT ||
+ 	     last_ae == IRDMA_AE_RDMAP_ROE_BAD_LLP_CLOSE ||
+ 	     last_ae == IRDMA_AE_BAD_CLOSE ||
+-	     last_ae == IRDMA_AE_LLP_CONNECTION_RESET || iwdev->reset)) {
++	     last_ae == IRDMA_AE_LLP_CONNECTION_RESET || iwdev->rf->reset)) {
+ 		issue_close = 1;
+ 		iwqp->cm_id = NULL;
+ 		qp->term_flags = 0;
+@@ -4250,7 +4250,7 @@ void irdma_cm_teardown_connections(struct irdma_device *iwdev, u32 *ipaddr,
+ 				       teardown_entry);
+ 		attr.qp_state = IB_QPS_ERR;
+ 		irdma_modify_qp(&cm_node->iwqp->ibqp, &attr, IB_QP_STATE, NULL);
+-		if (iwdev->reset)
++		if (iwdev->rf->reset)
+ 			irdma_cm_disconn(cm_node->iwqp);
+ 		irdma_rem_ref_cm_node(cm_node);
+ 	}
+diff --git a/drivers/infiniband/hw/irdma/hw.c b/drivers/infiniband/hw/irdma/hw.c
+index 00de5ee9a260..33c06a3a4f63 100644
+--- a/drivers/infiniband/hw/irdma/hw.c
++++ b/drivers/infiniband/hw/irdma/hw.c
+@@ -1489,7 +1489,7 @@ void irdma_reinitialize_ieq(struct irdma_sc_vsi *vsi)
  
-+/*
-+ * A qnx4 directory entry is an inode entry or link info
-+ * depending on the status field in the last byte. The
-+ * first byte is where the name start either way, and a
-+ * zero means it's empty.
-+ */
-+union qnx4_directory_entry {
-+	struct {
-+		char de_name;
-+		char de_pad[62];
-+		char de_status;
-+	};
-+	struct qnx4_inode_entry inode;
-+	struct qnx4_link_info link;
-+};
-+
- static int qnx4_readdir(struct file *file, struct dir_context *ctx)
- {
- 	struct inode *inode = file_inode(file);
- 	unsigned int offset;
- 	struct buffer_head *bh;
--	struct qnx4_inode_entry *de;
--	struct qnx4_link_info *le;
- 	unsigned long blknum;
- 	int ix, ino;
- 	int size;
-@@ -38,27 +52,30 @@ static int qnx4_readdir(struct file *file, struct dir_context *ctx)
- 		}
- 		ix = (ctx->pos >> QNX4_DIR_ENTRY_SIZE_BITS) % QNX4_INODES_PER_BLOCK;
- 		for (; ix < QNX4_INODES_PER_BLOCK; ix++, ctx->pos += QNX4_DIR_ENTRY_SIZE) {
-+			union qnx4_directory_entry *de;
-+			const char *name;
-+
- 			offset = ix * QNX4_DIR_ENTRY_SIZE;
--			de = (struct qnx4_inode_entry *) (bh->b_data + offset);
--			if (!de->di_fname[0])
-+			de = (union qnx4_directory_entry *) (bh->b_data + offset);
-+
-+			if (!de->de_name)
- 				continue;
--			if (!(de->di_status & (QNX4_FILE_USED|QNX4_FILE_LINK)))
-+			if (!(de->de_status & (QNX4_FILE_USED|QNX4_FILE_LINK)))
- 				continue;
--			if (!(de->di_status & QNX4_FILE_LINK))
--				size = QNX4_SHORT_NAME_MAX;
--			else
--				size = QNX4_NAME_MAX;
--			size = strnlen(de->di_fname, size);
--			QNX4DEBUG((KERN_INFO "qnx4_readdir:%.*s\n", size, de->di_fname));
--			if (!(de->di_status & QNX4_FILE_LINK))
-+			if (!(de->de_status & QNX4_FILE_LINK)) {
-+				size = sizeof(de->inode.di_fname);
-+				name = de->inode.di_fname;
- 				ino = blknum * QNX4_INODES_PER_BLOCK + ix - 1;
--			else {
--				le  = (struct qnx4_link_info*)de;
--				ino = ( le32_to_cpu(le->dl_inode_blk) - 1 ) *
-+			} else {
-+				size = sizeof(de->link.dl_fname);
-+				name = de->link.dl_fname;
-+				ino = ( le32_to_cpu(de->link.dl_inode_blk) - 1 ) *
- 					QNX4_INODES_PER_BLOCK +
--					le->dl_inode_ndx;
-+					de->link.dl_inode_ndx;
- 			}
--			if (!dir_emit(ctx, de->di_fname, size, ino, DT_UNKNOWN)) {
-+			size = strnlen(name, size);
-+			QNX4DEBUG((KERN_INFO "qnx4_readdir:%.*s\n", size, name));
-+			if (!dir_emit(ctx, name, size, ino, DT_UNKNOWN)) {
- 				brelse(bh);
- 				return 0;
- 			}
+ 	irdma_puda_dele_rsrc(vsi, IRDMA_PUDA_RSRC_TYPE_IEQ, false);
+ 	if (irdma_initialize_ieq(iwdev)) {
+-		iwdev->reset = true;
++		iwdev->rf->reset = true;
+ 		rf->gen_ops.request_reset(rf);
+ 	}
+ }
+@@ -1632,13 +1632,13 @@ void irdma_rt_deinit_hw(struct irdma_device *iwdev)
+ 	case IEQ_CREATED:
+ 		if (!iwdev->roce_mode)
+ 			irdma_puda_dele_rsrc(&iwdev->vsi, IRDMA_PUDA_RSRC_TYPE_IEQ,
+-					     iwdev->reset);
++					     iwdev->rf->reset);
+ 		fallthrough;
+ 	case ILQ_CREATED:
+ 		if (!iwdev->roce_mode)
+ 			irdma_puda_dele_rsrc(&iwdev->vsi,
+ 					     IRDMA_PUDA_RSRC_TYPE_ILQ,
+-					     iwdev->reset);
++					     iwdev->rf->reset);
+ 		break;
+ 	default:
+ 		ibdev_warn(&iwdev->ibdev, "bad init_state = %d\n", iwdev->init_state);
+diff --git a/drivers/infiniband/hw/irdma/i40iw_if.c b/drivers/infiniband/hw/irdma/i40iw_if.c
+index bddf88194d09..d219f64b2c3d 100644
+--- a/drivers/infiniband/hw/irdma/i40iw_if.c
++++ b/drivers/infiniband/hw/irdma/i40iw_if.c
+@@ -55,7 +55,7 @@ static void i40iw_close(struct i40e_info *cdev_info, struct i40e_client *client,
+ 
+ 	iwdev = to_iwdev(ibdev);
+ 	if (reset)
+-		iwdev->reset = true;
++		iwdev->rf->reset = true;
+ 
+ 	iwdev->iw_status = 0;
+ 	irdma_port_ibevent(iwdev);
+diff --git a/drivers/infiniband/hw/irdma/main.h b/drivers/infiniband/hw/irdma/main.h
+index 743d9e143a99..b678fe712447 100644
+--- a/drivers/infiniband/hw/irdma/main.h
++++ b/drivers/infiniband/hw/irdma/main.h
+@@ -346,7 +346,6 @@ struct irdma_device {
+ 	bool roce_mode:1;
+ 	bool roce_dcqcn_en:1;
+ 	bool dcb:1;
+-	bool reset:1;
+ 	bool iw_ooo:1;
+ 	enum init_completion_state init_state;
+ 
+diff --git a/drivers/infiniband/hw/irdma/utils.c b/drivers/infiniband/hw/irdma/utils.c
+index 5bbe44e54f9a..832e9604766b 100644
+--- a/drivers/infiniband/hw/irdma/utils.c
++++ b/drivers/infiniband/hw/irdma/utils.c
+@@ -2510,7 +2510,7 @@ void irdma_modify_qp_to_err(struct irdma_sc_qp *sc_qp)
+ 	struct irdma_qp *qp = sc_qp->qp_uk.back_qp;
+ 	struct ib_qp_attr attr;
+ 
+-	if (qp->iwdev->reset)
++	if (qp->iwdev->rf->reset)
+ 		return;
+ 	attr.qp_state = IB_QPS_ERR;
+ 
+diff --git a/drivers/infiniband/hw/irdma/verbs.c b/drivers/infiniband/hw/irdma/verbs.c
+index 717147ed0519..6107f37321d2 100644
+--- a/drivers/infiniband/hw/irdma/verbs.c
++++ b/drivers/infiniband/hw/irdma/verbs.c
+@@ -535,8 +535,7 @@ static int irdma_destroy_qp(struct ib_qp *ibqp, struct ib_udata *udata)
+ 	irdma_qp_rem_ref(&iwqp->ibqp);
+ 	wait_for_completion(&iwqp->free_qp);
+ 	irdma_free_lsmm_rsrc(iwqp);
+-	if (!iwdev->reset)
+-		irdma_cqp_qp_destroy_cmd(&iwdev->rf->sc_dev, &iwqp->sc_qp);
++	irdma_cqp_qp_destroy_cmd(&iwdev->rf->sc_dev, &iwqp->sc_qp);
+ 
+ 	if (!iwqp->user_mode) {
+ 		if (iwqp->iwscq) {
 -- 
 2.33.0
 
