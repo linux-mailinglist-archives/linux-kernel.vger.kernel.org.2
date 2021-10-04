@@ -2,39 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BE56420F77
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:34:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7565420C56
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:03:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235275AbhJDNfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:35:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47278 "EHLO mail.kernel.org"
+        id S234926AbhJDNEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:04:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39214 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236310AbhJDNbn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:31:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 62ED861BA1;
-        Mon,  4 Oct 2021 13:14:11 +0000 (UTC)
+        id S234933AbhJDNDX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:03:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1AD0E61994;
+        Mon,  4 Oct 2021 12:59:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633353251;
-        bh=2aou1H1vNQtAw5M/ECqOLD9IIJ4Ygl4rIiudc0l9X2s=;
+        s=korg; t=1633352381;
+        bh=LL46pIl7PY0LSsN9X7Pt4Fu9vlqyg0sY68M+pC0v5tI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NNslxUpXffNUhhhbfjMIa+PQd/ZcqwwW2xq9zj1dVdsEyVnENx0H60VvZ1olKOBLW
-         +WdkE/RhP/DZaLuTEn/XerySn/MowP9jA9NJkU0s+5SUiukv5GjzG9mZs13PjELWtB
-         za7fqke9XuvjDZeen7/hK320HVvA660qDxH0Ldh0=
+        b=TZz5uf/e6Bl4NAvuF9plus3a+I9LkpM+c1oWH98mK5vIWJvpjvLY/IJq7oWya2dEK
+         hReV985uUAXEjVb1VOaDSN9cH5SVtnnA4qSGskfJdb/qUqbafkxee7gTL0wI/FRrzH
+         H/lxSfX123aj/bYxzoOBV2SJ886E8zY5bBNhp3Ow=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+f3985126b746b3d59c9d@syzkaller.appspotmail.com,
-        Alexander Potapenko <glider@google.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.14 053/172] KVM: x86: Swap order of CPUID entry "index" vs. "significant flag" checks
+        stable@vger.kernel.org, Alex Elder <elder@linaro.org>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.14 08/75] staging: greybus: uart: fix tty use after free
 Date:   Mon,  4 Oct 2021 14:51:43 +0200
-Message-Id: <20211004125046.707413951@linuxfoundation.org>
+Message-Id: <20211004125031.801090082@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
-References: <20211004125044.945314266@linuxfoundation.org>
+In-Reply-To: <20211004125031.530773667@linuxfoundation.org>
+References: <20211004125031.530773667@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,80 +39,172 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <seanjc@google.com>
+From: Johan Hovold <johan@kernel.org>
 
-commit e8a747d0884e554a8c1872da6c8f680a4f893c6d upstream.
+commit 92dc0b1f46e12cfabd28d709bb34f7a39431b44f upstream.
 
-Check whether a CPUID entry's index is significant before checking for a
-matching index to hack-a-fix an undefined behavior bug due to consuming
-uninitialized data.  RESET/INIT emulation uses kvm_cpuid() to retrieve
-CPUID.0x1, which does _not_ have a significant index, and fails to
-initialize the dummy variable that doubles as EBX/ECX/EDX output _and_
-ECX, a.k.a. index, input.
+User space can hold a tty open indefinitely and tty drivers must not
+release the underlying structures until the last user is gone.
 
-Practically speaking, it's _extremely_  unlikely any compiler will yield
-code that causes problems, as the compiler would need to inline the
-kvm_cpuid() call to detect the uninitialized data, and intentionally hose
-the kernel, e.g. insert ud2, instead of simply ignoring the result of
-the index comparison.
+Switch to using the tty-port reference counter to manage the life time
+of the greybus tty state to avoid use after free after a disconnect.
 
-Although the sketchy "dummy" pattern was introduced in SVM by commit
-66f7b72e1171 ("KVM: x86: Make register state after reset conform to
-specification"), it wasn't actually broken until commit 7ff6c0350315
-("KVM: x86: Remove stateful CPUID handling") arbitrarily swapped the
-order of operations such that "index" was checked before the significant
-flag.
-
-Avoid consuming uninitialized data by reverting to checking the flag
-before the index purely so that the fix can be easily backported; the
-offending RESET/INIT code has been refactored, moved, and consolidated
-from vendor code to common x86 since the bug was introduced.  A future
-patch will directly address the bad RESET/INIT behavior.
-
-The undefined behavior was detected by syzbot + KernelMemorySanitizer.
-
-  BUG: KMSAN: uninit-value in cpuid_entry2_find arch/x86/kvm/cpuid.c:68
-  BUG: KMSAN: uninit-value in kvm_find_cpuid_entry arch/x86/kvm/cpuid.c:1103
-  BUG: KMSAN: uninit-value in kvm_cpuid+0x456/0x28f0 arch/x86/kvm/cpuid.c:1183
-   cpuid_entry2_find arch/x86/kvm/cpuid.c:68 [inline]
-   kvm_find_cpuid_entry arch/x86/kvm/cpuid.c:1103 [inline]
-   kvm_cpuid+0x456/0x28f0 arch/x86/kvm/cpuid.c:1183
-   kvm_vcpu_reset+0x13fb/0x1c20 arch/x86/kvm/x86.c:10885
-   kvm_apic_accept_events+0x58f/0x8c0 arch/x86/kvm/lapic.c:2923
-   vcpu_enter_guest+0xfd2/0x6d80 arch/x86/kvm/x86.c:9534
-   vcpu_run+0x7f5/0x18d0 arch/x86/kvm/x86.c:9788
-   kvm_arch_vcpu_ioctl_run+0x245b/0x2d10 arch/x86/kvm/x86.c:10020
-
-  Local variable ----dummy@kvm_vcpu_reset created at:
-   kvm_vcpu_reset+0x1fb/0x1c20 arch/x86/kvm/x86.c:10812
-   kvm_apic_accept_events+0x58f/0x8c0 arch/x86/kvm/lapic.c:2923
-
-Reported-by: syzbot+f3985126b746b3d59c9d@syzkaller.appspotmail.com
-Reported-by: Alexander Potapenko <glider@google.com>
-Fixes: 2a24be79b6b7 ("KVM: VMX: Set EDX at INIT with CPUID.0x1, Family-Model-Stepping")
-Fixes: 7ff6c0350315 ("KVM: x86: Remove stateful CPUID handling")
-Cc: stable@vger.kernel.org
-Signed-off-by: Sean Christopherson <seanjc@google.com>
-Reviewed-by: Jim Mattson <jmattson@google.com>
-Message-Id: <20210929222426.1855730-2-seanjc@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Fixes: a18e15175708 ("greybus: more uart work")
+Cc: stable@vger.kernel.org      # 4.9
+Reviewed-by: Alex Elder <elder@linaro.org>
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Link: https://lore.kernel.org/r/20210906124538.22358-1-johan@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/kvm/cpuid.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/staging/greybus/uart.c |   62 +++++++++++++++++++++--------------------
+ 1 file changed, 32 insertions(+), 30 deletions(-)
 
---- a/arch/x86/kvm/cpuid.c
-+++ b/arch/x86/kvm/cpuid.c
-@@ -65,8 +65,8 @@ static inline struct kvm_cpuid_entry2 *c
- 	for (i = 0; i < nent; i++) {
- 		e = &entries[i];
+--- a/drivers/staging/greybus/uart.c
++++ b/drivers/staging/greybus/uart.c
+@@ -800,6 +800,17 @@ out:
+ 	gbphy_runtime_put_autosuspend(gb_tty->gbphy_dev);
+ }
  
--		if (e->function == function && (e->index == index ||
--		    !(e->flags & KVM_CPUID_FLAG_SIGNIFCANT_INDEX)))
-+		if (e->function == function &&
-+		    (!(e->flags & KVM_CPUID_FLAG_SIGNIFCANT_INDEX) || e->index == index))
- 			return e;
++static void gb_tty_port_destruct(struct tty_port *port)
++{
++	struct gb_tty *gb_tty = container_of(port, struct gb_tty, port);
++
++	if (gb_tty->minor != GB_NUM_MINORS)
++		release_minor(gb_tty);
++	kfifo_free(&gb_tty->write_fifo);
++	kfree(gb_tty->buffer);
++	kfree(gb_tty);
++}
++
+ static const struct tty_operations gb_ops = {
+ 	.install =		gb_tty_install,
+ 	.open =			gb_tty_open,
+@@ -823,6 +834,7 @@ static const struct tty_port_operations
+ 	.dtr_rts =		gb_tty_dtr_rts,
+ 	.activate =		gb_tty_port_activate,
+ 	.shutdown =		gb_tty_port_shutdown,
++	.destruct =		gb_tty_port_destruct,
+ };
+ 
+ static int gb_uart_probe(struct gbphy_device *gbphy_dev,
+@@ -835,17 +847,11 @@ static int gb_uart_probe(struct gbphy_de
+ 	int retval;
+ 	int minor;
+ 
+-	gb_tty = kzalloc(sizeof(*gb_tty), GFP_KERNEL);
+-	if (!gb_tty)
+-		return -ENOMEM;
+-
+ 	connection = gb_connection_create(gbphy_dev->bundle,
+ 					  le16_to_cpu(gbphy_dev->cport_desc->id),
+ 					  gb_uart_request_handler);
+-	if (IS_ERR(connection)) {
+-		retval = PTR_ERR(connection);
+-		goto exit_tty_free;
+-	}
++	if (IS_ERR(connection))
++		return PTR_ERR(connection);
+ 
+ 	max_payload = gb_operation_get_payload_size_max(connection);
+ 	if (max_payload < sizeof(struct gb_uart_send_data_request)) {
+@@ -853,13 +859,23 @@ static int gb_uart_probe(struct gbphy_de
+ 		goto exit_connection_destroy;
  	}
  
++	gb_tty = kzalloc(sizeof(*gb_tty), GFP_KERNEL);
++	if (!gb_tty) {
++		retval = -ENOMEM;
++		goto exit_connection_destroy;
++	}
++
++	tty_port_init(&gb_tty->port);
++	gb_tty->port.ops = &gb_port_ops;
++	gb_tty->minor = GB_NUM_MINORS;
++
+ 	gb_tty->buffer_payload_max = max_payload -
+ 			sizeof(struct gb_uart_send_data_request);
+ 
+ 	gb_tty->buffer = kzalloc(gb_tty->buffer_payload_max, GFP_KERNEL);
+ 	if (!gb_tty->buffer) {
+ 		retval = -ENOMEM;
+-		goto exit_connection_destroy;
++		goto exit_put_port;
+ 	}
+ 
+ 	INIT_WORK(&gb_tty->tx_work, gb_uart_tx_write_work);
+@@ -867,7 +883,7 @@ static int gb_uart_probe(struct gbphy_de
+ 	retval = kfifo_alloc(&gb_tty->write_fifo, GB_UART_WRITE_FIFO_SIZE,
+ 			     GFP_KERNEL);
+ 	if (retval)
+-		goto exit_buf_free;
++		goto exit_put_port;
+ 
+ 	gb_tty->credits = GB_UART_FIRMWARE_CREDITS;
+ 	init_completion(&gb_tty->credits_complete);
+@@ -881,7 +897,7 @@ static int gb_uart_probe(struct gbphy_de
+ 		} else {
+ 			retval = minor;
+ 		}
+-		goto exit_kfifo_free;
++		goto exit_put_port;
+ 	}
+ 
+ 	gb_tty->minor = minor;
+@@ -890,9 +906,6 @@ static int gb_uart_probe(struct gbphy_de
+ 	init_waitqueue_head(&gb_tty->wioctl);
+ 	mutex_init(&gb_tty->mutex);
+ 
+-	tty_port_init(&gb_tty->port);
+-	gb_tty->port.ops = &gb_port_ops;
+-
+ 	gb_tty->connection = connection;
+ 	gb_tty->gbphy_dev = gbphy_dev;
+ 	gb_connection_set_data(connection, gb_tty);
+@@ -900,7 +913,7 @@ static int gb_uart_probe(struct gbphy_de
+ 
+ 	retval = gb_connection_enable_tx(connection);
+ 	if (retval)
+-		goto exit_release_minor;
++		goto exit_put_port;
+ 
+ 	send_control(gb_tty, gb_tty->ctrlout);
+ 
+@@ -927,16 +940,10 @@ static int gb_uart_probe(struct gbphy_de
+ 
+ exit_connection_disable:
+ 	gb_connection_disable(connection);
+-exit_release_minor:
+-	release_minor(gb_tty);
+-exit_kfifo_free:
+-	kfifo_free(&gb_tty->write_fifo);
+-exit_buf_free:
+-	kfree(gb_tty->buffer);
++exit_put_port:
++	tty_port_put(&gb_tty->port);
+ exit_connection_destroy:
+ 	gb_connection_destroy(connection);
+-exit_tty_free:
+-	kfree(gb_tty);
+ 
+ 	return retval;
+ }
+@@ -967,15 +974,10 @@ static void gb_uart_remove(struct gbphy_
+ 	gb_connection_disable_rx(connection);
+ 	tty_unregister_device(gb_tty_driver, gb_tty->minor);
+ 
+-	/* FIXME - free transmit / receive buffers */
+-
+ 	gb_connection_disable(connection);
+-	tty_port_destroy(&gb_tty->port);
+ 	gb_connection_destroy(connection);
+-	release_minor(gb_tty);
+-	kfifo_free(&gb_tty->write_fifo);
+-	kfree(gb_tty->buffer);
+-	kfree(gb_tty);
++
++	tty_port_put(&gb_tty->port);
+ }
+ 
+ static int gb_tty_init(void)
 
 
