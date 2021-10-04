@@ -2,73 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2EDB42162E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 20:13:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19646421632
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 20:14:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236123AbhJDSPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 14:15:38 -0400
-Received: from mail-ot1-f43.google.com ([209.85.210.43]:45638 "EHLO
-        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234607AbhJDSPh (ORCPT
+        id S236235AbhJDSQj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 14:16:39 -0400
+Received: from mail-oi1-f181.google.com ([209.85.167.181]:39900 "EHLO
+        mail-oi1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232577AbhJDSQi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 14:15:37 -0400
-Received: by mail-ot1-f43.google.com with SMTP id e66-20020a9d2ac8000000b0054da8bdf2aeso20504128otb.12;
-        Mon, 04 Oct 2021 11:13:47 -0700 (PDT)
+        Mon, 4 Oct 2021 14:16:38 -0400
+Received: by mail-oi1-f181.google.com with SMTP id a3so22775517oid.6;
+        Mon, 04 Oct 2021 11:14:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=GbdWS7O+5glk2eGl8y+sbYBXK1dhg+jDTiIjq/zLXkk=;
-        b=l51gM3fAPOQpD/ychRx1JlS7HRsSCUZwTBHW5R5bVnoi95LbgCHUmwF3nZsTyhc5Gu
-         QCBdTRC7lgbAo2eg6aab/1oKs237pzxBN99vBZCfZ8ax4nzllzIU1ch3gbSlkKi8VwWQ
-         P7pj/qqENrIK+PCLR5ncBu15Y9+Izej5P+IA8F8tv7ebIKkw5P9H0nnM41Nc5idS+Oit
-         Q5aCCjomvs6WftuRAMU6NBGWGVpEIbLvYol42gpUN9jzAUrTXv1YCe7AXskElK7Lmn5f
-         JgrgAFxipEmxlf7DvKU3FcIN3V3zjcamancmVoneRBS4bjUs6h8x3BJbOWz7VHvcR0LE
-         Mqsg==
-X-Gm-Message-State: AOAM5314bWcCDTZfLy2t00H7mrS0iRQAUDU3HTPT84n5Up8w9frUbzjE
-        PXWQGnQPnOQYdLpDy0M6bQ==
-X-Google-Smtp-Source: ABdhPJyVSoPfOlG3bABMGNUkllimA8tjCoYiWHbAbImE0Mv1LkkBB12zo19HHkTpIqYjKjTEECrEKQ==
-X-Received: by 2002:a9d:4696:: with SMTP id z22mr10532837ote.293.1633371227643;
-        Mon, 04 Oct 2021 11:13:47 -0700 (PDT)
+        bh=xmMc3rWEU1efxoTuQUPwz+mRri1cEQCNMADP+8wt6Ag=;
+        b=BmlEMhvvuCPfCvvSfRm7pYeKVoe5wrNsjBDb1bWPveVzLWamRdxXMt6aCphheX1OCN
+         HqcjGyFZMmdPLTzVoExu/yqZJbhi78KlkQHNhE+HzjqGOxAejoGl9gdWBVsx6dDZXUFU
+         PCZX/51rQ09K278ZHYSgLDmtqlP6tfqMAfKPfp3HlmMn0TR3mCl2qZUNIfyYzwwcjWwd
+         OUbLDtoyVjZSwHWyAQf2sxiMeBAiU2VCymF1rcnEUeB4moeX8/HrEzSyavZyGrINLNwb
+         7LS9h2TwrFleem+2GDqv7HZc2DDCQqhGSgy/xHdl6FVD8cgH5b4JSfMmC6cFnzne61gO
+         pFVw==
+X-Gm-Message-State: AOAM5302mxYSEdIDmrM3HK+a168ixGUZ9BiJu3rU+zbgIgOcJGsuFrXA
+        fANlorjVl38AMADUU6OPHQ==
+X-Google-Smtp-Source: ABdhPJwweR08rYfQVmo9mS5FC4ORSY8zaEfqR67w5NN8q0Flrm0RAAnE9yHyUo7wtCTpOIT6vn4U+g==
+X-Received: by 2002:a05:6808:15a3:: with SMTP id t35mr14498181oiw.92.1633371288751;
+        Mon, 04 Oct 2021 11:14:48 -0700 (PDT)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id b23sm2467983oie.29.2021.10.04.11.13.46
+        by smtp.gmail.com with ESMTPSA id s13sm1194251oou.11.2021.10.04.11.14.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Oct 2021 11:13:47 -0700 (PDT)
-Received: (nullmailer pid 1588870 invoked by uid 1000);
-        Mon, 04 Oct 2021 18:13:46 -0000
-Date:   Mon, 4 Oct 2021 13:13:46 -0500
+        Mon, 04 Oct 2021 11:14:48 -0700 (PDT)
+Received: (nullmailer pid 1590538 invoked by uid 1000);
+        Mon, 04 Oct 2021 18:14:47 -0000
+Date:   Mon, 4 Oct 2021 13:14:47 -0500
 From:   Rob Herring <robh@kernel.org>
-To:     Gavin Shan <gshan@redhat.com>
-Cc:     devicetree@vger.kernel.org, maz@kernel.org,
-        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        shan.gavin@gmail.com, catalin.marinas@arm.com,
-        rdunlap@infradead.org, kvmarm@lists.cs.columbia.edu,
-        will@kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 2/2] of, numa: Fetch empty NUMA node ID from distance
- map
-Message-ID: <YVtEWnahMZcysdTg@robh.at.kernel.org>
-References: <20210927064119.127285-1-gshan@redhat.com>
- <20210927064119.127285-3-gshan@redhat.com>
+To:     Shawn Guo <shawn.guo@linaro.org>
+Cc:     devicetree@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+        linux-phy@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH 1/2] dt-bindings: phy: qcom,qmp: Add QCM2290 USB3 PHY
+Message-ID: <YVtEl5KCUM8UIpuT@robh.at.kernel.org>
+References: <20210927064829.5752-1-shawn.guo@linaro.org>
+ <20210927064829.5752-2-shawn.guo@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210927064119.127285-3-gshan@redhat.com>
+In-Reply-To: <20210927064829.5752-2-shawn.guo@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 27 Sep 2021 14:41:19 +0800, Gavin Shan wrote:
-> There is no device node for the empty NUMA node. However, the
-> corresponding NUMA node ID and distance map is still valid in
-> "numa-distance-map-v1" compatible device node.
+On Mon, 27 Sep 2021 14:48:28 +0800, Shawn Guo wrote:
+> Add support for USB3 PHY found on Qualcomm QCM2290 SoC.
 > 
-> This fetches the NUMA node ID and distance map for these empty
-> NUMA node from "numa-distance-map-v1" compatible device node.
-> 
-> Signed-off-by: Gavin Shan <gshan@redhat.com>
+> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
 > ---
->  drivers/of/of_numa.c | 2 ++
->  1 file changed, 2 insertions(+)
+>  .../devicetree/bindings/phy/qcom,qmp-phy.yaml | 27 +++++++++++++++++++
+>  1 file changed, 27 insertions(+)
 > 
 
-Applied, thanks!
+Reviewed-by: Rob Herring <robh@kernel.org>
