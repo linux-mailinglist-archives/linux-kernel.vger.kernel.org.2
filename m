@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CE1D420C98
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:05:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D444A420E7C
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:23:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234846AbhJDNHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:07:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39430 "EHLO mail.kernel.org"
+        id S236773AbhJDNZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:25:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38168 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234986AbhJDNF0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:05:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F6A761A08;
-        Mon,  4 Oct 2021 13:00:47 +0000 (UTC)
+        id S236524AbhJDNWJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:22:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3DEC261BE3;
+        Mon,  4 Oct 2021 13:09:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352448;
-        bh=WQFJBCNPXnY7bvv8x9nhyVjC38kJBnHQWIFmgGT5sBE=;
+        s=korg; t=1633352980;
+        bh=G5N68ogxPOyVPsCq0EXsuXcQ22sRzRd8LAAZOtMEC1M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ulnjd2rzFFDECeIMqi/Jq01YuRIS+HLWdj9e5Cry5Tzf0RFj7UgGpmlJMxn28OaCT
-         kOntnjMWMSWYnySoe2bEV7vidNKllyo2rDRGhXljdh/lzZ02Pcadx3TZH/eetb2Do1
-         ZF+jKaKZa7CSvhQYwTX89F1VbIbJuvYxz/UFoQx8=
+        b=amJ+BC4GbjX1BLGYe1vQZCVuo4HvHF/Q2aWnrKfaxEXss7iYIjD0RpPT0FXP/NQeB
+         zYiJC9XmvICIRTEmEzsEENNJv1X0/qWmimQanO06WubwReTcZOzf3rWIKskttPGLuf
+         RFEBezjdSvl68HWNzwaNCyt7Yn18Rg2k/ZT1xn7Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Alexander Sverdlin <alexander.sverdlin@nokia.com>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        Florian Fainelli <f.fainelli@gmail.com>
-Subject: [PATCH 4.14 65/75] ARM: 9079/1: ftrace: Add MODULE_PLTS support
+        stable@vger.kernel.org, Matthew Auld <matthew.auld@intel.com>,
+        Michael Mason <michael.w.mason@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jani Nikula <jani.nikula@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 42/93] drm/i915/request: fix early tracepoints
 Date:   Mon,  4 Oct 2021 14:52:40 +0200
-Message-Id: <20211004125033.723105534@linuxfoundation.org>
+Message-Id: <20211004125035.948980497@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125031.530773667@linuxfoundation.org>
-References: <20211004125031.530773667@linuxfoundation.org>
+In-Reply-To: <20211004125034.579439135@linuxfoundation.org>
+References: <20211004125034.579439135@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,292 +43,122 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alex Sverdlin <alexander.sverdlin@nokia.com>
+From: Matthew Auld <matthew.auld@intel.com>
 
-commit 79f32b221b18c15a98507b101ef4beb52444cc6f upstream
+[ Upstream commit c83ff0186401169eb27ce5057d820b7a863455c3 ]
 
-Teach ftrace_make_call() and ftrace_make_nop() about PLTs.
-Teach PLT code about FTRACE and all its callbacks.
-Otherwise the following might happen:
+Currently we blow up in trace_dma_fence_init, when calling into
+get_driver_name or get_timeline_name, since both the engine and context
+might be NULL(or contain some garbage address) in the case of newly
+allocated slab objects via the request ctor. Note that we also use
+SLAB_TYPESAFE_BY_RCU here, which allows requests to be immediately
+freed, but delay freeing the underlying page by an RCU grace period.
+With this scheme requests can be re-allocated, at the same time as they
+are also being read by some lockless RCU lookup mechanism.
 
-------------[ cut here ]------------
-WARNING: CPU: 14 PID: 2265 at .../arch/arm/kernel/insn.c:14 __arm_gen_branch+0x83/0x8c()
-...
-Hardware name: LSI Axxia AXM55XX
-[<c0314a49>] (unwind_backtrace) from [<c03115e9>] (show_stack+0x11/0x14)
-[<c03115e9>] (show_stack) from [<c0519f51>] (dump_stack+0x81/0xa8)
-[<c0519f51>] (dump_stack) from [<c032185d>] (warn_slowpath_common+0x69/0x90)
-[<c032185d>] (warn_slowpath_common) from [<c03218f3>] (warn_slowpath_null+0x17/0x1c)
-[<c03218f3>] (warn_slowpath_null) from [<c03143cf>] (__arm_gen_branch+0x83/0x8c)
-[<c03143cf>] (__arm_gen_branch) from [<c0314337>] (ftrace_make_nop+0xf/0x24)
-[<c0314337>] (ftrace_make_nop) from [<c038ebcb>] (ftrace_process_locs+0x27b/0x3e8)
-[<c038ebcb>] (ftrace_process_locs) from [<c0378d79>] (load_module+0x11e9/0x1a44)
-[<c0378d79>] (load_module) from [<c037974d>] (SyS_finit_module+0x59/0x84)
-[<c037974d>] (SyS_finit_module) from [<c030e981>] (ret_fast_syscall+0x1/0x18)
----[ end trace e1b64ced7a89adcc ]---
-------------[ cut here ]------------
-WARNING: CPU: 14 PID: 2265 at .../kernel/trace/ftrace.c:1979 ftrace_bug+0x1b1/0x234()
-...
-Hardware name: LSI Axxia AXM55XX
-[<c0314a49>] (unwind_backtrace) from [<c03115e9>] (show_stack+0x11/0x14)
-[<c03115e9>] (show_stack) from [<c0519f51>] (dump_stack+0x81/0xa8)
-[<c0519f51>] (dump_stack) from [<c032185d>] (warn_slowpath_common+0x69/0x90)
-[<c032185d>] (warn_slowpath_common) from [<c03218f3>] (warn_slowpath_null+0x17/0x1c)
-[<c03218f3>] (warn_slowpath_null) from [<c038e87d>] (ftrace_bug+0x1b1/0x234)
-[<c038e87d>] (ftrace_bug) from [<c038ebd5>] (ftrace_process_locs+0x285/0x3e8)
-[<c038ebd5>] (ftrace_process_locs) from [<c0378d79>] (load_module+0x11e9/0x1a44)
-[<c0378d79>] (load_module) from [<c037974d>] (SyS_finit_module+0x59/0x84)
-[<c037974d>] (SyS_finit_module) from [<c030e981>] (ret_fast_syscall+0x1/0x18)
----[ end trace e1b64ced7a89adcd ]---
-ftrace failed to modify [<e9ef7006>] 0xe9ef7006
-actual: 02:f0:3b:fa
-ftrace record flags: 0
-(0) expected tramp: c0314265
+In the ctor case, which is only called for new slab objects(i.e allocate
+new page and call the ctor for each object) it's safe to reset the
+context/engine prior to calling into dma_fence_init, since we can be
+certain that no one is doing an RCU lookup which might depend on peeking
+at the engine/context, like in active_engine(), since the object can't
+yet be externally visible.
 
-[florian: resolved merge conflict with struct
-dyn_arch_ftrace::old_mcount]
+In the recycled case(which might also be externally visible) the request
+refcount always transitions from 0->1 after we set the context/engine
+etc, which should ensure it's valid to dereference the engine for
+example, when doing an RCU list-walk, so long as we can also increment
+the refcount first. If the refcount is already zero, then the request is
+considered complete/released.  If it's non-zero, then the request might
+be in the process of being re-allocated, or potentially still in flight,
+however after successfully incrementing the refcount, it's possible to
+carefully inspect the request state, to determine if the request is
+still what we were looking for. Note that all externally visible
+requests returned to the cache must have zero refcount.
 
-Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
-Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+One possible fix then is to move dma_fence_init out from the request
+ctor. Originally this was how it was done, but it was moved in:
+
+commit 855e39e65cfc33a73724f1cc644ffc5754864a20
+Author: Chris Wilson <chris@chris-wilson.co.uk>
+Date:   Mon Feb 3 09:41:48 2020 +0000
+
+    drm/i915: Initialise basic fence before acquiring seqno
+
+where it looks like intel_timeline_get_seqno() relied on some of the
+rq->fence state, but that is no longer the case since:
+
+commit 12ca695d2c1ed26b2dcbb528b42813bd0f216cfc
+Author: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Date:   Tue Mar 23 16:49:50 2021 +0100
+
+    drm/i915: Do not share hwsp across contexts any more, v8.
+
+intel_timeline_get_seqno() could also be cleaned up slightly by dropping
+the request argument.
+
+Moving dma_fence_init back out of the ctor, should ensure we have enough
+of the request initialised in case of trace_dma_fence_init.
+Functionally this should be the same, and is effectively what we were
+already open coding before, except now we also assign the fence->lock
+and fence->ops, but since these are invariant for recycled
+requests(which might be externally visible), and will therefore already
+hold the same value, it shouldn't matter.
+
+An alternative fix, since we don't yet have a fully initialised request
+when in the ctor, is just setting the context/engine as NULL, but this
+does require adding some extra handling in get_driver_name etc.
+
+v2(Daniel):
+  - Try to make the commit message less confusing
+
+Fixes: 855e39e65cfc ("drm/i915: Initialise basic fence before acquiring seqno")
+Signed-off-by: Matthew Auld <matthew.auld@intel.com>
+Cc: Michael Mason <michael.w.mason@intel.com>
+Cc: Daniel Vetter <daniel@ffwll.ch>
+Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210921134202.3803151-1-matthew.auld@intel.com
+(cherry picked from commit be988eaee1cb208c4445db46bc3ceaf75f586f0b)
+Signed-off-by: Jani Nikula <jani.nikula@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/include/asm/ftrace.h |    3 ++
- arch/arm/include/asm/module.h |    1 
- arch/arm/kernel/ftrace.c      |   50 +++++++++++++++++++++++++++++++++---------
- arch/arm/kernel/module-plts.c |   44 +++++++++++++++++++++++++++++++++---
- 4 files changed, 84 insertions(+), 14 deletions(-)
+ drivers/gpu/drm/i915/i915_request.c | 11 ++---------
+ 1 file changed, 2 insertions(+), 9 deletions(-)
 
---- a/arch/arm/include/asm/ftrace.h
-+++ b/arch/arm/include/asm/ftrace.h
-@@ -19,6 +19,9 @@ struct dyn_arch_ftrace {
- #ifdef CONFIG_OLD_MCOUNT
- 	bool	old_mcount;
- #endif
-+#ifdef CONFIG_ARM_MODULE_PLTS
-+	struct module *mod;
-+#endif
- };
+diff --git a/drivers/gpu/drm/i915/i915_request.c b/drivers/gpu/drm/i915/i915_request.c
+index d8fef42ca38e..896389f93029 100644
+--- a/drivers/gpu/drm/i915/i915_request.c
++++ b/drivers/gpu/drm/i915/i915_request.c
+@@ -776,8 +776,6 @@ static void __i915_request_ctor(void *arg)
+ 	i915_sw_fence_init(&rq->submit, submit_notify);
+ 	i915_sw_fence_init(&rq->semaphore, semaphore_notify);
  
- static inline unsigned long ftrace_call_adjust(unsigned long addr)
---- a/arch/arm/include/asm/module.h
-+++ b/arch/arm/include/asm/module.h
-@@ -30,6 +30,7 @@ struct plt_entries {
+-	dma_fence_init(&rq->fence, &i915_fence_ops, &rq->lock, 0, 0);
+-
+ 	rq->capture_list = NULL;
  
- struct mod_plt_sec {
- 	struct elf32_shdr	*plt;
-+	struct plt_entries	*plt_ent;
- 	int			plt_count;
- };
+ 	init_llist_head(&rq->execute_cb);
+@@ -840,17 +838,12 @@ __i915_request_create(struct intel_context *ce, gfp_t gfp)
+ 	rq->ring = ce->ring;
+ 	rq->execution_mask = ce->engine->mask;
  
---- a/arch/arm/kernel/ftrace.c
-+++ b/arch/arm/kernel/ftrace.c
-@@ -96,9 +96,10 @@ int ftrace_arch_code_modify_post_process
- 	return 0;
- }
+-	kref_init(&rq->fence.refcount);
+-	rq->fence.flags = 0;
+-	rq->fence.error = 0;
+-	INIT_LIST_HEAD(&rq->fence.cb_list);
+-
+ 	ret = intel_timeline_get_seqno(tl, rq, &seqno);
+ 	if (ret)
+ 		goto err_free;
  
--static unsigned long ftrace_call_replace(unsigned long pc, unsigned long addr)
-+static unsigned long ftrace_call_replace(unsigned long pc, unsigned long addr,
-+					 bool warn)
- {
--	return arm_gen_branch_link(pc, addr, true);
-+	return arm_gen_branch_link(pc, addr, warn);
- }
+-	rq->fence.context = tl->fence_context;
+-	rq->fence.seqno = seqno;
++	dma_fence_init(&rq->fence, &i915_fence_ops, &rq->lock,
++		       tl->fence_context, seqno);
  
- static int ftrace_modify_code(unsigned long pc, unsigned long old,
-@@ -137,14 +138,14 @@ int ftrace_update_ftrace_func(ftrace_fun
- 	int ret;
- 
- 	pc = (unsigned long)&ftrace_call;
--	new = ftrace_call_replace(pc, (unsigned long)func);
-+	new = ftrace_call_replace(pc, (unsigned long)func, true);
- 
- 	ret = ftrace_modify_code(pc, 0, new, false);
- 
- #ifdef CONFIG_DYNAMIC_FTRACE_WITH_REGS
- 	if (!ret) {
- 		pc = (unsigned long)&ftrace_regs_call;
--		new = ftrace_call_replace(pc, (unsigned long)func);
-+		new = ftrace_call_replace(pc, (unsigned long)func, true);
- 
- 		ret = ftrace_modify_code(pc, 0, new, false);
- 	}
-@@ -153,7 +154,7 @@ int ftrace_update_ftrace_func(ftrace_fun
- #ifdef CONFIG_OLD_MCOUNT
- 	if (!ret) {
- 		pc = (unsigned long)&ftrace_call_old;
--		new = ftrace_call_replace(pc, (unsigned long)func);
-+		new = ftrace_call_replace(pc, (unsigned long)func, true);
- 
- 		ret = ftrace_modify_code(pc, 0, new, false);
- 	}
-@@ -166,10 +167,22 @@ int ftrace_make_call(struct dyn_ftrace *
- {
- 	unsigned long new, old;
- 	unsigned long ip = rec->ip;
-+	unsigned long aaddr = adjust_address(rec, addr);
-+	struct module *mod = NULL;
-+
-+#ifdef CONFIG_ARM_MODULE_PLTS
-+	mod = rec->arch.mod;
-+#endif
- 
- 	old = ftrace_nop_replace(rec);
- 
--	new = ftrace_call_replace(ip, adjust_address(rec, addr));
-+	new = ftrace_call_replace(ip, aaddr, !mod);
-+#ifdef CONFIG_ARM_MODULE_PLTS
-+	if (!new && mod) {
-+		aaddr = get_module_plt(mod, ip, aaddr);
-+		new = ftrace_call_replace(ip, aaddr, true);
-+	}
-+#endif
- 
- 	return ftrace_modify_code(rec->ip, old, new, true);
- }
-@@ -182,9 +195,9 @@ int ftrace_modify_call(struct dyn_ftrace
- 	unsigned long new, old;
- 	unsigned long ip = rec->ip;
- 
--	old = ftrace_call_replace(ip, adjust_address(rec, old_addr));
-+	old = ftrace_call_replace(ip, adjust_address(rec, old_addr), true);
- 
--	new = ftrace_call_replace(ip, adjust_address(rec, addr));
-+	new = ftrace_call_replace(ip, adjust_address(rec, addr), true);
- 
- 	return ftrace_modify_code(rec->ip, old, new, true);
- }
-@@ -194,12 +207,29 @@ int ftrace_modify_call(struct dyn_ftrace
- int ftrace_make_nop(struct module *mod,
- 		    struct dyn_ftrace *rec, unsigned long addr)
- {
-+	unsigned long aaddr = adjust_address(rec, addr);
- 	unsigned long ip = rec->ip;
- 	unsigned long old;
- 	unsigned long new;
- 	int ret;
- 
--	old = ftrace_call_replace(ip, adjust_address(rec, addr));
-+#ifdef CONFIG_ARM_MODULE_PLTS
-+	/* mod is only supplied during module loading */
-+	if (!mod)
-+		mod = rec->arch.mod;
-+	else
-+		rec->arch.mod = mod;
-+#endif
-+
-+	old = ftrace_call_replace(ip, aaddr,
-+				  !IS_ENABLED(CONFIG_ARM_MODULE_PLTS) || !mod);
-+#ifdef CONFIG_ARM_MODULE_PLTS
-+	if (!old && mod) {
-+		aaddr = get_module_plt(mod, ip, aaddr);
-+		old = ftrace_call_replace(ip, aaddr, true);
-+	}
-+#endif
-+
- 	new = ftrace_nop_replace(rec);
- 	ret = ftrace_modify_code(ip, old, new, true);
- 
-@@ -207,7 +237,7 @@ int ftrace_make_nop(struct module *mod,
- 	if (ret == -EINVAL && addr == MCOUNT_ADDR) {
- 		rec->arch.old_mcount = true;
- 
--		old = ftrace_call_replace(ip, adjust_address(rec, addr));
-+		old = ftrace_call_replace(ip, adjust_address(rec, addr), true);
- 		new = ftrace_nop_replace(rec);
- 		ret = ftrace_modify_code(ip, old, new, true);
- 	}
---- a/arch/arm/kernel/module-plts.c
-+++ b/arch/arm/kernel/module-plts.c
-@@ -7,6 +7,7 @@
-  */
- 
- #include <linux/elf.h>
-+#include <linux/ftrace.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/sort.h>
-@@ -22,19 +23,52 @@
- 						    (PLT_ENT_STRIDE - 8))
- #endif
- 
-+static const u32 fixed_plts[] = {
-+#ifdef CONFIG_FUNCTION_TRACER
-+	FTRACE_ADDR,
-+	MCOUNT_ADDR,
-+#endif
-+};
-+
- static bool in_init(const struct module *mod, unsigned long loc)
- {
- 	return loc - (u32)mod->init_layout.base < mod->init_layout.size;
- }
- 
-+static void prealloc_fixed(struct mod_plt_sec *pltsec, struct plt_entries *plt)
-+{
-+	int i;
-+
-+	if (!ARRAY_SIZE(fixed_plts) || pltsec->plt_count)
-+		return;
-+	pltsec->plt_count = ARRAY_SIZE(fixed_plts);
-+
-+	for (i = 0; i < ARRAY_SIZE(plt->ldr); ++i)
-+		plt->ldr[i] = PLT_ENT_LDR;
-+
-+	BUILD_BUG_ON(sizeof(fixed_plts) > sizeof(plt->lit));
-+	memcpy(plt->lit, fixed_plts, sizeof(fixed_plts));
-+}
-+
- u32 get_module_plt(struct module *mod, unsigned long loc, Elf32_Addr val)
- {
- 	struct mod_plt_sec *pltsec = !in_init(mod, loc) ? &mod->arch.core :
- 							  &mod->arch.init;
-+	struct plt_entries *plt;
-+	int idx;
-+
-+	/* cache the address, ELF header is available only during module load */
-+	if (!pltsec->plt_ent)
-+		pltsec->plt_ent = (struct plt_entries *)pltsec->plt->sh_addr;
-+	plt = pltsec->plt_ent;
- 
--	struct plt_entries *plt = (struct plt_entries *)pltsec->plt->sh_addr;
--	int idx = 0;
-+	prealloc_fixed(pltsec, plt);
-+
-+	for (idx = 0; idx < ARRAY_SIZE(fixed_plts); ++idx)
-+		if (plt->lit[idx] == val)
-+			return (u32)&plt->ldr[idx];
- 
-+	idx = 0;
- 	/*
- 	 * Look for an existing entry pointing to 'val'. Given that the
- 	 * relocations are sorted, this will be the last entry we allocated.
-@@ -182,8 +216,8 @@ static unsigned int count_plts(const Elf
- int module_frob_arch_sections(Elf_Ehdr *ehdr, Elf_Shdr *sechdrs,
- 			      char *secstrings, struct module *mod)
- {
--	unsigned long core_plts = 0;
--	unsigned long init_plts = 0;
-+	unsigned long core_plts = ARRAY_SIZE(fixed_plts);
-+	unsigned long init_plts = ARRAY_SIZE(fixed_plts);
- 	Elf32_Shdr *s, *sechdrs_end = sechdrs + ehdr->e_shnum;
- 	Elf32_Sym *syms = NULL;
- 
-@@ -238,6 +272,7 @@ int module_frob_arch_sections(Elf_Ehdr *
- 	mod->arch.core.plt->sh_size = round_up(core_plts * PLT_ENT_SIZE,
- 					       sizeof(struct plt_entries));
- 	mod->arch.core.plt_count = 0;
-+	mod->arch.core.plt_ent = NULL;
- 
- 	mod->arch.init.plt->sh_type = SHT_NOBITS;
- 	mod->arch.init.plt->sh_flags = SHF_EXECINSTR | SHF_ALLOC;
-@@ -245,6 +280,7 @@ int module_frob_arch_sections(Elf_Ehdr *
- 	mod->arch.init.plt->sh_size = round_up(init_plts * PLT_ENT_SIZE,
- 					       sizeof(struct plt_entries));
- 	mod->arch.init.plt_count = 0;
-+	mod->arch.init.plt_ent = NULL;
- 
- 	pr_debug("%s: plt=%x, init.plt=%x\n", __func__,
- 		 mod->arch.core.plt->sh_size, mod->arch.init.plt->sh_size);
+ 	RCU_INIT_POINTER(rq->timeline, tl);
+ 	RCU_INIT_POINTER(rq->hwsp_cacheline, tl->hwsp_cacheline);
+-- 
+2.33.0
+
 
 
