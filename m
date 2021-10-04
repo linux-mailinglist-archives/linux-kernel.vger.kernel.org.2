@@ -2,240 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6112F420910
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 12:09:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7C23420913
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 12:10:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232102AbhJDKLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 06:11:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60616 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231904AbhJDKLH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 06:11:07 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4F52E61350;
-        Mon,  4 Oct 2021 10:09:18 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <maz@kernel.org>)
-        id 1mXKuK-00EaXF-96; Mon, 04 Oct 2021 11:09:16 +0100
+        id S231526AbhJDKL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 06:11:59 -0400
+Received: from mail-eopbgr60053.outbound.protection.outlook.com ([40.107.6.53]:53197
+        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230337AbhJDKL5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 06:11:57 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=X9AX0c49YyXKM/H2Rj4nSDWtL/lrsxskh+JmBtwoCZWQzctBqD8d99GgFa5CtUygolM/HJTF4Wy77tpu8byI6VTEITrq9LnHGsD/G7qaoJ3lpVA2WUkQQYC8dxEEN54na08/chzE1miIklqcEjd0n9xY0BUGrpLv3SwytzNRHo2JV7C0dDYGy/AVnahyqpSYuENTf38GZLaFA+uP4wLcpsNeaynI0Ev0kdP2ZsPSAyZ1bQtlr7K+Gh7/MW2xJjgnPz7mMxMZSfqGbNW6wnibX9jTrTrZ3eglLnJAqjWOzl1DBOJeIvXMqVusVladNNKH7E3ZHZCUbvbE/h7auW5oPQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=/TWVKMKSYP2z/IW+ova1SkKb88LKs9dC/45cSQ1gTKw=;
+ b=B5s0ptQ9s4l+Z0Ejl0j0G4eSr58Olspt2NacDfJjCDoV/7YB3SYSRzxkOKGwQw9sYe8NZ+gxaWqmLkjvu2gGfJsMEsMQ6CRQetcWG/KTFAyYrc+drS1qDeqxOyWR/pZwoYhvJPzzbt52sucshRsXV4T16yf2Cz446m3OPPynUg4raQu+1pa1i27SB/mPpXOFxcPVWY1pvXbGJf6K5wesdQjpiV7Wyw+nhYi34seMy2WycbYpfno/O1dgDKUiZieZXXOQjINhzzN2GRZ/B64zweOEvpdzMchgrj5bywORU3rg4UUv25PxfMkh3xQoPzNAOkzlkXt6rIE4vKWet3mikw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/TWVKMKSYP2z/IW+ova1SkKb88LKs9dC/45cSQ1gTKw=;
+ b=Wp/aDLAfBQPUS+3eVvdg5Xgu4lmD5VuzW9mLVFt/NHCd+c9gPixHbnba6QwlKhNe4SBQxI++C6bFbe1Y2vbwScnQxnIWzE8+3zL6j7x8tTqKV2SCcGIrImMI97lOfT7ZcvktocQtuaOBjXhaih+Rkneleaa9XBBs9oWjloIv2r0=
+Authentication-Results: lists.infradead.org; dkim=none (message not signed)
+ header.d=none;lists.infradead.org; dmarc=none action=none
+ header.from=nxp.com;
+Received: from VI1PR0402MB3405.eurprd04.prod.outlook.com (2603:10a6:803:3::26)
+ by VE1PR04MB7231.eurprd04.prod.outlook.com (2603:10a6:800:1a9::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.15; Mon, 4 Oct
+ 2021 10:10:05 +0000
+Received: from VI1PR0402MB3405.eurprd04.prod.outlook.com
+ ([fe80::e948:b382:34fc:c923]) by VI1PR0402MB3405.eurprd04.prod.outlook.com
+ ([fe80::e948:b382:34fc:c923%7]) with mapi id 15.20.4566.022; Mon, 4 Oct 2021
+ 10:10:05 +0000
+From:   Laurentiu Tudor <laurentiu.tudor@nxp.com>
+To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     leoyang.li@nxp.com, youri.querry_1@oss.nxp.com,
+        ioana.ciornei@nxp.com, Laurentiu Tudor <laurentiu.tudor@nxp.com>
+Subject: [PATCH] soc: dpio: fix cleanup on error
+Date:   Mon,  4 Oct 2021 13:09:44 +0300
+Message-Id: <20211004100944.15023-1-laurentiu.tudor@nxp.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-ClientProxiedBy: AM4PR0501CA0063.eurprd05.prod.outlook.com
+ (2603:10a6:200:68::31) To VI1PR0402MB3405.eurprd04.prod.outlook.com
+ (2603:10a6:803:3::26)
 MIME-Version: 1.0
-Date:   Mon, 04 Oct 2021 11:09:16 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Sam Shih <sam.shih@mediatek.com>
-Cc:     matthias.bgg@gmail.com, Ryder.Lee@mediatek.com,
-        devicetree@vger.kernel.org, enric.balletbo@collabora.com,
-        fparent@baylibre.com, gregkh@linuxfoundation.org,
-        herbert@gondor.apana.org.au, hsinyi@chromium.org, john@phrozen.org,
-        linus.walleij@linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-clk@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-serial@vger.kernel.org,
-        linux-watchdog@vger.kernel.org, linux@roeck-us.net,
-        mpm@selenic.com, mturquette@baylibre.com, robh+dt@kernel.org,
-        sboyd@kernel.org, sean.wang@kernel.org, seiya.wang@mediatek.com,
-        wim@linux-watchdog.org
-Subject: Re: [v4,9/9] arm64: dts: mediatek: add mt7986b support
-In-Reply-To: <20211004091617.31436-1-sam.shih@mediatek.com>
-References: <20210924112701.18459-1-sam.shih@mediatek.com>
- <20211004091617.31436-1-sam.shih@mediatek.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <39193058d8c206e616d7b179762a7829@kernel.org>
-X-Sender: maz@kernel.org
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: sam.shih@mediatek.com, matthias.bgg@gmail.com, Ryder.Lee@mediatek.com, devicetree@vger.kernel.org, enric.balletbo@collabora.com, fparent@baylibre.com, gregkh@linuxfoundation.org, herbert@gondor.apana.org.au, hsinyi@chromium.org, john@phrozen.org, linus.walleij@linaro.org, linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org, linux-crypto@vger.kernel.org, linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org, linux-serial@vger.kernel.org, linux-watchdog@vger.kernel.org, linux@roeck-us.net, mpm@selenic.com, mturquette@baylibre.com, robh+dt@kernel.org, sboyd@kernel.org, sean.wang@kernel.org, seiya.wang@mediatek.com, wim@linux-watchdog.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Received: from fsr-ub1864-101.ea.freescale.net (92.120.5.2) by AM4PR0501CA0063.eurprd05.prod.outlook.com (2603:10a6:200:68::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.15 via Frontend Transport; Mon, 4 Oct 2021 10:10:04 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 664f360b-dcab-47ae-be40-08d9871f2322
+X-MS-TrafficTypeDiagnostic: VE1PR04MB7231:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VE1PR04MB7231D82C9D6DAF601339D319ECAE9@VE1PR04MB7231.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3173;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: srzVxjQXvyOkyNf5Kk6LY7IuOaUW625tzBY3YR8DL4+Q/OxpNGblgiL8upY346jHLxaMy6BokFLdzpeciurL5JEoBVH5LjMi1n3CSErTAMlDe4oteucgqU0+1LkLyMA8ComGcXDBIqoVerG3kANVhM1KkDCpqV2gc/kpTHvSBN+37/Hby/NkffXZLXXTBx8bQ/Mc1uZw5EmwzbiX++dKnwQonDLtChPnuc22I1SD6TSYoqG8AhNTfUPyNLQ7m493DMfR3fYMgGKXuO71H3j5IjIkuRZ0V5yHedBnnM1p6JRiStxNDYp4rNXutt1wNfED0nIBuE+mPc9PfTu5FK771wxmEkb5BKiknP/LUZxIokXFmPN/ggCOwpE58v52WOlJogB/dFBQiTdWXDHoYCIXoHyxEyjLEP0HBUp4x4dg01lAyZgj6i7g/BTZcKdxwG+AI6HyVw8kr28wAjL+jEi/GbExmD9B4zIMG4b1aguC8mr9fZnCGYz6V8LFg08rIXSfgPGUWUV48MSyyybNECAFglcmpWJQFktENxXpqdmTJb9R/SAtNTusNnu5In3oBdY9SGtKYyBNzlDz6NfH1I1UKpqC6J+BnaU0lii+IVNExiScA3RyV7iRfcPUc0PFhscRUGWwW6mzl75EqKkJ6dNE9n6qthiLnr6KzmKS63SlFEt84rPkzIy7kbYki3+AxuOQvITx0P6w6fKXOvMjVbRkEA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0402MB3405.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(186003)(2906002)(83380400001)(26005)(6506007)(86362001)(4326008)(36756003)(52116002)(8676002)(44832011)(66946007)(5660300002)(66476007)(66556008)(6512007)(1076003)(38350700002)(6666004)(508600001)(316002)(38100700002)(8936002)(956004)(2616005)(6486002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?XNj0E7tNmF6BEkYD1RhwXyuFMGrkA0+aJW3lu8ILnujoV/Xfh4M6lNOiZckS?=
+ =?us-ascii?Q?7AsV5ZSCns2XjeDs155ySgl3qjuUDnpYyjySzr/XaifFqBoOdYz6cJT+CwlC?=
+ =?us-ascii?Q?21MhyCp9qeYMD62gYLjE2pcLXHG/Kmvl71iTDQ5DOpwYuHRUh4fMXl3j5CNH?=
+ =?us-ascii?Q?gNVkFQzPUFF13EEhvbNRVPjkM56MLm9StRkXaGSBvjHCKSBLH0KgBewbPISQ?=
+ =?us-ascii?Q?CkGUT6b40eLFXIqGQ8FJjmdI7w+I3Gjr476YxNFltFGPzWRs5mM90xbqeu0S?=
+ =?us-ascii?Q?aJKDDcfOW6fP+pEdbXoA0ONKBqInUiI5KoXkO063uoBgx2qZU8B7pGxjW3XZ?=
+ =?us-ascii?Q?9Ziylttl41PxAskBMPrlcKnTZuKUFJMWx2hjrMdWV1qvfPs/aZrtcHjz2cGq?=
+ =?us-ascii?Q?KpSD0sYAkgrobgR8thAbJd5h1i8CyREF2OU9qsJ3HTixE1NX1dIk4OGzClUD?=
+ =?us-ascii?Q?WDq1IKbXtpjh6DRCc9hS19eDhhmA66Kn9LoT8buwLMvwXhDHh2EWrTlK9B2c?=
+ =?us-ascii?Q?LqqqOIws1Ejve5c0gikFemY4YCNL6tbSwsFRP+LRxoS0u4xFZpnxsSaXP7bb?=
+ =?us-ascii?Q?vDh9liYOcAqkbK/r+9azHsTdmGGzQ4S6mvteX3dSMfgCDpFbxtwH7GrGbCPL?=
+ =?us-ascii?Q?rPOVQYnfMmbPXnPtD2vqhpbQE27ATDTXCvsRem43CN0oafqsnNd0tfG3HoPp?=
+ =?us-ascii?Q?ZCQjeu8XAPBJ5mIEKwm0JSR1G3NOdQaJPSnDlwb5gaer+SYZn0VWSju27bFU?=
+ =?us-ascii?Q?V1f6OMAvc6iG0rrQsDPq6RD6kpLAPfHWzYP6N10kCncdi8eXbPSLljEmYC7Z?=
+ =?us-ascii?Q?nZlBVTdvPUmmfPvhh9WtSv9F37ZFulFZSc6avSDP2JOOqrxP9MQScgQpgVQR?=
+ =?us-ascii?Q?BCSR1VWdWUMrQpd5HnWs+ywwLmMgPSrQdKI9s8UJ9J8Lj6zYD27XYZ7UQSTj?=
+ =?us-ascii?Q?g6MXCMJ5v+fl/O2bUHVAABkigK/QnutwyVP4QMtAa9rISmZivbltDOH1lrWF?=
+ =?us-ascii?Q?UfbtIsUhvYAOcbQPi9ynOzeCjHkNAZ9+5XMv+R9+091nV3mlNa/C6j0u1Fke?=
+ =?us-ascii?Q?SoxKwIx5gNvV5/l8M2CiJd5u6IPUAs7gWLsoffxEsVEHkYLL1V78gyRvih8Y?=
+ =?us-ascii?Q?po872YdZtMzGyEEkPoaEvwEvmflSEHWJbX1Fk2QcVdindxabL5ITHI4SttaF?=
+ =?us-ascii?Q?24CyUeRblusAPrPP7eEKZuw454YOeFLTHhWBsn+69x2SRBdV7uos/nxDr625?=
+ =?us-ascii?Q?od9/RTf8jJrp7YUMrnf8wHrKQWZGobZusc8sQI5o0J0PM5FhD/1CtONq7y6j?=
+ =?us-ascii?Q?iJ8UmVkKli9YW0W1oPMz3AQj?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 664f360b-dcab-47ae-be40-08d9871f2322
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR0402MB3405.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Oct 2021 10:10:05.5139
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: osW5x01sp3VVgwp0FJ9inDx03PF4U7Ef3LuX+BkPWuvGp2SkkWYn5p2su3MZOg0Ri0OhfItfW6zbvEOlKigiMQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB7231
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-10-04 10:16, Sam Shih wrote:
-> Add basic chip support for Mediatek mt7986b, include
-> uart nodes with correct clocks, rng node with correct clock,
-> and watchdog node and mt7986b pinctrl node.
-> 
-> Add cpu node, timer node, gic node, psci and reserved-memory node
-> for ARM Trusted Firmware,
-> 
-> Add clock controller nodes, include 40M clock source, topckgen, 
-> infracfg,
-> apmixedsys and ethernet subsystem.
-> 
-> Signed-off-by: Sam Shih <sam.shih@mediatek.com>
-> ---
-> v4: added missing gic register bases, and fixed range of GICR
-> v3: used the stdout-path instead of console=ttyS0
-> v2: modified clock and uart node due to clock driver updated
-> ---
->  arch/arm64/boot/dts/mediatek/Makefile        |   1 +
->  arch/arm64/boot/dts/mediatek/mt7986b-rfb.dts |  26 +++
->  arch/arm64/boot/dts/mediatek/mt7986b.dtsi    | 230 +++++++++++++++++++
->  3 files changed, 257 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/mediatek/mt7986b-rfb.dts
->  create mode 100644 arch/arm64/boot/dts/mediatek/mt7986b.dtsi
-> 
-> diff --git a/arch/arm64/boot/dts/mediatek/Makefile
-> b/arch/arm64/boot/dts/mediatek/Makefile
-> index e6c3a73b9e4a..d555e43d1ccc 100644
-> --- a/arch/arm64/boot/dts/mediatek/Makefile
-> +++ b/arch/arm64/boot/dts/mediatek/Makefile
-> @@ -8,6 +8,7 @@ dtb-$(CONFIG_ARCH_MEDIATEK) += mt6797-x20-dev.dtb
->  dtb-$(CONFIG_ARCH_MEDIATEK) += mt7622-rfb1.dtb
->  dtb-$(CONFIG_ARCH_MEDIATEK) += mt7622-bananapi-bpi-r64.dtb
->  dtb-$(CONFIG_ARCH_MEDIATEK) += mt7986a-rfb.dtb
-> +dtb-$(CONFIG_ARCH_MEDIATEK) += mt7986b-rfb.dtb
->  dtb-$(CONFIG_ARCH_MEDIATEK) += mt8167-pumpkin.dtb
->  dtb-$(CONFIG_ARCH_MEDIATEK) += mt8173-elm.dtb
->  dtb-$(CONFIG_ARCH_MEDIATEK) += mt8173-elm-hana.dtb
-> diff --git a/arch/arm64/boot/dts/mediatek/mt7986b-rfb.dts
-> b/arch/arm64/boot/dts/mediatek/mt7986b-rfb.dts
-> new file mode 100644
-> index 000000000000..95a202505bb2
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/mediatek/mt7986b-rfb.dts
-> @@ -0,0 +1,26 @@
-> +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-> +/*
-> + * Copyright (C) 2021 MediaTek Inc.
-> + * Author: Sam.Shih <sam.shih@mediatek.com>
-> + */
-> +
-> +/dts-v1/;
-> +#include "mt7986b.dtsi"
-> +
-> +/ {
-> +	model = "MediaTek MT7986b RFB";
-> +	compatible = "mediatek,mt7986b-rfb";
-> +
-> +	aliases {
-> +		serial0 = &uart0;
-> +	};
-> +
-> +	chosen {
-> +		stdout-path = "serial0:115200n8";
-> +		bootargs = "earlycon=uart8250,mmio32,0x11002000 swiotlb=512";
-> +	};
-> +};
-> +
-> +&uart0 {
-> +	status = "okay";
-> +};
-> diff --git a/arch/arm64/boot/dts/mediatek/mt7986b.dtsi
-> b/arch/arm64/boot/dts/mediatek/mt7986b.dtsi
-> new file mode 100644
-> index 000000000000..06c3381a5170
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/mediatek/mt7986b.dtsi
-> @@ -0,0 +1,230 @@
-> +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-> +/*
-> + * Copyright (C) 2021 MediaTek Inc.
-> + * Author: Sam.Shih <sam.shih@mediatek.com>
-> + */
-> +
-> +#include <dt-bindings/interrupt-controller/irq.h>
-> +#include <dt-bindings/interrupt-controller/arm-gic.h>
-> +#include <dt-bindings/clock/mt7986-clk.h>
-> +
-> +/ {
-> +	compatible = "mediatek,mt7986b";
-> +	interrupt-parent = <&gic>;
-> +	#address-cells = <2>;
-> +	#size-cells = <2>;
-> +
-> +	clk40m: oscillator@0 {
-> +		compatible = "fixed-clock";
-> +		#clock-cells = <0>;
-> +		clock-frequency = <40000000>;
-> +		clock-output-names = "clkxtal";
-> +	};
-> +
-> +	cpus {
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +		cpu0: cpu@0 {
-> +			device_type = "cpu";
-> +			compatible = "arm,cortex-a53";
-> +			enable-method = "psci";
-> +			reg = <0x0>;
-> +			#cooling-cells = <2>;
-> +		};
-> +
-> +		cpu1: cpu@1 {
-> +			device_type = "cpu";
-> +			compatible = "arm,cortex-a53";
-> +			enable-method = "psci";
-> +			reg = <0x1>;
-> +			#cooling-cells = <2>;
-> +		};
-> +
-> +		cpu2: cpu@2 {
-> +			device_type = "cpu";
-> +			compatible = "arm,cortex-a53";
-> +			enable-method = "psci";
-> +			reg = <0x2>;
-> +			#cooling-cells = <2>;
-> +		};
-> +
-> +		cpu3: cpu@3 {
-> +			device_type = "cpu";
-> +			enable-method = "psci";
-> +			compatible = "arm,cortex-a53";
-> +			reg = <0x3>;
-> +			#cooling-cells = <2>;
-> +		};
-> +	};
-> +
-> +	psci {
-> +		compatible  = "arm,psci-0.2";
-> +		method      = "smc";
-> +	};
-> +
-> +	reserved-memory {
-> +		#address-cells = <2>;
-> +		#size-cells = <2>;
-> +		ranges;
-> +		/* 192 KiB reserved for ARM Trusted Firmware (BL31) */
-> +		secmon_reserved: secmon@43000000 {
-> +			reg = <0 0x43000000 0 0x30000>;
-> +			no-map;
-> +		};
-> +	};
-> +
-> +	timer {
-> +		compatible = "arm,armv8-timer";
-> +		interrupt-parent = <&gic>;
-> +		clock-frequency = <13000000>;
+dpaa2_io_service_register() adds an element to a linked list but
+doesn't remove it on the error path, leaking it. Fix it.
 
-As previously mentioned, please fix your firmware and drop this.
+Signed-off-by: Laurentiu Tudor <laurentiu.tudor@nxp.com>
+---
+ drivers/soc/fsl/dpio/dpio-service.c | 18 ++++++++++++++----
+ 1 file changed, 14 insertions(+), 4 deletions(-)
 
-> +		interrupts = <GIC_PPI 13 IRQ_TYPE_LEVEL_LOW>,
-> +			     <GIC_PPI 14 IRQ_TYPE_LEVEL_LOW>,
-> +			     <GIC_PPI 11 IRQ_TYPE_LEVEL_LOW>,
-> +			     <GIC_PPI 10 IRQ_TYPE_LEVEL_LOW>;
-> +	};
-> +
-> +	soc {
-> +		#address-cells = <2>;
-> +		#size-cells = <2>;
-> +		compatible = "simple-bus";
-> +		ranges;
-> +
-> +		gic: interrupt-controller@c000000 {
-> +			compatible = "arm,gic-v3";
-> +			#interrupt-cells = <3>;
-> +			interrupt-parent = <&gic>;
-> +			interrupt-controller;
-> +			reg = <0 0x0c000000 0 0x40000>,  /* GICD */
+diff --git a/drivers/soc/fsl/dpio/dpio-service.c b/drivers/soc/fsl/dpio/dpio-service.c
+index 7351f3030550..b42367eb1653 100644
+--- a/drivers/soc/fsl/dpio/dpio-service.c
++++ b/drivers/soc/fsl/dpio/dpio-service.c
+@@ -278,10 +278,20 @@ int dpaa2_io_service_register(struct dpaa2_io *d,
+ 	spin_unlock_irqrestore(&d->lock_notifications, irqflags);
+ 
+ 	/* Enable the generation of CDAN notifications */
+-	if (ctx->is_cdan)
+-		return qbman_swp_CDAN_set_context_enable(d->swp,
+-							 (u16)ctx->id,
+-							 ctx->qman64);
++	if (ctx->is_cdan) {
++		int ret;
++
++		ret = qbman_swp_CDAN_set_context_enable(d->swp, (u16)ctx->id,
++							ctx->qman64);
++		if (ret) {
++			spin_lock_irqsave(&d->lock_notifications, irqflags);
++			list_del(&ctx->node);
++			spin_unlock_irqrestore(&d->lock_notifications,
++					       irqflags);
++
++			return ret;
++		}
++	}
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(dpaa2_io_service_register);
+-- 
+2.17.1
 
-This is not a valid value for GICD.
-
-Thanks,
-
-         M.
