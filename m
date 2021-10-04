@@ -2,253 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52C1B4214A8
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 19:01:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C6994214A0
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 19:00:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238000AbhJDRDA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 13:03:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57874 "EHLO
+        id S237885AbhJDRBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 13:01:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237982AbhJDRC7 (ORCPT
+        with ESMTP id S237915AbhJDRBt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 13:02:59 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BE02C061749
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 10:01:10 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id b9-20020a5b07890000b0290558245b7eabso24409339ybq.10
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 10:01:10 -0700 (PDT)
+        Mon, 4 Oct 2021 13:01:49 -0400
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 701EEC061749
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 10:00:00 -0700 (PDT)
+Received: by mail-oi1-x22e.google.com with SMTP id w206so22479809oiw.4
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 10:00:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=Mo3PE3P1ieu1o7ruBSuI9hdnELVPjKYRFQStGRBmn/U=;
-        b=UQon0Wfqg4GxMOuasE8AUhiaIFLhfSwmsGpyth6skSfLoFChbF9PG4+f/Wo6S2/70n
-         EV/hz2Nmar8O7gfkeM3VAJI1panHn04NElI+ayr6EAAIxHR7u5VQAh9j1aDsTcUynG4D
-         qEiSBDrthXmgzSzFZDX3/cWkxHQjmnnycmHUVCTEFCyi2Qw0BfEG9BWgqGUs2C6K3k4v
-         k80wwtIioj2XaSKh2mtrZbBtv3i9VEVeFppECgg39MKzdTh+Id3EpoQbkocuZflLCTNP
-         qxto98fPR6l3nAakDL3Vk+BcIddP9th+xi3Gv4pIrVJgMK2r7MRmiECSsMDFsEOCYiTf
-         uNsA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7Y7UKyDUSlyu4qLC51VzZsmeKuAHQdoo+Z/ZqGaBMFw=;
+        b=oO1VuPdig2CLMSXNrQBPM7QO3+6o3wlG4oM2+yIYZfjpwVJcNp/E2WawAhMW/yBvOT
+         9SAiVd7DiLeQFxHE/9z969qLlQzbUB1TC/swVGMQREbMd4OyjokBonwHh7wkDz+Efckf
+         UfxgvOv//QmNayqMfxBdryYT1fwPAl3jMX4rirB4arfMnWu7x2eYW7ULUukfYbwiFl5G
+         bfUBErsRrL3JacJnN7HEYjI1Hal1RnkO6f0PnhTwBVnA3Og/ve1NKWpnqPG1QB+w6JAg
+         ca/3E9InTbaFYs8K3iYG0S7M+l6UkKE+B7v24NDIkBXkEOVqWS7RxfxIJx3m9YCh0bZL
+         tLFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=Mo3PE3P1ieu1o7ruBSuI9hdnELVPjKYRFQStGRBmn/U=;
-        b=lOOz9FuEW88SQzhrZVZqOZXSJOb/Oqm15sjBw94DoeIXLqSQHTAjtTwxuNVnHrAhG2
-         FajJKIBK8+hjb22R5OckNogVxJISADteMrihS2yp6GM1VcQ0RfhS3zYd1K5qJkmKiHGr
-         dDYk/XxUReVuPcR5c28mfFhShdM9qPMe7aaQ8PM0WUzxNJFBFgEPYoyg8VLC72/WXDX+
-         GN8a8ItTBC8xXFy1UFN+GMz2EPm2m4JCgcKKxlp2AOp470Apt+0rnpird1mAkuPPTJda
-         ldBsII/v+dZ865XvCc82nHp2THL7uaiy8YtbXOI/YXisJjUsuTE32VNB9cTNGYPhA9fd
-         tKvg==
-X-Gm-Message-State: AOAM5331bl9GAG+RmaEzgSWlO85NmgjVxrWlJQQqSVJM1c1QNtqPKxOi
-        KRoTMopuJjntG8mwDPV0ClTJmquw+NbR1g==
-X-Google-Smtp-Source: ABdhPJzkolyH7q9Y8u0KG2zn5wZ7ALjaLNHA/08E9qzmIy3t99h5C4o2EQPfB14uyNNAjLQZcFbWIH3p5VsjAA==
-X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:ee03:329e:90be:b395])
- (user=dlatypov job=sendgmr) by 2002:a5b:846:: with SMTP id
- v6mr8164116ybq.457.1633366869207; Mon, 04 Oct 2021 10:01:09 -0700 (PDT)
-Date:   Mon,  4 Oct 2021 10:01:02 -0700
-Message-Id: <20211004170102.2522514-1-dlatypov@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.800.g4c38ced690-goog
-Subject: [PATCH] kunit: tool: yield output from run_kernel in real time
-From:   Daniel Latypov <dlatypov@google.com>
-To:     brendanhiggins@google.com, davidgow@google.com
-Cc:     linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org,
-        Daniel Latypov <dlatypov@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7Y7UKyDUSlyu4qLC51VzZsmeKuAHQdoo+Z/ZqGaBMFw=;
+        b=z3el0B5Ff6cEigGZogrmCc3HmnnHZaXhFV9p2tYKjxsVTs7/vT//5L6nMKk2I9t0xW
+         /d6HklUvfXMfkHlb2SDVMBYO+29GvyD0rpb+696xWcX0pmuL3ot3ouAfqOOLwbvoYtir
+         y332RuhWrjdwgx0cH7bKfdb0meBm1WdW+JoO6/wBz9un16jl43BxhV99VlGUABuD6uR2
+         hEZZyHabaKsxBAG4EwDW6FpEecw3s/2qh8gkhY6lyFme7NObJc08wv+KM0RyvAhr19W8
+         v2Djyyq7F9k5bTpCfQkKu8OnMjA0cE6sLBEEh3oDW028ssfbcgTH/g9C5v92nHrSvsdW
+         FhzQ==
+X-Gm-Message-State: AOAM532jF+Ov6OGvzp0zUwcM38wHlpzYUKbHi5gtHGCMZlo5S3U2ZM7E
+        l8pejNsi40NtCIe1xXwH7GRWXw==
+X-Google-Smtp-Source: ABdhPJwMoWUHK/oGTnKvYFBisPxqvxGwNWZZz8vS1lRvZAq36UAH34jf2aQVIB0Fam308/PrXdzJhg==
+X-Received: by 2002:aca:f257:: with SMTP id q84mr13416671oih.52.1633366799740;
+        Mon, 04 Oct 2021 09:59:59 -0700 (PDT)
+Received: from ripper ([2600:1700:a0:3dc8:205:1bff:fec0:b9b3])
+        by smtp.gmail.com with ESMTPSA id y12sm2913239otu.11.2021.10.04.09.59.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Oct 2021 09:59:59 -0700 (PDT)
+Date:   Mon, 4 Oct 2021 10:01:43 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>, rafael@kernel.org,
+        robh+dt@kernel.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH] dt-bindings: cpufreq: cpufreq-qcom-hw: Convert to YAML
+ bindings
+Message-ID: <YVszd2UMw9F5LqWC@ripper>
+References: <20211004044317.34809-1-manivannan.sadhasivam@linaro.org>
+ <20211004070531.sexvnqmnkoe4j6a2@vireshk-i7>
+ <20211004072222.GE16442@workstation>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211004072222.GE16442@workstation>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, `run_kernel()` dumps all the kernel output to a file
-(.kunit/test.log) and then opens the file and yields it to callers.
-This made it easier to respect the requested timeout, if any.
+On Mon 04 Oct 00:22 PDT 2021, Manivannan Sadhasivam wrote:
 
-But it means that we can't yield the results in real time, either to the
-parser or to stdout (if --raw_output is set).
+> On Mon, Oct 04, 2021 at 12:35:31PM +0530, Viresh Kumar wrote:
+> > On 04-10-21, 10:13, Manivannan Sadhasivam wrote:
+> > > Convert Qualcomm cpufreq devicetree binding to YAML.
+> > > 
+> > > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > > Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+> > > Reviewed-by: Rob Herring <robh@kernel.org>
+> > 
+> > I am not sure if Rob ever gave this.
+> > 
+> 
+> I'm not fooling you :)
+> https://patchwork.kernel.org/project/linux-pm/patch/20210701105730.322718-5-angelogioacchino.delregno@somainline.org/#24312445
+> 
+> > > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > 
+> > Why double signed off ?
+> > 
+> 
+> Ah, it came while I applied the patch from Angelo's series. If you want
+> I can send a new version removing one or you can do that while applying.
+> 
 
-This change spins up a background thread to enforce the timeout, which
-allows us to yield the kernel output in real time, while also copying it
-to the .kunit/test.log file.
-It's also careful to ensure that the .kunit/test.log file is complete,
-even in the kunit_parser throws an exception/otherwise doesn't consume
-every line, see the new `finally` block and unit test.
+If you wrote the patch, then Angelo handled it, then you handled it
+again the double S-o-b captures that nicely.
 
-For example:
+Looking it from the other angle, if you remove the first S-o-b, then you
+forgot to signed it off when you authored the original patch and if you
+skip the last S-o-b then you didn't adequately sign off the final
+result.
 
-$ ./tools/testing/kunit/kunit.py run --arch=x86_64 --raw_output
-<configure + build steps>
-...
-<can now see output from QEMU in real time>
+Regards,
+Bjorn
 
-This does not currently have a visible effect when --raw_output is not
-passed, as kunit_parser.py currently only outputs everything at the end.
-But that could change, and this patch is a necessary step towards
-showing parsed test results in real time.
-
-Signed-off-by: Daniel Latypov <dlatypov@google.com>
----
- tools/testing/kunit/kunit_kernel.py    | 73 +++++++++++++++-----------
- tools/testing/kunit/kunit_tool_test.py | 17 ++++++
- 2 files changed, 60 insertions(+), 30 deletions(-)
-
-diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
-index 2c6f916ccbaf..b8cba8123aa3 100644
---- a/tools/testing/kunit/kunit_kernel.py
-+++ b/tools/testing/kunit/kunit_kernel.py
-@@ -12,7 +12,8 @@ import subprocess
- import os
- import shutil
- import signal
--from typing import Iterator, Optional, Tuple
-+import threading
-+from typing import Iterator, List, Optional, Tuple
- 
- from contextlib import ExitStack
- 
-@@ -103,8 +104,8 @@ class LinuxSourceTreeOperations(object):
- 		if stderr:  # likely only due to build warnings
- 			print(stderr.decode())
- 
--	def run(self, params, timeout, build_dir, outfile) -> None:
--		pass
-+	def start(self, params: List[str], build_dir: str) -> subprocess.Popen:
-+		raise RuntimeError('not implemented!')
- 
- 
- class LinuxSourceTreeOperationsQemu(LinuxSourceTreeOperations):
-@@ -123,7 +124,7 @@ class LinuxSourceTreeOperationsQemu(LinuxSourceTreeOperations):
- 		kconfig.parse_from_string(self._kconfig)
- 		base_kunitconfig.merge_in_entries(kconfig)
- 
--	def run(self, params, timeout, build_dir, outfile):
-+	def start(self, params: List[str], build_dir: str) -> subprocess.Popen:
- 		kernel_path = os.path.join(build_dir, self._kernel_path)
- 		qemu_command = ['qemu-system-' + self._qemu_arch,
- 				'-nodefaults',
-@@ -134,18 +135,10 @@ class LinuxSourceTreeOperationsQemu(LinuxSourceTreeOperations):
- 				'-nographic',
- 				'-serial stdio'] + self._extra_qemu_params
- 		print('Running tests with:\n$', ' '.join(qemu_command))
--		with open(outfile, 'w') as output:
--			process = subprocess.Popen(' '.join(qemu_command),
--						   stdin=subprocess.PIPE,
--						   stdout=output,
--						   stderr=subprocess.STDOUT,
--						   text=True, shell=True)
--		try:
--			process.wait(timeout=timeout)
--		except Exception as e:
--			print(e)
--			process.terminate()
--		return process
-+		return subprocess.Popen(' '.join(qemu_command),
-+					   stdout=subprocess.PIPE,
-+					   stderr=subprocess.STDOUT,
-+					   text=True, shell=True)
- 
- class LinuxSourceTreeOperationsUml(LinuxSourceTreeOperations):
- 	"""An abstraction over command line operations performed on a source tree."""
-@@ -175,17 +168,13 @@ class LinuxSourceTreeOperationsUml(LinuxSourceTreeOperations):
- 		kunit_parser.print_with_timestamp(
- 			'Starting Kernel with all configs takes a few minutes...')
- 
--	def run(self, params, timeout, build_dir, outfile):
-+	def start(self, params: List[str], build_dir: str) -> subprocess.Popen:
- 		"""Runs the Linux UML binary. Must be named 'linux'."""
- 		linux_bin = get_file_path(build_dir, 'linux')
--		outfile = get_outfile_path(build_dir)
--		with open(outfile, 'w') as output:
--			process = subprocess.Popen([linux_bin] + params,
--						   stdin=subprocess.PIPE,
--						   stdout=output,
--						   stderr=subprocess.STDOUT,
--						   text=True)
--			process.wait(timeout)
-+		return subprocess.Popen([linux_bin] + params,
-+					   stdout=subprocess.PIPE,
-+					   stderr=subprocess.STDOUT,
-+					   text=True)
- 
- def get_kconfig_path(build_dir) -> str:
- 	return get_file_path(build_dir, KCONFIG_PATH)
-@@ -330,12 +319,36 @@ class LinuxSourceTree(object):
- 		args.extend(['mem=1G', 'console=tty', 'kunit_shutdown=halt'])
- 		if filter_glob:
- 			args.append('kunit.filter_glob='+filter_glob)
--		outfile = get_outfile_path(build_dir)
--		self._ops.run(args, timeout, build_dir, outfile)
--		subprocess.call(['stty', 'sane'])
--		with open(outfile, 'r') as file:
--			for line in file:
-+
-+		process = self._ops.start(args, build_dir)
-+		assert process.stdout is not None  # tell mypy it's set
-+
-+		# Enforce the timeout in a background thread.
-+		def _wait_proc():
-+			try:
-+				process.wait(timeout=timeout)
-+			except Exception as e:
-+				print(e)
-+				process.terminate()
-+				process.wait()
-+		waiter = threading.Thread(target=_wait_proc)
-+		waiter.start()
-+
-+		output = open(get_outfile_path(build_dir), 'w')
-+		try:
-+			# Tee the output to the file and to our caller in real time.
-+			for line in process.stdout:
-+				output.write(line)
- 				yield line
-+		# This runs even if our caller doesn't consume every line.
-+		finally:
-+			# Flush any leftover output to the file
-+			output.write(process.stdout.read())
-+			output.close()
-+			process.stdout.close()
-+
-+			waiter.join()
-+			subprocess.call(['stty', 'sane'])
- 
- 	def signal_handler(self, sig, frame) -> None:
- 		logging.error('Build interruption occurred. Cleaning console.')
-diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
-index 619c4554cbff..f9a7398a9584 100755
---- a/tools/testing/kunit/kunit_tool_test.py
-+++ b/tools/testing/kunit/kunit_tool_test.py
-@@ -14,6 +14,7 @@ import tempfile, shutil # Handling test_tmpdir
- import itertools
- import json
- import signal
-+import subprocess
- import os
- 
- import kunit_config
-@@ -291,6 +292,22 @@ class LinuxSourceTreeTest(unittest.TestCase):
- 				pass
- 			tree = kunit_kernel.LinuxSourceTree('', kunitconfig_path=dir)
- 
-+	def test_run_kernel_hits_exception(self):
-+		def fake_start(unused_args, unused_build_dir):
-+			return subprocess.Popen(['echo "hi\nbye"'], shell=True, text=True, stdout=subprocess.PIPE)
-+
-+		with tempfile.TemporaryDirectory('') as build_dir:
-+			tree = kunit_kernel.LinuxSourceTree(build_dir, load_config=False)
-+			mock.patch.object(tree._ops, 'start', side_effect=fake_start).start()
-+
-+			with self.assertRaises(ValueError):
-+				for line in tree.run_kernel(build_dir=build_dir):
-+					self.assertEqual(line, 'hi\n')
-+					raise ValueError('uh oh, did not read all output')
-+
-+			with open(kunit_kernel.get_outfile_path(build_dir), 'rt') as outfile:
-+				self.assertEqual(outfile.read(), 'hi\nbye\n', msg='Missing some output')
-+
- 	# TODO: add more test cases.
- 
- 
-
-base-commit: 3b29021ddd10cfb6b2565c623595bd3b02036f33
--- 
-2.33.0.800.g4c38ced690-goog
-
+> Let me know.
+> 
+> Thanks,
+> Mani
+> 
+> > -- 
+> > viresh
