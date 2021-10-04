@@ -2,165 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F32E2421317
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 17:51:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C36042131E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 17:53:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236031AbhJDPwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 11:52:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23040 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236011AbhJDPwu (ORCPT
+        id S235450AbhJDPzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 11:55:13 -0400
+Received: from relay3-d.mail.gandi.net ([217.70.183.195]:47327 "EHLO
+        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234175AbhJDPzM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 11:52:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633362661;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=wnNQLEGYyuqtuWKutOrdKZyTyV/siDKuhdgiO+cXLTs=;
-        b=MvuVqhcxHVI+Dt9Tu7yVilrRmKA72wNkKX3htNSeMVd4jqwwA4swdnw+gGU2H8rbN3kYwF
-        VodTbb7UK8m/BvcOEgc92POr4sSA6t/RbT0qT7XkxU4YqX58ax1sdpwb0oNkGUjh9HYwKM
-        WU0nxSv8zdZPi1TBAQpazpKR8JRiZ00=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-504-c0t_ZGP3Pt2ItEdpb_iEag-1; Mon, 04 Oct 2021 11:50:58 -0400
-X-MC-Unique: c0t_ZGP3Pt2ItEdpb_iEag-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F25A3824FA6;
-        Mon,  4 Oct 2021 15:50:56 +0000 (UTC)
-Received: from localhost (unknown [10.39.193.66])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6C9BB10016FB;
-        Mon,  4 Oct 2021 15:50:45 +0000 (UTC)
-From:   Cornelia Huck <cohuck@redhat.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Halil Pasic <pasic@linux.ibm.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Xie Yongji <xieyongji@bytedance.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, markver@us.ibm.com,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-s390@vger.kernel.org, qemu-devel@nongnu.org
-Subject: Re: [RFC PATCH 1/1] virtio: write back features before verify
-In-Reply-To: <20211004110537-mutt-send-email-mst@kernel.org>
-Organization: Red Hat GmbH
-References: <20210930012049.3780865-1-pasic@linux.ibm.com>
- <20210930070444-mutt-send-email-mst@kernel.org>
- <20211001092125.64fef348.pasic@linux.ibm.com>
- <20211002055605-mutt-send-email-mst@kernel.org>
- <87bl452d90.fsf@redhat.com>
- <20211004090018-mutt-send-email-mst@kernel.org>
- <875yuc3ln2.fsf@redhat.com>
- <20211004110537-mutt-send-email-mst@kernel.org>
-User-Agent: Notmuch/0.32.1 (https://notmuchmail.org)
-Date:   Mon, 04 Oct 2021 17:50:44 +0200
-Message-ID: <87wnms23hn.fsf@redhat.com>
+        Mon, 4 Oct 2021 11:55:12 -0400
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 6218A60014;
+        Mon,  4 Oct 2021 15:53:20 +0000 (UTC)
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        linux-iio@vger.kernel.org, Ryan Barnett <ryan.barnett@collins.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH v5] mfd: ti_am335x_tscadc: Add ADC1/magnetic reader support
+Date:   Mon,  4 Oct 2021 17:53:19 +0200
+Message-Id: <20211004155319.1507652-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 04 2021, "Michael S. Tsirkin" <mst@redhat.com> wrote:
+Introduce a new compatible that has another set of driver data,
+targeting am437x SoCs with a magnetic reader instead of the
+touchscreen and a more featureful set of registers.
 
-> On Mon, Oct 04, 2021 at 04:33:21PM +0200, Cornelia Huck wrote:
->> On Mon, Oct 04 2021, "Michael S. Tsirkin" <mst@redhat.com> wrote:
->> 
->> > On Mon, Oct 04, 2021 at 02:19:55PM +0200, Cornelia Huck wrote:
->> >> 
->> >> [cc:qemu-devel]
->> >> 
->> >> On Sat, Oct 02 2021, "Michael S. Tsirkin" <mst@redhat.com> wrote:
->> >> 
->> >> > On Fri, Oct 01, 2021 at 09:21:25AM +0200, Halil Pasic wrote:
->> >> >> On Thu, 30 Sep 2021 07:12:21 -0400
->> >> >> "Michael S. Tsirkin" <mst@redhat.com> wrote:
->> >> >> 
->> >> >> > On Thu, Sep 30, 2021 at 03:20:49AM +0200, Halil Pasic wrote:
->> >> >> > > This patch fixes a regression introduced by commit 82e89ea077b9
->> >> >> > > ("virtio-blk: Add validation for block size in config space") and
->> >> >> > > enables similar checks in verify() on big endian platforms.
->> >> >> > > 
->> >> >> > > The problem with checking multi-byte config fields in the verify
->> >> >> > > callback, on big endian platforms, and with a possibly transitional
->> >> >> > > device is the following. The verify() callback is called between
->> >> >> > > config->get_features() and virtio_finalize_features(). That we have a
->> >> >> > > device that offered F_VERSION_1 then we have the following options
->> >> >> > > either the device is transitional, and then it has to present the legacy
->> >> >> > > interface, i.e. a big endian config space until F_VERSION_1 is
->> >> >> > > negotiated, or we have a non-transitional device, which makes
->> >> >> > > F_VERSION_1 mandatory, and only implements the non-legacy interface and
->> >> >> > > thus presents a little endian config space. Because at this point we
->> >> >> > > can't know if the device is transitional or non-transitional, we can't
->> >> >> > > know do we need to byte swap or not.  
->> >> >> > 
->> >> >> > Hmm which transport does this refer to?
->> >> >> 
->> >> >> It is the same with virtio-ccw and virtio-pci. I see the same problem
->> >> >> with both on s390x. I didn't try with virtio-blk-pci-non-transitional
->> >> >> yet (have to figure out how to do that with libvirt) for pci I used
->> >> >> virtio-blk-pci.
->> >> >> 
->> >> >> > Distinguishing between legacy and modern drivers is transport
->> >> >> > specific.  PCI presents
->> >> >> > legacy and modern at separate addresses so distinguishing
->> >> >> > between these two should be no trouble.
->> >> >> 
->> >> >> You mean the device id? Yes that is bolted down in the spec, but
->> >> >> currently we don't exploit that information. Furthermore there
->> >> >> is a fat chance that with QEMU even the allegedly non-transitional
->> >> >> devices only present a little endian config space after VERSION_1
->> >> >> was negotiated. Namely get_config for virtio-blk is implemented in
->> >> >> virtio_blk_update_config() which does virtio_stl_p(vdev,
->> >> >> &blkcfg.blk_size, blk_size) and in there we don't care
->> >> >> about transitional or not:
->> >> >> 
->> >> >> static inline bool virtio_access_is_big_endian(VirtIODevice *vdev)
->> >> >> {
->> >> >> #if defined(LEGACY_VIRTIO_IS_BIENDIAN)
->> >> >>     return virtio_is_big_endian(vdev);
->> >> >> #elif defined(TARGET_WORDS_BIGENDIAN)
->> >> >>     if (virtio_vdev_has_feature(vdev, VIRTIO_F_VERSION_1)) {
->> >> >>         /* Devices conforming to VIRTIO 1.0 or later are always LE. */
->> >> >>         return false;
->> >> >>     }
->> >> >>     return true;
->> >> >> #else
->> >> >>     return false;
->> >> >> #endif
->> >> >> }
->> >> >> 
->> >> >
->> >> > ok so that's a QEMU bug. Any virtio 1.0 and up
->> >> > compatible device must use LE.
->> >> > It can also present a legacy config space where the
->> >> > endian depends on the guest.
->> >> 
->> >> So, how is the virtio core supposed to determine this? A
->> >> transport-specific callback?
->> >
->> > I'd say a field in VirtIODevice is easiest.
->> 
->> The transport needs to set this as soon as it has figured out whether
->> we're using legacy or not.
->
-> Basically on each device config access?
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+---
 
-Prior to the first one, I think. It should not change again, should it?
+Changes in v5:
+* Let the 48 v4 patch series aside, while only resending this patch that
+  triggered a robot warning. Use the use_mag boolean instead of sticking
+  to tscmag_wires which was not optimal anyway, silencing the 'not used'
+  warning while keeping the code simple and clear.
 
->
->> I guess we also need to fence off any
->> accesses respectively error out the device if the driver tries any
->> read/write operations that would depend on that knowledge?
->> 
->> And using a field in VirtIODevice would probably need some care when
->> migrating. Hm...
->
-> It's just a shorthand to minimize changes. No need to migrate I think.
 
-If we migrate in from an older QEMU, we don't know whether we are
-dealing with legacy or not, until feature negotiation is already
-done... don't we have to ask the transport?
+ drivers/mfd/ti_am335x_tscadc.c       | 37 ++++++++++++++++++++++------
+ include/linux/mfd/ti_am335x_tscadc.h |  6 +++++
+ 2 files changed, 36 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/mfd/ti_am335x_tscadc.c b/drivers/mfd/ti_am335x_tscadc.c
+index 4f76b5498077..bfbc8288a71e 100644
+--- a/drivers/mfd/ti_am335x_tscadc.c
++++ b/drivers/mfd/ti_am335x_tscadc.c
+@@ -121,11 +121,11 @@ static	int ti_tscadc_probe(struct platform_device *pdev)
+ 	struct mfd_cell *cell;
+ 	struct property *prop;
+ 	const __be32 *cur;
+-	bool use_tsc = false;
++	bool use_tsc = false, use_mag = false;
+ 	u32 val;
+ 	int err;
+ 	int tscmag_wires = 0, adc_channels = 0, cell_idx = 0, total_channels;
+-	int readouts = 0;
++	int readouts = 0, mag_tracks = 0;
+ 
+ 	/* Allocate memory for device */
+ 	tscadc = devm_kzalloc(&pdev->dev, sizeof(*tscadc), GFP_KERNEL);
+@@ -148,6 +148,16 @@ static	int ti_tscadc_probe(struct platform_device *pdev)
+ 		of_node_put(node);
+ 		if (tscmag_wires)
+ 			use_tsc = true;
++	} else {
++		/*
++		 * When adding support for the magnetic stripe reader, here is
++		 * the place to look for the number of tracks used from device
++		 * tree. Let's default to 0 for now.
++		 */
++		mag_tracks = 0;
++		tscmag_wires = mag_tracks * 2;
++		if (tscmag_wires)
++			use_mag = true;
+ 	}
+ 
+ 	node = of_get_child_by_name(pdev->dev.of_node, "adc");
+@@ -209,8 +219,9 @@ static	int ti_tscadc_probe(struct platform_device *pdev)
+ 	 * The TSC_ADC_Subsystem has 2 clock domains: OCP_CLK and ADC_CLK.
+ 	 * ADCs produce a 12-bit sample every 15 ADC_CLK cycles.
+ 	 * am33xx ADCs expect to capture 200ksps.
+-	 * We need the ADC clocks to run at 3MHz.
+-	 * This frequency is valid since TSC_ADC_SS controller design
++	 * am47xx ADCs expect to capture 867ksps.
++	 * We need ADC clocks respectively running at 3MHz and 13MHz.
++	 * These frequencies are valid since TSC_ADC_SS controller design
+ 	 * assumes the OCP clock is at least 6x faster than the ADC clock.
+ 	 */
+ 	clk = devm_clk_get(&pdev->dev, NULL);
+@@ -238,6 +249,9 @@ static	int ti_tscadc_probe(struct platform_device *pdev)
+ 			else
+ 				tscadc->ctrl |= CNTRLREG_TSC_4WIRE;
+ 		}
++	} else {
++		tscadc->ctrl |= CNTRLREG_MAG_PREAMP_PWRDOWN |
++				CNTRLREG_MAG_PREAMP_BYPASS;
+ 	}
+ 	regmap_write(tscadc->regmap, REG_CTRL, tscadc->ctrl);
+ 
+@@ -246,8 +260,8 @@ static	int ti_tscadc_probe(struct platform_device *pdev)
+ 	/* Enable the TSC module enable bit */
+ 	regmap_write(tscadc->regmap, REG_CTRL, tscadc->ctrl | CNTRLREG_SSENB);
+ 
+-	/* TSC Cell */
+-	if (tscmag_wires > 0) {
++	/* TSC or MAG Cell */
++	if (use_tsc || use_mag) {
+ 		cell = &tscadc->cells[cell_idx++];
+ 		cell->name = tscadc->data->secondary_feature_name;
+ 		cell->of_compatible = tscadc->data->secondary_feature_compatible;
+@@ -340,8 +354,17 @@ static const struct ti_tscadc_data tscdata = {
+ 	.target_clk_rate = TSC_ADC_CLK,
+ };
+ 
++static const struct ti_tscadc_data magdata = {
++	.adc_feature_name = "TI-am43xx-adc",
++	.adc_feature_compatible = "ti,am4372-adc",
++	.secondary_feature_name = "TI-am43xx-mag",
++	.secondary_feature_compatible = "ti,am4372-mag",
++	.target_clk_rate = MAG_ADC_CLK,
++};
++
+ static const struct of_device_id ti_tscadc_dt_ids[] = {
+ 	{ .compatible = "ti,am3359-tscadc", .data = &tscdata },
++	{ .compatible = "ti,am4372-magadc", .data = &magdata },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(of, ti_tscadc_dt_ids);
+@@ -359,6 +382,6 @@ static struct platform_driver ti_tscadc_driver = {
+ 
+ module_platform_driver(ti_tscadc_driver);
+ 
+-MODULE_DESCRIPTION("TI touchscreen / ADC MFD controller driver");
++MODULE_DESCRIPTION("TI touchscreen/magnetic stripe reader/ADC MFD controller driver");
+ MODULE_AUTHOR("Rachna Patil <rachna@ti.com>");
+ MODULE_LICENSE("GPL");
+diff --git a/include/linux/mfd/ti_am335x_tscadc.h b/include/linux/mfd/ti_am335x_tscadc.h
+index ee160b2036c1..5225e3fc194d 100644
+--- a/include/linux/mfd/ti_am335x_tscadc.h
++++ b/include/linux/mfd/ti_am335x_tscadc.h
+@@ -106,6 +106,11 @@
+ #define CNTRLREG_TSC_8WIRE	CNTRLREG_TSC_AFE_CTRL(3)
+ #define CNTRLREG_TSC_ENB	BIT(7)
+ 
++/*Control registers bitfields  for MAGADC IP */
++#define CNTRLREG_MAGADCENB      BIT(0)
++#define CNTRLREG_MAG_PREAMP_PWRDOWN BIT(5)
++#define CNTRLREG_MAG_PREAMP_BYPASS  BIT(6)
++
+ /* FIFO READ Register */
+ #define FIFOREAD_DATA_MASK	GENMASK(11, 0)
+ #define FIFOREAD_CHNLID_MASK	GENMASK(19, 16)
+@@ -119,6 +124,7 @@
+ #define CHARGE_STEP		0x11
+ 
+ #define TSC_ADC_CLK		(3 * HZ_PER_MHZ)
++#define MAG_ADC_CLK		(13 * HZ_PER_MHZ)
+ #define TOTAL_STEPS		16
+ #define TOTAL_CHANNELS		8
+ #define FIFO1_THRESHOLD		19
+-- 
+2.27.0
 
