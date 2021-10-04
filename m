@@ -2,40 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BA59420E7B
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:23:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7FAA420BD6
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:58:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235837AbhJDNZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:25:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38020 "EHLO mail.kernel.org"
+        id S234333AbhJDNA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:00:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60114 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236510AbhJDNWA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:22:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D9CA61B62;
-        Mon,  4 Oct 2021 13:09:27 +0000 (UTC)
+        id S234306AbhJDM6z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 08:58:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A8210613AD;
+        Mon,  4 Oct 2021 12:57:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352967;
-        bh=OSvn5waHUs7w7ltyhQovFUEu+eYst4bz4nJT96TImdI=;
+        s=korg; t=1633352221;
+        bh=jNpmYPJE1z97s9zfAE8RJax1RBKozyW2UxwHze8RfZA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kS29P+p+ME3n6vKWertgBApUDbeAy/tWtRy3CfrA0Jy1jrZs8cCHLaU7lyaH8gSs8
-         ylfqwPe2Ji778RejMpexamNTMPmb/d2nvhl3DcjvPKom7OJxMQFqJ9uwS5qtdEBHLJ
-         Y39zWXuVKOKVaoMgwW111MsxCUqCM70ljS4LN9t4=
+        b=UgKGFGMUuPeLBRUhV4Dwb5n2pfoxWtNvDmQYxs5woMdV+Y+t5EwLTJk3l1KR+x33k
+         /bl3TxSHvaBKEwc2+9yEcwcS4jUMDYC4Fn7xRpr4G0OejjtcVcWixmRsocU++zRY/5
+         qW4dBUpfIgERfax/mZwhrILkOKDiC5r8NGa60TgE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Foley <pefoley@google.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Doug Evans <dje@google.com>
-Subject: [PATCH 5.10 20/93] KVM: rseq: Update rseq when processing NOTIFY_RESUME on xfer to KVM guest
-Date:   Mon,  4 Oct 2021 14:52:18 +0200
-Message-Id: <20211004125035.248048862@linuxfoundation.org>
+        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>
+Subject: [PATCH 4.9 35/57] mac80211: fix use-after-free in CCMP/GCMP RX
+Date:   Mon,  4 Oct 2021 14:52:19 +0200
+Message-Id: <20211004125030.048985859@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125034.579439135@linuxfoundation.org>
-References: <20211004125034.579439135@linuxfoundation.org>
+In-Reply-To: <20211004125028.940212411@linuxfoundation.org>
+References: <20211004125028.940212411@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,75 +38,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <seanjc@google.com>
+From: Johannes Berg <johannes.berg@intel.com>
 
-commit 8646e53633f314e4d746a988240d3b951a92f94a upstream.
+commit 94513069eb549737bcfc3d988d6ed4da948a2de8 upstream.
 
-Invoke rseq's NOTIFY_RESUME handler when processing the flag prior to
-transferring to a KVM guest, which is roughly equivalent to an exit to
-userspace and processes many of the same pending actions.  While the task
-cannot be in an rseq critical section as the KVM path is reachable only
-by via ioctl(KVM_RUN), the side effects that apply to rseq outside of a
-critical section still apply, e.g. the current CPU needs to be updated if
-the task is migrated.
+When PN checking is done in mac80211, for fragmentation we need
+to copy the PN to the RX struct so we can later use it to do a
+comparison, since commit bf30ca922a0c ("mac80211: check defrag
+PN against current frame").
 
-Clearing TIF_NOTIFY_RESUME without informing rseq can lead to segfaults
-and other badness in userspace VMMs that use rseq in combination with KVM,
-e.g. due to the CPU ID being stale after task migration.
+Unfortunately, in that commit I used the 'hdr' variable without
+it being necessarily valid, so use-after-free could occur if it
+was necessary to reallocate (parts of) the frame.
 
-Fixes: 72c3c0fe54a3 ("x86/kvm: Use generic xfer to guest work function")
-Reported-by: Peter Foley <pefoley@google.com>
-Bisected-by: Doug Evans <dje@google.com>
-Acked-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Shakeel Butt <shakeelb@google.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
+Fix this by reloading the variable after the code that results
+in the reallocations, if any.
+
+This fixes https://bugzilla.kernel.org/show_bug.cgi?id=214401.
+
 Cc: stable@vger.kernel.org
-Signed-off-by: Sean Christopherson <seanjc@google.com>
-Message-Id: <20210901203030.1292304-2-seanjc@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-[sean: Resolve benign conflict due to unrelated access_ok() check in 5.10]
-Signed-off-by: Sean Christopherson <seanjc@google.com>
+Fixes: bf30ca922a0c ("mac80211: check defrag PN against current frame")
+Link: https://lore.kernel.org/r/20210927115838.12b9ac6bb233.I1d066acd5408a662c3b6e828122cd314fcb28cdb@changeid
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/entry/kvm.c |    4 +++-
- kernel/rseq.c      |   13 ++++++++++---
- 2 files changed, 13 insertions(+), 4 deletions(-)
+ net/mac80211/wpa.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/kernel/entry/kvm.c
-+++ b/kernel/entry/kvm.c
-@@ -16,8 +16,10 @@ static int xfer_to_guest_mode_work(struc
- 		if (ti_work & _TIF_NEED_RESCHED)
- 			schedule();
+--- a/net/mac80211/wpa.c
++++ b/net/mac80211/wpa.c
+@@ -514,6 +514,9 @@ ieee80211_crypto_ccmp_decrypt(struct iee
+ 			return RX_DROP_UNUSABLE;
+ 	}
  
--		if (ti_work & _TIF_NOTIFY_RESUME)
-+		if (ti_work & _TIF_NOTIFY_RESUME) {
- 			tracehook_notify_resume(NULL);
-+			rseq_handle_notify_resume(NULL, NULL);
-+		}
++	/* reload hdr - skb might have been reallocated */
++	hdr = (void *)rx->skb->data;
++
+ 	data_len = skb->len - hdrlen - IEEE80211_CCMP_HDR_LEN - mic_len;
+ 	if (!rx->sta || data_len < 0)
+ 		return RX_DROP_UNUSABLE;
+@@ -744,6 +747,9 @@ ieee80211_crypto_gcmp_decrypt(struct iee
+ 			return RX_DROP_UNUSABLE;
+ 	}
  
- 		ret = arch_xfer_to_guest_mode_handle_work(vcpu, ti_work);
- 		if (ret)
---- a/kernel/rseq.c
-+++ b/kernel/rseq.c
-@@ -268,9 +268,16 @@ void __rseq_handle_notify_resume(struct
- 		return;
- 	if (unlikely(!access_ok(t->rseq, sizeof(*t->rseq))))
- 		goto error;
--	ret = rseq_ip_fixup(regs);
--	if (unlikely(ret < 0))
--		goto error;
-+	/*
-+	 * regs is NULL if and only if the caller is in a syscall path.  Skip
-+	 * fixup and leave rseq_cs as is so that rseq_sycall() will detect and
-+	 * kill a misbehaving userspace on debug kernels.
-+	 */
-+	if (regs) {
-+		ret = rseq_ip_fixup(regs);
-+		if (unlikely(ret < 0))
-+			goto error;
-+	}
- 	if (unlikely(rseq_update_cpu_id(t)))
- 		goto error;
- 	return;
++	/* reload hdr - skb might have been reallocated */
++	hdr = (void *)rx->skb->data;
++
+ 	data_len = skb->len - hdrlen - IEEE80211_GCMP_HDR_LEN - mic_len;
+ 	if (!rx->sta || data_len < 0)
+ 		return RX_DROP_UNUSABLE;
 
 
