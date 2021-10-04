@@ -2,122 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09A2E4214EA
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 19:13:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61CA14214F3
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 19:14:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236443AbhJDROy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 13:14:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60692 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236127AbhJDROw (ORCPT
+        id S238024AbhJDRPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 13:15:49 -0400
+Received: from mail-vs1-f53.google.com ([209.85.217.53]:45671 "EHLO
+        mail-vs1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236127AbhJDRPs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 13:14:52 -0400
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87FBBC061746
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 10:13:03 -0700 (PDT)
-Received: by mail-qt1-x829.google.com with SMTP id d8so6375785qtd.5
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 10:13:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=cOKjddDH5+4xS9V6U2CWaH8D4d1KqVMcYRtfQMaTs5c=;
-        b=GgvWKF+Qow1pRmPozvXwK2n6+vlzlAdHg6CBoGnUsGSCYEVdzLPd45F7dE6qGax55W
-         uIZXUFTGdekCCcreTwaTXheY/u4z2Htz1g2kRHKpkvOjcN7f9zK83dzPuh36ynHbAj5r
-         Q0khND2u9HtkPw+KjpvYUFBXWsR+ItBJjfAn2U2Zxrx3MEB63rzpJWoot7UvfQCk6YfW
-         IwQEebSORZ1pdAiMpCIg3xzfCmjRrNJlswM7uqD+Ei7mVjWfa3RP2U+6lKdPt4ub+2MK
-         vQUGdOTByuoOBxPzrJiOvrS8wxIeXzQoY3i9NFRVPcpqoDY3nsjb74rbLQb4AXYrn/6q
-         QCNg==
+        Mon, 4 Oct 2021 13:15:48 -0400
+Received: by mail-vs1-f53.google.com with SMTP id v4so5797338vsg.12;
+        Mon, 04 Oct 2021 10:13:59 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=cOKjddDH5+4xS9V6U2CWaH8D4d1KqVMcYRtfQMaTs5c=;
-        b=hyVhqYzZluaKDoj4iXmy0HIiNdnJv/zFUGH0ZnW4oU0+OSHIyl/TLudGDRBnwnPhAy
-         1OOlxLJKOV6WoXuAnbiRC7j/plhC3qbjcJFGBb2Tq5iV02MwSIQ3whMlwauUxlYAMYh/
-         Izhj6h2LLKhWuw6oeChI2w75yjn3IKJszfxC9S+heRvexG8seHranWUlg2t6HhaIzR+O
-         GW4T/3/VtidgchYKcVfkTnJMF0U4Amifuwzb2WgBIQbD8HT1Y4nQWQEWiqQz2O5zdfhy
-         BGNxJsilZpzb6KfDY911zp1wReM+M2GEmBaOB2u5sMSn4AXJZxU/EERqA3R+Df5eIJD5
-         s6wQ==
-X-Gm-Message-State: AOAM531Q6y9GzvO0XfVsw3foaMod57hrCnB+mtksufenp0ChT5m6H2O9
-        W2/Fg6lTQ9WQPjTt7r0FIGntPQ==
-X-Google-Smtp-Source: ABdhPJyHXh9xAEaI+chzKoDCbjRMjAzxAmOsUGwwrilg5S3YihxeXByibrc9cOiMrfCR5Vojnwty/g==
-X-Received: by 2002:ac8:709a:: with SMTP id y26mr14324507qto.142.1633367582734;
-        Mon, 04 Oct 2021 10:13:02 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
-        by smtp.gmail.com with ESMTPSA id h14sm8793364qkn.4.2021.10.04.10.13.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Oct 2021 10:13:02 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1mXRWP-00AXWA-O2; Mon, 04 Oct 2021 14:13:01 -0300
-Date:   Mon, 4 Oct 2021 14:13:01 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Lino Sanfilippo <LinoSanfilippo@gmx.de>, rjui@broadcom.com,
-        sbranden@broadcom.com, bcm-kernel-feedback-list@broadcom.com,
-        nsaenz@kernel.org, linux-spi@vger.kernel.org,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        p.rosenberger@kunbus.com, linux-integrity@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] spi: bcm2835: do not unregister controller in shutdown
- handler
-Message-ID: <20211004171301.GA3544071@ziepe.ca>
-References: <20211001175422.GA53652@sirena.org.uk>
- <2c4d7115-7a02-f79e-c91b-3c2dd54051b2@gmx.de>
- <YVr4USeiIoQJ0Pqh@sirena.org.uk>
- <20211004131756.GW3544071@ziepe.ca>
- <YVsLxHMCdXf4vS+i@sirena.org.uk>
- <20211004154436.GY3544071@ziepe.ca>
- <YVssWYaxuQDi8jI5@sirena.org.uk>
- <e68b04ab-831b-0ed5-074a-0879194569f9@gmail.com>
- <20211004165127.GZ3544071@ziepe.ca>
- <f481f7cc-6734-59b3-6432-5c2049cd87ea@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qDIVmR/qFuDDiFyWNf3y3niN15+lX6TIgv0kekHzpE8=;
+        b=JlNTqYWgky0nW1lEZ6JGhUQCZVPleQEhdvbgcz/JI4TzEOBaJeXjmREs3hqs9FkNoS
+         Yc6rE6tR6YwU9qmXak1OkczTDxBz74RFDci/6ms43k2Eq+PXuzRi6BlA8k8OK9SEoy30
+         GdT2nJzSTDwdOPjqqJmHte7NnDwWVxE04l/ZbUtkipR1EogS8bNPjuZ+Zz/tENPjrakc
+         lPCHOhufPsw+IQAY7/xH3Ia322b0dQQSYuWa2lVEMWtAlj64nWWUFJ7CsfbrbQpc4PVh
+         NoemZifgUh6Vi5K4PlZEbm3uOvVTAl2+BQBMTFl+HCKctnp+CxeKsXWXkPBYRQ1JoGss
+         bRDw==
+X-Gm-Message-State: AOAM532aAC4R9bsNSZ87KYqYJFGNqxWzFNasOzeDoHihCSFmlBPs9jhx
+        tkyclS0G6kHTuV7ypmvuFIC3T8UtSj/JAZdRqog=
+X-Google-Smtp-Source: ABdhPJyfd/P5arwYcERnUkJxEhSvSRTgfpXDmvSyUgqTuMJgZeXYqwzGlSFUN1nE+bCjMj2ewLylD/0E6wTHQevyZgk=
+X-Received: by 2002:a67:2c58:: with SMTP id s85mr13878232vss.35.1633367638697;
+ Mon, 04 Oct 2021 10:13:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f481f7cc-6734-59b3-6432-5c2049cd87ea@gmail.com>
+References: <20210914202202.1702601-1-dianders@chromium.org>
+ <20210914132020.v5.2.I62e76a034ac78c994d40a23cd4ec5aeee56fa77c@changeid>
+ <CAMuHMdWy+aASNevg8nc9LTvR9QNrGYZQnB3sYYLDRfEU1w_idg@mail.gmail.com> <CAD=FV=W07iZigvNaxv1WodhQZVm8hD-1NxTuBuapJYifi6ROng@mail.gmail.com>
+In-Reply-To: <CAD=FV=W07iZigvNaxv1WodhQZVm8hD-1NxTuBuapJYifi6ROng@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 4 Oct 2021 19:13:47 +0200
+Message-ID: <CAMuHMdVK9p3J762+TQM9ogS5YE2QdJ5fiXKOQo7mXy8TwzCeew@mail.gmail.com>
+Subject: Re: [PATCH v5 02/15] drm/edid: Break out reading block 0 of the EDID
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Steev Klimaszewski <steev@kali.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Linus W <linus.walleij@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maxime Ripard <mripard@kernel.org>,
+        Jani Nikula <jani.nikula@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 04, 2021 at 09:55:32AM -0700, Florian Fainelli wrote:
-> On 10/4/21 9:51 AM, Jason Gunthorpe wrote:
-> > On Mon, Oct 04, 2021 at 09:36:37AM -0700, Florian Fainelli wrote:
-> > 
-> >> No please don't, I should have arguably justified the reasons why
-> >> better, but the main reason is that one of the platforms on which this
-> >> driver is used has received extensive power management analysis and
-> >> changes, and shutting down every bit of hardware, including something as
-> >> small as a SPI controller, and its clock (and its PLL) helped meet
-> >> stringent power targets.
-> > 
-> > Huh? for device shutdown? What would this matter if the next step is
-> > reboot or power off?
-> 
-> Power off, the device is put into a low power state (equivalent to ACPI
-> S5) and then a remote control key press, or a GPIO could wake-up the
-> device again. While it is in that mode, it consumes less than 0.5W(AC).
-> Imagine your stick/cast/broom behind your TV falling in that category.
+Hi Doug,
 
-So really this is more of a very deep sleep that cannot be recovered
-from than what other platforms would call a shutdown - eg the
-powerdomain of the device under driver control will not loose
-power.
+On Mon, Oct 4, 2021 at 6:26 PM Doug Anderson <dianders@chromium.org> wrote:
+> On Mon, Oct 4, 2021 at 8:42 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > -       if ((edid = kmalloc(EDID_LENGTH, GFP_KERNEL)) == NULL)
+> > > +       edid = (u8 *)drm_do_get_edid_base_block(get_edid_block, data,
+> > > +                                               &connector->edid_corrupt,
+> > > +                                               &connector->null_edid_counter);
+> > > +       if (IS_ERR_OR_NULL(edid)) {
+> > > +               if (IS_ERR(edid))
+> >
+> > So edid is an error code, not a valid pointer...
+> >
+> > > +                       connector_bad_edid(connector, edid, 1);
+> >
+> > ... while connector_bad_edid() expects edid to be a valid pointer,
+> > causing a crash:
+> >
+> > Unable to handle kernel NULL pointer dereference at virtual address
+>
+> Sigh. Thanks for the report and analysis. I guess I don't have any
+> displays reporting invalid EDIDs to test with. Hopefully this will
+> help:
 
-I'm kind of surprised a scheme like this didn't involve a FW call
-after Linux is done with the CPUs to quiet all the HW and let it
-sleep, I've built things that way before at least.
+It doesn't happen all the time.  Looks like my EDID is only invalid after
+a reset needed to resolve an s2ram crash in the adv7511 driver...
 
-> I am fairly sure that no driver write knows about the being bound in
-> time aspect.
+> https://lore.kernel.org/r/20211004092100.1.Ic90a5ebd44c75db963112be167a03cc96f9fb249@changeid/
 
-Well, it is a logical consequence. The system is shutting down, no
-driver should be designed to deadlock the shutdown forever.
+Thanks for the quick fix!
 
-I suppose this is why I've occasionally seen Linux just hang at a
-black screen and no power off when told to shutdown :)
+Gr{oetje,eeting}s,
 
-Jason
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
