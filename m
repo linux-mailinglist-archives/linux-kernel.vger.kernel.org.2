@@ -2,145 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84201420475
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 01:25:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDCB0420481
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 02:17:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231907AbhJCX04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Oct 2021 19:26:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43704 "EHLO
+        id S231961AbhJDASe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Oct 2021 20:18:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230520AbhJCX0z (ORCPT
+        with ESMTP id S230508AbhJDASe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Oct 2021 19:26:55 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2A5DC061780
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Oct 2021 16:25:06 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id p13so29552886edw.0
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Oct 2021 16:25:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amikom.ac.id; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=GSCXqxIA1o807PK6C5J2wuYzWvo/IRAhFGJYC3Av3vU=;
-        b=Y/PSYvM7+k9cj4P4gwtvnHz+ZogB6+5zu/W4Av/04ZU9AcbOBuyF05JNsJL5NRsdog
-         AraEq8Jyj7dpz+iYH5kc4Q8lh8QOq1Kr887D686efcFO4tVqYPqOyZwJcn4FlZF2SGs6
-         3quETLnmkKbJn5ssxNmIDAm+lDx6OGfOF8dZayARYoCepwtxvQlUVcdB7lI8zG0pZeBF
-         VqaDu8SYOt/m9iSUqb+HryyQ4lY3BmQtvMpz/AG7uuva/uAggGbqhlCoSlc0+woS+ZC+
-         5sRNiczOWVr2tSy9yNL64DgyNBTBKNqg67T0R/MKw+ut8VHAyiogCOr8g/0tvb611std
-         jfTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=GSCXqxIA1o807PK6C5J2wuYzWvo/IRAhFGJYC3Av3vU=;
-        b=OxQdd58D76POIrXLs5fXfk87MLzPYYvgWH+awRZr7LyARkAeyKZVResGb5dyiySCOD
-         a8MbPzuUxA8YNPmk6iNvkN6hyKBzwJ4zeSm7/y4/qJNGuWhGHGRkZ1jjlv9JNmUlcEPY
-         UDmT1pZJTiRMx1Kq4qRkCrg6BsdbfsGLbCIEb7ICVQBoSvcYNJ6Bkk3ZHUYAwJOh5BpE
-         F6x8KpdZbl1Xb7nXmWHKv3wPEfeUyyiNur8RP4aMk2ycKTxEqkkIAEoNtM58MnewhBBD
-         1G40MuxEc7ngKDL9Ti0AGH+4SeVGQqTuYOIm+auwZkNZa5rVLnuVJvSDUV4rqE4Y5R4M
-         eVcA==
-X-Gm-Message-State: AOAM532uTBvKq4VZ7xLSIXBRgafAsnbIHWjt8KZikPeHlnO+/mSiv3RC
-        XzcEeigJspRlHSM9/VapRJdQ/rzsobjWb6/TD4p5Hg==
-X-Google-Smtp-Source: ABdhPJwlXghwRiHVLqNgde12Z99mmV7noD5vKOvj8fqS+t1n0MgWrz9xYYiT4DFgmZVqaxsnlqW7f0hZFg8M0ej9xNw=
-X-Received: by 2002:a17:906:1757:: with SMTP id d23mr13761971eje.102.1633303504459;
- Sun, 03 Oct 2021 16:25:04 -0700 (PDT)
+        Sun, 3 Oct 2021 20:18:34 -0400
+Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 212A5C0613EC
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Oct 2021 17:16:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=/Nb4MRKaxM4+91oHH7Ktejb5oApeSbdWV88H/UQxSZo=; b=S2RlYKuQD0JvhCC1wzCdKfkPLL
+        TtHGi3RXuWm3TjRzVT2lEUR+uc5Ubt28+oN2pNJ7el8tanWuyKpglsC/A0i7ROhl+pO6iT5Q9YtYd
+        6fe3LO8LQyDXRM+OftC7Dz4/iSp90w9vajEyix821F8AOmQ7xmhWP/dEcGZmSwllCb2nU5rdX3+sS
+        IHL01kDyzyMhBiEsBClvh+hFxENP30lpCSQgIx1CnM4Wu5UtVkY7vJzC4RNQF7nqhFJSX3T8bNBiD
+        PIqJXrVKQ7sUfA7yZX5qatKGJWbUEJCrEi453YCAxszRuD3dXwbozKQDMexil9r6O3QNWMbMTeKaC
+        J3cX6PzQ==;
+Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mXBeu-004kkd-ID; Mon, 04 Oct 2021 00:16:44 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH] misc: HI6421V600_IRQ should depend on HAS_IOMEM
+Date:   Sun,  3 Oct 2021 17:16:41 -0700
+Message-Id: <20211004001641.23180-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20211002231723.29019-1-ammar.faizi@students.amikom.ac.id> <1bad16dc-e11e-4096-2014-a0eae92686e8@gmail.com>
-In-Reply-To: <1bad16dc-e11e-4096-2014-a0eae92686e8@gmail.com>
-From:   Ammar Faizi <ammar.faizi@students.amikom.ac.id>
-Date:   Mon, 4 Oct 2021 06:24:52 +0700
-Message-ID: <CAGzmLMWehxhp7L7Ye+ERjZPRxAaVu=pYmV6Zr-Q78dzruu2qaA@mail.gmail.com>
-Subject: Re: [PATCH] media: atomisp: fix `-Werror=return-type`
-To:     Pavel Skripkin <paskripkin@gmail.com>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Bedirhan KURT <windowz414@gnuweeb.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 3, 2021 at 11:19 PM Pavel Skripkin <paskripkin@gmail.com> wrote=
-:
->
-> On 10/3/21 02:17, Ammar Faizi wrote:
-> > Bedirhan reported build error:
-> > ```
-> >    drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_sys=
-tem.c: In function =E2=80=98input_system_configure_channel_sensor=E2=80=99:
-> >    drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_sys=
-tem.c:1649:1: error: control reaches end of non-void function [-Werror=3Dre=
-turn-type]
-> >     1649 | }
-> >          | ^
-> >    cc1: some warnings being treated as errors
-> >    make[4]: *** [scripts/Makefile.build:277: drivers/staging/media/atom=
-isp/pci/hive_isp_css_common/host/input_system.o] Error 1
-> >    make[3]: *** [scripts/Makefile.build:540: drivers/staging/media/atom=
-isp] Error 2
-> >    make[2]: *** [scripts/Makefile.build:540: drivers/staging/media] Err=
-or 2
-> >    make[1]: *** [scripts/Makefile.build:540: drivers/staging] Error 2
-> >    make: *** [Makefile:1868: drivers] Error 2
-> > ```
-> >
-> > Commit 264f590899146baa19e0ab5689e55fadbc292333 ("media: atomisp:
-> > remove useless returns") incorrectly removed a required return results
-> > in the above build error. Reinstate it.
-> >
-> > Cc: Pavel Skripkin <paskripkin@gmail.com>
-> > Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> > Cc: Sakari Ailus <sakari.ailus@linux.intel.com>
-> > Cc: linux-media@vger.kernel.org
-> > Cc: linux-staging@lists.linux.dev
-> > Cc: linux-kernel@vger.kernel.org
-> > Reported-by: Bedirhan KURT <windowz414@gnuweeb.org>
-> > Fixes: 264f590899146baa19e0ab5689e55fadbc292333 ("media: atomisp: remov=
-e useless returns")
-> > Signed-off-by: Ammar Faizi <ammar.faizi@students.amikom.ac.id>
-> > ---
-> >   .../media/atomisp/pci/hive_isp_css_common/host/input_system.c    | 1 =
-+
-> >   1 file changed, 1 insertion(+)
-> >
-> > diff --git a/drivers/staging/media/atomisp/pci/hive_isp_css_common/host=
-/input_system.c b/drivers/staging/media/atomisp/pci/hive_isp_css_common/hos=
-t/input_system.c
-> > index 8e085dda0c18..1bd917e81743 100644
-> > --- a/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_=
-system.c
-> > +++ b/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_=
-system.c
-> > @@ -1646,6 +1646,7 @@ static input_system_err_t input_system_configure_=
-channel_sensor(
-> >       default:
-> >               return INPUT_SYSTEM_ERR_PARAMETER_NOT_SUPPORTED;
-> >       }
-> > +     return INPUT_SYSTEM_ERR_NO_ERROR;
-> >   }
-> >
-> >   // Test flags and set structure.
-> >
->
-> Hi, Ammar!
->
->
-> Thank you for fixing this, but it's already fixed in linux-next tree.
-> See commit 05344a1d2ea7 ("media: atomisp: restore missing 'return'
-> statement").
->
-> Again, I am sorry for introducing this bug :(
->
->
->
->
-> With regards,
-> Pavel Skripkin
+MFD_CORE depends on HAS_IOMEM so anything that selects MFD_CORE should
+also depend on HAS_IOMEM since 'select' does not check any dependencies
+of the symbol that is being selected.
 
-No worries, thanks for the update :D
+Prevents this kconfig warning:
 
---=20
-Ammar Faizi
+WARNING: unmet direct dependencies detected for MFD_CORE
+  Depends on [n]: HAS_IOMEM [=n]
+  Selected by [m]:
+  - HI6421V600_IRQ [=m] && OF [=y] && SPMI [=m]
+
+Fixes: bb3b6552a5b0 ("staging: hikey9xx: split hi6421v600 irq into a separate driver")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/misc/Kconfig |    1 +
+ 1 file changed, 1 insertion(+)
+
+--- linux-next-20211001.orig/drivers/misc/Kconfig
++++ linux-next-20211001/drivers/misc/Kconfig
+@@ -224,6 +224,7 @@ config HI6421V600_IRQ
+ 	tristate "HiSilicon Hi6421v600 IRQ and powerkey"
+ 	depends on OF
+ 	depends on SPMI
++	depends on HAS_IOMEM
+ 	select MFD_CORE
+ 	select REGMAP_SPMI
+ 	help
