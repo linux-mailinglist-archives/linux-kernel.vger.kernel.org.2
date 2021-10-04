@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEF9D420B89
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:56:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ACB5420D19
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:10:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234084AbhJDM55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 08:57:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59150 "EHLO mail.kernel.org"
+        id S235438AbhJDNLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:11:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46410 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233850AbhJDM5T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 08:57:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3378661381;
-        Mon,  4 Oct 2021 12:55:30 +0000 (UTC)
+        id S235288AbhJDNJI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:09:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C597561B55;
+        Mon,  4 Oct 2021 13:03:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352130;
-        bh=8ScA0uS0vFuGSImXk7+KqIkAdMK68VnB/O0JcZX7frY=;
+        s=korg; t=1633352599;
+        bh=gtHvc0HZonQuMqEPsdc0C0bkVaBd1dO2c49JDHCP3Xk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=T7hKFE/KFfxE/dmW9v6UbJ8+R/xKOWGn00GTgHZDynl5/2hoPkGz+Ygx/CN+SckuJ
-         6TZS/imcevo/hPxCU5T4LjQQa0wcy2so9dtRdCdptOrBVBq6jOCZxBJcPq2RBK/HqZ
-         hP/CoRc/R4CtGa244wnDF94pfG5F5qGsfjFU1pj4=
+        b=MzMAxHgjT89apewuZAExE8HJ74ujoSYI6TLtjkp2aJgsxturwaFqVAsTKzH0e/XAU
+         ckk4/SlU8ejKWUl3EAcNrsZ7/dyxK4FbzN/0YW0+nN31wc22+jOr9HCbA/rr+xebzU
+         cH+TViZigglmwel4d5Ag8TBypJsMnHXtm4z+gblo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yi Chen <yiche@redhat.com>,
-        Andrea Claudi <aclaudi@redhat.com>,
-        Julian Anastasov <ja@ssi.bg>,
-        Simon Horman <horms@verge.net.au>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 27/41] ipvs: check that ip_vs_conn_tab_bits is between 8 and 20
+        stable@vger.kernel.org,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        Gregory CLEMENT <gregory.clement@bootlin.com>
+Subject: [PATCH 4.19 48/95] arm64: dts: marvell: armada-37xx: Extend PCIe MEM space
 Date:   Mon,  4 Oct 2021 14:52:18 +0200
-Message-Id: <20211004125027.441460139@linuxfoundation.org>
+Message-Id: <20211004125035.148973261@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125026.597501645@linuxfoundation.org>
-References: <20211004125026.597501645@linuxfoundation.org>
+In-Reply-To: <20211004125033.572932188@linuxfoundation.org>
+References: <20211004125033.572932188@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,46 +40,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrea Claudi <aclaudi@redhat.com>
+From: Pali Rohár <pali@kernel.org>
 
-[ Upstream commit 69e73dbfda14fbfe748d3812da1244cce2928dcb ]
+commit 514ef1e62d6521c2199d192b1c71b79d2aa21d5a upstream.
 
-ip_vs_conn_tab_bits may be provided by the user through the
-conn_tab_bits module parameter. If this value is greater than 31, or
-less than 0, the shift operator used to derive tab_size causes undefined
-behaviour.
+Current PCIe MEM space of size 16 MB is not enough for some combination
+of PCIe cards (e.g. NVMe disk together with ath11k wifi card). ARM Trusted
+Firmware for Armada 3700 platform already assigns 128 MB for PCIe window,
+so extend PCIe MEM space to the end of 128 MB PCIe window which allows to
+allocate more PCIe BARs for more PCIe cards.
 
-Fix this checking ip_vs_conn_tab_bits value to be in the range specified
-in ipvs Kconfig. If not, simply use default value.
+Without this change some combination of PCIe cards cannot be used and
+kernel show error messages in dmesg during initialization:
 
-Fixes: 6f7edb4881bf ("IPVS: Allow boot time change of hash size")
-Reported-by: Yi Chen <yiche@redhat.com>
-Signed-off-by: Andrea Claudi <aclaudi@redhat.com>
-Acked-by: Julian Anastasov <ja@ssi.bg>
-Acked-by: Simon Horman <horms@verge.net.au>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+    pci 0000:00:00.0: BAR 8: no space for [mem size 0x01800000]
+    pci 0000:00:00.0: BAR 8: failed to assign [mem size 0x01800000]
+    pci 0000:00:00.0: BAR 6: assigned [mem 0xe8000000-0xe80007ff pref]
+    pci 0000:01:00.0: BAR 8: no space for [mem size 0x01800000]
+    pci 0000:01:00.0: BAR 8: failed to assign [mem size 0x01800000]
+    pci 0000:02:03.0: BAR 8: no space for [mem size 0x01000000]
+    pci 0000:02:03.0: BAR 8: failed to assign [mem size 0x01000000]
+    pci 0000:02:07.0: BAR 8: no space for [mem size 0x00100000]
+    pci 0000:02:07.0: BAR 8: failed to assign [mem size 0x00100000]
+    pci 0000:03:00.0: BAR 0: no space for [mem size 0x01000000 64bit]
+    pci 0000:03:00.0: BAR 0: failed to assign [mem size 0x01000000 64bit]
+
+Due to bugs in U-Boot port for Turris Mox, the second range in Turris Mox
+kernel DTS file for PCIe must start at 16 MB offset. Otherwise U-Boot
+crashes during loading of kernel DTB file. This bug is present only in
+U-Boot code for Turris Mox and therefore other Armada 3700 devices are not
+affected by this bug. Bug is fixed in U-Boot version 2021.07.
+
+To not break booting new kernels on existing versions of U-Boot on Turris
+Mox, use first 16 MB range for IO and second range with rest of PCIe window
+for MEM.
+
+Signed-off-by: Pali Rohár <pali@kernel.org>
+Fixes: 76f6386b25cc ("arm64: dts: marvell: Add Aardvark PCIe support for Armada 3700")
+Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- net/netfilter/ipvs/ip_vs_conn.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ arch/arm64/boot/dts/marvell/armada-37xx.dtsi |   11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/net/netfilter/ipvs/ip_vs_conn.c b/net/netfilter/ipvs/ip_vs_conn.c
-index 85ca189bdc3d..de196dd95dcd 100644
---- a/net/netfilter/ipvs/ip_vs_conn.c
-+++ b/net/netfilter/ipvs/ip_vs_conn.c
-@@ -1368,6 +1368,10 @@ int __init ip_vs_conn_init(void)
- 	int idx;
- 
- 	/* Compute size and mask */
-+	if (ip_vs_conn_tab_bits < 8 || ip_vs_conn_tab_bits > 20) {
-+		pr_info("conn_tab_bits not in [8, 20]. Using default value\n");
-+		ip_vs_conn_tab_bits = CONFIG_IP_VS_TAB_BITS;
-+	}
- 	ip_vs_conn_tab_size = 1 << ip_vs_conn_tab_bits;
- 	ip_vs_conn_tab_mask = ip_vs_conn_tab_size - 1;
- 
--- 
-2.33.0
-
+--- a/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
++++ b/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
+@@ -376,8 +376,15 @@
+ 			#interrupt-cells = <1>;
+ 			msi-parent = <&pcie0>;
+ 			msi-controller;
+-			ranges = <0x82000000 0 0xe8000000   0 0xe8000000 0 0x1000000 /* Port 0 MEM */
+-				  0x81000000 0 0xe9000000   0 0xe9000000 0 0x10000>; /* Port 0 IO*/
++			/*
++			 * The 128 MiB address range [0xe8000000-0xf0000000] is
++			 * dedicated for PCIe and can be assigned to 8 windows
++			 * with size a power of two. Use one 64 KiB window for
++			 * IO at the end and the remaining seven windows
++			 * (totaling 127 MiB) for MEM.
++			 */
++			ranges = <0x82000000 0 0xe8000000   0 0xe8000000   0 0x07f00000   /* Port 0 MEM */
++				  0x81000000 0 0xefff0000   0 0xefff0000   0 0x00010000>; /* Port 0 IO */
+ 			interrupt-map-mask = <0 0 0 7>;
+ 			interrupt-map = <0 0 0 1 &pcie_intc 0>,
+ 					<0 0 0 2 &pcie_intc 1>,
 
 
