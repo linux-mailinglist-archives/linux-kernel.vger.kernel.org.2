@@ -2,32 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B5B2420EB9
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:25:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C9EA420EBF
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:26:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236941AbhJDN1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:27:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38168 "EHLO mail.kernel.org"
+        id S237078AbhJDN14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:27:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39884 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236208AbhJDNZb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:25:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EA49861C14;
-        Mon,  4 Oct 2021 13:11:20 +0000 (UTC)
+        id S236765AbhJDNZy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:25:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 95F7361BFD;
+        Mon,  4 Oct 2021 13:11:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633353081;
-        bh=Zir6WWtaZQgjcbiLvfVuEMCCOq2lBqseqnqrAjomzKs=;
+        s=korg; t=1633353086;
+        bh=HkzmHn7XQtDDUPx25hwrJ9mNGPveo/J5caG/OJrMG2E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KP3e7oKjy8XvSM+8NIlbvGyUFW0kDjOAYEuFV3AATLPthmWe62/DB0p9F47IjpLWv
-         xEdCYCfv7aORdd5IYUcsIfcQYKNUC9I5sqI9xzzGMFvOsMT+/5YZJ8NxGdWb1nvgP7
-         VvXpLHWlusQGWt6qnFHh3VrJqXdYgkX7+anWQCQk=
+        b=k2qZXWcSXUauYkHSoAs3bYVo5tcFsLtOOIywTd3w6/DVpdhCyOshscxZqjvNI6m7x
+         rJOLfwxQFHQQ4P6xErRYx8PQHcYsUhyfxLsOw9ToTS3dWWl+qjHkVRy6IHrVp9TYue
+         /qyrbXS3zi8GlBVMCqg6ee+pE6YUlcqLTv/X8C7Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.10 82/93] net: udp: annotate data race around udp_sk(sk)->corkflag
-Date:   Mon,  4 Oct 2021 14:53:20 +0200
-Message-Id: <20211004125037.316344203@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Rander Wang <rander.wang@linux.intel.com>,
+        Shuming Fan <shumingf@realtek.com>,
+        Mark Brown <broonie@kernel.org>,
+        Robert Lee <lerobert@google.com>
+Subject: [PATCH 5.10 83/93] ASoC: dapm: use component prefix when checking widget names
+Date:   Mon,  4 Oct 2021 14:53:21 +0200
+Message-Id: <20211004125037.353769462@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211004125034.579439135@linuxfoundation.org>
 References: <20211004125034.579439135@linuxfoundation.org>
@@ -39,73 +43,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Shuming Fan <shumingf@realtek.com>
 
-commit a9f5970767d11eadc805d5283f202612c7ba1f59 upstream.
+commit ae4fc532244b3bb4d86c397418d980b0c6be1dfd upstream.
 
-up->corkflag field can be read or written without any lock.
-Annotate accesses to avoid possible syzbot/KCSAN reports.
+On a TigerLake SoundWire platform, we see these warnings:
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+[   27.360086] rt5682 sdw:0:25d:5682:0: ASoC: DAPM unknown pin MICBIAS
+[   27.360092] rt5682 sdw:0:25d:5682:0: ASoC: DAPM unknown pin Vref2
+
+This is root-caused to the addition of a component prefix in the
+machine driver. The tests in soc-dapm should account for a prefix
+instead of reporting an invalid issue.
+
+Reported-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Rander Wang <rander.wang@linux.intel.com>
+Signed-off-by: Shuming Fan <shumingf@realtek.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20210208234043.59750-2-pierre-louis.bossart@linux.intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Robert Lee <lerobert@google.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ipv4/udp.c |   10 +++++-----
- net/ipv6/udp.c |    2 +-
- 2 files changed, 6 insertions(+), 6 deletions(-)
+ sound/soc/soc-dapm.c |   13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
 
---- a/net/ipv4/udp.c
-+++ b/net/ipv4/udp.c
-@@ -1035,7 +1035,7 @@ int udp_sendmsg(struct sock *sk, struct
- 	__be16 dport;
- 	u8  tos;
- 	int err, is_udplite = IS_UDPLITE(sk);
--	int corkreq = up->corkflag || msg->msg_flags&MSG_MORE;
-+	int corkreq = READ_ONCE(up->corkflag) || msg->msg_flags&MSG_MORE;
- 	int (*getfrag)(void *, char *, int, int, int, struct sk_buff *);
- 	struct sk_buff *skb;
- 	struct ip_options_data opt_copy;
-@@ -1343,7 +1343,7 @@ int udp_sendpage(struct sock *sk, struct
- 	}
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -2528,9 +2528,20 @@ static struct snd_soc_dapm_widget *dapm_
+ {
+ 	struct snd_soc_dapm_widget *w;
+ 	struct snd_soc_dapm_widget *fallback = NULL;
++	char prefixed_pin[80];
++	const char *pin_name;
++	const char *prefix = soc_dapm_prefix(dapm);
++
++	if (prefix) {
++		snprintf(prefixed_pin, sizeof(prefixed_pin), "%s %s",
++			 prefix, pin);
++		pin_name = prefixed_pin;
++	} else {
++		pin_name = pin;
++	}
  
- 	up->len += size;
--	if (!(up->corkflag || (flags&MSG_MORE)))
-+	if (!(READ_ONCE(up->corkflag) || (flags&MSG_MORE)))
- 		ret = udp_push_pending_frames(sk);
- 	if (!ret)
- 		ret = size;
-@@ -2609,9 +2609,9 @@ int udp_lib_setsockopt(struct sock *sk,
- 	switch (optname) {
- 	case UDP_CORK:
- 		if (val != 0) {
--			up->corkflag = 1;
-+			WRITE_ONCE(up->corkflag, 1);
- 		} else {
--			up->corkflag = 0;
-+			WRITE_ONCE(up->corkflag, 0);
- 			lock_sock(sk);
- 			push_pending_frames(sk);
- 			release_sock(sk);
-@@ -2734,7 +2734,7 @@ int udp_lib_getsockopt(struct sock *sk,
- 
- 	switch (optname) {
- 	case UDP_CORK:
--		val = up->corkflag;
-+		val = READ_ONCE(up->corkflag);
- 		break;
- 
- 	case UDP_ENCAP:
---- a/net/ipv6/udp.c
-+++ b/net/ipv6/udp.c
-@@ -1288,7 +1288,7 @@ int udpv6_sendmsg(struct sock *sk, struc
- 	int addr_len = msg->msg_namelen;
- 	bool connected = false;
- 	int ulen = len;
--	int corkreq = up->corkflag || msg->msg_flags&MSG_MORE;
-+	int corkreq = READ_ONCE(up->corkflag) || msg->msg_flags&MSG_MORE;
- 	int err;
- 	int is_udplite = IS_UDPLITE(sk);
- 	int (*getfrag)(void *, char *, int, int, int, struct sk_buff *);
+ 	for_each_card_widgets(dapm->card, w) {
+-		if (!strcmp(w->name, pin)) {
++		if (!strcmp(w->name, pin_name)) {
+ 			if (w->dapm == dapm)
+ 				return w;
+ 			else
 
 
