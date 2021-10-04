@@ -2,78 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C0434215E5
+	by mail.lfdr.de (Postfix) with ESMTP id F2E4B4215E7
 	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 20:01:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236253AbhJDSD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 14:03:29 -0400
-Received: from mail-ot1-f46.google.com ([209.85.210.46]:37702 "EHLO
-        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236334AbhJDSDV (ORCPT
+        id S236336AbhJDSDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 14:03:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44144 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236250AbhJDSDa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 14:03:21 -0400
-Received: by mail-ot1-f46.google.com with SMTP id r43-20020a05683044ab00b0054716b40005so22665659otv.4;
-        Mon, 04 Oct 2021 11:01:32 -0700 (PDT)
+        Mon, 4 Oct 2021 14:03:30 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07C9FC061746
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 11:01:41 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id f130so17346447qke.6
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 11:01:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CQjISX4cpePeXQAfVi2rLJCncJ5gVzXwhTOkI28aziE=;
+        b=fSXFDdNKvyMK/yaCgGoXJ6m72aKBTdReBKGveeCC29x6MdScWA111agI+MsjJ090+g
+         0DTYK3TyPADTYrrih61nPgTCVJtxE6pKAW07d7vWYFaBBtThsyoK9j2V+H4vnWeCsY8E
+         svpFmFYwQuEpR18LI75/EQZVeSJ8+d90tfH/O1eB8/KVf8l6ScA3eLd1pQAHrToxBC3+
+         /oEWXTW8Q4EO1A1X7HjNfzyr7Z+t+/n2JgSWq5mBTISjtGlyHZdCHsj79DqGGIlU2uqG
+         uHsGvv3Hf1QYn2cNPWYvlX2IyKJ/geE8eLgQnCXLL4QkFdTL/2Zj6FYEDEIyACQVlhui
+         eMZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Pv86mBYYQI6ZTZjtJe5Lu8vOr6IQOHLnJWKdcQKjRzc=;
-        b=mO7jbZenEvQ7dSY/pDJIDtKCJnduv67QEVHtGs8+z9XotuaMwKJuIqNDHGWGYjepHS
-         Yfi1rYDzq6e9eTtV/J5R5sp07TocWjMM/brxhhvK+x2wOXBHZl/zsOHEeCOmeNBWatsW
-         OBj0kRCoJWvSPBAX45WOiDvIWR7q+eD/sVFMZsS23A/gyx44+w1t1vO7FTGZtRlduEpB
-         mT7OR+RsdlTLK5CfYluxUvJeiVfWn52cwcV5ryrTsnMQgJIo1liVTFMhFMsseCWi5j3n
-         IzkjSppl5EhN972USn+8G44gB+yUkzd9ZG3i9RUSiY5Gp7gYEAtkBlm3gutHc+sOSrbw
-         hTJQ==
-X-Gm-Message-State: AOAM531WUHyAKvqiNOlwkYz7509j+QPv+OSSv+x+waEMM7jWGug6MO1B
-        Ak2NURZO7TBnoZwMKZVq7AJKQWCiUw==
-X-Google-Smtp-Source: ABdhPJzhXWNovn9uWaeLJ8IddFdPPa+myX6TR4D87Hapmy4PG1jAlRPPCh0xx7swB3WDfIkmyGc9Rg==
-X-Received: by 2002:a9d:7116:: with SMTP id n22mr10788066otj.56.1633370490645;
-        Mon, 04 Oct 2021 11:01:30 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id i12sm2820400oik.50.2021.10.04.11.01.29
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=CQjISX4cpePeXQAfVi2rLJCncJ5gVzXwhTOkI28aziE=;
+        b=38EldMjynL/SA/BEpMPs5GLhiGIMP/7GmEN53muBl8gIj54xtmff7T47LF9+odwHbl
+         qf3bfTRRJPS0kVRD0le3Gh8Nb9QrDhGcuEhScVrv9I1tyE90O42fcv97Z6/pFsj3gfl+
+         KZebDEHGGMruLGHxzJsc0GLhKvNaLqG/00ar/Ts4u4zXjNzmcuqgNqUzjvcR6VGVjWdS
+         zrBW3ad6LW23ghyLX4rcSKMxlgpa5PhuHhy8q8FDz0YTC5YG+AZFukyZGMIYM7Nw5twR
+         t51O+sFVVnno5GwPHKc/2I5G1vKbiSHxlia5gSCPAunkyfB7F9lgX9DUwA+7S7rPYmML
+         tnvg==
+X-Gm-Message-State: AOAM5310wm4LCqOxTlEluOwpUmYhrJ48T8MrcJ3alh1EeGPQSDsh1YfT
+        S5wpJRPuKt5hk4CjJ3/CstLOdA==
+X-Google-Smtp-Source: ABdhPJyW3XAlloMgTj6KKo74FXq7cHjymNK0JudtpTQypDKmPZqhjg7xC61tUHm+paNlCQeO8fWElg==
+X-Received: by 2002:a37:6147:: with SMTP id v68mr11510781qkb.154.1633370499899;
+        Mon, 04 Oct 2021 11:01:39 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id v2sm9541297qtw.8.2021.10.04.11.01.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Oct 2021 11:01:30 -0700 (PDT)
-Received: (nullmailer pid 1569210 invoked by uid 1000);
-        Mon, 04 Oct 2021 18:01:29 -0000
-Date:   Mon, 4 Oct 2021 13:01:29 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Sven Peter <sven@svenpeter.dev>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Olof Johansson <olof@lixom.net>,
-        Paul Mackerras <paulus@samba.org>,
-        Stan Skowronek <stan@corellium.com>,
-        Arnd Bergmann <arnd@arndb.de>, linuxppc-dev@lists.ozlabs.org,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Hector Martin <marcan@marcan.st>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: Re: [PATCH 01/10] dt-bindings: i2c: Add Apple I2C controller bindings
-Message-ID: <YVtBeZKqErioOMkD@robh.at.kernel.org>
-References: <20210926095847.38261-1-sven@svenpeter.dev>
- <20210926095847.38261-2-sven@svenpeter.dev>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210926095847.38261-2-sven@svenpeter.dev>
+        Mon, 04 Oct 2021 11:01:39 -0700 (PDT)
+Date:   Mon, 04 Oct 2021 11:01:39 -0700 (PDT)
+X-Google-Original-Date: Mon, 04 Oct 2021 11:01:35 PDT (-0700)
+Subject:     Re: [PATCH v20 00/17] KVM RISC-V Support
+In-Reply-To: <5cadb0b3-5e8f-110b-c6ed-4adaea033e58@redhat.com>
+CC:     Anup Patel <Anup.Patel@wdc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, graf@amazon.com,
+        Atish Patra <Atish.Patra@wdc.com>,
+        Alistair Francis <Alistair.Francis@wdc.com>,
+        Damien Le Moal <Damien.LeMoal@wdc.com>, anup@brainfault.org,
+        kvm@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+From:   Palmer Dabbelt <palmerdabbelt@google.com>
+To:     pbonzini@redhat.com
+Message-ID: <mhng-1bfcbce2-3da3-4490-bcc5-45173ad84285@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 26 Sep 2021 11:58:38 +0200, Sven Peter wrote:
-> The Apple I2C controller is based on the PASemi I2C controller.
-> It is present on Apple SoCs such as the M1.
-> 
-> Signed-off-by: Sven Peter <sven@svenpeter.dev>
-> ---
->  .../devicetree/bindings/i2c/apple,i2c.yaml    | 61 +++++++++++++++++++
->  MAINTAINERS                                   |  1 +
->  2 files changed, 62 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/i2c/apple,i2c.yaml
-> 
+On Mon, 04 Oct 2021 01:58:28 PDT (-0700), pbonzini@redhat.com wrote:
+> On 27/09/21 13:39, Anup Patel wrote:
+>> This series adds initial KVM RISC-V support. Currently, we are able to boot
+>> Linux on RV64/RV32 Guest with multiple VCPUs.
+>>
+>> Key aspects of KVM RISC-V added by this series are:
+>> 1. No RISC-V specific KVM IOCTL
+>> 2. Loadable KVM RISC-V module supported
+>> 3. Minimal possible KVM world-switch which touches only GPRs and few CSRs
+>> 4. Both RV64 and RV32 host supported
+>> 5. Full Guest/VM switch is done via vcpu_get/vcpu_put infrastructure
+>> 6. KVM ONE_REG interface for VCPU register access from user-space
+>> 7. PLIC emulation is done in user-space
+>> 8. Timer and IPI emuation is done in-kernel
+>> 9. Both Sv39x4 and Sv48x4 supported for RV64 host
+>> 10. MMU notifiers supported
+>> 11. Generic dirtylog supported
+>> 12. FP lazy save/restore supported
+>> 13. SBI v0.1 emulation for KVM Guest available
+>> 14. Forward unhandled SBI calls to KVM userspace
+>> 15. Hugepage support for Guest/VM
+>> 16. IOEVENTFD support for Vhost
+>>
+>> Here's a brief TODO list which we will work upon after this series:
+>> 1. KVM unit test support
+>> 2. KVM selftest support
+>> 3. SBI v0.3 emulation in-kernel
+>> 4. In-kernel PMU virtualization
+>> 5. In-kernel AIA irqchip support
+>> 6. Nested virtualizaiton
+>> 7. ..... and more .....
+>
+> Looks good, I prepared a tag "for-riscv" at
+> https://git.kernel.org/pub/scm/virt/kvm/kvm.git.  Palmer can pull it and
+> you can use it to send me a pull request.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Thanks.  I'm assuming "you" there is Anup?
+
+Just to make sure we're on the same page here, I've got
+
+    commit 6c341a285912ddb2894ef793a58ad4f8462f26f4 (HEAD -> for-next)
+    Merge: 08da1608a1ca 3f2401f47d29
+    Author: Palmer Dabbelt <palmerdabbelt@google.com>
+    Date:   Mon Oct 4 10:12:44 2021 -0700
+    
+        Merge tag 'for-riscv' of https://git.kernel.org/pub/scm/virt/kvm/kvm.git into for-next
+    
+        H extension definitions, shared by the KVM and RISC-V trees.
+    
+        * tag 'for-riscv' of ssh://gitolite.kernel.org/pub/scm/virt/kvm/kvm: (301 commits)
+          RISC-V: Add hypervisor extension related CSR defines
+          KVM: selftests: Ensure all migrations are performed when test is affined
+          KVM: x86: Swap order of CPUID entry "index" vs. "significant flag" checks
+          ptp: Fix ptp_kvm_getcrosststamp issue for x86 ptp_kvm
+          x86/kvmclock: Move this_cpu_pvti into kvmclock.h
+          KVM: s390: Function documentation fixes
+          selftests: KVM: Don't clobber XMM register when read
+          KVM: VMX: Fix a TSX_CTRL_CPUID_CLEAR field mask issue
+          selftests: KVM: Explicitly use movq to read xmm registers
+          selftests: KVM: Call ucall_init when setting up in rseq_test
+          KVM: Remove tlbs_dirty
+          KVM: X86: Synchronize the shadow pagetable before link it
+          KVM: X86: Fix missed remote tlb flush in rmap_write_protect()
+          KVM: x86: nSVM: don't copy virt_ext from vmcb12
+          KVM: x86: nSVM: test eax for 4K alignment for GP errata workaround
+          KVM: x86: selftests: test simultaneous uses of V_IRQ from L1 and L0
+          KVM: x86: nSVM: restore int_vector in svm_clear_vintr
+          kvm: x86: Add AMD PMU MSRs to msrs_to_save_all[]
+          KVM: x86: nVMX: re-evaluate emulation_required on nested VM exit
+          KVM: x86: nVMX: don't fail nested VM entry on invalid guest state if !from_vmentry
+          ...
+
+into ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/palmer/linux.git for-next
+(I know that's kind of a confusing name, but it's what I've been using 
+as my short-term staging branch so I can do all my tests before saying 
+"it's on for-next").
+
+If that looks OK I can make it a touch more official by putting into the 
+RISC-V tree.
+
+> I look forward to the test support. :)  Would be nice to have selftest
+> support already in 5.16, since there are a few arch-independent
+> selftests that cover the hairy parts of the MMU.
+
+Me too ;).
+
+I'm happy to add some KVM-related stuff to my pre-push test set, just 
+LMK if there's anything specific I should be looking in to.
