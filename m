@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A888A421001
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:38:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0738D420D6E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:13:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238263AbhJDNkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:40:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51040 "EHLO mail.kernel.org"
+        id S233855AbhJDNPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:15:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46566 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238068AbhJDNiH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:38:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EF9BE6140A;
-        Mon,  4 Oct 2021 13:17:17 +0000 (UTC)
+        id S236086AbhJDNNK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:13:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E710461BA4;
+        Mon,  4 Oct 2021 13:05:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633353438;
-        bh=Y/Lt5xuajswcdiDtduWXoQreSwMgG7vfXBPOViZyxP8=;
+        s=korg; t=1633352707;
+        bh=eyC0Tzv53FFFU/5eHMqYw7yMEYbE1QpsRWtofhlR+C8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iX5NW2gAaRHXo9w63jDsa63gLJujPlz3Mxk5F2j6ffPde9Tc0swbIhMSITkhzPNxr
-         g/Y2RBupwPtDvfKH9haVXr2mfO0U4sIWka+qafieCOEHVGIZIUKgOkUJ5+R9wn+W0X
-         GN3/6NPZbvG4+1uMhso8g1xZPyrEXmtR0QcHstfM=
+        b=WRMlv67m1Pab/YrF/KPVVklP6ikEzPLK8OAujV3dSSQVXqJLVfwCTXTgay0RGepQ5
+         NEIvnBPdedtWyMp6ZroSF87C13KSnZep6X2dl69PHEcI3EoEHACzOwChKTWNHfaBLH
+         7eo9jjJW1YdjpTb/hJH633r/A6rqoicFmpUe+BmE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jian Shen <shenjian15@huawei.com>,
-        Guangbin Huang <huangguangbin2@huawei.com>,
+        stable@vger.kernel.org, Oliver Neukum <oneukum@suse.com>,
         "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 127/172] net: hns3: fix mixed flag HCLGE_FLAG_MQPRIO_ENABLE and HCLGE_FLAG_DCB_ENABLE
-Date:   Mon,  4 Oct 2021 14:52:57 +0200
-Message-Id: <20211004125049.070960550@linuxfoundation.org>
+        Ovidiu Panait <ovidiu.panait@windriver.com>
+Subject: [PATCH 4.19 88/95] hso: fix bailout in error case of probe
+Date:   Mon,  4 Oct 2021 14:52:58 +0200
+Message-Id: <20211004125036.456344463@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
-References: <20211004125044.945314266@linuxfoundation.org>
+In-Reply-To: <20211004125033.572932188@linuxfoundation.org>
+References: <20211004125033.572932188@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,134 +40,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jian Shen <shenjian15@huawei.com>
+From: Oliver Neukum <oneukum@suse.com>
 
-[ Upstream commit 0472e95ffeac8e61259eec17ab61608c6b35599d ]
+commit 5fcfb6d0bfcda17f0d0656e4e5b3710af2bbaae5 upstream.
 
-HCLGE_FLAG_MQPRIO_ENABLE is supposed to set when enable
-multiple TCs with tc mqprio, and HCLGE_FLAG_DCB_ENABLE is
-supposed to set when enable multiple TCs with ets. But
-the driver mixed the flags when updating the tm configuration.
+The driver tries to reuse code for disconnect in case
+of a failed probe.
+If resources need to be freed after an error in probe, the
+netdev must not be freed because it has never been registered.
+Fix it by telling the helper which path we are in.
 
-Furtherly, PFC should be available when HCLGE_FLAG_MQPRIO_ENABLE
-too, so remove the unnecessary limitation.
-
-Fixes: 5a5c90917467 ("net: hns3: add support for tc mqprio offload")
-Signed-off-by: Jian Shen <shenjian15@huawei.com>
-Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
+Signed-off-by: Oliver Neukum <oneukum@suse.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Ovidiu Panait <ovidiu.panait@windriver.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- .../hisilicon/hns3/hns3pf/hclge_dcb.c         |  7 +++--
- .../ethernet/hisilicon/hns3/hns3pf/hclge_tm.c | 31 +++----------------
- 2 files changed, 10 insertions(+), 28 deletions(-)
+ drivers/net/usb/hso.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_dcb.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_dcb.c
-index e4f87ffd41ac..c90bfde2aecf 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_dcb.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_dcb.c
-@@ -224,6 +224,10 @@ static int hclge_ieee_setets(struct hnae3_handle *h, struct ieee_ets *ets)
- 	}
- 
- 	hclge_tm_schd_info_update(hdev, num_tc);
-+	if (num_tc > 1)
-+		hdev->flag |= HCLGE_FLAG_DCB_ENABLE;
-+	else
-+		hdev->flag &= ~HCLGE_FLAG_DCB_ENABLE;
- 
- 	ret = hclge_ieee_ets_to_tm_info(hdev, ets);
- 	if (ret)
-@@ -285,8 +289,7 @@ static int hclge_ieee_setpfc(struct hnae3_handle *h, struct ieee_pfc *pfc)
- 	u8 i, j, pfc_map, *prio_tc;
- 	int ret;
- 
--	if (!(hdev->dcbx_cap & DCB_CAP_DCBX_VER_IEEE) ||
--	    hdev->flag & HCLGE_FLAG_MQPRIO_ENABLE)
-+	if (!(hdev->dcbx_cap & DCB_CAP_DCBX_VER_IEEE))
- 		return -EINVAL;
- 
- 	if (pfc->pfc_en == hdev->tm_info.pfc_en)
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_tm.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_tm.c
-index 6f5035a788c0..f314dbd3ce11 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_tm.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_tm.c
-@@ -727,14 +727,6 @@ static void hclge_tm_tc_info_init(struct hclge_dev *hdev)
- 	for (i = 0; i < HNAE3_MAX_USER_PRIO; i++)
- 		hdev->tm_info.prio_tc[i] =
- 			(i >= hdev->tm_info.num_tc) ? 0 : i;
--
--	/* DCB is enabled if we have more than 1 TC or pfc_en is
--	 * non-zero.
--	 */
--	if (hdev->tm_info.num_tc > 1 || hdev->tm_info.pfc_en)
--		hdev->flag |= HCLGE_FLAG_DCB_ENABLE;
--	else
--		hdev->flag &= ~HCLGE_FLAG_DCB_ENABLE;
+--- a/drivers/net/usb/hso.c
++++ b/drivers/net/usb/hso.c
+@@ -2368,7 +2368,7 @@ static int remove_net_device(struct hso_
  }
  
- static void hclge_tm_pg_info_init(struct hclge_dev *hdev)
-@@ -765,10 +757,10 @@ static void hclge_tm_pg_info_init(struct hclge_dev *hdev)
- 
- static void hclge_update_fc_mode_by_dcb_flag(struct hclge_dev *hdev)
+ /* Frees our network device */
+-static void hso_free_net_device(struct hso_device *hso_dev)
++static void hso_free_net_device(struct hso_device *hso_dev, bool bailout)
  {
--	if (!(hdev->flag & HCLGE_FLAG_DCB_ENABLE)) {
-+	if (hdev->tm_info.num_tc == 1 && !hdev->tm_info.pfc_en) {
- 		if (hdev->fc_mode_last_time == HCLGE_FC_PFC)
- 			dev_warn(&hdev->pdev->dev,
--				 "DCB is disable, but last mode is FC_PFC\n");
-+				 "Only 1 tc used, but last mode is FC_PFC\n");
+ 	int i;
+ 	struct hso_net *hso_net = dev2net(hso_dev);
+@@ -2391,7 +2391,7 @@ static void hso_free_net_device(struct h
+ 	kfree(hso_net->mux_bulk_tx_buf);
+ 	hso_net->mux_bulk_tx_buf = NULL;
  
- 		hdev->tm_info.fc_mode = hdev->fc_mode_last_time;
- 	} else if (hdev->tm_info.fc_mode != HCLGE_FC_PFC) {
-@@ -794,7 +786,7 @@ static void hclge_update_fc_mode(struct hclge_dev *hdev)
+-	if (hso_net->net)
++	if (hso_net->net && !bailout)
+ 		free_netdev(hso_net->net);
+ 
+ 	kfree(hso_dev);
+@@ -2567,7 +2567,7 @@ static struct hso_device *hso_create_net
+ 
+ 	return hso_dev;
+ exit:
+-	hso_free_net_device(hso_dev);
++	hso_free_net_device(hso_dev, true);
+ 	return NULL;
+ }
+ 
+@@ -3130,7 +3130,7 @@ static void hso_free_interface(struct us
+ 				rfkill_unregister(rfk);
+ 				rfkill_destroy(rfk);
+ 			}
+-			hso_free_net_device(network_table[i]);
++			hso_free_net_device(network_table[i], false);
+ 		}
  	}
  }
- 
--static void hclge_pfc_info_init(struct hclge_dev *hdev)
-+void hclge_tm_pfc_info_update(struct hclge_dev *hdev)
- {
- 	if (hdev->ae_dev->dev_version >= HNAE3_DEVICE_VERSION_V3)
- 		hclge_update_fc_mode(hdev);
-@@ -810,7 +802,7 @@ static void hclge_tm_schd_info_init(struct hclge_dev *hdev)
- 
- 	hclge_tm_vport_info_update(hdev);
- 
--	hclge_pfc_info_init(hdev);
-+	hclge_tm_pfc_info_update(hdev);
- }
- 
- static int hclge_tm_pg_to_pri_map(struct hclge_dev *hdev)
-@@ -1556,19 +1548,6 @@ void hclge_tm_schd_info_update(struct hclge_dev *hdev, u8 num_tc)
- 	hclge_tm_schd_info_init(hdev);
- }
- 
--void hclge_tm_pfc_info_update(struct hclge_dev *hdev)
--{
--	/* DCB is enabled if we have more than 1 TC or pfc_en is
--	 * non-zero.
--	 */
--	if (hdev->tm_info.num_tc > 1 || hdev->tm_info.pfc_en)
--		hdev->flag |= HCLGE_FLAG_DCB_ENABLE;
--	else
--		hdev->flag &= ~HCLGE_FLAG_DCB_ENABLE;
--
--	hclge_pfc_info_init(hdev);
--}
--
- int hclge_tm_init_hw(struct hclge_dev *hdev, bool init)
- {
- 	int ret;
-@@ -1614,7 +1593,7 @@ int hclge_tm_vport_map_update(struct hclge_dev *hdev)
- 	if (ret)
- 		return ret;
- 
--	if (!(hdev->flag & HCLGE_FLAG_DCB_ENABLE))
-+	if (hdev->tm_info.num_tc == 1 && !hdev->tm_info.pfc_en)
- 		return 0;
- 
- 	return hclge_tm_bp_setup(hdev);
--- 
-2.33.0
-
 
 
