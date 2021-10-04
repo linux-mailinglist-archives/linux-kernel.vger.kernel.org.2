@@ -2,147 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3411421178
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 16:33:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DF0942117B
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 16:33:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234496AbhJDOf1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 10:35:27 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37638 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234290AbhJDOfY (ORCPT
+        id S234465AbhJDOf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 10:35:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50226 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234490AbhJDOf0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 10:35:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633358014;
+        Mon, 4 Oct 2021 10:35:26 -0400
+Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [IPv6:2001:67c:2050::465:202])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39B27C061745;
+        Mon,  4 Oct 2021 07:33:37 -0700 (PDT)
+Received: from smtp202.mailbox.org (smtp202.mailbox.org [IPv6:2001:67c:2050:105:465:1:4:0])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4HNNW32xxLzQkhP;
+        Mon,  4 Oct 2021 16:33:35 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mailbox.org; h=
+        content-transfer-encoding:content-type:content-type:mime-version
+        :subject:subject:references:in-reply-to:message-id:from:from
+        :date:date:received; s=mail20150812; t=1633358011; bh=i464Ru14yK
+        p+tO7OJAFrwLQPSlMjtYA/mmJLgmITXH4=; b=OsmnW3zZynDb1Dgz8yOjPO8lYQ
+        NHLIkKDcdTUFZtwm0F+3KZA9Y2wIZMtW2rTawq+iEAy6MoOvCk56dZhIK1OXGqWG
+        D4jfqu41VLeOw4Eqi/32dr1C+n+xssb6C+3XtgAkcEsjNvgednC4/TEsqPWBWMXS
+        kTPFfQTtoEp5IIQuHOb6C3kERfslEEiYmfqpgjqzbwP3l21HzU3DBm6E0jO1oKga
+        PZfw1RSUVzhQ6qz7G42wDSuDLtaH2rJkNrJocUfZhfBDOAnybvziZUIcyTlKiCmT
+        ZVDS3QAaFZpvCAEZZyI0xS88niEVGXBcZdPvYwIGB+lVioJC8sH2vVwTyFWg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
+        t=1633358013;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=tkFXR+Ar045yOW1Qn+SywsZzwu6VhSEtfZbFfXfqIlo=;
-        b=hsliw9iCbTaOj2zpc3io4iIwZpay5GEFAFdYBp0B8hiPbDfXMGwpLgRTp7D4xriOPPisQb
-        c65yBda+C4eh2nPBq8qJ97v6na/SgXyWLlbV/LTtcy1P+Aul3H2Tdrts3DByAGl+++RyAJ
-        vVBO+XkKK+3KogdqCaduz5Ko9ht0nkM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-324-nNKntssOPQqiw5sEur7mCA-1; Mon, 04 Oct 2021 10:33:31 -0400
-X-MC-Unique: nNKntssOPQqiw5sEur7mCA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4893B835DE2;
-        Mon,  4 Oct 2021 14:33:30 +0000 (UTC)
-Received: from localhost (unknown [10.39.193.66])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id B7DA0100238C;
-        Mon,  4 Oct 2021 14:33:22 +0000 (UTC)
-From:   Cornelia Huck <cohuck@redhat.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Halil Pasic <pasic@linux.ibm.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Xie Yongji <xieyongji@bytedance.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, markver@us.ibm.com,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-s390@vger.kernel.org, qemu-devel@nongnu.org
-Subject: Re: [RFC PATCH 1/1] virtio: write back features before verify
-In-Reply-To: <20211004090018-mutt-send-email-mst@kernel.org>
-Organization: Red Hat GmbH
-References: <20210930012049.3780865-1-pasic@linux.ibm.com>
- <20210930070444-mutt-send-email-mst@kernel.org>
- <20211001092125.64fef348.pasic@linux.ibm.com>
- <20211002055605-mutt-send-email-mst@kernel.org>
- <87bl452d90.fsf@redhat.com>
- <20211004090018-mutt-send-email-mst@kernel.org>
-User-Agent: Notmuch/0.32.1 (https://notmuchmail.org)
-Date:   Mon, 04 Oct 2021 16:33:21 +0200
-Message-ID: <875yuc3ln2.fsf@redhat.com>
+        bh=rmjeYd7vcU5PyUKxcIasco2LgsFeZ5uHoTR73KzRdkU=;
+        b=qosJzPDRamsy1m8+HMsW6BkZ002WDNwtFpshGAY6fIZfXAMg5LGsAUzcjcp5eAbue7dYjZ
+        eD6qv80iabD/DDtaD6HsI7UcJnNFxTCm43z2DaBVUzDsKtW54PZTS1nEwHoQlhBgc/bMAC
+        I2wHuzSH8qFgLbff4NcipABC0mOrnEQupb4hfAXsCTzKcDznnLnNQbvIQCbnNCHTv+GAvQ
+        7aNFJevKbmaz4vxdMOZQpr/Ue6Y7Fmzanll8X/QWv0TUnPEWN0XX6mO4Vz05WWVHJFpeqX
+        1SITC32l6/SRNQJcVhS81k+iz7b/GHGEJ29f/MXvfeHIbtPUCjMDxIGT1I2p6A==
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+Date:   Mon, 4 Oct 2021 16:33:30 +0200 (CEST)
+From:   torvic9@mailbox.org
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        "seanjc@google.com" <seanjc@google.com>,
+        "vkuznets@redhat.com" <vkuznets@redhat.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "ndesaulniers@google.com" <ndesaulniers@google.com>,
+        "nathan@kernel.org" <nathan@kernel.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "bp@alien8.de" <bp@alien8.de>
+Message-ID: <1033024644.226.1633358010150@office.mailbox.org>
+In-Reply-To: <1723492337.161319.1633342255263@office.mailbox.org>
+References: <1446878298.170497.1633338512925@office.mailbox.org>
+ <b6abc5a3-39ea-b463-9df5-f50bdcb16d08@redhat.com>
+ <936688112.157288.1633339838738@office.mailbox.org>
+ <c4773ecc-053f-9bc6-03af-5039397a4531@redhat.com>
+ <1723492337.161319.1633342255263@office.mailbox.org>
+Subject: Re: [BUG] [5.15] Compilation error in arch/x86/kvm/mmu/spte.h with
+ clang-14
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+Importance: Normal
+X-Rspamd-Queue-Id: C24A526A
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 04 2021, "Michael S. Tsirkin" <mst@redhat.com> wrote:
 
-> On Mon, Oct 04, 2021 at 02:19:55PM +0200, Cornelia Huck wrote:
->> 
->> [cc:qemu-devel]
->> 
->> On Sat, Oct 02 2021, "Michael S. Tsirkin" <mst@redhat.com> wrote:
->> 
->> > On Fri, Oct 01, 2021 at 09:21:25AM +0200, Halil Pasic wrote:
->> >> On Thu, 30 Sep 2021 07:12:21 -0400
->> >> "Michael S. Tsirkin" <mst@redhat.com> wrote:
->> >> 
->> >> > On Thu, Sep 30, 2021 at 03:20:49AM +0200, Halil Pasic wrote:
->> >> > > This patch fixes a regression introduced by commit 82e89ea077b9
->> >> > > ("virtio-blk: Add validation for block size in config space") and
->> >> > > enables similar checks in verify() on big endian platforms.
->> >> > > 
->> >> > > The problem with checking multi-byte config fields in the verify
->> >> > > callback, on big endian platforms, and with a possibly transitional
->> >> > > device is the following. The verify() callback is called between
->> >> > > config->get_features() and virtio_finalize_features(). That we have a
->> >> > > device that offered F_VERSION_1 then we have the following options
->> >> > > either the device is transitional, and then it has to present the legacy
->> >> > > interface, i.e. a big endian config space until F_VERSION_1 is
->> >> > > negotiated, or we have a non-transitional device, which makes
->> >> > > F_VERSION_1 mandatory, and only implements the non-legacy interface and
->> >> > > thus presents a little endian config space. Because at this point we
->> >> > > can't know if the device is transitional or non-transitional, we can't
->> >> > > know do we need to byte swap or not.  
->> >> > 
->> >> > Hmm which transport does this refer to?
->> >> 
->> >> It is the same with virtio-ccw and virtio-pci. I see the same problem
->> >> with both on s390x. I didn't try with virtio-blk-pci-non-transitional
->> >> yet (have to figure out how to do that with libvirt) for pci I used
->> >> virtio-blk-pci.
->> >> 
->> >> > Distinguishing between legacy and modern drivers is transport
->> >> > specific.  PCI presents
->> >> > legacy and modern at separate addresses so distinguishing
->> >> > between these two should be no trouble.
->> >> 
->> >> You mean the device id? Yes that is bolted down in the spec, but
->> >> currently we don't exploit that information. Furthermore there
->> >> is a fat chance that with QEMU even the allegedly non-transitional
->> >> devices only present a little endian config space after VERSION_1
->> >> was negotiated. Namely get_config for virtio-blk is implemented in
->> >> virtio_blk_update_config() which does virtio_stl_p(vdev,
->> >> &blkcfg.blk_size, blk_size) and in there we don't care
->> >> about transitional or not:
->> >> 
->> >> static inline bool virtio_access_is_big_endian(VirtIODevice *vdev)
->> >> {
->> >> #if defined(LEGACY_VIRTIO_IS_BIENDIAN)
->> >>     return virtio_is_big_endian(vdev);
->> >> #elif defined(TARGET_WORDS_BIGENDIAN)
->> >>     if (virtio_vdev_has_feature(vdev, VIRTIO_F_VERSION_1)) {
->> >>         /* Devices conforming to VIRTIO 1.0 or later are always LE. */
->> >>         return false;
->> >>     }
->> >>     return true;
->> >> #else
->> >>     return false;
->> >> #endif
->> >> }
->> >> 
->> >
->> > ok so that's a QEMU bug. Any virtio 1.0 and up
->> > compatible device must use LE.
->> > It can also present a legacy config space where the
->> > endian depends on the guest.
->> 
->> So, how is the virtio core supposed to determine this? A
->> transport-specific callback?
->
-> I'd say a field in VirtIODevice is easiest.
+> torvic9@mailbox.org hat am 04.10.2021 12:10 geschrieben:
+> 
+>  
+> > Paolo Bonzini <pbonzini@redhat.com> hat am 04.10.2021 11:49 geschrieben:
+> > 
+> >  
+> > On 04/10/21 11:30, torvic9@mailbox.org wrote:
+> > > 
+> > >> Paolo Bonzini <pbonzini@redhat.com> hat am 04.10.2021 11:26 geschrieben:
+> > >>
+> > >>   
+> > >> On 04/10/21 11:08, torvic9@mailbox.org wrote:
+> > >>> I encounter the following issue when compiling 5.15-rc4 with clang-14:
+> > >>>
+> > >>> In file included from arch/x86/kvm/mmu/mmu.c:27:
+> > >>> arch/x86/kvm/mmu/spte.h:318:9: error: use of bitwise '|' with boolean operands [-Werror,-Wbitwise-instead-of-logical]
+> > >>>           return __is_bad_mt_xwr(rsvd_check, spte) |
+> > >>>                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > >>>                                                    ||
+> > >>> arch/x86/kvm/mmu/spte.h:318:9: note: cast one or both operands to int to silence this warning
+> > >>
+> > >> The warning is wrong, as mentioned in the line right above:
+> > > 
+> > > So it's an issue with clang-14 then?
+> > > (I add Nick and Nathan)
+> > 
+> > My clang here doesn't have the option, so I'm going to ask---are you 
+> > using W=1?  I can see why clang is warning for KVM's code, but in my 
+> > opinion such a check should only be in -Wextra.
+> 
+> I don't use any options (not that I'm aware of).
+> Clang version 14.0.0 5f7a5353301b776ffb0e5fb048992898507bf7ee
 
-The transport needs to set this as soon as it has figured out whether
-we're using legacy or not. I guess we also need to fence off any
-accesses respectively error out the device if the driver tries any
-read/write operations that would depend on that knowledge?
+Probably the cause for this bug is this recent llvm commit:
+https://github.com/llvm/llvm-project/commit/f59cc9542bfb461d16ad12b2cc4be4abbfd9d96e
 
-And using a field in VirtIODevice would probably need some care when
-migrating. Hm...
-
+> 
+> > 
+> > Paolo
+> > 
+> > >>
+> > >>           /*
+> > >>            * Use a bitwise-OR instead of a logical-OR to aggregate the reserved
+> > >>            * bits and EPT's invalid memtype/XWR checks to avoid an extra Jcc
+> > >>            * (this is extremely unlikely to be short-circuited as true).
+> > >>            */
+> > >>
+> > >> Paolo
+> > >
