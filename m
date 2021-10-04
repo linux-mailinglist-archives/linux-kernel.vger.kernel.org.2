@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06353420DB3
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:15:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F2EC420C74
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:04:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236342AbhJDNRf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:17:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53112 "EHLO mail.kernel.org"
+        id S235212AbhJDNFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:05:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39478 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236049AbhJDNPf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:15:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EF33461A4F;
-        Mon,  4 Oct 2021 13:06:15 +0000 (UTC)
+        id S235095AbhJDNDp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:03:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1DC3D611CA;
+        Mon,  4 Oct 2021 13:00:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352776;
-        bh=hS9Cv2GgpA22l9hSUJmgIrgptdAdxoBtyueF6qM0twM=;
+        s=korg; t=1633352407;
+        bh=/jedxVR/RPuLMpMlT+S75a77nQHDpdLauJf1ZEvXxzQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RdfhxJ7p0FO1Uvw/KLIkeyUB9siM5zKNKfCUcVR2DuV6o7gsNcEiLMe0wq4YPuJth
-         5JkKEqrjWCGZoVb22Cu6f61rTEQqc+TFML52NZ63Stf6EO2CcoSEyCAOsbso+405XO
-         XDA0Nma0+vpKSRqHSlQ3FUDPJ7WT9l2r2/oM7wjE=
+        b=Ch5OYSKNT4QgbqNaj+RlvOXP2PWO8+UA+d9BBPixW1sl1NAgSlxxM+q9ZDBMtKy2X
+         GtNJapP//TZgjkFlC5hTvGU42WzGk5zhGm5zuQmleMMZxakeyq3c1do8HwlUCkP+S1
+         fjdI1myR3uzKJLecgBYUk7fypetHAjVwebHH7DWc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Boris Burkov <boris@bur.io>,
-        Eric Biggers <ebiggers@google.com>
-Subject: [PATCH 5.4 05/56] fs-verity: fix signed integer overflow with i_size near S64_MAX
+        stable@vger.kernel.org, Paul Fertser <fercerpav@gmail.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 50/75] hwmon: (tmp421) fix rounding for negative values
 Date:   Mon,  4 Oct 2021 14:52:25 +0200
-Message-Id: <20211004125030.183851324@linuxfoundation.org>
+Message-Id: <20211004125033.202886857@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125030.002116402@linuxfoundation.org>
-References: <20211004125030.002116402@linuxfoundation.org>
+In-Reply-To: <20211004125031.530773667@linuxfoundation.org>
+References: <20211004125031.530773667@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,60 +40,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+From: Paul Fertser <fercerpav@gmail.com>
 
-commit 80f6e3080bfcf865062a926817b3ca6c4a137a57 upstream.
+[ Upstream commit 724e8af85854c4d3401313b6dd7d79cf792d8990 ]
 
-If the file size is almost S64_MAX, the calculated number of Merkle tree
-levels exceeds FS_VERITY_MAX_LEVELS, causing FS_IOC_ENABLE_VERITY to
-fail.  This is unintentional, since as the comment above the definition
-of FS_VERITY_MAX_LEVELS states, it is enough for over U64_MAX bytes of
-data using SHA-256 and 4K blocks.  (Specifically, 4096*128**8 >= 2**64.)
+Old code produces -24999 for 0b1110011100000000 input in standard format due to
+always rounding up rather than "away from zero".
 
-The bug is actually that when the number of blocks in the first level is
-calculated from i_size, there is a signed integer overflow due to i_size
-being signed.  Fix this by treating i_size as unsigned.
+Use the common macro for division, unify and simplify the conversion code along
+the way.
 
-This was found by the new test "generic: test fs-verity EFBIG scenarios"
-(https://lkml.kernel.org/r/b1d116cd4d0ea74b9cd86f349c672021e005a75c.1631558495.git.boris@bur.io).
-
-This didn't affect ext4 or f2fs since those have a smaller maximum file
-size, but it did affect btrfs which allows files up to S64_MAX bytes.
-
-Reported-by: Boris Burkov <boris@bur.io>
-Fixes: 3fda4c617e84 ("fs-verity: implement FS_IOC_ENABLE_VERITY ioctl")
-Fixes: fd2d1acfcadf ("fs-verity: add the hook for file ->open()")
-Cc: <stable@vger.kernel.org> # v5.4+
-Reviewed-by: Boris Burkov <boris@bur.io>
-Link: https://lore.kernel.org/r/20210916203424.113376-1-ebiggers@kernel.org
-Signed-off-by: Eric Biggers <ebiggers@google.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 9410700b881f ("hwmon: Add driver for Texas Instruments TMP421/422/423 sensor chips")
+Signed-off-by: Paul Fertser <fercerpav@gmail.com>
+Link: https://lore.kernel.org/r/20210924093011.26083-3-fercerpav@gmail.com
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/verity/enable.c |    2 +-
- fs/verity/open.c   |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/hwmon/tmp421.c | 24 ++++++++----------------
+ 1 file changed, 8 insertions(+), 16 deletions(-)
 
---- a/fs/verity/enable.c
-+++ b/fs/verity/enable.c
-@@ -136,7 +136,7 @@ static int build_merkle_tree(struct inod
- 	 * (level 0) and ascending to the root node (level 'num_levels - 1').
- 	 * Then at the end (level 'num_levels'), calculate the root hash.
- 	 */
--	blocks = (inode->i_size + params->block_size - 1) >>
-+	blocks = ((u64)inode->i_size + params->block_size - 1) >>
- 		 params->log_blocksize;
- 	for (level = 0; level <= params->num_levels; level++) {
- 		err = build_merkle_tree_level(inode, level, blocks, params,
---- a/fs/verity/open.c
-+++ b/fs/verity/open.c
-@@ -89,7 +89,7 @@ int fsverity_init_merkle_tree_params(str
- 	 */
+diff --git a/drivers/hwmon/tmp421.c b/drivers/hwmon/tmp421.c
+index ceb3db6f3fdd..c45968454110 100644
+--- a/drivers/hwmon/tmp421.c
++++ b/drivers/hwmon/tmp421.c
+@@ -109,23 +109,17 @@ struct tmp421_data {
+ 	s16 temp[4];
+ };
  
- 	/* Compute number of levels and the number of blocks in each level */
--	blocks = (inode->i_size + params->block_size - 1) >> log_blocksize;
-+	blocks = ((u64)inode->i_size + params->block_size - 1) >> log_blocksize;
- 	pr_debug("Data is %lld bytes (%llu blocks)\n", inode->i_size, blocks);
- 	while (blocks > 1) {
- 		if (params->num_levels >= FS_VERITY_MAX_LEVELS) {
+-static int temp_from_s16(s16 reg)
++static int temp_from_raw(u16 reg, bool extended)
+ {
+ 	/* Mask out status bits */
+ 	int temp = reg & ~0xf;
+ 
+-	return (temp * 1000 + 128) / 256;
+-}
+-
+-static int temp_from_u16(u16 reg)
+-{
+-	/* Mask out status bits */
+-	int temp = reg & ~0xf;
+-
+-	/* Add offset for extended temperature range. */
+-	temp -= 64 * 256;
++	if (extended)
++		temp = temp - 64 * 256;
++	else
++		temp = (s16)temp;
+ 
+-	return (temp * 1000 + 128) / 256;
++	return DIV_ROUND_CLOSEST(temp * 1000, 256);
+ }
+ 
+ static struct tmp421_data *tmp421_update_device(struct device *dev)
+@@ -162,10 +156,8 @@ static int tmp421_read(struct device *dev, enum hwmon_sensor_types type,
+ 
+ 	switch (attr) {
+ 	case hwmon_temp_input:
+-		if (tmp421->config & TMP421_CONFIG_RANGE)
+-			*val = temp_from_u16(tmp421->temp[channel]);
+-		else
+-			*val = temp_from_s16(tmp421->temp[channel]);
++		*val = temp_from_raw(tmp421->temp[channel],
++				     tmp421->config & TMP421_CONFIG_RANGE);
+ 		return 0;
+ 	case hwmon_temp_fault:
+ 		/*
+-- 
+2.33.0
+
 
 
