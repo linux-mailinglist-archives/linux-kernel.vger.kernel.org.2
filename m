@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BE5A420CBF
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:07:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BDD8420DC4
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:17:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235302AbhJDNJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:09:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39242 "EHLO mail.kernel.org"
+        id S236219AbhJDNSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:18:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53980 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235307AbhJDNGr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:06:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 474CD613AC;
-        Mon,  4 Oct 2021 13:01:25 +0000 (UTC)
+        id S234436AbhJDNQV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:16:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9626F61BB2;
+        Mon,  4 Oct 2021 13:06:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352485;
-        bh=PaS8DXTucc4XRnztat11GNzIWcUA1B1MLeSoIEYNxDs=;
+        s=korg; t=1633352793;
+        bh=n1CoMQiKBXVMk5YwYTLUvIGd8zllXLDTXO9xNoJVG5I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NTqDGqoei4mS61gEbSbvUG9fzH9hc0YP3qrY6+PzP8FUjDKu+h2R2vifXkcFbPzNT
-         K08AXdQbLaKcFZ4AFkkhfOD+00gKJCbb9Ppv/TIChVf+EKOEkpNDi3h0omZ8XbYqUZ
-         WrrJaSiHHmv3bD5w9iJZg3Bm/ehi9NcvIVzKtfQM=
+        b=Ou8v8/il8XjsMM/BmSIwdjEt4vpGTjTVlC1ecNdZhkrzZisbBpsboADcC2UxvVozN
+         bgiRtetGVEcpgTStV6rHmpL35TZkZWRIH8khvNW1wEVWrcKvK2TBj1AlF6RiUuRqp8
+         Gf2pEeCrnmcRx2Xz/CX6M6uoek7Xp6vDIUghK3uM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+47b26cd837ececfc666d@syzkaller.appspotmail.com,
-        Anirudh Rayabharam <mail@anirudhrb.com>,
-        Jiri Kosina <jkosina@suse.cz>
-Subject: [PATCH 4.14 74/75] HID: usbhid: free raw_report buffers in usbhid_stop
+        stable@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 29/56] net: phy: bcm7xxx: request and manage GPHY clock
 Date:   Mon,  4 Oct 2021 14:52:49 +0200
-Message-Id: <20211004125034.017930999@linuxfoundation.org>
+Message-Id: <20211004125030.918133685@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125031.530773667@linuxfoundation.org>
-References: <20211004125031.530773667@linuxfoundation.org>
+In-Reply-To: <20211004125030.002116402@linuxfoundation.org>
+References: <20211004125030.002116402@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,55 +41,104 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anirudh Rayabharam <mail@anirudhrb.com>
+From: Florian Fainelli <f.fainelli@gmail.com>
 
-commit f7744fa16b96da57187dc8e5634152d3b63d72de upstream.
+[ Upstream commit ba4ee3c053659119472135231dbef8f6880ce1fb ]
 
-Free the unsent raw_report buffers when the device is removed.
+The internal Gigabit PHY on Broadcom STB chips has a digital clock which
+drives its MDIO interface among other things, the driver now requests
+and manage that clock during .probe() and .remove() accordingly.
 
-Fixes a memory leak reported by syzbot at:
-https://syzkaller.appspot.com/bug?id=7b4fa7cb1a7c2d3342a2a8a6c53371c8c418ab47
+Because the PHY driver can be probed with the clocks turned off we need
+to apply the dummy BMSR workaround during the driver probe function to
+ensure subsequent MDIO read or write towards the PHY will succeed.
 
-Reported-by: syzbot+47b26cd837ececfc666d@syzkaller.appspotmail.com
-Tested-by: syzbot+47b26cd837ececfc666d@syzkaller.appspotmail.com
-Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/usbhid/hid-core.c |   13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+ drivers/net/phy/bcm7xxx.c | 30 +++++++++++++++++++++++++++++-
+ 1 file changed, 29 insertions(+), 1 deletion(-)
 
---- a/drivers/hid/usbhid/hid-core.c
-+++ b/drivers/hid/usbhid/hid-core.c
-@@ -501,7 +501,7 @@ static void hid_ctrl(struct urb *urb)
+diff --git a/drivers/net/phy/bcm7xxx.c b/drivers/net/phy/bcm7xxx.c
+index af8eabe7a6d4..e68dd2e9443c 100644
+--- a/drivers/net/phy/bcm7xxx.c
++++ b/drivers/net/phy/bcm7xxx.c
+@@ -11,6 +11,7 @@
+ #include "bcm-phy-lib.h"
+ #include <linux/bitops.h>
+ #include <linux/brcmphy.h>
++#include <linux/clk.h>
+ #include <linux/mdio.h>
  
- 	if (unplug) {
- 		usbhid->ctrltail = usbhid->ctrlhead;
--	} else {
-+	} else if (usbhid->ctrlhead != usbhid->ctrltail) {
- 		usbhid->ctrltail = (usbhid->ctrltail + 1) & (HID_CONTROL_FIFO_SIZE - 1);
+ /* Broadcom BCM7xxx internal PHY registers */
+@@ -39,6 +40,7 @@
  
- 		if (usbhid->ctrlhead != usbhid->ctrltail &&
-@@ -1214,9 +1214,20 @@ static void usbhid_stop(struct hid_devic
- 	mutex_lock(&usbhid->mutex);
+ struct bcm7xxx_phy_priv {
+ 	u64	*stats;
++	struct clk *clk;
+ };
  
- 	clear_bit(HID_STARTED, &usbhid->iofl);
+ static int bcm7xxx_28nm_d0_afe_config_init(struct phy_device *phydev)
+@@ -517,6 +519,7 @@ static void bcm7xxx_28nm_get_phy_stats(struct phy_device *phydev,
+ static int bcm7xxx_28nm_probe(struct phy_device *phydev)
+ {
+ 	struct bcm7xxx_phy_priv *priv;
++	int ret = 0;
+ 
+ 	priv = devm_kzalloc(&phydev->mdio.dev, sizeof(*priv), GFP_KERNEL);
+ 	if (!priv)
+@@ -530,7 +533,30 @@ static int bcm7xxx_28nm_probe(struct phy_device *phydev)
+ 	if (!priv->stats)
+ 		return -ENOMEM;
+ 
+-	return 0;
++	priv->clk = devm_clk_get_optional(&phydev->mdio.dev, NULL);
++	if (IS_ERR(priv->clk))
++		return PTR_ERR(priv->clk);
 +
- 	spin_lock_irq(&usbhid->lock);	/* Sync with error and led handlers */
- 	set_bit(HID_DISCONNECTED, &usbhid->iofl);
-+	while (usbhid->ctrltail != usbhid->ctrlhead) {
-+		if (usbhid->ctrl[usbhid->ctrltail].dir == USB_DIR_OUT) {
-+			kfree(usbhid->ctrl[usbhid->ctrltail].raw_report);
-+			usbhid->ctrl[usbhid->ctrltail].raw_report = NULL;
-+		}
++	ret = clk_prepare_enable(priv->clk);
++	if (ret)
++		return ret;
 +
-+		usbhid->ctrltail = (usbhid->ctrltail + 1) &
-+			(HID_CONTROL_FIFO_SIZE - 1);
-+	}
- 	spin_unlock_irq(&usbhid->lock);
++	/* Dummy read to a register to workaround an issue upon reset where the
++	 * internal inverter may not allow the first MDIO transaction to pass
++	 * the MDIO management controller and make us return 0xffff for such
++	 * reads. This is needed to ensure that any subsequent reads to the
++	 * PHY will succeed.
++	 */
++	phy_read(phydev, MII_BMSR);
 +
- 	usb_kill_urb(usbhid->urbin);
- 	usb_kill_urb(usbhid->urbout);
- 	usb_kill_urb(usbhid->urbctrl);
++	return ret;
++}
++
++static void bcm7xxx_28nm_remove(struct phy_device *phydev)
++{
++	struct bcm7xxx_phy_priv *priv = phydev->priv;
++
++	clk_disable_unprepare(priv->clk);
+ }
+ 
+ #define BCM7XXX_28NM_GPHY(_oui, _name)					\
+@@ -548,6 +574,7 @@ static int bcm7xxx_28nm_probe(struct phy_device *phydev)
+ 	.get_strings	= bcm_phy_get_strings,				\
+ 	.get_stats	= bcm7xxx_28nm_get_phy_stats,			\
+ 	.probe		= bcm7xxx_28nm_probe,				\
++	.remove		= bcm7xxx_28nm_remove,				\
+ }
+ 
+ #define BCM7XXX_28NM_EPHY(_oui, _name)					\
+@@ -563,6 +590,7 @@ static int bcm7xxx_28nm_probe(struct phy_device *phydev)
+ 	.get_strings	= bcm_phy_get_strings,				\
+ 	.get_stats	= bcm7xxx_28nm_get_phy_stats,			\
+ 	.probe		= bcm7xxx_28nm_probe,				\
++	.remove		= bcm7xxx_28nm_remove,				\
+ }
+ 
+ #define BCM7XXX_40NM_EPHY(_oui, _name)					\
+-- 
+2.33.0
+
 
 
