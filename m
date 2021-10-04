@@ -2,138 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A5324213AD
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 18:09:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA5914213B2
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 18:10:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236054AbhJDQLe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 12:11:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45326 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235966AbhJDQL0 (ORCPT
+        id S236443AbhJDQM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 12:12:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31970 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236449AbhJDQM2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 12:11:26 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4888CC061745
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 09:09:37 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id r18so66653573edv.12
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 09:09:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=tpqz/Ca4HuJ9FtsBRGM9SdVp/XgKo9Jug8kOLuk5hKg=;
-        b=O70hyt7Xl0bnnrj6nAifypb7wEAuJQni0CGlgG7NLCu06xAA2esXdS+thh8AcqehaI
-         GicPPtfggsrRwB5D1zuNfRvU9nDjNSdIDFOJWg7vhh53t9ItbUkzwObnIif36Bt37MAv
-         zmxQ9tIplT4h8DRi7QR+30wX7h/8zwaisNqj81DMX/5pUIsEbvKXxtHmziTv9FrSuEI/
-         dx3yr7p7KecwY3sa4dQRH3NYP5A0pFsuqNo+6m9pKek2Mt96/JOk3cFD419YLmFS96+n
-         r5h5pQjV1K5fuu9U0DV4EhCVobXWpP7D4GcKkOIEHHKZAFZ0+mW5zvY1yxiQ/orhp8+2
-         NKqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=tpqz/Ca4HuJ9FtsBRGM9SdVp/XgKo9Jug8kOLuk5hKg=;
-        b=0/J3Xjt/1hD57N1HQt1jrWTN6Ki29MAHb/afLlSkEu8agki1y1HhFauq42gB7bYX/o
-         POioZC7PVBlJaDmE2VIeF0jHPDRMCOulWCf474ol/BlsXvDQHfYY1tGI40vVob5kkp0Z
-         OiRPQnibJngRV5oGf4fRGmTnYquSp08hLzFtcQDVYl4ugaZkXOBDlm85tY9sWRWBZiOe
-         VkQI9XjhKCejxvrM2/NZ5PkItkFwezsT/y5WoLgdcc8HdglzXK/yG2kKrYILTmG9ZmX4
-         gw00nNvZrFHux+u2UiAlmQj1cLpht1KAovoV80nfKCH5k6rRFpdOH4EeKPl6ui4yrtB+
-         U1XA==
-X-Gm-Message-State: AOAM533TJl/v74EGxHtwmPnMDWmI7MrEW530AJnwwodruc1G8U8IP3r9
-        eB3icQF/qYTIbk/5GiDWD1ZSd8PsZV7xqHp7j+9i
-X-Google-Smtp-Source: ABdhPJyQWd8s7ZVAM+qsDTeNBAYyTuV1VVaLtBP5AloPlNs44bjqzHBoSEvyI6ROO70W1s6zXpKrBI93lmDFoNSB1tk=
-X-Received: by 2002:a17:906:12d8:: with SMTP id l24mr17506722ejb.126.1633363694172;
- Mon, 04 Oct 2021 09:08:14 -0700 (PDT)
+        Mon, 4 Oct 2021 12:12:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633363839;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=FVbkf/jcBFVRfE0J9D7YHJAbSJJPgT+ifzPwiDUviTs=;
+        b=PpaPJe2GnsS1uzyXfsD5J3Eikca5Y77oQcyBhf8TORXiPIqIn/xE1DjVpHQmfkM8oklrW+
+        fjX71bCACsjenMixssscXikn65GyY22J+x38jGkCii49EHLFHO/d3NiqNKXVMtqQFNgEQh
+        KqxeL3ca7dOanfbeUhPAMpGCY6ghVZc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-477-hCCZaHc_MPG_WGnU2LclOw-1; Mon, 04 Oct 2021 12:10:36 -0400
+X-MC-Unique: hCCZaHc_MPG_WGnU2LclOw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C474284A5E1;
+        Mon,  4 Oct 2021 16:10:34 +0000 (UTC)
+Received: from vitty.brq.redhat.com (unknown [10.40.194.218])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 618B618A50;
+        Mon,  4 Oct 2021 16:10:31 +0000 (UTC)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/4] KVM: nVMX: Enlightened MSR Bitmap feature for Hyper-V on KVM
+Date:   Mon,  4 Oct 2021 18:10:25 +0200
+Message-Id: <20211004161029.641155-1-vkuznets@redhat.com>
 MIME-Version: 1.0
-References: <cover.1621363275.git.rgb@redhat.com> <d23fbb89186754487850367224b060e26f9b7181.1621363275.git.rgb@redhat.com>
-In-Reply-To: <d23fbb89186754487850367224b060e26f9b7181.1621363275.git.rgb@redhat.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Mon, 4 Oct 2021 12:08:03 -0400
-Message-ID: <CAHC9VhQdzdpwUZEKxeV6VuMJpmGJHf-kXtYP8WMKLBhfLXL9xg@mail.gmail.com>
-Subject: Re: [PATCH v4 3/3] audit: add OPENAT2 record to list how
-To:     Richard Guy Briggs <rgb@redhat.com>
-Cc:     Linux-Audit Mailing List <linux-audit@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Eric Paris <eparis@parisplace.org>,
-        Steve Grubb <sgrubb@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Eric Paris <eparis@redhat.com>, linux-fsdevel@vger.kernel.org,
-        Aleksa Sarai <cyphar@cyphar.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 4:02 PM Richard Guy Briggs <rgb@redhat.com> wrote:
->
-> Since the openat2(2) syscall uses a struct open_how pointer to communicat=
-e
-> its parameters they are not usefully recorded by the audit SYSCALL record=
-'s
-> four existing arguments.
->
-> Add a new audit record type OPENAT2 that reports the parameters in its
-> third argument, struct open_how with fields oflag, mode and resolve.
->
-> The new record in the context of an event would look like:
-> time->Wed Mar 17 16:28:53 2021
-> type=3DPROCTITLE msg=3Daudit(1616012933.531:184): proctitle=3D73797363616=
-C6C735F66696C652F6F70656E617432002F746D702F61756469742D7465737473756974652D=
-737641440066696C652D6F70656E617432
-> type=3DPATH msg=3Daudit(1616012933.531:184): item=3D1 name=3D"file-openat=
-2" inode=3D29 dev=3D00:1f mode=3D0100600 ouid=3D0 ogid=3D0 rdev=3D00:00 obj=
-=3Dunconfined_u:object_r:user_tmp_t:s0 nametype=3DCREATE cap_fp=3D0 cap_fi=
-=3D0 cap_fe=3D0 cap_fver=3D0 cap_frootid=3D0
-> type=3DPATH msg=3Daudit(1616012933.531:184): item=3D0 name=3D"/root/rgb/g=
-it/audit-testsuite/tests" inode=3D25 dev=3D00:1f mode=3D040700 ouid=3D0 ogi=
-d=3D0 rdev=3D00:00 obj=3Dunconfined_u:object_r:user_tmp_t:s0 nametype=3DPAR=
-ENT cap_fp=3D0 cap_fi=3D0 cap_fe=3D0 cap_fver=3D0 cap_frootid=3D0
-> type=3DCWD msg=3Daudit(1616012933.531:184): cwd=3D"/root/rgb/git/audit-te=
-stsuite/tests"
-> type=3DOPENAT2 msg=3Daudit(1616012933.531:184): oflag=3D0100302 mode=3D06=
-00 resolve=3D0xa
-> type=3DSYSCALL msg=3Daudit(1616012933.531:184): arch=3Dc000003e syscall=
-=3D437 success=3Dyes exit=3D4 a0=3D3 a1=3D7ffe315f1c53 a2=3D7ffe315f1550 a3=
-=3D18 items=3D2 ppid=3D528 pid=3D540 auid=3D0 uid=3D0 gid=3D0 euid=3D0 suid=
-=3D0 fsuid=3D0 egid=3D0 sgid=3D0 fsgid=3D0 tty=3DttyS0 ses=3D1 comm=3D"open=
-at2" exe=3D"/root/rgb/git/audit-testsuite/tests/syscalls_file/openat2" subj=
-=3Dunconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023 key=3D"testsuite-1=
-616012933-bjAUcEPO"
->
-> Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
-> Link: https://lore.kernel.org/r/d23fbb89186754487850367224b060e26f9b7181.=
-1621363275.git.rgb@redhat.com
-> ---
->  fs/open.c                  |  2 ++
->  include/linux/audit.h      | 10 ++++++++++
->  include/uapi/linux/audit.h |  1 +
->  kernel/audit.h             |  2 ++
->  kernel/auditsc.c           | 18 +++++++++++++++++-
->  5 files changed, 32 insertions(+), 1 deletion(-)
+Changes since v1:
+- Added Maxim's R-b tags to patches 1,2
+- Moved nested.msr_bitmap_changed clearing from nested_get_vmcs12_pages()
+  to nested_vmx_prepare_msr_bitmap [Maxim Levitsky]
+- Rebased to current kvm/queue.
 
-...
+Updating MSR bitmap for L2 is not cheap and rearly needed. TLFS for Hyper-V
+offers 'Enlightened MSR Bitmap' feature which allows L1 hypervisor to
+inform L0 when it changes MSR bitmap, this eliminates the need to examine
+L1's MSR bitmap for L2 every time when 'real' MSR bitmap for L2 gets
+constructed.
 
-> diff --git a/include/uapi/linux/audit.h b/include/uapi/linux/audit.h
-> index cd2d8279a5e4..67aea2370c6d 100644
-> --- a/include/uapi/linux/audit.h
-> +++ b/include/uapi/linux/audit.h
-> @@ -118,6 +118,7 @@
->  #define AUDIT_TIME_ADJNTPVAL   1333    /* NTP value adjustment */
->  #define AUDIT_BPF              1334    /* BPF subsystem */
->  #define AUDIT_EVENT_LISTENER   1335    /* Task joined multicast read soc=
-ket */
-> +#define AUDIT_OPENAT2          1336    /* Record showing openat2 how arg=
-s */
+When the feature is enabled for Win10+WSL2, it shaves off around 700 CPU
+cycles from a nested vmexit cost (tight cpuid loop test).
 
-As a heads-up, I had to change the AUDIT_OPENAT2 value to 1337 as the
-1336 value is already in use by AUDIT_URINGOP.  It wasn't caught
-during my initial build test as the LSM/audit io_uring patches are in
-selinux/next and not audit/next, it wasn't until the kernel-secnext
-build was merging everything for its test run that the collision
-occurred.  I'll be updating the audit/next tree with the new value
-shortly.
+First patch of the series is unrelated to the newly implemented feature,
+it fixes a bug in Enlightened MSR Bitmap usage when KVM runs as a nested
+hypervisor on top of Hyper-V.
 
---=20
-paul moore
-www.paul-moore.com
+Vitaly Kuznetsov (4):
+  KVM: nVMX: Don't use Enlightened MSR Bitmap for L3
+  KVM: VMX: Introduce vmx_msr_bitmap_l01_changed() helper
+  KVM: nVMX: Track whether changes in L0 require MSR bitmap for L2 to be
+    rebuilt
+  KVM: nVMX: Implement Enlightened MSR Bitmap feature
+
+ arch/x86/kvm/hyperv.c     |  2 ++
+ arch/x86/kvm/vmx/nested.c | 29 +++++++++++++++++++++++++---
+ arch/x86/kvm/vmx/vmx.c    | 40 ++++++++++++++++++++++++++-------------
+ arch/x86/kvm/vmx/vmx.h    |  6 ++++++
+ 4 files changed, 61 insertions(+), 16 deletions(-)
+
+-- 
+2.31.1
+
