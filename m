@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA749420B60
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:55:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71419420B65
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:55:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233703AbhJDM46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 08:56:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58088 "EHLO mail.kernel.org"
+        id S233510AbhJDM5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 08:57:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58126 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233465AbhJDM4g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 08:56:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F04661381;
-        Mon,  4 Oct 2021 12:54:47 +0000 (UTC)
+        id S233605AbhJDM4j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 08:56:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E6456136F;
+        Mon,  4 Oct 2021 12:54:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352087;
-        bh=IPcfNl2ejP4tASh88d7qhUQZkOs/+1oLKrRjIEv6kiU=;
+        s=korg; t=1633352090;
+        bh=IM0GVIETrA1TCgyu+Y0HSv9K4DcNrkaq6dSy2MZMlhk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=j20emtGSgAeywu16BbloLl3NKhoC4NwiUUVM8De3UxiM1OUv1kliA/EP+hMyNQyhM
-         0bH6U7r8rTM2IJBbmJEVA0fUeRA01nGMGz8yTUpe5QzavV+8uOu7heuaJYByCAv81U
-         fcZ5DY9BOdtbG8hvqEGzAYs7cn6ZK7rQiqboSuZk=
+        b=D6VP4wA7sXqdUzL4HRFw7h9ILlh6cz6YuvOa+o1EyOKdTo3kTYF/ZuQw3Uxx6IH8g
+         dL+wpvSi59S1DOhjtfvtspyaoRDgqtew5BVldGq1SHHFG25JYALiaxCewm35u7M9B8
+         lkjVxj+eAmUkxk7zI7COpG++CGYmTgjGsbcDCFx8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        stable@vger.kernel.org, Slark Xiao <slark_xiao@163.com>,
         Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.4 08/41] USB: serial: option: remove duplicate USB device ID
-Date:   Mon,  4 Oct 2021 14:51:59 +0200
-Message-Id: <20211004125026.856201991@linuxfoundation.org>
+Subject: [PATCH 4.4 09/41] USB: serial: option: add device id for Foxconn T99W265
+Date:   Mon,  4 Oct 2021 14:52:00 +0200
+Message-Id: <20211004125026.884206794@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211004125026.597501645@linuxfoundation.org>
 References: <20211004125026.597501645@linuxfoundation.org>
@@ -40,30 +39,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+From: Slark Xiao <slark_xiao@163.com>
 
-commit 1ca200a8c6f079950a04ea3c3380fe8cf78e95a2 upstream.
+commit 9e3eed534f8235a4a596a9dae5b8a6425d81ea1a upstream.
 
-The device ZTE 0x0094 is already on the list.
+Adding support for Foxconn device T99W265 for enumeration with
+PID 0xe0db.
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Fixes: b9e44fe5ecda ("USB: option: cleanup zte 3g-dongle's pid in option.c")
+usb-devices output for 0xe0db
+T:  Bus=04 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#= 19 Spd=5000 MxCh= 0
+D:  Ver= 3.20 Cls=ef(misc ) Sub=02 Prot=01 MxPS= 9 #Cfgs=  1
+P:  Vendor=0489 ProdID=e0db Rev=05.04
+S:  Manufacturer=Microsoft
+S:  Product=Generic Mobile Broadband Adapter
+S:  SerialNumber=6c50f452
+C:  #Ifs= 5 Cfg#= 1 Atr=a0 MxPwr=896mA
+I:  If#=0x0 Alt= 0 #EPs= 1 Cls=02(commc) Sub=0e Prot=00 Driver=cdc_mbim
+I:  If#=0x1 Alt= 1 #EPs= 2 Cls=0a(data ) Sub=00 Prot=02 Driver=cdc_mbim
+I:  If#=0x2 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=40 Driver=option
+I:  If#=0x3 Alt= 0 #EPs= 1 Cls=ff(vend.) Sub=ff Prot=ff Driver=(none)
+I:  If#=0x4 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=30 Driver=option
+
+if0/1: MBIM, if2:Diag, if3:GNSS, if4: Modem
+
+Signed-off-by: Slark Xiao <slark_xiao@163.com>
+Link: https://lore.kernel.org/r/20210917110106.9852-1-slark_xiao@163.com
+[ johan: use USB_DEVICE_INTERFACE_CLASS(), amend comment ]
 Cc: stable@vger.kernel.org
 Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/serial/option.c |    1 -
- 1 file changed, 1 deletion(-)
+ drivers/usb/serial/option.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
 --- a/drivers/usb/serial/option.c
 +++ b/drivers/usb/serial/option.c
-@@ -1640,7 +1640,6 @@ static const struct usb_device_id option
- 	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x0060, 0xff, 0xff, 0xff) },
- 	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x0070, 0xff, 0xff, 0xff) },
- 	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x0073, 0xff, 0xff, 0xff) },
--	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x0094, 0xff, 0xff, 0xff) },
- 	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x0130, 0xff, 0xff, 0xff),
- 	  .driver_info = RSVD(1) },
- 	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x0133, 0xff, 0xff, 0xff),
+@@ -2059,6 +2059,8 @@ static const struct usb_device_id option
+ 	  .driver_info = RSVD(0) | RSVD(1) | RSVD(6) },
+ 	{ USB_DEVICE(0x0489, 0xe0b5),						/* Foxconn T77W968 ESIM */
+ 	  .driver_info = RSVD(0) | RSVD(1) | RSVD(6) },
++	{ USB_DEVICE_INTERFACE_CLASS(0x0489, 0xe0db, 0xff),			/* Foxconn T99W265 MBIM */
++	  .driver_info = RSVD(3) },
+ 	{ USB_DEVICE(0x1508, 0x1001),						/* Fibocom NL668 (IOT version) */
+ 	  .driver_info = RSVD(4) | RSVD(5) | RSVD(6) },
+ 	{ USB_DEVICE(0x2cb7, 0x0104),						/* Fibocom NL678 series */
 
 
