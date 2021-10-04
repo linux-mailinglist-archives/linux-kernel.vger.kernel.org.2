@@ -2,120 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0329942159F
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 19:55:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A29B4215A7
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 19:56:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235316AbhJDR42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 13:56:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57135 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234025AbhJDR41 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 13:56:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633370077;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=y+2zA1jjle3vmfTB5/pcGcT1V4t7upA8muF5rWRjTyI=;
-        b=eUkiB07ZvRupaWjs0f7E0MOZqieYpDjHmYyRh8BWnkJIuICHHs5L4LqgPiduoV6S76QAQ1
-        FA9xOrUdADgLL7YqNML5W2vyqgZgjj/ytnQlCSKrCkT8ikJl1JkHh/7KAveecxMGWKwowd
-        engCwdmnfcSpM1thDk2dy4I87dvmQx4=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-573-5PqwirqvP6i1Cl2Rbb51Yg-1; Mon, 04 Oct 2021 13:54:36 -0400
-X-MC-Unique: 5PqwirqvP6i1Cl2Rbb51Yg-1
-Received: by mail-qt1-f197.google.com with SMTP id o7-20020ac86d07000000b002a69537d614so21029631qtt.21
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 10:54:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=y+2zA1jjle3vmfTB5/pcGcT1V4t7upA8muF5rWRjTyI=;
-        b=1Z14CILRVZ7y2hODK146SREMyaqEBm6Rz1+rWSDEiTdwvv++akYouKbcHlkbXnNrCh
-         cX7s2ZhLAfjrdwzW/ewGh9kOuRkMcF0mzE2IEriDJs/f3MzeWxRJ6oHeOATY1NRFyPzC
-         QByzxHf4hMoeXW4cerFtGS5VtI13q4KmLRoQHRIMW8CR3XP6cMpHMdtyZANjyk+tWEK3
-         rWL5iO2LT1fCBxO4qgsefaPy0Qlh0zaKkl0ad72I1jpT848XgGMPgu6JTay3vMjbXzdy
-         +fM3HioLspGiQMTW9BtShChx+AbHkekOgpOySQBGdGzkk6VAZh6Nm3dO/wI/UETwFuSB
-         ZECw==
-X-Gm-Message-State: AOAM5317adTBl9MAsJ8638T5C0oaaYgWkgf79KavCWEmgVrPZnSC0mR/
-        m+pduAMdUBWVchkxk3sujV1TXdSmMTIf0DUiCaAkcH/fjDq4JH84kt+nZyI9SGu2TWv9MAiqCaY
-        brsLHsG1zoTxcUV3ti5OwJJyl
-X-Received: by 2002:a05:622a:1646:: with SMTP id y6mr14823550qtj.146.1633370075977;
-        Mon, 04 Oct 2021 10:54:35 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyOn+3ShPF0raBL9KUr3smyATPofejRnGaUi0gpHiRJsdE8Mg50Kmary4N5R8LkG0fx0Rb1ew==
-X-Received: by 2002:a05:622a:1646:: with SMTP id y6mr14823519qtj.146.1633370075730;
-        Mon, 04 Oct 2021 10:54:35 -0700 (PDT)
-Received: from treble ([2600:1700:6e32:6c00::15])
-        by smtp.gmail.com with ESMTPSA id g12sm9153881qtm.59.2021.10.04.10.54.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Oct 2021 10:54:35 -0700 (PDT)
-Date:   Mon, 4 Oct 2021 10:54:31 -0700
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Andrea Arcangeli <aarcange@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        YiFei Zhu <zhuyifei1999@gmail.com>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        David Laight <David.Laight@aculab.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Jann Horn <jannh@google.com>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Will Drewry <wad@chromium.org>, Jiri Kosina <jikos@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>
-Subject: Re: [PATCH 1/1] x86: change default to
- spec_store_bypass_disable=prctl spectre_v2_user=prctl
-Message-ID: <20211004175431.5myyh2wqnxbwqnwh@treble>
-References: <202109111411.C3D58A18EC@keescook>
- <AAA2EF2C-293D-4D5B-BFA6-FF655105CD84@redhat.com>
+        id S234465AbhJDR55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 13:57:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35598 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229635AbhJDR54 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 13:57:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F5F761207;
+        Mon,  4 Oct 2021 17:56:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633370166;
+        bh=iihWtpxgSsYd4yX5WcJ7ebWvE0XP2NH1ko0MEkDEqI4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QxeiIafKt8gaBHAQ5/ukADuqigQu0UGFqrzNQh2bxpXyDJ+O1T3tpxgEIpqDc7or1
+         fZXJjmvKTB5KCXNNeVwnctypruPuQsTKOPVh53mC1EGOGq8gSrBT39JIhRbEGQ4P8l
+         ZRNDkjKMlKsmyehoFJdnZllqYKlfkqdK+juxkuoh4y3ECNyLvNYbEfFqDq6Nzi46iF
+         9hmBp3/mt5KdKiGo4sI453c9w4VO9Fn+qWj43TY1KDQ65Oew46MqBfZDSxeHMXudjs
+         0KJlToErN3yp8IUNvrEFSk7r3wb7HPnX4HeDRIVWbOuJnuN8Y38SCpye1SecygvhMb
+         ICOT+2tg2IT7A==
+Date:   Mon, 4 Oct 2021 18:56:04 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Lino Sanfilippo <LinoSanfilippo@gmx.de>, rjui@broadcom.com,
+        sbranden@broadcom.com, bcm-kernel-feedback-list@broadcom.com,
+        nsaenz@kernel.org, linux-spi@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        p.rosenberger@kunbus.com, linux-integrity@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] spi: bcm2835: do not unregister controller in shutdown
+ handler
+Message-ID: <YVtANKEp3DVZPgsp@sirena.org.uk>
+References: <20211004131756.GW3544071@ziepe.ca>
+ <YVsLxHMCdXf4vS+i@sirena.org.uk>
+ <20211004154436.GY3544071@ziepe.ca>
+ <YVssWYaxuQDi8jI5@sirena.org.uk>
+ <e68b04ab-831b-0ed5-074a-0879194569f9@gmail.com>
+ <20211004165127.GZ3544071@ziepe.ca>
+ <f481f7cc-6734-59b3-6432-5c2049cd87ea@gmail.com>
+ <20211004171301.GA3544071@ziepe.ca>
+ <YVs5gT1rj9HiAW5p@sirena.org.uk>
+ <8513334a-1de4-bc9c-0157-e792e8ff4871@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="tDeEGRM3Etvfc3kD"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <AAA2EF2C-293D-4D5B-BFA6-FF655105CD84@redhat.com>
+In-Reply-To: <8513334a-1de4-bc9c-0157-e792e8ff4871@gmail.com>
+X-Cookie: If it heals good, say it.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 11, 2021 at 07:01:40PM -0700, Josh Poimboeuf wrote:
-> 
-> 
-> > On Sep 11, 2021, at 2:13 PM, Kees Cook <keescook@chromium.org> wrote:
-> > 
-> > ﻿On Wed, Nov 04, 2020 at 06:50:54PM -0500, Andrea Arcangeli wrote:
-> >> Switch the kernel default of SSBD and STIBP to the ones with
-> >> CONFIG_SECCOMP=n (i.e. spec_store_bypass_disable=prctl
-> >> spectre_v2_user=prctl) even if CONFIG_SECCOMP=y.
-> > 
-> > Hello x86 maintainers!
-> > 
-> > I'd really like to get this landed, so I'll take this via the
-> > seccomp-tree unless someone else speaks up. This keeps falling off
-> > the edge of my TODO list. :)
-> 
-> Thanks!  You can add my
-> 
-> Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
 
-Hi Kees,
+--tDeEGRM3Etvfc3kD
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Ping - I don't see this patch in linux-next.  Are you planning on grabbing this
-for the next merge window?
+On Mon, Oct 04, 2021 at 10:44:34AM -0700, Florian Fainelli wrote:
 
--- 
-Josh
+> Anyway, we are divergin slightly here, how do we go about fixing
+> .shutdown here?
 
+Implement something in the core which will stop any new operations being
+requested and flush existing ones then update the driver to just do
+whatever is needed to turn off the hardware.
+
+--tDeEGRM3Etvfc3kD
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFbQDMACgkQJNaLcl1U
+h9B02gf8DMJ9GV0eTB6jdz3mzbfIDKFWtRDU0DAiDmtHoX71kYjzVqPBjrSgej+h
+FePNNGAjbv3Vw5i/aPtJjdScC0CcsDDqdYqjRD3hALn2RmnKdHfzIc4TbAfH0Bhy
+DtobtvArYdFNdP5lG/SHmHi7b8+ObIfV/bj1SsyxmrPd9xTY17smH7WYgKCeTZRC
+XLldyg+mn+wV0fGrSOCwpAAoEifV2mq1stJTg9TLI7nNbXEGqBJlMfVEdhlrSix6
+j1yoSqXz3FdLyHySBogmAuPcREHpPkUh601cCiK3lqlFy7O3lCckyt4VCruNaZCB
+dTPjFsh5QBjcK9BZU4cX5gG9WnFifA==
+=9ZgA
+-----END PGP SIGNATURE-----
+
+--tDeEGRM3Etvfc3kD--
