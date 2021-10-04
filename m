@@ -2,168 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA46E4213D5
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 18:17:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2CFA4213DB
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 18:18:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236608AbhJDQSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 12:18:55 -0400
-Received: from mail-oi1-f172.google.com ([209.85.167.172]:47007 "EHLO
-        mail-oi1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235467AbhJDQSy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 12:18:54 -0400
-Received: by mail-oi1-f172.google.com with SMTP id s69so22173361oie.13;
-        Mon, 04 Oct 2021 09:17:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3pf88udj5nt/KT7d9jbHcC+owlbZc/CpSFgdstchHks=;
-        b=w0DrMmPlMa+vBzCvSufX+Gn1Ua7EppZfzVGQhMF9E1MqUS8UFu2n5xnQvH4PmeqMp6
-         MDdD3tqEFiEzrTyErA0OgRwJ0bAxIRv6+pwFd9rjHEUKfr6JmXo9xrySTrWJBFVU+j7D
-         Idd7NWmWnLTMn0J4SP9gq4hVrblsgyu3vsrUDPAxguaFpTslC0Dd1vhs0siBEZISerE4
-         qrlfCBcNHPCBw3vPSzfZfGKODwejGQfZVQrwHaaE0rSA4Lo3od/0Bwdo7TNQ7sbjchAu
-         HFtj7mupniknNBdx2LZuHJUJoUAai/xEjQ9FOKxhC6f+oqAyMGauPAaUerLzPngtlQPp
-         OBDQ==
-X-Gm-Message-State: AOAM5339w5TDkKImkf36IL/ZdnvcbCB/abHdIyZI0KI8o70CtK0K4xWP
-        xy/dauXnrrci3CH87ROHsQ==
-X-Google-Smtp-Source: ABdhPJym1rFnpsm9XdZgKcx9KlcF6AVxIlmd+pYVYVMs3KyDbDQ0xTBW7PiCsJaITTql5bjQamQ+WA==
-X-Received: by 2002:a05:6808:a9c:: with SMTP id q28mr14059367oij.148.1633364224977;
-        Mon, 04 Oct 2021 09:17:04 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id m26sm2989928otf.12.2021.10.04.09.17.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Oct 2021 09:17:04 -0700 (PDT)
-Received: (nullmailer pid 1402925 invoked by uid 1000);
-        Mon, 04 Oct 2021 16:17:03 -0000
-Date:   Mon, 4 Oct 2021 11:17:03 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Laxman Dewangan <ldewangan@nvidia.com>
-Subject: Re: [PATCH] regulator: dt-bindings: maxim,max8973: convert to
- dtschema
-Message-ID: <YVso//wfOMVUUZmv@robh.at.kernel.org>
-References: <20211001074654.41196-1-krzysztof.kozlowski@canonical.com>
+        id S236714AbhJDQUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 12:20:20 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:30837 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235090AbhJDQUR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 12:20:17 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1633364308; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: From: References: Cc: To: Subject: MIME-Version: Date:
+ Message-ID: Sender; bh=SKqejxIT/P8GAHWrZuMInz6vjEvPr2YZ0BNWg+ce9Z4=; b=LKZWXMxgyKGMh2t75CYQbHdzYJtvx9SLBoDAw0pYaKnOzyauoH/RdwLLP8bWEkKT/4h/KHoM
+ SUSqt+yHf65siQneJHa/dsMIAtoSkCogUqSEF47BKq1UbSZSaZemse1tmwMAsgNVT0xdIw9I
+ 0X7TIHUSuHAbkthRj0vRNtVUcYI=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 615b2944a5a9bab6e84dc78e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 04 Oct 2021 16:18:12
+ GMT
+Sender: akhilpo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 4F4B6C4361B; Mon,  4 Oct 2021 16:18:12 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.1.10] (unknown [117.210.177.11])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: akhilpo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E9BA4C4338F;
+        Mon,  4 Oct 2021 16:18:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org E9BA4C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Message-ID: <afdf991d-0012-609b-b0e6-232cc8e9f3f0@codeaurora.org>
+Date:   Mon, 4 Oct 2021 21:48:03 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211001074654.41196-1-krzysztof.kozlowski@canonical.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
+Subject: Re: [PATCH] drm/msm/a6xx: Serialize GMU communication
+Content-Language: en-US
+To:     Rob Clark <robdclark@gmail.com>, dri-devel@lists.freedesktop.org
+Cc:     freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Eric Anholt <eric@anholt.net>,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20211001193241.1348868-1-robdclark@gmail.com>
+From:   Akhil P Oommen <akhilpo@codeaurora.org>
+In-Reply-To: <20211001193241.1348868-1-robdclark@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 01, 2021 at 09:46:54AM +0200, Krzysztof Kozlowski wrote:
-> Convert the Maxim MAX8973 regulator to DT schema format.  Extend the
-> examples with more advanced one for MAX77621 copied from kernel's
-> nvidia/tegra210-smaug.dts, licensed under GPL-2.0.
+On 10/2/2021 1:02 AM, Rob Clark wrote:
+> From: Rob Clark <robdclark@chromium.org>
 > 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> I've seen some crashes in our crash reporting that *look* like multiple
+> threads stomping on each other while communicating with GMU.  So wrap
+> all those paths in a lock.
+> 
+> Signed-off-by: Rob Clark <robdclark@chromium.org>
 > ---
->  .../bindings/regulator/max8973-regulator.txt  |  52 -------
->  .../bindings/regulator/maxim,max8973.yaml     | 140 ++++++++++++++++++
->  2 files changed, 140 insertions(+), 52 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/regulator/max8973-regulator.txt
->  create mode 100644 Documentation/devicetree/bindings/regulator/maxim,max8973.yaml
+>   drivers/gpu/drm/msm/adreno/a6xx_gmu.c |  6 ++++
+>   drivers/gpu/drm/msm/adreno/a6xx_gmu.h |  3 ++
+>   drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 40 +++++++++++++++++++++++----
+>   3 files changed, 43 insertions(+), 6 deletions(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/regulator/max8973-regulator.txt b/Documentation/devicetree/bindings/regulator/max8973-regulator.txt
-> deleted file mode 100644
-> index c2c68fcc1b41..000000000000
-> --- a/Documentation/devicetree/bindings/regulator/max8973-regulator.txt
-> +++ /dev/null
-> @@ -1,52 +0,0 @@
-> -* Maxim MAX8973 Voltage Regulator
-> -
-> -Required properties:
-> -
-> -- compatible:	must be one of following:
-> -			"maxim,max8973"
-> -			"maxim,max77621".
-> -- reg:		the i2c slave address of the regulator. It should be 0x1b.
-> -
-> -Any standard regulator properties can be used to configure the single max8973
-> -DCDC.
-> -
-> -Optional properties:
-> -
-> --maxim,externally-enable: boolean, externally control the regulator output
-> -		enable/disable.
-> --maxim,enable-gpio: GPIO for enable control. If the valid GPIO is provided
-> -		then externally enable control will be considered.
-> --maxim,dvs-gpio: GPIO which is connected to DVS pin of device.
-> --maxim,dvs-default-state: Default state of GPIO during initialisation.
-> -		1 for HIGH and 0 for LOW.
-> --maxim,enable-remote-sense: boolean, enable reote sense.
-> --maxim,enable-falling-slew-rate: boolean, enable falling slew rate.
-> --maxim,enable-active-discharge: boolean: enable active discharge.
-> --maxim,enable-frequency-shift: boolean, enable 9% frequency shift.
-> --maxim,enable-bias-control: boolean, enable bias control. By enabling this
-> -		startup delay can be reduce to 20us from 220us.
-> --maxim,enable-etr: boolean, enable Enhanced Transient Response.
-> --maxim,enable-high-etr-sensitivity: boolean, Enhanced transient response
-> -		circuit is enabled and set for high sensitivity. If this
-> -		property is available then etr will be enable default.
-> -
-> -Enhanced transient response (ETR) will affect the configuration of CKADV.
-> -
-> --junction-warn-millicelsius: u32, junction warning temperature threshold
-> -		in millicelsius. If die temperature crosses this level then
-> -		device generates the warning interrupts.
-> -
-> -Please note that thermal functionality is only supported on MAX77621. The
-> -supported threshold warning temperature for MAX77621 are 120 degC and 140 degC.
-> -
-> -Example:
-> -
-> -	max8973@1b {
-> -		compatible = "maxim,max8973";
-> -		reg = <0x1b>;
-> -
-> -		regulator-min-microvolt = <935000>;
-> -		regulator-max-microvolt = <1200000>;
-> -		regulator-boot-on;
-> -		regulator-always-on;
-> -	};
-> diff --git a/Documentation/devicetree/bindings/regulator/maxim,max8973.yaml b/Documentation/devicetree/bindings/regulator/maxim,max8973.yaml
-> new file mode 100644
-> index 000000000000..8947d1fa989a
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/regulator/maxim,max8973.yaml
-> @@ -0,0 +1,140 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/regulator/maxim,max8973.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+> index a7c58018959f..8b73f70766a4 100644
+> --- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+> @@ -296,6 +296,8 @@ int a6xx_gmu_set_oob(struct a6xx_gmu *gmu, enum a6xx_gmu_oob_state state)
+>   	u32 val;
+>   	int request, ack;
+>   
+> +	WARN_ON_ONCE(!mutex_is_locked(&gmu->lock));
 > +
-> +title: Maxim MAX8973/MAX77621 voltage regulator
+>   	if (state >= ARRAY_SIZE(a6xx_gmu_oob_bits))
+>   		return -EINVAL;
+>   
+> @@ -337,6 +339,8 @@ void a6xx_gmu_clear_oob(struct a6xx_gmu *gmu, enum a6xx_gmu_oob_state state)
+>   {
+>   	int bit;
+>   
+> +	WARN_ON_ONCE(!mutex_is_locked(&gmu->lock));
 > +
-> +maintainers:
-> +  - Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+>   	if (state >= ARRAY_SIZE(a6xx_gmu_oob_bits))
+>   		return;
+>   
+> @@ -1482,6 +1486,8 @@ int a6xx_gmu_init(struct a6xx_gpu *a6xx_gpu, struct device_node *node)
+>   	if (!pdev)
+>   		return -ENODEV;
+>   
+> +	mutex_init(&gmu->lock);
 > +
-> +allOf:
-> +  - $ref: regulator.yaml#
+>   	gmu->dev = &pdev->dev;
+>   
+>   	of_dma_configure(gmu->dev, node, true);
+> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.h b/drivers/gpu/drm/msm/adreno/a6xx_gmu.h
+> index 3c74f64e3126..84bd516f01e8 100644
+> --- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.h
+> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.h
+> @@ -44,6 +44,9 @@ struct a6xx_gmu_bo {
+>   struct a6xx_gmu {
+>   	struct device *dev;
+>   
+> +	/* For serializing communication with the GMU: */
+> +	struct mutex lock;
 > +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - maxim,max8973
-> +      - maxim,max77621
+>   	struct msm_gem_address_space *aspace;
+>   
+>   	void * __iomem mmio;
+> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> index f6a4dbef796b..bd7bdeff5d6f 100644
+> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> @@ -881,7 +881,7 @@ static int a6xx_zap_shader_init(struct msm_gpu *gpu)
+>   	  A6XX_RBBM_INT_0_MASK_UCHE_OOB_ACCESS | \
+>   	  A6XX_RBBM_INT_0_MASK_UCHE_TRAP_INTR)
+>   
+> -static int a6xx_hw_init(struct msm_gpu *gpu)
+> +static int hw_init(struct msm_gpu *gpu)
+>   {
+>   	struct adreno_gpu *adreno_gpu = to_adreno_gpu(gpu);
+>   	struct a6xx_gpu *a6xx_gpu = to_a6xx_gpu(adreno_gpu);
+> @@ -1135,6 +1135,19 @@ static int a6xx_hw_init(struct msm_gpu *gpu)
+>   	return ret;
+>   }
+>   
+> +static int a6xx_hw_init(struct msm_gpu *gpu)
+> +{
+> +	struct adreno_gpu *adreno_gpu = to_adreno_gpu(gpu);
+> +	struct a6xx_gpu *a6xx_gpu = to_a6xx_gpu(adreno_gpu);
+> +	int ret;
 > +
-> +  junction-warn-millicelsius:
-> +    #$ref: /schemas/types.yaml#/definitions/uint32
+> +	mutex_lock(&a6xx_gpu->gmu.lock);
+> +	ret = hw_init(gpu);
+> +	mutex_unlock(&a6xx_gpu->gmu.lock);
+> +
+> +	return ret;
+> +}
+> +
+>   static void a6xx_dump(struct msm_gpu *gpu)
+>   {
+>   	DRM_DEV_INFO(&gpu->pdev->dev, "status:   %08x\n",
+> @@ -1509,7 +1522,9 @@ static int a6xx_pm_resume(struct msm_gpu *gpu)
+>   
+>   	trace_msm_gpu_resume(0);
+>   
+> +	mutex_lock(&a6xx_gpu->gmu.lock);
+>   	ret = a6xx_gmu_resume(a6xx_gpu);
+> +	mutex_unlock(&a6xx_gpu->gmu.lock);
+>   	if (ret)
+>   		return ret;
+>   
+> @@ -1532,7 +1547,9 @@ static int a6xx_pm_suspend(struct msm_gpu *gpu)
+>   
+>   	msm_devfreq_suspend(gpu);
+>   
+> +	mutex_lock(&a6xx_gpu->gmu.lock);
+>   	ret = a6xx_gmu_stop(a6xx_gpu);
+> +	mutex_unlock(&a6xx_gpu->gmu.lock);
+>   	if (ret)
+>   		return ret;
+>   
+> @@ -1547,18 +1564,19 @@ static int a6xx_get_timestamp(struct msm_gpu *gpu, uint64_t *value)
+>   {
+>   	struct adreno_gpu *adreno_gpu = to_adreno_gpu(gpu);
+>   	struct a6xx_gpu *a6xx_gpu = to_a6xx_gpu(adreno_gpu);
+> -	static DEFINE_MUTEX(perfcounter_oob);
+>   
+> -	mutex_lock(&perfcounter_oob);
+> +	mutex_lock(&a6xx_gpu->gmu.lock);
+>   
+>   	/* Force the GPU power on so we can read this register */
+>   	a6xx_gmu_set_oob(&a6xx_gpu->gmu, GMU_OOB_PERFCOUNTER_SET);
+>   
+>   	*value = gpu_read64(gpu, REG_A6XX_CP_ALWAYS_ON_COUNTER_LO,
+> -		REG_A6XX_CP_ALWAYS_ON_COUNTER_HI);
+> +			    REG_A6XX_CP_ALWAYS_ON_COUNTER_HI);
+>   
+>   	a6xx_gmu_clear_oob(&a6xx_gpu->gmu, GMU_OOB_PERFCOUNTER_SET);
+> -	mutex_unlock(&perfcounter_oob);
+> +
+> +	mutex_unlock(&a6xx_gpu->gmu.lock);
+> +
+>   	return 0;
+>   }
+>   
+> @@ -1622,6 +1640,16 @@ static unsigned long a6xx_gpu_busy(struct msm_gpu *gpu)
+>   	return (unsigned long)busy_time;
+>   }
+>   
+> +void a6xx_gpu_set_freq(struct msm_gpu *gpu, struct dev_pm_opp *opp)
+> +{
+> +	struct adreno_gpu *adreno_gpu = to_adreno_gpu(gpu);
+> +	struct a6xx_gpu *a6xx_gpu = to_a6xx_gpu(adreno_gpu);
+> +
+> +	mutex_lock(&a6xx_gpu->gmu.lock);
+> +	a6xx_gmu_set_freq(gpu, opp);
+> +	mutex_unlock(&a6xx_gpu->gmu.lock);
+> +}
+> +
+>   static struct msm_gem_address_space *
+>   a6xx_create_address_space(struct msm_gpu *gpu, struct platform_device *pdev)
+>   {
+> @@ -1766,7 +1794,7 @@ static const struct adreno_gpu_funcs funcs = {
+>   #endif
+>   		.gpu_busy = a6xx_gpu_busy,
+>   		.gpu_get_freq = a6xx_gmu_get_freq,
+> -		.gpu_set_freq = a6xx_gmu_set_freq,
+> +		.gpu_set_freq = a6xx_gpu_set_freq,
+>   #if defined(CONFIG_DRM_MSM_GPU_STATE)
+>   		.gpu_state_get = a6xx_gpu_state_get,
+>   		.gpu_state_put = a6xx_gpu_state_put,
+> 
 
-Drop. 
+I think I overlooked this because every hw access is serialized in the 
+downstream driver.
 
-With that,
+Reviewed-by: Akhil P Oommen <akhilpo@codeaurora.org>
 
-Reviewed-by: Rob Herring <robh@kernel.org>
-
-> +    description: |
-> +      Junction warning temperature threshold in millicelsius. If die
-> +      temperature crosses this level then device generates the warning
-> +      interrupts.
-> +      Please note that thermal functionality is only supported on MAX77621. The
-> +      supported threshold warning temperature for MAX77621 are 120 degC and 140
-> +      degC.
+-Akhil
