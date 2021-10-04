@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A165420EA4
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:25:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98CED421020
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:39:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235318AbhJDN06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:26:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37214 "EHLO mail.kernel.org"
+        id S238591AbhJDNkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:40:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52280 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236808AbhJDNZB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:25:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BEC261B66;
-        Mon,  4 Oct 2021 13:10:58 +0000 (UTC)
+        id S238565AbhJDNiq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:38:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F19F63245;
+        Mon,  4 Oct 2021 13:17:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633353059;
-        bh=wZMgo4gl+2tQup07NRFHpMI01h3M95+MqkaaMPs4i2U=;
+        s=korg; t=1633353471;
+        bh=dHnNYp5A+OqL1gE6Z3IskOI2r698DKp6V3t6uhpPoC4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EFUNErpSyx6wI6pUcQ91ZUxYEfVAokLsdUX2WlHvaeNOPX1iYgPzCEx5qffj7/UHY
-         //cdbotwTamip+7gG/OQq0KbYEVLA8hcJJrY/65tfObQ/r2KZEmQQfZtgHq2I46Hak
-         1x3cwvw9aTGyvPZm7mX1QHijh2xyaPnzlg+GVNxI=
+        b=TgzvO46EKTRZjv10O/seRuc09nT4NUmWFNJYZxUsCjLwytlM14J8cXheYaygSCS4l
+         R0Nw+Mz3CppC0kiqs7nF7sRUEFaf+/JLH1+2Ol01ofX+4h24NBJnqm5txMm/KazvHA
+         O/bt3esAJUKZuNxiMPScxSerNXqJnxxtHAZLPuvU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 5.10 73/93] ipack: ipoctal: fix tty-registration error handling
-Date:   Mon,  4 Oct 2021 14:53:11 +0200
-Message-Id: <20211004125036.992468394@linuxfoundation.org>
+        stable@vger.kernel.org, Vadim Pasternak <vadimp@nvidia.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 142/172] hwmon: (pmbus/mp2975) Add missed POUT attribute for page 1 mp2975 controller
+Date:   Mon,  4 Oct 2021 14:53:12 +0200
+Message-Id: <20211004125049.552469029@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125034.579439135@linuxfoundation.org>
-References: <20211004125034.579439135@linuxfoundation.org>
+In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
+References: <20211004125044.945314266@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,56 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Vadim Pasternak <vadimp@nvidia.com>
 
-commit cd20d59291d1790dc74248476e928f57fc455189 upstream.
+[ Upstream commit 2292e2f685cd5c65e3f47bbcf9f469513acc3195 ]
 
-Registration of the ipoctal tty devices is unlikely to fail, but if it
-ever does, make sure not to deregister a never registered tty device
-(and dereference a NULL pointer) when the driver is later unbound.
+Add missed attribute for reading POUT from page 1.
+It is supported by device, but has been missed in initial commit.
 
-Fixes: 2afb41d9d30d ("Staging: ipack/devices/ipoctal: Check tty_register_device return value.")
-Cc: stable@vger.kernel.org      # 3.7
-Acked-by: Samuel Iglesias Gonsalvez <siglesias@igalia.com>
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Link: https://lore.kernel.org/r/20210917114622.5412-4-johan@kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 2c6fcbb21149 ("hwmon: (pmbus) Add support for MPS Multi-phase mp2975 controller")
+Signed-off-by: Vadim Pasternak <vadimp@nvidia.com>
+Link: https://lore.kernel.org/r/20210927070740.2149290-1-vadimp@nvidia.com
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/ipack/devices/ipoctal.c |    7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/hwmon/pmbus/mp2975.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/ipack/devices/ipoctal.c
-+++ b/drivers/ipack/devices/ipoctal.c
-@@ -35,6 +35,7 @@ struct ipoctal_channel {
- 	unsigned int			pointer_read;
- 	unsigned int			pointer_write;
- 	struct tty_port			tty_port;
-+	bool				tty_registered;
- 	union scc2698_channel __iomem	*regs;
- 	union scc2698_block __iomem	*block_regs;
- 	unsigned int			board_id;
-@@ -399,9 +400,11 @@ static int ipoctal_inst_slot(struct ipoc
- 							i, NULL, channel, NULL);
- 		if (IS_ERR(tty_dev)) {
- 			dev_err(&ipoctal->dev->dev, "Failed to register tty device.\n");
-+			tty_port_free_xmit_buf(&channel->tty_port);
- 			tty_port_destroy(&channel->tty_port);
- 			continue;
- 		}
-+		channel->tty_registered = true;
- 	}
+diff --git a/drivers/hwmon/pmbus/mp2975.c b/drivers/hwmon/pmbus/mp2975.c
+index eb94bd5f4e2a..51986adfbf47 100644
+--- a/drivers/hwmon/pmbus/mp2975.c
++++ b/drivers/hwmon/pmbus/mp2975.c
+@@ -54,7 +54,7 @@
  
- 	/*
-@@ -702,6 +705,10 @@ static void __ipoctal_remove(struct ipoc
+ #define MP2975_RAIL2_FUNC	(PMBUS_HAVE_VOUT | PMBUS_HAVE_STATUS_VOUT | \
+ 				 PMBUS_HAVE_IOUT | PMBUS_HAVE_STATUS_IOUT | \
+-				 PMBUS_PHASE_VIRTUAL)
++				 PMBUS_HAVE_POUT | PMBUS_PHASE_VIRTUAL)
  
- 	for (i = 0; i < NR_CHANNELS; i++) {
- 		struct ipoctal_channel *channel = &ipoctal->channel[i];
-+
-+		if (!channel->tty_registered)
-+			continue;
-+
- 		tty_unregister_device(ipoctal->tty_drv, i);
- 		tty_port_free_xmit_buf(&channel->tty_port);
- 		tty_port_destroy(&channel->tty_port);
+ struct mp2975_data {
+ 	struct pmbus_driver_info info;
+-- 
+2.33.0
+
 
 
