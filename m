@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CE6F420F95
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:34:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4E4B420BCD
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:58:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237228AbhJDNgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:36:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48738 "EHLO mail.kernel.org"
+        id S234490AbhJDNAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:00:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32834 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234756AbhJDNdt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:33:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A4D46322C;
-        Mon,  4 Oct 2021 13:15:25 +0000 (UTC)
+        id S234039AbhJDM6g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 08:58:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5AFDF6124C;
+        Mon,  4 Oct 2021 12:56:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633353326;
-        bh=eEGquIZV9LhV62znlXQeqkbUGi2dSA9idNNBdPQyaGQ=;
+        s=korg; t=1633352207;
+        bh=dVvtqKomkEAw1WZxplDiM7/ZBQF1VHn42z+2bN8P/vk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l35JKP5yX6hUdaXj2SwioRHslMi4JFwFul+ChUdcAXn3dkwf+cmeGUc9+9Rk/qnKq
-         zcQRJJY9NXyUIa1Lx/+dejaLmJSD2fuGmUEyvHrMbd9V1kAxg7y3wF5aqr+A+Xza6Q
-         XqUVbQcCyl67UlQOE1f1hjl7De4gXhsK9Mp5Bw5k=
+        b=VFbkqUcgCo72fEp8qwax6nnd4Dtha5vwuqgIf5Zsxp2OP4JG1IMvMTYWxHuzGxPj7
+         BG9MwULQyqTK7/EM0FxSoBCng5Q5gH6g2S6rlpDuM8Fs4jsCb6YKDaYk/n4Zv4QdnG
+         g8O3mlG2G9dGjphkr6e+DrrQ5gcl72xT2kzsPF/8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sindhu Devale <sindhu.devale@intel.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 084/172] RDMA/irdma: Report correct WC error when transport retry counter is exceeded
+        stable@vger.kernel.org,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        Gregory CLEMENT <gregory.clement@bootlin.com>
+Subject: [PATCH 4.9 30/57] arm64: dts: marvell: armada-37xx: Extend PCIe MEM space
 Date:   Mon,  4 Oct 2021 14:52:14 +0200
-Message-Id: <20211004125047.700969754@linuxfoundation.org>
+Message-Id: <20211004125029.888285274@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
-References: <20211004125044.945314266@linuxfoundation.org>
+In-Reply-To: <20211004125028.940212411@linuxfoundation.org>
+References: <20211004125028.940212411@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,68 +40,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sindhu Devale <sindhu.devale@intel.com>
+From: Pali Rohár <pali@kernel.org>
 
-[ Upstream commit d3bdcd59633907ee306057b6bb70f06dce47dddc ]
+commit 514ef1e62d6521c2199d192b1c71b79d2aa21d5a upstream.
 
-When the retry counter exceeds, as the remote QP didn't send any Ack or
-Nack an asynchronous event (AE) for too many retries is generated. Add
-code to handle the AE and set the correct IB WC error code
-IB_WC_RETRY_EXC_ERR.
+Current PCIe MEM space of size 16 MB is not enough for some combination
+of PCIe cards (e.g. NVMe disk together with ath11k wifi card). ARM Trusted
+Firmware for Armada 3700 platform already assigns 128 MB for PCIe window,
+so extend PCIe MEM space to the end of 128 MB PCIe window which allows to
+allocate more PCIe BARs for more PCIe cards.
 
-Fixes: b48c24c2d710 ("RDMA/irdma: Implement device supported verb APIs")
-Link: https://lore.kernel.org/r/20210916191222.824-4-shiraz.saleem@intel.com
-Signed-off-by: Sindhu Devale <sindhu.devale@intel.com>
-Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Without this change some combination of PCIe cards cannot be used and
+kernel show error messages in dmesg during initialization:
+
+    pci 0000:00:00.0: BAR 8: no space for [mem size 0x01800000]
+    pci 0000:00:00.0: BAR 8: failed to assign [mem size 0x01800000]
+    pci 0000:00:00.0: BAR 6: assigned [mem 0xe8000000-0xe80007ff pref]
+    pci 0000:01:00.0: BAR 8: no space for [mem size 0x01800000]
+    pci 0000:01:00.0: BAR 8: failed to assign [mem size 0x01800000]
+    pci 0000:02:03.0: BAR 8: no space for [mem size 0x01000000]
+    pci 0000:02:03.0: BAR 8: failed to assign [mem size 0x01000000]
+    pci 0000:02:07.0: BAR 8: no space for [mem size 0x00100000]
+    pci 0000:02:07.0: BAR 8: failed to assign [mem size 0x00100000]
+    pci 0000:03:00.0: BAR 0: no space for [mem size 0x01000000 64bit]
+    pci 0000:03:00.0: BAR 0: failed to assign [mem size 0x01000000 64bit]
+
+Due to bugs in U-Boot port for Turris Mox, the second range in Turris Mox
+kernel DTS file for PCIe must start at 16 MB offset. Otherwise U-Boot
+crashes during loading of kernel DTB file. This bug is present only in
+U-Boot code for Turris Mox and therefore other Armada 3700 devices are not
+affected by this bug. Bug is fixed in U-Boot version 2021.07.
+
+To not break booting new kernels on existing versions of U-Boot on Turris
+Mox, use first 16 MB range for IO and second range with rest of PCIe window
+for MEM.
+
+Signed-off-by: Pali Rohár <pali@kernel.org>
+Fixes: 76f6386b25cc ("arm64: dts: marvell: Add Aardvark PCIe support for Armada 3700")
+Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/infiniband/hw/irdma/hw.c    | 3 +++
- drivers/infiniband/hw/irdma/user.h  | 1 +
- drivers/infiniband/hw/irdma/verbs.c | 2 ++
- 3 files changed, 6 insertions(+)
+ arch/arm64/boot/dts/marvell/armada-37xx.dtsi |   11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/hw/irdma/hw.c b/drivers/infiniband/hw/irdma/hw.c
-index 33c06a3a4f63..cb9a8e24e3b7 100644
---- a/drivers/infiniband/hw/irdma/hw.c
-+++ b/drivers/infiniband/hw/irdma/hw.c
-@@ -176,6 +176,9 @@ static void irdma_set_flush_fields(struct irdma_sc_qp *qp,
- 	case IRDMA_AE_LLP_RECEIVED_MPA_CRC_ERROR:
- 		qp->flush_code = FLUSH_GENERAL_ERR;
- 		break;
-+	case IRDMA_AE_LLP_TOO_MANY_RETRIES:
-+		qp->flush_code = FLUSH_RETRY_EXC_ERR;
-+		break;
- 	default:
- 		qp->flush_code = FLUSH_FATAL_ERR;
- 		break;
-diff --git a/drivers/infiniband/hw/irdma/user.h b/drivers/infiniband/hw/irdma/user.h
-index ff705f323233..267102d1049d 100644
---- a/drivers/infiniband/hw/irdma/user.h
-+++ b/drivers/infiniband/hw/irdma/user.h
-@@ -102,6 +102,7 @@ enum irdma_flush_opcode {
- 	FLUSH_REM_OP_ERR,
- 	FLUSH_LOC_LEN_ERR,
- 	FLUSH_FATAL_ERR,
-+	FLUSH_RETRY_EXC_ERR,
- };
- 
- enum irdma_cmpl_status {
-diff --git a/drivers/infiniband/hw/irdma/verbs.c b/drivers/infiniband/hw/irdma/verbs.c
-index 6c3d28f744cb..3960c872ff76 100644
---- a/drivers/infiniband/hw/irdma/verbs.c
-+++ b/drivers/infiniband/hw/irdma/verbs.c
-@@ -3358,6 +3358,8 @@ static enum ib_wc_status irdma_flush_err_to_ib_wc_status(enum irdma_flush_opcode
- 		return IB_WC_LOC_LEN_ERR;
- 	case FLUSH_GENERAL_ERR:
- 		return IB_WC_WR_FLUSH_ERR;
-+	case FLUSH_RETRY_EXC_ERR:
-+		return IB_WC_RETRY_EXC_ERR;
- 	case FLUSH_FATAL_ERR:
- 	default:
- 		return IB_WC_FATAL_ERR;
--- 
-2.33.0
-
+--- a/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
++++ b/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
+@@ -186,8 +186,15 @@
+ 			#interrupt-cells = <1>;
+ 			msi-parent = <&pcie0>;
+ 			msi-controller;
+-			ranges = <0x82000000 0 0xe8000000   0 0xe8000000 0 0x1000000 /* Port 0 MEM */
+-				  0x81000000 0 0xe9000000   0 0xe9000000 0 0x10000>; /* Port 0 IO*/
++			/*
++			 * The 128 MiB address range [0xe8000000-0xf0000000] is
++			 * dedicated for PCIe and can be assigned to 8 windows
++			 * with size a power of two. Use one 64 KiB window for
++			 * IO at the end and the remaining seven windows
++			 * (totaling 127 MiB) for MEM.
++			 */
++			ranges = <0x82000000 0 0xe8000000   0 0xe8000000   0 0x07f00000   /* Port 0 MEM */
++				  0x81000000 0 0xefff0000   0 0xefff0000   0 0x00010000>; /* Port 0 IO */
+ 			interrupt-map-mask = <0 0 0 7>;
+ 			interrupt-map = <0 0 0 1 &pcie_intc 0>,
+ 					<0 0 0 2 &pcie_intc 1>,
 
 
