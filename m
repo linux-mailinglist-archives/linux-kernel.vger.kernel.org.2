@@ -2,203 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FAE2421418
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 18:29:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF39442141C
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 18:30:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237023AbhJDQbc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 12:31:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50138 "EHLO
+        id S237042AbhJDQcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 12:32:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236970AbhJDQbb (ORCPT
+        with ESMTP id S236808AbhJDQcO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 12:31:31 -0400
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC692C061745
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 09:29:41 -0700 (PDT)
-Received: by mail-qk1-x749.google.com with SMTP id m1-20020a05620a290100b0045e5e0b11e6so24397146qkp.23
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 09:29:41 -0700 (PDT)
+        Mon, 4 Oct 2021 12:32:14 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19AE0C061745;
+        Mon,  4 Oct 2021 09:30:25 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id g2so14976048pfc.6;
+        Mon, 04 Oct 2021 09:30:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=+vV3ucd+Bx0akx2LdRWzBXCnCYRKpCfCiCi/OQpYgC8=;
-        b=qVuDYfUt9m1HYHDlRY7p7MEZDA5wQNDLbnTxlv2pGHWTig4cHoDD2dfpSjJH47vI88
-         E3hrTrhLbDrxLVNDmlc5UulVM+RKznuc/3H4wHnNAXSz2SLg+Nw8leRt20tO5v/65XcB
-         O3RE2bv/JEua8XSJR0JhJAqHlp4K7jNerFFkdyawCr8CvloO3deJbzXRLMgGnKG14oEd
-         7E8j4ojUS3qK7i6rUczb8opu/0KbjWe79j7AwQRtNXj5OeFEqayd0D2LH3wAc+tYMBEj
-         GS40HkLSeJ+l/1WdWfVxCXhU5wGj3jvko3q5Dxnl9rybnD5KOjQmQ0ytdHx250DqYInJ
-         CYHA==
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=U/gXY3WVhJ/nvDWWVPhBXPgTxuRKJcOBX7y2RATu4k8=;
+        b=nR6cs3n/l5GebOuqrwwoUW8Dmv4Uc+aROASi3zE11rcVXU1dWmmNeMTupCOCJmZ2yg
+         bCsK8eKbgKW+xIniwvS78xovucXVVspEDrSlHfqTN3OcVHUna5sWqwWnzIbiM4b1rFBd
+         7Rt80oTFJzJOIJBTdNuy8ic4ni/iaUbFHiL8q65mBDms2v/sarrtifDmWD8cd35OgAUg
+         dVHxcZs546XIATLMQPb2SlTihIkmqAdHoPAU0e41QEUZU5+IasQLSk1zSGY5gV0SLz+k
+         f5btrkA1jNoEMq+Ot1Yb98AMq2fAP5uvZEQSYUHQ1lxAwONKJMf5Kazw2FTm+wJaKFyr
+         k8ig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=+vV3ucd+Bx0akx2LdRWzBXCnCYRKpCfCiCi/OQpYgC8=;
-        b=ZkoWPk8RHkzr2uKWsEIlJn6QxK/S0ok9D4NLV3IkVxuDwg3Ox3OhOwCjxcUl+f21gI
-         W8Q0YSfJHXYHlJwxb6VGBSO19ontQzRGE0EqIvGLi6c2BPatF8DZrXwI7K7RUKPieKBl
-         et5HXVYv2fCZFaVH+YCqKqarhcCCPAI4yKCiAt7rHB/EV9v1SLeVtuE87j7V+TGeHme3
-         xhQzrwqGtDYMZuBl54chCsBTvIPbcPrKLkHFzwGMn8UR9vhOrDIxwgQXS1BC4xytuUUV
-         SaC26tmCrZUk1/Y7Nx79GF7zo72shJCeXBN0mZZa/MKPNIdEONGhCnyaFQHKP/ZMrkCg
-         HkDQ==
-X-Gm-Message-State: AOAM533AxNKuDpK4NEpz22y260+JKT8egUnZBzkhUOCNBKi6IBh/CwCe
-        g7EnfrObrwCQptakX1+IOosQJtLMjgtMl9aYvQg=
-X-Google-Smtp-Source: ABdhPJwh87utGAnjXgFD2YWwrzYiagURxcE463NsPCOi8s43yOm4oWkOt+2ZfkgJO8cvyocwR1IIGPhvrD35n/ffDag=
-X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:618e:aa53:de64:4411])
- (user=ndesaulniers job=sendgmr) by 2002:ad4:4664:: with SMTP id
- z4mr22837649qvv.16.1633364980909; Mon, 04 Oct 2021 09:29:40 -0700 (PDT)
-Date:   Mon,  4 Oct 2021 09:29:33 -0700
-In-Reply-To: <202110020501.RKX4zca7-lkp@intel.com>
-Message-Id: <20211004162936.21961-1-ndesaulniers@google.com>
-Mime-Version: 1.0
-References: <202110020501.RKX4zca7-lkp@intel.com>
-X-Mailer: git-send-email 2.33.0.800.g4c38ced690-goog
-Subject: [PATCH v6] kallsyms: strip LTO suffixes from static functions
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        "KE . LI" <like1@oppo.com>, Nathan Chancellor <nathan@kernel.org>,
-        Padmanabha Srinivasaiah <treasure4paddy@gmail.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Fangrui Song <maskray@google.com>,
-        Jessica Yu <jeyu@kernel.org>, Miroslav Benes <mbenes@suse.cz>,
-        Joe Perches <joe@perches.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=U/gXY3WVhJ/nvDWWVPhBXPgTxuRKJcOBX7y2RATu4k8=;
+        b=Ly9UQKrgm4zVP4HEw9fAkbXrfSLmbeah8DyZPg4fEwCVwnBhPzk0MMAD9unV1Qb3Fi
+         p+h7WZzhKa4pote0qWsti6cliSRL2y6ZW59oJic7s1LL/JaCFo1gpdT7E2rodBxLEBYZ
+         zNn2EUGRvlIHBhbx+5wMptpB6G/62zRp7HS/B29kfle/AO2y/3yqCBDq45ql51hnlYm/
+         K+ysAGMOECELsboYWpIGGDax9qjEJF2x1xDSY61H/sl/vBsBriTJxHk8fDu9dbmg/rP5
+         xB/vwKkXXSEj8fid40CV9irPUfmze0h1Oh/gVbQruj2/ERHscdwQeVan8TZ6BbWTz16w
+         rYSQ==
+X-Gm-Message-State: AOAM532UanYhp9hECJowoLWkZ6Fjt3QI/ZQjMZ0M9xyJ8QTXKfZpKd4x
+        9p5EvvXxJLWNbggcjgT1cpw=
+X-Google-Smtp-Source: ABdhPJxDG//5O1ZUGqvalSOL8+L5N2i7FGS/YP1KD4/omrYIHHLe0MI1C/FNW9fOgYi61oRH5MRViA==
+X-Received: by 2002:a63:a65:: with SMTP id z37mr11909128pgk.192.1633365024435;
+        Mon, 04 Oct 2021 09:30:24 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
+        by smtp.gmail.com with ESMTPSA id mj2sm386314pjb.18.2021.10.04.09.30.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Oct 2021 09:30:23 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Mon, 4 Oct 2021 06:30:22 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Wei Yang <richard.weiyang@gmail.com>
+Cc:     lizefan.x@bytedance.com, hannes@cmpxchg.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/4] cgroup: a u16 is enough for cgroup_subsys.depends_on
+Message-ID: <YVssHgmGdoSBY59K@slm.duckdns.org>
+References: <20211004084928.17622-1-richard.weiyang@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211004084928.17622-1-richard.weiyang@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Similar to:
-commit 8b8e6b5d3b01 ("kallsyms: strip ThinLTO hashes from static
-functions")
+On Mon, Oct 04, 2021 at 08:49:25AM +0000, Wei Yang wrote:
+> After commit 6e5c830770f9 ("cgroup: make cgroup subsystem masks u16"),
+> we limit the number of subsystem to be less then 16. This applies to
+> cgroup_subsys.depends_on too.
 
-It's very common for compilers to modify the symbol name for static
-functions as part of optimizing transformations. That makes hooking
-static functions (that weren't inlined or DCE'd) with kprobes difficult.
+None of the patches seems meaningful enough. I'm gonna ignore this series.
 
-LLVM has yet another name mangling scheme used by thin LTO.
+Thanks.
 
-Combine handling of the various schemes by truncating after the first
-'.'.  Strip off these suffixes so that we can continue to hook such
-static functions.  Clang releases prior to clang-13 would use '$'
-instead of '.'
-
-Link: https://reviews.llvm.org/rGc6e5c4654bd5045fe22a1a52779e48e2038a404c
-Reported-by: KE.LI(Lieke) <like1@oppo.com>
-Suggested-by: Nathan Chancellor <nathan@kernel.org>
-Suggested-by: Padmanabha Srinivasaiah <treasure4paddy@gmail.com>
-Suggested-by: Sami Tolvanen <samitolvanen@google.com>
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-Reviewed-by: Fangrui Song <maskray@google.com>
-Reviewed-by: Sami Tolvanen <samitolvanen@google.com>
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
----
-Changes v5 -> v6:
-* Replace __clang_major__ with CONFIG_CLANG_VERSION. The former is not
-  defined for CC=gcc while the latter is.
-* Reflow comment that wasn't wrapper properly. gq in vim behaves
-  differently based on whether tabstop=8 was set.
-* Pick up Sami's RB tag.
-
-Changes v4 -> v5:
-* Absorb Padmanabha Srinivasaiah's patch from
-  https://lore.kernel.org/lkml/20210814124224.8551-1-treasure4paddy@gmail.com/.
-* Add Padmanabha's Suggested-by tag.
-* Rewrite the patch to truncate after first '.', as per Sami's comment
-  from
-  https://lore.kernel.org/lkml/CABCJKue5Ay6_+8sibzh5wRh3gPzV1g72gJ9m2ot4E1ezj8bpHA@mail.gmail.com/.
-* Add Sami's Suggested-by tag.
-* Verify that the '$' delimiter only appears for
-  thin LTO + CFI + clang <= 12, use __clang_minor__ to check.
-* Update comments as per Nathan + Fangrui, add their Suggested-by tags.
-* While Nathan + Fangrui did review v4, v5 is too different IMO to carry
-  those tags forward.
-
-Changes v3 -> v4:
-* Convert this function to use IS_ENABLED rather than provide multiple
-  definitions based on preprocessor checks.
-* Add Nathan's suggested-by.
-
-Changes v2 -> v3:
-* Un-nest preprocessor checks, as per Nathan.
-
-Changes v1 -> v2:
-* Both mangling schemes can occur for thinLTO + CFI, this new scheme can
-  also occur for thinLTO without CFI. Split cleanup_symbol_name() into
-  two function calls.
-* Drop KE.LI's tested by tag.
-* Do not carry Fangrui's Reviewed by tag.
-* Drop the inline keyword; it is meaningless.
-
- kernel/kallsyms.c | 46 +++++++++++++++++++++++++++++++++-------------
- 1 file changed, 33 insertions(+), 13 deletions(-)
-
-diff --git a/kernel/kallsyms.c b/kernel/kallsyms.c
-index 0ba87982d017..3011bc33a5ba 100644
---- a/kernel/kallsyms.c
-+++ b/kernel/kallsyms.c
-@@ -164,26 +164,46 @@ static unsigned long kallsyms_sym_address(int idx)
- 	return kallsyms_relative_base - 1 - kallsyms_offsets[idx];
- }
- 
--#if defined(CONFIG_CFI_CLANG) && defined(CONFIG_LTO_CLANG_THIN)
--/*
-- * LLVM appends a hash to static function names when ThinLTO and CFI are
-- * both enabled, i.e. foo() becomes foo$707af9a22804d33c81801f27dcfe489b.
-- * This causes confusion and potentially breaks user space tools, so we
-- * strip the suffix from expanded symbol names.
-- */
--static inline bool cleanup_symbol_name(char *s)
-+static bool cleanup_symbol_name(char *s)
- {
- 	char *res;
- 
-+	if (!IS_ENABLED(CONFIG_LTO_CLANG))
-+		return false;
-+
-+	/*
-+	 * LLVM appends various suffixes for local functions and variables that
-+	 * must be promoted to global scope as part of LTO.  This can break
-+	 * hooking of static functions with kprobes. '.' is not a valid
-+	 * character in an identifier in C. Suffixes observed:
-+	 * - foo.llvm.[0-9a-f]+
-+	 * - foo.[0-9a-f]+
-+	 * - foo.[0-9a-f]+.cfi_jt
-+	 */
-+	res = strchr(s, '.');
-+	if (res) {
-+		*res = '\0';
-+		return true;
-+	}
-+
-+	if (!IS_ENABLED(CONFIG_CFI_CLANG) ||
-+	    !IS_ENABLED(CONFIG_LTO_CLANG_THIN) ||
-+	    CONFIG_CLANG_VERSION >= 130000)
-+		return false;
-+
-+	/*
-+	 * Prior to LLVM 13, the following suffixes were observed when thinLTO
-+	 * and CFI are both enabled:
-+	 * - foo$[0-9]+
-+	 */
- 	res = strrchr(s, '$');
--	if (res)
-+	if (res) {
- 		*res = '\0';
-+		return true;
-+	}
- 
--	return res != NULL;
-+	return false;
- }
--#else
--static inline bool cleanup_symbol_name(char *s) { return false; }
--#endif
- 
- /* Lookup the address for this symbol. Returns 0 if not found. */
- unsigned long kallsyms_lookup_name(const char *name)
-
-base-commit: 4de593fb965fc2bd11a0b767e0c65ff43540a6e4
 -- 
-2.33.0.800.g4c38ced690-goog
-
+tejun
