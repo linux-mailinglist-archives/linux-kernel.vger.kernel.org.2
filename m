@@ -2,119 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AB5F42084A
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 11:31:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01A26420855
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 11:33:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231553AbhJDJdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 05:33:08 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:44976
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231355AbhJDJdH (ORCPT
+        id S231849AbhJDJet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 05:34:49 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:61137 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231821AbhJDJeq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 05:33:07 -0400
-Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com [209.85.167.71])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        Mon, 4 Oct 2021 05:34:46 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1633339977; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=/w7dyJN0zUz/mQPwa7PRmDmQArtW6PQOI6KgXyimEbY=; b=b7GlY1L/LGZduxDdeYH8QqMjviJR5MzzbPrlr6UtGhDHhPAjnC7sPmejinvwD7pyQE5VOJaD
+ uHA+DGJGkwT69ACwKcQ/lE3ksaO99qJkk2QxJyu4fSbYUi5JlTMXHYTOt5jnnCwmEbu2MEYG
+ DbMZny/wr+rZUqdapprYWH/qrAw=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 615aca3bfc6e34f8cd5da5ef (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 04 Oct 2021 09:32:43
+ GMT
+Sender: pillair=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A33EBC4360C; Mon,  4 Oct 2021 09:32:43 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from pillair-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id EF926402CF
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 09:31:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1633339877;
-        bh=BhMF861qRXxB8JicXlfyBxo5M67ugNaJYcXfYfJhwvs=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=s/0j1vD92J4iRHXcw593uLQq18ySmKQIbdB4G46GY0/dzKwKcgHYANtzezOR4XACS
-         enGIenCAHmYV8mu1psecVUuhpppT+6eo2mM5SMVYWn/5FmO/tz5/K9rhQzLhma7d27
-         5E8U+5OgVmC8hksm93Tdg3n768wkMDLaIpeSY5Z21Q8x8jeS8DJK/tW1tuUg6Vr8Fc
-         I+i9/3+cHPts3iqa0AfK/96S8VRstI7fNk3mb7n7Sky9mVVSQCZSUMOa5bHvxrIiiH
-         ZxoLkJsU8RrMHjwKLNa1wY38rgdhrl0ZrrNti7a3h6HLolkGUfBlJbD9vJLJKyWSFF
-         o5eM8S5cI5t2A==
-Received: by mail-lf1-f71.google.com with SMTP id c42-20020a05651223aa00b003fd328cfeccso2491876lfv.4
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 02:31:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=BhMF861qRXxB8JicXlfyBxo5M67ugNaJYcXfYfJhwvs=;
-        b=DsHuCStSUcvdUXeneCz4SVyNfFNpTzGyuA/Ufu49YJ+GJ6Vct4jvWk08qjHCnR+ekK
-         hHfW5KexeR/WryB9U2IdUmj1Fw0ziboNR2IzBxA2KY2vjQoPIMRHeaV755o/CnxZDyLT
-         3bI6hO+LzQo61HyjJYU1+wWKcmDjGHOisYhOoCE0NhMjSDjyCNzwMJM7kh8Jw66pYie7
-         tdZRXAhig74j804fVHTODJyhB1pbTYPrPjUztApgym1gXLRpol5scNwFVg2cbuJgRwbP
-         f5UI1aEgKzhR543Yg5v5kc5xkHzyX+uE0/6sHpyQHVFTMEKrndKCmj35lRBCESruVr9+
-         58tQ==
-X-Gm-Message-State: AOAM531NZ1Y7lrBGDH1cFlDw1uC6mSp8LF8PiK9y7eqEFOb9HIgsgrhx
-        XjiKamNklGJhtUoK8ZvWyCSgQBPw6njN+niITfANn+l9yTrNZmPkJHJ+bPUxioVE1Iu0Rk5a/Mb
-        zuxpuhHbC+hxmI12nUkM75qeaJwWbTdhhriOMHC1oIA==
-X-Received: by 2002:a05:6512:1052:: with SMTP id c18mr13061986lfb.223.1633339876165;
-        Mon, 04 Oct 2021 02:31:16 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzsF7MpTHnCy/j3g+hDSYlF5AGtBdgBEcCWhBbURgsQ+KvwKCwGBOZ9EeWYxDHnkw58Nm6QvQ==
-X-Received: by 2002:a05:6512:1052:: with SMTP id c18mr13061970lfb.223.1633339875996;
-        Mon, 04 Oct 2021 02:31:15 -0700 (PDT)
-Received: from [192.168.0.197] ([193.178.187.25])
-        by smtp.gmail.com with ESMTPSA id s29sm1678179ljd.54.2021.10.04.02.31.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Oct 2021 02:31:15 -0700 (PDT)
-Subject: Re: [PATCH 1/5] dt-bindings: memory: fsl: convert ifc binding to yaml
- schema
-To:     Li Yang <leoyang.li@nxp.com>
-Cc:     Shawn Guo <shawnguo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        lkml <linux-kernel@vger.kernel.org>
-References: <20211001000924.15421-1-leoyang.li@nxp.com>
- <20211001000924.15421-2-leoyang.li@nxp.com>
- <db751cb1-9107-3857-7576-644bde4c28e5@canonical.com>
- <CADRPPNROVBp_QB=6XEgk8WF5fnEPFTSko4Nn+mm8oLM3iGTuuw@mail.gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <e42fa620-810b-fdcc-c827-602a14d10d97@canonical.com>
-Date:   Mon, 4 Oct 2021 11:31:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <CADRPPNROVBp_QB=6XEgk8WF5fnEPFTSko4Nn+mm8oLM3iGTuuw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        (Authenticated sender: pillair)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A7E7FC4360C;
+        Mon,  4 Oct 2021 09:32:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org A7E7FC4360C
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Rakesh Pillai <pillair@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
+        swboyd@chromium.org
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sibis@codeaurora.org,
+        mpubbise@codeaurora.org, kuabhs@chromium.org,
+        Rakesh Pillai <pillair@codeaurora.org>
+Subject: [PATCH v5] arm64: dts: qcom: sc7280: Add WPSS remoteproc node
+Date:   Mon,  4 Oct 2021 15:02:25 +0530
+Message-Id: <1633339945-1568-1-git-send-email-pillair@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/10/2021 18:17, Li Yang wrote:
-> On Fri, Oct 1, 2021 at 5:01 AM Krzysztof Kozlowski
-> <krzysztof.kozlowski@canonical.com> wrote:
->>
+Add the WPSS remoteproc node in dts for
+PIL loading.
 
-(...)
+Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+---
+ arch/arm64/boot/dts/qcom/sc7280-idp.dts |  4 +++
+ arch/arm64/boot/dts/qcom/sc7280.dtsi    | 58 +++++++++++++++++++++++++++++++++
+ 2 files changed, 62 insertions(+)
 
->>> +
->>> +  interrupts:
->>> +    minItems: 1
->>> +    maxItems: 2
->>> +    description: |
->>> +      IFC may have one or two interrupts.  If two interrupt specifiers are
->>> +      present, the first is the "common" interrupt (CM_EVTER_STAT), and the
->>> +      second is the NAND interrupt (NAND_EVTER_STAT).  If there is only one,
->>> +      that interrupt reports both types of event.
->>> +
->>> +  little-endian:
->>> +    $ref: '/schemas/types.yaml#/definitions/flag'
->>
->> type: boolean
-> 
-> It will not have a true or false value, but only present or not.  Is
-> the boolean type taking care of this too?
+diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dts b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+index 64fc22a..2b8bbcd 100644
+--- a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
++++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+@@ -68,3 +68,7 @@
+ 		qcom,pre-scaling = <1 1>;
+ 	};
+ };
++
++&remoteproc_wpss {
++	status = "okay";
++};
+diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+index 39635da..edc7951 100644
+--- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+@@ -134,6 +134,11 @@
+ 			no-map;
+ 		};
+ 
++		wpss_mem: memory@9ae00000 {
++			no-map;
++			reg = <0x0 0x9ae00000 0x0 0x1900000>;
++		};
++
+ 		rmtfs_mem: memory@9c900000 {
+ 			compatible = "qcom,rmtfs-mem";
+ 			reg = <0x0 0x9c900000 0x0 0x280000>;
+@@ -2588,6 +2593,59 @@
+ 			#power-domain-cells = <1>;
+ 		};
+ 
++		remoteproc_wpss: remoteproc@8a00000 {
++			compatible = "qcom,sc7280-wpss-pil";
++			reg = <0 0x08a00000 0 0x10000>;
++
++			interrupts-extended = <&intc GIC_SPI 587 IRQ_TYPE_EDGE_RISING>,
++					      <&wpss_smp2p_in 0 IRQ_TYPE_EDGE_RISING>,
++					      <&wpss_smp2p_in 1 IRQ_TYPE_EDGE_RISING>,
++					      <&wpss_smp2p_in 2 IRQ_TYPE_EDGE_RISING>,
++					      <&wpss_smp2p_in 3 IRQ_TYPE_EDGE_RISING>,
++					      <&wpss_smp2p_in 7 IRQ_TYPE_EDGE_RISING>;
++			interrupt-names = "wdog", "fatal", "ready", "handover",
++					  "stop-ack", "shutdown-ack";
++
++			clocks = <&gcc GCC_WPSS_AHB_BDG_MST_CLK>,
++				 <&gcc GCC_WPSS_AHB_CLK>,
++				 <&gcc GCC_WPSS_RSCP_CLK>,
++				 <&rpmhcc RPMH_CXO_CLK>;
++			clock-names = "gcc_wpss_ahb_bdg_mst_clk",
++				      "gcc_wpss_ahb_clk",
++				      "gcc_wpss_rscp_clk",
++				      "xo";
++
++			power-domains = <&rpmhpd SC7280_CX>,
++					<&rpmhpd SC7280_MX>;
++			power-domain-names = "cx", "mx";
++
++			memory-region = <&wpss_mem>;
++
++			qcom,qmp = <&aoss_qmp>;
++
++			qcom,smem-states = <&wpss_smp2p_out 0>;
++			qcom,smem-state-names = "stop";
++
++			resets = <&aoss_reset AOSS_CC_WCSS_RESTART>,
++				 <&pdc_reset PDC_WPSS_SYNC_RESET>;
++			reset-names = "restart", "pdc_sync";
++
++			qcom,halt-regs = <&tcsr_mutex 0x37000>;
++
++			status = "disabled";
++
++			glink-edge {
++				interrupts-extended = <&ipcc IPCC_CLIENT_WPSS
++							     IPCC_MPROC_SIGNAL_GLINK_QMP
++							     IRQ_TYPE_EDGE_RISING>;
++				mboxes = <&ipcc IPCC_CLIENT_WPSS
++						IPCC_MPROC_SIGNAL_GLINK_QMP>;
++
++				label = "wpss";
++				qcom,remote-pid = <13>;
++			};
++		};
++
+ 		pdc: interrupt-controller@b220000 {
+ 			compatible = "qcom,sc7280-pdc", "qcom,pdc";
+ 			reg = <0 0x0b220000 0 0x30000>;
+-- 
+2.7.4
 
-boolean is for a property which does not accept values and true/false
-depends on its presence.
-See:
-Documentation/devicetree/bindings/phy/lantiq,vrx200-pcie-phy.yaml
-Documentation/devicetree/bindings/thermal/qoriq-thermal.yaml
-
-
-Best regards,
-Krzysztof
