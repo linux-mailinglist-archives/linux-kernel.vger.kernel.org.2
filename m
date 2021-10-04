@@ -2,215 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FB504205A6
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 07:58:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A36C84205AA
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 08:01:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232558AbhJDGAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 02:00:18 -0400
-Received: from mout.gmx.net ([212.227.17.22]:35283 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231935AbhJDGAO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 02:00:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1633327086;
-        bh=3yQaFDx3HteINXfvXksHTXMue8daiL/SfDc07itzYXc=;
-        h=X-UI-Sender-Class:From:To:CC:In-reply-to:Subject:Reply-to:
-         References:Date;
-        b=C34tpHZ63vLX2lWlplKZFtVaP6QSvYENnT6CFy2STHzNlqVz6XIbbCVYNpsVDRDFW
-         BvUgClE9pCVUUxYhMc1YPkYEkWqZf2PTkH9pwOmCoR9ymLNJywMEsPuMdMeYeZNjwq
-         N49SJynqauYZwpzibAWPNzLet2y4i1eho40ozId8=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from corona.crabdance.com ([173.228.106.131]) by mail.gmx.net
- (mrgmx105 [212.227.17.168]) with ESMTPSA (Nemesis) id
- 1M3lYB-1mWzjq2m5T-000wlv; Mon, 04 Oct 2021 07:58:06 +0200
-Received: by corona.crabdance.com (Postfix, from userid 1000)
-        id C52AD899CC4; Sun,  3 Oct 2021 22:57:58 -0700 (PDT)
-From:   Stefan Schaeckeler <schaecsn@gmx.net>
-To:     richard@nod.at
-CC:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        sschaeck@cisco.com
-In-reply-to: <1815586081.32955.1633291105033.JavaMail.zimbra@nod.at> (message
-        from Richard Weinberger on Sun, 3 Oct 2021 21:58:25 +0200 (CEST))
-Subject: Re: [PATCH 1/1] ubifs: ubifs to export filesystem error counters
-Content-Type: text/plain
-Reply-to: schaecsn@gmx.net
-References: <20210907214034.11676-1-schaecsn@gmx.net> <20210907214034.11676-2-schaecsn@gmx.net> <1815586081.32955.1633291105033.JavaMail.zimbra@nod.at>
-Message-Id: <20211004055758.C52AD899CC4@corona.crabdance.com>
-Date:   Sun,  3 Oct 2021 22:57:58 -0700 (PDT)
-X-Provags-ID: V03:K1:Zg0mDQu0TezbLoYA8pDQR0+RMH3KAnGSWTLtVxSkc71qesyBOPr
- JBAf+vDG++ICxoeTj8f3iQe3YwwWUAK9o9I2YEP0s9tsLe4jckW0gqoysT8GPpP31/HaS2y
- c4dWeRxMxRVkqy+5NQEhJX/4pSLhLYFcGX35nT709N4wJxjXWKjPlOPlaapuoKzNcn+O2mx
- WNnJxPshu06YrrT1JY4gQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:mhArpKz+4UI=:iUQjTCYBLI/S7wj60DELtH
- cFRnjvOicAMHcSqcHAjqmlh1flfDRg/Q7Y9EPM+bXDGJfgSiXeydoJ9VcRxi6EBQP03FYY/UC
- RcUaNGJJXW21XPyjlrsHuHx4vGuHFXWegwYSuf7YchEWxq5QPwPXSFvs+HjasRwOnlyCzAjBn
- 5UBKL21UnGjmQL/CowHbBfaIujmh3viWS393J1V7ng0MpXIu4MfZg7tp/t0Jy947x4wC+gDYU
- o9FUCcgYbuG1xW60Bwcoj5rDsTPQQquoXG6nS3HiFlhn6iQmJSbBp+dLCQ9A4kEg9EhS6yXXf
- Unhzo8KaIfp9yj+7dkkjTxVt/8HfawXXFVHv9coDRNWHX7RXqpOfgqTTnV47qxB45q5mmOlVR
- wIiUKhLqP4Rf3mGfHhWh3wFFoiTj0JNxMlPJankhQDV/UhHag2A5GzUAvO/527s2zIK4GrJDc
- nKZdImbMDQR21zU1yzYEsnzLefIZBLYvtPHrG8R2TDwBVkwGeG9FQ+iEwgkQHhSNxCwC6WDup
- +eTh8y3h6qrPd0p53CeQ/VYTqmCvbE5UoxrY9WxqdN8hnB2DKYPiJp/pFwzAE8WhSyp4GIhZ9
- WXXD1H/X07ugFbE5J+6OEgB1Ko4Oui2vjGKyDg+go9LF5xzripN8UqOa3INpXspyub/7TO7Ha
- EsXVbsAU2glLfjXt6M1oKCsGl6ecsxX5FMUBE6S121+2yaz9y/AqGY7/0l/lnUYdsGwfDREhE
- r7LE9vMsxk6xdY931+w/mOPs+6EnPG1sZSvPlY1fRvht89qiEkaCCRnEr91hdnwmcd/FBszEd
- rznQuT1vQ88k683h8mjS/xNu7iGc0Y330c1pmbPt9IxCQ0Ea7yYoQ3Nt18foCxEOgQ79vPy6/
- vD9NmCzaSdN/8zzaC3Rsn/SImmCLX3KMgbgXou61OyOWxFEz/W93Uuhsayn0ELAAablDcaOmm
- 4uG168dmiSg7swjlleuEKcZH/Nz2FsIaJE10CKoZS+SiaP96a6uj+nwLi3ljhsnK56fwx2+0I
- l68YVuMYw/95VPz4dnDlmoeKp7v0+4uThgCM6eY/Uw+w/o3cyRMzULmfBHkClzy65dwj2GhS0
- VB5OrH7zIvP6cs=
-Content-Transfer-Encoding: quoted-printable
+        id S232600AbhJDGDF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 02:03:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45024 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231935AbhJDGDD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 02:03:03 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1EBCC0613EC
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Oct 2021 23:01:14 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id qe4-20020a17090b4f8400b0019f663cfcd1so7451796pjb.1
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Oct 2021 23:01:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=cxuoqPc/PmB8mcM5TuGRV+qu2o9l2KtFKmqxX/+Qr9o=;
+        b=qgQrtCEaMYgsg0jjCV1DDo2tvrEUcH4DzPaBi8qTujHdIdAXmDgIa1Po8Z9Y9NuDj4
+         hub+B+0tOawqxcXdf8mQB+5Ibl2uOqRE7Xks92k1DT7OH80h2vr8Pnmdd2RHxEIIUfEC
+         g9Oge8Ue60JXR+sVdeFspouBp+L2LcxKkm9J72waXhHQro/RkibqFKisL1JtzBjeTaa+
+         PCG+vGytmcfNgAaWuBXkvvo6Sa00J2R5VC9L3g2HNV4sO/9TvHNsSfwBoF+HmrEXWJ6W
+         ttnHIF4qa6bGEn/ZP6XTRMykasTrS+g0Gb6/+Rj8fMt5kZx9qnU82cQQK8JGDN6s19w9
+         EfXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=cxuoqPc/PmB8mcM5TuGRV+qu2o9l2KtFKmqxX/+Qr9o=;
+        b=Ft6DNP2hvRCDjhiuFSXqRcYLDhns7v46i6DOzytwd2NirlgBupmhSEvtFpWzxWUSlq
+         DNM+PQ0E8CjYSEHTerle8dKyX0m+TLlr2jMLNJVYxWSlmssQ6EJVy/aYtpU3dNOvFnK/
+         8DOxh4Z1C3mWawhL5WPwebyGhEweqlRYeEk4iF6PrWzTi2jK8qBTzrNHLPUCis2euhfv
+         s4XUqR4J156Mm8yEninhcvhqJnCp3IKIWMAYF1eIys7+nsvN3Xk+NGRgVKyJVkHFPGcn
+         o8+25aGyhEyN9Hygi5YOpbyfncBNgH0GR+PLQFPaGhY6VhoW14BxlkIxdh1k5GV9DL/I
+         Ti4g==
+X-Gm-Message-State: AOAM531XoyX01T2CVZ8XN/L5RZNPzVsX6etb+AXR1Ghqb40WGld3mx3W
+        4lOgs2ba1o3OilxJBGKEzRk=
+X-Google-Smtp-Source: ABdhPJx+aSxo9lpIz8K+5iM+BjVf3OcTZG4Ob8vcG7A2msOIc7Zog6MPuLNVDe32SA2/LfMsASfHqQ==
+X-Received: by 2002:a17:90b:1e02:: with SMTP id pg2mr35298336pjb.114.1633327274431;
+        Sun, 03 Oct 2021 23:01:14 -0700 (PDT)
+Received: from linux.asia-northeast3-a.c.our-ratio-313919.internal (252.229.64.34.bc.googleusercontent.com. [34.64.229.252])
+        by smtp.gmail.com with ESMTPSA id j6sm12257166pgh.17.2021.10.03.23.01.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 03 Oct 2021 23:01:14 -0700 (PDT)
+Date:   Mon, 4 Oct 2021 06:01:09 +0000
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+To:     David Rientjes <rientjes@google.com>
+Cc:     Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [QUESTION] is SLAB considered legacy and deprecated?
+Message-ID: <20211004060109.GA2949@linux.asia-northeast3-a.c.our-ratio-313919.internal>
+References: <20210927090347.GA2533@linux.asia-northeast3-a.c.our-ratio-313919.internal>
+ <8aa15f4b-71de-5283-5ebc-d8d1a323473d@suse.cz>
+ <20210928111231.GA2596@linux.asia-northeast3-a.c.our-ratio-313919.internal>
+ <b3c5bd9a-5fbc-8388-a4ab-6c20864dc7c6@suse.cz>
+ <20211003055928.GA7643@linux.asia-northeast3-a.c.our-ratio-313919.internal>
+ <377a622-9a5e-37dc-8f8d-42ae124042b6@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <377a622-9a5e-37dc-8f8d-42ae124042b6@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Richard,
-
-> > Not all ubifs filesystem errors are propagated to userspace.
-> >
-> > Export bad magic, bad node and crc errors via sysfs. This allows users=
-pace
-> > to notice filesystem errors:
-> >
-> > /sys/fs/ubifs/ubiX_Y/errors_magic
-> > /sys/fs/ubifs/ubiX_Y/errors_node
-> > /sys/fs/ubifs/ubiX_Y/errors_crc
-> >
-> > The counters are reset to 0 with a remount. Writing anything into the
-> > counters also clears them.
+On Sun, Oct 03, 2021 at 06:25:29PM -0700, David Rientjes wrote:
+> On Sun, 3 Oct 2021, Hyeonggon Yoo wrote:
+> 
+> > I think the points are still valid because on some workloads SLAB works
+> > better. especially when alloc/frees are intensive, SLUB tends to become
+> > bottleneck.
+> > 
+> > If we can't drop SLAB, it should be at least maintained :(
+> > But it has been neglected for a long time, which makes people not to
+> > use SLAB. Nobody likes to use a subsystem that isn't maintained.
+> > 
+> > Anyway, I'm curious about share of SLAB and SLUB and on what situations
+> > SLAB or SLUB is preferred. that information would help maintain both.
+> > 
+> 
+> Thanks for raising this, the discussion is always useful.  Both allocators 
+> have their pros and cons.
 >
-> I think this is a nice feature. Thanks for implementing it.
-> Please see some minor nits below.
->
-> Is there a specific reason why you didn't implement it via UBIFS's debug=
-fs interface?
 
-These error counters are not meant for aiding debugging but for userspace =
-to
-monitor the sanity of the filesystem. Also ext4 exports error counters via
-sysfs - it's probably a good idea to be consistent with them.
+Thanks for kind words, I was curious and wanted to help improve
+SLAB
 
-$ dir /sys/fs/ext4/sdb2/*error*
--r--r--r-- 1 root root 4096 Oct  3 13:46 /sys/fs/ext4/sdb2/errors_count
--r--r--r-- 1 root root 4096 Oct  3 13:46 /sys/fs/ext4/sdb2/first_error_blo=
-ck
--r--r--r-- 1 root root 4096 Oct  3 13:46 /sys/fs/ext4/sdb2/first_error_err=
-code
--r--r--r-- 1 root root 4096 Oct  3 13:46 /sys/fs/ext4/sdb2/first_error_fun=
-c
--r--r--r-- 1 root root 4096 Oct  3 13:46 /sys/fs/ext4/sdb2/first_error_ino
--r--r--r-- 1 root root 4096 Oct  3 13:46 /sys/fs/ext4/sdb2/first_error_lin=
-e
--r--r--r-- 1 root root 4096 Oct  3 13:46 /sys/fs/ext4/sdb2/first_error_tim=
-e
--r--r--r-- 1 root root 4096 Oct  3 13:46 /sys/fs/ext4/sdb2/last_error_bloc=
-k
--r--r--r-- 1 root root 4096 Oct  3 13:46 /sys/fs/ext4/sdb2/last_error_errc=
-ode
--r--r--r-- 1 root root 4096 Oct  3 13:46 /sys/fs/ext4/sdb2/last_error_func
--r--r--r-- 1 root root 4096 Oct  3 13:47 /sys/fs/ext4/sdb2/last_error_ino
--r--r--r-- 1 root root 4096 Oct  3 13:46 /sys/fs/ext4/sdb2/last_error_line
--r--r--r-- 1 root root 4096 Oct  3 13:46 /sys/fs/ext4/sdb2/last_error_time
-=2D-w------- 1 root root 4096 Oct  3 13:46 /sys/fs/ext4/sdb2/trigger_fs_er=
-ror
+> I would disagree that SLAB isn't currently maintained, I think it's 
+> actively maintained.
 
+I thought it was not actively maintained because most of patches were
+fixups and cleanups for years and as Vlastimil said, new features are
+only added to SLUB. development was focused on SLUB.
 
-> sysfs is ABI, so we cannot change much anymore.
+> I think the general guidance is that changes for both allocators can still
+> be merged upstream if they show a significant win (improved performnace, 
+> maintaining performance while reducing memory footprint, code hygiene, 
+> etc) and there's no specific policy that we cannot make changes to 
+> mm/slab.c.
 
-Judging by the filesystem permissions above, ext4 does not seem to allow
-resetting error counters. If you worry about unchangable ABIs then we coul=
-d
-play it safe and don't support write callbacks for resetting the error cou=
-nters
-in an initial version of the ubifs sysfs. What do you think?
+Good.
 
-When we are at it, in the current code, writing anything into a sysfs node
-resets the corresponding counter. One could fine-tune that to set the coun=
-ter
-to whatever non-negative integer is passed.
+I see things to improve in SLAB and want to improve it.
+I will appreciate if you review them.
 
-
-> > +		if (c->stats)
-> > +			c->stats->magic_errors++;
->
-> Please wrap this into a helper function.
-
-Ack.
-
-
-> > +		if (c->stats)
-> > +			c->stats->node_errors++;
->
-> Same.
-
-Ack.
-
-
-> > +		if (c->stats)
-> > +			c->stats->crc_errors++;
->
-> Same.
-
-Ack.
-
-
-> > +#define UBIFS_ATTR_FUNC(_name, _mode) UBIFS_ATTR(_name, _mode, _name)
-> > +
-> > +UBIFS_ATTR_FUNC(errors_magic, 0644);
-> > +UBIFS_ATTR_FUNC(errors_crc, 0644);
-> > +UBIFS_ATTR_FUNC(errors_node, 0644);
->
-> I'm not sure whether everyone should be allowed to read these stats.
-> dmesg is also restricted these days. An unprivileged user should not see=
- the
-> errors he can indirectly trigger.
-
-I don't mind 600, but having error counters world-readable is consistent w=
-ith
-ext4 (see dir above) and so I suggest to keep 644.
-
-
-> > +	case attr_errors_crc:
-> > +		return snprintf(buf, PAGE_SIZE, "%u\n",
-> > +				sbi->stats->crc_errors);
->
-> Please use sysfs_emit().
-
-Ack.
-
-
-> > +	if (n =3D=3D UBIFS_DFS_DIR_LEN) {
-> > +		/* The array size is too small */
-> > +		ret =3D -EINVAL;
-> > +		goto out_last;
->
-> Where is c->stats released in case of an error?
-
-My fault. Will be fixed.
-
-
-> > diff --git a/fs/ubifs/sysfs.h b/fs/ubifs/sysfs.h
-> > new file mode 100644
-> > index 000000000000..a10a82585af8
-> > --- /dev/null
-> > +++ b/fs/ubifs/sysfs.h
->
-> Do we really need a new header file?
-> Usually most run-time stuff of UBIFS is part of ubifs.h.
-
-I wanted to be consistent with debugfs where fs/ubifs/debug.c comes with i=
-ts
-own header fs/ubifs/debug.h.
-
-
-I'll send out a new patch once we agree on all changes. To recap:
-
-- write callbacks: do we remove them? If not, do we keep them as is or do =
-we
-  fine-tine them by letting a non-negative integer set the counter?
-
-- 644 (world-readable) counters to be consistent with ext4?
-
-- keep sysfs.h to be consistent with debugfs?
-
- Stefan
+Thanks,
+Hyeonggon
