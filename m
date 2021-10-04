@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92544420C00
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:00:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB64B420FD1
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:37:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234502AbhJDNBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:01:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60114 "EHLO mail.kernel.org"
+        id S237603AbhJDNiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:38:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49924 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234034AbhJDNAN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:00:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E21761213;
-        Mon,  4 Oct 2021 12:57:53 +0000 (UTC)
+        id S236540AbhJDNgj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:36:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F8E361244;
+        Mon,  4 Oct 2021 13:16:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352273;
-        bh=KXnMig1+1jNUcDKDIWgFR3AO2q8KWmvyo3DPJs9IbLU=;
+        s=korg; t=1633353388;
+        bh=TntB1egtxX+cVgnbi3uAtTG3jLkqyUYeWXXsNEWXATk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=W5iaNGfzFUFc9/2QHTrViFIXBr0+wBpCQjpqKHvyTlBrjjR2mp3682n2unGvlQQ1V
-         vzVuSOeVcMtrvPW413UFISXw7pF0kg/eF+EMAeTCt3UPiP7uPy9pG01+Y2tVxu6lq3
-         nsqeL+rLtL/Q4OxmjScnF/dGCKJPveSMAi1qTQ6s=
+        b=jE7c7LT+WQBS5UqavNLBoOm+3EHcIdncmQH2gzUBVzGE04eLTmLk337oqh3hEXNx+
+         ztDGbvEdT2N74GW7kevfpgZfDuTsfWbgk+xE5tQ798cGwX4cCFRTcELgBckm64iUh4
+         zX2sqquqAQQux0NoiKBBr+4ZYNPi37feb2mR/1Y4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+47b26cd837ececfc666d@syzkaller.appspotmail.com,
-        Anirudh Rayabharam <mail@anirudhrb.com>,
-        Jiri Kosina <jkosina@suse.cz>
-Subject: [PATCH 4.9 56/57] HID: usbhid: free raw_report buffers in usbhid_stop
+        Felicitas Hetzelt <felicitashetzelt@gmail.com>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 110/172] e100: fix buffer overrun in e100_get_regs
 Date:   Mon,  4 Oct 2021 14:52:40 +0200
-Message-Id: <20211004125030.720628285@linuxfoundation.org>
+Message-Id: <20211004125048.530845087@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125028.940212411@linuxfoundation.org>
-References: <20211004125028.940212411@linuxfoundation.org>
+In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
+References: <20211004125044.945314266@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,55 +42,107 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anirudh Rayabharam <mail@anirudhrb.com>
+From: Jacob Keller <jacob.e.keller@intel.com>
 
-commit f7744fa16b96da57187dc8e5634152d3b63d72de upstream.
+[ Upstream commit 51032e6f17ce990d06123ad7307f258c50d25aa7 ]
 
-Free the unsent raw_report buffers when the device is removed.
+The e100_get_regs function is used to implement a simple register dump
+for the e100 device. The data is broken into a couple of MAC control
+registers, and then a series of PHY registers, followed by a memory dump
+buffer.
 
-Fixes a memory leak reported by syzbot at:
-https://syzkaller.appspot.com/bug?id=7b4fa7cb1a7c2d3342a2a8a6c53371c8c418ab47
+The total length of the register dump is defined as (1 + E100_PHY_REGS)
+* sizeof(u32) + sizeof(nic->mem->dump_buf).
 
-Reported-by: syzbot+47b26cd837ececfc666d@syzkaller.appspotmail.com
-Tested-by: syzbot+47b26cd837ececfc666d@syzkaller.appspotmail.com
-Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+The logic for filling in the PHY registers uses a convoluted inverted
+count for loop which counts from E100_PHY_REGS (0x1C) down to 0, and
+assigns the slots 1 + E100_PHY_REGS - i. The first loop iteration will
+fill in [1] and the final loop iteration will fill in [1 + 0x1C]. This
+is actually one more than the supposed number of PHY registers.
+
+The memory dump buffer is then filled into the space at
+[2 + E100_PHY_REGS] which will cause that memcpy to assign 4 bytes past
+the total size.
+
+The end result is that we overrun the total buffer size allocated by the
+kernel, which could lead to a panic or other issues due to memory
+corruption.
+
+It is difficult to determine the actual total number of registers
+here. The only 8255x datasheet I could find indicates there are 28 total
+MDI registers. However, we're reading 29 here, and reading them in
+reverse!
+
+In addition, the ethtool e100 register dump interface appears to read
+the first PHY register to determine if the device is in MDI or MDIx
+mode. This doesn't appear to be documented anywhere within the 8255x
+datasheet. I can only assume it must be in register 28 (the extra
+register we're reading here).
+
+Lets not change any of the intended meaning of what we copy here. Just
+extend the space by 4 bytes to account for the extra register and
+continue copying the data out in the same order.
+
+Change the E100_PHY_REGS value to be the correct total (29) so that the
+total register dump size is calculated properly. Fix the offset for
+where we copy the dump buffer so that it doesn't overrun the total size.
+
+Re-write the for loop to use counting up instead of the convoluted
+down-counting. Correct the mdio_read offset to use the 0-based register
+offsets, but maintain the bizarre reverse ordering so that we have the
+ABI expected by applications like ethtool. This requires and additional
+subtraction of 1. It seems a bit odd but it makes the flow of assignment
+into the register buffer easier to follow.
+
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Reported-by: Felicitas Hetzelt <felicitashetzelt@gmail.com>
+Signed-off-by: Jacob Keller <jacob.e.keller@intel.com>
+Tested-by: Jacob Keller <jacob.e.keller@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/usbhid/hid-core.c |   13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/intel/e100.c | 16 ++++++++++------
+ 1 file changed, 10 insertions(+), 6 deletions(-)
 
---- a/drivers/hid/usbhid/hid-core.c
-+++ b/drivers/hid/usbhid/hid-core.c
-@@ -500,7 +500,7 @@ static void hid_ctrl(struct urb *urb)
+diff --git a/drivers/net/ethernet/intel/e100.c b/drivers/net/ethernet/intel/e100.c
+index 71b9f0563b32..1fa68ebe9432 100644
+--- a/drivers/net/ethernet/intel/e100.c
++++ b/drivers/net/ethernet/intel/e100.c
+@@ -2437,7 +2437,7 @@ static void e100_get_drvinfo(struct net_device *netdev,
+ 		sizeof(info->bus_info));
+ }
  
- 	if (unplug) {
- 		usbhid->ctrltail = usbhid->ctrlhead;
--	} else {
-+	} else if (usbhid->ctrlhead != usbhid->ctrltail) {
- 		usbhid->ctrltail = (usbhid->ctrltail + 1) & (HID_CONTROL_FIFO_SIZE - 1);
+-#define E100_PHY_REGS 0x1C
++#define E100_PHY_REGS 0x1D
+ static int e100_get_regs_len(struct net_device *netdev)
+ {
+ 	struct nic *nic = netdev_priv(netdev);
+@@ -2459,14 +2459,18 @@ static void e100_get_regs(struct net_device *netdev,
+ 	buff[0] = ioread8(&nic->csr->scb.cmd_hi) << 24 |
+ 		ioread8(&nic->csr->scb.cmd_lo) << 16 |
+ 		ioread16(&nic->csr->scb.status);
+-	for (i = E100_PHY_REGS; i >= 0; i--)
+-		buff[1 + E100_PHY_REGS - i] =
+-			mdio_read(netdev, nic->mii.phy_id, i);
++	for (i = 0; i < E100_PHY_REGS; i++)
++		/* Note that we read the registers in reverse order. This
++		 * ordering is the ABI apparently used by ethtool and other
++		 * applications.
++		 */
++		buff[1 + i] = mdio_read(netdev, nic->mii.phy_id,
++					E100_PHY_REGS - 1 - i);
+ 	memset(nic->mem->dump_buf, 0, sizeof(nic->mem->dump_buf));
+ 	e100_exec_cb(nic, NULL, e100_dump);
+ 	msleep(10);
+-	memcpy(&buff[2 + E100_PHY_REGS], nic->mem->dump_buf,
+-		sizeof(nic->mem->dump_buf));
++	memcpy(&buff[1 + E100_PHY_REGS], nic->mem->dump_buf,
++	       sizeof(nic->mem->dump_buf));
+ }
  
- 		if (usbhid->ctrlhead != usbhid->ctrltail &&
-@@ -1185,9 +1185,20 @@ static void usbhid_stop(struct hid_devic
- 		usbhid->intf->needs_remote_wakeup = 0;
- 
- 	clear_bit(HID_STARTED, &usbhid->iofl);
-+
- 	spin_lock_irq(&usbhid->lock);	/* Sync with error and led handlers */
- 	set_bit(HID_DISCONNECTED, &usbhid->iofl);
-+	while (usbhid->ctrltail != usbhid->ctrlhead) {
-+		if (usbhid->ctrl[usbhid->ctrltail].dir == USB_DIR_OUT) {
-+			kfree(usbhid->ctrl[usbhid->ctrltail].raw_report);
-+			usbhid->ctrl[usbhid->ctrltail].raw_report = NULL;
-+		}
-+
-+		usbhid->ctrltail = (usbhid->ctrltail + 1) &
-+			(HID_CONTROL_FIFO_SIZE - 1);
-+	}
- 	spin_unlock_irq(&usbhid->lock);
-+
- 	usb_kill_urb(usbhid->urbin);
- 	usb_kill_urb(usbhid->urbout);
- 	usb_kill_urb(usbhid->urbctrl);
+ static void e100_get_wol(struct net_device *netdev, struct ethtool_wolinfo *wol)
+-- 
+2.33.0
+
 
 
