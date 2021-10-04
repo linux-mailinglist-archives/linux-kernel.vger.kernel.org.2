@@ -2,77 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D04E421464
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 18:47:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9818842146B
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 18:51:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237467AbhJDQtg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 12:49:36 -0400
-Received: from mail-ot1-f49.google.com ([209.85.210.49]:45845 "EHLO
-        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237351AbhJDQtf (ORCPT
+        id S237406AbhJDQxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 12:53:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55286 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235435AbhJDQxT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 12:49:35 -0400
-Received: by mail-ot1-f49.google.com with SMTP id e66-20020a9d2ac8000000b0054da8bdf2aeso20153646otb.12;
-        Mon, 04 Oct 2021 09:47:46 -0700 (PDT)
+        Mon, 4 Oct 2021 12:53:19 -0400
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B220C06174E
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 09:51:30 -0700 (PDT)
+Received: by mail-qt1-x831.google.com with SMTP id c20so16490527qtb.2
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 09:51:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=fm0N+uR1hXDzNubZl52j+8JgNSoL4ihvsWR45BnPk0U=;
+        b=fONFgNJfZDZei6PZNVpZuBiLsJj1X5q23bUBDHR6Fuxaodm1hwle2aSXXPZVhQpqj9
+         /ElI7DyN32U6z+PhNlz1pYV8PPs8OQn/iFlypBkab16easskT0oRAko11Dw8EcB06gh3
+         CT8v9N1IlFy843LfazZZljBlqka49vpAeBfatzveca+w8ZlAxXkZUlYcmf+sEfKG76u1
+         TY3Qw27XfzNUrJYbeVCCKzCM9MyLRwvqODBB2+ZIY6INJBFgZ0vzDFcU4588yCEQbWfI
+         VrxXG8yZyLHHstArVfuqbBlnxD2yIw4Q9BeabvwIFlg/VlzoHYsVmsWnFXrwI3rskJ6H
+         T5Iw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=bX1AWjTVQ99QhdMBAvTgxvLZsO8dKqZ24tnr3dEHNw8=;
-        b=sdBcnya7haGVyy8rMSgoNrblNYqgnUM4BQuTXmSMbUJ1z2rQ5ZTp9lQwwU8/XFSwW1
-         9SkXzPgWzfwtvGOEVrRb1ptnzfnRPem3vQSoc3SuQrrWsdHxwxbftPWEGGGwv/6Za0lR
-         bmJgiaILq//JB5U/DX4yFWV81S8ZxdQmbR0aMW1kEhVbgxJIMVj4NlXzM588xYU4s043
-         cb7rX/z9OYJJyECg+6EAoxQ4brgetgL0w/+CEkHRRQ77Q3wIwBmwSoVz4R7Bwyk3Uf9h
-         GorVObrfEWuPTWPb8G5K5u7fqaFBloCElEjB5v0HC6dscRzfKqH3aY5I69D2VEUqRZxm
-         j9mQ==
-X-Gm-Message-State: AOAM533TUyY1PcTAaZC8oxf8ry/iFCkIzHzr6lG0KgIpvu5zgCqsS977
-        bKjkzxtMgNPgiPX0qsvQ3w==
-X-Google-Smtp-Source: ABdhPJwRXaKWlO5doyFlIqDOX6eKpoHs6FSOnYo+lTc7QnEVeYigsMQ3rRlJ7Hq/fQ3+OH+d8D37Lw==
-X-Received: by 2002:a05:6830:3486:: with SMTP id c6mr10175603otu.101.1633366065420;
-        Mon, 04 Oct 2021 09:47:45 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id g12sm2919168oof.6.2021.10.04.09.47.44
+        bh=fm0N+uR1hXDzNubZl52j+8JgNSoL4ihvsWR45BnPk0U=;
+        b=nTxf7TPOkxtPHsBHzlTitTi2h/uBu9pk2hbTrvXxtEzsTMJXu7Q+1hIcnuzl8TLiPU
+         ylD3oAv2SoR7RMJ/cGqVmGc2o0zaZqkoYyrPg0+A1VLQHFAOcy4hwYO/gT0RKoXSxzMl
+         MvzlFGHUqevY8cZLbglswGuLzo4VElGR2nc+gkgKiOY4L2jpP0QuWjGMicPmu93+2hLk
+         uvu0DkAQQb8sJ7L4RREvpd34CO47IVm0O1ZYI2GZw54xQJIFrJGCmkXypEdfyQy5mGwK
+         tCfqCbEjby0yT1KtnYRJ9drpUEJE6e9Wy+i2u3RIi7+yGTwjmIowGDXwLZrhCVTxdGc0
+         IkvA==
+X-Gm-Message-State: AOAM530vgcxpu55pGIDgdM/DzczC+iM9+PXSyMYhkGgd3MT86klzu+jv
+        3lNiHNOYgV26nCrcCMzE7X0umQ==
+X-Google-Smtp-Source: ABdhPJwYxtXAD8Z3ExxCEQ19TzIoVR9HRb32/NI/yIjc3B407LzHe5QYs0z4lz+/49EyQ9oJMCYpoQ==
+X-Received: by 2002:ac8:4610:: with SMTP id p16mr6740796qtn.98.1633366289243;
+        Mon, 04 Oct 2021 09:51:29 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
+        by smtp.gmail.com with ESMTPSA id l26sm974766qkj.38.2021.10.04.09.51.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Oct 2021 09:47:44 -0700 (PDT)
-Received: (nullmailer pid 1453765 invoked by uid 1000);
-        Mon, 04 Oct 2021 16:47:43 -0000
-Date:   Mon, 4 Oct 2021 11:47:43 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Cc:     drinkcat@chromium.org, matthias.bgg@gmail.com,
-        Rob Herring <robh+dt@kernel.org>, chunkuang.hu@kernel.org,
-        devicetree@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        Mon, 04 Oct 2021 09:51:28 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1mXRBX-00AXAU-Qu; Mon, 04 Oct 2021 13:51:27 -0300
+Date:   Mon, 4 Oct 2021 13:51:27 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Lino Sanfilippo <LinoSanfilippo@gmx.de>, rjui@broadcom.com,
+        sbranden@broadcom.com, bcm-kernel-feedback-list@broadcom.com,
+        nsaenz@kernel.org, linux-spi@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Fabien Parent <fparent@baylibre.com>, kernel@collabora.com,
-        eizan@chromium.org, hsinyi@chromium.org, jitao.shi@mediatek.com
-Subject: Re: [PATCH v4 2/7] dt-bindings: mediatek: Add #reset-cells to mmsys
- system controller
-Message-ID: <YVswLzTQhuj7zI4Z@robh.at.kernel.org>
-References: <20210930083150.3317003-1-enric.balletbo@collabora.com>
- <20210930103105.v4.2.I3f7f1c9a8e46be07d1757ddf4e0097535f3a7d41@changeid>
+        p.rosenberger@kunbus.com, linux-integrity@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] spi: bcm2835: do not unregister controller in shutdown
+ handler
+Message-ID: <20211004165127.GZ3544071@ziepe.ca>
+References: <20210928195657.5573-1-LinoSanfilippo@gmx.de>
+ <20211001175422.GA53652@sirena.org.uk>
+ <2c4d7115-7a02-f79e-c91b-3c2dd54051b2@gmx.de>
+ <YVr4USeiIoQJ0Pqh@sirena.org.uk>
+ <20211004131756.GW3544071@ziepe.ca>
+ <YVsLxHMCdXf4vS+i@sirena.org.uk>
+ <20211004154436.GY3544071@ziepe.ca>
+ <YVssWYaxuQDi8jI5@sirena.org.uk>
+ <e68b04ab-831b-0ed5-074a-0879194569f9@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210930103105.v4.2.I3f7f1c9a8e46be07d1757ddf4e0097535f3a7d41@changeid>
+In-Reply-To: <e68b04ab-831b-0ed5-074a-0879194569f9@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 30 Sep 2021 10:31:45 +0200, Enric Balletbo i Serra wrote:
-> The mmsys system controller exposes a set of memory client resets and
-> needs to specify the #reset-cells property in order to advertise the
-> number of cells needed to describe each of the resets.
-> 
-> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-> ---
-> 
-> (no changes since v3)
-> 
-> Changes in v3:
-> - Based on top of the patch that converts mmsys to schema
-> 
->  .../devicetree/bindings/arm/mediatek/mediatek,mmsys.yaml      | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
+On Mon, Oct 04, 2021 at 09:36:37AM -0700, Florian Fainelli wrote:
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+> No please don't, I should have arguably justified the reasons why
+> better, but the main reason is that one of the platforms on which this
+> driver is used has received extensive power management analysis and
+> changes, and shutting down every bit of hardware, including something as
+> small as a SPI controller, and its clock (and its PLL) helped meet
+> stringent power targets.
+
+Huh? for device shutdown? What would this matter if the next step is
+reboot or power off?
+
+> TBH, I still wonder why we have .shutdown() and we simply don't use
+> .remove() which would reduce the amount of work that people have to do
+> validate that the hardware is put in a low power state and would also
+> reduce the amount of burden on the various subsystems.
+
+The difference between remove and shutdown really is that 'emergency'
+sense that shutdown is something that must complete in bounded time
+and thus only has to concern itself with quieting hardware to a safe
+state for the next step in the shutdown/reboot/kexec/kdump sequence.
+
+Many remove handlers happily block until, eg all user files are closed
+or something to allow a graceful module unload.
+
+Jason
