@@ -2,129 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 212034217A7
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 21:34:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C0DE4217C9
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 21:42:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238997AbhJDTgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 15:36:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38052 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238881AbhJDTfu (ORCPT
+        id S239133AbhJDToH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 15:44:07 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:13507 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239066AbhJDTnv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 15:35:50 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34C38C061745;
-        Mon,  4 Oct 2021 12:34:01 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id o20so14733817wro.3;
-        Mon, 04 Oct 2021 12:34:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=AB8Fd9J5nhvmXnlzY+kN5c+dkvcRYSKSOLXBLG59XyI=;
-        b=XeFwqG7tdttVUpvyAEa0+o4v1npEufRCff1blIOfzsQrFELlHPSGUoFCgz24eHt1gf
-         QdncUEuE1qkGT5cMueFNKq+xM+/VfB7RvxF8SZ4L/JE4h88vZ1Tl2WlWSU+j0zTn7Lah
-         vFPNs29D/7TeImyOP4yryWP/fbEBIn2nZg7hKXqH5REUTo4RI9m+310PeIPOSzhZFkC3
-         +1TlgzKIhH5h6DQ7d4JYPumJv4rGUD6cr6FjNBi/+8UXGfrYZx9AchG9mD10zDZcibdL
-         BplKzZbskj/dYOQ9Yd0Xo8QvXxeujUHzIrHdg3DhT+zSxNb1230oHwRt3BK3YHYZqhjw
-         2AgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=AB8Fd9J5nhvmXnlzY+kN5c+dkvcRYSKSOLXBLG59XyI=;
-        b=X+TilvxpTjeUCGJFAYeZOuL7TrEps1lghg++SQPNsoUQ1Bwo/7g2dckPlDQzFNbPNI
-         o37Bkw68K9qiINP0+rvikhwF+fMthohNhlKmMOg7myuOEhFbU1oHziVHB43V3LPcnYXV
-         kXnhQBECXiNERYSvju75nbuJ27fi9rjNkXccV4N86U0wcZnTKA6GoQ0cqm/cdudoSAWY
-         rHHycNFJT2qY6XPNcps6hJXzsPs6JPkPgttZxNAw+wR5ce7JUp/unyg4S9ltMkRWNf//
-         ARsVk5G8sVfxQY5OVeHYDmRNOeJPzsekzyA38sAJqjTsQ6ptzG8VTKExE8c8Iki5ewin
-         9o7Q==
-X-Gm-Message-State: AOAM530yL2xkpzIwtC/DK99eYY7KZ64LtlG1t7eSc2C5zzdSSLqO0yle
-        MdBEhO+TCAm6qtyltvvz2Wg=
-X-Google-Smtp-Source: ABdhPJw/putw+bmJUdvmmoLAQe6MqLM63VHbTKG2urlYRxiL22Rj2ibW6zx/tWGkt9CGdjOJ+5qxKA==
-X-Received: by 2002:a5d:648f:: with SMTP id o15mr16666691wri.338.1633376039737;
-        Mon, 04 Oct 2021 12:33:59 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id v13sm12377769wrp.64.2021.10.04.12.33.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Oct 2021 12:33:58 -0700 (PDT)
-Date:   Mon, 4 Oct 2021 21:33:57 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>, linux-pm@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 4/6] clk: tegra: Add stubs needed for compile testing
-Message-ID: <YVtXJVeK2qdy8E1q@orome.fritz.box>
-References: <20210912202907.28471-1-digetx@gmail.com>
- <20210912202907.28471-5-digetx@gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="GQheADiyYuC4Rye0"
-Content-Disposition: inline
-In-Reply-To: <20210912202907.28471-5-digetx@gmail.com>
-User-Agent: Mutt/2.1.3 (987dde4c) (2021-09-10)
+        Mon, 4 Oct 2021 15:43:51 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1633376522; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=hn7lmRIVDQJrIAxbdnCv3VFdDFyuLebKXSyB7FoPSIU=; b=wv+LNsbSAexenL7GX9pQ3NpjmZ27S2NFXa6W/W8bzWtntx4RmixCFE2i0oLvIdeRnG9/Z9M2
+ Fhv3j4uSMTtqP/Ecl6SoXmaHU9kX8x5vCfC5zc/AJ+SJCTJgYT0F3BtaanKP8So7Km4wHYpD
+ 2QxfHVvIb5ZwMdyKvriwH5H8Xag=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 615b58f6605ecf100b48d8e3 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 04 Oct 2021 19:41:42
+ GMT
+Sender: pmaliset=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 52434C43460; Mon,  4 Oct 2021 19:41:42 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from pmaliset-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: pmaliset)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 60AF2C43460;
+        Mon,  4 Oct 2021 19:41:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 60AF2C43460
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Prasad Malisetty <pmaliset@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, bhelgaas@google.com,
+        robh+dt@kernel.org, swboyd@chromium.org, lorenzo.pieralisi@arm.com,
+        svarbanov@mm-sol.com
+Cc:     devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dianders@chromium.org, mka@chromium.org, vbadigan@codeaurora.org,
+        sallenki@codeaurora.org, manivannan.sadhasivam@linaro.org,
+        linux-pci@vger.kernel.org,
+        Prasad Malisetty <pmaliset@codeaurora.org>
+Subject: [PATCH v10 0/5] Add DT bindings and DT nodes for PCIe and PHY in SC7280
+Date:   Tue,  5 Oct 2021 01:11:23 +0530
+Message-Id: <1633376488-545-1-git-send-email-pmaliset@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Changes added in v10:
 
---GQheADiyYuC4Rye0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+	* v9 [Patch 4/4/] has been split into two separate patches
+	* Addressed all comments in IDP [Patch 3/4] file.
+ 	
+Changes added in v9:
+    * Added fixed regulator entry for nvme.suggested by Stephen Boyd
+    * Added NULL pointer check before accessing ops in pcie probe
+      Suggested by Stephen Boyd
 
-On Sun, Sep 12, 2021 at 11:29:05PM +0300, Dmitry Osipenko wrote:
-> Add stubs needed for compile-testing of tegra-cpuidle driver.
->=20
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  include/linux/clk/tegra.h | 4 ++++
->  1 file changed, 4 insertions(+)
->=20
-> diff --git a/include/linux/clk/tegra.h b/include/linux/clk/tegra.h
-> index d128ad1570aa..9bd06d8a5436 100644
-> --- a/include/linux/clk/tegra.h
-> +++ b/include/linux/clk/tegra.h
-> @@ -42,7 +42,11 @@ struct tegra_cpu_car_ops {
->  #endif
->  };
-> =20
-> +#ifdef CONFIG_ARCH_TEGRA
->  extern struct tegra_cpu_car_ops *tegra_cpu_car_ops;
-> +#else
-> +static struct tegra_cpu_car_ops *tegra_cpu_car_ops __maybe_unused;
-> +#endif
+Changes added in v8:
 
-Ugh... this one seems a bit over the top, to be honest. The only place
-where this seems to be used is in arch/arm/mach-tegra/pm.c, but that
-already uses one of the stubs from include/linux/clk/tegra.h, so I'm
-wondering if we can't define that latter stub in a way to make it
-unnecessary to declare this bogus pointer.
+    * Added seperate pinctrl state for NVMe LDO enable pin [v8 P3/4]
+    * Removed pointer initialization for pcie_cfg [v8 P4/4]
+    * Replaced bool pcie_pipe_clk_src with unsigned int:1 [v8 P4/4]
+    * Changed gcc_pcie_1_pipe_clk_src to pipe_clk_src
 
-I'll play around with this a little bit.
+Changes added in v7:
 
-Thierry
+        * Removed two fallbacks qcom,pcie-sm8250 and snps,dw-pcie.
+        * Replaced compatible method in get_resources_2_7_0 with
+            flag approach suggested by Bjorn Helgaas .
+        * Setting gcc_pcie_1_clk_src as XO in init_2_7_0 for
+          gdsc enable.
+        * Added specific NVMe GPIO entries for SKU1 and SKU2 support
+          in idp.dts and idp2.dts respectively.
+        * Moved pcie_1 and pcie_1_phy board specific entries into common
+          board file sc7280-idp.dtsi file.
 
---GQheADiyYuC4Rye0
-Content-Type: application/pgp-signature; name="signature.asc"
+Changes in v6:
 
------BEGIN PGP SIGNATURE-----
+    * Removed platform check while setting gcc_pcie_1_pipe_clk_src
+          as clk_set_parent will return 0 with nop if platform doesn't
+          need to switch pipe clk source.
+        * Moved wake-n gpio to board specific file sc7280-idp.dtsi
+        * Sorted gpio.h header entry in sc7280.dtsi file
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmFbVyMACgkQ3SOs138+
-s6GkhxAAtIARHiYgA2/pVU45dG9aJo+1WHokbkY3gjuqUUg5EwVeJ4pIs2mwuZDx
-UnvdoMLP58u5pQUzrEP9j4eaH9QeFdS4TnAFX036ooD36l8xDqseDFL0Y+wEd/JD
-FBzJiBYZKBfKJcK+1+jZjpo1k1BiQE9Okv5NtxGxRQv6T3YMXoVAYTDUXTNX1zNO
-Ufiy7iOZT8CfdNi3S1QwKSD/RqO9c9ZR9gnFTfXuPfLrDN8nSduu0QO8tZDaBYsT
-Qo1oC/x9ZMLglNE36B8wdIW685UUjjP+prLJD0IZEV6hrEHaE6tMNnhB08GtrnIn
-FvHZPNXJyvoI7V7h/3PKX7g587KOvcVVWXMSMN8ZIbhOgen9VUi7vd4wAD960Qgl
-4BIOu6J7JVVB9xZF9tvYh4U4oNmIs0Y2U2zRyZ08HjxTiS1UQjVu4M8AtS2AxTGl
-OJDmoggAzQJIR/tiDSLG2fN0dMfqUo7j47VHFu2+MlJFa2qCBvuq1S4aRljWHlUu
-F9uKfKoItxyB8eq+Agno2dRIiYNdBv3wvucTyR8eu9dyH5LzTdXx/zR2OX4rI57y
-dU88jvymbXmaNplJP5qS+PgXq3p8VP9nVkGuMhhN1lW8o7agJDLpWFxgxzgSapxL
-fcmYQlIdcjd2QDjvMbrvmBOVNDeV1kdK3GpZwAuaTwhQ5n6vp44=
-=O9GU
------END PGP SIGNATURE-----
+Changes in v5:
 
---GQheADiyYuC4Rye0--
+        * Re ordered PCIe, PHY nodes in Soc and board specific dtsi files.
+        * Removed ref_clk entry in current patch [PATCH v4 P4/4].
+        * I will add ref clk entry in suspend/ resume commits.
+        * Added boolean flag in Soc specific dtsi file to differentiate
+          SM8250 and SC7280 platforms. based on boolean flag, platforms will handle
+          the pipe clk handling.
+
+Changes in v4 as suggested by Bjorn:
+
+        * Changed pipe clk mux name as gcc_pcie_1_pipe_clk_src.
+        * Changed pipe_ext_src as phy_pipe_clk.
+        * Updated commit message for [PATCH v4 4/4].
+
+Changes in v3:
+        * Changed pipe clock names in dt bindings as pipe_mux and phy_pipe.
+        * Moved reset and NVMe GPIO pin configs into board specific file.
+        * Updated pipe clk mux commit message.
+
+Changes in v2:
+        * Moved pcie pin control settings into IDP file.
+        * Replaced pipe_clk_src with pipe_clk_mux in pcie driver
+        * Included pipe clk mux setting change set in this series
+
+Prasad Malisetty (5):
+  dt-bindings: pci: qcom: Document PCIe bindings for SC7280
+  arm64: dts: qcom: sc7280: Add PCIe and PHY related nodes
+  arm64: dts: qcom: sc7280: Add PCIe nodes for IDP board
+  PCI: qcom: Add a flag in match data along with ops
+  PCI: qcom: Switch pcie_1_pipe_clk_src after PHY init in SC7280
+
+ .../devicetree/bindings/pci/qcom,pcie.txt          |  17 +++
+ arch/arm64/boot/dts/qcom/sc7280-idp.dts            |   8 ++
+ arch/arm64/boot/dts/qcom/sc7280-idp.dtsi           |  51 +++++++++
+ arch/arm64/boot/dts/qcom/sc7280-idp2.dts           |   8 ++
+ arch/arm64/boot/dts/qcom/sc7280.dtsi               | 117 +++++++++++++++++++++
+ drivers/pci/controller/dwc/pcie-qcom.c             |  94 +++++++++++++++--
+ 6 files changed, 284 insertions(+), 11 deletions(-)
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
