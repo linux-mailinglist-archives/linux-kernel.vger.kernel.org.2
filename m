@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 065AE420E85
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:23:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98E6B420BDD
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:59:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237010AbhJDNZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:25:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37678 "EHLO mail.kernel.org"
+        id S234374AbhJDNAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:00:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58688 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236949AbhJDNXj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:23:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C5C4861B70;
-        Mon,  4 Oct 2021 13:10:16 +0000 (UTC)
+        id S234379AbhJDM7J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 08:59:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 86A206139F;
+        Mon,  4 Oct 2021 12:57:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633353017;
-        bh=pKIv5ZIEhTmDZth8FWRdX463UbhpyPioYdH+f5mknIA=;
+        s=korg; t=1633352234;
+        bh=N/YiuC8gDkYC3NlJtoU7QQS35Ya/8ant7MnCQhzfkfY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GUbZMK0b0KlMiawdZavlBTfCA5JkSAHP93rnzvSBIkrZInFDP0JbfIDhd7xif/Ml/
-         BA1jdPbknpWQDD0D735Dxt+Njx9nSbGnO6ywqW+CUminUBU2SaD01ouG4WXA0Bwniv
-         J+GwHP4HOwU8iyUF7LtRiZw65vN/S12etXqmuut8=
+        b=VlV8YMDhgUCfbIx0jYclY1fMi272PU8U+W8O7qplUDTxbOWa18pqmjVtmzEMrpsde
+         U3GUhwtaBdjfCN1EhgxnIq9i0HktyvtPsyHvaiZc4SeGBzf5ub7WIsycsvnCv0Elap
+         SXSJx3w227r1fcY9hT1jQ0kclm/aenpa10Xu0gZk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hawking Zhang <Hawking.Zhang@amd.com>,
-        Le Ma <Le.Ma@amd.com>, Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.10 24/93] drm/amdgpu: correct initial cp_hqd_quantum for gfx9
-Date:   Mon,  4 Oct 2021 14:52:22 +0200
-Message-Id: <20211004125035.382811357@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Felicitas Hetzelt <felicitashetzelt@gmail.com>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 39/57] e100: fix length calculation in e100_get_regs_len
+Date:   Mon,  4 Oct 2021 14:52:23 +0200
+Message-Id: <20211004125030.173308166@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125034.579439135@linuxfoundation.org>
-References: <20211004125034.579439135@linuxfoundation.org>
+In-Reply-To: <20211004125028.940212411@linuxfoundation.org>
+References: <20211004125028.940212411@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,32 +42,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hawking Zhang <Hawking.Zhang@amd.com>
+From: Jacob Keller <jacob.e.keller@intel.com>
 
-commit 9f52c25f59b504a29dda42d83ac1e24d2af535d4 upstream.
+[ Upstream commit 4329c8dc110b25d5f04ed20c6821bb60deff279f ]
 
-didn't read the value of mmCP_HQD_QUANTUM from correct
-register offset
+commit abf9b902059f ("e100: cleanup unneeded math") tried to simplify
+e100_get_regs_len and remove a double 'divide and then multiply'
+calculation that the e100_reg_regs_len function did.
 
-Signed-off-by: Hawking Zhang <Hawking.Zhang@amd.com>
-Reviewed-by: Le Ma <Le.Ma@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This change broke the size calculation entirely as it failed to account
+for the fact that the numbered registers are actually 4 bytes wide and
+not 1 byte. This resulted in a significant under allocation of the
+register buffer used by e100_get_regs.
+
+Fix this by properly multiplying the register count by u32 first before
+adding the size of the dump buffer.
+
+Fixes: abf9b902059f ("e100: cleanup unneeded math")
+Reported-by: Felicitas Hetzelt <felicitashetzelt@gmail.com>
+Signed-off-by: Jacob Keller <jacob.e.keller@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/intel/e100.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
---- a/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c
-+++ b/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c
-@@ -3542,7 +3542,7 @@ static int gfx_v9_0_mqd_init(struct amdg
+diff --git a/drivers/net/ethernet/intel/e100.c b/drivers/net/ethernet/intel/e100.c
+index 9035cb5fc70d..abb65ed9492b 100644
+--- a/drivers/net/ethernet/intel/e100.c
++++ b/drivers/net/ethernet/intel/e100.c
+@@ -2466,7 +2466,11 @@ static void e100_get_drvinfo(struct net_device *netdev,
+ static int e100_get_regs_len(struct net_device *netdev)
+ {
+ 	struct nic *nic = netdev_priv(netdev);
+-	return 1 + E100_PHY_REGS + sizeof(nic->mem->dump_buf);
++
++	/* We know the number of registers, and the size of the dump buffer.
++	 * Calculate the total size in bytes.
++	 */
++	return (1 + E100_PHY_REGS) * sizeof(u32) + sizeof(nic->mem->dump_buf);
+ }
  
- 	/* set static priority for a queue/ring */
- 	gfx_v9_0_mqd_set_priority(ring, mqd);
--	mqd->cp_hqd_quantum = RREG32(mmCP_HQD_QUANTUM);
-+	mqd->cp_hqd_quantum = RREG32_SOC15(GC, 0, mmCP_HQD_QUANTUM);
- 
- 	/* map_queues packet doesn't need activate the queue,
- 	 * so only kiq need set this field.
+ static void e100_get_regs(struct net_device *netdev,
+-- 
+2.33.0
+
 
 
