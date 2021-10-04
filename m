@@ -2,210 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F6E5421254
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 17:08:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C571A421257
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 17:08:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235553AbhJDPKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 11:10:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59146 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233728AbhJDPKh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 11:10:37 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 854C6C061745
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 08:08:48 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f08d80044cec3b734c8017c.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:d800:44ce:c3b7:34c8:17c])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id B807E1EC03D5;
-        Mon,  4 Oct 2021 17:08:45 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1633360125;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=ggal+4qNmiBMoIpJ/kVznwCxxMAmbQKX5Lqka/nSR5Q=;
-        b=Y8g6T+ftcyQ8lEts04ildOYPWTdFSbgR0dA6bLBRlZmNNrIjEnPtjqj5PwZ9qjyNRMNY/J
-        MA/YjbtKXXRPS8yF7JVStR4lqs585WZFAT8bLC0z5ULeItsow4SSFSGLARBdjFHOw1FHbW
-        /wn0ULoBWU+hag4xkoZSJqL+Ks4ZJx4=
-Date:   Mon, 4 Oct 2021 17:08:39 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Joerg Roedel <jroedel@suse.de>
-Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Brijesh Singh <brijesh.singh@amd.com>
-Subject: [PATCH] x86/sev: Make the #VC exception stacks part of the default
- stacks storage
-Message-ID: <YVsY95SXNN4uTCCl@zn.tnic>
-References: <113eca80a14cd280540c38488fd31ac0fa7bf36c.1633063250.git.thomas.lendacky@amd.com>
- <YVbNlXwiASQEsG+x@zn.tnic>
- <YVb2AGXAwYx/OI6J@suse.de>
- <YVcF9ENTfLAGaLec@zn.tnic>
- <YVcGdpVuSsieFL8W@suse.de>
- <YVcSuVqmTPiw4YLk@zn.tnic>
- <YVdx/SRNkeRFnIuX@zn.tnic>
+        id S235599AbhJDPKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 11:10:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45408 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233728AbhJDPKl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 11:10:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D13B06124B;
+        Mon,  4 Oct 2021 15:08:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633360132;
+        bh=YyiPjnhA/C8Zq0nFVh6TXVal9ej329r9Ds4u6daTnVk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=n1HsymbdjNPn9mx1ESEllSEhWpOzCtdS9tXBzU6Eo1OIDZRdmCDqYLHR9NLOndqPb
+         P7q7R5aU1P/e73e5APA+uvFMljrWS/osBdqpDkhsBZzTCqlutSc5ilr6MVMTAiOyu7
+         2YtLGTavEYae49XfogZORP+Xh0On3TtUC96j4BuWqJpnyOVb/opw1SCiFnSU5TOFSX
+         I+gE352cCJyz0biR2azy85dM4+7PbedLyrc3dZetDpUifJsULhrJKhu4b8isU9/FBv
+         Fw+YcARed6YPl0Ww5LXtS9FcN9S/T4Aui9xiQGanne0xL3TjxZ5eD/D2cs49ByACrj
+         LqNEn3txQLIow==
+Date:   Mon, 4 Oct 2021 17:08:47 +0200
+From:   Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Rob Herring <robh+dt@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: lets settle the LED `function` property regarding the netdev
+ trigger
+Message-ID: <20211004170847.3f92ef48@thinkpad>
+In-Reply-To: <YVsUodiPoiIESrEE@lunn.ch>
+References: <20211001143601.5f57eb1a@thinkpad>
+        <YVn815h7JBtVSfwZ@lunn.ch>
+        <20211003212654.30fa43f5@thinkpad>
+        <YVsUodiPoiIESrEE@lunn.ch>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YVdx/SRNkeRFnIuX@zn.tnic>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
----
-From: Borislav Petkov <bp@suse.de>
-Date: Fri, 1 Oct 2021 21:41:20 +0200
+On Mon, 4 Oct 2021 16:50:09 +0200
+Andrew Lunn <andrew@lunn.ch> wrote:
 
-The size of the exception stacks was increased by the commit in Fixes,
-resulting in stack sizes greater than a page in size. The #VC exception
-handling was only mapping the first (bottom) page, resulting in an
-SEV-ES guest failing to boot.
+> > Hello Andrew,
+> > 
+> > I am aware of this, and in fact am working on a proposal for an
+> > extension of netdev LED extension, to support the different link
+> > modes. (And also to support for multi-color LEDs.)
+> > 
+> > But I am not entirely sure whether these different link modes should be
+> > also definable via device-tree. Are there devices with ethernet LEDs
+> > dedicated for a specific speed? (i.e. the manufacturer says in the
+> > documentation of the device, or perhaps on the device's case, that this
+> > LED shows 100M/1000M link, and that other LED is shows 10M link?)
+> > If so, that this should be specified in the devicetree, IMO. But are
+> > such devices common?  
+> 
+> I have a dumb 5 port switch next to me. One port is running at 1G. Its
+> left green LED is on and blinks with traffic. Another port of the
+> switch is running at 100Mbps and its right orange LED is on, blinks
+> for traffic. And there is text on the case saying 10/100 orange, 1G
+> green.
+> 
+> I think this is pretty common. You generally do want to know if 10/100
+> is being used, it can indicate problems. Same for a 10G port running
+> at 1G, etc.
 
-Make the #VC exception stacks part of the default exception stacks
-storage and allocate them with a CONFIG_AMD_MEM_ENCRYPT=y .config. Map
-them only when a SEV-ES guest has been detected.
+OK then. I will work no a proposal for device tree bindings for this.
 
-Rip out the custom VC stacks mapping and storage code.
+> > And what about multi-color LEDs? There are ethernet ports where one LED
+> > is red-green, and so can generate red, green, and yellow color. Should
+> > device tree also define which color indicates which mode?  
+> 
+> There are two different ways this can be implemented. There can be two
+> independent LEDs within the same package. So you can generate three
+> colours. Or there can be two cross connected LEDs within the
+> package. Apply +ve you get one colour, apply -ve you get a different
+> colour. Since you cannot apply both -ve and +ve at the same time, you
+> cannot get both colours at once.
+> 
+> If you have two independent LEDs, I would define two LEDs in DT.
 
- [ bp: Steal and adapt Tom's commit message. ]
+No, we have multicolor LED API which is meant for exactly this
+situation: a multicolor LED.
+(I am talking about something like the KJ2518D-262 from
+ http://www.rego.com.tw/product_detail.php?prdt_id=258
+ which has Green/Orange on left and Yellow on right side.
+ The left Green/Orange LED has 3 pins, and so it can mix the colors into
+ yellow.)
 
-Fixes: 7fae4c24a2b8 ("x86: Increase exception stack sizes")
-Signed-off-by: Borislav Petkov <bp@suse.de>
----
- arch/x86/include/asm/cpu_entry_area.h | 16 +++++++++-----
- arch/x86/kernel/sev.c                 | 32 ---------------------------
- arch/x86/mm/cpu_entry_area.c          |  7 ++++++
- 3 files changed, 18 insertions(+), 37 deletions(-)
+> Things get tricky for the two dependency LEDs. Does the LED core have
+> support for such LEDs?
 
-diff --git a/arch/x86/include/asm/cpu_entry_area.h b/arch/x86/include/asm/cpu_entry_area.h
-index 3d52b094850a..2512e1f5ac02 100644
---- a/arch/x86/include/asm/cpu_entry_area.h
-+++ b/arch/x86/include/asm/cpu_entry_area.h
-@@ -10,8 +10,14 @@
- 
- #ifdef CONFIG_X86_64
- 
-+#ifdef CONFIG_AMD_MEM_ENCRYPT
-+#define VC_EXCEPTION_STKSZ	EXCEPTION_STKSZ
-+#else
-+#define VC_EXCEPTION_STKSZ	0
-+#endif
-+
- /* Macro to enforce the same ordering and stack sizes */
--#define ESTACKS_MEMBERS(guardsize, optional_stack_size)		\
-+#define ESTACKS_MEMBERS(guardsize)				\
- 	char	DF_stack_guard[guardsize];			\
- 	char	DF_stack[EXCEPTION_STKSZ];			\
- 	char	NMI_stack_guard[guardsize];			\
-@@ -21,19 +27,19 @@
- 	char	MCE_stack_guard[guardsize];			\
- 	char	MCE_stack[EXCEPTION_STKSZ];			\
- 	char	VC_stack_guard[guardsize];			\
--	char	VC_stack[optional_stack_size];			\
-+	char	VC_stack[VC_EXCEPTION_STKSZ];			\
- 	char	VC2_stack_guard[guardsize];			\
--	char	VC2_stack[optional_stack_size];			\
-+	char	VC2_stack[VC_EXCEPTION_STKSZ];			\
- 	char	IST_top_guard[guardsize];			\
- 
- /* The exception stacks' physical storage. No guard pages required */
- struct exception_stacks {
--	ESTACKS_MEMBERS(0, 0)
-+	ESTACKS_MEMBERS(0)
- };
- 
- /* The effective cpu entry area mapping with guard pages. */
- struct cea_exception_stacks {
--	ESTACKS_MEMBERS(PAGE_SIZE, EXCEPTION_STKSZ)
-+	ESTACKS_MEMBERS(PAGE_SIZE)
- };
- 
- /*
-diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
-index a6895e440bc3..88401675dabb 100644
---- a/arch/x86/kernel/sev.c
-+++ b/arch/x86/kernel/sev.c
-@@ -46,16 +46,6 @@ static struct ghcb __initdata *boot_ghcb;
- struct sev_es_runtime_data {
- 	struct ghcb ghcb_page;
- 
--	/* Physical storage for the per-CPU IST stack of the #VC handler */
--	char ist_stack[EXCEPTION_STKSZ] __aligned(PAGE_SIZE);
--
--	/*
--	 * Physical storage for the per-CPU fall-back stack of the #VC handler.
--	 * The fall-back stack is used when it is not safe to switch back to the
--	 * interrupted stack in the #VC entry code.
--	 */
--	char fallback_stack[EXCEPTION_STKSZ] __aligned(PAGE_SIZE);
--
- 	/*
- 	 * Reserve one page per CPU as backup storage for the unencrypted GHCB.
- 	 * It is needed when an NMI happens while the #VC handler uses the real
-@@ -99,27 +89,6 @@ DEFINE_STATIC_KEY_FALSE(sev_es_enable_key);
- /* Needed in vc_early_forward_exception */
- void do_early_exception(struct pt_regs *regs, int trapnr);
- 
--static void __init setup_vc_stacks(int cpu)
--{
--	struct sev_es_runtime_data *data;
--	struct cpu_entry_area *cea;
--	unsigned long vaddr;
--	phys_addr_t pa;
--
--	data = per_cpu(runtime_data, cpu);
--	cea  = get_cpu_entry_area(cpu);
--
--	/* Map #VC IST stack */
--	vaddr = CEA_ESTACK_BOT(&cea->estacks, VC);
--	pa    = __pa(data->ist_stack);
--	cea_set_pte((void *)vaddr, pa, PAGE_KERNEL);
--
--	/* Map VC fall-back stack */
--	vaddr = CEA_ESTACK_BOT(&cea->estacks, VC2);
--	pa    = __pa(data->fallback_stack);
--	cea_set_pte((void *)vaddr, pa, PAGE_KERNEL);
--}
--
- static __always_inline bool on_vc_stack(struct pt_regs *regs)
- {
- 	unsigned long sp = regs->sp;
-@@ -787,7 +756,6 @@ void __init sev_es_init_vc_handling(void)
- 	for_each_possible_cpu(cpu) {
- 		alloc_runtime_data(cpu);
- 		init_ghcb(cpu);
--		setup_vc_stacks(cpu);
- 	}
- 
- 	sev_es_setup_play_dead();
-diff --git a/arch/x86/mm/cpu_entry_area.c b/arch/x86/mm/cpu_entry_area.c
-index f5e1e60c9095..82d062414f19 100644
---- a/arch/x86/mm/cpu_entry_area.c
-+++ b/arch/x86/mm/cpu_entry_area.c
-@@ -110,6 +110,13 @@ static void __init percpu_setup_exception_stacks(unsigned int cpu)
- 	cea_map_stack(NMI);
- 	cea_map_stack(DB);
- 	cea_map_stack(MCE);
-+
-+	if (IS_ENABLED(CONFIG_AMD_MEM_ENCRYPT)) {
-+		if (sev_es_active()) {
-+			cea_map_stack(VC);
-+			cea_map_stack(VC2);
-+		}
-+	}
- }
- #else
- static inline void percpu_setup_exception_stacks(unsigned int cpu)
--- 
-2.29.2
+Unfortunately not yet. The multicolor API supports LEDs where the
+sub-leds are independent.
 
+> This is where we need to strike a balance between too simple and too
+> complex. Implement most of the common features, but don't support
+> exotic stuff, like two dependency LEDs?
 
--- 
-Regards/Gruss,
-    Boris.
+I think the best solution here would be a subclass "enumcolor" (or
+different name), where you can choose between several pre-defined colors.
+In sysfs you could then do
+  echo 1 >brightness
+  echo green >color
+  echo yellow >color
 
-https://people.kernel.org/tglx/notes-about-netiquette
+There already are other people who need to register such LEDs.
+
+Marek
