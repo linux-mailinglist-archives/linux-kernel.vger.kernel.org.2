@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B9F4420E6E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:23:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DAB4420EDE
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:27:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236872AbhJDNZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:25:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37214 "EHLO mail.kernel.org"
+        id S235005AbhJDN3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:29:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43492 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236863AbhJDNX0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:23:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6005A61BE6;
-        Mon,  4 Oct 2021 13:10:09 +0000 (UTC)
+        id S236722AbhJDN1L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:27:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 523FA61B72;
+        Mon,  4 Oct 2021 13:11:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633353009;
-        bh=g6j03v111nugHzRuQGjslHZwzoMToh2SjGV/TP+k1b4=;
+        s=korg; t=1633353118;
+        bh=90CvL/O49qy5C+G7Aq+mqE2wEL7AFDCuIoCUyt0bVfA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QxxL3+/UeNlagpIiOIDeGb+dvRo8hJ9WXgLwHfR2E47DjxOvQTLScyb5Ll5B/Qw7n
-         oZUEHywpRBSzZH7uRJdtIZWAVLj1tMfW9AJuP8An6lgqQbK4uJtUQwKCNQj0glisQy
-         ot1CktrY/ETeuaAj88yaQvugk94eIQwm/j4kb/D0=
+        b=RitOpha2BlF+fZIwoUQhzAXnlCD+xDXCOUNvNoLYovcmy6qo7EBbFsyNAtdpZnlS9
+         5f2OTjrtiBJe2JuG/Duc6p3B/hl0LYPrwmq+x1VLxhKclq77MXUFz+8q5i8Catg3gE
+         9YwqxlDVWNhTeGMoye3wAp3EVf0qG6ddyQ6E/x4U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
-        Marek Vasut <marex@denx.de>, Arnd Bergmann <arnd@arndb.de>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 52/93] net: ks8851: fix link error
-Date:   Mon,  4 Oct 2021 14:52:50 +0200
-Message-Id: <20211004125036.292908680@linuxfoundation.org>
+Subject: [PATCH 5.10 53/93] Revert "block, bfq: honor already-setup queue merges"
+Date:   Mon,  4 Oct 2021 14:52:51 +0200
+Message-Id: <20211004125036.331527780@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211004125034.579439135@linuxfoundation.org>
 References: <20211004125034.579439135@linuxfoundation.org>
@@ -41,84 +39,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Jens Axboe <axboe@kernel.dk>
 
-[ Upstream commit 51bb08dd04a05035a64504faa47651d36b0f3125 ]
+[ Upstream commit ebc69e897e17373fbe1daaff1debaa77583a5284 ]
 
-An object file cannot be built for both loadable module and built-in
-use at the same time:
+This reverts commit 2d52c58b9c9bdae0ca3df6a1eab5745ab3f7d80b.
 
-arm-linux-gnueabi-ld: drivers/net/ethernet/micrel/ks8851_common.o: in function `ks8851_probe_common':
-ks8851_common.c:(.text+0xf80): undefined reference to `__this_module'
+We have had several folks complain that this causes hangs for them, which
+is especially problematic as the commit has also hit stable already.
 
-Change the ks8851_common code to be a standalone module instead,
-and use Makefile logic to ensure this is built-in if at least one
-of its two users is.
+As no resolution seems to be forthcoming right now, revert the patch.
 
-Fixes: 797047f875b5 ("net: ks8851: Implement Parallel bus operations")
-Link: https://lore.kernel.org/netdev/20210125121937.3900988-1-arnd@kernel.org/
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Acked-by: Marek Vasut <marex@denx.de>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=214503
+Fixes: 2d52c58b9c9b ("block, bfq: honor already-setup queue merges")
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/micrel/Makefile        | 6 ++----
- drivers/net/ethernet/micrel/ks8851_common.c | 8 ++++++++
- 2 files changed, 10 insertions(+), 4 deletions(-)
+ block/bfq-iosched.c | 16 +++-------------
+ 1 file changed, 3 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/net/ethernet/micrel/Makefile b/drivers/net/ethernet/micrel/Makefile
-index 5cc00d22c708..6ecc4eb30e74 100644
---- a/drivers/net/ethernet/micrel/Makefile
-+++ b/drivers/net/ethernet/micrel/Makefile
-@@ -4,8 +4,6 @@
- #
- 
- obj-$(CONFIG_KS8842) += ks8842.o
--obj-$(CONFIG_KS8851) += ks8851.o
--ks8851-objs = ks8851_common.o ks8851_spi.o
--obj-$(CONFIG_KS8851_MLL) += ks8851_mll.o
--ks8851_mll-objs = ks8851_common.o ks8851_par.o
-+obj-$(CONFIG_KS8851) += ks8851_common.o ks8851_spi.o
-+obj-$(CONFIG_KS8851_MLL) += ks8851_common.o ks8851_par.o
- obj-$(CONFIG_KSZ884X_PCI) += ksz884x.o
-diff --git a/drivers/net/ethernet/micrel/ks8851_common.c b/drivers/net/ethernet/micrel/ks8851_common.c
-index d65872172229..f74eae8eed02 100644
---- a/drivers/net/ethernet/micrel/ks8851_common.c
-+++ b/drivers/net/ethernet/micrel/ks8851_common.c
-@@ -1031,6 +1031,7 @@ int ks8851_suspend(struct device *dev)
- 
- 	return 0;
+diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
+index 65c200e0ecb5..b8c2ddc01aec 100644
+--- a/block/bfq-iosched.c
++++ b/block/bfq-iosched.c
+@@ -2526,15 +2526,6 @@ bfq_setup_merge(struct bfq_queue *bfqq, struct bfq_queue *new_bfqq)
+ 	 * are likely to increase the throughput.
+ 	 */
+ 	bfqq->new_bfqq = new_bfqq;
+-	/*
+-	 * The above assignment schedules the following redirections:
+-	 * each time some I/O for bfqq arrives, the process that
+-	 * generated that I/O is disassociated from bfqq and
+-	 * associated with new_bfqq. Here we increases new_bfqq->ref
+-	 * in advance, adding the number of processes that are
+-	 * expected to be associated with new_bfqq as they happen to
+-	 * issue I/O.
+-	 */
+ 	new_bfqq->ref += process_refs;
+ 	return new_bfqq;
  }
-+EXPORT_SYMBOL_GPL(ks8851_suspend);
- 
- int ks8851_resume(struct device *dev)
+@@ -2594,10 +2585,6 @@ bfq_setup_cooperator(struct bfq_data *bfqd, struct bfq_queue *bfqq,
  {
-@@ -1044,6 +1045,7 @@ int ks8851_resume(struct device *dev)
+ 	struct bfq_queue *in_service_bfqq, *new_bfqq;
  
- 	return 0;
- }
-+EXPORT_SYMBOL_GPL(ks8851_resume);
- #endif
+-	/* if a merge has already been setup, then proceed with that first */
+-	if (bfqq->new_bfqq)
+-		return bfqq->new_bfqq;
+-
+ 	/*
+ 	 * Do not perform queue merging if the device is non
+ 	 * rotational and performs internal queueing. In fact, such a
+@@ -2652,6 +2639,9 @@ bfq_setup_cooperator(struct bfq_data *bfqd, struct bfq_queue *bfqq,
+ 	if (bfq_too_late_for_merging(bfqq))
+ 		return NULL;
  
- int ks8851_probe_common(struct net_device *netdev, struct device *dev,
-@@ -1175,6 +1177,7 @@ int ks8851_probe_common(struct net_device *netdev, struct device *dev,
- err_reg_io:
- 	return ret;
- }
-+EXPORT_SYMBOL_GPL(ks8851_probe_common);
- 
- int ks8851_remove_common(struct device *dev)
- {
-@@ -1191,3 +1194,8 @@ int ks8851_remove_common(struct device *dev)
- 
- 	return 0;
- }
-+EXPORT_SYMBOL_GPL(ks8851_remove_common);
++	if (bfqq->new_bfqq)
++		return bfqq->new_bfqq;
 +
-+MODULE_DESCRIPTION("KS8851 Network driver");
-+MODULE_AUTHOR("Ben Dooks <ben@simtec.co.uk>");
-+MODULE_LICENSE("GPL");
+ 	if (!io_struct || unlikely(bfqq == &bfqd->oom_bfqq))
+ 		return NULL;
+ 
 -- 
 2.33.0
 
