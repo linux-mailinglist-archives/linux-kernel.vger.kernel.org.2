@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24B0A420D62
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:12:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 031CA420D64
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:13:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235876AbhJDNOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:14:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45770 "EHLO mail.kernel.org"
+        id S235901AbhJDNOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:14:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46350 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235634AbhJDNMm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:12:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A48861B7D;
-        Mon,  4 Oct 2021 13:04:53 +0000 (UTC)
+        id S235660AbhJDNMp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:12:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 59CE76137D;
+        Mon,  4 Oct 2021 13:04:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352694;
-        bh=xvb0BHosjtP7JTAoWsTComR2+BIC2m1Uxu0qABGC6IQ=;
+        s=korg; t=1633352699;
+        bh=sCKqQsnWyy2TMFoIwAoK9TxQENvqp67L5yhaXHcheCw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0fcxHI3slSJ7NiTlEEj2Uib7zv7SjBd5AqK3iRVb6ZswAwdVwaRpzYnMxxeAxc2Il
-         Dd7SI0w69fwMrw1DPZFbeDcxSn0sYliSrKOZO1AMWKSkoXVxtTUoNFRDMTyToFx8to
-         bSOdm9fB4iZ3R3NRkSlb3f/1sSm90DY5CpuNXZGk=
+        b=WcbzqT/GzczerPGzsKHcJDq5pR5aGnqpqEnYfnP9fo5Te5KLHyvRmbdV8msJ9mRpQ
+         9R4V/tWVQBZFlJZeEh9G1R3KR8Oh+Ca4C+PRjbi7XI7lFHTrU8wbYM05owL0kdPlDi
+         x8fG7n69e6eGW4TX2KPTvCQBnnBQQN3ZQa+jMRrI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,9 +27,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Alexander Sverdlin <alexander.sverdlin@nokia.com>,
         Russell King <rmk+kernel@armlinux.org.uk>,
         Florian Fainelli <f.fainelli@gmail.com>
-Subject: [PATCH 4.19 84/95] ARM: 9077/1: PLT: Move struct plt_entries definition to header
-Date:   Mon,  4 Oct 2021 14:52:54 +0200
-Message-Id: <20211004125036.325905574@linuxfoundation.org>
+Subject: [PATCH 4.19 85/95] ARM: 9078/1: Add warn suppress parameter to arm_gen_branch_link()
+Date:   Mon,  4 Oct 2021 14:52:55 +0200
+Message-Id: <20211004125036.356842983@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211004125033.572932188@linuxfoundation.org>
 References: <20211004125033.572932188@linuxfoundation.org>
@@ -43,61 +43,112 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Alex Sverdlin <alexander.sverdlin@nokia.com>
 
-commit 4e271701c17dee70c6e1351c4d7d42e70405c6a9 upstream
+commit 890cb057a46d323fd8c77ebecb6485476614cd21 upstream
 
-No functional change, later it will be re-used in several files.
+Will be used in the following patch. No functional change.
 
 Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
 Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
 Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm/include/asm/module.h |    9 +++++++++
- arch/arm/kernel/module-plts.c |    9 ---------
- 2 files changed, 9 insertions(+), 9 deletions(-)
+ arch/arm/include/asm/insn.h |    8 ++++----
+ arch/arm/kernel/ftrace.c    |    2 +-
+ arch/arm/kernel/insn.c      |   19 ++++++++++---------
+ 3 files changed, 15 insertions(+), 14 deletions(-)
 
---- a/arch/arm/include/asm/module.h
-+++ b/arch/arm/include/asm/module.h
-@@ -19,6 +19,15 @@ enum {
- };
- #endif
+--- a/arch/arm/include/asm/insn.h
++++ b/arch/arm/include/asm/insn.h
+@@ -13,18 +13,18 @@ arm_gen_nop(void)
+ }
  
-+#define PLT_ENT_STRIDE		L1_CACHE_BYTES
-+#define PLT_ENT_COUNT		(PLT_ENT_STRIDE / sizeof(u32))
-+#define PLT_ENT_SIZE		(sizeof(struct plt_entries) / PLT_ENT_COUNT)
-+
-+struct plt_entries {
-+	u32	ldr[PLT_ENT_COUNT];
-+	u32	lit[PLT_ENT_COUNT];
-+};
-+
- struct mod_plt_sec {
- 	struct elf32_shdr	*plt;
- 	int			plt_count;
---- a/arch/arm/kernel/module-plts.c
-+++ b/arch/arm/kernel/module-plts.c
-@@ -14,10 +14,6 @@
- #include <asm/cache.h>
+ unsigned long
+-__arm_gen_branch(unsigned long pc, unsigned long addr, bool link);
++__arm_gen_branch(unsigned long pc, unsigned long addr, bool link, bool warn);
+ 
+ static inline unsigned long
+ arm_gen_branch(unsigned long pc, unsigned long addr)
+ {
+-	return __arm_gen_branch(pc, addr, false);
++	return __arm_gen_branch(pc, addr, false, true);
+ }
+ 
+ static inline unsigned long
+-arm_gen_branch_link(unsigned long pc, unsigned long addr)
++arm_gen_branch_link(unsigned long pc, unsigned long addr, bool warn)
+ {
+-	return __arm_gen_branch(pc, addr, true);
++	return __arm_gen_branch(pc, addr, true, warn);
+ }
+ 
+ #endif
+--- a/arch/arm/kernel/ftrace.c
++++ b/arch/arm/kernel/ftrace.c
+@@ -98,7 +98,7 @@ int ftrace_arch_code_modify_post_process
+ 
+ static unsigned long ftrace_call_replace(unsigned long pc, unsigned long addr)
+ {
+-	return arm_gen_branch_link(pc, addr);
++	return arm_gen_branch_link(pc, addr, true);
+ }
+ 
+ static int ftrace_modify_code(unsigned long pc, unsigned long old,
+--- a/arch/arm/kernel/insn.c
++++ b/arch/arm/kernel/insn.c
+@@ -3,8 +3,9 @@
+ #include <linux/kernel.h>
  #include <asm/opcodes.h>
  
--#define PLT_ENT_STRIDE		L1_CACHE_BYTES
--#define PLT_ENT_COUNT		(PLT_ENT_STRIDE / sizeof(u32))
--#define PLT_ENT_SIZE		(sizeof(struct plt_entries) / PLT_ENT_COUNT)
--
- #ifdef CONFIG_THUMB2_KERNEL
- #define PLT_ENT_LDR		__opcode_to_mem_thumb32(0xf8dff000 | \
- 							(PLT_ENT_STRIDE - 4))
-@@ -26,11 +22,6 @@
- 						    (PLT_ENT_STRIDE - 8))
- #endif
- 
--struct plt_entries {
--	u32	ldr[PLT_ENT_COUNT];
--	u32	lit[PLT_ENT_COUNT];
--};
--
- static bool in_init(const struct module *mod, unsigned long loc)
+-static unsigned long
+-__arm_gen_branch_thumb2(unsigned long pc, unsigned long addr, bool link)
++static unsigned long __arm_gen_branch_thumb2(unsigned long pc,
++					     unsigned long addr, bool link,
++					     bool warn)
  {
- 	return loc - (u32)mod->init_layout.base < mod->init_layout.size;
+ 	unsigned long s, j1, j2, i1, i2, imm10, imm11;
+ 	unsigned long first, second;
+@@ -12,7 +13,7 @@ __arm_gen_branch_thumb2(unsigned long pc
+ 
+ 	offset = (long)addr - (long)(pc + 4);
+ 	if (offset < -16777216 || offset > 16777214) {
+-		WARN_ON_ONCE(1);
++		WARN_ON_ONCE(warn);
+ 		return 0;
+ 	}
+ 
+@@ -33,8 +34,8 @@ __arm_gen_branch_thumb2(unsigned long pc
+ 	return __opcode_thumb32_compose(first, second);
+ }
+ 
+-static unsigned long
+-__arm_gen_branch_arm(unsigned long pc, unsigned long addr, bool link)
++static unsigned long __arm_gen_branch_arm(unsigned long pc, unsigned long addr,
++					  bool link, bool warn)
+ {
+ 	unsigned long opcode = 0xea000000;
+ 	long offset;
+@@ -44,7 +45,7 @@ __arm_gen_branch_arm(unsigned long pc, u
+ 
+ 	offset = (long)addr - (long)(pc + 8);
+ 	if (unlikely(offset < -33554432 || offset > 33554428)) {
+-		WARN_ON_ONCE(1);
++		WARN_ON_ONCE(warn);
+ 		return 0;
+ 	}
+ 
+@@ -54,10 +55,10 @@ __arm_gen_branch_arm(unsigned long pc, u
+ }
+ 
+ unsigned long
+-__arm_gen_branch(unsigned long pc, unsigned long addr, bool link)
++__arm_gen_branch(unsigned long pc, unsigned long addr, bool link, bool warn)
+ {
+ 	if (IS_ENABLED(CONFIG_THUMB2_KERNEL))
+-		return __arm_gen_branch_thumb2(pc, addr, link);
++		return __arm_gen_branch_thumb2(pc, addr, link, warn);
+ 	else
+-		return __arm_gen_branch_arm(pc, addr, link);
++		return __arm_gen_branch_arm(pc, addr, link, warn);
+ }
 
 
