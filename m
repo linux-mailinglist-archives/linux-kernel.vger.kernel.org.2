@@ -2,65 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F7E442166E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 20:28:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B630D421671
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 20:28:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238591AbhJDSaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 14:30:05 -0400
-Received: from mail-ot1-f41.google.com ([209.85.210.41]:40634 "EHLO
-        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238572AbhJDSaE (ORCPT
+        id S238599AbhJDSa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 14:30:28 -0400
+Received: from mail-oi1-f181.google.com ([209.85.167.181]:46079 "EHLO
+        mail-oi1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238360AbhJDSa1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 14:30:04 -0400
-Received: by mail-ot1-f41.google.com with SMTP id l16-20020a9d6a90000000b0053b71f7dc83so22752589otq.7;
-        Mon, 04 Oct 2021 11:28:15 -0700 (PDT)
+        Mon, 4 Oct 2021 14:30:27 -0400
+Received: by mail-oi1-f181.google.com with SMTP id v10so22780304oic.12;
+        Mon, 04 Oct 2021 11:28:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=vNjiYkRNjz5lXd1Q8xBRkNIS/zy9kwynR0rykuEziC8=;
-        b=AdQqNMAWBqklWao7Lt9+L0Zi3PLHpMhohje8QganTwVjng5UYA8Kv5shiBmqTEZaOb
-         Uj1qYPib++q5P6tuYDQegTCEeb79UU55FUqBDdTIXhD6Hg6/9ZBN0p/WgEyV/tJCEmVW
-         1yYLGst8FdcEfP9R0sRxeh6kjC+XGYPZaMDf/0vepcTnCFyKIPiYH5Vdc1SEdXJH3rGG
-         qPbCP20yEgvWqdLCp/ioSS9Jwpg1Yux9Mfl9s3Q7fayy22FoqWd+NWsy9etT23oP9sTf
-         +txrwsRRZcANLw02cktdIZpUjWxRo99mgxf1SotEWjXPPhSTkCuJXh/T5Bal/+1PMJOI
-         H0XA==
-X-Gm-Message-State: AOAM532NmRmCrHL3uk/EbKgNNJ72A/m/bwmyGCeTeeuKe/7/IhcWYyut
-        5g5Hd7yfg1NjY79bErJ1V+VSetQjSg==
-X-Google-Smtp-Source: ABdhPJwApm4fnizB89yUK3e7WkldXIJbmmT7gNDLc5Ra8hwvImTtl9c+pjlvaQxqIYs5aWXNwxGXgg==
-X-Received: by 2002:a9d:764c:: with SMTP id o12mr11205729otl.129.1633372094994;
-        Mon, 04 Oct 2021 11:28:14 -0700 (PDT)
+        bh=Gx+bJMYWjDm/EcyN95y7pWBSr8UxHnftYxDVqLErH4g=;
+        b=qal+wx2sC6YS4x3xnXjjHArMbbRw271NtNXbW+DB3gl9ogWK/zGXfhTHjs2QH9tH4K
+         XnoAFebxv9r38OU9iv7DWM/1MjX7CiSNZu3nRtiPy8Y9Ap7lnoaf1tvDUkSFEjGRe6F3
+         KN1bAFZ5bF5/Sm4G+GjxwAoK6DGgb0s1uxseSZixUF/+HPqvj0ewuv02LE/1ARSyvJON
+         gsRJgXViCsZFlZpQaLfdu1a9kiOrS9UxpCSoR3natVHc2k8KYNNDq4gPWBH1PMMLGMOK
+         EwZanv6vE0RP2wj/kFhbZuxpuss+LYAk/jSyHoKNEYtllUAFuSeJF7x+tYg9asxcbxHe
+         BfUw==
+X-Gm-Message-State: AOAM530W0y06FK4rjw1O7D62BZYL7axT51vFSSPqBu+grYTtSdAluuYq
+        PXYtPMDNS8oqP3Y6x+UMow==
+X-Google-Smtp-Source: ABdhPJzSyQB52yS+HqXQJ3UhFIYr4Lbt99pioIxRCBU1yLHerKk1DvSupgYa/oFAI6RzvLdFMvZ00g==
+X-Received: by 2002:aca:c6c7:: with SMTP id w190mr14688903oif.96.1633372117759;
+        Mon, 04 Oct 2021 11:28:37 -0700 (PDT)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id a6sm3145341otj.42.2021.10.04.11.28.13
+        by smtp.gmail.com with ESMTPSA id f17sm2959337ooc.1.2021.10.04.11.28.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Oct 2021 11:28:14 -0700 (PDT)
-Received: (nullmailer pid 1611586 invoked by uid 1000);
-        Mon, 04 Oct 2021 18:28:13 -0000
-Date:   Mon, 4 Oct 2021 13:28:13 -0500
+        Mon, 04 Oct 2021 11:28:37 -0700 (PDT)
+Received: (nullmailer pid 1612253 invoked by uid 1000);
+        Mon, 04 Oct 2021 18:28:36 -0000
+Date:   Mon, 4 Oct 2021 13:28:36 -0500
 From:   Rob Herring <robh@kernel.org>
-To:     Zev Weiss <zev@bewilderbeest.net>
-Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        linux-hwmon@vger.kernel.org, Jean Delvare <jdelvare@suse.com>
-Subject: Re: [PATCH 8/8] dt-bindings: hwmon/pmbus: Add ti,lm25066
- power-management IC
-Message-ID: <YVtHvZZd0JdLT9rV@robh.at.kernel.org>
-References: <20210928092242.30036-1-zev@bewilderbeest.net>
- <20210928092242.30036-9-zev@bewilderbeest.net>
+To:     Chunyan Zhang <zhang.lyra@gmail.com>
+Cc:     Baolin Wang <baolin.wang7@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Orson Zhai <orsonzhai@gmail.com>, linux-serial@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Chunyan Zhang <chunyan.zhang@unisoc.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH 1/3] dt-bindings: arm: Add bindings for Unisoc's UMS512
+Message-ID: <YVtH1PRJNdwkQvGW@robh.at.kernel.org>
+References: <20210928095229.233572-1-zhang.lyra@gmail.com>
+ <20210928095229.233572-2-zhang.lyra@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210928092242.30036-9-zev@bewilderbeest.net>
+In-Reply-To: <20210928095229.233572-2-zhang.lyra@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 28 Sep 2021 02:22:42 -0700, Zev Weiss wrote:
-> Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
+On Tue, 28 Sep 2021 17:52:27 +0800, Chunyan Zhang wrote:
+> From: Chunyan Zhang <chunyan.zhang@unisoc.com>
+> 
+> Add bindings for Unisoc's ums512-1h10 board and ums512 SoC.
+> 
+> Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
 > ---
->  .../bindings/hwmon/pmbus/ti,lm25066.yaml      | 54 +++++++++++++++++++
->  1 file changed, 54 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/hwmon/pmbus/ti,lm25066.yaml
+>  Documentation/devicetree/bindings/arm/sprd/sprd.yaml | 5 +++++
+>  1 file changed, 5 insertions(+)
 > 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Acked-by: Rob Herring <robh@kernel.org>
