@@ -2,119 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21B0D421708
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 21:08:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D627542170A
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 21:11:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238103AbhJDTKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 15:10:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60174 "EHLO
+        id S238103AbhJDTMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 15:12:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233226AbhJDTKM (ORCPT
+        with ESMTP id S235352AbhJDTMs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 15:10:12 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35222C061745;
-        Mon,  4 Oct 2021 12:08:23 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0fe4009c23c25c98857304.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:e400:9c23:c25c:9885:7304])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A06841EC03FE;
-        Mon,  4 Oct 2021 21:08:21 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1633374501;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=i6PxikJNA1V7HfDVyLAobLqaSjOebbk6J6n8Zlv5QfE=;
-        b=EKdSCXKP0dFy4SUcN7yE1/LTYYr7g50Rq74dwqthJVY7HnSsWQ0haYRQBlHM9qpvT/ZewA
-        L/dhM/XkdJucHyEk/QoP7sLQggGOKhbB/la4UEPn7+C8g2QJ/yp32xgC5HZdOGksGMh1OO
-        gOfqpItzsrx/A1wmMvUKtArbVnZHUQM=
-Date:   Mon, 4 Oct 2021 21:08:22 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Iwona Winiarska <iwona.winiarska@intel.com>
-Cc:     linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        x86@kernel.org, devicetree@vger.kernel.org,
-        linux-aspeed@lists.ozlabs.org,
-        linux-arm-kernel@lists.infradead.org, linux-hwmon@vger.kernel.org,
-        linux-doc@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Yazen Ghannam <yazen.ghannam@amd.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Zev Weiss <zweiss@equinix.com>,
-        David Muller <d.mueller@elsoft.ch>
-Subject: Re: [PATCH v2 02/15] x86/cpu: Extract cpuid helpers to
- arch-independent
-Message-ID: <YVtRJiYD9EqGh7TM@zn.tnic>
-References: <20210803113134.2262882-1-iwona.winiarska@intel.com>
- <20210803113134.2262882-3-iwona.winiarska@intel.com>
+        Mon, 4 Oct 2021 15:12:48 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20C42C061749
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 12:10:59 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id n65so10338315ybb.7
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 12:10:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TX98aLvs0jm488r8l6cPv4x2o09VgHdP6nIV9yzsoR8=;
+        b=jrdny670eRSrixabawz8NM8mV1j3NcKBf3/5o2HmMYs5Pt/3jEDKejaagNLZuHD4eA
+         XsA7lnk5rlDb255PMmTfbkU01FmcbAxBIYEQtM94T1iMAclIOyb2sv35ZTukC2pwU2GG
+         ltnDtI/O33I3Ik/UGu+M8Yrc0A6fNj4jCPp0p3IE11EK9JyQmUG6php2mjyq7W1jvwzx
+         hm4UYlfHmBM4ZggOpSlbBQ2TH3Rh8u5TAQjTysy9vuPEMDgSJTBc8GQ46Bm7g/nowXkw
+         mNseks8sftxpTK7nsWq+M26M6JTRKKfc+IXpLEJJw6dXy7eJuoEmg5mbmgeSD8SJR7lw
+         RJxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TX98aLvs0jm488r8l6cPv4x2o09VgHdP6nIV9yzsoR8=;
+        b=7ov3rikhBFtJzIf2DuVbJbHyEBJWJQBy4Y9+sKxj+CmSvMhpIZJIjAQJr/kNTF7c0P
+         52RMJEqTQbapOVw1moHxrnf5NbW6rBE0v9pr9g2j30PCY1qJGOV3c7L9z/+IoZu+HpBH
+         CBKU5bkECiL2h1589K6ozVWcE1t3CXRp7wfMapZoniZJDLKnGHMUlZPzS+6MzQIO1RzF
+         ShJZv/jtIvB4SLsohPdTjqTqof23Nl4guaId+168y3rDrF6Ww6LEWntdHuhe/EYjVCB8
+         bFc0XUKBP0Eq0qf5hNEC+b3AjGxeZi+SbVk3c8zIEG2BOx5mxQf//YwH0sKWkoVQHlAN
+         OOXg==
+X-Gm-Message-State: AOAM531t7ITPB352Ufk5Y21rIZjJEtdNsOcBDX6h0r1bjdHQUVzo0lJt
+        jE0eV1DtgeVpGbkdm0Y8rvjiwR6Cyh81LJqlqnaoQQ==
+X-Google-Smtp-Source: ABdhPJyvignQgUWVGULEBdeVmUDF7c5rAhbNIgSFqFjfcL8Oh9L1Nm3LtbDC/MhhvQjpl759ZDx6OBAK3+tEv7om3q8=
+X-Received: by 2002:a25:aaec:: with SMTP id t99mr17333011ybi.456.1633374657849;
+ Mon, 04 Oct 2021 12:10:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210803113134.2262882-3-iwona.winiarska@intel.com>
+References: <20210930180531.1190642-1-samitolvanen@google.com>
+ <20210930180531.1190642-5-samitolvanen@google.com> <YVsGoJ+NN6wRFi22@hirez.programming.kicks-ass.net>
+In-Reply-To: <YVsGoJ+NN6wRFi22@hirez.programming.kicks-ass.net>
+From:   Sami Tolvanen <samitolvanen@google.com>
+Date:   Mon, 4 Oct 2021 12:10:46 -0700
+Message-ID: <CABCJKudBrHfwR=gQc=9=cfBjR9p5jm65ovSNwzLLEpDUdo6ZPQ@mail.gmail.com>
+Subject: Re: [PATCH v4 04/15] cfi: Add DEFINE_CFI_IMMEDIATE_RETURN_STUB
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     X86 ML <x86@kernel.org>, Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        linux-hardening@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>, llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 03, 2021 at 01:31:21PM +0200, Iwona Winiarska wrote:
-> Baseboard management controllers (BMC) often run Linux but are usually
-> implemented with non-X86 processors. They can use PECI to access package
-> config space (PCS) registers on the host CPU and since some information,
-> e.g. figuring out the core count, can be obtained using different
-> registers on different CPU generations, they need to decode the family
-> and model.
-> 
-> The format of Package Identifier PCS register that describes CPUID
-> information has the same layout as CPUID_1.EAX, so let's allow to reuse
-> cpuid helpers by making it available for other architectures as well.
-> 
-> Signed-off-by: Iwona Winiarska <iwona.winiarska@intel.com>
-> Reviewed-by: Tony Luck <tony.luck@intel.com>
-> Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-> ---
->  MAINTAINERS                      | 1 +
->  arch/x86/Kconfig                 | 1 +
->  arch/x86/include/asm/cpu.h       | 3 ---
->  arch/x86/include/asm/microcode.h | 2 +-
->  arch/x86/kvm/cpuid.h             | 3 ++-
->  arch/x86/lib/Makefile            | 2 +-
->  drivers/edac/mce_amd.c           | 3 +--
->  include/linux/x86/cpu.h          | 9 +++++++++
->  lib/Kconfig                      | 4 ++++
->  lib/Makefile                     | 2 ++
->  lib/x86/Makefile                 | 3 +++
->  {arch/x86/lib => lib/x86}/cpu.c  | 2 +-
->  12 files changed, 26 insertions(+), 9 deletions(-)
->  create mode 100644 include/linux/x86/cpu.h
->  create mode 100644 lib/x86/Makefile
->  rename {arch/x86/lib => lib/x86}/cpu.c (95%)
+On Mon, Oct 4, 2021 at 6:50 AM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Thu, Sep 30, 2021 at 11:05:20AM -0700, Sami Tolvanen wrote:
+> > This change introduces the DEFINE_CFI_IMMEDIATE_RETURN_STUB macro,
+> > which defines a stub function that immediately returns and when
+> > defined in the core kernel, always passes indirect call checking
+> > with CONFIG_CFI_CLANG. Note that this macro should only be used when
+> > a stub cannot be called using the correct function type.
+>
+> > diff --git a/include/linux/cfi.h b/include/linux/cfi.h
+> > index 879744aaa6e0..19f74af8eac2 100644
+> > --- a/include/linux/cfi.h
+> > +++ b/include/linux/cfi.h
+> > @@ -20,6 +20,17 @@ extern void __cfi_check(uint64_t id, void *ptr, void *diag);
+> >  #define __CFI_ADDRESSABLE(fn, __attr) \
+> >       const void *__cfi_jt_ ## fn __visible __attr = (void *)&fn
+> >
+> > +/*
+> > + * Defines a stub function that returns immediately, and when defined and
+> > + * referenced in the core kernel, always passes CFI checking. This should
+> > + * be used only for stubs that cannot be called using the correct function
+> > + * pointer type, which should be rare.
+> > + */
+> > +#define DEFINE_CFI_IMMEDIATE_RETURN_STUB(fn) \
+> > +     void fn(void) { return; } \
+> > +     const void *__cfi_excl_ ## fn __visible \
+> > +             __section(".cfi_excluded_stubs") = (void *)&fn
+> > +
+> >  #ifdef CONFIG_CFI_CLANG_SHADOW
+> >
+> >  extern void cfi_module_add(struct module *mod, unsigned long base_addr);
+> > @@ -35,6 +46,8 @@ static inline void cfi_module_remove(struct module *mod, unsigned long base_addr
+> >  #else /* !CONFIG_CFI_CLANG */
+> >
+> >  #define __CFI_ADDRESSABLE(fn, __attr)
+> > +#define DEFINE_CFI_IMMEDIATE_RETURN_STUB(fn) \
+> > +     void fn(void) { return; }
+> >
+> >  #endif /* CONFIG_CFI_CLANG */
+> >
+>
+> Why DEFINE_CFI_IMMEDIATE_RETURN_STUB() vs __no_cfi attribute that we can
+> stick on the relvant functions?
 
-AFAICT, all that churn is done for x86_family() and x86_model() which
-are used *exactly* *once* and which are almost trivial anyway.
+To avoid accidentally creating useful gadgets for attackers. For
+example, while excluding an empty stub isn't necessarily ideal,
+allowing calls to a function that always returns zero would be worse.
 
-What's wrong with simply computing the family and model "by hand", so to
-speak, in peci_device_info_init() and do away with that diffstat
+> Because I've got at least one more variant for you :-) See
+> kernel/static_call.c:__static_call_return0
 
- 12 files changed, 26 insertions(+), 9 deletions(-)
+Does __static_call_return0 ever get called indirectly on architectures
+that support static calls? If it's always patched into a direct call,
+the type mismatch isn't an issue.
 
-?
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Sami
