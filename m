@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17438421003
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:38:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D073420EDC
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:27:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238294AbhJDNkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:40:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49924 "EHLO mail.kernel.org"
+        id S236802AbhJDN3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:29:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43308 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238371AbhJDNiZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:38:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 850FC6159A;
-        Mon,  4 Oct 2021 13:17:20 +0000 (UTC)
+        id S236807AbhJDN04 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:26:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ADBE361B03;
+        Mon,  4 Oct 2021 13:11:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633353440;
-        bh=FZwgsMyYOtSav5zQPNH1yBIkX+5AlpRp7AQZkNa3UuQ=;
+        s=korg; t=1633353111;
+        bh=n1iMFi3qYPp87o4hpS9JNJE+tU12TEkyUSgPj85JqEs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LuZXvsD1MOOfW517UyNM3Q/w8GXStVEUtcbsTt8lGaxPyNf4vQ+DVCYEalZLokgei
-         U5iiY1ztVa25zQLNQOIt9TCkfJBvSjbU58xlXm4KFweCmGwioTUQ6CO0ZYrgJEIeV1
-         zkJnALP6WyDXb6mrpENYXRyoXwgsQSD8fHxVnEhA=
+        b=J/fxAOVri1WBLDF246SnpdPmlE1iiG4P+nhsKGPL+4cLwkxvPkfj1ydGDkRSd1vfz
+         gkHtbo3D9ULdisw5LAbUvqwU0SZIBknihRdpnuMPJ7ESX6/riKQ5VbmfVnM+QnBfU9
+         P1BqZYpCTqvHNSEomjSePnnvqg00jTjQRL87zcxI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jian Shen <shenjian15@huawei.com>,
-        Guangbin Huang <huangguangbin2@huawei.com>,
+        stable@vger.kernel.org, Huazhong Tan <tanhuazhong@huawei.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 128/172] net: hns3: fix show wrong state when add existing uc mac address
+Subject: [PATCH 5.10 60/93] net: hns3: fix prototype warning
 Date:   Mon,  4 Oct 2021 14:52:58 +0200
-Message-Id: <20211004125049.101994260@linuxfoundation.org>
+Message-Id: <20211004125036.550832349@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
-References: <20211004125044.945314266@linuxfoundation.org>
+In-Reply-To: <20211004125034.579439135@linuxfoundation.org>
+References: <20211004125034.579439135@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,65 +40,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jian Shen <shenjian15@huawei.com>
+From: Huazhong Tan <tanhuazhong@huawei.com>
 
-[ Upstream commit 108b3c7810e14892c4a1819b1d268a2c785c087c ]
+[ Upstream commit a1e144d7dc3c55aa4d451e3a23cd8f34cd65ee01 ]
 
-Currently, if function adds an existing unicast mac address, eventhough
-driver will not add this address into hardware, but it will return 0 in
-function hclge_add_uc_addr_common(). It will cause the state of this
-unicast mac address is ACTIVE in driver, but it should be in TO-ADD state.
+Correct a report warning in hns3_ethtool.c
 
-To fix this problem, function hclge_add_uc_addr_common() returns -EEXIST
-if mac address is existing, and delete two error log to avoid printing
-them all the time after this modification.
-
-Fixes: 72110b567479 ("net: hns3: return 0 and print warning when hit duplicate MAC")
-Signed-off-by: Jian Shen <shenjian15@huawei.com>
-Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
+Signed-off-by: Huazhong Tan <tanhuazhong@huawei.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../hisilicon/hns3/hns3pf/hclge_main.c        | 19 +++++++++----------
- 1 file changed, 9 insertions(+), 10 deletions(-)
+ drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-index 90a72c79fec9..9920e76b4f41 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-@@ -8701,15 +8701,8 @@ int hclge_add_uc_addr_common(struct hclge_vport *vport,
- 	}
- 
- 	/* check if we just hit the duplicate */
--	if (!ret) {
--		dev_warn(&hdev->pdev->dev, "VF %u mac(%pM) exists\n",
--			 vport->vport_id, addr);
--		return 0;
--	}
--
--	dev_err(&hdev->pdev->dev,
--		"PF failed to add unicast entry(%pM) in the MAC table\n",
--		addr);
-+	if (!ret)
-+		return -EEXIST;
- 
- 	return ret;
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c b/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c
+index c0aa3be0cdfb..0aee100902ff 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c
+@@ -301,7 +301,7 @@ static int hns3_lp_run_test(struct net_device *ndev, enum hnae3_loop mode)
  }
-@@ -8861,7 +8854,13 @@ static void hclge_sync_vport_mac_list(struct hclge_vport *vport,
- 		} else {
- 			set_bit(HCLGE_VPORT_STATE_MAC_TBL_CHANGE,
- 				&vport->state);
--			break;
-+
-+			/* If one unicast mac address is existing in hardware,
-+			 * we need to try whether other unicast mac addresses
-+			 * are new addresses that can be added.
-+			 */
-+			if (ret != -EEXIST)
-+				break;
- 		}
- 	}
- }
+ 
+ /**
+- * hns3_nic_self_test - self test
++ * hns3_self_test - self test
+  * @ndev: net device
+  * @eth_test: test cmd
+  * @data: test result
 -- 
 2.33.0
 
