@@ -2,114 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BFA44206E9
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 09:59:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01D8A4206F5
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 10:01:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229904AbhJDIBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 04:01:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60678 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229618AbhJDIBl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 04:01:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633334391;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=c37BzLidBYzb5X13SgY9I9yJ9KC600FPw/jSiIVYAh0=;
-        b=FocwmMIt0k8MP8aYaLA/VYXyrBEyL0oeiyKJoQ+mcRQlMeF/Bu7mCQONnR6Cu2Bzvu/Pts
-        rox7d7XeC2YsVSuOOoR0TxrB+HkGAx9vDPez/avjxRsXpSpi2oq++bT5WG0WFZTcS1TiFi
-        /7Lcxj3Duo+plg0gtp4CvaN6wIGByqw=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-535-YAZH9hyAPj21N8NdfthOrg-1; Mon, 04 Oct 2021 03:59:50 -0400
-X-MC-Unique: YAZH9hyAPj21N8NdfthOrg-1
-Received: by mail-ed1-f70.google.com with SMTP id k10-20020a508aca000000b003dad77857f7so440979edk.22
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 00:59:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=c37BzLidBYzb5X13SgY9I9yJ9KC600FPw/jSiIVYAh0=;
-        b=gmURyQY30viN2BuLHTF5XHu2YqduxNGVuNvL03u55SUfkO4x64rOqltcVNI8kqJptU
-         KsRH9AHv49S9zbA4EC/BGofbe+znotCSvhSIOGWIqP3eArR4Jd/qEUOOjRu0+bMbwCfg
-         YFMTnRlA20JTBuxLP81Cap71c7YYx3UXJHGBcIHcu5BvTq27sxaISLthaFNQ8pGIMW1i
-         qSPCagi+LPthHEIaQIUUNO4BV1+hogtxSoz46GAxwwC3WRaxXSax9G+3wQVurDzbmBQq
-         vdz8VtZIBN5I0if6SGvLA383uLyHziNU+rDpgT6UPIyhQdpgB2tHmhN27o48wuQD9JNe
-         u7EQ==
-X-Gm-Message-State: AOAM531KzP6RjOj8LKkUz6ep8JWA81bjlsfgfXT/9352Mr4tornJ/4Xe
-        TKJKwoOhvlK9EBHFKNqJQdtNxf9emxgkatCD7kBuPissjLX3Tu93j/vV/9XaJVw+esRRkH02899
-        f/i8Ccq7pRuyeCR+e+8GGV+kc
-X-Received: by 2002:a50:bb09:: with SMTP id y9mr16259956ede.89.1633334389020;
-        Mon, 04 Oct 2021 00:59:49 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzzQhV94k4lBT9IBc6lsco946c+YRKUoPG15ShQUP6UiQTbWwVPybN55Udnsy6qXsJkSNGcQA==
-X-Received: by 2002:a50:bb09:: with SMTP id y9mr16259942ede.89.1633334388849;
-        Mon, 04 Oct 2021 00:59:48 -0700 (PDT)
-Received: from x1.localdomain ([81.30.35.201])
-        by smtp.gmail.com with ESMTPSA id n6sm6893877eds.10.2021.10.04.00.59.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Oct 2021 00:59:48 -0700 (PDT)
-Subject: Re: [PATCH] staging: rtl8723bs: core: remove condition never execute
-To:     Saurav Girepunje <saurav.girepunje@gmail.com>,
-        gregkh@linuxfoundation.org, fabioaiuto83@gmail.com,
-        ross.schm.dev@gmail.com, marcocesati@gmail.com,
-        fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Cc:     saurav.girepunje@hotmail.com
-References: <YVnTJCoz2qsXDXGc@user>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <fb939e4a-2e1e-18c2-f65c-9e2103ff8bcc@redhat.com>
-Date:   Mon, 4 Oct 2021 09:59:47 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S230250AbhJDIDP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 04:03:15 -0400
+Received: from mga04.intel.com ([192.55.52.120]:11362 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229487AbhJDIDH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 04:03:07 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10126"; a="224091266"
+X-IronPort-AV: E=Sophos;i="5.85,345,1624345200"; 
+   d="scan'208";a="224091266"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2021 01:01:12 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,345,1624345200"; 
+   d="scan'208";a="482808264"
+Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.171])
+  by fmsmga007.fm.intel.com with SMTP; 04 Oct 2021 01:01:02 -0700
+Received: by stinkbox (sSMTP sendmail emulation); Mon, 04 Oct 2021 11:01:01 +0300
+Date:   Mon, 4 Oct 2021 11:01:01 +0300
+From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+To:     Fernando Ramos <greenfoo@u92.eu>
+Cc:     Sean Paul <sean@poorly.run>, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+Subject: Re: [Intel-gfx] [PATCH v2 00/17] drm: cleanup: Use
+ DRM_MODESET_LOCK_ALL_* helpers where possible
+Message-ID: <YVq0vZgFUpSXEBFh@intel.com>
+References: <20210924064324.229457-1-greenfoo@u92.eu>
+ <20211001183655.GW2515@art_vandelay>
+ <YVda4jNSGuQf50JV@intel.com>
+ <20211001204815.GA2515@art_vandelay>
+ <YVeGOyLzuhN7zzV7@intel.com>
+ <YVfEWaLfYWdhezCa@intel.com>
+ <YVgGklsHT5fkavDL@zacax395.localdomain>
+ <YViWomXZWdy/81uT@zacax395.localdomain>
 MIME-Version: 1.0
-In-Reply-To: <YVnTJCoz2qsXDXGc@user>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YViWomXZWdy/81uT@zacax395.localdomain>
+X-Patchwork-Hint: comment
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Hi,
-
-On 10/3/21 5:58 PM, Saurav Girepunje wrote:
-> Remove condition which never get execute.
-> as pattrib->mdata is always zero before if condition check.
+On Sat, Oct 02, 2021 at 07:28:02PM +0200, Fernando Ramos wrote:
+> On 21/10/02 09:13AM, Fernando Ramos wrote:
+> > On 21/10/02 05:30AM, Ville Syrjälä wrote:
+> > > On Sat, Oct 02, 2021 at 01:05:47AM +0300, Ville Syrjälä wrote:
+> > > > On Fri, Oct 01, 2021 at 04:48:15PM -0400, Sean Paul wrote:
+> > > > > On Fri, Oct 01, 2021 at 10:00:50PM +0300, Ville Syrjälä wrote:
+> > > > > > On Fri, Oct 01, 2021 at 02:36:55PM -0400, Sean Paul wrote:
+> > > > > > > 
+> > > > > > > Thank you for revising, Fernando! I've pushed the set to drm-misc-next (along
+> > > > > > > with the necessary drm-tip conflict resolutions).
+> > > > > > 
+> > > > > > Ugh. Did anyone actually review the locking changes this does?
+> > > > > > I shot the previous i915 stuff down because the commit messages
+> > > > > > did not address any of it.
+> > > > > 
+> > > > > I reviewed the set on 9/17, I didn't see your feedback on that thread.
+> > > > 
+> > > > It was much earlir than that.
+> > > > https://lists.freedesktop.org/archives/dri-devel/2021-June/313193.html
 > 
-> Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
-
-Thanks, patch looks good to me:
-
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-
-Regards,
-
-Hans
-
-> ---
->  drivers/staging/rtl8723bs/core/rtw_mlme_ext.c | 3 ---
->  1 file changed, 3 deletions(-)
+> Sorry, I'm new to this and it did not occur to me to search for similar patches
+> in the mailing list archives in case there were additional comments that applied
+> to my change set.
 > 
-> diff --git a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
-> index b2c042c36777..3ee4d35ca8d7 100644
-> --- a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
-> +++ b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
-> @@ -3222,9 +3222,6 @@ static int _issue_qos_nulldata(struct adapter *padapter, unsigned char *da,
->  	else if ((pmlmeinfo->state&0x03) == WIFI_FW_STATION_STATE)
->  		SetToDs(fctrl);
+> In case I had done that I would have found that, as you mentioned, you had
+> already raised two issues back in June:
 > 
-> -	if (pattrib->mdata)
-> -		SetMData(fctrl);
-> -
->  	qc = (unsigned short *)(pframe + pattrib->hdrlen - 2);
+>     On Tue, Jun 29, 2021, Ville Syrjälä wrote:
+>     >
+>     > That looks wrong. You're using a private ctx here, but still
+>     > passing dev->mode_config.acquire_ctx to the lower level stuff.
+>     > 
+>     > Also DRM_MODESET_LOCK_ALL_{BEGIN,END}() do not seem to be
+>     > equivalent to drm_modeset_{lock,unlock}_all() when it comes to 
+>     > mode_config.mutex. So would need a proper review whether we
+>     > actually need that lock or not.
 > 
->  	SetPriority(qc, tid);
-> --
-> 2.32.0
+> The first one was pointing out the same error I would later repeat in my patch
+> series (ups).
 > 
+> After further inspection of the code it looks to me that changing this:
+> 
+>     intel_modeset_setup_hw_state(dev, dev->mode_config.acquire_ctx);
+> 
+> ...into this:
+> 
+>     intel_modeset_setup_hw_state(dev, &ctx);
+> 
+> ...would be enough.
 
+Yes.
+
+> 
+> Why? The only difference between the old drm_modeset_{lock,unlock}_all()
+> functions and the new DRM_MODESET_LOCK_ALL_{BEGIN,END}() macros is that the
+> former use a global context stored in dev->mode_config.acquire_ctx while the
+> latter depend on a user provided one (typically in the stack).
+> 
+> In the old (working) code the global context structure is freed in
+> drm_modeset_unlock_all() thus we are sure no one is holding a reference to it at
+> that point. This means that as long as no one accesses the global
+> dev->mode_config.acquire_ctx context in the block that runs between lock/BEGIN
+> and unlock/END, the code should be equivalent before and after my changes.
+> 
+> In fact, now that my patch series removes the drm_modeset_{lock,unlock}_all()
+> functions, the acquire_ctx field of the drm_mode_config structure should be
+> deleted:
+> 
+>     /**
+>      * @acquire_ctx:
+>      *
+>      * Global implicit acquire context used by atomic drivers for legacy
+>      * IOCTLs. Deprecated, since implicit locking contexts make it
+>      * impossible to use driver-private &struct drm_modeset_lock. Users of
+>      * this must hold @mutex.
+>      */
+>     struct drm_modeset_acquire_ctx *acquire_ctx;
+> 
+> If I had done that (ie. removing this field) I would have detected the problem
+> when compiling.
+> 
+> There is another place (in the amdgpu driver) where this field is still being
+> referenced, but before I investigate that I would like to know if you agree that
+> this is a good path to follow.
+
+Yeah, removing the mode_config.acquire_ctx is a good idea if it's
+no longer needed.
+
+> 
+> Regarding the second issue you raised...
+> 
+>     > Also DRM_MODESET_LOCK_ALL_{BEGIN,END}() do not seem to be
+>     > equivalent to drm_modeset_{lock,unlock}_all() when it comes to 
+>     > mode_config.mutex. So would need a proper review whether we
+>     > actually need that lock or not.
+> 
+> ...the only difference regarding mode_config.mutex I see is that in the new
+> macros the mutex is locked only under this condition:
+> 
+>     if (!drm_drv_uses_atomic_modeset(dev))
+> 
+> ...which seems reasonable, right? Is this what you were referring to or is it
+> something else?
+
+In order to eliminate the lock one first has to determine what that lock
+might be protecting here, and then prove that such protection is not
+actually needed.
+
+-- 
+Ville Syrjälä
+Intel
