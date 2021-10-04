@@ -2,128 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AD8F421174
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 16:33:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3411421178
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 16:33:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234477AbhJDOe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 10:34:57 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:52019 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S234383AbhJDOez (ORCPT
+        id S234496AbhJDOf1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 10:35:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37638 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234290AbhJDOfY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 10:34:55 -0400
-Received: (qmail 584706 invoked by uid 1000); 4 Oct 2021 10:33:05 -0400
-Date:   Mon, 4 Oct 2021 10:33:05 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Oliver Neukum <oneukum@suse.com>
-Cc:     Hayes Wang <hayeswang@realtek.com>,
-        Jason-ch Chen <jason-ch.chen@mediatek.com>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "Project_Global_Chrome_Upstream_Group@mediatek.com" 
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        "hsinyi@google.com" <hsinyi@google.com>,
-        nic_swsd <nic_swsd@realtek.com>
-Subject: Re: [PATCH] r8152: stop submitting rx for -EPROTO
-Message-ID: <20211004143305.GA583555@rowland.harvard.edu>
-References: <20210929051812.3107-1-jason-ch.chen@mediatek.com>
- <cbd1591fc03f480c9f08cc55585e2e35@realtek.com>
- <4c2ad5e4a9747c59a55d92a8fa0c95df5821188f.camel@mediatek.com>
- <274ec862-86cf-9d83-7ea7-5786e30ca4a7@suse.com>
- <20210930151819.GC464826@rowland.harvard.edu>
- <3694347f29ed431e9f8f2c065b8df0a7@realtek.com>
- <5f56b21575dd4f64a3b46aac21151667@realtek.com>
- <20211001152226.GA505557@rowland.harvard.edu>
- <72573b91-11d7-55a0-0cd8-5afbc289b38c@suse.com>
+        Mon, 4 Oct 2021 10:35:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633358014;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tkFXR+Ar045yOW1Qn+SywsZzwu6VhSEtfZbFfXfqIlo=;
+        b=hsliw9iCbTaOj2zpc3io4iIwZpay5GEFAFdYBp0B8hiPbDfXMGwpLgRTp7D4xriOPPisQb
+        c65yBda+C4eh2nPBq8qJ97v6na/SgXyWLlbV/LTtcy1P+Aul3H2Tdrts3DByAGl+++RyAJ
+        vVBO+XkKK+3KogdqCaduz5Ko9ht0nkM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-324-nNKntssOPQqiw5sEur7mCA-1; Mon, 04 Oct 2021 10:33:31 -0400
+X-MC-Unique: nNKntssOPQqiw5sEur7mCA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4893B835DE2;
+        Mon,  4 Oct 2021 14:33:30 +0000 (UTC)
+Received: from localhost (unknown [10.39.193.66])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id B7DA0100238C;
+        Mon,  4 Oct 2021 14:33:22 +0000 (UTC)
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Halil Pasic <pasic@linux.ibm.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Xie Yongji <xieyongji@bytedance.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, markver@us.ibm.com,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org, qemu-devel@nongnu.org
+Subject: Re: [RFC PATCH 1/1] virtio: write back features before verify
+In-Reply-To: <20211004090018-mutt-send-email-mst@kernel.org>
+Organization: Red Hat GmbH
+References: <20210930012049.3780865-1-pasic@linux.ibm.com>
+ <20210930070444-mutt-send-email-mst@kernel.org>
+ <20211001092125.64fef348.pasic@linux.ibm.com>
+ <20211002055605-mutt-send-email-mst@kernel.org>
+ <87bl452d90.fsf@redhat.com>
+ <20211004090018-mutt-send-email-mst@kernel.org>
+User-Agent: Notmuch/0.32.1 (https://notmuchmail.org)
+Date:   Mon, 04 Oct 2021 16:33:21 +0200
+Message-ID: <875yuc3ln2.fsf@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <72573b91-11d7-55a0-0cd8-5afbc289b38c@suse.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 04, 2021 at 01:44:54PM +0200, Oliver Neukum wrote:
-> 
-> On 01.10.21 17:22, Alan Stern wrote:
-> > On Fri, Oct 01, 2021 at 03:26:48AM +0000, Hayes Wang wrote:
-> >>> Alan Stern <stern@rowland.harvard.edu>
-> >>> [...]
-> >>>> There has been some discussion about this in the past.
-> >>>>
-> >>>> In general, -EPROTO is almost always a non-recoverable error.
-> >>> Excuse me. I am confused about the above description.
-> >>> I got -EPROTO before, when I debugged another issue.
-> >>> However, the bulk transfer still worked after I resubmitted
-> >>> the transfer. I didn't do anything to recover it. That is why
-> >>> I do resubmission for -EPROTO.
-> >> I check the Linux driver and the xHCI spec.
-> >> The driver gets -EPROTO for bulk transfer, when the host
-> >> returns COMP_USB_TRANSACTION_ERROR.
-> >> According to the spec of xHCI, USB TRANSACTION ERROR
-> >> means the host did not receive a valid response from the
-> >> device (Timeout, CRC, Bad PID, unexpected NYET, etc.).
-> > That's right.  If the device and cable are working properly, this 
-> > should never happen.  Or only extremely rarely (for example, caused 
-> > by external electromagnetic interference).
-> And the device. I am afraid the condition in your conditional statement
-> is not as likely to be true as would be desirable for quite a lot setups.
+On Mon, Oct 04 2021, "Michael S. Tsirkin" <mst@redhat.com> wrote:
 
-But if the device isn't working, a simple retry is most unlikely to fix 
-the problem.  Some form of active error recovery, such as a bus reset, 
-will be necessary.  For a non-working cable, even a reset won't help -- 
-the user would have to physically adjust or replace the cable.
+> On Mon, Oct 04, 2021 at 02:19:55PM +0200, Cornelia Huck wrote:
+>> 
+>> [cc:qemu-devel]
+>> 
+>> On Sat, Oct 02 2021, "Michael S. Tsirkin" <mst@redhat.com> wrote:
+>> 
+>> > On Fri, Oct 01, 2021 at 09:21:25AM +0200, Halil Pasic wrote:
+>> >> On Thu, 30 Sep 2021 07:12:21 -0400
+>> >> "Michael S. Tsirkin" <mst@redhat.com> wrote:
+>> >> 
+>> >> > On Thu, Sep 30, 2021 at 03:20:49AM +0200, Halil Pasic wrote:
+>> >> > > This patch fixes a regression introduced by commit 82e89ea077b9
+>> >> > > ("virtio-blk: Add validation for block size in config space") and
+>> >> > > enables similar checks in verify() on big endian platforms.
+>> >> > > 
+>> >> > > The problem with checking multi-byte config fields in the verify
+>> >> > > callback, on big endian platforms, and with a possibly transitional
+>> >> > > device is the following. The verify() callback is called between
+>> >> > > config->get_features() and virtio_finalize_features(). That we have a
+>> >> > > device that offered F_VERSION_1 then we have the following options
+>> >> > > either the device is transitional, and then it has to present the legacy
+>> >> > > interface, i.e. a big endian config space until F_VERSION_1 is
+>> >> > > negotiated, or we have a non-transitional device, which makes
+>> >> > > F_VERSION_1 mandatory, and only implements the non-legacy interface and
+>> >> > > thus presents a little endian config space. Because at this point we
+>> >> > > can't know if the device is transitional or non-transitional, we can't
+>> >> > > know do we need to byte swap or not.  
+>> >> > 
+>> >> > Hmm which transport does this refer to?
+>> >> 
+>> >> It is the same with virtio-ccw and virtio-pci. I see the same problem
+>> >> with both on s390x. I didn't try with virtio-blk-pci-non-transitional
+>> >> yet (have to figure out how to do that with libvirt) for pci I used
+>> >> virtio-blk-pci.
+>> >> 
+>> >> > Distinguishing between legacy and modern drivers is transport
+>> >> > specific.  PCI presents
+>> >> > legacy and modern at separate addresses so distinguishing
+>> >> > between these two should be no trouble.
+>> >> 
+>> >> You mean the device id? Yes that is bolted down in the spec, but
+>> >> currently we don't exploit that information. Furthermore there
+>> >> is a fat chance that with QEMU even the allegedly non-transitional
+>> >> devices only present a little endian config space after VERSION_1
+>> >> was negotiated. Namely get_config for virtio-blk is implemented in
+>> >> virtio_blk_update_config() which does virtio_stl_p(vdev,
+>> >> &blkcfg.blk_size, blk_size) and in there we don't care
+>> >> about transitional or not:
+>> >> 
+>> >> static inline bool virtio_access_is_big_endian(VirtIODevice *vdev)
+>> >> {
+>> >> #if defined(LEGACY_VIRTIO_IS_BIENDIAN)
+>> >>     return virtio_is_big_endian(vdev);
+>> >> #elif defined(TARGET_WORDS_BIGENDIAN)
+>> >>     if (virtio_vdev_has_feature(vdev, VIRTIO_F_VERSION_1)) {
+>> >>         /* Devices conforming to VIRTIO 1.0 or later are always LE. */
+>> >>         return false;
+>> >>     }
+>> >>     return true;
+>> >> #else
+>> >>     return false;
+>> >> #endif
+>> >> }
+>> >> 
+>> >
+>> > ok so that's a QEMU bug. Any virtio 1.0 and up
+>> > compatible device must use LE.
+>> > It can also present a legacy config space where the
+>> > endian depends on the guest.
+>> 
+>> So, how is the virtio core supposed to determine this? A
+>> transport-specific callback?
+>
+> I'd say a field in VirtIODevice is easiest.
 
-> >> It seems to be reasonable why resubmission sometimes works.
-> > Did you ever track down the reason why you got the -EPROTO error 
-> > while debugging that other issue?  Can you reproduce it?
-> 
-> Is that really the issue though? We are seeing this issue with EPROTO.
-> But wouldn't we see it with any recoverable error?
+The transport needs to set this as soon as it has figured out whether
+we're using legacy or not. I guess we also need to fence off any
+accesses respectively error out the device if the driver tries any
+read/write operations that would depend on that knowledge?
 
-If you mean an error that can be fixed but only by doing something more 
-than a simple retry, then yes.  However, the vast majority of USB 
-drivers do not attempt anything more than a simple retry.  Relatively 
-few of them (including usbhid and mass-storage) are more sophisticated 
-in their error handling.
+And using a field in VirtIODevice would probably need some care when
+migrating. Hm...
 
-> AFAICT we are running into a situation without progress because drivers
-> retry
-> 
-> * forever
-> * immediately
-> 
-> If we broke any of these conditions the system would proceed and the
-> hotplug event be eventually be processed. We may ask whether drivers should
-> retry forever, but I don't see that you can blame it on error codes.
-
-It's important to distinguish between:
-
-    1.	errors that are transient and will disappear very quickly,
-	meaning that a retry has a good chance of working, and
-
-    2.	errors that are effectively permanent (or at least, long-lived)
-	and therefore are highly unlikely to be fixed by retrying.
-
-My point is that there is no reason to retry in case 2, and -EPROTO 
-falls into this case (as do -EILSEQ and -ETIME).
-
-Converting drivers to keep track of their retries, to avoid retrying 
-forever, would be a fairly large change.  Even implementing delayed 
-retries requires some significant work (as you can see in Hayes's recent 
-patch -- and that was an easy case because the NAPI infrastructure was 
-already present).  It's much simpler to avoid retrying entirely in 
-situations where retries won't help.
-
-And it's even simpler if the USB core would automatically prevent 
-retries (by failing URB submissions after low-level protocol errors) in 
-these situations.
-
-Alan Stern
