@@ -2,115 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D549042085A
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 11:34:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D848420862
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 11:36:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231976AbhJDJgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 05:36:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37140 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229957AbhJDJgM (ORCPT
+        id S232268AbhJDJiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 05:38:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39223 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230408AbhJDJiJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 05:36:12 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AF9CC061745;
-        Mon,  4 Oct 2021 02:34:24 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id v11so3362769pgb.8;
-        Mon, 04 Oct 2021 02:34:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=dJQWn2Sif2VCs7bc9fSojLnxy+HpF5qOK5tsXATQ6mE=;
-        b=Ihuv/5aR8UBlWzjCeRAUDxXhK+LkTNza8BrE/GSAeS0X2LXl/VeoA+BMEQHmlrcX7G
-         3PPSGTqP/Uw9FjOUQIuEteE1Gt/e896IRxN7KwkV7IYxEEAp1Gk/Uy1f3OsjhVzKUEbV
-         f55JrNJD8XLERsrjD/LNDRRGGe1uHdRirE7j1Sf4uvIfjWOvk8Qpac7HdQ6pQHhYNJiu
-         pg+gUQyZ5ID3w7RmcOZoZMn5GTkmsPfN492Yq869VEvklkushQOVBCVy370Ll/31f6Ep
-         0vrZnIJlFAgNrxeyIGBEnN1u/pJ4piLb97xlH4rCSg23wzPQ7LQA1KJUAdSlP7flul5F
-         W2kQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=dJQWn2Sif2VCs7bc9fSojLnxy+HpF5qOK5tsXATQ6mE=;
-        b=DliqU0s+zQW9qQIiHEdMjM/0+GNgeVAtLAkcJvns7me4OtxPfGRvduM+9Hql5FUexc
-         d69J5Uo/Zn0VC3p8liLFYogGzSg7Lh+LRil8mrgno8e9+mvLtxnI1j4wb4/PrB5WXX0V
-         z2om3WEDqJbQgdTtsWxpQZRMHbCIFOWT4tYWFzU40JQsAns0XA8Dp4LxnRzzWiwrwIg4
-         0rRwxF/T/eijg3DkymvECBEK8SRsrqCiDCiqSic3jECFk8YOKceVkDTu/FH4AVZLpyAU
-         UjXuNtZc0BGSRdczteXW8v78x8AmKKNuWBt7nv6hmgS4fR7P4GWcPxACchkkr4xB2HlF
-         hQYA==
-X-Gm-Message-State: AOAM533FDznqbiZhcTQG4SUq2EXOwRn6mwnAfq6AtoIdVwKIXiJIFRcE
-        5O+Mj7SUVPOGPTCDKkKl8KNffhhv5WA=
-X-Google-Smtp-Source: ABdhPJxpNBo9hS5TRJpWRSjoFeXpAMKnaUdujVNM36//c6ofLI2PT0MKgjn/1DdOwCVPdoKK+wCbgw==
-X-Received: by 2002:a63:131f:: with SMTP id i31mr10077531pgl.207.1633340063688;
-        Mon, 04 Oct 2021 02:34:23 -0700 (PDT)
-Received: from sol (106-69-170-56.dyn.iinet.net.au. [106.69.170.56])
-        by smtp.gmail.com with ESMTPSA id v26sm14010911pfm.175.2021.10.04.02.34.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Oct 2021 02:34:22 -0700 (PDT)
-Date:   Mon, 4 Oct 2021 17:34:16 +0800
-From:   Kent Gibson <warthog618@gmail.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Bartosz Golaszewski <brgl@bgdev.pl>
-Subject: linux 5.15-rc4: refcount underflow when unloading gpio-mockup
-Message-ID: <20211004093416.GA2513199@sol>
+        Mon, 4 Oct 2021 05:38:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633340180;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=hlABN2UfX8mmg4ng0oI/HDWFcaKFWagGNJM8HwtDihg=;
+        b=F7YrK3RBAgnWJ3QDhU3GrNHz022r7yRiR2Glygvs2++J8onyr9icyN6wMidHk+HWb5py3b
+        o+oWaQyjYZB6Z8s4cOhi7GnIErun1YJ1xUvoFSTNAnGzG/DuTykOKL4I1+wQ2RF4GCHble
+        rkUvMMqMu2pa56xQUZZTJ79lDJFfo4A=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-560-MDZ8qFBKP2Whbkrt_JF4zg-1; Mon, 04 Oct 2021 05:36:17 -0400
+X-MC-Unique: MDZ8qFBKP2Whbkrt_JF4zg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B143E1006AA4;
+        Mon,  4 Oct 2021 09:36:14 +0000 (UTC)
+Received: from t480s.redhat.com (unknown [10.39.194.159])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 098A9100763D;
+        Mon,  4 Oct 2021 09:36:06 +0000 (UTC)
+From:   David Hildenbrand <david@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Jianyong Wu <Jianyong.Wu@arm.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Vineet Gupta <vgupta@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-snps-arc@lists.infradead.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-mm@kvack.org,
+        kexec@lists.infradead.org
+Subject: [PATCH v2 0/5] mm/memory_hotplug: full support for add_memory_driver_managed() with CONFIG_ARCH_KEEP_MEMBLOCK
+Date:   Mon,  4 Oct 2021 11:36:00 +0200
+Message-Id: <20211004093605.5830-1-david@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Architectures that require CONFIG_ARCH_KEEP_MEMBLOCK=y, such as arm64,
+don't cleanly support add_memory_driver_managed() yet. Most prominently,
+kexec_file can still end up placing kexec images on such driver-managed
+memory, resulting in undesired behavior, for example, having kexec images
+located on memory not part of the firmware-provided memory map.
 
-I'm seeing a refcount underflow when I unload the gpio-mockup module on
-Linux v5.15-rc4 (and going back to v5.15-rc1):
+Teaching kexec to not place images on driver-managed memory is especially
+relevant for virtio-mem. Details can be found in commit 7b7b27214bba
+("mm/memory_hotplug: introduce add_memory_driver_managed()").
 
-# modprobe gpio-mockup gpio_mockup_ranges=-1,4,-1,10
-# rmmod gpio-mockup
-------------[ cut here ]------------
-refcount_t: underflow; use-after-free.
-WARNING: CPU: 0 PID: 103 at lib/refcount.c:28 refcount_warn_saturate+0xd1/0x120
-Modules linked in: gpio_mockup(-)
-CPU: 0 PID: 103 Comm: rmmod Not tainted 5.15.0-rc4 #1
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1.1 04/01/2014
-EIP: refcount_warn_saturate+0xd1/0x120
-Code: e8 a2 b0 3b 00 0f 0b eb 83 80 3d db 2a 8c c1 00 0f 85 76 ff ff ff c7 04 24 88 85 78 c1 b1 01 88 0d db 2a 8c c1 e8 7d b0 3b 00 <0f> 0b e9 5b ff ff ff 80 3d d9 2a 8c c1 00 0f 85 4e ff ff ff c7 04
-EAX: 00000026 EBX: c250b100 ECX: f5fe8c28 EDX: 00000000
-ESI: c244860c EDI: c250b100 EBP: c245be84 ESP: c245be80
-DS: 007b ES: 007b FS: 00d8 GS: 0033 SS: 0068 EFLAGS: 00000296
-CR0: 80050033 CR2: b7e3c3e1 CR3: 024ba000 CR4: 00000690
-Call Trace:
- kobject_put+0xdc/0xf0
- software_node_notify_remove+0xa8/0xc0
- device_del+0x15a/0x3e0
- ? kfree_const+0xf/0x30
- ? kobject_put+0xa6/0xf0
- ? module_remove_driver+0x73/0xa0
- platform_device_del.part.0+0xf/0x80
- platform_device_unregister+0x19/0x40
- gpio_mockup_unregister_pdevs+0x13/0x1b [gpio_mockup]
- gpio_mockup_exit+0x1c/0x68c [gpio_mockup]
- __ia32_sys_delete_module+0x137/0x1e0
- ? task_work_run+0x61/0x90
- ? exit_to_user_mode_prepare+0x1b5/0x1c0
- __do_fast_syscall_32+0x50/0xc0
- do_fast_syscall_32+0x32/0x70
- do_SYSENTER_32+0x15/0x20
- entry_SYSENTER_32+0x98/0xe7
-EIP: 0xb7eda549
-Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d 76 00 58 b8 77 00 00 00 cd 80 90 8d 76
-EAX: ffffffda EBX: 0045a19c ECX: 00000800 EDX: 0045a160
-ESI: fffffffe EDI: 0045a160 EBP: bff19d08 ESP: bff19cc8
-DS: 007b ES: 007b FS: 0000 GS: 0033 SS: 007b EFLAGS: 00000202
----[ end trace 3d71387f54bc2d06 ]---
+Extend memblock with a new flag and set it from memory hotplug code
+when applicable. This is required to fully support virtio-mem on
+arm64, making also kexec_file behave like on x86-64.
 
-I suspect this is related to the recent changes to swnode.c or
-platform.c, as gpio-mockup hasn't changed, but haven't had the
-chance to debug further.
+v1 -> v2:
+- "memblock: improve MEMBLOCK_HOTPLUG documentation"
+-- Added
+- "memblock: add MEMBLOCK_DRIVER_MANAGED to mimic
+   IORESOURCE_SYSRAM_DRIVER_MANAGED"
+-- Improve documentation of MEMBLOCK_DRIVER_MANAGED
+- Refine patch descriptions
 
-Cheers,
-Kent.
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Mike Rapoport <rppt@kernel.org>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Oscar Salvador <osalvador@suse.de>
+Cc: Jianyong Wu <Jianyong.Wu@arm.com>
+Cc: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+Cc: Vineet Gupta <vgupta@kernel.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Huacai Chen <chenhuacai@kernel.org>
+Cc: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Heiko Carstens <hca@linux.ibm.com>
+Cc: Vasily Gorbik <gor@linux.ibm.com>
+Cc: Christian Borntraeger <borntraeger@de.ibm.com>
+Cc: Eric Biederman <ebiederm@xmission.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: linux-snps-arc@lists.infradead.org
+Cc: linux-ia64@vger.kernel.org
+Cc: linux-m68k@lists.linux-m68k.org
+Cc: linux-mips@vger.kernel.org
+Cc: linux-s390@vger.kernel.org
+Cc: linux-mm@kvack.org
+Cc: kexec@lists.infradead.org
+
+David Hildenbrand (5):
+  mm/memory_hotplug: handle memblock_add_node() failures in
+    add_memory_resource()
+  memblock: improve MEMBLOCK_HOTPLUG documentation
+  memblock: allow to specify flags with memblock_add_node()
+  memblock: add MEMBLOCK_DRIVER_MANAGED to mimic
+    IORESOURCE_SYSRAM_DRIVER_MANAGED
+  mm/memory_hotplug: indicate MEMBLOCK_DRIVER_MANAGED with
+    IORESOURCE_SYSRAM_DRIVER_MANAGED
+
+ arch/arc/mm/init.c               |  4 ++--
+ arch/ia64/mm/contig.c            |  2 +-
+ arch/ia64/mm/init.c              |  2 +-
+ arch/m68k/mm/mcfmmu.c            |  3 ++-
+ arch/m68k/mm/motorola.c          |  6 ++++--
+ arch/mips/loongson64/init.c      |  4 +++-
+ arch/mips/sgi-ip27/ip27-memory.c |  3 ++-
+ arch/s390/kernel/setup.c         |  3 ++-
+ include/linux/memblock.h         | 25 +++++++++++++++++++++----
+ include/linux/mm.h               |  2 +-
+ kernel/kexec_file.c              |  5 +++++
+ mm/memblock.c                    | 13 +++++++++----
+ mm/memory_hotplug.c              | 11 +++++++++--
+ 13 files changed, 62 insertions(+), 21 deletions(-)
+
+
+base-commit: 9e1ff307c779ce1f0f810c7ecce3d95bbae40896
+-- 
+2.31.1
+
