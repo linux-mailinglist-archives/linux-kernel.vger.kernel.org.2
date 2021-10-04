@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98A97420D77
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:13:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C603C42100F
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:38:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235995AbhJDNP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:15:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47310 "EHLO mail.kernel.org"
+        id S238421AbhJDNkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:40:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51836 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236172AbhJDNNc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:13:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 17BAD61B3E;
-        Mon,  4 Oct 2021 13:05:13 +0000 (UTC)
+        id S238469AbhJDNif (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:38:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9719261872;
+        Mon,  4 Oct 2021 13:17:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352714;
-        bh=cXgnBP+vUWeCWYi2Pza35xjs8y6lEZ4xs4PTc/6Z69s=;
+        s=korg; t=1633353451;
+        bh=/iEj+Dy6csfBsYnHFRL20+7jzqNMnO/aEswdmbKKV8I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bAvMt5yphjJSAG9KHzrnxa/X7Sd/hPKuGHUF8LR5ONO239zXkrTlF4NEICqogBOHo
-         2xxItbkdC57iF3ZnUN/htkhKV+M19zfCt9X4Uwo+RCFtXj6bbBMLTuYEZVI1STENGw
-         ttnGveqFaNga2+hb2hXDRJ+DlmLiOduyKUk/xlwc=
+        b=2QYKrpfdtZIvqE9bYPiKA9PEDVoYSj6rDvQJAADOgNx7UFP0YnknmP5oiiDriJbLS
+         sYgcGQv7tDo7zwQsbqdMSbL9AWTEXVAHf88Jw7YXWLnXgUqk2twRDT2EqyHZwNoA4Y
+         1nNihIxuhSFSUgoNjcGJ0YgJ2xmQnpUh6P8LyR4c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zelin Deng <zelin.deng@linux.alibaba.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 4.19 60/95] x86/kvmclock: Move this_cpu_pvti into kvmclock.h
+        stable@vger.kernel.org, Paul Fertser <fercerpav@gmail.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 100/172] hwmon: (tmp421) fix rounding for negative values
 Date:   Mon,  4 Oct 2021 14:52:30 +0200
-Message-Id: <20211004125035.538640579@linuxfoundation.org>
+Message-Id: <20211004125048.210616434@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125033.572932188@linuxfoundation.org>
-References: <20211004125033.572932188@linuxfoundation.org>
+In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
+References: <20211004125044.945314266@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,69 +40,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zelin Deng <zelin.deng@linux.alibaba.com>
+From: Paul Fertser <fercerpav@gmail.com>
 
-commit ad9af930680bb396c87582edc172b3a7cf2a3fbf upstream.
+[ Upstream commit 724e8af85854c4d3401313b6dd7d79cf792d8990 ]
 
-There're other modules might use hv_clock_per_cpu variable like ptp_kvm,
-so move it into kvmclock.h and export the symbol to make it visiable to
-other modules.
+Old code produces -24999 for 0b1110011100000000 input in standard format due to
+always rounding up rather than "away from zero".
 
-Signed-off-by: Zelin Deng <zelin.deng@linux.alibaba.com>
-Cc: <stable@vger.kernel.org>
-Message-Id: <1632892429-101194-2-git-send-email-zelin.deng@linux.alibaba.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Use the common macro for division, unify and simplify the conversion code along
+the way.
+
+Fixes: 9410700b881f ("hwmon: Add driver for Texas Instruments TMP421/422/423 sensor chips")
+Signed-off-by: Paul Fertser <fercerpav@gmail.com>
+Link: https://lore.kernel.org/r/20210924093011.26083-3-fercerpav@gmail.com
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/include/asm/kvmclock.h |   14 ++++++++++++++
- arch/x86/kernel/kvmclock.c      |   13 ++-----------
- 2 files changed, 16 insertions(+), 11 deletions(-)
+ drivers/hwmon/tmp421.c | 24 ++++++++----------------
+ 1 file changed, 8 insertions(+), 16 deletions(-)
 
---- a/arch/x86/include/asm/kvmclock.h
-+++ b/arch/x86/include/asm/kvmclock.h
-@@ -2,6 +2,20 @@
- #ifndef _ASM_X86_KVM_CLOCK_H
- #define _ASM_X86_KVM_CLOCK_H
+diff --git a/drivers/hwmon/tmp421.c b/drivers/hwmon/tmp421.c
+index c9ef83627bb7..b963a369c5ab 100644
+--- a/drivers/hwmon/tmp421.c
++++ b/drivers/hwmon/tmp421.c
+@@ -100,23 +100,17 @@ struct tmp421_data {
+ 	s16 temp[4];
+ };
  
-+#include <linux/percpu.h>
-+
- extern struct clocksource kvm_clock;
+-static int temp_from_s16(s16 reg)
++static int temp_from_raw(u16 reg, bool extended)
+ {
+ 	/* Mask out status bits */
+ 	int temp = reg & ~0xf;
  
-+DECLARE_PER_CPU(struct pvclock_vsyscall_time_info *, hv_clock_per_cpu);
-+
-+static inline struct pvclock_vcpu_time_info *this_cpu_pvti(void)
-+{
-+	return &this_cpu_read(hv_clock_per_cpu)->pvti;
-+}
-+
-+static inline struct pvclock_vsyscall_time_info *this_cpu_hvclock(void)
-+{
-+	return this_cpu_read(hv_clock_per_cpu);
-+}
-+
- #endif /* _ASM_X86_KVM_CLOCK_H */
---- a/arch/x86/kernel/kvmclock.c
-+++ b/arch/x86/kernel/kvmclock.c
-@@ -64,18 +64,9 @@ early_param("no-kvmclock-vsyscall", pars
- static struct pvclock_vsyscall_time_info
- 			hv_clock_boot[HVC_BOOT_ARRAY_SIZE] __bss_decrypted __aligned(PAGE_SIZE);
- static struct pvclock_wall_clock wall_clock __bss_decrypted;
--static DEFINE_PER_CPU(struct pvclock_vsyscall_time_info *, hv_clock_per_cpu);
- static struct pvclock_vsyscall_time_info *hvclock_mem;
--
--static inline struct pvclock_vcpu_time_info *this_cpu_pvti(void)
--{
--	return &this_cpu_read(hv_clock_per_cpu)->pvti;
+-	return (temp * 1000 + 128) / 256;
 -}
 -
--static inline struct pvclock_vsyscall_time_info *this_cpu_hvclock(void)
+-static int temp_from_u16(u16 reg)
 -{
--	return this_cpu_read(hv_clock_per_cpu);
--}
-+DEFINE_PER_CPU(struct pvclock_vsyscall_time_info *, hv_clock_per_cpu);
-+EXPORT_PER_CPU_SYMBOL_GPL(hv_clock_per_cpu);
+-	/* Mask out status bits */
+-	int temp = reg & ~0xf;
+-
+-	/* Add offset for extended temperature range. */
+-	temp -= 64 * 256;
++	if (extended)
++		temp = temp - 64 * 256;
++	else
++		temp = (s16)temp;
  
- /*
-  * The wallclock is the time of day when we booted. Since then, some time may
+-	return (temp * 1000 + 128) / 256;
++	return DIV_ROUND_CLOSEST(temp * 1000, 256);
+ }
+ 
+ static int tmp421_update_device(struct tmp421_data *data)
+@@ -172,10 +166,8 @@ static int tmp421_read(struct device *dev, enum hwmon_sensor_types type,
+ 
+ 	switch (attr) {
+ 	case hwmon_temp_input:
+-		if (tmp421->config & TMP421_CONFIG_RANGE)
+-			*val = temp_from_u16(tmp421->temp[channel]);
+-		else
+-			*val = temp_from_s16(tmp421->temp[channel]);
++		*val = temp_from_raw(tmp421->temp[channel],
++				     tmp421->config & TMP421_CONFIG_RANGE);
+ 		return 0;
+ 	case hwmon_temp_fault:
+ 		/*
+-- 
+2.33.0
+
 
 
