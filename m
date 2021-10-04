@@ -2,94 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A161D42089B
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 11:44:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FA244208A5
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 11:46:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232339AbhJDJqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 05:46:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48004 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231962AbhJDJqH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 05:46:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DD5826124B;
-        Mon,  4 Oct 2021 09:44:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633340659;
-        bh=fk61M3UGDZbik4xQrIYyiZJxiHlmJ2ySY6kXmySER+s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PurdbFyUtnGgzBveLRsgnFFgIpBtnBI5T/WPmlrsXHY53rvnRWZQG2D+wazrgGNOc
-         18eaoPV5ppwkpI2LZz+KuwDkUzJ1fuHxKPmH7oD9+M/HGTqozUmFNAg5yrbxzj7FMP
-         fuzOYJoEJ5bqggJHQTztq0XQCYub38yfgciglf1E=
-Date:   Mon, 4 Oct 2021 11:44:17 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Kent Gibson <warthog618@gmail.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <brgl@bgdev.pl>
-Subject: Re: linux 5.15-rc4: refcount underflow when unloading gpio-mockup
-Message-ID: <YVrM8VdLKZUt0i8R@kroah.com>
-References: <20211004093416.GA2513199@sol>
+        id S232462AbhJDJsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 05:48:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39916 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232364AbhJDJr7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 05:47:59 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2C03C061746
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 02:46:10 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mXKXn-0005Lx-Cy; Mon, 04 Oct 2021 11:45:59 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mXKXk-00087w-4v; Mon, 04 Oct 2021 11:45:56 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mXKXk-00081G-2w; Mon, 04 Oct 2021 11:45:56 +0200
+Date:   Mon, 4 Oct 2021 11:45:55 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Eric Tremblay <etremblay@distech-controls.com>
+Cc:     gregkh@linuxfoundation.org, jslaby@suse.com,
+        andriy.shevchenko@linux.intel.com, matwey.kornilov@gmail.com,
+        giulio.benetti@micronovasrl.com, lukas@wunner.de,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        heiko@sntech.de, heiko.stuebner@theobroma-systems.com
+Subject: Re: [PATCH v2 1/3] serial: 8250: Handle UART without interrupt on
+ TEMT using em485
+Message-ID: <20211004094555.26azbbzhzdzavjpf@pengutronix.de>
+References: <20210204161158.643-1-etremblay@distech-controls.com>
+ <20210204161158.643-2-etremblay@distech-controls.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="pylzd3ugdvivstpl"
 Content-Disposition: inline
-In-Reply-To: <20211004093416.GA2513199@sol>
+In-Reply-To: <20210204161158.643-2-etremblay@distech-controls.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 04, 2021 at 05:34:16PM +0800, Kent Gibson wrote:
-> Hi,
-> 
-> I'm seeing a refcount underflow when I unload the gpio-mockup module on
-> Linux v5.15-rc4 (and going back to v5.15-rc1):
-> 
-> # modprobe gpio-mockup gpio_mockup_ranges=-1,4,-1,10
-> # rmmod gpio-mockup
-> ------------[ cut here ]------------
-> refcount_t: underflow; use-after-free.
-> WARNING: CPU: 0 PID: 103 at lib/refcount.c:28 refcount_warn_saturate+0xd1/0x120
-> Modules linked in: gpio_mockup(-)
-> CPU: 0 PID: 103 Comm: rmmod Not tainted 5.15.0-rc4 #1
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1.1 04/01/2014
-> EIP: refcount_warn_saturate+0xd1/0x120
-> Code: e8 a2 b0 3b 00 0f 0b eb 83 80 3d db 2a 8c c1 00 0f 85 76 ff ff ff c7 04 24 88 85 78 c1 b1 01 88 0d db 2a 8c c1 e8 7d b0 3b 00 <0f> 0b e9 5b ff ff ff 80 3d d9 2a 8c c1 00 0f 85 4e ff ff ff c7 04
-> EAX: 00000026 EBX: c250b100 ECX: f5fe8c28 EDX: 00000000
-> ESI: c244860c EDI: c250b100 EBP: c245be84 ESP: c245be80
-> DS: 007b ES: 007b FS: 00d8 GS: 0033 SS: 0068 EFLAGS: 00000296
-> CR0: 80050033 CR2: b7e3c3e1 CR3: 024ba000 CR4: 00000690
-> Call Trace:
->  kobject_put+0xdc/0xf0
->  software_node_notify_remove+0xa8/0xc0
->  device_del+0x15a/0x3e0
->  ? kfree_const+0xf/0x30
->  ? kobject_put+0xa6/0xf0
->  ? module_remove_driver+0x73/0xa0
->  platform_device_del.part.0+0xf/0x80
->  platform_device_unregister+0x19/0x40
->  gpio_mockup_unregister_pdevs+0x13/0x1b [gpio_mockup]
->  gpio_mockup_exit+0x1c/0x68c [gpio_mockup]
->  __ia32_sys_delete_module+0x137/0x1e0
->  ? task_work_run+0x61/0x90
->  ? exit_to_user_mode_prepare+0x1b5/0x1c0
->  __do_fast_syscall_32+0x50/0xc0
->  do_fast_syscall_32+0x32/0x70
->  do_SYSENTER_32+0x15/0x20
->  entry_SYSENTER_32+0x98/0xe7
-> EIP: 0xb7eda549
-> Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d 76 00 58 b8 77 00 00 00 cd 80 90 8d 76
-> EAX: ffffffda EBX: 0045a19c ECX: 00000800 EDX: 0045a160
-> ESI: fffffffe EDI: 0045a160 EBP: bff19d08 ESP: bff19cc8
-> DS: 007b ES: 007b FS: 0000 GS: 0033 SS: 007b EFLAGS: 00000202
-> ---[ end trace 3d71387f54bc2d06 ]---
-> 
-> I suspect this is related to the recent changes to swnode.c or
-> platform.c, as gpio-mockup hasn't changed, but haven't had the
-> chance to debug further.
 
-Any chance you can run 'git bisect' for this?
+--pylzd3ugdvivstpl
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-thanks,
+Hello,
 
-greg k-h
+[dropped christoph.muellner@theobroma-systems.com from Cc: as the
+address doesn't seem to work any more]
+
+On Thu, Feb 04, 2021 at 11:11:56AM -0500, Eric Tremblay wrote:
+> The patch introduce the UART_CAP_NOTEMT capability. The capability
+> indicate that the UART doesn't have an interrupt available on TEMT.
+>=20
+> In the case where the device does not support it, we calculate the
+> maximum time it could take for the transmitter to empty the
+> shift register. When we get in the situation where we get the
+> THRE interrupt, we check if the TEMT bit is set. If it's not, we start
+> the a timer and recall __stop_tx() after the delay.
+>=20
+> The transmit sequence is a bit modified when the capability is set. The
+> new timer is used between the last interrupt(THRE) and a potential
+> stop_tx timer.
+
+I wonder if the required change can be simplified by just increasing the
+stop_tx_timer timeout as there is nothing that has to happen when the
+shifter is empty apart from starting the stop_tx timer.
+
+This would require a good documentation because the semantic of the stop
+timer would change.
+
+@Eric: Do you plan to address the feedback comments here? I'd volunteer
+as a tester if yes. Otherwise there might be some incentive to work on
+this series myself.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--pylzd3ugdvivstpl
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmFazUsACgkQwfwUeK3K
+7AmPowf+JkeIVicDG9Nv39f6Knk/CnoLyUdHesOXFHtpNs5rbnl3dyhTKAdNW2jf
+8te6Q/6dkT8PmVB2aMUmQKTWZxmTxRjbRWiLY1NAiSK07WF576rm9O9B6/V9Tnwf
+N1N0y8QYqKMOxGQ+4azCnPyzXinirhlJ8vddrv5FTKHMCTJhwuvthFdSywbc3k0J
+pLa5BHjkpFjdp0imSjOvDnFPE19XzCCGW+jina7nLfa/R5rHtNHQAnVE4el0xYiA
+zugLEhGjoDi7sbPicJd3y/lAVYJ2GqEffz521gg4CbdZ/vBnlmDfwwZ7Ix4l7rSK
+YcZPfcFOgS6RAq2VUamtu0J9jvyFrQ==
+=grO0
+-----END PGP SIGNATURE-----
+
+--pylzd3ugdvivstpl--
