@@ -2,114 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70E63420AE8
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:30:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6744B420AE9
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:31:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230337AbhJDMch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 08:32:37 -0400
-Received: from mga04.intel.com ([192.55.52.120]:41089 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229486AbhJDMcg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 08:32:36 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10126"; a="224171074"
-X-IronPort-AV: E=Sophos;i="5.85,345,1624345200"; 
-   d="scan'208";a="224171074"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2021 05:30:47 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,345,1624345200"; 
-   d="scan'208";a="622120668"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 04 Oct 2021 05:30:44 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 04 Oct 2021 15:30:43 +0300
-Date:   Mon, 4 Oct 2021 15:30:43 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Kent Gibson <warthog618@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <brgl@bgdev.pl>
-Subject: Re: linux 5.15-rc4: refcount underflow when unloading gpio-mockup
-Message-ID: <YVrz86m3+7wDSYlh@kuha.fi.intel.com>
-References: <20211004093416.GA2513199@sol>
- <YVrM8VdLKZUt0i8R@kroah.com>
- <20211004121942.GA3343713@sol>
+        id S232395AbhJDMdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 08:33:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49778 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229486AbhJDMdU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 08:33:20 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6D5DC061745
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 05:31:31 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id g8so64367971edt.7
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 05:31:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chrisdown.name; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=j3+NTrKGFxPGR5lMV22TDnmiT6BfVPVV1SDrEBp3aXk=;
+        b=O6lUjgv5/RmkoDv75GKCiEFyuEGSKsFUCencENjUDqGrkgJQVkxIZtZjU8VnAdfwt6
+         gEyzSam26qVPlIwwtf1K2Ktx8bYDsaB7oFybuW8dtS3OOngk00UZ8MAKDs6oKGKgZ0pA
+         eY7mnh5tym7TIsoWXHX6zo8RKhK7g6aBiBpQs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=j3+NTrKGFxPGR5lMV22TDnmiT6BfVPVV1SDrEBp3aXk=;
+        b=cVCuKr0kyGHE/ClyPM5KGtJrPzfcIcfXC8/7a/T672QYs1dav6Cr6YBqdks0n0M8Za
+         UZD9fkNXe7JLETgTVLWjE2yy3rB92s/J/QV/r/t0yjMMDf2gPr1sj9/MOZ4cqXLlofV9
+         eSPotp5U9MAgk8y3c88ZxHQWp3GY2Yyj5KGUnGnPJPsYlhWrLzshSxaDi9DfK3jC+vht
+         sC8BDL2opJb/j18JFaihMq7wNV1xHXOTTuyjWrVF1CExe0NXkdbZ4MURfqMoNzEYNFjV
+         RSB6hOESZxv2OJm0wEZO4l30j+vTVBnpg9QRYLIIKjyGVDNl1CWZG7blJYw4lFV0iY5l
+         w7aQ==
+X-Gm-Message-State: AOAM5309/JOijQAzHFN914G8j3o06GxJtujR0mmfEBT4w41icUwmxX7X
+        2gt6wpLPPTqojgbcIKXv8XyqXw==
+X-Google-Smtp-Source: ABdhPJyCTMYab3bhdSRWmXA9IxDIE79OlIAQP4zIl/PVIgqhZErhowcR1kJRIn0y6/gf+MUY2jp7eQ==
+X-Received: by 2002:a50:da0a:: with SMTP id z10mr17910180edj.95.1633350687042;
+        Mon, 04 Oct 2021 05:31:27 -0700 (PDT)
+Received: from localhost ([2620:10d:c093:400::5:d19e])
+        by smtp.gmail.com with ESMTPSA id s21sm4658614eji.3.2021.10.04.05.31.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Oct 2021 05:31:26 -0700 (PDT)
+Date:   Mon, 4 Oct 2021 13:31:25 +0100
+From:   Chris Down <chris@chrisdown.name>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        YueHaibing <yuehaibing@huawei.com>, Jessica Yu <jeyu@kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+Subject: Re: [PATCH] [v2] printk: avoid -Wsometimes-uninitialized warning
+Message-ID: <YVr0HRnfzttC/wqX@chrisdown.name>
+References: <20210928093456.2438109-1-arnd@kernel.org>
+ <YVLrttKajDU+1ZvX@chrisdown.name>
+ <YVrH5MUdS6uE/zDj@alley>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20211004121942.GA3343713@sol>
+In-Reply-To: <YVrH5MUdS6uE/zDj@alley>
+User-Agent: Mutt/2.1.3 (987dde4c) (2021-09-10)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 04, 2021 at 08:19:42PM +0800, Kent Gibson wrote:
-> On Mon, Oct 04, 2021 at 11:44:17AM +0200, Greg Kroah-Hartman wrote:
-> > On Mon, Oct 04, 2021 at 05:34:16PM +0800, Kent Gibson wrote:
-> > > Hi,
-> > > 
-> > > I'm seeing a refcount underflow when I unload the gpio-mockup module on
-> > > Linux v5.15-rc4 (and going back to v5.15-rc1):
-> > > 
-> > > # modprobe gpio-mockup gpio_mockup_ranges=-1,4,-1,10
-> > > # rmmod gpio-mockup
-> > > ------------[ cut here ]------------
-> > > refcount_t: underflow; use-after-free.
-> > > WARNING: CPU: 0 PID: 103 at lib/refcount.c:28 refcount_warn_saturate+0xd1/0x120
-> > > Modules linked in: gpio_mockup(-)
-> > > CPU: 0 PID: 103 Comm: rmmod Not tainted 5.15.0-rc4 #1
-> > > Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1.1 04/01/2014
-> > > EIP: refcount_warn_saturate+0xd1/0x120
-> > > Code: e8 a2 b0 3b 00 0f 0b eb 83 80 3d db 2a 8c c1 00 0f 85 76 ff ff ff c7 04 24 88 85 78 c1 b1 01 88 0d db 2a 8c c1 e8 7d b0 3b 00 <0f> 0b e9 5b ff ff ff 80 3d d9 2a 8c c1 00 0f 85 4e ff ff ff c7 04
-> > > EAX: 00000026 EBX: c250b100 ECX: f5fe8c28 EDX: 00000000
-> > > ESI: c244860c EDI: c250b100 EBP: c245be84 ESP: c245be80
-> > > DS: 007b ES: 007b FS: 00d8 GS: 0033 SS: 0068 EFLAGS: 00000296
-> > > CR0: 80050033 CR2: b7e3c3e1 CR3: 024ba000 CR4: 00000690
-> > > Call Trace:
-> > >  kobject_put+0xdc/0xf0
-> > >  software_node_notify_remove+0xa8/0xc0
-> > >  device_del+0x15a/0x3e0
-> > >  ? kfree_const+0xf/0x30
-> > >  ? kobject_put+0xa6/0xf0
-> > >  ? module_remove_driver+0x73/0xa0
-> > >  platform_device_del.part.0+0xf/0x80
-> > >  platform_device_unregister+0x19/0x40
-> > >  gpio_mockup_unregister_pdevs+0x13/0x1b [gpio_mockup]
-> > >  gpio_mockup_exit+0x1c/0x68c [gpio_mockup]
-> > >  __ia32_sys_delete_module+0x137/0x1e0
-> > >  ? task_work_run+0x61/0x90
-> > >  ? exit_to_user_mode_prepare+0x1b5/0x1c0
-> > >  __do_fast_syscall_32+0x50/0xc0
-> > >  do_fast_syscall_32+0x32/0x70
-> > >  do_SYSENTER_32+0x15/0x20
-> > >  entry_SYSENTER_32+0x98/0xe7
-> > > EIP: 0xb7eda549
-> > > Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d 76 00 58 b8 77 00 00 00 cd 80 90 8d 76
-> > > EAX: ffffffda EBX: 0045a19c ECX: 00000800 EDX: 0045a160
-> > > ESI: fffffffe EDI: 0045a160 EBP: bff19d08 ESP: bff19cc8
-> > > DS: 007b ES: 007b FS: 0000 GS: 0033 SS: 007b EFLAGS: 00000202
-> > > ---[ end trace 3d71387f54bc2d06 ]---
-> > > 
-> > > I suspect this is related to the recent changes to swnode.c or
-> > > platform.c, as gpio-mockup hasn't changed, but haven't had the
-> > > chance to debug further.
-> > 
-> > Any chance you can run 'git bisect' for this?
-> > 
-> 
-> That results in:
-> 
-> bd1e336aa8535a99f339e2d66a611984262221ce is the first bad commit
-> commit bd1e336aa8535a99f339e2d66a611984262221ce
-> Author: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> Date:   Tue Aug 17 13:24:49 2021 +0300
-> 
->     driver core: platform: Remove platform_device_add_properties()
+Petr Mladek writes:
+>On Tue 2021-09-28 11:17:26, Chris Down wrote:
+>> Arnd Bergmann writes:
+>> > From: Arnd Bergmann <arnd@arndb.de>
+>> >
+>> > clang notices that the pi_get_entry() function would use
+>> > uninitialized data if it was called with a non-NULL module
+>> > pointer on a kernel that does not support modules:
+>> >
+>> > kernel/printk/index.c:32:6: error: variable 'nr_entries' is used uninitialized whenever 'if' condition is false [-Werror,-Wsometimes-uninitialized]
+>> >        if (!mod) {
+>> >            ^~~~
+>> > kernel/printk/index.c:38:13: note: uninitialized use occurs here
+>> >        if (pos >= nr_entries)
+>> >                   ^~~~~~~~~~
+>> > kernel/printk/index.c:32:2: note: remove the 'if' if its condition is always true
+>> >        if (!mod) {
+>> >
+>> > Rework the condition to make it clear to the compiler that we are always
+>> > in the second case. Unfortunately the #ifdef is still required as the
+>> > definition of 'struct module' is hidden when modules are disabled.
+>> >
+>> > Fixes: 337015573718 ("printk: Userspace format indexing support")
+>>
+>> This changelog should make it clear that this is theoretical and will never
+>> actually happen, which is salient information for people who are considering
+>> whether it should go in stable or similar.
+>
+>IMHO, the sentence "Rework the condition to make it clear that this
+>is theoretical and will never actually happen" is rather clear.
 
-Can you test does this patch help:
-https://lore.kernel.org/all/20210930121246.22833-3-heikki.krogerus@linux.intel.com/
+Sounds good to me, thanks!
 
-thanks,
+I guess it's unneeded at this point, but feel free to add:
 
--- 
-heikki
+Acked-by: Chris Down <chris@chrisdown.name>
+
+>Well, I am not a native speaker.
+>
+>Anyway, I have pushed the patch into printk/linux.git, branch
+>for-5.16.
+>
+>Best Regards,
+>Petr
