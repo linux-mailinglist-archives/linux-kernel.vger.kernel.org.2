@@ -2,158 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01A26420855
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 11:33:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3EA9420850
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 11:32:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231849AbhJDJet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 05:34:49 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:61137 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231821AbhJDJeq (ORCPT
+        id S231805AbhJDJec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 05:34:32 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:46722 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229795AbhJDJeb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 05:34:46 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1633339977; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=/w7dyJN0zUz/mQPwa7PRmDmQArtW6PQOI6KgXyimEbY=; b=b7GlY1L/LGZduxDdeYH8QqMjviJR5MzzbPrlr6UtGhDHhPAjnC7sPmejinvwD7pyQE5VOJaD
- uHA+DGJGkwT69ACwKcQ/lE3ksaO99qJkk2QxJyu4fSbYUi5JlTMXHYTOt5jnnCwmEbu2MEYG
- DbMZny/wr+rZUqdapprYWH/qrAw=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 615aca3bfc6e34f8cd5da5ef (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 04 Oct 2021 09:32:43
- GMT
-Sender: pillair=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id A33EBC4360C; Mon,  4 Oct 2021 09:32:43 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from pillair-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        Mon, 4 Oct 2021 05:34:31 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id A8BD422208;
+        Mon,  4 Oct 2021 09:32:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1633339961; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=cVbR2AIszwjTu+A/NL6X3/123fGAWjpDPUfYJkyefYg=;
+        b=k9QSkT/CMufpYhIXrC+LwvfrQfjiGkp8+OjIFosOO/CHZOZ0CICesmEuublBNaRRjwnB2Y
+        u3JNVKrHeuOKSf/Iryx3832vIw0VT7efcAfwzRHAVNy8Da9FYo5olH5eww1gk9w1tzTrk9
+        TwdGnSbLCtdaBej7s8qiC1r8NKEtcl8=
+Received: from suse.cz (unknown [10.100.224.162])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: pillair)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A7E7FC4360C;
-        Mon,  4 Oct 2021 09:32:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org A7E7FC4360C
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Rakesh Pillai <pillair@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
-        swboyd@chromium.org
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sibis@codeaurora.org,
-        mpubbise@codeaurora.org, kuabhs@chromium.org,
-        Rakesh Pillai <pillair@codeaurora.org>
-Subject: [PATCH v5] arm64: dts: qcom: sc7280: Add WPSS remoteproc node
-Date:   Mon,  4 Oct 2021 15:02:25 +0530
-Message-Id: <1633339945-1568-1-git-send-email-pillair@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        by relay2.suse.de (Postfix) with ESMTPS id 32880A3B9C;
+        Mon,  4 Oct 2021 09:32:41 +0000 (UTC)
+Date:   Mon, 4 Oct 2021 11:32:41 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Pingfan Liu <kernelfans@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Wang Qing <wangqing@vivo.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Santosh Sivaraj <santosh@fossix.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCHv2 1/4] kernel/watchdog: trival cleanups
+Message-ID: <YVrKOUVnDFjKOiNZ@alley>
+References: <20210923140951.35902-1-kernelfans@gmail.com>
+ <20210923140951.35902-2-kernelfans@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210923140951.35902-2-kernelfans@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the WPSS remoteproc node in dts for
-PIL loading.
+On Thu 2021-09-23 22:09:48, Pingfan Liu wrote:
+> No reference to WATCHDOG_DEFAULT, remove it.
+> 
+> And nobody cares about the return value of watchdog_nmi_enable(),
+> changing its prototype to void.
+> 
+> Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
+> Cc: Petr Mladek <pmladek@suse.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Wang Qing <wangqing@vivo.com>
+> Cc: "Peter Zijlstra (Intel)" <peterz@infradead.org>
+> Cc: Santosh Sivaraj <santosh@fossix.org>
+> Cc: linux-arm-kernel@lists.infradead.org
+> To: linux-kernel@vger.kernel.org
+> ---
+>  include/linux/nmi.h | 2 +-
+>  kernel/watchdog.c   | 5 +----
+>  2 files changed, 2 insertions(+), 5 deletions(-)
+> 
+> diff --git a/include/linux/nmi.h b/include/linux/nmi.h
+> index 750c7f395ca9..b7bcd63c36b4 100644
+> --- a/include/linux/nmi.h
+> +++ b/include/linux/nmi.h
+> @@ -119,7 +119,7 @@ static inline int hardlockup_detector_perf_init(void) { return 0; }
+>  void watchdog_nmi_stop(void);
+>  void watchdog_nmi_start(void);
+>  int watchdog_nmi_probe(void);
+> -int watchdog_nmi_enable(unsigned int cpu);
+> +void watchdog_nmi_enable(unsigned int cpu);
+>  void watchdog_nmi_disable(unsigned int cpu);
+>  
+>  /**
+> diff --git a/kernel/watchdog.c b/kernel/watchdog.c
+> index ad912511a0c0..6e6dd5f0bc3e 100644
+> --- a/kernel/watchdog.c
+> +++ b/kernel/watchdog.c
+> @@ -30,10 +30,8 @@
+>  static DEFINE_MUTEX(watchdog_mutex);
+>  
+>  #if defined(CONFIG_HARDLOCKUP_DETECTOR) || defined(CONFIG_HAVE_NMI_WATCHDOG)
+> -# define WATCHDOG_DEFAULT	(SOFT_WATCHDOG_ENABLED | NMI_WATCHDOG_ENABLED)
+>  # define NMI_WATCHDOG_DEFAULT	1
+>  #else
+> -# define WATCHDOG_DEFAULT	(SOFT_WATCHDOG_ENABLED)
+>  # define NMI_WATCHDOG_DEFAULT	0
+>  #endif
+>  
+> @@ -95,10 +93,9 @@ __setup("nmi_watchdog=", hardlockup_panic_setup);
+>   * softlockup watchdog start and stop. The arch must select the
+>   * SOFTLOCKUP_DETECTOR Kconfig.
+>   */
+> -int __weak watchdog_nmi_enable(unsigned int cpu)
+> +void __weak watchdog_nmi_enable(unsigned int cpu)
 
-Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
----
- arch/arm64/boot/dts/qcom/sc7280-idp.dts |  4 +++
- arch/arm64/boot/dts/qcom/sc7280.dtsi    | 58 +++++++++++++++++++++++++++++++++
- 2 files changed, 62 insertions(+)
+It is __weak. spart specific implementation is in
+arch/sparc/kernel/nmi.c. It has to be updated as well.
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dts b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-index 64fc22a..2b8bbcd 100644
---- a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-+++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-@@ -68,3 +68,7 @@
- 		qcom,pre-scaling = <1 1>;
- 	};
- };
-+
-+&remoteproc_wpss {
-+	status = "okay";
-+};
-diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-index 39635da..edc7951 100644
---- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-@@ -134,6 +134,11 @@
- 			no-map;
- 		};
- 
-+		wpss_mem: memory@9ae00000 {
-+			no-map;
-+			reg = <0x0 0x9ae00000 0x0 0x1900000>;
-+		};
-+
- 		rmtfs_mem: memory@9c900000 {
- 			compatible = "qcom,rmtfs-mem";
- 			reg = <0x0 0x9c900000 0x0 0x280000>;
-@@ -2588,6 +2593,59 @@
- 			#power-domain-cells = <1>;
- 		};
- 
-+		remoteproc_wpss: remoteproc@8a00000 {
-+			compatible = "qcom,sc7280-wpss-pil";
-+			reg = <0 0x08a00000 0 0x10000>;
-+
-+			interrupts-extended = <&intc GIC_SPI 587 IRQ_TYPE_EDGE_RISING>,
-+					      <&wpss_smp2p_in 0 IRQ_TYPE_EDGE_RISING>,
-+					      <&wpss_smp2p_in 1 IRQ_TYPE_EDGE_RISING>,
-+					      <&wpss_smp2p_in 2 IRQ_TYPE_EDGE_RISING>,
-+					      <&wpss_smp2p_in 3 IRQ_TYPE_EDGE_RISING>,
-+					      <&wpss_smp2p_in 7 IRQ_TYPE_EDGE_RISING>;
-+			interrupt-names = "wdog", "fatal", "ready", "handover",
-+					  "stop-ack", "shutdown-ack";
-+
-+			clocks = <&gcc GCC_WPSS_AHB_BDG_MST_CLK>,
-+				 <&gcc GCC_WPSS_AHB_CLK>,
-+				 <&gcc GCC_WPSS_RSCP_CLK>,
-+				 <&rpmhcc RPMH_CXO_CLK>;
-+			clock-names = "gcc_wpss_ahb_bdg_mst_clk",
-+				      "gcc_wpss_ahb_clk",
-+				      "gcc_wpss_rscp_clk",
-+				      "xo";
-+
-+			power-domains = <&rpmhpd SC7280_CX>,
-+					<&rpmhpd SC7280_MX>;
-+			power-domain-names = "cx", "mx";
-+
-+			memory-region = <&wpss_mem>;
-+
-+			qcom,qmp = <&aoss_qmp>;
-+
-+			qcom,smem-states = <&wpss_smp2p_out 0>;
-+			qcom,smem-state-names = "stop";
-+
-+			resets = <&aoss_reset AOSS_CC_WCSS_RESTART>,
-+				 <&pdc_reset PDC_WPSS_SYNC_RESET>;
-+			reset-names = "restart", "pdc_sync";
-+
-+			qcom,halt-regs = <&tcsr_mutex 0x37000>;
-+
-+			status = "disabled";
-+
-+			glink-edge {
-+				interrupts-extended = <&ipcc IPCC_CLIENT_WPSS
-+							     IPCC_MPROC_SIGNAL_GLINK_QMP
-+							     IRQ_TYPE_EDGE_RISING>;
-+				mboxes = <&ipcc IPCC_CLIENT_WPSS
-+						IPCC_MPROC_SIGNAL_GLINK_QMP>;
-+
-+				label = "wpss";
-+				qcom,remote-pid = <13>;
-+			};
-+		};
-+
- 		pdc: interrupt-controller@b220000 {
- 			compatible = "qcom,sc7280-pdc", "qcom,pdc";
- 			reg = <0 0x0b220000 0 0x30000>;
--- 
-2.7.4
-
+Best Regards,
+Petr
