@@ -2,49 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0D8942128D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 17:20:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABFE34212B3
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 17:31:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234935AbhJDPWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 11:22:33 -0400
-Received: from foss.arm.com ([217.140.110.172]:50242 "EHLO foss.arm.com"
+        id S235455AbhJDPcz convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 4 Oct 2021 11:32:55 -0400
+Received: from mga05.intel.com ([192.55.52.43]:44485 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234893AbhJDPWb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 11:22:31 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8D22FD6E;
-        Mon,  4 Oct 2021 08:20:42 -0700 (PDT)
-Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3ACCA3F70D;
-        Mon,  4 Oct 2021 08:20:41 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Yicong Yang <yangyicong@hisilicon.com>, mingo@redhat.com,
-        peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, 21cnbao@gmail.com
-Cc:     linux-kernel@vger.kernel.org, song.bao.hua@hisilicon.com,
-        prime.zeng@huawei.com, yangyicong@hisilicon.com
-Subject: Re: [RESEND PATCH] sched/topology: Remove unused numa_distance in cpu_attach_domain()
-In-Reply-To: <20210915063158.80639-1-yangyicong@hisilicon.com>
-References: <20210915063158.80639-1-yangyicong@hisilicon.com>
-Date:   Mon, 04 Oct 2021 16:20:39 +0100
-Message-ID: <87y278lsu0.mognet@arm.com>
+        id S234917AbhJDPcy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 11:32:54 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10127"; a="311679231"
+X-IronPort-AV: E=Sophos;i="5.85,346,1624345200"; 
+   d="scan'208";a="311679231"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2021 08:21:17 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,346,1624345200"; 
+   d="scan'208";a="483157815"
+Received: from fmsmsx606.amr.corp.intel.com ([10.18.126.86])
+  by fmsmga007.fm.intel.com with ESMTP; 04 Oct 2021 08:21:15 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Mon, 4 Oct 2021 08:21:15 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Mon, 4 Oct 2021 08:21:14 -0700
+Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
+ fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2242.012;
+ Mon, 4 Oct 2021 08:21:14 -0700
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     Eric Badger <ebadger@purestorage.com>
+CC:     Borislav Petkov <bp@alien8.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Robert Richter <rric@kernel.org>,
+        "open list:EDAC-CORE" <linux-edac@vger.kernel.org>,
+        "open list" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] EDAC/mc_sysfs: Print MC-scope sysfs counters unsigned
+Thread-Topic: [PATCH] EDAC/mc_sysfs: Print MC-scope sysfs counters unsigned
+Thread-Index: AQHXuILh17+pdjiyHUKscEUknTnYO6vC9PPQ
+Date:   Mon, 4 Oct 2021 15:21:13 +0000
+Message-ID: <045ce9cf33904a52a365a04c055c5cbf@intel.com>
+References: <20211003181653.GA685515@ebadger-ThinkPad-T590>
+In-Reply-To: <20211003181653.GA685515@ebadger-ThinkPad-T590>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.6.200.16
+x-originating-ip: [10.1.200.100]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/09/21 14:31, Yicong Yang wrote:
-> numa_distance in cpu_attach_domain() is introduced in
-> commit b5b217346de8 ("sched/topology: Warn when NUMA diameter > 2")
-> to warn user when NUMA diameter > 2 as we'll misrepresent
-> the scheduler topology structures at that time. This is
-> fixed by Barry in commit 585b6d2723dc ("sched/topology: fix the issue
-> groups don't span domain->span for NUMA diameter > 2") and
-> numa_distance is unused now. So remove it.
->
+> This is cosmetically nicer for counts > INT32_MAX, and aligns the
+> MC-scope format with that of the lower layer sysfs counter files.
 
-Ah, 585b6d2723dc didn't contain a proper revert of b5b217346de8, leaving
-those hunks behind.
+While this is technically the right thing to do, I pity the system administrator that
+is looking at a system with more than 2147483647 corrected or uncorrected errors!
 
-Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
+So:
+
+Acked-by: Tony Luck <tony.luck@intel.com>
+
+but maybe this is just churn and not really useful in practice?
+
+-Tony
