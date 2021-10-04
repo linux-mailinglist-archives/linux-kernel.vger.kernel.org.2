@@ -2,68 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3DDD420CEF
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:08:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ADBD421090
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:45:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234115AbhJDNKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:10:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39400 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235498AbhJDNIb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:08:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D20A61425;
-        Mon,  4 Oct 2021 13:02:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633352543;
-        bh=VtcPaXR9dkDp4NIqjnvCK/gI/LxrXMTSniLXLU0DfHk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qrFZXdCNyZhqZt+0afA1Gx/mx7HB6ERk5cuD+2B3evuK+Z558+QXtpt9dTZ+LDAmI
-         UyFmhvyJgPDbdZYsW/BBAkoxaovGIaU21efU2k0C+ET0m1BKFprHaU7zWnCjs/XCvP
-         f9Y3G8leu0tSglFS19ydfOB8qlHEEAdU/hsnyPH+I9gPMJzOMM+ZQT0nZPzzUy0ahr
-         5LIt9K2kGN0xtkWmX1E/yYEMsylCt17zshVeb0CkHDUmKEPrsmWkUC5luewRqwSmo8
-         mXgKoWidg1Ouwm95506dJBpfbWoNM6ksNLEbtUYLEqSMDnvuM7UKDwBcYGxxzCl9o5
-         jFRI9y3jbKXoA==
-Date:   Mon, 4 Oct 2021 21:02:18 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Michael Walle <michael@walle.cc>
-Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Li Yang <leoyang.li@nxp.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>
-Subject: Re: [PATCH 0/7] arm64: dts: ls1028: GPU support and cleanups
-Message-ID: <20211004130218.GJ15650@dragon>
-References: <20210831134013.1625527-1-michael@walle.cc>
+        id S238175AbhJDNr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:47:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37958 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237779AbhJDNrZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:47:25 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD4FFC0D9436
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 06:07:38 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id r18so64501668edv.12
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 06:07:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=3xhITpFaVUHg+5EZbnzqRDgQ6Md69G0yDI6FlhB0FOw=;
+        b=F09w7RiqYBXkBGwnr5At93zYHtIIKiPh9AH8Nske5mly8osqqUGbxfHK6/LPXY/IiT
+         pp+L1qFfadseFfdgpRGkE6oYl0AuMP99FYtFEg7h6CGYyJiC3RnKG+dpKOe8l8LFu/6K
+         /whJFAdnSpWimFCLDY1wpG4cb/JHnLybJqc/c=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=3xhITpFaVUHg+5EZbnzqRDgQ6Md69G0yDI6FlhB0FOw=;
+        b=DdLnFid9VjgKhLKfgc352YoKJu7Uy/xRFTuwbDHMuqfqV2SQXRkJLb72ub2S4czhJ0
+         lalDlVOZX2szqO3z/CBQsolHFFKYMsBog4pOgsM1PLDWMJbeVkjNQjbfeD+mOTBOWy0O
+         RzU0U6h7zgtVc2GIfbLx9O5aQ/318/RJPJTLudJijO81mocivdOilstmflQ+YiMsPhRK
+         5xcJvdpMeEWewvLK5Igc+Gm2x4M9FBnuVJLBTpJ1rcnGKbQEODPvPYUZTLAszKsmzsjH
+         92Q/7lKmEUEOpWoeOe8YSF1cHzTEKn9vQFyUYNkfxerESx+bXz9MDwlecLiKUyoANjT2
+         Nhwg==
+X-Gm-Message-State: AOAM531NNXtiNhz2ThCU9U4EQHK+ML3bP6t7b2BcsHoN9ZTzFRjPzdf2
+        p77QQcEGjruNT6v7ClcwC+7zZA==
+X-Google-Smtp-Source: ABdhPJzmLt8RhT6JUaun/XGi1pRU4pNkGD1tiuHSoPjE5/52CHX5cEIi0LfauFOPb6Eos79FMQH7uw==
+X-Received: by 2002:a50:d84c:: with SMTP id v12mr17688714edj.203.1633352839921;
+        Mon, 04 Oct 2021 06:07:19 -0700 (PDT)
+Received: from miu.piliscsaba.redhat.com (catv-86-101-169-16.catv.broadband.hu. [86.101.169.16])
+        by smtp.gmail.com with ESMTPSA id d17sm2957548edv.58.2021.10.04.06.07.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Oct 2021 06:07:17 -0700 (PDT)
+Date:   Mon, 4 Oct 2021 15:07:14 +0200
+From:   Miklos Szeredi <miklos@szeredi.hu>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-unionfs@vger.kernel.org
+Subject: [GIT PULL] overlayfs fixes for 5.15-rc5
+Message-ID: <YVr8grJWnLDcBZFJ@miu.piliscsaba.redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210831134013.1625527-1-michael@walle.cc>
-User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 03:40:06PM +0200, Michael Walle wrote:
-> In an attempt to unify u-boot's and linux' device tree for the LS1028A SoC
-> we first need to clean up some network related stuff. Vladimir suggested to
-> move the Ethernet PHYs into the MDIO controller node, which is already the
-> case for u-boot's device tree. Further we unify the use of phy-mode and
-> phy-connection-type. Both have the same meaning, but phy-mode is used more
-> often in the kernel and for the ls1028a both were used. Replace
-> phy-connection-type with phy-mode.
-> 
-> Further move all the nodes which belongs to the CCSR into the /soc node.
-> These are the Mali display conntroller and its associated pixel clock PLL.
-> Finally, add the GPU node for the etnaviv driver under /soc.
-> 
-> Michael Walle (7):
->   arm64: dts: ls1028a: move pixel clock pll into /soc
->   arm64: dts: ls1028a: move Mali DP500 node into /soc
->   arm64: dts: ls1028a: add Vivante GPU node
->   arm64: dts: freescale: fix arm,sp805 compatible string
->   arm64: dts: ls1028a: disable usb controller by default
->   arm64: dts: ls1028a: move PHY nodes to MDIO controller
->   arm64: dts: ls1028a: use phy-mode instead of phy-connection-type
+Hi Linus,
 
-Applied all, except #4 which had been picked up separately.
+Please pull from:
 
-Shawn
+  git://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/vfs.git tags/ovl-fixes-5.15-rc5
+
+Fix two bugs, both of them corner cases not affecting most users.
+
+Thanks,
+Miklos
+
+---
+Miklos Szeredi (1):
+      ovl: fix IOCB_DIRECT if underlying fs doesn't support direct IO
+
+Zheng Liang (1):
+      ovl: fix missing negative dentry check in ovl_rename()
+
+---
+ fs/overlayfs/dir.c  | 10 +++++++---
+ fs/overlayfs/file.c | 15 ++++++++++++++-
+ 2 files changed, 21 insertions(+), 4 deletions(-)
