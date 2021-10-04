@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FAB9420BFC
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:59:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9A22420C8D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:05:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234278AbhJDNBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:01:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59970 "EHLO mail.kernel.org"
+        id S235109AbhJDNG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:06:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39402 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233821AbhJDM77 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 08:59:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D67F60E0C;
-        Mon,  4 Oct 2021 12:57:47 +0000 (UTC)
+        id S235108AbhJDNFG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:05:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4041F613AD;
+        Mon,  4 Oct 2021 13:00:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352268;
-        bh=8PiVwGkXWJD5okVWy9HY50VjTZ6cNLUcjQvgfdQ5A/k=;
+        s=korg; t=1633352445;
+        bh=sCKqQsnWyy2TMFoIwAoK9TxQENvqp67L5yhaXHcheCw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=I9BjYU8ZLF4raCDbNMzwhLFdoclsZq8Jttnr54K6v6v9Nz2RME36TaIHBHeIa7xRA
-         CaAg5MvlOMMNaF6RkX0JyTv0HJx1wHbTEAfTAumbIB/1Goa7OyvncR7hhxbPggNSqo
-         0bZkAQ08gGoLH63heOoOBT+bOdcOq8pHsg9hp/fw=
+        b=p3v90gkjIVGaAIIJGdW0PVSMLoXVynjfT6XLTctGbRq1gpRes2AAOpRa3FarX8a7c
+         bMAfyVtFGIzb4WkKiju2aBSa8S3fpCGfjZlQ+h2wi0dbeY2jLoJ3jS/c+zk6N9M0ec
+         Zo0dM8JIpBH/gNOZoGDcG1MZYp6HrNNrI0jWDpZE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+07efed3bc5a1407bd742@syzkaller.appspotmail.com,
-        "F.A. SULAIMAN" <asha.16@itfac.mrt.ac.lk>,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        Jiri Kosina <jkosina@suse.cz>
-Subject: [PATCH 4.9 54/57] HID: betop: fix slab-out-of-bounds Write in betop_probe
-Date:   Mon,  4 Oct 2021 14:52:38 +0200
-Message-Id: <20211004125030.653563435@linuxfoundation.org>
+        Alexander Sverdlin <alexander.sverdlin@nokia.com>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        Florian Fainelli <f.fainelli@gmail.com>
+Subject: [PATCH 4.14 64/75] ARM: 9078/1: Add warn suppress parameter to arm_gen_branch_link()
+Date:   Mon,  4 Oct 2021 14:52:39 +0200
+Message-Id: <20211004125033.684690563@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125028.940212411@linuxfoundation.org>
-References: <20211004125028.940212411@linuxfoundation.org>
+In-Reply-To: <20211004125031.530773667@linuxfoundation.org>
+References: <20211004125031.530773667@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,52 +41,114 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: F.A.Sulaiman <asha.16@itfac.mrt.ac.lk>
+From: Alex Sverdlin <alexander.sverdlin@nokia.com>
 
-commit 1e4ce418b1cb1a810256b5fb3fd33d22d1325993 upstream.
+commit 890cb057a46d323fd8c77ebecb6485476614cd21 upstream
 
-Syzbot reported slab-out-of-bounds Write bug in hid-betopff driver.
-The problem is the driver assumes the device must have an input report but
-some malicious devices violate this assumption.
+Will be used in the following patch. No functional change.
 
-So this patch checks hid_device's input is non empty before it's been used.
-
-Reported-by: syzbot+07efed3bc5a1407bd742@syzkaller.appspotmail.com
-Signed-off-by: F.A. SULAIMAN <asha.16@itfac.mrt.ac.lk>
-Reviewed-by: Pavel Skripkin <paskripkin@gmail.com>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/hid/hid-betopff.c |   13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+ arch/arm/include/asm/insn.h |    8 ++++----
+ arch/arm/kernel/ftrace.c    |    2 +-
+ arch/arm/kernel/insn.c      |   19 ++++++++++---------
+ 3 files changed, 15 insertions(+), 14 deletions(-)
 
---- a/drivers/hid/hid-betopff.c
-+++ b/drivers/hid/hid-betopff.c
-@@ -59,15 +59,22 @@ static int betopff_init(struct hid_devic
- {
- 	struct betopff_device *betopff;
- 	struct hid_report *report;
--	struct hid_input *hidinput =
--			list_first_entry(&hid->inputs, struct hid_input, list);
-+	struct hid_input *hidinput;
- 	struct list_head *report_list =
- 			&hid->report_enum[HID_OUTPUT_REPORT].report_list;
--	struct input_dev *dev = hidinput->input;
-+	struct input_dev *dev;
- 	int field_count = 0;
- 	int error;
- 	int i, j;
+--- a/arch/arm/include/asm/insn.h
++++ b/arch/arm/include/asm/insn.h
+@@ -13,18 +13,18 @@ arm_gen_nop(void)
+ }
  
-+	if (list_empty(&hid->inputs)) {
-+		hid_err(hid, "no inputs found\n");
-+		return -ENODEV;
-+	}
-+
-+	hidinput = list_first_entry(&hid->inputs, struct hid_input, list);
-+	dev = hidinput->input;
-+
- 	if (list_empty(report_list)) {
- 		hid_err(hid, "no output reports found\n");
- 		return -ENODEV;
+ unsigned long
+-__arm_gen_branch(unsigned long pc, unsigned long addr, bool link);
++__arm_gen_branch(unsigned long pc, unsigned long addr, bool link, bool warn);
+ 
+ static inline unsigned long
+ arm_gen_branch(unsigned long pc, unsigned long addr)
+ {
+-	return __arm_gen_branch(pc, addr, false);
++	return __arm_gen_branch(pc, addr, false, true);
+ }
+ 
+ static inline unsigned long
+-arm_gen_branch_link(unsigned long pc, unsigned long addr)
++arm_gen_branch_link(unsigned long pc, unsigned long addr, bool warn)
+ {
+-	return __arm_gen_branch(pc, addr, true);
++	return __arm_gen_branch(pc, addr, true, warn);
+ }
+ 
+ #endif
+--- a/arch/arm/kernel/ftrace.c
++++ b/arch/arm/kernel/ftrace.c
+@@ -98,7 +98,7 @@ int ftrace_arch_code_modify_post_process
+ 
+ static unsigned long ftrace_call_replace(unsigned long pc, unsigned long addr)
+ {
+-	return arm_gen_branch_link(pc, addr);
++	return arm_gen_branch_link(pc, addr, true);
+ }
+ 
+ static int ftrace_modify_code(unsigned long pc, unsigned long old,
+--- a/arch/arm/kernel/insn.c
++++ b/arch/arm/kernel/insn.c
+@@ -3,8 +3,9 @@
+ #include <linux/kernel.h>
+ #include <asm/opcodes.h>
+ 
+-static unsigned long
+-__arm_gen_branch_thumb2(unsigned long pc, unsigned long addr, bool link)
++static unsigned long __arm_gen_branch_thumb2(unsigned long pc,
++					     unsigned long addr, bool link,
++					     bool warn)
+ {
+ 	unsigned long s, j1, j2, i1, i2, imm10, imm11;
+ 	unsigned long first, second;
+@@ -12,7 +13,7 @@ __arm_gen_branch_thumb2(unsigned long pc
+ 
+ 	offset = (long)addr - (long)(pc + 4);
+ 	if (offset < -16777216 || offset > 16777214) {
+-		WARN_ON_ONCE(1);
++		WARN_ON_ONCE(warn);
+ 		return 0;
+ 	}
+ 
+@@ -33,8 +34,8 @@ __arm_gen_branch_thumb2(unsigned long pc
+ 	return __opcode_thumb32_compose(first, second);
+ }
+ 
+-static unsigned long
+-__arm_gen_branch_arm(unsigned long pc, unsigned long addr, bool link)
++static unsigned long __arm_gen_branch_arm(unsigned long pc, unsigned long addr,
++					  bool link, bool warn)
+ {
+ 	unsigned long opcode = 0xea000000;
+ 	long offset;
+@@ -44,7 +45,7 @@ __arm_gen_branch_arm(unsigned long pc, u
+ 
+ 	offset = (long)addr - (long)(pc + 8);
+ 	if (unlikely(offset < -33554432 || offset > 33554428)) {
+-		WARN_ON_ONCE(1);
++		WARN_ON_ONCE(warn);
+ 		return 0;
+ 	}
+ 
+@@ -54,10 +55,10 @@ __arm_gen_branch_arm(unsigned long pc, u
+ }
+ 
+ unsigned long
+-__arm_gen_branch(unsigned long pc, unsigned long addr, bool link)
++__arm_gen_branch(unsigned long pc, unsigned long addr, bool link, bool warn)
+ {
+ 	if (IS_ENABLED(CONFIG_THUMB2_KERNEL))
+-		return __arm_gen_branch_thumb2(pc, addr, link);
++		return __arm_gen_branch_thumb2(pc, addr, link, warn);
+ 	else
+-		return __arm_gen_branch_arm(pc, addr, link);
++		return __arm_gen_branch_arm(pc, addr, link, warn);
+ }
 
 
