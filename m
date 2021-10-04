@@ -2,129 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB5EA42073B
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 10:21:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E955442074D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 10:26:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231381AbhJDIW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 04:22:56 -0400
-Received: from esa5.hgst.iphmx.com ([216.71.153.144]:58975 "EHLO
-        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231199AbhJDIWx (ORCPT
+        id S231397AbhJDI2h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 04:28:37 -0400
+Received: from protonic.xs4all.nl ([83.163.252.89]:33382 "EHLO
+        protonic.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230469AbhJDI2g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 04:22:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1633335664; x=1664871664;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
-  b=XmKzVWvh0ghat6wUFWTOVbnn5irCItiiDOUV60+xqfgi7TSJslqxMTNx
-   cqdjJtZjN5h9FYBlFI4iuMEmAoGbXk4gIBqO/FxihklX7s3Kxbr/LGW+e
-   eQQyxIemjmMjutCe/SZfLyKEXYzmQjP0Q3ZNgtXv2wEXuBxEcAQw9hzbB
-   ZwyetVNGJB6afHEMXtiTUbqjIdfXFi+kx5PNVL9hhEbuyYX7FfT4Au50E
-   sQQK8RP/1WyNX8J2z7WG3Ush6JiEm9B5HtOKLlOkFPEWGIjGnP8GyThTE
-   CjBPc3G5/ozD6ZGRBPbUlMsLIUWPb9Ft2W2rrH7L+aZSVzRjUAwMMjGBa
-   Q==;
-X-IronPort-AV: E=Sophos;i="5.85,345,1624291200"; 
-   d="scan'208";a="181769638"
-Received: from mail-bn7nam10lp2109.outbound.protection.outlook.com (HELO NAM10-BN7-obe.outbound.protection.outlook.com) ([104.47.70.109])
-  by ob1.hgst.iphmx.com with ESMTP; 04 Oct 2021 16:21:02 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aScrRv54/BLHJhija6Sqv4DbPPex1zDGmyz6dJibFtUrOh4D+TWN+1fNb5Fr5L3LKRJVphnPva+p6lA/pJkt6mdvk0au2vKnvscXYsD9c/OV+xQHd7S7h2aoU7Nf44U+R49EAK+3RPoFc9pH6CMFMpDvxmgOCXbKbQTqFDnQtZ1AEx3rFkTDDR7SJL3k2dwlffe+DIJVh5ila0fnwnoHtudU3d2PikM1JedKTjKOFlFiVKsfE0/W6L7OiXsCH9LWY8zZ8bSx2m9+IrtRiMtPIQD/iqT84F7DMSYFgQ+MvWTDXACiowqy1re7M6cK4GCs48JcIfuVQhbzI64Mbbyjng==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
- b=WVHzWgqbhg88JKJVhblyxQJOzdUwR0Ywb3+9C3pYUFDiaUm9OoB4b0AY50Ju+4DnvL3hvJjYv/nM9udGkY8AUPAkGu4Jpk0WsLW6vcYTQCfMui5bqC2CVKDVKww1Gks3kv65NRitKyhYS9vpSk8mEvw+y7Hthb9hqYw6pmEsGYpZtH+OR+5KaN5ZI8n0PTsy6T+m/wQoSYkFTDW05dOew5GDFL1H7jIlggZAU7wESH8ot1B4vAH1Em1c9rJw4m4uE8OcYx+QqME7vLIDQfzn7Q5FErcmtL358oY5ESX+42LwnahU6HyRFYROVBQPP+gdjLf3gtHbkT+O021PODDa2A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
- b=c7D2w98/RNhSmccWN1gEz6es4QGarW9WacdgYAGeZ+uLJ2ZXwHCSiYOgiXY8FkYMgjHaM1p6Jd84roaUjTvMx9YLdkeIGVgSsMTxq2lsZ5JFuX0MwzTCMPZH8t+1cd9GgUulkUEj7oVChKWazt8RrqoAddzG2Gp41wFNwzAK7Ak=
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
- by PH0PR04MB7717.namprd04.prod.outlook.com (2603:10b6:510:4d::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.15; Mon, 4 Oct
- 2021 08:21:01 +0000
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::5d0d:3d52:2041:885a]) by PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::5d0d:3d52:2041:885a%4]) with mapi id 15.20.4566.022; Mon, 4 Oct 2021
- 08:21:01 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Kai Song <songkai01@inspur.com>, "clm@fb.com" <clm@fb.com>,
-        "josef@toxicpanda.com" <josef@toxicpanda.com>,
-        "dsterba@suse.com" <dsterba@suse.com>
-CC:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] btrfs: zoned: Use kmemdup() to replace kmalloc + memcpy
-Thread-Topic: [PATCH] btrfs: zoned: Use kmemdup() to replace kmalloc + memcpy
-Thread-Index: AQHXuC2wxUmuzryjrk+2hZq/XlSYiw==
-Date:   Mon, 4 Oct 2021 08:21:00 +0000
-Message-ID: <PH0PR04MB7416A09EAE9BF1C2A0F90C579BAE9@PH0PR04MB7416.namprd04.prod.outlook.com>
-References: <20211003080656.217151-1-songkai01@inspur.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: inspur.com; dkim=none (message not signed)
- header.d=none;inspur.com; dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 198e9a5e-8cf9-4f40-cf8f-08d9870fe685
-x-ms-traffictypediagnostic: PH0PR04MB7717:
-x-microsoft-antispam-prvs: <PH0PR04MB7717A7CDFCD7DE1EFC117C699BAE9@PH0PR04MB7717.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:1728;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: agkGzHWjcYZx+YRWlisQX5ROrd/jNxi+UB6ezZv5oSt/kvTZ+jAxG5o1lbBiomXutP14BkaKcA+1tQRuQkLt+OWqNAQJKicjbKrT2ZL3uO/6lRW3aIxHPuz4RtBQ6Lf0ddY5h9nadeEvM/u8YYDC8Nj9LW78/jq5G8HzVqpu5xldc9fHB+nRF2Hdewjgn1tdkY/3CueAi77/97D6HXjM3AxkDlbho88GaeXplEN0xOoPHOirbIbgFGvHwGkw0B7WGxcrHGiTHD3SWmd11abWXGhIZ9Uih2P29/Q+5hgzapOLmmeq8Tz/seUSeGPGrr2agGCNiZam8BwvCLPqacTRBXnn1p7h515wmhh5M1RyXhC5EDxGvlX+f9xKPMrypyc6llyv9zM28+ttJZowCYv5PtV+bP+fNXSKTmjP4q0WpEHZLCuBvVqlDc07mtZfgoZINpBwlvDEkRqpqvr1kNZpX/QfKXStN+2xM+LtIo2IOzB/SV588WuCIHK5bm5M86jUeFS9tDcNpzLFb1yt9x4+f4/a2Awv9JsTPXaPtAKoOhOiz7QMY4pRCxzJxh1ARPYuRtMtBBFZKdfTmfEfu01PLqGkvSkuoWtdy/Pg5KsSg71fXv5GGxBo2++l3LpLxWwHSY28OFyJl0fR2tOz9bxlEnU9aj1HZshC9FTQHXzpIqpzMsHgruUiG39WZyurnU531DSooFgUN+dyUuZJd7uKwA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(2906002)(508600001)(122000001)(55016002)(33656002)(110136005)(9686003)(38100700002)(5660300002)(19618925003)(38070700005)(52536014)(4326008)(76116006)(8676002)(558084003)(91956017)(86362001)(54906003)(316002)(6506007)(71200400001)(8936002)(4270600006)(66476007)(66946007)(186003)(66556008)(64756008)(66446008)(7696005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?XwD3aqfwgLIO8+G5lcd8nh6pcgQR6eKk6Jh7wMvhnEimjmJOp5VpK79QqE7L?=
- =?us-ascii?Q?Y8JBGTv5s37gQxFQuj0DWlHAYnpPtHQLCodRls9FoL9xmtSwS9YGINL7eS/6?=
- =?us-ascii?Q?E/5unQrdkey3RX3MI11y5C8OI64QGLPmsCK9Y17G7YtrIhxKhqh5aHO1aj3l?=
- =?us-ascii?Q?pPSfkS81gJZAJAB1efMPCxhWq6Lxg9xaBnuxFDCSPKS5DsRKdZjgdP6nNiOo?=
- =?us-ascii?Q?2IMp/fukyRo0YcvbnAzI690kjkEjvYy4QNpqKy4+dUK0I1CwGOPGymJOacJ5?=
- =?us-ascii?Q?WnJA6yhI4gfJAMHH43dYYoqxspKiT2O1tQ+VdeOfvgTrxygqKhSbV4RSLXCm?=
- =?us-ascii?Q?cCCPdJi+Houfv+C9PsRRChvDYiUR4djZicq3mYp0pPeNlMcGM239sY6nDYZ7?=
- =?us-ascii?Q?PcclkCZLZZ8DBAhhIB6W3dbgYD0OPHIBkh7nvxNNGFUiY1eL7y7CVeXZ1COT?=
- =?us-ascii?Q?S5oIjAdUDYv87wsdZ4CRF7It1eW5K45wL09haO1cPm00vwV7eOyQ/mwZSJhh?=
- =?us-ascii?Q?eV9s7WRjVWOcO+1leqwXySY4uSdoJTlbM1hT+WBofTkyP44ojsmH77INzLmQ?=
- =?us-ascii?Q?15EY/m9j+zR/QBIwPZeHyIcb/lfnrQMkWYWYTP+kEPeoE1cPKtVPOS7q9y0s?=
- =?us-ascii?Q?a/FXA2DR+slUe8reqD+R/y9O2DUI7iTvFQ6bq9Z6UeaGDyrimqOmL2WYFnUe?=
- =?us-ascii?Q?puwaAGzU6t/aiGLRlZtI474YWUC7WWdGNQ4sHIl4pn+Hmc0ZU3wkSc1f5KvV?=
- =?us-ascii?Q?M+tPQthuuSEgyMOygTLUyDeJvw2zZHLr2TTxaudR4kpYSoXJsp4ejzoZkoeU?=
- =?us-ascii?Q?RYN2Ai//9hwAWOzaZp78nObVcqKIQ6ejFB/XxtyviRo9Q/gFuDO87fBWwcK7?=
- =?us-ascii?Q?0ceIeAI5+VmLrMoIQL24YhwqNlV5UNalLpdIkJpB+g3ucGCoQS5feleCMxtY?=
- =?us-ascii?Q?wwA9tV9TkBKIKpnK4hJjEK8Z1wcdV3Pp+y+luc47Y4oVW7zyWtbknHL0cMka?=
- =?us-ascii?Q?ZikiFkKFbUNaUupdppkVDbeydeQ43+mOhHt/dlxQiP/Mz81K8PLaY48c3XmQ?=
- =?us-ascii?Q?VGNaHS/QXq5aoZpAjIG4KzVCfO6ZmoaWrzAG4DkfWSQHriNKbkOvBjv34nna?=
- =?us-ascii?Q?2PkXSeOOvevoxComje8MCh+Cswj8DoVdCVWkQKjipDMevSMmXtX1SPgaNhQO?=
- =?us-ascii?Q?2Ifxp9628yxnXYwwQ7KgjO/IkamYimOsndikdyG5egh9lBU9Goa+dykJgFqe?=
- =?us-ascii?Q?t71dsv+p1oDglIQW3vyFxbrzAr4QYrQsDN2CIb3oXRfFuQVAB8jkJEKEMbTb?=
- =?us-ascii?Q?Wtau4h8XBR+cvX70atuwyIiadhi6ycjg8IXdMXfc6znZ3WIILPYQUsVpZ8vi?=
- =?us-ascii?Q?5ysCXJcD7HafAOBdS8sFDQcwS54O/pdz2yd9VjA2f3jh399gYQ=3D=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Mon, 4 Oct 2021 04:28:36 -0400
+Received: from fiber.protonic.nl (edge2.prtnl [192.168.1.170])
+        by sparta.prtnl (Postfix) with ESMTP id B0A4A44A024E;
+        Mon,  4 Oct 2021 10:26:45 +0200 (CEST)
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 198e9a5e-8cf9-4f40-cf8f-08d9870fe685
-X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Oct 2021 08:21:00.9572
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: uDcv10c4fIhrLIAPNirh/uWm8KVN17tr3H4NC2hwD1UCS9b/4LSHehVRVsg7wQw8lKhoT/XNLVrWtf/gNFH0+I8Z0TGmA6dCt/mKLUD+eXY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR04MB7717
+Date:   Mon, 04 Oct 2021 10:26:45 +0200
+From:   Robin van der Gracht <robin@protonic.nl>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Miguel Ojeda <ojeda@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Pavel Machek <pavel@ucw.cz>, Marek Behun <marek.behun@nic.cz>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-leds <linux-leds@vger.kernel.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        =?UTF-8?Q?Marek_Beh=C3=BAn?= <kabel@kernel.org>
+Subject: Re: [PATCH v6 19/19] auxdisplay: ht16k33: Add LED support
+Reply-To: robin@protonic.nl
+In-Reply-To: <CAMuHMdVOa8DAGJQpJ8AotARxfh9PvpskJJa6k48jE92-P+GLRA@mail.gmail.com>
+References: <20210914143835.511051-1-geert@linux-m68k.org>
+ <20210914143835.511051-20-geert@linux-m68k.org>
+ <4602a8e681db4d0ebc43e4dafee8c28e@protonic.nl>
+ <CAMuHMdVOa8DAGJQpJ8AotARxfh9PvpskJJa6k48jE92-P+GLRA@mail.gmail.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <bc1632943ecbb7e244b87c285501f706@protonic.nl>
+X-Sender: robin@protonic.nl
+Organization: Protonic Holland
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Looks good,=0A=
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
+Hi Geert,
+
+On 2021-10-01 17:51, Geert Uytterhoeven wrote:
+> Hoi Robin,
+> 
+> On Thu, Sep 30, 2021 at 12:57 PM Robin van der Gracht <robin@protonic.nl> 
+> wrote:
+>> On 2021-09-14 16:38, Geert Uytterhoeven wrote:
+>> > Instantiate a single LED based on the "led" subnode in DT.
+>> > This allows the user to control display brightness and blinking (backed
+>> > by hardware support) through the LED class API and triggers, and exposes
+>> > the display color.  The LED will be named
+>> > "auxdisplay:<color>:<function>".
+>> >
+>> > When running in dot-matrix mode and if no "led" subnode is found, the
+>> > driver falls back to the traditional backlight mode, to preserve
+>> > backwards compatibility.
+>> >
+>> > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+>> > Reviewed-by: Marek Behún <kabel@kernel.org>
+>> > ---
+>> > v6:
+>> >   - Add Reviewed-by,
+>> >   - Reorder operations in ht16k33_led_probe() to ease future conversion
+>> >     to device properties,
+> 
+>> > --- a/drivers/auxdisplay/ht16k33.c
+>> > +++ b/drivers/auxdisplay/ht16k33.c
+>> > @@ -425,6 +477,35 @@ static void ht16k33_seg14_update(struct work_struct
+>> > *work)
+>> >       i2c_smbus_write_i2c_block_data(priv->client, 0, ARRAY_SIZE(buf), buf);
+>> >  }
+>> >
+>> > +static int ht16k33_led_probe(struct device *dev, struct led_classdev *led,
+>> > +                          unsigned int brightness)
+>> > +{
+>> > +     struct led_init_data init_data = {};
+>> > +     struct device_node *node;
+>> > +     int err;
+>> > +
+>> > +     /* The LED is optional */
+>> > +     node = of_get_child_by_name(dev->of_node, "led");
+>> > +     if (!node)
+>> > +             return 0;
+>> > +
+>> > +     init_data.fwnode = of_fwnode_handle(node);
+>> > +     init_data.devicename = "auxdisplay";
+>> > +     init_data.devname_mandatory = true;
+>> > +
+>> > +     led->brightness_set_blocking = ht16k33_brightness_set_blocking;
+>> > +     led->blink_set = ht16k33_blink_set;
+>> > +     led->flags = LED_CORE_SUSPENDRESUME;
+>> > +     led->brightness = brightness;
+>> > +     led->max_brightness = MAX_BRIGHTNESS;
+>> 
+>> What do you think about adding a default trigger and making it 'backlight'?
+>> 
+>> led->default_trigger = "blacklight";
+>> 
+>> Or as an alternative, suggesting linux,default-trigger = "backlight" in the
+>> docs? Since the led class won't respond to blank events by just making it's
+>> function LED_FUNCTION_BACKLIGHT.
+>> 
+>> led {
+>>         function = LED_FUNCTION_BACKLIGHT;
+>>         color = <LED_COLOR_ID_GREEN>;
+>>         linux,default-trigger = "backlight";
+>> };
+> 
+> The latter makes perfect sense to me.  Will do.
+
+Ack.
+
+> 
+>> I noticed blanking is broken. The backlight device (or LED device with
+>> backlight trigger) doens't get notified when the framebuffer is blanked 
+>> since
+>> the driver doesn't implement fb_blank.
+>> 
+>> Right now:
+>> 
+>> echo 1 > /sys/class/graphics/fb0/blank
+>>                                                              |
+>> sh: write error: Invalid argument
+>> 
+>> Due to:
+>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/video/fbdev/core/fbmem.c?h=v5.15-rc3#n1078
+> 
+> That's a pre-existing problem, righ? ;-)
+
+Yes it is. The fix is easy and since we're making major driver changes now...
+I needed the fix to properly test the changes we're making, so I thought we
+might as well include it.
+
+> 
+>> Something like this fixes it.
+>> 
+>> diff --git a/drivers/auxdisplay/ht16k33.c b/drivers/auxdisplay/ht16k33.c
+>> index 89ee5b4b3dfc..0883d5252c81 100644
+>> --- a/drivers/auxdisplay/ht16k33.c
+>> +++ b/drivers/auxdisplay/ht16k33.c
+>> @@ -346,6 +346,15 @@ static int ht16k33_mmap(struct fb_info *info, struct
+>> vm_area_struct *vma)
+>>          return vm_map_pages_zero(vma, &pages, 1);
+>>   }
+>> 
+>> +/*
+>> + * Blank events will be passed to the backlight device (or the LED device 
+>> if
+>> + * it's trigger is 'backlight') when we return 0 here.
+>> + */
+>> +static int ht16k33_blank(int blank, struct fb_info *info)
+>> +{
+>> +       return 0;
+>> +}
+>> +
+>>   static const struct fb_ops ht16k33_fb_ops = {
+>>          .owner = THIS_MODULE,
+>>          .fb_read = fb_sys_read,
+>> @@ -354,6 +363,7 @@ static const struct fb_ops ht16k33_fb_ops = {
+>>          .fb_copyarea = sys_copyarea,
+>>          .fb_imageblit = sys_imageblit,
+>>          .fb_mmap = ht16k33_mmap,
+>> +       .fb_blank = ht16k33_blank,
+>>   };
+>> 
+>>   /*
+>> 
+>> Feel free to include (something like) this in the patch stack.
+> 
+> Thanks, will do.
+
+Ack.
+
+> 
+>> > +
+>> > +     err = devm_led_classdev_register_ext(dev, led, &init_data);
+>> > +     if (err)
+>> > +             dev_err(dev, "Failed to register LED\n");
+>> 
+>> You might want to call ht16k33_brightness_set(priv, brightness) here to get 
+>> a
+>> know value into the display setup register (0x80).
+>> 
+>> Right now if I enable hardware blinking and (soft)reboot my board it keeps 
+>> on
+>> blinking even after a re-probe.
+> 
+> I don't have that issue.
+> Aha, ht16k33_seg_probe() calls ht16k33_brightness_set(), but
+> ht16k33_fbdev_probe() doesn't.  The latter should do that, too,
+> when not using backwards compatibility mode.
+
+Ack. I have hardware which uses the ht16k33 in dot matrix mode and I tested
+both the backlight and led setup. I ran into this with the fbdev + led setup.
+
+I noticed ht16k33_bl_update_status() is called in ht16k33_fbdev_probe()
+before the fbdev device is registered. Which is fine right now, but in theory
+the fbdev blank state can influence the backlight setting (nitpick since
+the fbdev device is unblanked by default).
+
+The point: Maybe ht16k33_brightness_set() (or ht16k33_bl_update_status() for
+backlight device) should be called in one central place (i.e at the end of 
+the
+main probe function).
+
+> 
+>> > @@ -575,7 +660,7 @@ static int ht16k33_seg_probe(struct device *dev, struct
+>> > ht16k33_priv *priv,
+>> >       struct ht16k33_seg *seg = &priv->seg;
+>> >       int err;
+>> >
+>> > -     err = ht16k33_brightness_set(priv, MAX_BRIGHTNESS);
+>> > +     err = ht16k33_brightness_set(priv, brightness);
+>> 
+>> This looks like a bugfix for patch 17, maybe move this change there?
+> 
+> Indeed. Bad rebase. Will move.
+> 
+> Thanks a lot for your comments!
+
+:)
+
+- Robin
