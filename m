@@ -2,96 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D59DE4209F2
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 13:18:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0184F4209F1
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 13:18:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232997AbhJDLTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 07:19:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60628 "EHLO mail.kernel.org"
+        id S232458AbhJDLTx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 07:19:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60620 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232395AbhJDLTv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233005AbhJDLTv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 4 Oct 2021 07:19:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B488F6124C;
-        Mon,  4 Oct 2021 11:18:00 +0000 (UTC)
-Date:   Mon, 4 Oct 2021 13:17:58 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Christian Brauner <christian@brauner.io>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Subject: Re: [PATCH] RISC-V: Include clone3() on rv32
-Message-ID: <20211004111758.rl2zq6l575hmcv22@wittgenstein>
-References: <20211003002120.198752-1-palmer@dabbelt.com>
- <CAK8P3a1rwMWQSmdW4ARkk6swT9VC2Fcx5nBWVugSOuhv8o7QHg@mail.gmail.com>
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1879A60FD8;
+        Mon,  4 Oct 2021 11:18:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633346282;
+        bh=0wgu5iuPepCxFxpreyphFnKy/ixxODTBfmJn7/Iu3yE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cwCo+BFKqVLQ1SvbSEXurrDxAkESGjOPahwmc/v7dYUl0nSGUvMWYYAUlrHK6wA72
+         Tl7bt+KLft1VY8XcW1uQjMzTu7Bxy59KjyIzKpvZYczVvEF/33IVmVS0K0d5ynNmEm
+         hznHSZlQgPPfQ6JeEaOqcq6G4F3dLSk2yzo0FQDZhX/moMnybr32CuCZraBLrdCRkD
+         y/e7EyNF1zIsI6wgWRosuIFHfsqMoaTezQj+yW5ZtKZ7QXVOkayKfxx7wdX5x7vKB/
+         Km4QA+LvwmGmPj7/JZZau4x0NY/m9gsfr8qoRM1+pkwNxJilYnb8DW7rlc3YJD/uuu
+         ELy4g7gdn652g==
+Date:   Mon, 4 Oct 2021 12:18:00 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Christian Hewitt <christianshewitt@gmail.com>
+Cc:     Geraldo Nascimento <geraldogabriel@gmail.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        alsa-devel@alsa-project.org, linux-amlogic@lists.infradead.org,
+        lgirdwood@gmail.com, LKML <linux-kernel@vger.kernel.org>,
+        tiwai@suse.com, linux-arm-kernel@lists.infradead.org
+Subject: Re: [RFC PATCH v1 0/1] ASoC: meson: aiu: HDMI codec control
+ questions and issues
+Message-ID: <YVri6Plus1oaX248@sirena.org.uk>
+References: <20211002234313.3209294-1-martin.blumenstingl@googlemail.com>
+ <YVk77/SIxr8Vt8TQ@geday>
+ <494D4A30-F230-4B64-AFA9-319FFC4C69DA@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="5TFB1rwqMxtqYHgE"
 Content-Disposition: inline
-In-Reply-To: <CAK8P3a1rwMWQSmdW4ARkk6swT9VC2Fcx5nBWVugSOuhv8o7QHg@mail.gmail.com>
+In-Reply-To: <494D4A30-F230-4B64-AFA9-319FFC4C69DA@gmail.com>
+X-Cookie: If it heals good, say it.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 03, 2021 at 05:30:24PM +0200, Arnd Bergmann wrote:
-> On Sun, Oct 3, 2021 at 2:58 AM Palmer Dabbelt <palmer@dabbelt.com> wrote:
-> >
-> > From: Palmer Dabbelt <palmerdabbelt@google.com>
-> >
-> > As far as I can tell this should be enabled on rv32 as well, I'm not
-> > sure why it's rv64-only.  checksyscalls is complaining about our lack of
-> > clone3() on rv32.
-> >
-> > Fixes: 56ac5e213933 ("riscv: enable sys_clone3 syscall for rv64")
-> > Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
-> 
-> We should probably reverse the polarity of this symbol and force
-> architectures that don't implement it properly to say they don't
-> have it, but for now, it definitely makes sense to treat this the same
-> way on 32-bit and 64-bit risc-v.
 
-I think we had that discussion back when I added it and I think I even
-proposed that or you did but then we settled on __ARCH_WANT_SYS_CLONE3.
-Most likely because it fell in line with the other
-__ARCH_WANT_SYS_{CLONE,FORK}.
+--5TFB1rwqMxtqYHgE
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I think at this point its alpha, ia64, nios, sparc, and sh that don't
-implement it. For some it looks trivial at first glance at least (Fwiw,
-nios implements sys_clone() but doesn't select __ARCH_WANT_SYS_CLONE3):
+On Sun, Oct 03, 2021 at 11:00:15AM +0400, Christian Hewitt wrote:
+> > On 3 Oct 2021, at 9:13 am, Geraldo Nascimento <geraldogabriel@gmail.com=
+> wrote:
 
-diff --git a/arch/nios2/include/uapi/asm/unistd.h b/arch/nios2/include/uapi/asm/unistd.h
-index 0b4bb1d41b28..6c4f45abd3ab 100644
---- a/arch/nios2/include/uapi/asm/unistd.h
-+++ b/arch/nios2/include/uapi/asm/unistd.h
-@@ -18,6 +18,7 @@
+> > It doesn't sound like a machine gun noise to me :)
 
-  #define sys_mmap2 sys_mmap_pgoff
+> > More like brown noise, but anyway what I'd like to note to
+> > everyone involved is that this one is a major dealbreaker.
 
-+#define __ARCH_WANT_SYS_CLONE3
- #define __ARCH_WANT_RENAMEAT
- #define __ARCH_WANT_STAT64
- #define __ARCH_WANT_SET_GET_RLIMIT
-diff --git a/arch/nios2/kernel/entry.S b/arch/nios2/kernel/entry.S
-index 0794cd7803df..c1804bda8259 100644
---- a/arch/nios2/kernel/entry.S
-+++ b/arch/nios2/kernel/entry.S
-@@ -396,6 +396,15 @@ ENTRY(sys_clone)
-        RESTORE_SWITCH_STACK
-        ret
+> I=E2=80=99m the origin of most reports that Google will eventually discov=
+er. I
+> was told elsewhere that this is known as MGN so I=E2=80=99ve described it=
+ as
+> such, but that could be wrong. For clarity this is the noise
+> (triggered, and with AVR volume deliberately right down) followed by
+> some navigation in the Kodi GUI to change output:
 
-+/*
-+ * int clone3(struct clone_args __user *, uargs, size_t, size)
-+ */
-+ENTRY(sys_clone3)
-+       SAVE_SWITCH_STACK
-+       call    sys_clone3
-+       RESTORE_SWITCH_STACK
-+       ret
-+
- ENTRY(sys_rt_sigreturn)
-        SAVE_SWITCH_STACK
-        mov     r4, sp
+> https://chewitt.libreelec.tv/testing/wp2_audio_noise.mov
 
+Right, I would just call that static.
+
+Please fix your mail client to word wrap within paragraphs at something
+substantially less than 80 columns.  Doing this makes your messages much
+easier to read and reply to.
+
+--5TFB1rwqMxtqYHgE
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFa4ucACgkQJNaLcl1U
+h9AGmwf/fxBw23uJPAC92OR7QsFhST90SG2lccRXbEC0+OXrQX3FyehcnLk6aURp
+2BV7EWeP8mpFG9VmfR0uQIKAClPMChSO+23XieDPF5Nmk4HQc7foEnu3OJIkDhvK
+cmjlDh29FKmSfIR+Ky8BN5EUhVd+Wj1FzYjbyGgMhfm2d6kZq8OzpJHVG9Ddet8t
+E/xCVh8IsaEp5aGSPdty096Q0xC1v5ApLnStlCjzFCcqGVRYVCwUrZm4MARyTWIC
+b00uBIwlKMSkV9Qh/K3a0umgcl/zGNjIO8n2edAOXtrw5EJIdmCboupoKpNLjLDC
+CxWhMmWFJlsXDz0qSGAiSJaI30OMMg==
+=gPaQ
+-----END PGP SIGNATURE-----
+
+--5TFB1rwqMxtqYHgE--
