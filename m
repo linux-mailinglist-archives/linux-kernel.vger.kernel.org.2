@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC3A8420CDE
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:08:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C1A3420BA3
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:56:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234483AbhJDNJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:09:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44986 "EHLO mail.kernel.org"
+        id S234266AbhJDM6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 08:58:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59900 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234712AbhJDNH4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:07:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 198EB613DB;
-        Mon,  4 Oct 2021 13:01:59 +0000 (UTC)
+        id S233821AbhJDM5s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 08:57:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 97083613DB;
+        Mon,  4 Oct 2021 12:55:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352520;
-        bh=yOhE8lHul4cv5jJEdhv5Qa7pAAADaG+mWfMcWdn4VJY=;
+        s=korg; t=1633352160;
+        bh=pO7csgMicKZZe6oqlX6FEP0b2qDEsemZnaPfkYlnzkc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LAkIkmMP4fWqeZOGeYMMebrGSYxd6WfgrURtA9ImvGOzSZ/TjOdxADehezzFIpJAA
-         lNNzXH53oglhFiZmGFy9JlYgGdJQ7bTRJk48aFWYLXL2qfCi+2AqwGWK+KsPps0kAi
-         gCVS80AslQszXs3Hd0HZsMJK8EqKd2aQg8f8AZew=
+        b=bw+PBRSZ+r/Ut8j2X15P1CdTHDi30z2+CA+si8AyLmcoNyFuHOALllaWchQaEyi2A
+         6yH9dF8B/cV6yNf8KgkF+SMADBkVTIWA933ahNwkb8un9ECtD38w9s0/Tv0fGDPfQo
+         KqgY7TQavGxU/NKa3vT/ACTy/1bW/vhoIV5sZs+8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavan Chebbi <pavan.chebbi@broadcom.com>,
-        Michael Chan <michael.chan@broadocm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 19/95] bnxt_en: Fix TX timeout when TX ring size is set to the smallest
+        stable@vger.kernel.org, Jan Beulich <jbeulich@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>
+Subject: [PATCH 4.9 05/57] xen/x86: fix PV trap handling on secondary processors
 Date:   Mon,  4 Oct 2021 14:51:49 +0200
-Message-Id: <20211004125034.180731956@linuxfoundation.org>
+Message-Id: <20211004125029.109456889@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125033.572932188@linuxfoundation.org>
-References: <20211004125033.572932188@linuxfoundation.org>
+In-Reply-To: <20211004125028.940212411@linuxfoundation.org>
+References: <20211004125028.940212411@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,105 +40,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Chan <michael.chan@broadcom.com>
+From: Jan Beulich <jbeulich@suse.com>
 
-[ Upstream commit 5bed8b0704c9ecccc8f4a2c377d7c8e21090a82e ]
+commit 0594c58161b6e0f3da8efa9c6e3d4ba52b652717 upstream.
 
-The smallest TX ring size we support must fit a TX SKB with MAX_SKB_FRAGS
-+ 1.  Because the first TX BD for a packet is always a long TX BD, we
-need an extra TX BD to fit this packet.  Define BNXT_MIN_TX_DESC_CNT with
-this value to make this more clear.  The current code uses a minimum
-that is off by 1.  Fix it using this constant.
+The initial observation was that in PV mode under Xen 32-bit user space
+didn't work anymore. Attempts of system calls ended in #GP(0x402). All
+of the sudden the vector 0x80 handler was not in place anymore. As it
+turns out up to 5.13 redundant initialization did occur: Once from
+cpu_initialize_context() (through its VCPUOP_initialise hypercall) and a
+2nd time while each CPU was brought fully up. This 2nd initialization is
+now gone, uncovering that the 1st one was flawed: Unlike for the
+set_trap_table hypercall, a full virtual IDT needs to be specified here;
+the "vector" fields of the individual entries are of no interest. With
+many (kernel) IDT entries still(?) (i.e. at that point at least) empty,
+the syscall vector 0x80 ended up in slot 0x20 of the virtual IDT, thus
+becoming the domain's handler for vector 0x20.
 
-The tx_wake_thresh to determine when to wake up the TX queue is half the
-ring size but we must have at least BNXT_MIN_TX_DESC_CNT for the next
-packet which may have maximum fragments.  So the comparison of the
-available TX BDs with tx_wake_thresh should be >= instead of > in the
-current code.  Otherwise, at the smallest ring size, we will never wake
-up the TX queue and will cause TX timeout.
+Make xen_convert_trap_info() fit for either purpose, leveraging the fact
+that on the xen_copy_trap_info() path the table starts out zero-filled.
+This includes moving out the writing of the sentinel, which would also
+have lead to a buffer overrun in the xen_copy_trap_info() case if all
+(kernel) IDT entries were populated. Convert the writing of the sentinel
+to clearing of the entire table entry rather than just the address
+field.
 
-Fixes: c0c050c58d84 ("bnxt_en: New Broadcom ethernet driver.")
-Reviewed-by: Pavan Chebbi <pavan.chebbi@broadcom.com>
-Signed-off-by: Michael Chan <michael.chan@broadocm.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+(I didn't bother trying to identify the commit which uncovered the issue
+in 5.14; the commit named below is the one which actually introduced the
+bad code.)
+
+Fixes: f87e4cac4f4e ("xen: SMP guest support")
+Cc: stable@vger.kernel.org
+Signed-off-by: Jan Beulich <jbeulich@suse.com>
+Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Link: https://lore.kernel.org/r/7a266932-092e-b68f-f2bb-1473b61adc6e@suse.com
+Signed-off-by: Juergen Gross <jgross@suse.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/broadcom/bnxt/bnxt.c         | 8 ++++----
- drivers/net/ethernet/broadcom/bnxt/bnxt.h         | 5 +++++
- drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c | 2 +-
- 3 files changed, 10 insertions(+), 5 deletions(-)
+ arch/x86/xen/enlighten.c |   15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-index 55827ac65a15..5e30299bcf64 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-@@ -294,7 +294,7 @@ static bool bnxt_txr_netif_try_stop_queue(struct bnxt *bp,
- 	 * netif_tx_queue_stopped().
- 	 */
- 	smp_mb();
--	if (bnxt_tx_avail(bp, txr) > bp->tx_wake_thresh) {
-+	if (bnxt_tx_avail(bp, txr) >= bp->tx_wake_thresh) {
- 		netif_tx_wake_queue(txq);
- 		return false;
- 	}
-@@ -625,7 +625,7 @@ static void bnxt_tx_int(struct bnxt *bp, struct bnxt_napi *bnapi, int nr_pkts)
- 	smp_mb();
- 
- 	if (unlikely(netif_tx_queue_stopped(txq)) &&
--	    bnxt_tx_avail(bp, txr) > bp->tx_wake_thresh &&
-+	    bnxt_tx_avail(bp, txr) >= bp->tx_wake_thresh &&
- 	    READ_ONCE(txr->dev_state) != BNXT_DEV_STATE_CLOSING)
- 		netif_tx_wake_queue(txq);
+--- a/arch/x86/xen/enlighten.c
++++ b/arch/x86/xen/enlighten.c
+@@ -872,8 +872,8 @@ static void xen_write_idt_entry(gate_des
+ 	preempt_enable();
  }
-@@ -1909,7 +1909,7 @@ static int bnxt_poll_work(struct bnxt *bp, struct bnxt_napi *bnapi, int budget)
- 		if (TX_CMP_TYPE(txcmp) == CMP_TYPE_TX_L2_CMP) {
- 			tx_pkts++;
- 			/* return full budget so NAPI will complete. */
--			if (unlikely(tx_pkts > bp->tx_wake_thresh)) {
-+			if (unlikely(tx_pkts >= bp->tx_wake_thresh)) {
- 				rx_pkts = budget;
- 				raw_cons = NEXT_RAW_CMP(raw_cons);
- 				break;
-@@ -2712,7 +2712,7 @@ static int bnxt_init_tx_rings(struct bnxt *bp)
- 	u16 i;
  
- 	bp->tx_wake_thresh = max_t(int, bp->tx_ring_size / 2,
--				   MAX_SKB_FRAGS + 1);
-+				   BNXT_MIN_TX_DESC_CNT);
+-static void xen_convert_trap_info(const struct desc_ptr *desc,
+-				  struct trap_info *traps)
++static unsigned xen_convert_trap_info(const struct desc_ptr *desc,
++				      struct trap_info *traps, bool full)
+ {
+ 	unsigned in, out, count;
  
- 	for (i = 0; i < bp->tx_nr_rings; i++) {
- 		struct bnxt_tx_ring_info *txr = &bp->tx_ring[i];
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.h b/drivers/net/ethernet/broadcom/bnxt/bnxt.h
-index f3f5484c43e4..5c1c3a0ed928 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt.h
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.h
-@@ -484,6 +484,11 @@ struct rx_tpa_end_cmp_ext {
- #define BNXT_MAX_RX_JUM_DESC_CNT	(RX_DESC_CNT * MAX_RX_AGG_PAGES - 1)
- #define BNXT_MAX_TX_DESC_CNT		(TX_DESC_CNT * MAX_TX_PAGES - 1)
+@@ -883,17 +883,18 @@ static void xen_convert_trap_info(const
+ 	for (in = out = 0; in < count; in++) {
+ 		gate_desc *entry = (gate_desc*)(desc->address) + in;
  
-+/* Minimum TX BDs for a TX packet with MAX_SKB_FRAGS + 1.  We need one extra
-+ * BD because the first TX BD is always a long BD.
-+ */
-+#define BNXT_MIN_TX_DESC_CNT		(MAX_SKB_FRAGS + 2)
+-		if (cvt_gate_to_trap(in, entry, &traps[out]))
++		if (cvt_gate_to_trap(in, entry, &traps[out]) || full)
+ 			out++;
+ 	}
+-	traps[out].address = 0;
 +
- #define RX_RING(x)	(((x) & ~(RX_DESC_CNT - 1)) >> (BNXT_PAGE_SHIFT - 4))
- #define RX_IDX(x)	((x) & (RX_DESC_CNT - 1))
++	return out;
+ }
  
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c b/drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c
-index 511240e8246f..e75a47a9f511 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c
-@@ -446,7 +446,7 @@ static int bnxt_set_ringparam(struct net_device *dev,
+ void xen_copy_trap_info(struct trap_info *traps)
+ {
+ 	const struct desc_ptr *desc = this_cpu_ptr(&idt_desc);
  
- 	if ((ering->rx_pending > BNXT_MAX_RX_DESC_CNT) ||
- 	    (ering->tx_pending > BNXT_MAX_TX_DESC_CNT) ||
--	    (ering->tx_pending <= MAX_SKB_FRAGS))
-+	    (ering->tx_pending < BNXT_MIN_TX_DESC_CNT))
- 		return -EINVAL;
+-	xen_convert_trap_info(desc, traps);
++	xen_convert_trap_info(desc, traps, true);
+ }
  
- 	if (netif_running(dev))
--- 
-2.33.0
-
+ /* Load a new IDT into Xen.  In principle this can be per-CPU, so we
+@@ -903,6 +904,7 @@ static void xen_load_idt(const struct de
+ {
+ 	static DEFINE_SPINLOCK(lock);
+ 	static struct trap_info traps[257];
++	unsigned out;
+ 
+ 	trace_xen_cpu_load_idt(desc);
+ 
+@@ -910,7 +912,8 @@ static void xen_load_idt(const struct de
+ 
+ 	memcpy(this_cpu_ptr(&idt_desc), desc, sizeof(idt_desc));
+ 
+-	xen_convert_trap_info(desc, traps);
++	out = xen_convert_trap_info(desc, traps, false);
++	memset(&traps[out], 0, sizeof(traps[0]));
+ 
+ 	xen_mc_flush();
+ 	if (HYPERVISOR_set_trap_table(traps))
 
 
