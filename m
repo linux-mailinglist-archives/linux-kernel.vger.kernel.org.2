@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 528D3420FF1
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:37:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C8B6420E89
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:24:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234314AbhJDNjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:39:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52280 "EHLO mail.kernel.org"
+        id S237072AbhJDNZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:25:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38150 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238202AbhJDNhb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:37:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A3EF1611C2;
-        Mon,  4 Oct 2021 13:17:00 +0000 (UTC)
+        id S237023AbhJDNXs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:23:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DAED961C13;
+        Mon,  4 Oct 2021 13:10:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633353421;
-        bh=eyaRu31su1+/2x/IVtiIXP+xz8jnUm3D6HT3Yr56L1c=;
+        s=korg; t=1633353029;
+        bh=3C6iHA7wH4RyXJEFJq7ukVmCEwCLUOLvkiHSGmNUM4o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ssg4UPXs+Fjmm1HjW11J3M7cLzdebJegMhl9D9GZl6LcYjt3ayFl5+sHzB7K4mWXl
-         mwnQraNbesAvwImKYkyKk3WFqEkmDPXoOKMZVqNFbpUfW+zfiqIqiG2d1p0ucfjfGj
-         sENdP5u/h4jSj4wd+z1FKPsnELOtFVQ4iX6WIuag=
+        b=xOZBu1Z7zBLi8lZhE2n2WaEAAi3bnRg67Nw1ByPYEDUj1j2s2OUXt+eUU8LD+RspQ
+         HuedAsDoqb+tw2xKePfMPYP74uuVAuDUycBulVj4djiyErYnhaQP9MY6plJw+HYYgO
+         BYirdTA9d5RDvEa+S/dJd6Jcb03tBWL3PfNFMXaI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        stable@vger.kernel.org,
+        Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 121/172] Revert "block, bfq: honor already-setup queue merges"
-Date:   Mon,  4 Oct 2021 14:52:51 +0200
-Message-Id: <20211004125048.888344150@linuxfoundation.org>
+Subject: [PATCH 5.10 54/93] scsi: csiostor: Add module softdep on cxgb4
+Date:   Mon,  4 Oct 2021 14:52:52 +0200
+Message-Id: <20211004125036.363453462@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
-References: <20211004125044.945314266@linuxfoundation.org>
+In-Reply-To: <20211004125034.579439135@linuxfoundation.org>
+References: <20211004125034.579439135@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,66 +41,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jens Axboe <axboe@kernel.dk>
+From: Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>
 
-[ Upstream commit ebc69e897e17373fbe1daaff1debaa77583a5284 ]
+[ Upstream commit 79a7482249a7353bc86aff8127954d5febf02472 ]
 
-This reverts commit 2d52c58b9c9bdae0ca3df6a1eab5745ab3f7d80b.
+Both cxgb4 and csiostor drivers run on their own independent Physical
+Function. But when cxgb4 and csiostor are both being loaded in parallel via
+modprobe, there is a race when firmware upgrade is attempted by both the
+drivers.
 
-We have had several folks complain that this causes hangs for them, which
-is especially problematic as the commit has also hit stable already.
+When the cxgb4 driver initiates the firmware upgrade, it halts the firmware
+and the chip until upgrade is complete. When the csiostor driver is coming
+up in parallel, the firmware mailbox communication fails with timeouts and
+the csiostor driver probe fails.
 
-As no resolution seems to be forthcoming right now, revert the patch.
+Add a module soft dependency on cxgb4 driver to ensure loading csiostor
+triggers cxgb4 to load first when available to avoid the firmware upgrade
+race.
 
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=214503
-Fixes: 2d52c58b9c9b ("block, bfq: honor already-setup queue merges")
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Link: https://lore.kernel.org/r/1632759248-15382-1-git-send-email-rahul.lakkireddy@chelsio.com
+Fixes: a3667aaed569 ("[SCSI] csiostor: Chelsio FCoE offload driver")
+Signed-off-by: Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- block/bfq-iosched.c | 16 +++-------------
- 1 file changed, 3 insertions(+), 13 deletions(-)
+ drivers/scsi/csiostor/csio_init.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
-index 3a1038b6eeb3..9360c65169ff 100644
---- a/block/bfq-iosched.c
-+++ b/block/bfq-iosched.c
-@@ -2662,15 +2662,6 @@ bfq_setup_merge(struct bfq_queue *bfqq, struct bfq_queue *new_bfqq)
- 	 * are likely to increase the throughput.
- 	 */
- 	bfqq->new_bfqq = new_bfqq;
--	/*
--	 * The above assignment schedules the following redirections:
--	 * each time some I/O for bfqq arrives, the process that
--	 * generated that I/O is disassociated from bfqq and
--	 * associated with new_bfqq. Here we increases new_bfqq->ref
--	 * in advance, adding the number of processes that are
--	 * expected to be associated with new_bfqq as they happen to
--	 * issue I/O.
--	 */
- 	new_bfqq->ref += process_refs;
- 	return new_bfqq;
- }
-@@ -2733,10 +2724,6 @@ bfq_setup_cooperator(struct bfq_data *bfqd, struct bfq_queue *bfqq,
- {
- 	struct bfq_queue *in_service_bfqq, *new_bfqq;
- 
--	/* if a merge has already been setup, then proceed with that first */
--	if (bfqq->new_bfqq)
--		return bfqq->new_bfqq;
--
- 	/*
- 	 * Check delayed stable merge for rotational or non-queueing
- 	 * devs. For this branch to be executed, bfqq must not be
-@@ -2838,6 +2825,9 @@ bfq_setup_cooperator(struct bfq_data *bfqd, struct bfq_queue *bfqq,
- 	if (bfq_too_late_for_merging(bfqq))
- 		return NULL;
- 
-+	if (bfqq->new_bfqq)
-+		return bfqq->new_bfqq;
-+
- 	if (!io_struct || unlikely(bfqq == &bfqd->oom_bfqq))
- 		return NULL;
- 
+diff --git a/drivers/scsi/csiostor/csio_init.c b/drivers/scsi/csiostor/csio_init.c
+index 390b07bf92b9..ccbded3353bd 100644
+--- a/drivers/scsi/csiostor/csio_init.c
++++ b/drivers/scsi/csiostor/csio_init.c
+@@ -1254,3 +1254,4 @@ MODULE_DEVICE_TABLE(pci, csio_pci_tbl);
+ MODULE_VERSION(CSIO_DRV_VERSION);
+ MODULE_FIRMWARE(FW_FNAME_T5);
+ MODULE_FIRMWARE(FW_FNAME_T6);
++MODULE_SOFTDEP("pre: cxgb4");
 -- 
 2.33.0
 
