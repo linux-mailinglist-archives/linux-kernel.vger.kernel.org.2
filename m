@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 561A3420E33
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:21:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B461420BBF
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:57:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236495AbhJDNWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:22:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33046 "EHLO mail.kernel.org"
+        id S233745AbhJDM7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 08:59:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60618 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236580AbhJDNUu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:20:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9225561994;
-        Mon,  4 Oct 2021 13:08:53 +0000 (UTC)
+        id S233504AbhJDM6R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 08:58:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 334D261501;
+        Mon,  4 Oct 2021 12:56:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352934;
-        bh=4tqAWzyryKYmgALVAX8+oJ1ZlePLWu4Bus+uT4VdClg=;
+        s=korg; t=1633352188;
+        bh=FXQ+k/a6TXA1IGUvQ3SLbQtS2u9CHUz3F5W8de1mHgM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JSZqW1BkGheuUOAClHpq9O2ZWeHX8iIy2cO1DunyEM1I/ximJLopQ9e/bfUZGS+zX
-         QW+Z8zL4isDolC0zSIFg3pxPADYbWof0CvFYpGHjUeg0ZvJLXd67ketLwtYIR4vaZU
-         3/MCYfSYH8sbT8NheTDrJdiZvZ3U/wqIUoEDW8K8=
+        b=q6Y5Md+dxXyy5vIx4HRZBjjmV1MK7Ijzs1PIAIs2T1zjp8fY/L3z7tqp0z/TjEleL
+         J+LFO4DN/XKRhVySZZy3d8hos7EEGDz4g9JlpHKXGBKPCg5WyYIVOYi1DmD4Ggcc1b
+         PYncmPAmdv6RL2UAuXYtk4BztG2RgW5QaBcRUhX4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paul Fertser <fercerpav@gmail.com>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH 5.10 09/93] hwmon: (tmp421) handle I2C errors
-Date:   Mon,  4 Oct 2021 14:52:07 +0200
-Message-Id: <20211004125034.893357112@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 24/57] qnx4: avoid stringop-overread errors
+Date:   Mon,  4 Oct 2021 14:52:08 +0200
+Message-Id: <20211004125029.699792244@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125034.579439135@linuxfoundation.org>
-References: <20211004125034.579439135@linuxfoundation.org>
+In-Reply-To: <20211004125028.940212411@linuxfoundation.org>
+References: <20211004125028.940212411@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,99 +40,131 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Fertser <fercerpav@gmail.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 
-commit 2938b2978a70d4cc10777ee71c9e512ffe4e0f4b upstream.
+[ Upstream commit b7213ffa0e585feb1aee3e7173e965e66ee0abaa ]
 
-Function i2c_smbus_read_byte_data() can return a negative error number
-instead of the data read if I2C transaction failed for whatever reason.
+The qnx4 directory entries are 64-byte blocks that have different
+contents depending on the a status byte that is in the last byte of the
+block.
 
-Lack of error checking can lead to serious issues on production
-hardware, e.g. errors treated as temperatures produce spurious critical
-temperature-crossed-threshold errors in BMC logs for OCP server
-hardware. The patch was tested with Mellanox OCP Mezzanine card
-emulating TMP421 protocol for temperature sensing which sometimes leads
-to I2C protocol error during early boot up stage.
+In particular, a directory entry can be either a "link info" entry with
+a 48-byte name and pointers to the real inode information, or an "inode
+entry" with a smaller 16-byte name and the full inode information.
 
-Fixes: 9410700b881f ("hwmon: Add driver for Texas Instruments TMP421/422/423 sensor chips")
-Cc: stable@vger.kernel.org
-Signed-off-by: Paul Fertser <fercerpav@gmail.com>
-Link: https://lore.kernel.org/r/20210924093011.26083-1-fercerpav@gmail.com
-[groeck: dropped unnecessary line breaks]
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+But the code was written to always just treat the directory name as if
+it was part of that "inode entry", and just extend the name to the
+longer case if the status byte said it was a link entry.
+
+That work just fine and gives the right results, but now that gcc is
+tracking data structure accesses much more, the code can trigger a
+compiler error about using up to 48 bytes (the long name) in a structure
+that only has that shorter name in it:
+
+   fs/qnx4/dir.c: In function ‘qnx4_readdir’:
+   fs/qnx4/dir.c:51:32: error: ‘strnlen’ specified bound 48 exceeds source size 16 [-Werror=stringop-overread]
+      51 |                         size = strnlen(de->di_fname, size);
+         |                                ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+   In file included from fs/qnx4/qnx4.h:3,
+                    from fs/qnx4/dir.c:16:
+   include/uapi/linux/qnx4_fs.h:45:25: note: source object declared here
+      45 |         char            di_fname[QNX4_SHORT_NAME_MAX];
+         |                         ^~~~~~~~
+
+which is because the source code doesn't really make this whole "one of
+two different types" explicit.
+
+Fix this by introducing a very explicit union of the two types, and
+basically explaining to the compiler what is really going on.
+
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hwmon/tmp421.c |   38 ++++++++++++++++++++++++++++----------
- 1 file changed, 28 insertions(+), 10 deletions(-)
+ fs/qnx4/dir.c | 51 ++++++++++++++++++++++++++++++++++-----------------
+ 1 file changed, 34 insertions(+), 17 deletions(-)
 
---- a/drivers/hwmon/tmp421.c
-+++ b/drivers/hwmon/tmp421.c
-@@ -119,38 +119,56 @@ static int temp_from_u16(u16 reg)
- 	return (temp * 1000 + 128) / 256;
- }
+diff --git a/fs/qnx4/dir.c b/fs/qnx4/dir.c
+index 781056a0480f..740a0bdd360f 100644
+--- a/fs/qnx4/dir.c
++++ b/fs/qnx4/dir.c
+@@ -14,13 +14,27 @@
+ #include <linux/buffer_head.h>
+ #include "qnx4.h"
  
--static struct tmp421_data *tmp421_update_device(struct device *dev)
-+static int tmp421_update_device(struct tmp421_data *data)
- {
--	struct tmp421_data *data = dev_get_drvdata(dev);
- 	struct i2c_client *client = data->client;
-+	int ret = 0;
- 	int i;
- 
- 	mutex_lock(&data->update_lock);
- 
- 	if (time_after(jiffies, data->last_updated + (HZ / 2)) ||
- 	    !data->valid) {
--		data->config = i2c_smbus_read_byte_data(client,
--			TMP421_CONFIG_REG_1);
-+		ret = i2c_smbus_read_byte_data(client, TMP421_CONFIG_REG_1);
-+		if (ret < 0)
-+			goto exit;
-+		data->config = ret;
- 
- 		for (i = 0; i < data->channels; i++) {
--			data->temp[i] = i2c_smbus_read_byte_data(client,
--				TMP421_TEMP_MSB[i]) << 8;
--			data->temp[i] |= i2c_smbus_read_byte_data(client,
--				TMP421_TEMP_LSB[i]);
-+			ret = i2c_smbus_read_byte_data(client, TMP421_TEMP_MSB[i]);
-+			if (ret < 0)
-+				goto exit;
-+			data->temp[i] = ret << 8;
++/*
++ * A qnx4 directory entry is an inode entry or link info
++ * depending on the status field in the last byte. The
++ * first byte is where the name start either way, and a
++ * zero means it's empty.
++ */
++union qnx4_directory_entry {
++	struct {
++		char de_name;
++		char de_pad[62];
++		char de_status;
++	};
++	struct qnx4_inode_entry inode;
++	struct qnx4_link_info link;
++};
 +
-+			ret = i2c_smbus_read_byte_data(client, TMP421_TEMP_LSB[i]);
-+			if (ret < 0)
-+				goto exit;
-+			data->temp[i] |= ret;
+ static int qnx4_readdir(struct file *file, struct dir_context *ctx)
+ {
+ 	struct inode *inode = file_inode(file);
+ 	unsigned int offset;
+ 	struct buffer_head *bh;
+-	struct qnx4_inode_entry *de;
+-	struct qnx4_link_info *le;
+ 	unsigned long blknum;
+ 	int ix, ino;
+ 	int size;
+@@ -37,27 +51,30 @@ static int qnx4_readdir(struct file *file, struct dir_context *ctx)
  		}
- 		data->last_updated = jiffies;
- 		data->valid = 1;
- 	}
- 
-+exit:
- 	mutex_unlock(&data->update_lock);
- 
--	return data;
-+	if (ret < 0) {
-+		data->valid = 0;
-+		return ret;
-+	}
+ 		ix = (ctx->pos >> QNX4_DIR_ENTRY_SIZE_BITS) % QNX4_INODES_PER_BLOCK;
+ 		for (; ix < QNX4_INODES_PER_BLOCK; ix++, ctx->pos += QNX4_DIR_ENTRY_SIZE) {
++			union qnx4_directory_entry *de;
++			const char *name;
 +
-+	return 0;
- }
- 
- static int tmp421_read(struct device *dev, enum hwmon_sensor_types type,
- 		       u32 attr, int channel, long *val)
- {
--	struct tmp421_data *tmp421 = tmp421_update_device(dev);
-+	struct tmp421_data *tmp421 = dev_get_drvdata(dev);
-+	int ret = 0;
+ 			offset = ix * QNX4_DIR_ENTRY_SIZE;
+-			de = (struct qnx4_inode_entry *) (bh->b_data + offset);
+-			if (!de->di_fname[0])
++			de = (union qnx4_directory_entry *) (bh->b_data + offset);
 +
-+	ret = tmp421_update_device(tmp421);
-+	if (ret)
-+		return ret;
- 
- 	switch (attr) {
- 	case hwmon_temp_input:
++			if (!de->de_name)
+ 				continue;
+-			if (!(de->di_status & (QNX4_FILE_USED|QNX4_FILE_LINK)))
++			if (!(de->de_status & (QNX4_FILE_USED|QNX4_FILE_LINK)))
+ 				continue;
+-			if (!(de->di_status & QNX4_FILE_LINK))
+-				size = QNX4_SHORT_NAME_MAX;
+-			else
+-				size = QNX4_NAME_MAX;
+-			size = strnlen(de->di_fname, size);
+-			QNX4DEBUG((KERN_INFO "qnx4_readdir:%.*s\n", size, de->di_fname));
+-			if (!(de->di_status & QNX4_FILE_LINK))
++			if (!(de->de_status & QNX4_FILE_LINK)) {
++				size = sizeof(de->inode.di_fname);
++				name = de->inode.di_fname;
+ 				ino = blknum * QNX4_INODES_PER_BLOCK + ix - 1;
+-			else {
+-				le  = (struct qnx4_link_info*)de;
+-				ino = ( le32_to_cpu(le->dl_inode_blk) - 1 ) *
++			} else {
++				size = sizeof(de->link.dl_fname);
++				name = de->link.dl_fname;
++				ino = ( le32_to_cpu(de->link.dl_inode_blk) - 1 ) *
+ 					QNX4_INODES_PER_BLOCK +
+-					le->dl_inode_ndx;
++					de->link.dl_inode_ndx;
+ 			}
+-			if (!dir_emit(ctx, de->di_fname, size, ino, DT_UNKNOWN)) {
++			size = strnlen(name, size);
++			QNX4DEBUG((KERN_INFO "qnx4_readdir:%.*s\n", size, name));
++			if (!dir_emit(ctx, name, size, ino, DT_UNKNOWN)) {
+ 				brelse(bh);
+ 				return 0;
+ 			}
+-- 
+2.33.0
+
 
 
