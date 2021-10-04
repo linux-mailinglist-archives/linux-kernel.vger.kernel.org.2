@@ -2,107 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D530642127D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 17:17:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09009421277
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 17:16:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234590AbhJDPTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 11:19:19 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:45718
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233561AbhJDPTR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 11:19:17 -0400
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com [209.85.167.72])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 1B19C3F22C
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 15:17:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1633360648;
-        bh=V3o0PPzdLxt9FTzgnpcmYNfVrR3nxoe1+2HhHs0RBOg=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-        b=OwiGN2oqCj9tvcc8hQwMFo6qWa/7bAY+lnxFEHfJ8SA++Kod28PJ6gXUVcQIM7oAG
-         MTpv4CRxyNYYfEyrQ5uxz+XlNCQLT8LJgBDn47Pz59MSIQrEN5Rlz0DbYecJuAfrC7
-         EUOF8jKoMksKTwrjEMyjZaNnjEnkGdCbnvmBW/2TyXKVuCnbnyymo2yH+AAHCrrGbv
-         dlPph4tJOu5G8V+0EYpSvjsumgWmO4NQ7aiEt79WMUyjgLh8dncRQUMlSxdCF2Tz53
-         QqqYNPKOjcnAJSNS33wslWAPYjD3JH0uLSV+7gDDzTT1RSl6d5hDUh5UhXpwX/suiu
-         NX/PN6GqTF8Nw==
-Received: by mail-lf1-f72.google.com with SMTP id z9-20020a0565120c0900b003fce36c1f74so14495364lfu.9
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 08:17:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=V3o0PPzdLxt9FTzgnpcmYNfVrR3nxoe1+2HhHs0RBOg=;
-        b=T+8+ilwV67tdXApr38r0PeUvoVOtBRRFWfzP9+vupCYzHSDJxJK4Xo+BUObx9NSemL
-         9b76mbZz4y2Sg7sUmsipRouLkK4jaDBJhbwcH+DrMic7VWSlpAmi+c2s4RwlzNubpC5b
-         YRzZ3OfJZa+vgMl+N8FFxNT0Gv4Q1BzBxYB+2oVvff/a4R8DKUfrOQV0hXrHkyRUgS3Q
-         XdgJKFNH5lNmbqWwfKSoJz9nhPMs1NUbUEVT/kGmCNpiw0qZrJfoRi5oX6HX01kGuzVP
-         r4eSvEJw+JBHXnqSMAc59L1QqzXin1S0KG1JQCpWnZujX/uOvYVcL/9a69EnJBROLJ5P
-         zfAA==
-X-Gm-Message-State: AOAM533OAG6ncqE5fFI5hRMFCkv6i5/LT5/xdAxSR53rxgSn0l9Rfx57
-        2IIK0YmWPlpjbm8gOunI2CIRZ6U3H1htMgGwK0KQnY4AOExXHJE8f7JdoZsw5TDmOTVMEYuSnNp
-        QtOCs9SNzz1yYI02bqgO9Lm9UqLg39b5x0sFBjkJD0w==
-X-Received: by 2002:ac2:4f01:: with SMTP id k1mr14821245lfr.94.1633360647622;
-        Mon, 04 Oct 2021 08:17:27 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwqAmuBfz4zlVzr9PC+S5DriT+SGP+Xe1UGshV8/PwVH2o6sbeYfOu4GBpKMtuF700lCYfSFg==
-X-Received: by 2002:ac2:4f01:: with SMTP id k1mr14821227lfr.94.1633360647464;
-        Mon, 04 Oct 2021 08:17:27 -0700 (PDT)
-Received: from localhost.localdomain ([193.178.187.25])
-        by smtp.gmail.com with ESMTPSA id f7sm1623302lfc.217.2021.10.04.08.17.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Oct 2021 08:17:27 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Rob Herring <robh@kernel.org>
-Subject: [PATCH next] dt-bindings: mmc: arasan,sdci: bring back requirement of clock-output-names
-Date:   Mon,  4 Oct 2021 17:16:46 +0200
-Message-Id: <20211004151646.73599-1-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.30.2
+        id S234181AbhJDPSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 11:18:41 -0400
+Received: from foss.arm.com ([217.140.110.172]:49700 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233289AbhJDPSk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 11:18:40 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 16716D6E;
+        Mon,  4 Oct 2021 08:16:51 -0700 (PDT)
+Received: from [192.168.1.131] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F21133F70D;
+        Mon,  4 Oct 2021 08:16:47 -0700 (PDT)
+Subject: Re: [PATCH 0/5] arm64: ARMv8.7-A: MTE: Add asymm mode support
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+References: <20210913081424.48613-1-vincenzo.frascino@arm.com>
+ <20210929154907.GC22029@willie-the-truck>
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <90cb5600-44cb-1ed5-de4b-d19919090622@arm.com>
+Date:   Mon, 4 Oct 2021 17:16:49 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210929154907.GC22029@willie-the-truck>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The schema defines dependency only of clock-output-names on #clock-cells.
-The dependency in opposite direction - requirement of clock-output-names
-if #clock-cells is defined - should be explicitly included in the
-bindings.
+Hi Will,
 
-Reported-by: Rob Herring <robh@kernel.org>
-Fixes: 22ea8ab0dcc4 ("dt-bindings: mmc: arasan,sdci: drop unneeded clock-cells dependency")
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+sorry for the late reply but I am on sabbatical :)
 
----
+On 9/29/21 5:49 PM, Will Deacon wrote:
+> I'm surprised not to see any update to:
+> 
+> 	Documentation/arm64/memory-tagging-extension.rst
+> 
+> particularly regarding the per-cpu preferred tag checking modes. Is
+> asymmetric mode not supported there?
+> 
 
-Fixes tag from the linux-next
+The document that you are pointing out covers the userspace support, this series
+introduces the in-kernel support only for asymmetric MTE. The userspace bits for
+asymm will be added with a future series.
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
----
- Documentation/devicetree/bindings/mmc/arasan,sdhci.yaml | 3 +++
- 1 file changed, 3 insertions(+)
+The confusion comes from the fact, as Peter correctly pointed already, that I
+forgot to mention this vital info in the cover letter. Sorry about that I will
+make sure that this is addressed in v2.
 
-diff --git a/Documentation/devicetree/bindings/mmc/arasan,sdhci.yaml b/Documentation/devicetree/bindings/mmc/arasan,sdhci.yaml
-index dd70431df0b7..de6f076e0ece 100644
---- a/Documentation/devicetree/bindings/mmc/arasan,sdhci.yaml
-+++ b/Documentation/devicetree/bindings/mmc/arasan,sdhci.yaml
-@@ -158,6 +158,9 @@ properties:
-     description:
-       The MIO bank number in which the command and data lines are configured.
- 
-+dependencies:
-+  '#clock-cells': [ clock-output-names ]
-+
- required:
-   - compatible
-   - reg
+Thanks!
+
+> Will
+
 -- 
-2.30.2
-
+Regards,
+Vincenzo
