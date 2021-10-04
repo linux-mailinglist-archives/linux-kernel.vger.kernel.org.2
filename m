@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BC1F420BBC
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:57:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C168420F82
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:34:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234162AbhJDM7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 08:59:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60556 "EHLO mail.kernel.org"
+        id S236074AbhJDNff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:35:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47354 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234202AbhJDM6P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 08:58:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 98D7D613D5;
-        Mon,  4 Oct 2021 12:56:25 +0000 (UTC)
+        id S237875AbhJDNdQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:33:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 969646322F;
+        Mon,  4 Oct 2021 13:15:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352186;
-        bh=58RFKXXViAzwwCwE5+5j36GGL2p24I8CoD7yBiR3tKw=;
+        s=korg; t=1633353307;
+        bh=ZFmozfvCzzG+g+6hKP+upxe8Dw6TlT0XzAD2q4Xexmk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jpRaHrEb8ZvPCl08tXCxADPv+GhkFq+TRG1TxS0HKmtqsFHriCnooctWvzsp231+b
-         KPWGyGKtmpOyOVnnI1ShZgQlcqjEt10utbgGKCftTo6UXIpU5y/pV3XJWGmsmPBGxw
-         XnkeG8EwINLKinA4lx/4wJ69k8XIPIqek0nouJUU=
+        b=D725hZ33LjkUKxx3npoNGDAAo2auCgGicK6/MGTqFDsFEB8PI12sJFUhqz4K3wXxB
+         aZ/YWqNrsUqfOC6vWuu7eDXZTWu1KDqjTo8j9mJHcInfZU5HzzwDFAlIVli3tHdl9e
+         a27AuEMOGAiHV9U0ytCFZl/cVFdXWxTCF2yXaabQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org, Hou Tao <houtao1@huawei.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 23/57] sparc: avoid stringop-overread errors
+Subject: [PATCH 5.14 077/172] bpf: Handle return value of BPF_PROG_TYPE_STRUCT_OPS prog
 Date:   Mon,  4 Oct 2021 14:52:07 +0200
-Message-Id: <20211004125029.669554088@linuxfoundation.org>
+Message-Id: <20211004125047.487332294@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125028.940212411@linuxfoundation.org>
-References: <20211004125028.940212411@linuxfoundation.org>
+In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
+References: <20211004125044.945314266@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,60 +41,200 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Torvalds <torvalds@linux-foundation.org>
+From: Hou Tao <houtao1@huawei.com>
 
-[ Upstream commit fc7c028dcdbfe981bca75d2a7b95f363eb691ef3 ]
+[ Upstream commit 356ed64991c6847a0c4f2e8fa3b1133f7a14f1fc ]
 
-The sparc mdesc code does pointer games with 'struct mdesc_hdr', but
-didn't describe to the compiler how that header is then followed by the
-data that the header describes.
+Currently if a function ptr in struct_ops has a return value, its
+caller will get a random return value from it, because the return
+value of related BPF_PROG_TYPE_STRUCT_OPS prog is just dropped.
 
-As a result, gcc is now unhappy since it does stricter pointer range
-tracking, and doesn't understand about how these things work.  This
-results in various errors like:
+So adding a new flag BPF_TRAMP_F_RET_FENTRY_RET to tell bpf trampoline
+to save and return the return value of struct_ops prog if ret_size of
+the function ptr is greater than 0. Also restricting the flag to be
+used alone.
 
-    arch/sparc/kernel/mdesc.c: In function ‘mdesc_node_by_name’:
-    arch/sparc/kernel/mdesc.c:647:22: error: ‘strcmp’ reading 1 or more bytes from a region of size 0 [-Werror=stringop-overread]
-      647 |                 if (!strcmp(names + ep[ret].name_offset, name))
-          |                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-which are easily avoided by just describing 'struct mdesc_hdr' better,
-and making the node_block() helper function look into that unsized
-data[] that follows the header.
-
-This makes the sparc64 build happy again at least for my cross-compiler
-version (gcc version 11.2.1).
-
-Link: https://lore.kernel.org/lkml/CAHk-=wi4NW3NC0xWykkw=6LnjQD6D_rtRtxY9g8gQAJXtQMi8A@mail.gmail.com/
-Cc: Guenter Roeck <linux@roeck-us.net>
-Cc: David S. Miller <davem@davemloft.net>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: 85d33df357b6 ("bpf: Introduce BPF_MAP_TYPE_STRUCT_OPS")
+Signed-off-by: Hou Tao <houtao1@huawei.com>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Acked-by: Martin KaFai Lau <kafai@fb.com>
+Link: https://lore.kernel.org/bpf/20210914023351.3664499-1-houtao1@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/sparc/kernel/mdesc.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/x86/net/bpf_jit_comp.c | 53 ++++++++++++++++++++++++++++---------
+ include/linux/bpf.h         |  2 ++
+ kernel/bpf/bpf_struct_ops.c |  7 +++--
+ 3 files changed, 47 insertions(+), 15 deletions(-)
 
-diff --git a/arch/sparc/kernel/mdesc.c b/arch/sparc/kernel/mdesc.c
-index 8a6982dfd733..5aa33bf7139e 100644
---- a/arch/sparc/kernel/mdesc.c
-+++ b/arch/sparc/kernel/mdesc.c
-@@ -37,6 +37,7 @@ struct mdesc_hdr {
- 	u32	node_sz; /* node block size */
- 	u32	name_sz; /* name block size */
- 	u32	data_sz; /* data block size */
-+	char	data[];
- } __attribute__((aligned(16)));
- 
- struct mdesc_elem {
-@@ -369,7 +370,7 @@ out:
- 
- static struct mdesc_elem *node_block(struct mdesc_hdr *mdesc)
- {
--	return (struct mdesc_elem *) (mdesc + 1);
-+	return (struct mdesc_elem *) mdesc->data;
+diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+index 16d76f814e9b..47780844598a 100644
+--- a/arch/x86/net/bpf_jit_comp.c
++++ b/arch/x86/net/bpf_jit_comp.c
+@@ -1744,7 +1744,7 @@ static void restore_regs(const struct btf_func_model *m, u8 **prog, int nr_args,
  }
  
- static void *name_block(struct mdesc_hdr *mdesc)
+ static int invoke_bpf_prog(const struct btf_func_model *m, u8 **pprog,
+-			   struct bpf_prog *p, int stack_size, bool mod_ret)
++			   struct bpf_prog *p, int stack_size, bool save_ret)
+ {
+ 	u8 *prog = *pprog;
+ 	u8 *jmp_insn;
+@@ -1777,11 +1777,15 @@ static int invoke_bpf_prog(const struct btf_func_model *m, u8 **pprog,
+ 	if (emit_call(&prog, p->bpf_func, prog))
+ 		return -EINVAL;
+ 
+-	/* BPF_TRAMP_MODIFY_RETURN trampolines can modify the return
++	/*
++	 * BPF_TRAMP_MODIFY_RETURN trampolines can modify the return
+ 	 * of the previous call which is then passed on the stack to
+ 	 * the next BPF program.
++	 *
++	 * BPF_TRAMP_FENTRY trampoline may need to return the return
++	 * value of BPF_PROG_TYPE_STRUCT_OPS prog.
+ 	 */
+-	if (mod_ret)
++	if (save_ret)
+ 		emit_stx(&prog, BPF_DW, BPF_REG_FP, BPF_REG_0, -8);
+ 
+ 	/* replace 2 nops with JE insn, since jmp target is known */
+@@ -1828,13 +1832,15 @@ static int emit_cond_near_jump(u8 **pprog, void *func, void *ip, u8 jmp_cond)
+ }
+ 
+ static int invoke_bpf(const struct btf_func_model *m, u8 **pprog,
+-		      struct bpf_tramp_progs *tp, int stack_size)
++		      struct bpf_tramp_progs *tp, int stack_size,
++		      bool save_ret)
+ {
+ 	int i;
+ 	u8 *prog = *pprog;
+ 
+ 	for (i = 0; i < tp->nr_progs; i++) {
+-		if (invoke_bpf_prog(m, &prog, tp->progs[i], stack_size, false))
++		if (invoke_bpf_prog(m, &prog, tp->progs[i], stack_size,
++				    save_ret))
+ 			return -EINVAL;
+ 	}
+ 	*pprog = prog;
+@@ -1877,6 +1883,23 @@ static int invoke_bpf_mod_ret(const struct btf_func_model *m, u8 **pprog,
+ 	return 0;
+ }
+ 
++static bool is_valid_bpf_tramp_flags(unsigned int flags)
++{
++	if ((flags & BPF_TRAMP_F_RESTORE_REGS) &&
++	    (flags & BPF_TRAMP_F_SKIP_FRAME))
++		return false;
++
++	/*
++	 * BPF_TRAMP_F_RET_FENTRY_RET is only used by bpf_struct_ops,
++	 * and it must be used alone.
++	 */
++	if ((flags & BPF_TRAMP_F_RET_FENTRY_RET) &&
++	    (flags & ~BPF_TRAMP_F_RET_FENTRY_RET))
++		return false;
++
++	return true;
++}
++
+ /* Example:
+  * __be16 eth_type_trans(struct sk_buff *skb, struct net_device *dev);
+  * its 'struct btf_func_model' will be nr_args=2
+@@ -1949,17 +1972,19 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+ 	struct bpf_tramp_progs *fmod_ret = &tprogs[BPF_TRAMP_MODIFY_RETURN];
+ 	u8 **branches = NULL;
+ 	u8 *prog;
++	bool save_ret;
+ 
+ 	/* x86-64 supports up to 6 arguments. 7+ can be added in the future */
+ 	if (nr_args > 6)
+ 		return -ENOTSUPP;
+ 
+-	if ((flags & BPF_TRAMP_F_RESTORE_REGS) &&
+-	    (flags & BPF_TRAMP_F_SKIP_FRAME))
++	if (!is_valid_bpf_tramp_flags(flags))
+ 		return -EINVAL;
+ 
+-	if (flags & BPF_TRAMP_F_CALL_ORIG)
+-		stack_size += 8; /* room for return value of orig_call */
++	/* room for return value of orig_call or fentry prog */
++	save_ret = flags & (BPF_TRAMP_F_CALL_ORIG | BPF_TRAMP_F_RET_FENTRY_RET);
++	if (save_ret)
++		stack_size += 8;
+ 
+ 	if (flags & BPF_TRAMP_F_SKIP_FRAME)
+ 		/* skip patched call instruction and point orig_call to actual
+@@ -1986,7 +2011,8 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+ 	}
+ 
+ 	if (fentry->nr_progs)
+-		if (invoke_bpf(m, &prog, fentry, stack_size))
++		if (invoke_bpf(m, &prog, fentry, stack_size,
++			       flags & BPF_TRAMP_F_RET_FENTRY_RET))
+ 			return -EINVAL;
+ 
+ 	if (fmod_ret->nr_progs) {
+@@ -2033,7 +2059,7 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+ 	}
+ 
+ 	if (fexit->nr_progs)
+-		if (invoke_bpf(m, &prog, fexit, stack_size)) {
++		if (invoke_bpf(m, &prog, fexit, stack_size, false)) {
+ 			ret = -EINVAL;
+ 			goto cleanup;
+ 		}
+@@ -2053,9 +2079,10 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+ 			ret = -EINVAL;
+ 			goto cleanup;
+ 		}
+-		/* restore original return value back into RAX */
+-		emit_ldx(&prog, BPF_DW, BPF_REG_0, BPF_REG_FP, -8);
+ 	}
++	/* restore return value of orig_call or fentry prog back into RAX */
++	if (save_ret)
++		emit_ldx(&prog, BPF_DW, BPF_REG_0, BPF_REG_FP, -8);
+ 
+ 	EMIT1(0x5B); /* pop rbx */
+ 	EMIT1(0xC9); /* leave */
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index e8e2b0393ca9..11da5671d4f0 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -553,6 +553,8 @@ struct btf_func_model {
+  * programs only. Should not be used with normal calls and indirect calls.
+  */
+ #define BPF_TRAMP_F_SKIP_FRAME		BIT(2)
++/* Return the return value of fentry prog. Only used by bpf_struct_ops. */
++#define BPF_TRAMP_F_RET_FENTRY_RET	BIT(4)
+ 
+ /* Each call __bpf_prog_enter + call bpf_func + call __bpf_prog_exit is ~50
+  * bytes on x86.  Pick a number to fit into BPF_IMAGE_SIZE / 2
+diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
+index 70f6fd4fa305..2ce17447fb76 100644
+--- a/kernel/bpf/bpf_struct_ops.c
++++ b/kernel/bpf/bpf_struct_ops.c
+@@ -367,6 +367,7 @@ static int bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
+ 		const struct btf_type *mtype, *ptype;
+ 		struct bpf_prog *prog;
+ 		u32 moff;
++		u32 flags;
+ 
+ 		moff = btf_member_bit_offset(t, member) / 8;
+ 		ptype = btf_type_resolve_ptr(btf_vmlinux, member->type, NULL);
+@@ -430,10 +431,12 @@ static int bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
+ 
+ 		tprogs[BPF_TRAMP_FENTRY].progs[0] = prog;
+ 		tprogs[BPF_TRAMP_FENTRY].nr_progs = 1;
++		flags = st_ops->func_models[i].ret_size > 0 ?
++			BPF_TRAMP_F_RET_FENTRY_RET : 0;
+ 		err = arch_prepare_bpf_trampoline(NULL, image,
+ 						  st_map->image + PAGE_SIZE,
+-						  &st_ops->func_models[i], 0,
+-						  tprogs, NULL);
++						  &st_ops->func_models[i],
++						  flags, tprogs, NULL);
+ 		if (err < 0)
+ 			goto reset_unlock;
+ 
 -- 
 2.33.0
 
