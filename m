@@ -2,103 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B5C14210CB
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:56:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B80104210CC
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:56:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233805AbhJDN6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:58:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40318 "EHLO
+        id S238710AbhJDN6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:58:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233943AbhJDN55 (ORCPT
+        with ESMTP id S238593AbhJDN57 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:57:57 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17F99C06178C;
-        Mon,  4 Oct 2021 06:50:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=6vUpJUB5MdZXzWaMmf7c2QvR3CqVlsdp5dr0n/HKs40=; b=e90zv0e7wf8LJPpvaSWtJTY6cO
-        Ulgjoqv+E7YyYinhTnXJeK9uT2+m0JxNB+LUoDuVW98WBXfcwOY3AvaoyGuEjZcXq4hda+QGTfK7W
-        i6yXATawRQn05/eYQhz58UcKA7kphdaqTG97RVD0lUgzeDZ/U05AUdTkOJb4ZPP/kZAa1+WvhY+YV
-        DSJZ9LKZZYqSB93GkOf03fVE17onPldrpr6Un7QrCTYN73Aclh+NakdQH3oCG90gvI5N3VBAjz9oS
-        eiMIYSJ9ALP3KfIlDDTiI1gEp7HDhD48PovWQORPlGfc1uvG1zseCZmB9cx9GPf1b7CWp/MmsfOOn
-        Da2tYbmQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mXOMN-007qXv-3U; Mon, 04 Oct 2021 13:50:27 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 081AC30026F;
-        Mon,  4 Oct 2021 15:50:24 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id DC22E2016AFC1; Mon,  4 Oct 2021 15:50:24 +0200 (CEST)
-Date:   Mon, 4 Oct 2021 15:50:24 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     x86@kernel.org, Kees Cook <keescook@chromium.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev
-Subject: Re: [PATCH v4 04/15] cfi: Add DEFINE_CFI_IMMEDIATE_RETURN_STUB
-Message-ID: <YVsGoJ+NN6wRFi22@hirez.programming.kicks-ass.net>
-References: <20210930180531.1190642-1-samitolvanen@google.com>
- <20210930180531.1190642-5-samitolvanen@google.com>
+        Mon, 4 Oct 2021 09:57:59 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DADF2C04E2E2
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 06:51:02 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id b136-20020a1c808e000000b0030d60716239so5976577wmd.4
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 06:51:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ixcLdTagJRu/06gC176lfPRdoFQRHt0CXg6VWfHheVY=;
+        b=p6TDaGTFlpLS+iMuviaB8B07k0Ae0uBloriBCGPD6Rrdgs9T0CVQcM1WFsIzGzqRh4
+         rzJ2nflnlUjmgNTKvOp4HOnH39FUwKc9dNzsjATrAk6hzT3jQ6bOhMIBpi0iQhJMw6BI
+         wotyqWu9/oW7G/Y2SEOnTsaKTFQUfyr48vOBADEdoWxiKc1BaCy++HOyiq6F/uQao6Iq
+         /4GQOe7YvDcD7JwNqkKmmcFu6iULtZbTs0VgkGejb3JQpgBjfcelhjREylmPQmZGW0BW
+         wCnlC9fwjpcLbd24WvMLdhjOKyCeLbppTbFikG2nR9Cx/sWND3dI05tPFInq0wGiYb5C
+         dlBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ixcLdTagJRu/06gC176lfPRdoFQRHt0CXg6VWfHheVY=;
+        b=mMOdESvmD+cmXvQBuGFvGPRRrslEth9EwoUDQgCVP3Ochf/LyNVwpzAVgOAXM7e0tJ
+         kxBmRtBdgxuBKDJPqmxAVuYviAZIVPd3QN0h7P4Bri1AQOV4ocJTNSWhm0zQL9qsD0P7
+         MZV4dXDQbdLIWm04dxhpaaPt7NoAIYx2LFLbanQ8AM1ysoCzV+9/T/DWW12YzdwUZeYo
+         N53v7KdhXqlZb5iF5JGE5euX/rMifSLUi9p8N28hBQID6q/yD+iMvyxowJPMj/+wekOL
+         GpVryeXEQfj5ujiUxErQ55KN9Jdfugaw9qMuFrpj7bBzcq0hsbaF65qLXKiejabHdTRO
+         q/xA==
+X-Gm-Message-State: AOAM532INEbQSX7IAJghpFplJB/C8bxqxXEsTHdAPKwo09JOZ7r29LfQ
+        QuvkDM+wdVt7lC66aU4tX0VZst8xxAgW1a3vFN+jdg==
+X-Google-Smtp-Source: ABdhPJw1v2ZRogF2DMasR0MEbo1LWWhq0iSwwVnx7mfGK0MtGZblExODYu8l8WDnhe6n4XGcNYOzK3roxkxLprcfO0w=
+X-Received: by 2002:a1c:208e:: with SMTP id g136mr1524425wmg.177.1633355461387;
+ Mon, 04 Oct 2021 06:51:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210930180531.1190642-5-samitolvanen@google.com>
+References: <20210915113813.GA509196@jade>
+In-Reply-To: <20210915113813.GA509196@jade>
+From:   Jens Wiklander <jens.wiklander@linaro.org>
+Date:   Mon, 4 Oct 2021 15:50:50 +0200
+Message-ID: <CAHUa44EZeE4pWmYFTfoBBxL4AhjTbRBS8vv6=M1UksL-oO_Rzw@mail.gmail.com>
+Subject: Re: [GIT PULL] OP-TEE fix for v5.15
+To:     arm-soc <arm@kernel.org>, SoC Team <soc@kernel.org>
+Cc:     OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        CGEL <cgel.zte@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 11:05:20AM -0700, Sami Tolvanen wrote:
-> This change introduces the DEFINE_CFI_IMMEDIATE_RETURN_STUB macro,
-> which defines a stub function that immediately returns and when
-> defined in the core kernel, always passes indirect call checking
-> with CONFIG_CFI_CLANG. Note that this macro should only be used when
-> a stub cannot be called using the correct function type.
+Hi,
 
-> diff --git a/include/linux/cfi.h b/include/linux/cfi.h
-> index 879744aaa6e0..19f74af8eac2 100644
-> --- a/include/linux/cfi.h
-> +++ b/include/linux/cfi.h
-> @@ -20,6 +20,17 @@ extern void __cfi_check(uint64_t id, void *ptr, void *diag);
->  #define __CFI_ADDRESSABLE(fn, __attr) \
->  	const void *__cfi_jt_ ## fn __visible __attr = (void *)&fn
->  
-> +/*
-> + * Defines a stub function that returns immediately, and when defined and
-> + * referenced in the core kernel, always passes CFI checking. This should
-> + * be used only for stubs that cannot be called using the correct function
-> + * pointer type, which should be rare.
-> + */
-> +#define DEFINE_CFI_IMMEDIATE_RETURN_STUB(fn) \
-> +	void fn(void) { return; } \
-> +	const void *__cfi_excl_ ## fn __visible \
-> +		__section(".cfi_excluded_stubs") = (void *)&fn
-> +
->  #ifdef CONFIG_CFI_CLANG_SHADOW
->  
->  extern void cfi_module_add(struct module *mod, unsigned long base_addr);
-> @@ -35,6 +46,8 @@ static inline void cfi_module_remove(struct module *mod, unsigned long base_addr
->  #else /* !CONFIG_CFI_CLANG */
->  
->  #define __CFI_ADDRESSABLE(fn, __attr)
-> +#define DEFINE_CFI_IMMEDIATE_RETURN_STUB(fn) \
-> +	void fn(void) { return; }
->  
->  #endif /* CONFIG_CFI_CLANG */
->  
+Is there any problems with this, or is it just that you'd rather take it later?
 
-Why DEFINE_CFI_IMMEDIATE_RETURN_STUB() vs __no_cfi attribute that we can
-stick on the relvant functions?
+Thanks,
+Jens
 
-Because I've got at least one more variant for you :-) See
-kernel/static_call.c:__static_call_return0
+On Wed, Sep 15, 2021 at 1:38 PM Jens Wiklander
+<jens.wiklander@linaro.org> wrote:
+>
+> Hello arm-soc maintainers,
+>
+> Please pull this small OP-TEE driver fix for the shared memory pool
+> handler. The fix doesn't change the generated code, but it's still relevant
+> since the problem obviously triggers warnings with some tools.
+>
+> Thanks,
+> Jens
+>
+> The following changes since commit 7d2a07b769330c34b4deabeed939325c77a7ec2f:
+>
+>   Linux 5.14 (2021-08-29 15:04:50 -0700)
+>
+> are available in the Git repository at:
+>
+>   git://git.linaro.org/people/jens.wiklander/linux-tee.git tags/optee-fix-for-v5.15
+>
+> for you to fetch changes up to 88a3856c0a8c03188db7913f4d49379432fe1f93:
+>
+>   tee/optee/shm_pool: fix application of sizeof to pointer (2021-09-14 07:54:56 +0200)
+>
+> ----------------------------------------------------------------
+> Fix OP-TEE shm_pool lint warning
+>
+> ----------------------------------------------------------------
+> jing yangyang (1):
+>       tee/optee/shm_pool: fix application of sizeof to pointer
+>
+>  drivers/tee/optee/shm_pool.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
