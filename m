@@ -2,38 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F8C8420F63
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:32:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBFDA420B9F
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:56:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237272AbhJDNeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:34:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47478 "EHLO mail.kernel.org"
+        id S234196AbhJDM6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 08:58:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58886 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237185AbhJDNbu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:31:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6CB2F61BA2;
-        Mon,  4 Oct 2021 13:14:21 +0000 (UTC)
+        id S234024AbhJDM5n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 08:57:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 52BF661409;
+        Mon,  4 Oct 2021 12:55:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633353261;
-        bh=fgpLNK0QJX5G7bMV1QQIBI+1zCB4DxuGWwDN6fjnozQ=;
+        s=korg; t=1633352154;
+        bh=tg/LdSw7r3e908Zm42bDYSimlqnlchmK7sNUofOb8Yo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mUXqn+ZlYge3ioQAKKhiUpZof36dvazghLsJXbVaN0r3cG6PxPRrhedUdvVvZNEnw
-         1NvVTn5R+bOEUQtjiWFBLhXhEt/QVtYhOSrbQD7hT1RWMjiwLbGQg2cPO/TzqjNxPU
-         eQhZm+mLitUaFcDPZXIFMktrlFvANMOCyfselwPk=
+        b=BOHp1nFVjfm1/6+PagyccoNwPtsL3j4SOASKFuHj+DwgdQ4JJn6Qe50NWmT5S8tgv
+         9uFVizkpbzy1dAqFOayqEE4KyiChYkczbVMbQJ9E3HGhcD8arny8Z7chG/VeLYWD9y
+         tcLgZu3ObwPbnU3un7qwuoDYvlG9DB5fArIoGxAQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Gonda <pgonda@google.com>,
-        Marc Orr <marcorr@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>, kvm@vger.kernel.org
-Subject: [PATCH 5.14 057/172] KVM: SEV: Acquire vcpu mutex when updating VMSA
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [PATCH 4.9 03/57] usb: musb: tusb6010: uninitialized data in tusb_fifo_write_unaligned()
 Date:   Mon,  4 Oct 2021 14:51:47 +0200
-Message-Id: <20211004125046.837857428@linuxfoundation.org>
+Message-Id: <20211004125029.049392775@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
-References: <20211004125044.945314266@linuxfoundation.org>
+In-Reply-To: <20211004125028.940212411@linuxfoundation.org>
+References: <20211004125028.940212411@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,109 +38,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Gonda <pgonda@google.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-commit bb18a677746543e7f5eeb478129c92cedb0f9658 upstream.
+commit 517c7bf99bad3d6b9360558414aae634b7472d80 upstream.
 
-The update-VMSA ioctl touches data stored in struct kvm_vcpu, and
-therefore should not be performed concurrently with any VCPU ioctl
-that might cause KVM or the processor to use the same data.
+This is writing to the first 1 - 3 bytes of "val" and then writing all
+four bytes to musb_writel().  The last byte is always going to be
+garbage.  Zero out the last bytes instead.
 
-Adds vcpu mutex guard to the VMSA updating code. Refactors out
-__sev_launch_update_vmsa() function to deal with per vCPU parts
-of sev_launch_update_vmsa().
-
-Fixes: ad73109ae7ec ("KVM: SVM: Provide support to launch and run an SEV-ES guest")
-Signed-off-by: Peter Gonda <pgonda@google.com>
-Cc: Marc Orr <marcorr@google.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>
-Cc: Sean Christopherson <seanjc@google.com>
-Cc: Brijesh Singh <brijesh.singh@amd.com>
-Cc: kvm@vger.kernel.org
-Cc: stable@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Message-Id: <20210915171755.3773766-1-pgonda@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Fixes: 550a7375fe72 ("USB: Add MUSB and TUSB support")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210916135737.GI25094@kili
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/kvm/svm/sev.c |   53 +++++++++++++++++++++++++++----------------------
- 1 file changed, 30 insertions(+), 23 deletions(-)
+ drivers/usb/musb/tusb6010.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/arch/x86/kvm/svm/sev.c
-+++ b/arch/x86/kvm/svm/sev.c
-@@ -596,43 +596,50 @@ static int sev_es_sync_vmsa(struct vcpu_
- 	return 0;
- }
- 
--static int sev_launch_update_vmsa(struct kvm *kvm, struct kvm_sev_cmd *argp)
-+static int __sev_launch_update_vmsa(struct kvm *kvm, struct kvm_vcpu *vcpu,
-+				    int *error)
- {
--	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
- 	struct sev_data_launch_update_vmsa vmsa;
-+	struct vcpu_svm *svm = to_svm(vcpu);
-+	int ret;
-+
-+	/* Perform some pre-encryption checks against the VMSA */
-+	ret = sev_es_sync_vmsa(svm);
-+	if (ret)
-+		return ret;
-+
-+	/*
-+	 * The LAUNCH_UPDATE_VMSA command will perform in-place encryption of
-+	 * the VMSA memory content (i.e it will write the same memory region
-+	 * with the guest's key), so invalidate it first.
-+	 */
-+	clflush_cache_range(svm->vmsa, PAGE_SIZE);
-+
-+	vmsa.reserved = 0;
-+	vmsa.handle = to_kvm_svm(kvm)->sev_info.handle;
-+	vmsa.address = __sme_pa(svm->vmsa);
-+	vmsa.len = PAGE_SIZE;
-+	return sev_issue_cmd(kvm, SEV_CMD_LAUNCH_UPDATE_VMSA, &vmsa, error);
-+}
-+
-+static int sev_launch_update_vmsa(struct kvm *kvm, struct kvm_sev_cmd *argp)
-+{
- 	struct kvm_vcpu *vcpu;
- 	int i, ret;
- 
- 	if (!sev_es_guest(kvm))
- 		return -ENOTTY;
- 
--	vmsa.reserved = 0;
--
- 	kvm_for_each_vcpu(i, vcpu, kvm) {
--		struct vcpu_svm *svm = to_svm(vcpu);
--
--		/* Perform some pre-encryption checks against the VMSA */
--		ret = sev_es_sync_vmsa(svm);
-+		ret = mutex_lock_killable(&vcpu->mutex);
- 		if (ret)
- 			return ret;
- 
--		/*
--		 * The LAUNCH_UPDATE_VMSA command will perform in-place
--		 * encryption of the VMSA memory content (i.e it will write
--		 * the same memory region with the guest's key), so invalidate
--		 * it first.
--		 */
--		clflush_cache_range(svm->vmsa, PAGE_SIZE);
--
--		vmsa.handle = sev->handle;
--		vmsa.address = __sme_pa(svm->vmsa);
--		vmsa.len = PAGE_SIZE;
--		ret = sev_issue_cmd(kvm, SEV_CMD_LAUNCH_UPDATE_VMSA, &vmsa,
--				    &argp->error);
-+		ret = __sev_launch_update_vmsa(kvm, vcpu, &argp->error);
-+
-+		mutex_unlock(&vcpu->mutex);
- 		if (ret)
- 			return ret;
--
--		svm->vcpu.arch.guest_state_protected = true;
+--- a/drivers/usb/musb/tusb6010.c
++++ b/drivers/usb/musb/tusb6010.c
+@@ -193,6 +193,7 @@ tusb_fifo_write_unaligned(void __iomem *
  	}
- 
- 	return 0;
+ 	if (len > 0) {
+ 		/* Write the rest 1 - 3 bytes to FIFO */
++		val = 0;
+ 		memcpy(&val, buf, len);
+ 		musb_writel(fifo, 0, val);
+ 	}
 
 
