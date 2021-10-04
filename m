@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31D08420FE3
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:37:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CB0B420E0D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:19:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237653AbhJDNjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:39:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51998 "EHLO mail.kernel.org"
+        id S236659AbhJDNVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:21:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55680 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238160AbhJDNhJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:37:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6AAFC6126A;
-        Mon,  4 Oct 2021 13:16:50 +0000 (UTC)
+        id S236618AbhJDNSn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:18:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 37EFD61A38;
+        Mon,  4 Oct 2021 13:07:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633353410;
-        bh=qJ9lhhn04jBi8L3e0Q5wmv8IRUQA0TvXcJUX+Ff7azk=;
+        s=korg; t=1633352879;
+        bh=Tz4qOokfeXJKGxkszgzrmb1XGj8kFC/SFTXN4vTfSGs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lN3IUjpPF0NQp0Pv0J2YwhZ2CKdys8uFU40qGHmtLBDAji81xsl3fKipzrgPCq6/R
-         qTh0F4zpbqFqUD28jqFPFmGWUG65ek27UHPM7la4Ji7K/LXabuIFTrkO3m0RLz9f3f
-         HodXqAEVNqFrrEutzj/kzKFkW9PZ8IP9B4Dhfuxk=
+        b=CbJpT3rFhvxOJokbBffypg0/UepIiaSVSw0jQb7zpprvZAx+9ONQoCAK7StB5Lkpt
+         LP5VpWx41lPO6fg5pLLIuV6aCPlyvvKlMyOX08Ufuv37HCHUAWDsPR1MBD6/9MGkVX
+         Nt/t+dkpB7Sg0d/g8M8n7O02TFjK5Dnm8UgU2KXM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jiri Benc <jbenc@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        stable@vger.kernel.org, Jian Shen <shenjian15@huawei.com>,
+        Guangbin Huang <huangguangbin2@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 117/172] selftests, bpf: test_lwt_ip_encap: Really disable rp_filter
-Date:   Mon,  4 Oct 2021 14:52:47 +0200
-Message-Id: <20211004125048.759890007@linuxfoundation.org>
+Subject: [PATCH 5.4 28/56] net: hns3: do not allow call hns3_nic_net_open repeatedly
+Date:   Mon,  4 Oct 2021 14:52:48 +0200
+Message-Id: <20211004125030.888524315@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
-References: <20211004125044.945314266@linuxfoundation.org>
+In-Reply-To: <20211004125030.002116402@linuxfoundation.org>
+References: <20211004125030.002116402@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,55 +41,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiri Benc <jbenc@redhat.com>
+From: Jian Shen <shenjian15@huawei.com>
 
-[ Upstream commit 79e2c306667542b8ee2d9a9d947eadc7039f0a3c ]
+[ Upstream commit 5b09e88e1bf7fe86540fab4b5f3eece8abead39e ]
 
-It's not enough to set net.ipv4.conf.all.rp_filter=0, that does not override
-a greater rp_filter value on the individual interfaces. We also need to set
-net.ipv4.conf.default.rp_filter=0 before creating the interfaces. That way,
-they'll also get their own rp_filter value of zero.
+hns3_nic_net_open() is not allowed to called repeatly, but there
+is no checking for this. When doing device reset and setup tc
+concurrently, there is a small oppotunity to call hns3_nic_net_open
+repeatedly, and cause kernel bug by calling napi_enable twice.
 
-Fixes: 0fde56e4385b0 ("selftests: bpf: add test_lwt_ip_encap selftest")
-Signed-off-by: Jiri Benc <jbenc@redhat.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Link: https://lore.kernel.org/bpf/b1cdd9d469f09ea6e01e9c89a6071c79b7380f89.1632386362.git.jbenc@redhat.com
+The calltrace information is like below:
+[ 3078.222780] ------------[ cut here ]------------
+[ 3078.230255] kernel BUG at net/core/dev.c:6991!
+[ 3078.236224] Internal error: Oops - BUG: 0 [#1] PREEMPT SMP
+[ 3078.243431] Modules linked in: hns3 hclgevf hclge hnae3 vfio_iommu_type1 vfio_pci vfio_virqfd vfio pv680_mii(O)
+[ 3078.258880] CPU: 0 PID: 295 Comm: kworker/u8:5 Tainted: G           O      5.14.0-rc4+ #1
+[ 3078.269102] Hardware name:  , BIOS KpxxxFPGA 1P B600 V181 08/12/2021
+[ 3078.276801] Workqueue: hclge hclge_service_task [hclge]
+[ 3078.288774] pstate: 60400009 (nZCv daif +PAN -UAO -TCO BTYPE=--)
+[ 3078.296168] pc : napi_enable+0x80/0x84
+tc qdisc sho[w  3d0e7v8 .e3t0h218 79] lr : hns3_nic_net_open+0x138/0x510 [hns3]
+
+[ 3078.314771] sp : ffff8000108abb20
+[ 3078.319099] x29: ffff8000108abb20 x28: 0000000000000000 x27: ffff0820a8490300
+[ 3078.329121] x26: 0000000000000001 x25: ffff08209cfc6200 x24: 0000000000000000
+[ 3078.339044] x23: ffff0820a8490300 x22: ffff08209cd76000 x21: ffff0820abfe3880
+[ 3078.349018] x20: 0000000000000000 x19: ffff08209cd76900 x18: 0000000000000000
+[ 3078.358620] x17: 0000000000000000 x16: ffffc816e1727a50 x15: 0000ffff8f4ff930
+[ 3078.368895] x14: 0000000000000000 x13: 0000000000000000 x12: 0000259e9dbeb6b4
+[ 3078.377987] x11: 0096a8f7e764eb40 x10: 634615ad28d3eab5 x9 : ffffc816ad8885b8
+[ 3078.387091] x8 : ffff08209cfc6fb8 x7 : ffff0820ac0da058 x6 : ffff0820a8490344
+[ 3078.396356] x5 : 0000000000000140 x4 : 0000000000000003 x3 : ffff08209cd76938
+[ 3078.405365] x2 : 0000000000000000 x1 : 0000000000000010 x0 : ffff0820abfe38a0
+[ 3078.414657] Call trace:
+[ 3078.418517]  napi_enable+0x80/0x84
+[ 3078.424626]  hns3_reset_notify_up_enet+0x78/0xd0 [hns3]
+[ 3078.433469]  hns3_reset_notify+0x64/0x80 [hns3]
+[ 3078.441430]  hclge_notify_client+0x68/0xb0 [hclge]
+[ 3078.450511]  hclge_reset_rebuild+0x524/0x884 [hclge]
+[ 3078.458879]  hclge_reset_service_task+0x3c4/0x680 [hclge]
+[ 3078.467470]  hclge_service_task+0xb0/0xb54 [hclge]
+[ 3078.475675]  process_one_work+0x1dc/0x48c
+[ 3078.481888]  worker_thread+0x15c/0x464
+[ 3078.487104]  kthread+0x160/0x170
+[ 3078.492479]  ret_from_fork+0x10/0x18
+[ 3078.498785] Code: c8027c81 35ffffa2 d50323bf d65f03c0 (d4210000)
+[ 3078.506889] ---[ end trace 8ebe0340a1b0fb44 ]---
+
+Once hns3_nic_net_open() is excute success, the flag
+HNS3_NIC_STATE_DOWN will be cleared. So add checking for this
+flag, directly return when HNS3_NIC_STATE_DOWN is no set.
+
+Fixes: e888402789b9 ("net: hns3: call hns3_nic_net_open() while doing HNAE3_UP_CLIENT")
+Signed-off-by: Jian Shen <shenjian15@huawei.com>
+Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/bpf/test_lwt_ip_encap.sh | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ drivers/net/ethernet/hisilicon/hns3/hns3_enet.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/test_lwt_ip_encap.sh b/tools/testing/selftests/bpf/test_lwt_ip_encap.sh
-index 59ea56945e6c..b497bb85b667 100755
---- a/tools/testing/selftests/bpf/test_lwt_ip_encap.sh
-+++ b/tools/testing/selftests/bpf/test_lwt_ip_encap.sh
-@@ -112,6 +112,14 @@ setup()
- 	ip netns add "${NS2}"
- 	ip netns add "${NS3}"
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
+index db9c8f943811..ffd1018d43fb 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
+@@ -452,6 +452,11 @@ static int hns3_nic_net_open(struct net_device *netdev)
+ 	if (hns3_nic_resetting(netdev))
+ 		return -EBUSY;
  
-+	# rp_filter gets confused by what these tests are doing, so disable it
-+	ip netns exec ${NS1} sysctl -wq net.ipv4.conf.all.rp_filter=0
-+	ip netns exec ${NS2} sysctl -wq net.ipv4.conf.all.rp_filter=0
-+	ip netns exec ${NS3} sysctl -wq net.ipv4.conf.all.rp_filter=0
-+	ip netns exec ${NS1} sysctl -wq net.ipv4.conf.default.rp_filter=0
-+	ip netns exec ${NS2} sysctl -wq net.ipv4.conf.default.rp_filter=0
-+	ip netns exec ${NS3} sysctl -wq net.ipv4.conf.default.rp_filter=0
++	if (!test_bit(HNS3_NIC_STATE_DOWN, &priv->state)) {
++		netdev_warn(netdev, "net open repeatedly!\n");
++		return 0;
++	}
 +
- 	ip link add veth1 type veth peer name veth2
- 	ip link add veth3 type veth peer name veth4
- 	ip link add veth5 type veth peer name veth6
-@@ -236,11 +244,6 @@ setup()
- 	ip -netns ${NS1} -6 route add ${IPv6_GRE}/128 dev veth5 via ${IPv6_6} ${VRF}
- 	ip -netns ${NS2} -6 route add ${IPv6_GRE}/128 dev veth7 via ${IPv6_8} ${VRF}
+ 	netif_carrier_off(netdev);
  
--	# rp_filter gets confused by what these tests are doing, so disable it
--	ip netns exec ${NS1} sysctl -wq net.ipv4.conf.all.rp_filter=0
--	ip netns exec ${NS2} sysctl -wq net.ipv4.conf.all.rp_filter=0
--	ip netns exec ${NS3} sysctl -wq net.ipv4.conf.all.rp_filter=0
--
- 	TMPFILE=$(mktemp /tmp/test_lwt_ip_encap.XXXXXX)
- 
- 	sleep 1  # reduce flakiness
+ 	ret = hns3_nic_set_real_num_queue(netdev);
 -- 
 2.33.0
 
