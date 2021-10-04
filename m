@@ -2,67 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08D47420591
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 07:23:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E16AC420596
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 07:33:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232549AbhJDFY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 01:24:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36802 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232437AbhJDFY5 (ORCPT
+        id S232520AbhJDFep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 01:34:45 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:11892 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232495AbhJDFen (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 01:24:57 -0400
-Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29514C061787
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Oct 2021 22:23:09 -0700 (PDT)
-Received: by mail-ua1-x92c.google.com with SMTP id t36so11448822uad.4
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Oct 2021 22:23:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=ifmbnRVePpINkQY1V1Qh4IrZJpniPJH7HtTlSpQGGG4=;
-        b=FRwnOkJOkV5mUk2WdCMhTmqTXSUnnCsrR9PPBRdeClkHClHprapaVGeDBGbI0HyARG
-         OjQw4BC3oJb40i14SHx+o1Cu67LiesYlvWeYErVUIEeEAK6VxAujkREZMTeDsaPySpHt
-         r+BoWOLq6lq2GkxDJZc+CQhzTO4nZLVmDWnCDZbQNueoF/ndfWkprY8L7RBzKFVAsvqG
-         DOwoFOyxhvJjx6Bt9gCrjcZcIxwAmOrX9nAP7XyVNgJmYDX4xdQD/YLEjtz7BqBUPf3q
-         gFd73J4eZsNIkRdhrOSfUNmI6ZsSomHlOEcCuzUaHDkvVDy0DBi3Y9+aw8Pxr5afU4Jp
-         ARoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=ifmbnRVePpINkQY1V1Qh4IrZJpniPJH7HtTlSpQGGG4=;
-        b=13hQvFYiC+phr6rXer09GUmHzxqHO6sHrudKpzmMMnhB6koHTtMgG7EQGDNi5n5Ck/
-         J3KxAtEZtz5Wqszpay0/n5NljcGM/dD3hP+wH04eU9+xQoou3eTLxlErhU/MtbHip7Wq
-         d/zxo89D+SRKIlAoE2+sRlNZZZEONzBMbWX5yCdmM5KZQYWaE1FlBnlolcQvhkcwK0Sj
-         D3WdsFRU7qxwrjTtqV8SJZ7H5AzTV+IULdy1dwfapC5iL87hRMudKePuIJT4e+dKLfI3
-         7mLw2SDUO0V7LclN6je8RQb7H2XLUHXjc+MBaTXdmB71ZUdUkCwIpbfvMBhgWcXUW/mG
-         uFfA==
-X-Gm-Message-State: AOAM533VWWlIH4DTudfdKtkYOYs5Nl5/DJZUGKTAA9Zb6Ud7iNCDKM2d
-        RS9p+sVAEWJ8Wzfqi2U50AMkxrn4my3bsLcKjaY=
-X-Google-Smtp-Source: ABdhPJwZ2lmQYQULQ7LbydosN3Gm2zJz8pfBQz99cgqkI3eVsGCMoX17EgYQY9g9UO6qZ+jklJV6h80SlhyJ0GkWW4Q=
-X-Received: by 2002:ab0:29da:: with SMTP id i26mr4019770uaq.129.1633324987545;
- Sun, 03 Oct 2021 22:23:07 -0700 (PDT)
+        Mon, 4 Oct 2021 01:34:43 -0400
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1934PA4k001061
+        for <linux-kernel@vger.kernel.org>; Sun, 3 Oct 2021 22:32:55 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=ZUciwl852Lqkpzfl9IQj/1VtOOCjVLQ1V25CpGOStg8=;
+ b=mNAkkDiRSat9OXzXDx4Au+H55XKv2EQXNbeNNJkFMURGVCcAt6EqY1dIs1xTlXVop9Vz
+ er49znYGVhLF4Z5qOrbOdYZz9WzhFOwJq9GI5Joz1p2nnqK7VwLwh/lho3Oy+aGTVQM4
+ rcnvluOfF7n9+wJcr5VJiE2NBf3DHnwc5PM= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 3bf5fd5qkp-5
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Oct 2021 22:32:55 -0700
+Received: from intmgw001.38.frc1.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:11d::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Sun, 3 Oct 2021 22:32:50 -0700
+Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
+        id 5EF6615554668; Sun,  3 Oct 2021 22:32:43 -0700 (PDT)
+From:   Song Liu <songliubraving@fb.com>
+To:     <linux-kernel@vger.kernel.org>
+CC:     <kernel-team@fb.com>, <acme@kernel.org>, <peterz@infradead.org>,
+        <mingo@redhat.com>, Song Liu <songliubraving@fb.com>,
+        <stable@vger.kernel.org>
+Subject: [PATCH] perf-script: check session->header.env.arch before using it
+Date:   Sun, 3 Oct 2021 22:32:38 -0700
+Message-ID: <20211004053238.514936-1-songliubraving@fb.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Received: by 2002:a9f:2376:0:0:0:0:0 with HTTP; Sun, 3 Oct 2021 22:23:06 -0700 (PDT)
-Reply-To: sroomf70@gmail.com
-From:   "Prof. Dr. Diane" <mes64543@gmail.com>
-Date:   Sun, 3 Oct 2021 22:23:07 -0700
-Message-ID: <CAF4hjb9553=ZoKhfMyMqHY30kFShrtFhUkUHnc1qJbRMR+t_zQ@mail.gmail.com>
-Subject: Good Day,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-FB-Source: Intern
+X-Proofpoint-GUID: fAv3P0qx4zQC7yPrKZm1SykvcWr6EHyp
+X-Proofpoint-ORIG-GUID: fAv3P0qx4zQC7yPrKZm1SykvcWr6EHyp
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-10-04_01,2021-10-01_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
+ spamscore=0 clxscore=1015 lowpriorityscore=0 mlxlogscore=999
+ priorityscore=1501 adultscore=0 mlxscore=0 phishscore=0 bulkscore=0
+ suspectscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2109230001 definitions=main-2110040039
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--- 
-Hello,
-From Prof. Dr Diane,  please a huge amount of payment was made into
-your account. as soon as your respond is noted the payment
-confirmation slip will immediately send to you.  please do not
-hesitate to reply as soon as you receive this message. awaiting your
-urgent reply please.
+When perf.data is not written cleanly, we would like to process existing
+data as much as possible (please see f_header.data.size =3D=3D 0 conditio=
+n
+in perf_session__read_header). However, perf.data with partial data may
+crash perf. Specifically, we see crash in perf-script for NULL
+session->header.env.arch.
 
-Best regards
-Prof. Dr Diane
+Fix this by checking session->header.env.arch before using it to determin=
+e
+native_arch. Also split the if condition so it is easier to read.
+
+Cc: stable@vger.kernel.org
+Signed-off-by: Song Liu <songliubraving@fb.com>
+---
+ tools/perf/builtin-script.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
+
+diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
+index 6211d0b84b7a6..7821f6740ac1d 100644
+--- a/tools/perf/builtin-script.c
++++ b/tools/perf/builtin-script.c
+@@ -4039,12 +4039,17 @@ int cmd_script(int argc, const char **argv)
+ 		goto out_delete;
+=20
+ 	uname(&uts);
+-	if (data.is_pipe ||  /* assume pipe_mode indicates native_arch */
+-	    !strcmp(uts.machine, session->header.env.arch) ||
+-	    (!strcmp(uts.machine, "x86_64") &&
+-	     !strcmp(session->header.env.arch, "i386")))
++	if (data.is_pipe)  /* assume pipe_mode indicates native_arch */
+ 		native_arch =3D true;
+=20
++	if (session->header.env.arch) {
++		if (!strcmp(uts.machine, session->header.env.arch))
++			native_arch =3D true;
++		else if (!strcmp(uts.machine, "x86_64") &&
++			 !strcmp(session->header.env.arch, "i386"))
++			native_arch =3D true;
++	}
++
+ 	script.session =3D session;
+ 	script__setup_sample_type(&script);
+=20
+--=20
+2.30.2
+
