@@ -2,78 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75B0C42130D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 17:50:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30FA1421305
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 17:48:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235980AbhJDPwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 11:52:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40754 "EHLO
+        id S235931AbhJDPue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 11:50:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234366AbhJDPw3 (ORCPT
+        with ESMTP id S235176AbhJDPuc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 11:52:29 -0400
-Received: from metanate.com (unknown [IPv6:2001:8b0:1628:5005::111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4E6BC061745
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 08:50:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=metanate.com; s=stronger; h=Content-Transfer-Encoding:Message-Id:Date:
-        Subject:Cc:To:From:Content-Type:Reply-To:Content-ID:Content-Description:
-        In-Reply-To:References; bh=mcPsMWFUXThCmrbwjJ6iqZMj928t2CHXjl9mKy5UmgM=; b=SL
-        yROnRVrv2VvaKzY55jDSB1kAOjyMd698pXfqruEnyuQYqFBBeUB8zjL6C+Ljn3T+ApHxY5j6y9feG
-        j5j1rQHuzxCSLfk875ijHovPNEKQ8aHH31zkQEJwr9ei6ryMNBYMsLuCwbtU8L7YfyQ1K4b+uPUos
-        1pOxZszBSP1VVhtPxHTbgIk5dyD+nRAfLEeJIgykUHJH1m8QgvrcTxrCFe0ALiH+iyfUeOVPnpZQW
-        pQaW6341iZIvtIxr/AS97S61/zz9FzyUcNh2MAFMJBgVvjkz7yC6HJXFtxnnPAfw8p4ntzBotZZ4U
-        5AikMf2FudnTPFLFw59RtafUhBif3uNg==;
-Received: from [81.174.171.191] (helo=donbot.metanate.com)
-        by email.metanate.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <john@metanate.com>)
-        id 1mXQEU-0008Us-FQ; Mon, 04 Oct 2021 16:50:26 +0100
-From:   John Keeping <john@metanate.com>
-To:     Arnaldo Carvalho de Melo <acme@redhat.com>
-Cc:     John Keeping <john@metanate.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Leo Yan <leo.yan@linaro.org>, Jiri Olsa <jolsa@redhat.com>,
-        Ian Rogers <irogers@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] tools/build: drop slang include path in test-all
-Date:   Mon,  4 Oct 2021 16:50:19 +0100
-Message-Id: <20211004155020.1287199-1-john@metanate.com>
-X-Mailer: git-send-email 2.33.0
+        Mon, 4 Oct 2021 11:50:32 -0400
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA586C061746
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 08:48:43 -0700 (PDT)
+Received: by mail-ot1-x32a.google.com with SMTP id 97-20020a9d006a000000b00545420bff9eso22074242ota.8
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 08:48:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=3XFgmwQ1hEJzqwqEAg7wvAfnSR1sFfJzAaBRc9FMDKs=;
+        b=o07qS99kYatIMjEySAiYnYcqpDLh5KBSm6q9+gwD1qp7AI1FPnWH29sWhZvpBmTSGh
+         DVDfXw5oA8LL5ogMzCe/Z2fuKZEeDKm6yJEPE0Xdg6Ugjwo4bmQQ4vLacInWDR1W+Kyv
+         JMxm7D4nXz1MhfvT8JNqF6Php2ryKZRUwZR+wQVBoJM9U+nMRRd4YS+R9Uu6AZW4bPJy
+         oO9SepEwSbBJ/ow65/iZR7qDBGW9OCl6RnGIk1t32wxOnItKFzpSoYjkoBkobq4cwZbB
+         dW6FSXPQl2DlmhxYg/tC0pQz6Wv0P+ebuoSJnzCh0VeHcCj+/9Ev1bvwZ8l65h7q2pVo
+         AnzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3XFgmwQ1hEJzqwqEAg7wvAfnSR1sFfJzAaBRc9FMDKs=;
+        b=VnUgI8bhQHMQ0yMlbDLwCgyxq9ZhnzBQUX7jg8/U8BO7B42e5Xz99dHsB8zNyUqemd
+         Wy+rbjLsqG3IrioIK7beW54+ZZAXK4GJ+51aisNWLETQ5jb1qVzFuZ+3TsZZ0q7LRDAI
+         VaiRjQi099vdvuhYxn0Mg+dJFnJjc38q7JIVZxzo0wL6lEPWFhzmW2H5d2lXK9fLaeve
+         yCIcBpPNqReXOfjrdIlO09yDPNTJ33INhkJNMmNQAU3U4p/QDJkzV4BFzHFgCJVzrTgk
+         1xOeWlpKJzbbadIgCAQhtcmTQ82OuEKWUcKGkrHd9ZrdlRXf2SlOZ2kud09I+Wgu3mxa
+         tpNA==
+X-Gm-Message-State: AOAM5331jdQFVzGf3I5DSso7ISaME8AjlhgFrpmxT23pktlBOLexut3O
+        xvs2d1NoN9tSLaKoYvAiDWmtsO4uTgwBaw==
+X-Google-Smtp-Source: ABdhPJwV90rWzKbQLCaoiR/lcJoWO35cpCznSnAV6td25c5rirNv+mBDtZTpS+7MmtPJcXQaprbK6w==
+X-Received: by 2002:a05:6830:1da6:: with SMTP id z6mr10378498oti.234.1633362523183;
+        Mon, 04 Oct 2021 08:48:43 -0700 (PDT)
+Received: from ripper ([2600:1700:a0:3dc8:205:1bff:fec0:b9b3])
+        by smtp.gmail.com with ESMTPSA id bl23sm1065584oib.40.2021.10.04.08.48.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Oct 2021 08:48:42 -0700 (PDT)
+Date:   Mon, 4 Oct 2021 08:50:26 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Souradeep Chowdhury <schowdhu@codeaurora.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Bryan O'Donoghue <pure.logic@nexus-software.ie>,
+        Greg KH <greg@kroah.com>, linux-kernel@vger.kernel.org,
+        ckadabi@codeaurora.org, tsoni@codeaurora.org,
+        bryanh@codeaurora.org, psodagud@codeaurora.org,
+        satyap@codeaurora.org, pheragu@codeaurora.org,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Subject: Re: [PATCH V0 2/7] dt-bindings: usb: dwc3: Update dwc3 properties
+ for EUD connector
+Message-ID: <YVsiwsemiCEmRkJ0@ripper>
+References: <cover.1633343547.git.schowdhu@codeaurora.org>
+ <d4c9d60e8960968ad77a4a2c6c119a8e9cebc22d.1633343547.git.schowdhu@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Authenticated: YES
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d4c9d60e8960968ad77a4a2c6c119a8e9cebc22d.1633343547.git.schowdhu@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit cbefd24f0aee3 ("tools build: Add test to check if slang.h is in
-/usr/include/slang/") added a proper test to check whether slang.h is in
-a subdirectory, and commit 1955c8cf5e26b ("perf tools: Don't hardcode
-host include path for libslang") removed the include path for
-test-libslang.bin but missed test-all.bin.  Apply the same change to
-test-all.bin.
+On Mon 04 Oct 04:16 PDT 2021, Souradeep Chowdhury wrote:
 
-Fixes: 1955c8cf5e26 ("perf tools: Don't hardcode host include path for libslang")
-Signed-off-by: John Keeping <john@metanate.com>
----
- tools/build/feature/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> Adding the address size,cell size and ranges property for EUD connector.
+> Adding the connector property for EUD which is child of dwc3 node.
+> 
 
-diff --git a/tools/build/feature/Makefile b/tools/build/feature/Makefile
-index d024b5204ba0..71390309f4d7 100644
---- a/tools/build/feature/Makefile
-+++ b/tools/build/feature/Makefile
-@@ -91,7 +91,7 @@ __BUILDXX = $(CXX) $(CXXFLAGS) -MD -Wall -Werror -o $@ $(patsubst %.bin,%.cpp,$(
- ###############################
- 
- $(OUTPUT)test-all.bin:
--	$(BUILD) -fstack-protector-all -O2 -D_FORTIFY_SOURCE=2 -ldw -lelf -lnuma -lelf -I/usr/include/slang -lslang $(FLAGS_PERL_EMBED) $(FLAGS_PYTHON_EMBED) -DPACKAGE='"perf"' -lbfd -ldl -lz -llzma -lzstd -lcap
-+	$(BUILD) -fstack-protector-all -O2 -D_FORTIFY_SOURCE=2 -ldw -lelf -lnuma -lelf -lslang $(FLAGS_PERL_EMBED) $(FLAGS_PYTHON_EMBED) -DPACKAGE='"perf"' -lbfd -ldl -lz -llzma -lzstd -lcap
- 
- $(OUTPUT)test-hello.bin:
- 	$(BUILD)
--- 
-2.33.0
+When we have a Type-C controller involved, the connector is described
+using of_graph, so will we not then have two different connectors
+described, in two different ways?
 
+Regards,
+Bjorn
+
+> Signed-off-by: Souradeep Chowdhury <schowdhu@codeaurora.org>
+> ---
+>  Documentation/devicetree/bindings/usb/snps,dwc3.yaml | 15 +++++++++++++++
+>  1 file changed, 15 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
+> index 078fb78..3e71205 100644
+> --- a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
+> +++ b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
+> @@ -36,6 +36,14 @@ properties:
+>          - const: synopsys,dwc3
+>            deprecated: true
+>  
+> +  "#address-cells":
+> +    enum: [ 1, 2 ]
+> +
+> +  "#size-cells":
+> +    enum: [ 1, 2 ]
+> +
+> +  ranges: true
+> +
+>    interrupts:
+>      description:
+>        It's either a single common DWC3 interrupt (dwc_usb3) or individual
+> @@ -318,6 +326,13 @@ properties:
+>      items:
+>        enum: [1, 4, 8, 16, 32, 64, 128, 256]
+>  
+> +  connector:
+> +    type: object
+> +    $ref: /connector/usb-connector.yaml#
+> +    description:
+> +      Connector for dual role switch, especially for "eud-usb-c-connector"
+> +
+> +
+>  unevaluatedProperties: false
+>  
+>  required:
+> -- 
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+> of Code Aurora Forum, hosted by The Linux Foundation
+> 
