@@ -2,44 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D3B1420FC0
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:36:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC85A420D2B
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:10:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238248AbhJDNhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:37:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48650 "EHLO mail.kernel.org"
+        id S235511AbhJDNMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:12:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45330 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235019AbhJDNf3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:35:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A1CB563239;
-        Mon,  4 Oct 2021 13:16:00 +0000 (UTC)
+        id S235303AbhJDNKP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:10:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E6D4B61B60;
+        Mon,  4 Oct 2021 13:03:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633353361;
-        bh=9kAS1EdsWHXPEiGsFvpceYBJh9ghv41JBffYWz0WCcs=;
+        s=korg; t=1633352626;
+        bh=XZAz01FjaUwXQY2PbwZnx+052zXgSR09x1NumYH45vA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PHRXrLtmoq2/lrbHp4IHu1hdAMR1YSBs6+47Uf8hOYo6Y9qcpBzIfGTvseGK6DeN0
-         cRM8nFe9weJxdEnPaHoGZX/wfsNnDf1QW5rs2IQMDc57AxL7uMmM6sIDasJLAGjYMy
-         kQcuflzHaPptLLMldxc0f78Pf/juuYE9JcmcunOo=
+        b=W12OrZ8x457RtsZJx5YXsWh9svKewJ5+4qCpL516LiUdzKaxmM0hKTqhYYIDxzQb4
+         3lR1UFXbRgppWfAvXvRlr2c0v2418ZW0+9SXORia8JFXMPNXirPdkgcIevMvYVoNUq
+         nJF1dzEkqjp0HsbjDmNz6Sd+Pvo09oVdo+/D5Jms=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@kernel.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Kees Cook <keescook@chromium.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Pavel Machek <pavel@ucw.cz>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.14 066/172] nbd: use shifts rather than multiplies
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Tom Rix <trix@redhat.com>, Moritz Fischer <mdf@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 26/95] fpga: machxo2-spi: Return an error on failure
 Date:   Mon,  4 Oct 2021 14:51:56 +0200
-Message-Id: <20211004125047.122127830@linuxfoundation.org>
+Message-Id: <20211004125034.407990015@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
-References: <20211004125044.945314266@linuxfoundation.org>
+In-Reply-To: <20211004125033.572932188@linuxfoundation.org>
+References: <20211004125033.572932188@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,176 +40,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nick Desaulniers <ndesaulniers@google.com>
+From: Tom Rix <trix@redhat.com>
 
-commit 41e76c6a3c83c85e849f10754b8632ea763d9be4 upstream.
+[ Upstream commit 34331739e19fd6a293d488add28832ad49c9fc54 ]
 
-commit fad7cd3310db ("nbd: add the check to prevent overflow in
-__nbd_ioctl()") raised an issue from the fallback helpers added in
-commit f0907827a8a9 ("compiler.h: enable builtin overflow checkers and
-add fallback code")
+Earlier successes leave 'ret' in a non error state, so these errors are
+not reported. Set ret to -EINVAL before going to the error handler.
 
-ERROR: modpost: "__divdi3" [drivers/block/nbd.ko] undefined!
+This addresses two issues reported by smatch:
+drivers/fpga/machxo2-spi.c:229 machxo2_write_init()
+  warn: missing error code 'ret'
 
-As Stephen Rothwell notes:
-  The added check_mul_overflow() call is being passed 64 bit values.
-  COMPILER_HAS_GENERIC_BUILTIN_OVERFLOW is not set for this build (see
-  include/linux/overflow.h).
+drivers/fpga/machxo2-spi.c:316 machxo2_write_complete()
+  warn: missing error code 'ret'
 
-Specifically, the helpers for checking whether the results of a
-multiplication overflowed (__unsigned_mul_overflow,
-__signed_add_overflow) use the division operator when
-!COMPILER_HAS_GENERIC_BUILTIN_OVERFLOW.  This is problematic for 64b
-operands on 32b hosts.
-
-This was fixed upstream by
-commit 76ae847497bc ("Documentation: raise minimum supported version of
-GCC to 5.1")
-which is not suitable to be backported to stable.
-
-Further, __builtin_mul_overflow() would emit a libcall to a
-compiler-rt-only symbol when compiling with clang < 14 for 32b targets.
-
-ld.lld: error: undefined symbol: __mulodi4
-
-In order to keep stable buildable with GCC 4.9 and clang < 14, modify
-struct nbd_config to instead track the number of bits of the block size;
-reconstructing the block size using runtime checked shifts that are not
-problematic for those compilers and in a ways that can be backported to
-stable.
-
-In nbd_set_size, we do validate that the value of blksize must be a
-power of two (POT) and is in the range of [512, PAGE_SIZE] (both
-inclusive).
-
-This does modify the debugfs interface.
-
-Cc: stable@vger.kernel.org
-Cc: Arnd Bergmann <arnd@kernel.org>
-Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Link: https://github.com/ClangBuiltLinux/linux/issues/1438
-Link: https://lore.kernel.org/all/20210909182525.372ee687@canb.auug.org.au/
-Link: https://lore.kernel.org/stable/CAHk-=whiQBofgis_rkniz8GBP9wZtSZdcDEffgSLO62BUGV3gg@mail.gmail.com/
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-Reported-by: Nathan Chancellor <nathan@kernel.org>
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Suggested-by: Kees Cook <keescook@chromium.org>
-Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
-Suggested-by: Pavel Machek <pavel@ucw.cz>
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-Link: https://lore.kernel.org/r/20210920232533.4092046-1-ndesaulniers@google.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+[mdf@kernel.org: Reworded commit message]
+Fixes: 88fb3a002330 ("fpga: lattice machxo2: Add Lattice MachXO2 support")
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Tom Rix <trix@redhat.com>
+Signed-off-by: Moritz Fischer <mdf@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/block/nbd.c |   29 +++++++++++++++++------------
- 1 file changed, 17 insertions(+), 12 deletions(-)
+ drivers/fpga/machxo2-spi.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
---- a/drivers/block/nbd.c
-+++ b/drivers/block/nbd.c
-@@ -97,13 +97,18 @@ struct nbd_config {
+diff --git a/drivers/fpga/machxo2-spi.c b/drivers/fpga/machxo2-spi.c
+index a582e0000c97..e3cbd7ff9dc9 100644
+--- a/drivers/fpga/machxo2-spi.c
++++ b/drivers/fpga/machxo2-spi.c
+@@ -223,8 +223,10 @@ static int machxo2_write_init(struct fpga_manager *mgr,
+ 		goto fail;
  
- 	atomic_t recv_threads;
- 	wait_queue_head_t recv_wq;
--	loff_t blksize;
-+	unsigned int blksize_bits;
- 	loff_t bytesize;
- #if IS_ENABLED(CONFIG_DEBUG_FS)
- 	struct dentry *dbg_dir;
- #endif
- };
+ 	get_status(spi, &status);
+-	if (test_bit(FAIL, &status))
++	if (test_bit(FAIL, &status)) {
++		ret = -EINVAL;
+ 		goto fail;
++	}
+ 	dump_status_reg(&status);
  
-+static inline unsigned int nbd_blksize(struct nbd_config *config)
-+{
-+	return 1u << config->blksize_bits;
-+}
-+
- struct nbd_device {
- 	struct blk_mq_tag_set tag_set;
- 
-@@ -147,7 +152,7 @@ static struct dentry *nbd_dbg_dir;
- 
- #define NBD_MAGIC 0x68797548
- 
--#define NBD_DEF_BLKSIZE 1024
-+#define NBD_DEF_BLKSIZE_BITS 10
- 
- static unsigned int nbds_max = 16;
- static int max_part = 16;
-@@ -350,12 +355,12 @@ static int nbd_set_size(struct nbd_devic
- 		loff_t blksize)
- {
- 	if (!blksize)
--		blksize = NBD_DEF_BLKSIZE;
-+		blksize = 1u << NBD_DEF_BLKSIZE_BITS;
- 	if (blksize < 512 || blksize > PAGE_SIZE || !is_power_of_2(blksize))
- 		return -EINVAL;
- 
- 	nbd->config->bytesize = bytesize;
--	nbd->config->blksize = blksize;
-+	nbd->config->blksize_bits = __ffs(blksize);
- 
- 	if (!nbd->task_recv)
- 		return 0;
-@@ -1370,7 +1375,7 @@ static int nbd_start_device(struct nbd_d
- 		args->index = i;
- 		queue_work(nbd->recv_workq, &args->work);
+ 	spi_message_init(&msg);
+@@ -310,6 +312,7 @@ static int machxo2_write_complete(struct fpga_manager *mgr,
+ 	dump_status_reg(&status);
+ 	if (!test_bit(DONE, &status)) {
+ 		machxo2_cleanup(mgr);
++		ret = -EINVAL;
+ 		goto fail;
  	}
--	return nbd_set_size(nbd, config->bytesize, config->blksize);
-+	return nbd_set_size(nbd, config->bytesize, nbd_blksize(config));
- }
  
- static int nbd_start_device_ioctl(struct nbd_device *nbd, struct block_device *bdev)
-@@ -1439,11 +1444,11 @@ static int __nbd_ioctl(struct block_devi
- 	case NBD_SET_BLKSIZE:
- 		return nbd_set_size(nbd, config->bytesize, arg);
- 	case NBD_SET_SIZE:
--		return nbd_set_size(nbd, arg, config->blksize);
-+		return nbd_set_size(nbd, arg, nbd_blksize(config));
- 	case NBD_SET_SIZE_BLOCKS:
--		if (check_mul_overflow((loff_t)arg, config->blksize, &bytesize))
-+		if (check_shl_overflow(arg, config->blksize_bits, &bytesize))
- 			return -EINVAL;
--		return nbd_set_size(nbd, bytesize, config->blksize);
-+		return nbd_set_size(nbd, bytesize, nbd_blksize(config));
- 	case NBD_SET_TIMEOUT:
- 		nbd_set_cmd_timeout(nbd, arg);
- 		return 0;
-@@ -1509,7 +1514,7 @@ static struct nbd_config *nbd_alloc_conf
- 	atomic_set(&config->recv_threads, 0);
- 	init_waitqueue_head(&config->recv_wq);
- 	init_waitqueue_head(&config->conn_wait);
--	config->blksize = NBD_DEF_BLKSIZE;
-+	config->blksize_bits = NBD_DEF_BLKSIZE_BITS;
- 	atomic_set(&config->live_connections, 0);
- 	try_module_get(THIS_MODULE);
- 	return config;
-@@ -1637,7 +1642,7 @@ static int nbd_dev_dbg_init(struct nbd_d
- 	debugfs_create_file("tasks", 0444, dir, nbd, &nbd_dbg_tasks_fops);
- 	debugfs_create_u64("size_bytes", 0444, dir, &config->bytesize);
- 	debugfs_create_u32("timeout", 0444, dir, &nbd->tag_set.timeout);
--	debugfs_create_u64("blocksize", 0444, dir, &config->blksize);
-+	debugfs_create_u32("blocksize_bits", 0444, dir, &config->blksize_bits);
- 	debugfs_create_file("flags", 0444, dir, nbd, &nbd_dbg_flags_fops);
- 
- 	return 0;
-@@ -1841,7 +1846,7 @@ nbd_device_policy[NBD_DEVICE_ATTR_MAX +
- static int nbd_genl_size_set(struct genl_info *info, struct nbd_device *nbd)
- {
- 	struct nbd_config *config = nbd->config;
--	u64 bsize = config->blksize;
-+	u64 bsize = nbd_blksize(config);
- 	u64 bytes = config->bytesize;
- 
- 	if (info->attrs[NBD_ATTR_SIZE_BYTES])
-@@ -1850,7 +1855,7 @@ static int nbd_genl_size_set(struct genl
- 	if (info->attrs[NBD_ATTR_BLOCK_SIZE_BYTES])
- 		bsize = nla_get_u64(info->attrs[NBD_ATTR_BLOCK_SIZE_BYTES]);
- 
--	if (bytes != config->bytesize || bsize != config->blksize)
-+	if (bytes != config->bytesize || bsize != nbd_blksize(config))
- 		return nbd_set_size(nbd, bytes, bsize);
- 	return 0;
- }
+-- 
+2.33.0
+
 
 
