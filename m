@@ -2,113 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABAA342143E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 18:37:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 113B5421444
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 18:38:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237222AbhJDQjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 12:39:07 -0400
-Received: from mail-ot1-f43.google.com ([209.85.210.43]:43910 "EHLO
-        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237178AbhJDQjG (ORCPT
+        id S237228AbhJDQko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 12:40:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52298 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237104AbhJDQkl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 12:39:06 -0400
-Received: by mail-ot1-f43.google.com with SMTP id x33-20020a9d37a4000000b0054733a85462so22307367otb.10;
-        Mon, 04 Oct 2021 09:37:16 -0700 (PDT)
+        Mon, 4 Oct 2021 12:40:41 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4662FC061749
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 09:38:52 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id d207so6494482qkg.0
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 09:38:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4nD/CqNzR9E4HGpSddngZ7NQXINMID609Z0nuYAzxVQ=;
+        b=EhHEBOBGv3jAdd0eEwTEevENTAb2AhyLvwesYd92iZLWqj7mTTdpBBgs4KL47AQ0oH
+         ZwglecIE1krknfq1btMK26sMK70sIco+nuL8EtgDkDN9ePohB2tzfYyBZi//yhabNZMZ
+         QP2aeujeABcZR46+NAT9doCWdbaRbYrX5zVHc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=yXdfDKIRSjWNIHGf2GeNCQna0ZEGH+oW5o42/i9ekhg=;
-        b=PSIR2APqIY2QkztOxdB2fKufn0KzF826/IcSwjQnTd1KtG98Yz75LrAMe7gf9gSmqk
-         RjMwDUuCZX/n8NrngRTP3WnWewFtNpXZ2OcbNZDjkZsSZeNa2Omb0wkJ1xdnzPaS5l/y
-         lic0sEQepETyVI87Hxc3vhq2ADBDWZgv1o30ewGqB/CHZtC4yeb2pR0kAqOFyin4/hIQ
-         EGzHhjfexkj36n65n7nm61uGmr+g1/kNCs5vjS4XSHmKlx97ahC/yY4RfiZXT/9ZNnCM
-         agUcdlAqS4BHCG9QGpcx2KeZfmxspakDlgP+QFUhxOMI9e/32mHk9JiV122qhaq4YXDb
-         Etsw==
-X-Gm-Message-State: AOAM531ThcKwnavljq6F12yN98XMSfzqqDrOd/kXf8e7Is276Ha/iQIL
-        FzuFk87gX/ov4gsXvuDSnw==
-X-Google-Smtp-Source: ABdhPJwQeu5GQkOhwdultlP8GZAfwsFJamVDEnHx3HwKXq9slIXZcX4Ve7cxU63r6uzg0buHOFtWyw==
-X-Received: by 2002:a05:6830:410b:: with SMTP id w11mr10073772ott.210.1633365436517;
-        Mon, 04 Oct 2021 09:37:16 -0700 (PDT)
-Received: from robh.at.kernel.org ([66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id l22sm2993874otr.63.2021.10.04.09.37.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Oct 2021 09:37:15 -0700 (PDT)
-Received: (nullmailer pid 1434458 invoked by uid 1000);
-        Mon, 04 Oct 2021 16:37:09 -0000
-Date:   Mon, 4 Oct 2021 11:37:09 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Souradeep Chowdhury <schowdhu@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Bryan O'Donoghue <pure.logic@nexus-software.ie>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Greg KH <greg@kroah.com>, linux-kernel@vger.kernel.org,
-        ckadabi@codeaurora.org, tsoni@codeaurora.org,
-        bryanh@codeaurora.org, psodagud@codeaurora.org,
-        satyap@codeaurora.org, pheragu@codeaurora.org,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Subject: Re: [PATCH V0 1/7] dt-bindings: connector: Add property for eud type
- c connector
-Message-ID: <YVsttQySDnaXxOuI@robh.at.kernel.org>
-References: <cover.1633343547.git.schowdhu@codeaurora.org>
- <246c9d24da27b6ce91d5f1e536fa96ac5656a0b2.1633343547.git.schowdhu@codeaurora.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4nD/CqNzR9E4HGpSddngZ7NQXINMID609Z0nuYAzxVQ=;
+        b=z3J5z2bQNdD/q4anm8n7rEaP1Q+54qB3QKcAoxvj0q1YTRFSOWRmaLh5NQFHme3vIs
+         L723kXCGAxuBheJt4QHgSDXOl2Ikl4DcHH/PHSguUkqnkTg5flOEqcHk3kSDjOqgFpDw
+         eXsrnE2qIpor6wpLSbFgGhs1VRsp64WSgIYoAwkQ95acvKqtYeh9/fQOpoAbYRQIXcqL
+         DSLjJ8xyqkXfCx/6W+O6mppzyvaUAduucu++ybe3Ly8fWHc05YI3y2hpcrCJbY0GUCiR
+         Q2K8BcHZPGM5c3J764eVCrlfRDUV6XXDL6D4T+1ZVF+zh/Kamfcfm9jPY4Bfi/uAKI7e
+         z34Q==
+X-Gm-Message-State: AOAM532+P62ziXnxMKfUKIgUVGYYqOu9rHfjzTz3YANgnz5Ywi4jt5cs
+        k4SWj5RoyZLUsUwEsPM0DyZ6CNS9MlatKHkv
+X-Google-Smtp-Source: ABdhPJzq/r8e69CW3mWs2BGSTZC867hdMlpuMU9Lng43ZAuXI77W4G6yhpRoEAUjsGUfn51CshJF1Q==
+X-Received: by 2002:a37:a394:: with SMTP id m142mr10538919qke.62.1633365531276;
+        Mon, 04 Oct 2021 09:38:51 -0700 (PDT)
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com. [209.85.167.52])
+        by smtp.gmail.com with ESMTPSA id x6sm8563181qts.79.2021.10.04.09.38.51
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Oct 2021 09:38:51 -0700 (PDT)
+Received: by mail-lf1-f52.google.com with SMTP id j5so69130467lfg.8
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 09:38:51 -0700 (PDT)
+X-Received: by 2002:a2e:1510:: with SMTP id s16mr16602800ljd.56.1633365528411;
+ Mon, 04 Oct 2021 09:38:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <246c9d24da27b6ce91d5f1e536fa96ac5656a0b2.1633343547.git.schowdhu@codeaurora.org>
+References: <270324.1633342386@warthog.procyon.org.uk>
+In-Reply-To: <270324.1633342386@warthog.procyon.org.uk>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 4 Oct 2021 09:38:32 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wj-ANpwDnAJ0HAdbwyti7Z6aBBJT6JEbkta9VjaF30Tcw@mail.gmail.com>
+Message-ID: <CAHk-=wj-ANpwDnAJ0HAdbwyti7Z6aBBJT6JEbkta9VjaF30Tcw@mail.gmail.com>
+Subject: Re: Do you want warning quashing patches at this point in the cycle?
+To:     David Howells <dhowells@redhat.com>
+Cc:     Dominique Martinet <asmadeus@codewreck.org>,
+        Jeff Layton <jlayton@kernel.org>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        v9fs-developer@lists.sourceforge.net,
+        linux-afs@lists.infradead.org,
+        "open list:NFS, SUNRPC, AND..." <linux-nfs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 04, 2021 at 04:46:19PM +0530, Souradeep Chowdhury wrote:
-> Added the property for EUD(Embedded USB Debug) connector.Added
-> the "reg" and "interrupts" property which is needed for EUD.
+On Mon, Oct 4, 2021 at 3:13 AM David Howells <dhowells@redhat.com> wrote:
+>
+> Do you want patches that quash warnings from W=1
 
-You are going to need a better explanation of this h/w.
+For W=1? No.
 
-> 
-> Signed-off-by: Souradeep Chowdhury <schowdhu@codeaurora.org>
-> ---
->  .../devicetree/bindings/connector/usb-connector.yaml      | 15 +++++++++++++++
->  1 file changed, 15 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/connector/usb-connector.yaml b/Documentation/devicetree/bindings/connector/usb-connector.yaml
-> index 7eb8659..908129f 100644
-> --- a/Documentation/devicetree/bindings/connector/usb-connector.yaml
-> +++ b/Documentation/devicetree/bindings/connector/usb-connector.yaml
-> @@ -30,6 +30,21 @@ properties:
->            - const: samsung,usb-connector-11pin
->            - const: usb-b-connector
->  
-> +      - items:
-> +          - enum:
-> +              - qcom,sc7280-usb-connector-eud
-> +          - const: qcom,usb-connector-eud
-> +          - const: usb-c-connector
-> +
-> +  reg:
-> +    items:
-> +      - description: EUD Base Register Region
-> +      - description: EUD Mode Manager Region
+The kerneldoc ones might be ok, but actual code fixes have
+historically been problematic because W=1 sometimes warns for
+perfectly good code (and then people "fix" it to not warn, and
+introduce actual bugs).
 
-A connector node represents the physical connector on a board. That 
-can't really be an MMIO peripheral. Maybe you need a node for EUD and 
-then it should have a connector child node? Don't really know without 
-understanding this h/w.
-
-> +
-> +  interrupts:
-> +    description:
-> +      EUD interrupt
-> +
->    label:
->      description: Symbolic name for the connector.
->  
-> -- 
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-> of Code Aurora Forum, hosted by The Linux Foundation
-> 
-> 
+           Linus
