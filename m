@@ -2,124 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC1FD4204DD
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 04:16:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37FBD4204E4
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 04:22:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232268AbhJDCSK convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 3 Oct 2021 22:18:10 -0400
-Received: from rtits2.realtek.com ([211.75.126.72]:53333 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232113AbhJDCSJ (ORCPT
+        id S232270AbhJDCYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Oct 2021 22:24:23 -0400
+Received: from mail-oi1-f172.google.com ([209.85.167.172]:36767 "EHLO
+        mail-oi1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232213AbhJDCYV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Oct 2021 22:18:09 -0400
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 1942FkVV2010014, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36503.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 1942FkVV2010014
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 4 Oct 2021 10:15:46 +0800
-Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
- RTEXH36503.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Mon, 4 Oct 2021 10:15:45 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXMBS01.realtek.com.tw (172.21.6.94) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Mon, 4 Oct 2021 10:15:44 +0800
-Received: from RTEXMBS04.realtek.com.tw ([fe80::cdd5:82a3:e854:7098]) by
- RTEXMBS04.realtek.com.tw ([fe80::cdd5:82a3:e854:7098%5]) with mapi id
- 15.01.2106.013; Mon, 4 Oct 2021 10:15:44 +0800
-From:   Hayes Wang <hayeswang@realtek.com>
-To:     Alan Stern <stern@rowland.harvard.edu>
-CC:     Oliver Neukum <oneukum@suse.com>,
-        Jason-ch Chen <jason-ch.chen@mediatek.com>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "Project_Global_Chrome_Upstream_Group@mediatek.com" 
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        "hsinyi@google.com" <hsinyi@google.com>,
-        nic_swsd <nic_swsd@realtek.com>
-Subject: RE: [PATCH] r8152: stop submitting rx for -EPROTO
-Thread-Topic: [PATCH] r8152: stop submitting rx for -EPROTO
-Thread-Index: AQHXtPF6mRt31KuIqUSf0ySwz113xKu6nqYQ//+g0oCAAYwXgIAAYT6AgAFAzFCAAA04sIAARXcAgARaYuA=
-Date:   Mon, 4 Oct 2021 02:15:44 +0000
-Message-ID: <21b97638ece04b4fbd81d29143b72137@realtek.com>
-References: <20210929051812.3107-1-jason-ch.chen@mediatek.com>
- <cbd1591fc03f480c9f08cc55585e2e35@realtek.com>
- <4c2ad5e4a9747c59a55d92a8fa0c95df5821188f.camel@mediatek.com>
- <274ec862-86cf-9d83-7ea7-5786e30ca4a7@suse.com>
- <20210930151819.GC464826@rowland.harvard.edu>
- <3694347f29ed431e9f8f2c065b8df0a7@realtek.com>
- <5f56b21575dd4f64a3b46aac21151667@realtek.com>
- <20211001152226.GA505557@rowland.harvard.edu>
-In-Reply-To: <20211001152226.GA505557@rowland.harvard.edu>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.21.177.203]
-x-kse-serverinfo: RTEXMBS01.realtek.com.tw, 9
-x-kse-attachmentfiltering-interceptor-info: no applicable attachment filtering
- rules found
-x-kse-antivirus-interceptor-info: scan successful
-x-kse-antivirus-info: =?us-ascii?Q?Clean,_bases:_2021/10/3_=3F=3F_11:24:00?=
-x-kse-bulkmessagesfiltering-scan-result: protection disabled
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-MIME-Version: 1.0
-X-KSE-ServerInfo: RTEXH36503.realtek.com.tw, 9
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
-X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 10/04/2021 01:57:09
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 166473 [Oct 04 2021]
-X-KSE-AntiSpam-Info: Version: 5.9.20.0
-X-KSE-AntiSpam-Info: Envelope from: hayeswang@realtek.com
-X-KSE-AntiSpam-Info: LuaCore: 463 463 5854868460de3f0d8e8c0a4df98aeb05fb764a09
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: realtek.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2
-X-KSE-AntiSpam-Info: Rate: 0
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 10/04/2021 01:59:00
+        Sun, 3 Oct 2021 22:24:21 -0400
+Received: by mail-oi1-f172.google.com with SMTP id y201so19746832oie.3;
+        Sun, 03 Oct 2021 19:22:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=ushgit0mjUfKyHoADqKH5l5MXksAnFZZ1AfG5dgrz5o=;
+        b=KavC6goRMlIqYawnF0c6rDjtUiZLCGomJELy84TPlotH5ENKP6xbIyLKZxa3Mwp08i
+         k7sKpbhsBXUiTNtqOfATzoM9foTt4azfd6tj/wx7GkLgU9ddu2Xf7GPPOO2xhhVEFtWg
+         hPdBxorWCbDc5MGGI2qMMro9lCur8lRTUhaslgp31TrndVn/ftachMCWuqb7JLe4cD1p
+         WjRearT2vvBhvpUtVhJf4VfxkgAmZpC7pHGYKdB9H/73mJmlrJhGU/pjSSU307wejbQY
+         X4lG1KSqqoIx9G0J54W8ZCdRlE0y5RLOqsnzPHpS+qRDdJasXvGpdhwSDmEJ2TPcISY6
+         l8ng==
+X-Gm-Message-State: AOAM530f4p5Q8D35WsrHkotMfa2/iaxlCJJDDALpo4fPeTjllKKqWd+z
+        NPEmABs7Rh8fYSmQKGrVFw==
+X-Google-Smtp-Source: ABdhPJy86dvc9vfTKpEFg++eA1EydHmuKP0dyaBvrqugtku1lZKymqE4572adTJMvNNBVNFt4ors8Q==
+X-Received: by 2002:aca:5909:: with SMTP id n9mr11877042oib.130.1633314151746;
+        Sun, 03 Oct 2021 19:22:31 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id e2sm2612613ooa.20.2021.10.03.19.22.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 03 Oct 2021 19:22:31 -0700 (PDT)
+Received: (nullmailer pid 116315 invoked by uid 1000);
+        Mon, 04 Oct 2021 02:22:30 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     David Heidelberg <david@ixit.cz>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        devicetree@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <treding@nvidia.com>, linux-clk@vger.kernel.org,
+        Stephen Boyd <sboyd@kernel.org>
+In-Reply-To: <20211003192529.29615-1-david@ixit.cz>
+References: <20211003192529.29615-1-david@ixit.cz>
+Subject: Re: [PATCH] [v2] dt-bindings: clock: tegra: Fix USB controller nodes in examples
+Date:   Sun, 03 Oct 2021 21:22:30 -0500
+Message-Id: <1633314150.313988.116314.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alan Stern <stern@rowland.harvard.edu>
-> Sent: Friday, October 1, 2021 11:22 PM
-[...]
-> That's right.  If the device and cable are working properly, this
-> should never happen.  Or only extremely rarely (for example, caused
-> by external electromagnetic interference).
+On Sun, 03 Oct 2021 21:25:30 +0200, David Heidelberg wrote:
+> From: Thierry Reding <treding@nvidia.com>
 > 
-> > It seems to be reasonable why resubmission sometimes works.
+> A subsequent patch will convert the USB controller device tree bindings
+> to json-schema, which will cause the DT validation to point out various
+> issues with the examples in the clock and reset controller bindings.
 > 
-> Did you ever track down the reason why you got the -EPROTO error
-> while debugging that other issue?  Can you reproduce it?
+> Fix these issues so that the subsequent patch will not cause validation
+> warnings.
+> 
+> v2:
+>  - add missing usb-ehci compatible (David)
+> 
+> Signed-off-by: Thierry Reding <treding@nvidia.com>
+> Signed-off-by: David Heidelberg <david@ixit.cz>
+> ---
+>  .../bindings/clock/nvidia,tegra124-car.yaml           | 11 ++++++++---
+>  .../devicetree/bindings/clock/nvidia,tegra20-car.yaml |  5 +++++
+>  2 files changed, 13 insertions(+), 3 deletions(-)
+> 
 
-I didn't follow it, because it was not relative to the driver. Besides, we
-didn't focus on -EPROTO at that time, because it was not the major issue.
-And the -EPROTO occurred rarely indeed during a lot of transmission.
-The hw engineer confirmed that the device completed the transfer
-normally, but the driver still got an error from the host. I don't sure if
-there was a USB HUB between the device and the USB host controller.
-That are all what I know.
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-Best Regards,
-Hayes
+yamllint warnings/errors:
+
+dtschema/dtc warnings/errors:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/nvidia,tegra124-car.example.dt.yaml: usb-controller@7d000000: compatible: 'oneOf' conditional failed, one must be fixed:
+	['nvidia,tegra124-ehci', 'nvidia,tegra30-ehci', 'usb-ehci'] is too long
+	Additional items are not allowed ('usb-ehci' was unexpected)
+	Additional items are not allowed ('nvidia,tegra30-ehci', 'usb-ehci' were unexpected)
+	'nvidia,tegra124-ehci' is not one of ['allwinner,sun4i-a10-ehci', 'allwinner,sun50i-a64-ehci', 'allwinner,sun50i-h6-ehci', 'allwinner,sun5i-a13-ehci', 'allwinner,sun6i-a31-ehci', 'allwinner,sun7i-a20-ehci', 'allwinner,sun8i-a23-ehci', 'allwinner,sun8i-a83t-ehci', 'allwinner,sun8i-h3-ehci', 'allwinner,sun8i-r40-ehci', 'allwinner,sun9i-a80-ehci', 'aspeed,ast2400-ehci', 'aspeed,ast2500-ehci', 'aspeed,ast2600-ehci', 'brcm,bcm3384-ehci', 'brcm,bcm63268-ehci', 'brcm,bcm6328-ehci', 'brcm,bcm6358-ehci', 'brcm,bcm6362-ehci', 'brcm,bcm6368-ehci', 'brcm,bcm7125-ehci', 'brcm,bcm7346-ehci', 'brcm,bcm7358-ehci', 'brcm,bcm7360-ehci', 'brcm,bcm7362-ehci', 'brcm,bcm7420-ehci', 'brcm,bcm7425-ehci', 'brcm,bcm7435-ehci', 'ibm,476gtr-ehci', 'nxp,lpc1850-ehci', 'qca,ar7100-ehci', 'snps,hsdk-v1.0-ehci', 'socionext,uniphier-ehci']
+	'nvidia,tegra124-ehci' is not one of ['cavium,octeon-6335-ehci', 'ibm,usb-ehci-440epx', 'ibm,usb-ehci-460ex', 'nintendo,hollywood-usb-ehci', 'st,spear600-ehci']
+	'nvidia,tegra124-ehci' is not one of ['generic-ehci', 'usb-ehci']
+	'generic-ehci' was expected
+	'usb-ehci' was expected
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/usb/generic-ehci.yaml
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/nvidia,tegra124-car.example.dt.yaml: usb-controller@7d000000: 'nvidia,phy', 'phy_type', 'reset-names' do not match any of the regexes: 'pinctrl-[0-9]+'
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/usb/generic-ehci.yaml
+Documentation/devicetree/bindings/clock/nvidia,tegra124-car.example.dt.yaml:0:0: /example-0/usb-controller@7d000000: failed to match any schema with compatible: ['nvidia,tegra124-ehci', 'nvidia,tegra30-ehci', 'usb-ehci']
+Documentation/devicetree/bindings/clock/nvidia,tegra124-car.example.dt.yaml:0:0: /example-0/usb-controller@7d000000: failed to match any schema with compatible: ['nvidia,tegra124-ehci', 'nvidia,tegra30-ehci', 'usb-ehci']
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/patch/1535873
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
 
