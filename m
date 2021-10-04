@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43D09420E8D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:24:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68FA1420F98
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:34:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235778AbhJDN0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:26:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38148 "EHLO mail.kernel.org"
+        id S238108AbhJDNgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:36:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48752 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237024AbhJDNXs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:23:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 29D2161C11;
-        Mon,  4 Oct 2021 13:10:26 +0000 (UTC)
+        id S233987AbhJDNdt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:33:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 66CC063233;
+        Mon,  4 Oct 2021 13:15:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633353026;
-        bh=H/EPqUtZHIEDKO9oV35T1Bf3435LGktlH6aQfh5KD0A=;
+        s=korg; t=1633353330;
+        bh=u6dkUD6+qi1YlkLMdVQi8ezQWVKe0Lra1exI6z3j9xQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=x9LulAlBHQOfY0REebGNzrHTxc/uL+SgxUMav/AgwGe3h5gG8xZdZZfKh1GVRkd42
-         LiUppWGwpVspa2c3+5o8HMnnt5IeWeUvFLP79exItkX5gW+Oi++JJTDskGUBSetqx9
-         kDpkeHqbCSwps+qnfTjlwI/rqgmPOellVFQpa5r8=
+        b=xaU08Fb2/jVtGGCIutW3kqX/4yRJhoR2VOKWhh21Hn8kIlhS2vsw+8QyX6nxVnbFJ
+         LtUGY7V0ikS9+04hwN1MNLPzKhn+TERx16cP5jH5lnPQXIPBA+fBbtTM6200kEJRAe
+         pWNFXml+q2xtv48Gc4W3Ki9G9BA5KLlwBYhiPelA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maxim Levitsky <mlevitsk@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.10 18/93] KVM: x86: nSVM: dont copy virt_ext from vmcb12
+        stable@vger.kernel.org, Florian Westphal <fw@strlen.de>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Sasha Levin <sashal@kernel.org>,
+        syzbot+f31660cf279b0557160c@syzkaller.appspotmail.com
+Subject: [PATCH 5.14 086/172] netfilter: nf_tables: unlink table before deleting it
 Date:   Mon,  4 Oct 2021 14:52:16 +0200
-Message-Id: <20211004125035.178726400@linuxfoundation.org>
+Message-Id: <20211004125047.765328694@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125034.579439135@linuxfoundation.org>
-References: <20211004125034.579439135@linuxfoundation.org>
+In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
+References: <20211004125044.945314266@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,34 +41,106 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maxim Levitsky <mlevitsk@redhat.com>
+From: Florian Westphal <fw@strlen.de>
 
-commit faf6b755629627f19feafa75b32e81cd7738f12d upstream.
+[ Upstream commit a499b03bf36b0c2e3b958a381d828678ab0ffc5e ]
 
-These field correspond to features that we don't expose yet to L2
+syzbot reports following UAF:
+BUG: KASAN: use-after-free in memcmp+0x18f/0x1c0 lib/string.c:955
+ nla_strcmp+0xf2/0x130 lib/nlattr.c:836
+ nft_table_lookup.part.0+0x1a2/0x460 net/netfilter/nf_tables_api.c:570
+ nft_table_lookup net/netfilter/nf_tables_api.c:4064 [inline]
+ nf_tables_getset+0x1b3/0x860 net/netfilter/nf_tables_api.c:4064
+ nfnetlink_rcv_msg+0x659/0x13f0 net/netfilter/nfnetlink.c:285
+ netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2504
 
-While currently there are no CVE worthy features in this field,
-if AMD adds more features to this field, that could allow guest
-escapes similar to CVE-2021-3653 and CVE-2021-3656.
+Problem is that all get operations are lockless, so the commit_mutex
+held by nft_rcv_nl_event() isn't enough to stop a parallel GET request
+from doing read-accesses to the table object even after synchronize_rcu().
 
-Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
-Message-Id: <20210914154825.104886-6-mlevitsk@redhat.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To avoid this, unlink the table first and store the table objects in
+on-stack scratch space.
+
+Fixes: 6001a930ce03 ("netfilter: nftables: introduce table ownership")
+Reported-and-tested-by: syzbot+f31660cf279b0557160c@syzkaller.appspotmail.com
+Signed-off-by: Florian Westphal <fw@strlen.de>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kvm/svm/nested.c |    1 -
- 1 file changed, 1 deletion(-)
+ net/netfilter/nf_tables_api.c | 28 ++++++++++++++++++----------
+ 1 file changed, 18 insertions(+), 10 deletions(-)
 
---- a/arch/x86/kvm/svm/nested.c
-+++ b/arch/x86/kvm/svm/nested.c
-@@ -447,7 +447,6 @@ static void nested_prepare_vmcb_control(
- 		(svm->nested.ctl.int_ctl & int_ctl_vmcb12_bits) |
- 		(svm->nested.hsave->control.int_ctl & int_ctl_vmcb01_bits);
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index 081437dd75b7..33e771cd847c 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -9599,7 +9599,6 @@ static void __nft_release_table(struct net *net, struct nft_table *table)
+ 		table->use--;
+ 		nf_tables_chain_destroy(&ctx);
+ 	}
+-	list_del(&table->list);
+ 	nf_tables_table_destroy(&ctx);
+ }
  
--	svm->vmcb->control.virt_ext            = svm->nested.ctl.virt_ext;
- 	svm->vmcb->control.int_vector          = svm->nested.ctl.int_vector;
- 	svm->vmcb->control.int_state           = svm->nested.ctl.int_state;
- 	svm->vmcb->control.event_inj           = svm->nested.ctl.event_inj;
+@@ -9612,6 +9611,8 @@ static void __nft_release_tables(struct net *net)
+ 		if (nft_table_has_owner(table))
+ 			continue;
+ 
++		list_del(&table->list);
++
+ 		__nft_release_table(net, table);
+ 	}
+ }
+@@ -9619,31 +9620,38 @@ static void __nft_release_tables(struct net *net)
+ static int nft_rcv_nl_event(struct notifier_block *this, unsigned long event,
+ 			    void *ptr)
+ {
++	struct nft_table *table, *to_delete[8];
+ 	struct nftables_pernet *nft_net;
+ 	struct netlink_notify *n = ptr;
+-	struct nft_table *table, *nt;
+ 	struct net *net = n->net;
+-	bool release = false;
++	unsigned int deleted;
++	bool restart = false;
+ 
+ 	if (event != NETLINK_URELEASE || n->protocol != NETLINK_NETFILTER)
+ 		return NOTIFY_DONE;
+ 
+ 	nft_net = nft_pernet(net);
++	deleted = 0;
+ 	mutex_lock(&nft_net->commit_mutex);
++again:
+ 	list_for_each_entry(table, &nft_net->tables, list) {
+ 		if (nft_table_has_owner(table) &&
+ 		    n->portid == table->nlpid) {
+ 			__nft_release_hook(net, table);
+-			release = true;
++			list_del_rcu(&table->list);
++			to_delete[deleted++] = table;
++			if (deleted >= ARRAY_SIZE(to_delete))
++				break;
+ 		}
+ 	}
+-	if (release) {
++	if (deleted) {
++		restart = deleted >= ARRAY_SIZE(to_delete);
+ 		synchronize_rcu();
+-		list_for_each_entry_safe(table, nt, &nft_net->tables, list) {
+-			if (nft_table_has_owner(table) &&
+-			    n->portid == table->nlpid)
+-				__nft_release_table(net, table);
+-		}
++		while (deleted)
++			__nft_release_table(net, to_delete[--deleted]);
++
++		if (restart)
++			goto again;
+ 	}
+ 	mutex_unlock(&nft_net->commit_mutex);
+ 
+-- 
+2.33.0
+
 
 
