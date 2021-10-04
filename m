@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B1BD420B57
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:55:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98A26420C3D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:02:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233637AbhJDM4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 08:56:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57788 "EHLO mail.kernel.org"
+        id S234144AbhJDNDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:03:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60396 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233383AbhJDM4X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 08:56:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CF0946136F;
-        Mon,  4 Oct 2021 12:54:33 +0000 (UTC)
+        id S234126AbhJDNCH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:02:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 03AC2615A4;
+        Mon,  4 Oct 2021 12:58:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352074;
-        bh=RlyUX7sP5Ct99u20gbtpOm7CNK2Mnr+7k0y2eCkd/Bs=;
+        s=korg; t=1633352335;
+        bh=3+uSUMwiGr0vWOPVOODaHR+2+RrS0BvRSyqfqhN1DcM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wHfUhIyfQ8mNjgCv9dpI+RafkrppmWAjepb2mvJj+hgA0vmIB1veFF7rQenSSRf+u
-         0zZujjcN8Z1ty8Arymb5IbMS3J378XZDjKS/INotVfJGxyZbK1JXtlvJIir/LC8uu6
-         jS+N1c+MxKpu/j5ol9ZAaEnh03a75qUq5ZfFqFZA=
+        b=ieFpEIGJAEWt1BAhBkxvefFdedg4DVBZKR9RDJ8KnNrpzcXKNk9IyJuzH4L1aaZuU
+         COPKPQoaxEcUC1MKIUnds4vuk6wnhWGTdlc/FGiKjfJ7z70ON57CXE+pRIbWS8bAd1
+         zSQbB+kPF53QK8sK2Vg38VLR/bngclzFeJV7yev8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jan Beulich <jbeulich@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>
-Subject: [PATCH 4.4 04/41] xen/x86: fix PV trap handling on secondary processors
-Date:   Mon,  4 Oct 2021 14:51:55 +0200
-Message-Id: <20211004125026.740038171@linuxfoundation.org>
+        stable@vger.kernel.org, Kaige Fu <kaige.fu@linux.alibaba.com>,
+        Marc Zyngier <maz@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 21/75] irqchip/gic-v3-its: Fix potential VPE leak on error
+Date:   Mon,  4 Oct 2021 14:51:56 +0200
+Message-Id: <20211004125032.229863489@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125026.597501645@linuxfoundation.org>
-References: <20211004125026.597501645@linuxfoundation.org>
+In-Reply-To: <20211004125031.530773667@linuxfoundation.org>
+References: <20211004125031.530773667@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,98 +39,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Beulich <jbeulich@suse.com>
+From: Kaige Fu <kaige.fu@linux.alibaba.com>
 
-commit 0594c58161b6e0f3da8efa9c6e3d4ba52b652717 upstream.
+[ Upstream commit 280bef512933b2dda01d681d8cbe499b98fc5bdd ]
 
-The initial observation was that in PV mode under Xen 32-bit user space
-didn't work anymore. Attempts of system calls ended in #GP(0x402). All
-of the sudden the vector 0x80 handler was not in place anymore. As it
-turns out up to 5.13 redundant initialization did occur: Once from
-cpu_initialize_context() (through its VCPUOP_initialise hypercall) and a
-2nd time while each CPU was brought fully up. This 2nd initialization is
-now gone, uncovering that the 1st one was flawed: Unlike for the
-set_trap_table hypercall, a full virtual IDT needs to be specified here;
-the "vector" fields of the individual entries are of no interest. With
-many (kernel) IDT entries still(?) (i.e. at that point at least) empty,
-the syscall vector 0x80 ended up in slot 0x20 of the virtual IDT, thus
-becoming the domain's handler for vector 0x20.
+In its_vpe_irq_domain_alloc, when its_vpe_init() returns an error,
+there is an off-by-one in the number of VPEs to be freed.
 
-Make xen_convert_trap_info() fit for either purpose, leveraging the fact
-that on the xen_copy_trap_info() path the table starts out zero-filled.
-This includes moving out the writing of the sentinel, which would also
-have lead to a buffer overrun in the xen_copy_trap_info() case if all
-(kernel) IDT entries were populated. Convert the writing of the sentinel
-to clearing of the entire table entry rather than just the address
-field.
+Fix it by simply passing the number of VPEs allocated, which is the
+index of the loop iterating over the VPEs.
 
-(I didn't bother trying to identify the commit which uncovered the issue
-in 5.14; the commit named below is the one which actually introduced the
-bad code.)
-
-Fixes: f87e4cac4f4e ("xen: SMP guest support")
-Cc: stable@vger.kernel.org
-Signed-off-by: Jan Beulich <jbeulich@suse.com>
-Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Link: https://lore.kernel.org/r/7a266932-092e-b68f-f2bb-1473b61adc6e@suse.com
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 7d75bbb4bc1a ("irqchip/gic-v3-its: Add VPE irq domain allocation/teardown")
+Signed-off-by: Kaige Fu <kaige.fu@linux.alibaba.com>
+[maz: fixed commit message]
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/d9e36dee512e63670287ed9eff884a5d8d6d27f2.1631672311.git.kaige.fu@linux.alibaba.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/xen/enlighten.c |   15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
+ drivers/irqchip/irq-gic-v3-its.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/x86/xen/enlighten.c
-+++ b/arch/x86/xen/enlighten.c
-@@ -861,8 +861,8 @@ static void xen_write_idt_entry(gate_des
- 	preempt_enable();
- }
+diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
+index 1d2267c6d31a..85b4610e6dc4 100644
+--- a/drivers/irqchip/irq-gic-v3-its.c
++++ b/drivers/irqchip/irq-gic-v3-its.c
+@@ -2730,7 +2730,7 @@ static int its_vpe_irq_domain_alloc(struct irq_domain *domain, unsigned int virq
  
--static void xen_convert_trap_info(const struct desc_ptr *desc,
--				  struct trap_info *traps)
-+static unsigned xen_convert_trap_info(const struct desc_ptr *desc,
-+				      struct trap_info *traps, bool full)
- {
- 	unsigned in, out, count;
+ 	if (err) {
+ 		if (i > 0)
+-			its_vpe_irq_domain_free(domain, virq, i - 1);
++			its_vpe_irq_domain_free(domain, virq, i);
  
-@@ -872,17 +872,18 @@ static void xen_convert_trap_info(const
- 	for (in = out = 0; in < count; in++) {
- 		gate_desc *entry = (gate_desc*)(desc->address) + in;
- 
--		if (cvt_gate_to_trap(in, entry, &traps[out]))
-+		if (cvt_gate_to_trap(in, entry, &traps[out]) || full)
- 			out++;
- 	}
--	traps[out].address = 0;
-+
-+	return out;
- }
- 
- void xen_copy_trap_info(struct trap_info *traps)
- {
- 	const struct desc_ptr *desc = this_cpu_ptr(&idt_desc);
- 
--	xen_convert_trap_info(desc, traps);
-+	xen_convert_trap_info(desc, traps, true);
- }
- 
- /* Load a new IDT into Xen.  In principle this can be per-CPU, so we
-@@ -892,6 +893,7 @@ static void xen_load_idt(const struct de
- {
- 	static DEFINE_SPINLOCK(lock);
- 	static struct trap_info traps[257];
-+	unsigned out;
- 
- 	trace_xen_cpu_load_idt(desc);
- 
-@@ -899,7 +901,8 @@ static void xen_load_idt(const struct de
- 
- 	memcpy(this_cpu_ptr(&idt_desc), desc, sizeof(idt_desc));
- 
--	xen_convert_trap_info(desc, traps);
-+	out = xen_convert_trap_info(desc, traps, false);
-+	memset(&traps[out], 0, sizeof(traps[0]));
- 
- 	xen_mc_flush();
- 	if (HYPERVISOR_set_trap_table(traps))
+ 		its_lpi_free_chunks(bitmap, base, nr_ids);
+ 		its_free_prop_table(vprop_page);
+-- 
+2.33.0
+
 
 
