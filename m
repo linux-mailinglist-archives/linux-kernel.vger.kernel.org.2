@@ -2,91 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A72F542198A
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 23:59:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D39DD42198D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 00:01:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234578AbhJDWBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 18:01:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43178 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234443AbhJDWBA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 18:01:00 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6895C061749
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 14:59:10 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id v11so5287662pgb.8
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 14:59:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oR9FHMJEaE13BkBpbWUGvIfigwsE0vr7a2ZHshK3wS8=;
-        b=Uoo+1ct0QV2Ux4fbTZVkWV8nryL5oetajREzRreulNaUhqlC127gIysHH7lp/i5knd
-         STWX/oNrsWN/HniF6cnQextBItaxCNwuRcpx/leW+XanjTZULZlAs1FdmzN6w1oGLTks
-         XjkB8WL/XqvKW/Hu2cBqEIKC2JRFf+GWKDb+4fy1w94BjAyYTUi9F7X9dDKeM9RpNPHv
-         8oDAUbv2tcX08n7EstQAwWAjsLm8S5P1VbkOYlcEmBBGcLBIooCZpHd/6G03TqPmJGX+
-         8WY2gFAXuya754SoO6LK5JOY9kqfXXHGCMesZ1NCfhngY0kKQfSLeHz9HL+zFEfmIuGV
-         ZJqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oR9FHMJEaE13BkBpbWUGvIfigwsE0vr7a2ZHshK3wS8=;
-        b=Zm7yJjDb/d8Vo8pPew2L6Ietr0aqZHXTxv27dG0SJN1ghWQYfasB71IHdBySXmV+T0
-         uQbuhXksQMub90H+Q4C8e7NSlLxZhGujauhfCSAAxNzZv/xqhAdUHw3t4/S9HWcETTKx
-         8cMJjmM8lGXXCX8S5mPqCWQiaRzoTZHzwGoCHqesWci8U65ecpdHJie8DtKGJb3s8/Pp
-         Q28G1Mp/p2yZVQtIQAf9Wlej/tyMfQLz8RAW7WfOz3eVU+IY1yXSYExKEOlb7qH8eS4i
-         rJxEwsTdNYMwY5IR+OfmSSphHh4J/rYiKWwc1OW6uSSrbi6V45Fz/26rb1xo/3cmN9ds
-         KSLQ==
-X-Gm-Message-State: AOAM531FkrXw8dac9EsjT63UQ+iRqxolZqJqHTV9/StzCuP6UPN1CiH5
-        tvxe/wcDOn5+0bXM/Ph65yvJxJ9TT8zYnYnAfbpz5w==
-X-Google-Smtp-Source: ABdhPJx/IYfNIgTxZHkDt7sZz13R0PuKORGcEsg8RwW6O6NXtMs8sbqqQu2exzbVt+/skIEmvc8fcdL37FQ4z7F3MlQ=
-X-Received: by 2002:a65:6658:: with SMTP id z24mr13092905pgv.266.1633384750068;
- Mon, 04 Oct 2021 14:59:10 -0700 (PDT)
+        id S234894AbhJDWDO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 18:03:14 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:48470 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233487AbhJDWDM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 18:03:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=fYPXulzv7ga+wDX0AJs+dfD7EVy3GhoMVPr0FyDWXag=; b=Y6R/ODLBIr3hAQNIvwmZ35HU7e
+        OROrBLiHkVpnQfAwubq5F5KC8nOJCAzlTOc2JgxhWqJOwy8jDxFPyF8jOs604QoVXtmkfpiAAIcuy
+        U/FD2eZaehURkNja7xEVKRcpn2PNW/jbWj7hH9oSsHEbplTbxG4e0oykvgjEIuOauR60=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mXW1O-009bkw-46; Tue, 05 Oct 2021 00:01:18 +0200
+Date:   Tue, 5 Oct 2021 00:01:18 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Sean Anderson <sean.anderson@seco.com>
+Cc:     netdev@vger.kernel.org, "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>
+Subject: Re: [RFC net-next PATCH 16/16] net: sfp: Add quirk to ignore PHYs
+Message-ID: <YVt5rpEl3HkIkAfB@lunn.ch>
+References: <20211004191527.1610759-1-sean.anderson@seco.com>
+ <20211004191527.1610759-17-sean.anderson@seco.com>
 MIME-Version: 1.0
-References: <20211002013635.2076371-1-dlatypov@google.com>
-In-Reply-To: <20211002013635.2076371-1-dlatypov@google.com>
-From:   Brendan Higgins <brendanhiggins@google.com>
-Date:   Mon, 4 Oct 2021 14:58:59 -0700
-Message-ID: <CAFd5g45Cnyt0nJ9d8KwAYO8jZu_5YdGkXT6XLcbJQWG1V4PP1Q@mail.gmail.com>
-Subject: Re: [PATCH] kunit: fix too small allocation when using suite-only kunit.filter_glob
-To:     Daniel Latypov <dlatypov@google.com>
-Cc:     davidgow@google.com, linux-kernel@vger.kernel.org,
-        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
-        skhan@linuxfoundation.org,
-        kernel test robot <oliver.sang@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211004191527.1610759-17-sean.anderson@seco.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 1, 2021 at 6:36 PM Daniel Latypov <dlatypov@google.com> wrote:
->
-> When a user filters by a suite and not a test, e.g.
-> $ ./tools/testing/kunit/kunit.py run 'suite_name'
->
-> it hits this code
->   const int len = strlen(filter_glob);
->   ...
->   parsed->suite_glob = kmalloc(len, GFP_KERNEL);
-> which fails to allocate space for the terminating NULL.
->
-> Somehow, it seems like we can't easily reproduce this under UML, so the
-> existing `parse_filter_test()` didn't catch this.
->
-> Fix this by allocating `len + 1` and switch to kzalloc() just to be a
-> bit more defensive. We're only going to run this code once per kernel
-> boot, and it should never be very long.
->
-> Also update the unit tests to be a bit more cautious.
-> This bug showed up as a NULL pointer dereference here:
-> >  KUNIT_EXPECT_STREQ(test, (const char *)filtered.start[0][0]->name, "suite0");
-> `filtered.start[0][0]` was NULL, and `name` is at offset 0 in the struct,
-> so `...->name` was also NULL.
->
-> Fixes: 3b29021ddd10 ("kunit: tool: allow filtering test cases via glob")
-> Reported-by: kernel test robot <oliver.sang@intel.com>
-> Signed-off-by: Daniel Latypov <dlatypov@google.com>
+On Mon, Oct 04, 2021 at 03:15:27PM -0400, Sean Anderson wrote:
+> Some modules have something at SFP_PHY_ADDR which isn't a PHY. If we try to
+> probe it, we might attach genphy anyway if addresses 2 and 3 return
+> something other than all 1s. To avoid this, add a quirk for these modules
+> so that we do not probe their PHY.
+> 
+> The particular module in this case is a Finisar SFP-GB-GE-T. This module is
+> also worked around in xgbe_phy_finisar_phy_quirks() by setting the support
+> manually. However, I do not believe that it has a PHY in the first place:
+> 
+> $ i2cdump -y -r 0-31 $BUS 0x56 w
+>      0,8  1,9  2,a  3,b  4,c  5,d  6,e  7,f
+> 00: ff01 ff01 ff01 c20c 010c 01c0 0f00 0120
+> 08: fc48 000e ff78 0000 0000 0000 0000 00f0
+> 10: 7800 00bc 0000 401c 680c 0300 0000 0000
+> 18: ff41 0000 0a00 8890 0000 0000 0000 0000
+> 
+> The first several addresses contain the same value, which should almost
+> never be the case for a proper phy. In addition, the "OUI" 00-7F-C3 does
+> not match Finisar's OUI of 00-90-65 (or any other OUI for that matter).
+> 
+> Signed-off-by: Sean Anderson <sean.anderson@seco.com>
 
-Acked-by: Brendan Higgins <brendanhiggins@google.com>
+Hi Sean
+
+This does not really have anything to do with PCS. I would send it on
+its own.
+
+    Andrew
