@@ -2,34 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 489FF420C65
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:03:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81742420B91
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:56:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234735AbhJDNFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:05:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39400 "EHLO mail.kernel.org"
+        id S234136AbhJDM6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 08:58:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59346 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235024AbhJDNDi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:03:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D2EE61AEC;
-        Mon,  4 Oct 2021 12:59:54 +0000 (UTC)
+        id S233700AbhJDM5Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 08:57:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5930861501;
+        Mon,  4 Oct 2021 12:55:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352394;
-        bh=jNpmYPJE1z97s9zfAE8RJax1RBKozyW2UxwHze8RfZA=;
+        s=korg; t=1633352135;
+        bh=L241wpkUh0bWgSPDGbsmy1HluiZHT2lvYcQZyy8xsko=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vGOeeX2sX4vhOys0fJ0ASfTQwnXm9g/IjVysWLSMCmyKGxzcdcs38EKPI/8Dia+ae
-         w1CSqcC8UhAtFnPHtCh2mCYURzUTFMzX7zDVcSAVeNpFWg9BsFyTOMoDq+NY4HPXWN
-         wSzLstSaasep7t0cYQgiCxNWPuQRb/oS+9U7M+xg=
+        b=X6WySviV7Z9WsQWwV7TKkbbxCWkOBjkHkSmwVXJkD+1zNDU00ptWzImMV2nQnSMn4
+         hFC11J91U1T1tvwVB7GDGMn+QD8ah8vO425Vva/eveOclLS7f1EdkcF9PRzu6e473S
+         YZVwvMpcfB8R5EmeaPAinSwoq6W/dY1o4EhsFc9c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>
-Subject: [PATCH 4.14 45/75] mac80211: fix use-after-free in CCMP/GCMP RX
+        stable@vger.kernel.org,
+        Felicitas Hetzelt <felicitashetzelt@gmail.com>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 29/41] e100: fix buffer overrun in e100_get_regs
 Date:   Mon,  4 Oct 2021 14:52:20 +0200
-Message-Id: <20211004125033.041021292@linuxfoundation.org>
+Message-Id: <20211004125027.500694420@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125031.530773667@linuxfoundation.org>
-References: <20211004125031.530773667@linuxfoundation.org>
+In-Reply-To: <20211004125026.597501645@linuxfoundation.org>
+References: <20211004125026.597501645@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,54 +42,107 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Jacob Keller <jacob.e.keller@intel.com>
 
-commit 94513069eb549737bcfc3d988d6ed4da948a2de8 upstream.
+[ Upstream commit 51032e6f17ce990d06123ad7307f258c50d25aa7 ]
 
-When PN checking is done in mac80211, for fragmentation we need
-to copy the PN to the RX struct so we can later use it to do a
-comparison, since commit bf30ca922a0c ("mac80211: check defrag
-PN against current frame").
+The e100_get_regs function is used to implement a simple register dump
+for the e100 device. The data is broken into a couple of MAC control
+registers, and then a series of PHY registers, followed by a memory dump
+buffer.
 
-Unfortunately, in that commit I used the 'hdr' variable without
-it being necessarily valid, so use-after-free could occur if it
-was necessary to reallocate (parts of) the frame.
+The total length of the register dump is defined as (1 + E100_PHY_REGS)
+* sizeof(u32) + sizeof(nic->mem->dump_buf).
 
-Fix this by reloading the variable after the code that results
-in the reallocations, if any.
+The logic for filling in the PHY registers uses a convoluted inverted
+count for loop which counts from E100_PHY_REGS (0x1C) down to 0, and
+assigns the slots 1 + E100_PHY_REGS - i. The first loop iteration will
+fill in [1] and the final loop iteration will fill in [1 + 0x1C]. This
+is actually one more than the supposed number of PHY registers.
 
-This fixes https://bugzilla.kernel.org/show_bug.cgi?id=214401.
+The memory dump buffer is then filled into the space at
+[2 + E100_PHY_REGS] which will cause that memcpy to assign 4 bytes past
+the total size.
 
-Cc: stable@vger.kernel.org
-Fixes: bf30ca922a0c ("mac80211: check defrag PN against current frame")
-Link: https://lore.kernel.org/r/20210927115838.12b9ac6bb233.I1d066acd5408a662c3b6e828122cd314fcb28cdb@changeid
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+The end result is that we overrun the total buffer size allocated by the
+kernel, which could lead to a panic or other issues due to memory
+corruption.
+
+It is difficult to determine the actual total number of registers
+here. The only 8255x datasheet I could find indicates there are 28 total
+MDI registers. However, we're reading 29 here, and reading them in
+reverse!
+
+In addition, the ethtool e100 register dump interface appears to read
+the first PHY register to determine if the device is in MDI or MDIx
+mode. This doesn't appear to be documented anywhere within the 8255x
+datasheet. I can only assume it must be in register 28 (the extra
+register we're reading here).
+
+Lets not change any of the intended meaning of what we copy here. Just
+extend the space by 4 bytes to account for the extra register and
+continue copying the data out in the same order.
+
+Change the E100_PHY_REGS value to be the correct total (29) so that the
+total register dump size is calculated properly. Fix the offset for
+where we copy the dump buffer so that it doesn't overrun the total size.
+
+Re-write the for loop to use counting up instead of the convoluted
+down-counting. Correct the mdio_read offset to use the 0-based register
+offsets, but maintain the bizarre reverse ordering so that we have the
+ABI expected by applications like ethtool. This requires and additional
+subtraction of 1. It seems a bit odd but it makes the flow of assignment
+into the register buffer easier to follow.
+
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Reported-by: Felicitas Hetzelt <felicitashetzelt@gmail.com>
+Signed-off-by: Jacob Keller <jacob.e.keller@intel.com>
+Tested-by: Jacob Keller <jacob.e.keller@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/mac80211/wpa.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/net/ethernet/intel/e100.c | 16 ++++++++++------
+ 1 file changed, 10 insertions(+), 6 deletions(-)
 
---- a/net/mac80211/wpa.c
-+++ b/net/mac80211/wpa.c
-@@ -514,6 +514,9 @@ ieee80211_crypto_ccmp_decrypt(struct iee
- 			return RX_DROP_UNUSABLE;
- 	}
+diff --git a/drivers/net/ethernet/intel/e100.c b/drivers/net/ethernet/intel/e100.c
+index abb65ed9492b..aa556e4f9051 100644
+--- a/drivers/net/ethernet/intel/e100.c
++++ b/drivers/net/ethernet/intel/e100.c
+@@ -2462,7 +2462,7 @@ static void e100_get_drvinfo(struct net_device *netdev,
+ 		sizeof(info->bus_info));
+ }
  
-+	/* reload hdr - skb might have been reallocated */
-+	hdr = (void *)rx->skb->data;
-+
- 	data_len = skb->len - hdrlen - IEEE80211_CCMP_HDR_LEN - mic_len;
- 	if (!rx->sta || data_len < 0)
- 		return RX_DROP_UNUSABLE;
-@@ -744,6 +747,9 @@ ieee80211_crypto_gcmp_decrypt(struct iee
- 			return RX_DROP_UNUSABLE;
- 	}
+-#define E100_PHY_REGS 0x1C
++#define E100_PHY_REGS 0x1D
+ static int e100_get_regs_len(struct net_device *netdev)
+ {
+ 	struct nic *nic = netdev_priv(netdev);
+@@ -2484,14 +2484,18 @@ static void e100_get_regs(struct net_device *netdev,
+ 	buff[0] = ioread8(&nic->csr->scb.cmd_hi) << 24 |
+ 		ioread8(&nic->csr->scb.cmd_lo) << 16 |
+ 		ioread16(&nic->csr->scb.status);
+-	for (i = E100_PHY_REGS; i >= 0; i--)
+-		buff[1 + E100_PHY_REGS - i] =
+-			mdio_read(netdev, nic->mii.phy_id, i);
++	for (i = 0; i < E100_PHY_REGS; i++)
++		/* Note that we read the registers in reverse order. This
++		 * ordering is the ABI apparently used by ethtool and other
++		 * applications.
++		 */
++		buff[1 + i] = mdio_read(netdev, nic->mii.phy_id,
++					E100_PHY_REGS - 1 - i);
+ 	memset(nic->mem->dump_buf, 0, sizeof(nic->mem->dump_buf));
+ 	e100_exec_cb(nic, NULL, e100_dump);
+ 	msleep(10);
+-	memcpy(&buff[2 + E100_PHY_REGS], nic->mem->dump_buf,
+-		sizeof(nic->mem->dump_buf));
++	memcpy(&buff[1 + E100_PHY_REGS], nic->mem->dump_buf,
++	       sizeof(nic->mem->dump_buf));
+ }
  
-+	/* reload hdr - skb might have been reallocated */
-+	hdr = (void *)rx->skb->data;
-+
- 	data_len = skb->len - hdrlen - IEEE80211_GCMP_HDR_LEN - mic_len;
- 	if (!rx->sta || data_len < 0)
- 		return RX_DROP_UNUSABLE;
+ static void e100_get_wol(struct net_device *netdev, struct ethtool_wolinfo *wol)
+-- 
+2.33.0
+
 
 
