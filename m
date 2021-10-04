@@ -2,179 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 175CA420789
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 10:46:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34780420790
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 10:47:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229778AbhJDIsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 04:48:01 -0400
-Received: from foss.arm.com ([217.140.110.172]:50132 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229631AbhJDIsA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 04:48:00 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B5EA4101E;
-        Mon,  4 Oct 2021 01:46:11 -0700 (PDT)
-Received: from [10.57.72.173] (unknown [10.57.72.173])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BD6323F66F;
-        Mon,  4 Oct 2021 01:46:09 -0700 (PDT)
-Subject: Re: [PATCH v2 09/17] coresight: trbe: Workaround TRBE errata
- overwrite in FILL mode
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        maz@kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com,
-        james.morse@arm.com, anshuman.khandual@arm.com, leo.yan@linaro.org,
-        mike.leach@linaro.org, will@kernel.org, lcherian@marvell.com,
-        coresight@lists.linaro.org
-References: <20210921134121.2423546-1-suzuki.poulose@arm.com>
- <20210921134121.2423546-10-suzuki.poulose@arm.com>
- <20211001171522.GB3148492@p14s>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <085e398c-767c-1b9b-0780-bed830d936fb@arm.com>
-Date:   Mon, 4 Oct 2021 09:46:07 +0100
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        id S230022AbhJDItU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 04:49:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54490 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229631AbhJDItT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 04:49:19 -0400
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70BE9C061745
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 01:47:30 -0700 (PDT)
+Received: by mail-yb1-xb44.google.com with SMTP id r1so35821982ybo.10
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 01:47:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=/jfyDf2uGQ0G4PkhWSUViq4lngXtqzf19oHYgswwn6Y=;
+        b=ZhNjpXps1iaEVkmEi+Dwi9/nQUeNUCX+Mvij14snth8JJVp1c24CCuMAoXGHgF9An/
+         5Lt2Y5QZX8NRykdSdrOwh4Q2wPfDU3vhYYHbyaXX6UHszpUDG4P2O/rxiUFlkgNcRCn0
+         bYoLe1/MiRNM+gS5LeAVLy7BzhreG5VwilMzctgAAm3v3fsomdHEKWiLthFXtPyM8hUk
+         +cvtoFmFvfyQBWTl43dNiokFk1fuxssufn6+m/N+34kzK3dqPrgjt6lyN6CWbeqkn0Lt
+         8CAwTAcVIkfPke/cn+w7daNml1CGOo1QQQ6Ckt6MkatRtkF8nblxNnD8ZKpl+8TjcoAy
+         3GVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=/jfyDf2uGQ0G4PkhWSUViq4lngXtqzf19oHYgswwn6Y=;
+        b=MP1mCQWLfvGEGHv8vFel22YbG4OJyik8xm5bO157g+c8zybe7+36AiyeEtfniZb17s
+         Zhyf6u9OsNpO0J3E89H0R6o74n9rHEOH4EvuZcJgfMY+n45cTfVKXFaG/wQq9R5qhFAJ
+         xg4ZJUy+eOoZMrGA5RQOCnINIzZLKRqMj0HWKXC/2iEyW6onPeZ8VSVBFV6QSI61LJKX
+         2QB5meE9Ls4KHv4gDXBAKTgSbiN+7Oe+XeEAsHzm+6skEGB1OfF0h9jpZ/YBUmq0t4kA
+         esg39JzD79/6HlS3Udjg57LA/vSEp/6mK9H3GA5VObeOWRNzusWPvo8SKeVeqextS+Fh
+         oRiQ==
+X-Gm-Message-State: AOAM530fwD4iOO7HFflB35XlUYKAGuyjq18b27BTycxkiMRvwnNdusNM
+        KS9sb61wTbxecdKws71WCkejegstnoNoOHJZDC0=
+X-Google-Smtp-Source: ABdhPJwJHk5FMtxIpEOscXs+sKwqKgA5Hsl9GA0U7h/1xxdxA9kj+6EYaO70RafRkvPhAQwpTR0Vs5jtiI3mlk13kiI=
+X-Received: by 2002:a25:ed0d:: with SMTP id k13mr13497050ybh.191.1633337249273;
+ Mon, 04 Oct 2021 01:47:29 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20211001171522.GB3148492@p14s>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Received: by 2002:a05:7108:3370:0:0:0:0 with HTTP; Mon, 4 Oct 2021 01:47:28
+ -0700 (PDT)
+Reply-To: shawnhayden424@gmail.com
+From:   Shawn Hayden <shawnhayden424@gmail.com>
+Date:   Mon, 4 Oct 2021 09:47:28 +0100
+Message-ID: <CAFrwAPLY=FEzorq=AXXgO_yH6gmfA=ogBKC0CS56PJ2P70uj2g@mail.gmail.com>
+Subject: LOANS AND INVESTMENT
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mathieu
+Dear Sir,
 
-On 01/10/2021 18:15, Mathieu Poirier wrote:
-> On Tue, Sep 21, 2021 at 02:41:13PM +0100, Suzuki K Poulose wrote:
->> ARM Neoverse-N2 (#2139208) and Cortex-A710(##2119858) suffers from
->> an erratum, which when triggered, might cause the TRBE to overwrite
->> the trace data already collected in FILL mode, in the event of a WRAP.
->> i.e, the TRBE doesn't stop writing the data, instead wraps to the base
->> and could write upto 3 cache line size worth trace. Thus, this could
->> corrupt the trace at the "BASE" pointer.
->>
->> The workaround is to program the write pointer 256bytes from the
->> base, such that if the erratum is triggered, it doesn't overwrite
->> the trace data that was captured. This skipped region could be
->> padded with ignore packets at the end of the session, so that
->> the decoder sees a continuous buffer with some padding at the
->> beginning. The trace data written at the base is considered
->> lost as the limit could have been in the middle of the perf
->> ring buffer, and jumping to the "base" is not acceptable.
->> We set the flags already to indicate that some amount of trace
->> was lost during the FILL event IRQ. So this is fine.
->>
->> One important change with the work around is, we program the
->> TRBBASER_EL1 to current page where we are allowed to write.
->> Otherwise, it could overwrite a region that may be consumed
->> by the perf. Towards this, we always make sure that the
->> "handle->head" and thus the trbe_write is PAGE_SIZE aligned,
->> so that we can set the BASE to the PAGE base and move the
->> TRBPTR to the 256bytes offset.
->>
->> Cc: Mike Leach <mike.leach@linaro.org>
->> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
->> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
->> Cc: Leo Yan <leo.yan@linaro.org>
->> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
->> ---
->> Change since v1:
->>   - Updated comment with ASCII art
->>   - Add _BYTES suffix for the space to skip for the work around.
->> ---
->>   drivers/hwtracing/coresight/coresight-trbe.c | 144 +++++++++++++++++--
->>   1 file changed, 132 insertions(+), 12 deletions(-)
->>
->> diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
->> index f569010c672b..983dd5039e52 100644
->> --- a/drivers/hwtracing/coresight/coresight-trbe.c
->> +++ b/drivers/hwtracing/coresight/coresight-trbe.c
->> @@ -16,6 +16,7 @@
->>   #define pr_fmt(fmt) DRVNAME ": " fmt
->>   
->>   #include <asm/barrier.h>
->> +#include <asm/cpufeature.h>
->>   #include <asm/cputype.h>
->>   
->>   #include "coresight-self-hosted-trace.h"
->> @@ -84,9 +85,17 @@ struct trbe_buf {
->>    * per TRBE instance, we keep track of the list of errata that
->>    * affects the given instance of the TRBE.
->>    */
->> -#define TRBE_ERRATA_MAX			0
->> +#define TRBE_WORKAROUND_OVERWRITE_FILL_MODE	0
->> +#define TRBE_ERRATA_MAX				1
->> +
->> +/*
->> + * Safe limit for the number of bytes that may be overwritten
->> + * when the erratum is triggered.
->> + */
->> +#define TRBE_WORKAROUND_OVERWRITE_FILL_MODE_SKIP_BYTES	256
->>   
->>   static unsigned long trbe_errata_cpucaps[TRBE_ERRATA_MAX] = {
->> +	[TRBE_WORKAROUND_OVERWRITE_FILL_MODE] = ARM64_WORKAROUND_TRBE_OVERWRITE_FILL_MODE,
->>   };
->>   
->>   /*
->> @@ -519,10 +528,13 @@ static void trbe_enable_hw(struct trbe_buf *buf)
->>   	set_trbe_limit_pointer_enabled(buf->trbe_limit);
->>   }
->>   
->> -static enum trbe_fault_action trbe_get_fault_act(u64 trbsr)
->> +static enum trbe_fault_action trbe_get_fault_act(struct perf_output_handle *handle,
->> +						 u64 trbsr)
->>   {
->>   	int ec = get_trbe_ec(trbsr);
->>   	int bsc = get_trbe_bsc(trbsr);
->> +	struct trbe_buf *buf = etm_perf_sink_config(handle);
->> +	struct trbe_cpudata *cpudata = buf->cpudata;
->>   
->>   	WARN_ON(is_trbe_running(trbsr));
->>   	if (is_trbe_trg(trbsr) || is_trbe_abort(trbsr))
->> @@ -531,10 +543,16 @@ static enum trbe_fault_action trbe_get_fault_act(u64 trbsr)
->>   	if ((ec == TRBE_EC_STAGE1_ABORT) || (ec == TRBE_EC_STAGE2_ABORT))
->>   		return TRBE_FAULT_ACT_FATAL;
->>   
->> -	if (is_trbe_wrap(trbsr) && (ec == TRBE_EC_OTHERS) && (bsc == TRBE_BSC_FILLED)) {
->> -		if (get_trbe_write_pointer() == get_trbe_base_pointer())
->> -			return TRBE_FAULT_ACT_WRAP;
->> -	}
->> +	/*
->> +	 * If the trbe is affected by TRBE_WORKAROUND_OVERWRITE_FILL_MODE,
->> +	 * it might write data after a WRAP event in the fill mode.
->> +	 * Thus the check TRBPTR == TRBBASER will not be honored.
->> +	 */
->> +	if ((is_trbe_wrap(trbsr) && (ec == TRBE_EC_OTHERS) && (bsc == TRBE_BSC_FILLED)) &&
->> +	    (trbe_has_erratum(cpudata, TRBE_WORKAROUND_OVERWRITE_FILL_MODE) ||
->> +	     get_trbe_write_pointer() == get_trbe_base_pointer()))
->> +		return TRBE_FAULT_ACT_WRAP;
->> +
-> 
-> I'm very perplexed by the trbe_has_erratum() infrastructure... Since this is a
-> TRBE the code will always run on the CPU it is associated with, and if
-> I'm correct here we could call this_cpu_has_cap() directly with the same
-> outcome.  I doubt that all divers using the cpucaps subsystem carry a shadow
-> structure to keep the same information.
+Aseel Islamic finance PJSC is private joint stock company that was
+established in 2006 and has built a leading market position for itself
+in the UAE's Islamic finance market which specializes in loan finance
+and investment activities in real estate, hospitality, industrial &
+sustainable technologies, strategic financial investments, specialized
+education, healthcare services, agriculture, manufacturing,
+mining,energy and additional environmentally sustainable projects.
 
-Very valid question. Of course, we can use the this_cpu_has_cap()
-helper. Unlike the cpus_have_*_cap() - which gives you the system
-wide status of the erratum - the cpucap doesn't keep a cache of which
-CPUs are affected by a given erratum. Thus this_cpu_has_cap() would
-involve running the detection on the current CPU everytime we call it.
-i.e, scanning the MIDR of the CPU through the list of affected MIDRs
-for the given erratum. This is a bit of overhead.
+My name is Mr. Ibn Ahmad Mustafa . Do you have projects that require
+funding? We have finance available for your projects with over 2
+trillion private and corporate investment portfolios.  Aseel Islamic
+finance PJSC is looking for equity partners, entrepreneur, fund
+raisers and portfolio managers who will pay up to 4.5% interest and/or
+part equity position with a 5 to 10 year hold. In 2030, we plan on
+acquiring up to 2 trillion in high-quality, low risk assets and
+investments to capitalize on the current market cycle.
 
-Given that we already have CPU specific information in trbe_cpudata, I
-chose to cache the affected errata locally. This gives us quick access
-to the erratum for individual TRBE instances. Of course this list is
-initialised at TRBE probe and thus avoids us having to do the costly
-check, each time we need it. I could make this clear in the patch
-which introduces the framework.
+Aseel Islamic finance PJSC is acting as a lender and the fund will be
+disbursed on a clear interest rate of 3.5% annually to the equity
+partners and entrepreneurs for their investment projects. We also give
+a 2% commission to brokers, who bring project owners for finance or
+other opportunities.
+
+For further details, kindly send us your business plans or project summary.
+
+Regards,
 
 
-Thanks for the review
-
-Suzuki
-
-> Thanks,
-> Mathieu
+Mr. Ibn Ahmad Mustafa
+International Business Coordinator
+Aseel Islamic Finance PJSC
+Al Mankhool, Dubai C2 Tower,
+Ground floor,P.O 94669 Dubai, UAE
+Abu Dhabi - United Arab Emirates
+Email : ahmadmustafa.7800@gmail.com
