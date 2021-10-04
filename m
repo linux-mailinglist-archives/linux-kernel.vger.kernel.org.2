@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 844C5420E50
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:22:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A06A420D9B
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:15:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234116AbhJDNYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:24:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37266 "EHLO mail.kernel.org"
+        id S235411AbhJDNQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:16:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54356 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236390AbhJDNVa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:21:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 95E5861BD4;
-        Mon,  4 Oct 2021 13:09:19 +0000 (UTC)
+        id S235845AbhJDNOg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:14:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E28B61BA5;
+        Mon,  4 Oct 2021 13:05:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352960;
-        bh=63BZD+TwkvZUjFJ4LiCBPySeHyYT9QY60f+AVHD36qo=;
+        s=korg; t=1633352753;
+        bh=8vn8TgtgDX0d24YZKQGbn+g0vStMejX4ykhzkhty2pU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SMe0f7B9pePJyyUrnGIR/jQ8Grqf2uLKGe+W03c0jrNN5b4fUWTsEoMbK8KQHZ+uB
-         veXhP3ykE9xDOsRcZrIJ44tTB818AL5rLqZc/Ip6cfO+zRirOWMxHx1ks1apjcKGOV
-         w9f/arKRIaj4yzsee/O/ne5Uo7XTi6ikob7qznnc=
+        b=2kyEO/hWBaloD1dSEphdljtjGch1mPo0beUfYdKluBZQmTHtl8VjfAsExCo7WKWJc
+         bmRDrE3fFYVX4pvUy3tRcL1TVPj4QjLxV0Z734V+GzSVr3lO8Xf43JofJbBm5b6hFP
+         qQhaCedcqN8Y46HheDnfWvNhwp4ISg9afS/Pnloc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+581aff2ae6b860625116@syzkaller.appspotmail.com,
-        Xin Long <lucien.xin@gmail.com>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Yi Chen <yiche@redhat.com>,
+        Andrea Claudi <aclaudi@redhat.com>,
+        Julian Anastasov <ja@ssi.bg>,
+        Simon Horman <horms@verge.net.au>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 35/93] sctp: break out if skb_header_pointer returns NULL in sctp_rcv_ootb
+Subject: [PATCH 5.4 13/56] ipvs: check that ip_vs_conn_tab_bits is between 8 and 20
 Date:   Mon,  4 Oct 2021 14:52:33 +0200
-Message-Id: <20211004125035.721418591@linuxfoundation.org>
+Message-Id: <20211004125030.428220201@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125034.579439135@linuxfoundation.org>
-References: <20211004125034.579439135@linuxfoundation.org>
+In-Reply-To: <20211004125030.002116402@linuxfoundation.org>
+References: <20211004125030.002116402@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,53 +43,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xin Long <lucien.xin@gmail.com>
+From: Andrea Claudi <aclaudi@redhat.com>
 
-[ Upstream commit f7e745f8e94492a8ac0b0a26e25f2b19d342918f ]
+[ Upstream commit 69e73dbfda14fbfe748d3812da1244cce2928dcb ]
 
-We should always check if skb_header_pointer's return is NULL before
-using it, otherwise it may cause null-ptr-deref, as syzbot reported:
+ip_vs_conn_tab_bits may be provided by the user through the
+conn_tab_bits module parameter. If this value is greater than 31, or
+less than 0, the shift operator used to derive tab_size causes undefined
+behaviour.
 
-  KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
-  RIP: 0010:sctp_rcv_ootb net/sctp/input.c:705 [inline]
-  RIP: 0010:sctp_rcv+0x1d84/0x3220 net/sctp/input.c:196
-  Call Trace:
-  <IRQ>
-   sctp6_rcv+0x38/0x60 net/sctp/ipv6.c:1109
-   ip6_protocol_deliver_rcu+0x2e9/0x1ca0 net/ipv6/ip6_input.c:422
-   ip6_input_finish+0x62/0x170 net/ipv6/ip6_input.c:463
-   NF_HOOK include/linux/netfilter.h:307 [inline]
-   NF_HOOK include/linux/netfilter.h:301 [inline]
-   ip6_input+0x9c/0xd0 net/ipv6/ip6_input.c:472
-   dst_input include/net/dst.h:460 [inline]
-   ip6_rcv_finish net/ipv6/ip6_input.c:76 [inline]
-   NF_HOOK include/linux/netfilter.h:307 [inline]
-   NF_HOOK include/linux/netfilter.h:301 [inline]
-   ipv6_rcv+0x28c/0x3c0 net/ipv6/ip6_input.c:297
+Fix this checking ip_vs_conn_tab_bits value to be in the range specified
+in ipvs Kconfig. If not, simply use default value.
 
-Fixes: 3acb50c18d8d ("sctp: delay as much as possible skb_linearize")
-Reported-by: syzbot+581aff2ae6b860625116@syzkaller.appspotmail.com
-Signed-off-by: Xin Long <lucien.xin@gmail.com>
-Acked-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 6f7edb4881bf ("IPVS: Allow boot time change of hash size")
+Reported-by: Yi Chen <yiche@redhat.com>
+Signed-off-by: Andrea Claudi <aclaudi@redhat.com>
+Acked-by: Julian Anastasov <ja@ssi.bg>
+Acked-by: Simon Horman <horms@verge.net.au>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sctp/input.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/netfilter/ipvs/ip_vs_conn.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/net/sctp/input.c b/net/sctp/input.c
-index 49c49a4d203f..34494a0b28bd 100644
---- a/net/sctp/input.c
-+++ b/net/sctp/input.c
-@@ -677,7 +677,7 @@ static int sctp_rcv_ootb(struct sk_buff *skb)
- 		ch = skb_header_pointer(skb, offset, sizeof(*ch), &_ch);
+diff --git a/net/netfilter/ipvs/ip_vs_conn.c b/net/netfilter/ipvs/ip_vs_conn.c
+index 02f2f636798d..d1524ca4b90e 100644
+--- a/net/netfilter/ipvs/ip_vs_conn.c
++++ b/net/netfilter/ipvs/ip_vs_conn.c
+@@ -1394,6 +1394,10 @@ int __init ip_vs_conn_init(void)
+ 	int idx;
  
- 		/* Break out if chunk length is less then minimal. */
--		if (ntohs(ch->length) < sizeof(_ch))
-+		if (!ch || ntohs(ch->length) < sizeof(_ch))
- 			break;
+ 	/* Compute size and mask */
++	if (ip_vs_conn_tab_bits < 8 || ip_vs_conn_tab_bits > 20) {
++		pr_info("conn_tab_bits not in [8, 20]. Using default value\n");
++		ip_vs_conn_tab_bits = CONFIG_IP_VS_TAB_BITS;
++	}
+ 	ip_vs_conn_tab_size = 1 << ip_vs_conn_tab_bits;
+ 	ip_vs_conn_tab_mask = ip_vs_conn_tab_size - 1;
  
- 		ch_end = offset + SCTP_PAD4(ntohs(ch->length));
 -- 
 2.33.0
 
