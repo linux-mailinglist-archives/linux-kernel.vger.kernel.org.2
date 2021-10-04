@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FB52420C16
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:00:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3588E420D39
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:11:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234205AbhJDNCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:02:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59670 "EHLO mail.kernel.org"
+        id S235506AbhJDNM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:12:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45746 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234579AbhJDNBG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:01:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 15D5A61A03;
-        Mon,  4 Oct 2021 12:58:18 +0000 (UTC)
+        id S235452AbhJDNKl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:10:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D06F161B49;
+        Mon,  4 Oct 2021 13:03:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352299;
-        bh=wyMY1huRCNbpoO8j0Fn8jm0T0PLjaIIMmNDIL1urKvM=;
+        s=korg; t=1633352639;
+        bh=QRdGMx2T0k1BXBHWVQkVzw7IrF+ceV8lp88TD1W75sI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o91TUBqPVNfMgThd3PW69/lS4St5/7+nGg6BR81MqiE/VsQqTZE5xVFQaE2f6UZgt
-         Nz8dT8MBeEQ1L/cB53zMpmgaqu3RX/mOMyanvweVVWhYnOZym2i118Q+5d8DvjgOhi
-         GrnPphTZQgJ7Nw6FZycqh6LLMx//dlhzbo57dB3o=
+        b=GuXt4Jv6c1P42oEo1cc3bWCYJBH384UAae+GsHtE9hSWfW5KgbxzWAkjSCEmLPBTd
+         lFaCExV6/4Q/5npAQ/nNQuXT4mmNh4UT0/Bk2IYDaLx2sQKnPAzsZhNh3g566b4ADZ
+         QjClCwsPshkekcxE6p8VkggASYjmmP34v2DXgy60=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.9 42/57] ipack: ipoctal: fix tty registration race
+        Igor Matheus Andrade Torrente <igormtorrente@gmail.com>,
+        Sasha Levin <sashal@kernel.org>,
+        syzbot+858dc7a2f7ef07c2c219@syzkaller.appspotmail.com
+Subject: [PATCH 4.19 56/95] tty: Fix out-of-bound vmalloc access in imageblit
 Date:   Mon,  4 Oct 2021 14:52:26 +0200
-Message-Id: <20211004125030.281210320@linuxfoundation.org>
+Message-Id: <20211004125035.397931520@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125028.940212411@linuxfoundation.org>
-References: <20211004125028.940212411@linuxfoundation.org>
+In-Reply-To: <20211004125033.572932188@linuxfoundation.org>
+References: <20211004125033.572932188@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,40 +41,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
 
-commit 65c001df517a7bf9be8621b53d43c89f426ce8d6 upstream.
+[ Upstream commit 3b0c406124719b625b1aba431659f5cdc24a982c ]
 
-Make sure to set the tty class-device driver data before registering the
-tty to avoid having a racing open() dereference a NULL pointer.
+This issue happens when a userspace program does an ioctl
+FBIOPUT_VSCREENINFO passing the fb_var_screeninfo struct
+containing only the fields xres, yres, and bits_per_pixel
+with values.
 
-Fixes: 9c1d784afc6f ("Staging: ipack/devices/ipoctal: Get rid of ipoctal_list.")
-Cc: stable@vger.kernel.org      # 3.7
-Acked-by: Samuel Iglesias Gonsalvez <siglesias@igalia.com>
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Link: https://lore.kernel.org/r/20210917114622.5412-3-johan@kernel.org
+If this struct is the same as the previous ioctl, the
+vc_resize() detects it and doesn't call the resize_screen(),
+leaving the fb_var_screeninfo incomplete. And this leads to
+the updatescrollmode() calculates a wrong value to
+fbcon_display->vrows, which makes the real_y() return a
+wrong value of y, and that value, eventually, causes
+the imageblit to access an out-of-bound address value.
+
+To solve this issue I made the resize_screen() be called
+even if the screen does not need any resizing, so it will
+"fix and fill" the fb_var_screeninfo independently.
+
+Cc: stable <stable@vger.kernel.org> # after 5.15-rc2 is out, give it time to bake
+Reported-and-tested-by: syzbot+858dc7a2f7ef07c2c219@syzkaller.appspotmail.com
+Signed-off-by: Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
+Link: https://lore.kernel.org/r/20210628134509.15895-1-igormtorrente@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/ipack/devices/ipoctal.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/tty/vt/vt.c | 21 +++++++++++++++++++--
+ 1 file changed, 19 insertions(+), 2 deletions(-)
 
---- a/drivers/ipack/devices/ipoctal.c
-+++ b/drivers/ipack/devices/ipoctal.c
-@@ -398,13 +398,13 @@ static int ipoctal_inst_slot(struct ipoc
- 		spin_lock_init(&channel->lock);
- 		channel->pointer_read = 0;
- 		channel->pointer_write = 0;
--		tty_dev = tty_port_register_device(&channel->tty_port, tty, i, NULL);
-+		tty_dev = tty_port_register_device_attr(&channel->tty_port, tty,
-+							i, NULL, channel, NULL);
- 		if (IS_ERR(tty_dev)) {
- 			dev_err(&ipoctal->dev->dev, "Failed to register tty device.\n");
- 			tty_port_destroy(&channel->tty_port);
- 			continue;
- 		}
--		dev_set_drvdata(tty_dev, channel);
- 	}
+diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
+index b2b5f19fb2fb..72e3989dffa6 100644
+--- a/drivers/tty/vt/vt.c
++++ b/drivers/tty/vt/vt.c
+@@ -1218,8 +1218,25 @@ static int vc_do_resize(struct tty_struct *tty, struct vc_data *vc,
+ 	new_row_size = new_cols << 1;
+ 	new_screen_size = new_row_size * new_rows;
  
- 	/*
+-	if (new_cols == vc->vc_cols && new_rows == vc->vc_rows)
+-		return 0;
++	if (new_cols == vc->vc_cols && new_rows == vc->vc_rows) {
++		/*
++		 * This function is being called here to cover the case
++		 * where the userspace calls the FBIOPUT_VSCREENINFO twice,
++		 * passing the same fb_var_screeninfo containing the fields
++		 * yres/xres equal to a number non-multiple of vc_font.height
++		 * and yres_virtual/xres_virtual equal to number lesser than the
++		 * vc_font.height and yres/xres.
++		 * In the second call, the struct fb_var_screeninfo isn't
++		 * being modified by the underlying driver because of the
++		 * if above, and this causes the fbcon_display->vrows to become
++		 * negative and it eventually leads to out-of-bound
++		 * access by the imageblit function.
++		 * To give the correct values to the struct and to not have
++		 * to deal with possible errors from the code below, we call
++		 * the resize_screen here as well.
++		 */
++		return resize_screen(vc, new_cols, new_rows, user);
++	}
+ 
+ 	if (new_screen_size > KMALLOC_MAX_SIZE || !new_screen_size)
+ 		return -EINVAL;
+-- 
+2.33.0
+
 
 
