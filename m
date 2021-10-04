@@ -2,135 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5178B4214DF
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 19:09:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 499FC4214E3
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 19:10:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238188AbhJDRLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 13:11:43 -0400
-Received: from mail-oi1-f179.google.com ([209.85.167.179]:36683 "EHLO
-        mail-oi1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233108AbhJDRLm (ORCPT
+        id S234496AbhJDRMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 13:12:34 -0400
+Received: from out02.mta.xmission.com ([166.70.13.232]:45012 "EHLO
+        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231575AbhJDRMc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 13:11:42 -0400
-Received: by mail-oi1-f179.google.com with SMTP id y201so22516384oie.3;
-        Mon, 04 Oct 2021 10:09:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1KLq9MkcpxBGVB7sgiyeCQaUXR/d16n3LEbxVLt/cqg=;
-        b=kChq6Lz06yp2ddKLDr3yxU9ZS6r0fx8VSwFKuh0XWy9AJpeptxbBhWj76Ce4ZADGV/
-         25trhaCd02OV4x3WS46oUGURpPCc850doSfoxwy4Rva+otCLJFcIHBVk9MFogbDh4M2E
-         O8aJfTa3UHa1QU97K+2FEsQ4N9qC5KvqsGLaaYuKKxwEKj3W6D7zl03B5QecMXxX9nwk
-         ozYlS25XTj+cCLM0ES8LTQFt+0Djw1rL6OE3lxyqoagarSd9YY3z9Aulrrkfj4wDRDGx
-         IE8cGcpQzA7nTlLGlzWXcHZ7u3y9rpKrZ/ow1WG9L9m5SEh+LQTwQslNtqEUdkxEJgVn
-         n64g==
-X-Gm-Message-State: AOAM5306DShRPCKK1i5B6ithfHdR7OACYq8mKsMQBZQgb2+veXWPdG52
-        3f0aPv0/Y5GFE08AF2+Aww==
-X-Google-Smtp-Source: ABdhPJwpGLcCHuQ/ilTbzTySohMcTJl/JUKbz4U1S+2nZLmVieFfoTMv2OP5e4KmB3Dqpn/bYl08mg==
-X-Received: by 2002:a05:6808:57d:: with SMTP id j29mr15099829oig.80.1633367392344;
-        Mon, 04 Oct 2021 10:09:52 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id f61sm2998816otf.73.2021.10.04.10.09.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Oct 2021 10:09:50 -0700 (PDT)
-Received: (nullmailer pid 1488976 invoked by uid 1000);
-        Mon, 04 Oct 2021 17:09:49 -0000
-Date:   Mon, 4 Oct 2021 12:09:49 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Pratyush Yadav <p.yadav@ti.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Michael Walle <michael@walle.cc>,
-        Apurva Nandan <a-nandan@ti.com>, Nishanth Menon <nm@ti.com>,
-        linux-spi@vger.kernel.org,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v1] dt-bindings: mtd: spi-nor: use unevaluatedProperties:
- false
-Message-ID: <YVs1XZmeIdix1m1V@robh.at.kernel.org>
-References: <20210924180705.14021-1-p.yadav@ti.com>
+        Mon, 4 Oct 2021 13:12:32 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52]:56088)
+        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mXRUA-00AIQb-9M; Mon, 04 Oct 2021 11:10:42 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:35024 helo=email.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mXRU8-00FQAR-W9; Mon, 04 Oct 2021 11:10:41 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Yu Zhao <yuzhao@google.com>
+Cc:     Alexey Gladkov <legion@kernel.org>,
+        Jordan Glover <Golden_Miller83@protonmail.ch>,
+        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
+        containers@lists.linux-foundation.org,
+        Rune Kleveland <rune.kleveland@infomedia.dk>
+References: <1M9_d6wrcu6rdPe1ON0_k0lOxJMyyot3KAb1gdyuwzDPC777XVUWPHoTCEVmcK3fYfgu7sIo3PSaLe9KulUdm4TWVuqlbKyYGxRAjsf_Cpk=@protonmail.ch>
+        <87ee9pa6xw.fsf@disp2133>
+        <OJK-F2NSBlem52GqvCQYzaVxs2x9Csq3qO4QbTG4A4UUNaQpebpAQmyyKzUd70CIo27C4K7CL3bhIzcxulIzYMu067QOMXCFz8ejh3ZtFhE=@protonmail.ch>
+        <U6ByMUZ9LgvxXX6eb0M9aBx8cw8GpgE1qU22LaxaJ_2bOdnGLLJHDgnLL-6cJT7dKdcG_Ms37APSutc3EIMmtpgpP_2kotVLCNRoUq-wTJ8=@protonmail.ch>
+        <878rzw77i3.fsf@disp2133>
+        <o3tuBB58KUQjyQsALqWi0s1tSPlgVPST4PNNjHewIgRB7CUOOVyFSFxSBLCOJdUH3ly21cIjBthNyqQGnDgJD7fjU8NiVHq7i0JcMvYuzUA=@protonmail.ch>
+        <20210929173611.fo5traia77o63gpw@example.org>
+        <hPgvCJ2KbKeauk78uWJEsuKJ5VfMqknPJ_oyOZe6M78-6eG7qnj0t0UKC-joPVowo_nOikIsEWP-ZDioARfI-Cl6zrHjCHPJST3drpi5ALE=@protonmail.ch>
+        <20210930130640.wudkpmn3cmah2cjz@example.org>
+        <CAOUHufZmAjuKyRcmq6GH8dfdZxchykS=BTZDsk-gDAh3LJTe1Q@mail.gmail.com>
+Date:   Mon, 04 Oct 2021 12:10:05 -0500
+In-Reply-To: <CAOUHufZmAjuKyRcmq6GH8dfdZxchykS=BTZDsk-gDAh3LJTe1Q@mail.gmail.com>
+        (Yu Zhao's message of "Thu, 30 Sep 2021 16:27:34 -0600")
+Message-ID: <878rz8wwb6.fsf@disp2133>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210924180705.14021-1-p.yadav@ti.com>
+Content-Type: text/plain
+X-XM-SPF: eid=1mXRU8-00FQAR-W9;;;mid=<878rz8wwb6.fsf@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1/fW4fqBtqqTCbM1YFal6ou2aHs6gF4F48=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa08.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=0.7 required=8.0 tests=ALL_TRUSTED,BAYES_40,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_XMDrugObfuBody_12,XMSubLong
+        autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        * -0.0 BAYES_40 BODY: Bayes spam probability is 20 to 40%
+        *      [score: 0.3212]
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa08 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  1.0 T_XMDrugObfuBody_12 obfuscated drug references
+X-Spam-DCC: XMission; sa08 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Yu Zhao <yuzhao@google.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 484 ms - load_scoreonly_sql: 0.37 (0.1%),
+        signal_user_changed: 12 (2.6%), b_tie_ro: 10 (2.1%), parse: 1.54
+        (0.3%), extract_message_metadata: 3.8 (0.8%), get_uri_detail_list:
+        1.14 (0.2%), tests_pri_-1000: 4.2 (0.9%), tests_pri_-950: 1.47 (0.3%),
+        tests_pri_-900: 1.25 (0.3%), tests_pri_-90: 111 (22.9%), check_bayes:
+        109 (22.5%), b_tokenize: 7 (1.5%), b_tok_get_all: 9 (1.9%),
+        b_comp_prob: 3.1 (0.6%), b_tok_touch_all: 81 (16.8%), b_finish: 1.37
+        (0.3%), tests_pri_0: 328 (67.7%), check_dkim_signature: 0.58 (0.1%),
+        check_dkim_adsp: 3.3 (0.7%), poll_dns_idle: 1.24 (0.3%), tests_pri_10:
+        2.3 (0.5%), tests_pri_500: 8 (1.7%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: linux 5.14.3: free_user_ns causes NULL pointer dereference
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 24, 2021 at 11:37:05PM +0530, Pratyush Yadav wrote:
-> Many SPI controllers need to add properties to slave devices. This could
-> be the delay in clock or data lines, etc. These properties are
-> controller specific but need to be defined in the slave node because
-> they are per-slave and there can be multiple slaves attached to a
-> controller.
-> 
-> If these properties are not added to the slave binding, then the dtbs
-> check emits a warning. But these properties do not make much sense in
-> the slave binding because they are controller-specific and they will
-> just pollute every slave binding.
-> 
-> One option is to add a separate schema that collects all such properties
-> from all such controllers. Slave bindings can simply refer to this
-> binding and they should be rid of the warnings.
-> 
-> There are some limitations with this approach:
-> 
-> 1. There is no way to specify required properties. The schema would
-> contain properties for all controllers and there would be no way to know
-> which controller is being used.
-> 
-> 2. There would be no way to restrict additional properties. Since this
-> schema will be used with an allOf operator, additionalProperties would
-> need to be true. In addition, the slave schema will have to set
-> unevaluatedProperties: false.
 
-I don't see what is the problem. If there's a $ref, then 
-unevaluatedProperties is what should be used.
+Adding Rune Kleveland to the discussion as he also seems to have
+reproduced the issue.
 
-> 
-> A much simpler option would be to make controller schemas specify those
-> properties in patternProperties and set unevaluatedProperties to false
-> on slave schemas, which is done in the previous approach anyway. This
-> approach would have the same limitations as the 2nd limitation in the
-> previous approach. But it does not have the 1st limitation since the
-> properties of all controllers are not collected in a single schema, but
-> instead reside in the same schema as the controller. It also has the
-> added benefit of being much simpler.
-> 
-> The SPI NOR binding is taken as the first one to follow this. Other
-> bindings like SPI NAND can follow in later patches.
-> 
-> Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
-> 
-> ---
-> I sent the first approach mentioned in the commit message some time ago
-> [0]. When re-rolling this series I realized that if we are going to use
-> unevaluatedProperties: false, then it would be much simpler to just keep
-> everything else as-is. This has clear positives with no negatives
-> relative to [0], as explained in the commit message.
-> 
-> [0] https://lore.kernel.org/all/20210609111707.9555-1-p.yadav@ti.com/T/#u
-> 
->  Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> index ed590d7c6e37..81be0620b264 100644
-> --- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> +++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> @@ -88,7 +88,7 @@ patternProperties:
->    "^otp(-[0-9]+)?$":
->      type: object
-> 
-> -additionalProperties: false
-> +unevaluatedProperties: false
+Alex and I have been starring at the code and the reports and this
+bug is hiding well.  Here is what we have figured out so far.
 
-This only works until unevaluatedProperties support is actually 
-implemented. Then it's back to the same warnings. In the mean time, we'd 
-be allowing any extra random properties to be added for everyone.
+Both the warning from free_user_ns calling dec_ucount that Jordan Glover
+reported and the KASAN error that Yu Zhao has reported appear to have
+the same cause.  Using a ucounts structure after it has been freed and
+reallocated as something else.
 
-Rob
+I have just skimmed through the recent report from Rune Kleveland
+and it appears also to be a use after free.  Especially since the
+second failure in the log is slub complaining about trying to free
+the ucounts data structure.
+
+We looked through the users of put_ucounts and we don't see any obvious
+buggy users that would be freeing the data structure early.
+
+Alex has tried to reproduce this so far is not having any luck.
+Folks can you tell what compiler versions you are using and share your
+kernel config with us?  That might help.
+
+The little debug diff below is my guess of what is happening.  If the
+folks who can reproduce this issue can try the patch below and let me
+know if the warnings fire that would be appreciated.  It is still not
+enough to track down the bug but at least it will confirm my current
+hypothesis about how things look before there is a use of memory after
+it is freed.
+
+Thank you,
+Eric
+
+diff --git a/kernel/cred.c b/kernel/cred.c
+index f784e08c2fbd..e7ffaa3cf5a6 100644
+--- a/kernel/cred.c
++++ b/kernel/cred.c
+@@ -120,6 +120,12 @@ static void put_cred_rcu(struct rcu_head *rcu)
+ 	if (cred->group_info)
+ 		put_group_info(cred->group_info);
+ 	free_uid(cred->user);
++#if 1
++	if ((cred->ucounts == cred->user_ns->ucounts) &&
++	    (atomic_read(&cred->ucounts->count) == 1)) {
++		WARN_ONCE(1, "put_cred_rcu: ucount count 1\n");
++	}
++#endif
+ 	if (cred->ucounts)
+ 		put_ucounts(cred->ucounts);
+ 	put_user_ns(cred->user_ns);
+diff --git a/kernel/exit.c b/kernel/exit.c
+index 91a43e57a32e..60fd88b34c1a 100644
+--- a/kernel/exit.c
++++ b/kernel/exit.c
+@@ -743,6 +743,13 @@ void __noreturn do_exit(long code)
+ 	if (unlikely(!tsk->pid))
+ 		panic("Attempted to kill the idle task!");
+ 
++#if 1
++	if ((tsk->cred->ucounts == tsk->cred->user_ns->ucounts) &&
++	    (atomic_read(tsk->cred->ucounts->count) == 1)) {
++		WARN_ONCE(1, "do_exit: ucount count 1\n");
++	}
++#endif
++
+ 	/*
+ 	 * If do_exit is called because this processes oopsed, it's possible
+ 	 * that get_fs() was left as KERNEL_DS, so reset it to USER_DS before
+
+
