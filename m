@@ -2,91 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FB15420B32
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:50:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EB3B420F0D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:28:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233286AbhJDMwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 08:52:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56226 "EHLO mail.kernel.org"
+        id S237548AbhJDNae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:30:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43540 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233268AbhJDMwn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 08:52:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 406E46103B;
-        Mon,  4 Oct 2021 12:50:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633351854;
-        bh=DEPXcUSwkuLvKTygrBe4+mBiRWgvdY/Y44xGRtMf2bg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=i/lAB4Nxk794gnkR+a90qgK3LEiKjd12Aka1uL4kohj9qPLfYiRlpqOUWC66yUIXN
-         +bywrc7QRJB9zbaCA7CDVrT0k4ub6MkrIBHh33vrTrelp5BgsZhWui4ctH47Fxh6oL
-         e/SbulhfwqhZhbkPimdNnC9TFgDIctMXOeV0P4MwMAnMsXh/6Fclp8EJEbDE3J3ddo
-         4B+CjbdbHybFlYMpkQVRoQtcvHdhtlvuAOPQwmESQVdyptJUAwA0WmId0YrZCU/P/F
-         Xg3xNI3uQJ+fbj1brN/VDai97pYqukkm7sjeuBOEWhIJFblRZjU9O83tCAx0k3DI7k
-         +5ZvpJurMMvVA==
-Date:   Mon, 4 Oct 2021 13:50:52 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Chien-Yu Lin <Chien-Yu.Lin@mediatek.com>
-Cc:     linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, yichin.huang@mediatek.com,
-        hungjung.hsu@mediatek.com, allen-hw.hsu@mediatek.com
-Subject: Re: [PATCH] ASoc: fix ASoC driver to support ops to register
- get_time_info
-Message-ID: <YVr4rAbfS220ucDr@sirena.org.uk>
-References: <20210820130210.3321-1-chien-yu.lin@mediatek.com>
- <a6336289dcf0009f2fc900c74f480b3c5fc0e8be.camel@mediatek.com>
+        id S237507AbhJDN2d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:28:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3007361D7C;
+        Mon,  4 Oct 2021 13:12:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1633353171;
+        bh=/F9PQqw3XsZUH/IFwFAxTh1OULuuS3UjvwBwc2taDNs=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=fI/16Urs7dadAftqvUKThUiKNUDlG5FV6bo8b46ymIfQbr8srBOh85V+rc08Mrk0y
+         s1+mHiqG9/z/1imjMHAdBV4cm5F+84idyP5GKnWHCUfGehmniOE+XVaVzXGgYu62zr
+         8foLFv4i+1jqLEphnX+SERZ37E8NUJebbuh6WlWw=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        kernel test robot <lkp@intel.com>,
+        Andrzej Pietrasiewicz <andrzejtp2010@gmail.com>,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 003/172] media: s5p-jpeg: rename JPEG marker constants to prevent build warnings
+Date:   Mon,  4 Oct 2021 14:50:53 +0200
+Message-Id: <20211004125045.060219114@linuxfoundation.org>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
+References: <20211004125044.945314266@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="HwyruTVZFZxRCbxq"
-Content-Disposition: inline
-In-Reply-To: <a6336289dcf0009f2fc900c74f480b3c5fc0e8be.camel@mediatek.com>
-X-Cookie: If it heals good, say it.
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Randy Dunlap <rdunlap@infradead.org>
 
---HwyruTVZFZxRCbxq
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+[ Upstream commit 3ad02c27d89d72b3b49ac51899144b7d0942f05f ]
 
-On Mon, Oct 04, 2021 at 07:38:22PM +0800, Chien-Yu Lin wrote:
-> Dear Sir,
->=20
-> Sorry for bothering you.
->=20
-> Does it have any status updated, please?
+The use of a macro named 'RST' conflicts with one of the same name
+in arch/mips/include/asm/mach-rc32434/rb.h. This causes build
+warnings on some MIPS builds.
 
-Please don't send content free pings and please allow a reasonable time
-for review.  People get busy, go on holiday, attend conferences and so=20
-on so unless there is some reason for urgency (like critical bug fixes)
-please allow at least a couple of weeks for review.  If there have been
-review comments then people may be waiting for those to be addressed.
+Change the names of the JPEG marker constants to be in their own
+namespace to fix these build warnings and to prevent other similar
+problems in the future.
 
-Sending content free pings adds to the mail volume (if they are seen at
-all) which is often the problem and since they can't be reviewed
-directly if something has gone wrong you'll have to resend the patches
-anyway, so sending again is generally a better approach though there are
-some other maintainers who like them - if in doubt look at how patches
-for the subsystem are normally handled.
+Fixes these build warnings:
 
---HwyruTVZFZxRCbxq
-Content-Type: application/pgp-signature; name="signature.asc"
+In file included from ../drivers/media/platform/s5p-jpeg/jpeg-hw-exynos3250.c:14:
+../drivers/media/platform/s5p-jpeg/jpeg-core.h:43: warning: "RST" redefined
+   43 | #define RST                             0xd0
+      |
+../arch/mips/include/asm/mach-rc32434/rb.h:13: note: this is the location of the previous definition
+   13 | #define RST             (1 << 15)
 
------BEGIN PGP SIGNATURE-----
+In file included from ../drivers/media/platform/s5p-jpeg/jpeg-hw-s5p.c:13:
+../drivers/media/platform/s5p-jpeg/jpeg-core.h:43: warning: "RST" redefined
+   43 | #define RST                             0xd0
+../arch/mips/include/asm/mach-rc32434/rb.h:13: note: this is the location of the previous definition
+   13 | #define RST             (1 << 15)
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFa+KsACgkQJNaLcl1U
-h9B44gf/fUMPWu+biAIQkH3GN1XQANoRFWcvCfbt7GluF29wUwCmTWWNbE+pOnbC
-OIAiltjgUkizwDO5UqxK+geASqmI24BRHOFxgb+0MLsEkcrV+oQXfq1ysba61lvR
-ATwkOnFC9x/QQA1h9bAf7On6ma6w4nRKdXiJm8HwzlS2oNuiG3Q8yt2FM6MbrnYb
-HSc/8lWwFnyB68zIZgpOV9boN8mxC1q/QW4QaYa5eVfsreRm+qGVLsL+ZQYcxv4Y
-NznJUih2U3JDc+4vXZSm9uta360+wMLE6q9wsuBin6SOUdQlE0+k9RKTG0UTVB2+
-dzSebepqIS215S5s9gGIE0/xHYCRZw==
-=r+iv
------END PGP SIGNATURE-----
+In file included from ../drivers/media/platform/s5p-jpeg/jpeg-hw-exynos4.c:12:
+../drivers/media/platform/s5p-jpeg/jpeg-core.h:43: warning: "RST" redefined
+   43 | #define RST                             0xd0
+../arch/mips/include/asm/mach-rc32434/rb.h:13: note: this is the location of the previous definition
+   13 | #define RST             (1 << 15)
 
---HwyruTVZFZxRCbxq--
+In file included from ../drivers/media/platform/s5p-jpeg/jpeg-core.c:31:
+../drivers/media/platform/s5p-jpeg/jpeg-core.h:43: warning: "RST" redefined
+   43 | #define RST                             0xd0
+../arch/mips/include/asm/mach-rc32434/rb.h:13: note: this is the location of the previous definition
+   13 | #define RST             (1 << 15)
+
+Also update the kernel-doc so that the word "marker" is not
+repeated.
+
+Link: https://lore.kernel.org/linux-media/20210907044022.30602-1-rdunlap@infradead.org
+Fixes: bb677f3ac434 ("[media] Exynos4 JPEG codec v4l2 driver")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Cc: Andrzej Pietrasiewicz <andrzejtp2010@gmail.com>
+Cc: Jacek Anaszewski <jacek.anaszewski@gmail.com>
+Cc: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc: linux-arm-kernel@lists.infradead.org
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/media/platform/s5p-jpeg/jpeg-core.c | 18 ++++++-------
+ drivers/media/platform/s5p-jpeg/jpeg-core.h | 28 ++++++++++-----------
+ 2 files changed, 23 insertions(+), 23 deletions(-)
+
+diff --git a/drivers/media/platform/s5p-jpeg/jpeg-core.c b/drivers/media/platform/s5p-jpeg/jpeg-core.c
+index d402e456f27d..7d0ab19c38bb 100644
+--- a/drivers/media/platform/s5p-jpeg/jpeg-core.c
++++ b/drivers/media/platform/s5p-jpeg/jpeg-core.c
+@@ -1140,8 +1140,8 @@ static bool s5p_jpeg_parse_hdr(struct s5p_jpeg_q_data *result,
+ 			continue;
+ 		length = 0;
+ 		switch (c) {
+-		/* SOF0: baseline JPEG */
+-		case SOF0:
++		/* JPEG_MARKER_SOF0: baseline JPEG */
++		case JPEG_MARKER_SOF0:
+ 			if (get_word_be(&jpeg_buffer, &word))
+ 				break;
+ 			length = (long)word - 2;
+@@ -1172,7 +1172,7 @@ static bool s5p_jpeg_parse_hdr(struct s5p_jpeg_q_data *result,
+ 			notfound = 0;
+ 			break;
+ 
+-		case DQT:
++		case JPEG_MARKER_DQT:
+ 			if (get_word_be(&jpeg_buffer, &word))
+ 				break;
+ 			length = (long)word - 2;
+@@ -1185,7 +1185,7 @@ static bool s5p_jpeg_parse_hdr(struct s5p_jpeg_q_data *result,
+ 			skip(&jpeg_buffer, length);
+ 			break;
+ 
+-		case DHT:
++		case JPEG_MARKER_DHT:
+ 			if (get_word_be(&jpeg_buffer, &word))
+ 				break;
+ 			length = (long)word - 2;
+@@ -1198,15 +1198,15 @@ static bool s5p_jpeg_parse_hdr(struct s5p_jpeg_q_data *result,
+ 			skip(&jpeg_buffer, length);
+ 			break;
+ 
+-		case SOS:
++		case JPEG_MARKER_SOS:
+ 			sos = jpeg_buffer.curr - 2; /* 0xffda */
+ 			break;
+ 
+ 		/* skip payload-less markers */
+-		case RST ... RST + 7:
+-		case SOI:
+-		case EOI:
+-		case TEM:
++		case JPEG_MARKER_RST ... JPEG_MARKER_RST + 7:
++		case JPEG_MARKER_SOI:
++		case JPEG_MARKER_EOI:
++		case JPEG_MARKER_TEM:
+ 			break;
+ 
+ 		/* skip uninteresting payload markers */
+diff --git a/drivers/media/platform/s5p-jpeg/jpeg-core.h b/drivers/media/platform/s5p-jpeg/jpeg-core.h
+index a77d93c098ce..8473a019bb5f 100644
+--- a/drivers/media/platform/s5p-jpeg/jpeg-core.h
++++ b/drivers/media/platform/s5p-jpeg/jpeg-core.h
+@@ -37,15 +37,15 @@
+ #define EXYNOS3250_IRQ_TIMEOUT		0x10000000
+ 
+ /* a selection of JPEG markers */
+-#define TEM				0x01
+-#define SOF0				0xc0
+-#define DHT				0xc4
+-#define RST				0xd0
+-#define SOI				0xd8
+-#define EOI				0xd9
+-#define	SOS				0xda
+-#define DQT				0xdb
+-#define DHP				0xde
++#define JPEG_MARKER_TEM				0x01
++#define JPEG_MARKER_SOF0				0xc0
++#define JPEG_MARKER_DHT				0xc4
++#define JPEG_MARKER_RST				0xd0
++#define JPEG_MARKER_SOI				0xd8
++#define JPEG_MARKER_EOI				0xd9
++#define	JPEG_MARKER_SOS				0xda
++#define JPEG_MARKER_DQT				0xdb
++#define JPEG_MARKER_DHP				0xde
+ 
+ /* Flags that indicate a format can be used for capture/output */
+ #define SJPEG_FMT_FLAG_ENC_CAPTURE	(1 << 0)
+@@ -187,11 +187,11 @@ struct s5p_jpeg_marker {
+  * @fmt:	driver-specific format of this queue
+  * @w:		image width
+  * @h:		image height
+- * @sos:	SOS marker's position relative to the buffer beginning
+- * @dht:	DHT markers' positions relative to the buffer beginning
+- * @dqt:	DQT markers' positions relative to the buffer beginning
+- * @sof:	SOF0 marker's position relative to the buffer beginning
+- * @sof_len:	SOF0 marker's payload length (without length field itself)
++ * @sos:	JPEG_MARKER_SOS's position relative to the buffer beginning
++ * @dht:	JPEG_MARKER_DHT' positions relative to the buffer beginning
++ * @dqt:	JPEG_MARKER_DQT' positions relative to the buffer beginning
++ * @sof:	JPEG_MARKER_SOF0's position relative to the buffer beginning
++ * @sof_len:	JPEG_MARKER_SOF0's payload length (without length field itself)
+  * @size:	image buffer size in bytes
+  */
+ struct s5p_jpeg_q_data {
+-- 
+2.33.0
+
+
+
