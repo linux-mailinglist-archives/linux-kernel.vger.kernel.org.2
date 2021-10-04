@@ -2,114 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37FBD4204E4
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 04:22:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D6C04204E6
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 04:23:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232270AbhJDCYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Oct 2021 22:24:23 -0400
-Received: from mail-oi1-f172.google.com ([209.85.167.172]:36767 "EHLO
-        mail-oi1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232213AbhJDCYV (ORCPT
+        id S232272AbhJDCZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Oct 2021 22:25:40 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:39926 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229550AbhJDCZj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Oct 2021 22:24:21 -0400
-Received: by mail-oi1-f172.google.com with SMTP id y201so19746832oie.3;
-        Sun, 03 Oct 2021 19:22:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=ushgit0mjUfKyHoADqKH5l5MXksAnFZZ1AfG5dgrz5o=;
-        b=KavC6goRMlIqYawnF0c6rDjtUiZLCGomJELy84TPlotH5ENKP6xbIyLKZxa3Mwp08i
-         k7sKpbhsBXUiTNtqOfATzoM9foTt4azfd6tj/wx7GkLgU9ddu2Xf7GPPOO2xhhVEFtWg
-         hPdBxorWCbDc5MGGI2qMMro9lCur8lRTUhaslgp31TrndVn/ftachMCWuqb7JLe4cD1p
-         WjRearT2vvBhvpUtVhJf4VfxkgAmZpC7pHGYKdB9H/73mJmlrJhGU/pjSSU307wejbQY
-         X4lG1KSqqoIx9G0J54W8ZCdRlE0y5RLOqsnzPHpS+qRDdJasXvGpdhwSDmEJ2TPcISY6
-         l8ng==
-X-Gm-Message-State: AOAM530f4p5Q8D35WsrHkotMfa2/iaxlCJJDDALpo4fPeTjllKKqWd+z
-        NPEmABs7Rh8fYSmQKGrVFw==
-X-Google-Smtp-Source: ABdhPJy86dvc9vfTKpEFg++eA1EydHmuKP0dyaBvrqugtku1lZKymqE4572adTJMvNNBVNFt4ors8Q==
-X-Received: by 2002:aca:5909:: with SMTP id n9mr11877042oib.130.1633314151746;
-        Sun, 03 Oct 2021 19:22:31 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id e2sm2612613ooa.20.2021.10.03.19.22.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Oct 2021 19:22:31 -0700 (PDT)
-Received: (nullmailer pid 116315 invoked by uid 1000);
-        Mon, 04 Oct 2021 02:22:30 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     David Heidelberg <david@ixit.cz>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        devicetree@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <treding@nvidia.com>, linux-clk@vger.kernel.org,
-        Stephen Boyd <sboyd@kernel.org>
-In-Reply-To: <20211003192529.29615-1-david@ixit.cz>
-References: <20211003192529.29615-1-david@ixit.cz>
-Subject: Re: [PATCH] [v2] dt-bindings: clock: tegra: Fix USB controller nodes in examples
-Date:   Sun, 03 Oct 2021 21:22:30 -0500
-Message-Id: <1633314150.313988.116314.nullmailer@robh.at.kernel.org>
+        Sun, 3 Oct 2021 22:25:39 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1942HAJn013952;
+        Sun, 3 Oct 2021 22:23:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=BtW7404GpwTKkqUTjmtVhCQlU8hAD4j8yFpxhidkv9E=;
+ b=Scl5gXNsWoxA+9pclCDWadANOxwMTegy+ilhXb141GCCW0y6vT8DgNC0IqTJ53husE6x
+ n5x6mqzCdiofe92xGUQlCSrxBY6S+SP/RS8gWlu56xWfUczEJ4WfAujSY7Q6vKpwXeBm
+ hLHrOwIhwcseEa5XJkCSVE3v2eQQjd16T2wCIRdyr8pyHFSFI1kJ0bWRfV1NeoBqoHhQ
+ NWPX7DNBFVmQvBiUSijIxJB+JmS7IZZLqxsz/RdUU+fE1+y+wDuwT6aG7OpRC3HpZyYH
+ glgS+9eYP6yZrc3f9oYVqReHiz5p3OvMrFoWeYK+huDQ2zCAcjocz6VNXEy9E2N436k6 Rw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bfrprr2et-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 03 Oct 2021 22:23:48 -0400
+Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1942NmPB004228;
+        Sun, 3 Oct 2021 22:23:48 -0400
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bfrprr2eb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 03 Oct 2021 22:23:48 -0400
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1942MT84009622;
+        Mon, 4 Oct 2021 02:23:46 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma03fra.de.ibm.com with ESMTP id 3bef290aje-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Oct 2021 02:23:45 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1942IQpa56492426
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 4 Oct 2021 02:18:26 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5760A42045;
+        Mon,  4 Oct 2021 02:23:42 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AE12342041;
+        Mon,  4 Oct 2021 02:23:41 +0000 (GMT)
+Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.45.119])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Mon,  4 Oct 2021 02:23:41 +0000 (GMT)
+Date:   Mon, 4 Oct 2021 04:23:23 +0200
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Cornelia Huck <cohuck@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Xie Yongji <xieyongji@bytedance.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, markver@us.ibm.com,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org, Halil Pasic <pasic@linux.ibm.com>
+Subject: Re: [RFC PATCH 1/1] virtio: write back features before verify
+Message-ID: <20211004042323.730c6a5e.pasic@linux.ibm.com>
+In-Reply-To: <20211002082128-mutt-send-email-mst@kernel.org>
+References: <20210930012049.3780865-1-pasic@linux.ibm.com>
+        <87r1d64dl4.fsf@redhat.com>
+        <20210930130350.0cdc7c65.pasic@linux.ibm.com>
+        <87ilyi47wn.fsf@redhat.com>
+        <20211001162213.18d7375e.pasic@linux.ibm.com>
+        <87v92g3h9l.fsf@redhat.com>
+        <20211002082128-mutt-send-email-mst@kernel.org>
+Organization: IBM
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: Y7yW0o3qPlgrIsoRY6SAyO-846f8MTod
+X-Proofpoint-GUID: x2D0ejPsNex5tElS_xlaqVr8c-MW3FnQ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-10-03_11,2021-10-01_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 bulkscore=0
+ malwarescore=0 suspectscore=0 priorityscore=1501 lowpriorityscore=0
+ phishscore=0 impostorscore=0 mlxlogscore=999 mlxscore=0 adultscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110040013
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 03 Oct 2021 21:25:30 +0200, David Heidelberg wrote:
-> From: Thierry Reding <treding@nvidia.com>
+On Sat, 2 Oct 2021 14:13:37 -0400
+"Michael S. Tsirkin" <mst@redhat.com> wrote:
+
+> > Anyone else have an idea? This is a nasty regression; we could revert the
+> > patch, which would remove the symptoms and give us some time, but that
+> > doesn't really feel right, I'd do that only as a last resort.  
 > 
-> A subsequent patch will convert the USB controller device tree bindings
-> to json-schema, which will cause the DT validation to point out various
-> issues with the examples in the clock and reset controller bindings.
-> 
-> Fix these issues so that the subsequent patch will not cause validation
-> warnings.
-> 
-> v2:
->  - add missing usb-ehci compatible (David)
-> 
-> Signed-off-by: Thierry Reding <treding@nvidia.com>
-> Signed-off-by: David Heidelberg <david@ixit.cz>
-> ---
->  .../bindings/clock/nvidia,tegra124-car.yaml           | 11 ++++++++---
->  .../devicetree/bindings/clock/nvidia,tegra20-car.yaml |  5 +++++
->  2 files changed, 13 insertions(+), 3 deletions(-)
-> 
+> Well we have Halil's hack (except I would limit it
+> to only apply to BE, only do devices with validate,
+> and only in modern mode), and we will fix QEMU to be spec compliant.
+> Between these why do we need any conditional compiles?
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+We don't. As I stated before, this hack is flawed because it
+effectively breaks fencing features by the driver with QEMU. Some
+features can not be unset after once set, because we tend to try to
+enable the corresponding functionality whenever we see a write
+features operation with the feature bit set, and we don't disable, if a
+subsequent features write operation stores the feature bit as not set.
+But it looks like VIRTIO_1 is fine to get cleared afterwards. So my hack
+should actually look like posted below, modulo conditions.
 
-yamllint warnings/errors:
+Regarding the conditions I guess checking that driver_features has
+F_VERSION_1 already satisfies "only modern mode", or? For now
+I've deliberately omitted the has verify and the is big endian
+conditions so we have a better chance to see if something breaks
+(i.e. the approach does not work). I can add in those extra conditions
+later.
 
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/nvidia,tegra124-car.example.dt.yaml: usb-controller@7d000000: compatible: 'oneOf' conditional failed, one must be fixed:
-	['nvidia,tegra124-ehci', 'nvidia,tegra30-ehci', 'usb-ehci'] is too long
-	Additional items are not allowed ('usb-ehci' was unexpected)
-	Additional items are not allowed ('nvidia,tegra30-ehci', 'usb-ehci' were unexpected)
-	'nvidia,tegra124-ehci' is not one of ['allwinner,sun4i-a10-ehci', 'allwinner,sun50i-a64-ehci', 'allwinner,sun50i-h6-ehci', 'allwinner,sun5i-a13-ehci', 'allwinner,sun6i-a31-ehci', 'allwinner,sun7i-a20-ehci', 'allwinner,sun8i-a23-ehci', 'allwinner,sun8i-a83t-ehci', 'allwinner,sun8i-h3-ehci', 'allwinner,sun8i-r40-ehci', 'allwinner,sun9i-a80-ehci', 'aspeed,ast2400-ehci', 'aspeed,ast2500-ehci', 'aspeed,ast2600-ehci', 'brcm,bcm3384-ehci', 'brcm,bcm63268-ehci', 'brcm,bcm6328-ehci', 'brcm,bcm6358-ehci', 'brcm,bcm6362-ehci', 'brcm,bcm6368-ehci', 'brcm,bcm7125-ehci', 'brcm,bcm7346-ehci', 'brcm,bcm7358-ehci', 'brcm,bcm7360-ehci', 'brcm,bcm7362-ehci', 'brcm,bcm7420-ehci', 'brcm,bcm7425-ehci', 'brcm,bcm7435-ehci', 'ibm,476gtr-ehci', 'nxp,lpc1850-ehci', 'qca,ar7100-ehci', 'snps,hsdk-v1.0-ehci', 'socionext,uniphier-ehci']
-	'nvidia,tegra124-ehci' is not one of ['cavium,octeon-6335-ehci', 'ibm,usb-ehci-440epx', 'ibm,usb-ehci-460ex', 'nintendo,hollywood-usb-ehci', 'st,spear600-ehci']
-	'nvidia,tegra124-ehci' is not one of ['generic-ehci', 'usb-ehci']
-	'generic-ehci' was expected
-	'usb-ehci' was expected
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/usb/generic-ehci.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/nvidia,tegra124-car.example.dt.yaml: usb-controller@7d000000: 'nvidia,phy', 'phy_type', 'reset-names' do not match any of the regexes: 'pinctrl-[0-9]+'
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/usb/generic-ehci.yaml
-Documentation/devicetree/bindings/clock/nvidia,tegra124-car.example.dt.yaml:0:0: /example-0/usb-controller@7d000000: failed to match any schema with compatible: ['nvidia,tegra124-ehci', 'nvidia,tegra30-ehci', 'usb-ehci']
-Documentation/devicetree/bindings/clock/nvidia,tegra124-car.example.dt.yaml:0:0: /example-0/usb-controller@7d000000: failed to match any schema with compatible: ['nvidia,tegra124-ehci', 'nvidia,tegra30-ehci', 'usb-ehci']
+--------------------------8<---------------------
 
-doc reference errors (make refcheckdocs):
+From: Halil Pasic <pasic@linux.ibm.com>
+Date: Thu, 30 Sep 2021 02:38:47 +0200
+Subject: [PATCH] virtio: write back feature VERSION_1 before verify
 
-See https://patchwork.ozlabs.org/patch/1535873
+This patch fixes a regression introduced by commit 82e89ea077b9
+("virtio-blk: Add validation for block size in config space") and
+enables similar checks in verify() on big endian platforms.
 
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
+The problem with checking multi-byte config fields in the verify
+callback, on big endian platforms, and with a possibly transitional
+device is the following. The verify() callback is called between
+config->get_features() and virtio_finalize_features(). That we have a
+device that offered F_VERSION_1 then we have the following options
+either the device is transitional, and then it has to present the legacy
+interface, i.e. a big endian config space until F_VERSION_1 is
+negotiated, or we have a non-transitional device, which makes
+F_VERSION_1 mandatory, and only implements the non-legacy interface and
+thus presents a little endian config space. Because at this point we
+can't know if the device is transitional or non-transitional, we can't
+know do we need to byte swap or not.
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
+The virtio spec explicitly states that the driver MAY read config
+between reading and writing the features so saying that first accessing
+the config before feature negotiation is done is not an option. The
+specification ain't clear about setting the features multiple times
+before FEATURES_OK, so I guess that should be fine to set F_VERSION_1
+since at this point we already know that we are about to negotiate
+F_VERSION_1.
 
-pip3 install dtschema --upgrade
+I don't consider this patch super clean, but frankly I don't think we
+have a ton of options. Another option that may or man not be cleaner,
+but is also IMHO much uglier is to figure out whether the device is
+transitional by rejecting _F_VERSION_1, then resetting it and proceeding
+according tho what we have figured out, hoping that the characteristics
+of the device didn't change.
 
-Please check and re-submit.
+Signed-off-by: Halil Pasic <pasic@linux.ibm.com>
+Fixes: 82e89ea077b9 ("virtio-blk: Add validation for block size in config space")
+Reported-by: markver@us.ibm.com
+---
+ drivers/virtio/virtio.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
+diff --git a/drivers/virtio/virtio.c b/drivers/virtio/virtio.c
+index 0a5b54034d4b..2b9358f2e22a 100644
+--- a/drivers/virtio/virtio.c
++++ b/drivers/virtio/virtio.c
+@@ -239,6 +239,12 @@ static int virtio_dev_probe(struct device *_d)
+ 		driver_features_legacy = driver_features;
+ 	}
+ 
++	/* Write F_VERSION_1 feature to pin down endianness */
++	if (device_features & (1ULL << VIRTIO_F_VERSION_1) & driver_features) {
++		dev->features = (1ULL << VIRTIO_F_VERSION_1);
++		dev->config->finalize_features(dev);
++	}
++
+ 	if (device_features & (1ULL << VIRTIO_F_VERSION_1))
+ 		dev->features = driver_features & device_features;
+ 	else
+-- 
+2.31.1
+
+
+
+
+
+ 
