@@ -2,106 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63EFE4214BD
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 19:04:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71DB24214C3
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 19:05:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238048AbhJDRGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 13:06:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58600 "EHLO
+        id S238078AbhJDRHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 13:07:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235119AbhJDRF7 (ORCPT
+        with ESMTP id S233646AbhJDRHH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 13:05:59 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E307C061745;
-        Mon,  4 Oct 2021 10:04:10 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id k23so1136780pji.0;
-        Mon, 04 Oct 2021 10:04:10 -0700 (PDT)
+        Mon, 4 Oct 2021 13:07:07 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDC52C061745;
+        Mon,  4 Oct 2021 10:05:17 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id y15so8800584lfk.7;
+        Mon, 04 Oct 2021 10:05:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=KSk5l7mdzrJfPwPq7PQoSfM6i1dcNInCldcD7w5Rhdg=;
-        b=HGFVHIsP+6R7wNek89B8ROjD5hstgjgoRRaOyjwS+rFGdiVJR4bVDZIr37pdCr1W/2
-         POTGQZZ0OE1qFVt3G6N3de0DusfCSq35asGHmPmheySNYkxSrFRNfUupa1kijPRGkIsL
-         0BIwWFutc383PQI5ZmLcpcUukuc02k0LRz8kEgkPvmvbwiujTAUxTGlLh4p/KS1mLhVk
-         HdV6amOFNGB0MyM6d5XGm8EVj3q9aGwMiYy1Cp4jYJxJRoJIlINOS4jIJFOFQVaXO5hW
-         IgzkVqPA74KQhS9n3EmSSQeDMO2dztCsucVj0nvr5IemLBOIa5CJQW/P6+N0o/86kYEU
-         05kw==
+        bh=hjjZdeUEp0/4fUr63QkE2TTYbTpb7SXPyJvyoceinIg=;
+        b=AnMkcDTsrywKhl4y+oppPWcYZcIKQ63v3gS35gx0/IvVoLEprhHDnA4uvm95SaYYhA
+         W5VXBFqElv/CKGKZS+FUuJdiR3+96LkR7BxPjhNva3Kh9AVfrIOXmfCAln9++FD9crKO
+         mBLaM5mpfYJ9+djgbhbxgT3irK7tFMBEiEo5FYI2+8hVhQDK5E14AjWHCCrJaxPZPfJh
+         mCFvXbb/JsE0VVAZsRRKL5IubO5tcUzS5gzmlwHcH/f+yRoqTZcYHegiKRPl0l11GrrI
+         yOu3gITcCuQUnQlKH+TnifKIj3altWR+Kv0e1zVHOCfjjzqy0Cfel/JQpNHCKW8M2K0H
+         iNUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=KSk5l7mdzrJfPwPq7PQoSfM6i1dcNInCldcD7w5Rhdg=;
-        b=1eb4+f0I30NQMY5nSfJmxrD2hvXehPCFLqZ/YU0mXH6HXCinTo1RGQmwll59AT6ycA
-         jQeNHlhN4BxMC4oVEUh9tjKoxj0VQIeiQ0HSLd3lpLq0uCSDpvlCjieh5IeJsUP16Z1c
-         XRl/jX6XhdVsj4iFV+3Q2GfQQ2XzRcTp7muo5/wX9hSceI1BTCDOLelVjUSbBFOb0B/9
-         m3nQFrlmPs5dpx2a/aUFfuNmbpDWfvusL4CWEy+8Ao+Uy6uvzXVl84xLuWsrKiDQMBIe
-         MdL14GSGCaWV1oCNXykJV1W24I6cCkKsjc5SkOMqrcuRNtDJgfNMpFiIGXlXX+V1L+K0
-         Rmeg==
-X-Gm-Message-State: AOAM530tn25GJhXXD+FnBiWgRf/IAdBDGb5FgrgboPCOzf/0UX3rvgBy
-        jgeJCqp2AcDmspfCx3efS67bukmjqe0=
-X-Google-Smtp-Source: ABdhPJyBBa5NckhrG5G/+VSSniHL/ROk9PH0Mj2W/GCzuQPGAcdVL4ZkZJerflFTZv1PzFVavFO87Q==
-X-Received: by 2002:a17:90a:86:: with SMTP id a6mr37401886pja.190.1633367049126;
-        Mon, 04 Oct 2021 10:04:09 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id z24sm15839126pgu.54.2021.10.04.10.04.01
+        bh=hjjZdeUEp0/4fUr63QkE2TTYbTpb7SXPyJvyoceinIg=;
+        b=ohUPi/VrV+oLFnUdULY5aW06fkGIVCtMMdLRMwyRe8Ny4dCqUtKinBKFQ5L44jLsRx
+         u4+4yjp8dB7nZaG3NwNB0CObx+mDpArp0udWQHIxgQZ6Spiou89kbSIrMtv3sm6W1EYR
+         ES/fXreSmJ2VYM2rwxPPpZtJe3D35J1aSUPHEV6fkXF9CiyaUEDGUpKu60DRMt88dWyV
+         9d1vMPWi7kuLoIHUIK6LwjK2lNHQgbq93QS8dsF7lJyYTnsDFvfyYjVjRHKunYMthMID
+         0t2Gq1aZdbLWy+b/8Jv87UxOx705kFIY6NJmWLL/YNvCdb8wPfv/vmPgZ714xcl6BmkH
+         szKA==
+X-Gm-Message-State: AOAM530VighfvqdVIujMNq85EK8hfJr1+L1MR/INUm+4HfsjQn/LcAZv
+        osxPcrTF06HzxkWg1XFYj35+1DG5Hck=
+X-Google-Smtp-Source: ABdhPJxKoUyZO6u3SJQhLjYW/+mnS1pgFUV5IK5hg0dLyXSHlpeXAAVlxm4bUXQ7O0iQyC6gIRP8Fg==
+X-Received: by 2002:a2e:814d:: with SMTP id t13mr17592208ljg.237.1633367115986;
+        Mon, 04 Oct 2021 10:05:15 -0700 (PDT)
+Received: from [192.168.2.145] (79-139-163-57.dynamic.spd-mgts.ru. [79.139.163.57])
+        by smtp.googlemail.com with ESMTPSA id j20sm1481798lfu.304.2021.10.04.10.05.15
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Oct 2021 10:04:08 -0700 (PDT)
-Subject: Re: [PATCH v3 00/14] Modular Broadcom irqchip drivers
-To:     Florian Fainelli <f.fainelli@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
-        "maintainer:BROADCOM BCM281XX/BCM11XXX/BCM216XX ARM ARCHITE..." 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        "moderated list:ARM SUB-ARCHITECTURES" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE" 
-        <devicetree@vger.kernel.org>
-References: <20210928182139.652896-1-f.fainelli@gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <c49d51d0-bb17-8e0d-4181-1eb93a2ae787@gmail.com>
-Date:   Mon, 4 Oct 2021 10:03:58 -0700
+        Mon, 04 Oct 2021 10:05:15 -0700 (PDT)
+Subject: Re: [PATCH v3 4/4] memory: tegra20-emc: Support matching timings by
+ LPDDR2 configuration
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+References: <20211003013235.2357-1-digetx@gmail.com>
+ <20211003013235.2357-5-digetx@gmail.com>
+ <636b147b-0a71-8c40-7038-1227918986e5@canonical.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <e41c944e-1b01-ef09-78a9-8dab7f97b054@gmail.com>
+Date:   Mon, 4 Oct 2021 20:05:15 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210928182139.652896-1-f.fainelli@gmail.com>
+In-Reply-To: <636b147b-0a71-8c40-7038-1227918986e5@canonical.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/28/21 11:21 AM, Florian Fainelli wrote:
-> Hi Thomas, Marc,
+04.10.2021 12:09, Krzysztof Kozlowski пишет:
+>>  static int emc_setup_hw(struct tegra_emc *emc)
+>>  {
+>> +	u32 emc_cfg, emc_dbg, emc_fbio, emc_adr_cfg;
+>>  	u32 intmask = EMC_REFRESH_OVERFLOW_INT;
+>> -	u32 emc_cfg, emc_dbg, emc_fbio;
+>> +	static bool print_sdram_info_once;
+> How about moving print_sdram_info_once to emc_read_lpddr_sdram_info()?
+> Less code here.
 > 
-> This patch series aims at allowing the 3 interrupt controller drivers
-> used on Broadcom STB platforms to be built as modules in order for those
-> to be shipped in a GKI enabled system (Android).
-> 
-> The irq-bcm7038-l1 requires us to export a number of symbols, which is
-> not great, but there are not obvious solutions other than adding
-> accessor functions to get the same information.
-> 
-> Assuming you are happy with the changes though, please do take the last
-> two changes as well through your tree.
-> 
-> Thanks!
 
-I will be re-submitting a v4 with the Acked-by from Thomas on patch 1,
-and the Reviewed-by from Rob on patch 9 along with the update he
-proposed to the qcom-pdc driver. Finally, I will take Sergey's update as
-well on patch 14.
--- 
-Florian
+The SDRAM info is printed out for each attached SDRAM chip. There are
+two prints if two chips are attached to memory controller. Hence this
+print_once flag should cover both prints.
