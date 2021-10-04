@@ -2,180 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A4AF420AD8
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:23:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83586420AE2
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:27:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232729AbhJDMZX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 08:25:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50250 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230337AbhJDMZU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 08:25:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 89A736124C;
-        Mon,  4 Oct 2021 12:23:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633350211;
-        bh=ej7aJ0FW65oKsNtQjiH6FThlyKBsKax9Z2ffsEWdqTo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Z8To3342g6UJ4vhD+OEmlMItibW536UAqAdbB+SVo6NVWWujgoLiFCBu3+FhKRHrq
-         E2vD0eLdJXx+jZgCn9e+gmN+3aTBM7jUb8N/iUZH52RqRZfCFPp6r+uSOKC5+VTbVO
-         h26tTuiC6+iTaaAfa0LyDzG90xPS/Ic88ckVvr4uxZz+sV06mwDvW5bb8MRfw1pTIH
-         1kxRoZluNAVqZ5XIi2Bp4LGXjNgavrWtuvv6IigN6UgKStxSoqy6ifWvGNkyIGA+El
-         7GDGK6r3NyAq5yX8EjpqzPAp8CkFEM0hercTJK15B81dfXmr6dzgVTcMCmB0jyn6oM
-         Yrdceo7T4tL6g==
-Date:   Mon, 4 Oct 2021 13:23:29 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     Jerome Brunet <jbrunet@baylibre.com>, alsa-devel@alsa-project.org,
-        linux-amlogic@lists.infradead.org, lgirdwood@gmail.com,
-        perex@perex.cz, tiwai@suse.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v1 0/1] ASoC: meson: aiu: HDMI codec control
- questions and issues
-Message-ID: <YVryQb3myHBVcIAx@sirena.org.uk>
-References: <20211002234313.3209294-1-martin.blumenstingl@googlemail.com>
- <1j35pivzho.fsf@starbuckisacylon.baylibre.com>
- <CAFBinCCCQebCEdLjYAfWkF4NDPdma8UzVMhHOhZPVreoV2qd2w@mail.gmail.com>
+        id S229945AbhJDM3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 08:29:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48900 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230238AbhJDM3T (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 08:29:19 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FF24C061745
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 05:27:31 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id n2so10955418plk.12
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 05:27:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=seqv46vapK3LYSUO+3R1zuCP1rybYVvrFT5pZqlDw1A=;
+        b=B9th5UxPPKH4IGJzAy4GbFFVV9wEb9q8pYukvEGqowKB/vV/l4UpjJGJxuTbaoHg78
+         P4NiaoBGoOFxqlL0UNnjgC5fCNf64+LIK7RDQyDYplmsBwZnz/23MGV4Va31cqrB4+Wa
+         Ffgtj4gp3UnvQcsgDLmIKLmyIBzXcBqq3aI1hVE8un2jvArUCE+O+wW3fa3zRijAO539
+         0VrjxTo80cRcLs12HoHBba8Z23DkdeNiNrQq2Y/KyZsVjLoLzpbNTDp7JVMuIV/Xu8xJ
+         GmTuBmqDI+tjQujcjTfiUd+06nxInO6B49btOoTnfGuRFWX1t8cQ3sWU6U7mxaAOEm0O
+         h+nw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=seqv46vapK3LYSUO+3R1zuCP1rybYVvrFT5pZqlDw1A=;
+        b=Iy5azMbpi0g+3lw7EBWx09nrLGn7syHX8AI9pyImKUxwTpvLPIjDkW9b3LEq9Kz/AB
+         gAt8USCFWvYt7lItLamlN1I1VLldAaARnXWMCh161MKHbBlJN6NpPc3In9rt5VihiNIk
+         mddVGk8Zrg8FMlgITMejdL+uoTAX3eGg1YDkcstmJ13ynl6CFC1WGr8fWPj4l09MZ4nY
+         XbemvOvPyTq04h5QvzJT/ezcXWzO4hb312Mqew0kA7Bde8yTzmaDV8O8YyoSBkVpu8nL
+         pnZVZOiXXV//Egq43rRcFO0guepAjqD+n3RRX7KF//GSWLU1e555XnHI0pELAZiZHenI
+         Sgkw==
+X-Gm-Message-State: AOAM532XPZHX0XTfkgJXF/8xzmE0vkqOWbbC/FTF726Pd7DgRyo599NP
+        V6UqiuS8Gpz3T2Cs9pASq+m8iQ==
+X-Google-Smtp-Source: ABdhPJxMgsnpiosCKhuEpLJjE3CB+I+h06iBCRwJEbbQ+Z59Ytp3hnFa5B/efn+C3/yQFI4hUws3Ig==
+X-Received: by 2002:a17:90a:f0c4:: with SMTP id fa4mr2614890pjb.245.1633350450588;
+        Mon, 04 Oct 2021 05:27:30 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s ([204.124.181.210])
+        by smtp.gmail.com with ESMTPSA id a10sm14423232pgd.91.2021.10.04.05.27.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Oct 2021 05:27:30 -0700 (PDT)
+Date:   Mon, 4 Oct 2021 20:27:24 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     German Gomez <german.gomez@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org
+Subject: Re: [PATCH 4/5] perf arm-spe: Implement find_snapshot callback
+Message-ID: <20211004122724.GC174271@leoy-ThinkPad-X240s>
+References: <20210916154635.1525-1-german.gomez@arm.com>
+ <20210916154635.1525-4-german.gomez@arm.com>
+ <20210923135016.GG400258@leoy-ThinkPad-X240s>
+ <20210923144048.GB603008@leoy-ThinkPad-X240s>
+ <1c6a3a73-27dc-6673-7fe7-34bc7fcb0a68@arm.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="/+Vq12Du1ArhJUSc"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAFBinCCCQebCEdLjYAfWkF4NDPdma8UzVMhHOhZPVreoV2qd2w@mail.gmail.com>
-X-Cookie: If it heals good, say it.
+In-Reply-To: <1c6a3a73-27dc-6673-7fe7-34bc7fcb0a68@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi German,
 
---/+Vq12Du1ArhJUSc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Thu, Sep 30, 2021 at 01:26:15PM +0100, German Gomez wrote:
 
-On Sun, Oct 03, 2021 at 09:17:39PM +0200, Martin Blumenstingl wrote:
+[...]
 
-> old 32-bit u-boot sources from the Endless Mini do have some
-> documentation on AIU_I2S_SYNC [0]:
-> // 8'b0_000_1_1_10
-> // A write to this register will cause the interface to repeat the current
-> // sample. Can be used to regain synchronization.
-> // A read from this register indicates that the next sample to be sent
-> // out of the interface should go into the _left_ channel of the dac.
+> The patch is indeed based on that commit. The reason behind it is that the
+> values for *head are being wrapped in the driver side (see the macro
+> PERF_IDX2OFF which is used at various points in
+> /drivers/perf/arm_spe_pmu.c).
 
-> There's also a note about AIU_I2S_MISC stating:
-> // Bit 4 if true, force each audio data to left or right according to
-> the bit attached with the audio data
-> // This bit should be used with Register AIU_i2s_sync(0x511) together
+Yes, I noted that Arm SPE driver doesn't use monotonical increasing
+for AUX head.
 
-> To be honest: to me this is not helpful since I don't understand
-> how/why the left channel is of importance.
+> If this callback is not to be added, I believe the driver needs to be
+> updated > first so that the head pointer monotonically increases like in cs-etm. Do
+> you think this makes sense for SPE?
 
-The left channel is important because for most (I think all?) audio
-formats the first channel sent after each frame sync is the left
-channel, if you're trying to resync it's useful to know when a left
-frame is going to be sent.
+Please note, there have two cases should be handled for snapshot mode:
+- Wrap-around case, somehow function __auxtrace_mmap__read() has
+  handled this case, see [1];
+- It's possible that there have overrun case for snapshot mode, e.g.
+  the kernel space receives multiple signals and take snapshot to save
+  Arm SPE trace data into AUX buffer for multiple times, but the
+  userspace tool cannot catch up to save AUX data into perf.data file.
+  Thus the AUX head might be wrapped around for multiple times, for
+  this case, I think monotonically increasing AUX head is the right
+  solution to handle overrun issue.
 
->=20
-> > At the time, It was completely new driver. Even if was not rock solid,
-> > it was still progress and I opted to upstream it with an imperfect 8ch
-> > support so people could help debug it. This was mentioned in the
-> > original submission.
-> >
-> > The other solution is to restrict to 2ch mode and remove
-> > AIU_RST_SOFT_I2S_FAST and AIU_I2S_SYNC pokes. There will be no noise
-> > anymore.
-> I think Christian (Hewitt) agrees on this point as he mentioned that
-> your earlier versions of the AIU code (before it got upstream) were
-> not affected by the "machine gun noise" issue.
-> Does the documentation from above give you any new ideas (assuming
-> that it's correct since it's the best we have)? Should I try playing
-> with AIU_RST_SOFT_I2S_FAST and AIU_I2S_SYNC to see if I can make a
-> difference?
->=20
-> [...]
-> > Here you describe a DAI link (think of it as wires) between the SPDIF
-> > encoder (output) and AIU_HDMI input PCM. This is not what the HW is and
-> > it is not possible.
-> >
-> > Let's start from the HDMI controller.
-> > The designware (on amlogic SoC) has 2 interface for audio input.
-> > 1) PCM/I2S: a classic interface 2 clocks and N data line
-> > 2) SPDIF: The Sony Philips 1 wire interface
-> The Transwitch HDMI TX controller supports these two inputs so even
-> though the IP is different the basic functionality (which we'll
-> discuss below) is the same.
->=20
-> > Whatever comes up on 1) has to be some sort of i2s signal. So SPDIF
-> > won't fly there.
-> I agree with this
->=20
-> > AIU_HDMI output is Hardwired to 1). It is just just a digital mux,
-> > implemented as an ASoC codec which allows to seleted one of 2 audio
-> > sources:
-> > A) the i2s output implemented as part of the AIU
-> > B) the PCM output, part the AUDIN (yes, an output in AUDIN) block. This
-> > is not implemented ATM.
-> This is some interesting information, I thought that PCM was used
-> because PCM audio can be transmitted over SPDIF.
->=20
-> For A) my understanding is different though:
-> - for AIU_HDMI_CLK_DATA_CTRL[5:4] (HDMI_DATA_SEL) your description
-> matches my understanding. For me it makes sense that SPDIF data cannot
-> be selected with this register since it's a one-wire protocol (and
-> doesn't have separate data/clock lines). Value 0x2 selects the I2S
-> data interface
-> - for AIU_HDMI_CLK_DATA_CTRL[1:0] (HDMI_DATA_CLK_SEL) however I have a
-> different understanding: 0x0 disables the clock signal to the HDMI TX
-> controller, 0x1 selects the PCM clock (which now I have learned is
-> related to the AUDIN block) and 0x2 selects the "AIU clock" (see
-> below)
-> - my understanding is that "AIU clock" comes from AIU_CLK_CTRL_MORE[6]
-> (HDMITX_SEL_AOCLKX2) where 0x0 selects "cts_i958 as AIU clk to
-> hdmi_tx_audio_master_clk" (SPDIF clock) and 0x1 selects
-> "cts_aoclkx2_int as AIU clk to hdmi_tx_audio_master_clk" (I2S clock)
->=20
-> So to me this means that there's three different muxes:
-> - data mux to choose between 0x0 (all zeros), 0x1 (PCM) and 0x2 (I2S)
-> - clock mux to choose between 0x0 (disabled), 0x1 (PCM) and 0x2
-> (hdmi_tx_audio_master_clk)
-> - hdmi_tx_audio_master_clk clock mux to choose between 0x0 (cts_i958)
-> and 0x1 (cts_aoclkx2_int)
->=20
-> Based on that I think that it's not possible to have AIU output the
-> I2S and SPDIF signals at the same time to the HDMI TX controller and
-> then letting the HDMI TX controller choose which one to use.
-> Based on whichever signal (I2S or SPDIF) we want to use for HDMI we
-> need to configure AIU accordingly (data and clock).
->=20
-> [...]
-> > It is not meant to. The dai_link and the endpoint are i2s.
-> > Your HDMI controller should have 2 inputs and should have a way to
-> > select one or the other. The format at each of the (internal) input does
-> > not change
-> ah, that makes sense.
-> Let's say AIU has some internal muxing for the HDMI output then AIU
-> would have two outputs as well (let's call them HDMI_OUT_I2S and
-> HDMI_OUT_SPDIF).
-> Then I'd wire up each of these to their corresponding inputs on the
-> HDMI TX controller.
->=20
->=20
-> Best regards,
-> Martin
+So simply say, I think the head pointer monotonically increasing is
+the right thing to do in Arm SPE driver.
 
---/+Vq12Du1ArhJUSc
-Content-Type: application/pgp-signature; name="signature.asc"
+> (note that the patch will skip the wrap-around detection if this is the
+> case,
+> in order to handle both cases in the userspace perf tool).
 
------BEGIN PGP SIGNATURE-----
+Almost agree, I read multiple times but have no idea what's the
+"both cases" in the last sentence.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFa8kAACgkQJNaLcl1U
-h9BMJwf/d07nv9RvNZHG5kWNU/JXFm14eDZ04SF4RdZ8I320a4C5dlJmNPw/jxwL
-XXW9FK3/+o/D7tqAdZhXu+Jo1gng9/SzqhyEntA4mXZSit/QhFkbAtAFCHZe0fPa
-X3/0ed3NpFqQ/kxXXrOKqT58xgd9YmzayJsOmphoqyg5CuwfjXQscOXEDpmmIqAV
-Sa2lMR72R8hQM6LawLuRCctfrGzz27DHwmQU+y0le8rTzwtVY8irYYVRkK+w8R2a
-grsSNGqLupzt5trqsX2vnfD4zaPkAiLlTVFrItxUSVKd/bGu4ibJDUb4l0Qlmwnu
-uAkefotjbjTiYRhE46CruMibys76yQ==
-=X6z2
------END PGP SIGNATURE-----
+Please let me know if anything is not clear.
 
---/+Vq12Du1ArhJUSc--
+Thanks,
+Leo
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/perf/util/auxtrace.c#n1804
