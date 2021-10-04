@@ -2,102 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78BBB420589
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 07:16:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08D47420591
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 07:23:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232524AbhJDFSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 01:18:34 -0400
-Received: from mga17.intel.com ([192.55.52.151]:17601 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232388AbhJDFSd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 01:18:33 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10126"; a="206099171"
-X-IronPort-AV: E=Sophos;i="5.85,344,1624345200"; 
-   d="scan'208";a="206099171"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2021 22:16:45 -0700
-X-IronPort-AV: E=Sophos;i="5.85,344,1624345200"; 
-   d="scan'208";a="566826043"
-Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2021 22:16:39 -0700
-Received: by lahna (sSMTP sendmail emulation); Mon, 04 Oct 2021 08:16:36 +0300
-Date:   Mon, 4 Oct 2021 08:16:36 +0300
-From:   Mika Westerberg <mika.westerberg@linux.intel.com>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Alan Stern <stern@rowland.harvard.edu>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Borislav Petkov <bp@alien8.de>, X86 ML <x86@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andreas Noever <andreas.noever@gmail.com>,
-        Michael Jamet <michael.jamet@intel.com>,
-        Yehezkel Bernat <YehezkelShB@gmail.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jason Wang <jasowang@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v2 4/6] virtio: Initialize authorized attribute for
- confidential guest
-Message-ID: <YVqONA0vhl0/H3QE@lahna>
-References: <CAPcyv4hP6mtzKS-CVb-aKf-kYuiLM771PMxN2zeBEfoj6NbctA@mail.gmail.com>
- <6d1e2701-5095-d110-3b0a-2697abd0c489@linux.intel.com>
- <YVXWaF73gcrlvpnf@kroah.com>
- <1cfdce51-6bb4-f7af-a86b-5854b6737253@linux.intel.com>
- <YVaywQLAboZ6b36V@kroah.com>
- <CAPcyv4gqs=KuGyxFR61QWqF6HKrRg851roCGUqrq585+s2Cm=w@mail.gmail.com>
- <20211001164533.GC505557@rowland.harvard.edu>
- <CAPcyv4i__reKFRP1KjWUov_W5jBQN9_vbUbKRL_V7KMM3oPuuQ@mail.gmail.com>
- <20211001190048.GA512418@rowland.harvard.edu>
- <CAPcyv4hYL51DcBuSuyMRFo5Jcc=zLd=Ugo+H_2saELcZ5AJBeQ@mail.gmail.com>
+        id S232549AbhJDFY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 01:24:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36802 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232437AbhJDFY5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 01:24:57 -0400
+Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29514C061787
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Oct 2021 22:23:09 -0700 (PDT)
+Received: by mail-ua1-x92c.google.com with SMTP id t36so11448822uad.4
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Oct 2021 22:23:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=ifmbnRVePpINkQY1V1Qh4IrZJpniPJH7HtTlSpQGGG4=;
+        b=FRwnOkJOkV5mUk2WdCMhTmqTXSUnnCsrR9PPBRdeClkHClHprapaVGeDBGbI0HyARG
+         OjQw4BC3oJb40i14SHx+o1Cu67LiesYlvWeYErVUIEeEAK6VxAujkREZMTeDsaPySpHt
+         r+BoWOLq6lq2GkxDJZc+CQhzTO4nZLVmDWnCDZbQNueoF/ndfWkprY8L7RBzKFVAsvqG
+         DOwoFOyxhvJjx6Bt9gCrjcZcIxwAmOrX9nAP7XyVNgJmYDX4xdQD/YLEjtz7BqBUPf3q
+         gFd73J4eZsNIkRdhrOSfUNmI6ZsSomHlOEcCuzUaHDkvVDy0DBi3Y9+aw8Pxr5afU4Jp
+         ARoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=ifmbnRVePpINkQY1V1Qh4IrZJpniPJH7HtTlSpQGGG4=;
+        b=13hQvFYiC+phr6rXer09GUmHzxqHO6sHrudKpzmMMnhB6koHTtMgG7EQGDNi5n5Ck/
+         J3KxAtEZtz5Wqszpay0/n5NljcGM/dD3hP+wH04eU9+xQoou3eTLxlErhU/MtbHip7Wq
+         d/zxo89D+SRKIlAoE2+sRlNZZZEONzBMbWX5yCdmM5KZQYWaE1FlBnlolcQvhkcwK0Sj
+         D3WdsFRU7qxwrjTtqV8SJZ7H5AzTV+IULdy1dwfapC5iL87hRMudKePuIJT4e+dKLfI3
+         7mLw2SDUO0V7LclN6je8RQb7H2XLUHXjc+MBaTXdmB71ZUdUkCwIpbfvMBhgWcXUW/mG
+         uFfA==
+X-Gm-Message-State: AOAM533VWWlIH4DTudfdKtkYOYs5Nl5/DJZUGKTAA9Zb6Ud7iNCDKM2d
+        RS9p+sVAEWJ8Wzfqi2U50AMkxrn4my3bsLcKjaY=
+X-Google-Smtp-Source: ABdhPJwZ2lmQYQULQ7LbydosN3Gm2zJz8pfBQz99cgqkI3eVsGCMoX17EgYQY9g9UO6qZ+jklJV6h80SlhyJ0GkWW4Q=
+X-Received: by 2002:ab0:29da:: with SMTP id i26mr4019770uaq.129.1633324987545;
+ Sun, 03 Oct 2021 22:23:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPcyv4hYL51DcBuSuyMRFo5Jcc=zLd=Ugo+H_2saELcZ5AJBeQ@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Received: by 2002:a9f:2376:0:0:0:0:0 with HTTP; Sun, 3 Oct 2021 22:23:06 -0700 (PDT)
+Reply-To: sroomf70@gmail.com
+From:   "Prof. Dr. Diane" <mes64543@gmail.com>
+Date:   Sun, 3 Oct 2021 22:23:07 -0700
+Message-ID: <CAF4hjb9553=ZoKhfMyMqHY30kFShrtFhUkUHnc1qJbRMR+t_zQ@mail.gmail.com>
+Subject: Good Day,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+-- 
+Hello,
+From Prof. Dr Diane,  please a huge amount of payment was made into
+your account. as soon as your respond is noted the payment
+confirmation slip will immediately send to you.  please do not
+hesitate to reply as soon as you receive this message. awaiting your
+urgent reply please.
 
-On Fri, Oct 01, 2021 at 12:57:18PM -0700, Dan Williams wrote:
-> > > Ah, so are you saying that it would be sufficient for USB if the
-> > > generic authorized implementation did something like:
-> > >
-> > > dev->authorized = 1;
-> > > device_attach(dev);
-> > >
-> > > ...for the authorize case, and:
-> > >
-> > > dev->authorize = 0;
-> > > device_release_driver(dev);
-> > >
-> > > ...for the deauthorize case?
-> >
-> > Yes, I think so.  But I haven't tried making this change to test and
-> > see what really happens.
-> 
-> Sounds like a useful path for this effort to explore. Especially as
-> Greg seems to want the proposed "has_probe_authorization" flag in the
-> bus_type to disappear and make this all generic. It just seems that
-> Thunderbolt would need deeper surgery to move what it does in the
-> authorization toggle path into the probe and remove paths.
-> 
-> Mika, do you see a path for Thunderbolt to align its authorization
-> paths behind bus ->probe() ->remove() events similar to what USB might
-> be able to support for a generic authorization path?
-
-In Thunderbolt "authorization" actually means whether there is a PCIe
-tunnel to the device or not. There is no driver bind/unbind happening
-when authorization toggles (well on Thunderbolt bus, there can be on PCI
-bus after the tunnel is established) so I'm not entirely sure how we
-could use the bus ->probe() or ->remove for that to be honest.
+Best regards
+Prof. Dr Diane
