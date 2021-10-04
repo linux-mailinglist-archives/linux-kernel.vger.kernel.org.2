@@ -2,113 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25A2142077E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 10:42:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 175CA420789
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 10:46:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230478AbhJDInp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 04:43:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53262 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229836AbhJDInm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 04:43:42 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49BE6C061745
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 01:41:54 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 2C20F1F422CA;
-        Mon,  4 Oct 2021 09:41:52 +0100 (BST)
-Date:   Mon, 4 Oct 2021 10:41:47 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Sean Nyekjaer <sean@geanix.com>
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] mtd: rawnand: use mutex to protect access while in
- suspend
-Message-ID: <20211004104147.579f3b01@collabora.com>
-In-Reply-To: <20211004065608.3190348-1-sean@geanix.com>
-References: <20211004065608.3190348-1-sean@geanix.com>
-Organization: Collabora
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S229778AbhJDIsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 04:48:01 -0400
+Received: from foss.arm.com ([217.140.110.172]:50132 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229631AbhJDIsA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 04:48:00 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B5EA4101E;
+        Mon,  4 Oct 2021 01:46:11 -0700 (PDT)
+Received: from [10.57.72.173] (unknown [10.57.72.173])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BD6323F66F;
+        Mon,  4 Oct 2021 01:46:09 -0700 (PDT)
+Subject: Re: [PATCH v2 09/17] coresight: trbe: Workaround TRBE errata
+ overwrite in FILL mode
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        maz@kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com,
+        james.morse@arm.com, anshuman.khandual@arm.com, leo.yan@linaro.org,
+        mike.leach@linaro.org, will@kernel.org, lcherian@marvell.com,
+        coresight@lists.linaro.org
+References: <20210921134121.2423546-1-suzuki.poulose@arm.com>
+ <20210921134121.2423546-10-suzuki.poulose@arm.com>
+ <20211001171522.GB3148492@p14s>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <085e398c-767c-1b9b-0780-bed830d936fb@arm.com>
+Date:   Mon, 4 Oct 2021 09:46:07 +0100
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20211001171522.GB3148492@p14s>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon,  4 Oct 2021 08:56:09 +0200
-Sean Nyekjaer <sean@geanix.com> wrote:
+Hi Mathieu
 
-> This will prevent nand_get_device() from returning -EBUSY.
-> It will force mtd_write()/mtd_read() to wait for the nand_resume() to unlock
-> access to the mtd device.
+On 01/10/2021 18:15, Mathieu Poirier wrote:
+> On Tue, Sep 21, 2021 at 02:41:13PM +0100, Suzuki K Poulose wrote:
+>> ARM Neoverse-N2 (#2139208) and Cortex-A710(##2119858) suffers from
+>> an erratum, which when triggered, might cause the TRBE to overwrite
+>> the trace data already collected in FILL mode, in the event of a WRAP.
+>> i.e, the TRBE doesn't stop writing the data, instead wraps to the base
+>> and could write upto 3 cache line size worth trace. Thus, this could
+>> corrupt the trace at the "BASE" pointer.
+>>
+>> The workaround is to program the write pointer 256bytes from the
+>> base, such that if the erratum is triggered, it doesn't overwrite
+>> the trace data that was captured. This skipped region could be
+>> padded with ignore packets at the end of the session, so that
+>> the decoder sees a continuous buffer with some padding at the
+>> beginning. The trace data written at the base is considered
+>> lost as the limit could have been in the middle of the perf
+>> ring buffer, and jumping to the "base" is not acceptable.
+>> We set the flags already to indicate that some amount of trace
+>> was lost during the FILL event IRQ. So this is fine.
+>>
+>> One important change with the work around is, we program the
+>> TRBBASER_EL1 to current page where we are allowed to write.
+>> Otherwise, it could overwrite a region that may be consumed
+>> by the perf. Towards this, we always make sure that the
+>> "handle->head" and thus the trbe_write is PAGE_SIZE aligned,
+>> so that we can set the BASE to the PAGE base and move the
+>> TRBPTR to the 256bytes offset.
+>>
+>> Cc: Mike Leach <mike.leach@linaro.org>
+>> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+>> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+>> Cc: Leo Yan <leo.yan@linaro.org>
+>> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+>> ---
+>> Change since v1:
+>>   - Updated comment with ASCII art
+>>   - Add _BYTES suffix for the space to skip for the work around.
+>> ---
+>>   drivers/hwtracing/coresight/coresight-trbe.c | 144 +++++++++++++++++--
+>>   1 file changed, 132 insertions(+), 12 deletions(-)
+>>
+>> diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
+>> index f569010c672b..983dd5039e52 100644
+>> --- a/drivers/hwtracing/coresight/coresight-trbe.c
+>> +++ b/drivers/hwtracing/coresight/coresight-trbe.c
+>> @@ -16,6 +16,7 @@
+>>   #define pr_fmt(fmt) DRVNAME ": " fmt
+>>   
+>>   #include <asm/barrier.h>
+>> +#include <asm/cpufeature.h>
+>>   #include <asm/cputype.h>
+>>   
+>>   #include "coresight-self-hosted-trace.h"
+>> @@ -84,9 +85,17 @@ struct trbe_buf {
+>>    * per TRBE instance, we keep track of the list of errata that
+>>    * affects the given instance of the TRBE.
+>>    */
+>> -#define TRBE_ERRATA_MAX			0
+>> +#define TRBE_WORKAROUND_OVERWRITE_FILL_MODE	0
+>> +#define TRBE_ERRATA_MAX				1
+>> +
+>> +/*
+>> + * Safe limit for the number of bytes that may be overwritten
+>> + * when the erratum is triggered.
+>> + */
+>> +#define TRBE_WORKAROUND_OVERWRITE_FILL_MODE_SKIP_BYTES	256
+>>   
+>>   static unsigned long trbe_errata_cpucaps[TRBE_ERRATA_MAX] = {
+>> +	[TRBE_WORKAROUND_OVERWRITE_FILL_MODE] = ARM64_WORKAROUND_TRBE_OVERWRITE_FILL_MODE,
+>>   };
+>>   
+>>   /*
+>> @@ -519,10 +528,13 @@ static void trbe_enable_hw(struct trbe_buf *buf)
+>>   	set_trbe_limit_pointer_enabled(buf->trbe_limit);
+>>   }
+>>   
+>> -static enum trbe_fault_action trbe_get_fault_act(u64 trbsr)
+>> +static enum trbe_fault_action trbe_get_fault_act(struct perf_output_handle *handle,
+>> +						 u64 trbsr)
+>>   {
+>>   	int ec = get_trbe_ec(trbsr);
+>>   	int bsc = get_trbe_bsc(trbsr);
+>> +	struct trbe_buf *buf = etm_perf_sink_config(handle);
+>> +	struct trbe_cpudata *cpudata = buf->cpudata;
+>>   
+>>   	WARN_ON(is_trbe_running(trbsr));
+>>   	if (is_trbe_trg(trbsr) || is_trbe_abort(trbsr))
+>> @@ -531,10 +543,16 @@ static enum trbe_fault_action trbe_get_fault_act(u64 trbsr)
+>>   	if ((ec == TRBE_EC_STAGE1_ABORT) || (ec == TRBE_EC_STAGE2_ABORT))
+>>   		return TRBE_FAULT_ACT_FATAL;
+>>   
+>> -	if (is_trbe_wrap(trbsr) && (ec == TRBE_EC_OTHERS) && (bsc == TRBE_BSC_FILLED)) {
+>> -		if (get_trbe_write_pointer() == get_trbe_base_pointer())
+>> -			return TRBE_FAULT_ACT_WRAP;
+>> -	}
+>> +	/*
+>> +	 * If the trbe is affected by TRBE_WORKAROUND_OVERWRITE_FILL_MODE,
+>> +	 * it might write data after a WRAP event in the fill mode.
+>> +	 * Thus the check TRBPTR == TRBBASER will not be honored.
+>> +	 */
+>> +	if ((is_trbe_wrap(trbsr) && (ec == TRBE_EC_OTHERS) && (bsc == TRBE_BSC_FILLED)) &&
+>> +	    (trbe_has_erratum(cpudata, TRBE_WORKAROUND_OVERWRITE_FILL_MODE) ||
+>> +	     get_trbe_write_pointer() == get_trbe_base_pointer()))
+>> +		return TRBE_FAULT_ACT_WRAP;
+>> +
 > 
-> Then we avoid -EBUSY is returned to ubifsi via mtd_write()/mtd_read(),
-> that will in turn hard error on every error returened.
-> We have seen during ubifs tries to call mtd_write before the mtd device
-> is resumed.
+> I'm very perplexed by the trbe_has_erratum() infrastructure... Since this is a
+> TRBE the code will always run on the CPU it is associated with, and if
+> I'm correct here we could call this_cpu_has_cap() directly with the same
+> outcome.  I doubt that all divers using the cpucaps subsystem carry a shadow
+> structure to keep the same information.
 
-I think the problem is here. Why would UBIFS/UBI try to write something
-to a device that's not resumed yet (or has been suspended already, if
-you hit this in the suspend path).
+Very valid question. Of course, we can use the this_cpu_has_cap()
+helper. Unlike the cpus_have_*_cap() - which gives you the system
+wide status of the erratum - the cpucap doesn't keep a cache of which
+CPUs are affected by a given erratum. Thus this_cpu_has_cap() would
+involve running the detection on the current CPU everytime we call it.
+i.e, scanning the MIDR of the CPU through the list of affected MIDRs
+for the given erratum. This is a bit of overhead.
 
-> 
-> Exec_op[0] speed things up, so we see this race when the device is
-> resuming. But it's actually "mtd: rawnand: Simplify the locking" that
-> allows it to return -EBUSY, before that commit it would have waited for
-> the mtd device to resume.
+Given that we already have CPU specific information in trbe_cpudata, I
+chose to cache the affected errata locally. This gives us quick access
+to the erratum for individual TRBE instances. Of course this list is
+initialised at TRBE probe and thus avoids us having to do the costly
+check, each time we need it. I could make this clear in the patch
+which introduces the framework.
 
-Uh, wait. If nand_resume() was called before any writes/reads this
-wouldn't happen. IMHO, the problem is not that we return -EBUSY without
-blocking, the problem is that someone issues a write/read before calling
-mtd_resume().
 
-> 
-> Tested on a iMX6ULL.
-> 
-> [0]:
-> ef347c0cfd61 ("mtd: rawnand: gpmi: Implement exec_op")
-> 
-> Fixes: 013e6292aaf5 ("mtd: rawnand: Simplify the locking")
-> Signed-off-by: Sean Nyekjaer <sean@geanix.com>
-> ---
-> 
-> I did this a RFC as we probably will need to remove the suspended
-> variable as it's kinda made obsolute by this change.
-> Should we introduce a new mutex? Or maybe a spin_lock?
-> 
->  drivers/mtd/nand/raw/nand_base.c | 2 --
->  1 file changed, 2 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-> index 3d6c6e880520..0ea343404cac 100644
-> --- a/drivers/mtd/nand/raw/nand_base.c
-> +++ b/drivers/mtd/nand/raw/nand_base.c
-> @@ -4567,7 +4567,6 @@ static int nand_suspend(struct mtd_info *mtd)
->  		ret = chip->ops.suspend(chip);
->  	if (!ret)
->  		chip->suspended = 1;
-> -	mutex_unlock(&chip->lock);
+Thanks for the review
 
-Hm, I'm not sure keeping the lock when you're in a suspended state
-is a good idea. It just papers over another bug IMO (see above).
+Suzuki
 
->  
->  	return ret;
->  }
-> @@ -4580,7 +4579,6 @@ static void nand_resume(struct mtd_info *mtd)
->  {
->  	struct nand_chip *chip = mtd_to_nand(mtd);
->  
-> -	mutex_lock(&chip->lock);
->  	if (chip->suspended) {
->  		if (chip->ops.resume)
->  			chip->ops.resume(chip);
-
+> Thanks,
+> Mathieu
