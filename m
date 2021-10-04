@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D5AE421019
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:38:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39695420D82
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:14:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238521AbhJDNki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:40:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51998 "EHLO mail.kernel.org"
+        id S236158AbhJDNP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:15:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53200 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238490AbhJDNih (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:38:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DACAB61B31;
-        Mon,  4 Oct 2021 13:17:40 +0000 (UTC)
+        id S236338AbhJDNNv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:13:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8700961B95;
+        Mon,  4 Oct 2021 13:05:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633353461;
-        bh=QYt9trg1oSaefnwroeaWSvTpXmJbnJK1xVb51c0jn6U=;
+        s=korg; t=1633352729;
+        bh=WzMOgXrvb4YTkBj40OMzlVskVhLCOeCwBl4ym3E/mt0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RJg16r96z0vpI8enwFcfApXFH0eSXhDlY5uDUECh3kyBnS6EHjCeu9o/zLBla4+GY
-         KnMTetwbyMwfNGyARZ+DsbzL8i4nJlNqqFyCv7pZ+nWRCTpSpxFebtvYxj4sv2h7/W
-         Hkuib3LH0PRIJg0Bf1pvhAjXMVN9QSZHXho15epw=
+        b=ANLLtOUiXwx1Qtnodf3rpE/KOwAk3VL+3927DdZhAlb1Ms09Pw5fLlcnEm31oykI4
+         3c7k+Yj8D7Zt6XnFzYlUQ5Q/QkA7zIIYEk7gPqx+ompwyFp1qZwnYWsg3E8+JjFK0D
+         9DI0cV3u5auv9UtmJK2ZxPDz0b8zq0CrkyLbLghk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guangbin Huang <huangguangbin2@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 130/172] net: hns3: fix always enable rx vlan filter problem after selftest
-Date:   Mon,  4 Oct 2021 14:53:00 +0200
-Message-Id: <20211004125049.163432672@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?minihanshen ?= <minihanshen@tencent.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        John Allen <john.allen@amd.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Subject: [PATCH 4.19 91/95] crypto: ccp - fix resource leaks in ccp_run_aes_gcm_cmd()
+Date:   Mon,  4 Oct 2021 14:53:01 +0200
+Message-Id: <20211004125036.548491377@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
-References: <20211004125044.945314266@linuxfoundation.org>
+In-Reply-To: <20211004125033.572932188@linuxfoundation.org>
+References: <20211004125033.572932188@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,52 +42,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guangbin Huang <huangguangbin2@huawei.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 27bf4af69fcb9845fb2f0076db5d562ec072e70f ]
+commit 505d9dcb0f7ddf9d075e729523a33d38642ae680 upstream.
 
-Currently, the rx vlan filter will always be disabled before selftest and
-be enabled after selftest as the rx vlan filter feature is fixed on in
-old device earlier than V3.
+There are three bugs in this code:
 
-However, this feature is not fixed in some new devices and it can be
-disabled by user. In this case, it is wrong if rx vlan filter is enabled
-after selftest. So fix it.
+1) If we ccp_init_data() fails for &src then we need to free aad.
+   Use goto e_aad instead of goto e_ctx.
+2) The label to free the &final_wa was named incorrectly as "e_tag" but
+   it should have been "e_final_wa".  One error path leaked &final_wa.
+3) The &tag was leaked on one error path.  In that case, I added a free
+   before the goto because the resource was local to that block.
 
-Fixes: bcc26e8dc432 ("net: hns3: remove unused code in hns3_self_test()")
-Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 36cf515b9bbe ("crypto: ccp - Enable support for AES GCM on v5 CCPs")
+Reported-by: "minihanshen(沈明航)" <minihanshen@tencent.com>
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Reviewed-by: John Allen <john.allen@amd.com>
+Tested-by: John Allen <john.allen@amd.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/crypto/ccp/ccp-ops.c |   14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c b/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c
-index 69b253424da8..83ee0f41322c 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c
-@@ -348,7 +348,8 @@ static void hns3_selftest_prepare(struct net_device *ndev,
+--- a/drivers/crypto/ccp/ccp-ops.c
++++ b/drivers/crypto/ccp/ccp-ops.c
+@@ -783,7 +783,7 @@ ccp_run_aes_gcm_cmd(struct ccp_cmd_queue
+ 				    in_place ? DMA_BIDIRECTIONAL
+ 					     : DMA_TO_DEVICE);
+ 		if (ret)
+-			goto e_ctx;
++			goto e_aad;
  
- #if IS_ENABLED(CONFIG_VLAN_8021Q)
- 	/* Disable the vlan filter for selftest does not support it */
--	if (h->ae_algo->ops->enable_vlan_filter)
-+	if (h->ae_algo->ops->enable_vlan_filter &&
-+	    ndev->features & NETIF_F_HW_VLAN_CTAG_FILTER)
- 		h->ae_algo->ops->enable_vlan_filter(h, false);
- #endif
+ 		if (in_place) {
+ 			dst = src;
+@@ -868,7 +868,7 @@ ccp_run_aes_gcm_cmd(struct ccp_cmd_queue
+ 	op.u.aes.size = 0;
+ 	ret = cmd_q->ccp->vdata->perform->aes(&op);
+ 	if (ret)
+-		goto e_dst;
++		goto e_final_wa;
  
-@@ -373,7 +374,8 @@ static void hns3_selftest_restore(struct net_device *ndev, bool if_running)
- 		h->ae_algo->ops->halt_autoneg(h, false);
+ 	if (aes->action == CCP_AES_ACTION_ENCRYPT) {
+ 		/* Put the ciphered tag after the ciphertext. */
+@@ -878,17 +878,19 @@ ccp_run_aes_gcm_cmd(struct ccp_cmd_queue
+ 		ret = ccp_init_dm_workarea(&tag, cmd_q, authsize,
+ 					   DMA_BIDIRECTIONAL);
+ 		if (ret)
+-			goto e_tag;
++			goto e_final_wa;
+ 		ret = ccp_set_dm_area(&tag, 0, p_tag, 0, authsize);
+-		if (ret)
+-			goto e_tag;
++		if (ret) {
++			ccp_dm_free(&tag);
++			goto e_final_wa;
++		}
  
- #if IS_ENABLED(CONFIG_VLAN_8021Q)
--	if (h->ae_algo->ops->enable_vlan_filter)
-+	if (h->ae_algo->ops->enable_vlan_filter &&
-+	    ndev->features & NETIF_F_HW_VLAN_CTAG_FILTER)
- 		h->ae_algo->ops->enable_vlan_filter(h, true);
- #endif
+ 		ret = crypto_memneq(tag.address, final_wa.address,
+ 				    authsize) ? -EBADMSG : 0;
+ 		ccp_dm_free(&tag);
+ 	}
  
--- 
-2.33.0
-
+-e_tag:
++e_final_wa:
+ 	ccp_dm_free(&final_wa);
+ 
+ e_dst:
 
 
