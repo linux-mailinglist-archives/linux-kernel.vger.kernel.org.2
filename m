@@ -2,35 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E0F6420CDD
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:08:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFCC5420FBC
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:35:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235360AbhJDNJq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:09:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39808 "EHLO mail.kernel.org"
+        id S237938AbhJDNhc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:37:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48662 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233874AbhJDNHx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:07:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C5AE6139F;
-        Mon,  4 Oct 2021 13:01:57 +0000 (UTC)
+        id S237885AbhJDNfa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:35:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CA3B461BAA;
+        Mon,  4 Oct 2021 13:16:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352518;
-        bh=ai6t8Io9YxNczUiR+Rh8jbyDH7qVOcOTOC9EGJBkAPA=;
+        s=korg; t=1633353366;
+        bh=HSo0HeoTq6932krhI7dspLP/+JlyL66tOuDir8PxY7w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o5NSQ7Wc1RZD1zd58N4IhppMv9+GtqTGgtKEFkmP2wHABjU8Gfw27daoFUSfLECvO
-         ONzIV6uZ8bfE0hc0RTTNSZkn45ErL1byoEo9IwEFnEXsXTB7iJbUYRMEznQVbsaY5Z
-         w7TDi2rfzvLH28wM6t9J2O2VHmO5ULKiYhjGf0W0=
+        b=XO4t4BjCqebfSnyNCwtvPA42rP4Pvi+m4OnhCAkddvLXF4YuLKkLBvoaX05K3oM+F
+         SRC70qkdBOOlDBxTl5TPoDXhkn8826GbQsSILsFh35+SJUm9PObUQ7fAszdZiVLB+3
+         UvLoOxwc2Qx3shlJwn2eAhEy0f0WJ412LH2SVllo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.19 18/95] net: hso: fix muxed tty registration
+        stable@vger.kernel.org, Peter Gonda <pgonda@google.com>,
+        Marc Orr <marcorr@google.com>,
+        Nathan Tempelman <natet@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Steve Rutherford <srutherford@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>, kvm@vger.kernel.org
+Subject: [PATCH 5.14 058/172] KVM: SEV: Allow some commands for mirror VM
 Date:   Mon,  4 Oct 2021 14:51:48 +0200
-Message-Id: <20211004125034.148261499@linuxfoundation.org>
+Message-Id: <20211004125046.868220573@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125033.572932188@linuxfoundation.org>
-References: <20211004125033.572932188@linuxfoundation.org>
+In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
+References: <20211004125044.945314266@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,59 +44,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Peter Gonda <pgonda@google.com>
 
-commit e8f69b16ee776da88589b5271e3f46020efc8f6c upstream.
+commit 5b92b6ca92b65bef811048c481e4446f4828500a upstream.
 
-If resource allocation and registration fail for a muxed tty device
-(e.g. if there are no more minor numbers) the driver should not try to
-deregister the never-registered (or already-deregistered) tty.
+A mirrored SEV-ES VM will need to call KVM_SEV_LAUNCH_UPDATE_VMSA to
+setup its vCPUs and have them measured, and their VMSAs encrypted. Without
+this change, it is impossible to have mirror VMs as part of SEV-ES VMs.
 
-Fix up the error handling to avoid dereferencing a NULL pointer when
-attempting to remove the character device.
+Also allow the guest status check and debugging commands since they do
+not change any guest state.
 
-Fixes: 72dc1c096c70 ("HSO: add option hso driver")
-Cc: stable@vger.kernel.org	# 2.6.27
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Peter Gonda <pgonda@google.com>
+Cc: Marc Orr <marcorr@google.com>
+Cc: Nathan Tempelman <natet@google.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>
+Cc: Sean Christopherson <seanjc@google.com>
+Cc: Steve Rutherford <srutherford@google.com>
+Cc: Brijesh Singh <brijesh.singh@amd.com>
+Cc: kvm@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: stable@vger.kernel.org
+Fixes: 54526d1fd593 ("KVM: x86: Support KVM VMs sharing SEV context", 2021-04-21)
+Message-Id: <20210921150345.2221634-3-pgonda@google.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/usb/hso.c |   12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
+ arch/x86/kvm/svm/sev.c |   19 +++++++++++++++++--
+ 1 file changed, 17 insertions(+), 2 deletions(-)
 
---- a/drivers/net/usb/hso.c
-+++ b/drivers/net/usb/hso.c
-@@ -2714,14 +2714,14 @@ struct hso_device *hso_create_mux_serial
+--- a/arch/x86/kvm/svm/sev.c
++++ b/arch/x86/kvm/svm/sev.c
+@@ -1509,6 +1509,20 @@ static int sev_receive_finish(struct kvm
+ 	return sev_issue_cmd(kvm, SEV_CMD_RECEIVE_FINISH, &data, &argp->error);
+ }
  
- 	serial = kzalloc(sizeof(*serial), GFP_KERNEL);
- 	if (!serial)
--		goto exit;
-+		goto err_free_dev;
++static bool cmd_allowed_from_miror(u32 cmd_id)
++{
++	/*
++	 * Allow mirrors VM to call KVM_SEV_LAUNCH_UPDATE_VMSA to enable SEV-ES
++	 * active mirror VMs. Also allow the debugging and status commands.
++	 */
++	if (cmd_id == KVM_SEV_LAUNCH_UPDATE_VMSA ||
++	    cmd_id == KVM_SEV_GUEST_STATUS || cmd_id == KVM_SEV_DBG_DECRYPT ||
++	    cmd_id == KVM_SEV_DBG_ENCRYPT)
++		return true;
++
++	return false;
++}
++
+ int svm_mem_enc_op(struct kvm *kvm, void __user *argp)
+ {
+ 	struct kvm_sev_cmd sev_cmd;
+@@ -1525,8 +1539,9 @@ int svm_mem_enc_op(struct kvm *kvm, void
  
- 	hso_dev->port_data.dev_serial = serial;
- 	serial->parent = hso_dev;
+ 	mutex_lock(&kvm->lock);
  
- 	if (hso_serial_common_create
- 	    (serial, 1, CTRL_URB_RX_SIZE, CTRL_URB_TX_SIZE))
--		goto exit;
-+		goto err_free_serial;
- 
- 	serial->tx_data_length--;
- 	serial->write_data = hso_mux_serial_write_data;
-@@ -2737,11 +2737,9 @@ struct hso_device *hso_create_mux_serial
- 	/* done, return it */
- 	return hso_dev;
- 
--exit:
--	if (serial) {
--		tty_unregister_device(tty_drv, serial->minor);
--		kfree(serial);
--	}
-+err_free_serial:
-+	kfree(serial);
-+err_free_dev:
- 	kfree(hso_dev);
- 	return NULL;
- 
+-	/* enc_context_owner handles all memory enc operations */
+-	if (is_mirroring_enc_context(kvm)) {
++	/* Only the enc_context_owner handles some memory enc operations. */
++	if (is_mirroring_enc_context(kvm) &&
++	    !cmd_allowed_from_miror(sev_cmd.id)) {
+ 		r = -EINVAL;
+ 		goto out;
+ 	}
 
 
