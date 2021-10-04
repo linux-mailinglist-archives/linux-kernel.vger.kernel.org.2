@@ -2,124 +2,389 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70F51420B02
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:41:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A036420B0D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:42:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233132AbhJDMne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 08:43:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54012 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229836AbhJDMnc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 08:43:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EF906124C;
-        Mon,  4 Oct 2021 12:41:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633351303;
-        bh=JefH+xuB/XiNG/HUrhn62tZnfeWCj3Rpehje4Cw3ico=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=idWFkCK/FKj918ITXPNEkBQnpFKm8qs6VC6n7TqNWORZD6pO+t2wc2kFGFcYbzy4E
-         JPYitjc/JaGc+BBWZRrHWcq68ELguWAXcGw9EXTZ6bvUtEFf3LdyqEKZ1f0alzcmq+
-         ODbQKdMGSxINxd9IVOui2FeaDGf1qcXgxal7KpnkK5NluAUPQ5OKo8VczOaRegb5OC
-         sMSEH1bwIln4PlM4IGaqgTEjRP6kFTugwVb4fsRBdrxXNgnwJ3DN2Wx9CWQdc2CIgc
-         2D+Zlfj+EwmhSJOIrS+NYwm8arDYXOlhrmvg5vWoBUKsSNjnw8BtDdMJ2BRTxAYVZ8
-         AJr34dXmd3eEg==
-Date:   Mon, 4 Oct 2021 14:41:41 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
-Subject: Re: [PATCH 03/11] rcu/nocb: Invoke rcu_core() at the start of
- deoffloading
-Message-ID: <20211004124141.GA272717@lothringen>
-References: <20210929221012.228270-1-frederic@kernel.org>
- <20210929221012.228270-4-frederic@kernel.org>
- <87czoomy7n.mognet@arm.com>
+        id S233203AbhJDMoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 08:44:01 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:52544 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229836AbhJDMn7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 08:43:59 -0400
+X-UUID: 784c8b32dd2d4ef58c677c74b43a6ce7-20211004
+X-UUID: 784c8b32dd2d4ef58c677c74b43a6ce7-20211004
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+        (envelope-from <sam.shih@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1532807696; Mon, 04 Oct 2021 20:42:06 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.2.792.15; Mon, 4 Oct 2021 20:42:04 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 4 Oct 2021 20:42:04 +0800
+From:   Sam Shih <sam.shih@mediatek.com>
+To:     <maz@kernel.org>, <matthias.bgg@gmail.com>
+CC:     <Ryder.Lee@mediatek.com>, <devicetree@vger.kernel.org>,
+        <enric.balletbo@collabora.com>, <fparent@baylibre.com>,
+        <gregkh@linuxfoundation.org>, <herbert@gondor.apana.org.au>,
+        <hsinyi@chromium.org>, <john@phrozen.org>,
+        <linus.walleij@linaro.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-clk@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
+        <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-serial@vger.kernel.org>, <linux-watchdog@vger.kernel.org>,
+        <linux@roeck-us.net>, <mpm@selenic.com>, <mturquette@baylibre.com>,
+        <robh+dt@kernel.org>, <sam.shih@mediatek.com>, <sboyd@kernel.org>,
+        <sean.wang@kernel.org>, <seiya.wang@mediatek.com>,
+        <wim@linux-watchdog.org>
+Subject: [v5,8/9] arm64: dts: mediatek: add mt7986a support
+Date:   Mon, 4 Oct 2021 20:41:55 +0800
+Message-ID: <20211004124155.1404-1-sam.shih@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <878rz9rtky.wl-maz@kernel.org>
+References: <878rz9rtky.wl-maz@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87czoomy7n.mognet@arm.com>
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 01, 2021 at 06:50:04PM +0100, Valentin Schneider wrote:
-> On 30/09/21 00:10, Frederic Weisbecker wrote:
-> > On PREEMPT_RT, if rcu_core() is preempted by the de-offloading process,
-> > some work, such as callbacks acceleration and invocation, may be left
-> > unattended due to the volatile checks on the offloaded state.
-> >
-> > In the worst case this work is postponed until the next rcu_pending()
-> > check that can take a jiffy to reach, which can be a problem in case
-> > of callbacks flooding.
-> >
-> > Solve that with invoking rcu_core() early in the de-offloading process.
-> > This way any work dismissed by an ongoing rcu_core() call fooled by
-> > a preempting deoffloading process will be caught up by a nearby future
-> > recall to rcu_core(), this time fully aware of the de-offloading state.
-> >
-> > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> > Cc: Valentin Schneider <valentin.schneider@arm.com>
-> > Cc: Peter Zijlstra <peterz@infradead.org>
-> > Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> > Cc: Josh Triplett <josh@joshtriplett.org>
-> > Cc: Joel Fernandes <joel@joelfernandes.org>
-> > Cc: Boqun Feng <boqun.feng@gmail.com>
-> > Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
-> > Cc: Uladzislau Rezki <urezki@gmail.com>
-> > Cc: Thomas Gleixner <tglx@linutronix.de>
-> 
-> One comment/question below.
-> 
-> > @@ -990,6 +990,15 @@ static long rcu_nocb_rdp_deoffload(void *arg)
-> >        * will refuse to put anything into the bypass.
-> >        */
-> >       WARN_ON_ONCE(!rcu_nocb_flush_bypass(rdp, NULL, jiffies));
-> > +	/*
-> > +	 * Start with invoking rcu_core() early. This way if the current thread
-> > +	 * happens to preempt an ongoing call to rcu_core() in the middle,
-> > +	 * leaving some work dismissed because rcu_core() still thinks the rdp is
-> > +	 * completely offloaded, we are guaranteed a nearby future instance of
-> > +	 * rcu_core() to catch up.
-> > +	 */
-> > +	rcu_segcblist_set_flags(cblist, SEGCBLIST_RCU_CORE);
-> > +	invoke_rcu_core();
-> 
-> I think your approach is a bit neater, but would there have been any issue
-> with keeping the setting of SEGCBLIST_RCU_CORE within
-> rcu_segcblist_offload() and bundling it with an invoke_rcu_core()?
+Add basic chip support for Mediatek mt7986a, include
+uart nodes with correct clocks, rng node with correct clock,
+and watchdog node and mt7986a pinctrl node.
 
-Probably not in practice.
+Add cpu node, timer node, gic node, psci and reserved-memory node
+for ARM Trusted Firmware,
 
-But in theory, it may be more comfortable to read the following in order:
+Add clock controller nodes, include 40M clock source, topckgen, infracfg,
+apmixedsys and ethernet subsystem.
 
-1) Set SEGCBLIST_RCU_CORE so subsequent invocations of rcu_core() handle
-callbacks
+Signed-off-by: Sam Shih <sam.shih@mediatek.com>
+---
+v5: follow reviewr's comment: removed clock freqency node in timer due to
+    we have set CNTFRQ_EL0 in ATF firmware, and also corrected GICD range
+v4: added missing gic register bases, and fixed range of GICR
+v3: used the stdout-path instead of console=ttyS0
+v2: modified clock and uart node due to clock driver updated
+---
+ arch/arm64/boot/dts/mediatek/Makefile        |   1 +
+ arch/arm64/boot/dts/mediatek/mt7986a-rfb.dts |  54 +++++
+ arch/arm64/boot/dts/mediatek/mt7986a.dtsi    | 229 +++++++++++++++++++
+ 3 files changed, 284 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/mediatek/mt7986a-rfb.dts
+ create mode 100644 arch/arm64/boot/dts/mediatek/mt7986a.dtsi
 
-2) Invoke rcu_core()
+diff --git a/arch/arm64/boot/dts/mediatek/Makefile b/arch/arm64/boot/dts/mediatek/Makefile
+index 4f68ebed2e31..e6c3a73b9e4a 100644
+--- a/arch/arm64/boot/dts/mediatek/Makefile
++++ b/arch/arm64/boot/dts/mediatek/Makefile
+@@ -7,6 +7,7 @@ dtb-$(CONFIG_ARCH_MEDIATEK) += mt6797-evb.dtb
+ dtb-$(CONFIG_ARCH_MEDIATEK) += mt6797-x20-dev.dtb
+ dtb-$(CONFIG_ARCH_MEDIATEK) += mt7622-rfb1.dtb
+ dtb-$(CONFIG_ARCH_MEDIATEK) += mt7622-bananapi-bpi-r64.dtb
++dtb-$(CONFIG_ARCH_MEDIATEK) += mt7986a-rfb.dtb
+ dtb-$(CONFIG_ARCH_MEDIATEK) += mt8167-pumpkin.dtb
+ dtb-$(CONFIG_ARCH_MEDIATEK) += mt8173-elm.dtb
+ dtb-$(CONFIG_ARCH_MEDIATEK) += mt8173-elm-hana.dtb
+diff --git a/arch/arm64/boot/dts/mediatek/mt7986a-rfb.dts b/arch/arm64/boot/dts/mediatek/mt7986a-rfb.dts
+new file mode 100644
+index 000000000000..e210d03ba70a
+--- /dev/null
++++ b/arch/arm64/boot/dts/mediatek/mt7986a-rfb.dts
+@@ -0,0 +1,54 @@
++// SPDX-License-Identifier: (GPL-2.0 OR MIT)
++/*
++ * Copyright (C) 2021 MediaTek Inc.
++ * Author: Sam.Shih <sam.shih@mediatek.com>
++ */
++
++/dts-v1/;
++#include "mt7986a.dtsi"
++
++/ {
++	model = "MediaTek MT7986a RFB";
++	compatible = "mediatek,mt7986a-rfb";
++
++	aliases {
++		serial0 = &uart0;
++	};
++
++	chosen {
++		stdout-path = "serial0:115200n8";
++		bootargs = "earlycon=uart8250,mmio32,0x11002000 swiotlb=512";
++	};
++};
++
++&uart0 {
++	status = "okay";
++};
++
++&uart1 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&uart1_pins>;
++	status = "okay";
++};
++
++&uart2 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&uart2_pins>;
++	status = "okay";
++};
++
++&pio {
++	uart1_pins: uart1-pins-42-to-45 {
++		mux {
++			function = "uart";
++			groups = "uart1";
++		};
++	};
++
++	uart2_pins: uart1-pins-46-to-49 {
++		mux {
++			function = "uart";
++			groups = "uart2";
++		};
++	};
++};
+diff --git a/arch/arm64/boot/dts/mediatek/mt7986a.dtsi b/arch/arm64/boot/dts/mediatek/mt7986a.dtsi
+new file mode 100644
+index 000000000000..d126fb7218c6
+--- /dev/null
++++ b/arch/arm64/boot/dts/mediatek/mt7986a.dtsi
+@@ -0,0 +1,229 @@
++// SPDX-License-Identifier: (GPL-2.0 OR MIT)
++/*
++ * Copyright (C) 2021 MediaTek Inc.
++ * Author: Sam.Shih <sam.shih@mediatek.com>
++ */
++
++#include <dt-bindings/interrupt-controller/irq.h>
++#include <dt-bindings/interrupt-controller/arm-gic.h>
++#include <dt-bindings/clock/mt7986-clk.h>
++
++/ {
++	compatible = "mediatek,mt7986a";
++	interrupt-parent = <&gic>;
++	#address-cells = <2>;
++	#size-cells = <2>;
++
++	clk40m: oscillator@0 {
++		compatible = "fixed-clock";
++		#clock-cells = <0>;
++		clock-frequency = <40000000>;
++		clock-output-names = "clkxtal";
++	};
++
++	cpus {
++		#address-cells = <1>;
++		#size-cells = <0>;
++		cpu0: cpu@0 {
++			device_type = "cpu";
++			compatible = "arm,cortex-a53";
++			enable-method = "psci";
++			reg = <0x0>;
++			#cooling-cells = <2>;
++		};
++
++		cpu1: cpu@1 {
++			device_type = "cpu";
++			compatible = "arm,cortex-a53";
++			enable-method = "psci";
++			reg = <0x1>;
++			#cooling-cells = <2>;
++		};
++
++		cpu2: cpu@2 {
++			device_type = "cpu";
++			compatible = "arm,cortex-a53";
++			enable-method = "psci";
++			reg = <0x2>;
++			#cooling-cells = <2>;
++		};
++
++		cpu3: cpu@3 {
++			device_type = "cpu";
++			enable-method = "psci";
++			compatible = "arm,cortex-a53";
++			reg = <0x3>;
++			#cooling-cells = <2>;
++		};
++	};
++
++	psci {
++		compatible  = "arm,psci-0.2";
++		method      = "smc";
++	};
++
++	reserved-memory {
++		#address-cells = <2>;
++		#size-cells = <2>;
++		ranges;
++		/* 192 KiB reserved for ARM Trusted Firmware (BL31) */
++		secmon_reserved: secmon@43000000 {
++			reg = <0 0x43000000 0 0x30000>;
++			no-map;
++		};
++	};
++
++	timer {
++		compatible = "arm,armv8-timer";
++		interrupt-parent = <&gic>;
++		interrupts = <GIC_PPI 13 IRQ_TYPE_LEVEL_LOW>,
++			     <GIC_PPI 14 IRQ_TYPE_LEVEL_LOW>,
++			     <GIC_PPI 11 IRQ_TYPE_LEVEL_LOW>,
++			     <GIC_PPI 10 IRQ_TYPE_LEVEL_LOW>;
++	};
++
++	soc {
++		#address-cells = <2>;
++		#size-cells = <2>;
++		compatible = "simple-bus";
++		ranges;
++
++		gic: interrupt-controller@c000000 {
++			compatible = "arm,gic-v3";
++			#interrupt-cells = <3>;
++			interrupt-parent = <&gic>;
++			interrupt-controller;
++			reg = <0 0x0c000000 0 0x10000>,  /* GICD */
++			      <0 0x0c080000 0 0x80000>,  /* GICR */
++			      <0 0x0c400000 0 0x2000>,   /* GICC */
++			      <0 0x0c410000 0 0x1000>,   /* GICH */
++			      <0 0x0c420000 0 0x2000>;   /* GICV */
++			interrupts = <GIC_PPI 9 IRQ_TYPE_LEVEL_HIGH>;
++		};
++
++		infracfg: infracfg@10001000 {
++			compatible = "mediatek,mt7986-infracfg", "syscon";
++			reg = <0 0x10001000 0 0x1000>;
++			#clock-cells = <1>;
++		};
++
++		topckgen: topckgen@1001b000 {
++			compatible = "mediatek,mt7986-topckgen", "syscon";
++			reg = <0 0x1001B000 0 0x1000>;
++			#clock-cells = <1>;
++		};
++
++		watchdog: watchdog@1001c000 {
++			compatible = "mediatek,mt7986-wdt",
++				     "mediatek,mt6589-wdt";
++			reg = <0 0x1001c000 0 0x1000>;
++			interrupts = <GIC_SPI 110 IRQ_TYPE_LEVEL_HIGH>;
++			#reset-cells = <1>;
++			status = "disabled";
++		};
++
++		apmixedsys: apmixedsys@1001e000 {
++			compatible = "mediatek,mt7986-apmixedsys";
++			reg = <0 0x1001E000 0 0x1000>;
++			#clock-cells = <1>;
++		};
++
++		pio: pinctrl@1001f000 {
++			compatible = "mediatek,mt7986a-pinctrl";
++			reg = <0 0x1001f000 0 0x1000>,
++			      <0 0x11c30000 0 0x1000>,
++			      <0 0x11c40000 0 0x1000>,
++			      <0 0x11e20000 0 0x1000>,
++			      <0 0x11e30000 0 0x1000>,
++			      <0 0x11f00000 0 0x1000>,
++			      <0 0x11f10000 0 0x1000>,
++			      <0 0x1000b000 0 0x1000>;
++			reg-names = "gpio_base", "iocfg_rt_base", "iocfg_rb_base",
++				    "iocfg_lt_base", "iocfg_lb_base", "iocfg_tr_base",
++				    "iocfg_tl_base", "eint";
++			gpio-controller;
++			#gpio-cells = <2>;
++			gpio-ranges = <&pio 0 0 100>;
++			interrupt-controller;
++			interrupts = <GIC_SPI 225 IRQ_TYPE_LEVEL_HIGH>;
++			interrupt-parent = <&gic>;
++			#interrupt-cells = <2>;
++		};
++
++		sgmiisys0: syscon@10060000 {
++			compatible = "mediatek,mt7986-sgmiisys_0",
++				     "syscon";
++			reg = <0 0x10060000 0 0x1000>;
++			#clock-cells = <1>;
++		};
++
++		sgmiisys1: syscon@10070000 {
++			compatible = "mediatek,mt7986-sgmiisys_1",
++				     "syscon";
++			reg = <0 0x10070000 0 0x1000>;
++			#clock-cells = <1>;
++		};
++
++		trng: trng@1020f000 {
++			compatible = "mediatek,mt7986-rng",
++				     "mediatek,mt7623-rng";
++			reg = <0 0x1020f000 0 0x100>;
++			clocks = <&infracfg CLK_INFRA_TRNG_CK>;
++			clock-names = "rng";
++			status = "disabled";
++		};
++
++		uart0: serial@11002000 {
++			compatible = "mediatek,mt7986-uart",
++				     "mediatek,mt6577-uart";
++			reg = <0 0x11002000 0 0x400>;
++			interrupts = <GIC_SPI 123 IRQ_TYPE_LEVEL_HIGH>;
++			clocks = <&infracfg CLK_INFRA_UART0_SEL>,
++				 <&infracfg CLK_INFRA_UART0_CK>;
++			clock-names = "baud", "bus";
++			assigned-clocks = <&topckgen CLK_TOP_UART_SEL>,
++					  <&infracfg CLK_INFRA_UART0_SEL>;
++			assigned-clock-parents = <&topckgen CLK_TOP_XTAL>,
++						 <&topckgen CLK_TOP_UART_SEL>;
++			status = "disabled";
++		};
++
++		uart1: serial@11003000 {
++			compatible = "mediatek,mt7986-uart",
++				     "mediatek,mt6577-uart";
++			reg = <0 0x11003000 0 0x400>;
++			interrupts = <GIC_SPI 124 IRQ_TYPE_LEVEL_HIGH>;
++			clocks = <&infracfg CLK_INFRA_UART1_SEL>,
++				 <&infracfg CLK_INFRA_UART1_CK>;
++			clock-names = "baud", "bus";
++			assigned-clocks = <&infracfg CLK_INFRA_UART1_SEL>;
++			assigned-clock-parents = <&topckgen CLK_TOP_F26M_SEL>;
++			status = "disabled";
++		};
++
++		uart2: serial@11004000 {
++			compatible = "mediatek,mt7986-uart",
++				     "mediatek,mt6577-uart";
++			reg = <0 0x11004000 0 0x400>;
++			interrupts = <GIC_SPI 125 IRQ_TYPE_LEVEL_HIGH>;
++			clocks = <&infracfg CLK_INFRA_UART2_SEL>,
++				 <&infracfg CLK_INFRA_UART2_CK>;
++			clock-names = "baud", "bus";
++			assigned-clocks = <&infracfg CLK_INFRA_UART2_SEL>;
++			assigned-clock-parents = <&topckgen CLK_TOP_F26M_SEL>;
++			status = "disabled";
++		};
++
++		ethsys: syscon@15000000 {
++			 #address-cells = <1>;
++			 #size-cells = <1>;
++			 compatible = "mediatek,mt7986-ethsys",
++				      "syscon";
++			 reg = <0 0x15000000 0 0x1000>;
++			 #clock-cells = <1>;
++			 #reset-cells = <1>;
++		};
++
++	};
++
++};
+-- 
+2.29.2
 
-3) Only once we achieved the above we can clear SEGCBLIST_OFFLOADED which
-will stop the nocb kthreads.
-
-If we did 3) first and only then 1) and 2), there would be a risk that callbacks
-get completely ignored in the middle.
-
-That said you have a point in that we could do:
-
-1) Set SEGCBLIST_RCU_CORE and clear SEGCBLIST_OFFLOADED at the _very_ same time
-(arrange that with a WRITE_ONCE() I guess).
-
-2) Invoke rcu_core()
-
-But well...arranging for rcu_core() to take over before we even consider
-starting the de-offloading process provides some unexplainable relief to the
-soul. Some code design sometimes rely more on faith than logic :)
-
-Thanks.
