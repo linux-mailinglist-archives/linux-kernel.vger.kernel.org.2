@@ -2,87 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAC304206A6
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 09:28:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEFB64206A4
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 09:28:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230295AbhJDHaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 03:30:13 -0400
-Received: from honk.sigxcpu.org ([24.134.29.49]:34370 "EHLO honk.sigxcpu.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230195AbhJDHaG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 03:30:06 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by honk.sigxcpu.org (Postfix) with ESMTP id 50CCBFB02;
-        Mon,  4 Oct 2021 09:28:16 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
-Received: from honk.sigxcpu.org ([127.0.0.1])
-        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id sYVkJr4AioKx; Mon,  4 Oct 2021 09:28:14 +0200 (CEST)
-From:   =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>
-To:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Marek Vasut <marex@denx.de>,
-        Stefan Agner <stefan@agner.ch>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Ondrej Jirman <megous@megous.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v2 5/5] drm: mxsfb: Set proper default bus format when using a bridge
-Date:   Mon,  4 Oct 2021 09:27:38 +0200
-Message-Id: <15afbcb04dea432867bb9f8b0e47205decd4bd6e.1633332399.git.agx@sigxcpu.org>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <cover.1633332399.git.agx@sigxcpu.org>
-References: <cover.1633332399.git.agx@sigxcpu.org>
+        id S230172AbhJDHaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 03:30:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38460 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230097AbhJDHaC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 03:30:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633332493;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=EYZ/LTvvLx16jE1eNgqc9g2GCASb4awUhWNDIjrf5JI=;
+        b=YRsXBAqBq38aU45on0E0hwAweL5zv7oN5CIGciiDWIJqNrJ8A236mpOnwXQJHtjqESRVMc
+        W7zOB8VSQLQWMLYTN12xiOjuhgk9bkFSrJj76LDzZuIhtKJ74AK79bewGJmAjfPlMTvbix
+        FGfq/R6P65r9c+qTY27XMevYwCBCZS8=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-446-ayRTnm7dOuOFcezOZTyF2w-1; Mon, 04 Oct 2021 03:28:12 -0400
+X-MC-Unique: ayRTnm7dOuOFcezOZTyF2w-1
+Received: by mail-ed1-f71.google.com with SMTP id ec14-20020a0564020d4e00b003cf5630c190so16353867edb.3
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 00:28:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=EYZ/LTvvLx16jE1eNgqc9g2GCASb4awUhWNDIjrf5JI=;
+        b=k4eLwluk9AI0GQFFuEsZQce+KnW1A65YEOFBlOtPdYVdy5LcCAJjhi9BKUi96QXQy9
+         XWk80j9AQnbXD41QIoh+pjO+xSnBdwOpEiw+qWKjqAuhBr2NB/7T3fMcHxFxji8SxUqi
+         hrC+TXQfxegziM8kyP2royyKKfmskeQ7zZBpZAjaWl6sn/7wKcJV2zuO3MyVc23JIMA8
+         dGGSc3ZC02xExRrOm/YvXSuPN2zAATWgIOoTd/2ZrIogL++HImuYfPAmLzjs7I27NQkI
+         SATwvKgyPPS5S6qGehRxTo0Ta5vnnQ79l6WQZdCw3OFWIBv/NU9/5AriKqENWFY+HX5r
+         mt9g==
+X-Gm-Message-State: AOAM531vIX+ITh4aPCyN/QBIuUL1nWUe0b2LlE61EMHGuw6mJRLkb5fr
+        CstjGlrJJFlUhKKnfSlLAeEqy2HVIcY1ki1MQbQnNAQlm9n8Y1EUzvhoQ0Ja0Kl5YAmBlIScOKq
+        gm3f+mKS8yhlKmfNFvceTdC3g
+X-Received: by 2002:a17:906:9401:: with SMTP id q1mr15261246ejx.313.1633332491730;
+        Mon, 04 Oct 2021 00:28:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy6IjodyqAgeB1PAWb4RYx1NKLku+W8R/sJTCbRjbEB4EJ9Zbss8oDgUkRXt//jnV39fft8iw==
+X-Received: by 2002:a17:906:9401:: with SMTP id q1mr15261224ejx.313.1633332491481;
+        Mon, 04 Oct 2021 00:28:11 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id s21sm4348798eji.3.2021.10.04.00.28.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Oct 2021 00:28:10 -0700 (PDT)
+Message-ID: <a1a283ab-bede-412d-6552-21a2814b39cb@redhat.com>
+Date:   Mon, 4 Oct 2021 09:28:08 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [GIT PULL] objtool/urgent for v5.15-rc4
+Content-Language: en-US
+To:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Borislav Petkov <bp@suse.de>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Nathan Chancellor <nathan@kernel.org>, x86-ml <x86@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        KVM list <kvm@vger.kernel.org>
+References: <YVl7RR5NcbPyiXgO@zn.tnic>
+ <CAHk-=wh9JzLmwAqA2+cA=Y4x_TYNBZv_OM4eSEDFPF8V_GAPug@mail.gmail.com>
+ <CAHk-=wiZwq-0LknKhXN4M+T8jbxn_2i9mcKpO+OaBSSq_Eh7tg@mail.gmail.com>
+ <CAHk-=wjtJ532TqnLN+CLqZJXx=MWHjQqi0-fR8PSQ-nGZ_iMvg@mail.gmail.com>
+ <20211003230206.hhrrhna52dnhumji@treble>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <20211003230206.hhrrhna52dnhumji@treble>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If a bridge doesn't do any bus format handling MEDIA_BUS_FMT_FIXED is
-returned. Fallback to a reasonable default (MEDIA_BUS_FMT_RGB888_1X24) in
-that case.
+On 04/10/21 01:02, Josh Poimboeuf wrote:
+> That said, I have no idea what's going in that code or why
+> kvm_fastop_exception() is clearing %esi.
 
-This unbreaks e.g. using mxsfb with the nwl bridge and mipi panels.
+It's handled here (which definitely qualifies as "funky sh*t"):
 
-Fixes: b776b0f00f24 ("drm: mxsfb: Use bus_format from the nearest bridge if present")
+         asm("push %[flags]; popf; " CALL_NOSPEC " ; pushf; pop %[flags]\n"
+             : "+a"(ctxt->dst.val), "+d"(ctxt->src.val), [flags]"+D"(flags),
+               [thunk_target]"+S"(fop), ASM_CALL_CONSTRAINT
+             : "c"(ctxt->src2.val));
 
-Reported-by: Martin Kepplinger <martink@posteo.de>
-Signed-off-by: Guido Günther <agx@sigxcpu.org>
----
- drivers/gpu/drm/mxsfb/mxsfb_kms.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+         ctxt->eflags = (ctxt->eflags & ~EFLAGS_MASK) | (flags & EFLAGS_MASK);
+         if (!fop) /* exception is returned in fop variable */
+                 return emulate_de(ctxt);
 
-diff --git a/drivers/gpu/drm/mxsfb/mxsfb_kms.c b/drivers/gpu/drm/mxsfb/mxsfb_kms.c
-index d6abd2077114..e3fbb8b58d5d 100644
---- a/drivers/gpu/drm/mxsfb/mxsfb_kms.c
-+++ b/drivers/gpu/drm/mxsfb/mxsfb_kms.c
-@@ -369,6 +369,12 @@ static void mxsfb_crtc_atomic_enable(struct drm_crtc *crtc,
- 			drm_atomic_get_new_bridge_state(state,
- 							mxsfb->bridge);
- 		bus_format = bridge_state->input_bus_cfg.format;
-+		if (bus_format == MEDIA_BUS_FMT_FIXED) {
-+			dev_warn_once(drm->dev,
-+				      "Bridge does not provide bus format, assuming MEDIA_BUS_FMT_RGB888_1X24.\n"
-+				      "Please fix bridge driver by handling atomic_get_input_bus_fmts.\n");
-+			bus_format = MEDIA_BUS_FMT_RGB888_1X24;
-+		}
- 	}
- 
- 	/* If there is no bridge, use bus format from connector */
--- 
-2.33.0
+and documented here:
+
+/*
+  * fastop functions have a special calling convention:
+  *
+  * dst:    rax        (in/out)
+  * src:    rdx        (in/out)
+  * src2:   rcx        (in)
+  * flags:  rflags     (in/out)
+  * ex:     rsi        (in:fastop pointer, out:zero if exception)
+  *
+  * Moreover, they are all exactly FASTOP_SIZE bytes long, so functions for
+  * different operand sizes can be reached by calculation, rather than a jump
+  * table (which would be bigger than the code).
+  */
+
+The fastop stuff saves quite a few clock cycles and lines of code, by
+avoiding complicated emulation of x86 flags.  I'll check out the .global
+annotations, since they are indeed unnecessary.
+
+Paolo
 
