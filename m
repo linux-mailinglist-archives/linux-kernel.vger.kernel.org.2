@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1161420B84
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:56:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E294420CA7
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:06:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233561AbhJDM5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 08:57:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58438 "EHLO mail.kernel.org"
+        id S234192AbhJDNIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:08:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38546 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233565AbhJDM5O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 08:57:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DD15F6139F;
-        Mon,  4 Oct 2021 12:55:24 +0000 (UTC)
+        id S235235AbhJDNF6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:05:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4247961A4F;
+        Mon,  4 Oct 2021 13:01:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352125;
-        bh=2qpAD+L5/T28ZNjqb6iHZdmxrgabzWb4CH1om1FuagI=;
+        s=korg; t=1633352467;
+        bh=04kIWPn05Hq1DT9FgELgq24nOOVbuN6zG7jDb7g0c10=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=z6oWsrtN38GF7AVA/OBKdZddtjwcPANYeBLVrX+3g/brgK5mmn1V6fXSa/Uv58Ms7
-         /NxTjlAPxWrbkB8OuRSGniCCLnJbFYVlQRQUvDTbyyYNwZg5FDZdU7vUE5iw4sy9P4
-         eSWD+hJyG+4NM+dr/yIP8qZ9RY0q1wQhRucMmBkU=
+        b=iwUSC76L/IuEd+gS6cp0k6MXHaY4sf7y5fcJHU3Kqjtg3KprXydA00MSgQ03dUsHT
+         ekUL4jCkwuY4ffWem2dcNS4/Ggre0Q+icqRt53mIwyxlbCjPsrPmQ/ohBgM3LKnlIp
+         tkh3Lea5Re0aZwZW0AF0dKLY2PO1u1kohF3CsaYk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Igor Matheus Andrade Torrente <igormtorrente@gmail.com>,
-        Sasha Levin <sashal@kernel.org>,
-        syzbot+858dc7a2f7ef07c2c219@syzkaller.appspotmail.com
-Subject: [PATCH 4.4 25/41] tty: Fix out-of-bound vmalloc access in imageblit
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Arnd Bergmann <arnd@kernel.org>
+Subject: [PATCH 4.14 41/75] qnx4: work around gcc false positive warning bug
 Date:   Mon,  4 Oct 2021 14:52:16 +0200
-Message-Id: <20211004125027.378244619@linuxfoundation.org>
+Message-Id: <20211004125032.891042855@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125026.597501645@linuxfoundation.org>
-References: <20211004125026.597501645@linuxfoundation.org>
+In-Reply-To: <20211004125031.530773667@linuxfoundation.org>
+References: <20211004125031.530773667@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,71 +40,120 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 
-[ Upstream commit 3b0c406124719b625b1aba431659f5cdc24a982c ]
+commit d5f6545934c47e97c0b48a645418e877b452a992 upstream.
 
-This issue happens when a userspace program does an ioctl
-FBIOPUT_VSCREENINFO passing the fb_var_screeninfo struct
-containing only the fields xres, yres, and bits_per_pixel
-with values.
+In commit b7213ffa0e58 ("qnx4: avoid stringop-overread errors") I tried
+to teach gcc about how the directory entry structure can be two
+different things depending on a status flag.  It made the code clearer,
+and it seemed to make gcc happy.
 
-If this struct is the same as the previous ioctl, the
-vc_resize() detects it and doesn't call the resize_screen(),
-leaving the fb_var_screeninfo incomplete. And this leads to
-the updatescrollmode() calculates a wrong value to
-fbcon_display->vrows, which makes the real_y() return a
-wrong value of y, and that value, eventually, causes
-the imageblit to access an out-of-bound address value.
+However, Arnd points to a gcc bug, where despite using two different
+members of a union, gcc then gets confused, and uses the size of one of
+the members to decide if a string overrun happens.  And not necessarily
+the rigth one.
 
-To solve this issue I made the resize_screen() be called
-even if the screen does not need any resizing, so it will
-"fix and fill" the fb_var_screeninfo independently.
+End result: with some configurations, gcc-11 will still complain about
+the source buffer size being overread:
 
-Cc: stable <stable@vger.kernel.org> # after 5.15-rc2 is out, give it time to bake
-Reported-and-tested-by: syzbot+858dc7a2f7ef07c2c219@syzkaller.appspotmail.com
-Signed-off-by: Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
-Link: https://lore.kernel.org/r/20210628134509.15895-1-igormtorrente@gmail.com
+  fs/qnx4/dir.c: In function 'qnx4_readdir':
+  fs/qnx4/dir.c:76:32: error: 'strnlen' specified bound [16, 48] exceeds source size 1 [-Werror=stringop-overread]
+     76 |                         size = strnlen(name, size);
+        |                                ^~~~~~~~~~~~~~~~~~~
+  fs/qnx4/dir.c:26:22: note: source object declared here
+     26 |                 char de_name;
+        |                      ^~~~~~~
+
+because gcc will get confused about which union member entry is actually
+getting accessed, even when the source code is very clear about it.  Gcc
+internally will have combined two "redundant" pointers (pointing to
+different union elements that are at the same offset), and takes the
+size checking from one or the other - not necessarily the right one.
+
+This is clearly a gcc bug, but we can work around it fairly easily.  The
+biggest thing here is the big honking comment about why we do what we
+do.
+
+Link: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=99578#c6
+Reported-and-tested-by: Arnd Bergmann <arnd@kernel.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/vt/vt.c | 21 +++++++++++++++++++--
- 1 file changed, 19 insertions(+), 2 deletions(-)
+ fs/qnx4/dir.c |   36 +++++++++++++++++++++++++++---------
+ 1 file changed, 27 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
-index 9f479b4c6491..0fab196a1d90 100644
---- a/drivers/tty/vt/vt.c
-+++ b/drivers/tty/vt/vt.c
-@@ -882,8 +882,25 @@ static int vc_do_resize(struct tty_struct *tty, struct vc_data *vc,
- 	new_row_size = new_cols << 1;
- 	new_screen_size = new_row_size * new_rows;
+--- a/fs/qnx4/dir.c
++++ b/fs/qnx4/dir.c
+@@ -20,12 +20,33 @@
+  * depending on the status field in the last byte. The
+  * first byte is where the name start either way, and a
+  * zero means it's empty.
++ *
++ * Also, due to a bug in gcc, we don't want to use the
++ * real (differently sized) name arrays in the inode and
++ * link entries, but always the 'de_name[]' one in the
++ * fake struct entry.
++ *
++ * See
++ *
++ *   https://gcc.gnu.org/bugzilla/show_bug.cgi?id=99578#c6
++ *
++ * for details, but basically gcc will take the size of the
++ * 'name' array from one of the used union entries randomly.
++ *
++ * This use of 'de_name[]' (48 bytes) avoids the false positive
++ * warnings that would happen if gcc decides to use 'inode.di_name'
++ * (16 bytes) even when the pointer and size were to come from
++ * 'link.dl_name' (48 bytes).
++ *
++ * In all cases the actual name pointer itself is the same, it's
++ * only the gcc internal 'what is the size of this field' logic
++ * that can get confused.
+  */
+ union qnx4_directory_entry {
+ 	struct {
+-		char de_name;
+-		char de_pad[62];
+-		char de_status;
++		const char de_name[48];
++		u8 de_pad[15];
++		u8 de_status;
+ 	};
+ 	struct qnx4_inode_entry inode;
+ 	struct qnx4_link_info link;
+@@ -53,29 +74,26 @@ static int qnx4_readdir(struct file *fil
+ 		ix = (ctx->pos >> QNX4_DIR_ENTRY_SIZE_BITS) % QNX4_INODES_PER_BLOCK;
+ 		for (; ix < QNX4_INODES_PER_BLOCK; ix++, ctx->pos += QNX4_DIR_ENTRY_SIZE) {
+ 			union qnx4_directory_entry *de;
+-			const char *name;
  
--	if (new_cols == vc->vc_cols && new_rows == vc->vc_rows)
--		return 0;
-+	if (new_cols == vc->vc_cols && new_rows == vc->vc_rows) {
-+		/*
-+		 * This function is being called here to cover the case
-+		 * where the userspace calls the FBIOPUT_VSCREENINFO twice,
-+		 * passing the same fb_var_screeninfo containing the fields
-+		 * yres/xres equal to a number non-multiple of vc_font.height
-+		 * and yres_virtual/xres_virtual equal to number lesser than the
-+		 * vc_font.height and yres/xres.
-+		 * In the second call, the struct fb_var_screeninfo isn't
-+		 * being modified by the underlying driver because of the
-+		 * if above, and this causes the fbcon_display->vrows to become
-+		 * negative and it eventually leads to out-of-bound
-+		 * access by the imageblit function.
-+		 * To give the correct values to the struct and to not have
-+		 * to deal with possible errors from the code below, we call
-+		 * the resize_screen here as well.
-+		 */
-+		return resize_screen(vc, new_cols, new_rows, user);
-+	}
+ 			offset = ix * QNX4_DIR_ENTRY_SIZE;
+ 			de = (union qnx4_directory_entry *) (bh->b_data + offset);
  
- 	if (new_screen_size > (4 << 20))
- 		return -EINVAL;
--- 
-2.33.0
-
+-			if (!de->de_name)
++			if (!de->de_name[0])
+ 				continue;
+ 			if (!(de->de_status & (QNX4_FILE_USED|QNX4_FILE_LINK)))
+ 				continue;
+ 			if (!(de->de_status & QNX4_FILE_LINK)) {
+ 				size = sizeof(de->inode.di_fname);
+-				name = de->inode.di_fname;
+ 				ino = blknum * QNX4_INODES_PER_BLOCK + ix - 1;
+ 			} else {
+ 				size = sizeof(de->link.dl_fname);
+-				name = de->link.dl_fname;
+ 				ino = ( le32_to_cpu(de->link.dl_inode_blk) - 1 ) *
+ 					QNX4_INODES_PER_BLOCK +
+ 					de->link.dl_inode_ndx;
+ 			}
+-			size = strnlen(name, size);
++			size = strnlen(de->de_name, size);
+ 			QNX4DEBUG((KERN_INFO "qnx4_readdir:%.*s\n", size, name));
+-			if (!dir_emit(ctx, name, size, ino, DT_UNKNOWN)) {
++			if (!dir_emit(ctx, de->de_name, size, ino, DT_UNKNOWN)) {
+ 				brelse(bh);
+ 				return 0;
+ 			}
 
 
