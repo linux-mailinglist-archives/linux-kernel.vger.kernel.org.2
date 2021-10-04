@@ -2,149 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E40E1421928
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 23:22:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05E7A42192D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 23:22:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234992AbhJDVYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 17:24:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34950 "EHLO
+        id S235294AbhJDVYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 17:24:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234470AbhJDVYQ (ORCPT
+        with ESMTP id S234470AbhJDVYl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 17:24:16 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63CFCC061749
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 14:22:27 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id s20so21961739ioa.4
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 14:22:27 -0700 (PDT)
+        Mon, 4 Oct 2021 17:24:41 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6898C061745;
+        Mon,  4 Oct 2021 14:22:51 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id s198-20020a1ca9cf000000b0030d6986ea9fso1101457wme.1;
+        Mon, 04 Oct 2021 14:22:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=MuilptXu/lrbHdYIjm49Orq1L38EfLHYhkCQZMQN58Y=;
-        b=YxVu7riC7j4LVz42GKgYXGTFCKJqdQPDoBbNgq6DmDMCPYIgq7r0JSZLEMwRUv3grr
-         cdiedFdp4r+iNBBN/mXe7pWqYYu2JUV8jVVKsIYViY6+g5jaCREmtkDy07NScmLqvK+S
-         JgdZ4x2qrsy/bvSg3+wlyjybySzvvSnkRl7J4=
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=aOu68f1QX/jrntnkf3FLWDymhn5DKxTIXT6hPkHKG/E=;
+        b=JOCEBXc3Pur4iBa/if9OTl/NcjM3JZyhbhclin4q8kkgiXjnXA9upibdyXhgBrR1/u
+         Vb5Nl5lBTWJk/xFkJwsl/pc0Waa+Kj6+9w+ADF9lWML6+h3bX8McCWbp+SOkJF+L0gHA
+         Dj+idttGAd2FwBjk0tMmOtD42a43lIvFpN7NNhjlvKAqd+OwoMHGeAq3gyDl+GS+4Yk5
+         cTNRkMkbp5p76utJZGidEghbBbd5Ta34YXAcESlhjGHe6vcM0/TUdcSssSV8i3ZArs5V
+         SGFbbr1417miyUqBm+pepsvf02Nc4YD8nZUmSo8+MVRts1BbcLT3UwkB++Wz5j0fyfa4
+         gTCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=MuilptXu/lrbHdYIjm49Orq1L38EfLHYhkCQZMQN58Y=;
-        b=lXixthvLbfr2aMyAMh1p17UGAhzeCJl+GC4TiPR+OKIWJCounp4F6efmqQfexT9Gx9
-         mg1pSGOWoMDrYb/AImrNEel227QUR7x5KjNOeukY83gma9uHLc3BvZEpcg1xRjmse3ow
-         7KafvZSjfiOq8YlQBibekFj7C888LD5V10LAFa9QXvi2F/sPpZP932dNwZY+K709UPn8
-         CHfAM1iKgBL5qSRuf2FE2ctPJLITbsicUHMPAHW0jTpqTktlP7zDIzgFPoSK7Do/zqoc
-         gEfSd/D0BtF88R3lEVrTc8vZYAgzqqc9JvdgNS9NFSZccXiCt4W420OGoO12DhcB9cfW
-         OvCQ==
-X-Gm-Message-State: AOAM533DdmGOC+I5tgNZu/kHiZlnch2hEtiJ76nsIezxEn04pw/0N3/X
-        XkzjoOH0KUYo0ZPp4nuzvblfPg==
-X-Google-Smtp-Source: ABdhPJx1RzTfEn170/4xRIBn0Qw7X57+hgrKnGZ4qAFynZArJaATjwdrmMQXQOmPcAV4ahbaG9Xzng==
-X-Received: by 2002:a5e:a916:: with SMTP id c22mr10780139iod.211.1633382546674;
-        Mon, 04 Oct 2021 14:22:26 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id v63sm9635481ioe.17.2021.10.04.14.22.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Oct 2021 14:22:26 -0700 (PDT)
-Subject: Re: [PATCH v3 1/8] PCI/AER: Remove ID from aer_agent_string[]
-To:     Naveen Naidu <naveennaidu479@gmail.com>, bhelgaas@google.com,
-        ruscur@russell.cc, oohall@gmail.com
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <cover.1633357368.git.naveennaidu479@gmail.com>
- <b4c5a5005d4549420cf6e86f31a01d3fb2876731.1633357368.git.naveennaidu479@gmail.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <a51d90cb-2ffb-8d4e-6097-54d03e6ef693@linuxfoundation.org>
-Date:   Mon, 4 Oct 2021 15:22:25 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=aOu68f1QX/jrntnkf3FLWDymhn5DKxTIXT6hPkHKG/E=;
+        b=IV/lH7+89lMzKIPhco4syn7zWfaCoWwQLArV/34+BxOxpdOA4hnDGJWrHGNpf9+evA
+         pB5e4/r4hQ1vsDVvrrOwZIBmR0n9uc8hrI+Mo1PhhJSeIcdk/cgumc69zO/zkdwVf2Wd
+         XqZigyCKZQ4xvSHniVWgN4ITog3qAdSiPNoqDCSgEPfwmRjjxG9+uEsyoSQ9P8koTyfL
+         y4BaknWaGmRwp7Eg4iobr3cYoGwFeGGrK5NcGWl+TP1s3jYUyO4QB9MCgysmjAhlWmuB
+         zWZdHie3HZ3V9AjBAjssrW07D++CMMsDst5oRcDukKHFWC0XxZLcyQcF+8jpa12mNtAh
+         9dtg==
+X-Gm-Message-State: AOAM531EwXOF0dPuJUX4bi8UWjwSsCQN/J8jX2PbMugck/ZOMXzNh4br
+        +txxvkq69c3+Rgo502jO/jE=
+X-Google-Smtp-Source: ABdhPJwdrjF/1DreMzVejMUrvBvcozcZvb0/EC7Hp99yU6JocUFjFK5jopJTrqjQ+Ok0sUi4x2Kdiw==
+X-Received: by 2002:a7b:c1d2:: with SMTP id a18mr9728030wmj.194.1633382570544;
+        Mon, 04 Oct 2021 14:22:50 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id g12sm2070863wme.3.2021.10.04.14.22.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Oct 2021 14:22:49 -0700 (PDT)
+Date:   Mon, 4 Oct 2021 23:22:48 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <treding@nvidia.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Felipe Balbi <balbi@kernel.org>, devicetree@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org, Peter Chen <peter.chen@kernel.org>,
+        David Heidelberg <david@ixit.cz>
+Subject: Re: [PATCH v7 4/7] usb: phy: tegra: Support OTG mode programming
+Message-ID: <YVtwqLlG8+S9cooU@orome.fritz.box>
+References: <20210912181718.1328-1-digetx@gmail.com>
+ <20210912181718.1328-5-digetx@gmail.com>
+ <29ae631d-cc8d-663e-3ce2-db00f3470365@gmail.com>
+ <YVtslrGXStvdO2IS@orome.fritz.box>
+ <94949858-6089-06df-1226-f7974a3ae6bf@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <b4c5a5005d4549420cf6e86f31a01d3fb2876731.1633357368.git.naveennaidu479@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="QrHWM9Xgt4I+yCs7"
+Content-Disposition: inline
+In-Reply-To: <94949858-6089-06df-1226-f7974a3ae6bf@gmail.com>
+User-Agent: Mutt/2.1.3 (987dde4c) (2021-09-10)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/4/21 8:29 AM, Naveen Naidu wrote:
-> Before 010caed4ccb6 ("PCI/AER: Decode Error Source RequesterID")
-> the AER error logs looked like:
-> 
->    pcieport 0000:00:03.0: AER: Corrected error received: id=0018
->    pcieport 0000:00:03.0: PCIe Bus Error: severity=Corrected, type=Data Link Layer, id=0018 (Receiver ID)
->    pcieport 0000:00:03.0:   device [1b36:000c] error status/mask=00000040/0000e000
->    pcieport 0000:00:03.0:    [ 6] BadTLP
-> 
-> In 010caed4ccb6 ("PCI/AER: Decode Error Source Requester ID"),
-> the "id" field was removed from the AER error logs, so currently AER
-> logs look like:
-> 
->    pcieport 0000:00:03.0: AER: Corrected error received: 0000:00:03:0
->    pcieport 0000:00:03.0: PCIe Bus Error: severity=Corrected, type=Data Link Layer, (Receiver ID)
->    pcieport 0000:00:03.0:   device [1b36:000c] error status/mask=00000040/0000e000
->    pcieport 0000:00:03.0:    [ 6] BadTLP
-> 
-> The second line in the above logs prints "(Receiver ID)", even when
-> there is no "id" in the log line. This is confusing.
-> 
 
-Starting your commit log to say that message are confusing and then talk
-about why will make it easier to understand why the change is needed.
+--QrHWM9Xgt4I+yCs7
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> Remove the "ID" from the aer_agent_string[]. The error logs will
-> look as follows (Sample from dummy error injected by aer-inject):
-> 
->    pcieport 0000:00:03.0: AER: Corrected error received: 0000:00:03.0
->    pcieport 0000:00:03.0: PCIe Bus Error: severity=Corrected, type=Data Link Layer, (Receiver)
->    pcieport 0000:00:03.0:   device [1b36:000c] error status/mask=00000040/0000e000
->    pcieport 0000:00:03.0:    [ 6] BadTLP
-> 
+On Tue, Oct 05, 2021 at 12:13:48AM +0300, Dmitry Osipenko wrote:
+> 05.10.2021 00:05, Thierry Reding =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> > On Mon, Sep 27, 2021 at 07:36:52PM +0300, Dmitry Osipenko wrote:
+> >> 12.09.2021 21:17, Dmitry Osipenko =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> >>> Support programming USB PHY into OTG mode.
+> >>>
+> >>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> >>> ---
+> >>>  drivers/usb/phy/phy-tegra-usb.c   | 198 ++++++++++++++++++++++++++++=
++-
+> >>>  include/linux/usb/tegra_usb_phy.h |   5 +
+> >>>  2 files changed, 198 insertions(+), 5 deletions(-)
+> >>
+> >> Greg / Felipe, could you please ack this patch to allow Thierry to take
+> >> this series via the Tegra tree? It depends on the soc/tegra patch of
+> >> this patchset.
+> >=20
+> > Looking at the series, I don't think this necessarily needs to go
+> > through the Tegra tree. Given that you have backwards-compatibility with
+> > older device trees, applying this separately to the USB tree should work
+> > fine. Once the soc/tegra and DT bits and the USB bits get combined they
+> > should enable the new functionality, but nothing should break if things
+> > are applied separately.
+> >=20
+> > If so, I can just pick up the rest and let Felipe or Greg pick this one
+> > up.
+> >=20
+> > Dmitry, can you confirm that this patch should be applicable separately?
+> > If so:
+> >=20
+> > Acked-by: Thierry Reding <treding@nvidia.com>
+> >=20
+>=20
+> This PHY patch has this hunk:
+>=20
+> +	phy->pmc_regmap =3D dev_get_regmap(&pmc_pdev->dev, "usb_sleepwalk");
+> +	if (!phy->pmc_regmap)
+> +		return -EINVAL;
+>=20
+> If this patch and the DT patches will be applied before the soc/tegra
+> patch, then USB PHY driver will fail to probe.
 
-It is good to see before and after messages. However, it will be helpful
-to know why this change is necessary. It isn't very clear why in this
-commit log.
+I had missed that. I was assuming that this other hunk took care of the
+backwards-compatibility:
 
-> Signed-off-by: Naveen Naidu <naveennaidu479@gmail.com
-> Signed-off-by: Naveen Naidu <naveennaidu479@gmail.com>
++       /* older device-trees don't have PMC regmap */
++       if (!phy->pmc_regmap)
++               return 0;
 
-Extra signed-off-by?
+but that's rather pointless given your check above, right? Why not just
+return 0 instead and let the remaining code skip sleepwalk configuration
+if the regmap doesn't exist?
 
-> ---
->   drivers/pci/pcie/aer.c | 10 +++++-----
->   1 file changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
-> index 9784fdcf3006..241ff361b43c 100644
-> --- a/drivers/pci/pcie/aer.c
-> +++ b/drivers/pci/pcie/aer.c
-> @@ -516,10 +516,10 @@ static const char *aer_uncorrectable_error_string[] = {
->   };
->   
->   static const char *aer_agent_string[] = {
-> -	"Receiver ID",
-> -	"Requester ID",
-> -	"Completer ID",
-> -	"Transmitter ID"
-> +	"Receiver",
-> +	"Requester",
-> +	"Completer",
-> +	"Transmitter"
->   };
->   
->   #define aer_stats_dev_attr(name, stats_array, strings_array,		\
-> @@ -703,7 +703,7 @@ void aer_print_error(struct pci_dev *dev, struct aer_err_info *info)
->   	const char *level;
->   
->   	if (!info->status) {
-> -		pci_err(dev, "PCIe Bus Error: severity=%s, type=Inaccessible, (Unregistered Agent ID)\n",
-> +		pci_err(dev, "PCIe Bus Error: severity=%s, type=Inaccessible, (Unregistered Agent)\n",
->   			aer_error_severity_string[info->severity]);
->   		goto out;
->   	}
-> 
+Thierry
 
-thanks,
--- Shuah
+--QrHWM9Xgt4I+yCs7
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmFbcKgACgkQ3SOs138+
+s6EHIw//dsUnageoG8jJ29+4mn23IGoiXdvVW3fJy6EbavvX1KknsIq9kcmL+dph
+dkfa95/iIC8ohjB6u6zuMdRLs2TLdZoDRJ+xjSkwlAssvo+adGLjKnEeWAWAf29f
+cMqK55oIyczW1Ti4udHz8WikuIZSFIex8pu/u7O3bOqmpjKCLv2U/vRqaFOg5JlY
+JOdtLWl+OW4DJGGuqFM+pxra/xxGRuyMgjrSHLhDDZIQ88xzecmA62aE5H7CxTa4
+aX7AAeAK59xN7u/dY2tG+qyZuDPGl0DtEAI/EuETc6/yfJ9SytYnhlvh4DUEGKrw
+fChIvFPVbK8mJLjLNSq29V3QmheFuLeuU+aK0t8L+FARY50M7LA/bjDxPClWvtsw
+7SjxZCxy8iWybNtJi35dW/nKMTzqrGo630GGI7qN3mK0dgF4P2JrDtzZG3YRDotH
+RZe6vnssAkxoPcrQi+kiBzmhgBTVekeTJYINqeKNhrdoJXcEJ39Mo0W+WVvogvqn
+3HxFP8G5u5BRmEqAKpwWzcOPOgss7kbgFFn6Mg8EqJAMoS7AC/dSkCzuDSLQ9gzY
+F371DZW4O9kwriPohZkC3HNcSf9GuLO8s0uRB4Ne+LtmC9yEKwo5jtTxH2HiHTwp
+D57XYWwQcOkxByfmLavfInlWUUK72LFMRxNhG+c4JHLKTC7K+6c=
+=XcKw
+-----END PGP SIGNATURE-----
+
+--QrHWM9Xgt4I+yCs7--
