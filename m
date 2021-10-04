@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF250420C76
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:04:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FB52420C16
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:00:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235216AbhJDNFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:05:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39512 "EHLO mail.kernel.org"
+        id S234205AbhJDNCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:02:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59670 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235112AbhJDNDr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:03:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 67A4D61B03;
-        Mon,  4 Oct 2021 13:00:09 +0000 (UTC)
+        id S234579AbhJDNBG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:01:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 15D5A61A03;
+        Mon,  4 Oct 2021 12:58:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352409;
-        bh=KTWfOgBFlkIwENSSXqqs1/+ibOYxMx7CwI3CgEhNjZM=;
+        s=korg; t=1633352299;
+        bh=wyMY1huRCNbpoO8j0Fn8jm0T0PLjaIIMmNDIL1urKvM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JoYP2T3/6ilN7Q0Kv5Rn97uiXeBrYJd82ocZKj8tUtI0VgEaJF4xz1P5M6RzIiZrj
-         Fm8yhyKo+08RzyFebDXQUe7SzzsPq6xqWtENBubGNOj1WPC30r4VGPFqQjx09XMseu
-         HGVPMn9Q/82h9ChKuHnvGRjlDKfxmf9UBbCK3QSw=
+        b=o91TUBqPVNfMgThd3PW69/lS4St5/7+nGg6BR81MqiE/VsQqTZE5xVFQaE2f6UZgt
+         Nz8dT8MBeEQ1L/cB53zMpmgaqu3RX/mOMyanvweVVWhYnOZym2i118Q+5d8DvjgOhi
+         GrnPphTZQgJ7Nw6FZycqh6LLMx//dlhzbo57dB3o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Felicitas Hetzelt <felicitashetzelt@gmail.com>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 51/75] e100: fix length calculation in e100_get_regs_len
+        Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.9 42/57] ipack: ipoctal: fix tty registration race
 Date:   Mon,  4 Oct 2021 14:52:26 +0200
-Message-Id: <20211004125033.234387493@linuxfoundation.org>
+Message-Id: <20211004125030.281210320@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125031.530773667@linuxfoundation.org>
-References: <20211004125031.530773667@linuxfoundation.org>
+In-Reply-To: <20211004125028.940212411@linuxfoundation.org>
+References: <20211004125028.940212411@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,50 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jacob Keller <jacob.e.keller@intel.com>
+From: Johan Hovold <johan@kernel.org>
 
-[ Upstream commit 4329c8dc110b25d5f04ed20c6821bb60deff279f ]
+commit 65c001df517a7bf9be8621b53d43c89f426ce8d6 upstream.
 
-commit abf9b902059f ("e100: cleanup unneeded math") tried to simplify
-e100_get_regs_len and remove a double 'divide and then multiply'
-calculation that the e100_reg_regs_len function did.
+Make sure to set the tty class-device driver data before registering the
+tty to avoid having a racing open() dereference a NULL pointer.
 
-This change broke the size calculation entirely as it failed to account
-for the fact that the numbered registers are actually 4 bytes wide and
-not 1 byte. This resulted in a significant under allocation of the
-register buffer used by e100_get_regs.
-
-Fix this by properly multiplying the register count by u32 first before
-adding the size of the dump buffer.
-
-Fixes: abf9b902059f ("e100: cleanup unneeded math")
-Reported-by: Felicitas Hetzelt <felicitashetzelt@gmail.com>
-Signed-off-by: Jacob Keller <jacob.e.keller@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 9c1d784afc6f ("Staging: ipack/devices/ipoctal: Get rid of ipoctal_list.")
+Cc: stable@vger.kernel.org      # 3.7
+Acked-by: Samuel Iglesias Gonsalvez <siglesias@igalia.com>
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Link: https://lore.kernel.org/r/20210917114622.5412-3-johan@kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/intel/e100.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/ipack/devices/ipoctal.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/e100.c b/drivers/net/ethernet/intel/e100.c
-index a73102357bbd..ae967fa9e502 100644
---- a/drivers/net/ethernet/intel/e100.c
-+++ b/drivers/net/ethernet/intel/e100.c
-@@ -2463,7 +2463,11 @@ static void e100_get_drvinfo(struct net_device *netdev,
- static int e100_get_regs_len(struct net_device *netdev)
- {
- 	struct nic *nic = netdev_priv(netdev);
--	return 1 + E100_PHY_REGS + sizeof(nic->mem->dump_buf);
-+
-+	/* We know the number of registers, and the size of the dump buffer.
-+	 * Calculate the total size in bytes.
-+	 */
-+	return (1 + E100_PHY_REGS) * sizeof(u32) + sizeof(nic->mem->dump_buf);
- }
+--- a/drivers/ipack/devices/ipoctal.c
++++ b/drivers/ipack/devices/ipoctal.c
+@@ -398,13 +398,13 @@ static int ipoctal_inst_slot(struct ipoc
+ 		spin_lock_init(&channel->lock);
+ 		channel->pointer_read = 0;
+ 		channel->pointer_write = 0;
+-		tty_dev = tty_port_register_device(&channel->tty_port, tty, i, NULL);
++		tty_dev = tty_port_register_device_attr(&channel->tty_port, tty,
++							i, NULL, channel, NULL);
+ 		if (IS_ERR(tty_dev)) {
+ 			dev_err(&ipoctal->dev->dev, "Failed to register tty device.\n");
+ 			tty_port_destroy(&channel->tty_port);
+ 			continue;
+ 		}
+-		dev_set_drvdata(tty_dev, channel);
+ 	}
  
- static void e100_get_regs(struct net_device *netdev,
--- 
-2.33.0
-
+ 	/*
 
 
