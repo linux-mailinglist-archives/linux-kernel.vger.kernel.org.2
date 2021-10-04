@@ -2,116 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A9F84207C9
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 11:03:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 137744207C2
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 11:03:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231555AbhJDJFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 05:05:39 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:58688 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229716AbhJDJFh (ORCPT
+        id S231210AbhJDJFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 05:05:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58136 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229716AbhJDJFC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 05:05:37 -0400
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19493Sph008959;
-        Mon, 4 Oct 2021 11:03:34 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=selector1;
- bh=nJpxX9PGQq7OHBwCh6Km3sL4rv9XksaSXEVrd4QAuFc=;
- b=tbkpxkKvj+VO404KHISL2TMnk3AZxb9hxVqanjJmg9RYtbQtdg8f+mxmouc34wx3Yet7
- rr8Xj2xjL9LzMVWJl4Ule6Ha7TLsGnSjOABmrwdurCjSu9ZMUX9CkO3X9dpoWYHGwtvz
- QOWqnpWik14IEOPXpGI+nZtomNTk9vf4CVGTNJwEA5klfEc08erfdGWnCrChGNFil4lv
- 0Cv7dse3+QDbu97rlKPdrU2UVssG72jgPXQsp/8ujvpoXyhZK8v5uerAPPORFm6fyAHW
- FVQn1xS6gLW9xEwj20ceAbMn87q7ZO3rnjLOnpLaO6BPn49frOqMpyOPNAxo398SRDRD 6g== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 3bfxn7800u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 Oct 2021 11:03:34 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id F3592100040;
-        Mon,  4 Oct 2021 11:03:32 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id D09B822FA2E;
-        Mon,  4 Oct 2021 11:03:32 +0200 (CEST)
-Received: from localhost (10.75.127.48) by SFHDAG2NODE2.st.com (10.75.127.5)
- with Microsoft SMTP Server (TLS) id 15.0.1497.18; Mon, 4 Oct 2021 11:03:32
- +0200
-From:   Olivier Moysan <olivier.moysan@foss.st.com>
-To:     Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Marek Vasut <marex@denx.de>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        Olivier Moysan <olivier.moysan@foss.st.com>
-Subject: [PATCH v2] ARM: dts: stm32: fix AV96 board SAI2 pin muxing on stm32mp15
-Date:   Mon, 4 Oct 2021 11:03:04 +0200
-Message-ID: <20211004090304.8984-1-olivier.moysan@foss.st.com>
-X-Mailer: git-send-email 2.17.1
+        Mon, 4 Oct 2021 05:05:02 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 798B2C061746
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 02:03:13 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id me5-20020a17090b17c500b0019af76b7bb4so3987639pjb.2
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 02:03:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Lq895Nb4Ct+Ub9VR31k06exDUume1AHkepUF0n7GX6I=;
+        b=DoauARro51+RAFBcQnseSJBz3MSOSMh9B5dQ2DKxxGDyXK1Qy3KbaajVARZ5C5zHco
+         0+F31TdKV04Nc9fYfW1PzN24o6r857zFIy5crfaAieQfEf7xKQs+LwCdZGbCHKg49g1F
+         xzXRYqBi6OsTz6GkZmY4dmwwcf3HSowpdTs+Nskd0VnIdkV7UKtGGIxOy6YSSZF2hJiY
+         IDcaCGmSYWOrP6sjU9aTpKCRvRXAqSAJRmIOk35dzIsB9iqhfQf7kzE1HU1gc4OfNBB4
+         XpygESY0O2aUB5U41GChlGixCY1Pc3xHMfUSXqQtQfaI2N5qKZJ7GK3QZf14ZeHOxQJn
+         6xjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Lq895Nb4Ct+Ub9VR31k06exDUume1AHkepUF0n7GX6I=;
+        b=vVJ0iCCrGHkGlV22dV2/tJjfWzUgQJXMJhicsR0mxzAuYb3/dufy5RWsUzwXC5qhtR
+         tNohrHmHuPdAWd1y7IkbbzG5oU7Tq39doEFIwXSMaEINGgZYRbweQcNLpoyKaVeR9U9e
+         6w3HDGegNpQ6Wx1G05tailzHIsjOICpYd5v6MYdablSbcDmbVnG2Lqr+mQPPsprhvcA+
+         Gpmm+APt3FI11kSTZbeWSa5t2nr27xOBBRPlt6w7E1EP+Kv6x12p3/zVKAl9yS39ZNyP
+         DPM4IU2OJJx3d4BItANC5/1NasnZK2R4vgHWgizIuLRPfW2gNL4lWcLF5wTnWrYKMMAN
+         6ALg==
+X-Gm-Message-State: AOAM531BDjh7ex22wohbS6XO3/ddBZqLqNqpbBpHSvD5oXsemP5gU8Ex
+        nM6yy2kbBWyZtojUIq7n8wvWukXZFpolXA==
+X-Google-Smtp-Source: ABdhPJxJcS0g7wFeeSHz3t6QcKZVb7PuQOGEmvH6cBs66mWGAKJyWwuW2FIhrKRi36aBWjXYf5WFog==
+X-Received: by 2002:a17:90b:4b89:: with SMTP id lr9mr3432892pjb.11.1633338192932;
+        Mon, 04 Oct 2021 02:03:12 -0700 (PDT)
+Received: from localhost ([122.171.247.18])
+        by smtp.gmail.com with ESMTPSA id k5sm15281374pfc.111.2021.10.04.02.03.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Oct 2021 02:03:12 -0700 (PDT)
+Date:   Mon, 4 Oct 2021 14:33:10 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     rafael@kernel.org, robh+dt@kernel.org, bjorn.andersson@linaro.org,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH] dt-bindings: cpufreq: cpufreq-qcom-hw: Convert to YAML
+ bindings
+Message-ID: <20211004090310.pwtsjpmwajivclxj@vireshk-i7>
+References: <20211004044317.34809-1-manivannan.sadhasivam@linaro.org>
+ <20211004070531.sexvnqmnkoe4j6a2@vireshk-i7>
+ <20211004072222.GE16442@workstation>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.48]
-X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE2.st.com
- (10.75.127.5)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-10-04_02,2021-10-01_02,2020-04-07_01
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211004072222.GE16442@workstation>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix SAI2A and SAI2B pin muxings for AV96 board on STM32MP15.
-Change sai2a-4 & sai2a-5 to sai2a-2 & sai2a-2.
-Change sai2a-4 & sai2a-sleep-5 to sai2b-2 & sai2b-sleep-2
+On 04-10-21, 12:52, Manivannan Sadhasivam wrote:
+> On Mon, Oct 04, 2021 at 12:35:31PM +0530, Viresh Kumar wrote:
+> > On 04-10-21, 10:13, Manivannan Sadhasivam wrote:
+> > > Convert Qualcomm cpufreq devicetree binding to YAML.
+> > > 
+> > > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > > Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+> > > Reviewed-by: Rob Herring <robh@kernel.org>
+> > 
+> > I am not sure if Rob ever gave this.
+> > 
+> 
+> I'm not fooling you :)
+> https://patchwork.kernel.org/project/linux-pm/patch/20210701105730.322718-5-angelogioacchino.delregno@somainline.org/#24312445
 
-Fixes: dcf185ca8175 ("ARM: dts: stm32: Add alternate pinmux for SAI2 pins on stm32mp15")
+Btw, I also wondered about this since we now have "performance-domain"
+bindings and was thinking if this should be moved to use those or not.
 
-Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
----
- arch/arm/boot/dts/stm32mp15-pinctrl.dtsi | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Rob ?
 
-diff --git a/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi b/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
-index 5b60ecbd718f..2ebafe27a865 100644
---- a/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
-+++ b/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
-@@ -1179,7 +1179,7 @@
- 		};
- 	};
- 
--	sai2a_pins_c: sai2a-4 {
-+	sai2a_pins_c: sai2a-2 {
- 		pins {
- 			pinmux = <STM32_PINMUX('D', 13, AF10)>, /* SAI2_SCK_A */
- 				 <STM32_PINMUX('D', 11, AF10)>, /* SAI2_SD_A */
-@@ -1190,7 +1190,7 @@
- 		};
- 	};
- 
--	sai2a_sleep_pins_c: sai2a-5 {
-+	sai2a_sleep_pins_c: sai2a-2 {
- 		pins {
- 			pinmux = <STM32_PINMUX('D', 13, ANALOG)>, /* SAI2_SCK_A */
- 				 <STM32_PINMUX('D', 11, ANALOG)>, /* SAI2_SD_A */
-@@ -1235,14 +1235,14 @@
- 		};
- 	};
- 
--	sai2b_pins_c: sai2a-4 {
-+	sai2b_pins_c: sai2b-2 {
- 		pins1 {
- 			pinmux = <STM32_PINMUX('F', 11, AF10)>; /* SAI2_SD_B */
- 			bias-disable;
- 		};
- 	};
- 
--	sai2b_sleep_pins_c: sai2a-sleep-5 {
-+	sai2b_sleep_pins_c: sai2b-sleep-2 {
- 		pins {
- 			pinmux = <STM32_PINMUX('F', 11, ANALOG)>; /* SAI2_SD_B */
- 		};
 -- 
-2.17.1
-
+viresh
