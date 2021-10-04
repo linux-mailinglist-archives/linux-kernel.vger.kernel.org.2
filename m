@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D136421A57
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 00:55:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9B63421A59
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 00:55:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236977AbhJDW5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 18:57:09 -0400
+        id S237001AbhJDW5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 18:57:10 -0400
 Received: from mga07.intel.com ([134.134.136.100]:62906 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233501AbhJDW5H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 18:57:07 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10127"; a="289117032"
+        id S236954AbhJDW5I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 18:57:08 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10127"; a="289117045"
 X-IronPort-AV: E=Sophos;i="5.85,347,1624345200"; 
-   d="scan'208";a="289117032"
+   d="scan'208";a="289117045"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2021 15:55:01 -0700
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2021 15:55:03 -0700
 X-IronPort-AV: E=Sophos;i="5.85,347,1624345200"; 
-   d="scan'208";a="559011855"
+   d="scan'208";a="559011876"
 Received: from ksgonzal-mobl.amr.corp.intel.com (HELO pbossart-mobl3.intel.com) ([10.209.181.38])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2021 15:54:59 -0700
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2021 15:55:01 -0700
 From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To:     alsa-devel@alsa-project.org
 Cc:     tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org,
@@ -32,9 +32,9 @@ Cc:     tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org,
         Jaroslav Kysela <perex@perex.cz>,
         Takashi Iwai <tiwai@suse.com>,
         linux-kernel@vger.kernel.org (open list)
-Subject: [RFC PATCH v2 1/5] ASoC: soc-pcm: remove snd_soc_dpcm_fe_can_update()
-Date:   Mon,  4 Oct 2021 17:54:37 -0500
-Message-Id: <20211004225441.233375-2-pierre-louis.bossart@linux.intel.com>
+Subject: [RFC PATCH v2 2/5] ASoC: soc-pcm: don't export local functions, use static
+Date:   Mon,  4 Oct 2021 17:54:38 -0500
+Message-Id: <20211004225441.233375-3-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211004225441.233375-1-pierre-louis.bossart@linux.intel.com>
 References: <20211004225441.233375-1-pierre-louis.bossart@linux.intel.com>
@@ -44,50 +44,113 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This function is not used anywhere, including soc-pcm.c
+No one uses the following functions outside of soc-pcm.c
 
-Remove dead code.
+snd_soc_dpcm_can_be_free_stop()
+snd_soc_dpcm_can_be_params()
+snd_soc_dpcm_be_can_update()
+
+In preparation for locking changes, move them to static functions and
+remove the EXPORT_SYMBOL_GPL()
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- include/sound/soc-dpcm.h | 3 ---
- sound/soc/soc-pcm.c      | 9 ---------
- 2 files changed, 12 deletions(-)
+ include/sound/soc-dpcm.h | 12 ------------
+ sound/soc/soc-pcm.c      | 21 +++++++++++++++------
+ 2 files changed, 15 insertions(+), 18 deletions(-)
 
 diff --git a/include/sound/soc-dpcm.h b/include/sound/soc-dpcm.h
-index bc7af90099a8..72d45ad47ee3 100644
+index 72d45ad47ee3..9c00118603e7 100644
 --- a/include/sound/soc-dpcm.h
 +++ b/include/sound/soc-dpcm.h
-@@ -121,9 +121,6 @@ int snd_soc_dpcm_can_be_free_stop(struct snd_soc_pcm_runtime *fe,
- int snd_soc_dpcm_can_be_params(struct snd_soc_pcm_runtime *fe,
- 		struct snd_soc_pcm_runtime *be, int stream);
+@@ -113,18 +113,6 @@ struct snd_soc_dpcm_runtime {
+ #define for_each_dpcm_be_rollback(fe, stream, _dpcm)			\
+ 	list_for_each_entry_continue_reverse(_dpcm, &(fe)->dpcm[stream].be_clients, list_be)
  
--/* is the current PCM operation for this FE ? */
--int snd_soc_dpcm_fe_can_update(struct snd_soc_pcm_runtime *fe, int stream);
+-/* can this BE stop and free */
+-int snd_soc_dpcm_can_be_free_stop(struct snd_soc_pcm_runtime *fe,
+-		struct snd_soc_pcm_runtime *be, int stream);
 -
- /* is the current PCM operation for this BE ? */
- int snd_soc_dpcm_be_can_update(struct snd_soc_pcm_runtime *fe,
- 		struct snd_soc_pcm_runtime *be, int stream);
+-/* can this BE perform a hw_params() */
+-int snd_soc_dpcm_can_be_params(struct snd_soc_pcm_runtime *fe,
+-		struct snd_soc_pcm_runtime *be, int stream);
+-
+-/* is the current PCM operation for this BE ? */
+-int snd_soc_dpcm_be_can_update(struct snd_soc_pcm_runtime *fe,
+-		struct snd_soc_pcm_runtime *be, int stream);
+-
+ /* get the substream for this BE */
+ struct snd_pcm_substream *
+ 	snd_soc_dpcm_get_substream(struct snd_soc_pcm_runtime *be, int stream);
 diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index fc1854e3e43f..17476e3219ea 100644
+index 17476e3219ea..360811f8a18c 100644
 --- a/sound/soc/soc-pcm.c
 +++ b/sound/soc/soc-pcm.c
-@@ -2805,15 +2805,6 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
- 	return ret;
+@@ -29,6 +29,18 @@
+ 
+ #define DPCM_MAX_BE_USERS	8
+ 
++/* can this BE stop and free */
++static int snd_soc_dpcm_can_be_free_stop(struct snd_soc_pcm_runtime *fe,
++					 struct snd_soc_pcm_runtime *be, int stream);
++
++/* can this BE perform a hw_params() */
++static int snd_soc_dpcm_can_be_params(struct snd_soc_pcm_runtime *fe,
++				      struct snd_soc_pcm_runtime *be, int stream);
++
++/* is the current PCM operation for this BE ? */
++static int snd_soc_dpcm_be_can_update(struct snd_soc_pcm_runtime *fe,
++				      struct snd_soc_pcm_runtime *be, int stream);
++
+ static inline const char *soc_cpu_dai_name(struct snd_soc_pcm_runtime *rtd)
+ {
+ 	return (rtd)->num_cpus == 1 ? asoc_rtd_to_cpu(rtd, 0)->name : "multicpu";
+@@ -2806,7 +2818,7 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
  }
  
--/* is the current PCM operation for this FE ? */
--int snd_soc_dpcm_fe_can_update(struct snd_soc_pcm_runtime *fe, int stream)
--{
--	if (fe->dpcm[stream].runtime_update == SND_SOC_DPCM_UPDATE_FE)
--		return 1;
--	return 0;
--}
--EXPORT_SYMBOL_GPL(snd_soc_dpcm_fe_can_update);
--
  /* is the current PCM operation for this BE ? */
- int snd_soc_dpcm_be_can_update(struct snd_soc_pcm_runtime *fe,
+-int snd_soc_dpcm_be_can_update(struct snd_soc_pcm_runtime *fe,
++static int snd_soc_dpcm_be_can_update(struct snd_soc_pcm_runtime *fe,
  		struct snd_soc_pcm_runtime *be, int stream)
+ {
+ 	if ((fe->dpcm[stream].runtime_update == SND_SOC_DPCM_UPDATE_FE) ||
+@@ -2815,7 +2827,6 @@ int snd_soc_dpcm_be_can_update(struct snd_soc_pcm_runtime *fe,
+ 		return 1;
+ 	return 0;
+ }
+-EXPORT_SYMBOL_GPL(snd_soc_dpcm_be_can_update);
+ 
+ /* get the substream for this BE */
+ struct snd_pcm_substream *
+@@ -2861,7 +2872,7 @@ static int snd_soc_dpcm_check_state(struct snd_soc_pcm_runtime *fe,
+  * We can only hw_free, stop, pause or suspend a BE DAI if any of it's FE
+  * are not running, paused or suspended for the specified stream direction.
+  */
+-int snd_soc_dpcm_can_be_free_stop(struct snd_soc_pcm_runtime *fe,
++static int snd_soc_dpcm_can_be_free_stop(struct snd_soc_pcm_runtime *fe,
+ 		struct snd_soc_pcm_runtime *be, int stream)
+ {
+ 	const enum snd_soc_dpcm_state state[] = {
+@@ -2872,13 +2883,12 @@ int snd_soc_dpcm_can_be_free_stop(struct snd_soc_pcm_runtime *fe,
+ 
+ 	return snd_soc_dpcm_check_state(fe, be, stream, state, ARRAY_SIZE(state));
+ }
+-EXPORT_SYMBOL_GPL(snd_soc_dpcm_can_be_free_stop);
+ 
+ /*
+  * We can only change hw params a BE DAI if any of it's FE are not prepared,
+  * running, paused or suspended for the specified stream direction.
+  */
+-int snd_soc_dpcm_can_be_params(struct snd_soc_pcm_runtime *fe,
++static int snd_soc_dpcm_can_be_params(struct snd_soc_pcm_runtime *fe,
+ 		struct snd_soc_pcm_runtime *be, int stream)
+ {
+ 	const enum snd_soc_dpcm_state state[] = {
+@@ -2890,4 +2900,3 @@ int snd_soc_dpcm_can_be_params(struct snd_soc_pcm_runtime *fe,
+ 
+ 	return snd_soc_dpcm_check_state(fe, be, stream, state, ARRAY_SIZE(state));
+ }
+-EXPORT_SYMBOL_GPL(snd_soc_dpcm_can_be_params);
 -- 
 2.25.1
 
