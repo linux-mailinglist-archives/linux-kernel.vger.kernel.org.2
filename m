@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4FE6420B56
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:54:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4554420E1F
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:20:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233293AbhJDM4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 08:56:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57754 "EHLO mail.kernel.org"
+        id S236098AbhJDNVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:21:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54200 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233387AbhJDM4U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 08:56:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 580746139F;
-        Mon,  4 Oct 2021 12:54:31 +0000 (UTC)
+        id S235176AbhJDNT1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:19:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E29461BB4;
+        Mon,  4 Oct 2021 13:08:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352071;
-        bh=PIbSv5+aLo81YMPeqyWAtnVJitmVlGcjP8D8JKUBSBk=;
+        s=korg; t=1633352905;
+        bh=LgmcMSkTSwcv4p1NplrD8Mju0sljwNQnbuNZC9W459Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=se+tNMLIWhgA4VuXEQu0n/lXE1DySDunsA0yvLf/aUBsC4sDbC5i2pZumEez+Q8xz
-         cKyyBkq+VGZp0TCU/Fdu//Ymvdqpav5y12R5a2xECAD8wThFS8iITv+7Pzf4+8GEI5
-         0PnGpiDYR4E4H38nkpErVXTW/ca4diMJM6LFN+8c=
+        b=zc9mMwBkgf5/bxGC33b9i9T/4VlFEGJzB/VaJqaK7vMrpshRlRMlg+VLJrppydRhH
+         fe4G5dARrEv5dUJzcLihujcjuDp/nOIYBDM2BXJh0UmyGi0TlD+ixQiuZaJRbt0FNK
+         Am45L69gEDEIXA4zQz+gbbvfIdQ6iGek4+CR9J2g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 21/41] alpha: Declare virt_to_phys and virt_to_bus parameter as pointer to volatile
+        stable@vger.kernel.org, Stanley Chu <stanley.chu@mediatek.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Jonathan Hsu <jonathan.hsu@mediatek.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: [PATCH 5.10 14/93] scsi: ufs: Fix illegal offset in UPIU event trace
 Date:   Mon,  4 Oct 2021 14:52:12 +0200
-Message-Id: <20211004125027.255850386@linuxfoundation.org>
+Message-Id: <20211004125035.044011344@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125026.597501645@linuxfoundation.org>
-References: <20211004125026.597501645@linuxfoundation.org>
+In-Reply-To: <20211004125034.579439135@linuxfoundation.org>
+References: <20211004125034.579439135@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,68 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guenter Roeck <linux@roeck-us.net>
+From: Jonathan Hsu <jonathan.hsu@mediatek.com>
 
-[ Upstream commit 35a3f4ef0ab543daa1725b0c963eb8c05e3376f8 ]
+commit e8c2da7e329ce004fee748b921e4c765dc2fa338 upstream.
 
-Some drivers pass a pointer to volatile data to virt_to_bus() and
-virt_to_phys(), and that works fine.  One exception is alpha.  This
-results in a number of compile errors such as
+Fix incorrect index for UTMRD reference in ufshcd_add_tm_upiu_trace().
 
-  drivers/net/wan/lmc/lmc_main.c: In function 'lmc_softreset':
-  drivers/net/wan/lmc/lmc_main.c:1782:50: error:
-	passing argument 1 of 'virt_to_bus' discards 'volatile'
-	qualifier from pointer target type
-
-  drivers/atm/ambassador.c: In function 'do_loader_command':
-  drivers/atm/ambassador.c:1747:58: error:
-	passing argument 1 of 'virt_to_bus' discards 'volatile'
-	qualifier from pointer target type
-
-Declare the parameter of virt_to_phys and virt_to_bus as pointer to
-volatile to fix the problem.
-
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Acked-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Link: https://lore.kernel.org/r/20210924085848.25500-1-jonathan.hsu@mediatek.com
+Fixes: 4b42d557a8ad ("scsi: ufs: core: Fix wrong Task Tag used in task management request UPIUs")
+Cc: stable@vger.kernel.org
+Reviewed-by: Stanley Chu <stanley.chu@mediatek.com>
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+Signed-off-by: Jonathan Hsu <jonathan.hsu@mediatek.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/alpha/include/asm/io.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/scsi/ufs/ufshcd.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/arch/alpha/include/asm/io.h b/arch/alpha/include/asm/io.h
-index 355aec0867f4..e55a5e6ab460 100644
---- a/arch/alpha/include/asm/io.h
-+++ b/arch/alpha/include/asm/io.h
-@@ -60,7 +60,7 @@ extern inline void set_hae(unsigned long new_hae)
-  * Change virtual addresses to physical addresses and vv.
-  */
- #ifdef USE_48_BIT_KSEG
--static inline unsigned long virt_to_phys(void *address)
-+static inline unsigned long virt_to_phys(volatile void *address)
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -318,8 +318,7 @@ static void ufshcd_add_query_upiu_trace(
+ static void ufshcd_add_tm_upiu_trace(struct ufs_hba *hba, unsigned int tag,
+ 		const char *str)
  {
- 	return (unsigned long)address - IDENT_ADDR;
- }
-@@ -70,7 +70,7 @@ static inline void * phys_to_virt(unsigned long address)
- 	return (void *) (address + IDENT_ADDR);
- }
- #else
--static inline unsigned long virt_to_phys(void *address)
-+static inline unsigned long virt_to_phys(volatile void *address)
- {
-         unsigned long phys = (unsigned long)address;
+-	int off = (int)tag - hba->nutrs;
+-	struct utp_task_req_desc *descp = &hba->utmrdl_base_addr[off];
++	struct utp_task_req_desc *descp = &hba->utmrdl_base_addr[tag];
  
-@@ -111,7 +111,7 @@ static inline dma_addr_t __deprecated isa_page_to_bus(struct page *page)
- extern unsigned long __direct_map_base;
- extern unsigned long __direct_map_size;
- 
--static inline unsigned long __deprecated virt_to_bus(void *address)
-+static inline unsigned long __deprecated virt_to_bus(volatile void *address)
- {
- 	unsigned long phys = virt_to_phys(address);
- 	unsigned long bus = phys + __direct_map_base;
--- 
-2.33.0
-
+ 	trace_ufshcd_upiu(dev_name(hba->dev), str, &descp->req_header,
+ 			&descp->input_param1);
 
 
