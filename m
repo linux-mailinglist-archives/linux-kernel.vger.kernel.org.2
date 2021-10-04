@@ -2,107 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB84442116E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 16:32:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BD4942118E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 16:35:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234378AbhJDOe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 10:34:28 -0400
-Received: from out2.migadu.com ([188.165.223.204]:61281 "EHLO out2.migadu.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234021AbhJDOe1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 10:34:27 -0400
-Date:   Mon, 4 Oct 2021 23:32:28 +0900
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1633357957;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=sqfgVz/9I9K4KamPvNycNExje+swH63ObdWWIwX9lL0=;
-        b=ab9jun9Daj2WzTS+9xxyU1duapIjcVsi7r15EhDxVhJlyYsph6hq5CgjfP2mcN/6r8vXhh
-        JMzR+JMq7ofPAFz/Y39rIlxlZUH96f4qs4g9xizVi3KtC/4AuKxmBKIGiqBs0pZkDW6ACL
-        JgtcZqPUxwwVZOrPYEHfSp227Xv38U8=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Naoya Horiguchi <naoya.horiguchi@linux.dev>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Alistair Popple <apopple@nvidia.com>,
-        Peter Xu <peterx@redhat.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Konstantin Khlebnikov <koct9i@gmail.com>,
-        Bin Wang <wangbin224@huawei.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] mm, pagemap: expose hwpoison entry
-Message-ID: <20211004143228.GA1545442@u2004>
-References: <20211004115001.1544259-1-naoya.horiguchi@linux.dev>
- <258d0ddb-6c82-0c95-a15e-b085b59d2142@redhat.com>
+        id S234638AbhJDOhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 10:37:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50710 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233373AbhJDOhI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 10:37:08 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6319AC061745
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 07:35:19 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id l7so42069081edq.3
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 07:35:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DGtFGDUfMevqWirZ/ziCiuJVGFIHXAXrgxKQ7OAmNJA=;
+        b=gr2t1ZwAMDg23O/kbMJjckG7d6oZGGMr/690Lw+TK3EFwN0N3Hf9a9HJexGD0dmmts
+         IGAT4EAHFqHGCTF1IXyuaWjtnX/7e0mUTghTdVF10dCMIhAkbYc22MRt1NKx23mNQjy9
+         ekJ3dog9szhYoO7WRHwqjH4gnilnk1iuAwY0Ba3LtuYkvXg2E12dXTIlognKsxZQFgce
+         pqLO0ZP9EP02HRIEamCKhRX9Jk2i6I4djF16e98MvRvjSD9Lxfen17JrApSfpFK34RHW
+         aulhq3li0iD0HJS42bp64+3ZmYFExG4VpUEH1bRvJVLy9xDeXlYTid0wn3wovlLIT5E6
+         T1ig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DGtFGDUfMevqWirZ/ziCiuJVGFIHXAXrgxKQ7OAmNJA=;
+        b=CTxwzU/zAv3veputVba5THORPMoFSPDuRuRKd4aH9o6bxgOzTpduSMt36YNfjtC4K+
+         Nhd7LXTSHMzomNX6gTFjDnotrwAHQcPRuvvf1NaHcvkLbjq+CAr0gKocFBAIojnESoeo
+         psKBKxm51Vgvak6qkChQiBAUCMjnDnBMMVC98lL8VAUVBUcqlRspmxTDDGusV4hYmDXW
+         RSA3tgMBOAT8sZm/oONJ/i7zJKAPgSXOldJ8U+VYx+hALIC0KN+ACq4WPFn4OymUKezU
+         p/Arw8DGV5stwicDgX303Azc4KIxAZSUPGUujTvnvZk2+1L9dLcr+LxRiku48Soxkx9t
+         tKwg==
+X-Gm-Message-State: AOAM5322Sl6KxJPH3E0aXlO/roRoSdK55i6q2nftoSB5NS3HEYRnpFRU
+        8qpwaert6A6UFfd10akP/SipcpCByVZqpyrgjyLAHSZa/Sh5wA==
+X-Google-Smtp-Source: ABdhPJwaWcqHUCHx20tHs9XuzZxMBOqv86kmZT12gZmuTNPTRvALwQ332GXGLjMEOjhTgz/k9oIcYW5n5jITJz+h54g=
+X-Received: by 2002:aa7:c911:: with SMTP id b17mr9274547edt.5.1633358017613;
+ Mon, 04 Oct 2021 07:33:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <258d0ddb-6c82-0c95-a15e-b085b59d2142@redhat.com>
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: naoya.horiguchi@linux.dev
+References: <20211001181627.394921-1-bgeffon@google.com> <20211001162204.f8d20e62e8b528f5e2e5fa3e@linux-foundation.org>
+In-Reply-To: <20211001162204.f8d20e62e8b528f5e2e5fa3e@linux-foundation.org>
+From:   Brian Geffon <bgeffon@google.com>
+Date:   Mon, 4 Oct 2021 10:33:01 -0400
+Message-ID: <CADyq12yGoOHbYNF_9DOTS5jW0nDmT_UgY2ZGwmd5AidvVaG9RQ@mail.gmail.com>
+Subject: Re: [PATCH] zram: Allow backing device to be assigned after init
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Minchan Kim <minchan@kernel.org>, Nitin Gupta <ngupta@vflare.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        LKML <linux-kernel@vger.kernel.org>, linux-doc@vger.kernel.org,
+        linux-block@vger.kernel.org,
+        Suleiman Souhlal <suleiman@google.com>,
+        Jesse Barnes <jsbarnes@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 04, 2021 at 01:55:30PM +0200, David Hildenbrand wrote:
-> On 04.10.21 13:50, Naoya Horiguchi wrote:
-> > From: Naoya Horiguchi <naoya.horiguchi@nec.com>
-> > 
-> > A hwpoison entry is a non-present page table entry to report
-> > memory error events to userspace. If we have an easy way to know
-> > which processes have hwpoison entries, that might be useful for
-> > user processes to take proper actions. But we don't have it now.
-> > So make pagemap interface expose hwpoison entries to userspace.
-> 
-> Noting that this is only a way to inspect hwpoison set for private anonymous
-> memory. You cannot really identify anything related to shared memory.
-> 
-> Do you also handle private hugetlb pages?
+On Fri, Oct 1, 2021 at 7:22 PM Andrew Morton <akpm@linux-foundation.org> wrote:
+>
+> On Fri,  1 Oct 2021 11:16:27 -0700 Brian Geffon <bgeffon@google.com> wrote:
+>
+> > There does not appear to be a technical reason to not
+> > allow the zram backing device to be assigned after the
+> > zram device is initialized.
+> >
+> > This change will allow for the backing device to be assigned
+> > as long as no backing device is already assigned. In that
+> > event backing_dev would return -EEXIST.
+>
+> Why is this useful?
 
-I think yes.  As long as hugepages are mmap()ed, we should be able to
-identify them with hwpoison entry (even if used via private/shared mapping).
+Hi Andrew,
+In the case of ChromeOS we're backing zram with a loop device. For us,
+having the ability to size the backing file after the system has fully
+booted proves to be very useful. Also, doing so later allows us to
+place users in different experimental groups while we evaluate the
+performance of swapping to disk in the wild. Both of these things
+would be much harder if we did it early on when swap is first brought
+up or would require us to delay starting swap altogether.
 
-> 
-> > 
-> > Hwpoison entry for hugepage is also exposed by this patch. The below
-> > example shows how pagemap is visible in the case where a memory error
-> > hit a hugepage mapped to a process.
-> > 
-> >      $ ./page-types --no-summary --pid $PID --raw --list --addr 0x700000000+0x400
-> >      voffset offset  len     flags
-> >      700000000       12fa00  1       ___U_______Ma__H_G_________________f_______1
-> >      700000001       12fa01  1ff     ___________Ma___TG_________________f_______1
-> >      700000200       12f800  1       __________B________X_______________f______w_
-> >      700000201       12f801  1       ___________________X_______________f______w_   // memory failure hit this page
-> >      700000202       12f802  1fe     __________B________X_______________f______w_
-> > 
-> > The entries with both of "X" flag (hwpoison flag) and "w" flag (swap
-> > flag) are considered as hwpoison entries.  So all pages in 2MB range
-> > are inaccessible from the process.  We can get actual error location
-> > by page-types in physical address mode.
-> > 
-> >      $ ./page-types --no-summary --addr 0x12f800+0x200 --raw --list
-> >      offset  len     flags
-> >      12f800  1       __________B_________________________________
-> >      12f801  1       ___________________X________________________
-> >      12f802  1fe     __________B_________________________________
-> > 
-> > Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
-> > ---
-> >   fs/proc/task_mmu.c      | 41 ++++++++++++++++++++++++++++++++---------
-> >   include/linux/swapops.h | 13 +++++++++++++
-> >   tools/vm/page-types.c   |  7 ++++++-
-> >   3 files changed, 51 insertions(+), 10 deletions(-)
-> 
-> 
-> Please also update the documentation located at
-> 
-> Documentation/admin-guide/mm/pagemap.rst
-
-I will do this in the next post.
-
-Thanks,
-Naoya Horigcuhi
+Brian
