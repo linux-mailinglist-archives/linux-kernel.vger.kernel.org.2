@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1DEF42103A
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:40:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95D4242103C
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:40:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238239AbhJDNlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:41:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51592 "EHLO mail.kernel.org"
+        id S238284AbhJDNl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:41:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51804 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238284AbhJDNkN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:40:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B05D663251;
-        Mon,  4 Oct 2021 13:18:15 +0000 (UTC)
+        id S238338AbhJDNkT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:40:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 485F663240;
+        Mon,  4 Oct 2021 13:18:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633353496;
-        bh=yV1Umhyi5YtwnfzNNWLC/Qa59ninjl6oXpt8uC/eaXg=;
+        s=korg; t=1633353499;
+        bh=az/puUVO3OQupAISPb3tFCwtI7VlAK23Sruq7XLmSIo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ywu85c1Z20oydW0etzUxoPPKGeIcftq0yJyCy0JTubCm+9pRrTcaalGlwFACzdf5a
-         +lMOzKX1eMURkPy7kfDYYEA/lA/Y7hq7XslWTGQGZKJQWnBqUNI4VDmAYvYXArGEKc
-         Og9KRaLLCQXSH8+jApc40Ex7uxMX/xaU1ICXSJZI=
+        b=nYxsHM4ompIj8RHCz0WA2WONkRqQR8Ykfwq+WRfwMaKDyQkpUyztBZ5L5ZTOrdu1Y
+         HeoIu2Ej2hszjiGWWLvGqUU1rXACeOw+XF7L6tNIUWJGFFomW51D2zqe0kSahaSNR9
+         UisPHJIfq4nrPUH9VIMW+Oq8Ck9ws37jPO/3AR3U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
+        stable@vger.kernel.org, Federico Vaga <federico.vaga@cern.ch>,
         Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
         Johan Hovold <johan@kernel.org>
-Subject: [PATCH 5.14 151/172] ipack: ipoctal: fix missing allocation-failure check
-Date:   Mon,  4 Oct 2021 14:53:21 +0200
-Message-Id: <20211004125049.847250379@linuxfoundation.org>
+Subject: [PATCH 5.14 152/172] ipack: ipoctal: fix module reference leak
+Date:   Mon,  4 Oct 2021 14:53:22 +0200
+Message-Id: <20211004125049.878965582@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
 References: <20211004125044.945314266@linuxfoundation.org>
@@ -42,34 +42,77 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Johan Hovold <johan@kernel.org>
 
-commit 445c8132727728dc297492a7d9fc074af3e94ba3 upstream.
+commit bb8a4fcb2136508224c596a7e665bdba1d7c3c27 upstream.
 
-Add the missing error handling when allocating the transmit buffer to
-avoid dereferencing a NULL pointer in write() should the allocation
-ever fail.
+A reference to the carrier module was taken on every open but was only
+released once when the final reference to the tty struct was dropped.
 
-Fixes: ba4dc61fe8c5 ("Staging: ipack: add support for IP-OCTAL mezzanine board")
-Cc: stable@vger.kernel.org      # 3.5
+Fix this by taking the module reference and initialising the tty driver
+data when installing the tty.
+
+Fixes: 82a82340bab6 ("ipoctal: get carrier driver to avoid rmmod")
+Cc: stable@vger.kernel.org      # 3.18
+Cc: Federico Vaga <federico.vaga@cern.ch>
 Acked-by: Samuel Iglesias Gonsalvez <siglesias@igalia.com>
 Signed-off-by: Johan Hovold <johan@kernel.org>
-Link: https://lore.kernel.org/r/20210917114622.5412-5-johan@kernel.org
+Link: https://lore.kernel.org/r/20210917114622.5412-6-johan@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/ipack/devices/ipoctal.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/ipack/devices/ipoctal.c |   29 +++++++++++++++++++++--------
+ 1 file changed, 21 insertions(+), 8 deletions(-)
 
 --- a/drivers/ipack/devices/ipoctal.c
 +++ b/drivers/ipack/devices/ipoctal.c
-@@ -386,7 +386,9 @@ static int ipoctal_inst_slot(struct ipoc
+@@ -82,22 +82,34 @@ static int ipoctal_port_activate(struct
+ 	return 0;
+ }
  
- 		channel = &ipoctal->channel[i];
- 		tty_port_init(&channel->tty_port);
--		tty_port_alloc_xmit_buf(&channel->tty_port);
-+		res = tty_port_alloc_xmit_buf(&channel->tty_port);
-+		if (res)
-+			continue;
- 		channel->tty_port.ops = &ipoctal_tty_port_ops;
+-static int ipoctal_open(struct tty_struct *tty, struct file *file)
++static int ipoctal_install(struct tty_driver *driver, struct tty_struct *tty)
+ {
+ 	struct ipoctal_channel *channel = dev_get_drvdata(tty->dev);
+ 	struct ipoctal *ipoctal = chan_to_ipoctal(channel, tty->index);
+-	int err;
+-
+-	tty->driver_data = channel;
++	int res;
  
- 		ipoctal_reset_stats(&channel->stats);
+ 	if (!ipack_get_carrier(ipoctal->dev))
+ 		return -EBUSY;
+ 
+-	err = tty_port_open(&channel->tty_port, tty, file);
+-	if (err)
+-		ipack_put_carrier(ipoctal->dev);
++	res = tty_standard_install(driver, tty);
++	if (res)
++		goto err_put_carrier;
++
++	tty->driver_data = channel;
++
++	return 0;
++
++err_put_carrier:
++	ipack_put_carrier(ipoctal->dev);
++
++	return res;
++}
++
++static int ipoctal_open(struct tty_struct *tty, struct file *file)
++{
++	struct ipoctal_channel *channel = tty->driver_data;
+ 
+-	return err;
++	return tty_port_open(&channel->tty_port, tty, file);
+ }
+ 
+ static void ipoctal_reset_stats(struct ipoctal_stats *stats)
+@@ -662,6 +674,7 @@ static void ipoctal_cleanup(struct tty_s
+ 
+ static const struct tty_operations ipoctal_fops = {
+ 	.ioctl =		NULL,
++	.install =		ipoctal_install,
+ 	.open =			ipoctal_open,
+ 	.close =		ipoctal_close,
+ 	.write =		ipoctal_write_tty,
 
 
