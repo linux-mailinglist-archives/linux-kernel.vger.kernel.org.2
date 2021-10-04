@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29A6C420B75
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:56:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C57ED420FC3
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:36:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233892AbhJDM5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 08:57:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58492 "EHLO mail.kernel.org"
+        id S237931AbhJDNhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:37:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47908 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233470AbhJDM4w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 08:56:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D72FB61391;
-        Mon,  4 Oct 2021 12:55:02 +0000 (UTC)
+        id S237955AbhJDNfb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:35:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 55BF36323E;
+        Mon,  4 Oct 2021 13:16:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352103;
-        bh=ZMFTrj+G1zzL9POirBeOmm9akaZ2DUSRVUlKBDsS6DA=;
+        s=korg; t=1633353368;
+        bh=I1EtwMEg3f+5Gi1tSt7SdQPFl6sxHfc5dDzpPSebGcQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=otD3YCFABlVMHmdrncDZmVJNUU6q4sZUFu+NYoDdJ5xzsYOzO0zzUyTcgzwwARZpL
-         u0fZh2TgJj5rnnz53G2sZRbp6RNOC1goQOAVWy1CjD2hmzgBlo12gEcTkqLQ94r4lU
-         SONsI0WOfwpxYSUmfMAxZjdPQPgDncdsfwdCtmYM=
+        b=FcjhUPDAjNsQ67BhDzCesJEmT2iaOECzQjeuI/Vet2j+RK8Iagob4YNgDaQDv0i62
+         9ZEsDrwl6f88nLO0DYGGayQVNxAEA1EPjn96JTVP7MFmbVzm8nUec0VN9f+dhtgewZ
+         1I1OkMvdOUHJhDNpD6WH0f6kQWaNOwA5eBWSaQQY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.4 33/41] ipack: ipoctal: fix missing allocation-failure check
+        stable@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
+        Saravana Kannan <saravanak@google.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 094/172] net: mdiobus: Set FWNODE_FLAG_NEEDS_CHILD_BOUND_ON_ADD for mdiobus parents
 Date:   Mon,  4 Oct 2021 14:52:24 +0200
-Message-Id: <20211004125027.628837448@linuxfoundation.org>
+Message-Id: <20211004125048.026692254@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125026.597501645@linuxfoundation.org>
-References: <20211004125026.597501645@linuxfoundation.org>
+In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
+References: <20211004125044.945314266@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,36 +40,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Saravana Kannan <saravanak@google.com>
 
-commit 445c8132727728dc297492a7d9fc074af3e94ba3 upstream.
+[ Upstream commit 04f41c68f18886aea5afc68be945e7195ea1d598 ]
 
-Add the missing error handling when allocating the transmit buffer to
-avoid dereferencing a NULL pointer in write() should the allocation
-ever fail.
+There are many instances of PHYs that depend on a switch to supply a
+resource (Eg: interrupts). Switches also expects the PHYs to be probed
+by their specific drivers as soon as they are added. If that doesn't
+happen, then the switch would force the use of generic PHY drivers for
+the PHY even if the PHY might have specific driver available.
 
-Fixes: ba4dc61fe8c5 ("Staging: ipack: add support for IP-OCTAL mezzanine board")
-Cc: stable@vger.kernel.org      # 3.5
-Acked-by: Samuel Iglesias Gonsalvez <siglesias@igalia.com>
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Link: https://lore.kernel.org/r/20210917114622.5412-5-johan@kernel.org
+fw_devlink=on by design can cause delayed probes of PHY. To avoid, this
+we need to set the FWNODE_FLAG_NEEDS_CHILD_BOUND_ON_ADD for the switch's
+fwnode before the PHYs are added. The most generic way to do this is to
+set this flag for the parent of MDIO busses which is typically the
+switch.
+
+For more context:
+https://lore.kernel.org/lkml/YTll0i6Rz3WAAYzs@lunn.ch/#t
+
+Fixes: ea718c699055 ("Revert "Revert "driver core: Set fw_devlink=on by default""")
+Suggested-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: Saravana Kannan <saravanak@google.com>
+Link: https://lore.kernel.org/r/20210915170940.617415-4-saravanak@google.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/ipack/devices/ipoctal.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/net/phy/mdio_bus.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/drivers/ipack/devices/ipoctal.c
-+++ b/drivers/ipack/devices/ipoctal.c
-@@ -391,7 +391,9 @@ static int ipoctal_inst_slot(struct ipoc
+diff --git a/drivers/net/phy/mdio_bus.c b/drivers/net/phy/mdio_bus.c
+index 53f034fc2ef7..ee8313a4ac71 100644
+--- a/drivers/net/phy/mdio_bus.c
++++ b/drivers/net/phy/mdio_bus.c
+@@ -525,6 +525,10 @@ int __mdiobus_register(struct mii_bus *bus, struct module *owner)
+ 	    NULL == bus->read || NULL == bus->write)
+ 		return -EINVAL;
  
- 		channel = &ipoctal->channel[i];
- 		tty_port_init(&channel->tty_port);
--		tty_port_alloc_xmit_buf(&channel->tty_port);
-+		res = tty_port_alloc_xmit_buf(&channel->tty_port);
-+		if (res)
-+			continue;
- 		channel->tty_port.ops = &ipoctal_tty_port_ops;
++	if (bus->parent && bus->parent->of_node)
++		bus->parent->of_node->fwnode.flags |=
++					FWNODE_FLAG_NEEDS_CHILD_BOUND_ON_ADD;
++
+ 	BUG_ON(bus->state != MDIOBUS_ALLOCATED &&
+ 	       bus->state != MDIOBUS_UNREGISTERED);
  
- 		ipoctal_reset_stats(&channel->stats);
+-- 
+2.33.0
+
 
 
