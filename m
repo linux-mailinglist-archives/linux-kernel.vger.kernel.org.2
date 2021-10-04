@@ -2,476 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B2E9420570
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 06:43:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE72C420577
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 06:47:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232487AbhJDEpZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 00:45:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56452 "EHLO
+        id S232513AbhJDEtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 00:49:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232388AbhJDEpY (ORCPT
+        with ESMTP id S232358AbhJDEtP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 00:45:24 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69FEBC061787
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Oct 2021 21:43:36 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id g13-20020a17090a3c8d00b00196286963b9so1821686pjc.3
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Oct 2021 21:43:36 -0700 (PDT)
+        Mon, 4 Oct 2021 00:49:15 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 860D6C0613EC
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Oct 2021 21:47:26 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id e12so8226825wra.4
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Oct 2021 21:47:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HWAMUj4dzgURJ5vWqiq2PCQyUrgEU4zywjKpxJ3KIW4=;
-        b=fRJehPvZC/iQE5Dwn11fQfHHskmrJ2mY++dheYxe0ZWsV77I6v3+kKNCaxV1lTFG/x
-         B7ovXSruSmskJ+nmOzJkBbBcI2t8XmQFXLUQ2VJ0qXDKUXYzgPN3VsBAtCRI2ECYZXaD
-         ssoQRJPJQlFLjQMsaLQXFZk5Hd3rNomo6zmIR4tVjUsB3J0YWlOLtg6KXqGR7wAOhdMU
-         KR0qpE/T1pW2++KUNTOQuZML5Ep8QhPtYTelns37zL2Zouuu7bT449dAfw82DN2NYnnL
-         ylJqafBoJsJ60/MIOGugQGRyNU47m2UU7yHt5di+k9vnQgtOv0wBYT6KrnMmE2BeWMjn
-         4arw==
+        d=brainfault-org.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=f4tKoSTK3inceMY79QUe3y1d0IroqdLSv2OwkWk2/A8=;
+        b=vWWDVV47UEHkiIDoYrLU082WRdmSUQHbaJsK0RBGw+i4JyXd9rB/yX9KmIKfNBBgm9
+         kqVPd0C9LMEc2i+5pNaKXcDDCWbt46i9W7lxZynQakH4aNdjNBs5+ST9hEs9h+4IkF7k
+         zo4sMI9EwV/Y3h8sLXNIpcORk9a/qN4SlNmdlccZL2X0dIwAbpjEoYM6djVbFLGp+8ED
+         K1HvhLZiW4DXx8nY3M3tc9sPnV3RNHd/O60P33ye2tcuQbhTDTXzUesV//3fymsnY6TD
+         DM0GxD4TdxFNDbAXyFQateeN3vnqqyLU2JGij5IKaOn71GcK9c+QKQ36yjvCYBZwGFnR
+         1MaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HWAMUj4dzgURJ5vWqiq2PCQyUrgEU4zywjKpxJ3KIW4=;
-        b=ICiuSJ9NoKULfi/2jDhe764/bbu1f3khjY/EtDUws9acHCRtwgsWwaCgkTJ8S58tBm
-         BJpLKnzI8hf7qxtwbj0Idsyy0K2MiCLd1MPzAwqo6K+/4wyCmQyhyxtvXiMyyE1Jgck9
-         JyE2Azx0PrvPgeclB4V4jgE/JqAzzZrDszHyopvxa6jBrHLj5ug/zcuRyJmIMvQEGgw7
-         7Xb8ohfjTp5QME6+LFOZ7h6+GFSOUwLIDkos6nEXMwbn9VY2k1AFa/gZHmqYLM8Fv7eu
-         Xx5cTUENOSp0W55JjVj4j0Rtz1LbDLS3lwoKyMPXeYEvuz1lhiwtYO+qfgRIjCyyN8BT
-         wJdg==
-X-Gm-Message-State: AOAM533Qnx6fqKNy1glEH6koB5nJfuhSRkuKx3PAdAnFl+719oqA31pH
-        uEBCd0ou35BX2FgsJFzqNOwV
-X-Google-Smtp-Source: ABdhPJzb8mSw6qm9ga/lbPhac7OUpluPNkMe2S8mb4QmaYcRH1LnbwyJjI5wUsVme0NBzaDlhcxd3w==
-X-Received: by 2002:a17:90b:4016:: with SMTP id ie22mr14659484pjb.29.1633322615137;
-        Sun, 03 Oct 2021 21:43:35 -0700 (PDT)
-Received: from localhost.localdomain ([120.138.13.170])
-        by smtp.gmail.com with ESMTPSA id m73sm393325pfd.152.2021.10.03.21.43.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Oct 2021 21:43:34 -0700 (PDT)
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     rafael@kernel.org, viresh.kumar@linaro.org, robh+dt@kernel.org
-Cc:     bjorn.andersson@linaro.org, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Rob Herring <robh@kernel.org>
-Subject: [PATCH] dt-bindings: cpufreq: cpufreq-qcom-hw: Convert to YAML bindings
-Date:   Mon,  4 Oct 2021 10:13:17 +0530
-Message-Id: <20211004044317.34809-1-manivannan.sadhasivam@linaro.org>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=f4tKoSTK3inceMY79QUe3y1d0IroqdLSv2OwkWk2/A8=;
+        b=Gb20w/NHPi8NzdOxNMDvQVqssNa7AFO9FU0dBNxxpSGYwUK/hWxm+xOcxUDRNuF4gV
+         Wo/6vjU+1RAmvSWfHCKItXD2/qf9nPc9mwP7OzdzacRybxuhBdFs6hUlkUn8W/wbxboy
+         G3511u/eGbtrFAVdBgVVE8W2AqNO2NaUN8hetMXtCiUQUoesECphSF2wqXdbYvIDd2wA
+         ZRvnx3s14otUV+xCou457baNWBC8Gz0PTkkZH1Utq+bTjL+vwNgbvtDZZf1U4cfGPT1z
+         tF+CF6TZgPCRMZR5gjyqGZ4WjYfFnw8SsV6k/CjMSTRPIxTSjLxCljIAC41WQvQ8AaqT
+         qxYw==
+X-Gm-Message-State: AOAM5327Ad/r6hImOrwdEV9e/MlJwuVd4fug/ZIjkwTB35Kes/iPaz7l
+        r32IL8PJudpBOqO6F7WiVTruq+NFFeYdAjKdIJVPXQ==
+X-Google-Smtp-Source: ABdhPJx37gv7S86waNUH+xL9Pa5+R4uyJSjSCccv/5SpnP1pbD+BHOOHyD+wYk5jf+xLYyO5QKxloQtS2nSz9VCP1U4=
+X-Received: by 2002:adf:ab57:: with SMTP id r23mr12045283wrc.199.1633322844751;
+ Sun, 03 Oct 2021 21:47:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210927114016.1089328-1-anup.patel@wdc.com> <CAAhSdy1yZ11L=A3g06GXM8tFtonBX0Cj5NDyGHQ1v44vJ8MqSA@mail.gmail.com>
+ <CAFiDJ5_--KsNd3aH1gT_cgU32C+wzunzXeSKtn8HTNj_La7n5A@mail.gmail.com>
+ <CAAhSdy1un6ab62LN-0ihV=oku8EH3fZ5YzbX1zzUFAEbatVAuQ@mail.gmail.com> <CAFiDJ5-Pew6311w7pS-_ADWQnP=H7gFEUUuU8MqhsMHEDrofdA@mail.gmail.com>
+In-Reply-To: <CAFiDJ5-Pew6311w7pS-_ADWQnP=H7gFEUUuU8MqhsMHEDrofdA@mail.gmail.com>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Mon, 4 Oct 2021 10:17:13 +0530
+Message-ID: <CAAhSdy3a6MqR5bmgA3Znwsn7RXWYhpokWzSP308JV7MQJ0NmWg@mail.gmail.com>
+Subject: Re: [PATCH v20 00/17] KVM RISC-V Support
+To:     Ley Foon Tan <lftan.linux@gmail.com>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexander Graf <graf@amazon.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Alistair Francis <Alistair.Francis@wdc.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        KVM General <kvm@vger.kernel.org>,
+        kvm-riscv@lists.infradead.org,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        Anup Patel <anup.patel@wdc.com>,
+        Philipp Tomsich <philipp.tomsich@vrull.eu>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert Qualcomm cpufreq devicetree binding to YAML.
+On Mon, Oct 4, 2021 at 7:58 AM Ley Foon Tan <lftan.linux@gmail.com> wrote:
+>
+> On Fri, Oct 1, 2021 at 6:41 PM Anup Patel <anup@brainfault.org> wrote:
+> >
+> > On Fri, Oct 1, 2021 at 2:33 PM Ley Foon Tan <lftan.linux@gmail.com> wrote:
+> > >
+> > > On Mon, Sep 27, 2021 at 8:01 PM Anup Patel <anup@brainfault.org> wrote:
+> > > >
+> > > > Hi Palmer, Hi Paolo,
+> > > >
+> > > > On Mon, Sep 27, 2021 at 5:10 PM Anup Patel <anup.patel@wdc.com> wrote:
+> > > > >
+> > > > > This series adds initial KVM RISC-V support. Currently, we are able to boot
+> > > > > Linux on RV64/RV32 Guest with multiple VCPUs.
+> > > > >
+> > > > > Key aspects of KVM RISC-V added by this series are:
+> > > > > 1. No RISC-V specific KVM IOCTL
+> > > > > 2. Loadable KVM RISC-V module supported
+> > > > > 3. Minimal possible KVM world-switch which touches only GPRs and few CSRs
+> > > > > 4. Both RV64 and RV32 host supported
+> > > > > 5. Full Guest/VM switch is done via vcpu_get/vcpu_put infrastructure
+> > > > > 6. KVM ONE_REG interface for VCPU register access from user-space
+> > > > > 7. PLIC emulation is done in user-space
+> > > > > 8. Timer and IPI emuation is done in-kernel
+> > > > > 9. Both Sv39x4 and Sv48x4 supported for RV64 host
+> > > > > 10. MMU notifiers supported
+> > > > > 11. Generic dirtylog supported
+> > > > > 12. FP lazy save/restore supported
+> > > > > 13. SBI v0.1 emulation for KVM Guest available
+> > > > > 14. Forward unhandled SBI calls to KVM userspace
+> > > > > 15. Hugepage support for Guest/VM
+> > > > > 16. IOEVENTFD support for Vhost
+> > > > >
+> > > > > Here's a brief TODO list which we will work upon after this series:
+> > > > > 1. KVM unit test support
+> > > > > 2. KVM selftest support
+> > > > > 3. SBI v0.3 emulation in-kernel
+> > > > > 4. In-kernel PMU virtualization
+> > > > > 5. In-kernel AIA irqchip support
+> > > > > 6. Nested virtualizaiton
+> > > > > 7. ..... and more .....
+> > > > >
+> > > > > This series can be found in riscv_kvm_v20 branch at:
+> > > > > https//github.com/avpatel/linux.git
+> > > > >
+> > > > > Our work-in-progress KVMTOOL RISC-V port can be found in riscv_v9 branch
+> > > > > at: https//github.com/avpatel/kvmtool.git
+> > > > >
+> > > > > The QEMU RISC-V hypervisor emulation is done by Alistair and is available
+> > > > > in master branch at: https://git.qemu.org/git/qemu.git
+> > > > >
+> > > > > To play around with KVM RISC-V, refer KVM RISC-V wiki at:
+> > > > > https://github.com/kvm-riscv/howto/wiki
+> > > > > https://github.com/kvm-riscv/howto/wiki/KVM-RISCV64-on-QEMU
+> > > > > https://github.com/kvm-riscv/howto/wiki/KVM-RISCV64-on-Spike
+> > > > >
 
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-Reviewed-by: Rob Herring <robh@kernel.org>
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
----
+<snip>
 
-I've taken this patch (again) from the cpufreq series by AngeloGioacchino.
-Addressed the comment by Rob and Bjorn on making the "reg-names" property
-optional as in the txt version.
+> Hi Anup
+>
+> It is able to boot up to kvm guest OS after change to use
+> https://github.com/avpatel/qemu.git, riscv_aia_v2 branch.
+> Is there dependency to AIA hardware feature for KVM?
 
- .../bindings/cpufreq/cpufreq-qcom-hw.txt      | 172 ---------------
- .../bindings/cpufreq/cpufreq-qcom-hw.yaml     | 203 ++++++++++++++++++
- 2 files changed, 203 insertions(+), 172 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.txt
- create mode 100644 Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.yaml
+No, there is no dependency on AIA hardware and KVM RISC-V
+v20 series.
 
-diff --git a/Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.txt b/Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.txt
-deleted file mode 100644
-index 9299028ee712..000000000000
---- a/Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.txt
-+++ /dev/null
-@@ -1,172 +0,0 @@
--Qualcomm Technologies, Inc. CPUFREQ Bindings
--
--CPUFREQ HW is a hardware engine used by some Qualcomm Technologies, Inc. (QTI)
--SoCs to manage frequency in hardware. It is capable of controlling frequency
--for multiple clusters.
--
--Properties:
--- compatible
--	Usage:		required
--	Value type:	<string>
--	Definition:	must be "qcom,cpufreq-hw" or "qcom,cpufreq-epss".
--
--- clocks
--	Usage:		required
--	Value type:	<phandle> From common clock binding.
--	Definition:	clock handle for XO clock and GPLL0 clock.
--
--- clock-names
--	Usage:		required
--	Value type:	<string> From common clock binding.
--	Definition:	must be "xo", "alternate".
--
--- reg
--	Usage:		required
--	Value type:	<prop-encoded-array>
--	Definition:	Addresses and sizes for the memory of the HW bases in
--			each frequency domain.
--- reg-names
--	Usage:		Optional
--	Value type:	<string>
--	Definition:	Frequency domain name i.e.
--			"freq-domain0", "freq-domain1".
--
--- #freq-domain-cells:
--	Usage:		required.
--	Definition:	Number of cells in a freqency domain specifier.
--
--* Property qcom,freq-domain
--Devices supporting freq-domain must set their "qcom,freq-domain" property with
--phandle to a cpufreq_hw followed by the Domain ID(0/1) in the CPU DT node.
--
--
--Example:
--
--Example 1: Dual-cluster, Quad-core per cluster. CPUs within a cluster switch
--DCVS state together.
--
--/ {
--	cpus {
--		#address-cells = <2>;
--		#size-cells = <0>;
--
--		CPU0: cpu@0 {
--			device_type = "cpu";
--			compatible = "qcom,kryo385";
--			reg = <0x0 0x0>;
--			enable-method = "psci";
--			next-level-cache = <&L2_0>;
--			qcom,freq-domain = <&cpufreq_hw 0>;
--			L2_0: l2-cache {
--				compatible = "cache";
--				next-level-cache = <&L3_0>;
--				L3_0: l3-cache {
--				      compatible = "cache";
--				};
--			};
--		};
--
--		CPU1: cpu@100 {
--			device_type = "cpu";
--			compatible = "qcom,kryo385";
--			reg = <0x0 0x100>;
--			enable-method = "psci";
--			next-level-cache = <&L2_100>;
--			qcom,freq-domain = <&cpufreq_hw 0>;
--			L2_100: l2-cache {
--				compatible = "cache";
--				next-level-cache = <&L3_0>;
--			};
--		};
--
--		CPU2: cpu@200 {
--			device_type = "cpu";
--			compatible = "qcom,kryo385";
--			reg = <0x0 0x200>;
--			enable-method = "psci";
--			next-level-cache = <&L2_200>;
--			qcom,freq-domain = <&cpufreq_hw 0>;
--			L2_200: l2-cache {
--				compatible = "cache";
--				next-level-cache = <&L3_0>;
--			};
--		};
--
--		CPU3: cpu@300 {
--			device_type = "cpu";
--			compatible = "qcom,kryo385";
--			reg = <0x0 0x300>;
--			enable-method = "psci";
--			next-level-cache = <&L2_300>;
--			qcom,freq-domain = <&cpufreq_hw 0>;
--			L2_300: l2-cache {
--				compatible = "cache";
--				next-level-cache = <&L3_0>;
--			};
--		};
--
--		CPU4: cpu@400 {
--			device_type = "cpu";
--			compatible = "qcom,kryo385";
--			reg = <0x0 0x400>;
--			enable-method = "psci";
--			next-level-cache = <&L2_400>;
--			qcom,freq-domain = <&cpufreq_hw 1>;
--			L2_400: l2-cache {
--				compatible = "cache";
--				next-level-cache = <&L3_0>;
--			};
--		};
--
--		CPU5: cpu@500 {
--			device_type = "cpu";
--			compatible = "qcom,kryo385";
--			reg = <0x0 0x500>;
--			enable-method = "psci";
--			next-level-cache = <&L2_500>;
--			qcom,freq-domain = <&cpufreq_hw 1>;
--			L2_500: l2-cache {
--				compatible = "cache";
--				next-level-cache = <&L3_0>;
--			};
--		};
--
--		CPU6: cpu@600 {
--			device_type = "cpu";
--			compatible = "qcom,kryo385";
--			reg = <0x0 0x600>;
--			enable-method = "psci";
--			next-level-cache = <&L2_600>;
--			qcom,freq-domain = <&cpufreq_hw 1>;
--			L2_600: l2-cache {
--				compatible = "cache";
--				next-level-cache = <&L3_0>;
--			};
--		};
--
--		CPU7: cpu@700 {
--			device_type = "cpu";
--			compatible = "qcom,kryo385";
--			reg = <0x0 0x700>;
--			enable-method = "psci";
--			next-level-cache = <&L2_700>;
--			qcom,freq-domain = <&cpufreq_hw 1>;
--			L2_700: l2-cache {
--				compatible = "cache";
--				next-level-cache = <&L3_0>;
--			};
--		};
--	};
--
-- soc {
--	cpufreq_hw: cpufreq@17d43000 {
--		compatible = "qcom,cpufreq-hw";
--		reg = <0x17d43000 0x1400>, <0x17d45800 0x1400>;
--		reg-names = "freq-domain0", "freq-domain1";
--
--		clocks = <&rpmhcc RPMH_CXO_CLK>, <&gcc GPLL0>;
--		clock-names = "xo", "alternate";
--
--		#freq-domain-cells = <1>;
--	};
--}
-diff --git a/Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.yaml b/Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.yaml
-new file mode 100644
-index 000000000000..a281914a8bf5
---- /dev/null
-+++ b/Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.yaml
-@@ -0,0 +1,203 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/cpufreq/cpufreq-qcom-hw.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Qualcomm Technologies, Inc. CPUFREQ
-+
-+maintainers:
-+  - Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-+
-+description: |
-+
-+  CPUFREQ HW is a hardware engine used by some Qualcomm Technologies, Inc. (QTI)
-+  SoCs to manage frequency in hardware. It is capable of controlling frequency
-+  for multiple clusters.
-+
-+properties:
-+  compatible:
-+    oneOf:
-+      - description: v1 of CPUFREQ HW
-+        items:
-+          - const: qcom,cpufreq-hw
-+
-+      - description: v2 of CPUFREQ HW (EPSS)
-+        items:
-+          - enum:
-+              - qcom,sm8250-cpufreq-epss
-+          - const: qcom,cpufreq-epss
-+
-+  reg:
-+    minItems: 2
-+    maxItems: 3
-+    items:
-+      - description: Frequency domain 0 register region
-+      - description: Frequency domain 1 register region
-+      - description: Frequency domain 2 register region
-+
-+  reg-names:
-+    minItems: 2
-+    maxItems: 3
-+    items:
-+      - const: freq-domain0
-+      - const: freq-domain1
-+      - const: freq-domain2
-+
-+  clocks:
-+    items:
-+      - description: XO Clock
-+      - description: GPLL0 Clock
-+
-+  clock-names:
-+    items:
-+      - const: xo
-+      - const: alternate
-+
-+  '#freq-domain-cells':
-+    const: 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - clocks
-+  - clock-names
-+  - '#freq-domain-cells'
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/qcom,gcc-sdm845.h>
-+    #include <dt-bindings/clock/qcom,rpmh.h>
-+
-+    // Example 1: Dual-cluster, Quad-core per cluster. CPUs within a cluster
-+    // switch DCVS state together.
-+    cpus {
-+      #address-cells = <2>;
-+      #size-cells = <0>;
-+
-+      CPU0: cpu@0 {
-+        device_type = "cpu";
-+        compatible = "qcom,kryo385";
-+        reg = <0x0 0x0>;
-+        enable-method = "psci";
-+        next-level-cache = <&L2_0>;
-+        qcom,freq-domain = <&cpufreq_hw 0>;
-+        L2_0: l2-cache {
-+          compatible = "cache";
-+          next-level-cache = <&L3_0>;
-+          L3_0: l3-cache {
-+            compatible = "cache";
-+          };
-+        };
-+      };
-+
-+      CPU1: cpu@100 {
-+        device_type = "cpu";
-+        compatible = "qcom,kryo385";
-+        reg = <0x0 0x100>;
-+        enable-method = "psci";
-+        next-level-cache = <&L2_100>;
-+        qcom,freq-domain = <&cpufreq_hw 0>;
-+        L2_100: l2-cache {
-+          compatible = "cache";
-+          next-level-cache = <&L3_0>;
-+        };
-+      };
-+
-+      CPU2: cpu@200 {
-+        device_type = "cpu";
-+        compatible = "qcom,kryo385";
-+        reg = <0x0 0x200>;
-+        enable-method = "psci";
-+        next-level-cache = <&L2_200>;
-+        qcom,freq-domain = <&cpufreq_hw 0>;
-+        L2_200: l2-cache {
-+          compatible = "cache";
-+          next-level-cache = <&L3_0>;
-+        };
-+      };
-+
-+      CPU3: cpu@300 {
-+        device_type = "cpu";
-+        compatible = "qcom,kryo385";
-+        reg = <0x0 0x300>;
-+        enable-method = "psci";
-+        next-level-cache = <&L2_300>;
-+        qcom,freq-domain = <&cpufreq_hw 0>;
-+        L2_300: l2-cache {
-+          compatible = "cache";
-+          next-level-cache = <&L3_0>;
-+        };
-+      };
-+
-+      CPU4: cpu@400 {
-+        device_type = "cpu";
-+        compatible = "qcom,kryo385";
-+        reg = <0x0 0x400>;
-+        enable-method = "psci";
-+        next-level-cache = <&L2_400>;
-+        qcom,freq-domain = <&cpufreq_hw 1>;
-+        L2_400: l2-cache {
-+          compatible = "cache";
-+          next-level-cache = <&L3_0>;
-+        };
-+      };
-+
-+      CPU5: cpu@500 {
-+        device_type = "cpu";
-+        compatible = "qcom,kryo385";
-+        reg = <0x0 0x500>;
-+        enable-method = "psci";
-+        next-level-cache = <&L2_500>;
-+        qcom,freq-domain = <&cpufreq_hw 1>;
-+        L2_500: l2-cache {
-+          compatible = "cache";
-+          next-level-cache = <&L3_0>;
-+        };
-+      };
-+
-+      CPU6: cpu@600 {
-+        device_type = "cpu";
-+        compatible = "qcom,kryo385";
-+        reg = <0x0 0x600>;
-+        enable-method = "psci";
-+        next-level-cache = <&L2_600>;
-+        qcom,freq-domain = <&cpufreq_hw 1>;
-+        L2_600: l2-cache {
-+          compatible = "cache";
-+          next-level-cache = <&L3_0>;
-+        };
-+      };
-+
-+      CPU7: cpu@700 {
-+        device_type = "cpu";
-+        compatible = "qcom,kryo385";
-+        reg = <0x0 0x700>;
-+        enable-method = "psci";
-+        next-level-cache = <&L2_700>;
-+        qcom,freq-domain = <&cpufreq_hw 1>;
-+        L2_700: l2-cache {
-+          compatible = "cache";
-+          next-level-cache = <&L3_0>;
-+        };
-+      };
-+    };
-+
-+    soc {
-+      #address-cells = <1>;
-+      #size-cells = <1>;
-+
-+      cpufreq@17d43000 {
-+        compatible = "qcom,cpufreq-hw";
-+        reg = <0x17d43000 0x1400>, <0x17d45800 0x1400>;
-+        reg-names = "freq-domain0", "freq-domain1";
-+
-+        clocks = <&rpmhcc RPMH_CXO_CLK>, <&gcc GPLL0>;
-+        clock-names = "xo", "alternate";
-+
-+        #freq-domain-cells = <1>;
-+      };
-+    };
-+...
--- 
-2.25.1
+I quickly tried the latest QEMU master with KVM RISC-V v20 and
+it worked perfectly fine for me.
+(QEMU master commit 30bd1db58b09c12b68c35f041f919014b885482d)
 
+Although, I did see that VS-mode interrupts were broken in the latest
+Spike due to some recent merge. I have sent fix PR to Spike for this.
+(Refer, https://github.com/riscv-software-src/riscv-isa-sim/pull/822)
+
+With Spike fix PR (above), the KVM RISC-V v20 series works fine
+on Spike as well.
+
+>
+>
+> Log:
+>
+> [    6.212484] Run /virt/init as init process
+> Mounting...
+> [    7.202552] random: fast init done
+> / # cat /proc/cpuinfo
+> processor : 0
+> hart : 1
+> isa : rv64imafdcsu
+> mmu : sv48
+>
+> processor : 1
+> hart : 0
+> isa : rv64imafdcsu
+> mmu : sv48
+>
+> / # cat /proc/interrupts
+>            CPU0       CPU1
+>   1:        355          0  SiFive PLIC   5 Edge      virtio0
+>   2:        212          0  SiFive PLIC   6 Edge      virtio1
+>   3:         11          0  SiFive PLIC   7 Edge      virtio2
+>   4:        155          0  SiFive PLIC   1 Edge      ttyS0
+>   5:       1150        942  RISC-V INTC   5 Edge      riscv-timer
+> IPI0:        19          5  Rescheduling interrupts
+> IPI1:        50        565  Function call interrupts
+> IPI2:         0          0  CPU stop interrupts
+> IPI3:         0          0  IRQ work interrupts
+> IPI4:         0          0  Timer broadcast interrupts
+>
+>
+> Thanks.
+>
+> Regards
+> Ley Foon
+
+Regards,
+Anup
