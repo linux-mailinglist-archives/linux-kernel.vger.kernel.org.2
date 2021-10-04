@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B622C420C92
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:05:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2548F420BF6
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:59:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233615AbhJDNHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:07:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39242 "EHLO mail.kernel.org"
+        id S234670AbhJDNBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:01:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32900 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234934AbhJDNE4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:04:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B44866137D;
-        Mon,  4 Oct 2021 13:00:35 +0000 (UTC)
+        id S234440AbhJDM7o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 08:59:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BCABA61507;
+        Mon,  4 Oct 2021 12:57:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352436;
-        bh=I4twkpA9yWUE5pIM4QzxI3aYM2GteOuhlVOrWPQ8iKs=;
+        s=korg; t=1633352263;
+        bh=kecqeoEY1ApU2mMIuYtqh1Ysyhtgb9SGG7Gj0G8KGCM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sfa4rSJ8ch3I4KIxP4k8OywEDkGwjiAxVoo1z6CMIHYY/+OnMBxTOfx44xo4dVD40
-         xLtYcyfese0HmbopJb2LSvSYtjz/cZMV6avTlj+WuQzm9RqBEkHyW+fGrrNFHOuISN
-         SZtwQ3CazfDzj4UigiOTxP4XrKpNToSyd3lo3nH0=
+        b=xN2IEYML/bkmVmD3/wM4h1IvsTq+xplqy8ifp3CG1fE2d+4T3jPF8QxlTSju+DBxv
+         W7TXMZwmgaEva5ABKV4QOSnV+vwVhjpal04diee/96ZWuSsrKaq6G5mh8mUR5mhakf
+         B5IZRFpazTGVBdWkCfFekGuhTt/kXWrimfafZ/sE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 61/75] net: udp: annotate data race around udp_sk(sk)->corkflag
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Alexander Sverdlin <alexander.sverdlin@nokia.com>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        Florian Fainelli <f.fainelli@gmail.com>
+Subject: [PATCH 4.9 52/57] ARM: 9098/1: ftrace: MODULE_PLT: Fix build problem without DYNAMIC_FTRACE
 Date:   Mon,  4 Oct 2021 14:52:36 +0200
-Message-Id: <20211004125033.575737377@linuxfoundation.org>
+Message-Id: <20211004125030.592343929@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125031.530773667@linuxfoundation.org>
-References: <20211004125031.530773667@linuxfoundation.org>
+In-Reply-To: <20211004125028.940212411@linuxfoundation.org>
+References: <20211004125028.940212411@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,73 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Alex Sverdlin <alexander.sverdlin@nokia.com>
 
-commit a9f5970767d11eadc805d5283f202612c7ba1f59 upstream.
+commit 6fa630bf473827aee48cbf0efbbdf6f03134e890 upstream
 
-up->corkflag field can be read or written without any lock.
-Annotate accesses to avoid possible syzbot/KCSAN reports.
+FTRACE_ADDR is only defined when CONFIG_DYNAMIC_FTRACE is defined, the
+latter is even stronger requirement than CONFIG_FUNCTION_TRACER (which is
+enough for MCOUNT_ADDR).
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Link: https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org/thread/ZUVCQBHDMFVR7CCB7JPESLJEWERZDJ3T/
+
+Fixes: 1f12fb25c5c5d22f ("ARM: 9079/1: ftrace: Add MODULE_PLTS support")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ipv4/udp.c |   10 +++++-----
- net/ipv6/udp.c |    2 +-
- 2 files changed, 6 insertions(+), 6 deletions(-)
+ arch/arm/kernel/module-plts.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/ipv4/udp.c
-+++ b/net/ipv4/udp.c
-@@ -882,7 +882,7 @@ int udp_sendmsg(struct sock *sk, struct
- 	__be16 dport;
- 	u8  tos;
- 	int err, is_udplite = IS_UDPLITE(sk);
--	int corkreq = up->corkflag || msg->msg_flags&MSG_MORE;
-+	int corkreq = READ_ONCE(up->corkflag) || msg->msg_flags&MSG_MORE;
- 	int (*getfrag)(void *, char *, int, int, int, struct sk_buff *);
- 	struct sk_buff *skb;
- 	struct ip_options_data opt_copy;
-@@ -1165,7 +1165,7 @@ int udp_sendpage(struct sock *sk, struct
- 	}
+--- a/arch/arm/kernel/module-plts.c
++++ b/arch/arm/kernel/module-plts.c
+@@ -24,7 +24,7 @@
+ #endif
  
- 	up->len += size;
--	if (!(up->corkflag || (flags&MSG_MORE)))
-+	if (!(READ_ONCE(up->corkflag) || (flags&MSG_MORE)))
- 		ret = udp_push_pending_frames(sk);
- 	if (!ret)
- 		ret = size;
-@@ -2373,9 +2373,9 @@ int udp_lib_setsockopt(struct sock *sk,
- 	switch (optname) {
- 	case UDP_CORK:
- 		if (val != 0) {
--			up->corkflag = 1;
-+			WRITE_ONCE(up->corkflag, 1);
- 		} else {
--			up->corkflag = 0;
-+			WRITE_ONCE(up->corkflag, 0);
- 			lock_sock(sk);
- 			push_pending_frames(sk);
- 			release_sock(sk);
-@@ -2482,7 +2482,7 @@ int udp_lib_getsockopt(struct sock *sk,
- 
- 	switch (optname) {
- 	case UDP_CORK:
--		val = up->corkflag;
-+		val = READ_ONCE(up->corkflag);
- 		break;
- 
- 	case UDP_ENCAP:
---- a/net/ipv6/udp.c
-+++ b/net/ipv6/udp.c
-@@ -1135,7 +1135,7 @@ int udpv6_sendmsg(struct sock *sk, struc
- 	struct ipcm6_cookie ipc6;
- 	int addr_len = msg->msg_namelen;
- 	int ulen = len;
--	int corkreq = up->corkflag || msg->msg_flags&MSG_MORE;
-+	int corkreq = READ_ONCE(up->corkflag) || msg->msg_flags&MSG_MORE;
- 	int err;
- 	int connected = 0;
- 	int is_udplite = IS_UDPLITE(sk);
+ static const u32 fixed_plts[] = {
+-#ifdef CONFIG_FUNCTION_TRACER
++#ifdef CONFIG_DYNAMIC_FTRACE
+ 	FTRACE_ADDR,
+ 	MCOUNT_ADDR,
+ #endif
 
 
