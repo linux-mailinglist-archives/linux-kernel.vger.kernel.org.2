@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53776420D21
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:10:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 017A3420BD7
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:59:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235931AbhJDNMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:12:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47450 "EHLO mail.kernel.org"
+        id S233887AbhJDNA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:00:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60266 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235809AbhJDNJo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:09:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 659FB60F9C;
-        Mon,  4 Oct 2021 13:03:40 +0000 (UTC)
+        id S234334AbhJDM67 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 08:58:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 36016613AC;
+        Mon,  4 Oct 2021 12:57:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352621;
-        bh=+vmliVF3h7whJ63pel0fd0qaw8JqRC3leYCvfM2RWus=;
+        s=korg; t=1633352226;
+        bh=jaaH+N1Ti4iJ1GW6PkXJJWxY9THTxW7E7t5EeLJyHnE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J50Qa1LZz25StZNb5RsA9bxrGgP4VuAq9KhSIqrfnvtUH7wZafeMRqYWa/tWHirsF
-         gUlf6Wo+5uhX7YZDcTLAR4XylzhLMj6n244233MrKIAc+J1X1g0SPvz9zVtGaB/pX7
-         qS0FFeYvGeAFBVFw0ryOg3v3A/Fmx4uFxNQFA7NM=
+        b=BwxZ//biFBUEGIY4zaFnZv0gtn1KmZgh6avrEI9h57HmTN2vM7tQBz3ce3GaTrDY7
+         Qbz2QvX6irJYgSPZayMuarkAm6rJCQInM9oqmby1qHCjZLkCFq0/BTFcyouRJ//cvk
+         E4B7uRsm5VmNfG8pqT4nqDQLyrIcLV/Km9xc/ECc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jiri Slaby <jslaby@suse.cz>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 24/95] tty: synclink_gt, drop unneeded forward declarations
+        stable@vger.kernel.org, Carlo Lobrano <c.lobrano@gmail.com>,
+        Daniele Palmas <dnlplm@gmail.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.9 10/57] USB: serial: option: add Telit LN920 compositions
 Date:   Mon,  4 Oct 2021 14:51:54 +0200
-Message-Id: <20211004125034.345938066@linuxfoundation.org>
+Message-Id: <20211004125029.261298031@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125033.572932188@linuxfoundation.org>
-References: <20211004125033.572932188@linuxfoundation.org>
+In-Reply-To: <20211004125028.940212411@linuxfoundation.org>
+References: <20211004125028.940212411@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,154 +40,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiri Slaby <jslaby@suse.cz>
+From: Carlo Lobrano <c.lobrano@gmail.com>
 
-[ Upstream commit b9b90fe655c0bd816847ac1bcbf179cfa2981ecb ]
+commit 7bb057134d609b9c038a00b6876cf0d37d0118ce upstream.
 
-Forward declarations make the code larger and rewrites harder. Harder as
-they are often omitted from global changes. Remove forward declarations
-which are not really needed, i.e. the definition of the function is
-before its first use.
+This patch adds the following Telit LN920 compositions:
 
-Signed-off-by: Jiri Slaby <jslaby@suse.cz>
-Link: https://lore.kernel.org/r/20210302062214.29627-39-jslaby@suse.cz
+0x1060: tty, adb, rmnet, tty, tty, tty, tty
+0x1061: tty, adb, mbim, tty, tty, tty, tty
+0x1062: rndis, tty, adb, tty, tty, tty, tty
+0x1063: tty, adb, ecm, tty, tty, tty, tty
+
+Signed-off-by: Carlo Lobrano <c.lobrano@gmail.com>
+Link: https://lore.kernel.org/r/20210903123913.1086513-1-c.lobrano@gmail.com
+Reviewed-by: Daniele Palmas <dnlplm@gmail.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/synclink_gt.c | 57 +--------------------------------------
- 1 file changed, 1 insertion(+), 56 deletions(-)
+ drivers/usb/serial/option.c |    8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/drivers/tty/synclink_gt.c b/drivers/tty/synclink_gt.c
-index e9779b03ee56..503836be5fe2 100644
---- a/drivers/tty/synclink_gt.c
-+++ b/drivers/tty/synclink_gt.c
-@@ -137,37 +137,14 @@ MODULE_PARM_DESC(maxframe, "Maximum frame size used by device (4096 to 65535)");
-  */
- static struct tty_driver *serial_driver;
- 
--static int  open(struct tty_struct *tty, struct file * filp);
--static void close(struct tty_struct *tty, struct file * filp);
--static void hangup(struct tty_struct *tty);
--static void set_termios(struct tty_struct *tty, struct ktermios *old_termios);
--
--static int  write(struct tty_struct *tty, const unsigned char *buf, int count);
--static int put_char(struct tty_struct *tty, unsigned char ch);
--static void send_xchar(struct tty_struct *tty, char ch);
- static void wait_until_sent(struct tty_struct *tty, int timeout);
--static int  write_room(struct tty_struct *tty);
--static void flush_chars(struct tty_struct *tty);
- static void flush_buffer(struct tty_struct *tty);
--static void tx_hold(struct tty_struct *tty);
- static void tx_release(struct tty_struct *tty);
- 
--static int  ioctl(struct tty_struct *tty, unsigned int cmd, unsigned long arg);
--static int  chars_in_buffer(struct tty_struct *tty);
--static void throttle(struct tty_struct * tty);
--static void unthrottle(struct tty_struct * tty);
--static int set_break(struct tty_struct *tty, int break_state);
--
- /*
-- * generic HDLC support and callbacks
-+ * generic HDLC support
-  */
--#if SYNCLINK_GENERIC_HDLC
- #define dev_to_port(D) (dev_to_hdlc(D)->priv)
--static void hdlcdev_tx_done(struct slgt_info *info);
--static void hdlcdev_rx(struct slgt_info *info, char *buf, int size);
--static int  hdlcdev_init(struct slgt_info *info);
--static void hdlcdev_exit(struct slgt_info *info);
--#endif
- 
- 
- /*
-@@ -186,9 +163,6 @@ struct cond_wait {
- 	wait_queue_entry_t wait;
- 	unsigned int data;
- };
--static void init_cond_wait(struct cond_wait *w, unsigned int data);
--static void add_cond_wait(struct cond_wait **head, struct cond_wait *w);
--static void remove_cond_wait(struct cond_wait **head, struct cond_wait *w);
- static void flush_cond_wait(struct cond_wait **head);
- 
- /*
-@@ -443,12 +417,8 @@ static void shutdown(struct slgt_info *info);
- static void program_hw(struct slgt_info *info);
- static void change_params(struct slgt_info *info);
- 
--static int  register_test(struct slgt_info *info);
--static int  irq_test(struct slgt_info *info);
--static int  loopback_test(struct slgt_info *info);
- static int  adapter_test(struct slgt_info *info);
- 
--static void reset_adapter(struct slgt_info *info);
- static void reset_port(struct slgt_info *info);
- static void async_mode(struct slgt_info *info);
- static void sync_mode(struct slgt_info *info);
-@@ -457,14 +427,12 @@ static void rx_stop(struct slgt_info *info);
- static void rx_start(struct slgt_info *info);
- static void reset_rbufs(struct slgt_info *info);
- static void free_rbufs(struct slgt_info *info, unsigned int first, unsigned int last);
--static void rdma_reset(struct slgt_info *info);
- static bool rx_get_frame(struct slgt_info *info);
- static bool rx_get_buf(struct slgt_info *info);
- 
- static void tx_start(struct slgt_info *info);
- static void tx_stop(struct slgt_info *info);
- static void tx_set_idle(struct slgt_info *info);
--static unsigned int free_tbuf_count(struct slgt_info *info);
- static unsigned int tbuf_bytes(struct slgt_info *info);
- static void reset_tbufs(struct slgt_info *info);
- static void tdma_reset(struct slgt_info *info);
-@@ -472,26 +440,10 @@ static bool tx_load(struct slgt_info *info, const char *buf, unsigned int count)
- 
- static void get_signals(struct slgt_info *info);
- static void set_signals(struct slgt_info *info);
--static void enable_loopback(struct slgt_info *info);
- static void set_rate(struct slgt_info *info, u32 data_rate);
- 
--static int  bh_action(struct slgt_info *info);
--static void bh_handler(struct work_struct *work);
- static void bh_transmit(struct slgt_info *info);
--static void isr_serial(struct slgt_info *info);
--static void isr_rdma(struct slgt_info *info);
- static void isr_txeom(struct slgt_info *info, unsigned short status);
--static void isr_tdma(struct slgt_info *info);
--
--static int  alloc_dma_bufs(struct slgt_info *info);
--static void free_dma_bufs(struct slgt_info *info);
--static int  alloc_desc(struct slgt_info *info);
--static void free_desc(struct slgt_info *info);
--static int  alloc_bufs(struct slgt_info *info, struct slgt_desc *bufs, int count);
--static void free_bufs(struct slgt_info *info, struct slgt_desc *bufs, int count);
--
--static int  alloc_tmp_rbuf(struct slgt_info *info);
--static void free_tmp_rbuf(struct slgt_info *info);
- 
- static void tx_timeout(struct timer_list *t);
- static void rx_timeout(struct timer_list *t);
-@@ -509,10 +461,6 @@ static int  tx_abort(struct slgt_info *info);
- static int  rx_enable(struct slgt_info *info, int enable);
- static int  modem_input_wait(struct slgt_info *info,int arg);
- static int  wait_mgsl_event(struct slgt_info *info, int __user *mask_ptr);
--static int  tiocmget(struct tty_struct *tty);
--static int  tiocmset(struct tty_struct *tty,
--				unsigned int set, unsigned int clear);
--static int set_break(struct tty_struct *tty, int break_state);
- static int  get_interface(struct slgt_info *info, int __user *if_mode);
- static int  set_interface(struct slgt_info *info, int if_mode);
- static int  set_gpio(struct slgt_info *info, struct gpio_desc __user *gpio);
-@@ -526,9 +474,6 @@ static int  set_xctrl(struct slgt_info *info, int if_mode);
- /*
-  * driver functions
-  */
--static void add_device(struct slgt_info *info);
--static void device_init(int adapter_num, struct pci_dev *pdev);
--static int  claim_resources(struct slgt_info *info);
- static void release_resources(struct slgt_info *info);
- 
- /*
--- 
-2.33.0
-
+--- a/drivers/usb/serial/option.c
++++ b/drivers/usb/serial/option.c
+@@ -1187,6 +1187,14 @@ static const struct usb_device_id option
+ 	  .driver_info = NCTRL(0) | RSVD(1) },
+ 	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x1056, 0xff),	/* Telit FD980 */
+ 	  .driver_info = NCTRL(2) | RSVD(3) },
++	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x1060, 0xff),	/* Telit LN920 (rmnet) */
++	  .driver_info = NCTRL(0) | RSVD(1) | RSVD(2) },
++	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x1061, 0xff),	/* Telit LN920 (MBIM) */
++	  .driver_info = NCTRL(0) | RSVD(1) },
++	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x1062, 0xff),	/* Telit LN920 (RNDIS) */
++	  .driver_info = NCTRL(2) | RSVD(3) },
++	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x1063, 0xff),	/* Telit LN920 (ECM) */
++	  .driver_info = NCTRL(0) | RSVD(1) },
+ 	{ USB_DEVICE(TELIT_VENDOR_ID, TELIT_PRODUCT_ME910),
+ 	  .driver_info = NCTRL(0) | RSVD(1) | RSVD(3) },
+ 	{ USB_DEVICE(TELIT_VENDOR_ID, TELIT_PRODUCT_ME910_DUAL_MODEM),
 
 
