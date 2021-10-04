@@ -2,219 +2,806 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6C274212EA
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 17:42:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22A5B4212EB
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 17:43:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235831AbhJDPoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 11:44:37 -0400
-Received: from mail-ua1-f46.google.com ([209.85.222.46]:46897 "EHLO
-        mail-ua1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235375AbhJDPog (ORCPT
+        id S235842AbhJDPpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 11:45:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22815 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235275AbhJDPpK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 11:44:36 -0400
-Received: by mail-ua1-f46.google.com with SMTP id u5so9713308uao.13;
-        Mon, 04 Oct 2021 08:42:46 -0700 (PDT)
+        Mon, 4 Oct 2021 11:45:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633362201;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ly4r/34bmILip5ZiID87hvZ8ITCLaIHuFra8lBUJoX4=;
+        b=Y6BXGzXLQFAVdhULGfyGSphYCP9ppCMEESVPS4VzpY+NkBk6vIwqj4RjIsZ5KqA14GE8Qx
+        vTLQ6xYrRdE8o4elQiYSY364mB+b5iLUGNWyFA5ido5CCPg5WlTwLT7eprNM6Dk2GtHYxs
+        lf+yPLKHFdx49h3kCO2OQ9wEvCbYang=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-533-2-qRzhH_NPKb-nymldaDnQ-1; Mon, 04 Oct 2021 11:43:03 -0400
+X-MC-Unique: 2-qRzhH_NPKb-nymldaDnQ-1
+Received: by mail-wr1-f71.google.com with SMTP id r21-20020adfa155000000b001608162e16dso4252067wrr.15
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 08:43:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MQdBFrT4gY5hArjSORJuBxhjfd5fLS9GXe/QptoG1WE=;
-        b=WzE0JkGDLpHffVCRB3rfb0BoOwsLqPmpR8lDJEICw2l3Um8VsMvCDXvHmNDAn5qetQ
-         KvujVfbX1xu7dgIUkL8mDZqx+3uLE//0bF2RPfGhno51N8KTAMdcfkN1lMF4vj0KttyC
-         QyxUF14lb4KwDxT1cUE3CmkFziSoo/YRX+gQiKPoFkkovmVIJHL5/Kkr/xSqVflqHKsF
-         42wcS5qr6oVcaX8g1hmjuSYOnuSNHpKnWohco/QdFV+NXBgNmlJGuHY8t9qmJ629XdDR
-         4JBFOOOSnnsdW37X88NMgyYPODMssgu9amry1UAICnMHoYFoZOK42nv4GCkVjZ9qeJck
-         qb6w==
-X-Gm-Message-State: AOAM531GL5enKJTYTOs4fQGqZRv2l4f2IEVF8WOVGHLiYlQAtArgJtER
-        09o9NVZrAElPTY6RSu3AqK82Di7pRL8g3icjTKfYSSONZls=
-X-Google-Smtp-Source: ABdhPJx0vB1rRxvDrREx/zG8/LgZeL2ryBFKT9obtzzKyTnHkzyoBuYlzdLJX5UVe9rEup1mwW9F5wpGlG4jGmIEVAY=
-X-Received: by 2002:ab0:311a:: with SMTP id e26mr7219640ual.122.1633362166344;
- Mon, 04 Oct 2021 08:42:46 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Ly4r/34bmILip5ZiID87hvZ8ITCLaIHuFra8lBUJoX4=;
+        b=mK3g8DywTjYNsxnCLGVAziDfMof1Uz+iI2VQOQKsoB6GBbXyLEJEXJfXHENL8hFwg4
+         BMidQZqf8Fxaj3/JuU58YyT86QtrR+W35+tTI4bbvyOVmmcTnUe34laMk+E0N33tJqaa
+         nzjjbxosQEtLDpgPW5pySbSdm0fp1VK7Hmj6tV4Mmbo9USsn4d2A4xzD0La7uvHs43Ig
+         NP90qVN5Avk2hO/WS1U+KyCsqUxYsUMI89oCou/FCFfQRF46kwhI2hs0YQjcdfgwiL5L
+         ofGejvKHdCfGNMTkVbNh5cTTDEqs57ycHMHMT0vyZVs7XQF0R1yudP67+Z+7AwV/BvSW
+         1Hgw==
+X-Gm-Message-State: AOAM530gsMsgojoyw8ne1TmiO9BdqW9UwIlMSopw3Tp02S7HuSD95sXk
+        bUEt3fWg8jZRInM+9u2KVy/t7wpwuuShw8jPMI/NAHdU3wqlSf2W8vUUwf2I88FI+xSwCV9bBah
+        2JXmZWEpFUpLxQbDxpF7MUFgL
+X-Received: by 2002:a1c:2d6:: with SMTP id 205mr19092986wmc.48.1633362179146;
+        Mon, 04 Oct 2021 08:42:59 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzvVdCO9+tQVLBwMEaQbski8TndlK5YXfGMMiOGyoUzzbGJcAc6zeuM/PnUgFRqv5ltQR+ehA==
+X-Received: by 2002:a1c:2d6:: with SMTP id 205mr19092966wmc.48.1633362178857;
+        Mon, 04 Oct 2021 08:42:58 -0700 (PDT)
+Received: from krava (nat-pool-brq-u.redhat.com. [213.175.37.12])
+        by smtp.gmail.com with ESMTPSA id y10sm4722840wrw.5.2021.10.04.08.42.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Oct 2021 08:42:58 -0700 (PDT)
+Date:   Mon, 4 Oct 2021 17:42:56 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     kan.liang@linux.intel.com
+Cc:     acme@kernel.org, linux-kernel@vger.kernel.org, ak@linux.intel.com
+Subject: Re: [PATCH] perf tests attr: Support Topdown metrics events
+Message-ID: <YVshAMbqreNnGVnj@krava>
+References: <1633031566-176517-1-git-send-email-kan.liang@linux.intel.com>
 MIME-Version: 1.0
-References: <20210914202202.1702601-1-dianders@chromium.org> <20210914132020.v5.2.I62e76a034ac78c994d40a23cd4ec5aeee56fa77c@changeid>
-In-Reply-To: <20210914132020.v5.2.I62e76a034ac78c994d40a23cd4ec5aeee56fa77c@changeid>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 4 Oct 2021 17:42:35 +0200
-Message-ID: <CAMuHMdWy+aASNevg8nc9LTvR9QNrGYZQnB3sYYLDRfEU1w_idg@mail.gmail.com>
-Subject: Re: [PATCH v5 02/15] drm/edid: Break out reading block 0 of the EDID
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Steev Klimaszewski <steev@kali.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Linus W <linus.walleij@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Maxime Ripard <mripard@kernel.org>,
-        Jani Nikula <jani.nikula@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1633031566-176517-1-git-send-email-kan.liang@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Douglas,
+On Thu, Sep 30, 2021 at 12:52:46PM -0700, kan.liang@linux.intel.com wrote:
+> From: Kan Liang <kan.liang@linux.intel.com>
+> 
+> The Topdown metrics events were added as perf stat default events since
+> commit 42641d6f4d15 ("perf stat: Add Topdown metrics events as default
+> events"). However, the perf attr tests were not updated accordingly.
+> 
+> The perf attr test fails on the platform which supports Topdown metrics.
+> perf test 17
+> 17: Setup struct perf_event_attr                        :FAILED!
+> 
+> Add Topdown metrics events into perf attr test cases. Make them optional
+> since they are only available on newer platforms.
+> 
+> Reported-by: kernel test robot <oliver.sang@intel.com>
+> Fixes: 42641d6f4d15 ("perf stat: Add Topdown metrics events as default events")
+> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
 
-On Tue, Sep 14, 2021 at 10:23 PM Douglas Anderson <dianders@chromium.org> wrote:
-> A future change wants to be able to read just block 0 of the EDID, so
-> break it out of drm_do_get_edid() into a sub-function.
->
-> This is intended to be a no-op change--just code movement.
->
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Acked-by: Jiri Olsa <jolsa@redhat.com>
 
-Thanks for your patch, which is now commit bac9c29482248b00 ("drm/edid:
-Break out reading block 0 of the EDID") in drm-next.
+thanks,
+jirka
 
-> --- a/drivers/gpu/drm/drm_edid.c
-> +++ b/drivers/gpu/drm/drm_edid.c
-> @@ -1905,6 +1905,44 @@ int drm_add_override_edid_modes(struct drm_connector *connector)
->  }
->  EXPORT_SYMBOL(drm_add_override_edid_modes);
->
-> +static struct edid *drm_do_get_edid_base_block(
-> +       int (*get_edid_block)(void *data, u8 *buf, unsigned int block,
-> +                             size_t len),
-> +       void *data, bool *edid_corrupt, int *null_edid_counter)
-> +{
-> +       int i;
-> +       void *edid;
+> ---
+>  tools/perf/tests/attr/test-stat-default    |  97 +++++++++++++++++++
+>  tools/perf/tests/attr/test-stat-detailed-1 | 113 ++++++++++++++++++++--
+>  tools/perf/tests/attr/test-stat-detailed-2 | 137 +++++++++++++++++++++++----
+>  tools/perf/tests/attr/test-stat-detailed-3 | 145 ++++++++++++++++++++++++-----
+>  4 files changed, 440 insertions(+), 52 deletions(-)
+> 
+> diff --git a/tools/perf/tests/attr/test-stat-default b/tools/perf/tests/attr/test-stat-default
+> index d9e99b3..d8ea6a8 100644
+> --- a/tools/perf/tests/attr/test-stat-default
+> +++ b/tools/perf/tests/attr/test-stat-default
+> @@ -68,3 +68,100 @@ fd=10
+>  type=0
+>  config=5
+>  optional=1
 > +
-> +       edid = kmalloc(EDID_LENGTH, GFP_KERNEL);
-> +       if (edid == NULL)
-> +               return NULL;
+> +# PERF_TYPE_RAW / slots (0x400)
+> +[event11:base-stat]
+> +fd=11
+> +group_fd=-1
+> +type=4
+> +config=1024
+> +read_format=15
+> +optional=1
 > +
-> +       /* base block fetch */
-> +       for (i = 0; i < 4; i++) {
-> +               if (get_edid_block(data, edid, 0, EDID_LENGTH))
-> +                       goto out;
-> +               if (drm_edid_block_valid(edid, 0, false, edid_corrupt))
-> +                       break;
-> +               if (i == 0 && drm_edid_is_zero(edid, EDID_LENGTH)) {
-> +                       if (null_edid_counter)
-> +                               (*null_edid_counter)++;
-> +                       goto carp;
-> +               }
-> +       }
-> +       if (i == 4)
-> +               goto carp;
+> +# PERF_TYPE_RAW / topdown-retiring (0x8000)
+> +[event12:base-stat]
+> +fd=12
+> +group_fd=11
+> +type=4
+> +config=32768
+> +disabled=0
+> +enable_on_exec=0
+> +read_format=15
+> +optional=1
 > +
-> +       return edid;
+> +# PERF_TYPE_RAW / topdown-bad-spec (0x8100)
+> +[event13:base-stat]
+> +fd=13
+> +group_fd=11
+> +type=4
+> +config=33024
+> +disabled=0
+> +enable_on_exec=0
+> +read_format=15
+> +optional=1
 > +
-> +carp:
-> +       kfree(edid);
-> +       return ERR_PTR(-EINVAL);
+> +# PERF_TYPE_RAW / topdown-fe-bound (0x8200)
+> +[event14:base-stat]
+> +fd=14
+> +group_fd=11
+> +type=4
+> +config=33280
+> +disabled=0
+> +enable_on_exec=0
+> +read_format=15
+> +optional=1
 > +
-> +out:
-> +       kfree(edid);
-> +       return NULL;
-> +}
+> +# PERF_TYPE_RAW / topdown-be-bound (0x8300)
+> +[event15:base-stat]
+> +fd=15
+> +group_fd=11
+> +type=4
+> +config=33536
+> +disabled=0
+> +enable_on_exec=0
+> +read_format=15
+> +optional=1
 > +
->  /**
->   * drm_do_get_edid - get EDID data using a custom EDID block read function
->   * @connector: connector we're probing
-> @@ -1938,25 +1976,16 @@ struct edid *drm_do_get_edid(struct drm_connector *connector,
->         if (override)
->                 return override;
->
-> -       if ((edid = kmalloc(EDID_LENGTH, GFP_KERNEL)) == NULL)
-> +       edid = (u8 *)drm_do_get_edid_base_block(get_edid_block, data,
-> +                                               &connector->edid_corrupt,
-> +                                               &connector->null_edid_counter);
-> +       if (IS_ERR_OR_NULL(edid)) {
-> +               if (IS_ERR(edid))
+> +# PERF_TYPE_RAW / topdown-heavy-ops (0x8400)
+> +[event16:base-stat]
+> +fd=16
+> +group_fd=11
+> +type=4
+> +config=33792
+> +disabled=0
+> +enable_on_exec=0
+> +read_format=15
+> +optional=1
+> +
+> +# PERF_TYPE_RAW / topdown-br-mispredict (0x8500)
+> +[event17:base-stat]
+> +fd=17
+> +group_fd=11
+> +type=4
+> +config=34048
+> +disabled=0
+> +enable_on_exec=0
+> +read_format=15
+> +optional=1
+> +
+> +# PERF_TYPE_RAW / topdown-fetch-lat (0x8600)
+> +[event18:base-stat]
+> +fd=18
+> +group_fd=11
+> +type=4
+> +config=34304
+> +disabled=0
+> +enable_on_exec=0
+> +read_format=15
+> +optional=1
+> +
+> +# PERF_TYPE_RAW / topdown-mem-bound (0x8700)
+> +[event19:base-stat]
+> +fd=19
+> +group_fd=11
+> +type=4
+> +config=34560
+> +disabled=0
+> +enable_on_exec=0
+> +read_format=15
+> +optional=1
+> diff --git a/tools/perf/tests/attr/test-stat-detailed-1 b/tools/perf/tests/attr/test-stat-detailed-1
+> index 8b04a05..b656ab9 100644
+> --- a/tools/perf/tests/attr/test-stat-detailed-1
+> +++ b/tools/perf/tests/attr/test-stat-detailed-1
+> @@ -70,12 +70,109 @@ type=0
+>  config=5
+>  optional=1
+>  
+> +# PERF_TYPE_RAW / slots (0x400)
+> +[event11:base-stat]
+> +fd=11
+> +group_fd=-1
+> +type=4
+> +config=1024
+> +read_format=15
+> +optional=1
+> +
+> +# PERF_TYPE_RAW / topdown-retiring (0x8000)
+> +[event12:base-stat]
+> +fd=12
+> +group_fd=11
+> +type=4
+> +config=32768
+> +disabled=0
+> +enable_on_exec=0
+> +read_format=15
+> +optional=1
+> +
+> +# PERF_TYPE_RAW / topdown-bad-spec (0x8100)
+> +[event13:base-stat]
+> +fd=13
+> +group_fd=11
+> +type=4
+> +config=33024
+> +disabled=0
+> +enable_on_exec=0
+> +read_format=15
+> +optional=1
+> +
+> +# PERF_TYPE_RAW / topdown-fe-bound (0x8200)
+> +[event14:base-stat]
+> +fd=14
+> +group_fd=11
+> +type=4
+> +config=33280
+> +disabled=0
+> +enable_on_exec=0
+> +read_format=15
+> +optional=1
+> +
+> +# PERF_TYPE_RAW / topdown-be-bound (0x8300)
+> +[event15:base-stat]
+> +fd=15
+> +group_fd=11
+> +type=4
+> +config=33536
+> +disabled=0
+> +enable_on_exec=0
+> +read_format=15
+> +optional=1
+> +
+> +# PERF_TYPE_RAW / topdown-heavy-ops (0x8400)
+> +[event16:base-stat]
+> +fd=16
+> +group_fd=11
+> +type=4
+> +config=33792
+> +disabled=0
+> +enable_on_exec=0
+> +read_format=15
+> +optional=1
+> +
+> +# PERF_TYPE_RAW / topdown-br-mispredict (0x8500)
+> +[event17:base-stat]
+> +fd=17
+> +group_fd=11
+> +type=4
+> +config=34048
+> +disabled=0
+> +enable_on_exec=0
+> +read_format=15
+> +optional=1
+> +
+> +# PERF_TYPE_RAW / topdown-fetch-lat (0x8600)
+> +[event18:base-stat]
+> +fd=18
+> +group_fd=11
+> +type=4
+> +config=34304
+> +disabled=0
+> +enable_on_exec=0
+> +read_format=15
+> +optional=1
+> +
+> +# PERF_TYPE_RAW / topdown-mem-bound (0x8700)
+> +[event19:base-stat]
+> +fd=19
+> +group_fd=11
+> +type=4
+> +config=34560
+> +disabled=0
+> +enable_on_exec=0
+> +read_format=15
+> +optional=1
+> +
+>  # PERF_TYPE_HW_CACHE /
+>  #  PERF_COUNT_HW_CACHE_L1D                <<  0  |
+>  # (PERF_COUNT_HW_CACHE_OP_READ            <<  8) |
+>  # (PERF_COUNT_HW_CACHE_RESULT_ACCESS      << 16)
+> -[event11:base-stat]
+> -fd=11
+> +[event20:base-stat]
+> +fd=20
+>  type=3
+>  config=0
+>  optional=1
+> @@ -84,8 +181,8 @@ optional=1
+>  #  PERF_COUNT_HW_CACHE_L1D                <<  0  |
+>  # (PERF_COUNT_HW_CACHE_OP_READ            <<  8) |
+>  # (PERF_COUNT_HW_CACHE_RESULT_MISS        << 16)
+> -[event12:base-stat]
+> -fd=12
+> +[event21:base-stat]
+> +fd=21
+>  type=3
+>  config=65536
+>  optional=1
+> @@ -94,8 +191,8 @@ optional=1
+>  #  PERF_COUNT_HW_CACHE_LL                 <<  0  |
+>  # (PERF_COUNT_HW_CACHE_OP_READ            <<  8) |
+>  # (PERF_COUNT_HW_CACHE_RESULT_ACCESS      << 16)
+> -[event13:base-stat]
+> -fd=13
+> +[event22:base-stat]
+> +fd=22
+>  type=3
+>  config=2
+>  optional=1
+> @@ -104,8 +201,8 @@ optional=1
+>  #  PERF_COUNT_HW_CACHE_LL                 <<  0  |
+>  # (PERF_COUNT_HW_CACHE_OP_READ            <<  8) |
+>  # (PERF_COUNT_HW_CACHE_RESULT_MISS        << 16)
+> -[event14:base-stat]
+> -fd=14
+> +[event23:base-stat]
+> +fd=23
+>  type=3
+>  config=65538
+>  optional=1
+> diff --git a/tools/perf/tests/attr/test-stat-detailed-2 b/tools/perf/tests/attr/test-stat-detailed-2
+> index 4fca9f1..9762509 100644
+> --- a/tools/perf/tests/attr/test-stat-detailed-2
+> +++ b/tools/perf/tests/attr/test-stat-detailed-2
+> @@ -70,12 +70,109 @@ type=0
+>  config=5
+>  optional=1
+>  
+> +# PERF_TYPE_RAW / slots (0x400)
+> +[event11:base-stat]
+> +fd=11
+> +group_fd=-1
+> +type=4
+> +config=1024
+> +read_format=15
+> +optional=1
+> +
+> +# PERF_TYPE_RAW / topdown-retiring (0x8000)
+> +[event12:base-stat]
+> +fd=12
+> +group_fd=11
+> +type=4
+> +config=32768
+> +disabled=0
+> +enable_on_exec=0
+> +read_format=15
+> +optional=1
+> +
+> +# PERF_TYPE_RAW / topdown-bad-spec (0x8100)
+> +[event13:base-stat]
+> +fd=13
+> +group_fd=11
+> +type=4
+> +config=33024
+> +disabled=0
+> +enable_on_exec=0
+> +read_format=15
+> +optional=1
+> +
+> +# PERF_TYPE_RAW / topdown-fe-bound (0x8200)
+> +[event14:base-stat]
+> +fd=14
+> +group_fd=11
+> +type=4
+> +config=33280
+> +disabled=0
+> +enable_on_exec=0
+> +read_format=15
+> +optional=1
+> +
+> +# PERF_TYPE_RAW / topdown-be-bound (0x8300)
+> +[event15:base-stat]
+> +fd=15
+> +group_fd=11
+> +type=4
+> +config=33536
+> +disabled=0
+> +enable_on_exec=0
+> +read_format=15
+> +optional=1
+> +
+> +# PERF_TYPE_RAW / topdown-heavy-ops (0x8400)
+> +[event16:base-stat]
+> +fd=16
+> +group_fd=11
+> +type=4
+> +config=33792
+> +disabled=0
+> +enable_on_exec=0
+> +read_format=15
+> +optional=1
+> +
+> +# PERF_TYPE_RAW / topdown-br-mispredict (0x8500)
+> +[event17:base-stat]
+> +fd=17
+> +group_fd=11
+> +type=4
+> +config=34048
+> +disabled=0
+> +enable_on_exec=0
+> +read_format=15
+> +optional=1
+> +
+> +# PERF_TYPE_RAW / topdown-fetch-lat (0x8600)
+> +[event18:base-stat]
+> +fd=18
+> +group_fd=11
+> +type=4
+> +config=34304
+> +disabled=0
+> +enable_on_exec=0
+> +read_format=15
+> +optional=1
+> +
+> +# PERF_TYPE_RAW / topdown-mem-bound (0x8700)
+> +[event19:base-stat]
+> +fd=19
+> +group_fd=11
+> +type=4
+> +config=34560
+> +disabled=0
+> +enable_on_exec=0
+> +read_format=15
+> +optional=1
+> +
+>  # PERF_TYPE_HW_CACHE /
+>  #  PERF_COUNT_HW_CACHE_L1D                <<  0  |
+>  # (PERF_COUNT_HW_CACHE_OP_READ            <<  8) |
+>  # (PERF_COUNT_HW_CACHE_RESULT_ACCESS      << 16)
+> -[event11:base-stat]
+> -fd=11
+> +[event20:base-stat]
+> +fd=20
+>  type=3
+>  config=0
+>  optional=1
+> @@ -84,8 +181,8 @@ optional=1
+>  #  PERF_COUNT_HW_CACHE_L1D                <<  0  |
+>  # (PERF_COUNT_HW_CACHE_OP_READ            <<  8) |
+>  # (PERF_COUNT_HW_CACHE_RESULT_MISS        << 16)
+> -[event12:base-stat]
+> -fd=12
+> +[event21:base-stat]
+> +fd=21
+>  type=3
+>  config=65536
+>  optional=1
+> @@ -94,8 +191,8 @@ optional=1
+>  #  PERF_COUNT_HW_CACHE_LL                 <<  0  |
+>  # (PERF_COUNT_HW_CACHE_OP_READ            <<  8) |
+>  # (PERF_COUNT_HW_CACHE_RESULT_ACCESS      << 16)
+> -[event13:base-stat]
+> -fd=13
+> +[event22:base-stat]
+> +fd=22
+>  type=3
+>  config=2
+>  optional=1
+> @@ -104,8 +201,8 @@ optional=1
+>  #  PERF_COUNT_HW_CACHE_LL                 <<  0  |
+>  # (PERF_COUNT_HW_CACHE_OP_READ            <<  8) |
+>  # (PERF_COUNT_HW_CACHE_RESULT_MISS        << 16)
+> -[event14:base-stat]
+> -fd=14
+> +[event23:base-stat]
+> +fd=23
+>  type=3
+>  config=65538
+>  optional=1
+> @@ -114,8 +211,8 @@ optional=1
+>  #  PERF_COUNT_HW_CACHE_L1I                <<  0  |
+>  # (PERF_COUNT_HW_CACHE_OP_READ            <<  8) |
+>  # (PERF_COUNT_HW_CACHE_RESULT_ACCESS      << 16)
+> -[event15:base-stat]
+> -fd=15
+> +[event24:base-stat]
+> +fd=24
+>  type=3
+>  config=1
+>  optional=1
+> @@ -124,8 +221,8 @@ optional=1
+>  #  PERF_COUNT_HW_CACHE_L1I                <<  0  |
+>  # (PERF_COUNT_HW_CACHE_OP_READ            <<  8) |
+>  # (PERF_COUNT_HW_CACHE_RESULT_MISS        << 16)
+> -[event16:base-stat]
+> -fd=16
+> +[event25:base-stat]
+> +fd=25
+>  type=3
+>  config=65537
+>  optional=1
+> @@ -134,8 +231,8 @@ optional=1
+>  #  PERF_COUNT_HW_CACHE_DTLB               <<  0  |
+>  # (PERF_COUNT_HW_CACHE_OP_READ            <<  8) |
+>  # (PERF_COUNT_HW_CACHE_RESULT_ACCESS      << 16)
+> -[event17:base-stat]
+> -fd=17
+> +[event26:base-stat]
+> +fd=26
+>  type=3
+>  config=3
+>  optional=1
+> @@ -144,8 +241,8 @@ optional=1
+>  #  PERF_COUNT_HW_CACHE_DTLB               <<  0  |
+>  # (PERF_COUNT_HW_CACHE_OP_READ            <<  8) |
+>  # (PERF_COUNT_HW_CACHE_RESULT_MISS        << 16)
+> -[event18:base-stat]
+> -fd=18
+> +[event27:base-stat]
+> +fd=27
+>  type=3
+>  config=65539
+>  optional=1
+> @@ -154,8 +251,8 @@ optional=1
+>  #  PERF_COUNT_HW_CACHE_ITLB               <<  0  |
+>  # (PERF_COUNT_HW_CACHE_OP_READ            <<  8) |
+>  # (PERF_COUNT_HW_CACHE_RESULT_ACCESS      << 16)
+> -[event19:base-stat]
+> -fd=19
+> +[event28:base-stat]
+> +fd=28
+>  type=3
+>  config=4
+>  optional=1
+> @@ -164,8 +261,8 @@ optional=1
+>  #  PERF_COUNT_HW_CACHE_ITLB               <<  0  |
+>  # (PERF_COUNT_HW_CACHE_OP_READ            <<  8) |
+>  # (PERF_COUNT_HW_CACHE_RESULT_MISS        << 16)
+> -[event20:base-stat]
+> -fd=20
+> +[event29:base-stat]
+> +fd=29
+>  type=3
+>  config=65540
+>  optional=1
+> diff --git a/tools/perf/tests/attr/test-stat-detailed-3 b/tools/perf/tests/attr/test-stat-detailed-3
+> index 4bb58e1..d555042 100644
+> --- a/tools/perf/tests/attr/test-stat-detailed-3
+> +++ b/tools/perf/tests/attr/test-stat-detailed-3
+> @@ -70,12 +70,109 @@ type=0
+>  config=5
+>  optional=1
+>  
+> +# PERF_TYPE_RAW / slots (0x400)
+> +[event11:base-stat]
+> +fd=11
+> +group_fd=-1
+> +type=4
+> +config=1024
+> +read_format=15
+> +optional=1
+> +
+> +# PERF_TYPE_RAW / topdown-retiring (0x8000)
+> +[event12:base-stat]
+> +fd=12
+> +group_fd=11
+> +type=4
+> +config=32768
+> +disabled=0
+> +enable_on_exec=0
+> +read_format=15
+> +optional=1
+> +
+> +# PERF_TYPE_RAW / topdown-bad-spec (0x8100)
+> +[event13:base-stat]
+> +fd=13
+> +group_fd=11
+> +type=4
+> +config=33024
+> +disabled=0
+> +enable_on_exec=0
+> +read_format=15
+> +optional=1
+> +
+> +# PERF_TYPE_RAW / topdown-fe-bound (0x8200)
+> +[event14:base-stat]
+> +fd=14
+> +group_fd=11
+> +type=4
+> +config=33280
+> +disabled=0
+> +enable_on_exec=0
+> +read_format=15
+> +optional=1
+> +
+> +# PERF_TYPE_RAW / topdown-be-bound (0x8300)
+> +[event15:base-stat]
+> +fd=15
+> +group_fd=11
+> +type=4
+> +config=33536
+> +disabled=0
+> +enable_on_exec=0
+> +read_format=15
+> +optional=1
+> +
+> +# PERF_TYPE_RAW / topdown-heavy-ops (0x8400)
+> +[event16:base-stat]
+> +fd=16
+> +group_fd=11
+> +type=4
+> +config=33792
+> +disabled=0
+> +enable_on_exec=0
+> +read_format=15
+> +optional=1
+> +
+> +# PERF_TYPE_RAW / topdown-br-mispredict (0x8500)
+> +[event17:base-stat]
+> +fd=17
+> +group_fd=11
+> +type=4
+> +config=34048
+> +disabled=0
+> +enable_on_exec=0
+> +read_format=15
+> +optional=1
+> +
+> +# PERF_TYPE_RAW / topdown-fetch-lat (0x8600)
+> +[event18:base-stat]
+> +fd=18
+> +group_fd=11
+> +type=4
+> +config=34304
+> +disabled=0
+> +enable_on_exec=0
+> +read_format=15
+> +optional=1
+> +
+> +# PERF_TYPE_RAW / topdown-mem-bound (0x8700)
+> +[event19:base-stat]
+> +fd=19
+> +group_fd=11
+> +type=4
+> +config=34560
+> +disabled=0
+> +enable_on_exec=0
+> +read_format=15
+> +optional=1
+> +
+>  # PERF_TYPE_HW_CACHE /
+>  #  PERF_COUNT_HW_CACHE_L1D                <<  0  |
+>  # (PERF_COUNT_HW_CACHE_OP_READ            <<  8) |
+>  # (PERF_COUNT_HW_CACHE_RESULT_ACCESS      << 16)
+> -[event11:base-stat]
+> -fd=11
+> +[event20:base-stat]
+> +fd=20
+>  type=3
+>  config=0
+>  optional=1
+> @@ -84,8 +181,8 @@ optional=1
+>  #  PERF_COUNT_HW_CACHE_L1D                <<  0  |
+>  # (PERF_COUNT_HW_CACHE_OP_READ            <<  8) |
+>  # (PERF_COUNT_HW_CACHE_RESULT_MISS        << 16)
+> -[event12:base-stat]
+> -fd=12
+> +[event21:base-stat]
+> +fd=21
+>  type=3
+>  config=65536
+>  optional=1
+> @@ -94,8 +191,8 @@ optional=1
+>  #  PERF_COUNT_HW_CACHE_LL                 <<  0  |
+>  # (PERF_COUNT_HW_CACHE_OP_READ            <<  8) |
+>  # (PERF_COUNT_HW_CACHE_RESULT_ACCESS      << 16)
+> -[event13:base-stat]
+> -fd=13
+> +[event22:base-stat]
+> +fd=22
+>  type=3
+>  config=2
+>  optional=1
+> @@ -104,8 +201,8 @@ optional=1
+>  #  PERF_COUNT_HW_CACHE_LL                 <<  0  |
+>  # (PERF_COUNT_HW_CACHE_OP_READ            <<  8) |
+>  # (PERF_COUNT_HW_CACHE_RESULT_MISS        << 16)
+> -[event14:base-stat]
+> -fd=14
+> +[event23:base-stat]
+> +fd=23
+>  type=3
+>  config=65538
+>  optional=1
+> @@ -114,8 +211,8 @@ optional=1
+>  #  PERF_COUNT_HW_CACHE_L1I                <<  0  |
+>  # (PERF_COUNT_HW_CACHE_OP_READ            <<  8) |
+>  # (PERF_COUNT_HW_CACHE_RESULT_ACCESS      << 16)
+> -[event15:base-stat]
+> -fd=15
+> +[event24:base-stat]
+> +fd=24
+>  type=3
+>  config=1
+>  optional=1
+> @@ -124,8 +221,8 @@ optional=1
+>  #  PERF_COUNT_HW_CACHE_L1I                <<  0  |
+>  # (PERF_COUNT_HW_CACHE_OP_READ            <<  8) |
+>  # (PERF_COUNT_HW_CACHE_RESULT_MISS        << 16)
+> -[event16:base-stat]
+> -fd=16
+> +[event25:base-stat]
+> +fd=25
+>  type=3
+>  config=65537
+>  optional=1
+> @@ -134,8 +231,8 @@ optional=1
+>  #  PERF_COUNT_HW_CACHE_DTLB               <<  0  |
+>  # (PERF_COUNT_HW_CACHE_OP_READ            <<  8) |
+>  # (PERF_COUNT_HW_CACHE_RESULT_ACCESS      << 16)
+> -[event17:base-stat]
+> -fd=17
+> +[event26:base-stat]
+> +fd=26
+>  type=3
+>  config=3
+>  optional=1
+> @@ -144,8 +241,8 @@ optional=1
+>  #  PERF_COUNT_HW_CACHE_DTLB               <<  0  |
+>  # (PERF_COUNT_HW_CACHE_OP_READ            <<  8) |
+>  # (PERF_COUNT_HW_CACHE_RESULT_MISS        << 16)
+> -[event18:base-stat]
+> -fd=18
+> +[event27:base-stat]
+> +fd=27
+>  type=3
+>  config=65539
+>  optional=1
+> @@ -154,8 +251,8 @@ optional=1
+>  #  PERF_COUNT_HW_CACHE_ITLB               <<  0  |
+>  # (PERF_COUNT_HW_CACHE_OP_READ            <<  8) |
+>  # (PERF_COUNT_HW_CACHE_RESULT_ACCESS      << 16)
+> -[event19:base-stat]
+> -fd=19
+> +[event28:base-stat]
+> +fd=28
+>  type=3
+>  config=4
+>  optional=1
+> @@ -164,8 +261,8 @@ optional=1
+>  #  PERF_COUNT_HW_CACHE_ITLB               <<  0  |
+>  # (PERF_COUNT_HW_CACHE_OP_READ            <<  8) |
+>  # (PERF_COUNT_HW_CACHE_RESULT_MISS        << 16)
+> -[event20:base-stat]
+> -fd=20
+> +[event29:base-stat]
+> +fd=29
+>  type=3
+>  config=65540
+>  optional=1
+> @@ -174,8 +271,8 @@ optional=1
+>  #  PERF_COUNT_HW_CACHE_L1D                <<  0  |
+>  # (PERF_COUNT_HW_CACHE_OP_PREFETCH        <<  8) |
+>  # (PERF_COUNT_HW_CACHE_RESULT_ACCESS      << 16)
+> -[event21:base-stat]
+> -fd=21
+> +[event30:base-stat]
+> +fd=30
+>  type=3
+>  config=512
+>  optional=1
+> @@ -184,8 +281,8 @@ optional=1
+>  #  PERF_COUNT_HW_CACHE_L1D                <<  0  |
+>  # (PERF_COUNT_HW_CACHE_OP_PREFETCH        <<  8) |
+>  # (PERF_COUNT_HW_CACHE_RESULT_MISS        << 16)
+> -[event22:base-stat]
+> -fd=22
+> +[event31:base-stat]
+> +fd=31
+>  type=3
+>  config=66048
+>  optional=1
+> -- 
+> 2.7.4
+> 
 
-So edid is an error code, not a valid pointer...
-
-> +                       connector_bad_edid(connector, edid, 1);
-
-... while connector_bad_edid() expects edid to be a valid pointer,
-causing a crash:
-
-Unable to handle kernel NULL pointer dereference at virtual address
-0000000000000068
-Mem abort info:
-  ESR = 0x96000004
-  EC = 0x25: DABT (current EL), IL = 32 bits
-  SET = 0, FnV = 0
-  EA = 0, S1PTW = 0
-  FSC = 0x04: level 0 translation fault
-Data abort info:
-  ISV = 0, ISS = 0x00000004
-  CM = 0, WnR = 0
-[0000000000000068] user address but active_mm is swapper
-Internal error: Oops: 96000004 [#1] PREEMPT SMP
-CPU: 0 PID: 7 Comm: kworker/u4:0 Not tainted
-5.15.0-rc3-arm64-renesas-00629-geb2d42841024-dirty #1313
-Hardware name: Renesas Ebisu-4D board based on r8a77990 (DT)
-Workqueue: events_unbound deferred_probe_work_func
-pstate: 20000005 (nzCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-pc : connector_bad_edid+0x28/0x1a8
-lr : drm_do_get_edid+0x260/0x268
-sp : ffff8000121336a0
-x29: ffff8000121336a0 x28: ffff00000a373200 x27: 0000000000001ffe
-PM: ==== always-on/ee160000.mmc: stop
-x26: 0000000000000005 x25: 0000000000000041 x24: 0000000000000000
-x23: ffff000008a25080 x22: ffff8000106bd990 x21: ffff0000081496c0
-x20: 0000000000000001 x19: ffffffffffffffea x18: 0000000000000010
-x17: 0000000000000000 x16: 0000000000000000 x15: 0000000000000000
-x14: 0000000000000000 x13: 0000000000000000 x12: 0000000000000000
-x11: 0000000000000000 x10: 0000000000000000 x9 : 0000000000000000
-x8 : 0000000000000000 x7 : 0000000000000080 x6 : ffff000009c71000
-x5 : 0000000000000000 x4 : 0000000000000069 x3 : ffff00000a3c2900
-x2 : 0000000000000001 x1 : ffffffffffffffea x0 : ffff000009c71000
-Call trace:
- connector_bad_edid+0x28/0x1a8
- drm_do_get_edid+0x260/0x268
- adv7511_get_edid+0xb4/0xd0
- adv7511_bridge_get_edid+0x10/0x18
-
->                 return NULL;
-> -
-> -       /* base block fetch */
-> -       for (i = 0; i < 4; i++) {
-> -               if (get_edid_block(data, edid, 0, EDID_LENGTH))
-> -                       goto out;
-> -               if (drm_edid_block_valid(edid, 0, false,
-> -                                        &connector->edid_corrupt))
-> -                       break;
-> -               if (i == 0 && drm_edid_is_zero(edid, EDID_LENGTH)) {
-> -                       connector->null_edid_counter++;
-> -                       goto carp;
-> -               }
->         }
-> -       if (i == 4)
-> -               goto carp;
->
-> -       /* if there's no extensions, we're done */
-> +       /* if there's no extensions or no connector, we're done */
->         valid_extensions = edid[0x7e];
->         if (valid_extensions == 0)
->                 return (struct edid *)edid;
-> @@ -2010,8 +2039,6 @@ struct edid *drm_do_get_edid(struct drm_connector *connector,
->
->         return (struct edid *)edid;
->
-> -carp:
-> -       connector_bad_edid(connector, edid, 1);
->  out:
->         kfree(edid);
->         return NULL;
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
