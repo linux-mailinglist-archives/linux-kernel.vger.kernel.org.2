@@ -2,88 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD547421993
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 00:06:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1AC5421991
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 00:04:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234904AbhJDWIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 18:08:02 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:49998 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233722AbhJDWIB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 18:08:01 -0400
-X-Greylist: delayed 11201 seconds by postgrey-1.27 at vger.kernel.org; Mon, 04 Oct 2021 18:08:01 EDT
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 194IxKOD016034;
-        Mon, 4 Oct 2021 13:59:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1633373960;
-        bh=NyH+MlctXadiJnC7SYn/Gt47lxm/Xz6ld3yGSQ1HTGg=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=jTJbyv0ubhZXyDEQDp/ZodowX7TfPHvMWg2wKpAlvmadQ3knVoodjd3fxpjQTKgfe
-         hEYQu1NgK7QZbwRqbROvOn4qChzZ1ka3ADgA9ALyFeOSBrP1GEVMGg4d31j781HM53
-         sUbCPrM2IFuqNmKPLexrSP+ShIQm6L4mOitv4lbM=
-Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 194IxKwq002483
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 4 Oct 2021 13:59:20 -0500
-Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Mon, 4
- Oct 2021 13:59:20 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Mon, 4 Oct 2021 13:59:20 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 194IxKO3049783;
-        Mon, 4 Oct 2021 13:59:20 -0500
-Date:   Mon, 4 Oct 2021 13:59:20 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     Tero Kristo <kristo@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, Suman Anna <s-anna@ti.com>,
-        Sinthu Raja <sinthu.raja@ti.com>,
-        Hari Nagalla <hnagalla@ti.com>,
-        Sinthu Raja <sinthu.raja@mistralsolutions.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>
-Subject: Re: [PATCH V2 2/4] dt-bindings: arm: ti: am642/am654: Allow for SoC
- only compatibles
-Message-ID: <20211004185920.26iyyq3xz7vjam5i@gentile>
-References: <20210925201430.11678-1-nm@ti.com>
- <20210925201430.11678-3-nm@ti.com>
- <YVs/v7g8wwLq/ujb@robh.at.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <YVs/v7g8wwLq/ujb@robh.at.kernel.org>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+        id S234593AbhJDWFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 18:05:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50050 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230517AbhJDWFu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 18:05:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 8B02261248;
+        Mon,  4 Oct 2021 22:04:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633385040;
+        bh=ptPjZamrSRz75pgEjsbsvW8bq613ATjRZtw+WHXkg6s=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=A4t+dqU6YbHzkyq82ovgnGv9BwpGyyRC7B88wqb9YIRg4857cQi7BVQo+aZsCbEgC
+         JLwSHJiifVxruUt15RGPqmgc7vsXUieSzbhlrk4fYkn5DPsEOmIgBK3eQmmpOIcSin
+         wAyDO+5VvCG//a1EUjOX2KZBzBSnPeAFlG0iT6PRyyIsDcfZnQnnkTjNaLFQdjQlJG
+         2Y8M2WYxpAvV8TuGbis7i+45MSAltIEvhnIqk+0SncV2NTnpsG58oZCZdUUMZqG90p
+         D5DX2q4Sswmolujzg2MTq5JuN5OoCCyVLaUWf1fBgUlJsCo9+lnSkdfCmFa3YKmzJI
+         +AFsqGT7MY+SA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 785F9609D8;
+        Mon,  4 Oct 2021 22:04:00 +0000 (UTC)
+Subject: Re: [GIT PULL] Kselftest fixes update for Linux 5.15-rc5
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <6c737cda-28aa-0ac7-c07c-5115d0968bd9@linuxfoundation.org>
+References: <6c737cda-28aa-0ac7-c07c-5115d0968bd9@linuxfoundation.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <6c737cda-28aa-0ac7-c07c-5115d0968bd9@linuxfoundation.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest tags/linux-kselftest-fixes-5.15-rc5
+X-PR-Tracked-Commit-Id: 2f9602870886af74d97bac23ee6db5f5466d0a49
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: f6274b06e326d8471cdfb52595f989a90f5e888f
+Message-Id: <163338504042.6107.2760751247423903309.pr-tracker-bot@kernel.org>
+Date:   Mon, 04 Oct 2021 22:04:00 +0000
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12:54-20211004, Rob Herring wrote:
-> On Sat, Sep 25, 2021 at 03:14:28PM -0500, Nishanth Menon wrote:
-> > Maintain consistency in K3 SoCs by allowing AM654 and AM642 platforms
-> > just state SoC compatibles without specific board specific compatibles
-> > aligned with what we have done for J721E/J7200 platforms as well.
-> 
-> This is the wrong direction IMO. Why do you want this other than 
-> alignment?
+The pull request you sent on Mon, 4 Oct 2021 15:15:09 -0600:
 
-Many downstream boards tend not to have an specific compatible at least
-during initial phase and I would like folks to start using checks to
-make sure that the easy to catch issues via match against bindings are
-already handled.
+> git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest tags/linux-kselftest-fixes-5.15-rc5
 
-I am curious as to why you think this is wrong - because we permit an
-alternative option that allows the board files to be less specific?
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/f6274b06e326d8471cdfb52595f989a90f5e888f
 
-[...]
+Thank you!
+
 -- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D)/Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
