@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21D68420E5D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:23:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F32EE420FE0
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:37:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236479AbhJDNYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:24:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36444 "EHLO mail.kernel.org"
+        id S237461AbhJDNjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:39:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51836 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236556AbhJDNW6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:22:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A1D361BE1;
-        Mon,  4 Oct 2021 13:09:48 +0000 (UTC)
+        id S237149AbhJDNhC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:37:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F21A261215;
+        Mon,  4 Oct 2021 13:16:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352988;
-        bh=iB9EGtyIh87DMLnO/pL/eiYJQgpAL/oLIN6vD+jQscs=;
+        s=korg; t=1633353400;
+        bh=8ofguC9CtQHUSM4/k/g9gXqsobh2j3qKHdJ08Hij9uk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=drj2lblzYchhuTuEZVdr78jrWgbfnhW9ozZIpqSob6hYDg/oC2g/cUVXESjw9As33
-         VqliK1SeHTL1iCAi9jrCOjUI68p/e7JwXgYX1PKrDA8lqmG6A64smqavuKx07swHYr
-         3yugbsYlPUWOr88eFHmnSEFqsXJvayxIrTUYRpr0=
+        b=VP6lK/1UBx93bw+lnCBIWQkmZfc32fHyLWYsl1S9duCeBgc3knj9Qt0OnNGSx1ILD
+         aqJ/OmddnUKCNonHmndIWoLWlr2vMBHv5EWKA5wWZTR7KBSU8ukAhRKBfGpVUYEXxx
+         +AgWRzoC/CB5wWl/pFy7PS04HcuNJW29aNfqFVpI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Wenpeng Liang <liangwenpeng@huawei.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 45/93] dsa: mv88e6xxx: Include tagger overhead when setting MTU for DSA and CPU ports
+Subject: [PATCH 5.14 113/172] RDMA/hns: Add the check of the CQE size of the user space
 Date:   Mon,  4 Oct 2021 14:52:43 +0200
-Message-Id: <20211004125036.047630852@linuxfoundation.org>
+Message-Id: <20211004125048.632020201@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125034.579439135@linuxfoundation.org>
-References: <20211004125034.579439135@linuxfoundation.org>
+In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
+References: <20211004125044.945314266@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,66 +40,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrew Lunn <andrew@lunn.ch>
+From: Wenpeng Liang <liangwenpeng@huawei.com>
 
-[ Upstream commit b9c587fed61cf88bd45822c3159644445f6d5aa6 ]
+[ Upstream commit e671f0ecfece14940a9bb81981098910ea278cf7 ]
 
-Same members of the Marvell Ethernet switches impose MTU restrictions
-on ports used for connecting to the CPU or another switch for DSA. If
-the MTU is set too low, tagged frames will be discarded. Ensure the
-worst case tagger overhead is included in setting the MTU for DSA and
-CPU ports.
+If the CQE size of the user space is not the size supported by the
+hardware, the creation of CQ should be stopped.
 
-Fixes: 1baf0fac10fb ("net: dsa: mv88e6xxx: Use chip-wide max frame size for MTU")
-Reported by: 曹煜 <cao88yu@gmail.com>
-Signed-off-by: Andrew Lunn <andrew@lunn.ch>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 09a5f210f67e ("RDMA/hns: Add support for CQE in size of 64 Bytes")
+Link: https://lore.kernel.org/r/20210927125557.15031-3-liangwenpeng@huawei.com
+Signed-off-by: Wenpeng Liang <liangwenpeng@huawei.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/dsa/mv88e6xxx/chip.c | 9 ++++++---
- drivers/net/dsa/mv88e6xxx/chip.h | 1 +
- 2 files changed, 7 insertions(+), 3 deletions(-)
+ drivers/infiniband/hw/hns/hns_roce_cq.c | 31 ++++++++++++++++++-------
+ 1 file changed, 22 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/net/dsa/mv88e6xxx/chip.c b/drivers/net/dsa/mv88e6xxx/chip.c
-index 50bbea220fbf..18388ea5ebd9 100644
---- a/drivers/net/dsa/mv88e6xxx/chip.c
-+++ b/drivers/net/dsa/mv88e6xxx/chip.c
-@@ -2718,10 +2718,10 @@ static int mv88e6xxx_get_max_mtu(struct dsa_switch *ds, int port)
- 	struct mv88e6xxx_chip *chip = ds->priv;
- 
- 	if (chip->info->ops->port_set_jumbo_size)
--		return 10240 - VLAN_ETH_HLEN - ETH_FCS_LEN;
-+		return 10240 - VLAN_ETH_HLEN - EDSA_HLEN - ETH_FCS_LEN;
- 	else if (chip->info->ops->set_max_frame_size)
--		return 1632 - VLAN_ETH_HLEN - ETH_FCS_LEN;
--	return 1522 - VLAN_ETH_HLEN - ETH_FCS_LEN;
-+		return 1632 - VLAN_ETH_HLEN - EDSA_HLEN - ETH_FCS_LEN;
-+	return 1522 - VLAN_ETH_HLEN - EDSA_HLEN - ETH_FCS_LEN;
+diff --git a/drivers/infiniband/hw/hns/hns_roce_cq.c b/drivers/infiniband/hw/hns/hns_roce_cq.c
+index 1e9c3c5bee68..d763f097599f 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_cq.c
++++ b/drivers/infiniband/hw/hns/hns_roce_cq.c
+@@ -326,19 +326,30 @@ static void set_cq_param(struct hns_roce_cq *hr_cq, u32 cq_entries, int vector,
+ 	INIT_LIST_HEAD(&hr_cq->rq_list);
  }
  
- static int mv88e6xxx_change_mtu(struct dsa_switch *ds, int port, int new_mtu)
-@@ -2729,6 +2729,9 @@ static int mv88e6xxx_change_mtu(struct dsa_switch *ds, int port, int new_mtu)
- 	struct mv88e6xxx_chip *chip = ds->priv;
- 	int ret = 0;
+-static void set_cqe_size(struct hns_roce_cq *hr_cq, struct ib_udata *udata,
+-			 struct hns_roce_ib_create_cq *ucmd)
++static int set_cqe_size(struct hns_roce_cq *hr_cq, struct ib_udata *udata,
++			struct hns_roce_ib_create_cq *ucmd)
+ {
+ 	struct hns_roce_dev *hr_dev = to_hr_dev(hr_cq->ib_cq.device);
  
-+	if (dsa_is_dsa_port(ds, port) || dsa_is_cpu_port(ds, port))
-+		new_mtu += EDSA_HLEN;
+-	if (udata) {
+-		if (udata->inlen >= offsetofend(typeof(*ucmd), cqe_size))
+-			hr_cq->cqe_size = ucmd->cqe_size;
+-		else
+-			hr_cq->cqe_size = HNS_ROCE_V2_CQE_SIZE;
+-	} else {
++	if (!udata) {
+ 		hr_cq->cqe_size = hr_dev->caps.cqe_sz;
++		return 0;
++	}
 +
- 	mv88e6xxx_reg_lock(chip);
- 	if (chip->info->ops->port_set_jumbo_size)
- 		ret = chip->info->ops->port_set_jumbo_size(chip, port, new_mtu);
-diff --git a/drivers/net/dsa/mv88e6xxx/chip.h b/drivers/net/dsa/mv88e6xxx/chip.h
-index 81c244fc0419..51a7ff44478e 100644
---- a/drivers/net/dsa/mv88e6xxx/chip.h
-+++ b/drivers/net/dsa/mv88e6xxx/chip.h
-@@ -18,6 +18,7 @@
- #include <linux/timecounter.h>
- #include <net/dsa.h>
++	if (udata->inlen >= offsetofend(typeof(*ucmd), cqe_size)) {
++		if (ucmd->cqe_size != HNS_ROCE_V2_CQE_SIZE &&
++		    ucmd->cqe_size != HNS_ROCE_V3_CQE_SIZE) {
++			ibdev_err(&hr_dev->ib_dev,
++				  "invalid cqe size %u.\n", ucmd->cqe_size);
++			return -EINVAL;
++		}
++
++		hr_cq->cqe_size = ucmd->cqe_size;
++	} else {
++		hr_cq->cqe_size = HNS_ROCE_V2_CQE_SIZE;
+ 	}
++
++	return 0;
+ }
  
-+#define EDSA_HLEN		8
- #define MV88E6XXX_N_FID		4096
+ int hns_roce_create_cq(struct ib_cq *ib_cq, const struct ib_cq_init_attr *attr,
+@@ -366,7 +377,9 @@ int hns_roce_create_cq(struct ib_cq *ib_cq, const struct ib_cq_init_attr *attr,
  
- /* PVT limits for 4-bit port and 5-bit switch */
+ 	set_cq_param(hr_cq, attr->cqe, attr->comp_vector, &ucmd);
+ 
+-	set_cqe_size(hr_cq, udata, &ucmd);
++	ret = set_cqe_size(hr_cq, udata, &ucmd);
++	if (ret)
++		return ret;
+ 
+ 	ret = alloc_cq_buf(hr_dev, hr_cq, udata, ucmd.buf_addr);
+ 	if (ret) {
 -- 
 2.33.0
 
