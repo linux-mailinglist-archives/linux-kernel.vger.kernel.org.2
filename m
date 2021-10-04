@@ -2,123 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E036B420A26
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 13:35:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7B16420A2B
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 13:38:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232950AbhJDLhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 07:37:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37440 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232193AbhJDLhm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 07:37:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6CB14613AD;
-        Mon,  4 Oct 2021 11:35:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633347353;
-        bh=vZuX3Cyse/YHIXHO2dy354XGAEyLO3imsdxMKLGQKUA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uWjgczH6LnTHMF7nlz5KlcQHSXXb69dnZByrraU59EJtJsgwHIUjTpB6p/CRzXQQt
-         DDx5UyJbMZAHF6xxd+y2XGPvNapU+wpVYUQlhfjMAq64akAF4xhqo2c0y+DIdn7Qi/
-         EJbFwmACH3CV4YZhSjWemLU2UWjZ4txOlGZ2ZWl11H1DzhHV9FslEOvRHgBiedIUiI
-         irdMKARZtgJ6+wSxdOHyxcDBoiuq1kttBTNl7aD+l1PH+bMoxfmr2oD+T8U8U/EiQD
-         aFXBZDnT21Ls8EfD0GnFEjXOPDhSiV4Xc1LhitKtKuqrTYAVXV64Fqv8iYPHr28WIF
-         DXea4kU2bAifA==
-Date:   Mon, 4 Oct 2021 13:35:51 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
-Subject: Re: [PATCH 02/11] rcu/nocb: Prepare state machine for a new step
-Message-ID: <20211004113551.GA271348@lothringen>
-References: <20210929221012.228270-1-frederic@kernel.org>
- <20210929221012.228270-3-frederic@kernel.org>
- <87ee94myab.mognet@arm.com>
+        id S232964AbhJDLkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 07:40:25 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:38164 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S232193AbhJDLkY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 07:40:24 -0400
+X-UUID: 1a16d0b360ca4f439959f8290e5fee06-20211004
+X-UUID: 1a16d0b360ca4f439959f8290e5fee06-20211004
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+        (envelope-from <chien-yu.lin@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 676627194; Mon, 04 Oct 2021 19:38:23 +0800
+Received: from mtkexhb01.mediatek.inc (172.21.101.102) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 4 Oct 2021 19:38:22 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by mtkexhb01.mediatek.inc
+ (172.21.101.102) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 4 Oct
+ 2021 19:38:22 +0800
+Received: from mtksdccf07 (172.21.84.99) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 4 Oct 2021 19:38:22 +0800
+Message-ID: <a6336289dcf0009f2fc900c74f480b3c5fc0e8be.camel@mediatek.com>
+Subject: Re: [PATCH] ASoc: fix ASoC driver to support ops to register
+ get_time_info
+From:   Chien-Yu Lin <Chien-Yu.Lin@mediatek.com>
+To:     <linux-kernel@vger.kernel.org>
+CC:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        "Matthias Brugger" <matthias.bgg@gmail.com>,
+        <alsa-devel@alsa-project.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <yichin.huang@mediatek.com>,
+        <hungjung.hsu@mediatek.com>, <allen-hw.hsu@mediatek.com>
+Date:   Mon, 4 Oct 2021 19:38:22 +0800
+In-Reply-To: <20210820130210.3321-1-chien-yu.lin@mediatek.com>
+References: <20210820130210.3321-1-chien-yu.lin@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87ee94myab.mognet@arm.com>
+Content-Transfer-Encoding: 7bit
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 01, 2021 at 06:48:28PM +0100, Valentin Schneider wrote:
-> On 30/09/21 00:10, Frederic Weisbecker wrote:
-> > Currently SEGCBLIST_SOFTIRQ_ONLY is a bit of an exception among the
-> > segcblist flags because it is an exclusive state that doesn't mix up
-> > with the other flags. Remove it in favour of:
-> >
-> > _ A flag specifying that rcu_core() needs to perform callbacks execution
-> >   and acceleration
-> >
-> > and
-> >
-> > _ A flag specifying we want the nocb lock to be held in any needed
-> >   circumstances
-> >
-> > This clarifies the code and is more flexible: It allows to have a state
-> > where rcu_core() runs with locking while offloading hasn't started yet.
-> > This is a necessary step to prepare for triggering rcu_core() at the
-> > very beginning of the de-offloading process so that rcu_core() won't
-> > dismiss work while being preempted by the de-offloading process, at
-> > least not without a pending subsequent rcu_core() that will quickly
-> > catch up.
-> >
-> > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> > Cc: Valentin Schneider <valentin.schneider@arm.com>
-> > Cc: Peter Zijlstra <peterz@infradead.org>
-> > Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> > Cc: Josh Triplett <josh@joshtriplett.org>
-> > Cc: Joel Fernandes <joel@joelfernandes.org>
-> > Cc: Boqun Feng <boqun.feng@gmail.com>
-> > Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
-> > Cc: Uladzislau Rezki <urezki@gmail.com>
-> > Cc: Thomas Gleixner <tglx@linutronix.de>
-> 
-> One question and a comment nit below, other than that:
-> 
-> Reviewed-by: Valentin Schneider <Valentin.Schneider@arm.com>
-> 
-> > @@ -84,7 +84,7 @@ static inline bool rcu_segcblist_is_enabled(struct rcu_segcblist *rsclp)
-> >  static inline bool rcu_segcblist_is_offloaded(struct rcu_segcblist *rsclp)
-> 
-> It doesn't show up on the diff but there's a SEGCBLIST_SOFTIRQ_ONLY
-> straggler in the comment above (the last one according to grep).
+Dear Sir,
 
-Ah thanks, I'll remove that.
+Sorry for bothering you.
 
-> 
-> >  {
-> >       if (IS_ENABLED(CONFIG_RCU_NOCB_CPU) &&
-> > -	    !rcu_segcblist_test_flags(rsclp, SEGCBLIST_SOFTIRQ_ONLY))
-> > +	    rcu_segcblist_test_flags(rsclp, SEGCBLIST_LOCKING))
-> >               return true;
-> >
-> >       return false;
-> 
-> > @@ -1000,12 +1000,12 @@ static long rcu_nocb_rdp_deoffload(void *arg)
-> >        */
-> >       rcu_nocb_lock_irqsave(rdp, flags);
-> >       /*
-> > -	 * Theoretically we could set SEGCBLIST_SOFTIRQ_ONLY after the nocb
-> > +	 * Theoretically we could clear SEGCBLIST_LOCKING after the nocb
-> >        * lock is released but how about being paranoid for once?
-> >        */
-> > -	rcu_segcblist_set_flags(cblist, SEGCBLIST_SOFTIRQ_ONLY);
-> > +	rcu_segcblist_clear_flags(cblist, SEGCBLIST_LOCKING);
-> 
-> Thought experiment for me; AFAICT the comment still holds: we can't offload
-> until deoffload has finished, and we shouldn't be able to preempt
-> rcu_core() while it holds ->nocb_lock. With that said, I'm all for
-> paranoia.
+Does it have any status updated, please?
 
-Exactly :)
+Thank you.
 
-Thanks.
+Best Regards,
+Chien-Yu.Lin
+
+On Fri, 2021-08-20 at 21:02 +0800, Chien-Yu Lin wrote:
+> From: "chien-yu.lin" <chien-yu.lin@mediatek.com>
+> 
+> Because ASoC soc_new_pcm() function didn't register
+> .get_time_info() ops and cause snd_pcm_update_hw_ptr0() can not find
+> substream->ops->get_time_info, it will not be called due to ASoC
+> driver which register in HW device driver.
+> 
+> Add .get_time_info() ops in ASoC soc_new_pcm() and
+> register by snd_pcm_set_ops() function.
+> If HW device driver want to implment timestamp by itself,
+> ASoC should register .get_time_info function.
+> 
+> Signed-off-by: chien-yu.lin <chien-yu.lin@mediatek.com>
+> ---
+>  include/sound/soc-component.h |  4 ++++
+>  sound/soc/soc-component.c     | 21 +++++++++++++++++++++
+>  sound/soc/soc-pcm.c           |  2 ++
+>  3 files changed, 27 insertions(+)
+> 
+> diff --git a/include/sound/soc-component.h b/include/sound/soc-
+> component.h
+> index 8c4d6830597f..52b5228b7a8d 100644
+> --- a/include/sound/soc-component.h
+> +++ b/include/sound/soc-component.h
+> @@ -484,6 +484,10 @@ int snd_soc_pcm_component_sync_stop(struct
+> snd_pcm_substream *substream);
+>  int snd_soc_pcm_component_copy_user(struct snd_pcm_substream
+> *substream,
+>  				    int channel, unsigned long pos,
+>  				    void __user *buf, unsigned long
+> bytes);
+> +int snd_soc_pcm_component_get_time_info(struct snd_pcm_substream
+> *substream,
+> +					struct timespec64 *system_ts,
+> struct timespec64 *audio_ts,
+> +					struct
+> snd_pcm_audio_tstamp_config *audio_tstamp_config,
+> +					struct
+> snd_pcm_audio_tstamp_report *audio_tstamp_report);
+>  struct page *snd_soc_pcm_component_page(struct snd_pcm_substream
+> *substream,
+>  					unsigned long offset);
+>  int snd_soc_pcm_component_mmap(struct snd_pcm_substream *substream,
+> diff --git a/sound/soc/soc-component.c b/sound/soc/soc-component.c
+> index 3a5e84e16a87..56caec7ec00b 100644
+> --- a/sound/soc/soc-component.c
+> +++ b/sound/soc/soc-component.c
+> @@ -1000,6 +1000,27 @@ int snd_soc_pcm_component_copy_user(struct
+> snd_pcm_substream *substream,
+>  	return -EINVAL;
+>  }
+>  
+> +int snd_soc_pcm_component_get_time_info(struct snd_pcm_substream
+> *substream,
+> +					struct timespec64 *system_ts,
+> struct timespec64 *audio_ts,
+> +					struct
+> snd_pcm_audio_tstamp_config *audio_tstamp_config,
+> +					struct
+> snd_pcm_audio_tstamp_report *audio_tstamp_report)
+> +{
+> +	struct snd_soc_pcm_runtime *rtd =
+> asoc_substream_to_rtd(substream);
+> +	struct snd_soc_component *component;
+> +	int i;
+> +
+> +	/* FIXME. it returns 1st get_time_info now */
+> +	for_each_rtd_components(rtd, i, component) {
+> +		if (component->driver->get_time_info)
+> +			return soc_component_ret(component,
+> +				component->driver-
+> >get_time_info(component,
+> +				substream, system_ts, audio_ts,
+> +				audio_tstamp_config,
+> audio_tstamp_report));
+> +	}
+> +
+> +	return -EINVAL;
+> +}
+> +
+>  struct page *snd_soc_pcm_component_page(struct snd_pcm_substream
+> *substream,
+>  					unsigned long offset)
+>  {
+> diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+> index d1c570ca21ea..cff7025027a6 100644
+> --- a/sound/soc/soc-pcm.c
+> +++ b/sound/soc/soc-pcm.c
+> @@ -2786,6 +2786,8 @@ int soc_new_pcm(struct snd_soc_pcm_runtime
+> *rtd, int num)
+>  			rtd->ops.mmap		=
+> snd_soc_pcm_component_mmap;
+>  		if (drv->ack)
+>  			rtd->ops.ack            =
+> snd_soc_pcm_component_ack;
+> +		if (drv->get_time_info)
+> +			rtd->ops.get_time_info	=
+> snd_soc_pcm_component_get_time_info;
+>  	}
+>  
+>  	if (playback)
+
