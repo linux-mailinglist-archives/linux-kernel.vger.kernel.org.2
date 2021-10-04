@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 913B9420D7F
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:14:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3858420FFD
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:38:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236086AbhJDNPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:15:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53112 "EHLO mail.kernel.org"
+        id S238154AbhJDNj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:39:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52372 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236263AbhJDNNn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:13:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F1FEC61B98;
-        Mon,  4 Oct 2021 13:05:25 +0000 (UTC)
+        id S238228AbhJDNhf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:37:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C2DE6613AC;
+        Mon,  4 Oct 2021 13:17:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352726;
-        bh=04kIWPn05Hq1DT9FgELgq24nOOVbuN6zG7jDb7g0c10=;
+        s=korg; t=1633353426;
+        bh=jmbShUp6S/VY4DOgiAhV5yW/VSbScpIroef6xDArdBg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dWqWZJhDZPaEYE3DdgIvvLDEhzjJtwVBJcaTgEmfhHMcmHlAKRdF3UHNWpNaGewF0
-         gFOaVUng0LPAbjWp2T27Xd78wpTI1b37qgEP4ZEhaoBPX6HTRKeLgGCOuYp31yYJko
-         SDx4FNPiZWnANkACnPSa2EvT8fwm5oEc2v35a6yo=
+        b=fRD1JIyYTevB4p5vii/cA32fgBtrJrPfxbEJMY4CEIaiq3zRR4KPUoCK5Wuqu08Cv
+         4XgzQygM2TDsTKoSONB+qj2/tWu2rTMKabAUIkGoiyh8TT5oELbNVJ3bqLAwbe8Y+6
+         fBdCDW3LrXw6EfwuMrPEuuRtcWllSDhan+70QH4k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Arnd Bergmann <arnd@kernel.org>
-Subject: [PATCH 4.19 55/95] qnx4: work around gcc false positive warning bug
-Date:   Mon,  4 Oct 2021 14:52:25 +0200
-Message-Id: <20211004125035.366534793@linuxfoundation.org>
+        stable@vger.kernel.org, Florian Westphal <fw@strlen.de>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 096/172] mptcp: dont return sockets in foreign netns
+Date:   Mon,  4 Oct 2021 14:52:26 +0200
+Message-Id: <20211004125048.088060917@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125033.572932188@linuxfoundation.org>
-References: <20211004125033.572932188@linuxfoundation.org>
+In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
+References: <20211004125044.945314266@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,120 +41,215 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Torvalds <torvalds@linux-foundation.org>
+From: Florian Westphal <fw@strlen.de>
 
-commit d5f6545934c47e97c0b48a645418e877b452a992 upstream.
+[ Upstream commit ea1300b9df7c8e8b65695a08b8f6aaf4b25fec9c ]
 
-In commit b7213ffa0e58 ("qnx4: avoid stringop-overread errors") I tried
-to teach gcc about how the directory entry structure can be two
-different things depending on a status flag.  It made the code clearer,
-and it seemed to make gcc happy.
+mptcp_token_get_sock() may return a mptcp socket that is in
+a different net namespace than the socket that received the token value.
 
-However, Arnd points to a gcc bug, where despite using two different
-members of a union, gcc then gets confused, and uses the size of one of
-the members to decide if a string overrun happens.  And not necessarily
-the rigth one.
+The mptcp syncookie code path had an explicit check for this,
+this moves the test into mptcp_token_get_sock() function.
 
-End result: with some configurations, gcc-11 will still complain about
-the source buffer size being overread:
+Eventually token.c should be converted to pernet storage, but
+such change is not suitable for net tree.
 
-  fs/qnx4/dir.c: In function 'qnx4_readdir':
-  fs/qnx4/dir.c:76:32: error: 'strnlen' specified bound [16, 48] exceeds source size 1 [-Werror=stringop-overread]
-     76 |                         size = strnlen(name, size);
-        |                                ^~~~~~~~~~~~~~~~~~~
-  fs/qnx4/dir.c:26:22: note: source object declared here
-     26 |                 char de_name;
-        |                      ^~~~~~~
-
-because gcc will get confused about which union member entry is actually
-getting accessed, even when the source code is very clear about it.  Gcc
-internally will have combined two "redundant" pointers (pointing to
-different union elements that are at the same offset), and takes the
-size checking from one or the other - not necessarily the right one.
-
-This is clearly a gcc bug, but we can work around it fairly easily.  The
-biggest thing here is the big honking comment about why we do what we
-do.
-
-Link: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=99578#c6
-Reported-and-tested-by: Arnd Bergmann <arnd@kernel.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 2c5ebd001d4f0 ("mptcp: refactor token container")
+Signed-off-by: Florian Westphal <fw@strlen.de>
+Signed-off-by: Mat Martineau <mathew.j.martineau@linux.intel.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/qnx4/dir.c |   36 +++++++++++++++++++++++++++---------
- 1 file changed, 27 insertions(+), 9 deletions(-)
+ net/mptcp/mptcp_diag.c |  2 +-
+ net/mptcp/protocol.h   |  2 +-
+ net/mptcp/subflow.c    |  2 +-
+ net/mptcp/syncookies.c | 13 +------------
+ net/mptcp/token.c      | 11 ++++++++---
+ net/mptcp/token_test.c | 14 ++++++++------
+ 6 files changed, 20 insertions(+), 24 deletions(-)
 
---- a/fs/qnx4/dir.c
-+++ b/fs/qnx4/dir.c
-@@ -20,12 +20,33 @@
-  * depending on the status field in the last byte. The
-  * first byte is where the name start either way, and a
-  * zero means it's empty.
-+ *
-+ * Also, due to a bug in gcc, we don't want to use the
-+ * real (differently sized) name arrays in the inode and
-+ * link entries, but always the 'de_name[]' one in the
-+ * fake struct entry.
-+ *
-+ * See
-+ *
-+ *   https://gcc.gnu.org/bugzilla/show_bug.cgi?id=99578#c6
-+ *
-+ * for details, but basically gcc will take the size of the
-+ * 'name' array from one of the used union entries randomly.
-+ *
-+ * This use of 'de_name[]' (48 bytes) avoids the false positive
-+ * warnings that would happen if gcc decides to use 'inode.di_name'
-+ * (16 bytes) even when the pointer and size were to come from
-+ * 'link.dl_name' (48 bytes).
-+ *
-+ * In all cases the actual name pointer itself is the same, it's
-+ * only the gcc internal 'what is the size of this field' logic
-+ * that can get confused.
+diff --git a/net/mptcp/mptcp_diag.c b/net/mptcp/mptcp_diag.c
+index f48eb6315bbb..292374fb0779 100644
+--- a/net/mptcp/mptcp_diag.c
++++ b/net/mptcp/mptcp_diag.c
+@@ -36,7 +36,7 @@ static int mptcp_diag_dump_one(struct netlink_callback *cb,
+ 	struct sock *sk;
+ 
+ 	net = sock_net(in_skb->sk);
+-	msk = mptcp_token_get_sock(req->id.idiag_cookie[0]);
++	msk = mptcp_token_get_sock(net, req->id.idiag_cookie[0]);
+ 	if (!msk)
+ 		goto out_nosk;
+ 
+diff --git a/net/mptcp/protocol.h b/net/mptcp/protocol.h
+index 6ac564d584c1..c8a49e92e66f 100644
+--- a/net/mptcp/protocol.h
++++ b/net/mptcp/protocol.h
+@@ -680,7 +680,7 @@ int mptcp_token_new_connect(struct sock *sk);
+ void mptcp_token_accept(struct mptcp_subflow_request_sock *r,
+ 			struct mptcp_sock *msk);
+ bool mptcp_token_exists(u32 token);
+-struct mptcp_sock *mptcp_token_get_sock(u32 token);
++struct mptcp_sock *mptcp_token_get_sock(struct net *net, u32 token);
+ struct mptcp_sock *mptcp_token_iter_next(const struct net *net, long *s_slot,
+ 					 long *s_num);
+ void mptcp_token_destroy(struct mptcp_sock *msk);
+diff --git a/net/mptcp/subflow.c b/net/mptcp/subflow.c
+index 966f777d35ce..1f3039b829a7 100644
+--- a/net/mptcp/subflow.c
++++ b/net/mptcp/subflow.c
+@@ -86,7 +86,7 @@ static struct mptcp_sock *subflow_token_join_request(struct request_sock *req)
+ 	struct mptcp_sock *msk;
+ 	int local_id;
+ 
+-	msk = mptcp_token_get_sock(subflow_req->token);
++	msk = mptcp_token_get_sock(sock_net(req_to_sk(req)), subflow_req->token);
+ 	if (!msk) {
+ 		SUBFLOW_REQ_INC_STATS(req, MPTCP_MIB_JOINNOTOKEN);
+ 		return NULL;
+diff --git a/net/mptcp/syncookies.c b/net/mptcp/syncookies.c
+index 37127781aee9..7f22526346a7 100644
+--- a/net/mptcp/syncookies.c
++++ b/net/mptcp/syncookies.c
+@@ -108,18 +108,12 @@ bool mptcp_token_join_cookie_init_state(struct mptcp_subflow_request_sock *subfl
+ 
+ 	e->valid = 0;
+ 
+-	msk = mptcp_token_get_sock(e->token);
++	msk = mptcp_token_get_sock(net, e->token);
+ 	if (!msk) {
+ 		spin_unlock_bh(&join_entry_locks[i]);
+ 		return false;
+ 	}
+ 
+-	/* If this fails, the token got re-used in the mean time by another
+-	 * mptcp socket in a different netns, i.e. entry is outdated.
+-	 */
+-	if (!net_eq(sock_net((struct sock *)msk), net))
+-		goto err_put;
+-
+ 	subflow_req->remote_nonce = e->remote_nonce;
+ 	subflow_req->local_nonce = e->local_nonce;
+ 	subflow_req->backup = e->backup;
+@@ -128,11 +122,6 @@ bool mptcp_token_join_cookie_init_state(struct mptcp_subflow_request_sock *subfl
+ 	subflow_req->msk = msk;
+ 	spin_unlock_bh(&join_entry_locks[i]);
+ 	return true;
+-
+-err_put:
+-	spin_unlock_bh(&join_entry_locks[i]);
+-	sock_put((struct sock *)msk);
+-	return false;
+ }
+ 
+ void __init mptcp_join_cookie_init(void)
+diff --git a/net/mptcp/token.c b/net/mptcp/token.c
+index a98e554b034f..e581b341c5be 100644
+--- a/net/mptcp/token.c
++++ b/net/mptcp/token.c
+@@ -231,6 +231,7 @@ bool mptcp_token_exists(u32 token)
+ 
+ /**
+  * mptcp_token_get_sock - retrieve mptcp connection sock using its token
++ * @net: restrict to this namespace
+  * @token: token of the mptcp connection to retrieve
+  *
+  * This function returns the mptcp connection structure with the given token.
+@@ -238,7 +239,7 @@ bool mptcp_token_exists(u32 token)
+  *
+  * returns NULL if no connection with the given token value exists.
   */
- union qnx4_directory_entry {
- 	struct {
--		char de_name;
--		char de_pad[62];
--		char de_status;
-+		const char de_name[48];
-+		u8 de_pad[15];
-+		u8 de_status;
- 	};
- 	struct qnx4_inode_entry inode;
- 	struct qnx4_link_info link;
-@@ -53,29 +74,26 @@ static int qnx4_readdir(struct file *fil
- 		ix = (ctx->pos >> QNX4_DIR_ENTRY_SIZE_BITS) % QNX4_INODES_PER_BLOCK;
- 		for (; ix < QNX4_INODES_PER_BLOCK; ix++, ctx->pos += QNX4_DIR_ENTRY_SIZE) {
- 			union qnx4_directory_entry *de;
--			const char *name;
+-struct mptcp_sock *mptcp_token_get_sock(u32 token)
++struct mptcp_sock *mptcp_token_get_sock(struct net *net, u32 token)
+ {
+ 	struct hlist_nulls_node *pos;
+ 	struct token_bucket *bucket;
+@@ -251,11 +252,15 @@ struct mptcp_sock *mptcp_token_get_sock(u32 token)
+ again:
+ 	sk_nulls_for_each_rcu(sk, pos, &bucket->msk_chain) {
+ 		msk = mptcp_sk(sk);
+-		if (READ_ONCE(msk->token) != token)
++		if (READ_ONCE(msk->token) != token ||
++		    !net_eq(sock_net(sk), net))
+ 			continue;
++
+ 		if (!refcount_inc_not_zero(&sk->sk_refcnt))
+ 			goto not_found;
+-		if (READ_ONCE(msk->token) != token) {
++
++		if (READ_ONCE(msk->token) != token ||
++		    !net_eq(sock_net(sk), net)) {
+ 			sock_put(sk);
+ 			goto again;
+ 		}
+diff --git a/net/mptcp/token_test.c b/net/mptcp/token_test.c
+index e1bd6f0a0676..5d984bec1cd8 100644
+--- a/net/mptcp/token_test.c
++++ b/net/mptcp/token_test.c
+@@ -11,6 +11,7 @@ static struct mptcp_subflow_request_sock *build_req_sock(struct kunit *test)
+ 			    GFP_USER);
+ 	KUNIT_EXPECT_NOT_ERR_OR_NULL(test, req);
+ 	mptcp_token_init_request((struct request_sock *)req);
++	sock_net_set((struct sock *)req, &init_net);
+ 	return req;
+ }
  
- 			offset = ix * QNX4_DIR_ENTRY_SIZE;
- 			de = (union qnx4_directory_entry *) (bh->b_data + offset);
+@@ -22,7 +23,7 @@ static void mptcp_token_test_req_basic(struct kunit *test)
+ 	KUNIT_ASSERT_EQ(test, 0,
+ 			mptcp_token_new_request((struct request_sock *)req));
+ 	KUNIT_EXPECT_NE(test, 0, (int)req->token);
+-	KUNIT_EXPECT_PTR_EQ(test, null_msk, mptcp_token_get_sock(req->token));
++	KUNIT_EXPECT_PTR_EQ(test, null_msk, mptcp_token_get_sock(&init_net, req->token));
  
--			if (!de->de_name)
-+			if (!de->de_name[0])
- 				continue;
- 			if (!(de->de_status & (QNX4_FILE_USED|QNX4_FILE_LINK)))
- 				continue;
- 			if (!(de->de_status & QNX4_FILE_LINK)) {
- 				size = sizeof(de->inode.di_fname);
--				name = de->inode.di_fname;
- 				ino = blknum * QNX4_INODES_PER_BLOCK + ix - 1;
- 			} else {
- 				size = sizeof(de->link.dl_fname);
--				name = de->link.dl_fname;
- 				ino = ( le32_to_cpu(de->link.dl_inode_blk) - 1 ) *
- 					QNX4_INODES_PER_BLOCK +
- 					de->link.dl_inode_ndx;
- 			}
--			size = strnlen(name, size);
-+			size = strnlen(de->de_name, size);
- 			QNX4DEBUG((KERN_INFO "qnx4_readdir:%.*s\n", size, name));
--			if (!dir_emit(ctx, name, size, ino, DT_UNKNOWN)) {
-+			if (!dir_emit(ctx, de->de_name, size, ino, DT_UNKNOWN)) {
- 				brelse(bh);
- 				return 0;
- 			}
+ 	/* cleanup */
+ 	mptcp_token_destroy_request((struct request_sock *)req);
+@@ -55,6 +56,7 @@ static struct mptcp_sock *build_msk(struct kunit *test)
+ 	msk = kunit_kzalloc(test, sizeof(struct mptcp_sock), GFP_USER);
+ 	KUNIT_EXPECT_NOT_ERR_OR_NULL(test, msk);
+ 	refcount_set(&((struct sock *)msk)->sk_refcnt, 1);
++	sock_net_set((struct sock *)msk, &init_net);
+ 	return msk;
+ }
+ 
+@@ -74,11 +76,11 @@ static void mptcp_token_test_msk_basic(struct kunit *test)
+ 			mptcp_token_new_connect((struct sock *)icsk));
+ 	KUNIT_EXPECT_NE(test, 0, (int)ctx->token);
+ 	KUNIT_EXPECT_EQ(test, ctx->token, msk->token);
+-	KUNIT_EXPECT_PTR_EQ(test, msk, mptcp_token_get_sock(ctx->token));
++	KUNIT_EXPECT_PTR_EQ(test, msk, mptcp_token_get_sock(&init_net, ctx->token));
+ 	KUNIT_EXPECT_EQ(test, 2, (int)refcount_read(&sk->sk_refcnt));
+ 
+ 	mptcp_token_destroy(msk);
+-	KUNIT_EXPECT_PTR_EQ(test, null_msk, mptcp_token_get_sock(ctx->token));
++	KUNIT_EXPECT_PTR_EQ(test, null_msk, mptcp_token_get_sock(&init_net, ctx->token));
+ }
+ 
+ static void mptcp_token_test_accept(struct kunit *test)
+@@ -90,11 +92,11 @@ static void mptcp_token_test_accept(struct kunit *test)
+ 			mptcp_token_new_request((struct request_sock *)req));
+ 	msk->token = req->token;
+ 	mptcp_token_accept(req, msk);
+-	KUNIT_EXPECT_PTR_EQ(test, msk, mptcp_token_get_sock(msk->token));
++	KUNIT_EXPECT_PTR_EQ(test, msk, mptcp_token_get_sock(&init_net, msk->token));
+ 
+ 	/* this is now a no-op */
+ 	mptcp_token_destroy_request((struct request_sock *)req);
+-	KUNIT_EXPECT_PTR_EQ(test, msk, mptcp_token_get_sock(msk->token));
++	KUNIT_EXPECT_PTR_EQ(test, msk, mptcp_token_get_sock(&init_net, msk->token));
+ 
+ 	/* cleanup */
+ 	mptcp_token_destroy(msk);
+@@ -116,7 +118,7 @@ static void mptcp_token_test_destroyed(struct kunit *test)
+ 
+ 	/* simulate race on removal */
+ 	refcount_set(&sk->sk_refcnt, 0);
+-	KUNIT_EXPECT_PTR_EQ(test, null_msk, mptcp_token_get_sock(msk->token));
++	KUNIT_EXPECT_PTR_EQ(test, null_msk, mptcp_token_get_sock(&init_net, msk->token));
+ 
+ 	/* cleanup */
+ 	mptcp_token_destroy(msk);
+-- 
+2.33.0
+
 
 
