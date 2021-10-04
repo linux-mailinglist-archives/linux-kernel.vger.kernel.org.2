@@ -2,102 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B76B04218E8
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 23:01:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FFA64218ED
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 23:04:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233988AbhJDVDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 17:03:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58550 "EHLO
+        id S234145AbhJDVGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 17:06:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233373AbhJDVDd (ORCPT
+        with ESMTP id S233373AbhJDVGS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 17:03:33 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D9A9C061745;
-        Mon,  4 Oct 2021 14:01:44 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id p1so9507454pfh.8;
-        Mon, 04 Oct 2021 14:01:44 -0700 (PDT)
+        Mon, 4 Oct 2021 17:06:18 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C659EC061745
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 14:04:28 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id c29so5184323pfp.2
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 14:04:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=N9yHwJ+N62Bg8WWUllfyOyd8NA6iR+DUl1YGeY5PMO4=;
-        b=PGRCQQfbTrLZDPXNeasC0IT/+MyOfLCzUL3utCvQxX/A1aH0U66DXtrxad59r1H66Z
-         lJXj0GAe5iGDSLj2BQgQt/VSuJgFd4GS4+yG7knK85EO1wPTw/X6vG3cr6h3K7D9D/+u
-         TY51wwcp30X4azLNze3cz6MuCr87j0XcppksfiAhYrOsuH+bMrm0znIkF3LEKFnuWi+y
-         PGRrl6McRkBp0k+JG0CSoPAdlQtl5A+LoGMFa0ROBBSyvaXKocYODd1VuZXEr1YtNxjc
-         0Bnn3p5/5Z2KqhW5UxQAwOczwZmndgobIZpseQ/f2U8pySQAr3rBllQkc5xMgN8YcXu8
-         O1oQ==
+        d=intel-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dTL71zCsO4wuS7DXxshZZRFAlW1Q/e6e78gucQODCPs=;
+        b=XmzdavWE+xPwKjOfD7fVZBYLqzsaZ82tzU8rY7LUQTZzp2u58uvRub2eqnWLAelR42
+         wLD6XtFTKQ+DXn86Rk1NjlffjspX7Z4xONQzcrRTl6WpCYAKGNigChzH1USP/+YHqV9S
+         vZc+p0UEL2hD82BqL0dO/uxnq3Mnqc8ctr4Gz/pURtRB4rk3jKWFsKsMSYSX2m2E8Azg
+         RvMWFiiLTiyyKXeTVFLm1BvWmS9VifSoG/e7OsLK26L+G/3Hp+Ihcr8dknzhk96b2FzO
+         e6oEQdoZCpclC6RmTbpgM9m3MeKwU3UAkXLsknw16zQ5X13Esxb3XHzrZsCcKkqqTG+H
+         anFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=N9yHwJ+N62Bg8WWUllfyOyd8NA6iR+DUl1YGeY5PMO4=;
-        b=mR+lW4JGgaUUo2q3X3ySg48LnpsDAV6YoNl6U4MyhxIAgauLjXP3pnq/YanLaVU94e
-         gYxZtyfF9NvHkHxFZoUELPZLcOUf2v0BXmMGwKRTn4qyNBqP3Ro5EWWiacBMJlK5mWTl
-         0vdNUjiUlmIBD1ywfTCJrlPbHrKZAsjdMLZCemLjL6eQo0vBqP3yLr+C+Sxt/UsVbOaT
-         i4gW0Xf54AAa5IvlVCoUS3ybGcGPmAfKILB0BSkg7XYBL+FcG6laqkb/APTjB3LItAw0
-         ko2fzLeaw79s9IIi0wLJbX3/+WFrt7+tVNNy2QqGZNhkODjt2DjvDE5DII0MyFDEmsex
-         DlfA==
-X-Gm-Message-State: AOAM530MwNOfAyM2/gkOJCfW1r2wQaBNEP2u9Q4sDCbX2+rpgcQL7NGH
-        4aq6NPhK+3uWfStzbYGDAMl5BlHp2OM=
-X-Google-Smtp-Source: ABdhPJxBfbiQz94cJuWW5L2omeJqMwx4WyEfQHJLrmWhm0JFjs9AplndKc+sdw+9PUkPq0k1QYRoBQ==
-X-Received: by 2002:a65:538e:: with SMTP id x14mr1528896pgq.364.1633381303816;
-        Mon, 04 Oct 2021 14:01:43 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id x11sm14548914pfh.201.2021.10.04.14.01.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Oct 2021 14:01:43 -0700 (PDT)
-Subject: Re: [PATCH 5.14 000/172] 5.14.10-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20211004125044.945314266@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <090e7044-1ce2-4cf3-affc-ea25bf3eaa1a@gmail.com>
-Date:   Mon, 4 Oct 2021 14:01:33 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dTL71zCsO4wuS7DXxshZZRFAlW1Q/e6e78gucQODCPs=;
+        b=Y13k8+lB3sLMgp0Cf2Q+UUKCnSVWfCwNbRI8utSawXXKfW9Y8/QXPGIDeJ9gMZnlnn
+         hYOivf0tl0ZKZiaEGPsgDrim7OLF8nUt1NVC0UMf4fKQd9xBqjGg9VJM4LzfCywL/oB2
+         EBGkaTSf9ulwErvTnL5MayHdJ3NT+plre8+Xh5wKQyn30FSMG9ZhSJipgJ4JImKlLbv7
+         OHdob7TUUXu5trskUuenW9C0LilfQ8cPVI27YkDt03nwWLg5zF5DT18abuxRLOhdN5bP
+         Ly7dG4lc+hSt96zrJbTfWoecpNLtWzgu2HYigZXOwgrOE6agq8zYClDm9ux/imyWJlyS
+         ibbQ==
+X-Gm-Message-State: AOAM532ZnpgrEbocnMfwc5ENE4iIARdMLbYFiWijursKjQ+/kTltg9QO
+        SHV15Jyh0PKtIxN2MbpYkz6Ps9ebmzdtFYlOclrM6A==
+X-Google-Smtp-Source: ABdhPJwtA7a1u8MewgFOuQ4ODk6qNf/e8OOxKzSS55rulMOQukdTduuScadVjnccrxY46jGbRZAxi2Ttqu24INezDC8=
+X-Received: by 2002:a05:6a00:1a01:b0:44c:1ec3:364f with SMTP id
+ g1-20020a056a001a0100b0044c1ec3364fmr19009668pfv.86.1633381468208; Mon, 04
+ Oct 2021 14:04:28 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210930010511.3387967-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210930010511.3387967-5-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210930065953-mutt-send-email-mst@kernel.org> <CAPcyv4hP6mtzKS-CVb-aKf-kYuiLM771PMxN2zeBEfoj6NbctA@mail.gmail.com>
+ <6d1e2701-5095-d110-3b0a-2697abd0c489@linux.intel.com> <YVXWaF73gcrlvpnf@kroah.com>
+ <1cfdce51-6bb4-f7af-a86b-5854b6737253@linux.intel.com> <YVaywQLAboZ6b36V@kroah.com>
+ <64eb085b-ef9d-dc6e-5bfd-d23ca0149b5e@linux.intel.com> <20211002070218-mutt-send-email-mst@kernel.org>
+ <YVg/F10PCFNOtCnL@kroah.com> <95ba71c5-87b8-7716-fbe4-bdc9b04b6812@linux.intel.com>
+In-Reply-To: <95ba71c5-87b8-7716-fbe4-bdc9b04b6812@linux.intel.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Mon, 4 Oct 2021 14:04:20 -0700
+Message-ID: <CAPcyv4jfdVTMtvhoUJ5B-ka596RgEH_0RLathfKL9aAi9+0apg@mail.gmail.com>
+Subject: Re: [PATCH v2 4/6] virtio: Initialize authorized attribute for
+ confidential guest
+To:     Andi Kleen <ak@linux.intel.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Borislav Petkov <bp@alien8.de>, X86 ML <x86@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andreas Noever <andreas.noever@gmail.com>,
+        Michael Jamet <michael.jamet@intel.com>,
+        Yehezkel Bernat <YehezkelShB@gmail.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jason Wang <jasowang@redhat.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        "Reshetova, Elena" <elena.reshetova@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/4/21 5:50 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.14.10 release.
-> There are 172 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 06 Oct 2021 12:50:17 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.10-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+On Sat, Oct 2, 2021 at 7:20 AM Andi Kleen <ak@linux.intel.com> wrote:
+>
+>
+> On 10/2/2021 4:14 AM, Greg Kroah-Hartman wrote:
+> > On Sat, Oct 02, 2021 at 07:04:28AM -0400, Michael S. Tsirkin wrote:
+> >> On Fri, Oct 01, 2021 at 08:49:28AM -0700, Andi Kleen wrote:
+> >>>>    Do you have a list of specific drivers and kernel options that you
+> >>>> feel you now "trust"?
+> >>> For TDX it's currently only virtio net/block/console
+> >>>
+> >>> But we expect this list to grow slightly over time, but not at a high rate
+> >>> (so hopefully <10)
+> >> Well there are already >10 virtio drivers and I think it's reasonable
+> >> that all of these will be used with encrypted guests. The list will
+> >> grow.
+> > What is keeping "all" drivers from being on this list?
+>
+> It would be too much work to harden them all, and it would be pointless
+> because all these drivers are never legitimately needed in a virtualized
+> environment which only virtualize a very small number of devices.
+>
+> >   How exactly are
+> > you determining what should, and should not, be allowed?
+>
+> Everything that has had reasonable effort at hardening can be added. But
+> if someone proposes to add a driver that should trigger additional
+> scrutiny in code review. We should also request them to do some fuzzing.
+>
+> It's a bit similar to someone trying to add a new syscall interface.
+> That also triggers much additional scrutiny for good reasons and people
+> start fuzzing it.
+>
+>
+> >    How can
+> > drivers move on, or off, of it over time?
+>
+> Adding something is submitting a patch to the allow list.
+>
+> I'm not sure the "off" case would happen, unless the driver is
+> completely removed, or maybe it has some unfixable security problem. But
+> that is all rather unlikely.
+>
+>
+> >
+> > And why not just put all of that into userspace and have it pick and
+> > choose?  That should be the end-goal here, you don't want to encode
+> > policy like this in the kernel, right?
+>
+> How would user space know what drivers have been hardened? This is
+> really something that the kernel needs to determine. I don't think we
+> can outsource it to anyone else.
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
+How it is outsourcing by moving that same allow list over the kernel /
+user boundary. It can be maintained by the same engineers and get
+deployed by something like:
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+dracut --authorize-device-list=confidential-computing-default $kernel-version
 
-Similar to other comments., this commit:
+With that distributions can deploy kernel-specific authorizations and
+admins can deploy site-specific authorizations. Then the kernel
+implementation is minimized to authorize just enough drivers by
+default to let userspace take over the policy.
 
-net: mdiobus: Fix memory leak in __mdiobus_register
+> Also BTW of course user space can still override it, but really the
+> defaults should be a kernel policy.
 
-has since been reverted upstream. Thanks!
--- 
-Florian
+The default is secure, trust nothing but bootstrap devices.
+
+> There's also the additional problem that one of the goals of
+> confidential guest is to just move existing guest virtual images into
+> them without much changes. So it's better for such a case if as much as
+> possible of the policy is in the kernel. But that's more a secondary
+> consideration, the first point is really the important part.
+
+The same image can be used on host and guest in this "do it in
+userspace" proposal.
