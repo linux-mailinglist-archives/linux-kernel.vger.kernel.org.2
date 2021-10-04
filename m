@@ -2,150 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 995B042066D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 09:08:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79A61420670
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 09:08:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229631AbhJDHJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 03:09:48 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:32938 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229486AbhJDHJr (ORCPT
+        id S229659AbhJDHKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 03:10:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60258 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229568AbhJDHKh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 03:09:47 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 404D01FFC3;
-        Mon,  4 Oct 2021 07:07:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1633331278; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=P7ccqQOFs0LjZy3F5wGLg1Zml4wdhQrmF5FOF2AP4xU=;
-        b=XhOGE+MsCYY2xdcx8Mtyr/u6Z+OzxWFlAsdAHRwFX/QizwlcKAsHQwFv+3kVUrWG+YH8wc
-        NAKtcdgEX0J9H4umqsxkMlqUKO7KgeUYl1RoGX8coXin+LlAh+opAjRT46ueWTk20Si8l2
-        C9N6t3kCaFOz48al28zI4icHpxjMzq0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1633331278;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=P7ccqQOFs0LjZy3F5wGLg1Zml4wdhQrmF5FOF2AP4xU=;
-        b=Q/i6K1EpHyd5hSHu3R2iD6OsApa3qoQfPneeaSLCByM2Mo5OuGvLx8/CMYMnBZd21v5pqQ
-        1O/386CAsgmlNlCg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 198C713B72;
-        Mon,  4 Oct 2021 07:07:58 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id Vg1ABE6oWmFXcQAAMHmgww
-        (envelope-from <tzimmermann@suse.de>); Mon, 04 Oct 2021 07:07:58 +0000
-Message-ID: <eeaf6170-0aca-4466-c79c-b422cdf29179@suse.de>
-Date:   Mon, 4 Oct 2021 09:07:56 +0200
+        Mon, 4 Oct 2021 03:10:37 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C53EBC061745
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 00:08:48 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mXI5P-00049J-Ll; Mon, 04 Oct 2021 09:08:31 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mXI5K-0007tv-Nw; Mon, 04 Oct 2021 09:08:26 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mXI5K-0007Hj-Mf; Mon, 04 Oct 2021 09:08:26 +0200
+Date:   Mon, 4 Oct 2021 09:08:26 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Billy Tsai <billy_tsai@aspeedtech.com>
+Cc:     "lee.jones@linaro.org" <lee.jones@linaro.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "joel@jms.id.au" <joel@jms.id.au>,
+        "andrew@aj.id.au" <andrew@aj.id.au>,
+        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>,
+        BMC-SW <BMC-SW@aspeedtech.com>
+Subject: Re: [v12 2/2] pwm: Add Aspeed ast2600 PWM support
+Message-ID: <20211004070826.on5tg42dvjh7bayt@pengutronix.de>
+References: <20210906024339.21124-1-billy_tsai@aspeedtech.com>
+ <20210906024339.21124-3-billy_tsai@aspeedtech.com>
+ <012AEBBE-9FFC-48B5-8794-00A577C3C87A@aspeedtech.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
-Subject: Re: 572994bf18ff prevents system boot
-Content-Language: en-US
-To:     Chuck Lever III <chuck.lever@oracle.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ainux Wang <ainux.wang@gmail.com>
-References: <A194B6CE-AF77-422D-A92F-292ABD83BCCE@oracle.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-In-Reply-To: <A194B6CE-AF77-422D-A92F-292ABD83BCCE@oracle.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------pkyDyYh678Uqzr03z5NXwRCs"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="5t4m3yzkgi5tqy6e"
+Content-Disposition: inline
+In-Reply-To: <012AEBBE-9FFC-48B5-8794-00A577C3C87A@aspeedtech.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------pkyDyYh678Uqzr03z5NXwRCs
-Content-Type: multipart/mixed; boundary="------------k6r2eveYWzBFiretA8lIqR0q";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Chuck Lever III <chuck.lever@oracle.com>,
- "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Ainux Wang <ainux.wang@gmail.com>
-Message-ID: <eeaf6170-0aca-4466-c79c-b422cdf29179@suse.de>
-Subject: Re: 572994bf18ff prevents system boot
-References: <A194B6CE-AF77-422D-A92F-292ABD83BCCE@oracle.com>
-In-Reply-To: <A194B6CE-AF77-422D-A92F-292ABD83BCCE@oracle.com>
 
---------------k6r2eveYWzBFiretA8lIqR0q
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+--5t4m3yzkgi5tqy6e
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-KGNjOiBhaW51eC53YW5nQGdtYWlsLmNvbSkNCg0KSGkNCg0KQW0gMDMuMTAuMjEgdW0gMjA6
-MDkgc2NocmllYiBDaHVjayBMZXZlciBJSUk6DQo+IEhpLQ0KPiANCj4gQWZ0ZXIgdXBkYXRp
-bmcgb25lIG9mIG15IHRlc3Qgc3lzdGVtcyB0byB2NS4xNS1yYywgSSBmb3VuZCB0aGF0IGl0
-DQo+IGJlY29tZXMgdW5yZXNwb25zaXZlIGR1cmluZyB0aGUgbGF0ZXIgcGFydCBvZiB0aGUg
-Ym9vdCBwcm9jZXNzLiBBDQo+IHBvd2VyLW9uIHJlc2V0IGlzIG5lY2Vzc2FyeSB0byByZWNv
-dmVyLg0KPiANCj4gSSBiaXNlY3RlZCB0byB0aGlzIGNvbW1pdDoNCj4gDQo+IDU3Mjk5NGJm
-MThmZiAoImRybS9hc3Q6IFplcm8gaXMgbWlzc2luZyBpbiBkZXRlY3QgZnVuY3Rpb24iKQ0K
-DQpZb3UgZG9uJ3QgaGF2ZSBhIG1vbml0b3IgY29ubmVjdGVkLCBJIGd1ZXNzPyBJbiB0aGF0
-IGNhc2UsIHdlIG5vdyANCnRyaWdnZXIgdGhlIGhlbHBlcnMgdGhhdCBwb2xsIGZvciBjb25u
-ZWN0ZWQgbW9uaXRvcnMuIEhvd2V2ZXIsIHRoZSANCm92ZXJoZWFkIHNlZW1zIHJhdGhlciBl
-eHRyZW1lLg0KDQpJJ2xsIGhhdmUgdG8gdHJ5IHRvIHJlcHJvZHVjZSB0aGlzLCBvciBvdGhl
-cndpc2Ugd2UgY2FuIHJldmVydCB0aGUgY29tbWl0Lg0KDQpCZXN0IHJlZ2FyZHMNClRob21h
-cw0KDQo+IA0KPiBDaGVja2luZyBvdXQgdjUuMTUtcmMzIGFuZCByZXZlcnRpbmcgdGhpcyBj
-b21taXQgZW5hYmxlcyB0aGUgc3lzdGVtDQo+IHRvIGJvb3QgYWdhaW4uDQo+IA0KPiAwYjow
-MC4wIFZHQSBjb21wYXRpYmxlIGNvbnRyb2xsZXI6IEFTUEVFRCBUZWNobm9sb2d5LCBJbmMu
-IEFTUEVFRCBHcmFwaGljcyBGYW1pbHkgKHJldiAzMCkgKHByb2ctaWYgMDAgW1ZHQSBjb250
-cm9sbGVyXSkNCj4gICAgICAgICAgRGV2aWNlTmFtZTogIEFTUEVFRCBWaWRlbyBBU1QyNDAw
-DQo+ICAgICAgICAgIFN1YnN5c3RlbTogU3VwZXIgTWljcm8gQ29tcHV0ZXIgSW5jIFgxMFNS
-TC1GDQo+ICAgICAgICAgIENvbnRyb2w6IEkvTysgTWVtKyBCdXNNYXN0ZXItIFNwZWNDeWNs
-ZS0gTWVtV0lOVi0gVkdBU25vb3AtIFBhckVyci0gU3RlcHBpbmctIFNFUlItIEZhc3RCMkIt
-IERpc0lOVHgtDQo+ICAgICAgICAgIFN0YXR1czogQ2FwKyA2Nk1Iei0gVURGLSBGYXN0QjJC
-LSBQYXJFcnItIERFVlNFTD1tZWRpdW0gPlRBYm9ydC0gPFRBYm9ydC0gPE1BYm9ydC0gPlNF
-UlItIDxQRVJSLSBJTlR4LQ0KPiAgICAgICAgICBJbnRlcnJ1cHQ6IHBpbiBBIHJvdXRlZCB0
-byBJUlEgMTgNCj4gICAgICAgICAgUmVnaW9uIDA6IE1lbW9yeSBhdCBmYTAwMDAwMCAoMzIt
-Yml0LCBub24tcHJlZmV0Y2hhYmxlKSBbc2l6ZT0xNk1dDQo+ICAgICAgICAgIFJlZ2lvbiAx
-OiBNZW1vcnkgYXQgZmIwMDAwMDAgKDMyLWJpdCwgbm9uLXByZWZldGNoYWJsZSkgW3NpemU9
-MTI4S10NCj4gICAgICAgICAgUmVnaW9uIDI6IEkvTyBwb3J0cyBhdCBjMDAwIFtzaXplPTEy
-OF0NCj4gICAgICAgICAgRXhwYW5zaW9uIFJPTSBhdCAwMDBjMDAwMCBbdmlydHVhbF0gW2Rp
-c2FibGVkXSBbc2l6ZT0xMjhLXQ0KPiAgICAgICAgICBDYXBhYmlsaXRpZXM6IFs0MF0gUG93
-ZXIgTWFuYWdlbWVudCB2ZXJzaW9uIDMNCj4gICAgICAgICAgICAgICAgICBGbGFnczogUE1F
-Q2xrLSBEU0ktIEQxKyBEMisgQXV4Q3VycmVudD0zNzVtQSBQTUUoRDArLEQxKyxEMissRDNo
-b3QrLEQzY29sZCspDQo+ICAgICAgICAgICAgICAgICAgU3RhdHVzOiBEMCBOb1NvZnRSc3Qt
-IFBNRS1FbmFibGUtIERTZWw9MCBEU2NhbGU9MCBQTUUtDQo+ICAgICAgICAgIENhcGFiaWxp
-dGllczogWzUwXSBNU0k6IEVuYWJsZS0gQ291bnQ9MS80IE1hc2thYmxlLSA2NGJpdCsNCj4g
-ICAgICAgICAgICAgICAgICBBZGRyZXNzOiAwMDAwMDAwMDAwMDAwMDAwICBEYXRhOiAwMDAw
-DQo+ICAgICAgICAgIEtlcm5lbCBkcml2ZXIgaW4gdXNlOiBhc3QNCj4gICAgICAgICAgS2Vy
-bmVsIG1vZHVsZXM6IGFzdA0KPiANCj4gLS0NCj4gQ2h1Y2sgTGV2ZXINCj4gDQo+IA0KPiAN
-Cg0KLS0gDQpUaG9tYXMgWmltbWVybWFubg0KR3JhcGhpY3MgRHJpdmVyIERldmVsb3Blcg0K
-U1VTRSBTb2Z0d2FyZSBTb2x1dGlvbnMgR2VybWFueSBHbWJIDQpNYXhmZWxkc3RyLiA1LCA5
-MDQwOSBOw7xybmJlcmcsIEdlcm1hbnkNCihIUkIgMzY4MDksIEFHIE7DvHJuYmVyZykNCkdl
-c2Now6RmdHNmw7xocmVyOiBGZWxpeCBJbWVuZMO2cmZmZXINCg==
+Hello Billy,
 
---------------k6r2eveYWzBFiretA8lIqR0q--
+On Mon, Oct 04, 2021 at 02:54:00AM +0000, Billy Tsai wrote:
+> Does anyone have any comments about this patch?
 
---------------pkyDyYh678Uqzr03z5NXwRCs
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
+It's on my list of todos, the problem is there are so many thing on that
+list. I'll try to review your patch set this week.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--5t4m3yzkgi5tqy6e
+Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmFaqEwFAwAAAAAACgkQlh/E3EQov+D2
-7xAApmbao3QPxrePUsG2S4m9Gza55TXzD2moCKAd/8k6XQgMw5tDdu9Lmwl33NhRTB8RhaVqAST9
-PEsoQrZAaSQ+ivBpsM/a+SVyivaflL/nxsXZYYefKxxirKooSM0weWBqtGcUCXhbVAlYadH7LNSH
-9JrUMFiMuGLLc835tANhvrMcXoUZQ2k+JYFdH3zLBkaCfo7IMKo/bkbXprz48sdRO+27bAixZfKg
-+6VXxVSJ2mPcGIDpZQz3CkX2P0ZLjUlUc2FfrOop3KyKgBkWLZKtQa6EbYAFPC4jxEAGgcmGkssQ
-7kLfBI+r4Xh8yRjZui8NdvDM9pCnZRSviXX33lmwV2jLMeaEahIuFRkb6hnt43QZc49L8oTICxcr
-iUZeyruMZ07GLEi9T0T1d+prHOs6TtWYgXMSJBgIsj3tvY0PYH9SLeWcDkNAvgMM6LJmHFA+92tb
-wTpGwdHKWy64zXUaIbJ4idY2RoasMFAxUE1J3FJ/xqPs48acp/+Fk+DygXahhWa0IZGLS/Zc7sp+
-2mQh1i43Uw3oOHU+gbrUR3ylJJoEDTgWwqSE2XHPzJou52HEj8Uo8LOSGiaRNRyaxn1LtbWO+k4v
-uBD8r21ZMIGgf4xDf+zhMRF7i/uCYZOVBiu1ptitxCcgRcJKlF8mYDE46VcKqnmkxuBHMjaY51ft
-jgE=
-=p3en
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmFaqGcACgkQwfwUeK3K
+7AnGAgf9G336UWwO/gwlaZ/cj2wpcF8RfEe28nz+ZdOLKOTExHGoTFA/i4jisAN3
+QCtLRrKdUQb+133ZMFwKdfUH+MVgtDC2TyScXhsHH9x8/8flyZTkP1fxeQp4u3Qw
+MJIF2oiz18CGU01qck3evudKGeWKiD9yHl2TbvCT+dlcSIIGpleviEyynnOB7OKi
+sMNE7wJcz8i+EYiB7N0NxdTIWhix17lE3QSYyy9yBRrfUpmT8QEj15mUxuAzsI+x
+EZHk9bv43TRShMy6QFNfwcqdC5L6mSKFKgwSSJmYGQSunmzcRxpZLM9upJy3Jj/Z
+Y6+cqlD/ohXtKbi9Znc4XYXPg0ug3A==
+=lJ1t
 -----END PGP SIGNATURE-----
 
---------------pkyDyYh678Uqzr03z5NXwRCs--
+--5t4m3yzkgi5tqy6e--
