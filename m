@@ -2,68 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16F5C4209F4
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 13:18:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A38494209F9
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 13:20:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233005AbhJDLUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 07:20:25 -0400
-Received: from mail-ua1-f46.google.com ([209.85.222.46]:47018 "EHLO
-        mail-ua1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232395AbhJDLUY (ORCPT
+        id S233019AbhJDLWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 07:22:31 -0400
+Received: from mout.kundenserver.de ([212.227.126.130]:56497 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232278AbhJDLWa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 07:20:24 -0400
-Received: by mail-ua1-f46.google.com with SMTP id u5so9072557uao.13
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 04:18:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=f00Zs4J4gfx8iX7+J4LOkonrw2VpufCcl1Fh+328R7Y=;
-        b=hIi71syTeJ7XO2h/VGaxNhxSDR/WA4fzWFKZBvA1iCRPO9HYHnWGZfTUR1S/+pSdbM
-         s+somIEEEPnGNnON/oc3of2P5I1RCIqnl1aldzP6pvqCgUev45WEntNoHZJCx3fHuiCT
-         iCQ3b2E9eTh66drNhm0O2+yTrOvpRR+wQ0A0xaCJnkPb5yaVTK9uvr0Fz53507JV9c3u
-         uwEZ363Hath+dVAOiQNDOYFmXwoAY7tlxLVGteclaeTMvyJ8uYbI3YnuZUCr9ltvaLxu
-         s3WNy9vTT2R72n5lwpfNHS9X0czg7GH6l/ipTc8SEEekVaAWBeV3x1vMfKGPD4QXXwH8
-         KDhQ==
-X-Gm-Message-State: AOAM533F/6Sb3q6dpnSpNwjmdD9wdvWNylitxvTXe0qNGlq97yh3LL4o
-        tVGcMm8mUPoNLiwkZAXR9fV1E1NWSp2Z+0SkV9ySgYjM4KM=
-X-Google-Smtp-Source: ABdhPJzH3dEgAVJ0TwVm3UwGxCLp+rCY7gxoHCX74NqyJZ+QS7TNRAm52FsStQJMv/t6qQ9T9zUkj1xQxBG8ciRoeYE=
-X-Received: by 2002:ab0:58c1:: with SMTP id r1mr5838360uac.89.1633346314602;
- Mon, 04 Oct 2021 04:18:34 -0700 (PDT)
+        Mon, 4 Oct 2021 07:22:30 -0400
+Received: from mail-wr1-f41.google.com ([209.85.221.41]) by
+ mrelayeu.kundenserver.de (mreue010 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1M9FX5-1mTnWZ1N39-006OM4; Mon, 04 Oct 2021 13:20:40 +0200
+Received: by mail-wr1-f41.google.com with SMTP id o20so12139824wro.3;
+        Mon, 04 Oct 2021 04:20:40 -0700 (PDT)
+X-Gm-Message-State: AOAM532Jd4Po+Bvnbqm4GkigEP2bVjOHyYxoCozDi8gcdjWRMXNBSZ7q
+        ewRxpQw07K7OwvM/eoxjkeDpHp+bo43WhY5CnAk=
+X-Google-Smtp-Source: ABdhPJwhFhZN1/rLzElq8LxHI+vYWGkiTfpWXOOqhx7kKzXCSyCUhYRu/5RoeP1GLfBuA250yguyI6fH/b4xP7cPZqg=
+X-Received: by 2002:adf:f481:: with SMTP id l1mr13368134wro.411.1633346439970;
+ Mon, 04 Oct 2021 04:20:39 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211004111224.941450-1-geert@linux-m68k.org>
-In-Reply-To: <20211004111224.941450-1-geert@linux-m68k.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 4 Oct 2021 13:18:23 +0200
-Message-ID: <CAMuHMdXA-4Y0obSTmwkavauwpMrM8LXxnofeNXtGuC7N=bu5Uw@mail.gmail.com>
-Subject: Re: Build regressions/improvements in v5.15-rc4
-To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Cc:     linux-um <linux-um@lists.infradead.org>
+References: <49890226-cf04-46ff-bc37-33d1643faea2@www.fastmail.com>
+ <1B71F6A3-6467-46EF-858F-82E93D54365D@xenosoft.de> <YVrPf4yVFm184LEG@shikoro>
+In-Reply-To: <YVrPf4yVFm184LEG@shikoro>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Mon, 4 Oct 2021 13:20:23 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2760x4OYbNBuFCv32Tgt7K3MdJna4qXvPchdKhV8-8vQ@mail.gmail.com>
+Message-ID: <CAK8P3a2760x4OYbNBuFCv32Tgt7K3MdJna4qXvPchdKhV8-8vQ@mail.gmail.com>
+Subject: Re: Add Apple M1 support to PASemi i2c driver
+To:     Wolfram Sang <wsa@kernel.org>,
+        Christian Zigotzky <chzigotzky@xenosoft.de>,
+        Sven Peter <sven@svenpeter.dev>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
+        Hector Martin <marcan@marcan.st>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Linux I2C <linux-i2c@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "R.T.Dickinson" <rtd2@xtra.co.nz>,
+        Darren Stevens <darren@stevens-zone.net>,
+        Matthew Leaman <matthew@a-eon.biz>,
+        "R.T.Dickinson" <rtd@a-eon.com>
 Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:yEGDJdAsg9cAEfqhEAR9pAQVPWRaBH/v0c5qXjHJCtGYJfPwKj1
+ Q0FuzH2gcjxVhrSESt8aZyVZZSC8BkDZzWcdFduEBEnM7D1CfKwIabP1DoJ2CDc0XYHDBiS
+ dw0vQRAiqxWKEeREgTZMB5K8uke7sce23zpI7vcC2mkuybtwhln5g3mAjzTsdigz5nJ8Kx3
+ HYCeQAJCdh2AOPBAap4Bg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:DBVNx+O0+SE=:J2teYZ1JJoZ/JJiKj8TtBm
+ wO+XbNXpmoXA2sAYAeQD3mFkS20jgeOIEGSKAAFxvDcOizs4t2YQEnOMGIKvn9923cBWcaGul
+ TMXJyfAHSN4IywcZ1sn8gd+qgWwoEiFKG1eCBabnNWuqRT/ULak2Lus43aeeEWns352C/f5TH
+ YWOEh6hP5dmsEGOH4f4ylgEBY9tfjv5f5PMRbduI5Y7DMvbwgPBOq2jyEa9o2fgKdgEDyXe0G
+ qCO2kS0VgIqyzuYrCwAbC+vLrec4fvGHKlewZLvcaANPWhqDN3RrmTdaBQMReHmAPY/HbBupy
+ pLRP4AXXE8m+wYWtG03sC9lTFUgEKH0LWxeX02xxRXKkjpwsdU9jDYgN1xtNksdCq5w54TMHU
+ h2DIWILMKwMRbFsu4moy8xjgqs6uRpB4IYPuDdGtcFR2963GnUagQ/sTtVdMw8ofhLM1S2OUG
+ OYkWzGIzXIHxTR7UBf/2I+2CB2QRk21DQXA0RdMM7HkU8o8RV9SIfet7E94CthVE28D7vpSol
+ Unb1dPJTY22hXbMAtWzAtIKAZdfWAL8fFPZcIOu2+7XEczWAdJ8EFEhbYguKzkYho+ayifJPn
+ cD8Ni5gN3fnrWCWpplALQe0+ukwwTaCj98+IZfMJ4qwn6zl/RQsSKqskZHJ6CoIAXlpJDBTUm
+ Z4YXdqIUgbreafEJXBc47TWud7O+S382sKNA73HZVhNHARHMuMaf3BcTbZgp/+3sCP+WoVacf
+ QVA3nSTP8x17ZF4Zr42yuZ+WSUA6fdTLSKfQmw3yGrWrHVqBTWRVOzUv1gUCTYe4Z40WZxOiS
+ lD1sJxuX3ai/OrnZJNweZD2oedcioekysWxxZbjBATX/9+LazQgZroRi5DLRevNGycSUEWt1s
+ c8taZp2rOcT+BB72758A==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 4, 2021 at 1:15 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> JFYI, when comparing v5.15-rc4[1] to v5.15-rc3[3], the summaries are:
->   - build errors: +1/-4
+On Mon, Oct 4, 2021 at 11:55 AM Wolfram Sang <wsa@kernel.org> wrote:
+>
+>
+> > i2c-8 i2c             PA Semi SMBus adapter at 0x(____ptrval____)     I2C adapter
+> > i2c-9 i2c             PA Semi SMBus adapter at 0x(____ptrval____)     I2C adapter
+> > i2c-10        i2c             PA Semi SMBus adapter at 0x(____ptrval____)     I2C adapter
+>
+> As Sven correctly switched from %lx to %p, this is intended behaviour.
+> Run 'i2cdetect' as root to see the values again.
 
-  + /kisskb/src/drivers/video/fbdev/nvidia/nvidia.c: error: passing
-argument 1 of 'iounmap' discards 'volatile' qualifier from pointer
-target type [-Werror=discarded-qualifiers]:  => 1439:10, 1414:10
+I think the address could just get removed here, as this is clearly not helpful.
+port number, which is somewhat useful for identifying the device, now
+it's either the pointless string, or the virtual address that the
+device is mapped
+to, which is not helpful either and potentially leaks information about kernel
+internal structures.
 
-um-x86_64/um-allyesconfig (fix available)
-
-> [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/9e1ff307c779ce1f0f810c7ecce3d95bbae40896/ (90 out of 182 configs)
-> [3] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/5816b3e6577eaa676ceb00a848f0fd65fe2adc29/ (90 out of 182 configs)
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+       Arnd
