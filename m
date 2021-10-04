@@ -2,110 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89B6742151D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 19:24:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E30E421520
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 19:25:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234340AbhJDR0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 13:26:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35114 "EHLO
+        id S234365AbhJDR1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 13:27:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234103AbhJDR0E (ORCPT
+        with ESMTP id S233892AbhJDR1P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 13:26:04 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0871C061745
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 10:24:14 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id x27so74136399lfa.9
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 10:24:14 -0700 (PDT)
+        Mon, 4 Oct 2021 13:27:15 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EBF3C061745
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 10:25:26 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id n8so19091969lfk.6
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 10:25:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=kEcLDwK9m1057jui6AApVi77iUKrt1BBHKk+cl8sBwg=;
-        b=TnB++IRae/jo7gqmQjvRKcHMHKTEqCZDZphTfi5vqyHYACWjXUvpjyPRFMIh9KZN4I
-         WnSWO3bAsjSUNczaIep4vUgkrW4Xkc2ZKwYP9nvihsSLiG2BAOx8GhVX9b6/+iiS0tFH
-         k0r5k6pUly5KokxDk1+787vNZJfhPAsJHdfl2BFuxeaST/d+CUl2KLhb51OQxSLZYfD2
-         pjjuWIBmQsmt3Ohu1veqNZMuquHHpjwDPqYrnVG9FfFe7XhCnvRQCLFCQI6HDiAOcJXc
-         tf2e/QLDCOpEgcy6ghQvYIWqFc6qRvU5YXWA5oML13c00Wf4o9ga0BnaVrt40rNS7YOk
-         OjNQ==
+        bh=gKBTIHZkFkwseGAi5II5oGVj0iBXe7h2uvt78kuBKSA=;
+        b=bBqGZLltEUDsR1PL9Qc1Y/XRczlTpQxaY5AFRGuodqngidy2xOtDflakPH5qdOqet0
+         ny3SMOeBMt2G4zr7THRWei1s9a9znFAqdy7l8EbjWtiqoCkmH5ZY6ewRFn6M+9PmOZh7
+         DV3FZ5a8xAC6Y04zmZqcJ48/Js2PEaa/0LC0yJn4nRk0oiYY1nAkGggkRnmPKxPlmVF4
+         GErOtqrFb2+A5BIZdLLgIsEZ4qDah8/7VyCTtKaFb4za+Tk32wmnsjxI6tTj1hVG+M3Q
+         gwNbLXdk/1YG8nhU32hxUc+vnh5/8TgxuzvkLfzzX5LYxFxLY+ygKfBQ5MSfZKEW90Ew
+         SAsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=kEcLDwK9m1057jui6AApVi77iUKrt1BBHKk+cl8sBwg=;
-        b=4Vi45UJXMlzPztlQc0Of3QMut1AZ8rlKP2SFaVvDqn9VXMwvjPxOfNts3NIS965JVE
-         nMY4ZqyM056LUQNbjpYgNmkRdsOk+EHZOicWMFaKaVYuI05dSK9oxj3nm/4ftJGGokug
-         IHKxfTsG7cPbQww26fWUpIonNhiGdUrIJGuWamRHQnrHbGD+0DrRteRDSrMpVBcQIA5c
-         ZDFBruiSEF0o1wGvL3vIvFpfqyQC6aFC4Sq1DQ+LUi0LG8+kQG7ghrWWUwdDTK01EZvi
-         GjCwR2YAPvm4uaKcPMVAU2FttglKph/0WCnA4lKNKskDJ+OpgtFcyW27q5mDoeUKuwxj
-         udRw==
-X-Gm-Message-State: AOAM532RSWh9aTPr/muuzmgYrG3QH9bHMeKpsuFDDGT/UH/u8XXEPW5y
-        zs9bHavzqIRXQf1IW2djcFBdRZX2exW4UbXXzaOzlw==
-X-Google-Smtp-Source: ABdhPJzmD4UEBiXFKhf3rNaJHbKhr3KtSIrZIN1GdcE1+jJQvDvJM30Za3MQXvWxtLqb+LdeTrVIpEaC31hVR+x7lVM=
-X-Received: by 2002:a05:6512:3193:: with SMTP id i19mr15780869lfe.485.1633368251172;
- Mon, 04 Oct 2021 10:24:11 -0700 (PDT)
+        bh=gKBTIHZkFkwseGAi5II5oGVj0iBXe7h2uvt78kuBKSA=;
+        b=pndVqeXjVb5ImYc1igfS8tetnHFRBNm6hgxY2Aw29AKQAuxONoAC5gCY3O2K3uZUWH
+         IL7BpXmPCBEsMXA2uhlmfATOqMDUhzm6gD2fqPoRTfjgxqlfCZL1ximjiRnD2BHf82/6
+         oHtZOh8zJbXvUr191fUeZuyEIAw4xKwKPTXiIJ6n21rvtJMv2cCZMgnKJF9Bb9GvUArA
+         0y+7T6vwHx6gUOwAVxrCTKmpzZzxmnFCs3XQ1d5ODEFWVnmM7hvSXMsO315Upa5URAd3
+         9f77XIvDY4AkzGCKy93kRMZYlKAmTHdwczKIGlBEX4EnJkbIc91F5XkLkV6ShpcbPmxr
+         dZ9Q==
+X-Gm-Message-State: AOAM5333b6kQ+s2HxXY8+n94tniu0S8DwpngSJ+oYS5q/vw5y0fYWxXP
+        jwBUo8YAyOF1AMhZlIY5v122e+lxAN0xw6bgEy+SEg==
+X-Google-Smtp-Source: ABdhPJzUTQp6h+Sb/2NzFKgUR2uR7Qc2dWO/JFqsIhiNclfxF49MzRER5nTGq/dvtBpWJX0w4hgl9SfOI8qSEhxVitk=
+X-Received: by 2002:a2e:a370:: with SMTP id i16mr16470454ljn.35.1633368323563;
+ Mon, 04 Oct 2021 10:25:23 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210617090941.340135-1-lee.jones@linaro.org> <YMs08Ij8PZ/gemLL@slm.duckdns.org>
- <YMs5ssb50B208Aad@dell> <CAJuCfpHvRuapSMa2KMdF4_-8fKdqtx_gYVKyw5dYT6XjfRrDfg@mail.gmail.com>
- <YVsuw+UBZDY6Rkzd@slm.duckdns.org> <CAJuCfpHprdJWpR_HPSVm6DFEOJj4RWmWC10=ZdGYF_JFAvV+_g@mail.gmail.com>
-In-Reply-To: <CAJuCfpHprdJWpR_HPSVm6DFEOJj4RWmWC10=ZdGYF_JFAvV+_g@mail.gmail.com>
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Mon, 4 Oct 2021 10:23:59 -0700
-Message-ID: <CALAqxLV-tOgBMAWd36sg+bh3s0XXqKWD+P-CYgVXf7Won4auAA@mail.gmail.com>
-Subject: Re: [PATCH 1/1] cgroup-v1: Grant CAP_SYS_NICE holders permission to
- move tasks between cgroups
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     Tejun Heo <tj@kernel.org>, Lee Jones <lee.jones@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        cgroups mailinglist <cgroups@vger.kernel.org>,
-        Wei Wang <wvw@google.com>
+References: <20210929235936.2859271-1-shakeelb@google.com> <YVszNI97NAAYpHpm@slm.duckdns.org>
+In-Reply-To: <YVszNI97NAAYpHpm@slm.duckdns.org>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Mon, 4 Oct 2021 10:25:12 -0700
+Message-ID: <CALvZod5OKz=7pFpxCt1CONPyJO4wR5t+PH0nzdbFBT1SYpjrsg@mail.gmail.com>
+Subject: Re: [PATCH] cgroup: rstat: optimize flush through speculative test
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        Cgroups <cgroups@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 4, 2021 at 9:57 AM Suren Baghdasaryan <surenb@google.com> wrote:
-> On Mon, Oct 4, 2021 at 9:41 AM Tejun Heo <tj@kernel.org> wrote:
-> > On Thu, Sep 30, 2021 at 02:20:53PM -0700, Suren Baghdasaryan wrote:
-> > > Some of the controllers are moving to cgroup v2 but not all of them
-> > > are there yet. For example, there are still some issues with moving
-> > > the cpu controller to v2 which I believe were discussed during Android
-> > > Microconference at LPC 2021.
-> >
-> > Care to provide a summary?
+On Mon, Oct 4, 2021 at 10:00 AM Tejun Heo <tj@kernel.org> wrote:
 >
-> Unfortunately I could not be present at LPC this year but Wei I
-> believe was the presenter (CC'ing him).
-> Wei, could you please summarize the issues with moving the cpu
-> controller to cgroups v2?
+> Hello, Shakeel.
+>
+> On Wed, Sep 29, 2021 at 04:59:36PM -0700, Shakeel Butt wrote:
+> > Currently cgroup_rstat_updated() has a speculative already-on-list test
+> > to check if the given cgroup is already part of the rstat update tree.
+> > This helps in reducing the contention on the rstat cpu lock. This patch
+> > adds the similar speculative not-on-list test on the rstat flush
+> > codepath.
+> >
+> > Recently the commit aa48e47e3906 ("memcg: infrastructure to flush memcg
+> > stats") added periodic rstat flush. On a large system which is not much
+> > busy, most of the per-cpu rstat tree would be empty. So, the speculative
+> > not-on-list test helps in eliminating unnecessary work and potentially
+> > reducing contention on the rstat cpu lock. Please note this might
+> > introduce temporary inaccuracy but with the frequent and periodic flush
+> > this would not be an issue.
+> >
+> > To evaluate the impact of this patch, an 8 GiB tmpfs file is created on
+> > a system with swap-on-zram and the file was pushed to swap through
+> > memory.force_empty interface. On reading the whole file, the memcg stat
+> > flush in the refault code path is triggered. With this patch, we
+> > observed 38% reduction in the read time of 8 GiB file.
+>
+> The patch looks fine to me but that's a lot of reduction in read time. Can
+> you elaborate a bit on why this makes such a huge difference? Who's hitting
+> on that lock so hard?
+>
 
-Tejun: We were sorry you didn't join as we were hoping for your
-attendance for the discussion!
+It was actually due to machine size. I ran a single threaded workload
+without any interference on a 112 cpus machine. So, most of the time
+the flush was acquiring and releasing the per-cpu rstat lock for empty
+trees.
 
-For reference, here's the video of the session:
-  https://www.youtube.com/watch?v=O_lCFGinFPM&t=2941s
-
-And continued discussion from the BoF:
-  https://youtu.be/i5BdYn6SNQc?t=703
-
-But Wei can still chime in with a more focused summary, maybe?
-
-
-> Also CC'ing John, who I believe tried to upstream this patch before.
-
-We sort of went in a big circle of creating a config time option w/
-CAP_SYS_NICE, then a new CAP_CGROUP_MIGRATE then switching to
-CAP_SYS_RESOURCE and then back to CAP_CGROUP_MIGRATE, and when that
-was panned I gave up and we kept the small patch in the Android tree
-that uses CAP_SYS_NICE.
-
-Links to previous attempts & discussion:
-v1: https://lore.kernel.org/lkml/1475556090-6278-1-git-send-email-john.stultz@linaro.org/#t
-v2: https://lore.kernel.org/lkml/1476743724-9104-1-git-send-email-john.stultz@linaro.org/
-v4: https://lore.kernel.org/lkml/1478647728-30357-1-git-send-email-john.stultz@linaro.org/
-v5: https://lore.kernel.org/lkml/1481593143-18756-1-git-send-email-john.stultz@linaro.org/
-
-thanks
--john
+Shakeel
