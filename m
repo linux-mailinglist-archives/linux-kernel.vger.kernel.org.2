@@ -2,32 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 062BC420E62
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:23:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D07AC420E73
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:23:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236614AbhJDNYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 09:24:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36558 "EHLO mail.kernel.org"
+        id S236665AbhJDNZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:25:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37266 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236776AbhJDNXD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 09:23:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 288C360F9C;
-        Mon,  4 Oct 2021 13:09:56 +0000 (UTC)
+        id S236873AbhJDNX3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:23:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C12C61BF3;
+        Mon,  4 Oct 2021 13:10:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352996;
-        bh=32F6x39IuP+xV2Coi3AfhZCg5iYWqEXEbn+cTJ3EV5g=;
+        s=korg; t=1633353012;
+        bh=r7XJEaL/8RlBaOqF5DRbSvJHEOIGr8i+rARVrtVS91k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bCYqBjqAAOqac86qZtkTL9uplmIUtjB3v4X2CX7ncVcouAeK+jfVshzOwMJlq/ioA
-         erUP+1/T9ItaQEuXX7CNdTbjcIQioEelXC5hVxQ60jaPjyUPvabZ4nZkZt7ZNUJpDG
-         XyAjYoyLuMQ41oozUE/T+j4JPSCPqTwosxII6+TM=
+        b=dIvRfw7cqd0vOrtzvdGlfWAffMvoENDjJdENiYjhsGLvoiQK9Yh0PlEeTzU4nbDzs
+         83kCKiES5Dz3h+GCTcZJAa/8ZpdpGNutTSRDviP9Lk+O3DQD0WoHtnq/DgvABJFxWG
+         3LDxc3XxVml7Sc3gDOBeg7fzoi/zgafbg9x8Ynes=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sean Young <sean@mess.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 5.10 21/93] media: ir_toy: prevent device from hanging during transmit
-Date:   Mon,  4 Oct 2021 14:52:19 +0200
-Message-Id: <20211004125035.277224706@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+6bb0528b13611047209c@syzkaller.appspotmail.com,
+        Hao Sun <sunhao.th@gmail.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Subject: [PATCH 5.10 22/93] RDMA/cma: Do not change route.addr.src_addr.ss_family
+Date:   Mon,  4 Oct 2021 14:52:20 +0200
+Message-Id: <20211004125035.308810861@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211004125034.579439135@linuxfoundation.org>
 References: <20211004125034.579439135@linuxfoundation.org>
@@ -39,65 +42,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Young <sean@mess.org>
+From: Jason Gunthorpe <jgg@nvidia.com>
 
-commit f0c15b360fb65ee39849afe987c16eb3d0175d0d upstream.
+commit bc0bdc5afaa740d782fbf936aaeebd65e5c2921d upstream.
 
-If the IR Toy is receiving IR while a transmit is done, it may end up
-hanging. We can prevent this from happening by re-entering sample mode
-just before issuing the transmit command.
+If the state is not idle then rdma_bind_addr() will immediately fail and
+no change to global state should happen.
 
-Link: https://github.com/bengtmartensson/HarcHardware/discussions/25
+For instance if the state is already RDMA_CM_LISTEN then this will corrupt
+the src_addr and would cause the test in cma_cancel_operation():
 
+		if (cma_any_addr(cma_src_addr(id_priv)) && !id_priv->cma_dev)
+
+To view a mangled src_addr, eg with a IPv6 loopback address but an IPv4
+family, failing the test.
+
+This would manifest as this trace from syzkaller:
+
+  BUG: KASAN: use-after-free in __list_add_valid+0x93/0xa0 lib/list_debug.c:26
+  Read of size 8 at addr ffff8881546491e0 by task syz-executor.1/32204
+
+  CPU: 1 PID: 32204 Comm: syz-executor.1 Not tainted 5.12.0-rc8-syzkaller #0
+  Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+  Call Trace:
+   __dump_stack lib/dump_stack.c:79 [inline]
+   dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+   print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:232
+   __kasan_report mm/kasan/report.c:399 [inline]
+   kasan_report.cold+0x7c/0xd8 mm/kasan/report.c:416
+   __list_add_valid+0x93/0xa0 lib/list_debug.c:26
+   __list_add include/linux/list.h:67 [inline]
+   list_add_tail include/linux/list.h:100 [inline]
+   cma_listen_on_all drivers/infiniband/core/cma.c:2557 [inline]
+   rdma_listen+0x787/0xe00 drivers/infiniband/core/cma.c:3751
+   ucma_listen+0x16a/0x210 drivers/infiniband/core/ucma.c:1102
+   ucma_write+0x259/0x350 drivers/infiniband/core/ucma.c:1732
+   vfs_write+0x28e/0xa30 fs/read_write.c:603
+   ksys_write+0x1ee/0x250 fs/read_write.c:658
+   do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+   entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+Which is indicating that an rdma_id_private was destroyed without doing
+cma_cancel_listens().
+
+Instead of trying to re-use the src_addr memory to indirectly create an
+any address build one explicitly on the stack and bind to that as any
+other normal flow would do.
+
+Link: https://lore.kernel.org/r/0-v1-9fbb33f5e201+2a-cma_listen_jgg@nvidia.com
 Cc: stable@vger.kernel.org
-Signed-off-by: Sean Young <sean@mess.org>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Fixes: 732d41c545bb ("RDMA/cma: Make the locking for automatic state transition more clear")
+Reported-by: syzbot+6bb0528b13611047209c@syzkaller.appspotmail.com
+Tested-by: Hao Sun <sunhao.th@gmail.com>
+Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/media/rc/ir_toy.c |   21 ++++++++++++++++++++-
- 1 file changed, 20 insertions(+), 1 deletion(-)
+ drivers/infiniband/core/cma.c |    8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
---- a/drivers/media/rc/ir_toy.c
-+++ b/drivers/media/rc/ir_toy.c
-@@ -24,6 +24,7 @@ static const u8 COMMAND_VERSION[] = { 'v
- // End transmit and repeat reset command so we exit sump mode
- static const u8 COMMAND_RESET[] = { 0xff, 0xff, 0, 0, 0, 0, 0 };
- static const u8 COMMAND_SMODE_ENTER[] = { 's' };
-+static const u8 COMMAND_SMODE_EXIT[] = { 0 };
- static const u8 COMMAND_TXSTART[] = { 0x26, 0x24, 0x25, 0x03 };
+--- a/drivers/infiniband/core/cma.c
++++ b/drivers/infiniband/core/cma.c
+@@ -3732,9 +3732,13 @@ int rdma_listen(struct rdma_cm_id *id, i
+ 	int ret;
  
- #define REPLY_XMITCOUNT 't'
-@@ -309,12 +310,30 @@ static int irtoy_tx(struct rc_dev *rc, u
- 		buf[i] = cpu_to_be16(v);
- 	}
- 
--	buf[count] = cpu_to_be16(0xffff);
-+	buf[count] = 0xffff;
- 
- 	irtoy->tx_buf = buf;
- 	irtoy->tx_len = size;
- 	irtoy->emitted = 0;
- 
-+	// There is an issue where if the unit is receiving IR while the
-+	// first TXSTART command is sent, the device might end up hanging
-+	// with its led on. It does not respond to any command when this
-+	// happens. To work around this, re-enter sample mode.
-+	err = irtoy_command(irtoy, COMMAND_SMODE_EXIT,
-+			    sizeof(COMMAND_SMODE_EXIT), STATE_RESET);
-+	if (err) {
-+		dev_err(irtoy->dev, "exit sample mode: %d\n", err);
-+		return err;
-+	}
+ 	if (!cma_comp_exch(id_priv, RDMA_CM_ADDR_BOUND, RDMA_CM_LISTEN)) {
++		struct sockaddr_in any_in = {
++			.sin_family = AF_INET,
++			.sin_addr.s_addr = htonl(INADDR_ANY),
++		};
 +
-+	err = irtoy_command(irtoy, COMMAND_SMODE_ENTER,
-+			    sizeof(COMMAND_SMODE_ENTER), STATE_COMMAND);
-+	if (err) {
-+		dev_err(irtoy->dev, "enter sample mode: %d\n", err);
-+		return err;
-+	}
-+
- 	err = irtoy_command(irtoy, COMMAND_TXSTART, sizeof(COMMAND_TXSTART),
- 			    STATE_TX);
- 	kfree(buf);
+ 		/* For a well behaved ULP state will be RDMA_CM_IDLE */
+-		id->route.addr.src_addr.ss_family = AF_INET;
+-		ret = rdma_bind_addr(id, cma_src_addr(id_priv));
++		ret = rdma_bind_addr(id, (struct sockaddr *)&any_in);
+ 		if (ret)
+ 			return ret;
+ 		if (WARN_ON(!cma_comp_exch(id_priv, RDMA_CM_ADDR_BOUND,
 
 
