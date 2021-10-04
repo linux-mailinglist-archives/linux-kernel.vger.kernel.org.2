@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 141F1420B90
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 14:56:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C840C420FA3
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 15:34:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234112AbhJDM6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 08:58:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58620 "EHLO mail.kernel.org"
+        id S237721AbhJDNgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 09:36:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47096 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233895AbhJDM5W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 08:57:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D884D611CA;
-        Mon,  4 Oct 2021 12:55:32 +0000 (UTC)
+        id S237787AbhJDNe5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 09:34:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 23F9A61B45;
+        Mon,  4 Oct 2021 13:15:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633352133;
-        bh=N/YiuC8gDkYC3NlJtoU7QQS35Ya/8ant7MnCQhzfkfY=;
+        s=korg; t=1633353340;
+        bh=7SnyddLCr/GWPeUpFNCi4ClkEwx3EauQ2ygNGZESIIg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oA6evFIdE+84GUPo8qh7sgGMMC29peJDnysw2s/j9bQrcp57xbqFt37LM76+7MwJD
-         z9G40mCbyXALzr6pkpmZ5Jq8AtWyTzb4cGj7WL3oaJEdldv654SgxnsgTP+5p+Aohi
-         BEIEeOLOpy3+tAyLriwksjpLXvPXooii+KgoEHPI=
+        b=Tw00qvuhbbJn32POOZRyZhXM7G63TuoHFTVn+5cYBlBOFnMa4UsGR0kQtcXfBJst4
+         t9zN4nsHSP0xvtpOsQ3RqHgnE3IxsMUD22QsYridUwUPTZb+LLoPkhpa5q8SiosEgv
+         QasetHa9DqjFT8bX1POOZLuoXYDVniz/3kqvLqBg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Felicitas Hetzelt <felicitashetzelt@gmail.com>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        stable@vger.kernel.org, Chih-Kang Chang <gary.chang@realtek.com>,
+        Zong-Zhe Yang <kevin_yang@realtek.com>,
+        Ping-Ke Shih <pkshih@realtek.com>,
+        Johannes Berg <johannes.berg@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 28/41] e100: fix length calculation in e100_get_regs_len
+Subject: [PATCH 5.14 089/172] mac80211: Fix ieee80211_amsdu_aggregate frag_tail bug
 Date:   Mon,  4 Oct 2021 14:52:19 +0200
-Message-Id: <20211004125027.470137447@linuxfoundation.org>
+Message-Id: <20211004125047.870621326@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211004125026.597501645@linuxfoundation.org>
-References: <20211004125026.597501645@linuxfoundation.org>
+In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
+References: <20211004125044.945314266@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,48 +42,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jacob Keller <jacob.e.keller@intel.com>
+From: Chih-Kang Chang <gary.chang@realtek.com>
 
-[ Upstream commit 4329c8dc110b25d5f04ed20c6821bb60deff279f ]
+[ Upstream commit fe94bac626d9c1c5bc98ab32707be8a9d7f8adba ]
 
-commit abf9b902059f ("e100: cleanup unneeded math") tried to simplify
-e100_get_regs_len and remove a double 'divide and then multiply'
-calculation that the e100_reg_regs_len function did.
+In ieee80211_amsdu_aggregate() set a pointer frag_tail point to the
+end of skb_shinfo(head)->frag_list, and use it to bind other skb in
+the end of this function. But when execute ieee80211_amsdu_aggregate()
+->ieee80211_amsdu_realloc_pad()->pskb_expand_head(), the address of
+skb_shinfo(head)->frag_list will be changed. However, the
+ieee80211_amsdu_aggregate() not update frag_tail after call
+pskb_expand_head(). That will cause the second skb can't bind to the
+head skb appropriately.So we update the address of frag_tail to fix it.
 
-This change broke the size calculation entirely as it failed to account
-for the fact that the numbered registers are actually 4 bytes wide and
-not 1 byte. This resulted in a significant under allocation of the
-register buffer used by e100_get_regs.
-
-Fix this by properly multiplying the register count by u32 first before
-adding the size of the dump buffer.
-
-Fixes: abf9b902059f ("e100: cleanup unneeded math")
-Reported-by: Felicitas Hetzelt <felicitashetzelt@gmail.com>
-Signed-off-by: Jacob Keller <jacob.e.keller@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Fixes: 6e0456b54545 ("mac80211: add A-MSDU tx support")
+Signed-off-by: Chih-Kang Chang <gary.chang@realtek.com>
+Signed-off-by: Zong-Zhe Yang <kevin_yang@realtek.com>
+Signed-off-by: Ping-Ke Shih <pkshih@realtek.com>
+Link: https://lore.kernel.org/r/20210830073240.12736-1-pkshih@realtek.com
+[reword comment]
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/e100.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ net/mac80211/tx.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/drivers/net/ethernet/intel/e100.c b/drivers/net/ethernet/intel/e100.c
-index 9035cb5fc70d..abb65ed9492b 100644
---- a/drivers/net/ethernet/intel/e100.c
-+++ b/drivers/net/ethernet/intel/e100.c
-@@ -2466,7 +2466,11 @@ static void e100_get_drvinfo(struct net_device *netdev,
- static int e100_get_regs_len(struct net_device *netdev)
- {
- 	struct nic *nic = netdev_priv(netdev);
--	return 1 + E100_PHY_REGS + sizeof(nic->mem->dump_buf);
-+
-+	/* We know the number of registers, and the size of the dump buffer.
-+	 * Calculate the total size in bytes.
-+	 */
-+	return (1 + E100_PHY_REGS) * sizeof(u32) + sizeof(nic->mem->dump_buf);
- }
+diff --git a/net/mac80211/tx.c b/net/mac80211/tx.c
+index fa09a369214d..0208f68af394 100644
+--- a/net/mac80211/tx.c
++++ b/net/mac80211/tx.c
+@@ -3380,6 +3380,14 @@ static bool ieee80211_amsdu_aggregate(struct ieee80211_sub_if_data *sdata,
+ 	if (!ieee80211_amsdu_prepare_head(sdata, fast_tx, head))
+ 		goto out;
  
- static void e100_get_regs(struct net_device *netdev,
++	/* If n == 2, the "while (*frag_tail)" loop above didn't execute
++	 * and  frag_tail should be &skb_shinfo(head)->frag_list.
++	 * However, ieee80211_amsdu_prepare_head() can reallocate it.
++	 * Reload frag_tail to have it pointing to the correct place.
++	 */
++	if (n == 2)
++		frag_tail = &skb_shinfo(head)->frag_list;
++
+ 	/*
+ 	 * Pad out the previous subframe to a multiple of 4 by adding the
+ 	 * padding to the next one, that's being added. Note that head->len
 -- 
 2.33.0
 
