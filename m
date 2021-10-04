@@ -2,135 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BA6B421624
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 20:12:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9BC842162A
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 20:13:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237860AbhJDSOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 14:14:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46924 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236050AbhJDSN6 (ORCPT
+        id S235723AbhJDSPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 14:15:31 -0400
+Received: from mail-oi1-f171.google.com ([209.85.167.171]:42951 "EHLO
+        mail-oi1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233226AbhJDSP3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 14:13:58 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDC85C061745;
-        Mon,  4 Oct 2021 11:12:09 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id 73so17380663qki.4;
-        Mon, 04 Oct 2021 11:12:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=+fT+aA8O5oRqS8Fx8O+K4w9xvhEfwcMTbFUqJDULxaY=;
-        b=cB8begJI5ATh6WUeF3PsZL0eN0zkI5dsdFYEZsxDXbahwFjHCE1LT8VFlsj9Lzs7/j
-         Jmu/pnTyPj5S+Fm/F9qYXTzyt8PT95g2kYwLN9j+Tyu+yiMElJlKLkLaso0lI5fd8zOQ
-         8aikJdx6bbwK0b4VlPhSQGhg3iUjzqBBi0LBltW4vu8eeDkG4nF6JyhWEyPQbE4QM4x6
-         e5iIa+gy3aim9dxo2/Lhxkkdm/9LBYhyL/YErgBSFkwgRcBPqEnGsPjCkdX4bTXXD6Am
-         uXRC8r/AvgiBFtEY8N7CPtTQmEtAR6muZNgeF1XFRg1hGD1UHOSUVA5Wk6j3ANGQ+glD
-         RaIQ==
+        Mon, 4 Oct 2021 14:15:29 -0400
+Received: by mail-oi1-f171.google.com with SMTP id x124so22729592oix.9;
+        Mon, 04 Oct 2021 11:13:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+fT+aA8O5oRqS8Fx8O+K4w9xvhEfwcMTbFUqJDULxaY=;
-        b=5fLsraFjhG1lwxIgZiT6OMdPZuSsZFMG6V9Fpvss3WHUzx1MkW0IAIV1njH8q5w+wW
-         h7kA1gtKm8nKS3R3Oxrluqpeg+2ixEc/mf1HDRirpf2DPHo6o/NPczJmkWhxn5OOAA0o
-         LgntKCnhtLyVX/fswc229A6aC3NvMSWJjmb0pxS2hl5c8O5IsH15dzkVOdZKewEj46WM
-         BfjDrZ2i3Y0gRl7xee7QYEY/zGDlBNtsCyPNX8wsFxA7sqqYuQMAPK9W/M3KgAv9+GXR
-         Ef2yNm8FuBtYAp3i05joTY+4+ROBjMxf4xuN64uTlw9Bi3wsmuzF9VrVsF4m8x3Yecpc
-         ho6g==
-X-Gm-Message-State: AOAM531teUz6KYVY3PT45BW5edOr1hXdfpFAD1Oh6VTFfBcs61eeiVaj
-        o0VQlTkC/+ulBB52nc2WIb4dRIbxPB/HwM2GLSo=
-X-Google-Smtp-Source: ABdhPJw+p5LDAu4EWLtXrEVmBgi6I2O8BSJ/cp3rVmaxsAJHduNSbNYqlpna5byopgrCWGY7tfR9Bg==
-X-Received: by 2002:a37:e14:: with SMTP id 20mr11478184qko.250.1633371128922;
-        Mon, 04 Oct 2021 11:12:08 -0700 (PDT)
-Received: from [192.168.4.191] (pool-72-82-21-11.prvdri.fios.verizon.net. [72.82.21.11])
-        by smtp.gmail.com with ESMTPSA id g12sm9179316qtm.59.2021.10.04.11.12.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Oct 2021 11:12:08 -0700 (PDT)
-Subject: Re: [PATCH 1/2] Bluetooth: call sock_hold earlier in sco_conn_del
-To:     Marcel Holtmann <marcel@holtmann.org>
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        eric.dumazet@gmail.com
-References: <20210903031306.78292-1-desmondcheongzx@gmail.com>
- <20210903031306.78292-2-desmondcheongzx@gmail.com>
- <7AEB2618-111A-45F4-8C00-CF40FCBE92EC@holtmann.org>
-From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Message-ID: <1203215b-13bf-ce0c-ef23-5664544607a1@gmail.com>
-Date:   Mon, 4 Oct 2021 14:12:07 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7MmG9UNeaN9rX2Xe0UpnHbblcz68hViXX139qRa5xqs=;
+        b=CYMDUgQVW7UT0G1bG4WG1rXhKfJBnAgcadn8Vu1u+BcLNU7lrvQmKBdOACNByaPjNG
+         P8gDlGn+lGyXIR/fQgTVxQfQQ/J8ED6L23xq9uVlshYBP9aVKygbxKEw+gx0Pbzm21Sw
+         NuxiW1cfYFUejxt719WxOpSiDUXdpXkb7cAiiPL+PWIZqAVseYHWqx8/zW/Fz6A31iig
+         +dcKv4CJArG/gHwSSJb55UtxRqlVdr/5jV5iLuyKypvJglKutnChHl+N38Ps76gXu5ET
+         piItricQ+XmtiXzk5Zkn61kNQdu/jrlr1J/aBC4sVGeXE4aA+H9SBbiOLy0rnOS3ygG3
+         KB/w==
+X-Gm-Message-State: AOAM533FpsN/+55MoDx+J6TACs5a9rBRreNxynWfYJzrFdnu6ut9X1JQ
+        3YHqC7pgDE/9Ab+fqt+O8g==
+X-Google-Smtp-Source: ABdhPJx0ioUdg1qmUioj/6ORoTI6fqApCcPadwhZIZ/aH8TQKsWdiLD5MArO3D+E2krV4WhpTIUqEA==
+X-Received: by 2002:aca:1b09:: with SMTP id b9mr14672812oib.55.1633371220108;
+        Mon, 04 Oct 2021 11:13:40 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id d7sm2973690ooa.36.2021.10.04.11.13.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Oct 2021 11:13:39 -0700 (PDT)
+Received: (nullmailer pid 1588507 invoked by uid 1000);
+        Mon, 04 Oct 2021 18:13:38 -0000
+Date:   Mon, 4 Oct 2021 13:13:38 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Gavin Shan <gshan@redhat.com>
+Cc:     devicetree@vger.kernel.org, catalin.marinas@arm.com,
+        shan.gavin@gmail.com, will@kernel.org, rdunlap@infradead.org,
+        maz@kernel.org, linux-efi@vger.kernel.org,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] Documentation, dt, numa: Add note to empty NUMA
+ node
+Message-ID: <YVtEUpIFdOrIoH0B@robh.at.kernel.org>
+References: <20210927064119.127285-1-gshan@redhat.com>
+ <20210927064119.127285-2-gshan@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <7AEB2618-111A-45F4-8C00-CF40FCBE92EC@holtmann.org>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210927064119.127285-2-gshan@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marcel,
-
-On 10/9/21 3:36 am, Marcel Holtmann wrote:
-> Hi Desmond,
+On Mon, 27 Sep 2021 14:41:18 +0800, Gavin Shan wrote:
+> The empty memory nodes, where no memory resides in, are allowed.
+> The NUMA node IDs are still valid and parsed, but memory may be
+> added to them through hotplug afterwards. Currently, QEMU fails
+> to boot when multiple empty memory nodes are specified. It's
+> caused by device-tree population failure and duplicated memory
+> node names.
 > 
->> In sco_conn_del, conn->sk is read while holding on to the
->> sco_conn.lock to avoid races with a socket that could be released
->> concurrently.
->>
->> However, in between unlocking sco_conn.lock and calling sock_hold,
->> it's possible for the socket to be freed, which would cause a
->> use-after-free write when sock_hold is finally called.
->>
->> To fix this, the reference count of the socket should be increased
->> while the sco_conn.lock is still held.
->>
->> Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
->> ---
->> net/bluetooth/sco.c | 3 ++-
->> 1 file changed, 2 insertions(+), 1 deletion(-)
->>
->> diff --git a/net/bluetooth/sco.c b/net/bluetooth/sco.c
->> index b62c91c627e2..4a057f99b60a 100644
->> --- a/net/bluetooth/sco.c
->> +++ b/net/bluetooth/sco.c
->> @@ -187,10 +187,11 @@ static void sco_conn_del(struct hci_conn *hcon, int err)
->> 	/* Kill socket */
->> 	sco_conn_lock(conn);
->> 	sk = conn->sk;
+> The device-tree specification doesn't provide how empty NUMA
+> nodes are handled. Besides, I finds difficulty to get where
+> this case is documented. So lets add a section for empty memory
+> nodes to cover it in NUMA binding document.
 > 
-> please add a comment here on why we are doing it.
+> Signed-off-by: Gavin Shan <gshan@redhat.com>
+> ---
+>  Documentation/devicetree/bindings/numa.txt | 46 +++++++++++++++++++++-
+>  1 file changed, 45 insertions(+), 1 deletion(-)
 > 
 
-So sorry for the very delayed response. I was looking through old email 
-threads to check if my recently resent patch was still necessary, and 
-just realized I missed this email.
-
-This patch was merged into the bluetooth-next tree before your feedback 
-came in. Would you still like me to write a separate patch to add the 
-requested comment?
-
-Best wishes,
-Desmond
-
->> +	if (sk)
->> +		sock_hold(sk);
->> 	sco_conn_unlock(conn);
->>
->> 	if (sk) {
->> -		sock_hold(sk);
->> 		lock_sock(sk);
->> 		sco_sock_clear_timer(sk);
->> 		sco_chan_del(sk, err);
-> 
-> Regards
-> 
-> Marcel
-> 
+Applied, thanks!
