@@ -2,63 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08909421488
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 18:56:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 319C442148B
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 18:56:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237765AbhJDQ5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 12:57:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58340 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237718AbhJDQ5p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 12:57:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 83BD7613D5;
-        Mon,  4 Oct 2021 16:55:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633366556;
-        bh=t2FGgy/ZmUcae32+QHqHrM+MJ8eOfljtdVyackkRL6k=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=aMNgWq6sVIckArpn1lQ9YOcXn5gAChBF8I+s2HY81nvV+JOM/SKBSygOCJXzNJ8kI
-         bpVHfU/q0L0ohcwnrjKxdCYJIA/UMiD9CQDRfe4TD4mGESO/XIqeCAHoB+WJPKgjjn
-         uZ0br3mulMKIlMXOYDKxpB/lNWtCNC6rrz7EJ2aWm3Mx+kAc1gLXjr1/CudeoWBAi3
-         cNL/E8tMrJTbM3zVkWQbya6YeVckYa2cB1oWfsrPHOmV6Yfs46DFqzvb2Hn2bprgmu
-         rxJnCW2GG2qX8nOfkOtgvCMj3o1r5w8Vmi7jasiwKS20jOXlS8KnwTjjizPeduBWad
-         KuieimdtEKVlA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 7BD8C60971;
-        Mon,  4 Oct 2021 16:55:56 +0000 (UTC)
-Subject: Re: [GIT PULL for v5.15-rc5] media fixes
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20211004175922.39809118@coco.lan>
-References: <20211004175922.39809118@coco.lan>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20211004175922.39809118@coco.lan>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/mchehab/linux-media tags/media/v5.15-3
-X-PR-Tracked-Commit-Id: 206704a1fe0bcaaa036d3e90358bb168fac8bea1
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 84b3e42564accd94c2680e3ba42717c32c8b5fc4
-Message-Id: <163336655650.28831.1943845365861034110.pr-tracker-bot@kernel.org>
-Date:   Mon, 04 Oct 2021 16:55:56 +0000
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>
+        id S237807AbhJDQ6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 12:58:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56566 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236888AbhJDQ6d (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 12:58:33 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DD3DC061745;
+        Mon,  4 Oct 2021 09:56:44 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id y26so74796670lfa.11;
+        Mon, 04 Oct 2021 09:56:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=cReZXvdMaLPxxkxwUTgOEpzK4V0huMHeXvJZLCF/y34=;
+        b=KMfb+TS0Y+2s0MvIHw2iH2i8+wp1dpTMJrVh+eVU8gOf88gDBk1QlHbBmdrTqqd+BZ
+         Ok2JS5yG87BTKUF7HJM/t5ULmU3xao83Vm3T5/Q4ct8m3YtdMbLlzkrXfTDmAgU/xeR5
+         wrpzXLv3efk9NTl9aHHs6eFSCCzjfKPmXn3fA2QiUKIJdiIV8G6H4N9zd3bYIBl1Rl9b
+         6bo6JwmFxV/rIdC2WjazvvZ+TMHqkNf9gmuQBlSPBIgggq1wn0X7DXKBw01N1GCFhToR
+         WYeXhyUQtNL++GrAn3WLH1JNO81094QVY7oxuE0s9IJv5If/7DGybE30sZCjztgvOMSX
+         RjNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=cReZXvdMaLPxxkxwUTgOEpzK4V0huMHeXvJZLCF/y34=;
+        b=rgHD2cPQ03Ahd8ZOdMKwF3oneMR/kM/SeZQGfb/G4YgquNZeQ1fHpNmg2nqmyqtZHJ
+         KoFbv8RNfymGPwY/Q8p6yCy7+2SrYFAxotljwUzc/w6NmmdJyBTopk9Z9o0dUcs47s1X
+         4zKQBSP8meHA/o5EAPm+jv1F7Bw++kyXam6vtwaNQryDzpJ5TTZHKxiXDvIfkZwtLK0O
+         itz0OypRAD0DJf/LytgPfaFWC7Ejf0lqvmCzLiL2JohACjHbG4kp4c4ezCGZVEbBQLrn
+         vbrP9+CxDydaQO+wFsZ16aVuwEQUirtu1bQc2VeEECLtWolXGnPQryOteYegkbrcDLrz
+         nHKg==
+X-Gm-Message-State: AOAM531NgYS4MVXDhd5FP0wxJli2jWrYu8DM535KKnwYsTOmGqWHrtWZ
+        N3dEQlUWszq7LJ+l/+7NrSYjAfMK1OI=
+X-Google-Smtp-Source: ABdhPJxWC2HN3ttLQ1P+heXRUCye01FLfaz3AROBpfjCTKhYBZjm3G6YsDsUwr5/CKUixmHiparpLA==
+X-Received: by 2002:a05:6512:12c6:: with SMTP id p6mr15386474lfg.271.1633366602778;
+        Mon, 04 Oct 2021 09:56:42 -0700 (PDT)
+Received: from [192.168.2.145] (79-139-163-57.dynamic.spd-mgts.ru. [79.139.163.57])
+        by smtp.googlemail.com with ESMTPSA id k2sm1621088ljo.69.2021.10.04.09.56.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Oct 2021 09:56:42 -0700 (PDT)
+Subject: Re: [PATCH v3 2/4] dt-bindings: memory: tegra20: emc: Document new
+ LPDDR2 sub-node
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+References: <20211003013235.2357-1-digetx@gmail.com>
+ <20211003013235.2357-3-digetx@gmail.com>
+ <a3713f62-0ece-5ab2-f55a-3d614ce01c00@canonical.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <184e4ce9-7beb-19ff-1562-453603eb7cce@gmail.com>
+Date:   Mon, 4 Oct 2021 19:56:41 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <a3713f62-0ece-5ab2-f55a-3d614ce01c00@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 4 Oct 2021 17:59:22 +0200:
+04.10.2021 11:37, Krzysztof Kozlowski пишет:
+> On 03/10/2021 03:32, Dmitry Osipenko wrote:
+>> Some Tegra20 boards don't have RAM code stored in NVMEM, which is used for
+>> the memory chip identification and the identity information should be read
+>> out from LPDDR2 chip in this case. Document new sub-node containing generic
+>> LPDDR2 properties that will be used for the memory chip identification if
+>> RAM code isn't available. The identification is done by reading out memory
+>> configuration values from generic LPDDR2 mode registers of SDRAM chip and
+>> comparing them with the values of device-tree sub-node's.
+>>
+>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>> ---
+>>  .../memory-controllers/nvidia,tegra20-emc.yaml  | 17 ++++++++++++++---
+>>  1 file changed, 14 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.yaml b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.yaml
+>> index cac6842dc8f1..65f7c3898ac4 100644
+>> --- a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.yaml
+>> +++ b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.yaml
+>> @@ -164,13 +164,14 @@ patternProperties:
+>>        "#size-cells":
+>>          const: 0
+>>  
+>> +      lpddr2-configuration:
+> 
+> Nodes should be named generic, so just lpddr2?
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/mchehab/linux-media tags/media/v5.15-3
+Yes
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/84b3e42564accd94c2680e3ba42717c32c8b5fc4
+>> +        $ref: "jedec,lpddr2.yaml#"
+>> +        type: object
+>> +
+>>      patternProperties:
+>>        "^emc-table@[0-9]+$":
+>>          $ref: "#/$defs/emc-table"
+>>  
+>> -    required:
+>> -      - nvidia,ram-code
+> 
+> Isn't lpddr2-configuration required in such case? If not, probably you
+> want either this or that (oneOf like in reserved-memory.yaml).
 
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Thanks, oneOf will work.
