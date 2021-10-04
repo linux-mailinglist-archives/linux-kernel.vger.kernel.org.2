@@ -2,85 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA2954211F1
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 16:49:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 766C54211F5
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Oct 2021 16:49:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235135AbhJDOu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 10:50:56 -0400
-Received: from foss.arm.com ([217.140.110.172]:45680 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235150AbhJDOun (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 10:50:43 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BA8DDD6E;
-        Mon,  4 Oct 2021 07:48:54 -0700 (PDT)
-Received: from [10.57.22.120] (unknown [10.57.22.120])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F33813F70D;
-        Mon,  4 Oct 2021 07:48:52 -0700 (PDT)
-Subject: Re: [PATCH 0/5] iommu: Some IOVA code reorganisation
-To:     Will Deacon <will@kernel.org>, John Garry <john.garry@huawei.com>
-Cc:     joro@8bytes.org, mst@redhat.com, jasowang@redhat.com,
-        xieyongji@bytedance.com, linux-kernel@vger.kernel.org,
-        iommu@lists.linux-foundation.org,
-        virtualization@lists.linux-foundation.org, linuxarm@huawei.com,
-        thunder.leizhen@huawei.com, baolu.lu@linux.intel.com
-References: <1632477717-5254-1-git-send-email-john.garry@huawei.com>
- <20211004114418.GC27373@willie-the-truck>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <87b782d7-339a-fcd0-8fae-659e2d9da078@arm.com>
-Date:   Mon, 4 Oct 2021 15:48:46 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S235145AbhJDOv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 10:51:26 -0400
+Received: from mail-oo1-f48.google.com ([209.85.161.48]:40635 "EHLO
+        mail-oo1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233295AbhJDOvZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 10:51:25 -0400
+Received: by mail-oo1-f48.google.com with SMTP id j11-20020a4a92cb000000b002902ae8cb10so5418464ooh.7;
+        Mon, 04 Oct 2021 07:49:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zqTBWhIGTkge588tlOlIrfK3r/w7kMo+9XK0mXqjZqQ=;
+        b=bwyYgED23rBoIB/Z7AIzqpXzmH8UrYBikeXvbUiRohrpKGAU3crGBbqu4pEpERh3RY
+         1Xi+8kan1k+j2pcfYinvgfZhLiSC7bQpW7mG+u7LUP3BvnPaib2/mzcy8Uc1Hmu2FU9C
+         lGrsW8ItTpXg43OpEuhQD7ZPKtI4/0z955NYYHoy/EQWuUzeb3WUWkTIlifNSs1d6jH8
+         fgFimQjvoAZikYrI4bEYXpfSSVC+Ry2X0qkOKKRGs5oaJlqyV9NJTtqUpgUAx3C2rAnH
+         JHe77Nw7WZ47dLnOH7w/UKFrZB+QoJvDStL0j2/KELyqTiDRSgY+IMuqMa15ecRnYsuj
+         M7zw==
+X-Gm-Message-State: AOAM5334wf0BOVa0kagGzGuBf7q470uvQCIih6F3cm+/RRo4MIcZxV06
+        0FS9eJFxj895eg5HsA6Hag==
+X-Google-Smtp-Source: ABdhPJzXy7KgLng3agv3eJiTS+0A271mqQdfMvGbN+PFcw6VwIunXw/BAyiUhYdaWCEr1vFZ7jM78g==
+X-Received: by 2002:a4a:e292:: with SMTP id k18mr9320265oot.80.1633358976337;
+        Mon, 04 Oct 2021 07:49:36 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id o8sm2790157oiw.39.2021.10.04.07.49.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Oct 2021 07:49:35 -0700 (PDT)
+Received: (nullmailer pid 1275157 invoked by uid 1000);
+        Mon, 04 Oct 2021 14:49:34 -0000
+Date:   Mon, 4 Oct 2021 09:49:34 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     linux-clk@vger.kernel.org,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org
+Subject: Re: [PATCH v2 09/10] dt-bindings: mfd: samsung,s5m8767: convert to
+ dtschema
+Message-ID: <YVsUfubIH+p5ZRdu@robh.at.kernel.org>
+References: <20211001094106.52412-1-krzysztof.kozlowski@canonical.com>
+ <20211001094106.52412-10-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
-In-Reply-To: <20211004114418.GC27373@willie-the-truck>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211001094106.52412-10-krzysztof.kozlowski@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-10-04 12:44, Will Deacon wrote:
-> On Fri, Sep 24, 2021 at 06:01:52PM +0800, John Garry wrote:
->> The IOVA domain structure is a bit overloaded, holding:
->> - IOVA tree management
->> - FQ control
->> - IOVA rcache memories
->>
->> Indeed only a couple of IOVA users use the rcache, and only dma-iommu.c
->> uses the FQ feature.
->>
->> This series separates out that structure. In addition, it moves the FQ
->> code into dma-iommu.c . This is not strictly necessary, but it does make
->> it easier for the FQ domain lookup the rcache domain.
->>
->> The rcache code stays where it is, as it may be reworked in future, so
->> there is not much point in relocating and then discarding.
->>
->> This topic was initially discussed and suggested (I think) by Robin here:
->> https://lore.kernel.org/linux-iommu/1d06eda1-9961-d023-f5e7-fe87e768f067@arm.com/
+On Fri, 01 Oct 2021 11:41:05 +0200, Krzysztof Kozlowski wrote:
+> Convert the MFD part of Samsung S5M8767 PMIC to DT schema format.
+> Previously the bindings were mostly in mfd/samsung,sec-core.txt.
 > 
-> It would be useful to have Robin's Ack on patches 2-4. The implementation
-> looks straightforward to me, but the thread above isn't very clear about
-> what is being suggested.
+> Since all of bindings for Samsung S2M and S5M family of PMICs were
+> converted from mfd/samsung,sec-core.txt to respective dtschema file,
+> remove the former one.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> ---
+>  .../bindings/mfd/samsung,s5m8767.yaml         | 269 ++++++++++++++++++
+>  .../bindings/mfd/samsung,sec-core.txt         |  86 ------
+>  MAINTAINERS                                   |   2 +-
+>  3 files changed, 270 insertions(+), 87 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/mfd/samsung,s5m8767.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/mfd/samsung,sec-core.txt
+> 
 
-FWIW I actually got about half-way through writing my own equivalent of 
-patches 2-3, except tackling it from the other direction - simplifying 
-the FQ code *before* moving whatever was left to iommu-dma, then I got 
-side-tracked trying to make io-pgtable use that freelist properly, and 
-then I've been on holiday the last 2 weeks. I've got other things to 
-catch up on first but I'll try to get to this later this week.
-
-> To play devil's advocate: there aren't many direct users of the iovad code:
-> either they'll die out entirely (and everybody will use the dma-iommu code)
-> and it's fine having the flush queue code where it is, or we'll get more
-> users and the likelihood of somebody else wanting flush queues increases.
-
-I think the FQ code is mostly just here as a historical artefact, since 
-the IOVA allocator was the only thing common to the Intel and AMD DMA 
-ops when the common FQ implementation was factored out of those, so 
-although it's essentially orthogonal it was still related enough that it 
-was an easy place to stick it.
-
-Cheers,
-Robin.
+Reviewed-by: Rob Herring <robh@kernel.org>
