@@ -2,502 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB318423018
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 20:35:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93058423026
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 20:40:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234500AbhJESh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 14:37:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47220 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232869AbhJEShX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 14:37:23 -0400
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B210FC061753
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 11:35:32 -0700 (PDT)
-Received: by mail-oi1-x235.google.com with SMTP id a3so515140oid.6
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 11:35:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=ORTclUchsvS7k6/jAdlyfi7grvQ4yAocOHDoxDuoPHQ=;
-        b=kJNiV+3Tm2p1qsshIHPk5Hyg4vm0I9SCZUipt1EXh+sEEDul11VuwlgekzqSXZevT+
-         /m59ZB1S8Bo7gcsgDpj+bZpunJwveRMaoDrPgOdxMZubf/r/Yc30Y0qhu0Obt3UX2pHa
-         XEirXS1Eub7IvMzpmtbBbQZJoCLaes+vkwKMk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=ORTclUchsvS7k6/jAdlyfi7grvQ4yAocOHDoxDuoPHQ=;
-        b=xy5E93mGNqBFiPV4OVDAjAvdBS/dTBrOuR8Kx5Ro4CFrouTg2Xgi+wwYaAGW4LYAlY
-         FAiWprtATA4lmcMZVx0Mx3CBhiECC/o/WNL5zbqHYj+eUzQE4KjIQXqWgwqOnwGtKI4w
-         5InOX71ez1MIxXNiBa5Tf8g8ngknSj58Khgsec7AUJIXtG6425Xu8PDHxgBf4B9cJ5Ya
-         4JwRn/1E/K1dZoMBbgdIH5Ie6pnCw/tQCQapG79+H2N94jVzzkJfqzDojE2IxnhJt/Kn
-         A/SgFM+jNMLFSfke45RplDjyqyKW1Nic4grvN3nwqWCWkq4qx9KDNVwtMxMpRlsMwFRm
-         xXJw==
-X-Gm-Message-State: AOAM533Ngy1q6M92T2mrCeolEIWFCA4DL0KrZBevR4++GXPZQdat/np1
-        N/vQS+s+nqjvT0NuXRUuSjJyfhr0/r0jy8YfE7vBGQ==
-X-Google-Smtp-Source: ABdhPJynlHW7Lbi4CzIY58fgSMUW6Hv67WLrspb3F68l1hD2SsTTUzpdpRQNnarX3siIBlEbGbEooigtKop4oem/dUc=
-X-Received: by 2002:aca:42d7:: with SMTP id p206mr3798607oia.32.1633458931950;
- Tue, 05 Oct 2021 11:35:31 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Tue, 5 Oct 2021 11:35:31 -0700
+        id S234873AbhJESl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 14:41:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47730 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229662AbhJESl4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 14:41:56 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CB861613D3;
+        Tue,  5 Oct 2021 18:40:03 +0000 (UTC)
+Date:   Tue, 5 Oct 2021 14:40:02 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Jan Engelhardt <jengelh@inai.de>
+Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Paul <paulmck@linux.vnet.ibm.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        "Joel Fernandes, Google" <joel@joelfernandes.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, rcu <rcu@vger.kernel.org>,
+        netfilter-devel <netfilter-devel@vger.kernel.org>,
+        coreteam <coreteam@netfilter.org>,
+        netdev <netdev@vger.kernel.org>
+Subject: Re: [RFC][PATCH] rcu: Use typeof(p) instead of typeof(*p) *
+Message-ID: <20211005144002.34008ea0@gandalf.local.home>
+In-Reply-To: <826o327o-3r46-3oop-r430-8qr0ssp537o3@vanv.qr>
+References: <20211005094728.203ecef2@gandalf.local.home>
+        <ef5b1654-1f75-da82-cab8-248319efbe3f@rasmusvillemoes.dk>
+        <639278914.2878.1633457192964.JavaMail.zimbra@efficios.com>
+        <826o327o-3r46-3oop-r430-8qr0ssp537o3@vanv.qr>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <1633060859-22969-4-git-send-email-skakit@codeaurora.org>
-References: <1633060859-22969-1-git-send-email-skakit@codeaurora.org> <1633060859-22969-4-git-send-email-skakit@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Tue, 5 Oct 2021 11:35:31 -0700
-Message-ID: <CAE-0n50HiFin8+ZmrbCoK=CCq4JM5JKGN=fTDrS9wGdTb8uzAQ@mail.gmail.com>
-Subject: Re: [PATCH V2 3/4] regulator: Add a regulator driver for the PM8008 PMIC
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Satya Priya <skakit@codeaurora.org>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Das Srinagesh <gurus@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mka@chromium.org,
-        collinsd@codeaurora.org, subbaram@codeaurora.org,
-        kgunda@codeaurora.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Satya Priya (2021-09-30 21:00:58)
-> diff --git a/drivers/regulator/qcom-pm8008-regulator.c b/drivers/regulator/qcom-pm8008-regulator.c
-> new file mode 100644
-> index 0000000..5dacaa4
-> --- /dev/null
-> +++ b/drivers/regulator/qcom-pm8008-regulator.c
-> @@ -0,0 +1,320 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/* Copyright (c) 2021, The Linux Foundation. All rights reserved. */
-> +
-> +#include <linux/delay.h>
-
-Is this include used?
-
-> +#include <linux/device.h>
-> +#include <linux/interrupt.h>
-> +#include <linux/module.h>
-> +#include <linux/mutex.h>
-
-Is this include used?
-
-> +#include <linux/of.h>
-> +#include <linux/of_device.h>
-> +#include <linux/of_irq.h>
-
-Is this include used?
-
-> +#include <linux/pm.h>
-
-Is this include used?
-
-> +#include <linux/platform_device.h>
-> +#include <linux/regmap.h>
-> +#include <linux/string.h>
-
-Is this include used? Probably should just be kernel.h?
-
-> +#include <linux/regulator/driver.h>
-> +#include <linux/regulator/machine.h>
-> +#include <linux/regulator/of_regulator.h>
-
-Is this include used?
-
-> +
-> +#define STARTUP_DELAY_USEC             20
-> +#define VSET_STEP_MV                   8
-> +#define VSET_STEP_UV                   (VSET_STEP_MV * 1000)
-> +
-> +#define LDO_ENABLE_REG(base)           (base + 0x46)
-> +#define ENABLE_BIT                     BIT(7)
-> +
-> +#define LDO_STATUS1_REG(base)          (base + 0x08)
-> +#define VREG_READY_BIT                 BIT(7)
-> +
-> +#define LDO_VSET_LB_REG(base)          (base + 0x40)
-> +
-> +#define LDO_STEPPER_CTL_REG(base)      (base + 0x3b)
-> +#define STEP_RATE_MASK                 GENMASK(1, 0)
-> +
-> +#define PM8008_MAX_LDO                 7
-
-Drop define.
-
-> +
-> +struct regulator_data {
-> +       char            *name;
-
-const?
-
-> +       char            *supply_name;
-
-const?
-
-> +       int             min_uv;
-> +       int             max_uv;
-> +       int             min_dropout_uv;
-> +};
-> +
-> +struct pm8008_regulator {
-> +       struct device           *dev;
-> +       struct regmap           *regmap;
-> +       struct regulator_desc   rdesc;
-> +       struct regulator_dev    *rdev;
-> +       struct device_node      *of_node;
-> +       u16                     base;
-> +       int                     step_rate;
-> +};
-> +
-> +static const struct regulator_data reg_data[PM8008_MAX_LDO] = {
-
-Use [] instead of PM8008_MAX_LDO.
-
-> +       /* name  parent      min_uv  max_uv  headroom_uv */
-> +       {"l1", "vdd_l1_l2",  528000, 1504000, 225000},
-> +       {"l2", "vdd_l1_l2",  528000, 1504000, 225000},
-> +       {"l3", "vdd_l3_l4", 1504000, 3400000, 200000},
-> +       {"l4", "vdd_l3_l4", 1504000, 3400000, 200000},
-> +       {"l5", "vdd_l5",    1504000, 3400000, 300000},
-> +       {"l6", "vdd_l6",    1504000, 3400000, 300000},
-> +       {"l7", "vdd_l7",    1504000, 3400000, 300000},
-
-Nitpick: Put a space after { and before } to match kernel style.
-
-> +};
-> +
-> +static int pm8008_read(struct regmap *regmap,  u16 reg, u8 *val, int count)
-> +{
-> +       int rc;
-> +
-> +       rc = regmap_bulk_read(regmap, reg, val, count);
-> +       if (rc < 0)
-> +               pr_err("failed to read %#x, rc=%d\n", reg, rc);
-> +
-> +       return rc;
-> +}
-> +
-> +static int pm8008_write(struct regmap *regmap, u16 reg, u8 *val, int count)
-> +{
-> +       int rc;
-> +
-> +       pr_debug("Writing [%*ph] from address %#x\n", count, val, reg);
-
-Don't we already have regmap debugging facilities for this? Why
-duplicate it in this driver?
-
-> +       rc = regmap_bulk_write(regmap, reg, val, count);
-> +       if (rc < 0)
-> +               pr_err("failed to write %#x rc=%d\n", reg, rc);
-> +
-> +       return rc;
-> +}
-
-The above two functions should just be inlined.
-
-> +
-> +static int pm8008_regulator_get_voltage(struct regulator_dev *rdev)
-> +{
-> +       struct pm8008_regulator *pm8008_reg = rdev_get_drvdata(rdev);
-> +       u8 vset_raw[2];
-> +       int rc;
-> +
-> +       rc = pm8008_read(pm8008_reg->regmap,
-> +                       LDO_VSET_LB_REG(pm8008_reg->base),
-> +                       vset_raw, 2);
-
-Can this be an __le16 mV?
-
-> +       if (rc < 0) {
-> +               dev_err(pm8008_reg->dev, "failed to read regulator voltage rc=%d\n", rc);
-> +               return rc;
-> +       }
-> +
-> +       return (vset_raw[1] << 8 | vset_raw[0]) * 1000;
-
-And then return le16_to_cpu(mV) * 1000;
-
-
-> +}
-> +
-> +static inline int pm8008_write_voltage(struct pm8008_regulator *pm8008_reg, int min_uv,
-> +                               int max_uv)
-> +{
-> +       int rc = 0, mv;
-> +       u8 vset_raw[2];
-> +
-> +       mv = DIV_ROUND_UP(min_uv, 1000);
-> +
-> +       /*
-> +        * Each LSB of regulator is 1mV and the voltage setpoint
-> +        * should be multiple of 8mV(step).
-> +        */
-> +       mv = DIV_ROUND_UP(mv, VSET_STEP_MV) * VSET_STEP_MV;
-> +       if (mv * 1000 > max_uv) {
-> +               dev_err(pm8008_reg->dev,
-> +                       "requested voltage (%d uV) above maximum limit (%d uV)\n",
-> +                               mv*1000, max_uv);
-> +               return -EINVAL;
-> +       }
-> +
-> +       vset_raw[0] = mv & 0xff;
-> +       vset_raw[1] = (mv & 0xff00) >> 8;
-
-Make vset_raw a u16?
-
-	vset = mv;
-
-And then use cpu_to_le16() below?
-
-> +       rc = pm8008_write(pm8008_reg->regmap, LDO_VSET_LB_REG(pm8008_reg->base),
-> +                       vset_raw, 2);
-
-	regmap_bulk_write(pm8008_reg->regmap, LDO_VSET_LB_REG(pm8008_reg->base),
-			  cpu_to_le16(vset), sizeof(vset));
-
-does it work?
-
-> +       if (rc < 0) {
-> +               dev_err(pm8008_reg->dev, "failed to write voltage rc=%d\n", rc);
-> +               return rc;
-> +       }
-> +
-> +       return 0;
-> +}
-> +
-> +static int pm8008_regulator_set_voltage_time(struct regulator_dev *rdev,
-> +                               int old_uV, int new_uv)
-> +{
-> +       struct pm8008_regulator *pm8008_reg = rdev_get_drvdata(rdev);
-> +
-> +       return DIV_ROUND_UP(abs(new_uv - old_uV), pm8008_reg->step_rate);
-> +}
-> +
-> +static int pm8008_regulator_set_voltage(struct regulator_dev *rdev,
-> +                               int min_uv, int max_uv, unsigned int *selector)
-> +{
-> +       struct pm8008_regulator *pm8008_reg = rdev_get_drvdata(rdev);
-> +       int rc;
-> +
-> +       rc = pm8008_write_voltage(pm8008_reg, min_uv, max_uv);
-> +       if (rc < 0)
-> +               return rc;
-> +
-> +       *selector = DIV_ROUND_UP(min_uv - pm8008_reg->rdesc.min_uV,
-> +                               VSET_STEP_UV);
-> +
-> +       dev_dbg(pm8008_reg->dev, "voltage set to %d\n", min_uv);
-> +       return 0;
-> +}
-> +
-> +static const struct regulator_ops pm8008_regulator_ops = {
-> +       .enable         = regulator_enable_regmap,
-
-Weird tabbing.
-
-> +       .disable                = regulator_disable_regmap,
-> +       .is_enabled             = regulator_is_enabled_regmap,
-> +       .set_voltage            = pm8008_regulator_set_voltage,
-> +       .get_voltage            = pm8008_regulator_get_voltage,
-> +       .list_voltage           = regulator_list_voltage_linear,
-> +       .set_voltage_time       = pm8008_regulator_set_voltage_time,
-> +};
-> +
-> +static int pm8008_register_ldo(struct pm8008_regulator *pm8008_reg,
-> +                                               const char *name)
-> +{
-> +       struct regulator_config reg_config = {};
-> +       struct regulator_init_data *init_data;
-> +       struct device *dev = pm8008_reg->dev;
-> +       struct device_node *reg_node = pm8008_reg->of_node;
-> +       int rc, i;
-> +       u32 base = 0;
-> +       u8 reg;
-> +
-> +       /* get regulator data */
-> +       for (i = 0; i < PM8008_MAX_LDO; i++)
-
-Use ARRAY_SIZE()
-
-> +               if (strstr(name, reg_data[i].name))
-> +                       break;
-> +
-> +       if (i == PM8008_MAX_LDO) {
-> +               dev_err(dev, "Invalid regulator name %s\n", name);
-> +               return -EINVAL;
-> +       }
-> +
-> +       rc = of_property_read_u32(reg_node, "reg", &base);
-> +       if (rc < 0) {
-> +               dev_err(dev, "%s: failed to get regulator base rc=%d\n", name, rc);
-> +               return rc;
-> +       }
-> +       pm8008_reg->base = base;
-> +
-> +       /* get slew rate */
-> +       rc = pm8008_read(pm8008_reg->regmap,
-> +                       LDO_STEPPER_CTL_REG(pm8008_reg->base), &reg, 1);
-> +       if (rc < 0) {
-> +               dev_err(dev, "%s: failed to read step rate configuration rc=%d\n",
-> +                               name, rc);
-> +               return rc;
-> +       }
-> +       pm8008_reg->step_rate = 38400 >> (reg & STEP_RATE_MASK);
-
-Where does 38400 come from? Is that a frequency?
-
-> +
-> +       init_data = of_get_regulator_init_data(dev, reg_node,
-> +                                               &pm8008_reg->rdesc);
-> +       if (init_data == NULL) {
-
-	if (!init_data)
-
-is more kernel style.
-
-> +               dev_err(dev, "%s: failed to get regulator data\n", name);
-> +               return -ENODATA;
-> +       }
-> +
-> +       init_data->constraints.input_uV = init_data->constraints.max_uV;
-> +       reg_config.dev = dev;
-> +       reg_config.init_data = init_data;
-> +       reg_config.driver_data = pm8008_reg;
-> +       reg_config.of_node = reg_node;
-> +
-> +       pm8008_reg->rdesc.type = REGULATOR_VOLTAGE;
-> +       pm8008_reg->rdesc.ops = &pm8008_regulator_ops;
-> +       pm8008_reg->rdesc.name = init_data->constraints.name;
-> +       pm8008_reg->rdesc.supply_name = reg_data[i].supply_name;
-> +       pm8008_reg->rdesc.uV_step = VSET_STEP_UV;
-> +       pm8008_reg->rdesc.min_uV = reg_data[i].min_uv;
-> +       pm8008_reg->rdesc.n_voltages
-> +               = ((reg_data[i].max_uv - reg_data[i].min_uv)
-> +                       / pm8008_reg->rdesc.uV_step) + 1;
-> +
-> +       pm8008_reg->rdesc.enable_reg = LDO_ENABLE_REG(base);
-> +       pm8008_reg->rdesc.enable_mask = ENABLE_BIT;
-> +       pm8008_reg->rdesc.min_dropout_uV = reg_data[i].min_dropout_uv;
-> +       of_property_read_u32(reg_node, "qcom,min-dropout-voltage",
-> +                            &pm8008_reg->rdesc.min_dropout_uV);
-
-Why do we allow DT to override this? Isn't it a property of the hardware
-that doesn't change? So the driver can hardcode the knowledge about the
-dropout.
-
-> +
-> +       pm8008_reg->rdev = devm_regulator_register(dev, &pm8008_reg->rdesc,
-
-Is this assignment ever used? Seems like it would be better to merely
-
-	return PTR_ERR_OR_ZERO(devm_regulator_register(dev, ...));
-
-> +                                               &reg_config);
-> +       if (IS_ERR(pm8008_reg->rdev)) {
-> +               rc = PTR_ERR(pm8008_reg->rdev);
-> +               dev_err(dev, "%s: failed to register regulator rc=%d\n",
-> +                               pm8008_reg->rdesc.name, rc);
-> +               return rc;
-> +       }
-> +
-> +       dev_dbg(dev, "%s regulator registered\n", name);
-> +
-> +       return 0;
-> +}
-> +
-> +static int pm8008_parse_regulator(struct regmap *regmap, struct device *dev)
-> +{
-> +       int rc = 0;
-
-Drop initialization.
-
-> +       const char *name;
-> +       struct device_node *child;
-> +       struct pm8008_regulator *pm8008_reg;
-> +
-> +       /* parse each subnode and register regulator for regulator child */
-> +       for_each_available_child_of_node(dev->of_node, child) {
-> +               pm8008_reg = devm_kzalloc(dev, sizeof(*pm8008_reg), GFP_KERNEL);
-> +
-> +               pm8008_reg->regmap = regmap;
-> +               pm8008_reg->of_node = child;
-> +               pm8008_reg->dev = dev;
-> +
-> +               rc = of_property_read_string(child, "regulator-name", &name);
-> +               if (rc)
-> +                       continue;
-> +
-> +               rc = pm8008_register_ldo(pm8008_reg, name);
-
-Can we use the of_parse_cb similar to qcom_spmi-regulator.c?
-
-> +               if (rc < 0) {
-> +                       dev_err(dev, "failed to register regulator %s rc=%d\n",
-> +                                       name, rc);
-> +                       return rc;
-> +               }
-> +       }
-> +
-> +       return 0;
-> +}
-> +
-> +static int pm8008_regulator_probe(struct platform_device *pdev)
-> +{
-> +       int rc = 0;
-
-Please don't initialize locals and then overwrite them before testing
-them.
-
-> +       struct regmap *regmap;
-> +
-> +       regmap = dev_get_regmap(pdev->dev.parent, NULL);
-> +       if (!regmap) {
-> +               dev_err(&pdev->dev, "parent regmap is missing\n");
-> +               return -EINVAL;
-> +       }
-> +
-> +       rc = pm8008_parse_regulator(regmap, &pdev->dev);
-
-Just inline this code. It's basically the entire probe function so
-splitting it away to yet another function just makes it harder to read.
-
-> +       if (rc < 0) {
-> +               dev_err(&pdev->dev, "failed to parse device tree rc=%d\n", rc);
-> +               return rc;
-> +       }
-> +
-> +       return 0;
-> +}
-> +
-> +static const struct of_device_id pm8008_regulator_match_table[] = {
-> +       { .compatible = "qcom,pm8008-regulator", },
-> +       { },
-
-Nitpick: Drop comma on sentinel so nothing can come after without
-causing a compilation error.
-
-> +};
-
-Add a MODULE_DEVICE_TABLE please. Same comment applies to the mfd
-driver.
-
-> +
-> +static struct platform_driver pm8008_regulator_driver = {
-> +       .driver = {
-> +               .name           = "qcom,pm8008-regulator",
-> +               .of_match_table = pm8008_regulator_match_table,
-> +       },
-> +       .probe          = pm8008_regulator_probe,
-
-I have no idea what's going on with this tabbing.
-
-> +};
-> +
-> +module_platform_driver(pm8008_regulator_driver);
-> +
+On Tue, 5 Oct 2021 20:28:54 +0200 (CEST)
+Jan Engelhardt <jengelh@inai.de> wrote:
+
+> On Tuesday 2021-10-05 20:06, Mathieu Desnoyers wrote:
+> >> instead of just "typeof(p)", to force the decay to a pointer.  
+> >
+> >If the type of @p is an integer, (p) + 0 is still valid, so it will not
+> >prevent users from passing an integer type as argument, which is what
+> >the current implementation prevents.
+> >
+> >Also, AFAIU, the compiler wants to know the sizeof(p) in order to evaluate
+> >(p + 0). Steven's goal is to hide the structure declaration, so that would
+> >not work either.  
+> 
+> >>>> typeof(*p) *________p1 = (typeof(*p) *__force)READ_ONCE(p);  
+> 
+> 
+> #define static_cast(type, expr) ((struct { type x; }){(expr)}.x)
+> typeof(p) p1 = (typeof(p) __force)static_cast(void *, READ_ONCE(p));
+> 
+> Let the name not fool you; it's absolutely _not_ the same as C++'s 
+> static_cast, but still: it does emit a warning when you do pass an 
+> integer, which is better than no warning at all in that case.
+> 
+>  *flies away*
+
+Are you suggesting I should continue this exercise ;-)
+
+-- Steve
