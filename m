@@ -2,164 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AED742306D
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 20:53:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D01742306F
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 20:54:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235176AbhJESzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 14:55:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51368 "EHLO
+        id S235067AbhJES4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 14:56:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229684AbhJESzA (ORCPT
+        with ESMTP id S229662AbhJES4I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 14:55:00 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6502C061749;
-        Tue,  5 Oct 2021 11:53:09 -0700 (PDT)
+        Tue, 5 Oct 2021 14:56:08 -0400
+Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8421C061749;
+        Tue,  5 Oct 2021 11:54:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=qjr76vSgztkgEfig8jYzCaTebFv24jfWo3PlnZ+dHr4=; b=eWtqvcIhO5Vo588yDa9141/8Ku
-        mbeJ/XvB8y/8U3rR+1lN0/ry3+YEpFASbvneEgRMMem6fSlrsdTtzf96aD8xqS1eR1KEsViPw7Ny2
-        S+XAGgj92edGRNx4xTWhCSOo+N/xEvLwhr2/zkxFbrs7WqWY/wZA+4ccHjB6zBepbhaFESgpYOs6D
-        Fa8DmYq6EsN1shs74Em7ev5SLBTsUClkYWbbbF/Do7DtmciaKDNL+oGL4U6lWE/Cocv65dCkDN94W
-        xu46KrfbP1v3bP61IpxGcgdIxxLH170VQu3TzNVY5D5D33ccVd2RIT/5LtGK+TBT77vp2q5rdqnRy
-        d/CdwtRw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:54962)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1mXpYo-0000ey-Co; Tue, 05 Oct 2021 19:53:06 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1mXpYm-0000EW-3k; Tue, 05 Oct 2021 19:53:04 +0100
-Date:   Tue, 5 Oct 2021 19:53:04 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Sean Anderson <sean.anderson@seco.com>
-Cc:     netdev@vger.kernel.org, "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>
-Subject: Re: [RFC net-next PATCH 10/16] net: macb: Move PCS settings to PCS
- callbacks
-Message-ID: <YVyfEOu+emsX/ERr@shell.armlinux.org.uk>
-References: <20211004191527.1610759-1-sean.anderson@seco.com>
- <20211004191527.1610759-11-sean.anderson@seco.com>
- <YVwjjghGcXaEYgY+@shell.armlinux.org.uk>
- <7c92218c-baec-a991-9d6b-af42dfabbad3@seco.com>
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=FVV1YBR9IhK1qGAecM676RSXQazVBgX6DGfNAvuxHgc=; b=f583AHTNgWAXJ8zuMWjbXeWRjT
+        WrYsMtxnSidRz5GscdqlzgrkcjjaciUNW7qTvj0nOuCpHeqgCAkB3AhqCB3DuaOVIq5X4uSvmlr7Y
+        5u9p3ZxbBJqT6s7DUM2skHjcyJIMFyg5tRADwX5oIRpl4cPlj1ZLeTku6bVPsCwUpn9NrLVzIlG1F
+        4/SDJtQFLWO1iqp2rOL02Uh7inJwUTPqfnxHRLwT6URkjYWwJ8xtoJc0F9vSE/fL3lGimq73sXNhU
+        WviSOgDte/2FY7Q2tO0JR4We+TIVy9myu/F53UyJddgJwSw4A7V3fvUpQAw9ehkVSWkFf2rp3/jlJ
+        HvwjaAbQ==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mXpZv-00BZNT-TI; Tue, 05 Oct 2021 18:54:15 +0000
+Subject: Re: [PATCH] kunit: fix kernel-doc warnings in doc. build
+To:     Daniel Latypov <dlatypov@google.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Brendan Higgins <brendanhiggins@google.com>,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20211005053019.26284-1-rdunlap@infradead.org>
+ <CAGS_qxqRQ+1DmKQwyw-=Yud5LTeZ9LzPQfh-ooOrFuQFN1V3Dg@mail.gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <70b0b0c4-47d0-7bb3-3bdd-688a91074bfb@infradead.org>
+Date:   Tue, 5 Oct 2021 11:54:15 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7c92218c-baec-a991-9d6b-af42dfabbad3@seco.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <CAGS_qxqRQ+1DmKQwyw-=Yud5LTeZ9LzPQfh-ooOrFuQFN1V3Dg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05, 2021 at 12:03:50PM -0400, Sean Anderson wrote:
-> Hi Russell,
+On 10/5/21 9:21 AM, Daniel Latypov wrote:
+> On Mon, Oct 4, 2021 at 10:30 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+>>
+>> Fix documentation build warnings in <kunit/test.h>:
+>>
+>> ../include/kunit/test.h:616: warning: Function parameter or member 'flags' not described in 'kunit_kmalloc_array'
+>> ../include/kunit/test.h:616: warning: Excess function parameter 'gfp' description in 'kunit_kmalloc_array'
+>> ../include/kunit/test.h:661: warning: Function parameter or member 'flags' not described in 'kunit_kcalloc'
+>> ../include/kunit/test.h:661: warning: Excess function parameter 'gfp' description in 'kunit_kcalloc'
+>>
+>> Fixes: 0a756853586c ("kunit: test: add test resource management API")
+>> Fixes: 7122debb4367 ("kunit: introduce kunit_kmalloc_array/kunit_kcalloc() helpers")
+>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+>> Cc: Brendan Higgins <brendanhiggins@google.com>
+>> Cc: linux-kselftest@vger.kernel.org
+>> Cc: kunit-dev@googlegroups.com
+>> Cc: Daniel Latypov <dlatypov@google.com>
+>> Cc: Shuah Khan <skhan@linuxfoundation.org>
+>> ---
+>>   include/kunit/test.h |    4 ++--
+>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> --- lnx-515-rc4.orig/include/kunit/test.h
+>> +++ lnx-515-rc4/include/kunit/test.h
+>> @@ -607,7 +607,7 @@ void kunit_remove_resource(struct kunit
+>>    * @test: The test context object.
+>>    * @n: number of elements.
+>>    * @size: The size in bytes of the desired memory.
+>> - * @gfp: flags passed to underlying kmalloc().
+>> + * @flags: gfp flags passed to underlying kmalloc().
 > 
-> On 10/5/21 6:06 AM, Russell King (Oracle) wrote:
-> > On Mon, Oct 04, 2021 at 03:15:21PM -0400, Sean Anderson wrote:
-> > > +static void macb_pcs_get_state(struct phylink_pcs *pcs,
-> > > +			       struct phylink_link_state *state)
-> > > +{
-> > > +	struct macb *bp = pcs_to_macb(pcs);
-> > > +
-> > > +	if (gem_readl(bp, NCFGR) & GEM_BIT(SGMIIEN))
-> > > +		state->interface = PHY_INTERFACE_MODE_SGMII;
-> > > +	else
-> > > +		state->interface = PHY_INTERFACE_MODE_1000BASEX;
-> > 
-> > There is no requirement to set state->interface here. Phylink doesn't
-> > cater for interface changes when reading the state. As documented,
-> > phylink will set state->interface already before calling this function
-> > to indicate what interface mode it is currently expecting from the
-> > hardware.
+> Thanks for catching this.
+> But can we instead rename the parameters?
+> I can send out a patch for that if you'd prefer.
 > 
-> Ok, so instead I should be doing something like
+> The other funcs here use `gfp_t gfp`, which is why this copy-pasted
+> comment does too.
+> In test.c, kmalloc_array() actually calls the parameter `gfp` as well.
 > 
-> if (gem_readl(bp, NCFGR) & GEM_BIT(SGMIIEN))
-> 	interface = PHY_INTERFACE_MODE_SGMII;
-> else
-> 	interface = PHY_INTERFACE_MODE_1000BASEX;
-> 
-> if (interface != state->interface) {
-> 	state->link = 0;
-> 	return;
-> }
 
-Why would it be different? If we've called the pcs_config method to
-set the interface to one mode, why would it change?
-
-> > There has been the suggestion that we should allow in-band AN to be
-> > disabled in 1000base-X if we're in in-band mode according to the
-> > ethtool state.
-> 
-> This logic is taken from phylink_mii_c22_pcs_config. Maybe I should add
-> another _encode variant? I hadn't done this here because the logic was
-> only one if statement.
-> 
-> > I have a patch that adds that.
-> 
-> Have you posted it?
-
-I haven't - it is a patch from Robert Hancock, "net: phylink: Support
-disabling autonegotiation for PCS". I've had it in my tree for a while,
-but I do want to make some changes to it before re-posting.
-
-> > You can't actually abort at this point - phylink will print the error
-> > and carry on regardless. The checking is all done via the validate()
-> > callback and if that indicates the interface mode is acceptable, then
-> > it should be accepted.
-> 
-> Ok, so where can the PCS NAK an interface? This is the only callback
-> which has a return code, so I assumed this was the correct place to say
-> "no, we don't support this." This is what lynx_pcs_config does as well.
-
-At the moment, the PCS doesn't get to NAK an inappropriate interface.
-That's currently the job of the MAC's validate callback with the
-assumtion that the MAC knows what interfaces are supportable.
-
-Trying to do it later, once the configuration has been worked out can
-_only_ lead to a failure of some kind - in many paths, there is no way
-to report the problem except by printing a message into the kernel log.
-
-For example, by the time we reach pcs_config(), we've already prepared
-the MAC for a change to the interface, we've told the MAC to configure
-for that interface. Now the PCS rejects it - we have no record of the
-old configuration to restore. Even if we had a way to restore it, then
-we could return an error to the user - but the user doesn't get to
-control the interface themselves. If it was the result of a PHY changing
-its interface, then what - we can only log an error to the kernel log.
-If it's the result of a SFP being plugged in, we have no way to
-renegotiate.
-
-pcs_config() is too late to be making decisions about whether the
-requested configuration is acceptable or not. It needs to be done as
-part of the validation step.
-
-However, the validation step is not purely just validation, but it's
-negotiation too for SFPs to be able to work out what interface mode
-they should use in combination with the support that the MAC/PCS
-offers.
-
-I do feel that the implementation around the validation/selection of
-interface for SFP etc is starting to creak, and I've some patches that
-introduce a bitmap of interface types that are supported by the various
-components. I haven't had the motivation to finish that off as my last
-attempt at making a phylink API change was not pleasant in terms of
-either help updating network drivers or getting patches tested. So I
-now try to avoid phylink API changes at all cost.
-
-People have whinged that phylink's API changes too quickly... I'm
-guessing we're now going to get other people arguing that it needs
-change to fix issues like this...
+Sure, go ahead with it, please.
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+~Randy
