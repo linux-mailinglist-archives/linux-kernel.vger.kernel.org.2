@@ -2,103 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A1454231FF
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 22:29:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB3DB423207
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 22:30:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236141AbhJEUbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 16:31:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45418 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235715AbhJEUbF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 16:31:05 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB3D1C06174E
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 13:29:14 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id a7so469287yba.6
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 13:29:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OcQv/s+1PQ0ZjDCw+SRTOFCxUQmvWoG+IaGmgRCu54s=;
-        b=MW14OSQ1gFA4P7702EgFpqM3qR3T4ysOSPqEqQduRialXr2rl+z6u1qfBew5gCMwxP
-         He0OejT6iuY2z8ccXO2nJN2cvrfEb3xsVI2LTu9Dq+HbqvZLLzKClVUbl2lCw2cxayay
-         bjMlUpJL4oXj88XjInk7lSQBsjgghYRFeZq66op4EtfF4MEf07gQqOJGAKnMo6LR6R9r
-         agZjlErLE9uBq3uzftWy/5vlpMpuF6hapb8jPGMhmMdwnb9oLoHxfLKXAfGCQnV/ckZO
-         tIyrfw0Q9PYNgG8xvztQ+v6/B+DG1lxyTv5RrdFo4HqZ5OApN9bxwaDHd6NWUiP+MZEp
-         wSng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OcQv/s+1PQ0ZjDCw+SRTOFCxUQmvWoG+IaGmgRCu54s=;
-        b=gXmOmXrwaEj2RO/Zz10P95DFKwL+UDWu8lt3AfcpRNJJ3d+DRDjw8L8PNZ62GhymU6
-         4un3DNhn5xEtwWzW9Ya0c/pRHh9EZ+E9l6EsL/tpEYTMFFcsItKBovuZ0ufc39IN8gNy
-         aL5b9ftYhGz7gaKZvk9Oyb5P62CW5/9Qp+EE84+cocQh5ogpGC1lYbPXjfFtV332I0Ri
-         iYXAIktU5EDrgFFW9VWp+EyIh9BT2gsQ6F1YfYBVqtDI5nFPRhiWjF6CLhJ8iQVP9z//
-         /Fpj5ofLmNJZ3mvTh48vOGVrKjPUGDsc0LRAY2dv4mz/xLJrgl+zRJ1Si1bDv+E7SWFd
-         FSvQ==
-X-Gm-Message-State: AOAM5335PZUC5YwQ6Bxsw5aaHMn2K5eGKeEiLDzkdsstNWq4FhU/q4n7
-        Jk2aUN+6bOKJwBIPAPXnXBM73dnMGxJuWosIkn3r4Q==
-X-Google-Smtp-Source: ABdhPJzJsAm0jIvkO40dr+sZFTs2tR+7kzjFwmvCvA4ilABfEgSVApT0Rz05CRz9lseERDmx31G5dQQz6jq8IE2Ituw=
-X-Received: by 2002:a25:cf8f:: with SMTP id f137mr26144522ybg.338.1633465753946;
- Tue, 05 Oct 2021 13:29:13 -0700 (PDT)
+        id S236281AbhJEUcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 16:32:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53028 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230019AbhJEUcJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 16:32:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E7FA60F44;
+        Tue,  5 Oct 2021 20:30:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633465818;
+        bh=gbIXNRW5Wq4ehAfiyk/kQqqaMrxPz+mtMrf130bf9ws=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=VjJ5c5XiBc3GJlXt/eQ9FQXEUIJnTCkKvmvqABBmmAOmc9KdXI7hdqZho1rptJ9uu
+         EzAmvw7Ns2KK0qgz6zKdf53DMIyZtO5jTXcYEdqouK4XCOapcVKg+Fjoo9LsoHYJUZ
+         1zSY/AQSjzI8aGmz7G9KFunqazrwt+D0SwJ037GqEU7jRljEEccAZxw8OjgvNWbGJ2
+         6op7FZcz0tXKLlpio7y1CJ42vRuPPMivlbDdwZy7D3DbI8hdueQtBHgQ6vLlcaiwKs
+         zp+rIKuUalKmA0fEfAMEHazs3YHUfZ5LaHrzQQU0TAk/Z4MquijSjEhL2yCGN9Lg2N
+         4mQ5c+3jBpRbg==
+Date:   Tue, 5 Oct 2021 22:30:14 +0200
+From:   Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Rob Herring <robh+dt@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: lets settle the LED `function` property regarding the netdev
+ trigger
+Message-ID: <20211005223014.3891f041@thinkpad>
+In-Reply-To: <YVs5sxd/dEBwBShm@lunn.ch>
+References: <20211001143601.5f57eb1a@thinkpad>
+        <YVn815h7JBtVSfwZ@lunn.ch>
+        <20211003212654.30fa43f5@thinkpad>
+        <YVsUodiPoiIESrEE@lunn.ch>
+        <20211004170847.3f92ef48@thinkpad>
+        <YVs5sxd/dEBwBShm@lunn.ch>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20210930180531.1190642-1-samitolvanen@google.com>
- <20210930180531.1190642-5-samitolvanen@google.com> <YVsGoJ+NN6wRFi22@hirez.programming.kicks-ass.net>
- <CABCJKudBrHfwR=gQc=9=cfBjR9p5jm65ovSNwzLLEpDUdo6ZPQ@mail.gmail.com> <20211005065923.GH4323@worktop.programming.kicks-ass.net>
-In-Reply-To: <20211005065923.GH4323@worktop.programming.kicks-ass.net>
-From:   Sami Tolvanen <samitolvanen@google.com>
-Date:   Tue, 5 Oct 2021 13:29:02 -0700
-Message-ID: <CABCJKud1Gm0ouROKLAw9t03qbs+_EASky053=SqijPJahqogng@mail.gmail.com>
-Subject: Re: [PATCH v4 04/15] cfi: Add DEFINE_CFI_IMMEDIATE_RETURN_STUB
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     X86 ML <x86@kernel.org>, Kees Cook <keescook@chromium.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        linux-hardening@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>, llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 4, 2021 at 11:59 PM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Mon, Oct 04, 2021 at 12:10:46PM -0700, Sami Tolvanen wrote:
-> > On Mon, Oct 4, 2021 at 6:50 AM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> > > Why DEFINE_CFI_IMMEDIATE_RETURN_STUB() vs __no_cfi attribute that we can
-> > > stick on the relvant functions?
-> >
-> > To avoid accidentally creating useful gadgets for attackers. For
-> > example, while excluding an empty stub isn't necessarily ideal,
-> > allowing calls to a function that always returns zero would be worse.
->
-> I was afraid you'd say something like that...
->
-> > > Because I've got at least one more variant for you :-) See
-> > > kernel/static_call.c:__static_call_return0
-> >
-> > Does __static_call_return0 ever get called indirectly on architectures
-> > that support static calls? If it's always patched into a direct call,
-> > the type mismatch isn't an issue.
->
-> For x86_64 it should indeed never get called, however if you plan on
-> supporting i386 then you need the annotation. Also, it might get called
-> on arm64 which is about to grow basic HAVE_STATIC_CALL support.
+On Mon, 4 Oct 2021 19:28:19 +0200
+Andrew Lunn <andrew@lunn.ch> wrote:
 
-Good point. I read through the latest arm64 static call proposal and
-while it can fall back to an indirect call, it doesn't look like that
-would cause issues with CFI.
+> > > There are two different ways this can be implemented. There can be two
+> > > independent LEDs within the same package. So you can generate three
+> > > colours. Or there can be two cross connected LEDs within the
+> > > package. Apply +ve you get one colour, apply -ve you get a different
+> > > colour. Since you cannot apply both -ve and +ve at the same time, you
+> > > cannot get both colours at once.
+> > > 
+> > > If you have two independent LEDs, I would define two LEDs in DT.  
+> > 
+> > No, we have multicolor LED API which is meant for exactly this
+> > situation: a multicolor LED.
+> > (I am talking about something like the KJ2518D-262 from
+> >  http://www.rego.com.tw/product_detail.php?prdt_id=258
+> >  which has Green/Orange on left and Yellow on right side.
+> >  The left Green/Orange LED has 3 pins, and so it can mix the colors into
+> >  yellow.)  
+> 
+> But here you are talking about the LED, not the controller in the
+> PHY. The controller might control it as two independent LEDs. It has
+> no idea it can get a third colour by enabling two LEDs at the same
+> time. Or maybe the controller does know it can combine colours.
+> 
+> So you need to know about both the controller and the LED. And the
+> same controller can be used either way. Plus you need to think about
+> the non DT case, when you have no idea about the LED connected to the
+> controller.
+> 
+> > I think the best solution here would be a subclass "enumcolor" (or
+> > different name), where you can choose between several pre-defined colors.
+> > In sysfs you could then do
+> >   echo 1 >brightness
+> >   echo green >color
+> >   echo yellow >color  
+> 
+> I'm not sure it is as simple as that. In the general case, you have no
+> idea what the colours actually are. You only know the colours if you
+> have DT and DT lists the colours. And you only know if LEDs are
+> combined if you have DT. You need a basic sysfs API based on knowing
+> the PHY can control X LEDs. You can then extend that API if you have
+> additional information via DT, like colour and if LEDs are combined,
+> that only LEDs numbered 2 and 3 are used, etc.
+> 
+> 	   Andrew
 
-> (and just in case you care about CFI on PPC32, they too grew basic
-> static_call support)
+I really don't think we should be registering any LEDs in the PHY driver
+if the driver does not know whether there are LEDs connected to the PHY.
 
-We are currently targeting only x86_64 and arm64, but I'll keep that
-in mind in case we want to add more platforms.
+If this information is not available (via device-tree or some other
+method, for example USB vendor/device table), then we can't register a
+LED and let user control it.
 
-Sami
+What if the pin is used for something different on a board?
+
+Marek
