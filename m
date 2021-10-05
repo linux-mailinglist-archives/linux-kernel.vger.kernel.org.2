@@ -2,144 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6987842277E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 15:12:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ADC542277A
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 15:11:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234987AbhJENNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 09:13:53 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:16375 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S234981AbhJENNt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 09:13:49 -0400
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 195D46EQ024082;
-        Tue, 5 Oct 2021 09:11:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=sn8JNMLsVNgRbSJzI/EzW7A8UP/FvqC8QJg8zhzAmuU=;
- b=XEx53wdm/hC57fjBZ3IDq1HC0qFvvAxNXSHcouJhewKVWUDipMzJUSOU1BQjejlVsjkU
- 8rBy24BwCTzBlRBqlNjaN+UL7Zsfv+hNh6rdmcGkHQhgb25LYMWGHN7RveVTex7SZFuC
- r6JyNU4GU6KOmiIu9gjmbnd9KZ6Z3qX5sx5fwLZ+3hBusNXyNc/8+PvxVZLe7oyWnFg1
- 3Vd3VJ99iWYg84Tn4ZHlvAn6y0BZOIXISmrkGFTf6wQl+IrL2wG49wa4eqU3E+TD1qAo
- XSzvqWKMgvogvsebdb/k7r6UKyplIabdIUzZsuzhI/yKb9PshCHkYTNnuofdefR9q4I8 nw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3bgnm9avh3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Oct 2021 09:11:58 -0400
-Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 195D4Y9p026132;
-        Tue, 5 Oct 2021 09:11:57 -0400
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3bgnm9avgc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Oct 2021 09:11:57 -0400
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 195D66G4009972;
-        Tue, 5 Oct 2021 13:11:55 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma05fra.de.ibm.com with ESMTP id 3bef29rg91-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Oct 2021 13:11:55 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 195DBmBH14745926
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 5 Oct 2021 13:11:48 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 52798A40A0;
-        Tue,  5 Oct 2021 13:11:48 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CE0B0A4093;
-        Tue,  5 Oct 2021 13:11:47 +0000 (GMT)
-Received: from [9.145.45.132] (unknown [9.145.45.132])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue,  5 Oct 2021 13:11:47 +0000 (GMT)
-Message-ID: <440d852f-ae4e-7466-ecb8-c60890a6d849@linux.ibm.com>
-Date:   Tue, 5 Oct 2021 15:11:47 +0200
+        id S234966AbhJENNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 09:13:46 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:59601 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234720AbhJENNo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 09:13:44 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1633439514; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=U6BZdp7Nj1iB2Co/1jqzWb6n7mqm30f5x3oIRYnDtpI=;
+ b=cYMr3wIVC8cCqbQy2m8TvqhhSYen8J3h9V7AkqkciogtmA8bWG7IWalpN/YA5AQP3heikLCp
+ cUqWGbpoXdZwk4JD1mS2MJ5I75GFgqq5ANMBkH3nc3xe804nP3nZ3adqUaXVRl5lApPqg2/h
+ 0ejPfYLtmNFUUPfoSDjuW32sHhE=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 615c4f1563b1f186582a7408 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 05 Oct 2021 13:11:49
+ GMT
+Sender: schowdhu=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C2883C43616; Tue,  5 Oct 2021 13:11:48 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: schowdhu)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 03C64C4338F;
+        Tue,  5 Oct 2021 13:11:47 +0000 (UTC)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH v5 02/14] KVM: s390: pv: avoid double free of sida page
-Content-Language: en-US
-To:     Claudio Imbrenda <imbrenda@linux.ibm.com>, kvm@vger.kernel.org
-Cc:     cohuck@redhat.com, borntraeger@de.ibm.com, thuth@redhat.com,
-        pasic@linux.ibm.com, david@redhat.com, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ulrich.Weigand@de.ibm.com
-References: <20210920132502.36111-1-imbrenda@linux.ibm.com>
- <20210920132502.36111-3-imbrenda@linux.ibm.com>
-From:   Janosch Frank <frankja@linux.ibm.com>
-In-Reply-To: <20210920132502.36111-3-imbrenda@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: rlPs-mcViv1av9yTZd3cnX5TYvyOk_an
-X-Proofpoint-ORIG-GUID: psWW0_MgIlChGltkfi_5Ht2seQCSuHuk
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-10-05_02,2021-10-04_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- clxscore=1015 impostorscore=0 mlxlogscore=738 bulkscore=0 phishscore=0
- suspectscore=0 mlxscore=0 spamscore=0 malwarescore=0 adultscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110050078
+Date:   Tue, 05 Oct 2021 18:41:47 +0530
+From:   schowdhu@codeaurora.org
+To:     Rob Herring <robh@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Bryan O'Donoghue <pure.logic@nexus-software.ie>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Greg KH <greg@kroah.com>, linux-kernel@vger.kernel.org,
+        ckadabi@codeaurora.org, tsoni@codeaurora.org,
+        bryanh@codeaurora.org, psodagud@codeaurora.org,
+        satyap@codeaurora.org, pheragu@codeaurora.org,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Subject: Re: [PATCH V0 1/7] dt-bindings: connector: Add property for eud type
+ c connector
+In-Reply-To: <YVsttQySDnaXxOuI@robh.at.kernel.org>
+References: <cover.1633343547.git.schowdhu@codeaurora.org>
+ <246c9d24da27b6ce91d5f1e536fa96ac5656a0b2.1633343547.git.schowdhu@codeaurora.org>
+ <YVsttQySDnaXxOuI@robh.at.kernel.org>
+Message-ID: <b3d10d7b874c11462604a5f78bc0e8cf@codeaurora.org>
+X-Sender: schowdhu@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/20/21 15:24, Claudio Imbrenda wrote:
-> If kvm_s390_pv_destroy_cpu is called more than once, we risk calling
-> free_page on a random page, since the sidad field is aliased with the
-> gbea, which is not guaranteed to be zero.
+On 2021-10-04 22:07, Rob Herring wrote:
+> On Mon, Oct 04, 2021 at 04:46:19PM +0530, Souradeep Chowdhury wrote:
+>> Added the property for EUD(Embedded USB Debug) connector.Added
+>> the "reg" and "interrupts" property which is needed for EUD.
 > 
-> This can happen, for example, if userspace calls the KVM_PV_DISABLE
-> IOCTL, and it fails, and then userspace calls the same IOCTL again.
-> This scenario is only possible if KVM has some serious bug or if the
-> hardware is broken.
-> 
-> The solution is to simply return successfully immediately if the vCPU
-> was already non secure.
-> 
-> Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
-> Fixes: 19e1227768863a1469797c13ef8fea1af7beac2c ("KVM: S390: protvirt: Introduce instruction data area bounce buffer")
+> You are going to need a better explanation of this h/w.
 
-Reviewed-by: Janosch Frank <frankja@linux.ibm.com>
+Ack. Will update this with the detailed hardware description
+in the next version.
 
-> ---
->   arch/s390/kvm/pv.c | 19 +++++++++----------
->   1 file changed, 9 insertions(+), 10 deletions(-)
 > 
-> diff --git a/arch/s390/kvm/pv.c b/arch/s390/kvm/pv.c
-> index c8841f476e91..0a854115100b 100644
-> --- a/arch/s390/kvm/pv.c
-> +++ b/arch/s390/kvm/pv.c
-> @@ -16,18 +16,17 @@
->   
->   int kvm_s390_pv_destroy_cpu(struct kvm_vcpu *vcpu, u16 *rc, u16 *rrc)
->   {
-> -	int cc = 0;
-> +	int cc;
->   
-> -	if (kvm_s390_pv_cpu_get_handle(vcpu)) {
-> -		cc = uv_cmd_nodata(kvm_s390_pv_cpu_get_handle(vcpu),
-> -				   UVC_CMD_DESTROY_SEC_CPU, rc, rrc);
-> +	if (!kvm_s390_pv_cpu_get_handle(vcpu))
-> +		return 0;
-> +
-> +	cc = uv_cmd_nodata(kvm_s390_pv_cpu_get_handle(vcpu), UVC_CMD_DESTROY_SEC_CPU, rc, rrc);
-> +
-> +	KVM_UV_EVENT(vcpu->kvm, 3, "PROTVIRT DESTROY VCPU %d: rc %x rrc %x",
-> +		     vcpu->vcpu_id, *rc, *rrc);
-> +	WARN_ONCE(cc, "protvirt destroy cpu failed rc %x rrc %x", *rc, *rrc);
->   
-> -		KVM_UV_EVENT(vcpu->kvm, 3,
-> -			     "PROTVIRT DESTROY VCPU %d: rc %x rrc %x",
-> -			     vcpu->vcpu_id, *rc, *rrc);
-> -		WARN_ONCE(cc, "protvirt destroy cpu failed rc %x rrc %x",
-> -			  *rc, *rrc);
-> -	}
->   	/* Intended memory leak for something that should never happen. */
->   	if (!cc)
->   		free_pages(vcpu->arch.pv.stor_base,
+>> 
+>> Signed-off-by: Souradeep Chowdhury <schowdhu@codeaurora.org>
+>> ---
+>>  .../devicetree/bindings/connector/usb-connector.yaml      | 15 
+>> +++++++++++++++
+>>  1 file changed, 15 insertions(+)
+>> 
+>> diff --git 
+>> a/Documentation/devicetree/bindings/connector/usb-connector.yaml 
+>> b/Documentation/devicetree/bindings/connector/usb-connector.yaml
+>> index 7eb8659..908129f 100644
+>> --- a/Documentation/devicetree/bindings/connector/usb-connector.yaml
+>> +++ b/Documentation/devicetree/bindings/connector/usb-connector.yaml
+>> @@ -30,6 +30,21 @@ properties:
+>>            - const: samsung,usb-connector-11pin
+>>            - const: usb-b-connector
+>> 
+>> +      - items:
+>> +          - enum:
+>> +              - qcom,sc7280-usb-connector-eud
+>> +          - const: qcom,usb-connector-eud
+>> +          - const: usb-c-connector
+>> +
+>> +  reg:
+>> +    items:
+>> +      - description: EUD Base Register Region
+>> +      - description: EUD Mode Manager Region
 > 
+> A connector node represents the physical connector on a board. That
+> can't really be an MMIO peripheral. Maybe you need a node for EUD and
+> then it should have a connector child node? Don't really know without
+> understanding this h/w.
 
+As per the previous discussion on the EUD, it was agreed upon to map EUD
+as a type C connector and use Role-Switch to change the USB role instead
+of extcon interface that was being used previously. The link for the 
+same
+is as follows:-
+
+https://lore.kernel.org/lkml/5db1a666-62ec-c850-6626-ad33d337b452@codeaurora.org/
+
+> 
+>> +
+>> +  interrupts:
+>> +    description:
+>> +      EUD interrupt
+>> +
+>>    label:
+>>      description: Symbolic name for the connector.
+>> 
+>> --
+>> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+>> member
+>> of Code Aurora Forum, hosted by The Linux Foundation
+>> 
+>> 
