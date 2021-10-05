@@ -2,215 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61379423173
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 22:16:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42A3A42317A
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 22:17:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232574AbhJEUSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 16:18:22 -0400
-Received: from sibelius.xs4all.nl ([83.163.83.176]:50367 "EHLO
-        sibelius.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229805AbhJEUSV (ORCPT
+        id S235884AbhJEUTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 16:19:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42434 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229851AbhJEUTC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 16:18:21 -0400
-Received: from localhost (bloch.sibelius.xs4all.nl [local])
-        by bloch.sibelius.xs4all.nl (OpenSMTPD) with ESMTPA id 3b738dd1;
-        Tue, 5 Oct 2021 22:16:28 +0200 (CEST)
-Date:   Tue, 5 Oct 2021 22:16:28 +0200 (CEST)
-From:   Mark Kettenis <mark.kettenis@xs4all.nl>
-To:     Hector Martin <marcan@marcan.st>
-Cc:     linux-arm-kernel@lists.infradead.org, marcan@marcan.st,
-        maz@kernel.org, robh+dt@kernel.org, arnd@kernel.org,
-        linus.walleij@linaro.org, alyssa@rosenzweig.io, krzk@kernel.org,
-        gregkh@linuxfoundation.org, p.zabel@pengutronix.de,
-        rafael@kernel.org, devicetree@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org, linux-serial@vger.kernel.org
-In-Reply-To: <20211005155923.173399-3-marcan@marcan.st> (message from Hector
-        Martin on Wed, 6 Oct 2021 00:59:18 +0900)
-Subject: Re: [PATCH 2/7] dt-bindings: power: Add apple,pmgr-pwrstate binding
-References: <20211005155923.173399-1-marcan@marcan.st> <20211005155923.173399-3-marcan@marcan.st>
-Message-ID: <d3ca3bcc44156f32@bloch.sibelius.xs4all.nl>
+        Tue, 5 Oct 2021 16:19:02 -0400
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6433FC061749
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 13:17:11 -0700 (PDT)
+Received: by mail-qt1-x82f.google.com with SMTP id r1so299837qta.12
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 13:17:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UlaLhBwrKQHqRpficZi+S5MunK5Nu4oR4wDiTqmlmSA=;
+        b=KLSOi67/N0aPhbIh7UtgCb+Jvk7gPIC/DiVmq56UAdpq47BIzFMU5A6N54ySFOpKNZ
+         auZEEINrxbW1WkX1lqmkau0THaXOnd/oJTwTfszBWg9QokyIjeV1HNl3NQZHWMgeCtjb
+         de6dT/5LzzCeIt+e/zohTI+ReOMCAvmbJnuGucC/Yf84lNaT8HAVte5Fgch05Lr6HxCq
+         lz+mlHZlVVP5ao/1UcRajxyaAgRzCAb4acmqTvXFxC81Vx8bRbqjuJ4GLbd4DRrh/3GI
+         SNLUHeH/t6OMi0bK0EK/PyYPFfmsEj4NsdIkqzoek6cpElwQSaggiEEbsE1/xGfzan99
+         1Y1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UlaLhBwrKQHqRpficZi+S5MunK5Nu4oR4wDiTqmlmSA=;
+        b=OHcNbzq7QsoMp9okaAN/Ei/xbHRjjiWgX2OU2s4ZXRJNRAsqXSlxfRMJCSO6FIar4G
+         J13/vljO8qsiQtqf655NcF+0xK3HI6MTNaaBCpJJoBdUOGPI+/C+FtALyAtjNxWiqeSc
+         CniFWla3lTa4h+sHbwT17CSczjKcCpQw70iDCcQCB9CgFFcapBQP/zy7QCh/Vqda+cAN
+         Hge2WwvNUrVFdZEfUFoP4hioD3QXuTTjKtYO93kH0sR8XIVjVx20BDM4JcCf2HhQG/zv
+         NGvi60s06us+Iap8VJ4Lc7imb7gQvvzZADtlUp0iCVQDOTdaB8OCdhyLNliS7j6kXCEu
+         cTEA==
+X-Gm-Message-State: AOAM530iJ9LZg56BlUhptUHwteAsINKcRxt/NYXS0ldD3eR+ajNkenzo
+        dF/qDV803gkv+zeJl2HCiHh/h29Rfi4QOA==
+X-Google-Smtp-Source: ABdhPJwfBQvpkZaKoH7otomEjvO/noihg7/lMkBVjw3OrtzjuCIlknrAS2lVamCDfqo0H2SbU4DKCQ==
+X-Received: by 2002:ac8:106:: with SMTP id e6mr21742037qtg.406.1633465030560;
+        Tue, 05 Oct 2021 13:17:10 -0700 (PDT)
+Received: from localhost.localdomain ([2804:14c:125:9b98::1007])
+        by smtp.googlemail.com with ESMTPSA id j2sm13056905qta.84.2021.10.05.13.17.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Oct 2021 13:17:10 -0700 (PDT)
+From:   Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
+To:     rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com
+Cc:     Igor Matheus Andrade Torrente <igormtorrente@gmail.com>,
+        hamohammed.sa@gmail.com, daniel@ffwll.ch, airlied@linux.ie,
+        contact@emersion.fr, leandro.ribeiro@collabora.com,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        lkcamp@lists.libreplanetbr.org
+Subject: [PATCH 0/6] Refactor the vkms to accept new formats
+Date:   Tue,  5 Oct 2021 17:16:31 -0300
+Message-Id: <20211005201637.58563-1-igormtorrente@gmail.com>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Hector Martin <marcan@marcan.st>
-> Date: Wed,  6 Oct 2021 00:59:18 +0900
-> 
-> This syscon child node represents a single SoC device controlled by the
-> PMGR block. This layout allows us to declare all device power state
-> controls (power/clock gating and reset) in the device tree, including
-> dependencies, instead of hardcoding it into the driver. The register
-> layout is uniform.
-> 
-> Each pmgr-pwrstate node provides genpd and reset features, to be
-> consumed by downstream device nodes.
-> 
-> Future SoCs are expected to use backwards compatible registers, and the
-> "apple,pmgr-pwrstate" represents any such interfaces (possibly with
-> additional features gated by the more specific compatible), allowing
-> them to be bound without driver updates. If a backwards incompatible
-> change is introduced in future SoCs, it will require a new compatible,
-> such as "apple,pmgr-pwrstate-v2".
+Summary
+=======
+This series of patches refactor some vkms components in order to introduce
+new formats to the planes and writeback connector.
 
-Or we drop the apple,mpgr-pwrstate and go with only SoC-specific
-compatibles from that point onwards.
+Now in the blend function, the plane's pixels are converted to ARGB16161616
+and then blended together.
 
-> 
-> Signed-off-by: Hector Martin <marcan@marcan.st>
-> ---
->  .../bindings/power/apple,pmgr-pwrstate.yaml   | 117 ++++++++++++++++++
->  MAINTAINERS                                   |   1 +
->  2 files changed, 118 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/power/apple,pmgr-pwrstate.yaml
+The CRC is calculated based on the ARGB1616161616 buffer. And if required,
+this buffer is copied/converted to the writeback buffer format.
 
-This works for U-Boot.  Didn't write an OpenBSD driver yet but it
-should work there as well.
+And to handle the pixel conversion, new functions were added to convert
+from a specific format to ARGB16161616 (the reciprocal is also true).
 
-Reviewed-by: Mark Kettenis <kettenis@openbsd.org>
+Tests
+=====
+This patch series was tested using the following igt tests:
+-t ".*kms_plane.*"
+-t ".*kms_writeback.*"
+-t ".*kms_cursor_crc*"
 
+New tests passing
+-------------------
+- pipe-A-cursor-size-change
+- pipe-A-cursor-alpha-transparent
 
-> diff --git a/Documentation/devicetree/bindings/power/apple,pmgr-pwrstate.yaml b/Documentation/devicetree/bindings/power/apple,pmgr-pwrstate.yaml
-> new file mode 100644
-> index 000000000000..a14bf5f30ff0
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/power/apple,pmgr-pwrstate.yaml
-> @@ -0,0 +1,117 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/power/apple,pmgr-pwrstate.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Apple SoC PMGR Power States
-> +
-> +maintainers:
-> +  - Hector Martin <marcan@marcan.st>
-> +
-> +allOf:
-> +  - $ref: "power-domain.yaml#"
-> +
-> +description: |
-> +  Apple SoCs include a PMGR block responsible for power management,
-> +  which can control various clocks, resets, power states, and
-> +  performance features. This binding describes the device power
-> +  state registers, which control power states and resets.
-> +
-> +  Each instance of a power controller within the PMGR syscon node
-> +  represents a generic power domain provider, as documented in
-> +  Documentation/devicetree/bindings/power/power-domain.yaml.
-> +  The provider controls a single SoC block. The power hierarchy is
-> +  represented via power-domains relationships between these nodes.
-> +
-> +  See Documentation/devicetree/bindings/arm/apple/apple,pmgr.yaml
-> +  for the top-level PMGR node documentation.
-> +
-> +  IP cores belonging to a power domain should contain a
-> +  "power-domains" property that is a phandle for the
-> +  power domain node representing the domain.
-> +
-> +properties:
-> +  $nodename:
-> +    pattern: "^power-controller@[0-9a-f]+$"
-> +
-> +  compatible:
-> +    items:
-> +      - enum:
-> +          - apple,t8103-pmgr-pwrstate
-> +      - const: apple,pmgr-pwrstate
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  "#power-domain-cells":
-> +    const: 0
-> +
-> +  "#reset-cells":
-> +    const: 0
-> +
-> +  power-domains:
-> +    description:
-> +      Reference to parent power domains. A domain may have multiple parents,
-> +      and all will be powered up when it is powered.
-> +
-> +  apple,domain-name:
-> +    description: |
-> +      Specifies the name of the SoC device being controlled. This is used to
-> +      name the power/reset domains.
-> +    $ref: /schemas/types.yaml#/definitions/string
-> +
-> +  apple,always-on:
-> +    description: |
-> +      Forces this power domain to always be powered up.
-> +    type: boolean
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - "#power-domain-cells"
-> +  - "#reset-cells"
-> +  - "apple,domain-name"
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    soc {
-> +        #address-cells = <2>;
-> +        #size-cells = <2>;
-> +
-> +        power-management@23b700000 {
-> +            compatible = "apple,t8103-pmgr", "apple,pmgr", "syscon", "simple-mfd";
-> +            #address-cells = <1>;
-> +            #size-cells = <0>;
-> +            reg = <0x2 0x3b700000 0x0 0x14000>;
-> +
-> +            ps_sio: power-controller@1c0 {
-> +                compatible = "apple,t8103-pmgr-pwrstate", "apple,pmgr-pwrstate";
-> +                reg = <0x1c0>;
-> +                #power-domain-cells = <0>;
-> +                #reset-cells = <0>;
-> +                apple,domain-name = "sio";
-> +                apple,always-on;
-> +            };
-> +
-> +            ps_uart_p: power-controller@220 {
-> +                compatible = "apple,t8103-pmgr-pwrstate", "apple,pmgr-pwrstate";
-> +                reg = <0x220>;
-> +                #power-domain-cells = <0>;
-> +                #reset-cells = <0>;
-> +                apple,domain-name = "uart_p";
-> +                power-domains = <&ps_sio>;
-> +            };
-> +
-> +            ps_uart0: power-controller@270 {
-> +                compatible = "apple,t8103-pmgr-pwrstate", "apple,pmgr-pwrstate";
-> +                reg = <0x270>;
-> +                #power-domain-cells = <0>;
-> +                #reset-cells = <0>;
-> +                apple,domain-name = "uart0";
-> +                power-domains = <&ps_uart_p>;
-> +            };
-> +        };
-> +    };
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index d25598842d15..5fe53d9a2956 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -1722,6 +1722,7 @@ F:	Documentation/devicetree/bindings/arm/apple.yaml
->  F:	Documentation/devicetree/bindings/arm/apple/*
->  F:	Documentation/devicetree/bindings/interrupt-controller/apple,aic.yaml
->  F:	Documentation/devicetree/bindings/pinctrl/apple,pinctrl.yaml
-> +F:	Documentation/devicetree/bindings/power/apple*
->  F:	arch/arm64/boot/dts/apple/
->  F:	drivers/irqchip/irq-apple-aic.c
->  F:	include/dt-bindings/interrupt-controller/apple-aic.h
-> -- 
-> 2.33.0
-> 
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-> 
+Tests and Performance Regressions
+-------------------------------------
+This pack of tests is failing:
+- pipe-A-cursor-*-rapid-movement
+
+This is expected since there are more operations per pixel than before.
+And consequently, the compositing is way slower than before.
+
+My micro-profiling shows these ranges to the completion of each
+compositing in the .*kms_cursor_crc.* tests:
+
+|      Frametime     |
+|:-------:|:--------:|
+|  before |   after  |
+| 8~20 ms | 32~56 ms |
+
+Hence, further optimizations will be required.
+
+Writeback test
+---------------
+During the development of this patch series, I discovered that the
+writeback-check-output test wasn't filling the plane correctly.
+
+So, currently, this patch series is failing in this test. But I sent a
+patch to igt to fix it[1].
+
+XRGB to ARGB behavior
+=================
+During the development, I decided to always fill the alpha channel of
+the output pixel whenever the conversion from a format without an alpha
+channel to ARGB16161616 is necessary. Therefore, I ignore the value
+received from the XRGB and overwrite the value with 0xFFFF.
+
+My question is, is this behavior acceptable?
+
+[1] https://lists.freedesktop.org/archives/igt-dev/2021-October/036125.html
+
+Igor Matheus Andrade Torrente (6):
+  drm: vkms: Replace the deprecated drm_mode_config_init
+  drm: vkms: Alloc the compose frame using vzalloc
+  drm: vkms: Replace hardcoded value of `vkms_composer.map` to
+    DRM_FORMAT_MAX_PLANES
+  drm: vkms: Add fb information to `vkms_writeback_job`
+  drm: vkms: Prepare `vkms_wb_encoder_atomic_check` to accept multiple
+    formats
+  drm: vkms: Refactor the plane composer to accept new formats
+
+ drivers/gpu/drm/vkms/vkms_composer.c  | 275 ++++++++++++++------------
+ drivers/gpu/drm/vkms/vkms_drv.c       |   5 +-
+ drivers/gpu/drm/vkms/vkms_drv.h       |  12 +-
+ drivers/gpu/drm/vkms/vkms_formats.h   | 125 ++++++++++++
+ drivers/gpu/drm/vkms/vkms_writeback.c |  27 ++-
+ 5 files changed, 304 insertions(+), 140 deletions(-)
+ create mode 100644 drivers/gpu/drm/vkms/vkms_formats.h
+
+-- 
+2.30.2
+
