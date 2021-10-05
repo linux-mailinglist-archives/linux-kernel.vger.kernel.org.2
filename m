@@ -2,260 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C972422CB8
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:39:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5352E422CC0
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:40:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236198AbhJEPl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 11:41:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34020 "EHLO
+        id S235979AbhJEPm1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 11:42:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235510AbhJEPl1 (ORCPT
+        with ESMTP id S230059AbhJEPmZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 11:41:27 -0400
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58FC7C061749
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 08:39:37 -0700 (PDT)
-Received: by mail-io1-xd2c.google.com with SMTP id p68so199764iof.6
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 08:39:37 -0700 (PDT)
+        Tue, 5 Oct 2021 11:42:25 -0400
+Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AEF0C061749;
+        Tue,  5 Oct 2021 08:40:35 -0700 (PDT)
+Received: by mail-oo1-xc29.google.com with SMTP id e19-20020a4a7353000000b002b5a2c0d2b8so6543595oof.3;
+        Tue, 05 Oct 2021 08:40:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Jn/8ah9SoyFj7/AW/wHvLR/E0NKkVYESoUG4F0G7wes=;
-        b=f9xqUyzRkkv5jK2D9eJy++YNj6qTjlTkV8LNjYsHXR5hvKLfMpJp7XMAHvfc1LXbza
-         fukG3CzYA7x41zb93VjrPWya2JERm8bljAH1iIC1Ex4rMw1onFVPtSEU722Laf/p58V5
-         wRh9Pwz/I9diTXBAUmMJfu2fjeu4HjskBTB1k=
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:reply-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=5QktpwidiajSgJvIim8VKPelrfPrxs7aTCcg3SgMOnQ=;
+        b=LrJydlGqf2IRWbCkEuUKMLD9qxKoltfdqfE4dgB/X732p4nit+b4w157mj+ialGptg
+         cCCdKSMuHXHBWYskXuKDs9Uut4xCe7CFE5Z8FvgY3u6wNIClzHkn3vf6I0bz71EhoOGh
+         PHcHmP1CMQMhSg6xVG2vxqqzjc5scRnD1m1ic4xtkXtecYecJuULGD6qWue4CLgqdXbU
+         JWpupOpwyflNReq2Ac622+QH1Whqi9kncjtlRCRSzCifgymWQujIF4b3EfKFN9k0nwlx
+         JPtmDkMHVKIvzkWcTAnAO7jAgUTZTO1IppGOtkAaGopor6lP+8zVyRYxfrgdqeEL/UK4
+         dlTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Jn/8ah9SoyFj7/AW/wHvLR/E0NKkVYESoUG4F0G7wes=;
-        b=ShgFP6oEwTlSdKxjtK7L1ceOxQteGPdBk1PEvXZvl52vgZ35mN4CmlRZqABy/oazbC
-         E9RLDvsjz/7SC18ZyaZRxcHE73UTFfolxoODFFuJ0u4piPTZ4OnuRGtFWIFrDwv2erR4
-         0N2nJ7nVOMgpgiiG/agLW0JJ+nDAsjdv1YeemIqCa0FMjxuAzk1xEhCz51FPUrMZEIJz
-         cQmPX8iWwrTNPLDLejI0Hwf5DKyEppbimjn5/9lVRqT0qHaXv4sgdagkLutZmc5exo3A
-         BzM8I6V6/12JXwsDdotQrq1Jqbc5JMBOHTb7TPOcc57A15giIhrDiz1sxTHmINyMI1PQ
-         M+UQ==
-X-Gm-Message-State: AOAM533IZGTIMwbVfrho0i2rZ0CKHPI4bKfYUBhMjb70YPQIv8U/2QMs
-        lw6gX0r2evOjzGPrGlj9LqJGwTf37UIjSA==
-X-Google-Smtp-Source: ABdhPJzfVbP9FCPyzKPRh1wCPaiAgls0wUWinwV7gSMuCQxsiPPPvcLoY5LAtTniPYZ6eK5Y5b7lpA==
-X-Received: by 2002:a6b:7118:: with SMTP id q24mr2794190iog.103.1633448376459;
-        Tue, 05 Oct 2021 08:39:36 -0700 (PDT)
-Received: from mail-il1-f180.google.com (mail-il1-f180.google.com. [209.85.166.180])
-        by smtp.gmail.com with ESMTPSA id j20sm11177859ioo.35.2021.10.05.08.39.34
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Oct 2021 08:39:34 -0700 (PDT)
-Received: by mail-il1-f180.google.com with SMTP id y15so22234547ilu.12
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 08:39:34 -0700 (PDT)
-X-Received: by 2002:a05:6e02:1989:: with SMTP id g9mr2013043ilf.165.1633448374264;
- Tue, 05 Oct 2021 08:39:34 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :reply-to:references:mime-version:content-disposition:in-reply-to;
+        bh=5QktpwidiajSgJvIim8VKPelrfPrxs7aTCcg3SgMOnQ=;
+        b=UCwNxUXJIjmb/0ik6kc7P3+2z2xZ24KwzdvZCrD8fjXXJea79RemrgOQzi6ZQkPa7h
+         R/+em0PBdHdzqKOMOysnjvL0Y1JDrn1ib/QWhcnnHcYSGY/KApO/dS3SdAToTRb4k0HK
+         77YBtKAjeoslVtJsqs7CzPFxNCU+z1o8cLa0hQqKV12JRy+sgHl64yp31teglb/mn9uC
+         YggYGw4x4ojNDHVINbxFDGCkF9871/SFKeHRyegbI8w538G2eUAWT6mlW4el6WsR5BPE
+         yb9AycGt/9qZyuQPkTtya8pLjgnG5qOGxvVjLps/q6Cj2cCinxV6qyx9+EGc+OHGILaH
+         buBQ==
+X-Gm-Message-State: AOAM533w47oTKH3RUDgQydBaqnXuYkNKO1ypRCKjRwiDRDfRfbwm/uUW
+        4gtiwr9+TKy9lm8yWGMRQ2503wlbag==
+X-Google-Smtp-Source: ABdhPJzHlCKXoqun8+eMsIBoGBDZwo9BLOIQP/FgDYKi9BIHYuRSRjpt7qabwEBqbV9m6/FNDHKXCg==
+X-Received: by 2002:a4a:e292:: with SMTP id k18mr13915115oot.80.1633448434304;
+        Tue, 05 Oct 2021 08:40:34 -0700 (PDT)
+Received: from serve.minyard.net (serve.minyard.net. [2001:470:b8f6:1b::1])
+        by smtp.gmail.com with ESMTPSA id e2sm3428597ooh.40.2021.10.05.08.40.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Oct 2021 08:40:33 -0700 (PDT)
+Sender: Corey Minyard <tcminyard@gmail.com>
+Received: from minyard.net (unknown [IPv6:2001:470:b8f6:1b:1ce5:3fb4:8fe9:30d1])
+        by serve.minyard.net (Postfix) with ESMTPSA id F22D2180053;
+        Tue,  5 Oct 2021 15:40:32 +0000 (UTC)
+Date:   Tue, 5 Oct 2021 10:40:31 -0500
+From:   Corey Minyard <minyard@acm.org>
+To:     Colin King <colin.king@canonical.com>
+Cc:     openipmi-developer@lists.sourceforge.net,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [Openipmi-developer] [PATCH][next] ipmi: ipmb: Fix off-by-one
+ size check on rcvlen
+Message-ID: <20211005154031.GD5381@minyard.net>
+Reply-To: minyard@acm.org
+References: <20211005151611.305383-1-colin.king@canonical.com>
 MIME-Version: 1.0
-References: <20210726231351.655302-1-bjorn.andersson@linaro.org>
- <CAD=FV=UGtHXD==Yy8CVCOioYGb=2hqGQOoNWftD1Jj7OiEp51g@mail.gmail.com>
- <YVd3YdfgFVc0Br5T@ripper> <CAD=FV=U=xVLuKOYHbGPTkLjGa8_U+F1ZtEvJt4LGaRuR5SsKFw@mail.gmail.com>
- <YVumL1lHLqtb/HKS@ripper>
-In-Reply-To: <YVumL1lHLqtb/HKS@ripper>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Tue, 5 Oct 2021 08:39:21 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=W9uKq00wXn4H1ax0u2D=R8Wn3J-Je43uxcPyDtk7AK7Q@mail.gmail.com>
-Message-ID: <CAD=FV=W9uKq00wXn4H1ax0u2D=R8Wn3J-Je43uxcPyDtk7AK7Q@mail.gmail.com>
-Subject: Re: [RFC] drm/msm/dp: Allow attaching a drm_panel
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Kuogee Hsieh <khsieh@codeaurora.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Vara Reddy <varar@codeaurora.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Chandan Uddaraju <chandanu@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211005151611.305383-1-colin.king@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, Oct 05, 2021 at 04:16:11PM +0100, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> There is an off-by-one bounds check on the rcvlen causing a potential
+> out of bounds write on iidev->rcvmsg. Fix this by using the >= operator
+> on the bounds check rather than the > operator.
 
-On Mon, Oct 4, 2021 at 6:09 PM Bjorn Andersson
-<bjorn.andersson@linaro.org> wrote:
->
-> On Mon 04 Oct 17:36 PDT 2021, Doug Anderson wrote:
->
-> > Hi,
-> >
-> > On Fri, Oct 1, 2021 at 2:00 PM Bjorn Andersson
-> > <bjorn.andersson@linaro.org> wrote:
-> > >
-> > > On Fri 27 Aug 13:52 PDT 2021, Doug Anderson wrote:
-> > >
-> > > > Hi,
-> > > >
-> > > > On Mon, Jul 26, 2021 at 4:15 PM Bjorn Andersson
-> > > > <bjorn.andersson@linaro.org> wrote:
-> > > > >
-> > > > > +static int dp_parser_find_panel(struct dp_parser *parser)
-> > > > > +{
-> > > > > +       struct device_node *np = parser->pdev->dev.of_node;
-> > > > > +       int rc;
-> > > > > +
-> > > > > +       rc = drm_of_find_panel_or_bridge(np, 2, 0, &parser->drm_panel, NULL);
-> > > >
-> > > > Why port 2? Shouldn't this just be port 1 always? The yaml says that
-> > > > port 1 is "Output endpoint of the controller". We should just use port
-> > > > 1 here, right?
-> > > >
-> > >
-> > > Finally got back to this, changed it to 1 and figured out why I left it
-> > > at 2.
-> > >
-> > > drm_of_find_panel_or_bridge() on a DP controller will find the of_graph
-> > > reference to the USB-C controller, scan through the registered panels
-> > > and conclude that the of_node of the USB-C controller isn't a registered
-> > > panel and return -EPROBE_DEFER.
-> >
-> > I'm confused, but maybe it would help if I could see something
-> > concrete. Is there a specific board this was happening on?
-> >
->
-> Right, let's make this more concrete with a snippet from the actual
-> SC8180x DT.
->
-> > Under the DP node in the device tree I expect:
-> >
-> > ports {
-> >   port@1 {
-> >     reg = <1>;
-> >     edp_out: endpoint {
-> >       remote-endpoint = <&edp_panel_in>;
-> >     };
-> >   };
-> > };
-> >
->
-> /* We got a panel */
-> panel {
->     ...
->     ports {
->         port {
->             auo_b133han05_in: endpoint {
->                 remote-endpoint = <&mdss_edp_out>;
->             };
->         };
->     };
-> };
->
-> /* And a 2-port USB-C controller */
-> type-c-controller {
->     ...
->     connector@0 {
->         ports {
->             port@0 {
->                 reg = <0>;
->                 ucsi_port_0_dp: endpoint {
->                     remote-endpoint = <&dp0_mode>;
->                 };
->             };
->
->             port@1 {
->                 reg = <1>;
->                 ucsi_port_0_switch: endpoint {
->                     remote-endpoint = <&primary_qmp_phy>;
->                 };
->             };
->         };
->     };
->
->         connector@1 {
->         ports {
->             port@0 {
->                 reg = <0>;
->                 ucsi_port_1_dp: endpoint {
->                     remote-endpoint = <&dp1_mode>;
->                 };
->             };
->
->             port@1 {
->                 reg = <1>;
->                 ucsi_port_1_switch: endpoint {
->                     remote-endpoint = <&second_qmp_phy>;
->                 };
->             };
->         };
->         };
-> };
->
-> /* And then our 2 DP and single eDP controllers */
-> &mdss_dp0 {
->     ports {
->         port@1 {
->             reg = <1>;
->             dp0_mode: endpoint {
->                 remote-endpoint = <&ucsi_port_0_dp>;
->             };
->         };
->     };
-> };
->
-> &mdss_dp1 {
->     ports {
->         port@1 {
->             reg = <1>;
->             dp1_mode: endpoint {
->                 remote-endpoint = <&ucsi_port_1_dp>;
->             };
->         };
->     };
-> };
->
-> &mdss_edp {
->     ports {
->         port@1 {
->             reg = <1>;
->             mdss_edp_out: endpoint {
->                 remote-endpoint = <&auo_b133han05_in>;
->             };
->         };
->     };
-> };
->
-> > If you have "port@1" pointing to a USB-C controller but this instance
-> > of the DP controller is actually hooked up straight to a panel then
-> > you should simply delete the "port@1" that points to the typeC and
-> > replace it with one that points to a panel, right?
-> >
->
-> As you can see, port 1 on &mdss_dp0 and &mdss_dp1 points to the two UCSI
-> connectors and the eDP points to the panel, exactly like we agreed.
->
-> So now I call:
->     drm_of_find_panel_or_bridge(dev->of_node, 1, 0, &panel, NULL);
->
-> which for the two DP nodes will pass respective UCSI connector to
-> drm_find_panel() and get EPROBE_DEFER back - because they are not on
-> panel_list.
->
-> There's nothing indicating in the of_graph that the USB connectors
-> aren't panels (or bridges), so I don't see a way to distinguish the two
-> types remotes.
+Got it, thanks.
 
-As far as I can tell the way this would be solved would be to actually
-pass &bridge in and then make sure that a bridge would be in place for
-the DP connector. In the full DP case you'll get an -EPROBE_DEFER if
-the connector hasn't been probed but once it's probed then it should
-register as a bridge and thus give you the info you need (AKA that
-this isn't a panel).
+-corey
 
-I haven't done the digging to see how all this works, but according to
-Laurent [1]: "Physical connectors are already handled as bridges, see
-drivers/gpu/drm/bridge/display-connector.c"
-
-So basically I think this is solvable in code and there's no reason to
-mess with the devicetree bindings to solve this problem. Does that
-sound right?
-
-[1] https://lore.kernel.org/r/YUvMv+Y8tFcWPEHd@pendragon.ideasonboard.com/
+> 
+> Addresses-Coverity: ("Out-of-bounds write")
+> Fixes: 0ba0c3c5d1c1 ("ipmi:ipmb: Add initial support for IPMI over IPMB")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  drivers/char/ipmi/ipmi_ipmb.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/char/ipmi/ipmi_ipmb.c b/drivers/char/ipmi/ipmi_ipmb.c
+> index b10a1fd9c563..77ebec4ed28e 100644
+> --- a/drivers/char/ipmi/ipmi_ipmb.c
+> +++ b/drivers/char/ipmi/ipmi_ipmb.c
+> @@ -192,7 +192,7 @@ static int ipmi_ipmb_slave_cb(struct i2c_client *client,
+>  		break;
+>  
+>  	case I2C_SLAVE_WRITE_RECEIVED:
+> -		if (iidev->rcvlen > sizeof(iidev->rcvmsg))
+> +		if (iidev->rcvlen >= sizeof(iidev->rcvmsg))
+>  			iidev->overrun = true;
+>  		else
+>  			iidev->rcvmsg[iidev->rcvlen++] = *val;
+> -- 
+> 2.32.0
+> 
+> 
+> 
+> _______________________________________________
+> Openipmi-developer mailing list
+> Openipmi-developer@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/openipmi-developer
