@@ -2,154 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3FED421EF1
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 08:41:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A577F421EF3
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 08:41:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231751AbhJEGnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 02:43:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47504 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231913AbhJEGm6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 02:42:58 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04293C061745
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 23:41:06 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id j10-20020a1c230a000000b0030d523b6693so1979091wmj.2
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 23:41:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=6wind.com; s=google;
-        h=reply-to:subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=RQd1eb7LuGWMGXLW0Toj0Xy2/OgdsTmnaijiP9bfs9U=;
-        b=RPHqYA3e3EwHYTUB3ZxwTfsF8lSLbP97gBZAXp/Qh0rKVVJRSUJxMFhjfA6T1BeCBm
-         LW4SosYc0ZipAwZLYXCfNfqjzrgBqNBY8TwUpUlEVb3Mu6jb4bCgYL4traaopI3szxsR
-         LlKpRmFJN8ZXa9cfVqclrLQuDxA7t9EGWF7TohOFrkvIZl0f4w/8hqhL212bHnMSxhW8
-         6kOgzrvrz4U696/iQD37Lb/vogdOVzXvt65pwGrc5P0FWoyjlWhPyBh5iIZ/+HkSIGWk
-         2B0FxFD9vacmkuPphLWv8iH1echfyjf7R/KF73PVEIgcEqRf5fbocGsugZ8ay3bgjHv5
-         Zc1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:reply-to:subject:to:cc:references:from
-         :organization:message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=RQd1eb7LuGWMGXLW0Toj0Xy2/OgdsTmnaijiP9bfs9U=;
-        b=mUYB656cXMlcjy4EaNDgAUUuE59rtxpXW6IWOCQMo/fAb/aPdzu8oiUwASzc2EfuRN
-         XS1gCl/9ZHe4gAaVkZG9XsYYxYH1/3GxtFxvKrWvnV2FQ9AFY6vtm5Hcmz9MTPJwpDG+
-         Zh5YCMkXWwfn4FUq2sFtAR5yIBDADBel5b3UZL0KGS6ZXcEngZDV2llnwLcFwPMRuszK
-         jZgMvDcILBEMHQVjiP7IjB/jpsGOQhsixdFdfNwBQVPD3vcAUcPDkHCNboSJzazzBPE1
-         JXs0a0+NeqQlEFVxyaHs8rDrsU82JqJlRSlIHbU7jHAX1SqEPHMpHKxJYVKMQS7IZ7Uf
-         lVIQ==
-X-Gm-Message-State: AOAM531ZeG+3Iq42pYKvdbz3kYS00/NG7pm5w7+NsmPElot8UlHbuoZ2
-        eIIDwu6Kf1BEXrM/58br9CPmRsPab85vOQ==
-X-Google-Smtp-Source: ABdhPJwHYdrAmn7HqGpTOF+tOwfSklRJAwMdUfFhaC6YHYzyjRrTA6T939GnW35iI62OmGc1AXFUzA==
-X-Received: by 2002:a7b:c5d8:: with SMTP id n24mr1573727wmk.51.1633416064597;
-        Mon, 04 Oct 2021 23:41:04 -0700 (PDT)
-Received: from ?IPv6:2a01:e0a:410:bb00:573:1b46:b04d:a14c? ([2a01:e0a:410:bb00:573:1b46:b04d:a14c])
-        by smtp.gmail.com with ESMTPSA id c17sm772160wmr.15.2021.10.04.23.41.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Oct 2021 23:41:04 -0700 (PDT)
-Reply-To: nicolas.dichtel@6wind.com
-Subject: Re: [PATCH net-next v6] net: openvswitch: IPv6: Add IPv6 extension
- header support
-To:     Cpp Code <cpp.code.lv@gmail.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        pshelar@ovn.org, "David S. Miller" <davem@davemloft.net>,
-        ovs dev <dev@openvswitch.org>, linux-kernel@vger.kernel.org
-References: <20210928194727.1635106-1-cpp.code.lv@gmail.com>
- <20210928174853.06fe8e66@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <d1e5b178-47f5-9791-73e9-0c1f805b0fca@6wind.com>
- <20210929061909.59c94eff@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAASuNyVe8z1R6xyCfSAxZbcrL3dej1n8TXXkqS-e8QvA6eWd+w@mail.gmail.com>
- <b091ef39-dc29-8362-4d31-0a9cc498e8ea@6wind.com>
- <CAASuNyW81zpSu+FGSDuUrOsyqJj7SokZtvX081BbeXi0ARBaYg@mail.gmail.com>
-From:   Nicolas Dichtel <nicolas.dichtel@6wind.com>
-Organization: 6WIND
-Message-ID: <a4894aef-b82a-8224-611d-07be229f5ebe@6wind.com>
-Date:   Tue, 5 Oct 2021 08:41:03 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S232447AbhJEGni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 02:43:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33710 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232361AbhJEGnh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 02:43:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BB2466101E;
+        Tue,  5 Oct 2021 06:41:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1633416107;
+        bh=f3ZK9sPZ3xIV5pqs7xzihpi018YXotDED4kPjdkFiB8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=O46IOlfbSVozYGhCRIa/Qi5Tp4pqZb4skC4k/lFuuajp98qssgk0/0Gk3FunLefJY
+         XkNH4Pw1nyGVFfzS/g1HFpIqwpmeSyf8rWTF6Jsi/8p9AUFfbN51MRRmlpPnXT9Jmp
+         JybBW3WcOeaHCfU7N3KW3vQYSRuSAsC9Gjqp7mOU=
+Date:   Tue, 5 Oct 2021 08:41:45 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH 5.14 000/172] 5.14.10-rc1 review
+Message-ID: <YVvzqdhF6EJ24Kh5@kroah.com>
+References: <20211004125044.945314266@linuxfoundation.org>
+ <CA+G9fYuZf8qJJnUMfL8jXScgvX17MLTVDNNXAXYGMS_paBOfHg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAASuNyW81zpSu+FGSDuUrOsyqJj7SokZtvX081BbeXi0ARBaYg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+G9fYuZf8qJJnUMfL8jXScgvX17MLTVDNNXAXYGMS_paBOfHg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 01/10/2021 à 22:42, Cpp Code a écrit :
-> On Fri, Oct 1, 2021 at 12:21 AM Nicolas Dichtel
-> <nicolas.dichtel@6wind.com> wrote:
->>
->> Le 30/09/2021 à 18:11, Cpp Code a écrit :
->>> On Wed, Sep 29, 2021 at 6:19 AM Jakub Kicinski <kuba@kernel.org> wrote:
->>>>
->>>> On Wed, 29 Sep 2021 08:19:05 +0200 Nicolas Dichtel wrote:
->>>>>> /* Insert a kernel only KEY_ATTR */
->>>>>> #define OVS_KEY_ATTR_TUNNEL_INFO    __OVS_KEY_ATTR_MAX
->>>>>> #undef OVS_KEY_ATTR_MAX
->>>>>> #define OVS_KEY_ATTR_MAX            __OVS_KEY_ATTR_MAX
->>>>> Following the other thread [1], this will break if a new app runs over an old
->>>>> kernel.
->>>>
->>>> Good point.
->>>>
->>>>> Why not simply expose this attribute to userspace and throw an error if a
->>>>> userspace app uses it?
->>>>
->>>> Does it matter if it's exposed or not? Either way the parsing policy
->>>> for attrs coming from user space should have a reject for the value.
->>>> (I say that not having looked at the code, so maybe I shouldn't...)
->>>
->>> To remove some confusion, there are some architectural nuances if we
->>> want to extend code without large refactor.
->>> The ovs_key_attr is defined only in kernel side. Userspace side is
->>> generated from this file. As well the code can be built without kernel
->>> modules.
->>> The code inside OVS repository and net-next is not identical, but I
->>> try to keep some consistency.
->> I didn't get why OVS_KEY_ATTR_TUNNEL_INFO cannot be exposed to userspace.
+On Tue, Oct 05, 2021 at 09:34:22AM +0530, Naresh Kamboju wrote:
+> On Mon, 4 Oct 2021 at 18:43, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > This is the start of the stable review cycle for the 5.14.10 release.
+> > There are 172 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> >
+> > Responses should be made by Wed, 06 Oct 2021 12:50:17 +0000.
+> > Anything received after that time might be too late.
+> >
+> > The whole patch series can be found in one patch at:
+> >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.10-rc1.gz
+> > or in the git tree and branch at:
+> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
+> > and the diffstat can be found below.
+> >
+> > thanks,
+> >
+> > greg k-h
 > 
-> OVS_KEY_ATTR_TUNNEL_INFO is compressed version of OVS_KEY_ATTR_TUNNEL
-> and for clarity purposes its not exposed to userspace as it will never
-> use it.
-> I would say it's a coding style as it would not brake anything if exposed.
-In fact, it's the best way to keep the compatibility in the long term.
-You can define it like this:
-OVS_KEY_ATTR_TUNNEL_INFO,  /* struct ip_tunnel_info, reserved for kernel use */
+> Regression found on i386 and x86.
+> following kernel warning reported on stable-rc linux-5.14.y while booting x86.
+> 
+> metadata:
+>   git branch: linux-5.14.y
+>   git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+>   git commit: cda15f9c69e08480d4308d0e5c62bd44324a9ff0
+>   git describe: v5.14.9-173-gcda15f9c69e0
+>   make_kernelversion: 5.14.10-rc1
+>   kernel-config:
+> http://snapshots.linaro.org/openembedded/lkft/lkft/sumo/intel-corei7-64/lkft/linux-stable-rc-5.14/36/config
+> 
+> Kernel crash:
+> --------------
+> [   22.356755] =========================
+> [   22.360414] WARNING: held lock freed!
+> [   22.364071] 5.14.10-rc1 #1 Not tainted
+> [   22.367824] -------------------------
+> [   22.371489] systemd-network/341 is freeing memory
+> ffff9d21cbea0000-ffff9d21cbea06bf, with a lock still held there!
+> [   22.381828] ffff9d21cbea0120 (sk_lock-AF_INET){+.+.}-{0:0}, at:
+> sk_common_release+0x21/0x100
+> [   22.384624] igb 0000:02:00.0 eno2: renamed from eth1
+> [   22.390260] 2 locks held by systemd-network/341:
+> [   22.390261]  #0: ffff9d21c406eb10
+> (&sb->s_type->i_mutex_key#6){+.+.}-{3:3}, at: __sock_release+0x32/0xc0
+> [   22.390267]  #1: ffff9d21cbea0120 (sk_lock-AF_INET){+.+.}-{0:0},
+> at: sk_common_release+0x21/0x100
+> [   22.390272]
+> [   22.390272] stack backtrace:
+> [   22.390273] CPU: 2 PID: 341 Comm: systemd-network Not tainted 5.14.10-rc1 #1
+> [   22.390275] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS
+> 2.0b 07/27/2017
+> [   22.390276] Call Trace:
+> [   22.390278]  dump_stack_lvl+0x49/0x5e
+> [   22.390281]  dump_stack+0x10/0x12
+> [   22.390283]  debug_check_no_locks_freed+0x111/0x120
+> [   22.390286]  slab_free_freelist_hook+0x119/0x1d0
+> [   22.390289]  kmem_cache_free+0x102/0x540
+> [   22.390291]  ? __sk_destruct+0x145/0x210
+> [   22.390294]  __sk_destruct+0x145/0x210
+> [   22.390296]  sk_destruct+0x48/0x50
+> [   22.409489] ata_id (348) used greatest stack depth: 11952 bytes left
+> [   22.418194]  __sk_free+0x2f/0xc0
+> [   22.418198]  sk_free+0x26/0x40
+> [   22.418200]  sk_common_release+0xa9/0x100
+> [   22.487567]  udp_lib_close+0x9/0x10
+> [   22.491057]  inet_release+0x44/0x80
+> [   22.494542]  __sock_release+0x42/0xc0
+> [   22.498209]  sock_close+0x18/0x20
+> [   22.501525]  __fput+0xb5/0x260
+> [   22.504578]  ____fput+0xe/0x10
+> [   22.507636]  task_work_run+0x6f/0xc0
+> [   22.511216]  exit_to_user_mode_prepare+0x1f6/0x200
+> [   22.515999]  syscall_exit_to_user_mode+0x1d/0x50
+> [   22.520610]  do_syscall_64+0x67/0x80
+> [   22.524190]  ? irqentry_exit+0x75/0x80
+> [   22.527940]  ? exc_page_fault+0x6c/0x200
+> [   22.531859]  ? asm_exc_page_fault+0x8/0x30
+> [   22.535950]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> [   22.541002] RIP: 0033:0x7f52fe67e641
+> [   22.544580] Code: f7 d8 64 89 02 48 c7 c0 ff ff ff ff c3 66 2e 0f
+> 1f 84 00 00 00 00 00 66 90 8b 05 aa cd 20 00 85 c0 75 16 b8 03 00 00
+> 00 0f 05 <48> 3d 00 f0 ff ff 77 3f c3 66 0f 1f 44 00 00 53 89 fb 48 83
+> ec 10
+> [   22.563318] RSP: 002b:00007ffe31761878 EFLAGS: 00000246 ORIG_RAX:
+> 0000000000000003
+> [   22.570884] RAX: 0000000000000000 RBX: 0000000000000010 RCX: 00007f52fe67e641
+> [   22.578007] RDX: 00000000000073b0 RSI: 0000000000000000 RDI: 0000000000000010
+> [   22.585130] RBP: 00007f52feed8338 R08: 000055893cf103c3 R09: 0000000000000078
+> [   22.592253] R10: 0000000000000004 R11: 0000000000000246 R12: 0000000000000000
+> [   22.599379] R13: 00007ffe317618c0 R14: 0000000000000000 R15: 00007ffe31762a60
+> 
+> 
+> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> 
+> ref:
+> https://lkft.validation.linaro.org/scheduler/job/3658919#L1477
+> 
+> -- 
+> Linaro LKFT
+> https://lkft.linaro.org
 
-> 
->>
->>>
->>> JFYI This is the file responsible for generating userspace part:
->>> https://github.com/openvswitch/ovs/blob/master/build-aux/extract-odp-netlink-h
->>> This is the how corresponding file for ovs_key_attr looks inside OVS:
->>> https://github.com/openvswitch/ovs/blob/master/datapath/linux/compat/include/linux/openvswitch.h
->>> one can see there are more values than in net-next version.
->> There are still some '#ifdef __KERNEL__'. The standard 'make headers_install'
->> filters them. Why not using this standard mechanism?
-> 
-> Could you elaborate on this, I don't quite understand the idea!? Which
-> ifdef you are referring, the one along OVS_KEY_ATTR_TUNNEL_INFO or
-> some other?
-My understanding is that this file is used for the userland third party, thus,
-theoretically, there should be no '#ifdef __KERNEL__'. uapi headers generated
-with 'make headers_install' are filtered to remove them.
-
-> 
->>
->> In this file, there are two attributes (OVS_KEY_ATTR_PACKET_TYPE and
->> OVS_KEY_ATTR_ND_EXTENSIONS) that doesn't exist in the kernel.
->> This will also breaks if an old app runs over a new kernel. I don't see how it
->> is possible to keep the compat between {old|new} {kernel|app}.
-> 
-> Looks like this most likely is a bug while working on multiple
-> versions of code.  Need to do add more padding.
-As said above, just define the same uapi for everybody and the problem is gone
-forever.
-
-
-Regards,
-Nicolas
+Any chance at bisection?
