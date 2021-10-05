@@ -2,80 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36193422755
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 15:06:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B25A422750
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 15:05:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234762AbhJENIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 09:08:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36462 "EHLO mail.kernel.org"
+        id S234740AbhJENHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 09:07:14 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:49786 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233365AbhJENIA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 09:08:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AA93C61526;
-        Tue,  5 Oct 2021 13:06:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633439169;
-        bh=LBXeQPdnongCHHFOfC+fjyOcJRys5u65ipIxCzTick4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=gDHzo93l854WzFerwfvh36GtjhaZ7Weyyg6jAhTVjRIj7T7AbKsMTsNzVqZMuu7K4
-         TcTSD3E+LAyL1d9ggksxUB8GNR7m7FN0TcfCOzrjXBZQkWedsCOg/XqD1JLt+gRsfG
-         nwOwc1smfbytVhQmZSx3xyUmvdAUjpA1IBOqMwYWFtWP973OpeOAWJmRhVJonOSZS/
-         rA5+tBKp8QAAcN9v1h0BJaGkykK7h4pdw/ucljGjQSp35BdaUvcoiVqidquW9tBzhF
-         GlzBDQXxnWVLhonQO6pdteY37AcYrkm0wFRB5st+2UxoEll2jlfcnv2f6Sbf3Gcjix
-         JPzcYLsMKV0yw==
-Received: by mail-ed1-f44.google.com with SMTP id v18so77109170edc.11;
-        Tue, 05 Oct 2021 06:06:09 -0700 (PDT)
-X-Gm-Message-State: AOAM533+xUuZhoqL5+eq+Sue7UBgxzGzVpHSsBDjnygZAStWaJcfZ2PN
-        K6pb/AZDrPJSC+IVWt58V1pDL8QW0VEcv1kmEw==
-X-Google-Smtp-Source: ABdhPJzaDPA+eqvi7RrlFbwXQ2RyM9quXXqzBd25W7ggPUd88sGd4fU1jywhVaFqcYfoqXwS07gace2G8er+DPiqaDA=
-X-Received: by 2002:a50:d903:: with SMTP id t3mr25974872edj.70.1633439126004;
- Tue, 05 Oct 2021 06:05:26 -0700 (PDT)
+        id S233666AbhJENHM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 09:07:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=GjSw70UXArEHRQSHVBHoPAYrTU+PZTUZHzIDM8YnLPc=; b=OhpLmBSdICkgEyNuofNjis7duX
+        jxlY5aNa1IpRqsEWFjqmb+61waOfeLwzsEnJF4v2beuEsdV/ngEpRtunNDcmcDwqNX+8qjWJhqx5N
+        fjMfLSNN+OnsXe37Jix3RiAt+EUTQPrvf7Ek4PyPIS6+M4sGwBq/aEpwhwaUD5hgTvtE=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mXk8D-009h5c-9r; Tue, 05 Oct 2021 15:05:17 +0200
+Date:   Tue, 5 Oct 2021 15:05:17 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Marcel Ziswiler <marcel@ziswiler.com>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Olof Johansson <olof@lixom.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        soc@kernel.org
+Subject: Re: [PATCH v1 4/4] ARM: dts: mvebu: add device tree for netgear
+ gs110emx switch
+Message-ID: <YVxNjc0LrYp4SXtP@lunn.ch>
+References: <20211005060334.203818-1-marcel@ziswiler.com>
+ <20211005060334.203818-5-marcel@ziswiler.com>
 MIME-Version: 1.0
-References: <20211004112550.27546-1-j-keerthy@ti.com> <20211004112550.27546-2-j-keerthy@ti.com>
- <1633436798.497006.3226792.nullmailer@robh.at.kernel.org>
-In-Reply-To: <1633436798.497006.3226792.nullmailer@robh.at.kernel.org>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Tue, 5 Oct 2021 08:05:12 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqKLuE+RhH+T4UKecMhRjbm69rwA1a2+FjrnMPKUf13J6A@mail.gmail.com>
-Message-ID: <CAL_JsqKLuE+RhH+T4UKecMhRjbm69rwA1a2+FjrnMPKUf13J6A@mail.gmail.com>
-Subject: Re: [PATCH 1/4] dt-bindings: thermal: k3-j72xx: Add VTM bindings documentation
-To:     Keerthy <j-keerthy@ti.com>
-Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Tero Kristo <kristo@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Amit Kucheria <amitk@kernel.org>,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211005060334.203818-5-marcel@ziswiler.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 5, 2021 at 7:26 AM Rob Herring <robh@kernel.org> wrote:
->
-> On Mon, 04 Oct 2021 16:55:47 +0530, Keerthy wrote:
-> > Add VTM bindings documentation. In the Voltage Thermal
-> > Management Module(VTM), K3 J72XX supplies a voltage
-> > reference and a temperature sensor feature that are gathered in the band
-> > gap voltage and temperature sensor (VBGAPTS) module. The band
-> > gap provides current and voltage reference for its internal
-> > circuits and other analog IP blocks. The analog-to-digital
-> > converter (ADC) produces an output value that is proportional
-> > to the silicon temperature.
-> >
-> > Signed-off-by: Keerthy <j-keerthy@ti.com>
-> > ---
-> >  .../bindings/thermal/ti,j72xx-thermal.yaml    | 58 +++++++++++++++++++
-> >  1 file changed, 58 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/thermal/ti,j72xx-thermal.yaml
-> >
->
-> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-> on your patch (DT_CHECKER_FLAGS is new in v5.13):
+> +		mdio {
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +
+> +			switch0phy0: switch0phy0@1 {
+> +				reg = <0x1>;
+> +			};
 
-Woot, TI has blacklisted me:
+> +
+> +			port@1 {
+> +				label = "lan1";
+> +				phy-handle = <&switch0phy0>;
+> +				reg = <1>;
+> +			};
 
-The response from the remote server was:
-553 Sorry, your email address has been blacklisted. Please contact
-Texas Instruments Inc to have yourself removed.
+You numbering of the phy labels is a bit confusing here. Both the port
+and the PHY use reg=<1>. So i would use the label
+
+switch0phy1: switch0phy1@1 
+
+     Andrew
