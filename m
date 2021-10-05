@@ -2,91 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D31744224F4
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 13:24:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A36EA4224FA
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 13:26:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234281AbhJEL0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 07:26:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57768 "EHLO
+        id S234360AbhJEL2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 07:28:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233842AbhJEL0f (ORCPT
+        with ESMTP id S232658AbhJEL2F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 07:26:35 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED00CC061749
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 04:24:44 -0700 (PDT)
+        Tue, 5 Oct 2021 07:28:05 -0400
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0F00C061749;
+        Tue,  5 Oct 2021 04:26:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=2G6TJ80fE3ZRcTQr8pZQn2p5sAs/HIJkcuih26ApsG4=; b=B2f/EdpvIFQV22yYWIjsFB9M1e
-        Uug0kKT8Tyw4EFkRAXVRvcUudfl0xA79Oaz6KZ+YXBa3lfQIS2AZYv2F/71RA+OvawCaywAbj9Gvj
-        1JQVVEjMU4egoJbFXcB6mGPsrVpEir3TbC9rblo4ulfeYaJGvIAf9cvCYkomEjmSrvC2S88jDz1C4
-        OCH0otJ3YLWMLGUHB3EXwpYUXTyiMxIj8v0cyFMnf01a7nujsjAvFzbXvEdMCgbKHAG+a79vKa6y0
-        NaZhbWJUOnPgasumLgyjn5BLAtnpDrhXeX33YwOonN0zpn5V2/TFTiN1AkRLw6c/uYxzgIqf4cJ68
-        s//WT/zQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mXiXv-000LRa-9Z; Tue, 05 Oct 2021 11:24:05 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DA2F93002DE;
-        Tue,  5 Oct 2021 13:23:42 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id B9FE92038E1F9; Tue,  5 Oct 2021 13:23:42 +0200 (CEST)
-Date:   Tue, 5 Oct 2021 13:23:42 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     "Chang S. Bae" <chang.seok.bae@intel.com>, bp@suse.de,
-        luto@kernel.org, mingo@kernel.org, x86@kernel.org,
-        len.brown@intel.com, lenb@kernel.org, dave.hansen@intel.com,
-        thiago.macieira@intel.com, jing2.liu@intel.com,
-        ravi.v.shankar@intel.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v11 15/29] x86/arch_prctl: Create
- ARCH_SET_STATE_ENABLE/ARCH_GET_STATE_ENABLE
-Message-ID: <YVw1vvy0QUKcKaxU@hirez.programming.kicks-ass.net>
-References: <20211001223728.9309-1-chang.seok.bae@intel.com>
- <20211001223728.9309-16-chang.seok.bae@intel.com>
- <87o884fh3g.ffs@tglx>
- <87ilybg5ta.ffs@tglx>
+        d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
+        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+        Resent-Cc:Resent-Message-ID; bh=yXyjrs+qRyg3miUfwqFVVGS7bdkhv6JEtbu14uoGH3o=;
+        t=1633433174; x=1634642774; b=Kd6H5KMEyXmphHmqPvexQlhg+y5NXCeuZDThSmUW/H4ofq/
+        089Vb8Gbmxkaaim8peW1hS562fH/yxtXdueZdZV4DkBSJ3IVI6PPbJUJXo9AyLJCBZPZ+Wu2eNnPv
+        ywNG6edK29vj3iGhQsKKG0YZ8+55ABCmDbe2rEy2xt0g9h4EThB15wxNr359I9Pp7T9ZW8SbRAUoX
+        LpIpcldfJttAfOGaB5Ho6MKbVrMWG0l5L25WTW+MgjVa5AiUO3I0URVx9j4M6uE4bTaLT7wUd7T4s
+        WH/YxcTxQ+YzQHQ4ZPQcf5v0fcp6NWOY9BGyeIkGvbVbrGq8N2uf+xstY40eMRGg==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.95-RC2)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1mXiaD-00Fryi-Pl;
+        Tue, 05 Oct 2021 13:26:05 +0200
+Message-ID: <67cac8f7c300397f511bf55253c27d58621bda33.camel@sipsolutions.net>
+Subject: Re: [PATCH] [v17] wireless: Initial driver submission for pureLiFi
+ STA devices
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     Srinivasan Raju <srini.raju@purelifi.com>
+Cc:     mostafa.afgani@purelifi.com, Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:NETWORKING DRIVERS (WIRELESS)" 
+        <linux-wireless@vger.kernel.org>,
+        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>
+Date:   Tue, 05 Oct 2021 13:26:04 +0200
+In-Reply-To: <20211005112246.9266-1-srini.raju@purelifi.com>
+References: <20200928102008.32568-1-srini.raju@purelifi.com>
+         <20211005112246.9266-1-srini.raju@purelifi.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87ilybg5ta.ffs@tglx>
+Content-Transfer-Encoding: 8bit
+X-malware-bazaar: not-scanned
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05, 2021 at 11:49:05AM +0200, Thomas Gleixner wrote:
-> So this gives us two options:
 > 
->    1) Bitmap with proper sanity checks
-> 
->       reject (1 << 17) and (1 << 18)
->       grant (1 << 17 | 1 << 18)
-> 
->       but for sanity sake and also for ease of filtering, we want to
->       restrict a permission request to one functional block at a time.
-> 
->       #define X86_XCOMP_AMX	(1 << 17 | 1 << 18)
->       #define X86_XCOMP_XYZ1    (1 << 19)
-> 
->       But that gets a bit odd when there is a component which depends on
->       others:
-> 
->       #define X86_XCOMP_XYZ2    (1 << 19 | 1 << 20)
-> 
->    2) Facility based numerical interface, i.e.
-> 
->       #define X86_XCOMP_AMX	1
->       #define X86_XCOMP_XYZ1    2
->       #define X86_XCOMP_XYZ2    3
-> 
->       is way simpler to understand IMO.
+> ---
+> v17:
+>  - Add Light communication band
 
-I'm thinking 2 makes most sense. Perhaps we could use the highest
-feature number involved in the facility to denote it? The rationale
-being that we don't have to invent yet another enumeration and it's
-easier to figure out what's what.
+Please do this in a separate patch.
+
+johannes
+
