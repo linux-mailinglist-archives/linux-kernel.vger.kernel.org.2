@@ -2,138 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 543374230A1
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 21:15:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9599B4230B0
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 21:21:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235432AbhJETRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 15:17:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58762 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235157AbhJETRf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 15:17:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DE49261372;
-        Tue,  5 Oct 2021 19:15:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633461344;
-        bh=QlG3sQglseWfkURiKCWMosrqdWfH4HRYzxEXsFR8ogU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aa62h0WA4S9B48zmGcRHtpgkleEHVI2Tl2yoNhpNulTAl6uOBH5rqDOwhaiSTgUnF
-         Ov1K0eAn9r4wzPnVvMjOHRES4Ik7L9szrL/CXt7L3//p/DerptWqI+O/ceY1j1UMJs
-         xp6li8DLI0HOIid9eQGxoWrMw8lsOxkeb+wJ/nlCax6eRNbv779FyhCU7j+S1uWPUb
-         WVahoYc2ByBRUQez5/wT7jDflYwebnZpeNYJ/JvQ+xqFMN2oN+HoZUYIBMrNAbo10E
-         R9dFxaJYU7ZZBkPNFl6DD6outONhCVAmPqy00Dnor0krlV2wVtlPAByhEXwG+80G3r
-         JOAyXNnHkBrAw==
-Date:   Tue, 5 Oct 2021 22:15:40 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Ido Schimmel <idosch@nvidia.com>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Pirko <jiri@nvidia.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        mlxsw@nvidia.com, Moshe Shemesh <moshe@nvidia.com>,
-        netdev@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Shay Drory <shayd@nvidia.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>
-Subject: Re: [PATCH net-next v2 3/5] devlink: Allow set specific ops
- callbacks dynamically
-Message-ID: <YVykXLY7mX4K1ScW@unreal>
-References: <cover.1633284302.git.leonro@nvidia.com>
- <92971648bcad41d095d12f5296246fc44ab8f5c7.1633284302.git.leonro@nvidia.com>
- <20211004164413.60e9ce80@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <YVv/nUe63nO8o8wz@unreal>
- <20211005113213.0ee61358@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        id S229684AbhJETXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 15:23:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57734 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229662AbhJETXM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 15:23:12 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95664C061749
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 12:21:21 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id w14so154656pll.2
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 12:21:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dp7Oi0QvrWBA209df2TQmdc5am4px2pX99t2tf1pAOA=;
+        b=qeegXRnHsBlkibk5tUFoabMfu3zzlKUEKQH7rYQ28kZj6ymxw4SS/GEpOGOgEU5luQ
+         9f3CLmT4pDRCeIkZPL3qADZe7KgRF4pPRr189hXw5RQnYwKwX3VWzo1O7Yk0OybN69yN
+         JdH+1YDGcI9p9tzvNzNT6IKMCCmR/S4fXDM1D8Wj/SmpGyUp8UN9l7JeHOCmqUWAb5oz
+         GBG3ecNgmff2cNvvaXs3Q8Z2uldi6ztVehlpjtZM1REmnoVRR681ihHeCpcNEDH/Lb7b
+         tm4iiAokTt3t3P57gIsxPRxdtUAy9TJNFKYGtjWLrmo7eXmmTSBI5BWM6TLZSIWQuiN7
+         SecQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dp7Oi0QvrWBA209df2TQmdc5am4px2pX99t2tf1pAOA=;
+        b=DaKdpo5eLpAATSHg9gO3lGti1qaZX1KUo6xI192gqQwiVDFobbMw+hb4Y5S5BH4Px0
+         6U64AL3U6uZJdWKwfhZsHv3RXpxiOqojJaBtPL6lNwP845XS3UkkbGikX5kGeHc42FCa
+         sMbQYUhVdJpOrgKkiwQYUHZB1etBrJLs/JXd9y7VMe7hiAZ4THIX90nVhrmFS3PwgOmR
+         4bTRpDsTjAZAknChX6CIdlGpYfUCSgkjl4u3xG7JfFfkwGKvlRvKriCo6tRSp6rZwpu9
+         5Ve0BzB8FE3DU9OrR1HD/jTXXvKkcOod73N5rLpO7r8vfQz1j8JZimG2SpNIbFFTdHVB
+         O5/Q==
+X-Gm-Message-State: AOAM533qhWweO7ctZt44CDR77m94XbxOyWrAB96F0Cp0x28+qXDlDa04
+        8EQ5oUl8oOgsXDf4iuBNxOo=
+X-Google-Smtp-Source: ABdhPJyJTPXzQzt2fRdm8g4PPQOf0uG3dyJc5pU2jYIUzBuSTXMcR1kvR1pDwVkT0Bq1U+iQTBRFzg==
+X-Received: by 2002:a17:90a:a88a:: with SMTP id h10mr5779808pjq.226.1633461681055;
+        Tue, 05 Oct 2021 12:21:21 -0700 (PDT)
+Received: from octofox.hsd1.ca.comcast.net ([2601:641:401:1d20:ecea:c8ec:ff7b:52])
+        by smtp.gmail.com with ESMTPSA id s19sm1482211pfh.18.2021.10.05.12.21.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Oct 2021 12:21:20 -0700 (PDT)
+From:   Max Filippov <jcmvbkbc@gmail.com>
+To:     linux-xtensa@linux-xtensa.org
+Cc:     Chris Zankel <chris@zankel.net>, linux-kernel@vger.kernel.org,
+        Max Filippov <jcmvbkbc@gmail.com>
+Subject: [PATCH] xtensa: xtfpga: use CONFIG_USE_OF instead of CONFIG_OF
+Date:   Tue,  5 Oct 2021 12:21:11 -0700
+Message-Id: <20211005192111.14732-1-jcmvbkbc@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211005113213.0ee61358@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05, 2021 at 11:32:13AM -0700, Jakub Kicinski wrote:
-> On Tue, 5 Oct 2021 10:32:45 +0300 Leon Romanovsky wrote:
-> > On Mon, Oct 04, 2021 at 04:44:13PM -0700, Jakub Kicinski wrote:
-> > > On Sun,  3 Oct 2021 21:12:04 +0300 Leon Romanovsky wrote:  
-> > > > From: Leon Romanovsky <leonro@nvidia.com>
-> > > > 
-> > > > Introduce new devlink call to set specific ops callback during
-> > > > device initialization phase after devlink_alloc() is already
-> > > > called.
-> > > > 
-> > > > This allows us to set specific ops based on device property which
-> > > > is not known at the beginning of driver initialization.
-> > > > 
-> > > > For the sake of simplicity, this API lacks any type of locking and
-> > > > needs to be called before devlink_register() to make sure that no
-> > > > parallel access to the ops is possible at this stage.  
-> > > 
-> > > The fact that it's not registered does not mean that the callbacks
-> > > won't be invoked. Look at uses of devlink_compat_flash_update().  
-> > 
-> > It is impossible, devlink_register() is part of .probe() flow and if it
-> > wasn't called -> probe didn't success -> net_device doesn't exist.
-> 
-> Are you talking about reality or the bright future brought by auxbus?
+Use platform data to initialize xtfpga device drivers when CONFIG_USE_OF
+is not selected. This fixes xtfpga networking when CONFIG_USE_OF is not
+selected but CONFIG_OF is.
 
-I looked on all the drivers which called to devlink_alloc() which is
-starting point before devlink_register(). All of them used it in the
-probe. My annotation patch checks that too.
+Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
+---
+ arch/xtensa/platforms/xtfpga/setup.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-https://lore.kernel.org/linux-rdma/f65772d429d2c259bbc18cf5b1bbe61e39eb7081.1633284302.git.leonro@nvidia.com/T/#u
+diff --git a/arch/xtensa/platforms/xtfpga/setup.c b/arch/xtensa/platforms/xtfpga/setup.c
+index 4f7d6142d41f..59b7f11f2a3e 100644
+--- a/arch/xtensa/platforms/xtfpga/setup.c
++++ b/arch/xtensa/platforms/xtfpga/setup.c
+@@ -66,7 +66,7 @@ void __init platform_calibrate_ccount(void)
+ 
+ #endif
+ 
+-#ifdef CONFIG_OF
++#ifdef CONFIG_USE_OF
+ 
+ static void __init xtfpga_clk_setup(struct device_node *np)
+ {
+@@ -284,4 +284,4 @@ static int __init xtavnet_init(void)
+  */
+ arch_initcall(xtavnet_init);
+ 
+-#endif /* CONFIG_OF */
++#endif /* CONFIG_USE_OF */
+-- 
+2.20.1
 
-So IMHO, it is reality.
-
-> 
-> > We are not having net_device without "connected" device beneath, aren't we?
-> > 
-> > At least drivers that I checked are not prepared at all to handle call
-> > to devlink->ops.flash_update() if they didn't probe successfully.
-> 
-> Last time I checked you moved the devlink_register() at the end of
-> probe which for all no-auxbus drivers means after register_netdev().
-
-I need to add a check of if(devlink_register) inside devlink_compat_flash_update().
-
-> 
-> > > > diff --git a/net/core/devlink.c b/net/core/devlink.c
-> > > > index 4e484afeadea..25c2aa2b35cd 100644
-> > > > --- a/net/core/devlink.c
-> > > > +++ b/net/core/devlink.c
-> > > > @@ -53,7 +53,7 @@ struct devlink {
-> > > >  	struct list_head trap_list;
-> > > >  	struct list_head trap_group_list;
-> > > >  	struct list_head trap_policer_list;
-> > > > -	const struct devlink_ops *ops;
-> > > > +	struct devlink_ops ops;  
-> > > 
-> > > Security people like ops to live in read-only memory. You're making
-> > > them r/w for every devlink instance now.  
-> > 
-> > Yes, but we are explicitly copy every function pointer, which is safe.
-> 
-> The goal is for ops to live in pages which are mapped read-only,
-> so that heap overflows can overwrite the pointers.
-
-<...>
-
-> I don't like it. If you're feeling strongly please gather support of
-> other developers. Right now it's my preference against yours. I don't
-> even see you making arguments that your approach is better, just that
-> mine is not perfect and requires some similar changes.
-
-I have an idea of how to keep static ops and allow devlink_set_ops()
-like functionality.
-
-What about if I group ops by some sort of commonalities?
-
-In my case, it will be devlink_reload_ops, which will include reload
-relevant callbacks and provide devlink_set_reload_ops() wrapper to set
-them?
-
-It will ensure that all pointers are const without need to have feature
-bits.
-
-Thanks
