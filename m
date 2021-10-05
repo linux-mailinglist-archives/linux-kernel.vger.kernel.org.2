@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D236F422B1B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:35:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FA30422B1D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:35:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235249AbhJEOhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 10:37:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46692 "EHLO
+        id S235332AbhJEOhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 10:37:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233705AbhJEOhM (ORCPT
+        with ESMTP id S233705AbhJEOhd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 10:37:12 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E089C061749
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 07:35:22 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id y26so87699323lfa.11
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 07:35:22 -0700 (PDT)
+        Tue, 5 Oct 2021 10:37:33 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 883E7C061749
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 07:35:42 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id y26so87704394lfa.11
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 07:35:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cogentembedded-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=xJ3nhukfNncU2sAkhVxnfr4phCF76502pKvZUuaK5RM=;
-        b=ymMQyP3OPtOJVk4A4j8qXiY3Xyj9KWNH+C+PS16wfiHTt9wKw9TVtEZxFHqK9Oqgl5
-         OchWoRe+EhjZZ+gPDv6cH56zaiePqu2EKSDcPEFoMMpR1ORuYwiPOh7AAopbNVvkfy5h
-         IC9MYgoXH11/TljmXpot/Xs3GUwYlaZ715Kke3+24nh1SPjJu0D9T0zgJnYkU93rXyv1
-         K/mGJefM5vHtIJcfxLghka5wyRDfrKdsuMqwDicp55gwDUlO7L4X/b/ToqlV6vHPIZwb
-         oWQ72Fm6gzGzDFsba2zi+wJfS9f+SDrGpnknWAS98jip21ycsCO/pzzinF1UCWetDUTb
-         TxXQ==
+        bh=7ziF/R1LISi9m0sMghR9TEp0K4nRAOLPcUVkKeZiW1E=;
+        b=wfLeaxd3hmQqpgznnrtbMLgnbIebWgUsbQ1kRxDbUE0gXUdPmL74xD+q85fTc8v/q0
+         wo/F8kdo8OIcbydmubHikA6xkNyv6Vcb5Iat7kAbx9EdQZNoSrc90GSkGkC6Q2bywrlR
+         2OwsHjYiNuD+wfZT+PmxCZTB2pbpD647w8aDzfra2qmmdo0lVEIVL0UJUG8SOIYfdJIm
+         fVWPK3CIYzDy/mMqJYp8phMao3ZyYb8W4LjvwjU5SMaWMeu5Vvkj/kfEKwtwcnpOCvS3
+         j/vsGeYeiynXl9XDXIkuYbkiNLBeFNnDK3GXdoMpTE3Kx7lIK2+RgdLX5o7zHkuP9wig
+         8LuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=xJ3nhukfNncU2sAkhVxnfr4phCF76502pKvZUuaK5RM=;
-        b=wzfO0UfKR0kgjlrmHxGPYSJuNicjk8MLsfq/z98TTcykahJUzmP40ZwwEQEK97Rdmw
-         Sovl04NZmm16oesSNjgvYMSP6DdN+BKcKace9FFS8e8tTAC/xy7ulsP3FqFnBEsRRXLB
-         olDwVG3+iVF7LR1xdnK5GwFVt3tUFB+g0cPtjM0r6dLg0wr4XAvy4rbPcFlCmbIXsuao
-         N7FkcmRPHUPSse1KwrhvnKCua9wfSi1Ae9qfkr9xd1faZcvdiykqYrBOy1rM5SV6PWcM
-         SsY36fpYkLytbHC8PpU7OrD3KXQcI38oryYg2ELgspom3QzaoKk75Zz5qxnbjL3yxgiK
-         +Urg==
-X-Gm-Message-State: AOAM532XuQWZtnBn2/K8urNjTFW57QKYUNFveZ6tHpJp3jih8MYnAXdy
-        aDsQwODreOm45o0h92cIbt4VNg==
-X-Google-Smtp-Source: ABdhPJwLA1gnXVwA1LP7KXOMXY16x+1Us4coFH34L1naBc2iJgQpCek95Z/ywlZjAgpLoImbSSs+nQ==
-X-Received: by 2002:a2e:7f06:: with SMTP id a6mr22553903ljd.437.1633444520442;
-        Tue, 05 Oct 2021 07:35:20 -0700 (PDT)
+        bh=7ziF/R1LISi9m0sMghR9TEp0K4nRAOLPcUVkKeZiW1E=;
+        b=0TZf8kg7ZsI6BlaQC4J8mGHuMCDduuw2sT5ItZEjvwfm4xKvolrWZExM3xX2hxD/+L
+         J03fKsGH+oZ+jXPsriB0ca0v6S5UjNQmmVOHSrorQQ/aCjPvwXM/x/fXkk7G6aUCv2HC
+         W9EA0Vs78bkAVi6h82JNsIiCcxe3MoUa9zq11tOcac6iuaqxrgdo9vBGKHNn/xoCeseD
+         fjadK0So02nhXm5nIO2+iWke5AZTv6+QrPp2tN7rQS4oECs08XfSBA+OzglnofrTNB6v
+         Jfuok+ji6cYLAbx04UssbmJgOsRpuuheoDpsv+6vHz4DY6Cy0wrCTx5EgVKHjswLCISV
+         tXrw==
+X-Gm-Message-State: AOAM532edID5KeHThl0UjHeU8U2k8zku7nXtEH3CIVEQFxtGidHZAh0B
+        RjgrQsr93Xrpa+POIza3pWguug==
+X-Google-Smtp-Source: ABdhPJx7kuRooYbFcBOabMZUbCnACo88UphCNfI9sBuLpIbR9wIQWeTaByEmax2QO++B8GtouFAKXA==
+X-Received: by 2002:a19:6a16:: with SMTP id u22mr3996901lfu.444.1633444540799;
+        Tue, 05 Oct 2021 07:35:40 -0700 (PDT)
 Received: from cobook.home (nikaet.starlink.ru. [94.141.168.29])
-        by smtp.gmail.com with ESMTPSA id q5sm1969931lfo.225.2021.10.05.07.35.19
+        by smtp.gmail.com with ESMTPSA id q5sm1969931lfo.225.2021.10.05.07.35.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Oct 2021 07:35:20 -0700 (PDT)
+        Tue, 05 Oct 2021 07:35:40 -0700 (PDT)
 From:   Nikita Yushchenko <nikita.yoush@cogentembedded.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Christian Gromm <christian.gromm@microchip.com>,
         Lee Jones <lee.jones@linaro.org>
 Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
         Nikita Yushchenko <nikita.yoush@cogentembedded.com>
-Subject: [PATCH 1/2] staging: most: dim2: do not double-register the same device
-Date:   Tue,  5 Oct 2021 17:34:48 +0300
-Message-Id: <20211005143448.8660-1-nikita.yoush@cogentembedded.com>
+Subject: [PATCH 2/2] staging: most: dim2: use device release method
+Date:   Tue,  5 Oct 2021 17:34:50 +0300
+Message-Id: <20211005143448.8660-2-nikita.yoush@cogentembedded.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <YVwofSvwGTv3kHjh@kroah.com>
 References: <YVwofSvwGTv3kHjh@kroah.com>
@@ -68,184 +68,141 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Commit 723de0f9171e ("staging: most: remove device from interface
 structure") moved registration of driver-provided struct device to
-the most subsystem.
+the most subsystem. This updated dim2 driver as well.
 
-Dim2 used to register the same struct device to provide a custom device
-attribute. This causes double-registration of the same struct device.
+However, struct device passed to register_device() becomes refcounted,
+and must not be explicitly deallocated, but must provide release method
+instead. Which is incompatible with managing it via devres.
 
-Fix that by moving the custom attribute to driver's dev_groups.
-This moves attribute to the platform_device object, which is a better
-location for platform-specific attributes anyway.
+This patch makes the device structure allocated without devres, adds
+device release method, and moves device destruction there.
 
 Fixes: 723de0f9171e ("staging: most: remove device from interface structure")
 Signed-off-by: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
 ---
- drivers/staging/most/dim2/Makefile |  2 +-
- drivers/staging/most/dim2/dim2.c   | 31 ++++++++++++-------
- drivers/staging/most/dim2/sysfs.c  | 49 ------------------------------
- drivers/staging/most/dim2/sysfs.h  | 11 -------
- 4 files changed, 21 insertions(+), 72 deletions(-)
- delete mode 100644 drivers/staging/most/dim2/sysfs.c
+ drivers/staging/most/dim2/dim2.c | 55 +++++++++++++++++---------------
+ 1 file changed, 30 insertions(+), 25 deletions(-)
 
-diff --git a/drivers/staging/most/dim2/Makefile b/drivers/staging/most/dim2/Makefile
-index 861adacf6c72..5f9612af3fa3 100644
---- a/drivers/staging/most/dim2/Makefile
-+++ b/drivers/staging/most/dim2/Makefile
-@@ -1,4 +1,4 @@
- # SPDX-License-Identifier: GPL-2.0
- obj-$(CONFIG_MOST_DIM2) += most_dim2.o
- 
--most_dim2-objs := dim2.o hal.o sysfs.o
-+most_dim2-objs := dim2.o hal.o
 diff --git a/drivers/staging/most/dim2/dim2.c b/drivers/staging/most/dim2/dim2.c
-index e8b03fa90e80..bb6dd508e531 100644
+index bb6dd508e531..4c0c3bc91ac0 100644
 --- a/drivers/staging/most/dim2/dim2.c
 +++ b/drivers/staging/most/dim2/dim2.c
-@@ -118,7 +118,8 @@ struct dim2_platform_data {
- 	(((p)[1] == 0x18) && ((p)[2] == 0x05) && ((p)[3] == 0x0C) && \
- 	 ((p)[13] == 0x3C) && ((p)[14] == 0x00) && ((p)[15] == 0x0A))
- 
--bool dim2_sysfs_get_state_cb(void)
-+static ssize_t state_show(struct device *dev, struct device_attribute *attr,
-+			  char *buf)
- {
- 	bool state;
- 	unsigned long flags;
-@@ -127,9 +128,25 @@ bool dim2_sysfs_get_state_cb(void)
- 	state = dim_get_lock_state();
- 	spin_unlock_irqrestore(&dim_lock, flags);
- 
--	return state;
-+	return sprintf(buf, "%s\n", state ? "locked" : "");
+@@ -734,6 +734,23 @@ static int get_dim2_clk_speed(const char *clock_speed, u8 *val)
+ 	return -EINVAL;
  }
  
-+static DEVICE_ATTR_RO(state);
++static void dim2_release(struct device *d)
++{
++	struct dim2_hdm *dev = container_of(d, struct dim2_hdm, dev);
++	unsigned long flags;
 +
-+static struct attribute *dim2_dev_attrs[] = {
-+	&dev_attr_state.attr,
-+	NULL,
-+};
++	kthread_stop(dev->netinfo_task);
 +
-+static struct attribute_group dim2_attr_group = {
-+	.attrs = dim2_dev_attrs,
-+};
++	spin_lock_irqsave(&dim_lock, flags);
++	dim_shutdown();
++	spin_unlock_irqrestore(&dim_lock, flags);
 +
-+static const struct attribute_group *dim2_attr_groups[] = {
-+	&dim2_attr_group,
-+	NULL,
-+};
++	if (dev->disable_platform)
++		dev->disable_platform(to_platform_device(d->parent));
 +
- /**
-  * dimcb_on_error - callback from HAL to report miscommunication between
-  * HDM and HAL
-@@ -874,16 +891,8 @@ static int dim2_probe(struct platform_device *pdev)
- 		goto err_stop_thread;
++	kfree(dev);
++}
++
+ /*
+  * dim2_probe - dim2 probe handler
+  * @pdev: platform device structure
+@@ -755,7 +772,7 @@ static int dim2_probe(struct platform_device *pdev)
+ 
+ 	enum { MLB_INT_IDX, AHB0_INT_IDX };
+ 
+-	dev = devm_kzalloc(&pdev->dev, sizeof(*dev), GFP_KERNEL);
++	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
+ 	if (!dev)
+ 		return -ENOMEM;
+ 
+@@ -767,19 +784,21 @@ static int dim2_probe(struct platform_device *pdev)
+ 				      "microchip,clock-speed", &clock_speed);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "missing dt property clock-speed\n");
+-		return ret;
++		goto err_free_dev;
  	}
  
--	ret = dim2_sysfs_probe(&dev->dev);
+ 	ret = get_dim2_clk_speed(clock_speed, &dev->clk_speed);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "bad dt property clock-speed\n");
+-		return ret;
++		goto err_free_dev;
+ 	}
+ 
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	dev->io_base = devm_ioremap_resource(&pdev->dev, res);
+-	if (IS_ERR(dev->io_base))
+-		return PTR_ERR(dev->io_base);
++	if (IS_ERR(dev->io_base)) {
++		ret = PTR_ERR(dev->io_base);
++		goto err_free_dev;
++	}
+ 
+ 	of_id = of_match_node(dim2_of_match, pdev->dev.of_node);
+ 	pdata = of_id->data;
+@@ -787,7 +806,7 @@ static int dim2_probe(struct platform_device *pdev)
+ 		if (pdata->enable) {
+ 			ret = pdata->enable(pdev);
+ 			if (ret)
+-				return ret;
++				goto err_free_dev;
+ 		}
+ 		dev->disable_platform = pdata->disable;
+ 		if (pdata->fcnt)
+@@ -882,24 +901,19 @@ static int dim2_probe(struct platform_device *pdev)
+ 	dev->most_iface.request_netinfo = request_netinfo;
+ 	dev->most_iface.driver_dev = &pdev->dev;
+ 	dev->most_iface.dev = &dev->dev;
+-	dev->dev.init_name = "dim2_state";
++	dev->dev.init_name = dev->name;
+ 	dev->dev.parent = &pdev->dev;
++	dev->dev.release = dim2_release;
+ 
+-	ret = most_register_interface(&dev->most_iface);
 -	if (ret) {
--		dev_err(&pdev->dev, "failed to create sysfs attribute\n");
--		goto err_unreg_iface;
+-		dev_err(&pdev->dev, "failed to register MOST interface\n");
+-		goto err_stop_thread;
 -	}
 -
- 	return 0;
+-	return 0;
++	return most_register_interface(&dev->most_iface);
  
--err_unreg_iface:
--	most_deregister_interface(&dev->most_iface);
- err_stop_thread:
- 	kthread_stop(dev->netinfo_task);
+-err_stop_thread:
+-	kthread_stop(dev->netinfo_task);
  err_shutdown_dim:
-@@ -906,7 +915,6 @@ static int dim2_remove(struct platform_device *pdev)
+ 	dim_shutdown();
+ err_disable_platform:
+ 	if (dev->disable_platform)
+ 		dev->disable_platform(pdev);
++err_free_dev:
++	kfree(dev);
+ 
+ 	return ret;
+ }
+@@ -913,17 +927,8 @@ static int dim2_probe(struct platform_device *pdev)
+ static int dim2_remove(struct platform_device *pdev)
+ {
  	struct dim2_hdm *dev = platform_get_drvdata(pdev);
- 	unsigned long flags;
+-	unsigned long flags;
  
--	dim2_sysfs_destroy(&dev->dev);
  	most_deregister_interface(&dev->most_iface);
- 	kthread_stop(dev->netinfo_task);
+-	kthread_stop(dev->netinfo_task);
+-
+-	spin_lock_irqsave(&dim_lock, flags);
+-	dim_shutdown();
+-	spin_unlock_irqrestore(&dim_lock, flags);
+-
+-	if (dev->disable_platform)
+-		dev->disable_platform(pdev);
  
-@@ -1100,6 +1108,7 @@ static struct platform_driver dim2_driver = {
- 	.driver = {
- 		.name = "hdm_dim2",
- 		.of_match_table = dim2_of_match,
-+		.dev_groups = dim2_attr_groups,
- 	},
- };
- 
-diff --git a/drivers/staging/most/dim2/sysfs.c b/drivers/staging/most/dim2/sysfs.c
-deleted file mode 100644
-index c85b2cdcdca3..000000000000
---- a/drivers/staging/most/dim2/sysfs.c
-+++ /dev/null
-@@ -1,49 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--/*
-- * sysfs.c - MediaLB sysfs information
-- *
-- * Copyright (C) 2015, Microchip Technology Germany II GmbH & Co. KG
-- */
--
--/* Author: Andrey Shvetsov <andrey.shvetsov@k2l.de> */
--
--#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
--
--#include <linux/kernel.h>
--#include "sysfs.h"
--#include <linux/device.h>
--
--static ssize_t state_show(struct device *dev, struct device_attribute *attr,
--			  char *buf)
--{
--	bool state = dim2_sysfs_get_state_cb();
--
--	return sprintf(buf, "%s\n", state ? "locked" : "");
--}
--
--static DEVICE_ATTR_RO(state);
--
--static struct attribute *dev_attrs[] = {
--	&dev_attr_state.attr,
--	NULL,
--};
--
--static struct attribute_group dev_attr_group = {
--	.attrs = dev_attrs,
--};
--
--static const struct attribute_group *dev_attr_groups[] = {
--	&dev_attr_group,
--	NULL,
--};
--
--int dim2_sysfs_probe(struct device *dev)
--{
--	dev->groups = dev_attr_groups;
--	return device_register(dev);
--}
--
--void dim2_sysfs_destroy(struct device *dev)
--{
--	device_unregister(dev);
--}
-diff --git a/drivers/staging/most/dim2/sysfs.h b/drivers/staging/most/dim2/sysfs.h
-index 24277a17cff3..09115cf4ed00 100644
---- a/drivers/staging/most/dim2/sysfs.h
-+++ b/drivers/staging/most/dim2/sysfs.h
-@@ -16,15 +16,4 @@ struct medialb_bus {
- 	struct kobject kobj_group;
- };
- 
--struct device;
--
--int dim2_sysfs_probe(struct device *dev);
--void dim2_sysfs_destroy(struct device *dev);
--
--/*
-- * callback,
-- * must deliver MediaLB state as true if locked or false if unlocked
-- */
--bool dim2_sysfs_get_state_cb(void);
--
- #endif	/* DIM2_SYSFS_H */
+ 	return 0;
+ }
 -- 
 2.30.2
 
