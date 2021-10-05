@@ -2,161 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 864A6421B5A
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 02:58:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8096421B61
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 03:04:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230234AbhJEA75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 20:59:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55022 "EHLO
+        id S229813AbhJEBGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 21:06:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230109AbhJEA7x (ORCPT
+        with ESMTP id S229549AbhJEBGM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 20:59:53 -0400
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D472C061745
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 17:58:04 -0700 (PDT)
-Received: by mail-ot1-x330.google.com with SMTP id o59-20020a9d2241000000b0054745f28c69so23826974ota.13
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 17:58:04 -0700 (PDT)
+        Mon, 4 Oct 2021 21:06:12 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE9B2C061745
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 18:04:22 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id b65so18320663qkc.13
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 18:04:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=05i/Uy6gH7QU48SgJKDCirwR+ez4PcUFTnCClwqtXkI=;
-        b=B61+Xp8onNbuyRL6JL9Kxx4gC7m4sx0TwG+gx96gdFijZbZa2c6EJNfNtnOeQJOwXX
-         eLTEkAB++Egb3OWnOCeMRLxZ200uG29IPQPtRxmdxhoPMiZ0Kzq4wjKcMiUzLVW7BtHg
-         VGNt67VDZhoMZ3GAicFMm7CEiyGU80AfYNBWo=
+        d=dabbelt-com.20210112.gappssmtp.com; s=20210112;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oebmTSxmq+zU8Utjs0yaAqanKgzPEsj+GJBxRd8logo=;
+        b=V2iUDB19iERQnJXZioGUMJdM/uynjFuRplbo7a5cEjDjxHwD2V8DwueeGPziYpbB71
+         Bi9liJ6HB2HHZX6lxu+oHLksFzHeBVlU+X0Nd6OowCRe7v7npgTonODB4rqmB3qVEqw/
+         jPGpQidXVV8GXapY/RU2rL3Fyjj1axEjXQnoedoWQNonB6JXkWMVrpKM+o5p3m0Ycs2Q
+         nkodGtZjkgnRUL5jEe95IomrgwwUY8EkQtpglV6mKWZOmXwzD/nwEuLhYOuXNG7rGVeN
+         nYQTN8FwNRwge3tobOp0kDWk3Aj3ml6KVwepwzNcWTatc7yS9ioeSUidAKzg2Ffmq+zg
+         vILw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=05i/Uy6gH7QU48SgJKDCirwR+ez4PcUFTnCClwqtXkI=;
-        b=zjGCiyL17UDpYAdo/+SWmbnR4vxklIyYECaSN+crVz/sLWn15Naqh7zYoqPjZ5yB7E
-         zpBy9NeBJkpMBRYX97aBP7muklUPtmWC2PhOpcugjUAZXrYQLM9YxsLhuKhaThdvUhg5
-         1kIKzKl3J8Ikt+WDYYhaRoXz3XPrbnZuUmlDnIJbeB7sSg54/spigIZliec7sgF8EUiU
-         HzL4VnURY40aDNiOtZCxAfsb2wriKB/ToqSwLjp+bywin3FpjJ81nslQXJ3BK3SQT1aq
-         0VM+ubhHRpS6OPjbt956XvaOwuyYl4YJPIfB+wsBuWWtGNaYuchzr108HY9nGYefuonZ
-         omCA==
-X-Gm-Message-State: AOAM530EcUUggwRnkEx7UdmU0YA6bXcldt+5hY82X5qMJ3yvS2Rwd19X
-        DgJMflvLjHuwjCZPlBpUt5WZb8gXcerxp07gWZN7GA==
-X-Google-Smtp-Source: ABdhPJx07aCTnqNwiD/0aa6rjlgcFB5P771OgnalRpLSTtV86//Yf7K4nDE2SG3vY/Lrmi1lOKT5dn1JO1kfvg1iC44=
-X-Received: by 2002:a05:6830:358:: with SMTP id h24mr11371665ote.159.1633395483677;
- Mon, 04 Oct 2021 17:58:03 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Mon, 4 Oct 2021 20:58:03 -0400
-MIME-Version: 1.0
-In-Reply-To: <20211001180058.1021913-4-bjorn.andersson@linaro.org>
-References: <20211001180058.1021913-1-bjorn.andersson@linaro.org> <20211001180058.1021913-4-bjorn.andersson@linaro.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Mon, 4 Oct 2021 20:58:03 -0400
-Message-ID: <CAE-0n50=EWg1GKuTnRi=zA0ufO1Xg4mucYaqNUZ+wgYNDRcWLA@mail.gmail.com>
-Subject: Re: [PATCH v3 3/5] drm/msm/dp: Support up to 3 DP controllers
-To:     Abhinav Kumar <abhinavk@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Kalyan Thota <kalyan_t@codeaurora.org>,
-        Kuogee Hsieh <khsieh@codeaurora.org>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>
-Cc:     Rob Herring <robh+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=oebmTSxmq+zU8Utjs0yaAqanKgzPEsj+GJBxRd8logo=;
+        b=GB52kiMK6/S3w6vS2fgJ7xzMw/+7AMiBKdvKnwg83l8zcEgwXMX9WBggKZnedPrN5F
+         PdIGyi1FQDXxhOktvx2zPv5aQ9Kl131g1gIlguMkNZB5e7fdmm6Rdv3tqIWSZCSlSfHS
+         Z56APPs15l9XKEiCWg8+6MUXyyoltkidbUfIDs10DV8Vs8gu/tLbXRNGKwwZMnSoSmus
+         n6C1+X5iK8h3TrtrbkTU3BDL0JCQhx7+Fz15xt6fzj2Ptg4LX2NUnsYjkjpUgc1kLl9d
+         L+o87eewuJyqOWR4EzYr/3dgG9YxyyxfXoF9DfQxRQ7fvWbbdtfMAcuGG+Il+NZh1Q8B
+         CEwg==
+X-Gm-Message-State: AOAM533ui1AfT7XAdCeuxSkVk68yYBrH+n5Wkx3J/j6OfT4nxGwy99vB
+        gyAbiduGMUlxoTbfk5J/azzu7w==
+X-Google-Smtp-Source: ABdhPJxkgUQGetwYGwiMjOMe+4nfq0UAIiYMxQuw9rxEaWWsEjAU6KlSu+C3bWRK9Yx/c927Qw6f0Q==
+X-Received: by 2002:a37:a40e:: with SMTP id n14mr12925505qke.81.1633395862031;
+        Mon, 04 Oct 2021 18:04:22 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id c9sm10444214qte.16.2021.10.04.18.04.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Oct 2021 18:04:21 -0700 (PDT)
+Date:   Mon, 04 Oct 2021 18:04:21 -0700 (PDT)
+X-Google-Original-Date: Mon, 04 Oct 2021 18:04:17 PDT (-0700)
+Subject:     Re: [PATCH v2 0/2] riscv: improve unaligned memory accesses
+In-Reply-To: <20210918221713.289f63bb@xhacker>
+CC:     wangkefeng.wang@huawei.com, chenhuang5@huawei.com,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, Darius Rad <darius@bluespec.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     jszhang3@mail.ustc.edu.cn
+Message-ID: <mhng-3469a0a8-a337-4b56-8e4f-b5a8bc47c4e9@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Bjorn Andersson (2021-10-01 11:00:56)
-> Based on the removal of the g_dp_display and the movement of the
-> priv->dp lookup into the DP code it's now possible to have multiple
-> DP instances.
+On Sat, 18 Sep 2021 07:17:13 PDT (-0700), jszhang3@mail.ustc.edu.cn wrote:
+> On Sat, 18 Sep 2021 09:14:05 +0800
+> Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
 >
-> In line with the other controllers in the MSM driver, introduce a
-> per-compatible list of base addresses which is used to resolve the
-> "instance id" for the given DP controller. This instance id is used as
-> index in the priv->dp[] array.
+>> On 2021/9/17 22:14, Jisheng Zhang wrote:
+>> > On Thu, 16 Sep 2021 13:08:53 +0000
+>> > Chen Huang <chenhuang5@huawei.com> wrote:
+>> >  
+>> >> The patchset improves RISCV unaligned memory accesses, selects
+>> >> HAVE_EFFICIENT_UNALIGNED_ACCESS if CPU_HAS_NO_UNALIGNED not
+>> >> enabled and supports DCACHE_WORD_ACCESS to improve the efficiency
+>> >> of unaligned memory accesses.
+>> >>
+>> >> If CPU don't support unaligned memory accesses for now, please
+>> >> select CONFIG_CPU_HAS_NO_UNALIGNED. For I don't know which CPU
+>> >> don't support unaligned memory accesses, I don't choose the
+>> >> CONFIG for them.  
+>> > This will break unified kernel Image for riscv. Obviously, we will have
+>> > two images for efficient unaligned access platforms and non-efficient
+>> > unaligned access platforms. IMHO, we may need alternative mechanism or
+>> > something else to dynamically enable related code path.  
+>> 
+>> it won't break unified kernel Image for riscv, if one SoC choose
+>> 
+>> CPU_HAS_NO_UNALIGNED, the single Image won't support unaligned memory
 >
-> Then extend the initialization code to initialize struct drm_encoder for
-> each of the registered priv->dp[] and update the logic for associating
-> each struct msm_dp with the struct dpu_encoder_virt.
->
-> Lastly, bump the number of struct msm_dp instances carries by priv->dp
-> to 3, the currently known maximum number of controllers found in a
-> Qualcomm SoC.
->
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
+> the "unified" means the kernel Image has to support all RV64GC or RV32GC SoCs.
+> To make the Image works for both efficient unaligned access and inefficient
+> unaligned access, I think we'd better make "inefficient unaligned access"
+> default behavior, the use alternative etc. tech to patch related code path
+> for efficient unaligned access.
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+I agree, at least until we have a sufficient breadth of implementations 
+to know whether efficient unaligned accesses are going to be possible.
 
-Some nits below.
+There was also a question about what exactly the C906 unaligned access 
+handling looks like on GCC, as well.  Do you guys have any sort of 
+pipeline description?
 
 >
-> Changes since v2:
-> - Added MSM_DRM_DP_COUNT to link the two 3s
-> - Moved NULL check for msm_dp_debugfs_init() to the call site
-> - Made struct dp_display_private->id unsigned
 >
-> I also implemented added connector_type to each of the DP instances and
-> propagated this to dp_drm_connector_init() but later dropped this again per
-> Doug's suggestion that we'll base this on the presence/absence of a associated
-> drm bridge or panel.
-
-Sad but OK. We can take up that topic in another patch.
-
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-> index f655adbc2421..875b07e7183d 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-> @@ -203,8 +204,10 @@ static int dpu_kms_debugfs_init(struct msm_kms *kms, struct drm_minor *minor)
->         dpu_debugfs_vbif_init(dpu_kms, entry);
->         dpu_debugfs_core_irq_init(dpu_kms, entry);
+>> 
+>> accesses, indeed, it depends on the CONFIG, and now, arm/powerpc/m68k has
 >
-> -       if (priv->dp)
-> -               msm_dp_debugfs_init(priv->dp, minor);
-> +       for (i = 0; i < ARRAY_SIZE(priv->dp); i++) {
-> +               if (priv->dp[i])
-> +                       msm_dp_debugfs_init(priv->dp[i], minor);
+> linux Distributions doesn't have enough background of which config options
+> must be enabled.
 
-This seems to cause a bunch of debugfs warnings when there are multiple
-nodes created with the same name.
+I wouldn't be opposed to adding this as a Kconfig option, something 
+along the lines of "tune for fast unaligned accesses" or whatever.  I 
+get that we're sort of just punting the problem to distros, but we could 
+add a Kconfig.socs-like (though that is a mess, so we'd need something 
+saner) tune target (which is maybe coupled to -mtune, as well?).  That 
+would a least let us give users the option of making this choice, and 
+while it'd still likely be best to set this to slow unaligned accesse to 
+start we may be able to more easily see what distros choose at this 
+point.
 
-> +       }
 >
->         return dpu_core_perf_debugfs_init(dpu_kms, entry);
->  }
-> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
-> index 5d3ee5ef07c2..ff3477474c5d 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_display.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
-> @@ -1180,10 +1192,31 @@ int dp_display_request_irq(struct msm_dp *dp_display)
->         return 0;
->  }
+>> 
+>> similar configuration.
 >
-> +static int dp_display_find_id(struct platform_device *pdev)
-> +{
-> +       const struct msm_dp_config *cfg = of_device_get_match_data(&pdev->dev);
-> +       struct resource *res;
-> +       int i;
-> +
-> +
+> I have little knowledge of powerpc or m68k, but there are serveral different
+> defconfig files for arm, for example multi_v7_defconfig and multi_v5_defconfig.
+> The previous v7 version enables HAVE_EFFICIENT_UNALIGNED_ACCESS while
+> the later v5 doesn't. Will you persuade riscv maintainers to accept one more
+> defconfig file?
 
-Nitpick: Remove a newline here.
+I'm not super worried about having more defconfigs, but I'm not really 
+sure it's worth it for this option alone.
 
-> +       res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +       if (!res)
-> +               return -EINVAL;
-> +
-> +       for (i = 0; i < cfg->num_descs; i++) {
-> +               if (cfg->io_start[i] == res->start)
-> +                       return i;
-> +       }
-
-Nitpick: Drop braces on single line if inside for loop.
-
-> +
-> +       dev_err(&pdev->dev, "unknown displayport instance\n");
-> +       return -EINVAL;
-> +}
-> +
+>
+> Thanks
+>
+>> 
+>> Yes,  it could be an optimization via alternative mechanism or something 
+>> else to
+>> 
+>> dynamically enable related code path later.
+>> 
+>> >
+>> > Regards
+>> >  
+>> >> Changes since v1:
+>> >>   - As Darius Rad and Jisheng Zhang mentioned, some CPUs don't support
+>> >>     unaligned memory accesses, add an option for CPUs to choose it or not.
+>> >>
+>> >> Chen Huang (2):
+>> >>    riscv: support HAVE_EFFICIENT_UNALIGNED_ACCESS
+>> >>    riscv: Support DCACHE_WORD_ACCESS
+>> >>
+>> >>   arch/riscv/Kconfig                      |  5 ++++
+>> >>   arch/riscv/include/asm/word-at-a-time.h | 37 +++++++++++++++++++++++++
+>> >>   2 files changed, 42 insertions(+)
+>> >>  
+>> >
+>> > .
+>> >  
