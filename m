@@ -2,79 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31E754229C0
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 15:59:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88C014229CE
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:00:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236076AbhJEOBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 10:01:02 -0400
-Received: from mail-ot1-f52.google.com ([209.85.210.52]:35638 "EHLO
-        mail-ot1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236504AbhJEN7b (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 09:59:31 -0400
-Received: by mail-ot1-f52.google.com with SMTP id 77-20020a9d0ed3000000b00546e10e6699so25924069otj.2;
-        Tue, 05 Oct 2021 06:57:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9Dmc2UFMnKcE8fZkmJNJs2CtEujDkiJDHQO9nSLj434=;
-        b=UdoNgHaw9Afd4Na9tYay55Y+V70klvhU7tcwXBqLCrRkPgtzh+sx6wuNrRW78/dlZF
-         FqhcO1Zc7xM5gGe2UfZ42gEWm+GAe4kJkZfHa2OyQeFYunc83vNhqtt6DCKH1o7hlxW/
-         3FTu1VK/WP2tfsgTdBMvNWXGd1QIXGZGhRtBKIDoIiD5W9/IFLCtAaMIraEnRhFT04ko
-         quy2+inUirN6KN+VZ+HgboFfME1hHFatp8xA3LW0k7f+5v6A/Qkn0gpZO2pHm4nw4T6D
-         z7TOhhmaFU4vhkDgMc7a/Snt0K2wNMu4ITQ9IJaKIe2noA8vhFAJYdjtxeZRt4nxCpRw
-         xm5w==
-X-Gm-Message-State: AOAM530Y9B0ZoU1e9fYb3f6fldxKhNpITK8ALJs87qVxB5ICTIJ0LH4a
-        EwPlIT1PlNFlNDyD+67AKU5kPsXAn44Pj//Tmas=
-X-Google-Smtp-Source: ABdhPJxSdpGAi/bDgCXOQyZaMdrRL1F3GTxfm3bZCxHuboEmINvhSI5BEiSNvVfo5XSAyl4iCzKlaOXCcNBeoJ7/iZA=
-X-Received: by 2002:a05:6830:2784:: with SMTP id x4mr14547219otu.86.1633442260806;
- Tue, 05 Oct 2021 06:57:40 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211002044500.24306-1-rdunlap@infradead.org>
-In-Reply-To: <20211002044500.24306-1-rdunlap@infradead.org>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 5 Oct 2021 15:57:30 +0200
-Message-ID: <CAJZ5v0ggDQ7ZXKRgZXQy-EsdD8-Yu01e=A+OSXm9UkJs2P8wUA@mail.gmail.com>
-Subject: Re: [PATCH] PNP: system.c: unmark a comment as being kernel-doc
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kernel test robot <lkp@intel.com>,
-        Aditya Srivastava <yashsri421@gmail.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S236092AbhJEOCC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 10:02:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39762 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235729AbhJEOAR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 10:00:17 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BD8C2610EA;
+        Tue,  5 Oct 2021 13:58:26 +0000 (UTC)
+Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
+        (envelope-from <rostedt@goodmis.org>)
+        id 1mXkxd-0055cw-Kl; Tue, 05 Oct 2021 09:58:25 -0400
+Message-ID: <20211005135733.485175654@goodmis.org>
+User-Agent: quilt/0.66
+Date:   Tue, 05 Oct 2021 09:57:33 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Punit Agrawal <punitagrawal@gmail.com>
+Subject: [for-linus][PATCH 00/27] tracing: Updates for 5.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 2, 2021 at 6:45 AM Randy Dunlap <rdunlap@infradead.org> wrote:
->
-> Fix a documentation build warning caused by the comment not being
-> in kernel-doc format:
->
-> system.c:110: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
->  * Reserve motherboard resources after PCI claim BARs,
->
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Reported-by: kernel test robot <lkp@intel.com>
-> Cc: Aditya Srivastava <yashsri421@gmail.com>
-> Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-> Cc: linux-acpi@vger.kernel.org
-> ---
->  drivers/pnp/system.c |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> --- linux-next-20211001.orig/drivers/pnp/system.c
-> +++ linux-next-20211001/drivers/pnp/system.c
-> @@ -106,7 +106,7 @@ static int __init pnp_system_init(void)
->         return pnp_register_driver(&system_pnp_driver);
->  }
->
-> -/**
-> +/*
->   * Reserve motherboard resources after PCI claim BARs,
->   * but before PCI assign resources for uninitialized PCI devices
->   */
+  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
+for-next
 
-Applied as 5.16 material, thanks!
+Head SHA1: bf094cffea2a6503ce84062f9f0243bef77c58f9
+
+
+Josh Poimboeuf (3):
+      objtool: Add frame-pointer-specific function ignore
+      objtool: Ignore unwind hints for ignored functions
+      x86/kprobes: Add UNWIND_HINT_FUNC on kretprobe_trampoline()
+
+Masami Hiramatsu (19):
+      kprobes: treewide: Cleanup the error messages for kprobes
+      kprobes: Fix coding style issues
+      kprobes: Use IS_ENABLED() instead of kprobes_built_in()
+      kprobes: Add assertions for required lock
+      kprobes: treewide: Use 'kprobe_opcode_t *' for the code address in get_optimized_kprobe()
+      kprobes: Use bool type for functions which returns boolean value
+      ia64: kprobes: Fix to pass correct trampoline address to the handler
+      kprobes: treewide: Replace arch_deref_entry_point() with dereference_symbol_descriptor()
+      kprobes: treewide: Remove trampoline_address from kretprobe_trampoline_handler()
+      kprobes: treewide: Make it harder to refer kretprobe_trampoline directly
+      kprobes: Add kretprobe_find_ret_addr() for searching return address
+      ARC: Add instruction_pointer_set() API
+      ia64: Add instruction_pointer_set() API
+      arm: kprobes: Make space for instruction pointer on stack
+      kprobes: Enable stacktrace from pt_regs in kretprobe handler
+      x86/kprobes: Push a fake return address at kretprobe_trampoline
+      x86/unwind: Recover kretprobe trampoline entry
+      tracing: Show kretprobe unknown indicator only for kretprobe_trampoline
+      x86/kprobes: Fixup return address in generic trampoline handler
+
+Punit Agrawal (5):
+      kprobes: Do not use local variable when creating debugfs file
+      kprobes: Use helper to parse boolean input from userspace
+      kprobe: Simplify prepare_kprobe() by dropping redundant version
+      csky: ftrace: Drop duplicate implementation of arch_check_ftrace_location()
+      kprobes: Make arch_check_ftrace_location static
+
+----
+ arch/arc/include/asm/kprobes.h                |   2 +-
+ arch/arc/include/asm/ptrace.h                 |   5 +
+ arch/arc/kernel/kprobes.c                     |  13 +-
+ arch/arm/probes/kprobes/core.c                |  15 +-
+ arch/arm/probes/kprobes/opt-arm.c             |   7 +-
+ arch/arm64/include/asm/kprobes.h              |   2 +-
+ arch/arm64/kernel/probes/kprobes.c            |  10 +-
+ arch/arm64/kernel/probes/kprobes_trampoline.S |   4 +-
+ arch/csky/include/asm/kprobes.h               |   2 +-
+ arch/csky/kernel/probes/ftrace.c              |   7 -
+ arch/csky/kernel/probes/kprobes.c             |  14 +-
+ arch/csky/kernel/probes/kprobes_trampoline.S  |   4 +-
+ arch/ia64/include/asm/ptrace.h                |   5 +
+ arch/ia64/kernel/kprobes.c                    |  15 +-
+ arch/mips/kernel/kprobes.c                    |  26 +-
+ arch/parisc/kernel/kprobes.c                  |   6 +-
+ arch/powerpc/include/asm/kprobes.h            |   2 +-
+ arch/powerpc/kernel/kprobes.c                 |  29 +-
+ arch/powerpc/kernel/optprobes.c               |   8 +-
+ arch/powerpc/kernel/stacktrace.c              |   2 +-
+ arch/riscv/include/asm/kprobes.h              |   2 +-
+ arch/riscv/kernel/probes/kprobes.c            |  15 +-
+ arch/riscv/kernel/probes/kprobes_trampoline.S |   4 +-
+ arch/s390/include/asm/kprobes.h               |   2 +-
+ arch/s390/kernel/kprobes.c                    |  16 +-
+ arch/s390/kernel/stacktrace.c                 |   2 +-
+ arch/sh/include/asm/kprobes.h                 |   2 +-
+ arch/sh/kernel/kprobes.c                      |  12 +-
+ arch/sparc/include/asm/kprobes.h              |   2 +-
+ arch/sparc/kernel/kprobes.c                   |  12 +-
+ arch/x86/include/asm/kprobes.h                |   1 -
+ arch/x86/include/asm/unwind.h                 |  23 ++
+ arch/x86/include/asm/unwind_hints.h           |   5 +
+ arch/x86/kernel/kprobes/core.c                |  71 +++-
+ arch/x86/kernel/kprobes/opt.c                 |   6 +-
+ arch/x86/kernel/unwind_frame.c                |   3 +-
+ arch/x86/kernel/unwind_guess.c                |   3 +-
+ arch/x86/kernel/unwind_orc.c                  |  21 +-
+ include/linux/kprobes.h                       | 113 +++---
+ include/linux/objtool.h                       |  12 +
+ kernel/kprobes.c                              | 502 ++++++++++++++------------
+ kernel/trace/trace_kprobe.c                   |   2 +-
+ kernel/trace/trace_output.c                   |  17 +-
+ lib/error-inject.c                            |   3 +-
+ tools/include/linux/objtool.h                 |  12 +
+ tools/objtool/check.c                         |   2 +-
+ 46 files changed, 607 insertions(+), 436 deletions(-)
