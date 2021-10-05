@@ -2,72 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF663422093
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 10:21:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9252422096
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 10:22:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233182AbhJEIX3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 04:23:29 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:49916 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233264AbhJEIXY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 04:23:24 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 2E90B223F3;
-        Tue,  5 Oct 2021 08:21:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1633422093; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gSgWfHBoq0JDEOFQ2LHMyzXTFy3fM71N3IgwYhLccE4=;
-        b=uvIywHtmliwkl2XzXJvi+3jQa74Ll6+r28e32vA6pKFBmS7HAF5gIMyPtFPXMbQKXsaBp5
-        EfMCMPvWTSKIYs7ouJ5TW3afmYzmpv4vk7uJtyEZWn6jgDhV53S0MzihXZyS53YwAOylRq
-        NYyO9JKQF09cyoq30rRgEytmsfmlh2s=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1633422093;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gSgWfHBoq0JDEOFQ2LHMyzXTFy3fM71N3IgwYhLccE4=;
-        b=tqUsTt8e9JBhZdDzbUo0vGY07DDfyo6OjYvr5tXVBDnuziX1ujGMMmEebhB8ehoQIDlYhM
-        8I0fDcvt7CIOQbCQ==
-Received: from suse.de (unknown [10.163.43.106])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id D74E5A3B81;
-        Tue,  5 Oct 2021 08:21:32 +0000 (UTC)
-Date:   Tue, 5 Oct 2021 09:21:31 +0100
-From:   Mel Gorman <mgorman@suse.de>
-To:     Bharata B Rao <bharata@amd.com>
-Cc:     linux-kernel@vger.kernel.org, mingo@redhat.com,
-        peterz@infradead.org, riel@redhat.com
-Subject: Re: [PATCH 2/4] sched/numa: Remove the redundant member
- numa_group::fault_cpus
-Message-ID: <20211005082131.GL3891@suse.de>
-References: <20211004105706.3669-1-bharata@amd.com>
- <20211004105706.3669-3-bharata@amd.com>
+        id S233001AbhJEIXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 04:23:51 -0400
+Received: from mga03.intel.com ([134.134.136.65]:38245 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232478AbhJEIXs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 04:23:48 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10127"; a="225626827"
+X-IronPort-AV: E=Sophos;i="5.85,348,1624345200"; 
+   d="scan'208";a="225626827"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2021 01:21:58 -0700
+X-IronPort-AV: E=Sophos;i="5.85,348,1624345200"; 
+   d="scan'208";a="439429468"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2021 01:21:56 -0700
+Received: from andy by smile with local (Exim 4.95)
+        (envelope-from <andy.shevchenko@gmail.com>)
+        id 1mXfhx-008pT9-8B;
+        Tue, 05 Oct 2021 11:21:53 +0300
+Date:   Tue, 5 Oct 2021 11:21:53 +0300
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+To:     Kent Gibson <warthog618@gmail.com>
+Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>
+Subject: Re: linux 5.15-rc4: refcount underflow when unloading gpio-mockup
+Message-ID: <YVwLIWrqY9TRLjwG@smile.fi.intel.com>
+References: <20211004093416.GA2513199@sol>
+ <YVrM8VdLKZUt0i8R@kroah.com>
+ <20211004121942.GA3343713@sol>
+ <YVrz86m3+7wDSYlh@kuha.fi.intel.com>
+ <20211004124701.GA3418302@sol>
+ <YVr/t7AbmP/h08GX@kuha.fi.intel.com>
+ <20211004141754.GA3510607@sol>
+ <20211004152844.GA3825382@sol>
+ <CAHp75VeBc3AN+5f680LeK8V6NpiiaPUTgE14FFonUM1W-xrjNA@mail.gmail.com>
+ <20211005004035.GA29779@sol>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211004105706.3669-3-bharata@amd.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20211005004035.GA29779@sol>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 04, 2021 at 04:27:04PM +0530, Bharata B Rao wrote:
-> numa_group::fault_cpus is actually a pointer to the region
-> in numa_group::faults[] where NUMA_CPU stats are located.
-> 
-> Remove this redundant member and use numa_group::faults[NUMA_CPU]
-> directly like it is done for similar per-process numa fault stats.
-> 
-> There is no functionality change due to this commit.
-> 
-> Signed-off-by: Bharata B Rao <bharata@amd.com>
+On Tue, Oct 05, 2021 at 08:40:35AM +0800, Kent Gibson wrote:
+> On Mon, Oct 04, 2021 at 10:56:00PM +0300, Andy Shevchenko wrote:
+> > On Mon, Oct 4, 2021 at 8:51 PM Kent Gibson <warthog618@gmail.com> wrote:
 
-Acked-by: Mel Gorman <mgorman@suse.de>
+...
+
+> > Here is debug prints of what happens
+> > 
+> > # modprobe gpio-mockup gpio_mockup_ranges=-1,10
+> > [  212.850993]  (null): device_create_managed_software_node <<< 0
+> > [  212.858177] platform gpio-mockup.0: software_node_notify 0 <<<
+> > [  212.865264] platform gpio-mockup.0: software_node_notify 1 <<< 1
+> > [  212.874159] gpio-mockup gpio-mockup.0: no of_node; not parsing pinctrl DT
+> > [  212.882962] gpiochip_find_base: found new base at 840
+> > [  212.889873] gpio gpiochip3: software_node_notify 0 <<<
+> > [  212.896164] gpio gpiochip3: software_node_notify 1 <<< 1
+> > [  212.905099] gpio gpiochip3: (gpio-mockup-A): added GPIO chardev (254:3)
+> > [  212.913313] gpio gpiochip840: software_node_notify 0 <<<
+> > [  212.920676] gpio gpiochip3: registered GPIOs 840 to 849 on gpio-mockup-A
+> > [  212.935601] modprobe (185) used greatest stack depth: 12744 bytes left
+> > 
+> > As I read it the software node is created for gpio-mockup device and
+> > then _shared_ with the GPIO device, since it's managed it's gone when
+> > GPIO device gone followed by UAF when mockup (platform) device itself
+> > gone. I.o.w. this software node mustn't be managed because it covers
+> > the lifetime of two different objects. The correct fix is to create
+> > manually software node and assign it to the pdev and manually free in
+> > gpio_mockup_unregister_pdevs()/
+> > 
+> > Tl;DR: it's a bug in gpio-mockup.
+> 
+> So the bug is in the behaviour of gpio_mockup_register_chip()?
+
+Not really. The utter root cause is the former API (device_add_properties()
+et al) which Heikki is getting rid of in particular because of this issue,
+i.e. when users blindly call it without fully understanding the picture of
+the object lifetimes.
+
+> That is out of my court, so I'll leave it to you and Bart to sort out.
+
+I'll see what I can do about.
 
 -- 
-Mel Gorman
-SUSE Labs
+With Best Regards,
+Andy Shevchenko
+
+
