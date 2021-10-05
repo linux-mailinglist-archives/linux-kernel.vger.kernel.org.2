@@ -2,162 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 900084220FC
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 10:40:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B82CD422104
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 10:42:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233182AbhJEImB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 04:42:01 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:47038 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231816AbhJEIl6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 04:41:58 -0400
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19585APf029448;
-        Tue, 5 Oct 2021 08:39:59 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2021-07-09;
- bh=QOS2UfD5+Xnte1lsH6cUptsfuYmZjzy4Pt0RetUIgT8=;
- b=cyunpQDJAn1CSWqaQIlDiAnv3UERcmATerTQCvcwaZtI2r7jsmSpka7Bx6ZA7wm02XvR
- F4/atgVW79S18reuxCrDvShr4Fk+SWmq6bochrudx4EDxXm7T8KzTxlwsSBjEKY5+Kpz
- /SXOdhLVLyWPLb0/R9kERTp9s+JckTf1eBId4N365/chWw8LyNCIpHjdSfwjPazhian0
- CNNvuWDFYQ/stRwdrEwv91My4P5Xw2DajrtyVIF+zzlUN094A6oUklG+Q67Yo23Oy11X
- UfmDYrdvMcC7qiNkbUtlBSpVaURQXFHg45I63HYMRIjUyFekoU54W432f8iErdnbgxzj QA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3bg42knrc1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 05 Oct 2021 08:39:58 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1958YdVZ099471;
-        Tue, 5 Oct 2021 08:39:57 GMT
-Received: from nam04-dm6-obe.outbound.protection.outlook.com (mail-dm6nam08lp2045.outbound.protection.outlook.com [104.47.73.45])
-        by userp3030.oracle.com with ESMTP id 3bf0s64g7w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 05 Oct 2021 08:39:57 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DOo1KpBSlXfla0vYemAvgY3auhHtyNYD392OVWaDPcYZoL9ZElM+8c4pJDxdvWtQ5kl/O/Pf3WgOl4eKkux/B8rZYvpjGCYu4gOx8rfLC0RBqbUSycvGJk1Rt7CnP0g7XQZxpcQeBTk76uaUByhBDL0KL4lBfB9vWIgjyk4qBFOdHtwWwMa7owJ7mYirXbwqsw6L1qEMbJ+Nc509eccfOK1VL84KmaxqAJkh8XgL3s6CJsH8RYd2/5IH9W0bw8B8uIE9EzmVRci2o1hmc7r9Umq+eCJ6HF9uOvXZ/WKH5APjFKvcwcWXbQmSAlxsEnSJq+iqGtsjVl8fHX43Ld2DZQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=QOS2UfD5+Xnte1lsH6cUptsfuYmZjzy4Pt0RetUIgT8=;
- b=II5wKpSAe6i0xc6VkIal9FfU4qm6ciRmIcU+h+vkGQ/KBEx37DqW72K7hC52FAecMkoOnaPgt4ulAROPXQcm/xE7bV0Vm2bQaIKJ4/cykeroSmRD/2oyAbUsolnv45PCeL1TDzTrO6clzrTYnSra/YGAkQYNVQPCaktQ4jRR/imhJlDi193gdvGe0qxHL81RMf80Rcwzm8oHjTTbwEuA+vlx1vtXkgO927wrfjb4fEjFVp/DynJaxVaMUM1k6Q9kbvN16N2/AiGMhDy10Tp5OBtkOky2WZMizhh8Tcs5HrClyx344BpkGXjaTTG8MTMCATTZBi7n8pQMsOIADj+HNQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QOS2UfD5+Xnte1lsH6cUptsfuYmZjzy4Pt0RetUIgT8=;
- b=F0xTBkiq5hHKDxWyexIMzdYgPjfSbp1YzVI5xyOSf5OXMs3DuCUfvba3pJLTho9o8+ymSTH+2gvenBTDSS02q3IdS8Tr+kOZZj5SAOSx8C0i8G/FvlmSS7RBK/qv+ShrVHUBc67Jy8Nv0xB2JbbwRkXPjPc2CHFQqyl3aW1U47A=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=oracle.com;
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- (2603:10b6:301:2d::28) by CO1PR10MB4513.namprd10.prod.outlook.com
- (2603:10b6:303:93::23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.15; Tue, 5 Oct
- 2021 08:39:55 +0000
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::d409:11b5:5eb2:6be9]) by MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::d409:11b5:5eb2:6be9%5]) with mapi id 15.20.4566.022; Tue, 5 Oct 2021
- 08:39:55 +0000
-Date:   Tue, 5 Oct 2021 11:39:36 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Tommaso Merciai <tomm.merciai@gmail.com>
-Cc:     Forest Bond <forest@alittletooquiet.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Madhumitha Prabakaran <madhumithabiw@gmail.com>,
-        Yujia Qiao <rapiz@foxmail.com>,
-        Lucas Henneman <lucas.henneman@linaro.org>,
-        Aldas =?utf-8?B?VGFyYcWha2V2acSNaXVz?= <aldas60@gmail.com>,
-        Deepak R Varma <mh12gx2825@gmail.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 2/3] staging: vt6655: fix camelcase in ldBmThreshold
-Message-ID: <20211005083936.GW2048@kadam>
-References: <20211004223200.70524-1-tomm.merciai@gmail.com>
- <20211004223200.70524-3-tomm.merciai@gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211004223200.70524-3-tomm.merciai@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: JN2P275CA0046.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:2::34)
- To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
+        id S232920AbhJEIop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 04:44:45 -0400
+Received: from mout.gmx.net ([212.227.17.21]:43867 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230526AbhJEIon (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 04:44:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1633423332;
+        bh=8vloTmutBIqcWlksH5esiytG0nlB3zdmM0rN/4QHZpo=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=ar3M5d2gUZDbWLyd1lGbMo7aOrwVEEINzMDbLvJnG6U85Q8c+uKHWPRtS7QO/TQqL
+         WMGbSh3FJ6AIn7oIo8sV+5kPYqo8bGCwwjoSbmsIdju1OZMeyS9SIoC4oxCqbb66pu
+         D6SlDkfhOwFRZYGbJ4yw0QOrxgCN5j0N3qp+lB7I=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.191.218.74]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MulmF-1mqIq03vnP-00rnkT; Tue, 05
+ Oct 2021 10:42:12 +0200
+Message-ID: <ba1195a9843add64b38fce9ceb186c0c21ef5783.camel@gmx.de>
+Subject: Re: wakeup_affine_weight() is b0rked - was Re: [PATCH 2/2]
+ sched/fair: Scale wakeup granularity relative to nr_running
+From:   Mike Galbraith <efault@gmx.de>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Barry Song <21cnbao@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Date:   Tue, 05 Oct 2021 10:42:07 +0200
+In-Reply-To: <20211005074719.GP3959@techsingularity.net>
+References: <20210920142614.4891-1-mgorman@techsingularity.net>
+         <20210920142614.4891-3-mgorman@techsingularity.net>
+         <22e7133d674b82853a5ee64d3f5fc6b35a8e18d6.camel@gmx.de>
+         <20210921103621.GM3959@techsingularity.net>
+         <ea2f9038f00d3b4c0008235079e1868145b47621.camel@gmx.de>
+         <02c977d239c312de5e15c77803118dcf1e11f216.camel@gmx.de>
+         <CAGsJ_4xcRFcDMpuC7vrpHe=aRbDpAnRd1F64aqh2EEcNgmZxCg@mail.gmail.com>
+         <f1b421f956fa044b4efa7f5fef015725b27223cf.camel@gmx.de>
+         <4f571c5c759b9d356d1bb4114fb169181194a780.camel@gmx.de>
+         <20211005074719.GP3959@techsingularity.net>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.0 
 MIME-Version: 1.0
-Received: from kadam (62.8.83.99) by JN2P275CA0046.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:2::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.14 via Frontend Transport; Tue, 5 Oct 2021 08:39:49 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: faaad7fa-8ac1-4c90-81c3-08d987dbb4ca
-X-MS-TrafficTypeDiagnostic: CO1PR10MB4513:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <CO1PR10MB4513482505701B9C39E28CA48EAF9@CO1PR10MB4513.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:586;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: D340Gz6360FeIG9IflmE4fjDO75tCl2aCjKNndMPvhglyXTQsBXOqHoWWAMzp4VthEPyCBwWP5CaUUheM/3v0CCAwpekP5Yl0XeJQ68Xz1wk3/K5fW/9LOi6K0vZkulymYm+OZtOBo+D/M31pmhicrhuy6LMZGCvwo3C+zZoHAr1d1mMONbo4sp8HDxH1/nCJGlG2xQ9xvfYMGKbNBiBZesOFzFHZgrrLW8uyGae76pCMR9w3e3GiJkYgDz3S383//K5xhNRU5dln0O1atSpUJssZIzQzLUFdLTcve7BEwpCkAk+VXFd55MKVAiea1vvGjT2CkW1kC4bxceH49HyocZNcyPhrjgHZwy+FF19RlBp1O44E9mXAZY8Ga1WtWKPSQfQpB1ooD96hfL7BpsYF4MxzB7Cx/HVnpmg2dJC/l2fuK4Mrhb8MvWOhW2rhHoVHj00LCwgHXtIpG5ZnGXp5+QWo5I3aVhH60mFOSVpuOVXmUOBeY3nwL39sAvkYhwdtbVm/CPbJf+/ZtIfh9uqwmVB2ESjLcaiZdqw+71yT9usAwKL8rols4aJXQTNkE7QAkBIEXRTQCDFY/SqEFcoBo40edITjVzqePO5dhQ1TN/e8/eV5Z7QcCMhNj/yTv7ZRUvbZhx3e/QLzw490ZcDxUplMd9bkB7pWIl6fOUtJrawZYU7G9T123UCdrzVeeSA1jT44YOEdMAMfMAWH40Y2lxlxyisOnZpDa+WoCr4Z3OqwUnKxiMqRh88XDQ3iDSoNxtcrvIIOkIoqqB8h5Qkm+AY6cHPB3Fr/G4lKLce4PTWTOIwAzY8eGllUEm+5QfA
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(6029001)(366004)(33656002)(38100700002)(55016002)(38350700002)(9686003)(508600001)(966005)(86362001)(316002)(4326008)(8936002)(8676002)(6916009)(52116002)(186003)(5660300002)(7416002)(26005)(6496006)(956004)(9576002)(54906003)(44832011)(2906002)(6666004)(4744005)(66476007)(66946007)(33716001)(66556008)(1076003)(156123004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?bEGjdx+9QFFtC6R1c8vBijNdvf9pVwvTp2mMI/g+cGeT5PyxtwJ1ijVI7Brg?=
- =?us-ascii?Q?49l7EHnsBqUlDpV5xZX5u07YutNsshlMpE7dBkrjLugRNkY45vFh3a1n79rK?=
- =?us-ascii?Q?jctzq421HGqU+SRdXZwavyUHy2qhE9r6KU7x+uqLlvHcT4Yucyex5HCO3rfs?=
- =?us-ascii?Q?owqlXyujZL6rfivRjSAesfpUv2l37mSKz0QjCrP0NVUYZ+3Hi2LI0N8t+fWq?=
- =?us-ascii?Q?Xj7r9oNIeJBEX+6ngF8G80zQ83eTdJlWWKo87tdgZJDyt1cKyvZmyzT6BOSP?=
- =?us-ascii?Q?xCYMEtsAEW5hFjjgaQbPF1YgHYAXI5kX6wuOuUkydctwjCSwBT07NQ0e832m?=
- =?us-ascii?Q?z1ydUx+85U746vkpXTYLihZK644CJpCUIaLfN9qc6TGYH70FpxqHQhGAa5yu?=
- =?us-ascii?Q?A0EmJVmfYQtADCtKDK5MClnEUPqTgJR0cg70PZPF1slRX+tYnccv+rdTIj8+?=
- =?us-ascii?Q?wvgTZmwUiHBO2ZoQZ/unKDmSkwPAKR53sbq6a3KXaP7qgIXzLIGVm7b1gl+w?=
- =?us-ascii?Q?YIyZEIfHnHcH3zaVB9zgIFhXRE0ssV9V4KY4wNeNlZ6rYtzJhhtmdDSdO1hW?=
- =?us-ascii?Q?Dbq0v5JRB+YI8xJPcejyZ036qRFbneSvj3SXmGRlg8qRMZMh6PsWKKs2FO+m?=
- =?us-ascii?Q?COrtdYzHujK3y83RcUuIrH5FfHclS7o9JQv+glcyY3Cjc5GWnggUKFxAWtIf?=
- =?us-ascii?Q?Jaj3/bQzKywBf0NtwIICdRoCV5hL4koh2otcj7K9F2edA2Hqsxg7pHJhJ64o?=
- =?us-ascii?Q?q6ZrebO8sqfcCNCJFF3LvehrwYK96WzO9D+CjVUbJ9wiUfdnr28RQoNvkXKg?=
- =?us-ascii?Q?SF1XStIVeZSnTqGXrwhG0BLQ7vk44LT3z9lKOHiIVlWki8nGoXQ67DBfHoIJ?=
- =?us-ascii?Q?sEP8SP3FTP73ZlHMdb1dgYKoovNsMOymF3f4dIqYB6anDhy/gqNu68ojrwFE?=
- =?us-ascii?Q?mCiuk4JxyO74j531ubpnRd2/b7zRolFIkxn6dFoM3osm0/IhKQiqlph7HWgv?=
- =?us-ascii?Q?aYFF9GzyqtgjMOFjVFDthyNfbF295v1+2hZRqKdklVviWvCPDWHOz0u/FyZX?=
- =?us-ascii?Q?xBapQB0VXtdjv8rRhrJ6xdYDo6s7o1Ti8tg6z5BjFl23neigChcsyJLmh/l5?=
- =?us-ascii?Q?u/pa9WBgB8TRYw2pzd4SgOAGcZBSjH7fB/hDvuSUqpECzdE6hNd3KiDD4/Fn?=
- =?us-ascii?Q?7KVr6tR/Fz3ZCIS4osffdNF6t7dHncL/HbD5jLsD2DRLCs4b080jv0KEYWZU?=
- =?us-ascii?Q?CZ/HuYp2KoJRQDT22hGKs0cb/ZkcHKKmo3OH4rWmT/LBVXtK+qYO5t0d4QxC?=
- =?us-ascii?Q?0cNVll2RUXVzWhyURsLoaE3s?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: faaad7fa-8ac1-4c90-81c3-08d987dbb4ca
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Oct 2021 08:39:55.6450
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: UaZ5b2Xe90XqVKX953eVk4qHXQIvlCkngqPqzOB65mJjAdZUpTlDrrNGTRt/w5u5qr8QVTdQvoVP5lKG+xEh78m1ojS/UhVi+UKOgnyCXNY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR10MB4513
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10127 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=0 adultscore=0
- mlxscore=0 phishscore=0 bulkscore=0 mlxlogscore=999 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109230001
- definitions=main-2110050049
-X-Proofpoint-GUID: d5N4sMJiFKF0WWyg8cSmRpxAFHjhWWCB
-X-Proofpoint-ORIG-GUID: d5N4sMJiFKF0WWyg8cSmRpxAFHjhWWCB
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:BYOEhFKj5Pc/3Qc/U3noD5es72ht/FLWnDkRbltiJ1s+IUifPS7
+ sPoIR5ESZxf4m0uXQXYtMm3iMrMbVkECqRBn5OSpyVaHJH7tLm/6YmiSikxBURyPQLX8D6R
+ EYunBgFUTmgsXBPruut4ndT7ra7yEXvGVr9HuokBpxE2HSChHYu4vmvvCEUR0onoJj5+DXC
+ Aa51bgz00P5cnuvKE2yHQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:K2jJnMg12QQ=:pa+21JsPRfpWQS5dGzbBvt
+ QgiP9Ioq+7w34kd6XbAUvjfJG1IYtQvCt8VK9Mcuiga6Vq0Fr4D1PN2HSUOu5Yk6brur9uArK
+ R9irJYiKMPnMf0b8bH/2JIGA4f/Vkct+Iir/V+EsiV+LcAJFbpY/mKSZFzndEqGaaEUHXk4Y6
+ DRWU1WWLQ/sSR4lvRlxoMjAI9okEO919zNhdn4xhSFdyIFQXNONFF7Nh1JZxEd/ZYfkXR6iMk
+ aVx7Lo32mr7Lxl1TnJoLF9IL0xyOc87XuiuxVjsb6QRqrNlAbthwtMI3eM8tju7aGmcTV9GN2
+ bBjHMdNOHU0CxYkX/YJYeFqlfbWxS4SRcPRFeEzhyBpcU1LISOrguCUBWZkaNm+Kq1XQRudqU
+ z9qZ8LugQ1KVr/hsiwRVOPt4oHF9x5WF47zer8n09/uL3kxDtED2qgzXFCUYDwjosHbvUYJOl
+ G8F8HsObBCxm5AEwX6qdxoQ1w7yZN3k1dr1giMqqQhZwC8BjBi3UjsC1zMr9PpZBXhQh16CVI
+ dbUfMhOjP+/BNQdveNVeCkLhpDbKpOLet/uC+Z+4yi1Tu/R4E14LRV7u8KZOgr6FqfE5U58vj
+ oNaS5iJ4Nsf/GNcla9atoeCPhQQCFUdKs2+pghTcAnO1/jONI8eZymBcBf8XkCei2/DjISEao
+ 8g/CqFvWrernB1sx8ACmYDppLmj6GoXL+SER5Gv2dJFiqT4mBC0KapOXmYRHmM3PT07AA3KH/
+ FDL6v/p2Fh2uHUf8gO37xrxvdsFX/sbHdGmFyV4YcOB1Uy6kp7bdr33CQqckO9p0VTfmW8r9f
+ pkPbFen2FkXLzgDOLrO7dAflufK7emidvduLkvfFD9fkBVdc6I5Gx4qeFbOqOA2Qd93IlkOo0
+ /jay5xu8X+mKefHdx7/uqv/GZITHnTK3X2//gyMY6D/zbh9dnGNkn10EUkKsVAf0wzQDRVAPf
+ zV0uXnvNwPdBYuw2pojtXJZ5BNvUERHApLKm7bMFoS7XiW1qKeFtUPrdDzEcKimEqpXONSv/x
+ QVjKEq+l13CBav3+uv3urwqp49YZr9Or2NdRBRERhNapjq4op/ctteBOyplPMpEPmHy7h9WXU
+ pgBjeo05wdpgjM=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05, 2021 at 12:31:57AM +0200, Tommaso Merciai wrote:
-> diff --git a/drivers/staging/vt6655/device.h b/drivers/staging/vt6655/device.h
-> index 49e3d09480f2..e74372263e14 100644
-> --- a/drivers/staging/vt6655/device.h
-> +++ b/drivers/staging/vt6655/device.h
-> @@ -215,7 +215,7 @@ struct vnt_private {
->  
->  	bool bEncryptionEnable;
->  	bool bLongHeader;
-> -	bool short_slot_time;
-> +	bool bShortSlotTime;
+On Tue, 2021-10-05 at 08:47 +0100, Mel Gorman wrote:
+> On Mon, Oct 04, 2021 at 11:06:30AM +0200, Mike Galbraith wrote:
+> >
+> > The mallet below convinced wake_wide() that X waking event threads is
+> > something it most definitely should care about.=C2=A0 It's not perfect=
+, can
+> > get caught with its pants down, because behavior changes a LOT, but I
+> > at least have to work at it a bit to stack tasks to the ceiling.
+> >
+> > With make -j8 running along with firefox with two tabs, one containing
+> > youtube's suggestions of stuff you probably don't want to watch, the
+> > other a running clip, if I have the idle tab in focus, and don't drive
+> > mouse around, flips decay enough for wake_wide() to lose interest, but
+> > just wiggle the mouse, and it starts waking wide. Focus on the running
+> > clip, and it continuously wakes wide. =C2=A0
+> >
+> > Hacky, but way better behavior.. at this particular testcase.. in this
+> > particular box.. at least once :)
+> >
+>
+> Only three machines managed to complete tests overnight. For most
+> workloads test, it was neutral or slight improvements. For
+> multi-kernbench__netperf-tcp-rr-multipair (kernel compile +
+> netperf-tcp-rr combined), there was little to no change.
+>
+> For the heavy overloaded cases (hackbench again), it was variable. Worst
+> improvement was a gain of 1-3%. Best improvement (single socket skylake
+> with 8 logical CPUs SMT enabled) was 1%-18% depending on the group
+> count.
 
-Trolololol....
+I wrote up a changelog to remind future me why I bent it up, but I'm
+not going to submit it. I'll leave the twiddling to folks who can be
+more responsive to possible (spelled probable;) regression reports than
+I can be.
 
-https://www.youtube.com/watch?v=2Z4m4lnjxkY
-
-regards,
-dan carpenter
+	-Mike
 
