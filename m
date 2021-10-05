@@ -2,85 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 076BE422E64
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 18:50:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34894422E67
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 18:51:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236296AbhJEQwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 12:52:40 -0400
-Received: from relay02.th.seeweb.it ([5.144.164.163]:50095 "EHLO
-        relay02.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233896AbhJEQwj (ORCPT
+        id S234413AbhJEQxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 12:53:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51448 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236618AbhJEQxL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 12:52:39 -0400
-Received: from [192.168.31.208] (riviera.nat.ds.pw.edu.pl [194.29.137.1])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 361721F564;
-        Tue,  5 Oct 2021 18:50:46 +0200 (CEST)
-Message-ID: <15b74129-111f-a43e-ad10-36722fe86e2e@somainline.org>
-Date:   Tue, 5 Oct 2021 18:50:45 +0200
+        Tue, 5 Oct 2021 12:53:11 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FA5EC061749
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 09:51:20 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id t8so38671456wri.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 09:51:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0oYgCq8tdGL5ZnFMRu0rVxW8eQ2Me6G+FliJuxkQGT8=;
+        b=LQoDamG/0yIG0jhB3YGreFjRgT9SUHOOeZblFDFaZlUTvvjj1Apbv9AUs5jG0g2X5k
+         zUUjfGVhtjzs9Xgkfl3rGNUobgp0st2d45dKirMaCW7cIYWs5UsGqS/UjZI4dspV78mt
+         qYxx7SZtd0mj07iKnlU7ZlmBMJUeIw1N89iJ1IVAuxdhYESZhOxrUq5XYBdmtr+SaHBT
+         +kqeiN7RF8hzqrEMElIfy7FYb93pDJGZ6AEiq59eFm9m+JRgfIpMZY0/gOWDt5ejocoG
+         Oiw28g5/9nqV51WozZHfMoOO1pp+vGWBWzjZDhwlMTM89D6BUDrZnb7aXvrR/Zw0h3Md
+         dJEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0oYgCq8tdGL5ZnFMRu0rVxW8eQ2Me6G+FliJuxkQGT8=;
+        b=m7QIn3JVICkffMXiaRELAu7jS9EL+K2xm5Wg5tZt2ee2+Yj+k/ztJzCqI0WpIxFllZ
+         eI7lkLrNsG3ipnc3ExEvAikUc5r4tRBjTaebIE8zsdSA3YjBoKyF/F4X/ac+29t10EeO
+         zBUrZvXFTl7Fd3aMY3NUSoFipUcy+gFCAVjiHMflnfU8Yv0hHz5dTsZahCoj30CLGdzj
+         rkin+uH8aFokFwjTxHpOevL0yuqFiqvSYlU7lfQyYR9LDk4qKg6fGGQuScZmNJOkfEmQ
+         eJ+MYGS5lZqspe8ouUZgI3x42h8+R+dXSC77+7ebV30+45EUvB4Met6Hc5e2PRzfoWcW
+         RWwA==
+X-Gm-Message-State: AOAM5328DEw9LUKF1drUBE97BEn73sr8rZkQYGl8mqyTfnbmAq84ORoH
+        DES/SUUh7Z+3sbV5ver7OGyxB+ftzqDXpp/s4CE14w==
+X-Google-Smtp-Source: ABdhPJxIcRRhtZXhKjFg/Twt+0uxoC+Lb8/6VVNoDaqELQr9ZnABVR2MLDmqkQkwA+1HHVIGUKu9+IznAxkAvDhcArw=
+X-Received: by 2002:adf:a390:: with SMTP id l16mr630649wrb.291.1633452678797;
+ Tue, 05 Oct 2021 09:51:18 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.1.2
-Subject: Re: [PATCH 05/10] backlight: qcom-wled: Fix off-by-one maximum with
- default num_strings
-To:     Daniel Thompson <daniel.thompson@linaro.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        phone-devel@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Martin Botka <martin.botka@somainline.org>,
-        Jami Kettunen <jami.kettunen@somainline.org>,
-        Pavel Dubrova <pashadubrova@gmail.com>,
-        Kiran Gunda <kgunda@codeaurora.org>,
-        Courtney Cavin <courtney.cavin@sonymobile.com>,
-        Bryan Wu <cooloney@gmail.com>, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211004192741.621870-1-marijn.suijten@somainline.org>
- <20211004192741.621870-6-marijn.suijten@somainline.org>
- <20211005091947.7msztp5l554c7cy4@maple.lan>
- <20211005100606.faxra73mzkvjd4f6@SoMainline.org>
- <20211005103843.heufyonycnudxnzd@maple.lan>
- <20211005105312.kqiyzoqtzzjxayhg@maple.lan>
- <20211005114435.phyq2jsbdyroa6kn@SoMainline.org>
- <20211005140349.kefi26yev3gy3zhv@maple.lan>
- <20211005152326.5k5cb53ajqnactrg@SoMainline.org>
- <20211005162453.ozckxhm47jcarsza@maple.lan>
-From:   Konrad Dybcio <konrad.dybcio@somainline.org>
-In-Reply-To: <20211005162453.ozckxhm47jcarsza@maple.lan>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20210929224823.556943-1-rajatja@google.com> <20210929224823.556943-2-rajatja@google.com>
+ <YVVLxi/on9x6nfCZ@kroah.com> <CACK8Z6EamamgYExt629gyNrYKpvnu2Gh0eGOOvOa5LH-jnOmaQ@mail.gmail.com>
+ <20211005145655.GJ621017@rowland.harvard.edu>
+In-Reply-To: <20211005145655.GJ621017@rowland.harvard.edu>
+From:   Dmitry Torokhov <dtor@google.com>
+Date:   Tue, 5 Oct 2021 09:51:02 -0700
+Message-ID: <CAE_wzQ-XG3YBtKTmbn1LSGETCUg5AYjTmcnwOnc1h57OaL9+Cw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] usb: hub: Mark devices downstream a removable hub, as removable
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     Rajat Jain <rajatja@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Mathias Nyman <mathias.nyman@linux.intel.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Chris Chiu <chris.chiu@canonical.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        levinale@google.com, bleung@google.com, rajatxjain@gmail.com,
+        jsbarnes@google.com, pmalani@google.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[snipping to not have the entire thread here]
-> I've no objections to seeing the DT updated. However I don't really see
-> what benefit we get from breaking existing DTs in order to do so.
+Hi Alan,
+
+On Tue, Oct 5, 2021 at 7:56 AM Alan Stern <stern@rowland.harvard.edu> wrote:
 >
-> "Cleaning up annoying legacy" is seldom a good reason to break existing
-> DTs since, if we could break DTs whenever we choose, there would never
-> be any annoying legacy to worry about. When conflicting properties
-> result in uninterpretable DTs then a break may be justified but that is
-> not the case here.
+> On Mon, Oct 04, 2021 at 03:42:46PM -0700, Rajat Jain wrote:
+> > +Dmitry Torokhov
+> >
+> > Hi Greg, Oliver,
+> >
+> > Thanks for taking a look.
+> >
+> > On Wed, Sep 29, 2021 at 10:31 PM Greg Kroah-Hartman
+> > <gregkh@linuxfoundation.org> wrote:
+> > >
+> > > On Wed, Sep 29, 2021 at 03:48:23PM -0700, Rajat Jain wrote:
+> > > > If a usb device sits below a removable hub, mark the device also as
+> > > > removable. This helps with devices inserted on a standard removable hub or
+> > > > also thunderbold docks, to be shown as removable.
+> > > >
+> > > > Signed-off-by: Rajat Jain <rajatja@google.com>
+> > > > ---
+> > > >  drivers/usb/core/hub.c | 7 +++++++
+> > > >  1 file changed, 7 insertions(+)
+> > >
+> > > Combined with the previous patch, you are now marking all devices that
+> > > happen to be attached to a root hub that is on a thunderbolt controller
+> > > as removable.  So all USB devices inside of a docking station are now
+> > > removable?
+> >
+> > With this patch, yes that was my intent. I think what we are debating
+> > here is should the "removable" attribute imply possibility of removal
+> > from "the system" or just the "local immediate box" (e.g. thunderbolt
+> > dock). In my mind, the removable property was analogous to imply an
+> > "external device", i.e a device that may be removed from the system,
+> > perhaps as a result of its parent devices being removed from the
+> > system. I guess this definition doesn't match what you believe it
+> > should be?
 >
+> As I understand it, the "removable" property refers specifically to
+> the device's upstream link, not to whether _any_ of the links leading
+> from the device to the computer could be removed.
+
+No, that is not what it means. I'll cite our sysfs ABI:
+
+What:           /sys/devices/.../removable
+Date:           May 2021
+Contact:        Rajat Jain <rajatxjain@gmail.com>
+Description:
+                Information about whether a given device can be removed from the
+                platform by the user. This is determined by its subsystem in a
+                bus / platform-specific way. This attribute is only present for
+                devices that can support determining such information:
+
+                "removable": device can be removed from the platform by the user
+                "fixed":     device is fixed to the platform / cannot be removed
+                             by the user.
+                "unknown":   The information is unavailable / cannot be deduced.
+
+                Currently this is only supported by USB (which infers the
+                information from a combination of hub descriptor bits and
+                platform-specific data such as ACPI) and PCI (which gets this
+                from ACPI / device tree).
+
+It specifically talks about _platform_, not about properties of some
+peripheral attached to a system. Note that the wording is very similar
+to what we had for USB devices that originally implemented "removable"
+attribute:
+
 >
-> Daniel.
+> This is probably what Oliver meant when he complained about losing
+> information.  With the knowledge of whether each individual link is
+> removable, you can easily tell whether there's some way to remove a
+> device from the system.  But if you only know whether the device is
+> removable from the system overall, you generally can't tell whether
+> the link to the device's parent is removable.
 
-The only true user of wled as of right now is Xperia Tone platform, 
-which does not yet
+If we need this data then we need to establish some new attribute to
+convey this info.
 
-have display support upstream, so unless one classifies lighting up an 
-otherwise black display
-
-a dealbreaker, I think it'd be fine to bend the rules this time.
-
-
-Konrad
-
+Thanks,
+Dmitry
