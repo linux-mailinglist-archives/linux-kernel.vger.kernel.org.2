@@ -2,144 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82A234223B6
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 12:38:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EB0A4223C7
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 12:44:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234075AbhJEKki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 06:40:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47076 "EHLO
+        id S234073AbhJEKqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 06:46:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233855AbhJEKkh (ORCPT
+        with ESMTP id S233077AbhJEKqU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 06:40:37 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D13D6C06161C
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 03:38:46 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id r10so20024226wra.12
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 03:38:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=H9PK5OVBJJh8Z07ZGNAQ/njfImaF/ljJYKuf9Kp7Cqs=;
-        b=ALdOKXeOQWsAyarKfutyvCbCybKfyRWHwCFdpQIIag2dprgW9sMW4ZInIwcvqlEn0E
-         J7CxsV5kMMZWpyajS3O+xSnIR2j4zWZl6YSb2ARmq3WUt8uX9qVdkefSYiVjZnatziTf
-         5yb7MFMDb5jA8Bd/9EuE4kIuewjEZ6NUaLxI9Ni7YytmoX8XLKltlurxKILT/YRfFqBy
-         eqbMyYbs468+5X3T7rfNDHAxGZ8Yec2ic6pUkCSR8tVinwUSROM8vOC+7Bgnb4JGye3Y
-         zyY66eIBk1bHG3IhrCKBwTSDxqP/JKvXVFkCghsAlQ9MzkB/eVl8LWBm+/8pFx318NNC
-         NXsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=H9PK5OVBJJh8Z07ZGNAQ/njfImaF/ljJYKuf9Kp7Cqs=;
-        b=F6AOmz6ifzIzWOO54yheMIy3kMoE4kzElPbdhNWTcxTlpVPINHPJx1Fi+OmnAsv645
-         0QP+0YmME49kKDxc/i1m6EvNLyILbkudpZDc8+tFEDEEkMhskTALq4xCHE6zVt1THPEe
-         ggMTYzsjp8ckoSB3vm2zNS20fYvnH1Sq57iZAL+HT6LhDkA0GScxeG3sMnMjcVx3+0H6
-         U3q0vNYPbL8tbfoAoNYRmCFYEntJWNw+19mvRS4ERKTRUzqoYykGzibYAGj2+MMve8Fr
-         1Wm4BdJItdooB83q6uXSZAYgnh4Uq5fN4cJiCWbOYanSTQujDplnNGlM6IexWXro/upJ
-         I8mA==
-X-Gm-Message-State: AOAM533Zdg084a0YrurgfF2O/De8CKahUxo81TYkgv1XRfgPG+HzUYtI
-        aXmBCrAx6zKQj0F6IX6vBN/0xw==
-X-Google-Smtp-Source: ABdhPJzsbxS7Sgk4dlKMXvgUGEOt3+fcZUe+f2XcxzvViCSjyKDrehXfNrlJzGPcrJ24mbBQtcENCA==
-X-Received: by 2002:adf:df91:: with SMTP id z17mr9383829wrl.434.1633430325318;
-        Tue, 05 Oct 2021 03:38:45 -0700 (PDT)
-Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
-        by smtp.gmail.com with ESMTPSA id g21sm1393351wmk.10.2021.10.05.03.38.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Oct 2021 03:38:44 -0700 (PDT)
-Date:   Tue, 5 Oct 2021 11:38:43 +0100
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Marijn Suijten <marijn.suijten@somainline.org>
-Cc:     phone-devel@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Martin Botka <martin.botka@somainline.org>,
-        Jami Kettunen <jami.kettunen@somainline.org>,
-        Pavel Dubrova <pashadubrova@gmail.com>,
-        Kiran Gunda <kgunda@codeaurora.org>,
-        Courtney Cavin <courtney.cavin@sonymobile.com>,
-        Bryan Wu <cooloney@gmail.com>, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 05/10] backlight: qcom-wled: Fix off-by-one maximum with
- default num_strings
-Message-ID: <20211005103843.heufyonycnudxnzd@maple.lan>
-References: <20211004192741.621870-1-marijn.suijten@somainline.org>
- <20211004192741.621870-6-marijn.suijten@somainline.org>
- <20211005091947.7msztp5l554c7cy4@maple.lan>
- <20211005100606.faxra73mzkvjd4f6@SoMainline.org>
+        Tue, 5 Oct 2021 06:46:20 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8323C06161C;
+        Tue,  5 Oct 2021 03:44:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=cJD/+MY9O8PHjOJeBQShvY15RDowrj3eSl2/eSskHLA=; b=rT4wKb6l2b2KWtpvqqlmr7CJHE
+        kLGA9UWh3rkdNMx3WCU5Lr8XcmcfZO41p+3Qqd1gDraI1mMY8dE6VgZnqF+4ep6IbegxcdZMM83QR
+        E18KMtQA9l0o6LccN078woxgNDWtEDxTsCQCN0vjaN6ognriXh1nj7d6ptLL/maP9RVL0a0ta5SXI
+        FUMvZx2J7rtU0zDuOW7z6eBW8v3BMf/sW5BFPH4nXfTM69r7HORC0jOncrJwo4O62iwbtsx3nMpgD
+        EeX0ueiROd7+3o49zo2rR+by1nRZ1+qVxbfRowon/1ALXf26EC4ltPfTKek4Rc3jBIH1Iiad4ZTp3
+        7QgXfq9w==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mXhs8-000EnA-Jq; Tue, 05 Oct 2021 10:40:53 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DEBA13002DE;
+        Tue,  5 Oct 2021 12:40:30 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id B864A203BF5E8; Tue,  5 Oct 2021 12:40:30 +0200 (CEST)
+Date:   Tue, 5 Oct 2021 12:40:30 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Barry Song <21cnbao@gmail.com>
+Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Ben Segall <bsegall@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Guodong Xu <guodong.xu@linaro.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        "Cc: Len Brown" <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        LAK <linux-arm-kernel@lists.infradead.org>,
+        Linuxarm <linuxarm@huawei.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mel Gorman <mgorman@suse.de>, msys.mizuma@gmail.com,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Will Deacon <will@kernel.org>, x86 <x86@kernel.org>,
+        yangyicong <yangyicong@huawei.com>,
+        Yicong Yang <yangyicong@hisilicon.com>
+Subject: Re: [PATCH RESEND 2/3] scheduler: Add cluster scheduler level in
+ core and related Kconfig for ARM64
+Message-ID: <YVwrnv+81+KQF+cS@hirez.programming.kicks-ass.net>
+References: <20210924085104.44806-1-21cnbao@gmail.com>
+ <20210924085104.44806-3-21cnbao@gmail.com>
+ <20211005073544.GI4323@worktop.programming.kicks-ass.net>
+ <CAGsJ_4zCCKmyV7SpwCjwqiMj5Cch=CMd_np71uSXdqeGhZjRRg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211005100606.faxra73mzkvjd4f6@SoMainline.org>
+In-Reply-To: <CAGsJ_4zCCKmyV7SpwCjwqiMj5Cch=CMd_np71uSXdqeGhZjRRg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05, 2021 at 12:06:06PM +0200, Marijn Suijten wrote:
-> On 2021-10-05 10:19:47, Daniel Thompson wrote:
-> > On Mon, Oct 04, 2021 at 09:27:36PM +0200, Marijn Suijten wrote:
-> > > When not specifying num-strings in the DT the default is used, but +1 is
-> > > added to it which turns wled3 into 4 and wled4/5 into 5 strings instead
-> > > of 3 and 4 respectively, causing out of bounds reads and register
-> > > read/writes.  This +1 exists for a deficiency in the DT parsing code,
-> > > and is simply omitted entirely - solving this oob issue - by allowing
-> > > one extra iteration of the wled_var_cfg function parsing this particular
-> > > property.
-> > > 
-> > > Fixes: 93c64f1ea1e8 ("leds: add Qualcomm PM8941 WLED driver")
-> > > Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
-> > > Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-> > > ---
-> > >  drivers/video/backlight/qcom-wled.c | 8 +++-----
-> > >  1 file changed, 3 insertions(+), 5 deletions(-)
-> > > 
-> > > diff --git a/drivers/video/backlight/qcom-wled.c b/drivers/video/backlight/qcom-wled.c
-> > > index 27e8949c7922..66ce77ee3099 100644
-> > > --- a/drivers/video/backlight/qcom-wled.c
-> > > +++ b/drivers/video/backlight/qcom-wled.c
-> > > @@ -1255,17 +1255,17 @@ static const struct wled_var_cfg wled5_ovp_cfg = {
-> > >  
-> > >  static u32 wled3_num_strings_values_fn(u32 idx)
-> > >  {
-> > > -	return idx + 1;
-> > > +	return idx;
-
-
-> > >  }
-> > >  
-> > >  static const struct wled_var_cfg wled3_num_strings_cfg = {
-> > >  	.fn = wled3_num_strings_values_fn,
-> > > -	.size = 3,
-> > > +	.size = 4, /* [0, 3] */
-> > 
-> > 0 is not a valid value for this property.
+On Tue, Oct 05, 2021 at 10:01:09PM +1300, Barry Song wrote:
+> On Tue, Oct 5, 2021 at 8:35 PM Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > On Fri, Sep 24, 2021 at 08:51:03PM +1200, Barry Song wrote:
+> > > From: Barry Song <song.bao.hua@hisilicon.com>
+> > >
+> >
+> > >
+> > > Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
+> > > Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
+> >
+> > That is not a valid SoB pattern. The first SoB should be the author, the
+> > last SoB should be the one sending the patch, in this case both are
+> > Barry. What's Yicong's contribution in all this?
 > 
-> These comments represent the possible loop iterations the DT "cfg
-> parser" runs through, starting at j=0 and running up until and including
-> j=3.  Should I make that more clear or omit these comments entirely?
+> Yicong made the benchmarks of SPECrate and collected the result data which
+> is in the commit log. I am not quite sure what is the best tag for
+> him. Is Tested-by
+> appropriate in this case?
 
-The role of wled3_num_strings_values_fn() is to enumerate the list of
-legal values for the property [ 1, 2, 3 ]. Your changes cause the
-enumeration to include a non-legal value so that you can have an
-identity mapping between the symbol and the enumerate value.
-
-An alternative approach would be to leave the enumeration logic
-alone but set the num_string default to UINT_MAX in all cases:
-
--	cfg->num_strings = cfg->num_strings + 1;
-+	if (cfg->num_strings == UINT_MAX)
-+		cfg->num_strings = 
-+	else
-+               /* Convert from enumerated to numeric form */
-+		cfg->num_strings = wled3_num_strings_values_fn(
-+						cfg->num_strings);
-
-
-Daniel.
+Yeah, that works for me, changed it.
