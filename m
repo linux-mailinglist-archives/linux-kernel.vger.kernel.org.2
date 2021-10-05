@@ -2,88 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 208DA422610
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 14:14:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E670742262B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 14:17:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234546AbhJEMQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 08:16:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38874 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233808AbhJEMQk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 08:16:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EAA5B61166;
-        Tue,  5 Oct 2021 12:14:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633436090;
-        bh=DeaHbSCWFT8NlzFI7wJri1fE1dG3RGKllnRW0mksoIo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CUNgIxvsTj9HQ9K9IbRnK/q5KeNl3Eq9UZtsxwYap6OhnKEBUkVz79qVWZIJA9OV0
-         IqB9kLaFnP60wlAm0vYZYd2qO5B/pEgLAI0xfqKMM9a9rAJ9HvzzyWorat3pC0a5EJ
-         RU80Mk5SupjC+SM+9lN4zx/oblJStStnqNrCbTjhFhKvSEUFGp1CKPGx8deEnKxNIz
-         GX4qNwgH9EQHKAB4yRD3nkX4q9HGl5hvluanRCXqM2F1Y8kBwY33MxnAPpzQu/GRm+
-         kMg0VaiExald2jB4tap1QTznzfe3UHVJfxC0s80FgZaDMlKgKbrUCaTbO4XqCOLP5o
-         hda23Jz+1GW/Q==
-Date:   Tue, 5 Oct 2021 13:14:48 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org
-Subject: Re: [PATCH v2 00/10] regulator/mfd/clock: dt-bindings: Samsung S2M
- and S5M to dtschema
-Message-ID: <YVxBuEvHVdyDvaGD@sirena.org.uk>
-References: <20211001094106.52412-1-krzysztof.kozlowski@canonical.com>
+        id S234702AbhJEMS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 08:18:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41828 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234409AbhJEMS6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 08:18:58 -0400
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C03B4C061755
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 05:17:07 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id h9-20020a9d2f09000000b005453f95356cso25563988otb.11
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 05:17:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Qtirudvd3CXF1rYRgKYcpMfzejgCL2epG1sP1VQEe9s=;
+        b=KTwb/ogrtt/E591H/tN/VTYlhqrR9Vl5tddsqaZzE0kkrXYzv/GX8tid0+F3lr5qQq
+         yPWVTg2B314ddDgSwSevNhKAu64R7YWiSygh+c8h3Asl4LsYrFegO/B6AISMwFJ6D8Vr
+         XRXfMMIK8QWdqX+E7w/eSWk7FDRpKdoGDgzRD0PpaXqgSjJuzh6nSIptpD4f/Bs/ztSK
+         2TK//39Gd5LVxzA5kd9wKdOxiLO1a+l5Db/we0xTTygfsehseuN2h/z0vzxEdg7X2hEt
+         0wvhmExP39oZanRDPHEP3T1fKkhGJjnqPf1v/7cFh+00IaE9+I2+0LRHTzwjraO4OnYR
+         TByA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Qtirudvd3CXF1rYRgKYcpMfzejgCL2epG1sP1VQEe9s=;
+        b=u/4Uj0z4C5XVndUAkxZ29WqIaP/IDIwTQ2o28b8bnBf2+6PThWSf97z6zXeNlXkDav
+         oCkBgiSE8uofKczOsgP41n+qrWBY8hqU/9Vh7p5U+X16lUNSv2vLedVDjNc/9bBRPQwN
+         s4Pe1ggdqq9jFKR1f5dVr9BNHHQVEW1Ph3YklD6sW+iuJqZ4fH/Jk2wsLiz/6ReRFM3Z
+         4eh4WGU1lLkeqBAGU2IOmucf3YxlxvY0Dy0pFJwOa0203PGkg2+NodVQPBsapk/nFVin
+         hMKzsXIajDrC0E74eMdbZyPRRxLrECOtWDa3I9noKiKctoNKQtoq1OFR1Q4f5mttyTAi
+         7zQw==
+X-Gm-Message-State: AOAM532jCBWyF3F4Ox+RLo09aMzycj8lJnKjGgjMAf7KPwl/+f2OtgUz
+        OJocoii51Wr9GCsg3c37o2AiUWtEz47cpfFKw2eoug==
+X-Google-Smtp-Source: ABdhPJwjDgxSZtLpmCXXe/rrN8LcDZxzExGHH2uRskhVorKYUt+/6c8rdV+/ZTp3iqUz8WZjpWJJNavoVIUkrlZN2QA=
+X-Received: by 2002:a9d:3e04:: with SMTP id a4mr14216116otd.329.1633436226924;
+ Tue, 05 Oct 2021 05:17:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="NHJ+x3vjgC+S2IOr"
-Content-Disposition: inline
-In-Reply-To: <20211001094106.52412-1-krzysztof.kozlowski@canonical.com>
-X-Cookie: A is for Apple.
+References: <20211005105905.1994700-1-elver@google.com> <20211005105905.1994700-17-elver@google.com>
+ <YVw+4McyFdvU7ZED@hirez.programming.kicks-ass.net>
+In-Reply-To: <YVw+4McyFdvU7ZED@hirez.programming.kicks-ass.net>
+From:   Marco Elver <elver@google.com>
+Date:   Tue, 5 Oct 2021 14:16:55 +0200
+Message-ID: <CANpmjNO6H2imqsGaLYqimm0POvqA65Pd3OYji-QzONMn=Ht6Og@mail.gmail.com>
+Subject: Re: [PATCH -rcu/kcsan 16/23] locking/atomics, kcsan: Add
+ instrumentation for barriers
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
+        Alexander Potapenko <glider@google.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Waiman Long <longman@redhat.com>,
+        Will Deacon <will@kernel.org>, kasan-dev@googlegroups.com,
+        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 5 Oct 2021 at 14:03, Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Tue, Oct 05, 2021 at 12:58:58PM +0200, Marco Elver wrote:
+> > @@ -59,6 +60,7 @@ atomic_add(int i, atomic_t *v)
+> >  static __always_inline int
+> >  atomic_add_return(int i, atomic_t *v)
+> >  {
+> > +     kcsan_mb();
+> >       instrument_atomic_read_write(v, sizeof(*v));
+> >       return arch_atomic_add_return(i, v);
+> >  }
+>
+> This and others,.. is this actually correct? Should that not be
+> something like:
+>
+>         kscan_mb();
+>         instrument_atomic_read_write(...);
+>         ret = arch_atomic_add_return(i, v);
+>         kcsan_mb();
+>         return ret;
+>
+> ?
 
---NHJ+x3vjgC+S2IOr
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In theory, yes, but right now it's redundant.
 
-On Fri, Oct 01, 2021 at 11:40:56AM +0200, Krzysztof Kozlowski wrote:
+Because right now KCSAN only models "buffering", and no "prefetching".
+So there's no way that a later instruction would be reordered before
+this point. And atomic accesses are never considered for reordering,
+so it's also impossible that it would  be reordered later.
 
-> Merging/dependencies
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> 1. Regulator related binding changes depend on first two commits (the
->    fixes), because of context.
-> 2. The mfd bindings depend on clock and regulator bindings.
->=20
-> The fixes and bindings changes (patches 1-10) should go via the same
-> tree.  For example regulator or mfd tree.  I propose the regulator tree,
-> since it will have also one driver change (the fix, first commit).
-
-Lee, Stephen, Michael does Krzysztof's plan make sense to you?
-
---NHJ+x3vjgC+S2IOr
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFcQbcACgkQJNaLcl1U
-h9B78Qf8DbtcL1OFNxmK5o5qziAQ7pj3GzOOi+h25mAQirGBLDoUxNGTTzs57/8f
-kSK2LEvstzQMBEUeZtXSOzhHzLjAGRahEWlwNLmYP/8hSAlY+y9VJCEBbYbeWnbl
-qm5Zy/rDqH8I9dKMWvTcMA6V2AfcGczQ6UnlObIdsO3+FYYRKvB9qxmQQaro8d8/
-s3Eq8je14T6lQ+AITujDiWEoxUzJsrPX8WxZQAiKjmJjl/RB/sjI8bN1i0UImjws
-IYvv3DYnFKTcyQzLXeBkstB/mmUaTAgdz9DzChh6j9StHXkI0h83/so2pp3Ys+09
-1mV23wOM9a2muVldboi23vvDpWBjSQ==
-=E3E1
------END PGP SIGNATURE-----
-
---NHJ+x3vjgC+S2IOr--
+Each kcsan_mb() is a call, so right now it makes sense to just have 1
+call to be a bit more efficient.
