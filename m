@@ -2,94 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26B61422086
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 10:18:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A618422089
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 10:19:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232935AbhJEIUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 04:20:35 -0400
-Received: from mga01.intel.com ([192.55.52.88]:35781 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233174AbhJEIUd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 04:20:33 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10127"; a="248943315"
-X-IronPort-AV: E=Sophos;i="5.85,348,1624345200"; 
-   d="scan'208";a="248943315"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2021 01:18:43 -0700
-X-IronPort-AV: E=Sophos;i="5.85,348,1624345200"; 
-   d="scan'208";a="589267458"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2021 01:18:41 -0700
-Received: from andy by smile with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mXfeo-008pR6-6c;
-        Tue, 05 Oct 2021 11:18:38 +0300
-Date:   Tue, 5 Oct 2021 11:18:38 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Heiko Carstens <hca@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>
-Subject: Re: [PATCH v1 1/1] s390: Use string_upper() instead of open coded
- variant
-Message-ID: <YVwKXn1Nqwk+Ahsx@smile.fi.intel.com>
-References: <20211001130201.72545-1-andriy.shevchenko@linux.intel.com>
- <YVtksmjj1eGqw5GY@osiris>
+        id S233079AbhJEIVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 04:21:10 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:39556 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233352AbhJEIUt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 04:20:49 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 2572320276;
+        Tue,  5 Oct 2021 08:18:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1633421938; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kkPDXffrrJ+hj7t8fdYRdLuRd1zqhh+uit59I6+zuoM=;
+        b=j8NDRxJ5tqFyz6PckdXxjEmdjgQSuuHv1Vhf+J7fvDHFwVQu7AmAiAwE47plmurmc1/yB7
+        tph+J2NyWngjqn9vNYfIAt1co58Fv8yNRGVGnXue2V419KdJj5QTdAaubOoNy3nGof4b/x
+        /ruIav9hZkG+FcbF9Z8ld2Ysw5qJRik=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1633421938;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kkPDXffrrJ+hj7t8fdYRdLuRd1zqhh+uit59I6+zuoM=;
+        b=GoXZZVJF36FEhHhfewQa06c6c7bNpd95M8rymNq84YyLrgOr3tAKbPc/fR2BjjmnU3SBFo
+        T51zwZZ74qoMZNAw==
+Received: from suse.de (unknown [10.163.43.106])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id B2FCFA3B81;
+        Tue,  5 Oct 2021 08:18:57 +0000 (UTC)
+Date:   Tue, 5 Oct 2021 09:18:56 +0100
+From:   Mel Gorman <mgorman@suse.de>
+To:     Bharata B Rao <bharata@amd.com>
+Cc:     linux-kernel@vger.kernel.org, mingo@redhat.com,
+        peterz@infradead.org, riel@redhat.com
+Subject: Re: [PATCH 1/4] sched/numa: Replace hard-coded number by a define in
+ numa_task_group()
+Message-ID: <20211005081855.GK3891@suse.de>
+References: <20211004105706.3669-1-bharata@amd.com>
+ <20211004105706.3669-2-bharata@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <YVtksmjj1eGqw5GY@osiris>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20211004105706.3669-2-bharata@amd.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 04, 2021 at 10:31:46PM +0200, Heiko Carstens wrote:
-> On Fri, Oct 01, 2021 at 04:02:01PM +0300, Andy Shevchenko wrote:
-
-...
-
-> > +	/* Segment name is limited by 8 characters + NUL */
-> > +	char tmp[8 + 1];
-> >  	int i;
-> >  
-> > -	for (i = 0; i < 8; i++) {
-> > -		if (name[i] == '\0')
-> > -			break;
-> > -		dcss_name[i] = toupper(name[i]);
-> > -	}
-> > -	for (; i < 8; i++)
-> > -		dcss_name[i] = ' ';
-> > +	/*
-> > +	 * This snprintf() call does two things:
-> > +	 * - makes a NUL-terminated copy of the input string
-> > +	 * - pads it with spaces
-> > +	 */
-> > +	snprintf(tmp, sizeof(tmp), "%s        ", name);
+On Mon, Oct 04, 2021 at 04:27:03PM +0530, Bharata B Rao wrote:
+> While allocating group fault stats, task_numa_group()
+> is using a hard coded number 4. Replace this by
+> NR_NUMA_HINT_FAULT_STATS.
 > 
-> I can't say I like code where I have to count spaces in order to
-> verify if the code is actually correct.
-
-I understand your point, but have any idea how to make it differently
-and not ugly at the same time?
-
-> > +	string_upper(dcss_name, tmp);
-
-...
-
-> >  static struct dcss_segment *
-> >  segment_by_name (char *name)
-> >  {
-> > -	char dcss_name[9];
-> > +	char dcss_name[8];
+> No functionality change in this commit.
 > 
-> string_upper will copy the terminating NUL-byte. By reducing the size
-> of dcss_name to 8 bytes this will result in stack corruption.
+> Signed-off-by: Bharata B Rao <bharata@amd.com>
 
-Nope. Even in the original code this additional byte is left unused.
+Acked-by: Mel Gorman <mgorman@suse.de>
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+Mel Gorman
+SUSE Labs
