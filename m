@@ -2,625 +2,274 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8190C421BA8
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 03:17:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 640C8421BAA
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 03:17:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230402AbhJEBTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 21:19:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59480 "EHLO
+        id S230395AbhJEBTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 21:19:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231134AbhJEBTD (ORCPT
+        with ESMTP id S230410AbhJEBTV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 21:19:03 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A094C061760;
-        Mon,  4 Oct 2021 18:17:09 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id qe4-20020a17090b4f8400b0019f663cfcd1so728547pjb.1;
-        Mon, 04 Oct 2021 18:17:09 -0700 (PDT)
+        Mon, 4 Oct 2021 21:19:21 -0400
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89393C061749
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 18:17:31 -0700 (PDT)
+Received: by mail-io1-xd35.google.com with SMTP id 5so9933931iov.9
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 18:17:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=9PJ1l4RD9xAsl/BFZraLRjwAVSX3QsWPsP0erok0hD8=;
-        b=ZwBvo2K3vcaXJl9kC/N1qp8VaylnD4Sbt0Nt/pnlDpvqy+1Y292e6L5XSxHfev3XCu
-         Durq1tzr5ebzT+qCD5u456EnFa0Vl4Rr9WG+M45drAe7C7vc0Wrq/JskhuDtu8A0tF6s
-         NjE1I9P34R+/DO/k07ZrWo8N7+pbiEJ2nkF8uPbtOJWeh26CdpQ8tzuLjVZlbggsoHW7
-         FaRqGKrbPQ+2n7Hln8FpeSBADX6hnXF3DAR/BSda9/k4AhWZYa6LZLuIccw2RBVzHdmV
-         MBMVIi0nWCg0v/I3+rDuj1IwPMEdug2TVtt4UCPskIsGPijYRUacuzg5SJUARJPENvar
-         bpFQ==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uFH58MnGys3qQcihPrr7GEc7YMtbeREM2ZW+uVuRVco=;
+        b=kitDNNzkuL+1NVv6xwgm2pfF7V64T1n6mNePnHkwSM2GYq2YoNIJh0GFjrRY1H4klr
+         PNft7NTo/XePqU5HdIVPB0wDuZMtDovQBPaCf80j8I1oQufyV9pK+CnZ4dBEUPSHhV7j
+         NNR/UVfCV/JMpEAM0ick90XkHjRCiTb96uAOkQB4R/2QXfRnGYnR8y+safwTd9PtAL66
+         7Za+fyBmNciXq+abLN1iEJ8vobMdt6+OVBB4BPZJ73YW8vdlTvtruFTaopm+OePJx9TV
+         rsCdcWbCJN7J+uwLBrs+nZUPWwzL1YmMRuW1xp6aU33cFygaiKroEOqSO7rMvbBsUKuY
+         3seA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=9PJ1l4RD9xAsl/BFZraLRjwAVSX3QsWPsP0erok0hD8=;
-        b=JHBnARfJL/k06lf8KOLvHMXf/k2sCdVn1q3fnA60zN1LsdZkadgDt4EmwOMKSI6gR+
-         NMAD8K8WTuR8qcyU6FVd7O5CKhuf41WBSLMktPmM3L6uEqDkTRpuI0z8cbWZOVSJ2GRd
-         0o/ichkUc2/ya6EGVfzdVpmyF6YOAYITTKT2V0sFe1foVUCWYfpDl+LxPp/eJoAXGsZd
-         QsFuhDmg+DwKtMKcYzD3m9VQdepp2KSz7crq137zYSiBPNoZdHhKIVdIOjotlyw2oJYl
-         mlFA/ax06398WW+9dBzk51roE6sV5Bzr5Y8jYgzsE+mY2ObCcZEXlgWK1NDo9cLIUO6d
-         ZESQ==
-X-Gm-Message-State: AOAM5339Yi0St80+8J+JEzGcRKEw+p8ZnEqU3PymiwrOx6z6R0JWXkWn
-        syrcg7uoyDj4Mz3trv5kNkM=
-X-Google-Smtp-Source: ABdhPJxHw1gycykrn7YD8VmPvME8fmp4f7EbftNuoCncgoDRRAWrrCO+asYfJWJB8xs9zm0FRZL/+Q==
-X-Received: by 2002:a17:90a:191c:: with SMTP id 28mr350539pjg.121.1633396628880;
-        Mon, 04 Oct 2021 18:17:08 -0700 (PDT)
-Received: from localhost.localdomain ([2402:7500:578:6fac:e123:108:2f69:cff1])
-        by smtp.gmail.com with ESMTPSA id j6sm15162454pgq.0.2021.10.04.18.17.05
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 04 Oct 2021 18:17:08 -0700 (PDT)
-From:   cy_huang <u0084500@gmail.com>
-To:     oder_chiou@realtek.com, perex@perex.cz, tiwai@suse.com,
-        robh+dt@kernel.org
-Cc:     lgirdwood@gmail.com, broonie@kernel.org,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        cy_huang@richtek.com, devicetree@vger.kernel.org,
-        allen_lin@richtek.com
-Subject: [PATCH 2/2] ASoC: rt9120: Add rt9210 audio amplifier support
-Date:   Tue,  5 Oct 2021 09:16:55 +0800
-Message-Id: <1633396615-14043-2-git-send-email-u0084500@gmail.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1633396615-14043-1-git-send-email-u0084500@gmail.com>
-References: <1633396615-14043-1-git-send-email-u0084500@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uFH58MnGys3qQcihPrr7GEc7YMtbeREM2ZW+uVuRVco=;
+        b=n36ghBzlWb/JQGm9k75VSNLbyqTPTTWn3aFnTz5mL286lvLf6zTSuM+CyC/gHfkU/L
+         7orE5gkeM7cOhFEXM+K9macaggpb2AmmVjF4RKSxO20hHfiGxnZHt2SNEhDvpqRmRW11
+         mTu98/THIp5uhfgTQNRv5ESDckv2DahFjrFYsmTEanU/5jB6yQU+0J+eUEvsbHoFNrnT
+         bKElb1RQJzPHUAzfrfPVbZ/fB/lfJ58BLvbZOIfq1RgBjvLKb8gcX7XVZg3tlVWIsGTc
+         H4jb8/y+3UAQX4EpSrKflMBNACXg8WEzoYhqsRV2wicfDWxQXhZRrzlvw4xSOomMRK67
+         v4mQ==
+X-Gm-Message-State: AOAM530XtPiuneyONI3Iw9xZAJedMLbsinDfSmLF0OOuGunRhQTEmFfX
+        yzDFZ51kOUneSAKdUHpTKhi+9HFvWLEmpIfu8xwjDg==
+X-Google-Smtp-Source: ABdhPJwIvw85TvixXq62uiSiKYgFRBk2mq87mKdqXrEmlD/eAEgFCQB/MSAWldDnmHdu0eiAC5IdP/8rcWC1qEZI7iU=
+X-Received: by 2002:a6b:f805:: with SMTP id o5mr242261ioh.131.1633396650537;
+ Mon, 04 Oct 2021 18:17:30 -0700 (PDT)
+MIME-Version: 1.0
+References: <20211004170102.2522514-1-dlatypov@google.com> <CABVgOS=LsVTvX-RnsfE775fnq4aGQt7SUCeRpBpEd03My99NTQ@mail.gmail.com>
+ <CAGS_qxpzB0r1piC9S1z9vWy-2Dz=frfN0uK-UAar6i+zvtjdjg@mail.gmail.com>
+ <CABVgOS==C7r+9JAV5+NcCqgCdqdYy+Yyr8ht7RUVwrpAmqR1vg@mail.gmail.com>
+ <CAGS_qxpo0xLYWzUib6drELbE-PvbwmaB80Y25H2_S5KOGeW7iA@mail.gmail.com> <CABVgOSnXBtCHEMDYYqrbXWvKcrSbY9BXP4MJjsT+vzZS6W4J=w@mail.gmail.com>
+In-Reply-To: <CABVgOSnXBtCHEMDYYqrbXWvKcrSbY9BXP4MJjsT+vzZS6W4J=w@mail.gmail.com>
+From:   Daniel Latypov <dlatypov@google.com>
+Date:   Mon, 4 Oct 2021 18:17:18 -0700
+Message-ID: <CAGS_qxpecM8NcosSYBxbUviXkVt+i30NZNsre3q8q3vkvAb93g@mail.gmail.com>
+Subject: Re: [PATCH] kunit: tool: yield output from run_kernel in real time
+To:     David Gow <davidgow@google.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: ChiYuan Huang <cy_huang@richtek.com>
+On Mon, Oct 4, 2021 at 6:08 PM David Gow <davidgow@google.com> wrote:
+>
+> On Tue, Oct 5, 2021 at 8:36 AM Daniel Latypov <dlatypov@google.com> wrote:
+> >
+> > On Mon, Oct 4, 2021 at 4:58 PM David Gow <davidgow@google.com> wrote:
+> > >
+> > > On Tue, Oct 5, 2021 at 7:46 AM Daniel Latypov <dlatypov@google.com> wrote:
+> > > >
+> > > > On Mon, Oct 4, 2021 at 4:34 PM 'David Gow' via KUnit Development
+> > > > <kunit-dev@googlegroups.com> wrote:
+> > > > >
+> > > > > On Tue, Oct 5, 2021 at 1:01 AM Daniel Latypov <dlatypov@google.com> wrote:
+> > > > > >
+> > > > > > Currently, `run_kernel()` dumps all the kernel output to a file
+> > > > > > (.kunit/test.log) and then opens the file and yields it to callers.
+> > > > > > This made it easier to respect the requested timeout, if any.
+> > > > > >
+> > > > > > But it means that we can't yield the results in real time, either to the
+> > > > > > parser or to stdout (if --raw_output is set).
+> > > > > >
+> > > > > > This change spins up a background thread to enforce the timeout, which
+> > > > > > allows us to yield the kernel output in real time, while also copying it
+> > > > > > to the .kunit/test.log file.
+> > > > > > It's also careful to ensure that the .kunit/test.log file is complete,
+> > > > > > even in the kunit_parser throws an exception/otherwise doesn't consume
+> > > > > > every line, see the new `finally` block and unit test.
+> > > > > >
+> > > > > > For example:
+> > > > > >
+> > > > > > $ ./tools/testing/kunit/kunit.py run --arch=x86_64 --raw_output
+> > > > > > <configure + build steps>
+> > > > > > ...
+> > > > > > <can now see output from QEMU in real time>
+> > > > > >
+> > > > > > This does not currently have a visible effect when --raw_output is not
+> > > > > > passed, as kunit_parser.py currently only outputs everything at the end.
+> > > > > > But that could change, and this patch is a necessary step towards
+> > > > > > showing parsed test results in real time.
+> > > > > >
+> > > > > > Signed-off-by: Daniel Latypov <dlatypov@google.com>
+> > > > > > ---
+> > > > > >  tools/testing/kunit/kunit_kernel.py    | 73 +++++++++++++++-----------
+> > > > > >  tools/testing/kunit/kunit_tool_test.py | 17 ++++++
+> > > > > >  2 files changed, 60 insertions(+), 30 deletions(-)
+> > > > > >
+> > > > > > diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
+> > > > > > index 2c6f916ccbaf..b8cba8123aa3 100644
+> > > > > > --- a/tools/testing/kunit/kunit_kernel.py
+> > > > > > +++ b/tools/testing/kunit/kunit_kernel.py
+> > > > > > @@ -12,7 +12,8 @@ import subprocess
+> > > > > >  import os
+> > > > > >  import shutil
+> > > > > >  import signal
+> > > > > > -from typing import Iterator, Optional, Tuple
+> > > > > > +import threading
+> > > > > > +from typing import Iterator, List, Optional, Tuple
+> > > > > >
+> > > > > >  from contextlib import ExitStack
+> > > > > >
+> > > > > > @@ -103,8 +104,8 @@ class LinuxSourceTreeOperations(object):
+> > > > > >                 if stderr:  # likely only due to build warnings
+> > > > > >                         print(stderr.decode())
+> > > > > >
+> > > > > > -       def run(self, params, timeout, build_dir, outfile) -> None:
+> > > > > > -               pass
+> > > > > > +       def start(self, params: List[str], build_dir: str) -> subprocess.Popen:
+> > > > > > +               raise RuntimeError('not implemented!')
+> > > > > >
+> > > > > >
+> > > > > >  class LinuxSourceTreeOperationsQemu(LinuxSourceTreeOperations):
+> > > > > > @@ -123,7 +124,7 @@ class LinuxSourceTreeOperationsQemu(LinuxSourceTreeOperations):
+> > > > > >                 kconfig.parse_from_string(self._kconfig)
+> > > > > >                 base_kunitconfig.merge_in_entries(kconfig)
+> > > > > >
+> > > > > > -       def run(self, params, timeout, build_dir, outfile):
+> > > > > > +       def start(self, params: List[str], build_dir: str) -> subprocess.Popen:
+> > > > > >                 kernel_path = os.path.join(build_dir, self._kernel_path)
+> > > > > >                 qemu_command = ['qemu-system-' + self._qemu_arch,
+> > > > > >                                 '-nodefaults',
+> > > > > > @@ -134,18 +135,10 @@ class LinuxSourceTreeOperationsQemu(LinuxSourceTreeOperations):
+> > > > > >                                 '-nographic',
+> > > > > >                                 '-serial stdio'] + self._extra_qemu_params
+> > > > > >                 print('Running tests with:\n$', ' '.join(qemu_command))
+> > > > > > -               with open(outfile, 'w') as output:
+> > > > > > -                       process = subprocess.Popen(' '.join(qemu_command),
+> > > > > > -                                                  stdin=subprocess.PIPE,
+> > > > > > -                                                  stdout=output,
+> > > > > > -                                                  stderr=subprocess.STDOUT,
+> > > > > > -                                                  text=True, shell=True)
+> > > > > > -               try:
+> > > > > > -                       process.wait(timeout=timeout)
+> > > > > > -               except Exception as e:
+> > > > > > -                       print(e)
+> > > > > > -                       process.terminate()
+> > > > > > -               return process
+> > > > > > +               return subprocess.Popen(' '.join(qemu_command),
+> > > > > > +                                          stdout=subprocess.PIPE,
+> > > > > > +                                          stderr=subprocess.STDOUT,
+> > > > > > +                                          text=True, shell=True)
+> > > > > >
+> > > > > >  class LinuxSourceTreeOperationsUml(LinuxSourceTreeOperations):
+> > > > > >         """An abstraction over command line operations performed on a source tree."""
+> > > > > > @@ -175,17 +168,13 @@ class LinuxSourceTreeOperationsUml(LinuxSourceTreeOperations):
+> > > > > >                 kunit_parser.print_with_timestamp(
+> > > > > >                         'Starting Kernel with all configs takes a few minutes...')
+> > > > > >
+> > > > > > -       def run(self, params, timeout, build_dir, outfile):
+> > > > > > +       def start(self, params: List[str], build_dir: str) -> subprocess.Popen:
+> > > > > >                 """Runs the Linux UML binary. Must be named 'linux'."""
+> > > > > >                 linux_bin = get_file_path(build_dir, 'linux')
+> > > > > > -               outfile = get_outfile_path(build_dir)
+> > > > > > -               with open(outfile, 'w') as output:
+> > > > > > -                       process = subprocess.Popen([linux_bin] + params,
+> > > > > > -                                                  stdin=subprocess.PIPE,
+> > > > >
+> > > > > This breaks --raw_output under UML for me. Including the
+> > > > > stdin=subprocess.PIPE again seems to fix it.
+> > > >
+> > > > Can you give an example of what it does?
+> > > >
+> > > > I don't see any issues with --raw_output under UML with the patch as-is.
+> > > > I was mainly testing this with UML, and I must have ran it some 10s of
+> > > > times, so I'm a bit surprised.
+> > > >
+> > > > On an earlier version, I saw some mangling of --raw_output (\n was
+> > > > missing), but that went away after some revisions.
+> > > >
+> > >
+> > > Yeah, that's the sort of thing I'm seeing: \n being treated as just a
+> > > new line (without the carriage return).
+> > > It happens pretty consistently, though sometimes the text wraps and
+> > > sometimes (well, once) everything gets forced into the last column of
+> > > the terminal. I've not been able to get it to work at all without
+> > > having stdin be subprocess.PIPE.
+> >
+> > I can't repro in the shell I was using while writing this.
+> > Starting up a new session, I get:
+> > * good
+> > * bad x3
+> > * good
+> > * bad x3
+> > * good
+> > * bad x3
+> > * bad, but not as bad (phew, I thought this was cursed)
+> >
+> > .kunit/test.log contains the output with proper \n each time I checked.
+> >
+> > Doesn't seem to repro when redirected into a file:
+> >
+> > $ ./tools/testing/kunit/kunit.py exec --raw_output > /tmp/out && diff
+> > /tmp/out .kunit/test.log | grep -m1 '^>'
+> >
+> > Piping it through cat also seems 100% fine:
+> > $ ./tools/testing/kunit/kunit.py exec --raw_output | cat
+> >
+> > So having stdin be subprocess.PIPE sorta makes sense in some twisted way.
+> > I can also now repro that setting stdin=subprocess.PIPE seems to fix it.
+> >
+> > I don't want to put back subprocess.PIPE, but I'm not confident in
+> > being able to find a better solution...
+>
+> So it turns out that there are a few issues with UML assuming stdin ==
+> stdout (or at least that stdin and stdout are related), as seen in
+> this ongoing thread on linux-um:
+> http://lists.infradead.org/pipermail/linux-um/2021-October/001805.html
 
-Add rt9120 audio amplifier support.
+Ah, that sounds very related.
 
-Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
----
- sound/soc/codecs/Kconfig  |  10 +
- sound/soc/codecs/Makefile |   2 +
- sound/soc/codecs/rt9120.c | 491 ++++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 503 insertions(+)
- create mode 100644 sound/soc/codecs/rt9120.c
+>
+> Some of the coments in UML's chan_user.c seem pretty related, too, in
+> that termios is used to set this weird
+> "mostly-raw-but-\n-includes-carriage-returns" mode:
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/um/drivers/chan_user.c#n90
+>
+> My theory is that UML sets "raw" mode based on what stdin is, then
+> only sets OPOST if stdout is a tty, so there's a mismatch here. So,
+> probably this is fundamentally a UML bug, but worth us working around
+> in it kunit_tool for the time being. That being said, I've not been
+> able to find anything obviously stdin-y setting raw mode thus far, so
+> I could be wrong.
+>
+> My preference is that we put stdin=subprocess.PIPE back for now, since
+> we don't want a regression, and if a cause in UML is found and fixed,
+> we can remove it after the fix has propagated comfortably everywhere.
+>
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 82ee233..155050d 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -187,6 +187,7 @@ config SND_SOC_ALL_CODECS
- 	imply SND_SOC_RT715_SDCA_SDW
- 	imply SND_SOC_RT1308_SDW
- 	imply SND_SOC_RT1316_SDW
-+	imply SND_SOC_RT9120
- 	imply SND_SOC_SDW_MOCKUP
- 	imply SND_SOC_SGTL5000
- 	imply SND_SOC_SI476X
-@@ -1288,6 +1289,15 @@ config SND_SOC_RT715_SDCA_SDW
- 	select REGMAP_SOUNDWIRE
- 	select REGMAP_SOUNDWIRE_MBQ
- 
-+config SND_SOC_RT9120
-+	tristate "Richtek RT9120 Stereo Class-D Amplifier"
-+	depends on I2C
-+	select REGMAP_I2C
-+	select GPIOLIB
-+	help
-+	  Enable support for Richtek RT9120 20W, stereo, inductor-less,
-+	  high-efficiency Class-D audio amplifier.
-+
- config SND_SOC_SDW_MOCKUP
- 	tristate "SoundWire mockup codec"
- 	depends on EXPERT
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index 8dcea2c..5ba164d 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -203,6 +203,7 @@ snd-soc-rt711-objs := rt711.o rt711-sdw.o
- snd-soc-rt711-sdca-objs := rt711-sdca.o rt711-sdca-sdw.o
- snd-soc-rt715-objs := rt715.o rt715-sdw.o
- snd-soc-rt715-sdca-objs := rt715-sdca.o rt715-sdca-sdw.o
-+snd-soc-rt9120-objs := rt9120.o
- snd-soc-sdw-mockup-objs := sdw-mockup.o
- snd-soc-sgtl5000-objs := sgtl5000.o
- snd-soc-alc5623-objs := alc5623.o
-@@ -531,6 +532,7 @@ obj-$(CONFIG_SND_SOC_RT711)     += snd-soc-rt711.o
- obj-$(CONFIG_SND_SOC_RT711_SDCA_SDW)     += snd-soc-rt711-sdca.o
- obj-$(CONFIG_SND_SOC_RT715)     += snd-soc-rt715.o
- obj-$(CONFIG_SND_SOC_RT715_SDCA_SDW)     += snd-soc-rt715-sdca.o
-+obj-$(CONFIG_SND_SOC_RT9120)	+= snd-soc-rt9120.o
- obj-$(CONFIG_SND_SOC_SDW_MOCKUP)     += snd-soc-sdw-mockup.o
- obj-$(CONFIG_SND_SOC_SGTL5000)  += snd-soc-sgtl5000.o
- obj-$(CONFIG_SND_SOC_SIGMADSP)	+= snd-soc-sigmadsp.o
-diff --git a/sound/soc/codecs/rt9120.c b/sound/soc/codecs/rt9120.c
-new file mode 100644
-index 00000000..19a143b
---- /dev/null
-+++ b/sound/soc/codecs/rt9120.c
-@@ -0,0 +1,491 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/bits.h>
-+#include <linux/delay.h>
-+#include <linux/gpio/consumer.h>
-+#include <linux/i2c.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/regmap.h>
-+#include <linux/property.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
-+#include <sound/tlv.h>
-+
-+#define RT9120_REG_DEVID	0x00
-+#define RT9120_REG_I2SFMT	0x02
-+#define RT9120_REG_I2SWL	0x03
-+#define RT9120_REG_SDIOSEL	0x04
-+#define RT9120_REG_SYSCTL	0x05
-+#define RT9120_REG_SPKGAIN	0x07
-+#define RT9120_REG_VOLRAMP	0x0A
-+#define RT9120_REG_ERRRPT	0x10
-+#define RT9120_REG_MSVOL	0x20
-+#define RT9120_REG_SWRESET	0x40
-+#define RT9120_REG_INTERNAL0	0x65
-+#define RT9120_REG_INTERNAL1	0x69
-+#define RT9120_REG_UVPOPT	0x6C
-+
-+#define RT9120_VID_MASK		GENMASK(15,8)
-+#define RT9120_SWRST_MASK	BIT(7)
-+#define RT9120_MUTE_MASK	GENMASK(5, 4)
-+#define RT9120_I2SFMT_MASK	GENMASK(4, 2)
-+#define RT9120_I2SFMT_SHIFT	2
-+#define RT9120_CFG_FMT_I2S	0
-+#define RT9120_CFG_FMT_LEFTJ	1
-+#define RT9120_CFG_FMT_RIGHTJ	2
-+#define RT9120_CFG_FMT_DSPA	3
-+#define RT9120_CFG_FMT_DSPB	7
-+#define RT9120_AUDBIT_MASK	GENMASK(1, 0)
-+#define RT9120_CFG_AUDBIT_16	0
-+#define RT9120_CFG_AUDBIT_20	1
-+#define RT9120_CFG_AUDBIT_24	2
-+#define RT9120_AUDWL_MASK	GENMASK(5, 0)
-+#define RT9120_CFG_WORDLEN_16	16
-+#define RT9120_CFG_WORDLEN_24	24
-+#define RT9120_CFG_WORDLEN_32	32
-+#define RT9120_DVDD_UVSEL_MASK	GENMASK(5, 4)
-+
-+#define RT9120_VENDOR_ID	0x4200
-+#define RT9120_RESET_WAITMS	20
-+#define RT9120_CHIPON_WAITMS	20
-+#define RT9120_AMPON_WAITMS	50
-+#define RT9120_AMPOFF_WAITMS	100
-+
-+/* 8000 to 192000 supported , only 176400 not support */
-+#define RT9120_RATES_MASK	(SNDRV_PCM_RATE_8000_192000 &\
-+				 ~SNDRV_PCM_RATE_176400)
-+#define RT9120_FMTS_MASK	(SNDRV_PCM_FMTBIT_S16_LE |\
-+				 SNDRV_PCM_FMTBIT_S24_LE |\
-+				 SNDRV_PCM_FMTBIT_S32_LE)
-+struct rt9120_data {
-+	struct device *dev;
-+	struct regmap *regmap;
-+};
-+
-+/* 11bit [min,max,step] = [-103.9375dB, 24dB, 0.0625dB] */
-+static const DECLARE_TLV_DB_SCALE(digital_gain, -1039375, 625, -1039375);
-+
-+static const char * const sdo_select_text[] = {
-+	"NONE", "INTF", "FINAL", "RMS Detect"
-+};
-+
-+static const struct soc_enum sdo_select_enum =
-+	SOC_ENUM_SINGLE(RT9120_REG_SDIOSEL, 4, ARRAY_SIZE(sdo_select_text),
-+			sdo_select_text);
-+
-+static const struct snd_kcontrol_new rt9120_snd_controls[] = {
-+	SOC_SINGLE_TLV("MS Volume", RT9120_REG_MSVOL, 0, 2047, 1, digital_gain),
-+	SOC_SINGLE("SPK Gain", RT9120_REG_SPKGAIN, 0, 7, 0),
-+	SOC_SINGLE("PBTL Switch", RT9120_REG_SYSCTL, 3, 1, 0),
-+	SOC_ENUM("SDO Select", sdo_select_enum),
-+};
-+
-+static int internal_power_event(struct snd_soc_dapm_widget *w,
-+				struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_component *comp = snd_soc_dapm_to_component(w->dapm);
-+
-+	if (event == SND_SOC_DAPM_PRE_PMU)
-+		snd_soc_component_write(comp, RT9120_REG_ERRRPT, 0);
-+	else if (event == SND_SOC_DAPM_POST_PMU)
-+		msleep(RT9120_AMPON_WAITMS);
-+	else if (event == SND_SOC_DAPM_POST_PMD)
-+		msleep(RT9120_AMPOFF_WAITMS);
-+
-+	return 0;
-+}
-+
-+static const struct snd_soc_dapm_widget rt9120_dapm_widgets[] = {
-+	SND_SOC_DAPM_MIXER("DMIX", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_DAC("LDAC", NULL, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_DAC("RDAC", NULL, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_SUPPLY("PWND", RT9120_REG_SYSCTL, 6, 1,
-+			    internal_power_event, SND_SOC_DAPM_PRE_PMU |
-+			    SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_POST_PMD),
-+	SND_SOC_DAPM_PGA("SPKL PA", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("SPKR PA", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_OUTPUT("SPKL"),
-+	SND_SOC_DAPM_OUTPUT("SPKR"),
-+};
-+
-+static const struct snd_soc_dapm_route rt9120_dapm_routes[] = {
-+	{ "DMIX", NULL, "AIF Playback" },
-+	/* SPKL */
-+	{ "LDAC", NULL, "PWND" },
-+	{ "LDAC", NULL, "DMIX" },
-+	{ "SPKL PA", NULL, "LDAC" },
-+	{ "SPKL", NULL, "SPKL PA" },
-+	/* SPKR */
-+	{ "RDAC", NULL, "PWND" },
-+	{ "RDAC", NULL, "DMIX" },
-+	{ "SPKR PA", NULL, "RDAC" },
-+	{ "SPKR", NULL, "SPKR PA" },
-+	/* Cap */
-+	{ "AIF Capture", NULL, "LDAC" },
-+	{ "AIF Capture", NULL, "RDAC" },
-+};
-+
-+static int rt9120_codec_probe(struct snd_soc_component *comp)
-+{
-+	struct rt9120_data *data = snd_soc_component_get_drvdata(comp);
-+
-+	snd_soc_component_init_regmap(comp, data->regmap);
-+
-+	/* Internal setting */
-+	snd_soc_component_write(comp, RT9120_REG_INTERNAL1, 0x03);
-+	snd_soc_component_write(comp, RT9120_REG_INTERNAL0, 0x69);
-+	/* Default config volume to 0dB */
-+	snd_soc_component_write(comp, RT9120_REG_MSVOL, 0x180);
-+	/* Mute by default */
-+	snd_soc_component_update_bits(comp, RT9120_REG_VOLRAMP,
-+				      RT9120_MUTE_MASK, RT9120_MUTE_MASK);
-+	return 0;
-+}
-+
-+static const struct snd_soc_component_driver rt9120_component_driver = {
-+	.probe = rt9120_codec_probe,
-+	.controls = rt9120_snd_controls,
-+	.num_controls = ARRAY_SIZE(rt9120_snd_controls),
-+	.dapm_widgets = rt9120_dapm_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(rt9120_dapm_widgets),
-+	.dapm_routes = rt9120_dapm_routes,
-+	.num_dapm_routes = ARRAY_SIZE(rt9120_dapm_routes),
-+};
-+
-+static int rt9120_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
-+{
-+	struct snd_soc_component *comp = dai->component;
-+	unsigned int format;
-+
-+	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-+	case SND_SOC_DAIFMT_I2S:
-+		format = RT9120_CFG_FMT_I2S;
-+		break;
-+	case SND_SOC_DAIFMT_LEFT_J:
-+		format = RT9120_CFG_FMT_LEFTJ;
-+		break;
-+	case SND_SOC_DAIFMT_RIGHT_J:
-+		format = RT9120_CFG_FMT_RIGHTJ;
-+		break;
-+	case SND_SOC_DAIFMT_DSP_A:
-+		format = RT9120_CFG_FMT_DSPA;
-+		break;
-+	case SND_SOC_DAIFMT_DSP_B:
-+		format = RT9120_CFG_FMT_DSPB;
-+		break;
-+	default:
-+		dev_err(dai->dev, "Unknown dai format\n");
-+		return -EINVAL;
-+	}
-+
-+	snd_soc_component_update_bits(comp, RT9120_REG_I2SFMT,
-+				      RT9120_I2SFMT_MASK,
-+				      format << RT9120_I2SFMT_SHIFT);
-+	return 0;
-+}
-+
-+static int rt9120_hw_params(struct snd_pcm_substream *substream,
-+			    struct snd_pcm_hw_params *param,
-+			    struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_component *comp = dai->component;
-+	unsigned int param_width, param_slot_width;
-+	int width;
-+
-+	switch (width = params_width(param)) {
-+	case 16:
-+		param_width = RT9120_CFG_AUDBIT_16;
-+		break;
-+	case 20:
-+		param_width = RT9120_CFG_AUDBIT_20;
-+		break;
-+	case 24:
-+	case 32:
-+		param_width = RT9120_CFG_AUDBIT_24;
-+		break;
-+	default:
-+		dev_err(dai->dev, "Unsupported data width [%d]\n", width);
-+		return -EINVAL;
-+	}
-+
-+	snd_soc_component_update_bits(comp, RT9120_REG_I2SFMT,
-+				      RT9120_AUDBIT_MASK, param_width);
-+
-+	switch (width = params_physical_width(param)) {
-+	case 16:
-+		param_slot_width = RT9120_CFG_WORDLEN_16;
-+		break;
-+	case 24:
-+		param_slot_width = RT9120_CFG_WORDLEN_24;
-+		break;
-+	case 32:
-+		param_slot_width = RT9120_CFG_WORDLEN_32;
-+		break;
-+	default:
-+		dev_err(dai->dev, "Unsupported slot width [%d]\n", width);
-+		return -EINVAL;
-+	}
-+
-+	snd_soc_component_update_bits(comp, RT9120_REG_I2SWL,
-+				      RT9120_AUDWL_MASK, param_slot_width);
-+	return 0;
-+}
-+
-+
-+static int rt9120_mute_stream(struct snd_soc_dai *dai, int mute, int stream)
-+{
-+	struct snd_soc_component *comp = dai->component;
-+	unsigned int val = mute ? RT9120_MUTE_MASK : 0;
-+
-+	snd_soc_component_update_bits(comp, RT9120_REG_VOLRAMP,
-+				      RT9120_MUTE_MASK, val);
-+	return 0;
-+}
-+
-+static const struct snd_soc_dai_ops rt9120_dai_ops = {
-+	.set_fmt = rt9120_set_fmt,
-+	.hw_params = rt9120_hw_params,
-+	.mute_stream = rt9120_mute_stream,
-+	.no_capture_mute = 1,
-+};
-+
-+static struct snd_soc_dai_driver rt9120_dai = {
-+	.name = "rt9120_aif",
-+	.playback = {
-+		.stream_name = "AIF Playback",
-+		.rates = RT9120_RATES_MASK,
-+		.formats = RT9120_FMTS_MASK,
-+		.rate_max = 192000,
-+		.rate_min = 8000,
-+		.channels_min = 1,
-+		.channels_max = 2,
-+	},
-+	.capture = {
-+		.stream_name = "AIF Capture",
-+		.rates = RT9120_RATES_MASK,
-+		.formats = RT9120_FMTS_MASK,
-+		.rate_max = 192000,
-+		.rate_min = 8000,
-+		.channels_min = 1,
-+		.channels_max = 2,
-+	},
-+	.ops = &rt9120_dai_ops,
-+	.symmetric_rate = 1,
-+	.symmetric_sample_bits = 1,
-+};
-+
-+static const struct regmap_range rt9120_rd_yes_ranges[] = {
-+	regmap_reg_range(0x00, 0x0C),
-+	regmap_reg_range(0x10, 0x15),
-+	regmap_reg_range(0x20, 0x27),
-+	regmap_reg_range(0x30, 0x38),
-+	regmap_reg_range(0x3A, 0x40),
-+	regmap_reg_range(0x65, 0x65),
-+	regmap_reg_range(0x69, 0x69),
-+	regmap_reg_range(0x6C, 0x6C)
-+};
-+
-+static const struct regmap_access_table rt9120_rd_table = {
-+	.yes_ranges = rt9120_rd_yes_ranges,
-+	.n_yes_ranges = ARRAY_SIZE(rt9120_rd_yes_ranges),
-+};
-+
-+static const struct regmap_range rt9120_wr_yes_ranges[] = {
-+	regmap_reg_range(0x00, 0x00),
-+	regmap_reg_range(0x02, 0x0A),
-+	regmap_reg_range(0x10, 0x15),
-+	regmap_reg_range(0x20, 0x27),
-+	regmap_reg_range(0x30, 0x38),
-+	regmap_reg_range(0x3A, 0x3D),
-+	regmap_reg_range(0x40, 0x40),
-+	regmap_reg_range(0x65, 0x65),
-+	regmap_reg_range(0x69, 0x69),
-+	regmap_reg_range(0x6C, 0x6C)
-+};
-+
-+static const struct regmap_access_table rt9120_wr_table = {
-+	.yes_ranges = rt9120_wr_yes_ranges,
-+	.n_yes_ranges = ARRAY_SIZE(rt9120_wr_yes_ranges),
-+};
-+
-+static int rt9120_get_reg_size(unsigned int reg)
-+{
-+	switch (reg) {
-+	case 0x00:
-+	case 0x09:
-+	case 0x20 ... 0x27:
-+		return 2;
-+	case 0x30 ... 0x3D:
-+		return 3;
-+	case 0x3E ... 0x3F:
-+		return 4;
-+	default:
-+		return 1;
-+	}
-+}
-+
-+static int rt9120_reg_read(void *context, unsigned int reg, unsigned int *val)
-+{
-+	struct rt9120_data *data = context;
-+	struct i2c_client *i2c = to_i2c_client(data->dev);
-+	int size = rt9120_get_reg_size(reg);
-+	u8 raw[4] = {0};
-+	int ret;
-+
-+	ret = i2c_smbus_read_i2c_block_data(i2c, reg, size, raw);
-+	if (ret < 0)
-+		return ret;
-+	else if (ret != size)
-+		return -EIO;
-+
-+	switch (size) {
-+	case 4:
-+		*val = be32_to_cpup((__be32 *)raw);
-+		break;
-+	case 3:
-+		*val = raw[0] << 16 | raw[1] << 8 | raw[0];
-+		break;
-+	case 2:
-+		*val = be16_to_cpup((__be16 *)raw);
-+		break;
-+	default:
-+		*val = raw[0];
-+	}
-+
-+	return 0;
-+}
-+
-+static int rt9120_reg_write(void *context, unsigned int reg, unsigned int val)
-+{
-+	struct rt9120_data *data = context;
-+	struct i2c_client *i2c = to_i2c_client(data->dev);
-+	int size = rt9120_get_reg_size(reg);
-+	__be32 be32_val;
-+	u8 *rawp = (u8 *)&be32_val;
-+	int offs = 4 - size;
-+
-+	be32_val = cpu_to_be32(val);
-+	return i2c_smbus_write_i2c_block_data(i2c, reg, size, rawp + offs);
-+}
-+
-+static const struct regmap_config rt9120_regmap_config = {
-+	.reg_bits = 8,
-+	.val_bits = 32,
-+	.max_register = RT9120_REG_UVPOPT,
-+
-+	.reg_read = rt9120_reg_read,
-+	.reg_write = rt9120_reg_write,
-+
-+	.wr_table = &rt9120_wr_table,
-+	.rd_table = &rt9120_rd_table,
-+};
-+
-+static int rt9120_check_vendor_info(struct rt9120_data *data)
-+{
-+	unsigned int devid;
-+	int ret;
-+
-+	ret = regmap_read(data->regmap, RT9120_REG_DEVID, &devid);
-+	if (ret)
-+		return ret;
-+
-+	if ((devid & RT9120_VID_MASK) != RT9120_VENDOR_ID) {
-+		dev_err(data->dev, "DEVID not correct [0x%04x]\n", devid);
-+		return -ENODEV;
-+	}
-+
-+	return 0;
-+}
-+
-+static int rt9120_do_register_reset(struct rt9120_data *data)
-+{
-+	int ret;
-+
-+	ret = regmap_write(data->regmap, RT9120_REG_SWRESET,
-+			   RT9120_SWRST_MASK);
-+	if (ret)
-+		return ret;
-+
-+	msleep(RT9120_RESET_WAITMS);
-+	return 0;
-+}
-+
-+static int rt9120_probe(struct i2c_client *i2c)
-+{
-+	struct rt9120_data *data;
-+	struct gpio_desc *pwdnn_gpio;
-+	bool dvdd_1p8v;
-+	int ret;
-+
-+	data = devm_kzalloc(&i2c->dev, sizeof(*data), GFP_KERNEL);
-+	if (!data)
-+		return -ENOMEM;
-+
-+	data->dev = &i2c->dev;
-+	i2c_set_clientdata(i2c, data);
-+
-+	pwdnn_gpio = devm_gpiod_get_optional(&i2c->dev, "pwdnn",
-+					     GPIOD_OUT_HIGH);
-+	if (IS_ERR(pwdnn_gpio)) {
-+		dev_err(&i2c->dev, "Failed to initialize 'pwdnn' gpio\n");
-+		return PTR_ERR(pwdnn_gpio);
-+	} else if (pwdnn_gpio) {
-+		dev_dbg(&i2c->dev, "'pwdnn' from low to high, wait chip on\n");
-+		msleep(RT9120_CHIPON_WAITMS);
-+	}
-+
-+	data->regmap = devm_regmap_init(&i2c->dev, NULL, data,
-+					&rt9120_regmap_config);
-+	if (IS_ERR(data->regmap)) {
-+		ret = PTR_ERR(data->regmap);
-+		dev_err(&i2c->dev, "Failed to init regmap [%d]\n", ret);
-+		return ret;
-+	}
-+
-+	ret = rt9120_check_vendor_info(data);
-+	if (ret) {
-+		dev_err(&i2c->dev, "Failed to check vendor info\n");
-+		return ret;
-+	}
-+
-+	ret = rt9120_do_register_reset(data);
-+	if (ret) {
-+		dev_err(&i2c->dev, "Failed to do register reset\n");
-+		return ret;
-+	}
-+
-+	dvdd_1p8v = device_property_present(&i2c->dev, "richtek,use-dvdd-1p8v");
-+	if (dvdd_1p8v) {
-+		ret = regmap_update_bits(data->regmap, RT9120_REG_UVPOPT,
-+					 RT9120_DVDD_UVSEL_MASK, 0);
-+		if (ret) {
-+			dev_err(&i2c->dev, "Failed to config DVDD for 1P8V\n");
-+			return ret;
-+		}
-+	}
-+
-+	return devm_snd_soc_register_component(&i2c->dev,
-+					       &rt9120_component_driver,
-+					       &rt9120_dai, 1);
-+}
-+
-+static const struct of_device_id __maybe_unused rt9120_device_table[] = {
-+	{ .compatible = "richtek,rt9120", },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, rt9120_device_table);
-+
-+static struct i2c_driver rt9120_driver = {
-+	.driver = {
-+		.name = "rt9120",
-+		.of_match_table = rt9120_device_table,
-+	},
-+	.probe_new = rt9120_probe,
-+};
-+module_i2c_driver(rt9120_driver);
-+
-+MODULE_AUTHOR("ChiYuan Huang <cy_huang@richtek.com>");
-+MODULE_DESCRIPTION("RT9120 Audio Amplifier Driver");
-+MODULE_LICENSE("GPL");
--- 
-2.7.4
+Agreed.
+I sent out v2 here:
+https://lore.kernel.org/linux-kselftest/20211005011340.2826268-1-dlatypov@google.com
 
+Based on this, we could probably drop it for the QEMU code path, but
+I'll leave stdin untouched for both in the patch for consistency.
+
+We can followup later and
+* drop it from QEMU + add a comment/TODO on UML
+* or just revist if/when we've found a fix and drop it from both.
+
+> -- David
+>
+> >
+> > >
+> > > It occurs both under tmux and not, and under Konsole and xterm, so it
+> > > doesn't appear to be specific to any given terminal implementation.
+> > > Still occurs even after running 'reset', and with a clean build.
+> > > QEMU-based --raw_output works fine.
+> > >
+> > >
