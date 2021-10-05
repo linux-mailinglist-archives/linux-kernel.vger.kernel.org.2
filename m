@@ -2,195 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E807421CD0
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 05:12:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9637421CD7
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 05:19:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231559AbhJEDN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 23:13:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57298 "EHLO
+        id S230526AbhJEDV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 23:21:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231520AbhJEDN5 (ORCPT
+        with ESMTP id S229659AbhJEDV1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 23:13:57 -0400
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 219C9C061753
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 20:12:08 -0700 (PDT)
-Received: by mail-oi1-x236.google.com with SMTP id o4so405861oia.10
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 20:12:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=2eGuF9yrfRZ7HYMXv0FDGrrnI1fdkBivhcQ+vOGTxCg=;
-        b=ik3kKEdbd7mUnND8jQw8zVgpqV28vtfrJ1ITkytt48hNs5tiTSkdzvvNIP3y0t4qLF
-         ygWx/AuiV7/G5O0Kj7qtQHJTFKg9TvgQdrUcOdjdQRtXCKh4R3T9Lb9KMNx2Lh2dKSQU
-         EM0zYItI2DsAfwBht5VbgfRr61aHz9/OBRH7I1FR0Q7F2tUKsbMdX/9NTAFBiwLkZEEG
-         mfWBhKrjuuV0lSmjm79vtHwZpc0ybcOULNLQDNtzlee9kk3dom8c5zkLv29tokvFBU8c
-         wZuGVDduEA35pWKPe/I8BHmPPdGDEQetwvG3Ca33ZvrbaWpZA6lYKTaM3m/RaZ+lh16u
-         8kHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2eGuF9yrfRZ7HYMXv0FDGrrnI1fdkBivhcQ+vOGTxCg=;
-        b=ho2g5emGzlKJMuEAdsRgPzS8dAWT06SzIWUF8eKE6qxmHcp/YvrYAq2uoqOvRNGA9e
-         EGzIscKIckynT0AkEUUJc7p7+7NLoBRz5XwOkU35yrF5Ci97FK48aVAx+Ta+YQLgOGVo
-         6ZoBPOJEk/myqLYVFhhKDKvuAteb67M0iS80r009POCB7bOxv1HiSjpRisJlPWBsObMM
-         TYgLkSNoJrsSwvPCrlHXW58tVsPLvtuqDjn8NDuWWEQYPjBsLLyDjGEUZTX4U4vt1dc2
-         VCTxO1D8WWQ8a+p6UNefUGEjH+V5obLOo8e3HHL5MKGlQrc+95hlmQ1l57uJv4d188dI
-         kWdw==
-X-Gm-Message-State: AOAM530sHxupaKIGXxHVWQccRDbzKeBppeBi4DssfD482m5Z78lHRMR7
-        8Zgo7l8cAFjKHZL6jbhsLhEyiQ==
-X-Google-Smtp-Source: ABdhPJwFt21TeWx177qr6HneOnRNpt17cUbSmdfdYx5o0fzICnB6UgzOwFp5Ieqx6rc2vXlzDEQ/uQ==
-X-Received: by 2002:a05:6808:2188:: with SMTP id be8mr593263oib.44.1633403527316;
-        Mon, 04 Oct 2021 20:12:07 -0700 (PDT)
-Received: from yoga ([2600:1700:a0:3dc8:c84c:8eff:fe1e:256f])
-        by smtp.gmail.com with ESMTPSA id q133sm3066758oia.55.2021.10.04.20.12.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Oct 2021 20:12:06 -0700 (PDT)
-Date:   Mon, 4 Oct 2021 22:12:04 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Matthias Kaehlcke <mka@chromium.org>,
-        Andy Gross <agross@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thara Gopinath <thara.gopinath@linaro.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 4/4] arm64: dts: qcom: sdm845: mtp: Add vadc channels
- and thermal zones
-Message-ID: <YVvChGwyiBF+TjlB@yoga>
-References: <20210923212311.2877048-1-bjorn.andersson@linaro.org>
- <20210923212311.2877048-5-bjorn.andersson@linaro.org>
- <YVSzJZ8G43CLml3L@google.com>
- <YVtg3lcR1HMqVdAJ@ripper>
- <CAA8EJprYij6pWD1A17yr1+5-n5fKPW=YDA_-2+f8h6JnEh4myw@mail.gmail.com>
+        Mon, 4 Oct 2021 23:21:27 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FFFBC061745;
+        Mon,  4 Oct 2021 20:19:37 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HNjVt6x3dz4xbQ;
+        Tue,  5 Oct 2021 14:19:34 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1633403975;
+        bh=Sl4KVVedaj6+zi9r5eFLA+cnzxdpSY28JEgvOWdgT68=;
+        h=Date:From:To:Cc:Subject:From;
+        b=PUAIHa2DFPRWJbbtNfTILQrSL3HLm7UdZDNIKVq+II1/Qdl/inBqiEp1E05cQOxlH
+         lS9ktUhP13P9QKF39ea5ZbonOdQj5Lo3lheFFSeaIH6wFJ7njlLhJbLtiNhSqxEMk3
+         Y2YeUqDsEVvu7dveTra88n53zAg74NPlklm61mQD1tGPWIsX2DhfwobSpLVT2LTaGh
+         MO9XOQHwLeWk1dXOtFX+XMxZ+6atNPnWamyy01F3YT7Ms4sdIJPv2mj7ztKipO6TVf
+         vYU9Ngv5bi9mPXhU0ZJM/JzDoW33+cEjK1+g880PnYg2O+hVK+kNy+stfRtH0lOOux
+         lQvI3p6orxMvw==
+Date:   Tue, 5 Oct 2021 14:19:34 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Richard Guy Briggs <rgb@redhat.com>
+Subject: linux-next: manual merge of the audit tree with the selinux tree
+Message-ID: <20211005141934.705eaa1c@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAA8EJprYij6pWD1A17yr1+5-n5fKPW=YDA_-2+f8h6JnEh4myw@mail.gmail.com>
+Content-Type: multipart/signed; boundary="Sig_/Vj0EJ54.9EchM1kEmZ4Bncj";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 04 Oct 15:56 CDT 2021, Dmitry Baryshkov wrote:
+--Sig_/Vj0EJ54.9EchM1kEmZ4Bncj
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> On Mon, 4 Oct 2021 at 23:13, Bjorn Andersson <bjorn.andersson@linaro.org> wrote:
-> >
-> > On Wed 29 Sep 11:40 PDT 2021, Matthias Kaehlcke wrote:
-> >
-> > > On Thu, Sep 23, 2021 at 02:23:11PM -0700, Bjorn Andersson wrote:
-> > > > Downstream defines four ADC channels related to thermal sensors external
-> > > > to the PM8998 and two channels for internal voltage measurements.
-> > > >
-> > > > Add these to the upstream SDM845 MTP, describe the thermal monitor
-> > > > channels and add thermal_zones for these.
-> > > >
-> > > > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > > > ---
-> > > >
-> > > > In addition to the iio channels exposed by v1, Daniel wanted thermal_zones...
-> > > >
-> > > > Changes since v1:
-> > > > - Enable the pm8998_adc_tm and describe the ADC channels
-> > > > - Add thermal-zones for the new channels
-> > > >
-> > > >  arch/arm64/boot/dts/qcom/sdm845-mtp.dts | 128 ++++++++++++++++++++++++
-> > > >  1 file changed, 128 insertions(+)
-> > > >
-> > > > diff --git a/arch/arm64/boot/dts/qcom/sdm845-mtp.dts b/arch/arm64/boot/dts/qcom/sdm845-mtp.dts
-> > [..]
-> > > > +&pm8998_adc {
-> > > > +   adc-chan@4c {
-> > > > +           reg = <ADC5_XO_THERM_100K_PU>;
-> > > > +           label = "xo_therm";
-> > > > +   };
-> > > > +
-> > > > +   adc-chan@4d {
-> > > > +           reg = <ADC5_AMUX_THM1_100K_PU>;
-> > > > +           label = "msm_therm";
-> > > > +   };
-> > > > +
-> > > > +   adc-chan@4f {
-> > > > +           reg = <ADC5_AMUX_THM3_100K_PU>;
-> > > > +           label = "pa_therm1";
-> > > > +   };
-> > > > +
-> > > > +   adc-chan@51 {
-> > > > +           reg = <ADC5_AMUX_THM5_100K_PU>;
-> > > > +           label = "quiet_therm";
-> > > > +   };
-> > > > +
-> > > > +   adc-chan@83 {
-> > > > +           reg = <ADC5_VPH_PWR>;
-> > > > +           label = "vph_pwr";
-> > > > +   };
-> > > > +
-> > > > +   adc-chan@85 {
-> > > > +           reg = <ADC5_VCOIN>;
-> > > > +           label = "vcoin";
-> > > > +   };
-> > > > +};
-> > > > +
-> > > > +&pm8998_adc_tm {
-> > > > +   status = "okay";
-> > > > +
-> > > > +   xo-thermistor@1 {
-> > > > +           reg = <1>;
-> > > > +           io-channels = <&pm8998_adc ADC5_XO_THERM_100K_PU>;
-> > > > +           qcom,ratiometric;
-> > > > +           qcom,hw-settle-time-us = <200>;
-> > > > +   };
-> > > > +
-> > > > +   msm-thermistor@2 {
-> > > > +           reg = <2>;
-> > > > +           io-channels = <&pm8998_adc ADC5_AMUX_THM1_100K_PU>;
-> > > > +           qcom,ratiometric;
-> > > > +           qcom,hw-settle-time-us = <200>;
-> > > > +   };
-> > > > +
-> > > > +   pa-thermistor@3 {
-> > > > +           reg = <3>;
-> > > > +           io-channels = <&pm8998_adc ADC5_AMUX_THM3_100K_PU>;
-> > > > +           qcom,ratiometric;
-> > > > +           qcom,hw-settle-time-us = <200>;
-> > > > +   };
-> > > > +
-> > > > +   quiet-thermistor@4 {
-> > > > +           reg = <4>;
-> > > > +           io-channels = <&pm8998_adc ADC5_AMUX_THM5_100K_PU>;
-> > > > +           qcom,ratiometric;
-> > > > +           qcom,hw-settle-time-us = <200>;
-> > > > +   };
-> > > > +};
-> > > > +
-> > >
-> > > The example in the 'qcom,spmi-adc-tm5' binding specifies 'qcom,ratiometric'
-> > > and 'qcom,hw-settle-time-us' for both the ADC and the thermal monitor, so do
-> > > several board files (e.g. sm8250-mtp.dts and qrb5165-rb5.dts). This apparent
-> > > redundancy bothered me earlier, it's not really clear to me whether it's
-> > > needed/recommended or not. Do you happen to have any insights on this?
-> >
-> > Hmm, you're right and I missed this in defining my channels. I've not
-> > looked at this detail, just got reasonable readings from my thermal
-> > zones and was happy about that.
-> >
-> > Dmitry, do you have any further insights why these properties are
-> > supposed to be duplicated between the adc channel and the thermal zones?
-> 
-> Because both ADC channel and thermal zone registers should be
-> programmed accordingly.
-> 
+Hi all,
 
-I presume our question is "why" to this particular part. The actual
-implementation thereof seems reasonable.
+Today's linux-next merge of the audit tree got a conflict in:
 
-Regards,
-Bjorn
+  include/uapi/linux/audit.h
+
+between commit:
+
+  5bd2182d58e9 ("audit,io_uring,io-wq: add some basic audit support to io_u=
+ring")
+
+from the selinux tree and commit:
+
+  571e5c0efcb2 ("audit: add OPENAT2 record to list "how" info")
+
+from the audit tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc include/uapi/linux/audit.h
+index ecf1edd2affa,afa2472ad5d6..000000000000
+--- a/include/uapi/linux/audit.h
++++ b/include/uapi/linux/audit.h
+@@@ -118,7 -118,7 +118,8 @@@
+  #define AUDIT_TIME_ADJNTPVAL	1333	/* NTP value adjustment */
+  #define AUDIT_BPF		1334	/* BPF subsystem */
+  #define AUDIT_EVENT_LISTENER	1335	/* Task joined multicast read socket */
+ +#define AUDIT_URINGOP		1336	/* io_uring operation */
++ #define AUDIT_OPENAT2		1337	/* Record showing openat2 how args */
+ =20
+  #define AUDIT_AVC		1400	/* SE Linux avc denial or grant */
+  #define AUDIT_SELINUX_ERR	1401	/* Internal SE Linux Errors */
+
+--Sig_/Vj0EJ54.9EchM1kEmZ4Bncj
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFbxEYACgkQAVBC80lX
+0Gy8/wf+OKBGrUvS1u2z5THjgqE3U7yqnurg9zP8AwuZriPKjHdCn9qBQE5BSUTs
+b/9Z039Sfv9Y66hNxs3MxyoYrvLi942pWxiwkhXEdzfqK62kjlD/sFrT4nvKHLHT
+K0YxybxKzfkEgNgFcoPeRNthiwHwR5+75rMipi0GYqsKNCGMmjRQIp83qYUN1Ya6
+FzmUvLYekoYkAs0amztfBoFaOgophH6N7nOsHEu9gfP2V/jkPceVEj3Vq5CuG3yH
+cO4GFwdQhSJZM8/vs0xejR76SZD3UqyX5FYz4i4eGa+JyMEqd9GCTAGG/wRm/Obd
+ygM65jJty2q7Uf/6gO0xd96IAYfs7Q==
+=6mqi
+-----END PGP SIGNATURE-----
+
+--Sig_/Vj0EJ54.9EchM1kEmZ4Bncj--
