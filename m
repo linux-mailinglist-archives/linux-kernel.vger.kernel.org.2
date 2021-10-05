@@ -2,118 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0789422BF3
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:11:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64152422BEE
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:10:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235600AbhJEPMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 11:12:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55216 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235533AbhJEPMs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 11:12:48 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C2FEC061749
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 08:10:58 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id ls14-20020a17090b350e00b001a00e2251c8so1187286pjb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 08:10:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+QnKdMD67+rQVIo2b0/8Hr/i0O4OC/30heYtQ6dc/js=;
-        b=MWGHadB5myjzG7hi7dEWEPb8pOcALr2pFYDh0ztFd5+60GiynIznraGmKCFLG9e1J/
-         60NqPZOBhULuBWXwnucxJ/AWgtP8nKcV9vTLWvlpBYy6FbdRgHG+xKzEJFloyTLEUIs4
-         QzOxy+kLAS/LJ3leSqgLOjJlx23/8zJ9MRXAs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+QnKdMD67+rQVIo2b0/8Hr/i0O4OC/30heYtQ6dc/js=;
-        b=esEOGLVSm0jNxj494GtbcucOsNTv0/bxLeaNG/7+wMfNkyXnbRbsaJk2NZOOmUZNsP
-         PsGBc65z2Xww3VOSc+uhETXdNTi1TC4DJFjXLKioAMOb9EEB6TUyKJ43S6AlwLj8gavp
-         XvtcsHBNs/jAoZ05Z7gZAwqbDmm6b1SXrhtxnu5Vg1iT43e8NMX29lwvR8NclqkmVPBW
-         06ErG1MRU8SUQSwrwxwTrjGeMZlaYAsYU57Jw6Hcfs+J+5hPQPIrRteAnJy64wCoj8Vm
-         OgZYKmYcPdBeLWSYF5nCYOhQftigEd0rMHbvdv0puUSSb6s0oL/pb3d6tv0WljkJ6PHK
-         xT9Q==
-X-Gm-Message-State: AOAM531lKJt1DmR5EbIKztZHPpsWIcXSfdWhYmj5rARUG5Yk9D5nivNa
-        akSLiXsq7hE6OXuhIZ32EO6iwg==
-X-Google-Smtp-Source: ABdhPJzSVCahQti09JKEx8hW7Dg7wwwmo3seeZ5OZCLdMc6jbjcG482M1ZiVw+8V4Fx/bV899Alhjw==
-X-Received: by 2002:a17:90a:1a4c:: with SMTP id 12mr4467161pjl.89.1633446657910;
-        Tue, 05 Oct 2021 08:10:57 -0700 (PDT)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:202:201:68e6:d130:478e:edbd])
-        by smtp.gmail.com with ESMTPSA id a15sm6280000pfg.53.2021.10.05.08.10.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Oct 2021 08:10:57 -0700 (PDT)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     dri-devel@lists.freedesktop.org
-Cc:     Rodrigo.Siqueira@amd.com, ville.syrjala@linux.intel.com,
-        Harry.Wentland@amd.com, khsieh@codeaurora.org, Jerry.Zuo@amd.com,
-        alexander.deucher@amd.com,
-        Douglas Anderson <dianders@chromium.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/edid: In connector_bad_edid() cap num_of_ext by num_blocks read
-Date:   Tue,  5 Oct 2021 08:10:28 -0700
-Message-Id: <20211005081022.1.Ib059f9c23c2611cb5a9d760e7d0a700c1295928d@changeid>
-X-Mailer: git-send-email 2.33.0.800.g4c38ced690-goog
+        id S235519AbhJEPMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 11:12:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35574 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229488AbhJEPMe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 11:12:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A7604613AC;
+        Tue,  5 Oct 2021 15:10:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633446644;
+        bh=Oj/dpsXfZsdFT7IwiB6sdPRCjBt10BrnkG8D+uo6sIo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=AufutoAB69XX17b/4aQLtRhiBG9Avh+kvxdspsskno6fEhAuWl4qN+adoAG9BKH2P
+         PyXghsGrmDUcR7jDXCAFw++X8BZsXNYN7zOR53H1AmRYXgM6JpRZGBx7nA5cFD+fGY
+         4/3jwswfV3hInmbo80Ko1w6scY0FmY23rBNsnUHrP34WCluoZYylOrXW8+BF3e2pau
+         ms6H1zZZrVQhH6kpk5U2zKhSbUrwIHZqUAEm3Jh5kcQCa1RNbyruYlvMkxT0hiQ7PI
+         ZcFUN0Vcl2HsjPrKsrN2er50Qnr/0+QMiPO3ME2XqfLxeergohRnJJ+gT53QLfYgEj
+         lV4jvS5wK36sg==
+Date:   Tue, 5 Oct 2021 10:10:42 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Jeremy Linton <jeremy.linton@arm.com>
+Cc:     linux-pci@vger.kernel.org, lorenzo.pieralisi@arm.com,
+        nsaenz@kernel.org, bhelgaas@google.com, rjw@rjwysocki.net,
+        lenb@kernel.org, robh@kernel.org, kw@linux.com,
+        f.fainelli@gmail.com, bcm-kernel-feedback-list@broadcom.com,
+        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rpi-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 3/4] PCI/ACPI: Add Broadcom bcm2711 MCFG quirk
+Message-ID: <20211005151042.GA1083482@bhelgaas>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210826071557.29239-4-jeremy.linton@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In commit e11f5bd8228f ("drm: Add support for DP 1.4 Compliance edid
-corruption test") the function connector_bad_edid() started assuming
-that the memory for the EDID passed to it was big enough to hold
-`edid[0x7e] + 1` blocks of data (1 extra for the base block). It
-completely ignored the fact that the function was passed `num_blocks`
-which indicated how much memory had been allocated for the EDID.
+On Thu, Aug 26, 2021 at 02:15:56AM -0500, Jeremy Linton wrote:
+> Now that there is a bcm2711 quirk, it needs to be enabled when the
+> MCFG is missing. Use an ACPI namespace _DSD property
+> "linux-ecam-quirk-id" as an alternative to the MCFG OEM.
+> 
+> Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
+> Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+> Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+> ---
+>  drivers/acpi/pci_mcfg.c | 17 +++++++++++++++++
+>  1 file changed, 17 insertions(+)
+> 
+> diff --git a/drivers/acpi/pci_mcfg.c b/drivers/acpi/pci_mcfg.c
+> index 53cab975f612..04c517418365 100644
+> --- a/drivers/acpi/pci_mcfg.c
+> +++ b/drivers/acpi/pci_mcfg.c
+> @@ -169,6 +169,9 @@ static struct mcfg_fixup mcfg_quirks[] = {
+>  	ALTRA_ECAM_QUIRK(1, 13),
+>  	ALTRA_ECAM_QUIRK(1, 14),
+>  	ALTRA_ECAM_QUIRK(1, 15),
+> +
+> +	{ "bc2711", "", 0, 0, MCFG_BUS_ANY, &bcm2711_pcie_ops,
+> +	  DEFINE_RES_MEM(0xFD500000, 0xA000) },
+>  };
+>  
+>  static char mcfg_oem_id[ACPI_OEM_ID_SIZE];
+> @@ -198,8 +201,22 @@ static void pci_mcfg_apply_quirks(struct acpi_pci_root *root,
+>  	u16 segment = root->segment;
+>  	struct resource *bus_range = &root->secondary;
+>  	struct mcfg_fixup *f;
+> +	const char *soc;
+>  	int i;
+>  
+> +	/*
+> +	 * This may be a machine with a PCI/SMC conduit, which means it doesn't
+> +	 * have an MCFG. Use an ACPI namespace definition instead.
+> +	 */
+> +	if (!fwnode_property_read_string(acpi_fwnode_handle(root->device),
+> +					 "linux-ecam-quirk-id", &soc)) {
+> +		if (strlen(soc) != ACPI_OEM_ID_SIZE)
 
-Let's fix this by adding a bounds check.
+From a reviewing perspective, it's not obvious why soc must be exactly
+ACPI_OEM_ID_SIZE.  Does that imply space-padding in the DT string or
+something?
 
-This is important for handling the case where there's an error in the
-first block of the EDID. In that case we will call
-connector_bad_edid() without having re-allocated memory based on
-`edid[0x7e]`.
+Is there any documentation for this DT property?
 
-Fixes: e11f5bd8228f ("drm: Add support for DP 1.4 Compliance edid corruption test")
-Reported-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
-This problem report came up in the context of a patch I sent out [1]
-and this is my attempt at a fix. The problem predates my patch,
-though. I don't personally know anything about DP compliance testing
-and what should be happening here, nor do I apparently have any
-hardware that actually reports a bad EDID. Thus this is just compile
-tested. I'm hoping that someone here can test this and make sure it
-seems OK to them.
+Also not obvious why strlen() is safe here.  I mean, I looked a couple
+levels deep in fwnode_property_read_string(), but whatever guarantees
+null termination is buried pretty deep.
 
- drivers/gpu/drm/drm_edid.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+It seems a little weird to use an MCFG quirk mechanism when there's no
+MCFG at all on this platform.
 
-diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
-index 9b19eee0e1b4..ccfa08631c57 100644
---- a/drivers/gpu/drm/drm_edid.c
-+++ b/drivers/gpu/drm/drm_edid.c
-@@ -1843,8 +1843,9 @@ static void connector_bad_edid(struct drm_connector *connector,
- 	u8 num_of_ext = edid[0x7e];
- 
- 	/* Calculate real checksum for the last edid extension block data */
--	connector->real_edid_checksum =
--		drm_edid_block_checksum(edid + num_of_ext * EDID_LENGTH);
-+	if (num_of_ext <= num_blocks - 1)
-+		connector->real_edid_checksum =
-+			drm_edid_block_checksum(edid + num_of_ext * EDID_LENGTH);
- 
- 	if (connector->bad_edid_counter++ && !drm_debug_enabled(DRM_UT_KMS))
- 		return;
--- 
-2.33.0.800.g4c38ced690-goog
-
+> +			dev_err(&root->device->dev, "ECAM quirk should be %d characters\n",
+> +				ACPI_OEM_ID_SIZE);
+> +		else
+> +			memcpy(mcfg_oem_id, soc, ACPI_OEM_ID_SIZE);
+> +	}
+> +
+>  	for (i = 0, f = mcfg_quirks; i < ARRAY_SIZE(mcfg_quirks); i++, f++) {
+>  		if (pci_mcfg_quirk_matches(f, segment, bus_range)) {
+>  			if (f->cfgres.start)
+> -- 
+> 2.31.1
+> 
