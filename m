@@ -2,144 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4938A42219E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 11:03:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22A404221AA
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 11:06:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233488AbhJEJFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 05:05:06 -0400
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:46038 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233490AbhJEJFE (ORCPT
+        id S233400AbhJEJHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 05:07:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52974 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233290AbhJEJHs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 05:05:04 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=rongwei.wang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UqdvfmN_1633424581;
-Received: from 30.25.232.89(mailfrom:rongwei.wang@linux.alibaba.com fp:SMTPD_---0UqdvfmN_1633424581)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 05 Oct 2021 17:03:01 +0800
-Message-ID: <847363b1-1b31-dcc8-6d6c-7b5d8a6d1972@linux.alibaba.com>
-Date:   Tue, 5 Oct 2021 17:03:00 +0800
+        Tue, 5 Oct 2021 05:07:48 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ED0CC061755
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 02:05:57 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id p21so6026185wmq.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 02:05:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Sch0aWxDBNQdpah51FulP42zKP3FSOyTJMCjs7CVLTM=;
+        b=bY1lQ0osNyWKNqBAua4Kg5sBOYow4ldD0jTiPF6AlazJXq8jACkl3c0roM248Trihg
+         IP1KhGgFlPLVdLbcJ1LQeVgaTZDTX8dl62IlXg5NzbZv3pc/nkiVxgPatKf/tZaHm1dL
+         kWzZPcxsZ1+0mJeUm2cRo7GK1UtZzJCa6edlGwQPdzpIgr6QnEosRGm68aQsotwzRJXF
+         CDbleSXqI0i4BrCEaC5F1nDeuw3Wo75cHlLNBDTaOZrwrqkmq0tiaCjWf2eIqL13yYp3
+         wOpHJgeVAURft6aB7hMKER+PDuAzkvCD3WYlBBpsOe5ccbcbMWKY+sZV6UI69i1B+isa
+         q/4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Sch0aWxDBNQdpah51FulP42zKP3FSOyTJMCjs7CVLTM=;
+        b=PvmxE2Wlc/4w6p6wBAEkWZa/t+Nol7qiGWK6D3cex/kjvdwk4rxR0Hi+bMeQvsaADd
+         0AdXgYY23h4/skJubpdffun+thIuwiB2NxGKVfjJikUAzrRSHv3X2s638tvTYDo6T7tn
+         kcUfRHIpx/Qw+hGUxgpPdilhTlApWoRjSEoSADIDmLGrUoXeS8TFiZu4zCywg6FyBM9e
+         y4K27BbZAQL0MWcOAU0fQ8C1LVWQWaFylG7gBYh2EIExu/6yfCLZ3ZlsX6mnzaDA4Vfd
+         bLxtqPMMOJA7yKWz6f5e7MIrkDLpLPZTdv+1Y+CSzoffwY3WdDiOTJzKQxSTVa8NUvyU
+         Kpww==
+X-Gm-Message-State: AOAM531T4MN5VQWQxFC42YHQVNMY01VjQuvcDIRA0XRU8nTVrHrquo8O
+        8nKuDMAO0hp05wlEcCNdhKaoBA==
+X-Google-Smtp-Source: ABdhPJxihmBnUHQnbQ4fyua0XZJasSFmZfAkJOHSSqxnk0Vb1yLrCSgSEA7VR57yIqbCyZjlKhl21w==
+X-Received: by 2002:a05:600c:4e86:: with SMTP id f6mr2195141wmq.52.1633424756122;
+        Tue, 05 Oct 2021 02:05:56 -0700 (PDT)
+Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
+        by smtp.gmail.com with ESMTPSA id k9sm16658777wrz.22.2021.10.05.02.05.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Oct 2021 02:05:55 -0700 (PDT)
+Date:   Tue, 5 Oct 2021 10:05:53 +0100
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Marijn Suijten <marijn.suijten@somainline.org>
+Cc:     phone-devel@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Martin Botka <martin.botka@somainline.org>,
+        Jami Kettunen <jami.kettunen@somainline.org>,
+        Pavel Dubrova <pashadubrova@gmail.com>,
+        Kiran Gunda <kgunda@codeaurora.org>,
+        Courtney Cavin <courtney.cavin@sonymobile.com>,
+        Bryan Wu <cooloney@gmail.com>, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 01/10] backlight: qcom-wled: Pass number of elements to
+ read to read_u32_array
+Message-ID: <20211005090553.zoqzzz4767srvwzb@maple.lan>
+References: <20211004192741.621870-1-marijn.suijten@somainline.org>
+ <20211004192741.621870-2-marijn.suijten@somainline.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:93.0)
- Gecko/20100101 Thunderbird/93.0
-Subject: Re: [PATCH v2 1/2] mm, thp: check page mapping when truncating page
- cache
-Content-Language: en-US
-To:     Hugh Dickins <hughd@google.com>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     Song Liu <song@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        William Kucharski <william.kucharski@oracle.com>
-References: <BC145393-93AC-4DF4-9CF4-2FB1C736B70C@linux.alibaba.com>
- <20210923194343.ca0f29e1c4d361170343a6f2@linux-foundation.org>
- <9e41661d-9919-d556-8c49-610dae157553@linux.alibaba.com>
- <CAPhsuW4cP4qV2c_wXP89-2fa+mALv-uEe+Qdqr_MD3Ptw03Wng@mail.gmail.com>
- <68737431-01d2-e6e3-5131-7d7c731e49ae@linux.alibaba.com>
- <CAPhsuW4x2UzMLwZyioWH4dXqrYwNT-XKgzvrm+6YeWk9EgQmCQ@mail.gmail.com>
- <dde441c4-febe-cfa1-7729-b405fa331a4e@linux.alibaba.com>
- <CAPhsuW5FONP=1rPh0oPLHsehjfGSDQWn8hKH4v=azdd=+WK2sA@mail.gmail.com>
- <YVSopxYWegtQJ3iD@casper.infradead.org>
- <CAPhsuW6_2_LxQRrs7xF3omgO22+6goDR=bEjKGRopaS-pHJB2Q@mail.gmail.com>
- <YVT+KWFA8hfSKU+m@casper.infradead.org>
- <CAPhsuW7tDh2cbA6QpZ993fuwOK=LKVsDYjymA4983riQw4QTkA@mail.gmail.com>
- <8d8fb192-bd8d-8a08-498d-ca7204d4a716@linux.alibaba.com>
- <d2776967-bb9f-985b-6d38-d1d1dc83cd7b@google.com>
-From:   Rongwei Wang <rongwei.wang@linux.alibaba.com>
-In-Reply-To: <d2776967-bb9f-985b-6d38-d1d1dc83cd7b@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211004192741.621870-2-marijn.suijten@somainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Oct 04, 2021 at 09:27:32PM +0200, Marijn Suijten wrote:
+> of_property_read_u32_array takes the number of elements to read as last
+> argument. This does not always need to be 4 (sizeof(u32)) but should
+> instead be the size of the array in DT as read just above with
+> of_property_count_elems_of_size.
+> 
+> To not make such an error go unnoticed again the driver now bails
+> accordingly when of_property_read_u32_array returns an error.
+> 
+> Fixes: 775d2ffb4af6 ("backlight: qcom-wled: Restructure the driver for WLED3")
+> Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
+> Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+
+Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
 
 
-On 10/5/21 10:58 AM, Hugh Dickins wrote:
-> On Tue, 5 Oct 2021, Rongwei Wang wrote:
+> ---
+>  drivers/video/backlight/qcom-wled.c | 13 ++++++++++---
+>  1 file changed, 10 insertions(+), 3 deletions(-)
 > 
->> Hi,
->> I have run our cases these two days to stress test new Patch #1. The new Patch
->> #1 mainly add filemap_invalidate_{un}lock before and after
->> truncate_pagecache(), basing on original Patch #1. And the crash has not
->> happened.
->>
->> Now, I keep the original Patch #1, then adding the code below which suggested
->> by liu song (I'm not sure which one I should add in the next version,
->> Suggested-by or Signed-off-by? If you know, please remind me).
->>
->> -               if (filemap_nr_thps(inode->i_mapping))
->> +               if (filemap_nr_thps(inode->i_mapping)) {
->> +                       filemap_invalidate_lock(inode->i_mapping);
->>                          truncate_pagecache(inode, 0);
->> +                       filemap_invalidate_unlock(inode->i_mapping);
->> +               }
-> 
-> I won't NAK that patch; but I still believe it's unnecessary, and don't
-> see how it protects against all the races (collapse_file() does not use
-> that lock, whereas collapse_file() does use page lock).  And if you're
-> hoping to fix 5.10, then you will have to backport those invalidate_lock
-> patches there too (they're really intended to protect hole-punching).
-> 
->>
->> And the reason for keeping the original Patch #1 is mainly to fix the race
->> between collapse_file and truncate_pagecache. It seems necessary. Despite the
->> two-day test, I did not reproduce this race any more.
->>
->> In addition, I also test the below method:
->>
->> diff --git a/mm/truncate.c b/mm/truncate.c
->> index 3f47190f98a8..33604e4ce60a 100644
->> --- a/mm/truncate.c
->> +++ b/mm/truncate.c
->> @@ -210,8 +210,6 @@ invalidate_complete_page(struct address_space *mapping,
->> struct page *page)
->>
->>   int truncate_inode_page(struct address_space *mapping, struct page *page)
->>   {
->> -       VM_BUG_ON_PAGE(PageTail(page), page);
->> -
->>          if (page->mapping != mapping)
->>                  return -EIO;
->>
->> I am not very sure this VM_BUG_ON_PAGE(PageTail) is what Hugh means. And
->> the test results show that only removing this VM_BUG_ON_PAGE(PageTail) has no
->> effect. So, I still keep the original Patch #1 to fix one race.
-> 
-> Yes, that's exactly what I meant, and thank you for intending to try it.
-> 
-> But if that patch had "no effect", then I think you were not running the
-> kernel with that patch applied: because it deletes the BUG on line 213
-> of mm/truncate.c, which is what you reported in the first mail!
-> 
-> Or, is line 213 of mm/truncate.c in your 5.10.46-hugetext+ kernel
-> something else?  I've been looking at 5.15-rc.
-Hi, Hugh
-
-I'm sorry the confusing '5.10.46-hugetext+'. I am also look and test at 
-5.15-rc.
-> 
-> But I wasn't proposing to delete it merely to hide the BUG: as I hope
-> I explained, we could move it below the page->mapping check, but it
-> wouldn't really be of any value there since tails have NULL page->mapping
-> anyway (well, I didn't check first and second tails, maybe mapping gets
-> reused for some compound page field in those). I was proposing to delete
-> it because the page->mapping check then weeds out the racy case once
-> we're holding page lock, without the need for adding anything special.
-> 
-> Hugh
-Today, I try again to create some cases to reproduce the race, such as 
-ensuring that multiple processes are always executing 
-‘truncate_pagecache’ and only mapping 2M DSO. In this way, I try to 
-ensure that the target of 'collapse_file' and 'truncate_pagecache' can 
-only be the same VMA, to increase the probability of reproducing that 
-race. But, I can't reproduce that race any more.
-
-In fact, according to the previous experience, the current number of 
-attempts should be able to reproduce that race.
-
-If you have the idea about creating this case, please tell me, and I can 
-try again. Or we can solve it when it appears again.
-
-Thanks!
+> diff --git a/drivers/video/backlight/qcom-wled.c b/drivers/video/backlight/qcom-wled.c
+> index d094299c2a48..6af808af2328 100644
+> --- a/drivers/video/backlight/qcom-wled.c
+> +++ b/drivers/video/backlight/qcom-wled.c
+> @@ -1528,11 +1528,18 @@ static int wled_configure(struct wled *wled)
+>  	string_len = of_property_count_elems_of_size(dev->of_node,
+>  						     "qcom,enabled-strings",
+>  						     sizeof(u32));
+> -	if (string_len > 0)
+> -		of_property_read_u32_array(dev->of_node,
+> +	if (string_len > 0) {
+> +		rc = of_property_read_u32_array(dev->of_node,
+>  						"qcom,enabled-strings",
+>  						wled->cfg.enabled_strings,
+> -						sizeof(u32));
+> +						string_len);
+> +		if (rc) {
+> +			dev_err(dev, "Failed to read %d elements from "
+> +				"qcom,enabled-strings: %d\n",
+> +				string_len, rc);
+> +			return -EINVAL;
+> +		}
+> +	}
+>  
+>  	return 0;
+>  }
+> -- 
+> 2.33.0
 > 
