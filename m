@@ -2,233 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23435422FC5
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 20:12:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A075422FCC
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 20:14:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234413AbhJESOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 14:14:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39926 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232861AbhJESOA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 14:14:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F7FA611C1;
-        Tue,  5 Oct 2021 18:12:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633457529;
-        bh=UjZ2Xm5broc1piKEKhkcL/ZQQTcKo08ncq98rmOJHbA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sioChlqZZvOkxgRbUkZ4p1QVY68QRX5j1Dgwq50eCKv990BPbSWPbF/inoNPoCNiB
-         su/vRTMhhhhIC5fvtdifVy7O5SxYeicZJE/qv+A01G9vS3Ao6YNpZ76ZkRwh3ukS5a
-         eIlo27yfnfnGp4e+TyP77UR13odyDZrRIppuqwo2gGxn1eZyvxHlROogPV7cZY/wKu
-         n7JwWWEsIysWtRsOrtZUcuXuPRJwJsXKqhTjEtM0fzxxI/Dyqf+MHYshjgnYw/HzQL
-         gXrsDPD6jIKmvtmk1gguw5eNn9+PsNmXbsT1uIUEt1o5jCUQzn1pZy33lOO9wRAlVZ
-         Kb05dQp0uJ3Lw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 9BEE0410A1; Tue,  5 Oct 2021 15:12:06 -0300 (-03)
-Date:   Tue, 5 Oct 2021 15:12:06 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Antonov <alexander.antonov@linux.intel.com>,
-        Alexei Budankov <abudankov@huawei.com>,
-        Riccardo Mancini <rickyman7@gmail.com>
-Subject: Re: [PATCH v2 2/5] perf session: Introduce decompressor in reader
- object
-Message-ID: <YVyVdmFj4GBZHbRK@kernel.org>
-References: <cover.1633424934.git.alexey.v.bayduraev@linux.intel.com>
- <f549ee7d25f10a8bacef6fa337566b8028c4433f.1633424934.git.alexey.v.bayduraev@linux.intel.com>
+        id S234520AbhJESQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 14:16:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42352 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232861AbhJESQX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 14:16:23 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 159FFC061749;
+        Tue,  5 Oct 2021 11:14:32 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id p11so2139705edy.10;
+        Tue, 05 Oct 2021 11:14:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=qrVDa6iqwbI1N1i5Vvsk2q6J4SqfjK9r6QKza8oCivI=;
+        b=AA0eXZM6Nho5oZvo6al2SeGKlZfJensqta3LehDMmebtXUXElVigfZhvJJE3M9f+yA
+         cQQ2Z7QGwIO3ZVvRLLaWezv6d1Mnr3W3EYvfkfZEwJKZYFPBAGM1jKP3NonsiiI51srq
+         4Rsu09nvxptF67f10at7blY211KI5vSmsJwCYo2xABCS3xaZfp+xFO+82Ug301IP4/Eq
+         MZ8YGC0IUXmz/YBMZTOlGE+76tJWtcyd/bjCfkwcgWJAnxwL5lTeoFOvffKATZp+1iVc
+         weiaPXIYbqOCi4yaXitOID2JZbDZU2UvjiSWQUzLLBKSG/e4qaOTYuVyDAT0ElxmiTQM
+         yhIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qrVDa6iqwbI1N1i5Vvsk2q6J4SqfjK9r6QKza8oCivI=;
+        b=nB3NC1DcS/gi8wvucN+YtQbY0mxH+8C2TAlKvvBlOohvWzVrddYYMYrlGYeikzavPw
+         ePBuy2btgsliME1iWB1PLhFj8rrjKHSjJuG2yrNQXJkpiuWSTafTALv+MzpRcDj7tuwf
+         EXdErrTsS3gHf5+Y9gqZ9qmmZGDX6kP8/vM/Tv5FCYnylmGmgAYQ4PTSPu7Q6vF+qOuF
+         O7TQO2yzjR3AXVbNndDlZrecugvd6RlKdjroMqqZRDXd8dDiENKiRf0ojdfdNPvIyrzR
+         APXyF2NeSY4C3U56xvxXaYmiwNtqsrQYxp0rIMFtoPa7w/FpPs5wTAnkdOPDZPwIArNX
+         tYOQ==
+X-Gm-Message-State: AOAM533AVT5zu0uSjdI7mNKn1NPsj5N/o25naO3ejT/nbt69sncpvYmu
+        fyhpRf2+7en4G43TpaV9/ek=
+X-Google-Smtp-Source: ABdhPJxnZiAFCgH3mNtRtBZf9s+olbhESF2EJDUaPjin0mTkfZiEUY4Vd94Go43dgya325nYhMt1Nw==
+X-Received: by 2002:a17:906:e011:: with SMTP id cu17mr23108770ejb.244.1633457670478;
+        Tue, 05 Oct 2021 11:14:30 -0700 (PDT)
+Received: from anparri (host-79-49-65-228.retail.telecomitalia.it. [79.49.65.228])
+        by smtp.gmail.com with ESMTPSA id e7sm7259482edv.39.2021.10.05.11.14.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Oct 2021 11:14:29 -0700 (PDT)
+Date:   Tue, 5 Oct 2021 20:14:21 +0200
+From:   Andrea Parri <parri.andrea@gmail.com>
+To:     Michael Kelley <mikelley@microsoft.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Dexuan Cui <decui@microsoft.com>
+Subject: Re: [PATCH] scsi: storvsc: Fix validation for unsolicited incoming
+ packets
+Message-ID: <20211005181421.GA1714@anparri>
+References: <20211005114103.3411-1-parri.andrea@gmail.com>
+ <MWHPR21MB15935C9A0C33A858AFF1A825D7AF9@MWHPR21MB1593.namprd21.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f549ee7d25f10a8bacef6fa337566b8028c4433f.1633424934.git.alexey.v.bayduraev@linux.intel.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <MWHPR21MB15935C9A0C33A858AFF1A825D7AF9@MWHPR21MB1593.namprd21.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Oct 05, 2021 at 01:26:59PM +0300, Alexey Bayduraev escreveu:
-> Introducing decompressor data structure with pointers to decomp
-> objects and to zstd object. We cannot just move session->zstd_data to
-> decomp_data as session->zstd_data is used not only for decompression.
-> Adding decompressor data object to reader object and introducing
-> active_decomp into perf_session object to select current decompressor.
-> Thus decompression could be executed separately for each data file.
+> > @@ -292,6 +292,9 @@ struct vmstorage_protocol_version {
+> >  #define STORAGE_CHANNEL_REMOVABLE_FLAG		0x1
+> >  #define STORAGE_CHANNEL_EMULATED_IDE_FLAG	0x2
+> > 
+> > +/* Lower bound on the size of unsolicited packets with ID of 0 */
+> > +#define VSTOR_MIN_UNSOL_PKT_SIZE		48
+> > +
 > 
-> Acked-by: Namhyung Kim <namhyung@gmail.com>
-> Reviewed-by: Riccardo Mancini <rickyman7@gmail.com>
-> Tested-by: Riccardo Mancini <rickyman7@gmail.com>
-> Signed-off-by: Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
-> ---
->  tools/perf/util/session.c | 36 ++++++++++++++++++++++++------------
->  tools/perf/util/session.h | 10 ++++++++--
->  2 files changed, 32 insertions(+), 14 deletions(-)
+> I know you have determined experimentally that Hyper-V sends
+> unsolicited packets with the above length, so the idea is to validate
+> that the guest actually gets packets at least that big.  But I wonder if
+> we should think about this slightly differently.
 > 
-> diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
-> index f29b106b1b17..50f2ec523ae0 100644
-> --- a/tools/perf/util/session.c
-> +++ b/tools/perf/util/session.c
-> @@ -44,7 +44,7 @@ static int perf_session__process_compressed_event(struct perf_session *session,
->  	size_t decomp_size, src_size;
->  	u64 decomp_last_rem = 0;
->  	size_t mmap_len, decomp_len = session->header.env.comp_mmap_len;
-> -	struct decomp *decomp, *decomp_last = session->decomp_last;
-> +	struct decomp *decomp, *decomp_last = session->active_decomp->decomp_last;
->  
->  	if (decomp_last) {
->  		decomp_last_rem = decomp_last->size - decomp_last->head;
-> @@ -71,7 +71,7 @@ static int perf_session__process_compressed_event(struct perf_session *session,
->  	src = (void *)event + sizeof(struct perf_record_compressed);
->  	src_size = event->pack.header.size - sizeof(struct perf_record_compressed);
->  
-> -	decomp_size = zstd_decompress_stream(&(session->zstd_data), src, src_size,
-> +	decomp_size = zstd_decompress_stream(session->active_decomp->zstd_decomp, src, src_size,
->  				&(decomp->data[decomp_last_rem]), decomp_len - decomp_last_rem);
->  	if (!decomp_size) {
->  		munmap(decomp, mmap_len);
-> @@ -81,12 +81,12 @@ static int perf_session__process_compressed_event(struct perf_session *session,
->  
->  	decomp->size += decomp_size;
->  
-> -	if (session->decomp == NULL) {
-> -		session->decomp = decomp;
-> -		session->decomp_last = decomp;
-> +	if (session->active_decomp->decomp == NULL) {
-> +		session->active_decomp->decomp = decomp;
-> +		session->active_decomp->decomp_last = decomp;
->  	} else {
-> -		session->decomp_last->next = decomp;
-> -		session->decomp_last = decomp;
-> +		session->active_decomp->decomp_last->next = decomp;
-> +		session->active_decomp->decomp_last = decomp;
->  	}
+> The goal is for the storvsc driver to protect itself against bad or
+> malicious messages from Hyper-V.  For the unsolicited messages, the
+> only field that this storvsc driver needs to access is the
+> vstor_packet->operation field.
 
-This one is invariant, can it be put after the if/else block, please?
+Eh, this is one piece of information I was looking for...  ;-)
 
-	session->active_decomp->decomp_last = decomp;
->  
->  	pr_debug("decomp (B): %zd to %zd\n", src_size, decomp_size);
-> @@ -197,6 +197,8 @@ struct perf_session *__perf_session__new(struct perf_data *data,
->  
->  	session->repipe = repipe;
->  	session->tool   = tool;
-> +	session->decomp_data.zstd_decomp = &session->zstd_data;
-> +	session->active_decomp = &session->decomp_data;
->  	INIT_LIST_HEAD(&session->auxtrace_index);
->  	machines__init(&session->machines);
->  	ordered_events__init(&session->ordered_events,
-> @@ -276,11 +278,11 @@ static void perf_session__delete_threads(struct perf_session *session)
->  	machine__delete_threads(&session->machines.host);
->  }
->  
-> -static void perf_session__release_decomp_events(struct perf_session *session)
-> +static void perf_decomp__release_events(struct decomp *next)
->  {
-> -	struct decomp *next, *decomp;
-> +	struct decomp *decomp;
->  	size_t mmap_len;
-> -	next = session->decomp;
-> +
->  	do {
->  		decomp = next;
->  		if (decomp == NULL)
-> @@ -299,7 +301,7 @@ void perf_session__delete(struct perf_session *session)
->  	auxtrace_index__free(&session->auxtrace_index);
->  	perf_session__destroy_kernel_maps(session);
->  	perf_session__delete_threads(session);
-> -	perf_session__release_decomp_events(session);
-> +	perf_decomp__release_events(session->decomp_data.decomp);
->  	perf_env__exit(&session->header.env);
->  	machines__exit(&session->machines);
->  	if (session->data) {
-> @@ -2117,7 +2119,7 @@ static int __perf_session__process_decomp_events(struct perf_session *session)
->  {
->  	s64 skip;
->  	u64 size, file_pos = 0;
-> -	struct decomp *decomp = session->decomp_last;
-> +	struct decomp *decomp = session->active_decomp->decomp_last;
->  
->  	if (!decomp)
->  		return 0;
-> @@ -2183,6 +2185,8 @@ struct reader {
->  	reader_cb_t	 process;
->  	bool		 in_place_update;
->  	struct reader_state state;
-> +	struct zstd_data    zstd_data;
-> +	struct decomp_data  decomp_data;
->  };
->  
->  static int
-> @@ -2212,6 +2216,10 @@ reader__process_events(struct reader *rd, struct perf_session *session,
->  
->  	memset(mmaps, 0, sizeof(st->mmaps));
->  
-> +	if (zstd_init(&rd->zstd_data, 0))
-> +		return -1;
-> +	rd->decomp_data.zstd_decomp = &rd->zstd_data;
-> +
->  	mmap_prot  = PROT_READ;
->  	mmap_flags = MAP_SHARED;
->  
-> @@ -2255,6 +2263,7 @@ reader__process_events(struct reader *rd, struct perf_session *session,
->  		goto remap;
->  	}
->  
-> +	session->active_decomp = &rd->decomp_data;
->  	size = event->header.size;
->  
->  	skip = -EINVAL;
-> @@ -2287,6 +2296,9 @@ reader__process_events(struct reader *rd, struct perf_session *session,
->  		goto more;
->  
->  out:
-> +	session->active_decomp = &session->decomp_data;
-> +	perf_decomp__release_events(rd->decomp_data.decomp);
-> +	zstd_fini(&rd->zstd_data);
->  	return err;
->  }
->  
-> diff --git a/tools/perf/util/session.h b/tools/perf/util/session.h
-> index 5d8bd14a0a39..46c854292ad6 100644
-> --- a/tools/perf/util/session.h
-> +++ b/tools/perf/util/session.h
-> @@ -20,6 +20,12 @@ struct thread;
->  struct auxtrace;
->  struct itrace_synth_opts;
->  
-> +struct decomp_data {
-> +	struct decomp	 *decomp;
-> +	struct decomp	 *decomp_last;
-> +	struct zstd_data *zstd_decomp;
-> +};
 
-using _data like above is too vague, and I saw that in some places you
-used "perf_decomp_", wouldn't the above be better described as "struct
-perf_decomp"?
+>So an alternate approach is to set
+> the minimum length as small as possible while ensuring that field is valid.
 
-> +
->  struct perf_session {
->  	struct perf_header	header;
->  	struct machines		machines;
-> @@ -39,8 +45,8 @@ struct perf_session {
->  	u64			bytes_transferred;
->  	u64			bytes_compressed;
->  	struct zstd_data	zstd_data;
-> -	struct decomp		*decomp;
-> -	struct decomp		*decomp_last;
-> +	struct decomp_data	decomp_data;
-> +	struct decomp_data	*active_decomp;
->  };
->  
->  struct decomp {
-> -- 
-> 2.19.0
+The fact is, I'm not sure how to do it for unsolicited messages.
+Current code ensures/checks != COMPLETE_IO.  Your comment above
+and code audit suggest that we should add a check != FCHBA_DATA.
+I saw ENUMERATE_BUS messages, code only using their "operation".
 
--- 
+And, again, this is only based on current code/observations...
 
-- Arnaldo
+So, maybe you mean something like this (on top of this patch)?
+
+diff --git a/drivers/scsi/storvsc_drv.c b/drivers/scsi/storvsc_drv.c
+index 349c1071a98d4..8fedac3c7597a 100644
+--- a/drivers/scsi/storvsc_drv.c
++++ b/drivers/scsi/storvsc_drv.c
+@@ -292,9 +292,6 @@ struct vmstorage_protocol_version {
+ #define STORAGE_CHANNEL_REMOVABLE_FLAG		0x1
+ #define STORAGE_CHANNEL_EMULATED_IDE_FLAG	0x2
+ 
+-/* Lower bound on the size of unsolicited packets with ID of 0 */
+-#define VSTOR_MIN_UNSOL_PKT_SIZE		48
+-
+ struct vstor_packet {
+ 	/* Requested operation type */
+ 	enum vstor_packet_operation operation;
+@@ -1291,7 +1288,7 @@ static void storvsc_on_channel_callback(void *context)
+ 		u32 pktlen = hv_pkt_datalen(desc);
+ 		u64 rqst_id = desc->trans_id;
+ 		u32 minlen = rqst_id ? sizeof(struct vstor_packet) -
+-			stor_device->vmscsi_size_delta : VSTOR_MIN_UNSOL_PKT_SIZE;
++			stor_device->vmscsi_size_delta : sizeof(enum vstor_packet_operation);
+ 
+ 		if (pktlen < minlen) {
+ 			dev_err(&device->device,
+@@ -1315,7 +1312,8 @@ static void storvsc_on_channel_callback(void *context)
+ 				 * storvsc_on_io_completion() with a guest memory address that is
+ 				 * zero if Hyper-V were to construct and send such a bogus packet.
+ 				 */
+-				if (packet->operation == VSTOR_OPERATION_COMPLETE_IO) {
++				if (packet->operation == VSTOR_OPERATION_COMPLETE_IO ||
++				    packet->operation == VSTOR_OPERATION_FCHBA_DATA) {
+ 					dev_err(&device->device, "Invalid packet with ID of 0\n");
+ 					continue;
+ 				}
+
+Thanks,
+  Andrea
+
