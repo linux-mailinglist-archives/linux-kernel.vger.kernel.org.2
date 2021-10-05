@@ -2,130 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F49F422AF1
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:23:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCFB9422AF4
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:24:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235324AbhJEOYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 10:24:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43732 "EHLO
+        id S235268AbhJEO0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 10:26:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234823AbhJEOYs (ORCPT
+        with ESMTP id S234437AbhJEO0Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 10:24:48 -0400
-Received: from mail-oo1-xc2a.google.com (mail-oo1-xc2a.google.com [IPv6:2607:f8b0:4864:20::c2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06730C061753
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 07:22:58 -0700 (PDT)
-Received: by mail-oo1-xc2a.google.com with SMTP id i26-20020a4ad09a000000b002a9d58c24f5so6454691oor.0
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 07:22:57 -0700 (PDT)
+        Tue, 5 Oct 2021 10:26:16 -0400
+Received: from mail-ua1-x92f.google.com (mail-ua1-x92f.google.com [IPv6:2607:f8b0:4864:20::92f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7680FC061749;
+        Tue,  5 Oct 2021 07:24:25 -0700 (PDT)
+Received: by mail-ua1-x92f.google.com with SMTP id f13so9160937uan.6;
+        Tue, 05 Oct 2021 07:24:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=xF+jNwW5BFEV+lIRF79mZl5w3T2WmTQ1n+ANOqGSM58=;
-        b=G6WOlcyfrBgIu0kBXl6Bx3ZoUEQr6/41sXdy6lq/sSgNafvyAemd+dwNdapXnV3vQ4
-         UKifj/kxPStJlaVPMTA9ab+lLDZY4sQ2+f2wY++qX7vRBaVpW5zNTqa9fFNe98irLV3S
-         GVWYWVhmPK8KnUJNQ+LADA8ROn56XNvBR+c+g=
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fkUZ7DdFeWkEpyDRZ/1dM/ty+cqUyDxv2VSxJU7d1zc=;
+        b=bU5JIPdpARDVB55z0K2+CLoUJgHYBy6m9RQhkSHDIhiVsRqGHWwn1rHOEi9hKGl345
+         rbytzpzJXF89ylrynFg9UnGnph3EHP40DqVbiriw6oF3io73pcJNqv6cKVZ1KTvpposF
+         UkD7gZYhfkG9qcSjHP7X8xTdrb1W2OoYvnVgFliw+uINq6Cp16FyvBWwIdIcpSBSw9K3
+         r+7glMFCnUt3LW6IuttDWBqIY7v0vuxbPUP5A4sPQfOKkp8SO+6v8jOGKEBkro6hAE/D
+         lGVTwDvAeTr0IzrtN0icLbweNZgPH7lT30H9bAJplbQZ3I8XIHlSYBW311J5lQI9AJRd
+         Os3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=xF+jNwW5BFEV+lIRF79mZl5w3T2WmTQ1n+ANOqGSM58=;
-        b=uTlEQu8zXznEc+GuysEcrubIUF7KqEGbsl4rGj9xw9ePRMh+qsDVswHJoSI6k7vcLS
-         EoP+ZYr9+QRuHs2+qnxpx0ufrmdXfMmNMm/cW5D67dPaYtHl/c8+OQ3CuDyD9Gm/Bwbg
-         6A5Vi//l1uOyMZwBd/QdE4NuGVNYfrCcQvJ5xc8dG7GH6aqoOWjEm5U8jmnLrh11Igzo
-         YKJt7UcuuG9X6jE1s4LggWMWGdVjq65PSuKRLb1ogt7wuddC52OMknxB1TvNldF+Dt/F
-         oNAldEwjSTRcl2WKtsOQ+QIqsy/JidNBuwWv1F21BwmWnqT6UBYCibDVQpk3wKXV35YD
-         aBRw==
-X-Gm-Message-State: AOAM531orsVVqhaz7BO3x61l97lE3AZ7qePllvyeQ6f8LZsuFV4IiGRB
-        pTXHaGGmfoUwD0YfTt8dI71GHg==
-X-Google-Smtp-Source: ABdhPJyBcGscPewH1ZEk7sJd92chljhW3DetsHnRNw1RAHBxKccwA91AIJhkvrbu0pKqg5g+Lc7jUQ==
-X-Received: by 2002:a05:6820:358:: with SMTP id m24mr13754323ooe.34.1633443777284;
-        Tue, 05 Oct 2021 07:22:57 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id v9sm1382374oth.62.2021.10.05.07.22.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Oct 2021 07:22:56 -0700 (PDT)
-Subject: Re: [PATCH v1 2/6] mm/memory_hotplug: remove
- CONFIG_MEMORY_HOTPLUG_SPARSE
-To:     David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>, Alex Shi <alexs@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Shuah Khan <shuah@kernel.org>, Michal Hocko <mhocko@suse.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Mike Rapoport <rppt@kernel.org>, x86@kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
-        linux-doc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        virtualization@lists.linux-foundation.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210929143600.49379-1-david@redhat.com>
- <20210929143600.49379-3-david@redhat.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <0489ea97-0a78-0299-335a-ca1166bb2735@linuxfoundation.org>
-Date:   Tue, 5 Oct 2021 08:22:54 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fkUZ7DdFeWkEpyDRZ/1dM/ty+cqUyDxv2VSxJU7d1zc=;
+        b=au2mCCeNyisJvfupD/gB045B2gY0On6cX5eeV6pQSmfHb792o1aY6SlVopIXBuUqe6
+         NVPyndZK20nidak6l7ezSq7v38Ql5y3Loa3EpBPJV01W8jvVcDc6fIZ94p/LZ9PvzIWr
+         yyYvPpW3fxPldgWzJjpVxLnFI20BqNXVT1pnZZqC4e+vfhlLl8rQ0X2E8Zg3mKVjSzub
+         lSgzHIFQe1Xx0xggfQHffNdK3vI2vKO4VpjJraJdsG1ucEbwk9q+E153TuBeaUbJdly8
+         AkZc8d2u6LsCWv24LE4GPG1uKeny19xS1ty5LfxYBG1SmopZjPhqka8rLl9qH5vpf8PV
+         obtw==
+X-Gm-Message-State: AOAM533BMWPOZGn6CYn2fGjK8Qnl42dxZcN/YqMnxfvW75hzRGi8Cm64
+        i9pNsCTXt6Etf9PPwPLjjGucu5RZo6sIlk2lm8rec5st8mg=
+X-Google-Smtp-Source: ABdhPJyvi75JWiWJrIbgesEtwwpwS2QwxXNTC393L1igtxGKdv0pJbR/hj13HjwDvZJngNIPNVjl0CV2RV76dVUFLJg=
+X-Received: by 2002:ab0:538b:: with SMTP id k11mr12027715uaa.131.1633443864593;
+ Tue, 05 Oct 2021 07:24:24 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210929143600.49379-3-david@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210926145931.14603-1-sergio.paracuellos@gmail.com>
+ <20210926145931.14603-3-sergio.paracuellos@gmail.com> <YVtCtGcLjNcO2NJ0@robh.at.kernel.org>
+ <CAMhs-H9TDEWEffDn7hBQxT127RNU4eUtPxaSciuiis0fPqTN_w@mail.gmail.com> <CAL_Jsq+U_0JnCoJVaHH0T+kdmxX_OosD9=OT0dWyNdwbe=CLoQ@mail.gmail.com>
+In-Reply-To: <CAL_Jsq+U_0JnCoJVaHH0T+kdmxX_OosD9=OT0dWyNdwbe=CLoQ@mail.gmail.com>
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Date:   Tue, 5 Oct 2021 16:24:12 +0200
+Message-ID: <CAMhs-H_3Z34e3_n4VrMayvbOt0MJ_RuJ=jYDgQynT6Zdo1eDVw@mail.gmail.com>
+Subject: Re: [PATCH 2/3] dt: bindings: add ralink RT2880 resets device tree
+ binding documentation
+To:     Rob Herring <robh@kernel.org>
+Cc:     linux-staging@lists.linux.dev, John Crispin <john@phrozen.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Greg KH <gregkh@linuxfoundation.org>,
+        NeilBrown <neil@brown.name>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/29/21 8:35 AM, David Hildenbrand wrote:
-> CONFIG_MEMORY_HOTPLUG depends on CONFIG_SPARSEMEM, so there is no need for
-> CONFIG_MEMORY_HOTPLUG_SPARSE anymore; adjust all instances to use
-> CONFIG_MEMORY_HOTPLUG and remove CONFIG_MEMORY_HOTPLUG_SPARSE.
-> 
-> Signed-off-by: David Hildenbrand <david@redhat.com>
-> ---
->   arch/powerpc/include/asm/machdep.h            |  2 +-
->   arch/powerpc/kernel/setup_64.c                |  2 +-
->   arch/powerpc/platforms/powernv/setup.c        |  4 ++--
->   arch/powerpc/platforms/pseries/setup.c        |  2 +-
->   drivers/base/Makefile                         |  2 +-
->   drivers/base/node.c                           |  9 ++++-----
->   drivers/virtio/Kconfig                        |  2 +-
->   include/linux/memory.h                        | 18 +++++++-----------
->   include/linux/node.h                          |  4 ++--
->   lib/Kconfig.debug                             |  2 +-
->   mm/Kconfig                                    |  4 ----
->   mm/memory_hotplug.c                           |  2 --
->   tools/testing/selftests/memory-hotplug/config |  1 -
->   13 files changed, 21 insertions(+), 33 deletions(-)
-> 
+Hi Rob,
 
->   {
-> diff --git a/tools/testing/selftests/memory-hotplug/config b/tools/testing/selftests/memory-hotplug/config
-> index a7e8cd5bb265..1eef042a31e1 100644
-> --- a/tools/testing/selftests/memory-hotplug/config
-> +++ b/tools/testing/selftests/memory-hotplug/config
-> @@ -1,5 +1,4 @@
->   CONFIG_MEMORY_HOTPLUG=y
-> -CONFIG_MEMORY_HOTPLUG_SPARSE=y
->   CONFIG_NOTIFIER_ERROR_INJECTION=y
->   CONFIG_MEMORY_NOTIFIER_ERROR_INJECT=m
->   CONFIG_MEMORY_HOTREMOVE=y
-> 
+On Tue, Oct 5, 2021 at 3:27 PM Rob Herring <robh@kernel.org> wrote:
+>
+> On Mon, Oct 4, 2021 at 1:23 PM Sergio Paracuellos
+> <sergio.paracuellos@gmail.com> wrote:
+> >
+> > Hi Rob,
+> >
+> > On Mon, Oct 4, 2021 at 8:06 PM Rob Herring <robh@kernel.org> wrote:
+> > >
+> > > On Sun, Sep 26, 2021 at 04:59:30PM +0200, Sergio Paracuellos wrote:
+> > > > Adds device tree binding documentation for resets in the ralink RT2880 SoCs.
+> > > >
+> > > > Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> > > > ---
+> > > >  .../bindings/reset/ralink,rt2880-reset.yaml   | 39 +++++++++++++++++++
+> > > >  1 file changed, 39 insertions(+)
+> > > >  create mode 100644 Documentation/devicetree/bindings/reset/ralink,rt2880-reset.yaml
+> > > >
+> > > > diff --git a/Documentation/devicetree/bindings/reset/ralink,rt2880-reset.yaml b/Documentation/devicetree/bindings/reset/ralink,rt2880-reset.yaml
+> > > > new file mode 100644
+> > > > index 000000000000..88eddeb4ee45
+> > > > --- /dev/null
+> > > > +++ b/Documentation/devicetree/bindings/reset/ralink,rt2880-reset.yaml
+> > > > @@ -0,0 +1,39 @@
+> > > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > > +%YAML 1.2
+> > > > +---
+> > > > +$id: http://devicetree.org/schemas/reset/ralink,rt2880-reset.yaml#
+> > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > > +
+> > > > +title: Ralink RT2880 Reset Controller Device Tree Bindings
+> > > > +
+> > > > +maintainers:
+> > > > +  - Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> > > > +
+> > > > +description: |
+> > > > +  Ralink RT2880 reset controller driver which supports the SoC
+> > > > +  system controller supplied reset registers for the various peripherals
+> > > > +  of the SoC.
+> > > > +
+> > > > +  See also:
+> > > > +  - dt-bindings/reset/ralink-rt2880.h
+> > > > +
+> > > > +properties:
+> > > > +  compatible:
+> > > > +    const: ralink,rt2880-reset
+> > > > +
+> > > > +  '#reset-cells':
+> > > > +    const: 1
+> > > > +
+> > > > +required:
+> > > > +  - '#reset-cells'
+> > > > +  - compatible
+> > > > +
+> > > > +additionalProperties: false
+> > > > +
+> > > > +examples:
+> > > > +  - |
+> > > > +    #include <dt-bindings/reset/ralink-rt2880.h>
+> > > > +    rstctrl: reset-controller {
+> > > > +      compatible = "ralink,rt2880-reset";
+> > > > +      #reset-cells = <1>;
+> > >
+> > > How is this h/w controlled? If this is part of a system controller, then
+> > > it needs to be documented as such. IOW, you need to document the binding
+> > > for the whole block.
+> > >
+> > > Do you really need a child node here? All you need to make a system
+> > > controller a reset provider is add '#reset-cells' to it.
+> >
+> > I am just documenting what is already mainlined (see [0]) in order to
+> > get mt7621-dts out of staging at some point of my life. What am I
+> > supposed to do? Should I rewrite all already mainlined code? Because
+> > if that is the case we need to rewrite tons of things from the ralink
+> > platform...
+>
+> On the flip side, am I not supposed to review bindings because the dts
+> is already in staging? Code dependent on DT bindings shouldn't have
+> been mainlined without any documented binding.
 
-For Kselftest change:
+Thanks for reviewing this. I guess I should have sent a complete
+patchset with all remaining bindings and the move for the complete
+binding instead of sending single binding doc patches.
 
-Acked-by: Shuah Khan <skhan@linuxfoundation.org>
+>
+> Looks like the resets are part of "mediatek,mt7621-sysc" to answer my
+> question. Add a #reset-cell to that node (and binding) and then change
+> this line to "mediatek,mt7621-sysc":
+>
+>         reset_dev.of_node = of_find_compatible_node(NULL, NULL,
+>                                                 "ralink,rt2880-reset");
+>
+> That's the minimal change, but really I would move the reset code to
+> the clock driver as that is what handles the sysc node.
 
-thanks,
--- Shuah
+It is not that easy since the code in reset.c is shared for all ralink
+platforms and the mediatek,mt7621-sysc node is only for mt7621. So I
+guess I have to "duplicate" the reset code and put it in the clock
+driver for mt7621 as you are pointing out here. I have to also review
+how other drivers are using the reset, using reset apis or directly
+through the syscon.
+
+>
+>
+> > I'd also like to know what we should do with those nodes already added
+> > to the dtsi file that have not got associated compatible driver
+> > mainlined. Can we just get rid of them?
+>
+> Yes. Typically dts files start with minimal support.
+>
+> A dts file in staging is odd. We shouldn't be adding them there.
+
+Thanks for clarification.
+
+Best regards,
+    Sergio Paracuellos
+
+>
+> Rob
