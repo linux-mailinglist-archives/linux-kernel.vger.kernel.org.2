@@ -2,157 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 490EF423244
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 22:43:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2984F423248
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 22:44:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236303AbhJEUps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 16:45:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49004 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235648AbhJEUpq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 16:45:46 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65863C061749
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 13:43:55 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id z5so598303ybj.2
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 13:43:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vqE21VBUis5F7P2tyfYlDOrpKr4yHrwWmAyRNmJWM3s=;
-        b=cLdugDTmr/j2oBSHl6ozvoJ0MUztT02mdFP1wViGsj6Es2vUDXH3ZKf0dgAvBRswBG
-         4nw7Ii4GeXo/fAzUaTjYOPt6JRHTe8t5Q40Sq/JAY1c2+zHmKNfHZtRuHtrubosUCXjj
-         tNczBaDQ4bhQN0nlecEG5Y8I63K7PrxdUlrLmKmNAxtRSqnjPWgjkdwDPuwh0kUI9rBA
-         m47INqgwtWh1ybXdUOTGhlDh007hgptN9+4uMEw/1iYHGtiI67rUFYFfsxg7a7ih3WLt
-         rVQnsO/wS4iN+N3TONQfPsl0EcuNPmrWUSAnVcHAf52OQoxar1CxZFfZj6r0eJPQ5e1X
-         pD3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vqE21VBUis5F7P2tyfYlDOrpKr4yHrwWmAyRNmJWM3s=;
-        b=B233BPWTzv5qfPJTWYiojwYxtATXmSJZIz3r7PSavIxUrVYkW+wwIZCa64iEaX9S86
-         FTThiX1G3SbfLTvpfuWdeOLaFu4LrxEnCqLTBY9DOX2hSghOrnruGNWGKNU1NCysnUeT
-         c2i6GDqHzPcT+waWzSDdiCKupE1UamZ9Keop/ChZyIb8xw3lFgH/qkmAJiaTaUGiLYlR
-         8w6IBtudqY7dv/VLPKC6+BmOgSLiVUR0yuk37ZXSd2PP7FQRkZe2kLTA1na7yQFiSNEd
-         gp4dHiq5/X73Q2SXq8GN6tQMBt972mPE+5aHd+qtwpswKM/hCp54F5UOruL8IR6eyiQb
-         4DHQ==
-X-Gm-Message-State: AOAM530G8KzKTLAiP2+E5VA6s5jfV68kVAIj9yLfmP8Mw8//4R+j5juc
-        qRdj95L5iahyo0SiF1+Uycw/z5OA+1yZQiFjel+A2A==
-X-Google-Smtp-Source: ABdhPJwSm0BVOOZ5kTvRyYIrXx9qnEj/0YszDwLj+4P9EMmNTXKp7nh2cjQfq6luS4PqGmW3SNrlE+Yl4FCV+mWu3MQ=
-X-Received: by 2002:a25:3:: with SMTP id 3mr24647134yba.418.1633466634369;
- Tue, 05 Oct 2021 13:43:54 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211001205657.815551-1-surenb@google.com> <20211001205657.815551-3-surenb@google.com>
- <20211005184211.GA19804@duo.ucw.cz> <CAJuCfpE5JEThTMhwKPUREfSE1GYcTx4YSLoVhAH97fJH_qR0Zg@mail.gmail.com>
- <20211005200411.GB19804@duo.ucw.cz>
-In-Reply-To: <20211005200411.GB19804@duo.ucw.cz>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Tue, 5 Oct 2021 13:43:43 -0700
-Message-ID: <CAJuCfpFZkz2c0ZWeqzOAx8KFqk1ge3K-SiCMeu3dmi6B7bK-9w@mail.gmail.com>
-Subject: Re: [PATCH v10 3/3] mm: add anonymous vma name refcounting
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Colin Cross <ccross@google.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Dave Hansen <dave.hansen@intel.com>,
+        id S236395AbhJEUqK convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 5 Oct 2021 16:46:10 -0400
+Received: from aposti.net ([89.234.176.197]:51056 "EHLO aposti.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235648AbhJEUqG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 16:46:06 -0400
+Date:   Tue, 05 Oct 2021 21:43:56 +0100
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH v5 3/7] dt-bindings: display: Add ingenic,jz4780-dw-hdmi
+ DT Schema
+To:     "H. Nikolaus Schaller" <hns@goldelico.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
         Kees Cook <keescook@chromium.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        vincenzo.frascino@arm.com,
-        =?UTF-8?B?Q2hpbndlbiBDaGFuZyAo5by16Yym5paHKQ==?= 
-        <chinwen.chang@mediatek.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Jann Horn <jannh@google.com>, apopple@nvidia.com,
-        John Hubbard <jhubbard@nvidia.com>,
-        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
-        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
-        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
-        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
-        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
-        chris.hyser@oracle.com, Peter Collingbourne <pcc@google.com>,
         "Eric W. Biederman" <ebiederm@xmission.com>,
-        Jens Axboe <axboe@kernel.dk>, legion@kernel.org,
-        Rolf Eike Beer <eb@emlix.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Thomas Cedeno <thomascedeno@google.com>, sashal@kernel.org,
-        cxfcosmos@gmail.com, Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-mm <linux-mm@kvack.org>,
-        kernel-team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Paul Boddie <paul@boddie.org.uk>, devicetree@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        letux-kernel@openphoenux.org, Jonas Karlman <jonas@kwiboo.se>,
+        dri-devel@lists.freedesktop.org, Rob Herring <robh@kernel.org>
+Message-Id: <8XUI0R.KDQ64KIMI9BU@crapouillou.net>
+In-Reply-To: <518d5db83e84e3f0326854c5afb53a92e7ae4e41.1633436959.git.hns@goldelico.com>
+References: <cover.1633436959.git.hns@goldelico.com>
+        <518d5db83e84e3f0326854c5afb53a92e7ae4e41.1633436959.git.hns@goldelico.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 5, 2021 at 1:04 PM Pavel Machek <pavel@ucw.cz> wrote:
->
-> Hi!
->
-> > > On Fri 2021-10-01 13:56:57, Suren Baghdasaryan wrote:
-> > > > While forking a process with high number (64K) of named anonymous vmas the
-> > > > overhead caused by strdup() is noticeable. Experiments with ARM64
-> > > Android
-> > >
-> > > I still believe you should simply use numbers and do the
-> > > numbers->strings mapping in userspace. We should not need to optimize
-> > > strdups in kernel...
-> >
-> > Here are complications with mapping numbers to strings in the userspace:
-> > Approach 1: hardcode number->string in some header file and let all
-> > tools use that mapping. The issue is that whenever that mapping
-> > changes all the tools that are using it (including 3rd party ones)
-> > have to be rebuilt. This is not really maintainable since we don't
-> > control 3rd party tools and even for the ones we control, it will be a
-> > maintenance issue figuring out which version of the tool used which
-> > header file.
->
-> 1a) Just put it into a file in /etc... Similar to header file but
-> easier...
->
-> > Approach 2: have a centralized facility (a process or a DB)
-> > maintaining number->string mapping. This would require an additional
-> > request to this facility whenever we want to make a number->string
-> > conversion. Moreover, when we want to name a VMA, we would have to
->
-> I see it complicates userspace. But that's better than complicating
-> kernel, and I don't know what limits on strings you plan, but
-> considering you'll be outputing the strings in /proc... someone is
-> going to get confused with parsing.
+Hi Nikolaus,
 
-I'm not a fan of complicating kernel but the proposed approach seems
-simple enough to me. Again this is subjective, so I can't really have
-a good argument here. Maybe, as Andrew suggested, I should keep it
-under a separate config so that whoever does not care about this
-feature pays no price for it?
-On the topic of confusing the parsers, if the parser is written so
-that it can't ignore new [anon:...] entry then it does not matter
-whether we use strings or numbers, it will get confused either way.
-Again, if we are concerned about confusing existing parsers I think
-having a separate config option set to 'n' would help. This would
-prevent some userspace process from naming an anonymous VMA and
-causing parser confusion. OTOH on systems where parsers can handle
-anon VMA names (Android) we will set that config and use the feature.
-Would that address your concerns?
+Le mar., oct. 5 2021 at 14:29:15 +0200, H. Nikolaus Schaller 
+<hns@goldelico.com> a écrit :
+> From: Sam Ravnborg <sam@ravnborg.org>
+> 
+> Add DT bindings for the hdmi driver for the Ingenic JZ4780 SoC.
+> Based on .txt binding from Zubair Lutfullah Kakakhel
+> 
+> Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
+> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+> Cc: Rob Herring <robh@kernel.org>
+> Cc: devicetree@vger.kernel.org
+> ---
+>  .../bindings/display/ingenic-jz4780-hdmi.yaml | 79 
+> +++++++++++++++++++
+>  1 file changed, 79 insertions(+)
+>  create mode 100644 
+> Documentation/devicetree/bindings/display/ingenic-jz4780-hdmi.yaml
+> 
+> diff --git 
+> a/Documentation/devicetree/bindings/display/ingenic-jz4780-hdmi.yaml 
+> b/Documentation/devicetree/bindings/display/ingenic-jz4780-hdmi.yaml
+> new file mode 100644
+> index 000000000000..5bcb342da86f
+> --- /dev/null
+> +++ 
+> b/Documentation/devicetree/bindings/display/ingenic-jz4780-hdmi.yaml
+> @@ -0,0 +1,79 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/display/ingenic-jz4780-hdmi.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Bindings for Ingenic JZ4780 HDMI Transmitter
+> +
+> +maintainers:
+> +  - H. Nikolaus Schaller <hns@goldelico.com>
+> +
+> +description: |
+> +  The HDMI Transmitter in the Ingenic JZ4780 is a Synopsys 
+> DesignWare HDMI 1.4
+> +  TX controller IP with accompanying PHY IP.
 
+My dmesg disagrees:
+dw-hdmi-ingenic 10180000.hdmi: Detected HDMI TX controller v1.31a with 
+HDCP (DWC HDMI 3D TX PHY)
 
->
->                                                                 Pavel
+Or am I comparing apples to oranges?
+
+> +
+> +allOf:
+> +  - $ref: bridge/synopsys,dw-hdmi.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    const: ingenic,jz4780-dw-hdmi
+> +
+> +  reg-io-width:
+> +    const: 4
+> +
+> +  clocks:
+> +    maxItems: 2
+> +
+> +  hdmi-5v-supply:
+> +    description: Optional regulator to provide +5V at the connector
+> +
+> +  ddc-i2c-bus:
+> +    description: An I2C interface if the internal DDC I2C driver is 
+> not to be used
+
+This property is used within 
+(drivers/gpu/drm/bridge/synopsys/dw-hdmi.c); I think it would make 
+sense to move it to bridge/synopsys,dw-hdmi.yaml.
+
+Cheers,
+-Paul
+
+> +
+> +  ports:
+> +    $ref: /schemas/graph.yaml#/properties/ports
+> +
+> +required:
+> +    - compatible
+> +    - clocks
+> +    - clock-names
+> +    - ports
+> +    - reg-io-width
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/jz4780-cgu.h>
+> +
+> +    hdmi: hdmi@10180000 {
+> +        compatible = "ingenic,jz4780-dw-hdmi";
+> +        reg = <0x10180000 0x8000>;
+> +        reg-io-width = <4>;
+> +        ddc-i2c-bus = <&i2c4>;
+> +        interrupt-parent = <&intc>;
+> +        interrupts = <3>;
+> +        clocks = <&cgu JZ4780_CLK_AHB0>, <&cgu JZ4780_CLK_HDMI>;
+> +        clock-names = "iahb", "isfr";
+> +
+> +        ports {
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +            hdmi_in: port@0 {
+> +                reg = <0>;
+> +                dw_hdmi_in: endpoint {
+> +                    remote-endpoint = <&jz4780_lcd_out>;
+> +                };
+> +            };
+> +            hdmi_out: port@1 {
+> +                reg = <1>;
+> +                dw_hdmi_out: endpoint {
+> +                    remote-endpoint = <&hdmi_con>;
+> +                };
+> +            };
+> +        };
+> +    };
+> +
+> +...
 > --
-> http://www.livejournal.com/~pavelmachek
+> 2.33.0
+> 
+
+
