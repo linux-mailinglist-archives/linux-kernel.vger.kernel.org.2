@@ -2,85 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 784D1421F61
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 09:26:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7183A421F66
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 09:26:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232549AbhJEH2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 03:28:12 -0400
-Received: from mail-ua1-f49.google.com ([209.85.222.49]:35684 "EHLO
-        mail-ua1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232365AbhJEH2L (ORCPT
+        id S232730AbhJEH22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 03:28:28 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3913 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232511AbhJEH21 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 03:28:11 -0400
-Received: by mail-ua1-f49.google.com with SMTP id q13so2150336uaq.2;
-        Tue, 05 Oct 2021 00:26:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5B8guYb5WtEG1DfSQkNHuh8hV3bBqGM6XN/MlDSJq6g=;
-        b=Wo3h2a1j3ucRsdu8bnoUcvVumzVyNDaqP2LqUhAWgRFHap/ZmpkRVvY2ceXyVvENBC
-         eYVCgfV33oT4TTjWKXPw4LYpdNxxXCMEwIbrzprXNOOsoNvVdjZzCFO2ZBOkJmtigv3R
-         cYpBUH+2NRURvNDvM4+NjWIn5YYFmO3vWvnS1elIf6upl/mrSfARtmx5ONTwuqKXhsnu
-         1dM+qBL6qbda1wEplISZFQHjXkpLBP0XS1Rg3UPORrzPJVBQLIapKsaxd/O+Lyx1STi1
-         +fRNXBAHu+OvVdfir6tBPcQR71wCqKGaMKje+gMbj3B8K//lGtXKA6434rEnS0JvqGKT
-         S82g==
-X-Gm-Message-State: AOAM530ELi83pr4qRWlA3sx4kUD0vvSicHbccMXlFhoNhmOSHJ0svlfy
-        ghH8vyvp9HzdZWqIr8AguCiLNjl+405iCSoJfUE=
-X-Google-Smtp-Source: ABdhPJwitoHm5NqIklNf3C/vTIwhdJEaTtzOd1JmOOF/GJsBSk+HnFu5BWxGe3wzWFhlUDtnlcmU/pjMaReCJlRtJqI=
-X-Received: by 2002:ab0:540d:: with SMTP id n13mr10811903uaa.78.1633418777896;
- Tue, 05 Oct 2021 00:26:17 -0700 (PDT)
+        Tue, 5 Oct 2021 03:28:27 -0400
+Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HNpwm3rRXz67XcG;
+        Tue,  5 Oct 2021 15:23:52 +0800 (CST)
+Received: from roberto-ThinkStation-P620.huawei.com (10.204.63.22) by
+ fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Tue, 5 Oct 2021 09:26:35 +0200
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     <hca@linux.ibm.com>, <gor@linux.ibm.com>, <borntraeger@de.ibm.com>
+CC:     <linux-s390@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Roberto Sassu <roberto.sassu@huawei.com>
+Subject: [PATCH] s390: Fix strrchr() implementation
+Date:   Tue, 5 Oct 2021 09:26:21 +0200
+Message-ID: <20211005072621.53500-1-roberto.sassu@huawei.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <20211005001914.28574-1-rdunlap@infradead.org> <20211005001914.28574-4-rdunlap@infradead.org>
-In-Reply-To: <20211005001914.28574-4-rdunlap@infradead.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 5 Oct 2021 09:26:06 +0200
-Message-ID: <CAMuHMdUwkOwLgbxjSwO0QCq+=jBL+e1z8X6NZHrrx0bv_zFq1A@mail.gmail.com>
-Subject: Re: [PATCH 3/5 v3] sh: math-emu: drop unused functions
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Takashi YOSHII <takasi-y@ops.dti.ne.jp>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.204.63.22]
+X-ClientProxiedBy: lhreml754-chm.china.huawei.com (10.201.108.204) To
+ fraeml714-chm.china.huawei.com (10.206.15.33)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Randy,
+Access the string at len - 1 instead of len.
 
-Thanks for your patch!
+Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+---
+ arch/s390/lib/string.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-On Tue, Oct 5, 2021 at 2:19 AM Randy Dunlap <rdunlap@infradead.org> wrote:
-> Delete ieee_fpe_handler() since it is not used. After that is done,
-> delete denormal_to_double() since it is not used:
->
-> ../arch/sh/math-emu/math.c:505:12: error: 'ieee_fpe_handler' defined but not used [-Werror=unused-function]
->   505 | static int ieee_fpe_handler(struct pt_regs *regs)
->
-> ../arch/sh/math-emu/math.c:477:13: error: 'denormal_to_double' defined but not used [-Werror=unused-function]
->   477 | static void denormal_to_double(struct sh_fpu_soft_struct *fpu, int n)
->
-> Fixes: 4b565680d163 ("sh: math-emu support")
-
-Shouldn't that be
-Fixes: 7caf62de25554da3 ("sh: remove unused do_fpu_error")
-?
-
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/arch/s390/lib/string.c b/arch/s390/lib/string.c
+index cfcdf76d6a95..162a391788ad 100644
+--- a/arch/s390/lib/string.c
++++ b/arch/s390/lib/string.c
+@@ -261,12 +261,12 @@ char *strrchr(const char *s, int c)
+ {
+        size_t len = __strend(s) - s;
+ 
+-       if (len)
+-	       do {
+-		       if (s[len] == (char) c)
+-			       return (char *) s + len;
+-	       } while (--len > 0);
+-       return NULL;
++	if (len)
++		do {
++			if (s[len - 1] == (char) c)
++				return (char *) s + len - 1;
++		} while (--len > 0);
++	return NULL;
+ }
+ EXPORT_SYMBOL(strrchr);
+ #endif
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.32.0
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
