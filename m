@@ -2,115 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4470C421EC3
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 08:13:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71D1E421EC5
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 08:14:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232496AbhJEGPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 02:15:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41476 "EHLO
+        id S232261AbhJEGQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 02:16:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232469AbhJEGPf (ORCPT
+        with ESMTP id S231751AbhJEGQo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 02:15:35 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 322E3C06174E
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 23:13:45 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id g193-20020a1c20ca000000b0030d55f1d984so1897894wmg.3
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 23:13:45 -0700 (PDT)
+        Tue, 5 Oct 2021 02:16:44 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 667D3C061745;
+        Mon,  4 Oct 2021 23:14:54 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id a73so15871317pge.0;
+        Mon, 04 Oct 2021 23:14:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=j0gdpa7QFj6JEtxCL0CAkQhhWBN7lylbx+e4M1Vsb7o=;
-        b=VSMlRsoRvLnUs/myw52hG6menRckaTpfD/sc8jEUT0jyW5v3NKcZHtBWqWykMD5xpQ
-         mFu4QMfCZ9RQ9gHcJ9QFLXWCDQioaZGzCLDj2r3q5cK6Bu/YSHR3txAyRLJylC+4AKLR
-         g55PRWGvVR45Df7AB215vAr2ryBVF9UVBNPf2zz3lLIf+C6rBUlNftwFmbW96vlrWdTq
-         hCwjH6VQ0tr1DWzEEMjTxsoihIPbk377R7bOZfQPdhVWl10LaMlIoj6UaOF+EZtODQyV
-         LwPycfL7e8vNKveuzSRdCDYLP9xDWVdJMnpBwUvvLfFs+gIqIOclKdHk3GCXIwYTLdoB
-         y/FQ==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=au1Vrd4vqmeD3zgvwTDIH32GDjUt+PEXRkVst82OMZU=;
+        b=CDeLehxSRpNRSNV9p8WMPJcprhnk0tJVsyBiEQTVoFplEK1fJ6KOMo1qYGba8jDS8N
+         OTNP8EnW2+/JMCRehbe1oXpNlsgfXSmR8h3iON5OnBM/c5fcwx8G91kpT8xsi/ug7F3k
+         qdQpLzZybvwtSJs1mRrR33un6gPBbajcDuDghuXjL0nh4nG86x8k7jHMd23IitPg4K6R
+         xr1BJptNilxGm6KgSDhORaABFPKuSO6HDprHqQIipVuNofv5vIjNbtnmx/cbwMAhdyhO
+         x/FCDDjn3xP0lgi6uANVVZ1LdwQ6U0MafdMAyCfYvNfnmL6tOoJUCXUV8pTbFjqyA6MH
+         J+UA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=j0gdpa7QFj6JEtxCL0CAkQhhWBN7lylbx+e4M1Vsb7o=;
-        b=dw2Z4ZiR0ghq5cKdbvbo+jQlNRycobDXLGhXlThJOvPvPPMQL4BPi8Vjz1EU7g76sS
-         +b/E7TmKLrkQEFTUATyO+Oui2HG3JIMHi1eEcNOPUyDCWrl41STlwRnjCBI2YXAsw3UO
-         rvJeb2r8IeT9LCcd/w0Bjcs0St3yWa5TqqN9oli4Lk8kRzmskOY2dhCkLHomnnYMEKBO
-         0SKWX1jEIIpkgcmEYgRDi8Ws9feXxRP0QCcuxfGxoA0IiJcOlqs+T0sI8RyowHCHsNF1
-         ZiT6d/+DshoMiT6oPYuymFKtdGFBqiRGBBNM6z7XjvQXAJZOycdfjDsBi8QJCQwbQ+2f
-         +z0g==
-X-Gm-Message-State: AOAM533E0Z1cYtxWjuL8xXiOaxoT80gEM85M6D3QO9wmGxC32ASKMWOW
-        Q9lrBKBBa6CNj1mE6mogM8ryh5erUFZcd5IVsz/O9g==
-X-Google-Smtp-Source: ABdhPJwvzH04gXiNcjIVGCd6bQFa+g35hTdKUKGTFBM4UFTMR14Ybiy5zm5HBrSroG102mfVLu4iLioSc6A1uZAaB2I=
-X-Received: by 2002:a05:600c:1c9a:: with SMTP id k26mr1406845wms.169.1633414423545;
- Mon, 04 Oct 2021 23:13:43 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=au1Vrd4vqmeD3zgvwTDIH32GDjUt+PEXRkVst82OMZU=;
+        b=boU67RgMMKJ1tXE1zBAzo+CVddRn200FQ1L9byFGt/c4ZZ7LqlwV+m6jz32F5s+Ufg
+         D8EM4CeMuHuAL2FRMF7jH8nnqtxCdcW0OPzYd1S93dUIVsAKjC6Ss0vfAiwPb2ruUrY5
+         nGtc3nrbw1nZc9DkclWpsKoRG2yk2BZK2BtNchQoHx4+JYKQSg6EA3MGYXm594wT3jdg
+         1ELs+u971Ui57XMiobIqXe5i3r//IIShgGQK24x8GLLyRJHcJiZG4LKGfiIu1Btuvogw
+         Y+y4pNyIyA7Mnsy5wzuJazmK+fsold15+DWFYI7/UQn+zmI8gEqp4aW9HZKFkF1T65YL
+         HW8A==
+X-Gm-Message-State: AOAM5304Xu8AuY8mJi/YzLfPbnAAUKtoUl2VzB5AMl800vX9Mses0lkF
+        WZzc1W/dUIlgcHDPqsQzdK+znCDQEuKkDw==
+X-Google-Smtp-Source: ABdhPJyGcwjbha4Phz6yL0g64hPZVRsZGJFgrvPB8yT8NFurG9QFdj6GhtvsLuw5B8dV7IR1gOXoDA==
+X-Received: by 2002:a62:7a4f:0:b0:448:6a41:14bb with SMTP id v76-20020a627a4f000000b004486a4114bbmr28828537pfc.31.1633414493878;
+        Mon, 04 Oct 2021 23:14:53 -0700 (PDT)
+Received: from localhost.localdomain (113x37x72x24.ap113.ftth.ucom.ne.jp. [113.37.72.24])
+        by smtp.gmail.com with ESMTPSA id z124sm16931744pfb.108.2021.10.04.23.14.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Oct 2021 23:14:53 -0700 (PDT)
+From:   William Breathitt Gray <vilhelm.gray@gmail.com>
+To:     jic23@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        William Breathitt Gray <vilhelm.gray@gmail.com>
+Subject: [PATCH] docs: counter: Include counter-chrdev kernel-doc to generic-counter.rst
+Date:   Tue,  5 Oct 2021 15:14:37 +0900
+Message-Id: <20211005061437.4846-1-vilhelm.gray@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-References: <20210901083215.25984-1-yunfei.dong@mediatek.com>
- <CAAEAJfDOt_GyDPojcj5P6Wou9HC2GC8YzRt2wYyqdrCOjfeOog@mail.gmail.com>
- <3b9463e88d88ce85205da08f8263252da7726ade.camel@mediatek.com>
- <aba7fb4ffe6e45ac90869b5017468386bce64d28.camel@mediatek.com>
- <b7ed8b71578a98704e9b8ca29cac63c67cc14b3f.camel@mediatek.com>
- <CAAEAJfCHEBFc8B7C0bu7UxtJdffvDarqgA-rset1wPjLOiV01A@mail.gmail.com> <CAC-pXoMR=mOwnKqP5SFAfF3Ka5UrG0F8Mj=sJuEziU=uOKftoA@mail.gmail.com>
-In-Reply-To: <CAC-pXoMR=mOwnKqP5SFAfF3Ka5UrG0F8Mj=sJuEziU=uOKftoA@mail.gmail.com>
-From:   Tomasz Figa <tfiga@google.com>
-Date:   Tue, 5 Oct 2021 15:13:32 +0900
-Message-ID: <CAAFQd5DzLMFarc2fFkrcE4t+T3mk5XJtCoWa8WpHNuOS5++SbA@mail.gmail.com>
-Subject: Re: [PATCH v6, 00/15] Using component framework to support multi
- hardware decode
-To:     Steve Cho <stevecho@chromium.org>
-Cc:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        "yunfei.dong@mediatek.com" <Yunfei.Dong@mediatek.com>,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Tzung-Bi Shih <tzungbi@chromium.org>,
-        Tiffany Lin <tiffany.lin@mediatek.com>,
-        Andrew-CT Chen <Andrew-CT.Chen@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Fritz Koenig <frkoenig@chromium.org>,
-        Irui Wang <irui.wang@mediatek.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Project_Global_Chrome_Upstream_Group 
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 2:02 AM Steve Cho <stevecho@chromium.org> wrote:
->
-> Hi Ezequiel,
->
-> Thank you for reviewing these series from Yunfei!
-> This series is one of the main obstacles for us at the moment for MTK
-> so please continue to help & support reviewing this series.
->
-> > > According to google's suggestion, it's better not to use v4l2 async
-> > > also.
-> >
-> > Hum? I haven't seen such objection on the mailing list.
-> Maybe coming from Tzung-Bi?
-> Yunfei, please let us know.
+The counter-chrdev.c file exports the counter_push_event() function.
 
-I do object to using V4L2 async. It's designed for independent
-components of media pipelines, handled by multiple different drivers
-and also modelled as V4L2 subdevices. We don't have anything like that
-here.
+Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+---
+ Documentation/driver-api/generic-counter.rst | 3 +++
+ 1 file changed, 3 insertions(+)
 
-How about just open coding something trivial that only fits the needs
-of this specific driver? I think it would be as simple as a linked
-list and registering the V4L2 devices only after all the nodes probe.
+diff --git a/Documentation/driver-api/generic-counter.rst b/Documentation/driver-api/generic-counter.rst
+index ae9d3c2079f1..1b487a331467 100644
+--- a/Documentation/driver-api/generic-counter.rst
++++ b/Documentation/driver-api/generic-counter.rst
+@@ -237,6 +237,9 @@ for defining a counter device.
+ .. kernel-doc:: drivers/counter/counter-core.c
+    :export:
+ 
++.. kernel-doc:: drivers/counter/counter-chrdev.c
++   :export:
++
+ Driver Implementation
+ =====================
+ 
 
-Best regards,
-Tomasz
+base-commit: 4c2d124b3c9dade959740e0a842868ca4520cf46
+prerequisite-patch-id: afa00fa5e8b34bd71871f41c5542dcfd688d03e0
+-- 
+2.33.0
+
