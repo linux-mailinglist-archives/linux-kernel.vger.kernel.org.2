@@ -2,67 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E676042248F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 13:06:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E9124224A9
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 13:08:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234274AbhJELIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 07:08:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45708 "EHLO mail.kernel.org"
+        id S234382AbhJELJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 07:09:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46080 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233881AbhJELIj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 07:08:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9359A61181;
-        Tue,  5 Oct 2021 11:06:48 +0000 (UTC)
+        id S234227AbhJELJu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 07:09:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 17FE961139;
+        Tue,  5 Oct 2021 11:07:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633432009;
-        bh=TzrIPxcsGexRZuowd5yTFey66W3I5CCoUeggTOGay6s=;
+        s=korg; t=1633432080;
+        bh=8O4NbzI83W4MmE7yBDBAt3SGlFnFr044fTTajdBRZjY=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=b5fVzLxaSZ3klmbMRr0tM4gu7NkccL54t77pbne4+SMXm5sgsHG2c5ZJsSUeGgrx/
-         m4xSKL/iZ9YOW/qdpR49jmlMLq0AkpDiYz6Bnj8kolU78zuhhQ7zn5rYYX073HU1ss
-         0wz7XcMexaTfVpemyW2D9lrsvPUavYdZ2ESqzdhA=
-Date:   Tue, 5 Oct 2021 13:06:47 +0200
+        b=JVUyO5b7dn6kniwvljrzctepL71uRP7zMmqY759v7eUGFpvem6FDZ//ruqnRgZQaB
+         ZyNQGcg8NxCAi552kbDFl5rz2SC2o1vpnTSA9Scr8MEW5E2BssedOppDe4nMhNtlOm
+         290oJallKkxVysNzEus01pXISW76wmW4U+mRFEtk=
+Date:   Tue, 5 Oct 2021 13:07:58 +0200
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Mathias Nyman <mathias.nyman@intel.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        JC Kuo <jckuo@nvidia.com>, Arnd Bergmann <arnd@arndb.de>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-usb@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] [RESEND] usb: xhci: tegra: mark PM functions as
- __maybe_unused
-Message-ID: <YVwxxywC5iSGSaXM@kroah.com>
-References: <20210927142258.1863321-1-arnd@kernel.org>
+To:     Nikita Yushchenko <nikita.yoush@cogentembedded.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Alan Stern <stern@rowland.harvard.edu>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Petr Nechaev <petr.nechaev@cogentembedded.com>
+Subject: Re: [PATCH v3] usb: gadget: storage: add support for media larger
+ than 2T
+Message-ID: <YVwyDsuIT9lZWi2v@kroah.com>
+References: <YUnsSxUERYj/oXTO@kroah.com>
+ <20210921145901.11952-1-nikita.yoush@cogentembedded.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210927142258.1863321-1-arnd@kernel.org>
+In-Reply-To: <20210921145901.11952-1-nikita.yoush@cogentembedded.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 04:22:52PM +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+On Tue, Sep 21, 2021 at 05:59:02PM +0300, Nikita Yushchenko wrote:
+> This adds support for READ_CAPACITY(16), READ(16) and WRITE(16)
+> commands, and fixes READ_CAPACITY command to return 0xffffffff if
+> media size does not fit in 32 bits.
 > 
-> The added #ifdefs in the PM rework were almost correct, but still
-> cause warnings in some randconfig builds:
+> This makes f_mass_storage to export a 16T disk array correctly.
 > 
-> drivers/usb/host/xhci-tegra.c:2147:12: error: 'tegra_xusb_resume' defined but not used [-Werror=unused-function]
->  2147 | static int tegra_xusb_resume(struct device *dev)
->       |            ^~~~~~~~~~~~~~~~~
-> drivers/usb/host/xhci-tegra.c:2105:12: error: 'tegra_xusb_suspend' defined but not used [-Werror=unused-function]
->  2105 | static int tegra_xusb_suspend(struct device *dev)
+> Signed-off-by: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
+> ---
+> v3:
+> - added this changelog
 > 
-> Replace the #ifdef checks with simpler __maybe_unused annotations to
-> reliably shut up these warnings.
-> 
-> Fixes: d64d362f1d8b ("usb: xhci: tegra: Enable ELPG for runtime/system PM")
+> v2:
+> - fixed call to check_command() for READ_CAPACITY(16)
+> - fixed alphabetical order of commands in switch statement
+> - renamed variable, added comments, and fixed formatting, per advices by
+>   Alan Stern <stern@rowland.harvard.edu>
 
-What tree does this commit come in from?  I don't see it in my usb tree
-:(
+Felipe and Alan, any objections to this change?
 
 thanks,
 
