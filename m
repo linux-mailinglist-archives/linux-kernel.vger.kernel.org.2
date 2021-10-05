@@ -2,105 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE18F42278E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 15:15:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CB2C422797
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 15:15:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234860AbhJENQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 09:16:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55610 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234761AbhJENQy (ORCPT
+        id S234965AbhJENRc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 09:17:32 -0400
+Received: from hostingweb31-40.netsons.net ([89.40.174.40]:40403 "EHLO
+        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234919AbhJENRb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 09:16:54 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67351C061753
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 06:15:03 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id r10so20810785wra.12
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 06:15:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=C7t36aQJ/HdVD4haldIX8sv1hXdH5zMENhm9qykkDX0=;
-        b=u/W41neVt5urYn/aY5Lkl4TT8qiB8LAHeqCJ1PtTbbe+W7kGbk1QoUtfLs5mDnG9TQ
-         Jj1ySQu0udLwMDJ4GpmxcQqsmCEnTMqFD0kd0y9PgA3xRWiGHvwk0uTovGmPoju5mQth
-         Q9DCqXk4Eo/lldLxH6LsZtKnqKTMeH3Bmm7cttIylM5HawltyfbY7gqkuuu0kbVn7waY
-         ToFLue9dvcQfauTseB+5VSd0jXUYFx2gRrUNTtsmk6fX9Ha4G6XOIGwrdwaAj5NxmSL8
-         xrLoK2hn4K6oJ3cpfEUc1CVG+qvFLKnJVlA4Y68fC07b7PitzDR+U4e8gcloSFlZSxkh
-         Kyuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=C7t36aQJ/HdVD4haldIX8sv1hXdH5zMENhm9qykkDX0=;
-        b=VibLc0Kn/US77JdA3K+/9CWbmG72uvhqIRlDGJ00USBQzMJK5R2qpm9R37IQbmizZl
-         PW/VTD0f3zfs/zjFS4zNZF59PERc1GSKS3t/tNMGehMBNJYJ7NcqYWjXNX64cq1y9NNl
-         YTtOIbXtMRR5UZiy9XftvrC2DhavvPC1YfdjAhFI5da+B27n4s/hih+ZgyS1P9lvZ8up
-         wCJIPngKwCAu4xBvSLECrk1locPVYqMXtYBX3a7qU0xNhIP7DX1eNN6F6LrV1ltHYGo0
-         RNir8yaQdqdntyRFAXUmFqLecHCLGHtHO7eWXdKkZmdnCGZ5aKZcdixjo3dL9aeFgc4U
-         hb0w==
-X-Gm-Message-State: AOAM531aABb3ah23niUYURarznpBOOCWnLlH8udSwUOM3xIQ3WILhNqt
-        ETDbTw1VVeh4cGuSofXoqYCl/g==
-X-Google-Smtp-Source: ABdhPJx+AvsAM1xJpR4F7gOV4Bz1IXec3HMpD2aJxgbeZYeQpGFuhMEfzND1sQXGP/vcePMxxmG4qg==
-X-Received: by 2002:a5d:64ca:: with SMTP id f10mr21231328wri.93.1633439701937;
-        Tue, 05 Oct 2021 06:15:01 -0700 (PDT)
-Received: from google.com ([95.148.6.175])
-        by smtp.gmail.com with ESMTPSA id k18sm1171078wrn.81.2021.10.05.06.15.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Oct 2021 06:15:01 -0700 (PDT)
-Date:   Tue, 5 Oct 2021 14:14:59 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Liam Girdwood <lgirdwood@gmail.com>, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org
-Subject: Re: [PATCH v2 00/10] regulator/mfd/clock: dt-bindings: Samsung S2M
- and S5M to dtschema
-Message-ID: <YVxP0+kVxI0xQmQQ@google.com>
-References: <20211001094106.52412-1-krzysztof.kozlowski@canonical.com>
- <YVxBuEvHVdyDvaGD@sirena.org.uk>
+        Tue, 5 Oct 2021 09:17:31 -0400
+Received: from [185.56.157.72] (port=34808 helo=[192.168.101.73])
+        by hostingweb31.netsons.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <luca@lucaceresoli.net>)
+        id 1mXkIF-00GPVT-64; Tue, 05 Oct 2021 15:15:39 +0200
+Subject: Re: [PATCH 2/2] power: supply: max77976: add Maxim MAX77976 charger
+ driver
+To:     Randy Dunlap <rdunlap@infradead.org>, linux-pm@vger.kernel.org
+Cc:     Sebastian Reichel <sre@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211004130732.950512-1-luca@lucaceresoli.net>
+ <20211004130732.950512-2-luca@lucaceresoli.net>
+ <a6ea9a21-e9df-b596-eb80-4df4b8d8115e@infradead.org>
+From:   Luca Ceresoli <luca@lucaceresoli.net>
+Message-ID: <cce10251-c092-c06b-dbc4-d257bb7aa305@lucaceresoli.net>
+Date:   Tue, 5 Oct 2021 15:15:37 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
+In-Reply-To: <a6ea9a21-e9df-b596-eb80-4df4b8d8115e@infradead.org>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <YVxBuEvHVdyDvaGD@sirena.org.uk>
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lucaceresoli.net
+X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca+lucaceresoli.net/only user confirmed/virtual account not confirmed
+X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 05 Oct 2021, Mark Brown wrote:
+Hi Randy,
 
-> On Fri, Oct 01, 2021 at 11:40:56AM +0200, Krzysztof Kozlowski wrote:
+On 04/10/21 17:28, Randy Dunlap wrote:
+> On 10/4/21 6:07 AM, Luca Ceresoli wrote:
+>> diff --git a/drivers/power/supply/Kconfig b/drivers/power/supply/Kconfig
+>> index ad93b3550d6d..622d690c883a 100644
+>> --- a/drivers/power/supply/Kconfig
+>> +++ b/drivers/power/supply/Kconfig
+>> @@ -557,6 +557,17 @@ config CHARGER_MAX77693
+>>       help
+>>         Say Y to enable support for the Maxim MAX77693 battery charger.
+>>   +config CHARGER_MAX77976
+>> +    tristate "Maxim MAX77976 battery charger driver"
+>> +    depends on REGMAP_I2C
+>> +    help
+>> +      The Maxim MAX77976 is a 19 Vin, 5.5A 1-Cell Li+ Battery Charger
+>> +      USB OTG support. It has an I2C interface for configuration.
+>> +
+>> +      Say Y to enable support for the Maxim MAX77976 battery charger.
+>> +      This driver can also be built as a module. If so, the module
+>> will be
+>> +      called max77976_charger.
 > 
-> > Merging/dependencies
-> > ====================
-> > 1. Regulator related binding changes depend on first two commits (the
-> >    fixes), because of context.
-> > 2. The mfd bindings depend on clock and regulator bindings.
-> > 
-> > The fixes and bindings changes (patches 1-10) should go via the same
-> > tree.  For example regulator or mfd tree.  I propose the regulator tree,
-> > since it will have also one driver change (the fix, first commit).
+> REGMAP_I2C is not a user-settable config option, so drivers should not
+> "depend on" it. This should be more like:
 > 
-> Lee, Stephen, Michael does Krzysztof's plan make sense to you?
+>     depends on I2C
+>     select REGMAP_I2C
 
-I tend to take cross subsystem patches.  MFD is usually in the centre
-of these scenarios and I have tooling to easily set-up immutable
-branches/pull-requests.
-
-Always happy to discuss if others have different/better ideas though.
+Ouch, thanks for spotting, will fix in v2.
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Luca
