@@ -2,219 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 492A3421F8C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 09:41:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7D43421F8E
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 09:41:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232824AbhJEHmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 03:42:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34784 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230526AbhJEHmw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 03:42:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9FDFA6121F;
-        Tue,  5 Oct 2021 07:41:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633419662;
-        bh=waBURoAl+9jsJYLDG/eWsVwSNuKd8iuPccusP+F6hbE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sYbJpW7vqP0v6yFNZr/hOoq+5OiaZuhXC0xH+HZ1OYq7fGrv4QcB5j+x54LUIslDn
-         vI5uxhQBM8kHD6yOCQ1sD3XPRM/IGTjOUDMXeCR2b9JyENTtm+pt0R47pB3M6h5uuv
-         AuQlklQRgj6uKZerHk/AP7GbNKzX1o/Rf2CbQ7MRw+j0c5qETG35ikl3/jQQHvpcok
-         67wCtzALYgqGVwldAP6OsCbKc4I2s7l37JQoNHqeKglwN9xHAI7s7hAyiMxUWZAWIh
-         LvuaSfWLNHgHhUonFjqimQ1sM2RoK2dBxHrdpux28vbtMvcxxrz3jpl3K1BsT/EZ9h
-         q3LeQSsfWQdLQ==
-Date:   Tue, 5 Oct 2021 10:40:58 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Ido Schimmel <idosch@idosch.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Ido Schimmel <idosch@nvidia.com>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Pirko <jiri@nvidia.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        mlxsw@nvidia.com, Moshe Shemesh <moshe@nvidia.com>,
-        netdev@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Shay Drory <shayd@nvidia.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>
-Subject: Re: [PATCH net-next v2 5/5] devlink: Delete reload enable/disable
- interface
-Message-ID: <YVwBiomKH9Bju/KV@unreal>
-References: <cover.1633284302.git.leonro@nvidia.com>
- <06ebba9e115d421118b16ac4efda61c2e08f4d50.1633284302.git.leonro@nvidia.com>
- <YVsNfLzhGULiifw2@shredder>
- <YVshg3a9OpotmOQg@unreal>
- <YVsxqsEGkV0A5lvO@shredder>
- <YVtPruw9kzOQvhZu@unreal>
- <YVvsR4CxOW09k8KX@shredder>
+        id S232834AbhJEHnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 03:43:14 -0400
+Received: from outbound-smtp30.blacknight.com ([81.17.249.61]:52362 "EHLO
+        outbound-smtp30.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232108AbhJEHnM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 03:43:12 -0400
+Received: from mail.blacknight.com (pemlinmail04.blacknight.ie [81.17.254.17])
+        by outbound-smtp30.blacknight.com (Postfix) with ESMTPS id D197DBA9D9
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 08:41:21 +0100 (IST)
+Received: (qmail 6350 invoked from network); 5 Oct 2021 07:41:21 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.29])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 5 Oct 2021 07:41:21 -0000
+Date:   Tue, 5 Oct 2021 08:41:20 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Mike Galbraith <efault@gmx.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] sched/fair: Scale wakeup granularity relative to
+ nr_running
+Message-ID: <20211005074120.GO3959@techsingularity.net>
+References: <20210922173853.GB3959@techsingularity.net>
+ <CAKfTPtDc39fCLbQqA2BhC6dsb+MyYYMdk9HUvrU0fRqULuQB-g@mail.gmail.com>
+ <ba60262d15891702cae0d59122388c6a18caaf53.camel@gmx.de>
+ <CAKfTPtBBqLghrXrayyoBQQyDqdv6+pdCjiZkmzLaGvdNtN=Aug@mail.gmail.com>
+ <50400427070018eff83b0782d2e26c0cc9ff4521.camel@gmx.de>
+ <CAKfTPtDHYtskM7wR0w=fDry+6JJae2_q8Lw7ETcW_gBJ+n4NBA@mail.gmail.com>
+ <20210927111730.GG3959@techsingularity.net>
+ <ae821481769c4cd82a1672f0aac427c52e0a1647.camel@gmx.de>
+ <20211004080547.GK3959@techsingularity.net>
+ <CAKfTPtD5=VQfSdL6YqdET99XFbPxT359oH0UZ78O=wWn6G8mAg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <YVvsR4CxOW09k8KX@shredder>
+In-Reply-To: <CAKfTPtD5=VQfSdL6YqdET99XFbPxT359oH0UZ78O=wWn6G8mAg@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05, 2021 at 09:10:15AM +0300, Ido Schimmel wrote:
-> On Mon, Oct 04, 2021 at 10:02:06PM +0300, Leon Romanovsky wrote:
-> > On Mon, Oct 04, 2021 at 07:54:02PM +0300, Ido Schimmel wrote:
-> > > On Mon, Oct 04, 2021 at 06:45:07PM +0300, Leon Romanovsky wrote:
-> > > > On Mon, Oct 04, 2021 at 05:19:40PM +0300, Ido Schimmel wrote:
-> > > > > On Sun, Oct 03, 2021 at 09:12:06PM +0300, Leon Romanovsky wrote:
-> > > > > > From: Leon Romanovsky <leonro@nvidia.com>
-> > > > > > 
-> > > > > > After changes to allow dynamically set the reload_up/_down callbacks,
-> > > > > > we ensure that properly supported devlink ops are not accessible before
-> > > > > > devlink_register, which is last command in the initialization sequence.
-> > > > > > 
-> > > > > > It makes devlink_reload_enable/_disable not relevant anymore and can be
-> > > > > > safely deleted.
-> > > > > > 
-> > > > > > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> > > > > 
-> > > > > [...]
-> > > > > 
-> > > > > > diff --git a/drivers/net/netdevsim/dev.c b/drivers/net/netdevsim/dev.c
-> > > > > > index cb6645012a30..09e48fb232a9 100644
-> > > > > > --- a/drivers/net/netdevsim/dev.c
-> > > > > > +++ b/drivers/net/netdevsim/dev.c
-> > > > > > @@ -1512,7 +1512,6 @@ int nsim_dev_probe(struct nsim_bus_dev *nsim_bus_dev)
-> > > > > >  
-> > > > > >  	nsim_dev->esw_mode = DEVLINK_ESWITCH_MODE_LEGACY;
-> > > > > >  	devlink_register(devlink);
-> > > > > > -	devlink_reload_enable(devlink);
-> > > > > >  	return 0;
-> > > > > >  
-> > > > > >  err_psample_exit:
-> > > > > > @@ -1566,9 +1565,7 @@ void nsim_dev_remove(struct nsim_bus_dev *nsim_bus_dev)
-> > > > > >  	struct nsim_dev *nsim_dev = dev_get_drvdata(&nsim_bus_dev->dev);
-> > > > > >  	struct devlink *devlink = priv_to_devlink(nsim_dev);
-> > > > > >  
-> > > > > > -	devlink_reload_disable(devlink);
-> > > > > >  	devlink_unregister(devlink);
-> > > > > > -
-> > > > > >  	nsim_dev_reload_destroy(nsim_dev);
-> > > > > >  
-> > > > > >  	nsim_bpf_dev_exit(nsim_dev);
-> > > > > 
-> > > > > I didn't remember why devlink_reload_{enable,disable}() were added in
-> > > > > the first place so it was not clear to me from the commit message why
-> > > > > they can be removed. It is described in commit a0c76345e3d3 ("devlink:
-> > > > > disallow reload operation during device cleanup") with a reproducer.
-> > > > 
-> > > > It was added because devlink ops were accessible by the user space very
-> > > > early in the driver lifetime. All my latest devlink patches are the
-> > > > attempt to fix this arch/design/implementation issue.
-> > > 
-> > > The reproducer in the commit message executed the reload after the
-> > > device was fully initialized. IIRC, the problem there was that nothing
-> > > prevented these two tasks from racing:
-> > > 
-> > > devlink dev reload netdevsim/netdevsim10
-> > > echo 10 > /sys/bus/netdevsim/del_device
-> > > 
-> > > The title also talks about forbidding reload during device cleanup.
-> > 
-> > It is incomplete title and reproducer.
+On Mon, Oct 04, 2021 at 06:37:02PM +0200, Vincent Guittot wrote:
+> On Mon, 4 Oct 2021 at 10:05, Mel Gorman <mgorman@techsingularity.net> wrote:
+> >
+> > On Mon, Sep 27, 2021 at 04:17:25PM +0200, Mike Galbraith wrote:
+> > > On Mon, 2021-09-27 at 12:17 +0100, Mel Gorman wrote:
+> > > > On Thu, Sep 23, 2021 at 02:41:06PM +0200, Vincent Guittot wrote:
+> > > > > On Thu, 23 Sept 2021 at 11:22, Mike Galbraith <efault@gmx.de> wrote:
+> > > > > >
+> > > > > > On Thu, 2021-09-23 at 10:40 +0200, Vincent Guittot wrote:
+> > > > > > >
+> > > > > > > a 100us value should even be enough to fix Mel's problem without
+> > > > > > > impacting common wakeup preemption cases.
+> > > > > >
+> > > > > > It'd be nice if it turn out to be something that simple, but color me
+> > > > > > skeptical.  I've tried various preemption throttling schemes, and while
+> > > > >
+> > > > > Let's see what the results will show. I tend to agree that this will
+> > > > > not be enough to cover all use cases and I don't see any other way to
+> > > > > cover all cases than getting some inputs from the threads about their
+> > > > > latency fairness which bring us back to some kind of latency niceness
+> > > > > value
+> > > > >
+> > > >
+> > > > Unfortunately, I didn't get a complete set of results but enough to work
+> > > > with. The missing tests have been requeued. The figures below are based
+> > > > on a single-socket Skylake machine with 8 CPUs as it had the most set of
+> > > > results and is the basic case.
+> > >
+> > > There's something missing, namely how does whatever load you measure
+> > > perform when facing dissimilar competition. Instead of only scaling
+> > > loads running solo from underutilized to heavily over-committed, give
+> > > them competition. eg something switch heavy, say tbench, TCP_RR et al
+> > > (latency bound load) pairs=CPUS vs something hefty like make -j CPUS or
+> > > such.
+> > >
+> >
+> > Ok, that's an interesting test. I've been out intermittently and will be
+> > for the next few weeks but I managed to automate something that can test
+> > this. The test runs a kernel compile with -jNR_CPUS and TCP_RR running
+> > NR_CPUS pairs of clients/servers in the background with the default
+> > openSUSE Leap kernel config (CONFIG_PREEMPT_NONE) with the two patches
+> > and no tricks done with task priorities.  5 kernel compilations are run
+> > and TCP_RR is shutdown when the compilation finishes.
+> >
+> > This can be reproduced with the mmtests config
+> > config-multi-kernbench__netperf-tcp-rr-multipair using xfs as the
+> > filesystem for the kernel compilation.
+> >
+> > sched-scalewakegran-v2r5: my patch
+> > sched-moveforward-v1r1: Vincent's patch
 > 
-> How can the reproducer be incomplete when it reproduced the issue 100%
-> of the time?
+> If I'm not wrong, you refer to the 1st version which scales with the
+> number of cpu by sched-moveforward-v1r1. We don't want to scale with
+> the number of cpu because this can create some quite large non
+> preemptable duration. We want to ensure a fix small runtime like the
+> last version with 100us
+> 
 
-Incomplete in the sense that other reproducers exists.
-Our internally famous one is module load/reload together with devlink
-reload. More complex includes PCI errors, health recover e.t.c.
+It was a modified version based on feedback that limited the scale that
+preemption would be disabled. It was still based on h_nr_running as a
+basis for comparison
 
-> 
-> > In our verification, we observed more than 40 bugs related to devlink
-> > reload flows and races around it.
-> 
-> I assume these bugs are related to mlx5. syzkaller is familiar with the
-> devlink messages [1] and we are using it to fuzz over both mlxsw and
-> netdevsim. syzbot is also fuzzing over netdevsim and I'm not aware of
-> any open bugs.
-> 
-> [1] https://github.com/google/syzkaller/blob/master/sys/linux/socket_netlink_generic_devlink.txt
-
-We don't know what we don't know.
-
-> 
-> > 
-> > > 
-> > > > 
-> > > > > 
-> > > > > Tried the reproducer with this series and I cannot reproduce the issue.
-> > > > > Wasn't quite sure why, but it does not seem to be related to "changes to
-> > > > > allow dynamically set the reload_up/_down callbacks", as this seems to
-> > > > > be specific to mlx5.
-> > > > 
-> > > > You didn't reproduce because of my series that moved
-> > > > devlink_register()/devlink_unregister() to be last/first commands in
-> > > > .probe()/.remove() flows.
-> > > 
-> > > Agree, that is what I wrote in the next paragraph of my reply.
-> > > 
-> > > > 
-> > > > Patch to allow dynamically set ops was needed because mlx5 had logic
-> > > > like this:
-> > > >  if(something)
-> > > >     devlink_reload_enable()
-> > > > 
-> > > > And I needed a way to keep this if ... condition.
-> > > > 
-> > > > > 
-> > > > > IIUC, the reason that the race described in above mentioned commit can
-> > > > > no longer happen is related to the fact that devlink_unregister() is
-> > > > > called first in the device dismantle path, after your previous patches.
-> > > > > Since both the reload operation and devlink_unregister() hold
-> > > > > 'devlink_mutex', it is not possible for the reload operation to race
-> > > > > with device dismantle.
-> > > > > 
-> > > > > Agree? If so, I think it would be good to explain this in the commit
-> > > > > message unless it's clear to everyone else.
-> > > > 
-> > > > I don't agree for very simple reason that devlink_mutex is going to be
-> > > > removed very soon and it is really not a reason why devlink reload is
-> > > > safer now when before.
-> > > > 
-> > > > The reload can't race due to:
-> > > > 1. devlink_unregister(), which works as a barrier to stop accesses
-> > > > from the user space.
-> > > > 2. reference counting that ensures that all in-flight commands are counted.
-> > > > 3. wait_for_completion that blocks till all commands are done.
-> > > 
-> > > So the wait_for_completion() is what prevents the race, not
-> > > 'devlink_mutex' that is taken later. This needs to be explained in the
-> > > commit message to make it clear why the removal is safe.
-> > 
-> > Can you please suggest what exactly should I write in the commit message
-> > to make it clear?
-> > 
-> > I'm too much into this delvink stuff already and for me this patch is
-> > trivial. IMHO, that change doesn't need an explanation at all because
-> > coding pattern of refcount + wait_for_completion is pretty common in the
-> > kernel. So I think that I explained good enough: move of
-> > devlink_register/devlink_unregister obsoletes the devlink_reload_* APIs.
-> > 
-> > I have no problem to update the commit message, just help me with the
-> > message.
-> 
-> I suggest something like:
-> 
-> "
-> Commit a0c76345e3d3 ("devlink: disallow reload operation during device
-> cleanup") added devlink_reload_{enable,disable}() APIs to prevent reload
-> operation from racing with device probe / dismantle.
-> 
-> After recent changes to move devlink_register() to the end of device
-> probe and devlink_unregister() to the beginning of device dismantle,
-> these races can no longer happen. Reload operations will be denied if
-> the devlink instance is unregistered and devlink_unregister() will block
-> until all in-flight operations are done.
-> 
-> Therefore, remove these devlink_reload_{enable,disable}() APIs. Tested
-> with the reproducer mentioned in cited commit.
-> "
-
-Sure, thanks.
-Can I added your TOB to the patch?
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index ff69f245b939..964f76a95c04 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -84,6 +84,14 @@ static unsigned int normalized_sysctl_sched_wakeup_granularity	= 1000000UL;
+ 
+ const_debug unsigned int sysctl_sched_migration_cost	= 500000UL;
+ 
++/*
++ * This value is kept at sysctl_sched_latency / sysctl_sched_wakeup_granularity
++ *
++ * This influences the decision on whether a waking task can preempt a running
++ * task.
++ */
++static unsigned int sched_nr_disable_gran = 6;
++
+ int sched_thermal_decay_shift;
+ static int __init setup_sched_thermal_decay_shift(char *str)
+ {
+@@ -627,6 +635,9 @@ int sched_update_scaling(void)
+ 	sched_nr_latency = DIV_ROUND_UP(sysctl_sched_latency,
+ 					sysctl_sched_min_granularity);
+ 
++	sched_nr_disable_gran = DIV_ROUND_UP(sysctl_sched_latency,
++					sysctl_sched_wakeup_granularity);
++
+ #define WRT_SYSCTL(name) \
+ 	(normalized_sysctl_##name = sysctl_##name / (factor))
+ 	WRT_SYSCTL(sched_min_granularity);
+@@ -4511,7 +4522,8 @@ set_next_entity(struct cfs_rq *cfs_rq, struct sched_entity *se)
+ }
+ 
+ static int
+-wakeup_preempt_entity(struct sched_entity *curr, struct sched_entity *se);
++wakeup_preempt_entity(struct cfs_rq *cfs_rq, struct sched_entity *curr,
++						struct sched_entity *se);
+ 
+ /*
+  * Pick the next process, keeping these things in mind, in this order:
+@@ -4550,16 +4562,16 @@ pick_next_entity(struct cfs_rq *cfs_rq, struct sched_entity *curr)
+ 				second = curr;
+ 		}
+ 
+-		if (second && wakeup_preempt_entity(second, left) < 1)
++		if (second && wakeup_preempt_entity(NULL, second, left) < 1)
+ 			se = second;
+ 	}
+ 
+-	if (cfs_rq->next && wakeup_preempt_entity(cfs_rq->next, left) < 1) {
++	if (cfs_rq->next && wakeup_preempt_entity(NULL, cfs_rq->next, left) < 1) {
+ 		/*
+ 		 * Someone really wants this to run. If it's not unfair, run it.
+ 		 */
+ 		se = cfs_rq->next;
+-	} else if (cfs_rq->last && wakeup_preempt_entity(cfs_rq->last, left) < 1) {
++	} else if (cfs_rq->last && wakeup_preempt_entity(NULL, cfs_rq->last, left) < 1) {
+ 		/*
+ 		 * Prefer last buddy, try to return the CPU to a preempted task.
+ 		 */
+@@ -7044,9 +7056,42 @@ balance_fair(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+ }
+ #endif /* CONFIG_SMP */
+ 
+-static unsigned long wakeup_gran(struct sched_entity *se)
++static unsigned long
++select_wakeup_gran(struct cfs_rq *cfs_rq)
++{
++	unsigned int nr_running, threshold;
++
++	if (!cfs_rq || !sched_feat(SCALE_WAKEUP_GRAN))
++		return sysctl_sched_wakeup_granularity;
++
++	/* !GENTLE_FAIR_SLEEPERS has one overload threshold. */
++	if (!sched_feat(GENTLE_FAIR_SLEEPERS)) {
++		if (cfs_rq->h_nr_running <= sched_nr_disable_gran)
++			return sysctl_sched_wakeup_granularity;
++
++		return sysctl_sched_latency;
++	}
++
++	/* GENTLE_FAIR_SLEEPER has two overloaded thresholds. */
++	nr_running = cfs_rq->h_nr_running;
++	threshold = sched_nr_disable_gran >> 1;
++
++	/* No overload. */
++	if (nr_running <= threshold)
++		return sysctl_sched_wakeup_granularity;
++
++	/* Light overload. */
++	if (nr_running <= sched_nr_disable_gran)
++		return sysctl_sched_latency >> 1;
++
++	/* Heavy overload. */
++	return sysctl_sched_latency;
++}
++
++static unsigned long
++wakeup_gran(struct cfs_rq *cfs_rq, struct sched_entity *se)
+ {
+-	unsigned long gran = sysctl_sched_wakeup_granularity;
++	unsigned long gran = select_wakeup_gran(cfs_rq);
+ 
+ 	/*
+ 	 * Since its curr running now, convert the gran from real-time
+@@ -7079,14 +7124,15 @@ static unsigned long wakeup_gran(struct sched_entity *se)
+  *
+  */
+ static int
+-wakeup_preempt_entity(struct sched_entity *curr, struct sched_entity *se)
++wakeup_preempt_entity(struct cfs_rq *cfs_rq, struct sched_entity *curr,
++						struct sched_entity *se)
+ {
+ 	s64 gran, vdiff = curr->vruntime - se->vruntime;
+ 
+ 	if (vdiff <= 0)
+ 		return -1;
+ 
+-	gran = wakeup_gran(se);
++	gran = wakeup_gran(cfs_rq, se);
+ 	if (vdiff > gran)
+ 		return 1;
+ 
+@@ -7190,8 +7236,9 @@ static void check_preempt_wakeup(struct rq *rq, struct task_struct *p, int wake_
+ 	if (cse_is_idle != pse_is_idle)
+ 		return;
+ 
+-	update_curr(cfs_rq_of(se));
+-	if (wakeup_preempt_entity(se, pse) == 1) {
++	cfs_rq = cfs_rq_of(se);
++	update_curr(cfs_rq);
++	if (wakeup_preempt_entity(cfs_rq, se, pse) == 1) {
+ 		/*
+ 		 * Bias pick_next to pick the sched entity that is
+ 		 * triggering this preemption.
+diff --git a/kernel/sched/features.h b/kernel/sched/features.h
+index 7f8dace0964c..d041d7023029 100644
+--- a/kernel/sched/features.h
++++ b/kernel/sched/features.h
+@@ -95,3 +95,9 @@ SCHED_FEAT(LATENCY_WARN, false)
+ 
+ SCHED_FEAT(ALT_PERIOD, true)
+ SCHED_FEAT(BASE_SLICE, true)
++
++/*
++ * Scale sched_wakeup_granularity dynamically based on the number of running
++ * tasks up to a cap of sysctl_sched_latency.
++ */
++SCHED_FEAT(SCALE_WAKEUP_GRAN, true)
