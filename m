@@ -2,92 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6704421B44
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 02:41:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43AF1421B46
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 02:41:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230494AbhJEAms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 20:42:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51160 "EHLO
+        id S230318AbhJEAnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 20:43:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230459AbhJEAmg (ORCPT
+        with ESMTP id S231137AbhJEAmy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 20:42:36 -0400
-Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com [IPv6:2607:f8b0:4864:20::92e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2700AC0613EC
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 17:40:44 -0700 (PDT)
-Received: by mail-ua1-x92e.google.com with SMTP id c33so13668470uae.9
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 17:40:44 -0700 (PDT)
+        Mon, 4 Oct 2021 20:42:54 -0400
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A67D4C061764
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 17:41:04 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id r75so22392287iod.7
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 17:41:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20210112.gappssmtp.com; s=20210112;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=eu6xQaZ+L/7SEbm2kM+MqievePKlsmmZKrxh7/j0Gx0=;
-        b=bYFTdC458YYvLwQWaj0LutyFeNvzV2xOB8z/FiTrRLph+G40abtUQCO7uUSITFUICI
-         Q6cb7RZQtPqpGs1yeUuyknrm9ehOepAPItJA8O2rB7N9n70BN4qJD5/t5kPv0rOI0Olo
-         z+WrLDXkCwM0aBqbChhu8CfCefkTcdgpyO95qPPdXZo2FLQ11C484aoaDvJM5o9Mky2r
-         0a3Fx1sjtyjW9RyIr49QLvfFzsBMDZpA/g9eacX+dNIQGaE4K57YpCuR6FAcdRC9ab7f
-         ahCVe92QuHDG7m5m1873+sqz6WK3jJ+wF4u0SVZ5H6bnIJz83eua1IRqSJyST4qk98SY
-         IODA==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=S8/bkKiby+7EkwB2wz+nIC2A5KBIG95pAQLX24jqAYI=;
+        b=M4ztBx95ziwV0D+GbQdUtLp28pZJUKwn8h37ftcAcvY9Q+EomhOOR8ELG6jdaRGj3a
+         QVUY+CqmNTnFHSoiLipf+EsQQkWXzpd3KFueYcdENLdMuAKkkHMaY/0f7xI77fy+JeFB
+         EaXeVy1tYdpZoF8k/8oUKSLYtCLcaRmwShGnI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=eu6xQaZ+L/7SEbm2kM+MqievePKlsmmZKrxh7/j0Gx0=;
-        b=Yj+1to4PO0mscHWnXswzmn7vZ2UpOxcWXpeFGY7PHJ41gIpjAKzy+Y95zjglttyCPp
-         Y1owP6eNex6gzS0PGykxytXY+pQOXH7rmttLBtOahrMpXx9e7RdXTBXS/IdTXGSi2xDI
-         59BpCzcopxvSaKQA8YcsXNyI3Gbt6Sm8cQMNJ7AKcDh2GBu1xdBRVseXo6QKrfzIxS80
-         +U+HOp6lKIH6OFjjgOFpskozKbZLIeBUuxnnDpVBpdiWnpCJaWvwTGPH5b8mcf4t0JMs
-         IO1AAAbjBNVJR8UAaABtOny7TbWdGgSnJitf/6yfw59pcc29Jfq8jxSuYsatzUDHfVyY
-         SXmw==
-X-Gm-Message-State: AOAM531YQTj2LT1SyVNQXWGLV2KKqW1J/vaYk+hmA8jXMNfu7Yaj5nP2
-        BxbD88pJcEA/uyn17S6MeOp9mg==
-X-Google-Smtp-Source: ABdhPJww3mVtU7cqIbTqZq2nACjciZnsKEYgEPbhUhT9+QN5X45mMFKcavhdWpRrezYolgErPY2PnA==
-X-Received: by 2002:ab0:494a:: with SMTP id a10mr10097245uad.90.1633394443206;
-        Mon, 04 Oct 2021 17:40:43 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id g20sm8030772vkf.33.2021.10.04.17.40.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Oct 2021 17:40:42 -0700 (PDT)
-Date:   Mon, 04 Oct 2021 17:40:42 -0700 (PDT)
-X-Google-Original-Date: Mon, 04 Oct 2021 17:40:37 PDT (-0700)
-Subject:     Re: [PATCH 05/10] riscv: remove Kconfig check for GCC version for ARCH_RV64I
-In-Reply-To: <202109130923.E294BFD5C@keescook>
-CC:     ndesaulniers@google.com, akpm@linux-foundation.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux@rasmusvillemoes.dk, nathan@kernel.org, masahiroy@kernel.org,
-        joe@perches.com, arnd@kernel.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>, llvm@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, linux-riscv@lists.infradead.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     ndesaulniers@google.com, keescook@chromium.org
-Message-ID: <mhng-387507df-2708-4ea1-9854-780fcb35eb1d@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=S8/bkKiby+7EkwB2wz+nIC2A5KBIG95pAQLX24jqAYI=;
+        b=l/SxPnCrUkywpiS1icU4dx8qlUmavaYodb4yYFZJvOd5kZrQe224iCOxhQug3QTp3F
+         8C7AL6r2i6WKGT8AcHmPI0bpWjjdr4hhUokO75mfbwASaLJNTqY+vOEtfLhSdPHMfcTE
+         qTPK7NE2DnYFVF5KokpQn6IKG1p6NqKX8ERBgKUVRyh0j2QRh1ExKjAk/FJ5Ei7JCrIE
+         jIH/x3/jMto6QgNsjH+u0fh5IC+nZpS1Z6fv29PA37+eqC7QYEw1FvdyRhFQS205pbwg
+         x4VzRXLMU0lbf6LWCRWjp0GVte+11hhPBuk29Znu6asQV8Zh0hNsPWvGyozTL7t0uC61
+         E2Yw==
+X-Gm-Message-State: AOAM533wUWm9trUKEIZ9fTrdIpbK4gr40eekeXeXBIPlXIeJkR+YQY9i
+        W2twQoeqqiEqY4+5AiR6uthQ+Xn6KuU3BA==
+X-Google-Smtp-Source: ABdhPJxil3pNNRzc25ovCHFqTft4B8kgod0e+7G3Oe3gPPlpvf0174fVNEy9NMFn/xJfMA2eFryxFg==
+X-Received: by 2002:a02:c4da:: with SMTP id h26mr167978jaj.101.1633394463858;
+        Mon, 04 Oct 2021 17:41:03 -0700 (PDT)
+Received: from mail-io1-f43.google.com (mail-io1-f43.google.com. [209.85.166.43])
+        by smtp.gmail.com with ESMTPSA id y2sm9865917ioj.12.2021.10.04.17.41.02
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Oct 2021 17:41:03 -0700 (PDT)
+Received: by mail-io1-f43.google.com with SMTP id q205so22382570iod.8
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 17:41:02 -0700 (PDT)
+X-Received: by 2002:a6b:2ccb:: with SMTP id s194mr153772ios.128.1633394462524;
+ Mon, 04 Oct 2021 17:41:02 -0700 (PDT)
+MIME-Version: 1.0
+References: <20211004092100.1.Ic90a5ebd44c75db963112be167a03cc96f9fb249@changeid>
+ <CAMuHMdUsoBO2hjd0tAecAjnwCUbp=d8i8vaUFDT6Yn3emw2s9Q@mail.gmail.com>
+In-Reply-To: <CAMuHMdUsoBO2hjd0tAecAjnwCUbp=d8i8vaUFDT6Yn3emw2s9Q@mail.gmail.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Mon, 4 Oct 2021 17:40:49 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=V8MoYX2deqD_YE6ii9+VFbwqX0bre=5xaYe8ZwwExziQ@mail.gmail.com>
+Message-ID: <CAD=FV=V8MoYX2deqD_YE6ii9+VFbwqX0bre=5xaYe8ZwwExziQ@mail.gmail.com>
+Subject: Re: [PATCH] drm/edid: Fix crash with zero/invalid EDID
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
+        kernel test robot <oliver.sang@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Jani Nikula <jani.nikula@intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 13 Sep 2021 09:23:45 PDT (-0700), keescook@chromium.org wrote:
-> On Fri, Sep 10, 2021 at 04:40:42PM -0700, Nick Desaulniers wrote:
->> The minimum supported version of GCC is now 5.1. The check wasn't
->> correct as written anyways since GCC_VERSION is 0 when CC=clang.
->>
->> Cc: Paul Walmsley <paul.walmsley@sifive.com>
->> Cc: Palmer Dabbelt <palmer@dabbelt.com>
->> Cc: Albert Ou <aou@eecs.berkeley.edu>
->> Cc: linux-riscv@lists.infradead.org
->> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
->
-> Yeah, good catch for Clang too.
->
-> Reviewed-by: Kees Cook <keescook@chromium.org>
+Hi,
 
-Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
-Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
+On Mon, Oct 4, 2021 at 10:14 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+> Hi Douglas,
+>
+> On Mon, Oct 4, 2021 at 6:22 PM Douglas Anderson <dianders@chromium.org> wrote:
+> > In the commit bac9c2948224 ("drm/edid: Break out reading block 0 of
+> > the EDID") I broke out reading the base block of the EDID to its own
+> > function. Unfortunately, when I did that I messed up the handling when
+> > drm_edid_is_zero() indicated that we had an EDID that was all 0x00 or
+> > when we went through 4 loops and didn't get a valid EDID. Specifically
+> > I needed to pass the broken EDID to connector_bad_edid() but now I was
+> > passing an error-pointer.
+> >
+> > Let's re-jigger things so we can pass the bad EDID in properly.
+> >
+> > Fixes: bac9c2948224 ("drm/edid: Break out reading block 0 of the EDID")
+> > Reported-by: kernel test robot <oliver.sang@intel.com>
+> > Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> > Signed-off-by: Douglas Anderson <dianders@chromium.org>
+>
+> The crash is was seeing is gone, so
+> Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Only this patch ended up in my inbox.  Where you guys planning on 
-keeping this whole series together, or did you want me to pick this for 
-the RISC-V tree?
+Thanks for testing! I'll plan to apply tomorrow morning (California
+time) to balance between giving folks a chance to yell at me for my
+patch and the urgency of fixing the breakage.
+
+-Doug
