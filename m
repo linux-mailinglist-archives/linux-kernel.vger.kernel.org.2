@@ -2,136 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A9CD4222ED
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 11:57:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E79FB4222F0
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 11:58:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233991AbhJEJ7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 05:59:38 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:39724 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233942AbhJEJ7e (ORCPT
+        id S233895AbhJEJ76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 05:59:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37464 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233870AbhJEJ7y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 05:59:34 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 60D55223BB;
-        Tue,  5 Oct 2021 09:57:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1633427863; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rRWNNjHGGhrCYYyeUxzn4qH1ns33EY4uqx/qy+c8tD4=;
-        b=zmNpd1LPU+i6LV/vk/jaPKsic6J7OavgFVXgg47zkc4+sYi2aurkO6BeZs622F8YoVft9K
-        OShcKd4081TDebr+33MfokPn+p02LD3pcEooAmtnzuBl88aAcAY87pVU01t0r11YV1Levq
-        7LpGiWgVDP84ks6iQqN8D+H1Pa56jFs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1633427863;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rRWNNjHGGhrCYYyeUxzn4qH1ns33EY4uqx/qy+c8tD4=;
-        b=8h9LNLWMJ//vEFu3Mkf1RG2jWiciK2vadOyQzVvNlsSeCA4Y+DIBcwORYKITH76DIG5dta
-        PqXu+hHmuvko9lAg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2264913C23;
-        Tue,  5 Oct 2021 09:57:43 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 6DhsB5chXGFqEQAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Tue, 05 Oct 2021 09:57:43 +0000
-Message-ID: <3b0351d3-4753-1d69-a115-60b20c69656c@suse.cz>
-Date:   Tue, 5 Oct 2021 11:57:42 +0200
+        Tue, 5 Oct 2021 05:59:54 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45699C061745
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 02:58:04 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id m3so82862655lfu.2
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 02:58:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rq7MKM2zrv9Ik3HYA0sfeiFO+Ud/aiQ0uN8CoLNzjP8=;
+        b=q6xeJSXDEJCDu7zY5yhSM415ImPMMcJXjo5jezsYRWmGPbMU3MD9kDDhCzV8xbhh5J
+         xuMucvdJ8sKJZQ9rq29tm0S7V0FTdEzd/dty+Z7IbagtQbFRaf6p5f8IOGfIk1tqbWYh
+         /mGljqys/66QZoamXvHtEXjHm8AOLPxo99x26Dsrh3Kbtm9mbpx3cQcNji8t+en5PtOF
+         EeTVWMIPYYeA7cU54LsXvZg/lcix3FPyEBW0m+61lAIdBBuG0TnqY0iSVxkt8tedVGEn
+         rHhY+AcXYhBj4VURLrWv4Kft89rkEL7tqv2xZu1kLgdMp/cBH5dDbI0HQYCHHrtB9ecO
+         AvRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rq7MKM2zrv9Ik3HYA0sfeiFO+Ud/aiQ0uN8CoLNzjP8=;
+        b=L7Zp/EVishcz5JGQ7fV3LK4eMpdx6FzCQxlwnQtFEWRiomGc6Q5QBRitsslGk9s/NH
+         mBAf8MFH6TB/zRi4/dwfX0SfYzJkERZHwrfOoVD8j+XEih76XZGKqVC+olggXQn72xjd
+         9a9NsqT/EBwl0QbNxHbmdvfbltQ9upMGD4+eurXfmAfoAVSoaHweZk8zhe9goKBNk8hw
+         FHHcixxqRaupG+FHFOdgH8KJFnLfMXF+OK9ZEipKlzx+PFrDWxoI7Pexym+tmEwHPgJS
+         yEQHxEDd01tQxzT8evwG25DQKINnQX5SJyY/SAr9vWoyETpFxkMtK+I2JIrrgzNPqLIv
+         0Z9g==
+X-Gm-Message-State: AOAM533g2AG0l19QjZY8qw09wIwvW3BGxQ6a7BDjiIHTmSBvdA9AKN6z
+        H9o5YQQL+hcj39Ft+DsvHhi8Bg==
+X-Google-Smtp-Source: ABdhPJztJNS0D67j+1Xh2JJk3ONd902XRoJ8JO2wypn685qKb8NkIEto9fs/OTRtiLIIdaA347rP9A==
+X-Received: by 2002:a19:790c:: with SMTP id u12mr2535757lfc.490.1633427881861;
+        Tue, 05 Oct 2021 02:58:01 -0700 (PDT)
+Received: from localhost ([31.134.121.151])
+        by smtp.gmail.com with ESMTPSA id b15sm2088546lji.126.2021.10.05.02.58.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Oct 2021 02:58:01 -0700 (PDT)
+From:   Sam Protsenko <semen.protsenko@linaro.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Jiri Slaby <jirislaby@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] tty: serial: samsung: Improve naming for common macro
+Date:   Tue,  5 Oct 2021 12:58:00 +0300
+Message-Id: <20211005095800.2165-1-semen.protsenko@linaro.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.2
-Subject: Re: [PATCH 2/5] mm, slub: fix mismatch between reconstructed freelist
- depth and cnt
-Content-Language: en-US
-To:     Miaohe Lin <linmiaohe@huawei.com>, akpm@linux-foundation.org,
-        cl@linux.com, penberg@kernel.org, rientjes@google.com,
-        iamjoonsoo.kim@lge.com
-Cc:     gregkh@linuxfoundation.org, faiyazm@codeaurora.org,
-        andreyknvl@gmail.com, ryabinin.a.a@gmail.com, thgarnie@google.com,
-        keescook@chromium.org, bharata@linux.ibm.com, guro@fb.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20210916123920.48704-1-linmiaohe@huawei.com>
- <20210916123920.48704-3-linmiaohe@huawei.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20210916123920.48704-3-linmiaohe@huawei.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/16/21 14:39, Miaohe Lin wrote:
-> If object's reuse is delayed, it will be excluded from the reconstructed
-> freelist. But we forgot to adjust the cnt accordingly. So there will be
-> a mismatch between reconstructed freelist depth and cnt. This will lead
-> to free_debug_processing() complain about freelist count or a incorrect
-> slub inuse count.
-> 
-> Fixes: c3895391df38 ("kasan, slub: fix handling of kasan_slab_free hook")
-> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Having "_USI" suffix in EXYNOS_COMMON_SERIAL_DRV_DATA_USI() macro is
+confusing. Rename it to just EXYNOS_COMMON_SERIAL_DRV_DATA() and provide
+USI registers availability for all Exynos variants instead. While at it,
+also convert .has_usi field type to bool, so its usage is more obvious.
 
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+---
+Changes in v2:
+  - Converted .has_usi field to boolean
+  - Used true/false instead of 1/0 values in
+    EXYNOS_COMMON_SERIAL_DRV_DATA() macro
 
-I was worried about taking pointer of the cnt parameter when it's hardcoded
-1, whether it would destroy inlining. Looks like not, luckily, the function
-is just renamed:
+ drivers/tty/serial/samsung_tty.c | 13 +++++--------
+ 1 file changed, 5 insertions(+), 8 deletions(-)
 
-> ./scripts/bloat-o-meter mm/slub.o slub.o.after
-add/remove: 1/1 grow/shrink: 0/0 up/down: 292/-292 (0)
-Function                                     old     new   delta
-slab_free_freelist_hook.constprop              -     292    +292
-slab_free_freelist_hook                      292       -    -292
-
-> ---
->  mm/slub.c | 11 +++++++++--
->  1 file changed, 9 insertions(+), 2 deletions(-)
-> 
-> diff --git a/mm/slub.c b/mm/slub.c
-> index ed160b6c54f8..a56a6423d4e8 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -1701,7 +1701,8 @@ static __always_inline bool slab_free_hook(struct kmem_cache *s,
->  }
->  
->  static inline bool slab_free_freelist_hook(struct kmem_cache *s,
-> -					   void **head, void **tail)
-> +					   void **head, void **tail,
-> +					   int *cnt)
->  {
->  
->  	void *object;
-> @@ -1728,6 +1729,12 @@ static inline bool slab_free_freelist_hook(struct kmem_cache *s,
->  			*head = object;
->  			if (!*tail)
->  				*tail = object;
-> +		} else {
-> +			/*
-> +			 * Adjust the reconstructed freelist depth
-> +			 * accordingly if object's reuse is delayed.
-> +			 */
-> +			--(*cnt);
->  		}
->  	} while (object != old_tail);
->  
-> @@ -3480,7 +3487,7 @@ static __always_inline void slab_free(struct kmem_cache *s, struct page *page,
->  	 * With KASAN enabled slab_free_freelist_hook modifies the freelist
->  	 * to remove objects, whose reuse must be delayed.
->  	 */
-> -	if (slab_free_freelist_hook(s, &head, &tail))
-> +	if (slab_free_freelist_hook(s, &head, &tail, &cnt))
->  		do_slab_free(s, page, head, tail, cnt, addr);
->  }
->  
-> 
+diff --git a/drivers/tty/serial/samsung_tty.c b/drivers/tty/serial/samsung_tty.c
+index e2f49863e9c2..ca084c10d0bb 100644
+--- a/drivers/tty/serial/samsung_tty.c
++++ b/drivers/tty/serial/samsung_tty.c
+@@ -65,7 +65,7 @@ enum s3c24xx_port_type {
+ struct s3c24xx_uart_info {
+ 	char			*name;
+ 	enum s3c24xx_port_type	type;
+-	unsigned int		has_usi;
++	bool			has_usi;
+ 	unsigned int		port_type;
+ 	unsigned int		fifosize;
+ 	unsigned long		rx_fifomask;
+@@ -2780,7 +2780,7 @@ static struct s3c24xx_serial_drv_data s5pv210_serial_drv_data = {
+ #endif
+ 
+ #if defined(CONFIG_ARCH_EXYNOS)
+-#define EXYNOS_COMMON_SERIAL_DRV_DATA_USI(_has_usi)		\
++#define EXYNOS_COMMON_SERIAL_DRV_DATA(_has_usi)			\
+ 	.info = &(struct s3c24xx_uart_info) {			\
+ 		.name		= "Samsung Exynos UART",	\
+ 		.type		= TYPE_S3C6400,			\
+@@ -2804,21 +2804,18 @@ static struct s3c24xx_serial_drv_data s5pv210_serial_drv_data = {
+ 		.has_fracval	= 1,				\
+ 	}							\
+ 
+-#define EXYNOS_COMMON_SERIAL_DRV_DATA				\
+-	EXYNOS_COMMON_SERIAL_DRV_DATA_USI(0)
+-
+ static struct s3c24xx_serial_drv_data exynos4210_serial_drv_data = {
+-	EXYNOS_COMMON_SERIAL_DRV_DATA,
++	EXYNOS_COMMON_SERIAL_DRV_DATA(false),
+ 	.fifosize = { 256, 64, 16, 16 },
+ };
+ 
+ static struct s3c24xx_serial_drv_data exynos5433_serial_drv_data = {
+-	EXYNOS_COMMON_SERIAL_DRV_DATA,
++	EXYNOS_COMMON_SERIAL_DRV_DATA(false),
+ 	.fifosize = { 64, 256, 16, 256 },
+ };
+ 
+ static struct s3c24xx_serial_drv_data exynos850_serial_drv_data = {
+-	EXYNOS_COMMON_SERIAL_DRV_DATA_USI(1),
++	EXYNOS_COMMON_SERIAL_DRV_DATA(true),
+ 	.fifosize = { 256, 64, 64, 64 },
+ };
+ 
+-- 
+2.30.2
 
