@@ -2,207 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FA30422B1D
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:35:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4D24422B23
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:36:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235332AbhJEOhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 10:37:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46778 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233705AbhJEOhd (ORCPT
+        id S235381AbhJEOi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 10:38:27 -0400
+Received: from mail-oi1-f170.google.com ([209.85.167.170]:37721 "EHLO
+        mail-oi1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234355AbhJEOi0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 10:37:33 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 883E7C061749
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 07:35:42 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id y26so87704394lfa.11
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 07:35:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cogentembedded-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=7ziF/R1LISi9m0sMghR9TEp0K4nRAOLPcUVkKeZiW1E=;
-        b=wfLeaxd3hmQqpgznnrtbMLgnbIebWgUsbQ1kRxDbUE0gXUdPmL74xD+q85fTc8v/q0
-         wo/F8kdo8OIcbydmubHikA6xkNyv6Vcb5Iat7kAbx9EdQZNoSrc90GSkGkC6Q2bywrlR
-         2OwsHjYiNuD+wfZT+PmxCZTB2pbpD647w8aDzfra2qmmdo0lVEIVL0UJUG8SOIYfdJIm
-         fVWPK3CIYzDy/mMqJYp8phMao3ZyYb8W4LjvwjU5SMaWMeu5Vvkj/kfEKwtwcnpOCvS3
-         j/vsGeYeiynXl9XDXIkuYbkiNLBeFNnDK3GXdoMpTE3Kx7lIK2+RgdLX5o7zHkuP9wig
-         8LuQ==
+        Tue, 5 Oct 2021 10:38:26 -0400
+Received: by mail-oi1-f170.google.com with SMTP id w206so26494884oiw.4;
+        Tue, 05 Oct 2021 07:36:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=7ziF/R1LISi9m0sMghR9TEp0K4nRAOLPcUVkKeZiW1E=;
-        b=0TZf8kg7ZsI6BlaQC4J8mGHuMCDduuw2sT5ItZEjvwfm4xKvolrWZExM3xX2hxD/+L
-         J03fKsGH+oZ+jXPsriB0ca0v6S5UjNQmmVOHSrorQQ/aCjPvwXM/x/fXkk7G6aUCv2HC
-         W9EA0Vs78bkAVi6h82JNsIiCcxe3MoUa9zq11tOcac6iuaqxrgdo9vBGKHNn/xoCeseD
-         fjadK0So02nhXm5nIO2+iWke5AZTv6+QrPp2tN7rQS4oECs08XfSBA+OzglnofrTNB6v
-         Jfuok+ji6cYLAbx04UssbmJgOsRpuuheoDpsv+6vHz4DY6Cy0wrCTx5EgVKHjswLCISV
-         tXrw==
-X-Gm-Message-State: AOAM532edID5KeHThl0UjHeU8U2k8zku7nXtEH3CIVEQFxtGidHZAh0B
-        RjgrQsr93Xrpa+POIza3pWguug==
-X-Google-Smtp-Source: ABdhPJx7kuRooYbFcBOabMZUbCnACo88UphCNfI9sBuLpIbR9wIQWeTaByEmax2QO++B8GtouFAKXA==
-X-Received: by 2002:a19:6a16:: with SMTP id u22mr3996901lfu.444.1633444540799;
-        Tue, 05 Oct 2021 07:35:40 -0700 (PDT)
-Received: from cobook.home (nikaet.starlink.ru. [94.141.168.29])
-        by smtp.gmail.com with ESMTPSA id q5sm1969931lfo.225.2021.10.05.07.35.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Oct 2021 07:35:40 -0700 (PDT)
-From:   Nikita Yushchenko <nikita.yoush@cogentembedded.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Christian Gromm <christian.gromm@microchip.com>,
-        Lee Jones <lee.jones@linaro.org>
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Nikita Yushchenko <nikita.yoush@cogentembedded.com>
-Subject: [PATCH 2/2] staging: most: dim2: use device release method
-Date:   Tue,  5 Oct 2021 17:34:50 +0300
-Message-Id: <20211005143448.8660-2-nikita.yoush@cogentembedded.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <YVwofSvwGTv3kHjh@kroah.com>
-References: <YVwofSvwGTv3kHjh@kroah.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=o00KyEWco01TxEwUad/z3+tPtEbuVbgl1TjuLeOWTEc=;
+        b=cty5ds51cJJPznQu9I4M/OXEJarrSlvfmxcuzuOrIxbjeyX73MyIgqAX0RbO/idd9s
+         M95vnX8lP9TaFjoCwhmIXLIEykgnlHzxdIPfAhtEZOqROMfB5yr7yJmdICae0f5U0Xgl
+         xgpciNeyoFjH4ZOsWVaynwGlhXZIaGwRc1bRmwzZPU21nfKcDMbxDW/Flx+zQ1h5pGm7
+         DZaJ9Oi+dL3LDe9r0roUxNd+kVF2Gt5/y+gXnT2siD41K04PBavEE3nN+J90IYjZ9ppr
+         KfQtlK78cy0/4IbAP4dTUh4Btmnk5AVCwc3sJXKw9ZpXrYXO1g6pNgpg6QNvLzQfpV6E
+         dt5Q==
+X-Gm-Message-State: AOAM533YbZQj88K1p4yQUxh/NcgpGslzZZYbj5JBJ3H4gSnPjSg7+jMD
+        LUTUfdAv9mEz22wIqVEphYz+LXHlLEm2TRQDbFM+VvTO
+X-Google-Smtp-Source: ABdhPJxmUGMzQy4xaQJ4D/xcXxOXnvsl5XECKNhmq04hZZl4UcsycnbNHlsnnLY+S9MrIwuSYtExY4Bml9oda3xKH0c=
+X-Received: by 2002:a05:6808:178c:: with SMTP id bg12mr2934456oib.157.1633444595315;
+ Tue, 05 Oct 2021 07:36:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210920203849.32136-1-rikard.falkeborn@gmail.com>
+In-Reply-To: <20210920203849.32136-1-rikard.falkeborn@gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 5 Oct 2021 16:36:24 +0200
+Message-ID: <CAJZ5v0jrXbuyQez1rX7-9CEjazTFp32SSH60Tx5Oqf+D2Czv5Q@mail.gmail.com>
+Subject: Re: [PATCH] thermal: thermal_mmio: Constify static struct thermal_mmio_ops
+To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     Talel Shenhar <talel@amazon.com>, Zhang Rui <rui.zhang@intel.com>,
+        Amit Kucheria <amitk@kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 723de0f9171e ("staging: most: remove device from interface
-structure") moved registration of driver-provided struct device to
-the most subsystem. This updated dim2 driver as well.
+On Tue, Sep 21, 2021 at 3:55 AM Rikard Falkeborn
+<rikard.falkeborn@gmail.com> wrote:
+>
+> The only usage of thermal_mmio_ops is to pass its address to
+> devm_thermal_zone_of_sensor_register(), which has a pointer to const
+> struct thermal_zone_of_device_ops as argument. Make it const to allow
+> the compiler to put it in read-only memory.
+>
+> Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+> ---
+>  drivers/thermal/thermal_mmio.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/thermal/thermal_mmio.c b/drivers/thermal/thermal_mmio.c
+> index ded1dd0d4ef7..360b0dfdc3b0 100644
+> --- a/drivers/thermal/thermal_mmio.c
+> +++ b/drivers/thermal/thermal_mmio.c
+> @@ -34,7 +34,7 @@ static int thermal_mmio_get_temperature(void *private, int *temp)
+>         return 0;
+>  }
+>
+> -static struct thermal_zone_of_device_ops thermal_mmio_ops = {
+> +static const struct thermal_zone_of_device_ops thermal_mmio_ops = {
+>         .get_temp = thermal_mmio_get_temperature,
+>  };
+>
+> --
 
-However, struct device passed to register_device() becomes refcounted,
-and must not be explicitly deallocated, but must provide release method
-instead. Which is incompatible with managing it via devres.
+I'm not sure what happened to this patch.
 
-This patch makes the device structure allocated without devres, adds
-device release method, and moves device destruction there.
-
-Fixes: 723de0f9171e ("staging: most: remove device from interface structure")
-Signed-off-by: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
----
- drivers/staging/most/dim2/dim2.c | 55 +++++++++++++++++---------------
- 1 file changed, 30 insertions(+), 25 deletions(-)
-
-diff --git a/drivers/staging/most/dim2/dim2.c b/drivers/staging/most/dim2/dim2.c
-index bb6dd508e531..4c0c3bc91ac0 100644
---- a/drivers/staging/most/dim2/dim2.c
-+++ b/drivers/staging/most/dim2/dim2.c
-@@ -734,6 +734,23 @@ static int get_dim2_clk_speed(const char *clock_speed, u8 *val)
- 	return -EINVAL;
- }
- 
-+static void dim2_release(struct device *d)
-+{
-+	struct dim2_hdm *dev = container_of(d, struct dim2_hdm, dev);
-+	unsigned long flags;
-+
-+	kthread_stop(dev->netinfo_task);
-+
-+	spin_lock_irqsave(&dim_lock, flags);
-+	dim_shutdown();
-+	spin_unlock_irqrestore(&dim_lock, flags);
-+
-+	if (dev->disable_platform)
-+		dev->disable_platform(to_platform_device(d->parent));
-+
-+	kfree(dev);
-+}
-+
- /*
-  * dim2_probe - dim2 probe handler
-  * @pdev: platform device structure
-@@ -755,7 +772,7 @@ static int dim2_probe(struct platform_device *pdev)
- 
- 	enum { MLB_INT_IDX, AHB0_INT_IDX };
- 
--	dev = devm_kzalloc(&pdev->dev, sizeof(*dev), GFP_KERNEL);
-+	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
- 	if (!dev)
- 		return -ENOMEM;
- 
-@@ -767,19 +784,21 @@ static int dim2_probe(struct platform_device *pdev)
- 				      "microchip,clock-speed", &clock_speed);
- 	if (ret) {
- 		dev_err(&pdev->dev, "missing dt property clock-speed\n");
--		return ret;
-+		goto err_free_dev;
- 	}
- 
- 	ret = get_dim2_clk_speed(clock_speed, &dev->clk_speed);
- 	if (ret) {
- 		dev_err(&pdev->dev, "bad dt property clock-speed\n");
--		return ret;
-+		goto err_free_dev;
- 	}
- 
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	dev->io_base = devm_ioremap_resource(&pdev->dev, res);
--	if (IS_ERR(dev->io_base))
--		return PTR_ERR(dev->io_base);
-+	if (IS_ERR(dev->io_base)) {
-+		ret = PTR_ERR(dev->io_base);
-+		goto err_free_dev;
-+	}
- 
- 	of_id = of_match_node(dim2_of_match, pdev->dev.of_node);
- 	pdata = of_id->data;
-@@ -787,7 +806,7 @@ static int dim2_probe(struct platform_device *pdev)
- 		if (pdata->enable) {
- 			ret = pdata->enable(pdev);
- 			if (ret)
--				return ret;
-+				goto err_free_dev;
- 		}
- 		dev->disable_platform = pdata->disable;
- 		if (pdata->fcnt)
-@@ -882,24 +901,19 @@ static int dim2_probe(struct platform_device *pdev)
- 	dev->most_iface.request_netinfo = request_netinfo;
- 	dev->most_iface.driver_dev = &pdev->dev;
- 	dev->most_iface.dev = &dev->dev;
--	dev->dev.init_name = "dim2_state";
-+	dev->dev.init_name = dev->name;
- 	dev->dev.parent = &pdev->dev;
-+	dev->dev.release = dim2_release;
- 
--	ret = most_register_interface(&dev->most_iface);
--	if (ret) {
--		dev_err(&pdev->dev, "failed to register MOST interface\n");
--		goto err_stop_thread;
--	}
--
--	return 0;
-+	return most_register_interface(&dev->most_iface);
- 
--err_stop_thread:
--	kthread_stop(dev->netinfo_task);
- err_shutdown_dim:
- 	dim_shutdown();
- err_disable_platform:
- 	if (dev->disable_platform)
- 		dev->disable_platform(pdev);
-+err_free_dev:
-+	kfree(dev);
- 
- 	return ret;
- }
-@@ -913,17 +927,8 @@ static int dim2_probe(struct platform_device *pdev)
- static int dim2_remove(struct platform_device *pdev)
- {
- 	struct dim2_hdm *dev = platform_get_drvdata(pdev);
--	unsigned long flags;
- 
- 	most_deregister_interface(&dev->most_iface);
--	kthread_stop(dev->netinfo_task);
--
--	spin_lock_irqsave(&dim_lock, flags);
--	dim_shutdown();
--	spin_unlock_irqrestore(&dim_lock, flags);
--
--	if (dev->disable_platform)
--		dev->disable_platform(pdev);
- 
- 	return 0;
- }
--- 
-2.30.2
-
+Daniel, are you going to pick it up?
