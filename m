@@ -2,250 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 550E6422D9C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 18:14:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A9DD422DA1
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 18:15:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236331AbhJEQQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 12:16:45 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:10166 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235875AbhJEQQn (ORCPT
+        id S236463AbhJEQQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 12:16:58 -0400
+Received: from mail.efficios.com ([167.114.26.124]:48222 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236419AbhJEQQ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 12:16:43 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1633450489; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=11fmJ2P4gyUURTQDhz0W4XmaWlBMfP0gXWd3T6QMvQY=; b=Ymt7+k0H856EGoscb6EaD/3UA23cfJA1zpmETAxnKqFtDag7lc8uBTsxE8HT9MVG/ZfUflVy
- HvtH74+yHOoyibM5E+2EypBl2mNwDJDA1gz8+yQscLQZ43LE3y3p4IAbYd6vVmIe5UAhKbLA
- lAN1miWnutuSvpbGCiXDgFdqjSM=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 615c79b4003e680efb52ba7d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 05 Oct 2021 16:13:40
- GMT
-Sender: deesin=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 4E047C4360D; Tue,  5 Oct 2021 16:13:39 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from deesin-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: deesin)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0095DC4338F;
-        Tue,  5 Oct 2021 16:13:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 0095DC4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Deepak Kumar Singh <deesin@codeaurora.org>
-To:     bjorn.andersson@linaro.org, clew@codeaurora.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org,
-        Deepak Kumar Singh <deesin@codeaurora.org>,
-        Andy Gross <agross@kernel.org>
-Subject: [PATCH V2 1/1] soc: qcom: smp2p: add feature negotiation and ssr ack feature support
-Date:   Tue,  5 Oct 2021 21:43:23 +0530
-Message-Id: <1633450403-21281-1-git-send-email-deesin@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Tue, 5 Oct 2021 12:16:56 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 1606838E466;
+        Tue,  5 Oct 2021 12:15:05 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id m0Qvt7WXiQiC; Tue,  5 Oct 2021 12:15:04 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 748AD38E780;
+        Tue,  5 Oct 2021 12:15:04 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 748AD38E780
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1633450504;
+        bh=wdXI//wKXjJYzeAAdexY7E9PnkR6DLjHJxcq7rpw10M=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=M4xcmPCu9QQijyxoeSD7mQnm/miHc6NnbsFQ4tWPe0I66PpgBDxrH9mbSnGBOpJMi
+         +bj1V51Nqw29OTYPj5Ry0lmmj4S6bT69I6PQsawkruFuEnW3OKhFTf/xXx/APCaoHA
+         jVhORbMm9RPSv2bAjZT0i3xBhXqlJ7S6s2ssnCkX1+zTUQXPRgfJEPX95W8kagv1Rq
+         o+G3kyphfZis+HmS6DOU4P3bC979jwKMF+mk3yZd+eqbqUAFDTaBWfBRuy1EazPVcq
+         de6GgD0LKY0hKYEK8qOL/rYH5wW6MJ0tiDqZdUjeBwfg8MRIqymzjKl2N3bmAVPAGu
+         PYXYKFD659Aog==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id ZC9KUwjnWQxC; Tue,  5 Oct 2021 12:15:04 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id 5DACE38E2F5;
+        Tue,  5 Oct 2021 12:15:04 -0400 (EDT)
+Date:   Tue, 5 Oct 2021 12:15:04 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Paul <paulmck@linux.vnet.ibm.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        "Joel Fernandes, Google" <joel@joelfernandes.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, rcu <rcu@vger.kernel.org>,
+        netfilter-devel <netfilter-devel@vger.kernel.org>,
+        coreteam <coreteam@netfilter.org>,
+        netdev <netdev@vger.kernel.org>
+Message-ID: <155148572.2789.1633450504238.JavaMail.zimbra@efficios.com>
+In-Reply-To: <20211005115817.2e1b57bd@gandalf.local.home>
+References: <20211005094728.203ecef2@gandalf.local.home> <505004021.2637.1633446912223.JavaMail.zimbra@efficios.com> <20211005115817.2e1b57bd@gandalf.local.home>
+Subject: Re: [RFC][PATCH] rcu: Use typeof(p) instead of typeof(*p) *
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_4156 (ZimbraWebClient - FF92 (Linux)/8.8.15_GA_4156)
+Thread-Topic: Use typeof(p) instead of typeof(*p) *
+Thread-Index: DIGMOxZGUFfMiJjhKijLQjQDGvVFOA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Lew <clew@codeaurora.org>
+----- On Oct 5, 2021, at 11:58 AM, rostedt rostedt@goodmis.org wrote:
 
-This patch adds feature negotiation and ssr ack feature between
-local host and remote processor. Local host can negotiate on common
-features supported with remote processor.
+> On Tue, 5 Oct 2021 11:15:12 -0400 (EDT)
+> Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
+> 
+>> ----- On Oct 5, 2021, at 9:47 AM, rostedt rostedt@goodmis.org wrote:
+>> [...]
+>> > #define rcu_dereference_raw(p) \
+>> > ({ \
+>> > 	/* Dependency order vs. p above. */ \
+>> > 	typeof(p) ________p1 = READ_ONCE(p); \
+>> > -	((typeof(*p) __force __kernel *)(________p1)); \
+>> > +	((typeof(p) __force __kernel)(________p1)); \
+>> > })
+>> 
+>> AFAIU doing so removes validation that @p is indeed a pointer, so a user might
+>> mistakenly
+>> try to use rcu_dereference() on an integer, and get away with it. I'm not sure
+>> we want to
+>> loosen this check. I wonder if there might be another way to achieve the same
+>> check without
+>> requiring the structure to be declared, e.g. with __builtin_types_compatible_p ?
+> 
+> Is that really an issue? Because you would be assigning it to an integer.
+> 
+> 
+>	x = rcu_dereference_raw(y);
+> 
+> And that just makes 'x' a copy of 'y' and not really a reference to it, thus
+> if you don't have a pointer, it's just a fancy READ_ONCE(y).
 
-When ssr ack feature bit is set, the remote processor will tell local
-host when it is reinitialized. All clients registered for falling edge
-interrupts will be notified when the smp2p entries are cleared for ssr.
+See Documentation/RCU/arrayRCU.rst:
 
-Signed-off-by: Chris Lew <clew@codeaurora.org>
-Signed-off-by: Deepak Kumar Singh <deesin@codeaurora.org>
----
- drivers/soc/qcom/smp2p.c | 121 +++++++++++++++++++++++++++++++++++++----------
- 1 file changed, 96 insertions(+), 25 deletions(-)
+"It might be tempting to consider use
+of RCU to instead protect the index into an array, however, this use
+case is **not** supported.  The problem with RCU-protected indexes into
+arrays is that compilers can play way too many optimization games with
+integers, which means that the rules governing handling of these indexes
+are far more trouble than they are worth.  If RCU-protected indexes into
+arrays prove to be particularly valuable (which they have not thus far),
+explicit cooperation from the compiler will be required to permit them
+to be safely used."
 
-diff --git a/drivers/soc/qcom/smp2p.c b/drivers/soc/qcom/smp2p.c
-index 38585a7..11b9511 100644
---- a/drivers/soc/qcom/smp2p.c
-+++ b/drivers/soc/qcom/smp2p.c
-@@ -41,8 +41,11 @@
- #define SMP2P_MAX_ENTRY_NAME 16
- 
- #define SMP2P_FEATURE_SSR_ACK 0x1
-+#define SMP2P_FLAGS_RESTART_DONE_BIT 0
-+#define SMP2P_FLAGS_RESTART_ACK_BIT 1
- 
- #define SMP2P_MAGIC 0x504d5324
-+#define SMP2P_ALL_FEATURES	SMP2P_FEATURE_SSR_ACK
- 
- /**
-  * struct smp2p_smem_item - in memory communication structure
-@@ -136,6 +139,10 @@ struct qcom_smp2p {
- 
- 	unsigned valid_entries;
- 
-+	bool ssr_ack_enabled;
-+	bool ssr_ack;
-+	bool negotiation_done;
-+
- 	unsigned local_pid;
- 	unsigned remote_pid;
- 
-@@ -163,22 +170,53 @@ static void qcom_smp2p_kick(struct qcom_smp2p *smp2p)
- 	}
- }
- 
--/**
-- * qcom_smp2p_intr() - interrupt handler for incoming notifications
-- * @irq:	unused
-- * @data:	smp2p driver context
-- *
-- * Handle notifications from the remote side to handle newly allocated entries
-- * or any changes to the state bits of existing entries.
-- */
--static irqreturn_t qcom_smp2p_intr(int irq, void *data)
-+static bool qcom_smp2p_check_ssr(struct qcom_smp2p *smp2p)
-+{
-+	struct smp2p_smem_item *in = smp2p->in;
-+	bool restart;
-+
-+	if (!smp2p->ssr_ack_enabled)
-+		return false;
-+
-+	restart = in->flags & BIT(SMP2P_FLAGS_RESTART_DONE_BIT);
-+
-+	return restart != smp2p->ssr_ack;
-+}
-+
-+static void qcom_smp2p_do_ssr_ack(struct qcom_smp2p *smp2p)
-+{
-+	struct smp2p_smem_item *out = smp2p->out;
-+	u32 val;
-+
-+	smp2p->ssr_ack = !smp2p->ssr_ack;
-+
-+	val = out->flags & ~BIT(SMP2P_FLAGS_RESTART_ACK_BIT);
-+	if (smp2p->ssr_ack)
-+		val |= BIT(SMP2P_FLAGS_RESTART_ACK_BIT);
-+	out->flags = val;
-+
-+	qcom_smp2p_kick(smp2p);
-+}
-+
-+static void qcom_smp2p_negotiate(struct qcom_smp2p *smp2p)
-+{
-+	struct smp2p_smem_item *out = smp2p->out;
-+	struct smp2p_smem_item *in = smp2p->in;
-+
-+	if (in->version == out->version) {
-+		out->features &= in->features;
-+
-+		if (out->features & SMP2P_FEATURE_SSR_ACK)
-+			smp2p->ssr_ack_enabled = true;
-+
-+		smp2p->negotiation_done = true;
-+	}
-+}
-+
-+static void qcom_smp2p_notify_in(struct qcom_smp2p *smp2p)
- {
- 	struct smp2p_smem_item *in;
- 	struct smp2p_entry *entry;
--	struct qcom_smp2p *smp2p = data;
--	unsigned smem_id = smp2p->smem_items[SMP2P_INBOUND];
--	unsigned pid = smp2p->remote_pid;
--	size_t size;
- 	int irq_pin;
- 	u32 status;
- 	char buf[SMP2P_MAX_ENTRY_NAME];
-@@ -187,18 +225,6 @@ static irqreturn_t qcom_smp2p_intr(int irq, void *data)
- 
- 	in = smp2p->in;
- 
--	/* Acquire smem item, if not already found */
--	if (!in) {
--		in = qcom_smem_get(pid, smem_id, &size);
--		if (IS_ERR(in)) {
--			dev_err(smp2p->dev,
--				"Unable to acquire remote smp2p item\n");
--			return IRQ_HANDLED;
--		}
--
--		smp2p->in = in;
--	}
--
- 	/* Match newly created entries */
- 	for (i = smp2p->valid_entries; i < in->valid_entries; i++) {
- 		list_for_each_entry(entry, &smp2p->inbound, node) {
-@@ -237,7 +263,51 @@ static irqreturn_t qcom_smp2p_intr(int irq, void *data)
- 			}
- 		}
- 	}
-+}
-+
-+/**
-+ * qcom_smp2p_intr() - interrupt handler for incoming notifications
-+ * @irq:	unused
-+ * @data:	smp2p driver context
-+ *
-+ * Handle notifications from the remote side to handle newly allocated entries
-+ * or any changes to the state bits of existing entries.
-+ */
-+static irqreturn_t qcom_smp2p_intr(int irq, void *data)
-+{
-+	struct smp2p_smem_item *in;
-+	struct qcom_smp2p *smp2p = data;
-+	unsigned int smem_id = smp2p->smem_items[SMP2P_INBOUND];
-+	unsigned int pid = smp2p->remote_pid;
-+	bool ack_restart;
-+	size_t size;
-+
-+	in = smp2p->in;
-+
-+	/* Acquire smem item, if not already found */
-+	if (!in) {
-+		in = qcom_smem_get(pid, smem_id, &size);
-+		if (IS_ERR(in)) {
-+			dev_err(smp2p->dev,
-+				"Unable to acquire remote smp2p item\n");
-+			goto out;
-+		}
-+
-+		smp2p->in = in;
-+	}
-+
-+	if (!smp2p->negotiation_done)
-+		qcom_smp2p_negotiate(smp2p);
-+
-+	if (smp2p->negotiation_done) {
-+		ack_restart = qcom_smp2p_check_ssr(smp2p);
-+		qcom_smp2p_notify_in(smp2p);
-+
-+		if (ack_restart)
-+			qcom_smp2p_do_ssr_ack(smp2p);
-+	}
- 
-+out:
- 	return IRQ_HANDLED;
- }
- 
-@@ -393,6 +463,7 @@ static int qcom_smp2p_alloc_outbound_item(struct qcom_smp2p *smp2p)
- 	out->remote_pid = smp2p->remote_pid;
- 	out->total_entries = SMP2P_MAX_ENTRY;
- 	out->valid_entries = 0;
-+	out->features = SMP2P_ALL_FEATURES;
- 
- 	/*
- 	 * Make sure the rest of the header is written before we validate the
+So AFAIU validation that rcu_dereference receives a pointer as parameter
+is done on purpose.
+
+Thanks,
+
+Mathieu
+
+
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
