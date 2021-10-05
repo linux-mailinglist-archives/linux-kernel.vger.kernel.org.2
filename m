@@ -2,70 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50DD0422DC4
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 18:20:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC1AF422DC9
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 18:21:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235875AbhJEQV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 12:21:58 -0400
-Received: from mga07.intel.com ([134.134.136.100]:52971 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231196AbhJEQV5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 12:21:57 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10128"; a="289294118"
-X-IronPort-AV: E=Sophos;i="5.85,349,1624345200"; 
-   d="scan'208";a="289294118"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2021 09:20:06 -0700
-X-IronPort-AV: E=Sophos;i="5.85,349,1624345200"; 
-   d="scan'208";a="559379000"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2021 09:20:01 -0700
-Received: from andy by smile with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mXnAb-008vgs-4v;
-        Tue, 05 Oct 2021 19:19:57 +0300
-Date:   Tue, 5 Oct 2021 19:19:57 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     =?utf-8?B?UGF3ZcWC?= Anikiel <pan@semihalf.com>
-Cc:     jarkko.nikula@linux.intel.com, mika.westerberg@linux.intel.com,
-        robh+dt@kernel.org, p.zabel@pengutronix.de, arnd@arndb.de,
-        olof@lixom.net, soc@kernel.org, dinguyen@kernel.org,
-        p.yadav@ti.com, Tudor.Ambarus@microchip.com,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alexandre.belloni@bootlin.com, sre@kernel.org,
-        thunder.leizhen@huawei.com, Jonathan.Cameron@huawei.com,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        ka@semihalf.com, tn@semihalf.com, jam@semihalf.com,
-        amstan@google.com
-Subject: Re: [PATCH v2 1/4] i2c: check bus number property in DesignWare I2C
- Controller
-Message-ID: <YVx7LdKo1f1KBpqr@smile.fi.intel.com>
-References: <20211005143748.2471647-1-pan@semihalf.com>
- <20211005143748.2471647-2-pan@semihalf.com>
+        id S233975AbhJEQXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 12:23:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44240 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236227AbhJEQXL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 12:23:11 -0400
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D441C061749
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 09:21:20 -0700 (PDT)
+Received: by mail-il1-x131.google.com with SMTP id y17so14116328ilb.9
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 09:21:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bsPMAPw99iWd0WhV63c7spsKiJkbce1Wl9V5bVSV9pg=;
+        b=spnTz/2AVm9ssDQTJRW4Zj0xMkfyc4oc4QYOcMnAfAf/K2+P+mOa868KMUc143wSAk
+         FqDLdioJSXFbCbpPScDOZEBjcsQPlMz9HC5rMYQWAQKhDqE1CI9U9h0OEJxE1DlTemKD
+         u2UupU3hBe96JEChCHLg61acTr5z9NWtfv+N0/p4rlUrTYwg88PfQP0z651JzaePaKkE
+         G5IY5HpE67Y+OzHEti9VII1jaWlsg7K7Iqk0eV5O9+Ekjg+cpGzy9irVTeaPpxEweFJw
+         NIlrOmdKUXev6er/IUAWJYPAlQwnTTs9jwpSKOc2iyaIigKs1vExz8Y/IyL7/PddW3jS
+         /5wA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bsPMAPw99iWd0WhV63c7spsKiJkbce1Wl9V5bVSV9pg=;
+        b=l119QK38w+YnF6TpwhpyErVbkigQ7bvUa6KBDA4OZNq+iL3nw2QWbbzNTj25uS7UEd
+         LtVl7bx3ulH1MhoGMvfKkLmky+4Zovw1gG/j4s91tCinA7KK9bhgl6Vps2vyiDB3c+XI
+         PSAzM7UKaohEkqVnAD3ztzj1KGTCaKmFfRg5e5S7trRqGtqTh1tlURpPOtHqYceVeWag
+         DnDkIIMx8tdstFNiGD1jXem1e6l92tPhCPBqWqys/wU8eucWolcVDNSatIBeJyaV6JLU
+         YV0LM4VHHqFNAd85e3eGB0yDKSCxqfn1fez8KgLtZvWebAJzpvmAeZkN5tPvhPhXit0U
+         iTfg==
+X-Gm-Message-State: AOAM533mLH4NCrdTmT8HtyQLXI5FB2Bb7lVeeCey8po7FCFhfusIjP4x
+        YHHlzY62+tVcmYExbPpbNbBhdKy/KM8mN62rxJW/XQ==
+X-Google-Smtp-Source: ABdhPJxjnIt9fxcA7gsYZJBGPC7mrhjXzYlWAlc8dHZJsqIJ9d8TEQJ9LJ7pZryrjritrPfKbbUCiFfe10v/G+AmnSw=
+X-Received: by 2002:a05:6e02:12e6:: with SMTP id l6mr3648443iln.293.1633450879811;
+ Tue, 05 Oct 2021 09:21:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211005143748.2471647-2-pan@semihalf.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20211005053019.26284-1-rdunlap@infradead.org>
+In-Reply-To: <20211005053019.26284-1-rdunlap@infradead.org>
+From:   Daniel Latypov <dlatypov@google.com>
+Date:   Tue, 5 Oct 2021 09:21:08 -0700
+Message-ID: <CAGS_qxqRQ+1DmKQwyw-=Yud5LTeZ9LzPQfh-ooOrFuQFN1V3Dg@mail.gmail.com>
+Subject: Re: [PATCH] kunit: fix kernel-doc warnings in doc. build
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Brendan Higgins <brendanhiggins@google.com>,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        Shuah Khan <skhan@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05, 2021 at 04:37:45PM +0200, Paweł Anikiel wrote:
-> On SoCFPGA systems, it's desireable to have fixed numbering for
-> i2c busses, while being able to enable/disable them (e.g. have i2c1
-> be mapped to /dev/i2c-1, even though i2c0 is disabled). This can also
-> be achieved using devicetree aliases (see i2c_add_adapter). However,
-> having the driver be self-contained without relying on aliases is more
-> robust.
+On Mon, Oct 4, 2021 at 10:30 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+>
+> Fix documentation build warnings in <kunit/test.h>:
+>
+> ../include/kunit/test.h:616: warning: Function parameter or member 'flags' not described in 'kunit_kmalloc_array'
+> ../include/kunit/test.h:616: warning: Excess function parameter 'gfp' description in 'kunit_kmalloc_array'
+> ../include/kunit/test.h:661: warning: Function parameter or member 'flags' not described in 'kunit_kcalloc'
+> ../include/kunit/test.h:661: warning: Excess function parameter 'gfp' description in 'kunit_kcalloc'
+>
+> Fixes: 0a756853586c ("kunit: test: add test resource management API")
+> Fixes: 7122debb4367 ("kunit: introduce kunit_kmalloc_array/kunit_kcalloc() helpers")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Brendan Higgins <brendanhiggins@google.com>
+> Cc: linux-kselftest@vger.kernel.org
+> Cc: kunit-dev@googlegroups.com
+> Cc: Daniel Latypov <dlatypov@google.com>
+> Cc: Shuah Khan <skhan@linuxfoundation.org>
+> ---
+>  include/kunit/test.h |    4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> --- lnx-515-rc4.orig/include/kunit/test.h
+> +++ lnx-515-rc4/include/kunit/test.h
+> @@ -607,7 +607,7 @@ void kunit_remove_resource(struct kunit
+>   * @test: The test context object.
+>   * @n: number of elements.
+>   * @size: The size in bytes of the desired memory.
+> - * @gfp: flags passed to underlying kmalloc().
+> + * @flags: gfp flags passed to underlying kmalloc().
 
-Why? This number means nothing, user space has another means to have
-this being robust. Sorry, but I don't see any even close to good enough
-justification, NAK.
+Thanks for catching this.
+But can we instead rename the parameters?
+I can send out a patch for that if you'd prefer.
 
--- 
-With Best Regards,
-Andy Shevchenko
+The other funcs here use `gfp_t gfp`, which is why this copy-pasted
+comment does too.
+In test.c, kmalloc_array() actually calls the parameter `gfp` as well.
 
-
+>   *
+>   * Just like `kmalloc_array(...)`, except the allocation is managed by the test case
+>   * and is automatically cleaned up after the test case concludes. See &struct
+> @@ -653,7 +653,7 @@ static inline void *kunit_kzalloc(struct
+>   * @test: The test context object.
+>   * @n: number of elements.
+>   * @size: The size in bytes of the desired memory.
+> - * @gfp: flags passed to underlying kmalloc().
+> + * @flags: gfp flags passed to underlying kmalloc().
+>   *
+>   * See kcalloc() and kunit_kmalloc_array() for more information.
+>   */
