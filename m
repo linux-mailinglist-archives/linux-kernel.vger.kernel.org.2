@@ -2,72 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 850ED4230D4
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 21:33:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 348BF4230CF
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 21:31:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235403AbhJETfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 15:35:15 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38988 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234762AbhJETfO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 15:35:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633462403;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=aIz24nBWGhxPvmnmxAPoU/I9s0e84WcoRyDehHE/D4A=;
-        b=fCEJHMsaIheRbPoQfcHyjzpB7XupBqtIfBCZPDDYD/eorxAqDIaCcb9DPJy7dhJm85vAc+
-        vR2lnLmjfg+30jMzfPdrMYeHa1kAdQKn3WukqW7rCHtLu+PvOzBqy88nO5WisHpnm26Gml
-        WsI9yumVTkn1//ViXNkjWyTcvsNDU+g=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-286-6LoWTaDAM5aJsJ_9mdGUwg-1; Tue, 05 Oct 2021 15:33:21 -0400
-X-MC-Unique: 6LoWTaDAM5aJsJ_9mdGUwg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3FD3A180831C;
-        Tue,  5 Oct 2021 19:33:20 +0000 (UTC)
-Received: from segfault.boston.devel.redhat.com (segfault.boston.devel.redhat.com [10.19.60.26])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6257560C9F;
-        Tue,  5 Oct 2021 19:33:19 +0000 (UTC)
-From:   Jeff Moyer <jmoyer@redhat.com>
-To:     Ramji Jiyani <ramjiyani@google.com>
-Cc:     Benjamin LaHaise <bcrl@kvack.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>, kernel-team@android.com,
-        linux-aio@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
-Subject: Re: [RESEND PATCH] aio: Add support for the POLLFREE
-References: <20210928194509.4133465-1-ramjiyani@google.com>
-X-PGP-KeyID: 1F78E1B4
-X-PGP-CertKey: F6FE 280D 8293 F72C 65FD  5A58 1FF8 A7CA 1F78 E1B4
-Date:   Tue, 05 Oct 2021 15:35:10 -0400
-In-Reply-To: <20210928194509.4133465-1-ramjiyani@google.com> (Ramji Jiyani's
-        message of "Tue, 28 Sep 2021 19:45:08 +0000")
-Message-ID: <x49ilybjmdt.fsf@segfault.boston.devel.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S235306AbhJETdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 15:33:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37640 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231343AbhJETdp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 15:33:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B3C261027;
+        Tue,  5 Oct 2021 19:31:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633462314;
+        bh=CdT8WVDbXzXBkotXEbD6Lg3bwGfVO6pbEPcBZnCnbhg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KfBfmVV8HwnVrRk5ailM2fxdPVxAfrX48NcCAqS1yOjsisVWkfGAH466DxkVufSB8
+         QzgCeIYSS6cN70adEhJgob7sELUblvoS6Tr4x/KB/5NAhzW2HStPQl3tc+4alobjAv
+         YxzhzCIadKSSOvqsSKhfdlJKD+pvqgQlX43H81VWUNBaLJIu+8lg/Ta1VmxwAgfuXn
+         OKoNIQcwaBAfpCbwKVNW760VMwlIVb9FdrfIIoxZe5cL2JSO9tKDAgSIfX34tc0Lsu
+         oFYFwVY2EERo67m4BuZMBR45X2fE6SxrY2BTLSQLsg2W79Hv0Effb+eSqNuRNoma2n
+         iGP1DR4RKM6Cw==
+Date:   Tue, 5 Oct 2021 14:35:57 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Daniel Bristot de Oliveira <bristot@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] ftrace: Fix -Wcast-function-type warnings on
+ powerpc64
+Message-ID: <20211005193557.GA881195@embeddedor>
+References: <20211005053922.GA702049@embeddedor>
+ <20211005111714.18ebea2b@gandalf.local.home>
+ <20211005161812.GA768055@embeddedor>
+ <20211005123522.244281e6@gandalf.local.home>
+ <20211005165027.GA797862@embeddedor>
+ <20211005150807.03da5e54@gandalf.local.home>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211005150807.03da5e54@gandalf.local.home>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Ramji,
+On Tue, Oct 05, 2021 at 03:08:07PM -0400, Steven Rostedt wrote:
+[..]
+> Or did you not remove your patch first?
 
-Thanks for the explanation of the use after free.  I went ahead and
-ran the patch through the libaio test suite and it passed.
+Yep; that was the problem. 
 
-> -#define POLLFREE	(__force __poll_t)0x4000	/* currently only for epoll */
-> +#define POLLFREE	((__force __poll_t)0x4000)
+I now applied it to a clean tree and the warnings went away.
 
-You added parenthesis, here, and I'm not sure if that's a necessary part
-of this patch.
+However, I'm a bit concerned about the following Jann's comments:
 
-Other than that:
+"the real issue here is that ftrace_func_t is defined as a fixed
+type, but actually has different types depending on the architecture?
+If so, it might be cleaner to define ftrace_func_t differently
+depending on architecture, or something like that?"[1]
 
-Reviewed-by: Jeff Moyer <jmoyer@redhat.com>
+"Would it not be possible to have two function types (#define'd as the
+same if ARCH_SUPPORTS_FTRACE_OPS), and then ensure that ftrace_func_t
+is only used as ftrace_asm_func_t if ARCH_SUPPORTS_FTRACE_OPS?"[2]
 
+"Essentially my idea here is to take the high-level rule "you can only
+directly call ftrace_func_t-typed functions from assembly if
+ARCH_SUPPORTS_FTRACE_OPS", and encode it in the type system. And then
+the compiler won't complain as long as we make sure that we never cast
+between the two types under ARCH_SUPPORTS_FTRACE_OPS==0."[3]
+
+So, is this linker approach really a good solution to this problem? :)
+
+What's the main problem with what Jann suggests?
+
+Thanks!
+--
+Gustavo
+
+[1] https://lore.kernel.org/all/CAG48ez2pOns4vF9M_4ubMJ+p9YFY29udMaH0wm8UuCwGQ4ZZAQ@mail.gmail.com/
+[2] https://lore.kernel.org/all/CAG48ez04Fj=1p61KAxAQWZ3f_z073fVUr8LsQgtKA9c-kcHmDQ@mail.gmail.com/#t
+[3] https://lore.kernel.org/all/CAG48ez1LoTLmHnAKFZCQFSvcb13Em6kc8y1xO8sNwyvzB=D2Lg@mail.gmail.com/
