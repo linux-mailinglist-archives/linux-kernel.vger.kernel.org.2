@@ -2,120 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E421422E6A
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 18:51:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35C4E422E94
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 18:56:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236610AbhJEQxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 12:53:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51580 "EHLO
+        id S235807AbhJEQ6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 12:58:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236512AbhJEQxo (ORCPT
+        with ESMTP id S234938AbhJEQ6m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 12:53:44 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52E1AC061749
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 09:51:53 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id z2so16961237wmc.3
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 09:51:53 -0700 (PDT)
+        Tue, 5 Oct 2021 12:58:42 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3CF4C061749
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 09:56:51 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id r4-20020a7bc084000000b0030d6fc48bd2so2198793wmh.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 09:56:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20210112;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=SXTjxuUZnmqjHtVD8/qvvFaOiH10Qiusvt2hNLMFYc4=;
-        b=a9vaykgeQFPZ5IWK4tw43UUz2rYmFvYlcMiv/BSqpAqKwQJrJR7b+A10p3SCXVLHUe
-         sJv1ZyxTgbo+v/Fq0/jSG2CT3AHYnKkZZy/ylaHVw2MmrAv2ZlU1aZy8SEyqfaTakbdr
-         4SelJSHP89Qojt8u1xnUBh77hbfIl0SasZwJibIPsQwm7/jOS7wfBvNUXQrboAo5jjRU
-         WNnbBiAu+q+iePzXqdRL/tvYIXJ74z01iak/3d1TW8td297I4kSOl87BUAmAftrUNJ2b
-         75zKntuwYUyfn3BnvXIL6RcZICeed80Wz8whaXMb7I2vTSNRpMc1dH1vYBZ53BRSI/Og
-         520Q==
+        bh=mQFSk5tNjh4yCNVgqgn0pPU/iicxGTaTGaLZV1ngF6o=;
+        b=NmjIr+evRVGz3FpBPYGjxl07PquOQFm8veryi8RVz2WSCJVw2pNEeETWTPgHr3cSzR
+         Rmg/5OOITJdzZdqQwAYvSDcfu3vCowjZaQvM+cZlwCMyVvN1cVa6A0OW4WQVYv+d0YfG
+         P6mhj1qcThlp4+SsrV34x8mqHOP6e+aUmvMkhLfszmKF8tOeJev1LwDwgbQeKpeUFOve
+         47EUEZ2aXmgAn02Brt43g6XAj2++jo9YN+y9xafOphJAeNHxEiuv7+U/VSrTGAmQrvIT
+         cVvjZISDbpBaTJijBQsReqAQBv7bNqi2IPbY9yIxYXrgENZkdTQhVsRKMmgALnCguLnt
+         xt2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=SXTjxuUZnmqjHtVD8/qvvFaOiH10Qiusvt2hNLMFYc4=;
-        b=FzzqT+zDfVyC2wS+/ATirRP/uc4XrfW3ANEWAO8bfXDCL5j602tSVPUlvp8ppNINLx
-         oAafimSI0om1XANTKz9u+PN7xfpZr+SFcQO7UpM8izFC3ru5V5gH6odkoTCLwcUq7jy9
-         8d4iMAE+B/3YSf9qd35zR9PjS0p0K9aKA5k2WmtjsAEW0M8/iAkMHUMjPNTQa73QcYxb
-         0liS0v0DrkqHuyveSbvTPdulledHXEG+D+mK7/M8ufRpoofupo+Jl671OtdTDeGjkvIb
-         OGrKxUX0YbCtxlivBpJcRH257tB+ohFirb3RnXMWhEPOpZcuN2tKZCchr69iOF2ax19x
-         JM4Q==
-X-Gm-Message-State: AOAM531DJ7vr/1GDct7WkYCkYzFY3fEbFjZn5VMpqHTtUIjN2VGEDNR+
-        Ce+QEYEPxGMHj7TTAI/wJKUhOsScuD60vg==
-X-Google-Smtp-Source: ABdhPJwWSTpySBGm7o6pyhpzyWOoXtWOExVDc6+pizpXAC0kUuqkLVz4SbBzgQCIsZNkmGTBrwGnYA==
-X-Received: by 2002:a1c:a443:: with SMTP id n64mr4562314wme.32.1633452711715;
-        Tue, 05 Oct 2021 09:51:51 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:b9d9:80fd:d5df:361b? ([2a01:e34:ed2f:f020:b9d9:80fd:d5df:361b])
-        by smtp.googlemail.com with ESMTPSA id m4sm2643472wml.28.2021.10.05.09.51.50
+        bh=mQFSk5tNjh4yCNVgqgn0pPU/iicxGTaTGaLZV1ngF6o=;
+        b=K8foZuKUyflQDsE/hkgWiDFemSqh8bkYABqsHNMTB/be5tg6q5n29MwH0eLld77RhE
+         H8NSYkzgPOXzXgf/yrytfOPwrmnnfMs2WBDZ4WC1Fq6lpgRptchHGZPBwkp1RRngP04+
+         TivWLruJprPSgMAb3bOjeS/Dw4ryMmfEkUNYJ54teWsWFMTWkR6dfYqPRVooxIMoWWZk
+         XgLYWa6p0IMrqPPUDakgO/X3SaY6Dboe2+tQWpGErdMHCiiizrU1kEqoKpsior1vIcM5
+         u/rpThbpjZ4sI2KSiNKcdqb06A8jCxpW0hoslgXwoAD0OUQS10hoDddnxBSAsNN50vfj
+         IcKw==
+X-Gm-Message-State: AOAM530Fr1DrgbxlNuP/CLJmSyymmMqVmulcFJTYK6E+2YwF0kjolV5S
+        OJtik/3SoSOjRLmjmnInpOR0KvgrJHM=
+X-Google-Smtp-Source: ABdhPJwgM/2m3d9xlLAAJIUunA9JW0qFlTzStAqG+c+91t7z355sML/E+68BSs4WM8sakKf4fSXXRQ==
+X-Received: by 2002:a1c:2543:: with SMTP id l64mr4586724wml.9.1633453010540;
+        Tue, 05 Oct 2021 09:56:50 -0700 (PDT)
+Received: from ?IPv6:2a02:8084:e84:2480:228:f8ff:fe6f:83a8? ([2a02:8084:e84:2480:228:f8ff:fe6f:83a8])
+        by smtp.gmail.com with ESMTPSA id u2sm17830629wrr.35.2021.10.05.09.56.49
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Oct 2021 09:51:51 -0700 (PDT)
-Subject: Re: [PATCH] thermal: thermal_mmio: Constify static struct
- thermal_mmio_ops
-To:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Cc:     Talel Shenhar <talel@amazon.com>, Zhang Rui <rui.zhang@intel.com>,
-        Amit Kucheria <amitk@kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210920203849.32136-1-rikard.falkeborn@gmail.com>
- <CAJZ5v0jrXbuyQez1rX7-9CEjazTFp32SSH60Tx5Oqf+D2Czv5Q@mail.gmail.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <01fde6ee-af39-1ae2-a8e2-da8e4f3f8e68@linaro.org>
-Date:   Tue, 5 Oct 2021 18:51:49 +0200
+        Tue, 05 Oct 2021 09:56:50 -0700 (PDT)
+Subject: Re: [PATCH] x86: move arch_get_vdso_data under CONFIG_TIME_NS
+To:     Andrei Vagin <avagin@gmail.com>, linux-kernel@vger.kernel.org,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     kernel test robot <lkp@intel.com>
+References: <20211005164827.103876-1-avagin@gmail.com>
+From:   Dmitry Safonov <0x7f454c46@gmail.com>
+Message-ID: <db24ba19-28b1-db09-c055-9bf5b9184a4f@gmail.com>
+Date:   Tue, 5 Oct 2021 17:56:49 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <CAJZ5v0jrXbuyQez1rX7-9CEjazTFp32SSH60Tx5Oqf+D2Czv5Q@mail.gmail.com>
+In-Reply-To: <20211005164827.103876-1-avagin@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/10/2021 16:36, Rafael J. Wysocki wrote:
-> On Tue, Sep 21, 2021 at 3:55 AM Rikard Falkeborn
-> <rikard.falkeborn@gmail.com> wrote:
->>
->> The only usage of thermal_mmio_ops is to pass its address to
->> devm_thermal_zone_of_sensor_register(), which has a pointer to const
->> struct thermal_zone_of_device_ops as argument. Make it const to allow
->> the compiler to put it in read-only memory.
->>
->> Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
->> ---
->>  drivers/thermal/thermal_mmio.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/thermal/thermal_mmio.c b/drivers/thermal/thermal_mmio.c
->> index ded1dd0d4ef7..360b0dfdc3b0 100644
->> --- a/drivers/thermal/thermal_mmio.c
->> +++ b/drivers/thermal/thermal_mmio.c
->> @@ -34,7 +34,7 @@ static int thermal_mmio_get_temperature(void *private, int *temp)
->>         return 0;
->>  }
->>
->> -static struct thermal_zone_of_device_ops thermal_mmio_ops = {
->> +static const struct thermal_zone_of_device_ops thermal_mmio_ops = {
->>         .get_temp = thermal_mmio_get_temperature,
->>  };
->>
->> --
+On 10/5/21 5:48 PM, Andrei Vagin wrote:
+> This patch fixes the warning:
+>>> vma.c:32:19: warning: no previous prototype for 'arch_get_vdso_data'
+>       32 | struct vdso_data *arch_get_vdso_data(void *vvar_page)
+>          |                   ^~~~~~~~~~~~~~~~~~
 > 
-> I'm not sure what happened to this patch.
-> 
-> Daniel, are you going to pick it up?
+> Cc: Dmitry Safonov <0x7f454c46@gmail.com>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Andrei Vagin <avagin@gmail.com>
 
-Yes.
+Reviewed-by: Dmitry Safonov <0x7f454c46@gmail.com>
 
-I had picked also the intel ones but I'll drop them.
-
-
-
+Thanks for a fast fix!
 
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+            Dima
