@@ -2,67 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 244B3422325
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 12:12:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 097C842232A
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 12:13:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233975AbhJEKOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 06:14:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233077AbhJEKON (ORCPT
+        id S233998AbhJEKOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 06:14:41 -0400
+Received: from m-r2.th.seeweb.it ([5.144.164.171]:48245 "EHLO
+        m-r2.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233077AbhJEKOX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 06:14:13 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD27AC061749;
-        Tue,  5 Oct 2021 03:12:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=UBZLxMuMMqAMN+6dt2Y8ZmEZCnKumRdcBRucu92Bimk=; b=o2mz3Zi5qgTlHUht0Zdq1S2Lt7
-        KEccvYnfJQi/N39tPJ4Uf2lMqVb7T3xCBSjtlPFNqWArgfzDKIcAK6CqhdYd6wUxpvQe9zGSNZI+y
-        W1MOJoNP6JI/tdQ2Fsqrguix0qmTIBYBCgGbq+x0unlJv9QUEaHDpY8LjwibvRmbN1s6RX7BX/Gpl
-        Q+qupSa6UAktMYJeZBrHvLWHhMg2tIuCWUkIN4SxfyVSx1FABJ+NBXqmNmYyZSihsJ//ByuQi0loa
-        kcJtDhk2XfZliJbIMqY4SoVeErEBp3pewKb2YfVWVmLXBX+a44VNufiQb4qGT0CSGAxVWkkGeF7h6
-        aLu2OJbQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:54952)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1mXhQp-000082-SQ; Tue, 05 Oct 2021 11:12:19 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1mXhQo-0008OH-Nz; Tue, 05 Oct 2021 11:12:18 +0100
-Date:   Tue, 5 Oct 2021 11:12:18 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Sean Anderson <sean.anderson@seco.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     netdev@vger.kernel.org, "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [RFC net-next PATCH 13/16] net: phy: Export get_phy_c22_id
-Message-ID: <YVwlAkW9U0Pk3oKA@shell.armlinux.org.uk>
-References: <20211004191527.1610759-1-sean.anderson@seco.com>
- <20211004191527.1610759-14-sean.anderson@seco.com>
+        Tue, 5 Oct 2021 06:14:23 -0400
+Received: from SoMainline.org (94-209-165-62.cable.dynamic.v4.ziggo.nl [94.209.165.62])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id E09AC3F0AC;
+        Tue,  5 Oct 2021 12:12:31 +0200 (CEST)
+Date:   Tue, 5 Oct 2021 12:12:30 +0200
+From:   Marijn Suijten <marijn.suijten@somainline.org>
+To:     Daniel Thompson <daniel.thompson@linaro.org>
+Cc:     phone-devel@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Martin Botka <martin.botka@somainline.org>,
+        Jami Kettunen <jami.kettunen@somainline.org>,
+        Pavel Dubrova <pashadubrova@gmail.com>,
+        Kiran Gunda <kgunda@codeaurora.org>,
+        Courtney Cavin <courtney.cavin@sonymobile.com>,
+        Bryan Wu <cooloney@gmail.com>, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 09/10] backlight: qcom-wled: Consistently use
+ enabled-strings in set_brightness
+Message-ID: <20211005101230.sp2ldu3gfvh5eiit@SoMainline.org>
+Mail-Followup-To: Daniel Thompson <daniel.thompson@linaro.org>,
+        phone-devel@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Lee Jones <lee.jones@linaro.org>, Jingoo Han <jingoohan1@gmail.com>,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Martin Botka <martin.botka@somainline.org>,
+        Jami Kettunen <jami.kettunen@somainline.org>,
+        Pavel Dubrova <pashadubrova@gmail.com>,
+        Kiran Gunda <kgunda@codeaurora.org>,
+        Courtney Cavin <courtney.cavin@sonymobile.com>,
+        Bryan Wu <cooloney@gmail.com>, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211004192741.621870-1-marijn.suijten@somainline.org>
+ <20211004192741.621870-10-marijn.suijten@somainline.org>
+ <20211005093331.4houxsc5b6lfzmbz@maple.lan>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211004191527.1610759-14-sean.anderson@seco.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <20211005093331.4houxsc5b6lfzmbz@maple.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 04, 2021 at 03:15:24PM -0400, Sean Anderson wrote:
-> This function is useful when probing MDIO devices which present a
-> phy-like interface despite not using the Linux ethernet phy subsystem.
+On 2021-10-05 10:33:31, Daniel Thompson wrote:
+> On Mon, Oct 04, 2021 at 09:27:40PM +0200, Marijn Suijten wrote:
+> > The hardware is capable of controlling any non-contiguous sequence of
+> > LEDs specified in the DT using qcom,enabled-strings as u32
+> > array, and this also follows from the DT-bindings documentation.  The
+> > numbers specified in this array represent indices of the LED strings
+> > that are to be enabled and disabled.
+> > 
+> > Its value is appropriately used to setup and enable string modules, but
+> > completely disregarded in the set_brightness paths which only iterate
+> > over the number of strings linearly.
+> > Take an example where only string 2 is enabled with
+> > qcom,enabled_strings=<2>: this string is appropriately enabled but
+> > subsequent brightness changes would have only touched the zero'th
+> > brightness register because num_strings is 1 here.  This is simply
+> > addressed by looking up the string for this index in the enabled_strings
+> > array just like the other codepaths that iterate over num_strings.
+> 
+> This isn't true until patch 10 is applied!
 
-Maybe we should consider moving this into mdio_device.c and renaming
-it if it's going to become more generic? Maybe mdio_read_c22_id()?
-Andrew, Heiner, any opinions?
+Patch 9 and 10 were split up at a last resort to prevent a clash in the
+title, apologies for that.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+> Given both patches fix the same issue in different functions I'd prefer
+> these to be squashed together (and doubly so because the autodetect code
+> uses set_brightness() as a helper function).
+
+That's a fair reason, and solution I agree on.  I'll figure out how to
+generify the title and re-spin this patchset except if there are other
+reviewers/maintainers I should wait for.
+
+- Marijn
+
+> Daniel.
