@@ -2,109 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64152422BEE
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:10:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64C28422BF7
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:11:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235519AbhJEPMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 11:12:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35574 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229488AbhJEPMe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 11:12:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A7604613AC;
-        Tue,  5 Oct 2021 15:10:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633446644;
-        bh=Oj/dpsXfZsdFT7IwiB6sdPRCjBt10BrnkG8D+uo6sIo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=AufutoAB69XX17b/4aQLtRhiBG9Avh+kvxdspsskno6fEhAuWl4qN+adoAG9BKH2P
-         PyXghsGrmDUcR7jDXCAFw++X8BZsXNYN7zOR53H1AmRYXgM6JpRZGBx7nA5cFD+fGY
-         4/3jwswfV3hInmbo80Ko1w6scY0FmY23rBNsnUHrP34WCluoZYylOrXW8+BF3e2pau
-         ms6H1zZZrVQhH6kpk5U2zKhSbUrwIHZqUAEm3Jh5kcQCa1RNbyruYlvMkxT0hiQ7PI
-         ZcFUN0Vcl2HsjPrKsrN2er50Qnr/0+QMiPO3ME2XqfLxeergohRnJJ+gT53QLfYgEj
-         lV4jvS5wK36sg==
-Date:   Tue, 5 Oct 2021 10:10:42 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Jeremy Linton <jeremy.linton@arm.com>
-Cc:     linux-pci@vger.kernel.org, lorenzo.pieralisi@arm.com,
-        nsaenz@kernel.org, bhelgaas@google.com, rjw@rjwysocki.net,
-        lenb@kernel.org, robh@kernel.org, kw@linux.com,
-        f.fainelli@gmail.com, bcm-kernel-feedback-list@broadcom.com,
-        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rpi-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/4] PCI/ACPI: Add Broadcom bcm2711 MCFG quirk
-Message-ID: <20211005151042.GA1083482@bhelgaas>
+        id S235727AbhJEPNT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 11:13:19 -0400
+Received: from mail-vs1-f52.google.com ([209.85.217.52]:39557 "EHLO
+        mail-vs1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235697AbhJEPNO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 11:13:14 -0400
+Received: by mail-vs1-f52.google.com with SMTP id o124so24070565vsc.6;
+        Tue, 05 Oct 2021 08:11:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AO/n39DEQE+kNBhOJcG8/vIMrumgJRNvPPJVHpBpJic=;
+        b=7k88qyS5175LhLeE8r4ATbwQhNhv0NX1Jac9bvWIdpRbyEzEMqQVDy3nuWXE+uA/K4
+         gZiUBn/dg8xo9KIaEzaK19vUsqfNGg1bTRKCQQGsxDb0gnUSWqNKluw6mIqY0sJE2G+2
+         e6VC7gKUBuRg5vo0USxtA/tO8rhYIV7UAst1Ra0GIkB8yYhBS/P/NRPOxwIetRF1gNcI
+         KsOPAn34iQMiX+evvoI49/BsbkdvA+ao5db6eAadxm8Qe6aq0NPB/FiOE1zB92tQeH79
+         904T1aaPPtFFSVR/VLHlUKPo+YpkjyAzv28yIIPhuqTYXSiuxs02YEf8jqqDIo4m4Z5Z
+         xBqw==
+X-Gm-Message-State: AOAM531YEF2antANONQG+RMvRzLwue+727lIyg1w/F+IyLpD/LhYP7Sy
+        +IeFuxlPjpbGr/0OTKfhPgteHUnOIKa8zzt+G6Y=
+X-Google-Smtp-Source: ABdhPJwbutRLYFa/x4DgBk6axsrpzqnuQQS9yABJI7P4SqTGGeBmOBsHASLte9b+qo/+S14Axl7WqhSZ8l5JCixtpCM=
+X-Received: by 2002:a67:cb0a:: with SMTP id b10mr19359924vsl.9.1633446682848;
+ Tue, 05 Oct 2021 08:11:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210826071557.29239-4-jeremy.linton@arm.com>
+References: <20210929000735.585237-1-saravanak@google.com> <20210929000735.585237-3-saravanak@google.com>
+In-Reply-To: <20210929000735.585237-3-saravanak@google.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 5 Oct 2021 17:11:11 +0200
+Message-ID: <CAMuHMdWLgpom978bGt1vdNQNxPVb34QJRs5gdRKnRkOs6DJOLA@mail.gmail.com>
+Subject: Re: [PATCH v4 2/2] drivers: bus: Delete CONFIG_SIMPLE_PM_BUS
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-oxnas@groups.io,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:TI ETHERNET SWITCH DRIVER (CPSW)" 
+        <linux-omap@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 26, 2021 at 02:15:56AM -0500, Jeremy Linton wrote:
-> Now that there is a bcm2711 quirk, it needs to be enabled when the
-> MCFG is missing. Use an ACPI namespace _DSD property
-> "linux-ecam-quirk-id" as an alternative to the MCFG OEM.
-> 
-> Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
-> Acked-by: Florian Fainelli <f.fainelli@gmail.com>
-> Acked-by: Bjorn Helgaas <bhelgaas@google.com>
-> ---
->  drivers/acpi/pci_mcfg.c | 17 +++++++++++++++++
->  1 file changed, 17 insertions(+)
-> 
-> diff --git a/drivers/acpi/pci_mcfg.c b/drivers/acpi/pci_mcfg.c
-> index 53cab975f612..04c517418365 100644
-> --- a/drivers/acpi/pci_mcfg.c
-> +++ b/drivers/acpi/pci_mcfg.c
-> @@ -169,6 +169,9 @@ static struct mcfg_fixup mcfg_quirks[] = {
->  	ALTRA_ECAM_QUIRK(1, 13),
->  	ALTRA_ECAM_QUIRK(1, 14),
->  	ALTRA_ECAM_QUIRK(1, 15),
-> +
-> +	{ "bc2711", "", 0, 0, MCFG_BUS_ANY, &bcm2711_pcie_ops,
-> +	  DEFINE_RES_MEM(0xFD500000, 0xA000) },
->  };
->  
->  static char mcfg_oem_id[ACPI_OEM_ID_SIZE];
-> @@ -198,8 +201,22 @@ static void pci_mcfg_apply_quirks(struct acpi_pci_root *root,
->  	u16 segment = root->segment;
->  	struct resource *bus_range = &root->secondary;
->  	struct mcfg_fixup *f;
-> +	const char *soc;
->  	int i;
->  
-> +	/*
-> +	 * This may be a machine with a PCI/SMC conduit, which means it doesn't
-> +	 * have an MCFG. Use an ACPI namespace definition instead.
-> +	 */
-> +	if (!fwnode_property_read_string(acpi_fwnode_handle(root->device),
-> +					 "linux-ecam-quirk-id", &soc)) {
-> +		if (strlen(soc) != ACPI_OEM_ID_SIZE)
+On Wed, Sep 29, 2021 at 2:07 AM Saravana Kannan <saravanak@google.com> wrote:
+> The simple-pm-bus driver is mandatory for CONFIG_OF based platforms to work
+> with fw_devlink. So, always compile it in for CONFIG_OF and delete the
+> config since it's no longer necessary.
+>
+> Signed-off-by: Saravana Kannan <saravanak@google.com>
+> Tested-by: Ulf Hansson <ulf.hansson@linaro.org>
 
-From a reviewing perspective, it's not obvious why soc must be exactly
-ACPI_OEM_ID_SIZE.  Does that imply space-padding in the DT string or
-something?
+Works fine on R-Car Gen/Gen3 (simple-bus), and SH-Mobile AG5,
+R-Mobile APE6, and K210 (simple-pm-bus).
+Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Is there any documentation for this DT property?
+Gr{oetje,eeting}s,
 
-Also not obvious why strlen() is safe here.  I mean, I looked a couple
-levels deep in fwnode_property_read_string(), but whatever guarantees
-null termination is buried pretty deep.
+                        Geert
 
-It seems a little weird to use an MCFG quirk mechanism when there's no
-MCFG at all on this platform.
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-> +			dev_err(&root->device->dev, "ECAM quirk should be %d characters\n",
-> +				ACPI_OEM_ID_SIZE);
-> +		else
-> +			memcpy(mcfg_oem_id, soc, ACPI_OEM_ID_SIZE);
-> +	}
-> +
->  	for (i = 0, f = mcfg_quirks; i < ARRAY_SIZE(mcfg_quirks); i++, f++) {
->  		if (pci_mcfg_quirk_matches(f, segment, bus_range)) {
->  			if (f->cfgres.start)
-> -- 
-> 2.31.1
-> 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
