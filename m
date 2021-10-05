@@ -2,103 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 098BB4230D2
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 21:33:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 850ED4230D4
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 21:33:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235351AbhJETfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 15:35:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60350 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229671AbhJETe5 (ORCPT
+        id S235403AbhJETfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 15:35:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38988 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234762AbhJETfO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 15:34:57 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BCB0C061749;
-        Tue,  5 Oct 2021 12:33:06 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id r19so349464lfe.10;
-        Tue, 05 Oct 2021 12:33:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Mnw929F+QI2LJCOMHvncA5yXLsxHMMtEgXZ8YjCURP0=;
-        b=LOkaoCOgIJr/xRS71R/aGAl16ufAufpmQ6LQa9PSMe1IkxPWbhUMT9y9KVDXPnlAlb
-         g8cm0s0TzWU7cp28BV8qCiKosF0KefkIHWSLiL/YRITiXRg4ueMabBFHLdtstcelVLoV
-         FfdUDXpDfSl2222FxMvvQdg3Tz84BHANry18dE/7fE+RTWh7BNFTnlAduXayKgmzL+/Q
-         h/qEIgr0iMl6h5WAuiH67Vj1Hqnr8mNGo+GBi62+EU+LMhRk+hpF8l0NsHRrHmIakOSo
-         WG1aRsWrdbdutuGftaTAyENWv4X6ZMn3EVcPU1IdyrZT8ClZOGUc/DF6vTVEbC+7F8AY
-         BswA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Mnw929F+QI2LJCOMHvncA5yXLsxHMMtEgXZ8YjCURP0=;
-        b=qsCo4X9xj5LlHxpnro53MsBQbbNvAaRMn26zRcxsYnHgt/2KXBkp7iDQ85XSrd2rcJ
-         SfA5ESMRxGK3q3Old27rwWZGrgdCirwNTYTbTeBZliowrTK4WPEdWHuqClfr8eG4g3Mm
-         h0aC/dhxhuk2E+p4oaHR4Na1vp4GCyOr0YceleA/Q30/DTjFnqTMSlO/ym0S+JvlVnjY
-         7IjeJa6i0YfSNvKgOYB6qy4DP913JOVsM9a+u0WCWyNvZnDyi9edfNdE+dSzmAFA+WHd
-         mi3gOklrXECY4slj41HTmAVRdlITQhoGuNc8SVzNPUf7AbVMWx2shWicT1sSYgT4o8IW
-         lakA==
-X-Gm-Message-State: AOAM530+CeqNCe18h2yIyeWLgm7ddSRcJFUGBZ59Bo7M0TvLPt+/ty4R
-        ykGst1fuuyjA8b+1wfF6Dd0=
-X-Google-Smtp-Source: ABdhPJw6jz+UwRuXxIZNsejqH598H90/HYL7Ur7sw+6Sq7kBCBP9Q3ncqHKUUiZEMVYXyLv2v5Cp+w==
-X-Received: by 2002:a19:c70b:: with SMTP id x11mr5373363lff.57.1633462384164;
-        Tue, 05 Oct 2021 12:33:04 -0700 (PDT)
-Received: from [192.168.0.131] ([194.183.54.57])
-        by smtp.gmail.com with ESMTPSA id e30sm122581lfc.112.2021.10.05.12.33.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Oct 2021 12:33:03 -0700 (PDT)
-Subject: Re: [PATCH v15 0/2] leds: mt6360: Add LED driver for MT6360
-To:     Gene Chen <gene.chen.richtek@gmail.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     Dan Murphy <dmurphy@ti.com>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Gene Chen <gene_chen@richtek.com>, Wilma.Wu@mediatek.com,
-        ChiYuan Huang <cy_huang@richtek.com>,
-        benjamin.chao@mediatek.com
-References: <20210716081731.80118-1-gene.chen.richtek@gmail.com>
- <CAE+NS34qtKgQYiCLQDupLK8L84SVS9EsztOpQFtS_CoOPzNwzQ@mail.gmail.com>
-From:   Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Message-ID: <417ee2ca-daf3-3559-5ea5-7f08c655f16b@gmail.com>
-Date:   Tue, 5 Oct 2021 21:33:02 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Tue, 5 Oct 2021 15:35:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633462403;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=aIz24nBWGhxPvmnmxAPoU/I9s0e84WcoRyDehHE/D4A=;
+        b=fCEJHMsaIheRbPoQfcHyjzpB7XupBqtIfBCZPDDYD/eorxAqDIaCcb9DPJy7dhJm85vAc+
+        vR2lnLmjfg+30jMzfPdrMYeHa1kAdQKn3WukqW7rCHtLu+PvOzBqy88nO5WisHpnm26Gml
+        WsI9yumVTkn1//ViXNkjWyTcvsNDU+g=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-286-6LoWTaDAM5aJsJ_9mdGUwg-1; Tue, 05 Oct 2021 15:33:21 -0400
+X-MC-Unique: 6LoWTaDAM5aJsJ_9mdGUwg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3FD3A180831C;
+        Tue,  5 Oct 2021 19:33:20 +0000 (UTC)
+Received: from segfault.boston.devel.redhat.com (segfault.boston.devel.redhat.com [10.19.60.26])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6257560C9F;
+        Tue,  5 Oct 2021 19:33:19 +0000 (UTC)
+From:   Jeff Moyer <jmoyer@redhat.com>
+To:     Ramji Jiyani <ramjiyani@google.com>
+Cc:     Benjamin LaHaise <bcrl@kvack.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>, kernel-team@android.com,
+        linux-aio@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
+Subject: Re: [RESEND PATCH] aio: Add support for the POLLFREE
+References: <20210928194509.4133465-1-ramjiyani@google.com>
+X-PGP-KeyID: 1F78E1B4
+X-PGP-CertKey: F6FE 280D 8293 F72C 65FD  5A58 1FF8 A7CA 1F78 E1B4
+Date:   Tue, 05 Oct 2021 15:35:10 -0400
+In-Reply-To: <20210928194509.4133465-1-ramjiyani@google.com> (Ramji Jiyani's
+        message of "Tue, 28 Sep 2021 19:45:08 +0000")
+Message-ID: <x49ilybjmdt.fsf@segfault.boston.devel.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <CAE+NS34qtKgQYiCLQDupLK8L84SVS9EsztOpQFtS_CoOPzNwzQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pavel,
+Hi, Ramji,
 
-On 10/5/21 11:21 AM, Gene Chen wrote:
-> Gene Chen <gene.chen.richtek@gmail.com> 於 2021年7月16日 週五 下午4:33寫道：
->>
->>
->> This patch series add MT6360 LED support contains driver and binding document
->>
->> Gene Chen (2)
->>   dt-bindings: leds: Add bindings for MT6360 LED
->>   leds: mt6360: Add LED driver for MT6360
->>
->>   Documentation/devicetree/bindings/leds/leds-mt6360.yaml |  159 ++
->>   drivers/leds/flash/Kconfig                              |   13
->>   drivers/leds/flash/Makefile                             |    1
->>   drivers/leds/flash/leds-mt6360.c                        |  910 ++++++++++++++++
->>   4 files changed, 1083 insertions(+)
+Thanks for the explanation of the use after free.  I went ahead and
+ran the patch through the libaio test suite and it passed.
 
-Do you see Gene's emails or maybe they land somehow in your spam folder?
-It's been four months since last version addressing your remarks.
+> -#define POLLFREE	(__force __poll_t)0x4000	/* currently only for epoll */
+> +#define POLLFREE	((__force __poll_t)0x4000)
 
--- 
-Best regards,
-Jacek Anaszewski
+You added parenthesis, here, and I'm not sure if that's a necessary part
+of this patch.
+
+Other than that:
+
+Reviewed-by: Jeff Moyer <jmoyer@redhat.com>
+
