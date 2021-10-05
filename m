@@ -2,95 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12FB742267E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 14:27:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D3EC422684
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 14:27:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234803AbhJEM32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 08:29:28 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:50608 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234962AbhJEM3R (ORCPT
+        id S234900AbhJEM3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 08:29:39 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:52934 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234401AbhJEM3i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 08:29:17 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1633436846;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        Tue, 5 Oct 2021 08:29:38 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 054E220020;
+        Tue,  5 Oct 2021 12:27:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1633436866; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=3kK9xoGY9q1BQ0iWLjqmNJRsd+6Y8c8/p/triD44+A8=;
-        b=dbEzOarTS2bW+LMoROS2TCV2vrfbcgNAhGt0RycohPw2dlgEr6+HZCNm3pmL5PdQSkN70W
-        VSUW3vhx/2ccVbRSTvyTNTGk+G8/6wLucHAqHF0xfKR6Cb4C8uAzajPCXpfBBhpnYoBSha
-        zn1CQs+lojcAX+wUze97tc8N9I+0jZpKX6k/dnx1lWwjYRDwuNzKjTcN0LKWXxxYx5CSQW
-        P6qy1+7WBQ5xY++7Ye4nyxAD2ay0xUIjxnWgU0jr9H1QeTXEr00VbPm1JeQ7dPsDO2Jb29
-        ZirgvEWCaFsU0emZc8C/Oi5mZDscR+lS1h183yq+6bph2TbosV0cS2VPr+3tWA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1633436846;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        bh=JjGOU28aseIxzbgxmKKGBf+lfKA8napnrkp1mk29VtE=;
+        b=Bzpre7weOsXJ/u0YLszAyXJT5NP2OpWOG4HD0n3NXs9HPxWb/XUtF8fVLg5+g0fPQL7LIJ
+        J+ePJ6f5kRNWYMjcrWW79ogSqTmH18OMCLxa5kV7b9ZPYN+22E9C2nckip1BhlQLaiO4EX
+        QPHzankMnoMtHNaLmhKTwWqqdxyCKDk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1633436866;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=3kK9xoGY9q1BQ0iWLjqmNJRsd+6Y8c8/p/triD44+A8=;
-        b=/NulxX9OXeYr5zfckOvKqSRlTF4Ndg3DaYtDB4G9qUMLP+3WMdJjPmkGHLn6nFGyPH/Yb1
-        Gna3QtBEOiTHaDAA==
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     "Chang S. Bae" <chang.seok.bae@intel.com>, bp@suse.de,
-        luto@kernel.org, mingo@kernel.org, x86@kernel.org,
-        len.brown@intel.com, lenb@kernel.org, dave.hansen@intel.com,
-        thiago.macieira@intel.com, jing2.liu@intel.com,
-        ravi.v.shankar@intel.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v11 15/29] x86/arch_prctl: Create
- ARCH_SET_STATE_ENABLE/ARCH_GET_STATE_ENABLE
-In-Reply-To: <YVw1vvy0QUKcKaxU@hirez.programming.kicks-ass.net>
-References: <20211001223728.9309-1-chang.seok.bae@intel.com>
- <20211001223728.9309-16-chang.seok.bae@intel.com> <87o884fh3g.ffs@tglx>
- <87ilybg5ta.ffs@tglx> <YVw1vvy0QUKcKaxU@hirez.programming.kicks-ass.net>
-Date:   Tue, 05 Oct 2021 14:27:25 +0200
-Message-ID: <878rz7fyhe.ffs@tglx>
+        bh=JjGOU28aseIxzbgxmKKGBf+lfKA8napnrkp1mk29VtE=;
+        b=JcXixsvED2f4ufImevKRnrpIhO7jiSyFefYaC+44w0N5Nf8Va0GlAZnYmtiF0is3Ufq1tf
+        FDf4ReDNhB2Fa1AQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B2EE113C50;
+        Tue,  5 Oct 2021 12:27:45 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id aGXfKsFEXGHXawAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Tue, 05 Oct 2021 12:27:45 +0000
+Message-ID: <eba04a07-99da-771a-ab6b-36de41f9f120@suse.cz>
+Date:   Tue, 5 Oct 2021 14:27:45 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.2
+Subject: Re: [PATCH 2/6] MM: improve documentation for __GFP_NOFAIL
+Content-Language: en-US
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     NeilBrown <neilb@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mel Gorman <mgorman@suse.de>,
+        ". Dave Chinner" <david@fromorbit.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-xfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+References: <163184698512.29351.4735492251524335974.stgit@noble.brown>
+ <163184741778.29351.16920832234899124642.stgit@noble.brown>
+ <b680fb87-439b-0ba4-cf9f-33d729f27941@suse.cz>
+ <YVwyhDnE/HEnoLAi@dhcp22.suse.cz>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <YVwyhDnE/HEnoLAi@dhcp22.suse.cz>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05 2021 at 13:23, Peter Zijlstra wrote:
-> On Tue, Oct 05, 2021 at 11:49:05AM +0200, Thomas Gleixner wrote:
->> So this gives us two options:
+On 10/5/21 13:09, Michal Hocko wrote:
+> On Tue 05-10-21 11:20:51, Vlastimil Babka wrote:
+> [...]
+>> > --- a/include/linux/gfp.h
+>> > +++ b/include/linux/gfp.h
+>> > @@ -209,7 +209,11 @@ struct vm_area_struct;
+>> >   * used only when there is no reasonable failure policy) but it is
+>> >   * definitely preferable to use the flag rather than opencode endless
+>> >   * loop around allocator.
+>> > - * Using this flag for costly allocations is _highly_ discouraged.
+>> > + * Use of this flag may lead to deadlocks if locks are held which would
+>> > + * be needed for memory reclaim, write-back, or the timely exit of a
+>> > + * process killed by the OOM-killer.  Dropping any locks not absolutely
+>> > + * needed is advisable before requesting a %__GFP_NOFAIL allocate.
+>> > + * Using this flag for costly allocations (order>1) is _highly_ discouraged.
 >> 
->>    1) Bitmap with proper sanity checks
->> 
->>       reject (1 << 17) and (1 << 18)
->>       grant (1 << 17 | 1 << 18)
->> 
->>       but for sanity sake and also for ease of filtering, we want to
->>       restrict a permission request to one functional block at a time.
->> 
->>       #define X86_XCOMP_AMX	(1 << 17 | 1 << 18)
->>       #define X86_XCOMP_XYZ1    (1 << 19)
->> 
->>       But that gets a bit odd when there is a component which depends on
->>       others:
->> 
->>       #define X86_XCOMP_XYZ2    (1 << 19 | 1 << 20)
->> 
->>    2) Facility based numerical interface, i.e.
->> 
->>       #define X86_XCOMP_AMX	1
->>       #define X86_XCOMP_XYZ1    2
->>       #define X86_XCOMP_XYZ2    3
->> 
->>       is way simpler to understand IMO.
->
-> I'm thinking 2 makes most sense. Perhaps we could use the highest
-> feature number involved in the facility to denote it? The rationale
-> being that we don't have to invent yet another enumeration and it's
-> easier to figure out what's what.
+>> We define costly as 3, not 1. But sure it's best to avoid even order>0 for
+>> __GFP_NOFAIL. Advising order>1 seems arbitrary though?
+> 
+> This is not completely arbitrary. We have a warning for any higher order
+> allocation.
+> rmqueue:
+> 	WARN_ON_ONCE((gfp_flags & __GFP_NOFAIL) && (order > 1));
 
-That makes sense. So the above would be:
+Oh, I missed that.
 
-      #define X86_XCOMP_AMX	18      (implies 17)
-      #define X86_XCOMP_XYZ1    19
-      #define X86_XCOMP_XYZ2    20      (implies 19)
+> I do agree that "Using this flag for higher order allocations is
+> _highly_ discouraged.
 
-Thanks,
+Well, with the warning in place this is effectively forbidden, not just
+discouraged.
 
-        tglx
+>> >   */
+>> >  #define __GFP_IO	((__force gfp_t)___GFP_IO)
+>> >  #define __GFP_FS	((__force gfp_t)___GFP_FS)
+>> > 
+>> > 
+>> > 
+> 
+
