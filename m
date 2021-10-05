@@ -2,74 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D6DB422CD9
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:45:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 582A9422CD6
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:44:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236063AbhJEPrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 11:47:11 -0400
-Received: from conssluserg-01.nifty.com ([210.131.2.80]:54006 "EHLO
-        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236225AbhJEPpg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 11:45:36 -0400
-Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43]) (authenticated)
-        by conssluserg-01.nifty.com with ESMTP id 195FhVOe018297;
-        Wed, 6 Oct 2021 00:43:31 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 195FhVOe018297
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1633448612;
-        bh=7KHzNJArunt+AsZQcYX78r05TGgrRkmM/OebmoHU69I=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=YxT73IQ81QudBOGAj4BAW5zoykIp0GNFGGa8drvpaWabJOEzytzaKrfnPO3GRaus7
-         pNv8h76mzquXi8aXMcbsLB7HSh8x9OPyCfIP6HJpUlhTfMrx+2+wIgaNEgBq/njWl5
-         SRpVHSo6a3eSd8KQDC2sKljYFk6rklTQ57eC70hxJLuzVHet5ajrB6fgLa4n9T6i/d
-         28YnXkHEN+DBIZnk795lNn9utPG6jCC7lTLNZW5SUW4GZRfgJFn4MOGBXrF9tNoN94
-         HldKvWTBdzQGyY9joM7cwZ585xreAl2cvq3DNAipnAxpGNIcNMHcQOs5sS0/u+i9+r
-         MFqnraxFGLqPA==
-X-Nifty-SrcIP: [209.85.216.43]
-Received: by mail-pj1-f43.google.com with SMTP id np13so4440625pjb.4;
-        Tue, 05 Oct 2021 08:43:31 -0700 (PDT)
-X-Gm-Message-State: AOAM5306jRA1p1pEPIdFlnvQjxkYd1iGQj6XdaKp+ulshoOQVfRDaGRj
-        38IT4MXDd27emopMNAEnZDwPeZUsZyJNnV9RHYM=
-X-Google-Smtp-Source: ABdhPJxa0XnjdhgyGfp1YcU5HxWZALDV0EYXv+orqK/WSc01E/ow6WDMY6Pe9Plq+sfbz7omUjr2mMhKD6v6JOELnOQ=
-X-Received: by 2002:a17:902:6b01:b0:13e:50bb:790f with SMTP id
- o1-20020a1709026b0100b0013e50bb790fmr5873181plk.42.1633448610986; Tue, 05 Oct
- 2021 08:43:30 -0700 (PDT)
+        id S235968AbhJEPpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 11:45:54 -0400
+Received: from foss.arm.com ([217.140.110.172]:34602 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231513AbhJEPpw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 11:45:52 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F27E21FB;
+        Tue,  5 Oct 2021 08:44:01 -0700 (PDT)
+Received: from [192.168.122.166] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1B48B3F70D;
+        Tue,  5 Oct 2021 08:44:01 -0700 (PDT)
+Subject: Re: [PATCH v3 3/4] PCI/ACPI: Add Broadcom bcm2711 MCFG quirk
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     linux-pci@vger.kernel.org, lorenzo.pieralisi@arm.com,
+        nsaenz@kernel.org, bhelgaas@google.com, rjw@rjwysocki.net,
+        lenb@kernel.org, robh@kernel.org, kw@linux.com,
+        f.fainelli@gmail.com, bcm-kernel-feedback-list@broadcom.com,
+        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rpi-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20211005151042.GA1083482@bhelgaas>
+From:   Jeremy Linton <jeremy.linton@arm.com>
+Message-ID: <2bcc69b5-6659-0ec4-cd33-a9b8e61d1afe@arm.com>
+Date:   Tue, 5 Oct 2021 10:43:32 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-References: <20210920213957.1064-1-richard@nod.at> <CAK7LNAQd1d89J8GjLExgeirQ3cR+tnP6GMgekeBcrGJ-=ArrCQ@mail.gmail.com>
-In-Reply-To: <CAK7LNAQd1d89J8GjLExgeirQ3cR+tnP6GMgekeBcrGJ-=ArrCQ@mail.gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 6 Oct 2021 00:42:54 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASS0NeAhwevT1AXoknRJK0RQdysK0F9Rp=F9PXxGB+j5g@mail.gmail.com>
-Message-ID: <CAK7LNASS0NeAhwevT1AXoknRJK0RQdysK0F9Rp=F9PXxGB+j5g@mail.gmail.com>
-Subject: Re: [PATCH 1/2] kconfig: Refactor sym_escape_string_value
-To:     Richard Weinberger <richard@nod.at>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211005151042.GA1083482@bhelgaas>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 9:36 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> On Tue, Sep 21, 2021 at 6:42 AM Richard Weinberger <richard@nod.at> wrote:
-> >
-> > sym_escape_string_value() can take a struct symbol directly
-> > and use sym_get_string_value() itself to obtain the string value.
-> > We will need struct symbol later for error reporting.
-> >
-> > Signed-off-by: Richard Weinberger <richard@nod.at>
-> > ---
->
-> I think this is a nice clean-up regardless of 2/2.
-> Applied to linux-kbuild. Thanks.
->
+Hi,
 
-I changed my mind after all.
-I dropped this patch to clean up the code in a different way.
+Thanks for looking at this again.
 
 
--- 
-Best Regards
-Masahiro Yamada
+On 10/5/21 10:10 AM, Bjorn Helgaas wrote:
+> On Thu, Aug 26, 2021 at 02:15:56AM -0500, Jeremy Linton wrote:
+>> Now that there is a bcm2711 quirk, it needs to be enabled when the
+>> MCFG is missing. Use an ACPI namespace _DSD property
+>> "linux-ecam-quirk-id" as an alternative to the MCFG OEM.
+>>
+>> Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
+>> Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+>> Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+>> ---
+>>   drivers/acpi/pci_mcfg.c | 17 +++++++++++++++++
+>>   1 file changed, 17 insertions(+)
+>>
+>> diff --git a/drivers/acpi/pci_mcfg.c b/drivers/acpi/pci_mcfg.c
+>> index 53cab975f612..04c517418365 100644
+>> --- a/drivers/acpi/pci_mcfg.c
+>> +++ b/drivers/acpi/pci_mcfg.c
+>> @@ -169,6 +169,9 @@ static struct mcfg_fixup mcfg_quirks[] = {
+>>   	ALTRA_ECAM_QUIRK(1, 13),
+>>   	ALTRA_ECAM_QUIRK(1, 14),
+>>   	ALTRA_ECAM_QUIRK(1, 15),
+>> +
+>> +	{ "bc2711", "", 0, 0, MCFG_BUS_ANY, &bcm2711_pcie_ops,
+>> +	  DEFINE_RES_MEM(0xFD500000, 0xA000) },
+>>   };
+>>   
+>>   static char mcfg_oem_id[ACPI_OEM_ID_SIZE];
+>> @@ -198,8 +201,22 @@ static void pci_mcfg_apply_quirks(struct acpi_pci_root *root,
+>>   	u16 segment = root->segment;
+>>   	struct resource *bus_range = &root->secondary;
+>>   	struct mcfg_fixup *f;
+>> +	const char *soc;
+>>   	int i;
+>>   
+>> +	/*
+>> +	 * This may be a machine with a PCI/SMC conduit, which means it doesn't
+>> +	 * have an MCFG. Use an ACPI namespace definition instead.
+>> +	 */
+>> +	if (!fwnode_property_read_string(acpi_fwnode_handle(root->device),
+>> +					 "linux-ecam-quirk-id", &soc)) {
+>> +		if (strlen(soc) != ACPI_OEM_ID_SIZE)
+> 
+>  From a reviewing perspective, it's not obvious why soc must be exactly
+> ACPI_OEM_ID_SIZE.  Does that imply space-padding in the DT string or
+> something?
+
+This is at the moment an ACPI only DSD, and it must follow the MADT 
+OEM_ID format for now because we are effectively just overriding that 
+field. The rest of the code in this module is just treating it as a 
+fixed 6 bytes.
+
+
+> 
+> Is there any documentation for this DT property?
+
+Its not a DT property, and its unclear since its linux only if it 
+belongs in previously linked ACPI registry.
+
+> 
+> Also not obvious why strlen() is safe here.  I mean, I looked a couple
+> levels deep in fwnode_property_read_string(), but whatever guarantees
+> null termination is buried pretty deep.
+
+I've not tracked down who, if anyone other than the AML compiler is 
+guaranteeing a null. The spec says something to the effect "Most other 
+string, however,  are of variable-length and are automatically null 
+terminated by the compiler". Not sure if that helps any.
+
+> 
+> It seems a little weird to use an MCFG quirk mechanism when there's no
+> MCFG at all on this platform.
+
+Well its just a point to hook in a CFG space quirk, and since that is 
+what most of the MCFG quirks are, it seemed reasonable to reuse it 
+rather than recreate it.
+
+
+
+PS, had some offline convo about reposing with a simple rebase and the 
+ACK's applied, will do that if it helps any, but when I checked a couple 
+weeks back this applied to 5.15 automatically.
+
+
+
+> 
+>> +			dev_err(&root->device->dev, "ECAM quirk should be %d characters\n",
+>> +				ACPI_OEM_ID_SIZE);
+>> +		else
+>> +			memcpy(mcfg_oem_id, soc, ACPI_OEM_ID_SIZE);
+>> +	}
+>> +
+>>   	for (i = 0, f = mcfg_quirks; i < ARRAY_SIZE(mcfg_quirks); i++, f++) {
+>>   		if (pci_mcfg_quirk_matches(f, segment, bus_range)) {
+>>   			if (f->cfgres.start)
+>> -- 
+>> 2.31.1
+>>
+
