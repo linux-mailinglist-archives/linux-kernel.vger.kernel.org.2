@@ -2,71 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 548F94232F3
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 23:42:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF0734232F4
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 23:43:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236700AbhJEVok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 17:44:40 -0400
-Received: from mga07.intel.com ([134.134.136.100]:15688 "EHLO mga07.intel.com"
+        id S233973AbhJEVpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 17:45:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55680 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235679AbhJEVoj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 17:44:39 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10128"; a="289367662"
-X-IronPort-AV: E=Sophos;i="5.85,349,1624345200"; 
-   d="scan'208";a="289367662"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2021 14:42:48 -0700
-X-IronPort-AV: E=Sophos;i="5.85,349,1624345200"; 
-   d="scan'208";a="477862427"
-Received: from rriesen-ivm.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.209.35.74])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2021 14:42:47 -0700
-Subject: Re: [PATCH v8 04/11] x86/tdx: Add Intel ARCH support to
- cc_platform_has()
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
-        VMware Inc <pv-drivers@vmware.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        linux-kernel@vger.kernel.org
-References: <20211005025205.1784480-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211005025205.1784480-5-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211005211611.ys42txybaed4ffpz@treble>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <81add9dc-0115-67c3-d138-ed931ff286e8@linux.intel.com>
-Date:   Tue, 5 Oct 2021 14:42:48 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <20211005211611.ys42txybaed4ffpz@treble>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+        id S231167AbhJEVo7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 17:44:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1DB8961163;
+        Tue,  5 Oct 2021 21:43:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1633470188;
+        bh=g/LtuMoXlaHezf4SYW6I64I+lkHJGCjMAkb9z0woxbE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=KLiofxUvwbRrylHZdh4h6JVgPlR9Qv5QjiFQCJHjXruxzvIyc6cra75NOB4zchOPb
+         Msw41+WGaY/89HNl3WgEE3BK5W6nmD5XK6BXBAQcVyCIq1PXqX51+kOPTh4jJu6WcZ
+         rkMb4vDs41yWlqID4ZBMQB8NgMxSqUhmqmu3jwzI=
+Date:   Tue, 5 Oct 2021 14:43:07 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Miaohe Lin <linmiaohe@huawei.com>, cl@linux.com,
+        penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
+        gregkh@linuxfoundation.org, faiyazm@codeaurora.org,
+        andreyknvl@gmail.com, ryabinin.a.a@gmail.com, thgarnie@google.com,
+        keescook@chromium.org, bharata@linux.ibm.com, guro@fb.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 5/5] mm, slub: fix incorrect memcg slab count for bulk
+ free
+Message-Id: <20211005144307.9c2eedd9c4802d47c64df2aa@linux-foundation.org>
+In-Reply-To: <25db026b-76bc-cad3-7913-c310fc6cd822@suse.cz>
+References: <20210916123920.48704-1-linmiaohe@huawei.com>
+        <20210916123920.48704-6-linmiaohe@huawei.com>
+        <25db026b-76bc-cad3-7913-c310fc6cd822@suse.cz>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 5 Oct 2021 12:50:08 +0200 Vlastimil Babka <vbabka@suse.cz> wrote:
 
+> I now noticed the series doesn't Cc: stable and it should, so I hope Andrew
+> can add those together with the review tags. Thanks.
 
-On 10/5/21 2:16 PM, Josh Poimboeuf wrote:
-> Examples of TDX include TDX?:-)
-
-Intel TDX. Not sure whether there will be other vendors.
-
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+Done, thanks.
