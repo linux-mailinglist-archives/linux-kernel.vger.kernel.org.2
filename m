@@ -2,73 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4D6D423229
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 22:37:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8F8C42322C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 22:38:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236395AbhJEUjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 16:39:39 -0400
-Received: from mga02.intel.com ([134.134.136.20]:61547 "EHLO mga02.intel.com"
+        id S236563AbhJEUjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 16:39:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54998 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230098AbhJEUji (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 16:39:38 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10128"; a="212969785"
-X-IronPort-AV: E=Sophos;i="5.85,349,1624345200"; 
-   d="scan'208";a="212969785"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2021 13:37:30 -0700
-X-IronPort-AV: E=Sophos;i="5.85,349,1624345200"; 
-   d="scan'208";a="477832319"
-Received: from rriesen-ivm.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.209.35.74])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2021 13:37:29 -0700
-Subject: Re: [PATCH v8 02/11] x86/tdx: Introduce INTEL_TDX_GUEST config option
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
-        VMware Inc <pv-drivers@vmware.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        linux-kernel@vger.kernel.org
-References: <20211005025205.1784480-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211005025205.1784480-3-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211005201758.o5eikzp33kfepdag@treble>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <d4628814-13e3-2f34-d1ec-a6c6bfd00293@linux.intel.com>
-Date:   Tue, 5 Oct 2021 13:37:27 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
+        id S230098AbhJEUjt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 16:39:49 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5065C613D5;
+        Tue,  5 Oct 2021 20:37:57 +0000 (UTC)
+Date:   Tue, 5 Oct 2021 16:37:54 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Jan Engelhardt <jengelh@inai.de>
+Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Paul <paulmck@linux.vnet.ibm.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        "Joel Fernandes, Google" <joel@joelfernandes.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, rcu <rcu@vger.kernel.org>,
+        netfilter-devel <netfilter-devel@vger.kernel.org>,
+        coreteam <coreteam@netfilter.org>,
+        netdev <netdev@vger.kernel.org>
+Subject: Re: [RFC][PATCH] rcu: Use typeof(p) instead of typeof(*p) *
+Message-ID: <20211005163754.66552fb3@gandalf.local.home>
+In-Reply-To: <20211005154029.46f9c596@gandalf.local.home>
+References: <20211005094728.203ecef2@gandalf.local.home>
+        <ef5b1654-1f75-da82-cab8-248319efbe3f@rasmusvillemoes.dk>
+        <639278914.2878.1633457192964.JavaMail.zimbra@efficios.com>
+        <826o327o-3r46-3oop-r430-8qr0ssp537o3@vanv.qr>
+        <20211005144002.34008ea0@gandalf.local.home>
+        <srqsppq-p657-43qq-np31-pq5pp03271r6@vanv.qr>
+        <20211005154029.46f9c596@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20211005201758.o5eikzp33kfepdag@treble>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 5 Oct 2021 15:40:29 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
+
+> struct trace_pid_list {
+> 	unsigned long		ignore;
+> };
+> 
+> Rename the above struct trace_pid_list to struct trace_pid_internal.
+> 
+> And internally have:
+> 
+> union trace_pid_data {
+> 	struct trace_pid_list		external;
+> 	struct trace_pid_internal	internal;
+> };
+> 
+> Then use the internal version within the C file that modifies it, and just
+> return a pointer to the external part.
+
+So this has proved to be a PITA.
+
+> 
+> That should follow the "C standard".
+
+Really, thinking about abstraction, I don't believe there's anything wrong
+with returning a pointer of one type, and then typecasting it to a pointer
+of another type. Is there? As long as whoever uses the returned type does
+nothing with it.
+
+That is, if I simply do:
+
+In the header file:
+
+struct trace_pid_list {
+	void *ignore;
+};
+
+struct trace_pid_list *trace_pid_list_alloc(void);
+void trace_pid_list_free(struct trace_pid_list *pid_list);
 
 
-On 10/5/21 1:17 PM, Josh Poimboeuf wrote:
->> +	  Provide support for running in a trusted domain on Intel processors
->> +	  equipped with Trusted Domain eXtensions. TDX is a Intel technology
-> I haven't seen this particular punctuation "eXtensions" anywhere.  Intel
-> documentation writes it as "Extensions".  Better to be consistent.
+And then in the C file:
 
-Ok. I will fix this in next version.
+struct pid_list {
+	[...]
+};
 
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+struct trace_pid_list *trace_pid_list_alloc(void)
+{
+	struct pid_list *pid_list;
+
+	pid_list = kmalloc(sizeof(*pid_list), GFP_KERNEL);
+	[..]
+
+	return (struct trace_pid_list *)pid_list;
+}
+
+void trace_pid_list_free(struct trace_pid_list *list)
+{
+	struct pid_list *pid_list = (struct pid_list *)list;
+
+	[..]
+	kfree(pid_list);
+}
+
+That should be perfectly fine for standard C. Right?
+
+-- Steve
+
