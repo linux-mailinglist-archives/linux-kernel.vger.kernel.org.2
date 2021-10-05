@@ -2,74 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02DED422E68
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 18:51:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E421422E6A
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 18:51:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236563AbhJEQx1 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 5 Oct 2021 12:53:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47922 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233896AbhJEQx0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 12:53:26 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2CA6261090;
-        Tue,  5 Oct 2021 16:51:35 +0000 (UTC)
-Date:   Tue, 5 Oct 2021 12:51:32 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] ftrace: Fix -Wcast-function-type warnings on
- powerpc64
-Message-ID: <20211005125132.4ae5d128@gandalf.local.home>
-In-Reply-To: <20211005165027.GA797862@embeddedor>
-References: <20211005053922.GA702049@embeddedor>
-        <20211005111714.18ebea2b@gandalf.local.home>
-        <20211005161812.GA768055@embeddedor>
-        <20211005123522.244281e6@gandalf.local.home>
-        <20211005165027.GA797862@embeddedor>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S236610AbhJEQxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 12:53:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51580 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236512AbhJEQxo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 12:53:44 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52E1AC061749
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 09:51:53 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id z2so16961237wmc.3
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 09:51:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=SXTjxuUZnmqjHtVD8/qvvFaOiH10Qiusvt2hNLMFYc4=;
+        b=a9vaykgeQFPZ5IWK4tw43UUz2rYmFvYlcMiv/BSqpAqKwQJrJR7b+A10p3SCXVLHUe
+         sJv1ZyxTgbo+v/Fq0/jSG2CT3AHYnKkZZy/ylaHVw2MmrAv2ZlU1aZy8SEyqfaTakbdr
+         4SelJSHP89Qojt8u1xnUBh77hbfIl0SasZwJibIPsQwm7/jOS7wfBvNUXQrboAo5jjRU
+         WNnbBiAu+q+iePzXqdRL/tvYIXJ74z01iak/3d1TW8td297I4kSOl87BUAmAftrUNJ2b
+         75zKntuwYUyfn3BnvXIL6RcZICeed80Wz8whaXMb7I2vTSNRpMc1dH1vYBZ53BRSI/Og
+         520Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=SXTjxuUZnmqjHtVD8/qvvFaOiH10Qiusvt2hNLMFYc4=;
+        b=FzzqT+zDfVyC2wS+/ATirRP/uc4XrfW3ANEWAO8bfXDCL5j602tSVPUlvp8ppNINLx
+         oAafimSI0om1XANTKz9u+PN7xfpZr+SFcQO7UpM8izFC3ru5V5gH6odkoTCLwcUq7jy9
+         8d4iMAE+B/3YSf9qd35zR9PjS0p0K9aKA5k2WmtjsAEW0M8/iAkMHUMjPNTQa73QcYxb
+         0liS0v0DrkqHuyveSbvTPdulledHXEG+D+mK7/M8ufRpoofupo+Jl671OtdTDeGjkvIb
+         OGrKxUX0YbCtxlivBpJcRH257tB+ohFirb3RnXMWhEPOpZcuN2tKZCchr69iOF2ax19x
+         JM4Q==
+X-Gm-Message-State: AOAM531DJ7vr/1GDct7WkYCkYzFY3fEbFjZn5VMpqHTtUIjN2VGEDNR+
+        Ce+QEYEPxGMHj7TTAI/wJKUhOsScuD60vg==
+X-Google-Smtp-Source: ABdhPJwWSTpySBGm7o6pyhpzyWOoXtWOExVDc6+pizpXAC0kUuqkLVz4SbBzgQCIsZNkmGTBrwGnYA==
+X-Received: by 2002:a1c:a443:: with SMTP id n64mr4562314wme.32.1633452711715;
+        Tue, 05 Oct 2021 09:51:51 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:b9d9:80fd:d5df:361b? ([2a01:e34:ed2f:f020:b9d9:80fd:d5df:361b])
+        by smtp.googlemail.com with ESMTPSA id m4sm2643472wml.28.2021.10.05.09.51.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Oct 2021 09:51:51 -0700 (PDT)
+Subject: Re: [PATCH] thermal: thermal_mmio: Constify static struct
+ thermal_mmio_ops
+To:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Cc:     Talel Shenhar <talel@amazon.com>, Zhang Rui <rui.zhang@intel.com>,
+        Amit Kucheria <amitk@kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210920203849.32136-1-rikard.falkeborn@gmail.com>
+ <CAJZ5v0jrXbuyQez1rX7-9CEjazTFp32SSH60Tx5Oqf+D2Czv5Q@mail.gmail.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <01fde6ee-af39-1ae2-a8e2-da8e4f3f8e68@linaro.org>
+Date:   Tue, 5 Oct 2021 18:51:49 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <CAJZ5v0jrXbuyQez1rX7-9CEjazTFp32SSH60Tx5Oqf+D2Czv5Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 5 Oct 2021 11:50:27 -0500
-"Gustavo A. R. Silva" <gustavoars@kernel.org> wrote:
-
-> Nop; there are still some warnings (ppc64_defconfig):
-
-Thanks, I'll take a look, and compile it against ppc64_defconfig.
-
--- Steve
-
+On 05/10/2021 16:36, Rafael J. Wysocki wrote:
+> On Tue, Sep 21, 2021 at 3:55 AM Rikard Falkeborn
+> <rikard.falkeborn@gmail.com> wrote:
+>>
+>> The only usage of thermal_mmio_ops is to pass its address to
+>> devm_thermal_zone_of_sensor_register(), which has a pointer to const
+>> struct thermal_zone_of_device_ops as argument. Make it const to allow
+>> the compiler to put it in read-only memory.
+>>
+>> Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+>> ---
+>>  drivers/thermal/thermal_mmio.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/thermal/thermal_mmio.c b/drivers/thermal/thermal_mmio.c
+>> index ded1dd0d4ef7..360b0dfdc3b0 100644
+>> --- a/drivers/thermal/thermal_mmio.c
+>> +++ b/drivers/thermal/thermal_mmio.c
+>> @@ -34,7 +34,7 @@ static int thermal_mmio_get_temperature(void *private, int *temp)
+>>         return 0;
+>>  }
+>>
+>> -static struct thermal_zone_of_device_ops thermal_mmio_ops = {
+>> +static const struct thermal_zone_of_device_ops thermal_mmio_ops = {
+>>         .get_temp = thermal_mmio_get_temperature,
+>>  };
+>>
+>> --
 > 
-> kernel/trace/ftrace.c: In function ‘ftrace_ops_get_list_func’:
-> kernel/trace/ftrace.c:171:10: error: returning ‘void (*)(long unsigned int,  long unsigned int,  struct ftrace_ops *, struct ftrace_regs *)’ from a function with incompatible return type ‘ftrace_func_t’ {aka ‘void (*)(long unsigned int,  long unsigned int)’} [-Werror=incompatible-pointer-types]
->   171 |   return ftrace_ops_list_func;
->       |          ^~~~~~~~~~~~~~~~~~~~
-> kernel/trace/ftrace.c: In function ‘update_ftrace_function’:
-> kernel/trace/ftrace.c:204:8: error: assignment to ‘ftrace_func_t’ {aka ‘void (*)(long unsigned int,  long unsigned int)’} from incompatible pointer type ‘void (*)(long unsigned int,  long unsigned int,  struct ftrace_ops *, struct ftrace_regs *)’ [-Werror=incompatible-pointer-types]
->   204 |   func = ftrace_ops_list_func;
->       |        ^
-> kernel/trace/ftrace.c:217:11: warning: comparison of distinct pointer types lacks a cast
->   217 |  if (func == ftrace_ops_list_func) {
->       |           ^~
-> kernel/trace/ftrace.c: In function ‘ftrace_modify_all_code’:
-> kernel/trace/ftrace.c:2695:35: error: passing argument 1 of ‘ftrace_update_ftrace_func’ from incompatible pointer type [-Werror=incompatible-pointer-types]
->  2695 |   err = ftrace_update_ftrace_func(ftrace_ops_list_func);
->       |                                   ^~~~~~~~~~~~~~~~~~~~
->       |                                   |
->       |                                   void (*)(long unsigned int,  long unsigned int,  struct ftrace_ops *, struct ftrace_regs *)
-> In file included from kernel/trace/ftrace.c:29:
-> ./include/linux/ftrace.h:585:52: note: expected ‘ftrace_func_t’ {aka ‘void (*)(long unsigned int,  long unsigned int)’} but argument is of type ‘void (*)(long unsigned int,  long unsigned int,  struct ftrace_ops *, struct ftrace_regs *)’
->   585 | extern int ftrace_update_ftrace_func(ftrace_func_t func);
->       |                                      ~~~~~~~~~~~~~~^~~~
-> kernel/trace/ftrace.c:2705:38: warning: comparison of distinct pointer types lacks a cast
->  2705 |  if (update && ftrace_trace_function != ftrace_ops_list_func) {
->       |                                      ^~
+> I'm not sure what happened to this patch.
+> 
+> Daniel, are you going to pick it up?
+
+Yes.
+
+I had picked also the intel ones but I'll drop them.
+
+
+
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
