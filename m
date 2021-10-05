@@ -2,128 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5E9842311C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 21:57:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5657942311F
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 21:58:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235546AbhJET7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 15:59:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37720 "EHLO
+        id S235783AbhJET75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 15:59:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232208AbhJET71 (ORCPT
+        with ESMTP id S235467AbhJET7w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 15:59:27 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4773C061749;
-        Tue,  5 Oct 2021 12:57:36 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0d20002fd498dc90ccb948.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:2000:2fd4:98dc:90cc:b948])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C9A231EC01CE;
-        Tue,  5 Oct 2021 21:57:33 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1633463853;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=bSTD+YJ7AsMgF5Lwa6uxwybJxnQHhV2/XYQ6rwOH5yc=;
-        b=rrKYMYVox2JWv1DVP5Rou8wB5FYDmvzrSpgMDTvVFH58Djuvwl/9wWczLQsdK1CVmm6bAb
-        pBfjgPSTtSSfXvavCKW/Qw4KcyD99ltCxA4cYPDhliN+kONw2TdjmqU8cOilzM7vdKr/Yr
-        k2uHE1uim0D04TSSiGrgpM67VTjMon0=
-Date:   Tue, 5 Oct 2021 21:57:29 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Lubomir Rintel <lkundrak@v3.sk>, Pavel Machek <pavel@ucw.cz>,
-        Lee Jones <lee.jones@linaro.org>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        platform-driver-x86@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5/9] x86/Kconfig: remove reference to obsolete APB_TIMER
- config
-Message-ID: <YVyuKanDJz5vaFfW@zn.tnic>
-References: <20210803113531.30720-1-lukas.bulwahn@gmail.com>
- <20210803113531.30720-6-lukas.bulwahn@gmail.com>
+        Tue, 5 Oct 2021 15:59:52 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 150BCC061749
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 12:58:01 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id z20so916357edc.13
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 12:58:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=a8lhsN4hKFRUVQDERwqEyKk0gMYk5ecn9GsKyVSyC3o=;
+        b=fi0gdZ5UUTNiveZMnTDtbF5y5FXvyn1SRB+fF0Q/XfHIItVtWe4Nbdd1NWvq4Zv85D
+         52JBVRhdSjtMZh5d2mKdJvYC9OlywnynqbEb64+h4Be7eWSIYWrDrkrp+GhIajYEY4mh
+         fuU/j4wQS1KpvvrtR1L334lRFANeSCIfUahMFxqPMoiNfoUmNPKgNEj9eHntU9aGs8BR
+         DKZjsdlUQXDytjA4fG4KhI0eXtqYIhoFQfsSoAl62gXJbDnTQneTr62yRmMhIKNu57rZ
+         RArrbptPBXiEEralXiPMLhidK8j6B2FtOT28Xc5O78TSatNKLbG+erqVEA0e0dLWPr9b
+         ve0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=a8lhsN4hKFRUVQDERwqEyKk0gMYk5ecn9GsKyVSyC3o=;
+        b=R8qiO24cFK4aEXEZ6LqVqi04mRp8eglR2dpEGHfdu0fS7hMkmX5K2aI0vXTmwJZXBT
+         CC8yPz11v/oIsUqJXx2xykfglQzva9b9MnUiK2wWum0Ms1l3WxmZgSHezmXjZc+ZJkP8
+         3gbdTepgv/PM1oxs8OGEvyykXbk/jmJhH3Gey06+lA4MxoHrU1ptO/5VZz0QhtoWh+53
+         dXMoOIUHrYXiS3WWS0Y/i9kWRQIDzKx8RxXpt/7hOAlxgltUuMEpCwR3Kcz9Dis2mf0R
+         mn2rQAQoq3ieRFaWs2iVhuNNAfJ0tHArcA6K8OVtxekqG4VBUFvEnVgddoLm+rdF+XEr
+         SXEw==
+X-Gm-Message-State: AOAM533ZcY4DA2SQ8DhWPQrFjbWttgNbVQdiG4zlF3uc1uY9FuLVPfQ0
+        ig6m9nSvcQ7iWtWx5zu+d2THTPEMjumvsd9lwts=
+X-Google-Smtp-Source: ABdhPJz96qVzjEymZLIjw4dlpVxh/9Xz7nyTarwcpMafmqx8+8NwrpGWT0rYf+W2/e11DT0zYaQwDBMX876LMt8Lalo=
+X-Received: by 2002:a50:e005:: with SMTP id e5mr28356307edl.211.1633463879333;
+ Tue, 05 Oct 2021 12:57:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210803113531.30720-6-lukas.bulwahn@gmail.com>
+Received: by 2002:a17:906:7c07:0:0:0:0 with HTTP; Tue, 5 Oct 2021 12:57:58
+ -0700 (PDT)
+Reply-To: gregosbornlaw@gmail.com
+From:   Greg Osborn <augustinejohnsonesq001@gmail.com>
+Date:   Tue, 5 Oct 2021 21:57:58 +0200
+Message-ID: <CADrPLpzkdv8mrcoHJWt9a6Uff3MNsMujJy-QAopkwKJpXM7X1A@mail.gmail.com>
+Subject: Immediate transfer of $23.5 Million Dollars to you
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 03, 2021 at 01:35:27PM +0200, Lukas Bulwahn wrote:
-> Commit 1b79fc4f2bfd ("x86/apb_timer: Remove driver for deprecated
-> platform") removes the definition of the config APB_TIMER in
-> ./arch/x86/Kconfig, but misses to remove a reference to it in config
-> X86_INTEL_MID.
-> 
-> Fortunately, ./scripts/checkkconfigsymbols.py warns:
-> 
-> APB_TIMER
-> Referencing files: arch/x86/Kconfig
-> 
-> Remove this reference to the obsolete config.
-> 
-> Fixes: 1b79fc4f2bfd ("x86/apb_timer: Remove driver for deprecated platform")
-> Suggested-by: Randy Dunlap <rdunlap@infradead.org>
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> ---
->  arch/x86/Kconfig | 1 -
->  1 file changed, 1 deletion(-)
+No,301 William Nicole Road Sandton,
+Johannesburg,
+Republic Of South Africa.
+05/10/2021.
 
-I've combined that and the previous one into a single patch since
-they're pretty trivial:
+Dear Friend,
 
----
-From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date: Tue, 3 Aug 2021 13:35:26 +0200
-Subject: [PATCH] x86/Kconfig: Remove references to obsolete Kconfig symbols
+It is with trust and sincerity that I approach you for assistance to
+transfer some funds into your bank account. Please accept my apology
+if my mail infringes on your personal ethics. My name is Greg Osborn,
+a Private attorney based here in Johannesburg, Republic of South
+Africa. Honestly it will be my humble pleasure if we can work
+together. I would like you to act as the next of kin to my deceased
+client Mr. Glenn Warrington, a US citizen who made a deposit of
+$23,500,000.00 ($23.5 Million Dollars) with a Bank here in
+Johannesburg. He died in a car accident on the 20th of November 2009
+without any registered next of kin. Several efforts were made to find
+his extended family through their embassy without success.I have
+received an official letter from the bank suggesting a likely
+proceeding for confiscation of the Fund in line with existing laws by
+the bank in which my client deposited the sum of $23.5 Million
+Dollars. According to the Government Law here, at the expiration of 10
+years the fund will revert to the ownership of the South African
+Government, if nobody applies to claim the fund. My proposition to you
+is to present you to the bank as the Next of kin to my late client so
+that the bank will pay this $23.5 Million Dollars to you as his
+beneficiary so that we can share the amount on a mutually agreed
+percentage of 60% for me 40% for you.
 
-Remove two symbols referenced in Kconfig which have been removed
-previously by:
+All legal documents to back up your claim will provided by me. All I
+require is your honest cooperation to enable us to see this
+transaction through. I will also guarantee you that this will be
+executed under a legitimate arrangement that will protect you from any
+breach of the law here or in your country.
 
-  ef3c67b6454b ("mfd: intel_msic: Remove driver for deprecated platform")
-  1b79fc4f2bfd ("x86/apb_timer: Remove driver for deprecated platform")
+If you are interested in this transactions, Please do contact me so
+that I can give you comprehensive details on how to proceed
+(gregosbornlaw@gmail.com)Your immediate
+response will be highly appreciated.
 
-Detected by scripts/checkkconfigsymbols.py.
+Regards,
 
-  [ bp: Merge into a single patch. ]
+Advocate Greg Osborn.
 
-Suggested-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20210803113531.30720-5-lukas.bulwahn@gmail.com
----
- arch/x86/Kconfig | 2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 4e001bbbb425..b79e88ee6627 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -605,9 +605,7 @@ config X86_INTEL_MID
- 	depends on X86_IO_APIC
- 	select I2C
- 	select DW_APB_TIMER
--	select APB_TIMER
- 	select INTEL_SCU_PCI
--	select MFD_INTEL_MSIC
- 	help
- 	  Select to build a kernel capable of supporting Intel MID (Mobile
- 	  Internet Device) platform systems which do not have the PCI legacy
--- 
-2.29.2
-
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Principal Attorney: Greg & Co Associates
