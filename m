@@ -2,131 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46B9D423141
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 22:04:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98949423145
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 22:07:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235763AbhJEUGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 16:06:05 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:50782 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231266AbhJEUGE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 16:06:04 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 10CBD1C0B80; Tue,  5 Oct 2021 22:04:12 +0200 (CEST)
-Date:   Tue, 5 Oct 2021 22:04:11 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Colin Cross <ccross@google.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        vincenzo.frascino@arm.com,
-        Chinwen Chang =?utf-8?B?KOW8temMpuaWhyk=?= 
-        <chinwen.chang@mediatek.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Jann Horn <jannh@google.com>, apopple@nvidia.com,
-        John Hubbard <jhubbard@nvidia.com>,
-        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
-        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
-        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
-        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
-        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
-        chris.hyser@oracle.com, Peter Collingbourne <pcc@google.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Jens Axboe <axboe@kernel.dk>, legion@kernel.org,
-        Rolf Eike Beer <eb@emlix.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Thomas Cedeno <thomascedeno@google.com>, sashal@kernel.org,
-        cxfcosmos@gmail.com, Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-mm <linux-mm@kvack.org>,
-        kernel-team <kernel-team@android.com>
-Subject: Re: [PATCH v10 3/3] mm: add anonymous vma name refcounting
-Message-ID: <20211005200411.GB19804@duo.ucw.cz>
-References: <20211001205657.815551-1-surenb@google.com>
- <20211001205657.815551-3-surenb@google.com>
- <20211005184211.GA19804@duo.ucw.cz>
- <CAJuCfpE5JEThTMhwKPUREfSE1GYcTx4YSLoVhAH97fJH_qR0Zg@mail.gmail.com>
+        id S235432AbhJEUIw convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 5 Oct 2021 16:08:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46506 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231159AbhJEUIu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 16:08:50 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 30FDB610CE;
+        Tue,  5 Oct 2021 20:06:58 +0000 (UTC)
+Date:   Tue, 5 Oct 2021 16:06:56 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Jan Engelhardt <jengelh@inai.de>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Paul <paulmck@linux.vnet.ibm.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        "Joel Fernandes, Google" <joel@joelfernandes.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, rcu <rcu@vger.kernel.org>,
+        netfilter-devel <netfilter-devel@vger.kernel.org>,
+        coreteam <coreteam@netfilter.org>,
+        netdev <netdev@vger.kernel.org>
+Subject: Re: [RFC][PATCH] rcu: Use typeof(p) instead of typeof(*p) *
+Message-ID: <20211005160656.29e8bf38@gandalf.local.home>
+In-Reply-To: <1403497170.3059.1633463398562.JavaMail.zimbra@efficios.com>
+References: <20211005094728.203ecef2@gandalf.local.home>
+        <ef5b1654-1f75-da82-cab8-248319efbe3f@rasmusvillemoes.dk>
+        <639278914.2878.1633457192964.JavaMail.zimbra@efficios.com>
+        <826o327o-3r46-3oop-r430-8qr0ssp537o3@vanv.qr>
+        <20211005144002.34008ea0@gandalf.local.home>
+        <srqsppq-p657-43qq-np31-pq5pp03271r6@vanv.qr>
+        <20211005154029.46f9c596@gandalf.local.home>
+        <1403497170.3059.1633463398562.JavaMail.zimbra@efficios.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="E39vaYmALEf/7YXx"
-Content-Disposition: inline
-In-Reply-To: <CAJuCfpE5JEThTMhwKPUREfSE1GYcTx4YSLoVhAH97fJH_qR0Zg@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 5 Oct 2021 15:49:58 -0400 (EDT)
+Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
 
---E39vaYmALEf/7YXx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> ----- On Oct 5, 2021, at 3:40 PM, rostedt rostedt@goodmis.org wrote:
+> 
+> > On Tue, 5 Oct 2021 21:06:36 +0200 (CEST)
+> > Jan Engelhardt <jengelh@inai.de> wrote:
+> >   
+> >> On Tuesday 2021-10-05 20:40, Steven Rostedt wrote:  
+> >> >>     
+> >> >> >>>> typeof(*p) *________p1 = (typeof(*p) *__force)READ_ONCE(p);  
+> >> >> 
+> >> >> #define static_cast(type, expr) ((struct { type x; }){(expr)}.x)
+> >> >> typeof(p) p1 = (typeof(p) __force)static_cast(void *, READ_ONCE(p));
+> >> >> 
+> >> >> Let the name not fool you; it's absolutely _not_ the same as C++'s
+> >> >> static_cast, but still: it does emit a warning when you do pass an
+> >> >> integer, which is better than no warning at all in that case.
+> >> >> 
+> >> >>  *flies away*  
+> >> >
+> >> >Are you suggesting I should continue this exercise ;-)  
+> >> 
+> >> “After all, why not?”
+> >> 
+> >> typeof(p) p1 = (typeof(p) __force)READ_ONCE(p) +
+> >>                BUILD_BUG_ON_EXPR(__builtin_classify_type(p) != 5);  
+> > 
+> > I may try it, because exposing the structure I want to hide, is pulling out
+> > a lot of other crap with it :-p  
+> 
+> I like the static_cast() approach above. It is neat way to validate that the
+> argument is a pointer without need to dereference the pointer.
+> 
+> I would also be open to consider this trick for liburcu's userspace API.
+> 
+> About the other proposed solution based on __builtin_classify_type, I am
+> reluctant to use something designed specifically for varargs in a context
+> where they are not used.
+> 
 
-Hi!
+Unfortunately, it doesn't solve the Debian gcc 10 compiler failing when
+passing the function name instead of a pointer to the function in
+RCU_INIT_POINTER()  That alone makes me feel like I shouldn't touch that
+macro :-(
 
-> > On Fri 2021-10-01 13:56:57, Suren Baghdasaryan wrote:
-> > > While forking a process with high number (64K) of named anonymous vma=
-s the
-> > > overhead caused by strdup() is noticeable. Experiments with ARM64
-> > Android
-> >
-> > I still believe you should simply use numbers and do the
-> > numbers->strings mapping in userspace. We should not need to optimize
-> > strdups in kernel...
->=20
-> Here are complications with mapping numbers to strings in the userspace:
-> Approach 1: hardcode number->string in some header file and let all
-> tools use that mapping. The issue is that whenever that mapping
-> changes all the tools that are using it (including 3rd party ones)
-> have to be rebuilt. This is not really maintainable since we don't
-> control 3rd party tools and even for the ones we control, it will be a
-> maintenance issue figuring out which version of the tool used which
-> header file.
+And who knows what other version of gcc will fail on passing the address :-p
 
-1a) Just put it into a file in /etc... Similar to header file but
-easier...
+-- Steve
 
-> Approach 2: have a centralized facility (a process or a DB)
-> maintaining number->string mapping. This would require an additional
-> request to this facility whenever we want to make a number->string
-> conversion. Moreover, when we want to name a VMA, we would have to
-
-I see it complicates userspace. But that's better than complicating
-kernel, and I don't know what limits on strings you plan, but
-considering you'll be outputing the strings in /proc... someone is
-going to get confused with parsing.
-
-								Pavel
---=20
-http://www.livejournal.com/~pavelmachek
-
---E39vaYmALEf/7YXx
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYVyvuwAKCRAw5/Bqldv6
-8lGrAJ0V28fWGvxGtBp2Sl4G3ljoIC0PJwCffbxs6/Xqs9vpl5ve9tLrqDxFsX4=
-=H8Zl
------END PGP SIGNATURE-----
-
---E39vaYmALEf/7YXx--
