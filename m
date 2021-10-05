@@ -2,75 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C46E9421E72
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 07:52:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7758D421E75
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 07:54:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231967AbhJEFxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 01:53:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36372 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231142AbhJEFxv (ORCPT
+        id S231816AbhJEF4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 01:56:14 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:58564 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231142AbhJEF4N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 01:53:51 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A146C061745;
-        Mon,  4 Oct 2021 22:52:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=1XQZGVwYmPJS3p+DdVicrs9TzBUoo6qW7dRI91zPfCY=; b=n9PQUJCzCkyiJwAheTY/dq9VLp
-        16iqD8SgMICb6ENH3VGApBOj6GMC1mZCz3kdDo++JBLPFpyB8tGI/gbNXJr8cQPVGGevU9yS5H/ld
-        4v3fYGmXodSHBNABiwqAW8OMpahCPXrBheGjnGox4N6HR/4htrVStAUNMTaV9FEyomNvRN/KBPIe2
-        q2KisVXo8soyK2zX/d1bLYnTLYJymJH8PnFkTC6whhI9FGEEt254zfrOna4Iik4r9EHibYDtmBRMY
-        Fim+4gyofPTP8AbMoRAMZ+N5gyZbWLSjQgAWVpwNrexypZbBSYBVmtBck8cIrsXp5z9csj6VB0MAI
-        yvrCTg4w==;
-Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mXdMs-0091xC-Sv; Tue, 05 Oct 2021 05:51:59 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        William Breathitt Gray <vilhelm.gray@gmail.com>,
-        linux-iio@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Subject: [PATCH -next] counter: fix docum. build problems after filename change
-Date:   Mon,  4 Oct 2021 22:51:57 -0700
-Message-Id: <20211005055157.22937-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.31.1
+        Tue, 5 Oct 2021 01:56:13 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1955BUTi020200;
+        Tue, 5 Oct 2021 01:54:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : reply-to : references : mime-version : content-type
+ : in-reply-to; s=pp1; bh=zL9jjSWewjRs17S5msFtSiMv6zE6VPs9IRLqdj9vZvU=;
+ b=sF932pDS/QMXkkMgZqXRkF8sBDPT6eHtB0DEMt2AGpZWEU3IV1jpZtCxyUcYixTbFG+A
+ CXHy7O7MhKv6DQueFrMyKyJX6sKmXV1Lz3OuHLIfv5LijxAfqSg5n9o5fh6Yds3fKIHf
+ OjXlCH4MmjEZIHXho0Ss2n8SbxTTmSJMNAp0FgvKuIEIiGHoBZjLgfNZAh+mlJRg9Tr/
+ e1y2iodZCoBsO0TPAIbkd8zNJUXZ7V+2KSsTjgjVEYuX8kJja0viZjmuTQ7lfqwkaMXZ
+ N9DTKYBrUL5WjchKOfuE8BjAyhsKF+r6q/rx0CT7kW71rmde7tNr+404Ss/dimOEJQBj LA== 
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3bggbd8n2e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Oct 2021 01:54:19 -0400
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1955cjwI002779;
+        Tue, 5 Oct 2021 05:54:17 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma03fra.de.ibm.com with ESMTP id 3bef29chg9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Oct 2021 05:54:17 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1955sD2C5374696
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 5 Oct 2021 05:54:13 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9B4A34C046;
+        Tue,  5 Oct 2021 05:54:13 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7FC3C4C050;
+        Tue,  5 Oct 2021 05:54:11 +0000 (GMT)
+Received: from in.ibm.com (unknown [9.43.121.93])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Tue,  5 Oct 2021 05:54:11 +0000 (GMT)
+Date:   Tue, 5 Oct 2021 11:24:08 +0530
+From:   Mahesh J Salgaonkar <mahesh@linux.ibm.com>
+To:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+Cc:     Sourabh Jain <sourabhjain@linux.ibm.com>, mpe@ellerman.id.au,
+        linuxppc-dev@ozlabs.org, mahesh@linux.vnet.ibm.com,
+        linux-kernel@vger.kernel.org,
+        Abdul haleem <abdhalee@linux.vnet.ibm.com>,
+        hbathini@linux.ibm.com
+Subject: Re: [PATCH 1/3] fixup mmu_features immediately after getting cpu pa
+ features.
+Message-ID: <20211005055408.flthbpp2nfwkygmm@in.ibm.com>
+Reply-To: mahesh@linux.ibm.com
+References: <20211004151142.256251-1-sourabhjain@linux.ibm.com>
+ <20211004151142.256251-2-sourabhjain@linux.ibm.com>
+ <e67acb9b-dd8e-767a-b57b-f12b3b0fd44d@linux.ibm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e67acb9b-dd8e-767a-b57b-f12b3b0fd44d@linux.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: I9WnqRAN5NRq7AxwnNlQqXYK-fbZ5vYy
+X-Proofpoint-GUID: I9WnqRAN5NRq7AxwnNlQqXYK-fbZ5vYy
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-10-04_05,2021-10-04_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ suspectscore=0 lowpriorityscore=0 adultscore=0 spamscore=0
+ priorityscore=1501 clxscore=1011 bulkscore=0 mlxlogscore=999 phishscore=0
+ mlxscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110050030
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix documentation build warnings due to a source file being
-renamed.
+On 2021-10-04 21:02:21 Mon, Aneesh Kumar K.V wrote:
+> On 10/4/21 20:41, Sourabh Jain wrote:
+> > From: Mahesh Salgaonkar <mahesh@linux.ibm.com>
+> > 
+> > On system with radix support available, early_radix_enabled() starts
+> > returning true for a small window (until mmu_early_init_devtree() is
+> > called) even when radix mode disabled on kernel command line. This causes
+> > ppc64_bolted_size() to return ULONG_MAX in HPT mode instead of supported
+> > segment size, during boot cpu paca allocation.
+> > 
+> > With kernel command line = "... disable_radix":
+> > 
+> > early_init_devtree:			  <- early_radix_enabled() = false
+> >    early_init_dt_scan_cpus:		  <- early_radix_enabled() = false
+> >        ...
+> >        check_cpu_pa_features:		  <- early_radix_enabled() = false
+> >        ...				^ <- early_radix_enabled() = TRUE
+> >        allocate_paca:			| <- early_radix_enabled() = TRUE
+> >            ...                           |
+> >            ppc64_bolted_size:		| <- early_radix_enabled() = TRUE
+> >                if (early_radix_enabled())| <- early_radix_enabled() = TRUE
+> >                    return ULONG_MAX;     |
+> >        ...                               |
+> >    ...					| <- early_radix_enabled() = TRUE
+> >    ...					| <- early_radix_enabled() = TRUE
+> >    mmu_early_init_devtree()              V
+> >    ...					  <- early_radix_enabled() = false
+> > 
+> > So far we have not seen any issue because allocate_paca() takes minimum of
+> > ppc64_bolted_size and rma_size while allocating paca. However it is better
+> > to close this window by fixing up the mmu features as early as possible.
+> > This fixes early_radix_enabled() and ppc64_bolted_size() to return valid
+> > values in radix disable mode. This patch will help subsequent patch to
+> > depend on early_radix_enabled() check while detecting supported segment
+> > size in HPT mode.
+> > 
+> > Signed-off-by: Mahesh Salgaonkar <mahesh@linux.ibm.com>
+> > Signed-off-by: Sourabh Jain <sourabhjain@linux.ibm.com>
+> > Reported-and-tested-by: Abdul haleem <abdhalee@linux.vnet.ibm.com>
+> > ---
+> >   arch/powerpc/include/asm/book3s/64/mmu.h | 1 +
+> >   arch/powerpc/include/asm/mmu.h           | 1 +
+> >   arch/powerpc/kernel/prom.c               | 1 +
+> >   arch/powerpc/mm/init_64.c                | 5 ++++-
+> >   4 files changed, 7 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/arch/powerpc/include/asm/book3s/64/mmu.h b/arch/powerpc/include/asm/book3s/64/mmu.h
+> > index c02f42d1031e..69a89fa1330d 100644
+> > --- a/arch/powerpc/include/asm/book3s/64/mmu.h
+> > +++ b/arch/powerpc/include/asm/book3s/64/mmu.h
+> > @@ -197,6 +197,7 @@ extern int mmu_vmemmap_psize;
+> >   extern int mmu_io_psize;
+> >   /* MMU initialization */
+> > +void mmu_cpu_feature_fixup(void);
+> >   void mmu_early_init_devtree(void);
+> >   void hash__early_init_devtree(void);
+> >   void radix__early_init_devtree(void);
+> > diff --git a/arch/powerpc/include/asm/mmu.h b/arch/powerpc/include/asm/mmu.h
+> > index 8abe8e42e045..c8eafd401fe9 100644
+> > --- a/arch/powerpc/include/asm/mmu.h
+> > +++ b/arch/powerpc/include/asm/mmu.h
+> > @@ -401,6 +401,7 @@ extern void early_init_mmu(void);
+> >   extern void early_init_mmu_secondary(void);
+> >   extern void setup_initial_memory_limit(phys_addr_t first_memblock_base,
+> >   				       phys_addr_t first_memblock_size);
+> > +static inline void mmu_cpu_feature_fixup(void) { }
+> >   static inline void mmu_early_init_devtree(void) { }
+> >   static inline void pkey_early_init_devtree(void) {}
+> > diff --git a/arch/powerpc/kernel/prom.c b/arch/powerpc/kernel/prom.c
+> > index 2e67588f6f6e..1727a3abe6c1 100644
+> > --- a/arch/powerpc/kernel/prom.c
+> > +++ b/arch/powerpc/kernel/prom.c
+> > @@ -380,6 +380,7 @@ static int __init early_init_dt_scan_cpus(unsigned long node,
+> >   		check_cpu_pa_features(node);
+> >   	}
+> > +	mmu_cpu_feature_fixup();
+> 
+> can you do that call inside check_cpu_pa_features? or is it because we have
+> the same issue with baremetal platforms?
 
-WARNING: kernel-doc '../scripts/kernel-doc -rst -enable-lineno -sphinx-version 1.8.5 -export ../drivers/counter/counter.c' failed with return code 2
+Yup same issue exist on baremetal as well in case of dt_cpu_ftrs_in_use
+is true. Hence calling it after the if (!dt_cpu_ftrs_in_use) code block
+takes care of both pseries and baremetal platforms.
 
-Error: Cannot open file ../drivers/counter/counter.c
+> 
+> Can we also rename this to indicate we are sanitizing the feature flag based
+> on kernel command line.  Something like
+> 
+> /* Update cpu features based on kernel command line */
+> update_cpu_features();
 
-Fixes: d70e46af7531 ("counter: Internalize sysfs interface code")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: William Breathitt Gray <vilhelm.gray@gmail.com>
-Cc: linux-iio@vger.kernel.org
-Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: linux-doc@vger.kernel.org
----
- Documentation/driver-api/generic-counter.rst |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Sure will do.
 
---- linux-next-20211001.orig/Documentation/driver-api/generic-counter.rst
-+++ linux-next-20211001/Documentation/driver-api/generic-counter.rst
-@@ -247,7 +247,7 @@ for defining a counter device.
- .. kernel-doc:: include/linux/counter.h
-    :internal:
- 
--.. kernel-doc:: drivers/counter/counter.c
-+.. kernel-doc:: drivers/counter/counter-core.c
-    :export:
- 
- Driver Implementation
+Thanks for your review.
+-Mahesh.
