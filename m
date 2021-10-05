@@ -2,66 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3097A422AD5
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:18:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ADC8422ADC
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:20:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235613AbhJEOUo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 10:20:44 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:51548 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234919AbhJEOUl (ORCPT
+        id S235684AbhJEOVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 10:21:55 -0400
+Received: from mail-ua1-f46.google.com ([209.85.222.46]:42515 "EHLO
+        mail-ua1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235524AbhJEOVx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 10:20:41 -0400
-Date:   Tue, 5 Oct 2021 16:18:48 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1633443529;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=h+hsztr/umJzTDpJmHDTmgfYbMGoKmREVcSnZcNhevQ=;
-        b=VGiKN/QRm7H5oG4sR3emZufNoZwvRmDEv7QfPbR9x4oXoWseoa769Hok1o7OZH1X5eLzeR
-        UMlrAKAlcAnxqgGJOJwzH2bYEGz4JOnQoD6J4fwSeA5siLIh745tcToDvJp+cP91nmPOCP
-        UoDRD+Mq2eW2jtO7MvxgeBanL4zfiIDbnb8+bqbDoqMyF0RI87jZrTJ6lybbKhun1cZaa7
-        zCZcMSu4/i73pMwYMhT7gu/2FFOnaZOSMBh6RM7hFkHZgxBrG7CuwQk6TohhnalCAcMDod
-        Vqq//nwVj1oS9xvJqetXwWqIqnJK2jzNu2neu2CuNg7qj/tXaxT+OvJ4Pf0NAQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1633443529;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=h+hsztr/umJzTDpJmHDTmgfYbMGoKmREVcSnZcNhevQ=;
-        b=Sh3lWfIOR+kHVdD7hPIFQYl9xMUoI4BCOrajvlzEv3Fazd++aaOKMAAqSt2P1p0x22ox9a
-        HLkpGi69Mr9NRQBQ==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Stefani Seibold <stefani@seibold.net>,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH] samples/kfifo: Rename read_lock/write_lock
-Message-ID: <20211005141848.cefuqo4eq5d27e6y@linutronix.de>
-References: <20210923172918.o22iwgvn3w7ilh44@linutronix.de>
- <5cb013d281fc064a7e928eb16bdfa9d5d77987e1.camel@seibold.net>
- <YVxV8sKyc1Y62X7r@kroah.com>
+        Tue, 5 Oct 2021 10:21:53 -0400
+Received: by mail-ua1-f46.google.com with SMTP id c33so14972252uae.9;
+        Tue, 05 Oct 2021 07:20:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZsiLQowr4dhRO4ZjojPIeEJxCcz4NxfUulcGoFnBsRg=;
+        b=iMOPzSUmxXMNBW7Zqo7fLpZJpt5ejyvLoiVrXucMVMkbnGKLIUkZa+aA+7nyL06Gki
+         qcGZ4zSz+3FVOspYCvU40lDVwoYfEtOgaqbCuKu0sMzMXFPyt7oXxyXdnWPOXJssIANw
+         aTIH3QzD6pGskMYiL+cNpr6x8y7Jwc4iqt/+67qPY+Jt7rW7Y25mUhd5jI2edDAO41Ar
+         A77NmeptTANEFdNHvrRYWqhNzjIkMkTdPeDgp7NvGGHLsigf9Ycn/Dtw4N9HDp2lcrSU
+         Pd5zq9N6xlB+SNq9U0GXZl6jMI73MEtjdeat7PoV0wrfsxiTCE5y2SfugAiEXX6bptQs
+         arJA==
+X-Gm-Message-State: AOAM532N+vyECXsGKZaaOfD7inV/v5lkAl8cVYhrNwMXGBiNWKeZZoCg
+        kdL3iOeewQmO19ZH5sy7OmqXbOHti6k0b5BfDy8=
+X-Google-Smtp-Source: ABdhPJwbX0bv3d6cnzEiJdyoXXCC2z0J1QalhQzgibPPXevn+FB0srI+5BaF2vwcsf9msNCU0KS+wu3Pezau/u9StB0=
+X-Received: by 2002:ab0:58c1:: with SMTP id r1mr12347091uac.89.1633443602509;
+ Tue, 05 Oct 2021 07:20:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YVxV8sKyc1Y62X7r@kroah.com>
+References: <20210928130132.15022-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20210928130132.15022-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 5 Oct 2021 16:19:51 +0200
+Message-ID: <CAMuHMdVoAkJHedLwjN6v2Tqtc7Rj36PJ3DotSB-QXg-_VcAHVQ@mail.gmail.com>
+Subject: Re: [PATCH] clk: renesas: r9a07g044-cpg: Add clock and reset entries
+ for SPI Multi I/O Bus Controller
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-10-05 15:41:06 [+0200], Greg Kroah-Hartman wrote:
-> On Tue, Oct 05, 2021 at 11:42:57AM +0200, Stefani Seibold wrote:
-> > Acked by Stefani Seibold <stefani@seibold.net>
-> 
-> WHo is supposed to take these?
-> 
-> Want me to take them through my char/misc tree?
+On Tue, Sep 28, 2021 at 3:01 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> Add clock and reset entries for SPI Multi I/O Bus Controller.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
 
-Yes, please (if it is up to me).
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in renesas-clk-for-v5.16.
 
-> thanks,
-> 
-> greg k-h
+Gr{oetje,eeting}s,
 
-Sebastian
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
