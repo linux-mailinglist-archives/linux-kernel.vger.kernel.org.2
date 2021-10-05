@@ -2,124 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B97B9423107
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 21:50:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 938B8423111
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 21:51:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235837AbhJETvx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 15:51:53 -0400
-Received: from mail.efficios.com ([167.114.26.124]:38746 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235424AbhJETvv (ORCPT
+        id S235490AbhJETxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 15:53:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36380 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235709AbhJETxc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 15:51:51 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 7E7C238FB64;
-        Tue,  5 Oct 2021 15:49:59 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id ZEXrR5Ci9ztl; Tue,  5 Oct 2021 15:49:58 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id C548438FD25;
-        Tue,  5 Oct 2021 15:49:58 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com C548438FD25
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1633463398;
-        bh=dozxmLSuH4fqPxd682HodmlOfauCaaugJuGX+lZefU8=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=VQLxpJX9s6Ims/iCloj2co6DZ+kAdayJlyjk0y39LTLedU12jjm3nRuS3ML03MCxy
-         UY9oFtvBhPj8xL+HiCsR7Pwg4pWZisnoHzhUgxTh0R/QYj+/4YNutoi+kOcS/YdKMS
-         wBGAZWIGIye7ICOyCS3Rc/lVbHQ4WNpQ0AVIsXN1r920EaxyuHuGeqkSyR8y2Fmdo0
-         KJps0Xp0reKwLf3Wbgi2mxfR+PbgOIFy126o8QYAEFtBWQAFf8m4kFSiV76TqdgDf/
-         8cjY4PLqtdqMqCyyloggvXTrp/dgg1EovojbCFhaBWRD8zpQnda+JqtKRVkyap5eqF
-         /OSD+5ooicwig==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 1mYUU1jAuvet; Tue,  5 Oct 2021 15:49:58 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id AB0C738FBD8;
-        Tue,  5 Oct 2021 15:49:58 -0400 (EDT)
-Date:   Tue, 5 Oct 2021 15:49:58 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     rostedt <rostedt@goodmis.org>
-Cc:     Jan Engelhardt <jengelh@inai.de>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Paul <paulmck@linux.vnet.ibm.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        "Joel Fernandes, Google" <joel@joelfernandes.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
+        Tue, 5 Oct 2021 15:53:32 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF204C061760
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 12:51:41 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id d1-20020a056902060100b005b9c7c04351so127041ybt.14
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 12:51:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=ruleJux/5LJ89GBnHLLZrulEoEZQntK4/1Ov9wfpo+4=;
+        b=P1FicB+D7N40MyGLhIwZ/HaGNpUlZfZIcgpM3fJyqJUBIZtpNE7GUZOHqGtLeFRuUK
+         k/TY4xjrZADxoa0nsPAs682fJrrZCeK5qktH5Br+VghVRSTld5y29oifxAkdm8N4wmn8
+         PXzHNn1Zp5+TidAthHOYvcYjX/SND+u3TePP7DYwDiTJK5G949OkIzKSlJjoTqJJAIzO
+         SnPaArK+kTTISGDcqg+vvWhvXTTml2h4/hGBEHm8EYw/05h5N+d5Filz2NhSTt+Eu9+I
+         tTjpedR3ZvJOU2/6cYsVmkGyHVlUmFJd4ohDPIh0K41/aODexlarcRxRGFqzNEOg4F3V
+         hANQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=ruleJux/5LJ89GBnHLLZrulEoEZQntK4/1Ov9wfpo+4=;
+        b=VBDw+uATi5yUpGxnTrQxnttFWN9CbXMlevYcv/ZKL37B/y7TlD+A6hT8uWCibZQPb6
+         8r1uWJveBMuIxnKPuni+hX8Bg2O3V9gzMErHwqnwu5UY2Im7Dvhydn6XyFYEwh/pD3m0
+         KQnOrcVoI3UnpkyC+ZPfLfBCRVvYeCkwx88Th9R4apxZZIjWKIDe+hSKmiWEuRkc7EhJ
+         3h574csAfECvn46maPQqvaqsCewNPdFmB5EuhZUR9MBZmFZgf5TncPI60KrDKl51L+Cj
+         be078+bagMvjvZlK0uL4QYBVfI27ebT7qbgFfcRuZSk615AK9Gqcs5XoGXb4boZFK825
+         gDDw==
+X-Gm-Message-State: AOAM532XoGNJztJVJnlYyQktL9lTyoei804HyRhjDsXjTuhgYoFFrKp8
+        BhFltF8NIjCmmeJwI0lpNuv5M1xNVzE=
+X-Google-Smtp-Source: ABdhPJzPEmHJWlRyTuNPyeYZh6L/nXbs5BX6Lcne2eMYq4+WjxiKZNPQ+V+rswlP5O89vaL5+iT5Rltg7bo=
+X-Received: from pgonda1.kir.corp.google.com ([2620:15c:29:204:b603:db5:e90f:74aa])
+ (user=pgonda job=sendgmr) by 2002:a25:b9cf:: with SMTP id y15mr22754044ybj.110.1633463501163;
+ Tue, 05 Oct 2021 12:51:41 -0700 (PDT)
+Date:   Tue,  5 Oct 2021 12:51:31 -0700
+Message-Id: <20211005195131.2904331-1-pgonda@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.800.g4c38ced690-goog
+Subject: [PATCH] crypto: ccp - Fix whitespace in sev_cmd_buffer_len()
+From:   Peter Gonda <pgonda@google.com>
+To:     thomas.lendacky@amd.com
+Cc:     Peter Gonda <pgonda@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Marc Orr <marcorr@google.com>, Joerg Roedel <jroedel@suse.de>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        David Rientjes <rientjes@google.com>,
+        John Allen <john.allen@amd.com>,
         "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, rcu <rcu@vger.kernel.org>,
-        netfilter-devel <netfilter-devel@vger.kernel.org>,
-        coreteam <coreteam@netfilter.org>,
-        netdev <netdev@vger.kernel.org>
-Message-ID: <1403497170.3059.1633463398562.JavaMail.zimbra@efficios.com>
-In-Reply-To: <20211005154029.46f9c596@gandalf.local.home>
-References: <20211005094728.203ecef2@gandalf.local.home> <ef5b1654-1f75-da82-cab8-248319efbe3f@rasmusvillemoes.dk> <639278914.2878.1633457192964.JavaMail.zimbra@efficios.com> <826o327o-3r46-3oop-r430-8qr0ssp537o3@vanv.qr> <20211005144002.34008ea0@gandalf.local.home> <srqsppq-p657-43qq-np31-pq5pp03271r6@vanv.qr> <20211005154029.46f9c596@gandalf.local.home>
-Subject: Re: [RFC][PATCH] rcu: Use typeof(p) instead of typeof(*p) *
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_4156 (ZimbraWebClient - FF92 (Linux)/8.8.15_GA_4156)
-Thread-Topic: Use typeof(p) instead of typeof(*p) *
-Thread-Index: 1k/Ly56F/MzpErICaHpi/t7hzD4jKA==
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Oct 5, 2021, at 3:40 PM, rostedt rostedt@goodmis.org wrote:
+Extra tab in sev_cmd_buffer_len().
 
-> On Tue, 5 Oct 2021 21:06:36 +0200 (CEST)
-> Jan Engelhardt <jengelh@inai.de> wrote:
->=20
->> On Tuesday 2021-10-05 20:40, Steven Rostedt wrote:
->> >>  =20
->> >> >>>> typeof(*p) *________p1 =3D (typeof(*p) *__force)READ_ONCE(p);
->> >>=20
->> >> #define static_cast(type, expr) ((struct { type x; }){(expr)}.x)
->> >> typeof(p) p1 =3D (typeof(p) __force)static_cast(void *, READ_ONCE(p))=
-;
->> >>=20
->> >> Let the name not fool you; it's absolutely _not_ the same as C++'s
->> >> static_cast, but still: it does emit a warning when you do pass an
->> >> integer, which is better than no warning at all in that case.
->> >>=20
->> >>  *flies away*
->> >
->> >Are you suggesting I should continue this exercise ;-)
->>=20
->> =E2=80=9CAfter all, why not?=E2=80=9D
->>=20
->> typeof(p) p1 =3D (typeof(p) __force)READ_ONCE(p) +
->>                BUILD_BUG_ON_EXPR(__builtin_classify_type(p) !=3D 5);
->=20
-> I may try it, because exposing the structure I want to hide, is pulling o=
-ut
-> a lot of other crap with it :-p
+Signed-off-by: Peter Gonda <pgonda@google.com>
+Cc: Tom Lendacky <thomas.lendacky@amd.com>
+Cc: Brijesh Singh <brijesh.singh@amd.com>
+Cc: Marc Orr <marcorr@google.com>
+Cc: Joerg Roedel <jroedel@suse.de>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: David Rientjes <rientjes@google.com>
+Cc: John Allen <john.allen@amd.com>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: linux-crypto@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+---
+ drivers/crypto/ccp/sev-dev.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I like the static_cast() approach above. It is neat way to validate that th=
-e
-argument is a pointer without need to dereference the pointer.
+diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
+index 2ecb0e1f65d8..e09925d86bf3 100644
+--- a/drivers/crypto/ccp/sev-dev.c
++++ b/drivers/crypto/ccp/sev-dev.c
+@@ -134,7 +134,7 @@ static int sev_cmd_buffer_len(int cmd)
+ 	case SEV_CMD_DOWNLOAD_FIRMWARE:		return sizeof(struct sev_data_download_firmware);
+ 	case SEV_CMD_GET_ID:			return sizeof(struct sev_data_get_id);
+ 	case SEV_CMD_ATTESTATION_REPORT:	return sizeof(struct sev_data_attestation_report);
+-	case SEV_CMD_SEND_CANCEL:			return sizeof(struct sev_data_send_cancel);
++	case SEV_CMD_SEND_CANCEL:		return sizeof(struct sev_data_send_cancel);
+ 	default:				return 0;
+ 	}
+ 
+-- 
+2.33.0.800.g4c38ced690-goog
 
-I would also be open to consider this trick for liburcu's userspace API.
-
-About the other proposed solution based on __builtin_classify_type, I am
-reluctant to use something designed specifically for varargs in a context
-where they are not used.
-
-Thanks,
-
-Mathieu
-
---=20
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
