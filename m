@@ -2,146 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 450E9423097
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 21:12:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36DAF42309D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 21:15:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235267AbhJETOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 15:14:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55680 "EHLO
+        id S235224AbhJETRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 15:17:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229662AbhJETOK (ORCPT
+        with ESMTP id S234762AbhJETRD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 15:14:10 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09681C061749;
-        Tue,  5 Oct 2021 12:12:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=ZySrRcpaEzMbdQfBG5rx663ZoIC8b9XdJJknPEQby6E=; b=xXnrgXUNhYZDL1pqeuvnObDIJY
-        x8+Auwk7wGQzqn4IGVKmqobsSCpf/Ws7CsKL8m03Tw2jASiOS1Dq32C5lJFo/LKjgldKGVZ/rN2JM
-        yeYwLcK61j6R+lg9su82T+HpTFr2gvrotWOYclUqsk+A6qojfRURERWOO9H6Hy7rOMYyGr38UEMN1
-        RMyLWAgBxaIzih3FJc8qR589iS/G5+eUMJlr4T+LyNPU1yO4wlkoISepj6bcQHIWi1FnjH7Cbpt2m
-        7pdVD74GQTRy3rF8eIlK+2gejVurRTp0KdnKz26c9pVfeBdBdV217Xues118cI0ypK5oMyVPMJEat
-        ndIeFiJA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:54964)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1mXprM-0000fu-SO; Tue, 05 Oct 2021 20:12:16 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1mXprL-0000FY-Qm; Tue, 05 Oct 2021 20:12:15 +0100
-Date:   Tue, 5 Oct 2021 20:12:15 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Sean Anderson <sean.anderson@seco.com>
-Cc:     netdev@vger.kernel.org, "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>
-Subject: Re: [RFC net-next PATCH 16/16] net: sfp: Add quirk to ignore PHYs
-Message-ID: <YVyjj64t2K7YOiM+@shell.armlinux.org.uk>
-References: <20211004191527.1610759-1-sean.anderson@seco.com>
- <20211004191527.1610759-17-sean.anderson@seco.com>
- <YVwp9R40r0ZWJzTa@shell.armlinux.org.uk>
- <66fd0680-a56b-a211-5f3e-ac7498f1ff9b@seco.com>
+        Tue, 5 Oct 2021 15:17:03 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC70BC061753
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 12:15:11 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id z5so99107ybj.2
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 12:15:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Y/mJ1wrJl0e2S4EbithBXePxqkT5yOeu8iCmqxY+6zM=;
+        b=M1kis41L+W8a3X4xSlCWbuPFyHGcq4qAALLCMn7eMkW+D55940o+GnlKZhYo7SfEFf
+         eKx6U0ezgxMJKf89ERCwNbfcEjqSrgI8bXetehSKbTq3hBALUwCIZPjkpgB+cjunVdCS
+         WUOM7tVLgucnzyc8N7gK6PqKOxIpKi31m9jpvL6Suhi3ntBbP04Ksv5mHZBiqQ5gDMuB
+         mlnsP6U61UcL/L4VlXu/rhMogaYmgD7B9TYlwJp7ET39MVF2lwNWW/NYA9HVlvbQWWyg
+         +U9pskA/P247x4+EuPoUg8wGV/hMoaBW2hCKqC5njS/cSZCbY21y0BxIUGtwBZcfJF1H
+         84mA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Y/mJ1wrJl0e2S4EbithBXePxqkT5yOeu8iCmqxY+6zM=;
+        b=jpaaQiYii3vwQGhtIP8sgeGEsw081dY/5CdodS4ohZuDZWlfclt0HXsM5Fl7PKKqj6
+         DGTlRFB1Rk8lUPMhYCBdK+RyB36vq/3Cj3ZqIyRz/yla0Dm/jSdJWuTcyqCgEQEHyyrL
+         zaOp4h6gXgZ8Z/w7ZI+JC1kVQ5lNshdqfzDLEW2QOKH7KtbZm1kLOzmJrBARCZkYFTSZ
+         rxkJIocvyQXkr+FcxPhnAiIy78wNMXXq76uT7UdDONIYpCBtktgjvh4HMEMvsG7cpYNu
+         IxhLnJAy9rIHy2Q2uF9L5zgn3lsdvnRacbpEe2OFxl1A87E07lgE+5am8DFqaF42/932
+         dp3A==
+X-Gm-Message-State: AOAM532OvKWUaWXPE0hFDM+VZdPCman+sPDdfeGJG96vl2fcyUEliOEM
+        kQwFN5iWKqn+MgvJCJx/mZsrz51Jtl3McKkS2f0BXg==
+X-Google-Smtp-Source: ABdhPJxa45KExZ/7k/RCApHcxypXu8XAAvYJq3w4XtzePMFBwOXwgWrUVZ+OKZLOGNg4W5UYgNh720duxvdX3NBhPKs=
+X-Received: by 2002:a25:5646:: with SMTP id k67mr25382729ybb.127.1633461310475;
+ Tue, 05 Oct 2021 12:15:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <66fd0680-a56b-a211-5f3e-ac7498f1ff9b@seco.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+References: <20211001205657.815551-1-surenb@google.com> <20211001205657.815551-3-surenb@google.com>
+ <20211005184211.GA19804@duo.ucw.cz>
+In-Reply-To: <20211005184211.GA19804@duo.ucw.cz>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Tue, 5 Oct 2021 12:14:59 -0700
+Message-ID: <CAJuCfpE5JEThTMhwKPUREfSE1GYcTx4YSLoVhAH97fJH_qR0Zg@mail.gmail.com>
+Subject: Re: [PATCH v10 3/3] mm: add anonymous vma name refcounting
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Colin Cross <ccross@google.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        vincenzo.frascino@arm.com,
+        =?UTF-8?B?Q2hpbndlbiBDaGFuZyAo5by16Yym5paHKQ==?= 
+        <chinwen.chang@mediatek.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Jann Horn <jannh@google.com>, apopple@nvidia.com,
+        John Hubbard <jhubbard@nvidia.com>,
+        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
+        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
+        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
+        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
+        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
+        chris.hyser@oracle.com, Peter Collingbourne <pcc@google.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Jens Axboe <axboe@kernel.dk>, legion@kernel.org,
+        Rolf Eike Beer <eb@emlix.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Thomas Cedeno <thomascedeno@google.com>, sashal@kernel.org,
+        cxfcosmos@gmail.com, Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-mm <linux-mm@kvack.org>,
+        kernel-team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05, 2021 at 12:45:28PM -0400, Sean Anderson wrote:
-> 
-> 
-> On 10/5/21 6:33 AM, Russell King (Oracle) wrote:
-> > On Mon, Oct 04, 2021 at 03:15:27PM -0400, Sean Anderson wrote:
-> > > Some modules have something at SFP_PHY_ADDR which isn't a PHY. If we try to
-> > > probe it, we might attach genphy anyway if addresses 2 and 3 return
-> > > something other than all 1s. To avoid this, add a quirk for these modules
-> > > so that we do not probe their PHY.
-> > > 
-> > > The particular module in this case is a Finisar SFP-GB-GE-T. This module is
-> > > also worked around in xgbe_phy_finisar_phy_quirks() by setting the support
-> > > manually. However, I do not believe that it has a PHY in the first place:
-> > > 
-> > > $ i2cdump -y -r 0-31 $BUS 0x56 w
-> > >      0,8  1,9  2,a  3,b  4,c  5,d  6,e  7,f
-> > > 00: ff01 ff01 ff01 c20c 010c 01c0 0f00 0120
-> > > 08: fc48 000e ff78 0000 0000 0000 0000 00f0
-> > > 10: 7800 00bc 0000 401c 680c 0300 0000 0000
-> > > 18: ff41 0000 0a00 8890 0000 0000 0000 0000
-> > 
-> > Actually, I think that is a PHY. It's byteswapped (which is normal using
-> > i2cdump in this way).The real contents of the registers are:
-> > 
-> > 00: 01ff 01ff 01ff 0cc2 0c01 c001 000f 2001
-> > 08: 48fc 0e00 78ff 0000 0000 0000 0000 f000
-> > 10: 0078 bc00 0000 1c40 0c68 0003 0000 0000
-> > 18: 41ff 0000 000a 9088 0000 0000 0000 0000
-> 
-> Ah, thanks for catching this.
-> 
-> > It's advertising pause + asym pause, 1000BASE-T FD, link partner is also
-> > advertising 1000BASE-T FD but no pause abilities.
-> > 
-> > When comparing this with a Marvell 88e1111:
-> > 
-> > 00: 1140 7949 0141 0cc2 05e1 0000 0004 2001
-> > 08: 0000 0e00 4000 0000 0000 0000 0000 f000
-> > 10: 0078 8100 0000 0040 0568 0000 0000 0000
-> > 18: 4100 0000 0002 8084 0000 0000 0000 0000
-> > 
-> > It looks remarkably similar. However, The first few reads seem to be
-> > corrupted with 0x01ff. It may be that the module is slow to allow the
-> > PHY to start responding - we've had similar with Champion One SFPs.
-> 
-> Do you have an an example of how to work around this? Even reading one
-> register at a time I still get the bogus 0x01ff. Reading bytewise, a
-> reasonable-looking upper byte is returned every other read, but the
-> lower byte is 0xff every time.
+On Tue, Oct 5, 2021 at 11:42 AM Pavel Machek <pavel@ucw.cz> wrote:
+>
+> On Fri 2021-10-01 13:56:57, Suren Baghdasaryan wrote:
+> > While forking a process with high number (64K) of named anonymous vmas the
+> > overhead caused by strdup() is noticeable. Experiments with ARM64
+> Android
+>
+> I still believe you should simply use numbers and do the
+> numbers->strings mapping in userspace. We should not need to optimize
+> strdups in kernel...
 
-I think the Champion One modules just don't respond to the I2C
-transactions, so we keep retrying for a while. We try every
-50ms for 12 retries, which seems to be long enough for their
-modules.
+Here are complications with mapping numbers to strings in the userspace:
+Approach 1: hardcode number->string in some header file and let all
+tools use that mapping. The issue is that whenever that mapping
+changes all the tools that are using it (including 3rd party ones)
+have to be rebuilt. This is not really maintainable since we don't
+control 3rd party tools and even for the ones we control, it will be a
+maintenance issue figuring out which version of the tool used which
+header file.
+Approach 2: have a centralized facility (a process or a DB)
+maintaining number->string mapping. This would require an additional
+request to this facility whenever we want to make a number->string
+conversion. Moreover, when we want to name a VMA, we would have to
+register a new VMA name in that facility or check that one already
+exists and get its ID. So each prctl() call to name a VMA will be
+preceded by such a request (IPC call), maybe with some optimizations
+to cache already known number->string pairs. This would be quite
+expensive performance-wise. Additional issue with this approach is
+that this mapping will have to be persistent to handle a case when the
+facility crashes and has to be restored.
 
-> > It looks like it's a Marvell 88e1111. The register at 0x11 is the
-> > Marvell status register, and 0xbc00 indicates 1000Mbit, FD, AN
-> > resolved, link up which agrees with what's in the various other
-> > registers.
-> 
-> That matches some supplemental info on the manufacturer's website
-> (which was frustratingly not associated with the model number of
-> this particular module).
+As I said before, it complicates userspace quite a bit. Is that a good
+enough reason to store the names in the kernel and pay a little more
+memory for that? IMHO yes, but I might be wrong.
+Thanks,
+Suren.
 
-The interesting thing is, many modules use 88e1111, which is about
-the only PHY that I'm aware that supports I2C access mode natively.
-So, it's really surprising that you're getting corrupted data,
-unless...
-
-There's been a history of using too strong pull-ups on the SFP I2C
-lines. The SFP MSA gives a minimum value of the resistors (4.7k).
-SFP+ lowers the minimum value and raises the maximum clock frequency.
-Some SFP modules are unable to drive the I2C bus low against the
-lower resistances resulting in corrupted data (or worse, it can
-corrupt the EEPROMs.)
-
-Other problems on some platforms have been with I2C level shifters
-locking up, but that doesn't look like what's happening here - they
-lockup at logic low not logic high. Even so-called "impossible to
-lockup" level shifters have locked up despite their manufacturer
-stating that it is impossible.
-
-Is it always the same addresses? What if you read from a different
-offset? What if you re-read after it seems to have cleared?
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+>
+> Best regards,
+>                                                                 Pavel
+> --
+> http://www.livejournal.com/~pavelmachek
+>
+> --
+> To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
