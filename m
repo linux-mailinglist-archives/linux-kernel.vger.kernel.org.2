@@ -2,86 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D956D422253
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 11:31:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98B1D422263
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 11:34:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233216AbhJEJdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 05:33:05 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3914 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232658AbhJEJdE (ORCPT
+        id S233635AbhJEJgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 05:36:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59758 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233290AbhJEJgE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 05:33:04 -0400
-Received: from fraeml706-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HNsh41m76z67b5Q;
-        Tue,  5 Oct 2021 17:28:04 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml706-chm.china.huawei.com (10.206.15.55) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.8; Tue, 5 Oct 2021 11:31:11 +0200
-Received: from [10.47.95.252] (10.47.95.252) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2308.8; Tue, 5 Oct 2021
- 10:31:10 +0100
-Subject: Re: [PATCH 4/4] perf vendor events: Add the Neoverse V1 to arm64
- mapfile
-To:     Andrew Kilroy <andrew.kilroy@arm.com>,
-        <linux-kernel@vger.kernel.org>, <linux-perf-users@vger.kernel.org>,
-        <acme@kernel.org>
-CC:     Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        "Namhyung Kim" <namhyung@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20211004160008.21645-1-andrew.kilroy@arm.com>
- <20211004160008.21645-4-andrew.kilroy@arm.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <424d066b-30d5-4512-bd8c-15b700af2864@huawei.com>
-Date:   Tue, 5 Oct 2021 10:33:49 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        Tue, 5 Oct 2021 05:36:04 -0400
+Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3B5EC061753
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 02:34:13 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:9ca4:a53a:9ffa:e003])
+        by albert.telenet-ops.be with bizsmtp
+        id 29a72600U119333069a7g2; Tue, 05 Oct 2021 11:34:11 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1mXgpr-0028mJ-EX; Tue, 05 Oct 2021 11:34:07 +0200
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1mXgpq-005CuT-SL; Tue, 05 Oct 2021 11:34:06 +0200
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Qu Wenruo <wqu@suse.com>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        noreply@ellerman.id.au
+Subject: [PATCH -next] btrfs: lzo: Mask instead of divide to fix 32-bit build
+Date:   Tue,  5 Oct 2021 11:34:06 +0200
+Message-Id: <20211005093406.1241222-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20211004160008.21645-4-andrew.kilroy@arm.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.95.252]
-X-ClientProxiedBy: lhreml709-chm.china.huawei.com (10.201.108.58) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/10/2021 17:00, Andrew Kilroy wrote:
-> This is so that performance counters for the Neoverse V1 appear
-> categorised upon running 'perf list' on the CPU.
-> 
+On 32-bit builds (e.g. m68k):
 
-this really belongs with the previous patch
+    ERROR: modpost: "__umoddi3" [fs/btrfs/btrfs.ko] undefined!
 
-Thanks,
-John
+"cur_in - start" is 64-bit, while sectorsize is u32.
 
-> Signed-off-by: Andrew Kilroy <andrew.kilroy@arm.com>
-> ---
->   tools/perf/pmu-events/arch/arm64/mapfile.csv | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/tools/perf/pmu-events/arch/arm64/mapfile.csv b/tools/perf/pmu-events/arch/arm64/mapfile.csv
-> index c43591d831b8..31d8b57ca9bb 100644
-> --- a/tools/perf/pmu-events/arch/arm64/mapfile.csv
-> +++ b/tools/perf/pmu-events/arch/arm64/mapfile.csv
-> @@ -18,6 +18,7 @@
->   0x00000000410fd080,v1,arm/cortex-a57-a72,core
->   0x00000000410fd0b0,v1,arm/cortex-a76-n1,core
->   0x00000000410fd0c0,v1,arm/cortex-a76-n1,core
-> +0x00000000410fd400,v1,arm/neoverse-v1,core
->   0x00000000420f5160,v1,cavium/thunderx2,core
->   0x00000000430f0af0,v1,cavium/thunderx2,core
->   0x00000000460f0010,v1,fujitsu/a64fx,core
-> 
+As sectorsize is always a power of two, the 64-by-32 modulo operation
+can be replaced by a much cheaper bitwise AND with "sectorsize - 1".
+
+Fixes: 0078783c7089fc83 ("btrfs: rework lzo_compress_pages() to make it subpage compatible")
+Reported-by: noreply@ellerman.id.au
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+Compile-tested only.
+---
+ fs/btrfs/lzo.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/lzo.c b/fs/btrfs/lzo.c
+index 47003cec4046f13e..d08f9eba49dab3cd 100644
+--- a/fs/btrfs/lzo.c
++++ b/fs/btrfs/lzo.c
+@@ -211,7 +211,7 @@ int lzo_compress_pages(struct list_head *ws, struct address_space *mapping,
+ 	 */
+ 	cur_out += LZO_LEN;
+ 	while (cur_in < start + len) {
+-		u32 sector_off = (cur_in - start) % sectorsize;
++		u32 sector_off = (cur_in - start) & (sectorsize - 1);
+ 		u32 in_len;
+ 		size_t out_len;
+ 
+-- 
+2.25.1
 
