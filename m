@@ -2,135 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E857E422C5A
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:23:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2834422C54
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:23:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236043AbhJEPZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 11:25:26 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:24219 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235974AbhJEPZW (ORCPT
+        id S235709AbhJEPZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 11:25:21 -0400
+Received: from m-r2.th.seeweb.it ([5.144.164.171]:35717 "EHLO
+        m-r2.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235951AbhJEPZT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 11:25:22 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4HP1Y11zrmzGp6H;
-        Tue,  5 Oct 2021 23:22:29 +0800 (CST)
-Received: from dggpeml100016.china.huawei.com (7.185.36.216) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Tue, 5 Oct 2021 23:23:27 +0800
-Received: from DESKTOP-27KDQMV.china.huawei.com (10.174.148.223) by
- dggpeml100016.china.huawei.com (7.185.36.216) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Tue, 5 Oct 2021 23:23:27 +0800
-From:   "Longpeng(Mike)" <longpeng2@huawei.com>
-To:     <baolu.lu@linux.intel.com>, <dwmw2@infradead.org>,
-        <will@kernel.org>, <joro@8bytes.org>
-CC:     <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
-        <arei.gonglei@huawei.com>, "Longpeng(Mike)" <longpeng2@huawei.com>
-Subject: [PATCH v2 2/2] iommu/vt-d: avoid duplicated removing in __domain_mapping
-Date:   Tue, 5 Oct 2021 23:23:08 +0800
-Message-ID: <20211005152308.1061-3-longpeng2@huawei.com>
-X-Mailer: git-send-email 2.25.0.windows.1
-In-Reply-To: <20211005152308.1061-1-longpeng2@huawei.com>
-References: <20211005152308.1061-1-longpeng2@huawei.com>
+        Tue, 5 Oct 2021 11:25:19 -0400
+Received: from SoMainline.org (94-209-165-62.cable.dynamic.v4.ziggo.nl [94.209.165.62])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 5D90B3E8D8;
+        Tue,  5 Oct 2021 17:23:27 +0200 (CEST)
+Date:   Tue, 5 Oct 2021 17:23:26 +0200
+From:   Marijn Suijten <marijn.suijten@somainline.org>
+To:     Daniel Thompson <daniel.thompson@linaro.org>
+Cc:     phone-devel@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Martin Botka <martin.botka@somainline.org>,
+        Jami Kettunen <jami.kettunen@somainline.org>,
+        Pavel Dubrova <pashadubrova@gmail.com>,
+        Kiran Gunda <kgunda@codeaurora.org>,
+        Courtney Cavin <courtney.cavin@sonymobile.com>,
+        Bryan Wu <cooloney@gmail.com>, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 05/10] backlight: qcom-wled: Fix off-by-one maximum with
+ default num_strings
+Message-ID: <20211005152326.5k5cb53ajqnactrg@SoMainline.org>
+Mail-Followup-To: Marijn Suijten <marijn.suijten@somainline.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        phone-devel@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Lee Jones <lee.jones@linaro.org>, Jingoo Han <jingoohan1@gmail.com>,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Martin Botka <martin.botka@somainline.org>,
+        Jami Kettunen <jami.kettunen@somainline.org>,
+        Pavel Dubrova <pashadubrova@gmail.com>,
+        Kiran Gunda <kgunda@codeaurora.org>,
+        Courtney Cavin <courtney.cavin@sonymobile.com>,
+        Bryan Wu <cooloney@gmail.com>, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211004192741.621870-1-marijn.suijten@somainline.org>
+ <20211004192741.621870-6-marijn.suijten@somainline.org>
+ <20211005091947.7msztp5l554c7cy4@maple.lan>
+ <20211005100606.faxra73mzkvjd4f6@SoMainline.org>
+ <20211005103843.heufyonycnudxnzd@maple.lan>
+ <20211005105312.kqiyzoqtzzjxayhg@maple.lan>
+ <20211005114435.phyq2jsbdyroa6kn@SoMainline.org>
+ <20211005140349.kefi26yev3gy3zhv@maple.lan>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.148.223]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpeml100016.china.huawei.com (7.185.36.216)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211005140349.kefi26yev3gy3zhv@maple.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-__domain_mapping() always removes the pages in the range from
-'iov_pfn' to 'end_pfn', but the 'end_pfn' is always the last pfn
-of the range that the caller wants to map.
+On 2021-10-05 15:03:49, Daniel Thompson wrote:
+[..]
+> > I much prefer doing that instead of trying to wrangle enumeration
+> > parsing around integer values that are supposed to be used as-is.  After
+> > all this variable is already named to set the `+ 1` override currently,
+> > and `qcom,enabled_strings` has "custom" handling as well.  I'll extend
+> > the validation to ensure num_strings>=1 too.
+> 
+> Great.
+> 
+> 
+> > In addition, and this needs some investigation on the dt-bindings side
+> > too, it might be beneficial to make both properties mutually exclusive.
+> > When specifying qcom,enabled_strings it makes little sense to also
+> > provide qcom,num_strings and we want the former to take precedence.
+> 
+> If we are designing a "fix" for that then my view is that if both are
+> passed then num-strings should take precedence because it is an
+> explicit statement about the number of strings where enabled_strings
+> is implicit. In other words, if num-strings <= len(enabled_strings) then
+> we should do what we are told, otherwise report error.
 
-This would introduce too many duplicated removing and leads the
-map operation take too long, for example:
+IMO both should be identical (num-strings == len(enabled-strings)) to
+avoid ambiguity, but do read on.
 
-  Map iova=0x100000,nr_pages=0x7d61800
-    iov_pfn: 0x100000, end_pfn: 0x7e617ff
-    iov_pfn: 0x140000, end_pfn: 0x7e617ff
-    iov_pfn: 0x180000, end_pfn: 0x7e617ff
-    iov_pfn: 0x1c0000, end_pfn: 0x7e617ff
-    iov_pfn: 0x200000, end_pfn: 0x7e617ff
-    ...
-  it takes about 50ms in total.
+> > At that point one might ask why qcom,num_strings remains at all when
+> > DT can use qcom,enabled_strings instead.  We will supposedly have to
+> > keep backwards compatibility with DTs in mind so none of this can be
+> > removed or made mutually exclusive from a driver standpoint, that all
+> > has to be done in dt-bindings yaml to be enforced on checked-in DTs.
+> 
+> So... perhaps I made a make offering a Reviewed-by: to a patch
+> that allows len(enabled-strings) to have precedence. If anything
+> currently uses enabled-strings then it *will* be 4 cells long and
+> is relying on num-strings to ensure the right things happens ;-) .
 
-We can reduce the cost by recalculate the 'end_pfn' and limit it
-to the boundary of the end of this pte page.
+Unfortunately Konrad (one of my team members) landed such a patch at the
+beginning of this year because I failed to submit this patchset in time
+while it has been sitting in my queue since 2019 after being used in a
+downstream project.  This is in pmi8994 which doesn't have anything
+widely used / production ready yet, so I'd prefer to fix the DT instead
+and remove / fix his comment:
 
-  Map iova=0x100000,nr_pages=0x7d61800
-    iov_pfn: 0x100000, end_pfn: 0x13ffff
-    iov_pfn: 0x140000, end_pfn: 0x17ffff
-    iov_pfn: 0x180000, end_pfn: 0x1bffff
-    iov_pfn: 0x1c0000, end_pfn: 0x1fffff
-    iov_pfn: 0x200000, end_pfn: 0x23ffff
-    ...
-  it only need 9ms now.
+    /* Yes, all four strings *have to* be defined or things won't work. */
 
-Signed-off-by: Longpeng(Mike) <longpeng2@huawei.com>
----
- drivers/iommu/intel/iommu.c | 12 +++++++-----
- include/linux/intel-iommu.h |  6 ++++++
- 2 files changed, 13 insertions(+), 5 deletions(-)
+But this is mostly because, prior to this patchset, no default was set
+for WLED4 so the 0'th string would get enabled num-strings (3 in
+pmi8994's case) times.
 
-diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-index d75f59a..87cbf34 100644
---- a/drivers/iommu/intel/iommu.c
-+++ b/drivers/iommu/intel/iommu.c
-@@ -2354,12 +2354,18 @@ static void switch_to_super_page(struct dmar_domain *domain,
- 				return -ENOMEM;
- 			first_pte = pte;
- 
-+			lvl_pages = lvl_to_nr_pages(largepage_lvl);
-+			BUG_ON(nr_pages < lvl_pages);
-+
- 			/* It is large page*/
- 			if (largepage_lvl > 1) {
- 				unsigned long end_pfn;
-+				unsigned long pages_to_remove;
- 
- 				pteval |= DMA_PTE_LARGE_PAGE;
--				end_pfn = ((iov_pfn + nr_pages) & level_mask(largepage_lvl)) - 1;
-+				pages_to_remove = min_t(unsigned long, nr_pages,
-+							nr_pte_to_next_page(pte) * lvl_pages);
-+				end_pfn = iov_pfn + pages_to_remove - 1;
- 				switch_to_super_page(domain, iov_pfn, end_pfn, largepage_lvl);
- 			} else {
- 				pteval &= ~(uint64_t)DMA_PTE_LARGE_PAGE;
-@@ -2381,10 +2387,6 @@ static void switch_to_super_page(struct dmar_domain *domain,
- 			WARN_ON(1);
- 		}
- 
--		lvl_pages = lvl_to_nr_pages(largepage_lvl);
--
--		BUG_ON(nr_pages < lvl_pages);
--
- 		nr_pages -= lvl_pages;
- 		iov_pfn += lvl_pages;
- 		phys_pfn += lvl_pages;
-diff --git a/include/linux/intel-iommu.h b/include/linux/intel-iommu.h
-index a590b00..623b407 100644
---- a/include/linux/intel-iommu.h
-+++ b/include/linux/intel-iommu.h
-@@ -713,6 +713,12 @@ static inline bool first_pte_in_page(struct dma_pte *pte)
- 	return !((unsigned long)pte & ~VTD_PAGE_MASK);
- }
- 
-+static inline int nr_pte_to_next_page(struct dma_pte *pte)
-+{
-+	return first_pte_in_page(pte) ? BIT_ULL(VTD_STRIDE_SHIFT) :
-+		(struct dma_pte *)ALIGN((unsigned long)pte, VTD_PAGE_SIZE) - pte;
-+}
-+
- extern struct dmar_drhd_unit * dmar_find_matched_drhd_unit(struct pci_dev *dev);
- extern int dmar_find_matched_atsr_unit(struct pci_dev *dev);
- 
--- 
-1.8.3.1
+Aside that there's only one more PMIC (also being worked on by
+SoMainline) that sets qcom,enabled-strings: this is pm660l, pulled from
+our local tree, and it actually has enabled-strings of length 2 which is
+broken in its current form, exactly because of relying on this patchset.
 
+Finally, we already discussed this inside SoMainline and the
+number/enabled leds should most likely be moved out of the PMIC dtsi's
+as they're probably panel, hence board or even device dependent.
+
+> We'd like that case to keep working so we must allow num-strings to have
+> precedence. In other words, when you add the new code, please put it at
+> the end of the function!
+
+Since there don't seem to be any substantial platforms/PMICs using this
+functionality in a working manner, can I talk you into agreeing with
+fixing the DT instead?
+
+PS. In -next pmi8994_wled is only enabled for sony-xperia-tone, and
+pm660l_wled has yet to be enabled by anything.
+
+- Marijn
