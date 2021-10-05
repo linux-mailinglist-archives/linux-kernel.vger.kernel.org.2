@@ -2,112 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36C90422B43
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:41:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 716AA422B4B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:42:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235175AbhJEOmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 10:42:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22797 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234084AbhJEOmt (ORCPT
+        id S235194AbhJEOoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 10:44:09 -0400
+Received: from mail-oi1-f177.google.com ([209.85.167.177]:43923 "EHLO
+        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233705AbhJEOoH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 10:42:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633444858;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=wzU/i4Pg+46qgDCgZNJOC2Q5GF1N36X0X0hspBjPG1E=;
-        b=LLWBuOCyUtI0SbhTXUVjoTpBIHsTyoFefhrOybKTuqOOrPukW6mvYXTMKmM7uxDLkCHgu4
-        tcXcQT9iPAG5XLaFFKJJP5WYf2Y0ka8+cBMy6Vua78B6Jsad4LMQL3qw06n/wGBpecRAgS
-        lqTowjZAMUHqwE0tJoM1vEhVjlYUQqI=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-338-0uRaLsIuNNG3Dmd5EsTCAg-1; Tue, 05 Oct 2021 10:40:57 -0400
-X-MC-Unique: 0uRaLsIuNNG3Dmd5EsTCAg-1
-Received: by mail-qv1-f72.google.com with SMTP id z6-20020a056214060600b0037a3f6bd9abso21386472qvw.3
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 07:40:57 -0700 (PDT)
+        Tue, 5 Oct 2021 10:44:07 -0400
+Received: by mail-oi1-f177.google.com with SMTP id o4so2583766oia.10;
+        Tue, 05 Oct 2021 07:42:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wzU/i4Pg+46qgDCgZNJOC2Q5GF1N36X0X0hspBjPG1E=;
-        b=UZxzYL69h0Drcv3d4MPY3atcnL2ZJl2yJzxyukadeascR6b/w3UtJ5m3GnXvujHIXJ
-         rr3lf1eeTU33pVRtXDHG6RW887rIGywoLz+q0HQDefIowuOGeeeEx0atiIHrHSkVI+P6
-         3Tb5uRQRs0BCnNjtWBuBcuYaMZsrLEyU+SmKGBISH/vLhJZbp8MnEuH0jI9qAtsN/0cd
-         pESvPT38KUzQ3Gtlu9CgO4tBvqZH+sLTNB04aC9YtK8lgSVfVr0nDrKSxfOA/fPb4SVv
-         dEJjybsS+qRMxX4dDCAbPeB8qm6ee7qRU7GxH5PWlmc/YUH1KtGzFWFuhkuHVSO4jH3d
-         PBnQ==
-X-Gm-Message-State: AOAM533TXV1h1+KhERZT77i1a0/EJn7pcjZJvElSdkTNJY4ievE26htS
-        x0DNayGJSj4wvRTCYGz0XbBT78/GYMQhg5v3va99Xu4Fsx0pqtRB8KtBcR2mPX2qzSiIknJel/c
-        JRIOWUkumdqrzWut2whikpZPQ
-X-Received: by 2002:ac8:12:: with SMTP id a18mr19699739qtg.157.1633444853046;
-        Tue, 05 Oct 2021 07:40:53 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy+t2B4lIEFPAbmTXO3075yF8VAAPnvFzGUfF6eQo+6mowEgcIC92iA+n3CUeM44w62NVx2MQ==
-X-Received: by 2002:ac8:12:: with SMTP id a18mr19699434qtg.157.1633444849664;
-        Tue, 05 Oct 2021 07:40:49 -0700 (PDT)
-Received: from t490s ([2607:fea8:56a2:9100::bed8])
-        by smtp.gmail.com with ESMTPSA id m5sm11623756qtk.88.2021.10.05.07.40.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Oct 2021 07:40:48 -0700 (PDT)
-Date:   Tue, 5 Oct 2021 10:40:47 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>
-Subject: Re: [PATCH 3/3] mm/smaps: Simplify shmem handling of pte holes
-Message-ID: <YVxj753GsZB/m7/J@t490s>
-References: <20210917164756.8586-1-peterx@redhat.com>
- <20210917164756.8586-4-peterx@redhat.com>
- <4bcf5e1d-cd86-319a-889f-782755955e04@suse.cz>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eZwLpL3VR1cDxPTIuLWceDkViaFbLKix0Hx3TUG7elc=;
+        b=SU3ofwoQli/UBW8PwznNzXTHtUtlVI4P8/WZCpJpEqcK8RL01sekP7dwCQR+MDjHND
+         /KpyGNU3I99K4La/USw4iDmhCctIoSsEVdLraq5QhBeS8SwHv8f96yGAZZnuBXdUvQUH
+         +vlcuund9X/mgXJEGjDCdN5JufBizxDDuHkP5Ic2NOZR87VJJdo0QN02oBFoi59IjqSx
+         aBr6LLlGZ+awJO717qiEOcdWmlUk6m/vaiZrPKdXAQk84yHrAS7exsX4mGQ/CTA4Yygd
+         DD1Hrz1vJ3mM2PzdeUgFUnZryf+sa/THKDigJ9mkuVaOjm0zbUTXVne5HY6FFolUIa90
+         YkFg==
+X-Gm-Message-State: AOAM532ui/9KjAR90Tumk/5CGV7I4KSIobrsGDcdebbd7+h8e6ZTkENt
+        cH+RhUAzsivjmxAAgXIq2RoqRyz/Tt7M8FENxoI=
+X-Google-Smtp-Source: ABdhPJwBSQTruG4tXHdQMFKRNdq9o7SvD0P5bn3E9E1CZEYOchSGi2uTsPDGXPY9h9SA95cqB2Yd2ha3bikKX6rl05E=
+X-Received: by 2002:a05:6808:1816:: with SMTP id bh22mr2786784oib.69.1633444936747;
+ Tue, 05 Oct 2021 07:42:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <4bcf5e1d-cd86-319a-889f-782755955e04@suse.cz>
+References: <f7513027ae9242643b5ddb6ed48a3aeca1b0f2a8.1632640557.git.christophe.jaillet@wanadoo.fr>
+In-Reply-To: <f7513027ae9242643b5ddb6ed48a3aeca1b0f2a8.1632640557.git.christophe.jaillet@wanadoo.fr>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 5 Oct 2021 16:42:05 +0200
+Message-ID: <CAJZ5v0hSRn2Au5phOHnoR3SMtA0B-H_tn+dskHSZEfHt1g9G_g@mail.gmail.com>
+Subject: Re: [PATCH] thermal: intel_powerclamp: Use bitmap_zalloc/bitmap_free
+ when applicable
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     "Zhang, Rui" <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Vlastimil,
+On Sun, Sep 26, 2021 at 9:17 AM Christophe JAILLET
+<christophe.jaillet@wanadoo.fr> wrote:
+>
+> 'cpu_clamping_mask' is a bitmap. So use 'bitmap_zalloc()' and
+> 'bitmap_free()' to simplify code, improve the semantic of the code and
+> avoid some open-coded arithmetic in allocator arguments.
+>
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
+>  drivers/thermal/intel/intel_powerclamp.c | 8 +++-----
+>  1 file changed, 3 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/thermal/intel/intel_powerclamp.c b/drivers/thermal/intel/intel_powerclamp.c
+> index a5b58ea89cc6..9b68489a2356 100644
+> --- a/drivers/thermal/intel/intel_powerclamp.c
+> +++ b/drivers/thermal/intel/intel_powerclamp.c
+> @@ -705,10 +705,8 @@ static enum cpuhp_state hp_state;
+>  static int __init powerclamp_init(void)
+>  {
+>         int retval;
+> -       int bitmap_size;
+>
+> -       bitmap_size = BITS_TO_LONGS(num_possible_cpus()) * sizeof(long);
+> -       cpu_clamping_mask = kzalloc(bitmap_size, GFP_KERNEL);
+> +       cpu_clamping_mask = bitmap_zalloc(num_possible_cpus(), GFP_KERNEL);
+>         if (!cpu_clamping_mask)
+>                 return -ENOMEM;
+>
+> @@ -753,7 +751,7 @@ static int __init powerclamp_init(void)
+>  exit_unregister:
+>         cpuhp_remove_state_nocalls(hp_state);
+>  exit_free:
+> -       kfree(cpu_clamping_mask);
+> +       bitmap_free(cpu_clamping_mask);
+>         return retval;
+>  }
+>  module_init(powerclamp_init);
+> @@ -764,7 +762,7 @@ static void __exit powerclamp_exit(void)
+>         cpuhp_remove_state_nocalls(hp_state);
+>         free_percpu(worker_data);
+>         thermal_cooling_device_unregister(cooling_dev);
+> -       kfree(cpu_clamping_mask);
+> +       bitmap_free(cpu_clamping_mask);
+>
+>         cancel_delayed_work_sync(&poll_pkg_cstate_work);
+>         debugfs_remove_recursive(debug_dir);
+> --
 
-On Tue, Oct 05, 2021 at 01:15:05PM +0200, Vlastimil Babka wrote:
-> > Since at it, use the pte_hole() helper rather than dup the page cache lookup.
-> 
-> pte_hole() is for checking a range and we are calling it for single page,
-> isnt't that causing larger overhead in the end? There's xarray involved, so
-> maybe Matthew will know best.
-
-Per my understanding, pte_hole() calls xas_load() too at last, just like the
-old code; it's just that the xas_for_each() of shmem_partial_swap_usage() will
-only run one iteration, iiuc.
-
-> 
-> > Still keep the CONFIG_SHMEM part so the code can be optimized to nop for !SHMEM.
-> > 
-> > There will be a very slight functional change in smaps_pte_entry(), that for
-> > !SHMEM we'll return early for pte_none (before checking page==NULL), but that's
-> > even nicer.
-> 
-> I don't think this is true, 'unlikely(IS_ENABLED(CONFIG_SHMEM))' will be a
-> compile-time constant false and shortcut the rest of the 'if' evaluation
-> thus there will be no page check? Or I misunderstood.
-
-The page check I was referring is this one in smaps_pte_entry():
-
-	if (!page)
-		return;
-
-After the change, with !SHMEM the "else" block will be kept there (unlike the
-old code as you mentioned it'll be optimized), the smaps_pte_hole_lookup() will
-be noop so it'll be a direct "return" in that "else", then it should return a
-bit earlier by not checking "!page" (because in that case pte_none must have
-page==NULL).
-
-Thanks,
-
--- 
-Peter Xu
-
+Applied as 5.16 material, thanks!
