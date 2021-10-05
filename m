@@ -2,97 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0F4A4221A0
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 11:03:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4938A42219E
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 11:03:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233523AbhJEJFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 05:05:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52364 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233490AbhJEJFN (ORCPT
+        id S233488AbhJEJFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 05:05:06 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:46038 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233490AbhJEJFE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 05:05:13 -0400
-Received: from mail-wm1-x34a.google.com (mail-wm1-x34a.google.com [IPv6:2a00:1450:4864:20::34a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3FB0C061745
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 02:03:22 -0700 (PDT)
-Received: by mail-wm1-x34a.google.com with SMTP id x23-20020a05600c21d700b0030d23749278so1028714wmj.2
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 02:03:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=IJ5d9LFfxfsfjOyzMb9wAWVGNaAsBq4D1S2tLUmROQw=;
-        b=k+C6KttgJIhWI0N6my6Gmd+ifempL0NxliApNM7bNFc4Zypp/266/edmPpEdSuDO6k
-         BE90f8QW/H93+LTSCmLBuGx6sAqz7pvyDbd+uGNlrq2s33VlMhGlGZHNhEJGQskmS7Sq
-         H3A4s6gUk4VgPHHkYEMLWraNS5mgRAPw+PZ4EBgI3WL0zgszOi1M00F1dadnofYdFWon
-         FgyIwwZ5d7m1fgmZMM8TOnwJdR2xercMi9sTasNLWYOOCQ9DIzXjssEiSBg7PlQOcvX5
-         L2sCgUPBIptqZ2kWHkne6YuTtKba/WcDG0cGnwu/hL7rHcLbGW7NnTteqVrtdarf8XNk
-         zYmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=IJ5d9LFfxfsfjOyzMb9wAWVGNaAsBq4D1S2tLUmROQw=;
-        b=yLvagOP93/oATjnVdFgUq/6tU2Y3hmdtfhTCTzpulRfG6kdgxxUnORz/QJA25vjUTl
-         0oTOY7cyiuh0VYdwqqW8IG/bHpgt2W8EEhRarUkmmHXw/gIDu2zyk4hG8Y7I2mE1xIlJ
-         E+dqZjJGJ9fbyYorrVPoqxK33kD1PBux1fkLM3wfiLcE4vNGi8hpdaLCcjyCl5l6wQyI
-         V9FMEX0asQ48chuudgE5d8yWlnbfVw4omYDrM+QKAAlmTCFlboxsToECaPBbNhhVsTal
-         oNA5QQKP3xNVDZ69ufm3LDss8kG4tOBXhS1wo2yGg7HM/51bpv1iXJjG7plO/bhqCM+8
-         VWJQ==
-X-Gm-Message-State: AOAM533DltzdiIr1txPMxGSXOGCcT++xBmyyjZg8ybvJPjtEBZmspp8p
-        LVHrAFY2SML3dilDy4EuSf41AduEDZQP
-X-Google-Smtp-Source: ABdhPJyWTqPJLcSZAfXhuyYllToltNQE4ex6rZPSYifRYSyemm303hl/IP70LZOn0VKNHsWefxffl1TuuHTX
-X-Received: from luke.lon.corp.google.com ([2a00:79e0:d:210:5700:9128:3106:b389])
- (user=qperret job=sendgmr) by 2002:a05:600c:3b26:: with SMTP id
- m38mr484791wms.0.1633424600779; Tue, 05 Oct 2021 02:03:20 -0700 (PDT)
-Date:   Tue,  5 Oct 2021 10:01:42 +0100
-In-Reply-To: <20211005090155.734578-1-qperret@google.com>
-Message-Id: <20211005090155.734578-6-qperret@google.com>
-Mime-Version: 1.0
-References: <20211005090155.734578-1-qperret@google.com>
-X-Mailer: git-send-email 2.33.0.800.g4c38ced690-goog
-Subject: [PATCH v2 2/2] KVM: arm64: Report corrupted refcount at EL2
-From:   Quentin Perret <qperret@google.com>
-To:     Marc Zyngier <maz@kernel.org>, James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Quentin Perret <qperret@google.com>,
-        Fuad Tabba <tabba@google.com>,
-        David Brazdil <dbrazdil@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org
-Cc:     kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 5 Oct 2021 05:05:04 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=rongwei.wang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UqdvfmN_1633424581;
+Received: from 30.25.232.89(mailfrom:rongwei.wang@linux.alibaba.com fp:SMTPD_---0UqdvfmN_1633424581)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 05 Oct 2021 17:03:01 +0800
+Message-ID: <847363b1-1b31-dcc8-6d6c-7b5d8a6d1972@linux.alibaba.com>
+Date:   Tue, 5 Oct 2021 17:03:00 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:93.0)
+ Gecko/20100101 Thunderbird/93.0
+Subject: Re: [PATCH v2 1/2] mm, thp: check page mapping when truncating page
+ cache
+Content-Language: en-US
+To:     Hugh Dickins <hughd@google.com>,
+        Matthew Wilcox <willy@infradead.org>
+Cc:     Song Liu <song@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        William Kucharski <william.kucharski@oracle.com>
+References: <BC145393-93AC-4DF4-9CF4-2FB1C736B70C@linux.alibaba.com>
+ <20210923194343.ca0f29e1c4d361170343a6f2@linux-foundation.org>
+ <9e41661d-9919-d556-8c49-610dae157553@linux.alibaba.com>
+ <CAPhsuW4cP4qV2c_wXP89-2fa+mALv-uEe+Qdqr_MD3Ptw03Wng@mail.gmail.com>
+ <68737431-01d2-e6e3-5131-7d7c731e49ae@linux.alibaba.com>
+ <CAPhsuW4x2UzMLwZyioWH4dXqrYwNT-XKgzvrm+6YeWk9EgQmCQ@mail.gmail.com>
+ <dde441c4-febe-cfa1-7729-b405fa331a4e@linux.alibaba.com>
+ <CAPhsuW5FONP=1rPh0oPLHsehjfGSDQWn8hKH4v=azdd=+WK2sA@mail.gmail.com>
+ <YVSopxYWegtQJ3iD@casper.infradead.org>
+ <CAPhsuW6_2_LxQRrs7xF3omgO22+6goDR=bEjKGRopaS-pHJB2Q@mail.gmail.com>
+ <YVT+KWFA8hfSKU+m@casper.infradead.org>
+ <CAPhsuW7tDh2cbA6QpZ993fuwOK=LKVsDYjymA4983riQw4QTkA@mail.gmail.com>
+ <8d8fb192-bd8d-8a08-498d-ca7204d4a716@linux.alibaba.com>
+ <d2776967-bb9f-985b-6d38-d1d1dc83cd7b@google.com>
+From:   Rongwei Wang <rongwei.wang@linux.alibaba.com>
+In-Reply-To: <d2776967-bb9f-985b-6d38-d1d1dc83cd7b@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some of the refcount manipulation helpers used at EL2 are instrumented
-to catch a corrupted state, but not all of them are treated equally. Let's
-make things more consistent by instrumenting hyp_page_ref_dec_and_test()
-as well.
 
-Acked-by: Will Deacon <will@kernel.org>
-Suggested-by: Will Deacon <will@kernel.org>
-Signed-off-by: Quentin Perret <qperret@google.com>
----
- arch/arm64/kvm/hyp/nvhe/page_alloc.c | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm64/kvm/hyp/nvhe/page_alloc.c b/arch/arm64/kvm/hyp/nvhe/page_alloc.c
-index a6e874e61a40..0bd7701ad1df 100644
---- a/arch/arm64/kvm/hyp/nvhe/page_alloc.c
-+++ b/arch/arm64/kvm/hyp/nvhe/page_alloc.c
-@@ -152,6 +152,7 @@ static inline void hyp_page_ref_inc(struct hyp_page *p)
- 
- static inline int hyp_page_ref_dec_and_test(struct hyp_page *p)
- {
-+	BUG_ON(!p->refcount);
- 	p->refcount--;
- 	return (p->refcount == 0);
- }
--- 
-2.33.0.800.g4c38ced690-goog
+On 10/5/21 10:58 AM, Hugh Dickins wrote:
+> On Tue, 5 Oct 2021, Rongwei Wang wrote:
+> 
+>> Hi,
+>> I have run our cases these two days to stress test new Patch #1. The new Patch
+>> #1 mainly add filemap_invalidate_{un}lock before and after
+>> truncate_pagecache(), basing on original Patch #1. And the crash has not
+>> happened.
+>>
+>> Now, I keep the original Patch #1, then adding the code below which suggested
+>> by liu song (I'm not sure which one I should add in the next version,
+>> Suggested-by or Signed-off-by? If you know, please remind me).
+>>
+>> -               if (filemap_nr_thps(inode->i_mapping))
+>> +               if (filemap_nr_thps(inode->i_mapping)) {
+>> +                       filemap_invalidate_lock(inode->i_mapping);
+>>                          truncate_pagecache(inode, 0);
+>> +                       filemap_invalidate_unlock(inode->i_mapping);
+>> +               }
+> 
+> I won't NAK that patch; but I still believe it's unnecessary, and don't
+> see how it protects against all the races (collapse_file() does not use
+> that lock, whereas collapse_file() does use page lock).  And if you're
+> hoping to fix 5.10, then you will have to backport those invalidate_lock
+> patches there too (they're really intended to protect hole-punching).
+> 
+>>
+>> And the reason for keeping the original Patch #1 is mainly to fix the race
+>> between collapse_file and truncate_pagecache. It seems necessary. Despite the
+>> two-day test, I did not reproduce this race any more.
+>>
+>> In addition, I also test the below method:
+>>
+>> diff --git a/mm/truncate.c b/mm/truncate.c
+>> index 3f47190f98a8..33604e4ce60a 100644
+>> --- a/mm/truncate.c
+>> +++ b/mm/truncate.c
+>> @@ -210,8 +210,6 @@ invalidate_complete_page(struct address_space *mapping,
+>> struct page *page)
+>>
+>>   int truncate_inode_page(struct address_space *mapping, struct page *page)
+>>   {
+>> -       VM_BUG_ON_PAGE(PageTail(page), page);
+>> -
+>>          if (page->mapping != mapping)
+>>                  return -EIO;
+>>
+>> I am not very sure this VM_BUG_ON_PAGE(PageTail) is what Hugh means. And
+>> the test results show that only removing this VM_BUG_ON_PAGE(PageTail) has no
+>> effect. So, I still keep the original Patch #1 to fix one race.
+> 
+> Yes, that's exactly what I meant, and thank you for intending to try it.
+> 
+> But if that patch had "no effect", then I think you were not running the
+> kernel with that patch applied: because it deletes the BUG on line 213
+> of mm/truncate.c, which is what you reported in the first mail!
+> 
+> Or, is line 213 of mm/truncate.c in your 5.10.46-hugetext+ kernel
+> something else?  I've been looking at 5.15-rc.
+Hi, Hugh
 
+I'm sorry the confusing '5.10.46-hugetext+'. I am also look and test at 
+5.15-rc.
+> 
+> But I wasn't proposing to delete it merely to hide the BUG: as I hope
+> I explained, we could move it below the page->mapping check, but it
+> wouldn't really be of any value there since tails have NULL page->mapping
+> anyway (well, I didn't check first and second tails, maybe mapping gets
+> reused for some compound page field in those). I was proposing to delete
+> it because the page->mapping check then weeds out the racy case once
+> we're holding page lock, without the need for adding anything special.
+> 
+> Hugh
+Today, I try again to create some cases to reproduce the race, such as 
+ensuring that multiple processes are always executing 
+‘truncate_pagecache’ and only mapping 2M DSO. In this way, I try to 
+ensure that the target of 'collapse_file' and 'truncate_pagecache' can 
+only be the same VMA, to increase the probability of reproducing that 
+race. But, I can't reproduce that race any more.
+
+In fact, according to the previous experience, the current number of 
+attempts should be able to reproduce that race.
+
+If you have the idea about creating this case, please tell me, and I can 
+try again. Or we can solve it when it appears again.
+
+Thanks!
+> 
