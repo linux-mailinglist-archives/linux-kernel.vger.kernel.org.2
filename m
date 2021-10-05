@@ -2,102 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 685834226E3
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 14:37:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F1E24226E6
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 14:37:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234575AbhJEMiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 08:38:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46428 "EHLO
+        id S234382AbhJEMjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 08:39:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234409AbhJEMhq (ORCPT
+        with ESMTP id S234476AbhJEMi5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 08:37:46 -0400
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37257C061753
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 05:35:55 -0700 (PDT)
-Received: by mail-io1-xd34.google.com with SMTP id b78so3107952iof.2
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 05:35:55 -0700 (PDT)
+        Tue, 5 Oct 2021 08:38:57 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C814C061753
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 05:37:06 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id pf6-20020a17090b1d8600b0019fa884ab85so1893111pjb.5
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 05:37:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=nd2ejrVn1IrBzoTnNUOEIyw1dA744hB3m7HTfczVCYw=;
-        b=xmvqwh+kxSPa9x9HeEtsBRyEMZbiwmF9kmT2OvILc5pg90cUkpuaMZ5OvHxKqkDYU/
-         1fpVksM05Rf0fxzEAil/CPpgNnKkpCNejmW21owoiE3aWLED7++R8k81uvojfVvqc7ci
-         HHXXOXOa9lBEMqLOMKVKNocxqsF+0fQcu+AQ08kIFpjn5xBRAdKSlfOYM9Apu+9R1+eY
-         SHsfuYhDY6L8gqWWZaKmVr3FcM7xqLEmeo/ExEEu7PQfnMv9yRp+FF0GUJngHr9mvWDX
-         kTsCNcRsjwP+pp6QAXebSf40N/OR4D2lHP2fsAz5ikvIPfnSdkdPZWCCpOhP/G2e1N4n
-         RT+Q==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lVPH4TZHAxvSTCltWyDXdeo1ZxDBlOyPU18BgDEONOg=;
+        b=udMMTi/ssJDcJsFoHtRX8AG0xQfsjCJQ0ENBji1xTFvR5lMruvSPrsX2ngejyocisw
+         JxeWqaK0nCvpsbIYa/ypNM40WsczDbsNGvwgTZyprgpjqpJGwscXbkQFSkErpxAEti9o
+         Ee8RSrt4D8PS3vcFhRx6y8dLBpPPrkmQzNyaCR/+OY7iBCzoeVboKN2FiNUJpy03NIA4
+         Y39693spgVic67In4EPGb6tdQB9gfSRgpefa/UF/3Ydxd/oRrYMkcndDOSoSCTqnnNBf
+         7NqMBzMjfd68E99WPaMETOtw2IiXbG3/CyRPobuTijAHqRu8WSnC38QjP6ZtIdP8n48B
+         0fCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=nd2ejrVn1IrBzoTnNUOEIyw1dA744hB3m7HTfczVCYw=;
-        b=XQ/Ao64wQAyNZHglcRVKgH1HSMBGoRqziRNNE4PBtJQ/GK5rRZrIc/8MdfA/kKiCDE
-         ylO+DdHa4XbA/QL7/dLHGZYpw2+3S0YSi2+oUHFqcAnOBgnXqJHJGKk02q+U+pGGB4Eu
-         lAkQXXUSIFtS5usASkQcWjy8GS1YBYrd6x6k75SwuRLi3w/nI8VB7v/IjqbQJgyVKB8w
-         6NbcdUVuUnKVw10XHMIQ6o48pn3SM2uXss2LSLblqC3M6bzVEBcJ1CTS0zII/w8LeEGa
-         65nl79OsEJG490WrB/YVMDxSQtA8EIunx3WbFDCYMRUHBYp8GK7awlsK+blz5Te+47bv
-         vmyA==
-X-Gm-Message-State: AOAM5334qJDiQE/OuIU4CW9x1rWUYa3j5+AeljMrFj0eryAgDJjW8Dsc
-        I6fvwDgbyS3GDQPSdeq8N/9LuQ==
-X-Google-Smtp-Source: ABdhPJwRiZXSHS0qUfot1WPJLc5czmuF+55CPQgpqu62Bytbnh3tfhH63y5zGznVaUNcr7o0Yrnpfg==
-X-Received: by 2002:a02:7006:: with SMTP id f6mr136991jac.113.1633437354591;
-        Tue, 05 Oct 2021 05:35:54 -0700 (PDT)
-Received: from [192.168.1.116] ([66.219.217.159])
-        by smtp.gmail.com with ESMTPSA id a4sm8961525ild.52.2021.10.05.05.35.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Oct 2021 05:35:54 -0700 (PDT)
-Subject: Re: [PATCH v5 00/14] blk-mq: Reduce static requests memory footprint
- for shared sbitmap
-To:     John Garry <john.garry@huawei.com>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ming.lei@redhat.com, hare@suse.de, linux-scsi@vger.kernel.org,
-        kashyap.desai@broadcom.com
-References: <1633429419-228500-1-git-send-email-john.garry@huawei.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <ae33dde8-96e8-2978-5f32-c7e0a6136e8e@kernel.dk>
-Date:   Tue, 5 Oct 2021 06:35:52 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        bh=lVPH4TZHAxvSTCltWyDXdeo1ZxDBlOyPU18BgDEONOg=;
+        b=aJLfu7VRF+TTNTl8HoKwaZlcElGokMCisAeKtYBSygXJabHWz7GjA4I/SziNhBYCyJ
+         HStqESAmMXFoqlbw0d/vMMfi31OG1YcACNki3iu+pdAQx8P3ssH6eOxEA1G/b+sVV0RW
+         Xwpeu04fAyoGGwOf3Xuk9fr6QoLpvBAoluXeZdQs51hlQaq50J7XVKdaVoeeVuxKVXBb
+         YhVZfdLuH0ElSIzZnvymK+NjahavLE6JW6tatzQED71nzhaCz0b0eEmpid5juaLHKrB3
+         TK5npo8+mBNAPH/Z0xiNhEkWEy3pHHqYSw4BwkDOv07aRQ4tmnWvssJUWRnZlsLF5WRg
+         jdbw==
+X-Gm-Message-State: AOAM533UVzEt2tUK4D+AAE2thn5X26xUJ38e1mWoGgWnHD69N7jj938C
+        OEWpnTY8T1oSgQxNGri1pQcYiw==
+X-Google-Smtp-Source: ABdhPJwaElTGd3gRHuAw77hTTZtY+xP98SrG7ozv3yojilY71WaGsAS1I9GSJJwRAWWgIH1iWurHrA==
+X-Received: by 2002:a17:90b:4b85:: with SMTP id lr5mr3580224pjb.66.1633437425769;
+        Tue, 05 Oct 2021 05:37:05 -0700 (PDT)
+Received: from localhost.localdomain ([223.178.212.101])
+        by smtp.gmail.com with ESMTPSA id p13sm2038736pjb.44.2021.10.05.05.37.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Oct 2021 05:37:05 -0700 (PDT)
+From:   Sumit Garg <sumit.garg@linaro.org>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     rostedt@goodmis.org, mingo@redhat.com, catalin.marinas@arm.com,
+        will@kernel.org, samitolvanen@google.com, ben.dai@unisoc.com,
+        mark.rutland@arm.com, nathan@kernel.org, keescook@chromium.org,
+        ndesaulniers@google.com, daniel.thompson@linaro.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        Sumit Garg <sumit.garg@linaro.org>
+Subject: [PATCH v2] arm64: ftrace: use function_nocfi for _mcount as well
+Date:   Tue,  5 Oct 2021 18:06:45 +0530
+Message-Id: <20211005123645.2766258-1-sumit.garg@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <1633429419-228500-1-git-send-email-john.garry@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/5/21 4:23 AM, John Garry wrote:
-> Currently a full set of static requests are allocated per hw queue per
-> tagset when shared sbitmap is used.
-> 
-> However, only tagset->queue_depth number of requests may be active at
-> any given time. As such, only tagset->queue_depth number of static
-> requests are required.
-> 
-> The same goes for using an IO scheduler, which allocates a full set of
-> static requests per hw queue per request queue.
-> 
-> This series changes shared sbitmap support by using a shared tags per
-> tagset and request queue. Ming suggested something along those lines in
-> v1 review. In using a shared tags, the static rqs also become shared,
-> reducing the number of sets of static rqs, reducing memory usage.
-> 
-> Patch "blk-mq: Use shared tags for shared sbitmap support" is a bit big,
-> and could potentially be broken down. But then maintaining ability to
-> bisect becomes harder and each sub-patch would get more convoluted.
-> 
-> For megaraid sas driver on my 128-CPU arm64 system with 1x SATA disk, we
-> save approx. 300MB(!) [370MB -> 60MB]
-> 
-> Baseline is 1b2d1439fc25 (block/for-next) Merge branch 'for-5.16/io_uring'
-> into for-next
+Commit 800618f955a9 ("arm64: ftrace: use function_nocfi for ftrace_call")
+only fixed address of ftrace_call but address of _mcount needs to be
+fixed as well. Use function_nocfi() to get the actual address of _mcount
+function as with CONFIG_CFI_CLANG, the compiler replaces function pointers
+with jump table addresses which breaks dynamic ftrace as the address of
+_mcount is replaced with the address of _mcount.cfi_jt.
 
-Let's get this queued up for testing, thanks John.
+This problem won't apply where the toolchain implements
+-fpatchable-function-entry as we'll use that in preference to regular -pg,
+i.e. this won't show up with recent versions of clang.
 
+Fixes: 9186ad8e66bab6a1 ("arm64: allow CONFIG_CFI_CLANG to be selected")
+Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+Acked-by: Mark Rutland <mark.rutland@arm.com>
+---
+
+Changes in v2:
+- Added fixes tag.
+- Extended commit description.
+- Picked up Mark's ack.
+
+ arch/arm64/include/asm/ftrace.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm64/include/asm/ftrace.h b/arch/arm64/include/asm/ftrace.h
+index 91fa4baa1a93..347b0cc68f07 100644
+--- a/arch/arm64/include/asm/ftrace.h
++++ b/arch/arm64/include/asm/ftrace.h
+@@ -15,7 +15,7 @@
+ #ifdef CONFIG_DYNAMIC_FTRACE_WITH_REGS
+ #define ARCH_SUPPORTS_FTRACE_OPS 1
+ #else
+-#define MCOUNT_ADDR		((unsigned long)_mcount)
++#define MCOUNT_ADDR		((unsigned long)function_nocfi(_mcount))
+ #endif
+ 
+ /* The BL at the callsite's adjusted rec->ip */
 -- 
-Jens Axboe
+2.17.1
 
