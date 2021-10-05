@@ -2,80 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AEFD421FF3
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 09:57:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEB00422006
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 09:59:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232739AbhJEH60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 03:58:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39492 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233612AbhJEH55 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 03:57:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B446961350;
-        Tue,  5 Oct 2021 07:56:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633420567;
-        bh=f4gsbsUJ2pbvz6Vm0qN214XBzGKbfjvTDyCDkH9qwoU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=jr0uAPEXaN1ov5aY1GCXK4ansIV4xeQfmIv3dWlzxw+RKXAoYflkVVtsEW+QkLn9i
-         HoXNedAH5S4LUu787uOK/T6ITBB3sozWJhgDKVB/wW4sgnfNclbRJhIb/JTav+mOoa
-         qFMoPvursQplbFXEaRSU/zmIRnQUp6ilmv+sdINxLTZ0dfyMDxVWY9xmuxgPgOuS6y
-         ezvhoaJ4cJLGpifj2IxbDEO5kRjuYFOC7J3s2Q08XEXYPo7V0Utu55n0cozKNebRNs
-         vAb0Pze/6bXxz08oVdPvpQJoOZ49bhLqUJd7RpzAabo/c1RoYUfPYJQi8owr8N9FA9
-         qiRYYsp4W0QQA==
-Date:   Tue, 5 Oct 2021 09:56:03 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 RESEND] mfd: hi6421-spmi-pmic: cleanup drvdata
-Message-ID: <20211005095603.0e204776@coco.lan>
-In-Reply-To: <YVwD2sPZMCtwP9yf@google.com>
-References: <b6102d6db357ebb5c937f460a564c6f26281e403.1631709890.git.mchehab+huawei@kernel.org>
-        <YVwD2sPZMCtwP9yf@google.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
+        id S232947AbhJEIBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 04:01:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37240 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231816AbhJEIBi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 04:01:38 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 315DFC061745;
+        Tue,  5 Oct 2021 00:59:48 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HNqk73Tmdz4xbC;
+        Tue,  5 Oct 2021 18:59:42 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1633420785;
+        bh=wfeXA7dMbbU3zv2UjIpe4e0tS5IB1hPNSHNMLRMmit0=;
+        h=Date:From:To:Cc:Subject:From;
+        b=uSvqMIZ9QTCXc/u82OEuuMkVqDfJreRQ0jmrC1bS2ankHyCq8l2sDdMuHU8WXr9/Q
+         /iVY2/IFrCLunSKHnPjVSMLSl/lawhO78oS4l2HzRu9C0VJs0BZyoyFscVRgDKRw4B
+         j1StM8W3TEQTj7J/DOHc/XfPJ2jtrS354VkKVAKdOSpMLBQxrmSq7L+FGHKPq2ZG6v
+         3Vv/fuZ8Q0MWSRGrOu5YphBqQ5YdfDABUA2wSeAE59MVbd2JzNt0BgM1zBYwmkswrM
+         XEHfxYEHkiW46Bu/RQLXQWIULy5nW/b3NGzwU2c6qeOLGGCO1LE5i2sjk9tH9AZnsw
+         OiZIMiOyiF1Zg==
+Date:   Tue, 5 Oct 2021 18:59:40 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>
+Cc:     Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the drm-misc tree
+Message-ID: <20211005185940.382720e7@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/DzN9LhCaJE=kJIITRXpYg2U";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, 5 Oct 2021 08:50:50 +0100
-Lee Jones <lee.jones@linaro.org> escreveu:
+--Sig_/DzN9LhCaJE=kJIITRXpYg2U
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> On Wed, 15 Sep 2021, Mauro Carvalho Chehab wrote:
-> 
-> > There are lots of fields at struct hi6421_spmi_pmic that aren't
-> > used. In a matter of fact, only regmap is needed.
-> > 
-> > So, drop the struct as a hole, and set just the regmap as
-> > the drvdata.
-> > 
-> > Acked-by: Mark Brown <broonie@kernel.org>
-> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> > ---
-> >  drivers/mfd/hi6421-spmi-pmic.c           | 16 +++++----------
-> >  drivers/misc/hi6421v600-irq.c            |  9 ++++-----
-> >  drivers/regulator/hi6421v600-regulator.c | 10 +++++-----
-> >  include/linux/mfd/hi6421-spmi-pmic.h     | 25 ------------------------
-> >  4 files changed, 14 insertions(+), 46 deletions(-)
-> >  delete mode 100644 include/linux/mfd/hi6421-spmi-pmic.h  
-> 
-> For my own reference (apply this as-is to your sign-off block):
-> 
->   Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
-> 
-> I intend to take this with a Misc Ack.
+Hi all,
 
-Hi Lee,
+After merging the drm-misc tree, today's linux-next build (htmldocs)
+produced this warning:
 
-Greg already gave you:
+include/linux/dma-buf.h:456: warning: Function parameter or member 'cb_in' =
+not described in 'dma_buf'
+include/linux/dma-buf.h:456: warning: Function parameter or member 'cb_out'=
+ not described in 'dma_buf'
 
-	https://lore.kernel.org/all/YVLA14jbwqXjNM2f@kroah.com/
+Introduced by commit
 
-Regards,
-Mauro
+  6b51b02a3a0a ("dma-buf: fix and rework dma_buf_poll v7")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/DzN9LhCaJE=kJIITRXpYg2U
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFcBewACgkQAVBC80lX
+0Gz87Qf/ejwjqlHJAHNP2eNsQJh+/0/HggBItJofeqDAXd9uPH2oap2ZHo85ot2P
+CIn/vLl4N290pS+YVWc+D8rnWiytgb+ASFjCBVaSnIIqzN2SIMvTOHfHtTvZuGTF
+owhBNWD9TkdZwJqUemERiHB3J9aHoH5RyHqhMu+drFivhTAIn/YR7suHlTuw4ogU
+m1G01RjLJkkEGx23S9uFV+Dz7/zt7gYe70Y7Q3/I5xj0Od5sm4JCz/sUJjMoOMpH
+UnETNYkC5tzh4ojcQz9LnoXhPIzPRuB6R+jFBD3nzCqG7zjDbAWmSbMFY9RHYfVr
++ZsCqKnBkjVOFXdQFXAltDt3piqAGQ==
+=13EE
+-----END PGP SIGNATURE-----
+
+--Sig_/DzN9LhCaJE=kJIITRXpYg2U--
