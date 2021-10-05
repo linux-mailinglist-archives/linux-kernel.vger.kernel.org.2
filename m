@@ -2,86 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C4D4422AEB
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:21:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F49F422AF1
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:23:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236045AbhJEOWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 10:22:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43184 "EHLO
+        id S235324AbhJEOYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 10:24:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235294AbhJEOWp (ORCPT
+        with ESMTP id S234823AbhJEOYs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 10:22:45 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33077C061749;
-        Tue,  5 Oct 2021 07:20:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=9cd4fflbhPi+WS75BLlYH8Lxr29xEplX+5DiCepdM6M=; b=OnNnDZAKK+pQ6EIA+ZWx48Di7m
-        tMp2OUnjS87vId8Dy0d5hZTjGs7cBq59swnhV9JCKGUAzFnr4WwA+9tlVSLgeXL/JLufkRzubC33Q
-        2l6MC4iBv8AJKNMMFJIyUSiJGVQMVoVnkPXvew12mA05UqHbUmiSw5/xcYTn8smG0rJ7m4vpEQQri
-        uJzZ1wwm3TM8a92IqmGWFaJB9LOc9VPHqCAvbTIjN2+tUGfSHPwL5UelwKcDGytuynF2iS4WBAAmX
-        cYg84BxxaLFmdMUPQ4PYoo8sij9dMymbE4t8KP5tgclSAt9k3YtZPnwReEUI5PfzlKFGo4C/q161H
-        qyQQ4eEw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mXlJ8-0083tX-1Y; Tue, 05 Oct 2021 14:20:38 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 28D5230003C;
-        Tue,  5 Oct 2021 16:20:37 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 100B321339B6B; Tue,  5 Oct 2021 16:20:37 +0200 (CEST)
-Date:   Tue, 5 Oct 2021 16:20:37 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Marco Elver <elver@google.com>
-Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
-        Alexander Potapenko <glider@google.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
+        Tue, 5 Oct 2021 10:24:48 -0400
+Received: from mail-oo1-xc2a.google.com (mail-oo1-xc2a.google.com [IPv6:2607:f8b0:4864:20::c2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06730C061753
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 07:22:58 -0700 (PDT)
+Received: by mail-oo1-xc2a.google.com with SMTP id i26-20020a4ad09a000000b002a9d58c24f5so6454691oor.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 07:22:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=xF+jNwW5BFEV+lIRF79mZl5w3T2WmTQ1n+ANOqGSM58=;
+        b=G6WOlcyfrBgIu0kBXl6Bx3ZoUEQr6/41sXdy6lq/sSgNafvyAemd+dwNdapXnV3vQ4
+         UKifj/kxPStJlaVPMTA9ab+lLDZY4sQ2+f2wY++qX7vRBaVpW5zNTqa9fFNe98irLV3S
+         GVWYWVhmPK8KnUJNQ+LADA8ROn56XNvBR+c+g=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=xF+jNwW5BFEV+lIRF79mZl5w3T2WmTQ1n+ANOqGSM58=;
+        b=uTlEQu8zXznEc+GuysEcrubIUF7KqEGbsl4rGj9xw9ePRMh+qsDVswHJoSI6k7vcLS
+         EoP+ZYr9+QRuHs2+qnxpx0ufrmdXfMmNMm/cW5D67dPaYtHl/c8+OQ3CuDyD9Gm/Bwbg
+         6A5Vi//l1uOyMZwBd/QdE4NuGVNYfrCcQvJ5xc8dG7GH6aqoOWjEm5U8jmnLrh11Igzo
+         YKJt7UcuuG9X6jE1s4LggWMWGdVjq65PSuKRLb1ogt7wuddC52OMknxB1TvNldF+Dt/F
+         oNAldEwjSTRcl2WKtsOQ+QIqsy/JidNBuwWv1F21BwmWnqT6UBYCibDVQpk3wKXV35YD
+         aBRw==
+X-Gm-Message-State: AOAM531orsVVqhaz7BO3x61l97lE3AZ7qePllvyeQ6f8LZsuFV4IiGRB
+        pTXHaGGmfoUwD0YfTt8dI71GHg==
+X-Google-Smtp-Source: ABdhPJyBcGscPewH1ZEk7sJd92chljhW3DetsHnRNw1RAHBxKccwA91AIJhkvrbu0pKqg5g+Lc7jUQ==
+X-Received: by 2002:a05:6820:358:: with SMTP id m24mr13754323ooe.34.1633443777284;
+        Tue, 05 Oct 2021 07:22:57 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id v9sm1382374oth.62.2021.10.05.07.22.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Oct 2021 07:22:56 -0700 (PDT)
+Subject: Re: [PATCH v1 2/6] mm/memory_hotplug: remove
+ CONFIG_MEMORY_HOTPLUG_SPARSE
+To:     David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>, Alex Shi <alexs@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Waiman Long <longman@redhat.com>,
-        Will Deacon <will@kernel.org>, kasan-dev@googlegroups.com,
-        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, x86@kernel.org
-Subject: Re: [PATCH -rcu/kcsan 04/23] kcsan: Add core support for a subset of
- weak memory modeling
-Message-ID: <YVxfNbTgT7GN21I1@hirez.programming.kicks-ass.net>
-References: <20211005105905.1994700-1-elver@google.com>
- <20211005105905.1994700-5-elver@google.com>
- <YVxKplLAMJJUlg/w@hirez.programming.kicks-ass.net>
- <CANpmjNMk0ubjYEVjdx=gg-S=zy7h=PSjZDXZRVfj_BsNzd6zkg@mail.gmail.com>
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Shuah Khan <shuah@kernel.org>, Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Mike Rapoport <rppt@kernel.org>, x86@kernel.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+        linux-doc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        virtualization@lists.linux-foundation.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210929143600.49379-1-david@redhat.com>
+ <20210929143600.49379-3-david@redhat.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <0489ea97-0a78-0299-335a-ca1166bb2735@linuxfoundation.org>
+Date:   Tue, 5 Oct 2021 08:22:54 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANpmjNMk0ubjYEVjdx=gg-S=zy7h=PSjZDXZRVfj_BsNzd6zkg@mail.gmail.com>
+In-Reply-To: <20210929143600.49379-3-david@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05, 2021 at 03:13:25PM +0200, Marco Elver wrote:
-> On Tue, 5 Oct 2021 at 14:53, Peter Zijlstra <peterz@infradead.org> wrote:
-
-> > And since you want to mark these functions as uaccess_safe, there must
-> > not be any tracing on, hence notrace.
+On 9/29/21 8:35 AM, David Hildenbrand wrote:
+> CONFIG_MEMORY_HOTPLUG depends on CONFIG_SPARSEMEM, so there is no need for
+> CONFIG_MEMORY_HOTPLUG_SPARSE anymore; adjust all instances to use
+> CONFIG_MEMORY_HOTPLUG and remove CONFIG_MEMORY_HOTPLUG_SPARSE.
 > 
-> In the Makefile we've relied on:
+> Signed-off-by: David Hildenbrand <david@redhat.com>
+> ---
+>   arch/powerpc/include/asm/machdep.h            |  2 +-
+>   arch/powerpc/kernel/setup_64.c                |  2 +-
+>   arch/powerpc/platforms/powernv/setup.c        |  4 ++--
+>   arch/powerpc/platforms/pseries/setup.c        |  2 +-
+>   drivers/base/Makefile                         |  2 +-
+>   drivers/base/node.c                           |  9 ++++-----
+>   drivers/virtio/Kconfig                        |  2 +-
+>   include/linux/memory.h                        | 18 +++++++-----------
+>   include/linux/node.h                          |  4 ++--
+>   lib/Kconfig.debug                             |  2 +-
+>   mm/Kconfig                                    |  4 ----
+>   mm/memory_hotplug.c                           |  2 --
+>   tools/testing/selftests/memory-hotplug/config |  1 -
+>   13 files changed, 21 insertions(+), 33 deletions(-)
 > 
->   CFLAGS_REMOVE_core.o = $(CC_FLAGS_FTRACE)
+
+>   {
+> diff --git a/tools/testing/selftests/memory-hotplug/config b/tools/testing/selftests/memory-hotplug/config
+> index a7e8cd5bb265..1eef042a31e1 100644
+> --- a/tools/testing/selftests/memory-hotplug/config
+> +++ b/tools/testing/selftests/memory-hotplug/config
+> @@ -1,5 +1,4 @@
+>   CONFIG_MEMORY_HOTPLUG=y
+> -CONFIG_MEMORY_HOTPLUG_SPARSE=y
+>   CONFIG_NOTIFIER_ERROR_INJECTION=y
+>   CONFIG_MEMORY_NOTIFIER_ERROR_INJECT=m
+>   CONFIG_MEMORY_HOTREMOVE=y
 > 
-> just to disable it for all code here. That should be enough, right?
 
-I find these implicit notrace thingies terribly confusing :/ I've
-reported fail to rostedt a number of times only to be (re)told about
-these Makefile level thingies.
+For Kselftest change:
 
-Ideally we'd script notrace on every implicit symbol or something.
+Acked-by: Shuah Khan <skhan@linuxfoundation.org>
+
+thanks,
+-- Shuah
