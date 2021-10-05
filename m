@@ -2,225 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22A9F4230E1
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 21:42:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DE794230E7
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 21:43:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235572AbhJEToY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 15:44:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34200 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235496AbhJEToW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 15:44:22 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B7ADC06174E
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 12:42:31 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id x7so913722edd.6
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 12:42:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+8SNQ/BUCGUuug/KneYCQ18TWuSycJxPe40EryL3As8=;
-        b=IsMRmg3op1/W/FJCoSqfcYl8D6JZHanQtR20HmWJnZI5KPL33yHrD/CjvkGoVoi6KH
-         33ajyvHQCKw9c/eANvr6FnieU+KeVuHxIqMNn8IrlBI2CBWZRy3IN+o9a44JHWvaXmgG
-         sQLzRRus5aLRTM+iqm9v67n5STspxcuxGmVsSCzxzxLVHGJcRWFf0tSeY89FvXx/3Cd4
-         H0yKTk7l5lk1oWrw6sWcdFxyO49Ld937EqhQ6eOFAk8RqSaaybrrRAhEGych25Ce7iQe
-         nS9HYRgYvD6sY5+lTIDGqBmzdYMb0sG+VeSKW4ffOogz0iBntObkiV2j7znEwmag5+IW
-         01Cg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+8SNQ/BUCGUuug/KneYCQ18TWuSycJxPe40EryL3As8=;
-        b=2Tsfx2vr9/bnTUaWoHtJlaZMGeby87tnPXFT1cXFQqqBCxpkmcieai8/Y+/iaG3OTb
-         QmZVfo6cI/SSiAr85YhyX7OQf+pMizd0oPvBM+s+50sw7bSBCbWQkDLjTO8OuJ9/fTJ2
-         qaKy2FB2/ggQTzGPitYsffWqs1ywCacCCNvLrVau4zH3VF3TsSIbUerypckvIqlLzqps
-         KXYx9GCpMn0lU6k2pC4ijOv6xNfwEGp51v3MSdE+VJb3z7gwac4lnaWfPKKdcnPqHGZZ
-         YD3TzkZoKwr3QfvkoEi1m5Wc2MKFPmwiFVwf7mdEsZYNj/9oEJPwSMCU5AvnY+mjt8IV
-         RiVA==
-X-Gm-Message-State: AOAM533krCFEznE4JBol8ytEdG/tCnTj9Qx3ctP2Yf8EAkQI9m6sJVk5
-        OH+WsGKagWYDv4m1GPoMv4ffaA2j/GDbI5wzOZg+/g==
-X-Google-Smtp-Source: ABdhPJwle01c7hMxSATBOSlChA/RkP5lX14BdMkY4LtJNlo/XvnowdQCDeBsEBvlm82QD02IXyT06Lb1tJOpy4KLImg=
-X-Received: by 2002:a17:906:c7c1:: with SMTP id dc1mr28278167ejb.6.1633462949452;
- Tue, 05 Oct 2021 12:42:29 -0700 (PDT)
+        id S235593AbhJETo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 15:44:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42582 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235134AbhJEToz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 15:44:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 063D4610A5;
+        Tue,  5 Oct 2021 19:43:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633462984;
+        bh=93hVsy5BdDKlxUJFddXFi3vlWoO0RQGiRnw/E66GdM8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KYhYHG3q0/jMzU2P/lSej5mQZqlS1lOlJajSBxtUbkFvwRSihhtAyHaj7cEsOqc9h
+         Oz5+t5YI0rMT5PVj4UvfF2f4JWP6x+0L/krFZ6sKIR7SL6EnRyD2iLNcmjqhXI+9bg
+         zCw7M5f0xZ0HIPdq7rJwjqPsG13E94u0OOXE5W6F/EWgfWpM8YHY/8nIq/LcQO9Ny7
+         KmmqUAOTgC6gxtRCIqNlmzs/fnfrQQ1+Z0mldWwHkb1l/mR5GYFSuHB7hj1eEgxwlv
+         YXQkoH85br8e3dHfM9WzC6KRQ0JcUUFKNRZKRb+N0dYdrecgGUZzC3MR4ha1tYxlnc
+         pVdBhqZAsvzUg==
+Received: by pali.im (Postfix)
+        id 85139812; Tue,  5 Oct 2021 21:43:01 +0200 (CEST)
+Date:   Tue, 5 Oct 2021 21:43:01 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Jeremy Linton <jeremy.linton@arm.com>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org,
+        lorenzo.pieralisi@arm.com, nsaenz@kernel.org, bhelgaas@google.com,
+        rjw@rjwysocki.net, lenb@kernel.org, robh@kernel.org, kw@linux.com,
+        f.fainelli@gmail.com, bcm-kernel-feedback-list@broadcom.com,
+        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rpi-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/4] PCI: brcmstb: Add ACPI config space quirk
+Message-ID: <20211005194301.enb5jddzdgczcolx@pali>
+References: <20211005153209.GA1083986@bhelgaas>
+ <d4b34193-31e5-2f95-6365-b58239c0dabb@arm.com>
 MIME-Version: 1.0
-References: <20211005083311.830861640@linuxfoundation.org> <20211005155909.GA1386975@roeck-us.net>
- <4ecdfb07-4957-913a-6bd3-4410bd2cb5c0@iki.fi>
-In-Reply-To: <4ecdfb07-4957-913a-6bd3-4410bd2cb5c0@iki.fi>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 6 Oct 2021 01:12:17 +0530
-Message-ID: <CA+G9fYs=K4V4MgApsoEfGm6YUFnRSP6X6r7_H0uJ-ZzHp4EFJQ@mail.gmail.com>
-Subject: Re: [PATCH 5.14 000/173] 5.14.10-rc2 review
-To:     Thomas Backlund <tmb@iki.fi>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Jann Horn <jannh@google.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
-        Paolo Abeni <pabeni@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d4b34193-31e5-2f95-6365-b58239c0dabb@arm.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 6 Oct 2021 at 00:37, Thomas Backlund <tmb@iki.fi> wrote:
->
-> Den 2021-10-05 kl. 18:59, skrev Guenter Roeck:
-> > On Tue, Oct 05, 2021 at 10:38:40AM +0200, Greg Kroah-Hartman wrote:
-> >> This is the start of the stable review cycle for the 5.14.10 release.
-> >> There are 173 patches in this series, all will be posted as a response
-> >> to this one.  If anyone has any issues with these being applied, please
-> >> let me know.
-> >>
-> >> Responses should be made by Thu, 07 Oct 2021 08:32:44 +0000.
-> >> Anything received after that time might be too late.
-> >>
-> >
-> > AFAICS the warning problems are still seen. Unfortunately I won't be able
-> > to bisect since I have limited internet access.
-> >
-> > Guenter
-> >
-> > =========================
-> > WARNING: held lock freed!
-> > 5.14.10-rc2-00174-g355f3195d051 #1 Not tainted
-> > -------------------------
-> > ip/202 is freeing memory c000000009918900-c000000009918f7f, with a lock still held there!
-> > c000000009918a20 (sk_lock-AF_INET){+.+.}-{0:0}, at: .sk_common_release+0x4c/0x1b0
-> > 2 locks held by ip/202:
-> >   #0: c00000000ae149d0 (&sb->s_type->i_mutex_key#5){+.+.}-{3:3}, at: .__sock_release+0x4c/0x150
-> >   #1: c000000009918a20 (sk_lock-AF_INET){+.+.}-{0:0}, at: .sk_common_release+0x4c/0x1b0
-> >
-> >
->
+Hello!
 
-When I reverted the following two patches the warning got fixed.
+On Tuesday 05 October 2021 10:57:18 Jeremy Linton wrote:
+> Hi,
+> 
+> On 10/5/21 10:32 AM, Bjorn Helgaas wrote:
+> > On Thu, Aug 26, 2021 at 02:15:55AM -0500, Jeremy Linton wrote:
+> > > Additionally, some basic bus/device filtering exist to avoid sending
+> > > config transactions to invalid devices on the RP's primary or
+> > > secondary bus. A basic link check is also made to assure that
+> > > something is operational on the secondary side before probing the
+> > > remainder of the config space. If either of these constraints are
+> > > violated and a config operation is lost in the ether because an EP
+> > > doesn't respond an unrecoverable SERROR is raised.
+> > 
+> > It's not "lost"; I assume the root port raises an error because it
+> > can't send a transaction over a link that is down.
+> 
+> The problem is AFAIK because the root port doesn't do that.
 
-73a03563f123 af_unix: fix races in sk_peer_pid and sk_peer_cred accesses
-b226d61807f1 net: introduce and use lock_sock_fast_nested()
+Interesting! Does it mean that PCIe Root Complex / Host Bridge (which I
+guess contains also logic for Root Port) does not signal transaction
+failure for config requests? Or it is just your opinion? Because I'm
+dealing with similar issues and I'm trying to find a way how to detect
+if some PCIe IP signal transaction error via AXI SLVERR response OR it
+just does not send any response back. So if you know some way how to
+check which one it is, I would like to know it too.
 
+> > 
+> > Is "SERROR" an ARM64 thing?  My guess is the root port would raise an
+> > Unsupported Request error or similar, and the root complex turns that
+> > into a system-specific SERROR?
 
-> Isn't this a fallout of:
->
-> queue-5.14/net-introduce-and-use-lock_sock_fast_nested.patch
-> that has: Fixes: 2dcb96bacce3 ("net: core: Correct the
-> sock::sk_lock.owned lockdep annotations")
+Yes, SError is arm64 specific. It is asynchronous CPU interrupt and
+syndrome code then contains what happened.
 
-I have cherry-picked and tested but still I see this  new warning.
+> AFAIK, what is happening here the CPU core has an outstanding R/W request
+> for which it never receives a response from the root port. So basically its
+> an interconnect protocol violation that the CPU is complaining about rather
+> than something PCIe specific.
 
-old warings are:
-----------------------
-[ 22.528947] WARNING: held lock freed!
-or
-[ 36.765439] WARNING: lock held when returning to user space!
-
-
-new warning after the cherry pick.
-------------------
-[   22.330646] ============================================
-[   22.335955] WARNING: possible recursive locking detected
-[   22.341260] 5.14.10-rc2 #1 Not tainted
-[   22.345004] --------------------------------------------
-[   22.348869] igb 0000:02:00.0 eno2: renamed from eth1
-[   22.350309] sd-resolve/345 is trying to acquire lock:
-[   22.350310] ffff9a39c9580120 (sk_lock-AF_INET){+.+.}-{0:0}, at:
-udp_destroy_sock+0x3a/0xe0
-[   22.350317]
-[   22.350317] but task is already holding lock:
-[   22.350317] ffff9a39c9580120 (sk_lock-AF_INET){+.+.}-{0:0}, at:
-sk_common_release+0x22/0x110
-[   22.350321]
-[   22.350321] other info that might help us debug this:
-[   22.350321]  Possible unsafe locking scenario:
-[   22.350321]
-[   22.350322]        CPU0
-[   22.350322]        ----
-[   22.350322]   lock(sk_lock-AF_INET);
-[   22.350323]   lock(sk_lock-AF_INET);
-[   22.350324]
-[   22.350324]  *** DEADLOCK ***
-[   22.350324]
-[   22.350324]  May be due to missing lock nesting notation
-[   22.350324]
-[   22.350325] 2 locks held by sd-resolve/345:
-[   22.350326]  #0: ffff9a39c0610c10
-(&sb->s_type->i_mutex_key#6){+.+.}-{3:3}, at: __sock_release+0x32/0xb0
-[   22.424188]  #1: ffff9a39c9580120 (sk_lock-AF_INET){+.+.}-{0:0},
-at: sk_common_release+0x22/0x110
-[   22.424191]
-[   22.424191] stack backtrace:
-[   22.424192] CPU: 2 PID: 345 Comm: sd-resolve Not tainted 5.14.10-rc2 #1
-[   22.424194] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS
-2.0b 07/27/2017
-[   22.424195] Call Trace:
-[   22.424196]  dump_stack_lvl+0x49/0x5e
-[   22.424200]  dump_stack+0x10/0x12
-[   22.424202]  __lock_acquire.cold+0x21f/0x2b8
-[   22.424204]  ? lock_is_held_type+0x9d/0x110
-[   22.424207]  lock_acquire+0xb5/0x2c0
-[   22.424209]  ? udp_destroy_sock+0x3a/0xe0
-[   22.424212]  ? sk_common_release+0x22/0x110
-[   22.424214]  __lock_sock_fast+0x34/0x90
-[   22.424216]  ? udp_destroy_sock+0x3a/0xe0
-[   22.424217]  udp_destroy_sock+0x3a/0xe0
-[   22.424219]  ? sk_common_release+0x22/0x110
-[   22.424220]  sk_common_release+0x22/0x110
-[   22.424221]  udp_lib_close+0x9/0x10
-[   22.424223]  inet_release+0x48/0x80
-[   22.424225]  __sock_release+0x42/0xb0
-[   22.424227]  sock_close+0x18/0x20
-[   22.424228]  __fput+0xbb/0x270
-[   22.424230]  ____fput+0xe/0x10
-[   22.424231]  task_work_run+0x64/0xb0
-[   22.424234]  exit_to_user_mode_prepare+0x201/0x210
-[   22.424237]  syscall_exit_to_user_mode+0x1e/0x50
-[   22.424239]  do_syscall_64+0x69/0x80
-[   22.424241]  ? do_syscall_64+0x69/0x80
-[   22.424243]  ? exc_page_fault+0x7c/0x220
-[   22.424244]  ? asm_exc_page_fault+0x8/0x30
-[   22.424246]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-[   22.424248] RIP: 0033:0x7f509b8c4837
-[   22.424250] Code: 2c 00 f7 d8 64 89 02 b8 ff ff ff ff c3 48 8b 0d
-57 86 2c 00 f7 d8 64 89 01 b8 ff ff ff ff eb c2 0f 1f 00 b8 03 00 00
-00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 8b 15 31 86 2c 00 f7 d8 64 89
-02 b8
-[   22.424251] RSP: 002b:00007f509a9419c8 EFLAGS: 00000213 ORIG_RAX:
-0000000000000003
-[   22.424253] RAX: 0000000000000000 RBX: 0000000000000001 RCX: 00007f509b8c4837
-[   22.424254] RDX: 0000000000001387 RSI: 0000000000000000 RDI: 000000000000000c
-[   22.424255] RBP: 00007f509a949db8 R08: 0000000000000000 R09: 0000000000005d18
-[   22.424256] R10: 00007ffc8831c080 R11: 0000000000000213 R12: 0000000000000000
-[   22.424257] R13: 0000000000000000 R14: 00007f509a949db8 R15: 0000000000000004
-
-ref:
-new warning after the cherry-pick full test log link,
-https://lkft.validation.linaro.org/scheduler/job/3673750
-
-
-on RC2 the original reported warning links,
-https://lkft.validation.linaro.org/scheduler/job/3672925#L1185
-https://lkft.validation.linaro.org/scheduler/job/3672930#L1261
-
-
->
-> BUT:
->
-> $ git describe --contains 2dcb96bacce3
-> v5.15-rc3~30^2~26
->
-> --
-> Thomas
-
-- Naresh
+Could you describe (ideally in commit message) which SError is
+triggered? Normally if kernel receive SError interrupt it also puts into
+dmesg or oops message also syndrome code which describe what kind of
+error / event occurred. It could help also to other understand what is
+happening there.
