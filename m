@@ -2,313 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22109422D4E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 18:03:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20EEE422D50
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 18:04:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235598AbhJEQF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 12:05:29 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:36344 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231513AbhJEQF1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 12:05:27 -0400
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 195EGJJW032013;
-        Tue, 5 Oct 2021 18:03:26 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=YjHDloZxbvDPHJwf58cAVSAR8Cs92EMjLLxMd5V2oaQ=;
- b=0Yv2X/2MRYzrU6mdr1doF3eHQOLg1OoCsVJMiQOc+cv930vAddQKp6Leg4lNWikI93bs
- HbMZzYnK5tLqGi6v3ahpdPN7ui64m3nAdSga8IJzLb3kyriN82BmeQr0OpxFCgFYt1+n
- +Ojf7aEOl/34GCi4lnya2oWZgWtikcJZgFpjHf3fs6QArVauL1amVJVQ4mUNdpYN2bv9
- pb2TzEjTJly1qfnHlmy8JB7CF9IG2kFEstAwbjmxycuUTSw64FLJNc3580Sn1B709aBM
- v2NiWkiOt6eq1P6BN78uZyfdJftj44I+2U/LoOtv68Xdc7iT0WoUDA9JwpGFZoCadx3L JQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 3bgdt9v5bq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Oct 2021 18:03:26 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 1F51810002A;
-        Tue,  5 Oct 2021 18:03:26 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 14EF9231DEB;
-        Tue,  5 Oct 2021 18:03:26 +0200 (CEST)
-Received: from lmecxl0889.lme.st.com (10.75.127.49) by SFHDAG2NODE2.st.com
- (10.75.127.5) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 5 Oct
- 2021 18:03:25 +0200
-Subject: Re: [PATCH v8 2/2] tty: add rpmsg driver
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Jiri Slaby <jirislaby@kernel.org>, Suman Anna <s-anna@ti.com>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-remoteproc@vger.kernel.org>
-References: <20210930160520.19678-1-arnaud.pouliquen@foss.st.com>
- <20210930160520.19678-3-arnaud.pouliquen@foss.st.com>
- <YVxMKekWW0w0+qoM@kroah.com>
-From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
-Message-ID: <4cfc7497-ac85-828b-0b2f-a212c5a0503c@foss.st.com>
-Date:   Tue, 5 Oct 2021 18:03:25 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <YVxMKekWW0w0+qoM@kroah.com>
-Content-Type: text/plain; charset="utf-8"
+        id S236136AbhJEQFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 12:05:50 -0400
+Received: from mail-am6eur05on2047.outbound.protection.outlook.com ([40.107.22.47]:61888
+        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231513AbhJEQFs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 12:05:48 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=M7jyrJb5n3TFaju3gzjL50AtsSMP5CNGPNEQwApGVfUbCOk1eBDBoZb5Yuzu8/DyIkKEgHen+S7d5ODpkZgWlOwydNY4SRJrpeIMVfFB5QdM3tB91ypjrEouDPItd8IWIeoZFgwDwlCso0DsUxwNo1RPjNG6h9oj17BdEahypVKmqrPrqlpEo8/QBD4JPjIht8iT6ZBb1gapmiNVDvkRY4dLLJECl9d/fYWx7SKsiD5k+Q8Ar8NRRE3AsJ+2TPniHoWH/gPKloOR72SOD983AVX+BHg0EmUJu40h3vDviFBP948Z8W0IFf7LbC6dygmgwgD3xPUm0gJqqSho2r21Qw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=mat2pyjPTqLoKIUYMIcDaZk/LbhHYpR1e8iYVSI4qoE=;
+ b=IdtRGw8k9pk9lW0UYa0JoU6vpIp6ggBcf/unLsVGdbiYkbSZJ79Y1yj0l3gO3XW6JY48Igm5K6jjLwjeWrCZBKlXs55SNtogiF5e0/IERC7Uwrjtqpb8rXhnxRyhZkHeOIYgNbPz6zZS58Zmpk9fJs8fhys0+m1qW93onKPNs8gw15pHU4wi7hr4GZJjpzzGNv8iAJxkeRe5hlEbeUvWhHa1MDiHJU5lBu4KqoEzqq54pE1TJVzGUOVe/roCxne1EQ3a+KmlzJ4H1mRV+uB/CIRA33SSRXpVdDTPTTb1GGnGUVYrJJAqZFNJS4rBHIiNv01bDcnok0ot8ZIe9IlsBA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=seco.com; dmarc=pass action=none header.from=seco.com;
+ dkim=pass header.d=seco.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=secospa.onmicrosoft.com; s=selector2-secospa-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mat2pyjPTqLoKIUYMIcDaZk/LbhHYpR1e8iYVSI4qoE=;
+ b=cIT84UBQoUwCzIhazn1abVnjZaft0i4I6a3nEfaizqjSjtxTSK7hX2s8FdlcdyuY9ponlw36HsBTzjbWt8lPEMKzg/W4/GwSQsfsg1stdA/naGghf/kUOj3CxyxuLssLHtYRgNKhTIpoZrq3+IlgHxwGeSuzHAOC7pT40QRQslI=
+Authentication-Results: microchip.com; dkim=none (message not signed)
+ header.d=none;microchip.com; dmarc=none action=none header.from=seco.com;
+Received: from DB7PR03MB4523.eurprd03.prod.outlook.com (2603:10a6:10:19::27)
+ by DB9PR03MB7514.eurprd03.prod.outlook.com (2603:10a6:10:22a::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.19; Tue, 5 Oct
+ 2021 16:03:55 +0000
+Received: from DB7PR03MB4523.eurprd03.prod.outlook.com
+ ([fe80::a9aa:f363:66e:fadf]) by DB7PR03MB4523.eurprd03.prod.outlook.com
+ ([fe80::a9aa:f363:66e:fadf%6]) with mapi id 15.20.4566.022; Tue, 5 Oct 2021
+ 16:03:55 +0000
+From:   Sean Anderson <sean.anderson@seco.com>
+Subject: Re: [RFC net-next PATCH 10/16] net: macb: Move PCS settings to PCS
+ callbacks
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     netdev@vger.kernel.org, "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>
+References: <20211004191527.1610759-1-sean.anderson@seco.com>
+ <20211004191527.1610759-11-sean.anderson@seco.com>
+ <YVwjjghGcXaEYgY+@shell.armlinux.org.uk>
+Message-ID: <7c92218c-baec-a991-9d6b-af42dfabbad3@seco.com>
+Date:   Tue, 5 Oct 2021 12:03:50 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <YVwjjghGcXaEYgY+@shell.armlinux.org.uk>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.49]
-X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE2.st.com
- (10.75.127.5)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-10-05_02,2021-10-04_01,2020-04-07_01
+X-ClientProxiedBy: BL1P221CA0014.NAMP221.PROD.OUTLOOK.COM
+ (2603:10b6:208:2c5::26) To DB7PR03MB4523.eurprd03.prod.outlook.com
+ (2603:10a6:10:19::27)
+MIME-Version: 1.0
+Received: from [172.27.1.65] (50.195.82.171) by BL1P221CA0014.NAMP221.PROD.OUTLOOK.COM (2603:10b6:208:2c5::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.22 via Frontend Transport; Tue, 5 Oct 2021 16:03:53 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 6b35d93c-af73-4c5b-a495-08d98819bb4f
+X-MS-TrafficTypeDiagnostic: DB9PR03MB7514:
+X-Microsoft-Antispam-PRVS: <DB9PR03MB75144721CE176546EF1298DD96AF9@DB9PR03MB7514.eurprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: BSEjNIh6V4jLvyv7ozey+za5MLhaS49CY6PxPyEeyl/nfTM0uQCZllX+B0L8E95wi3NeVD69JmRBAW3vx90M9b0/1QawewInW2kH8WBo5784R2zdLun1QXHhA141MMkjsZ7K1XQK6ec77SfEOwngtNjrwyBoTkDdCzAAzcB8aXNZf1Y6blk/D66ij5lp9VoRD5OvRM1mrLG9NKQ60kge7RmAN4kjVQO1v1OCY1kbsP3WrfxKoXOJD9ivzd2d99AqCciEHMeT1ugmMYSsyIbP8hga2w7lrAK/JijUTTSPe0Oe0fH10XlvHdue7D9THl8zt5/2KH2QbeY3fk0MVf6tYgwbe9c1EGspC0Lo2T3T1A0fFRzH3e+QelsaEp5qQaSMt0jMhuPP1SiX7QPFro3SBz8FzHF0RQ+qa+4VmZI5/POoGnYeiKTcb7yirL24KF9rCZk/wZKKUdu3kCkOzr8Ags51ZjR5aIdHCbghT+8sLmyIqpM51+cy3j5wmqGBZAsWUKHaD/Ix8sPFoNaUsEb7Uty/M2XHT5xlK1adlkin0yNlLfC3nWMtovTMmuRAYlfIlm3glXOh2m/o/OaPA4zhIrcroZm7jnNCHU9NKNFUzVlD12RbGVsxR82i62sCDl4SHOQEOxGEmNwKRFOFvbA1otGEJYjUmxlABwcdTYrtVkRKMYEILbqX+3v5wwRcHS8xOIUkg7HOG3Hi9VXunE1qTacrOqMalsZffmYJN8fH8EQJ4lvh33F4BcCbsEpslzLz7TsTMAfl3fjUpZTyQ0rHIQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB7PR03MB4523.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(53546011)(956004)(508600001)(5660300002)(2616005)(66476007)(52116002)(316002)(66946007)(83380400001)(66556008)(4326008)(186003)(2906002)(86362001)(44832011)(8936002)(31696002)(16576012)(36756003)(38100700002)(38350700002)(31686004)(54906003)(6486002)(8676002)(26005)(6916009)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NXZBdjdGbTdJdjdlcExEd1c2UWNwZFQwclhWZWxVcXdQdEp1U2lIRXE0ODNR?=
+ =?utf-8?B?K1BhZ2lES1QzTHpqaW00d2p3bTdUcEw2bnU2d0E2MGE2M2VyMWsweTNSYktL?=
+ =?utf-8?B?V1dTWE4xMFJOK29adjluSm9mQjg3S1RKVHYvcEFnVFV5NWJqRCtseHVydkxF?=
+ =?utf-8?B?QVpVRXBIL2RJdWVHK1I1VHhycVZINk1PaXpxYlIxZTdDY0VOeHVOQ2R2MUdr?=
+ =?utf-8?B?b0cydjRibFZFVTJtK0F2bitQSDF4WGJ0LytvcXVQbFdtWWxxSmpiZ0lMQThm?=
+ =?utf-8?B?WHdIbTFYQW1MTkszUG0ySjdzbElLSVZmeDNpTWlaRDhPV2lkNVVuRElrWUlE?=
+ =?utf-8?B?a2dzK0dwZ1BaYiswL1E5MFdobU9UL1k2V2toWTZFMDNCVytJVVpkY1YyOUFj?=
+ =?utf-8?B?NzFpbmVUYng1Z2wvQktiTDBJYnFWVURYdjB4aGZKRlhEajRrZ0dUcFJ3M0hm?=
+ =?utf-8?B?NFBLRjhRSE5SckNscXJ5SWhEalcwZDVVTnpURFh5RzNNVkJSakJ1c3lkV3dO?=
+ =?utf-8?B?T01jQTI0TUhLLzZwTC8xeEh3L08zZkN0aWJxdkVRTVRwS0ZDTGlGa1M4a05G?=
+ =?utf-8?B?b3RqY3lnQkZUd2RxVUtySW1zOFlOVDBETStnWExFdG9JN2Z5QmpYUVJyb1cx?=
+ =?utf-8?B?TWhwbnpGNWM3ajZ5di9Wa1Fhc05MMm5FZm9MMU1sdUtURWRaUWJRb1phZ0V5?=
+ =?utf-8?B?VzhLcSt2S1R5ejZUN1VPek90VUlJUnFzQ0RLTlYyditkOWlRWmhNbVpldGxK?=
+ =?utf-8?B?QnkrdUczdDFHWVNINU9ha2V0cW16bGR1VTlVNVVQcVk3ZnhNeWs1STFHTFc3?=
+ =?utf-8?B?eEZHZ2hsajNzMUplZ3dxL3VMR1o3aUc3eTJSYWFkdXpJd3lWb2hrZXY4Qms3?=
+ =?utf-8?B?N1BIdUFNdU5SeFpua2ZtSDgzT3c4dFBaZEk5czA0T3pFdGFFK3d4MTc1Mjc5?=
+ =?utf-8?B?Witic210ODQrUGJjVDVMRkl2eFBGQ2RQVjN5eDRkTjc1cU8xaVNubkF6ODh6?=
+ =?utf-8?B?elF2NTgzQ2RRNyttKzIwYlBTZVVoTTdrM1VhRXhuWjdvbnZtZU1lN0lCMCth?=
+ =?utf-8?B?RGprdHJieUdMNDVESUZxOFdCOXE4YjBNUXhXRk9jZHEvMEMrR1ZIaG1Db1I4?=
+ =?utf-8?B?SWdLYldvS0diM0IzQ3J2L0N3ZVE5LzJkWGlKajJlRXBRRytyenZkV0FyZ1hW?=
+ =?utf-8?B?N1FpeTgyb250WlQyWHRDWVFmZEpaUzlzbFFyZXFnanBZQWl1SitCMTNKbkFS?=
+ =?utf-8?B?UkI1ZUtXemMxZ1ZsYkpQMVRJWnhrTDVtWGZYK0UvM2RpNmRiNWhZWHFzQWZQ?=
+ =?utf-8?B?ZVErNUp3VUtEOGxmZDhuY3N0V1FMcHRmNlBsdSt1WWRNZDZKN0wzSWxjZHFR?=
+ =?utf-8?B?Qi9UMHk1QXhhWkxZU2xTTm5pQ2ZPdjVOZ0podFJQL3RQWXVmTEtzMDM0aUtl?=
+ =?utf-8?B?dEZTWkJ4S1V4U1g1MUsrSUxtL0t3Qi9zS1g1ZVFVV2pqUVVqYVFhZmh3QVZJ?=
+ =?utf-8?B?M0tDMTI3b2NPNUhBOXZIQzIyR2x2aXJZSFZpc3VSeVMxVitPdmJweC9jNytv?=
+ =?utf-8?B?cHdEbDRvYWNVRTRzc2FzdDJBcVdJcVpGRU05eE1QM0RFQ1ZzSzBuNUdCN1pm?=
+ =?utf-8?B?ZnJLM2JqeHZHYnBjZUZvUG5FTVd6TFBWYXAwc3doNmYwZEVYTU9KekVYcUV3?=
+ =?utf-8?B?NDRkeHIwN05UMkZKcEFiaDFnYmhiNzNjSWNtTFAzV2N0RjlQaWxNMWF0UFlX?=
+ =?utf-8?Q?Oq0ok/HNmIdX6KoFNTp/aunNDBkKbt1SYuoo9mN?=
+X-OriginatorOrg: seco.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6b35d93c-af73-4c5b-a495-08d98819bb4f
+X-MS-Exchange-CrossTenant-AuthSource: DB7PR03MB4523.eurprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Oct 2021 16:03:55.1323
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: bebe97c3-6438-442e-ade3-ff17aa50e733
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7C9mw9u4Pr/3Q+avf8Sb75NcV2IBISiM8xP55Gq/Hd6Hpr/6K2Aak+xBG3GEZKxJ71QvI10dxmIePO3b0ONukQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR03MB7514
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Greg,
+Hi Russell,
 
-On 10/5/21 2:59 PM, Greg Kroah-Hartman wrote:
-> On Thu, Sep 30, 2021 at 06:05:20PM +0200, Arnaud Pouliquen wrote:
->> This driver exposes a standard TTY interface on top of the rpmsg
->> framework through a rpmsg service.
->>
->> This driver supports multi-instances, offering a /dev/ttyRPMSGx entry
->> per rpmsg endpoint.
->>
->> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
->> ---
->>  Documentation/serial/tty_rpmsg.rst |  15 ++
->>  drivers/tty/Kconfig                |   9 +
->>  drivers/tty/Makefile               |   1 +
->>  drivers/tty/rpmsg_tty.c            | 275 +++++++++++++++++++++++++++++
->>  4 files changed, 300 insertions(+)
->>  create mode 100644 Documentation/serial/tty_rpmsg.rst
->>  create mode 100644 drivers/tty/rpmsg_tty.c
->>
->> diff --git a/Documentation/serial/tty_rpmsg.rst b/Documentation/serial/tty_rpmsg.rst
->> new file mode 100644
->> index 000000000000..b055107866c9
->> --- /dev/null
->> +++ b/Documentation/serial/tty_rpmsg.rst
->> @@ -0,0 +1,15 @@
->> +.. SPDX-License-Identifier: GPL-2.0
->> +
->> +=========
->> +RPMsg TTY
->> +=========
->> +
->> +The rpmsg tty driver implements serial communication on the RPMsg bus to makes possible for
->> +user-space programs to send and receive rpmsg messages as a standard tty protocol.
->> +
->> +The remote processor can instantiate a new tty by requesting a "rpmsg-tty" RPMsg service.
->> +
->> +The "rpmsg-tty" service is directly used for data exchange. No flow control is implemented.
->> +
->> +Information related to the RPMsg and associated tty device is available in
->> +/sys/bus/rpmsg/devices/.
-> 
-> 
-> Why is this file needed?  Nothing references it, and this would be the
-> only file in this directory.
-
-This file is created by the RPMsg framework, it allows to have information about
-RPMsg endpoint addresses associated to the rpmsg tty service instance.
-I can add this additional information to clarify the sentence.
-
-> 
->> diff --git a/drivers/tty/Kconfig b/drivers/tty/Kconfig
->> index 23cc988c68a4..5095513029d7 100644
->> --- a/drivers/tty/Kconfig
->> +++ b/drivers/tty/Kconfig
->> @@ -368,6 +368,15 @@ config VCC
->>  
->>  source "drivers/tty/hvc/Kconfig"
->>  
->> +config RPMSG_TTY
->> +	tristate "RPMSG tty driver"
->> +	depends on RPMSG
->> +	help
->> +	  Say y here to export rpmsg endpoints as tty devices, usually found
->> +	  in /dev/ttyRPMSGx.
->> +	  This makes it possible for user-space programs to send and receive
->> +	  rpmsg messages as a standard tty protocol.
-> 
-> What is the module name going to be?
-
-I will add information
-
-> 
-> 
->> +
->>  endif # TTY
->>  
->>  source "drivers/tty/serdev/Kconfig"
->> diff --git a/drivers/tty/Makefile b/drivers/tty/Makefile
->> index a2bd75fbaaa4..07aca5184a55 100644
->> --- a/drivers/tty/Makefile
->> +++ b/drivers/tty/Makefile
->> @@ -26,5 +26,6 @@ obj-$(CONFIG_PPC_EPAPR_HV_BYTECHAN) += ehv_bytechan.o
->>  obj-$(CONFIG_GOLDFISH_TTY)	+= goldfish.o
->>  obj-$(CONFIG_MIPS_EJTAG_FDC_TTY) += mips_ejtag_fdc.o
->>  obj-$(CONFIG_VCC)		+= vcc.o
->> +obj-$(CONFIG_RPMSG_TTY)		+= rpmsg_tty.o
->>  
->>  obj-y += ipwireless/
->> diff --git a/drivers/tty/rpmsg_tty.c b/drivers/tty/rpmsg_tty.c
->> new file mode 100644
->> index 000000000000..0c99f54c2911
->> --- /dev/null
->> +++ b/drivers/tty/rpmsg_tty.c
->> @@ -0,0 +1,275 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/*
->> + * Copyright (C) STMicroelectronics 2021 - All Rights Reserved
-> 
-> Copyright needs a year, right?
-
-The year is present, but indicated after the company, to inverse
-
-> 
->> + */
->> +
->> +#include <linux/module.h>
->> +#include <linux/rpmsg.h>
->> +#include <linux/slab.h>
->> +#include <linux/tty.h>
->> +#include <linux/tty_flip.h>
->> +
->> +#define MAX_TTY_RPMSG	32
-> 
-> Why have a max at all?
-
-This is linked to tty_alloc_driver in the module init
-It is multi instance but need pre-allocation.
-I did not find a proper way to do this. Any suggestion is welcome.
-
-> 
-> 
->> +
->> +static DEFINE_IDR(tty_idr);	/* tty instance id */
->> +static DEFINE_MUTEX(idr_lock);	/* protects tty_idr */
-> 
-> I didn't think an idr needed a lock anymore, are you sure this is
-> needed?
-
-recognized in ird_alloc header for multi instance:
-https://elixir.bootlin.com/linux/v5.15-rc1/source/lib/idr.c#L60
-
-> 
-> 
->> +
->> +static struct tty_driver *rpmsg_tty_driver;
->> +
->> +struct rpmsg_tty_port {
->> +	struct tty_port		port;	 /* TTY port data */
->> +	int			id;	 /* TTY rpmsg index */
->> +	struct rpmsg_device	*rpdev;	 /* rpmsg device */
->> +};
->> +
->> +static int rpmsg_tty_cb(struct rpmsg_device *rpdev, void *data, int len, void *priv, u32 src)
+On 10/5/21 6:06 AM, Russell King (Oracle) wrote:
+> On Mon, Oct 04, 2021 at 03:15:21PM -0400, Sean Anderson wrote:
+>> +static void macb_pcs_get_state(struct phylink_pcs *pcs,
+>> +			       struct phylink_link_state *state)
 >> +{
->> +	struct rpmsg_tty_port *cport = dev_get_drvdata(&rpdev->dev);
->> +	int copied;
+>> +	struct macb *bp = pcs_to_macb(pcs);
 >> +
->> +	if (!len)
->> +		return -EINVAL;
-> 
-> How can len be 0?
+>> +	if (gem_readl(bp, NCFGR) & GEM_BIT(SGMIIEN))
+>> +		state->interface = PHY_INTERFACE_MODE_SGMII;
+>> +	else
+>> +		state->interface = PHY_INTERFACE_MODE_1000BASEX;
+>
+> There is no requirement to set state->interface here. Phylink doesn't
+> cater for interface changes when reading the state. As documented,
+> phylink will set state->interface already before calling this function
+> to indicate what interface mode it is currently expecting from the
+> hardware.
 
-In the RPMsg framework, nothing prevents a RPMsg with len = 0 (means header with
-no payload).
-It should be possible that the remote processor firmware bug generates such message.
+Ok, so instead I should be doing something like
 
-> 
-> 
->> +	copied = tty_insert_flip_string(&cport->port, data, len);
->> +	if (copied != len)
->> +		dev_dbg(&rpdev->dev, "Trunc buffer: available space is %d\n",
->> +			copied);
-> 
-> Is this the proper error handling?
+if (gem_readl(bp, NCFGR) & GEM_BIT(SGMIIEN))
+	interface = PHY_INTERFACE_MODE_SGMII;
+else
+	interface = PHY_INTERFACE_MODE_1000BASEX;
 
-Right, as a part of the message is lost, should be an error.
+if (interface != state->interface) {
+	state->link = 0;
+	return;
+}
 
-> 
-> 
->> +	tty_flip_buffer_push(&cport->port);
-> 
-> Shouldn't you return the number of bytes sent?
+?
 
-For the RPMsg framework you mean? No, because for another RPMsg services, it
-might not make sense. Return 0 seems to me more generic.
-In any case today the RPMsg framework doesn't test the callback return,
-associated action would depend on the service.
-
-> 
->> +
->> +	return 0;
->> +}
->> +
->> +static int rpmsg_tty_install(struct tty_driver *driver, struct tty_struct *tty)
+>> +static int macb_pcs_config_an(struct macb *bp, unsigned int mode,
+>> +			      phy_interface_t interface,
+>> +			      const unsigned long *advertising)
 >> +{
->> +	struct rpmsg_tty_port *cport = idr_find(&tty_idr, tty->index);
+>> +	bool changed = false;
+>> +	u16 old, new;
 >> +
->> +	if (!cport) {
->> +		dev_err(tty->dev, "Cannot get cport\n");
-> 
-> How can this happen?
-
-Right over protection!
-
-> 
-> 
->> +		return -ENODEV;
+>> +	old = gem_readl(bp, PCSANADV);
+>> +	new = phylink_mii_c22_pcs_encode_advertisement(interface, advertising,
+>> +						       old);
+>> +	if (old != new) {
+>> +		changed = true;
+>> +		gem_writel(bp, PCSANADV, new);
 >> +	}
 >> +
->> +	tty->driver_data = cport;
->> +
->> +	return tty_port_install(&cport->port, driver, tty);
+>> +	old = new = gem_readl(bp, PCSCNTRL);
+>> +	if (mode == MLO_AN_INBAND)
+>
+> Please use phylink_autoneg_inband(mode) here.
+
+Ok.
+
+>
+>> +		new |= BMCR_ANENABLE;
+>> +	else
+>> +		new &= ~BMCR_ANENABLE;
+>> +	if (old != new) {
+>> +		changed = true;
+>> +		gem_writel(bp, PCSCNTRL, new);
+>> +	}
+>
+> There has been the suggestion that we should allow in-band AN to be
+> disabled in 1000base-X if we're in in-band mode according to the
+> ethtool state.
+
+This logic is taken from phylink_mii_c22_pcs_config. Maybe I should add
+another _encode variant? I hadn't done this here because the logic was
+only one if statement.
+
+> I have a patch that adds that.
+
+Have you posted it?
+
+>> +	return changed;
 >> +}
 >> +
->> +static int rpmsg_tty_open(struct tty_struct *tty, struct file *filp)
+>> +static int macb_pcs_config(struct phylink_pcs *pcs, unsigned int mode,
+>> +			   phy_interface_t interface,
+>> +			   const unsigned long *advertising,
+>> +			   bool permit_pause_to_mac)
 >> +{
->> +	return tty_port_open(tty->port, tty, filp);
->> +}
+>> +	bool changed = false;
+>> +	struct macb *bp = pcs_to_macb(pcs);
+>> +	u16 old, new;
+>> +	unsigned long flags;
 >> +
->> +static void rpmsg_tty_close(struct tty_struct *tty, struct file *filp)
->> +{
->> +	return tty_port_close(tty->port, tty, filp);
->> +}
->> +
->> +static int rpmsg_tty_write(struct tty_struct *tty, const u8 *buf, int len)
->> +{
->> +	struct rpmsg_tty_port *cport = tty->driver_data;
->> +	struct rpmsg_device *rpdev;
->> +	int msg_max_size, msg_size;
->> +	int ret;
->> +
->> +	rpdev = cport->rpdev;
->> +
->> +	dev_dbg(&rpdev->dev, "Send msg from tty->index = %d, len = %d\n", tty->index, len);
-> 
-> ftrace is your friend, is this really still needed?
-> 
+>> +	spin_lock_irqsave(&bp->lock, flags);
+>> +	old = new = gem_readl(bp, NCFGR);
+>> +	if (interface == PHY_INTERFACE_MODE_SGMII) {
+>> +		new |= GEM_BIT(SGMIIEN);
+>> +	} else if (interface == PHY_INTERFACE_MODE_1000BASEX) {
+>> +		new &= ~GEM_BIT(SGMIIEN);
+>> +	} else {
+>> +		spin_lock_irqsave(&bp->lock, flags);
+>> +		return -EOPNOTSUPP;
+>
+> You can't actually abort at this point - phylink will print the error
+> and carry on regardless. The checking is all done via the validate()
+> callback and if that indicates the interface mode is acceptable, then
+> it should be accepted.
 
-Yes, but unfortunately not the friend of all our customers :)
-I will clean this log. The RPMsg dynamic traces already allows to trace the
-messages, which should be enough for a first level of debug.
+Ok, so where can the PCS NAK an interface? This is the only callback
+which has a return code, so I assumed this was the correct place to say
+"no, we don't support this." This is what lynx_pcs_config does as well.
 
-I will send a new revision integrating your comments.
+>>  static const struct phylink_pcs_ops macb_phylink_usx_pcs_ops = {
+>>  	.pcs_get_state = macb_usx_pcs_get_state,
+>>  	.pcs_config = macb_usx_pcs_config,
+>> -	.pcs_link_up = macb_usx_pcs_link_up,
+>>  };
+>>
+>>  static const struct phylink_pcs_ops macb_phylink_pcs_ops = {
+>>  	.pcs_get_state = macb_pcs_get_state,
+>> -	.pcs_an_restart = macb_pcs_an_restart,
+>
+> You don't want to remove this.
 
-Thanks & Regards,
-Arnaud
+Hm, I didn't realized I had removed this, so I add it back in the next
+patch. I will merge that one into this one.
 
-> thanks,
-> 
-> greg k-h
-> 
+
+> When operating in 1000BASE-X mode, it
+> will be called if a restart is required (e.g. macb_pcs_config()
+> returning positive, or an ethtool request.) You need to keep the empty
+> function.
+
+Ok, perhaps I can add some sanity checks for this in pcs_register.
+
+--Sean
+
+> That may also help the diff algorithm to produce a cleaner
+> patch too.
