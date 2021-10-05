@@ -2,1307 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78B2C423282
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 22:58:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1393B42327E
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 22:57:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236644AbhJEU7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 16:59:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52440 "EHLO
+        id S236554AbhJEU6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 16:58:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230019AbhJEU7q (ORCPT
+        with ESMTP id S235679AbhJEU6x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 16:59:46 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CCEBC061749
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 13:57:55 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id t8so1881985wri.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 13:57:55 -0700 (PDT)
+        Tue, 5 Oct 2021 16:58:53 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00AE1C061762
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 13:57:02 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id y1so251615plk.10
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 13:57:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=8NANyCRjkrObfgIDICmrNG67WwTRO4qurjeAEuf4gwg=;
-        b=UPQO+mEphtBBWseSqonkKaQUNZ7QTlRx46aq0zRXkwZQ2najY2YsUmO55+zLv35kWD
-         L74Nh983G0pqZSMF4mO7C9xlgWDjhBXA7PXye0hePZ//5lMUbflnWYZK0mykbmos364f
-         5FI+QWhJvBXu8TXslBafGn+XWytKTP3ekiYNZsvY2XIikSgB8TuZFLhYLGceD1ftpx0I
-         3spe2P/TRvhPoCeEALFpH5kj8wKGJliVyjMxqSAWoneN4b5yYLa8EMMQ7xv1ruwuaJev
-         1uM/ePrcuUA60YvZ8FJm6qE9I/9fZ/B1TyxVgCy/3s3scAp1f1kaBvEzz4fSxIr96G4l
-         8qSQ==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=T+sMQPLCyYA4dgDA1po3mBpk0YoEDbPhmdJtIoH1yHg=;
+        b=kVgnrWPqt/8TfKL7BNZmPQgr0QNgPXvvZytDS2h5kaHcpxqTbADjBCJ/Abt2MRD2ho
+         AQE6rA2089pPBRBYTGNYGFKtDpFFZRx90vfQSkxbm4IaXQ3Pq8Gm9EV0WQBnS6muswp+
+         oqVLs9ZzfyMttc3apez4GOzOBxGUI3GFG9IZA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=8NANyCRjkrObfgIDICmrNG67WwTRO4qurjeAEuf4gwg=;
-        b=Qo7AuPHG5hxKb5B2erWJsg4nVzHQz13IzlPvytKckB4ezZSUjWO/914MlW3knnE6XF
-         I9TbWZ9Ea/SOd3FWK+nk3QFyMnhLdXAmVuKjgXEKskDAK5ad5FyTQ7t/6Qw6+/Dej4Oz
-         l6HIYeBiStMMT0CXCUXkoDPJupKxNhGD1Bji1U7jXSEHiVzE4PLo0WaiP1W9QjqwHDjK
-         QVJ6ZRiwN0S85YRuClb7y5/NfvKZKH6pDlEpR2s5zgEu7V+gAWTqmVgu9W+7/dMR10jY
-         HWa60x2mOQqC7PHb08opIMZSgXtzSnQtfV7eEU9Ku1LtbDCWi2Er5Wn2XbY8Jck+66EU
-         ftlg==
-X-Gm-Message-State: AOAM530MjHkxtFIhdyPNONWBRtQ1v99rtUq+g9tVZmjHnDOjEK/fUNlU
-        L6f3DY9UuO7kBzkPht2ae6w=
-X-Google-Smtp-Source: ABdhPJx1xKd+XJKAqlTTr2rnq3xx9h39UpH4Pp8IkkzCJyavNQ47tB6jZvYSMnw6vLsn6civ4DTRCg==
-X-Received: by 2002:adf:fb0a:: with SMTP id c10mr25210033wrr.354.1633467473577;
-        Tue, 05 Oct 2021 13:57:53 -0700 (PDT)
-Received: from tom-desktop.station (net-2-42-54-217.cust.vodafonedsl.it. [2.42.54.217])
-        by smtp.gmail.com with ESMTPSA id p14sm2944109wmc.18.2021.10.05.13.57.52
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=T+sMQPLCyYA4dgDA1po3mBpk0YoEDbPhmdJtIoH1yHg=;
+        b=8KazZYyBJq7E/wmyCfqtPdtGxvoUydiVlYHCXu/01h2F5iLrwq72luY+d+xI9bYxKa
+         6RAlFaZQkQhG1hGvUVK8neeHwBIjNQbE+gK/ZCuaXpqhe9/ssFqJKeXRiGIaEcneBqma
+         oNIY7/fcFHxTYLDOwiWzmHar5RdkWyGu3j312dUBexScKB9jPzZv/Ks12F1dBGZfvaCI
+         YzVjM0lAHmyHqqGuvX2zShC95KNZTpUagnjL0FL6Xf9WWyty2oBPjb4uZ1mWC119of+h
+         HoPD5MMhagvMVeag1lNQKHpM16pW9JDZv/tJpif+YdhbJZGD1EB1BNpvmCP7BDr/uhOB
+         ivZg==
+X-Gm-Message-State: AOAM531zkJyMtVxsXPepXY4Yx+Tb4QPHEUvCkXhxwEwUvfTh7jdjmR3B
+        oRAznrIgCaWDHw/ZkZjnpkfnPg==
+X-Google-Smtp-Source: ABdhPJy7Oi6ah2YEoAsHtUO4Oj62iQ0k+3Z363yUYvVg6uJCzv8mP6M8mdrm/8nMPcYAbOMuxZNFfA==
+X-Received: by 2002:a17:90a:1984:: with SMTP id 4mr6348154pji.87.1633467421458;
+        Tue, 05 Oct 2021 13:57:01 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id u12sm3312455pjr.2.2021.10.05.13.57.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Oct 2021 13:57:52 -0700 (PDT)
-From:   Tommaso Merciai <tomm.merciai@gmail.com>
-Cc:     tomm.merciai@gmail.com, Forest Bond <forest@alittletooquiet.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Lucas Henneman <lucas.henneman@linaro.org>,
-        Madhumitha Prabakaran <madhumithabiw@gmail.com>,
-        Yujia Qiao <rapiz@foxmail.com>,
-        Marcos Antonio de Jesus Filho <mdejesusfilho@gmail.com>,
-        Edmundo Carmona Antoranz <eantoranz@gmail.com>,
-        =?UTF-8?q?Aldas=20Tara=C5=A1kevi=C4=8Dius?= <aldas60@gmail.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Deepak R Varma <mh12gx2825@gmail.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH v7 3/3] staging: vt6655: fix camelcase in PortOffset
-Date:   Tue,  5 Oct 2021 22:56:59 +0200
-Message-Id: <20211005205702.14029-4-tomm.merciai@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211005205702.14029-1-tomm.merciai@gmail.com>
-References: <20211005205702.14029-1-tomm.merciai@gmail.com>
+        Tue, 05 Oct 2021 13:57:01 -0700 (PDT)
+Date:   Tue, 5 Oct 2021 13:57:00 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     tj@kernel.org, gregkh@linuxfoundation.org,
+        akpm@linux-foundation.org, minchan@kernel.org, jeyu@kernel.org,
+        shuah@kernel.org, bvanassche@acm.org, dan.j.williams@intel.com,
+        joe@perches.com, tglx@linutronix.de, rostedt@goodmis.org,
+        linux-spdx@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 12/12] zram: use ATTRIBUTE_GROUPS to fix sysfs
+ deadlock module removal
+Message-ID: <202110051356.D8B18C4@keescook>
+References: <20210927163805.808907-1-mcgrof@kernel.org>
+ <20210927163805.808907-13-mcgrof@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210927163805.808907-13-mcgrof@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace camel case variable PortOffset with snake case
-variable port_offset.
+On Mon, Sep 27, 2021 at 09:38:05AM -0700, Luis Chamberlain wrote:
+> The ATTRIBUTE_GROUPS is typically used to avoid boiler plate
+> code which is used in many drivers. Embracing ATTRIBUTE_GROUPS was
+> long due on the zram driver, however a recent fix for sysfs allows
+> users of ATTRIBUTE_GROUPS to also associate a module to the group
+> attribute.
 
-Signed-off-by: Tommaso Merciai <tomm.merciai@gmail.com>
----
-Changes since v4:
- - Make the commit body message more clearer
+Does this mean that other modules using sysfs but _not_
+ATTRIBUTE_GROUPS() are still vulnerable to potential use-after-free of
+the kernfs fops?
 
-Changes since v3:
- - Fix patch changelog
+-Kees
 
-Changes since v2:
- - Add patch changelog
+> 
+> In zram's case this also means it allows us to fix a race which triggers
+> a deadlock on the zram driver. This deadlock happens when a sysfs attribute
+> use a lock also used on module removal. This happens when for instance a
+> sysfs file on a driver is used, then at the same time we have module
+> removal call trigger. The module removal call code holds a lock, and then
+> the sysfs file entry waits for the same lock. While holding the lock the
+> module removal tries to remove the sysfs entries, but these cannot be
+> removed yet as one is waiting for a lock. This won't complete as the lock
+> is already held. Likewise module removal cannot complete, and so we
+> deadlock.
+> 
+> Sysfs fixes this when the group attributes have a module associated to
+> it, sysfs will *try* to get a refcount to the module when a shared
+> lock is used, prior to mucking with a sysfs attribute. If this fails we
+> just give up right away.
+> 
+> This deadlock was first reported with the zram driver, a sketch of how
+> this can happen follows:
+> 
+> CPU A                              CPU B
+>                                    whatever_store()
+> module_unload
+>   mutex_lock(foo)
+>                                    mutex_lock(foo)
+>    del_gendisk(zram->disk);
+>      device_del()
+>        device_remove_groups()
+> 
+> In this situation whatever_store() is waiting for the mutex foo to
+> become unlocked, but that won't happen until module removal is complete.
+> But module removal won't complete until the sysfs file being poked
+> completes which is waiting for a lock already held.
+> 
+> This issue can be reproduced easily on the zram driver as follows:
+> 
+> Loop 1 on one terminal:
+> 
+> while true;
+> 	do modprobe zram;
+> 	modprobe -r zram;
+> done
+> 
+> Loop 2 on a second terminal:
+> while true; do
+> 	echo 1024 >  /sys/block/zram0/disksize;
+> 	echo 1 > /sys/block/zram0/reset;
+> done
+> 
+> Without this patch we end up in a deadlock, and the following
+> stack trace is produced which hints to us what the issue was:
+> 
+> INFO: task bash:888 blocked for more than 120 seconds.
+>       Tainted: G            E 5.12.0-rc1-next-20210304+ #4
+> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> task:bash            state:D stack:    0 pid:  888 ppid: 887 flags:<etc>
+> Call Trace:
+>  __schedule+0x2e4/0x900
+>  schedule+0x46/0xb0
+>  schedule_preempt_disabled+0xa/0x10
+>  __mutex_lock.constprop.0+0x2c3/0x490
+>  ? _kstrtoull+0x35/0xd0
+>  reset_store+0x6c/0x160 [zram]
+>  kernfs_fop_write_iter+0x124/0x1b0
+>  new_sync_write+0x11c/0x1b0
+>  vfs_write+0x1c2/0x260
+>  ksys_write+0x5f/0xe0
+>  do_syscall_64+0x33/0x80
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> RIP: 0033:0x7f34f2c3df33
+> RSP: 002b:00007ffe751df6e8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+> RAX: ffffffffffffffda RBX: 0000000000000002 RCX: 00007f34f2c3df33
+> RDX: 0000000000000002 RSI: 0000561ccb06ec10 RDI: 0000000000000001
+> RBP: 0000561ccb06ec10 R08: 000000000000000a R09: 0000000000000001
+> R10: 0000561ccb157590 R11: 0000000000000246 R12: 0000000000000002
+> R13: 00007f34f2d0e6a0 R14: 0000000000000002 R15: 00007f34f2d0e8a0
+> INFO: task modprobe:1104 can't die for more than 120 seconds.
+> task:modprobe        state:D stack:    0 pid: 1104 ppid: 916 flags:<etc>
+> Call Trace:
+>  __schedule+0x2e4/0x900
+>  schedule+0x46/0xb0
+>  __kernfs_remove.part.0+0x228/0x2b0
+>  ? finish_wait+0x80/0x80
+>  kernfs_remove_by_name_ns+0x50/0x90
+>  remove_files+0x2b/0x60
+>  sysfs_remove_group+0x38/0x80
+>  sysfs_remove_groups+0x29/0x40
+>  device_remove_attrs+0x4a/0x80
+>  device_del+0x183/0x3e0
+>  ? mutex_lock+0xe/0x30
+>  del_gendisk+0x27a/0x2d0
+>  zram_remove+0x8a/0xb0 [zram]
+>  ? hot_remove_store+0xf0/0xf0 [zram]
+>  zram_remove_cb+0xd/0x10 [zram]
+>  idr_for_each+0x5e/0xd0
+>  destroy_devices+0x39/0x6f [zram]
+>  __do_sys_delete_module+0x190/0x2a0
+>  do_syscall_64+0x33/0x80
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> RIP: 0033:0x7f32adf727d7
+> RSP: 002b:00007ffc08bb38a8 EFLAGS: 00000206 ORIG_RAX: 00000000000000b0
+> RAX: ffffffffffffffda RBX: 000055eea23cbb10 RCX: 00007f32adf727d7
+> RDX: 0000000000000000 RSI: 0000000000000800 RDI: 000055eea23cbb78
+> RBP: 000055eea23cbb10 R08: 0000000000000000 R09: 0000000000000000
+> R10: 00007f32adfe5ac0 R11: 0000000000000206 R12: 000055eea23cbb78
+> R13: 0000000000000000 R14: 0000000000000000 R15: 000055eea23cbc20
+> 
+> [0] https://lkml.kernel.org/r/20210401235925.GR4332@42.do-not-panic.com
+> 
+> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+> ---
+>  drivers/block/zram/zram_drv.c | 11 ++---------
+>  1 file changed, 2 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
+> index b26abcb955cc..60a55ae8cd91 100644
+> --- a/drivers/block/zram/zram_drv.c
+> +++ b/drivers/block/zram/zram_drv.c
+> @@ -1902,14 +1902,7 @@ static struct attribute *zram_disk_attrs[] = {
+>  	NULL,
+>  };
+>  
+> -static const struct attribute_group zram_disk_attr_group = {
+> -	.attrs = zram_disk_attrs,
+> -};
+> -
+> -static const struct attribute_group *zram_disk_attr_groups[] = {
+> -	&zram_disk_attr_group,
+> -	NULL,
+> -};
+> +ATTRIBUTE_GROUPS(zram_disk);
+>  
+>  /*
+>   * Allocate and initialize new zram device. the function returns
+> @@ -1981,7 +1974,7 @@ static int zram_add(void)
+>  		blk_queue_max_write_zeroes_sectors(zram->disk->queue, UINT_MAX);
+>  
+>  	blk_queue_flag_set(QUEUE_FLAG_STABLE_WRITES, zram->disk->queue);
+> -	device_add_disk(NULL, zram->disk, zram_disk_attr_groups);
+> +	device_add_disk(NULL, zram->disk, zram_disk_groups);
+>  
+>  	strlcpy(zram->compressor, default_compressor, sizeof(zram->compressor));
+>  
+> -- 
+> 2.30.2
+> 
 
-Changes since v1:
- - Fix: port_offset istead of port_off_set
- - Make the commit message more clearer
-
- drivers/staging/vt6655/baseband.c    |   6 +-
- drivers/staging/vt6655/card.c        |  88 ++++++++--------
- drivers/staging/vt6655/channel.c     |  10 +-
- drivers/staging/vt6655/device.h      |   2 +-
- drivers/staging/vt6655/device_main.c | 144 +++++++++++++--------------
- drivers/staging/vt6655/mac.c         |  46 ++++-----
- drivers/staging/vt6655/power.c       |  24 ++---
- drivers/staging/vt6655/rf.c          |  12 +--
- drivers/staging/vt6655/rxtx.c        |  12 +--
- 9 files changed, 172 insertions(+), 172 deletions(-)
-
-diff --git a/drivers/staging/vt6655/baseband.c b/drivers/staging/vt6655/baseband.c
-index 7ae6ae984e2d..d6e114f25685 100644
---- a/drivers/staging/vt6655/baseband.c
-+++ b/drivers/staging/vt6655/baseband.c
-@@ -1905,7 +1905,7 @@ void vnt_get_phy_field(struct vnt_private *priv, u32 frame_length,
- bool bb_read_embedded(struct vnt_private *priv, unsigned char by_bb_addr,
- 		      unsigned char *pby_data)
- {
--	void __iomem *iobase = priv->PortOffset;
-+	void __iomem *iobase = priv->port_offset;
- 	unsigned short ww;
- 	unsigned char by_value;
- 
-@@ -1948,7 +1948,7 @@ bool bb_read_embedded(struct vnt_private *priv, unsigned char by_bb_addr,
- bool bb_write_embedded(struct vnt_private *priv, unsigned char by_bb_addr,
- 		       unsigned char by_data)
- {
--	void __iomem *iobase = priv->PortOffset;
-+	void __iomem *iobase = priv->port_offset;
- 	unsigned short ww;
- 	unsigned char by_value;
- 
-@@ -1992,7 +1992,7 @@ bool bb_vt3253_init(struct vnt_private *priv)
- {
- 	bool result = true;
- 	int        ii;
--	void __iomem *iobase = priv->PortOffset;
-+	void __iomem *iobase = priv->port_offset;
- 	unsigned char by_rf_type = priv->byRFType;
- 	unsigned char by_local_id = priv->byLocalID;
- 
-diff --git a/drivers/staging/vt6655/card.c b/drivers/staging/vt6655/card.c
-index 7fb8a74e2a78..b5e6880555fd 100644
---- a/drivers/staging/vt6655/card.c
-+++ b/drivers/staging/vt6655/card.c
-@@ -190,7 +190,7 @@ bool CARDbSetPhyParameter(struct vnt_private *priv, u8 bb_type)
- 	if (bb_type == BB_TYPE_11A) {
- 		if (priv->byRFType == RF_AIROHA7230) {
- 			/* AL7230 use single PAPE and connect to PAPE_2.4G */
--			MACvSetBBType(priv->PortOffset, BB_TYPE_11G);
-+			MACvSetBBType(priv->port_offset, BB_TYPE_11G);
- 			priv->abyBBVGA[0] = 0x20;
- 			priv->abyBBVGA[2] = 0x10;
- 			priv->abyBBVGA[3] = 0x10;
-@@ -199,7 +199,7 @@ bool CARDbSetPhyParameter(struct vnt_private *priv, u8 bb_type)
- 				bb_write_embedded(priv, 0xE7, priv->abyBBVGA[0]);
- 
- 		} else if (priv->byRFType == RF_UW2452) {
--			MACvSetBBType(priv->PortOffset, BB_TYPE_11A);
-+			MACvSetBBType(priv->port_offset, BB_TYPE_11A);
- 			priv->abyBBVGA[0] = 0x18;
- 			bb_read_embedded(priv, 0xE7, &byData);
- 			if (byData == 0x14) {
-@@ -207,7 +207,7 @@ bool CARDbSetPhyParameter(struct vnt_private *priv, u8 bb_type)
- 				bb_write_embedded(priv, 0xE1, 0x57);
- 			}
- 		} else {
--			MACvSetBBType(priv->PortOffset, BB_TYPE_11A);
-+			MACvSetBBType(priv->port_offset, BB_TYPE_11A);
- 		}
- 		bb_write_embedded(priv, 0x88, 0x03);
- 		bySlot = C_SLOT_SHORT;
-@@ -215,7 +215,7 @@ bool CARDbSetPhyParameter(struct vnt_private *priv, u8 bb_type)
- 		byDIFS = C_SIFS_A + 2 * C_SLOT_SHORT;
- 		byCWMaxMin = 0xA4;
- 	} else if (bb_type == BB_TYPE_11B) {
--		MACvSetBBType(priv->PortOffset, BB_TYPE_11B);
-+		MACvSetBBType(priv->port_offset, BB_TYPE_11B);
- 		if (priv->byRFType == RF_AIROHA7230) {
- 			priv->abyBBVGA[0] = 0x1C;
- 			priv->abyBBVGA[2] = 0x00;
-@@ -238,7 +238,7 @@ bool CARDbSetPhyParameter(struct vnt_private *priv, u8 bb_type)
- 		byDIFS = C_SIFS_BG + 2 * C_SLOT_LONG;
- 		byCWMaxMin = 0xA5;
- 	} else { /* PK_TYPE_11GA & PK_TYPE_11GB */
--		MACvSetBBType(priv->PortOffset, BB_TYPE_11G);
-+		MACvSetBBType(priv->port_offset, BB_TYPE_11G);
- 		if (priv->byRFType == RF_AIROHA7230) {
- 			priv->abyBBVGA[0] = 0x1C;
- 			priv->abyBBVGA[2] = 0x00;
-@@ -292,25 +292,25 @@ bool CARDbSetPhyParameter(struct vnt_private *priv, u8 bb_type)
- 
- 	if (priv->bySIFS != bySIFS) {
- 		priv->bySIFS = bySIFS;
--		VNSvOutPortB(priv->PortOffset + MAC_REG_SIFS, priv->bySIFS);
-+		VNSvOutPortB(priv->port_offset + MAC_REG_SIFS, priv->bySIFS);
- 	}
- 	if (priv->byDIFS != byDIFS) {
- 		priv->byDIFS = byDIFS;
--		VNSvOutPortB(priv->PortOffset + MAC_REG_DIFS, priv->byDIFS);
-+		VNSvOutPortB(priv->port_offset + MAC_REG_DIFS, priv->byDIFS);
- 	}
- 	if (priv->byEIFS != C_EIFS) {
- 		priv->byEIFS = C_EIFS;
--		VNSvOutPortB(priv->PortOffset + MAC_REG_EIFS, priv->byEIFS);
-+		VNSvOutPortB(priv->port_offset + MAC_REG_EIFS, priv->byEIFS);
- 	}
- 	if (priv->bySlot != bySlot) {
- 		priv->bySlot = bySlot;
--		VNSvOutPortB(priv->PortOffset + MAC_REG_SLOT, priv->bySlot);
-+		VNSvOutPortB(priv->port_offset + MAC_REG_SLOT, priv->bySlot);
- 
- 		bb_set_short_slot_time(priv);
- 	}
- 	if (priv->byCWMaxMin != byCWMaxMin) {
- 		priv->byCWMaxMin = byCWMaxMin;
--		VNSvOutPortB(priv->PortOffset + MAC_REG_CWMAXMIN0,
-+		VNSvOutPortB(priv->port_offset + MAC_REG_CWMAXMIN0,
- 			     priv->byCWMaxMin);
- 	}
- 
-@@ -348,11 +348,11 @@ bool CARDbUpdateTSF(struct vnt_private *priv, unsigned char byRxRate,
- 		qwTSFOffset = CARDqGetTSFOffset(byRxRate, qwBSSTimestamp,
- 						local_tsf);
- 		/* adjust TSF, HW's TSF add TSF Offset reg */
--		VNSvOutPortD(priv->PortOffset + MAC_REG_TSFOFST,
-+		VNSvOutPortD(priv->port_offset + MAC_REG_TSFOFST,
- 			     (u32)qwTSFOffset);
--		VNSvOutPortD(priv->PortOffset + MAC_REG_TSFOFST + 4,
-+		VNSvOutPortD(priv->port_offset + MAC_REG_TSFOFST + 4,
- 			     (u32)(qwTSFOffset >> 32));
--		MACvRegBitsOn(priv->PortOffset, MAC_REG_TFTCTL,
-+		MACvRegBitsOn(priv->port_offset, MAC_REG_TFTCTL,
- 			      TFTCTL_TSFSYNCEN);
- 	}
- 	return true;
-@@ -381,13 +381,13 @@ bool CARDbSetBeaconPeriod(struct vnt_private *priv,
- 	qwNextTBTT = CARDqGetNextTBTT(qwNextTBTT, wBeaconInterval);
- 
- 	/* set HW beacon interval */
--	VNSvOutPortW(priv->PortOffset + MAC_REG_BI, wBeaconInterval);
-+	VNSvOutPortW(priv->port_offset + MAC_REG_BI, wBeaconInterval);
- 	priv->wBeaconInterval = wBeaconInterval;
- 	/* Set NextTBTT */
--	VNSvOutPortD(priv->PortOffset + MAC_REG_NEXTTBTT, (u32)qwNextTBTT);
--	VNSvOutPortD(priv->PortOffset + MAC_REG_NEXTTBTT + 4,
-+	VNSvOutPortD(priv->port_offset + MAC_REG_NEXTTBTT, (u32)qwNextTBTT);
-+	VNSvOutPortD(priv->port_offset + MAC_REG_NEXTTBTT + 4,
- 		     (u32)(qwNextTBTT >> 32));
--	MACvRegBitsOn(priv->PortOffset, MAC_REG_TFTCTL, TFTCTL_TBTTSYNCEN);
-+	MACvRegBitsOn(priv->port_offset, MAC_REG_TFTCTL, TFTCTL_TBTTSYNCEN);
- 
- 	return true;
- }
-@@ -409,29 +409,29 @@ void CARDbRadioPowerOff(struct vnt_private *priv)
- 
- 	switch (priv->byRFType) {
- 	case RF_RFMD2959:
--		MACvWordRegBitsOff(priv->PortOffset, MAC_REG_SOFTPWRCTL,
-+		MACvWordRegBitsOff(priv->port_offset, MAC_REG_SOFTPWRCTL,
- 				   SOFTPWRCTL_TXPEINV);
--		MACvWordRegBitsOn(priv->PortOffset, MAC_REG_SOFTPWRCTL,
-+		MACvWordRegBitsOn(priv->port_offset, MAC_REG_SOFTPWRCTL,
- 				  SOFTPWRCTL_SWPE1);
- 		break;
- 
- 	case RF_AIROHA:
- 	case RF_AL2230S:
- 	case RF_AIROHA7230:
--		MACvWordRegBitsOff(priv->PortOffset, MAC_REG_SOFTPWRCTL,
-+		MACvWordRegBitsOff(priv->port_offset, MAC_REG_SOFTPWRCTL,
- 				   SOFTPWRCTL_SWPE2);
--		MACvWordRegBitsOff(priv->PortOffset, MAC_REG_SOFTPWRCTL,
-+		MACvWordRegBitsOff(priv->port_offset, MAC_REG_SOFTPWRCTL,
- 				   SOFTPWRCTL_SWPE3);
- 		break;
- 	}
- 
--	MACvRegBitsOff(priv->PortOffset, MAC_REG_HOSTCR, HOSTCR_RXON);
-+	MACvRegBitsOff(priv->port_offset, MAC_REG_HOSTCR, HOSTCR_RXON);
- 
- 	bb_set_deep_sleep(priv, priv->byLocalID);
- 
- 	priv->bRadioOff = true;
- 	pr_debug("chester power off\n");
--	MACvRegBitsOn(priv->PortOffset, MAC_REG_GPIOCTL0,
-+	MACvRegBitsOn(priv->port_offset, MAC_REG_GPIOCTL0,
- 		      LED_ACTSET);  /* LED issue */
- }
- 
-@@ -467,7 +467,7 @@ void CARDvSafeResetTx(struct vnt_private *priv)
- 	MACvSetCurrTXDescAddr(TYPE_AC0DMA, priv, priv->td1_pool_dma);
- 
- 	/* set MAC Beacon TX pointer */
--	MACvSetCurrBCNTxDescAddr(priv->PortOffset,
-+	MACvSetCurrBCNTxDescAddr(priv->port_offset,
- 				 (priv->tx_beacon_dma));
- }
- 
-@@ -509,8 +509,8 @@ void CARDvSafeResetRx(struct vnt_private *priv)
- 	}
- 
- 	/* set perPkt mode */
--	MACvRx0PerPktMode(priv->PortOffset);
--	MACvRx1PerPktMode(priv->PortOffset);
-+	MACvRx0PerPktMode(priv->port_offset);
-+	MACvRx1PerPktMode(priv->port_offset);
- 	/* set MAC RD pointer */
- 	MACvSetCurrRx0DescAddr(priv, priv->rd0_pool_dma);
- 
-@@ -599,7 +599,7 @@ void CARDvSetRSPINF(struct vnt_private *priv, u8 bb_type)
- 	spin_lock_irqsave(&priv->lock, flags);
- 
- 	/* Set to Page1 */
--	MACvSelectPage1(priv->PortOffset);
-+	MACvSelectPage1(priv->port_offset);
- 
- 	/* RSPINF_b_1 */
- 	vnt_get_phy_field(priv, 14,
-@@ -609,7 +609,7 @@ void CARDvSetRSPINF(struct vnt_private *priv, u8 bb_type)
- 	 /* swap over to get correct write order */
- 	swap(phy.swap[0], phy.swap[1]);
- 
--	VNSvOutPortD(priv->PortOffset + MAC_REG_RSPINF_B_1, phy.field_write);
-+	VNSvOutPortD(priv->port_offset + MAC_REG_RSPINF_B_1, phy.field_write);
- 
- 	/* RSPINF_b_2 */
- 	vnt_get_phy_field(priv, 14,
-@@ -618,7 +618,7 @@ void CARDvSetRSPINF(struct vnt_private *priv, u8 bb_type)
- 
- 	swap(phy.swap[0], phy.swap[1]);
- 
--	VNSvOutPortD(priv->PortOffset + MAC_REG_RSPINF_B_2, phy.field_write);
-+	VNSvOutPortD(priv->port_offset + MAC_REG_RSPINF_B_2, phy.field_write);
- 
- 	/* RSPINF_b_5 */
- 	vnt_get_phy_field(priv, 14,
-@@ -627,7 +627,7 @@ void CARDvSetRSPINF(struct vnt_private *priv, u8 bb_type)
- 
- 	swap(phy.swap[0], phy.swap[1]);
- 
--	VNSvOutPortD(priv->PortOffset + MAC_REG_RSPINF_B_5, phy.field_write);
-+	VNSvOutPortD(priv->port_offset + MAC_REG_RSPINF_B_5, phy.field_write);
- 
- 	/* RSPINF_b_11 */
- 	vnt_get_phy_field(priv, 14,
-@@ -636,42 +636,42 @@ void CARDvSetRSPINF(struct vnt_private *priv, u8 bb_type)
- 
- 	swap(phy.swap[0], phy.swap[1]);
- 
--	VNSvOutPortD(priv->PortOffset + MAC_REG_RSPINF_B_11, phy.field_write);
-+	VNSvOutPortD(priv->port_offset + MAC_REG_RSPINF_B_11, phy.field_write);
- 
- 	/* RSPINF_a_6 */
- 	s_vCalculateOFDMRParameter(RATE_6M,
- 				   bb_type,
- 				   &byTxRate,
- 				   &byRsvTime);
--	VNSvOutPortW(priv->PortOffset + MAC_REG_RSPINF_A_6,
-+	VNSvOutPortW(priv->port_offset + MAC_REG_RSPINF_A_6,
- 		     MAKEWORD(byTxRate, byRsvTime));
- 	/* RSPINF_a_9 */
- 	s_vCalculateOFDMRParameter(RATE_9M,
- 				   bb_type,
- 				   &byTxRate,
- 				   &byRsvTime);
--	VNSvOutPortW(priv->PortOffset + MAC_REG_RSPINF_A_9,
-+	VNSvOutPortW(priv->port_offset + MAC_REG_RSPINF_A_9,
- 		     MAKEWORD(byTxRate, byRsvTime));
- 	/* RSPINF_a_12 */
- 	s_vCalculateOFDMRParameter(RATE_12M,
- 				   bb_type,
- 				   &byTxRate,
- 				   &byRsvTime);
--	VNSvOutPortW(priv->PortOffset + MAC_REG_RSPINF_A_12,
-+	VNSvOutPortW(priv->port_offset + MAC_REG_RSPINF_A_12,
- 		     MAKEWORD(byTxRate, byRsvTime));
- 	/* RSPINF_a_18 */
- 	s_vCalculateOFDMRParameter(RATE_18M,
- 				   bb_type,
- 				   &byTxRate,
- 				   &byRsvTime);
--	VNSvOutPortW(priv->PortOffset + MAC_REG_RSPINF_A_18,
-+	VNSvOutPortW(priv->port_offset + MAC_REG_RSPINF_A_18,
- 		     MAKEWORD(byTxRate, byRsvTime));
- 	/* RSPINF_a_24 */
- 	s_vCalculateOFDMRParameter(RATE_24M,
- 				   bb_type,
- 				   &byTxRate,
- 				   &byRsvTime);
--	VNSvOutPortW(priv->PortOffset + MAC_REG_RSPINF_A_24,
-+	VNSvOutPortW(priv->port_offset + MAC_REG_RSPINF_A_24,
- 		     MAKEWORD(byTxRate, byRsvTime));
- 	/* RSPINF_a_36 */
- 	s_vCalculateOFDMRParameter(CARDwGetOFDMControlRate((void *)priv,
-@@ -679,7 +679,7 @@ void CARDvSetRSPINF(struct vnt_private *priv, u8 bb_type)
- 				   bb_type,
- 				   &byTxRate,
- 				   &byRsvTime);
--	VNSvOutPortW(priv->PortOffset + MAC_REG_RSPINF_A_36,
-+	VNSvOutPortW(priv->port_offset + MAC_REG_RSPINF_A_36,
- 		     MAKEWORD(byTxRate, byRsvTime));
- 	/* RSPINF_a_48 */
- 	s_vCalculateOFDMRParameter(CARDwGetOFDMControlRate((void *)priv,
-@@ -687,7 +687,7 @@ void CARDvSetRSPINF(struct vnt_private *priv, u8 bb_type)
- 				   bb_type,
- 				   &byTxRate,
- 				   &byRsvTime);
--	VNSvOutPortW(priv->PortOffset + MAC_REG_RSPINF_A_48,
-+	VNSvOutPortW(priv->port_offset + MAC_REG_RSPINF_A_48,
- 		     MAKEWORD(byTxRate, byRsvTime));
- 	/* RSPINF_a_54 */
- 	s_vCalculateOFDMRParameter(CARDwGetOFDMControlRate((void *)priv,
-@@ -695,7 +695,7 @@ void CARDvSetRSPINF(struct vnt_private *priv, u8 bb_type)
- 				   bb_type,
- 				   &byTxRate,
- 				   &byRsvTime);
--	VNSvOutPortW(priv->PortOffset + MAC_REG_RSPINF_A_54,
-+	VNSvOutPortW(priv->port_offset + MAC_REG_RSPINF_A_54,
- 		     MAKEWORD(byTxRate, byRsvTime));
- 	/* RSPINF_a_72 */
- 	s_vCalculateOFDMRParameter(CARDwGetOFDMControlRate((void *)priv,
-@@ -703,10 +703,10 @@ void CARDvSetRSPINF(struct vnt_private *priv, u8 bb_type)
- 				   bb_type,
- 				   &byTxRate,
- 				   &byRsvTime);
--	VNSvOutPortW(priv->PortOffset + MAC_REG_RSPINF_A_72,
-+	VNSvOutPortW(priv->port_offset + MAC_REG_RSPINF_A_72,
- 		     MAKEWORD(byTxRate, byRsvTime));
- 	/* Set to Page0 */
--	MACvSelectPage0(priv->PortOffset);
-+	MACvSelectPage0(priv->port_offset);
- 
- 	spin_unlock_irqrestore(&priv->lock, flags);
- }
-@@ -796,7 +796,7 @@ u64 CARDqGetTSFOffset(unsigned char byRxRate, u64 qwTSF1, u64 qwTSF2)
-  */
- bool CARDbGetCurrentTSF(struct vnt_private *priv, u64 *pqwCurrTSF)
- {
--	void __iomem *iobase = priv->PortOffset;
-+	void __iomem *iobase = priv->port_offset;
- 	unsigned short ww;
- 	unsigned char byData;
- 
-@@ -857,7 +857,7 @@ u64 CARDqGetNextTBTT(u64 qwTSF, unsigned short wBeaconInterval)
- void CARDvSetFirstNextTBTT(struct vnt_private *priv,
- 			   unsigned short wBeaconInterval)
- {
--	void __iomem *iobase = priv->PortOffset;
-+	void __iomem *iobase = priv->port_offset;
- 	u64 qwNextTBTT = 0;
- 
- 	CARDbGetCurrentTSF(priv, &qwNextTBTT); /* Get Local TSF counter */
-@@ -886,7 +886,7 @@ void CARDvSetFirstNextTBTT(struct vnt_private *priv,
- void CARDvUpdateNextTBTT(struct vnt_private *priv, u64 qwTSF,
- 			 unsigned short wBeaconInterval)
- {
--	void __iomem *iobase = priv->PortOffset;
-+	void __iomem *iobase = priv->port_offset;
- 
- 	qwTSF = CARDqGetNextTBTT(qwTSF, wBeaconInterval);
- 	/* Set NextTBTT */
-diff --git a/drivers/staging/vt6655/channel.c b/drivers/staging/vt6655/channel.c
-index 52b6538a201a..76ee3146b865 100644
---- a/drivers/staging/vt6655/channel.c
-+++ b/drivers/staging/vt6655/channel.c
-@@ -173,7 +173,7 @@ bool set_channel(struct vnt_private *priv, struct ieee80211_channel *ch)
- 	}
- 
- 	/* clear NAV */
--	MACvRegBitsOn(priv->PortOffset, MAC_REG_MACCR, MACCR_CLRNAV);
-+	MACvRegBitsOn(priv->port_offset, MAC_REG_MACCR, MACCR_CLRNAV);
- 
- 	/* TX_PE will reserve 3 us for MAX2829 A mode only,
- 	 * it is for better TX throughput
-@@ -199,14 +199,14 @@ bool set_channel(struct vnt_private *priv, struct ieee80211_channel *ch)
- 		spin_lock_irqsave(&priv->lock, flags);
- 
- 		/* set HW default power register */
--		MACvSelectPage1(priv->PortOffset);
-+		MACvSelectPage1(priv->port_offset);
- 		RFbSetPower(priv, RATE_1M, priv->byCurrentCh);
--		VNSvOutPortB(priv->PortOffset + MAC_REG_PWRCCK,
-+		VNSvOutPortB(priv->port_offset + MAC_REG_PWRCCK,
- 			     priv->byCurPwr);
- 		RFbSetPower(priv, RATE_6M, priv->byCurrentCh);
--		VNSvOutPortB(priv->PortOffset + MAC_REG_PWROFDM,
-+		VNSvOutPortB(priv->port_offset + MAC_REG_PWROFDM,
- 			     priv->byCurPwr);
--		MACvSelectPage0(priv->PortOffset);
-+		MACvSelectPage0(priv->port_offset);
- 
- 		spin_unlock_irqrestore(&priv->lock, flags);
- 	}
-diff --git a/drivers/staging/vt6655/device.h b/drivers/staging/vt6655/device.h
-index 307a36222c78..ea6f9568f112 100644
---- a/drivers/staging/vt6655/device.h
-+++ b/drivers/staging/vt6655/device.h
-@@ -124,7 +124,7 @@ struct vnt_private {
- 	unsigned char *tx1_bufs;
- 	unsigned char *tx_beacon_bufs;
- 
--	void __iomem                *PortOffset;
-+	void __iomem                *port_offset;
- 	u32                         memaddr;
- 	u32                         ioaddr;
- 
-diff --git a/drivers/staging/vt6655/device_main.c b/drivers/staging/vt6655/device_main.c
-index ff6c59e198a4..3683a9d65017 100644
---- a/drivers/staging/vt6655/device_main.c
-+++ b/drivers/staging/vt6655/device_main.c
-@@ -219,11 +219,11 @@ static void device_init_registers(struct vnt_private *priv)
- 	MACvInitialize(priv);
- 
- 	/* Get Local ID */
--	VNSvInPortB(priv->PortOffset + MAC_REG_LOCALID, &priv->byLocalID);
-+	VNSvInPortB(priv->port_offset + MAC_REG_LOCALID, &priv->byLocalID);
- 
- 	spin_lock_irqsave(&priv->lock, flags);
- 
--	SROMvReadAllContents(priv->PortOffset, priv->abyEEPROM);
-+	SROMvReadAllContents(priv->port_offset, priv->abyEEPROM);
- 
- 	spin_unlock_irqrestore(&priv->lock, flags);
- 
-@@ -232,7 +232,7 @@ static void device_init_registers(struct vnt_private *priv)
- 	priv->byMaxChannel = CB_MAX_CHANNEL;
- 
- 	/* Get Antena */
--	byValue = SROMbyReadEmbedded(priv->PortOffset, EEP_OFS_ANTENNA);
-+	byValue = SROMbyReadEmbedded(priv->port_offset, EEP_OFS_ANTENNA);
- 	if (byValue & EEP_ANTINV)
- 		priv->bTxRxAntInv = true;
- 	else
-@@ -292,20 +292,20 @@ static void device_init_registers(struct vnt_private *priv)
- 
- 	/* Get Desire Power Value */
- 	priv->byCurPwr = 0xFF;
--	priv->byCCKPwr = SROMbyReadEmbedded(priv->PortOffset, EEP_OFS_PWR_CCK);
--	priv->byOFDMPwrG = SROMbyReadEmbedded(priv->PortOffset,
-+	priv->byCCKPwr = SROMbyReadEmbedded(priv->port_offset, EEP_OFS_PWR_CCK);
-+	priv->byOFDMPwrG = SROMbyReadEmbedded(priv->port_offset,
- 					      EEP_OFS_PWR_OFDMG);
- 
- 	/* Load power Table */
- 	for (ii = 0; ii < CB_MAX_CHANNEL_24G; ii++) {
- 		priv->abyCCKPwrTbl[ii + 1] =
--			SROMbyReadEmbedded(priv->PortOffset,
-+			SROMbyReadEmbedded(priv->port_offset,
- 					   (unsigned char)(ii + EEP_OFS_CCK_PWR_TBL));
- 		if (priv->abyCCKPwrTbl[ii + 1] == 0)
- 			priv->abyCCKPwrTbl[ii + 1] = priv->byCCKPwr;
- 
- 		priv->abyOFDMPwrTbl[ii + 1] =
--			SROMbyReadEmbedded(priv->PortOffset,
-+			SROMbyReadEmbedded(priv->port_offset,
- 					   (unsigned char)(ii + EEP_OFS_OFDM_PWR_TBL));
- 		if (priv->abyOFDMPwrTbl[ii + 1] == 0)
- 			priv->abyOFDMPwrTbl[ii + 1] = priv->byOFDMPwrG;
-@@ -323,25 +323,25 @@ static void device_init_registers(struct vnt_private *priv)
- 	/* Load OFDM A Power Table */
- 	for (ii = 0; ii < CB_MAX_CHANNEL_5G; ii++) {
- 		priv->abyOFDMPwrTbl[ii + CB_MAX_CHANNEL_24G + 1] =
--			SROMbyReadEmbedded(priv->PortOffset,
-+			SROMbyReadEmbedded(priv->port_offset,
- 					   (unsigned char)(ii + EEP_OFS_OFDMA_PWR_TBL));
- 
- 		priv->abyOFDMDefaultPwr[ii + CB_MAX_CHANNEL_24G + 1] =
--			SROMbyReadEmbedded(priv->PortOffset,
-+			SROMbyReadEmbedded(priv->port_offset,
- 					   (unsigned char)(ii + EEP_OFS_OFDMA_PWR_dBm));
- 	}
- 
- 	if (priv->byLocalID > REV_ID_VT3253_B1) {
--		MACvSelectPage1(priv->PortOffset);
-+		MACvSelectPage1(priv->port_offset);
- 
--		VNSvOutPortB(priv->PortOffset + MAC_REG_MSRCTL + 1,
-+		VNSvOutPortB(priv->port_offset + MAC_REG_MSRCTL + 1,
- 			     (MSRCTL1_TXPWR | MSRCTL1_CSAPAREN));
- 
--		MACvSelectPage0(priv->PortOffset);
-+		MACvSelectPage0(priv->port_offset);
- 	}
- 
- 	/* use relative tx timeout and 802.11i D4 */
--	MACvWordRegBitsOn(priv->PortOffset,
-+	MACvWordRegBitsOn(priv->port_offset,
- 			  MAC_REG_CFG, (CFG_TKIPOPT | CFG_NOTXTIMEOUT));
- 
- 	/* set performance parameter by registry */
-@@ -349,9 +349,9 @@ static void device_init_registers(struct vnt_private *priv)
- 	MACvSetLongRetryLimit(priv, priv->byLongRetryLimit);
- 
- 	/* reset TSF counter */
--	VNSvOutPortB(priv->PortOffset + MAC_REG_TFTCTL, TFTCTL_TSFCNTRST);
-+	VNSvOutPortB(priv->port_offset + MAC_REG_TFTCTL, TFTCTL_TSFCNTRST);
- 	/* enable TSF counter */
--	VNSvOutPortB(priv->PortOffset + MAC_REG_TFTCTL, TFTCTL_TSFCNTREN);
-+	VNSvOutPortB(priv->port_offset + MAC_REG_TFTCTL, TFTCTL_TSFCNTREN);
- 
- 	/* initialize BBP registers */
- 	bb_vt3253_init(priv);
-@@ -371,13 +371,13 @@ static void device_init_registers(struct vnt_private *priv)
- 
- 	priv->bRadioOff = false;
- 
--	priv->byRadioCtl = SROMbyReadEmbedded(priv->PortOffset,
-+	priv->byRadioCtl = SROMbyReadEmbedded(priv->port_offset,
- 					      EEP_OFS_RADIOCTL);
- 	priv->bHWRadioOff = false;
- 
- 	if (priv->byRadioCtl & EEP_RADIOCTL_ENABLE) {
- 		/* Get GPIO */
--		MACvGPIOIn(priv->PortOffset, &priv->byGPIO);
-+		MACvGPIOIn(priv->port_offset, &priv->byGPIO);
- 
- 		if (((priv->byGPIO & GPIO0_DATA) &&
- 		     !(priv->byRadioCtl & EEP_RADIOCTL_INV)) ||
-@@ -390,7 +390,7 @@ static void device_init_registers(struct vnt_private *priv)
- 		CARDbRadioPowerOff(priv);
- 
- 	/* get Permanent network address */
--	SROMvReadEtherAddress(priv->PortOffset, priv->abyCurrentNetAddr);
-+	SROMvReadEtherAddress(priv->port_offset, priv->abyCurrentNetAddr);
- 	pr_debug("Network address = %pM\n", priv->abyCurrentNetAddr);
- 
- 	/* reset Tx pointer */
-@@ -399,21 +399,21 @@ static void device_init_registers(struct vnt_private *priv)
- 	CARDvSafeResetTx(priv);
- 
- 	if (priv->byLocalID <= REV_ID_VT3253_A1)
--		MACvRegBitsOn(priv->PortOffset, MAC_REG_RCR, RCR_WPAERR);
-+		MACvRegBitsOn(priv->port_offset, MAC_REG_RCR, RCR_WPAERR);
- 
- 	/* Turn On Rx DMA */
--	MACvReceive0(priv->PortOffset);
--	MACvReceive1(priv->PortOffset);
-+	MACvReceive0(priv->port_offset);
-+	MACvReceive1(priv->port_offset);
- 
- 	/* start the adapter */
--	MACvStart(priv->PortOffset);
-+	MACvStart(priv->port_offset);
- }
- 
- static void device_print_info(struct vnt_private *priv)
- {
- 	dev_info(&priv->pcid->dev, "MAC=%pM IO=0x%lx Mem=0x%lx IRQ=%d\n",
- 		 priv->abyCurrentNetAddr, (unsigned long)priv->ioaddr,
--		 (unsigned long)priv->PortOffset, priv->pcid->irq);
-+		 (unsigned long)priv->port_offset, priv->pcid->irq);
- }
- 
- static void device_free_info(struct vnt_private *priv)
-@@ -424,8 +424,8 @@ static void device_free_info(struct vnt_private *priv)
- 	if (priv->mac_hw)
- 		ieee80211_unregister_hw(priv->hw);
- 
--	if (priv->PortOffset)
--		iounmap(priv->PortOffset);
-+	if (priv->port_offset)
-+		iounmap(priv->port_offset);
- 
- 	if (priv->pcid)
- 		pci_release_regions(priv->pcid);
-@@ -1029,7 +1029,7 @@ static void vnt_interrupt_process(struct vnt_private *priv)
- 	u32 isr;
- 	unsigned long flags;
- 
--	MACvReadISR(priv->PortOffset, &isr);
-+	MACvReadISR(priv->port_offset, &isr);
- 
- 	if (isr == 0)
- 		return;
-@@ -1042,7 +1042,7 @@ static void vnt_interrupt_process(struct vnt_private *priv)
- 	spin_lock_irqsave(&priv->lock, flags);
- 
- 	/* Read low level stats */
--	MACvReadMIBCounter(priv->PortOffset, &mib_counter);
-+	MACvReadMIBCounter(priv->port_offset, &mib_counter);
- 
- 	low_stats->dot11RTSSuccessCount += mib_counter & 0xff;
- 	low_stats->dot11RTSFailureCount += (mib_counter >> 8) & 0xff;
-@@ -1056,12 +1056,12 @@ static void vnt_interrupt_process(struct vnt_private *priv)
- 	 * update ISR counter
- 	 */
- 	while (isr && priv->vif) {
--		MACvWriteISR(priv->PortOffset, isr);
-+		MACvWriteISR(priv->port_offset, isr);
- 
- 		if (isr & ISR_FETALERR) {
- 			pr_debug(" ISR_FETALERR\n");
--			VNSvOutPortB(priv->PortOffset + MAC_REG_SOFTPWRCTL, 0);
--			VNSvOutPortW(priv->PortOffset +
-+			VNSvOutPortB(priv->port_offset + MAC_REG_SOFTPWRCTL, 0);
-+			VNSvOutPortW(priv->port_offset +
- 				     MAC_REG_SOFTPWRCTL, SOFTPWRCTL_SWPECTI);
- 			device_error(priv, isr);
- 		}
-@@ -1116,10 +1116,10 @@ static void vnt_interrupt_process(struct vnt_private *priv)
- 		    ieee80211_queue_stopped(priv->hw, 0))
- 			ieee80211_wake_queues(priv->hw);
- 
--		MACvReadISR(priv->PortOffset, &isr);
-+		MACvReadISR(priv->port_offset, &isr);
- 
--		MACvReceive0(priv->PortOffset);
--		MACvReceive1(priv->PortOffset);
-+		MACvReceive0(priv->port_offset);
-+		MACvReceive1(priv->port_offset);
- 
- 		if (max_count > priv->opts.int_works)
- 			break;
-@@ -1136,7 +1136,7 @@ static void vnt_interrupt_work(struct work_struct *work)
- 	if (priv->vif)
- 		vnt_interrupt_process(priv);
- 
--	MACvIntEnable(priv->PortOffset, IMR_MASK_VALUE);
-+	MACvIntEnable(priv->port_offset, IMR_MASK_VALUE);
- }
- 
- static irqreturn_t vnt_interrupt(int irq,  void *arg)
-@@ -1145,7 +1145,7 @@ static irqreturn_t vnt_interrupt(int irq,  void *arg)
- 
- 	schedule_work(&priv->interrupt_work);
- 
--	MACvIntDisable(priv->PortOffset);
-+	MACvIntDisable(priv->port_offset);
- 
- 	return IRQ_HANDLED;
- }
-@@ -1201,9 +1201,9 @@ static int vnt_tx_packet(struct vnt_private *priv, struct sk_buff *skb)
- 	wmb(); /* second memory barrier */
- 
- 	if (head_td->td_info->flags & TD_FLAGS_NETIF_SKB)
--		MACvTransmitAC0(priv->PortOffset);
-+		MACvTransmitAC0(priv->port_offset);
- 	else
--		MACvTransmit0(priv->PortOffset);
-+		MACvTransmit0(priv->port_offset);
- 
- 	priv->iTDUsed[dma_idx]++;
- 
-@@ -1255,7 +1255,7 @@ static int vnt_start(struct ieee80211_hw *hw)
- 	device_init_registers(priv);
- 
- 	dev_dbg(&priv->pcid->dev, "call MACvIntEnable\n");
--	MACvIntEnable(priv->PortOffset, IMR_MASK_VALUE);
-+	MACvIntEnable(priv->port_offset, IMR_MASK_VALUE);
- 
- 	ieee80211_wake_queues(hw);
- 
-@@ -1305,15 +1305,15 @@ static int vnt_add_interface(struct ieee80211_hw *hw, struct ieee80211_vif *vif)
- 	case NL80211_IFTYPE_STATION:
- 		break;
- 	case NL80211_IFTYPE_ADHOC:
--		MACvRegBitsOff(priv->PortOffset, MAC_REG_RCR, RCR_UNICAST);
-+		MACvRegBitsOff(priv->port_offset, MAC_REG_RCR, RCR_UNICAST);
- 
--		MACvRegBitsOn(priv->PortOffset, MAC_REG_HOSTCR, HOSTCR_ADHOC);
-+		MACvRegBitsOn(priv->port_offset, MAC_REG_HOSTCR, HOSTCR_ADHOC);
- 
- 		break;
- 	case NL80211_IFTYPE_AP:
--		MACvRegBitsOff(priv->PortOffset, MAC_REG_RCR, RCR_UNICAST);
-+		MACvRegBitsOff(priv->port_offset, MAC_REG_RCR, RCR_UNICAST);
- 
--		MACvRegBitsOn(priv->PortOffset, MAC_REG_HOSTCR, HOSTCR_AP);
-+		MACvRegBitsOn(priv->port_offset, MAC_REG_HOSTCR, HOSTCR_AP);
- 
- 		break;
- 	default:
-@@ -1334,16 +1334,16 @@ static void vnt_remove_interface(struct ieee80211_hw *hw,
- 	case NL80211_IFTYPE_STATION:
- 		break;
- 	case NL80211_IFTYPE_ADHOC:
--		MACvRegBitsOff(priv->PortOffset, MAC_REG_TCR, TCR_AUTOBCNTX);
--		MACvRegBitsOff(priv->PortOffset,
-+		MACvRegBitsOff(priv->port_offset, MAC_REG_TCR, TCR_AUTOBCNTX);
-+		MACvRegBitsOff(priv->port_offset,
- 			       MAC_REG_TFTCTL, TFTCTL_TSFCNTREN);
--		MACvRegBitsOff(priv->PortOffset, MAC_REG_HOSTCR, HOSTCR_ADHOC);
-+		MACvRegBitsOff(priv->port_offset, MAC_REG_HOSTCR, HOSTCR_ADHOC);
- 		break;
- 	case NL80211_IFTYPE_AP:
--		MACvRegBitsOff(priv->PortOffset, MAC_REG_TCR, TCR_AUTOBCNTX);
--		MACvRegBitsOff(priv->PortOffset,
-+		MACvRegBitsOff(priv->port_offset, MAC_REG_TCR, TCR_AUTOBCNTX);
-+		MACvRegBitsOff(priv->port_offset,
- 			       MAC_REG_TFTCTL, TFTCTL_TSFCNTREN);
--		MACvRegBitsOff(priv->PortOffset, MAC_REG_HOSTCR, HOSTCR_AP);
-+		MACvRegBitsOff(priv->port_offset, MAC_REG_HOSTCR, HOSTCR_AP);
- 		break;
- 	default:
- 		break;
-@@ -1407,7 +1407,7 @@ static void vnt_bss_info_changed(struct ieee80211_hw *hw,
- 
- 		spin_lock_irqsave(&priv->lock, flags);
- 
--		MACvWriteBSSIDAddress(priv->PortOffset, (u8 *)conf->bssid);
-+		MACvWriteBSSIDAddress(priv->port_offset, (u8 *)conf->bssid);
- 
- 		spin_unlock_irqrestore(&priv->lock, flags);
- 	}
-@@ -1423,19 +1423,19 @@ static void vnt_bss_info_changed(struct ieee80211_hw *hw,
- 
- 	if (changed & BSS_CHANGED_ERP_PREAMBLE) {
- 		if (conf->use_short_preamble) {
--			MACvEnableBarkerPreambleMd(priv->PortOffset);
-+			MACvEnableBarkerPreambleMd(priv->port_offset);
- 			priv->byPreambleType = true;
- 		} else {
--			MACvDisableBarkerPreambleMd(priv->PortOffset);
-+			MACvDisableBarkerPreambleMd(priv->port_offset);
- 			priv->byPreambleType = false;
- 		}
- 	}
- 
- 	if (changed & BSS_CHANGED_ERP_CTS_PROT) {
- 		if (conf->use_cts_prot)
--			MACvEnableProtectMD(priv->PortOffset);
-+			MACvEnableProtectMD(priv->port_offset);
- 		else
--			MACvDisableProtectMD(priv->PortOffset);
-+			MACvDisableProtectMD(priv->port_offset);
- 	}
- 
- 	if (changed & BSS_CHANGED_ERP_SLOT) {
-@@ -1459,10 +1459,10 @@ static void vnt_bss_info_changed(struct ieee80211_hw *hw,
- 		if (conf->enable_beacon) {
- 			vnt_beacon_enable(priv, vif, conf);
- 
--			MACvRegBitsOn(priv->PortOffset, MAC_REG_TCR,
-+			MACvRegBitsOn(priv->port_offset, MAC_REG_TCR,
- 				      TCR_AUTOBCNTX);
- 		} else {
--			MACvRegBitsOff(priv->PortOffset, MAC_REG_TCR,
-+			MACvRegBitsOff(priv->port_offset, MAC_REG_TCR,
- 				       TCR_AUTOBCNTX);
- 		}
- 	}
-@@ -1477,9 +1477,9 @@ static void vnt_bss_info_changed(struct ieee80211_hw *hw,
- 
- 			CARDvSetFirstNextTBTT(priv, conf->beacon_int);
- 		} else {
--			VNSvOutPortB(priv->PortOffset + MAC_REG_TFTCTL,
-+			VNSvOutPortB(priv->port_offset + MAC_REG_TFTCTL,
- 				     TFTCTL_TSFCNTRST);
--			VNSvOutPortB(priv->PortOffset + MAC_REG_TFTCTL,
-+			VNSvOutPortB(priv->port_offset + MAC_REG_TFTCTL,
- 				     TFTCTL_TSFCNTREN);
- 		}
- 	}
-@@ -1513,7 +1513,7 @@ static void vnt_configure(struct ieee80211_hw *hw,
- 
- 	*total_flags &= FIF_ALLMULTI | FIF_OTHER_BSS | FIF_BCN_PRBRESP_PROMISC;
- 
--	VNSvInPortB(priv->PortOffset + MAC_REG_RCR, &rx_mode);
-+	VNSvInPortB(priv->port_offset + MAC_REG_RCR, &rx_mode);
- 
- 	dev_dbg(&priv->pcid->dev, "rx mode in = %x\n", rx_mode);
- 
-@@ -1524,24 +1524,24 @@ static void vnt_configure(struct ieee80211_hw *hw,
- 			spin_lock_irqsave(&priv->lock, flags);
- 
- 			if (priv->mc_list_count > 2) {
--				MACvSelectPage1(priv->PortOffset);
-+				MACvSelectPage1(priv->port_offset);
- 
--				VNSvOutPortD(priv->PortOffset +
-+				VNSvOutPortD(priv->port_offset +
- 					     MAC_REG_MAR0, 0xffffffff);
--				VNSvOutPortD(priv->PortOffset +
-+				VNSvOutPortD(priv->port_offset +
- 					    MAC_REG_MAR0 + 4, 0xffffffff);
- 
--				MACvSelectPage0(priv->PortOffset);
-+				MACvSelectPage0(priv->port_offset);
- 			} else {
--				MACvSelectPage1(priv->PortOffset);
-+				MACvSelectPage1(priv->port_offset);
- 
--				VNSvOutPortD(priv->PortOffset +
-+				VNSvOutPortD(priv->port_offset +
- 					     MAC_REG_MAR0, (u32)multicast);
--				VNSvOutPortD(priv->PortOffset +
-+				VNSvOutPortD(priv->port_offset +
- 					     MAC_REG_MAR0 + 4,
- 					     (u32)(multicast >> 32));
- 
--				MACvSelectPage0(priv->PortOffset);
-+				MACvSelectPage0(priv->port_offset);
- 			}
- 
- 			spin_unlock_irqrestore(&priv->lock, flags);
-@@ -1561,7 +1561,7 @@ static void vnt_configure(struct ieee80211_hw *hw,
- 			rx_mode |= RCR_BSSID;
- 	}
- 
--	VNSvOutPortB(priv->PortOffset + MAC_REG_RCR, rx_mode);
-+	VNSvOutPortB(priv->port_offset + MAC_REG_RCR, rx_mode);
- 
- 	dev_dbg(&priv->pcid->dev, "rx mode out= %x\n", rx_mode);
- }
-@@ -1621,7 +1621,7 @@ static void vnt_reset_tsf(struct ieee80211_hw *hw, struct ieee80211_vif *vif)
- 	struct vnt_private *priv = hw->priv;
- 
- 	/* reset TSF counter */
--	VNSvOutPortB(priv->PortOffset + MAC_REG_TFTCTL, TFTCTL_TSFCNTRST);
-+	VNSvOutPortB(priv->port_offset + MAC_REG_TFTCTL, TFTCTL_TSFCNTRST);
- }
- 
- static const struct ieee80211_ops vnt_mac_ops = {
-@@ -1698,9 +1698,9 @@ vt6655_probe(struct pci_dev *pcid, const struct pci_device_id *ent)
- 
- 	priv->memaddr = pci_resource_start(pcid, 0);
- 	priv->ioaddr = pci_resource_start(pcid, 1);
--	priv->PortOffset = ioremap(priv->memaddr & PCI_BASE_ADDRESS_MEM_MASK,
-+	priv->port_offset = ioremap(priv->memaddr & PCI_BASE_ADDRESS_MEM_MASK,
- 				   256);
--	if (!priv->PortOffset) {
-+	if (!priv->port_offset) {
- 		dev_err(&pcid->dev, ": Failed to IO remapping ..\n");
- 		device_free_info(priv);
- 		return -ENODEV;
-@@ -1729,10 +1729,10 @@ vt6655_probe(struct pci_dev *pcid, const struct pci_device_id *ent)
- 	}
- 	/* initial to reload eeprom */
- 	MACvInitialize(priv);
--	MACvReadEtherAddress(priv->PortOffset, priv->abyCurrentNetAddr);
-+	MACvReadEtherAddress(priv->port_offset, priv->abyCurrentNetAddr);
- 
- 	/* Get RFType */
--	priv->byRFType = SROMbyReadEmbedded(priv->PortOffset, EEP_OFS_RFTYPE);
-+	priv->byRFType = SROMbyReadEmbedded(priv->port_offset, EEP_OFS_RFTYPE);
- 	priv->byRFType &= RF_MASK;
- 
- 	dev_dbg(&pcid->dev, "RF Type = %x\n", priv->byRFType);
-diff --git a/drivers/staging/vt6655/mac.c b/drivers/staging/vt6655/mac.c
-index 9721c2234bf2..1ae7148b4092 100644
---- a/drivers/staging/vt6655/mac.c
-+++ b/drivers/staging/vt6655/mac.c
-@@ -57,7 +57,7 @@
- bool MACbIsRegBitsOff(struct vnt_private *priv, unsigned char byRegOfs,
- 		      unsigned char byTestBits)
- {
--	void __iomem *io_base = priv->PortOffset;
-+	void __iomem *io_base = priv->port_offset;
- 
- 	return !(ioread8(io_base + byRegOfs) & byTestBits);
- }
-@@ -77,7 +77,7 @@ bool MACbIsRegBitsOff(struct vnt_private *priv, unsigned char byRegOfs,
-  */
- bool MACbIsIntDisable(struct vnt_private *priv)
- {
--	void __iomem *io_base = priv->PortOffset;
-+	void __iomem *io_base = priv->port_offset;
- 
- 	if (ioread32(io_base + MAC_REG_IMR))
- 		return false;
-@@ -102,7 +102,7 @@ bool MACbIsIntDisable(struct vnt_private *priv)
- void MACvSetShortRetryLimit(struct vnt_private *priv,
- 			    unsigned char byRetryLimit)
- {
--	void __iomem *io_base = priv->PortOffset;
-+	void __iomem *io_base = priv->port_offset;
- 	/* set SRT */
- 	iowrite8(byRetryLimit, io_base + MAC_REG_SRT);
- }
-@@ -124,7 +124,7 @@ void MACvSetShortRetryLimit(struct vnt_private *priv,
- void MACvSetLongRetryLimit(struct vnt_private *priv,
- 			   unsigned char byRetryLimit)
- {
--	void __iomem *io_base = priv->PortOffset;
-+	void __iomem *io_base = priv->port_offset;
- 	/* set LRT */
- 	iowrite8(byRetryLimit, io_base + MAC_REG_LRT);
- }
-@@ -145,7 +145,7 @@ void MACvSetLongRetryLimit(struct vnt_private *priv,
-  */
- void MACvSetLoopbackMode(struct vnt_private *priv, unsigned char byLoopbackMode)
- {
--	void __iomem *io_base = priv->PortOffset;
-+	void __iomem *io_base = priv->port_offset;
- 
- 	byLoopbackMode <<= 6;
- 	/* set TCR */
-@@ -168,7 +168,7 @@ void MACvSetLoopbackMode(struct vnt_private *priv, unsigned char byLoopbackMode)
-  */
- void MACvSaveContext(struct vnt_private *priv, unsigned char *cxt_buf)
- {
--	void __iomem *io_base = priv->PortOffset;
-+	void __iomem *io_base = priv->port_offset;
- 
- 	/* read page0 register */
- 	memcpy_fromio(cxt_buf, io_base, MAC_MAX_CONTEXT_SIZE_PAGE0);
-@@ -198,7 +198,7 @@ void MACvSaveContext(struct vnt_private *priv, unsigned char *cxt_buf)
-  */
- void MACvRestoreContext(struct vnt_private *priv, unsigned char *cxt_buf)
- {
--	void __iomem *io_base = priv->PortOffset;
-+	void __iomem *io_base = priv->port_offset;
- 
- 	MACvSelectPage1(io_base);
- 	/* restore page1 */
-@@ -249,7 +249,7 @@ void MACvRestoreContext(struct vnt_private *priv, unsigned char *cxt_buf)
-  */
- bool MACbSoftwareReset(struct vnt_private *priv)
- {
--	void __iomem *io_base = priv->PortOffset;
-+	void __iomem *io_base = priv->port_offset;
- 	unsigned short ww;
- 
- 	/* turn on HOSTCR_SOFTRST, just write 0x01 to reset */
-@@ -312,7 +312,7 @@ bool MACbSafeSoftwareReset(struct vnt_private *priv)
-  */
- bool MACbSafeRxOff(struct vnt_private *priv)
- {
--	void __iomem *io_base = priv->PortOffset;
-+	void __iomem *io_base = priv->port_offset;
- 	unsigned short ww;
- 
- 	/* turn off wow temp for turn off Rx safely */
-@@ -366,7 +366,7 @@ bool MACbSafeRxOff(struct vnt_private *priv)
-  */
- bool MACbSafeTxOff(struct vnt_private *priv)
- {
--	void __iomem *io_base = priv->PortOffset;
-+	void __iomem *io_base = priv->port_offset;
- 	unsigned short ww;
- 
- 	/* Clear TX DMA */
-@@ -422,7 +422,7 @@ bool MACbSafeTxOff(struct vnt_private *priv)
-  */
- bool MACbSafeStop(struct vnt_private *priv)
- {
--	void __iomem *io_base = priv->PortOffset;
-+	void __iomem *io_base = priv->port_offset;
- 
- 	MACvRegBitsOff(io_base, MAC_REG_TCR, TCR_AUTOBCNTX);
- 
-@@ -457,7 +457,7 @@ bool MACbSafeStop(struct vnt_private *priv)
-  */
- bool MACbShutdown(struct vnt_private *priv)
- {
--	void __iomem *io_base = priv->PortOffset;
-+	void __iomem *io_base = priv->port_offset;
- 	/* disable MAC IMR */
- 	MACvIntDisable(io_base);
- 	MACvSetLoopbackMode(priv, MAC_LB_INTERNAL);
-@@ -485,7 +485,7 @@ bool MACbShutdown(struct vnt_private *priv)
-  */
- void MACvInitialize(struct vnt_private *priv)
- {
--	void __iomem *io_base = priv->PortOffset;
-+	void __iomem *io_base = priv->port_offset;
- 	/* clear sticky bits */
- 	MACvClearStckDS(io_base);
- 	/* disable force PME-enable */
-@@ -517,7 +517,7 @@ void MACvInitialize(struct vnt_private *priv)
-  */
- void MACvSetCurrRx0DescAddr(struct vnt_private *priv, u32 curr_desc_addr)
- {
--	void __iomem *io_base = priv->PortOffset;
-+	void __iomem *io_base = priv->port_offset;
- 	unsigned short ww;
- 	unsigned char org_dma_ctl;
- 
-@@ -551,7 +551,7 @@ void MACvSetCurrRx0DescAddr(struct vnt_private *priv, u32 curr_desc_addr)
-  */
- void MACvSetCurrRx1DescAddr(struct vnt_private *priv, u32 curr_desc_addr)
- {
--	void __iomem *io_base = priv->PortOffset;
-+	void __iomem *io_base = priv->port_offset;
- 	unsigned short ww;
- 	unsigned char org_dma_ctl;
- 
-@@ -586,7 +586,7 @@ void MACvSetCurrRx1DescAddr(struct vnt_private *priv, u32 curr_desc_addr)
- void MACvSetCurrTx0DescAddrEx(struct vnt_private *priv,
- 			      u32 curr_desc_addr)
- {
--	void __iomem *io_base = priv->PortOffset;
-+	void __iomem *io_base = priv->port_offset;
- 	unsigned short ww;
- 	unsigned char org_dma_ctl;
- 
-@@ -622,7 +622,7 @@ void MACvSetCurrTx0DescAddrEx(struct vnt_private *priv,
- void MACvSetCurrAC0DescAddrEx(struct vnt_private *priv,
- 			      u32 curr_desc_addr)
- {
--	void __iomem *io_base = priv->PortOffset;
-+	void __iomem *io_base = priv->port_offset;
- 	unsigned short ww;
- 	unsigned char org_dma_ctl;
- 
-@@ -666,7 +666,7 @@ void MACvSetCurrTXDescAddr(int iTxType, struct vnt_private *priv,
-  */
- void MACvTimer0MicroSDelay(struct vnt_private *priv, unsigned int uDelay)
- {
--	void __iomem *io_base = priv->PortOffset;
-+	void __iomem *io_base = priv->port_offset;
- 	unsigned char byValue;
- 	unsigned int uu, ii;
- 
-@@ -703,7 +703,7 @@ void MACvTimer0MicroSDelay(struct vnt_private *priv, unsigned int uDelay)
- void MACvOneShotTimer1MicroSec(struct vnt_private *priv,
- 			       unsigned int uDelayTime)
- {
--	void __iomem *io_base = priv->PortOffset;
-+	void __iomem *io_base = priv->port_offset;
- 
- 	iowrite8(0, io_base + MAC_REG_TMCTL1);
- 	iowrite32(uDelayTime, io_base + MAC_REG_TMDATA1);
-@@ -713,7 +713,7 @@ void MACvOneShotTimer1MicroSec(struct vnt_private *priv,
- void MACvSetMISCFifo(struct vnt_private *priv, unsigned short offset,
- 		     u32 data)
- {
--	void __iomem *io_base = priv->PortOffset;
-+	void __iomem *io_base = priv->port_offset;
- 
- 	if (offset > 273)
- 		return;
-@@ -724,7 +724,7 @@ void MACvSetMISCFifo(struct vnt_private *priv, unsigned short offset,
- 
- bool MACbPSWakeup(struct vnt_private *priv)
- {
--	void __iomem *io_base = priv->PortOffset;
-+	void __iomem *io_base = priv->port_offset;
- 	unsigned int ww;
- 	/* Read PSCTL */
- 	if (MACbIsRegBitsOff(priv, MAC_REG_PSCTL, PSCTL_PS))
-@@ -765,7 +765,7 @@ void MACvSetKeyEntry(struct vnt_private *priv, unsigned short wKeyCtl,
- 		     unsigned char *pbyAddr, u32 *pdwKey,
- 		     unsigned char byLocalID)
- {
--	void __iomem *io_base = priv->PortOffset;
-+	void __iomem *io_base = priv->port_offset;
- 	unsigned short offset;
- 	u32 data;
- 	int     ii;
-@@ -830,7 +830,7 @@ void MACvSetKeyEntry(struct vnt_private *priv, unsigned short wKeyCtl,
-  */
- void MACvDisableKeyEntry(struct vnt_private *priv, unsigned int uEntryIdx)
- {
--	void __iomem *io_base = priv->PortOffset;
-+	void __iomem *io_base = priv->port_offset;
- 	unsigned short offset;
- 
- 	offset = MISCFIFO_KEYETRY0;
-diff --git a/drivers/staging/vt6655/power.c b/drivers/staging/vt6655/power.c
-index aac021e983d1..06066fa56dd5 100644
---- a/drivers/staging/vt6655/power.c
-+++ b/drivers/staging/vt6655/power.c
-@@ -52,30 +52,30 @@ void PSvEnablePowerSaving(struct vnt_private *priv,
- 	u16 wAID = priv->current_aid | BIT(14) | BIT(15);
- 
- 	/* set period of power up before TBTT */
--	VNSvOutPortW(priv->PortOffset + MAC_REG_PWBT, C_PWBT);
-+	VNSvOutPortW(priv->port_offset + MAC_REG_PWBT, C_PWBT);
- 	if (priv->op_mode != NL80211_IFTYPE_ADHOC) {
- 		/* set AID */
--		VNSvOutPortW(priv->PortOffset + MAC_REG_AIDATIM, wAID);
-+		VNSvOutPortW(priv->port_offset + MAC_REG_AIDATIM, wAID);
- 	}
- 
- 	/* Set AutoSleep */
--	MACvRegBitsOn(priv->PortOffset, MAC_REG_PSCFG, PSCFG_AUTOSLEEP);
-+	MACvRegBitsOn(priv->port_offset, MAC_REG_PSCFG, PSCFG_AUTOSLEEP);
- 
- 	/* Set HWUTSF */
--	MACvRegBitsOn(priv->PortOffset, MAC_REG_TFTCTL, TFTCTL_HWUTSF);
-+	MACvRegBitsOn(priv->port_offset, MAC_REG_TFTCTL, TFTCTL_HWUTSF);
- 
- 	if (wListenInterval >= 2) {
- 		/* clear always listen beacon */
--		MACvRegBitsOff(priv->PortOffset, MAC_REG_PSCTL, PSCTL_ALBCN);
-+		MACvRegBitsOff(priv->port_offset, MAC_REG_PSCTL, PSCTL_ALBCN);
- 		/* first time set listen next beacon */
--		MACvRegBitsOn(priv->PortOffset, MAC_REG_PSCTL, PSCTL_LNBCN);
-+		MACvRegBitsOn(priv->port_offset, MAC_REG_PSCTL, PSCTL_LNBCN);
- 	} else {
- 		/* always listen beacon */
--		MACvRegBitsOn(priv->PortOffset, MAC_REG_PSCTL, PSCTL_ALBCN);
-+		MACvRegBitsOn(priv->port_offset, MAC_REG_PSCTL, PSCTL_ALBCN);
- 	}
- 
- 	/* enable power saving hw function */
--	MACvRegBitsOn(priv->PortOffset, MAC_REG_PSCTL, PSCTL_PSEN);
-+	MACvRegBitsOn(priv->port_offset, MAC_REG_PSCTL, PSCTL_PSEN);
- 	priv->bEnablePSMode = true;
- 
- 	priv->bPWBitOn = true;
-@@ -98,13 +98,13 @@ void PSvDisablePowerSaving(struct vnt_private *priv)
- 	MACbPSWakeup(priv);
- 
- 	/* clear AutoSleep */
--	MACvRegBitsOff(priv->PortOffset, MAC_REG_PSCFG, PSCFG_AUTOSLEEP);
-+	MACvRegBitsOff(priv->port_offset, MAC_REG_PSCFG, PSCFG_AUTOSLEEP);
- 
- 	/* clear HWUTSF */
--	MACvRegBitsOff(priv->PortOffset, MAC_REG_TFTCTL, TFTCTL_HWUTSF);
-+	MACvRegBitsOff(priv->port_offset, MAC_REG_TFTCTL, TFTCTL_HWUTSF);
- 
- 	/* set always listen beacon */
--	MACvRegBitsOn(priv->PortOffset, MAC_REG_PSCTL, PSCTL_ALBCN);
-+	MACvRegBitsOn(priv->port_offset, MAC_REG_PSCTL, PSCTL_ALBCN);
- 
- 	priv->bEnablePSMode = false;
- 
-@@ -135,7 +135,7 @@ bool PSbIsNextTBTTWakeUp(struct vnt_private *priv)
- 
- 		if (priv->wake_up_count == 1) {
- 			/* Turn on wake up to listen next beacon */
--			MACvRegBitsOn(priv->PortOffset,
-+			MACvRegBitsOn(priv->port_offset,
- 				      MAC_REG_PSCTL, PSCTL_LNBCN);
- 			wake_up = true;
- 		}
-diff --git a/drivers/staging/vt6655/rf.c b/drivers/staging/vt6655/rf.c
-index 0dae593c6944..a6f17162d017 100644
---- a/drivers/staging/vt6655/rf.c
-+++ b/drivers/staging/vt6655/rf.c
-@@ -406,7 +406,7 @@ static const unsigned long dwAL7230ChannelTable2[CB_MAX_CHANNEL] = {
-  */
- static bool s_bAL7230Init(struct vnt_private *priv)
- {
--	void __iomem *iobase = priv->PortOffset;
-+	void __iomem *iobase = priv->port_offset;
- 	int     ii;
- 	bool ret;
- 
-@@ -455,7 +455,7 @@ static bool s_bAL7230Init(struct vnt_private *priv)
-  */
- static bool s_bAL7230SelectChannel(struct vnt_private *priv, unsigned char byChannel)
- {
--	void __iomem *iobase = priv->PortOffset;
-+	void __iomem *iobase = priv->port_offset;
- 	bool ret;
- 
- 	ret = true;
-@@ -494,7 +494,7 @@ static bool s_bAL7230SelectChannel(struct vnt_private *priv, unsigned char byCha
-  */
- bool IFRFbWriteEmbedded(struct vnt_private *priv, unsigned long dwData)
- {
--	void __iomem *iobase = priv->PortOffset;
-+	void __iomem *iobase = priv->port_offset;
- 	unsigned short ww;
- 	unsigned long dwValue;
- 
-@@ -527,7 +527,7 @@ bool IFRFbWriteEmbedded(struct vnt_private *priv, unsigned long dwData)
-  */
- static bool RFbAL2230Init(struct vnt_private *priv)
- {
--	void __iomem *iobase = priv->PortOffset;
-+	void __iomem *iobase = priv->port_offset;
- 	int     ii;
- 	bool ret;
- 
-@@ -572,7 +572,7 @@ static bool RFbAL2230Init(struct vnt_private *priv)
- 
- static bool RFbAL2230SelectChannel(struct vnt_private *priv, unsigned char byChannel)
- {
--	void __iomem *iobase = priv->PortOffset;
-+	void __iomem *iobase = priv->port_offset;
- 	bool ret;
- 
- 	ret = true;
-@@ -679,7 +679,7 @@ bool RFbSelectChannel(struct vnt_private *priv, unsigned char byRFType,
- bool RFvWriteWakeProgSyn(struct vnt_private *priv, unsigned char byRFType,
- 			 u16 uChannel)
- {
--	void __iomem *iobase = priv->PortOffset;
-+	void __iomem *iobase = priv->port_offset;
- 	int   ii;
- 	unsigned char byInitCount = 0;
- 	unsigned char bySleepCount = 0;
-diff --git a/drivers/staging/vt6655/rxtx.c b/drivers/staging/vt6655/rxtx.c
-index 5395c3a3e35a..7ec7fd309329 100644
---- a/drivers/staging/vt6655/rxtx.c
-+++ b/drivers/staging/vt6655/rxtx.c
-@@ -1422,13 +1422,13 @@ static int vnt_beacon_xmit(struct vnt_private *priv,
- 
- 	priv->wBCNBufLen = sizeof(*short_head) + skb->len;
- 
--	MACvSetCurrBCNTxDescAddr(priv->PortOffset, priv->tx_beacon_dma);
-+	MACvSetCurrBCNTxDescAddr(priv->port_offset, priv->tx_beacon_dma);
- 
--	MACvSetCurrBCNLength(priv->PortOffset, priv->wBCNBufLen);
-+	MACvSetCurrBCNLength(priv->port_offset, priv->wBCNBufLen);
- 	/* Set auto Transmit on */
--	MACvRegBitsOn(priv->PortOffset, MAC_REG_TCR, TCR_AUTOBCNTX);
-+	MACvRegBitsOn(priv->port_offset, MAC_REG_TCR, TCR_AUTOBCNTX);
- 	/* Poll Transmit the adapter */
--	MACvTransmitBCN(priv->PortOffset);
-+	MACvTransmitBCN(priv->port_offset);
- 
- 	return 0;
- }
-@@ -1452,9 +1452,9 @@ int vnt_beacon_make(struct vnt_private *priv, struct ieee80211_vif *vif)
- int vnt_beacon_enable(struct vnt_private *priv, struct ieee80211_vif *vif,
- 		      struct ieee80211_bss_conf *conf)
- {
--	VNSvOutPortB(priv->PortOffset + MAC_REG_TFTCTL, TFTCTL_TSFCNTRST);
-+	VNSvOutPortB(priv->port_offset + MAC_REG_TFTCTL, TFTCTL_TSFCNTRST);
- 
--	VNSvOutPortB(priv->PortOffset + MAC_REG_TFTCTL, TFTCTL_TSFCNTREN);
-+	VNSvOutPortB(priv->port_offset + MAC_REG_TFTCTL, TFTCTL_TSFCNTREN);
- 
- 	CARDvSetFirstNextTBTT(priv, conf->beacon_int);
- 
 -- 
-2.25.1
-
+Kees Cook
