@@ -2,132 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FF39421C3E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 03:55:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E89D1421C41
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 03:58:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230305AbhJEB5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 21:57:33 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:60133 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229659AbhJEB53 (ORCPT
+        id S230237AbhJECAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 22:00:36 -0400
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:58381 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229568AbhJECAe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 21:57:29 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HNgdx17Hfz4xbX;
-        Tue,  5 Oct 2021 12:55:33 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1633398938;
-        bh=gYlu6Qv+8m83iP3aG7acEoyr8D3DPbZlTHZ8jerl4Jw=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=oI6DgPAmrS6eid+iQKQamhFupmXA2CScxqKHRX+CJjC8/0fF1BV9+LamvP9D9eSE9
-         npjDtMfC1MNcKzde3tkhkeuyG4S9CqgWI+LezmFwIFfQSxbUaY4NuejzURphht7FGp
-         ek1oZ95ogFF9mgsmHq93KfvqDA7s9lg+SefS7Uu4jQH2xweVqk/OBZLY5w4Y8cz5FF
-         jyvaNEhNFclinElquxf3fKJ2na1IGJxwQje4Hg2exFycrlUGHsDHKTaqoiruy7a9vc
-         DhFa9QFOiNLbuIgQmTX/jgFIHs3lgRjeXXAezx290U6sPOlbkpQN1FwNvR9TVFpWGR
-         ggckHw/xPBG0Q==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Keith Packard <keithpac@amazon.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:LINUX FOR POWERPC (32-BIT AND 64-BIT)" 
-        <linuxppc-dev@lists.ozlabs.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "open list:S390" <linux-s390@vger.kernel.org>
-Subject: Re: [RFC PATCH 4/8] powerpc: add CPU field to struct thread_info
-In-Reply-To: <202109301045.15DDDA0B@keescook>
-References: <20210914121036.3975026-1-ardb@kernel.org>
- <20210914121036.3975026-5-ardb@kernel.org>
- <CAMj1kXEojbQbNzCP39KT4EzFAyW3J1Tfm_stCZ+fGo8_SO90PA@mail.gmail.com>
- <87ee99lii7.fsf@mpe.ellerman.id.au> <87pmst1rn9.fsf@mpe.ellerman.id.au>
- <CAMj1kXFXtbD3=L+QvCnwbyFr-qbWivZ0wRGT0N4LNxANPD8x4g@mail.gmail.com>
- <878rzf0zmb.fsf@mpe.ellerman.id.au> <202109301045.15DDDA0B@keescook>
-Date:   Tue, 05 Oct 2021 12:55:31 +1100
-Message-ID: <87ilycqlpo.fsf@mpe.ellerman.id.au>
+        Mon, 4 Oct 2021 22:00:34 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=rongwei.wang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UqcME4E_1633399122;
+Received: from 30.25.244.41(mailfrom:rongwei.wang@linux.alibaba.com fp:SMTPD_---0UqcME4E_1633399122)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 05 Oct 2021 09:58:43 +0800
+Message-ID: <9bde2c4c-de26-442c-0a1c-799954440c77@linux.alibaba.com>
+Date:   Tue, 5 Oct 2021 09:58:42 +0800
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:93.0)
+ Gecko/20100101 Thunderbird/93.0
+Subject: Re: [PATCH v2 1/2] mm, thp: check page mapping when truncating page
+ cache
+Content-Language: en-US
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Song Liu <song@kernel.org>, Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        William Kucharski <william.kucharski@oracle.com>
+References: <CAPhsuW4cP4qV2c_wXP89-2fa+mALv-uEe+Qdqr_MD3Ptw03Wng@mail.gmail.com>
+ <68737431-01d2-e6e3-5131-7d7c731e49ae@linux.alibaba.com>
+ <CAPhsuW4x2UzMLwZyioWH4dXqrYwNT-XKgzvrm+6YeWk9EgQmCQ@mail.gmail.com>
+ <dde441c4-febe-cfa1-7729-b405fa331a4e@linux.alibaba.com>
+ <CAPhsuW5FONP=1rPh0oPLHsehjfGSDQWn8hKH4v=azdd=+WK2sA@mail.gmail.com>
+ <YVSopxYWegtQJ3iD@casper.infradead.org>
+ <CAPhsuW6_2_LxQRrs7xF3omgO22+6goDR=bEjKGRopaS-pHJB2Q@mail.gmail.com>
+ <YVT+KWFA8hfSKU+m@casper.infradead.org>
+ <CAPhsuW7tDh2cbA6QpZ993fuwOK=LKVsDYjymA4983riQw4QTkA@mail.gmail.com>
+ <8d8fb192-bd8d-8a08-498d-ca7204d4a716@linux.alibaba.com>
+ <YVtQZ1vxhe/W+adm@casper.infradead.org>
+From:   Rongwei Wang <rongwei.wang@linux.alibaba.com>
+In-Reply-To: <YVtQZ1vxhe/W+adm@casper.infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kees Cook <keescook@chromium.org> writes:
-> On Thu, Sep 30, 2021 at 08:46:04AM +1000, Michael Ellerman wrote:
->> Ard Biesheuvel <ardb@kernel.org> writes:
->> > On Tue, 28 Sept 2021 at 02:16, Michael Ellerman <mpe@ellerman.id.au> wrote:
->> >>
->> >> Michael Ellerman <mpe@ellerman.id.au> writes:
->> >> > Ard Biesheuvel <ardb@kernel.org> writes:
->> >> >> On Tue, 14 Sept 2021 at 14:11, Ard Biesheuvel <ardb@kernel.org> wrote:
->> >> >>>
->> >> >>> The CPU field will be moved back into thread_info even when
->> >> >>> THREAD_INFO_IN_TASK is enabled, so add it back to powerpc's definition
->> >> >>> of struct thread_info.
->> >> >>>
->> >> >>> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
->> >> >>
->> >> >> Michael,
->> >> >>
->> >> >> Do you have any objections or issues with this patch or the subsequent
->> >> >> ones cleaning up the task CPU kludge for ppc32? Christophe indicated
->> >> >> that he was happy with it.
->> >> >
->> >> > No objections, it looks good to me, thanks for cleaning up that horror :)
->> >> >
->> >> > It didn't apply cleanly to master so I haven't tested it at all, if you can point me at a
->> >> > git tree with the dependencies I'd be happy to run some tests over it.
->> >>
->> >> Actually I realised I can just drop the last patch.
->> >>
->> >> So that looks fine, passes my standard quick build & boot on qemu tests,
->> >> and builds with/without stack protector enabled.
->> >>
->> >
->> > Thanks.
->> >
->> > Do you have any opinion on how this series should be merged? Kees Cook
->> > is willing to take them via his cross-arch tree, or you could carry
->> > them if you prefer. Taking it via multiple trees at the same time is
->> > going to be tricky, or take two cycles, with I'd prefer to avoid.
->> 
->> I don't really mind. If Kees is happy to take it then that's OK by me.
->> 
->> If Kees put the series in a topic branch based off rc2 then I could
->> merge that, and avoid any conflicts.
->
-> I've created:
->
-> git://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git for-next/thread_info/cpu
->
-> it includes a --no-ff merge commit, which I'm not sure is desirable? Let
-> me know if I should adjust this, or if Linus will yell about this if I
-> send him a PR containing a merge commit? I'm not sure what's right here.
 
-It looks good to me.
 
-I don't think Linus will be bothered about that merge. It has useful
-information, ie. explains why you're merging it and that arch
-maintainers have acked it, and quotes Ard's cover letter.
+On 10/5/21 3:05 AM, Matthew Wilcox wrote:
+> On Tue, Oct 05, 2021 at 01:26:50AM +0800, Rongwei Wang wrote:
+>> Hi,
+>> I have run our cases these two days to stress test new Patch #1. The new
+>> Patch #1 mainly add filemap_invalidate_{un}lock before and after
+>> truncate_pagecache(), basing on original Patch #1. And the crash has not
+>> happened.
+> 
+> You shouldn't need most of patch 1.
+> 
+> In fact, the only two patches you should need would be this:
+> 
+> +++ b/mm/filemap.c
+> @@ -2093,7 +2093,6 @@ unsigned find_lock_entries(struct address_space *mapping, pgoff_t start,
+>                  if (!xa_is_value(page)) {
+>                          if (page->index < start)
+>                                  goto put;
+> -                       VM_BUG_ON_PAGE(page->index != xas.xa_index, page);
+>                          if (page->index + thp_nr_pages(page) - 1 > end)
+>                                  goto put;
+>                          if (!trylock_page(page))
+> 
+> (already in Andrew's tree) and:
+> 
+>> -               if (filemap_nr_thps(inode->i_mapping))
+>> +               if (filemap_nr_thps(inode->i_mapping)) {
+>> +                       filemap_invalidate_lock(inode->i_mapping);
+>>                          truncate_pagecache(inode, 0);
+>> +                       filemap_invalidate_unlock(inode->i_mapping);
+>> +               }
+> 
+> If you can still hit a bug with just those two patches, then something
+> else is going wrong, and needs to be investigated.
+OK, I see what your mean. I will send Patch v3 and only keep 
+filemap_invalidate_{un}lock in Patch #1.
 
-cheers
+Thanks!
+> 
