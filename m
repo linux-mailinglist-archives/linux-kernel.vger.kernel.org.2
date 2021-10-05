@@ -2,78 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FD13422C32
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:17:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E639F422C2E
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:17:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235810AbhJEPTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 11:19:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56902 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229936AbhJEPTc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 11:19:32 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A42CFC061749;
-        Tue,  5 Oct 2021 08:17:41 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id r18so211239edv.12;
-        Tue, 05 Oct 2021 08:17:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9hjpAihAR6YOSiSaQW5lhvO8nzkCGkYP9LUxetB1V8Q=;
-        b=nfdimCVqznTmDhQze5hARq+nK7zj3ZB5R0YKCwedKXrszipibl7pOr80QRwrwS2rsI
-         irpjxtxHlySjjHZMTOwUL35v8IUAy2HOz/obqJq9aMJWKyeWI0LtXq2G5t89ZNTMWYzK
-         AiMMB5bK8yw7ONk3xovxIGIKOM5x5GqzxwydlYdzx6zmTMTOKucWt3Tq+63QFDKgy7P6
-         39ehN2wKXV9sEnlOWymM8bcqvXxUMKs/qGeZ2641MpHUNGlAHRthPPsXayJTo63QgjxJ
-         XzB5X3tyL5AyP3GX1Z2gbeEf2POeu4sTVpbxa4K/xBbdE8jjzOh+vlGqpfyjA8DaWag6
-         iMwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9hjpAihAR6YOSiSaQW5lhvO8nzkCGkYP9LUxetB1V8Q=;
-        b=T0St1IuJN03ZX1V9tv8/z4enlY6kTli58SaQrGyU0lLrRWu6vu0sRMndqE/2pEvGFr
-         OPuxHmaaE5ZI82b9gMpUEKjQqtxY6A0RNly7EqZELLBfAyhnKAV2rj4cBJrP5QtFWIin
-         bc4PAhIW39fVyhH4ARla84+rYveaz/3xTFHZ8347o2gWaKpaMIz7wLasjXRnSFSZpVwR
-         Nglfnllt0KIcqtarzSHkiK96diprvQt5Fht+PdBLa17XbCtYnilIGFrETIca+zIUl9L2
-         T7T4AdMFIW1ixY69Oma/+ml3mu+LVC1bXEFW1m4b7TSNWdWH3KdHzKWktkppVQlLKtYN
-         RtVw==
-X-Gm-Message-State: AOAM531KnBmOtNYU9jppk1sKpjHdXaRZlQ3nu7sjr1JqagN/DLUDnfMD
-        lqIIYNpqj6X0DnimucHbMXEEc1XG7w/vbRDPFu1oaueu7lg=
-X-Google-Smtp-Source: ABdhPJxwT+fMV3gyNDVa4lAUwShZTN5isQxaxxx4ZWIdH3lf9FoCrbCpyqY/SJGkxs9ZONMxu7JtsKVESxBgrZH3byA=
-X-Received: by 2002:a17:906:eb86:: with SMTP id mh6mr7584934ejb.141.1633447060019;
- Tue, 05 Oct 2021 08:17:40 -0700 (PDT)
+        id S235714AbhJEPTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 11:19:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38708 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229936AbhJEPTH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 11:19:07 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5EE606115A;
+        Tue,  5 Oct 2021 15:17:16 +0000 (UTC)
+Date:   Tue, 5 Oct 2021 11:17:14 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Daniel Bristot de Oliveira <bristot@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] ftrace: Fix -Wcast-function-type warnings on
+ powerpc64
+Message-ID: <20211005111714.18ebea2b@gandalf.local.home>
+In-Reply-To: <20211005053922.GA702049@embeddedor>
+References: <20211005053922.GA702049@embeddedor>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20211005151445.89620-1-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20211005151445.89620-1-andriy.shevchenko@linux.intel.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 5 Oct 2021 18:17:03 +0300
-Message-ID: <CAHp75VdR7Dn+621YewmePRXxb6wbxTGZK8GHcUVDiDbQxho+Rw@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] watchdog: wdt_pci: Correct the PCI ID vendor name
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        linux-watchdog@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 5, 2021 at 6:15 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> The proper name of Acces I/O is with a single 's'. Correct it respectively.
->
-> While at it, convert to use PCI_DEVICE() macro, drop unneeded initializer
-> and comma.
+On Tue, 5 Oct 2021 00:39:22 -0500
+"Gustavo A. R. Silva" <gustavoars@kernel.org> wrote:
 
-Scratch it. 8250_exar is using the wrong vendor ID as well.
+> In order to make sure new function cast mismatches are not introduced
+> in the kernel (to avoid tripping CFI checking), the kernel should be
+> globally built with -Wcast-function-type.
+> 
+> So, fix the following -Wcast-function-type warnings on powerpc64
+> (ppc64_defconfig):
 
--- 
-With Best Regards,
-Andy Shevchenko
+I think I'll go back and add my linker magic.
+
+  https://lore.kernel.org/all/20200617165616.52241bde@oasis.local.home/
+
+I'll clean it up a bit too. I'll have a patch in a bit.
+
+-- Steve
