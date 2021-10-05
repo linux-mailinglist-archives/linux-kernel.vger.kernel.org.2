@@ -2,130 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87426423273
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 22:56:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90847423276
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 22:56:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236352AbhJEU6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 16:58:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51982 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231322AbhJEU6F (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 16:58:05 -0400
-Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBAAFC061749;
-        Tue,  5 Oct 2021 13:56:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=kmomRx0MWiWwMhds3Qf0OPR0SiP4275qlsODlT8KAeY=; b=rXkBoSln3QjUtM+muTTXybBqLI
-        62T9XF2/fxutRkU7qcpza92mn+wfv5oRKTauJJKaRebgbl6v79VrOYgbu6IFhWC5RtcADzrDJh/5f
-        MrChG4q/h5VVfOAnfW8C3/TRIMsypAtOXRBc0a1CGGaDQzWUWy35V7habfBDIpgj9illAeiB87x3k
-        CE5h/V7CO0lsBnoxbxWuAwPXzRN4H9HPe1u5bRvQQ3k1EhClrJgMiHRwtWg+Rvrpedek+bAbEH56p
-        BQ7SrX/hTsfcEMl86I0lyDfGIV/A6aGoORBtFujjGIbfsSTR9497+WWHn/gtvmYDnW5XDHF/u501U
-        ymm8TkGg==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mXrTx-00BsC6-Ln; Tue, 05 Oct 2021 20:56:13 +0000
-Subject: Re: [PATCH] x86/PCI: Add pci=no_e820 cmdline option to ignore E820
- reservations for bridge windows
-To:     Hans de Goede <hdegoede@redhat.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>
-Cc:     linux-pci@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211005150956.303707-1-hdegoede@redhat.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <0320b854-327b-397f-ba26-e69ea321dd1b@infradead.org>
-Date:   Tue, 5 Oct 2021 13:56:13 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S236478AbhJEU6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 16:58:11 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:11331 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236447AbhJEU6J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 16:58:09 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1633467379; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=d2UIVnPOW3ElF02gfggo+xeMDHqG4QtmTz1NBPCyNOc=;
+ b=g63ZB6BczuWWO0MZG9ebm9evow6YvIZlbJi1eKjAUMnqaHLUdnTkSzF4tg2FLRPqZuDQ8Z3n
+ smyYKAngNISOLBjZzrVv3Pg00nmzWSFu/OfhUkohf0x7x6Y1+RKOlgey9OTf1ui+IQ3jQTHH
+ 0vyC0OWpjzs742BMmURiBs/u1sM=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 615cbbf29ebaf35aaa14b507 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 05 Oct 2021 20:56:18
+ GMT
+Sender: abhinavk=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 60C9DC4361B; Tue,  5 Oct 2021 20:56:17 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: abhinavk)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6416DC43460;
+        Tue,  5 Oct 2021 20:56:16 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <20211005150956.303707-1-hdegoede@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Tue, 05 Oct 2021 13:56:16 -0700
+From:   abhinavk@codeaurora.org
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Kuogee Hsieh <khsieh@codeaurora.org>,
+        Tanmay Shah <tanmay@codeaurora.org>,
+        Chandan Uddaraju <chandanu@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Rob Herring <robh@kernel.org>
+Subject: Re: [Freedreno] [PATCH v3 1/5] dt-bindings: msm/dp: Change reg
+ definition
+In-Reply-To: <20211001174400.981707-2-bjorn.andersson@linaro.org>
+References: <20211001174400.981707-1-bjorn.andersson@linaro.org>
+ <20211001174400.981707-2-bjorn.andersson@linaro.org>
+Message-ID: <78cc9c0faafcab3375f74a4f52790a52@codeaurora.org>
+X-Sender: abhinavk@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/5/21 8:09 AM, Hans de Goede wrote:
-> Some BIOS-es contain a bug where they add addresses which map to system RAM
-> in the PCI bridge memory window returned by the ACPI _CRS method, see
-> commit 4dc2287c1805 ("x86: avoid E820 regions when allocating address
-> space").
+On 2021-10-01 10:43, Bjorn Andersson wrote:
+> reg was defined as one region covering the entire DP block, but the
+> memory map is actually split in 4 regions and obviously the size of
+> these regions differs between platforms.
 > 
-> To avoid this Linux by default excludes E820 reservations when allocating
-> addresses since 2010. Windows however ignores E820 reserved regions for PCI
-> mem allocations, instead it avoids these BIOS bugs by allocates addresses
-> top-down.
+> Switch the reg to require that all four regions are specified instead.
+> It is expected that the implementation will handle existing DTBs, even
+> though the schema defines the new layout.
 > 
-> Recently (2020) some systems have shown-up with E820 reservations which
-> cover the entire _CRS returned PCI bridge memory window, causing all
-> attempts to assign memory to PCI bars which have not been setup by the BIOS
-> to fail. For example here are the relevant dmesg bits from a
-> Lenovo IdeaPad 3 15IIL 81WE:
-> 
-> [    0.000000] BIOS-e820: [mem 0x000000004bc50000-0x00000000cfffffff] reserved
-> [    0.557473] pci_bus 0000:00: root bus resource [mem 0x65400000-0xbfffffff window]
-> 
-> Add a pci=no_e820 option which allows disabling the E820 reservations
-> check, while still honoring the _CRS provided resources.
-> 
-> And automatically enable this on the "Lenovo IdeaPad 3 15IIL05" to fix
-> the touchpad not working on this laptop.
-> 
-> Also add a pci=use_e820 option to allow overruling the results of
-> DMI quirks defaulting to no_e820 on some systems.
-> 
-> BugLink: https://bugzilla.redhat.com/show_bug.cgi?id=1868899
-> BugLink: https://bugzilla.redhat.com/show_bug.cgi?id=1871793
-> BugLink: https://bugs.launchpad.net/ubuntu/+source/linux-signed-hwe/+bug/1878279
-> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-
-Hi Hans,
-
-Please update Documentation/admin-guide/kernel-parameters.txt also.
-
+> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+> Reviewed-by: Rob Herring <robh@kernel.org>
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Reviewed-by: Abhinav Kumar <abhinavk@codeaurora.org>
 > ---
->   arch/x86/include/asm/pci_x86.h | 10 ++++++++++
->   arch/x86/kernel/resource.c     | 17 +++++++++++++++++
->   arch/x86/pci/acpi.c            | 26 ++++++++++++++++++++++++++
->   arch/x86/pci/common.c          |  6 ++++++
->   4 files changed, 59 insertions(+)
 > 
-
-> diff --git a/arch/x86/kernel/resource.c b/arch/x86/kernel/resource.c
-> index 9b9fb7882c20..6069d86021f0 100644
-> --- a/arch/x86/kernel/resource.c
-> +++ b/arch/x86/kernel/resource.c
-
-> @@ -23,11 +24,27 @@ static void resource_clip(struct resource *res, resource_size_t start,
->   		res->start = end + 1;
->   }
->   
-> +/*
-> + * Some BIOS-es contain a bug where they add addresses which map to system RAM
-> + * in the PCI bridge memory window returned by the ACPI _CRS method, see
-> + * commit 4dc2287c1805 ("x86: avoid E820 regions when allocating address space").
-> + * To avoid this Linux by default excludes E820 reservations when allocating
-> + * addresses since 2010. Windows however ignores E820 reserved regions for PCI
-> + * mem allocations, instead it avoids these BIOS bugs by allocates addresses
-> + * top-down.
-> + * Recently (2020) some systems have shown-up with E820 reservations which
-> + * cover the entire _CRS returned PCI bridge memory window, causing all
-> + * attempts to assign memory to PCI bars which have not been setup by the BIOS
-
-                     preferably:        BARs
-
-> + * to fail. The pci_use_e820 check is there as a workaround for these systems.
-> + */
-
-
-
-thanks.
--- 
-~Randy
+> Changes since v2:
+> - None
+> 
+>  .../bindings/display/msm/dp-controller.yaml         | 13 +++++++++++--
+>  1 file changed, 11 insertions(+), 2 deletions(-)
+> 
+> diff --git
+> a/Documentation/devicetree/bindings/display/msm/dp-controller.yaml
+> b/Documentation/devicetree/bindings/display/msm/dp-controller.yaml
+> index d89b3c510c27..6bb424c21340 100644
+> --- a/Documentation/devicetree/bindings/display/msm/dp-controller.yaml
+> +++ b/Documentation/devicetree/bindings/display/msm/dp-controller.yaml
+> @@ -19,7 +19,12 @@ properties:
+>        - qcom,sc7180-dp
+> 
+>    reg:
+> -    maxItems: 1
+> +    items:
+> +      - description: ahb register block
+> +      - description: aux register block
+> +      - description: link register block
+> +      - description: p0 register block
+> +      - description: p1 register block
+> 
+>    interrupts:
+>      maxItems: 1
+> @@ -99,7 +104,11 @@ examples:
+> 
+>      displayport-controller@ae90000 {
+>          compatible = "qcom,sc7180-dp";
+> -        reg = <0xae90000 0x1400>;
+> +        reg = <0xae90000 0x200>,
+> +              <0xae90200 0x200>,
+> +              <0xae90400 0xc00>,
+> +              <0xae91000 0x400>,
+> +              <0xae91400 0x400>;
+>          interrupt-parent = <&mdss>;
+>          interrupts = <12>;
+>          clocks = <&dispcc DISP_CC_MDSS_AHB_CLK>,
