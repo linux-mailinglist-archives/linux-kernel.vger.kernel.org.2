@@ -2,88 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 317F0422B98
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:57:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A173422B9B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:58:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235176AbhJEO6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 10:58:48 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:41293 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S233705AbhJEO6q (ORCPT
+        id S235262AbhJEPA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 11:00:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52256 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234814AbhJEPAY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 10:58:46 -0400
-Received: (qmail 623870 invoked by uid 1000); 5 Oct 2021 10:56:55 -0400
-Date:   Tue, 5 Oct 2021 10:56:55 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Rajat Jain <rajatja@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dmitry Torokhov <dtor@google.com>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Mathias Nyman <mathias.nyman@linux.intel.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Chris Chiu <chris.chiu@canonical.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        levinale@google.com, bleung@google.com, rajatxjain@gmail.com,
-        jsbarnes@google.com, pmalani@google.com
-Subject: Re: [PATCH 2/2] usb: hub: Mark devices downstream a removable hub,
- as removable
-Message-ID: <20211005145655.GJ621017@rowland.harvard.edu>
-References: <20210929224823.556943-1-rajatja@google.com>
- <20210929224823.556943-2-rajatja@google.com>
- <YVVLxi/on9x6nfCZ@kroah.com>
- <CACK8Z6EamamgYExt629gyNrYKpvnu2Gh0eGOOvOa5LH-jnOmaQ@mail.gmail.com>
+        Tue, 5 Oct 2021 11:00:24 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B880C06174E
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 07:58:34 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id s11so20002275pgr.11
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 07:58:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=bgoHCxSMWvrI+zzIWEUSO5wxgiEm1xpuQV4K1NeO+Fo=;
+        b=n2VxdJdbtIt7YREvkC5LomLZ+1AYzH92N+DmBobCEQ++KbLOQ8yWMf95N4fS11aFkC
+         zNijFy/PhpP4oXtf82j8SMrtpMxI6+JjjR8Ar9xP6xG+CnKLSYEaS1eGtVzSxxUp/A3a
+         +BrhTp99Mh8EZQ6jnxN7BZCQu/VMjcGoA93pQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bgoHCxSMWvrI+zzIWEUSO5wxgiEm1xpuQV4K1NeO+Fo=;
+        b=5j7nrQnkfLpcxfDnPsAC64dse6KYe5SrX6aAIPslQN8oTLKjCRvuRzuA/Mf/fw3Zaj
+         Qbt0J9EP+4+214dD/JC641B7V5RS5YLzi9xBrZjznkXn2zmjyMyKPUStCc+6EFOVOGxV
+         VXMIcKOjCTNc/s7hi5p0dA8TzgKX2kJzjifOvE63IaiGElENYyFXzHJys6a6Gj0ztG/A
+         ikKSOn4umfLY1FxCkz5t0oyXNBI5KXV+MEH5GmV9ZCn+JNTLAj2BtVspD7RamYe8bdas
+         +ZgqouT460x3UAM1WevhyCK4+OD1ih927cfMwlVpKnKf4Bm1tdIoeCpHJNfCEIX57ljE
+         KhfQ==
+X-Gm-Message-State: AOAM532Z8nj0COMVwqZtTI66NkezLl01PZJf4qYKpj/idGuYFj4GJ9Ft
+        xGru+BtwikJoeHiB9gsxHOcNOQ==
+X-Google-Smtp-Source: ABdhPJwiCrol/8Yn1vfrch619l1Kejw3+LZHyiDtgtNjkiBiVAGbNI4qLOTTVNP5HnHCXg70FEGGbw==
+X-Received: by 2002:a63:3549:: with SMTP id c70mr13028802pga.179.1633445913710;
+        Tue, 05 Oct 2021 07:58:33 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id mt5sm2512942pjb.12.2021.10.05.07.58.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Oct 2021 07:58:33 -0700 (PDT)
+Date:   Tue, 5 Oct 2021 07:58:32 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Joe Perches <joe@perches.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v4] docs: Explain the desired position of function
+ attributes
+Message-ID: <202110050758.E7470639D@keescook>
+References: <20210930235754.2635912-1-keescook@chromium.org>
+ <87h7dw75gh.fsf@meer.lwn.net>
+ <CANiq72mTmYCJ4_7KVRMMKCDTMrnE9wCXBKViCMzkW1ErpdZKHg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CACK8Z6EamamgYExt629gyNrYKpvnu2Gh0eGOOvOa5LH-jnOmaQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CANiq72mTmYCJ4_7KVRMMKCDTMrnE9wCXBKViCMzkW1ErpdZKHg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 04, 2021 at 03:42:46PM -0700, Rajat Jain wrote:
-> +Dmitry Torokhov
-> 
-> Hi Greg, Oliver,
-> 
-> Thanks for taking a look.
-> 
-> On Wed, Sep 29, 2021 at 10:31 PM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
+On Tue, Oct 05, 2021 at 10:28:40AM +0200, Miguel Ojeda wrote:
+> On Tue, Oct 5, 2021 at 1:57 AM Jonathan Corbet <corbet@lwn.net> wrote:
 > >
-> > On Wed, Sep 29, 2021 at 03:48:23PM -0700, Rajat Jain wrote:
-> > > If a usb device sits below a removable hub, mark the device also as
-> > > removable. This helps with devices inserted on a standard removable hub or
-> > > also thunderbold docks, to be shown as removable.
-> > >
-> > > Signed-off-by: Rajat Jain <rajatja@google.com>
-> > > ---
-> > >  drivers/usb/core/hub.c | 7 +++++++
-> > >  1 file changed, 7 insertions(+)
-> >
-> > Combined with the previous patch, you are now marking all devices that
-> > happen to be attached to a root hub that is on a thunderbolt controller
-> > as removable.  So all USB devices inside of a docking station are now
-> > removable?
+> > In this case I think we're as close as to consensus as things get.  In
+> > the absence of a strong reason to the contrary, I'll apply this before
+> > too long.
 > 
-> With this patch, yes that was my intent. I think what we are debating
-> here is should the "removable" attribute imply possibility of removal
-> from "the system" or just the "local immediate box" (e.g. thunderbolt
-> dock). In my mind, the removable property was analogous to imply an
-> "external device", i.e a device that may be removed from the system,
-> perhaps as a result of its parent devices being removed from the
-> system. I guess this definition doesn't match what you believe it
-> should be?
+> No strong reason, but there was the question about the `__malloc` in a
+> separate line in the second example which seems to contradict the
+> declaration and it is not explained otherwise (+ clang-format does it
+> differently).
 
-As I understand it, the "removable" property refers specifically to 
-the device's upstream link, not to whether _any_ of the links leading 
-from the device to the computer could be removed.
+I'll send a v5 -- the "extern" also needs to be dropped.
 
-This is probably what Oliver meant when he complained about losing 
-information.  With the knowledge of whether each individual link is 
-removable, you can easily tell whether there's some way to remove a 
-device from the system.  But if you only know whether the device is 
-removable from the system overall, you generally can't tell whether 
-the link to the device's parent is removable.
-
-Alan Stern
+-- 
+Kees Cook
