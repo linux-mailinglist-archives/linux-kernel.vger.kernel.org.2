@@ -2,91 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D00524222DE
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 11:56:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB3D44222E4
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 11:57:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233977AbhJEJ6N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 05:58:13 -0400
-Received: from mail-ua1-f41.google.com ([209.85.222.41]:36572 "EHLO
-        mail-ua1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233933AbhJEJ6K (ORCPT
+        id S233635AbhJEJ7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 05:59:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37204 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233365AbhJEJ7C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 05:58:10 -0400
-Received: by mail-ua1-f41.google.com with SMTP id u11so14412044uaw.3;
-        Tue, 05 Oct 2021 02:56:19 -0700 (PDT)
+        Tue, 5 Oct 2021 05:59:02 -0400
+Received: from mail-vk1-xa2a.google.com (mail-vk1-xa2a.google.com [IPv6:2607:f8b0:4864:20::a2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B60A3C061745
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 02:57:11 -0700 (PDT)
+Received: by mail-vk1-xa2a.google.com with SMTP id x207so9029675vke.2
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 02:57:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5tyZ1L4nPxHAH57fPWcCNfvTj6DGtahCV/QiQgPB4f0=;
+        b=w6WrpcoLhjiXUHF0pSlcCde3W3uqzcYz6OKbgnEaoYfsjMFccUF39SiE6HKJr2E9yf
+         OgR6+50MXyzsGvfduM48g3XoZFulVjK2VFTXlV3QueU4lT2Wk8CN9GsvSBi55UbJXOXX
+         wQ/7uJUi1+Hfweauq0/hWJ3nQaNQVo1FMIi3WkwTHzeyShGK08Y81G9Atx2+tNgXkuEZ
+         tRXZTIp08hpwg7VDQzccA5vCO2iuySmkCxMwVYaGZ5vwmR6Ccj6lLOaQjkkiIJITaEAV
+         P1qNBxRz4O6H8klxQbXOUo3Xdm9oM27ER8/RGyJploTJkGBCCYGw4iRZegjux/pdwMHU
+         8n0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=7f7La1K3j/sf3y6WAPsiJ3HiHMfo9c5sHomKDoZBG7U=;
-        b=k2IKov7jB0n+UA2Ba6xXi/dtkzWMyvN8/oXdRDjW/TVGcXQs5GyrZCahRsU9ZUzoSk
-         qXfb3TdiyKbNjQI2i2tlB32LSBrDG2mHcucnAAPxaZatqc0lz4ujs+g4Boz1/yOTQltl
-         VVYAXO9LhU2an/YvvnzO9e59P8m8QfNu6UJOD76u5w0lmLnUzjW6Zg+pAh97G1d0YN4b
-         yIcWwqrIlfIfLGbzPUvgTgzWXD8Ec7A6n5UMWjYOtUJKQjvvxirZS1f+AGXdSYOYo4VV
-         nDZzSMEPh8sRK2DfZcqwoVFSha3/emEyeiwO/zPUntHjwzyKiYFO65GDv0Jw4gJHv3Fk
-         SCPA==
-X-Gm-Message-State: AOAM531c3rkWFNKd9MWvG9S5We1t54akg894yzQ4balVf22SemmRUco6
-        9ZKSs6prEmfXhMyF7ZWVwYcmrOJvVbbl4aU24fc=
-X-Google-Smtp-Source: ABdhPJwoedqIMTs/zp1tZCy9OstAKU8ntmrhQvtFdRYOoHyHH+E8MpEzp9P57PSyaiMXuRqdCgIgcecFKpCx4qab0jY=
-X-Received: by 2002:ab0:311a:: with SMTP id e26mr10862299ual.122.1633427779260;
- Tue, 05 Oct 2021 02:56:19 -0700 (PDT)
+        bh=5tyZ1L4nPxHAH57fPWcCNfvTj6DGtahCV/QiQgPB4f0=;
+        b=RIPVhyWONJt7VqVuN7AlavnJGyfKOVF5ZUEX6p2zotvj+pXiWbIwWpkaetMjmvdVfM
+         weuqAI85KEgJ/3XtDfzTCC+bKt+2fcujmdeXAsuDv71YzMFOaXcW95bPNLAAmuAJ0FZ5
+         qcp3HMxCfYHw8raD97/i73uzuyEhVanIqjdYiNKIllzzXATUdoQMF7Cbp0CF+FaeVnm+
+         wPId89W5jjTyU7qmKeS2Q77qsILjG2rErgvD9uYkGlA6RWxEGP3MaF/hp7IREaOJYy3V
+         3txKCSqMjX9kf95lSp+yV9YYMducaHlR5sKVhC+MGwMQWU8lBob7NE1x5YhsdCanJYlw
+         Ch3Q==
+X-Gm-Message-State: AOAM531JKVRsEgTi5TyzCPPSGU2wvt9cLIHmpju6htc32i6b4AcQ9Iq4
+        iResKWUUFQSi0YWq7UfzsMl2Y+VKRoFVYGvAjLulig==
+X-Google-Smtp-Source: ABdhPJxkOlO4SYnOan3kE1N3PVnE07RjPPQhgqdJa8q8rTuO1aJhb1yAzCCR3efsvdB7JDWMo19sbFRbS33OTJ8AmG0=
+X-Received: by 2002:a1f:1bc6:: with SMTP id b189mr19231679vkb.15.1633427830840;
+ Tue, 05 Oct 2021 02:57:10 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210921193028.13099-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20210921193028.13099-4-prabhakar.mahadev-lad.rj@bp.renesas.com> <CACRpkdaJk-G0YE63uvH9C=G3n7k2gZqf9QrwGfAZC2O4hhps=A@mail.gmail.com>
-In-Reply-To: <CACRpkdaJk-G0YE63uvH9C=G3n7k2gZqf9QrwGfAZC2O4hhps=A@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 5 Oct 2021 11:56:07 +0200
-Message-ID: <CAMuHMdUvThtOKrhTqW+U1qijW7dRc6GYg4_Owt_GnUxX4DrGog@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 3/4] pinctrl: renesas: pinctrl-rzg2l: Add IRQ
- domain to handle GPIO interrupt
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Rob Herring <robh+dt@kernel.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>
+References: <20210914142315.26596-1-semen.protsenko@linaro.org> <6efec37b-4392-dffe-1bda-d4f7aac6643f@canonical.com>
+In-Reply-To: <6efec37b-4392-dffe-1bda-d4f7aac6643f@canonical.com>
+From:   Sam Protsenko <semen.protsenko@linaro.org>
+Date:   Tue, 5 Oct 2021 12:56:59 +0300
+Message-ID: <CAPLW+4nJ6yumqRC8YqUSVaWJSWrfj+fjWRTe0Opc1qa2L=F6+A@mail.gmail.com>
+Subject: Re: [PATCH] tty: serial: samsung: Improve naming for common macro
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
-
-On Thu, Sep 23, 2021 at 11:38 PM Linus Walleij <linus.walleij@linaro.org> wrote:
-> On Tue, Sep 21, 2021 at 9:30 PM Lad Prabhakar
-> <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> > Add IRQ domian to RZ/G2L pinctrl driver to handle GPIO interrupt.
-> >
-> > GPIO0-GPIO122 pins can be used as IRQ lines but only 32 pins can be
-> > used as IRQ lines at given time. Selection of pins as IRQ lines
-> > is handled by IA55 (which is the IRQC block) which sits in between the
-> > GPIO and GIC.
-> >
-> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+On Wed, 15 Sept 2021 at 10:28, Krzysztof Kozlowski
+<krzysztof.kozlowski@canonical.com> wrote:
 >
-> Why can't you just use the hierarchical IRQ domain handling inside
-> gpiolib?
+> On 14/09/2021 16:23, Sam Protsenko wrote:
+> > Having "_USI" suffix in EXYNOS_COMMON_SERIAL_DRV_DATA_USI() macro is
+> > confusing. Rename it to just EXYNOS_COMMON_SERIAL_DRV_DATA() and provide
+> > USI registers availability for all Exynos variants instead.
+> >
+> > Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+> > ---
+> >  drivers/tty/serial/samsung_tty.c | 11 ++++-------
+> >  1 file changed, 4 insertions(+), 7 deletions(-)>
+> > diff --git a/drivers/tty/serial/samsung_tty.c b/drivers/tty/serial/samsung_tty.c
+> > index e2f49863e9c2..542b7e2b99dc 100644
+> > --- a/drivers/tty/serial/samsung_tty.c
+> > +++ b/drivers/tty/serial/samsung_tty.c
+> > @@ -2780,7 +2780,7 @@ static struct s3c24xx_serial_drv_data s5pv210_serial_drv_data = {
+> >  #endif
+> >
+> >  #if defined(CONFIG_ARCH_EXYNOS)
+> > -#define EXYNOS_COMMON_SERIAL_DRV_DATA_USI(_has_usi)          \
+> > +#define EXYNOS_COMMON_SERIAL_DRV_DATA(_has_usi)                      \
+> >       .info = &(struct s3c24xx_uart_info) {                   \
+> >               .name           = "Samsung Exynos UART",        \
+> >               .type           = TYPE_S3C6400,                 \
+> > @@ -2804,21 +2804,18 @@ static struct s3c24xx_serial_drv_data s5pv210_serial_drv_data = {
+> >               .has_fracval    = 1,                            \
+> >       }                                                       \
+> >
+> > -#define EXYNOS_COMMON_SERIAL_DRV_DATA                                \
+> > -     EXYNOS_COMMON_SERIAL_DRV_DATA_USI(0)
+> > -
+> >  static struct s3c24xx_serial_drv_data exynos4210_serial_drv_data = {
+> > -     EXYNOS_COMMON_SERIAL_DRV_DATA,
+> > +     EXYNOS_COMMON_SERIAL_DRV_DATA(0),
+> >       .fifosize = { 256, 64, 16, 16 },
+> >  };
+> >
+> >  static struct s3c24xx_serial_drv_data exynos5433_serial_drv_data = {
+> > -     EXYNOS_COMMON_SERIAL_DRV_DATA,
+> > +     EXYNOS_COMMON_SERIAL_DRV_DATA(0),
+> >       .fifosize = { 64, 256, 16, 256 },
+> >  };
+> >
+> >  static struct s3c24xx_serial_drv_data exynos850_serial_drv_data = {
+> > -     EXYNOS_COMMON_SERIAL_DRV_DATA_USI(1),
+>
+> Makes sense, although I would prefer to have here true or false. More
+> obvious. Otherwise "1" looks like counter/number for some property.
+>
+> The has_usi field in struct could be then also converted to bool.
+>
 
-Out of interest (not related to this patch), does this support multiple
-parent domains?
+No problem, will send v2 shortly.
 
-Thanks!
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+>
+> Best regards,
+> Krzysztof
