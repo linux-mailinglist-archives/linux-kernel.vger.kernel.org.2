@@ -2,180 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 404654229FF
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:03:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C0D7422A07
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:04:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234694AbhJEOFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 10:05:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37632 "EHLO
+        id S235411AbhJEOF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 10:05:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235319AbhJEOCe (ORCPT
+        with ESMTP id S236436AbhJEOFI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 10:02:34 -0400
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CFE9C08C5CA
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 06:53:16 -0700 (PDT)
-Received: by mail-qk1-x736.google.com with SMTP id 72so19824998qkk.7
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 06:53:16 -0700 (PDT)
+        Tue, 5 Oct 2021 10:05:08 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF444C02B8C1
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 06:55:42 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id dj4so79391392edb.5
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 06:55:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=from:references:in-reply-to:mime-version:thread-index:date
-         :message-id:subject:to:cc;
-        bh=lSS1vC9uVxxcwZIADFqXPAJM19XirM4ca49vCzGpFDg=;
-        b=C5hAb7zsC7D9XLZGcxsVpKW/5oJvjCgXngYPBdYhC2ComL5TIJfcqp+W/F3irmwT2w
-         K69qWIqZLkMpPgIXzkDZ+k+wRW0XRVNML7V+apMvEJhysVBbhPY8TcMPGp9VHDRO0KyV
-         wlacmG2rBvBmTHPnbEUaJDTzo5gB2KrKyEmsc=
+        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4nQrZDe3L3lnevNgwmmPUj83yrkESGDrc+fmpfAhQFg=;
+        b=5Z80PapGlg+CLKzYJ7C4/tcqEsBWzVrpWomx8ZPjQx33tVA89XTnNsMfMpNoGlEPFc
+         Tv1ftiRthctlN0/AZ82d5WxOFvBqrAY1aPi2cvDs3OkwqfExUj04CDMxdO3i2i0tTXMg
+         i/5P1V6lcfEq1kvXAW819vWS8f7ST75/6BhpJPvGexNA7o9J7+fmvAJr/fJqOTc962jV
+         8FwKZTL5ttRXRnxqo4NBUjDHvTzE0QCoWcW1JgcBfKQ3xXwn/YNE7SulwFuZI7m5Q7FW
+         La6Vqpkut1o7RbUic5xqYwBizsyJLbJvOV/nzyfmDVhGK3od5SwWE6OM045ZsIVosw8y
+         yy7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:references:in-reply-to:mime-version
-         :thread-index:date:message-id:subject:to:cc;
-        bh=lSS1vC9uVxxcwZIADFqXPAJM19XirM4ca49vCzGpFDg=;
-        b=dnkF+6Jr+DP2VgZDaITfunRKoPUuXqa7M/fJL0WfJ6eQVfakCESVv5dUiSDE+d3ehE
-         uy+riaoWK/faF8aOgxKxHxbQRXMUb8Cw8YbRcW3FUwx5dBrJ75/QSdH53D/+3o0rO9HQ
-         MUgL5/ChbOdiSAEGmazDEZGrX9HWsuMp9EQVlhavzKqC3CBIqYS6DzftYTtIGWBElhqs
-         wG6rsIi3Goyk/Bz0uCJYjpH1MMvl45943Rb9gD3DapVncZkc53iYsXZ7FCRLUbfbcn4a
-         3R5Rc2vWQuEXj4hr9dtVvQicU+e1RVbUI4vzs+mDAO6+nOc6AxlC0TtdE/DJbfV0rUje
-         XQWQ==
-X-Gm-Message-State: AOAM531O9pgid0x+ufGEjBi61v3AvykBE6MTzFLXWkg1GetDjZ+lbJIv
-        Ow0FUhWEeLSIUzT2g6cY4K38FQqdajT+MQwemuRqIOQ9NFw=
-X-Google-Smtp-Source: ABdhPJxOzWQHTttWe3IjCBtlULxFzl8+MBVCWrQvdkyxI+zv2cyhv24AZxKRrkGi35iAwAMhcJ7m94pmrJgy3z6hqCo=
-X-Received: by 2002:a37:8242:: with SMTP id e63mr15363774qkd.294.1633441995106;
- Tue, 05 Oct 2021 06:53:15 -0700 (PDT)
-From:   Kashyap Desai <kashyap.desai@broadcom.com>
-References: <1633429419-228500-1-git-send-email-john.garry@huawei.com>
- <ae33dde8-96e8-2978-5f32-c7e0a6136e8e@kernel.dk> <81d9e019-b730-221e-a8c0-f72a8422a2ec@huawei.com>
-In-Reply-To: <81d9e019-b730-221e-a8c0-f72a8422a2ec@huawei.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4nQrZDe3L3lnevNgwmmPUj83yrkESGDrc+fmpfAhQFg=;
+        b=ZuoZpF/3i8c4VLXVYv//Bpk1pLRDMHHwazxzC4oSv33NzWrPkWgBNIEWcn3yK1Sjk6
+         ud9W6pgCGfG+tltRpsshQAWu1IZ3IuoM3lcdvlWvdzNOrbhm0/e8zUruwqn7KJ+ZAK16
+         FyE0QJkdGh7zZbcrlb2O4ruCTzF0HTUf/iJsF3rvOcryqnBORwZ+NAk5dD5LUZVxizBZ
+         rrY87xPshJ7wlTWtRS+rfnBYn2mPTPRGCtuj/J/kALro/cWOh36udyOCb4RiuuSQJ1C9
+         MuhtconJMgH6Utgm9OzvCMTao5B+RkziFLQh691hl5gJDKeJytOHGDM4kuWvJ7r5+eLa
+         E24A==
+X-Gm-Message-State: AOAM532cHL0UqdxdYgRaGHuKv53lhEs9cwJPug8eovCvtj76jD8fynVp
+        57wpyJtXQkyur6g9UTxK8rhdlT/AgmKM94fEvrEw
+X-Google-Smtp-Source: ABdhPJxXFaPdoVeXTHWJ4N9Z9y35WGVg9/WQkoOpNDkwryi/oobLzFCbBmPQZs0ePNLDIgCowz+yAsCdg+1+ItUorQQ=
+X-Received: by 2002:a17:907:629b:: with SMTP id nd27mr25354271ejc.24.1633442022740;
+ Tue, 05 Oct 2021 06:53:42 -0700 (PDT)
 MIME-Version: 1.0
-X-Mailer: Microsoft Outlook 15.0
-Thread-Index: AQGgGyzjlHsoUBOKQforaoyr3oYZHgFiajqbAYnHiCCsHEhW8A==
-Date:   Tue, 5 Oct 2021 19:23:13 +0530
-Message-ID: <d3a11ba59cc0a912fa6486a148a7458a@mail.gmail.com>
-Subject: RE: [PATCH v5 00/14] blk-mq: Reduce static requests memory footprint
- for shared sbitmap
-To:     John Garry <john.garry@huawei.com>, Jens Axboe <axboe@kernel.dk>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ming.lei@redhat.com, hare@suse.de, linux-scsi@vger.kernel.org
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000e6181605cd9b5945"
+References: <20211001175521.3853257-1-tkjos@google.com> <YVxTlBMSWBkLgSi9@kroah.com>
+In-Reply-To: <YVxTlBMSWBkLgSi9@kroah.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Tue, 5 Oct 2021 09:53:31 -0400
+Message-ID: <CAHC9VhTdyc6qagfFDLFteqTpayC4G=tNy1T7mueMKeZzU8QmwQ@mail.gmail.com>
+Subject: Re: [PATCH v2] binder: use cred instead of task for selinux checks
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Todd Kjos <tkjos@google.com>, arve@android.com, tkjos@android.com,
+        maco@android.com, christian@brauner.io,
+        James Morris <jmorris@namei.org>,
+        Serge Hallyn <serge@hallyn.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Paris <eparis@parisplace.org>, keescook@chromium.org,
+        jannh@google.com, Jeffrey Vander Stoep <jeffv@google.com>,
+        zohar@linux.ibm.com, linux-security-module@vger.kernel.org,
+        selinux@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org, joel@joelfernandes.org,
+        kernel-team@android.com, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000e6181605cd9b5945
-Content-Type: text/plain; charset="UTF-8"
-
-> -----Original Message-----
-> From: John Garry [mailto:john.garry@huawei.com]
-> Sent: Tuesday, October 5, 2021 7:05 PM
-> To: Jens Axboe <axboe@kernel.dk>; kashyap.desai@broadcom.com
-> Cc: linux-block@vger.kernel.org; linux-kernel@vger.kernel.org;
-> ming.lei@redhat.com; hare@suse.de; linux-scsi@vger.kernel.org
-> Subject: Re: [PATCH v5 00/14] blk-mq: Reduce static requests memory
-> footprint for shared sbitmap
+On Tue, Oct 5, 2021 at 9:31 AM Greg KH <gregkh@linuxfoundation.org> wrote:
+> On Fri, Oct 01, 2021 at 10:55:21AM -0700, Todd Kjos wrote:
+> > Save the struct cred associated with a binder process
+> > at initial open to avoid potential race conditions
+> > when converting to a security ID.
+> >
+> > Since binder was integrated with selinux, it has passed
+> > 'struct task_struct' associated with the binder_proc
+> > to represent the source and target of transactions.
+> > The conversion of task to SID was then done in the hook
+> > implementations. It turns out that there are race conditions
+> > which can result in an incorrect security context being used.
+> >
+> > Fix by saving the 'struct cred' during binder_open and pass
+> > it to the selinux subsystem.
+> >
+> > Fixes: 79af73079d75 ("Add security hooks to binder and implement the
+> > hooks for SELinux.")
+> > Signed-off-by: Todd Kjos <tkjos@google.com>
+> > Cc: stable@vger.kernel.org # 5.14+ (need backport for earlier stables)
+> > ---
+> > v2: updated comments as suggested by Paul Moore
+> >
+> >  drivers/android/binder.c          | 14 +++++----
+> >  drivers/android/binder_internal.h |  4 +++
+> >  include/linux/lsm_hook_defs.h     | 14 ++++-----
+> >  include/linux/lsm_hooks.h         | 14 ++++-----
+> >  include/linux/security.h          | 28 +++++++++---------
+> >  security/security.c               | 14 ++++-----
+> >  security/selinux/hooks.c          | 48 +++++++++----------------------
+> >  7 files changed, 60 insertions(+), 76 deletions(-)
 >
-> On 05/10/2021 13:35, Jens Axboe wrote:
-> >> Baseline is 1b2d1439fc25 (block/for-next) Merge branch
-> >> 'for-5.16/io_uring'
-> >> into for-next
-> > Let's get this queued up for testing, thanks John.
->
-> Cheers, appreciated
->
-> @Kashyap, You mentioned that when testing you saw a performance
-> regression from v5.11 -> v5.12 - any idea on that yet? Can you describe
-> the
-> scenario, like IO scheduler and how many disks and the type? Does
-> disabling
-> host_tagset_enable restore performance?
+> Ideally I could get an ack from the security developers before taking
+> this in my tree...
 
-John - I am still working on this. System was not available due to some
-other debugging.
+This should probably go in via one of the security trees, e.g. SELinux
+or LSM, rather than the binder/driver tree.
 
->
->  From checking differences between those kernels, I don't see anything
-> directly relevant in sbitmap support or in the megaraid sas driver.
->
-> Thanks,
-> John
-
---000000000000e6181605cd9b5945
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-MIIQcAYJKoZIhvcNAQcCoIIQYTCCEF0CAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
-gg3HMIIFDTCCA/WgAwIBAgIQeEqpED+lv77edQixNJMdADANBgkqhkiG9w0BAQsFADBMMSAwHgYD
-VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
-AxMKR2xvYmFsU2lnbjAeFw0yMDA5MTYwMDAwMDBaFw0yODA5MTYwMDAwMDBaMFsxCzAJBgNVBAYT
-AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBS
-MyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA
-vbCmXCcsbZ/a0fRIQMBxp4gJnnyeneFYpEtNydrZZ+GeKSMdHiDgXD1UnRSIudKo+moQ6YlCOu4t
-rVWO/EiXfYnK7zeop26ry1RpKtogB7/O115zultAz64ydQYLe+a1e/czkALg3sgTcOOcFZTXk38e
-aqsXsipoX1vsNurqPtnC27TWsA7pk4uKXscFjkeUE8JZu9BDKaswZygxBOPBQBwrA5+20Wxlk6k1
-e6EKaaNaNZUy30q3ArEf30ZDpXyfCtiXnupjSK8WU2cK4qsEtj09JS4+mhi0CTCrCnXAzum3tgcH
-cHRg0prcSzzEUDQWoFxyuqwiwhHu3sPQNmFOMwIDAQABo4IB2jCCAdYwDgYDVR0PAQH/BAQDAgGG
-MGAGA1UdJQRZMFcGCCsGAQUFBwMCBggrBgEFBQcDBAYKKwYBBAGCNxQCAgYKKwYBBAGCNwoDBAYJ
-KwYBBAGCNxUGBgorBgEEAYI3CgMMBggrBgEFBQcDBwYIKwYBBQUHAxEwEgYDVR0TAQH/BAgwBgEB
-/wIBADAdBgNVHQ4EFgQUljPR5lgXWzR1ioFWZNW+SN6hj88wHwYDVR0jBBgwFoAUj/BLf6guRSSu
-TVD6Y5qL3uLdG7wwegYIKwYBBQUHAQEEbjBsMC0GCCsGAQUFBzABhiFodHRwOi8vb2NzcC5nbG9i
-YWxzaWduLmNvbS9yb290cjMwOwYIKwYBBQUHMAKGL2h0dHA6Ly9zZWN1cmUuZ2xvYmFsc2lnbi5j
-b20vY2FjZXJ0L3Jvb3QtcjMuY3J0MDYGA1UdHwQvMC0wK6ApoCeGJWh0dHA6Ly9jcmwuZ2xvYmFs
-c2lnbi5jb20vcm9vdC1yMy5jcmwwWgYDVR0gBFMwUTALBgkrBgEEAaAyASgwQgYKKwYBBAGgMgEo
-CjA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAN
-BgkqhkiG9w0BAQsFAAOCAQEAdAXk/XCnDeAOd9nNEUvWPxblOQ/5o/q6OIeTYvoEvUUi2qHUOtbf
-jBGdTptFsXXe4RgjVF9b6DuizgYfy+cILmvi5hfk3Iq8MAZsgtW+A/otQsJvK2wRatLE61RbzkX8
-9/OXEZ1zT7t/q2RiJqzpvV8NChxIj+P7WTtepPm9AIj0Keue+gS2qvzAZAY34ZZeRHgA7g5O4TPJ
-/oTd+4rgiU++wLDlcZYd/slFkaT3xg4qWDepEMjT4T1qFOQIL+ijUArYS4owpPg9NISTKa1qqKWJ
-jFoyms0d0GwOniIIbBvhI2MJ7BSY9MYtWVT5jJO3tsVHwj4cp92CSFuGwunFMzCCA18wggJHoAMC
-AQICCwQAAAAAASFYUwiiMA0GCSqGSIb3DQEBCwUAMEwxIDAeBgNVBAsTF0dsb2JhbFNpZ24gUm9v
-dCBDQSAtIFIzMRMwEQYDVQQKEwpHbG9iYWxTaWduMRMwEQYDVQQDEwpHbG9iYWxTaWduMB4XDTA5
-MDMxODEwMDAwMFoXDTI5MDMxODEwMDAwMFowTDEgMB4GA1UECxMXR2xvYmFsU2lnbiBSb290IENB
-IC0gUjMxEzARBgNVBAoTCkdsb2JhbFNpZ24xEzARBgNVBAMTCkdsb2JhbFNpZ24wggEiMA0GCSqG
-SIb3DQEBAQUAA4IBDwAwggEKAoIBAQDMJXaQeQZ4Ihb1wIO2hMoonv0FdhHFrYhy/EYCQ8eyip0E
-XyTLLkvhYIJG4VKrDIFHcGzdZNHr9SyjD4I9DCuul9e2FIYQebs7E4B3jAjhSdJqYi8fXvqWaN+J
-J5U4nwbXPsnLJlkNc96wyOkmDoMVxu9bi9IEYMpJpij2aTv2y8gokeWdimFXN6x0FNx04Druci8u
-nPvQu7/1PQDhBjPogiuuU6Y6FnOM3UEOIDrAtKeh6bJPkC4yYOlXy7kEkmho5TgmYHWyn3f/kRTv
-riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
-QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
-UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
-M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
-Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
-14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
-a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
-XzCCBU8wggQ3oAMCAQICDHA7TgNc55htm2viYDANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
-RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
-UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMTAyMjIxMjU2MDJaFw0yMjA5MTUxMTQ1MTZaMIGQ
-MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
-BgNVBAoTDUJyb2FkY29tIEluYy4xFjAUBgNVBAMTDUthc2h5YXAgRGVzYWkxKTAnBgkqhkiG9w0B
-CQEWGmthc2h5YXAuZGVzYWlAYnJvYWRjb20uY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIB
-CgKCAQEAzPAzyHBqFL/1u7ttl86wZrWK3vYcqFH+GBe0laKvAGOuEkaHijHa8iH+9GA8FUv1cdWF
-WY3c3BGA+omJGYc4eHLEyKowuLRWvjV3MEjGBG7NIVoIaTkH4R+6Xs1P4/9EmUA0WI881B3pTv5W
-nHG54/aqGUDSRDyWVhK7TLqJQkkiYKB0kH0GkB/UfmU/pmCaV68w5J6l4vz/TG23hWJmTg1lW5mu
-P3lSxcw4Cg90iKHqfpwLnGNc9AGXHMxUCukpnAHRlivljilKHMx1ymb180BLmtF+ZLm6KrFLQWzB
-4KeiUOMtKM13wJrQubqTeZgB1XA+89jeLYlxagVsMyksdwIDAQABo4IB2zCCAdcwDgYDVR0PAQH/
-BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3VyZS5nbG9i
-YWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEGCCsGAQUF
-BzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAy
-MDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xv
-YmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6hjhodHRw
-Oi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNybDAlBgNV
-HREEHjAcgRprYXNoeWFwLmRlc2FpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAf
-BgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUkTOZp9jXE3yPj4ieKeDT
-OiNyCtswDQYJKoZIhvcNAQELBQADggEBABG1KCh7cLjStywh4S37nKE1eE8KPyAxDzQCkhxYLBVj
-gnnhaLmEOayEucPAsM1hCRAm/vR3RQ27lMXBGveCHaq9RZkzTjGSbzr8adOGK3CluPrasNf5StX3
-GSk4HwCapA39BDUrhnc/qG5vHwLrgA1jwAvSy8e/vn4F4h+KPrPoFNd1OnCafedbuiEXTqTkn5Rk
-vZ2AOTcSbxvmyKBMb/iu1vn7AAoui0d8GYCPoz8shf2iWMSUXVYJAMrtRHVJr47J5jlopF5F2ghC
-MzNfx6QsmJhYiRByd8L9sUOjp/DMgkC6H93PyYpYMiBGapgNf6UMsLg/1kx5DATNwhPAJbkxggJt
-MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
-VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgxwO04DXOeYbZtr
-4mAwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIPxOtBi35tMoA1K3S9uPFQceSGu1
-pehSO2Q5K8PrmxXjMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIx
-MTAwNTEzNTMxNVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
-CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
-AwQCATANBgkqhkiG9w0BAQEFAASCAQByESsl2hP8MtGRSRz56t5gKGM6iRBuDfSsI2d3sfJ8bJ1D
-v6JpWvtq85YiMtVMTy9fTRwC7u+oMsQhZClkF1FQj5RomNanQgFjO7cxfa45VfJszFDRIEWD8vHr
-To4w/E7qb08clHH75PXqciMkfVSp5V55/8NyssGaqKwBDbC2i+nVzQ1fEli0XpidskQJE52CAGC+
-kXq0p6KLOzkQM1xqh1RlI/+KpyEXvK5FNUVRsZ9PNnkeBDy1rRU+XtnrO161o0X1K5xgb2TlmcgC
-czFVYPBgDwin4DA1nmz0J8URpBhAVK6zSwKqshpwqo4CuYYBXOpDGVv/hdOzs6Ye2jru
---000000000000e6181605cd9b5945--
+-- 
+paul moore
+www.paul-moore.com
