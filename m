@@ -2,94 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D487342281F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 15:42:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83D2B422823
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 15:43:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234520AbhJENoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 09:44:20 -0400
-Received: from foss.arm.com ([217.140.110.172]:43428 "EHLO foss.arm.com"
+        id S234983AbhJENoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 09:44:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56188 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233077AbhJENoT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 09:44:19 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DC89E1FB;
-        Tue,  5 Oct 2021 06:42:28 -0700 (PDT)
-Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E6D8F3F70D;
-        Tue,  5 Oct 2021 06:42:24 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
-        Barry Song <21cnbao@gmail.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Ben Segall <bsegall@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Guodong Xu <guodong.xu@linaro.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        "Cc\: Len Brown" <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        LAK <linux-arm-kernel@lists.infradead.org>,
-        Linuxarm <linuxarm@huawei.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mel Gorman <mgorman@suse.de>, msys.mizuma@gmail.com,
-        "Zengtao \(B\)" <prime.zeng@hisilicon.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
+        id S233077AbhJENoy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 09:44:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 81D4861139;
+        Tue,  5 Oct 2021 13:43:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1633441384;
+        bh=J3aLC4PyDoCkE6ZBV8EqrCKHmRNUR7xIl7ihhOOIWl4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HE/zEbfQY3VRPURBiiBl3nmNLxbxzIjiG0nNhZFJS4sVTkP3LGwRrZPQoVrxubd9S
+         3mnh0WJqJLjJ1SY2uCSdyk+s1qbwmWVYvCoUMIE+IfcKFjTQKuefL6oWlA/f88QIPD
+         txTvZU5/4JPNu47XGv/7efwohUNnUVkoeATLd5ME=
+Date:   Tue, 5 Oct 2021 15:43:02 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>, Alex Shi <alexs@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
         Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
         "Rafael J. Wysocki" <rafael@kernel.org>,
-        Will Deacon <will@kernel.org>, x86 <x86@kernel.org>,
-        yangyicong <yangyicong@huawei.com>
-Subject: Re: [PATCH RESEND 0/3] Represent cluster topology and enable load balance between clusters
-In-Reply-To: <20211005075001.GJ4323@worktop.programming.kicks-ass.net>
-References: <20210924085104.44806-1-21cnbao@gmail.com> <CAGsJ_4yW72mktbWjRfE9ngXoq9oXBXyAd_TPjKBNdGiRSoh9LA@mail.gmail.com> <CAKfTPtAtfJRFBbo+kBCYf42hxcc2iP8kkmg3Wcr5aW7Rnf=rfw@mail.gmail.com> <YVch0/R9PHzUwqea@hirez.programming.kicks-ass.net> <ece8838d112840bf26adbb09f653babcf298eb28.camel@linux.intel.com> <20211005075001.GJ4323@worktop.programming.kicks-ass.net>
-Date:   Tue, 05 Oct 2021 14:42:17 +0100
-Message-ID: <87tuhvlhae.mognet@arm.com>
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Shuah Khan <shuah@kernel.org>, Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Mike Rapoport <rppt@kernel.org>, x86@kernel.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+        linux-doc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v1 2/6] mm/memory_hotplug: remove
+ CONFIG_MEMORY_HOTPLUG_SPARSE
+Message-ID: <YVxWZtQRxTdP2jvX@kroah.com>
+References: <20210929143600.49379-1-david@redhat.com>
+ <20210929143600.49379-3-david@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210929143600.49379-3-david@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/10/21 09:50, Peter Zijlstra wrote:
-> On Fri, Oct 01, 2021 at 04:22:46PM -0700, Tim Chen wrote:
->> On Fri, 2021-10-01 at 16:57 +0200, Peter Zijlstra wrote:
->
->> > The one questino I have is, do we want default y?
->>
->> I also agree that default y is preferable.
->
-> I'll change at least the x86 one to:
->
->       default y
->       depends on SMP
->
+On Wed, Sep 29, 2021 at 04:35:56PM +0200, David Hildenbrand wrote:
+> CONFIG_MEMORY_HOTPLUG depends on CONFIG_SPARSEMEM, so there is no need for
+> CONFIG_MEMORY_HOTPLUG_SPARSE anymore; adjust all instances to use
+> CONFIG_MEMORY_HOTPLUG and remove CONFIG_MEMORY_HOTPLUG_SPARSE.
+> 
+> Signed-off-by: David Hildenbrand <david@redhat.com>
 
-Huh, so the arm64 SCHED_{SMT,MC} configs are defaultless (I added SCHED_SMT
-to arm64's defconfig not so long ago), but x86 has them default y, which
-I'm thinking is a tad better, and would be nice to harmonize. Unfortunately
-different architectures have their own dependency requirements - arm has
-ARM_CPU_TOPOLOGY, parisc has PARISC_CPU_TOPOLOGY...
-
-Would you hate making SCHED_* a "generic" config, with a common default and
-help text, and punt the arch specific stuff to an ARCH_SUPPORTS_* knob?
-
-Something like:
-
-arch/arm/Kconfig:
-  select ARCH_SUPPORTS_SCHED_MC if ARM_CPU_TOPOLOGY
-
-init/Kconfig:
-  config SCHED_MC
-    def_bool y
-    depends on ARCH_SUPPORTS_SCHED_MC && SMP
+Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
