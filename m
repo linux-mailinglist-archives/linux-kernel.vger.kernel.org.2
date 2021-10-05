@@ -2,37 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 745F8422CA5
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:37:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF969422CA8
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:37:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235995AbhJEPjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 11:39:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43194 "EHLO mail.kernel.org"
+        id S236068AbhJEPjp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 11:39:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43232 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235588AbhJEPjj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 11:39:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E62D360F9D;
-        Tue,  5 Oct 2021 15:37:47 +0000 (UTC)
+        id S235942AbhJEPjl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 11:39:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 69245610EA;
+        Tue,  5 Oct 2021 15:37:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633448268;
-        bh=VNMwv22FvVJr37/utthyswV8Kmqu6h+cvM+d5Cilb8U=;
+        s=k20201202; t=1633448270;
+        bh=s8dscrrIAsTmIuDm+tx17i82rsTJNNFZ/mXmMzrR8a8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GZ/ikPyX6aEgzTkFrv0zdwmzrCGDU2gTAp4/NE+9fgLBoe7iS7J0PyPd1emkBNnXj
-         /xjwTh7aqHb0MUomUuoZLFlwj72MbShSMQshd2mifsHbGYDx+rBqVWO6w0lVw9p4bK
-         Edo72759r38JyFMSsNWTlFfzwEDefkhX+bYkMJoDvaqj02gVKZ7aOtcY57jbETe8wO
-         LL1KeeN0xX5ZR765cF3nEDo+5nRvC9p2BGrHSRcMcVlo8b4b8E9E8xJ1DWZeRaXimp
-         /vq3Z2zTQP/ZO8ALlbTAvmkQt5e7LXL4V49ivYC8V2zSSOofXfv7SEUpBh37bIDmtV
-         wstVlx7XH4NRA==
+        b=V422fjGQ5XIVBiW3hGv4wEyMh5NPtAi1+IcycV9rfcvPIrDaRz0y+qXjnMCD00TTT
+         u2sklFX6x9jdCrvu+6F/1j77FAraO7T5FVvbqmM7CtocIajF4ypxFUjXEPS/8SkjAx
+         ZdUbiwuU99pWVRZg5HAjp6KYpoEuAhAHmr2vJuQd5UIpxF2T6P+FDJBMj8njgfYVnr
+         V95Do6ZtHdk4ak1yaCUOhrTmQLH4zDbWb1hKJAlNtP9rYV1T3PsWnGRBlePU/JYnk/
+         CN8qIJTegt13fRsKQo7YEZY/6vuBLpe/OXhsThYQyAY4YlT4vUHWQTrznNkGlSo7fL
+         R6lar4nOFt6Tg==
 From:   Mark Brown <broonie@kernel.org>
-To:     Eddie James <eajames@linux.ibm.com>
-Cc:     Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] spi: fsi: Print status on error
-Date:   Tue,  5 Oct 2021 16:37:39 +0100
-Message-Id: <163344813900.1141585.10210629516525058717.b4-ty@kernel.org>
+To:     devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Nishanth Menon <nm@ti.com>,
+        Naga Sureshkumar Relli <nagasure@xilinx.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Mirela Rabulea <mirela.rabulea@nxp.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Anitha Chrisanthus <anitha.chrisanthus@intel.com>,
+        linux-kernel@vger.kernel.org,
+        Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>,
+        Wilken Gottwalt <wilken.gottwalt@posteo.net>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
+        Tero Kristo <kristo@kernel.org>, Yu Chen <chenyu56@huawei.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Hans Ulli Kroll <ulli.kroll@googlemail.com>,
+        Joakim Zhang <qiangqing.zhang@nxp.com>,
+        Deepak Saxena <dsaxena@plexity.net>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        kernel-janitors@vger.kernel.org,
+        Vignesh Raghavendra <vigneshr@ti.com>
+Subject: Re: (subset) [PATCH v4 00/11] Rectify file references for dt-bindings in MAINTAINERS
+Date:   Tue,  5 Oct 2021 16:37:40 +0100
+Message-Id: <163344802403.1141521.13995618381491807996.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211004195149.29759-1-eajames@linux.ibm.com>
-References: <20211004195149.29759-1-eajames@linux.ibm.com>
+In-Reply-To: <20211005075451.29691-1-lukas.bulwahn@gmail.com>
+References: <20211005075451.29691-1-lukas.bulwahn@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -40,20 +61,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 4 Oct 2021 14:51:49 -0500, Eddie James wrote:
-> Print the SPI engine status register when an error is detected. This
-> will aid tremendously in debugging failed transactions.
+On Tue, 5 Oct 2021 09:54:40 +0200, Lukas Bulwahn wrote:
+> here is a patch series that cleans up some file references for dt-bindings
+> in MAINTAINERS. It applies cleanly on next-20211001.
 > 
+> This is a v4 of the still relevant patches from the first submission
+> of the patch series (see Links) send out 2021-03-15 and resent on 2021-04-19
+> and on 2021-07-26.
 > 
+> [...]
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
 
 Thanks!
 
-[1/1] spi: fsi: Print status on error
-      commit: 48a78c66ad5d9d4f918182335d6e5726e7008085
+[10/11] MAINTAINERS: rectify entry for SY8106A REGULATOR DRIVER
+        commit: beb76cb4eebf9ac4ff15312e33f97db621b46da7
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
