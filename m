@@ -2,104 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E15284226A5
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 14:30:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C79B4226A6
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 14:30:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234949AbhJEMbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 08:31:49 -0400
-Received: from mo4-p04-ob.smtp.rzone.de ([85.215.255.121]:33019 "EHLO
-        mo4-p04-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234614AbhJEMbf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 08:31:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1633436968;
-    s=strato-dkim-0002; d=goldelico.com;
-    h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=KtThjIMinVSdCkIDMN04wE20pEj4YIVO9PyU6QPxr70=;
-    b=tpt97t9lJ8tQtwo+SG1sjJF+A9fodZivBi4+ouN7YjTknS7O4bFAWccEvsLJq8+4tj
-    Xnc7K4/xpcnSuHkWFhQqEIJ7+SkEhXhKo+fsIe5ho+FRPuKehScpR8VuP3QmcRq9q5IF
-    +LSkewC75GYE9DJmaUHq9T/XAFVSMib9g+YFDafdWgLtxXu0m32bdrwdjU127VnzMR1k
-    8yVE3WXlP1UnFZ5jAjf2xzDUP8xsa1r0n9hu9v03raosv4R1VZf0Mf5ArkHHvaw47saa
-    LpkURO8aPblgIfgvU9/2AnvQRqRaEjOKXI1OAip19Bku9isbiwFTZlasWRiWapL9EJ0i
-    VJyA==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9o12DNOsPj0lByOdcKlH0"
-X-RZG-CLASS-ID: mo00
-Received: from iMac.fritz.box
-    by smtp.strato.de (RZmta 47.33.8 DYNA|AUTH)
-    with ESMTPSA id I01f74x95CTR50i
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Tue, 5 Oct 2021 14:29:27 +0200 (CEST)
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-To:     Paul Cercueil <paul@crapouillou.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "H. Nikolaus Schaller" <hns@goldelico.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Paul Boddie <paul@boddie.org.uk>
-Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, letux-kernel@openphoenux.org,
-        Jonas Karlman <jonas@kwiboo.se>,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH v5 7/7] MIPS: defconfig: CI20: configure for DRM_DW_HDMI_JZ4780
-Date:   Tue,  5 Oct 2021 14:29:19 +0200
-Message-Id: <63bcf73f5a679e63ba29cd80fb1d21db7b0eb969.1633436959.git.hns@goldelico.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <cover.1633436959.git.hns@goldelico.com>
-References: <cover.1633436959.git.hns@goldelico.com>
+        id S234744AbhJEMby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 08:31:54 -0400
+Received: from mga14.intel.com ([192.55.52.115]:34488 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234825AbhJEMbl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 08:31:41 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10127"; a="226037352"
+X-IronPort-AV: E=Sophos;i="5.85,348,1624345200"; 
+   d="scan'208";a="226037352"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2021 05:29:50 -0700
+X-IronPort-AV: E=Sophos;i="5.85,348,1624345200"; 
+   d="scan'208";a="559304412"
+Received: from slwegrzy-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.212.129.144])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2021 05:29:48 -0700
+Subject: Re: [PATCH v8 04/11] x86/tdx: Add Intel ARCH support to
+ cc_platform_has()
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
+        VMware Inc <pv-drivers@vmware.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        linux-kernel@vger.kernel.org
+References: <20211005025205.1784480-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20211005025205.1784480-5-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <50eaabfc-50b2-7617-ed9f-61f61b619cd8@infradead.org>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <0350a300-dced-c10e-a4ce-53fb50a7a11a@linux.intel.com>
+Date:   Tue, 5 Oct 2021 05:29:44 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
+In-Reply-To: <50eaabfc-50b2-7617-ed9f-61f61b619cd8@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable CONFIG options as modules.
 
-Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
-Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
----
- arch/mips/configs/ci20_defconfig | 6 ++++++
- 1 file changed, 6 insertions(+)
 
-diff --git a/arch/mips/configs/ci20_defconfig b/arch/mips/configs/ci20_defconfig
-index ab7ebb066834..9c9c649d385b 100644
---- a/arch/mips/configs/ci20_defconfig
-+++ b/arch/mips/configs/ci20_defconfig
-@@ -98,7 +98,13 @@ CONFIG_RC_DEVICES=y
- CONFIG_IR_GPIO_CIR=m
- CONFIG_IR_GPIO_TX=m
- CONFIG_MEDIA_SUPPORT=m
-+CONFIG_DRM=m
-+CONFIG_DRM_INGENIC=m
-+CONFIG_DRM_INGENIC_DW_HDMI=y
-+CONFIG_DRM_DISPLAY_CONNECTOR=m
- # CONFIG_VGA_CONSOLE is not set
-+CONFIG_FB=y
-+CONFIG_FRAMEBUFFER_CONSOLE=y
- # CONFIG_HID is not set
- CONFIG_USB=y
- CONFIG_USB_STORAGE=y
+On 10/4/21 9:47 PM, Randy Dunlap wrote:
+> On 10/4/21 7:51 PM, Kuppuswamy Sathyanarayanan wrote:
+>> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+>> index c42dd8a2d1f4..abb249dc829d 100644
+>> --- a/arch/x86/Kconfig
+>> +++ b/arch/x86/Kconfig
+>> @@ -871,6 +871,7 @@ config INTEL_TDX_GUEST
+>>       depends on SECURITY
+>>       select X86_X2APIC
+>>       select SECURITY_LOCKDOWN_LSM
+>> +    select ARCH_HAS_CC_PLATFORM
+> 
+> Where is ARCH_HAS_CC_PLATFORM defined, please?
+> I can't seem to find it.
+
+It is merged to tip tree.
+
+https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/commit/?id=46b49b12f3fc5e1347dba37d4639e2165f447871
+
+> 
+>>       help
+>>         Provide support for running in a trusted domain on Intel processors
+>>         equipped with Trusted Domain eXtensions. TDX is a Intel technology
+> 
+> 
+> thanks.
+
 -- 
-2.33.0
-
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
