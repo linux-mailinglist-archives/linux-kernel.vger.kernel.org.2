@@ -2,153 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED962422230
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 11:22:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E06C0422239
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 11:24:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233647AbhJEJX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 05:23:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56952 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233372AbhJEJXy (ORCPT
+        id S233478AbhJEJ02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 05:26:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60492 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232773AbhJEJ01 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 05:23:54 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF16FC061745;
-        Tue,  5 Oct 2021 02:22:04 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id u20-20020a9d7214000000b0054e170300adso8073otj.13;
-        Tue, 05 Oct 2021 02:22:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=tWCZQD/n7Y/MgcB3b8Xhms8A/Xp3yZnIB33cQunaJpA=;
-        b=DMLjnX/74Mmwlgz+PWs9+YyvNesESpEOSL+UBtJ0nZCNA/+sRYXzUC4cz6+mQ7s2jM
-         3hZZRmijiO2DNDEyqWJ3DIpB7r76CI2puzWl3GsDSWwqmI1XeoM9ACCPmHxCOtW07uTP
-         Q2Yalt8sxWh1miz6aAZzGoKPilA9BY3s+utTWi6CrZ/VVsOGX6idB0qO653py/zPiV4E
-         utyqxxCFRTx15JcGNGES0NdhqX7rd1PfXiF3WpU3Piiq9rPLhIYEBaTmGFjn+j8G9t8Y
-         3FY1M8kmD6g26Ur95pbCft9lDW5cwG4EKjZwEciUstcmoQhW2yMfXimNj/mXVDgYi2SR
-         H7zA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=tWCZQD/n7Y/MgcB3b8Xhms8A/Xp3yZnIB33cQunaJpA=;
-        b=l5yLvqzYbxmMCD4XwyF4GJOrWj+tNEFy8iqqoYOvMXLc2ocuzYChsvElw3kjPSmgQ3
-         wfI23oBMWCk19gv+nlky31AIrpzn4LHDFE2ZR/6Ej4tbOxn1+1/IpkUUwlne7qi5cXCc
-         TVQYYk7zB/nMnAxX2/ihytcW7j+w8wbPz1xto2DzxnBEA9U1YAf6HNccFKZRRpu7TjXQ
-         gmGHzRaLTbVKYyREUIEmOmWMMmlAh3d2vD2R0EwCN6fuLihUETDaJQKSHGpWUTxbtzp2
-         QrzvanWpFPTyo7Avr17MJ/MG2lL3Afn1b0qsaJ2Ea5wGF1RKnm/sLgITUPYpZs23zZ0Z
-         KcWg==
-X-Gm-Message-State: AOAM532xgaJylh2pnfDzCYcsUsoeqn9ChfDyJnRrazf49RaX5AzXrY4L
-        aB8Zz9uG8QQ1cNs1bHDUTzMiLtG3tI/XytSG8y4=
-X-Google-Smtp-Source: ABdhPJySkyUchFhBsS+LhyiT2FdEMBCSVCBcLM6/3/d6uMy6yPQXdSF507crN5NiDrG5e5EaH1qzyZ3n9T4+pCLI2SA=
-X-Received: by 2002:a9d:3e15:: with SMTP id a21mr13699450otd.60.1633425724166;
- Tue, 05 Oct 2021 02:22:04 -0700 (PDT)
+        Tue, 5 Oct 2021 05:26:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633425877;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=qyGWEhpdvwHRCn/lr1t/kNe6MHkOq9fXmq3K7gAa+cc=;
+        b=ccDz3mF/M2P2/aw3KGe2iTLkVhNhJ/xeJI0nq0FZGNVpJatOEG2t1stVQQUIU3ILw4gSLL
+        i1Im4bQZWnRhmZ+kW89r/h6A3k4AjfQPpeFFCyTuDdxzmjk2wg6jD/V5kbpxoRsuwmuJy+
+        H1UtWL9osfLoDOI93S+Z0Hiwb+R+GDQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-531-YETLEAj_PmuF1NvZWR3dfQ-1; Tue, 05 Oct 2021 05:24:35 -0400
+X-MC-Unique: YETLEAj_PmuF1NvZWR3dfQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2A2C610151E1;
+        Tue,  5 Oct 2021 09:24:33 +0000 (UTC)
+Received: from T590 (ovpn-8-16.pek2.redhat.com [10.72.8.16])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id C0F385F4EA;
+        Tue,  5 Oct 2021 09:24:23 +0000 (UTC)
+Date:   Tue, 5 Oct 2021 17:24:18 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     tj@kernel.org, gregkh@linuxfoundation.org,
+        akpm@linux-foundation.org, minchan@kernel.org, jeyu@kernel.org,
+        shuah@kernel.org, bvanassche@acm.org, dan.j.williams@intel.com,
+        joe@perches.com, tglx@linutronix.de, keescook@chromium.org,
+        rostedt@goodmis.org, linux-spdx@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 09/12] sysfs: fix deadlock race with module removal
+Message-ID: <YVwZwh7qDKfSM59h@T590>
+References: <20210927163805.808907-1-mcgrof@kernel.org>
+ <20210927163805.808907-10-mcgrof@kernel.org>
 MIME-Version: 1.0
-References: <20210716081731.80118-1-gene.chen.richtek@gmail.com>
-In-Reply-To: <20210716081731.80118-1-gene.chen.richtek@gmail.com>
-From:   Gene Chen <gene.chen.richtek@gmail.com>
-Date:   Tue, 5 Oct 2021 17:21:55 +0800
-Message-ID: <CAE+NS34qtKgQYiCLQDupLK8L84SVS9EsztOpQFtS_CoOPzNwzQ@mail.gmail.com>
-Subject: Re: [PATCH v15 0/2] leds: mt6360: Add LED driver for MT6360
-To:     Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     Dan Murphy <dmurphy@ti.com>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Gene Chen <gene_chen@richtek.com>, Wilma.Wu@mediatek.com,
-        ChiYuan Huang <cy_huang@richtek.com>,
-        benjamin.chao@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210927163805.808907-10-mcgrof@kernel.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Gene Chen <gene.chen.richtek@gmail.com> =E6=96=BC 2021=E5=B9=B47=E6=9C=8816=
-=E6=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8B=E5=8D=884:33=E5=AF=AB=E9=81=93=EF=BC=
-=9A
->
->
-> This patch series add MT6360 LED support contains driver and binding docu=
-ment
->
-> Gene Chen (2)
->  dt-bindings: leds: Add bindings for MT6360 LED
->  leds: mt6360: Add LED driver for MT6360
->
->  Documentation/devicetree/bindings/leds/leds-mt6360.yaml |  159 ++
->  drivers/leds/flash/Kconfig                              |   13
->  drivers/leds/flash/Makefile                             |    1
->  drivers/leds/flash/leds-mt6360.c                        |  910 +++++++++=
-+++++++
->  4 files changed, 1083 insertions(+)
->
-> changelogs between v1 & v2
->  - add led driver with mfd
->
-> changelogs between v2 & v3
->  - independent add led driver
->  - add dt-binding document
->  - refactor macros definition for easy to debug
->  - parse device tree by fwnode
->  - use devm*ext to register led class device
->
-> changelogs between v3 & v4
->  - fix binding document description
->  - use GENMASK and add unit postfix to definition
->  - isink register led class device
->
-> changelogs between v4 & v5
->  - change rgb isink to multicolor control
->  - add binding reference to mfd yaml
->
-> changelogs between v5 & v6
->  - Use DT to decide RGB LED is multicolor device or indicator device only
->
-> changelogs between v6 & v7
->  - Add binding multicolor device sample code
->  - Add flash ops mutex lock
->  - Remove V4L2 init with indicator device
->
-> changelogs between v7 & v8
->  - Add mutex for led fault get ops
->  - Fix flash and multicolor no-ops return 0
->  - Add LED_FUNCTION_MOONLIGHT
->
-> changelogs between v8 & v9
->  - reuse api in flash and multicolor header
->
-> changelogs between v9 & v10
->  - add comment for reuse registration functions in flash and multicolor
->
-> changelogs between v10 & v11
->  - match dt-binding reg property comment to the functionality name
->  - remove exist patch in linux-next
->  - dicide multicolor channel by color definitiion
->
-> changelogs between v11 & v12
->  - Fix print size_t by %zu
->  - Fix dt-binding name regular experssion
->
-> changelogs between v12 & v13
->  - Fix kbuild test rebot build error
->
-> changelogs between v13 & v14
->  - Move driver to flash folder
->  - Remove LED FUNCTION MOONLIGHT
->  - Keep 80 char per line
->
-> changelogs between v14 & v15
->  - Add ack in commit message
->
+On Mon, Sep 27, 2021 at 09:38:02AM -0700, Luis Chamberlain wrote:
+> When driver sysfs attributes use a lock also used on module removal we
+> can race to deadlock. This happens when for instance a sysfs file on
+> a driver is used, then at the same time we have module removal call
+> trigger. The module removal call code holds a lock, and then the
+> driver's sysfs file entry waits for the same lock. While holding the
+> lock the module removal tries to remove the sysfs entries, but these
+> cannot be removed yet as one is waiting for a lock. This won't complete
+> as the lock is already held. Likewise module removal cannot complete,
+> and so we deadlock.
+> 
+> This can now be easily reproducible with our sysfs selftest as follows:
+> 
+> ./tools/testing/selftests/sysfs/sysfs.sh -t 0027
+> 
+> This uses a local driver lock. Test 0028 can also be used, that uses
+> the rtnl_lock():
+> 
+> ./tools/testing/selftests/sysfs/sysfs.sh -t 0028
+> 
+> To fix this we extend the struct kernfs_node with a module reference
+> and use the try_module_get() after kernfs_get_active() is called. As
+> documented in the prior patch, we now know that once kernfs_get_active()
+> is called the module is implicitly guarded to exist and cannot be removed.
+> This is because the module is the one in charge of removing the same
+> sysfs file it created, and removal of sysfs files on module exit will wait
+> until they don't have any active references. By using a try_module_get()
+> after kernfs_get_active() we yield to let module removal trump calls to
+> process a sysfs operation, while also preventing module removal if a sysfs
+> operation is in already progress. This prevents the deadlock.
+> 
+> This deadlock was first reported with the zram driver, however the live
 
-Dear Reviewers,
+Looks not see the lock pattern you mentioned in zram driver, can you
+share the related zram code?
 
-Please let me know if any concern.
+> patching folks have acknowledged they have observed this as well with
+> live patching, when a live patch is removed. I was then able to
+> reproduce easily by creating a dedicated selftest for it.
+> 
+> A sketch of how this can happen follows, consider foo a local mutex
+> part of a driver, and used on the driver's module exit routine and
+> on one of its sysfs ops:
+> 
+> foo.c:
+> static DEFINE_MUTEX(foo);
+> static ssize_t foo_store(struct device *dev,
+> 			 struct device_attribute *attr,
+> 			 const char *buf, size_t count)
+> {
+> 	...
+> 	mutex_lock(&foo);
+> 	...
+> 	mutex_lock(&foo);
+> 	...
+> }
+> static DEVICE_ATTR_RW(foo);
+> ...
+> void foo_exit(void)
+> {
+> 	mutex_lock(&foo);
+> 	...
+> 	mutex_unlock(&foo);
+> }
+> module_exit(foo_exit);
+> 
+> And this can lead to this condition:
+> 
+> CPU A                              CPU B
+>                                    foo_store()
+> foo_exit()
+>   mutex_lock(&foo)
+>                                    mutex_lock(&foo)
+>    del_gendisk(some_struct->disk);
+>      device_del()
+>        device_remove_groups()
 
-Thanks.
+I guess the deadlock exists if foo_exit() is called anywhere. If yes,
+look the issue may not be related with removing module directly, right?
+
+
+
+Thanks,
+Ming
+
