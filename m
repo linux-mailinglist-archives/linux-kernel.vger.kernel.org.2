@@ -2,179 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D233422156
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 10:54:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54798422158
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 10:54:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232834AbhJEIzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 04:55:50 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:37034 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232739AbhJEIzt (ORCPT
+        id S233194AbhJEI43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 04:56:29 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:38010 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232739AbhJEI42 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 04:55:49 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1633424039; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=XGvgtp0AX96gfU5biA7tguc9gNgcpbuj4vK8IW5EGAo=; b=JlK0gvzVtzowNhJrmcfHKl5/yeEOi6xZ0eocQJKt4pOPm6NNL38OqckqA/RIgdHqgJ/4IbrW
- 2tsy/T75u2dwuAjl2+Bn3CIairtJkbF5MaqW3FWJhefFwTZVBXHgDs9YEBqlkc4OBi33JgbC
- VeWPi6ifBBcz7cqGBXKkE9bt59w=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 615c129247d64efb6deb2400 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 05 Oct 2021 08:53:38
- GMT
-Sender: mkshah=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id A25E4C4360D; Tue,  5 Oct 2021 08:53:38 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.29.129] (unknown [49.36.85.177])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: mkshah)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 64CBBC4338F;
-        Tue,  5 Oct 2021 08:53:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 64CBBC4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Subject: Re: [PATCH v9 1/5] dt-bindings: Introduce SoC sleep stats bindings
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     swboyd@chromium.org, mka@chromium.org, evgreen@chromium.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        agross@kernel.org, dianders@chromium.org, linux@roeck-us.net,
-        rnayak@codeaurora.org, lsrao@codeaurora.org,
-        Mahesh Sivasubramanian <msivasub@codeaurora.org>,
-        devicetree@vger.kernel.org, Lina Iyer <ilina@codeaurora.org>
-References: <1630906083-32194-1-git-send-email-mkshah@codeaurora.org>
- <1630906083-32194-2-git-send-email-mkshah@codeaurora.org>
- <YU5d4PhKRvF3wzGX@builder.lan>
-From:   Maulik Shah <mkshah@codeaurora.org>
-Message-ID: <5d6fe646-5110-0fba-fc30-0ff7aad6de03@codeaurora.org>
-Date:   Tue, 5 Oct 2021 14:23:30 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Tue, 5 Oct 2021 04:56:28 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1958g3Qw024789;
+        Tue, 5 Oct 2021 04:54:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=Oc3GvTQfzksAh7Ij8tpg94WjZ7As1pYxcRGBnzkR4T8=;
+ b=dLgwPOutMeYkpMw37ClaXMEdDAhlIkT/sBzRFGJZP/hZwpKBXQEi2lK30JibLFAYXFfd
+ a20t5DNCIjFefY1fj0Ve/fZSkSBBtFQcRnWEyfqKbqOnja0EikWUC+8ul8sdstrBnsLQ
+ RkGtIjgZB6/Qx1wri6zKsCbmpQugUN1nLDIOH8dklslG3Q2/AY3MfNV5XCcG53r6IX6H
+ VPseOXWo6UbTrB0welEAvKKBLF1yeS5nZ4Le7SiBUMrFdcaLw70z8EMkfyYr/7If7qK2
+ kFUjDQC/4fN0SarBd6IJQqXgHDD5jKVpmaPy6PsTVY2+VPiKX5kOTsu5mPrRynBAiJtU jA== 
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3bgkdw86h2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Oct 2021 04:54:36 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1958mWCG020471;
+        Tue, 5 Oct 2021 08:54:34 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma06ams.nl.ibm.com with ESMTP id 3beepjg740-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Oct 2021 08:54:34 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1958sUrU38994194
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 5 Oct 2021 08:54:30 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A5A4152065;
+        Tue,  5 Oct 2021 08:54:30 +0000 (GMT)
+Received: from osiris (unknown [9.145.46.219])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTPS id 64D205205F;
+        Tue,  5 Oct 2021 08:54:30 +0000 (GMT)
+Date:   Tue, 5 Oct 2021 10:54:28 +0200
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>
+Subject: Re: [PATCH v1 1/1] s390: Use string_upper() instead of open coded
+ variant
+Message-ID: <YVwSxGyx45gs2+ZW@osiris>
+References: <20211001130201.72545-1-andriy.shevchenko@linux.intel.com>
+ <YVtksmjj1eGqw5GY@osiris>
+ <YVwKXn1Nqwk+Ahsx@smile.fi.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <YU5d4PhKRvF3wzGX@builder.lan>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YVwKXn1Nqwk+Ahsx@smile.fi.intel.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: cPPcssBzOwyyeEHkFO6Sgkp5Pyo4XnJf
+X-Proofpoint-GUID: cPPcssBzOwyyeEHkFO6Sgkp5Pyo4XnJf
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-10-04_05,2021-10-04_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 adultscore=0
+ priorityscore=1501 lowpriorityscore=0 malwarescore=0 bulkscore=0
+ suspectscore=0 impostorscore=0 clxscore=1015 mlxscore=0 mlxlogscore=999
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110050049
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 9/25/2021 4:53 AM, Bjorn Andersson wrote:
-> On Mon 06 Sep 00:27 CDT 2021, Maulik Shah wrote:
+On Tue, Oct 05, 2021 at 11:18:38AM +0300, Andy Shevchenko wrote:
+> On Mon, Oct 04, 2021 at 10:31:46PM +0200, Heiko Carstens wrote:
+> > On Fri, Oct 01, 2021 at 04:02:01PM +0300, Andy Shevchenko wrote:
+> > > +	/* Segment name is limited by 8 characters + NUL */
+> > > +	char tmp[8 + 1];
+> > >  	int i;
+> > >  
+> > > -	for (i = 0; i < 8; i++) {
+> > > -		if (name[i] == '\0')
+> > > -			break;
+> > > -		dcss_name[i] = toupper(name[i]);
+> > > -	}
+> > > -	for (; i < 8; i++)
+> > > -		dcss_name[i] = ' ';
+> > > +	/*
+> > > +	 * This snprintf() call does two things:
+> > > +	 * - makes a NUL-terminated copy of the input string
+> > > +	 * - pads it with spaces
+> > > +	 */
+> > > +	snprintf(tmp, sizeof(tmp), "%s        ", name);
+> > 
+> > I can't say I like code where I have to count spaces in order to
+> > verify if the code is actually correct.
 > 
->> From: Mahesh Sivasubramanian <msivasub@codeaurora.org>
->>
->> Add device binding documentation for Qualcomm Technologies, Inc. (QTI)
->> SoC sleep stats driver. The driver is used for displaying SoC sleep
->> statistic maintained by Always On Processor or Resource Power Manager.
->>
->> Cc: devicetree@vger.kernel.org
->> Signed-off-by: Mahesh Sivasubramanian <msivasub@codeaurora.org>
->> Signed-off-by: Lina Iyer <ilina@codeaurora.org>
->> Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
->> Reviewed-by: Rob Herring <robh@kernel.org>
->> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
->> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
->> ---
->>   .../bindings/soc/qcom/soc-sleep-stats.yaml         | 48 ++++++++++++++++++++++
->>   1 file changed, 48 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/soc/qcom/soc-sleep-stats.yaml
->>
->> diff --git a/Documentation/devicetree/bindings/soc/qcom/soc-sleep-stats.yaml b/Documentation/devicetree/bindings/soc/qcom/soc-sleep-stats.yaml
->> new file mode 100644
->> index 0000000..4161156
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/soc/qcom/soc-sleep-stats.yaml
->> @@ -0,0 +1,48 @@
->> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/soc/qcom/soc-sleep-stats.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Qualcomm Technologies, Inc. (QTI) SoC sleep stats bindings
->> +
->> +maintainers:
->> +  - Maulik Shah <mkshah@codeaurora.org>
->> +  - Lina Iyer <ilina@codeaurora.org>
-> 
-> Lina's address is no longer valid.
+> I understand your point, but have any idea how to make it differently
+> and not ugly at the same time?
 
-Removed in v10.
+Don't know. You could use strncopy+strlen+memset (with space
+character). After all I'm not very convinced that the resulting code
+buys us anything compared to the current variant.
 
+> > > +	string_upper(dcss_name, tmp);
 > 
->> +
->> +description:
->> +  Always On Processor/Resource Power Manager maintains statistics of the SoC
->> +  sleep modes involving powering down of the rails and oscillator clock.
->> +
->> +  Statistics includes SoC sleep mode type, number of times low power mode were
->> +  entered, time of last entry, time of last exit and accumulated sleep duration.
->> +
->> +properties:
->> +  compatible:
->> +    enum:
->> +      - qcom,rpmh-sleep-stats
->> +      - qcom,rpm-sleep-stats
->> +
->> +  reg:
->> +    maxItems: 1
->> +
->> +required:
->> +  - compatible
->> +  - reg
->> +
->> +additionalProperties: false
->> +
->> +examples:
->> +  # Example of rpmh sleep stats
->> +  - |
->> +    aop_msgram@c3f0048 {
->> +      compatible = "qcom,rpmh-sleep-stats";
->> +      reg = <0x0c3f0048 0x400>;
+> ...
 > 
-> As I tested this series I did find it quite odd that the start address
-> of this block is $48 bytes into a page and still the length is an even
-> $400.
+> > >  static struct dcss_segment *
+> > >  segment_by_name (char *name)
+> > >  {
+> > > -	char dcss_name[9];
+> > > +	char dcss_name[8];
+> > 
+> > string_upper will copy the terminating NUL-byte. By reducing the size
+> > of dcss_name to 8 bytes this will result in stack corruption.
 > 
-> Is there any single platform where qcom,rpmh-sleep-stats doesn't start
-> at an offset of $48 from the beginning of its msgram? Could we move this
-> number to the driver?
-> 
-> Regards,
-> Bjorn
+> Nope. Even in the original code this additional byte is left unused.
 
-Sure, i have moved 0x48 into driver in v10.
-
-Thanks,
-Maulik
-
-> 
->> +    };
->> +  # Example of rpm sleep stats
->> +  - |
->> +    rpm_msgram@4690000 {
->> +      compatible = "qcom,rpm-sleep-stats";
->> +      reg = <0x04690000 0x400>;
->> +    };
->> +...
->> -- 
->> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
->> of Code Aurora Forum, hosted by The Linux Foundation
->>
-
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member of Code Aurora Forum, hosted by The Linux Foundation
+I'm talking about the new code, not the old code: If "name" points to
+a NUL terminated eight chararacter string, then the new code will use
+snprintf to copy it 1:1 to tmp, and the subsequent string_upper() will
+copy the string (upper cased) to dcss_name, now including the NUL
+terminating byte, which won't fit into dcss_name.
+Am I missing something here?
