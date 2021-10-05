@@ -2,105 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A8BA422ADF
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:20:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 609B1422AE2
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:20:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235831AbhJEOV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 10:21:57 -0400
-Received: from mx.socionext.com ([202.248.49.38]:10312 "EHLO mx.socionext.com"
+        id S235912AbhJEOWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 10:22:30 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:48914 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235640AbhJEOVz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 10:21:55 -0400
-Received: from unknown (HELO kinkan2-ex.css.socionext.com) ([172.31.9.52])
-  by mx.socionext.com with ESMTP; 05 Oct 2021 23:20:04 +0900
-Received: from mail.mfilter.local (m-filter-2 [10.213.24.62])
-        by kinkan2-ex.css.socionext.com (Postfix) with ESMTP id 4A40B2059034;
-        Tue,  5 Oct 2021 23:20:04 +0900 (JST)
-Received: from 172.31.9.53 (172.31.9.53) by m-FILTER with ESMTP; Tue, 5 Oct 2021 23:20:04 +0900
-Received: from yuzu2.css.socionext.com (yuzu2 [172.31.9.57])
-        by iyokan2.css.socionext.com (Postfix) with ESMTP id 02111B62B7;
-        Tue,  5 Oct 2021 23:20:03 +0900 (JST)
-Received: from [10.212.181.36] (unknown [10.212.181.36])
-        by yuzu2.css.socionext.com (Postfix) with ESMTP id 8BB89B62B3;
-        Tue,  5 Oct 2021 23:20:02 +0900 (JST)
-Subject: Re: [PATCH 3/3] pinctrl: uniphier: Add UniPhier NX1 pinctrl driver
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <1633399920-1537-4-git-send-email-hayashi.kunihiko@socionext.com>
- <202110052101.CZroR9ku-lkp@intel.com>
-From:   Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-Message-ID: <9acc6fe3-ff06-106b-4289-92319d43f100@socionext.com>
-Date:   Tue, 5 Oct 2021 23:20:02 +0900
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S234437AbhJEOW2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 10:22:28 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1633443637; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Message-ID: In-Reply-To: Date: References: Subject: Cc:
+ To: From: Sender; bh=iXaHQCDcTat4B7XjXBM6ERGc8OaY+eIv7u8gl6/j0qg=; b=N7RnSvNXmzuAzrwuhdZx689MYqG8mspp2pMtrlW9maZ42mrP79Czdm7Q4TzxwbhBuBA8urZH
+ ZAK2k6nTG+c9EaxTxcQTp0HtGIiawPQgElugnF36PAJq7HBI7UTs6kwFuJDoWQmYoNlZGe6O
+ Y+Wjb8s17uWp6mIWAsbT0NkYQ84=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 615c5f2aff0285fb0ab466d6 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 05 Oct 2021 14:20:26
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 087F0C4361B; Tue,  5 Oct 2021 14:20:26 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from tykki (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id EF3B7C4338F;
+        Tue,  5 Oct 2021 14:20:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org EF3B7C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Jerome Pouiller <Jerome.Pouiller@silabs.com>
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        linux-mmc@vger.kernel.org,
+        Pali =?utf-8?Q?Roh?= =?utf-8?Q?=C3=A1r?= <pali@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: Re: [PATCH v8 00/24] wfx: get out from the staging area
+References: <20211005135400.788058-1-Jerome.Pouiller@silabs.com>
+Date:   Tue, 05 Oct 2021 17:20:19 +0300
+In-Reply-To: <20211005135400.788058-1-Jerome.Pouiller@silabs.com> (Jerome
+        Pouiller's message of "Tue, 5 Oct 2021 15:53:36 +0200")
+Message-ID: <871r4zft98.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <202110052101.CZroR9ku-lkp@intel.com>
-Content-Type: text/plain; charset=iso-2022-jp; format=flowed; delsp=yes
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Jerome Pouiller <Jerome.Pouiller@silabs.com> writes:
 
-On 2021/10/05 22:06, kernel test robot wrote:
-> Hi Kunihiko,
-> 
-> I love your patch! Yet something to improve:
-> 
-> [auto build test ERROR on linusw-pinctrl/devel]
-> [also build test ERROR on robh/for-next v5.15-rc3 next-20210922]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch]
-> 
-> url:
-> https://github.com/0day-ci/linux/commits/Kunihiko-Hayashi/pinctrl-uniphier
-> -Introduce-some-features-and-NX1-support/20211005-101346
-> base:
-> https://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git
-> devel
-> config: powerpc-allyesconfig (attached as .config)
-> compiler: powerpc64-linux-gcc (GCC) 11.2.0
-> reproduce (this is a W=1 build):
->          wget
-> https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross
-> -O ~/bin/make.cross
->          chmod +x ~/bin/make.cross
->          #
-> https://github.com/0day-ci/linux/commit/c68781cbddcc323070eee04896f6f85884
-> 0a60dc
->          git remote add linux-review https://github.com/0day-ci/linux
->          git fetch --no-tags linux-review
-> Kunihiko-Hayashi/pinctrl-uniphier-Introduce-some-features-and-NX1-support/
-> 20211005-101346
->          git checkout c68781cbddcc323070eee04896f6f858840a60dc
->          # save the attached .config to linux build tree
->          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross
-> ARCH=powerpc
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All errors (new ones prefixed by >>):
-> 
->>> drivers/pinctrl/uniphier/pinctrl-uniphier-nx1.c:429:27: error:
-> 'usb3_groups' defined but not used [-Werror=unused-const-variable=]
->       429 | static const char * const usb3_groups[] = {"usb3"};
->           |                           ^~~~~~~~~~~
->>> drivers/pinctrl/uniphier/pinctrl-uniphier-nx1.c:428:27: error:
-> 'usb2_groups' defined but not used [-Werror=unused-const-variable=]
->       428 | static const char * const usb2_groups[] = {"usb2"};
->           |                           ^~~~~~~~~~~
->     cc1: all warnings being treated as errors
+> From: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
+>
+> Hello,
+>
+> I think the wfx driver is now mature enough to be accepted in the
+> drivers/net/wireless directory.
+>
+> The firmware is now a part of the linux-firmware repository since relase
+> 20210315[1]. It had taken a bit of time because I have worked with the le=
+gal
+> department to simplify the redistribution terms of the firmware.
+>
+> [1]: https://lore.kernel.org/linux-firmware/2833354.gXvVfaC4I7@pc-42/
+>
+>
+> As requested by Kalle[2], I send one file per patch. At the end, all the
+> patches (or at least the patches 3 to 24) will be squashed (therefore, I
+> didn't bother to write real commit messages).
+>
+> [2]: https://lore.kernel.org/lkml/87ft6p2n0h.fsf@codeaurora.org/
+>
+> Here is a diagram of the global architecture that may help to understand
+> the code:
+>
+>     ,------------------------------------.
+>     |                mac80211            |
+>     `------------------------------------'
+>     ,------------+-----------+-----------.
+>     |    sta     |           |           |
+>     |    scan    |           |           |
+>     |    main    |           |           |
+>     +------------+  data_tx  |           |
+>     |    key     |           |  data_rx  |
+>     | hif_tx_mib |   queue   |           |
+>     |   hif_tx   |           |           |
+>     |   hif_rx   |           |           |
+>     |  hif_api_* |           |           |
+>     +------------+-----------+-----------+--------.
+>     |                  bh                |  fwio  |
+>     +------------------------------------+--------+
+>     |                     hwio                    |
+>     +---------------------------------------------+
+>     |                   bus_sdio                  |
+>     |                   bus_spi                   |
+>     `---------------------------------------------'
+>     ,---------------------------------------------.
+>     |                  spi / sdio                 |
+>     `---------------------------------------------'
+>
+> Roughly, I have sent the files from the bottom to the top.
+>
+>
+> v8:
+>   - Change the way the DT is handled. The user can now specify the name of
+>     the board (=3D chip + antenna) he use. It easier for board designers =
+to
+>     add new entries. I plan to send a PR to linux-firmware to include PDS
+>     files of the developpement boards belong the firmware (I also plan to
+>     relocate these file into wfx/ instead of silabs/). (Kalle, Pali)
+>   - Prefix visible functions and structs with "wfx_". I mostly kept the
+>     code under 80 columns. (Kalle, Pali, Greg)
+>   - Remove support for force_ps_timeout for now. (Kalle)
+>   - Fix licenses of Makefile, Kconfig and hif_api*.h. (Kalle)
+>   - Do not mix and match endianess in struct hif_ind_startup. (Kalle)
+>   - Remove magic values. (Kalle)
+>   - Use IS_ALIGNED(). (BTW, PTR_IS_ALIGNED() does not exist?) (Kalle)
+>   - I have also noticed that some headers files did not declare all the
+>     struct they used.
+>
+>   These issues remain (I hope they are not blockers):
+>   - I have currently no ideas how to improve/simplify the parsing PDS fil=
+e.
+>     (Kalle)
+>   - We would like to relate the SDIO quirks into mmc/core/quirks.h, but t=
+he
+>     API to do that does not yet exist. (Ulf, Pali)
 
-The usb2 and usb3 groups don't exist. I'll remove them in next.
+So is this a direct version from staging-next? If yes, what commit id did
+you use? Or do you have your own set of patches on top of staging-next?
 
-Thank you,
+--=20
+https://patchwork.kernel.org/project/linux-wireless/list/
 
----
-Best Regards
-Kunihiko Hayashi
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
+hes
