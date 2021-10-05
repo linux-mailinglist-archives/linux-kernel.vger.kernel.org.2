@@ -2,88 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B554F422C34
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:19:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DCC6422C39
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:20:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235410AbhJEPVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 11:21:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57224 "EHLO
+        id S234964AbhJEPWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 11:22:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbhJEPU6 (ORCPT
+        with ESMTP id S229488AbhJEPWF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 11:20:58 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAAC9C061749
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 08:19:07 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1633447145;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=F0jteui4C6o0n+swDYTpF6sOj/mmEYS1bk4mq9FjiP4=;
-        b=DeUb9vQkV0wiNp495ETKeWOcKBMgsVqpWPJzT9DjdZXjWhYTT1NuI6wX5zuRdSVVkPZcD6
-        vahBakH5S/DndLIPfTDbDkEvyRwj305Uvt44uT32CPVAtJFm+ECJO1YDGA8hRKK8cgOkMs
-        XjdLT65kf7IYrKEHG0sDkXdLoWwofKZbowZeqCONfqd3hCqH4BRbWSlN2HRkD6WYk0+wnc
-        e6MCTOrW28hk51oS8Ld/EiSBbzyddo1vH5ZO9lkrHKmGNhbr+7laFVHk2N2ohvtoCmU7cn
-        eRfLwESRSRIu9QeQ82RkNPjVUvJ8g7l/UiD2sGsIDoR+uyi6V/AUPKevzf08pw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1633447145;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=F0jteui4C6o0n+swDYTpF6sOj/mmEYS1bk4mq9FjiP4=;
-        b=CjNa9TDULa5Nb1xmArNOlDqsBkhq6px6YRQX+tyjs3PDcPsONW8G/pd9MBejSa/enhgihl
-        yW+3ERdzphUdkzAw==
-To:     "Chang S. Bae" <chang.seok.bae@intel.com>, bp@suse.de,
-        luto@kernel.org, mingo@kernel.org, x86@kernel.org
-Cc:     len.brown@intel.com, lenb@kernel.org, dave.hansen@intel.com,
-        thiago.macieira@intel.com, jing2.liu@intel.com,
-        ravi.v.shankar@intel.com, linux-kernel@vger.kernel.org,
-        chang.seok.bae@intel.com
-Subject: Re: [PATCH v11 16/29] x86/fpu/xstate: Support both legacy and
- expanded signal XSTATE size
-In-Reply-To: <20211001223728.9309-17-chang.seok.bae@intel.com>
-References: <20211001223728.9309-1-chang.seok.bae@intel.com>
- <20211001223728.9309-17-chang.seok.bae@intel.com>
-Date:   Tue, 05 Oct 2021 17:19:04 +0200
-Message-ID: <87zgrnebyv.ffs@tglx>
+        Tue, 5 Oct 2021 11:22:05 -0400
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E434C061749
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 08:20:15 -0700 (PDT)
+Received: by mail-yb1-xb34.google.com with SMTP id i84so46342185ybc.12
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 08:20:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6U3A2TkKi5u+zlp1bWUocfIN/kiEDVADM7cYHhDKH6Y=;
+        b=eJfEToxllcMDKYkRz5XmfBYFWtUufSPRxIkRc0G3EqqeQz+rMrMSKeNNSmZNs9XyOA
+         lPxl5yo30pjEhGgxLaN4fOv4Yea59SH9vSmi6ZugnCX0zJzSVHOjY3lD8UkOq+vvNJ41
+         cSqKBq0e0CMhutTpR6Xl+IoqBUndWfbEGN/aWJab0ZnD/8tHDGTMpcVp9THPMrZd/RXN
+         c31AD1wONPCBJ9sz/QALIlueDa9jhMVq4xt6eg38hhhN47+hO2211RIUtACfmAdmmpfg
+         nPuH5B4YvMNj5sKwlnVyhQokK+2ogeE+2zj4R1i9H6P94oSHBcqEjLEiZiKQlBvGK505
+         BCIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6U3A2TkKi5u+zlp1bWUocfIN/kiEDVADM7cYHhDKH6Y=;
+        b=FsfRN56RsFMjrXn9iUe7GZIjNhZFkbNYXvxuzv2/U7ryR6J4+aPnIR2o/S6YJ2SPb/
+         ODnlilvKC5ENhikc++0iTiO7VBj68PG2zB+F6ocgYCStM+xz64Ke1wbdGqK3rXT/v3Bz
+         Y9VfyeuaLujWaNvDJpxz4K+no9dEMbQt9Y2uJwMnayQnYxUuIze+bmJoQuRdhFdlDLBi
+         A8La3wn6YKP6Ku4W7ycQ4LTTQ+98KTwzFazlmy8sgLc7USltiQWSVxST8lygvEuKxLzH
+         K3kziEm3JLjjxXLlhx0BsYV2sQyrYvwsSZaj/Rp7lRAdX3jWTPtTmekRVBkERnPi9ZyM
+         PW9w==
+X-Gm-Message-State: AOAM531snW1+RpIaAlKdDoaiy1ppz3d5tRnO/iQfQcNzG2HARKlTQkO+
+        9WOMJ2KeS+6vI4qM5+rd086ZvfPvGZQsKlNdA6OvGw==
+X-Google-Smtp-Source: ABdhPJw50Kehp0YzYo8ni/ZcFuH0xfJPfEwkq0tDG/rca4iUXWkwwLZ8rjn4afptZgPUf2AmMQoAZXXl0rJ2NgOaWug=
+X-Received: by 2002:a25:cf8f:: with SMTP id f137mr24344842ybg.338.1633447214002;
+ Tue, 05 Oct 2021 08:20:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20211005123645.2766258-1-sumit.garg@linaro.org>
+In-Reply-To: <20211005123645.2766258-1-sumit.garg@linaro.org>
+From:   Sami Tolvanen <samitolvanen@google.com>
+Date:   Tue, 5 Oct 2021 08:20:02 -0700
+Message-ID: <CABCJKuesYcGdKLi1YqHP3PU5n6vf-3Q-A+UNyCLzsoJ+0oiKmw@mail.gmail.com>
+Subject: Re: [PATCH v2] arm64: ftrace: use function_nocfi for _mcount as well
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, ben.dai@unisoc.com,
+        Mark Rutland <mark.rutland@arm.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        daniel.thompson@linaro.org, LKML <linux-kernel@vger.kernel.org>,
+        llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 01 2021 at 15:37, Chang S. Bae wrote:
-> @@ -1252,6 +1267,13 @@ long do_arch_prctl_state(struct task_struct *tsk, int option, unsigned long arg2
->  		if (!state_perm)
->  			return 0;
->  
-> +		/*
-> +		 * Disallow when sigaltstack is not enough for the
-> +		 * AT_MINSIGSTKSZ value.
-> +		 */
-> +		if (tsk->sas_ss_size > 0 && tsk->sas_ss_size < get_sigframe_size())
-> +			return -EPERM;
+Hi Sumit,
 
-This is not enough:
+On Tue, Oct 5, 2021 at 5:37 AM Sumit Garg <sumit.garg@linaro.org> wrote:
+>
+> Commit 800618f955a9 ("arm64: ftrace: use function_nocfi for ftrace_call")
+> only fixed address of ftrace_call but address of _mcount needs to be
+> fixed as well. Use function_nocfi() to get the actual address of _mcount
+> function as with CONFIG_CFI_CLANG, the compiler replaces function pointers
+> with jump table addresses which breaks dynamic ftrace as the address of
+> _mcount is replaced with the address of _mcount.cfi_jt.
+>
+> This problem won't apply where the toolchain implements
+> -fpatchable-function-entry as we'll use that in preference to regular -pg,
+> i.e. this won't show up with recent versions of clang.
+>
+> Fixes: 9186ad8e66bab6a1 ("arm64: allow CONFIG_CFI_CLANG to be selected")
+> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+> Acked-by: Mark Rutland <mark.rutland@arm.com>
+> ---
+>
+> Changes in v2:
+> - Added fixes tag.
+> - Extended commit description.
+> - Picked up Mark's ack.
+>
+>  arch/arm64/include/asm/ftrace.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/arm64/include/asm/ftrace.h b/arch/arm64/include/asm/ftrace.h
+> index 91fa4baa1a93..347b0cc68f07 100644
+> --- a/arch/arm64/include/asm/ftrace.h
+> +++ b/arch/arm64/include/asm/ftrace.h
+> @@ -15,7 +15,7 @@
+>  #ifdef CONFIG_DYNAMIC_FTRACE_WITH_REGS
+>  #define ARCH_SUPPORTS_FTRACE_OPS 1
+>  #else
+> -#define MCOUNT_ADDR            ((unsigned long)_mcount)
+> +#define MCOUNT_ADDR            ((unsigned long)function_nocfi(_mcount))
+>  #endif
+>
+>  /* The BL at the callsite's adjusted rec->ip */
+> --
+> 2.17.1
+>
 
-T1
-sigaltstack(minsize)
-...
-                            T2
-                            libinit()
-                            prctl(....) --> success
-                            enable_amx()
+Clang >= 10 supports -fpatchable-function-entry and CFI requires Clang
+12, so I assume this is only an issue if
+CONFIG_DYNAMIC_FTRACE_WITH_REGS is explicitly disabled?
 
-libfunc()         
-  if (amx_enabled())
-       AMXINSN
-       -->#NM --> success
+Nevertheless, the patch looks good to me.
 
-handle_signal()
-   die(because altstack too small);
+Reviewed-by: Sami Tolvanen <samitolvanen@google.com>
 
-Thanks,
-
-        tglx
+Sami
