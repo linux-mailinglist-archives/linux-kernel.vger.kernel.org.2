@@ -2,133 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67C354232DE
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 23:31:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFD6A4232E3
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 23:34:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236658AbhJEVdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 17:33:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60150 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235845AbhJEVdf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 17:33:35 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50B23C061749
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 14:31:44 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id dj4so1911557edb.5
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 14:31:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dyVXlnP2EO7sin30ak6UOPtTEL7Y82rXmT1HaZJEwO8=;
-        b=EFN/EvkcYsa4w188RyqHCgrfIifhUY80k3vng6CANfrvzyfsDaVjfDtTPGoR518LhV
-         GD5oDuzos+B9/T9xu3L51B88VpK7ug1wdWoYUKxCIx5iYryNBRqmOK3f1s0NVN3zNmSx
-         ik2H8dDm4T9B6uiATyk6B/1DooH4Mqlz0oMcA15tRRXuCYjA43xQqokHbVsoWkx5638U
-         JjpXaSt8duZuGSYl3aAv73jpt0xE3eIMEnCrfjLShz4nsq98JtPv0HCuTUjPusvYOHhS
-         wqyE1xXpysKBlZ38l2YPGNjL6L1GamN+Nt8+bjyG/KZ7AgLrfLwbW2aQdn2pBfCWRgpX
-         cngg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dyVXlnP2EO7sin30ak6UOPtTEL7Y82rXmT1HaZJEwO8=;
-        b=ziv+XmmZZIHx7cSF3Res1UfBBTn5XYMYF3JKWEm7Iu25/3Qq+nR0gP2kcGXjxzV5zg
-         Ij02WQHK1EpC4HW8+41NuqsIEGJh1bnliWqSLJ+s6qyLVwYdgzlZGzhnM8gbHEDcejvM
-         QMbG3Ti9CoNHJHgORZexI8EyYFWAJs7HIqzqsCAl5S+pAY+uN8CSpsIL5vMbl7arJpV6
-         Erhkv2abaa3niJQjN824RxUWY1OKNFrzZ6rvaJg+7+9Mm7y0LPE8Gpe23Fn4qDhW5wgE
-         B5XNJ64M+EtjafTQTuu4bIVwWuRlv7xNHIOmixCtnNhAO+XaYeLcW6OAswf507GOWTHS
-         ta4Q==
-X-Gm-Message-State: AOAM5303oBhh0p5ZsAkTopxupWWHYPFB1E47xPDsq3keciR88h/76gfc
-        EarqAaRn2dIplTiHi8Ks0D2OSLcpzGiyJZX+wdc=
-X-Google-Smtp-Source: ABdhPJwKILTM9G/OOo7WWONLMHq2ef2R6ySw+NYb6dhPKjGQkfzxEG/W1fih0HC2WwHMp8T9yaPB74McG7c/6kHtQQ0=
-X-Received: by 2002:a17:906:318f:: with SMTP id 15mr27839463ejy.206.1633469502753;
- Tue, 05 Oct 2021 14:31:42 -0700 (PDT)
+        id S236188AbhJEVgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 17:36:19 -0400
+Received: from mga18.intel.com ([134.134.136.126]:25070 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235679AbhJEVgR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 17:36:17 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10128"; a="212795849"
+X-IronPort-AV: E=Sophos;i="5.85,349,1624345200"; 
+   d="scan'208";a="212795849"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2021 14:34:25 -0700
+X-IronPort-AV: E=Sophos;i="5.85,349,1624345200"; 
+   d="scan'208";a="477855541"
+Received: from pwali-mobl1.amr.corp.intel.com (HELO ldmartin-desk2) ([10.213.170.68])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2021 14:34:24 -0700
+Date:   Tue, 5 Oct 2021 14:34:23 -0700
+From:   Lucas De Marchi <lucas.demarchi@intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        Mikita Lipski <mikita.lipski@amd.com>,
+        Eryk Brol <eryk.brol@amd.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>,
+        Francis Laniel <laniel_francis@privacyrequired.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org,
+        netdev@vger.kernel.org, Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Raju Rangoju <rajur@chelsio.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: Re: [PATCH v1 1/3] string: Consolidate yesno() helpers under
+ string.h hood
+Message-ID: <20211005213423.dklsii4jx37pjvb4@ldmartin-desk2>
+References: <20210215142137.64476-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-References: <20211002234313.3209294-1-martin.blumenstingl@googlemail.com>
- <1j35pivzho.fsf@starbuckisacylon.baylibre.com> <CAFBinCCCQebCEdLjYAfWkF4NDPdma8UzVMhHOhZPVreoV2qd2w@mail.gmail.com>
- <1jy279uprd.fsf@starbuckisacylon.baylibre.com> <CAFBinCBrYUPOkvJUAiEF9X0Z76ta3jSrKkLkaHvJUaiWNyR0yw@mail.gmail.com>
-In-Reply-To: <CAFBinCBrYUPOkvJUAiEF9X0Z76ta3jSrKkLkaHvJUaiWNyR0yw@mail.gmail.com>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Tue, 5 Oct 2021 23:31:31 +0200
-Message-ID: <CAFBinCBv0GWDUL+WYBU4JAgKgie07m+duxReh2tSopGOHwh4=Q@mail.gmail.com>
-Subject: Re: [RFC PATCH v1 0/1] ASoC: meson: aiu: HDMI codec control questions
- and issues
-To:     Jerome Brunet <jbrunet@baylibre.com>
-Cc:     alsa-devel@alsa-project.org, linux-amlogic@lists.infradead.org,
-        lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Content-Type: multipart/mixed; boundary="00000000000076acda05cda1c165"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210215142137.64476-1-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---00000000000076acda05cda1c165
-Content-Type: text/plain; charset="UTF-8"
+On Mon, Feb 15, 2021 at 04:21:35PM +0200, Andy Shevchenko wrote:
+>We have already few similar implementation and a lot of code that can benefit
+>of the yesno() helper.  Consolidate yesno() helpers under string.h hood.
 
-Hi Jerome,
+I was taking a look on i915_utils.h to reduce it and move some of it
+elsewhere to be shared with others.  I was starting with these helpers
+and had [1] done, then Jani pointed me to this thread and also his
+previous tentative. I thought the natural place for this would be
+include/linux/string_helpers.h, but I will leave it up to you.
 
-On Mon, Oct 4, 2021 at 11:17 PM Martin Blumenstingl
-<martin.blumenstingl@googlemail.com> wrote:
-[...]
-> > This bit could also be a remain of an older design, not really connected
-> > to anything meaningful. It would not be the first time.
-> >
-> > The AIU looks like an IP that has evolved a lot over the years, not always
-> > in a coordinated fashion. Some scenario are well supported and easy,
-> > others seem to require a magic spell.
-> >
-> > Last (but not least), in AML vendor kernel, the only time this bit poked
-> > is around 8ch support (1 for 8ch, 0 otherwise) ... I have no idea why.
-> The 32-bit SoCs use SPDIF to feed 2-channel audio to the HDMI TX
-> controller and I2S to feed 8-channel audio to the HDMI TX controller.
-> It seems that Amlogic stopped this for (at least some) 64-bit SoCs.
+After reading the threads, I don't see real opposition to it.
+Is there a tree you plan to take this through?
+
+thanks
+Lucas De Marchi
+
+[1] https://lore.kernel.org/lkml/20211005212634.3223113-1-lucas.demarchi@intel.com/T/#u
+
 >
-> My testing results indicate that AIU_CLK_CTRL_MORE[6] is still relevant.
-> I can do another round of testing with various combinations of
-> AIU_CLK_CTRL_MORE[6] and AIU_HDMI_CLK_DATA_CTRL register values.
-> If you want me to test any specific combinations then please let me know.
-I have tested various combinations, see the attached result file
-(which can be viewed with "column -t /path/to/results.txt").
-The short summary is that...
-...I2S output requires:
-  AIU_HDMI_CLK_DATA_CTRL[1:0] = 0x2
-  AIU_HDMI_CLK_DATA_CTRL[5:4] = 0x2
-  AIU_CLK_CTRL_MORE[6] = 0x1
-
-...SPDIF output requires:
-  AIU_HDMI_CLK_DATA_CTRL[1:0] = 0x2
-  AIU_HDMI_CLK_DATA_CTRL[5:4] = (any)
-  AIU_CLK_CTRL_MORE[6] = 0x1
-
-My test consisted of running speaker-test -c2 and playing an mp3 with
-ffplay on an Odroid-C1.
-
-In other words: this confirms what we have suspected before.
-What is your suggestion on how to model these muxes in the driver?
-
-In the meantime I finally understood what #sound-dai-cells = <1>; does
-thanks to your previous hints.
-With that I can wire up the I2S and SPDIF inputs to the HDMI TX
-controller's "HDMI codec".
-Many thanks again for this hint!
-
-
-Best regards,
-Martin
-
---00000000000076acda05cda1c165
-Content-Type: text/plain; charset="US-ASCII"; name="results.txt"
-Content-Disposition: attachment; filename="results.txt"
-Content-Transfer-Encoding: base64
-Content-ID: <f_kuekxzbb0>
-X-Attachment-Id: f_kuekxzbb0
-
-QUlVX0hETUlfQ0xLX0RBVEFfQ1RSTFsxOjBdIEFJVV9IRE1JX0NMS19EQVRBX0NUUkxbNTo0XSBB
-SVVfQ0xLX0NUUkxfTU9SRVs2XSBJMlMgU1BESUYKKENUUkxfQ0xLX1NFTCkgKENUUkxfREFUQV9T
-RUwpIChBTUNMSykgKEkyUykgKFNQRElGKQoweDAgMHgwIDB4MCBzaWxlbmNlIHNpbGVuY2UKMHgw
-IDB4MCAweDEgc2lsZW5jZSBzaWxlbmNlCjB4MiAweDAgMHgwIHNpbGVuY2UgcGxheWJhY2sKMHgy
-IDB4MCAweDEgc2lsZW5jZSBzaWxlbmNlCjB4MiAweDIgMHgxIHBsYXliYWNrIHNpbGVuY2UKMHgy
-IDB4MiAweDAgc2lsZW5jZSBwbGF5YmFjawo=
---00000000000076acda05cda1c165--
+>Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+>---
+> .../drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c    |  6 +-----
+> drivers/gpu/drm/i915/i915_utils.h                    |  6 +-----
+> drivers/net/ethernet/chelsio/cxgb4/cxgb4_debugfs.c   | 12 +-----------
+> include/linux/string.h                               |  5 +++++
+> 4 files changed, 8 insertions(+), 21 deletions(-)
+>
+>diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
+>index 360952129b6d..7fde4f90e513 100644
+>--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
+>+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
+>@@ -23,6 +23,7 @@
+>  *
+>  */
+>
+>+#include <linux/string.h>
+> #include <linux/uaccess.h>
+>
+> #include <drm/drm_debugfs.h>
+>@@ -49,11 +50,6 @@ struct dmub_debugfs_trace_entry {
+> 	uint32_t param1;
+> };
+>
+>-static inline const char *yesno(bool v)
+>-{
+>-	return v ? "yes" : "no";
+>-}
+>-
+> /* parse_write_buffer_into_params - Helper function to parse debugfs write buffer into an array
+>  *
+>  * Function takes in attributes passed to debugfs write entry
+>diff --git a/drivers/gpu/drm/i915/i915_utils.h b/drivers/gpu/drm/i915/i915_utils.h
+>index abd4dcd9f79c..e6da5a951132 100644
+>--- a/drivers/gpu/drm/i915/i915_utils.h
+>+++ b/drivers/gpu/drm/i915/i915_utils.h
+>@@ -27,6 +27,7 @@
+>
+> #include <linux/list.h>
+> #include <linux/overflow.h>
+>+#include <linux/string.h>
+> #include <linux/sched.h>
+> #include <linux/types.h>
+> #include <linux/workqueue.h>
+>@@ -408,11 +409,6 @@ wait_remaining_ms_from_jiffies(unsigned long timestamp_jiffies, int to_wait_ms)
+> #define MBps(x) KBps(1000 * (x))
+> #define GBps(x) ((u64)1000 * MBps((x)))
+>
+>-static inline const char *yesno(bool v)
+>-{
+>-	return v ? "yes" : "no";
+>-}
+>-
+> static inline const char *onoff(bool v)
+> {
+> 	return v ? "on" : "off";
+>diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_debugfs.c b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_debugfs.c
+>index 7d49fd4edc9e..c857d73abbd7 100644
+>--- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_debugfs.c
+>+++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_debugfs.c
+>@@ -34,6 +34,7 @@
+>
+> #include <linux/seq_file.h>
+> #include <linux/debugfs.h>
+>+#include <linux/string.h>
+> #include <linux/string_helpers.h>
+> #include <linux/sort.h>
+> #include <linux/ctype.h>
+>@@ -2015,17 +2016,6 @@ static const struct file_operations rss_debugfs_fops = {
+> /* RSS Configuration.
+>  */
+>
+>-/* Small utility function to return the strings "yes" or "no" if the supplied
+>- * argument is non-zero.
+>- */
+>-static const char *yesno(int x)
+>-{
+>-	static const char *yes = "yes";
+>-	static const char *no = "no";
+>-
+>-	return x ? yes : no;
+>-}
+>-
+> static int rss_config_show(struct seq_file *seq, void *v)
+> {
+> 	struct adapter *adapter = seq->private;
+>diff --git a/include/linux/string.h b/include/linux/string.h
+>index 9521d8cab18e..fd946a5e18c8 100644
+>--- a/include/linux/string.h
+>+++ b/include/linux/string.h
+>@@ -308,4 +308,9 @@ static __always_inline size_t str_has_prefix(const char *str, const char *prefix
+> 	return strncmp(str, prefix, len) == 0 ? len : 0;
+> }
+>
+>+static inline const char *yesno(bool yes)
+>+{
+>+	return yes ? "yes" : "no";
+>+}
+>+
+> #endif /* _LINUX_STRING_H_ */
+>-- 
+>2.30.0
+>
+>
