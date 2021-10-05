@@ -2,107 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7BEA422C96
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:35:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 745F8422CA5
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:37:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235599AbhJEPhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 11:37:25 -0400
-Received: from foss.arm.com ([217.140.110.172]:33302 "EHLO foss.arm.com"
+        id S235995AbhJEPjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 11:39:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43194 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234282AbhJEPhX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 11:37:23 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 636B71FB;
-        Tue,  5 Oct 2021 08:35:32 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.23.50])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7419A3F70D;
-        Tue,  5 Oct 2021 08:35:27 -0700 (PDT)
-Date:   Tue, 5 Oct 2021 16:35:23 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Sumit Garg <sumit.garg@linaro.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, ben.dai@unisoc.com,
-        Nathan Chancellor <nathan@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        daniel.thompson@linaro.org, LKML <linux-kernel@vger.kernel.org>,
-        llvm@lists.linux.dev
-Subject: Re: [PATCH v2] arm64: ftrace: use function_nocfi for _mcount as well
-Message-ID: <20211005153523.GD6678@C02TD0UTHF1T.local>
-References: <20211005123645.2766258-1-sumit.garg@linaro.org>
- <CABCJKuesYcGdKLi1YqHP3PU5n6vf-3Q-A+UNyCLzsoJ+0oiKmw@mail.gmail.com>
+        id S235588AbhJEPjj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 11:39:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E62D360F9D;
+        Tue,  5 Oct 2021 15:37:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633448268;
+        bh=VNMwv22FvVJr37/utthyswV8Kmqu6h+cvM+d5Cilb8U=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=GZ/ikPyX6aEgzTkFrv0zdwmzrCGDU2gTAp4/NE+9fgLBoe7iS7J0PyPd1emkBNnXj
+         /xjwTh7aqHb0MUomUuoZLFlwj72MbShSMQshd2mifsHbGYDx+rBqVWO6w0lVw9p4bK
+         Edo72759r38JyFMSsNWTlFfzwEDefkhX+bYkMJoDvaqj02gVKZ7aOtcY57jbETe8wO
+         LL1KeeN0xX5ZR765cF3nEDo+5nRvC9p2BGrHSRcMcVlo8b4b8E9E8xJ1DWZeRaXimp
+         /vq3Z2zTQP/ZO8ALlbTAvmkQt5e7LXL4V49ivYC8V2zSSOofXfv7SEUpBh37bIDmtV
+         wstVlx7XH4NRA==
+From:   Mark Brown <broonie@kernel.org>
+To:     Eddie James <eajames@linux.ibm.com>
+Cc:     Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] spi: fsi: Print status on error
+Date:   Tue,  5 Oct 2021 16:37:39 +0100
+Message-Id: <163344813900.1141585.10210629516525058717.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20211004195149.29759-1-eajames@linux.ibm.com>
+References: <20211004195149.29759-1-eajames@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CABCJKuesYcGdKLi1YqHP3PU5n6vf-3Q-A+UNyCLzsoJ+0oiKmw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05, 2021 at 08:20:02AM -0700, Sami Tolvanen wrote:
-> Hi Sumit,
+On Mon, 4 Oct 2021 14:51:49 -0500, Eddie James wrote:
+> Print the SPI engine status register when an error is detected. This
+> will aid tremendously in debugging failed transactions.
 > 
-> On Tue, Oct 5, 2021 at 5:37 AM Sumit Garg <sumit.garg@linaro.org> wrote:
-> >
-> > Commit 800618f955a9 ("arm64: ftrace: use function_nocfi for ftrace_call")
-> > only fixed address of ftrace_call but address of _mcount needs to be
-> > fixed as well. Use function_nocfi() to get the actual address of _mcount
-> > function as with CONFIG_CFI_CLANG, the compiler replaces function pointers
-> > with jump table addresses which breaks dynamic ftrace as the address of
-> > _mcount is replaced with the address of _mcount.cfi_jt.
-> >
-> > This problem won't apply where the toolchain implements
-> > -fpatchable-function-entry as we'll use that in preference to regular -pg,
-> > i.e. this won't show up with recent versions of clang.
-> >
-> > Fixes: 9186ad8e66bab6a1 ("arm64: allow CONFIG_CFI_CLANG to be selected")
-> > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-> > Acked-by: Mark Rutland <mark.rutland@arm.com>
-> > ---
-> >
-> > Changes in v2:
-> > - Added fixes tag.
-> > - Extended commit description.
-> > - Picked up Mark's ack.
-> >
-> >  arch/arm64/include/asm/ftrace.h | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/arch/arm64/include/asm/ftrace.h b/arch/arm64/include/asm/ftrace.h
-> > index 91fa4baa1a93..347b0cc68f07 100644
-> > --- a/arch/arm64/include/asm/ftrace.h
-> > +++ b/arch/arm64/include/asm/ftrace.h
-> > @@ -15,7 +15,7 @@
-> >  #ifdef CONFIG_DYNAMIC_FTRACE_WITH_REGS
-> >  #define ARCH_SUPPORTS_FTRACE_OPS 1
-> >  #else
-> > -#define MCOUNT_ADDR            ((unsigned long)_mcount)
-> > +#define MCOUNT_ADDR            ((unsigned long)function_nocfi(_mcount))
-> >  #endif
-> >
-> >  /* The BL at the callsite's adjusted rec->ip */
-> > --
-> > 2.17.1
-> >
 > 
-> Clang >= 10 supports -fpatchable-function-entry and CFI requires Clang
-> 12, so I assume this is only an issue if
-> CONFIG_DYNAMIC_FTRACE_WITH_REGS is explicitly disabled?
 
-I don't believe it's possible to disable explicitly, since
-DYNAMIC_FTRACE_WITH_REGS isn't user selectable, and is def bool y,
-depending on HAVE_DYNAMIC_FTRACE_WITH_REGS.
+Applied to
 
-Sumit, have you actually seen a problem, or was this found by
-inspection?
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
-If this isn't an issue in practice, we could add the funciton_nocfi()
-for consistency, but we should make that clear in the commit message,
-and drop the fixes tag.
+Thanks!
+
+[1/1] spi: fsi: Print status on error
+      commit: 48a78c66ad5d9d4f918182335d6e5726e7008085
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
 Thanks,
-Mark.
+Mark
