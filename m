@@ -2,147 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DD82423241
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 22:43:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 490EF423244
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 22:43:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236205AbhJEUp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 16:45:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48920 "EHLO
+        id S236303AbhJEUps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 16:45:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235949AbhJEUp0 (ORCPT
+        with ESMTP id S235648AbhJEUpq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 16:45:26 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04AA2C061753;
-        Tue,  5 Oct 2021 13:43:35 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id f9so1525576edx.4;
-        Tue, 05 Oct 2021 13:43:34 -0700 (PDT)
+        Tue, 5 Oct 2021 16:45:46 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65863C061749
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 13:43:55 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id z5so598303ybj.2
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 13:43:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Og2M5waf4fA2uPXVR7x75f+2DQk+Er2YOKkUnKX3nZk=;
-        b=ap2vC8X6KAv1QHqhkz2q8YofK57fi+puC8XosK5Nz10ZYlMruG5LLHwPvClyBQpMWm
-         8berVuZXF7txYIkit8yuznvzVaI7C5Ow7olHViNWKOyjE1GPlrb/sEujo/OeYcpMl0yW
-         MGc36PE5YBgGXJINGW+BwkKb5gAXA54fzGFdXkIYFvAG+LRXz6brZlhNz6Onv6ydLvPA
-         M1TbBxjrpifn65fpmH8mxNkDUY/1J/M2fyK2AKDW0b1wpD9gYXodLEHKlntCWBUDgknL
-         yl+rJICcXGUvjFf6Cs7+U754p4ffpaW1FLQULNv0meKZUU91HvWYgH0yiQIxMZeBSLcY
-         EZ8w==
+        bh=vqE21VBUis5F7P2tyfYlDOrpKr4yHrwWmAyRNmJWM3s=;
+        b=cLdugDTmr/j2oBSHl6ozvoJ0MUztT02mdFP1wViGsj6Es2vUDXH3ZKf0dgAvBRswBG
+         4nw7Ii4GeXo/fAzUaTjYOPt6JRHTe8t5Q40Sq/JAY1c2+zHmKNfHZtRuHtrubosUCXjj
+         tNczBaDQ4bhQN0nlecEG5Y8I63K7PrxdUlrLmKmNAxtRSqnjPWgjkdwDPuwh0kUI9rBA
+         m47INqgwtWh1ybXdUOTGhlDh007hgptN9+4uMEw/1iYHGtiI67rUFYFfsxg7a7ih3WLt
+         rVQnsO/wS4iN+N3TONQfPsl0EcuNPmrWUSAnVcHAf52OQoxar1CxZFfZj6r0eJPQ5e1X
+         pD3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Og2M5waf4fA2uPXVR7x75f+2DQk+Er2YOKkUnKX3nZk=;
-        b=rhumTp6UJyJII+Nocf6isD35feiC6s4nGHv4PU40qDPV3BWOdt1hMNioCMh0BvIK4q
-         ixEnopPyHd7Po4majZPrOfYDXbLXyU4q20LWP5wgTLZGFUmlaTGgWXydmJAjz6u0g94q
-         zf+6FxhqannxHHP37A2atp1O5XVJYoFYeB0KJe1qRW4gYCFboKyvftwuZ7vDpKSs9asT
-         8DtoX0BDDN8xT21woXWQ7xgpWLJeE/JeDjak3QqPtAbzPwGRgSm228boIGjksmbtujPN
-         Cy/6vRMWxZISb2lMnGDODveoFHa6A0/7uQrzzgYm8HPcJr60w67O3sMmC9bMZkSk2g/H
-         /yfQ==
-X-Gm-Message-State: AOAM531LRHTj/4q96TC8unNBQJOSfdKKKQagFoTMs4ajcpYkSxmgeeqk
-        pOvHi1TkwJxobJJhO6vbfcS/EQ1l62OcZCrmc6U=
-X-Google-Smtp-Source: ABdhPJwy6b5QSPhwn9KbIlfOEPHwI/1HnWTI9L+Y+T7NDIRuCf954BxzRKe+Af1JsOXVAXjVYwbdF768KuUur7Usvb8=
-X-Received: by 2002:a17:906:280f:: with SMTP id r15mr26029552ejc.559.1633466613592;
- Tue, 05 Oct 2021 13:43:33 -0700 (PDT)
+        bh=vqE21VBUis5F7P2tyfYlDOrpKr4yHrwWmAyRNmJWM3s=;
+        b=B233BPWTzv5qfPJTWYiojwYxtATXmSJZIz3r7PSavIxUrVYkW+wwIZCa64iEaX9S86
+         FTThiX1G3SbfLTvpfuWdeOLaFu4LrxEnCqLTBY9DOX2hSghOrnruGNWGKNU1NCysnUeT
+         c2i6GDqHzPcT+waWzSDdiCKupE1UamZ9Keop/ChZyIb8xw3lFgH/qkmAJiaTaUGiLYlR
+         8w6IBtudqY7dv/VLPKC6+BmOgSLiVUR0yuk37ZXSd2PP7FQRkZe2kLTA1na7yQFiSNEd
+         gp4dHiq5/X73Q2SXq8GN6tQMBt972mPE+5aHd+qtwpswKM/hCp54F5UOruL8IR6eyiQb
+         4DHQ==
+X-Gm-Message-State: AOAM530G8KzKTLAiP2+E5VA6s5jfV68kVAIj9yLfmP8Mw8//4R+j5juc
+        qRdj95L5iahyo0SiF1+Uycw/z5OA+1yZQiFjel+A2A==
+X-Google-Smtp-Source: ABdhPJwSm0BVOOZ5kTvRyYIrXx9qnEj/0YszDwLj+4P9EMmNTXKp7nh2cjQfq6luS4PqGmW3SNrlE+Yl4FCV+mWu3MQ=
+X-Received: by 2002:a25:3:: with SMTP id 3mr24647134yba.418.1633466634369;
+ Tue, 05 Oct 2021 13:43:54 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210924085104.44806-1-21cnbao@gmail.com> <20210924085104.44806-2-21cnbao@gmail.com>
- <87o883l9c8.mognet@arm.com>
-In-Reply-To: <87o883l9c8.mognet@arm.com>
-From:   Barry Song <21cnbao@gmail.com>
-Date:   Wed, 6 Oct 2021 09:43:22 +1300
-Message-ID: <CAGsJ_4zCYjha8E6km9fDO8gFR-_vO1Nr0=a7V-b9yLRZGGAC9g@mail.gmail.com>
-Subject: Re: [PATCH RESEND 1/3] topology: Represent clusters of CPUs within a die
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
+References: <20211001205657.815551-1-surenb@google.com> <20211001205657.815551-3-surenb@google.com>
+ <20211005184211.GA19804@duo.ucw.cz> <CAJuCfpE5JEThTMhwKPUREfSE1GYcTx4YSLoVhAH97fJH_qR0Zg@mail.gmail.com>
+ <20211005200411.GB19804@duo.ucw.cz>
+In-Reply-To: <20211005200411.GB19804@duo.ucw.cz>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Tue, 5 Oct 2021 13:43:43 -0700
+Message-ID: <CAJuCfpFZkz2c0ZWeqzOAx8KFqk1ge3K-SiCMeu3dmi6B7bK-9w@mail.gmail.com>
+Subject: Re: [PATCH v10 3/3] mm: add anonymous vma name refcounting
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Colin Cross <ccross@google.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
         Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Ben Segall <bsegall@google.com>,
         Catalin Marinas <catalin.marinas@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Guodong Xu <guodong.xu@linaro.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        "Cc: Len Brown" <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        LAK <linux-arm-kernel@lists.infradead.org>,
-        Linuxarm <linuxarm@huawei.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mel Gorman <mgorman@suse.de>, msys.mizuma@gmail.com,
-        "Zengtao (B)" <prime.zeng@hisilicon.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Will Deacon <will@kernel.org>, x86 <x86@kernel.org>,
-        yangyicong <yangyicong@huawei.com>,
-        Tian Tao <tiantao6@hisilicon.com>
+        vincenzo.frascino@arm.com,
+        =?UTF-8?B?Q2hpbndlbiBDaGFuZyAo5by16Yym5paHKQ==?= 
+        <chinwen.chang@mediatek.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Jann Horn <jannh@google.com>, apopple@nvidia.com,
+        John Hubbard <jhubbard@nvidia.com>,
+        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
+        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
+        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
+        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
+        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
+        chris.hyser@oracle.com, Peter Collingbourne <pcc@google.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Jens Axboe <axboe@kernel.dk>, legion@kernel.org,
+        Rolf Eike Beer <eb@emlix.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Thomas Cedeno <thomascedeno@google.com>, sashal@kernel.org,
+        cxfcosmos@gmail.com, Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-mm <linux-mm@kvack.org>,
+        kernel-team <kernel-team@android.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 6, 2021 at 5:34 AM Valentin Schneider
-<valentin.schneider@arm.com> wrote:
+On Tue, Oct 5, 2021 at 1:04 PM Pavel Machek <pavel@ucw.cz> wrote:
 >
-> On 24/09/21 20:51, Barry Song wrote:
-> >  void update_siblings_masks(unsigned int cpuid)
-> >  {
-> >       struct cpu_topology *cpu_topo, *cpuid_topo = &cpu_topology[cpuid];
-> > @@ -617,6 +622,11 @@ void update_siblings_masks(unsigned int cpuid)
-> >               if (cpuid_topo->package_id != cpu_topo->package_id)
-> >                       continue;
+> Hi!
+>
+> > > On Fri 2021-10-01 13:56:57, Suren Baghdasaryan wrote:
+> > > > While forking a process with high number (64K) of named anonymous vmas the
+> > > > overhead caused by strdup() is noticeable. Experiments with ARM64
+> > > Android
+> > >
+> > > I still believe you should simply use numbers and do the
+> > > numbers->strings mapping in userspace. We should not need to optimize
+> > > strdups in kernel...
 > >
-> > +             if (cpuid_topo->cluster_id == cpu_topo->cluster_id) {
-> > +                     cpumask_set_cpu(cpu, &cpuid_topo->cluster_sibling);
-> > +                     cpumask_set_cpu(cpuid, &cpu_topo->cluster_sibling);
-> > +             }
-> > +
+> > Here are complications with mapping numbers to strings in the userspace:
+> > Approach 1: hardcode number->string in some header file and let all
+> > tools use that mapping. The issue is that whenever that mapping
+> > changes all the tools that are using it (including 3rd party ones)
+> > have to be rebuilt. This is not really maintainable since we don't
+> > control 3rd party tools and even for the ones we control, it will be a
+> > maintenance issue figuring out which version of the tool used which
+> > header file.
 >
-> Hm so without cluster information (e.g. DT system), we have
-> ->cluster_id=-1, we'll essentially copy the package mask into the cluster
-> mask.
+> 1a) Just put it into a file in /etc... Similar to header file but
+> easier...
 >
-> The exposed cluster mask is still <= package mask which is sensible. Are we
-> fine with that, or do we need/want the mask to be empty in the -1 case? I'm
-> guessing userspace tools should check for either id!=-1 or if the exclusive
-> disjucntion of cluster vs package masks is non-empty.
+> > Approach 2: have a centralized facility (a process or a DB)
+> > maintaining number->string mapping. This would require an additional
+> > request to this facility whenever we want to make a number->string
+> > conversion. Moreover, when we want to name a VMA, we would have to
+>
+> I see it complicates userspace. But that's better than complicating
+> kernel, and I don't know what limits on strings you plan, but
+> considering you'll be outputing the strings in /proc... someone is
+> going to get confused with parsing.
 
-Hi Valentin,
-Yep, this is a very good question. I'd like change the code to:
-diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
-index 7cb31d959f33..fc0836f460fb 100644
---- a/drivers/base/arch_topology.c
-+++ b/drivers/base/arch_topology.c
-@@ -622,7 +622,8 @@ void update_siblings_masks(unsigned int cpuid)
-                if (cpuid_topo->package_id != cpu_topo->package_id)
-                        continue;
+I'm not a fan of complicating kernel but the proposed approach seems
+simple enough to me. Again this is subjective, so I can't really have
+a good argument here. Maybe, as Andrew suggested, I should keep it
+under a separate config so that whoever does not care about this
+feature pays no price for it?
+On the topic of confusing the parsers, if the parser is written so
+that it can't ignore new [anon:...] entry then it does not matter
+whether we use strings or numbers, it will get confused either way.
+Again, if we are concerned about confusing existing parsers I think
+having a separate config option set to 'n' would help. This would
+prevent some userspace process from naming an anonymous VMA and
+causing parser confusion. OTOH on systems where parsers can handle
+anon VMA names (Android) we will set that config and use the feature.
+Would that address your concerns?
 
--               if (cpuid_topo->cluster_id == cpu_topo->cluster_id) {
-+               if (cpuid_topo->cluster_id == cpu_topo->cluster_id &&
-+                   cpuid_topo->cluster_id != -1) {
-                        cpumask_set_cpu(cpu, &cpuid_topo->cluster_sibling);
-                        cpumask_set_cpu(cpuid, &cpu_topo->cluster_sibling);
-                }
 
-This should be consistent with Tim's patch3/3 for x86 in case
-id is BAD_APICID:
-static bool match_l2c(struct cpuinfo_x86 *c, struct cpuinfo_x86 *o)
-{
-        ...
-        /* Do not match if we do not have a valid APICID for cpu: */
-        if (per_cpu(cpu_l2c_id, cpu1) == BAD_APICID)
-                return false;
-        ...
-}
-
-Thanks
-Barry
+>
+>                                                                 Pavel
+> --
+> http://www.livejournal.com/~pavelmachek
