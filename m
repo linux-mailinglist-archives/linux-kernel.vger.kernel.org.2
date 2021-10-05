@@ -2,139 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ADC542277A
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 15:11:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEAFC422786
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 15:13:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234966AbhJENNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 09:13:46 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:59601 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234720AbhJENNo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 09:13:44 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1633439514; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=U6BZdp7Nj1iB2Co/1jqzWb6n7mqm30f5x3oIRYnDtpI=;
- b=cYMr3wIVC8cCqbQy2m8TvqhhSYen8J3h9V7AkqkciogtmA8bWG7IWalpN/YA5AQP3heikLCp
- cUqWGbpoXdZwk4JD1mS2MJ5I75GFgqq5ANMBkH3nc3xe804nP3nZ3adqUaXVRl5lApPqg2/h
- 0ejPfYLtmNFUUPfoSDjuW32sHhE=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 615c4f1563b1f186582a7408 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 05 Oct 2021 13:11:49
- GMT
-Sender: schowdhu=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C2883C43616; Tue,  5 Oct 2021 13:11:48 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: schowdhu)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 03C64C4338F;
-        Tue,  5 Oct 2021 13:11:47 +0000 (UTC)
+        id S234592AbhJENP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 09:15:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55266 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234307AbhJENP2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 09:15:28 -0400
+Received: from mail-oo1-xc32.google.com (mail-oo1-xc32.google.com [IPv6:2607:f8b0:4864:20::c32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91639C061755
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 06:13:37 -0700 (PDT)
+Received: by mail-oo1-xc32.google.com with SMTP id h11-20020a4aa74b000000b002a933d156cbso6410314oom.4
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 06:13:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6G7malU1QffNFlLHyGnF0GE1rVke+5aiG8YVR53mxq8=;
+        b=Uo5Dxx/8CK3cBObyCN+G6zjFAZKGtDxuUZOCiZhE8emJWurCVGfpeQbXCqRz/ifw8h
+         5hJG4lOZ1j+wsv17NwZ2izgQ7JLzW/ft2ZZ3ui7naNTAy9MMSaSzlMSgOCEBE0K7Qs0t
+         PGSRYvlOSlUpoORJazPfM8UN/kLb9qnhtdMtq0XuKNTETS4ZCdnWTuLhsuCks3oPF//n
+         wf8xGuAxUqWcWqkBx+CDmE/gNFN5HOJjTlwmMXm8VSDfCjJt1mgSLS0RjAeKs7jE1lCa
+         uTfhMSHLyVhB2mkQfBO+UMdTDtPE/eSnpRBBglK2HfZhOmKx3KBZqBW59LtAzXHqvVZb
+         JaFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6G7malU1QffNFlLHyGnF0GE1rVke+5aiG8YVR53mxq8=;
+        b=JoxmiHtB0/AQjwZs/O5FnehbqZUt4exh0hs+AWxvWTcsSrdQYDmF37o3pzR0jxwwi3
+         nLS4E2RVu61/fDhSTURVD+oNFc3yOj5QPL0E2EJB7RoBf+poRPAssrcvrcxjlEYrthOa
+         ASLNwtwt1T3P1ihRkQ35kdUfRgVhSBR96RDVLNSzloVHCgxIFe8quXW+1hCbj4dZhWvD
+         4uwbKI/a4o6hJn/ym8tBgEdgsxAxGvaZvz6WsCRs3poaoaLY6QbKziWPPSwy7yD4LHcn
+         UmmK2sc+hM2SxpdiqPR911CzXPiQS1V0IxJ4vAFrNGAJVwO7VefL46JDCdtJJYa9zIFO
+         WTrQ==
+X-Gm-Message-State: AOAM532KzWtpkxrtn/EyCOo0G4KqFwYia/nttCrpg1ZzM1hgZMfoD6U2
+        ITy2Ze9sa5Jb0pYxmCy/xKYxvcjkQijEZHIEl1KvOw==
+X-Google-Smtp-Source: ABdhPJxqMq8cjDTc9QTKdqIRvlnQBOs1H6JCXbF5h1q6usAXXwdA/S40EKnb/uwBvgOd/CGMKkYqHGw1riXb4Giu+98=
+X-Received: by 2002:a4a:de57:: with SMTP id z23mr13364623oot.70.1633439616620;
+ Tue, 05 Oct 2021 06:13:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 05 Oct 2021 18:41:47 +0530
-From:   schowdhu@codeaurora.org
-To:     Rob Herring <robh@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Bryan O'Donoghue <pure.logic@nexus-software.ie>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Greg KH <greg@kroah.com>, linux-kernel@vger.kernel.org,
-        ckadabi@codeaurora.org, tsoni@codeaurora.org,
-        bryanh@codeaurora.org, psodagud@codeaurora.org,
-        satyap@codeaurora.org, pheragu@codeaurora.org,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Subject: Re: [PATCH V0 1/7] dt-bindings: connector: Add property for eud type
- c connector
-In-Reply-To: <YVsttQySDnaXxOuI@robh.at.kernel.org>
-References: <cover.1633343547.git.schowdhu@codeaurora.org>
- <246c9d24da27b6ce91d5f1e536fa96ac5656a0b2.1633343547.git.schowdhu@codeaurora.org>
- <YVsttQySDnaXxOuI@robh.at.kernel.org>
-Message-ID: <b3d10d7b874c11462604a5f78bc0e8cf@codeaurora.org>
-X-Sender: schowdhu@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <20211005105905.1994700-1-elver@google.com> <20211005105905.1994700-5-elver@google.com>
+ <YVxKplLAMJJUlg/w@hirez.programming.kicks-ass.net>
+In-Reply-To: <YVxKplLAMJJUlg/w@hirez.programming.kicks-ass.net>
+From:   Marco Elver <elver@google.com>
+Date:   Tue, 5 Oct 2021 15:13:25 +0200
+Message-ID: <CANpmjNMk0ubjYEVjdx=gg-S=zy7h=PSjZDXZRVfj_BsNzd6zkg@mail.gmail.com>
+Subject: Re: [PATCH -rcu/kcsan 04/23] kcsan: Add core support for a subset of
+ weak memory modeling
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
+        Alexander Potapenko <glider@google.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Waiman Long <longman@redhat.com>,
+        Will Deacon <will@kernel.org>, kasan-dev@googlegroups.com,
+        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-10-04 22:07, Rob Herring wrote:
-> On Mon, Oct 04, 2021 at 04:46:19PM +0530, Souradeep Chowdhury wrote:
->> Added the property for EUD(Embedded USB Debug) connector.Added
->> the "reg" and "interrupts" property which is needed for EUD.
-> 
-> You are going to need a better explanation of this h/w.
+On Tue, 5 Oct 2021 at 14:53, Peter Zijlstra <peterz@infradead.org> wrote:
+> On Tue, Oct 05, 2021 at 12:58:46PM +0200, Marco Elver wrote:
+> > +#if !defined(CONFIG_ARCH_WANTS_NO_INSTR) || defined(CONFIG_STACK_VALIDATION)
+> > +/*
+> > + * Arch does not rely on noinstr, or objtool will remove memory barrier
+> > + * instrumentation, and no instrumentation of noinstr code is expected.
+> > + */
+> > +#define kcsan_noinstr
+>
+> I think this still wants to be at the very least:
+>
+> #define kcsan_noinstr noinline notrace
+>
+> without noinline it is possible LTO (or similarly daft things) will end
+> up inlining the calls, and since we rely on objtool to NOP out CALLs
+> this must not happen.
 
-Ack. Will update this with the detailed hardware description
-in the next version.
+Good point about noinline, will add.
 
-> 
->> 
->> Signed-off-by: Souradeep Chowdhury <schowdhu@codeaurora.org>
->> ---
->>  .../devicetree/bindings/connector/usb-connector.yaml      | 15 
->> +++++++++++++++
->>  1 file changed, 15 insertions(+)
->> 
->> diff --git 
->> a/Documentation/devicetree/bindings/connector/usb-connector.yaml 
->> b/Documentation/devicetree/bindings/connector/usb-connector.yaml
->> index 7eb8659..908129f 100644
->> --- a/Documentation/devicetree/bindings/connector/usb-connector.yaml
->> +++ b/Documentation/devicetree/bindings/connector/usb-connector.yaml
->> @@ -30,6 +30,21 @@ properties:
->>            - const: samsung,usb-connector-11pin
->>            - const: usb-b-connector
->> 
->> +      - items:
->> +          - enum:
->> +              - qcom,sc7280-usb-connector-eud
->> +          - const: qcom,usb-connector-eud
->> +          - const: usb-c-connector
->> +
->> +  reg:
->> +    items:
->> +      - description: EUD Base Register Region
->> +      - description: EUD Mode Manager Region
-> 
-> A connector node represents the physical connector on a board. That
-> can't really be an MMIO peripheral. Maybe you need a node for EUD and
-> then it should have a connector child node? Don't really know without
-> understanding this h/w.
+> And since you want to mark these functions as uaccess_safe, there must
+> not be any tracing on, hence notrace.
 
-As per the previous discussion on the EUD, it was agreed upon to map EUD
-as a type C connector and use Role-Switch to change the USB role instead
-of extcon interface that was being used previously. The link for the 
-same
-is as follows:-
+In the Makefile we've relied on:
 
-https://lore.kernel.org/lkml/5db1a666-62ec-c850-6626-ad33d337b452@codeaurora.org/
+  CFLAGS_REMOVE_core.o = $(CC_FLAGS_FTRACE)
 
-> 
->> +
->> +  interrupts:
->> +    description:
->> +      EUD interrupt
->> +
->>    label:
->>      description: Symbolic name for the connector.
->> 
->> --
->> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
->> member
->> of Code Aurora Forum, hosted by The Linux Foundation
->> 
->> 
+just to disable it for all code here. That should be enough, right?
