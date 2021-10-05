@@ -2,138 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C56DC4232C7
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 23:24:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAF974232CD
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 23:27:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236580AbhJEV0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 17:26:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47766 "EHLO mail.kernel.org"
+        id S236580AbhJEV2y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 17:28:54 -0400
+Received: from mga02.intel.com ([134.134.136.20]:65235 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235679AbhJEV03 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 17:26:29 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 917CE6120A;
-        Tue,  5 Oct 2021 21:24:36 +0000 (UTC)
-Date:   Tue, 5 Oct 2021 17:24:35 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Jan Engelhardt <jengelh@inai.de>
-Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Paul <paulmck@linux.vnet.ibm.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        "Joel Fernandes, Google" <joel@joelfernandes.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, rcu <rcu@vger.kernel.org>,
-        netfilter-devel <netfilter-devel@vger.kernel.org>,
-        coreteam <coreteam@netfilter.org>,
-        netdev <netdev@vger.kernel.org>
-Subject: Re: [RFC][PATCH] rcu: Use typeof(p) instead of typeof(*p) *
-Message-ID: <20211005172435.190c62d9@gandalf.local.home>
-In-Reply-To: <pn2qp6r2-238q-rs8n-p8n0-9s37sr614123@vanv.qr>
-References: <20211005094728.203ecef2@gandalf.local.home>
-        <ef5b1654-1f75-da82-cab8-248319efbe3f@rasmusvillemoes.dk>
-        <639278914.2878.1633457192964.JavaMail.zimbra@efficios.com>
-        <826o327o-3r46-3oop-r430-8qr0ssp537o3@vanv.qr>
-        <20211005144002.34008ea0@gandalf.local.home>
-        <srqsppq-p657-43qq-np31-pq5pp03271r6@vanv.qr>
-        <20211005154029.46f9c596@gandalf.local.home>
-        <20211005163754.66552fb3@gandalf.local.home>
-        <pn2qp6r2-238q-rs8n-p8n0-9s37sr614123@vanv.qr>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S235679AbhJEV2w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 17:28:52 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10128"; a="212981665"
+X-IronPort-AV: E=Sophos;i="5.85,349,1624345200"; 
+   d="scan'208";a="212981665"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2021 14:27:01 -0700
+X-IronPort-AV: E=Sophos;i="5.85,349,1624345200"; 
+   d="scan'208";a="488213955"
+Received: from lucas-s2600cw.jf.intel.com ([10.165.21.202])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2021 14:27:01 -0700
+From:   Lucas De Marchi <lucas.demarchi@intel.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH] lib/string_helpers: add linux/string.h for strlen()
+Date:   Tue,  5 Oct 2021 14:26:34 -0700
+Message-Id: <20211005212634.3223113-1-lucas.demarchi@intel.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 5 Oct 2021 23:09:08 +0200 (CEST)
-Jan Engelhardt <jengelh@inai.de> wrote:
+linux/string_helpers.h uses strlen(), so include the correpondent
+header. Otherwise we get a compilation error if it's not also included
+by whoever included the helper.
 
-> On Tuesday 2021-10-05 22:37, Steven Rostedt wrote:
-> >
-> >Really, thinking about abstraction, I don't believe there's anything wrong
-> >with returning a pointer of one type, and then typecasting it to a pointer
-> >of another type. Is there? As long as whoever uses the returned type does
-> >nothing with it.  
-> 
-> Illegal.
-> https://en.cppreference.com/w/c/language/conversion
-> subsection "Pointer conversion"
-> "No other guarantees are offered"
+Signed-off-by: Lucas De Marchi <lucas.demarchi@intel.com>
+---
+ include/linux/string_helpers.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-Basically (one alternative I was looking at) was simply passing around a
-void pointer. Not sure how the RCU macros would handle that. But to
-completely abstract it out, I was thinking of just returning void * and
-accepting void *, but I didn't want to do that because now we just lost any
-kind of type checking done by the compiler. The tricks I was playing was to
-keep some kind of type checking.
-
-> 
-> >struct trace_pid_list *trace_pid_list_alloc(void)
-> >{
-> >	struct pid_list *pid_list;
-> >
-> >	pid_list = kmalloc(sizeof(*pid_list), GFP_KERNEL);
-> >	[..]
-> >
-> >	return (struct trace_pid_list *)pid_list;
-> >}  
-> 
-> struct trace_pid_list { void *pid_list; };
-> struct trace_pid_list trace_pid_list_alloc(void)
-> {
-> 	struct trace_pid_list t;
-> 	t.pid_list = kmalloc(sizeof(t.orig), GFP_KERNEL);
-> 	return t;
-> }
-> void freethat(struct strace_pid_list x)
-> {
-> 	kfree(x.pid_list);
-> }
-> 
-> Might run afoul of -Waggregate-return in C.
-
-The above isn't exactly what I was suggesting.
-
-And really, not that I'm going to do this, I could have followed the rest
-of the kernel with:
-
-struct trace_pid_list {
-	int max;
-	[..]
-};
-
-int *trace_pid_list_alloc(void)
-{
-	struct trace_pid_list *pid_list;
-
-	pid_list = kmalloc(sizeof(*pid_list), GFP_KERNEL);
-
-	[..]
-	return &pid_list->max;
-}
-
-void trace_pid_list_free(int *p)
-{
-	struct trace_pid_list *pid_list = container_of(p, struct pid_list, max);
-
-	[..]
-	free(pid_list);
-}
-
-
-Because we do this all over the kernel. Talk about lying to the compiler ;-)
-
--- Steve
+diff --git a/include/linux/string_helpers.h b/include/linux/string_helpers.h
+index 68189c4a2eb1..4ba39e1403b2 100644
+--- a/include/linux/string_helpers.h
++++ b/include/linux/string_helpers.h
+@@ -4,6 +4,7 @@
+ 
+ #include <linux/bits.h>
+ #include <linux/ctype.h>
++#include <linux/string.h>
+ #include <linux/types.h>
+ 
+ struct file;
+-- 
+2.33.0
 
