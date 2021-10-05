@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE6E342341F
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 01:06:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB1DB423420
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 01:06:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236909AbhJEXIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 19:08:20 -0400
-Received: from mga12.intel.com ([192.55.52.136]:14166 "EHLO mga12.intel.com"
+        id S237096AbhJEXI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 19:08:26 -0400
+Received: from mga12.intel.com ([192.55.52.136]:14170 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237005AbhJEXIH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 19:08:07 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10128"; a="205998523"
+        id S237024AbhJEXIJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 19:08:09 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10128"; a="205998536"
 X-IronPort-AV: E=Sophos;i="5.85,350,1624345200"; 
-   d="scan'208";a="205998523"
+   d="scan'208";a="205998536"
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2021 16:06:16 -0700
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2021 16:06:17 -0700
 X-IronPort-AV: E=Sophos;i="5.85,350,1624345200"; 
-   d="scan'208";a="438908013"
+   d="scan'208";a="438908037"
 Received: from alyee-mobl.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.254.5.222])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2021 16:06:15 -0700
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2021 16:06:16 -0700
 From:   Kuppuswamy Sathyanarayanan 
         <sathyanarayanan.kuppuswamy@linux.intel.com>
 To:     Thomas Gleixner <tglx@linutronix.de>,
@@ -39,9 +39,9 @@ Cc:     Dave Hansen <dave.hansen@intel.com>,
         Kuppuswamy Sathyanarayanan 
         <sathyanarayanan.kuppuswamy@linux.intel.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v7 3/6] x86/topology: Disable CPU online/offline control for TDX guest
-Date:   Tue,  5 Oct 2021 16:05:47 -0700
-Message-Id: <20211005230550.1819406-4-sathyanarayanan.kuppuswamy@linux.intel.com>
+Subject: [PATCH v7 4/6] x86/tdx: Forcefully disable legacy PIC for TDX guests
+Date:   Tue,  5 Oct 2021 16:05:48 -0700
+Message-Id: <20211005230550.1819406-5-sathyanarayanan.kuppuswamy@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211005230550.1819406-1-sathyanarayanan.kuppuswamy@linux.intel.com>
 References: <20211005230550.1819406-1-sathyanarayanan.kuppuswamy@linux.intel.com>
@@ -51,88 +51,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As per Intel TDX Virtual Firmware Design Guide, sec titled "AP
-initialization in OS" (index 4.3.5) and sec titled "Hotplug Device"
-(index 9.4), all unused CPUs are put in spinning state by TDVF until
-OS requests for CPU bring-up via mailbox address passed by ACPI MADT
-table. Since by default all unused CPUs are always in spinning state,
-there is no point in supporting dynamic CPU online/offline feature. So
-current generation of TDVF does not support CPU hotplug feature. It may
-be supported in next generation.
+From: Sean Christopherson <sean.j.christopherson@intel.com>
 
-Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Disable the legacy PIC (8259) for TDX guests as the PIC cannot be
+supported by the VMM. TDX Module does not allow direct IRQ injection,
+and using posted interrupt style delivery requires the guest to EOI
+the IRQ, which diverges from the legacy PIC behavior.
+
+Signed-off-by: Sean Christopherson <seanjc@google.com>
 Reviewed-by: Andi Kleen <ak@linux.intel.com>
 Reviewed-by: Tony Luck <tony.luck@intel.com>
+Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
 ---
 
 Changes since v6:
  * None
 
- arch/x86/kernel/tdx.c      | 16 ++++++++++++++++
- arch/x86/kernel/topology.c |  3 ++-
- 2 files changed, 18 insertions(+), 1 deletion(-)
+ arch/x86/kernel/tdx.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/arch/x86/kernel/tdx.c b/arch/x86/kernel/tdx.c
-index a66520405109..203deb57c4c9 100644
+index 203deb57c4c9..987dc3ee5bbf 100644
 --- a/arch/x86/kernel/tdx.c
 +++ b/arch/x86/kernel/tdx.c
-@@ -4,6 +4,8 @@
- #undef pr_fmt
- #define pr_fmt(fmt)     "tdx: " fmt
+@@ -7,6 +7,7 @@
+ #include <linux/cpuhotplug.h>
  
-+#include <linux/cpuhotplug.h>
-+
  #include <asm/tdx.h>
++#include <asm/i8259.h>
  #include <asm/vmx.h>
  #include <asm/insn.h>
-@@ -307,6 +309,17 @@ static int tdx_handle_mmio(struct pt_regs *regs, struct ve_info *ve)
- 	return insn.length;
- }
- 
-+static int tdx_cpu_offline_prepare(unsigned int cpu)
-+{
-+	/*
-+	 * Per Intel TDX Virtual Firmware Design Guide,
-+	 * sec 4.3.5 and sec 9.4, Hotplug is not supported
-+	 * in TDX platforms. So don't support CPU
-+	 * offline feature once it is turned on.
-+	 */
-+	return -EOPNOTSUPP;
-+}
-+
- unsigned long tdx_get_ve_info(struct ve_info *ve)
- {
- 	struct tdx_module_output out = {0};
-@@ -451,5 +464,8 @@ void __init tdx_early_init(void)
+ #include <asm/insn-eval.h>
+@@ -464,6 +465,8 @@ void __init tdx_early_init(void)
  	pv_ops.irq.safe_halt = tdx_safe_halt;
  	pv_ops.irq.halt = tdx_halt;
  
-+	cpuhp_setup_state(CPUHP_AP_ONLINE_DYN, "tdx:cpu_hotplug",
-+			  NULL, tdx_cpu_offline_prepare);
++	legacy_pic = &null_legacy_pic;
 +
- 	pr_info("Guest initialized\n");
- }
-diff --git a/arch/x86/kernel/topology.c b/arch/x86/kernel/topology.c
-index bd83748e2bde..ded34eda5bac 100644
---- a/arch/x86/kernel/topology.c
-+++ b/arch/x86/kernel/topology.c
-@@ -32,6 +32,7 @@
- #include <linux/init.h>
- #include <linux/smp.h>
- #include <linux/irq.h>
-+#include <linux/cc_platform.h>
- #include <asm/io_apic.h>
- #include <asm/cpu.h>
+ 	cpuhp_setup_state(CPUHP_AP_ONLINE_DYN, "tdx:cpu_hotplug",
+ 			  NULL, tdx_cpu_offline_prepare);
  
-@@ -130,7 +131,7 @@ int arch_register_cpu(int num)
- 			}
- 		}
- 	}
--	if (num || cpu0_hotpluggable)
-+	if ((num || cpu0_hotpluggable) && !cc_platform_has(CC_ATTR_GUEST_TDX))
- 		per_cpu(cpu_devices, num).cpu.hotpluggable = 1;
- 
- 	return register_cpu(&per_cpu(cpu_devices, num).cpu, num);
 -- 
 2.25.1
 
