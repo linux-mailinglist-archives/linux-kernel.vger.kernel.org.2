@@ -2,80 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA3BF421F31
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 08:59:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A95B3421F33
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 09:00:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232399AbhJEHB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 03:01:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51766 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231816AbhJEHB1 (ORCPT
+        id S232481AbhJEHCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 03:02:18 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:53540 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231816AbhJEHCO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 03:01:27 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD3D8C061745;
-        Mon,  4 Oct 2021 23:59:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ilnRYqTFf8fyFuSzqW3O0n0QWAQ9g8mOenxw49e75Rg=; b=CMv16MhF/Am98MlSq+aU712wBL
-        Pyz9j6zAixVPnrG/UmZbLboI969n1FF9339/KDL0c9zWrk9r8NSUOEkld8IIssJk5hjXNBq83IqsK
-        PLrx66+Zpc5r58Gi1ZSpR3MV/4YmdoExnqF91dsK7do5qcuLJx3T8MJTJ6K9GoWz0EqUSGLOuMQl8
-        IuO17vFEw78Qnv+wMgHM+LP7Z/z8qQPGjHJXdqN7UuyfKkdUoDPK2U02MnWJqvVnhzgNvtsgTzr+D
-        4wNbQ6TOMEugO8sUEFg1KG1ph17Zzv8S0/Lti3ldMiwnUq9YYG2w82K2g6F+Bit2jMYnW2nVhIfNg
-        3plpBQtQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mXeQ7-0080Dg-EX; Tue, 05 Oct 2021 06:59:23 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 8258E9811EE; Tue,  5 Oct 2021 08:59:23 +0200 (CEST)
-Date:   Tue, 5 Oct 2021 08:59:23 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     X86 ML <x86@kernel.org>, Kees Cook <keescook@chromium.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        linux-hardening@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>, llvm@lists.linux.dev
-Subject: Re: [PATCH v4 04/15] cfi: Add DEFINE_CFI_IMMEDIATE_RETURN_STUB
-Message-ID: <20211005065923.GH4323@worktop.programming.kicks-ass.net>
-References: <20210930180531.1190642-1-samitolvanen@google.com>
- <20210930180531.1190642-5-samitolvanen@google.com>
- <YVsGoJ+NN6wRFi22@hirez.programming.kicks-ass.net>
- <CABCJKudBrHfwR=gQc=9=cfBjR9p5jm65ovSNwzLLEpDUdo6ZPQ@mail.gmail.com>
+        Tue, 5 Oct 2021 03:02:14 -0400
+X-UUID: be0b5d5e78f24b48875d241a10957d00-20211005
+X-UUID: be0b5d5e78f24b48875d241a10957d00-20211005
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
+        (envelope-from <mark-pk.tsai@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 4802693; Tue, 05 Oct 2021 15:00:20 +0800
+Received: from mtkexhb02.mediatek.inc (172.21.101.103) by
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3;
+ Tue, 5 Oct 2021 15:00:19 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by mtkexhb02.mediatek.inc
+ (172.21.101.103) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 5 Oct
+ 2021 15:00:19 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 5 Oct 2021 15:00:18 +0800
+From:   Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+To:     <mturquette@baylibre.com>, <sboyd@kernel.org>
+CC:     <mark-pk.tsai@mediatek.com>, <yj.chiang@mediatek.com>,
+        <matthias.bgg@gmail.com>, <linux-clk@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>
+Subject: [PATCH] clk: make clk_core_lookup faster by using clk name hash
+Date:   Tue, 5 Oct 2021 14:59:49 +0800
+Message-ID: <20211005065948.10092-1-mark-pk.tsai@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CABCJKudBrHfwR=gQc=9=cfBjR9p5jm65ovSNwzLLEpDUdo6ZPQ@mail.gmail.com>
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 04, 2021 at 12:10:46PM -0700, Sami Tolvanen wrote:
-> On Mon, Oct 4, 2021 at 6:50 AM Peter Zijlstra <peterz@infradead.org> wrote:
+Compare hash value before strcmp the full name to make
+clk_core_lookup faster.
 
-> > Why DEFINE_CFI_IMMEDIATE_RETURN_STUB() vs __no_cfi attribute that we can
-> > stick on the relvant functions?
-> 
-> To avoid accidentally creating useful gadgets for attackers. For
-> example, while excluding an empty stub isn't necessarily ideal,
-> allowing calls to a function that always returns zero would be worse.
+It make clk driver probe 30 percent faster on the platform
+have 1483 registered clks and average clock name length 20.
 
-I was afraid you'd say something like that...
+Signed-off-by: Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+---
+ drivers/clk/clk.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
 
-> > Because I've got at least one more variant for you :-) See
-> > kernel/static_call.c:__static_call_return0
-> 
-> Does __static_call_return0 ever get called indirectly on architectures
-> that support static calls? If it's always patched into a direct call,
-> the type mismatch isn't an issue.
+diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
+index 65508eb89ec9..d5f65fda3db8 100644
+--- a/drivers/clk/clk.c
++++ b/drivers/clk/clk.c
+@@ -89,6 +89,7 @@ struct clk_core {
+ 	struct hlist_node	debug_node;
+ #endif
+ 	struct kref		ref;
++	unsigned int		hash;
+ };
+ 
+ #define CREATE_TRACE_POINTS
+@@ -292,16 +293,17 @@ struct clk_hw *clk_hw_get_parent(const struct clk_hw *hw)
+ EXPORT_SYMBOL_GPL(clk_hw_get_parent);
+ 
+ static struct clk_core *__clk_lookup_subtree(const char *name,
++					     unsigned int hash,
+ 					     struct clk_core *core)
+ {
+ 	struct clk_core *child;
+ 	struct clk_core *ret;
+ 
+-	if (!strcmp(core->name, name))
++	if (hash == core->hash && !strcmp(core->name, name))
+ 		return core;
+ 
+ 	hlist_for_each_entry(child, &core->children, child_node) {
+-		ret = __clk_lookup_subtree(name, child);
++		ret = __clk_lookup_subtree(name, hash, child);
+ 		if (ret)
+ 			return ret;
+ 	}
+@@ -313,20 +315,22 @@ static struct clk_core *clk_core_lookup(const char *name)
+ {
+ 	struct clk_core *root_clk;
+ 	struct clk_core *ret;
++	unsigned int hash;
+ 
+ 	if (!name)
+ 		return NULL;
+ 
++	hash = full_name_hash(NULL, name, strlen(name));
+ 	/* search the 'proper' clk tree first */
+ 	hlist_for_each_entry(root_clk, &clk_root_list, child_node) {
+-		ret = __clk_lookup_subtree(name, root_clk);
++		ret = __clk_lookup_subtree(name, hash, root_clk);
+ 		if (ret)
+ 			return ret;
+ 	}
+ 
+ 	/* if not found, then search the orphan tree */
+ 	hlist_for_each_entry(root_clk, &clk_orphan_list, child_node) {
+-		ret = __clk_lookup_subtree(name, root_clk);
++		ret = __clk_lookup_subtree(name, hash, root_clk);
+ 		if (ret)
+ 			return ret;
+ 	}
+@@ -3827,6 +3831,7 @@ __clk_register(struct device *dev, struct device_node *np, struct clk_hw *hw)
+ 		goto fail_name;
+ 	}
+ 
++	core->hash = full_name_hash(NULL, core->name, strlen(core->name));
+ 	if (WARN_ON(!init->ops)) {
+ 		ret = -EINVAL;
+ 		goto fail_ops;
+-- 
+2.18.0
 
-For x86_64 it should indeed never get called, however if you plan on
-supporting i386 then you need the annotation. Also, it might get called
-on arm64 which is about to grow basic HAVE_STATIC_CALL support.
-
-(and just in case you care about CFI on PPC32, they too grew basic
-static_call support)
