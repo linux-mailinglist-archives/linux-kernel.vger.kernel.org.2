@@ -2,89 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF7AD422131
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 10:50:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82821422136
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 10:50:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233433AbhJEIvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 04:51:49 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:43097 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233441AbhJEIvo (ORCPT
+        id S233477AbhJEIwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 04:52:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42389 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233441AbhJEIwC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 04:51:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1633423794; x=1664959794;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=wnI/BmLBk+uOxjkUxMpKCkqwdoB2WNVKJRNNMMMgnr0=;
-  b=KRfw5A5HkD342ki+AfJrkaqnmIacsekpMnE4xsnTwjUG4ZNU+Z6Dm4Gl
-   5kSW+uC7R6fnvTQPMOddoLAJ1ZWW2otd2uquWZeVjlHSozaZMcEfJqZvm
-   U0R8PINHFdpHkbMbtAu+ctOdfprMvWh06K76NrVY47a9hFT+7oNs9DnTT
-   uBzUj0J4TEW+A75B/3CcIJ3SJLD58HPJzqGlpbsyvZG+i8woXf8j2ATFG
-   /6eEexPbZ9t1y4k5ItSyV9DhF5oNLl5gfGWQ5dTY5lVv3gqW6ORR5hP5t
-   KoifrA18WyevOdr9iZ35ON6uROXCojylRNiMWJeDXFu5kRUPblF+d4z2s
-   w==;
-IronPort-SDR: MX5/27B/oPDhrwDxRXUCvaz9nDY40iv2zpFqfKJr2C5V8bvz54LAoZAytyHonTIHKWHs6LAAyQ
- v4H+dUJfbox8vnTQ7wOtydsZLsK3bmYANGlnZ2V8w1o3FGyuF2szeA1NBHbuS3sFGunk444t0m
- lp+kR0jq3/ruyjFo1Xk3QUHqK7u3ZPlKPxPOx7KGs15uonLDTXbLw+oUG77ynqMr7eiewsWX8G
- u3GeIGLQS93YhRLvhmtNCbOGbPzfIm0KVukEdreTMkdpw4bG9Srm/oCf1ey8dq7sZ8+9Ih9XPb
- sOMgJZtXXqvidCGaIr0xdX6t
-X-IronPort-AV: E=Sophos;i="5.85,348,1624345200"; 
-   d="scan'208";a="138489588"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 05 Oct 2021 01:49:54 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
- chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Tue, 5 Oct 2021 01:49:53 -0700
-Received: from CHE-LT-I41642.mchp-main.com (10.10.115.15) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Tue, 5 Oct 2021 01:49:50 -0700
-Message-ID: <fec61302f82d5030976ae9026619198580b8d53a.camel@microchip.com>
-Subject: Re: [PATCH v1 1/2] i2c:busses:Register PCI1XXXX adapter to I2C
- subsystem
-From:   LakshmiPraveen Kopparthi <LakshmiPraveen.Kopparthi@microchip.com>
-To:     Dmitry Osipenko <digetx@gmail.com>, <wsa@kernel.org>,
-        <andriy.shevchenko@linux.intel.com>, <treding@nvidia.com>,
-        <mirq-linux@rere.qmqm.pl>, <s.shtylyov@omp.ru>,
-        <linux-i2c@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <UNGLinuxDriver@microchip.com>
-Date:   Tue, 5 Oct 2021 14:19:48 +0530
-In-Reply-To: <775e00e3-e204-7138-9648-7551098968b8@gmail.com>
-References: <20210929062215.23905-1-LakshmiPraveen.Kopparthi@microchip.com>
-         <20210929062215.23905-2-LakshmiPraveen.Kopparthi@microchip.com>
-         <d39e99ff-6498-e532-e833-1c65861d566f@gmail.com>
-         <775e00e3-e204-7138-9648-7551098968b8@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Tue, 5 Oct 2021 04:52:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633423811;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=IVLfMf+ySnb6UvZ6Sc3LdpTjuoVgwMiB5uiQdXxYzDo=;
+        b=ae7s6976fS1JOHpflf7ngj49sAL/xZhmSNZs2IRYKXTX6CvH0v9qNNw3M1HYckB1l0Pzeo
+        ZWkflx4CEhShVlVIStFcD+0/hsg1faFGYP6ej92B3iZQdFGRh5MS9wQy02yd25duO1A1u4
+        nZHr92iaOOY4zIdN02ZOWfl0S3P7eVY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-396-GoylZSv_M9GKVkTRx2_jCw-1; Tue, 05 Oct 2021 04:50:03 -0400
+X-MC-Unique: GoylZSv_M9GKVkTRx2_jCw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 76C125074E;
+        Tue,  5 Oct 2021 08:50:01 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.33.36.44])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 302129AA2D;
+        Tue,  5 Oct 2021 08:49:56 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+Subject: [PATCH v3 2/5] afs: Fix kerneldoc warning shown up by W=1
+From:   David Howells <dhowells@redhat.com>
+To:     Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Dominique Martinet <asmadeus@codewreck.org>
+Cc:     Jeff Layton <jlayton@kernel.org>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        linux-afs@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-doc@vger.kernel.org, dhowells@redhat.com,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        torvalds@linux-foundation.org,
+        v9fs-developer@lists.sourceforge.net,
+        linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org,
+        linux-cachefs@redhat.com, linux-fsdevel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Tue, 05 Oct 2021 09:49:55 +0100
+Message-ID: <163342379534.876192.9641373450295656844.stgit@warthog.procyon.org.uk>
+In-Reply-To: <163342376338.876192.10313278824682848704.stgit@warthog.procyon.org.uk>
+References: <163342376338.876192.10313278824682848704.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-09-29 at 17:35 +0300, Dmitry Osipenko wrote:
-> [Some people who received this message don't often get email from
-> digetx@gmail.com. Learn why this is important at 
-> http://aka.ms/LearnAboutSenderIdentification.]
-> 
-> EXTERNAL EMAIL: Do not click links or open attachments unless you
-> know the content is safe
-> 
-> 29.09.2021 10:18, Dmitry Osipenko пишет:
-> > +static void pci1xxxx_i2c_remove_pci(struct pci_dev *pdev)
-> > +{
-> > +     struct pci1xxxx_i2c *i2c = pci_get_drvdata(pdev);
-> > +
-> > +     pci1xxxx_i2c_shutdown(i2c);
-> > +     i2c_del_adapter(&i2c->adap);
-> 
-> The order is wrong. Adapter must be removed first, then hardware can
-> be
-> disabled.
+Fix a kerneldoc warning in afs due to a partially documented internal
+function by removing the kerneldoc marker.
 
-ok. Got it. Will change it.
-> 
-> > +}
+Signed-off-by: David Howells <dhowells@redhat.com>
+Reviewed-by: Jeff Layton <jlayton@kernel.org>
+cc: Marc Dionne <marc.dionne@auristor.com>
+cc: linux-afs@lists.infradead.org
+cc: linux-fsdevel@vger.kernel.org
+cc: linux-doc@vger.kernel.org
+Link: https://lore.kernel.org/r/163214005516.2945267.7000234432243167892.stgit@warthog.procyon.org.uk/ # rfc v1
+Link: https://lore.kernel.org/r/163281899704.2790286.9177774252843775348.stgit@warthog.procyon.org.uk/ # rfc v2
+---
+
+ fs/afs/dir_silly.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/fs/afs/dir_silly.c b/fs/afs/dir_silly.c
+index dae9a57d7ec0..45cfd50a9521 100644
+--- a/fs/afs/dir_silly.c
++++ b/fs/afs/dir_silly.c
+@@ -86,8 +86,8 @@ static int afs_do_silly_rename(struct afs_vnode *dvnode, struct afs_vnode *vnode
+ 	return afs_do_sync_operation(op);
+ }
+ 
+-/**
+- * afs_sillyrename - Perform a silly-rename of a dentry
++/*
++ * Perform silly-rename of a dentry.
+  *
+  * AFS is stateless and the server doesn't know when the client is holding a
+  * file open.  To prevent application problems when a file is unlinked while
+
 
