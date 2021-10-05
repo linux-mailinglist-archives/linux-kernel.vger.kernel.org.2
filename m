@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA03C421FEE
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 09:56:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68A8A421FE7
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 09:55:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233550AbhJEH5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 03:57:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36200 "EHLO
+        id S233090AbhJEH5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 03:57:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233079AbhJEH5P (ORCPT
+        with ESMTP id S230286AbhJEH5Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 03:57:15 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F019DC061745;
-        Tue,  5 Oct 2021 00:55:24 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id b136-20020a1c808e000000b0030d60716239so2117679wmd.4;
-        Tue, 05 Oct 2021 00:55:24 -0700 (PDT)
+        Tue, 5 Oct 2021 03:57:16 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6568BC061749;
+        Tue,  5 Oct 2021 00:55:26 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id s198-20020a1ca9cf000000b0030d6986ea9fso2173840wme.1;
+        Tue, 05 Oct 2021 00:55:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=brZh1+Y4mHA/auO2EBCD5YPji97xxxj6RW4xNGX8ors=;
-        b=mHx5qfHOatJkPOCvAdiuUIX1yNyMWnYxBBEsHai7TBt1glMEyd+3b4gUUvkccC3n+U
-         QwfxDUQTWlId/CBwK46L+oRHCTxd9pHXARVsxC8YoHnKGK4l3Y1B99Rtfd9uf6jBTxpi
-         sUjAJhKdF0VOrVCOUvq2S5t2LKHChQLNGJpWXhIqh45n64zEQ4u/Bz5XAADhMgOzyvRe
-         Zgcvv1tI6+paPWAYnLA0KCKBg2kES2OnlCdt8AW5LBthfNuYbtO0/loRCHBbFpvBgtv2
-         7bSYnIuKnky9A1AfOF3niEIPTeeVBdRTFpzQZM+I8zwkLTz9Bxi0LndLIHx+zbZtn/mB
-         Ygaw==
+        bh=g/XH2ZH+4nGjHrCB0TxUfbfwc09zHXLxmUMfP3BcMhg=;
+        b=RlQIW6n0ZSfajXkuKYvMMPc9PgdCeEKwMnLx+UBVMUzUSszWSA1mmNgXfrEdf7c+fz
+         G5eYxNnNAGvU4b0oB3XiytazaoE4h4Z0MILzStojXZQqi+CCKl543DAeDe8IOlzel9lr
+         UqvRLFUUjIKlqXs41rBU9MDwdMC/TgismnfnJtJDv8ptbHD6+8lISPd/kWIE7LtYDHbv
+         +mfcj12X6Pv6Cjl9L2hiUUJJzm3m/N49eAcqVNm937Saslx5AHj6h1o2krc+kurPOjV7
+         HdLn5RGyMKXnEeVdvk4RouWBXUfXqC5Yk0Qpe6fMgs8HvLq3M6OzhvcFbgiCTDKOkWfj
+         TAmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=brZh1+Y4mHA/auO2EBCD5YPji97xxxj6RW4xNGX8ors=;
-        b=fZBOBUm6mEdQ/I2x3S1bY7aXh5B6RAt83WkHbTOcsoOAe3KQmxwNu2AhN09MCvALiM
-         WW3yzyiQC3UzGiXXlPCU1KiP9RxIzcUB6spZYgbV3Plo4k8a9cz/mHwkkTLg7oLFj95o
-         Ey19q0MZRBT75wuvpXogdGqyzoXW7X2yVHLNU04EqdTmRCQ4ut+sXTMSGQzps6jMQHR7
-         TZISJjOJuaprEynwo48/HDl2ns6m/TJG6n/ojihr8lrq6FhkeiQZeVBI/riqz4opuCBT
-         ljRttuA3UviZlpHbG43G3HPX3JHMTIXSr6/5WHECfdDeqIhhf6vLWtisilnykIVMAJUl
-         m9kw==
-X-Gm-Message-State: AOAM533Ey8qhVQLhOMiI6M0xGlVboFLb6crLjMK6Ti6NkYc9qgPhTYQC
-        NoAvyJqIO0Rh7NdquN+7eBI=
-X-Google-Smtp-Source: ABdhPJwIv0XwXYQoKg4et/C8qG54noBHCTk4D91AKyiqBvwcooJpdbo1NTDJtrjAgBgB6qnQG+DyfQ==
-X-Received: by 2002:a05:600c:aca:: with SMTP id c10mr1821856wmr.174.1633420523465;
-        Tue, 05 Oct 2021 00:55:23 -0700 (PDT)
+        bh=g/XH2ZH+4nGjHrCB0TxUfbfwc09zHXLxmUMfP3BcMhg=;
+        b=ODg1ECIxiqOzvFaUcP2hYeWoWC9LbAuvL6x7FnfWQxHQBHfSov7PuaKdXzyKRTreQq
+         QNo2MOr5EC72wPSSoQzJAEE78AaKdxvmDSgNwEx9a7AqpdEMchFzvOvjI9H4VYwn6D26
+         BV5sMktCB61IIJGhrxZal0Lfshh7jGl7W2CPmmPzt2d3EeAJjlv+uGYDgA+dQ6aARkJO
+         sIFag8FbFuRN+M2jjgJBtvQInqfY4XqemxZ26HK5KTrK62dzsC1wlBYlGBytzTDMu8KK
+         HiOfSSNvvLcGA2ZIjXb1dty+61fqqe8x4+7sujKnJNln9ZwPmFJiWj0Cn3JBjvb/JtV8
+         xu/Q==
+X-Gm-Message-State: AOAM5320UuupSHsIvhu4ufieEw5XgtskGOPT99YoIp5UMzNREWG69ddp
+        Z4NGBCTjAbGR0dZ9PwkO7Mg=
+X-Google-Smtp-Source: ABdhPJzpf9vStU7MVcwYcRs0SEZQCwQHzCB1mceYahnPVzWOwQvvHi+dvXRAiqYhLuNvuQUAE1i9qw==
+X-Received: by 2002:a05:600c:4e87:: with SMTP id f7mr1835960wmq.86.1633420524973;
+        Tue, 05 Oct 2021 00:55:24 -0700 (PDT)
 Received: from localhost.localdomain (i59F67A83.versanet.de. [89.246.122.131])
-        by smtp.gmail.com with ESMTPSA id o1sm1176984wmq.26.2021.10.05.00.55.22
+        by smtp.gmail.com with ESMTPSA id o1sm1176984wmq.26.2021.10.05.00.55.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Oct 2021 00:55:23 -0700 (PDT)
+        Tue, 05 Oct 2021 00:55:24 -0700 (PDT)
 From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
 To:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
 Cc:     Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
@@ -72,9 +72,9 @@ Cc:     Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
         Dmitry Torokhov <dmitry.torokhov@gmail.com>,
         kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
         Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH v4 07/11] MAINTAINERS: rectify entry for ARM/ASPEED I2C DRIVER
-Date:   Tue,  5 Oct 2021 09:54:47 +0200
-Message-Id: <20211005075451.29691-8-lukas.bulwahn@gmail.com>
+Subject: [PATCH v4 08/11] MAINTAINERS: rectify entry for FREESCALE IMX / MXC FEC DRIVER
+Date:   Tue,  5 Oct 2021 09:54:48 +0200
+Message-Id: <20211005075451.29691-9-lukas.bulwahn@gmail.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20211005075451.29691-1-lukas.bulwahn@gmail.com>
 References: <20211005075451.29691-1-lukas.bulwahn@gmail.com>
@@ -84,33 +84,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 810e4441946c ("dt-bindings: aspeed-i2c: Convert txt to yaml format")
-converts i2c-aspeed.txt to aspeed,i2c.yaml, but missed to adjust its
+Commit 96e4781b3d93 ("dt-bindings: net: fec: convert fsl,*fec bindings to
+yaml") converts fsl-fec.txt to fsl,fec.yaml,  but missed to adjust its
 reference in MAINTAINERS.
 
 Hence, ./scripts/get_maintainer.pl --self-test=patterns complains about
 a broken reference.
 
-Rectify this file reference in ARM/ASPEED I2C DRIVER.
+Repair this file reference in FREESCALE IMX / MXC FEC DRIVER.
 
+Reviewed-by: Joakim Zhang <qiangqing.zhang@nxp.com>
 Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 ---
  MAINTAINERS | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 0650954f1570..1337ba843f26 100644
+index 1337ba843f26..6660b32c01f9 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -1762,7 +1762,7 @@ R:	Joel Stanley <joel@jms.id.au>
- L:	linux-i2c@vger.kernel.org
- L:	openbmc@lists.ozlabs.org (moderated for non-subscribers)
+@@ -7495,7 +7495,7 @@ FREESCALE IMX / MXC FEC DRIVER
+ M:	Joakim Zhang <qiangqing.zhang@nxp.com>
+ L:	netdev@vger.kernel.org
  S:	Maintained
--F:	Documentation/devicetree/bindings/i2c/i2c-aspeed.txt
-+F:	Documentation/devicetree/bindings/i2c/aspeed,i2c.yaml
- F:	Documentation/devicetree/bindings/interrupt-controller/aspeed,ast2400-i2c-ic.txt
- F:	drivers/i2c/busses/i2c-aspeed.c
- F:	drivers/irqchip/irq-aspeed-i2c-ic.c
+-F:	Documentation/devicetree/bindings/net/fsl-fec.txt
++F:	Documentation/devicetree/bindings/net/fsl,fec.yaml
+ F:	drivers/net/ethernet/freescale/fec.h
+ F:	drivers/net/ethernet/freescale/fec_main.c
+ F:	drivers/net/ethernet/freescale/fec_ptp.c
 -- 
 2.26.2
 
