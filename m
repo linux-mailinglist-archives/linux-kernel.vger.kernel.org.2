@@ -2,97 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4138E422C11
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:13:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89BC9422C16
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:13:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235545AbhJEPP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 11:15:26 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:51988 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235541AbhJEPPZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 11:15:25 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1633446815; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=s3Xb4IsSqsYB8Xe3c7qxyiGRJeLbjA3gkFSG8+CibCw=; b=YS0rkOpB4q9ONKPFZURacTfXywhYybXYkHHVFXVdRaPDVaLgQe1l/XXQKVujadzpj0wKs1zA
- Gdi0zJJxlmYuym+atDUGsmUkaM7n6ait2jX+8+TTSGVL0TTNL2bsuYjuzmFIHbm6ozqbcViZ
- 2JPV2faBZnYY8gKkOJcOamYi+N4=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 615c6b934ccc4cf2c7c421ce (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 05 Oct 2021 15:13:23
- GMT
-Sender: srivasam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 42FD3C4361C; Tue,  5 Oct 2021 15:13:23 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [192.168.1.102] (unknown [157.48.255.211])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: srivasam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7DCE6C4360C;
-        Tue,  5 Oct 2021 15:13:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 7DCE6C4360C
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Subject: Re: [PATCH] ASoC: qcom: soundwire: Enable soundwire bus clock for
- version 1.6
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
-        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
-        srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        swboyd@chromium.org, judyhsiao@chromium.org
-Cc:     Venkata Prasad Potturu <potturu@codeaurora.org>
-References: <1633105471-30928-1-git-send-email-srivasam@codeaurora.org>
- <a2b6a9c7-2191-4bc9-b03b-3b22b495a4be@linux.intel.com>
- <2c18ff0c-cd24-356c-0104-086837ed7ff0@codeaurora.org>
- <d485af5f-4dfb-df08-9a22-901b7534ca3b@linux.intel.com>
-From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Organization: Qualcomm India Private Limited.
-Message-ID: <f7fbf5e2-2f09-1df5-475a-cfe04f33059a@codeaurora.org>
-Date:   Tue, 5 Oct 2021 20:43:11 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S235760AbhJEPPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 11:15:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55922 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235541AbhJEPPe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 11:15:34 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB37EC061753
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 08:13:43 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id u18so38010296wrg.5
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 08:13:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=PWCYDGGbLpSMPRQR7ZAmGiH0fGx9oqlU5WKkX0Mb0qU=;
+        b=C1yvQF0yUncj5rEDsqvtLNOh+x9A7zVvyBPM9/XAkJfELhfc8AMhISJj64NOPiegea
+         6JaYRoh2a4a8Ncik3T0v2Z6LPHWswvBeUX8M6NZ4jCkN4IEr3RdBho3Kd9rLpWJpM0V7
+         nAz428jBaLXsB3HI0R0UXCgzALnskQ+gT1Wuytyc91NjoM4QkNs6yNoNLLP+H7Kf3aF7
+         4mPFuU3GM98fENzdmGwNxmmAh6ePRObn3Xcmc0CdJfqyOPb1S20AuzfRXoOXfq0YejFs
+         5rUMpTiUdv/XOm8Bnfc39Y8QxXGwt9qYF2AbGEI/cO9MnsFx/isXdnG/CQge/XznLXKO
+         qP7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=PWCYDGGbLpSMPRQR7ZAmGiH0fGx9oqlU5WKkX0Mb0qU=;
+        b=oGV3kDEddq466pYFaKe+JoQ+e5X8UP0jcZ+lcWAs6Bmw2TaZmlFuIl55wc1etG13YX
+         VF3pKgu7ymUV7SlbPeXDZPcSf7Pk/GP5KBskdHjRRVDZlEBEjPN1k6KRUHdwRfvk44md
+         AovthfgXdMVYCdlb12hWC6ndmWB0WCsdP11vr34KY53uk0nyJyThHlCIWKWGXUQS/nVr
+         YtGyUK0xSdotjQMOtPzgKdERrYrv29XwmjmLFZyLnZvTqbbrpuNcfTZsHxNtVRKmnnRm
+         qgRVCAnzUx7hZCkDpvUnsJWBYpGAIGQkl9OQFuH92ZInr9kn3tJqsM0W0GI1rfpHvl+I
+         +S7g==
+X-Gm-Message-State: AOAM531TWDB9wVgOTfKc0uUzuaRnkRAHYk7hyq/aPnH9PVy8lsCpzk+N
+        +Fzbr90F5a3/VC+lS3bHK4nlNQ==
+X-Google-Smtp-Source: ABdhPJyHHQBSLIiixiOSj+09iVqstHSdw/JX82YLQyteKWj/W+BkVDOWUO25EZpQcPNg2mg9qLt/bg==
+X-Received: by 2002:adf:e6d0:: with SMTP id y16mr22269412wrm.181.1633446822192;
+        Tue, 05 Oct 2021 08:13:42 -0700 (PDT)
+Received: from elver.google.com ([2a00:79e0:15:13:e44f:5054:55f8:fcb8])
+        by smtp.gmail.com with ESMTPSA id a2sm4377335wru.82.2021.10.05.08.13.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Oct 2021 08:13:41 -0700 (PDT)
+Date:   Tue, 5 Oct 2021 17:13:35 +0200
+From:   Marco Elver <elver@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
+        Alexander Potapenko <glider@google.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Waiman Long <longman@redhat.com>,
+        Will Deacon <will@kernel.org>, kasan-dev@googlegroups.com,
+        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, x86@kernel.org
+Subject: Re: [PATCH -rcu/kcsan 23/23] objtool, kcsan: Remove memory barrier
+ instrumentation from noinstr
+Message-ID: <YVxrn2658Xdf0Asf@elver.google.com>
+References: <20211005105905.1994700-1-elver@google.com>
+ <20211005105905.1994700-24-elver@google.com>
+ <YVxjH2AtjvB8BDMD@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <d485af5f-4dfb-df08-9a22-901b7534ca3b@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YVxjH2AtjvB8BDMD@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/2.0.5 (2021-01-21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Oct 05, 2021 at 04:37PM +0200, Peter Zijlstra wrote:
+> On Tue, Oct 05, 2021 at 12:59:05PM +0200, Marco Elver wrote:
+> > Teach objtool to turn instrumentation required for memory barrier
+> > modeling into nops in noinstr text.
+> > 
+> > The __tsan_func_entry/exit calls are still emitted by compilers even
+> > with the __no_sanitize_thread attribute. The memory barrier
+> > instrumentation will be inserted explicitly (without compiler help), and
+> > thus needs to also explicitly be removed.
+> 
+> How is arm64 and others using kernel/entry + noinstr going to fix this?
+> 
+> ISTR they fully rely on the compilers not emitting instrumentation,
+> since they don't have objtool to fix up stray issues like this.
 
-On 10/5/2021 8:33 PM, Pierre-Louis Bossart wrote:
-> Thanks for Your time Bossart!!!
->
->>>> +        ctrl->swrm_hctl_reg = devm_ioremap(&pdev->dev,
->>>> swrm_hctl_reg, 0x4);
->>> if (!ctrl->swrm_hctl_reg)
->>>       return -ENODEV;
->>>
->>> ?
->> I think here error check is not required, as this change is required
->> only for soundwire version 1.6 and above.
-> My comment had nothing to do with versions, it's just that ioremap can
-> fail and in general it's wise to test for errors...
+So this is where I'd like to hear if the approach of:
 
-Okay. My intention is if offset (swrm_hctl_reg) is zero, devm_ioremap 
-may return error.
+ | #if !defined(CONFIG_ARCH_WANTS_NO_INSTR) || defined(CONFIG_STACK_VALIDATION)
+ | ...
+ | #else
+ | #define kcsan_noinstr noinstr
+ | static __always_inline bool within_noinstr(unsigned long ip)
+ | {
+ | 	return (unsigned long)__noinstr_text_start <= ip &&
+ | 	       ip < (unsigned long)__noinstr_text_end;
+ | }
+ | #endif
 
-In that case we need to ignore error.
+and then (using the !STACK_VALIDATION definitions)
 
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+ | kcsan_noinstr void instrumentation_may_appear_in_noinstr(void)
+ | {
+ | 	if (within_noinstr(_RET_IP_))
+ | 		return;
 
+works for the non-x86 arches that select ARCH_WANTS_NO_INSTR.
+
+If it doesn't I can easily just remove kcsan_noinstr/within_noinstr, and
+add a "depends on !ARCH_WANTS_NO_INSTR || STACK_VALIDATION" to the
+KCSAN_WEAK_MEMORY option.
+
+Looking at a previous discussion [1], however, I was under the
+impression that this would work.
+
+[1] https://lkml.kernel.org/r/CANpmjNMAZiW-Er=2QDgGP+_3hg1LOvPYcbfGSPMv=aR6MVTB-g@mail.gmail.com
