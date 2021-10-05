@@ -2,107 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E576542313B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 22:03:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46B9D423141
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 22:04:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235823AbhJEUEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 16:04:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46014 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230333AbhJEUEr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 16:04:47 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DD35E613B5;
-        Tue,  5 Oct 2021 20:02:54 +0000 (UTC)
-Date:   Tue, 5 Oct 2021 16:02:52 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Jan Engelhardt <jengelh@inai.de>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Paul <paulmck@linux.vnet.ibm.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        "Joel Fernandes, Google" <joel@joelfernandes.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, rcu <rcu@vger.kernel.org>,
-        netfilter-devel <netfilter-devel@vger.kernel.org>,
-        coreteam <coreteam@netfilter.org>,
-        netdev <netdev@vger.kernel.org>
-Subject: Re: [RFC][PATCH] rcu: Use typeof(p) instead of typeof(*p) *
-Message-ID: <20211005160252.54640350@gandalf.local.home>
-In-Reply-To: <CAHk-=wiL+wyCOTedh48Oz0cNOKJq2GNwtxg6423hf-1FuGrv_A@mail.gmail.com>
-References: <20211005094728.203ecef2@gandalf.local.home>
-        <ef5b1654-1f75-da82-cab8-248319efbe3f@rasmusvillemoes.dk>
-        <639278914.2878.1633457192964.JavaMail.zimbra@efficios.com>
-        <826o327o-3r46-3oop-r430-8qr0ssp537o3@vanv.qr>
-        <20211005144002.34008ea0@gandalf.local.home>
-        <srqsppq-p657-43qq-np31-pq5pp03271r6@vanv.qr>
-        <20211005154029.46f9c596@gandalf.local.home>
-        <CAHk-=wiL+wyCOTedh48Oz0cNOKJq2GNwtxg6423hf-1FuGrv_A@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S235763AbhJEUGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 16:06:05 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:50782 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231266AbhJEUGE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 16:06:04 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 10CBD1C0B80; Tue,  5 Oct 2021 22:04:12 +0200 (CEST)
+Date:   Tue, 5 Oct 2021 22:04:11 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Colin Cross <ccross@google.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        vincenzo.frascino@arm.com,
+        Chinwen Chang =?utf-8?B?KOW8temMpuaWhyk=?= 
+        <chinwen.chang@mediatek.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Jann Horn <jannh@google.com>, apopple@nvidia.com,
+        John Hubbard <jhubbard@nvidia.com>,
+        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
+        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
+        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
+        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
+        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
+        chris.hyser@oracle.com, Peter Collingbourne <pcc@google.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Jens Axboe <axboe@kernel.dk>, legion@kernel.org,
+        Rolf Eike Beer <eb@emlix.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Thomas Cedeno <thomascedeno@google.com>, sashal@kernel.org,
+        cxfcosmos@gmail.com, Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-mm <linux-mm@kvack.org>,
+        kernel-team <kernel-team@android.com>
+Subject: Re: [PATCH v10 3/3] mm: add anonymous vma name refcounting
+Message-ID: <20211005200411.GB19804@duo.ucw.cz>
+References: <20211001205657.815551-1-surenb@google.com>
+ <20211001205657.815551-3-surenb@google.com>
+ <20211005184211.GA19804@duo.ucw.cz>
+ <CAJuCfpE5JEThTMhwKPUREfSE1GYcTx4YSLoVhAH97fJH_qR0Zg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="E39vaYmALEf/7YXx"
+Content-Disposition: inline
+In-Reply-To: <CAJuCfpE5JEThTMhwKPUREfSE1GYcTx4YSLoVhAH97fJH_qR0Zg@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 5 Oct 2021 12:46:43 -0700
-Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
-> On Tue, Oct 5, 2021 at 12:40 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+--E39vaYmALEf/7YXx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi!
+
+> > On Fri 2021-10-01 13:56:57, Suren Baghdasaryan wrote:
+> > > While forking a process with high number (64K) of named anonymous vma=
+s the
+> > > overhead caused by strdup() is noticeable. Experiments with ARM64
+> > Android
 > >
-> > I may try it, because exposing the structure I want to hide, is pulling out
-> > a lot of other crap with it :-p  
-> 
-> One option is just "don't do rcu_access of a pointer that you're not
-> supposed to touch in a file that isn't supposed to touch it".
+> > I still believe you should simply use numbers and do the
+> > numbers->strings mapping in userspace. We should not need to optimize
+> > strdups in kernel...
+>=20
+> Here are complications with mapping numbers to strings in the userspace:
+> Approach 1: hardcode number->string in some header file and let all
+> tools use that mapping. The issue is that whenever that mapping
+> changes all the tools that are using it (including 3rd party ones)
+> have to be rebuilt. This is not really maintainable since we don't
+> control 3rd party tools and even for the ones we control, it will be a
+> maintenance issue figuring out which version of the tool used which
+> header file.
 
-The problem is, the RCU isn't for touching it, it is for knowing it exists.
+1a) Just put it into a file in /etc... Similar to header file but
+easier...
 
-> 
-> IOW, why are you doing that
-> 
->      pid_list = rcu_dereference_sched(tr->function_pids);
-> 
-> in a place that isn't supposed to look at the pid_list in the first place?
-> 
-> Yeah, yeah, I see how you just pass it to trace_ignore_this_task() as
-> an argument, but maybe the real fix is to just pass that trace_array
-> pointer instead?
-> 
-> IOW, if you want to keep that structure private, maybe you really just
-> shouldn't have non-private users of it randomly doing RCU lookups of
-> it?
->
+> Approach 2: have a centralized facility (a process or a DB)
+> maintaining number->string mapping. This would require an additional
+> request to this facility whenever we want to make a number->string
+> conversion. Moreover, when we want to name a VMA, we would have to
 
-Ideally, I wanted to keep the logic of the pid lists separate, and not have
-it know about the trace array at all.
+I see it complicates userspace. But that's better than complicating
+kernel, and I don't know what limits on strings you plan, but
+considering you'll be outputing the strings in /proc... someone is
+going to get confused with parsing.
 
-And this was the best "incremental" approach I had, as the code is
-currently all just open coded.
+								Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
 
-The RCU lookups are not an internal use functionality of the pid lists. The
-updates to the pid list are done by allocating a new pid_list, copying the
-old pid_list with the new updates and then swapping the pointers. The logic
-of the pid_list is orthogonal to the RCU update. It's just "allocate some
-random thing" and use RCU to swap it with the old random thing.
+--E39vaYmALEf/7YXx
+Content-Type: application/pgp-signature; name="signature.asc"
 
-That is, the logic to synchronize updates is left to the user not the pid
-list itself.
+-----BEGIN PGP SIGNATURE-----
 
-I also want to limit function calls, as this is called from the function
-tracer (every function being traced) and if the pid_list pointer is NULL it
-skips it. Hence, I want to avoid calling a function to know if the pointer
-is NULL or not.
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYVyvuwAKCRAw5/Bqldv6
+8lGrAJ0V28fWGvxGtBp2Sl4G3ljoIC0PJwCffbxs6/Xqs9vpl5ve9tLrqDxFsX4=
+=H8Zl
+-----END PGP SIGNATURE-----
 
--- Steve
+--E39vaYmALEf/7YXx--
