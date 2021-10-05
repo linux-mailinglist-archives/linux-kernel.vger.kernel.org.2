@@ -2,173 +2,293 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BFEB423155
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 22:11:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0240423159
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 22:11:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235163AbhJEUN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 16:13:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47396 "EHLO mail.kernel.org"
+        id S235467AbhJEUNn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 16:13:43 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:17391 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230198AbhJEUN0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 16:13:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CC8B060F4B;
-        Tue,  5 Oct 2021 20:11:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633464695;
-        bh=+/lmVuORwvCBOfPp/mgSHvs/dh2gIiLo9CdUJoTuZIs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=di9aAfq4m9R1JKQzWLbaplpfjchAuRfYHg0X9ATgtObXKaJ5pJ4kGhZWl1cmlbDBZ
-         cix8msThdAuvC6OwDUl2WYqcdgaz+j/3wCTG1GX7pNAD7q6oqGpHs8LnSwnwY+Cp0R
-         ph+V8JeQdfkk99Qn9qY7MBTIhuU/o02z+9e2CIW5OCJG0FTtykedjxaae8lZNXwlwU
-         MBK9k0qfGxOMZhQ7lcWRqJjyEPGQF95Sb2n8VWka6VhnuQ4xGVxYVKnuEsVLtgx9mR
-         U204IUyqnOj8lXSySEe7zW8PWBbYxSN56HY05SVrw6LXvrVuCbLbPPCB5nRtB5QB/r
-         bHfrPMfG7yyBA==
-Date:   Tue, 5 Oct 2021 15:11:33 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Kelvin.Cao@microchip.com
-Cc:     kurt.schwemmer@microsemi.com, bhelgaas@google.com,
-        kelvincao@outlook.com, logang@deltatee.com,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: Re: [PATCH 1/5] PCI/switchtec: Error out MRPC execution when no GAS
- access
-Message-ID: <20211005201133.GA1113701@bhelgaas>
+        id S230198AbhJEUNm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 16:13:42 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1633464711; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=P0DRo+mb9v24WUz418XHZJLSk+CMLADwzwicec1u7rc=;
+ b=rld50psNmv8bwPCj7j8MWCwZH+JMH2fYUvdSEHrRdnoUDfi+9CCqntxzOZOTUMdwxaHXxpux
+ F80+swIlNtcWz3ghzZwYLjmksBdIl5+/mIvVIe4qLrT7Ul6a4GbiWEq3M8m9ZLvdKJkTaS86
+ 3uN1AcqTsHFZIqcfed1lK0m8Wro=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 615cb17d4ccdf4fe575f4e02 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 05 Oct 2021 20:11:41
+ GMT
+Sender: abhinavk=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 30B9FC43616; Tue,  5 Oct 2021 20:11:39 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: abhinavk)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id BDEF2C4360D;
+        Tue,  5 Oct 2021 20:11:36 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1690d2d34fe8d1d11959cdbe9c00ba48ff01d9c3.camel@microchip.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 05 Oct 2021 13:11:36 -0700
+From:   abhinavk@codeaurora.org
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Kalyan Thota <kalyan_t@codeaurora.org>,
+        Kuogee Hsieh <khsieh@codeaurora.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [Freedreno] [PATCH v3 1/5] drm/msm/dp: Remove global g_dp_display
+ variable
+In-Reply-To: <20211001180058.1021913-2-bjorn.andersson@linaro.org>
+References: <20211001180058.1021913-1-bjorn.andersson@linaro.org>
+ <20211001180058.1021913-2-bjorn.andersson@linaro.org>
+Message-ID: <4e36028549fcadd5e31a6b5694d6be8f@codeaurora.org>
+X-Sender: abhinavk@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 04, 2021 at 08:51:06PM +0000, Kelvin.Cao@microchip.com wrote:
-> On Sat, 2021-10-02 at 10:11 -0500, Bjorn Helgaas wrote:
-> > On Fri, Oct 01, 2021 at 11:49:18PM +0000, Kelvin.Cao@microchip.com
-> > wrote:
-> > > On Fri, 2021-10-01 at 14:29 -0600, Logan Gunthorpe wrote:
-> > > > EXTERNAL EMAIL: Do not click links or open attachments unless you
-> > > > know the content is safe
-> > > > 
-> > > > On 2021-10-01 2:18 p.m., Bjorn Helgaas wrote:
-> > > > > On Fri, Sep 24, 2021 at 11:08:38AM +0000, 
-> > > > > kelvin.cao@microchip.com
-> > > > > wrote:
-> > > > > > From: Kelvin Cao <kelvin.cao@microchip.com>
-> > > > > > 
-> > > > > > After a firmware hard reset, MRPC command executions,
-> > > > > > which are based on the PCI BAR (which Microchip refers to
-> > > > > > as GAS) read/write, will hang indefinitely. This is
-> > > > > > because after a reset, the host will fail all GAS reads
-> > > > > > (get all 1s), in which case the driver won't get a valid
-> > > > > > MRPC status.
-> > > > > 
-> > > > > Trying to write a merge commit log for this, but having a
-> > > > > hard time summarizing it.  It sounds like it covers both
-> > > > > Switchtec-specific (firmware and MRPC commands) and generic
-> > > > > PCIe behavior (MMIO read failures).
-> > > > > 
-> > > > > This has something to do with a firmware hard reset.  What
-> > > > > is that?  Is that like a firmware reboot?  A device reset,
-> > > > > e.g., FLR or secondary bus reset, that causes a firmware
-> > > > > reboot?  A device reset initiated by firmware?
-> > > 
-> > > A firmware reset can be triggered by a reset command issued to
-> > > the firmware to reboot it.
-> > 
-> > So I guess this reset command was issued by the driver?
->
-> Yes, the reset command can be issued by a userspace utility to the
-> firmware via the driver. In some other cases, user can also issue
-> the reset command, via a sideband interface (like UART), to the
-> firmware. 
-
-OK, thanks.  That means CRS is not a factor here because this is not
-an FLR or similar reset.
-
-> > > > > Anyway, apparently when that happens, MMIO reads to the switch
-> > > > > fail (timeout or error completion on PCIe) for a while.  If a
-> > > > > device reset is involved, that much is standard PCIe behavior.
-> > > > > And the driver sees ~0 data from those failed reads.  That's
-> > > > > not
-> > > > > part of the PCIe spec, but is typical root complex behavior.
-> > > > > 
-> > > > > But you said the MRPC commands hang indefinitely.  Presumably
-> > > > > MMIO reads would start succeeding eventually when the device
-> > > > > becomes ready, so I don't know how that translates to
-> > > > > "indefinitely."
-> > > > 
-> > > > I suspect Kelvin can expand on this and fix the issue below. But
-> > > > in my experience, the MMIO will read ~0 forever after a firmware
-> > > > reset, until the system is rebooted. Presumably on systems that
-> > > > have good hot plug support they are supposed to recover. Though
-> > > > I've never seen that.
-> > > 
-> > > This is also my observation, all MMIO read will fail (~0 returned)
-> > > until the system is rebooted or a PCI rescan is performed.
-> > 
-> > This made sense until you said MMIO reads would start working after a
-> > PCI rescan.  A rescan doesn't really do anything special other than
-> > doing config accesses to the device.  Two things come to mind:
-> > 
-> > 1) Rescan does a config read of the Vendor ID, and devices may
-> > respond with "Configuration Request Retry Status" if they are not
-> > ready.  In this event, Linux retries this for a while.  This scenario
-> > doesn't quite fit because it sounds like this is a device-specific
-> > reset initiated by the driver, and CRS is not permited in this case.
-> > PCIe r5.0, sec 2.3.1, says:
-> > 
-> >   A device Function is explicitly not permitted to return CRS
-> >   following a software-initiated reset (other than an FLR) of the
-> >   device, e.g., by the device's software driver writing to a
-> >   device-specific reset bit.
-> > 
-> > 2) The device may lose its bus and device number configuration
-> > after a reset, so it must capture bus and device numbers from
-> > config writes.  I don't think Linux does this explicitly, but a
-> > rescan does do config writes, which could accidentally fix
-> > something (PCIe r5.0, sec 2.2.9).
+On 2021-10-01 11:00, Bjorn Andersson wrote:
+> As the Qualcomm DisplayPort driver only supports a single instance of
+> the driver the commonly used struct dp_display is kept in a global
+> variable. As we introduce additional instances this obviously doesn't
+> work.
 > 
-> Thanks Bjorn. It makes perfect sense!
-> > 
-> > > > The MMIO read that signals the MRPC status always returns ~0
-> > > > and the userspace request will eventually time out.
-> > > 
-> > > The problem in this case is that, in DMA MRPC mode, the status
-> > > (in host memory) is always initialized to 'in progress', and
-> > > it's up to the firmware to update it to 'done' after the command
-> > > is executed in the firmware. After a firmware reset is
-> > > performed, the firmware cannot be triggered to start a MRPC
-> > > command, therefore the status in host memory remains 'in
-> > > progress' in the driver, which prevents a MRPC from timing out.
-> > > I should have included this in the message.
-> > 
-> > I *thought* the problem was that the PCIe Memory Read failed and
-> > the Root Complex fabricated ~0 data to complete the CPU read.  But
-> > now I'm not sure, because it sounds like it might be that the PCIe
-> > transaction succeeds, but it reads data that hasn't been updated
-> > by the firmware, i.e., it reads 'in progress' because firmware
-> > hasn't updated it to 'done'.
+> Replace this with a combination of existing references to adjacent
+> objects and drvdata.
 > 
-> The original message was sort of misleading. After a firmware reset,
-> CPU getting ~0 for the PCIe Memory Read doesn't explain the hang. In
-> a MRPC execution (DMA MRPC mode), the MRPC status which is located
-> in the host memory, gets initialized by the CPU and
-> updated/finalized by the firmware. In the situation of a firmware
-> reset, any MRPC initiated afterwards will not get the status updated
-> by the firmware per the reason you pointed out above (or similar, to
-> my understanding, firmware can no longer DMA data to host memory in
-> such cases), therefore the MRPC execution will never end.
-
-I'm glad this makes sense to you, because it still doesn't to me.
-
-check_access() does an MMIO read to something in BAR0.  If that read
-returns ~0, it means either the PCIe Memory Read was successful and
-the Switchtec device supplied ~0 data (maybe because firmware has not
-initialized that part of the BAR) or the PCIe Memory Read failed and
-the root complex fabricated the ~0 data.
-
-I'd like to know which one is happening so we can clarify the commit
-log text about "MRPC command executions hang indefinitely" and "host
-wil fail all GAS reads."  It's not clear whether these are PCIe
-protocol issues or driver/firmware interaction issues.
-
-Bjorn
+> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Reviewed-by: Abhinav Kumar <abhinavk@codeaurora.org>
+> ---
+> 
+> Changes since v2:
+> - None
+> 
+>  drivers/gpu/drm/msm/dp/dp_display.c | 80 ++++++++---------------------
+>  1 file changed, 21 insertions(+), 59 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c
+> b/drivers/gpu/drm/msm/dp/dp_display.c
+> index fbe4c2cd52a3..5d3ee5ef07c2 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_display.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
+> @@ -27,7 +27,6 @@
+>  #include "dp_audio.h"
+>  #include "dp_debug.h"
+> 
+> -static struct msm_dp *g_dp_display;
+>  #define HPD_STRING_SIZE 30
+> 
+>  enum {
+> @@ -121,6 +120,13 @@ static const struct of_device_id dp_dt_match[] = {
+>  	{}
+>  };
+> 
+> +static struct dp_display_private *dev_get_dp_display_private(struct
+> device *dev)
+> +{
+> +	struct msm_dp *dp = dev_get_drvdata(dev);
+> +
+> +	return container_of(dp, struct dp_display_private, dp_display);
+> +}
+> +
+>  static int dp_add_event(struct dp_display_private *dp_priv, u32 event,
+>  						u32 data, u32 delay)
+>  {
+> @@ -197,15 +203,12 @@ static int dp_display_bind(struct device *dev,
+> struct device *master,
+>  			   void *data)
+>  {
+>  	int rc = 0;
+> -	struct dp_display_private *dp;
+> -	struct drm_device *drm;
+> +	struct dp_display_private *dp = dev_get_dp_display_private(dev);
+>  	struct msm_drm_private *priv;
+> +	struct drm_device *drm;
+> 
+>  	drm = dev_get_drvdata(master);
+> 
+> -	dp = container_of(g_dp_display,
+> -			struct dp_display_private, dp_display);
+> -
+>  	dp->dp_display.drm_dev = drm;
+>  	priv = drm->dev_private;
+>  	priv->dp = &(dp->dp_display);
+> @@ -240,13 +243,10 @@ static int dp_display_bind(struct device *dev,
+> struct device *master,
+>  static void dp_display_unbind(struct device *dev, struct device 
+> *master,
+>  			      void *data)
+>  {
+> -	struct dp_display_private *dp;
+> +	struct dp_display_private *dp = dev_get_dp_display_private(dev);
+>  	struct drm_device *drm = dev_get_drvdata(master);
+>  	struct msm_drm_private *priv = drm->dev_private;
+> 
+> -	dp = container_of(g_dp_display,
+> -			struct dp_display_private, dp_display);
+> -
+>  	dp_power_client_deinit(dp->power);
+>  	dp_aux_unregister(dp->aux);
+>  	priv->dp = NULL;
+> @@ -379,38 +379,17 @@ static void dp_display_host_deinit(struct
+> dp_display_private *dp)
+> 
+>  static int dp_display_usbpd_configure_cb(struct device *dev)
+>  {
+> -	int rc = 0;
+> -	struct dp_display_private *dp;
+> -
+> -	if (!dev) {
+> -		DRM_ERROR("invalid dev\n");
+> -		rc = -EINVAL;
+> -		goto end;
+> -	}
+> -
+> -	dp = container_of(g_dp_display,
+> -			struct dp_display_private, dp_display);
+> +	struct dp_display_private *dp = dev_get_dp_display_private(dev);
+> 
+>  	dp_display_host_init(dp, false);
+> 
+> -	rc = dp_display_process_hpd_high(dp);
+> -end:
+> -	return rc;
+> +	return dp_display_process_hpd_high(dp);
+>  }
+> 
+>  static int dp_display_usbpd_disconnect_cb(struct device *dev)
+>  {
+>  	int rc = 0;
+> -	struct dp_display_private *dp;
+> -
+> -	if (!dev) {
+> -		DRM_ERROR("invalid dev\n");
+> -		rc = -EINVAL;
+> -		return rc;
+> -	}
+> -
+> -	dp = container_of(g_dp_display,
+> -			struct dp_display_private, dp_display);
+> +	struct dp_display_private *dp = dev_get_dp_display_private(dev);
+> 
+>  	dp_add_event(dp, EV_USER_NOTIFICATION, false, 0);
+> 
+> @@ -472,15 +451,7 @@ static int dp_display_usbpd_attention_cb(struct
+> device *dev)
+>  {
+>  	int rc = 0;
+>  	u32 sink_request;
+> -	struct dp_display_private *dp;
+> -
+> -	if (!dev) {
+> -		DRM_ERROR("invalid dev\n");
+> -		return -EINVAL;
+> -	}
+> -
+> -	dp = container_of(g_dp_display,
+> -			struct dp_display_private, dp_display);
+> +	struct dp_display_private *dp = dev_get_dp_display_private(dev);
+> 
+>  	/* check for any test request issued by sink */
+>  	rc = dp_link_process_request(dp->link);
+> @@ -647,7 +618,7 @@ static int dp_hpd_unplug_handle(struct
+> dp_display_private *dp, u32 data)
+> 
+>  	DRM_DEBUG_DP("hpd_state=%d\n", state);
+>  	/* signal the disconnect event early to ensure proper teardown */
+> -	dp_display_handle_plugged_change(g_dp_display, false);
+> +	dp_display_handle_plugged_change(&dp->dp_display, false);
+> 
+>  	/* enable HDP plug interrupt to prepare for next plugin */
+>  	dp_catalog_hpd_config_intr(dp->catalog, DP_DP_HPD_PLUG_INT_MASK, 
+> true);
+> @@ -842,9 +813,7 @@ static int dp_display_prepare(struct msm_dp *dp)
+>  static int dp_display_enable(struct dp_display_private *dp, u32 data)
+>  {
+>  	int rc = 0;
+> -	struct msm_dp *dp_display;
+> -
+> -	dp_display = g_dp_display;
+> +	struct msm_dp *dp_display = &dp->dp_display;
+> 
+>  	DRM_DEBUG_DP("sink_count=%d\n", dp->link->sink_count);
+>  	if (dp_display->power_on) {
+> @@ -880,9 +849,7 @@ static int dp_display_post_enable(struct msm_dp 
+> *dp_display)
+> 
+>  static int dp_display_disable(struct dp_display_private *dp, u32 data)
+>  {
+> -	struct msm_dp *dp_display;
+> -
+> -	dp_display = g_dp_display;
+> +	struct msm_dp *dp_display = &dp->dp_display;
+> 
+>  	if (!dp_display->power_on)
+>  		return 0;
+> @@ -1237,14 +1204,13 @@ static int dp_display_probe(struct
+> platform_device *pdev)
+>  	}
+> 
+>  	mutex_init(&dp->event_mutex);
+> -	g_dp_display = &dp->dp_display;
+> 
+>  	/* Store DP audio handle inside DP display */
+> -	g_dp_display->dp_audio = dp->audio;
+> +	dp->dp_display.dp_audio = dp->audio;
+> 
+>  	init_completion(&dp->audio_comp);
+> 
+> -	platform_set_drvdata(pdev, g_dp_display);
+> +	platform_set_drvdata(pdev, &dp->dp_display);
+> 
+>  	rc = component_add(&pdev->dev, &dp_display_comp_ops);
+>  	if (rc) {
+> @@ -1257,10 +1223,7 @@ static int dp_display_probe(struct 
+> platform_device *pdev)
+> 
+>  static int dp_display_remove(struct platform_device *pdev)
+>  {
+> -	struct dp_display_private *dp;
+> -
+> -	dp = container_of(g_dp_display,
+> -			struct dp_display_private, dp_display);
+> +	struct dp_display_private *dp = 
+> dev_get_dp_display_private(&pdev->dev);
+> 
+>  	dp_display_deinit_sub_modules(dp);
+> 
+> @@ -1315,8 +1278,7 @@ static int dp_pm_resume(struct device *dev)
+>  	else
+>  		dp->dp_display.is_connected = false;
+> 
+> -	dp_display_handle_plugged_change(g_dp_display,
+> -				dp->dp_display.is_connected);
+> +	dp_display_handle_plugged_change(dp_display, 
+> dp->dp_display.is_connected);
+> 
+>  	DRM_DEBUG_DP("After, sink_count=%d is_connected=%d core_inited=%d
+> power_on=%d\n",
+>  			dp->link->sink_count, dp->dp_display.is_connected,
