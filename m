@@ -2,129 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46D9B422092
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 10:21:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF663422093
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 10:21:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233312AbhJEIXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S233182AbhJEIX3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 04:23:29 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:49916 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233264AbhJEIXY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 5 Oct 2021 04:23:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47662 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233215AbhJEIXT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 04:23:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CD36061352;
-        Tue,  5 Oct 2021 08:21:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633422089;
-        bh=U6uwtdCtTV5GlnkRiRrDaVENdO7F58zTTa2A8saHYBs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SAZFp7+jmCcTt6F6GBOXHjV7ZR+QQ29xj949iJyGjpEx3IvUT84zr2peZxssWnfn7
-         zmOivEkMocoZolUo6djRaD2zkqxuS71rA96nRUjXqd2UAPjVbJp+172s2axg2JL2gj
-         Jkr9ADll/Nk9iyV9bwwfL2DV1KdIfC67ePX/iVxA=
-Date:   Tue, 5 Oct 2021 10:21:27 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     =?iso-8859-1?B?Suly9G1l?= Pouiller <jerome.pouiller@silabs.com>
-Cc:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>, devel@driverdev.osuosl.org,
-        devicetree@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
-        netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        linux-mmc@vger.kernel.org, "David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH v7 13/24] wfx: add hif_tx*.c/hif_tx*.h
-Message-ID: <YVwLB02y67JOvoth@kroah.com>
-References: <20210920161136.2398632-1-Jerome.Pouiller@silabs.com>
- <20211001161316.w3cwsigacznjbowl@pali>
- <87tuhwf19w.fsf@codeaurora.org>
- <36155992.WRNEVsFkd7@pc-42>
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 2E90B223F3;
+        Tue,  5 Oct 2021 08:21:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1633422093; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=gSgWfHBoq0JDEOFQ2LHMyzXTFy3fM71N3IgwYhLccE4=;
+        b=uvIywHtmliwkl2XzXJvi+3jQa74Ll6+r28e32vA6pKFBmS7HAF5gIMyPtFPXMbQKXsaBp5
+        EfMCMPvWTSKIYs7ouJ5TW3afmYzmpv4vk7uJtyEZWn6jgDhV53S0MzihXZyS53YwAOylRq
+        NYyO9JKQF09cyoq30rRgEytmsfmlh2s=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1633422093;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=gSgWfHBoq0JDEOFQ2LHMyzXTFy3fM71N3IgwYhLccE4=;
+        b=tqUsTt8e9JBhZdDzbUo0vGY07DDfyo6OjYvr5tXVBDnuziX1ujGMMmEebhB8ehoQIDlYhM
+        8I0fDcvt7CIOQbCQ==
+Received: from suse.de (unknown [10.163.43.106])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id D74E5A3B81;
+        Tue,  5 Oct 2021 08:21:32 +0000 (UTC)
+Date:   Tue, 5 Oct 2021 09:21:31 +0100
+From:   Mel Gorman <mgorman@suse.de>
+To:     Bharata B Rao <bharata@amd.com>
+Cc:     linux-kernel@vger.kernel.org, mingo@redhat.com,
+        peterz@infradead.org, riel@redhat.com
+Subject: Re: [PATCH 2/4] sched/numa: Remove the redundant member
+ numa_group::fault_cpus
+Message-ID: <20211005082131.GL3891@suse.de>
+References: <20211004105706.3669-1-bharata@amd.com>
+ <20211004105706.3669-3-bharata@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <36155992.WRNEVsFkd7@pc-42>
+In-Reply-To: <20211004105706.3669-3-bharata@amd.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05, 2021 at 10:17:32AM +0200, Jérôme Pouiller wrote:
-> On Tuesday 5 October 2021 08:12:27 CEST Kalle Valo wrote:
-> > Pali Rohár <pali@kernel.org> writes:
-> > > On Friday 01 October 2021 17:17:52 Jérôme Pouiller wrote:
-> > >> On Friday 1 October 2021 11:55:33 CEST Kalle Valo wrote:
-> > >> > Jerome Pouiller <Jerome.Pouiller@silabs.com> writes:
-> > >> >
-> > >> > > From: Jérôme Pouiller <jerome.pouiller@silabs.com>
-> > >> > >
-> > >> > > Signed-off-by: Jérôme Pouiller <jerome.pouiller@silabs.com>
-> > >> >
-> > >> > [...]
-> > >> >
-> > >> > > --- /dev/null
-> > >> > > +++ b/drivers/net/wireless/silabs/wfx/hif_tx_mib.h
-> > >> > > @@ -0,0 +1,49 @@
-> > >> > > +/* SPDX-License-Identifier: GPL-2.0-only */
-> > >> > > +/*
-> > >> > > + * Implementation of the host-to-chip MIBs of the hardware API.
-> > >> > > + *
-> > >> > > + * Copyright (c) 2017-2020, Silicon Laboratories, Inc.
-> > >> > > + * Copyright (c) 2010, ST-Ericsson
-> > >> > > + * Copyright (C) 2010, ST-Ericsson SA
-> > >> > > + */
-> > >> > > +#ifndef WFX_HIF_TX_MIB_H
-> > >> > > +#define WFX_HIF_TX_MIB_H
-> > >> > > +
-> > >> > > +struct wfx_vif;
-> > >> > > +struct sk_buff;
-> > >> > > +
-> > >> > > +int hif_set_output_power(struct wfx_vif *wvif, int val);
-> > >> > > +int hif_set_beacon_wakeup_period(struct wfx_vif *wvif,
-> > >> > > +                              unsigned int dtim_interval,
-> > >> > > +                              unsigned int listen_interval);
-> > >> > > +int hif_set_rcpi_rssi_threshold(struct wfx_vif *wvif,
-> > >> > > +                             int rssi_thold, int rssi_hyst);
-> > >> > > +int hif_get_counters_table(struct wfx_dev *wdev, int vif_id,
-> > >> > > +                        struct hif_mib_extended_count_table *arg);
-> > >> > > +int hif_set_macaddr(struct wfx_vif *wvif, u8 *mac);
-> > >> > > +int hif_set_rx_filter(struct wfx_vif *wvif,
-> > >> > > +                   bool filter_bssid, bool fwd_probe_req);
-> > >> > > +int hif_set_beacon_filter_table(struct wfx_vif *wvif, int tbl_len,
-> > >> > > +                             const struct hif_ie_table_entry *tbl);
-> > >> > > +int hif_beacon_filter_control(struct wfx_vif *wvif,
-> > >> > > +                           int enable, int beacon_count);
-> > >> > > +int hif_set_operational_mode(struct wfx_dev *wdev, enum
-> > >> > > hif_op_power_mode mode);
-> > >> > > +int hif_set_template_frame(struct wfx_vif *wvif, struct sk_buff *skb,
-> > >> > > +                        u8 frame_type, int init_rate);
-> > >> > > +int hif_set_mfp(struct wfx_vif *wvif, bool capable, bool required);
-> > >> > > +int hif_set_block_ack_policy(struct wfx_vif *wvif,
-> > >> > > +                          u8 tx_tid_policy, u8 rx_tid_policy);
-> > >> > > +int hif_set_association_mode(struct wfx_vif *wvif, int ampdu_density,
-> > >> > > +                          bool greenfield, bool short_preamble);
-> > >> > > +int hif_set_tx_rate_retry_policy(struct wfx_vif *wvif,
-> > >> > > +                              int policy_index, u8 *rates);
-> > >> > > +int hif_keep_alive_period(struct wfx_vif *wvif, int period);
-> > >> > > +int hif_set_arp_ipv4_filter(struct wfx_vif *wvif, int idx, __be32 *addr);
-> > >> > > +int hif_use_multi_tx_conf(struct wfx_dev *wdev, bool enable);
-> > >> > > +int hif_set_uapsd_info(struct wfx_vif *wvif, unsigned long val);
-> > >> > > +int hif_erp_use_protection(struct wfx_vif *wvif, bool enable);
-> > >> > > +int hif_slot_time(struct wfx_vif *wvif, int val);
-> > >> > > +int hif_wep_default_key_id(struct wfx_vif *wvif, int val);
-> > >> > > +int hif_rts_threshold(struct wfx_vif *wvif, int val);
-> > >> >
-> > >> > "wfx_" prefix missing from quite a few functions.
-> > >>
-> > >> I didn't know it was mandatory to prefix all the functions with the
-> > >> same prefix.
-> > 
-> > I don't know either if this is mandatory or not, for example I do not
-> > have any recollection what Linus and other maintainers think of this. I
-> > just personally think it's good practise to use driver prefix ("wfx_")
-> > in all non-static functions.
+On Mon, Oct 04, 2021 at 04:27:04PM +0530, Bharata B Rao wrote:
+> numa_group::fault_cpus is actually a pointer to the region
+> in numa_group::faults[] where NUMA_CPU stats are located.
 > 
-> What about structs (especially all the structs from hif_api.*.h)? Do you
-> think I should also prefix them with wfx_? 
+> Remove this redundant member and use numa_group::faults[NUMA_CPU]
+> directly like it is done for similar per-process numa fault stats.
+> 
+> There is no functionality change due to this commit.
+> 
+> Signed-off-by: Bharata B Rao <bharata@amd.com>
 
-Why would they _not_ have wfx_ as a prefix if they only pertain to this
-driver?
+Acked-by: Mel Gorman <mgorman@suse.de>
 
-thanks,
-
-greg k-h
+-- 
+Mel Gorman
+SUSE Labs
