@@ -2,66 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A064042215B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 10:55:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0C0542215E
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 10:56:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232920AbhJEI5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 04:57:33 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:49456 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230526AbhJEI5b (ORCPT
+        id S232992AbhJEI6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 04:58:25 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:27862 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232834AbhJEI6X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 04:57:31 -0400
-Date:   Tue, 5 Oct 2021 10:55:39 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1633424140;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mToF1A35rc8FkkqdsQ+ngAvlAmPoX09sNn76CPlVkyY=;
-        b=A2DPMkGE6HLKyycsZ5X3hyf7Pfc/yliNtfqTHHnVJDn8kuaxJd8pPoskwVd72Ca0zuBlDn
-        16Nx1POgFhbr8AB/EB9T9LtAlyE3tikf429StFGv+0JmKJbhQo6Co+D63bwTkAAmjj9pXT
-        k/hPBzDKVVKeIN1IdECg4K1oCdxFHI+T1Ynu52CbXuh7g0SQfItKvFXYil4ztloTX2/mSQ
-        AFpyl0f+SiGw80z8V7ziANk67eVDcOdMcBgCSE0O2H4Ss16z12MZRgA6c0IpPJV5zH5jAH
-        Rn2fHhDgWzz4wKtB1WH6ASkl27tBdh48A/QTMXv62T/PInA4H6kbREVLwE2EbQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1633424140;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mToF1A35rc8FkkqdsQ+ngAvlAmPoX09sNn76CPlVkyY=;
-        b=OM91k6NfPbMyWwZwSfhT25SwF3ao/k4NC1C6AruwGdpvBQLnAoN9B2BWNI3qxoXZXvA32b
-        /125J6amO720JfBA==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     linux-kernel@vger.kernel.org
-Cc:     Stefani Seibold <stefani@seibold.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH] samples/kfifo: Rename read_lock/write_lock
-Message-ID: <20211005085539.kqi5542z6wgoxnlk@linutronix.de>
-References: <20210923172918.o22iwgvn3w7ilh44@linutronix.de>
+        Tue, 5 Oct 2021 04:58:23 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1633424192; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=ME6k5ppnQNHOtBFfmVbGGGL200n+G2K+4nbw1O/P4E0=; b=OiwZc08qx9OFrI6YHAoqaA3Yuu2HiVLtA3tRVMsm//tEGMWelbO5jv6yG32KneIrXecLTOCw
+ HkBRy2TWke+jd2ZnDmySh9Rqo5YXSd4YFuUSPdztSDazRbknbhws1RQwTXQPJB/QM3Ye0oPh
+ HOSG4Sh+iQM9LbJd9/kwjoL0rOI=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 615c133bfc6e34f8cd74f029 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 05 Oct 2021 08:56:27
+ GMT
+Sender: mkshah=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 4915BC4360D; Tue,  5 Oct 2021 08:56:27 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.29.129] (unknown [49.36.85.177])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: mkshah)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1F71CC4338F;
+        Tue,  5 Oct 2021 08:56:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 1F71CC4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Subject: Re: [PATCH v9 2/5] soc: qcom: Add SoC sleep stats driver
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     swboyd@chromium.org, mka@chromium.org, evgreen@chromium.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        agross@kernel.org, dianders@chromium.org, linux@roeck-us.net,
+        rnayak@codeaurora.org, lsrao@codeaurora.org,
+        Mahesh Sivasubramanian <msivasub@codeaurora.org>,
+        Lina Iyer <ilina@codeaurora.org>
+References: <1630906083-32194-1-git-send-email-mkshah@codeaurora.org>
+ <1630906083-32194-3-git-send-email-mkshah@codeaurora.org>
+ <YU5dUlscQzGXloKc@builder.lan>
+From:   Maulik Shah <mkshah@codeaurora.org>
+Message-ID: <8f76552b-76c6-d4f7-22d2-1dd61d191c00@codeaurora.org>
+Date:   Tue, 5 Oct 2021 14:26:19 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210923172918.o22iwgvn3w7ilh44@linutronix.de>
+In-Reply-To: <YU5dUlscQzGXloKc@builder.lan>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-09-23 19:29:19 [+0200], To linux-kernel@vger.kernel.org wrote:
-> The variables names read_lock and write_lock can clash with functions used for
-> read/writer locks.
-> 
-> Rename read_lock to read_access and write_lock to write_access to avoid a name
-> collision.
-> 
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> Link: https://lkml.kernel.org/r/20210806152551.qio7c3ho6pexezup@linutronix.de
-> ---
-> 
-> Repost.
+Hi,
 
-ping.
+On 9/25/2021 4:50 AM, Bjorn Andersson wrote:
+> On Mon 06 Sep 00:28 CDT 2021, Maulik Shah wrote:
+> 
+>> From: Mahesh Sivasubramanian <msivasub@codeaurora.org>
+>>
+>> Let's add a driver to read the stats from remote processor and
+>> export to debugfs.
+>>
+>> The driver creates "qcom_sleep_stats" directory in debugfs and
+>> adds files for various low power mode available. Below is sample
+>> output with command
+>>
+>> cat /sys/kernel/debug/qcom_sleep_stats/ddr
+>> count = 0
+>> Last Entered At = 0
+>> Last Exited At = 0
+>> Accumulated Duration = 0
+>>
+>> Signed-off-by: Mahesh Sivasubramanian <msivasub@codeaurora.org>
+>> Signed-off-by: Lina Iyer <ilina@codeaurora.org>
+>> [mkshah: add subsystem sleep stats, create one file for each stat]
+>> Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
+>> ---
+>>   drivers/soc/qcom/Kconfig           |  10 ++
+>>   drivers/soc/qcom/Makefile          |   1 +
+>>   drivers/soc/qcom/soc_sleep_stats.c | 241 +++++++++++++++++++++++++++++++++++++
+>>   3 files changed, 252 insertions(+)
+>>   create mode 100644 drivers/soc/qcom/soc_sleep_stats.c
+>>
+>> diff --git a/drivers/soc/qcom/Kconfig b/drivers/soc/qcom/Kconfig
+>> index 79b568f..e80b63a 100644
+>> --- a/drivers/soc/qcom/Kconfig
+>> +++ b/drivers/soc/qcom/Kconfig
+>> @@ -190,6 +190,16 @@ config QCOM_SOCINFO
+>>   	 Say yes here to support the Qualcomm socinfo driver, providing
+>>   	 information about the SoC to user space.
+>>   
+>> +config QCOM_SOC_SLEEP_STATS
+>> +	tristate "Qualcomm Technologies, Inc. (QTI) SoC sleep stats driver"
+>> +	depends on ARCH_QCOM && DEBUG_FS || COMPILE_TEST
+>> +	depends on QCOM_SMEM
+>> +	help
+>> +	  Qualcomm Technologies, Inc. (QTI) SoC sleep stats driver to read
+>> +	  the shared memory exported by the remote processor related to
+>> +	  various SoC level low power modes statistics and export to debugfs
+>> +	  interface.
+>> +
+>>   config QCOM_WCNSS_CTRL
+>>   	tristate "Qualcomm WCNSS control driver"
+>>   	depends on ARCH_QCOM || COMPILE_TEST
+>> diff --git a/drivers/soc/qcom/Makefile b/drivers/soc/qcom/Makefile
+>> index ad675a6..5f30d74 100644
+>> --- a/drivers/soc/qcom/Makefile
+>> +++ b/drivers/soc/qcom/Makefile
+>> @@ -20,6 +20,7 @@ obj-$(CONFIG_QCOM_SMEM_STATE) += smem_state.o
+>>   obj-$(CONFIG_QCOM_SMP2P)	+= smp2p.o
+>>   obj-$(CONFIG_QCOM_SMSM)	+= smsm.o
+>>   obj-$(CONFIG_QCOM_SOCINFO)	+= socinfo.o
+>> +obj-$(CONFIG_QCOM_SOC_SLEEP_STATS)	+= soc_sleep_stats.o
+> 
+> I know that the rest of the modules here does a bad job and have
+> completely generic names, but could we rename this "qcom_sleep_stats"
+> instead?
 
-Sebastian
+Sure renamed in v10.
+
+> 
+>>   obj-$(CONFIG_QCOM_WCNSS_CTRL) += wcnss_ctrl.o
+>>   obj-$(CONFIG_QCOM_APR) += apr.o
+>>   obj-$(CONFIG_QCOM_LLCC) += llcc-qcom.o
+>> diff --git a/drivers/soc/qcom/soc_sleep_stats.c b/drivers/soc/qcom/soc_sleep_stats.c
+> [..]
+>> +static int qcom_soc_sleep_stats_probe(struct platform_device *pdev)
+>> +{
+>> +	struct resource *res;
+>> +	void __iomem *reg;
+>> +	struct dentry *root;
+>> +	const struct stats_config *config;
+>> +	struct stats_data *d;
+>> +	int i;
+>> +
+>> +	config = device_get_match_data(&pdev->dev);
+>> +	if (!config)
+>> +		return -ENODEV;
+>> +
+>> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>> +	if (!res)
+>> +		return PTR_ERR(res);
+> 
+> You no longer use this "res".
+
+Thanks for catching this, removed in v10.
+
+> 
+>> +
+>> +	reg = devm_platform_get_and_ioremap_resource(pdev, 0, NULL);
+>> +	if (!reg)
+> 
+> IS_ERR()
+
+Updated in v10 to use IS_ERR().
+
+> 
+>> +		return -ENOMEM;
+>> +
+>> +	d = devm_kcalloc(&pdev->dev, config->num_records,
+>> +			 sizeof(*d), GFP_KERNEL);
+>> +	if (!d)
+>> +		return -ENOMEM;
+>> +
+>> +	for (i = 0; i < config->num_records; i++)
+>> +		d[i].appended_stats_avail = config->appended_stats_avail;
+>> +
+>> +	root = debugfs_create_dir("qcom_sleep_stats", NULL);
+>> +
+>> +	qcom_create_subsystem_stat_files(root);
+>> +	qcom_create_soc_sleep_stat_files(root, reg, d, config->num_records);
+>> +
+>> +	platform_set_drvdata(pdev, root);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static int qcom_soc_sleep_stats_remove(struct platform_device *pdev)
+>> +{
+>> +	struct dentry *root = platform_get_drvdata(pdev);
+>> +
+>> +	debugfs_remove_recursive(root);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static const struct stats_config rpm_data = {
+>> +	.num_records = 2,
+>> +	.appended_stats_avail = true,
+>> +};
+>> +
+>> +static const struct stats_config rpmh_data = {
+>> +	.num_records = 3,
+>> +	.appended_stats_avail = false,
+>> +};
+>> +
+>> +static const struct of_device_id qcom_soc_sleep_stats_table[] = {
+>> +	{ .compatible = "qcom,rpm-sleep-stats", .data = &rpm_data },
+>> +	{ .compatible = "qcom,rpmh-sleep-stats", .data = &rpmh_data },
+>> +	{ }
+>> +};
+> 
+> MODULE_DEVICE_TABLE(of, qcom_soc_sleep_stats_table);
+> 
+> Otherwise the module doesn't load automatically.
+> 
+> Regards,
+> Bjorn
+
+Added MODULE_DEVICE_TABLE in v10.
+
+Thanks,
+Maulik
+
+> 
+>> +
+>> +static struct platform_driver soc_sleep_stats = {
+>> +	.probe = qcom_soc_sleep_stats_probe,
+>> +	.remove = qcom_soc_sleep_stats_remove,
+>> +	.driver = {
+>> +		.name = "soc_sleep_stats",
+>> +		.of_match_table = qcom_soc_sleep_stats_table,
+>> +	},
+>> +};
+>> +module_platform_driver(soc_sleep_stats);
+>> +
+>> +MODULE_DESCRIPTION("Qualcomm Technologies, Inc. (QTI) SoC Sleep Stats driver");
+>> +MODULE_LICENSE("GPL v2");
+>> -- 
+>> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+>> of Code Aurora Forum, hosted by The Linux Foundation
+>>
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member of Code Aurora Forum, hosted by The Linux Foundation
