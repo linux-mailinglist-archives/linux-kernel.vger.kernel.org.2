@@ -2,101 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1DE8422302
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 12:02:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07FAD422309
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 12:04:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233855AbhJEKEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 06:04:46 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:57746 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232658AbhJEKEn (ORCPT
+        id S233881AbhJEKFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 06:05:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38852 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233819AbhJEKFr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 06:04:43 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        Tue, 5 Oct 2021 06:05:47 -0400
+Received: from relay07.th.seeweb.it (relay07.th.seeweb.it [IPv6:2001:4b7a:2000:18::168])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46E5EC06174E
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 03:03:56 -0700 (PDT)
+Received: from SoMainline.org (94-209-165-62.cable.dynamic.v4.ziggo.nl [94.209.165.62])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id C840A20002;
-        Tue,  5 Oct 2021 10:02:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1633428172; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TRF8ELWEC1qxhJ/5dNducCWpR3zUfGm/bOvx5X3DSHI=;
-        b=s19IdSWkE5zR/troGKl9mvP+u8j19UbOU8PoyoL8Ux7UCwD9p0xWdooHQ78dl54a6mBX7Z
-        RX9U/vKiF8JVGaKS2mV4a8dzH3KUCrByLNZ13T/UMs4JtJ97e99RBc8a6E75c4wzo4GErq
-        6l8OCe6YthEr/agulzhvh/RKVMAW2wk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1633428172;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TRF8ELWEC1qxhJ/5dNducCWpR3zUfGm/bOvx5X3DSHI=;
-        b=iRkP23tVh0lUdovrpOcT6fJIIbCcaJ4yxuMuShuQ1VVnrL8g683YHad2QzRWVbZ5C4bdW0
-        MWniqZ6ITQy7FUAA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 903B913C23;
-        Tue,  5 Oct 2021 10:02:52 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id GTmDIswiXGH2EwAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Tue, 05 Oct 2021 10:02:52 +0000
-Message-ID: <0c6203b3-5f25-d3d1-aefa-d975201c7637@suse.cz>
-Date:   Tue, 5 Oct 2021 12:02:52 +0200
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 02B013F585;
+        Tue,  5 Oct 2021 12:03:51 +0200 (CEST)
+Date:   Tue, 5 Oct 2021 12:03:50 +0200
+From:   Marijn Suijten <marijn.suijten@somainline.org>
+To:     Daniel Thompson <daniel.thompson@linaro.org>
+Cc:     phone-devel@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Martin Botka <martin.botka@somainline.org>,
+        Jami Kettunen <jami.kettunen@somainline.org>,
+        Pavel Dubrova <pashadubrova@gmail.com>,
+        Kiran Gunda <kgunda@codeaurora.org>,
+        Courtney Cavin <courtney.cavin@sonymobile.com>,
+        Bryan Wu <cooloney@gmail.com>, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 04/10] backlight: qcom-wled: Validate enabled string
+ indices in DT
+Message-ID: <20211005100350.p56xuq74qsc7vhyp@SoMainline.org>
+Mail-Followup-To: Daniel Thompson <daniel.thompson@linaro.org>,
+        phone-devel@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Lee Jones <lee.jones@linaro.org>, Jingoo Han <jingoohan1@gmail.com>,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Martin Botka <martin.botka@somainline.org>,
+        Jami Kettunen <jami.kettunen@somainline.org>,
+        Pavel Dubrova <pashadubrova@gmail.com>,
+        Kiran Gunda <kgunda@codeaurora.org>,
+        Courtney Cavin <courtney.cavin@sonymobile.com>,
+        Bryan Wu <cooloney@gmail.com>, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211004192741.621870-1-marijn.suijten@somainline.org>
+ <20211004192741.621870-5-marijn.suijten@somainline.org>
+ <20211005091452.4ecqhlhrdxdgvs3c@maple.lan>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.2
-Subject: Re: [PATCH 3/5] mm, slub: fix potential memoryleak in
- kmem_cache_open()
-Content-Language: en-US
-To:     Miaohe Lin <linmiaohe@huawei.com>, akpm@linux-foundation.org,
-        cl@linux.com, penberg@kernel.org, rientjes@google.com,
-        iamjoonsoo.kim@lge.com
-Cc:     gregkh@linuxfoundation.org, faiyazm@codeaurora.org,
-        andreyknvl@gmail.com, ryabinin.a.a@gmail.com, thgarnie@google.com,
-        keescook@chromium.org, bharata@linux.ibm.com, guro@fb.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20210916123920.48704-1-linmiaohe@huawei.com>
- <20210916123920.48704-4-linmiaohe@huawei.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20210916123920.48704-4-linmiaohe@huawei.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211005091452.4ecqhlhrdxdgvs3c@maple.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/16/21 14:39, Miaohe Lin wrote:
-> In error path, the random_seq of slub cache might be leaked. Fix this by
-> using __kmem_cache_release() to release all the relevant resources.
+On 2021-10-05 10:14:52, Daniel Thompson wrote:
+> On Mon, Oct 04, 2021 at 09:27:35PM +0200, Marijn Suijten wrote:
+> > The strings passed in DT may possibly cause out-of-bounds register
+> > accesses and should be validated before use.
+> > 
+> > Fixes: 775d2ffb4af6 ("backlight: qcom-wled: Restructure the driver for WLED3")
 > 
-> Fixes: 210e7a43fa90 ("mm: SLUB freelist randomization")
-> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+> The first half of this patch actually fixes patch 1 from this patch set.
+> It would be better to move that code there.
 
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+It only helps guarding against a maximum of 3 leds for WLED3, while
+using string_len instead of an unintentional sizeof(u32) (resulting in
+a fixed size of 4) is a different issue requiring a separate patch to
+fix.
 
-> ---
->  mm/slub.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+Would it help to reorder this patch before 1/10, and mention in patch
+1/10 (then 2/10) that, besides properly using string_len instead of
+hardcoded 4 (which causes wrong reads from DT on top of this), it relies
+on the previous patch to prevent against an array longer than 3 for
+WLED3?
+
+- Marijn
+
+> Daniel.
 > 
-> diff --git a/mm/slub.c b/mm/slub.c
-> index a56a6423d4e8..bf1793fb4ce5 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -4210,8 +4210,8 @@ static int kmem_cache_open(struct kmem_cache *s, slab_flags_t flags)
->  	if (alloc_kmem_cache_cpus(s))
->  		return 0;
->  
-> -	free_kmem_cache_nodes(s);
->  error:
-> +	__kmem_cache_release(s);
->  	return -EINVAL;
->  }
->  
 > 
-
+> > Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
+> > Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+> > ---
+> >  drivers/video/backlight/qcom-wled.c | 14 ++++++++++++++
+> >  1 file changed, 14 insertions(+)
+> > 
+> > diff --git a/drivers/video/backlight/qcom-wled.c b/drivers/video/backlight/qcom-wled.c
+> > index 29910e603c42..27e8949c7922 100644
+> > --- a/drivers/video/backlight/qcom-wled.c
+> > +++ b/drivers/video/backlight/qcom-wled.c
+> > @@ -1526,6 +1526,12 @@ static int wled_configure(struct wled *wled)
+> >  						     "qcom,enabled-strings",
+> >  						     sizeof(u32));
+> >  	if (string_len > 0) {
+> > +		if (string_len > wled->max_string_count) {
+> > +			dev_err(dev, "Cannot have more than %d strings\n",
+> > +				wled->max_string_count);
+> > +			return -EINVAL;
+> > +		}
+> > +
+> >  		rc = of_property_read_u32_array(dev->of_node,
+> >  						"qcom,enabled-strings",
+> >  						wled->cfg.enabled_strings,
+> > @@ -1537,6 +1543,14 @@ static int wled_configure(struct wled *wled)
+> >  			return -EINVAL;
+> >  		}
+> >  
+> > +		for (i = 0; i < string_len; ++i) {
+> > +			if (wled->cfg.enabled_strings[i] >= wled->max_string_count) {
+> > +				dev_err(dev, "qcom,enabled-strings index %d at %d is out of bounds\n",
+> > +					wled->cfg.enabled_strings[i], i);
+> > +				return -EINVAL;
+> > +			}
+> > +		}
+> > +
+> >  		cfg->num_strings = string_len;
+> >  	}
+> >  
+> > -- 
+> > 2.33.0
+> > 
