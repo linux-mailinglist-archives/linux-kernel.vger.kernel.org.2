@@ -2,86 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D261B423472
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 01:27:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7CDD423476
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 01:28:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236911AbhJEX25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 19:28:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58410 "EHLO
+        id S236938AbhJEXa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 19:30:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233540AbhJEX24 (ORCPT
+        with ESMTP id S236799AbhJEXa1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 19:28:56 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68239C061749
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 16:27:05 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id j15so501412plh.7
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 16:27:05 -0700 (PDT)
+        Tue, 5 Oct 2021 19:30:27 -0400
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D181C06174E
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 16:28:36 -0700 (PDT)
+Received: by mail-qt1-x82c.google.com with SMTP id z23so760315qtv.9
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 16:28:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=9OW4RL81pIUdiw+zgh4jW1IlqFN74R1uy0F7HjdiocU=;
-        b=JZe8Zhyu74F7LosaheIebMyt7o4GfPbBCkYP/9wP2Cz5wX4KOE7XbbNeECWc00RqwW
-         wymyCg5V4ISRFq70VFTRDxHHKuIE3mZZh+D57pJGZrVYnSdYfT30twuDKw46x2HF+sfr
-         7V9upegH4l5xtKqyQvl9xjOqx3XNhO3TBrWHY=
+        bh=YZtqiNpZkkBjH9PLa+2pg+VWvxuMg2D7NfMsla0iApM=;
+        b=W9M/04ikoH0xs+S7XpSkDR2UwXuMr54r1WDEMiLrXADyvj+BVQZ5larNl6JHMBOsgJ
+         gi1057s5XCujQy0a8GeabfgF/4AP1j4BkhHMi4+7MT131D4BK4FskSqsvTT4NoLE/F5u
+         NjVsItMi+O2rP5j8RLxQ79/oq6B/6EBTEtvNelJDRpl8shFYKdQ/9gArgjLyrmFBWzFK
+         J0FW5GstAgSyxV36N+hYUTZRXh0jg2btzSVVF50hXhj8EzFxQBaPNQlEQVEVSO2OOl3k
+         8hqHJg7aP8qQKtZgc+6a2E9CcNk+xx3G2R8r/HMH0kiPwGLCxyv7CQafKgZQYknQJOIV
+         rj9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=9OW4RL81pIUdiw+zgh4jW1IlqFN74R1uy0F7HjdiocU=;
-        b=yt3QlEiS6ibrkDHL7BcoPW1hJBWzGTejQoG/64I+FEI08ywrJ/1fjWHlxa71qe8xYK
-         nD30RPliHGFHAmEzVxkBhlRmYOPa/oJ9Yp7kJX6ZqRQDk9iPpa/FDOTPlm8NLK+wfB/k
-         p2yyNvtYbpdVYZE4ZBmsG6MeEK08WMN+hrTVGRNzUm6q/OooT2LqbjscdY+S713rPdHT
-         ivFDAdYKMOK4tNWuP67qo2+kTuW2FuPGH6CON9mRMJEhKQz6wd0QXvZfsD3FqLty7NgP
-         Zti+f2aWbvxu2c1lfVT+DT2EFQpnfqh4S1l9xZg7/cq6y6fUD8WroBnJQtUpIEG4qPXL
-         +tvQ==
-X-Gm-Message-State: AOAM533by77JlBEgX4syRils4wxc63gzLaIqIsmvbgrIinA5UPu/TNRA
-        EoJCPRHeUa3XqSF+RWmVimt0lw==
-X-Google-Smtp-Source: ABdhPJxBMXTOtss+AuYYPW5JCi3sHvUzY4RP0Xu+mwOes9zQB+0ckvefsntGWASR/8aWNgdlWzeOtg==
-X-Received: by 2002:a17:902:ab17:b0:13e:b2e0:58b with SMTP id ik23-20020a170902ab1700b0013eb2e0058bmr7910203plb.9.1633476424794;
-        Tue, 05 Oct 2021 16:27:04 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id c15sm6524084pfp.39.2021.10.05.16.27.04
+        bh=YZtqiNpZkkBjH9PLa+2pg+VWvxuMg2D7NfMsla0iApM=;
+        b=CDACGc980ErOjJCmOVSFO2a/9yhGHqB70QZ8gjXzarLfTa4VzcUHsIClmgz9xrvqUM
+         tnQqJugr8LtMwQTj/HeuUFzo7yEUQnTgjecJgw1TLLYj4OX1WE1oxkvG/hx/cUIIVOMY
+         X8ThJHyAPf7SdGf+pt8qWJWniZFbProz80jXZp4y0SDryzumyQUIwnV7xOVQf4Jb4ELi
+         CMjUJWQNZafewMiiHVErInJOTZDoo9SBGMHE1kvAdl8Vidzb0WtT/ko4HZ8+5ujHQItu
+         aFubpEllbzCGyOAjfLCJATnTvv0Wqk3cmqMepxY5I05y+dRFgHqVX4alPMHLgOHRiM0S
+         pqqA==
+X-Gm-Message-State: AOAM532Wbx57TqUy2dNtmq51vfaAFbyM8xlsumz9efhlAj3WSjtExZ7V
+        N1v5gBY/3AMVo4DZTIQTk9vEhA==
+X-Google-Smtp-Source: ABdhPJxLsGumPYgbsPy+xlzVZoblVHF5PD2wFx2gPiovv1H2BFWEuNX7TLFJw+HZ1DVzpRheZcUi0A==
+X-Received: by 2002:ac8:705d:: with SMTP id y29mr9574774qtm.73.1633476515521;
+        Tue, 05 Oct 2021 16:28:35 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
+        by smtp.gmail.com with ESMTPSA id b18sm1329682qtq.62.2021.10.05.16.28.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Oct 2021 16:27:04 -0700 (PDT)
-Date:   Tue, 5 Oct 2021 16:27:03 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Chen Jingwen <chenjingwen6@huawei.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrei Vagin <avagin@openvz.org>,
-        Khalid Aziz <khalid.aziz@oracle.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH] elf: don't use MAP_FIXED_NOREPLACE for elf interpreter
- mappings
-Message-ID: <202110051626.0AB43704@keescook>
-References: <20210928125657.153293-1-chenjingwen6@huawei.com>
- <202110041255.83A6616D9@keescook>
- <20211005161212.2eb4ca912d131e72bf09bdd6@linux-foundation.org>
+        Tue, 05 Oct 2021 16:28:35 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1mXtrO-00BKTt-Fi; Tue, 05 Oct 2021 20:28:34 -0300
+Date:   Tue, 5 Oct 2021 20:28:34 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Si-Wei Liu <siwliu.kernel@gmail.com>
+Cc:     Haakon Bugge <haakon.bugge@oracle.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        OFED mailing list <linux-rdma@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: Enabling RO on a VF
+Message-ID: <20211005232834.GB2688930@ziepe.ca>
+References: <48FF6F8E-95E2-4A29-A059-12EF614B381C@oracle.com>
+ <20211001115455.GJ3544071@ziepe.ca>
+ <4EAE3BC9-26B6-41E3-B040-2ADAB77D96CE@oracle.com>
+ <20211001120153.GL3544071@ziepe.ca>
+ <CAPWQSg0wODmw7evfzdtP4gW-toVgoVfigP5t0CVosOAkarNTTg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211005161212.2eb4ca912d131e72bf09bdd6@linux-foundation.org>
+In-Reply-To: <CAPWQSg0wODmw7evfzdtP4gW-toVgoVfigP5t0CVosOAkarNTTg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05, 2021 at 04:12:12PM -0700, Andrew Morton wrote:
-> On Mon, 4 Oct 2021 13:00:07 -0700 Kees Cook <keescook@chromium.org> wrote:
+On Tue, Oct 05, 2021 at 04:09:54PM -0700, Si-Wei Liu wrote:
+> On Fri, Oct 1, 2021 at 6:02 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> >
+> > On Fri, Oct 01, 2021 at 11:59:15AM +0000, Haakon Bugge wrote:
+> > >
+> > >
+> > > > On 1 Oct 2021, at 13:54, Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> > > >
+> > > > On Fri, Oct 01, 2021 at 11:05:15AM +0000, Haakon Bugge wrote:
+> > > >> Hey,
+> > > >>
+> > > >>
+> > > >> Commit 1477d44ce47d ("RDMA/mlx5: Enable Relaxed Ordering by default
+> > > >> for kernel ULPs") uses pcie_relaxed_ordering_enabled() to check if
+> > > >> RO can be enabled. This function checks if the Enable Relaxed
+> > > >> Ordering bit in the Device Control register is set. However, on a
+> > > >> VF, this bit is RsvdP (Reserved for future RW
+> > > >> implementations. Register bits are read-only and must return zero
+> > > >> when read. Software must preserve the value read for writes to
+> > > >> bits.).
+> > > >>
+> > > >> Hence, AFAICT, RO will not be enabled when using a VF.
+> > > >>
+> > > >> How can that be fixed?
+> > > >
+> > > > When qemu takes a VF and turns it into a PF in a VM it must emulate
+> > > > the RO bit and return one
+> > >
+> > > I have a pass-through VF:
+> > >
+> > > # lspci -s ff:00.0 -vvv
+> > > ff:00.0 Ethernet controller: Mellanox Technologies MT28800 Family [ConnectX-5 Ex Virtual Function]
+> > > []
+> > >               DevCtl: Report errors: Correctable- Non-Fatal- Fatal- Unsupported-
+> > >                       RlxdOrd- ExtTag- PhantFunc- AuxPwr- NoSnoop- FLReset-
+> >
+> > Like I said, it is a problem in the qemu area..
+> >
+> > Jason
+> Can you clarify why this is a problem in the QEMU area?
 > 
-> > Andrew, are you able to pick up [1], BTW? It seems to have fallen
-> > through the cracks.
-> > 
-> > [1] https://lore.kernel.org/all/20210916215947.3993776-1-keescook@chromium.org/T/#u
-> 
-> I added that to -mm on 19 September.:
-> https://ozlabs.org/~akpm/mmotm/broken-out/binfmt_elf-reintroduce-using-map_fixed_noreplace.patch
+> Even though Mellanox device might well support it (on VF), there's no
+> way for QEMU to really know if an arbitrary passthrough device may
+> support RO. 
 
-Ah! Thank you. :)
+That isn't what the cap bit means
 
--- 
-Kees Cook
+The cap bit on the PF completely disables generation of RO at the
+device at all.
+
+If the PF's cap bit is disabled then no VF can generate RO, and qemu
+should expose a wired to zero RO bit in the emulated PF.
+
+If the cap bit is enabled then the VFs could generate RO, depending on
+their drivers, and qemu should generate defaulted to 1 bit in the
+emulated PF.
+
+> PCIe device functions up to the root port throughout the PCIe fabric,
+> or it may follow PF's enabling status if it is at all capable. I don't
+> see what QEMU can do by just forcefully emulating the bit?
+
+IMHO Kernel/BIOS should be responsible to clear the RO bit at the PF
+if RO is not supportable in the environment. It is proper to prevent
+the device from using RO completely if it is broken.
+
+> Not to mention the current implementation only takes care of broken
+> root port but not the intermediate switches.
+> https://lore.kernel.org/linux-arm-kernel/MWHPR12MB1600255ACFCD3FB3C80EB8B6C88B0@MWHPR12MB1600.namprd12.prod.outlook.com/
+
+Which is what this message suggests doing
+
+Jason
