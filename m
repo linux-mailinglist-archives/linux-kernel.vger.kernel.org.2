@@ -2,138 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEB52421F64
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 09:26:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 784D1421F61
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 09:26:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232761AbhJEH2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 03:28:18 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:2800 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232730AbhJEH2R (ORCPT
+        id S232549AbhJEH2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 03:28:12 -0400
+Received: from mail-ua1-f49.google.com ([209.85.222.49]:35684 "EHLO
+        mail-ua1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232365AbhJEH2L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 03:28:17 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1956ai5K006023;
-        Tue, 5 Oct 2021 03:26:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=PRP3XC71ks3K/eXBA18uRQOABwYCF7SJb1De18qjsI0=;
- b=B0zQGKwYXq/xvgHfidZgWFo4IinBnF1pcAonlgvF5Rf/S5J0EldeFfKYYpHTIsLddsID
- E97ajKbpUwSI0gSLsLNIZjsVqowHkJEEM/BgiQa8G4cPt3w3UJ5fQVayTmiR17kxiq0w
- PkgcNiY3mZKKi7fE7RhWYLtZ5jiAiXM4vZnY1C8nj798U08aGKqjW9AMhOodBz42n50G
- fGKmvrP+W2jFjEhzLGVi8CuwQLqDet2QRZppPy6kwOkqPPZuMUqk3IoX+TquTy/I38cd
- p+9HBJjBbQTF4FjmF8bV7mrnFwbWX9yO8yFUq68QjUskJwL88i3qOo9z+gdQX2Jjf8pE UA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3bggbcten4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Oct 2021 03:26:19 -0400
-Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1956uC8E006135;
-        Tue, 5 Oct 2021 03:26:19 -0400
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3bggbctemm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Oct 2021 03:26:19 -0400
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1957DFGn009790;
-        Tue, 5 Oct 2021 07:26:17 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma01fra.de.ibm.com with ESMTP id 3bef29n7ca-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Oct 2021 07:26:16 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1957KnR646334430
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 5 Oct 2021 07:20:49 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BB77DA4060;
-        Tue,  5 Oct 2021 07:26:05 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3EC9DA4066;
-        Tue,  5 Oct 2021 07:26:01 +0000 (GMT)
-Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.45.119])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Tue,  5 Oct 2021 07:26:00 +0000 (GMT)
-Date:   Tue, 5 Oct 2021 09:25:39 +0200
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Cornelia Huck <cohuck@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Xie Yongji <xieyongji@bytedance.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, markver@us.ibm.com,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-s390@vger.kernel.org, qemu-devel@nongnu.org,
-        Halil Pasic <pasic@linux.ibm.com>
-Subject: Re: [RFC PATCH 1/1] virtio: write back features before verify
-Message-ID: <20211005092539.145c9cc4.pasic@linux.ibm.com>
-In-Reply-To: <20211004090018-mutt-send-email-mst@kernel.org>
-References: <20210930012049.3780865-1-pasic@linux.ibm.com>
-        <20210930070444-mutt-send-email-mst@kernel.org>
-        <20211001092125.64fef348.pasic@linux.ibm.com>
-        <20211002055605-mutt-send-email-mst@kernel.org>
-        <87bl452d90.fsf@redhat.com>
-        <20211004090018-mutt-send-email-mst@kernel.org>
-Organization: IBM
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Tue, 5 Oct 2021 03:28:11 -0400
+Received: by mail-ua1-f49.google.com with SMTP id q13so2150336uaq.2;
+        Tue, 05 Oct 2021 00:26:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5B8guYb5WtEG1DfSQkNHuh8hV3bBqGM6XN/MlDSJq6g=;
+        b=Wo3h2a1j3ucRsdu8bnoUcvVumzVyNDaqP2LqUhAWgRFHap/ZmpkRVvY2ceXyVvENBC
+         eYVCgfV33oT4TTjWKXPw4LYpdNxxXCMEwIbrzprXNOOsoNvVdjZzCFO2ZBOkJmtigv3R
+         cYpBUH+2NRURvNDvM4+NjWIn5YYFmO3vWvnS1elIf6upl/mrSfARtmx5ONTwuqKXhsnu
+         1dM+qBL6qbda1wEplISZFQHjXkpLBP0XS1Rg3UPORrzPJVBQLIapKsaxd/O+Lyx1STi1
+         +fRNXBAHu+OvVdfir6tBPcQR71wCqKGaMKje+gMbj3B8K//lGtXKA6434rEnS0JvqGKT
+         S82g==
+X-Gm-Message-State: AOAM530ELi83pr4qRWlA3sx4kUD0vvSicHbccMXlFhoNhmOSHJ0svlfy
+        ghH8vyvp9HzdZWqIr8AguCiLNjl+405iCSoJfUE=
+X-Google-Smtp-Source: ABdhPJwitoHm5NqIklNf3C/vTIwhdJEaTtzOd1JmOOF/GJsBSk+HnFu5BWxGe3wzWFhlUDtnlcmU/pjMaReCJlRtJqI=
+X-Received: by 2002:ab0:540d:: with SMTP id n13mr10811903uaa.78.1633418777896;
+ Tue, 05 Oct 2021 00:26:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: -F2P042FRLjgFARHmllaFsm-zqvz094d
-X-Proofpoint-ORIG-GUID: xxy95EbSVU-JOjLT_dASGOoXfDN5fZVl
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-10-04_05,2021-10-04_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 adultscore=0
- mlxlogscore=999 bulkscore=0 clxscore=1015 mlxscore=0 lowpriorityscore=0
- malwarescore=0 spamscore=0 priorityscore=1501 suspectscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110050040
+References: <20211005001914.28574-1-rdunlap@infradead.org> <20211005001914.28574-4-rdunlap@infradead.org>
+In-Reply-To: <20211005001914.28574-4-rdunlap@infradead.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 5 Oct 2021 09:26:06 +0200
+Message-ID: <CAMuHMdUwkOwLgbxjSwO0QCq+=jBL+e1z8X6NZHrrx0bv_zFq1A@mail.gmail.com>
+Subject: Re: [PATCH 3/5 v3] sh: math-emu: drop unused functions
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Takashi YOSHII <takasi-y@ops.dti.ne.jp>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 4 Oct 2021 09:11:04 -0400
-"Michael S. Tsirkin" <mst@redhat.com> wrote:
+Hi Randy,
 
-> > >> static inline bool virtio_access_is_big_endian(VirtIODevice *vdev)
-> > >> {
-> > >> #if defined(LEGACY_VIRTIO_IS_BIENDIAN)
-> > >>     return virtio_is_big_endian(vdev);
-> > >> #elif defined(TARGET_WORDS_BIGENDIAN)
-> > >>     if (virtio_vdev_has_feature(vdev, VIRTIO_F_VERSION_1)) {
-> > >>         /* Devices conforming to VIRTIO 1.0 or later are always LE. */
-> > >>         return false;
-> > >>     }
-> > >>     return true;
-> > >> #else
-> > >>     return false;
-> > >> #endif
-> > >> }
-> > >>   
-> > >
-> > > ok so that's a QEMU bug. Any virtio 1.0 and up
-> > > compatible device must use LE.
-> > > It can also present a legacy config space where the
-> > > endian depends on the guest.  
-> > 
-> > So, how is the virtio core supposed to determine this? A
-> > transport-specific callback?  
-> 
-> I'd say a field in VirtIODevice is easiest.
+Thanks for your patch!
 
-Wouldn't a call from transport code into virtio core
-be more handy? What I have in mind is stuff like vhost-user and vdpa. My
-understanding is, that for vhost setups where the config is outside qemu,
-we probably need a new  command that tells the vhost backend what
-endiannes to use for config. I don't think we can use
-VHOST_USER_SET_VRING_ENDIAN because  that one is on a virtqueue basis
-according to the doc. So for vhost-user and similar we would fire that
-command and probably also set the filed, while for devices for which
-control plane is handled by QEMU we would just set the field.
+On Tue, Oct 5, 2021 at 2:19 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+> Delete ieee_fpe_handler() since it is not used. After that is done,
+> delete denormal_to_double() since it is not used:
+>
+> ../arch/sh/math-emu/math.c:505:12: error: 'ieee_fpe_handler' defined but not used [-Werror=unused-function]
+>   505 | static int ieee_fpe_handler(struct pt_regs *regs)
+>
+> ../arch/sh/math-emu/math.c:477:13: error: 'denormal_to_double' defined but not used [-Werror=unused-function]
+>   477 | static void denormal_to_double(struct sh_fpu_soft_struct *fpu, int n)
+>
+> Fixes: 4b565680d163 ("sh: math-emu support")
 
-Does that sound about right?
+Shouldn't that be
+Fixes: 7caf62de25554da3 ("sh: remove unused do_fpu_error")
+?
 
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
 
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
