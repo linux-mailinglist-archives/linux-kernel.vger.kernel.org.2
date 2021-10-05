@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57D804229CF
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:00:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA50F4229D1
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:00:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235282AbhJEOCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 10:02:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39786 "EHLO mail.kernel.org"
+        id S235934AbhJEOCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 10:02:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39802 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235750AbhJEOAR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S235870AbhJEOAR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 5 Oct 2021 10:00:17 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EE88561074;
-        Tue,  5 Oct 2021 13:58:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 22426619E7;
+        Tue,  5 Oct 2021 13:58:27 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
         (envelope-from <rostedt@goodmis.org>)
-        id 1mXkxe-0055e7-0Z; Tue, 05 Oct 2021 09:58:26 -0400
-Message-ID: <20211005135825.861518453@goodmis.org>
+        id 1mXkxe-0055ef-6M; Tue, 05 Oct 2021 09:58:26 -0400
+Message-ID: <20211005135826.040229966@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Tue, 05 Oct 2021 09:57:35 -0400
+Date:   Tue, 05 Oct 2021 09:57:36 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Ingo Molnar <mingo@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Punit Agrawal <punitagrawal@gmail.com>,
         Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [for-linus][PATCH 02/27] kprobes: Use helper to parse boolean input from userspace
+Subject: [for-linus][PATCH 03/27] kprobe: Simplify prepare_kprobe() by dropping redundant version
 References: <20211005135733.485175654@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,66 +38,93 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Punit Agrawal <punitagrawal@gmail.com>
 
-The "enabled" file provides a debugfs interface to arm / disarm
-kprobes in the kernel. In order to parse the buffer containing the
-values written from userspace, the callback manually parses the user
-input to convert it to a boolean value.
+The function prepare_kprobe() is called during kprobe registration and
+is responsible for ensuring any architecture related preparation for
+the kprobe is done before returning.
 
-As taking a string value from userspace and converting it to boolean
-is a common operation, a helper kstrtobool_from_user() is already
-available in the kernel. Update the callback to use the common helper
-to parse the write buffer from userspace.
+One of two versions of prepare_kprobe() is chosen depending on the
+availability of KPROBE_ON_FTRACE in the kernel configuration.
 
-Link: https://lkml.kernel.org/r/163163032637.489837.10678039554832855327.stgit@devnote2
+Simplify the code by dropping the version when KPROBE_ON_FTRACE is not
+selected - instead relying on kprobe_ftrace() to return false when
+KPROBE_ON_FTRACE is not set.
+
+No functional change.
+
+Link: https://lkml.kernel.org/r/163163033696.489837.9264661820279300788.stgit@devnote2
 
 Signed-off-by: Punit Agrawal <punitagrawal@gmail.com>
 Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
 Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- kernel/kprobes.c | 28 ++++++----------------------
- 1 file changed, 6 insertions(+), 22 deletions(-)
+ include/linux/kprobes.h |  5 +++++
+ kernel/kprobes.c        | 23 +++++++++--------------
+ 2 files changed, 14 insertions(+), 14 deletions(-)
 
+diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
+index e4f3bfe08757..0b75549b2815 100644
+--- a/include/linux/kprobes.h
++++ b/include/linux/kprobes.h
+@@ -354,6 +354,11 @@ static inline void wait_for_kprobe_optimizer(void) { }
+ extern void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+ 				  struct ftrace_ops *ops, struct ftrace_regs *fregs);
+ extern int arch_prepare_kprobe_ftrace(struct kprobe *p);
++#else
++static inline int arch_prepare_kprobe_ftrace(struct kprobe *p)
++{
++	return -EINVAL;
++}
+ #endif
+ 
+ int arch_check_ftrace_location(struct kprobe *p);
 diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-index 1cf8bca1ea86..26fc9904c3b1 100644
+index 26fc9904c3b1..cfa9d3c263eb 100644
 --- a/kernel/kprobes.c
 +++ b/kernel/kprobes.c
-@@ -2770,30 +2770,14 @@ static ssize_t read_enabled_file_bool(struct file *file,
- static ssize_t write_enabled_file_bool(struct file *file,
- 	       const char __user *user_buf, size_t count, loff_t *ppos)
- {
--	char buf[32];
--	size_t buf_size;
--	int ret = 0;
+@@ -1033,15 +1033,6 @@ static struct ftrace_ops kprobe_ipmodify_ops __read_mostly = {
+ static int kprobe_ipmodify_enabled;
+ static int kprobe_ftrace_enabled;
+ 
+-/* Must ensure p->addr is really on ftrace */
+-static int prepare_kprobe(struct kprobe *p)
+-{
+-	if (!kprobe_ftrace(p))
+-		return arch_prepare_kprobe(p);
 -
--	buf_size = min(count, (sizeof(buf)-1));
--	if (copy_from_user(buf, user_buf, buf_size))
--		return -EFAULT;
-+	bool enable;
-+	int ret;
+-	return arch_prepare_kprobe_ftrace(p);
+-}
+-
+ /* Caller must lock kprobe_mutex */
+ static int __arm_kprobe_ftrace(struct kprobe *p, struct ftrace_ops *ops,
+ 			       int *cnt)
+@@ -1113,11 +1104,6 @@ static int disarm_kprobe_ftrace(struct kprobe *p)
+ 		ipmodify ? &kprobe_ipmodify_enabled : &kprobe_ftrace_enabled);
+ }
+ #else	/* !CONFIG_KPROBES_ON_FTRACE */
+-static inline int prepare_kprobe(struct kprobe *p)
+-{
+-	return arch_prepare_kprobe(p);
+-}
+-
+ static inline int arm_kprobe_ftrace(struct kprobe *p)
+ {
+ 	return -ENODEV;
+@@ -1129,6 +1115,15 @@ static inline int disarm_kprobe_ftrace(struct kprobe *p)
+ }
+ #endif
  
--	buf[buf_size] = '\0';
--	switch (buf[0]) {
--	case 'y':
--	case 'Y':
--	case '1':
--		ret = arm_all_kprobes();
--		break;
--	case 'n':
--	case 'N':
--	case '0':
--		ret = disarm_all_kprobes();
--		break;
--	default:
--		return -EINVAL;
--	}
-+	ret = kstrtobool_from_user(user_buf, count, &enable);
-+	if (ret)
-+		return ret;
- 
-+	ret = enable ? arm_all_kprobes() : disarm_all_kprobes();
- 	if (ret)
- 		return ret;
- 
++static int prepare_kprobe(struct kprobe *p)
++{
++	/* Must ensure p->addr is really on ftrace */
++	if (kprobe_ftrace(p))
++		return arch_prepare_kprobe_ftrace(p);
++
++	return arch_prepare_kprobe(p);
++}
++
+ /* Arm a kprobe with text_mutex */
+ static int arm_kprobe(struct kprobe *kp)
+ {
 -- 
 2.32.0
