@@ -2,98 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F04E442301D
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 20:38:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D00342300C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 20:31:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234950AbhJESjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 14:39:49 -0400
-Received: from ch3vs03.rockwellcollins.com ([205.175.226.47]:37686 "EHLO
-        ch3vs03.rockwellcollins.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229577AbhJESjs (ORCPT
+        id S234413AbhJESdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 14:33:23 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:49786 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229626AbhJESdV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 14:39:48 -0400
-X-Greylist: delayed 427 seconds by postgrey-1.27 at vger.kernel.org; Tue, 05 Oct 2021 14:39:48 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=rockwellcollins.com; s=hrcrc2020;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=KnwWS8FxXuoDgDDRlM7P5scofOq7+jfHg9Cs3y6jq5E=;
-  b=rBTp802gP1HQZIHecSVzcp8H0WNOmElvKX9j5ygPUJL82c6wRNk4Udh1
-   givVUvZjay8v4+WwSuhXG1efnjcUcnmKoO+K8DscjHZFN5cR39VNj4bEy
-   eP7SqS1xwYsscWd8wQ9bOQsBIW/YRNPCCK30EiqpVamgqz3RRe3PDyOSA
-   dacsOYKjQDsAmZ5yI6czaSTyu8gM+XrIbUgQ6NAVquPeYjOpvustvdnIa
-   qUaoE4LwdOeD9UCxETh9msEkjn6KLxB6KJyMJYzaREHycYxwmSIC4rBpO
-   7wOHAsNmAmMlHnuoFsuOr+/O8mBf8sOEftj0Riuc4PBOo1UclUCc1Terg
-   w==;
-IronPort-SDR: rkO7ETqPYBTFbL3KKFATaFVfS96dZm5FYwzuP2qG5qayGYRh/rCwTExBt5v7lcwAGZ4fEacaEs
- 6pfzbCZ9bMBk4DuAXlk6C+kgAMx/rFIwwOcPI6U0ZK00ZEjrvhN8MeNRMBWvCoDkFX1lKQ49Ro
- pNROYUmlIF53zNy3yjz450idAgvvN+ld/rYYYDCYaPAjyUYAYZ4AW0Hlg+un7eORHf/aGOoISG
- VnnTpqYCMjcFd4IYpR2WKyrjf8SuLtGxj2nEJb3gYVFBBpIY0f+3IX7PCGu8fNUmzrSSVH1mza
- N6Y=
-Received: from ofwch3n02.rockwellcollins.com (HELO crulimr01.rockwellcollins.com) ([205.175.226.14])
-  by ch3vs03.rockwellcollins.com with ESMTP; 05 Oct 2021 13:30:49 -0500
-X-Received: from righttwix.rockwellcollins.com (righttwix.rockwellcollins.com [192.168.141.218])
-        by crulimr01.rockwellcollins.com (Postfix) with ESMTP id 5ED8B6038E;
-        Tue,  5 Oct 2021 13:30:48 -0500 (CDT)
-From:   Brandon Maier <brandon.maier@rockwellcollins.com>
-Cc:     Brandon Maier <brandon.maier@rockwellcollins.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        linux-can@vger.kernel.org (open list:CAN NETWORK DRIVERS),
-        netdev@vger.kernel.org (open list:NETWORKING DRIVERS),
-        linux-arm-kernel@lists.infradead.org (moderated list:ARM/Microchip
-        (AT91) SoC support), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] can: at91_can: fix passive-state AERR flooding
-Date:   Tue,  5 Oct 2021 13:30:23 -0500
-Message-Id: <20211005183023.109328-1-brandon.maier@rockwellcollins.com>
-X-Mailer: git-send-email 2.30.2
+        Tue, 5 Oct 2021 14:33:21 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 195IVHNu121097;
+        Tue, 5 Oct 2021 13:31:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1633458677;
+        bh=WR7f8Krasvfot852Hz+xWJQu23dBi0fQnvs1vHZffPk=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=r7XAyPRQfOvzrfAyjDTHt1LiHG1Gw6CcYZeSokRqNBUg+x3l1iMEoE18Dl1/MgZiR
+         B7N4l44WF3CwZp/cSiiHPAIrl/pA8edn9sDSyKOcyO/6MP9wdbwh6WZhNz7V8dg5Rt
+         9+NFW+x57Fagwp8LSr/FYW4w6iuqke/V7arn6NLE=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 195IVHWC002177
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 5 Oct 2021 13:31:17 -0500
+Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Tue, 5
+ Oct 2021 13:31:17 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Tue, 5 Oct 2021 13:31:17 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 195IVHHF062004;
+        Tue, 5 Oct 2021 13:31:17 -0500
+Date:   Tue, 5 Oct 2021 13:31:17 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     <devicetree@vger.kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        <linux-kernel@vger.kernel.org>, Sinthu Raja <sinthu.raja@ti.com>,
+        Sinthu Raja <sinthu.raja@mistralsolutions.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Hari Nagalla <hnagalla@ti.com>
+Subject: Re: [PATCH V2 2/4] dt-bindings: arm: ti: am642/am654: Allow for SoC
+ only compatibles
+Message-ID: <20211005183117.fndcsfjdfhjmidib@lantern>
+References: <20210925201430.11678-1-nm@ti.com>
+ <20210925201430.11678-3-nm@ti.com>
+ <YVs/v7g8wwLq/ujb@robh.at.kernel.org>
+ <20211004185920.26iyyq3xz7vjam5i@gentile>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20211004185920.26iyyq3xz7vjam5i@gentile>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the at91_can is a single node on the bus and a user attempts to
-transmit, the can state machine will report ack errors and increment the
-transmit error count until it reaches the passive-state. Per the
-specification, it will then transmit with a passive error, but will stop
-incrementing the transmit error count. This results in the host machine
-being flooded with the AERR interrupt forever, or until another node
-rejoins the bus.
+On 13:59-20211004, Nishanth Menon wrote:
+> On 12:54-20211004, Rob Herring wrote:
+> > On Sat, Sep 25, 2021 at 03:14:28PM -0500, Nishanth Menon wrote:
+> > > Maintain consistency in K3 SoCs by allowing AM654 and AM642 platforms
+> > > just state SoC compatibles without specific board specific compatibles
+> > > aligned with what we have done for J721E/J7200 platforms as well.
+> > 
+> > This is the wrong direction IMO. Why do you want this other than 
+> > alignment?
+> 
+> Many downstream boards tend not to have an specific compatible at least
+> during initial phase and I would like folks to start using checks to
+> make sure that the easy to catch issues via match against bindings are
+> already handled.
+> 
+> I am curious as to why you think this is wrong - because we permit an
+> alternative option that allows the board files to be less specific?
 
-To prevent the AERR flooding, disable the AERR interrupt when we are in
-passive mode.
 
-Signed-off-by: Brandon Maier <brandon.maier@rockwellcollins.com>
----
- drivers/net/can/at91_can.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+Thinking again, I get the rationale. We are attempting to be specific,
+and this patch reverses the direction. Agreed. Will drop applying this
+patch. Also, for future SoCs, will insist on being specific compatible.
 
-diff --git a/drivers/net/can/at91_can.c b/drivers/net/can/at91_can.c
-index b06af90a9964..2a8831127bd0 100644
---- a/drivers/net/can/at91_can.c
-+++ b/drivers/net/can/at91_can.c
-@@ -804,8 +804,13 @@ static int at91_poll(struct napi_struct *napi, int quota)
- 		work_done += at91_poll_err(dev, quota - work_done, reg_sr);
- 
- 	if (work_done < quota) {
--		/* enable IRQs for frame errors and all mailboxes >= rx_next */
-+		/* enable IRQs for frame errors and all mailboxes >= rx_next,
-+		 * disable the ack error in passive mode to avoid flooding
-+		 * ourselves with interrupts
-+		 */
- 		u32 reg_ier = AT91_IRQ_ERR_FRAME;
-+		if (priv->can.state == CAN_STATE_ERROR_PASSIVE)
-+			reg_ier &= ~AT91_IRQ_AERR;
- 
- 		reg_ier |= get_irq_mb_rx(priv) & ~AT91_MB_MASK(priv->rx_next);
- 
 -- 
-2.30.2
-
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
