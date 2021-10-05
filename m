@@ -2,114 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8B09421DCB
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 07:02:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74B4D421DD8
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 07:16:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231833AbhJEFE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 01:04:29 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:35598
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230493AbhJEFE1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 01:04:27 -0400
-Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com [209.85.216.72])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 983033F22C
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 05:02:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1633410152;
-        bh=4sv1HPCgRHpn4yyOFITBxjMLxNIHOvFNMiBGKmMcH4k=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=vvalc3mvXOQ3g1yrOrBn8g0EqBaCQlMxOr85d8lNUBE3JwoVtDMhaINKTSXW6tUwG
-         1yeQWAHACG4Xn/6kGiEMdnEk+r6zE6QOw7jIAk/+zhUgjwwzYSDjLFXreygVjIDa5O
-         vExidkOjIqaE7lddhb5tGqSUYJVrctx0RMwBqi2BXwVTyKkPSUm3wxjT1chfbqGnSS
-         aAUmGANzz4vDlX2CDuVkVhK0MoOJx0em05z6H8r0dnotrsyi8lUpYYDJl8khOkrLtM
-         xMDCIqS0CDdKXghrrEJ7hLk9WpT45kXawhQWxw8kmno8L0qLjT3IIMVh5EulC8S8Nc
-         llUqsXnxj/Otg==
-Received: by mail-pj1-f72.google.com with SMTP id o15-20020a17090ac08f00b0019fafa34327so862665pjs.3
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 22:02:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4sv1HPCgRHpn4yyOFITBxjMLxNIHOvFNMiBGKmMcH4k=;
-        b=xmaRl4CNUWNz3QFjgYp2ew+bOdRu5Uwj07p6GzJWR1rSVUG0Zm2np/wsAYrf9ZGuT0
-         g9Q7QBvWEncNwA3QbjBfHRg2b1pkL7EZhF+h/upLpOlPR3NihbA4ktNC6UVakY3phgBj
-         nKHWTaaTAqcUVfeczWQSLtuF1AYsZaI0gPyOYRWuSBKDYpuqbCzb/ediJgpPzv+drPsN
-         HnNwrCBev2T5hSdlDMhwTZ50CkzrLC7dEIQnonupGOS0yA1auDstVOBmV2y0TH0lVCfx
-         aW/LRjXfI0KX0vsNdBVlreB8sZGa0RYMzUskRzCr3uVmkmi5YCjBZeb21rF7/CkMPiRR
-         v4Iw==
-X-Gm-Message-State: AOAM531E5rrWZ/7758BK5swsjIKqVuVlrvC0AL2Ry9A+x1H55kj7DtST
-        n3laFkJN1rLr4JR2kykUyyvHK4p58v8CXQa16so5LPdaGqTlWlFpHCZqIEfOLRyQWzFqe/e6oHU
-        l6HxdEpDg70zKJGVruvZsMX6/ewIEuawM83/66b8OkA==
-X-Received: by 2002:a63:f80a:: with SMTP id n10mr13873450pgh.303.1633410151083;
-        Mon, 04 Oct 2021 22:02:31 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxhJ2fHJ+dmvfkCeHi0hcYcdtJHYxmYJcUqsJ34pBYhVK4O+ZYTX3mcaGYC7tek2r//0a/SZA==
-X-Received: by 2002:a63:f80a:: with SMTP id n10mr13873440pgh.303.1633410150715;
-        Mon, 04 Oct 2021 22:02:30 -0700 (PDT)
-Received: from [192.168.1.107] (125-237-197-94-fibre.sparkbb.co.nz. [125.237.197.94])
-        by smtp.gmail.com with ESMTPSA id b23sm16272954pfi.135.2021.10.04.22.02.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Oct 2021 22:02:30 -0700 (PDT)
-Subject: Re: [PROBLEM] Frequently get "irq 31: nobody cared" when passing
- through 2x GPUs that share same pci switch via vfio
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     linux-pci@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
-        kvm@vger.kernel.org, nathan.langford@xcelesunifiedtechnologies.com
-References: <d4084296-9d36-64ec-8a79-77d82ac6d31c@canonical.com>
- <20210914104301.48270518.alex.williamson@redhat.com>
- <9e8d0e9e-1d94-35e8-be1f-cf66916c24b2@canonical.com>
- <20210915103235.097202d2.alex.williamson@redhat.com>
-From:   Matthew Ruffell <matthew.ruffell@canonical.com>
-Message-ID: <2fadf33d-8487-94c2-4460-2a20fdb2ea12@canonical.com>
-Date:   Tue, 5 Oct 2021 18:02:24 +1300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S231828AbhJEFRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 01:17:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58006 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229979AbhJEFRw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 01:17:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DE806126A;
+        Tue,  5 Oct 2021 05:16:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633410962;
+        bh=eU19dax//0ARGyclUGvOP2GXyLlBh9R1Ptu/E1Dag1g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ElKn+tGZk/6j37Muf57nAGcu5o+RU4Y78eoBNwf+mTv0M9jJ8M7rCcVnU+yDYlOwf
+         isBVVl+1Y2hCMNFmOPnC6h9HZdSrv/GJ6b4yhp89VUhSuew/gQygXlLRydu9ObZese
+         eDmCGL1CPQmRlAzP0YhwoX+BQE42PVvYKB4Doryw7eP8N4xbXLoR6Qt9GfBOUx6YkT
+         zlXMmwmDGe2X4/pn6hcuRyNK0v1JsgmdnNWVZaUHszdtz9edY+XMelc85katubUpcl
+         xeaGbq9civfPF1vixcoTk6PohYnXDjdiiHXObn0rwnO16JvRtAyhv8ORUQ14EoiV6A
+         iGxyS3BzGLFUw==
+Date:   Tue, 5 Oct 2021 13:15:56 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Sebastian Reichel <sebastian.reichel@collabora.com>
+Subject: Re: [PATCH] ARM: dts: imx6dl-b1x5v2: drop unsupported vcc-supply for
+ MPL3115A2
+Message-ID: <20211005051555.GI20743@dragon>
+References: <20210920182227.339577-1-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
-In-Reply-To: <20210915103235.097202d2.alex.williamson@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210920182227.339577-1-krzysztof.kozlowski@canonical.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alex,
-
-Have you had an opportunity to have a look at this a bit deeper?
-
-On 16/09/21 4:32 am, Alex Williamson wrote:
+On Mon, Sep 20, 2021 at 08:22:27PM +0200, Krzysztof Kozlowski wrote:
+> The MPL3115A2 I2C pressure sensor driver does not take a VCC regulator.
+> The bindings are so far trivial, but the datasheet does not have a VCC
+> pin.
 > 
-> Adding debugging to the vfio-pci interrupt handler, it's correctly
-> deferring the interrupt as the GPU device is not identifying itself as
-> the source of the interrupt via the status register.  In fact, setting
-> the disable INTx bit in the GPU command register while the interrupt
-> storm occurs does not stop the interrupts.
-> 
-> The interrupt storm does seem to be related to the bus resets, but I
-> can't figure out yet how multiple devices per switch factors into the
-> issue.  Serializing all bus resets via a mutex doesn't seem to change
-> the behavior.
-> 
-> I'm still investigating, but if anyone knows how to get access to the
-> Broadcom datasheet or errata for this switch, please let me know.
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-We have managed to obtain a recent errata for this switch, and it 
-doesn't
- mention any interrupt storms with nested switches. What would 
-I be looking for
- in the errata? I cannot share our copy, sorry.
-
-
-
-Is there anything that we can do to help?
-
-
-
-Thanks,
-
-Matthew
+Applied, thanks!
