@@ -2,120 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A28D422034
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 10:11:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5235E42205A
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 10:13:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233394AbhJEIND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 04:13:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39824 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232929AbhJEINB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 04:13:01 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33E8AC06174E
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 01:11:10 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id g198-20020a1c20cf000000b0030d60cd7fd6so2233373wmg.0
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 01:11:10 -0700 (PDT)
+        id S233216AbhJEIPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 04:15:03 -0400
+Received: from mail-bn7nam10on2043.outbound.protection.outlook.com ([40.107.92.43]:7552
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233079AbhJEIPB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 04:15:01 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dro6R0M8kZZWMa/ADIs2waPYd7oJg/oXwy6xm0sac5YTZkVA4+jmjKbBmSHxsOtg5c2AC9ZIrV+cmeD84gFCy99DszEWA0D+psi5Jbt3zymxa2NYi8fwBwmmrSM9HQ2ZjeCXep9BSYBeBmbfuFukjIjS9LkvAYaI0EGD5MMSzEAcNOIKbKAWL6+C+WY0mC9z5CM4S2Rx0yWjo/XEuICCK93yZJN1s9qUaCQUWeufwJdd0sMiObRqfFBrggkrGtVbyAsdUhrs8LREiZKYwm1aU+kM9si7r6SNd6MXOyGbbhruT46OSqSKpbWzBQymQRIg4GKQ8bWVQfVN2jyB7jnHFg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=XKrfD/33W0mY9h3j/KCH9Zwe0jb1xRDgXra8d8uLDWk=;
+ b=MxEYBCJZVAgkbbMbmA63+Q1VbHyybeCdPqhvz87cILmiu0POiwm9g0q/Uf71e3J06ylpXSJPNud7F2rBKSUwriNVicBdmJW4cq42gCHYMWYjSJQnwa3kNebFYv5vEDwIvh9ICaLiVPtW/x2ZqM47y71Q9jQIlmBfD6wiHPLI3FNE7LGWi6IrrcQ/v1W55oJ3LMuaI05W+YhEVkqll/JaYS12am4uIn9htPpi/FUkOZYNf8oYCTNrG8rmIQeP/gljPeNu7dIkTzAdQCIKk3XcO84EDatDHojgSNyUgjnjVnQ9JjfpwMRzK3/ZGfYXMoUzM7DX3W6PRg+XYMUXhTjfsw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=silabs.com; dmarc=pass action=none header.from=silabs.com;
+ dkim=pass header.d=silabs.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=bta05v7vW8t+S5VqKO1o8XaZo4sZ8MCHIv5cOVkrBw0=;
-        b=e/s6nRIJMACVqo1o+32h+rSQ6eo3hynaXqga4ZkjA4bK9Nk1P92YeN3T3lRo2HVoBA
-         9e6ckZEeX7TkA0o43HjijXjf/RzlOOh/fr0kLmI89kVdn/FU8hE7mZy9WgzaeHL++6CJ
-         4w0fDiH2JqvQIyiEwkrE8lAD+232TOdy4GxCNS6WKPze1HINX7xrIvDLNw+1v6bZJUF8
-         9wZz1lxp6j6gYtr9LD7aPKKSDznuc73iuHiwCxAzID4LMJQ8zPxVlQ/Z+qb88w6klo4O
-         MMkh1CQN0M33JjrEj2SBvpBu8WqM5f5dMhQ0MM8TNbqoV1B/bZ+kudbHyLSQGJteiM7v
-         pSLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=bta05v7vW8t+S5VqKO1o8XaZo4sZ8MCHIv5cOVkrBw0=;
-        b=zHtVO8k7dX6gwmJUWFQWpV9fw3BtJyi9YOorfttAlx9XLBj6m/wcqY6hh562TlUW6B
-         N+SG6G1Z2PSazp3Cd1CquLw+zXf+W/2Xp2OQOY+penaFeBP0rXuaOrpUaivcfyLPDfSp
-         SNZEGOcLno3K2+2PDWrUhEE6k03ddOvQ71rSaydG5huvo4Z2UK2cnz6agwVTeZvtJzns
-         2SVqD+HzyNg1ApdFGGxoS97/zdJ9SKKyJAAZRBVTr96DojNqcCH1RWYhl/qLt4/6T0Sg
-         QxMceEY2LSi4PuEkM8DgTSb9Y894KzZSpZ7XT9EwocPdA2B/3UfJ+TxXj7rQ1SgmAOcg
-         Bpnw==
-X-Gm-Message-State: AOAM532kd6ESz0/0M/1LcuqQOu5gd02ATOzTIIkbxZsUIfHET6WGTWRp
-        qxE3SivoiP+0BnySt9GUM7GG3w==
-X-Google-Smtp-Source: ABdhPJzs52tiM9/HGepdoOu43VqNtetWhPVHT8GdSTkY3A/gVZ+ezaPREGdSW5DXoiG4QNcsZav+EQ==
-X-Received: by 2002:a1c:e90a:: with SMTP id q10mr1958361wmc.108.1633421468827;
-        Tue, 05 Oct 2021 01:11:08 -0700 (PDT)
-Received: from google.com ([95.148.6.175])
-        by smtp.gmail.com with ESMTPSA id g1sm1784750wmk.2.2021.10.05.01.11.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Oct 2021 01:11:08 -0700 (PDT)
-Date:   Tue, 5 Oct 2021 09:11:06 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Arnd Bergmann <arnd@arndb.de>,
+ d=silabs.onmicrosoft.com; s=selector2-silabs-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XKrfD/33W0mY9h3j/KCH9Zwe0jb1xRDgXra8d8uLDWk=;
+ b=gl2YB1w8Rbhpp/nnHnsVrxhgKpL0cSqa9Kw+FRts2PxdR8mvGZqDMp3f9YRHl3CZwT9C+9jSEZy4nXaJK887Q0fXLFuDVYUaIv+5Lp/lYM0cjQJnkXKzalZKQHBQ5HfEwvwceif89rUvSuE5InlGeM7sZJez0WnNqxYvVrFY6cc=
+Authentication-Results: codeaurora.org; dkim=none (message not signed)
+ header.d=none;codeaurora.org; dmarc=none action=none header.from=silabs.com;
+Received: from PH0PR11MB5657.namprd11.prod.outlook.com (2603:10b6:510:ee::19)
+ by PH0PR11MB5675.namprd11.prod.outlook.com (2603:10b6:510:d4::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.14; Tue, 5 Oct
+ 2021 08:13:09 +0000
+Received: from PH0PR11MB5657.namprd11.prod.outlook.com
+ ([fe80::31cb:3b13:b0e8:d8f4]) by PH0PR11MB5657.namprd11.prod.outlook.com
+ ([fe80::31cb:3b13:b0e8:d8f4%9]) with mapi id 15.20.4566.022; Tue, 5 Oct 2021
+ 08:13:08 +0000
+From:   =?ISO-8859-1?Q?J=E9r=F4me?= Pouiller <jerome.pouiller@silabs.com>
+To:     Kalle Valo <kvalo@codeaurora.org>
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 RESEND] mfd: hi6421-spmi-pmic: cleanup drvdata
-Message-ID: <YVwImlQYPhc3/nhi@google.com>
-References: <b6102d6db357ebb5c937f460a564c6f26281e403.1631709890.git.mchehab+huawei@kernel.org>
- <YVwD2sPZMCtwP9yf@google.com>
- <20211005095603.0e204776@coco.lan>
+        "David S . Miller" <davem@davemloft.net>,
+        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        linux-mmc@vger.kernel.org,
+        Pali =?ISO-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: Re: [PATCH v7 05/24] wfx: add main.c/main.h
+Date:   Tue, 05 Oct 2021 10:12:32 +0200
+Message-ID: <7452745.X2mWs0JoBS@pc-42>
+Organization: Silicon Labs
+In-Reply-To: <8735pgggka.fsf@codeaurora.org>
+References: <20210920161136.2398632-1-Jerome.Pouiller@silabs.com> <3660480.PpQ1LQVJpD@pc-42> <8735pgggka.fsf@codeaurora.org>
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+X-ClientProxiedBy: PAZP264CA0066.FRAP264.PROD.OUTLOOK.COM
+ (2603:10a6:102:1fd::23) To PH0PR11MB5657.namprd11.prod.outlook.com
+ (2603:10b6:510:ee::19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211005095603.0e204776@coco.lan>
+Received: from pc-42.localnet (37.71.187.125) by PAZP264CA0066.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:1fd::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.18 via Frontend Transport; Tue, 5 Oct 2021 08:13:06 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 3bb5a6a9-c23e-4051-6107-08d987d7f738
+X-MS-TrafficTypeDiagnostic: PH0PR11MB5675:
+X-Microsoft-Antispam-PRVS: <PH0PR11MB56755F6972849C1C9FF8389E93AF9@PH0PR11MB5675.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: H5/VuKeEEeQuNj6dMKvyHA7N/BfdzckJLYVhzwdZAlnhYPDI4YQNfIqy/xYEdqWdKsty2S1yNl6GnC9UROQoSHh8EAyujmYmK2zt9VZgnujjRr7MUaw4zCK5YQ2Iw72NXp9LOJVZD+hP3zQqR07SZdMbRsrhQvre9eGc48LZpChC39uQiJ3rXECnu4lHa6bnqXmjSAMsB+yg6U3p9eBuJbeixIsAN7RzxdD93dflaH1kB8JrG1Kk4fuSSHcNhLFJUxGATqPVBLObaX2yZskBvdWFpoyuTKLoxB7JhKLVR0BKTmfjZD5dk7XTe4g4cLlRNISMJoVKrvuJInaxG3V6ksGaydHPT/9cjzVWN3Z0JzNvwaFafe8gr//mnGtXXYvEfQthr15/MXpGqJG1ETai/c7ZThxOkiKkFdCezm1NOj8ov8bfJ1Ly+sgDm4Csp4nbwt2RNJOHtEYH9G4MC92Who2CUwTV5pddipScUw80TxX1q38FUh6Dp/456zFAv1g+oaXO3qjaONJ4RZ9mUARBAogec8W99aFm287uvFJW0P9biz/mF1owgi2aEB6J3QevOQxxLcby5ktbA+ZSzWJ0JumZZydsl/uyKtoMmmOOWHFLTw1scLoVLZ1WF1UbwG260bgcia4tYeLEJymCVy8XctR3t4X4q+djCPpZGlwIGUucBsRuPxZoOKBS9jXMfm0qynXpcTnFKYXkjFRrBqGLR6ut3DYFzkcok1dEoSwdz3w=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5657.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(36916002)(316002)(54906003)(86362001)(6666004)(508600001)(6512007)(9686003)(2906002)(52116002)(33716001)(5660300002)(6486002)(956004)(66946007)(66556008)(66476007)(7416002)(66574015)(6506007)(8936002)(83380400001)(8676002)(186003)(26005)(38100700002)(38350700002)(6916009)(4326008)(39026012);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?+9VOkZS96RBi1NSmim7XCJAeFhlF0EJjGraA2Zo5rWy7ZtRv0YXWba4BKm?=
+ =?iso-8859-1?Q?w5ZvL/uSa6m/LR5kOSrp7isWIFPiY+7qhFfhul9evqTq48DWqh0FqTgFPG?=
+ =?iso-8859-1?Q?HpPLMUlqby/od0mj2BmKNy38K6BpFFwTENvObno8yEaanbkoYV+7soDE92?=
+ =?iso-8859-1?Q?JKzYJLvH1ZGoT4iz1iQItkh8PlMCQ7OEnS/hM3Pfi9rH88Qw8OPX1Slxq4?=
+ =?iso-8859-1?Q?17V5W0tMm6FjOJD/gkyFNCjXK2Ltc8FKUJR+99VfKOJfKibo2YRtYIs/wz?=
+ =?iso-8859-1?Q?iFlG4p2jUGAioyOAI59jjzHoMP4qMv1G38LlnO7PA4tG+n1MNpPl2u39iI?=
+ =?iso-8859-1?Q?egc5FyZRZxEUslDetxjckAikovBtfLNMMgAyLJk6yLIgqz6t+u5xclAlnH?=
+ =?iso-8859-1?Q?ga79RjQyV2bU7bBd8Ja3vvqFhebOi0vtEZUarsOZzuu5Bmd7iAierWFtPg?=
+ =?iso-8859-1?Q?EexxFljEnGlrnA0akIcuvuPTMnUQaGi2UQtZx+bNXfSgrK6aj6aWr/aU30?=
+ =?iso-8859-1?Q?KLy+7JBTQoNXnV/JBp5UCNbYqcFVtcNOwzXNLcIn1DqIl0ZmVOlFcN9AY2?=
+ =?iso-8859-1?Q?Eua0Z/qgvi2iIRXDH6eMK4KH/hEfd8ilbPFN1FvUEfxVQ8xphTf5yMoHTG?=
+ =?iso-8859-1?Q?+R9crfVymc2pwDpTPnQS0VirhohsAHvaZp8ZufyJ0OJzgObIZN0ceEpIYY?=
+ =?iso-8859-1?Q?AiqjanVDDABLFPwdoGLhharaHlWBWSYa3yjE0CT8+45ZfvTSc8eNjoWilF?=
+ =?iso-8859-1?Q?ekOJT4fbiuyBa8MlsPI0I4Vr/Gq1aBZGdFe0sJmD+kbvfDDkdPiRQnmyY4?=
+ =?iso-8859-1?Q?ItvXp5yxRfNncAYAPjtrUutuoHgInflJIzVsPxwmGMkrOydCIL69AmyHo6?=
+ =?iso-8859-1?Q?lDLkbaVQof6gDlc6r26Y90yUjrTaSuIVrTz9l6AxtAltBox/B/g3Vaq0r9?=
+ =?iso-8859-1?Q?vKIGZ78nQd/CfHAL43s9SvoNcQXl4NqD8ymR0C7RNQwBjDNUkgQxceNcWN?=
+ =?iso-8859-1?Q?RvFhvsaC5FxUuZdZYYQBoPvDuQ0B2rqJeT7GbJiRHGqe1xoMeAI7VvCyuZ?=
+ =?iso-8859-1?Q?f0ACrjMUdGUSYjRybnUhk5a3iThx91ybowEpV1GY6WTtuVjeRgSrNUns0D?=
+ =?iso-8859-1?Q?KFrUa2BvdnYvVR335/K0QDCAKV/GJlMb+NDGVpDur7P8970Hc9YXBX7D6T?=
+ =?iso-8859-1?Q?LPC32hNcxNZ65Y5+vDIwPYLbgy1MI++9aYkGX/KWImm8rYVewo6cnWJ88R?=
+ =?iso-8859-1?Q?35KQJ+u1SB5mh947Mwebyvev812s5SyLvCdSL9KP4rmvwtGYTNF/sMVsnd?=
+ =?iso-8859-1?Q?3RkVtjLOB3IpmMYZg9v48UDGkzJunLs5A+A1CMXh0sJa0AE00Gx1r7QPKI?=
+ =?iso-8859-1?Q?wOa+ULO6Th?=
+X-OriginatorOrg: silabs.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3bb5a6a9-c23e-4051-6107-08d987d7f738
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5657.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Oct 2021 08:13:08.6823
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 54dbd822-5231-4b20-944d-6f4abcd541fb
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: I/EOULx31YMLrJESbjME1JzHdQ03ZROvc4K6wi1EUh3T6WUE2bcWSW3R3GOd/quZsIMMIb9fczrpLEmYpd2GWQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB5675
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 05 Oct 2021, Mauro Carvalho Chehab wrote:
+On Tuesday 5 October 2021 07:56:53 CEST Kalle Valo wrote:
+> J=E9r=F4me Pouiller <jerome.pouiller@silabs.com> writes:
+>=20
+> > On Friday 1 October 2021 11:22:08 CEST Kalle Valo wrote:
+> >> CAUTION: This email originated from outside of the organization. Do
+> >> not click links or open attachments unless you recognize the sender
+> >> and know the content is safe.
+> >>
+> >>
+> >> Jerome Pouiller <Jerome.Pouiller@silabs.com> writes:
+> >>
+> >> > From: J=E9r=F4me Pouiller <jerome.pouiller@silabs.com>
+> >> >
+> >> > Signed-off-by: J=E9r=F4me Pouiller <jerome.pouiller@silabs.com>
+> >>
+> >> [...]
+> >>
+> >> > +/* The device needs data about the antenna configuration. This info=
+rmation in
+> >> > + * provided by PDS (Platform Data Set, this is the wording used in =
+WF200
+> >> > + * documentation) files. For hardware integrators, the full process=
+ to create
+> >> > + * PDS files is described here:
+> >> > + *   https:github.com/SiliconLabs/wfx-firmware/blob/master/PDS/READ=
+ME.md
+> >> > + *
+> >> > + * So this function aims to send PDS to the device. However, the PD=
+S file is
+> >> > + * often bigger than Rx buffers of the chip, so it has to be sent i=
+n multiple
+> >> > + * parts.
+> >> > + *
+> >> > + * In add, the PDS data cannot be split anywhere. The PDS files con=
+tains tree
+> >> > + * structures. Braces are used to enter/leave a level of the tree (=
+in a JSON
+> >> > + * fashion). PDS files can only been split between root nodes.
+> >> > + */
+> >> > +int wfx_send_pds(struct wfx_dev *wdev, u8 *buf, size_t len)
+> >> > +{
+> >> > +     int ret;
+> >> > +     int start, brace_level, i;
+> >> > +
+> >> > +     start =3D 0;
+> >> > +     brace_level =3D 0;
+> >> > +     if (buf[0] !=3D '{') {
+> >> > + dev_err(wdev->dev, "valid PDS start with '{'. Did you forget to
+> >> > compress it?\n");
+> >> > +             return -EINVAL;
+> >> > +     }
+> >> > +     for (i =3D 1; i < len - 1; i++) {
+> >> > +             if (buf[i] =3D=3D '{')
+> >> > +                     brace_level++;
+> >> > +             if (buf[i] =3D=3D '}')
+> >> > +                     brace_level--;
+> >> > +             if (buf[i] =3D=3D '}' && !brace_level) {
+> >> > +                     i++;
+> >> > +                     if (i - start + 1 > WFX_PDS_MAX_SIZE)
+> >> > +                             return -EFBIG;
+> >> > +                     buf[start] =3D '{';
+> >> > +                     buf[i] =3D 0;
+> >> > +                     dev_dbg(wdev->dev, "send PDS '%s}'\n", buf + s=
+tart);
+> >> > +                     buf[i] =3D '}';
+> >> > +                     ret =3D hif_configuration(wdev, buf + start,
+> >> > +                                             i - start + 1);
+> >> > +                     if (ret > 0) {
+> >> > + dev_err(wdev->dev, "PDS bytes %d to %d: invalid data (unsupported
+> >> > options?)\n",
+> >> > +                                     start, i);
+> >> > +                             return -EINVAL;
+> >> > +                     }
+> >> > +                     if (ret =3D=3D -ETIMEDOUT) {
+> >> > + dev_err(wdev->dev, "PDS bytes %d to %d: chip didn't reply (corrupt=
+ed
+> >> > file?)\n",
+> >> > +                                     start, i);
+> >> > +                             return ret;
+> >> > +                     }
+> >> > +                     if (ret) {
+> >> > + dev_err(wdev->dev, "PDS bytes %d to %d: chip returned an unknown
+> >> > error\n",
+> >> > +                                     start, i);
+> >> > +                             return -EIO;
+> >> > +                     }
+> >> > +                     buf[i] =3D ',';
+> >> > +                     start =3D i;
+> >> > +             }
+> >> > +     }
+> >> > +     return 0;
+> >> > +}
+> >>
+> >> I'm not really fond of having this kind of ASCII based parser in the
+> >> kernel. Do you have an example compressed file somewhere?
+> >>
+> >> Does the device still work without these PDS files? I ask because my
+> >> suggestion is to remove this part altogether and revisit after the
+> >> initial driver is moved to drivers/net/wireless. A lot simpler to revi=
+ew
+> >> complex features separately.
+> >
+> > Do you want I remove this function from this patch and place it a new
+> > patch at the end of this series?
+>=20
+> I don't understand, how that would help? The problem here is the file
+> format and that's what we should try to fix.
 
-> Em Tue, 5 Oct 2021 08:50:50 +0100
-> Lee Jones <lee.jones@linaro.org> escreveu:
-> 
-> > On Wed, 15 Sep 2021, Mauro Carvalho Chehab wrote:
-> > 
-> > > There are lots of fields at struct hi6421_spmi_pmic that aren't
-> > > used. In a matter of fact, only regmap is needed.
-> > > 
-> > > So, drop the struct as a hole, and set just the regmap as
-> > > the drvdata.
-> > > 
-> > > Acked-by: Mark Brown <broonie@kernel.org>
-> > > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> > > ---
-> > >  drivers/mfd/hi6421-spmi-pmic.c           | 16 +++++----------
-> > >  drivers/misc/hi6421v600-irq.c            |  9 ++++-----
-> > >  drivers/regulator/hi6421v600-regulator.c | 10 +++++-----
-> > >  include/linux/mfd/hi6421-spmi-pmic.h     | 25 ------------------------
-> > >  4 files changed, 14 insertions(+), 46 deletions(-)
-> > >  delete mode 100644 include/linux/mfd/hi6421-spmi-pmic.h  
-> > 
-> > For my own reference (apply this as-is to your sign-off block):
-> > 
-> >   Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
-> > 
-> > I intend to take this with a Misc Ack.
-> 
-> Hi Lee,
-> 
-> Greg already gave you:
-> 
-> 	https://lore.kernel.org/all/YVLA14jbwqXjNM2f@kroah.com/
+It was just to be able to review this function separately. Nevermind.
 
-Yes, I found that after I replied to this one.
 
-I was having some trouble applying it with `b4` just as you replied:
+--=20
+J=E9r=F4me Pouiller
 
-  https://lore.kernel.org/tools/CAF2Aj3icJtU+wacosM-LO2aqMChWL69T6bf7dK3xqPMSk6Ux3w@mail.gmail.com/T/#u
 
-I fixed the spelling/grammar mistakes and applied the patch.
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
