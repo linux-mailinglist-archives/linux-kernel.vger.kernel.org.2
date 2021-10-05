@@ -2,102 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B963F422B0F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:30:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56CDD422B0D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:30:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235395AbhJEOcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 10:32:04 -0400
-Received: from foss.arm.com ([217.140.110.172]:51310 "EHLO foss.arm.com"
+        id S235572AbhJEOcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 10:32:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52942 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235090AbhJEOcD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 10:32:03 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7E7621FB;
-        Tue,  5 Oct 2021 07:30:12 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.23.50])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4CA793F70D;
-        Tue,  5 Oct 2021 07:30:06 -0700 (PDT)
-Date:   Tue, 5 Oct 2021 15:30:03 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Daniel Axtens <dja@axtens.net>
-Cc:     keescook@chromium.org, catalin.marinas@arm.com,
-        clang-built-linux@googlegroups.com, hca@linux.ibm.com,
-        jarmo.tiitto@gmail.com, linux-kernel@vger.kernel.org,
-        lukas.bulwahn@gmail.com, masahiroy@kernel.org, maskray@google.com,
-        morbo@google.com, nathan@kernel.org, ndesaulniers@google.com,
-        oberpar@linux.ibm.com, ojeda@kernel.org, peterz@infradead.org,
-        samitolvanen@google.com, torvalds@linux-foundation.org,
-        wcw@google.com, will@kernel.org
-Subject: Re: ARCH_WANTS_NO_INSTR (Re: [GIT PULL] Clang feature updates for
- v5.14-rc1)
-Message-ID: <20211005143003.GC6678@C02TD0UTHF1T.local>
-References: <202106281231.E99B92BB13@keescook>
- <20211005131015.3153458-1-dja@axtens.net>
+        id S235090AbhJEOb6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 10:31:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DA9E5610E6;
+        Tue,  5 Oct 2021 14:30:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1633444208;
+        bh=Q4C78fvfdtapqj0+ujYuGFESUu/lC0XDXFEMMgK8fHs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Pur8XdkWnVOmSOtPyy8GXHrjwlau8gzFOt2rZyqLOnQrdNNxHm4YwD2YCEyAXRj/X
+         dIZUAlq5a4IXS2Nst+jOkWLOfcwz3lN/v5R+wBYACLNeDZxaTaW1UsmwyCFlxTIgmZ
+         QipiGkB/xuo5IxammX9f+cQ6WxSO6VUzVXEXdIqk=
+Date:   Tue, 5 Oct 2021 16:30:06 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     "Luis R. Rodriguez" <mcgrof@kernel.org>
+Cc:     bp@suse.de, akpm@linux-foundation.org, josh@joshtriplett.org,
+        rishabhb@codeaurora.org, kubakici@wp.pl, maco@android.com,
+        david.brown@linaro.org, bjorn.andersson@linaro.org,
+        linux-wireless@vger.kernel.org, keescook@chromium.org,
+        shuah@kernel.org, mfuzzey@parkeon.com, zohar@linux.vnet.ibm.com,
+        dhowells@redhat.com, pali.rohar@gmail.com, tiwai@suse.de,
+        arend.vanspriel@broadcom.com, zajec5@gmail.com, nbroeking@me.com,
+        broonie@kernel.org, dmitry.torokhov@gmail.com, dwmw2@infradead.org,
+        torvalds@linux-foundation.org, Abhay_Salunke@dell.com,
+        jewalt@lgsinnovations.com, cantabile.desu@gmail.com, ast@fb.com,
+        andresx7@gmail.com, dan.rue@linaro.org, brendanhiggins@google.com,
+        yzaikin@google.com, sfr@canb.auug.org.au, rdunlap@infradead.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 04/14] firmware_loader: add built-in firmware kconfig
+ entry
+Message-ID: <YVxhbhmNd7tahLV7@kroah.com>
+References: <20210917182226.3532898-1-mcgrof@kernel.org>
+ <20210917182226.3532898-5-mcgrof@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211005131015.3153458-1-dja@axtens.net>
+In-Reply-To: <20210917182226.3532898-5-mcgrof@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 06, 2021 at 12:10:15AM +1100, Daniel Axtens wrote:
-> Hi,
-
-Hi Daniel,
-
-> Apologies, I can't find the original email for this:
+On Fri, Sep 17, 2021 at 11:22:16AM -0700, Luis R. Rodriguez wrote:
+> From: Luis Chamberlain <mcgrof@kernel.org>
 > 
-> >      Kconfig: Introduce ARCH_WANTS_NO_INSTR and CC_HAS_NO_PROFILE_FN_ATTR
+> The built-in firmware is always supported when a user enables
+> FW_LOADER=y today, that is, it is built-in to the kernel. When the
+> firmware loader is built as a module, support for built-in firmware
+> is skipped. This requirement is not really clear to users or even
+> developers.
 > 
-> which is now commit 51c2ee6d121c ("Kconfig: Introduce ARCH_WANTS_NO_INSTR and
-> CC_HAS_NO_PROFILE_FN_ATTR"). It doesn't seem to show up on Google, this was the
-> best I could find.
-
-Unless I've misunderstood, the commit title was rewritten when the patch
-was applied, from the third link in commit 51c2ee6d121c. For reference,
-those three links are:
-
-  Link: https://lore.kernel.org/lkml/YMTn9yjuemKFLbws@hirez.programming.kicks-ass.net/
-  Link: https://lore.kernel.org/lkml/YMcssV%2Fn5IBGv4f0@hirez.programming.kicks-ass.net/
-  Link: https://lore.kernel.org/r/20210621231822.2848305-4-ndesaulniers@google.com
-
-> Anyway, the commit message reads:
+> Also, by default the EXTRA_FIRMWARE is always set to an empty string
+> and so by default we really have nothing built-in to that kernel's
+> sections for built-in firmware, so today a all FW_LOADER=y kernels
+> spins their wheels on an empty set of built-in firmware for each
+> firmware request with no true need for it.
 > 
->     Kconfig: Introduce ARCH_WANTS_NO_INSTR and CC_HAS_NO_PROFILE_FN_ATTR
->     
->     We don't want compiler instrumentation to touch noinstr functions,
->     which are annotated with the no_profile_instrument_function function
->     attribute. Add a Kconfig test for this and make GCOV depend on it, and
->     in the future, PGO.
->     
->     If an architecture is using noinstr, it should denote that via this
->     Kconfig value. That makes Kconfigs that depend on noinstr able to express
->     dependencies in an architecturally agnostic way.
+> Add a new kconfig entry to represent built-in firmware support more
+> clearly. This let's knock 3 birds with one stone:
 > 
-> However, things in generic code (such as rcu_nmi_enter) are tagged with
-> `noinstr`, so I'm worried that this commit subtly breaks things like KASAN on
-> platforms that haven't opted in yet. (I stumbled across this while developing
-> KASAN on ppc64, but at least riscv and ppc32 have KASAN but not
-> ARCH_WANTS_NO_INSTR already.)
+>  o Clarifies that support for built-in firmware requires the
+>    firmware loader to be built-in to the kernel
 > 
-> As I said, I haven't been able to find the original thread - is there any reason
-> this shouldn't be always on? Why would an arch not opt in? What's the motivation
-> for ignoring the noinstr markings?
+>  o By default we now always skip built-in firmware even if a FW_LOADER=y
+> 
+>  o This also lets us make it clear that the EXTRA_FIRMWARE_DIR
+>    kconfig entry is only used for built-in firmware
+> 
+> Reviewed-by: Borislav Petkov <bp@suse.de>
+> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+> ---
+>  .../driver-api/firmware/built-in-fw.rst       |  2 ++
+>  Documentation/x86/microcode.rst               |  5 ++--
+>  drivers/base/firmware_loader/Kconfig          | 25 +++++++++++++------
+>  drivers/base/firmware_loader/Makefile         |  3 +--
+>  drivers/base/firmware_loader/main.c           |  4 +--
+>  5 files changed, 26 insertions(+), 13 deletions(-)
+> 
+> diff --git a/Documentation/driver-api/firmware/built-in-fw.rst b/Documentation/driver-api/firmware/built-in-fw.rst
+> index bc1c961bace1..9dd2b1df44f0 100644
+> --- a/Documentation/driver-api/firmware/built-in-fw.rst
+> +++ b/Documentation/driver-api/firmware/built-in-fw.rst
+> @@ -8,6 +8,7 @@ the filesystem. Instead, firmware can be looked for inside the kernel
+>  directly. You can enable built-in firmware using the kernel configuration
+>  options:
+>  
+> +  * CONFIG_FW_LOADER_BUILTIN
+>    * CONFIG_EXTRA_FIRMWARE
+>    * CONFIG_EXTRA_FIRMWARE_DIR
+>  
+> @@ -17,6 +18,7 @@ into the kernel with CONFIG_EXTRA_FIRMWARE:
+>  * Speed
+>  * Firmware is needed for accessing the boot device, and the user doesn't
+>    want to stuff the firmware into the boot initramfs.
+> +* Testing built-in firmware
+>  
+>  Even if you have these needs there are a few reasons why you may not be
+>  able to make use of built-in firmware:
+> diff --git a/Documentation/x86/microcode.rst b/Documentation/x86/microcode.rst
+> index a320d37982ed..d199f0b98869 100644
+> --- a/Documentation/x86/microcode.rst
+> +++ b/Documentation/x86/microcode.rst
+> @@ -114,11 +114,12 @@ Builtin microcode
+>  =================
+>  
+>  The loader supports also loading of a builtin microcode supplied through
+> -the regular builtin firmware method CONFIG_EXTRA_FIRMWARE. Only 64-bit is
+> -currently supported.
+> +the regular builtin firmware method using CONFIG_FW_LOADER_BUILTIN and
+> +CONFIG_EXTRA_FIRMWARE. Only 64-bit is currently supported.
+>  
+>  Here's an example::
+>  
+> +  CONFIG_FW_LOADER_BUILTIN=y
+>    CONFIG_EXTRA_FIRMWARE="intel-ucode/06-3a-09 amd-ucode/microcode_amd_fam15h.bin"
+>    CONFIG_EXTRA_FIRMWARE_DIR="/lib/firmware"
+>  
+> diff --git a/drivers/base/firmware_loader/Kconfig b/drivers/base/firmware_loader/Kconfig
+> index 5b24f3959255..de4fcd9d41f3 100644
+> --- a/drivers/base/firmware_loader/Kconfig
+> +++ b/drivers/base/firmware_loader/Kconfig
+> @@ -29,8 +29,10 @@ if FW_LOADER
+>  config FW_LOADER_PAGED_BUF
+>  	bool
+>  
+> -config EXTRA_FIRMWARE
+> -	string "Build named firmware blobs into the kernel binary"
+> +config FW_LOADER_BUILTIN
+> +	bool "Enable support for built-in firmware"
+> +	default n
 
-IIRC the thinking was that architectures which have their entry logic in
-asm could/might avoid the problematic instrumentation by construction,
-and we didn't want to break functionality for those.
+n is always the default, no need to list it again.
 
-As you say, if that asm has to call code which can't safely be
-instrumented, that's equally broken, and that might have been
-wrong-headed.
+> +	depends on FW_LOADER=y
 
-> Should generic KASAN/KCSAN/anything else marked in noinstr also have markings
-> requring ARCH_WANTS_NO_INSTR? AFAICT they should, right?
+I don't see what this gets us to add another config option.  Are you
+making things easier later on?
 
-I suspect so, if we could otherwise get unexpected or unsafe recursion
-between instrumentation.
+Anyway, I took the first 3 patches here, please fix this up and rebase
+and resend.
 
-Thanks,
-Mark.
+thanks,
+
+greg k-h
