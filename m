@@ -2,79 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B38564223AC
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 12:37:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82A234223B6
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 12:38:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234101AbhJEKjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 06:39:10 -0400
-Received: from mga17.intel.com ([192.55.52.151]:34741 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232723AbhJEKjJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 06:39:09 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10127"; a="206521299"
-X-IronPort-AV: E=Sophos;i="5.85,348,1624345200"; 
-   d="scan'208";a="206521299"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2021 03:37:18 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,348,1624345200"; 
-   d="scan'208";a="623348719"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 05 Oct 2021 03:37:16 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 05 Oct 2021 13:37:15 +0300
-Date:   Tue, 5 Oct 2021 13:37:15 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Amelie Delaunay <amelie.delaunay@st.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org
-Subject: Re: [PATCH] usb: typec: STUSB160X should select REGMAP_I2C
-Message-ID: <YVwq26BIm9/cUUu4@kuha.fi.intel.com>
-References: <20211004232103.23893-1-rdunlap@infradead.org>
+        id S234075AbhJEKki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 06:40:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47076 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233855AbhJEKkh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 06:40:37 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D13D6C06161C
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 03:38:46 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id r10so20024226wra.12
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 03:38:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=H9PK5OVBJJh8Z07ZGNAQ/njfImaF/ljJYKuf9Kp7Cqs=;
+        b=ALdOKXeOQWsAyarKfutyvCbCybKfyRWHwCFdpQIIag2dprgW9sMW4ZInIwcvqlEn0E
+         J7CxsV5kMMZWpyajS3O+xSnIR2j4zWZl6YSb2ARmq3WUt8uX9qVdkefSYiVjZnatziTf
+         5yb7MFMDb5jA8Bd/9EuE4kIuewjEZ6NUaLxI9Ni7YytmoX8XLKltlurxKILT/YRfFqBy
+         eqbMyYbs468+5X3T7rfNDHAxGZ8Yec2ic6pUkCSR8tVinwUSROM8vOC+7Bgnb4JGye3Y
+         zyY66eIBk1bHG3IhrCKBwTSDxqP/JKvXVFkCghsAlQ9MzkB/eVl8LWBm+/8pFx318NNC
+         NXsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=H9PK5OVBJJh8Z07ZGNAQ/njfImaF/ljJYKuf9Kp7Cqs=;
+        b=F6AOmz6ifzIzWOO54yheMIy3kMoE4kzElPbdhNWTcxTlpVPINHPJx1Fi+OmnAsv645
+         0QP+0YmME49kKDxc/i1m6EvNLyILbkudpZDc8+tFEDEEkMhskTALq4xCHE6zVt1THPEe
+         ggMTYzsjp8ckoSB3vm2zNS20fYvnH1Sq57iZAL+HT6LhDkA0GScxeG3sMnMjcVx3+0H6
+         U3q0vNYPbL8tbfoAoNYRmCFYEntJWNw+19mvRS4ERKTRUzqoYykGzibYAGj2+MMve8Fr
+         1Wm4BdJItdooB83q6uXSZAYgnh4Uq5fN4cJiCWbOYanSTQujDplnNGlM6IexWXro/upJ
+         I8mA==
+X-Gm-Message-State: AOAM533Zdg084a0YrurgfF2O/De8CKahUxo81TYkgv1XRfgPG+HzUYtI
+        aXmBCrAx6zKQj0F6IX6vBN/0xw==
+X-Google-Smtp-Source: ABdhPJzsbxS7Sgk4dlKMXvgUGEOt3+fcZUe+f2XcxzvViCSjyKDrehXfNrlJzGPcrJ24mbBQtcENCA==
+X-Received: by 2002:adf:df91:: with SMTP id z17mr9383829wrl.434.1633430325318;
+        Tue, 05 Oct 2021 03:38:45 -0700 (PDT)
+Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
+        by smtp.gmail.com with ESMTPSA id g21sm1393351wmk.10.2021.10.05.03.38.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Oct 2021 03:38:44 -0700 (PDT)
+Date:   Tue, 5 Oct 2021 11:38:43 +0100
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Marijn Suijten <marijn.suijten@somainline.org>
+Cc:     phone-devel@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Martin Botka <martin.botka@somainline.org>,
+        Jami Kettunen <jami.kettunen@somainline.org>,
+        Pavel Dubrova <pashadubrova@gmail.com>,
+        Kiran Gunda <kgunda@codeaurora.org>,
+        Courtney Cavin <courtney.cavin@sonymobile.com>,
+        Bryan Wu <cooloney@gmail.com>, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 05/10] backlight: qcom-wled: Fix off-by-one maximum with
+ default num_strings
+Message-ID: <20211005103843.heufyonycnudxnzd@maple.lan>
+References: <20211004192741.621870-1-marijn.suijten@somainline.org>
+ <20211004192741.621870-6-marijn.suijten@somainline.org>
+ <20211005091947.7msztp5l554c7cy4@maple.lan>
+ <20211005100606.faxra73mzkvjd4f6@SoMainline.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211004232103.23893-1-rdunlap@infradead.org>
+In-Reply-To: <20211005100606.faxra73mzkvjd4f6@SoMainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 04, 2021 at 04:21:03PM -0700, Randy Dunlap wrote:
-> REGMAP_I2C is not a user visible kconfig symbol so driver configs
-> should not "depend on" it. They should depend on I2C and then
-> select REGMAP_I2C.
-> 
-> If this worked, it was only because some other driver had set/enabled
-> REGMAP_I2C.
-> 
-> Fixes: da0cb6310094 ("usb: typec: add support for STUSB160x Type-C controller family")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> Cc: Amelie Delaunay <amelie.delaunay@st.com>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: linux-usb@vger.kernel.org
+On Tue, Oct 05, 2021 at 12:06:06PM +0200, Marijn Suijten wrote:
+> On 2021-10-05 10:19:47, Daniel Thompson wrote:
+> > On Mon, Oct 04, 2021 at 09:27:36PM +0200, Marijn Suijten wrote:
+> > > When not specifying num-strings in the DT the default is used, but +1 is
+> > > added to it which turns wled3 into 4 and wled4/5 into 5 strings instead
+> > > of 3 and 4 respectively, causing out of bounds reads and register
+> > > read/writes.  This +1 exists for a deficiency in the DT parsing code,
+> > > and is simply omitted entirely - solving this oob issue - by allowing
+> > > one extra iteration of the wled_var_cfg function parsing this particular
+> > > property.
+> > > 
+> > > Fixes: 93c64f1ea1e8 ("leds: add Qualcomm PM8941 WLED driver")
+> > > Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
+> > > Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+> > > ---
+> > >  drivers/video/backlight/qcom-wled.c | 8 +++-----
+> > >  1 file changed, 3 insertions(+), 5 deletions(-)
+> > > 
+> > > diff --git a/drivers/video/backlight/qcom-wled.c b/drivers/video/backlight/qcom-wled.c
+> > > index 27e8949c7922..66ce77ee3099 100644
+> > > --- a/drivers/video/backlight/qcom-wled.c
+> > > +++ b/drivers/video/backlight/qcom-wled.c
+> > > @@ -1255,17 +1255,17 @@ static const struct wled_var_cfg wled5_ovp_cfg = {
+> > >  
+> > >  static u32 wled3_num_strings_values_fn(u32 idx)
+> > >  {
+> > > -	return idx + 1;
+> > > +	return idx;
 
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
-> ---
->  drivers/usb/typec/Kconfig |    4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> > >  }
+> > >  
+> > >  static const struct wled_var_cfg wled3_num_strings_cfg = {
+> > >  	.fn = wled3_num_strings_values_fn,
+> > > -	.size = 3,
+> > > +	.size = 4, /* [0, 3] */
+> > 
+> > 0 is not a valid value for this property.
 > 
-> --- lnx-515-rc4.orig/drivers/usb/typec/Kconfig
-> +++ lnx-515-rc4/drivers/usb/typec/Kconfig
-> @@ -65,9 +65,9 @@ config TYPEC_HD3SS3220
->  
->  config TYPEC_STUSB160X
->  	tristate "STMicroelectronics STUSB160x Type-C controller driver"
-> -	depends on I2C
-> -	depends on REGMAP_I2C
->  	depends on USB_ROLE_SWITCH || !USB_ROLE_SWITCH
-> +	depends on I2C
-> +	select REGMAP_I2C
->  	help
->  	  Say Y or M here if your system has STMicroelectronics STUSB160x
->  	  Type-C port controller.
+> These comments represent the possible loop iterations the DT "cfg
+> parser" runs through, starting at j=0 and running up until and including
+> j=3.  Should I make that more clear or omit these comments entirely?
 
--- 
-heikki
+The role of wled3_num_strings_values_fn() is to enumerate the list of
+legal values for the property [ 1, 2, 3 ]. Your changes cause the
+enumeration to include a non-legal value so that you can have an
+identity mapping between the symbol and the enumerate value.
+
+An alternative approach would be to leave the enumeration logic
+alone but set the num_string default to UINT_MAX in all cases:
+
+-	cfg->num_strings = cfg->num_strings + 1;
++	if (cfg->num_strings == UINT_MAX)
++		cfg->num_strings = 
++	else
++               /* Convert from enumerated to numeric form */
++		cfg->num_strings = wled3_num_strings_values_fn(
++						cfg->num_strings);
+
+
+Daniel.
