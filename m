@@ -2,139 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F36F0422572
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 13:40:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F9C6422579
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 13:41:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234318AbhJELmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 07:42:21 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:44790 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234394AbhJELmU (ORCPT
+        id S234459AbhJELnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 07:43:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33306 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234385AbhJELnF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 07:42:20 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id BAF361FE48;
-        Tue,  5 Oct 2021 11:40:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1633434028; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YrWYcUlP1sQfT+/jOsfeMnCp6UQhI/Qs3tOchoPDyGI=;
-        b=coLosvQ3jMU9psxOrTmI23xgUqlrufwY+sMKlHWAEa81GoretKibg67WInnSFKmszW2iq+
-        pgq3O6yiP+QWqUWgc7wDPxGVtk9vRJzFeB37Rv7YmlSKhR3199Pt+4/4W0l7jfUQ9BHz7V
-        y/BjYT1cvWn8kPLscp4WSORnFiE/ujE=
-Received: from suse.cz (unknown [10.100.224.162])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 26B07A3B8E;
-        Tue,  5 Oct 2021 11:40:28 +0000 (UTC)
-Date:   Tue, 5 Oct 2021 13:40:24 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     gor@linux.ibm.com, jpoimboe@redhat.com, jikos@kernel.org,
-        mbenes@suse.cz, mingo@kernel.org, linux-kernel@vger.kernel.org,
-        joe.lawrence@redhat.com, fweisbec@gmail.com, tglx@linutronix.de,
-        hca@linux.ibm.com, svens@linux.ibm.com, sumanthk@linux.ibm.com,
-        live-patching@vger.kernel.org, paulmck@kernel.org,
-        rostedt@goodmis.org, x86@kernel.org
-Subject: Re: [PATCH v2 03/11] sched,livepatch: Use task_call_func()
-Message-ID: <YVw5qO0rLA/GduFm@alley>
-References: <20210929151723.162004989@infradead.org>
- <20210929152428.709906138@infradead.org>
+        Tue, 5 Oct 2021 07:43:05 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12658C061749;
+        Tue,  5 Oct 2021 04:41:15 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id v18so76164030edc.11;
+        Tue, 05 Oct 2021 04:41:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5dP0dp6S1K23nYcgVnLdQY9FQ0JJKDn9S4Adpna91Wk=;
+        b=WuwAODlVsQO/YxDLaxPa+fWnErWGZeTG+jj5QbR2XlvUba/OpSvWuhqVBT9LviGd0i
+         5KR6JqxQMRvLMTgsPLJ2EEZK05TeiX6cy99IZG4ZIp/iMJwmg/2pSsqgGBsknUMQYHLc
+         h8IsQEMpgK+GLg+bYkbgvMWt9twc1AOTiYO3GDIIoRhWxNCGs87/+kMXaFMzWxCubb78
+         2OOqw38URj+MPn4B491mDXCuYdmqx6RWlZFlr008vFw8jZU2CjY6SVl7Ix7WSeAKTNZ7
+         mkFLM/GFfR6A4ODMRH6i7EWE/jYxfbkiP3kCqtHIeX9NOz5DR4ESv43cesKAC89xH4Za
+         oI+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5dP0dp6S1K23nYcgVnLdQY9FQ0JJKDn9S4Adpna91Wk=;
+        b=ly5/zS0I/XeNuSlSBZbItPZuHWSt+PKfhyJIwPOs3UW91wm5rdZhoeNmCXya4F5/UL
+         p+k2Q1yqW4jAbFzE035jWjOkBK0gVwAMD2wGy+SRveicQEnuimp1tlRPkmyV7iEJa94o
+         2I3AB9JkHpRbiiH6Xks6GCUHzvDqns2K0uQ2aXmH2T1xCUhJq8ZFh2oaYZwiSi24AmFe
+         WcTRjQ1KkGH6ftm7rVH04FkVCscK48c4OzP0Q1rqBQUOnsH1YCy+QIGVHUt3IZAA42zl
+         SyuBuuQa3zeY02F5sPV7cqiYAkdg19mCZVOdWR3V/HkTQpv+piAOjmNP8hc1MR6kyu8E
+         2yzQ==
+X-Gm-Message-State: AOAM531HuPkYN9IAbLWx6ywp/szqOyeUL4W0o+LoB8tYrLuF0pkr6BJH
+        j0KUD+Tt2zqNm/cbB71JkuCdUQpKuKTDskv/
+X-Google-Smtp-Source: ABdhPJz/vMjY2GearIQuKYktdUaC4sF5V50euf6kfHdhrC6kN3OF9pBiHIHR39NJT563C+NfsWtkcQ==
+X-Received: by 2002:aa7:ccd8:: with SMTP id y24mr15268314edt.358.1633434073274;
+        Tue, 05 Oct 2021 04:41:13 -0700 (PDT)
+Received: from anparri.mshome.net (host-79-49-65-228.retail.telecomitalia.it. [79.49.65.228])
+        by smtp.gmail.com with ESMTPSA id l19sm2437168edb.65.2021.10.05.04.41.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Oct 2021 04:41:12 -0700 (PDT)
+From:   "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>
+To:     linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        linux-scsi@vger.kernel.org
+Cc:     "K . Y . Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>,
+        Dexuan Cui <decui@microsoft.com>
+Subject: [PATCH] scsi: storvsc: Fix validation for unsolicited incoming packets
+Date:   Tue,  5 Oct 2021 13:41:03 +0200
+Message-Id: <20211005114103.3411-1-parri.andrea@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210929152428.709906138@infradead.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 2021-09-29 17:17:26, Peter Zijlstra wrote:
-> Instead of frobbing around with scheduler internals, use the shiny new
-> task_call_func() interface.
-> 
-> --- a/kernel/livepatch/transition.c
-> +++ b/kernel/livepatch/transition.c
-> @@ -274,6 +266,22 @@ static int klp_check_stack(struct task_s
->  	return 0;
->  }
->  
-> +static int klp_check_and_switch_task(struct task_struct *task, void *arg)
-> +{
-> +	int ret;
-> +
-> +	if (task_curr(task))
+The validation on the length of incoming packets performed in
+storvsc_on_channel_callback() does not apply to unsolicited
+packets with ID of 0 sent by Hyper-V.  Adjust the validation
+for such unsolicited packets.
 
-This must be
+Fixes: 91b1b640b834b2 ("scsi: storvsc: Validate length of incoming packet in storvsc_on_channel_callback()")
+Reported-by: Dexuan Cui <decui@microsoft.com>
+Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
+Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
+---
+Changes since RFC[1]:
+  - Merge length checks (Haiyang Zhang)
 
-	if (task_curr(task) && task != current)
+[1] https://lkml.kernel.org/r/20210928163732.5908-1-parri.andrea@gmail.com
 
-, otherwise the task is not able to migrate itself. The condition was
-lost when reshuffling the original code, see below.
+ drivers/scsi/storvsc_drv.c | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
-JFYI, I have missed it during review. I am actually surprised that the
-process could check its own stack reliably. But it seems to work.
+diff --git a/drivers/scsi/storvsc_drv.c b/drivers/scsi/storvsc_drv.c
+index ebbbc1299c625..349c1071a98d4 100644
+--- a/drivers/scsi/storvsc_drv.c
++++ b/drivers/scsi/storvsc_drv.c
+@@ -292,6 +292,9 @@ struct vmstorage_protocol_version {
+ #define STORAGE_CHANNEL_REMOVABLE_FLAG		0x1
+ #define STORAGE_CHANNEL_EMULATED_IDE_FLAG	0x2
+ 
++/* Lower bound on the size of unsolicited packets with ID of 0 */
++#define VSTOR_MIN_UNSOL_PKT_SIZE		48
++
+ struct vstor_packet {
+ 	/* Requested operation type */
+ 	enum vstor_packet_operation operation;
+@@ -1285,11 +1288,15 @@ static void storvsc_on_channel_callback(void *context)
+ 	foreach_vmbus_pkt(desc, channel) {
+ 		struct vstor_packet *packet = hv_pkt_data(desc);
+ 		struct storvsc_cmd_request *request = NULL;
++		u32 pktlen = hv_pkt_datalen(desc);
+ 		u64 rqst_id = desc->trans_id;
++		u32 minlen = rqst_id ? sizeof(struct vstor_packet) -
++			stor_device->vmscsi_size_delta : VSTOR_MIN_UNSOL_PKT_SIZE;
+ 
+-		if (hv_pkt_datalen(desc) < sizeof(struct vstor_packet) -
+-				stor_device->vmscsi_size_delta) {
+-			dev_err(&device->device, "Invalid packet len\n");
++		if (pktlen < minlen) {
++			dev_err(&device->device,
++				"Invalid pkt: id=%llu, len=%u, minlen=%u\n",
++				rqst_id, pktlen, minlen);
+ 			continue;
+ 		}
+ 
+-- 
+2.25.1
 
-I found the problem when "busy target module" selftest failed.
-It was not able to livepatch the workqueue worker that was
-proceeding klp_transition_work_fn().
-
-
-> +		return -EBUSY;
-> +
-> +	ret = klp_check_stack(task, arg);
-> +	if (ret)
-> +		return ret;
-> +
-> +	clear_tsk_thread_flag(task, TIF_PATCH_PENDING);
-> +	task->patch_state = klp_target_state;
-> +	return 0;
-> +}
-> +
->  /*
->   * Try to safely switch a task to the target patch state.  If it's currently
->   * running, or it's sleeping on a to-be-patched or to-be-unpatched function, or
-> @@ -305,36 +308,31 @@ static bool klp_try_switch_task(struct t
->  	 * functions.  If all goes well, switch the task to the target patch
->  	 * state.
->  	 */
-> -	rq = task_rq_lock(task, &flags);
-> +	ret = task_call_func(task, klp_check_and_switch_task, &old_name);
-
-It looks correct. JFYI, this is why:
-
-The logic seems to be exactly the same, except for the one fallout
-mentioned above. So the only problem might be races.
-
-The only important thing is that the task must not be running on any CPU
-when klp_check_stack(task, arg) is called. By other word, the stack
-must stay the same when being checked.
-
-The original code prevented races by taking task_rq_lock().
-And task_call_func() is slightly more relaxed but it looks safe enough:
-
-  + it still takes rq lock when the task is in runnable state.
-  + it always takes p->pi_lock that prevents moving the task
-    into runnable state by try_to_wake_up().
-
-
-> +	switch (ret) {
-> +	case 0:		/* success */
-> +		break;
->  
-> -	if (task_running(rq, task) && task != current) {
-
-This is the original code that checked (task != current).
-
-> -		snprintf(err_buf, STACK_ERR_BUF_SIZE,
-> -			 "%s: %s:%d is running\n", __func__, task->comm,
-> -			 task->pid);
-> -		goto done;
-
-With the added (task != current) check:
-
-Reviewed-by: Petr Mladek <pmladek@suse.com>
-Tested-by: Petr Mladek <pmladek@suse.com>
-
-Best Regards,
-Petr
