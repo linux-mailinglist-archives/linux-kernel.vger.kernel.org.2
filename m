@@ -2,249 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CF524232D3
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 23:27:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54A274232D5
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 23:28:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236085AbhJEV3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 17:29:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49844 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235845AbhJEV3f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 17:29:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1916260ED4;
-        Tue,  5 Oct 2021 21:27:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633469264;
-        bh=rzpwmOibjz/RTfWHqebQHtast+nMbYYH01BASoYRVz0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=aQT6wdf4wapAfsUBMTQ6AmRwaQBsai6g0NEig2DD4L3QM5NNkWglXxXx1xuu4Q1uD
-         72EhWIjP0ZwCKhKGrvVNCXIVCtxDifRqLgQQr8k2WbCxAm1jKLElPG+o5HXSpe/Xn4
-         sLUXD58Tv3xrcv0gghKSa9a1jj8aI4xlHqeyw7j6Pg9C4O19VBdRCSVOyvBzmQPC1I
-         ad+FwRSWhYdEQH7oYENLCLyLMlu3cAlnWZls5xcWufiKvuACs7Nd4FpzWSwJaQfMKb
-         3l1L6tfxJmIby36LRzoaHgrImH0pHV7rKEm+4sfBf1GoPJ5uN9FNSvBKFewWVU6xeG
-         HfOQDOO9V7SQA==
-Date:   Tue, 5 Oct 2021 23:27:38 +0200
-From:   Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
-To:     Ian Pilcher <arequipeno@gmail.com>
-Cc:     pavel@ucw.cz, linux-leds@vger.kernel.org,
-        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
-        hch@infradead.org
-Subject: Re: [RESEND PATCH v5 2/2] leds: trigger: Add block device LED
- trigger
-Message-ID: <20211005232738.371df6b8@thinkpad>
-In-Reply-To: <20211004155546.1120869-3-arequipeno@gmail.com>
-References: <20211004155546.1120869-1-arequipeno@gmail.com>
-        <20211004155546.1120869-3-arequipeno@gmail.com>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S236711AbhJEV3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 17:29:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59288 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235957AbhJEV3t (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 17:29:49 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2886EC061749
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 14:27:58 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id na16-20020a17090b4c1000b0019f5bb661f9so737857pjb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 14:27:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aoiQAn46ClahFaLRpc/gAkc33WV9lEU+0xQGA/BMNT8=;
+        b=EzCZBtPbGPOonc3QyLryZd/pemw8aHvTL2IBGwShTC3lXsD9+Mnb3ep4O2wdrajBCS
+         AsEwP/ODKw+6Ko6E4isxRpNix0lWda/zPJd8UcU7l8+ko6KWaM3LTRsn3m1DAVhwWhW5
+         0Rik3/kQrTZHzmrelEFqtGnv0BphbmnCDtAo4DwC7wFo1rSkTXwy77cqMyKEz8qUNP6S
+         ML1Sm/p09bPAi6IJcYAn66RN+O/jqqizM/qCXt9PdNoC5GnfdW7lb0AlANML03SuT+Vw
+         kEXMMQPFdtHGR0CxIMq9vD7E4L3U4IJpV2HafZIQB/iHzEPIiWHl12JgEjyAge8g1eU9
+         McQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aoiQAn46ClahFaLRpc/gAkc33WV9lEU+0xQGA/BMNT8=;
+        b=ANelKqJRsgCpwdns1WO9Vr06SK44UPh6Bof/pGHPWBE5j12bTz6fqE7qmbafmesLEX
+         8ZJH0YDllxIFTlHWW9R+eeL4gVURpt7KuUYx+xmf2V0HfLcXVdmM0SCW+FsPHGcZz57Y
+         CQHMZjeY50L/7fjA47ZeJvSZWCR2EIcJuhIDXdAm6dXprVWiGiFC6yq6f3fb95IyD8qf
+         0AVYaDTqFv+FY8XeAFtpKk445MkEh15Q5Uz6fB8ThQp423br8iJwu5IOeHn4cv6K5ouY
+         YyirJfn50whMlqno/Fv9GE3s+v3W+GYL2YLGt6upyBNY65C7F15niKIAWD0Dt55DQBJk
+         U4JQ==
+X-Gm-Message-State: AOAM532h6MRpDFJTxOU4G0hOZXwpo5AFxDsTGDw0HEIJfXqV7BYXjeyP
+        X/fleSEiZn1Ei2j9sgdJ+UWX8mcA+3iMpvKlcFYNyg==
+X-Google-Smtp-Source: ABdhPJwTs+XgdJR1uVjkk1E958Cqm+tyyyNonaR58H4o1z5QfLNS1MGp/4LGU2Xvbe0XJCB394hglZ8hnsr1IbiQl9o=
+X-Received: by 2002:a17:90a:9a8f:: with SMTP id e15mr6482032pjp.198.1633469277424;
+ Tue, 05 Oct 2021 14:27:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210929232534.1433720-1-dlatypov@google.com>
+In-Reply-To: <20210929232534.1433720-1-dlatypov@google.com>
+From:   Brendan Higgins <brendanhiggins@google.com>
+Date:   Tue, 5 Oct 2021 14:27:46 -0700
+Message-ID: <CAFd5g44TTBTcPctT5m7QDa0iCSt21oBHrL-PTqmnNo4d8ejr0w@mail.gmail.com>
+Subject: Re: [PATCH] kunit: tool: show list of valid --arch options when invalid
+To:     Daniel Latypov <dlatypov@google.com>
+Cc:     davidgow@google.com, linux-kernel@vger.kernel.org,
+        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
+        skhan@linuxfoundation.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Ian,
-
-first, as I replied in one of the previous versions: it is not customary
-to use the const keyword in Linux the way you do use it, i.e.
-  int f(const int var)
-Your argument was that this makes the code more safe when changes are
-made in the future. Maybe this is true (although in my opinion it is
-not), but since this isn't done anywhere in kernel AFAIK, please drop it
-in this proposal. If you want to introduce it, you can try sending
-proposals to other kernel subsystems. I am almost sure they will be
-rejected. Also, I won't give my Reviewed-by for this patch unless you
-drop it (or if Pavel or some other long-term maintainer thinks it
-should be used).
-
-Second, I really would like to solve the problem looking up the block
-device, given name. Since block API does not provide such function, I
-think we should try to add it. It does not make sense to not be able to
-set, for example "sda1" to trigger a LED, when /sys/class/block/sda1
-exists, but someone deleted the /dev/sda1 device file.
-
-Anyway, see other comments below:
-
-On Mon,  4 Oct 2021 10:55:46 -0500
-Ian Pilcher <arequipeno@gmail.com> wrote:
-
-> +/* Device activity type that will make LED blink */
-> +enum led_bdev_led_mode {
-> +	LED_BDEV_MODE_RO	= 0,
-> +	LED_BDEV_MODE_WO	= 1,
-> +	LED_BDEV_MODE_RW	= 2
-> +};
-
-Please use a bitmap as the netdev trigger does.
-
-> +struct led_bdev_lbd {
-
-Could this be renamed to trig_bdev?
-
-> +struct led_bdev_led {
-
-And this to trig_led?
-
-Also, the led_bdev prefixes everywhere make the code a little confusing,
-IMO.
-Could this prefix be changed to blkdev_trig? This would be similar to
-netdev trigger.
-
-> +/* Delayed work to periodically check for activity & blink LEDs */
-> +static DECLARE_DELAYED_WORK(led_bdev_work, led_bdev_process);
+On Wed, Sep 29, 2021 at 4:26 PM Daniel Latypov <dlatypov@google.com> wrote:
 >
-> +/* How often to run the delayed work - in jiffies */
-> +static unsigned int led_bdev_interval;
+> Consider this attempt to run KUnit in QEMU:
+> $ ./tools/testing/kunit/kunit.py run --arch=x86
+>
+> Before you'd get this error message:
+> kunit_kernel.ConfigError: x86 is not a valid arch
+>
+> After:
+> kunit_kernel.ConfigError: x86 is not a valid arch, options are ['alpha', 'arm', 'arm64', 'i386', 'powerpc', 'riscv', 's390', 'sparc', 'x86_64']
+>
+> This should make it a bit easier for people to notice when they make
+> typos, etc. Currently, one would have to dive into the python code to
+> figure out what the valid set is.
+>
+> Signed-off-by: Daniel Latypov <dlatypov@google.com>
 
-This is wrong. The interval can't be same for all triggers, this does
-not make sense. I want to be able to set different intervals for
-different LEDs, as in netdev trigger. Sure maybe not many people will
-use it, but the possibility should be there.
+Yes! Thank you for fixing this!
 
-The work will then also be per LED and your structures should become
-more simple. You won't need to have NxM mapping between LEDs and block
-devices.
-
-> +static int led_bdev_activate(struct led_classdev *const led_cdev)
-> +{
-> +	struct led_bdev_led *led;
-> +	int ret;
-> +
-> +	if (led_bdev_next_index == ULONG_MAX) {
-
-I don't understand why this must be done.
-
-> +		ret = -EOVERFLOW;
-> +		goto exit_return;
-
-exit_return label only returns. The whole idea behind using goto in such
-a way is to avoid code duplication. Instead you do the opposite. You
-can simply do
-  return -EOVERFLOW;
-
-> +	}
-> +
-> +	led = kmalloc(sizeof(*led), GFP_KERNEL);
-
-kzalloc
-
-> +	if (led == NULL) {
-> +		ret = -ENOMEM;
-> +		goto exit_return;
-
-return -ENOMEM.
-
-> +	}
-> +
-> +	led->index = led_bdev_next_index++;
-
-This variable led_bdev_next_index never gets subtracted from, it only
-increases. So if I enable and disable blkdev trigger ULONG_MAX times,
-I won't be able to enable it anymore since you return -EOVERFLOW ?
-This doesn't make any sense.
-
-> +	led->led_cdev = led_cdev;
-> +	led->blink_msec = LED_BDEV_BLINK_MSEC;
-> +	led->mode = LED_BDEV_MODE_RW;
-> +	xa_init(&led->linked_lbds);
-> +
-> +	ret = mutex_lock_interruptible(&led_bdev_mutex);
-> +	if (ret != 0)
-
-	if (ret)
-
-we don't do if(ret == 0) and if(ret != 0) normally, instead we do
-if(!ret) and if(ret). Explicitly mentioning 0 makes sense when you have
-something like
-  if (byte == 0x03 || byte == 0x00)
-
-> +		goto exit_free;
-
-> +static ssize_t link_device_store(struct device *const dev,
-> +				 struct device_attribute *const attr,
-> +				 const char *const buf, const size_t count)
-> +{
-> +	struct led_bdev_led *const led = led_trigger_get_drvdata(dev);
-> +	struct led_bdev_lbd *lbd;
-> +	int ret;
-> +
-> +	ret = mutex_lock_interruptible(&led_bdev_mutex);
-> +	if (ret != 0)
-> +		goto exit_return;
-> +
-> +	lbd = led_bdev_get_lbd(buf, count);
-> +	if (IS_ERR(lbd)) {
-> +		ret = PTR_ERR(lbd);
-> +		goto exit_unlock;
-> +	}
-> +
-> +	if (xa_load(&lbd->linked_leds, led->index) != NULL) {
-> +		ret = -EEXIST;
-> +		goto exit_put_lbd;
-> +	}
-> +
-> +	ret = led_bdev_link(led, lbd);
-> +
-> +exit_put_lbd:
-> +	if (ret != 0)
-> +		led_bdev_put_lbd(lbd);
-> +exit_unlock:
-> +	mutex_unlock(&led_bdev_mutex);
-> +exit_return:
-> +	return (ret == 0) ? count : ret;
-
-	return ret ? : count;
-
-> +static struct block_device *led_bdev_get_bdev(const char *const buf,
-> +					      const size_t count,
-> +					      const fmode_t mode)
-> +{
-> +	struct block_device *bdev;
-> +	char *path;
-> +
-> +	path = kmemdup(buf, count + 1, GFP_KERNEL);  /* include null */
-> +	if (path == NULL)
-> +		return ERR_PTR(-ENOMEM);
-> +
-> +	if (path[count - 1] == '\n')
-> +		path[count - 1] = 0;
-> +
-> +	bdev = blkdev_get_by_path(path, mode, THIS_MODULE);
-
-And this is what we should discuss with blk API people. I would really
-like to find the block device by name as seen in /sys/class/block.
-
-> +static void led_bdev_update_lbd(struct led_bdev_lbd *const lbd)
-> +{
-> +	unsigned long read_ios, write_ios;
-> +
-> +	if (lbd->generation != led_bdev_generation) {
-> +
-> +		read_ios = part_stat_read(lbd->bdev, ios[STAT_READ]);
-> +
-> +		write_ios = part_stat_read(lbd->bdev, ios[STAT_WRITE])
-> +				+ part_stat_read(lbd->bdev, ios[STAT_DISCARD])
-> +				+ part_stat_read(lbd->bdev, ios[STAT_FLUSH]);
-
-Wrong indentation.
-
-Also discards and flushed should be separate (I want to be able to set
-"blink on dicard" and "blink on flush").
-
-> +
-> +		if (lbd->read_ios != read_ios) {
-> +			lbd->read_act = true;
-> +			lbd->read_ios = read_ios;
-> +		} else {
-> +			lbd->read_act = false;
-> +		}
-
-	lbd->read_act = lbd->read_ios != read_ios;
-	lbd->read_ios = read_ios;
-
-> +		lbd->generation = led_bdev_generation;
-
-I don't like this led_bdev_generation. Can't we somehow do this without
-a static variable??
-
-Marek
+Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
