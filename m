@@ -2,130 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 308C94226F5
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 14:41:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9301C4226FE
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 14:45:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234459AbhJEMnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 08:43:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47744 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234165AbhJEMnf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 08:43:35 -0400
-Received: from mail-ua1-x935.google.com (mail-ua1-x935.google.com [IPv6:2607:f8b0:4864:20::935])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE37BC061749
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 05:41:44 -0700 (PDT)
-Received: by mail-ua1-x935.google.com with SMTP id e7so5516352ual.11
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 05:41:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BXDISnOh7ZckzDfw/rbcZvXrMiBYqKScksuW8yTohwo=;
-        b=Id6GY7R7KVW4uvhaDGqG/LWrQ6RRdE1WY7dKbzLj7Ytnar8nAL98hjwk25jwOwdofa
-         Q3p8KNC0hBivELcvg9UIHnpq1LPqrMc0WJKGt3BEx3jHkBLz9ZqJX2SYqT0Sxc3st3hJ
-         8KRWyAE9Hj3qmrXrXDrLVL8wgFVdiQq6C+nTo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BXDISnOh7ZckzDfw/rbcZvXrMiBYqKScksuW8yTohwo=;
-        b=vlV1lpC0WyWN0HWrWfVoXYzTEUVd2KPyiUtg1WRivyLo6apw69iOkWOWYs7Jf9n6p+
-         YD1AWLjUS107UyiVkIKV0H+gg7Tod9a8fRxSFLsccBCVUgjjTyVbJD3Ogll6qTj2/ZZI
-         Tqfb5BWY/Fg71XhoRgS7C8C5HYAYBIbUnnqi3AToOdJjhfvnRbLbA3HA3ZxybbBLdWy/
-         UdSLOKN2MoF/qZFVNDc1LTAcQg9MdCuOFhqO2n4kwb45Z+s5lGHVUrqTjUCM0b2XlS4L
-         Fx5hCGHCLDvAerCPiDTd/A/8OFOgOymJUMQLqoo/Yky3BcWtLEAFD/HpG8gcj+4v72NW
-         SJKw==
-X-Gm-Message-State: AOAM533OBtM/wyywICJu4QXWh0sD+tiFaQ0KYuhnXzgJAiR2N5OnjoqK
-        0r99Se6Btg9oy5cBbpLftXL0/4HkbzXmI1TrfIfW6L/pZqgNzg==
-X-Google-Smtp-Source: ABdhPJycar/1wBuMyd28y5qD07f3f9Qc3yBwJUToU1jHeLCtYVBM75fhfQEWYkGKlFKgB5ZSWIo29TnnTykxW5XfrIo=
-X-Received: by 2002:ab0:494a:: with SMTP id a10mr11929782uad.90.1633437703878;
- Tue, 05 Oct 2021 05:41:43 -0700 (PDT)
+        id S234378AbhJEMrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 08:47:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53684 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234080AbhJEMrr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 08:47:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9BFEF61247;
+        Tue,  5 Oct 2021 12:45:53 +0000 (UTC)
+Date:   Tue, 5 Oct 2021 14:45:50 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Mike Christie <michael.christie@oracle.com>, geert@linux-m68k.org,
+        vverma@digitalocean.com, hdanton@sina.com, hch@infradead.org,
+        stefanha@redhat.com, jasowang@redhat.com, mst@redhat.com,
+        sgarzare@redhat.com, virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V3 7/9] fork: Add worker flag to ignore signals
+Message-ID: <20211005124550.cm3fff4i2eztwizw@wittgenstein>
+References: <20211004192128.381453-1-michael.christie@oracle.com>
+ <20211004192128.381453-8-michael.christie@oracle.com>
+ <e3840acc-09c0-01bd-ad64-54e9d2dfb888@kernel.dk>
 MIME-Version: 1.0
-References: <20210930124950.3069638-1-daniel@0x0f.com> <YVXWiQWGkzmp6O1A@smile.fi.intel.com>
- <CAFr9PXkgDaXPb+h3TFmS4VVzzmPqjJJj0Y4cd_ZTUgqMbNZUSA@mail.gmail.com>
- <YVYmTL8WsgYnxPwc@smile.fi.intel.com> <CAFr9PXmVQFDdMiMUgg4v7DAcFkdaUtFeaXOyW4_NrVd5oYKSSA@mail.gmail.com>
- <YVxBphzSDG2VmM4I@smile.fi.intel.com>
-In-Reply-To: <YVxBphzSDG2VmM4I@smile.fi.intel.com>
-From:   Daniel Palmer <daniel@0x0f.com>
-Date:   Tue, 5 Oct 2021 21:41:33 +0900
-Message-ID: <CAFr9PXkN-6MAExF-P8-Biej2yoQYB6eQDezwfPRX4bcXaayZfA@mail.gmail.com>
-Subject: Re: [PATCH] serial: 8250_dw: Mark acpi match table as maybe unused
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-serial@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <e3840acc-09c0-01bd-ad64-54e9d2dfb888@kernel.dk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+On Mon, Oct 04, 2021 at 02:04:12PM -0600, Jens Axboe wrote:
+> On 10/4/21 1:21 PM, Mike Christie wrote:
+> > The kthread API creates threads that ignore all signals by default so
+> > modules like vhost that will move from that API to kernel_worker will
+> > not be expecting them. This patch adds a worker flag that tells
+> > kernel_worker to setup the task to ignore signals.
+> > 
+> > Signed-off-by: Mike Christie <michael.christie@oracle.com>
+> > Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+> > ---
+> >  include/linux/sched/task.h |  1 +
+> >  kernel/fork.c              | 11 ++++++++++-
+> >  2 files changed, 11 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/include/linux/sched/task.h b/include/linux/sched/task.h
+> > index 781abbc1c288..aefa0d221b57 100644
+> > --- a/include/linux/sched/task.h
+> > +++ b/include/linux/sched/task.h
+> > @@ -21,6 +21,7 @@ struct css_set;
+> >  #define KERN_WORKER_IO		BIT(0)
+> >  #define KERN_WORKER_USER	BIT(1)
+> >  #define KERN_WORKER_NO_FILES	BIT(2)
+> > +#define KERN_WORKER_NO_SIGS	BIT(3)
+> >  
+> >  struct kernel_clone_args {
+> >  	u64 flags;
+> > diff --git a/kernel/fork.c b/kernel/fork.c
+> > index 3f3fcabffa5f..34d3dca70cfb 100644
+> > --- a/kernel/fork.c
+> > +++ b/kernel/fork.c
+> > @@ -2555,6 +2555,8 @@ struct task_struct *create_io_thread(int (*fn)(void *), void *arg, int node)
+> >  struct task_struct *kernel_worker(int (*fn)(void *), void *arg, int node,
+> >  				  unsigned long clone_flags, u32 worker_flags)
+> >  {
+> > +	struct task_struct *tsk;
+> > +
+> >  	struct kernel_clone_args args = {
+> >  		.flags		= ((lower_32_bits(clone_flags) | CLONE_VM |
+> >  				   CLONE_UNTRACED) & ~CSIGNAL),
+> > @@ -2564,7 +2566,14 @@ struct task_struct *kernel_worker(int (*fn)(void *), void *arg, int node,
+> >  		.worker_flags	= KERN_WORKER_USER | worker_flags,
+> >  	};
+> >  
+> > -	return copy_process(NULL, 0, node, &args);
+> > +	tsk = copy_process(NULL, 0, node, &args);
+> > +	if (IS_ERR(tsk))
+> > +		return tsk;
+> > +
+> > +	if (worker_flags & KERN_WORKER_NO_SIGS)
+> > +		ignore_signals(tsk);
+> > +
+> > +	return tsk;
+> 
+> When I originally did it this way, Eric (correctly) pointed out that
+> it's racy. See where it's currently done as part of copy_process(), not
+> after.
 
-On Tue, 5 Oct 2021 at 21:14, Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
-> > Ok, is there a reason it's not for the ID tables? Does it break something?
->
-> It will look ugly. Why we define a table that may or may not be used?
-> Sounds fishy.
+Since this is mirroring kthread's sig ignore api introduced in commit
+10ab825bdef8 ("change kernel threads to ignore signals instead of
+blocking them") to ease the transition into the new api we should also
+rename KERNEL_WORKER_NO_SIGS to KERNEL_WORKER_SIG_IGN to reflect that in
+the name.
+Ignoring signals should be moved into copy_process() after
+copy_sighand() and copy_signals().
+Aside from that we should introduce a helper that verifies the arguments
+passed to kernel_worker() are sane so we don't end up with garbage in
+there by surprise (CLONE_SIGHAND and CLONE_CLEAR_SIGHAND don't make
+sense with KERNEL_WORKER_SIG_IGN). So this should give us sm like:
 
-I guess it's a toss up between is the attribute more ugly than #ifdefs
-and is the ugliness of either worth it..
-Not going to say I have an answer here. :)
+diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
+index 7a5142dcde1b..59891db97d87 100644
+--- a/drivers/vhost/vhost.c
++++ b/drivers/vhost/vhost.c
+@@ -596,7 +596,7 @@ static int vhost_worker_create(struct vhost_dev *dev)
+         */
+        task = kernel_worker(vhost_worker, worker, NUMA_NO_NODE,
+                             CLONE_FS | CLONE_CLEAR_SIGHAND,
+-                            KERN_WORKER_NO_FILES | KERN_WORKER_NO_SIGS);
++                            KERN_WORKER_NO_FILES | KERN_WORKER_SIG_IGN);
+        if (IS_ERR(task)) {
+                ret = PTR_ERR(task);
+                goto free_worker;
+diff --git a/include/linux/sched/task.h b/include/linux/sched/task.h
+index aefa0d221b57..b4f6007f335b 100644
+--- a/include/linux/sched/task.h
++++ b/include/linux/sched/task.h
+@@ -21,7 +21,7 @@ struct css_set;
+ #define KERN_WORKER_IO         BIT(0)
+ #define KERN_WORKER_USER       BIT(1)
+ #define KERN_WORKER_NO_FILES   BIT(2)
+-#define KERN_WORKER_NO_SIGS    BIT(3)
++#define KERN_WORKER_SIG_IGN    BIT(3)
 
-> On top of that why you should tell linker to waste resources on something
-> that you may well know beforehand will be thrown away?
+ struct kernel_clone_args {
+        u64 flags;
+diff --git a/kernel/fork.c b/kernel/fork.c
+index 34d3dca70cfb..874c356b3e9f 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -2212,6 +2212,9 @@ static __latent_entropy struct task_struct *copy_process(
+        if (retval)
+                goto bad_fork_cleanup_io;
 
-That's true but the linker on my machine with 64GB of RAM compiling
-for a single core machine with 64MB of RAM doesn't mind too much.
++       if (args->worker_flags & KERN_WORKER_SIG_IGN)
++               ignore_signals(p);
++
+        stackleak_task_init(p);
 
-> > For what it's worth I think the OF ids are a bit wasteful.
->
-> Exactly my point, but fixing one driver of zillions does not solve the issue
-> in general.
+        if (pid != &init_struct_pid) {
+@@ -2540,6 +2543,24 @@ struct task_struct *create_io_thread(int (*fn)(void *), void *arg, int node)
+        return copy_process(NULL, 0, node, &args);
+ }
 
-I looked into making OF ids smaller globally. There seems to be 64
-bytes wasted from the start for the name and type fields as nothing
-uses them as far as I can tell.
-Then you have the array for the compatible string which is currently
-128 bytes but the longest compatible string in the kernel is less than
-64 from what I can tell.
-I understand that it's for future proofing etc. Adding a few hacks to
-my kernel to remove the unused fields and reduce the size of the
-compatible string saved a few tens of K.
-Which isn't a lot but might be the difference between the kernel
-fitting in a tiny SPI NOR partition or not.
++static bool kernel_worker_flags_valid(struct kernel_clone_args *kargs)
++{
++       /* Verify that no unknown flags are passed along. */
++       if (kargs->worker_flags & ~(KERN_WORKER_IO | KERN_WORKER_USER |
++                                   KERN_WORKER_NO_FILES | KERN_WORKER_SIG_IGN))
++               return false;
++
++       /*
++        * If we're ignoring all signals don't allow sharing struct sighand and
++        * don't bother clearing signal handlers.
++        */
++       if ((kargs->flags & (CLONE_SIGHAND | CLONE_CLEAR_SIGHAND)) &&
++           (kargs->worker_flags & KERN_WORKER_SIG_IGN))
++               return false;
++
++       return true;
++}
++
+ /**
+  * kernel_worker - create a copy of a process to be used by the kernel
+  * @fn: thread stack
+@@ -2555,8 +2576,6 @@ struct task_struct *create_io_thread(int (*fn)(void *), void *arg, int node)
+ struct task_struct *kernel_worker(int (*fn)(void *), void *arg, int node,
+                                  unsigned long clone_flags, u32 worker_flags)
+ {
+-       struct task_struct *tsk;
+-
+        struct kernel_clone_args args = {
+                .flags          = ((lower_32_bits(clone_flags) | CLONE_VM |
+                                   CLONE_UNTRACED) & ~CSIGNAL),
+@@ -2566,14 +2585,10 @@ struct task_struct *kernel_worker(int (*fn)(void *), void *arg, int node,
+                .worker_flags   = KERN_WORKER_USER | worker_flags,
+        };
 
-> > For some
-> > drivers where there are tons of broken variations they add a few K of
-> > unneeded data. But since everyone now has gigabytes of memory I doubt
-> > they care...
-> Some actually cares.
->
+-       tsk = copy_process(NULL, 0, node, &args);
+-       if (IS_ERR(tsk))
+-               return tsk;
+-
+-       if (worker_flags & KERN_WORKER_NO_SIGS)
+-               ignore_signals(tsk);
++       if (!kernel_worker_flags_valid(&args))
++               return ERR_PTR(-EINVAL);
 
-Ok.. I might consider pushing my changes to remove unused ids all over
-the place then.
-drivers/cpufreq/cpufreq-dt-platdev.c is a really good example of
-adding ~10K to kernels for no reason.
+-       return tsk;
++       return copy_process(NULL, 0, node, &args);
+ }
+ EXPORT_SYMBOL_GPL(kernel_worker);
 
-> > I'm working with 64MB. :)
->
-> Then I would imagine that you already using as less kernel configuration as
-> possible and have as many modules as you want for the hardware that might
-> appear to be connected to that board, right?
-
-I have a minimal config but compiling in macb for the ethernet
-compiles in code and ids for stuff like zynq that I could do without.
-
->Then again one driver with 100+
-> bytes doesn't affect really your case. Disabling, for example PRINTK, will
-> win much more for you.
-
-It's not *that* bad just yet. :)
-
-Anyhow, thankyou for the interesting discussion. I'll just leave this
-in my tree for now so I don't have to see the warning.
-
-Cheers,
-
-Daniel
