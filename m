@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 886CB4229E2
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:02:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31AED4229E3
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:02:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235385AbhJEODy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 10:03:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40896 "EHLO mail.kernel.org"
+        id S235673AbhJEOD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 10:03:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40884 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235466AbhJEOCi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S235406AbhJEOCi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 5 Oct 2021 10:02:38 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 01131619F8;
+        by mail.kernel.org (Postfix) with ESMTPSA id 2AF4F61A35;
         Tue,  5 Oct 2021 13:58:30 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
         (envelope-from <rostedt@goodmis.org>)
-        id 1mXkxh-0055n5-1u; Tue, 05 Oct 2021 09:58:29 -0400
-Message-ID: <20211005135828.893173514@goodmis.org>
+        id 1mXkxh-0055ne-7Z; Tue, 05 Oct 2021 09:58:29 -0400
+Message-ID: <20211005135829.077894983@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Tue, 05 Oct 2021 09:57:51 -0400
+Date:   Tue, 05 Oct 2021 09:57:52 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Ingo Molnar <mingo@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [for-linus][PATCH 18/27] objtool: Ignore unwind hints for ignored functions
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>
+Subject: [for-linus][PATCH 19/27] x86/kprobes: Add UNWIND_HINT_FUNC on kretprobe_trampoline()
 References: <20211005135733.485175654@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,32 +39,75 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Josh Poimboeuf <jpoimboe@redhat.com>
 
-If a function is ignored, also ignore its hints.  This is useful for the
-case where the function ignore is conditional on frame pointers, e.g.
-STACK_FRAME_NON_STANDARD_FP().
+Add UNWIND_HINT_FUNC on __kretprobe_trampoline() code so that ORC
+information is generated on the __kretprobe_trampoline() correctly.
+Also, this uses STACK_FRAME_NON_STANDARD_FP(), CONFIG_FRAME_POINTER-
+-specific version of STACK_FRAME_NON_STANDARD().
 
-Link: https://lkml.kernel.org/r/163163048317.489837.10988954983369863209.stgit@devnote2
+Link: https://lkml.kernel.org/r/163163049242.489837.11970969750993364293.stgit@devnote2
 
 Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
-Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
-Tested-by: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+Tested-by: Andrii Nakryiko <andrii@kernel.org>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- tools/objtool/check.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/include/asm/unwind_hints.h |  5 +++++
+ arch/x86/kernel/kprobes/core.c      | 13 +++++++++++--
+ 2 files changed, 16 insertions(+), 2 deletions(-)
 
-diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index e5947fbb9e7a..67cbdcfcabae 100644
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -2909,7 +2909,7 @@ static int validate_unwind_hints(struct objtool_file *file, struct section *sec)
- 	}
+diff --git a/arch/x86/include/asm/unwind_hints.h b/arch/x86/include/asm/unwind_hints.h
+index 8e574c0afef8..8b33674288ea 100644
+--- a/arch/x86/include/asm/unwind_hints.h
++++ b/arch/x86/include/asm/unwind_hints.h
+@@ -52,6 +52,11 @@
+ 	UNWIND_HINT sp_reg=ORC_REG_SP sp_offset=8 type=UNWIND_HINT_TYPE_FUNC
+ .endm
  
- 	while (&insn->list != &file->insn_list && (!sec || insn->sec == sec)) {
--		if (insn->hint && !insn->visited) {
-+		if (insn->hint && !insn->visited && !insn->ignore) {
- 			ret = validate_branch(file, insn->func, insn, state);
- 			if (ret && backtrace)
- 				BT_FUNC("<=== (hint)", insn);
++#else
++
++#define UNWIND_HINT_FUNC \
++	UNWIND_HINT(ORC_REG_SP, 8, UNWIND_HINT_TYPE_FUNC, 0)
++
+ #endif /* __ASSEMBLY__ */
+ 
+ #endif /* _ASM_X86_UNWIND_HINTS_H */
+diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
+index 79cd23dba5b5..d1436d7463fd 100644
+--- a/arch/x86/kernel/kprobes/core.c
++++ b/arch/x86/kernel/kprobes/core.c
+@@ -1025,6 +1025,7 @@ asm(
+ 	/* We don't bother saving the ss register */
+ #ifdef CONFIG_X86_64
+ 	"	pushq %rsp\n"
++	UNWIND_HINT_FUNC
+ 	"	pushfq\n"
+ 	SAVE_REGS_STRING
+ 	"	movq %rsp, %rdi\n"
+@@ -1035,6 +1036,7 @@ asm(
+ 	"	popfq\n"
+ #else
+ 	"	pushl %esp\n"
++	UNWIND_HINT_FUNC
+ 	"	pushfl\n"
+ 	SAVE_REGS_STRING
+ 	"	movl %esp, %eax\n"
+@@ -1048,8 +1050,15 @@ asm(
+ 	".size __kretprobe_trampoline, .-__kretprobe_trampoline\n"
+ );
+ NOKPROBE_SYMBOL(__kretprobe_trampoline);
+-STACK_FRAME_NON_STANDARD(__kretprobe_trampoline);
+-
++/*
++ * __kretprobe_trampoline() skips updating frame pointer. The frame pointer
++ * saved in trampoline_handler() points to the real caller function's
++ * frame pointer. Thus the __kretprobe_trampoline() doesn't have a
++ * standard stack frame with CONFIG_FRAME_POINTER=y.
++ * Let's mark it non-standard function. Anyway, FP unwinder can correctly
++ * unwind without the hint.
++ */
++STACK_FRAME_NON_STANDARD_FP(__kretprobe_trampoline);
+ 
+ /*
+  * Called from __kretprobe_trampoline
 -- 
 2.32.0
