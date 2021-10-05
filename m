@@ -2,102 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 610394224C4
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 13:13:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66B1F4224CC
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 13:15:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234319AbhJELPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 07:15:47 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:49912 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233514AbhJELPq (ORCPT
+        id S234165AbhJELQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 07:16:58 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:41598 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233514AbhJELQ5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 07:15:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633432435;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=l9NIjeIAQCFxtj6GGh0Whhg4tP/fsFPSi3algChPtGc=;
-        b=MQr7hp8zB8W55b6ANOCl0DCKrGIAwn3eJN415O+lwsL3juWdkuEHsKX1jnN0I5zXUFECeU
-        ngnXFjU8hOe8HYVDN9JTUnxOZoJ2IuoHNX1Ao7lWYuD4e55BpLtzHuSbawKhn7gtEbORq8
-        ZP20suMnu416OdipnnlMrW+45yaDoZQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-164-SJRXkDwFOOWPwxdT0Az79Q-1; Tue, 05 Oct 2021 07:13:54 -0400
-X-MC-Unique: SJRXkDwFOOWPwxdT0Az79Q-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Tue, 5 Oct 2021 07:16:57 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C86271006AA2;
-        Tue,  5 Oct 2021 11:13:52 +0000 (UTC)
-Received: from localhost (unknown [10.39.192.167])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id CA34B1036B32;
-        Tue,  5 Oct 2021 11:13:38 +0000 (UTC)
-From:   Cornelia Huck <cohuck@redhat.com>
-To:     Halil Pasic <pasic@linux.ibm.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     linux-s390@vger.kernel.org, markver@us.ibm.com,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        qemu-devel@nongnu.org, linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        Xie Yongji <xieyongji@bytedance.com>, stefanha@redhat.com,
-        Raphael Norwitz <raphael.norwitz@nutanix.com>,
-        Halil Pasic <pasic@linux.ibm.com>
-Subject: Re: [RFC PATCH 1/1] virtio: write back features before verify
-In-Reply-To: <20211005124303.3abf848b.pasic@linux.ibm.com>
-Organization: Red Hat GmbH
-References: <20210930012049.3780865-1-pasic@linux.ibm.com>
- <87r1d64dl4.fsf@redhat.com> <20210930130350.0cdc7c65.pasic@linux.ibm.com>
- <87ilyi47wn.fsf@redhat.com> <20211001162213.18d7375e.pasic@linux.ibm.com>
- <87v92g3h9l.fsf@redhat.com>
- <20211002082128-mutt-send-email-mst@kernel.org>
- <20211004042323.730c6a5e.pasic@linux.ibm.com>
- <20211004040937-mutt-send-email-mst@kernel.org>
- <20211005124303.3abf848b.pasic@linux.ibm.com>
-User-Agent: Notmuch/0.32.1 (https://notmuchmail.org)
-Date:   Tue, 05 Oct 2021 13:13:31 +0200
-Message-ID: <87lf372084.fsf@redhat.com>
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 0E5942027E;
+        Tue,  5 Oct 2021 11:15:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1633432506; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/iXB7Q8sRuEn5IalpujyMPzVx9cKiV7uy8PSeyuhzXA=;
+        b=P6UWVjRA1QJefVXQzGHBE56/zXKTBSG7au+zg1DROwVHfYHSJ/SQ28kzAspfEZuekdKGtf
+        Qz93sGTFcl+SxcbdiKPs7aUR6WBDYDUUWMX8JfuAN07SlBdKbPAOJyryx7/Rx8Dm5bDjMH
+        DgGRIs/nEda1TQjTAa/45A0kjW7hIKc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1633432506;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/iXB7Q8sRuEn5IalpujyMPzVx9cKiV7uy8PSeyuhzXA=;
+        b=svlCpJ7mOa+0fPKz4EjTmrhBAZpotiFCH5+jOUFqMrLsssMpjPYqvhw5AXijXltYbIMhnP
+        t8mJ78jF4XikC/AA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D8F7C13C35;
+        Tue,  5 Oct 2021 11:15:05 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id YNGYM7kzXGGDNgAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Tue, 05 Oct 2021 11:15:05 +0000
+Message-ID: <4bcf5e1d-cd86-319a-889f-782755955e04@suse.cz>
+Date:   Tue, 5 Oct 2021 13:15:05 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.2
+Content-Language: en-US
+To:     Peter Xu <peterx@redhat.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>
+References: <20210917164756.8586-1-peterx@redhat.com>
+ <20210917164756.8586-4-peterx@redhat.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH 3/3] mm/smaps: Simplify shmem handling of pte holes
+In-Reply-To: <20210917164756.8586-4-peterx@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05 2021, Halil Pasic <pasic@linux.ibm.com> wrote:
+On 9/17/21 18:47, Peter Xu wrote:
+> Firstly, check_shmem_swap variable is actually not necessary, because it's
+> always set with pte_hole hook; checking each would work.
 
-> On Mon, 4 Oct 2021 05:07:13 -0400
-> "Michael S. Tsirkin" <mst@redhat.com> wrote:
->> Well we established that we can know. Here's an alternative explanation:
->
->
-> I thin we established how this should be in the future, where a transport
-> specific mechanism is used to decide are we operating in legacy mode or
-> in modern mode. But with the current QEMU reality, I don't think so.
-> Namely currently the switch native-endian config -> little endian config
-> happens when the VERSION_1 is negotiated, which may happen whenever
-> the VERSION_1 bit is changed, or only when FEATURES_OK is set
-> (vhost-user).
->
-> This is consistent with device should detect a legacy driver by checking
-> for VERSION_1, which is what the spec currently says.
->
-> So for transitional we start out with native-endian config. For modern
-> only the config is always LE.
->
-> The guest can distinguish between a legacy only device and a modern
-> capable device after the revision negotiation. A legacy device would
-> reject the CCW.
->
-> But both a transitional device and a modern only device would accept
-> a revision > 0. So the guest does not know for ccw.
+Right...
 
-Well, for pci I think the driver knows that it is using either legacy or
-modern, no?
+> Meanwhile, the check within smaps_pte_entry is not easy to follow.  E.g.,
+> pte_none() check is not needed as "!pte_present && !is_swap_pte" is the same.
 
-And for ccw, the driver knows at that point in time which revision it
-negotiated, so it should know that a revision > 0 will use LE (and the
-device will obviously know that as well.)
+Seems to be true, indeed.
 
-Or am I misunderstanding what you're getting at?
+> Since at it, use the pte_hole() helper rather than dup the page cache lookup.
+
+pte_hole() is for checking a range and we are calling it for single page,
+isnt't that causing larger overhead in the end? There's xarray involved, so
+maybe Matthew will know best.
+
+> Still keep the CONFIG_SHMEM part so the code can be optimized to nop for !SHMEM.
+> 
+> There will be a very slight functional change in smaps_pte_entry(), that for
+> !SHMEM we'll return early for pte_none (before checking page==NULL), but that's
+> even nicer.
+
+I don't think this is true, 'unlikely(IS_ENABLED(CONFIG_SHMEM))' will be a
+compile-time constant false and shortcut the rest of the 'if' evaluation
+thus there will be no page check? Or I misunderstood.
+
+> Cc: Hugh Dickins <hughd@google.com>
+> Cc: Matthew Wilcox <willy@infradead.org>
+> Cc: Vlastimil Babka <vbabka@suse.cz>
+> Signed-off-by: Peter Xu <peterx@redhat.com>
+> ---
+>  fs/proc/task_mmu.c | 22 ++++++++++++----------
+>  1 file changed, 12 insertions(+), 10 deletions(-)
+> 
+> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+> index 2197f669e17b..ad667dbc96f5 100644
+> --- a/fs/proc/task_mmu.c
+> +++ b/fs/proc/task_mmu.c
+> @@ -397,7 +397,6 @@ struct mem_size_stats {
+>  	u64 pss_shmem;
+>  	u64 pss_locked;
+>  	u64 swap_pss;
+> -	bool check_shmem_swap;
+>  };
+>  
+>  static void smaps_page_accumulate(struct mem_size_stats *mss,
+> @@ -490,6 +489,16 @@ static int smaps_pte_hole(unsigned long addr, unsigned long end,
+>  #define smaps_pte_hole		NULL
+>  #endif /* CONFIG_SHMEM */
+>  
+> +static void smaps_pte_hole_lookup(unsigned long addr, struct mm_walk *walk)
+> +{
+> +#ifdef CONFIG_SHMEM
+> +	if (walk->ops->pte_hole) {
+> +		/* depth is not used */
+> +		smaps_pte_hole(addr, addr + PAGE_SIZE, 0, walk);
+> +	}
+> +#endif
+> +}
+> +
+>  static void smaps_pte_entry(pte_t *pte, unsigned long addr,
+>  		struct mm_walk *walk)
+>  {
+> @@ -518,12 +527,8 @@ static void smaps_pte_entry(pte_t *pte, unsigned long addr,
+>  			}
+>  		} else if (is_pfn_swap_entry(swpent))
+>  			page = pfn_swap_entry_to_page(swpent);
+> -	} else if (unlikely(IS_ENABLED(CONFIG_SHMEM) && mss->check_shmem_swap
+> -							&& pte_none(*pte))) {
+> -		page = xa_load(&vma->vm_file->f_mapping->i_pages,
+> -						linear_page_index(vma, addr));
+> -		if (xa_is_value(page))
+> -			mss->swap += PAGE_SIZE;
+> +	} else {
+> +		smaps_pte_hole_lookup(addr, walk);
+>  		return;
+>  	}
+>  
+> @@ -737,8 +742,6 @@ static void smap_gather_stats(struct vm_area_struct *vma,
+>  		return;
+>  
+>  #ifdef CONFIG_SHMEM
+> -	/* In case of smaps_rollup, reset the value from previous vma */
+> -	mss->check_shmem_swap = false;
+>  	if (vma->vm_file && shmem_mapping(vma->vm_file->f_mapping)) {
+>  		/*
+>  		 * For shared or readonly shmem mappings we know that all
+> @@ -756,7 +759,6 @@ static void smap_gather_stats(struct vm_area_struct *vma,
+>  					!(vma->vm_flags & VM_WRITE))) {
+>  			mss->swap += shmem_swapped;
+>  		} else {
+> -			mss->check_shmem_swap = true;
+>  			ops = &smaps_shmem_walk_ops;
+>  		}
+>  	}
+> 
 
