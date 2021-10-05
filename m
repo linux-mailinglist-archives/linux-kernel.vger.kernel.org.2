@@ -2,84 +2,346 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39391421D39
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 06:23:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86095421D4C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 06:25:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231393AbhJEEY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 00:24:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44758 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229812AbhJEEYz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 00:24:55 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AA42C061749
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 21:23:05 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id h1so5581999pfv.12
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 21:23:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=FIDE+itK9PP/6qNSejIUv8DnzpCmOGBNCkTKxdd1fCo=;
-        b=dfUf/Rh102+RBR6eL8TEn2XI22uyXoD9tI1sUkm8ZogEYUv2UhSuYuPNznT9WkpMYc
-         TRyPkBBi9TtwKrVbtHrowzZ8zvbEAdP1LYfoAEyylRNQW3NZpV1jz5uG35Vf7C+RLuli
-         NKv1kgrIczdpj4K1zEcIx7RQ/Kdc26MhVy0oNJzUx/Z9Mr3TSaRLqwKO2lhsN5ckdRzV
-         wXlY3ixi/dAa+b4WLcP4mGcWr9JScrE0DgmEZpdykU/fzKdSVgY7zwRQbYXlA5IJxzy0
-         vTsRFcmmjv3o8wsbGPsPtUAJ8s+YK4kUyzURe+egb7/kTBdLkJf8kUMX8dQvHki+HgXr
-         ohLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=FIDE+itK9PP/6qNSejIUv8DnzpCmOGBNCkTKxdd1fCo=;
-        b=1iOVEqJMh1rdlnx3ZXSUAZeQKdt9jmy8NzdMjvuo1Z00VlxxUbRCbs4htLwaPbVq1f
-         Qn3Hy9aAVMurHutWEXoigVKAd+vwl+NXEwJbZ0Nrggx42K/At+h3JB+HH4yZbv0y1BSl
-         av3poDhyQEpjcN+Zamt2bQIHeKMWeEFdO0EdqJGfdwM+NJ+Gtqpcrcuko4qDy5ugMGhx
-         uXuQz4Ypz2dNE2v4p1DKC8hWtRMOSIPSldOWTU8dpXBxbiXWtLIfDmsVlfhY9sJZYmSa
-         41FqoJmnp3SXQZ0O03XRRwyzwZ+lrcE4wLr/SgP1i+lTipLA85kK8uAzFz9uSl7C4lFb
-         YO2Q==
-X-Gm-Message-State: AOAM532RNuVII934e6R/PpCNxJTilVFxRSPRsxnjY3ZqImaFYN0Sr1aM
-        x+b63fzgVC1zWvBNx0KAHZMUyQ==
-X-Google-Smtp-Source: ABdhPJxkYDU9Y16QOuD3/DRSSPEfzJcP6QJAOfFImHJArei3UlkfQzDDgy1bdvvaVWKwH089SyKA0Q==
-X-Received: by 2002:a63:8f0e:: with SMTP id n14mr14093935pgd.75.1633407785102;
-        Mon, 04 Oct 2021 21:23:05 -0700 (PDT)
-Received: from localhost ([122.171.247.18])
-        by smtp.gmail.com with ESMTPSA id q21sm15112936pgk.71.2021.10.04.21.23.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Oct 2021 21:23:04 -0700 (PDT)
-Date:   Tue, 5 Oct 2021 09:53:00 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     rafael@kernel.org, robh+dt@kernel.org, bjorn.andersson@linaro.org,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH] dt-bindings: cpufreq: cpufreq-qcom-hw: Convert to YAML
- bindings
-Message-ID: <20211005042300.ix46h3ceu7aiwrg7@vireshk-i7>
-References: <20211004044317.34809-1-manivannan.sadhasivam@linaro.org>
+        id S230493AbhJEE0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 00:26:54 -0400
+Received: from mga06.intel.com ([134.134.136.31]:29482 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229659AbhJEE0x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 00:26:53 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10127"; a="286526865"
+X-IronPort-AV: E=Sophos;i="5.85,347,1624345200"; 
+   d="scan'208";a="286526865"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2021 21:25:03 -0700
+X-IronPort-AV: E=Sophos;i="5.85,347,1624345200"; 
+   d="scan'208";a="623256247"
+Received: from yilai-mobl1.ccr.corp.intel.com (HELO chenyu5-mobl1) ([10.249.172.101])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2021 21:24:57 -0700
+Date:   Tue, 5 Oct 2021 12:24:53 +0800
+From:   Chen Yu <yu.c.chen@intel.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Len Brown <len.brown@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Aubrey Li <aubrey.li@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+Subject: Re: [PATCH v3 3/5] drivers/acpi: Introduce Platform Firmware Runtime
+ Update device driver
+Message-ID: <20211005042453.GC7134@chenyu5-mobl1>
+References: <cover.1631802162.git.yu.c.chen@intel.com>
+ <90d270c031401430445cb2c4ba1b9b0c265cf9d4.1631802163.git.yu.c.chen@intel.com>
+ <CAJZ5v0i__g02rjQh5TuBQN2HejEbZUxiy-4=YSWDUEczrTui0Q@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211004044317.34809-1-manivannan.sadhasivam@linaro.org>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <CAJZ5v0i__g02rjQh5TuBQN2HejEbZUxiy-4=YSWDUEczrTui0Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04-10-21, 10:13, Manivannan Sadhasivam wrote:
-> Convert Qualcomm cpufreq devicetree binding to YAML.
+On Tue, Sep 28, 2021 at 02:22:28PM +0200, Rafael J. Wysocki wrote:
+> On Thu, Sep 16, 2021 at 5:56 PM Chen Yu <yu.c.chen@intel.com> wrote:
+[snip]
+> > +static bool valid_cap_type(int idx, union acpi_object *obj)
+> > +{
+> > +       acpi_object_type type = obj->type;
+> > +
+> > +       if (idx == CAP_STATUS_IDX || idx == CAP_UPDATE_IDX ||
+> > +           idx == CAP_FW_VER_IDX || idx == CAP_CODE_RT_VER_IDX ||
+> > +           idx == CAP_DRV_RT_VER_IDX || idx == CAP_DRV_SVN_IDX)
+> > +               return type == ACPI_TYPE_INTEGER;
+> > +       else if (idx == CAP_CODE_TYPE_IDX || idx == CAP_DRV_TYPE_IDX ||
+> > +                idx == CAP_PLAT_ID_IDX || idx == CAP_OEM_ID_IDX ||
+> > +                idx == CAP_OEM_INFO_IDX)
+> > +               return type == ACPI_TYPE_BUFFER;
+> > +       else
+> > +               return false;
+> > +}
 > 
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
+> IMO, this is way overdesigned.  It is not necessary to do all of these
+> checks for every element of the package in query_capability().
+>
+[snip] 
+> It is not very useful to do a loop if there is a switch () on the
+> control variable in every step.
+> 
+> > +               union acpi_object *obj = &out_obj->package.elements[i];
+> > +
+> > +               if (!valid_cap_type(i, obj))
+> > +                       goto free_acpi_buffer;
+> > +
+> > +               switch (i) {
+> > +               case CAP_STATUS_IDX:
+> > +                       cap->status = obj->integer.value;
+> > +                       break;
+> 
+> The above can be written as
+> 
+> if (out_obj->package.elements[CAP_STATUS_IDX].type != ACPI_TYPE_INTEGER)
+>         goto free_acpi_buffer;
+> 
+> cap->status = out_obj->package.elements[CAP_STATUS_IDX].integer.value;
+> 
+> and analogously for all of the other index values.
+> 
+> But check the number of elements upfront.
+> 
+Ok, got it. The next version will combine above together, and eliminate
+the loop, switch logic.
+> > +               case CAP_UPDATE_IDX:
+> > +                       cap->update_cap = obj->integer.value;
+> > +                       break;
+> > +               case CAP_CODE_TYPE_IDX:
+> > +                       memcpy(&cap->code_type, obj->buffer.pointer,
+> > +                              obj->buffer.length);
+> > +                       break;
+> > +               case CAP_FW_VER_IDX:
+> > +                       cap->fw_version = obj->integer.value;
+> > +                       break;
+> > +               case CAP_CODE_RT_VER_IDX:
+> > +                       cap->code_rt_version = obj->integer.value;
+> > +                       break;
+> > +               case CAP_DRV_TYPE_IDX:
+> > +                       memcpy(&cap->drv_type, obj->buffer.pointer,
+> > +                              obj->buffer.length);
+> > +                       break;
+> > +               case CAP_DRV_RT_VER_IDX:
+> > +                       cap->drv_rt_version = obj->integer.value;
+> > +                       break;
+> > +               case CAP_DRV_SVN_IDX:
+> > +                       cap->drv_svn = obj->integer.value;
+> > +                       break;
+> > +               case CAP_PLAT_ID_IDX:
+> > +                       memcpy(&cap->platform_id, obj->buffer.pointer,
+> > +                              obj->buffer.length);
+> > +                       break;
+> > +               case CAP_OEM_ID_IDX:
+> > +                       memcpy(&cap->oem_id, obj->buffer.pointer,
+> > +                              obj->buffer.length);
+> > +                       break;
+> > +               case CAP_OEM_INFO_IDX:
+> > +                       /*vendor specific data*/
+> > +                       break;
+> > +               default:
+> > +                       pr_err("Incorrect format of Update Capability.\n");
+> 
+> Why pr_err() and not dev_dbg()?
+>
+Will change to dev_dbg() in next version. 
+> Besides, it looks like you're going to fail if the package has more
+> elements than expected, but is this really a big deal?
+> 
+> Moreover, what if the number of package elements is too small?
+> 
+Ok, will change it to check if the number of package elements is larger/equals to
+expected in the spec.
+> > +                       goto free_acpi_buffer;
+> > +               }
+> > +       }
+> > +       ret = 0;
+> > +
+> > +free_acpi_buffer:
+> > +       ACPI_FREE(out_obj);
+> > +
+> > +       return ret;
+> > +}
+> > +
+> > +static int query_buffer(struct pfru_com_buf_info *info)
+> > +{
+> > +       union acpi_object *out_obj;
+> > +       acpi_handle handle;
+> > +       int i, ret = -EINVAL;
+> > +
+> > +       handle = ACPI_HANDLE(pfru_dev->dev);
+> > +       out_obj = acpi_evaluate_dsm_typed(handle, &pfru_dev->uuid,
+> > +                                         pfru_dev->rev_id, FUNC_QUERY_BUF,
+> > +                                         NULL, ACPI_TYPE_PACKAGE);
+> > +       if (!out_obj)
+> > +               return -EINVAL;
+> > +
+> > +       for (i = 0; i < out_obj->package.count; i++) {
+> 
+> Again, what is the benefit from doing this loop?
+>
+Will eliminate the loop in next version. 
+[snip]
+> > +
+> > +static int get_image_type(efi_manage_capsule_image_header_t *img_hdr,
+> > +                         int *type)
+> > +{
+> > +       guid_t *image_type_id;
+> > +
+> > +       /* check whether this is a code injection or driver update */
+> > +       image_type_id = &img_hdr->image_type_id;
+> 
+> Anything wrong with doing this assignment as initialization?
+> 
+Ok, will change it in next version.
+> > +       if (guid_equal(image_type_id, &pfru_dev->code_uuid))
+> > +               *type = CODE_INJECT_TYPE;
+> > +       else if (guid_equal(image_type_id, &pfru_dev->drv_uuid))
+> > +               *type = DRIVER_UPDATE_TYPE;
+> 
+> And what would be wrong with returning the type or a negative error code?
+> 
+Will change it in next version.
+> > +       else
+> > +               return -EINVAL;
+> > +
+> > +       return 0;
+> > +}
+> > +
+> > +/*
+> > + * The (u64 hw_ins) was introduced in UEFI spec version 2,
+> > + * and (u64 capsule_support) was introduced in version 3.
+> > + * The size needs to be adjusted accordingly. That is to
+> > + * say, version 1 should subtract the size of hw_ins+capsule_support,
+> > + * and version 2 should sbstract the size of capsule_support.
+> 
+> Either turn this into a kerneldoc comment or put it inside the function.
+> 
+Will put it inside the function.
+> > + */
+> > +static int adjust_efi_size(efi_manage_capsule_image_header_t *img_hdr,
+> > +                          int *size)
+> > +{
+> > +       int tmp_size = *size;
+> > +
+> > +       tmp_size += sizeof(efi_manage_capsule_image_header_t);
+> > +       switch (img_hdr->ver) {
+> > +       case 1:
+> > +               tmp_size -= 2 * sizeof(u64);
+> > +               break;
+> > +       case 2:
+> > +               tmp_size -= sizeof(u64);
+> > +               break;
+> > +       default:
+> > +               /* only support version 1 and 2 */
+> > +               return -EINVAL;
+> > +       }
+> > +       *size = tmp_size;
+> 
+> Why not simply return the size or a negative error code?
+> 
+Will change it in next version.
+> > +
+> > +       return 0;
+> > +}
+> > +
+> > +/*
+> > + * Sanity check if the capsule image has a newer version than current one.
+> > + * Return: true if it is valid, false otherwise.
+> 
+> Would it hurt if this was a proper kerneldoc comment?
+> 
+Will put it inside the function.
+[snip]
+> > +
+> > +static void dump_update_result(struct pfru_updated_result *result)
+> > +{
+> > +       pr_debug("Update result:\n");
+> > +       pr_debug("Status:%d\n", result->status);
+> > +       pr_debug("Extended Status:%d\n", result->ext_status);
+> > +       pr_debug("Authentication Time Low:%lld\n", result->low_auth_time);
+> > +       pr_debug("Authentication Time High:%lld\n", result->high_auth_time);
+> > +       pr_debug("Execution Time Low:%lld\n", result->low_exec_time);
+> > +       pr_debug("Execution Time High:%lld\n", result->high_exec_time);
+> 
+> All of these could be dev_dbg() I suppose?
+>
+Ok, will change it in next version. 
+> > +}
+> > +
+> > +
+[snip]
+> > +       for (i = 0; i < out_obj->package.count; i++) {
+> 
+> Same comment regarding the benefit of doing a loop: why is it needed?
+> 
+Will remove the loop in next version.
+[snip]
+> > +
+> > +       switch (cmd) {
+> > +       case PFRU_IOC_SET_REV:
+> > +               if (copy_from_user(&rev, p, sizeof(unsigned int)))
+> > +                       return -EFAULT;
+> > +               if (!pfru_valid_revid(rev))
+> > +                       return -EFAULT;
+> 
+> Why is this the right error code to return here?
+> 
+Will change EFAULT to EINVAL in next version.
+[snip]
+> > +       /* map the communication buffer */
+> > +       phy_addr = (phys_addr_t)(info.addr_lo | (info.addr_hi << 32));
+> > +       buf_ptr = memremap(phy_addr, info.buf_size, MEMREMAP_WB);
+> > +       if (IS_ERR(buf_ptr))
+> > +               return PTR_ERR(buf_ptr);
+> 
+> Empty line here, please.
+> 
+Ok, will do.
+> > +       if (!copy_from_iter_full(buf_ptr, len, &iter)) {
+> > +               pr_err("error! could not read capsule file\n");
+> 
+> dev_dbg()?
+> 
+Ok, will change it in next version.
+> > +               ret = -EINVAL;
+> > +               goto unmap;
+> > +       }
+> > +
+> > +       /* Check if the capsule header has a valid version number. */
+> > +       ret = query_capability(&cap);
+> > +       if (ret)
+> > +               goto unmap;
+> 
+> ret is guaranteed to be 0 here, so you can do
+> 
+> if (cap.status != DSM_SUCCEED)
+>         ret = -EBUSY;
+> else if (!valid_version(buf_ptr, &cap))
+>         ret = -EINVAL;
+> 
+> and the gotos and the "ret = 0" statement below won't be necessary.
+> 
+Ok, will do in next version.
+[snip]
+> > +static ssize_t pfru_read(struct file *filp, char __user *ubuf,
+> > +                        size_t size, loff_t *off)
+> > +{
+> > +       struct pfru_update_cap_info cap;
+> > +       int ret;
+> > +
+> > +       ret = query_capability(&cap);
+> > +       if (ret)
+> > +               return ret;
+> > +
+> > +       size = min_t(size_t, size, sizeof(cap));
+> > +
+> > +       if (copy_to_user(ubuf, &cap, size))
+> > +               return -EFAULT;
+> 
+> Well, if the read() is only needed for this, maybe consider
+> implementing it as an ioctl() command and using read() for the
+> telemetry retrieval?  Then, you won't need the other special device
+> file, the write() will be the code injection/update, the read() will
+> be telemetry retrieval and all of the rest can be ioctl()s under one
+> special device file.
+> 
+Got it, will try to combine the two modules into one.
 
-I hope you will be resending this after fixing the DT warnings ?
-
--- 
-viresh
+thanks,
+Chenyu
