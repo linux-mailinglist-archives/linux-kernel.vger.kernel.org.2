@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BCDD42332D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 00:06:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9483642332E
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 00:06:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236764AbhJEWIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 18:08:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39722 "EHLO
+        id S236778AbhJEWIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 18:08:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229974AbhJEWIF (ORCPT
+        with ESMTP id S236768AbhJEWIT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 18:08:05 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0105EC061749
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 15:06:14 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id s15so2292202wrv.11
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 15:06:13 -0700 (PDT)
+        Tue, 5 Oct 2021 18:08:19 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84502C06174E
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 15:06:28 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id e12so2336428wra.4
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 15:06:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=message-id:date:mime-version:user-agent:subject:content-language:to
          :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=M9Muhp4IM6S5/hNPD1GTAHwYmi2Jj0Q80AHPZokCdCA=;
-        b=NbZ3SJ3Hn/Pqz/FFYfvEnxNGWTO92yuKpW3QtVsNa8G1mkSmm9FURvqBXgnBon/kbF
-         AW5rWmUYdbE/61HUkandHx+VowpnyxJlE8ZiNquZhifRCG2OE66nuIoTaMjswGfMrSLN
-         gqivptvDQ0AasDg4YAmH3+Y2obySW6IpALLTbDpCR7mATQs1l8OAdcOLxCtgmni5JDxJ
-         nfewOZdm9yHwxOMwJOUUYU8S75VKrE5aXjTUalExheiPgzAGLXR/IK5N3/aRT5zpiLcT
-         iZH/Jw+QOYybEl+AN+6550/VqLK3IcjoHQO6hctcBxS4CGTxr3LyZwR//P3x3yvDeTP5
-         mB5A==
+        bh=vFz2ixooEH7WCAssNrj2XaXWHqUxWi5Jrrg6C4o9k5E=;
+        b=NQZLtOX/o8cYhbJs2WkgZoeAwBdLxlImSbzhoF3kWECAv5hGtHo8cQWW8UXMpwLI46
+         +bFuON8mIU1lWqvM6WwC/yR5D5LSWMc/R5cQxnc9dNEHEhS2ekWTvCxX9ZLY2Ua7rp6p
+         OUJiSQTzfGKZOziDrMzxJfTzVZNiDQSLozgtCUX3hnCSflj+qvmvjri8mKZ+bZEnTvgo
+         xJU2i42hy3Myl81Up7BmJ+fWQcfxdPALnv+bdJqdeewDb+c8+X7kq/2fOAtACGHPJRDc
+         GGA/26W2sbN5L5Ro5MnDiyuB+41zVkzDhbcBWoBDjLEWFtE8cLKZdGFvdozkEvF8mr2n
+         zhyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
          :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=M9Muhp4IM6S5/hNPD1GTAHwYmi2Jj0Q80AHPZokCdCA=;
-        b=jgBpiKowJXWr6fmG1/ObHsD5Qz3GXfRS/oGEN5U+eyjzEgNz0ngz2PDFiokFbdEqU3
-         YcNqCBpFhe2EmIsk/sknVRWjulSxd1TlWxGfInVVcBwE/Pu+ZTjdt/mhVv4M/3qExYxb
-         P4ah0mvAySbqoCRzrEfm0BV5TM9TcyTmblSCILu3ASycbuyGu+EuZmrTnDwVVg9vH14X
-         thGg5pLrY8HGQtoPqHJkKMl48yGgoiRYMlB5UgEjkKvZ9xG0v1ZmUCH/ldETvjjNq5eT
-         mZIHK86yJZYqvXL8psEnShVIbaub77ISroUnZSiXCBy7PjqqCZ++kmefTWYi/r26ExR2
-         bmwQ==
-X-Gm-Message-State: AOAM531KAPMHwwzmeAYGKM9LIpFqJ53OmextXJrbioUXtF4YQXneSmpK
-        69ES0zAsTk0llqc8BVnnyEw=
-X-Google-Smtp-Source: ABdhPJyXb7dSIs5lTN3TL+YdL/peE1Jn3E5DaXgmF5ArxE1yW/BHgn14TNUv8yl2Z8OUoXRDk1QQ7g==
-X-Received: by 2002:adf:a31d:: with SMTP id c29mr23783587wrb.381.1633471572643;
-        Tue, 05 Oct 2021 15:06:12 -0700 (PDT)
+        bh=vFz2ixooEH7WCAssNrj2XaXWHqUxWi5Jrrg6C4o9k5E=;
+        b=xdhwrnzigsHu0x4ijgzSb+v7VHvv80m2gWTV7K1/5f7vmf16YDsc7U157auG2NQkru
+         Kk3Wj6iRoNiGGMqddgbWnrnLScKxCZZ5UV78Q1ZWevx8QpYCDAo3MtDf8cxZXrxsjdx/
+         PpYoX+xbwk0qWM3P/5WD69Pl9gZAbr1KO9df2JsImVjo11doNmDdasbHVyiEXOzThjYr
+         ctkBmfcWyFcAE9aq0kXwSjLQnLAAlpmswPuKN9NXAcOQmUd+Y6rEmo1KiCi/oj0Mb/LO
+         Lc3LwPqfZi2YnrB0mR/EbugkbKcdo5u6E2gkhuUQwz1uZtKX9rZeJI6r3hRZt+NPPbFm
+         Y4rg==
+X-Gm-Message-State: AOAM532qU/at/4nvxLkUZ/6qabBcyhYbSOiphaUrMXcfTVF3f4rkljof
+        3eqjO+nPqNGgxvAF0+eRmDM=
+X-Google-Smtp-Source: ABdhPJx5NashpsRnp5sMz8WHZPcUqpt0aIM+jfSAiCSmrxeF/dvefrnVP+i34wKZ+Olxee1UJvKpWQ==
+X-Received: by 2002:a05:600c:190c:: with SMTP id j12mr6213235wmq.122.1633471587146;
+        Tue, 05 Oct 2021 15:06:27 -0700 (PDT)
 Received: from ?IPV6:2a02:8108:96c0:3b88::f816? ([2a02:8108:96c0:3b88::f816])
-        by smtp.gmail.com with ESMTPSA id c204sm3310204wme.11.2021.10.05.15.06.12
+        by smtp.gmail.com with ESMTPSA id j4sm19174690wrt.67.2021.10.05.15.06.26
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Oct 2021 15:06:12 -0700 (PDT)
-Message-ID: <faa44ffb-197c-a6a9-3f0e-fd031c7b6b98@gmail.com>
-Date:   Wed, 6 Oct 2021 00:06:11 +0200
+        Tue, 05 Oct 2021 15:06:26 -0700 (PDT)
+Message-ID: <d6f016e1-b6d3-05eb-1880-9346580aca3f@gmail.com>
+Date:   Wed, 6 Oct 2021 00:06:26 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.1.1
-Subject: Re: [PATCH 3/9] staging: r8188eu: remove write-only HwRxPageSize
+Subject: Re: [PATCH 4/9] staging: r8188eu: remove unused IntrMask
 Content-Language: en-US
 To:     Martin Kaiser <martin@kaiser.cx>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
@@ -62,9 +62,9 @@ Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
         Phillip Potter <phil@philpotter.co.uk>,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
 References: <20211005200821.19783-1-martin@kaiser.cx>
- <20211005200821.19783-3-martin@kaiser.cx>
+ <20211005200821.19783-4-martin@kaiser.cx>
 From:   Michael Straube <straube.linux@gmail.com>
-In-Reply-To: <20211005200821.19783-3-martin@kaiser.cx>
+In-Reply-To: <20211005200821.19783-4-martin@kaiser.cx>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
@@ -72,75 +72,49 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 10/5/21 22:08, Martin Kaiser wrote:
-> HwRxPageSize from struct hal_data_8188e is set but never read. Remove
-> the component and the code to initialise it.
+> The IntrMask array is set but never read. Remove it.
 > 
 > Signed-off-by: Martin Kaiser <martin@kaiser.cx>
 > ---
->   drivers/staging/r8188eu/hal/usb_halinit.c     | 20 -------------------
->   .../staging/r8188eu/include/rtl8188e_hal.h    |  1 -
->   .../staging/r8188eu/include/rtl8188e_spec.h   |  4 ----
->   3 files changed, 25 deletions(-)
+>   drivers/staging/r8188eu/hal/usb_halinit.c      | 3 ---
+>   drivers/staging/r8188eu/include/rtl8188e_hal.h | 1 -
+>   2 files changed, 4 deletions(-)
 > 
 > diff --git a/drivers/staging/r8188eu/hal/usb_halinit.c b/drivers/staging/r8188eu/hal/usb_halinit.c
-> index ab7b80144403..f71f25e234ab 100644
+> index f71f25e234ab..bd3ba6ab364f 100644
 > --- a/drivers/staging/r8188eu/hal/usb_halinit.c
 > +++ b/drivers/staging/r8188eu/hal/usb_halinit.c
-> @@ -524,26 +524,6 @@ usb_AggSettingRxUpdate(
->   		/*  TODO: */
->   		break;
->   	}
-> -
-> -	switch (PBP_128) {
-> -	case PBP_128:
-> -		haldata->HwRxPageSize = 128;
-> -		break;
-> -	case PBP_64:
-> -		haldata->HwRxPageSize = 64;
-> -		break;
-> -	case PBP_256:
-> -		haldata->HwRxPageSize = 256;
-> -		break;
-> -	case PBP_512:
-> -		haldata->HwRxPageSize = 512;
-> -		break;
-> -	case PBP_1024:
-> -		haldata->HwRxPageSize = 1024;
-> -		break;
-> -	default:
-> -		break;
-> -	}
->   }	/*  usb_AggSettingRxUpdate */
+> @@ -119,18 +119,15 @@ static void _InitInterrupt(struct adapter *Adapter)
+>   {
+>   	u32 imr, imr_ex;
+>   	u8  usb_opt;
+> -	struct hal_data_8188e	*haldata = GET_HAL_DATA(Adapter);
 >   
->   static void InitUsbAggregationSetting(struct adapter *Adapter)
+>   	/* HISR write one to clear */
+>   	rtw_write32(Adapter, REG_HISR_88E, 0xFFFFFFFF);
+>   	/*  HIMR - */
+>   	imr = IMR_PSTIMEOUT_88E | IMR_TBDER_88E | IMR_CPWM_88E | IMR_CPWM2_88E;
+>   	rtw_write32(Adapter, REG_HIMR_88E, imr);
+> -	haldata->IntrMask[0] = imr;
+>   
+>   	imr_ex = IMR_TXERR_88E | IMR_RXERR_88E | IMR_TXFOVW_88E | IMR_RXFOVW_88E;
+>   	rtw_write32(Adapter, REG_HIMRE_88E, imr_ex);
+> -	haldata->IntrMask[1] = imr_ex;
+>   
+>   	/*  REG_USB_SPECIAL_OPTION - BIT(4) */
+>   	/*  0; Use interrupt endpoint to upload interrupt pkt */
 > diff --git a/drivers/staging/r8188eu/include/rtl8188e_hal.h b/drivers/staging/r8188eu/include/rtl8188e_hal.h
-> index 08dedf4c91b8..fc6acbba17e7 100644
+> index fc6acbba17e7..bfe32864ded6 100644
 > --- a/drivers/staging/r8188eu/include/rtl8188e_hal.h
 > +++ b/drivers/staging/r8188eu/include/rtl8188e_hal.h
-> @@ -360,7 +360,6 @@ struct hal_data_8188e {
+> @@ -356,7 +356,6 @@ struct hal_data_8188e {
+>   
+>   	/*  Interrupt relatd register information. */
+>   	u32	IntArray[3];/* HISR0,HISR1,HSISR */
+> -	u32	IntrMask[3];
 >   	u8	C2hArray[16];
 >   	u8	UsbTxAggMode;
 >   	u8	UsbTxAggDescNum;
-> -	u16	HwRxPageSize;		/*  Hardware setting */
->   	u32	MaxUsbRxAggBlock;
->   
->   	enum usb_rx_agg_mode UsbRxAggMode;
-> diff --git a/drivers/staging/r8188eu/include/rtl8188e_spec.h b/drivers/staging/r8188eu/include/rtl8188e_spec.h
-> index 1c96f7b81245..01aeaa4ac605 100644
-> --- a/drivers/staging/r8188eu/include/rtl8188e_spec.h
-> +++ b/drivers/staging/r8188eu/include/rtl8188e_spec.h
-> @@ -893,11 +893,7 @@ Current IOREG MAP
->   #define _PSRX(x)			(x)
->   #define _PSTX(x)			((x) << 4)
->   
-> -#define PBP_64				0x0
->   #define PBP_128				0x1
-> -#define PBP_256				0x2
-> -#define PBP_512				0x3
-> -#define PBP_1024			0x4
->   
->   /* 2 TX/RXDMA */
->   #define RXDMA_ARBBW_EN			BIT(0)
 > 
 
 Looks good to me.
