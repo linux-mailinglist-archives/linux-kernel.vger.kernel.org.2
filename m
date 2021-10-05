@@ -2,66 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83D2B422823
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 15:43:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D84E8422826
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 15:43:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234983AbhJENoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 09:44:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56188 "EHLO mail.kernel.org"
+        id S235084AbhJENpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 09:45:05 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:49868 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233077AbhJENoy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 09:44:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 81D4861139;
-        Tue,  5 Oct 2021 13:43:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633441384;
-        bh=J3aLC4PyDoCkE6ZBV8EqrCKHmRNUR7xIl7ihhOOIWl4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HE/zEbfQY3VRPURBiiBl3nmNLxbxzIjiG0nNhZFJS4sVTkP3LGwRrZPQoVrxubd9S
-         3mnh0WJqJLjJ1SY2uCSdyk+s1qbwmWVYvCoUMIE+IfcKFjTQKuefL6oWlA/f88QIPD
-         txTvZU5/4JPNu47XGv/7efwohUNnUVkoeATLd5ME=
-Date:   Tue, 5 Oct 2021 15:43:02 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>, Alex Shi <alexs@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Shuah Khan <shuah@kernel.org>, Michal Hocko <mhocko@suse.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Mike Rapoport <rppt@kernel.org>, x86@kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
-        linux-doc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v1 2/6] mm/memory_hotplug: remove
- CONFIG_MEMORY_HOTPLUG_SPARSE
-Message-ID: <YVxWZtQRxTdP2jvX@kroah.com>
-References: <20210929143600.49379-1-david@redhat.com>
- <20210929143600.49379-3-david@redhat.com>
+        id S235002AbhJENpC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 09:45:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=ovSUEtGPSxl/nybmRBxSi47cRQoVCb66ArRug3qzPRw=; b=o9FkshonziVohapuf/ejhvec8/
+        4qy9q6yDuA2BH/3dV13boXtdKffTyuWuI074YfiFVnRA/pGrAEhzsZ4oUBj2y0TCCUFByPPmORCoI
+        Mw7zGb/HvUtgF5aSCvi6lx8hKFK44Hg+5r8jjkuDBrn04lSEjutqL6ZVBFGycsepePdY=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mXkio-009hJZ-83; Tue, 05 Oct 2021 15:43:06 +0200
+Date:   Tue, 5 Oct 2021 15:43:06 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     Sean Anderson <sean.anderson@seco.com>, netdev@vger.kernel.org,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        Heiner Kallweit <hkallweit1@gmail.com>
+Subject: Re: [RFC net-next PATCH 06/16] net: phylink: Add function for
+ optionally adding a PCS
+Message-ID: <YVxWaif9jE/fCE0O@lunn.ch>
+References: <20211004191527.1610759-1-sean.anderson@seco.com>
+ <20211004191527.1610759-7-sean.anderson@seco.com>
+ <YVwgKnxuOeZC6IxW@shell.armlinux.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210929143600.49379-3-david@redhat.com>
+In-Reply-To: <YVwgKnxuOeZC6IxW@shell.armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 04:35:56PM +0200, David Hildenbrand wrote:
-> CONFIG_MEMORY_HOTPLUG depends on CONFIG_SPARSEMEM, so there is no need for
-> CONFIG_MEMORY_HOTPLUG_SPARSE anymore; adjust all instances to use
-> CONFIG_MEMORY_HOTPLUG and remove CONFIG_MEMORY_HOTPLUG_SPARSE.
+On Tue, Oct 05, 2021 at 10:51:38AM +0100, Russell King (Oracle) wrote:
+> On Mon, Oct 04, 2021 at 03:15:17PM -0400, Sean Anderson wrote:
+> > This adds a function to set the PCS only if there is not one currently
+> > set. The intention here is to allow MAC drivers to have a "default" PCS
+> > (such as an internal one) which may be used when one has not been set
+> > via the device tree. This allows for backwards compatibility for cases
+> > where a PCS was automatically attached if necessary.
 > 
-> Signed-off-by: David Hildenbrand <david@redhat.com>
+> I'm not sure I entirely like this approach. Why can't the network
+> driver check for the pcs-handle property and avoid using its
+> "default" if present?
 
-Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+And that would also be in line with
+
+ethernet/freescale/dpaa2/dpaa2-mac.c:	node = fwnode_find_reference(dpmac_node, "pcs-handle", 0);
+
+We need a uniform meaning of pcs-handle. And dpaa2-mac.c has set the
+precedent that the MAC uses it, not phylink. That can however be
+changed, if it make sense, but both users should do the same.
+
+	 Andrew
