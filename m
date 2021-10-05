@@ -2,124 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B17B423203
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 22:29:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A1454231FF
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 22:29:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236403AbhJEUbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 16:31:13 -0400
-Received: from mail.z3ntu.xyz ([128.199.32.197]:56930 "EHLO mail.z3ntu.xyz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236267AbhJEUbL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 16:31:11 -0400
-Received: from localhost.localdomain (ip-213-127-63-121.ip.prioritytelecom.net [213.127.63.121])
-        by mail.z3ntu.xyz (Postfix) with ESMTPSA id 86371C9169;
-        Tue,  5 Oct 2021 20:29:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=z3ntu.xyz; s=z3ntu;
-        t=1633465759; bh=caiZgo8/843g5GxiEcUJXyvFHNkUlh+M/VUHezDs/U0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=sK8ycAW1lzqo8789qgSWNTfbDXo0yMpkDtlxfrLloMHJi0CasZYUw7jDIXqr1i8G+
-         oFxb4zncyeWOD7O+l+JoFzNJGhYXmsxY1gFIjOV+CwTE5bnmnT+x9QMSkKB619qAPN
-         1aBzkZm8E7VDQ55u07pF8blp6JZl4poROxKFarps=
-From:   Luca Weiss <luca@z3ntu.xyz>
-To:     linux-mediatek@lists.infradead.org
-Cc:     ~postmarketos/upstreaming@lists.sr.ht,
-        Arnd Bergmann <arnd@arndb.de>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Fabien Parent <fparent@baylibre.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Luca Weiss <luca@z3ntu.xyz>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Olof Johansson <olof@lixom.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Seiya Wang <seiya.wang@mediatek.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, soc@kernel.org
-Subject: [PATCH 2/2] arm: dts: mt6589: Add device tree for Fairphone 1
-Date:   Tue,  5 Oct 2021 22:28:31 +0200
-Message-Id: <20211005202833.96526-2-luca@z3ntu.xyz>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211005202833.96526-1-luca@z3ntu.xyz>
-References: <20211005202833.96526-1-luca@z3ntu.xyz>
+        id S236141AbhJEUbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 16:31:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45418 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235715AbhJEUbF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 16:31:05 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB3D1C06174E
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 13:29:14 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id a7so469287yba.6
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 13:29:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OcQv/s+1PQ0ZjDCw+SRTOFCxUQmvWoG+IaGmgRCu54s=;
+        b=MW14OSQ1gFA4P7702EgFpqM3qR3T4ysOSPqEqQduRialXr2rl+z6u1qfBew5gCMwxP
+         He0OejT6iuY2z8ccXO2nJN2cvrfEb3xsVI2LTu9Dq+HbqvZLLzKClVUbl2lCw2cxayay
+         bjMlUpJL4oXj88XjInk7lSQBsjgghYRFeZq66op4EtfF4MEf07gQqOJGAKnMo6LR6R9r
+         agZjlErLE9uBq3uzftWy/5vlpMpuF6hapb8jPGMhmMdwnb9oLoHxfLKXAfGCQnV/ckZO
+         tIyrfw0Q9PYNgG8xvztQ+v6/B+DG1lxyTv5RrdFo4HqZ5OApN9bxwaDHd6NWUiP+MZEp
+         wSng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OcQv/s+1PQ0ZjDCw+SRTOFCxUQmvWoG+IaGmgRCu54s=;
+        b=gXmOmXrwaEj2RO/Zz10P95DFKwL+UDWu8lt3AfcpRNJJ3d+DRDjw8L8PNZ62GhymU6
+         4un3DNhn5xEtwWzW9Ya0c/pRHh9EZ+E9l6EsL/tpEYTMFFcsItKBovuZ0ufc39IN8gNy
+         aL5b9ftYhGz7gaKZvk9Oyb5P62CW5/9Qp+EE84+cocQh5ogpGC1lYbPXjfFtV332I0Ri
+         iYXAIktU5EDrgFFW9VWp+EyIh9BT2gsQ6F1YfYBVqtDI5nFPRhiWjF6CLhJ8iQVP9z//
+         /Fpj5ofLmNJZ3mvTh48vOGVrKjPUGDsc0LRAY2dv4mz/xLJrgl+zRJ1Si1bDv+E7SWFd
+         FSvQ==
+X-Gm-Message-State: AOAM5335PZUC5YwQ6Bxsw5aaHMn2K5eGKeEiLDzkdsstNWq4FhU/q4n7
+        Jk2aUN+6bOKJwBIPAPXnXBM73dnMGxJuWosIkn3r4Q==
+X-Google-Smtp-Source: ABdhPJzJsAm0jIvkO40dr+sZFTs2tR+7kzjFwmvCvA4ilABfEgSVApT0Rz05CRz9lseERDmx31G5dQQz6jq8IE2Ituw=
+X-Received: by 2002:a25:cf8f:: with SMTP id f137mr26144522ybg.338.1633465753946;
+ Tue, 05 Oct 2021 13:29:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210930180531.1190642-1-samitolvanen@google.com>
+ <20210930180531.1190642-5-samitolvanen@google.com> <YVsGoJ+NN6wRFi22@hirez.programming.kicks-ass.net>
+ <CABCJKudBrHfwR=gQc=9=cfBjR9p5jm65ovSNwzLLEpDUdo6ZPQ@mail.gmail.com> <20211005065923.GH4323@worktop.programming.kicks-ass.net>
+In-Reply-To: <20211005065923.GH4323@worktop.programming.kicks-ass.net>
+From:   Sami Tolvanen <samitolvanen@google.com>
+Date:   Tue, 5 Oct 2021 13:29:02 -0700
+Message-ID: <CABCJKud1Gm0ouROKLAw9t03qbs+_EASky053=SqijPJahqogng@mail.gmail.com>
+Subject: Re: [PATCH v4 04/15] cfi: Add DEFINE_CFI_IMMEDIATE_RETURN_STUB
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     X86 ML <x86@kernel.org>, Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        linux-hardening@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>, llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add rudimentary support for the Fairphone 1, based on MT6589 to boot to
-UART console.
+On Mon, Oct 4, 2021 at 11:59 PM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Mon, Oct 04, 2021 at 12:10:46PM -0700, Sami Tolvanen wrote:
+> > On Mon, Oct 4, 2021 at 6:50 AM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> > > Why DEFINE_CFI_IMMEDIATE_RETURN_STUB() vs __no_cfi attribute that we can
+> > > stick on the relvant functions?
+> >
+> > To avoid accidentally creating useful gadgets for attackers. For
+> > example, while excluding an empty stub isn't necessarily ideal,
+> > allowing calls to a function that always returns zero would be worse.
+>
+> I was afraid you'd say something like that...
+>
+> > > Because I've got at least one more variant for you :-) See
+> > > kernel/static_call.c:__static_call_return0
+> >
+> > Does __static_call_return0 ever get called indirectly on architectures
+> > that support static calls? If it's always patched into a direct call,
+> > the type mismatch isn't an issue.
+>
+> For x86_64 it should indeed never get called, however if you plan on
+> supporting i386 then you need the annotation. Also, it might get called
+> on arm64 which is about to grow basic HAVE_STATIC_CALL support.
 
-The recently added SMP support needs to be disabled for this board as
-the kernel panics executing /init with it, even though the CPUs seem to
-start up fine - maybe a stability issue.
+Good point. I read through the latest arm64 static call proposal and
+while it can fall back to an indirect call, it doesn't look like that
+would cause issues with CFI.
 
-[    0.072010] smp: Bringing up secondary CPUs ...
-[    0.131888] CPU1: thread -1, cpu 1, socket 0, mpidr 80000001
-[    0.191889] CPU2: thread -1, cpu 2, socket 0, mpidr 80000002
-[    0.251890] CPU3: thread -1, cpu 3, socket 0, mpidr 80000003
-[    0.251982] smp: Brought up 1 node, 4 CPUs
-[    0.254745] SMP: Total of 4 processors activated (7982.28 BogoMIPS).
-[    0.255582] CPU: All CPU(s) started in SVC mode.
+> (and just in case you care about CFI on PPC32, they too grew basic
+> static_call support)
 
-[    0.472039] Run /init as init process
-[    0.473317] Kernel panic - not syncing: Attempted to kill init! exitcode=0x00000004
+We are currently targeting only x86_64 and arm64, but I'll keep that
+in mind in case we want to add more platforms.
 
-Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
----
- arch/arm/boot/dts/Makefile                 |  1 +
- arch/arm/boot/dts/mt6589-fairphone-fp1.dts | 30 ++++++++++++++++++++++
- 2 files changed, 31 insertions(+)
- create mode 100644 arch/arm/boot/dts/mt6589-fairphone-fp1.dts
-
-diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-index 7e0934180724..24f402db2613 100644
---- a/arch/arm/boot/dts/Makefile
-+++ b/arch/arm/boot/dts/Makefile
-@@ -1437,6 +1437,7 @@ dtb-$(CONFIG_ARCH_MEDIATEK) += \
- 	mt2701-evb.dtb \
- 	mt6580-evbp1.dtb \
- 	mt6589-aquaris5.dtb \
-+	mt6589-fairphone-fp1.dtb \
- 	mt6592-evb.dtb \
- 	mt7623a-rfb-emmc.dtb \
- 	mt7623a-rfb-nand.dtb \
-diff --git a/arch/arm/boot/dts/mt6589-fairphone-fp1.dts b/arch/arm/boot/dts/mt6589-fairphone-fp1.dts
-new file mode 100644
-index 000000000000..32c14ecf2244
---- /dev/null
-+++ b/arch/arm/boot/dts/mt6589-fairphone-fp1.dts
-@@ -0,0 +1,30 @@
-+// SPDX-License-Identifier: BSD-3-Clause
-+/*
-+ * Copyright (c) 2021, Luca Weiss <luca@z3ntu.xyz>
-+ */
-+
-+/dts-v1/;
-+#include "mt6589.dtsi"
-+
-+/ {
-+	model = "Fairphone 1";
-+	compatible = "fairphone,fp1", "mediatek,mt6589";
-+
-+	chosen {
-+		stdout-path = &uart3;
-+	};
-+
-+	cpus {
-+		/* SMP is not stable on this board, makes the kernel panic */
-+		/delete-property/ enable-method;
-+	};
-+
-+	memory {
-+		device_type = "memory";
-+		reg = <0x80000000 0x40000000>;
-+	};
-+};
-+
-+&uart3 {
-+	status = "okay";
-+};
--- 
-2.33.0
-
+Sami
