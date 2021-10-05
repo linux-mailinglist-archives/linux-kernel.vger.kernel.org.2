@@ -2,98 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9EAA4228DA
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 15:52:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B61C422894
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 15:51:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235837AbhJENyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 09:54:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33356 "EHLO mail.kernel.org"
+        id S235709AbhJENxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 09:53:10 -0400
+Received: from foss.arm.com ([217.140.110.172]:44844 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235735AbhJENx1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 09:53:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E9446023D;
-        Tue,  5 Oct 2021 13:51:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633441897;
-        bh=LjyaNBioHQI0wflgWcjTsgXGj6lchXDXS+9YPalogTM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HG089bnRIU4sW2I47IeHPEaP4OysyTsR7ZsDIg4+4EnPnWp11fcGD630UrXHTOpmm
-         yOKPH1iRzuAruZ4VX3iXDMBzpvNzTrJuyaIQimeaBIl2jPJN8QFPznsDxdN8XDtMYQ
-         0rqRYyz5RWztJqy6hm5nhXGjjc1IyevgmdWyVW0ohrlDm7A1idps+eh1+FNBUdFNsM
-         Zxqevhbrw1CYL33XwqOyCfk/HbNCejTY9tJXF/Af+IzzamsPy7FjHIJbLi41Vc7Y5y
-         HggicqOWEan6ol9jng08KLIjZAy5eZ0gUzrzuPaR5FGgFDSpmXLwaZfdgSqrUVlPCx
-         m2OTfYbSUc/3g==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Brandon Wyman <bjwyman@gmail.com>,
-        Eddie James <eajames@linux.ibm.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Sasha Levin <sashal@kernel.org>, jdelvare@suse.com,
-        linux-hwmon@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.14 40/40] hwmon: (pmbus/ibm-cffps) max_power_out swap changes
-Date:   Tue,  5 Oct 2021 09:50:19 -0400
-Message-Id: <20211005135020.214291-40-sashal@kernel.org>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211005135020.214291-1-sashal@kernel.org>
-References: <20211005135020.214291-1-sashal@kernel.org>
+        id S235467AbhJENwm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 09:52:42 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 306D61FB;
+        Tue,  5 Oct 2021 06:50:51 -0700 (PDT)
+Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 37E593F70D;
+        Tue,  5 Oct 2021 06:50:47 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Tim Chen <tim.c.chen@linux.intel.com>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        Barry Song <21cnbao@gmail.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Ben Segall <bsegall@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Guodong Xu <guodong.xu@linaro.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        "Cc\: Len Brown" <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        LAK <linux-arm-kernel@lists.infradead.org>,
+        Linuxarm <linuxarm@huawei.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mel Gorman <mgorman@suse.de>, msys.mizuma@gmail.com,
+        "Zengtao \(B\)" <prime.zeng@hisilicon.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Will Deacon <will@kernel.org>, x86 <x86@kernel.org>,
+        yangyicong <yangyicong@huawei.com>
+Subject: Re: [PATCH RESEND 0/3] Represent cluster topology and enable load balance between clusters
+In-Reply-To: <87tuhvlhae.mognet@arm.com>
+References: <20210924085104.44806-1-21cnbao@gmail.com> <CAGsJ_4yW72mktbWjRfE9ngXoq9oXBXyAd_TPjKBNdGiRSoh9LA@mail.gmail.com> <CAKfTPtAtfJRFBbo+kBCYf42hxcc2iP8kkmg3Wcr5aW7Rnf=rfw@mail.gmail.com> <YVch0/R9PHzUwqea@hirez.programming.kicks-ass.net> <ece8838d112840bf26adbb09f653babcf298eb28.camel@linux.intel.com> <20211005075001.GJ4323@worktop.programming.kicks-ass.net> <87tuhvlhae.mognet@arm.com>
+Date:   Tue, 05 Oct 2021 14:50:45 +0100
+Message-ID: <87r1czlgwa.mognet@arm.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Brandon Wyman <bjwyman@gmail.com>
+On 05/10/21 14:42, Valentin Schneider wrote:
+> On 05/10/21 09:50, Peter Zijlstra wrote:
+>> On Fri, Oct 01, 2021 at 04:22:46PM -0700, Tim Chen wrote:
+>>> On Fri, 2021-10-01 at 16:57 +0200, Peter Zijlstra wrote:
+>>
+>>> > The one questino I have is, do we want default y?
+>>>
+>>> I also agree that default y is preferable.
+>>
+>> I'll change at least the x86 one to:
+>>
+>>       default y
+>>       depends on SMP
+>>
+>
+> Huh, so the arm64 SCHED_{SMT,MC} configs are defaultless (I added SCHED_SMT
+> to arm64's defconfig not so long ago), but x86 has them default y, which
+> I'm thinking is a tad better, and would be nice to harmonize. Unfortunately
+> different architectures have their own dependency requirements - arm has
+> ARM_CPU_TOPOLOGY, parisc has PARISC_CPU_TOPOLOGY...
+>
+> Would you hate making SCHED_* a "generic" config, with a common default and
+> help text, and punt the arch specific stuff to an ARCH_SUPPORTS_* knob?
+>
+> Something like:
+>
+> arch/arm/Kconfig:
+>   select ARCH_SUPPORTS_SCHED_MC if ARM_CPU_TOPOLOGY
+>
+> init/Kconfig:
+>   config SCHED_MC
+>     def_bool y
+>     depends on ARCH_SUPPORTS_SCHED_MC && SMP
 
-[ Upstream commit f067d5585cda2de1e47dde914a8a4f151659e0ad ]
-
-The bytes for max_power_out from the ibm-cffps devices differ in byte
-order for some power supplies.
-
-The Witherspoon power supply returns the bytes in MSB/LSB order.
-
-The Rainier power supply returns the bytes in LSB/MSB order.
-
-The Witherspoon power supply uses version cffps1. The Rainier power
-supply should use version cffps2. If version is cffps1, swap the bytes
-before output to max_power_out.
-
-Tested:
-    Witherspoon before: 3148. Witherspoon after: 3148.
-    Rainier before: 53255. Rainier after: 2000.
-
-Signed-off-by: Brandon Wyman <bjwyman@gmail.com>
-Reviewed-by: Eddie James <eajames@linux.ibm.com>
-Link: https://lore.kernel.org/r/20210928205051.1222815-1-bjwyman@gmail.com
-[groeck: Replaced yoda programming]
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/hwmon/pmbus/ibm-cffps.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/hwmon/pmbus/ibm-cffps.c b/drivers/hwmon/pmbus/ibm-cffps.c
-index df712ce4b164..53f7d1418bc9 100644
---- a/drivers/hwmon/pmbus/ibm-cffps.c
-+++ b/drivers/hwmon/pmbus/ibm-cffps.c
-@@ -171,8 +171,14 @@ static ssize_t ibm_cffps_debugfs_read(struct file *file, char __user *buf,
- 		cmd = CFFPS_SN_CMD;
- 		break;
- 	case CFFPS_DEBUGFS_MAX_POWER_OUT:
--		rc = i2c_smbus_read_word_swapped(psu->client,
--						 CFFPS_MAX_POWER_OUT_CMD);
-+		if (psu->version == cffps1) {
-+			rc = i2c_smbus_read_word_swapped(psu->client,
-+					CFFPS_MAX_POWER_OUT_CMD);
-+		} else {
-+			rc = i2c_smbus_read_word_data(psu->client,
-+					CFFPS_MAX_POWER_OUT_CMD);
-+		}
-+
- 		if (rc < 0)
- 			return rc;
- 
--- 
-2.33.0
-
+... Which is essentially what Barry suggested somewhere else in the thread
+(I TL; DR'd).
