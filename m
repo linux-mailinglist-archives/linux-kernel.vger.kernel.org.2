@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C59E442323B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 22:42:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21EEE42323C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 22:42:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236655AbhJEUoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 16:44:13 -0400
-Received: from mga07.intel.com ([134.134.136.100]:11176 "EHLO mga07.intel.com"
+        id S236701AbhJEUoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 16:44:15 -0400
+Received: from mga07.intel.com ([134.134.136.100]:11170 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236085AbhJEUnz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S236086AbhJEUnz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 5 Oct 2021 16:43:55 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10128"; a="289354610"
+X-IronPort-AV: E=McAfee;i="6200,9189,10128"; a="289354613"
 X-IronPort-AV: E=Sophos;i="5.85,349,1624345200"; 
-   d="scan'208";a="289354610"
+   d="scan'208";a="289354613"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2021 13:42:03 -0700
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2021 13:42:04 -0700
 X-IronPort-AV: E=Sophos;i="5.85,349,1624345200"; 
-   d="scan'208";a="523979603"
+   d="scan'208";a="523979698"
 Received: from alyee-mobl.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.254.5.222])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2021 13:42:02 -0700
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2021 13:42:03 -0700
 From:   Kuppuswamy Sathyanarayanan 
         <sathyanarayanan.kuppuswamy@linux.intel.com>
 To:     Thomas Gleixner <tglx@linutronix.de>,
@@ -37,13 +37,14 @@ Cc:     Dave Hansen <dave.hansen@intel.com>,
         Sean Christopherson <seanjc@google.com>,
         Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v7 08/10] x86/sev-es: Use insn_decode_mmio() for MMIO implementation
-Date:   Tue,  5 Oct 2021 13:41:34 -0700
-Message-Id: <20211005204136.1812078-9-sathyanarayanan.kuppuswamy@linux.intel.com>
+Subject: [PATCH v7 09/10] x86/tdx: Handle in-kernel MMIO
+Date:   Tue,  5 Oct 2021 13:41:35 -0700
+Message-Id: <20211005204136.1812078-10-sathyanarayanan.kuppuswamy@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211005204136.1812078-1-sathyanarayanan.kuppuswamy@linux.intel.com>
 References: <20211005204136.1812078-1-sathyanarayanan.kuppuswamy@linux.intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -51,13 +52,33 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 
-Switch SEV implementation to insn_decode_mmio(). The helper is going
-to be used by TDX too.
+In traditional VMs, MMIO is usually implemented by giving a guest
+access to a mapping which will cause a VMEXIT on access and then the
+VMM emulating the access. That's not possible in TDX guest because
+VMEXIT will expose the register state to the host. TDX guests don't
+trust the host and can't have its state exposed to the host. In TDX
+the MMIO regions are instead configured to trigger a #VE exception in
+the guest. The guest #VE handler then emulates the MMIO instruction
+inside the guest and converts them into a controlled TDCALL to the
+host, rather than completely exposing the state to the host.
 
-No functional changes. It is only build-tested.
+Currently, TDX only supports MMIO for instructions that are known to
+come from io.h macros (build_mmio_read/write()). For drivers that don't
+use the io.h macros or uses structure overlay to do MMIO are currently
+not supported in TDX guest (for example the MMIO based XAPIC is disable
+at runtime for TDX).
 
-Cc: Tom Lendacky <thomas.lendacky@amd.com>
-Cc: Joerg Roedel <jroedel@suse.de>
+This way of handling is similar to AMD SEV.
+
+Also, reasons for supporting #VE based MMIO in TDX guest are,
+
+* MMIO is widely used and more drivers will be added in the future.
+* To avoid annotating every TDX specific MMIO readl/writel etc.
+* If annotation is not preferred, an alternative way is required
+  for every MMIO access in the kernel (even though 99.9% will never
+  be used on TDX) which would be a complete waste and incredible
+  binary bloat for nothing.
+
 Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 Reviewed-by: Andi Kleen <ak@linux.intel.com>
 Reviewed-by: Tony Luck <tony.luck@intel.com>
@@ -71,7 +92,8 @@ Changes since v5:
  * None
 
 Changes since v4:
- * None
+ * Changed order of variable declaration in tdx_handle_mmio().
+ * Changed tdg_* prefix with tdx_*.
 
 Changes since v3:
  * None
@@ -79,237 +101,142 @@ Changes since v3:
 Changes since v2:
  * None
 
- arch/x86/kernel/sev.c | 171 ++++++++++--------------------------------
- 1 file changed, 40 insertions(+), 131 deletions(-)
+ arch/x86/kernel/tdx.c | 108 ++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 108 insertions(+)
 
-diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
-index 53a6837d354b..e2f1ae006114 100644
---- a/arch/x86/kernel/sev.c
-+++ b/arch/x86/kernel/sev.c
-@@ -807,22 +807,6 @@ static void __init vc_early_forward_exception(struct es_em_ctxt *ctxt)
- 	do_early_exception(ctxt->regs, trapnr);
+diff --git a/arch/x86/kernel/tdx.c b/arch/x86/kernel/tdx.c
+index cd0fb5d14ad7..851ad143da03 100644
+--- a/arch/x86/kernel/tdx.c
++++ b/arch/x86/kernel/tdx.c
+@@ -6,6 +6,9 @@
+ 
+ #include <asm/tdx.h>
+ #include <asm/vmx.h>
++#include <asm/insn.h>
++#include <asm/insn-eval.h>
++#include <linux/sched/signal.h> /* force_sig_fault() */
+ 
+ /* TDX Module call Leaf IDs */
+ #define TDGETVEINFO			3
+@@ -207,6 +210,103 @@ static void tdx_handle_io(struct pt_regs *regs, u32 exit_qual)
+ 	}
  }
  
--static long *vc_insn_get_reg(struct es_em_ctxt *ctxt)
--{
--	long *reg_array;
--	int offset;
--
--	reg_array = (long *)ctxt->regs;
--	offset    = insn_get_modrm_reg_off(&ctxt->insn, ctxt->regs);
--
--	if (offset < 0)
--		return NULL;
--
--	offset /= sizeof(long);
--
--	return reg_array + offset;
--}
--
- static long *vc_insn_get_rm(struct es_em_ctxt *ctxt)
- {
- 	long *reg_array;
-@@ -870,76 +854,6 @@ static enum es_result vc_do_mmio(struct ghcb *ghcb, struct es_em_ctxt *ctxt,
- 	return sev_es_ghcb_hv_call(ghcb, ctxt, exit_code, exit_info_1, exit_info_2);
- }
- 
--static enum es_result vc_handle_mmio_twobyte_ops(struct ghcb *ghcb,
--						 struct es_em_ctxt *ctxt)
--{
--	struct insn *insn = &ctxt->insn;
--	unsigned int bytes = 0;
--	enum es_result ret;
--	int sign_byte;
--	long *reg_data;
--
--	switch (insn->opcode.bytes[1]) {
--		/* MMIO Read w/ zero-extension */
--	case 0xb6:
--		bytes = 1;
--		fallthrough;
--	case 0xb7:
--		if (!bytes)
--			bytes = 2;
--
--		ret = vc_do_mmio(ghcb, ctxt, bytes, true);
--		if (ret)
--			break;
--
--		/* Zero extend based on operand size */
--		reg_data = vc_insn_get_reg(ctxt);
--		if (!reg_data)
--			return ES_DECODE_FAILED;
--
--		memset(reg_data, 0, insn->opnd_bytes);
--
--		memcpy(reg_data, ghcb->shared_buffer, bytes);
--		break;
--
--		/* MMIO Read w/ sign-extension */
--	case 0xbe:
--		bytes = 1;
--		fallthrough;
--	case 0xbf:
--		if (!bytes)
--			bytes = 2;
--
--		ret = vc_do_mmio(ghcb, ctxt, bytes, true);
--		if (ret)
--			break;
--
--		/* Sign extend based on operand size */
--		reg_data = vc_insn_get_reg(ctxt);
--		if (!reg_data)
--			return ES_DECODE_FAILED;
--
--		if (bytes == 1) {
--			u8 *val = (u8 *)ghcb->shared_buffer;
--
--			sign_byte = (*val & 0x80) ? 0xff : 0x00;
--		} else {
--			u16 *val = (u16 *)ghcb->shared_buffer;
--
--			sign_byte = (*val & 0x8000) ? 0xff : 0x00;
--		}
--		memset(reg_data, sign_byte, insn->opnd_bytes);
--
--		memcpy(reg_data, ghcb->shared_buffer, bytes);
--		break;
--
--	default:
--		ret = ES_UNSUPPORTED;
--	}
--
--	return ret;
--}
--
- /*
-  * The MOVS instruction has two memory operands, which raises the
-  * problem that it is not known whether the access to the source or the
-@@ -1007,83 +921,78 @@ static enum es_result vc_handle_mmio_movs(struct es_em_ctxt *ctxt,
- 		return ES_RETRY;
- }
- 
--static enum es_result vc_handle_mmio(struct ghcb *ghcb,
--				     struct es_em_ctxt *ctxt)
-+static enum es_result vc_handle_mmio(struct ghcb *ghcb, struct es_em_ctxt *ctxt)
- {
- 	struct insn *insn = &ctxt->insn;
- 	unsigned int bytes = 0;
++static unsigned long tdx_mmio(int size, bool write, unsigned long addr,
++			      unsigned long *val)
++{
++	struct tdx_hypercall_output out = {0};
++	u64 err;
++
++	err = _tdx_hypercall(EXIT_REASON_EPT_VIOLATION, size, write,
++			     addr, *val, &out);
++	*val = out.r11;
++	return err;
++}
++
++static int tdx_handle_mmio(struct pt_regs *regs, struct ve_info *ve)
++{
++	char buffer[MAX_INSN_SIZE];
++	unsigned long *reg, val;
++	struct insn insn = {};
 +	enum mmio_type mmio;
- 	enum es_result ret;
++	int size, ret;
 +	u8 sign_byte;
- 	long *reg_data;
- 
--	switch (insn->opcode.bytes[0]) {
--	/* MMIO Write */
--	case 0x88:
--		bytes = 1;
--		fallthrough;
--	case 0x89:
--		if (!bytes)
--			bytes = insn->opnd_bytes;
-+	mmio = insn_decode_mmio(insn, &bytes);
-+	if (mmio == MMIO_DECODE_FAILED)
-+		return ES_DECODE_FAILED;
- 
--		reg_data = vc_insn_get_reg(ctxt);
-+	if (mmio != MMIO_WRITE_IMM && mmio != MMIO_MOVS) {
-+		reg_data = insn_get_modrm_reg_ptr(insn, ctxt->regs);
- 		if (!reg_data)
- 			return ES_DECODE_FAILED;
++
++	if (user_mode(regs)) {
++		ret = insn_fetch_from_user(regs, buffer);
++		if (!ret)
++			return -EFAULT;
++		if (!insn_decode_from_regs(&insn, regs, buffer, ret))
++			return -EFAULT;
++	} else {
++		ret = copy_from_kernel_nofault(buffer, (void *)regs->ip,
++					       MAX_INSN_SIZE);
++		if (ret)
++			return -EFAULT;
++		insn_init(&insn, buffer, MAX_INSN_SIZE, 1);
++		insn_get_length(&insn);
 +	}
- 
++
++	mmio = insn_decode_mmio(&insn, &size);
++	if (mmio == MMIO_DECODE_FAILED)
++		return -EFAULT;
++
++	if (mmio != MMIO_WRITE_IMM && mmio != MMIO_MOVS) {
++		reg = insn_get_modrm_reg_ptr(&insn, regs);
++		if (!reg)
++			return -EFAULT;
++	}
++
 +	switch (mmio) {
 +	case MMIO_WRITE:
- 		memcpy(ghcb->shared_buffer, reg_data, bytes);
--
- 		ret = vc_do_mmio(ghcb, ctxt, bytes, false);
- 		break;
--
--	case 0xc6:
--		bytes = 1;
--		fallthrough;
--	case 0xc7:
--		if (!bytes)
--			bytes = insn->opnd_bytes;
--
++		memcpy(&val, reg, size);
++		ret = tdx_mmio(size, true, ve->gpa, &val);
++		break;
 +	case MMIO_WRITE_IMM:
- 		memcpy(ghcb->shared_buffer, insn->immediate1.bytes, bytes);
--
- 		ret = vc_do_mmio(ghcb, ctxt, bytes, false);
- 		break;
--
--		/* MMIO Read */
--	case 0x8a:
--		bytes = 1;
--		fallthrough;
--	case 0x8b:
--		if (!bytes)
--			bytes = insn->opnd_bytes;
--
++		val = insn.immediate.value;
++		ret = tdx_mmio(size, true, ve->gpa, &val);
++		break;
 +	case MMIO_READ:
- 		ret = vc_do_mmio(ghcb, ctxt, bytes, true);
- 		if (ret)
- 			break;
- 
--		reg_data = vc_insn_get_reg(ctxt);
--		if (!reg_data)
--			return ES_DECODE_FAILED;
--
- 		/* Zero-extend for 32-bit operation */
- 		if (bytes == 4)
- 			*reg_data = 0;
- 
- 		memcpy(reg_data, ghcb->shared_buffer, bytes);
- 		break;
++		ret = tdx_mmio(size, false, ve->gpa, &val);
++		if (ret)
++			break;
++		/* Zero-extend for 32-bit operation */
++		if (size == 4)
++			*reg = 0;
++		memcpy(reg, &val, size);
++		break;
 +	case MMIO_READ_ZERO_EXTEND:
-+		ret = vc_do_mmio(ghcb, ctxt, bytes, true);
++		ret = tdx_mmio(size, false, ve->gpa, &val);
 +		if (ret)
 +			break;
 +
-+		memset(reg_data, 0, insn->opnd_bytes);
-+		memcpy(reg_data, ghcb->shared_buffer, bytes);
++		/* Zero extend based on operand size */
++		memset(reg, 0, insn.opnd_bytes);
++		memcpy(reg, &val, size);
 +		break;
 +	case MMIO_READ_SIGN_EXTEND:
-+		ret = vc_do_mmio(ghcb, ctxt, bytes, true);
++		ret = tdx_mmio(size, false, ve->gpa, &val);
 +		if (ret)
 +			break;
- 
--		/* MOVS instruction */
--	case 0xa4:
--		bytes = 1;
--		fallthrough;
--	case 0xa5:
--		if (!bytes)
--			bytes = insn->opnd_bytes;
-+		if (bytes == 1) {
-+			u8 *val = (u8 *)ghcb->shared_buffer;
- 
--		ret = vc_handle_mmio_movs(ctxt, bytes);
-+			sign_byte = (*val & 0x80) ? 0xff : 0x00;
-+		} else {
-+			u16 *val = (u16 *)ghcb->shared_buffer;
 +
-+			sign_byte = (*val & 0x8000) ? 0xff : 0x00;
-+		}
++		if (size == 1)
++			sign_byte = (val & 0x80) ? 0xff : 0x00;
++		else
++			sign_byte = (val & 0x8000) ? 0xff : 0x00;
 +
 +		/* Sign extend based on operand size */
-+		memset(reg_data, sign_byte, insn->opnd_bytes);
-+		memcpy(reg_data, ghcb->shared_buffer, bytes);
- 		break;
--		/* Two-Byte Opcodes */
--	case 0x0f:
--		ret = vc_handle_mmio_twobyte_ops(ghcb, ctxt);
-+	case MMIO_MOVS:
-+		ret = vc_handle_mmio_movs(ctxt, bytes);
- 		break;
- 	default:
- 		ret = ES_UNSUPPORTED;
++		memset(reg, sign_byte, insn.opnd_bytes);
++		memcpy(reg, &val, size);
 +		break;
- 	}
- 
- 	return ret;
++	case MMIO_MOVS:
++	case MMIO_DECODE_FAILED:
++		return -EFAULT;
++	}
++
++	if (ret)
++		return -EFAULT;
++	return insn.length;
++}
++
+ unsigned long tdx_get_ve_info(struct ve_info *ve)
+ {
+ 	struct tdx_module_output out = {0};
+@@ -256,6 +356,14 @@ int tdx_handle_virtualization_exception(struct pt_regs *regs,
+ 	case EXIT_REASON_IO_INSTRUCTION:
+ 		tdx_handle_io(regs, ve->exit_qual);
+ 		break;
++	case EXIT_REASON_EPT_VIOLATION:
++		/* Currently only MMIO triggers EPT violation */
++		ve->instr_len = tdx_handle_mmio(regs, ve);
++		if (ve->instr_len < 0) {
++			pr_warn_once("MMIO failed\n");
++			return -EFAULT;
++		}
++		break;
+ 	default:
+ 		pr_warn("Unexpected #VE: %lld\n", ve->exit_reason);
+ 		return -EFAULT;
 -- 
 2.25.1
 
