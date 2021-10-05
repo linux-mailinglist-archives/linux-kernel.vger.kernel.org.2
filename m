@@ -2,328 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C013423428
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 01:09:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F21942342C
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 01:10:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236956AbhJEXLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 19:11:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54404 "EHLO
+        id S236969AbhJEXMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 19:12:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236700AbhJEXLf (ORCPT
+        with ESMTP id S236700AbhJEXL6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 19:11:35 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1373C061749
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 16:09:43 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id p68so784590iof.6
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 16:09:43 -0700 (PDT)
+        Tue, 5 Oct 2021 19:11:58 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BBA9C061749;
+        Tue,  5 Oct 2021 16:10:07 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id t8so2744664wri.1;
+        Tue, 05 Oct 2021 16:10:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=5W1wvotXe78j/+MNqeU+rjPexSCJXY7yIXqgs9vXVKc=;
-        b=PgTVE7tw0/RORhApMfwVKtkB0G4bNDw5wo4O6NK+SDVraRv3mXXLiV70OJdI130JRy
-         zFumqbEN8hHI2ZaFj3YjCKuHNrvwCH5rf2xjlws8E+UPU4nzntWAHxq/fYdFs03ZJgp2
-         nVAQexy+4Xaa5CrtCu5PobNb5PKW9kvO2sy70=
+        bh=iBXKLuBIklAebOb/7/xhhltJLs9mxot7CbToqq09lPc=;
+        b=iDyFeXK2NKKvbDXs4VwXnlSl3NkYOyK+zgkM+1mZp15wWXjlE2t+1bXtxcWxPFkvd7
+         ruBvWnCORCgBGHUhsG4yvJ08kAGlR7uU0n2IXMYUMNj9hVUolfd5kQxrK4BoMh5b0DLo
+         +JNMxOo5Oj6dkboM90sPq/kx7d5W3oGTBUq+AMq6v9QBP6VONttWV6dKH4sx/ojK+xGI
+         C7kF+D5WHxOHU+Ktltw+KE3+0+Ta+Jcv20hYx0gW17CoowlyUY+hhkn9eLPvGlUc0oYZ
+         E3AGlKuU2t/Vmo25KZKNSTxqZ9wjt9ek8mSqo4zVJb8Z41ETKy3TMb0Ui7CYNYkj81sb
+         zXPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=5W1wvotXe78j/+MNqeU+rjPexSCJXY7yIXqgs9vXVKc=;
-        b=ZlAvpnK2KAkprbfcVrRAGn1vw+IF+BFJGR/kjhwyXoBBHk7Y51W2A0FqqFItvChhOK
-         ho7Kl2sSUTVFmPan2Y72ifUpgCJi08ZCn16BtotbPR/vgsSb8KMPWc6TnBdbdU4VjgIO
-         zuaFYFRJaUHQBfIzGPKC3ULrQijcNowLX3LiGSQ6qOtSC2172j0vKylwoiC07NcMOkUD
-         rdUzJR1ziFrB90HD7CZWZmwQrn+bpkEf3scOi7hLo1YuoNngR2Xy3QEhhyYtSBWmwPD0
-         GtUKVI0DVuN2KD2SP+saa5qQMd64QeC7oXPWRShWHnYvN70AE7Djy6JNs0OlcUTIdKy0
-         B44g==
-X-Gm-Message-State: AOAM5330QIBr/6LU2JJmp0atmkd41OiWfgUYgLloWhGj867wSE7CcLuH
-        6ralgp8km/6IFc647RGImyCQZ6HtkCn9GQ==
-X-Google-Smtp-Source: ABdhPJwH1lRoWuVZNIIpTV+h4TMGahoMz9uGtCUWllG2DK8/ivVbLjF+Lb7njfwxmPU2uD0UCXqv0A==
-X-Received: by 2002:a6b:3e84:: with SMTP id l126mr4148077ioa.163.1633475383004;
-        Tue, 05 Oct 2021 16:09:43 -0700 (PDT)
-Received: from mail-io1-f49.google.com (mail-io1-f49.google.com. [209.85.166.49])
-        by smtp.gmail.com with ESMTPSA id d12sm11345404ila.79.2021.10.05.16.09.41
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Oct 2021 16:09:41 -0700 (PDT)
-Received: by mail-io1-f49.google.com with SMTP id p68so784512iof.6
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 16:09:41 -0700 (PDT)
-X-Received: by 2002:a05:6638:248a:: with SMTP id x10mr4765884jat.3.1633475380781;
- Tue, 05 Oct 2021 16:09:40 -0700 (PDT)
+        bh=iBXKLuBIklAebOb/7/xhhltJLs9mxot7CbToqq09lPc=;
+        b=AKs2II75vIq/Hz164KDpf2vbrb31bhM/ATCg7ubK5UZDJLQa9d7B+q3ZJov9DM2sOJ
+         fZYXdcZ/557Y90TxSmmCYrcw6Hbc/sTYQo9PvUJ4h5KQH3xj0GZdt2Xc5bQ2U/aXlpcq
+         1K9g0e7VQuErsaUq60h61AuoHlzBz71f155hSFKHcwwNrc1oxajb3n7xa7ti7MdU0Do4
+         L4K2D7pyEX1H41CbTHt4l7ESee/2whwpPbu/JFmw2KiJqQl7haREiVEoKpSi1OmVxiFT
+         yEDTpydkCs8nYWNXIve2zWTKEchdXMykHSEnVGP+V+i0t8HDwZFmmntPt9JYZy52vnPJ
+         ygeg==
+X-Gm-Message-State: AOAM533NcViiCGbeeAcWjbe1c3ea2lFmHdfqeIqsWX0CNVfM57EDzJFS
+        fL1Ag2UYU7gLWTJ48v8gZAHISLXMiKMXHanLNsU=
+X-Google-Smtp-Source: ABdhPJxUh7ugJZkQxkLQppqEtgbagU6X/aob1tAQ6BOTFPzHnXFi1iKRIicSBdGHRcRI0WuN3LX6jl8iVxS582S2Wis=
+X-Received: by 2002:a05:600c:ac1:: with SMTP id c1mr6456296wmr.99.1633475405855;
+ Tue, 05 Oct 2021 16:10:05 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210726231351.655302-1-bjorn.andersson@linaro.org>
- <CAD=FV=UGtHXD==Yy8CVCOioYGb=2hqGQOoNWftD1Jj7OiEp51g@mail.gmail.com>
- <YVd3YdfgFVc0Br5T@ripper> <CAD=FV=U=xVLuKOYHbGPTkLjGa8_U+F1ZtEvJt4LGaRuR5SsKFw@mail.gmail.com>
- <YVumL1lHLqtb/HKS@ripper> <CAD=FV=W9uKq00wXn4H1ax0u2D=R8Wn3J-Je43uxcPyDtk7AK7Q@mail.gmail.com>
- <YVyMwsvLl6XalJxB@ripper>
-In-Reply-To: <YVyMwsvLl6XalJxB@ripper>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Tue, 5 Oct 2021 16:09:29 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=WY+g38p7--QKZCaQnSqx7VvdwC36jH-VKnrEWoxK=XHQ@mail.gmail.com>
-Message-ID: <CAD=FV=WY+g38p7--QKZCaQnSqx7VvdwC36jH-VKnrEWoxK=XHQ@mail.gmail.com>
-Subject: Re: [RFC] drm/msm/dp: Allow attaching a drm_panel
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Kuogee Hsieh <khsieh@codeaurora.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Vara Reddy <varar@codeaurora.org>,
-        freedreno <freedreno@lists.freedesktop.org>
+References: <48FF6F8E-95E2-4A29-A059-12EF614B381C@oracle.com>
+ <20211001115455.GJ3544071@ziepe.ca> <4EAE3BC9-26B6-41E3-B040-2ADAB77D96CE@oracle.com>
+ <20211001120153.GL3544071@ziepe.ca>
+In-Reply-To: <20211001120153.GL3544071@ziepe.ca>
+From:   Si-Wei Liu <siwliu.kernel@gmail.com>
+Date:   Tue, 5 Oct 2021 16:09:54 -0700
+Message-ID: <CAPWQSg0wODmw7evfzdtP4gW-toVgoVfigP5t0CVosOAkarNTTg@mail.gmail.com>
+Subject: Re: Enabling RO on a VF
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Haakon Bugge <haakon.bugge@oracle.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        OFED mailing list <linux-rdma@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Tue, Oct 5, 2021 at 10:33 AM Bjorn Andersson
-<bjorn.andersson@linaro.org> wrote:
+On Fri, Oct 1, 2021 at 6:02 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
 >
-> On Tue 05 Oct 08:39 PDT 2021, Doug Anderson wrote:
->
-> > Hi,
+> On Fri, Oct 01, 2021 at 11:59:15AM +0000, Haakon Bugge wrote:
 > >
-> > On Mon, Oct 4, 2021 at 6:09 PM Bjorn Andersson
-> > <bjorn.andersson@linaro.org> wrote:
-> > >
-> > > On Mon 04 Oct 17:36 PDT 2021, Doug Anderson wrote:
-> > >
-> > > > Hi,
-> > > >
-> > > > On Fri, Oct 1, 2021 at 2:00 PM Bjorn Andersson
-> > > > <bjorn.andersson@linaro.org> wrote:
-> > > > >
-> > > > > On Fri 27 Aug 13:52 PDT 2021, Doug Anderson wrote:
-> > > > >
-> > > > > > Hi,
-> > > > > >
-> > > > > > On Mon, Jul 26, 2021 at 4:15 PM Bjorn Andersson
-> > > > > > <bjorn.andersson@linaro.org> wrote:
-> > > > > > >
-> > > > > > > +static int dp_parser_find_panel(struct dp_parser *parser)
-> > > > > > > +{
-> > > > > > > +       struct device_node *np = parser->pdev->dev.of_node;
-> > > > > > > +       int rc;
-> > > > > > > +
-> > > > > > > +       rc = drm_of_find_panel_or_bridge(np, 2, 0, &parser->drm_panel, NULL);
-> > > > > >
-> > > > > > Why port 2? Shouldn't this just be port 1 always? The yaml says that
-> > > > > > port 1 is "Output endpoint of the controller". We should just use port
-> > > > > > 1 here, right?
-> > > > > >
-> > > > >
-> > > > > Finally got back to this, changed it to 1 and figured out why I left it
-> > > > > at 2.
-> > > > >
-> > > > > drm_of_find_panel_or_bridge() on a DP controller will find the of_graph
-> > > > > reference to the USB-C controller, scan through the registered panels
-> > > > > and conclude that the of_node of the USB-C controller isn't a registered
-> > > > > panel and return -EPROBE_DEFER.
-> > > >
-> > > > I'm confused, but maybe it would help if I could see something
-> > > > concrete. Is there a specific board this was happening on?
-> > > >
-> > >
-> > > Right, let's make this more concrete with a snippet from the actual
-> > > SC8180x DT.
-> > >
-> > > > Under the DP node in the device tree I expect:
-> > > >
-> > > > ports {
-> > > >   port@1 {
-> > > >     reg = <1>;
-> > > >     edp_out: endpoint {
-> > > >       remote-endpoint = <&edp_panel_in>;
-> > > >     };
-> > > >   };
-> > > > };
-> > > >
-> > >
-> > > /* We got a panel */
-> > > panel {
-> > >     ...
-> > >     ports {
-> > >         port {
-> > >             auo_b133han05_in: endpoint {
-> > >                 remote-endpoint = <&mdss_edp_out>;
-> > >             };
-> > >         };
-> > >     };
-> > > };
-> > >
-> > > /* And a 2-port USB-C controller */
-> > > type-c-controller {
-> > >     ...
-> > >     connector@0 {
-> > >         ports {
-> > >             port@0 {
-> > >                 reg = <0>;
-> > >                 ucsi_port_0_dp: endpoint {
-> > >                     remote-endpoint = <&dp0_mode>;
-> > >                 };
-> > >             };
-> > >
-> > >             port@1 {
-> > >                 reg = <1>;
-> > >                 ucsi_port_0_switch: endpoint {
-> > >                     remote-endpoint = <&primary_qmp_phy>;
-> > >                 };
-> > >             };
-> > >         };
-> > >     };
-> > >
-> > >         connector@1 {
-> > >         ports {
-> > >             port@0 {
-> > >                 reg = <0>;
-> > >                 ucsi_port_1_dp: endpoint {
-> > >                     remote-endpoint = <&dp1_mode>;
-> > >                 };
-> > >             };
-> > >
-> > >             port@1 {
-> > >                 reg = <1>;
-> > >                 ucsi_port_1_switch: endpoint {
-> > >                     remote-endpoint = <&second_qmp_phy>;
-> > >                 };
-> > >             };
-> > >         };
-> > >         };
-> > > };
-> > >
-> > > /* And then our 2 DP and single eDP controllers */
-> > > &mdss_dp0 {
-> > >     ports {
-> > >         port@1 {
-> > >             reg = <1>;
-> > >             dp0_mode: endpoint {
-> > >                 remote-endpoint = <&ucsi_port_0_dp>;
-> > >             };
-> > >         };
-> > >     };
-> > > };
-> > >
-> > > &mdss_dp1 {
-> > >     ports {
-> > >         port@1 {
-> > >             reg = <1>;
-> > >             dp1_mode: endpoint {
-> > >                 remote-endpoint = <&ucsi_port_1_dp>;
-> > >             };
-> > >         };
-> > >     };
-> > > };
-> > >
-> > > &mdss_edp {
-> > >     ports {
-> > >         port@1 {
-> > >             reg = <1>;
-> > >             mdss_edp_out: endpoint {
-> > >                 remote-endpoint = <&auo_b133han05_in>;
-> > >             };
-> > >         };
-> > >     };
-> > > };
-> > >
-> > > > If you have "port@1" pointing to a USB-C controller but this instance
-> > > > of the DP controller is actually hooked up straight to a panel then
-> > > > you should simply delete the "port@1" that points to the typeC and
-> > > > replace it with one that points to a panel, right?
-> > > >
-> > >
-> > > As you can see, port 1 on &mdss_dp0 and &mdss_dp1 points to the two UCSI
-> > > connectors and the eDP points to the panel, exactly like we agreed.
-> > >
-> > > So now I call:
-> > >     drm_of_find_panel_or_bridge(dev->of_node, 1, 0, &panel, NULL);
-> > >
-> > > which for the two DP nodes will pass respective UCSI connector to
-> > > drm_find_panel() and get EPROBE_DEFER back - because they are not on
-> > > panel_list.
-> > >
-> > > There's nothing indicating in the of_graph that the USB connectors
-> > > aren't panels (or bridges), so I don't see a way to distinguish the two
-> > > types remotes.
-
-To summarize where I think our out-of-band discussion went, I think
-you're OK w/ keeping this at "port@1" for both the DP and eDP case and
-we'll figure out _some_ way to make it work.
-
-
-> > As far as I can tell the way this would be solved would be to actually
-> > pass &bridge in and then make sure that a bridge would be in place for
-> > the DP connector. In the full DP case you'll get an -EPROBE_DEFER if
-> > the connector hasn't been probed but once it's probed then it should
-> > register as a bridge and thus give you the info you need (AKA that
-> > this isn't a panel).
 > >
-> > I haven't done the digging to see how all this works, but according to
-> > Laurent [1]: "Physical connectors are already handled as bridges, see
-> > drivers/gpu/drm/bridge/display-connector.c"
+> > > On 1 Oct 2021, at 13:54, Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> > >
+> > > On Fri, Oct 01, 2021 at 11:05:15AM +0000, Haakon Bugge wrote:
+> > >> Hey,
+> > >>
+> > >>
+> > >> Commit 1477d44ce47d ("RDMA/mlx5: Enable Relaxed Ordering by default
+> > >> for kernel ULPs") uses pcie_relaxed_ordering_enabled() to check if
+> > >> RO can be enabled. This function checks if the Enable Relaxed
+> > >> Ordering bit in the Device Control register is set. However, on a
+> > >> VF, this bit is RsvdP (Reserved for future RW
+> > >> implementations. Register bits are read-only and must return zero
+> > >> when read. Software must preserve the value read for writes to
+> > >> bits.).
+> > >>
+> > >> Hence, AFAICT, RO will not be enabled when using a VF.
+> > >>
+> > >> How can that be fixed?
+> > >
+> > > When qemu takes a VF and turns it into a PF in a VM it must emulate
+> > > the RO bit and return one
 > >
->
-> All this seems to make sense for both eDP and "native" DP.
->
-> > So basically I think this is solvable in code and there's no reason to
-> > mess with the devicetree bindings to solve this problem. Does that
-> > sound right?
+> > I have a pass-through VF:
 > >
+> > # lspci -s ff:00.0 -vvv
+> > ff:00.0 Ethernet controller: Mellanox Technologies MT28800 Family [ConnectX-5 Ex Virtual Function]
+> > []
+> >               DevCtl: Report errors: Correctable- Non-Fatal- Fatal- Unsupported-
+> >                       RlxdOrd- ExtTag- PhantFunc- AuxPwr- NoSnoop- FLReset-
 >
-> But I don't have a DisplayPort connector.
+> Like I said, it is a problem in the qemu area..
 >
-> I have a USB-C connector, that upon determining that it's time to play
-> DisplayPort will use the typec_mux abstraction to tell someone on the
-> other side of the of_graph about DisplayPort events (HPD).
->
-> So where would I put this drm_bridge in the USB-C case?
->
-> I don't see that it fits in the Type-C side of things and putting it on
-> the DP side would leave us with exactly the problem we have here. So we
-> would have to put a fake "DP connector" inbetween the DP node and the
-> Type-C controller?
->
->
-> For reference, this is how I thought one is supposed to tie the Type-C
-> controller to the display driver:
-> https://lore.kernel.org/all/20211005022451.2037405-1-bjorn.andersson@linaro.org/
+> Jason
+Can you clarify why this is a problem in the QEMU area?
 
-OK, so I looked at that a bit. Fair warning that I've never looked at
-the type C code before today so anything I say could be totally wrong!
-:-)
+Even though Mellanox device might well support it (on VF), there's no
+way for QEMU to really know if an arbitrary passthrough device may
+support RO. It either has to resort to the host kernel to detect all
+PCIe device functions up to the root port throughout the PCIe fabric,
+or it may follow PF's enabling status if it is at all capable. I don't
+see what QEMU can do by just forcefully emulating the bit?
 
-...but I _think_ you're abusing the "mux" API for this. I think a type
-C port can have exactly 1 mux, right? Right now you are claiming to be
-_the_ mux in the DP driver, but what about for other alt modes? If
-those wanted to be notified about similar things it would be
-impossible because you're already _the_ mux, right?
+Not to mention the current implementation only takes care of broken
+root port but not the intermediate switches.
+https://lore.kernel.org/linux-arm-kernel/MWHPR12MB1600255ACFCD3FB3C80EB8B6C88B0@MWHPR12MB1600.namprd12.prod.outlook.com/
 
-I _think_ a mux is supposed to be something more like
-`drivers/phy/rockchip/phy-rockchip-typec.c` (though that code predates
-the type C framework we're looking at here). There the phy can do all
-the work of remuxing things / flipping orientation / etc. I don't
-think it's a requirement that every SoC be able to do this remuxing
-itself but (if memory serves) rk3399 implemented it so we didn't have
-to do it on the TCPC and could use a cheaper solution there.
-
-In any case, my point is that I think there is supposed to be a
-_single_ mux per port that handles reassigning pins and that's what
-this API is for.
-
-...so I will still assert that the right thing to do is to have a
-drm_bridge for the type c connector and _that's_ what should be
-sending HPD.
-
-
-> I'm afraid I must be missing something in Laurent and yours proposal
-> (although I think Laurent is talking about the native DP case?).
->
-> Regards,
-> Bjorn
->
-> > [1] https://lore.kernel.org/r/YUvMv+Y8tFcWPEHd@pendragon.ideasonboard.com/
+-Siwei
