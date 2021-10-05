@@ -2,72 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFEB2421EE0
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 08:33:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 308B5421EE3
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 08:34:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232305AbhJEGfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 02:35:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59092 "EHLO mail.kernel.org"
+        id S232130AbhJEGgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 02:36:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59868 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230526AbhJEGe7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 02:34:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9244661251;
-        Tue,  5 Oct 2021 06:33:08 +0000 (UTC)
+        id S230526AbhJEGgJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 02:36:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E5F761251;
+        Tue,  5 Oct 2021 06:34:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633415589;
-        bh=QFHAeDRRSiQyrtHsYxia9CmhBdGDJKJLZc5S01XcQWI=;
+        s=k20201202; t=1633415659;
+        bh=5EZHQoATB2gNDZncKK24ZE2sDKzzHL55yzP5fNl41/c=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VYMQdaGZCHaGOSxekgQOpfwZS4fA8PeVUETCQ9P0v0TpMTw5jRM4AFMjOBII4WjXQ
-         r4tZIqZlZKewHNzBdg95E0KacIxrCkrjLMR75xB9Txnj6TbckNCjrLH4rb9S1C/71Q
-         gDrnxC2i6Hijnkmg8CN+bpadCkpGBFlISSLMdic/yThYfMh1Xf+q2nr/hVNmGOoHGr
-         XTFtjVsyMI5GdyeLJV1l7xJj0wTjXtEJyQ1SdbTGs8tytq9V1HUPC6ASwg4oP356oJ
-         SmXHfNQHgwC92gWpX3elE/Yk8WinBz6MddVTatu+XhdEVCj9+1MuMB8gtLHVkYvD9l
-         /jp84T94POfEQ==
-Date:   Tue, 5 Oct 2021 12:03:05 +0530
+        b=IJIJMC8MbB2izN15QS7IJh45OY7JByOpZ7aQNS4RdBauw2CrlP6uYu/t5X/XK/LPO
+         z4bZtW65HsHJ4nIr3GoYXSf6A1dAseX2ATn16KCWCWmMqlUI4P0TS3/+tohDc/2tpa
+         qmCnwNxOBdVKFiLnd20JdRwrsRqj01DXTyuHKdP/6ZG9bUwwBZu3BjLNLf/WVzwOGY
+         Kjq43LCQhkpCKKoQlHVD+kLjNo3E1yVjp3voWwzh4n9RxHKGVp2NnQMBBOfnlSCoDY
+         F93boRDZRIoUUosNDTzftwentpAcUS9lPsBYOSHjhuuBFmVAL0pg+JxV0kHumX4CeY
+         H2iIG7iJXDirA==
+Date:   Tue, 5 Oct 2021 12:04:15 +0530
 From:   Vinod Koul <vkoul@kernel.org>
-To:     Sameer Pujar <spujar@nvidia.com>
-Cc:     jonathanh@nvidia.com, ldewangan@nvidia.com,
-        thierry.reding@gmail.com, dmaengine@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RESEND PATCH 0/3] Few Tegra210 ADMA fixes
-Message-ID: <YVvxoSChGm0lN4rZ@matsya>
-References: <1631722025-19873-1-git-send-email-spujar@nvidia.com>
- <564a850a-41e4-31fc-9ebe-51ac6b859f62@nvidia.com>
+To:     Shawn Guo <shawn.guo@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 01/10] dt-bindings: phy: qcom,qmp: '#clock-cells' is not
+ required for parent node
+Message-ID: <YVvx58Xhz1buDtaX@matsya>
+References: <20210929034253.24570-1-shawn.guo@linaro.org>
+ <20210929034253.24570-2-shawn.guo@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <564a850a-41e4-31fc-9ebe-51ac6b859f62@nvidia.com>
+In-Reply-To: <20210929034253.24570-2-shawn.guo@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04-10-21, 21:19, Sameer Pujar wrote:
-> Hi Vinod,
-> 
-> On 9/15/2021 9:37 PM, Sameer Pujar wrote:
-> > Following are the fixes in the series:
-> >   - Couple of minor fixes (non functional fixes)
-> > 
-> >   - ADMA FIFO size fix: The slave ADMAIF channels have different default
-> >     FIFO sizes (ADMAIF FIFO is actually a ring buffer and it is divided
-> >     amongst all available channels). As per HW recommendation the sizes
-> >     should match with the corresponding ADMA channels to which ADMAIF
-> >     channel is mapped to at runtime. Thus program ADMA channel FIFO sizes
-> >     accordingly. Otherwise FIFO corruption is observed.
-> > 
-> > Sameer Pujar (3):
-> >    dmaengine: tegra210-adma: Re-order 'has_outstanding_reqs' member
-> >    dmaengine: tegra210-adma: Add description for 'adma_get_burst_config'
-> >    dmaengine: tegra210-adma: Override ADMA FIFO size
-> > 
-> >   drivers/dma/tegra210-adma.c | 55 +++++++++++++++++++++++++++++++--------------
-> >   1 file changed, 38 insertions(+), 17 deletions(-)
-> > 
-> 
-> Are these patches good to be picked up? or I need to resend these?
+On 29-09-21, 11:42, Shawn Guo wrote:
+> '#clock-cells' is not required for parent qmp-phy node but the child
+> phy/lane node.
 
-Pls do not send unnecessary pings, I was on vacation, back now and going
-thru the queue!
- 
+Acked-By: Vinod Koul <vkoul@kernel.org>
+
 -- 
 ~Vinod
