@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 395544229DB
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:01:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2A334229DE
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:01:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236056AbhJEOCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 10:02:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40898 "EHLO mail.kernel.org"
+        id S236259AbhJEODC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 10:03:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40900 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235991AbhJEOB7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S236006AbhJEOB7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 5 Oct 2021 10:01:59 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7209B6197A;
+        by mail.kernel.org (Postfix) with ESMTPSA id 9F1D361872;
         Tue,  5 Oct 2021 13:58:28 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
         (envelope-from <rostedt@goodmis.org>)
-        id 1mXkxf-0055ia-H0; Tue, 05 Oct 2021 09:58:27 -0400
-Message-ID: <20211005135827.364882678@goodmis.org>
+        id 1mXkxf-0055j9-NB; Tue, 05 Oct 2021 09:58:27 -0400
+Message-ID: <20211005135827.552262330@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Tue, 05 Oct 2021 09:57:43 -0400
+Date:   Tue, 05 Oct 2021 09:57:44 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Ingo Molnar <mingo@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [for-linus][PATCH 10/27] kprobes: treewide: Use kprobe_opcode_t * for the code address in
- get_optimized_kprobe()
+Subject: [for-linus][PATCH 11/27] kprobes: Use bool type for functions which returns boolean value
 References: <20211005135733.485175654@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,135 +37,159 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Masami Hiramatsu <mhiramat@kernel.org>
 
-Since get_optimized_kprobe() is only used inside kprobes,
-it doesn't need to use 'unsigned long' type for 'addr' parameter.
-Make it use 'kprobe_opcode_t *' for the 'addr' parameter and
-subsequent call of arch_within_optimized_kprobe() also should use
-'kprobe_opcode_t *'.
+Use the 'bool' type instead of 'int' for the functions which
+returns a boolean value, because this makes clear that those
+functions don't return any error code.
 
-Note that MAX_OPTIMIZED_LENGTH and RELATIVEJUMP_SIZE are defined
-by byte-size, but the size of 'kprobe_opcode_t' depends on the
-architecture. Therefore, we must be careful when calculating
-addresses using those macros.
-
-Link: https://lkml.kernel.org/r/163163040680.489837.12133032364499833736.stgit@devnote2
+Link: https://lkml.kernel.org/r/163163041649.489837.17311187321419747536.stgit@devnote2
 
 Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- arch/arm/probes/kprobes/opt-arm.c |  7 ++++---
- arch/powerpc/kernel/optprobes.c   |  6 +++---
- arch/x86/kernel/kprobes/opt.c     |  6 +++---
- include/linux/kprobes.h           |  2 +-
- kernel/kprobes.c                  | 10 +++++-----
- 5 files changed, 16 insertions(+), 15 deletions(-)
+ include/linux/kprobes.h     |  8 ++++----
+ kernel/kprobes.c            | 26 +++++++++++++-------------
+ kernel/trace/trace_kprobe.c |  2 +-
+ 3 files changed, 18 insertions(+), 18 deletions(-)
 
-diff --git a/arch/arm/probes/kprobes/opt-arm.c b/arch/arm/probes/kprobes/opt-arm.c
-index c78180172120..dbef34ed933f 100644
---- a/arch/arm/probes/kprobes/opt-arm.c
-+++ b/arch/arm/probes/kprobes/opt-arm.c
-@@ -347,10 +347,11 @@ void arch_unoptimize_kprobes(struct list_head *oplist,
- }
- 
- int arch_within_optimized_kprobe(struct optimized_kprobe *op,
--				unsigned long addr)
-+				 kprobe_opcode_t *addr)
- {
--	return ((unsigned long)op->kp.addr <= addr &&
--		(unsigned long)op->kp.addr + RELATIVEJUMP_SIZE > addr);
-+	return (op->kp.addr <= addr &&
-+		op->kp.addr + (RELATIVEJUMP_SIZE / sizeof(kprobe_opcode_t)) > addr);
-+
- }
- 
- void arch_remove_optimized_kprobe(struct optimized_kprobe *op)
-diff --git a/arch/powerpc/kernel/optprobes.c b/arch/powerpc/kernel/optprobes.c
-index c79899abcec8..325ba544883c 100644
---- a/arch/powerpc/kernel/optprobes.c
-+++ b/arch/powerpc/kernel/optprobes.c
-@@ -301,8 +301,8 @@ void arch_unoptimize_kprobes(struct list_head *oplist, struct list_head *done_li
- 	}
- }
- 
--int arch_within_optimized_kprobe(struct optimized_kprobe *op, unsigned long addr)
-+int arch_within_optimized_kprobe(struct optimized_kprobe *op, kprobe_opcode_t *addr)
- {
--	return ((unsigned long)op->kp.addr <= addr &&
--		(unsigned long)op->kp.addr + RELATIVEJUMP_SIZE > addr);
-+	return (op->kp.addr <= addr &&
-+		op->kp.addr + (RELATIVEJUMP_SIZE / sizeof(kprobe_opcode_t)) > addr);
- }
-diff --git a/arch/x86/kernel/kprobes/opt.c b/arch/x86/kernel/kprobes/opt.c
-index 71425ebba98a..b4a54a52aa59 100644
---- a/arch/x86/kernel/kprobes/opt.c
-+++ b/arch/x86/kernel/kprobes/opt.c
-@@ -367,10 +367,10 @@ int arch_check_optimized_kprobe(struct optimized_kprobe *op)
- 
- /* Check the addr is within the optimized instructions. */
- int arch_within_optimized_kprobe(struct optimized_kprobe *op,
--				 unsigned long addr)
-+				 kprobe_opcode_t *addr)
- {
--	return ((unsigned long)op->kp.addr <= addr &&
--		(unsigned long)op->kp.addr + op->optinsn.size > addr);
-+	return (op->kp.addr <= addr &&
-+		op->kp.addr + op->optinsn.size > addr);
- }
- 
- /* Free optimized instruction slot */
 diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
-index 9c28fbb18e74..6a5995f334a0 100644
+index 6a5995f334a0..0ba3f9e316d4 100644
 --- a/include/linux/kprobes.h
 +++ b/include/linux/kprobes.h
-@@ -329,7 +329,7 @@ extern void arch_unoptimize_kprobes(struct list_head *oplist,
- 				    struct list_head *done_list);
- extern void arch_unoptimize_kprobe(struct optimized_kprobe *op);
- extern int arch_within_optimized_kprobe(struct optimized_kprobe *op,
--					unsigned long addr);
-+					kprobe_opcode_t *addr);
+@@ -104,25 +104,25 @@ struct kprobe {
+ #define KPROBE_FLAG_FTRACE	8 /* probe is using ftrace */
  
- extern void opt_pre_handler(struct kprobe *p, struct pt_regs *regs);
+ /* Has this kprobe gone ? */
+-static inline int kprobe_gone(struct kprobe *p)
++static inline bool kprobe_gone(struct kprobe *p)
+ {
+ 	return p->flags & KPROBE_FLAG_GONE;
+ }
  
+ /* Is this kprobe disabled ? */
+-static inline int kprobe_disabled(struct kprobe *p)
++static inline bool kprobe_disabled(struct kprobe *p)
+ {
+ 	return p->flags & (KPROBE_FLAG_DISABLED | KPROBE_FLAG_GONE);
+ }
+ 
+ /* Is this kprobe really running optimized path ? */
+-static inline int kprobe_optimized(struct kprobe *p)
++static inline bool kprobe_optimized(struct kprobe *p)
+ {
+ 	return p->flags & KPROBE_FLAG_OPTIMIZED;
+ }
+ 
+ /* Is this kprobe uses ftrace ? */
+-static inline int kprobe_ftrace(struct kprobe *p)
++static inline bool kprobe_ftrace(struct kprobe *p)
+ {
+ 	return p->flags & KPROBE_FLAG_FTRACE;
+ }
 diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-index ec3d97fd8c6b..b6f1dcf4bff3 100644
+index b6f1dcf4bff3..8021bccb7770 100644
 --- a/kernel/kprobes.c
 +++ b/kernel/kprobes.c
-@@ -485,15 +485,15 @@ static int kprobe_queued(struct kprobe *p)
-  * Return an optimized kprobe whose optimizing code replaces
-  * instructions including 'addr' (exclude breakpoint).
-  */
--static struct kprobe *get_optimized_kprobe(unsigned long addr)
-+static struct kprobe *get_optimized_kprobe(kprobe_opcode_t *addr)
+@@ -198,8 +198,8 @@ kprobe_opcode_t *__get_insn_slot(struct kprobe_insn_cache *c)
+ 	return slot;
+ }
+ 
+-/* Return 1 if all garbages are collected, otherwise 0. */
+-static int collect_one_slot(struct kprobe_insn_page *kip, int idx)
++/* Return true if all garbages are collected, otherwise false. */
++static bool collect_one_slot(struct kprobe_insn_page *kip, int idx)
  {
- 	int i;
- 	struct kprobe *p = NULL;
+ 	kip->slot_used[idx] = SLOT_CLEAN;
+ 	kip->nused--;
+@@ -223,9 +223,9 @@ static int collect_one_slot(struct kprobe_insn_page *kip, int idx)
+ 			kip->cache->free(kip->insns);
+ 			kfree(kip);
+ 		}
+-		return 1;
++		return true;
+ 	}
+-	return 0;
++	return false;
+ }
+ 
+ static int collect_garbage_slots(struct kprobe_insn_cache *c)
+@@ -389,13 +389,13 @@ NOKPROBE_SYMBOL(get_kprobe);
+ static int aggr_pre_handler(struct kprobe *p, struct pt_regs *regs);
+ 
+ /* Return true if 'p' is an aggregator */
+-static inline int kprobe_aggrprobe(struct kprobe *p)
++static inline bool kprobe_aggrprobe(struct kprobe *p)
+ {
+ 	return p->pre_handler == aggr_pre_handler;
+ }
+ 
+ /* Return true if 'p' is unused */
+-static inline int kprobe_unused(struct kprobe *p)
++static inline bool kprobe_unused(struct kprobe *p)
+ {
+ 	return kprobe_aggrprobe(p) && kprobe_disabled(p) &&
+ 	       list_empty(&p->list);
+@@ -455,7 +455,7 @@ static inline int kprobe_optready(struct kprobe *p)
+ }
+ 
+ /* Return true if the kprobe is disarmed. Note: p must be on hash list */
+-static inline int kprobe_disarmed(struct kprobe *p)
++static inline bool kprobe_disarmed(struct kprobe *p)
+ {
  	struct optimized_kprobe *op;
  
- 	/* Don't check i == 0, since that is a breakpoint case. */
--	for (i = 1; !p && i < MAX_OPTIMIZED_LENGTH; i++)
--		p = get_kprobe((void *)(addr - i));
-+	for (i = 1; !p && i < MAX_OPTIMIZED_LENGTH / sizeof(kprobe_opcode_t); i++)
-+		p = get_kprobe(addr - i);
+@@ -469,16 +469,16 @@ static inline int kprobe_disarmed(struct kprobe *p)
+ }
  
- 	if (p && kprobe_optready(p)) {
+ /* Return true if the probe is queued on (un)optimizing lists */
+-static int kprobe_queued(struct kprobe *p)
++static bool kprobe_queued(struct kprobe *p)
+ {
+ 	struct optimized_kprobe *op;
+ 
+ 	if (kprobe_aggrprobe(p)) {
  		op = container_of(p, struct optimized_kprobe, kp);
-@@ -967,7 +967,7 @@ static void __arm_kprobe(struct kprobe *p)
- 	lockdep_assert_held(&text_mutex);
- 
- 	/* Find the overlapping optimized kprobes. */
--	_p = get_optimized_kprobe((unsigned long)p->addr);
-+	_p = get_optimized_kprobe(p->addr);
- 	if (unlikely(_p))
- 		/* Fallback to unoptimized kprobe */
- 		unoptimize_kprobe(_p, true);
-@@ -989,7 +989,7 @@ static void __disarm_kprobe(struct kprobe *p, bool reopt)
- 	if (!kprobe_queued(p)) {
- 		arch_disarm_kprobe(p);
- 		/* If another kprobe was blocked, re-optimize it. */
--		_p = get_optimized_kprobe((unsigned long)p->addr);
-+		_p = get_optimized_kprobe(p->addr);
- 		if (unlikely(_p) && reopt)
- 			optimize_kprobe(_p);
+ 		if (!list_empty(&op->list))
+-			return 1;
++			return true;
  	}
+-	return 0;
++	return false;
+ }
+ 
+ /*
+@@ -1678,7 +1678,7 @@ int register_kprobe(struct kprobe *p)
+ EXPORT_SYMBOL_GPL(register_kprobe);
+ 
+ /* Check if all probes on the 'ap' are disabled. */
+-static int aggr_kprobe_disabled(struct kprobe *ap)
++static bool aggr_kprobe_disabled(struct kprobe *ap)
+ {
+ 	struct kprobe *kp;
+ 
+@@ -1690,9 +1690,9 @@ static int aggr_kprobe_disabled(struct kprobe *ap)
+ 			 * Since there is an active probe on the list,
+ 			 * we can't disable this 'ap'.
+ 			 */
+-			return 0;
++			return false;
+ 
+-	return 1;
++	return true;
+ }
+ 
+ static struct kprobe *__disable_kprobe(struct kprobe *p)
+diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
+index 3a64ba4bbad6..0e1e7ce5f7ed 100644
+--- a/kernel/trace/trace_kprobe.c
++++ b/kernel/trace/trace_kprobe.c
+@@ -97,7 +97,7 @@ static nokprobe_inline unsigned long trace_kprobe_offset(struct trace_kprobe *tk
+ 
+ static nokprobe_inline bool trace_kprobe_has_gone(struct trace_kprobe *tk)
+ {
+-	return !!(kprobe_gone(&tk->rp.kp));
++	return kprobe_gone(&tk->rp.kp);
+ }
+ 
+ static nokprobe_inline bool trace_kprobe_within_module(struct trace_kprobe *tk,
 -- 
 2.32.0
