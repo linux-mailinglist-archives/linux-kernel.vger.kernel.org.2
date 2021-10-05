@@ -2,85 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D0D742228B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 11:42:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30C29422291
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 11:43:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233727AbhJEJog (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 05:44:36 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:41817 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232658AbhJEJof (ORCPT
+        id S233683AbhJEJp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 05:45:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33906 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232658AbhJEJp2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 05:44:35 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HNt0z3yrGz4xb7;
-        Tue,  5 Oct 2021 20:42:40 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1633426964;
-        bh=tLt7WEiqm0CmAxK/qY5YSRAjYAvlFvyUuQvq4nXXoCY=;
-        h=Date:From:To:Cc:Subject:From;
-        b=UoFMT1BKP4u4JQ+PPkPDoKftsr0uryOX3mbs1M/7tP23JaxxddS2v/AAuWfl4AbRo
-         MidxB51iGmVpyfOJ1qmQXD7+jmxHl0mMVLNuixRxkcSaXlPdPEjJk+a2stw2msXtEN
-         zwk21RvPThEPjtkfh8TRCB5Nsm16GpBErCSGYTv2A7m61YmOtM0C7IVJv9mM7A3cXA
-         Tifu1SN40VtxlA4HF4V+3Q14gmGJvqhnV7a2LUbS6HcUCh8QQ8d97ZZ9yq8GKC/DTK
-         uP2ybYEQqmAttHyoRAgstJ2Rs+MK4SbEGXA7IeEZkKFThfkhfJBO8KJytLOIWlXkL4
-         lbxTdSLdddU0g==
-Date:   Tue, 5 Oct 2021 20:42:39 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Logan Gunthorpe <logang@deltatee.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning in Linus' tree
-Message-ID: <20211005204239.6d14a745@canb.auug.org.au>
+        Tue, 5 Oct 2021 05:45:28 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50FC5C06161C;
+        Tue,  5 Oct 2021 02:43:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=Fv/eTlFhdwJO4aKyPVZQzN2g3Wxr+4+vdkJDkaI1jhE=; b=1TfSU7PNMuwf3g5JgAb2wO6Wt8
+        Bs6bVYQE28iJhdlNKdKcRSg1D+TzuT0jie7meCtwv8jRiyerPcmtAHJZ6UCgi5G3gqv1kAoK12tU3
+        oK0ppCxEHi6aU3RJ180kNehOYM6Ctnm4WitpWn2sm08aUGJ47d7I8TR2z3EqT6kqVwWJE6DXGckR7
+        5jI9ft9s6VYktKKjPUb5AZG+nqcMM9wpjslcv4JPtGNggI6WSIEh62v8/1qScsDgP4TJXZ9ZKIrBp
+        us71AtvDgNV0ZWDD05HBA2ZD0X5Q9aId9tBLYUWJBZMAUfqMmr6dFeE89mVO6jv+ioNS/uHAYRDG0
+        uQlPVGTw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:54944)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1mXgz2-00005a-HP; Tue, 05 Oct 2021 10:43:36 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1mXgz1-0008Mo-TK; Tue, 05 Oct 2021 10:43:35 +0100
+Date:   Tue, 5 Oct 2021 10:43:35 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Sean Anderson <sean.anderson@seco.com>
+Cc:     netdev@vger.kernel.org, "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>
+Subject: Re: [RFC net-next PATCH 04/16] net: phylink: Move phylink_set_pcs
+ before phylink_create
+Message-ID: <YVweRwtV+ScT4mIe@shell.armlinux.org.uk>
+References: <20211004191527.1610759-1-sean.anderson@seco.com>
+ <20211004191527.1610759-5-sean.anderson@seco.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/MMGqIl7=lCbE_0/fyCyv5dB";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211004191527.1610759-5-sean.anderson@seco.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/MMGqIl7=lCbE_0/fyCyv5dB
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, Oct 04, 2021 at 03:15:15PM -0400, Sean Anderson wrote:
+> The new pcs-related functions in the next few commits fit better before
+> phylink_create, so move phylink_set_pcs in preparation. No functional
+> change intended.
+> 
+> Signed-off-by: Sean Anderson <sean.anderson@seco.com>
 
-Hi all,
+Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 
-In Linus' tree, today's linux-next build (htmldocs) produced this warning:
+Thanks.
 
-Documentation/driver-api/infrastructure:50: /home/sfr/next/next/kernel/dma/=
-mapping.c:256: WARNING: Definition list ends without a blank line; unexpect=
-ed unindent.
-Documentation/driver-api/infrastructure:50: /home/sfr/next/next/kernel/dma/=
-mapping.c:257: WARNING: Bullet list ends without a blank line; unexpected u=
-nindent.
-
-Introduced by commit
-
-  fffe3cc8c219 ("dma-mapping: allow map_sg() ops to return negative error c=
-odes")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/MMGqIl7=lCbE_0/fyCyv5dB
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFcHg8ACgkQAVBC80lX
-0Gx3twf8CnnjlRzzrSPNVZUdqrC2ck6r8YWgje+RUGY+6o4YETePJyKrygwE0HMn
-XTDlpAnGtWYaT8BXa+IiWCaBp1KHUo0VjSQqJl0UfL7p/TJenLm04wctx2UXmOdB
-ZABUpQqDq1nVLUeFYZyNctqo9hzAZUzz03fKUbPM4emT5owQtKGxS/rrvbcNiG3o
-5BkGvfqe9Ej8IH25S/HQlkt8Jngs20pD2riy8QqxW8pKVJUbRZc4ESO+UTHU+nK9
-5tkqcqJN+NQhb4aeLSME1FUbYvFQC6CFHur1CTNYf4X1Byw5SIpORVQY9469Jk8h
-ViCsRVJm24Qb8FrwzsYUzn7AXwm5oA==
-=Uyp8
------END PGP SIGNATURE-----
-
---Sig_/MMGqIl7=lCbE_0/fyCyv5dB--
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
