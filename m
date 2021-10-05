@@ -2,98 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A17C42260C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 14:14:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 208DA422610
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 14:14:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234461AbhJEMQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 08:16:30 -0400
-Received: from mga12.intel.com ([192.55.52.136]:18523 "EHLO mga12.intel.com"
+        id S234546AbhJEMQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 08:16:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38874 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233808AbhJEMQ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 08:16:29 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10127"; a="205845392"
-X-IronPort-AV: E=Sophos;i="5.85,348,1624345200"; 
-   d="scan'208";a="205845392"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2021 05:14:34 -0700
-X-IronPort-AV: E=Sophos;i="5.85,348,1624345200"; 
-   d="scan'208";a="589333436"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2021 05:14:33 -0700
-Received: from andy by smile with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mXjL4-008sJh-A2;
-        Tue, 05 Oct 2021 15:14:30 +0300
-Date:   Tue, 5 Oct 2021 15:14:30 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Daniel Palmer <daniel@0x0f.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-serial@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] serial: 8250_dw: Mark acpi match table as maybe unused
-Message-ID: <YVxBphzSDG2VmM4I@smile.fi.intel.com>
-References: <20210930124950.3069638-1-daniel@0x0f.com>
- <YVXWiQWGkzmp6O1A@smile.fi.intel.com>
- <CAFr9PXkgDaXPb+h3TFmS4VVzzmPqjJJj0Y4cd_ZTUgqMbNZUSA@mail.gmail.com>
- <YVYmTL8WsgYnxPwc@smile.fi.intel.com>
- <CAFr9PXmVQFDdMiMUgg4v7DAcFkdaUtFeaXOyW4_NrVd5oYKSSA@mail.gmail.com>
+        id S233808AbhJEMQk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 08:16:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EAA5B61166;
+        Tue,  5 Oct 2021 12:14:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633436090;
+        bh=DeaHbSCWFT8NlzFI7wJri1fE1dG3RGKllnRW0mksoIo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CUNgIxvsTj9HQ9K9IbRnK/q5KeNl3Eq9UZtsxwYap6OhnKEBUkVz79qVWZIJA9OV0
+         IqB9kLaFnP60wlAm0vYZYd2qO5B/pEgLAI0xfqKMM9a9rAJ9HvzzyWorat3pC0a5EJ
+         RU80Mk5SupjC+SM+9lN4zx/oblJStStnqNrCbTjhFhKvSEUFGp1CKPGx8deEnKxNIz
+         GX4qNwgH9EQHKAB4yRD3nkX4q9HGl5hvluanRCXqM2F1Y8kBwY33MxnAPpzQu/GRm+
+         kMg0VaiExald2jB4tap1QTznzfe3UHVJfxC0s80FgZaDMlKgKbrUCaTbO4XqCOLP5o
+         hda23Jz+1GW/Q==
+Date:   Tue, 5 Oct 2021 13:14:48 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org
+Subject: Re: [PATCH v2 00/10] regulator/mfd/clock: dt-bindings: Samsung S2M
+ and S5M to dtschema
+Message-ID: <YVxBuEvHVdyDvaGD@sirena.org.uk>
+References: <20211001094106.52412-1-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="NHJ+x3vjgC+S2IOr"
 Content-Disposition: inline
-In-Reply-To: <CAFr9PXmVQFDdMiMUgg4v7DAcFkdaUtFeaXOyW4_NrVd5oYKSSA@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20211001094106.52412-1-krzysztof.kozlowski@canonical.com>
+X-Cookie: A is for Apple.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 01, 2021 at 09:16:24AM +0900, Daniel Palmer wrote:
-> On Fri, 1 Oct 2021 at 06:04, Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> > > Doesn't this mean the ACPI table ends up in kernels that will never use ACPI?
-> >
-> > Yes. Is it a problem (*)? If so, you need to use ifdeffery, since __maybe_unused is
-> > not for the ID tables.
-> 
-> Ok, is there a reason it's not for the ID tables? Does it break something?
 
-It will look ugly. Why we define a table that may or may not be used?
-Sounds fishy.
+--NHJ+x3vjgC+S2IOr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On top of that why you should tell linker to waste resources on something
-that you may well know beforehand will be thrown away?
+On Fri, Oct 01, 2021 at 11:40:56AM +0200, Krzysztof Kozlowski wrote:
 
-> > *) while justifying this you also need to show why it's a problem specific
-> > to the ACPI IDs and not a problem for OF ones, which we have tons of in the
-> > Linux kernel without any guards (ifdeffery).
-> 
-> To be honest I don't care about this too much. I just wanted to cut
-> down some of the noise when I build my patch backlog so that warnings
-> in the stuff I'm trying to mainline are more visible.
+> Merging/dependencies
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> 1. Regulator related binding changes depend on first two commits (the
+>    fixes), because of context.
+> 2. The mfd bindings depend on clock and regulator bindings.
+>=20
+> The fixes and bindings changes (patches 1-10) should go via the same
+> tree.  For example regulator or mfd tree.  I propose the regulator tree,
+> since it will have also one driver change (the fix, first commit).
 
-Which is good intention and thanks for doing this!
+Lee, Stephen, Michael does Krzysztof's plan make sense to you?
 
-> For what it's worth I think the OF ids are a bit wasteful.
+--NHJ+x3vjgC+S2IOr
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Exactly my point, but fixing one driver of zillions does not solve the issue
-in general.
+-----BEGIN PGP SIGNATURE-----
 
-> For some
-> drivers where there are tons of broken variations they add a few K of
-> unneeded data. But since everyone now has gigabytes of memory I doubt
-> they care...
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFcQbcACgkQJNaLcl1U
+h9B78Qf8DbtcL1OFNxmK5o5qziAQ7pj3GzOOi+h25mAQirGBLDoUxNGTTzs57/8f
+kSK2LEvstzQMBEUeZtXSOzhHzLjAGRahEWlwNLmYP/8hSAlY+y9VJCEBbYbeWnbl
+qm5Zy/rDqH8I9dKMWvTcMA6V2AfcGczQ6UnlObIdsO3+FYYRKvB9qxmQQaro8d8/
+s3Eq8je14T6lQ+AITujDiWEoxUzJsrPX8WxZQAiKjmJjl/RB/sjI8bN1i0UImjws
+IYvv3DYnFKTcyQzLXeBkstB/mmUaTAgdz9DzChh6j9StHXkI0h83/so2pp3Ys+09
+1mV23wOM9a2muVldboi23vvDpWBjSQ==
+=E3E1
+-----END PGP SIGNATURE-----
 
-Some actually cares.
-
-> I'm working with 64MB. :)
-
-Then I would imagine that you already using as less kernel configuration as
-possible and have as many modules as you want for the hardware that might
-appear to be connected to that board, right? Then again one driver with 100+
-bytes doesn't affect really your case. Disabling, for example PRINTK, will
-win much more for you.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+--NHJ+x3vjgC+S2IOr--
