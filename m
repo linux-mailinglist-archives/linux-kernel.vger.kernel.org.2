@@ -2,88 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DFB5421F4B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 09:12:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81C5A421F4F
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 09:14:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232524AbhJEHO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 03:14:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53054 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230526AbhJEHO0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 03:14:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4AC6861506;
-        Tue,  5 Oct 2021 07:12:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633417956;
-        bh=Z1Kyh4CmT/HAHgyMmHMMCSHGxms9KPY2yA5BUj5ZFLg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fCnJZF3GT8TJTOOoHPseEhYX2OVuS7WYLpZ3h2dcHx7a1PhFE9e9OxNIHbpT5F8PJ
-         TK/qO6FF5eFOcjAYgEhdTvpi6vIuyrpEvR8lRQhaHfNSaUCApvEsAyszRCnGJCHiLG
-         LKyqaQh6eQpNMOkeA1v4n0YkfOxY37o4FlEp/paZHfEm1f91KKqZ+dzmjaFneaEwBW
-         lNAE4mJKT6CTNO6+S1RxkNEbHBSUuholIp/7XMbwUUwKNNCHubH+O/NbwTKOFCzQ98
-         +Jtt+S91lmXPhd77E8Fs090n3bt0b3FECB065apme/VW+lXCKEnOPNWQX7ExKQCBFU
-         aAsuC9SG4KJ6g==
-Date:   Tue, 5 Oct 2021 15:12:31 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Frieder Schrempf <frieder@fris.de>
-Cc:     devicetree@vger.kernel.org,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>, stable@vger.kernel.org,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>
-Subject: Re: [PATCH 5/8] arm64: dts: imx8mm-kontron: Fix CAN SPI clock
- frequency
-Message-ID: <20211005071230.GC20743@dragon>
-References: <20210930155633.2745201-1-frieder@fris.de>
- <20210930155633.2745201-6-frieder@fris.de>
+        id S232631AbhJEHQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 03:16:27 -0400
+Received: from smtprelay0048.hostedemail.com ([216.40.44.48]:58156 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232251AbhJEHQ0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 03:16:26 -0400
+Received: from omf14.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id C071F1807D7C1;
+        Tue,  5 Oct 2021 07:14:30 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf14.hostedemail.com (Postfix) with ESMTPA id 3DE5B268E45;
+        Tue,  5 Oct 2021 07:14:27 +0000 (UTC)
+Message-ID: <c56e78bc85cbe6b05dd16c750e596ab331c37dee.camel@perches.com>
+Subject: Re: [PATCH V0 4/7] usb: common: eud: Added the driver support for
+ Embedded USB Debugger(EUD)
+From:   Joe Perches <joe@perches.com>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Souradeep Chowdhury <schowdhu@codeaurora.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Bryan O'Donoghue <pure.logic@nexus-software.ie>,
+        Greg KH <greg@kroah.com>, linux-kernel@vger.kernel.org,
+        ckadabi@codeaurora.org, tsoni@codeaurora.org,
+        bryanh@codeaurora.org, psodagud@codeaurora.org,
+        satyap@codeaurora.org, pheragu@codeaurora.org,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Date:   Tue, 05 Oct 2021 00:14:25 -0700
+In-Reply-To: <YVsu602phHbZLMOT@ripper>
+References: <cover.1633343547.git.schowdhu@codeaurora.org>
+         <e6df4a21a283e822d15dedb7ffb3ae62c241999c.1633343547.git.schowdhu@codeaurora.org>
+         <YVsu602phHbZLMOT@ripper>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210930155633.2745201-6-frieder@fris.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: 3DE5B268E45
+X-Spam-Status: No, score=-2.03
+X-Stat-Signature: p41cre9disuxr4e5bn6qwko7y6z19gz4
+X-Rspamd-Server: rspamout02
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1/wX7nCYcBjYI3ylpNeDbHYE4g46+Sy/Cw=
+X-HE-Tag: 1633418067-584561
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 05:56:28PM +0200, Frieder Schrempf wrote:
-> From: Frieder Schrempf <frieder.schrempf@kontron.de>
+On Mon, 2021-10-04 at 09:42 -0700, Bjorn Andersson wrote:
+> On Mon 04 Oct 04:16 PDT 2021, Souradeep Chowdhury wrote:
 > 
-> The MCP2515 can be used with an SPI clock of up to 10 MHz. Set the
-> limit accordingly to prevent any performance issues caused by the
-> really low clock speed of 100 kHz.
+> > Add support for control peripheral of EUD (Embedded USB Debugger) to
+> > listen to events such as USB attach/detach, pet EUD to indicate software
+> > is functional.Reusing the platform device kobj, sysfs entry 'enable' is
+> > created to enable or disable EUD.
+[]
+> > diff --git a/drivers/usb/common/qcom_eud.c b/drivers/usb/common/qcom_eud.c
+[]
+> > +static ssize_t enable_show(struct device *dev,
+> > +		struct device_attribute *attr, char *buf)
+> > +{
+> > +	struct eud_chip *chip = dev_get_drvdata(dev);
+> > +
+> > +	return sprintf(buf, "%d", chip->enable);
 
-Could you share some testing result of this change?
+trivia:
 
-> 
-> Fixes: 21c4f45b335f ("arm64: dts: Add the Kontron i.MX8M Mini SoMs and baseboards")
+should probably use sysfs_emit and have a trailing '\n' in the format.
 
-It's really an optimization rather than fix, isn't it?
 
-Shawn
-
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
-> ---
->  arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-s.dts | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-s.dts b/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-s.dts
-> index f2c8ccefd1bf..dbf11e03ecce 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-s.dts
-> +++ b/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-s.dts
-> @@ -98,7 +98,7 @@ can0: can@0 {
->  		clocks = <&osc_can>;
->  		interrupt-parent = <&gpio4>;
->  		interrupts = <28 IRQ_TYPE_EDGE_FALLING>;
-> -		spi-max-frequency = <100000>;
-> +		spi-max-frequency = <10000000>;
->  		vdd-supply = <&reg_vdd_3v3>;
->  		xceiver-supply = <&reg_vdd_5v>;
->  	};
-> -- 
-> 2.33.0
-> 
