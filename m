@@ -2,214 +2,301 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBE6A422F1E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 19:22:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3955A422E98
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 18:58:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236250AbhJERYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 13:24:20 -0400
-Received: from mx07-001d1705.pphosted.com ([185.132.183.11]:46920 "EHLO
-        mx07-001d1705.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234938AbhJERYR (ORCPT
+        id S235976AbhJERAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 13:00:47 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:5494 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233961AbhJERAp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 13:24:17 -0400
-X-Greylist: delayed 1417 seconds by postgrey-1.27 at vger.kernel.org; Tue, 05 Oct 2021 13:24:14 EDT
-Received: from pps.filterd (m0209329.ppops.net [127.0.0.1])
-        by mx08-001d1705.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 195GnZIf025817;
-        Tue, 5 Oct 2021 16:58:00 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sony.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=S1;
- bh=bFq0gUCj+1rZhXMwCeMtZr757fLcC8Pl9kMcvt+8FRw=;
- b=B/qAGZ0zVn9AxTBgv8rXnuDrSGV+LWWQNN7mQz00mnC5RBAJgiy5XWkqR6XXx6/0bRBV
- tQw6qpohUAgVeZt5LdRNHlXxKcFkzNvwHRHHCuEWWXYjMJcrpYLevV7TVIroQsI4kd0z
- jBwztWmW8mU4HKxz5wF+SWunXJks8aB1snX7xnf0ilIaRYmizYCWvDd0rQrsgC5h34ZA
- jdXimUyDkn0unyldqnL/JhxSmrLChPaF0FMBaXnwuHjeipUh2nXyZVyFthicJkCPYxpk
- BRsGVNI9kHFh8Znj11ONOUohMNVk03BVn2DULkP3uEzLt3jIXSDflL9Uttpi9XGemBdX mw== 
-Received: from nam04-dm6-obe.outbound.protection.outlook.com (mail-dm6nam08lp2047.outbound.protection.outlook.com [104.47.73.47])
-        by mx08-001d1705.pphosted.com with ESMTP id 3bg3sm0v3g-1
+        Tue, 5 Oct 2021 13:00:45 -0400
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 195Gs5bL029416;
+        Tue, 5 Oct 2021 16:58:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2021-07-09;
+ bh=kmqRtGRi5bfFy49TkYw2HkfDdBNO0rH5fwa9wt80ITY=;
+ b=A9U/oTfeL4VbqdPsT+kg4RC3R6lGflVinb8BLQJz4esa4YM+Es0LrcEFYrUBOilJXEQt
+ nOqFO0UDEQinqOKq+boyj84latw51KfrprL+W2BTIgQjxkTB/VGVY4bsvNr7VywEraJ3
+ eJkUskuAV2g2RYTt4AJUUucvNYF9YclRydpga6XaGsIDEXKobxQepewseovfHDuK1ZHZ
+ TGOOLzIKsnwzFp+KBcqofhrTaW+BddfFVxQSrnSi82EEsLKwiBIEsfxVhuhI17LKNurM
+ GuFgjQPS6BsimO1bMGr6iiI939uyheHDk53Hk6I2ZqGAc/r2YD+etViGqv67FimRdNln mA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3bg42ksaf6-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 05 Oct 2021 16:58:00 +0000
+        Tue, 05 Oct 2021 16:58:42 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 195GoKZj124105;
+        Tue, 5 Oct 2021 16:58:15 GMT
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2109.outbound.protection.outlook.com [104.47.58.109])
+        by aserp3020.oracle.com with ESMTP id 3bev8x1a30-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 05 Oct 2021 16:58:15 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CyxLDTl2VeUGkTsjUKM5EAeGzWUaPG6coTRIwwr7Co+t7Mjq7MCrXu+RoZCdsR3FZCnn589FheGKYqm/GUOmDkV+5qj91dajVQQ6c/C+SvVyMFquU8e+RjXobPp2m8B/X1sNH075Arj0e3vCZpTqtPuF0jZsIiC2OuNmRC/9jdX9JW3JIPxC7tSiqNmFCyjswncLtH/VbpPgxxG6pw7JGE5/LR+4ZT+wnogvOiBl/3/5Ab7CpFccqLpTP+ecLchEHYA9qak7O7KRElrIkWweSWKLciK4IJfi1ZF4dDROxIeT3u1cPofwBfXDNLZVheYa4gYz6v3l5VRNFNABmnRbSw==
+ b=RLT09gcpiz38MJGkLAUfI2YtV98T2buqkAOShWzs60Fx5vvSEldYO5IBZ513fiCpMCdm4ey4H+tBXesoFJAD6n37yQSL+rDOpWfG+wnLquITyIzWsDw7CSWtd3m3onU7Fa2UFr/ODCPHNIGvOHw/LLv9dwLo8atE8h5WsUNIsF2Jcp6PeYucR/0sTEfv5Kdh6vDr4cOQyvT+hqAArKFTczXIvCbtoYHJHcptSpKy+DC2RI/rTxZDFDE0vsbfrmE3WaCWfAyHLP59Iv4SdGRZcOtXevx1duhi8hbga3Kk6Scdv2y0fBJ4jiUgxlNSSPtlCub3b+Y08EYyYRBLV1639w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=bFq0gUCj+1rZhXMwCeMtZr757fLcC8Pl9kMcvt+8FRw=;
- b=Tu7bA/exG0Q8i6PR/Nw2/cs51RZLzr88i/SwDFu78KTOhz9B/q5SS6Ko9GRwpooMpIQPrIkyHIUJnrl29IEAAlxEWsVfl0tw3dAUYDAtHZuatIXKv8APx8ePr6w9u9tSM7YRaPAfceMvH2EdDIZbHv70RyHJZCK5wMwfbpHTguhMJSaaBO0CYm3aK7krJ4x7o7V5NFX8xnl+KypDQWW+lymUm9eSIhZJ6fuOYh1uOZOSo/v0kemnS/HWKDEINjKTcC+b36TMyTLEATRkZ3JVexrt+m/D2GCAxAIwDFpiWi4ggrMFmkotoRcGUc34zMOCnHsAxScmMTmSUGJnu9GP4A==
+ bh=kmqRtGRi5bfFy49TkYw2HkfDdBNO0rH5fwa9wt80ITY=;
+ b=b3x35bBmWHAekeWVagceRJ68dXjGCHmHcTzp3qqWiYG97EKILDnp4bstgVL1ijTb94w5gEKETOPKMoiboB2LntxFMevG3ordU/j6p2bchM7sQjuM6J0SozeNsdtochVvUxakSiJ51B7gel0sJxT+TfO8vDKS0rDdRLkhjyd7bWWm7+8B6y9AEu0OE4UjpTvRh6NPUD2hwKohSXAJjzzXvfFSKcANXh/yrWdezbnngJeZvj5datETubO9Pe1+aLk6nt3+vCfeo8cT+cmFWASZFQlp05AMx7z4unexIJ6+o4v5oepLBjV7bq6nJDAUqah0pAQMIb7QJdK/zi3GvEgdBw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=sony.com; dmarc=pass action=none header.from=sony.com;
- dkim=pass header.d=sony.com; arc=none
-Received: from BYAPR13MB2503.namprd13.prod.outlook.com (2603:10b6:a02:cd::33)
- by BY5PR13MB4455.namprd13.prod.outlook.com (2603:10b6:a03:1d4::17) with
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kmqRtGRi5bfFy49TkYw2HkfDdBNO0rH5fwa9wt80ITY=;
+ b=SvAJZ7oRnFwZx6dIK9/m7wdcSint7IwRDxiqKNvV/u64/537ElWiQeekP88ciooyczOU7+uYgf+UE6UQk8rMlxA/CVH0XMY3OZO9tYVMjXRdJb37XyVf1d+b3iR4ujmWSx/BA/ihfOtf4t3VOdW5hWBTg6XQZXvvPsYmx6bzLsA=
+Authentication-Results: linux-foundation.org; dkim=none (message not signed)
+ header.d=none;linux-foundation.org; dmarc=none action=none
+ header.from=oracle.com;
+Received: from BY5PR10MB4196.namprd10.prod.outlook.com (2603:10b6:a03:20d::23)
+ by BYAPR10MB3638.namprd10.prod.outlook.com (2603:10b6:a03:125::25) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.12; Tue, 5 Oct
- 2021 16:57:56 +0000
-Received: from BYAPR13MB2503.namprd13.prod.outlook.com
- ([fe80::f544:a41:f814:7be9]) by BYAPR13MB2503.namprd13.prod.outlook.com
- ([fe80::f544:a41:f814:7be9%6]) with mapi id 15.20.4587.018; Tue, 5 Oct 2021
- 16:57:56 +0000
-From:   <Tim.Bird@sony.com>
-To:     <gregkh@linuxfoundation.org>, <mcgrof@kernel.org>
-CC:     <tj@kernel.org>, <akpm@linux-foundation.org>, <minchan@kernel.org>,
-        <jeyu@kernel.org>, <shuah@kernel.org>, <bvanassche@acm.org>,
-        <dan.j.williams@intel.com>, <joe@perches.com>,
-        <tglx@linutronix.de>, <keescook@chromium.org>,
-        <rostedt@goodmis.org>, <linux-spdx@vger.kernel.org>,
-        <linux-doc@vger.kernel.org>, <linux-block@vger.kernel.org>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v8 03/12] selftests: add tests_sysfs module
-Thread-Topic: [PATCH v8 03/12] selftests: add tests_sysfs module
-Thread-Index: AQHXs74tItgg1rfm00mmBKYUROs6y6vEf8UAgAArAZA=
-Date:   Tue, 5 Oct 2021 16:57:55 +0000
-Message-ID: <BYAPR13MB2503180449E0863CFD4672F5FDAF9@BYAPR13MB2503.namprd13.prod.outlook.com>
-References: <20210927163805.808907-1-mcgrof@kernel.org>
- <20210927163805.808907-4-mcgrof@kernel.org> <YVxeTvKkYs938g94@kroah.com>
-In-Reply-To: <YVxeTvKkYs938g94@kroah.com>
-Accept-Language: en-US
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.18; Tue, 5 Oct
+ 2021 16:58:13 +0000
+Received: from BY5PR10MB4196.namprd10.prod.outlook.com
+ ([fe80::bc59:71de:1590:cbf5]) by BY5PR10MB4196.namprd10.prod.outlook.com
+ ([fe80::bc59:71de:1590:cbf5%6]) with mapi id 15.20.4566.022; Tue, 5 Oct 2021
+ 16:58:13 +0000
+Subject: Re: [PATCH v3 1/5] hugetlb: add demote hugetlb page sysfs interfaces
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        David Hildenbrand <david@redhat.com>,
+        Michal Hocko <mhocko@suse.com>, Zi Yan <ziy@nvidia.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Naoya Horiguchi <naoya.horiguchi@linux.dev>,
+        David Rientjes <rientjes@google.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20211001175210.45968-1-mike.kravetz@oracle.com>
+ <20211001175210.45968-2-mike.kravetz@oracle.com>
+ <04e66e73b17c367d3f4b2b40e0cd7e17@suse.de>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <baa16521-baea-ef6d-f7d9-5ff99d3d0027@oracle.com>
+Date:   Tue, 5 Oct 2021 09:58:09 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
+In-Reply-To: <04e66e73b17c367d3f4b2b40e0cd7e17@suse.de>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: linuxfoundation.org; dkim=none (message not signed)
- header.d=none;linuxfoundation.org; dmarc=none action=none
- header.from=sony.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: fcaf89cc-738e-498a-a50f-08d98821473f
-x-ms-traffictypediagnostic: BY5PR13MB4455:
-x-microsoft-antispam-prvs: <BY5PR13MB44557ABC8CDDDB570A0813B6FDAF9@BY5PR13MB4455.namprd13.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: OodLZs6s01a9+4yb3m0yojogOzxScmtOWoxP3IfGkJtaTgtiLg+myi3lIU7tkwAMAuXf6R+VM39UM15dIQRgh9B74GD2r3DGjH76Nyqydglh2MujWQAH/3+f03NgsXr3NNkWpcFrN/5VKHO6aLYgMnVEHjhsrCnGW7JKf+Dq/eOuUv3ozob9htAdxqvqWmftXqb3BYsmUMSMWSn0UdB9lkMFe9MucqBs5I2uz7HHWFad0s1FZCpmPH/+WeaPSHBOd9tIsNm1tMoKbO8/XSyE56K4Eqn3FXNV9LME0lMP8gLc2HOgC2TgQEyzDADO7QWnfhM36BHovuSkkIppSDipK02RzJE5+J2zo1mnoqAQtAxFqQkYOa6a0oMOf/e0S4oVV033AuJchzziUM/0HDQm3V4f9ArOgpQfbgIoOejBK0l2zeIJSHWdEOyoFvuVuJfjyLh5Z+s2mdVE3+xefi/zuNQAfbvXs0trqRpTmAa1w7ECiZ0VHLvF63bNGarPP6420cD3mlaWSvTMT6R14rcx3SeFxG9qa8xbI9pvYtjGfq851cCop7p3nBP9i2zk44kWirDJjvjMF75cwNv5SXhNctrm0lLNRZj0zNo9+1/UwVfaOCS4U4aqCtDkeGKkEtLN43Q0WwJ0Q+hHvkIbcmXU+4WX3RBvOxu97Pacf5sxHRUrUIHTVa3+nFq3Zke22skvTMgSamD1N5mVs1/2sh4x00AIaWSNCXKvkI0TMTQ95/VoWaxe7a3K2rPyHC7FeG2CigYPG0Js/AOi+gPao7Kx1c/zU3FlQx+mll8I6At6e4/+FmwO39tifQZJZkxvV2ZE
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR13MB2503.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66556008)(52536014)(6506007)(64756008)(53546011)(66476007)(26005)(55016002)(66446008)(9686003)(8936002)(186003)(5660300002)(7416002)(4326008)(7696005)(38070700005)(8676002)(86362001)(38100700002)(966005)(122000001)(508600001)(110136005)(54906003)(316002)(71200400001)(83380400001)(76116006)(2906002)(66946007)(33656002)(2004002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?9YZlHFC5BrHJ7pC2ntWfXdxuexsli+3htodJcsUnhisAIcScgzuj4zLqW0cn?=
- =?us-ascii?Q?z4kPIW7QoQ7Fk7Qf6+v9lAeQgVzvNc0uTz7OswKdyOgHKEDUKpFKtxF3Q/LJ?=
- =?us-ascii?Q?EERbDYEkhvLzuuC623pfjR5P1AmTtIdGiQP1KRI7ZGSDuG4G3gaoWI1Nz3oP?=
- =?us-ascii?Q?chKusI1+UeKcrhnwzwyBJH3rRwCsEB/pJAHf+mr8wvnHYP8SnafDJ5gmpIlS?=
- =?us-ascii?Q?esBUHIuxwUj+vwAvQMKAGtVgEEXCsGENQmeoIVLNLlZP7YXx8qhr/T71bens?=
- =?us-ascii?Q?ABCezZg0NIwAiQEGlN35LIXp+Bfo3PVW5Smz137Hj9SUjtSw3fhbnYDJm2Wt?=
- =?us-ascii?Q?PsIdFYcEjhFFayjGxU506zJWPgaZjsH5VMb01n7n8tN/OaAHLtfo3ziS2KpF?=
- =?us-ascii?Q?6PFtPxlhATfx1xnTjL4n+4U3Kr3OsjfHYh34c22FZjO7rfhBpLLRZB+gcSSf?=
- =?us-ascii?Q?66smtVVyb+CQnXOiDjkrhnVkxBcVvoEsaefI5nJkL9bAkX4axjdl77GRT1zM?=
- =?us-ascii?Q?pxxxU013p8gE+UcByTBTcZiTDm707orWKYLUmv4lX4AN89xqsu0Voc2CCBSt?=
- =?us-ascii?Q?21qfbtqAhaFuiZxUQT8tfFHeCCwux+QoCqSuMS39W+GxKKhSperhBbB05eaG?=
- =?us-ascii?Q?CJjGE8x5Yi+l+RCemYfJgA2x28OJoeEWCpQS9Cj0iyhnCf6AkMGBovwMIQWb?=
- =?us-ascii?Q?LPT4WLMz+O6Szx4wpYrmMOIWbgXYTerCDcx31ZFYrBiVDKE3uYNNtznxZCGo?=
- =?us-ascii?Q?ypxjzdih/jpgOmvm5+yqzR/LTst2yJsivldghaNLiV8YctwAMoiYSGoLG5WF?=
- =?us-ascii?Q?rCfkdrTf4AJg9xrBxpp3+8VOKQdoIEZO2mVD2+T+X2YlIRVkb4lg8JQZVLP+?=
- =?us-ascii?Q?xolspMSYWB3VpMk/WJd7kscfuwd1PtD5VafWpPzr8aM08y6f80ZRSl4Bhmhh?=
- =?us-ascii?Q?yldMcaL2HtEkrHhRXVBlvHrJ2OOK/sTbpovWFrY3Wuxb0QxJHQejX+GYtNKV?=
- =?us-ascii?Q?GKwLq4Dhx9IyCwg8beBVE91FXd4Rh+sX50KYb4KnowR271KfDXJJlEMBpsU/?=
- =?us-ascii?Q?rX8d5Sj/SVoUbAp8OZh23jEmt+OfPfxCXIshfoiz7gUdUnYp88pUP9ZKt6HO?=
- =?us-ascii?Q?SI9TQhU09FKxczDaeo9O47wRxeivaZR+ET4ialyHWa82F/vhc5yo3TgWpHND?=
- =?us-ascii?Q?2zyCUBAPhl55U7cUgzMvLicNRCM4EwPvmZonPGB2JzT4jEbuGh6+UNP6wrsA?=
- =?us-ascii?Q?VTmZcL8WlUbxPwcRg9Rf61FtBYE6CJ/9NyIe/ek5A6xUEQiOHJ2akDf6o3LT?=
- =?us-ascii?Q?fDXubILr6aGTANWKDSYw2DrP?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MW3PR05CA0011.namprd05.prod.outlook.com
+ (2603:10b6:303:2b::16) To BY5PR10MB4196.namprd10.prod.outlook.com
+ (2603:10b6:a03:20d::23)
 MIME-Version: 1.0
-X-OriginatorOrg: sony.com
+Received: from [192.168.2.123] (50.38.35.18) by MW3PR05CA0011.namprd05.prod.outlook.com (2603:10b6:303:2b::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.9 via Frontend Transport; Tue, 5 Oct 2021 16:58:12 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f8d6bfba-7bc9-49d7-00b8-08d988215141
+X-MS-TrafficTypeDiagnostic: BYAPR10MB3638:
+X-Microsoft-Antispam-PRVS: <BYAPR10MB3638B5543C90D22D42969138E2AF9@BYAPR10MB3638.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: TWImLxhl8pbrJEJhTIcpRG60Tu0wRwVsYoImjJDhTt9NtUhxvLgIddqpS8FP/hhObY3w+24tdmMGfi/UCFPaMbXoyBuanEHEVqqbybzniZ4hLUeAzuli5L2RMNPKTYts3vZWemEvDKT2uArYcfmohhvtHKRBCPnN8qKuD0jbfbEHAvK3HF8YNhn0IgQ5JuQljtkhfj0l82ovZC1XzQLsNz9yf+J0mm4HaNH68ri52A9meZyS6veJlHAephUS6bbORk0nRUEiM5gpCJM0cpNjnbFWrd4e4C6GRghRPgyXsRl0/AZ7vcuOhU4sLCKvfLF6QQARmFZpMXzh6pucMGPxNLE2SU5zYL9AMU1CFHCOI4jy/k3iqCrLNQVKuClJ8f0QOJmwH5Qs+kUo7OEs3mCRUF8h/bapW443B3L4+ZDAc+5xhnUNf03Xkp+GXnFMHDtvg63G4jKN4U6PeyMFEmEWiBsXOTjQmtEwheYWDpOgtNF73wCJ0WP6cyCzZQ5gWxr/zkkbX5xB7fWcKpv2SMU6rRzymOsIb2WsTT8Dab68tQsaZbODMDdSLejQ8IgBnk/CrhsYxGJVjikWses0ZiZU92pyt78LWzDoUnqjTGjAwRVkp3ZlKrfK8Rle5x2yD5rgL1hRXsyumuc/34m14a738jT1Xt0rQ8hJEYp9Xh8G6IBbBtutLe6w/4wKNIBrdhNN13hZCFPkQDIYM1QgXCCZ9WCx+OP+LaF39pxpwRC1m0d4MEeONFnR3YdmurhtHhuKBXEQ/PsOhcgKDI0zDPJzEQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4196.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(31696002)(66476007)(66556008)(6666004)(66946007)(5660300002)(44832011)(86362001)(508600001)(53546011)(26005)(2616005)(7416002)(956004)(186003)(83380400001)(38350700002)(36756003)(2906002)(52116002)(38100700002)(6916009)(4326008)(6486002)(31686004)(54906003)(16576012)(8676002)(316002)(8936002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Rm9ZT2g2WHJJbDZ6UFZrUGFGWHR4S3dINktQRWZ3R205UFhMRHpMdTRGaHNQ?=
+ =?utf-8?B?QmZrZ2NMaXQ1aS9CaUF6cElENDQ3MTlaN0dsY1BLcXYvY2xabWRUZW1jSkMz?=
+ =?utf-8?B?NGh2TEZrZy9PdkI5dnRacCtHYitHVnhQb0xQeGk3UTFCem1pTjFxemcxT3NM?=
+ =?utf-8?B?RTlQZ09lV0ZmZ1ZOSjA1NlVRQW8wUDlCU3VxNkY4d0ZJemM4dldjWTlMbW9o?=
+ =?utf-8?B?VjVvenJRSEFuVXI0RjFXS205SkVTMnFXcVYweDF0ck16SC9QR0JoYm1NQTdY?=
+ =?utf-8?B?NE5GcHJOdzBSZ2p4d25iMXdOdzQ5N3pOOUQ0TzVmbmVxTDNtSlp1VlRnVmRH?=
+ =?utf-8?B?Tko5N3pNVHdCM1BYcGtoRDY2a3FlenJBRCs2Qk5Pd2tzLzY4OTRrbkFHc2V4?=
+ =?utf-8?B?RkJKSDAvc1lMcUJUMDRjUkpYcVRCYnBUYTBZUzMvaDcvZjFMSmQ2VWhVWEtZ?=
+ =?utf-8?B?eDMyOGE1N0NlaTlWNmoyanBGNG5BMW01NlEvNXZtRHNrSlAxR3JueVVCdnB0?=
+ =?utf-8?B?ZStPQkV5RFVIdExObXl6cTV2NzY5QmtxOGNiZW9nQkYyU1NPckNtejhRVEd5?=
+ =?utf-8?B?L3laM051WTVXQi9DdW5icXluNStydnBrdC9xWGowc0JZMVZlWDBJVDNhZW9s?=
+ =?utf-8?B?ODZzN2ROMDNSanJlTGh6R2VPZnBtbkplUngzWWFsQWlXTDVjN1VISm1KUllz?=
+ =?utf-8?B?VjB6YndHN2hIRnJlMHBsQ3pUVmowL1VtZnJXaUh1K0VsQzBkOXk3S05ydDJn?=
+ =?utf-8?B?N3JtVzVUWmVHK3hDVUUxRmNKalBmb3BsUW1YQlVycmlnTUtidzliWUJuZ085?=
+ =?utf-8?B?WU02UFdUaC9kOTBiY25zd21pWmo4VWg4YkJqZDY5VnFjRStmNjFvYXZnbXU5?=
+ =?utf-8?B?TzQrWE1vL25HWk8vTVpLc0RBZUQyaTFXcnNsazk0UGt1aHkySVJuWEFCM05D?=
+ =?utf-8?B?bmYwWGd1YjlQbTlUWi9qS09tWDJwbHRsL0lOaGZ6TTQ3N09jZ1ZUSm9LYi9k?=
+ =?utf-8?B?a2hlTTgwclRUT2dQNzQrcmdBbnZYVGJoaXp4OGRXcVIybDFPZldyZzNNNUkz?=
+ =?utf-8?B?ckVFN3I4c2R2T3owTWVEcTBHZ0NTVDhudzlDc0ZtYnFiTmtySzRMY25wUDJG?=
+ =?utf-8?B?YVY4THhDYzFDYitBcWtDQWpIR3QxWHhqRkwzZjdKUnZOTXNjNHY1ajIyOTZJ?=
+ =?utf-8?B?TXZQZzEvVWZuU0EwYktQOUhEek5jMStaSG1Zc1N5VDc3ZmFTK2tKQ1JHSHU3?=
+ =?utf-8?B?Z3Z1S2pMVk1Jd0lnd2tyZW1QSUhWbzI2aEJXTlgrWXUwSjlsRlcxZXIwWUx3?=
+ =?utf-8?B?V3IrM2hTemVra1MzU05TK3ZvM1FGdy8vSlNVL1VUR0xJNnovVFZBcG5Wb1RZ?=
+ =?utf-8?B?WXI5QjgvZW1mb0IxZThpcmdRTjVFNGNJdlJ4eUhEMjRhL2VTL3hlanhWdXJ1?=
+ =?utf-8?B?MW8yYVIvSFRxSWZxWWt1MVRjSWFlVWJnNUJJYkhxVHBhTklkMXduL2t6djlU?=
+ =?utf-8?B?QTB1ZFFiNldocGh4UFh5WjhtUUR4alJ6dmpkSElyL2lVV2pVNC84V1N4Mzkw?=
+ =?utf-8?B?dDNmczZ6aHhyaWp4YnM4by9Vbm5NSVVJVUdNUGdCaWpGWUhVWGJYamNpRDZN?=
+ =?utf-8?B?cGpyNi9ZZGpLRE5kUWV3Y25TdkJyNEdSbER2NWJYRVliZ3BoRlNTaG5lRGRQ?=
+ =?utf-8?B?TG5mTG9EQkpYMS9vUmhsUjlHdG04SnlFcTMramNTYVc5T1BIN2ExNXFISG1Y?=
+ =?utf-8?Q?1o2+SvOgiOXXXCf/fn1+z2k3oK3zo+W95e4h0VY?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f8d6bfba-7bc9-49d7-00b8-08d988215141
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB4196.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR13MB2503.namprd13.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fcaf89cc-738e-498a-a50f-08d98821473f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Oct 2021 16:57:55.9298
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Oct 2021 16:58:13.3863
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 66c65d8a-9158-4521-a2d8-664963db48e4
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: LJMrV12k30eNAm1sFG++4jZuHUspmtP82pTHORpKt+u+WkhL+fw5zHRff7fAeDV10MkAggewImJioSOhxkcrwA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR13MB4455
-X-Proofpoint-ORIG-GUID: EeylVr4NBOriIM-rODFr0fTwLx2nZqSX
-X-Proofpoint-GUID: EeylVr4NBOriIM-rODFr0fTwLx2nZqSX
-X-Sony-Outbound-GUID: EeylVr4NBOriIM-rODFr0fTwLx2nZqSX
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-10-05_03,2021-10-04_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
- bulkscore=0 adultscore=0 impostorscore=0 lowpriorityscore=0
- mlxlogscore=999 mlxscore=0 phishscore=0 priorityscore=1501 suspectscore=0
- clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110050102
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: /0XzTQFu1mfMIsP0B3vSm3qSM0Yl9zuWG1XXS+mebPraG0cNT63SscqwJFJVZfDl9TPKTbsWlTuwutduqeehsg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB3638
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10128 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0 phishscore=0
+ spamscore=0 mlxscore=0 mlxlogscore=999 suspectscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109230001
+ definitions=main-2110050101
+X-Proofpoint-GUID: 1Qw-cOvKEpDuSI18MbEVg-0UYOanfWm0
+X-Proofpoint-ORIG-GUID: 1Qw-cOvKEpDuSI18MbEVg-0UYOanfWm0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 10/5/21 1:23 AM, Oscar Salvador wrote:
+> On 2021-10-01 19:52, Mike Kravetz wrote:
+>> +static int demote_pool_huge_page(struct hstate *h, nodemask_t *nodes_allowed)
+>> +    __must_hold(&hugetlb_lock)
+>> +{
+>> +    int rc = 0;
+>> +
+>> +    lockdep_assert_held(&hugetlb_lock);
+>> +
+>> +    /* We should never get here if no demote order */
+>> +    if (!h->demote_order)
+>> +        return rc;
+> 
+> Probably add a warning here? If we should never reach this but we do, then
+> something got screwed along the way and we might want to know.
+> 
 
+Sure.  I thought about just dropping this check.  However, getting here
+with !h->demote_order implies there was an issue in the setup of sysfs
+files.  That is not directly in the 'call path', so a check is helpful.
 
-> -----Original Message-----
-> From: Greg KH <gregkh@linuxfoundation.org>
-> Sent: Tuesday, October 5, 2021 8:17 AM
-> To: Luis Chamberlain <mcgrof@kernel.org>
-> Cc: tj@kernel.org; akpm@linux-foundation.org; minchan@kernel.org; jeyu@ke=
-rnel.org; shuah@kernel.org; bvanassche@acm.org;
-> dan.j.williams@intel.com; joe@perches.com; tglx@linutronix.de; keescook@c=
-hromium.org; rostedt@goodmis.org; linux-
-> spdx@vger.kernel.org; linux-doc@vger.kernel.org; linux-block@vger.kernel.=
-org; linux-fsdevel@vger.kernel.org; linux-
-> kselftest@vger.kernel.org; linux-kernel@vger.kernel.org
-> Subject: Re: [PATCH v8 03/12] selftests: add tests_sysfs module
->=20
-> On Mon, Sep 27, 2021 at 09:37:56AM -0700, Luis Chamberlain wrote:
-> > --- /dev/null
-> > +++ b/lib/test_sysfs.c
-> > @@ -0,0 +1,921 @@
-> > +// SPDX-License-Identifier: GPL-2.0-or-later OR copyleft-next-0.3.1
-> > +/*
-> > + * sysfs test driver
-> > + *
-> > + * Copyright (C) 2021 Luis Chamberlain <mcgrof@kernel.org>
-> > + *
-> > + * This program is free software; you can redistribute it and/or modif=
-y it
-> > + * under the terms of the GNU General Public License as published by t=
-he Free
-> > + * Software Foundation; either version 2 of the License, or at your op=
-tion any
-> > + * later version; or, when distributed separately from the Linux kerne=
-l or
-> > + * when incorporated into other software packages, subject to the foll=
-owing
-> > + * license:
+I will add a warning.
 
-This is a very strange license grant, which I'm not sure is covered by any
-current SPDX syntax.
-" when distributed separately from the Linux kernel or when incorporated in=
-to
-other software packages, subject to the following license:"
+>> +static ssize_t demote_store(struct kobject *kobj,
+>> +           struct kobj_attribute *attr, const char *buf, size_t len)
+>> +{
+>> +    unsigned long nr_demote;
+>> +    unsigned long nr_available;
+>> +    nodemask_t nodes_allowed, *n_mask;
+>> +    struct hstate *h;
+>> +    int err;
+>> +    int nid;
+>> +
+>> +    err = kstrtoul(buf, 10, &nr_demote);
+>> +    if (err)
+>> +        return err;
+>> +    h = kobj_to_hstate(kobj, &nid);
+>> +
+>> +    /* Synchronize with other sysfs operations modifying huge pages */
+>> +    mutex_lock(&h->resize_lock);
+>> +
+>> +    spin_lock_irq(&hugetlb_lock);
+>> +    if (nid != NUMA_NO_NODE) {
+>> +        init_nodemask_of_node(&nodes_allowed, nid);
+>> +        n_mask = &nodes_allowed;
+>> +    } else {
+>> +        n_mask = &node_states[N_MEMORY];
+>> +    }
+> 
+> Cannot the n_mask dance be outside the locks? That does not need to be protected, right?
+> 
 
-Why would we care about the license used when the code is used in a non-ker=
-nel
-project?  If it is desired for the code to be available outside the kernel =
-under a
-different license, then surely the easiest thing is to make it available se=
-parately
-under that license.  I'm not sure why the kernel needs to carry this licens=
-e for
-non-kernel use of the code.
+Yes it can.   I will move outside.
 
-I would recommend giving this a GPLv2 SPDX header, and maybe in the comment
-at the top of the file put a reference to a git repository where the code c=
-an be
-obtained under a different license.
+>> +
+>> +    while (nr_demote) {
+>> +        /*
+>> +         * Check for available pages to demote each time thorough the
+>> +         * loop as demote_pool_huge_page will drop hugetlb_lock.
+>> +         *
+>> +         * NOTE: demote_pool_huge_page does not yet drop hugetlb_lock
+>> +         * but will when full demote functionality is added in a later
+>> +         * patch.
+>> +         */
+>> +        if (nid != NUMA_NO_NODE)
+>> +            nr_available = h->free_huge_pages_node[nid];
+>> +        else
+>> +            nr_available = h->free_huge_pages;
+>> +        nr_available -= h->resv_huge_pages;
+>> +        if (!nr_available)
+>> +            break;
+>> +
+>> +        if (!demote_pool_huge_page(h, n_mask))
+>> +            break;
+> 
+> Is it possible that when demote_pool_huge_page() drops the lock,
+> h->resv_huge_pages change? Or that can only happen under h->resize_lock?
+> 
 
-Just my 2 cents.
- -- Tim
+Yes, it can change.  That is why the calculations are done each time
+through the loop with the lock held.
 
-> > + *
-> > + * This program is free software; you can redistribute it and/or modif=
-y it
-> > + * under the terms of copyleft-next (version 0.3.1 or later) as publis=
-hed
-> > + * at http://copyleft-next.org/.
->=20
-> Independant of the fact that I don't like sysfs code attempting to be
-> accessed in the kernel with licenses other than GPLv2, you do not need
-> the license "boilerplate" text at all in files.  That's what the SPDX
-> line is for.
->=20
-> thanks,
->=20
-> greg k-h
+Should we be worried about compiler optimizations that may not read the
+value each time through the loop?
+
+>> +
+>> +        nr_demote--;
+>> +    }
+>> +
+>> +    spin_unlock_irq(&hugetlb_lock);
+>> +    mutex_unlock(&h->resize_lock);
+>> +
+>> +    return len;
+>> +}
+>> +HSTATE_ATTR_WO(demote);
+>> +
+>> +static ssize_t demote_size_show(struct kobject *kobj,
+>> +                    struct kobj_attribute *attr, char *buf)
+>> +{
+>> +    struct hstate *h;
+>> +    unsigned long demote_size;
+>> +    int nid;
+>> +
+>> +    h = kobj_to_hstate(kobj, &nid);
+>> +    demote_size = h->demote_order;
+> 
+> This has already been pointed out.
+> 
+
+Yes.
+
+>> +
+>> +    return sysfs_emit(buf, "%lukB\n",
+>> +            (unsigned long)(PAGE_SIZE << h->demote_order) / SZ_1K);
+>> +}
+>> +
+>> +static ssize_t demote_size_store(struct kobject *kobj,
+>> +                    struct kobj_attribute *attr,
+>> +                    const char *buf, size_t count)
+>> +{
+>> +    struct hstate *h, *t_hstate;
+>> +    unsigned long demote_size;
+>> +    unsigned int demote_order;
+>> +    int nid;
+> 
+> This is just a nit-pick, but what is t_hstate? demote_hstate might be more descriptive.
+> 
+
+temporary_hstate.  I agree that demote_hstate would be more descriptive.
+
+>> +
+>> +    demote_size = (unsigned long)memparse(buf, NULL);
+>> +
+>> +    t_hstate = size_to_hstate(demote_size);
+>> +    if (!t_hstate)
+>> +        return -EINVAL;
+>> +    demote_order = t_hstate->order;
+>> +
+>> +    /* demote order must be smaller hstate order */
+> 
+> "must be smaller than"
+> 
+
+Will change.
+
+Thanks for the suggestions!
+-- 
+Mike Kravetz
