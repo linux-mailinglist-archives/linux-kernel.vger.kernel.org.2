@@ -2,106 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC03B423193
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 22:20:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74AB14231DB
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 22:26:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235845AbhJEUWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 16:22:24 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:61790 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235675AbhJEUWX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 16:22:23 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1633465232; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=vvFKxosEWJRYj3/+/aQtl5VdWLCJLkT6giZQLPV1jPQ=;
- b=FrsgE/VCX3UfaExgA8MBLPUrLKKa6/Ce/JznaKREWj1FXixox65c2Wy+uNdf0qS13yumTqKA
- Sdm5ODiI/QGP8dM9cVhFBnJGOkLDfvawtm74FNWVEzqYzR1lRgbIl/kJ5Ig1T4UbXflIB+an
- cDmcSVOWPxTpGGAxRAvD+XtNLOI=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 615cb3904ccdf4fe5768e74c (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 05 Oct 2021 20:20:32
- GMT
-Sender: abhinavk=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 801EAC4360D; Tue,  5 Oct 2021 20:20:31 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: abhinavk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 829C8C4338F;
-        Tue,  5 Oct 2021 20:20:30 +0000 (UTC)
+        id S236150AbhJEU1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 16:27:49 -0400
+Received: from mail.w1.fi ([212.71.239.96]:45786 "EHLO
+        li674-96.members.linode.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230019AbhJEU1s (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 16:27:48 -0400
+X-Greylist: delayed 306 seconds by postgrey-1.27 at vger.kernel.org; Tue, 05 Oct 2021 16:27:47 EDT
+Received: from localhost (localhost [127.0.0.1])
+        by li674-96.members.linode.com (Postfix) with ESMTP id 6DC7A110DE;
+        Tue,  5 Oct 2021 20:20:49 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at w1.fi
+Received: from li674-96.members.linode.com ([127.0.0.1])
+        by localhost (mail.w1.fi [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id W-kqsIKIJhpv; Tue,  5 Oct 2021 20:20:47 +0000 (UTC)
+Received: by jm (sSMTP sendmail emulation); Tue, 05 Oct 2021 23:20:45 +0300
+Date:   Tue, 5 Oct 2021 23:20:45 +0300
+From:   Jouni Malinen <j@w1.fi>
+To:     Johannes Berg <johannes@sipsolutions.net>
+Cc:     Youghandhar Chintala <youghand@codeaurora.org>,
+        Abhishek Kumar <kuabhs@chromium.org>,
+        Felix Fietkau <nbd@nbd.name>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Brian Norris <briannorris@chromium.org>,
+        Rakesh Pillai <pillair@codeaurora.org>,
+        Manikanta Pubbisetty <mpubbise@codeaurora.org>
+Subject: Re: [PATCH 2/3] mac80211: Add support to trigger sta disconnect on
+ hardware restart
+Message-ID: <20211005202045.GA18000@w1.fi>
+References: <20201215172352.5311-1-youghand@codeaurora.org>
+ <f2089f3c-db96-87bc-d678-199b440c05be@nbd.name>
+ <ba0e6a3b783722c22715ae21953b1036@codeaurora.org>
+ <CACTWRwt0F24rkueS9Ydq6gY3M-oouKGpaL3rhWngQ7cTP0xHMA@mail.gmail.com>
+ <d5cfad1543f31b3e0d8e7a911d3741f3d5446c57.camel@sipsolutions.net>
+ <66ba0f836dba111b8c7692f78da3f079@codeaurora.org>
+ <5826123db4731bde01594212101ed5dbbea4d54f.camel@sipsolutions.net>
+ <30fa98673ad816ec849f34853c9e1257@codeaurora.org>
+ <90d3c3c8cedcf5f8baa77b3b6e94b18656fcd0be.camel@sipsolutions.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 05 Oct 2021 13:20:30 -0700
-From:   abhinavk@codeaurora.org
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Kalyan Thota <kalyan_t@codeaurora.org>,
-        Kuogee Hsieh <khsieh@codeaurora.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [Freedreno] [PATCH v3 5/5] drm/msm/dp: Add sc8180x DP controllers
-In-Reply-To: <20211001180058.1021913-6-bjorn.andersson@linaro.org>
-References: <20211001180058.1021913-1-bjorn.andersson@linaro.org>
- <20211001180058.1021913-6-bjorn.andersson@linaro.org>
-Message-ID: <691a2a6280821cf3ffe022e54092209d@codeaurora.org>
-X-Sender: abhinavk@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <90d3c3c8cedcf5f8baa77b3b6e94b18656fcd0be.camel@sipsolutions.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-10-01 11:00, Bjorn Andersson wrote:
-> The sc8180x has 2 DP and 1 eDP controllers, add support for these to 
-> the
-> DP driver.
+On Fri, Sep 24, 2021 at 11:20:50AM +0200, Johannes Berg wrote:
+> > We thought sending the delba would solve the problem as earlier thought 
+> > but the actual problem is with TX PN in a secure mode.
+> > It is not because of delba that the Seq number and TX PN are reset to 
+> > zero.
+> > It’s because of the HW restart, these parameters are reset to zero.
+> > Since FW/HW is the one which decides the TX PN, when it goes through 
+> > SSR, all these parameters are reset.
 > 
-> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Reviewed-by: Abhinav Kumar <abhinavk@codeaurora.org>
-> ---
-> 
-> Changes since v2:
-> - None
-> 
->  drivers/gpu/drm/msm/dp/dp_display.c | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c
-> b/drivers/gpu/drm/msm/dp/dp_display.c
-> index ff3477474c5d..56a79aeffed4 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_display.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
-> @@ -127,8 +127,15 @@ static const struct msm_dp_config sc7180_dp_cfg = 
-> {
->  	.num_descs = 1,
->  };
-> 
-> +static const struct msm_dp_config sc8180x_dp_cfg = {
-> +	.io_start = { 0xae90000, 0xae98000, 0xae9a000 },
-> +	.num_descs = 3,
-> +};
-> +
->  static const struct of_device_id dp_dt_match[] = {
->  	{ .compatible = "qcom,sc7180-dp", .data = &sc7180_dp_cfg },
-> +	{ .compatible = "qcom,sc8180x-dp", .data = &sc8180x_dp_cfg },
-> +	{ .compatible = "qcom,sc8180x-edp", .data = &sc8180x_dp_cfg },
->  	{}
->  };
+> Right, we solved this problem too - in a sense the driver reads the
+> database (not just TX PN btw, also RX replay counters) when the firmware
+> crashes, and sending it back after the restart. mac80211 has some hooks
+> for that.
+
+This might be doable for some cases where the firmware is the component
+assigning the PN values on TX and the firmware still being in a state
+where the counter used for this could be fetched after a crash or
+detected misbehavior. However, this does not sound like a very reliable
+mechanism for cases where the firmware state for this cannot be trusted
+or for the cases where the TX PN is actually assigned by the hardware
+(which would get cleared on that restart and the value might be
+unreadable before that restart). Trying to pull for this information
+periodically before the issue is detected does not sound like a very
+robust design either, since that would both waste resources and have a
+race condition with the lower layers having transmitted additional
+frames.
+
+Obviously it would be nice to be able to restore this type of state in
+all cases accurately, but that may not really be a viable approach for
+all designs and it would seem to make sense to provide an alternative
+approach to minimize the user visible impact from the rare cases of
+having to restart some low level components during an association.
+
+-- 
+Jouni Malinen                                            PGP id EFC895FA
