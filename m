@@ -2,125 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90847423276
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 22:56:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E758742327F
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 22:57:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236478AbhJEU6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 16:58:11 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:11331 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236447AbhJEU6J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 16:58:09 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1633467379; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=d2UIVnPOW3ElF02gfggo+xeMDHqG4QtmTz1NBPCyNOc=;
- b=g63ZB6BczuWWO0MZG9ebm9evow6YvIZlbJi1eKjAUMnqaHLUdnTkSzF4tg2FLRPqZuDQ8Z3n
- smyYKAngNISOLBjZzrVv3Pg00nmzWSFu/OfhUkohf0x7x6Y1+RKOlgey9OTf1ui+IQ3jQTHH
- 0vyC0OWpjzs742BMmURiBs/u1sM=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 615cbbf29ebaf35aaa14b507 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 05 Oct 2021 20:56:18
- GMT
-Sender: abhinavk=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 60C9DC4361B; Tue,  5 Oct 2021 20:56:17 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: abhinavk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6416DC43460;
-        Tue,  5 Oct 2021 20:56:16 +0000 (UTC)
+        id S236588AbhJEU7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 16:59:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52222 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236590AbhJEU66 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 16:58:58 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADA0EC06174E
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 13:57:07 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id t8so1876862wri.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 13:57:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VIhiZko/HdZRRX8wV8ISQub/+SSvOguPPMhdzz4lBsI=;
+        b=F55aWN7B0tWVyyqkDpMB35S/HuZ/y5OfbQ3UQB86GaKfqZ0py0u1QrjhhAaQlThy4E
+         7pnNICzzoTMcEH/JSoPXF9/irnPwwIYUZnGEI3gHwajirg7f1fuOpZTu6DTXVaEiMKQo
+         n8W9FQN64cwQL//MQGkX/m21WXAQapWmu2EGeWy+peRf6oIwe21TMwNhtRL5GyAUE4LH
+         YhDa4SGn0WzrWXbQtkWYw5s7+5MoVLIxdxhDrhmJv3flJJSeaJneEG/vwJN/dbTVHhMT
+         nG10yuzh9LeIDrPmC5tZ9orYoQL8tuwJOx9w/cV17ms+u3i5X6KEF+3BGDPlI33A9uUc
+         y2lw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VIhiZko/HdZRRX8wV8ISQub/+SSvOguPPMhdzz4lBsI=;
+        b=CrDkdAdO7smGwewg31/7M/bFSyT/PiefTtGj1RFVyabS6et9geJubaDKomI6T3SoeI
+         L6bAAa0mQSfdDpjCY6tToXW1UUlxAry4jjnSa1FdeRHaYxnbn/8qWKFizOxc6+lFQVXT
+         HPRZdrMAsF1io3SRCsFw4g/fmrQor287ejyIZ0/YjhnbKVkqZusSDxvJhhKfCUzANiEs
+         0/MUvF7+jcyf8NiPa6ba7idersEdTLxLq5WJMlYt0tvVteYX2+IBzs7w89PnVEjbVdpe
+         dA60sgavKUpUe1W4u5QcaGiKLMqAdJG5aAU8p3X9oSMd1ZeZ7FJsUffs8l0H4/2tXFDc
+         wr9A==
+X-Gm-Message-State: AOAM533z1RbqcmMpsoyPGQmJurED0HqQcnBKcEvStOl5FeoRdHc0zbud
+        1K/pbI8S9p9FpjSI8/e/k+c=
+X-Google-Smtp-Source: ABdhPJxMcxauFEQGHdkkYeRphHVrjZgzBs8tyPX4bB6G74U+UgQGtcrW1hhPRdeepx7NtGQGv4g6jQ==
+X-Received: by 2002:a7b:ce8c:: with SMTP id q12mr5856041wmj.14.1633467425703;
+        Tue, 05 Oct 2021 13:57:05 -0700 (PDT)
+Received: from tom-desktop.station (net-2-42-54-217.cust.vodafonedsl.it. [2.42.54.217])
+        by smtp.gmail.com with ESMTPSA id p14sm2944109wmc.18.2021.10.05.13.57.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Oct 2021 13:57:05 -0700 (PDT)
+From:   Tommaso Merciai <tomm.merciai@gmail.com>
+Cc:     tomm.merciai@gmail.com, Forest Bond <forest@alittletooquiet.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Lucas Henneman <lucas.henneman@linaro.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH v7 0/3] staging: vt6655: replace camel case variables
+Date:   Tue,  5 Oct 2021 22:56:56 +0200
+Message-Id: <20211005205702.14029-1-tomm.merciai@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 05 Oct 2021 13:56:16 -0700
-From:   abhinavk@codeaurora.org
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Kuogee Hsieh <khsieh@codeaurora.org>,
-        Tanmay Shah <tanmay@codeaurora.org>,
-        Chandan Uddaraju <chandanu@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Rob Herring <robh@kernel.org>
-Subject: Re: [Freedreno] [PATCH v3 1/5] dt-bindings: msm/dp: Change reg
- definition
-In-Reply-To: <20211001174400.981707-2-bjorn.andersson@linaro.org>
-References: <20211001174400.981707-1-bjorn.andersson@linaro.org>
- <20211001174400.981707-2-bjorn.andersson@linaro.org>
-Message-ID: <78cc9c0faafcab3375f74a4f52790a52@codeaurora.org>
-X-Sender: abhinavk@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-10-01 10:43, Bjorn Andersson wrote:
-> reg was defined as one region covering the entire DP block, but the
-> memory map is actually split in 4 regions and obviously the size of
-> these regions differs between platforms.
-> 
-> Switch the reg to require that all four regions are specified instead.
-> It is expected that the implementation will handle existing DTBs, even
-> though the schema defines the new layout.
-> 
-> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Reviewed-by: Abhinav Kumar <abhinavk@codeaurora.org>
-> ---
-> 
-> Changes since v2:
-> - None
-> 
->  .../bindings/display/msm/dp-controller.yaml         | 13 +++++++++++--
->  1 file changed, 11 insertions(+), 2 deletions(-)
-> 
-> diff --git
-> a/Documentation/devicetree/bindings/display/msm/dp-controller.yaml
-> b/Documentation/devicetree/bindings/display/msm/dp-controller.yaml
-> index d89b3c510c27..6bb424c21340 100644
-> --- a/Documentation/devicetree/bindings/display/msm/dp-controller.yaml
-> +++ b/Documentation/devicetree/bindings/display/msm/dp-controller.yaml
-> @@ -19,7 +19,12 @@ properties:
->        - qcom,sc7180-dp
-> 
->    reg:
-> -    maxItems: 1
-> +    items:
-> +      - description: ahb register block
-> +      - description: aux register block
-> +      - description: link register block
-> +      - description: p0 register block
-> +      - description: p1 register block
-> 
->    interrupts:
->      maxItems: 1
-> @@ -99,7 +104,11 @@ examples:
-> 
->      displayport-controller@ae90000 {
->          compatible = "qcom,sc7180-dp";
-> -        reg = <0xae90000 0x1400>;
-> +        reg = <0xae90000 0x200>,
-> +              <0xae90200 0x200>,
-> +              <0xae90400 0xc00>,
-> +              <0xae91000 0x400>,
-> +              <0xae91400 0x400>;
->          interrupt-parent = <&mdss>;
->          interrupts = <12>;
->          clocks = <&dispcc DISP_CC_MDSS_AHB_CLK>,
+This series replace the following camel case variables into
+equivalent snake case variable for vt6655 driver.
+
+bShortSlotTime -> short_slot_time
+ldBmThreshold -> dbm_threshold
+PortOffset -> port_offset
+
+Tommaso Merciai (3):
+  staging: vt6655: fix camelcase in bShortSlotTime
+  staging: vt6655: fix camelcase in ldBmThreshold
+  staging: vt6655: fix camelcase in PortOffset
+
+ drivers/staging/vt6655/baseband.c    |  58 +++++------
+ drivers/staging/vt6655/card.c        |  90 ++++++++--------
+ drivers/staging/vt6655/channel.c     |  10 +-
+ drivers/staging/vt6655/device.h      |   6 +-
+ drivers/staging/vt6655/device_main.c | 150 +++++++++++++--------------
+ drivers/staging/vt6655/mac.c         |  46 ++++----
+ drivers/staging/vt6655/power.c       |  24 ++---
+ drivers/staging/vt6655/rf.c          |  12 +--
+ drivers/staging/vt6655/rxtx.c        |  12 +--
+ 9 files changed, 204 insertions(+), 204 deletions(-)
+
+-- 
+2.25.1
+
