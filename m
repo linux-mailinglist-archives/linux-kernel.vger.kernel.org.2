@@ -2,193 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DF67422501
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 13:29:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E905422504
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 13:30:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234217AbhJELbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 07:31:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233911AbhJELbV (ORCPT
+        id S234358AbhJELb5 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 5 Oct 2021 07:31:57 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3932 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233911AbhJELbz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 07:31:21 -0400
-Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 315FBC061755
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 04:29:31 -0700 (PDT)
-Received: by mail-vs1-xe2d.google.com with SMTP id w13so5212654vsa.2
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 04:29:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qrwVEpJ/XUV+QEVqljOLbqlOPVjiAMub2FCrReehyZ0=;
-        b=EtZVHaj1566XTX+XZxTLu03OPVlLOfH87kfxFbq6q+vFS4QEcN7Uc5pwF/fTrJv6nN
-         6ul7qnrRt+GG95hjfUMgj4ziYGpdbkmjVmIFTrOoQxr3VN/bl1jMVchwAbIG3YmytP/O
-         O0XyYvWbt+xSHbFdnt+mp40cF1/FeTCXpZuuAEaDbzvDauWGb0ULsJMfEO69thQ+va3b
-         7ZaEE9J2jN82hb1qMiJQrjgeAXI/2oS9xL1iA5knxYRh3rnwO4QiL0vMo2bcu5wDJmDi
-         tMfnvdWQM/a6ZITSFZEDtq4pSOsptHin4o4DKT1UdSThjpF2hJd+AzmMntfEcGkBu9Kq
-         2p1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qrwVEpJ/XUV+QEVqljOLbqlOPVjiAMub2FCrReehyZ0=;
-        b=Y7bMWIIwbQpeZQj0at9VNkTYjdmFv81oocYPG/Itcg2R4eCKQdTsOZZ2brIFdHoZ1v
-         YEE33cOC4Nq3Qh7x2uyV8CViQ0F/XGurxFdOZRU+E6cjqm82ZZgtgoryGmpTjBHYjcCa
-         LIAVku3TR+pWNnA1Wsimt4niLRBdn/pXVH3jv+B23qYXsgWnK/QGt7LNVZ5uOwjmh20X
-         yywJA/0RynaDCtQ9P4mvlHfoxOvjZiQ4al5YbHxbxEtZvPiTnU4JgbYFQiCScj+rFprx
-         QmA29dzrYAmS6KW9dy+yjGa5KnNgW6Lu/f7yH2X5SKhCYRl9wk6UfW9gqkf+TTqE1Cyx
-         eSOw==
-X-Gm-Message-State: AOAM531BhDl47GXdMIZmK+MkQl8xGTkgbB+MOdCmLwAbwJz7WZh5JWeV
-        5TAwNHSn4+qHpmWhUvqi3/iElsW6Kda8Qcisa5XOBw==
-X-Google-Smtp-Source: ABdhPJxWO2wC1vuvfjjdVx5I/11lIUzUVp9XBbjqaVxFcNcK45Nh/CVj6P9EBlHICIY5XsnysjshS2LW5Fdj1mDHucs=
-X-Received: by 2002:a67:d91b:: with SMTP id t27mr8774428vsj.55.1633433370114;
- Tue, 05 Oct 2021 04:29:30 -0700 (PDT)
+        Tue, 5 Oct 2021 07:31:55 -0400
+Received: from fraeml712-chm.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HNwJr1L2fz67N0s;
+        Tue,  5 Oct 2021 19:26:36 +0800 (CST)
+Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
+ fraeml712-chm.china.huawei.com (10.206.15.61) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Tue, 5 Oct 2021 13:30:02 +0200
+Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
+ fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2308.008;
+ Tue, 5 Oct 2021 13:30:02 +0200
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     Heiko Carstens <hca@linux.ibm.com>
+CC:     "gor@linux.ibm.com" <gor@linux.ibm.com>,
+        "borntraeger@de.ibm.com" <borntraeger@de.ibm.com>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] s390: Fix strrchr() implementation
+Thread-Topic: [PATCH] s390: Fix strrchr() implementation
+Thread-Index: AQHXubpUeLbUtyZNSEm/g+efvuXaaqvEHweAgAAicsA=
+Date:   Tue, 5 Oct 2021 11:30:02 +0000
+Message-ID: <7eeccf08aed44453959763629852d58e@huawei.com>
+References: <20211005072621.53500-1-roberto.sassu@huawei.com>
+ <YVwzUbHcZkHQT0K4@osiris>
+In-Reply-To: <YVwzUbHcZkHQT0K4@osiris>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.221.98.153]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-References: <20210914155607.14122-1-semen.protsenko@linaro.org>
- <20210914155607.14122-7-semen.protsenko@linaro.org> <3da75dbe-2f98-39db-c455-46adead7097b@canonical.com>
-In-Reply-To: <3da75dbe-2f98-39db-c455-46adead7097b@canonical.com>
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-Date:   Tue, 5 Oct 2021 14:29:18 +0300
-Message-ID: <CAPLW+4k+1x+qwJJWth7=KwsF_Q2+n5LDA8Q+63M-bxXDO=4bZg@mail.gmail.com>
-Subject: Re: [PATCH 6/6] clk: samsung: Introduce Exynos850 clock driver
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        =?UTF-8?Q?Pawe=C5=82_Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Ryu Euiyoul <ryu.real@samsung.com>,
-        Tom Gall <tom.gall@linaro.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Amit Pundir <amit.pundir@linaro.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 15 Sept 2021 at 11:59, Krzysztof Kozlowski
-<krzysztof.kozlowski@canonical.com> wrote:
->
-> On 14/09/2021 17:56, Sam Protsenko wrote:
-> > This is the initial implementation adding only basic clocks like UART,
-> > MMC, I2C and corresponding parent clocks. Design is influenced by
-> > Exynos7 and Exynos5433 clock drivers.
+> From: Heiko Carstens [mailto:hca@linux.ibm.com]
+> Sent: Tuesday, October 5, 2021 1:13 PM
+> On Tue, Oct 05, 2021 at 09:26:21AM +0200, Roberto Sassu wrote:
+> > Access the string at len - 1 instead of len.
 > >
-> > Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+> > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
 > > ---
-> >  drivers/clk/samsung/Makefile        |   1 +
-> >  drivers/clk/samsung/clk-exynos850.c | 700 ++++++++++++++++++++++++++++
-> >  2 files changed, 701 insertions(+)
-> >  create mode 100644 drivers/clk/samsung/clk-exynos850.c
+> >  arch/s390/lib/string.c | 12 ++++++------
+> >  1 file changed, 6 insertions(+), 6 deletions(-)
 > >
-> > diff --git a/drivers/clk/samsung/Makefile b/drivers/clk/samsung/Makefile
-> > index 028b2e27a37e..c46cf11e4d0b 100644
-> > --- a/drivers/clk/samsung/Makefile
-> > +++ b/drivers/clk/samsung/Makefile
-> > @@ -17,6 +17,7 @@ obj-$(CONFIG_EXYNOS_ARM64_COMMON_CLK)       += clk-exynos5433.o
-> >  obj-$(CONFIG_EXYNOS_AUDSS_CLK_CON) += clk-exynos-audss.o
-> >  obj-$(CONFIG_EXYNOS_CLKOUT)  += clk-exynos-clkout.o
-> >  obj-$(CONFIG_EXYNOS_ARM64_COMMON_CLK)        += clk-exynos7.o
-> > +obj-$(CONFIG_EXYNOS_ARM64_COMMON_CLK)        += clk-exynos850.o
-> >  obj-$(CONFIG_S3C2410_COMMON_CLK)+= clk-s3c2410.o
-> >  obj-$(CONFIG_S3C2410_COMMON_DCLK)+= clk-s3c2410-dclk.o
-> >  obj-$(CONFIG_S3C2412_COMMON_CLK)+= clk-s3c2412.o
-> > diff --git a/drivers/clk/samsung/clk-exynos850.c b/drivers/clk/samsung/clk-exynos850.c
-> > new file mode 100644
-> > index 000000000000..1028caa2102e
-> > --- /dev/null
-> > +++ b/drivers/clk/samsung/clk-exynos850.c
-> > @@ -0,0 +1,700 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +/*
-> > + * Copyright (C) 2021 Linaro Ltd.
-> > + * Author: Sam Protsenko <semen.protsenko@linaro.org>
-> > + *
-> > + * Common Clock Framework support for Exynos850 SoC.
-> > + */
-> > +
-> > +#include <linux/clk-provider.h>
-> > +#include <linux/of.h>
-> > +#include <linux/of_address.h>
-> > +
-> > +#include <dt-bindings/clock/exynos850.h>
-> > +
-> > +#include "clk.h"
-> > +
-> > +/* Gate register bits */
-> > +#define GATE_MANUAL          BIT(20)
-> > +#define GATE_ENABLE_HWACG    BIT(28)
-> > +
-> > +/* Gate register offsets range */
-> > +#define GATE_OFF_START               0x2000
-> > +#define GATE_OFF_END         0x2fff
-> > +
-> > +/**
-> > + * exynos850_init_clocks - Set clocks initial configuration
-> > + * @np:                      CMU device tree node with "reg" property (CMU addr)
-> > + * @reg_offs:                Register offsets array for clocks to init
-> > + * @reg_offs_len:    Number of register offsets in reg_offs array
-> > + *
-> > + * Set manual control mode for all gate clocks.
-> > + */
-> > +static void __init exynos850_init_clocks(struct device_node *np,
-> > +             const unsigned long *reg_offs, size_t reg_offs_len)
-> > +{
-> > +     const __be32 *regaddr_p;
-> > +     u64 regaddr;
-> > +     u32 base;
-> > +     size_t i;
-> > +
-> > +     /* Get the base address ("reg" property in dts) */
-> > +     regaddr_p = of_get_address(np, 0, NULL, NULL);
-> > +     if (!regaddr_p)
-> > +             panic("%s: failed to get reg regaddr\n", __func__);
-> > +
-> > +     regaddr = of_translate_address(np, regaddr_p);
-> > +     if (regaddr == OF_BAD_ADDR || !regaddr)
-> > +             panic("%s: bad reg regaddr\n", __func__);
-> > +
-> > +     base = (u32)regaddr;
-> > +
-> > +     for (i = 0; i < reg_offs_len; ++i) {
-> > +             void __iomem *reg;
-> > +             u32 val;
-> > +
-> > +             /* Modify only gate clock registers */
-> > +             if (reg_offs[i] < GATE_OFF_START || reg_offs[i] > GATE_OFF_END)
-> > +                     continue;
-> > +
-> > +             reg = ioremap(base + reg_offs[i], 4);
->
-> You first translate the address to CPU physical address and then apply
-> offset. This should be equivalent to one of_iomap() of entire range and
-> iterate starting from the base pointer.  IOW, I don't get why you have
-> to map each register instead of mapping entire SFR/IO range?
->
+> > diff --git a/arch/s390/lib/string.c b/arch/s390/lib/string.c
+> > index cfcdf76d6a95..162a391788ad 100644
+> > --- a/arch/s390/lib/string.c
+> > +++ b/arch/s390/lib/string.c
+> > @@ -261,12 +261,12 @@ char *strrchr(const char *s, int c)
+> >  {
+> >         size_t len = __strend(s) - s;
+> >
+> > -       if (len)
+> > -	       do {
+> > -		       if (s[len] == (char) c)
+> > -			       return (char *) s + len;
+> > -	       } while (--len > 0);
+> > -       return NULL;
+> > +	if (len)
+> > +		do {
+> > +			if (s[len - 1] == (char) c)
+> > +				return (char *) s + len - 1;
+> > +		} while (--len > 0);
+> > +	return NULL;
+> 
+> You missed to tell what this is supposed to fix. The patch however is
+> incorrect: the terminating null byte is considered part of the
+> string. With your patch strrchr(somestring, 0) would not work
+> correctly anymore.
 
-Thanks, will do in v2.
+Hi Heiko
 
-> > +             val = ioread32(reg);
-> > +             val |= GATE_MANUAL;
-> > +             val &= ~GATE_ENABLE_HWACG;
-> > +             iowrite32(val, reg);
->
-> All other drivers use readl/writel, so how about keeping it consistent?
->
+yes, sorry. I didn't consider that.
 
-Ok. Though io* variants looks better to me (API names consistent with
-ioremap/iounmap) :)
+> However our strrchr implementation is indeed broken, since for an
+> empty string and searching for the null byte would incorrectly return
+> NULL. Luckily there is not a single invocation in the kernel which
+> doing that.
 
-> Rest looks good but I did not verify the numbers :)
->
-> Best regards,
-> Krzysztof
+Ok. However, the main reason of this patch is that s[0] is not
+evaluated, when len > 0. I will provide a new version of the patch.
+
+Thanks
+
+Roberto
+
+HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
+Managing Director: Li Peng, Zhong Ronghua
