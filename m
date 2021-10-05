@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C178F423233
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 22:42:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44F16423234
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 22:42:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235679AbhJEUnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 16:43:51 -0400
+        id S235934AbhJEUny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 16:43:54 -0400
 Received: from mga07.intel.com ([134.134.136.100]:11157 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230019AbhJEUnt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234130AbhJEUnt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 5 Oct 2021 16:43:49 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10128"; a="289354589"
+X-IronPort-AV: E=McAfee;i="6200,9189,10128"; a="289354591"
 X-IronPort-AV: E=Sophos;i="5.85,349,1624345200"; 
-   d="scan'208";a="289354589"
+   d="scan'208";a="289354591"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
   by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2021 13:41:58 -0700
 X-IronPort-AV: E=Sophos;i="5.85,349,1624345200"; 
-   d="scan'208";a="523979457"
+   d="scan'208";a="523979464"
 Received: from alyee-mobl.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.254.5.222])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2021 13:41:57 -0700
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2021 13:41:58 -0700
 From:   Kuppuswamy Sathyanarayanan 
         <sathyanarayanan.kuppuswamy@linux.intel.com>
 To:     Thomas Gleixner <tglx@linutronix.de>,
@@ -37,9 +37,9 @@ Cc:     Dave Hansen <dave.hansen@intel.com>,
         Sean Christopherson <seanjc@google.com>,
         Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v7 01/10] x86/io: Allow to override inX() and outX() implementation
-Date:   Tue,  5 Oct 2021 13:41:27 -0700
-Message-Id: <20211005204136.1812078-2-sathyanarayanan.kuppuswamy@linux.intel.com>
+Subject: [PATCH v7 02/10] x86/tdx: Add early_is_tdx_guest() interface
+Date:   Tue,  5 Oct 2021 13:41:28 -0700
+Message-Id: <20211005204136.1812078-3-sathyanarayanan.kuppuswamy@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211005204136.1812078-1-sathyanarayanan.kuppuswamy@linux.intel.com>
 References: <20211005204136.1812078-1-sathyanarayanan.kuppuswamy@linux.intel.com>
@@ -49,14 +49,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Add helper function to detect TDX feature support. It will be used
+to protect TDX specific code in decompression code (for example to
+add TDX specific I/O fixes in decompression code).
 
-The patch allows to override the implementation of the port IO
-helpers. TDX code will provide an implementation that redirect the
-helpers to paravirt calls.
-
-Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
 Reviewed-by: Tony Luck <tony.luck@intel.com>
 Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
 ---
@@ -74,46 +70,112 @@ Changes since v3:
  * None
 
 Changes since v2:
- * None
+ * Fixed string order issue in cpuid_count() call.
 
- arch/x86/include/asm/io.h | 16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
+Changes since v1:
+ * Modified cpuid_has_tdx_guest() to use cpuid_count() instead of native_cpuid().
+ * Reused cpuid_count() from cpuflags.c.
+ * Added a new function cpuid_eax().
+ * Renamed native_cpuid_has_tdx_guest() as early_cpuid_has_tdx_guest().
 
-diff --git a/arch/x86/include/asm/io.h b/arch/x86/include/asm/io.h
-index 5c6a4af0b911..3647a96238a9 100644
---- a/arch/x86/include/asm/io.h
-+++ b/arch/x86/include/asm/io.h
-@@ -271,18 +271,26 @@ static inline bool sev_key_active(void) { return false; }
+ arch/x86/boot/compressed/Makefile |  1 +
+ arch/x86/boot/compressed/tdx.c    | 31 +++++++++++++++++++++++++++++++
+ arch/x86/boot/cpuflags.c          | 12 ++++++++++--
+ arch/x86/boot/cpuflags.h          |  2 ++
+ 4 files changed, 44 insertions(+), 2 deletions(-)
+ create mode 100644 arch/x86/boot/compressed/tdx.c
+
+diff --git a/arch/x86/boot/compressed/Makefile b/arch/x86/boot/compressed/Makefile
+index 431bf7f846c3..22a2a6cc2ab4 100644
+--- a/arch/x86/boot/compressed/Makefile
++++ b/arch/x86/boot/compressed/Makefile
+@@ -98,6 +98,7 @@ ifdef CONFIG_X86_64
+ endif
  
- #endif /* CONFIG_AMD_MEM_ENCRYPT */
+ vmlinux-objs-$(CONFIG_ACPI) += $(obj)/acpi.o
++vmlinux-objs-$(CONFIG_INTEL_TDX_GUEST) += $(obj)/tdx.o
  
-+#ifndef __out
-+#define __out(bwl, bw)							\
-+	asm volatile("out" #bwl " %" #bw "0, %w1" : : "a"(value), "Nd"(port))
-+#endif
+ vmlinux-objs-$(CONFIG_EFI_MIXED) += $(obj)/efi_thunk_$(BITS).o
+ efi-obj-$(CONFIG_EFI_STUB) = $(objtree)/drivers/firmware/efi/libstub/lib.a
+diff --git a/arch/x86/boot/compressed/tdx.c b/arch/x86/boot/compressed/tdx.c
+new file mode 100644
+index 000000000000..ecb3b42992e0
+--- /dev/null
++++ b/arch/x86/boot/compressed/tdx.c
+@@ -0,0 +1,31 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * tdx.c - Early boot code for TDX
++ */
 +
-+#ifndef __in
-+#define __in(bwl, bw)							\
-+	asm volatile("in" #bwl " %w1, %" #bw "0" : "=a"(value) : "Nd"(port))
-+#endif
++#include "../cpuflags.h"
++#include "../string.h"
 +
- #define BUILDIO(bwl, bw, type)						\
- static inline void out##bwl(unsigned type value, int port)		\
- {									\
--	asm volatile("out" #bwl " %" #bw "0, %w1"			\
--		     : : "a"(value), "Nd"(port));			\
-+	__out(bwl, bw);							\
- }									\
- 									\
- static inline unsigned type in##bwl(int port)				\
- {									\
- 	unsigned type value;						\
--	asm volatile("in" #bwl " %w1, %" #bw "0"			\
--		     : "=a"(value) : "Nd"(port));			\
-+	__in(bwl, bw);							\
- 	return value;							\
- }									\
- 									\
++#define TDX_CPUID_LEAF_ID                       0x21
++
++static int tdx_guest = -1;
++
++static inline bool early_cpuid_has_tdx_guest(void)
++{
++	u32 eax = TDX_CPUID_LEAF_ID, sig[3] = {0};
++
++	if (cpuid_eax(0) < TDX_CPUID_LEAF_ID)
++		return false;
++
++	cpuid_count(TDX_CPUID_LEAF_ID, 0, &eax, &sig[0], &sig[2], &sig[1]);
++
++	return !memcmp("IntelTDX    ", sig, 12);
++}
++
++bool early_is_tdx_guest(void)
++{
++	if (tdx_guest < 0)
++		tdx_guest = early_cpuid_has_tdx_guest();
++
++	return !!tdx_guest;
++}
+diff --git a/arch/x86/boot/cpuflags.c b/arch/x86/boot/cpuflags.c
+index a0b75f73dc63..102613a092aa 100644
+--- a/arch/x86/boot/cpuflags.c
++++ b/arch/x86/boot/cpuflags.c
+@@ -71,8 +71,7 @@ int has_eflag(unsigned long mask)
+ # define EBX_REG "=b"
+ #endif
+ 
+-static inline void cpuid_count(u32 id, u32 count,
+-		u32 *a, u32 *b, u32 *c, u32 *d)
++void cpuid_count(u32 id, u32 count, u32 *a, u32 *b, u32 *c, u32 *d)
+ {
+ 	asm volatile(".ifnc %%ebx,%3 ; movl  %%ebx,%3 ; .endif	\n\t"
+ 		     "cpuid					\n\t"
+@@ -82,6 +81,15 @@ static inline void cpuid_count(u32 id, u32 count,
+ 	);
+ }
+ 
++u32 cpuid_eax(u32 id)
++{
++	u32 eax, ebx, ecx, edx;
++
++	cpuid_count(id, 0, &eax, &ebx, &ecx, &edx);
++
++	return eax;
++}
++
+ #define cpuid(id, a, b, c, d) cpuid_count(id, 0, a, b, c, d)
+ 
+ void get_cpuflags(void)
+diff --git a/arch/x86/boot/cpuflags.h b/arch/x86/boot/cpuflags.h
+index 2e20814d3ce3..5a72233eb8fd 100644
+--- a/arch/x86/boot/cpuflags.h
++++ b/arch/x86/boot/cpuflags.h
+@@ -17,5 +17,7 @@ extern u32 cpu_vendor[3];
+ 
+ int has_eflag(unsigned long mask);
+ void get_cpuflags(void);
++void cpuid_count(u32 id, u32 count, u32 *a, u32 *b, u32 *c, u32 *d);
++u32 cpuid_eax(u32 id);
+ 
+ #endif
 -- 
 2.25.1
 
