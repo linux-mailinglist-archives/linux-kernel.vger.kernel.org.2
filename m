@@ -2,113 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDA78421F3B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 09:04:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D8B3421F41
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 09:09:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232569AbhJEHGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 03:06:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42804 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230526AbhJEHGD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 03:06:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633417453;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=MwInSBtYmEyMyAif3gbAt3an+xVu0NUGoBdgjgo4es8=;
-        b=aviES+LSZU74pNRgHy9HsyS9dzeaQ1OufFAFdur7ZvIHUblc7fDTo9mU3yBlH4mswtf/r/
-        jrwZ2ph6ubxbwu8sGzIGAo8c3+qlxNXuIzRUYSfv/wRqtAJmOCOC7DoSZEIxW84X1mYE6t
-        bI6h4UZXotDVvgp8JEyZ+cPjsIeU7+8=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-590-xQ1OqefrOZOSsJQC-3aJOg-1; Tue, 05 Oct 2021 03:04:12 -0400
-X-MC-Unique: xQ1OqefrOZOSsJQC-3aJOg-1
-Received: by mail-ed1-f70.google.com with SMTP id c30-20020a50f61e000000b003daf3955d5aso5152575edn.4
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 00:04:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=MwInSBtYmEyMyAif3gbAt3an+xVu0NUGoBdgjgo4es8=;
-        b=TGzUCjsQvo+rLoNBttgVGl8plWTv2eyZiWySMhSEDRkkcKwIY0/e3s0cnDa2acm/HN
-         pnc/mV6kc31aj4mGodJ/nqbnja+DPWYs8uYHRR6Sn/qCISwAbs7c35DqBibcVa2y4rVV
-         joZFXRCQImoykg8YND5agMiAi4qDW4EJb5k8lmmGB3l++/icHBnvc4RFbcntIresbOF7
-         5eSIBli6odZRCKB8OgTEeOM0xiprc+5pJt8GGcTiqrUocG06AgDlDP5IFDCVBaXjUGGz
-         MhVoBiv3DlpAhz0vr41LxAfBi8merFy/YkAKwrB6gO9zTNoYfIKMwvLHhq88VKTJT0Sd
-         GvJA==
-X-Gm-Message-State: AOAM532zafALWoefKnQOyAjkff5lA0Wb9qkbeZeEMUeEWXx5u318a1Ly
-        vDbAROlwuz+lJBMnEOfoXdht7mvW+t/7s1KFVcEogVf62B/iSiqwNOu23CylkDszS8P1MvHaRDt
-        NiV+opXAI6XjEpIMKbetc0oArmmUR4/Daz7vJy+TazFDDn3fnrqMx0/Qsz07DkoRVS4lwGA==
-X-Received: by 2002:a05:6402:1b8a:: with SMTP id cc10mr23533879edb.313.1633417450621;
-        Tue, 05 Oct 2021 00:04:10 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzY7TKGubb0zmZNFzLoIzxm3WkaPK9JNBr5tNNxLovtIG5E0rgMolF1pMxF4SXqmvMM/BQpOA==
-X-Received: by 2002:a05:6402:1b8a:: with SMTP id cc10mr23533849edb.313.1633417450387;
-        Tue, 05 Oct 2021 00:04:10 -0700 (PDT)
-Received: from redhat.com ([2.55.147.134])
-        by smtp.gmail.com with ESMTPSA id a1sm7729375edu.43.2021.10.05.00.04.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Oct 2021 00:04:09 -0700 (PDT)
-Date:   Tue, 5 Oct 2021 03:04:07 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Amit Shah <amit@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        virtualization@lists.linux-foundation.org
-Subject: [PATCH] virtio_console: break out of buf poll on remove
-Message-ID: <20211005070354.265164-1-mst@redhat.com>
+        id S232251AbhJEHLZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 03:11:25 -0400
+Received: from first.geanix.com ([116.203.34.67]:37334 "EHLO first.geanix.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231913AbhJEHLY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 03:11:24 -0400
+Received: from skn-laptop (_gateway [172.25.0.1])
+        by first.geanix.com (Postfix) with ESMTPSA id 6FFBDC23D0;
+        Tue,  5 Oct 2021 07:09:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
+        t=1633417771; bh=GKTRWXeoYdsrzJBgSB5VWhXQCvyhEpmCpDIygADVHaI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=HlgLMB+oDpFD8umisKAKvCo0KGbrUT4nd+fpp8jKHxviPPo+v8rGYh1O7qtL+n4U5
+         LfWOYYHsnwAKySXIcxuMr19iRfkvHQekB3Jq2QwEHFI2NkYqqDwJlYwfVwHseD8NAN
+         AhgsPyWZ8hLy5FB70030BAdZyOAutmSgMxbeehNxWPx/kZhhihbxNoQxB3wa70Bjov
+         p5g72ccvGsze00rA6WTqBMcs089BMeeOEQepBd3NW1tbQJlI9lgHQwB8oU4k+Itqc2
+         4Do66C8l0wEQx4Ydg90u/ve7y7WUYVrfO6tCqjQIHKTg6U7UTodQBV27vSNmUnOmlO
+         UtpqwUAwnh1Pw==
+Date:   Tue, 5 Oct 2021 09:09:30 +0200
+From:   Sean Nyekjaer <sean@geanix.com>
+To:     Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] mtd: rawnand: use mutex to protect access while in
+ suspend
+Message-ID: <20211005070930.epgxb5qzumk4awxq@skn-laptop>
+References: <20211004065608.3190348-1-sean@geanix.com>
+ <20211004104147.579f3b01@collabora.com>
+ <20211004085509.iikxtdvxpt6bri5c@skn-laptop>
+ <20211004115817.18739936@collabora.com>
+ <20211004101246.kagtezizympxupat@skn-laptop>
+ <20211004134700.26327f6f@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-X-Mailer: git-send-email 2.27.0.106.g8ac3dc51b1
-X-Mutt-Fcc: =sent
+In-Reply-To: <20211004134700.26327f6f@collabora.com>
+X-Spam-Status: No, score=-3.1 required=4.0 tests=ALL_TRUSTED,BAYES_00,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,URIBL_BLOCKED
+        autolearn=disabled version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on 13e2a5895688
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A common pattern for device reset is currently:
-vdev->config->reset(vdev);
-.. cleanup ..
+On Mon, Oct 04, 2021 at 01:47:00PM +0200, Boris Brezillon wrote:
+> On Mon, 4 Oct 2021 12:12:46 +0200
+> Sean Nyekjaer <sean@geanix.com> wrote:
+> 
+> > On Mon, Oct 04, 2021 at 11:58:17AM +0200, Boris Brezillon wrote:
+> > > On Mon, 4 Oct 2021 10:55:09 +0200
+> > > Sean Nyekjaer <sean@geanix.com> wrote:
+> > >   
+> > > > On Mon, Oct 04, 2021 at 10:41:47AM +0200, Boris Brezillon wrote:  
+> > > > > On Mon,  4 Oct 2021 08:56:09 +0200
+> > > > > Sean Nyekjaer <sean@geanix.com> wrote:
+> > > > >     
+> > > > > > This will prevent nand_get_device() from returning -EBUSY.
+> > > > > > It will force mtd_write()/mtd_read() to wait for the nand_resume() to unlock
+> > > > > > access to the mtd device.
+> > > > > > 
+> > > > > > Then we avoid -EBUSY is returned to ubifsi via mtd_write()/mtd_read(),
+> > > > > > that will in turn hard error on every error returened.
+> > > > > > We have seen during ubifs tries to call mtd_write before the mtd device
+> > > > > > is resumed.    
+> > > > > 
+> > > > > I think the problem is here. Why would UBIFS/UBI try to write something
+> > > > > to a device that's not resumed yet (or has been suspended already, if
+> > > > > you hit this in the suspend path).
+> > > > >     
+> > > > > > 
+> > > > > > Exec_op[0] speed things up, so we see this race when the device is
+> > > > > > resuming. But it's actually "mtd: rawnand: Simplify the locking" that
+> > > > > > allows it to return -EBUSY, before that commit it would have waited for
+> > > > > > the mtd device to resume.    
+> > > > > 
+> > > > > Uh, wait. If nand_resume() was called before any writes/reads this
+> > > > > wouldn't happen. IMHO, the problem is not that we return -EBUSY without
+> > > > > blocking, the problem is that someone issues a write/read before calling
+> > > > > mtd_resume().
+> > > > >     
+> > > > 
+> > > > The commit msg from "mtd: rawnand: Simplify the locking" states this clearly.
+> > > > 
+> > > > """
+> > > > Last important change to mention: we now return -EBUSY when someone
+> > > > tries to access a device that as been suspended, and propagate this
+> > > > error to the upper layer.
+> > > > """
+> > > > 
+> > > > IMHO "mtd: rawnand: Simplify the locking" should never had been merged
+> > > > before the upper layers was fixed to handle -EBUSY. ;)
+> > > > Which they still not are...  
+> > > 
+> > > That's not really the problem here. Upper layers should never get
+> > > -EBUSY in the first place if the MTD device was resumed before the UBI
+> > > device. Looks like we have a missing UBI -> MTD parenting link, which
+> > > would explain why things don't get resumed in the right order. Can you
+> > > try with the following diff applied?
+> > > 
+> > > ---
+> > > diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+> > > index f399edc82191..1981ce8f3a26 100644
+> > > --- a/drivers/mtd/ubi/build.c
+> > > +++ b/drivers/mtd/ubi/build.c
+> > > @@ -905,6 +905,7 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int
+> > > ubi_num, ubi->dev.release = dev_release;
+> > >         ubi->dev.class = &ubi_class;
+> > >         ubi->dev.groups = ubi_dev_groups;
+> > > +       ubi->dev.parent = &mtd->dev;
+> > >  
+> > >         ubi->mtd = mtd;
+> > >         ubi->ubi_num = ubi_num;
+> > >   
+> > 
+> > No change:
+> > [   71.739193] Filesystems sync: 34.212 seconds
+> > [   71.755044] Freezing user space processes ... (elapsed 0.004 seconds) done.
+> > [   71.767289] OOM killer disabled.
+> > [   71.770552] Freezing remaining freezable tasks ... (elapsed 0.004 seconds) done.
+> > [   71.782182] printk: Suspending console(s) (use no_console_suspend to debug)
+> > [   71.824391] nand_suspend
+> > [   71.825177] gpmi_pm_suspend
+> > [   71.825676] PM: suspend devices took 0.040 seconds
+> > [   71.825971] nand_write_oob - nand_get_device() returned -EBUSY
+> > [   71.825985] ubi0 error: ubi_io_write: error -16 while writing 4096 bytes to PEB 986:65536, written 0 bytes
+> > [   71.826029] CPU: 0 PID: 7 Comm: kworker/u2:0 Not tainted 5.15.0-rc3-dirty #43
+> > [   71.826043] Hardware name: Freescale i.MX6 Ultralite (Device Tree)
+> > [   71.826054] Workqueue: writeback wb_workfn (flush-ubifs_0_8)
+> > [   71.826094] [<c010da84>] (unwind_backtrace) from [<c010a1b4>] (show_stack+0x10/0x14)
+> > [   71.826122] [<c010a1b4>] (show_stack) from [<c0989c30>] (dump_stack_lvl+0x40/0x4c)
+> > [   71.826151] [<c0989c30>] (dump_stack_lvl) from [<c05ed690>] (ubi_io_write+0x510/0x6b0)
+> > [   71.826178] [<c05ed690>] (ubi_io_write) from [<c05ea2f0>] (ubi_eba_write_leb+0xd0/0x968)
+> > [   71.826204] [<c05ea2f0>] (ubi_eba_write_leb) from [<c05e8754>] (ubi_leb_write+0xd0/0xe8)
+> > [   71.826232] [<c05e8754>] (ubi_leb_write) from [<c03d67bc>] (ubifs_leb_write+0x68/0x104)
+> > [   71.826263] [<c03d67bc>] (ubifs_leb_write) from [<c03d79e8>] (ubifs_wbuf_write_nolock+0x28c/0x74c)
+> > [   71.826291] [<c03d79e8>] (ubifs_wbuf_write_nolock) from [<c03ca18c>] (ubifs_jnl_write_data+0x1b8/0x2b4)
+> > [   71.826319] [<c03ca18c>] (ubifs_jnl_write_data) from [<c03cd184>] (do_writepage+0x190/0x284)
+> > [   71.826342] [<c03cd184>] (do_writepage) from [<c023083c>] (__writepage+0x14/0x68)
+> > [   71.826367] [<c023083c>] (__writepage) from [<c0231748>] (write_cache_pages+0x1c8/0x3f0)
+> > [   71.826390] [<c0231748>] (write_cache_pages) from [<c0233854>] (do_writepages+0xcc/0x1f4)
+> > [   71.826413] [<c0233854>] (do_writepages) from [<c02d03dc>] (__writeback_single_inode+0x2c/0x1b4)
+> > [   71.826440] [<c02d03dc>] (__writeback_single_inode) from [<c02d0a64>] (writeback_sb_inodes+0x200/0x470)
+> > [   71.826466] [<c02d0a64>] (writeback_sb_inodes) from [<c02d0d10>] (__writeback_inodes_wb+0x3c/0xf4)
+> > [   71.826493] [<c02d0d10>] (__writeback_inodes_wb) from [<c02d0f58>] (wb_writeback+0x190/0x1f0)
+> > [   71.826520] [<c02d0f58>] (wb_writeback) from [<c02d21d8>] (wb_workfn+0x2c0/0x3d4)
+> > [   71.826545] [<c02d21d8>] (wb_workfn) from [<c013ac04>] (process_one_work+0x1e0/0x440)
+> > [   71.826574] [<c013ac04>] (process_one_work) from [<c013aeac>] (worker_thread+0x48/0x594)
+> > [   71.826600] [<c013aeac>] (worker_thread) from [<c0142364>] (kthread+0x134/0x15c)
+> > [   71.826625] [<c0142364>] (kthread) from [<c0100150>] (ret_from_fork+0x14/0x24)
+> 
+> I'm not entirely sure, but given the timing, it looks like this
+> actually happens in the suspend path, not it the resume path. What I
+> don't get is why we still have a kernel thread running at that point.
 
-reset prevents new interrupts from arriving and waits for interrupt
-handlers to finish.
-
-However if - as is common - the handler queues a work request which is
-flushed during the cleanup stage, we have code adding buffers / trying
-to get buffers while device is reset. Not good.
-
-This was reproduced by running
-	modprobe virtio_console
-	modprobe -r virtio_console
-in a loop.
-
-Fixing this comprehensively needs some thought, and new APIs.
-Let's at least handle the specific case of virtio_console
-removal that was reported in the field.
-
-Bugzilla: https://bugzilla.redhat.com/show_bug.cgi?id=1786239
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+Have you seen the reproducer script?
 ---
- drivers/char/virtio_console.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+root@iwg26-v1:/data/root# cat /data/crash.sh
+#!/bin/sh -x
 
-diff --git a/drivers/char/virtio_console.c b/drivers/char/virtio_console.c
-index 7eaf303a7a86..c852ce0b4d56 100644
---- a/drivers/char/virtio_console.c
-+++ b/drivers/char/virtio_console.c
-@@ -1956,6 +1956,12 @@ static void virtcons_remove(struct virtio_device *vdev)
- 	list_del(&portdev->list);
- 	spin_unlock_irq(&pdrvdata_lock);
- 
-+	/* Device is going away, exit any polling for buffers */
-+	virtio_break_device(vdev);
-+	if (use_multiport(portdev))
-+		flush_work(&portdev->control_work);
-+	else
-+		flush_work(&portdev->config_work);
- 	/* Disable interrupts for vqs */
- 	vdev->config->reset(vdev);
- 	/* Finish up work that's lined up */
--- 
-MST
+echo enabled > /sys/devices/platform/soc/2100000.bus/21f4000.serial/tty/ttymxc4/power/wakeup
 
+rm /data/test50M
+dd if=/dev/urandom of=/tmp/test50M bs=1M count=50
+cp /tmp/test50M /data/ &
+sleep 1
+echo mem > /sys/power/state
+---
+
+As seen in the log above disk is synced before suspend.
+cp is continuing to copy data to ubifs.
+And then user space processes are frozen.
+At this point the kernel thread would have unwritten data.
+
+We tried to solve this with:
+https://lkml.org/lkml/2021/9/1/280
+
+/Sean
