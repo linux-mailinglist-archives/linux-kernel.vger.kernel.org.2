@@ -2,117 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 334A54227F8
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 15:34:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC1284227E6
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 15:32:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235064AbhJENg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 09:36:28 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:41132 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234103AbhJENg1 (ORCPT
+        id S235099AbhJENdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 09:33:55 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3935 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234103AbhJENdx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 09:36:27 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 9BBDF20028;
-        Tue,  5 Oct 2021 13:34:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1633440875; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=muVpN94mowz5PNDdbHLdWMwCxQCzzIFQLh6tPGkXOCw=;
-        b=WB084CpVgo7IVkufWcK3GX0mN37NTIXQAwwmpfy8mfvZjcDCTnJJph90jEaoPJ8gs6E5BO
-        s7Z+YiKqhftnBIOnEtwSjw6L/5HUFyKN3dBids+HBSzO8WlZAQPyLKQ8bJBkW6WBWRx9Qa
-        iO4ZxJ64g3GTX589cF6hqBGZ96qyPzc=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6487D13C35;
-        Tue,  5 Oct 2021 13:34:35 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id a1xEF2tUXGHnDwAAMHmgww
-        (envelope-from <jgross@suse.com>); Tue, 05 Oct 2021 13:34:35 +0000
-From:   Juergen Gross <jgross@suse.com>
-To:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
-Cc:     Juergen Gross <jgross@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Marek=20Marczykowski-G=C3=B3recki?= 
-        <marmarek@invisiblethingslab.com>
-Subject: [PATCH] xen/balloon: fix cancelled balloon action
-Date:   Tue,  5 Oct 2021 15:34:33 +0200
-Message-Id: <20211005133433.32008-1-jgross@suse.com>
-X-Mailer: git-send-email 2.26.2
+        Tue, 5 Oct 2021 09:33:53 -0400
+Received: from fraeml735-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HNz2P5GFfz67bWP;
+        Tue,  5 Oct 2021 21:29:17 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml735-chm.china.huawei.com (10.206.15.216) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Tue, 5 Oct 2021 15:32:01 +0200
+Received: from [10.47.95.252] (10.47.95.252) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2308.8; Tue, 5 Oct 2021
+ 14:32:00 +0100
+Subject: Re: [PATCH v5 00/14] blk-mq: Reduce static requests memory footprint
+ for shared sbitmap
+To:     Jens Axboe <axboe@kernel.dk>, <kashyap.desai@broadcom.com>
+CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <ming.lei@redhat.com>, <hare@suse.de>, <linux-scsi@vger.kernel.org>
+References: <1633429419-228500-1-git-send-email-john.garry@huawei.com>
+ <ae33dde8-96e8-2978-5f32-c7e0a6136e8e@kernel.dk>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <81d9e019-b730-221e-a8c0-f72a8422a2ec@huawei.com>
+Date:   Tue, 5 Oct 2021 14:34:39 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <ae33dde8-96e8-2978-5f32-c7e0a6136e8e@kernel.dk>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.95.252]
+X-ClientProxiedBy: lhreml709-chm.china.huawei.com (10.201.108.58) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In case a ballooning action is cancelled the new kernel thread handling
-the ballooning might end up in a busy loop.
+On 05/10/2021 13:35, Jens Axboe wrote:
+>> Baseline is 1b2d1439fc25 (block/for-next) Merge branch 'for-5.16/io_uring'
+>> into for-next
+> Let's get this queued up for testing, thanks John.
 
-Fix that by handling the cancelled action gracefully.
+Cheers, appreciated
 
-While at it introduce a short wait for the BP_WAIT case.
+@Kashyap, You mentioned that when testing you saw a performance 
+regression from v5.11 -> v5.12 - any idea on that yet? Can you describe 
+the scenario, like IO scheduler and how many disks and the type? Does 
+disabling host_tagset_enable restore performance?
 
-Cc: stable@vger.kernel.org
-Fixes: 8480ed9c2bbd56 ("xen/balloon: use a kernel thread instead a workqueue")
-Reported-by: Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>
-Signed-off-by: Juergen Gross <jgross@suse.com>
----
- drivers/xen/balloon.c | 21 +++++++++++++++------
- 1 file changed, 15 insertions(+), 6 deletions(-)
+ From checking differences between those kernels, I don't see anything 
+directly relevant in sbitmap support or in the megaraid sas driver.
 
-diff --git a/drivers/xen/balloon.c b/drivers/xen/balloon.c
-index 43ebfe36ac27..3a50f097ed3e 100644
---- a/drivers/xen/balloon.c
-+++ b/drivers/xen/balloon.c
-@@ -491,12 +491,12 @@ static enum bp_state decrease_reservation(unsigned long nr_pages, gfp_t gfp)
- }
- 
- /*
-- * Stop waiting if either state is not BP_EAGAIN and ballooning action is
-- * needed, or if the credit has changed while state is BP_EAGAIN.
-+ * Stop waiting if either state is BP_DONE and ballooning action is
-+ * needed, or if the credit has changed while state is not BP_DONE.
-  */
- static bool balloon_thread_cond(enum bp_state state, long credit)
- {
--	if (state != BP_EAGAIN)
-+	if (state == BP_DONE)
- 		credit = 0;
- 
- 	return current_credit() != credit || kthread_should_stop();
-@@ -516,10 +516,19 @@ static int balloon_thread(void *unused)
- 
- 	set_freezable();
- 	for (;;) {
--		if (state == BP_EAGAIN)
--			timeout = balloon_stats.schedule_delay * HZ;
--		else
-+		switch (state) {
-+		case BP_DONE:
-+		case BP_ECANCELED:
- 			timeout = 3600 * HZ;
-+			break;
-+		case BP_EAGAIN:
-+			timeout = balloon_stats.schedule_delay * HZ;
-+			break;
-+		case BP_WAIT:
-+			timeout = HZ;
-+			break;
-+		}
-+
- 		credit = current_credit();
- 
- 		wait_event_freezable_timeout(balloon_thread_wq,
--- 
-2.26.2
-
+Thanks,
+John
