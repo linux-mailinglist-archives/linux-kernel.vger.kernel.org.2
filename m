@@ -2,106 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 724584223DC
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 12:48:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 966824223E7
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 12:50:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234190AbhJEKtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 06:49:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49172 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233449AbhJEKto (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 06:49:44 -0400
-Received: from mail-vk1-xa30.google.com (mail-vk1-xa30.google.com [IPv6:2607:f8b0:4864:20::a30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AC3BC061745
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 03:47:54 -0700 (PDT)
-Received: by mail-vk1-xa30.google.com with SMTP id x207so9088979vke.2
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 03:47:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ajhii6MqyMqiNy3NMVTNUWTmPZ2TONfmQBcXYc18nyc=;
-        b=PpzwZjEfvQAR3wdvh4Ija1IGRc3TlM01l3CXiOjkA6gUR+9N7mXPhSJ5ZVOmjYskAI
-         oGpkFxkHhENoInGxbffpGnHR9xJvRWh8r3XSDRPf958u49kHv+rPrZn01SDSdcA6zW0x
-         0xt1dm14mCPA3T2tuml4XkzmLGpP4PUpDnWcw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ajhii6MqyMqiNy3NMVTNUWTmPZ2TONfmQBcXYc18nyc=;
-        b=NjdmOs02PG5rvkp3RsHSEDTdjnsPHFWTHj0UM/ckClz5NGwefqPvoE26ZjJ2LUCwSj
-         hjrKbzMUmXGPCJmM3TOyFauCEzajg3M0vccSWS7q8YMP1Uj+Qh4yIjxJQx5a4ICFIn5y
-         vD8hW4X37k2larAfoTqG07OcDFbBhaBelMNZUzkRlxTzJwT6BTWEHLxpaXtdlSG3wUcn
-         3Fyw/rha200nRKseCOQ0sJv7F2z3B8luyS/UTxnFtB58osNeZQoPPOwGhcckLl400ynQ
-         L0WW7/qTK/Lv18V9PyV15SMZxH0hXKfgV+9cc0WypUOgX4ogSZEqjGOS7QlCC09R64W1
-         WWNw==
-X-Gm-Message-State: AOAM5310oPaB5RgKT4fdtYkC3M3UcgmW1CHtdyZDzfD2iPYVGj01E/4L
-        cy7WBIdn+pvUAU7zpcvq6X31NwjrrTdcf4C4yVVV2g==
-X-Google-Smtp-Source: ABdhPJzrr1gphAURiwAOr78gd2UxAKGfYkpKe904wdrPrtgn839ZDhW9w9OyN0iTp5RtYFWzwl6zMp9ZwVYo8J/nBVs=
-X-Received: by 2002:ac5:c198:: with SMTP id z24mr5801681vkb.22.1633430873517;
- Tue, 05 Oct 2021 03:47:53 -0700 (PDT)
+        id S234210AbhJEKwD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 06:52:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39442 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233449AbhJEKwC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 06:52:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8152761502;
+        Tue,  5 Oct 2021 10:50:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633431011;
+        bh=SLgYcczN9LsLWDYmQolP27i4eos161EtVoDB7lKNWms=;
+        h=References:From:To:Cc:Subject:Date:In-reply-to:From;
+        b=L+zT0R5057LTJqOM8a8ye3OJiLpJotecIhHXJEuk2owUvRQsKay1wAA63Voni6AOD
+         XpQRwbJBzThtEfzSyQiMUuqLeOjt/WWd4h/22J1Kucw+IZ3TDpPkZA4u9ioc5vMg+W
+         2Uh3i6P3U3mCHLPBxHPjBRytXtDW0GjpqhesDmh7Q9vrlff5XHZSOS+6TBXhH5PpPf
+         blY5tlkQqPj0r5qai9y5uCy7m3k6E0Ly7p3sGP3KCavhHUerRwhV7wshkR+EW0+ET4
+         AFJjEwiIff5E34N6DgOrCwyxC8CKc6DycgLwmw3mFT1ubRMmHdqUaV3FwcJ7+jg36C
+         JJFCzPOfyaGZQ==
+References: <20211004141839.49079-1-andriy.shevchenko@linux.intel.com>
+ <7019ca3e-f076-e65b-f207-c23a379ade29@gmail.com>
+ <20211005085100.GB17524@pengutronix.de>
+User-agent: mu4e 1.6.6; emacs 27.2
+From:   Felipe Balbi <balbi@kernel.org>
+To:     Michael Grzeschik <mgr@pengutronix.de>
+Cc:     Ferry Toth <fntoth@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/1] usb: dwc3: gadget: Revert "set gadgets parent to
+ the right controller"
+Date:   Tue, 05 Oct 2021 13:49:32 +0300
+In-reply-to: <20211005085100.GB17524@pengutronix.de>
+Message-ID: <87ee8zzqxr.fsf@kernel.org>
 MIME-Version: 1.0
-References: <20211002162000.3708238-1-daniel@0x0f.com> <CACRpkdZmhZcGXi2Xg=r1BGaf8-QLPDawY_7Kp3d-xmvHuDe0xQ@mail.gmail.com>
-In-Reply-To: <CACRpkdZmhZcGXi2Xg=r1BGaf8-QLPDawY_7Kp3d-xmvHuDe0xQ@mail.gmail.com>
-From:   Daniel Palmer <daniel@0x0f.com>
-Date:   Tue, 5 Oct 2021 19:47:42 +0900
-Message-ID: <CAFr9PX=hkVu4PxEuw81=3wcM0ob5s=THXXrkwERj+WRWUEGCyw@mail.gmail.com>
-Subject: Re: [RFC PATCH] gpiolib: Move setting the flow handler and don't set
- it at all if there is a parent domain
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
 
-On Mon, 4 Oct 2021 at 07:16, Linus Walleij <linus.walleij@linaro.org> wrote:
-> If Marc says this is the way to go I think it is the way to go!
+Michael Grzeschik <mgr@pengutronix.de> writes:
 
-To be completely transparent, moving irq_domain_set_info() is from Marc.
-Not setting the handler is from me.
-
+> [[PGP Signed Part:Undecided]]
+> On Mon, Oct 04, 2021 at 10:35:57PM +0200, Ferry Toth wrote:
+>>Hi,
+>>
+>>Op 04-10-2021 om 16:18 schreef Andy Shevchenko:
+>>>The commit c6e23b89a95d ("usb: dwc3: gadget: set gadgets parent to the right
+>>>controller") changed the device for the UDC and broke the user space scripts
+>>>that instantiate the USB gadget(s) via ConfigFS.
+>>
+>> I confirm this regression on Intel Edison since at least 5.15-rc2
+>> while in 5.14.0 it was working fine.
+>>
+>>This patch resolves the issue as tested on 5.15-rc4.
+>>
+>>Tested-by: Ferry Toth<fntoth@gmail.com>
 >
-> >         kfree(parent_arg);
-> > +
-> > +       if (!ret) {
->
-> Please just exit on error so invert this.
+> NACK! Why should we resolv an issue by reverting it to solve not working
+> userspace. We already have this patch as a solution for solving a deeper
 
-Ok.
+heh, there is only one rule in this community: thou shalt not break
+userspace :-)
 
-> if (ret)
->   return ret;
->
-> and just de-indent the below code (easier to follow)
->
-> > +               /* If there is a parent domain leave the flow handler alone */
-> > +               if (d->parent)
->
-> Should we print an error if girq->handler is not NULL and we find
-> a parent domain, like
-> if (d->parent && girq->handler)
->   dev_err(dev, "parent domain and flow handler both specified\n");
-
-I think that would help catch situations where these changes would
-break stuff. I want to avoid breaking other people's stuff for my
-hobby project.
-
-However, I've noticed we can't get to the "if (d->parent)" if there is
-no parent as irq_domain_alloc_irqs_parent() will return -ENOSYS if
-d->parent is null.
-So the logic isn't right there. I think the idea is right but now I
-can't figure out what we should actually check to know whether we need
-to set the handler or not.
-I'm hoping Marc will chip in when he has some time. :)
-
-Cheers,
-
-Daniel
+-- 
+balbi
