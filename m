@@ -2,99 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EF7F4233D1
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 00:46:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38F364233CC
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 00:46:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236909AbhJEWsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 18:48:07 -0400
-Received: from mail-oo1-f53.google.com ([209.85.161.53]:44694 "EHLO
-        mail-oo1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236939AbhJEWsC (ORCPT
+        id S236932AbhJEWsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 18:48:01 -0400
+Received: from mail-oi1-f171.google.com ([209.85.167.171]:42821 "EHLO
+        mail-oi1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236820AbhJEWr7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 18:48:02 -0400
-Received: by mail-oo1-f53.google.com with SMTP id e16-20020a4ad250000000b002b5e1f1bc78so262893oos.11;
-        Tue, 05 Oct 2021 15:46:11 -0700 (PDT)
+        Tue, 5 Oct 2021 18:47:59 -0400
+Received: by mail-oi1-f171.google.com with SMTP id x124so1358397oix.9;
+        Tue, 05 Oct 2021 15:46:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=z05iAxjrVVtJJ74Uea+D+Nd3+xgMuNb36MMScUa9l6s=;
-        b=i50p6ZOzB1F2vhVPJjRH3r0IW0/VF73sRZbtYhc/5/8PAhwYmLr6yllUEHeRNeFhaj
-         IQSI56niyl+AoTM3rNbdG0+PTChMafGSC74oERPulNj3ZbXkFihA9VZvNpipb/zBnur+
-         KNT2fG2x28Vi6nxnqiUSNxmJdI8D7zuIxUHxwrhN8ynTg4i6AL9nQVvRIBR6B4loHKm/
-         r8KkOlWmslUNGo2lrjf+b7nkZZHh8ZAErjhYzUiehRpG2tu26gJzKwrb5ppigjuedUgE
-         d2DzUVtkkZN+guacVqlhvMkZqepur+fpudwPLLN0nvMCBGU40V3ba45aIgOtanUbpwpV
-         YuoA==
-X-Gm-Message-State: AOAM533s5GjHwZyJBC8GV7cLzmGVCHPx+zwPCPmVTUv3+MoM8PqEmka1
-        hSMfCq79y/yBFM8xtnPmcw==
-X-Google-Smtp-Source: ABdhPJx76djZVqB0ioneDeAM81Uh6K9ykIIZGHIxMbOnpc1TdPJPUZs3JKxyO2ZilAWRhpHzhp3t9w==
-X-Received: by 2002:a4a:a9ce:: with SMTP id h14mr15431532oon.89.1633473970735;
-        Tue, 05 Oct 2021 15:46:10 -0700 (PDT)
+        bh=idk/OPLqOoxicS++8eNcVOO+4pet2v6UE8sH+4Sn+Fs=;
+        b=WyTt2CQ9yJFlHGsC8zVMPHHvq5DXj31iv+UOO1BmXHi63+boxFKUna0r6qh0YTQY1/
+         M6TlUdbENjmP7LKGWBkuEjexUxmMNRskHJcy8eU4pYWnCYPzV/Fs/ilhnlQbyID86q5a
+         hvadqI9on0eHQYE6O2A0GT2ydrplUF0O10uZd25G56AjOs/rAZ7lU/mqGC3Io6kjssSg
+         sekxx0qnJLKGOTterNuzRs8zgl217lLuLxLGt14WiOShWd8U8Fn7urS4M+9uiUvILwQA
+         B8TU7Fnns99SfJyDaEBZfWzSpF9TDVV0hlB1T1uOtZX/EitPCyLKOSA+/GFJnXrALjir
+         Xzog==
+X-Gm-Message-State: AOAM533xb7Cko15KkCkvj0LbQF//I+SDLs5IsG8PlTuU/rz11d6CEkgn
+        aOTdNXsO68c5Zfxs7/t/HQ==
+X-Google-Smtp-Source: ABdhPJzuCyAG5KCu9OI9pzfAoSNtgTk0/nwWINbsvAaJKNhig4buPmUm2PEwS2D8Cwi0GfG/C6nvPw==
+X-Received: by 2002:aca:2415:: with SMTP id n21mr4542248oic.27.1633473967660;
+        Tue, 05 Oct 2021 15:46:07 -0700 (PDT)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id w17sm356605otu.53.2021.10.05.15.46.09
+        by smtp.gmail.com with ESMTPSA id a9sm3775851otk.3.2021.10.05.15.46.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Oct 2021 15:46:10 -0700 (PDT)
-Received: (nullmailer pid 106812 invoked by uid 1000);
+        Tue, 05 Oct 2021 15:46:06 -0700 (PDT)
+Received: (nullmailer pid 106780 invoked by uid 1000);
         Tue, 05 Oct 2021 22:45:59 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Amelie Delaunay <amelie.delaunay@foss.st.com>
-Cc:     linux-stm32@st-md-mailman.stormreply.com,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-phy@lists.infradead.org,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        linux-kernel@vger.kernel.org,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        devicetree@vger.kernel.org
-In-Reply-To: <20211005152453.89330-3-amelie.delaunay@foss.st.com>
-References: <20211005152453.89330-1-amelie.delaunay@foss.st.com> <20211005152453.89330-3-amelie.delaunay@foss.st.com>
-Subject: Re: [PATCH v2 2/3] dt-bindings: phy: phy-stm32-usbphyc: add optional phy tuning properties
+To:     Jerome Pouiller <Jerome.Pouiller@silabs.com>
+Cc:     devicetree@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        =?utf-8?b?SsOpcsO0bWUgUG91aWxsZXI=?= <jerome.pouiller@silabs.com>,
+        netdev@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        devel@driverdev.osuosl.org,
+        =?utf-8?q?Pali_Roh=C3=A1r?= <pali@kernel.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        linux-kernel@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        linux-wireless@vger.kernel.org, linux-mmc@vger.kernel.org
+In-Reply-To: <20211005135400.788058-3-Jerome.Pouiller@silabs.com>
+References: <20211005135400.788058-1-Jerome.Pouiller@silabs.com> <20211005135400.788058-3-Jerome.Pouiller@silabs.com>
+Subject: Re: [PATCH v8 02/24] dt-bindings: introduce silabs,wfx.yaml
 Date:   Tue, 05 Oct 2021 17:45:59 -0500
-Message-Id: <1633473959.465401.106809.nullmailer@robh.at.kernel.org>
+Message-Id: <1633473959.392405.106778.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 05 Oct 2021 17:24:52 +0200, Amelie Delaunay wrote:
-> This patch adds the description of new optional phy tuning properties
-> for usbphyc phy sub nodes.
+On Tue, 05 Oct 2021 15:53:38 +0200, Jerome Pouiller wrote:
+> From: Jérôme Pouiller <jerome.pouiller@silabs.com>
 > 
-> Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+> Prepare the inclusion of the wfx driver in the kernel.
+> 
+> Signed-off-by: Jérôme Pouiller <jerome.pouiller@silabs.com>
 > ---
-> Changes in v2:
-> - st,phy-tuning property removed
-> - tuning properties are now put directly in each child node
-> - tuning properties are no more free form text and their name reworked
-> ---
->  .../bindings/phy/phy-stm32-usbphyc.yaml       | 126 ++++++++++++++++++
->  1 file changed, 126 insertions(+)
+>  .../bindings/net/wireless/silabs,wfx.yaml     | 137 ++++++++++++++++++
+>  1 file changed, 137 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/net/wireless/silabs,wfx.yaml
 > 
 
-Running 'make dtbs_check' with the schema in this patch gives the
-following warnings. Consider if they are expected or the schema is
-incorrect. These may not be new warnings.
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-Note that it is not yet a requirement to have 0 warnings for dtbs_check.
-This will change in the future.
+yamllint warnings/errors:
+./Documentation/devicetree/bindings/net/wireless/silabs,wfx.yaml:39:31: [error] syntax error: mapping values are not allowed here (syntax)
 
-Full log is available here: https://patchwork.ozlabs.org/patch/1536730
+dtschema/dtc warnings/errors:
+make[1]: *** Deleting file 'Documentation/devicetree/bindings/net/wireless/silabs,wfx.example.dts'
+Traceback (most recent call last):
+  File "/usr/local/bin/dt-extract-example", line 45, in <module>
+    binding = yaml.load(open(args.yamlfile, encoding='utf-8').read())
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/main.py", line 434, in load
+    return constructor.get_single_data()
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 120, in get_single_data
+    node = self.composer.get_single_node()
+  File "_ruamel_yaml.pyx", line 706, in _ruamel_yaml.CParser.get_single_node
+  File "_ruamel_yaml.pyx", line 724, in _ruamel_yaml.CParser._compose_document
+  File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
+  File "_ruamel_yaml.pyx", line 889, in _ruamel_yaml.CParser._compose_mapping_node
+  File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
+  File "_ruamel_yaml.pyx", line 891, in _ruamel_yaml.CParser._compose_mapping_node
+  File "_ruamel_yaml.pyx", line 904, in _ruamel_yaml.CParser._parse_next_event
+ruamel.yaml.scanner.ScannerError: mapping values are not allowed in this context
+  in "<unicode string>", line 39, column 31
+make[1]: *** [Documentation/devicetree/bindings/Makefile:20: Documentation/devicetree/bindings/net/wireless/silabs,wfx.example.dts] Error 1
+make[1]: *** Waiting for unfinished jobs....
+./Documentation/devicetree/bindings/net/wireless/silabs,wfx.yaml:  mapping values are not allowed in this context
+  in "<unicode string>", line 39, column 31
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/net/wireless/silabs,wfx.yaml: ignoring, error parsing file
+warning: no schema found in file: ./Documentation/devicetree/bindings/net/wireless/silabs,wfx.yaml
+make: *** [Makefile:1441: dt_binding_check] Error 2
 
+doc reference errors (make refcheckdocs):
 
-usbphyc@5a006000: usb-phy@0: 'phy-supply' is a required property
-	arch/arm/boot/dts/stm32mp157a-icore-stm32mp1-ctouch2.dt.yaml
-	arch/arm/boot/dts/stm32mp157a-icore-stm32mp1-edimm2.2.dt.yaml
-	arch/arm/boot/dts/stm32mp157a-microgea-stm32mp1-microdev2.0.dt.yaml
-	arch/arm/boot/dts/stm32mp157a-microgea-stm32mp1-microdev2.0-of7.dt.yaml
-	arch/arm/boot/dts/stm32mp157c-lxa-mc1.dt.yaml
-	arch/arm/boot/dts/stm32mp157c-odyssey.dt.yaml
+See https://patchwork.ozlabs.org/patch/1536655
 
-usbphyc@5a006000: usb-phy@1: 'phy-supply' is a required property
-	arch/arm/boot/dts/stm32mp157a-icore-stm32mp1-ctouch2.dt.yaml
-	arch/arm/boot/dts/stm32mp157a-icore-stm32mp1-edimm2.2.dt.yaml
-	arch/arm/boot/dts/stm32mp157a-microgea-stm32mp1-microdev2.0.dt.yaml
-	arch/arm/boot/dts/stm32mp157a-microgea-stm32mp1-microdev2.0-of7.dt.yaml
-	arch/arm/boot/dts/stm32mp157c-lxa-mc1.dt.yaml
-	arch/arm/boot/dts/stm32mp157c-odyssey.dt.yaml
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
 
