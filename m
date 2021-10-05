@@ -2,70 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E2C042315C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 22:12:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08DE6423168
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 22:13:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235934AbhJEUOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 16:14:01 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:50718 "EHLO vps0.lunn.ch"
+        id S235999AbhJEUPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 16:15:19 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:17391 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235581AbhJEUN7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 16:13:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=Wq7nrL82/L3EOLhn+avQUN00z2EQ2FcNnYuF4o5Vwxc=; b=AV/VFhOx8CPCsEz+WuHkHFZ7pH
-        3D7Sa/E0gSDzXv38L0ZyfveGdnlyDeZQSSSifGFbhZFlgWu2U2XrcYpVjGXqHAwOtKKebb5b73rKd
-        gf1YjkWeejx3bP7apHZ7GC7Ta8vB/+amiGOkfjGzjD1jLXCUGy/I+1DkXUJtIDUAWtG8=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mXqnE-009k7C-1I; Tue, 05 Oct 2021 22:12:04 +0200
-Date:   Tue, 5 Oct 2021 22:12:04 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Cc:     Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: lets settle the LED `function` property regarding the netdev
- trigger
-Message-ID: <YVyxlEVQ7TvMs5DH@lunn.ch>
-References: <20211001143601.5f57eb1a@thinkpad>
- <YVn815h7JBtVSfwZ@lunn.ch>
- <20211003212654.30fa43f5@thinkpad>
- <YVsUodiPoiIESrEE@lunn.ch>
- <20211004170847.3f92ef48@thinkpad>
- <0b1bc2d7-6e62-5adb-5aed-48b99770d80d@gmail.com>
+        id S230019AbhJEUPQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 16:15:16 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1633464805; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=YLC/Q/jdvQ6/AOXqkmsIgNmFnLhtq0kwWRcsTJ1mOpY=;
+ b=KQuqMdRXLQSWar/GcjGgqM62SpwkD6v3PV6MR7KtS8Nq/TuLQGlmnAGe5FkvSwy9Q6GXVdWO
+ pTW+bjyvTIMkHCw2rWj24JyMYdZvnTJvl0fRySyDhP4Sw8z+i21fcTF2kdPpwMY9+Cb4xbRI
+ hxpn1sIIIdBHwjWuj1P1sZaDofc=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 615cb1d6ff0285fb0a75c164 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 05 Oct 2021 20:13:10
+ GMT
+Sender: abhinavk=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id BF179C43617; Tue,  5 Oct 2021 20:13:09 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: abhinavk)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 907DEC4338F;
+        Tue,  5 Oct 2021 20:13:08 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0b1bc2d7-6e62-5adb-5aed-48b99770d80d@gmail.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 05 Oct 2021 13:13:08 -0700
+From:   abhinavk@codeaurora.org
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Kalyan Thota <kalyan_t@codeaurora.org>,
+        Kuogee Hsieh <khsieh@codeaurora.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [Freedreno] [PATCH v3 2/5] drm/msm/dp: Modify prototype of
+ encoder based API
+In-Reply-To: <20211001180058.1021913-3-bjorn.andersson@linaro.org>
+References: <20211001180058.1021913-1-bjorn.andersson@linaro.org>
+ <20211001180058.1021913-3-bjorn.andersson@linaro.org>
+Message-ID: <1b86ea5b536d11335ec457fb729886ce@codeaurora.org>
+X-Sender: abhinavk@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > > There are two different ways this can be implemented. There can be two
-> > > independent LEDs within the same package. So you can generate three
-> > > colours. Or there can be two cross connected LEDs within the
-> > > package. Apply +ve you get one colour, apply -ve you get a different
-> > > colour. Since you cannot apply both -ve and +ve at the same time, you
-> > > cannot get both colours at once.
-> > > 
-> > > If you have two independent LEDs, I would define two LEDs in DT.
-> > 
-> > No, we have multicolor LED API which is meant for exactly this
-> > situation: a multicolor LED.
-
-> What do you mean by dependency here?
-
-https://www.youtube.com/watch?v=5M9p25OfKdg
-
-There are two different ways you can two LEDs in one package.
-
-Some Ethernet PHY RJ45 connector housings have bi-colour LEDs. Some
-have tri-colour LEDs, and some have mono-colour LEDs.
-
-      Andrew
+On 2021-10-01 11:00, Bjorn Andersson wrote:
+> Functions in the DisplayPort code that relates to individual instances
+> (encoders) are passed both the struct msm_dp and the struct 
+> drm_encoder. But
+> in a situation where multiple DP instances would exist this means that
+> the caller need to resolve which struct msm_dp relates to the struct
+> drm_encoder at hand.
+> 
+> Store a reference to the struct msm_dp associated with each
+> dpu_encoder_virt to allow the particular instance to be associate with
+> the encoder in the following patch.
+> 
+> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Reviewed-by: Abhinav Kumar <abhinavk@codeaurora.org>
+> ---
+> 
+> Changes since v2:
+> - None
+> 
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c | 23 ++++++++++++---------
+>  1 file changed, 13 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+> b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+> index 0e9d3fa1544b..b7f33da2799c 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+> @@ -168,6 +168,7 @@ enum dpu_enc_rc_states {
+>   * @vsync_event_work:		worker to handle vsync event for autorefresh
+>   * @topology:                   topology of the display
+>   * @idle_timeout:		idle timeout duration in milliseconds
+> + * @dp:				msm_dp pointer, for DP encoders
+>   */
+>  struct dpu_encoder_virt {
+>  	struct drm_encoder base;
+> @@ -206,6 +207,8 @@ struct dpu_encoder_virt {
+>  	struct msm_display_topology topology;
+> 
+>  	u32 idle_timeout;
+> +
+> +	struct msm_dp *dp;
+>  };
+> 
+>  #define to_dpu_encoder_virt(x) container_of(x, struct 
+> dpu_encoder_virt, base)
+> @@ -1000,8 +1003,8 @@ static void dpu_encoder_virt_mode_set(struct
+> drm_encoder *drm_enc,
+> 
+>  	trace_dpu_enc_mode_set(DRMID(drm_enc));
+> 
+> -	if (drm_enc->encoder_type == DRM_MODE_ENCODER_TMDS && priv->dp)
+> -		msm_dp_display_mode_set(priv->dp, drm_enc, mode, adj_mode);
+> +	if (drm_enc->encoder_type == DRM_MODE_ENCODER_TMDS)
+> +		msm_dp_display_mode_set(dpu_enc->dp, drm_enc, mode, adj_mode);
+> 
+>  	list_for_each_entry(conn_iter, connector_list, head)
+>  		if (conn_iter->encoder == drm_enc)
+> @@ -1182,9 +1185,8 @@ static void dpu_encoder_virt_enable(struct
+> drm_encoder *drm_enc)
+> 
+>  	_dpu_encoder_virt_enable_helper(drm_enc);
+> 
+> -	if (drm_enc->encoder_type == DRM_MODE_ENCODER_TMDS && priv->dp) {
+> -		ret = msm_dp_display_enable(priv->dp,
+> -						drm_enc);
+> +	if (drm_enc->encoder_type == DRM_MODE_ENCODER_TMDS) {
+> +		ret = msm_dp_display_enable(dpu_enc->dp, drm_enc);
+>  		if (ret) {
+>  			DPU_ERROR_ENC(dpu_enc, "dp display enable failed: %d\n",
+>  				ret);
+> @@ -1224,8 +1226,8 @@ static void dpu_encoder_virt_disable(struct
+> drm_encoder *drm_enc)
+>  	/* wait for idle */
+>  	dpu_encoder_wait_for_event(drm_enc, MSM_ENC_TX_COMPLETE);
+> 
+> -	if (drm_enc->encoder_type == DRM_MODE_ENCODER_TMDS && priv->dp) {
+> -		if (msm_dp_display_pre_disable(priv->dp, drm_enc))
+> +	if (drm_enc->encoder_type == DRM_MODE_ENCODER_TMDS) {
+> +		if (msm_dp_display_pre_disable(dpu_enc->dp, drm_enc))
+>  			DPU_ERROR_ENC(dpu_enc, "dp display push idle failed\n");
+>  	}
+> 
+> @@ -1253,8 +1255,8 @@ static void dpu_encoder_virt_disable(struct
+> drm_encoder *drm_enc)
+> 
+>  	DPU_DEBUG_ENC(dpu_enc, "encoder disabled\n");
+> 
+> -	if (drm_enc->encoder_type == DRM_MODE_ENCODER_TMDS && priv->dp) {
+> -		if (msm_dp_display_disable(priv->dp, drm_enc))
+> +	if (drm_enc->encoder_type == DRM_MODE_ENCODER_TMDS) {
+> +		if (msm_dp_display_disable(dpu_enc->dp, drm_enc))
+>  			DPU_ERROR_ENC(dpu_enc, "dp display disable failed\n");
+>  	}
+> 
+> @@ -2170,7 +2172,8 @@ int dpu_encoder_setup(struct drm_device *dev,
+> struct drm_encoder *enc,
+>  		timer_setup(&dpu_enc->vsync_event_timer,
+>  				dpu_encoder_vsync_event_handler,
+>  				0);
+> -
+> +	else if (disp_info->intf_type == DRM_MODE_ENCODER_TMDS)
+> +		dpu_enc->dp = priv->dp;
+> 
+>  	INIT_DELAYED_WORK(&dpu_enc->delayed_off_work,
+>  			dpu_encoder_off_work);
