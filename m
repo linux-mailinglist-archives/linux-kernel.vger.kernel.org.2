@@ -2,167 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58810421B29
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 02:32:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F033A421B2B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 02:35:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230242AbhJEAe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 20:34:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49302 "EHLO
+        id S229636AbhJEAhe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 20:37:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229486AbhJEAeT (ORCPT
+        with ESMTP id S229486AbhJEAhd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 20:34:19 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4070BC061749;
-        Mon,  4 Oct 2021 17:32:30 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id s69so23875119oie.13;
-        Mon, 04 Oct 2021 17:32:30 -0700 (PDT)
+        Mon, 4 Oct 2021 20:37:33 -0400
+Received: from mail-ua1-x934.google.com (mail-ua1-x934.google.com [IPv6:2607:f8b0:4864:20::934])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A05DC061745
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 17:35:43 -0700 (PDT)
+Received: by mail-ua1-x934.google.com with SMTP id 64so13674065uab.12
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 17:35:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=t/jVZ06a5/BtkTEQsv93Iskc6/yE5SoN8Er3SXjSRo0=;
-        b=k1hzRXHnpGFdgZlsdx0jjlvXflQZHrNmyq9Y4yq3OXobuDSAb8tl+BDYQ1sC8ynD+E
-         ycotN17PITJ4uCL42iPToynhMClDhNtWTfi9MN91XbCuWaqePUtfIf94zFojZn/Ds0d6
-         7RHu87puT/TaTBbq0fs1KggB1GPcTaTtzikoMoBy8rJaEpmgMIQmxZjYly8D7emnYD0W
-         2BwS83XKxyLaiBoWvlxQhDC2X2Wyxe/VSjJCsevUOLjg8nj3ZBkbDRS+s4Q5/QBWWjiN
-         H6DVVxJ9eGkCRdpXJL9n0eXwwMCcANlvmjWstFTNpHcWfzPG9ubdCac3L4nUL1b/XrAp
-         NmSg==
+        d=google.com; s=20210112;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0l5p0oE25SqlRLFMCCo2EWRTCPhDAqiXcOcdg7xVq1M=;
+        b=ejuDgM8fmefZMUg3Jx2LeaRwi6b9kq8lSJKUxN8jCsFqiTUmXH3Svzmal9VU5eVFum
+         Zg7tuD/lrSRPLUFFQTVcqjkO5q8zL4TA4a2zz8IgPZCArY7VUWYbxEF49COMMoP0nkTM
+         teh8alqCaTTktQL69QAezC/jeF+DfIxnp0SEWUVbogUrB13IIBCmXbS3bRgLN9OxfRu4
+         pNXAozDqp0gt/aO3BFvj6AvvkkuzwTOJWYXaP6J5fl0eptabu8o2uk+pW30JXyBK6bcM
+         2gshRIWzj2LaRUMVRSXSh0LSxG8uHN8xqYY6iwU9jeAvs7Ogt9aIf/rEKhY83mDwm/HR
+         0fwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=t/jVZ06a5/BtkTEQsv93Iskc6/yE5SoN8Er3SXjSRo0=;
-        b=KDqRAT98nP6EWs6YR4bWeazdvPU85w1BbeSj74Mjo5G2hkidwjHC/C7jeasDETYuQm
-         t3P2qIYzsX0i4AOWdoMaaConk9zdhP/i/eOEzoqDLv8jbeQUYaBGdKOT/dCSDI5M20V8
-         +6xbx5u79u9xR2fSgt2FqSe8Ezfc/wErmDt1EIAWGuhvSCsBGKPE8Qe05odM/f+EaQRN
-         R0Zx77onI1L7u6ML/cII7U7ForyzOnQOXhkJIKynpx4fVOEtkoiUUXatf3FYwDF6/l2s
-         C5QDmx7bCAZfJoL1+hJMBiYtWwsS0mtXJ2iZFTgbtZE/5dcoQrJZa+Bk6dJjOMyKsprk
-         y64Q==
-X-Gm-Message-State: AOAM533u01JZKRpcsepiK9TSsqdrmGQm9NFK/n6yfLbJm6L9/SJxR7SZ
-        0HRXThFxpMtcC7uJhL96Pw==
-X-Google-Smtp-Source: ABdhPJwjJQ7XfFdyN8Xc/JOyzSejb/WwXqAWVF8AaGEJeKNYwMKvDso72xg0AhFxYLGQwXydOMF0sw==
-X-Received: by 2002:a05:6808:57:: with SMTP id v23mr117164oic.172.1633393949568;
-        Mon, 04 Oct 2021 17:32:29 -0700 (PDT)
-Received: from serve.minyard.net (serve.minyard.net. [2001:470:b8f6:1b::1])
-        by smtp.gmail.com with ESMTPSA id k23sm3198138ook.45.2021.10.04.17.32.27
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=0l5p0oE25SqlRLFMCCo2EWRTCPhDAqiXcOcdg7xVq1M=;
+        b=S5Kk3EXVNHnlq0npnMGoKMb7htOvLKWd0/eDy1x5MyS2FtgrUgvoYTNOjURKClDp1M
+         jfOBhvLoiq8RWKbMgna6NI8GK7r/K+71RTpfmFTCR+fcnwe2driS8u0anyCS1fT21oNW
+         /3c3A8v5cRdiQ5jcUyfJU13ScQHVbA/RH6dIczNIhBo85s27CBuBd+5Yto+FBn6lW+Ex
+         zwmhYvlx1fsPaBPPxS5DoQe2RkPmsOu6CF42zlzgWWDIIV0QfMslqoG1+C1NvHfpno/G
+         q6Zj/WFU3h5vtmUXMNFWXZk04D39sX2L9JKvtt3nqnvBYlSC/odL/Dw6lQ4AQZFjOJii
+         72Cg==
+X-Gm-Message-State: AOAM533e/ktWvOZ5rdkWMFhOjMVQ+pB1K+5/b9D4/7ZqDr3n7b6YVWxG
+        HjKgacIhHRSY1t04fyazJHOBlQ==
+X-Google-Smtp-Source: ABdhPJwwCbODZAmdlHTct0WG9V3q+5xFprMFyk6J4nicYFya2JLGnSGHMjclaFE/ckmqCOs8CKTF1w==
+X-Received: by 2002:ab0:4a9d:: with SMTP id s29mr10047253uae.104.1633394142354;
+        Mon, 04 Oct 2021 17:35:42 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id o3sm7542542vsc.26.2021.10.04.17.35.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Oct 2021 17:32:28 -0700 (PDT)
-Sender: Corey Minyard <tcminyard@gmail.com>
-Received: from t560.minyard.net (unknown [IPv6:2001:470:b8f6:1b:1ce5:3fb4:8fe9:30d1])
-        by serve.minyard.net (Postfix) with ESMTPA id E5E0F1800F7;
-        Tue,  5 Oct 2021 00:32:26 +0000 (UTC)
-From:   minyard@acm.org
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Pengutronix Kernel Team <kernel@pengutronix.de>,
-        linux-i2c@vger.kernel.org,
-        Andrew Manley <andrew.manley@sealingtech.com>,
-        linux-kernel@vger.kernel.org, Corey Minyard <cminyard@mvista.com>,
-        Corey Minyard <minyard@acm.org>
-Subject: [PATCH 3/3] i2c:imx: Use an hrtimer, not a timer, for checking for bus idle
-Date:   Mon,  4 Oct 2021 19:32:16 -0500
-Message-Id: <20211005003216.2670632-4-minyard@acm.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211005003216.2670632-1-minyard@acm.org>
-References: <20211005003216.2670632-1-minyard@acm.org>
-MIME-Version: 1.0
+        Mon, 04 Oct 2021 17:35:40 -0700 (PDT)
+Date:   Mon, 04 Oct 2021 17:35:40 -0700 (PDT)
+X-Google-Original-Date: Mon, 04 Oct 2021 17:35:36 PDT (-0700)
+Subject:     Re: [PATCH] RISC-V: Include clone3() on rv32
+In-Reply-To: <20211004111758.rl2zq6l575hmcv22@wittgenstein>
+CC:     Arnd Bergmann <arnd@arndb.de>, linux-riscv@lists.infradead.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, christian@brauner.io,
+        linux-kernel@vger.kernel.org, kernel-team@android.com
+From:   Palmer Dabbelt <palmerdabbelt@google.com>
+To:     christian.brauner@ubuntu.com
+Message-ID: <mhng-73210076-6df9-44e7-8c1a-09ced50fe4c0@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Corey Minyard <cminyard@mvista.com>
+On Mon, 04 Oct 2021 04:17:58 PDT (-0700), christian.brauner@ubuntu.com wrote:
+> On Sun, Oct 03, 2021 at 05:30:24PM +0200, Arnd Bergmann wrote:
+>> On Sun, Oct 3, 2021 at 2:58 AM Palmer Dabbelt <palmer@dabbelt.com> wrote:
+>> >
+>> > From: Palmer Dabbelt <palmerdabbelt@google.com>
+>> >
+>> > As far as I can tell this should be enabled on rv32 as well, I'm not
+>> > sure why it's rv64-only.  checksyscalls is complaining about our lack of
+>> > clone3() on rv32.
+>> >
+>> > Fixes: 56ac5e213933 ("riscv: enable sys_clone3 syscall for rv64")
+>> > Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+>>
+>> We should probably reverse the polarity of this symbol and force
+>> architectures that don't implement it properly to say they don't
+>> have it, but for now, it definitely makes sense to treat this the same
+>> way on 32-bit and 64-bit risc-v.
+>
+> I think we had that discussion back when I added it and I think I even
+> proposed that or you did but then we settled on __ARCH_WANT_SYS_CLONE3.
+> Most likely because it fell in line with the other
+> __ARCH_WANT_SYS_{CLONE,FORK}.
+>
+> I think at this point its alpha, ia64, nios, sparc, and sh that don't
+> implement it. For some it looks trivial at first glance at least (Fwiw,
+> nios implements sys_clone() but doesn't select __ARCH_WANT_SYS_CLONE3):
+>
+> diff --git a/arch/nios2/include/uapi/asm/unistd.h b/arch/nios2/include/uapi/asm/unistd.h
+> index 0b4bb1d41b28..6c4f45abd3ab 100644
+> --- a/arch/nios2/include/uapi/asm/unistd.h
+> +++ b/arch/nios2/include/uapi/asm/unistd.h
+> @@ -18,6 +18,7 @@
+>
+>   #define sys_mmap2 sys_mmap_pgoff
+>
+> +#define __ARCH_WANT_SYS_CLONE3
+>  #define __ARCH_WANT_RENAMEAT
+>  #define __ARCH_WANT_STAT64
+>  #define __ARCH_WANT_SET_GET_RLIMIT
+> diff --git a/arch/nios2/kernel/entry.S b/arch/nios2/kernel/entry.S
+> index 0794cd7803df..c1804bda8259 100644
+> --- a/arch/nios2/kernel/entry.S
+> +++ b/arch/nios2/kernel/entry.S
+> @@ -396,6 +396,15 @@ ENTRY(sys_clone)
+>         RESTORE_SWITCH_STACK
+>         ret
+>
+> +/*
+> + * int clone3(struct clone_args __user *, uargs, size_t, size)
+> + */
+> +ENTRY(sys_clone3)
+> +       SAVE_SWITCH_STACK
+> +       call    sys_clone3
+> +       RESTORE_SWITCH_STACK
+> +       ret
+> +
+>  ENTRY(sys_rt_sigreturn)
+>         SAVE_SWITCH_STACK
+>         mov     r4, sp
 
-The timer is too slow and significantly reduces performance.  Use an
-hrtimer to get things working faster.
+Thanks.
 
-Signed-off-by: Corey Minyard <minyard@acm.org>
-Tested-by: Andrew Manley <andrew.manley@sealingtech.com>
-Reviewed-by: Andrew Manley <andrew.manley@sealingtech.com>
----
- drivers/i2c/busses/i2c-imx.c | 23 +++++++++++++++--------
- 1 file changed, 15 insertions(+), 8 deletions(-)
+I've put this on fixes, but if you're trying to do that refactoring I've 
+merged it in as a single patch on top of 5.15-rc1.  That's on 
+palmer/riscv-clone3, in case it helps someone avoid a conflict when 
+doing that refactoring.  I'd usually offer to do the refactoring, but 
+I'm super buried right now with all the RISC-V stuff ;)
 
-diff --git a/drivers/i2c/busses/i2c-imx.c b/drivers/i2c/busses/i2c-imx.c
-index 26a04dc0590b..4b0e9d1784dd 100644
---- a/drivers/i2c/busses/i2c-imx.c
-+++ b/drivers/i2c/busses/i2c-imx.c
-@@ -38,7 +38,7 @@
- #include <linux/iopoll.h>
- #include <linux/kernel.h>
- #include <linux/spinlock.h>
--#include <linux/timer.h>
-+#include <linux/hrtimer.h>
- #include <linux/module.h>
- #include <linux/of.h>
- #include <linux/of_device.h>
-@@ -53,6 +53,8 @@
- /* This will be the driver name the kernel reports */
- #define DRIVER_NAME "imx-i2c"
- 
-+#define I2C_IMX_CHECK_DELAY 30000 /* Time to check for bus idle, in NS */
-+
- /*
-  * Enable DMA if transfer byte size is bigger than this threshold.
-  * As the hardware request, it must bigger than 4 bytes.\
-@@ -214,8 +216,8 @@ struct imx_i2c_struct {
- 	enum i2c_slave_event last_slave_event;
- 
- 	/* For checking slave events. */
--	spinlock_t	  slave_lock;
--	struct timer_list slave_timer;
-+	spinlock_t     slave_lock;
-+	struct hrtimer slave_timer;
- };
- 
- static const struct imx_i2c_hwdata imx1_i2c_hwdata = {
-@@ -783,13 +785,16 @@ static irqreturn_t i2c_imx_slave_handle(struct imx_i2c_struct *i2c_imx,
- 	}
- 
- out:
--	mod_timer(&i2c_imx->slave_timer, jiffies + 1);
-+	hrtimer_try_to_cancel(&i2c_imx->slave_timer);
-+	hrtimer_forward_now(&i2c_imx->slave_timer, I2C_IMX_CHECK_DELAY);
-+	hrtimer_restart(&i2c_imx->slave_timer);
- 	return IRQ_HANDLED;
- }
- 
--static void i2c_imx_slave_timeout(struct timer_list *t)
-+static enum hrtimer_restart i2c_imx_slave_timeout(struct hrtimer *t)
- {
--	struct imx_i2c_struct *i2c_imx = from_timer(i2c_imx, t, slave_timer);
-+	struct imx_i2c_struct *i2c_imx = container_of(t, struct imx_i2c_struct,
-+						      slave_timer);
- 	unsigned int ctl, status;
- 	unsigned long flags;
- 
-@@ -798,6 +803,7 @@ static void i2c_imx_slave_timeout(struct timer_list *t)
- 	ctl = imx_i2c_read_reg(i2c_imx, IMX_I2C_I2CR);
- 	i2c_imx_slave_handle(i2c_imx, status, ctl);
- 	spin_unlock_irqrestore(&i2c_imx->slave_lock, flags);
-+	return HRTIMER_NORESTART;
- }
- 
- static void i2c_imx_slave_init(struct imx_i2c_struct *i2c_imx)
-@@ -1423,7 +1429,8 @@ static int i2c_imx_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 
- 	spin_lock_init(&i2c_imx->slave_lock);
--	timer_setup(&i2c_imx->slave_timer, i2c_imx_slave_timeout, 0);
-+	hrtimer_init(&i2c_imx->slave_timer, CLOCK_MONOTONIC, HRTIMER_MODE_ABS);
-+	i2c_imx->slave_timer.function = i2c_imx_slave_timeout;
- 
- 	match = device_get_match_data(&pdev->dev);
- 	if (match)
-@@ -1538,7 +1545,7 @@ static int i2c_imx_remove(struct platform_device *pdev)
- 	if (ret < 0)
- 		return ret;
- 
--	del_timer_sync(&i2c_imx->slave_timer);
-+	hrtimer_cancel(&i2c_imx->slave_timer);
- 
- 	/* remove adapter */
- 	dev_dbg(&i2c_imx->adapter.dev, "adapter removed\n");
--- 
-2.25.1
-
+I want to call this fix because it's breaking my builds, these 
+checksyscall warnings have recently turned into errors.
