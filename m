@@ -2,153 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57841422ACA
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:17:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5A21422AB9
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:16:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236317AbhJEOSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 10:18:08 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:16736 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235859AbhJEOR6 (ORCPT
+        id S235173AbhJEOSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 10:18:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41852 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236596AbhJEOSR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 10:17:58 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1633443367; h=Content-Transfer-Encoding: Content-Type:
- MIME-Version: Message-ID: In-Reply-To: Date: References: Subject: Cc:
- To: From: Sender; bh=wbRlR3S9un/VrDX7Y3W0hcFvNCAKaY9PkJGHjSDPKeo=; b=UzKz1pMlvXwxMHU9CiY8RMxq6OUQxyOrSi/u6BMt5BOJ8b8Ki4SB+oQqvJrqhLZfsxiwCAL4
- jg6Yjd/QL3C/5QGMGpalmo+gyexibIBGVsdICvdUSnb8t5tM3XvS1Agd3gT755x6BdHO2eDC
- WYuS9wB/kHmWrix3j9nv+gjIGlU=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 615c5e038ea00a941f67647e (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 05 Oct 2021 14:15:31
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 9913BC43150; Tue,  5 Oct 2021 14:15:31 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from tykki (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0FB13C43164;
-        Tue,  5 Oct 2021 14:15:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 0FB13C43164
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Jerome Pouiller <Jerome.Pouiller@silabs.com>
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        linux-mmc@vger.kernel.org,
-        Pali =?utf-8?Q?Roh?= =?utf-8?Q?=C3=A1r?= <pali@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: Re: [PATCH v8 00/24] wfx: get out from the staging area
-References: <20211005135400.788058-1-Jerome.Pouiller@silabs.com>
-Date:   Tue, 05 Oct 2021 17:15:22 +0300
-In-Reply-To: <20211005135400.788058-1-Jerome.Pouiller@silabs.com> (Jerome
-        Pouiller's message of "Tue, 5 Oct 2021 15:53:36 +0200")
-Message-ID: <875yubfthh.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Tue, 5 Oct 2021 10:18:17 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1242EC06174E
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 07:16:27 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id p1so11481076pfh.8
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 07:16:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=EwHZDZ7kt9Qt3vhwKnm3A0/y/1Nf7STGF1vfsq6DqDE=;
+        b=Dr39kURPHYYkONhvPaa1UE9yMgqt/Yk1d3oR/j6onhWoiP1TOjLwFVVO5LuwdSMa9+
+         Qq8WPcfNJqOgQnwYdeo41itxFbrJ1B0wcYIdXzb09PUYC5byA94xP3OSjKv9WNGnFmIx
+         7H/lKUIj0t5npCbJOiucP6vKNwmPPS2kfeuV1UwSVTGIjtjaf9xe8B49nNn5DEb/3jE5
+         KJG8xuUzynfhtD5v+kdFRPH7wCWKZFkyhNDhpywMdmzQ59IAmU/sSRsxxrYudN5I0rv3
+         3q980hqhNLR7gZmAdE8Z3ov64U07sFf+UsTgSvd2WrEaKVYHDjqcTNb7XmKo1GhDIhv3
+         VQ2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=EwHZDZ7kt9Qt3vhwKnm3A0/y/1Nf7STGF1vfsq6DqDE=;
+        b=GinLm8MgB2lO/OsKDXrqT8ohbi8ZvHL8F4M2JUkXb8oFfUPbIx/YYdV01uIEuAfQKa
+         FYPpGa+t2IWihlHXWPc8MLi4xEbRMMuLc9JbamyKUMgdqn0XSOIxRpkGMM7XVF2dOFkY
+         2fMWXUC0vHm9GTmHZMtExmfsZuTLY6sjvoEWVOhIzWHPHVlqt3abSds0wtjKBt8sSY3o
+         G05EaVGEbMpcGLfYQtUf3M+aflzu0bSMJSXkj5I7y4/EcVyLgYNtK3lTvBOp+H8+lXTB
+         LPGpAN8JSk5fUUOBKlFSeKYDWYJUyk9QVMx3QXOTB3MxBfwHTbPc/5lyYP08k4uu7oIH
+         eTdg==
+X-Gm-Message-State: AOAM533WPKmDdzR33P4nRszN24UtARC0XJkdFO0Jy0KY3VXNbJ9vOuaK
+        hDym5lWHQkbgXzfXobOOTks=
+X-Google-Smtp-Source: ABdhPJwvUVLH835WDiej69cMmIrlamhNnH89ABSVEQgdVQE+O4tPcP2eaBfVx30kXpcDuXkHKDUEUA==
+X-Received: by 2002:a63:1d13:: with SMTP id d19mr16047813pgd.383.1633443386517;
+        Tue, 05 Oct 2021 07:16:26 -0700 (PDT)
+Received: from kvm.asia-northeast3-a.c.our-ratio-313919.internal (24.151.64.34.bc.googleusercontent.com. [34.64.151.24])
+        by smtp.gmail.com with ESMTPSA id d26sm17723862pfo.116.2021.10.05.07.16.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Oct 2021 07:16:26 -0700 (PDT)
+Date:   Tue, 5 Oct 2021 14:16:22 +0000
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Christoph Lameter <cl@gentwo.de>, linux-mm@kvack.org,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: Queueing is outside of SLUB nowdays
+Message-ID: <20211005141622.GC2760@kvm.asia-northeast3-a.c.our-ratio-313919.internal>
+References: <20210927090347.GA2533@linux.asia-northeast3-a.c.our-ratio-313919.internal>
+ <8aa15f4b-71de-5283-5ebc-d8d1a323473d@suse.cz>
+ <20211001003908.GA2657@linux.asia-northeast3-a.c.our-ratio-313919.internal>
+ <alpine.DEB.2.22.394.2110041648220.294708@gentwo.de>
+ <09ca489a-ecfb-dd5e-b057-dc9c59c8585e@suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <09ca489a-ecfb-dd5e-b057-dc9c59c8585e@suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jerome Pouiller <Jerome.Pouiller@silabs.com> writes:
+On Tue, Oct 05, 2021 at 10:19:32AM +0200, Vlastimil Babka wrote:
+> On 10/4/21 16:56, Christoph Lameter wrote:
+> > On Fri, 1 Oct 2021, Hyeonggon Yoo wrote:
+> > 
+> >> Looking at other layers, they implemented queuing layer outside of SLUB.
+> >> See commit 795bb1c00dd ("net: bulk free infrastructure for NAPI context,
+> >> use napi_consume_skb") for example. They made skb cache because SLUB is
+> >> not suitable for intensive alloc/free.
+> >>
+> >> And because the queue is outside of slab, it can go lockless
+> >> depending on it's context. (But it's not easy to do so in slab because
+> >> slab is general purpose allocator.)
+> > 
+> > The queuing within in SLUB/SLAB is lockless.
+> >
 
-> From: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
->
-> Hello,
->
-> I think the wfx driver is now mature enough to be accepted in the
-> drivers/net/wireless directory.
->
-> The firmware is now a part of the linux-firmware repository since relase
-> 20210315[1]. It had taken a bit of time because I have worked with the le=
-gal
-> department to simplify the redistribution terms of the firmware.
->
-> [1]: https://lore.kernel.org/linux-firmware/2833354.gXvVfaC4I7@pc-42/
->
->
-> As requested by Kalle[2], I send one file per patch. At the end, all the
-> patches (or at least the patches 3 to 24) will be squashed (therefore, I
-> didn't bother to write real commit messages).
->
-> [2]: https://lore.kernel.org/lkml/87ft6p2n0h.fsf@codeaurora.org/
->
-> Here is a diagram of the global architecture that may help to understand
-> the code:
->
->     ,------------------------------------.
->     |                mac80211            |
->     `------------------------------------'
->     ,------------+-----------+-----------.
->     |    sta     |           |           |
->     |    scan    |           |           |
->     |    main    |           |           |
->     +------------+  data_tx  |           |
->     |    key     |           |  data_rx  |
->     | hif_tx_mib |   queue   |           |
->     |   hif_tx   |           |           |
->     |   hif_rx   |           |           |
->     |  hif_api_* |           |           |
->     +------------+-----------+-----------+--------.
->     |                  bh                |  fwio  |
->     +------------------------------------+--------+
->     |                     hwio                    |
->     +---------------------------------------------+
->     |                   bus_sdio                  |
->     |                   bus_spi                   |
->     `---------------------------------------------'
->     ,---------------------------------------------.
->     |                  spi / sdio                 |
->     `---------------------------------------------'
->
-> Roughly, I have sent the files from the bottom to the top.
->
->
-> v8:
->   - Change the way the DT is handled. The user can now specify the name of
->     the board (=3D chip + antenna) he use. It easier for board designers =
-to
->     add new entries. I plan to send a PR to linux-firmware to include PDS
->     files of the developpement boards belong the firmware (I also plan to
->     relocate these file into wfx/ instead of silabs/). (Kalle, Pali)
->   - Prefix visible functions and structs with "wfx_". I mostly kept the
->     code under 80 columns. (Kalle, Pali, Greg)
->   - Remove support for force_ps_timeout for now. (Kalle)
->   - Fix licenses of Makefile, Kconfig and hif_api*.h. (Kalle)
->   - Do not mix and match endianess in struct hif_ind_startup. (Kalle)
->   - Remove magic values. (Kalle)
->   - Use IS_ALIGNED(). (BTW, PTR_IS_ALIGNED() does not exist?) (Kalle)
->   - I have also noticed that some headers files did not declare all the
->     struct they used.
->
->   These issues remain (I hope they are not blockers):
->   - I have currently no ideas how to improve/simplify the parsing PDS fil=
-e.
->     (Kalle)
+Oh, yes. both SLAB/SLUB has lockless queueing.
 
-For the PDS file problem it would help if you could actually describe
-what the firmware requires/needs and then we can start from that. I had
-some questions about this in v7 but apparently you missed those.
+I misused word 'lockless'. it's lockless and also without disabling
+interrupt.
 
---=20
-https://patchwork.kernel.org/project/linux-wireless/list/
+> >> So current approach on place where slab's performance is critical
+> >> is implementing queuing layer on top of slab.
+> > 
+> > If you have to use object specific characteristics to optimize then yes
+> > you can optimize further. However, the slab allocators implement each
+> > their own form of queuing that is generic.
+> >
+> >> Then new question arising:
+> >>     - Is that proper way to solve fundamental problem?
+> > 
+> > There is a problem?
+> 
+> If someone benefits from implementing a caching layer on top of SL*B, it
+> probably indicates a problem.
+>
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
-hes
+Before I say something, I want to ask why Christoph stopped
+implementing SLUB+Q at that time.
+
+And Yeah, I think there are some problems.
+
+If objects are manged outside of slab allocator and most of alloc/frees
+are done outside of slab, it's waste of memory.
+
+To say the extreme case (even if it's not common situation), how does implementing 
+queueing layer on SLAB, on system with high NUMA nodes makes sense?
+it's wasting lots of memory.
+
+and objects are treated as 'allocated' even if it's actually being not
+used in queue outside slab. so the memory is unreclaimable.
+
+I think that, If objects are mostly allocated / freed outside of slab
+allocator, it does not need to be on top of slab allocator.
+
+and implementing same queueing layers on similar situation is duplication
+of code and increased maintenance cost.
+
+So what I tried was generalizing optimizations that are done in some layers
+(block and networks). But that was not an easy task, though.
+
+=============================================================================
+
+And what recently I was surprised was:
+
+    I asked Jens (who recently made bio caching layer on slab)
+    "I think it would have better performance if you run benchmarks with SLAB?".
+    because there is lots of allocations (Millions of allocations per second),
+    it's likely to cache-friendly characteristics of SLAB would have result in performance.
+
+    but the response was "I would be surprised if SLAB was better, SLAB
+    is considered legacy and everybody uses SLUB."
+
+    and the solution was too SLUB-specific way. (implementing queuing
+    layer) I'll say it's too SLUB-specific because SLAB's cache
+    utilization functionalities weren't even considered.
+
+    That's why I started this thread at first.
+
+> >>       - why not use SLAB if they need queuing?
+> > 
+> > SLAB is LIFO queuing whereas SLUB uses spatial considerations and queues
+> > within a page before going outside.
+> 
+> IIUC SLUB queueing works well for allocation (we just consume a per-cpu
+> freelist that nobody else can touch) but freeing uses the corresponding
+> page's freelist so the atomics are more expensive. In both cases the linked
+> freelists might be also worse for cache locality than an array of pointers.
+> So perhaps some workload still benefit from a array-based cache on top of
+> SLUB and it would be great if they didn't have to implement own solutions?
+>
+
+I wonder if page-based policy will work well with queueing.
+What to do if the page is full and we must take new page to satisfy a
+request?
+
+and what If the queue is mixed with objects of different pages?
+That might be somewhat losing spatial locality of SLUB.
+
+So if what you need is queueing, I think SLAB might be better
+than adding queueing on SLUB because adding queueing on SLUB
+might result in losing its own characteristics.
+
+It seems it's really difficult to consider all situations
+in a single memory allocator... T.T.
+
+> > Slab requires disabling interrupts,
+> > SLUB is optimized to rely on per cpu atomics and there are numerous other
+> > differences.
+> > 
+> >>       - how does this approach work on SLAB?
+> > 
+> > SLAB has a lockless layer that is only requiring disabling interrupts. It
+> > provides a generic queuing layer as well.
+> > 
+> > See my talk on Slab allocators awhile back.
+> > 
+> > https://www.youtube.com/watch?v=h0VMLXavx30
+
+Thank you for sharing that! I have read the presentation before
+but didn't know that there was a video too!
+
+It's very useful and I became more familiar with them.
+
+> > 
+> 
+
+If I wrongly understand something, please tell me.
+I'm so excited to talk about this topic.
+
+Thanks,
+Hyeonggon.
