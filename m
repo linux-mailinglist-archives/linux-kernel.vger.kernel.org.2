@@ -2,160 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9010B423129
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 21:58:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E55E742312C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 21:59:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235874AbhJEUAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 16:00:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38044 "EHLO
+        id S235936AbhJEUA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 16:00:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235224AbhJEUAj (ORCPT
+        with ESMTP id S235224AbhJEUA6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 16:00:39 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09557C061755
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 12:58:48 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id n2so146998plk.12
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 12:58:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=m4F7KbIKLk052E6TxP0dKBCdgkUeYdYXEOD3CSUVTIM=;
-        b=XniNzJtBFvHro/VDe66WdKX8l3Za6IBuWSuno6KT9zYxbIObQx4/GX0LtST1Dn0+4w
-         7KNbmA5IhdFz102EuOBTy9EJBhM9WpzMsz7QEHQK4OkIN8ggyeHsXK+xZi4niG+OJynC
-         mcaeqHjTrmLl4hn5gr+PJKQQj2Kp203ryO25c=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=m4F7KbIKLk052E6TxP0dKBCdgkUeYdYXEOD3CSUVTIM=;
-        b=ZJEfgANKdNr84fn6P2JO/UIYmHuw9LJkds0fsJCdryiC0ilC3xqgc8cqfCHcCbBOQ8
-         sXKAAFrVKeHPU0CPvWRQW6ImMILP/xCRPO1L58cxoum/s8N14BjVjyrRMMlzhbsKqX07
-         JrOTRGc3OfggdTP8bEK9FbozCH1am1tGYbKj5GLsh4UCPlUt9Djt2U2p4hQ4T4Q97/8W
-         4Yy6Ks0CF0HTcWG/RiVGEKfZ8YZnURY0Sw2HKSxHjXD3Y8xtcTUNe2HziqrrgL7Prh1a
-         8Nwe1ALX1L20C79DXIvk0xcH9Oyge9owaJtmeujOdSsnyJd+EMQS5txnKzXTfy0T8Vlc
-         qO7w==
-X-Gm-Message-State: AOAM530Hyp4y0s+Byjdg34kb/I9ciNgnNqelIhf8Ppi2dG1eAHq80Ttx
-        xC7Qwq5/5ti6XVSPxA2clZA+Rg==
-X-Google-Smtp-Source: ABdhPJyIVFMeXSk93lanHtPKT4spKueaCZvq6pzod9uEteRYiTnP6Xzri6pyKEkb7SQhAsGmyRZgXw==
-X-Received: by 2002:a17:90a:19d2:: with SMTP id 18mr6010010pjj.122.1633463928380;
-        Tue, 05 Oct 2021 12:58:48 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id 23sm2915094pjc.37.2021.10.05.12.58.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Oct 2021 12:58:48 -0700 (PDT)
-Date:   Tue, 5 Oct 2021 12:58:47 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     tj@kernel.org, gregkh@linuxfoundation.org,
-        akpm@linux-foundation.org, minchan@kernel.org, jeyu@kernel.org,
-        shuah@kernel.org, bvanassche@acm.org, dan.j.williams@intel.com,
-        joe@perches.com, tglx@linutronix.de, rostedt@goodmis.org,
-        linux-spdx@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 06/12] kernel/module: add documentation for
- try_module_get()
-Message-ID: <202110051252.790B3F2F0@keescook>
-References: <20210927163805.808907-1-mcgrof@kernel.org>
- <20210927163805.808907-7-mcgrof@kernel.org>
+        Tue, 5 Oct 2021 16:00:58 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76774C061749;
+        Tue,  5 Oct 2021 12:59:07 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0d20002fd498dc90ccb948.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:2000:2fd4:98dc:90cc:b948])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 06F001EC01CE;
+        Tue,  5 Oct 2021 21:59:06 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1633463946;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=Qmxm7CefUtXt2Yw0nJkZhWFc7mEAr8RAL5qiQWAIgjQ=;
+        b=aSGhz2XdrluOcHf5GknU/TWBcN0flEOQjeJ+D5kPaeDbADVwbC6pk4PyY+J0GZzENG3k0s
+        VUsIEAaUAt5w+BYv27Ok+k01yDeAPUyxodBV6W2V2iCq0uh6vvHPe0onGuKhk3NqihuJ+k
+        mijk1z8p0enA8ynnnDH9I2eoKZMMZSw=
+Date:   Tue, 5 Oct 2021 21:59:06 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Lubomir Rintel <lkundrak@v3.sk>, Pavel Machek <pavel@ucw.cz>,
+        Lee Jones <lee.jones@linaro.org>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        platform-driver-x86@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 9/9] x86: ia32.h: adjust comment for endif of
+ CONFIG_IA32_EMULATION
+Message-ID: <YVyuihupLwW3o0XR@zn.tnic>
+References: <20210803113531.30720-1-lukas.bulwahn@gmail.com>
+ <20210803113531.30720-10-lukas.bulwahn@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210927163805.808907-7-mcgrof@kernel.org>
+In-Reply-To: <20210803113531.30720-10-lukas.bulwahn@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 09:37:59AM -0700, Luis Chamberlain wrote:
-> There is quite a bit of tribal knowledge around proper use of
-> try_module_get() and that it must be used only in a context which
-> can ensure the module won't be gone during the operation. Document
-> this little bit of tribal knowledge.
+On Tue, Aug 03, 2021 at 01:35:31PM +0200, Lukas Bulwahn wrote:
+> The content of the ia32 header is guarded by
+> "ifdef CONFIG_IA32_EMULATION". The comment on the corresponding endif
+> refers slightly mismatching to CONFIG_IA32_SUPPORT instead.
 > 
-> I'm extending this tribal knowledge with new developments which it
-> seems some folks do not yet believe to be true: we can be sure a
-> module will exist during the lifetime of a sysfs file operation.
-> For proof, refer to test_sysfs test #32:
+> Hence, ./scripts/checkkconfigsymbols.py warns:
 > 
-> ./tools/testing/selftests/sysfs/sysfs.sh -t 0032
+> IA32_SUPPORT
+> Referencing files: arch/x86/include/asm/ia32.h
 > 
-> Without this being true, the write would fail or worse,
-> a crash would happen, in this test. It does not.
+> Adjust the comment on endif to the actual ifdef condition.
 > 
-> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 > ---
->  include/linux/module.h | 34 ++++++++++++++++++++++++++++++++--
->  1 file changed, 32 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/module.h b/include/linux/module.h
-> index c9f1200b2312..22eacd5e1e85 100644
-> --- a/include/linux/module.h
-> +++ b/include/linux/module.h
-> @@ -609,10 +609,40 @@ void symbol_put_addr(void *addr);
->     to handle the error case (which only happens with rmmod --wait). */
->  extern void __module_get(struct module *module);
->  
-> -/* This is the Right Way to get a module: if it fails, it's being removed,
-> - * so pretend it's not there. */
-> +/**
-> + * try_module_get() - yields to module removal and bumps refcnt otherwise
+>  arch/x86/include/asm/ia32.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-I find this hard to parse. How about:
-	"Take module refcount unless module is being removed"
+Merged the last 4 into a single patch because they're trivial:
 
-> + * @module: the module we should check for
-> + *
-> + * This can be used to try to bump the reference count of a module, so to
-> + * prevent module removal. The reference count of a module is not allowed
-> + * to be incremented if the module is already being removed.
+---
+From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date: Tue, 5 Oct 2021 21:48:30 +0200
+Subject: [PATCH] x86: Fix misspelled Kconfig symbols
 
-This I understand.
+Fix misspelled Kconfig symbols as detected by
+scripts/checkkconfigsymbols.py.
 
-> + *
-> + * Care must be taken to ensure the module cannot be removed during the call to
-> + * try_module_get(). This can be done by having another entity other than the
-> + * module itself increment the module reference count, or through some other
-> + * means which guarantees the module could not be removed during an operation.
-> + * An example of this later case is using try_module_get() in a sysfs file
-> + * which the module created. The sysfs store / read file operations are
-> + * gauranteed to exist through the use of kernfs's active reference (see
-> + * kernfs_active()). If a sysfs file operation is being run, the module which
-> + * created it must still exist as the module is in charge of removing the same
-> + * sysfs file being read. Also, a sysfs / kernfs file removal cannot happen
-> + * unless the same file is not active.
+ [ bp: Combine into a single patch. ]
 
-I can't understand this paragraph at all. "Care must be taken ..."? Why?
-Shouldn't callers of try_module_get() be satisfied with the results? I
-don't follow the example at all. It seems to just say "sysfs store/read
-functions don't need try_module_get() because whatever opened the sysfs
-file is already keeping the module referenced." ?
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20210803113531.30720-7-lukas.bulwahn@gmail.com
+---
+ arch/x86/include/asm/ia32.h      | 2 +-
+ arch/x86/include/asm/irq_stack.h | 2 +-
+ arch/x86/include/asm/page_32.h   | 2 +-
+ arch/x86/include/asm/uaccess.h   | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
 
-> + *
-> + * One of the real values to try_module_get() is the module_is_live() check
-> + * which ensures this the caller of try_module_get() can yield to userspace
-> + * module removal requests and fail whatever it was about to process.
-
-Please document the return value explicitly.
-
-> + */
->  extern bool try_module_get(struct module *module);
->  
-> +/**
-> + * module_put() - release a reference count to a module
-> + * @module: the module we should release a reference count for
-> + *
-> + * If you successfully bump a reference count to a module with try_module_get(),
-> + * when you are finished you must call module_put() to release that reference
-> + * count.
-> + */
->  extern void module_put(struct module *module);
->  
->  #else /*!CONFIG_MODULE_UNLOAD*/
-> -- 
-> 2.30.2
-> 
+diff --git a/arch/x86/include/asm/ia32.h b/arch/x86/include/asm/ia32.h
+index 2c5f7861d373..fada857f0a1e 100644
+--- a/arch/x86/include/asm/ia32.h
++++ b/arch/x86/include/asm/ia32.h
+@@ -68,6 +68,6 @@ extern void ia32_pick_mmap_layout(struct mm_struct *mm);
+ 
+ #endif
+ 
+-#endif /* !CONFIG_IA32_SUPPORT */
++#endif /* CONFIG_IA32_EMULATION */
+ 
+ #endif /* _ASM_X86_IA32_H */
+diff --git a/arch/x86/include/asm/irq_stack.h b/arch/x86/include/asm/irq_stack.h
+index 562854c60808..8912492a78f1 100644
+--- a/arch/x86/include/asm/irq_stack.h
++++ b/arch/x86/include/asm/irq_stack.h
+@@ -58,7 +58,7 @@
+  *     the output constraints to make the compiler aware that R11 cannot be
+  *     reused after the asm() statement.
+  *
+- *     For builds with CONFIG_UNWIND_FRAME_POINTER ASM_CALL_CONSTRAINT is
++ *     For builds with CONFIG_UNWINDER_FRAME_POINTER, ASM_CALL_CONSTRAINT is
+  *     required as well as this prevents certain creative GCC variants from
+  *     misplacing the ASM code.
+  *
+diff --git a/arch/x86/include/asm/page_32.h b/arch/x86/include/asm/page_32.h
+index 94dbd51df58f..b13f8488ac85 100644
+--- a/arch/x86/include/asm/page_32.h
++++ b/arch/x86/include/asm/page_32.h
+@@ -43,7 +43,7 @@ static inline void copy_page(void *to, void *from)
+ {
+ 	memcpy(to, from, PAGE_SIZE);
+ }
+-#endif	/* CONFIG_X86_3DNOW */
++#endif	/* CONFIG_X86_USE_3DNOW */
+ #endif	/* !__ASSEMBLY__ */
+ 
+ #endif /* _ASM_X86_PAGE_32_H */
+diff --git a/arch/x86/include/asm/uaccess.h b/arch/x86/include/asm/uaccess.h
+index c9fa7be3df82..e7fc2c515e08 100644
+--- a/arch/x86/include/asm/uaccess.h
++++ b/arch/x86/include/asm/uaccess.h
+@@ -411,7 +411,7 @@ do {									\
+ 		     : [umem] "m" (__m(addr)),				\
+ 		       [efault] "i" (-EFAULT), "0" (err))
+ 
+-#endif // CONFIG_CC_ASM_GOTO_OUTPUT
++#endif // CONFIG_CC_HAS_ASM_GOTO_OUTPUT
+ 
+ /* FIXME: this hack is definitely wrong -AK */
+ struct __large_struct { unsigned long buf[100]; };
+-- 
+2.29.2
 
 -- 
-Kees Cook
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
