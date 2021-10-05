@@ -2,92 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B9B8421DB4
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 06:51:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07866421DB8
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 06:52:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231656AbhJEExl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 00:53:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51224 "EHLO
+        id S231786AbhJEExr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 00:53:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229979AbhJEExi (ORCPT
+        with ESMTP id S231682AbhJEExq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 00:53:38 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE62EC061745;
-        Mon,  4 Oct 2021 21:51:48 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id 133so18669627pgb.1;
-        Mon, 04 Oct 2021 21:51:48 -0700 (PDT)
+        Tue, 5 Oct 2021 00:53:46 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A3ADC061745
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 21:51:56 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id j15so1441670plh.7
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 21:51:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HlT+qPxq8BW16CD3WxCEivqANKNeA3Ze9bwiVjEu7RU=;
-        b=h0L6CAhkmDAYAkkyvgyNwSEe3hzwtC5qTeefKSuAe79FOblmBqpmRBnnlseij1M0Cu
-         ySHcpwZ37+H3g7gyVBnrPfhJVXm+5tNKEIRWyCFXHhJHu1kiAVrVbxEVUPZN8pB+blQo
-         mMsuZEIpPT33eb77QvJgFSOmEsUlcd7Z4G05roeZsAMY1YW0Bvx0F7l4gaY6m/lOG8Sp
-         gyncUPjmyrqT6hAIXpQIyspAPa8PqUIC3RuZPFbyXr5bB4QYu4Yo+xZQ0QquJ8Hv05Gp
-         XTxQQHlbuTYDwZCZfKc8DApBR7hrqA1DC0/5Z0agXLNguXUbRNU4QsD9L+SDcM/IuaJ4
-         a1/w==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=kxVX01zuZBUirai+6B2SoPW2CcwR7nx7sC9W6AGzh80=;
+        b=FDxjPWLHmD+ysuPDGN5rV1T1RisFrf+gKFZ1DefEurFe4WUBwMptd9Skz5j5TVfodP
+         +VJk7KLuG1fEbOpa9leAJiB/x9xB/mtq+nZraW50TPfko2n5hja+tajEY1Me11wqijEI
+         +rS7WtIeET4qMfZa2SUmk1mrIFnXlhsD2LCeuWNCxJ5BAWTu0QY4Ol1at8ptlpGoLW9t
+         Ckp5YNH9UXKpVYXlezaCra9To4TmUT8ELdf71lSJAZ/KJ2bAb2Wtk/R2UkVf/rN5KBG4
+         NAdII8dCKVR27UojQVi7FH2k51ZQyTsGfULV50rpGlWr9t5WsZVysj+RIi3VBLJ87XI5
+         4HaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HlT+qPxq8BW16CD3WxCEivqANKNeA3Ze9bwiVjEu7RU=;
-        b=fN2eH8raouZ5t/3lFNVPEO0LFlV+cfOg7sAW57VT7wP3ktW9m7vpAh+sZl37kqbg0+
-         NznRqchSBmN0La1b+yO3BPTsPlRNNGJUAlvOhenfWLeS1drXWtTCt8GH3heNwscOd7Z+
-         UNjfDdanTrfunxKJTHSygfM0/w2PKOhMQQx3SMlVpQ8DEuKZcK3/AvX+xdRu6uxetZEO
-         hM8ThnDJ0/klm2H6wHPK4FBdJKW0mrDzVobS+ajvZ9tGDDaJysDS7DijmGZ+Lu+CZ8L0
-         rvhFA7p6VrwrAY5mhOU9Iuvxhbdj0SPHmBlv563NRxUqr+zHm11+ZsH3CJXE0o9pTSHb
-         6RNQ==
-X-Gm-Message-State: AOAM533W8fI1vs6tV4T2ECPOmaXe6eI/FQGKeeSG7KtbkHhaynEbLpSo
-        qrClF5p3NBWK3kw+oqW+Zj3N5SHIFTx8ZQ==
-X-Google-Smtp-Source: ABdhPJwOSoFMWIVbP/Nim01A7wy1OzrwqNnRurL5C9jchujynRvUj3Qo3IP6Y97RvyNDFfmUNLPRhw==
-X-Received: by 2002:a63:d80c:: with SMTP id b12mr13967193pgh.331.1633409508508;
-        Mon, 04 Oct 2021 21:51:48 -0700 (PDT)
-Received: from unconquered.home.aehallh.com (24-113-252-168.wavecable.com. [24.113.252.168])
-        by smtp.gmail.com with ESMTPSA id x11sm10087483pfh.75.2021.10.04.21.51.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Oct 2021 21:51:48 -0700 (PDT)
-From:   "Zephaniah E. Loss-Cutler-Hull" <zephaniah@gmail.com>
-To:     alsa-devel@alsa-project.org
-Cc:     linux-kernel@vger.kernel.org,
-        "Zephaniah E. Loss-Cutler-Hull" <zephaniah@gmail.com>,
-        stable@vger.kernel.org
-Subject: [PATCH] ALSA: hda/realtek - Fix silent output on Gigabyte B550 Aorus Elite AX v2
-Date:   Mon,  4 Oct 2021 21:51:34 -0700
-Message-Id: <20211005045134.1429877-1-zephaniah@gmail.com>
-X-Mailer: git-send-email 2.33.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=kxVX01zuZBUirai+6B2SoPW2CcwR7nx7sC9W6AGzh80=;
+        b=UBmkyB7LvbXF5tgj7M66Nw+QOsbMIUskpCvo4nK9aTWp8ZE+v+2r68sRgv5t+XdSyP
+         MWvWIaUC14DTC91r1n7/Rp/U3/NPECxCTqhlo9zG6wyj/Yhdn+JS7rPVWMMh1YGp15tB
+         av1o9z8gHTJ0h4G67OKZUAZhZ4cdUzoaW56eknTo9gRg1HGmegMR5tknJYG5JOrijYQC
+         P7a4pP1GcwYWRxYNyvrkia2wGYOjMvKWhPdxKFD3tBijGEiN/4yCfBWAcycf99+Dg2bp
+         C64LK3A24HxhxjUBsi/qRp5YRkr8azcKkfOjQYs25K1O5rcn29j8YgTEkYhi5ne9F9LU
+         PwbA==
+X-Gm-Message-State: AOAM531pK8XFzsCXTSeYAKhvlyHkFXMv+WXDhcQMmN/LMQ5HrRbktsyV
+        pjbwOOIY/qpmEr+9WKgBWKTz
+X-Google-Smtp-Source: ABdhPJyF8IV3fNnaMskmP23kUjDD9683cDHaAVdrho93/FUHhfnPDaFKyxL91l6eQ0xOL6HWpeuMZA==
+X-Received: by 2002:a17:90a:4207:: with SMTP id o7mr1297339pjg.192.1633409515689;
+        Mon, 04 Oct 2021 21:51:55 -0700 (PDT)
+Received: from workstation ([120.138.13.79])
+        by smtp.gmail.com with ESMTPSA id x35sm5006826pfh.52.2021.10.04.21.51.52
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 04 Oct 2021 21:51:55 -0700 (PDT)
+Date:   Tue, 5 Oct 2021 10:21:51 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>, rafael@kernel.org,
+        robh+dt@kernel.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH] dt-bindings: cpufreq: cpufreq-qcom-hw: Convert to YAML
+ bindings
+Message-ID: <20211005045151.GB4195@workstation>
+References: <20211004044317.34809-1-manivannan.sadhasivam@linaro.org>
+ <20211004070531.sexvnqmnkoe4j6a2@vireshk-i7>
+ <20211004072222.GE16442@workstation>
+ <YVszd2UMw9F5LqWC@ripper>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YVszd2UMw9F5LqWC@ripper>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Gigabyte B550 Aorus Elite AX v2 motherboard with ALC1220 codec
-requires a similar workaround for Clevo laptops to enforce the DAC/mixer
-connection path.  Set up a quirk entry for that.
+On Mon, Oct 04, 2021 at 10:01:43AM -0700, Bjorn Andersson wrote:
+> On Mon 04 Oct 00:22 PDT 2021, Manivannan Sadhasivam wrote:
+> 
+> > On Mon, Oct 04, 2021 at 12:35:31PM +0530, Viresh Kumar wrote:
+> > > On 04-10-21, 10:13, Manivannan Sadhasivam wrote:
+> > > > Convert Qualcomm cpufreq devicetree binding to YAML.
+> > > > 
+> > > > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > > > Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+> > > > Reviewed-by: Rob Herring <robh@kernel.org>
+> > > 
+> > > I am not sure if Rob ever gave this.
+> > > 
+> > 
+> > I'm not fooling you :)
+> > https://patchwork.kernel.org/project/linux-pm/patch/20210701105730.322718-5-angelogioacchino.delregno@somainline.org/#24312445
+> > 
+> > > > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > > 
+> > > Why double signed off ?
+> > > 
+> > 
+> > Ah, it came while I applied the patch from Angelo's series. If you want
+> > I can send a new version removing one or you can do that while applying.
+> > 
+> 
+> If you wrote the patch, then Angelo handled it, then you handled it
+> again the double S-o-b captures that nicely.
+> 
+> Looking it from the other angle, if you remove the first S-o-b, then you
+> forgot to signed it off when you authored the original patch and if you
+> skip the last S-o-b then you didn't adequately sign off the final
+> result.
+> 
 
-This is the same workaround as the Gigabyta X570 boards also on the
-quirk list.
+Makes sense! I'll leave it as it is.
 
-Signed-off-by: Zephaniah E. Loss-Cutler-Hull <zephaniah@gmail.com>
-Cc: <stable@vger.kernel.org>
----
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
+Thanks,
+Mani
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 4407f7da57c4..ec5b6eed62e2 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -2517,6 +2517,7 @@ static const struct snd_pci_quirk alc882_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1458, 0xa0b8, "Gigabyte AZ370-Gaming", ALC1220_FIXUP_GB_DUAL_CODECS),
- 	SND_PCI_QUIRK(0x1458, 0xa0cd, "Gigabyte X570 Aorus Master", ALC1220_FIXUP_CLEVO_P950),
- 	SND_PCI_QUIRK(0x1458, 0xa0ce, "Gigabyte X570 Aorus Xtreme", ALC1220_FIXUP_CLEVO_P950),
-+	SND_PCI_QUIRK(0x1458, 0xa0cf, "Gigabyte B550 Aorus Elite AX v2", ALC1220_FIXUP_CLEVO_P950),
- 	SND_PCI_QUIRK(0x1462, 0x11f7, "MSI-GE63", ALC1220_FIXUP_CLEVO_P950),
- 	SND_PCI_QUIRK(0x1462, 0x1228, "MSI-GP63", ALC1220_FIXUP_CLEVO_P950),
- 	SND_PCI_QUIRK(0x1462, 0x1229, "MSI-GP73", ALC1220_FIXUP_CLEVO_P950),
--- 
-2.33.0
-
+> Regards,
+> Bjorn
+> 
+> > Let me know.
+> > 
+> > Thanks,
+> > Mani
+> > 
+> > > -- 
+> > > viresh
