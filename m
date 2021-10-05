@@ -2,112 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5352E422CC0
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:40:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C0AA422CC7
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:41:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235979AbhJEPm1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 11:42:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34246 "EHLO
+        id S236132AbhJEPni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 11:43:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230059AbhJEPmZ (ORCPT
+        with ESMTP id S235992AbhJEPnh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 11:42:25 -0400
-Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AEF0C061749;
-        Tue,  5 Oct 2021 08:40:35 -0700 (PDT)
-Received: by mail-oo1-xc29.google.com with SMTP id e19-20020a4a7353000000b002b5a2c0d2b8so6543595oof.3;
-        Tue, 05 Oct 2021 08:40:35 -0700 (PDT)
+        Tue, 5 Oct 2021 11:43:37 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C33D7C061753
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 08:41:46 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id d13-20020a17090ad3cd00b0019e746f7bd4so2354775pjw.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 08:41:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:reply-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5QktpwidiajSgJvIim8VKPelrfPrxs7aTCcg3SgMOnQ=;
-        b=LrJydlGqf2IRWbCkEuUKMLD9qxKoltfdqfE4dgB/X732p4nit+b4w157mj+ialGptg
-         cCCdKSMuHXHBWYskXuKDs9Uut4xCe7CFE5Z8FvgY3u6wNIClzHkn3vf6I0bz71EhoOGh
-         PHcHmP1CMQMhSg6xVG2vxqqzjc5scRnD1m1ic4xtkXtecYecJuULGD6qWue4CLgqdXbU
-         JWpupOpwyflNReq2Ac622+QH1Whqi9kncjtlRCRSzCifgymWQujIF4b3EfKFN9k0nwlx
-         JPtmDkMHVKIvzkWcTAnAO7jAgUTZTO1IppGOtkAaGopor6lP+8zVyRYxfrgdqeEL/UK4
-         dlTQ==
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=5/7o5EIsmXSiuzP1m4Q+SWodBgxhNUVp7n/GckW+Jrk=;
+        b=Dl8yKD10zzy661mtoaa0QdpladaehtORzyWw8GaN0/Az/CLUUH9TBPrvwKoF6GQQs4
+         PXQvWfPWsBHlEOT1LDRGkdd+aZjK6DRTpa1NLkqjig72gEJcG4FndrVbdUbpkylaDuVE
+         dEvFRUSrC8x5KMWvIGfiEXlMjgyxZsdZ5ptfDNNxIkGk7mqOpn7RsNMdoV6zpFvZHwLr
+         43JDIpGK7Oj35lRWTSwrW1t08d42apKif4VNtj6l94zOjuK69osIqs4rmWNN6YuvH4wU
+         Koo4kZjiSqGO4GZ8Ej9MJ8loW3X6iqAp8C6bae/u4eu4uAWONJp01OYo7yF0ISHNPGY1
+         noEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :reply-to:references:mime-version:content-disposition:in-reply-to;
-        bh=5QktpwidiajSgJvIim8VKPelrfPrxs7aTCcg3SgMOnQ=;
-        b=UCwNxUXJIjmb/0ik6kc7P3+2z2xZ24KwzdvZCrD8fjXXJea79RemrgOQzi6ZQkPa7h
-         R/+em0PBdHdzqKOMOysnjvL0Y1JDrn1ib/QWhcnnHcYSGY/KApO/dS3SdAToTRb4k0HK
-         77YBtKAjeoslVtJsqs7CzPFxNCU+z1o8cLa0hQqKV12JRy+sgHl64yp31teglb/mn9uC
-         YggYGw4x4ojNDHVINbxFDGCkF9871/SFKeHRyegbI8w538G2eUAWT6mlW4el6WsR5BPE
-         yb9AycGt/9qZyuQPkTtya8pLjgnG5qOGxvVjLps/q6Cj2cCinxV6qyx9+EGc+OHGILaH
-         buBQ==
-X-Gm-Message-State: AOAM533w47oTKH3RUDgQydBaqnXuYkNKO1ypRCKjRwiDRDfRfbwm/uUW
-        4gtiwr9+TKy9lm8yWGMRQ2503wlbag==
-X-Google-Smtp-Source: ABdhPJzHlCKXoqun8+eMsIBoGBDZwo9BLOIQP/FgDYKi9BIHYuRSRjpt7qabwEBqbV9m6/FNDHKXCg==
-X-Received: by 2002:a4a:e292:: with SMTP id k18mr13915115oot.80.1633448434304;
-        Tue, 05 Oct 2021 08:40:34 -0700 (PDT)
-Received: from serve.minyard.net (serve.minyard.net. [2001:470:b8f6:1b::1])
-        by smtp.gmail.com with ESMTPSA id e2sm3428597ooh.40.2021.10.05.08.40.33
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=5/7o5EIsmXSiuzP1m4Q+SWodBgxhNUVp7n/GckW+Jrk=;
+        b=cXjdlXodCGMNyGTrmi00PYQbD4qHLlvNQPxuVh3jd+i5Pt49jpmAWo2sj5B91mFM0/
+         bmpWnDzaBhfXBSiVfXaPTGnNL8ieAz8+l3BMyt2e/9Na6qNerHi803BNgYZvKWsL1DTP
+         aStlDGEpAJOg8wHAplGOqPXsuCzgJuxjI4x7GppMApo/6PSOSgOS2vPg48gx3C2vbyq1
+         UlL5C0lNhgfbWi/APcacBcLBoV4+XpzRJ/Xi32xY2Le4CT0vMKrzRtNr3uUEu0Jw7Fr+
+         aoTzQ2FQkHriVTxJeE+n/SXHzH1OHFskZWmH7I+44Rz6NXxtxaVl2BwSiE+OPdG6h70n
+         2eCw==
+X-Gm-Message-State: AOAM531/VWwo5vutC72QDsufVZEjW6xQug2ofCogfBO9aMbHpygYokJp
+        TaROtzYWOAEUYabbxhIwwPkYvw==
+X-Google-Smtp-Source: ABdhPJz7Eu5WhkXk+3OVsJv0v8fEKxdtoYqJuoAyIMqCgFUECW/V7fiWss45GtxUT3gd2sgeCsfWCg==
+X-Received: by 2002:a17:90a:890a:: with SMTP id u10mr4555711pjn.40.1633448506134;
+        Tue, 05 Oct 2021 08:41:46 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id t1sm17244661pgf.78.2021.10.05.08.41.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Oct 2021 08:40:33 -0700 (PDT)
-Sender: Corey Minyard <tcminyard@gmail.com>
-Received: from minyard.net (unknown [IPv6:2001:470:b8f6:1b:1ce5:3fb4:8fe9:30d1])
-        by serve.minyard.net (Postfix) with ESMTPSA id F22D2180053;
-        Tue,  5 Oct 2021 15:40:32 +0000 (UTC)
-Date:   Tue, 5 Oct 2021 10:40:31 -0500
-From:   Corey Minyard <minyard@acm.org>
+        Tue, 05 Oct 2021 08:41:45 -0700 (PDT)
+Date:   Tue, 5 Oct 2021 15:41:42 +0000
+From:   Sean Christopherson <seanjc@google.com>
 To:     Colin King <colin.king@canonical.com>
-Cc:     openipmi-developer@lists.sourceforge.net,
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
+        David Stevens <stevensd@chromium.org>, kvm@vger.kernel.org,
         kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [Openipmi-developer] [PATCH][next] ipmi: ipmb: Fix off-by-one
- size check on rcvlen
-Message-ID: <20211005154031.GD5381@minyard.net>
-Reply-To: minyard@acm.org
-References: <20211005151611.305383-1-colin.king@canonical.com>
+Subject: Re: [PATCH][next] KVM: x86: Fix allocation sizeof argument
+Message-ID: <YVxyNgyyxA7EnvJb@google.com>
+References: <20211001110106.15056-1-colin.king@canonical.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211005151611.305383-1-colin.king@canonical.com>
+In-Reply-To: <20211001110106.15056-1-colin.king@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05, 2021 at 04:16:11PM +0100, Colin King wrote:
+On Fri, Oct 01, 2021, Colin King wrote:
 > From: Colin Ian King <colin.king@canonical.com>
 > 
-> There is an off-by-one bounds check on the rcvlen causing a potential
-> out of bounds write on iidev->rcvmsg. Fix this by using the >= operator
-> on the bounds check rather than the > operator.
-
-Got it, thanks.
-
--corey
-
+> The allocation for *gfn_track should be for a slot->npages lot of
+> short integers, however the current allocation is using sizeof(*gfn_track)
+> and that is the size of a pointer, which is too large. Fix this by
+> using sizeof(**gfn_track) instead.
 > 
-> Addresses-Coverity: ("Out-of-bounds write")
-> Fixes: 0ba0c3c5d1c1 ("ipmi:ipmb: Add initial support for IPMI over IPMB")
+> Addresses-Coverity: ("Wrong sizeof argument")
+> Fixes: 35b330bba6a7 ("KVM: x86: only allocate gfn_track when necessary")
 > Signed-off-by: Colin Ian King <colin.king@canonical.com>
 > ---
->  drivers/char/ipmi/ipmi_ipmb.c | 2 +-
+>  arch/x86/kvm/mmu/page_track.c | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/char/ipmi/ipmi_ipmb.c b/drivers/char/ipmi/ipmi_ipmb.c
-> index b10a1fd9c563..77ebec4ed28e 100644
-> --- a/drivers/char/ipmi/ipmi_ipmb.c
-> +++ b/drivers/char/ipmi/ipmi_ipmb.c
-> @@ -192,7 +192,7 @@ static int ipmi_ipmb_slave_cb(struct i2c_client *client,
->  		break;
->  
->  	case I2C_SLAVE_WRITE_RECEIVED:
-> -		if (iidev->rcvlen > sizeof(iidev->rcvmsg))
-> +		if (iidev->rcvlen >= sizeof(iidev->rcvmsg))
->  			iidev->overrun = true;
->  		else
->  			iidev->rcvmsg[iidev->rcvlen++] = *val;
+> diff --git a/arch/x86/kvm/mmu/page_track.c b/arch/x86/kvm/mmu/page_track.c
+> index bb5d60bd4dbf..5b785a5f7dc9 100644
+> --- a/arch/x86/kvm/mmu/page_track.c
+> +++ b/arch/x86/kvm/mmu/page_track.c
+> @@ -92,7 +92,7 @@ int kvm_page_track_enable_mmu_write_tracking(struct kvm *kvm)
+>  		slots = __kvm_memslots(kvm, i);
+>  		kvm_for_each_memslot(slot, slots) {
+>  			gfn_track = slot->arch.gfn_track + KVM_PAGE_TRACK_WRITE;
+> -			*gfn_track = kvcalloc(slot->npages, sizeof(*gfn_track),
+> +			*gfn_track = kvcalloc(slot->npages, sizeof(**gfn_track),
+>  					      GFP_KERNEL_ACCOUNT);
+
+Eww (not your patch, the original code).  IMO the double indirection is completely
+unnecessary, e.g. I find this far easier to follow
+
+diff --git a/arch/x86/kvm/mmu/page_track.c b/arch/x86/kvm/mmu/page_track.c
+index bb5d60bd4dbf..8cae41b831dd 100644
+--- a/arch/x86/kvm/mmu/page_track.c
++++ b/arch/x86/kvm/mmu/page_track.c
+@@ -75,7 +75,7 @@ int kvm_page_track_enable_mmu_write_tracking(struct kvm *kvm)
+ {
+        struct kvm_memslots *slots;
+        struct kvm_memory_slot *slot;
+-       unsigned short **gfn_track;
++       unsigned short *gfn_track;
+        int i;
+ 
+        if (write_tracking_enabled(kvm))
+@@ -91,13 +91,13 @@ int kvm_page_track_enable_mmu_write_tracking(struct kvm *kvm)
+        for (i = 0; i < KVM_ADDRESS_SPACE_NUM; i++) {
+                slots = __kvm_memslots(kvm, i);
+                kvm_for_each_memslot(slot, slots) {
+-                       gfn_track = slot->arch.gfn_track + KVM_PAGE_TRACK_WRITE;
+-                       *gfn_track = kvcalloc(slot->npages, sizeof(*gfn_track),
+-                                             GFP_KERNEL_ACCOUNT);
+-                       if (*gfn_track == NULL) {
++                       gfn_track = kvcalloc(slot->npages, sizeof(*gfn_track),
++                                            GFP_KERNEL_ACCOUNT);
++                       if (gfn_track == NULL) {
+                                mutex_unlock(&kvm->slots_arch_lock);
+                                return -ENOMEM;
+                        }
++                       slot->arch.gfn_track[KVM_PAGE_TRACK_WRITE] = gfn_track;
+                }
+        }
+ 
+
+
+>  			if (*gfn_track == NULL) {
+>  				mutex_unlock(&kvm->slots_arch_lock);
+
+Hrm, this fails to free the gfn_track allocations for previous memslots.  The
+on-demand rmaps code has the exact same bug (it frees rmaps for previous lpages
+in the _current_ slot, but does not free previous slots).
+
+And having two separate flows (and flags) for rmaps vs. gfn_track is pointless,
+and means we have to maintain two near-identical copies of non-obvious code.
+
+Paolo, is it too late to just drop the original deae4a10f166 ("KVM: x86: only
+allocate gfn_track when necessary")?
+
 > -- 
 > 2.32.0
 > 
-> 
-> 
-> _______________________________________________
-> Openipmi-developer mailing list
-> Openipmi-developer@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/openipmi-developer
