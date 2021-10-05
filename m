@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FD8A421FDD
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 09:55:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 761AA421FE1
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 09:55:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233260AbhJEH5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 03:57:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36178 "EHLO
+        id S233319AbhJEH5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 03:57:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233005AbhJEH5L (ORCPT
+        with ESMTP id S232965AbhJEH5M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 03:57:11 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10D6EC06174E;
-        Tue,  5 Oct 2021 00:55:21 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id j10-20020a1c230a000000b0030d523b6693so2155407wmj.2;
-        Tue, 05 Oct 2021 00:55:20 -0700 (PDT)
+        Tue, 5 Oct 2021 03:57:12 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48BC6C061765;
+        Tue,  5 Oct 2021 00:55:22 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id s198-20020a1ca9cf000000b0030d6986ea9fso2173730wme.1;
+        Tue, 05 Oct 2021 00:55:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=cs7yL1yesYeQIrYbGC+FwZ8CROeborq06P53sikC5fs=;
-        b=gE9knev2IDasksSDYG6MpLzX9s+OcdLhHfmCJz80x2K14/oXXFl6RaAcE1WrigvhZ1
-         SckG+zOgwO9zBhgISokBLd9pcj3yhZM/IJAnN+87nQDDxFraF85IumjKvRwpvqMkIvu8
-         xkN0kVkF+XuDtmIJ7rNBAwEH0nP9OEDO5Qii1wcKyf/xPdm7BBWJMysP++OUZNMC13CB
-         Aygmg+xgLE4qhyePaKT4E9mD771ZWzCw2XlJbqzReoP1A850hqIoFI9qGoWVh1DgIdfj
-         6GX5C2vkzpK3J11WXBDEdGiAJQymze5cLf0HgQhgvlmxQc03eBJTbs12W2LZJXVf9eA7
-         q+jQ==
+        bh=rnxkwu+jla6ut+IvJVQYqIBJUbwnUPabboo+Da4W4N0=;
+        b=m8HoarMf1s6bCFaOn4CAiigvWMxLZaKUuCApzgBtO13KGqb7AL+XMf/vcB6EwZ81vr
+         lKvNjWiIgPb/ptbHjUWaeRq6hU3RfQ0AkSDBRllvHYp3vo1lAyCNAJYHLeyagQpAYSl6
+         YyNqZ4rngJuXv/mVHLUleOuHmJPkGJHI1eJU1Ba0X8aURaBZgm+Y9SWOyZTM19IwNzzs
+         GKASX840Y7oZQ0IvSPoBRXTR9mfVksBaKC7Mss5ySeAp1rmiAjZM02HilS7m+lfPAJTo
+         0/36WefREyNKwSsfp8wAfNYhQJMP8XXCEujbrpc07Kk19FAultk7a0C2cC3xWWIRfRvh
+         ufow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=cs7yL1yesYeQIrYbGC+FwZ8CROeborq06P53sikC5fs=;
-        b=n4xkHfdHIc37JogiHQw7eVJPJGLUS1wLUqsEfXBl4KGQFZXSHeMdFUoDVGYk9kOJLr
-         WrynSPrEvEqosk0vL7WRxVMew9d44TQxHnhta8l5qbA7jXnD35eHKGlY1vM9+Agy59Dg
-         1Z2ocmMJeEq1QCRDthUIW3R8tkpGbkJszvgBam+foSXiqs7d8+C2cx/y2p45G9MscUMF
-         hOGg2ZoiRo5VGwuPoLi6sLdYnO2Kx5shkXm1hckWq60ACWYRaugGkd5eSn3/VOyulvTi
-         IHYxLSJtUMcLrp/wM8ZZyb5qRY9uY+hmbRKetWEv8z1nZpmjP0qJCLQSNBvD7D8q3jcC
-         d0kA==
-X-Gm-Message-State: AOAM5323hhhbYEJyQh461eQWMAvI7/ia67aJlHKM7NLSRnSTgfZnh4o7
-        PztZnw2Il7awKCwRagNTdXQ=
-X-Google-Smtp-Source: ABdhPJwg/ONyDw+lvreHNf3aoTXXadwZJA7I+YEfssPCZ3Td9bOO3v68PjbfVRu9R+08qR843xYSpQ==
-X-Received: by 2002:a05:600c:210d:: with SMTP id u13mr1839931wml.146.1633420519584;
-        Tue, 05 Oct 2021 00:55:19 -0700 (PDT)
+        bh=rnxkwu+jla6ut+IvJVQYqIBJUbwnUPabboo+Da4W4N0=;
+        b=7OEt4Fx0WC2T9vL16WlJbv2mCgpQ2qm0WNg5sVanQS/ZhlF5eaW/aBRcK16Of2sVRW
+         L6UOnWUzFkHk4M8g1b79BQZO5Q2pJwnk5lSeQHEs3MeGRGUdDLuyape/HoAV3U32dC5C
+         5UPfXEumeC9dDMr1wTDaLTOysZ+iFA7N4oFaUk3jCgwFzS6yM+zq5Wv0CBFM+bu6ec/z
+         BfwPOOsq47wHnLG/0un7wsVXp3xXlTQR3rKAL97reseY8JiR5EG+FKPv/2RjpsLJbOsu
+         uLm5CF2TLiD4e75TvXordP64r+jI23M/GpuiqPu2U+ym16gFjg8one6lbVdVDJystTbL
+         xLSA==
+X-Gm-Message-State: AOAM533TPVSz04yrYmQAPmfWRlxlMmUjfXIBf6EF49xgpfxzEsQgvmwY
+        gKp1WYjsm1LINap14u01bbHDxZVYvQ7Kwg==
+X-Google-Smtp-Source: ABdhPJzRuWG43QbOjd2qa0K9HJVF6+r67DkGymvaqQc4rEARzw15ugPywEADgmXlbE8131GSOgEEGg==
+X-Received: by 2002:a1c:ed13:: with SMTP id l19mr1874484wmh.48.1633420520850;
+        Tue, 05 Oct 2021 00:55:20 -0700 (PDT)
 Received: from localhost.localdomain (i59F67A83.versanet.de. [89.246.122.131])
-        by smtp.gmail.com with ESMTPSA id o1sm1176984wmq.26.2021.10.05.00.55.18
+        by smtp.gmail.com with ESMTPSA id o1sm1176984wmq.26.2021.10.05.00.55.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Oct 2021 00:55:19 -0700 (PDT)
+        Tue, 05 Oct 2021 00:55:20 -0700 (PDT)
 From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
 To:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
 Cc:     Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
@@ -72,9 +72,9 @@ Cc:     Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
         Dmitry Torokhov <dmitry.torokhov@gmail.com>,
         kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
         Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH v4 04/11] MAINTAINERS: rectify entries with documentation-file-ref check
-Date:   Tue,  5 Oct 2021 09:54:44 +0200
-Message-Id: <20211005075451.29691-5-lukas.bulwahn@gmail.com>
+Subject: [PATCH v4 05/11] MAINTAINERS: rectify entry for ALLWINNER HARDWARE SPINLOCK SUPPORT
+Date:   Tue,  5 Oct 2021 09:54:45 +0200
+Message-Id: <20211005075451.29691-6-lukas.bulwahn@gmail.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20211005075451.29691-1-lukas.bulwahn@gmail.com>
 References: <20211005075451.29691-1-lukas.bulwahn@gmail.com>
@@ -84,76 +84,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A number of file entries can be automatically repaired with
-./scripts/documentation-file-ref-check --fix.
+Commit f9e784dcb63f ("dt-bindings: hwlock: add sun6i_hwspinlock") adds
+Documentation/devicetree/bindings/hwlock/allwinner,sun6i-a31-hwspinlock.yaml,
+but the related commit 3c881e05c814 ("hwspinlock: add sun6i hardware
+spinlock support") adds a file reference to allwinner,sun6i-hwspinlock.yaml
+instead.
 
-The changes from this script were manually cross-checked for sanity.
+Hence, ./scripts/get_maintainer.pl --self-test=patterns complains:
 
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
-Reviewed-by: Mirela Rabulea <mirela.rabulea@nxp.com> # for nxp,imx8-jpeg.yaml
+  warning: no file matches  F:  Documentation/devicetree/bindings/hwlock/allwinner,sun6i-hwspinlock.yaml
+
+Rectify this file reference in ALLWINNER HARDWARE SPINLOCK SUPPORT.
+
+Reviewed-by: Wilken Gottwalt <wilken.gottwalt@posteo.net>
 Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 ---
- MAINTAINERS | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ MAINTAINERS | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 15cb81c935e3..09c166e2a239 100644
+index 09c166e2a239..9db2012ebae4 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -1566,7 +1566,7 @@ ARM PRIMECELL VIC PL190/PL192 DRIVER
- M:	Linus Walleij <linus.walleij@linaro.org>
- L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+@@ -776,7 +776,7 @@ F:	drivers/crypto/allwinner/
+ ALLWINNER HARDWARE SPINLOCK SUPPORT
+ M:	Wilken Gottwalt <wilken.gottwalt@posteo.net>
  S:	Maintained
--F:	Documentation/devicetree/bindings/interrupt-controller/arm,vic.txt
-+F:	Documentation/devicetree/bindings/interrupt-controller/arm,vic.yaml
- F:	drivers/irqchip/irq-vic.c
+-F:	Documentation/devicetree/bindings/hwlock/allwinner,sun6i-hwspinlock.yaml
++F:	Documentation/devicetree/bindings/hwlock/allwinner,sun6i-a31-hwspinlock.yaml
+ F:	drivers/hwspinlock/sun6i_hwspinlock.c
  
- ARM SMC WATCHDOG DRIVER
-@@ -1892,7 +1892,7 @@ T:	git git://github.com/ulli-kroll/linux.git
- F:	Documentation/devicetree/bindings/arm/gemini.txt
- F:	Documentation/devicetree/bindings/net/cortina,gemini-ethernet.txt
- F:	Documentation/devicetree/bindings/pinctrl/cortina,gemini-pinctrl.txt
--F:	Documentation/devicetree/bindings/rtc/faraday,ftrtc010.txt
-+F:	Documentation/devicetree/bindings/rtc/faraday,ftrtc010.yaml
- F:	arch/arm/boot/dts/gemini*
- F:	arch/arm/mach-gemini/
- F:	drivers/crypto/gemini/
-@@ -8769,7 +8769,7 @@ Q:	http://patchwork.ozlabs.org/project/linux-mtd/list/
- C:	irc://irc.oftc.net/mtd
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git cfi/next
- F:	Documentation/devicetree/bindings/mtd/cypress,hyperflash.txt
--F:	Documentation/devicetree/bindings/mtd/ti,am654-hbmc.txt
-+F:	Documentation/devicetree/bindings/mtd/ti,am654-hbmc.yaml
- F:	drivers/mtd/hyperbus/
- F:	include/linux/mtd/hyperbus.h
- 
-@@ -9559,7 +9559,7 @@ F:	include/linux/soc/ixp4xx/qmgr.h
- INTEL IXP4XX RANDOM NUMBER GENERATOR SUPPORT
- M:	Deepak Saxena <dsaxena@plexity.net>
- S:	Maintained
--F:	Documentation/devicetree/bindings/display/intel,ixp46x-rng.yaml
-+F:	Documentation/devicetree/bindings/rng/intel,ixp46x-rng.yaml
- F:	drivers/char/hw_random/ixp4xx-rng.c
- 
- INTEL KEEM BAY DRM DRIVER
-@@ -13612,7 +13612,7 @@ M:	Mirela Rabulea <mirela.rabulea@nxp.com>
- R:	NXP Linux Team <linux-imx@nxp.com>
- L:	linux-media@vger.kernel.org
- S:	Maintained
--F:	Documentation/devicetree/bindings/media/imx8-jpeg.yaml
-+F:	Documentation/devicetree/bindings/media/nxp,imx8-jpeg.yaml
- F:	drivers/media/platform/imx-jpeg
- 
- NZXT-KRAKEN2 HARDWARE MONITORING DRIVER
-@@ -18619,7 +18619,7 @@ M:	Santosh Shilimkar <ssantosh@kernel.org>
- L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
- S:	Maintained
- F:	Documentation/devicetree/bindings/arm/keystone/ti,k3-sci-common.yaml
--F:	Documentation/devicetree/bindings/arm/keystone/ti,sci.txt
-+F:	Documentation/devicetree/bindings/arm/keystone/ti,sci.yaml
- F:	Documentation/devicetree/bindings/clock/ti,sci-clk.yaml
- F:	Documentation/devicetree/bindings/interrupt-controller/ti,sci-inta.yaml
- F:	Documentation/devicetree/bindings/interrupt-controller/ti,sci-intr.yaml
+ ALLWINNER THERMAL DRIVER
 -- 
 2.26.2
 
