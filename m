@@ -2,115 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A38D6423329
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 00:04:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C9B142332B
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 00:05:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236750AbhJEWGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 18:06:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39360 "EHLO
+        id S231658AbhJEWHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 18:07:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229974AbhJEWGd (ORCPT
+        with ESMTP id S229974AbhJEWHJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 18:06:33 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDB98C061749
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 15:04:41 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id v17so2284365wrv.9
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 15:04:41 -0700 (PDT)
+        Tue, 5 Oct 2021 18:07:09 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66790C061749
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 15:05:18 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id 133so658442pgb.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 15:05:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=wWGT6wyYNrHQcVjKvvDi6depYNBPBPoEJbTYnS4YHRE=;
-        b=oMaqA3o9QB94TpF7CppOdrcV4haz930ZF4+Q3iSjOXfqsmWCdei2kltW3OvQJU19kd
-         /V59SHINqQjwDzbyAYjjrf4QWS5WUlsx8P3x9EXaatOnSqxvbEoepxQzx2stjYfASETq
-         BUVIcAZvX2YPsATGazdGcy2Z3bnQxTYFcv4AMI7z55NhgW9pRgad2/PlOkB1Gw8p3NO0
-         gB2f/Fr1QhgZTdCrnC3bIXpAqdllyjpvErazZEXE9l4pePYmnNroUlbFuvKibj+7197V
-         HF0WJEU4IfhNkmwDqBhilfR/zAJIaHcHYgWMxYL8Nf4ZKIJKDkRFFGPbcdVXnIKxomtr
-         xO1w==
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=VloxAkcKG25Kax+zrrIt0tSfG0rrkP/DpDGPGBa4V04=;
+        b=XUwrlhK57tKwpuhMre75IzOJMvSFpxHPP1Z2weh9RhWm/JRtSNPKlJvqrSFC+0Yyjh
+         bT46HwXPL3YalnsCifMTLXX6xutCI6R8TMZnhrzn7xQ/HRwhf6Ch+2Rmd3XoG62pRdtP
+         wlKnv62UXBtAqwpwSInbfXsWpanAhq3fPSMdJRmzPWxJ2wjgS/s8Q25t7CSZp9d6qei8
+         fgi02tynGfP8PJeh7AoZ31ub/J6tNMdT0KEqsSAuGpbOj/iB5y8+R97UcLU0Ikl55HQg
+         NC7g5pe1kURqRNW7/hxFASgQOf6uh/+wNkS0cD5b0ioapDM0kA6FaDmAgBGHjbNoTL0H
+         +XIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=wWGT6wyYNrHQcVjKvvDi6depYNBPBPoEJbTYnS4YHRE=;
-        b=Sd+xGJCv5sbTT6yMl4UFnbhjA3ajiSxSA1N5lvfjiirpOY0BHdBJa0XbHb8Jt5BAOa
-         oY0CL7nmgRhggWiPXl48XYO5dNXsBwzvxMHYnNg1li3k2+7lmuenK1hJR1+Etxkp64uM
-         JgnpX/gQsZKwwOdQxLkghlXwA7Kw79HtyoHyRIDaDe9TDrvMN9Q3DF4/doQWL7lgaUeU
-         0bnFQHr52yuE8m2Wj4XvbizJTC7XxewPtGvvwSarP4QxtUMl5LDBHBh1hzzhom54GQ/y
-         ifFwNeZSVX9omHWlNwZUZsTpFmRiC8r9GlAkpOvi6bN//EJe0GnDtojDSAVBv5FSqdse
-         1eVA==
-X-Gm-Message-State: AOAM532NZ3zhA+bDbXt793k0NOhyLRHLa90HQe0zRWXGmwdqJiqzAN2x
-        mf1CWF3kZwMbIw0dpLSpbWQ=
-X-Google-Smtp-Source: ABdhPJy9S4jOKQChoQmLTDTvyvbf/rfKtqtNfqEC4t7BRNUobE80G3hGH22bvz5nxHqCc9dzxqYnuw==
-X-Received: by 2002:adf:a292:: with SMTP id s18mr5861731wra.42.1633471480523;
-        Tue, 05 Oct 2021 15:04:40 -0700 (PDT)
-Received: from ?IPV6:2a02:8108:96c0:3b88::f816? ([2a02:8108:96c0:3b88::f816])
-        by smtp.gmail.com with ESMTPSA id z79sm3216353wmc.17.2021.10.05.15.04.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Oct 2021 15:04:40 -0700 (PDT)
-Message-ID: <82be310c-6e8f-8ec8-fbb0-a08ee62ae220@gmail.com>
-Date:   Wed, 6 Oct 2021 00:04:39 +0200
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=VloxAkcKG25Kax+zrrIt0tSfG0rrkP/DpDGPGBa4V04=;
+        b=rd8XQmSC9kbWqCaMC8gOp/YxMz/YJMGWGU2WmoLJN5l8NqiErcdvQLccjvGU5v78L0
+         RUt11Jp6jT002eM6zvk+B/A4QgcPx6oRK7OUWJeF945nyWaBPiHPGwcc3XWBRGbGiDuB
+         k17zi3eeC+zJR8+cxi3+YhmsSaRqrFf5nAVEb/k/p7mauUEmkx0jKVN50kgkEjjRmeNm
+         nOtwF0lxDzs88y29d81X6H2rhhtWwxYHRR1C7zYuoxy0F5QAxkcJa4IRv2nJ1W2USCOX
+         S8A2A6LepVOWx4XRUsUb4haam/RuHihblusN0Q/AcvSjrOGi99JUtIlYduues8HtEC+m
+         KRjw==
+X-Gm-Message-State: AOAM533lv5LRHWdMKIARN+2e7BQUQaeYXCr/T/jpiPZ2GfKDZPBnnoPj
+        za2wL+DfPvBH2Jqjd/Wo2poKkZ9xRmIfEecaG0w=
+X-Google-Smtp-Source: ABdhPJyjidMpWMmZ/vRdtOas0DhL66RBJT8Ii1/S9KABWLZylqhYIz36F/Eo9J7p+d0j4MHla3/ZPhmUV7JRDowQ1Hc=
+X-Received: by 2002:a05:6a00:10cc:b0:44c:852:41d8 with SMTP id
+ d12-20020a056a0010cc00b0044c085241d8mr29356408pfu.54.1633471517931; Tue, 05
+ Oct 2021 15:05:17 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
-Subject: Re: [PATCH 1/9] staging: r8188eu: remove an obsolete comment
-Content-Language: en-US
-To:     Martin Kaiser <martin@kaiser.cx>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20211005200821.19783-1-martin@kaiser.cx>
-From:   Michael Straube <straube.linux@gmail.com>
-In-Reply-To: <20211005200821.19783-1-martin@kaiser.cx>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Received: by 2002:a17:90b:4b06:0:0:0:0 with HTTP; Tue, 5 Oct 2021 15:05:17
+ -0700 (PDT)
+Reply-To: om250752@gmail.com
+From:   Mrs Rose Samuel <mrsrosesamuel@gmail.com>
+Date:   Tue, 5 Oct 2021 15:05:17 -0700
+Message-ID: <CAJeEN1DsN19k0pbvkiyVFTA3623TmEVs6R7-vOePNFbjbmNcJg@mail.gmail.com>
+Subject: Thanks and God bless you.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/5/21 22:08, Martin Kaiser wrote:
-> The function that this comment describes is not present in the
-> r8188eu driver. The comment can be removed.
-> 
-> Signed-off-by: Martin Kaiser <martin@kaiser.cx>
-> ---
->   drivers/staging/r8188eu/hal/usb_halinit.c | 15 ---------------
->   1 file changed, 15 deletions(-)
-> 
-> diff --git a/drivers/staging/r8188eu/hal/usb_halinit.c b/drivers/staging/r8188eu/hal/usb_halinit.c
-> index 83813388de24..ab7b80144403 100644
-> --- a/drivers/staging/r8188eu/hal/usb_halinit.c
-> +++ b/drivers/staging/r8188eu/hal/usb_halinit.c
-> @@ -624,21 +624,6 @@ static void _InitAntenna_Selection(struct adapter *Adapter)
->   	DBG_88E("%s,Cur_ant:(%x)%s\n", __func__, haldata->CurAntenna, (haldata->CurAntenna == Antenna_A) ? "Antenna_A" : "Antenna_B");
->   }
->   
-> -/*-----------------------------------------------------------------------------
-> - * Function:	HwSuspendModeEnable92Cu()
-> - *
-> - * Overview:	HW suspend mode switch.
-> - *
-> - * Input:		NONE
-> - *
-> - * Output:	NONE
-> - *
-> - * Return:	NONE
-> - *
-> - * Revised History:
-> - *	When		Who		Remark
-> - *	08/23/2010	MHC		HW suspend mode switch test..
-> - *---------------------------------------------------------------------------*/
->   enum rt_rf_power_state RfOnOffDetect(struct adapter *adapt)
->   {
->   	u8 val8;
-> 
+Dear Good Friend.
 
-Hi Martin,
+I am happy to inform you about my success in getting those funds
+transferred under the cooperation of a new partner from India.
+Presently I am in India for investment projects with my own share of
+the total sum. Meanwhile, I didn=E2=80=99t forget you=E2=80=99re past effor=
+ts and
+attempts to assist me in transferring those funds despite that it
+failed us some how. Now contact my lawyer in Benin Republic his name
+is Barrister Adam Smith.
 
-patch looks good, just one note. The function RfOnOffDetect() is not
-used and could be removed as well.
 
-Regards,
-Michael
+
+Barrister Adam Smith.
+
+Email:adm.smth126@gmail.com
+
+
+
+Contact him and ask him to send you the total of $920.000.00.{Nine
+Hundred And Twenty Thousand United States Dollars} which I kept for
+your past efforts and attempts to assist me in this matter. I
+appreciated your efforts at that time very much. So feel free and get
+in touched with my lawyer and instruct him where to send the amount to
+you. Please do let me know immediately you receive it so that we can
+share the joy after all the sufferness at that time. Do send to Adam
+Smith, your contact details.
+
+
+
+Your Full Names=E2=80=A6...........................................
+
+
+
+You=E2=80=99re Address=E2=80=A6............................................=
+..
+
+
+
+Cell Phone Number=E2=80=A6........................................
+
+
+
+Your occupation................................................
+
+
+
+Your Age=E2=80=A6.....................................................
+
+
+
+To enable him submit your details to my paying bank the Need Bank in
+Benin Republic to wire your compensation money to your nominated bank
+account/western Union or they can send to you an authorized bank ATM
+VISA CARD  to your address for you to withdraw the money from any bank
+ATM machine in your country.
+
+
+In the moment, I am very busy here because of the investment projects
+which me and the new partner are having at hand, finally, remember
+that I had forwarded instruction to my lawyer on your behalf to
+receive that money, so feel free to get in touch with him and he will
+send the amount to you with out any delay.
+
+
+Thanks and God bless you.
+Regards
+Mrs Rose Samuel
