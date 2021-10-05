@@ -2,85 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 922B1421F2E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 08:56:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA3BF421F31
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 08:59:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232688AbhJEG6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 02:58:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42266 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230526AbhJEG6h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 02:58:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C9090610A2;
-        Tue,  5 Oct 2021 06:56:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633417007;
-        bh=71mlPq8y3H59x8SPscGDba3lmvBHepI0lrXnh8IQ0gE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ejJtWkmgJW82hCd31ZTppNppfTqQ3PKGjBsoQggjoEP3rT1LjMLnRQtrCWxjafETF
-         rZ9VDvidU+6Hb6ZsWz2Xk5Xf/Jy706h2GdiSvqid0TfUeeAGXZrwqdSc/5JVEUzyuU
-         ydIBhUybmP1NKWVV9ixTwUsOGRo4Wrf4G8KW9amQKVvg5RCFhwX6xnEMAJChG6hUkF
-         YxK5bQBOL6pZAIu0StvZ09c6II4TCtn/m3Y5SxyMaBnhXgcLKUB7HPiFtUfx/38SUG
-         8BAeWA+QTf7tGGwQgMH9ZgGPLlCWZji0vygZEyXaQP2AfcHoQeHfe9aPf7lZ9/9sGs
-         PEvJ758WmHQrw==
-Date:   Tue, 5 Oct 2021 14:56:42 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Frieder Schrempf <frieder@fris.de>
-Cc:     devicetree@vger.kernel.org,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>, stable@vger.kernel.org,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>
-Subject: Re: [PATCH 3/8] arm64: dts: imx8mm-kontron: Set VDD_SNVS to 800 mV
-Message-ID: <20211005065641.GA20743@dragon>
-References: <20210930155633.2745201-1-frieder@fris.de>
- <20210930155633.2745201-4-frieder@fris.de>
+        id S232399AbhJEHB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 03:01:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51766 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231816AbhJEHB1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 03:01:27 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD3D8C061745;
+        Mon,  4 Oct 2021 23:59:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ilnRYqTFf8fyFuSzqW3O0n0QWAQ9g8mOenxw49e75Rg=; b=CMv16MhF/Am98MlSq+aU712wBL
+        Pyz9j6zAixVPnrG/UmZbLboI969n1FF9339/KDL0c9zWrk9r8NSUOEkld8IIssJk5hjXNBq83IqsK
+        PLrx66+Zpc5r58Gi1ZSpR3MV/4YmdoExnqF91dsK7do5qcuLJx3T8MJTJ6K9GoWz0EqUSGLOuMQl8
+        IuO17vFEw78Qnv+wMgHM+LP7Z/z8qQPGjHJXdqN7UuyfKkdUoDPK2U02MnWJqvVnhzgNvtsgTzr+D
+        4wNbQ6TOMEugO8sUEFg1KG1ph17Zzv8S0/Lti3ldMiwnUq9YYG2w82K2g6F+Bit2jMYnW2nVhIfNg
+        3plpBQtQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mXeQ7-0080Dg-EX; Tue, 05 Oct 2021 06:59:23 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 8258E9811EE; Tue,  5 Oct 2021 08:59:23 +0200 (CEST)
+Date:   Tue, 5 Oct 2021 08:59:23 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     X86 ML <x86@kernel.org>, Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        linux-hardening@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>, llvm@lists.linux.dev
+Subject: Re: [PATCH v4 04/15] cfi: Add DEFINE_CFI_IMMEDIATE_RETURN_STUB
+Message-ID: <20211005065923.GH4323@worktop.programming.kicks-ass.net>
+References: <20210930180531.1190642-1-samitolvanen@google.com>
+ <20210930180531.1190642-5-samitolvanen@google.com>
+ <YVsGoJ+NN6wRFi22@hirez.programming.kicks-ass.net>
+ <CABCJKudBrHfwR=gQc=9=cfBjR9p5jm65ovSNwzLLEpDUdo6ZPQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210930155633.2745201-4-frieder@fris.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CABCJKudBrHfwR=gQc=9=cfBjR9p5jm65ovSNwzLLEpDUdo6ZPQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 05:56:26PM +0200, Frieder Schrempf wrote:
-> From: Frieder Schrempf <frieder.schrempf@kontron.de>
-> 
-> According to the datasheet VDD_SNVS should be 800 mV, so let's
-> make sure that the voltage won't be different.
+On Mon, Oct 04, 2021 at 12:10:46PM -0700, Sami Tolvanen wrote:
+> On Mon, Oct 4, 2021 at 6:50 AM Peter Zijlstra <peterz@infradead.org> wrote:
 
-Could you share the datasheet?
+> > Why DEFINE_CFI_IMMEDIATE_RETURN_STUB() vs __no_cfi attribute that we can
+> > stick on the relvant functions?
+> 
+> To avoid accidentally creating useful gadgets for attackers. For
+> example, while excluding an empty stub isn't necessarily ideal,
+> allowing calls to a function that always returns zero would be worse.
 
-Shawn
+I was afraid you'd say something like that...
 
+> > Because I've got at least one more variant for you :-) See
+> > kernel/static_call.c:__static_call_return0
 > 
-> Fixes: 21c4f45b335f ("arm64: dts: Add the Kontron i.MX8M Mini SoMs and baseboards")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
-> ---
->  arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-som.dtsi | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-som.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-som.dtsi
-> index b12fb7ce6686..213014f59b46 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-som.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-som.dtsi
-> @@ -152,8 +152,8 @@ reg_nvcc_snvs: LDO1 {
->  
->  			reg_vdd_snvs: LDO2 {
->  				regulator-name = "ldo2";
-> -				regulator-min-microvolt = <850000>;
-> -				regulator-max-microvolt = <900000>;
-> +				regulator-min-microvolt = <800000>;
-> +				regulator-max-microvolt = <800000>;
->  				regulator-boot-on;
->  				regulator-always-on;
->  			};
-> -- 
-> 2.33.0
-> 
+> Does __static_call_return0 ever get called indirectly on architectures
+> that support static calls? If it's always patched into a direct call,
+> the type mismatch isn't an issue.
+
+For x86_64 it should indeed never get called, however if you plan on
+supporting i386 then you need the annotation. Also, it might get called
+on arm64 which is about to grow basic HAVE_STATIC_CALL support.
+
+(and just in case you care about CFI on PPC32, they too grew basic
+static_call support)
