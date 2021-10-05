@@ -2,143 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDC98422DE5
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 18:25:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E60A1422DEB
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 18:26:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235519AbhJEQ0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 12:26:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45110 "EHLO
+        id S235872AbhJEQ2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 12:28:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234483AbhJEQ0s (ORCPT
+        with ESMTP id S235077AbhJEQ2G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 12:26:48 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4018AC061753
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 09:24:57 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id o20so20332439wro.3
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 09:24:57 -0700 (PDT)
+        Tue, 5 Oct 2021 12:28:06 -0400
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A6D2C06174E
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 09:26:15 -0700 (PDT)
+Received: by mail-oi1-x232.google.com with SMTP id w190so1874264oif.5
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 09:26:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:subject:message-id:references:mime-version
+        h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=O2knaCuIcm4g/kvK81ZD/R6KXoMPxp2/YvgHHKTs1+8=;
-        b=wJTAj7m2dGVL+MDe+OYbV185CZIVcPsvizMm9yOYOkRZBWGZ1eOM+Z77UNAIGFlWUz
-         o+LVyS8dTEjT6BZ86quSwR0BoaGmL9zNjpb8ZljUV0HkS7laqmM1RPy85BRYZTD2Ytbb
-         IJ22/h9Ka6SP82RQwncj2hOGnHgTGhSv1y5FUDdqPyHRcMFVL6T/o8I3rCfZKe9yePKf
-         VLID4rXd3MVaVFghx90PVFGUKsx5OC9svXsximxhCQDGFzvq4bkVrUdjO1zLkzyeEqpm
-         TmQhz8yC1hXId3TX4hbsnNm+6lakvo5GiMRkBZk+SvbcQW62MpccMm7GhHxeq79hEoMU
-         RLtw==
+        bh=8FXEoaPuSjmYoE44Oy8m4nN5N37CAdgGF5w9YsNL5XM=;
+        b=AaD6XS/7fj5QAtYuDKc2BsZu97Uset633WpxM3qa0/m8Ces9bSTUEn7MYvS5CJpzX1
+         JwybKgBe950zI6Pe9QhYWF8z76dK2imnAyroQ4OMKd+z1V4ruubXHXHAJ57iqXSDlV3V
+         lc5xzevZNI4AHlZEf9F+YaBWT+QF5a7ij1QvjWWqY8wsY1rY8rTSw4kKBzY4fyqJIbQA
+         oI9JgehKTy1PFikO3iQ/0WrOa/Q/2yCOIlpYkYB1ruqI1CfbX/0FC7KycJ7rkN6qgA36
+         E15gVNxNY699HZn390A4/IEq+3px2ox4rlEGeD7XDjadmkEmyGqPO56U2bQ5k5LCsp4Q
+         Bd9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=O2knaCuIcm4g/kvK81ZD/R6KXoMPxp2/YvgHHKTs1+8=;
-        b=Y0lNWdRPM33kiGiJsspUun1XHq6khpasFfiROLCPuY5YbXJA6TYY9ti6KfZ5IWClfa
-         H2iR+mSH4kCv+BGuMzxOC9daMi8yKmq4e/DLXCbtLOzeW9dcAaRYjNEtUh0aFdwEujv4
-         kQaWVjtUFA1PJDC0E6lySlynftcm9HiFN9i54d58sL9DROYEs65KYioVlwMhm7VR11Hl
-         uLmAUPs3UA0LgOTIGvEhDBSByMXSnft0BVHeYlKSIXHaqltEHeTwrHODUmod8LrltxOV
-         /DqyVo1LnLI+f0WikW1ry5Acf5Hi62nEYHmvPe6oBPu3JeTYaykiEw3fxUdp0S6CH6Ix
-         yUcQ==
-X-Gm-Message-State: AOAM530Tfj7Ej0DNpV/cF9zY5qxw0F+7YG/wWH1kdmg2GzbWMLfRokwO
-        CvH5XIe9JEZ7nBZl+q5R17i+xQ==
-X-Google-Smtp-Source: ABdhPJz+P2+x220j7T2l+shkjZv/CKb3ndz9Q786geSvOif2DjMhH0MAHjlt0xx1WUZlLp+M1vmCAA==
-X-Received: by 2002:adf:a48e:: with SMTP id g14mr18915437wrb.11.1633451095666;
-        Tue, 05 Oct 2021 09:24:55 -0700 (PDT)
-Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
-        by smtp.gmail.com with ESMTPSA id l21sm2359005wmh.31.2021.10.05.09.24.54
+        bh=8FXEoaPuSjmYoE44Oy8m4nN5N37CAdgGF5w9YsNL5XM=;
+        b=UA5yU0oiKmKasrDS9dmWjz5TDyV5Crhi+GrFQmjCIVVmHOI6jlTL2O+DyEM0KfZXWg
+         rlwyaVvV/wyRgBvGJAoCUC2eg9XcCmNpqueimzKC4ghVY+I9YwPvJs0xdq9RG+6FrYtx
+         dkwmGStJh6wh3XeAWuiVfKpjJrT2Vx6JAniN4BY92+aiuIJ418JdTNtJXXyi5GZKdD5f
+         s+13CmAIqDlPioCiSnCPShI+AnGjzoXKWKfndFtlJiUj7+ix/RPRNuxgPKw+cVLcPBKx
+         DSgLWQ3WVn9Wr+XVqA6y5u2yiGlP+H7/TMujQdM6u46ISWg+vUwPYbLNLoDNo47hUQas
+         koAA==
+X-Gm-Message-State: AOAM531SCWBA4qj30+r5nPmvLDUNQ6Ut9BUEbFIKGYE4bDnnHNuD97gu
+        88kLNFyxNyJjAg+ig+TCsHZ9ig==
+X-Google-Smtp-Source: ABdhPJy/XeVqid/7dcxYSksdL2f1Y0ro1GG40qMnqWBRMkVeNftGqE/gyc6WmTdwdpqZYaxYQpLRhw==
+X-Received: by 2002:a05:6808:178c:: with SMTP id bg12mr3429148oib.157.1633451174904;
+        Tue, 05 Oct 2021 09:26:14 -0700 (PDT)
+Received: from ripper ([2600:1700:a0:3dc8:205:1bff:fec0:b9b3])
+        by smtp.gmail.com with ESMTPSA id y12sm3489926otu.11.2021.10.05.09.26.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Oct 2021 09:24:55 -0700 (PDT)
-Date:   Tue, 5 Oct 2021 17:24:53 +0100
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Marijn Suijten <marijn.suijten@somainline.org>,
-        phone-devel@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Martin Botka <martin.botka@somainline.org>,
-        Jami Kettunen <jami.kettunen@somainline.org>,
-        Pavel Dubrova <pashadubrova@gmail.com>,
-        Kiran Gunda <kgunda@codeaurora.org>,
-        Courtney Cavin <courtney.cavin@sonymobile.com>,
-        Bryan Wu <cooloney@gmail.com>, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 05/10] backlight: qcom-wled: Fix off-by-one maximum with
- default num_strings
-Message-ID: <20211005162453.ozckxhm47jcarsza@maple.lan>
-References: <20211004192741.621870-1-marijn.suijten@somainline.org>
- <20211004192741.621870-6-marijn.suijten@somainline.org>
- <20211005091947.7msztp5l554c7cy4@maple.lan>
- <20211005100606.faxra73mzkvjd4f6@SoMainline.org>
- <20211005103843.heufyonycnudxnzd@maple.lan>
- <20211005105312.kqiyzoqtzzjxayhg@maple.lan>
- <20211005114435.phyq2jsbdyroa6kn@SoMainline.org>
- <20211005140349.kefi26yev3gy3zhv@maple.lan>
- <20211005152326.5k5cb53ajqnactrg@SoMainline.org>
+        Tue, 05 Oct 2021 09:26:14 -0700 (PDT)
+Date:   Tue, 5 Oct 2021 09:27:56 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Cc:     Ohad Ben-Cohen <ohad@wizery.com>, Jonathan Corbet <corbet@lwn.net>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>, Suman Anna <s-anna@ti.com>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org
+Subject: Re: [PATCH v8 1/2] rpmsg: core: add API to get MTU
+Message-ID: <YVx9DG/HYCEVJ6wv@ripper>
+References: <20210930160520.19678-1-arnaud.pouliquen@foss.st.com>
+ <20210930160520.19678-2-arnaud.pouliquen@foss.st.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211005152326.5k5cb53ajqnactrg@SoMainline.org>
+In-Reply-To: <20210930160520.19678-2-arnaud.pouliquen@foss.st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05, 2021 at 05:23:26PM +0200, Marijn Suijten wrote:
-> On 2021-10-05 15:03:49, Daniel Thompson wrote:
-> [..]
-> > > At that point one might ask why qcom,num_strings remains at all when
-> > > DT can use qcom,enabled_strings instead.  We will supposedly have to
-> > > keep backwards compatibility with DTs in mind so none of this can be
-> > > removed or made mutually exclusive from a driver standpoint, that all
-> > > has to be done in dt-bindings yaml to be enforced on checked-in DTs.
-> > 
-> > So... perhaps I made a make offering a Reviewed-by: to a patch
-> > that allows len(enabled-strings) to have precedence. If anything
-> > currently uses enabled-strings then it *will* be 4 cells long and
-> > is relying on num-strings to ensure the right things happens ;-) .
-> 
-> Unfortunately Konrad (one of my team members) landed such a patch at the
-> beginning of this year because I failed to submit this patchset in time
-> while it has been sitting in my queue since 2019 after being used in a
-> downstream project.  This is in pmi8994 which doesn't have anything
-> widely used / production ready yet, so I'd prefer to fix the DT instead
-> and remove / fix his comment:
-> 
->     /* Yes, all four strings *have to* be defined or things won't work. */
-> 
-> But this is mostly because, prior to this patchset, no default was set
-> for WLED4 so the 0'th string would get enabled num-strings (3 in
-> pmi8994's case) times.
-> 
-> Aside that there's only one more PMIC (also being worked on by
-> SoMainline) that sets qcom,enabled-strings: this is pm660l, pulled from
-> our local tree, and it actually has enabled-strings of length 2 which is
-> broken in its current form, exactly because of relying on this patchset.
-> 
-> Finally, we already discussed this inside SoMainline and the
-> number/enabled leds should most likely be moved out of the PMIC dtsi's
-> as they're probably panel, hence board or even device dependent.
-> 
-> > We'd like that case to keep working so we must allow num-strings to have
-> > precedence. In other words, when you add the new code, please put it at
-> > the end of the function!
-> 
-> Since there don't seem to be any substantial platforms/PMICs using this
-> functionality in a working manner, can I talk you into agreeing with
-> fixing the DT instead?
+On Thu 30 Sep 09:05 PDT 2021, Arnaud Pouliquen wrote:
 
-I've no objections to seeing the DT updated. However I don't really see
-what benefit we get from breaking existing DTs in order to do so.
+> Return the rpmsg buffer MTU for sending message, so rpmsg users
+> can split a long message in several sub rpmsg buffers.
+> 
+> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+> Acked-by: Suman Anna <s-anna@ti.com>
+> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> ---
+>  drivers/rpmsg/rpmsg_core.c       | 21 +++++++++++++++++++++
+>  drivers/rpmsg/rpmsg_internal.h   |  2 ++
+>  drivers/rpmsg/virtio_rpmsg_bus.c | 10 ++++++++++
+>  include/linux/rpmsg.h            | 10 ++++++++++
+>  4 files changed, 43 insertions(+)
+> 
+> diff --git a/drivers/rpmsg/rpmsg_core.c b/drivers/rpmsg/rpmsg_core.c
+> index 9151836190ce..fb955a79462b 100644
+> --- a/drivers/rpmsg/rpmsg_core.c
+> +++ b/drivers/rpmsg/rpmsg_core.c
+> @@ -327,6 +327,27 @@ int rpmsg_trysend_offchannel(struct rpmsg_endpoint *ept, u32 src, u32 dst,
+>  }
+>  EXPORT_SYMBOL(rpmsg_trysend_offchannel);
+>  
+> +/**
+> + * rpmsg_get_mtu() - get maximum transmission buffer size for sending message.
+> + * @ept: the rpmsg endpoint
+> + *
+> + * This function returns maximum buffer size available for a single message.
 
-"Cleaning up annoying legacy" is seldom a good reason to break existing
-DTs since, if we could break DTs whenever we choose, there would never
-be any annoying legacy to worry about. When conflicting properties
-result in uninterpretable DTs then a break may be justified but that is
-not the case here.
+Nit. Can we add "outgoing" between "single" and "message" here?
 
 
-Daniel.
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+
+Regards,
+Bjorn
+
+> + *
+> + * Return: the maximum transmission size on success and an appropriate error
+> + * value on failure.
+> + */
+> +
+> +ssize_t rpmsg_get_mtu(struct rpmsg_endpoint *ept)
+> +{
+> +	if (WARN_ON(!ept))
+> +		return -EINVAL;
+> +	if (!ept->ops->get_mtu)
+> +		return -ENOTSUPP;
+> +
+> +	return ept->ops->get_mtu(ept);
+> +}
+> +EXPORT_SYMBOL(rpmsg_get_mtu);
+> +
+>  /*
+>   * match a rpmsg channel with a channel info struct.
+>   * this is used to make sure we're not creating rpmsg devices for channels
+> diff --git a/drivers/rpmsg/rpmsg_internal.h b/drivers/rpmsg/rpmsg_internal.h
+> index a76c344253bf..b1245d3ed7c6 100644
+> --- a/drivers/rpmsg/rpmsg_internal.h
+> +++ b/drivers/rpmsg/rpmsg_internal.h
+> @@ -53,6 +53,7 @@ struct rpmsg_device_ops {
+>   * @trysendto:		see @rpmsg_trysendto(), optional
+>   * @trysend_offchannel:	see @rpmsg_trysend_offchannel(), optional
+>   * @poll:		see @rpmsg_poll(), optional
+> + * @get_mtu:		see @rpmsg_get_mtu(), optional
+>   *
+>   * Indirection table for the operations that a rpmsg backend should implement.
+>   * In addition to @destroy_ept, the backend must at least implement @send and
+> @@ -72,6 +73,7 @@ struct rpmsg_endpoint_ops {
+>  			     void *data, int len);
+>  	__poll_t (*poll)(struct rpmsg_endpoint *ept, struct file *filp,
+>  			     poll_table *wait);
+> +	ssize_t (*get_mtu)(struct rpmsg_endpoint *ept);
+>  };
+>  
+>  struct device *rpmsg_find_device(struct device *parent,
+> diff --git a/drivers/rpmsg/virtio_rpmsg_bus.c b/drivers/rpmsg/virtio_rpmsg_bus.c
+> index 8e49a3bacfc7..05fd06fc67e9 100644
+> --- a/drivers/rpmsg/virtio_rpmsg_bus.c
+> +++ b/drivers/rpmsg/virtio_rpmsg_bus.c
+> @@ -149,6 +149,7 @@ static int virtio_rpmsg_trysendto(struct rpmsg_endpoint *ept, void *data,
+>  				  int len, u32 dst);
+>  static int virtio_rpmsg_trysend_offchannel(struct rpmsg_endpoint *ept, u32 src,
+>  					   u32 dst, void *data, int len);
+> +static ssize_t virtio_rpmsg_get_mtu(struct rpmsg_endpoint *ept);
+>  static struct rpmsg_device *__rpmsg_create_channel(struct virtproc_info *vrp,
+>  						   struct rpmsg_channel_info *chinfo);
+>  
+> @@ -160,6 +161,7 @@ static const struct rpmsg_endpoint_ops virtio_endpoint_ops = {
+>  	.trysend = virtio_rpmsg_trysend,
+>  	.trysendto = virtio_rpmsg_trysendto,
+>  	.trysend_offchannel = virtio_rpmsg_trysend_offchannel,
+> +	.get_mtu = virtio_rpmsg_get_mtu,
+>  };
+>  
+>  /**
+> @@ -696,6 +698,14 @@ static int virtio_rpmsg_trysend_offchannel(struct rpmsg_endpoint *ept, u32 src,
+>  	return rpmsg_send_offchannel_raw(rpdev, src, dst, data, len, false);
+>  }
+>  
+> +static ssize_t virtio_rpmsg_get_mtu(struct rpmsg_endpoint *ept)
+> +{
+> +	struct rpmsg_device *rpdev = ept->rpdev;
+> +	struct virtio_rpmsg_channel *vch = to_virtio_rpmsg_channel(rpdev);
+> +
+> +	return vch->vrp->buf_size - sizeof(struct rpmsg_hdr);
+> +}
+> +
+>  static int rpmsg_recv_single(struct virtproc_info *vrp, struct device *dev,
+>  			     struct rpmsg_hdr *msg, unsigned int len)
+>  {
+> diff --git a/include/linux/rpmsg.h b/include/linux/rpmsg.h
+> index d97dcd049f18..990b80fb49ad 100644
+> --- a/include/linux/rpmsg.h
+> +++ b/include/linux/rpmsg.h
+> @@ -186,6 +186,8 @@ int rpmsg_trysend_offchannel(struct rpmsg_endpoint *ept, u32 src, u32 dst,
+>  __poll_t rpmsg_poll(struct rpmsg_endpoint *ept, struct file *filp,
+>  			poll_table *wait);
+>  
+> +ssize_t rpmsg_get_mtu(struct rpmsg_endpoint *ept);
+> +
+>  #else
+>  
+>  static inline int rpmsg_register_device(struct rpmsg_device *rpdev)
+> @@ -296,6 +298,14 @@ static inline __poll_t rpmsg_poll(struct rpmsg_endpoint *ept,
+>  	return 0;
+>  }
+>  
+> +static inline ssize_t rpmsg_get_mtu(struct rpmsg_endpoint *ept)
+> +{
+> +	/* This shouldn't be possible */
+> +	WARN_ON(1);
+> +
+> +	return -ENXIO;
+> +}
+> +
+>  #endif /* IS_ENABLED(CONFIG_RPMSG) */
+>  
+>  /* use a macro to avoid include chaining to get THIS_MODULE */
+> -- 
+> 2.17.1
+> 
