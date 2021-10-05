@@ -2,102 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1448542305B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 20:49:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A50D42305E
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 20:50:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235015AbhJESun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 14:50:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50314 "EHLO
+        id S234873AbhJESwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 14:52:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229758AbhJESuh (ORCPT
+        with ESMTP id S229662AbhJESwT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 14:50:37 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B2F3C061749
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 11:48:46 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id d8so342785edx.9
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 11:48:45 -0700 (PDT)
+        Tue, 5 Oct 2021 14:52:19 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 331E3C061749
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 11:50:28 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id i24so40131083lfj.13
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 11:50:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=A2NgxD1/eVKF5aA/6vOIKBsVzYpDnTEprcND7FDOo0M=;
-        b=fFls5kf51lCIVFfkvGfs/xBe5XimbcYmLquWrEgTuzI0E86OeuXyL7p0wYGBeMKXp6
-         n2zUmaPptcJGf4ySWE3LboQxkcw2GdxkxT8U487eGeQ/OELckpICsePkKJ7Jb5gQzOMp
-         DHouSPks6GOygmlOmWexqYsjUFUsR5vaYJxuA=
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lXdezQfuCfVkENY7jnc43K9813HJFYnFN+4/R39hM/w=;
+        b=q03Oj5ha0jq4IwzFMGNAXWasG6hsDXopmlEBCVyNfl06Cr57ccAVIw//C+FoVyxZkP
+         wh6TPHqNpxyuOz4N/nXnIB7zf7eTkayp6sQbWDK+jf0GJZZ4cA/EsVX1+nLNZupavxnm
+         dS+l+8KDcF4aL0kUpNsGIWZCjKe8mIkdE7sJoXIXT6TMAWZszrO9ozBY9S/glNN7o57g
+         nsxbNYA5OFcP/o3ZCIj3vZ6vR7DW4MDWgk+ZznaFJ6qN/uXOFLYc6yqZAB8S0uYhHOCG
+         nwC+xoNtOBBQzTWZsrr2ctZtjTk+HjZ+F5wTZTIzZZ51uEw9Altrb6xwkWRVMhl/7FVd
+         eO0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=A2NgxD1/eVKF5aA/6vOIKBsVzYpDnTEprcND7FDOo0M=;
-        b=WqcosJ1yYOJt2VDeThX6U0lU+SEZfFnXFOR89sIjuga1ItYq0234cDgiR5ejXmA6WV
-         aCsCaheIIOyHesVKJfGTxCJEt6Nvcb1D4A4zOWUxoAO1XaAhkVOZWkhZOwQmVV2+iuL/
-         NwogGuY3b/toXJ0BNVcuIp9OEWZuH0BU3HCbOrE7oN5FY+HoOL9RYQjcBB9nHwjz7kq8
-         yxq+IINKX9OUGIE5suwGZbJDLvR/8Bpvb3/2ZeUuH/us+pJD0QKZXMBTABaWBcVFt3dA
-         XAp7o/8MJSBQyLNrudC/+3djtzGLzH6j7HBTSwUTrG/1DSTZz+JzLiYJGtZAdu3lza6S
-         yVLw==
-X-Gm-Message-State: AOAM530OiCbNrl5jx5ei9SGXV7WrxfKviiGDAML1cliy4D6T2AVDqOMW
-        rga53A/WnwdHUaEnszDEwL2+Eg==
-X-Google-Smtp-Source: ABdhPJz9jeqHDl8O0imLWpCr8HeJ8hr/QY2yL6Y9H94zZ/C0athk4E1x91ecMziaL8KCw9LmdzYAMQ==
-X-Received: by 2002:a17:906:cec6:: with SMTP id si6mr2070177ejb.270.1633459724617;
-        Tue, 05 Oct 2021 11:48:44 -0700 (PDT)
-Received: from [192.168.1.149] ([80.208.69.72])
-        by smtp.gmail.com with ESMTPSA id lb20sm8091267ejc.40.2021.10.05.11.48.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Oct 2021 11:48:44 -0700 (PDT)
-Subject: Re: [RFC][PATCH] rcu: Use typeof(p) instead of typeof(*p) *
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     rostedt <rostedt@goodmis.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Paul <paulmck@linux.vnet.ibm.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        "Joel Fernandes, Google" <joel@joelfernandes.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, rcu <rcu@vger.kernel.org>,
-        netfilter-devel <netfilter-devel@vger.kernel.org>,
-        coreteam <coreteam@netfilter.org>,
-        netdev <netdev@vger.kernel.org>
-References: <20211005094728.203ecef2@gandalf.local.home>
- <ef5b1654-1f75-da82-cab8-248319efbe3f@rasmusvillemoes.dk>
- <639278914.2878.1633457192964.JavaMail.zimbra@efficios.com>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <ed3b6265-b073-bab2-4a05-d7a8acf7763d@rasmusvillemoes.dk>
-Date:   Tue, 5 Oct 2021 20:48:42 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lXdezQfuCfVkENY7jnc43K9813HJFYnFN+4/R39hM/w=;
+        b=SzdUbA+7hV34ogP0NUkdH2pOuMd+HDtJhuDVrTuV9OdLtI/jKLxpj1S6HbcLfjoxok
+         WAgmpW6ej9Tgwig8SQMDbGaEw3EM7SabO08pEYNo0DQJDYf3dCnPEeaQoPtF6Z6YjZnQ
+         f9qjzb6CAZk9h0PBANx0GleDkGSoqoMEXaBoHbBwX9dC1bgwUP0CTGj9MsDHQQRKjrcs
+         S+CZmX/TEZM43BPGH1Qp/TV/NXKYCGn3hjXZ0sfWU002uYBByxKHX9B4t6ztfy4kgKHs
+         cFGJoAgqR83U8uttJ/X4v0EmQBBQzseJcxqp5mxH8OzxvqNbL/mGZrxUxpX4osTvGfbb
+         FfTQ==
+X-Gm-Message-State: AOAM532nVnMYKcTq2BE6IKb1yGuKkvwdDhWP7KCrBccWetY2G01YiRsa
+        sqAjWvRxW4rByQ0obSTbSn/GeHurKvawKVVPyMlT+w==
+X-Google-Smtp-Source: ABdhPJytzFo4zbb2aR2vokF6x9HkN6BJUAxhIehAY3OVqFeHzbzGHIRc0Rc+UX1hX+BArmitfvwB7L/Y6yjicKgOC4M=
+X-Received: by 2002:a2e:b892:: with SMTP id r18mr24029097ljp.220.1633459825395;
+ Tue, 05 Oct 2021 11:50:25 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <639278914.2878.1633457192964.JavaMail.zimbra@efficios.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20211004230431.2321009-1-adelg@google.com> <CAKwvOdnGrKbsfreQHQQprSTeHRaqadJtKi3N9LE+mZGgmUCf1g@mail.gmail.com>
+ <CAEHm+vHNorGNxPMzrhqWhsKnQrLxfciAVmaMtgPk0E-7b0D8FA@mail.gmail.com>
+In-Reply-To: <CAEHm+vHNorGNxPMzrhqWhsKnQrLxfciAVmaMtgPk0E-7b0D8FA@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 5 Oct 2021 11:50:13 -0700
+Message-ID: <CAKwvOdm5vF08BmgAN9TKEmQnu8o9Nq_oDLiPztBkarWvCpp8kQ@mail.gmail.com>
+Subject: Re: [PATCH] selftests: Remove explicit headers for clang
+To:     Andrew Delgadillo <adelg@google.com>
+Cc:     Shuah Khan <shuah@kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Greg Thelen <gthelen@google.com>, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/10/2021 20.06, Mathieu Desnoyers wrote:
-> ----- On Oct 5, 2021, at 2:01 PM, Rasmus Villemoes linux@rasmusvillemoes.dk wrote:
-> 
->> I would think that one could avoid that churn by saying
->>
->>  typeof((p) + 0)
->>
->> instead of just "typeof(p)", to force the decay to a pointer.
-> 
-> Also, AFAIU, the compiler wants to know the sizeof(p) in order to evaluate
-> (p + 0). Steven's goal is to hide the structure declaration, so that would
-> not work either.
+On Tue, Oct 5, 2021 at 11:43 AM Andrew Delgadillo <adelg@google.com> wrote:
+>
+> On Tue, Oct 5, 2021 at 9:59 AM Nick Desaulniers <ndesaulniers@google.com> wrote:
+> >
+> > On Mon, Oct 4, 2021 at 4:04 PM Andrew Delgadilo <adelg@google.com> wrote:
+> > >
+> > > From: Andrew Delgadillo <adelg@google.com>
+> > >
+> > > GCC allows paths to header files to be passed on the command line while
+> > > using -o, but clang does not:
+> >
+> > Ah, it's because `-I` *insn't* being used more so than `-o` being present.
+> > >
+> > > $ make -C tools/testing/selftests TARGETS=futex
+> > >
+> > > $ make -C tools/testing/selftests TARGETS=futex LLVM=1
+> > > clang -Wall   -g -O2 -Wall -D_GNU_SOURCE -pthread -I../include \
+> > > -I../../ -I../../../../../usr/include/ -I/kselftest/usr/include \
+> > > futex_wait_timeout.c ../include/futextest.h ../include/atomic.h \
+> > > ../include/logging.h -lpthread -lrt -o \
+> > > tools/testing/selftests/futex/functional/futex_wait_timeout
+> > > clang: error: cannot specify -o when generating multiple output files
+> >
+> > Why aren't `-I` flags being passed? Rather than:
+> >
+> > $ clang ... ../include/futextest.h ../include/atomic.h ../include/logging.h ...
+> >
+> > shouldn't this be:
+> >
+> > $ clang ... -I ../include/futextest.h -I ../include/atomic.h -I
+> > ../include/logging.h
+>
+> Okay, I see, so the fix here wouldn't be to remove the headers from
+> the commandline, we should just prepend them with `-l`.
 
-Gah, you're right. I was hoping the frontend would see that +0 could be
-optimized away and only affect the type of the expression, but it does
-give 'error: invalid use of undefined type ‘struct abc’'. Sorry for the
-noise.
+Yes; I suspect they're added for a reason. If not for the futex tests
+then perhaps others, so removing them outright may allow the futex
+selftests to build, but I worry stripping them out might cause more
+issues down the line for building other selftests with clang, or
+regress the build with GCC support even.  But maybe not?
 
-Rasmus
+>
+> > >
+> > > To fix this, remove explicit paths to headers from the commandline in
+> > > lib.mk. We must explicitly remove them for x86 and binderfs as they are
+> > > not filtered out by the change to lib.mk, but the compiler search paths
+> > > for includes are already setup correctly, so the compiler finds the
+> > > correct headers.
+> > >
+> > > Tested: selftests build with LLVM=1 now.
+> >
+> > With this patch applied
+> > $ make -C tools/testing/selftests TARGETS=futex LLVM=1
+> > WFM but
+> > $ make -C tools/testing/selftests LLVM=1
+> > fails, horribly. Are you always expected to pass TARGETS when building
+> > the selftests?
+>
+> I specifically passed TARGETS=futex because I want to point out a
+> specific example where this is in an issue as there are other errors I
+> see when I build all of selftests with LLVM=1. But to answer your
+> question, no, I do not think you are expected to always pass TARGETS.
+>
+> When I run (without this patch)
+>
+> $ make -C tools/testing/selftests LLVM=1
+>  I get a bunch of errors as well ranging from:
+> - clang: error: cannot specify -o when generating multiple output
+> files <-- the specific one I'm trying to fix
+> - clang: warning: argument unused during compilation: '-pie'
+> [-Wunused-command-line-argument]
+> - include/x86_64/processor.h:344:25: warning: variable 'xmm7' is
+> uninitialized when used here [-Wuninitialized]
+>
+>                 return (unsigned long)xmm7;
+> - fuse_mnt.c:17:10: fatal error: 'fuse.h' file not found
+>
+> #include <fuse.h>
+>
+>          ^~~~~~~~
+>
+> However with the patch applied, I no longer see any "clang: error:
+> cannot specify -o when generating multiple output files", meaning that
+> I fixed one class of errors when building with LLVM=1.
+>
+> Do you see a clean build currently when building selftests with
+> LLVM=1?
+
+No.
+
+> I'm not arguing that this patch fixes *all* the errors seen,
+
+That was my interpretation of your `Tested` tag. Perhaps it can be reworded?
+
+> but it at least fixes one class of them. Although, it seems I went
+> about fixing it in the wrong manner. I can respin this to prepend -l
+> before header includes to get rid of the "clang: error: cannot specify
+> -o when generating multiple output files" errors.
+>
+>
+>
+>
+> > > Cc: stable@vger.kernel.org
+> > > Signed-off-by: Andrew Delgadillo <adelg@google.com>
+> > > ---
+> > >  tools/testing/selftests/filesystems/binderfs/Makefile | 2 +-
+> > >  tools/testing/selftests/lib.mk                        | 2 +-
+> > >  tools/testing/selftests/x86/Makefile                  | 4 ++--
+> > >  3 files changed, 4 insertions(+), 4 deletions(-)
+> > >
+> > > diff --git a/tools/testing/selftests/filesystems/binderfs/Makefile b/tools/testing/selftests/filesystems/binderfs/Makefile
+> > > index 8af25ae96049..58e41bd98200 100644
+> > > --- a/tools/testing/selftests/filesystems/binderfs/Makefile
+> > > +++ b/tools/testing/selftests/filesystems/binderfs/Makefile
+> > > @@ -3,6 +3,6 @@
+> > >  CFLAGS += -I../../../../../usr/include/ -pthread
+> > >  TEST_GEN_PROGS := binderfs_test
+> > >
+> > > -binderfs_test: binderfs_test.c ../../kselftest.h ../../kselftest_harness.h
+> > > +binderfs_test: binderfs_test.c
+> > >
+> > >  include ../../lib.mk
+> > > diff --git a/tools/testing/selftests/lib.mk b/tools/testing/selftests/lib.mk
+> > > index fa2ac0e56b43..fb152e20c86a 100644
+> > > --- a/tools/testing/selftests/lib.mk
+> > > +++ b/tools/testing/selftests/lib.mk
+> > > @@ -142,7 +142,7 @@ endif
+> > >  ifeq ($(OVERRIDE_TARGETS),)
+> > >  LOCAL_HDRS := $(selfdir)/kselftest_harness.h $(selfdir)/kselftest.h
+> > >  $(OUTPUT)/%:%.c $(LOCAL_HDRS)
+> > > -       $(LINK.c) $(filter-out $(LOCAL_HDRS),$^) $(LDLIBS) -o $@
+> > > +       $(LINK.c) $(filter-out %.h,$^) $(LDLIBS) -o $@
+> >
+> > What? Aren't kselftest.h and kselftest_harness.h already part of
+> > LOCAL_HDRS?  Perhaps that filter-out is broken, or LOCAL_HDRS.  Yeah,
+> > adding some debugging:
+> >
+> > diff --git a/tools/testing/selftests/lib.mk b/tools/testing/selftests/lib.mk
+> > index fe7ee2b0f29c..827f766d6057 100644
+> > --- a/tools/testing/selftests/lib.mk
+> > +++ b/tools/testing/selftests/lib.mk
+> > @@ -142,6 +142,7 @@ endif
+> >  # OVERRIDE_TARGETS = 1.
+> >  ifeq ($(OVERRIDE_TARGETS),)
+> >  LOCAL_HDRS := $(selfdir)/kselftest_harness.h $(selfdir)/kselftest.h
+> > +$(info $$LOCAL_HDRS is [${LOCAL_HDRS}])
+> >  $(OUTPUT)/%:%.c $(LOCAL_HDRS)
+> >         $(LINK.c) $(filter-out $(LOCAL_HDRS),$^) $(LDLIBS) -o $@
+> >
+> > prints:
+> >
+> > $LOCAL_HDRS is [/android0/kernel-all/tools/testing/selftests/kselftest_harness.h
+> > /android0/kernel-all/tools/testing/selftests/kselftest.h]
+> >
+> > so of course filter-out isn't going to match `../include/futextest.h
+> > ../include/atomic.h ../include/logging.h`.
+>
+> Like you mentioned above, it seems a better way to about this would be
+> to prepend -I before the includes. I'll go ahead and send a new patch
+> to do that.
+
+SGTM.  Thanks for pursuing this! ++beers_owed;
+
+> > >
+> > >  $(OUTPUT)/%.o:%.S
+> > >         $(COMPILE.S) $^ -o $@
+> > > diff --git a/tools/testing/selftests/x86/Makefile b/tools/testing/selftests/x86/Makefile
+> > > index b4142cd1c5c2..68967006b3e9 100644
+> > > --- a/tools/testing/selftests/x86/Makefile
+> > > +++ b/tools/testing/selftests/x86/Makefile
+> > > @@ -72,10 +72,10 @@ all_64: $(BINARIES_64)
+> > >  EXTRA_CLEAN := $(BINARIES_32) $(BINARIES_64)
+> > >
+> > >  $(BINARIES_32): $(OUTPUT)/%_32: %.c helpers.h
+> > > -       $(CC) -m32 -o $@ $(CFLAGS) $(EXTRA_CFLAGS) $^ -lrt -ldl -lm
+> > > +       $(CC) -m32 -o $@ $(CFLAGS) $(EXTRA_CFLAGS) $(filter-out %.h,$^) -lrt -ldl -lm
+> > >
+> > >  $(BINARIES_64): $(OUTPUT)/%_64: %.c helpers.h
+> > > -       $(CC) -m64 -o $@ $(CFLAGS) $(EXTRA_CFLAGS) $^ -lrt -ldl
+> > > +       $(CC) -m64 -o $@ $(CFLAGS) $(EXTRA_CFLAGS) $(filter-out %.h,$^) -lrt -ldl
+> > >
+> > >  # x86_64 users should be encouraged to install 32-bit libraries
+> > >  ifeq ($(CAN_BUILD_I386)$(CAN_BUILD_X86_64),01)
+> > > --
+> > > 2.33.0.800.g4c38ced690-goog
+> > >
+> >
+> >
+> > --
+> > Thanks,
+> > ~Nick Desaulniers
+
+
+
+-- 
+Thanks,
+~Nick Desaulniers
