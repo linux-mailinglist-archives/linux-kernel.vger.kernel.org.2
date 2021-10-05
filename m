@@ -2,74 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5CDB422282
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 11:39:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9861A422289
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 11:42:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233672AbhJEJld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 05:41:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32894 "EHLO
+        id S233705AbhJEJoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 05:44:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233077AbhJEJlc (ORCPT
+        with ESMTP id S232658AbhJEJoU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 05:41:32 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E2E7C061745;
-        Tue,  5 Oct 2021 02:39:42 -0700 (PDT)
+        Tue, 5 Oct 2021 05:44:20 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C66EFC061745
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 02:42:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=mP8SE6PYbA6eukRG5PcP85FllcxoPD5k3unsb67nCcQ=; b=dep6hnBXc/2z4bKbJKxlnT2dmi
-        lRDGPHZoHYEiXUzkY6zRwlksYbM9/sVYUoltpKhS9AgjOZ1GByGTv8Eknt9wBdI0NTbciP3jn0gG0
-        BojX//rXH1mGt51PPAb4U1pBafNj1qOB9J2+a5Z6+GNTyR8sOwVUSXhtKGTrueqUAENOYlcRsLkx8
-        pwSXq3k4COgz8QUaaAyIDBA/HuNu3obOcpt6u1z6kJ6AC7pmEshAqndY2f1ILqfXNpnrmsi+ej+XE
-        Vr/t5HjbzFbl+Jkl1IF+jNvHaz4aEgHqTDsVZb2IEnp/0JXTJUhHYB+hAi9b80l1+tY+LKKJNNDS7
-        Bu8EF6mw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:54942)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1mXgvC-00005N-Qh; Tue, 05 Oct 2021 10:39:38 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1mXgvA-0008Mf-Rx; Tue, 05 Oct 2021 10:39:36 +0100
-Date:   Tue, 5 Oct 2021 10:39:36 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Sean Anderson <sean.anderson@seco.com>
-Cc:     netdev@vger.kernel.org, "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org
-Subject: Re: [RFC net-next PATCH 01/16] dt-bindings: net: Add pcs property
-Message-ID: <YVwdWIJiV1nkJ4A3@shell.armlinux.org.uk>
-References: <20211004191527.1610759-1-sean.anderson@seco.com>
- <20211004191527.1610759-2-sean.anderson@seco.com>
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=SROZdM74rJINda6efh3/x7QvGWrv4vfLmeneC/gxc0Q=; b=gnT1M/Cprqagurm0L8AhF6akt7
+        5QYSfLNib7V0LsBfYtkr2RdPMGGCx7gqCeGKVm3ugJq3rCbb5PAfZymNnlNOzYerskU77bfUl9IjP
+        64qHLybq5EoQLdKcpjoCUKJcvH7DxJopkrLTfUu/qY3FC9+mQ8oVTVpn8pIrKI/OMU+RgFeGwwZhR
+        efZ/KROF2KscbOs18sBvwcL8MbwgxDtglkUftF0pQ/eVCudcjdSNhJZAEhiXBPBh7HnpooeO/vZam
+        9tPhzwCk5xbTkWnQbcbGXRXBvNhvzdH97vDKREkW+PxmdyLSeV5PPiXPxYiuTURYFVsRfoXzpQtt6
+        TDUB/YFA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mXgwZ-000Bp5-G8; Tue, 05 Oct 2021 09:41:10 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 86FB33002DE;
+        Tue,  5 Oct 2021 11:41:02 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 6F6B2202A012E; Tue,  5 Oct 2021 11:41:02 +0200 (CEST)
+Date:   Tue, 5 Oct 2021 11:41:02 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        Mike Galbraith <efault@gmx.de>, Ingo Molnar <mingo@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] sched/fair: Scale wakeup granularity relative to
+ nr_running
+Message-ID: <YVwdrh5pg0zSv2/b@hirez.programming.kicks-ass.net>
+References: <20210920142614.4891-1-mgorman@techsingularity.net>
+ <20210920142614.4891-3-mgorman@techsingularity.net>
+ <22e7133d674b82853a5ee64d3f5fc6b35a8e18d6.camel@gmx.de>
+ <20210921103621.GM3959@techsingularity.net>
+ <ea2f9038f00d3b4c0008235079e1868145b47621.camel@gmx.de>
+ <20210922132002.GX3959@techsingularity.net>
+ <CAKfTPtCxhzz1XgNXM8jaQC2=tGHm0ap88HneUgWTpCSeWVZwsw@mail.gmail.com>
+ <20210922150457.GA3959@techsingularity.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211004191527.1610759-2-sean.anderson@seco.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <20210922150457.GA3959@techsingularity.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 04, 2021 at 03:15:12PM -0400, Sean Anderson wrote:
-> Add a property for associating PCS devices with ethernet controllers.
-> Because PCS has no generic analogue like PHY, I have left off the
-> -handle suffix.
+On Wed, Sep 22, 2021 at 04:04:57PM +0100, Mel Gorman wrote:
+> On Wed, Sep 22, 2021 at 04:15:27PM +0200, Vincent Guittot wrote:
 
-For PHYs, we used to have phy and phy-device as property names, but the
-modern name is "phy-handle". I think we should do the same here, so I
-would suggest using "pcs-handle".
+> The reason I used SCHED_TUNABLESCALING_NONE for the changelog is that
+> the exact values depend on the number of CPUs so values are not even
+> the same across the range of machines I'm using. sysctl_sched_latency,
+> sysctl_sched_min_granularity sysctl_sched_wakeup_granularity are all
+> scaled but the ratios remain constant.
 
-We actually already have LX2160A platforms using "pcs-handle", (see
-Documentation/devicetree/bindings/net/fsl,qoriq-mc-dpmac.yaml) so we're
-in danger of ending up with multiple property names describing the same
-thing.
+It might make sense to reconsider the whole scaling thing FWIW. It used
+to be that desktop systems had 'small' number of CPUs (<=8) and servers
+had more.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+But today it's not uncommon to have 32-64 CPUs in a desktop system. And
+even LOG scaling gets us into stupid numbers for the latencies.
