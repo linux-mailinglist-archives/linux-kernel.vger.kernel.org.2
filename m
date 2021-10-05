@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4FC1421CB1
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 04:52:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C814421CB2
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 04:52:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231535AbhJECyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 22:54:21 -0400
+        id S231601AbhJECyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 22:54:23 -0400
 Received: from mga01.intel.com ([192.55.52.88]:43302 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231273AbhJECyQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 22:54:16 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10127"; a="248894628"
+        id S230457AbhJECyR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 22:54:17 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10127"; a="248894632"
 X-IronPort-AV: E=Sophos;i="5.85,347,1624345200"; 
-   d="scan'208";a="248894628"
+   d="scan'208";a="248894632"
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2021 19:52:26 -0700
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2021 19:52:27 -0700
 X-IronPort-AV: E=Sophos;i="5.85,347,1624345200"; 
-   d="scan'208";a="483409096"
+   d="scan'208";a="483409103"
 Received: from asaini1-mobl1.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.251.138.96])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2021 19:52:25 -0700
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2021 19:52:26 -0700
 From:   Kuppuswamy Sathyanarayanan 
         <sathyanarayanan.kuppuswamy@linux.intel.com>
 To:     Thomas Gleixner <tglx@linutronix.de>,
@@ -42,9 +42,9 @@ Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
         Sean Christopherson <seanjc@google.com>,
         Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v8 03/11] x86/cpufeatures: Add TDX Guest CPU feature
-Date:   Mon,  4 Oct 2021 19:51:57 -0700
-Message-Id: <20211005025205.1784480-4-sathyanarayanan.kuppuswamy@linux.intel.com>
+Subject: [PATCH v8 04/11] x86/tdx: Add Intel ARCH support to cc_platform_has()
+Date:   Mon,  4 Oct 2021 19:51:58 -0700
+Message-Id: <20211005025205.1784480-5-sathyanarayanan.kuppuswamy@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211005025205.1784480-1-sathyanarayanan.kuppuswamy@linux.intel.com>
 References: <20211005025205.1784480-1-sathyanarayanan.kuppuswamy@linux.intel.com>
@@ -54,173 +54,189 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add CPU feature detection for Trusted Domain Extensions support. TDX
-feature adds capabilities to keep guest register state and memory
-isolated from hypervisor.
+cc_platform_has() can be used to check for specific active confidential
+computing attributes, like memory encryption. For Intel platform like
+Trusted Domain eXtensions (TDX) guest has need for using this function
+to protect the TDX specific changes made in generic drivers.
 
-For TDX guest platforms, executing CPUID(eax=0x21, ecx=0) will return
-following values in EAX, EBX, ECX and EDX.
+So, extend cc_platform_has() and add support for Intel architecture
+variant (intel_cc_platform_has()). Also add TDX guest support to
+intel_cc_platform_has().
 
-EAX:  Maximum sub-leaf number:  0
-EBX/EDX/ECX:  Vendor string:
-
-EBX =  "Inte"
-EDX =  "lTDX"
-ECX =  "    "
-
-So when above condition is true, set X86_FEATURE_TDX_GUEST feature cap
-bit.
+Since intel_cc_platform_has() can be called with invalid %gs, it
+cannot be instrumented. So compile it with KCOV/ASAN disabled.
 
 Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
 ---
 
 Changes since v7:
- * Add comments for the order of tdx_early_init() call.
- * Similar to AMD (sme_me_mask) added a global variable
-   is_tdx_guest for Intel TDX related checks.
- * Changed pr_fmt from "x86/tdx: " to "tdx:"
+ * Merged patches titled "x86/tdx: Add Intel ARCH support to cc_platform_has()" and
+   "x86/tdx: Add TDX guest support to intel_cc_platform_has()" into one patch.
+ * Used cpuid_has_tdx_guest() when adding Intel support to cc_platform_has().
 
- arch/x86/include/asm/cpufeatures.h |  1 +
- arch/x86/include/asm/tdx.h         | 22 ++++++++++++++++
- arch/x86/kernel/Makefile           |  2 ++
- arch/x86/kernel/head64.c           |  8 ++++++
- arch/x86/kernel/tdx.c              | 40 ++++++++++++++++++++++++++++++
- 5 files changed, 73 insertions(+)
- create mode 100644 arch/x86/include/asm/tdx.h
- create mode 100644 arch/x86/kernel/tdx.c
+Change since v6:
+ * Used cc_platform_has() in place of prot_guest_has().
+ * Rebased on top of Tom Landecky's CC platform support patch series.
+   https://lore.kernel.org/linux-iommu/f9951644147e27772bf4512325e8ba6472e363b7.1631141919.git.thomas.lendacky@amd.com/T/
 
-diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
-index d0ce5cfd3ac1..84997abeb401 100644
---- a/arch/x86/include/asm/cpufeatures.h
-+++ b/arch/x86/include/asm/cpufeatures.h
-@@ -238,6 +238,7 @@
- #define X86_FEATURE_VMW_VMMCALL		( 8*32+19) /* "" VMware prefers VMMCALL hypercall instruction */
- #define X86_FEATURE_PVUNLOCK		( 8*32+20) /* "" PV unlock function */
- #define X86_FEATURE_VCPUPREEMPT		( 8*32+21) /* "" PV vcpu_is_preempted function */
-+#define X86_FEATURE_TDX_GUEST		( 8*32+22) /* Trusted Domain Extensions Guest */
+Changes since v5:
+ * Replaced tdx_prot_guest_has() with intel_prot_guest_has() to
+   keep the Intel call non TDX specific.
+ * Added TDX guest support to intel_prot_guest_has().
+
+Changes since v4:
+ * Rebased on top of Tom Lendacky's protected guest changes.
+ * Moved memory encryption related protected guest flags in
+   tdx_prot_guest_has() to the patch that actually uses them.
+
+ arch/x86/Kconfig                   |  1 +
+ arch/x86/include/asm/mem_encrypt.h |  6 ++++++
+ arch/x86/kernel/Makefile           |  1 +
+ arch/x86/kernel/cc_platform.c      |  5 +++++
+ arch/x86/kernel/cpu/Makefile       |  5 +++++
+ arch/x86/kernel/cpu/intel.c        | 16 ++++++++++++++++
+ include/linux/cc_platform.h        |  9 +++++++++
+ 7 files changed, 43 insertions(+)
+
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index c42dd8a2d1f4..abb249dc829d 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -871,6 +871,7 @@ config INTEL_TDX_GUEST
+ 	depends on SECURITY
+ 	select X86_X2APIC
+ 	select SECURITY_LOCKDOWN_LSM
++	select ARCH_HAS_CC_PLATFORM
+ 	help
+ 	  Provide support for running in a trusted domain on Intel processors
+ 	  equipped with Trusted Domain eXtensions. TDX is a Intel technology
+diff --git a/arch/x86/include/asm/mem_encrypt.h b/arch/x86/include/asm/mem_encrypt.h
+index ed954aa5c448..a73712b6ee0e 100644
+--- a/arch/x86/include/asm/mem_encrypt.h
++++ b/arch/x86/include/asm/mem_encrypt.h
+@@ -103,6 +103,12 @@ static inline u64 sme_get_me_mask(void)
+ 	return sme_me_mask;
+ }
  
- /* Intel-defined CPU features, CPUID level 0x00000007:0 (EBX), word 9 */
- #define X86_FEATURE_FSGSBASE		( 9*32+ 0) /* RDFSBASE, WRFSBASE, RDGSBASE, WRGSBASE instructions*/
-diff --git a/arch/x86/include/asm/tdx.h b/arch/x86/include/asm/tdx.h
-new file mode 100644
-index 000000000000..d552c7248bc7
---- /dev/null
-+++ b/arch/x86/include/asm/tdx.h
-@@ -0,0 +1,22 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/* Copyright (C) 2020 Intel Corporation */
-+#ifndef _ASM_X86_TDX_H
-+#define _ASM_X86_TDX_H
-+
-+#include <linux/cpufeature.h>
-+
-+#define TDX_CPUID_LEAF_ID	0x21
-+
-+#ifdef CONFIG_INTEL_TDX_GUEST
-+
-+extern u64 is_tdx_guest;
-+void __init tdx_early_init(void);
-+
++#if defined(CONFIG_CPU_SUP_INTEL) && defined(CONFIG_ARCH_HAS_CC_PLATFORM)
++bool intel_cc_platform_has(enum cc_attr attr);
 +#else
++static inline bool intel_cc_platform_has(enum cc_attr attr) { return false; }
++#endif
 +
-+#define is_tdx_guest		0ULL
-+static inline void tdx_early_init(void) { };
-+
-+#endif /* CONFIG_INTEL_TDX_GUEST */
-+
-+#endif /* _ASM_X86_TDX_H */
+ #endif	/* __ASSEMBLY__ */
+ 
+ #endif	/* __X86_MEM_ENCRYPT_H__ */
 diff --git a/arch/x86/kernel/Makefile b/arch/x86/kernel/Makefile
-index f91403a78594..159fccfece65 100644
+index 159fccfece65..8e5b49be65bd 100644
 --- a/arch/x86/kernel/Makefile
 +++ b/arch/x86/kernel/Makefile
-@@ -29,6 +29,7 @@ KASAN_SANITIZE_dumpstack_$(BITS).o			:= n
+@@ -28,6 +28,7 @@ KASAN_SANITIZE_dumpstack.o				:= n
+ KASAN_SANITIZE_dumpstack_$(BITS).o			:= n
  KASAN_SANITIZE_stacktrace.o				:= n
  KASAN_SANITIZE_paravirt.o				:= n
++KASAN_SANITIZE_cc_platform.o				:= n
  KASAN_SANITIZE_sev.o					:= n
-+KASAN_SANITIZE_tdx.o					:= n
+ KASAN_SANITIZE_tdx.o					:= n
  
- # With some compiler versions the generated code results in boot hangs, caused
- # by several compilation units. To be safe, disable all instrumentation.
-@@ -127,6 +128,7 @@ obj-$(CONFIG_PARAVIRT_CLOCK)	+= pvclock.o
- obj-$(CONFIG_X86_PMEM_LEGACY_DEVICE) += pmem.o
- 
- obj-$(CONFIG_JAILHOUSE_GUEST)	+= jailhouse.o
-+obj-$(CONFIG_INTEL_TDX_GUEST)	+= tdx.o
- 
- obj-$(CONFIG_EISA)		+= eisa.o
- obj-$(CONFIG_PCSPKR_PLATFORM)	+= pcspeaker.o
-diff --git a/arch/x86/kernel/head64.c b/arch/x86/kernel/head64.c
-index f98c76a1d16c..97ce0d037387 100644
---- a/arch/x86/kernel/head64.c
-+++ b/arch/x86/kernel/head64.c
-@@ -40,6 +40,7 @@
- #include <asm/extable.h>
- #include <asm/trapnr.h>
- #include <asm/sev.h>
-+#include <asm/tdx.h>
- 
- /*
-  * Manage page tables very early on.
-@@ -495,6 +496,13 @@ asmlinkage __visible void __init x86_64_start_kernel(char * real_mode_data)
- 
- 	copy_bootdata(__va(real_mode_data));
- 
-+	/*
-+	 * tdx_early_init() has dependency on command line parameters.
-+	 * So the order of calling it should be after copy_bootdata()
-+	 * (in which command line parameter is initialized).
-+	 */
-+	tdx_early_init();
-+
- 	/*
- 	 * Load microcode early on BSP.
- 	 */
-diff --git a/arch/x86/kernel/tdx.c b/arch/x86/kernel/tdx.c
-new file mode 100644
-index 000000000000..ad3ff5925153
---- /dev/null
-+++ b/arch/x86/kernel/tdx.c
-@@ -0,0 +1,40 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (C) 2020 Intel Corporation */
-+
-+#undef pr_fmt
-+#define pr_fmt(fmt)     "tdx: " fmt
+diff --git a/arch/x86/kernel/cc_platform.c b/arch/x86/kernel/cc_platform.c
+index 3c9bacd3c3f3..a84310ba1d8d 100644
+--- a/arch/x86/kernel/cc_platform.c
++++ b/arch/x86/kernel/cc_platform.c
+@@ -10,11 +10,16 @@
+ #include <linux/export.h>
+ #include <linux/cc_platform.h>
+ #include <linux/mem_encrypt.h>
++#include <linux/processor.h>
 +
 +#include <asm/tdx.h>
+ 
+ bool cc_platform_has(enum cc_attr attr)
+ {
+ 	if (sme_me_mask)
+ 		return amd_cc_platform_has(attr);
++	else if (is_tdx_guest)
++		return intel_cc_platform_has(attr);
+ 
+ 	return false;
+ }
+diff --git a/arch/x86/kernel/cpu/Makefile b/arch/x86/kernel/cpu/Makefile
+index 637b499450d1..64d33160e377 100644
+--- a/arch/x86/kernel/cpu/Makefile
++++ b/arch/x86/kernel/cpu/Makefile
+@@ -16,6 +16,11 @@ KCOV_INSTRUMENT_perf_event.o := n
+ # As above, instrumenting secondary CPU boot code causes boot hangs.
+ KCSAN_SANITIZE_common.o := n
+ 
++# intel_cc_platform_has cannot be instrumented because it can be called
++# with invalid %gs
++KCOV_INSTRUMENT_intel.o := n
++KCSAN_SANITIZE_intel.o := n
 +
-+/*
-+ * Allocate it in the data region to avoid zeroing it during
-+ * BSS initialization. It is mainly used in cc_platform_has()
-+ * call during early boot call.
-+ */
-+u64 __section(".data") is_tdx_guest = 0;
-+
-+static void __init is_tdx_guest_init(void)
+ # Make sure load_percpu_segment has no stackprotector
+ CFLAGS_common.o		:= -fno-stack-protector
+ 
+diff --git a/arch/x86/kernel/cpu/intel.c b/arch/x86/kernel/cpu/intel.c
+index 8321c43554a1..b99ead877549 100644
+--- a/arch/x86/kernel/cpu/intel.c
++++ b/arch/x86/kernel/cpu/intel.c
+@@ -11,6 +11,7 @@
+ #include <linux/init.h>
+ #include <linux/uaccess.h>
+ #include <linux/delay.h>
++#include <linux/mem_encrypt.h>
+ 
+ #include <asm/cpufeature.h>
+ #include <asm/msr.h>
+@@ -26,6 +27,7 @@
+ #include <asm/resctrl.h>
+ #include <asm/numa.h>
+ #include <asm/thermal.h>
++#include <asm/tdx.h>
+ 
+ #ifdef CONFIG_X86_64
+ #include <linux/topology.h>
+@@ -60,6 +62,20 @@ static u64 msr_test_ctrl_cache __ro_after_init;
+  */
+ static bool cpu_model_supports_sld __ro_after_init;
+ 
++#ifdef CONFIG_ARCH_HAS_CC_PLATFORM
++bool intel_cc_platform_has(enum cc_attr attr)
 +{
-+	u32 eax, sig[3];
-+
-+	if (cpuid_eax(0) < TDX_CPUID_LEAF_ID) {
-+		is_tdx_guest = 0;
-+		return;
++	switch (attr) {
++	case CC_ATTR_GUEST_TDX:
++		return is_tdx_guest;
++	default:
++		return false;
 +	}
 +
-+	cpuid_count(TDX_CPUID_LEAF_ID, 0, &eax, &sig[0], &sig[2], &sig[1]);
-+
-+	is_tdx_guest = !memcmp("IntelTDX    ", sig, 12);
++	return false;
 +}
++#endif
 +
-+void __init tdx_early_init(void)
-+{
-+	is_tdx_guest_init();
+ /*
+  * Processors which have self-snooping capability can handle conflicting
+  * memory type across CPUs by snooping its own cache. However, there exists
+diff --git a/include/linux/cc_platform.h b/include/linux/cc_platform.h
+index 253f3ea66cd8..26eb19f37d56 100644
+--- a/include/linux/cc_platform.h
++++ b/include/linux/cc_platform.h
+@@ -61,6 +61,15 @@ enum cc_attr {
+ 	 * Examples include SEV-ES.
+ 	 */
+ 	CC_ATTR_GUEST_STATE_ENCRYPT,
 +
-+	if (!is_tdx_guest)
-+		return;
-+
-+	setup_force_cpu_cap(X86_FEATURE_TDX_GUEST);
-+
-+	pr_info("Guest initialized\n");
-+}
++	/**
++	 * @CC_ATTR_GUEST_TDX: Trusted Domain Extension Support
++	 *
++	 * The platform/OS is running as a TDX guest/virtual machine.
++	 *
++	 * Examples include Intel TDX.
++	 */
++	CC_ATTR_GUEST_TDX,
+ };
+ 
+ #ifdef CONFIG_ARCH_HAS_CC_PLATFORM
 -- 
 2.25.1
 
