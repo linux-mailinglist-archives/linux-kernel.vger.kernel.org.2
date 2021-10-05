@@ -2,126 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43A94423332
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 00:07:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38FD8423335
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 00:07:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236810AbhJEWIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 18:08:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39918 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236750AbhJEWIv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 18:08:51 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FCCEC061749
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 15:07:00 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id r10so2292136wra.12
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 15:07:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=EI3G8VZjcZoUXoKns09EXb0KlF0BfbnupH/W8neV6aI=;
-        b=KOKCktSbplLJ41mxs+iE9C83jKFxnLoPhR/eNFhspRqbN0PhtgAjqiquYlYijKM6Rk
-         64vrS4ZFCFg7C4IQRR5vj0zGAS44dXcQ189e7hvvywSfP2QmWjRf9kj9/8bUeJ1Zqolt
-         xBFtxg83AXcF7tUGWGjp5ySdQMCjyRGC865g5tSvpHy/+n62i3EiyIQlDLbtKXaHnbbK
-         qKyGg5EzXhHE0aQItYX05+88yv7dBSAH7F6cEXEZKYNdV16Sm6EZV1HCujGOrcY2SDaQ
-         AC4tLbOhO/0LsVsyUVpbIbgdodUWQJXYVhypMRGw0HADnR9vjDhkcGrV9LRcVfAgAusR
-         EUKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=EI3G8VZjcZoUXoKns09EXb0KlF0BfbnupH/W8neV6aI=;
-        b=MYylJ5OS6qNCbUQx7iJL65lzn3PdsyxKORAwJ+4Vs/McX4xx5DIl/EC79qhYi8arSI
-         fuZqMvm/aB34vea4ELq46a+WdSI+yeFWs8K9DR0h1h6wOjTqBh1WJAwGdkj4k6WRl4Zj
-         c/yrAJTQQF680KpEufoviBDc5i6rylLq2Us2DrfR/c3VpYeJN/TlaWtIY0n/fcv0iE0h
-         g0zKxwb0KTOkMJbGqv30NVLO6T3JKjM2WWCqabsbdh76vXG7PvtNlrbtEIPDBWl4A1MC
-         tuGVFaSCljkq60ESFJYLBG+eP4AgcETBpqbWP2EMFGxlHocj/vAprej2HTn7YerdyTHb
-         A+bg==
-X-Gm-Message-State: AOAM532BmscH8httDj1jm+2UsLDHIPaGXkfSoWSfok513lz4TTnO6BSM
-        1juq25UydUL+Tgs4fJ7Q+ss=
-X-Google-Smtp-Source: ABdhPJxk73ZQYqCxt/oNZqQA40uUWWGdRRazNeg1V+WutdzmXyHI7ByU64YIcERJqqTiQkwC7tcd+g==
-X-Received: by 2002:a1c:ac81:: with SMTP id v123mr6217204wme.94.1633471618815;
-        Tue, 05 Oct 2021 15:06:58 -0700 (PDT)
-Received: from ?IPV6:2a02:8108:96c0:3b88::f816? ([2a02:8108:96c0:3b88::f816])
-        by smtp.gmail.com with ESMTPSA id s24sm2916820wmh.34.2021.10.05.15.06.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Oct 2021 15:06:58 -0700 (PDT)
-Message-ID: <448f1193-c22b-851d-4bf2-5aeec64268d1@gmail.com>
-Date:   Wed, 6 Oct 2021 00:06:57 +0200
+        id S236839AbhJEWIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 18:08:55 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:50894 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236816AbhJEWIx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 18:08:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=Lluhp1JzYl1MdgCun+Ng6rRe2JKMoYgDlOFY52JZHkI=; b=A9JRMZYv+g00Zd38Un+SBqSPMW
+        WRoUi7KZcYTflWhKIy9rp3/T+85FFyO2Q8hmcAU6pe8YXa7hP3Ot3lM4+Zcy515RTSJQZ2yaoY7Y8
+        tY2k/5Owv1IJbAtwbmdZzCV29K0VRoM6elseDsj54xkO1rRNJPiKHhw4Hvx0G6rAM8Z8=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mXsaQ-009kjn-UP; Wed, 06 Oct 2021 00:06:58 +0200
+Date:   Wed, 6 Oct 2021 00:06:58 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>
+Cc:     Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: lets settle the LED `function` property regarding the netdev
+ trigger
+Message-ID: <YVzMghbt1+ZSILpQ@lunn.ch>
+References: <20211001143601.5f57eb1a@thinkpad>
+ <YVn815h7JBtVSfwZ@lunn.ch>
+ <20211003212654.30fa43f5@thinkpad>
+ <YVsUodiPoiIESrEE@lunn.ch>
+ <20211004170847.3f92ef48@thinkpad>
+ <0b1bc2d7-6e62-5adb-5aed-48b99770d80d@gmail.com>
+ <20211005222657.7d1b2a19@thinkpad>
+ <YVy9Ho47XeVON+lB@lunn.ch>
+ <20211005234342.7334061b@thinkpad>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
-Subject: Re: [PATCH 6/9] staging: r8188eu: HardwareType is write-only
-Content-Language: en-US
-To:     Martin Kaiser <martin@kaiser.cx>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20211005200821.19783-1-martin@kaiser.cx>
- <20211005200821.19783-6-martin@kaiser.cx>
-From:   Michael Straube <straube.linux@gmail.com>
-In-Reply-To: <20211005200821.19783-6-martin@kaiser.cx>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211005234342.7334061b@thinkpad>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/5/21 22:08, Martin Kaiser wrote:
-> HardwareType in struct adapter is never read, it can be removed.
+> > I suggest we start with simple independent LEDs. That gives enough to
+> > support the majority of use cases people actually need. And is enough
+> > to unblock people who i keep NACKing patches and tell them to wait for
+> > this work to get merged.
 > 
-> Signed-off-by: Martin Kaiser <martin@kaiser.cx>
-> ---
->   drivers/staging/r8188eu/hal/usb_ops_linux.c | 1 -
->   drivers/staging/r8188eu/include/drv_types.h | 1 -
->   drivers/staging/r8188eu/include/hal_intf.h  | 2 --
->   3 files changed, 4 deletions(-)
+> Of course, and I plan to do so. Those netdev trigger extensions and
+> multi-color function definitions are for later :)
+
+Great.
+ 
+> We got side tracked in this discussion, sorry about that.
 > 
-> diff --git a/drivers/staging/r8188eu/hal/usb_ops_linux.c b/drivers/staging/r8188eu/hal/usb_ops_linux.c
-> index c15a75513c8c..9544300fab65 100644
-> --- a/drivers/staging/r8188eu/hal/usb_ops_linux.c
-> +++ b/drivers/staging/r8188eu/hal/usb_ops_linux.c
-> @@ -562,6 +562,5 @@ void rtl8188eu_xmit_tasklet(unsigned long priv)
->   void rtl8188eu_set_hw_type(struct adapter *adapt)
->   {
->   	adapt->chip_type = RTL8188E;
-> -	adapt->HardwareType = HARDWARE_TYPE_RTL8188EU;
->   	DBG_88E("CHIP TYPE: RTL8188E\n");
->   }
-> diff --git a/drivers/staging/r8188eu/include/drv_types.h b/drivers/staging/r8188eu/include/drv_types.h
-> index 6d63429d06c6..9fa561ad340b 100644
-> --- a/drivers/staging/r8188eu/include/drv_types.h
-> +++ b/drivers/staging/r8188eu/include/drv_types.h
-> @@ -206,7 +206,6 @@ struct adapter {
->   	int	pid[3];/* process id from UI, 0:wps, 1:hostapd, 2:dhcpcd */
->   	int	bDongle;/* build-in module or external dongle */
->   	u16	chip_type;
-> -	u16	HardwareType;
->   	u16	interface_type;/* USB,SDIO,SPI,PCI */
->   
->   	struct dvobj_priv *dvobj;
-> diff --git a/drivers/staging/r8188eu/include/hal_intf.h b/drivers/staging/r8188eu/include/hal_intf.h
-> index 29ca90a86844..ee8e67dafe7c 100644
-> --- a/drivers/staging/r8188eu/include/hal_intf.h
-> +++ b/drivers/staging/r8188eu/include/hal_intf.h
-> @@ -137,8 +137,6 @@ struct hal_ops {
->   #define RF_CHANGE_BY_HW		BIT(30)
->   #define RF_CHANGE_BY_SW		BIT(31)
->   
-> -#define HARDWARE_TYPE_RTL8188EU 17
-> -
->   #define is_boot_from_eeprom(adapter) (adapter->eeprompriv.EepromOrEfuse)
->   
->   void rtl8188eu_set_hal_ops(struct adapter *padapter);
+> In this thread I just wanted to settle the LED function property for
+> LEDs indicating network ports.
 > 
+> So would you, Andrew, agree with:
+> - extending function property to be array of strings instead of only
+>   one string, so that we can do
+>     function = "link", "activity";
 
-Looks good to me.
+I agree with having a list, and we use the combination. If the
+combination is not possible by the hardware, then -EINVAL, or
+-EOPNOTSUPP.
 
-Acked-by: Michael Straube <straube.linux@gmail.com>
+> - having separate functions for different link modes
+>     function = "link1000", "link100";
 
-Thanks,
-Michael
+I would suggest this, so you can use 
+
+function = "link1000", "link100", "activity"
+
+What could be interesting is how you do this in sysfs?  How do you
+enumerate what the hardware can do? How do you select what you want?
+
+Do you need to do
+
+echo "link1000 link100 activity" > /sys/class/net/eth0/phy/led/function
+
+And we can have something like
+
+cat /sys/class/net/eth0/phy/led/function
+activity
+link10 activity
+link100 activity
+link1000 activity
+[link100 link1000 activity]
+link10
+link100
+link1000
+
+each line being a combination the hardware supports, and the line in
+[] is the currently select function.
+
+   Andrew
+
+
+
+
