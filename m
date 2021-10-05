@@ -2,97 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 252494231FC
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 22:28:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAFFB423201
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 22:29:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236136AbhJEUaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 16:30:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45158 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229805AbhJEUaF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 16:30:05 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84ED7C061749;
-        Tue,  5 Oct 2021 13:28:14 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id g14so531994pfm.1;
-        Tue, 05 Oct 2021 13:28:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/GmU+skl6R6cWDd9uqFr0fshz0di0rgcxbz7AsCSLTk=;
-        b=czmtJZ6AjGKE/aKnwK871ypbVk81tVEwXYQESjXId7b3xjJisjnMKLf5CILbKIyojg
-         pxyYau4aogA6pIMtjCVO69sKo6LDn+kJ9dDMykX4wfd3mk6MDLJn8RvkqW9SmNtszMFz
-         cozoVLDN0uDeAhtju0p85b5CU0oYRgiuZa78yI2DFeXEx7f9l/Spx1k8AORKZaP6o9J+
-         PTqeBA99CIP1M0HQIY4RvSZVHCDdZA2g9FQL8HHxFKLC0C/c2FWBjDak6CJ5rdgeOFQq
-         dO1HEeIUfn4FIsnzTFfatiHGcEfYrNEcIBFPFv1eRE3yg/sZwGGqUKPqX6yG5UQCGEGQ
-         mGdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/GmU+skl6R6cWDd9uqFr0fshz0di0rgcxbz7AsCSLTk=;
-        b=H0HiBtDhWpO1mQ3wMv0VGaiY06sYBRQuSKBvzchm/7CTWSIo6wOj54AC0/+ScdiIU+
-         KmbYV3oKfDNx6PYc9YPbqfBsn5PCIN4DuVTOMNz5QAMfN5VM1snIzvtEtGnEGYZrkbca
-         M4TdR6claklUXath7XETTpnekGVnqTqAbflp1FoTHe4BLlgCrHwOcv/QdcOfTZet3+0o
-         zgeeZ5OnvRbcoqK1mep9t5bB/X5OUeEfLd4Ar5tyxlANId5jaVg+G6XZyfdla5zHmZXL
-         1edlUjNWjrfSgEMujhuJU6hjLZ6khTVQ/JJFQpA7fKtQF7E9S2YL2Ga5PCqHe9Ui0LCl
-         BISA==
-X-Gm-Message-State: AOAM530+PgHU2KLEbpJKWnFxKYkdZ/XvQbfFn42dsA4vr6Njf+P0OiNL
-        1c+3IEVyG71S/8mPDzsnROQ=
-X-Google-Smtp-Source: ABdhPJwwFVcPszFAH4eP+4kaSUQ5NJONF42DosSniwkCJyf3WCWUV2uJWqoQvN17GfuhBmzm0dAzWw==
-X-Received: by 2002:a05:6a00:1481:b0:43d:275b:7ba4 with SMTP id v1-20020a056a00148100b0043d275b7ba4mr32600810pfu.63.1633465693770;
-        Tue, 05 Oct 2021 13:28:13 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:d0a7:4716:8e1b:a15d])
-        by smtp.gmail.com with ESMTPSA id e9sm3160784pjl.41.2021.10.05.13.28.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Oct 2021 13:28:12 -0700 (PDT)
-Date:   Tue, 5 Oct 2021 13:28:10 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Zhang Qilong <zhangqilong3@huawei.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] [RESEND] [v2] Input: analog - fix invalid snprintf() call
-Message-ID: <YVy1WkSwfUPyZ2S4@google.com>
-References: <20210927101416.1569609-1-arnd@kernel.org>
+        id S236316AbhJEUbL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 16:31:11 -0400
+Received: from mail.z3ntu.xyz ([128.199.32.197]:56908 "EHLO mail.z3ntu.xyz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236188AbhJEUbJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 16:31:09 -0400
+Received: from localhost.localdomain (ip-213-127-63-121.ip.prioritytelecom.net [213.127.63.121])
+        by mail.z3ntu.xyz (Postfix) with ESMTPSA id B15B8C9158;
+        Tue,  5 Oct 2021 20:29:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=z3ntu.xyz; s=z3ntu;
+        t=1633465757; bh=frxoBNTsUZRbITBdNSe5aGy6uhU1HOv6AQ3q+VXoaXA=;
+        h=From:To:Cc:Subject:Date;
+        b=X0ujESeE0xHg0RTUID+yhgBnuvIcoCWFv5zHu3Ga9cnC9+IrR8fe/7NIxT/qlysZ1
+         /a5cS2myucCbWz3BV7KZ+TNYVm/1NmlJ4XszrKcbFultyujpeeTM6sQryoKME1NjNW
+         z2hLdL3vIpj7x8Nv0/La3dMbBIHDTYLcRdkJin0s=
+From:   Luca Weiss <luca@z3ntu.xyz>
+To:     linux-mediatek@lists.infradead.org
+Cc:     ~postmarketos/upstreaming@lists.sr.ht,
+        Arnd Bergmann <arnd@arndb.de>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Fabien Parent <fparent@baylibre.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Luca Weiss <luca@z3ntu.xyz>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Olof Johansson <olof@lixom.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Seiya Wang <seiya.wang@mediatek.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, soc@kernel.org
+Subject: [PATCH 1/2] dt-bindings: arm: Add MT6589 Fairphone 1
+Date:   Tue,  5 Oct 2021 22:28:30 +0200
+Message-Id: <20211005202833.96526-1-luca@z3ntu.xyz>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210927101416.1569609-1-arnd@kernel.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 12:14:06PM +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> Overlapping input and output arguments to snprintf() are
-> undefined behavior in C99:
-> 
-> drivers/input/joystick/analog.c: In function 'analog_name':
-> drivers/input/joystick/analog.c:428:3: error: 'snprintf' argument 4 overlaps destination object 'analog' [-Werror=restrict]
->   428 |   snprintf(analog->name, sizeof(analog->name), "%s %d-hat",
->       |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   429 |     analog->name, hweight16(analog->mask & ANALOG_HATS_ALL));
->       |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/input/joystick/analog.c:420:40: note: destination object referenced by 'restrict'-qualified argument 1 was declared here
->   420 | static void analog_name(struct analog *analog)
->       |                         ~~~~~~~~~~~~~~~^~~~~~
-> 
-> Change this function to use the simpler seq_buf interface instead.
-> 
-> Cc: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-> Link: https://lore.kernel.org/all/20210323131456.2600132-1-arnd@kernel.org/
-> Link: https://lore.kernel.org/all/20210324131959.2089129-1-arnd@kernel.org/
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Add the compatible for Fairphone 1 smartphone with MT6589 SoC.
 
-Applied, thank you.
+Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
+---
+ Documentation/devicetree/bindings/arm/mediatek.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
+diff --git a/Documentation/devicetree/bindings/arm/mediatek.yaml b/Documentation/devicetree/bindings/arm/mediatek.yaml
+index 80a05f6fee85..0fa55497b96f 100644
+--- a/Documentation/devicetree/bindings/arm/mediatek.yaml
++++ b/Documentation/devicetree/bindings/arm/mediatek.yaml
+@@ -32,6 +32,7 @@ properties:
+           - const: mediatek,mt6580
+       - items:
+           - enum:
++              - fairphone,fp1
+               - mundoreader,bq-aquaris5
+           - const: mediatek,mt6589
+       - items:
 -- 
-Dmitry
+2.33.0
+
