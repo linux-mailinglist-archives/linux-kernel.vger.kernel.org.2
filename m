@@ -2,106 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E670742262B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 14:17:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBFE942264A
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 14:20:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234702AbhJEMS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 08:18:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41828 "EHLO
+        id S234722AbhJEMW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 08:22:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234409AbhJEMS6 (ORCPT
+        with ESMTP id S233784AbhJEMW2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 08:18:58 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C03B4C061755
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 05:17:07 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id h9-20020a9d2f09000000b005453f95356cso25563988otb.11
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 05:17:07 -0700 (PDT)
+        Tue, 5 Oct 2021 08:22:28 -0400
+Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61F26C061749
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 05:20:37 -0700 (PDT)
+Received: by mail-wr1-x449.google.com with SMTP id w2-20020a5d5442000000b0016061c95fb7so5651557wrv.12
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 05:20:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Qtirudvd3CXF1rYRgKYcpMfzejgCL2epG1sP1VQEe9s=;
-        b=KTwb/ogrtt/E591H/tN/VTYlhqrR9Vl5tddsqaZzE0kkrXYzv/GX8tid0+F3lr5qQq
-         yPWVTg2B314ddDgSwSevNhKAu64R7YWiSygh+c8h3Asl4LsYrFegO/B6AISMwFJ6D8Vr
-         XRXfMMIK8QWdqX+E7w/eSWk7FDRpKdoGDgzRD0PpaXqgSjJuzh6nSIptpD4f/Bs/ztSK
-         2TK//39Gd5LVxzA5kd9wKdOxiLO1a+l5Db/we0xTTygfsehseuN2h/z0vzxEdg7X2hEt
-         0wvhmExP39oZanRDPHEP3T1fKkhGJjnqPf1v/7cFh+00IaE9+I2+0LRHTzwjraO4OnYR
-         TByA==
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=m/O1dgx/6dc/3G/WHpfSWl4EY1iI+ZyzOq/yOOojIvY=;
+        b=OD7BHJzoRVq9YndsXgA6wM/uouP19YQUkJYZ8SUt7BtxMUEI+dl3vAXpdyo4nfKnWt
+         Vsk3eSZrnL0Xe2Kf7qXbwwa9X56ZprMhgVUSz8+b4KMXu1kWFP2HjR5vgHXhPoy3q2uk
+         X3Ii7WpVkiUK2r48b53wLkrH/4pqCMMwoVCZy/1d9SHnKai8GthwWqAm0kbbsLwMqyTZ
+         L1rwzgHNArnHLbBPv0/S6y4EUzjDFknvyxBXSxWd2aNnJOK/6Th6VsFTHqsxAsWAuz5N
+         4/OkIdVv/6RiRMYvlaDGJumhw+2CBQPd+nv8BstqehoOILYGz0t1fie2R4BxE5Rh3G3V
+         6DuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Qtirudvd3CXF1rYRgKYcpMfzejgCL2epG1sP1VQEe9s=;
-        b=u/4Uj0z4C5XVndUAkxZ29WqIaP/IDIwTQ2o28b8bnBf2+6PThWSf97z6zXeNlXkDav
-         oCkBgiSE8uofKczOsgP41n+qrWBY8hqU/9Vh7p5U+X16lUNSv2vLedVDjNc/9bBRPQwN
-         s4Pe1ggdqq9jFKR1f5dVr9BNHHQVEW1Ph3YklD6sW+iuJqZ4fH/Jk2wsLiz/6ReRFM3Z
-         4eh4WGU1lLkeqBAGU2IOmucf3YxlxvY0Dy0pFJwOa0203PGkg2+NodVQPBsapk/nFVin
-         hMKzsXIajDrC0E74eMdbZyPRRxLrECOtWDa3I9noKiKctoNKQtoq1OFR1Q4f5mttyTAi
-         7zQw==
-X-Gm-Message-State: AOAM532jCBWyF3F4Ox+RLo09aMzycj8lJnKjGgjMAf7KPwl/+f2OtgUz
-        OJocoii51Wr9GCsg3c37o2AiUWtEz47cpfFKw2eoug==
-X-Google-Smtp-Source: ABdhPJwjDgxSZtLpmCXXe/rrN8LcDZxzExGHH2uRskhVorKYUt+/6c8rdV+/ZTp3iqUz8WZjpWJJNavoVIUkrlZN2QA=
-X-Received: by 2002:a9d:3e04:: with SMTP id a4mr14216116otd.329.1633436226924;
- Tue, 05 Oct 2021 05:17:06 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211005105905.1994700-1-elver@google.com> <20211005105905.1994700-17-elver@google.com>
- <YVw+4McyFdvU7ZED@hirez.programming.kicks-ass.net>
-In-Reply-To: <YVw+4McyFdvU7ZED@hirez.programming.kicks-ass.net>
-From:   Marco Elver <elver@google.com>
-Date:   Tue, 5 Oct 2021 14:16:55 +0200
-Message-ID: <CANpmjNO6H2imqsGaLYqimm0POvqA65Pd3OYji-QzONMn=Ht6Og@mail.gmail.com>
-Subject: Re: [PATCH -rcu/kcsan 16/23] locking/atomics, kcsan: Add
- instrumentation for barriers
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
-        Alexander Potapenko <glider@google.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Waiman Long <longman@redhat.com>,
-        Will Deacon <will@kernel.org>, kasan-dev@googlegroups.com,
-        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, x86@kernel.org
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=m/O1dgx/6dc/3G/WHpfSWl4EY1iI+ZyzOq/yOOojIvY=;
+        b=LjWtRA988rxGOdPMVMAURGCob11WdRJy9kJ8Z3UrGO5QzK7hZyQGYt93gRVahOaCW/
+         UilprWbRt1DuJpPnWIDFJxAY9c006aJlV+aMkd+Nbewk8OT7gAhcKN/Ar3FArmqbwRHH
+         rDLhXmlBCIwIIOryPxdq8ZCE0hOeRYFIDTpM1eVUxSynHie0+XLRBNnD3WWH37ybLDYd
+         USrbX2173yVCvAQOj5xWFCePheOSQf8gMNLJwD24ZeyB6uGrWRTjKuemsIE7U0UgtdES
+         HHA/sZ2uZC9FQrBlF1MFnHOUsv6m4E+DiMZBudqqSiUcGskyUAGacLJcZ/JSfgnevRWS
+         8e8w==
+X-Gm-Message-State: AOAM530K+ioPGeu6RWWsnMdXAUc9NmCZWyK62ACGe65jlBjfhhtWU+97
+        I4NX2TJclLhAV83cLlGsmnI7TuO5iiNH
+X-Google-Smtp-Source: ABdhPJwmuoUenb0uSWOlCBVEwk5H7f0VMu8HbnUjMB8fSNcFpLR024d7GwmK+6XLgt3zfreUU7OOwG2C8UMa
+X-Received: from luke.lon.corp.google.com ([2a00:79e0:d:210:c8bd:fb02:d32e:faa0])
+ (user=qperret job=sendgmr) by 2002:a05:600c:3b26:: with SMTP id
+ m38mr612627wms.0.1633436435583; Tue, 05 Oct 2021 05:20:35 -0700 (PDT)
+Date:   Tue,  5 Oct 2021 13:20:31 +0100
+Message-Id: <20211005122031.809857-1-qperret@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.800.g4c38ced690-goog
+Subject: [PATCH] KVM: arm64: Release mmap_lock when using VM_SHARED with MTE
+From:   Quentin Perret <qperret@google.com>
+To:     Marc Zyngier <maz@kernel.org>, James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Steven Price <steven.price@arm.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org
+Cc:     kernel-team@android.com, Quentin Perret <qperret@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 5 Oct 2021 at 14:03, Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Tue, Oct 05, 2021 at 12:58:58PM +0200, Marco Elver wrote:
-> > @@ -59,6 +60,7 @@ atomic_add(int i, atomic_t *v)
-> >  static __always_inline int
-> >  atomic_add_return(int i, atomic_t *v)
-> >  {
-> > +     kcsan_mb();
-> >       instrument_atomic_read_write(v, sizeof(*v));
-> >       return arch_atomic_add_return(i, v);
-> >  }
->
-> This and others,.. is this actually correct? Should that not be
-> something like:
->
->         kscan_mb();
->         instrument_atomic_read_write(...);
->         ret = arch_atomic_add_return(i, v);
->         kcsan_mb();
->         return ret;
->
-> ?
+VM_SHARED mappings are currently forbidden in a memslot with MTE to
+prevent two VMs racing to sanitise the same page. However, this check
+is performed while holding current->mm's mmap_lock, but fails to release
+it. Fix this by releasing the lock when needed.
 
-In theory, yes, but right now it's redundant.
+Fixes: ea7fc1bb1cd1 ("KVM: arm64: Introduce MTE VM feature")
+Signed-off-by: Quentin Perret <qperret@google.com>
+---
+ arch/arm64/kvm/mmu.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-Because right now KCSAN only models "buffering", and no "prefetching".
-So there's no way that a later instruction would be reordered before
-this point. And atomic accesses are never considered for reordering,
-so it's also impossible that it would  be reordered later.
+diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+index 1a94a7ca48f2..69bd1732a299 100644
+--- a/arch/arm64/kvm/mmu.c
++++ b/arch/arm64/kvm/mmu.c
+@@ -1529,8 +1529,10 @@ int kvm_arch_prepare_memory_region(struct kvm *kvm,
+ 		 * when updating the PG_mte_tagged page flag, see
+ 		 * sanitise_mte_tags for more details.
+ 		 */
+-		if (kvm_has_mte(kvm) && vma->vm_flags & VM_SHARED)
+-			return -EINVAL;
++		if (kvm_has_mte(kvm) && vma->vm_flags & VM_SHARED) {
++			ret = -EINVAL;
++			break;
++		}
+ 
+ 		if (vma->vm_flags & VM_PFNMAP) {
+ 			/* IO region dirty page logging not allowed */
+-- 
+2.33.0.800.g4c38ced690-goog
 
-Each kcsan_mb() is a call, so right now it makes sense to just have 1
-call to be a bit more efficient.
