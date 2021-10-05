@@ -2,88 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF094421EBD
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 08:13:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4470C421EC3
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 08:13:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232405AbhJEGPN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 02:15:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46466 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231752AbhJEGPM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 02:15:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 43AA36120C;
-        Tue,  5 Oct 2021 06:13:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633414402;
-        bh=68uJEZOoCThhXBOwX444y4tIygakaLMjcplKfatuAK0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cmAJaRd/6jEiS4tHFoI5uKbc3CI9Jwm2Ox1xK0lR9GxB70O6IQK4jQCOLq9X+j+Za
-         8oGe3FPyHuQytoohsuh5Soynqlmjq1rQUYo3qohWD6LOCvxWdsNZ6WlWYXdyovbMLj
-         eFKrbJIJJyyBYHKYps1DpPUbeensSe9EnVW3UKCBPc5Uwqv4pQ6igw5rX2PnJCuWr7
-         VrVtkxEi8ErnL8scjZUPGnsvVQUPVB57DN1+ZSKTkLl6BTUYXlNT0xg/caRKmdzGRf
-         DbfhQWP1otD3Wgo3qJWNnnvRyUSSYiIOp91phrL8l9KXKrvQjUCQhZdQ+NDitfyKpH
-         tSUk+NccvbXsA==
-Date:   Tue, 5 Oct 2021 09:13:18 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Ido Schimmel <idosch@nvidia.com>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Pirko <jiri@nvidia.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        mlxsw@nvidia.com, Moshe Shemesh <moshe@nvidia.com>,
-        netdev@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Shay Drory <shayd@nvidia.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>
-Subject: Re: [PATCH net-next v2 1/5] devlink: Reduce struct devlink exposure
-Message-ID: <YVvs/kNqxumdoVjR@unreal>
-References: <cover.1633284302.git.leonro@nvidia.com>
- <d21ebe6fde8139d5630ef4ebc9c5eb6ed18b0e3b.1633284302.git.leonro@nvidia.com>
- <20211004163808.437ea8f9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        id S232496AbhJEGPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 02:15:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41476 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232469AbhJEGPf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 02:15:35 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 322E3C06174E
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 23:13:45 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id g193-20020a1c20ca000000b0030d55f1d984so1897894wmg.3
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 23:13:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=j0gdpa7QFj6JEtxCL0CAkQhhWBN7lylbx+e4M1Vsb7o=;
+        b=VSMlRsoRvLnUs/myw52hG6menRckaTpfD/sc8jEUT0jyW5v3NKcZHtBWqWykMD5xpQ
+         mFu4QMfCZ9RQ9gHcJ9QFLXWCDQioaZGzCLDj2r3q5cK6Bu/YSHR3txAyRLJylC+4AKLR
+         g55PRWGvVR45Df7AB215vAr2ryBVF9UVBNPf2zz3lLIf+C6rBUlNftwFmbW96vlrWdTq
+         hCwjH6VQ0tr1DWzEEMjTxsoihIPbk377R7bOZfQPdhVWl10LaMlIoj6UaOF+EZtODQyV
+         LwPycfL7e8vNKveuzSRdCDYLP9xDWVdJMnpBwUvvLfFs+gIqIOclKdHk3GCXIwYTLdoB
+         y/FQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=j0gdpa7QFj6JEtxCL0CAkQhhWBN7lylbx+e4M1Vsb7o=;
+        b=dw2Z4ZiR0ghq5cKdbvbo+jQlNRycobDXLGhXlThJOvPvPPMQL4BPi8Vjz1EU7g76sS
+         +b/E7TmKLrkQEFTUATyO+Oui2HG3JIMHi1eEcNOPUyDCWrl41STlwRnjCBI2YXAsw3UO
+         rvJeb2r8IeT9LCcd/w0Bjcs0St3yWa5TqqN9oli4Lk8kRzmskOY2dhCkLHomnnYMEKBO
+         0SKWX1jEIIpkgcmEYgRDi8Ws9feXxRP0QCcuxfGxoA0IiJcOlqs+T0sI8RyowHCHsNF1
+         ZiT6d/+DshoMiT6oPYuymFKtdGFBqiRGBBNM6z7XjvQXAJZOycdfjDsBi8QJCQwbQ+2f
+         +z0g==
+X-Gm-Message-State: AOAM533E0Z1cYtxWjuL8xXiOaxoT80gEM85M6D3QO9wmGxC32ASKMWOW
+        Q9lrBKBBa6CNj1mE6mogM8ryh5erUFZcd5IVsz/O9g==
+X-Google-Smtp-Source: ABdhPJwvzH04gXiNcjIVGCd6bQFa+g35hTdKUKGTFBM4UFTMR14Ybiy5zm5HBrSroG102mfVLu4iLioSc6A1uZAaB2I=
+X-Received: by 2002:a05:600c:1c9a:: with SMTP id k26mr1406845wms.169.1633414423545;
+ Mon, 04 Oct 2021 23:13:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211004163808.437ea8f9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+References: <20210901083215.25984-1-yunfei.dong@mediatek.com>
+ <CAAEAJfDOt_GyDPojcj5P6Wou9HC2GC8YzRt2wYyqdrCOjfeOog@mail.gmail.com>
+ <3b9463e88d88ce85205da08f8263252da7726ade.camel@mediatek.com>
+ <aba7fb4ffe6e45ac90869b5017468386bce64d28.camel@mediatek.com>
+ <b7ed8b71578a98704e9b8ca29cac63c67cc14b3f.camel@mediatek.com>
+ <CAAEAJfCHEBFc8B7C0bu7UxtJdffvDarqgA-rset1wPjLOiV01A@mail.gmail.com> <CAC-pXoMR=mOwnKqP5SFAfF3Ka5UrG0F8Mj=sJuEziU=uOKftoA@mail.gmail.com>
+In-Reply-To: <CAC-pXoMR=mOwnKqP5SFAfF3Ka5UrG0F8Mj=sJuEziU=uOKftoA@mail.gmail.com>
+From:   Tomasz Figa <tfiga@google.com>
+Date:   Tue, 5 Oct 2021 15:13:32 +0900
+Message-ID: <CAAFQd5DzLMFarc2fFkrcE4t+T3mk5XJtCoWa8WpHNuOS5++SbA@mail.gmail.com>
+Subject: Re: [PATCH v6, 00/15] Using component framework to support multi
+ hardware decode
+To:     Steve Cho <stevecho@chromium.org>
+Cc:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+        "yunfei.dong@mediatek.com" <Yunfei.Dong@mediatek.com>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Tzung-Bi Shih <tzungbi@chromium.org>,
+        Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <Andrew-CT.Chen@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Fritz Koenig <frkoenig@chromium.org>,
+        Irui Wang <irui.wang@mediatek.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Project_Global_Chrome_Upstream_Group 
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 04, 2021 at 04:38:08PM -0700, Jakub Kicinski wrote:
-> On Sun,  3 Oct 2021 21:12:02 +0300 Leon Romanovsky wrote:
-> > From: Leon Romanovsky <leonro@nvidia.com>
-> > 
-> > The declaration of struct devlink in general header provokes the
-> > situation where internal fields can be accidentally used by the driver
-> > authors. In order to reduce such possible situations, let's reduce the
-> > namespace exposure of struct devlink.
-> > 
-> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> 
-> 100% subjective but every time I decided to hide a structure definition
-> like this I came to regret it later. The fact there is only one minor
-> infraction in drivers poking at members seems to prove this is not in
-> fact needed.
+On Tue, Sep 28, 2021 at 2:02 AM Steve Cho <stevecho@chromium.org> wrote:
+>
+> Hi Ezequiel,
+>
+> Thank you for reviewing these series from Yunfei!
+> This series is one of the main obstacles for us at the moment for MTK
+> so please continue to help & support reviewing this series.
+>
+> > > According to google's suggestion, it's better not to use v4l2 async
+> > > also.
+> >
+> > Hum? I haven't seen such objection on the mailing list.
+> Maybe coming from Tzung-Bi?
+> Yunfei, please let us know.
 
-Yes, it is subjective, my experience is completely opposite :). Every
-time the internals were exposed, they were abused.
+I do object to using V4L2 async. It's designed for independent
+components of media pipelines, handled by multiple different drivers
+and also modelled as V4L2 subdevices. We don't have anything like that
+here.
 
-IMHO, the one user that poked into the struct devlink internals is a pure
-luck together with lack of devlink adoption outside of the netdev which
-limited number of devlink API users. The more devlink will be used, the
-more creative usage will be.
+How about just open coding something trivial that only fits the needs
+of this specific driver? I think it would be as simple as a linked
+list and registering the V4L2 devices only after all the nodes probe.
 
-For example, ionic had internal logic based on internal devlink_port state:
- * c2255ff47768 ("ionic: cleanly release devlink instance")
- * d7907a2b1a3b ("devlink: Remove duplicated registration check")
-
-However, this patch was written not because of having right software
-abstraction, but because of the next patch, where I needed to have
-declaration of "struct devlink_ops" before struct devlink itself.
-
-Without this patch, I would need to heavily reshuffle include/net/devlink.h
-to have structs declarations written in different order. So a lot of
-churn for something that needs to be fixed anyway (in my opinion).
-
-Thanks
+Best regards,
+Tomasz
