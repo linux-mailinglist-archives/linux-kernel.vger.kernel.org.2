@@ -2,118 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFC15422D04
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:53:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AB2B422D12
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:54:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236110AbhJEPzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 11:55:08 -0400
-Received: from mail-vk1-f169.google.com ([209.85.221.169]:40456 "EHLO
-        mail-vk1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234516AbhJEPzH (ORCPT
+        id S235067AbhJEP4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 11:56:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37684 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233705AbhJEP4j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 11:55:07 -0400
-Received: by mail-vk1-f169.google.com with SMTP id w68so9528231vkd.7;
-        Tue, 05 Oct 2021 08:53:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Q1Xw4ky1AcjioHtE7GEPS21kis1agtXPzqqWu5ElWzw=;
-        b=xFx9mMFrDg5X2RRXWIqe02Tp85oRkc3FGcVtP5KXZHguvCcP13YkHtORJ6Y0Gs10Sk
-         yqJs8hg/hBoI0uAIXh6CURJrrnRUJVbwXA1PYtYc9vw10yfKu2TJP5kiYe7VM2Ro2FIg
-         vpwBNoUsYFjw4hhs40wn5Oz46GA/RRKcs7kK9hLgzFL+11V91+893Zd3KJaKuyLs4P+E
-         TVBW8JsUz4hDK/sCge+tWcWeuBrhxfEh+ccKM3zQQNTyqfWGjMmFV0GMcb5pm8oC6qKL
-         JTbZRPzjUJtPonkPn5PXw1252a8k4npclf0nQ2z4vhX3ahsI7HoWfQAhmBI5PtIqvCah
-         wasA==
-X-Gm-Message-State: AOAM533zMA58y0obPY55i1sR32G5yekRN4rGTTJvoO5Rl+vtxaYU8gpo
-        JoUXnXvvg28GEMzmLzBESHjgPrjJ582iwNXyTUY=
-X-Google-Smtp-Source: ABdhPJySyFDo2gMuB4Sog6kJpK0vNWCGJy24yOXVGi7bsv0910NttdqlkVdV/OruwFCqqcoLj7F6CU/hV2deF6QskpU=
-X-Received: by 2002:a1f:3a4b:: with SMTP id h72mr21287493vka.19.1633449196000;
- Tue, 05 Oct 2021 08:53:16 -0700 (PDT)
+        Tue, 5 Oct 2021 11:56:39 -0400
+Received: from metanate.com (unknown [IPv6:2001:8b0:1628:5005::111])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CE4AC061749
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 08:54:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=metanate.com; s=stronger; h=Content-Transfer-Encoding:Message-Id:Date:
+        Subject:Cc:To:From:Content-Type:Reply-To:Content-ID:Content-Description:
+        In-Reply-To:References; bh=csrmaSQcoepErVbpC8vwvkqM/QnjnY7CODP5fd4S9m0=; b=RQ
+        SKx6JPMyv/YavFF9kzdaP07GENOkrc0EcHep5YFAuiVV5WR7pFU1bdwF7tGOIxqLFdk8blro7snQz
+        n3IayK3tX/GyJUesI1qFn5BQIK3mjF7XVYqF2IQq1C7TacXdR7Fb9rnq0SfJvws7mfFr0v81KocIJ
+        2wMajU5GVbA/Dsz78+r9JC+UeSCWVriGMwjPwAh4ZlKEO1HboZripUS5PJl2GYOzsWq7RWqjGgT9d
+        niCRTkRDrA24+SFzyjXTxoKUZ8zPyDx9LcWh2PLFERjtKJdLEToT+mcg15z6oYO6mF96kmfSz5V+2
+        QwdvTxqaPSqpJcw565VBHwsK6qN0zYMQ==;
+Received: from [81.174.171.191] (helo=donbot.metanate.com)
+        by email.metanate.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <john@metanate.com>)
+        id 1mXmmB-0001ef-7s; Tue, 05 Oct 2021 16:54:43 +0100
+From:   John Keeping <john@metanate.com>
+To:     linux-rt-users@vger.kernel.org
+Cc:     John Keeping <john@metanate.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [RFC PATCH RT] PM: runtime: avoid retry loops on RT
+Date:   Tue,  5 Oct 2021 16:54:27 +0100
+Message-Id: <20211005155427.1591196-1-john@metanate.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-References: <20210929213431.5275-1-nikita.yoush@cogentembedded.com>
-In-Reply-To: <20210929213431.5275-1-nikita.yoush@cogentembedded.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 5 Oct 2021 17:53:04 +0200
-Message-ID: <CAMuHMdWBJSPWR+Tb87GcJiv_xkYjToOarTcHu8doAFsCECEd=w@mail.gmail.com>
-Subject: Re: [PATCH] clk: renesas: r8a779[56]x: add MLP clock
-To:     Nikita Yushchenko <nikita.yoush@cogentembedded.com>
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrey Gusakov <andrey.gusakov@cogentembedded.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Authenticated: YES
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nikita,
+With PREEMPT_RT spin_unlock() is identical to spin_unlock_irq() so there
+is no reason to have a special case using the former.  Furthermore,
+spin_unlock() enables preemption meaning that a task in RESUMING or
+SUSPENDING state may be preempted by a higher priority task running
+pm_runtime_get_sync() leading to a livelock.
 
-On Wed, Sep 29, 2021 at 11:35 PM Nikita Yushchenko
-<nikita.yoush@cogentembedded.com> wrote:
-> From: Andrey Gusakov <andrey.gusakov@cogentembedded.com>
->
-> Add clocks for MLP module on Renesas H3 and M3.
->
-> Signed-off-by: Andrey Gusakov <andrey.gusakov@cogentembedded.com>
-> Signed-off-by: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
+Use the non-irq_safe path for all waiting so that the waiting task will
+block.
 
-Thanks for your patch!
+Note that this changes only the waiting behaviour of irq_safe, other
+uses are left unchanged so that the parent device always remains active
+in the same way as !RT.
 
-> --- a/drivers/clk/renesas/r8a7795-cpg-mssr.c
-> +++ b/drivers/clk/renesas/r8a7795-cpg-mssr.c
-> @@ -229,6 +229,7 @@ static struct mssr_mod_clk r8a7795_mod_clks[] __initdata = {
->         DEF_MOD("lvds",                  727,   R8A7795_CLK_S0D4),
->         DEF_MOD("hdmi1",                 728,   R8A7795_CLK_HDMI),
->         DEF_MOD("hdmi0",                 729,   R8A7795_CLK_HDMI),
-> +       DEF_MOD("mlp",                   802,   R8A7795_CLK_S2D1),
->         DEF_MOD("vin7",                  804,   R8A7795_CLK_S0D2),
->         DEF_MOD("vin6",                  805,   R8A7795_CLK_S0D2),
->         DEF_MOD("vin5",                  806,   R8A7795_CLK_S0D2),
-> diff --git a/drivers/clk/renesas/r8a7796-cpg-mssr.c b/drivers/clk/renesas/r8a7796-cpg-mssr.c
-> index 41593c126faf..9c22977e42c2 100644
-> --- a/drivers/clk/renesas/r8a7796-cpg-mssr.c
-> +++ b/drivers/clk/renesas/r8a7796-cpg-mssr.c
-> @@ -207,6 +207,7 @@ static struct mssr_mod_clk r8a7796_mod_clks[] __initdata = {
->         DEF_MOD("du0",                   724,   R8A7796_CLK_S2D1),
->         DEF_MOD("lvds",                  727,   R8A7796_CLK_S2D1),
->         DEF_MOD("hdmi0",                 729,   R8A7796_CLK_HDMI),
-> +       DEF_MOD("mlp",                   802,   R8A7796_CLK_S2D1),
->         DEF_MOD("vin7",                  804,   R8A7796_CLK_S0D2),
->         DEF_MOD("vin6",                  805,   R8A7796_CLK_S0D2),
->         DEF_MOD("vin5",                  806,   R8A7796_CLK_S0D2),
-> diff --git a/drivers/clk/renesas/r8a77965-cpg-mssr.c b/drivers/clk/renesas/r8a77965-cpg-mssr.c
-> index bc1be8bcbbe4..52c5da26b756 100644
-> --- a/drivers/clk/renesas/r8a77965-cpg-mssr.c
-> +++ b/drivers/clk/renesas/r8a77965-cpg-mssr.c
-> @@ -205,6 +205,7 @@ static const struct mssr_mod_clk r8a77965_mod_clks[] __initconst = {
->         DEF_MOD("lvds",                 727,    R8A77965_CLK_S2D1),
->         DEF_MOD("hdmi0",                729,    R8A77965_CLK_HDMI),
->
-> +       DEF_MOD("mlp",                  802,    R8A77965_CLK_S2D1),
->         DEF_MOD("vin7",                 804,    R8A77965_CLK_S0D2),
->         DEF_MOD("vin6",                 805,    R8A77965_CLK_S0D2),
->         DEF_MOD("vin5",                 806,    R8A77965_CLK_S0D2),
+Signed-off-by: John Keeping <john@metanate.com>
+---
+ drivers/base/power/runtime.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-These additions look fine to me.  I'm only wondering about the
-actual parent clocks, which are not well-documented in the Hardware
-User's Manual.
-It does say that MLP uses the Audio main bus (AXI).
-The related AUDIO-DMAC uses S1D2, which runs at 266 MHz, while S2D1
-runs at 400 MHz?
-
-BTW, do you plan to enable full support for MLP in the upstream kernel?
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/drivers/base/power/runtime.c b/drivers/base/power/runtime.c
+index 96972d5f6ef3..5e0d349fab4e 100644
+--- a/drivers/base/power/runtime.c
++++ b/drivers/base/power/runtime.c
+@@ -347,8 +347,9 @@ static int __rpm_callback(int (*cb)(struct device *), struct device *dev)
+ {
+ 	int retval = 0, idx;
+ 	bool use_links = dev->power.links_count > 0;
++	bool irq_safe = dev->power.irq_safe && !IS_ENABLED(CONFIG_PREEMPT_RT);
+ 
+-	if (dev->power.irq_safe) {
++	if (irq_safe) {
+ 		spin_unlock(&dev->power.lock);
+ 	} else {
+ 		spin_unlock_irq(&dev->power.lock);
+@@ -376,7 +377,7 @@ static int __rpm_callback(int (*cb)(struct device *), struct device *dev)
+ 	if (cb)
+ 		retval = cb(dev);
+ 
+-	if (dev->power.irq_safe) {
++	if (irq_safe) {
+ 		spin_lock(&dev->power.lock);
+ 	} else {
+ 		/*
+@@ -596,7 +597,7 @@ static int rpm_suspend(struct device *dev, int rpmflags)
+ 			goto out;
+ 		}
+ 
+-		if (dev->power.irq_safe) {
++		if (dev->power.irq_safe && !IS_ENABLED(CONFIG_PREEMPT_RT)) {
+ 			spin_unlock(&dev->power.lock);
+ 
+ 			cpu_relax();
+@@ -777,7 +778,7 @@ static int rpm_resume(struct device *dev, int rpmflags)
+ 			goto out;
+ 		}
+ 
+-		if (dev->power.irq_safe) {
++		if (dev->power.irq_safe && !IS_ENABLED(CONFIG_PREEMPT_RT)) {
+ 			spin_unlock(&dev->power.lock);
+ 
+ 			cpu_relax();
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.33.0
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
