@@ -2,88 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F5044230FE
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 21:49:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B97B9423107
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 21:50:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235783AbhJETvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 15:51:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35772 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235763AbhJETvH (ORCPT
+        id S235837AbhJETvx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 15:51:53 -0400
+Received: from mail.efficios.com ([167.114.26.124]:38746 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235424AbhJETvv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 15:51:07 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FE07C061755
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 12:49:16 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id r19so513893lfe.10
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 12:49:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hSuSoFxOGCn2dKc1HCjcYz8H8NJV0h0NOInNBU1gpMA=;
-        b=r5wtOsIeugQcbSyjEU/905zrWR2yTnrfd3lG/w4v8yln/ZETnNb15iirXrqb21Q/SO
-         TEkfrPxqqAWodYR8/iZ0w+09qmRwPy7SPYIbNrIieEdDujUiMOG0kyqZv85hzLj98DXH
-         y2issgbN9WDO+jaoPuyZ2Bw995Nwtlvn7qQs+2QC1QtjPEruZLJ6h1NVwg90mo0swtGl
-         Gqtzl3zB1FwcLxIZqLbQa28WNWcdigta1v0d0BTNgYIo4l82y7hJdMvDVTwuYpWgugRB
-         q5IGQRWZ6oYxSo7vVocD3QCq5TzZLWiRn/S2Ud82TfBBpk/5ZtIb4oG/hk30EUA43SXm
-         xwnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hSuSoFxOGCn2dKc1HCjcYz8H8NJV0h0NOInNBU1gpMA=;
-        b=47q/VjN0w0fAVmDIv2Bn+IBvoaElQs2PG4avWvX7k/OaO+dnH5HRfqBe+Zs9vXcobx
-         B6jNSp3iVEbVKRiihfDf45vuhzDiz2E9xficH/yQdk9zZDpyxJgNf12b9JpR7gc1QBId
-         Rl/ywksXFjCRUYCMud3Jfd9Y07Ht/Ee28AEz5E7Dyv3FfVn38LtaALRpiAehsBAIsGSC
-         VZzJ7bLmyedsvi2hOMfcOX+NW/j7aCEPWlCP3BDVTmd0gWUCfdI+C2AHnTMbPIgZkXNX
-         USrdGkch4ThbCewSBHgaTw4MRXWazXcaq04gXfbq+PUZ3jCHaaNj145Dw4YKd5UsgnbM
-         B2ug==
-X-Gm-Message-State: AOAM530guh7UpOns/gA+8a+OWpnVI4y6hG9nQqbP1HjeoMz64MC+vsbi
-        lI+jITBVHKNYByNoYR96CMOl+zfT6teT4QxRy6OhXA==
-X-Google-Smtp-Source: ABdhPJykTThNIeCyH9BpbVcn03w3Un13AqDopS7RhmmTGPabmxfsRDhqrRXTaLxBykgm3tcdjFmpnL7g7PfeGoPlFYI=
-X-Received: by 2002:a2e:7f05:: with SMTP id a5mr23623339ljd.261.1633463354742;
- Tue, 05 Oct 2021 12:49:14 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211005155923.173399-1-marcan@marcan.st> <20211005155923.173399-4-marcan@marcan.st>
- <CACRpkdanbovvXXLAGGZEEiKXXrNnW+8p1sCONQYWmAjVi-m-9A@mail.gmail.com> <3bad7bc3-30ac-851f-57a3-7781dfa23521@marcan.st>
-In-Reply-To: <3bad7bc3-30ac-851f-57a3-7781dfa23521@marcan.st>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 5 Oct 2021 21:49:03 +0200
-Message-ID: <CACRpkdaZ5p1P1S6j5cphVB8dC6JZT+nc9VMdy7qTmT2EFExqng@mail.gmail.com>
-Subject: Re: [PATCH 3/7] soc: apple: Add driver for Apple PMGR power state controls
-To:     Hector Martin <marcan@marcan.st>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
+        Tue, 5 Oct 2021 15:51:51 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 7E7C238FB64;
+        Tue,  5 Oct 2021 15:49:59 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id ZEXrR5Ci9ztl; Tue,  5 Oct 2021 15:49:58 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id C548438FD25;
+        Tue,  5 Oct 2021 15:49:58 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com C548438FD25
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1633463398;
+        bh=dozxmLSuH4fqPxd682HodmlOfauCaaugJuGX+lZefU8=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=VQLxpJX9s6Ims/iCloj2co6DZ+kAdayJlyjk0y39LTLedU12jjm3nRuS3ML03MCxy
+         UY9oFtvBhPj8xL+HiCsR7Pwg4pWZisnoHzhUgxTh0R/QYj+/4YNutoi+kOcS/YdKMS
+         wBGAZWIGIye7ICOyCS3Rc/lVbHQ4WNpQ0AVIsXN1r920EaxyuHuGeqkSyR8y2Fmdo0
+         KJps0Xp0reKwLf3Wbgi2mxfR+PbgOIFy126o8QYAEFtBWQAFf8m4kFSiV76TqdgDf/
+         8cjY4PLqtdqMqCyyloggvXTrp/dgg1EovojbCFhaBWRD8zpQnda+JqtKRVkyap5eqF
+         /OSD+5ooicwig==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 1mYUU1jAuvet; Tue,  5 Oct 2021 15:49:58 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id AB0C738FBD8;
+        Tue,  5 Oct 2021 15:49:58 -0400 (EDT)
+Date:   Tue, 5 Oct 2021 15:49:58 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     rostedt <rostedt@goodmis.org>
+Cc:     Jan Engelhardt <jengelh@inai.de>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
         linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Paul <paulmck@linux.vnet.ibm.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        "Joel Fernandes, Google" <joel@joelfernandes.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, rcu <rcu@vger.kernel.org>,
+        netfilter-devel <netfilter-devel@vger.kernel.org>,
+        coreteam <coreteam@netfilter.org>,
+        netdev <netdev@vger.kernel.org>
+Message-ID: <1403497170.3059.1633463398562.JavaMail.zimbra@efficios.com>
+In-Reply-To: <20211005154029.46f9c596@gandalf.local.home>
+References: <20211005094728.203ecef2@gandalf.local.home> <ef5b1654-1f75-da82-cab8-248319efbe3f@rasmusvillemoes.dk> <639278914.2878.1633457192964.JavaMail.zimbra@efficios.com> <826o327o-3r46-3oop-r430-8qr0ssp537o3@vanv.qr> <20211005144002.34008ea0@gandalf.local.home> <srqsppq-p657-43qq-np31-pq5pp03271r6@vanv.qr> <20211005154029.46f9c596@gandalf.local.home>
+Subject: Re: [RFC][PATCH] rcu: Use typeof(p) instead of typeof(*p) *
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_4156 (ZimbraWebClient - FF92 (Linux)/8.8.15_GA_4156)
+Thread-Topic: Use typeof(p) instead of typeof(*p) *
+Thread-Index: 1k/Ly56F/MzpErICaHpi/t7hzD4jKA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 5, 2021 at 6:15 PM Hector Martin <marcan@marcan.st> wrote:
+----- On Oct 5, 2021, at 3:40 PM, rostedt rostedt@goodmis.org wrote:
 
-> We already broke tradition with the "apple," DT compatible prefix (used
-> to be AAPL for the PowerPC Macs), and these chips aren't even just used
-> in Macs (e.g. the iPad, which in theory people would be able to run
-> Linux on if someone figures out a jailbreak), so perhaps it's time for
-> another break here?
+> On Tue, 5 Oct 2021 21:06:36 +0200 (CEST)
+> Jan Engelhardt <jengelh@inai.de> wrote:
+>=20
+>> On Tuesday 2021-10-05 20:40, Steven Rostedt wrote:
+>> >>  =20
+>> >> >>>> typeof(*p) *________p1 =3D (typeof(*p) *__force)READ_ONCE(p);
+>> >>=20
+>> >> #define static_cast(type, expr) ((struct { type x; }){(expr)}.x)
+>> >> typeof(p) p1 =3D (typeof(p) __force)static_cast(void *, READ_ONCE(p))=
+;
+>> >>=20
+>> >> Let the name not fool you; it's absolutely _not_ the same as C++'s
+>> >> static_cast, but still: it does emit a warning when you do pass an
+>> >> integer, which is better than no warning at all in that case.
+>> >>=20
+>> >>  *flies away*
+>> >
+>> >Are you suggesting I should continue this exercise ;-)
+>>=20
+>> =E2=80=9CAfter all, why not?=E2=80=9D
+>>=20
+>> typeof(p) p1 =3D (typeof(p) __force)READ_ONCE(p) +
+>>                BUILD_BUG_ON_EXPR(__builtin_classify_type(p) !=3D 5);
+>=20
+> I may try it, because exposing the structure I want to hide, is pulling o=
+ut
+> a lot of other crap with it :-p
 
-Yeah fair enough. It's probably more intuitive under drivers/soc anyway.
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
+I like the static_cast() approach above. It is neat way to validate that th=
+e
+argument is a pointer without need to dereference the pointer.
 
-Yours,
-Linus Walleij
+I would also be open to consider this trick for liburcu's userspace API.
+
+About the other proposed solution based on __builtin_classify_type, I am
+reluctant to use something designed specifically for varargs in a context
+where they are not used.
+
+Thanks,
+
+Mathieu
+
+--=20
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
