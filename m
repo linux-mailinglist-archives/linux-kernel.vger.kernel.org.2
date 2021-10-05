@@ -2,85 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FED4421DF6
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 07:30:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA755421DFB
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 07:32:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231937AbhJEFcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 01:32:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59760 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230403AbhJEFcK (ORCPT
+        id S231854AbhJEFed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 01:34:33 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:62557 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231364AbhJEFec (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 01:32:10 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9491C061745;
-        Mon,  4 Oct 2021 22:30:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=ZwdSb4hH1QTGvodRLIIEgKbVS753IWCsfQMr66VwocA=; b=aGAzxtAZFMbFkqrxhDfwcq0yH9
-        vWpms2jvme98Fv4r7ZIFLQ+zazjEO7LmICt5O3wO9WPIINQFw7I4xAQwOWZfZ55De5t91tGJ7toPH
-        kwCwrW2yQ96tgi2LaoF3rjlc0FBnCii0JCj827Kg+UXH1LHQ5AVdDEW4pDyugbPrDmZMPnfyVVeiO
-        1N7DwJZUB8ADbsBvE0aSUuEPcYq/rp8zlWuY36rmfEfa43581a1rXXzsPRjSybp0QInPJW4pdwIFz
-        Wlh5HvJcDOYBXbviIj3QVlqrM6ydfsvOzqnVhtAJiErcvK3Bl5/2PrH/AHNVIVzqJqD5i35Cr49mM
-        HtyDfDtA==;
-Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mXd1w-008yyl-8k; Tue, 05 Oct 2021 05:30:20 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        Daniel Latypov <dlatypov@google.com>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Subject: [PATCH] kunit: fix kernel-doc warnings in doc. build
-Date:   Mon,  4 Oct 2021 22:30:19 -0700
-Message-Id: <20211005053019.26284-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.31.1
+        Tue, 5 Oct 2021 01:34:32 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1633411962; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=oeik4SHJ7/zT6Y6tH9SdWj4ivrSScffini1rxo27Ae8=;
+ b=uc5rf3Ogd0tGcbd4sY1Vx8nbPafJG/45OGtHJxSbN2Cz1FnN+1LQZFvTcDu57S6K736rR4yc
+ Fqc/Mw6wQlowfsHSzRD2K7e21wTqcqjd6bdXT3SnqUFYYEeRRrf4JSCE1qZEojgDS3Mp9Bhd
+ Rc7MYcZJXR7GkFGMekANAxfTwHk=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 615be377519bd8dcf0212175 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 05 Oct 2021 05:32:39
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 3E8DEC4338F; Tue,  5 Oct 2021 05:32:39 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 446F7C4338F;
+        Tue,  5 Oct 2021 05:32:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 446F7C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH] bcma: drop unneeded initialization value
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20210930194920.15847-1-sohaib.amhmd@gmail.com>
+References: <20210930194920.15847-1-sohaib.amhmd@gmail.com>
+To:     Sohaib Mohamed <sohaib.amhmd@gmail.com>
+Cc:     unlisted-recipients:; (no To-header on input)
+        Sohaib Mohamed <sohaib.amhmd@gmail.com>,
+        =?utf-8?b?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
+Illegal-Object: Syntax error in Cc: address found on vger.kernel.org:
+        Cc:     unlisted-recipients:; (no To-header on input)Sohaib Mohamed <sohaib.amhmd@gmail.com>
+                                                                     ^-missing end of address
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
+Message-Id: <20211005053239.3E8DEC4338F@smtp.codeaurora.org>
+Date:   Tue,  5 Oct 2021 05:32:39 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix documentation build warnings in <kunit/test.h>:
+Sohaib Mohamed <sohaib.amhmd@gmail.com> wrote:
 
-../include/kunit/test.h:616: warning: Function parameter or member 'flags' not described in 'kunit_kmalloc_array'
-../include/kunit/test.h:616: warning: Excess function parameter 'gfp' description in 'kunit_kmalloc_array'
-../include/kunit/test.h:661: warning: Function parameter or member 'flags' not described in 'kunit_kcalloc'
-../include/kunit/test.h:661: warning: Excess function parameter 'gfp' description in 'kunit_kcalloc'
+> Do not initialise statics to 0
+> ERROR found by checkpatch.pl
+> 
+> Signed-off-by: Sohaib Mohamed <sohaib.amhmd@gmail.com>
 
-Fixes: 0a756853586c ("kunit: test: add test resource management API")
-Fixes: 7122debb4367 ("kunit: introduce kunit_kmalloc_array/kunit_kcalloc() helpers")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Brendan Higgins <brendanhiggins@google.com>
-Cc: linux-kselftest@vger.kernel.org
-Cc: kunit-dev@googlegroups.com
-Cc: Daniel Latypov <dlatypov@google.com>
-Cc: Shuah Khan <skhan@linuxfoundation.org>
----
- include/kunit/test.h |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Patch applied to wireless-drivers-next.git, thanks.
 
---- lnx-515-rc4.orig/include/kunit/test.h
-+++ lnx-515-rc4/include/kunit/test.h
-@@ -607,7 +607,7 @@ void kunit_remove_resource(struct kunit
-  * @test: The test context object.
-  * @n: number of elements.
-  * @size: The size in bytes of the desired memory.
-- * @gfp: flags passed to underlying kmalloc().
-+ * @flags: gfp flags passed to underlying kmalloc().
-  *
-  * Just like `kmalloc_array(...)`, except the allocation is managed by the test case
-  * and is automatically cleaned up after the test case concludes. See &struct
-@@ -653,7 +653,7 @@ static inline void *kunit_kzalloc(struct
-  * @test: The test context object.
-  * @n: number of elements.
-  * @size: The size in bytes of the desired memory.
-- * @gfp: flags passed to underlying kmalloc().
-+ * @flags: gfp flags passed to underlying kmalloc().
-  *
-  * See kcalloc() and kunit_kmalloc_array() for more information.
-  */
+5668958f6a92 bcma: drop unneeded initialization value
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/20210930194920.15847-1-sohaib.amhmd@gmail.com/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
