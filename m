@@ -2,90 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A173422B9B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:58:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DDB9422BD8
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:08:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235262AbhJEPA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 11:00:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52256 "EHLO
+        id S235067AbhJEPJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 11:09:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234814AbhJEPAY (ORCPT
+        with ESMTP id S229488AbhJEPJy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 11:00:24 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B880C06174E
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 07:58:34 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id s11so20002275pgr.11
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 07:58:34 -0700 (PDT)
+        Tue, 5 Oct 2021 11:09:54 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFCBDC061749
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 08:08:03 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id r10so21482889wra.12
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 08:08:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=bgoHCxSMWvrI+zzIWEUSO5wxgiEm1xpuQV4K1NeO+Fo=;
-        b=n2VxdJdbtIt7YREvkC5LomLZ+1AYzH92N+DmBobCEQ++KbLOQ8yWMf95N4fS11aFkC
-         zNijFy/PhpP4oXtf82j8SMrtpMxI6+JjjR8Ar9xP6xG+CnKLSYEaS1eGtVzSxxUp/A3a
-         +BrhTp99Mh8EZQ6jnxN7BZCQu/VMjcGoA93pQ=
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=3PYTT8kJpyzpxpd4IUA8A7KEa4VhIQYWn6d7OgYbvSg=;
+        b=KERGXjexTo6cOXkAYp9NeVFF1j7TpkR0lVoPRsoCIB+kmnP/8n6s+zvTkf6tsFCecr
+         vZ9FRYvFmTxxzFwKdKWM+uM0x+wN0H3yMuvFNYzX78pN9o8DhY/ZO/6hbERBsRDa8xZP
+         xpAXXsxsnRCFdI3Ka8LS6oT/gUUU7mBmAUSJPQ/4ort1q/vMa2IjhHMwSv70g8mrJDor
+         dgpNr1HzJbWIhz0GRanpvlvTwoRJqdZnNshyIe4F1EzZPuOo5KOwTPvv/dYikUfSlpqX
+         l85CvkPP9iZG1gHQTCg0DrfTPIpcJr7Vaea1tRSWqAbNwteYA7nG1XgBtOOdVlvrNd51
+         0TTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bgoHCxSMWvrI+zzIWEUSO5wxgiEm1xpuQV4K1NeO+Fo=;
-        b=5j7nrQnkfLpcxfDnPsAC64dse6KYe5SrX6aAIPslQN8oTLKjCRvuRzuA/Mf/fw3Zaj
-         Qbt0J9EP+4+214dD/JC641B7V5RS5YLzi9xBrZjznkXn2zmjyMyKPUStCc+6EFOVOGxV
-         VXMIcKOjCTNc/s7hi5p0dA8TzgKX2kJzjifOvE63IaiGElENYyFXzHJys6a6Gj0ztG/A
-         ikKSOn4umfLY1FxCkz5t0oyXNBI5KXV+MEH5GmV9ZCn+JNTLAj2BtVspD7RamYe8bdas
-         +ZgqouT460x3UAM1WevhyCK4+OD1ih927cfMwlVpKnKf4Bm1tdIoeCpHJNfCEIX57ljE
-         KhfQ==
-X-Gm-Message-State: AOAM532Z8nj0COMVwqZtTI66NkezLl01PZJf4qYKpj/idGuYFj4GJ9Ft
-        xGru+BtwikJoeHiB9gsxHOcNOQ==
-X-Google-Smtp-Source: ABdhPJwiCrol/8Yn1vfrch619l1Kejw3+LZHyiDtgtNjkiBiVAGbNI4qLOTTVNP5HnHCXg70FEGGbw==
-X-Received: by 2002:a63:3549:: with SMTP id c70mr13028802pga.179.1633445913710;
-        Tue, 05 Oct 2021 07:58:33 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id mt5sm2512942pjb.12.2021.10.05.07.58.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Oct 2021 07:58:33 -0700 (PDT)
-Date:   Tue, 5 Oct 2021 07:58:32 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Joe Perches <joe@perches.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v4] docs: Explain the desired position of function
- attributes
-Message-ID: <202110050758.E7470639D@keescook>
-References: <20210930235754.2635912-1-keescook@chromium.org>
- <87h7dw75gh.fsf@meer.lwn.net>
- <CANiq72mTmYCJ4_7KVRMMKCDTMrnE9wCXBKViCMzkW1ErpdZKHg@mail.gmail.com>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=3PYTT8kJpyzpxpd4IUA8A7KEa4VhIQYWn6d7OgYbvSg=;
+        b=bYNQwhx5NDqrmo+RiW7t9l6PRv1Ipn+4gVnDkftiVyLJrM5R07qRkj3Hopzq0Qskrq
+         0be4iK4E1SmfZFgd4R32ag4joFR5BiW5HKfG47sPxkQdbe5P2JrF5O8PzDWNZpJDMtts
+         Tl/uIfVV6rZPGY2+x9uI/C6SX8yUBNnS/oQ18/2AqM/mS+TIEcqP+ZDYpr0tmB7Jm+0X
+         ZmILHHlgofeNmJqEOCHn9XbwmkkWNhv++85fEJzn3tnDl83bfPsKj96swnGAYrJyd5rk
+         V0I1w+V3evqpYbXTjzg05OFVbQpHVfOFOlepfszPk/ek1qxwN8qlI/UL9I+y9uKzBc++
+         Kd1Q==
+X-Gm-Message-State: AOAM531bosbUBtsCoSGip6+p7Zib4Mj7Y4Q00fAhsjBlk+JOU1glCafR
+        2FbOGWrNNhOZpWjA6Hky+v49xeEoeL4JrZfsId/98vulOt+G/g==
+X-Google-Smtp-Source: ABdhPJyUp1x/cWdPucDJ6okgZpkOQhsDDJnVqxlzzbG81M3zi7RVVB3lbiUo1rSZ8tPyt86cJAL8QU7PzUNXBlRIcgo=
+X-Received: by 2002:a17:906:7811:: with SMTP id u17mr24835486ejm.562.1633445916762;
+ Tue, 05 Oct 2021 07:58:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANiq72mTmYCJ4_7KVRMMKCDTMrnE9wCXBKViCMzkW1ErpdZKHg@mail.gmail.com>
+Received: by 2002:a54:2410:0:0:0:0:0 with HTTP; Tue, 5 Oct 2021 07:58:36 -0700 (PDT)
+From:   Kokou Mensah <kokou.associes228@gmail.com>
+Date:   Tue, 5 Oct 2021 14:58:36 +0000
+Message-ID: <CAMTsTFRnDN1FBN6af8ypgWo+n-KtndFXVXZYs21k8nbjSAuWoQ@mail.gmail.com>
+Subject: Re: Hello
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05, 2021 at 10:28:40AM +0200, Miguel Ojeda wrote:
-> On Tue, Oct 5, 2021 at 1:57 AM Jonathan Corbet <corbet@lwn.net> wrote:
-> >
-> > In this case I think we're as close as to consensus as things get.  In
-> > the absence of a strong reason to the contrary, I'll apply this before
-> > too long.
-> 
-> No strong reason, but there was the question about the `__malloc` in a
-> separate line in the second example which seems to contradict the
-> declaration and it is not explained otherwise (+ clang-format does it
-> differently).
+Good day,
 
-I'll send a v5 -- the "extern" also needs to be dropped.
+In my honor as the personal attorney to your late relative, I hereby
+officially invite you to his inheritance claim.
+With your permission, I will give you more information .
+
+Yours faithfully,
 
 -- 
-Kees Cook
+Kokou Mensah. Esq
