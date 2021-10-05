@@ -2,110 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C57E422679
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 14:27:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57FF6422671
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 14:27:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234916AbhJEM2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 08:28:51 -0400
-Received: from mail-ot1-f48.google.com ([209.85.210.48]:43728 "EHLO
+        id S234894AbhJEM2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 08:28:48 -0400
+Received: from mail-ot1-f48.google.com ([209.85.210.48]:44631 "EHLO
         mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234818AbhJEM2l (ORCPT
+        with ESMTP id S234732AbhJEM2j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 08:28:41 -0400
-Received: by mail-ot1-f48.google.com with SMTP id x33-20020a9d37a4000000b0054733a85462so25585527otb.10;
-        Tue, 05 Oct 2021 05:26:50 -0700 (PDT)
+        Tue, 5 Oct 2021 08:28:39 -0400
+Received: by mail-ot1-f48.google.com with SMTP id h9-20020a9d2f09000000b005453f95356cso25595567otb.11;
+        Tue, 05 Oct 2021 05:26:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=srNcdN6u67VLuDVEjunal3mhVTK6oKtIKqVefAM5/zw=;
-        b=spCXSUYuzlrKrxr+s87PaBG00jGlcK8sm+HcZ8o+ram9Cay6b4RZWt0t11GFbvA/Cy
-         Ypie+a11Ra+ZS6QQ4EUlnOFaHuDdjwBj2sgXfLnEywGTXPdXMyyt/o4+XgB32FQNyiTl
-         mzbL0+2k2G4VP9771hFf+ZbI7wsbrGJmCTC5LmH5F1HJza9BwPBkU+D80BIQew8Numdw
-         sRueJ0H6oXNWwmFRP+lJ1GoTxPPigjYnZMJl4Dzz6yQlu4nBfgHaGilS/mI5GNAPK8gB
-         lrZ1vN1w5PBS4Nh95RrXENmfIm4oYcdBZBc65IcH/fN5+6hl/EmrLzRT9O04b8FDIXKP
-         CWKw==
-X-Gm-Message-State: AOAM532eEA/GoqeAHW4uuV5sujAdk1MUS29bEz2g5L86Fa3GGAVsBk4j
-        DbB+b/K11JhVaruYHL+nRQ==
-X-Google-Smtp-Source: ABdhPJzGP0k7x9SJHnSA1WUxWsBg/ZNn8dg233m0CWHaSivAk8C7ANMMBUmCGX+ez61p7uivJLZDYg==
-X-Received: by 2002:a9d:490:: with SMTP id 16mr13966857otm.184.1633436810361;
-        Tue, 05 Oct 2021 05:26:50 -0700 (PDT)
+        bh=w/FK/ML78245XHAIchDVDOq8/sxzIBzb2YgmaSlt68M=;
+        b=BNmj+N/ixDvm9UXW0KHDpUe09qO1ZqlJseu17K0pNM7Hp+6EjLtsyRxsApGJltf8iQ
+         Scjv2h8eBupi9FmJoBJuG1vOnyQRKQaBRCshZw80Yo2tYQCWzwX6BPWaod46+2HQc9hL
+         VQIaogH66m+Wu1LTrXERb0eANEDHtVcKJckyACCZz3OVffv8O7Y6YRZ+HQazrsEqi71I
+         0GtBHIW1XLl6DIfr9BdJBZmbJpTaeneuUWDVk5Fl6jWczZWf5kUCS4zk5bP+wBnGUJVt
+         7JgAfl0EtECVSesQ9l1VJYay0Es1m/zDNX2WOhAe99zxOMODMcEDR2OKU8n0sFAi3bkw
+         SLnw==
+X-Gm-Message-State: AOAM533XquHuVScvQaos+QVpBzYiPJy1c/QqTjBXaFwOmmE6IEaOBSoA
+        QZ8vEhTPIrldL/yb/bhW9g==
+X-Google-Smtp-Source: ABdhPJysfIpY+AlZGPd1aq069xpRzqdiEWvovmqueORSOfYiFbk/wJ4mm+HHZh3UGFbHFe4HlLF1Mg==
+X-Received: by 2002:a05:6830:1bc6:: with SMTP id v6mr13950334ota.299.1633436808863;
+        Tue, 05 Oct 2021 05:26:48 -0700 (PDT)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id 8sm3274488oin.33.2021.10.05.05.26.49
+        by smtp.gmail.com with ESMTPSA id h26sm3505109otn.67.2021.10.05.05.26.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Oct 2021 05:26:49 -0700 (PDT)
-Received: (nullmailer pid 3226802 invoked by uid 1000);
+        Tue, 05 Oct 2021 05:26:48 -0700 (PDT)
+Received: (nullmailer pid 3226814 invoked by uid 1000);
         Tue, 05 Oct 2021 12:26:38 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Michael Turquette <mturquette@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>
-In-Reply-To: <1633399706-1251-5-git-send-email-hayashi.kunihiko@socionext.com>
-References: <1633399706-1251-1-git-send-email-hayashi.kunihiko@socionext.com> <1633399706-1251-5-git-send-email-hayashi.kunihiko@socionext.com>
-Subject: Re: [PATCH 4/5] dt-bindings: clock: uniphier: Add clock binding for SoC-glue
+To:     Maulik Shah <mkshah@codeaurora.org>
+Cc:     devicetree@vger.kernel.org, bjorn.andersson@linaro.org,
+        evgreen@chromium.org, agross@kernel.org, swboyd@chromium.org,
+        linux-arm-msm@vger.kernel.org, Lina Iyer <ilina@codeaurora.org>,
+        dianders@chromium.org,
+        Mahesh Sivasubramanian <msivasub@codeaurora.org>,
+        mka@chromium.org, rnayak@codeaurora.org, linux@roeck-us.net,
+        lsrao@codeaurora.org, linux-kernel@vger.kernel.org
+In-Reply-To: <1633425065-7927-2-git-send-email-mkshah@codeaurora.org>
+References: <1633425065-7927-1-git-send-email-mkshah@codeaurora.org> <1633425065-7927-2-git-send-email-mkshah@codeaurora.org>
+Subject: Re: [PATCH v10 1/5] dt-bindings: Introduce SoC sleep stats bindings
 Date:   Tue, 05 Oct 2021 07:26:38 -0500
-Message-Id: <1633436798.596710.3226801.nullmailer@robh.at.kernel.org>
+Message-Id: <1633436798.669118.3226812.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 05 Oct 2021 11:08:25 +0900, Kunihiko Hayashi wrote:
-> Update binding document for clocks implemented in SoC-glue.
+On Tue, 05 Oct 2021 14:41:01 +0530, Maulik Shah wrote:
+> From: Mahesh Sivasubramanian <msivasub@codeaurora.org>
 > 
-> Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+> Add device binding documentation for Qualcomm Technologies, Inc. (QTI)
+> SoC sleep stats driver. The driver is used for displaying SoC sleep
+> statistic maintained by Always On Processor or Resource Power Manager.
+> 
+> Cc: devicetree@vger.kernel.org
+> Signed-off-by: Mahesh Sivasubramanian <msivasub@codeaurora.org>
+> Signed-off-by: Lina Iyer <ilina@codeaurora.org>
+> Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
+> Reviewed-by: Rob Herring <robh@kernel.org>
+> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
 > ---
->  .../bindings/clock/socionext,uniphier-clock.yaml         | 16 ++++++++++++++++
->  1 file changed, 16 insertions(+)
+>  .../bindings/soc/qcom/soc-sleep-stats.yaml         | 47 ++++++++++++++++++++++
+>  1 file changed, 47 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/soc/qcom/soc-sleep-stats.yaml
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
 on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
 yamllint warnings/errors:
-./Documentation/devicetree/bindings/clock/socionext,uniphier-clock.yaml:51:1: [error] syntax error: found character '\t' that cannot start any token (syntax)
 
 dtschema/dtc warnings/errors:
-make[1]: *** Deleting file 'Documentation/devicetree/bindings/clock/socionext,uniphier-clock.example.dts'
-Traceback (most recent call last):
-  File "/usr/local/bin/dt-extract-example", line 45, in <module>
-    binding = yaml.load(open(args.yamlfile, encoding='utf-8').read())
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/main.py", line 434, in load
-    return constructor.get_single_data()
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 120, in get_single_data
-    node = self.composer.get_single_node()
-  File "_ruamel_yaml.pyx", line 706, in _ruamel_yaml.CParser.get_single_node
-  File "_ruamel_yaml.pyx", line 724, in _ruamel_yaml.CParser._compose_document
-  File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
-  File "_ruamel_yaml.pyx", line 889, in _ruamel_yaml.CParser._compose_mapping_node
-  File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
-  File "_ruamel_yaml.pyx", line 889, in _ruamel_yaml.CParser._compose_mapping_node
-  File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
-  File "_ruamel_yaml.pyx", line 889, in _ruamel_yaml.CParser._compose_mapping_node
-  File "_ruamel_yaml.pyx", line 773, in _ruamel_yaml.CParser._compose_node
-  File "_ruamel_yaml.pyx", line 850, in _ruamel_yaml.CParser._compose_sequence_node
-  File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
-  File "_ruamel_yaml.pyx", line 889, in _ruamel_yaml.CParser._compose_mapping_node
-  File "_ruamel_yaml.pyx", line 731, in _ruamel_yaml.CParser._compose_node
-  File "_ruamel_yaml.pyx", line 904, in _ruamel_yaml.CParser._parse_next_event
-ruamel.yaml.scanner.ScannerError: while scanning for the next token
-found character that cannot start any token
-  in "<unicode string>", line 51, column 1
-make[1]: *** [Documentation/devicetree/bindings/Makefile:20: Documentation/devicetree/bindings/clock/socionext,uniphier-clock.example.dts] Error 1
-make[1]: *** Waiting for unfinished jobs....
-./Documentation/devicetree/bindings/clock/socionext,uniphier-clock.yaml:  while scanning for the next token
-found character that cannot start any token
-  in "<unicode string>", line 51, column 1
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/socionext,uniphier-clock.yaml: ignoring, error parsing file
-warning: no schema found in file: ./Documentation/devicetree/bindings/clock/socionext,uniphier-clock.yaml
-make: *** [Makefile:1441: dt_binding_check] Error 2
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/soc/qcom/soc-sleep-stats.example.dt.yaml: memory@c3f0000: 'device_type' is a required property
+	From schema: /usr/local/lib/python3.8/dist-packages/dtschema/schemas/memory.yaml
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/soc/qcom/soc-sleep-stats.example.dt.yaml: memory@4690000: 'device_type' is a required property
+	From schema: /usr/local/lib/python3.8/dist-packages/dtschema/schemas/memory.yaml
 
 doc reference errors (make refcheckdocs):
 
-See https://patchwork.ozlabs.org/patch/1536449
+See https://patchwork.ozlabs.org/patch/1536587
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
