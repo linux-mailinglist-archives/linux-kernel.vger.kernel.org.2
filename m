@@ -2,144 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 582A9422CD6
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:44:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B73E3422CE2
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:46:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235968AbhJEPpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 11:45:54 -0400
-Received: from foss.arm.com ([217.140.110.172]:34602 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231513AbhJEPpw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 11:45:52 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F27E21FB;
-        Tue,  5 Oct 2021 08:44:01 -0700 (PDT)
-Received: from [192.168.122.166] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1B48B3F70D;
-        Tue,  5 Oct 2021 08:44:01 -0700 (PDT)
-Subject: Re: [PATCH v3 3/4] PCI/ACPI: Add Broadcom bcm2711 MCFG quirk
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     linux-pci@vger.kernel.org, lorenzo.pieralisi@arm.com,
-        nsaenz@kernel.org, bhelgaas@google.com, rjw@rjwysocki.net,
-        lenb@kernel.org, robh@kernel.org, kw@linux.com,
-        f.fainelli@gmail.com, bcm-kernel-feedback-list@broadcom.com,
-        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rpi-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20211005151042.GA1083482@bhelgaas>
-From:   Jeremy Linton <jeremy.linton@arm.com>
-Message-ID: <2bcc69b5-6659-0ec4-cd33-a9b8e61d1afe@arm.com>
-Date:   Tue, 5 Oct 2021 10:43:32 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S236231AbhJEPrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 11:47:53 -0400
+Received: from mail-mw2nam10on2077.outbound.protection.outlook.com ([40.107.94.77]:33920
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235588AbhJEPru (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 11:47:50 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=W/s3To2ZCGtA1J0Q7sm0ck4A0hjwgeLC8kvIZnVe4q8R7fJqAB3a61+05VgUufE86yOT+RoqW7gCk4JcjXDIfYM5LypXfFINQMRwBmXLT7QLNHOoxnbh45dvgvVpD5K62zx9By7kutM+a7xoCgfJU2HCFneGOmjsUxypF9Nok7J4I4reosgDw2DAXJ8b2pxxSIfGWiFRteVDcrcWIxNnx3Kfp0LFmsIKI3CbIu5V3ezk0NxiTsrl6Igb9+ltHRlkmhkmomXgmWKEOQTH/KcXy5Sfs284r3HLRn4xYxMQXNA0bWlIffqo9hmwHwtKccyJls5CABuKOY+KN4/CNlNb4A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=06RkNGu1oQkrHp9A2p5NMvkevqttSLQFjKWYj0X9ZWI=;
+ b=VyGBdm+lc879v2fFGsC2MTo6bZ8m+3Icfwi1Q8NL4nlKoV/OeEnGNCOYVKlkaua9jzjkoBiH7iellrHYEJdiC4tHEbgqBW0tSuPYra1tgRNinI1Ysgu9X881lWSO1FnO2h9TUMcvTIJJy8fCm00QdhKXPKRfvV6oiVUaqbK/exz2Pkuam5zzisORY4Ui/T48diZgYcJTsvmJ2AQ6byesJh8Uvd/ungYOyDFgBG/65EzS0gSWhdhgmY7BlFwbMWshM6xXp9P2Nmx30yQaY9VAJZUzj/G95Wbd5ja81lu8ThXPc/cs0f/waEo3jCl89C8fKodtWqAjH9qfT0f7XxPxSg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=06RkNGu1oQkrHp9A2p5NMvkevqttSLQFjKWYj0X9ZWI=;
+ b=wpq9s51CHIyc+6UwWQlbI9YTCi3POfwqdZEo/iN0AVuyn+AMZoaXkcCF4K4/c6RMSuijagj/EdHicVXpW3i6rYDxY70XbhZtumwfsRXIzZ8NbuevTrgvsgV42JCxpQlnpUdAA57aOmX5BzN45Dj2zyYKtFfYf1IOOE8dUvhxMWs=
+Received: from MW2PR2101CA0009.namprd21.prod.outlook.com (2603:10b6:302:1::22)
+ by DM6PR12MB3977.namprd12.prod.outlook.com (2603:10b6:5:1ce::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.21; Tue, 5 Oct
+ 2021 15:45:57 +0000
+Received: from CO1NAM11FT021.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:302:1:cafe::9b) by MW2PR2101CA0009.outlook.office365.com
+ (2603:10b6:302:1::22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.1 via Frontend
+ Transport; Tue, 5 Oct 2021 15:45:57 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CO1NAM11FT021.mail.protection.outlook.com (10.13.175.51) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4566.14 via Frontend Transport; Tue, 5 Oct 2021 15:45:57 +0000
+Received: from yaz-ethanolx.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Tue, 5 Oct 2021
+ 10:45:56 -0500
+From:   Yazen Ghannam <yazen.ghannam@amd.com>
+To:     <linux-edac@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <bp@alien8.de>,
+        <mchehab@kernel.org>, <tony.luck@intel.com>, <james.morse@arm.com>,
+        <rric@kernel.org>, <Smita.KoralahalliChannabasappa@amd.com>,
+        Yazen Ghannam <yazen.ghannam@amd.com>
+Subject: [PATCH] EDAC/amd64: Handle three rank interleaving mode
+Date:   Tue, 5 Oct 2021 15:44:19 +0000
+Message-ID: <20211005154419.2060504-1-yazen.ghannam@amd.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20211005151042.GA1083482@bhelgaas>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 9e0620ff-b09a-4f56-7da1-08d988173949
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3977:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB3977D2F7977FA27CD110D29EF8AF9@DM6PR12MB3977.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: gUWt+Te/UwPnPQaOR4suNNxKpl2LxM868Bu+VpyCk/ce+7unWw6kAUbpXwksQRQ5Pp0VqLbHovlzbP+h0EVevGu7e4ROobsRXa9nYWy0iIhuhHGXCS9M6/PxNAVCCHMbcMyDjlbNGHuOavcNTG78PSwGQkxCG9PuADHe6GTQFFwctv+6580zcBVyI4WPqHsGjNZkcA9fI6m2ETECzSFKtCqhC6V4FkntWtzoOWKQ8vpizNPrXIS8REMmkRQjVvUBML0Pk1xUpk4rq6A/qrespIA9X7pDJ5vM1rQ/cz2ndBSROJBN+IefLb6ZSO2WoZL4yB9joq1QjyAPHM4YPOyXLsVeLh4jRmS2ItcLFIEukspCmO8esCMldt68X9RASYo+A7BDijcUgIO0qYxjnX9HZ1VQXQ3z1KgH3Gv6VdXPnCPWVr5p+Nxp77qF2Fj6XvbVl7OwdxZcUTxHQQD5YaT2lRTmh9GQPABBNHOj5mMb3Q/eUBcKUEJDb2inqvqifR93dfqdRflZ5xpYjjC5mP7uWH1W0Aw6/Kyvqfl9CWiNR+4yItZDESNvWJaqdPqOHRdARIAFhtSVy0nS2pogs7xRKGZFE1x2jLk0oZmByd9XwEprmcdmjrH+SOf+nBbD6BFYM0gh5lI4YcUUnejwdjnjamj5UVxb0Hl/cMIT4xnrTPrMNb/AXL6LlcKNfFv6NC3aQwvisupsgfmABRpQ9eur80qeZ9vzwd02uTEDLauyVXA=
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(46966006)(36840700001)(7696005)(508600001)(86362001)(186003)(16526019)(26005)(6916009)(82310400003)(2906002)(6666004)(36756003)(36860700001)(336012)(8936002)(4326008)(70586007)(70206006)(54906003)(316002)(47076005)(83380400001)(81166007)(44832011)(5660300002)(356005)(426003)(1076003)(2616005)(8676002)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Oct 2021 15:45:57.4851
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9e0620ff-b09a-4f56-7da1-08d988173949
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT021.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3977
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+AMD Rome systems and later support interleaving between three identical
+ranks within a channel.
 
-Thanks for looking at this again.
+Check for this mode by counting the number of enabled chip selects and
+comparing their masks. If there are exactly three enabled chip selects
+and their masks are identical, then three rank interleaving is enabled.
 
+The size of a rank is determined from its mask value. However, three
+rank interleaving doesn't follow the method of swapping an interleave
+bit with the most significant bit. Rather, the interleave bit is flipped
+and the most significant bit remains the same. There is only a single
+interleave bit in this case.
 
-On 10/5/21 10:10 AM, Bjorn Helgaas wrote:
-> On Thu, Aug 26, 2021 at 02:15:56AM -0500, Jeremy Linton wrote:
->> Now that there is a bcm2711 quirk, it needs to be enabled when the
->> MCFG is missing. Use an ACPI namespace _DSD property
->> "linux-ecam-quirk-id" as an alternative to the MCFG OEM.
->>
->> Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
->> Acked-by: Florian Fainelli <f.fainelli@gmail.com>
->> Acked-by: Bjorn Helgaas <bhelgaas@google.com>
->> ---
->>   drivers/acpi/pci_mcfg.c | 17 +++++++++++++++++
->>   1 file changed, 17 insertions(+)
->>
->> diff --git a/drivers/acpi/pci_mcfg.c b/drivers/acpi/pci_mcfg.c
->> index 53cab975f612..04c517418365 100644
->> --- a/drivers/acpi/pci_mcfg.c
->> +++ b/drivers/acpi/pci_mcfg.c
->> @@ -169,6 +169,9 @@ static struct mcfg_fixup mcfg_quirks[] = {
->>   	ALTRA_ECAM_QUIRK(1, 13),
->>   	ALTRA_ECAM_QUIRK(1, 14),
->>   	ALTRA_ECAM_QUIRK(1, 15),
->> +
->> +	{ "bc2711", "", 0, 0, MCFG_BUS_ANY, &bcm2711_pcie_ops,
->> +	  DEFINE_RES_MEM(0xFD500000, 0xA000) },
->>   };
->>   
->>   static char mcfg_oem_id[ACPI_OEM_ID_SIZE];
->> @@ -198,8 +201,22 @@ static void pci_mcfg_apply_quirks(struct acpi_pci_root *root,
->>   	u16 segment = root->segment;
->>   	struct resource *bus_range = &root->secondary;
->>   	struct mcfg_fixup *f;
->> +	const char *soc;
->>   	int i;
->>   
->> +	/*
->> +	 * This may be a machine with a PCI/SMC conduit, which means it doesn't
->> +	 * have an MCFG. Use an ACPI namespace definition instead.
->> +	 */
->> +	if (!fwnode_property_read_string(acpi_fwnode_handle(root->device),
->> +					 "linux-ecam-quirk-id", &soc)) {
->> +		if (strlen(soc) != ACPI_OEM_ID_SIZE)
-> 
->  From a reviewing perspective, it's not obvious why soc must be exactly
-> ACPI_OEM_ID_SIZE.  Does that imply space-padding in the DT string or
-> something?
+Account for this when determining the chip select size by keeping the
+most significant bit at its original value and ignoring any zero bits.
+This will return a full bitmask in [MSB:1].
 
-This is at the moment an ACPI only DSD, and it must follow the MADT 
-OEM_ID format for now because we are effectively just overriding that 
-field. The rest of the code in this module is just treating it as a 
-fixed 6 bytes.
+Fixes: e53a3b267fb0 ("EDAC/amd64: Find Chip Select memory size using Address Mask")
 
+Signed-off-by: Yazen Ghannam <yazen.ghannam@amd.com>
+---
+ drivers/edac/amd64_edac.c | 22 +++++++++++++++++++++-
+ 1 file changed, 21 insertions(+), 1 deletion(-)
 
-> 
-> Is there any documentation for this DT property?
-
-Its not a DT property, and its unclear since its linux only if it 
-belongs in previously linked ACPI registry.
-
-> 
-> Also not obvious why strlen() is safe here.  I mean, I looked a couple
-> levels deep in fwnode_property_read_string(), but whatever guarantees
-> null termination is buried pretty deep.
-
-I've not tracked down who, if anyone other than the AML compiler is 
-guaranteeing a null. The spec says something to the effect "Most other 
-string, however,  are of variable-length and are automatically null 
-terminated by the compiler". Not sure if that helps any.
-
-> 
-> It seems a little weird to use an MCFG quirk mechanism when there's no
-> MCFG at all on this platform.
-
-Well its just a point to hook in a CFG space quirk, and since that is 
-what most of the MCFG quirks are, it seemed reasonable to reuse it 
-rather than recreate it.
-
-
-
-PS, had some offline convo about reposing with a simple rebase and the 
-ACK's applied, will do that if it helps any, but when I checked a couple 
-weeks back this applied to 5.15 automatically.
-
-
-
-> 
->> +			dev_err(&root->device->dev, "ECAM quirk should be %d characters\n",
->> +				ACPI_OEM_ID_SIZE);
->> +		else
->> +			memcpy(mcfg_oem_id, soc, ACPI_OEM_ID_SIZE);
->> +	}
->> +
->>   	for (i = 0, f = mcfg_quirks; i < ARRAY_SIZE(mcfg_quirks); i++, f++) {
->>   		if (pci_mcfg_quirk_matches(f, segment, bus_range)) {
->>   			if (f->cfgres.start)
->> -- 
->> 2.31.1
->>
+diff --git a/drivers/edac/amd64_edac.c b/drivers/edac/amd64_edac.c
+index 99b06a3e8fb1..4fce75013674 100644
+--- a/drivers/edac/amd64_edac.c
++++ b/drivers/edac/amd64_edac.c
+@@ -1065,12 +1065,14 @@ static void debug_dump_dramcfg_low(struct amd64_pvt *pvt, u32 dclr, int chan)
+ #define CS_ODD_PRIMARY		BIT(1)
+ #define CS_EVEN_SECONDARY	BIT(2)
+ #define CS_ODD_SECONDARY	BIT(3)
++#define CS_3R_INTERLEAVE	BIT(4)
+ 
+ #define CS_EVEN			(CS_EVEN_PRIMARY | CS_EVEN_SECONDARY)
+ #define CS_ODD			(CS_ODD_PRIMARY | CS_ODD_SECONDARY)
+ 
+ static int f17_get_cs_mode(int dimm, u8 ctrl, struct amd64_pvt *pvt)
+ {
++	u8 base, count = 0;
+ 	int cs_mode = 0;
+ 
+ 	if (csrow_enabled(2 * dimm, ctrl, pvt))
+@@ -1083,6 +1085,20 @@ static int f17_get_cs_mode(int dimm, u8 ctrl, struct amd64_pvt *pvt)
+ 	if (csrow_sec_enabled(2 * dimm + 1, ctrl, pvt))
+ 		cs_mode |= CS_ODD_SECONDARY;
+ 
++	/*
++	 * 3 Rank inteleaving support.
++	 * There should be only three bases enabled and their two masks should
++	 * be equal.
++	 */
++	for_each_chip_select(base, ctrl, pvt)
++		count += csrow_enabled(base, ctrl, pvt);
++
++	if (count == 3 &&
++	    pvt->csels[ctrl].csmasks[0] == pvt->csels[ctrl].csmasks[1]) {
++		edac_dbg(1, "3R interleaving in use.\n");
++		cs_mode |= CS_3R_INTERLEAVE;
++	}
++
+ 	return cs_mode;
+ }
+ 
+@@ -1891,10 +1907,14 @@ static int f17_addr_mask_to_cs_size(struct amd64_pvt *pvt, u8 umc,
+ 	 *
+ 	 * The MSB is the number of bits in the full mask because BIT[0] is
+ 	 * always 0.
++	 *
++	 * In the special 3 Rank interleaving case, a single bit is flipped
++	 * without swapping with the most significant bit. This can be handled
++	 * by keeping the MSB where it is and ignoring the single zero bit.
+ 	 */
+ 	msb = fls(addr_mask_orig) - 1;
+ 	weight = hweight_long(addr_mask_orig);
+-	num_zero_bits = msb - weight;
++	num_zero_bits = msb - weight - !!(cs_mode & CS_3R_INTERLEAVE);
+ 
+ 	/* Take the number of zero bits off from the top of the mask. */
+ 	addr_mask_deinterleaved = GENMASK_ULL(msb - num_zero_bits, 1);
+-- 
+2.25.1
 
