@@ -2,57 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81F4C422A92
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:13:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B993F422A8C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:13:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236696AbhJEOPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 10:15:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40898 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236244AbhJEOO3 (ORCPT
+        id S236617AbhJEOPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 10:15:32 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:51280 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235889AbhJEOOJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 10:14:29 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5C39C0617A8;
-        Tue,  5 Oct 2021 07:12:17 -0700 (PDT)
-Date:   Tue, 05 Oct 2021 14:12:15 -0000
+        Tue, 5 Oct 2021 10:14:09 -0400
+Date:   Tue, 05 Oct 2021 14:12:16 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1633443136;
+        s=2020; t=1633443137;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ldVr3xR+JMfuaZGsL409aCdLecuj8145HmwM9LtScu8=;
-        b=a836WwP96RV0wB8kJHKpmiN5aUz5Oi9Hr2g1LkJyrAiyEcCOXZRH/1RRaEY6NoxtDRdJ08
-        nPa8AltuZI2YMdW0iIx038uvhiXmeE8QkHmmjs0rugIgB/9LpdGgA+TYM+IixpMIcsgaPg
-        Bt8/3dSjxyq/Cd9EEiRJnSKGoYOC29Z5CaHcapf9WnLsg/2Ymp32awP8g0nHsdQNj8oXq1
-        X68MvIjOliHrERqCrCKLWVnaKRiP+lcn7Ar1UtKuAnmLkuQMSpu8ocGRmKItaqxDDtB0oS
-        snlfKRq3yzYlttKmUWVkzkPXEpErbqxOA+F0xbECboAkuTXuuWsoVGnPkfnLFA==
+        bh=YUVeoxtJ8R5MVDOLzU/tizWswHflWbFyYnPycLT0/Vo=;
+        b=0CcHuRjSEB6zaQAJfTv2SadRxOVJH91Fs8jq4H5WCbm0AsI0TiyPyam3Wb7MpIKURdds6p
+        vKdKO4SvwdpVyPPIg7BWKuYbd4P0qJ1XCa/66DG1FBXQnPM7GWYpnV+Fp/ItxrA6PhPhZw
+        reCqPH2uuzE/84n1aAtiJF4u7GZTXoszyWs69SvBgeaU8KPMHMwQCCNQPY2ca5U40vIvVp
+        DXlP5F0czcBHoOzzP0ddGvmdvMwfhlySxfF4XHC5bs9mKjH5AUGEtIZNDRH4sn5hTenLo0
+        Samm2y3clvVGWyAvqMGLElJ8SkCHdSqLtw3lkdtUy/0KvjlPn5LJ5UKaXLu3PA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1633443136;
+        s=2020e; t=1633443137;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ldVr3xR+JMfuaZGsL409aCdLecuj8145HmwM9LtScu8=;
-        b=LgjmpbidJilmWbxMqrNhkj3SXomWWOUG7k2iUuP9wU79PeKgsfQAF3Wwg8rZzuyHeAR67h
-        ZoQLKGHPxJN8VhDA==
-From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
+        bh=YUVeoxtJ8R5MVDOLzU/tizWswHflWbFyYnPycLT0/Vo=;
+        b=/c9Zl/n15Z0qNchgIjIs/yJldJrpvLmnnlcaZOrH/c1aXqogPWN03oX1/xn6+THvya/+Ql
+        +dUK/vGL2PCtgqCA==
+From:   "tip-bot2 for Valentin Schneider" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/core: Simplify core-wide task selection
-Cc:     Tao Zhou <tao.zhou@linux.dev>,
+Subject: [tip: sched/core] sched/fair: Trigger nohz.next_balance updates when
+ a CPU goes NOHZ-idle
+Cc:     Valentin Schneider <valentin.schneider@arm.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Josh Don <joshdon@google.com>,
-        "Vineeth Pillai (Microsoft)" <vineethrp@gmail.com>, x86@kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <YSS9+k1teA9oPEKl@hirez.programming.kicks-ass.net>
-References: <YSS9+k1teA9oPEKl@hirez.programming.kicks-ass.net>
+In-Reply-To: <20210823111700.2842997-3-valentin.schneider@arm.com>
+References: <20210823111700.2842997-3-valentin.schneider@arm.com>
 MIME-Version: 1.0
-Message-ID: <163344313552.25758.13436048366889885086.tip-bot2@tip-bot2>
+Message-ID: <163344313681.25758.6556207958432267712.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -63,252 +60,111 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     bc9ffef31bf59819c9fc032178534ff9ed7c4981
-Gitweb:        https://git.kernel.org/tip/bc9ffef31bf59819c9fc032178534ff9ed7c4981
-Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Tue, 24 Aug 2021 11:05:47 +02:00
+Commit-ID:     7fd7a9e0caba10829b4f8db1aa7711b558681fd4
+Gitweb:        https://git.kernel.org/tip/7fd7a9e0caba10829b4f8db1aa7711b558681fd4
+Author:        Valentin Schneider <valentin.schneider@arm.com>
+AuthorDate:    Mon, 23 Aug 2021 12:17:00 +01:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Tue, 05 Oct 2021 15:51:33 +02:00
+CommitterDate: Tue, 05 Oct 2021 15:51:31 +02:00
 
-sched/core: Simplify core-wide task selection
+sched/fair: Trigger nohz.next_balance updates when a CPU goes NOHZ-idle
 
-Tao suggested a two-pass task selection to avoid the retry loop.
+Consider a system with some NOHZ-idle CPUs, such that
 
-Not only does it avoid the retry loop, it results in *much* simpler
-code.
+  nohz.idle_cpus_mask = S
+  nohz.next_balance = T
 
-This also fixes an issue spotted by Josh Don where, for SMT3+, we can
-forget to update max on the first pass and get to do an extra round.
+When a new CPU k goes NOHZ idle (nohz_balance_enter_idle()), we end up
+with:
 
-Suggested-by: Tao Zhou <tao.zhou@linux.dev>
+  nohz.idle_cpus_mask = S \U {k}
+  nohz.next_balance = T
+
+Note that the nohz.next_balance hasn't changed - it won't be updated until
+a NOHZ balance is triggered. This is problematic if the newly NOHZ idle CPU
+has an earlier rq.next_balance than the other NOHZ idle CPUs, IOW if:
+
+  cpu_rq(k).next_balance < nohz.next_balance
+
+In such scenarios, the existing nohz.next_balance will prevent any NOHZ
+balance from happening, which itself will prevent nohz.next_balance from
+being updated to this new cpu_rq(k).next_balance. Unnecessary load balance
+delays of over 12ms caused by this were observed on an arm64 RB5 board.
+
+Use the new nohz.needs_update flag to mark the presence of newly-idle CPUs
+that need their rq->next_balance to be collated into
+nohz.next_balance. Trigger a NOHZ_NEXT_KICK when the flag is set.
+
+Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Josh Don <joshdon@google.com>
-Reviewed-by: Vineeth Pillai (Microsoft) <vineethrp@gmail.com>
-Link: https://lkml.kernel.org/r/YSS9+k1teA9oPEKl@hirez.programming.kicks-ass.net
+Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+Link: https://lkml.kernel.org/r/20210823111700.2842997-3-valentin.schneider@arm.com
 ---
- kernel/sched/core.c | 156 ++++++++++++-------------------------------
- 1 file changed, 45 insertions(+), 111 deletions(-)
+ kernel/sched/fair.c | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 2672694..f963c81 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -5580,8 +5580,7 @@ restart:
- 			return p;
- 	}
- 
--	/* The idle class should always have a runnable task: */
--	BUG();
-+	BUG(); /* The idle class should always have a runnable task. */
- }
- 
- #ifdef CONFIG_SCHED_CORE
-@@ -5603,54 +5602,18 @@ static inline bool cookie_match(struct task_struct *a, struct task_struct *b)
- 	return a->core_cookie == b->core_cookie;
- }
- 
--// XXX fairness/fwd progress conditions
--/*
-- * Returns
-- * - NULL if there is no runnable task for this class.
-- * - the highest priority task for this runqueue if it matches
-- *   rq->core->core_cookie or its priority is greater than max.
-- * - Else returns idle_task.
-- */
--static struct task_struct *
--pick_task(struct rq *rq, const struct sched_class *class, struct task_struct *max, bool in_fi)
-+static inline struct task_struct *pick_task(struct rq *rq)
- {
--	struct task_struct *class_pick, *cookie_pick;
--	unsigned long cookie = rq->core->core_cookie;
--
--	class_pick = class->pick_task(rq);
--	if (!class_pick)
--		return NULL;
--
--	if (!cookie) {
--		/*
--		 * If class_pick is tagged, return it only if it has
--		 * higher priority than max.
--		 */
--		if (max && class_pick->core_cookie &&
--		    prio_less(class_pick, max, in_fi))
--			return idle_sched_class.pick_task(rq);
-+	const struct sched_class *class;
-+	struct task_struct *p;
- 
--		return class_pick;
-+	for_each_class(class) {
-+		p = class->pick_task(rq);
-+		if (p)
-+			return p;
- 	}
- 
--	/*
--	 * If class_pick is idle or matches cookie, return early.
--	 */
--	if (cookie_equals(class_pick, cookie))
--		return class_pick;
--
--	cookie_pick = sched_core_find(rq, cookie);
--
--	/*
--	 * If class > max && class > cookie, it is the highest priority task on
--	 * the core (so far) and it must be selected, otherwise we must go with
--	 * the cookie pick in order to satisfy the constraint.
--	 */
--	if (prio_less(cookie_pick, class_pick, in_fi) &&
--	    (!max || prio_less(max, class_pick, in_fi)))
--		return class_pick;
--
--	return cookie_pick;
-+	BUG(); /* The idle class should always have a runnable task. */
- }
- 
- extern void task_vruntime_update(struct rq *rq, struct task_struct *p, bool in_fi);
-@@ -5658,11 +5621,12 @@ extern void task_vruntime_update(struct rq *rq, struct task_struct *p, bool in_f
- static struct task_struct *
- pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
- {
--	struct task_struct *next, *max = NULL;
--	const struct sched_class *class;
-+	struct task_struct *next, *p, *max = NULL;
- 	const struct cpumask *smt_mask;
- 	bool fi_before = false;
--	int i, j, cpu, occ = 0;
-+	unsigned long cookie;
-+	int i, cpu, occ = 0;
-+	struct rq *rq_i;
- 	bool need_sync;
- 
- 	if (!sched_core_enabled(rq))
-@@ -5735,12 +5699,7 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
- 	 * and there are no cookied tasks running on siblings.
- 	 */
- 	if (!need_sync) {
--		for_each_class(class) {
--			next = class->pick_task(rq);
--			if (next)
--				break;
--		}
--
-+		next = pick_task(rq);
- 		if (!next->core_cookie) {
- 			rq->core_pick = NULL;
- 			/*
-@@ -5753,76 +5712,51 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
- 		}
- 	}
- 
--	for_each_cpu(i, smt_mask) {
--		struct rq *rq_i = cpu_rq(i);
--
--		rq_i->core_pick = NULL;
-+	/*
-+	 * For each thread: do the regular task pick and find the max prio task
-+	 * amongst them.
-+	 *
-+	 * Tie-break prio towards the current CPU
-+	 */
-+	for_each_cpu_wrap(i, smt_mask, cpu) {
-+		rq_i = cpu_rq(i);
- 
- 		if (i != cpu)
- 			update_rq_clock(rq_i);
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index f4de7f5..6cc958e 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -5787,6 +5787,7 @@ static struct {
+ 	cpumask_var_t idle_cpus_mask;
+ 	atomic_t nr_cpus;
+ 	int has_blocked;		/* Idle CPUS has blocked load */
++	int needs_update;		/* Newly idle CPUs need their next_balance collated */
+ 	unsigned long next_balance;     /* in jiffy units */
+ 	unsigned long next_blocked;	/* Next update of blocked load in jiffies */
+ } nohz ____cacheline_aligned;
+@@ -10450,6 +10451,9 @@ static void nohz_balancer_kick(struct rq *rq)
+ unlock:
+ 	rcu_read_unlock();
+ out:
++	if (READ_ONCE(nohz.needs_update))
++		flags |= NOHZ_NEXT_KICK;
 +
-+		p = rq_i->core_pick = pick_task(rq_i);
-+		if (!max || prio_less(max, p, fi_before))
-+			max = p;
- 	}
- 
-+	cookie = rq->core->core_cookie = max->core_cookie;
-+
+ 	if (flags)
+ 		kick_ilb(flags);
+ }
+@@ -10546,12 +10550,13 @@ void nohz_balance_enter_idle(int cpu)
  	/*
--	 * Try and select tasks for each sibling in descending sched_class
--	 * order.
-+	 * For each thread: try and find a runnable task that matches @max or
-+	 * force idle.
+ 	 * Ensures that if nohz_idle_balance() fails to observe our
+ 	 * @idle_cpus_mask store, it must observe the @has_blocked
+-	 * store.
++	 * and @needs_update stores.
  	 */
--	for_each_class(class) {
--again:
--		for_each_cpu_wrap(i, smt_mask, cpu) {
--			struct rq *rq_i = cpu_rq(i);
--			struct task_struct *p;
--
--			if (rq_i->core_pick)
--				continue;
-+	for_each_cpu(i, smt_mask) {
-+		rq_i = cpu_rq(i);
-+		p = rq_i->core_pick;
+ 	smp_mb__after_atomic();
  
--			/*
--			 * If this sibling doesn't yet have a suitable task to
--			 * run; ask for the most eligible task, given the
--			 * highest priority task already selected for this
--			 * core.
--			 */
--			p = pick_task(rq_i, class, max, fi_before);
-+		if (!cookie_equals(p, cookie)) {
-+			p = NULL;
-+			if (cookie)
-+				p = sched_core_find(rq_i, cookie);
- 			if (!p)
--				continue;
-+				p = idle_sched_class.pick_task(rq_i);
-+		}
+ 	set_cpu_sd_state_idle(cpu);
  
--			if (!is_task_rq_idle(p))
--				occ++;
-+		rq_i->core_pick = p;
++	WRITE_ONCE(nohz.needs_update, 1);
+ out:
+ 	/*
+ 	 * Each time a cpu enter idle, we assume that it has blocked load and
+@@ -10600,13 +10605,17 @@ static void _nohz_idle_balance(struct rq *this_rq, unsigned int flags,
+ 	/*
+ 	 * We assume there will be no idle load after this update and clear
+ 	 * the has_blocked flag. If a cpu enters idle in the mean time, it will
+-	 * set the has_blocked flag and trig another update of idle load.
++	 * set the has_blocked flag and trigger another update of idle load.
+ 	 * Because a cpu that becomes idle, is added to idle_cpus_mask before
+ 	 * setting the flag, we are sure to not clear the state and not
+ 	 * check the load of an idle cpu.
++	 *
++	 * Same applies to idle_cpus_mask vs needs_update.
+ 	 */
+ 	if (flags & NOHZ_STATS_KICK)
+ 		WRITE_ONCE(nohz.has_blocked, 0);
++	if (flags & NOHZ_NEXT_KICK)
++		WRITE_ONCE(nohz.needs_update, 0);
  
--			rq_i->core_pick = p;
--			if (rq_i->idle == p && rq_i->nr_running) {
-+		if (p == rq_i->idle) {
-+			if (rq_i->nr_running) {
- 				rq->core->core_forceidle = true;
- 				if (!fi_before)
- 					rq->core->core_forceidle_seq++;
- 			}
--
--			/*
--			 * If this new candidate is of higher priority than the
--			 * previous; and they're incompatible; we need to wipe
--			 * the slate and start over. pick_task makes sure that
--			 * p's priority is more than max if it doesn't match
--			 * max's cookie.
--			 *
--			 * NOTE: this is a linear max-filter and is thus bounded
--			 * in execution time.
--			 */
--			if (!max || !cookie_match(max, p)) {
--				struct task_struct *old_max = max;
--
--				rq->core->core_cookie = p->core_cookie;
--				max = p;
--
--				if (old_max) {
--					rq->core->core_forceidle = false;
--					for_each_cpu(j, smt_mask) {
--						if (j == i)
--							continue;
--
--						cpu_rq(j)->core_pick = NULL;
--					}
--					occ = 1;
--					goto again;
--				}
--			}
-+		} else {
-+			occ++;
+ 	/*
+ 	 * Ensures that if we miss the CPU, we must see the has_blocked
+@@ -10630,6 +10639,8 @@ static void _nohz_idle_balance(struct rq *this_rq, unsigned int flags,
+ 		if (need_resched()) {
+ 			if (flags & NOHZ_STATS_KICK)
+ 				has_blocked_load = true;
++			if (flags & NOHZ_NEXT_KICK)
++				WRITE_ONCE(nohz.needs_update, 1);
+ 			goto abort;
  		}
- 	}
  
-@@ -5842,7 +5776,7 @@ again:
- 	 * non-matching user state.
- 	 */
- 	for_each_cpu(i, smt_mask) {
--		struct rq *rq_i = cpu_rq(i);
-+		rq_i = cpu_rq(i);
- 
- 		/*
- 		 * An online sibling might have gone offline before a task
