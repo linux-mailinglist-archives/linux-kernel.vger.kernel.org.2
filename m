@@ -2,117 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB2B1423139
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 22:02:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E576542313B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 22:03:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235520AbhJEUEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 16:04:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45890 "EHLO mail.kernel.org"
+        id S235823AbhJEUEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 16:04:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46014 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230333AbhJEUEV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 16:04:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 606C26120A;
-        Tue,  5 Oct 2021 20:02:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633464150;
-        bh=m2Pch5PBNpHn9fpdx33/OXtGVAsq5SNn8+Ee+4hkSvg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=G2eBNKq0Ek/OFeyD3p7RsKRBXx+3RsdkR8iD1OSFUXnriuwOeB98FR40Sbg1ugWRs
-         X1HUcb3mKDBrS/RotPZ4xg+LowBFy/hQVKTquPfSzERCO3scHEK79IyHzbUtOAIgWQ
-         7UhPphi/d3DkY8k1QIuSSz9cXlsQnPqYT4RNfQ98mHpL2VoFMRqXVxK7Sa07VvQUDp
-         PKLpxtDEA4j5VSFr1ELLTmXN1THAPsnubILodciQqYzRZeayQFHL8H3N2dD1O0qomj
-         8RQ1eik93nT1nEIVI3lMs6HLkS5BFc4tnU8x/S0D3knTHH1l/pLRQLEnvnxZF9nWtx
-         fqDmyybsHgpxQ==
-Received: by pali.im (Postfix)
-        id DDD28812; Tue,  5 Oct 2021 22:02:27 +0200 (CEST)
-Date:   Tue, 5 Oct 2021 22:02:27 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     bhelgaas@google.com, Jeremy Linton <jeremy.linton@arm.com>
-Cc:     linux-pci@vger.kernel.org, lorenzo.pieralisi@arm.com,
-        nsaenz@kernel.org, bhelgaas@google.com, rjw@rjwysocki.net,
-        lenb@kernel.org, robh@kernel.org, kw@linux.com,
-        f.fainelli@gmail.com, bcm-kernel-feedback-list@broadcom.com,
-        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rpi-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/4] PCI/ACPI: Add Broadcom bcm2711 MCFG quirk
-Message-ID: <20211005200227.ltl6owwksfn7l4xx@pali>
-References: <20210826071557.29239-1-jeremy.linton@arm.com>
- <20210826071557.29239-4-jeremy.linton@arm.com>
+        id S230333AbhJEUEr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 16:04:47 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DD35E613B5;
+        Tue,  5 Oct 2021 20:02:54 +0000 (UTC)
+Date:   Tue, 5 Oct 2021 16:02:52 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Jan Engelhardt <jengelh@inai.de>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Paul <paulmck@linux.vnet.ibm.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        "Joel Fernandes, Google" <joel@joelfernandes.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, rcu <rcu@vger.kernel.org>,
+        netfilter-devel <netfilter-devel@vger.kernel.org>,
+        coreteam <coreteam@netfilter.org>,
+        netdev <netdev@vger.kernel.org>
+Subject: Re: [RFC][PATCH] rcu: Use typeof(p) instead of typeof(*p) *
+Message-ID: <20211005160252.54640350@gandalf.local.home>
+In-Reply-To: <CAHk-=wiL+wyCOTedh48Oz0cNOKJq2GNwtxg6423hf-1FuGrv_A@mail.gmail.com>
+References: <20211005094728.203ecef2@gandalf.local.home>
+        <ef5b1654-1f75-da82-cab8-248319efbe3f@rasmusvillemoes.dk>
+        <639278914.2878.1633457192964.JavaMail.zimbra@efficios.com>
+        <826o327o-3r46-3oop-r430-8qr0ssp537o3@vanv.qr>
+        <20211005144002.34008ea0@gandalf.local.home>
+        <srqsppq-p657-43qq-np31-pq5pp03271r6@vanv.qr>
+        <20211005154029.46f9c596@gandalf.local.home>
+        <CAHk-=wiL+wyCOTedh48Oz0cNOKJq2GNwtxg6423hf-1FuGrv_A@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210826071557.29239-4-jeremy.linton@arm.com>
-User-Agent: NeoMutt/20180716
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday 26 August 2021 02:15:56 Jeremy Linton wrote:
-> Now that there is a bcm2711 quirk, it needs to be enabled when the
-> MCFG is missing. Use an ACPI namespace _DSD property
-> "linux-ecam-quirk-id" as an alternative to the MCFG OEM.
+On Tue, 5 Oct 2021 12:46:43 -0700
+Linus Torvalds <torvalds@linux-foundation.org> wrote:
+
+> On Tue, Oct 5, 2021 at 12:40 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+> >
+> > I may try it, because exposing the structure I want to hide, is pulling out
+> > a lot of other crap with it :-p  
 > 
-> Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
-> Acked-by: Florian Fainelli <f.fainelli@gmail.com>
-> Acked-by: Bjorn Helgaas <bhelgaas@google.com>
-> ---
->  drivers/acpi/pci_mcfg.c | 17 +++++++++++++++++
->  1 file changed, 17 insertions(+)
+> One option is just "don't do rcu_access of a pointer that you're not
+> supposed to touch in a file that isn't supposed to touch it".
+
+The problem is, the RCU isn't for touching it, it is for knowing it exists.
+
 > 
-> diff --git a/drivers/acpi/pci_mcfg.c b/drivers/acpi/pci_mcfg.c
-> index 53cab975f612..04c517418365 100644
-> --- a/drivers/acpi/pci_mcfg.c
-> +++ b/drivers/acpi/pci_mcfg.c
-> @@ -169,6 +169,9 @@ static struct mcfg_fixup mcfg_quirks[] = {
->  	ALTRA_ECAM_QUIRK(1, 13),
->  	ALTRA_ECAM_QUIRK(1, 14),
->  	ALTRA_ECAM_QUIRK(1, 15),
-> +
-> +	{ "bc2711", "", 0, 0, MCFG_BUS_ANY, &bcm2711_pcie_ops,
-> +	  DEFINE_RES_MEM(0xFD500000, 0xA000) },
-
-Hello!
-
-According to discussion described in email [1], adding a new MCFG quirk
-(like above) into kernel requires adding some errata entry for
-documenting buggy HW.
-
-But this patch series does not introduce any new errata entry.
-
-Bjorn, could you look at how to properly document these "hw bugs"?
-I guess there would be lot of more requests for adding MCFG quirks as
-now according to [1], doors are open for them. And it is possible that
-after more years nobody would be able to maintain these quirks if would
-not be properly documented.
-
-[1] - https://lore.kernel.org/linux-pci/20210325131231.GA18590@e121166-lin.cambridge.arm.com/
-
->  };
->  
->  static char mcfg_oem_id[ACPI_OEM_ID_SIZE];
-> @@ -198,8 +201,22 @@ static void pci_mcfg_apply_quirks(struct acpi_pci_root *root,
->  	u16 segment = root->segment;
->  	struct resource *bus_range = &root->secondary;
->  	struct mcfg_fixup *f;
-> +	const char *soc;
->  	int i;
->  
-> +	/*
-> +	 * This may be a machine with a PCI/SMC conduit, which means it doesn't
-> +	 * have an MCFG. Use an ACPI namespace definition instead.
-> +	 */
-> +	if (!fwnode_property_read_string(acpi_fwnode_handle(root->device),
-> +					 "linux-ecam-quirk-id", &soc)) {
-> +		if (strlen(soc) != ACPI_OEM_ID_SIZE)
-> +			dev_err(&root->device->dev, "ECAM quirk should be %d characters\n",
-> +				ACPI_OEM_ID_SIZE);
-> +		else
-> +			memcpy(mcfg_oem_id, soc, ACPI_OEM_ID_SIZE);
-> +	}
-> +
->  	for (i = 0, f = mcfg_quirks; i < ARRAY_SIZE(mcfg_quirks); i++, f++) {
->  		if (pci_mcfg_quirk_matches(f, segment, bus_range)) {
->  			if (f->cfgres.start)
-> -- 
-> 2.31.1
+> IOW, why are you doing that
 > 
+>      pid_list = rcu_dereference_sched(tr->function_pids);
+> 
+> in a place that isn't supposed to look at the pid_list in the first place?
+> 
+> Yeah, yeah, I see how you just pass it to trace_ignore_this_task() as
+> an argument, but maybe the real fix is to just pass that trace_array
+> pointer instead?
+> 
+> IOW, if you want to keep that structure private, maybe you really just
+> shouldn't have non-private users of it randomly doing RCU lookups of
+> it?
+>
+
+Ideally, I wanted to keep the logic of the pid lists separate, and not have
+it know about the trace array at all.
+
+And this was the best "incremental" approach I had, as the code is
+currently all just open coded.
+
+The RCU lookups are not an internal use functionality of the pid lists. The
+updates to the pid list are done by allocating a new pid_list, copying the
+old pid_list with the new updates and then swapping the pointers. The logic
+of the pid_list is orthogonal to the RCU update. It's just "allocate some
+random thing" and use RCU to swap it with the old random thing.
+
+That is, the logic to synchronize updates is left to the user not the pid
+list itself.
+
+I also want to limit function calls, as this is called from the function
+tracer (every function being traced) and if the pid_list pointer is NULL it
+skips it. Hence, I want to avoid calling a function to know if the pointer
+is NULL or not.
+
+-- Steve
