@@ -2,82 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F63B4229DA
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:01:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB832422A2C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:07:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235915AbhJEOCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 10:02:47 -0400
-Received: from relay.sw.ru ([185.231.240.75]:33224 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235734AbhJEOB6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 10:01:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
-        Subject; bh=Ed1xsp8lTrCrW27f1J4vH57YUUHw0q5d5pOknhx3OhI=; b=dlg9oxUUL9ON2P7NI
-        FPotPplwDm0pN9yRtW6uR6cImMJygenILBxuPbXKwHqwkrR4Xsm7PM70jOo1HQjb2RHaPSRAf8sNN
-        43yHyfSpf5DwKO2Vlo3GxDZ1spky8JiojDNWL2JimTvGua0MPzIGIEIvEsmMJTyevyQJZawJhUsLI
-        =;
-Received: from [10.93.0.56]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1mXkzF-0054Yv-SG; Tue, 05 Oct 2021 17:00:05 +0300
-Subject: Re: [PATCH mm v2] vmalloc: back off when the current task is
- OOM-killed
-From:   Vasily Averin <vvs@virtuozzo.com>
-To:     Michal Hocko <mhocko@kernel.org>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel@openvz.org
-References: <YVGmMSJ3NrQZjLP8@dhcp22.suse.cz>
- <83efc664-3a65-2adb-d7c4-2885784cf109@virtuozzo.com>
-Message-ID: <dd6f3cc5-70f3-4275-6458-118c463bf38a@virtuozzo.com>
-Date:   Tue, 5 Oct 2021 17:00:05 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <83efc664-3a65-2adb-d7c4-2885784cf109@virtuozzo.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S235329AbhJEOJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 10:09:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38486 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235995AbhJEOIM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 10:08:12 -0400
+Received: from mout-p-103.mailbox.org (mout-p-103.mailbox.org [IPv6:2001:67c:2050::465:103])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A629C08EAC7;
+        Tue,  5 Oct 2021 07:03:43 -0700 (PDT)
+Received: from smtp102.mailbox.org (smtp102.mailbox.org [IPv6:2001:67c:2050:105:465:1:3:0])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-103.mailbox.org (Postfix) with ESMTPS id 4HNznl6jjDzQjb8;
+        Tue,  5 Oct 2021 16:03:23 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=robgreener.com;
+        s=MBO0001; t=1633442602;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:to:
+         cc:in-reply-to:in-reply-to:references:references;
+        bh=WXuKKp05FgBaGzLWzaMwG93oVFh4NeKDYaS1W7hf3+E=;
+        b=wZT8+cKRlm4pTDS0WGBbniGcmXdO5KH5T7XxgPxUceWTe0aeTPmuoUo0Xg8lnSwbuSrkUB
+        K1BTHJQAzrdgvYaeLHf10pn2IZXqoF49doP4XxY/jwLVMya1u3B/bsnsMKQw2ylnfGKTQD
+        Uqz60T7BzGRaHgUtA4z7ihRwdTFOWgVk4W4SI70NBWZp5U0qBBkIy83P9KmEager3KlkhU
+        KwiA3sqfAJ66QgfEttmIzFbPZLOmqb/vjEeeGIDEcasVGGgzfEyM8/vkOgcHudDeRGtnfw
+        LlTYNxm833cCsPP1wMMvhhEAdn5tmav6ewqQFY8DqA3823xtu3xlUe5Kpgb2ew==
+X-Mailbox-Line: From 3e27773cc94bfc740374d0432e70e4b215c08c9a Mon Sep 17 00:00:00 2001
+Message-Id: <3e27773cc94bfc740374d0432e70e4b215c08c9a.1633442131.git.rob@robgreener.com>
+In-Reply-To: <cover.1633442131.git.rob@robgreener.com>
+References: <cover.1633442131.git.rob@robgreener.com>
+From:   Robert Greener <rob@robgreener.com>
+Date:   Tue, 5 Oct 2021 13:22:11 +0100
+Subject: [PATCH 01/13] usb: core: config: Use tabs rather than spaces for new
+ lines of args
+X-Rspamd-Queue-Id: 2D114268
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/5/21 4:52 PM, Vasily Averin wrote:
-> Huge vmalloc allocation on heavy loaded node can lead to a global
-> memory shortage. Task called vmalloc can have worst badness and
-> be selected by OOM-killer, however taken fatal signal does not
-> interrupt allocation cycle. Vmalloc repeat page allocaions
-> again and again, exacerbating the crisis and consuming the memory
-> freed up by another killed tasks.
-> 
-> After a successful completion of the allocation procedure, a fatal
-> signal will be processed and task will be destroyed finally.
-> However it may not release the consumed memory, since the allocated
-> object may have a lifetime unrelated to the completed task.
-> In the worst case, this can lead to the host will panic
-> due to "Out of memory and no killable processes..."
-> 
-> This patch allows OOM-killer to break vmalloc cycle, makes OOM more
-> effective and avoid host panic. It does not check oom condition directly,
-> however, and breaks page allocation cycle when fatal signal was received.
-> 
-> This may trigger some hidden problems, when caller does not handle
-> vmalloc failures, or when rollaback after failed vmalloc calls own
-> vmallocs inside. However all of these scenarios are incorrect:
-> vmalloc does not guarantee successful allocation, it has never been called
-> with __GFP_NOFAIL and threfore either should not be used for any rollbacks
-> or should handle such errors correctly and not lead to critical
-> failures.
+This fixes the following checkpatch.pl warning at lines 28, 499, 500, 606:
 
-I briefly checked this patch together with 
- v3 memcg: prohibit unconditional exceeding the limit of dying tasks
- over v5.15-rc4.
-I executed LTP on host, all oom, cgroup and memcg tests was successfully finished.
-and then experimented with memcg limited LXC containers.
-I did not noticed any troubles on my test node.
-Thank you,
-	Vasily Averin
+WARNING:LEADING_SPACE: please, no spaces at the start of a line
+
+Signed-off-by: Robert Greener <rob@robgreener.com>
+---
+ drivers/usb/core/config.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/usb/core/config.c b/drivers/usb/core/config.c
+index b199eb65f378..52b0edee5b55 100644
+--- a/drivers/usb/core/config.c
++++ b/drivers/usb/core/config.c
+@@ -25,7 +25,7 @@ static inline const char *plural(int n)
+ }
+ 
+ static int find_next_descriptor(unsigned char *buffer, int size,
+-    int dt1, int dt2, int *num_skipped)
++		int dt1, int dt2, int *num_skipped)
+ {
+ 	struct usb_descriptor_header *h;
+ 	int n = 0;
+@@ -496,8 +496,8 @@ void usb_release_interface_cache(struct kref *ref)
+ }
+ 
+ static int usb_parse_interface(struct device *ddev, int cfgno,
+-    struct usb_host_config *config, unsigned char *buffer, int size,
+-    u8 inums[], u8 nalts[])
++		struct usb_host_config *config, unsigned char *buffer, int size,
++		s[], u8 nalts[])
+ {
+ 	unsigned char *buffer0 = buffer;
+ 	struct usb_interface_descriptor	*d;
+@@ -603,7 +603,7 @@ static int usb_parse_interface(struct device *ddev, int cfgno,
+ }
+ 
+ static int usb_parse_configuration(struct usb_device *dev, int cfgidx,
+-    struct usb_host_config *config, unsigned char *buffer, int size)
++		struct usb_host_config *config, unsigned char *buffer, int size)
+ {
+ 	struct device *ddev = &dev->dev;
+ 	unsigned char *buffer0 = buffer;
+-- 
+2.32.0
+
