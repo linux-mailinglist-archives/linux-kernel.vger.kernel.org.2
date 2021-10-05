@@ -2,144 +2,353 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 254AB422BBD
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:01:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F772422BBA
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:01:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235496AbhJEPDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 11:03:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53024 "EHLO
+        id S235421AbhJEPDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 11:03:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235518AbhJEPDn (ORCPT
+        with ESMTP id S233705AbhJEPDf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 11:03:43 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18A91C06174E
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 08:01:53 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id z20so6410edc.13
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 08:01:53 -0700 (PDT)
+        Tue, 5 Oct 2021 11:03:35 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6590C061749
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 08:01:44 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id m3so86285783lfu.2
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 08:01:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=MCRBn6b3qoryRYKrN4/1JLdhAV/hIrIuL5Vq/GngAlY=;
-        b=mYs57AFKIU7i2tGt83F0nC59rmMH39ZE/i0lP71h3TsKRyHDKezP9q7FrxkmATPtlf
-         dGa0kEDJIDfss8qfgAnlRnyfYvQ2i7mQoH2I3P1abTTtt+OeEy/LCUGj8P5NvKjX05mN
-         xnmD4sdB0mtma37jmJXKGdTP/xu9ChYuEBX9+txpvXX0uXxrdPpbd23pNmiG+/8J8FIv
-         Ae0Vl22NZITYbOHKF0lnHOpEIpJ0l4aR7hdvwJ6AzlazgpMmFAmyJC6QJ70tekXfKEq7
-         91eoo0kkirf4et2kRi+3OckOh4yzKDKhGcpSeA27bU8c5sO570Oz5HcDbIJrP6QLAezc
-         V27w==
+        bh=42G3scgpWAbOtgxef+InMFnEa34BVWcCFN53mKIikV0=;
+        b=HaQ73Zp2P266ypuNKElq+jGbVlRIzMQ71XS7qQ2exXnMK2YWPRGvke9i4gh75sOsHE
+         AaUeLPa93afxOCNwDZ4rZXLseWBCcrIfDV+lcMPL8MqJOAs+FWh2d7is2HYq78mBQQgY
+         ZsYMsSpe8OkVrFv2+9XCEJSlWRawQCTaHtx3wCgLF/QdyXZ8UIbGcWs6yj/t+XvrMku9
+         N7Q4tFJpL31ePVP6Ed4OYRuJ0y7Yai1ntz96WQrNjMKAqmokUP+uPW//gqWd7n6iNAgs
+         srNj0nk5DBhe5iGveSfa7mXy7iSJxoZ7n5flMapZuomGAFyxyG0oTyLq+ZCevbABcV4Y
+         K3EQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=MCRBn6b3qoryRYKrN4/1JLdhAV/hIrIuL5Vq/GngAlY=;
-        b=ONW1THyStxmDWxT3VTnHlDomfZ39qbGut9JTk8TSLQ3CKHqtKaMxmI+LcT91XZRTdv
-         9HqEaSGPK7tU8gdt0ckr4cs9XGqi8Gt4vsa92IBkw4Tqn/fU8Y6YMNDAtuwgBw5DjEjs
-         l6p2FQz7+W5YF+30HYHmiiAzMKWd/RxHca22hQcsywmshv95DDk+PRqtD4wvtv3OY1Bj
-         M0xOLKyzGjU8tKccK1Rsr9bJBxgO8c+3Hk91n1Pm5DHEnbWp1MbddoOB0U/h8sC0AqR1
-         Dz8syPbdOXjoqoP5JtTkWHGkgVC8fuZZjyNqNWh6RRm7KQJ25Vfa7xqaOEzXLxP5JK6B
-         2PLw==
-X-Gm-Message-State: AOAM531+UjSH/gRMbgN2SxSxPghzIxuBtDJ3PqTbJ/ZzA6fmLFpzktyS
-        dnYJlGDOxrxDmw8sLIPlNzai2Aux9nkTTuNIw5Z4mg==
-X-Google-Smtp-Source: ABdhPJxAQ/4UsSMxvuXIEURMPvaas9ykcgFi/q1H4N/drfI2wcYk/4KQHSLGIJlx20Qi7odiErbbeE2ik8768PcSvV4=
-X-Received: by 2002:a05:6402:450:: with SMTP id p16mr26584475edw.162.1633446111422;
- Tue, 05 Oct 2021 08:01:51 -0700 (PDT)
+        bh=42G3scgpWAbOtgxef+InMFnEa34BVWcCFN53mKIikV0=;
+        b=IdxwnjfTEJMf0NQrRDtNVkr07KcMW/x0zYJpjFR/cCeTazYuQ6btlLpy9Iok+1hDpT
+         eMpOv88r2bUHWT9HnSyQ0rFdln/PqU9SXWHPvH7EH9CvtVKsJMXi7ooLoa4P/cw9W3X3
+         78XXgts8nUoQnwPEGvpUsGoFFbUfrq7/0c4Cm8SZXEcS9VtV8yn93ZVEWPZC61xcvD54
+         s3cKv2fUq6Ic/F7VwbiVq/UF4s087XKx3GsWt/5IW8LuvKfEVqr6OioGhdCwRJpjslio
+         O9rkvi7oXSuYgfO4Zs5vhwBEIUeUWazzoKFyqmsnkIuShSYNLmq6wRgbDNkrFYI8CChy
+         SJ7A==
+X-Gm-Message-State: AOAM532QKp6V3y/hFIwTjTTJWfS3skr51KMpNwXTLGND0V+vA1STRmP8
+        fv0kvt0kwQEEUpkgtcwoFJ7JVSfNwEdwpeLrOLML5g==
+X-Google-Smtp-Source: ABdhPJwfIVQtcMQUnNx8RT4h/VH+mgd9JIEGGedHljgEqbQmJLD/tT2gzhFnJVT7XW0mk42MFtXlb2TKsV03h7OLuhU=
+X-Received: by 2002:a2e:8787:: with SMTP id n7mr21556614lji.278.1633446087421;
+ Tue, 05 Oct 2021 08:01:27 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211001181627.394921-1-bgeffon@google.com> <YVtH60zyzq9AhUv2@google.com>
- <CADyq12xk-2Fhnf_rJQ70oC1_98OEBJqwxOt6z=PpJa5V=X3dFQ@mail.gmail.com> <YVtqHv+p3uYkbu5E@google.com>
-In-Reply-To: <YVtqHv+p3uYkbu5E@google.com>
-From:   Brian Geffon <bgeffon@google.com>
-Date:   Tue, 5 Oct 2021 11:01:15 -0400
-Message-ID: <CADyq12w2sHdeBhAKVP+5GghHMqNZN+h36ydV7gi8QxOcHZ7f7A@mail.gmail.com>
-Subject: Re: [PATCH] zram: Allow backing device to be assigned after init
-To:     Minchan Kim <minchan@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Nitin Gupta <ngupta@vflare.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        LKML <linux-kernel@vger.kernel.org>, linux-doc@vger.kernel.org,
-        linux-block@vger.kernel.org,
-        Suleiman Souhlal <suleiman@google.com>,
-        Jesse Barnes <jsbarnes@google.com>
+References: <20210820155918.7518-1-brijesh.singh@amd.com> <20210820155918.7518-26-brijesh.singh@amd.com>
+ <CAMkAt6qsZNJPM97Y6_8b7QmLv=n0MaDs7hThi3thFEee4P10pA@mail.gmail.com> <e5a47417-2f2e-7055-71ad-850b509f3876@amd.com>
+In-Reply-To: <e5a47417-2f2e-7055-71ad-850b509f3876@amd.com>
+From:   Peter Gonda <pgonda@google.com>
+Date:   Tue, 5 Oct 2021 09:01:15 -0600
+Message-ID: <CAMkAt6pJQmgzbpfxbXF_aJobszG8OU=rfVw8Xk9SMqC6050G6g@mail.gmail.com>
+Subject: Re: [PATCH Part2 v5 25/45] KVM: SVM: Add KVM_SEV_SNP_LAUNCH_UPDATE command
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        kvm list <kvm@vger.kernel.org>, linux-coco@lists.linux.dev,
+        linux-mm@kvack.org, linux-crypto@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
+        Marc Orr <marcorr@google.com>,
+        sathyanarayanan.kuppuswamy@linux.intel.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Minchan,
-Thank you for expanding on that. The only situation where there will
-be lock contention that is problematic is when we're storing the
-backing device the first time, all other times the lock will be held
-as a read. Once the backing device has been set it cannot be set again
-(it would return -EEXIST). I think no matter what if we're doing
-writeback, even with the optimization you're describing, you'd have to
-hold the zram->init_lock as read to validate that you have a writeback
-device. Does that make sense?
+On Mon, Sep 27, 2021 at 1:33 PM Brijesh Singh <brijesh.singh@amd.com> wrote:
+>
+>
+>
+> On 9/27/21 11:43 AM, Peter Gonda wrote:
+> ...
+> >>
+> >> +static bool is_hva_registered(struct kvm *kvm, hva_t hva, size_t len)
+> >> +{
+> >> +       struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
+> >> +       struct list_head *head = &sev->regions_list;
+> >> +       struct enc_region *i;
+> >> +
+> >> +       lockdep_assert_held(&kvm->lock);
+> >> +
+> >> +       list_for_each_entry(i, head, list) {
+> >> +               u64 start = i->uaddr;
+> >> +               u64 end = start + i->size;
+> >> +
+> >> +               if (start <= hva && end >= (hva + len))
+> >> +                       return true;
+> >> +       }
+> >> +
+> >> +       return false;
+> >> +}
+> >
+> > Internally we actually register the guest memory in chunks for various
+> > reasons. So for our largest SEV VM we have 768 1 GB entries in
+> > |sev->regions_list|. This was OK before because no look ups were done.
+> > Now that we are performing a look ups a linked list with linear time
+> > lookups seems not ideal, could we switch the back data structure here
+> > to something more conducive too fast lookups?
+> >> +
+>
+> Interesting, for qemu we had very few number of regions so there was no
+> strong reason for me to think something otherwise. Do you have any
+> preference on what data structure you will use ?
 
-Brian
+Chatted offline. I think this is fine for now, we won't want to use
+our userspace demand pinning with SNP yet.
 
-On Mon, Oct 4, 2021 at 4:55 PM Minchan Kim <minchan@kernel.org> wrote:
 >
-> On Mon, Oct 04, 2021 at 02:40:52PM -0400, Brian Geffon wrote:
-> > On Mon, Oct 4, 2021 at 2:29 PM Minchan Kim <minchan@kernel.org> wrote:
-> > >
-> > > On Fri, Oct 01, 2021 at 11:16:27AM -0700, Brian Geffon wrote:
-> > > > There does not appear to be a technical reason to not
-> > > > allow the zram backing device to be assigned after the
-> > > > zram device is initialized.
-> > > >
-> > > > This change will allow for the backing device to be assigned
-> > > > as long as no backing device is already assigned. In that
-> > > > event backing_dev would return -EEXIST.
-> > > >
-> > > > Signed-off-by: Brian Geffon <bgeffon@google.com>
-> > > > ---
-> > > >  drivers/block/zram/zram_drv.c | 6 +++---
-> > > >  1 file changed, 3 insertions(+), 3 deletions(-)
-> > > >
-> > > > diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
-> > > > index fcaf2750f68f..12b4555ee079 100644
-> > > > --- a/drivers/block/zram/zram_drv.c
-> > > > +++ b/drivers/block/zram/zram_drv.c
-> > > > @@ -462,9 +462,9 @@ static ssize_t backing_dev_store(struct device *dev,
-> > > >               return -ENOMEM;
-> > > >
-> > > >       down_write(&zram->init_lock);
-> > > > -     if (init_done(zram)) {
-> > > > -             pr_info("Can't setup backing device for initialized device\n");
-> > > > -             err = -EBUSY;
-> > > > +     if (zram->backing_dev) {
-> > > > +             pr_info("Backing device is already assigned\n");
-> > > > +             err = -EEXIST;
-> > > >               goto out;
-> > >
-> > > Hi Brian,
-> > >
+> >> +static int snp_launch_update(struct kvm *kvm, struct kvm_sev_cmd *argp)
+> >> +{
+> >> +       struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
+> >> +       struct sev_data_snp_launch_update data = {0};
+> >> +       struct kvm_sev_snp_launch_update params;
+> >> +       unsigned long npages, pfn, n = 0;
 > >
-> > Hi Minchan,
+> > Could we have a slightly more descriptive name for |n|? nprivate
+> > maybe? Also why not zero in the loop below?
 > >
-> > > I am worry about the inconsistency with other interface of current zram
-> > > set up. They were supposed to set it up before zram disksize setting
-> > > because it makes code more simple/maintainalbe in that we don't need
-> > > to check some feature on the fly.
-> > >
-> > > Let's think about when zram extends the writeback of incompressible
-> > > page on demand. The write path will need the backing_dev under
-> > > down_read(&zarm->init_lock) or other conditional variable to check
-> > > whether the feature is enabled or not on the fly.
+>
+> Sure, I will pick a better name and no need to zero above. I will fix it.
+>
+> > for (i = 0, n = 0; i < npages; ++i)
 > >
-> > I don't follow what you mean by that, writeback_store already holds
-> > down_read(&zarm->init_lock).
+> >> +       int *error = &argp->error;
+> >> +       struct page **inpages;
+> >> +       int ret, i, level;
+> >
+> > Should |i| be an unsigned long since it can is tracked in a for loop
+> > with "i < npages" npages being an unsigned long? (|n| too)
+> >
 >
-> I should have explained a bit more. Sorry about that.
-> I am thinking about a feature to deal with incompressible page.
-> Let's have an example to handle incompressible page for that.
+> Noted.
 >
-> zram_bvec_rw
->   zram_bvec_write
->     if (comp_len >= huge_class)
->         zs_page_writeback
->             down_read(&zram->init_lock) or some other way
+> >> +       u64 gfn;
+> >> +
+> >> +       if (!sev_snp_guest(kvm))
+> >> +               return -ENOTTY;
+> >> +
+> >> +       if (!sev->snp_context)
+> >> +               return -EINVAL;
+> >> +
+> >> +       if (copy_from_user(&params, (void __user *)(uintptr_t)argp->data, sizeof(params)))
+> >> +               return -EFAULT;
+> >> +
+> >> +       /* Verify that the specified address range is registered. */
+> >> +       if (!is_hva_registered(kvm, params.uaddr, params.len))
+> >> +               return -EINVAL;
+> >> +
+> >> +       /*
+> >> +        * The userspace memory is already locked so technically we don't
+> >> +        * need to lock it again. Later part of the function needs to know
+> >> +        * pfn so call the sev_pin_memory() so that we can get the list of
+> >> +        * pages to iterate through.
+> >> +        */
+> >> +       inpages = sev_pin_memory(kvm, params.uaddr, params.len, &npages, 1);
+> >> +       if (!inpages)
+> >> +               return -ENOMEM;
+> >> +
+> >> +       /*
+> >> +        * Verify that all the pages are marked shared in the RMP table before
+> >> +        * going further. This is avoid the cases where the userspace may try
+> >
+> > This is *too* avoid cases...
+> >
+> Noted
 >
-> It's just idea for incompressible page but we might intorduce
-> the way for other compresible pages, too at some condition.
+> >> +        * updating the same page twice.
+> >> +        */
+> >> +       for (i = 0; i < npages; i++) {
+> >> +               if (snp_lookup_rmpentry(page_to_pfn(inpages[i]), &level) != 0) {
+> >> +                       sev_unpin_memory(kvm, inpages, npages);
+> >> +                       return -EFAULT;
+> >> +               }
+> >> +       }
+> >> +
+> >> +       gfn = params.start_gfn;
+> >> +       level = PG_LEVEL_4K;
+> >> +       data.gctx_paddr = __psp_pa(sev->snp_context);
+> >> +
+> >> +       for (i = 0; i < npages; i++) {
+> >> +               pfn = page_to_pfn(inpages[i]);
+> >> +
+> >> +               ret = rmp_make_private(pfn, gfn << PAGE_SHIFT, level, sev_get_asid(kvm), true);
+> >> +               if (ret) {
+> >> +                       ret = -EFAULT;
+> >> +                       goto e_unpin;
+> >> +               }
+> >> +
+> >> +               n++;
+> >> +               data.address = __sme_page_pa(inpages[i]);
+> >> +               data.page_size = X86_TO_RMP_PG_LEVEL(level);
+> >> +               data.page_type = params.page_type;
+> >> +               data.vmpl3_perms = params.vmpl3_perms;
+> >> +               data.vmpl2_perms = params.vmpl2_perms;
+> >> +               data.vmpl1_perms = params.vmpl1_perms;
+> >> +               ret = __sev_issue_cmd(argp->sev_fd, SEV_CMD_SNP_LAUNCH_UPDATE, &data, error);
+> >> +               if (ret) {
+> >> +                       /*
+> >> +                        * If the command failed then need to reclaim the page.
+> >> +                        */
+> >> +                       snp_page_reclaim(pfn);
+> >> +                       goto e_unpin;
+> >> +               }
+> >
+> > Hmm if this call fails after the first iteration of this loop it will
+> > lead to a hard to reproduce LaunchDigest right? Say if we are
+> > SnpLaunchUpdating just 2 pages A and B. If we first call this ioctl
+> > and A is SNP_LAUNCH_UPDATED'd but B fails, we then make A shared again
+> > in the RMP. So we must call the ioctl with 2 pages again, after fixing
+> > the issue with page B. Now the Launch digest has something like
+> > Hash(A) then HASH(A & B) right (overly simplified) so A will be
+> > included twice right? I am not sure if anything better can be done
+> > here but might be worth documenting IIUC.
+> >
+>
+> I can add a comment in documentation that if a LAUNCH_UPDATE fails then
+> user need to destroy the existing context and start from the beginning.
+> I am not sure if we want to support the partial update cases. But in
+> case we have two choices a) decommission the context on failure or b)
+> add a new command to destroy the existing context.
+>
+
+Agreed supporting the partial update case seems very tricky.
+
+>
+> >> +
+> >> +               gfn++;
+> >> +       }
+> >> +
+> >> +e_unpin:
+> >> +       /* Content of memory is updated, mark pages dirty */
+> >> +       for (i = 0; i < n; i++) {
+> >> +               set_page_dirty_lock(inpages[i]);
+> >> +               mark_page_accessed(inpages[i]);
+> >> +
+> >> +               /*
+> >> +                * If its an error, then update RMP entry to change page ownership
+> >> +                * to the hypervisor.
+> >> +                */
+> >> +               if (ret)
+> >> +                       host_rmp_make_shared(pfn, level, true);
+> >> +       }
+> >> +
+> >> +       /* Unlock the user pages */
+> >> +       sev_unpin_memory(kvm, inpages, npages);
+> >> +
+> >> +       return ret;
+> >> +}
+> >> +
+> >>   int svm_mem_enc_op(struct kvm *kvm, void __user *argp)
+> >>   {
+> >>          struct kvm_sev_cmd sev_cmd;
+> >> @@ -1712,6 +1873,9 @@ int svm_mem_enc_op(struct kvm *kvm, void __user *argp)
+> >>          case KVM_SEV_SNP_LAUNCH_START:
+> >>                  r = snp_launch_start(kvm, &sev_cmd);
+> >>                  break;
+> >> +       case KVM_SEV_SNP_LAUNCH_UPDATE:
+> >> +               r = snp_launch_update(kvm, &sev_cmd);
+> >> +               break;
+> >>          default:
+> >>                  r = -EINVAL;
+> >>                  goto out;
+> >> @@ -1794,6 +1958,29 @@ find_enc_region(struct kvm *kvm, struct kvm_enc_region *range)
+> >>   static void __unregister_enc_region_locked(struct kvm *kvm,
+> >>                                             struct enc_region *region)
+> >>   {
+> >> +       unsigned long i, pfn;
+> >> +       int level;
+> >> +
+> >> +       /*
+> >> +        * The guest memory pages are assigned in the RMP table. Unassign it
+> >> +        * before releasing the memory.
+> >> +        */
+> >> +       if (sev_snp_guest(kvm)) {
+> >> +               for (i = 0; i < region->npages; i++) {
+> >> +                       pfn = page_to_pfn(region->pages[i]);
+> >> +
+> >> +                       if (!snp_lookup_rmpentry(pfn, &level))
+> >> +                               continue;
+> >> +
+> >> +                       cond_resched();
+> >> +
+> >> +                       if (level > PG_LEVEL_4K)
+> >> +                               pfn &= ~(KVM_PAGES_PER_HPAGE(PG_LEVEL_2M) - 1);
+> >> +
+> >> +                       host_rmp_make_shared(pfn, level, true);
+> >> +               }
+> >> +       }
+> >> +
+> >>          sev_unpin_memory(kvm, region->pages, region->npages);
+> >>          list_del(&region->list);
+> >>          kfree(region);
+> >> diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
+> >> index e6416e58cd9a..0681be4bdfdf 100644
+> >> --- a/include/uapi/linux/kvm.h
+> >> +++ b/include/uapi/linux/kvm.h
+> >> @@ -1715,6 +1715,7 @@ enum sev_cmd_id {
+> >>          /* SNP specific commands */
+> >>          KVM_SEV_SNP_INIT,
+> >>          KVM_SEV_SNP_LAUNCH_START,
+> >> +       KVM_SEV_SNP_LAUNCH_UPDATE,
+> >>
+> >>          KVM_SEV_NR_MAX,
+> >>   };
+> >> @@ -1831,6 +1832,24 @@ struct kvm_sev_snp_launch_start {
+> >>          __u8 pad[6];
+> >>   };
+> >>
+> >> +#define KVM_SEV_SNP_PAGE_TYPE_NORMAL           0x1
+> >> +#define KVM_SEV_SNP_PAGE_TYPE_VMSA             0x2
+> >> +#define KVM_SEV_SNP_PAGE_TYPE_ZERO             0x3
+> >> +#define KVM_SEV_SNP_PAGE_TYPE_UNMEASURED       0x4
+> >> +#define KVM_SEV_SNP_PAGE_TYPE_SECRETS          0x5
+> >> +#define KVM_SEV_SNP_PAGE_TYPE_CPUID            0x6
+> >> +
+> >> +struct kvm_sev_snp_launch_update {
+> >> +       __u64 start_gfn;
+> >> +       __u64 uaddr;
+> >> +       __u32 len;
+> >> +       __u8 imi_page;
+> >> +       __u8 page_type;
+> >> +       __u8 vmpl3_perms;
+> >> +       __u8 vmpl2_perms;
+> >> +       __u8 vmpl1_perms;
+> >> +};
+> >> +
+> >>   #define KVM_DEV_ASSIGN_ENABLE_IOMMU    (1 << 0)
+> >>   #define KVM_DEV_ASSIGN_PCI_2_3         (1 << 1)
+> >>   #define KVM_DEV_ASSIGN_MASK_INTX       (1 << 2)
+> >> --
+> >> 2.17.1
+> >>
+> >>
