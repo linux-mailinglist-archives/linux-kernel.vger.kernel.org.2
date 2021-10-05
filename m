@@ -2,215 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4938423357
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 00:18:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F29E5423361
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 00:19:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236832AbhJEWUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 18:20:11 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:12284 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231658AbhJEWUI (ORCPT
+        id S236810AbhJEWVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 18:21:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42830 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230477AbhJEWVc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 18:20:08 -0400
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 195M65K0020365;
-        Tue, 5 Oct 2021 15:18:18 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : mime-version; s=facebook;
- bh=npEujcpnOizu3bd0gufEBfretasZtrnQzl5pO+OWLiI=;
- b=Xt1TwdJPMbF22C+9AaEwyrJE/P22lcwQVW6KW1MKEgXtIcg4ZaR6VXPkyZHXsSTZZ8G1
- gpNmZIlsvpENy+bmXA4ynesmZDiLc0/cVdvHS7M8yMoG+Ioibuvxjm2Xef2M8h3c3FtT
- oMGePLWetZJgf5P7debZ08Y/ruBoNpXQLXA= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3bgy72g2j1-19
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 05 Oct 2021 15:18:17 -0700
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.229) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Tue, 5 Oct 2021 15:17:39 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=g7zQrAa10Pg54qKei7bht0Ky9YZJa2xBlE9sgSAlB0xz4pxOSD/TZmwVOgGHbF7iAJqRf0JaUNm45igjMpQaWCeuTaOGT7E5F20GsmujwzXA/B1iDvaGmZQclQi5kj68m1K7y2WfJuBfXgM78LLL+hXn9X8ZIuSOpqnbQWM9wMDRaNZCxPQwClhC+2liybd/LOeIhpbQh9BQzQmURavJqQEmzPYhHx0BIbMxGLW5nMrYi4Irx5+rbr6zfiW6rXlnzYqhnnUGN1gy9uB943Dta5Wkd1ExTtqBtlupvopYJH/lzduTPeuR3kXeU3csyMkbSoLZTxy5Pv8IAtT/Lhcj7w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=npEujcpnOizu3bd0gufEBfretasZtrnQzl5pO+OWLiI=;
- b=Pe6JWSbBjxGbDY6F298QhEqM24yKa08JYam+YkdXXOxCW+WRe/dodV6VSyzzYXLzv66ttIZTas9fuQpJoeTBBYfsveVCzvzZFjhnKV/bNc4HVe3YbzwwDGq0kAnNiXU9e5MDG5I50wD7+5bNp8uxqJcYqecLFCPXn+gCGG9ltJMjQLI9y1z5ugsarGPMAwPgRknpo+1f5UMTaYxq97vVbX4eASln8YVSgnwjLWLbp9eHUBqkZ1GT8f2ae4amuhfm11K3owARYj0u/q4Rqpvl3Xip97AVGinu9OteH3WLYIoEXlNilYLpK6XioJclLJCZuMwHXXImZvmC1A3asADFmw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from SA1PR15MB5109.namprd15.prod.outlook.com (2603:10b6:806:1dc::10)
- by SA1PR15MB5096.namprd15.prod.outlook.com (2603:10b6:806:1df::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.14; Tue, 5 Oct
- 2021 22:17:38 +0000
-Received: from SA1PR15MB5109.namprd15.prod.outlook.com
- ([fe80::7d66:9b36:b482:af0f]) by SA1PR15MB5109.namprd15.prod.outlook.com
- ([fe80::7d66:9b36:b482:af0f%8]) with mapi id 15.20.4566.022; Tue, 5 Oct 2021
- 22:17:37 +0000
-From:   Song Liu <songliubraving@fb.com>
-To:     Casey Schaufler <casey@schaufler-ca.com>
-CC:     Jiang Wang <jiang.wang@bytedance.com>, bpf <bpf@vger.kernel.org>,
-        "Cong Wang" <cong.wang@bytedance.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        "Daniel Borkmann" <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        "Martin Lau" <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Eric Dumazet <edumazet@google.com>,
-        "Christian Brauner" <christian.brauner@ubuntu.com>,
-        Rao Shoaib <Rao.Shoaib@oracle.com>,
-        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH bpf v1] unix: fix an issue in unix_shutdown causing the
- other end read/write failures
-Thread-Topic: [PATCH bpf v1] unix: fix an issue in unix_shutdown causing the
- other end read/write failures
-Thread-Index: AQHXuXcwLuslzx76qEe92GzLgt4utKvDhi0AgAF0f4A=
-Date:   Tue, 5 Oct 2021 22:17:37 +0000
-Message-ID: <774AADB0-5AF7-413E-8046-B863826565CB@fb.com>
-References: <20211004232530.2377085-1-jiang.wang@bytedance.com>
- <f7338e3e-8798-478f-bac9-a86e247e3a13@schaufler-ca.com>
-In-Reply-To: <f7338e3e-8798-478f-bac9-a86e247e3a13@schaufler-ca.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3654.120.0.1.13)
-authentication-results: schaufler-ca.com; dkim=none (message not signed)
- header.d=none;schaufler-ca.com; dmarc=none action=none header.from=fb.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 2cc56ef4-1cfc-4c54-543f-08d9884df097
-x-ms-traffictypediagnostic: SA1PR15MB5096:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SA1PR15MB5096CE73E057F80A4BA7BFA4B3AF9@SA1PR15MB5096.namprd15.prod.outlook.com>
-x-fb-source: Internal
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: iETgWxP/eMJDcpdUVnjFiZcLiPwHwkZcaPzMa8XPed54xzmiRMl9sDX7y1xaKiD6mMtH6QsHCnqI/lzaGKMd5taB3XgrXhXTtql3wK4co7lMYHvOB5o0DFRAsokakqq0spXqIEn74yLYcWxaDtfK+inJSvUOhTRDLHE6oDB+PTARbz5Ll2AlYrjqEwR17xyne8WyEEnd0etGvsgQtT2HjKDvlC6HpHaHJbdZ5gJ21ZVoxUbNSXFkuGZ3Qmwvo/V+zR4aG63CmReN8eV7QuBrfEt+fYHvEiUCxOnWyBioVK4a/Louwae/8KoxfET5aUNV5ZCENoJbdGG+nsuDCjd4EjCxQhXfrvHbrP0UymgbeNQ1Brq6xP6SglnU4iAIqr9wBd4oP/VNX/kQL4EWlkGhRXbJQ+u8HbwTFPKA/exdRceCcHtDTF7RZHjvCt1MoutmMxCIvrWtcKPwrFuzwONvYdxC7ACGjwSChc15Juy+BBCp/VFtJ1XSDto+XnxyW54mo5/Fq4VRpKP6Y9GZmS9RG8sFcVwFj9cQpaZEXf42FLnekj334A4ufLl6VCjTDzN/SloWVtaaM48/YvWn+pO5nG1/wyycJZSeinLtC8cdZ+ukASB6f6ThWPzlZlF74kaTUEs6YnuwJ6P+5RaLGob4f+H3wfMBW+vEFWXs8/3L3r0rTfIJptW5fUOr+xliRsRKCObuYpqbWAKCBRCbX7gXAbYS2aDYuGdGEKMFHt6AzxgZKSRd4ssovaqSQbIBiuiI
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5109.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(8936002)(83380400001)(8676002)(4326008)(36756003)(122000001)(6916009)(76116006)(38070700005)(86362001)(91956017)(5660300002)(2616005)(38100700002)(66556008)(64756008)(33656002)(66476007)(66446008)(54906003)(2906002)(508600001)(71200400001)(7416002)(6512007)(6486002)(186003)(316002)(66946007)(53546011)(6506007)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?lh7QjTNFAanZoT/5zracdvp9QQC4z+wDuTEcg2jpqELtL2m9wwTFoqtezBx7?=
- =?us-ascii?Q?LCSbIVfB0qS6yXQEtCjjlrDQN0NmfkDnkBBCVIWAywzKO0F7ne50SC4fIsko?=
- =?us-ascii?Q?QItaqMpT8XuC+cotO6pVfOyehL0UqalwN4da+EnzrR8LcwQg3Du2L+hFlEwW?=
- =?us-ascii?Q?Mqe5Z1Gnz6eLFbILxgsfW4zVkoekeFu9tFezUBpFOBjZ7Z2ZsRystaLF5ZCo?=
- =?us-ascii?Q?v6bJzxZ/9iJCJVVzjSFKUhDqCs0zjMy7lIqDPs/Jcqs1LqSb9c1lFphg1j07?=
- =?us-ascii?Q?vWjHJMr31+aFvWSDX0aj8HMROLC3R87V55ydk+7tbqWjJGnyAhIhE5g5XTbC?=
- =?us-ascii?Q?/panAzMnjyBn7dtqmAyH2BzRILl1kVQsMuiqLKB9IxRlIOIAfaMUmvJ33D3D?=
- =?us-ascii?Q?6F+bNfY+W1jFQnU0fPKmebxQS3fwk4BUr4jYcbRMce7RZcAplzA6xaRXWRaB?=
- =?us-ascii?Q?GVr+Y9l36P/ZNjQL/LvgE1Qf4TyUARxIqeH9lKoGMIXYJJZNMyWT9D9zCvd1?=
- =?us-ascii?Q?svisFIrPb+WvpmTFh4k+Q3WFO3YZF/4KSxUEbzgzAbM3IWIZuYNlZ862zS/y?=
- =?us-ascii?Q?GvM6ggUA/1qzTfe/SX+uNROekQHRR1B7pGHyiMj3A956hvFA9KzW1EJC18KB?=
- =?us-ascii?Q?wiH4ChAxPFQTT0he7TGl3D/xA+3L2BO6H4F8aPvQzC/9BIhV9NHFinBkWxBK?=
- =?us-ascii?Q?g8JAepPdHUKcH+dsmUU3dWOxz/FJb0pUFxQhbwiWtZTSudN8AoYwc09Aa9ta?=
- =?us-ascii?Q?K267axp0L5r4ct/NV+fIF7G54sSy3cCN8ru2wycmd4mz1RntIKYxysd/ZWv7?=
- =?us-ascii?Q?gFjW7E9W302oSpv3erCk9c2eAg0gJWb3SQUQhmaXWaDwF5MOLhGGJVnemgpI?=
- =?us-ascii?Q?7AT18Q6RpkPcYD6XaU27Nw83ReW7y3Q6HQlwoIp9o2cviHMOROv43p4nF91L?=
- =?us-ascii?Q?tacUczIYl05EwqEY0kZ/IDd2WP370GfHSY+NBUWN9aO0ejZ4RXHpWnP/Qvfa?=
- =?us-ascii?Q?xTWiq4By8diQHNFZQgOtoJ2nBokIvd1LqPA1JEm6grk3UysTIMn50vVQqOJv?=
- =?us-ascii?Q?G4jmaKLZFDGa6yHiWH71fmf63Hc0vBO2RQb9NvDibqIt821cuyDVgggdLx+b?=
- =?us-ascii?Q?LimsShXKLUbd7trOdDCGhdcuZRNDFx5YKc2ShPC/wqAv1hhQk2ielJ+FY4Mk?=
- =?us-ascii?Q?M/2VNPmeJ+EgqxCr2d6iVWNRLTE4iSbOolIJbZCs80fSYgxc2QYjnKB3lWIh?=
- =?us-ascii?Q?CmZKTVXAJlf3wrhjHMBtOGyHgjRETVyjoj0viINY0OPxY3cEgYppHz051ykl?=
- =?us-ascii?Q?Fd2O4pvHaf5d1g/ndF9ch6D1RjZ/C/kIjgCBmd86eFRKFulZGiPFpQ6qPlt8?=
- =?us-ascii?Q?nV7Av6Q=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <766CB2C0EFCB344EAE83048E12FD4CCD@namprd15.prod.outlook.com>
+        Tue, 5 Oct 2021 18:21:32 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71EB7C061749;
+        Tue,  5 Oct 2021 15:19:41 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id u18so1904112lfd.12;
+        Tue, 05 Oct 2021 15:19:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=cm3t0jHYi60ikbjIFrElH5F3+z5ZebZ+trrzKBFfgQI=;
+        b=qTAIEXIVB1/IgtvGdtrN/gmvUv6mTJMWYvN+by7UBNwUQz1edq9ynn5KZ4VakUYvgO
+         zdJ521ZSZKHguY4o7B00h080n6+hpVFgPtipWPhr7vdfUedARgQ4xE4HH2lbru46MeqC
+         A5BXLTY8VINH/AMBjZEF/K2gSikuRXhSI2fF9O8ZK3khdgYy8AFAvm2l22TZw2+cK0Up
+         VqGWxTT463F7ck5TyDg0STieTJ5C+qvpbnUQ5kqq4ulMywcZp+kTXt8lcdefcaH+dgKu
+         zq6l/FilsorGHNG/QzimfNCPZRYUNo7SlGD/xBo5UydUfU+gcPwF7E7ckKKrvoh9klYt
+         Rvdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=cm3t0jHYi60ikbjIFrElH5F3+z5ZebZ+trrzKBFfgQI=;
+        b=6hhnqyt2XuRgMYLBNC2nV0yG8PsZANtBv+Y+ujv3fVytDqGArizH5YtwnLATxAsUJt
+         OkqBwMbf78zRVcV/+qsOokjE5H3F1aeZGzVtXS+pSe1PoQtFgIESne4ZTE+qLvuM/537
+         Z289c3Z5jopFyyvmvlAzPZe7dkLyna195R2rycn/fFg9FLjF3bN4evkWrl88Ub2T4QNt
+         KA7sENlEZpFF5OvfJWwhjFl/nDzpJ0kMWoys51uuzC5BuPDzs6oSojwX9QtzgH0eBTO0
+         BDoETraINfqc+1dWTIr2Ii28Uuje+EDoIRhyd1noX9fHWJWCZRzdWE9KvHyAMbmhrUnb
+         ZzFA==
+X-Gm-Message-State: AOAM533jef9d3xmw1Rrve3XH/J5Rejztw9KP0UV1G8UZAUuJ+QLFjqbi
+        eYdIGCVA+23UkRg6+MwsUe8=
+X-Google-Smtp-Source: ABdhPJx7DQPDGWTTKyBBQ7on8Zoc9EHE4rfD8+/mmsH+2cs2olWIZx3pD3Yp7kL6x0TZhEN3swGrdg==
+X-Received: by 2002:a2e:5cc6:: with SMTP id q189mr24035068ljb.82.1633472379484;
+        Tue, 05 Oct 2021 15:19:39 -0700 (PDT)
+Received: from [192.168.2.145] (79-139-163-57.dynamic.spd-mgts.ru. [79.139.163.57])
+        by smtp.googlemail.com with ESMTPSA id d19sm2088024lfv.74.2021.10.05.15.19.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Oct 2021 15:19:39 -0700 (PDT)
+Subject: Re: [PATCH v13 06/35] clk: tegra: Support runtime PM and power domain
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        Peter Chen <peter.chen@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Nishanth Menon <nm@ti.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        linux-staging@lists.linux.dev, linux-pwm@vger.kernel.org,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Richard Weinberger <richard@nod.at>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        David Heidelberg <david@ixit.cz>
+References: <20210926224058.1252-1-digetx@gmail.com>
+ <20210926224058.1252-7-digetx@gmail.com>
+ <CAPDyKFq+LS4Jr1GyC-a-tGWPzGH0JxfJ9wKY=uQEBGYm952azw@mail.gmail.com>
+ <24101cd6-d3f5-1e74-db39-145ecd30418b@gmail.com>
+ <CAPDyKFreK7976PJL-1zySoza_yXM7rMQ64aODWUZ+U3L-uCa0w@mail.gmail.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <4bdba8a2-4b9b-ed7d-e6ca-9218d8200a85@gmail.com>
+Date:   Wed, 6 Oct 2021 01:19:37 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5109.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2cc56ef4-1cfc-4c54-543f-08d9884df097
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Oct 2021 22:17:37.8361
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: QOSPmwpX1VgFTWh0X/SCPeFlBDXDk7BC6chA5YCCi9Bcui6AvQKKnYZrDSNl9cD02A5GvUoO0LcxCa/BmamOEw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB5096
-X-OriginatorOrg: fb.com
-X-Proofpoint-GUID: uUmL3nHGPJyh6MppsXC6S79XgRZm_i6_
-X-Proofpoint-ORIG-GUID: uUmL3nHGPJyh6MppsXC6S79XgRZm_i6_
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-10-05_04,2021-10-04_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 malwarescore=0
- mlxlogscore=999 bulkscore=0 priorityscore=1501 suspectscore=0
- impostorscore=0 phishscore=0 adultscore=0 clxscore=1015 spamscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110050131
-X-FB-Internal: deliver
+In-Reply-To: <CAPDyKFreK7976PJL-1zySoza_yXM7rMQ64aODWUZ+U3L-uCa0w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-> On Oct 4, 2021, at 5:04 PM, Casey Schaufler <casey@schaufler-ca.com> wrote:
+05.10.2021 16:10, Ulf Hansson пишет:
+> On Sat, 2 Oct 2021 at 22:44, Dmitry Osipenko <digetx@gmail.com> wrote:
+>>
+>> 01.10.2021 15:32, Ulf Hansson пишет:
+>>>> +static __maybe_unused int tegra_clock_pm_suspend(struct device *dev)
+>>>> +{
+>>>> +       struct tegra_clk_device *clk_dev = dev_get_drvdata(dev);
+>>>> +
+>>>> +       /*
+>>>> +        * Power management of the clock is entangled with the Tegra PMC
+>>>> +        * GENPD because PMC driver enables/disables clocks for toggling
+>>>> +        * of the PD's on/off state.
+>>>> +        *
+>>>> +        * The PMC GENPD is resumed in NOIRQ phase, before RPM of the clocks
+>>>> +        * becomes available, hence PMC can't use clocks at the early resume
+>>>> +        * phase if RPM is involved. For example when 3d clock is enabled,
+>>>> +        * it may enable the parent PLL clock that needs to be RPM-resumed.
+>>>> +        *
+>>>> +        * Secondly, the PLL clocks may be enabled by the low level suspend
+>>>> +        * code, so we need to assume that PLL is in enabled state during
+>>>> +        * suspend.
+>>>> +        *
+>>>> +        * We will keep PLLs and system clock resumed during suspend time.
+>>>> +        * All PLLs on all SoCs are low power and system clock is always-on,
+>>>> +        * so practically not much is changed here.
+>>>> +        */
+>>>> +
+>>>> +       return clk_prepare(clk_dev->hw->clk);
+>>> I am trying to understand, more exactly, what you intend to achieve
+>>> with the clk_prepare() here. It looks a bit weird, to me. Can you try
+>>> to elaborate a bit more on the use case?
+>>
+>> The Tegra GENPD driver enable/disable clocks when domain is turned on.
 > 
-> On 10/4/2021 4:25 PM, Jiang Wang wrote:
->> Commit 94531cfcbe79 ("af_unix: Add unix_stream_proto for sockmap")
->> sets unix domain socket peer state to TCP_CLOSE
->> in unix_shutdown. This could happen when the local end is shutdown
->> but the other end is not. Then the other end will get read or write
->> failures which is not expected.
->> 
->> Fix the issue by setting the local state to shutdown.
->> 
->> Fixes: 94531cfcbe79 (af_unix: Add unix_stream_proto for sockmap)
->> Suggested-by: Cong Wang <cong.wang@bytedance.com>
->> Reported-by: Casey Schaufler <casey@schaufler-ca.com>
->> Signed-off-by: Jiang Wang <jiang.wang@bytedance.com>
+> Okay. I noticed that in tegra_genpd_power_on(). And the same clocks
+> are enabled/disabled also in tegra_genpd_power_off(), when powering
+> off the PM domain.
 > 
-> This patch looks like it has fixed the problem. My test cases
-> are now getting expected results consistently. Please add any
-> or all of:
+> So I guess the problem kind of exists for tegra_genpd_power_off() too?
+
+Both OFF/ON are affected by the same problem. If domain was already
+turned OFF before genpd_suspend_noirq(), then the OFF problem isn't visible.
+
+I reproduced the OFF problem by removing the clk prepare/unprepare from
+the suspend/resume of the clk driver and making some extra changes to
+clock tree topology and etc to trigger the problem on Nexus 7.
+
+tegra-pmc 7000e400.pmc: failed to turn off PM domain heg: -13
+
+I happens from genpd_suspend_noirq() -> tegra_genpd_power_off() -> clk
+-> GENPD -> I2C -> runtime-pm.
+
+-13 is EACCES, it comes from the runtime PM of I2C device. RPM is
+prohibited/disabled during late (NOIRQ) suspend by the drivers core.
+
+>> This can't be done during early system resume, when domains are getting
+>> turned on by the drivers core, because when clock is enabled, it's
+>> getting prepared (RPM-resumed) and this preparation fails because
+>> performance state of the clock goes up and it doesn't work during the
+>> early resume time since I2C, which applies the state to hardware, is
+>> suspended and can't work at that early time.
 > 
-> Tested-by: Casey Schaufler <casey@schaufler-ca.com>
-> Reviewed-by: Casey Schaufler <casey@schaufler-ca.com>
-
-Acked-by: Song Liu <songliubraving@fb.com>
-
+> This sounds complicated and I still don't quite follow all of it, sorry.
 > 
->> ---
->> net/unix/af_unix.c | 9 +++++----
->> 1 file changed, 5 insertions(+), 4 deletions(-)
->> 
->> diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
->> index efac5989edb5..0878ab86597b 100644
->> --- a/net/unix/af_unix.c
->> +++ b/net/unix/af_unix.c
->> @@ -2882,6 +2882,9 @@ static int unix_shutdown(struct socket *sock, int mode)
->> 
->> 	unix_state_lock(sk);
->> 	sk->sk_shutdown |= mode;
->> +	if ((sk->sk_type == SOCK_STREAM || sk->sk_type == SOCK_SEQPACKET) &&
->> +	    mode == SHUTDOWN_MASK)
->> +		sk->sk_state = TCP_CLOSE;
->> 	other = unix_peer(sk);
->> 	if (other)
->> 		sock_hold(other);
->> @@ -2904,12 +2907,10 @@ static int unix_shutdown(struct socket *sock, int mode)
->> 		other->sk_shutdown |= peer_mode;
->> 		unix_state_unlock(other);
->> 		other->sk_state_change(other);
->> -		if (peer_mode == SHUTDOWN_MASK) {
->> +		if (peer_mode == SHUTDOWN_MASK)
->> 			sk_wake_async(other, SOCK_WAKE_WAITD, POLL_HUP);
->> -			other->sk_state = TCP_CLOSE;
->> -		} else if (peer_mode & RCV_SHUTDOWN) {
->> +		else if (peer_mode & RCV_SHUTDOWN)
->> 			sk_wake_async(other, SOCK_WAKE_WAITD, POLL_IN);
->> -		}
->> 	}
->> 	if (other)
->> 		sock_put(other);
+> So, tegra_genpd_power_on() gets called from genpd_resume_noirq(), when
+> the first device of the attached devices to genpd gets resumed. And
+> vice versa for tegra_genpd_power_off() and genpd_suspend_noirq().
+> 
+> Are you saying that trying to enable/disable clocks from
+> tegra_genpd_power_on|off() in these paths doesn't work, because it
+> would also require the performance state to be changed, which would
+> fail because the I2C bus/driver is suspended?
 
+Yes, but it's actually not I2C bus/driver that is suspended, it's
+runtime PM that is unavailable during NOIRQ. The I2C driver itself is
+suspended after domains are turned OFF and resumed before they are
+enabled. It's just runtime PM API that is unavailable. I'm wondering if
+this could be changed.
+
+I'm also wondering if we could add some 'was_enabled' flag to GENPDs,
+setting it by genpd_suspend_noirq() for the enabled domains, and then
+powering-on GENPDs from genpd_resume_noirq() only if they were in the
+enabled state during genpd_suspend_noirq() time. It actually puzzled me
+for a quite long time why GENPD core enables domains unconditionally
+during early resume. This should solve a part of the problem and it
+makes suspend/resume a bit safer because there is a smaller chance to
+crash hardware during suspend, at least it's easier to debug.
+
+>> Secondly, Tegra has arch-specific low level assembly which touches
+>> clocks during last phase of system suspend and in the beginning of
+>> resume. Hence, clocks should stay prepared during suspend just because
+>> technically clock should be prepared before it can be enabled.
+> 
+> So the low level code is gating and ungating the clock behind the back
+> of the clock driver then? Why is that done like that, more exactly?
+
+I revisited that code again, and it shouldn't touch the clocks.
+I changed that code to not toggle the clocks [1] sometime ago, but
+forgot about it.
+
+[1] https://git.kernel.org/linus/680ae4452
+
+>>> Is this rather about making sure that the clock's corresponding PM
+>>> domain stays powered on during system suspend? In that case, I think
+>>> there may be an alternative option....
+>>>
+>>
+>> This is not about domain staying powered on, this is about keeping the
+>> performance state of the domain high during suspend.
+> 
+> Right, so the PM domain managed in tegra_genpd_power_on|off() can
+> still be powered on/off, as long as the clock remains ungated?
+
+Not ungated, but prepared.
