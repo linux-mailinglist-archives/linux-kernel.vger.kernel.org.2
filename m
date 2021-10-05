@@ -2,157 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0A2942337B
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 00:27:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF542423380
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 00:29:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236700AbhJEW3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 18:29:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44708 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229974AbhJEW3m (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 18:29:42 -0400
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA022C06174E
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 15:27:51 -0700 (PDT)
-Received: by mail-pg1-x54a.google.com with SMTP id n9-20020a63f809000000b0026930ed1b24so371482pgh.23
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 15:27:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=o49cNReT7tbfFW4OkGuUsna7W/I8mcpECmrtMrISc18=;
-        b=Vxl/bf+LUXZC1//yKKpG9OYg0qf5nGN2uy9H995MvZr27pbAnrcs/IusJVn7bevmGl
-         lRhar8aAR3BQ6JjR7xfadGcRbfCkr+s8OrApuB88P3N9mdEcO0s/ug3JRjSk7aWZtcXC
-         TZdE5pNclMlQ6174hiy4cOsoTu5ZT4WHuWYlfip4GnjZb3BvBZg8t6hKTXlK4GSeSxKv
-         nH4lVAfvgW/RX+738gkk2W91EO57rXPlblGvLYB6P5P7yMiUKUv8w/4ObO9CnU88pQO2
-         ADuwkTMXbZy4v2QXP8cFkMg4SvfozGVDys7krlO+dTCAUN1nKu7v2+4c57r6LlslZSJ6
-         PsXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=o49cNReT7tbfFW4OkGuUsna7W/I8mcpECmrtMrISc18=;
-        b=EuY4n046EV5QYurfX+gZLOfzpTyUe7/z3zCLa1RjUaHbCp8pb0i4QX4VaDSKRSbT5n
-         NX8l6XZCCXBqiwqwJ92awWZ077gmmjaba1dNuNvACRPDAFE69S/+jFnnHNV6LDuIVDmY
-         vE3+Ol2K5u0LDP6zRR8LRDXBr/vgHeV3IcVFIf8s2/B23TWaEdCaUY0478uG3qr0qoa6
-         PL52InA48DmkJGR9mvQK56a1tQO9gxfUTwJjrV3rQUpBEYjm8d2kNtIVEgngSAPnQhnQ
-         z1hQEXrk3XKBxGY/ObsUUXefd6soVMusnosYA9X8blvFo3yjwyQsdhK32lgWJnF+dyhi
-         xK5g==
-X-Gm-Message-State: AOAM530RzaN4mgroUNcyxuIMpR5YKXd7TTmf9OxrurrAV7cfDu32UWwh
-        NIFxdJrQxbK0XTbHu89y8tGaVd5p8w==
-X-Google-Smtp-Source: ABdhPJzbzhJQMhlmNALwq8tGwon8ljqHAnXSC6vZyy7SapyV65Y9SnCSQz+1SuSxo4rCKpETTMZCCfi60g==
-X-Received: from adelg-virt.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:d1f])
- (user=adelg job=sendgmr) by 2002:a62:5fc6:0:b0:44c:591a:5bf6 with SMTP id
- t189-20020a625fc6000000b0044c591a5bf6mr15037342pfb.36.1633472871291; Tue, 05
- Oct 2021 15:27:51 -0700 (PDT)
-Date:   Tue,  5 Oct 2021 22:27:39 +0000
-Message-Id: <20211005222739.2491124-1-adelg@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.800.g4c38ced690-goog
-Subject: [PATCH v2] selftests: Include directories of header files
-From:   Andrew Delgadilo <adelg@google.com>
-To:     Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>, gthelen@google.com,
-        Andrew Delgadillo <adelg@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S236787AbhJEWbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 18:31:22 -0400
+Received: from mail-mw2nam10on2086.outbound.protection.outlook.com ([40.107.94.86]:3498
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230477AbhJEWbV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 18:31:21 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HqyIiesZEPzkdI+sMx5BhjF/sj5IGgxWX8uvTM1x+9n1lnc/Ne+hgXfjic4a0dYTrbPrACc5fczjLuJFqdom4kPkzC0r3VSGGrRa+4Aa6KWJ/gRO0uwgVzkx67iO4OlJQ/ZHmk4nthw3hce04uLtCnKxhNf2LYztZHEgAmv/cPEQOGpC1txk6tjCckOtsII3UM1q6k/q7MVmAplMpIOKpg3TFGFDkEcixDtRf72odNo0K1EE+sEaRyXLCnhL3JSJgSqZQxH4DsY6sDm60AWQH3o+upwvnOzWAu5aIPH7JYf19mHESlUZtWf6nhzRWg7dSHJMW7H9A+nY6iEZkBVmsA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=chkYqoM6E93PKji183hSuWb9LTQEjHrIwMqf1+qRNwI=;
+ b=Rlfn6HGQA8fxmtnl3Q5LVIJVODw+Nd/GiID1DqHhYBcIpUw+RcKV0p5qC0uCxBhvx2ONTJX3Z+mBYVvn+JkAqW9xAJJAN9DU7nhXDSD7/L+cq9MF7RBL3ZANJ0vM7UauOwoBJzXRt9tVXfPKDHiAz6Yvp55TgNUN5tJJpU2QyOrCG8iywPPlvzFp34CqRFqhcj5XsFCk46vf0XCniEUqHOEke9uAVYqEv2M67wfovNAUpDcpUyTD7hH88m9QtYOSnIVN9HcNauD9XWNZhr8iXpTR9+LA0zTDHllg2hyMFY8aOskOhI2aKCe6da4gYrC8q0BqMwzdUPOeu7P7lSqbpA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=lst.de smtp.mailfrom=nvidia.com; dmarc=pass
+ (p=quarantine sp=none pct=100) action=none header.from=nvidia.com; dkim=none
+ (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=chkYqoM6E93PKji183hSuWb9LTQEjHrIwMqf1+qRNwI=;
+ b=XdTk9XOGaZG307QTshC3i8J6U3bdiKPGvIOF9n+5QijIv4IVwmkNX81Y7KGnEbOLLPJACxkiX+M7t9uHgq3e9arVpG5sld4XOO17icWVSfcsLS+LvhH4il/s3tI3DzNTSv+5KI9/zwd2Gzo/vH+C1Mwfo1gX873nkwdujXda/EDDKkR5mZ3rEq9Zu27xyhx8BCfvL2qwx66pmjrcAXYQXTWZjmqDMvqpdncaIW88X++DmZ7DJiEtmnz6a+1KjyuikCnL7BU7uOCGGU98UQkWju24aEJj23vMzdPtASWf8yH1p4vQzcyaniqeHIOqXr4FTHe8qh25ORJ6VcFtoqvAZA==
+Received: from DM5PR05CA0015.namprd05.prod.outlook.com (2603:10b6:3:d4::25) by
+ CY4PR12MB1399.namprd12.prod.outlook.com (2603:10b6:903:38::13) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4566.19; Tue, 5 Oct 2021 22:29:28 +0000
+Received: from DM6NAM11FT044.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:3:d4:cafe::de) by DM5PR05CA0015.outlook.office365.com
+ (2603:10b6:3:d4::25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.7 via Frontend
+ Transport; Tue, 5 Oct 2021 22:29:28 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; lst.de; dkim=none (message not signed)
+ header.d=none;lst.de; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ DM6NAM11FT044.mail.protection.outlook.com (10.13.173.185) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4566.14 via Frontend Transport; Tue, 5 Oct 2021 22:29:27 +0000
+Received: from [172.27.1.153] (172.20.187.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 5 Oct
+ 2021 22:29:20 +0000
+Subject: Re: [PATCH v3 10/20] nvme-pci: convert to using dma_map_sgtable()
+To:     Logan Gunthorpe <logang@deltatee.com>,
+        <linux-kernel@vger.kernel.org>, <linux-nvme@lists.infradead.org>,
+        <linux-block@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+        <linux-mm@kvack.org>, <iommu@lists.linux-foundation.org>
+CC:     Stephen Bates <sbates@raithlin.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Dan Williams" <dan.j.williams@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Don Dutile <ddutile@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        "Jakowski Andrzej" <andrzej.jakowski@intel.com>,
+        Minturn Dave B <dave.b.minturn@intel.com>,
+        Jason Ekstrand <jason@jlekstrand.net>,
+        "Dave Hansen" <dave.hansen@linux.intel.com>,
+        Xiong Jianxin <jianxin.xiong@intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Martin Oliveira <martin.oliveira@eideticom.com>,
+        Chaitanya Kulkarni <ckulkarnilinux@gmail.com>
+References: <20210916234100.122368-1-logang@deltatee.com>
+ <20210916234100.122368-11-logang@deltatee.com>
+From:   Max Gurtovoy <mgurtovoy@nvidia.com>
+Message-ID: <f38472e5-1273-140c-9177-299f09330c2a@nvidia.com>
+Date:   Wed, 6 Oct 2021 01:29:17 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
+MIME-Version: 1.0
+In-Reply-To: <20210916234100.122368-11-logang@deltatee.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [172.20.187.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 13cff12d-bd1c-4670-891c-08d9884f975b
+X-MS-TrafficTypeDiagnostic: CY4PR12MB1399:
+X-Microsoft-Antispam-PRVS: <CY4PR12MB139955E979C71D9B148E83B9DEAF9@CY4PR12MB1399.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2512;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: /jVsOBNqCNnGnzpCBvnGnNKbiTobINaogTE7wjsFEUjyDWxaa0WagZox3rZfeBcdKYcLwlydFY+vxPQfV7WaXPPZn41RnmFyzY87DvpIT6l+PBuMzUShjv+VcV3Ajp7pVr2hPMQlHw6UmcCOxtg1urhpzdMr01Z97hkCmq8Es7HsjZOuRy4dlM7dTIEqC3Zw0ksg3ASJgs4mkgr8m5g4A7ice8sIlTqKnj6xRM4viaSyAsVKZzf5RSM1kwp529ioXp3J6wK7fdsP1MFpR1PvV/nkyD8HZO2EkDbSJhuh/O2EsexZpDARRvGr/XAkZNBIT6w2ZnN4/2HnaxczyQ6oDUKKgDs/XS7yhq6yj09zujxCvMVnQXkxtT/JCt38OomhniiqFy/9BXoh14PBadwEy1gL9gZAIN5j4FioLL+4vBOUUJqNwZ8ShHsh4vS5MJGPGbwIqCAIrCC7PfDQ4N/sA1I3bpINLZqWxiHOadqskiI6+MYgJMl0ktnh0T3Kb18ClES2qYsmTlgtGe7AFw2/odDh2eHgRIyWYklEdkaMY1u0iIfWVUvqtFVsM/26mg5gOlj8+/pciCPRNkE95WEbOkHwKYAnf8Zw8WPv5pq6KkYBfUbXdi3T1UUfIF07LU/73R31whuR4uvF3SwDUSW/1eSkI74vQwunolcraa8SxTVoAFdJ0zGPADnjqlA0IfB7MqgYxecTIJMVLL+HP5oPFRus0v0SnjjSmmFFpdvK8wQ6WFENnnpJOy2+q8MfzYpT
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(36840700001)(46966006)(82310400003)(2906002)(47076005)(110136005)(186003)(16526019)(70586007)(26005)(54906003)(4326008)(7416002)(16576012)(8676002)(8936002)(316002)(31686004)(70206006)(53546011)(2616005)(83380400001)(356005)(6666004)(5660300002)(426003)(7636003)(508600001)(36756003)(4744005)(86362001)(31696002)(336012)(36860700001)(43740500002)(2101003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Oct 2021 22:29:27.1291
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 13cff12d-bd1c-4670-891c-08d9884f975b
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT044.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR12MB1399
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrew Delgadillo <adelg@google.com>
+Logan,
 
-clang complains about using -o when one specifies header files on the
-commandline. An example can be seen when building the futex selftests:
+On 9/17/2021 2:40 AM, Logan Gunthorpe wrote:
+> The dma_map operations now support P2PDMA pages directly. So remove
+> the calls to pci_p2pdma_[un]map_sg_attrs() and replace them with calls
+> to dma_map_sgtable().
+>
+> dma_map_sgtable() returns more complete error codes than dma_map_sg()
+> and allows differentiating EREMOTEIO errors in case an unsupported
+> P2PDMA transfer is requested. When this happens, return BLK_STS_TARGET
+> so the request isn't retried.
+>
+> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
+> ---
+>   drivers/nvme/host/pci.c | 69 +++++++++++++++++------------------------
+>   1 file changed, 29 insertions(+), 40 deletions(-)
 
-$ make -C tools/testing/selftests TARGETS=futex
-clang -Wall   -g -O2 -Wall -D_GNU_SOURCE -pthread -I../include \
--I../../ -I../../../../../usr/include/ -I/kselftest/usr/include \
-futex_wait_timeout.c ../include/futextest.h ../include/atomic.h \
-../include/logging.h -lpthread -lrt -o \
-tools/testing/selftests/futex/functional/futex_wait_timeout
-clang: error: cannot specify -o when generating multiple output files
+Looks good,
 
-To fix this, instead of specifying the headers explicitliy, we include
-(with -I) their directories. Note that -I does not work with files, only
-directories [1,2]
+Reviewed-by: Max Gurtovoy <mgurtovoy@nvidia.com>
 
-There are still errors when building with clang, but this patch does a
-way with one class of those errors.
-
-Tested: No new errors when building with LLVM=0/1. In fact, clang no
-longer errors out with "cannot specify -o ..." anymore.
-
-[1] https://gcc.gnu.org/onlinedocs/gcc-11.2.0/gcc/Directory-Options.html#Directory-Options
-[2] https://clang.llvm.org/docs/ClangCommandLineReference.html#cmdoption-clang-i-dir
-
-Suggested-by: gthelen@google.com
-Signed-off-by: Andrew Delgadillo <adelg@google.com>
----
-Changes since v1:
-- Instead of removing the headers from the cmdline altogether, include
-  their directories.
-- Add more detail to the tested tag.
-- Add missing Suggested-By tag from original patch.
-
- tools/testing/selftests/filesystems/binderfs/Makefile | 4 ++--
- tools/testing/selftests/lib.mk                        | 5 ++++-
- tools/testing/selftests/x86/Makefile                  | 4 ++--
- 3 files changed, 8 insertions(+), 5 deletions(-)
-
-diff --git a/tools/testing/selftests/filesystems/binderfs/Makefile b/tools/testing/selftests/filesystems/binderfs/Makefile
-index 8af25ae96049..e2f09acb15b4 100644
---- a/tools/testing/selftests/filesystems/binderfs/Makefile
-+++ b/tools/testing/selftests/filesystems/binderfs/Makefile
-@@ -1,8 +1,8 @@
- # SPDX-License-Identifier: GPL-2.0
- 
--CFLAGS += -I../../../../../usr/include/ -pthread
-+CFLAGS += -I../../../../../usr/include/ -I$(selfdir) -pthread
- TEST_GEN_PROGS := binderfs_test
- 
--binderfs_test: binderfs_test.c ../../kselftest.h ../../kselftest_harness.h
-+binderfs_test: binderfs_test.c
- 
- include ../../lib.mk
-diff --git a/tools/testing/selftests/lib.mk b/tools/testing/selftests/lib.mk
-index fa2ac0e56b43..0edf2a421771 100644
---- a/tools/testing/selftests/lib.mk
-+++ b/tools/testing/selftests/lib.mk
-@@ -137,12 +137,15 @@ COMPILE.S = $(CC) $(ASFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c
- LINK.S = $(CC) $(ASFLAGS) $(CPPFLAGS) $(LDFLAGS) $(TARGET_ARCH)
- endif
- 
-+
- # Selftest makefiles can override those targets by setting
- # OVERRIDE_TARGETS = 1.
- ifeq ($(OVERRIDE_TARGETS),)
- LOCAL_HDRS := $(selfdir)/kselftest_harness.h $(selfdir)/kselftest.h
- $(OUTPUT)/%:%.c $(LOCAL_HDRS)
--	$(LINK.c) $(filter-out $(LOCAL_HDRS),$^) $(LDLIBS) -o $@
-+	$(LINK.c) $(filter-out %.h,$^) \
-+		$(addprefix -I,$(dir $(filter %.h,$^))) \
-+			$(LDLIBS) -o $@
- 
- $(OUTPUT)/%.o:%.S
- 	$(COMPILE.S) $^ -o $@
-diff --git a/tools/testing/selftests/x86/Makefile b/tools/testing/selftests/x86/Makefile
-index b4142cd1c5c2..f794d431f289 100644
---- a/tools/testing/selftests/x86/Makefile
-+++ b/tools/testing/selftests/x86/Makefile
-@@ -72,10 +72,10 @@ all_64: $(BINARIES_64)
- EXTRA_CLEAN := $(BINARIES_32) $(BINARIES_64)
- 
- $(BINARIES_32): $(OUTPUT)/%_32: %.c helpers.h
--	$(CC) -m32 -o $@ $(CFLAGS) $(EXTRA_CFLAGS) $^ -lrt -ldl -lm
-+	$(CC) -m32 -o $@ $(CFLAGS) $(EXTRA_CFLAGS) $(filter-out %.h,$^) $(addprefix -I,$(dir $(filter %.h,$^))) -lrt -ldl -lm
- 
- $(BINARIES_64): $(OUTPUT)/%_64: %.c helpers.h
--	$(CC) -m64 -o $@ $(CFLAGS) $(EXTRA_CFLAGS) $^ -lrt -ldl
-+	$(CC) -m64 -o $@ $(CFLAGS) $(EXTRA_CFLAGS) $(filter-out %.h,$^) $(addprefix -I,$(dir $(filter %.h,$^))) -lrt -ldl
- 
- # x86_64 users should be encouraged to install 32-bit libraries
- ifeq ($(CAN_BUILD_I386)$(CAN_BUILD_X86_64),01)
--- 
-2.33.0.800.g4c38ced690-goog
 
