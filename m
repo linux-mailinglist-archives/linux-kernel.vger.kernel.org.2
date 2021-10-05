@@ -2,90 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10014422398
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 12:31:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7243942237B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 12:29:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233817AbhJEKc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 06:32:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45224 "EHLO
+        id S234229AbhJEKa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 06:30:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233514AbhJEKc4 (ORCPT
+        with ESMTP id S234158AbhJEKao (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 06:32:56 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4992AC06161C
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 03:31:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=8/E+Skj2P4cErpuwuqBhsyiELvo+Dy6BTQQ10rnG+ys=; b=TFxGeYihBUCt7zt4FMcX3F/Z5A
-        MnUwfKY8wnkIgAXFMP2X+rUKAwqgYVIlU1pDfjf+PErjwBGcCkcy6OEx0lQjoL+MPiaI8Un18l36/
-        Y2SlaIZXpQSIi7BWgGc7KP/tLiPqLY8d19vpSHpIbgficAV2Ew2kNB7xgzEHhRRUeU2vSPaOQ0+fQ
-        P3Tb6HrYPBHZMVW1jKmL6jfGUQ0eKuC/WCle1BtZwg2HQhrqZhCqIilwKSHjOmY+17oiQdGIrdSoV
-        zcHjc41t9Ylw8uUNZf0ys8cGfJI7usp8FG1X/gHcZaVqsbHltv66eLF1mM5tsAVdNQxRWeNS9KCgf
-        sxRox/gg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mXhgT-000DzM-Im; Tue, 05 Oct 2021 10:28:44 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D7C8F300233;
-        Tue,  5 Oct 2021 12:28:27 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id C0BCA2038E207; Tue,  5 Oct 2021 12:28:27 +0200 (CEST)
-Date:   Tue, 5 Oct 2021 12:28:27 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Mel Gorman <mgorman@techsingularity.net>,
-        Mike Galbraith <efault@gmx.de>, Ingo Molnar <mingo@kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] sched/fair: Scale wakeup granularity relative to
- nr_running
-Message-ID: <YVwoy30GY61Z4nid@hirez.programming.kicks-ass.net>
-References: <20210920142614.4891-3-mgorman@techsingularity.net>
- <22e7133d674b82853a5ee64d3f5fc6b35a8e18d6.camel@gmx.de>
- <20210921103621.GM3959@techsingularity.net>
- <ea2f9038f00d3b4c0008235079e1868145b47621.camel@gmx.de>
- <20210922132002.GX3959@techsingularity.net>
- <CAKfTPtCxhzz1XgNXM8jaQC2=tGHm0ap88HneUgWTpCSeWVZwsw@mail.gmail.com>
- <20210922150457.GA3959@techsingularity.net>
- <CAKfTPtB3tXwBZ_tVaDdiwMt-=sGH1iV6eUV6Rsnpw7q=tEpBwA@mail.gmail.com>
- <20210922173853.GB3959@techsingularity.net>
- <CAKfTPtDc39fCLbQqA2BhC6dsb+MyYYMdk9HUvrU0fRqULuQB-g@mail.gmail.com>
+        Tue, 5 Oct 2021 06:30:44 -0400
+Received: from mail-vs1-xe30.google.com (mail-vs1-xe30.google.com [IPv6:2607:f8b0:4864:20::e30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63C3BC061753
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 03:28:54 -0700 (PDT)
+Received: by mail-vs1-xe30.google.com with SMTP id o124so23048112vsc.6
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 03:28:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=G0mA3IE5MZEisQTtgMG+oRXyhpY0P+ydyHuZ+OL6HWc=;
+        b=dYz37AlljNPD9qLWQ97zbV27b0HY7ewVO3Uc3VbZE59qtLyIPZdAygLiP/L7L6ta2k
+         7wo82cBeaU/yrZGMukOkPAJVQZ4pLBfEzhvWccizI4iAeqttaW9UJYaQFvD6X593YYIL
+         UMVXewCTa3HMEhW+WMZqNwoGh2ccWd/n4Pm/RN1VTve0giAK9GGSd5+fNcnUwN7X/V9y
+         AGJRlgKoL8TADZr1MKOpubWt6dNk1B3XRYOeE3CyYwjA1HnG55pgvOyQHGnDcbaDSd+t
+         CsvLEOIzJa6coTyRT5lmDL0toEgb6nBTS2LPk6eoarcqHaj93J/x0NsS2JxXZdDhzVeK
+         lPLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=G0mA3IE5MZEisQTtgMG+oRXyhpY0P+ydyHuZ+OL6HWc=;
+        b=Ktja9jr8PyZQEQb18B894iTEM/r+kwsxXutlnDvqAh0SBM3AG0lRuNKhbwHsFPWH5k
+         9526ZHvSrBwYD1BIhmy2tVfQwKZarHNDOEB0k6SBGjiKNcIndTpyZlD694LLKWV1iWpL
+         Siv0Kp0WL2Cg5edosJguqq/DY7pFc9hhrEKppgzyiAa3m982h6vq3crYf0VjIXaqwbT+
+         JkHaebFNwTymS8ntX2+ieHgoU4Btv/yQw217gQ5+Jx2vBPbQx7yMYpS+p25UYZIHD/DW
+         ZS+Dh8quzq+Xcb8JZ6TjCXY2/n4l+mw4r4NnOPKzlY3ckoLWnaJ4FMuHLR7ZwBMM2R9b
+         pNuA==
+X-Gm-Message-State: AOAM5301A+iWiepzOcL7Y2b9rMMNwpxrUWZ4u8FGiq9g7lXvIDeaQpkW
+        SepN2l9VYkVpgZC/DEMXrlB2KzewRWeMc8WbPPd55w==
+X-Google-Smtp-Source: ABdhPJxI3BjDXd7TUEnohF0PNs6zjgfdCxTBiFr0D8GdDdXVisMsIArQDHOLlS4VgiQB2aceby4tfN5qicUSqa2Bf2o=
+X-Received: by 2002:a67:d289:: with SMTP id z9mr8432439vsi.39.1633429733158;
+ Tue, 05 Oct 2021 03:28:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKfTPtDc39fCLbQqA2BhC6dsb+MyYYMdk9HUvrU0fRqULuQB-g@mail.gmail.com>
+References: <20210914155607.14122-1-semen.protsenko@linaro.org>
+ <20210914155607.14122-5-semen.protsenko@linaro.org> <96e5587e-aca7-248e-6448-8edfc70784b7@gmail.com>
+In-Reply-To: <96e5587e-aca7-248e-6448-8edfc70784b7@gmail.com>
+From:   Sam Protsenko <semen.protsenko@linaro.org>
+Date:   Tue, 5 Oct 2021 13:28:40 +0300
+Message-ID: <CAPLW+4mEeh8Fo8kGHx+rB7nX7bDfaQRPGDotgPLTp4pm4rC0Cg@mail.gmail.com>
+Subject: Re: [PATCH 4/6] dt-bindings: clock: Add bindings definitions for
+ Exynos850 CMU
+To:     Chanwoo Choi <cwchoi00@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc:     =?UTF-8?Q?Pawe=C5=82_Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Ryu Euiyoul <ryu.real@samsung.com>,
+        Tom Gall <tom.gall@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Amit Pundir <amit.pundir@linaro.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 08:22:43PM +0200, Vincent Guittot wrote:
+On Wed, 15 Sept 2021 at 19:37, Chanwoo Choi <cwchoi00@gmail.com> wrote:
+>
+> Hi,
+>
+> You don't add clock ids for the all defined clocks in clk-exynos850.c.
+> I recommend that add all clock ids for the defined clocks if possible.
+>
+> If you want to change the parent clock of mux or change the clock rate
+> of div rate for some clocks, you have to touch the files as following:
+> - include/dt-bindings/clock/exynos850.h
+> - drivers/clk/samsung/clk-exynos850.c
+> - exynos850 dt files
+>
+> If you define the clock ids for all clocks added to this patchset,
+> you can change the parent or rate by just editing the dt files.
+>
 
-> @@ -7161,6 +7162,13 @@ static void check_preempt_wakeup(struct rq *rq,
-> struct task_struct *p, int wake_
->                 return;
-> 
->         update_curr(cfs_rq_of(se));
-> +       delta_exec = se->sum_exec_runtime - se->prev_sum_exec_runtime;
-> +       /*
-> +        * Ensure that current got a chance to move forward
-> +        */
-> +       if (delta_exec < sysctl_sched_min_granularity)
-> +               return;
-> +
+Hi Chanwoo,
 
-I think we tried that at some point; IIRC the problem with this is that
-if the interactive task fails to preempt, that preemption is lost. IOW
-interactivity suffers.
+I see your point. But I have intentionally omitted some clock ids,
+which can't be / shouldn't be used by consumers in device tree.
+Actually I took that idea from clk-exynos7.c.
 
-Basically if you don't want wake-up preemptions, use SCHED_BATCH, then
-those tasks will not preempt one another, but the SCHED_NORMAL tasks
-will preempt them.
+Krzysztof, Sylwester: can you please advice if all clock ids should be
+defined, or only those that are going to be used in dts clk consumers?
+I don't mind reworking the patch, just want to be sure which design
+approach we want to follow.
+
+Thanks!
+
+> But, I have no strongly objection about just keeping this patch.
+>
+>
+> On 21. 9. 15. =EC=98=A4=EC=A0=84 12:56, Sam Protsenko wrote:
+> > Clock controller driver is designed to have separate instances for each
+> > particular CMU. So clock IDs in this bindings header also start from 1
+> > for each CMU.
+> >
+> > Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+> > ---
+> >   include/dt-bindings/clock/exynos850.h | 72 ++++++++++++++++++++++++++=
++
+> >   1 file changed, 72 insertions(+)
+> >   create mode 100644 include/dt-bindings/clock/exynos850.h
+> >
+> > diff --git a/include/dt-bindings/clock/exynos850.h b/include/dt-binding=
+s/clock/exynos850.h
+> > new file mode 100644
+> > index 000000000000..2f0a7f619627
+> > --- /dev/null
+> > +++ b/include/dt-bindings/clock/exynos850.h
+> > @@ -0,0 +1,72 @@
+> > +/* SPDX-License-Identifier: GPL-2.0-only */
+> > +/*
+> > + * Copyright (C) 2021 Linaro Ltd.
+> > + * Author: Sam Protsenko <semen.protsenko@linaro.org>
+> > + *
+> > + * Device Tree binding constants for Exynos850 clock controller.
+> > + */
+> > +
+> > +#ifndef _DT_BINDINGS_CLOCK_EXYNOS_850_H
+> > +#define _DT_BINDINGS_CLOCK_EXYNOS_850_H
+> > +
+> > +/* CMU_TOP */
+> > +#define DOUT_HSI_BUS                 1
+> > +#define DOUT_HSI_MMC_CARD            2
+> > +#define DOUT_HSI_USB20DRD            3
+> > +#define DOUT_PERI_BUS                        4
+> > +#define DOUT_PERI_UART                       5
+> > +#define DOUT_PERI_IP                 6
+> > +#define DOUT_CORE_BUS                        7
+> > +#define DOUT_CORE_CCI                        8
+> > +#define DOUT_CORE_MMC_EMBD           9
+> > +#define DOUT_CORE_SSS                        10
+> > +#define TOP_NR_CLK                   11
+> > +
+> > +/* CMU_HSI */
+> > +#define GOUT_USB_RTC_CLK             1
+> > +#define GOUT_USB_REF_CLK             2
+> > +#define GOUT_USB_PHY_REF_CLK         3
+> > +#define GOUT_USB_PHY_ACLK            4
+> > +#define GOUT_USB_BUS_EARLY_CLK               5
+> > +#define GOUT_GPIO_HSI_PCLK           6
+> > +#define GOUT_MMC_CARD_ACLK           7
+> > +#define GOUT_MMC_CARD_SDCLKIN                8
+> > +#define GOUT_SYSREG_HSI_PCLK         9
+> > +#define HSI_NR_CLK                   10
+> > +
+> > +/* CMU_PERI */
+> > +#define GOUT_GPIO_PERI_PCLK          1
+> > +#define GOUT_HSI2C0_IPCLK            2
+> > +#define GOUT_HSI2C0_PCLK             3
+> > +#define GOUT_HSI2C1_IPCLK            4
+> > +#define GOUT_HSI2C1_PCLK             5
+> > +#define GOUT_HSI2C2_IPCLK            6
+> > +#define GOUT_HSI2C2_PCLK             7
+> > +#define GOUT_I2C0_PCLK                       8
+> > +#define GOUT_I2C1_PCLK                       9
+> > +#define GOUT_I2C2_PCLK                       10
+> > +#define GOUT_I2C3_PCLK                       11
+> > +#define GOUT_I2C4_PCLK                       12
+> > +#define GOUT_I2C5_PCLK                       13
+> > +#define GOUT_I2C6_PCLK                       14
+> > +#define GOUT_MCT_PCLK                        15
+> > +#define GOUT_PWM_MOTOR_PCLK          16
+> > +#define GOUT_SPI0_IPCLK                      17
+> > +#define GOUT_SPI0_PCLK                       18
+> > +#define GOUT_SYSREG_PERI_PCLK                19
+> > +#define GOUT_UART_IPCLK                      20
+> > +#define GOUT_UART_PCLK                       21
+> > +#define GOUT_WDT0_PCLK                       22
+> > +#define GOUT_WDT1_PCLK                       23
+> > +#define PERI_NR_CLK                  24
+> > +
+> > +/* CMU_CORE */
+> > +#define GOUT_CCI_ACLK                        1
+> > +#define GOUT_GIC_CLK                 2
+> > +#define GOUT_MMC_EMBD_ACLK           3
+> > +#define GOUT_MMC_EMBD_SDCLKIN                4
+> > +#define GOUT_SSS_ACLK                        5
+> > +#define GOUT_SSS_PCLK                        6
+> > +#define CORE_NR_CLK                  7
+> > +
+> > +#endif /* _DT_BINDINGS_CLOCK_EXYNOS_850_H */
+> >
+>
+>
+> --
+> Best Regards,
+> Samsung Electronics
+> Chanwoo Choi
