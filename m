@@ -2,103 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 038E3422E44
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 18:46:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 076BE422E64
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 18:50:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236619AbhJEQsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 12:48:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44814 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233896AbhJEQsP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 12:48:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 11B3C61381;
-        Tue,  5 Oct 2021 16:46:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633452384;
-        bh=aCGjlYwlXvH+nAOfI2fEY5kp5ron3AO1hrs4o0ZWp4A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=peJYUDhopLM69sOCM6826yBjUh6VB8AIvz8H234df7IbGmJY7UG4Rwp6dSseIDi0z
-         vzobrjrWa6qNHzrqt8FP7IB9d7yyLTcXlp+HAVFhavEPP9wpvS5jiQUrzoHiA4Lmve
-         tTjMdHRaOxmbp9uOVCZRGDUX+APtcYL0X4thRuYlaaZVwJ9Kc6zqo9t4h0nNnUSOa9
-         6ah4oRPKsggzXXjhpQM3eerroKkUaERtjpANmLwy4T/iw93rLgdsnGADOjc3C1TxQ0
-         xY8jTtXuhj8WI2Gdvtd+KAt2G54Ok9gOEJ2pqgT55Dp6oUiTjGto+dp8SNTxIxpTDC
-         0WKbb1AbPa3hg==
-Date:   Tue, 5 Oct 2021 11:50:27 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] ftrace: Fix -Wcast-function-type warnings on
- powerpc64
-Message-ID: <20211005165027.GA797862@embeddedor>
-References: <20211005053922.GA702049@embeddedor>
- <20211005111714.18ebea2b@gandalf.local.home>
- <20211005161812.GA768055@embeddedor>
- <20211005123522.244281e6@gandalf.local.home>
+        id S236296AbhJEQwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 12:52:40 -0400
+Received: from relay02.th.seeweb.it ([5.144.164.163]:50095 "EHLO
+        relay02.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233896AbhJEQwj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 12:52:39 -0400
+Received: from [192.168.31.208] (riviera.nat.ds.pw.edu.pl [194.29.137.1])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 361721F564;
+        Tue,  5 Oct 2021 18:50:46 +0200 (CEST)
+Message-ID: <15b74129-111f-a43e-ad10-36722fe86e2e@somainline.org>
+Date:   Tue, 5 Oct 2021 18:50:45 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211005123522.244281e6@gandalf.local.home>
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.1.2
+Subject: Re: [PATCH 05/10] backlight: qcom-wled: Fix off-by-one maximum with
+ default num_strings
+To:     Daniel Thompson <daniel.thompson@linaro.org>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        phone-devel@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Martin Botka <martin.botka@somainline.org>,
+        Jami Kettunen <jami.kettunen@somainline.org>,
+        Pavel Dubrova <pashadubrova@gmail.com>,
+        Kiran Gunda <kgunda@codeaurora.org>,
+        Courtney Cavin <courtney.cavin@sonymobile.com>,
+        Bryan Wu <cooloney@gmail.com>, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211004192741.621870-1-marijn.suijten@somainline.org>
+ <20211004192741.621870-6-marijn.suijten@somainline.org>
+ <20211005091947.7msztp5l554c7cy4@maple.lan>
+ <20211005100606.faxra73mzkvjd4f6@SoMainline.org>
+ <20211005103843.heufyonycnudxnzd@maple.lan>
+ <20211005105312.kqiyzoqtzzjxayhg@maple.lan>
+ <20211005114435.phyq2jsbdyroa6kn@SoMainline.org>
+ <20211005140349.kefi26yev3gy3zhv@maple.lan>
+ <20211005152326.5k5cb53ajqnactrg@SoMainline.org>
+ <20211005162453.ozckxhm47jcarsza@maple.lan>
+From:   Konrad Dybcio <konrad.dybcio@somainline.org>
+In-Reply-To: <20211005162453.ozckxhm47jcarsza@maple.lan>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05, 2021 at 12:35:22PM -0400, Steven Rostedt wrote:
-> On Tue, 5 Oct 2021 11:18:12 -0500
-> "Gustavo A. R. Silva" <gustavoars@kernel.org> wrote:
-> 
-> > On Tue, Oct 05, 2021 at 11:17:14AM -0400, Steven Rostedt wrote:
-> > > On Tue, 5 Oct 2021 00:39:22 -0500
-> > > "Gustavo A. R. Silva" <gustavoars@kernel.org> wrote:
-> > >   
-> > > > In order to make sure new function cast mismatches are not introduced
-> > > > in the kernel (to avoid tripping CFI checking), the kernel should be
-> > > > globally built with -Wcast-function-type.
-> > > > 
-> > > > So, fix the following -Wcast-function-type warnings on powerpc64
-> > > > (ppc64_defconfig):  
-> > > 
-> > > I think I'll go back and add my linker magic.
-> > > 
-> > >   https://lore.kernel.org/all/20200617165616.52241bde@oasis.local.home/
-> > > 
-> > > I'll clean it up a bit too. I'll have a patch in a bit.  
-> > 
-> > Awesome. :)
-> > 
-> > Thanks
-> > --
-> 
-> Does this fix it for you?
+[snipping to not have the entire thread here]
+> I've no objections to seeing the DT updated. However I don't really see
+> what benefit we get from breaking existing DTs in order to do so.
+>
+> "Cleaning up annoying legacy" is seldom a good reason to break existing
+> DTs since, if we could break DTs whenever we choose, there would never
+> be any annoying legacy to worry about. When conflicting properties
+> result in uninterpretable DTs then a break may be justified but that is
+> not the case here.
+>
+>
+> Daniel.
 
-Nop; there are still some warnings (ppc64_defconfig):
+The only true user of wled as of right now is Xperia Tone platform, 
+which does not yet
 
-kernel/trace/ftrace.c: In function ‘ftrace_ops_get_list_func’:
-kernel/trace/ftrace.c:171:10: error: returning ‘void (*)(long unsigned int,  long unsigned int,  struct ftrace_ops *, struct ftrace_regs *)’ from a function with incompatible return type ‘ftrace_func_t’ {aka ‘void (*)(long unsigned int,  long unsigned int)’} [-Werror=incompatible-pointer-types]
-  171 |   return ftrace_ops_list_func;
-      |          ^~~~~~~~~~~~~~~~~~~~
-kernel/trace/ftrace.c: In function ‘update_ftrace_function’:
-kernel/trace/ftrace.c:204:8: error: assignment to ‘ftrace_func_t’ {aka ‘void (*)(long unsigned int,  long unsigned int)’} from incompatible pointer type ‘void (*)(long unsigned int,  long unsigned int,  struct ftrace_ops *, struct ftrace_regs *)’ [-Werror=incompatible-pointer-types]
-  204 |   func = ftrace_ops_list_func;
-      |        ^
-kernel/trace/ftrace.c:217:11: warning: comparison of distinct pointer types lacks a cast
-  217 |  if (func == ftrace_ops_list_func) {
-      |           ^~
-kernel/trace/ftrace.c: In function ‘ftrace_modify_all_code’:
-kernel/trace/ftrace.c:2695:35: error: passing argument 1 of ‘ftrace_update_ftrace_func’ from incompatible pointer type [-Werror=incompatible-pointer-types]
- 2695 |   err = ftrace_update_ftrace_func(ftrace_ops_list_func);
-      |                                   ^~~~~~~~~~~~~~~~~~~~
-      |                                   |
-      |                                   void (*)(long unsigned int,  long unsigned int,  struct ftrace_ops *, struct ftrace_regs *)
-In file included from kernel/trace/ftrace.c:29:
-./include/linux/ftrace.h:585:52: note: expected ‘ftrace_func_t’ {aka ‘void (*)(long unsigned int,  long unsigned int)’} but argument is of type ‘void (*)(long unsigned int,  long unsigned int,  struct ftrace_ops *, struct ftrace_regs *)’
-  585 | extern int ftrace_update_ftrace_func(ftrace_func_t func);
-      |                                      ~~~~~~~~~~~~~~^~~~
-kernel/trace/ftrace.c:2705:38: warning: comparison of distinct pointer types lacks a cast
- 2705 |  if (update && ftrace_trace_function != ftrace_ops_list_func) {
-      |                                      ^~
+have display support upstream, so unless one classifies lighting up an 
+otherwise black display
 
---
-Gustavo
+a dealbreaker, I think it'd be fine to bend the rules this time.
+
+
+Konrad
+
