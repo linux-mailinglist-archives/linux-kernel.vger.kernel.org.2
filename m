@@ -2,152 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A59AA422323
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 12:12:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 647E14224C1
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 13:13:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233910AbhJEKOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 06:14:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40794 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233365AbhJEKOI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 06:14:08 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34987C061745
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 03:12:18 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id y15so18337460lfk.7
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 03:12:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Fd2bVG3T2aDLLsUGg65DNy9VZxuxLh/QslDXMizwJK8=;
-        b=Ez5mYoeEnxP72wgv6au1eWbZZvt7siRLWpI9GsKBKBLepayHvuXHhoBFqZfseuORyY
-         h1HA3jABRlKS8tuWaG2UUN4XzRb4Jizd3n+k9ryDkBNUpWyPDxOui77+S9ZqKc3aD0eI
-         IhRttz3xOc3IW3LwIjPPFZxivXeffhFA5txSbttH+iOS9g7NO3HrB8pvutVsiiQaPsIG
-         1ySZ3kqO9o7Bd1T6MoTMLAQEKlN8iKHV+m5My4Owt13LGlpQFTv1OWpU6AdxUVVKm/bP
-         7UXovG3irUPeGNxrJ6iwxCqh0qKa2utVcRhWtScOoJ2MkJj+6XNlVCKFmGij7agmbAVh
-         KBXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Fd2bVG3T2aDLLsUGg65DNy9VZxuxLh/QslDXMizwJK8=;
-        b=DDCfB0W1oKF4o0kOF7xE9RvuhqKy6gm0TABJZ9icWbzilhU29yrULq67db7kDHbrRv
-         f3+pr3A0N+93QYjUXwl6OY+aCb3zK+aIuwfG14UE3HDtdRjgiTFOS2oicG/jvSOxWCT8
-         PdLSLOS5epoF1vcOFsNPaScUXXy0wYdxRDd6wfvV9CYSgYAmHQcdO1if+xHEI6AUI3sm
-         2sgg4Bx8kqmXnLciRkLSuxdgdKSw2wjviS3hgTA30ZSUo5G/jiJogD0xb47Qc1/0lkcM
-         vXsqtwyBWLyKK9FwRt5ekqA2WsdQLTE4xe7bV77MivkLGB+pIdCe2UV0IusbJT4SnjCz
-         NuJw==
-X-Gm-Message-State: AOAM532VlsciScJaTYNWn3LClYMktQnVF8r02ICZLJR14fu+55InDtyR
-        HF3409hnptfN1QMenreVeHAMSQdjV8327RQRU+BpVA==
-X-Google-Smtp-Source: ABdhPJweYgnhJ9wfwnhC1naOEgjt465iKJfu5aOyclroBOPqShbw0RGuw1NZisfc1hj6jMsbtIvWVkehVRtpOKozveQ=
-X-Received: by 2002:a2e:b8cd:: with SMTP id s13mr21300509ljp.44.1633428736539;
- Tue, 05 Oct 2021 03:12:16 -0700 (PDT)
+        id S233998AbhJELPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 07:15:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47128 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232658AbhJELPV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 07:15:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B9D3161251;
+        Tue,  5 Oct 2021 11:13:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633432410;
+        bh=MP0zBtemtkQdqL8OmFU92hKaTF3Fwa0EJ8Ni7xN2MQQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=p5SeEDKNWmorB1aERVWlJrUJFNy/bgmsyZlYjmB3i1z8diKCJrkTeRRXXsDR1DVom
+         vA/MJE/AFcPSB7aY81e7aJIyYyDZYDHj7qs+vd91HSgxU0eKGET9tmmoJ6i3ANm9FM
+         jdxd8XKbujTchHiCgeDtVOAdYyH6EpZRsbfZRwWkq55cn3sjzFFM3cQdj4Aqbj94C/
+         omvocXtmtHPl9IdL5aCe5H/JJr8e1Njtxj9H/+gIxaSAOsgabAiB3+hwOuZYIus8J0
+         /7CIUdFgGFw4g1Rx+dsQCOAipwswntmJVk///9p/yAakrUZ7zUuNqOizGigR12U11B
+         1AbpqgAb0iRow==
+Received: by mail-wr1-f41.google.com with SMTP id t8so36773293wri.1;
+        Tue, 05 Oct 2021 04:13:30 -0700 (PDT)
+X-Gm-Message-State: AOAM5321zMsOUB6n9ABYt9RYXqEqIvoJcdgO5bDcnBSpnVn93vYRablm
+        YxYV5JxiKgMirfGB7ONVvZLRhFsv9xZSB69h5S4=
+X-Google-Smtp-Source: ABdhPJxm8Hkv+U2qTgwd7JgG4bmf7LJ55i18N0rZnyQafyKdjpcuy+trai2GX3XtqF4Cbb2Tz/frlo0hsiDd1SJyDKE=
+X-Received: by 2002:adf:a3da:: with SMTP id m26mr965033wrb.336.1633432409306;
+ Tue, 05 Oct 2021 04:13:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210920124141.1166544-1-pan@semihalf.com> <20210920124141.1166544-4-pan@semihalf.com>
- <ce254cc123f2809976c2f2404941a9074c458309.camel@pengutronix.de>
-In-Reply-To: <ce254cc123f2809976c2f2404941a9074c458309.camel@pengutronix.de>
-From:   =?UTF-8?Q?Pawe=C5=82_Anikiel?= <pan@semihalf.com>
-Date:   Tue, 5 Oct 2021 13:12:05 +0200
-Message-ID: <CAF9_jYQVpG8imn3zjAGKeZqZqDPtWRYWLQjNSXi2SXjjzAKvfA@mail.gmail.com>
-Subject: Re: [PATCH 3/3] reset: socfpga: add empty driver allowing consumers
- to probe
-To:     Philipp Zabel <p.zabel@pengutronix.de>, miquel.raynal@bootlin.com,
-        richard@nod.at, vigneshr@ti.com, robh+dt@kernel.org, arnd@arndb.de,
-        olof@lixom.net, soc@kernel.org, dinguyen@kernel.org
-Cc:     linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Tomasz Nowicki <tn@semihalf.com>,
-        Konrad Adamczyk <ka@semihalf.com>,
-        Jacek Majkowski <jam@semihalf.com>
+References: <20210927142258.1863321-1-arnd@kernel.org> <YVwxxywC5iSGSaXM@kroah.com>
+In-Reply-To: <YVwxxywC5iSGSaXM@kroah.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Tue, 5 Oct 2021 13:13:13 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3nmutn8ZHQkzH99mht9RPAUCTOvqTfEGPUKLoeqTs-pA@mail.gmail.com>
+Message-ID: <CAK8P3a3nmutn8ZHQkzH99mht9RPAUCTOvqTfEGPUKLoeqTs-pA@mail.gmail.com>
+Subject: Re: [PATCH] [RESEND] usb: xhci: tegra: mark PM functions as __maybe_unused
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Mathias Nyman <mathias.nyman@intel.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        JC Kuo <jckuo@nvidia.com>, Arnd Bergmann <arnd@arndb.de>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        USB list <linux-usb@vger.kernel.org>,
+        "open list:TEGRA ARCHITECTURE SUPPORT" <linux-tegra@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 5, 2021 at 11:34 AM Philipp Zabel <p.zabel@pengutronix.de> wrot=
-e:
+On Tue, Oct 5, 2021 at 1:07 PM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
-> Hi Pawe=C5=82,
->
-> On Mon, 2021-09-20 at 14:41 +0200, Pawe=C5=82 Anikiel wrote:
-> > The early reset driver doesn't ever probe, which causes consuming
-> > devices to be unable to probe. Add an empty driver to set this device
-> > as available, allowing consumers to probe.
+> On Mon, Sep 27, 2021 at 04:22:52PM +0200, Arnd Bergmann wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
 > >
-> > Signed-off-by: Pawe=C5=82 Anikiel <pan@semihalf.com>
-> > ---
-> >  drivers/reset/reset-socfpga.c | 26 ++++++++++++++++++++++++++
-> >  1 file changed, 26 insertions(+)
+> > The added #ifdefs in the PM rework were almost correct, but still
+> > cause warnings in some randconfig builds:
 > >
-> > diff --git a/drivers/reset/reset-socfpga.c b/drivers/reset/reset-socfpg=
-a.c
-> > index 2a72f861f798..8c6492e5693c 100644
-> > --- a/drivers/reset/reset-socfpga.c
-> > +++ b/drivers/reset/reset-socfpga.c
-> > @@ -92,3 +92,29 @@ void __init socfpga_reset_init(void)
-> >       for_each_matching_node(np, socfpga_early_reset_dt_ids)
-> >               a10_reset_init(np);
-> >  }
-> > +
-> > +/*
-> > + * The early driver is problematic, because it doesn't register
-> > + * itself as a driver. This causes certain device links to prevent
-> > + * consumer devices from probing. The hacky solution is to register
-> > + * an empty driver, whose only job is to attach itself to the reset
-> > + * manager and call probe.
-> > + */
-> > +static const struct of_device_id socfpga_reset_dt_ids[] =3D {
-> > +     { .compatible =3D "altr,rst-mgr", },
-> > +     { /* sentinel */ },
-> > +};
-> > +
-> > +static int reset_simple_probe(struct platform_device *pdev)
-> > +{
-> > +     return 0;
-> > +}
-> > +
-> > +static struct platform_driver reset_socfpga_driver =3D {
-> > +     .probe  =3D reset_simple_probe,
-> > +     .driver =3D {
-> > +             .name           =3D "socfpga-reset",
-> > +             .of_match_table =3D socfpga_reset_dt_ids,
-> > +     },
-> > +};
-> > +builtin_platform_driver(reset_socfpga_driver);
+> > drivers/usb/host/xhci-tegra.c:2147:12: error: 'tegra_xusb_resume' defined but not used [-Werror=unused-function]
+> >  2147 | static int tegra_xusb_resume(struct device *dev)
+> >       |            ^~~~~~~~~~~~~~~~~
+> > drivers/usb/host/xhci-tegra.c:2105:12: error: 'tegra_xusb_suspend' defined but not used [-Werror=unused-function]
+> >  2105 | static int tegra_xusb_suspend(struct device *dev)
+> >
+> > Replace the #ifdef checks with simpler __maybe_unused annotations to
+> > reliably shut up these warnings.
+> >
+> > Fixes: d64d362f1d8b ("usb: xhci: tegra: Enable ELPG for runtime/system PM")
 >
-> If we can just let devlink delay all consumers until the empty driver is
-> probed, does the reset controller have to be registered early at all?
->
-> regards
-> Philipp
+> What tree does this commit come in from?  I don't see it in my usb tree
+> :(
 
-I asked Dinh if the reset controller code needs to be called early:
+I don't know, I originally created the patch back in April when the
+problem first
+showed up in my randconfig build tree, and picked up the commit now when I saw
+the bug still exists in v5.15-rc.
 
->That's correct. It's for one of the SP timers.
->
->On 9/16/21 6:13 AM, Pawe=C5=82 Anikiel wrote:
->> Hi,
->>
->> I would like to ask you about the following commit:
->>> commit b3ca9888f35fa6919569cf27c929dc0ac49e9716
->>> Author: Dinh Nguyen <dinguyen@kernel.org>
->>> Date:   Tue Nov 13 12:50:48 2018 -0600
->>>
->>>      reset: socfpga: add an early reset driver for SoCFPGA
->>>
->>>      Create a separate reset driver that uses the reset operations in
->>>      reset-simple. The reset driver for the SoCFPGA platform needs to
->>>      register early in order to be able bring online timers that needed
->>>      early in the kernel bootup.
->>>      [...]
->> Which online timers is this commit message referring to? I couldn't find
->> any information about this. Without this patch the kernel seems to work
->> fine on an Arria 10 (with Mercury AA1 module). What's the exact reason
->> a regular platform driver isn't sufficient?
->>
->> Best regards,
->> Pawe=C5=82
->>
+Apparently the commit ID that has made it into mainline through your tree was
+971ee247060d ("usb: xhci: tegra: Enable ELPG for runtime/system PM").
+I'll resend with that reference fixed.
+
+      Arnd
