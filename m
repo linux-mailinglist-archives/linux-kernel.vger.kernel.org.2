@@ -2,170 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCEE8421D1A
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 06:04:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97006421D1C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 06:05:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230462AbhJEEG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 00:06:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40674 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbhJEEGZ (ORCPT
+        id S230097AbhJEEHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 00:07:22 -0400
+Received: from mailout3.samsung.com ([203.254.224.33]:38452 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229446AbhJEEHU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 00:06:25 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AC6BC061745
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 21:04:35 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id b8so38508645edk.2
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 21:04:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=e02BuBIFVDw19dOOLCBgX9KU+Ghl8CBHDYow7kOUtGQ=;
-        b=UA3HUGyWRIiedHksu/BZyRbcbRrSzCxNwYVnssW9FMS8zv+VLwoU/ZiILp+h5I38Si
-         9gb3h5T8eefCvAiqG9NsxX3mDR39tWrak2f0oFYa5hu9Mq9066kYDeE7NWNPUYpRYmik
-         iOpIG49/OejjLwNB4QoG0towwxI92ZjXyqKt/Jo0JsUoCi7ue3sU2QcB9uQnKn/RR9dG
-         QpoNues1Sc6w9stU8tm5wAgayND6uqETRc8KLgjXH+lM88dmndsEde7LlfmlXuop4aTk
-         ALtMA9tTbz9I/nd7dMZWl0nlfCffK+p/Khl/BOuzWRil3PHovDv9UiBaCeW9Cv4Q81nI
-         O2ig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=e02BuBIFVDw19dOOLCBgX9KU+Ghl8CBHDYow7kOUtGQ=;
-        b=J9bp9WCGpna8ibdZNmmW8julPOASmkm0804gXIClVZxpIwxx3arR0VG44kbh9Cfl9z
-         4ehFGGLCv1DpDD6ukd3LblUK1jNIjme6KTijkJoaTrq6j+x/rG0VCQt/2DFkjS3bohsx
-         P3hjcyrBeA3Imx3TVIG0UsfHeWknHFNAyYZRnuTzn6SMSbM2Dua3jHMupiQxI6U+qUMG
-         0gmzPdLcV2gZddKAwvVEPxGUX5ySe7oSdTkiy4FQsfgZP7RGt3BYOU4JwWGngRye40O9
-         JE19Mu2VBGkdGRwq4Z9r/Uw9GsrKpWWbNs0aovqRXdFegy11aITdOuJ9FKHuZ6qTjqX3
-         3uSw==
-X-Gm-Message-State: AOAM532uYofZptuO7aMpItP55nrCxPYHHsAWXSOQ2NXMA4M7DSYP6y/s
-        Qb/jcVt2t2RwPodTctHvPmMcHCPwB/S7WlFTEQUd2g==
-X-Google-Smtp-Source: ABdhPJywsNKen9TusQJoB6l4WOidTsnqOprB6GTt6AJc/UkznOIrAT0c1tyqGvr+F3+/f+4TiEcsIasuZfEdmW9mPsY=
-X-Received: by 2002:a17:906:318b:: with SMTP id 11mr22758137ejy.493.1633406673796;
- Mon, 04 Oct 2021 21:04:33 -0700 (PDT)
+        Tue, 5 Oct 2021 00:07:20 -0400
+Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20211005040528epoutp035729b6f9e7c606b19bd945a313c3af56~rBsP9wIgC0531405314epoutp03J
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 04:05:28 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20211005040528epoutp035729b6f9e7c606b19bd945a313c3af56~rBsP9wIgC0531405314epoutp03J
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1633406728;
+        bh=UKquJcqa+mCuTb6CfZPv0jbD8pNeW3BfHlcIX4+b5R8=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=fCUWCBmZuyqwvp74Ks70lKYioEbj6I2p2VNj+GTQCZGTpJ1FJ98rMwrZWtou0Cvek
+         8KHCaG2xFzb3FvRz8BAzj/Mdhb6+ywGPCzWT4s2NPXC2sJw/DG25nZhjlb5bjVNdrD
+         pDDFtLwkdQeW651h5w+ogJx74JRmaIF/miPiAbV4=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
+        20211005040528epcas1p43a21e4ca2394a24774311872f641fe7c~rBsPlD_ZJ2730827308epcas1p4C;
+        Tue,  5 Oct 2021 04:05:28 +0000 (GMT)
+Received: from epsmges1p2.samsung.com (unknown [182.195.38.248]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4HNkWn4gmQz4x9QC; Tue,  5 Oct
+        2021 04:05:25 +0000 (GMT)
+Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
+        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        98.14.62447.30FCB516; Tue,  5 Oct 2021 13:05:23 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
+        20211005040522epcas1p41dc8a9d440fad667fa1ae6ca8fb302ad~rBsKdmOta2331723317epcas1p4P;
+        Tue,  5 Oct 2021 04:05:22 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20211005040522epsmtrp1d73cff7fe06be8fbef57743d0877d232~rBsKctQu21682416824epsmtrp1J;
+        Tue,  5 Oct 2021 04:05:22 +0000 (GMT)
+X-AuditID: b6c32a36-3b5ff7000001f3ef-4c-615bcf039263
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        9E.3E.08750.20FCB516; Tue,  5 Oct 2021 13:05:22 +0900 (KST)
+Received: from W10PB11329 (unknown [10.253.152.129]) by epsmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20211005040522epsmtip1ae732bafd13964ba9c0175454ea7ad3c~rBsKUf3ea2029020290epsmtip1K;
+        Tue,  5 Oct 2021 04:05:22 +0000 (GMT)
+From:   "Sungjong Seo" <sj1557.seo@samsung.com>
+To:     "'Namjae Jeon'" <linkinjeon@kernel.org>
+Cc:     "'Chung-Chiang Cheng'" <cccheng@synology.com>,
+        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <shepjeng@gmail.com>, <sj1557.seo@samsung.com>
+In-Reply-To: <CAKYAXd9COEWU_QF3p0mnEnH4nHMrHQ5ujwBZ6rt4ZBjEFBnB=w@mail.gmail.com>
+Subject: RE: [PATCH] exfat: use local UTC offset when EXFAT_TZ_VALID isn't
+ set
+Date:   Tue, 5 Oct 2021 13:05:22 +0900
+Message-ID: <c28301d7b99e$37fb5af0$a7f210d0$@samsung.com>
 MIME-Version: 1.0
-References: <20211004125044.945314266@linuxfoundation.org>
-In-Reply-To: <20211004125044.945314266@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 5 Oct 2021 09:34:22 +0530
-Message-ID: <CA+G9fYuZf8qJJnUMfL8jXScgvX17MLTVDNNXAXYGMS_paBOfHg@mail.gmail.com>
-Subject: Re: [PATCH 5.14 000/172] 5.14.10-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Microsoft Outlook 15.0
+Thread-Index: AQGbLD2CCutv2trCrUWvFxdYN9vjigGoD6NLAWfhRkYBJWz3gQLEsXbMrAT4U+A=
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupjk+LIzCtJLcpLzFFi42LZdlhTX5f5fHSiwZpVAhZbnx1ntZg4bSmz
+        xZ69J1ksLu+aw2bROlvSYsu/I6wObB47Z91l99i0qpPNo2/LKkaPGR/2s3p83iQXwBqVbZOR
+        mpiSWqSQmpecn5KZl26r5B0c7xxvamZgqGtoaWGupJCXmJtqq+TiE6DrlpkDdICSQlliTilQ
+        KCCxuFhJ386mKL+0JFUhI7+4xFYptSAlp8CsQK84Mbe4NC9dLy+1xMrQwMDIFKgwITtj2uom
+        1oLlohX37s5mb2A8JdjFyMEhIWAicWZ+ShcjJ4eQwA5GiZU3E7sYuYDsT4wSHy/dYoNwPjNK
+        PN89gx2mYVEvN0R8F6NE7/ujTBDOS0aJU68WMoGMYhPQlXhy4yczSIOIgLbE/RfpIDXMAssY
+        JXY1T2cEqeEUCJT4P/sCK4gtLBAg0TsTwmYRUJFoO9fPDGLzClhKfF8ymw3CFpQ4OfMJC4jN
+        DDRz2cLXYDUSAgoSuz8dBesVEfCTuPnrOjtEjYjE7M42qJpODonma6IQtovEjqUTWCFsYYlX
+        x7ewQ9hSEi/726Dseon/89eygxwtIdDCKPHw0zYmiO/tJd5fsgAxmQU0Jdbv0ocoV5TY+Xsu
+        I8RaPol3X3tYIap5JTrahCBKVCS+f9jJArPpyo+rTBMYlWYheWwWksdmIXlgFsKyBYwsqxjF
+        UguKc9NTiw0LjOAxnZyfu4kRnDC1zHYwTnr7Qe8QIxMH4yFGCQ5mJRHeq16RiUK8KYmVValF
+        +fFFpTmpxYcYTYFBPZFZSjQ5H5iy80riDU0sDUzMjEwsjC2NzZTEeY+9tkwUEkhPLEnNTk0t
+        SC2C6WPi4JRqYOqYwBi0XpDHgtH2xNk99U/2Vexm5ohSOGKZ6c/5+JMew3Le/53XnVTaHP/m
+        dGyeE1vMuHBV2e5wg8fa6/d7HahxVtd2uJwUXypmJeV8aHWCkM9y7jmPv8yN4zrjzsWZ0nR6
+        Tmzfn4shqZnbsw9KX/rnvOENi6nDvJ/286M/tpSu3bO68kD+75nK5QFmJmsOLtiX8u7xwr9r
+        el/87Kq/+kDNICfZ+XLkPI6Gfarx21inNoo7LLy0aMPbkF7VazZqawqbGrdMMA2UZp9pcy88
+        +uwO1/C83QrHc458VLP++EE21UE33Kap52S3aZro4xef/5hq1F5ce3x1pX1v85knr1znKT/9
+        27j3tSj7zMXrLJRYijMSDbWYi4oTAc1FU9ghBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrBLMWRmVeSWpSXmKPExsWy7bCSnC7T+ehEg6OzNS22PjvOajFx2lJm
+        iz17T7JYXN41h82idbakxZZ/R1gd2Dx2zrrL7rFpVSebR9+WVYweMz7sZ/X4vEkugDWKyyYl
+        NSezLLVI3y6BK+Pn5u/MBQ2iFa8OfWBvYJwr2MXIwSEhYCKxqJe7i5GLQ0hgB6PEvq4FbBBx
+        KYmD+zQhTGGJw4eLIUqeA5VsW8nexcjJwSagK/Hkxk9mkBoRAW2J+y/SQcLMAqsYJZY+rwax
+        hQSOMEm07PACsTkFAiX+z77AClIuLOAnMX+nPUiYRUBFou1cPzOIzStgKfF9yWw2CFtQ4uTM
+        JywQI7Uleh+2MsLYyxa+BquXEFCQ2P3pKCuILQI08uav6+wQNSISszvbmCcwCs9CMmoWklGz
+        kIyahaRlASPLKkbJ1ILi3PTcYsMCo7zUcr3ixNzi0rx0veT83E2M4MjR0trBuGfVB71DjEwc
+        jIcYJTiYlUR4r3pFJgrxpiRWVqUW5ccXleakFh9ilOZgURLnvdB1Ml5IID2xJDU7NbUgtQgm
+        y8TBKdXAlOxZWdpRo8ebyDjjh4Sc15HAp29XfblSrn1olXrr/aKYlBbOuy0tzSd448VtUwIF
+        Eo7vm+9VoMk46fz3jXc3R+qfDZnO+22do79YXPusOx4r5ubOaZ3yvPCAvGfXXacKvov2LFx3
+        r9hv/BBdkSUbtXTCdo19h6a3+VVf8zvL0zhxfsnyzxHH71nZzbdki4+XN4z7MaVM2uNPjq6q
+        0pLz2w/FOyxdVXZJmVVW/lTw9etbNla8VZLaWlP+7UjGloB7RQ0FvuVbbjuesomVmn/PUn9n
+        WGSJ/xozo2089+5G1gbN/ied+DmIc/rblhNc161erWY9KXUkXPEpy5JlswOURdgsukqX8h9n
+        +nvrZ5m3EktxRqKhFnNRcSIA5Kan/wsDAAA=
+X-CMS-MailID: 20211005040522epcas1p41dc8a9d440fad667fa1ae6ca8fb302ad
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210910010035epcas1p496dd515369b9f2481ccd1c0de5904bbd
+References: <20210909065543.164329-1-cccheng@synology.com>
+        <CGME20210910010035epcas1p496dd515369b9f2481ccd1c0de5904bbd@epcas1p4.samsung.com>
+        <CAKYAXd_1ys-xQ9HusgqSr5GHaP6R2pK4JswfZzoqZ=wTnwSiOw@mail.gmail.com>
+        <997a01d7b6c6$ea0c3f50$be24bdf0$@samsung.com>
+        <CAKYAXd9COEWU_QF3p0mnEnH4nHMrHQ5ujwBZ6rt4ZBjEFBnB=w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 4 Oct 2021 at 18:43, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.14.10 release.
-> There are 172 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 06 Oct 2021 12:50:17 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.10-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+> 2021-10-01 22:19 GMT+09:00, Sungjong Seo <sj1557.seo=40samsung.com>:
+> > Hello, Namjae,
+> Hi Sungjong,
+> >
+> > I found an important difference between the code we first wrote and
+> > the code that has changed since our initial patch review. This
+> > difference seems to cause compatibility issues when reading saved
+> timestamps without timezone.
+> > (In our initial patch review, there were concerns about possible
+> > compatibility issues.) I think the code that reads timestamps without
+> > timezone should go back to the concept we wrote in the first place
+> > like reported patch.
+> Are you talking about using sys_tz?
+Yes, exactly, a part like below.
 
-Regression found on i386 and x86.
-following kernel warning reported on stable-rc linux-5.14.y while booting x86.
++static inline int exfat_tz_offset(struct exfat_sb_info *sbi) =7B
++	return (sbi->options.tz_set ? -sbi->options.time_offset :
++			sys_tz.tz_minuteswest) * SECS_PER_MIN; =7D
++
 
-metadata:
-  git branch: linux-5.14.y
-  git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-  git commit: cda15f9c69e08480d4308d0e5c62bd44324a9ff0
-  git describe: v5.14.9-173-gcda15f9c69e0
-  make_kernelversion: 5.14.10-rc1
-  kernel-config:
-http://snapshots.linaro.org/openembedded/lkft/lkft/sumo/intel-corei7-64/lkft/linux-stable-rc-5.14/36/config
+>=20
+> > It could be an answer of another timestamp issue.
+> What is another timestamp issue ?
 
-Kernel crash:
---------------
-[   22.356755] =========================
-[   22.360414] WARNING: held lock freed!
-[   22.364071] 5.14.10-rc1 #1 Not tainted
-[   22.367824] -------------------------
-[   22.371489] systemd-network/341 is freeing memory
-ffff9d21cbea0000-ffff9d21cbea06bf, with a lock still held there!
-[   22.381828] ffff9d21cbea0120 (sk_lock-AF_INET){+.+.}-{0:0}, at:
-sk_common_release+0x21/0x100
-[   22.384624] igb 0000:02:00.0 eno2: renamed from eth1
-[   22.390260] 2 locks held by systemd-network/341:
-[   22.390261]  #0: ffff9d21c406eb10
-(&sb->s_type->i_mutex_key#6){+.+.}-{3:3}, at: __sock_release+0x32/0xc0
-[   22.390267]  #1: ffff9d21cbea0120 (sk_lock-AF_INET){+.+.}-{0:0},
-at: sk_common_release+0x21/0x100
-[   22.390272]
-[   22.390272] stack backtrace:
-[   22.390273] CPU: 2 PID: 341 Comm: systemd-network Not tainted 5.14.10-rc1 #1
-[   22.390275] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS
-2.0b 07/27/2017
-[   22.390276] Call Trace:
-[   22.390278]  dump_stack_lvl+0x49/0x5e
-[   22.390281]  dump_stack+0x10/0x12
-[   22.390283]  debug_check_no_locks_freed+0x111/0x120
-[   22.390286]  slab_free_freelist_hook+0x119/0x1d0
-[   22.390289]  kmem_cache_free+0x102/0x540
-[   22.390291]  ? __sk_destruct+0x145/0x210
-[   22.390294]  __sk_destruct+0x145/0x210
-[   22.390296]  sk_destruct+0x48/0x50
-[   22.409489] ata_id (348) used greatest stack depth: 11952 bytes left
-[   22.418194]  __sk_free+0x2f/0xc0
-[   22.418198]  sk_free+0x26/0x40
-[   22.418200]  sk_common_release+0xa9/0x100
-[   22.487567]  udp_lib_close+0x9/0x10
-[   22.491057]  inet_release+0x44/0x80
-[   22.494542]  __sock_release+0x42/0xc0
-[   22.498209]  sock_close+0x18/0x20
-[   22.501525]  __fput+0xb5/0x260
-[   22.504578]  ____fput+0xe/0x10
-[   22.507636]  task_work_run+0x6f/0xc0
-[   22.511216]  exit_to_user_mode_prepare+0x1f6/0x200
-[   22.515999]  syscall_exit_to_user_mode+0x1d/0x50
-[   22.520610]  do_syscall_64+0x67/0x80
-[   22.524190]  ? irqentry_exit+0x75/0x80
-[   22.527940]  ? exc_page_fault+0x6c/0x200
-[   22.531859]  ? asm_exc_page_fault+0x8/0x30
-[   22.535950]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-[   22.541002] RIP: 0033:0x7f52fe67e641
-[   22.544580] Code: f7 d8 64 89 02 48 c7 c0 ff ff ff ff c3 66 2e 0f
-1f 84 00 00 00 00 00 66 90 8b 05 aa cd 20 00 85 c0 75 16 b8 03 00 00
-00 0f 05 <48> 3d 00 f0 ff ff 77 3f c3 66 0f 1f 44 00 00 53 89 fb 48 83
-ec 10
-[   22.563318] RSP: 002b:00007ffe31761878 EFLAGS: 00000246 ORIG_RAX:
-0000000000000003
-[   22.570884] RAX: 0000000000000000 RBX: 0000000000000010 RCX: 00007f52fe67e641
-[   22.578007] RDX: 00000000000073b0 RSI: 0000000000000000 RDI: 0000000000000010
-[   22.585130] RBP: 00007f52feed8338 R08: 000055893cf103c3 R09: 0000000000000078
-[   22.592253] R10: 0000000000000004 R11: 0000000000000246 R12: 0000000000000000
-[   22.599379] R13: 00007ffe317618c0 R14: 0000000000000000 R15: 00007ffe31762a60
+What I'm saying is =22timestamp incompatibilities in exfat-fs=22 from Reine=
+r <reinerstallknecht=40gmail.com>
+I think it might be the same issue with this.
 
+>=20
+> >
+> > Could you please let me know what you think?
+> >
+> > Thanks.
+> >> -----Original Message-----
+> >> From: Namjae Jeon =5Bmailto:linkinjeon=40kernel.org=5D
+> >> Sent: Friday, September 10, 2021 10:01 AM
+> >> To: Chung-Chiang Cheng <cccheng=40synology.com>
+> >> Cc: sj1557.seo=40samsung.com; linux-fsdevel=40vger.kernel.org; linux-
+> >> kernel=40vger.kernel.org; shepjeng=40gmail.com
+> >> Subject: Re: =5BPATCH=5D exfat: use local UTC offset when EXFAT_TZ_VAL=
+ID
+> >> isn't set
+> >>
+> >> 2021-09-09 15:55 GMT+09:00, Chung-Chiang Cheng <cccheng=40synology.com=
+>:
+> >> > EXFAT_TZ_VALID is corresponding to OffsetValid field in exfat
+> >> > specification =5B1=5D. If this bit isn't set, timestamps should be
+> >> > treated as having the same UTC offset as the current local time.
+> >> >
+> >> > This patch uses the existing mount option 'time_offset' as fat does.
+> >> > If time_offset isn't set, local UTC offset in sys_tz will be used
+> >> > as the default value.
+> >> >
+> >> > Link: =5B1=5D
+> >> > https://protect2.fireeye.com/v1/url?k=3Dcba4edf5-943fd4c8-cba566ba-0=
+c
+> >> > c47
+> >> > a31309a-e70aa065be678729&q=3D1&e=3D225feff2-841f-404c-9a2e-c12064b23=
+2d0
+> >> > &u=3D
+> >> > https%3A%2F%2Fdocs.microsoft.com%2Fen-us%2Fwindows%2Fwin32%2Ffileio
+> >> > %2F exfat-specification%2374102-offsetvalid-field
+> >> > Signed-off-by: Chung-Chiang Cheng <cccheng=40synology.com>
+> >> Please read this discussion:
+> >>  https://patchwork.kernel.org/project/linux-
+> >> fsdevel/patch/20200115082447.19520-10-namjae.jeon=40samsung.com/
+> >>
+> >> Thanks=21
+> >
+> >
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-ref:
-https://lkft.validation.linaro.org/scheduler/job/3658919#L1477
-
--- 
-Linaro LKFT
-https://lkft.linaro.org
