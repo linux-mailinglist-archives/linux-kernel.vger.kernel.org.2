@@ -2,146 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0B1C422320
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 12:11:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 244B3422325
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 12:12:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233886AbhJEKNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 06:13:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40520 "EHLO
+        id S233975AbhJEKOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 06:14:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233671AbhJEKNC (ORCPT
+        with ESMTP id S233077AbhJEKON (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 06:13:02 -0400
-Received: from mail-ua1-x92b.google.com (mail-ua1-x92b.google.com [IPv6:2607:f8b0:4864:20::92b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97953C06161C
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 03:11:12 -0700 (PDT)
-Received: by mail-ua1-x92b.google.com with SMTP id u11so14441101uaw.3
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 03:11:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WR0z3EsOmJ9HchNv/GRdB8LBXEWDht0e0gzzuCF3tHc=;
-        b=JJZWoCd9nQOmabGfbOnEyZ9APy4b6iEPrJszzfchPcdEtx4GWnkimEOUuHBi3/BM1x
-         2XyVQQgvIm4/5+JCcClvJpzcMA9sHuKxiZqjuyRxYoLN/Ie/R89YpX0AhioR6ysM9urC
-         KxhQ149ki9Tp5e4vnAuQhUC1C+JVDGijkuUblUyVvP/q7A3uC/lhnNwNeEBKn4lE4uII
-         +jYJ5ZD+P41mkxAbOl8OYmuezPntrdxbQJrdU/lc/yx+mblH0QNSWQd+VgQkv+btna7D
-         vynWVsiq+Z1FYV2MxCmpixS92X8YsLJAEGz0ca7VSsjNhHtaQrfOmfSxC2PqFGmnwW+5
-         uTPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WR0z3EsOmJ9HchNv/GRdB8LBXEWDht0e0gzzuCF3tHc=;
-        b=DW9oIYPOWW0DUIRNcyqLQn7WBW2Nb2JMCuM/BU8pzWj2nxMGQ4BY8l6+QBGL2n0OQW
-         4mWVmosSUfBtZqRshVGaVOU3gZ3uCb051ZwQvcEBfS7C/4Fv4i1APjHwdgiBYwhI3cd/
-         U2l7VpxiDyyzhOQGRpA08EIlIQ/oLzNrReOo69g6CAHxYQNaq/31TZwBcDtrdWvWzv2Z
-         G8/6Ka+j4mBKyqfc1xgGywopH1J/kF7WtpdiPVwd1eYQzz0A5OnhU+Iri10g5IOT3drZ
-         wZMpuppdpgn9iVFKFuGazGuajV69MGqczJnt6vDwlE2Rp8CPMSthR28iUYLmesDjC5A8
-         4RuQ==
-X-Gm-Message-State: AOAM533T4P2fag4odZ5+UTq3DiyeLC3Nx8Vywydg96UIq0WAcy1efeey
-        k1X409RKkzcF045BqQx0xPWthCPsT6tDxKNoQwuf1tmS75fZzA==
-X-Google-Smtp-Source: ABdhPJwlbdUTuDFTe1mcR2LOjzAdw0/QjAuKkTWFCnwwo9qVRJCLkuSG4KWeC721A1cp6A/UqbSPy+bJCy0KgOSRCic=
-X-Received: by 2002:ab0:208b:: with SMTP id r11mr639867uak.104.1633428671797;
- Tue, 05 Oct 2021 03:11:11 -0700 (PDT)
+        Tue, 5 Oct 2021 06:14:13 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD27AC061749;
+        Tue,  5 Oct 2021 03:12:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=UBZLxMuMMqAMN+6dt2Y8ZmEZCnKumRdcBRucu92Bimk=; b=o2mz3Zi5qgTlHUht0Zdq1S2Lt7
+        KEccvYnfJQi/N39tPJ4Uf2lMqVb7T3xCBSjtlPFNqWArgfzDKIcAK6CqhdYd6wUxpvQe9zGSNZI+y
+        W1MOJoNP6JI/tdQ2Fsqrguix0qmTIBYBCgGbq+x0unlJv9QUEaHDpY8LjwibvRmbN1s6RX7BX/Gpl
+        Q+qupSa6UAktMYJeZBrHvLWHhMg2tIuCWUkIN4SxfyVSx1FABJ+NBXqmNmYyZSihsJ//ByuQi0loa
+        kcJtDhk2XfZliJbIMqY4SoVeErEBp3pewKb2YfVWVmLXBX+a44VNufiQb4qGT0CSGAxVWkkGeF7h6
+        aLu2OJbQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:54952)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1mXhQp-000082-SQ; Tue, 05 Oct 2021 11:12:19 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1mXhQo-0008OH-Nz; Tue, 05 Oct 2021 11:12:18 +0100
+Date:   Tue, 5 Oct 2021 11:12:18 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Sean Anderson <sean.anderson@seco.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>
+Cc:     netdev@vger.kernel.org, "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [RFC net-next PATCH 13/16] net: phy: Export get_phy_c22_id
+Message-ID: <YVwlAkW9U0Pk3oKA@shell.armlinux.org.uk>
+References: <20211004191527.1610759-1-sean.anderson@seco.com>
+ <20211004191527.1610759-14-sean.anderson@seco.com>
 MIME-Version: 1.0
-References: <20210914141939.26410-1-semen.protsenko@linaro.org>
-In-Reply-To: <20210914141939.26410-1-semen.protsenko@linaro.org>
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-Date:   Tue, 5 Oct 2021 13:11:00 +0300
-Message-ID: <CAPLW+4mhr4pJAUyGNpfWDnxgTsJ7-fj0hw=ehV8YkqRmaBSnag@mail.gmail.com>
-Subject: Re: [PATCH] clk: Add clk_set_parent debugfs node
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Mike Tipton <mdtipton@codeaurora.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     linux-clk <linux-clk@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211004191527.1610759-14-sean.anderson@seco.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 14 Sept 2021 at 17:19, Sam Protsenko <semen.protsenko@linaro.org> wrote:
->
-> Useful for testing mux clocks. One can write the index of the parent to
-> set into clk_set_parent node, starting from 0. Example
->
->     # cat clk_possible_parrents
->       dout_shared0_div4 dout_shared1_div4
->     # cat clk_parent
->       dout_shared0_div4
->     # echo 1 > clk_set_parent
->     # cat clk_parent
->       dout_shared1_div4
->
-> Define CLOCK_ALLOW_WRITE_DEBUGFS in drivers/clk/clk.c in order to use
-> this feature.
->
-> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
-> ---
+On Mon, Oct 04, 2021 at 03:15:24PM -0400, Sean Anderson wrote:
+> This function is useful when probing MDIO devices which present a
+> phy-like interface despite not using the Linux ethernet phy subsystem.
 
-+ Adding more folks for review
+Maybe we should consider moving this into mdio_device.c and renaming
+it if it's going to become more generic? Maybe mdio_read_c22_id()?
+Andrew, Heiner, any opinions?
 
-Guys, can you please review this one?
-
->  drivers/clk/clk.c | 31 ++++++++++++++++++++++++++++++-
->  1 file changed, 30 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
-> index 65508eb89ec9..3e5456580db9 100644
-> --- a/drivers/clk/clk.c
-> +++ b/drivers/clk/clk.c
-> @@ -3214,6 +3214,30 @@ static int current_parent_show(struct seq_file *s, void *data)
->  }
->  DEFINE_SHOW_ATTRIBUTE(current_parent);
->
-> +#ifdef CLOCK_ALLOW_WRITE_DEBUGFS
-> +static int clk_set_parent_set(void *data, u64 val)
-> +{
-> +       struct clk_core *core = data, *parent;
-> +       int ret;
-> +
-> +       if (val >= core->num_parents)
-> +               return -EINVAL;
-> +
-> +       parent = clk_core_get_parent_by_index(core, val);
-> +       if (IS_ERR_OR_NULL(parent))
-> +               return PTR_ERR(parent);
-> +
-> +       clk_prepare_lock();
-> +       ret = clk_core_set_parent_nolock(core, parent);
-> +       clk_prepare_unlock();
-> +
-> +       return ret;
-> +}
-> +
-> +DEFINE_DEBUGFS_ATTRIBUTE(clk_set_parent_fops, NULL, clk_set_parent_set,
-> +                        "%llu\n");
-> +#endif
-> +
->  static int clk_duty_cycle_show(struct seq_file *s, void *data)
->  {
->         struct clk_core *core = s->private;
-> @@ -3285,9 +3309,14 @@ static void clk_debug_create_one(struct clk_core *core, struct dentry *pdentry)
->                 debugfs_create_file("clk_parent", 0444, root, core,
->                                     &current_parent_fops);
->
-> -       if (core->num_parents > 1)
-> +       if (core->num_parents > 1) {
->                 debugfs_create_file("clk_possible_parents", 0444, root, core,
->                                     &possible_parents_fops);
-> +#ifdef CLOCK_ALLOW_WRITE_DEBUGFS
-> +               debugfs_create_file("clk_set_parent", 0200, root, core,
-> +                                   &clk_set_parent_fops);
-> +#endif
-> +       }
->
->         if (core->ops->debug_init)
->                 core->ops->debug_init(core->hw, core->dentry);
-> --
-> 2.30.2
->
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
