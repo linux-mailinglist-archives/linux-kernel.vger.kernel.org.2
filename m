@@ -2,144 +2,502 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33DF2423011
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 20:32:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB318423018
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 20:35:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235113AbhJESeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 14:34:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45550 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229626AbhJESeG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 14:34:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B3FD610FC;
-        Tue,  5 Oct 2021 18:32:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633458735;
-        bh=fWiFxnLxlEYJaeb4vqHUXjVPIw59E/Lp4hGMAvlSYAo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=BAPwjPOQLG7w7zAx4AnjgMhZwqXELQcZGskKEhXSDsb6E7PKRwr3e42VEt8sWqfbw
-         EVM20EWdWgF1FL7AO54vHDEFWdJV3yYOd99w+fIWVTvoI6AT+KICXDMZrdIs1ZhJOJ
-         fTC9cHEp8sFmQpwcgwAnkKZnXm99V8a6kRXJmmfrjjIpaw/BukRwS0I+uu9IP06YzV
-         ZUJMm9P2iO/JmED0HuPwmxO+r7f73aCAVjZZadccs+tttbl/KvO4XT+jFrBnhIJFgh
-         v9DMbrlupU4F9uU0l4phg8bOET3O6YY/KTs8iJBAzbiCRxKutwjFNx2O5QEygh0p7e
-         yhJDa1F/kPkjQ==
-Date:   Tue, 5 Oct 2021 11:32:13 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Ido Schimmel <idosch@nvidia.com>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Pirko <jiri@nvidia.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        mlxsw@nvidia.com, Moshe Shemesh <moshe@nvidia.com>,
-        netdev@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Shay Drory <shayd@nvidia.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>
-Subject: Re: [PATCH net-next v2 3/5] devlink: Allow set specific ops
- callbacks dynamically
-Message-ID: <20211005113213.0ee61358@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <YVv/nUe63nO8o8wz@unreal>
-References: <cover.1633284302.git.leonro@nvidia.com>
-        <92971648bcad41d095d12f5296246fc44ab8f5c7.1633284302.git.leonro@nvidia.com>
-        <20211004164413.60e9ce80@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <YVv/nUe63nO8o8wz@unreal>
+        id S234500AbhJESh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 14:37:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47220 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232869AbhJEShX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 14:37:23 -0400
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B210FC061753
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 11:35:32 -0700 (PDT)
+Received: by mail-oi1-x235.google.com with SMTP id a3so515140oid.6
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 11:35:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=ORTclUchsvS7k6/jAdlyfi7grvQ4yAocOHDoxDuoPHQ=;
+        b=kJNiV+3Tm2p1qsshIHPk5Hyg4vm0I9SCZUipt1EXh+sEEDul11VuwlgekzqSXZevT+
+         /m59ZB1S8Bo7gcsgDpj+bZpunJwveRMaoDrPgOdxMZubf/r/Yc30Y0qhu0Obt3UX2pHa
+         XEirXS1Eub7IvMzpmtbBbQZJoCLaes+vkwKMk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=ORTclUchsvS7k6/jAdlyfi7grvQ4yAocOHDoxDuoPHQ=;
+        b=xy5E93mGNqBFiPV4OVDAjAvdBS/dTBrOuR8Kx5Ro4CFrouTg2Xgi+wwYaAGW4LYAlY
+         FAiWprtATA4lmcMZVx0Mx3CBhiECC/o/WNL5zbqHYj+eUzQE4KjIQXqWgwqOnwGtKI4w
+         5InOX71ez1MIxXNiBa5Tf8g8ngknSj58Khgsec7AUJIXtG6425Xu8PDHxgBf4B9cJ5Ya
+         4JwRn/1E/K1dZoMBbgdIH5Ie6pnCw/tQCQapG79+H2N94jVzzkJfqzDojE2IxnhJt/Kn
+         A/SgFM+jNMLFSfke45RplDjyqyKW1Nic4grvN3nwqWCWkq4qx9KDNVwtMxMpRlsMwFRm
+         xXJw==
+X-Gm-Message-State: AOAM533Ngy1q6M92T2mrCeolEIWFCA4DL0KrZBevR4++GXPZQdat/np1
+        N/vQS+s+nqjvT0NuXRUuSjJyfhr0/r0jy8YfE7vBGQ==
+X-Google-Smtp-Source: ABdhPJynlHW7Lbi4CzIY58fgSMUW6Hv67WLrspb3F68l1hD2SsTTUzpdpRQNnarX3siIBlEbGbEooigtKop4oem/dUc=
+X-Received: by 2002:aca:42d7:: with SMTP id p206mr3798607oia.32.1633458931950;
+ Tue, 05 Oct 2021 11:35:31 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Tue, 5 Oct 2021 11:35:31 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <1633060859-22969-4-git-send-email-skakit@codeaurora.org>
+References: <1633060859-22969-1-git-send-email-skakit@codeaurora.org> <1633060859-22969-4-git-send-email-skakit@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Tue, 5 Oct 2021 11:35:31 -0700
+Message-ID: <CAE-0n50HiFin8+ZmrbCoK=CCq4JM5JKGN=fTDrS9wGdTb8uzAQ@mail.gmail.com>
+Subject: Re: [PATCH V2 3/4] regulator: Add a regulator driver for the PM8008 PMIC
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Satya Priya <skakit@codeaurora.org>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Das Srinagesh <gurus@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mka@chromium.org,
+        collinsd@codeaurora.org, subbaram@codeaurora.org,
+        kgunda@codeaurora.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 5 Oct 2021 10:32:45 +0300 Leon Romanovsky wrote:
-> On Mon, Oct 04, 2021 at 04:44:13PM -0700, Jakub Kicinski wrote:
-> > On Sun,  3 Oct 2021 21:12:04 +0300 Leon Romanovsky wrote:  
-> > > From: Leon Romanovsky <leonro@nvidia.com>
-> > > 
-> > > Introduce new devlink call to set specific ops callback during
-> > > device initialization phase after devlink_alloc() is already
-> > > called.
-> > > 
-> > > This allows us to set specific ops based on device property which
-> > > is not known at the beginning of driver initialization.
-> > > 
-> > > For the sake of simplicity, this API lacks any type of locking and
-> > > needs to be called before devlink_register() to make sure that no
-> > > parallel access to the ops is possible at this stage.  
-> > 
-> > The fact that it's not registered does not mean that the callbacks
-> > won't be invoked. Look at uses of devlink_compat_flash_update().  
-> 
-> It is impossible, devlink_register() is part of .probe() flow and if it
-> wasn't called -> probe didn't success -> net_device doesn't exist.
+Quoting Satya Priya (2021-09-30 21:00:58)
+> diff --git a/drivers/regulator/qcom-pm8008-regulator.c b/drivers/regulator/qcom-pm8008-regulator.c
+> new file mode 100644
+> index 0000000..5dacaa4
+> --- /dev/null
+> +++ b/drivers/regulator/qcom-pm8008-regulator.c
+> @@ -0,0 +1,320 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/* Copyright (c) 2021, The Linux Foundation. All rights reserved. */
+> +
+> +#include <linux/delay.h>
 
-Are you talking about reality or the bright future brought by auxbus?
+Is this include used?
 
-> We are not having net_device without "connected" device beneath, aren't we?
-> 
-> At least drivers that I checked are not prepared at all to handle call
-> to devlink->ops.flash_update() if they didn't probe successfully.
+> +#include <linux/device.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/module.h>
+> +#include <linux/mutex.h>
 
-Last time I checked you moved the devlink_register() at the end of
-probe which for all no-auxbus drivers means after register_netdev().
+Is this include used?
 
-> > > diff --git a/net/core/devlink.c b/net/core/devlink.c
-> > > index 4e484afeadea..25c2aa2b35cd 100644
-> > > --- a/net/core/devlink.c
-> > > +++ b/net/core/devlink.c
-> > > @@ -53,7 +53,7 @@ struct devlink {
-> > >  	struct list_head trap_list;
-> > >  	struct list_head trap_group_list;
-> > >  	struct list_head trap_policer_list;
-> > > -	const struct devlink_ops *ops;
-> > > +	struct devlink_ops ops;  
-> > 
-> > Security people like ops to live in read-only memory. You're making
-> > them r/w for every devlink instance now.  
-> 
-> Yes, but we are explicitly copy every function pointer, which is safe.
+> +#include <linux/of.h>
+> +#include <linux/of_device.h>
+> +#include <linux/of_irq.h>
 
-The goal is for ops to live in pages which are mapped read-only,
-so that heap overflows can overwrite the pointers.
+Is this include used?
 
-> > >  	struct xarray snapshot_ids;
-> > >  	struct devlink_dev_stats stats;
-> > >  	struct device *dev;  
+> +#include <linux/pm.h>
 
-> > > +EXPORT_SYMBOL_GPL(devlink_set_ops);  
-> > 
-> > I still don't like this. IMO using feature bits to dynamically mask-off
-> > capabilities has much better properties. We already have static caps
-> > in devlink_ops (first 3 members), we should build on top of that.   
-> 
-> These capabilities are for specific operation, like flash or reload.
-> They control how these flows will work, they don't control if this flow
-> is valid or not.
-> 
-> You are too focused on reload caps, but mutliport mlx5 device doesn't
-> support eswitch too. I just didn't remove the eswitch callbacks to
-> stay focused on more important work - making devlink better. :)
-> 
-> Even if we decide to use new flag in devlink_ops, we will still need to
-> add this devlink_set_ops() patch, because the value of that new flag
-> will be known very late in initialization phase, after FW capabilities
-> are known and I will need to overwrite RO memory.
+Is this include used?
 
-Yes, you can change the caps at run time, that's perfectly reasonable.
-You'll also be able to define more fine grained caps going forward as
-needed.
+> +#include <linux/platform_device.h>
+> +#include <linux/regmap.h>
+> +#include <linux/string.h>
 
-> Jakub,
-> 
-> Can we please continue with the current approach? It doesn't expose any
-> user visible API and everything here will be easy rewrite differently
-> if such needs arise.
-> 
-> We have so much ahead, like removing devlink_lock, rewriting devlink->lock,
-> fixing devlink reload of IB part, e.t.c
+Is this include used? Probably should just be kernel.h?
 
-I don't like it. If you're feeling strongly please gather support of
-other developers. Right now it's my preference against yours. I don't
-even see you making arguments that your approach is better, just that
-mine is not perfect and requires some similar changes.
+> +#include <linux/regulator/driver.h>
+> +#include <linux/regulator/machine.h>
+> +#include <linux/regulator/of_regulator.h>
+
+Is this include used?
+
+> +
+> +#define STARTUP_DELAY_USEC             20
+> +#define VSET_STEP_MV                   8
+> +#define VSET_STEP_UV                   (VSET_STEP_MV * 1000)
+> +
+> +#define LDO_ENABLE_REG(base)           (base + 0x46)
+> +#define ENABLE_BIT                     BIT(7)
+> +
+> +#define LDO_STATUS1_REG(base)          (base + 0x08)
+> +#define VREG_READY_BIT                 BIT(7)
+> +
+> +#define LDO_VSET_LB_REG(base)          (base + 0x40)
+> +
+> +#define LDO_STEPPER_CTL_REG(base)      (base + 0x3b)
+> +#define STEP_RATE_MASK                 GENMASK(1, 0)
+> +
+> +#define PM8008_MAX_LDO                 7
+
+Drop define.
+
+> +
+> +struct regulator_data {
+> +       char            *name;
+
+const?
+
+> +       char            *supply_name;
+
+const?
+
+> +       int             min_uv;
+> +       int             max_uv;
+> +       int             min_dropout_uv;
+> +};
+> +
+> +struct pm8008_regulator {
+> +       struct device           *dev;
+> +       struct regmap           *regmap;
+> +       struct regulator_desc   rdesc;
+> +       struct regulator_dev    *rdev;
+> +       struct device_node      *of_node;
+> +       u16                     base;
+> +       int                     step_rate;
+> +};
+> +
+> +static const struct regulator_data reg_data[PM8008_MAX_LDO] = {
+
+Use [] instead of PM8008_MAX_LDO.
+
+> +       /* name  parent      min_uv  max_uv  headroom_uv */
+> +       {"l1", "vdd_l1_l2",  528000, 1504000, 225000},
+> +       {"l2", "vdd_l1_l2",  528000, 1504000, 225000},
+> +       {"l3", "vdd_l3_l4", 1504000, 3400000, 200000},
+> +       {"l4", "vdd_l3_l4", 1504000, 3400000, 200000},
+> +       {"l5", "vdd_l5",    1504000, 3400000, 300000},
+> +       {"l6", "vdd_l6",    1504000, 3400000, 300000},
+> +       {"l7", "vdd_l7",    1504000, 3400000, 300000},
+
+Nitpick: Put a space after { and before } to match kernel style.
+
+> +};
+> +
+> +static int pm8008_read(struct regmap *regmap,  u16 reg, u8 *val, int count)
+> +{
+> +       int rc;
+> +
+> +       rc = regmap_bulk_read(regmap, reg, val, count);
+> +       if (rc < 0)
+> +               pr_err("failed to read %#x, rc=%d\n", reg, rc);
+> +
+> +       return rc;
+> +}
+> +
+> +static int pm8008_write(struct regmap *regmap, u16 reg, u8 *val, int count)
+> +{
+> +       int rc;
+> +
+> +       pr_debug("Writing [%*ph] from address %#x\n", count, val, reg);
+
+Don't we already have regmap debugging facilities for this? Why
+duplicate it in this driver?
+
+> +       rc = regmap_bulk_write(regmap, reg, val, count);
+> +       if (rc < 0)
+> +               pr_err("failed to write %#x rc=%d\n", reg, rc);
+> +
+> +       return rc;
+> +}
+
+The above two functions should just be inlined.
+
+> +
+> +static int pm8008_regulator_get_voltage(struct regulator_dev *rdev)
+> +{
+> +       struct pm8008_regulator *pm8008_reg = rdev_get_drvdata(rdev);
+> +       u8 vset_raw[2];
+> +       int rc;
+> +
+> +       rc = pm8008_read(pm8008_reg->regmap,
+> +                       LDO_VSET_LB_REG(pm8008_reg->base),
+> +                       vset_raw, 2);
+
+Can this be an __le16 mV?
+
+> +       if (rc < 0) {
+> +               dev_err(pm8008_reg->dev, "failed to read regulator voltage rc=%d\n", rc);
+> +               return rc;
+> +       }
+> +
+> +       return (vset_raw[1] << 8 | vset_raw[0]) * 1000;
+
+And then return le16_to_cpu(mV) * 1000;
+
+
+> +}
+> +
+> +static inline int pm8008_write_voltage(struct pm8008_regulator *pm8008_reg, int min_uv,
+> +                               int max_uv)
+> +{
+> +       int rc = 0, mv;
+> +       u8 vset_raw[2];
+> +
+> +       mv = DIV_ROUND_UP(min_uv, 1000);
+> +
+> +       /*
+> +        * Each LSB of regulator is 1mV and the voltage setpoint
+> +        * should be multiple of 8mV(step).
+> +        */
+> +       mv = DIV_ROUND_UP(mv, VSET_STEP_MV) * VSET_STEP_MV;
+> +       if (mv * 1000 > max_uv) {
+> +               dev_err(pm8008_reg->dev,
+> +                       "requested voltage (%d uV) above maximum limit (%d uV)\n",
+> +                               mv*1000, max_uv);
+> +               return -EINVAL;
+> +       }
+> +
+> +       vset_raw[0] = mv & 0xff;
+> +       vset_raw[1] = (mv & 0xff00) >> 8;
+
+Make vset_raw a u16?
+
+	vset = mv;
+
+And then use cpu_to_le16() below?
+
+> +       rc = pm8008_write(pm8008_reg->regmap, LDO_VSET_LB_REG(pm8008_reg->base),
+> +                       vset_raw, 2);
+
+	regmap_bulk_write(pm8008_reg->regmap, LDO_VSET_LB_REG(pm8008_reg->base),
+			  cpu_to_le16(vset), sizeof(vset));
+
+does it work?
+
+> +       if (rc < 0) {
+> +               dev_err(pm8008_reg->dev, "failed to write voltage rc=%d\n", rc);
+> +               return rc;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+> +static int pm8008_regulator_set_voltage_time(struct regulator_dev *rdev,
+> +                               int old_uV, int new_uv)
+> +{
+> +       struct pm8008_regulator *pm8008_reg = rdev_get_drvdata(rdev);
+> +
+> +       return DIV_ROUND_UP(abs(new_uv - old_uV), pm8008_reg->step_rate);
+> +}
+> +
+> +static int pm8008_regulator_set_voltage(struct regulator_dev *rdev,
+> +                               int min_uv, int max_uv, unsigned int *selector)
+> +{
+> +       struct pm8008_regulator *pm8008_reg = rdev_get_drvdata(rdev);
+> +       int rc;
+> +
+> +       rc = pm8008_write_voltage(pm8008_reg, min_uv, max_uv);
+> +       if (rc < 0)
+> +               return rc;
+> +
+> +       *selector = DIV_ROUND_UP(min_uv - pm8008_reg->rdesc.min_uV,
+> +                               VSET_STEP_UV);
+> +
+> +       dev_dbg(pm8008_reg->dev, "voltage set to %d\n", min_uv);
+> +       return 0;
+> +}
+> +
+> +static const struct regulator_ops pm8008_regulator_ops = {
+> +       .enable         = regulator_enable_regmap,
+
+Weird tabbing.
+
+> +       .disable                = regulator_disable_regmap,
+> +       .is_enabled             = regulator_is_enabled_regmap,
+> +       .set_voltage            = pm8008_regulator_set_voltage,
+> +       .get_voltage            = pm8008_regulator_get_voltage,
+> +       .list_voltage           = regulator_list_voltage_linear,
+> +       .set_voltage_time       = pm8008_regulator_set_voltage_time,
+> +};
+> +
+> +static int pm8008_register_ldo(struct pm8008_regulator *pm8008_reg,
+> +                                               const char *name)
+> +{
+> +       struct regulator_config reg_config = {};
+> +       struct regulator_init_data *init_data;
+> +       struct device *dev = pm8008_reg->dev;
+> +       struct device_node *reg_node = pm8008_reg->of_node;
+> +       int rc, i;
+> +       u32 base = 0;
+> +       u8 reg;
+> +
+> +       /* get regulator data */
+> +       for (i = 0; i < PM8008_MAX_LDO; i++)
+
+Use ARRAY_SIZE()
+
+> +               if (strstr(name, reg_data[i].name))
+> +                       break;
+> +
+> +       if (i == PM8008_MAX_LDO) {
+> +               dev_err(dev, "Invalid regulator name %s\n", name);
+> +               return -EINVAL;
+> +       }
+> +
+> +       rc = of_property_read_u32(reg_node, "reg", &base);
+> +       if (rc < 0) {
+> +               dev_err(dev, "%s: failed to get regulator base rc=%d\n", name, rc);
+> +               return rc;
+> +       }
+> +       pm8008_reg->base = base;
+> +
+> +       /* get slew rate */
+> +       rc = pm8008_read(pm8008_reg->regmap,
+> +                       LDO_STEPPER_CTL_REG(pm8008_reg->base), &reg, 1);
+> +       if (rc < 0) {
+> +               dev_err(dev, "%s: failed to read step rate configuration rc=%d\n",
+> +                               name, rc);
+> +               return rc;
+> +       }
+> +       pm8008_reg->step_rate = 38400 >> (reg & STEP_RATE_MASK);
+
+Where does 38400 come from? Is that a frequency?
+
+> +
+> +       init_data = of_get_regulator_init_data(dev, reg_node,
+> +                                               &pm8008_reg->rdesc);
+> +       if (init_data == NULL) {
+
+	if (!init_data)
+
+is more kernel style.
+
+> +               dev_err(dev, "%s: failed to get regulator data\n", name);
+> +               return -ENODATA;
+> +       }
+> +
+> +       init_data->constraints.input_uV = init_data->constraints.max_uV;
+> +       reg_config.dev = dev;
+> +       reg_config.init_data = init_data;
+> +       reg_config.driver_data = pm8008_reg;
+> +       reg_config.of_node = reg_node;
+> +
+> +       pm8008_reg->rdesc.type = REGULATOR_VOLTAGE;
+> +       pm8008_reg->rdesc.ops = &pm8008_regulator_ops;
+> +       pm8008_reg->rdesc.name = init_data->constraints.name;
+> +       pm8008_reg->rdesc.supply_name = reg_data[i].supply_name;
+> +       pm8008_reg->rdesc.uV_step = VSET_STEP_UV;
+> +       pm8008_reg->rdesc.min_uV = reg_data[i].min_uv;
+> +       pm8008_reg->rdesc.n_voltages
+> +               = ((reg_data[i].max_uv - reg_data[i].min_uv)
+> +                       / pm8008_reg->rdesc.uV_step) + 1;
+> +
+> +       pm8008_reg->rdesc.enable_reg = LDO_ENABLE_REG(base);
+> +       pm8008_reg->rdesc.enable_mask = ENABLE_BIT;
+> +       pm8008_reg->rdesc.min_dropout_uV = reg_data[i].min_dropout_uv;
+> +       of_property_read_u32(reg_node, "qcom,min-dropout-voltage",
+> +                            &pm8008_reg->rdesc.min_dropout_uV);
+
+Why do we allow DT to override this? Isn't it a property of the hardware
+that doesn't change? So the driver can hardcode the knowledge about the
+dropout.
+
+> +
+> +       pm8008_reg->rdev = devm_regulator_register(dev, &pm8008_reg->rdesc,
+
+Is this assignment ever used? Seems like it would be better to merely
+
+	return PTR_ERR_OR_ZERO(devm_regulator_register(dev, ...));
+
+> +                                               &reg_config);
+> +       if (IS_ERR(pm8008_reg->rdev)) {
+> +               rc = PTR_ERR(pm8008_reg->rdev);
+> +               dev_err(dev, "%s: failed to register regulator rc=%d\n",
+> +                               pm8008_reg->rdesc.name, rc);
+> +               return rc;
+> +       }
+> +
+> +       dev_dbg(dev, "%s regulator registered\n", name);
+> +
+> +       return 0;
+> +}
+> +
+> +static int pm8008_parse_regulator(struct regmap *regmap, struct device *dev)
+> +{
+> +       int rc = 0;
+
+Drop initialization.
+
+> +       const char *name;
+> +       struct device_node *child;
+> +       struct pm8008_regulator *pm8008_reg;
+> +
+> +       /* parse each subnode and register regulator for regulator child */
+> +       for_each_available_child_of_node(dev->of_node, child) {
+> +               pm8008_reg = devm_kzalloc(dev, sizeof(*pm8008_reg), GFP_KERNEL);
+> +
+> +               pm8008_reg->regmap = regmap;
+> +               pm8008_reg->of_node = child;
+> +               pm8008_reg->dev = dev;
+> +
+> +               rc = of_property_read_string(child, "regulator-name", &name);
+> +               if (rc)
+> +                       continue;
+> +
+> +               rc = pm8008_register_ldo(pm8008_reg, name);
+
+Can we use the of_parse_cb similar to qcom_spmi-regulator.c?
+
+> +               if (rc < 0) {
+> +                       dev_err(dev, "failed to register regulator %s rc=%d\n",
+> +                                       name, rc);
+> +                       return rc;
+> +               }
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+> +static int pm8008_regulator_probe(struct platform_device *pdev)
+> +{
+> +       int rc = 0;
+
+Please don't initialize locals and then overwrite them before testing
+them.
+
+> +       struct regmap *regmap;
+> +
+> +       regmap = dev_get_regmap(pdev->dev.parent, NULL);
+> +       if (!regmap) {
+> +               dev_err(&pdev->dev, "parent regmap is missing\n");
+> +               return -EINVAL;
+> +       }
+> +
+> +       rc = pm8008_parse_regulator(regmap, &pdev->dev);
+
+Just inline this code. It's basically the entire probe function so
+splitting it away to yet another function just makes it harder to read.
+
+> +       if (rc < 0) {
+> +               dev_err(&pdev->dev, "failed to parse device tree rc=%d\n", rc);
+> +               return rc;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+> +static const struct of_device_id pm8008_regulator_match_table[] = {
+> +       { .compatible = "qcom,pm8008-regulator", },
+> +       { },
+
+Nitpick: Drop comma on sentinel so nothing can come after without
+causing a compilation error.
+
+> +};
+
+Add a MODULE_DEVICE_TABLE please. Same comment applies to the mfd
+driver.
+
+> +
+> +static struct platform_driver pm8008_regulator_driver = {
+> +       .driver = {
+> +               .name           = "qcom,pm8008-regulator",
+> +               .of_match_table = pm8008_regulator_match_table,
+> +       },
+> +       .probe          = pm8008_regulator_probe,
+
+I have no idea what's going on with this tabbing.
+
+> +};
+> +
+> +module_platform_driver(pm8008_regulator_driver);
+> +
