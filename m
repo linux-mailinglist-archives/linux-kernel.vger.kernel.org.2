@@ -2,90 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67C46422485
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 13:04:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24845422488
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 13:04:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234300AbhJELFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 07:05:51 -0400
-Received: from mail-oo1-f54.google.com ([209.85.161.54]:40752 "EHLO
-        mail-oo1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233449AbhJELFt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 07:05:49 -0400
-Received: by mail-oo1-f54.google.com with SMTP id j11-20020a4a92cb000000b002902ae8cb10so6274311ooh.7;
-        Tue, 05 Oct 2021 04:03:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rbQR10SUFcLSb0CqZ3+0KI2N/KoBUg4lIS8MaCYfWzA=;
-        b=uTRXokuJvnnt9xhRhvKk7nmg9P1L43vtMvvkzf5c7uTPaL5O6Dm116xMRTZRZLMOKD
-         fojp1hYG7NkIA9hcGEnMqAxJiWVk7tjgJvK8DtXNeyQQqS7cg/EJjHrV9BvN2Z4z56jI
-         auEN2JL0rm9iHJXOVNMEWGLCRuuvyLLFYQ8tBwoYpbYmm6x7Zj22BlEoIkmscDl+fdH5
-         tkKXAnyEhlL7unmkR0KeV3Zd43U00mmYfnXhAZHZ7N/Cg7NpNn5s8ZZ7wN59fescRBEz
-         3jXXD+sRiUyrA47RR8tx2FCxMPDbNTdNh0382at7NxCDuNjDAqqPEmXcsiaVwOmfnS8G
-         P3Tg==
-X-Gm-Message-State: AOAM530Ar+fZq1ruftRtomp4A+sgIEHTZi+HxKS8HktX7BrEcxPVQtJ8
-        xa6J21cuzsIhE/yIGIk5ZPOdfXBlntJaqI/Ffmc=
-X-Google-Smtp-Source: ABdhPJxripPRp/2cLwKftBJJECVik2j1AfoGQDmRIUHPdG4gKa29qqGW4SnWQFEZNeKgTv6jZa4cvNpPu7oUx2ePtCo=
-X-Received: by 2002:a05:6820:17a:: with SMTP id k26mr12930860ood.37.1633431839035;
- Tue, 05 Oct 2021 04:03:59 -0700 (PDT)
-MIME-Version: 1.0
-References: <1800633.tdWV9SEqCh@kreacher> <7312660.EvYhyI6sBW@kreacher> <fe9b4f36-0b46-f8d7-4a4c-9bdefe1fbd90@gmail.com>
-In-Reply-To: <fe9b4f36-0b46-f8d7-4a4c-9bdefe1fbd90@gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 5 Oct 2021 13:03:42 +0200
-Message-ID: <CAJZ5v0i9vyT7oU-4NkVjrtD+Mz0Udaex=4j6iR5f70ssd8AnbA@mail.gmail.com>
-Subject: Re: [PATCH v3 0/3] PCI: PM: Simplify and unify some helper functions
-To:     Ferry Toth <fntoth@gmail.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Bjorn Helgaas <helgaas@kernel.org>,
+        id S234201AbhJELGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 07:06:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45468 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233449AbhJELGR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 07:06:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 98AC5611F0;
+        Tue,  5 Oct 2021 11:04:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1633431867;
+        bh=zeGBNsog1olkIZ1fVKAxVZmcBFpEUAytVPA7H52jY7c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=wXBrKoaf/qaTtR5tbgysF5rd4ayDtHJateJtB7ljp3Pr9R0WCwFYRxJbh2qxi1g0K
+         ubPd12/AKqvKP6kt5/fzigwPr3TqpHsvtgcWEeXVIFmgaGWQgTlf888JORG0hRGPlA
+         W8BpObNbBL678AbKFC/lPIxyvw/Av5cExiYHsaZ8=
+Date:   Tue, 5 Oct 2021 13:04:25 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Michael Grzeschik <mgr@pengutronix.de>
+Cc:     Ferry Toth <fntoth@gmail.com>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Felipe Balbi <balbi@kernel.org>
+Subject: Re: [PATCH v1 1/1] usb: dwc3: gadget: Revert "set gadgets parent to
+ the right controller"
+Message-ID: <YVwxORtF1aQDsT08@kroah.com>
+References: <20211004141839.49079-1-andriy.shevchenko@linux.intel.com>
+ <7019ca3e-f076-e65b-f207-c23a379ade29@gmail.com>
+ <20211005085100.GB17524@pengutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211005085100.GB17524@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 3, 2021 at 10:14 PM Ferry Toth <fntoth@gmail.com> wrote:
->
-> Hi,
->
-> Op 29-09-2021 om 20:05 schreef Rafael J. Wysocki:
-> > Hi All,
-> >
-> > This series is on top of the linux-next branch from linux-pm.git:
-> >
-> >   git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git linux-next
-> >
-> > which should be included in linux-next.
-> >
-> > Two of the 3 patches in this series, [1-2/3], were included in the "PCI: ACPI:
-> > Get rid of struct pci_platform_pm_ops and clean up code" series:
-> >
-> >   https://lore.kernel.org/linux-acpi/1800633.tdWV9SEqCh@kreacher/
-> >
-> > and the remaining one, [3/3] is a new version of a problematic patch from that
-> > series.  The rest of that series is present in the git branch above.
-> >
-> > All of the 3 patches in this set need to be tested in order to verify that
-> > there are no more issues that need to be addressed in them.
-> >
-> > Ferry, please test!
->
-> This is how I tested:
-> 3 patches from
-> https://patchwork.kernel.org/project/linux-acpi/patch/2793105.e9J7NaK4W3@kreacher/
-> on top of 5.15.0-rc2 as before
-> 4 patches from v2 in the order of linux-pm.git
-> then tested without, with 1/3, 1+2/3, 1+2+3/3 on top (with only 3/3 the
-> new patch, 1+2/3 taken from v2 as they are unchanged).
->
-> In all 4 cases I didn't find any trouble (related to this patch).
->
-> Thanks for doing this!
+On Tue, Oct 05, 2021 at 10:51:00AM +0200, Michael Grzeschik wrote:
+> On Mon, Oct 04, 2021 at 10:35:57PM +0200, Ferry Toth wrote:
+> > Hi,
+> > 
+> > Op 04-10-2021 om 16:18 schreef Andy Shevchenko:
+> > > The commit c6e23b89a95d ("usb: dwc3: gadget: set gadgets parent to the right
+> > > controller") changed the device for the UDC and broke the user space scripts
+> > > that instantiate the USB gadget(s) via ConfigFS.
+> > 
+> > I confirm this regression on Intel Edison since at least 5.15-rc2 while
+> > in 5.14.0 it was working fine.
+> > 
+> > This patch resolves the issue as tested on 5.15-rc4.
+> > 
+> > Tested-by: Ferry Toth<fntoth@gmail.com>
+> 
+> NACK! Why should we resolv an issue by reverting it to solve not working
+> userspace. We already have this patch as a solution for solving a deeper
+> Problem, regarding the allocator addressing the right device.
+> 
+> > > Revert it for now until the better solution will be proposed.
+> 
+> So, I think fixing the userspace would be the right fix, not changing
+> the kernel. Otherwise we should find a proper solution.
 
-Thank you!
+We only really have one rule in Linux kernel development:
+
+	If a kernel change breaks userspace, the kernel change needs to
+	be reverted.
+
+Go fix up the userspace tools first, ensure everyone has updated, and
+then we can consider taking the change back into the kernel tree.
+
+thanks,
+
+greg k-h
