@@ -2,134 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2638D42230E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 12:06:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40D98422310
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 12:06:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233638AbhJEKIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 06:08:04 -0400
-Received: from relay05.th.seeweb.it ([5.144.164.166]:43233 "EHLO
-        relay05.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232658AbhJEKIA (ORCPT
+        id S233911AbhJEKIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 06:08:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39366 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233784AbhJEKIB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 06:08:00 -0400
-Received: from SoMainline.org (94-209-165-62.cable.dynamic.v4.ziggo.nl [94.209.165.62])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id C2A4E3EE89;
-        Tue,  5 Oct 2021 12:06:07 +0200 (CEST)
-Date:   Tue, 5 Oct 2021 12:06:06 +0200
-From:   Marijn Suijten <marijn.suijten@somainline.org>
-To:     Daniel Thompson <daniel.thompson@linaro.org>
-Cc:     phone-devel@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Martin Botka <martin.botka@somainline.org>,
-        Jami Kettunen <jami.kettunen@somainline.org>,
-        Pavel Dubrova <pashadubrova@gmail.com>,
-        Kiran Gunda <kgunda@codeaurora.org>,
-        Courtney Cavin <courtney.cavin@sonymobile.com>,
-        Bryan Wu <cooloney@gmail.com>, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 05/10] backlight: qcom-wled: Fix off-by-one maximum with
- default num_strings
-Message-ID: <20211005100606.faxra73mzkvjd4f6@SoMainline.org>
-Mail-Followup-To: Daniel Thompson <daniel.thompson@linaro.org>,
-        phone-devel@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Lee Jones <lee.jones@linaro.org>, Jingoo Han <jingoohan1@gmail.com>,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Martin Botka <martin.botka@somainline.org>,
-        Jami Kettunen <jami.kettunen@somainline.org>,
-        Pavel Dubrova <pashadubrova@gmail.com>,
-        Kiran Gunda <kgunda@codeaurora.org>,
-        Courtney Cavin <courtney.cavin@sonymobile.com>,
-        Bryan Wu <cooloney@gmail.com>, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211004192741.621870-1-marijn.suijten@somainline.org>
- <20211004192741.621870-6-marijn.suijten@somainline.org>
- <20211005091947.7msztp5l554c7cy4@maple.lan>
+        Tue, 5 Oct 2021 06:08:01 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C1F0C06161C;
+        Tue,  5 Oct 2021 03:06:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=x5LyrEZtyTYgVW8P7eEdPEoGjAnPMtn7SJqGAKJ+WAM=; b=xcPaIYgXlOo2smSUYYX6a3wMi+
+        Z3QY34kICgFD+S/huIFroTkxJUAiwbL4z7zZsBhbqviiC8lZ2Ace5P+fx6FwMoo660DfRJvR/GOIl
+        gzTVGFdQdsMxQ6ZafP+x/0tbhoXYFUbFZObP1qt3ViPNghfb2pxRc/PPB0A39wSVA8MiythyYW9A2
+        hayH3VYhxeNhbVK7rQK+M4xQBceIdjhAibAegPmZI1igzduL8UVst9H1LlSFWaP+QKfGCPtEfQ9xV
+        pIW8y+QfBl3Tn9IKlGIXU5WTSBm9tRa6WGizDDaIevuItbW+3GDkO0lBM3dBa/uIu+iVkVMCvkwkv
+        Sp07Fyig==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:54950)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1mXhKq-00007Y-KF; Tue, 05 Oct 2021 11:06:08 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1mXhKo-0008NG-Dp; Tue, 05 Oct 2021 11:06:06 +0100
+Date:   Tue, 5 Oct 2021 11:06:06 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Sean Anderson <sean.anderson@seco.com>
+Cc:     netdev@vger.kernel.org, "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>
+Subject: Re: [RFC net-next PATCH 10/16] net: macb: Move PCS settings to PCS
+ callbacks
+Message-ID: <YVwjjghGcXaEYgY+@shell.armlinux.org.uk>
+References: <20211004191527.1610759-1-sean.anderson@seco.com>
+ <20211004191527.1610759-11-sean.anderson@seco.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211005091947.7msztp5l554c7cy4@maple.lan>
+In-Reply-To: <20211004191527.1610759-11-sean.anderson@seco.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-10-05 10:19:47, Daniel Thompson wrote:
-> On Mon, Oct 04, 2021 at 09:27:36PM +0200, Marijn Suijten wrote:
-> > When not specifying num-strings in the DT the default is used, but +1 is
-> > added to it which turns wled3 into 4 and wled4/5 into 5 strings instead
-> > of 3 and 4 respectively, causing out of bounds reads and register
-> > read/writes.  This +1 exists for a deficiency in the DT parsing code,
-> > and is simply omitted entirely - solving this oob issue - by allowing
-> > one extra iteration of the wled_var_cfg function parsing this particular
-> > property.
-> > 
-> > Fixes: 93c64f1ea1e8 ("leds: add Qualcomm PM8941 WLED driver")
-> > Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
-> > Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-> > ---
-> >  drivers/video/backlight/qcom-wled.c | 8 +++-----
-> >  1 file changed, 3 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/drivers/video/backlight/qcom-wled.c b/drivers/video/backlight/qcom-wled.c
-> > index 27e8949c7922..66ce77ee3099 100644
-> > --- a/drivers/video/backlight/qcom-wled.c
-> > +++ b/drivers/video/backlight/qcom-wled.c
-> > @@ -1255,17 +1255,17 @@ static const struct wled_var_cfg wled5_ovp_cfg = {
-> >  
-> >  static u32 wled3_num_strings_values_fn(u32 idx)
-> >  {
-> > -	return idx + 1;
-> > +	return idx;
-> >  }
-> >  
-> >  static const struct wled_var_cfg wled3_num_strings_cfg = {
-> >  	.fn = wled3_num_strings_values_fn,
-> > -	.size = 3,
-> > +	.size = 4, /* [0, 3] */
-> 
-> 0 is not a valid value for this property.
+On Mon, Oct 04, 2021 at 03:15:21PM -0400, Sean Anderson wrote:
+> +static void macb_pcs_get_state(struct phylink_pcs *pcs,
+> +			       struct phylink_link_state *state)
+> +{
+> +	struct macb *bp = pcs_to_macb(pcs);
+> +
+> +	if (gem_readl(bp, NCFGR) & GEM_BIT(SGMIIEN))
+> +		state->interface = PHY_INTERFACE_MODE_SGMII;
+> +	else
+> +		state->interface = PHY_INTERFACE_MODE_1000BASEX;
 
-These comments represent the possible loop iterations the DT "cfg
-parser" runs through, starting at j=0 and running up until and including
-j=3.  Should I make that more clear or omit these comments entirely?
+There is no requirement to set state->interface here. Phylink doesn't
+cater for interface changes when reading the state. As documented,
+phylink will set state->interface already before calling this function
+to indicate what interface mode it is currently expecting from the
+hardware.
 
-- Marijn
+> +static int macb_pcs_config_an(struct macb *bp, unsigned int mode,
+> +			      phy_interface_t interface,
+> +			      const unsigned long *advertising)
+> +{
+> +	bool changed = false;
+> +	u16 old, new;
+> +
+> +	old = gem_readl(bp, PCSANADV);
+> +	new = phylink_mii_c22_pcs_encode_advertisement(interface, advertising,
+> +						       old);
+> +	if (old != new) {
+> +		changed = true;
+> +		gem_writel(bp, PCSANADV, new);
+> +	}
+> +
+> +	old = new = gem_readl(bp, PCSCNTRL);
+> +	if (mode == MLO_AN_INBAND)
 
-> >  };
-> >  
-> >  static const struct wled_var_cfg wled4_num_strings_cfg = {
-> >  	.fn = wled3_num_strings_values_fn,
-> > -	.size = 4,
-> > +	.size = 5, /* [0, 4] */
-> 
-> Ditto.
-> 
-> 
-> >  };
-> >  
-> >  static u32 wled3_switch_freq_values_fn(u32 idx)
-> > @@ -1520,8 +1520,6 @@ static int wled_configure(struct wled *wled)
-> >  			*bool_opts[i].val_ptr = true;
-> >  	}
-> >  
-> > -	cfg->num_strings = cfg->num_strings + 1;
-> > -
-> >  	string_len = of_property_count_elems_of_size(dev->of_node,
-> >  						     "qcom,enabled-strings",
-> >  						     sizeof(u32));
-> > -- 
-> > 2.33.0
-> > 
+Please use phylink_autoneg_inband(mode) here.
+
+> +		new |= BMCR_ANENABLE;
+> +	else
+> +		new &= ~BMCR_ANENABLE;
+> +	if (old != new) {
+> +		changed = true;
+> +		gem_writel(bp, PCSCNTRL, new);
+> +	}
+
+There has been the suggestion that we should allow in-band AN to be
+disabled in 1000base-X if we're in in-band mode according to the
+ethtool state. I have a patch that adds that.
+
+> +	return changed;
+> +}
+> +
+> +static int macb_pcs_config(struct phylink_pcs *pcs, unsigned int mode,
+> +			   phy_interface_t interface,
+> +			   const unsigned long *advertising,
+> +			   bool permit_pause_to_mac)
+> +{
+> +	bool changed = false;
+> +	struct macb *bp = pcs_to_macb(pcs);
+> +	u16 old, new;
+> +	unsigned long flags;
+> +
+> +	spin_lock_irqsave(&bp->lock, flags);
+> +	old = new = gem_readl(bp, NCFGR);
+> +	if (interface == PHY_INTERFACE_MODE_SGMII) {
+> +		new |= GEM_BIT(SGMIIEN);
+> +	} else if (interface == PHY_INTERFACE_MODE_1000BASEX) {
+> +		new &= ~GEM_BIT(SGMIIEN);
+> +	} else {
+> +		spin_lock_irqsave(&bp->lock, flags);
+> +		return -EOPNOTSUPP;
+
+You can't actually abort at this point - phylink will print the error
+and carry on regardless. The checking is all done via the validate()
+callback and if that indicates the interface mode is acceptable, then
+it should be accepted.
+
+>  static const struct phylink_pcs_ops macb_phylink_usx_pcs_ops = {
+>  	.pcs_get_state = macb_usx_pcs_get_state,
+>  	.pcs_config = macb_usx_pcs_config,
+> -	.pcs_link_up = macb_usx_pcs_link_up,
+>  };
+>  
+>  static const struct phylink_pcs_ops macb_phylink_pcs_ops = {
+>  	.pcs_get_state = macb_pcs_get_state,
+> -	.pcs_an_restart = macb_pcs_an_restart,
+
+You don't want to remove this. When operating in 1000BASE-X mode, it
+will be called if a restart is required (e.g. macb_pcs_config()
+returning positive, or an ethtool request.) You need to keep the empty
+function. That may also help the diff algorithm to produce a cleaner
+patch too.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
