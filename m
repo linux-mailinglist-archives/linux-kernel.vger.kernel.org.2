@@ -2,114 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D99642210A
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 10:46:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFD02422114
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 10:47:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233002AbhJEIrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 04:47:52 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:44010 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230526AbhJEIru (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 04:47:50 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id E058020272;
-        Tue,  5 Oct 2021 08:45:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1633423559; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ExidNuWCqnGf0/HJrIEctui2gYVjZ4NbIpRJWFCI2Ns=;
-        b=G2H3j7aIGcNz3ZWnQywfH18Mj7c4BPPgP6FRHA3/POFjoE9msPfEhr/FR0wPv0NDZqlUbr
-        0cKUAH9ZcbBwP1XgtaNQg8b+mmiS/KhpYtuynnFeqFg+NevZT6qnGUEtGheCl+2tpH9BWd
-        qAvh7CLwe+eHqXDjSYUthh3oBt1a0C0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1633423559;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ExidNuWCqnGf0/HJrIEctui2gYVjZ4NbIpRJWFCI2Ns=;
-        b=6An5bkniBrbnJyKoLShgnPmmt3vlLrcqP1zbiVqFUIkUQWnvef8kZ+qWsBwpKrOskSI9Mw
-        xRSFWPkPnSiYq7DA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4773C1342A;
-        Tue,  5 Oct 2021 08:45:59 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id RSmoDscQXGH8bAAAMHmgww
-        (envelope-from <osalvador@suse.de>); Tue, 05 Oct 2021 08:45:59 +0000
-Date:   Tue, 5 Oct 2021 10:45:57 +0200
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        David Hildenbrand <david@redhat.com>,
-        Michal Hocko <mhocko@suse.com>, Zi Yan <ziy@nvidia.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Naoya Horiguchi <naoya.horiguchi@linux.dev>,
-        David Rientjes <rientjes@google.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v3 2/5] mm/cma: add cma_pages_valid to determine if pages
- are in CMA
-Message-ID: <20211005084557.GB20412@linux>
-References: <20211001175210.45968-1-mike.kravetz@oracle.com>
- <20211001175210.45968-3-mike.kravetz@oracle.com>
+        id S233077AbhJEIsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 04:48:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53908 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232511AbhJEIsv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 04:48:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B07C6120F;
+        Tue,  5 Oct 2021 08:46:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633423620;
+        bh=yXhzl3h0sKXQyctT2YSx7eahcPkhmMrjQ5NDPOPyW5Y=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=WW3Z5pCirJQ5ppdZwXQ/8Veh8W4ckTb7Az8gQ7DXJwA+1BGKe/m/fO9T2ZMAvlCn2
+         YCXsQ3q16130lQV0eFC47Kk5grsl3+5GNbtFzsINhV6ZiblJ1Ye5TZmff2yulmWLxS
+         DfUpwvt5fc/b3zU9uhwqvO2ia2ApgAVIIfQ2knkmdAYr8oC7EmMXfA9Irt5iVd8tUi
+         2dz6ShZfRHmwjNhxEsQv/v6QxF5GDFKNg0ATAcmm9UX0gwULEEuAFJcbweYZnpiYHG
+         Bv6KjyJAEKWMiOzc6MBhop2b/q0tN4oq1rUAmOh+hfjd7pCGsVQB3pmsiOqlkYC6yZ
+         ZiFcZz9GEnvKA==
+Date:   Tue, 5 Oct 2021 10:46:56 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 RESEND] mfd: hi6421-spmi-pmic: cleanup drvdata
+Message-ID: <20211005104656.22d450b6@coco.lan>
+In-Reply-To: <YVwImlQYPhc3/nhi@google.com>
+References: <b6102d6db357ebb5c937f460a564c6f26281e403.1631709890.git.mchehab+huawei@kernel.org>
+        <YVwD2sPZMCtwP9yf@google.com>
+        <20211005095603.0e204776@coco.lan>
+        <YVwImlQYPhc3/nhi@google.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211001175210.45968-3-mike.kravetz@oracle.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 01, 2021 at 10:52:07AM -0700, Mike Kravetz wrote:
-> +bool cma_pages_valid(struct cma *cma, const struct page *pages,
-> +		     unsigned long count)
-> +{
-> +	unsigned long pfn;
-> +
-> +	if (!cma || !pages)
-> +		return false;
-> +
-> +	pfn = page_to_pfn(pages);
-> +
-> +	if (pfn < cma->base_pfn || pfn >= cma->base_pfn + cma->count)
-> +		return false;
-> +
-> +	return true;
-> +}
-> +
->  /**
->   * cma_release() - release allocated pages
->   * @cma:   Contiguous memory region for which the allocation is performed.
-> @@ -539,16 +555,13 @@ bool cma_release(struct cma *cma, const struct page *pages,
->  {
->  	unsigned long pfn;
->  
-> -	if (!cma || !pages)
-> +	if (!cma_pages_valid(cma, pages, count))
->  		return false;
->  
->  	pr_debug("%s(page %p, count %lu)\n", __func__, (void *)pages, count);
->  
->  	pfn = page_to_pfn(pages);
->  
-> -	if (pfn < cma->base_pfn || pfn >= cma->base_pfn + cma->count)
-> -		return false;
-> -
+Em Tue, 5 Oct 2021 09:11:06 +0100
+Lee Jones <lee.jones@linaro.org> escreveu:
 
-After this patch, the timing of printing the debug statement changes as we back
-off earlier.
-You might want to point that out in the changelog in case someone wonders why.
+> On Tue, 05 Oct 2021, Mauro Carvalho Chehab wrote:
+> 
+> > Em Tue, 5 Oct 2021 08:50:50 +0100
+> > Lee Jones <lee.jones@linaro.org> escreveu:
+> >   
+> > > On Wed, 15 Sep 2021, Mauro Carvalho Chehab wrote:
+> > >   
+> > > > There are lots of fields at struct hi6421_spmi_pmic that aren't
+> > > > used. In a matter of fact, only regmap is needed.
+> > > > 
+> > > > So, drop the struct as a hole, and set just the regmap as
+> > > > the drvdata.
+> > > > 
+> > > > Acked-by: Mark Brown <broonie@kernel.org>
+> > > > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> > > > ---
+> > > >  drivers/mfd/hi6421-spmi-pmic.c           | 16 +++++----------
+> > > >  drivers/misc/hi6421v600-irq.c            |  9 ++++-----
+> > > >  drivers/regulator/hi6421v600-regulator.c | 10 +++++-----
+> > > >  include/linux/mfd/hi6421-spmi-pmic.h     | 25 ------------------------
+> > > >  4 files changed, 14 insertions(+), 46 deletions(-)
+> > > >  delete mode 100644 include/linux/mfd/hi6421-spmi-pmic.h    
+> > > 
+> > > For my own reference (apply this as-is to your sign-off block):
+> > > 
+> > >   Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
+> > > 
+> > > I intend to take this with a Misc Ack.  
+> > 
+> > Hi Lee,
+> > 
+> > Greg already gave you:
+> > 
+> > 	https://lore.kernel.org/all/YVLA14jbwqXjNM2f@kroah.com/  
+> 
+> Yes, I found that after I replied to this one.
+> 
+> I was having some trouble applying it with `b4` just as you replied:
+> 
+>   https://lore.kernel.org/tools/CAF2Aj3icJtU+wacosM-LO2aqMChWL69T6bf7dK3xqPMSk6Ux3w@mail.gmail.com/T/#u
 
+Weird. Yeah, getting acks are sometimes problematic. I remember
+having issues with that (a long time ago) with patchwork too.
 
--- 
-Oscar Salvador
-SUSE Labs
+> I fixed the spelling/grammar mistakes and applied the patch.
+
+Thank you!
+
+Best regards,
+Mauro
