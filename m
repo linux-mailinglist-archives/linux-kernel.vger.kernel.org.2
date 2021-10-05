@@ -2,92 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A02A34233C5
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 00:46:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B94EE4233BC
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 00:46:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236906AbhJEWr7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 18:47:59 -0400
-Received: from mail-oi1-f169.google.com ([209.85.167.169]:46931 "EHLO
-        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236866AbhJEWr4 (ORCPT
+        id S236700AbhJEWry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 18:47:54 -0400
+Received: from mail-ot1-f47.google.com ([209.85.210.47]:38541 "EHLO
+        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230113AbhJEWrw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 18:47:56 -0400
-Received: by mail-oi1-f169.google.com with SMTP id s69so1319201oie.13;
-        Tue, 05 Oct 2021 15:46:05 -0700 (PDT)
+        Tue, 5 Oct 2021 18:47:52 -0400
+Received: by mail-ot1-f47.google.com with SMTP id c6-20020a9d2786000000b005471981d559so813472otb.5;
+        Tue, 05 Oct 2021 15:46:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=1pxND7BCUQcsSSy7TZxTVSdJeMVhe7/yxhkqlpU5RsE=;
-        b=qhHXB0KOH9CJzlOz5wyVTJohOosZCupknk+SiLbXzmTUEMrkrB4K2dHyeqgaYS5t/7
-         dKlEX8vGbCkIZEE5L8Rt5vX3ZeDZzCob1vYd/wIVkYztTCxnY0dD8dC+hZTmg+A4U1mT
-         PRdD6X3zHbgtmLinUiyqQFkYctdQw2A16f2Hi3EUGr7ysagE/bMsvbGS1kgRjTe1YThw
-         RbJ6RHTD0o1Dq56HoQxaisWw6m2xixVk/Xhow9T8CXoT2o3maiv8SzKDbZ+OT7ZVl05G
-         8LmwiSmkX5mK0c/sh1eLPIsk3tC+Z9sBbE7kMOSDe6Xm4YQ6WNC7iYVg7FBwQPzzoskB
-         5EHQ==
-X-Gm-Message-State: AOAM533TiLPdFkKLBQE50uzgDy8D43rJ/a/556wsOxlOhjmQbZPgROQg
-        NbabXMtDHpa7SDKrbQsud2zoMjj+nQ==
-X-Google-Smtp-Source: ABdhPJzOguD4l2kCjKfnxpvalktU+y3R8MfzP+cj3IqJDlV+LBYM1M+tbREdb4g60bxvG1vfkOBTew==
-X-Received: by 2002:a05:6808:bcf:: with SMTP id o15mr4696483oik.171.1633473965166;
-        Tue, 05 Oct 2021 15:46:05 -0700 (PDT)
+        bh=7Yvv1Am41pkLFWVRRxtVFFpmmIZ/+MuvB5/QTODKe0c=;
+        b=zZRvGmVXqhxnYzC1VlnglVmmpGaduPuNO3MBn8Lu2vSjztnMCMzpqWuvHUFEOJDjT0
+         MsBN6NDkzodI5FVjcbcMT2Z9ieP6emQs9Q6v6wbSm5cKtzO8xcAhermkLZ/jJvj1EmXV
+         3vrN3NDNo2I/+owL5Ptgstdm/0OyixGn5Gs/tZZC6GnUzLfckjYZQ/VcCeCRzxJ/jxX4
+         Ji6+xbxc9TnQElCYr6wLIdLufdH3J2psaBxmVGkkdSZUkH6A1PFey1Dt8t2qTo/71SnN
+         TnPV7fcnRYF1SlTcn5JkLT21Isbdk5uh5dq4LyzNwLWNbPVnbSCIhgihXNk9ShjDYz97
+         zAxQ==
+X-Gm-Message-State: AOAM530seIUqEFOnxrjG1yrD573c4nNtIZ0vXlmZ9plIXEh6DS8lgadV
+        YPfMzWBhi/cxCaJpo5H8wA==
+X-Google-Smtp-Source: ABdhPJz8rCGrSwA5JycAr4jjywMT6Q9vFnZJCvKui4nCAMdxcCRG96o4SGy+jI6iNtZhTv01VbbH+Q==
+X-Received: by 2002:a9d:6d14:: with SMTP id o20mr17177311otp.57.1633473961337;
+        Tue, 05 Oct 2021 15:46:01 -0700 (PDT)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id k23sm3760510ook.45.2021.10.05.15.46.03
+        by smtp.gmail.com with ESMTPSA id v25sm3684003oov.14.2021.10.05.15.45.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Oct 2021 15:46:04 -0700 (PDT)
-Received: (nullmailer pid 106773 invoked by uid 1000);
+        Tue, 05 Oct 2021 15:46:00 -0700 (PDT)
+Received: (nullmailer pid 106764 invoked by uid 1000);
         Tue, 05 Oct 2021 22:45:59 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Cc:     rohitkr@codeaurora.org, perex@perex.cz, agross@kernel.org,
-        linux-arm-msm@vger.kernel.org, plai@codeaurora.org,
-        devicetree@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com,
-        linux-kernel@vger.kernel.org, bjorn.andersson@linaro.org,
-        srinivas.kandagatla@linaro.org, broonie@kernel.org,
-        robh+dt@kernel.org, bgoswami@codeaurora.org,
-        alsa-devel@alsa-project.org, swboyd@chromium.org,
-        Venkata Prasad Potturu <potturu@codeaurora.org>,
-        judyhsiao@chromium.org
-In-Reply-To: <1633441974-15353-7-git-send-email-srivasam@codeaurora.org>
-References: <1633441974-15353-1-git-send-email-srivasam@codeaurora.org> <1633441974-15353-7-git-send-email-srivasam@codeaurora.org>
-Subject: Re: [PATCH v2 6/9] ASoC: dt-bindings: Add SC7280 sound card bindings
+To:     "H. Nikolaus Schaller" <hns@goldelico.com>
+Cc:     Maxime Ripard <maxime@cerno.tech>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mark Brown <broonie@kernel.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        linux-mips@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        David Airlie <airlied@linux.ie>,
+        dri-devel@lists.freedesktop.org,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        letux-kernel@openphoenux.org, Rob Herring <robh+dt@kernel.org>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Kees Cook <keescook@chromium.org>,
+        Robert Foss <robert.foss@linaro.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        devicetree@vger.kernel.org,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        linux-kernel@vger.kernel.org, Paul Boddie <paul@boddie.org.uk>
+In-Reply-To: <518d5db83e84e3f0326854c5afb53a92e7ae4e41.1633436959.git.hns@goldelico.com>
+References: <cover.1633436959.git.hns@goldelico.com> <518d5db83e84e3f0326854c5afb53a92e7ae4e41.1633436959.git.hns@goldelico.com>
+Subject: Re: [PATCH v5 3/7] dt-bindings: display: Add ingenic,jz4780-dw-hdmi DT Schema
 Date:   Tue, 05 Oct 2021 17:45:59 -0500
-Message-Id: <1633473959.357662.106769.nullmailer@robh.at.kernel.org>
+Message-Id: <1633473959.306315.106759.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 05 Oct 2021 19:22:51 +0530, Srinivasa Rao Mandadapu wrote:
-> Add bindings for lpass sc7280 based soundcards which supports
-> audio over i2s based speaker, soundwire based headset, msm dmics
-> and HDMI Port.
+On Tue, 05 Oct 2021 14:29:15 +0200, H. Nikolaus Schaller wrote:
+> From: Sam Ravnborg <sam@ravnborg.org>
 > 
-> Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
-> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+> Add DT bindings for the hdmi driver for the Ingenic JZ4780 SoC.
+> Based on .txt binding from Zubair Lutfullah Kakakhel
+> 
+> Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
+> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+> Cc: Rob Herring <robh@kernel.org>
+> Cc: devicetree@vger.kernel.org
 > ---
->  .../devicetree/bindings/sound/qcom,lpass-cpu.yaml  | 69 +++++++++++++++++++---
->  1 file changed, 61 insertions(+), 8 deletions(-)
+>  .../bindings/display/ingenic-jz4780-hdmi.yaml | 79 +++++++++++++++++++
+>  1 file changed, 79 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/display/ingenic-jz4780-hdmi.yaml
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
 on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
 yamllint warnings/errors:
+./Documentation/devicetree/bindings/display/ingenic-jz4780-hdmi.yaml:39:5: [warning] wrong indentation: expected 2 but found 4 (indentation)
 
 dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.example.dt.yaml: lpass@62d80000: reg: [[0, 1658351616, 0, 425984], [0, 1659895808, 0, 167936]] is too short
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.example.dt.yaml: lpass@62d80000: reg-names: ['lpass-hdmiif', 'lpass-lpaif'] is too short
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.example.dt.yaml: lpass@62d80000: interrupts: [[0, 160, 1], [0, 268, 1]] is too short
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.example.dt.yaml: lpass@62d80000: interrupt-names: ['lpass-irq-lpaif', 'lpass-irq-hdmi'] is too short
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.example.dt.yaml: lpass@62d80000: iommus: [[4294967295, 4128, 0], [4294967295, 4146, 0]] is too short
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/display/ingenic-jz4780-hdmi.example.dt.yaml: hdmi@10180000: 'clock-names', 'interrupt-parent', 'interrupts', 'reg' do not match any of the regexes: 'pinctrl-[0-9]+'
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/display/ingenic-jz4780-hdmi.yaml
 
 doc reference errors (make refcheckdocs):
 
-See https://patchwork.ozlabs.org/patch/1536654
+See https://patchwork.ozlabs.org/patch/1536624
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
