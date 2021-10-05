@@ -2,94 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF07F422658
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 14:24:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A369342265B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 14:24:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234749AbhJEM0c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 08:26:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44400 "EHLO mail.kernel.org"
+        id S234757AbhJEM0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 08:26:42 -0400
+Received: from mga01.intel.com ([192.55.52.88]:53710 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233784AbhJEM0W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 08:26:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C3CB861425;
-        Tue,  5 Oct 2021 12:24:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633436671;
-        bh=PMEu3vu3IEOanN6r5ndzxe4q8fSyh9+dWvBFRR9BaU4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=tXpWRCmizUMIdKoGi+34DQpQ8yjB8VZfZuGBYKwEsVJE95rErXQd16rtLbaK8T4tL
-         FMz3pnUPtz8MTPuOiojzK7LfrTdjUDhKSza7M2k2I9srzqT5+AJnm7vhLiFNqU9nMO
-         OxPnpGQkoaDqcr1FJXVlgQVINMf3yEBsH4zpf9ZSXebLbpNXSMHLqnv/UumJWC/gPu
-         yeFuVTA2iyfTHZ25he/VIvCeoTltppl/LmBHUbl5OCqDH4Otg7/yC2CNGtbYc9Ucrl
-         MIAmhlIPqeCeUBwrD13yzyS29FGn1vKlushOQ5+RVpC8ZlYAQZ4krIxEaC96hdzUNN
-         7rgt0rfSTp+dQ==
-Date:   Tue, 5 Oct 2021 14:24:28 +0200
-From:   Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Ian Pilcher <arequipeno@gmail.com>, pavel@ucw.cz,
-        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/2] docs: Add block device (blkdev) LED trigger
- documentation
-Message-ID: <20211005142428.6c6c83c8@dellmb>
-In-Reply-To: <YUgtqL4zUEV2YPnQ@infradead.org>
-References: <20210916202127.1216994-1-arequipeno@gmail.com>
-        <20210916202127.1216994-2-arequipeno@gmail.com>
-        <YUQzdyG+WWoiJ2I9@kroah.com>
-        <e09257e0-ce95-623c-3a04-cc033aa9fec2@gmail.com>
-        <YUWQSlXjIb58eCJZ@kroah.com>
-        <YUgtqL4zUEV2YPnQ@infradead.org>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S234744AbhJEM0j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 08:26:39 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10127"; a="248983455"
+X-IronPort-AV: E=Sophos;i="5.85,348,1624345200"; 
+   d="scan'208";a="248983455"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2021 05:24:47 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,348,1624345200"; 
+   d="scan'208";a="559302890"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by FMSMGA003.fm.intel.com with ESMTP; 05 Oct 2021 05:24:45 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id AA5131C8; Tue,  5 Oct 2021 15:24:51 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Bamvor Jian Zhang <bamv2005@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Kent Gibson <warthog618@gmail.com>
+Subject: [PATCH v3 1/1] gpio: mockup: Convert to use software nodes
+Date:   Tue,  5 Oct 2021 15:24:49 +0300
+Message-Id: <20211005122449.16296-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 20 Sep 2021 07:43:52 +0100
-Christoph Hellwig <hch@infradead.org> wrote:
+The gpio-mockup driver creates the properties that are shared between
+platform and GPIO devices. Because of that, the properties may not
+be removed at the proper point of time without provoking a use-after-free
+as shown in the following backtrace:
 
-> On Sat, Sep 18, 2021 at 09:07:54AM +0200, Greg KH wrote:
-> > > Honestly, I wasn't particularly enthusiastic about it in the first
-> > > place; it feels like something that should be done in user space.
-> > >  I wouldn't have included it if I didn't have to make a writable
-> > > copy of the buffer anyway, in order to trim a trailing newline.
-> > > 
-> > > I can certainly remove the re-check logic.  The end result will
-> > > be an API that is slightly less "user friendly" in return for
-> > > saving a bit of pointer arithmetic and a 5-byte memcpy().  
-> > 
-> > Just use the kernel block device name and that way you do not have
-> > to parse anything as it is unique and no paths are having to be
-> > followed.
-> > 
-> > That's the way that other LED apis are working, right?  
-> 
-> The "kernel block device name" is the a block device special path
-> that a normal VFS path lookup is done on.  This is the preferred block
-> device API used by everyone.  And yes, this includes resolving
-> symlinks. The only other API is by dev_t, but it is highly
-> discouraged and should really not grow any new users.
+  refcount_t: underflow; use-after-free.
+  WARNING: CPU: 0 PID: 103 at lib/refcount.c:28 refcount_warn_saturate+0xd1/0x120
+  ...
+  Call Trace:
+  kobject_put+0xdc/0xf0
+  software_node_notify_remove+0xa8/0xc0
+  device_del+0x15a/0x3e0
 
-Christoph,
+That's why the driver has to manage the lifetime of the software nodes
+by itself.
 
-/sys/class/block lists block devices' kernel object names.
-I don't understand why can't blk API provide a function returns a block
-device given such name as seen in /sys/class/block directory.
+The problem originates from the old device_add_properties() API, but
+has been only revealed after the commit bd1e336aa853 ("driver core: platform:
+Remove platform_device_add_properties()"). Hence, it's used as a landmark
+for backporting.
 
-Can you elaborate on this?
+Fixes: bd1e336aa853 ("driver core: platform: Remove platform_device_add_properties()")
+Reported-and-tested-by: Kent Gibson <warthog618@gmail.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+v3: fixed tag, more grammar fixes
+ drivers/gpio/gpio-mockup.c | 22 +++++++++++++++++++---
+ 1 file changed, 19 insertions(+), 3 deletions(-)
 
-It seems really strange to me to not be able to do
-  cd /sys/class/leds/<LED>
-  echo blkdev >trigger
-  echo sda1 >block_device
-and instead having to do (as the last command)
-  echo /dev/sda1 >block_device
+diff --git a/drivers/gpio/gpio-mockup.c b/drivers/gpio/gpio-mockup.c
+index 0a9d746a0fe0..8b147b565e92 100644
+--- a/drivers/gpio/gpio-mockup.c
++++ b/drivers/gpio/gpio-mockup.c
+@@ -478,8 +478,18 @@ static void gpio_mockup_unregister_pdevs(void)
+ {
+ 	int i;
+ 
+-	for (i = 0; i < GPIO_MOCKUP_MAX_GC; i++)
+-		platform_device_unregister(gpio_mockup_pdevs[i]);
++	for (i = 0; i < GPIO_MOCKUP_MAX_GC; i++) {
++		struct platform_device *pdev;
++		struct fwnode_handle *fwnode;
++
++		pdev = gpio_mockup_pdevs[i];
++		if (!pdev)
++			continue;
++
++		fwnode = dev_fwnode(&pdev->dev);
++		platform_device_unregister(pdev);
++		fwnode_remove_software_node(fwnode);
++	}
+ }
+ 
+ static __init char **gpio_mockup_make_line_names(const char *label,
+@@ -508,6 +518,7 @@ static int __init gpio_mockup_register_chip(int idx)
+ 	struct property_entry properties[GPIO_MOCKUP_MAX_PROP];
+ 	struct platform_device_info pdevinfo;
+ 	struct platform_device *pdev;
++	struct fwnode_handle *fwnode;
+ 	char **line_names = NULL;
+ 	char chip_label[32];
+ 	int prop = 0, base;
+@@ -536,13 +547,18 @@ static int __init gpio_mockup_register_chip(int idx)
+ 					"gpio-line-names", line_names, ngpio);
+ 	}
+ 
++	fwnode = fwnode_create_software_node(properties, NULL);
++	if (IS_ERR(fwnode))
++		return PTR_ERR(fwnode);
++
+ 	pdevinfo.name = "gpio-mockup";
+ 	pdevinfo.id = idx;
+-	pdevinfo.properties = properties;
++	pdevinfo.fwnode = fwnode;
+ 
+ 	pdev = platform_device_register_full(&pdevinfo);
+ 	kfree_strarray(line_names, ngpio);
+ 	if (IS_ERR(pdev)) {
++		fwnode_remove_software_node(fwnode);
+ 		pr_err("error registering device");
+ 		return PTR_ERR(pdev);
+ 	}
+-- 
+2.33.0
 
-And whas should we show when /dev/sda1 is paried to the trigger, and
-userspace reads the block_device sysfs file? Should we show the full
-path which was given when pairing, even if it may not be valid anymore?
-(Such as when the device file is removed from /dev.)
-
-Marek
