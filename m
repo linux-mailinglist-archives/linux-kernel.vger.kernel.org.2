@@ -2,53 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A632B422A7F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:13:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55C61422A81
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:13:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236407AbhJEOO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 10:14:57 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:51328 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235302AbhJEOOA (ORCPT
+        id S236446AbhJEOPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 10:15:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40898 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235599AbhJEOOC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 10:14:00 -0400
-Date:   Tue, 05 Oct 2021 14:12:07 -0000
+        Tue, 5 Oct 2021 10:14:02 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FE59C061786;
+        Tue,  5 Oct 2021 07:12:10 -0700 (PDT)
+Date:   Tue, 05 Oct 2021 14:12:08 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1633443128;
+        s=2020; t=1633443129;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=5LbmlTMyhAyy+4IodFqJpZp/kv+c0QJufYRXZCIU4Nc=;
-        b=VseMxB5LF4h+p9cN2EspA2ZlSpZXd/7ihQH2hLSXVFDSL+Xx2cGaWgNnLXM4K7JN2EtFXD
-        qR4xQjOiB0QfqRbCweJu20c4Fb6FKwtPGkZvL8QNiCnwBHf3PwTeeGJ8XlsyFIUkCz0ITo
-        +EBoAl/lc1htNTmiWo6uSO/NLFKkUheFtgmyqFsouNITMJfnH4bJNp8XCpNiAS7WoNpY12
-        5lna3v410lazwtU58IhfF+gPrvcs4Cv7XzefWsgsfm5IGsUsIH6naa+V9L1o0cMhmihEr4
-        bZVNCQDmCcyiD4A3uvEURhvv37WtZLbVJPvQQa/h9jefK6uYWxgNLhvXeFFqJQ==
+        bh=zIAvYn42rhROY5E6oqRvQcMIt/GxIN+XR+yIa+6O5Pw=;
+        b=Nlkwv49nuhTTnhOYN7xz2FqoCZRVnXMTzhZdzqd3uCMKF1mtXr4gXIKzhp/WAFz+uO7uMf
+        Dj8T4lapWW+IR+GrmMdSNKMfLGUWFDteO6cvJmFIU31WywBme9CSfyXnajVr3124s5VyuG
+        ZIZ0kzh3N06NAxLwvEh0ZdzPbZcGUFqqzF6z8CJP1VuSoLJ8a5GHHZ4pvyXiFSVN7xrk6v
+        pr5oEYzCYqUNXV4IDxErSL6ntd6QGWMzTZ6A89AWLsqatNe5sBKwLoSr/A5ODa2c6j/jhZ
+        HwAdL6CS1cBv7vbiMpM+waLrtw4+QnLxDO7OtZPVQeV/yblt1thFucIbfueBOA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1633443128;
+        s=2020e; t=1633443129;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=5LbmlTMyhAyy+4IodFqJpZp/kv+c0QJufYRXZCIU4Nc=;
-        b=rDRrB00/n/wwL+eaklc6M/QjOJSjllf4lIilVWFjCCsGxx0xqzcsnJvVcAm04/B7lEZfxm
-        w1W+QiFsQExK6pBw==
+        bh=zIAvYn42rhROY5E6oqRvQcMIt/GxIN+XR+yIa+6O5Pw=;
+        b=ZT/Lk69ATGolcPINR8p/7TfNHypsEHv8M6hk0goiJclSBNuAnx2bv5F2Q5lza5xtTPgIPD
+        b+/wnjB47aQ8pYCA==
 From:   "tip-bot2 for Yafang Shao" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/rt: Support sched_stat_runtime tracepoint for
- RT sched class
+Subject: [tip: sched/core] sched: Introduce task block time in schedstats
 Cc:     Yafang Shao <laoar.shao@gmail.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210905143547.4668-6-laoar.shao@gmail.com>
-References: <20210905143547.4668-6-laoar.shao@gmail.com>
+In-Reply-To: <20210905143547.4668-5-laoar.shao@gmail.com>
+References: <20210905143547.4668-5-laoar.shao@gmail.com>
 MIME-Version: 1.0
-Message-ID: <163344312778.25758.1766433794457376552.tip-bot2@tip-bot2>
+Message-ID: <163344312843.25758.4573162866545999201.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -59,44 +61,79 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     ed7b564cfdd0668efbd739d0b4e2d67797293f32
-Gitweb:        https://git.kernel.org/tip/ed7b564cfdd0668efbd739d0b4e2d67797293f32
+Commit-ID:     847fc0cd0664fcb2a08ac66df6b85935361ec454
+Gitweb:        https://git.kernel.org/tip/847fc0cd0664fcb2a08ac66df6b85935361ec454
 Author:        Yafang Shao <laoar.shao@gmail.com>
-AuthorDate:    Sun, 05 Sep 2021 14:35:44 
+AuthorDate:    Sun, 05 Sep 2021 14:35:43 
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Tue, 05 Oct 2021 15:51:49 +02:00
+CommitterDate: Tue, 05 Oct 2021 15:51:48 +02:00
 
-sched/rt: Support sched_stat_runtime tracepoint for RT sched class
+sched: Introduce task block time in schedstats
 
-The runtime of a RT task has already been there, so we only need to
-add a tracepoint.
-
-One difference between fair task and RT task is that there is no vruntime
-in RT task. To reuse the sched_stat_runtime tracepoint, '0' is passed as
-vruntime for RT task.
-
-The output of this tracepoint for RT task as follows,
-          stress-9748    [039] d.h.   113.519352: sched_stat_runtime: comm=stress pid=9748 runtime=997573 [ns] vruntime=0 [ns]
-          stress-9748    [039] d.h.   113.520352: sched_stat_runtime: comm=stress pid=9748 runtime=997627 [ns] vruntime=0 [ns]
-          stress-9748    [039] d.h.   113.521352: sched_stat_runtime: comm=stress pid=9748 runtime=998203 [ns] vruntime=0 [ns]
+Currently in schedstats we have sum_sleep_runtime and iowait_sum, but
+there's no metric to show how long the task is in D state.  Once a task in
+D state, it means the task is blocked in the kernel, for example the
+task may be waiting for a mutex. The D state is more frequent than
+iowait, and it is more critital than S state. So it is worth to add a
+metric to measure it.
 
 Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lore.kernel.org/r/20210905143547.4668-6-laoar.shao@gmail.com
+Link: https://lore.kernel.org/r/20210905143547.4668-5-laoar.shao@gmail.com
 ---
- kernel/sched/rt.c | 2 ++
- 1 file changed, 2 insertions(+)
+ include/linux/sched.h | 2 ++
+ kernel/sched/debug.c  | 6 ++++--
+ kernel/sched/stats.c  | 1 +
+ 3 files changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
-index 95a7c3a..5d25111 100644
---- a/kernel/sched/rt.c
-+++ b/kernel/sched/rt.c
-@@ -1012,6 +1012,8 @@ static void update_curr_rt(struct rq *rq)
- 	schedstat_set(curr->stats.exec_max,
- 		      max(curr->stats.exec_max, delta_exec));
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index 2bc4c72..193e16e 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -503,6 +503,8 @@ struct sched_statistics {
  
-+	trace_sched_stat_runtime(curr, delta_exec, 0);
+ 	u64				block_start;
+ 	u64				block_max;
++	s64				sum_block_runtime;
 +
- 	curr->se.sum_exec_runtime += delta_exec;
- 	account_group_exec_runtime(curr, delta_exec);
+ 	u64				exec_max;
+ 	u64				slice_max;
  
+diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
+index 76fd38e..26fac5e 100644
+--- a/kernel/sched/debug.c
++++ b/kernel/sched/debug.c
+@@ -540,10 +540,11 @@ print_task(struct seq_file *m, struct rq *rq, struct task_struct *p)
+ 		(long long)(p->nvcsw + p->nivcsw),
+ 		p->prio);
+ 
+-	SEQ_printf(m, "%9Ld.%06ld %9Ld.%06ld %9Ld.%06ld",
++	SEQ_printf(m, "%9lld.%06ld %9lld.%06ld %9lld.%06ld %9lld.%06ld",
+ 		SPLIT_NS(schedstat_val_or_zero(p->stats.wait_sum)),
+ 		SPLIT_NS(p->se.sum_exec_runtime),
+-		SPLIT_NS(schedstat_val_or_zero(p->stats.sum_sleep_runtime)));
++		SPLIT_NS(schedstat_val_or_zero(p->stats.sum_sleep_runtime)),
++		SPLIT_NS(schedstat_val_or_zero(p->stats.sum_block_runtime)));
+ 
+ #ifdef CONFIG_NUMA_BALANCING
+ 	SEQ_printf(m, " %d %d", task_node(p), task_numa_group_id(p));
+@@ -977,6 +978,7 @@ void proc_sched_show_task(struct task_struct *p, struct pid_namespace *ns,
+ 		u64 avg_atom, avg_per_cpu;
+ 
+ 		PN_SCHEDSTAT(sum_sleep_runtime);
++		PN_SCHEDSTAT(sum_block_runtime);
+ 		PN_SCHEDSTAT(wait_start);
+ 		PN_SCHEDSTAT(sleep_start);
+ 		PN_SCHEDSTAT(block_start);
+diff --git a/kernel/sched/stats.c b/kernel/sched/stats.c
+index fad781c..07dde29 100644
+--- a/kernel/sched/stats.c
++++ b/kernel/sched/stats.c
+@@ -82,6 +82,7 @@ void __update_stats_enqueue_sleeper(struct rq *rq, struct task_struct *p,
+ 
+ 		__schedstat_set(stats->block_start, 0);
+ 		__schedstat_add(stats->sum_sleep_runtime, delta);
++		__schedstat_add(stats->sum_block_runtime, delta);
+ 
+ 		if (p) {
+ 			if (p->in_iowait) {
