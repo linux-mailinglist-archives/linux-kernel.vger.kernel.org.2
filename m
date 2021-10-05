@@ -2,88 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEB00422006
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 09:59:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 700E44221E5
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 11:13:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232947AbhJEIBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 04:01:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37240 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231816AbhJEIBi (ORCPT
+        id S233456AbhJEJPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 05:15:18 -0400
+Received: from unicom145.biz-email.net ([210.51.26.145]:53608 "EHLO
+        unicom145.biz-email.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232871AbhJEJPR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 04:01:38 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 315DFC061745;
-        Tue,  5 Oct 2021 00:59:48 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HNqk73Tmdz4xbC;
-        Tue,  5 Oct 2021 18:59:42 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1633420785;
-        bh=wfeXA7dMbbU3zv2UjIpe4e0tS5IB1hPNSHNMLRMmit0=;
-        h=Date:From:To:Cc:Subject:From;
-        b=uSvqMIZ9QTCXc/u82OEuuMkVqDfJreRQ0jmrC1bS2ankHyCq8l2sDdMuHU8WXr9/Q
-         /iVY2/IFrCLunSKHnPjVSMLSl/lawhO78oS4l2HzRu9C0VJs0BZyoyFscVRgDKRw4B
-         j1StM8W3TEQTj7J/DOHc/XfPJ2jtrS354VkKVAKdOSpMLBQxrmSq7L+FGHKPq2ZG6v
-         3Vv/fuZ8Q0MWSRGrOu5YphBqQ5YdfDABUA2wSeAE59MVbd2JzNt0BgM1zBYwmkswrM
-         XEHfxYEHkiW46Bu/RQLXQWIULy5nW/b3NGzwU2c6qeOLGGCO1LE5i2sjk9tH9AZnsw
-         OiZIMiOyiF1Zg==
-Date:   Tue, 5 Oct 2021 18:59:40 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>
-Cc:     Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the drm-misc tree
-Message-ID: <20211005185940.382720e7@canb.auug.org.au>
+        Tue, 5 Oct 2021 05:15:17 -0400
+Received: from ([60.208.111.195])
+        by unicom145.biz-email.net ((LNX1044)) with ASMTP (SSL) id ZLT00021;
+        Tue, 05 Oct 2021 17:13:21 +0800
+Received: from localhost.localdomain (10.200.104.119) by
+ jtjnmail201606.home.langchao.com (10.100.2.6) with Microsoft SMTP Server id
+ 15.1.2308.14; Tue, 5 Oct 2021 17:13:20 +0800
+From:   Kai Song <songkai01@inspur.com>
+To:     <richard@nod.at>, <miquel.raynal@bootlin.com>, <vigneshr@ti.com>
+CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        Kai Song <songkai01@inspur.com>
+Subject: [PATCH] ubi: Fix a mistake in comment
+Date:   Tue, 5 Oct 2021 14:56:55 +0800
+Message-ID: <20211005065656.13497-1-songkai01@inspur.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/DzN9LhCaJE=kJIITRXpYg2U";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.200.104.119]
+tUid:   2021100517132163fb41eca9b96765dce7d25a84d1c897
+X-Abuse-Reports-To: service@corp-email.com
+Abuse-Reports-To: service@corp-email.com
+X-Complaints-To: service@corp-email.com
+X-Report-Abuse-To: service@corp-email.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/DzN9LhCaJE=kJIITRXpYg2U
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Fixes: 2a734bb8d502 ("UBI: use debugfs for the extra checks knobs")
+There is a mistake in docstrings, it should be ubi_debugfs_exit_dev
+instead of dbg_debug_exit_dev.
 
-Hi all,
+Signed-off-by: Kai Song <songkai01@inspur.com>
+---
+ drivers/mtd/ubi/debug.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-After merging the drm-misc tree, today's linux-next build (htmldocs)
-produced this warning:
+diff --git a/drivers/mtd/ubi/debug.c b/drivers/mtd/ubi/debug.c
+index 3c0c8eca4d51..31d427ee191a 100644
+--- a/drivers/mtd/ubi/debug.c
++++ b/drivers/mtd/ubi/debug.c
+@@ -562,7 +562,7 @@ int ubi_debugfs_init_dev(struct ubi_device *ubi)
+ }
+ 
+ /**
+- * dbg_debug_exit_dev - free all debugfs files corresponding to device @ubi
++ * ubi_debugfs_exit_dev - free all debugfs files corresponding to device @ubi
+  * @ubi: UBI device description object
+  */
+ void ubi_debugfs_exit_dev(struct ubi_device *ubi)
+-- 
+2.27.0
 
-include/linux/dma-buf.h:456: warning: Function parameter or member 'cb_in' =
-not described in 'dma_buf'
-include/linux/dma-buf.h:456: warning: Function parameter or member 'cb_out'=
- not described in 'dma_buf'
-
-Introduced by commit
-
-  6b51b02a3a0a ("dma-buf: fix and rework dma_buf_poll v7")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/DzN9LhCaJE=kJIITRXpYg2U
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFcBewACgkQAVBC80lX
-0Gz87Qf/ejwjqlHJAHNP2eNsQJh+/0/HggBItJofeqDAXd9uPH2oap2ZHo85ot2P
-CIn/vLl4N290pS+YVWc+D8rnWiytgb+ASFjCBVaSnIIqzN2SIMvTOHfHtTvZuGTF
-owhBNWD9TkdZwJqUemERiHB3J9aHoH5RyHqhMu+drFivhTAIn/YR7suHlTuw4ogU
-m1G01RjLJkkEGx23S9uFV+Dz7/zt7gYe70Y7Q3/I5xj0Od5sm4JCz/sUJjMoOMpH
-UnETNYkC5tzh4ojcQz9LnoXhPIzPRuB6R+jFBD3nzCqG7zjDbAWmSbMFY9RHYfVr
-+ZsCqKnBkjVOFXdQFXAltDt3piqAGQ==
-=13EE
------END PGP SIGNATURE-----
-
---Sig_/DzN9LhCaJE=kJIITRXpYg2U--
