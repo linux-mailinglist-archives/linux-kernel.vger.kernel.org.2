@@ -2,135 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 133B9421F83
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 09:37:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BC10421F86
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 09:38:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232778AbhJEHjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 03:39:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22224 "EHLO
+        id S232511AbhJEHkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 03:40:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29506 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231816AbhJEHjW (ORCPT
+        by vger.kernel.org with ESMTP id S230526AbhJEHkO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 03:39:22 -0400
+        Tue, 5 Oct 2021 03:40:14 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633419452;
+        s=mimecast20190719; t=1633419504;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=49p/2VYCpgzSUPriPCQYlTSgRQVf+nlRSvbtUTXuaMU=;
-        b=B9AlEbB19+f2vB8LRNxY2s6udT6AyA7/+cldz5bmp+wbIdAXzyxZ874uM417sRhhZrDoNN
-        HmwHCTr1l4p3gGsIIjo53HTG+KHyAWoqVtb8/5aJVfzLCJf8AN7YBthU2o63Op5AADN86a
-        Rksc/Mxhqxnv3IgGiLWsfwJ23wHYmd0=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-399-_89JLQ_oOW-f1q6W0n7jzQ-1; Tue, 05 Oct 2021 03:37:31 -0400
-X-MC-Unique: _89JLQ_oOW-f1q6W0n7jzQ-1
-Received: by mail-ed1-f69.google.com with SMTP id k10-20020a508aca000000b003dad77857f7so3862074edk.22
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 00:37:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=49p/2VYCpgzSUPriPCQYlTSgRQVf+nlRSvbtUTXuaMU=;
-        b=LPkuisyUtb8fXUjmxVU6fgvmM6BgzgA+So9794M2zZkzuPQjbwn5ie2FC4SRLWR/ic
-         2xwCsXTRSe208cuPXhy/l5pXmd/QIuui3Xvntai/KHmlQ4YnDEdde3UvAy0uiZFGqhn3
-         oNQZIVINiEeWs/YePaCUUBn/MP48cwgQasTzBC4R4T8R4hKWpxrvCLqWLpi3cpBKsEAI
-         DXQThTSiQRx6rlP25RZ7lwRXW7Sr0bYL7MM7AueZzFVaQTZvPaFAS4ePgH7BU6pj00za
-         kWWAheLPGHnL8POrqfsdd/thhSvkSNvU7v5noOXgWFJFxr6CVV0eawsXzvRblV0v0PHF
-         NWYA==
-X-Gm-Message-State: AOAM533VtTWYO+Wcq3HR9KlLRdokqiLYG2FfUVNwC0FcJINYvXzHil12
-        EVM4yTGfQqoCpHgkB8nQgrxi92+FRKgoHReKcG3GOBpVfFL2Ic/LxP6tz7rBahExUG8gTW0Yxbd
-        4vHeNM7UAuZ1YRC0pWUi4sy3f
-X-Received: by 2002:aa7:d78e:: with SMTP id s14mr23518882edq.171.1633419449697;
-        Tue, 05 Oct 2021 00:37:29 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyYKBVFrLpIIpPhu4m8RSBp05E7KVTz4BenJWgbIUX3s52OfAYe/V6Krl1NZzZwvRsRNqEHBQ==
-X-Received: by 2002:aa7:d78e:: with SMTP id s14mr23518858edq.171.1633419449429;
-        Tue, 05 Oct 2021 00:37:29 -0700 (PDT)
-Received: from [192.168.10.118] ([93.56.162.200])
-        by smtp.gmail.com with ESMTPSA id d10sm7349501eja.81.2021.10.05.00.37.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Oct 2021 00:37:28 -0700 (PDT)
-Message-ID: <ea3a9bab-28f2-48e7-761e-b41d7bc7d0a5@redhat.com>
-Date:   Tue, 5 Oct 2021 09:37:27 +0200
+        bh=EtTBfJ7umQKOo9c4zQtEMAqccC4CaaUVFj0BPcVpmPk=;
+        b=XiJlvClezweNM6eqgBAgka1GbG0/XUBZCiCbFpQ/qYJ9/NMvGQiXq6uYNtK5WDT7AIglRk
+        MeBdAmWd9pn+yzlyrSydXIsYJV6fpBh3Ly9e9zJsc6/8U5gEM1jWAVrRprzRTwDBxwA1Kq
+        +yoNxUlqZ6s8lgKxrIXFgoTIb5Ue1Ww=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-520-N9l1X2KRMuymU2ciTndIsQ-1; Tue, 05 Oct 2021 03:38:21 -0400
+X-MC-Unique: N9l1X2KRMuymU2ciTndIsQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F331DA40C0;
+        Tue,  5 Oct 2021 07:38:19 +0000 (UTC)
+Received: from localhost (unknown [10.39.192.167])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id D750F18A50;
+        Tue,  5 Oct 2021 07:38:07 +0000 (UTC)
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Halil Pasic <pasic@linux.ibm.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Xie Yongji <xieyongji@bytedance.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, markver@us.ibm.com,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org, virtio-dev@lists.oasis-open.org
+Subject: Re: [virtio-dev] Re: [RFC PATCH 1/1] virtio: write back features
+ before verify
+In-Reply-To: <20211004160005-mutt-send-email-mst@kernel.org>
+Organization: Red Hat GmbH
+References: <87fstm47no.fsf@redhat.com>
+ <20211002141351-mutt-send-email-mst@kernel.org>
+ <20211003070030.658fc94e.pasic@linux.ibm.com>
+ <20211003021027-mutt-send-email-mst@kernel.org>
+ <20211003032253-mutt-send-email-mst@kernel.org>
+ <87ee912e45.fsf@redhat.com>
+ <20211004083455-mutt-send-email-mst@kernel.org>
+ <878rz83lx0.fsf@redhat.com>
+ <20211004110152-mutt-send-email-mst@kernel.org>
+ <87zgro23r1.fsf@redhat.com>
+ <20211004160005-mutt-send-email-mst@kernel.org>
+User-Agent: Notmuch/0.32.1 (https://notmuchmail.org)
+Date:   Tue, 05 Oct 2021 09:38:05 +0200
+Message-ID: <87r1cz2a76.fsf@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH v20 00/17] KVM RISC-V Support
-Content-Language: en-US
-To:     Palmer Dabbelt <palmerdabbelt@google.com>
-Cc:     Anup Patel <Anup.Patel@wdc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, graf@amazon.com,
-        Atish Patra <Atish.Patra@wdc.com>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        Damien Le Moal <Damien.LeMoal@wdc.com>, anup@brainfault.org,
-        kvm@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <mhng-1bfcbce2-3da3-4490-bcc5-45173ad84285@palmerdabbelt-glaptop>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <mhng-1bfcbce2-3da3-4490-bcc5-45173ad84285@palmerdabbelt-glaptop>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/10/21 20:01, Palmer Dabbelt wrote:
-> 
-> Just to make sure we're on the same page here, I've got
-> 
->     commit 6c341a285912ddb2894ef793a58ad4f8462f26f4 (HEAD -> for-next)
->     Merge: 08da1608a1ca 3f2401f47d29
->     Author: Palmer Dabbelt <palmerdabbelt@google.com>
->     Date:   Mon Oct 4 10:12:44 2021 -0700
->         Merge tag 'for-riscv' of 
-> https://git.kernel.org/pub/scm/virt/kvm/kvm.git into for-next
->         H extension definitions, shared by the KVM and RISC-V trees.
->         * tag 'for-riscv' of 
-> ssh://gitolite.kernel.org/pub/scm/virt/kvm/kvm: (301 commits)
->           RISC-V: Add hypervisor extension related CSR defines
->           KVM: selftests: Ensure all migrations are performed when test 
-> is affined
->           KVM: x86: Swap order of CPUID entry "index" vs. "significant 
-> flag" checks
->           ptp: Fix ptp_kvm_getcrosststamp issue for x86 ptp_kvm
->           x86/kvmclock: Move this_cpu_pvti into kvmclock.h
->           KVM: s390: Function documentation fixes
->           selftests: KVM: Don't clobber XMM register when read
->           KVM: VMX: Fix a TSX_CTRL_CPUID_CLEAR field mask issue
->           selftests: KVM: Explicitly use movq to read xmm registers
->           selftests: KVM: Call ucall_init when setting up in rseq_test
->           KVM: Remove tlbs_dirty
->           KVM: X86: Synchronize the shadow pagetable before link it
->           KVM: X86: Fix missed remote tlb flush in rmap_write_protect()
->           KVM: x86: nSVM: don't copy virt_ext from vmcb12
->           KVM: x86: nSVM: test eax for 4K alignment for GP errata 
-> workaround
->           KVM: x86: selftests: test simultaneous uses of V_IRQ from L1 
-> and L0
->           KVM: x86: nSVM: restore int_vector in svm_clear_vintr
->           kvm: x86: Add AMD PMU MSRs to msrs_to_save_all[]
->           KVM: x86: nVMX: re-evaluate emulation_required on nested VM exit
->           KVM: x86: nVMX: don't fail nested VM entry on invalid guest 
-> state if !from_vmentry
->           ...
-> 
-> into 
-> ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/palmer/linux.git 
-> for-next
-> (I know that's kind of a confusing name, but it's what I've been using 
-> as my short-term staging branch so I can do all my tests before saying 
-> "it's on for-next").
-> 
-> If that looks OK I can make it a touch more official by putting into the 
-> RISC-V tree.
+On Mon, Oct 04 2021, "Michael S. Tsirkin" <mst@redhat.com> wrote:
 
-Yes.  All of the patches in there, except the last, are already in 
-Linus's tree.
+> On Mon, Oct 04, 2021 at 05:45:06PM +0200, Cornelia Huck wrote:
+>> On Mon, Oct 04 2021, "Michael S. Tsirkin" <mst@redhat.com> wrote:
+>> 
+>> > On Mon, Oct 04, 2021 at 04:27:23PM +0200, Cornelia Huck wrote:
+>> >> On Mon, Oct 04 2021, "Michael S. Tsirkin" <mst@redhat.com> wrote:
+>> >> 
+>> >> > Do we want to also add explanation that features can be
+>> >> > changed until FEATURES_OK?
+>> >> 
+>> >> I always considered that to be implict, as feature negotiation is not
+>> >> over until we have FEATURES_OK. Not sure whether we need an extra note.
+>> >
+>> > Well Halil here says once you set a feature bit you can't clear it.
+>> > So maybe not ...
+>> 
+>> Ok, so what about something like
+>> 
+>> "If FEATURES_OK is not set, the driver MAY change the set of features it
+>> accepts."
+>> 
+>> in the device initialization section?
+>
+> Maybe "as long as". However Halil implied that some features are not
+> turned off properly if that happens. Halil could you pls provide
+> some examples?
 
-Thank you,
-
-Paolo
+Yes, "as long as" sounds better.
 
