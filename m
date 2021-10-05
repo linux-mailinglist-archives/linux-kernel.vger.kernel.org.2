@@ -2,105 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A2074225F0
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 14:07:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8AB54225F6
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 14:07:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234592AbhJEMI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 08:08:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39458 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234395AbhJEMI6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 08:08:58 -0400
-Received: from mail-vs1-xe36.google.com (mail-vs1-xe36.google.com [IPv6:2607:f8b0:4864:20::e36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE6CAC06174E
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 05:07:07 -0700 (PDT)
-Received: by mail-vs1-xe36.google.com with SMTP id l19so23344088vst.7
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 05:07:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lD83FuXyo4Rd8RPUoclDBjywfkShCLbVEGQP8et9RdA=;
-        b=hKikOG5IDhmF6NJFOqVeb0VuaR8rP2Ugg7wDlfnHoNKRRg8JMTnBbRNIgtXdsQWhdo
-         nB+w7sIz1XpbQfcRJclH19JCDP6JRv1Ky60u5DpF05LzJZ9lFqyebUb8/IQtRtyg1xNN
-         gEKSTl7MOR0HaJCP/ARXgZjGBZnrbuldsQYd88DrHsQvIx6SBzeI9CPhkWtfAeceIsPZ
-         057zIf9cGeRjOW/VM+mOdso1O2uBENaM2WaCdLPvoB9KOFyF+sDgheUazzw6GF18uS93
-         QLWyV6Ehvd+pfcOX7kO9KLAwb5ywYUwUQl0pDl3xyCNFWJyOAhOS3ED+A6O9pBd9f0sJ
-         FBpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lD83FuXyo4Rd8RPUoclDBjywfkShCLbVEGQP8et9RdA=;
-        b=MJlevJc3qw49Oe+igUp4LBBgH78/cz1SD8EX8RbFiYcNJbinvyK1hW30ypshBZ8Uvr
-         2+G6k9aHpjq6C64QayKKaWhHyxNlSYJdfP/G9IA8kY7KQR40MqKXBBo+Sz/oNB07bvCQ
-         AM7bCsC9Orn3kDT3MTzO+zmhGxTiC45nHFjkoEg1DxYfBbDK2XUGmm1EU2LAWbi4TCBh
-         wfkw4KdLNrhAlSj6UdsDad9BHCPPHfq7TGoPu6ndQH33r8u7rH3U+5KaINufEslWezxo
-         g5vvbuoG+jSPvEL14FTQeEkc65jQokF9KMBgPHJc+LXTz07N+hQ10yBQWZBorpDVlPTM
-         MHvw==
-X-Gm-Message-State: AOAM5308dTP9unnMYYssYhQ7TpnPzzVspLJH0JPKReMJ6tLocf8Ao5eT
-        OgTWwt0mFHk3rgv53TX8jQay5ugtMqc187jAM3kXVw==
-X-Google-Smtp-Source: ABdhPJx3yNmMRnna6IuZi2wjjUunivgAB9HUxf0ytU7h8P5hgdhT/BSdk8MnPBSK6WNNJSgdthA0P2YwONYZ0TUL5D4=
-X-Received: by 2002:a67:d91b:: with SMTP id t27mr9004281vsj.55.1633435627030;
- Tue, 05 Oct 2021 05:07:07 -0700 (PDT)
+        id S234681AbhJEMJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 08:09:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36170 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234631AbhJEMJd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 08:09:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C9F6661502;
+        Tue,  5 Oct 2021 12:07:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633435663;
+        bh=oIgsQ77j5OZfDAx/jRH/jJIfGDauyIlgA9UGM0LBZUY=;
+        h=References:From:To:Cc:Subject:Date:In-reply-to:From;
+        b=GplYYVg2fP8Z6NLLI9qrRLRfPT3JhNIbxDBkmb+JdFeMgQM/VfHVAvuL0rvb2wV9K
+         E0B/ncmPqh1PyuVpd5e7EH/DzKCr2a4mB1qz30ndRNzQpJjLfyYV7/FI8EmrOVM3Zi
+         7Llq0v6QX4JgVvKFLDXF30qm1tRA0bhHl78wxSuSg4a+lgMz1W6XQncbqBc7IhXMbB
+         FubYkVZqHVn7hCUU4BYh4NyRbnwkw8yxinpLVceU3MYq7q9eOvy2aX4lOc9kDIQBtR
+         WBMuot5tM+uyQNLqqHfz8LeYZkXIF4fDgGt5pUDG/CLRsrDqo97349LcPYn6rekqPH
+         wWUAB8692AzpA==
+References: <YUnsSxUERYj/oXTO@kroah.com>
+ <20210921145901.11952-1-nikita.yoush@cogentembedded.com>
+ <YVwyDsuIT9lZWi2v@kroah.com>
+User-agent: mu4e 1.6.6; emacs 27.2
+From:   Felipe Balbi <balbi@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Nikita Yushchenko <nikita.yoush@cogentembedded.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Petr Nechaev <petr.nechaev@cogentembedded.com>
+Subject: Re: [PATCH v3] usb: gadget: storage: add support for media larger
+ than 2T
+Date:   Tue, 05 Oct 2021 15:07:11 +0300
+In-reply-to: <YVwyDsuIT9lZWi2v@kroah.com>
+Message-ID: <875yubznck.fsf@kernel.org>
 MIME-Version: 1.0
-References: <20210919093114.35987-1-krzysztof.kozlowski@canonical.com> <20210919093114.35987-2-krzysztof.kozlowski@canonical.com>
-In-Reply-To: <20210919093114.35987-2-krzysztof.kozlowski@canonical.com>
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-Date:   Tue, 5 Oct 2021 15:06:55 +0300
-Message-ID: <CAPLW+4mZuB426-M4_1CdiOvxBpOrHk57OeLmRY-KXs1p4QXmpQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] soc: samsung: exynos-chipid: avoid soc_device_to_device()
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Sylwester Nawrocki <snawrocki@kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Pankaj Dubey <pankaj.dubey@samsung.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 19 Sept 2021 at 12:31, Krzysztof Kozlowski
-<krzysztof.kozlowski@canonical.com> wrote:
->
-> soc_device_to_device() seems to be discouraged [1] so remove it in favor
-> of printing info message with platform device.  This will only change
-> the prefix in theh info message from "soc soc0: " to "exynos-chipid
-> 10000000.chipid:".
->
-> [1] https://lore.kernel.org/lkml/20191111052741.GB3176397@kroah.com/
->
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> ---
 
-Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
+Hi,
 
->  drivers/soc/samsung/exynos-chipid.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
+
+> On Tue, Sep 21, 2021 at 05:59:02PM +0300, Nikita Yushchenko wrote:
+>> This adds support for READ_CAPACITY(16), READ(16) and WRITE(16)
+>> commands, and fixes READ_CAPACITY command to return 0xffffffff if
+>> media size does not fit in 32 bits.
+>> 
+>> This makes f_mass_storage to export a 16T disk array correctly.
+>> 
+>> Signed-off-by: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
+>> ---
+>> v3:
+>> - added this changelog
+>> 
+>> v2:
+>> - fixed call to check_command() for READ_CAPACITY(16)
+>> - fixed alphabetical order of commands in switch statement
+>> - renamed variable, added comments, and fixed formatting, per advices by
+>>   Alan Stern <stern@rowland.harvard.edu>
 >
-> diff --git a/drivers/soc/samsung/exynos-chipid.c b/drivers/soc/samsung/exynos-chipid.c
-> index 5c1d0f97f766..dcd9a08ce706 100644
-> --- a/drivers/soc/samsung/exynos-chipid.c
-> +++ b/drivers/soc/samsung/exynos-chipid.c
-> @@ -104,8 +104,7 @@ static int exynos_chipid_probe(struct platform_device *pdev)
->
->         platform_set_drvdata(pdev, soc_dev);
->
-> -       dev_info(soc_device_to_device(soc_dev),
-> -                "Exynos: CPU[%s] PRO_ID[0x%x] REV[0x%x] Detected\n",
-> +       dev_info(&pdev->dev, "Exynos: CPU[%s] PRO_ID[0x%x] REV[0x%x] Detected\n",
->                  soc_dev_attr->soc_id, product_id, revision);
->
->         return 0;
-> --
-> 2.30.2
->
+> Felipe and Alan, any objections to this change?
+
+none from me, but I'd definitely wait for Alan's comments as he's the
+one who understands the storage gadget inside out :-)
+
+cheers
+
+-- 
+balbi
