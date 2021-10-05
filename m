@@ -2,98 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44542421C9F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 04:36:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA168421CA4
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 04:40:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230457AbhJECiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 22:38:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49316 "EHLO
+        id S231229AbhJECmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 22:42:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230097AbhJECh7 (ORCPT
+        with ESMTP id S229659AbhJECmP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 22:37:59 -0400
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA460C061749
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 19:36:09 -0700 (PDT)
-Received: by mail-ot1-x333.google.com with SMTP id h9-20020a9d2f09000000b005453f95356cso24096136otb.11
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 19:36:09 -0700 (PDT)
+        Mon, 4 Oct 2021 22:42:15 -0400
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B5FCC061745;
+        Mon,  4 Oct 2021 19:40:26 -0700 (PDT)
+Received: by mail-oi1-x230.google.com with SMTP id n64so24302114oih.2;
+        Mon, 04 Oct 2021 19:40:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+GYY3fgaaeOEZFwlrXaNb8Km6kTmaOO7oRCYiPn9Rtw=;
-        b=qQxkZKeNLS9TSHR3BlSX1ArGn+F4qj0wLMrriaL9e+NNs7BGuGFPd04emb85TkfPqs
-         X5AgvVsDLajRGyM/ad3xXjCLnxemgsLZiSsaXyU8ZIF0MZ2f3paGBdn3qlHqBAWB6L1K
-         L6B/pOj4UvESvrUkJkI5Tuq4Mfi7nWF3jlQA297TMkMYlWNoZuAiaUM70ZrRkq0twPWM
-         1iPyV55ubu9/9JIibbHyGJy47zoRQT8OXWRlrVswfb9Rxz578tl+dzTTZMqOnPos8/5h
-         +mBryetbbDvyQ744howTfEswI9PW1svgzLRTQZaC8LMS8BMG5xI+N4iw6ZA04Rjj5sTo
-         mcNw==
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=0BJ0P2Yg9ZT4yuVtYgihYwzsYivfk2NjvAbY5QjvY4k=;
+        b=Rth9H0FRuchUS8EDAPPgtXacEKSRom1euDALfXAzUBpK4I02TbozYWIDN/iW3o0NKt
+         yxFwqqOXvDDafawl4o0Uiw9pyxpns6bApqQpJ7Z8HrD8f+qHbFqSRY6RL8f/+Y/2+EIl
+         fNixSZK/o5HLv6pDoDSiFJGiM5ES4EET6uuof8kmmCz3wSfyGxzx6oOUCouxX2PqcXP8
+         ADYuWdn98PRY6eb3dx45vPSIlVwKTlTSeHdLeMiTAVvjiTbVTyInWijv3/snfcut2LE+
+         ldPzx+yb7sR9kWVVrRQm1r21IzGPQnIHT98pgnvwUxz3+kvhKd0YIFatoCy1eSriRTzq
+         I8XQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+GYY3fgaaeOEZFwlrXaNb8Km6kTmaOO7oRCYiPn9Rtw=;
-        b=UZ7dteQ+7HqqQOEWDwt2PSkjYVRoC2s9hwmt6KhCakoGWcUakt0PKIhhmp+woeQbVk
-         Kx2NWS+B6d9SCZzh4wtJu/DAo6Tk+Yhaqd6nY6DNtpCHAerBYVRdNsPPvbvsxlkMlBWW
-         DvF4mNfkT5HOnKn9dfbrnjNppU1lrpCHacS5A+gSpNunfymxEblT+xDgw1yiT0zj9Umy
-         nbRmv1BIEHoKRKcWmoTpDnsd2R/T7Fcz1x6D7pQrseaRVq6dzogXP3TAygXBkBOH52tH
-         PDsiDg1OJ3St5rdTY8cwNdhOcisomNWpglnvlYV32+X5LdOXiCZ8Gyqg91aKFl93ehmJ
-         Akrg==
-X-Gm-Message-State: AOAM531ZL5zoE7p+52DfuVKuEDeg+aTwfnZ5DwCGVRYx0Vbi+/zIQCgP
-        ktqsCtkgd+rlcjmJ/6aII3cIGA==
-X-Google-Smtp-Source: ABdhPJygR0UDTE4BCHMd53yNo4xPeVw33V9dkfjhe2wQn4fgUTpyYl/AR4nlydFZHzSlhUGbJGWU4A==
-X-Received: by 2002:a9d:7307:: with SMTP id e7mr12316641otk.35.1633401369095;
-        Mon, 04 Oct 2021 19:36:09 -0700 (PDT)
-Received: from localhost.localdomain ([2600:1700:a0:3dc8:205:1bff:fec0:b9b3])
-        by smtp.gmail.com with ESMTPSA id i12sm3055329oik.50.2021.10.04.19.36.07
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=0BJ0P2Yg9ZT4yuVtYgihYwzsYivfk2NjvAbY5QjvY4k=;
+        b=fQK6EvE90bQA9Cf3oWboGCt2jb/OxXT8qwrzHDE6o62DX0dEo2jlQWPApZQOPC8jMm
+         EObZgBuXn7c38/Shl63XIyQ1goAUqYRdwznNFRG44geY6MRV3CWAGhCR20EqDEgma5Cf
+         EVPrTRhYk7XYm9L3v2/3kBZViFiuZK1wV46jIcIjGcPfGUr7/2KNH2a9hh0gyFe1zgOq
+         QGagncCHSfIW1u9Zxs7rkc0DzMB2rdYduP/GA/fIhU4Vpm+E0BGxTde0V0C64c8n6bvf
+         8N2V7DEf9EnSzWTZAsRbbn67zqvmYpm1BmbgVDHnIDBe99R7vJlbODk6FLdWn32dlMcL
+         CDDA==
+X-Gm-Message-State: AOAM5323WgiXAgY2f0DEXrzu/HJJoRBlIRsjmfJdNNl/JG8Z5INm1JzM
+        KOP9rKev3/AirvkyJH2PqCY=
+X-Google-Smtp-Source: ABdhPJxBNSdz6Fm49nPid4J3uIhC9vjzvFsvQp43aGWW2astsmjpAcXBBFW6rJBFY8Ef69nH/zwxZg==
+X-Received: by 2002:a05:6808:243:: with SMTP id m3mr504915oie.54.1633401625504;
+        Mon, 04 Oct 2021 19:40:25 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id x4sm3310910otq.25.2021.10.04.19.40.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Oct 2021 19:36:08 -0700 (PDT)
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Kuogee Hsieh <khsieh@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Abhinav Kumar <abhinavk@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Sankeerth Billakanti <sbillaka@codeaurora.org>
-Subject: [PATCH] drm/msm/dp: Shorten SETUP timeout
-Date:   Mon,  4 Oct 2021 19:37:50 -0700
-Message-Id: <20211005023750.2037631-1-bjorn.andersson@linaro.org>
-X-Mailer: git-send-email 2.29.2
+        Mon, 04 Oct 2021 19:40:24 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Mon, 4 Oct 2021 19:40:23 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.10 00/93] 5.10.71-rc1 review
+Message-ID: <20211005024023.GA1391345@roeck-us.net>
+References: <20211004125034.579439135@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211004125034.579439135@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Found in the middle of a patch from Sankeerth was the reduction of the
-INIT_SETUP timeout from 10s to 100ms. Upon INIT_SETUP timeout the host
-is initalized and HPD interrupt start to be serviced, so in the case of
-eDP this reduction improves the user experience dramatically - i.e.
-removes 9.9s of bland screen time at boot.
+On Mon, Oct 04, 2021 at 02:51:58PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.71 release.
+> There are 93 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 06 Oct 2021 12:50:17 +0000.
+> Anything received after that time might be too late.
+> 
 
-Suggested-by: Sankeerth Billakanti <sbillaka@codeaurora.org>
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
----
- drivers/gpu/drm/msm/dp/dp_display.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Build results:
+	total: 159 pass: 159 fail: 0
+Qemu test results:
+	total: 472 pass: 472 fail: 0
 
-diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
-index 21b9c1de4ecb..46d9f3eb6d13 100644
---- a/drivers/gpu/drm/msm/dp/dp_display.c
-+++ b/drivers/gpu/drm/msm/dp/dp_display.c
-@@ -1438,7 +1438,7 @@ void msm_dp_irq_postinstall(struct msm_dp *dp_display)
- 
- 	dp_hpd_event_setup(dp);
- 
--	dp_add_event(dp, EV_HPD_INIT_SETUP, 0, 100);
-+	dp_add_event(dp, EV_HPD_INIT_SETUP, 0, 1);
- }
- 
- void msm_dp_debugfs_init(struct msm_dp *dp_display, struct drm_minor *minor)
--- 
-2.29.2
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
+Guenter
