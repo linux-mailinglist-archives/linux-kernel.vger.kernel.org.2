@@ -2,235 +2,440 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB5AA422742
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 14:59:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C19B42274A
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 15:01:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234432AbhJENBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 09:01:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34290 "EHLO mail.kernel.org"
+        id S234505AbhJENDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 09:03:33 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:17178 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233365AbhJENBO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 09:01:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 305686124F;
-        Tue,  5 Oct 2021 12:59:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633438763;
-        bh=vc0AIiiG/lp+/3L1MOoDAGLKzrH8rDn2SCnuHBCQD+I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0KQNPijNSHaLEfz57hoIKkXndl4fOOZwnsBH9Gby6N4c2PS658FEY7w2CMFP3zRk0
-         5eFV1ExPhXdtJ1JssFVfra+vs5TqWh9ozoys6JkdEAsVA2rPweqq8OPIZdfwFTi1uz
-         Sf6UoiRbkhy3RqLIrKTMbpNotQm5Ttb6Cf3uLUac=
-Date:   Tue, 5 Oct 2021 14:59:21 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-Cc:     Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Jiri Slaby <jirislaby@kernel.org>, Suman Anna <s-anna@ti.com>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org
-Subject: Re: [PATCH v8 2/2] tty: add rpmsg driver
-Message-ID: <YVxMKekWW0w0+qoM@kroah.com>
-References: <20210930160520.19678-1-arnaud.pouliquen@foss.st.com>
- <20210930160520.19678-3-arnaud.pouliquen@foss.st.com>
+        id S233762AbhJENDa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 09:03:30 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1633438900; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=LZweFgUzCLruRQSKdctiwYf0bITb8qFZlgKQzicABKY=;
+ b=ZYqhfQZ+R/e73N744tO9WSgPDCGW0zyr9SKsYgW/8YK0FpVS0XsRBTx1mURDDoGeFMsN81Lg
+ M/tWCWtognxxuNDJyMkIBgnNDMpP7Eyx9zlGkJCS4+ipZgdpT5UtyOgsOnvol6jbmPv4wdls
+ B1mOHwuYY+Vuehrx2pEWMnMEPfk=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 615c4ca4713d5d6f963bfb59 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 05 Oct 2021 13:01:24
+ GMT
+Sender: schowdhu=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 687DDC43616; Tue,  5 Oct 2021 13:01:23 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: schowdhu)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E95CCC43460;
+        Tue,  5 Oct 2021 13:01:21 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210930160520.19678-3-arnaud.pouliquen@foss.st.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 05 Oct 2021 18:31:21 +0530
+From:   schowdhu@codeaurora.org
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Bryan O'Donoghue <pure.logic@nexus-software.ie>,
+        Greg KH <greg@kroah.com>, linux-kernel@vger.kernel.org,
+        ckadabi@codeaurora.org, tsoni@codeaurora.org,
+        bryanh@codeaurora.org, psodagud@codeaurora.org,
+        satyap@codeaurora.org, pheragu@codeaurora.org,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Subject: Re: [PATCH V0 4/7] usb: common: eud: Added the driver support for
+ Embedded USB Debugger(EUD)
+In-Reply-To: <YVsu602phHbZLMOT@ripper>
+References: <cover.1633343547.git.schowdhu@codeaurora.org>
+ <e6df4a21a283e822d15dedb7ffb3ae62c241999c.1633343547.git.schowdhu@codeaurora.org>
+ <YVsu602phHbZLMOT@ripper>
+Message-ID: <aceadaa142a3cb29d7e7069268f19302@codeaurora.org>
+X-Sender: schowdhu@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 06:05:20PM +0200, Arnaud Pouliquen wrote:
-> This driver exposes a standard TTY interface on top of the rpmsg
-> framework through a rpmsg service.
+On 2021-10-04 22:12, Bjorn Andersson wrote:
+> On Mon 04 Oct 04:16 PDT 2021, Souradeep Chowdhury wrote:
 > 
-> This driver supports multi-instances, offering a /dev/ttyRPMSGx entry
-> per rpmsg endpoint.
+>> Add support for control peripheral of EUD (Embedded USB Debugger) to
+>> listen to events such as USB attach/detach, pet EUD to indicate 
+>> software
+>> is functional.Reusing the platform device kobj, sysfs entry 'enable' 
+>> is
+>> created to enable or disable EUD.
+>> 
+>> To enable the eud the following needs to be done
+>> echo 1 > /sys/bus/platform/.../enable
+>> 
+>> To disable eud, following is the command
+>> echo 0 > /sys/bus/platform/.../enable
+>> 
+>> Signed-off-by: Souradeep Chowdhury <schowdhu@codeaurora.org>
+>> ---
+>>  Documentation/ABI/testing/sysfs-driver-eud |   7 +
+>>  drivers/usb/common/Kconfig                 |   9 +
+>>  drivers/usb/common/Makefile                |   1 +
+>>  drivers/usb/common/qcom_eud.c              | 256 
+>> +++++++++++++++++++++++++++++
+>>  4 files changed, 273 insertions(+)
+>>  create mode 100644 Documentation/ABI/testing/sysfs-driver-eud
+>>  create mode 100644 drivers/usb/common/qcom_eud.c
+>> 
+>> diff --git a/Documentation/ABI/testing/sysfs-driver-eud 
+>> b/Documentation/ABI/testing/sysfs-driver-eud
+>> new file mode 100644
+>> index 0000000..14a02da
+>> --- /dev/null
+>> +++ b/Documentation/ABI/testing/sysfs-driver-eud
+>> @@ -0,0 +1,7 @@
+>> +What:		/sys/bus/platform/.../enable
+>> +Date:           October 2021
+>> +Contact:        Souradeep Chowdhury <schowdhu@codeaurora.org>
+>> +Description:
+>> +		The Enable/Disable sysfs interface for Embedded
+>> +		USB Debugger(EUD).This enables and disables the
+>> +		EUD based on a 1 or a 0 value.
+>> diff --git a/drivers/usb/common/Kconfig b/drivers/usb/common/Kconfig
+>> index 5e8a04e..669b3fe 100644
+>> --- a/drivers/usb/common/Kconfig
+>> +++ b/drivers/usb/common/Kconfig
+>> @@ -50,3 +50,12 @@ config USB_CONN_GPIO
+>> 
+>>  	  To compile the driver as a module, choose M here: the module will
+>>  	  be called usb-conn-gpio.ko
+>> +
+>> +config USB_QCOM_EUD
+>> +	tristate "USB EUD Driver"
+>> +	select USB_ROLE_SWITCH
+>> +	help
+>> +	  This module enables support for Qualcomm Technologies, Inc.
+>> +	  Embedded USB Debugger (EUD). The EUD is a control peripheral
+>> +	  which reports VBUS attach/detach events and has USB-based
+>> +	  debug and trace capabilities.
+>> diff --git a/drivers/usb/common/Makefile b/drivers/usb/common/Makefile
+>> index 8ac4d21..eb66045 100644
+>> --- a/drivers/usb/common/Makefile
+>> +++ b/drivers/usb/common/Makefile
+>> @@ -11,3 +11,4 @@ usb-common-$(CONFIG_USB_LED_TRIG) += led.o
+>>  obj-$(CONFIG_USB_CONN_GPIO)	+= usb-conn-gpio.o
+>>  obj-$(CONFIG_USB_OTG_FSM) += usb-otg-fsm.o
+>>  obj-$(CONFIG_USB_ULPI_BUS)	+= ulpi.o
+>> +obj-$(CONFIG_USB_QCOM_EUD)      += qcom_eud.o
+>> diff --git a/drivers/usb/common/qcom_eud.c 
+>> b/drivers/usb/common/qcom_eud.c
+>> new file mode 100644
+>> index 0000000..7a92fff
+>> --- /dev/null
+>> +++ b/drivers/usb/common/qcom_eud.c
+>> @@ -0,0 +1,256 @@
+>> +// SPDX-License-Identifier: GPL-2.0-only
+>> +/*
+>> + * Copyright (c) 2015-2021, The Linux Foundation. All rights 
+>> reserved.
+>> + */
+>> +
+>> +#include <linux/bitops.h>
+>> +#include <linux/delay.h>
+>> +#include <linux/err.h>
+>> +#include <linux/interrupt.h>
+>> +#include <linux/io.h>
+>> +#include <linux/iopoll.h>
+>> +#include <linux/kernel.h>
+>> +#include <linux/module.h>
+>> +#include <linux/of.h>
+>> +#include <linux/platform_device.h>
+>> +#include <linux/slab.h>
+>> +#include <linux/sysfs.h>
+>> +#include <linux/usb/role.h>
+>> +
+>> +#define EUD_REG_INT1_EN_MASK	0x0024
+>> +#define EUD_REG_INT_STATUS_1	0x0044
+>> +#define EUD_REG_CTL_OUT_1	0x0074
+>> +#define EUD_REG_VBUS_INT_CLR	0x0080
+>> +#define EUD_REG_CSR_EUD_EN	0x1014
+>> +#define EUD_REG_SW_ATTACH_DET	0x1018
+>> +#define EUD_REG_EUD_EN2         0x0000
+>> +
+>> +#define EUD_ENABLE		BIT(0)
+>> +#define EUD_INT_PET_EUD		BIT(0)
+>> +#define EUD_INT_VBUS		BIT(2)
+>> +#define EUD_INT_SAFE_MODE	BIT(4)
+>> +#define EUD_INT_ALL		(EUD_INT_VBUS|EUD_INT_SAFE_MODE)
+>> +
+>> +struct eud_chip {
+>> +	struct device			*dev;
+>> +	struct usb_role_switch		*role_sw;
+>> +	void __iomem			*eud_reg_base;
+>> +	void __iomem			*eud_mode_mgr2_phys_base;
+>> +	unsigned int			int_status;
+>> +	int				enable;
+>> +	int				eud_irq;
+>> +	bool				usb_attach;
+>> +
+>> +};
+>> +
+>> +static int enable_eud(struct eud_chip *priv)
+>> +{
+>> +	writel(EUD_ENABLE, priv->eud_reg_base + EUD_REG_CSR_EUD_EN);
+>> +	writel(EUD_INT_VBUS | EUD_INT_SAFE_MODE,
+>> +			priv->eud_reg_base + EUD_REG_INT1_EN_MASK);
+>> +	writel(1, priv->eud_mode_mgr2_phys_base + EUD_REG_EUD_EN2);
+>> +
+>> +	return usb_role_switch_set_role(priv->role_sw, USB_ROLE_DEVICE);
+>> +}
+>> +
+>> +static void disable_eud(struct eud_chip *priv)
+>> +{
+>> +	writel(0, priv->eud_reg_base + EUD_REG_CSR_EUD_EN);
+>> +	writel(0, priv->eud_mode_mgr2_phys_base + EUD_REG_EUD_EN2);
+>> +}
+>> +
+>> +static ssize_t enable_show(struct device *dev,
+>> +		struct device_attribute *attr, char *buf)
+>> +{
+>> +	struct eud_chip *chip = dev_get_drvdata(dev);
+>> +
+>> +	return sprintf(buf, "%d", chip->enable);
+>> +}
+>> +
+>> +static ssize_t enable_store(struct device *dev,
+>> +		struct device_attribute *attr,
+>> +		const char *buf, size_t count)
+>> +{
+>> +	struct eud_chip *chip = dev_get_drvdata(dev);
+>> +	unsigned long enable;
+>> +	int ret;
+>> +
+>> +	if (kstrtoul(buf, 16, &enable))
+>> +		return -EINVAL;
+>> +
+>> +	if (enable == 1) {
+>> +		ret = enable_eud(chip);
+>> +		if (!ret)
+>> +			chip->enable = enable;
+>> +	} else if (enable == 0) {
+>> +		disable_eud(chip);
+>> +	} else {
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	return count;
+>> +}
+>> +
+>> +static DEVICE_ATTR_RW(enable);
+>> +
+>> +static const struct device_attribute *eud_attrs[] = {
+>> +	&dev_attr_enable,
+>> +	NULL,
+>> +};
+>> +
+>> +static void usb_attach_detach(struct eud_chip *chip)
+>> +{
+>> +	u32 reg;
+>> +
+>> +	/* read ctl_out_1[4] to find USB attach or detach event */
+>> +	reg = readl(chip->eud_reg_base + EUD_REG_CTL_OUT_1);
+>> +	if (reg & EUD_INT_SAFE_MODE)
+>> +		chip->usb_attach = true;
+>> +	else
+>> +		chip->usb_attach = false;
+>> +
+>> +	/* set and clear vbus_int_clr[0] to clear interrupt */
+>> +	writel(BIT(0), chip->eud_reg_base + EUD_REG_VBUS_INT_CLR);
+>> +	writel(0, chip->eud_reg_base + EUD_REG_VBUS_INT_CLR);
+>> +}
+>> +
+>> +static void pet_eud(struct eud_chip *chip)
+>> +{
+>> +	u32 reg;
+>> +	int ret;
+>> +
+>> +	/* read sw_attach_det[0] to find attach/detach event */
+>> +	reg = readl(chip->eud_reg_base +  EUD_REG_SW_ATTACH_DET);
+>> +	if (reg & EUD_INT_PET_EUD) {
+>> +		/* Detach & Attach pet for EUD */
+>> +		writel(0, chip->eud_reg_base + EUD_REG_SW_ATTACH_DET);
+>> +		/* Delay to make sure detach pet is done before attach pet */
+>> +		ret = readl_poll_timeout(chip->eud_reg_base + 
+>> EUD_REG_SW_ATTACH_DET,
+>> +					reg, (reg == 0), 1, 100);
+>> +		if (ret) {
+>> +			dev_err(chip->dev, "Detach pet failed\n");
+>> +			return;
+>> +		}
+>> +
+>> +		writel(EUD_INT_PET_EUD, chip->eud_reg_base +
+>> +				EUD_REG_SW_ATTACH_DET);
+>> +	} else {
+>> +		/* Attach pet for EUD */
+>> +		writel(EUD_INT_PET_EUD, chip->eud_reg_base +
+>> +				EUD_REG_SW_ATTACH_DET);
+>> +	}
+>> +}
+>> +
+>> +static irqreturn_t handle_eud_irq(int irq, void *data)
+>> +{
+>> +	struct eud_chip *chip = data;
+>> +	u32 reg;
+>> +
+>> +	/* read status register and find out which interrupt triggered */
+>> +	reg = readl(chip->eud_reg_base +  EUD_REG_INT_STATUS_1);
+>> +	switch (reg & EUD_INT_ALL) {
+>> +	case EUD_INT_VBUS:
+>> +		chip->int_status = EUD_INT_VBUS;
+>> +		usb_attach_detach(chip);
+>> +		return IRQ_WAKE_THREAD;
+>> +	case EUD_INT_SAFE_MODE:
+>> +		pet_eud(chip);
+>> +		break;
+>> +	default:
+>> +		return IRQ_NONE;
+>> +	}
+>> +	return IRQ_HANDLED;
+>> +}
+>> +
+>> +static irqreturn_t handle_eud_irq_thread(int irq, void *data)
+>> +{
+>> +	struct eud_chip *chip = data;
+>> +	int ret;
+>> +
+>> +	if (chip->int_status == EUD_INT_VBUS) {
+>> +		if (chip->usb_attach)
+>> +			ret = usb_role_switch_set_role(chip->role_sw, USB_ROLE_DEVICE);
+>> +		else
+>> +			ret = usb_role_switch_set_role(chip->role_sw, USB_ROLE_HOST);
 > 
-> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-> ---
->  Documentation/serial/tty_rpmsg.rst |  15 ++
->  drivers/tty/Kconfig                |   9 +
->  drivers/tty/Makefile               |   1 +
->  drivers/tty/rpmsg_tty.c            | 275 +++++++++++++++++++++++++++++
->  4 files changed, 300 insertions(+)
->  create mode 100644 Documentation/serial/tty_rpmsg.rst
->  create mode 100644 drivers/tty/rpmsg_tty.c
+> How does this work if I have a Type-C controller wired up to the dwc3
+> and it has negotiated that we're supposed to be in device mode?
 > 
-> diff --git a/Documentation/serial/tty_rpmsg.rst b/Documentation/serial/tty_rpmsg.rst
-> new file mode 100644
-> index 000000000000..b055107866c9
-> --- /dev/null
-> +++ b/Documentation/serial/tty_rpmsg.rst
-> @@ -0,0 +1,15 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +
-> +=========
-> +RPMsg TTY
-> +=========
-> +
-> +The rpmsg tty driver implements serial communication on the RPMsg bus to makes possible for
-> +user-space programs to send and receive rpmsg messages as a standard tty protocol.
-> +
-> +The remote processor can instantiate a new tty by requesting a "rpmsg-tty" RPMsg service.
-> +
-> +The "rpmsg-tty" service is directly used for data exchange. No flow control is implemented.
-> +
-> +Information related to the RPMsg and associated tty device is available in
-> +/sys/bus/rpmsg/devices/.
+> Shouldn't this driver somehow work as an override only when EUD is
+> enabled, but otherwise let the Type-C controller deal with things?
+> 
+> Or is this interrupt simply not delivered when EUD is disabled, so that
+> it happens to work as expected?
 
+That is correct. When EUD is disabled, the interrupt lines are also 
+disabled.
 
-Why is this file needed?  Nothing references it, and this would be the
-only file in this directory.
+> 
+>> +		if (ret)
+>> +			dev_err(chip->dev, "failed to set role switch\n");
+>> +	}
+>> +
+>> +	return IRQ_HANDLED;
+>> +}
+>> +
+>> +static int eud_probe(struct platform_device *pdev)
+>> +{
+>> +	struct eud_chip *chip;
+>> +	int ret;
+>> +
+>> +	chip = devm_kzalloc(&pdev->dev, sizeof(*chip), GFP_KERNEL);
+>> +	if (!chip)
+>> +		return -ENOMEM;
+>> +
+>> +	chip->dev = &pdev->dev;
+>> +
+>> +	chip->role_sw = usb_role_switch_get(chip->dev);
+>> +	if (IS_ERR(chip->role_sw)) {
+>> +		if (PTR_ERR(chip->role_sw) != -EPROBE_DEFER)
+>> +			dev_err(chip->dev, "failed to get role switch\n");
+>> +
+>> +		return PTR_ERR(chip->role_sw);
+> 
+> Please use
+> 		dev_err_probe(chip->dev, PTR_ERR(chip->role_sw), "failed to...\n");
 
-> diff --git a/drivers/tty/Kconfig b/drivers/tty/Kconfig
-> index 23cc988c68a4..5095513029d7 100644
-> --- a/drivers/tty/Kconfig
-> +++ b/drivers/tty/Kconfig
-> @@ -368,6 +368,15 @@ config VCC
->  
->  source "drivers/tty/hvc/Kconfig"
->  
-> +config RPMSG_TTY
-> +	tristate "RPMSG tty driver"
-> +	depends on RPMSG
-> +	help
-> +	  Say y here to export rpmsg endpoints as tty devices, usually found
-> +	  in /dev/ttyRPMSGx.
-> +	  This makes it possible for user-space programs to send and receive
-> +	  rpmsg messages as a standard tty protocol.
+Ack
 
-What is the module name going to be?
+> 
+>> +	}
+>> +
+>> +	chip->eud_reg_base = devm_platform_ioremap_resource(pdev, 0);
+>> +	if (IS_ERR(chip->eud_reg_base))
+>> +		return PTR_ERR(chip->eud_reg_base);
+>> +
+>> +	chip->eud_mode_mgr2_phys_base = devm_platform_ioremap_resource(pdev, 
+>> 1);
+>> +	if (IS_ERR(chip->eud_mode_mgr2_phys_base))
+>> +		return PTR_ERR(chip->eud_mode_mgr2_phys_base);
+>> +
+>> +	chip->eud_irq = platform_get_irq(pdev, 0);
+>> +	ret = devm_request_threaded_irq(&pdev->dev, chip->eud_irq, 
+>> handle_eud_irq,
+>> +			handle_eud_irq_thread, IRQF_ONESHOT, NULL, chip);
+>> +	if (ret)
+> 
+> This deserved another dev_err_probe()
 
+Ack
 
-> +
->  endif # TTY
->  
->  source "drivers/tty/serdev/Kconfig"
-> diff --git a/drivers/tty/Makefile b/drivers/tty/Makefile
-> index a2bd75fbaaa4..07aca5184a55 100644
-> --- a/drivers/tty/Makefile
-> +++ b/drivers/tty/Makefile
-> @@ -26,5 +26,6 @@ obj-$(CONFIG_PPC_EPAPR_HV_BYTECHAN) += ehv_bytechan.o
->  obj-$(CONFIG_GOLDFISH_TTY)	+= goldfish.o
->  obj-$(CONFIG_MIPS_EJTAG_FDC_TTY) += mips_ejtag_fdc.o
->  obj-$(CONFIG_VCC)		+= vcc.o
-> +obj-$(CONFIG_RPMSG_TTY)		+= rpmsg_tty.o
->  
->  obj-y += ipwireless/
-> diff --git a/drivers/tty/rpmsg_tty.c b/drivers/tty/rpmsg_tty.c
-> new file mode 100644
-> index 000000000000..0c99f54c2911
-> --- /dev/null
-> +++ b/drivers/tty/rpmsg_tty.c
-> @@ -0,0 +1,275 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (C) STMicroelectronics 2021 - All Rights Reserved
-
-Copyright needs a year, right?
-
-> + */
-> +
-> +#include <linux/module.h>
-> +#include <linux/rpmsg.h>
-> +#include <linux/slab.h>
-> +#include <linux/tty.h>
-> +#include <linux/tty_flip.h>
-> +
-> +#define MAX_TTY_RPMSG	32
-
-Why have a max at all?
-
-
-> +
-> +static DEFINE_IDR(tty_idr);	/* tty instance id */
-> +static DEFINE_MUTEX(idr_lock);	/* protects tty_idr */
-
-I didn't think an idr needed a lock anymore, are you sure this is
-needed?
-
-
-> +
-> +static struct tty_driver *rpmsg_tty_driver;
-> +
-> +struct rpmsg_tty_port {
-> +	struct tty_port		port;	 /* TTY port data */
-> +	int			id;	 /* TTY rpmsg index */
-> +	struct rpmsg_device	*rpdev;	 /* rpmsg device */
-> +};
-> +
-> +static int rpmsg_tty_cb(struct rpmsg_device *rpdev, void *data, int len, void *priv, u32 src)
-> +{
-> +	struct rpmsg_tty_port *cport = dev_get_drvdata(&rpdev->dev);
-> +	int copied;
-> +
-> +	if (!len)
-> +		return -EINVAL;
-
-How can len be 0?
-
-
-> +	copied = tty_insert_flip_string(&cport->port, data, len);
-> +	if (copied != len)
-> +		dev_dbg(&rpdev->dev, "Trunc buffer: available space is %d\n",
-> +			copied);
-
-Is this the proper error handling?
-
-
-> +	tty_flip_buffer_push(&cport->port);
-
-Shouldn't you return the number of bytes sent?
-
-> +
-> +	return 0;
-> +}
-> +
-> +static int rpmsg_tty_install(struct tty_driver *driver, struct tty_struct *tty)
-> +{
-> +	struct rpmsg_tty_port *cport = idr_find(&tty_idr, tty->index);
-> +
-> +	if (!cport) {
-> +		dev_err(tty->dev, "Cannot get cport\n");
-
-How can this happen?
-
-
-> +		return -ENODEV;
-> +	}
-> +
-> +	tty->driver_data = cport;
-> +
-> +	return tty_port_install(&cport->port, driver, tty);
-> +}
-> +
-> +static int rpmsg_tty_open(struct tty_struct *tty, struct file *filp)
-> +{
-> +	return tty_port_open(tty->port, tty, filp);
-> +}
-> +
-> +static void rpmsg_tty_close(struct tty_struct *tty, struct file *filp)
-> +{
-> +	return tty_port_close(tty->port, tty, filp);
-> +}
-> +
-> +static int rpmsg_tty_write(struct tty_struct *tty, const u8 *buf, int len)
-> +{
-> +	struct rpmsg_tty_port *cport = tty->driver_data;
-> +	struct rpmsg_device *rpdev;
-> +	int msg_max_size, msg_size;
-> +	int ret;
-> +
-> +	rpdev = cport->rpdev;
-> +
-> +	dev_dbg(&rpdev->dev, "Send msg from tty->index = %d, len = %d\n", tty->index, len);
-
-ftrace is your friend, is this really still needed?
-
-thanks,
-
-greg k-h
+> 
+> Thanks,
+> Bjorn
+> 
+>> +		return ret;
+>> +
+>> +	device_init_wakeup(&pdev->dev, true);
+>> +	enable_irq_wake(chip->eud_irq);
+>> +
+>> +	platform_set_drvdata(pdev, chip);
+>> +
+>> +	ret = device_create_file(&pdev->dev, eud_attrs[0]);
+>> +
+>> +	return ret;
+>> +}
+>> +
+>> +static int eud_remove(struct platform_device *pdev)
+>> +{
+>> +	struct eud_chip *chip = platform_get_drvdata(pdev);
+>> +
+>> +	if (chip->enable)
+>> +		disable_eud(chip);
+>> +
+>> +	device_remove_file(&pdev->dev, eud_attrs[0]);
+>> +	device_init_wakeup(&pdev->dev, false);
+>> +	disable_irq_wake(chip->eud_irq);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static const struct of_device_id eud_dt_match[] = {
+>> +	{ .compatible = "qcom,usb-connector-eud" },
+>> +	{ }
+>> +};
+>> +MODULE_DEVICE_TABLE(of, eud_dt_match);
+>> +
+>> +static struct platform_driver eud_driver = {
+>> +	.probe		= eud_probe,
+>> +	.remove		= eud_remove,
+>> +	.driver		= {
+>> +		.name		= "eud",
+>> +		.of_match_table = eud_dt_match,
+>> +	},
+>> +};
+>> +module_platform_driver(eud_driver);
+>> +
+>> +MODULE_DESCRIPTION("QTI EUD driver");
+>> +MODULE_LICENSE("GPL v2");
+>> --
+>> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+>> member
+>> of Code Aurora Forum, hosted by The Linux Foundation
+>> 
