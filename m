@@ -2,139 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02D814227E3
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 15:31:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 143354227EE
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 15:33:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235090AbhJENdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 09:33:42 -0400
-Received: from mail-vs1-f49.google.com ([209.85.217.49]:44891 "EHLO
-        mail-vs1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234209AbhJENdi (ORCPT
+        id S235023AbhJENe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 09:34:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59950 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234103AbhJENe4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 09:33:38 -0400
-Received: by mail-vs1-f49.google.com with SMTP id 66so7395844vsd.11;
-        Tue, 05 Oct 2021 06:31:47 -0700 (PDT)
+        Tue, 5 Oct 2021 09:34:56 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42EC6C061749
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 06:33:05 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id x27so86427128lfu.5
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 06:33:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cogentembedded-com.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=MZBsxeP3JQSj3L9+9cIv9tClpw0dUUkSR3BWuM0kHGw=;
+        b=DsQlnwUHXvbWcyhexAagbrNJFfgdvWRsEaN7MFHK5H6TPlSnpdxbsDcGyqwxaY3/tk
+         xymDcZRrP8m4GzcHpZAwYJPqS9AYYj3Rm7VbvX7c8i7vg+lcPxjzAmfIwgWKauQypA+w
+         UIeoLXgOlJ7eVut7VScj8I2qak7O/6HuomCNYxMjaslZYIgFlbGkCdzkla2wcFWytGv0
+         1OLc9vVkSzBlUuP4p5MXcTBjwkzC6FMIgsbcyy8QH7fd6gs8JWxwo9gqwtcTf09hynvK
+         ls2KhmhE9J9vwxl6otWNTfz4OGOPFlm6802PkmuJmXvI/cmeqZl7R3cATJb9Hx/VtKK0
+         /hDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jtIuyFUc/GQgo2brS5lWjKc5AQy0lekPqeQGIz7oxwI=;
-        b=qGcA0SUuG9YMYS/jsz7sN+FpjB7mvda0zJe+bpIBTZlpzadlmT6jVW2gZVuGVhLGWd
-         bU4pD3f5IfKidWUwsasJvh2nW69vL96rJJ7KpbWwt9W6r6AZYchianfQyq3r9FzClSHo
-         hiCqYBN3xt3NTmwzKS78O204F8NO8yjb7r7vTvttOgh22TXVjGCj7+aSrfjQn/l2rlSv
-         WKzPR3qAnbIc00OkQFyObO170EDscpPw5wfnzx7eTdUIiee/1jpKOzQP5G0fnarE1cxd
-         B+UNnZSG7OYtt9g1W3xn7MQMIGNAdqcTMIFuJXOQY53tDLDXYFoR2BPn7kdDI50+GGv2
-         Y92g==
-X-Gm-Message-State: AOAM533iXFz9uUbQ1iqPd2K06FZUXo+sSGysxYNeNAhn5UXvbOmbdlCC
-        JXN7IgOTM81pZ7UgkbFZ+cqQcqDdD1PVVFgb07dyW/mITq8=
-X-Google-Smtp-Source: ABdhPJwTl6/GZjIbngxcjUnWHz5UYozZUYroW85rNOzUtPh/QU0Fo27+EpkPx2MAnOyjQXAxXvV9KdjTzVi3yyrqXh4=
-X-Received: by 2002:a67:c295:: with SMTP id k21mr15890974vsj.37.1633440707232;
- Tue, 05 Oct 2021 06:31:47 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=MZBsxeP3JQSj3L9+9cIv9tClpw0dUUkSR3BWuM0kHGw=;
+        b=Vl3dPm2CnTq1VFM1GTB3Wj9d4UahNKW/XOKnq1KwLQeI2MKzN/vHhjHy0Wi77Uu8/q
+         RySbE0LiiH2/WJ2nLawf+gPmxTRwEi4qDK/ll7erlEKfkNKFnARyJXB9hPWh6n8AlMRS
+         VPvrzXmVICIlO6X89D6o+0urn4qs5PDgFTx9gAh2O75TFRrAlTpxctzOLl2oQy/Z3B84
+         +fwUPvPjpOJW8tg7AGlV7yAS/3bhOPT4uVzefRRrOcyVGt5hWn2rwgFVJ5YzaiZtVKPk
+         Q6kgvfzVv2Cm/qX5qaN8KYK4fWk33sKrlwOjQVbdlWob3bncTenSpAf1BBIcSkCJfZps
+         Qayg==
+X-Gm-Message-State: AOAM532w4iq0p9uD7k5zgdEhuR7WtZPqrvWYC3A6+QArYSghuEcv0drx
+        x1EVY0J5vhfCITjq+vpV4XcIrg==
+X-Google-Smtp-Source: ABdhPJwSiw3QMYbPWjsbaTLH2D4VeURZI1m1YGkUm+DOqMdUuBqWSgZqx2RxlULdOX/HVIB/vKtcaw==
+X-Received: by 2002:a05:6512:3095:: with SMTP id z21mr3434912lfd.167.1633440783455;
+        Tue, 05 Oct 2021 06:33:03 -0700 (PDT)
+Received: from [192.168.112.17] (nikaet.starlink.ru. [94.141.168.29])
+        by smtp.gmail.com with ESMTPSA id z16sm1974264lji.41.2021.10.05.06.33.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Oct 2021 06:33:03 -0700 (PDT)
+Subject: Re: [PATCH] staging: most: dim2: fix device registration
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Lee Jones <lee.jones@linaro.org>, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Christian Gromm <christian.gromm@microchip.com>
+References: <20210929205619.2800-1-nikita.yoush@cogentembedded.com>
+ <YVwofSvwGTv3kHjh@kroah.com>
+From:   Nikita Yushchenko <nikita.yoush@cogentembedded.com>
+Message-ID: <d309b4cf-12f5-5f49-fcbe-3141dff9e73f@cogentembedded.com>
+Date:   Tue, 5 Oct 2021 16:33:02 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210922160649.28449-1-andrew_gabbasov@mentor.com>
-In-Reply-To: <20210922160649.28449-1-andrew_gabbasov@mentor.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 5 Oct 2021 15:31:35 +0200
-Message-ID: <CAMuHMdVVDpBAQR+H1TAnpf65aVbAL0Mm0km7Z9L7+1JuF6n1gQ@mail.gmail.com>
-Subject: Re: [PATCH] i2c: rcar: add SMBus block read support
-To:     Andrew Gabbasov <andrew_gabbasov@mentor.com>
-Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Bhuvanesh Surachari <bhuvanesh_surachari@mentor.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YVwofSvwGTv3kHjh@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew,
+>> Commit 723de0f9171e ("staging: most: remove device from interface
+>> structure") moved registration of driver-provided struct device to
+>> the most subsystem, but did not properly update dim2 driver to
+>> work with that change.
+>>
+>> After most subsystem passes driver's dev to register_device(), it
+>> becomes refcounted, and can be only deallocated in the release method.
+>> Provide that by:
+>> - not using devres to allocate the device,
+>> - moving shutdown actions from _remove() to the device release method,
+>> - not calling shutdown actions in _probe() after the device becomes
+>>    refcounted.
+> 
+> Should this be 3 patches?
 
-On Wed, Sep 22, 2021 at 6:14 PM Andrew Gabbasov
-<andrew_gabbasov@mentor.com> wrote:
-> The smbus block read is not currently supported for rcar i2c devices.
-> This patchset adds the support to rcar i2c bus so that blocks of data
-> can be read using SMbus block reads.(using i2c_smbus_read_block_data()
-> function from the i2c-core-smbus.c).
->
-> Inspired by commit 8e8782c71595 ("i2c: imx: add SMBus block read support")
->
-> This patch (adapted) was tested with v4.14, but due to lack of real
-> hardware with SMBus block read operations support, using "simulation",
-> that is manual analysis of data, read from plain I2C devices with
-> SMBus block read request.
->
-> Signed-off-by: Bhuvanesh Surachari <bhuvanesh_surachari@mentor.com>
-> Signed-off-by: Andrew Gabbasov <andrew_gabbasov@mentor.com>
+But these three items are deeply interconnected, and fix the issue together. Must not manually free 
+device structure passed to register_device(), thus must not allocate via devres (because otherwise, 
+devres will free it). Once not using devres for it, must deallocate it somehow else, thus must rework 
+the release paths.
 
-Thanks for your patch!
+Perhaps I just shall not go into these details in the commit message.
 
-> --- a/drivers/i2c/busses/i2c-rcar.c
-> +++ b/drivers/i2c/busses/i2c-rcar.c
-> @@ -429,9 +431,16 @@ static bool rcar_i2c_dma(struct rcar_i2c_priv *priv)
->                 /*
->                  * The last two bytes needs to be fetched using PIO in
->                  * order for the STOP phase to work.
-> +                *
-> +                * For SMBus block read the first byte was received using PIO.
+>> Also, driver used to register it's dev itself, to provide a custom
+>> attribute. With the modified most subsystem, this causes duplicate
+>> registration of the same device object. Fix that by adding that custom
+>> attribute to the platform device - that is a better location for
+>> a platform-specific attribute anyway.
+> 
+> Nope, it should be 4 patches.
 
-So it might be easier to read, and more maintainable, to keep the
-old assignments:
+Unlike the above three, this item could be separated.
+Will split into two patches now - the first for this (and with fix to the attributes issue noted below) 
+and the second for proper device releasing.
 
-    buf = priv->msg->buf;
-    len = priv->msg->len - 2;
+> Also, why have you not cc:ed the original author of the commit you are
+> "fixing" here?   They are the maintainer of this code, right?
 
-and adjust them for SMBus afterwards:
+I was under impression that "git send-email" does that automatically...
 
-    if (block_data) {
-            /* For SMBus block read the first byte was received using PIO */
-            buf++;
-            len--;
-    }
+CCing them now.
 
-?
+> One note on your change that would keep me from accepting it even if all
+> of the above was not an issue:
+> 
+>> diff --git a/drivers/staging/most/dim2/sysfs.c b/drivers/staging/most/dim2/sysfs.c
+>> index c85b2cdcdca3..22836c8ed554 100644
+>> --- a/drivers/staging/most/dim2/sysfs.c
+>> +++ b/drivers/staging/most/dim2/sysfs.c
+>> @@ -39,11 +39,10 @@ static const struct attribute_group *dev_attr_groups[] = {
+>>   
+>>   int dim2_sysfs_probe(struct device *dev)
+>>   {
+>> -	dev->groups = dev_attr_groups;
+>> -	return device_register(dev);
+>> +	return sysfs_create_groups(&dev->kobj, dev_attr_groups);
+> 
+> No driver code should ever be calling a sysfs_* function, which is a
+> huge hint that this is incorrect.
+> 
+> You also just raced with userspace and lost, please use the default
+> attributes for the driver or bus for this, but NEVER manually add and
+> remove sysfs files, that way lies madness and hard to maintain code.
+I'm aware of this race, but still creating attributes on device probe is under wide use in the kernel:
 
->                  */
-> -               buf = priv->msg->buf;
-> -               len = priv->msg->len - 2;
-> +               if (block_data) {
-> +                       buf = priv->msg->buf + 1;
-> +                       len = priv->msg->len - 3;
-> +               } else {
-> +                       buf = priv->msg->buf;
-> +                       len = priv->msg->len - 2;
-> +               }
->         } else {
->                 /*
->                  * First byte in message was sent using PIO.
+nikita@cobook:~/kernel$ grep -r device_create_file drivers | wc -l
+448
 
-And below we have another case handling buf and len :-(
+Still, in case of dim2 driver, moving to driver's dev_groups is trivial. Preparing that patch now.
 
-So perhaps:
+Nikita
 
-    buf = priv->msg->buf;
-    len = priv->msg->len;
-
-    if (read) {
-            /*
-             * The last two bytes needs to be fetched using PIO in
-             * order for the STOP phase to work.
-             */
-            len -= 2;
-    }
-    if (!read || block_data) {
-            /* First byte in message was sent using PIO *
-            buf++;
-            len--;
-    }
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
