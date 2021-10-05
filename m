@@ -2,95 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9634422F83
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 19:59:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 098CD422F7F
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 19:58:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234762AbhJESAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 14:00:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21483 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234217AbhJESAx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 14:00:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633456741;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=nuw43x0U3vDkxdS/rYgw2/JnjgAfFVN927udMy2kobw=;
-        b=RD53LMm97YOCFtkLANKqPMmnsk9TCipor1jHVzZLWpgCu2Lunowze/lFOkH5a1eBVN11ZV
-        4WBmqz1ZW1/WnyM8KtTGB1ZzY5M6n9MTxy2Mjt6ysghbPELXLlPacEIhsC/QTudVYuB3Xj
-        0xNKRy1ByweBElp47DcvlreGfrLypcE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-246-rWUJ-gcUPAW3O-sUhKoVOg-1; Tue, 05 Oct 2021 13:58:57 -0400
-X-MC-Unique: rWUJ-gcUPAW3O-sUhKoVOg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 42E18BAF81;
-        Tue,  5 Oct 2021 17:58:00 +0000 (UTC)
-Received: from fuller.cnet (ovpn-112-2.gru2.redhat.com [10.97.112.2])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 83EEA652AB;
-        Tue,  5 Oct 2021 17:57:51 +0000 (UTC)
-Received: by fuller.cnet (Postfix, from userid 1000)
-        id 88BD2416D862; Tue,  5 Oct 2021 14:57:47 -0300 (-03)
-Date:   Tue, 5 Oct 2021 14:57:47 -0300
-From:   Marcelo Tosatti <mtosatti@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Nitesh Narayan Lal <nitesh@redhat.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        seanjc@google.com, vkuznets@redhat.com, tglx@linutronix.de,
-        frederic@kernel.org, mingo@kernel.org, nilal@redhat.com,
-        Wanpeng Li <kernellwp@gmail.com>
-Subject: Re: [PATCH v1] KVM: isolation: retain initial mask for kthread VM
- worker
-Message-ID: <20211005175747.GA167517@fuller.cnet>
-References: <20211004222639.239209-1-nitesh@redhat.com>
- <e734691b-e9e1-10a0-88ee-73d8fceb50f9@redhat.com>
- <20211005105812.GA130626@fuller.cnet>
- <96f38a69-2ff8-a78c-a417-d32f1eb742be@redhat.com>
- <20211005132159.GA134926@fuller.cnet>
- <9c1fa821-2eaf-7709-7bd2-be83f92d2ee5@redhat.com>
+        id S229523AbhJESAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 14:00:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36716 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229626AbhJESAO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 14:00:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ECBF560F38;
+        Tue,  5 Oct 2021 17:58:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633456704;
+        bh=fGEQ/Kh6I+hpl2vaInO9ive8KNBkj7H+QlaS2vgQWPg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lfuUWu2adxlvevelEwEloBqVcapbe/s/56NvMxmycuIlkxafkigYvnTTK2Su0V/G0
+         fa7x20DnYpSBV7ZNu8wv84fC5sMUBRkwo+ZbprilphJwccj8Cf9RQkTnCvtxDaTy/J
+         gOV3AcZA/+W6aCY1LeW3nkt+dg+28MkSTyQr7uUk7tosvVEQfxuA9WDEmL6pom6MgI
+         IFsVKnec/CejMGWZm802zvBktm4h6A/sbNrKqSXcMJVbJGFphg0e6nK7TQaiXwmdII
+         h13ppKMJ7WD4Tl1M16OCUBQFaIDOHBsqRXFpwV1GylUkjDKgc5jAWWiaV26xPQD+dM
+         8Y7vhYDWi7n8Q==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 962B6410A1; Tue,  5 Oct 2021 14:58:21 -0300 (-03)
+Date:   Tue, 5 Oct 2021 14:58:21 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     John Garry <john.garry@huawei.com>
+Cc:     Andrew Kilroy <andrew.kilroy@arm.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 4/4] perf vendor events: Add the Neoverse V1 to arm64
+ mapfile
+Message-ID: <YVySPe1LRz4bGZFy@kernel.org>
+References: <20211004160008.21645-1-andrew.kilroy@arm.com>
+ <20211004160008.21645-4-andrew.kilroy@arm.com>
+ <424d066b-30d5-4512-bd8c-15b700af2864@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9c1fa821-2eaf-7709-7bd2-be83f92d2ee5@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <424d066b-30d5-4512-bd8c-15b700af2864@huawei.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05, 2021 at 07:15:43PM +0200, Paolo Bonzini wrote:
-> On 05/10/21 15:21, Marcelo Tosatti wrote:
-> > > The QEMU I/O thread is not hogging the CPU 100% of the time, and
-> > > therefore the nx-recovery thread should be able to run on that CPU.
+Em Tue, Oct 05, 2021 at 10:33:49AM +0100, John Garry escreveu:
+> On 04/10/2021 17:00, Andrew Kilroy wrote:
+> > This is so that performance counters for the Neoverse V1 appear
+> > categorised upon running 'perf list' on the CPU.
 > > 
-> > 1) The cpumask of the parent thread is not inherited
-> > 
-> > 	set_cpus_allowed_ptr(task, housekeeping_cpumask(HK_FLAG_KTHREAD));
-> > 
-> > On __kthread_create_on_node should fail (because its cgroup, the one
-> > inherited from QEMU, contains only isolated CPUs).
-> > 
-> > (The QEMU I/O thread runs on an isolated CPU, and is moved by libvirt
-> > to HK-cgroup as mentioned before).
 > 
-> Ok, that's the part that I missed.  So the core issue is that libvirt moves
-> the I/O thread out of the isolated-CPU cgroup too late?  This in turn is
-> because libvirt gets access to the QEMU monitor too late (the KVM file
-> descriptor is created when QEMU processes the command line).
+> this really belongs with the previous patch
 
-Actually, what i wrote was incorrect: set_cpus_allowed_ptr should 
-succeed (kthread creation), but cgroup_attach_task_all will
-override the kthread mask with the cgroup mask
-(which contains isolated CPUs).
+Waiting for a resolution on this one.
 
-Paolo: about your suggestion to use the same CPU for nx-recovery thread
-as the I/O thread one: I believe the cpumask of the userspace parent (QEMU I/O
-thread) is not inherited by the kernel thread.
+- Arnaldo
+ 
+> Thanks,
+> John
+> 
+> > Signed-off-by: Andrew Kilroy <andrew.kilroy@arm.com>
+> > ---
+> >   tools/perf/pmu-events/arch/arm64/mapfile.csv | 1 +
+> >   1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/tools/perf/pmu-events/arch/arm64/mapfile.csv b/tools/perf/pmu-events/arch/arm64/mapfile.csv
+> > index c43591d831b8..31d8b57ca9bb 100644
+> > --- a/tools/perf/pmu-events/arch/arm64/mapfile.csv
+> > +++ b/tools/perf/pmu-events/arch/arm64/mapfile.csv
+> > @@ -18,6 +18,7 @@
+> >   0x00000000410fd080,v1,arm/cortex-a57-a72,core
+> >   0x00000000410fd0b0,v1,arm/cortex-a76-n1,core
+> >   0x00000000410fd0c0,v1,arm/cortex-a76-n1,core
+> > +0x00000000410fd400,v1,arm/neoverse-v1,core
+> >   0x00000000420f5160,v1,cavium/thunderx2,core
+> >   0x00000000430f0af0,v1,cavium/thunderx2,core
+> >   0x00000000460f0010,v1,fujitsu/a64fx,core
+> > 
 
-We will resend the patchset once more data to justify this is available
-(or will if an userspace solution is not possible).
+-- 
 
+- Arnaldo
