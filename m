@@ -2,123 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CBF8423090
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 21:07:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC22A423091
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 21:08:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235175AbhJETJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 15:09:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54680 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229662AbhJETJh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 15:09:37 -0400
-Received: from lahtoruutu.iki.fi (lahtoruutu.iki.fi [IPv6:2a0b:5c81:1c1::37])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E675FC061749;
-        Tue,  5 Oct 2021 12:07:46 -0700 (PDT)
-Received: from [172.16.24.131] (73-55.dynamonet.fi [85.134.55.73])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        id S235206AbhJETKC convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 5 Oct 2021 15:10:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56104 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231858AbhJETKB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 15:10:01 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: tmb@iki.fi)
-        by lahtoruutu.iki.fi (Postfix) with ESMTPSA id 6293A1B001B4;
-        Tue,  5 Oct 2021 22:07:43 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=lahtoruutu;
-        t=1633460863;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JEWyRBhh3Ae6pPANgm7coVZ29Z0Zpt73cs/qEjDzOxA=;
-        b=WEhsYjjvKfIfaJUGcM3VXgyhTp7UfVMNBnM8b3s1rmZemGS88oVYhjGGBt/M8p9Xvm++AY
-        F24S3X9u3Xl7eMkAGFjcl5b9cd1j8iUf8koZZKgTJgJaqN6Uh7Ez+g0Eo7q4saiqdX/XjO
-        jZ420AQP0EMKSm0cgCEHs+os61opnuciCww3yLBNNu5qzqK/xUVCYbJ90jVBsXyWIMin7r
-        o6Snv0KW2AVz2g+L8wEG5SIzF6Hsda/CYXW8hvojzWFW/nV+Qyy5hX7CgMe4+CJvn+Px/C
-        JR4Jot0KDi4Ylc79XCtbdviP9ZrLiRASbHDrHlVsxhtj+JDkojqjZ80kOn6oZA==
-Message-ID: <4ecdfb07-4957-913a-6bd3-4410bd2cb5c0@iki.fi>
-Date:   Tue, 5 Oct 2021 22:07:43 +0300
+        by mail.kernel.org (Postfix) with ESMTPSA id 36E6E60F43;
+        Tue,  5 Oct 2021 19:08:10 +0000 (UTC)
+Date:   Tue, 5 Oct 2021 15:08:07 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Daniel Bristot de Oliveira <bristot@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] ftrace: Fix -Wcast-function-type warnings on
+ powerpc64
+Message-ID: <20211005150807.03da5e54@gandalf.local.home>
+In-Reply-To: <20211005165027.GA797862@embeddedor>
+References: <20211005053922.GA702049@embeddedor>
+        <20211005111714.18ebea2b@gandalf.local.home>
+        <20211005161812.GA768055@embeddedor>
+        <20211005123522.244281e6@gandalf.local.home>
+        <20211005165027.GA797862@embeddedor>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.2
-Subject: Re: [PATCH 5.14 000/173] 5.14.10-rc2 review
-Content-Language: en-US
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-References: <20211005083311.830861640@linuxfoundation.org>
- <20211005155909.GA1386975@roeck-us.net>
-From:   Thomas Backlund <tmb@iki.fi>
-In-Reply-To: <20211005155909.GA1386975@roeck-us.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-ARC-Seal: i=1; s=lahtoruutu; d=iki.fi; t=1633460863; a=rsa-sha256;
-        cv=none;
-        b=G0Fa8vg741Tj6T8nxLSD3BPjbi89O5yd3g3yMTrUgNBjZ33Ii2+cR9v4CHwNJlIUip+wA4
-        /yYVKbwHPLLYkrKREzmz9zIbDvJxZF/Q9anL4oLYkSRW99RXeynjpJnZoubETn+u5QqXMt
-        7qu8QZ+CRf4262OKsuxvDyTdNpzw4EGYEjt5YkCe1HFJ9BQ3SCsXh9DVZWc+DRy74oqASx
-        FsrvzF3ps3JiJ3e+GrUtuaGGDLFPFbXmOc5KFC+ERwowsK6qWE8RWnu/QAxj+LEuRO6Wj+
-        6ufJDq7CSvzJ4r6CE6mehBQ0j6ynMI6JD1nVcE/QSPcgblFHt8Qjfk+sOA10zw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
-        s=lahtoruutu; t=1633460863;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JEWyRBhh3Ae6pPANgm7coVZ29Z0Zpt73cs/qEjDzOxA=;
-        b=tLy9r2K3PDCTag6b5XavBTNDKy3swqX+i1OruVXsNCQ4Tj4Jt7Ng6h/3KToNLgvQy2qumM
-        FLMa+u1n5WA20dRgMkmHnX39WGMxAfJIA/8BPU++8Ds5MbcelpfB+u6zuLMUfI8VXcdYbl
-        EB6tWymuqm7OoxL0m5/YNwo6tHrOI2YkpYSXgsF0t9oQtT5WeQQ+cxS+/F9X5SrLw7fFki
-        w6O/zxYfjSwknpiNtXGsNFKZ8dPWGLvtgl8a8fD5ns//Ewjd9tAhreVwhmqvwjLq629642
-        kdkoTl9D8yvAo5zSYf0VwELyqYOa6jJzSsWhm7gZLLM1JTQ50d4zeZrYiwXRhg==
-ARC-Authentication-Results: i=1;
-        ORIGINATING;
-        auth=pass smtp.auth=tmb@iki.fi smtp.mailfrom=tmb@iki.fi
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Den 2021-10-05 kl. 18:59, skrev Guenter Roeck:
-> On Tue, Oct 05, 2021 at 10:38:40AM +0200, Greg Kroah-Hartman wrote:
->> This is the start of the stable review cycle for the 5.14.10 release.
->> There are 173 patches in this series, all will be posted as a response
->> to this one.  If anyone has any issues with these being applied, please
->> let me know.
->>
->> Responses should be made by Thu, 07 Oct 2021 08:32:44 +0000.
->> Anything received after that time might be too late.
->>
+On Tue, 5 Oct 2021 11:50:27 -0500
+"Gustavo A. R. Silva" <gustavoars@kernel.org> wrote:
+
+> On Tue, Oct 05, 2021 at 12:35:22PM -0400, Steven Rostedt wrote:
+> > On Tue, 5 Oct 2021 11:18:12 -0500
+> > "Gustavo A. R. Silva" <gustavoars@kernel.org> wrote:
+> >   
+> > > On Tue, Oct 05, 2021 at 11:17:14AM -0400, Steven Rostedt wrote:  
+> > > > On Tue, 5 Oct 2021 00:39:22 -0500
+> > > > "Gustavo A. R. Silva" <gustavoars@kernel.org> wrote:
+> > > >     
+> > > > > In order to make sure new function cast mismatches are not introduced
+> > > > > in the kernel (to avoid tripping CFI checking), the kernel should be
+> > > > > globally built with -Wcast-function-type.
+> > > > > 
+> > > > > So, fix the following -Wcast-function-type warnings on powerpc64
+> > > > > (ppc64_defconfig):    
+> > > > 
+> > > > I think I'll go back and add my linker magic.
+> > > > 
+> > > >   https://lore.kernel.org/all/20200617165616.52241bde@oasis.local.home/
+> > > > 
+> > > > I'll clean it up a bit too. I'll have a patch in a bit.    
+> > > 
+> > > Awesome. :)
+> > > 
+> > > Thanks
+> > > --  
+> > 
+> > Does this fix it for you?  
 > 
-> AFAICS the warning problems are still seen. Unfortunately I won't be able
-> to bisect since I have limited internet access.
+> Nop; there are still some warnings (ppc64_defconfig):
+
+Sure you applied it?
+
+Because I tested it on powerpc64 with the defconfig, and without the patch,
+I get the error, but with it, I don't.
+
 > 
-> Guenter
+> kernel/trace/ftrace.c: In function ‘ftrace_ops_get_list_func’:
+> kernel/trace/ftrace.c:171:10: error: returning ‘void (*)(long unsigned int,  long unsigned int,  struct ftrace_ops *, struct ftrace_regs *)’ from a function with incompatible return type ‘ftrace_func_t’ {aka ‘void (*)(long unsigned int,  long unsigned int)’} [-Werror=incompatible-pointer-types]
+>   171 |   return ftrace_ops_list_func;
+>       |          ^~~~~~~~~~~~~~~~~~~~
+
+Or did you not remove your patch first?
+
+Because, the above error shows:
+
+    return type ‘ftrace_func_t’ {aka ‘void (*)(long unsigned int,  long unsigned int)’
+
+But my code has:
+
+  typedef void (*ftrace_func_t)(unsigned long ip, unsigned long parent_ip,
+			      struct ftrace_ops *op, struct ftrace_regs *fregs);
+
+
+Which is not the same type, but your patch has:
+
++#if ARCH_SUPPORTS_FTRACE_OPS
+ typedef void (*ftrace_func_t)(unsigned long ip, unsigned long parent_ip,
+ 			      struct ftrace_ops *op, struct ftrace_regs *fregs);
++#else
++typedef void (*ftrace_func_t)(unsigned long ip, unsigned long parent_ip);
++#endif
++
++typedef void (*ftrace_func_base_t)(void);
++#define CAST_FTRACE_FUNC(f) ((ftrace_func_t)((ftrace_func_base_t)(f)))
+
+Which redefines ftrace_func_t.
+
+-- Steve
+
+
+> kernel/trace/ftrace.c: In function ‘update_ftrace_function’:
+> kernel/trace/ftrace.c:204:8: error: assignment to ‘ftrace_func_t’ {aka ‘void (*)(long unsigned int,  long unsigned int)’} from incompatible pointer type ‘void (*)(long unsigned int,  long unsigned int,  struct ftrace_ops *, struct ftrace_regs *)’ [-Werror=incompatible-pointer-types]
+>   204 |   func = ftrace_ops_list_func;
+>       |        ^
+> kernel/trace/ftrace.c:217:11: warning: comparison of distinct pointer types lacks a cast
+>   217 |  if (func == ftrace_ops_list_func) {
+>       |           ^~
+> kernel/trace/ftrace.c: In function ‘ftrace_modify_all_code’:
+> kernel/trace/ftrace.c:2695:35: error: passing argument 1 of ‘ftrace_update_ftrace_func’ from incompatible pointer type [-Werror=incompatible-pointer-types]
+>  2695 |   err = ftrace_update_ftrace_func(ftrace_ops_list_func);
+>       |                                   ^~~~~~~~~~~~~~~~~~~~
+>       |                                   |
+>       |                                   void (*)(long unsigned int,  long unsigned int,  struct ftrace_ops *, struct ftrace_regs *)
+> In file included from kernel/trace/ftrace.c:29:
+> ./include/linux/ftrace.h:585:52: note: expected ‘ftrace_func_t’ {aka ‘void (*)(long unsigned int,  long unsigned int)’} but argument is of type ‘void (*)(long unsigned int,  long unsigned int,  struct ftrace_ops *, struct ftrace_regs *)’
+>   585 | extern int ftrace_update_ftrace_func(ftrace_func_t func);
+>       |                                      ~~~~~~~~~~~~~~^~~~
+> kernel/trace/ftrace.c:2705:38: warning: comparison of distinct pointer types lacks a cast
+>  2705 |  if (update && ftrace_trace_function != ftrace_ops_list_func) {
+>       |                                      ^~
 > 
-> =========================
-> WARNING: held lock freed!
-> 5.14.10-rc2-00174-g355f3195d051 #1 Not tainted
-> -------------------------
-> ip/202 is freeing memory c000000009918900-c000000009918f7f, with a lock still held there!
-> c000000009918a20 (sk_lock-AF_INET){+.+.}-{0:0}, at: .sk_common_release+0x4c/0x1b0
-> 2 locks held by ip/202:
->   #0: c00000000ae149d0 (&sb->s_type->i_mutex_key#5){+.+.}-{3:3}, at: .__sock_release+0x4c/0x150
->   #1: c000000009918a20 (sk_lock-AF_INET){+.+.}-{0:0}, at: .sk_common_release+0x4c/0x1b0
-> 
-> 
-
-
-Isn't this a fallout of:
-
-queue-5.14/net-introduce-and-use-lock_sock_fast_nested.patch
-that has: Fixes: 2dcb96bacce3 ("net: core: Correct the 
-sock::sk_lock.owned lockdep annotations")
-
-BUT:
-
-$ git describe --contains 2dcb96bacce3
-v5.15-rc3~30^2~26
-
---
-Thomas
+> --
+> Gustavo
 
