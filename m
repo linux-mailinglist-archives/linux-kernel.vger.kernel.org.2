@@ -2,237 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D5434220E9
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 10:38:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B8FE4220FB
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 10:39:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232884AbhJEIju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 04:39:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50754 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230526AbhJEIjs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 04:39:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A0CAB61130;
-        Tue,  5 Oct 2021 08:37:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633423078;
-        bh=ch25ZyoSC4A/2UySrYo9vkFVpGLP3S3g3Kq3k6vSlOk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=wtaRPz3OgO836NpyEXSJSzHcqgqboZDCHB9fqdi2NnTIsUPEQ8KHe6sCeOI+b8izx
-         7ol5JlmNAaVqIPs1jwNTKTSaV8nICJoy7tBtI02nJpTygw7t+BhEytqwCFKLcXUFXw
-         DFfx9q4nQUPoJ0Yu/95frs/Cbx+kpQXfa34DcPuo=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: [PATCH 4.4 00/41] 4.4.286-rc2 review
-Date:   Tue,  5 Oct 2021 10:37:55 +0200
-Message-Id: <20211005083253.853051879@linuxfoundation.org>
-X-Mailer: git-send-email 2.33.0
+        id S233411AbhJEIld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 04:41:33 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:46046
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232965AbhJEIl1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 04:41:27 -0400
+Received: from workstation5.fritz.box (ip-88-152-144-157.hsi03.unitymediagroup.de [88.152.144.157])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id BC6AD3FFE4;
+        Tue,  5 Oct 2021 08:39:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1633423174;
+        bh=ly/I0QI95Yc9GO/H5XIXI5TePQzK07ffrFXTYhJcZXA=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+        b=piQT/rtlx+NJfj/j1qgSjzA5Nn5tfG40z2Q/AcY50gCh8JSn/lHeog5V8sYK5vfpw
+         AUTmHIlyY02MWohHOj82+gHGLOhpv59ojiqRzTf3LKiIxR5/W1q2B0sV/K4Y4ef1HT
+         kQxfVbDFrzQv3xj4Jmgl4mh2Gp6P6r2Bd3rOqvaBSpDUYDPmIosHbIwLKukBaZDq06
+         BykRctrTcd6iOXUDzffjYJkq/SdDZGEeAcZQUC79tNk5AeDQjiasTwR/YMBxYE6YJb
+         fcLbMOpUT8FVQwNUmbQAmVxBI5I8yKKfeFYDSrPGhFlM9XTNZXZ3iFiHOAPaz943ke
+         UuAp0iA4dJE6Q==
+From:   Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
+To:     James Bottomley <James.Bottomley@HansenPartnership.com>
+Cc:     linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
+Subject: [PATCH 1/1] sbsigntool: add support for RISC-V images
+Date:   Tue,  5 Oct 2021 10:37:57 +0200
+Message-Id: <20211005083757.9201-1-heinrich.schuchardt@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.286-rc2.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-4.4.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 4.4.286-rc2
-X-KernelTest-Deadline: 2021-10-07T08:32+00:00
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the start of the stable review cycle for the 4.4.286 release.
-There are 41 patches in this series, all will be posted as a response
-to this one.  If anyone has any issues with these being applied, please
-let me know.
+The UEFI 2.9 specification defines:
 
-Responses should be made by Thu, 07 Oct 2021 08:32:44 +0000.
-Anything received after that time might be too late.
+    EFI_IMAGE_MACHINE_RISCV32 = 0x5032
+    EFI_IMAGE_MACHINE_RISCV64 = 0x5064
 
-The whole patch series can be found in one patch at:
-	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.286-rc2.gz
-or in the git tree and branch at:
-	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.4.y
-and the diffstat can be found below.
+The same values can be found in the PE-COFF specification. Cf.
+https://docs.microsoft.com/en-us/windows/win32/debug/pe-format#machine-types
 
-thanks,
+    IMAGE_FILE_MACHINE_RISCV32 = 0x5032
+    IMAGE_FILE_MACHINE_RISCV64 = 0x5064
 
-greg k-h
+Signed-off-by: Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
+---
+ src/coff/pe.h | 2 ++
+ src/image.c   | 2 ++
+ 2 files changed, 4 insertions(+)
 
--------------
-Pseudo-Shortlog of commits:
-
-Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-    Linux 4.4.286-rc2
-
-NeilBrown <neilb@suse.com>
-    cred: allow get_cred() and put_cred() to be given NULL.
-
-Anirudh Rayabharam <mail@anirudhrb.com>
-    HID: usbhid: free raw_report buffers in usbhid_stop
-
-Jozsef Kadlecsik <kadlec@netfilter.org>
-    netfilter: ipset: Fix oversized kvmalloc() calls
-
-F.A.Sulaiman <asha.16@itfac.mrt.ac.lk>
-    HID: betop: fix slab-out-of-bounds Write in betop_probe
-
-Suzuki K Poulose <suzuki.poulose@arm.com>
-    arm64: Extend workaround for erratum 1024718 to all versions of Cortex-A55
-
-Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>
-    EDAC/synopsys: Fix wrong value type assignment for edac_mode
-
-yangerkun <yangerkun@huawei.com>
-    ext4: fix potential infinite loop in ext4_dx_readdir()
-
-Johan Hovold <johan@kernel.org>
-    ipack: ipoctal: fix module reference leak
-
-Johan Hovold <johan@kernel.org>
-    ipack: ipoctal: fix missing allocation-failure check
-
-Johan Hovold <johan@kernel.org>
-    ipack: ipoctal: fix tty-registration error handling
-
-Johan Hovold <johan@kernel.org>
-    ipack: ipoctal: fix tty registration race
-
-Johan Hovold <johan@kernel.org>
-    ipack: ipoctal: fix stack information leak
-
-Jacob Keller <jacob.e.keller@intel.com>
-    e100: fix buffer overrun in e100_get_regs
-
-Jacob Keller <jacob.e.keller@intel.com>
-    e100: fix length calculation in e100_get_regs_len
-
-Andrea Claudi <aclaudi@redhat.com>
-    ipvs: check that ip_vs_conn_tab_bits is between 8 and 20
-
-Johannes Berg <johannes.berg@intel.com>
-    mac80211: fix use-after-free in CCMP/GCMP RX
-
-Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
-    tty: Fix out-of-bound vmalloc access in imageblit
-
-Linus Torvalds <torvalds@linux-foundation.org>
-    qnx4: work around gcc false positive warning bug
-
-Linus Torvalds <torvalds@linux-foundation.org>
-    spi: Fix tegra20 build with CONFIG_PM=n
-
-Guenter Roeck <linux@roeck-us.net>
-    net: 6pack: Fix tx timeout and slot time
-
-Guenter Roeck <linux@roeck-us.net>
-    alpha: Declare virt_to_phys and virt_to_bus parameter as pointer to volatile
-
-Dan Li <ashimida@linux.alibaba.com>
-    arm64: Mark __stack_chk_guard as __ro_after_init
-
-Helge Deller <deller@gmx.de>
-    parisc: Use absolute_pointer() to define PAGE0
-
-Linus Torvalds <torvalds@linux-foundation.org>
-    qnx4: avoid stringop-overread errors
-
-Linus Torvalds <torvalds@linux-foundation.org>
-    sparc: avoid stringop-overread errors
-
-Guenter Roeck <linux@roeck-us.net>
-    net: i825xx: Use absolute_pointer for memcpy from fixed memory location
-
-Guenter Roeck <linux@roeck-us.net>
-    compiler.h: Introduce absolute_pointer macro
-
-Guenter Roeck <linux@roeck-us.net>
-    m68k: Double cast io functions to unsigned long
-
-Zhihao Cheng <chengzhihao1@huawei.com>
-    blktrace: Fix uaf in blk_trace access after removing by sysfs
-
-Baokun Li <libaokun1@huawei.com>
-    scsi: iscsi: Adjust iface sysfs attr detection
-
-Aya Levin <ayal@nvidia.com>
-    net/mlx4_en: Don't allow aRFS for encapsulated packets
-
-Johan Hovold <johan@kernel.org>
-    net: hso: fix muxed tty registration
-
-Slark Xiao <slark_xiao@163.com>
-    USB: serial: option: add device id for Foxconn T99W265
-
-Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-    USB: serial: option: remove duplicate USB device ID
-
-Carlo Lobrano <c.lobrano@gmail.com>
-    USB: serial: option: add Telit LN920 compositions
-
-Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-    USB: serial: mos7840: remove duplicated 0xac24 device ID
-
-Uwe Brandt <uwe.brandt@gmail.com>
-    USB: serial: cp210x: add ID for GW Instek GDM-834x Digital Multimeter
-
-Jan Beulich <jbeulich@suse.com>
-    xen/x86: fix PV trap handling on secondary processors
-
-Steve French <stfrench@microsoft.com>
-    cifs: fix incorrect check for null pointer in header_assemble
-
-Dan Carpenter <dan.carpenter@oracle.com>
-    usb: musb: tusb6010: uninitialized data in tusb_fifo_write_unaligned()
-
-Dan Carpenter <dan.carpenter@oracle.com>
-    usb: gadget: r8a66597: fix a loop in set_feature()
-
-
--------------
-
-Diffstat:
-
- Makefile                                       |  4 +-
- arch/alpha/include/asm/io.h                    |  6 +--
- arch/arm64/Kconfig                             |  2 +-
- arch/arm64/kernel/process.c                    |  2 +-
- arch/arm64/mm/proc.S                           |  4 +-
- arch/m68k/include/asm/raw_io.h                 | 20 ++++----
- arch/parisc/include/asm/page.h                 |  2 +-
- arch/sparc/kernel/mdesc.c                      |  3 +-
- arch/x86/xen/enlighten.c                       | 15 +++---
- drivers/edac/synopsys_edac.c                   |  2 +-
- drivers/hid/hid-betopff.c                      | 13 +++--
- drivers/hid/usbhid/hid-core.c                  | 13 ++++-
- drivers/ipack/devices/ipoctal.c                | 63 +++++++++++++++++------
- drivers/net/ethernet/i825xx/82596.c            |  2 +-
- drivers/net/ethernet/intel/e100.c              | 22 +++++---
- drivers/net/ethernet/mellanox/mlx4/en_netdev.c |  3 ++
- drivers/net/hamradio/6pack.c                   |  4 +-
- drivers/net/usb/hso.c                          | 12 ++---
- drivers/scsi/scsi_transport_iscsi.c            |  8 +--
- drivers/spi/spi-tegra20-slink.c                |  4 +-
- drivers/tty/vt/vt.c                            | 21 +++++++-
- drivers/usb/gadget/udc/r8a66597-udc.c          |  2 +-
- drivers/usb/musb/tusb6010.c                    |  1 +
- drivers/usb/serial/cp210x.c                    |  1 +
- drivers/usb/serial/mos7840.c                   |  2 -
- drivers/usb/serial/option.c                    | 11 +++-
- fs/cifs/connect.c                              |  5 +-
- fs/ext4/dir.c                                  |  6 +--
- fs/qnx4/dir.c                                  | 69 +++++++++++++++++++-------
- include/linux/compiler.h                       |  2 +
- include/linux/cred.h                           | 14 ++++--
- kernel/trace/blktrace.c                        |  8 +++
- net/mac80211/wpa.c                             |  6 +++
- net/netfilter/ipset/ip_set_hash_gen.h          |  4 +-
- net/netfilter/ipvs/ip_vs_conn.c                |  4 ++
- 35 files changed, 254 insertions(+), 106 deletions(-)
-
+diff --git a/src/coff/pe.h b/src/coff/pe.h
+index 0d1036e..a73a2c0 100644
+--- a/src/coff/pe.h
++++ b/src/coff/pe.h
+@@ -143,6 +143,8 @@
+ #define IMAGE_FILE_MACHINE_R10000            0x0168
+ #define IMAGE_FILE_MACHINE_R3000             0x0162
+ #define IMAGE_FILE_MACHINE_R4000             0x0166
++#define IMAGE_FILE_MACHINE_RISCV32           0x5032
++#define IMAGE_FILE_MACHINE_RISCV64           0x5064
+ #define IMAGE_FILE_MACHINE_SH3               0x01a2
+ #define IMAGE_FILE_MACHINE_SH3DSP            0x01a3
+ #define IMAGE_FILE_MACHINE_SH3E              0x01a4
+diff --git a/src/image.c b/src/image.c
+index 3ada37b..b14a30d 100644
+--- a/src/image.c
++++ b/src/image.c
+@@ -239,10 +239,12 @@ static int image_pecoff_parse(struct image *image)
+ 	switch (magic) {
+ 	case IMAGE_FILE_MACHINE_AMD64:
+ 	case IMAGE_FILE_MACHINE_AARCH64:
++	case IMAGE_FILE_MACHINE_RISCV64:
+ 		rc = image_pecoff_parse_64(image);
+ 		break;
+ 	case IMAGE_FILE_MACHINE_I386:
+ 	case IMAGE_FILE_MACHINE_THUMB:
++	case IMAGE_FILE_MACHINE_RISCV32:
+ 		rc = image_pecoff_parse_32(image);
+ 		break;
+ 	default:
+-- 
+2.31.1
 
