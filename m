@@ -2,114 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1197F422DF6
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 18:29:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DA93422DF9
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 18:29:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236480AbhJEQbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 12:31:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35046 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236088AbhJEQbG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 12:31:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2189D61373;
-        Tue,  5 Oct 2021 16:29:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633451356;
-        bh=iwigj6eqF85kwprTmioYxRpgk7wef6bzF9Dh2dvCPjw=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=AlXg6bGLNt7mMzBF/flLI36K2EjnFNxsBWAu6yprqL0wtI8WnL9FR1JLjxK+2foPA
-         jfdoChtdolfmJnadyhnhdglJpcA3NvDTReEmu41CYpBxcx4I09xz/9jBm0JIM+oUBG
-         GwrGAm2OhG7s5lqdXitgyMHwK2MpXzzkaPaEAoai+NN6loKruu6mH5D1vkxk873n+9
-         ibhq+PXrqr9yCgkzlF01zxyvkwigyxbkPytXlmd9WIT93erDqC5KBKDcgFW/SWCM5c
-         285Qeaajs7HoZNhb2B9+5VREBGmTjJmid0ze2Zv3L1ML7+tXNgHsYqLX89RJ3Noi4F
-         gIB761HlQ35Dg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id D979A5C098A; Tue,  5 Oct 2021 09:29:15 -0700 (PDT)
-Date:   Tue, 5 Oct 2021 09:29:15 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     rostedt <rostedt@goodmis.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        "Joel Fernandes, Google" <joel@joelfernandes.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, rcu <rcu@vger.kernel.org>,
-        netfilter-devel <netfilter-devel@vger.kernel.org>,
-        coreteam <coreteam@netfilter.org>,
-        netdev <netdev@vger.kernel.org>
-Subject: Re: [RFC][PATCH] rcu: Use typeof(p) instead of typeof(*p) *
-Message-ID: <20211005162915.GT880162@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20211005094728.203ecef2@gandalf.local.home>
- <505004021.2637.1633446912223.JavaMail.zimbra@efficios.com>
- <20211005115817.2e1b57bd@gandalf.local.home>
- <155148572.2789.1633450504238.JavaMail.zimbra@efficios.com>
+        id S236378AbhJEQba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 12:31:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46190 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231993AbhJEQb3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 12:31:29 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50990C061749;
+        Tue,  5 Oct 2021 09:29:39 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id k26so4991pfi.5;
+        Tue, 05 Oct 2021 09:29:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=3ef05so0Rs+jgYfMW3YGS4l9qvn+4nlVR3YmDCrPXYw=;
+        b=cU3tL+Q9fUwO24t1n/2NII5XrnMn/vm5SAVsFqkEwD2nlrS0sRbVVLIozF20SGGJed
+         OdLEEPcppisO0V4NMM1NAmFap4KoISr7yxYSdL9f67fk42/0xG52HO4CEeYs1kfenShH
+         ZVuD2b8OFqBqQ0mBdHSCI1FJDOdPMt4WVdZ1gjoayFrZXdz6sa2XaBEweji2YdOUbMid
+         4DG1GG2d/WxWp2qSacLEutw+HIQ3HDZcaTNhy/f1JkEF6eI9S2qC7kVRGsCn8iT9HcvQ
+         gJUI2BLTKGnClKSI1WpdXXLT8PbsQB8QRm88Nn9ZStAdh7CzPrdHYpX3o7JH+rrsuNIO
+         gUEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=3ef05so0Rs+jgYfMW3YGS4l9qvn+4nlVR3YmDCrPXYw=;
+        b=2Vs2Pb/Ea3Bj+QFF8xeAAl+iNlciAem7TL1mGCf8EPNqaZbMmSlIqX8lKCu4PYxEj0
+         J6+cc25J/VRv5C+u8hgV8s9k6IbBYbinaTChiluieg6IEuOXYqX/W+R5N1WkMudoKTf+
+         4lGd4MBISfaE354bJiQKEU6HmOFa44gAI6A2JrLIEf4jVwBnOOTKV+J8d35NnH9y0UC2
+         XdVUZDYxSdSIcLD+U48JFPMrwUNdqKiWUoQ02nxzaFQLkcN58Bo5rJ5UVb9b6H7TpnFD
+         2WV0vq5L4cnDlTnyE17Tj2ffb+/Cxyagfu+lx5zkDhBov8I1MsVecQNlKkpBiILbiYD/
+         R8KQ==
+X-Gm-Message-State: AOAM531rEy7TBup3oA1t4WN396Y5YkBPqNoSRfLDYJqNvKB0hl2+oD9P
+        NFJtLMV0mvk8xylPgvBopeDcf6ZLAdw=
+X-Google-Smtp-Source: ABdhPJxsbDU62npd3kBmiIs+3wpNxNitZg593jGipqJz8ZLnziQ5yHRwp3tm1Zqv7kO9N9uu/GjQIA==
+X-Received: by 2002:a63:ed03:: with SMTP id d3mr16408704pgi.24.1633451378436;
+        Tue, 05 Oct 2021 09:29:38 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id r7sm18046561pff.112.2021.10.05.09.29.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Oct 2021 09:29:37 -0700 (PDT)
+Subject: Re: [PATCH 5.10 00/92] 5.10.71-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20211005083301.812942169@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <c1082247-3d0a-f4eb-9f31-23dcbb0ad2cf@gmail.com>
+Date:   Tue, 5 Oct 2021 09:29:29 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <155148572.2789.1633450504238.JavaMail.zimbra@efficios.com>
+In-Reply-To: <20211005083301.812942169@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05, 2021 at 12:15:04PM -0400, Mathieu Desnoyers wrote:
-> ----- On Oct 5, 2021, at 11:58 AM, rostedt rostedt@goodmis.org wrote:
+On 10/5/21 1:38 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.71 release.
+> There are 92 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> > On Tue, 5 Oct 2021 11:15:12 -0400 (EDT)
-> > Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
-> > 
-> >> ----- On Oct 5, 2021, at 9:47 AM, rostedt rostedt@goodmis.org wrote:
-> >> [...]
-> >> > #define rcu_dereference_raw(p) \
-> >> > ({ \
-> >> > 	/* Dependency order vs. p above. */ \
-> >> > 	typeof(p) ________p1 = READ_ONCE(p); \
-> >> > -	((typeof(*p) __force __kernel *)(________p1)); \
-> >> > +	((typeof(p) __force __kernel)(________p1)); \
-> >> > })
-> >> 
-> >> AFAIU doing so removes validation that @p is indeed a pointer, so a user might
-> >> mistakenly
-> >> try to use rcu_dereference() on an integer, and get away with it. I'm not sure
-> >> we want to
-> >> loosen this check. I wonder if there might be another way to achieve the same
-> >> check without
-> >> requiring the structure to be declared, e.g. with __builtin_types_compatible_p ?
-> > 
-> > Is that really an issue? Because you would be assigning it to an integer.
-> > 
-> > 
-> >	x = rcu_dereference_raw(y);
-> > 
-> > And that just makes 'x' a copy of 'y' and not really a reference to it, thus
-> > if you don't have a pointer, it's just a fancy READ_ONCE(y).
+> Responses should be made by Thu, 07 Oct 2021 08:32:44 +0000.
+> Anything received after that time might be too late.
 > 
-> See Documentation/RCU/arrayRCU.rst:
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.71-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
 > 
-> "It might be tempting to consider use
-> of RCU to instead protect the index into an array, however, this use
-> case is **not** supported.  The problem with RCU-protected indexes into
-> arrays is that compilers can play way too many optimization games with
-> integers, which means that the rules governing handling of these indexes
-> are far more trouble than they are worth.  If RCU-protected indexes into
-> arrays prove to be particularly valuable (which they have not thus far),
-> explicit cooperation from the compiler will be required to permit them
-> to be safely used."
+> thanks,
 > 
-> So AFAIU validation that rcu_dereference receives a pointer as parameter
-> is done on purpose.
+> greg k-h
 
-What Mathieu said!
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
 
-On the other hand, I am starting to believe that explicit cooperation
-from compilers might actually be forthcoming in my lifetime, so there
-might well be that...
-
-							Thanx, Paul
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
