@@ -2,293 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0240423159
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 22:11:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E2C042315C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 22:12:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235467AbhJEUNn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 16:13:43 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:17391 "EHLO m43-7.mailgun.net"
+        id S235934AbhJEUOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 16:14:01 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:50718 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230198AbhJEUNm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 16:13:42 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1633464711; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=P0DRo+mb9v24WUz418XHZJLSk+CMLADwzwicec1u7rc=;
- b=rld50psNmv8bwPCj7j8MWCwZH+JMH2fYUvdSEHrRdnoUDfi+9CCqntxzOZOTUMdwxaHXxpux
- F80+swIlNtcWz3ghzZwYLjmksBdIl5+/mIvVIe4qLrT7Ul6a4GbiWEq3M8m9ZLvdKJkTaS86
- 3uN1AcqTsHFZIqcfed1lK0m8Wro=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 615cb17d4ccdf4fe575f4e02 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 05 Oct 2021 20:11:41
- GMT
-Sender: abhinavk=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 30B9FC43616; Tue,  5 Oct 2021 20:11:39 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: abhinavk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id BDEF2C4360D;
-        Tue,  5 Oct 2021 20:11:36 +0000 (UTC)
+        id S235581AbhJEUN7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 16:13:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=Wq7nrL82/L3EOLhn+avQUN00z2EQ2FcNnYuF4o5Vwxc=; b=AV/VFhOx8CPCsEz+WuHkHFZ7pH
+        3D7Sa/E0gSDzXv38L0ZyfveGdnlyDeZQSSSifGFbhZFlgWu2U2XrcYpVjGXqHAwOtKKebb5b73rKd
+        gf1YjkWeejx3bP7apHZ7GC7Ta8vB/+amiGOkfjGzjD1jLXCUGy/I+1DkXUJtIDUAWtG8=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mXqnE-009k7C-1I; Tue, 05 Oct 2021 22:12:04 +0200
+Date:   Tue, 5 Oct 2021 22:12:04 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Jacek Anaszewski <jacek.anaszewski@gmail.com>
+Cc:     Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: lets settle the LED `function` property regarding the netdev
+ trigger
+Message-ID: <YVyxlEVQ7TvMs5DH@lunn.ch>
+References: <20211001143601.5f57eb1a@thinkpad>
+ <YVn815h7JBtVSfwZ@lunn.ch>
+ <20211003212654.30fa43f5@thinkpad>
+ <YVsUodiPoiIESrEE@lunn.ch>
+ <20211004170847.3f92ef48@thinkpad>
+ <0b1bc2d7-6e62-5adb-5aed-48b99770d80d@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 05 Oct 2021 13:11:36 -0700
-From:   abhinavk@codeaurora.org
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Kalyan Thota <kalyan_t@codeaurora.org>,
-        Kuogee Hsieh <khsieh@codeaurora.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [Freedreno] [PATCH v3 1/5] drm/msm/dp: Remove global g_dp_display
- variable
-In-Reply-To: <20211001180058.1021913-2-bjorn.andersson@linaro.org>
-References: <20211001180058.1021913-1-bjorn.andersson@linaro.org>
- <20211001180058.1021913-2-bjorn.andersson@linaro.org>
-Message-ID: <4e36028549fcadd5e31a6b5694d6be8f@codeaurora.org>
-X-Sender: abhinavk@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0b1bc2d7-6e62-5adb-5aed-48b99770d80d@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-10-01 11:00, Bjorn Andersson wrote:
-> As the Qualcomm DisplayPort driver only supports a single instance of
-> the driver the commonly used struct dp_display is kept in a global
-> variable. As we introduce additional instances this obviously doesn't
-> work.
-> 
-> Replace this with a combination of existing references to adjacent
-> objects and drvdata.
-> 
-> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Reviewed-by: Abhinav Kumar <abhinavk@codeaurora.org>
-> ---
-> 
-> Changes since v2:
-> - None
-> 
->  drivers/gpu/drm/msm/dp/dp_display.c | 80 ++++++++---------------------
->  1 file changed, 21 insertions(+), 59 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c
-> b/drivers/gpu/drm/msm/dp/dp_display.c
-> index fbe4c2cd52a3..5d3ee5ef07c2 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_display.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
-> @@ -27,7 +27,6 @@
->  #include "dp_audio.h"
->  #include "dp_debug.h"
-> 
-> -static struct msm_dp *g_dp_display;
->  #define HPD_STRING_SIZE 30
-> 
->  enum {
-> @@ -121,6 +120,13 @@ static const struct of_device_id dp_dt_match[] = {
->  	{}
->  };
-> 
-> +static struct dp_display_private *dev_get_dp_display_private(struct
-> device *dev)
-> +{
-> +	struct msm_dp *dp = dev_get_drvdata(dev);
-> +
-> +	return container_of(dp, struct dp_display_private, dp_display);
-> +}
-> +
->  static int dp_add_event(struct dp_display_private *dp_priv, u32 event,
->  						u32 data, u32 delay)
->  {
-> @@ -197,15 +203,12 @@ static int dp_display_bind(struct device *dev,
-> struct device *master,
->  			   void *data)
->  {
->  	int rc = 0;
-> -	struct dp_display_private *dp;
-> -	struct drm_device *drm;
-> +	struct dp_display_private *dp = dev_get_dp_display_private(dev);
->  	struct msm_drm_private *priv;
-> +	struct drm_device *drm;
-> 
->  	drm = dev_get_drvdata(master);
-> 
-> -	dp = container_of(g_dp_display,
-> -			struct dp_display_private, dp_display);
-> -
->  	dp->dp_display.drm_dev = drm;
->  	priv = drm->dev_private;
->  	priv->dp = &(dp->dp_display);
-> @@ -240,13 +243,10 @@ static int dp_display_bind(struct device *dev,
-> struct device *master,
->  static void dp_display_unbind(struct device *dev, struct device 
-> *master,
->  			      void *data)
->  {
-> -	struct dp_display_private *dp;
-> +	struct dp_display_private *dp = dev_get_dp_display_private(dev);
->  	struct drm_device *drm = dev_get_drvdata(master);
->  	struct msm_drm_private *priv = drm->dev_private;
-> 
-> -	dp = container_of(g_dp_display,
-> -			struct dp_display_private, dp_display);
-> -
->  	dp_power_client_deinit(dp->power);
->  	dp_aux_unregister(dp->aux);
->  	priv->dp = NULL;
-> @@ -379,38 +379,17 @@ static void dp_display_host_deinit(struct
-> dp_display_private *dp)
-> 
->  static int dp_display_usbpd_configure_cb(struct device *dev)
->  {
-> -	int rc = 0;
-> -	struct dp_display_private *dp;
-> -
-> -	if (!dev) {
-> -		DRM_ERROR("invalid dev\n");
-> -		rc = -EINVAL;
-> -		goto end;
-> -	}
-> -
-> -	dp = container_of(g_dp_display,
-> -			struct dp_display_private, dp_display);
-> +	struct dp_display_private *dp = dev_get_dp_display_private(dev);
-> 
->  	dp_display_host_init(dp, false);
-> 
-> -	rc = dp_display_process_hpd_high(dp);
-> -end:
-> -	return rc;
-> +	return dp_display_process_hpd_high(dp);
->  }
-> 
->  static int dp_display_usbpd_disconnect_cb(struct device *dev)
->  {
->  	int rc = 0;
-> -	struct dp_display_private *dp;
-> -
-> -	if (!dev) {
-> -		DRM_ERROR("invalid dev\n");
-> -		rc = -EINVAL;
-> -		return rc;
-> -	}
-> -
-> -	dp = container_of(g_dp_display,
-> -			struct dp_display_private, dp_display);
-> +	struct dp_display_private *dp = dev_get_dp_display_private(dev);
-> 
->  	dp_add_event(dp, EV_USER_NOTIFICATION, false, 0);
-> 
-> @@ -472,15 +451,7 @@ static int dp_display_usbpd_attention_cb(struct
-> device *dev)
->  {
->  	int rc = 0;
->  	u32 sink_request;
-> -	struct dp_display_private *dp;
-> -
-> -	if (!dev) {
-> -		DRM_ERROR("invalid dev\n");
-> -		return -EINVAL;
-> -	}
-> -
-> -	dp = container_of(g_dp_display,
-> -			struct dp_display_private, dp_display);
-> +	struct dp_display_private *dp = dev_get_dp_display_private(dev);
-> 
->  	/* check for any test request issued by sink */
->  	rc = dp_link_process_request(dp->link);
-> @@ -647,7 +618,7 @@ static int dp_hpd_unplug_handle(struct
-> dp_display_private *dp, u32 data)
-> 
->  	DRM_DEBUG_DP("hpd_state=%d\n", state);
->  	/* signal the disconnect event early to ensure proper teardown */
-> -	dp_display_handle_plugged_change(g_dp_display, false);
-> +	dp_display_handle_plugged_change(&dp->dp_display, false);
-> 
->  	/* enable HDP plug interrupt to prepare for next plugin */
->  	dp_catalog_hpd_config_intr(dp->catalog, DP_DP_HPD_PLUG_INT_MASK, 
-> true);
-> @@ -842,9 +813,7 @@ static int dp_display_prepare(struct msm_dp *dp)
->  static int dp_display_enable(struct dp_display_private *dp, u32 data)
->  {
->  	int rc = 0;
-> -	struct msm_dp *dp_display;
-> -
-> -	dp_display = g_dp_display;
-> +	struct msm_dp *dp_display = &dp->dp_display;
-> 
->  	DRM_DEBUG_DP("sink_count=%d\n", dp->link->sink_count);
->  	if (dp_display->power_on) {
-> @@ -880,9 +849,7 @@ static int dp_display_post_enable(struct msm_dp 
-> *dp_display)
-> 
->  static int dp_display_disable(struct dp_display_private *dp, u32 data)
->  {
-> -	struct msm_dp *dp_display;
-> -
-> -	dp_display = g_dp_display;
-> +	struct msm_dp *dp_display = &dp->dp_display;
-> 
->  	if (!dp_display->power_on)
->  		return 0;
-> @@ -1237,14 +1204,13 @@ static int dp_display_probe(struct
-> platform_device *pdev)
->  	}
-> 
->  	mutex_init(&dp->event_mutex);
-> -	g_dp_display = &dp->dp_display;
-> 
->  	/* Store DP audio handle inside DP display */
-> -	g_dp_display->dp_audio = dp->audio;
-> +	dp->dp_display.dp_audio = dp->audio;
-> 
->  	init_completion(&dp->audio_comp);
-> 
-> -	platform_set_drvdata(pdev, g_dp_display);
-> +	platform_set_drvdata(pdev, &dp->dp_display);
-> 
->  	rc = component_add(&pdev->dev, &dp_display_comp_ops);
->  	if (rc) {
-> @@ -1257,10 +1223,7 @@ static int dp_display_probe(struct 
-> platform_device *pdev)
-> 
->  static int dp_display_remove(struct platform_device *pdev)
->  {
-> -	struct dp_display_private *dp;
-> -
-> -	dp = container_of(g_dp_display,
-> -			struct dp_display_private, dp_display);
-> +	struct dp_display_private *dp = 
-> dev_get_dp_display_private(&pdev->dev);
-> 
->  	dp_display_deinit_sub_modules(dp);
-> 
-> @@ -1315,8 +1278,7 @@ static int dp_pm_resume(struct device *dev)
->  	else
->  		dp->dp_display.is_connected = false;
-> 
-> -	dp_display_handle_plugged_change(g_dp_display,
-> -				dp->dp_display.is_connected);
-> +	dp_display_handle_plugged_change(dp_display, 
-> dp->dp_display.is_connected);
-> 
->  	DRM_DEBUG_DP("After, sink_count=%d is_connected=%d core_inited=%d
-> power_on=%d\n",
->  			dp->link->sink_count, dp->dp_display.is_connected,
+> > > There are two different ways this can be implemented. There can be two
+> > > independent LEDs within the same package. So you can generate three
+> > > colours. Or there can be two cross connected LEDs within the
+> > > package. Apply +ve you get one colour, apply -ve you get a different
+> > > colour. Since you cannot apply both -ve and +ve at the same time, you
+> > > cannot get both colours at once.
+> > > 
+> > > If you have two independent LEDs, I would define two LEDs in DT.
+> > 
+> > No, we have multicolor LED API which is meant for exactly this
+> > situation: a multicolor LED.
+
+> What do you mean by dependency here?
+
+https://www.youtube.com/watch?v=5M9p25OfKdg
+
+There are two different ways you can two LEDs in one package.
+
+Some Ethernet PHY RJ45 connector housings have bi-colour LEDs. Some
+have tri-colour LEDs, and some have mono-colour LEDs.
+
+      Andrew
