@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0607421D0B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 05:48:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3A43421D0E
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 05:52:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231559AbhJEDt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 23:49:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36962 "EHLO
+        id S231649AbhJEDx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 23:53:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230495AbhJEDtz (ORCPT
+        with ESMTP id S230097AbhJEDxz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 23:49:55 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9D96C061745;
-        Mon,  4 Oct 2021 20:48:05 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id qe4-20020a17090b4f8400b0019f663cfcd1so936325pjb.1;
-        Mon, 04 Oct 2021 20:48:05 -0700 (PDT)
+        Mon, 4 Oct 2021 23:53:55 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 298B7C061745;
+        Mon,  4 Oct 2021 20:52:05 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id s11so18519812pgr.11;
+        Mon, 04 Oct 2021 20:52:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
         bh=/jRoIvx4ENdh4pGhogdDVwoFP1/nkhTlh4K8JiaSyDk=;
-        b=oZgjLdJNdAeefLB76oWiTLO0BQpiQx/gRy+a/sUpduWJD3Rkgl4D5H78tg7MazIA1t
-         +8sEEqwTla8jGxyL4aP0E0xP2HByAXZBMC4GYRq7OfLw5yBWIS14ovAT09QLZblnhV36
-         ofXkdlzXBSqa8QD8XJwFikfBzJBk9F+BzfqfOCKN1XFWHK8PWApQQFSC7jN2pSVYC8Ji
-         I/JcDLZLW8kEd+7TIwPoT9J+VL92gTSsaByIbvfFDdM4fDKSputvdFHA+p729SMXkS1b
-         nTkhS0Imrn5aqUnWgyAHMm7a3QGoXRRdDqZRSjI5GCnKtospgdMkQMScj1ngYvHCgsyv
-         pPTQ==
+        b=V/9pxxiApHTJvkgIVIJ/Jl1Vxng/5giyrD72i0S/DZEUxBRNUt050PHSP8jgzVyAHA
+         YoStT3gbla9n3FVMj9hELTdnb+t2EZmdjBrYmVBgY8cFGys2bOnLWEMMw/aR2qJgEM0h
+         FgniCVwPp6uGGfgvSVdt/4VQL+WZJR9lu1/l9BqZsmqlQEDJ69IkrcmP7tOo49xCMwLV
+         fdCmUQ8VBkCciwZrhogjmmbMCtT4A3rDjgjKZNt95PNcrWRCkE2T4lMsbJIBB3Xb4RZY
+         HzQuCXl4KaYCrYhSHcynr064gqtUyocs+paH53EBjUWdiy4Osz3FUUHvk5vqGD998C2q
+         lf2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
         bh=/jRoIvx4ENdh4pGhogdDVwoFP1/nkhTlh4K8JiaSyDk=;
-        b=oEq5c9AK4gSvRTwVXwFzaD3cyFFimq4t3/9VOEwNMdmAWxP81yff7tXg3IHHlEumwp
-         EWCBqVfWHc2f1tEXYjubL9F/7xR+UKs+wTJbm8yeiuDE+wGo7AIPDL4jItDsxmp6+al9
-         zeLSUAuwU4hf4mKL+lLpGsLlYBYh+eF+eKjOWdrXgYOI7k0uJdZY8OIE3a5cqEImk9k4
-         o5h61IwHe9l21GSSGJ4Kxd8cMZ0tlOhphcShdXSxTFC7/ygQQhrOmISpc3RnPWeB/M9r
-         DVC6HbRD91pW3NnY1RIwKnl/alJ426rahCVmUnNwD6X8lA/iUfQakQzhEy6TXRvsL5GL
-         Jhcw==
-X-Gm-Message-State: AOAM532dnxuY/QLawXMK7avBrL9Ia33kSVkIBJWgwKcZG7fma0OCBNgQ
-        WmVSo8gWIhYxMq+rQUofO/177LrcT3s=
-X-Google-Smtp-Source: ABdhPJydTmkq8pXgaF3jsPamZp9/NGxvl9n/Ixb8EfSXw4bKpV89rFz0mrvPb3+CIkxurgTiFPrKWg==
-X-Received: by 2002:a17:90a:9403:: with SMTP id r3mr1029531pjo.220.1633405685375;
-        Mon, 04 Oct 2021 20:48:05 -0700 (PDT)
+        b=gIj9tGXaP9xyBuld74hWRzr5a34DH+0zVUA6Xd5X5wfn4dWo52yhNex3G/cNpfvGVB
+         H9h2JRv7BUVpTqOd+YyMsERrUUsghySOOsC4268OV1WUibdOTSSZOBTM6SzY/TPmW+lL
+         ZTDiH9SOU+QDsvPmart+hNpzQRHw+qD2FSv4CTmcHiORuvpWanp+cHLYlavpyBo0Q86t
+         R78SAnxb5qFkfHeiiN2w8EwDaF28XCMkYJHI/ID9Nm2ooTrPxRHHYsM2hfmMjJiq+rBs
+         4wAyHbQ12GgR+Dah3IXxH/1cRuMvckhHQrvZ1LV/Lh7g5xnFE1NLwUYsyijlSjmX2m7M
+         0L8w==
+X-Gm-Message-State: AOAM531PLYz6h++oxznAZmeFlq+7qiXVwjxX9WNRDq9KMcYxEuEXuOUR
+        T99xcnED4++ABq59s4U++wY=
+X-Google-Smtp-Source: ABdhPJwVGbO7EjAhBdkIeLzQagQcqst2bMH0Sr+S3ahnfeMLNN3ZKb0UUq0e/KeL5o1BJ2J+9lZ7Bw==
+X-Received: by 2002:a63:2261:: with SMTP id t33mr13996999pgm.274.1633405924658;
+        Mon, 04 Oct 2021 20:52:04 -0700 (PDT)
 Received: from [192.168.1.16] ([120.229.69.27])
-        by smtp.gmail.com with ESMTPSA id v7sm15385261pff.195.2021.10.04.20.48.01
+        by smtp.gmail.com with ESMTPSA id w8sm10563469pfd.4.2021.10.04.20.51.55
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Oct 2021 20:48:04 -0700 (PDT)
+        Mon, 04 Oct 2021 20:52:04 -0700 (PDT)
 Subject: Re: [PATCH net-next v4 3/3] skbuff: keep track of pp page when
  pp_frag_count is used
 To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>,
@@ -63,8 +63,8 @@ Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
 References: <20210930080747.28297-1-linyunsheng@huawei.com>
  <20210930080747.28297-4-linyunsheng@huawei.com> <YVqWKM89b2TH3Kic@enceladus>
 From:   Yunsheng Lin <yunshenglin0825@gmail.com>
-Message-ID: <8cacdb44-bb19-1dbf-714a-a96b348c7fb0@gmail.com>
-Date:   Tue, 5 Oct 2021 11:47:34 +0800
+Message-ID: <3c2df8f9-2e33-adca-38e5-206399719b94@gmail.com>
+Date:   Tue, 5 Oct 2021 11:51:37 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.10.2
 MIME-Version: 1.0
@@ -142,7 +142,7 @@ On 2021/10/4 13:50, Ilias Apalodimas wrote:
 >> +#endif
 >> +
 >> +	page_ref_inc(page);
-> 
+>
 > There's a BUG_ON we are now ignoring on get_page. 
 
 Actually it is a VM_BUG_ON_PAGE(), and it is only turned into a
@@ -154,7 +154,7 @@ place calling page_ref_inc() directly without the VM_BUG_ON_PAGE().
 
 https://elixir.bootlin.com/linux/v5.15-rc4/source/include/linux/page_ref.h#L117
 
-> 
+>
 >>  }
 >>  
 >>  /**
@@ -174,7 +174,7 @@ https://elixir.bootlin.com/linux/v5.15-rc4/source/include/linux/page_ref.h#L117
 >>  #endif
 >> -	put_page(page);
 >> +	__page_frag_cache_drain(page, 1);
-> 
+>
 > Same here,  freeing the page is not the only thing put_page does. 
 
 I think the __page_frag_cache_drain() has the VM_BUG_ON_PAGE() as
@@ -185,7 +185,7 @@ which is handled in put_page(), but is not handle in
 __page_frag_cache_drain(). Is it possible that devmap managed pages
 could be used in the network stack?
 
-> 
+>
 >>  }
 >>  
 >>  /**
@@ -313,7 +313,7 @@ could be used in the network stack?
 >> -- 
 >> 2.33.0
 >>
-> 
+>
 > Regardless of the comments above,  providing some numbers on how the
 > patches affect performance (at least on hns3), would be good to have.
 
@@ -324,7 +324,7 @@ when page pool is disabled."
 And no notiable performance degradation for the page pool enabled case
 with hns3 too.
 
-> 
+>
 > I'll try giving this another look.  I still think having three indicators
 > to look at before recycling the page is not ideal.
 
@@ -336,8 +336,8 @@ If the mlx5 driver can change the way of using the page pool as it is now,
 we can remove the addtional checking in the future, and just use the pp_magic
 to indicate a pp page.
 
-> 
-> 
+>
+>
 > Regards
 > /Ilias
-> 
+>
