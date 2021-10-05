@@ -2,207 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11E18422069
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 10:14:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8888142206B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 10:15:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233208AbhJEIQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 04:16:38 -0400
-Received: from mail-dm6nam08on2084.outbound.protection.outlook.com ([40.107.102.84]:61239
-        "EHLO NAM04-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231816AbhJEIQg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 04:16:36 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FeWE5U6+wxtJro7bKt0AFdlG701XwOffjIsSg1T8MaftUHq0o4iR/5BJJLNwjo+MaheausghzLTcwPRqKcbdQqxfjTqFF6e+z8pryZCdeHE5s7H9Tpsbi9GB6k5hVhw3tDJyChYHYnDklCtvwjY/mI/uxWM3hOi0WXFJ5YyOxflXenC4uO2r4iU3eqZTjV5VVJ6IVYEj7SZNcEU8cXAcbMiJ7HDmk5bCMT3kZXDncsqjjC3bJ5fV7hJmyZYyXjNLuQx6v0bfCbQUTynHpUkVFLjrd9/ijvl39VRe53g9VmBqNmzwLpPFZ9e4gB54VLNvS8V6JEsEfLWfy0xyLgSc0g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Y6uKW/dRhrw6ee/PBXCumDSuPjDTbDnpWPhdqJbGFNA=;
- b=LwD0UgzUIOi7lyDSXrvIHdpMntcPdVQecV1l03bicrh/VfLwhbTPbiTvPF+7YdS6dgsaTKJ5buN6YQ53tNRRgj+Pjt/eDVYWOGza6YaKAFyyRPOmXTu6OTsploJL0gGoxnib3dLqWJoJMxnUiTnfxK9KMwfzFkzfIBDzHEYhGNn7sAjdfbOhYKuxN8KqYimlzZzFrt4xr6WPJi6WDGUx0FF9H4gbUaYQkK2okb92pN0gWC2Ypy/KyKz149c37gP0SNLIFi58gx4bByc+VSavKWJOlCpjbQslgwnG42f+PrP4HELQ/1eVU2jhkOmvZe2Qa0t6zSBFToqjZde0Ybe3kQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=silabs.com; dmarc=pass action=none header.from=silabs.com;
- dkim=pass header.d=silabs.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=silabs.onmicrosoft.com; s=selector2-silabs-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Y6uKW/dRhrw6ee/PBXCumDSuPjDTbDnpWPhdqJbGFNA=;
- b=RkTSKewwAnk/saH6ltUrVhLc+JLYAjWOHw6Q9muWd991msRKSDtVhNOe4kAelUQykf++2aqIl9eLKsB0u+YZ0t5JId361XoAeVmKU35wBFtLIzFY33ipBuWH+SI/yNx8EEbpJaKX7lxEWm3kYWed/1/DI8dChX+9gXIcyeZQciA=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=silabs.com;
-Received: from PH0PR11MB5657.namprd11.prod.outlook.com (2603:10b6:510:ee::19)
- by PH0PR11MB5657.namprd11.prod.outlook.com (2603:10b6:510:ee::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.19; Tue, 5 Oct
- 2021 08:14:44 +0000
-Received: from PH0PR11MB5657.namprd11.prod.outlook.com
- ([fe80::31cb:3b13:b0e8:d8f4]) by PH0PR11MB5657.namprd11.prod.outlook.com
- ([fe80::31cb:3b13:b0e8:d8f4%9]) with mapi id 15.20.4566.022; Tue, 5 Oct 2021
- 08:14:44 +0000
-From:   =?ISO-8859-1?Q?J=E9r=F4me?= Pouiller <jerome.pouiller@silabs.com>
-To:     Pali =?ISO-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     linux-wireless <linux-wireless@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        driverdevel <devel@driverdev.osuosl.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        DTML <devicetree@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>
-Subject: Re: [PATCH v7 08/24] wfx: add bus_sdio.c
-Date:   Tue, 05 Oct 2021 10:14:36 +0200
-Message-ID: <149139701.nbvtKH4F0p@pc-42>
-Organization: Silicon Labs
-In-Reply-To: <CAPDyKFoaw8rdPRdjgAJz3-T2_fS1iA9jtonbwZAYE0npUNfOQQ@mail.gmail.com>
-References: <20210920161136.2398632-1-Jerome.Pouiller@silabs.com> <20210930170646.cffsuytdpa72izbh@pali> <CAPDyKFoaw8rdPRdjgAJz3-T2_fS1iA9jtonbwZAYE0npUNfOQQ@mail.gmail.com>
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
-X-ClientProxiedBy: PAZP264CA0042.FRAP264.PROD.OUTLOOK.COM
- (2603:10a6:102:1fc::23) To PH0PR11MB5657.namprd11.prod.outlook.com
- (2603:10b6:510:ee::19)
+        id S231816AbhJEIQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 04:16:49 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:17948 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S233215AbhJEIQp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 04:16:45 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1958C2OW011278;
+        Tue, 5 Oct 2021 04:14:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=A/Kl7e2gSTzCXrt+H1zCaP5VbCTaG1lDxyQaGTKuQ6E=;
+ b=R8oXJLNfP8kNH3r0EkmBE9C7YGSW1zFybQeSKpV5xvk2FfpxR4Hi7OfHbKKobQTbPpJG
+ dWqpiorySW4rdK3r9eZ7tbnFAVwiWv8qsNIa9RAgekRFboUTiH4646+Ni461j4dYGH2/
+ /IDnDATe/uHUVwTAZJ6cTvKyVB+TGs5DjNeceOrPc32AdC7sc61xYjW7IkaCPR0RX9tr
+ tKSlHRxcZhTnmix7YyNWlyvXGA37tWeGtj2bCKztV2GXT85jbpKNT24eo56rtosN5SKs
+ 3aVd+bvTjj1q4J5T+jRyBzS7L/6YyeWnlIAM/jwd+e2sJtvWg9n1mvs+RPFJjveInfGe jw== 
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3bgjyyr1md-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Oct 2021 04:14:50 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19586VnG021270;
+        Tue, 5 Oct 2021 08:14:49 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma06ams.nl.ibm.com with ESMTP id 3beepjfw67-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Oct 2021 08:14:48 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19589NVs44826984
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 5 Oct 2021 08:09:23 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DDDBF4C058;
+        Tue,  5 Oct 2021 08:14:42 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CE52D4C046;
+        Tue,  5 Oct 2021 08:14:38 +0000 (GMT)
+Received: from [9.43.70.175] (unknown [9.43.70.175])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue,  5 Oct 2021 08:14:38 +0000 (GMT)
+Message-ID: <b2844a83-d2b2-6e88-780c-3a41be882086@linux.ibm.com>
+Date:   Tue, 5 Oct 2021 13:44:36 +0530
 MIME-Version: 1.0
-Received: from pc-42.localnet (37.71.187.125) by PAZP264CA0042.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:1fc::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.16 via Frontend Transport; Tue, 5 Oct 2021 08:14:41 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b1d684a5-e532-4738-e2f9-08d987d83034
-X-MS-TrafficTypeDiagnostic: PH0PR11MB5657:
-X-Microsoft-Antispam-PRVS: <PH0PR11MB56579D6E97ED5DA715B8E97793AF9@PH0PR11MB5657.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: CYRNy5jJqlCPqcWbzO8MWnIGd53A/b54wjT3zya+4UNQ8gEBsvXNSaCZAUcgh3C+lLkS4G2t7wokB/KHNuhs0eGsXEm65c5jmyaP+WHQbzcb2yv5/JQZOy0qabRmPgnWlkF5Y7XDE+hGtlGO6qaDLrBY+3RiCXE7/eQ8HP1jwnwA1vy9daWpiQTOzdu8EoTRfIs4wqXiF/nvJAkIkkvKDExwLkS1srG/i691ve9szcc4lHPdVSiome3o0YKJvdYHFXmahKqSkHT9gaLwnOGOhShHMQuglAwSuWSmm4lgkXccsNCDdUQ6gDqpQr3KvrI7yrPWtV65twJzLCZA1SAb2XWpzZ8nbjCqzv+sp3G4wYnIE3mX1FZvtjfnimqMT/6SkvWiG/OgvGQOm8FMXbzmb9TA8hLX1amFOx0dyzjZVaMF+3T7hXAtO7ldoqtbBAVMoOvUam4ZKghG5DUy4DdlHjbo5BEVBIGiyiaCeXkmGIYG70oiyIIQ9m0E6FW0QDzoVYgKld7nn/10UCg8DXkaq+I31/FIE3yWa757uQhHBeWl4GPKhYM7w6kxS8Kh5KfyyCn8MF70kondF1iVP1yQuio6T7zetW4LefsE4eyygZJckDOyYTKZf/8lvvaGasFOda/PhpnXQP5XQ/L1U9Vsovhh5GDbVNwhw00cMuhkCYt0L+SMGWc9JHXckmCMxv4nlnL+yo0gpWX+NK+NVVRxltHnTACNv0ERlMEQ7ROZvxOFlKqTWtgveEN7yZX0r6UACv2f56y5yBTewMkvP0dIL4TYSSjHg5qxaLiROpQnkFCmii8OfY5/iNEv9kbsGhlj
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5657.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(52116002)(36916002)(33716001)(66946007)(66556008)(8676002)(83380400001)(66476007)(8936002)(6506007)(6666004)(7416002)(9686003)(54906003)(316002)(6512007)(38350700002)(38100700002)(26005)(966005)(110136005)(508600001)(186003)(4326008)(5660300002)(86362001)(2906002)(956004)(6486002)(39026012);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?j/pRJS4LF+Lfh1GrhUf7OtKfTRgJtMOuSvyGRt6OZt+nASXzVE4KHkp1MS?=
- =?iso-8859-1?Q?6Fp/lHzYJYzUviqkWO9VdjX3aB3mLSrwdWLgAgPyOfsaEDd/JTsmTzoCVN?=
- =?iso-8859-1?Q?svlvdJcpfxrIcpjZVb9635QNjf4zx/MXloHDoOqCJIRzCxq6FLrR7qMrB0?=
- =?iso-8859-1?Q?RKS2N0gXmOXTPFwDGVQ6mDAsSr3RWBM49lwUBTflMf0cvKTa1qPSqrdpTJ?=
- =?iso-8859-1?Q?0sIqzkEWsVFLGVy+yCEavbgV+fHg5CBWev47whuQXulMKzKM2Qrd7pNuN7?=
- =?iso-8859-1?Q?dzmn7A6vypDW+qjc42cM5qtL67KQDuFg10LrCObL+fL8Ex+OR+cfGZIFiA?=
- =?iso-8859-1?Q?KsQTSF2uRdmtSTNtykcT2BQdDdHfSgfS/3tnil8R82yI+SQFgPCgKFXgjF?=
- =?iso-8859-1?Q?VwxtbyV74zuKvRE3r1ULqb7rMm3yYOMMdT598bseBs/LqFuVJWRf/lDEDc?=
- =?iso-8859-1?Q?01GRe21S3mg7l/Fec8TVLwByig3KGJvXHnoDZYg1vGla7oISl01qesgHFJ?=
- =?iso-8859-1?Q?N2JMRU0b+CiER0oECg+/8iYSe2T8QDVO7WqDbXxv/zcdiHPVGr3IS9F+Id?=
- =?iso-8859-1?Q?rhVhWYyLkqrAkFTvTrmbkGS753OrVbojpPSR/cO56jaB7axQh1elPiSdgA?=
- =?iso-8859-1?Q?mM87TjbdO49zNoiHMARIi9/8IX50jMVywKLOiwL9aLFw4Kj7eb2okON4LP?=
- =?iso-8859-1?Q?nGaomyy9KBYj8g8skrvVmjJ760iFPzY5m2X5+FIvvGNP5rJLwX42iwiLQm?=
- =?iso-8859-1?Q?gEDHTB69LGUeGIqtIJTRqBPitu7RzLKoMzDVJiWGr6JiLyKXDoFg6gATN9?=
- =?iso-8859-1?Q?gkfEI5sPdBzUkRSOx2/45tzA3E1Ay3d49N3SwzgVgU1urjbv6hcjL9TM4/?=
- =?iso-8859-1?Q?kvb8JZYnhvKiZVwkDZfTy5MpL/D5MpqlBMvO7BF+Ml2jllV1DtvFC0WlOd?=
- =?iso-8859-1?Q?k4KDRFboRmRZqENvYvJN1TYGVMae3gPmb/nLKRCzQSVNx1/RJawtDfKC+9?=
- =?iso-8859-1?Q?PzCqj67Inb+2AvDOcSJ17JmbY4m2/p2b8VDxUnALLvUmVTxOKW2+/jXjcO?=
- =?iso-8859-1?Q?OB/FPc8Ad4196BLaJmhNdkghgKkQuPPfI7JFLtk3X/n6AGTI7IQI8IMnrw?=
- =?iso-8859-1?Q?fsmLQuiJpPI90Wi9WetEQE/rPbMbCBqT8ATugNVJLVEMtPqwVeJyqnb7bX?=
- =?iso-8859-1?Q?AB7lFOgOA3EI8osYZbCxJ/jaYrx7kT/5pWLdOZqjS/+eleiDy+cydZJauW?=
- =?iso-8859-1?Q?UwzSI6svNl286lJqA4vWXdFWx6owLjIbZxug/Dc989nbT7fAnHWTnMVmZT?=
- =?iso-8859-1?Q?SFuKuwn70p6fi88ntwV/GHS6ZlQ5ssbkvuP4bCLM7pYjHhewfiW/nBbppZ?=
- =?iso-8859-1?Q?HwMK9498Hn?=
-X-OriginatorOrg: silabs.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b1d684a5-e532-4738-e2f9-08d987d83034
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5657.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Oct 2021 08:14:44.2079
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 54dbd822-5231-4b20-944d-6f4abcd541fb
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: NQXzzWrvy/F5XRzUMKRpCwSc9O34yn6XZCV3aT7FV9c2dveWU04uOJKxaHNDDrkr26L4eD8uGD/ldjxsAjzMlQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB5657
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH 3/3] powerpc: Set crashkernel offset to mid of RMA region
+Content-Language: en-US
+To:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>, mpe@ellerman.id.au
+Cc:     Abdul haleem <abdhalee@linux.vnet.ibm.com>,
+        mahesh@linux.vnet.ibm.com, linux-kernel@vger.kernel.org,
+        hbathini@linux.ibm.com, linuxppc-dev@ozlabs.org
+References: <20211004151142.256251-1-sourabhjain@linux.ibm.com>
+ <20211004151142.256251-4-sourabhjain@linux.ibm.com>
+ <f13e218e-4e38-4076-672f-d555d7abfc02@linux.ibm.com>
+From:   Sourabh Jain <sourabhjain@linux.ibm.com>
+In-Reply-To: <f13e218e-4e38-4076-672f-d555d7abfc02@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: AjfoHP62Lh3HZ-7hkkLuGzsRw7sC1HmF
+X-Proofpoint-ORIG-GUID: AjfoHP62Lh3HZ-7hkkLuGzsRw7sC1HmF
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-10-04_05,2021-10-04_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 adultscore=0
+ clxscore=1015 mlxscore=0 malwarescore=0 phishscore=0 priorityscore=1501
+ suspectscore=0 lowpriorityscore=0 mlxlogscore=999 bulkscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110050046
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday 1 October 2021 17:23:16 CEST Ulf Hansson wrote:
-> On Thu, 30 Sept 2021 at 19:06, Pali Roh=E1r <pali@kernel.org> wrote:
-> > On Thursday 30 September 2021 18:51:09 J=E9r=F4me Pouiller wrote:
-> > > On Thursday 30 September 2021 12:07:55 CEST Ulf Hansson wrote:
-> > > > On Mon, 20 Sept 2021 at 18:12, Jerome Pouiller
-> > > > <Jerome.Pouiller@silabs.com> wrote:
-> > > > >
-> > > > > From: J=E9r=F4me Pouiller <jerome.pouiller@silabs.com>
-> > > > >
-> > > > > Signed-off-by: J=E9r=F4me Pouiller <jerome.pouiller@silabs.com>
-> > > > > ---
-> > > > >  drivers/net/wireless/silabs/wfx/bus_sdio.c | 261 +++++++++++++++=
-++++++
-> > > > >  1 file changed, 261 insertions(+)
-> > > > >  create mode 100644 drivers/net/wireless/silabs/wfx/bus_sdio.c
-> > > > >
-> > > > > diff --git a/drivers/net/wireless/silabs/wfx/bus_sdio.c b/drivers=
-/net/wireless/silabs/wfx/bus_sdio.c
-> > > >
-> > > > [...]
-> > > >
-> > > > > +
-> > > > > +static int wfx_sdio_probe(struct sdio_func *func,
-> > > > > +                         const struct sdio_device_id *id)
-> > > > > +{
-> > > > > +       struct device_node *np =3D func->dev.of_node;
-> > > > > +       struct wfx_sdio_priv *bus;
-> > > > > +       int ret;
-> > > > > +
-> > > > > +       if (func->num !=3D 1) {
-> > > > > +               dev_err(&func->dev, "SDIO function number is %d w=
-hile it should always be 1 (unsupported chip?)\n",
-> > > > > +                       func->num);
-> > > > > +               return -ENODEV;
-> > > > > +       }
-> > > > > +
-> > > > > +       bus =3D devm_kzalloc(&func->dev, sizeof(*bus), GFP_KERNEL=
-);
-> > > > > +       if (!bus)
-> > > > > +               return -ENOMEM;
-> > > > > +
-> > > > > +       if (!np || !of_match_node(wfx_sdio_of_match, np)) {
-> > > > > +               dev_warn(&func->dev, "no compatible device found =
-in DT\n");
-> > > > > +               return -ENODEV;
-> > > > > +       }
-> > > > > +
-> > > > > +       bus->func =3D func;
-> > > > > +       bus->of_irq =3D irq_of_parse_and_map(np, 0);
-> > > > > +       sdio_set_drvdata(func, bus);
-> > > > > +       func->card->quirks |=3D MMC_QUIRK_LENIENT_FN0 |
-> > > > > +                             MMC_QUIRK_BLKSZ_FOR_BYTE_MODE |
-> > > > > +                             MMC_QUIRK_BROKEN_BYTE_MODE_512;
-> > > >
-> > > > I would rather see that you add an SDIO_FIXUP for the SDIO card, to
-> > > > the sdio_fixup_methods[], in drivers/mmc/core/quirks.h, instead of
-> > > > this.
-> > >
-> > > In the current patch, these quirks are applied only if the device app=
-ears
-> > > in the device tree (see the condition above). If I implement them in
-> > > drivers/mmc/core/quirks.h they will be applied as soon as the device =
-is
-> > > detected. Is it what we want?
-> > >
-> > > Note: we already have had a discussion about the strange VID/PID decl=
-ared
-> > > by this device:
-> > >   https://www.spinics.net/lists/netdev/msg692577.html
-> >
-> > Yes, vendor id 0x0000 is invalid per SDIO spec. So based on this vendor
-> > id, it is not possible to write any quirk in mmc/sdio generic code.
-> >
-> > Ulf, but maybe it could be possible to write quirk based on OF
-> > compatible string?
->=20
-> Yes, that would be better in my opinion.
->=20
-> We already have DT bindings to describe embedded SDIO cards (a subnode
-> to the mmc controller node), so we should be able to extend that I
-> think.
 
-So, this feature does not yet exist? Do you consider it is a blocker for
-the current patch?
+On 04/10/21 21:36, Aneesh Kumar K.V wrote:
+> On 10/4/21 20:41, Sourabh Jain wrote:
+>> On large config LPARs (having 192 and more cores), Linux fails to boot
+>> due to insufficient memory in the first memory block. It is due to the
+>> reserve crashkernel area starts at 128MB offset by default and which
+>> doesn't leave enough space in the first memory block to accommodate
+>> memory for other essential system resources.
+>>
+>> Given that the RMA region size can be 512MB or more, setting the
+>> crashkernel offset to mid of RMA size will leave enough space to
+>> kernel to allocate memory for other system resources in the first
+>> memory block.
+>>
+>> Signed-off-by: Sourabh Jain <sourabhjain@linux.ibm.com>
+>> Reported-and-tested-by: Abdul haleem <abdhalee@linux.vnet.ibm.com>
+>> ---
+>>   arch/powerpc/kernel/rtas.c |  3 +++
+>>   arch/powerpc/kexec/core.c  | 13 +++++++++----
+>>   2 files changed, 12 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/arch/powerpc/kernel/rtas.c b/arch/powerpc/kernel/rtas.c
+>> index ff80bbad22a5..ce5e62bb4d8e 100644
+>> --- a/arch/powerpc/kernel/rtas.c
+>> +++ b/arch/powerpc/kernel/rtas.c
+>> @@ -1235,6 +1235,9 @@ int __init early_init_dt_scan_rtas(unsigned 
+>> long node,
+>>       entryp = of_get_flat_dt_prop(node, "linux,rtas-entry", NULL);
+>>       sizep  = of_get_flat_dt_prop(node, "rtas-size", NULL);
+>>   +    if (of_get_flat_dt_prop(node, "ibm,hypertas-functions", NULL))
+>> +        powerpc_firmware_features |= FW_FEATURE_LPAR;
+>> +
+>
+> The equivalent check that we currently do more than checking 
+> ibm,hypertas-functions.
+>
+>     if (!strcmp(uname, "rtas") || !strcmp(uname, "rtas@0")) {
+>         prop = of_get_flat_dt_prop(node, "ibm,hypertas-functions",
+>                        &len);
+>         if (prop) {
+>             powerpc_firmware_features |= FW_FEATURE_LPAR;
+>             fw_hypertas_feature_init(prop, len);
+>         }
+>
+>
+> also do we expect other firmware features to be set along with 
+> FW_FEATURE_LPAR?
 
-To be honest, I don't really want to take over this change in mmc/core.
+This patch needs to move crash kernel reservation to mid point of rma 
+size for LPAR in reserve_crashkernel() function. Since 
+reserve_crashkernel() is called too early even before 
+powerpc_firmware_features is set with FW_FEATURE_LPAR, the check for if 
+(firmware_has_feature(FW_FEATURE_LPAR)) fails and hence we only need to 
+make sure that we set this flag early during early_init_dt_scan_rtas().
 
---=20
-J=E9r=F4me Pouiller
+The rest of the LPAR specific initialization isn't required at this 
+point and will be still done during pseries_probe_fw_features() as usual.
 
-
+Thanks,
+Sourabh Jain
 
