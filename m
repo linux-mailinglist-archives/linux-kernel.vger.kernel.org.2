@@ -2,95 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBFE942264A
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 14:20:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68667422650
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 14:23:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234722AbhJEMW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 08:22:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42702 "EHLO
+        id S234628AbhJEMYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 08:24:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233784AbhJEMW2 (ORCPT
+        with ESMTP id S233784AbhJEMYx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 08:22:28 -0400
-Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61F26C061749
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 05:20:37 -0700 (PDT)
-Received: by mail-wr1-x449.google.com with SMTP id w2-20020a5d5442000000b0016061c95fb7so5651557wrv.12
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 05:20:37 -0700 (PDT)
+        Tue, 5 Oct 2021 08:24:53 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CC10C061749
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 05:23:03 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id i4so86158893lfv.4
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 05:23:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=m/O1dgx/6dc/3G/WHpfSWl4EY1iI+ZyzOq/yOOojIvY=;
-        b=OD7BHJzoRVq9YndsXgA6wM/uouP19YQUkJYZ8SUt7BtxMUEI+dl3vAXpdyo4nfKnWt
-         Vsk3eSZrnL0Xe2Kf7qXbwwa9X56ZprMhgVUSz8+b4KMXu1kWFP2HjR5vgHXhPoy3q2uk
-         X3Ii7WpVkiUK2r48b53wLkrH/4pqCMMwoVCZy/1d9SHnKai8GthwWqAm0kbbsLwMqyTZ
-         L1rwzgHNArnHLbBPv0/S6y4EUzjDFknvyxBXSxWd2aNnJOK/6Th6VsFTHqsxAsWAuz5N
-         4/OkIdVv/6RiRMYvlaDGJumhw+2CBQPd+nv8BstqehoOILYGz0t1fie2R4BxE5Rh3G3V
-         6DuA==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3F2qtoIxG3zxkrEUzzRxzrLqwcXtB72sgHyP3li3dqk=;
+        b=xUJ7mkOoDOxBVKfWHuEyusEWg32a5si67xM0kMKsav1ZKohMiraZhSgr5uI3grGE5k
+         kZ5rhw2LHHcnXUUn6SXDdd1Nh2KbhD6RTNZuN9lm9ZUDlfcQhg3x4mkYtyMbF0xFQWRF
+         hYuZhjrCcJkEXerAVam5uTKN6XneVg6hWuJZCziXzPeO8nPEDZJIumw0XetBrkZ+42tA
+         /grEXPN34W7l8YNoMIoEPxfk1BvJwjMNI7/QgOTMk9nNteb9R4oJilkTx+2yLIZd/EDq
+         PxrVu4tHKGbV2i+N/i9u+gT9W2+1OAvDEhLFqnaNQ5QjvXiw+DvDqCePg5vQp+AqDv4e
+         U/Ug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=m/O1dgx/6dc/3G/WHpfSWl4EY1iI+ZyzOq/yOOojIvY=;
-        b=LjWtRA988rxGOdPMVMAURGCob11WdRJy9kJ8Z3UrGO5QzK7hZyQGYt93gRVahOaCW/
-         UilprWbRt1DuJpPnWIDFJxAY9c006aJlV+aMkd+Nbewk8OT7gAhcKN/Ar3FArmqbwRHH
-         rDLhXmlBCIwIIOryPxdq8ZCE0hOeRYFIDTpM1eVUxSynHie0+XLRBNnD3WWH37ybLDYd
-         USrbX2173yVCvAQOj5xWFCePheOSQf8gMNLJwD24ZeyB6uGrWRTjKuemsIE7U0UgtdES
-         HHA/sZ2uZC9FQrBlF1MFnHOUsv6m4E+DiMZBudqqSiUcGskyUAGacLJcZ/JSfgnevRWS
-         8e8w==
-X-Gm-Message-State: AOAM530K+ioPGeu6RWWsnMdXAUc9NmCZWyK62ACGe65jlBjfhhtWU+97
-        I4NX2TJclLhAV83cLlGsmnI7TuO5iiNH
-X-Google-Smtp-Source: ABdhPJwmuoUenb0uSWOlCBVEwk5H7f0VMu8HbnUjMB8fSNcFpLR024d7GwmK+6XLgt3zfreUU7OOwG2C8UMa
-X-Received: from luke.lon.corp.google.com ([2a00:79e0:d:210:c8bd:fb02:d32e:faa0])
- (user=qperret job=sendgmr) by 2002:a05:600c:3b26:: with SMTP id
- m38mr612627wms.0.1633436435583; Tue, 05 Oct 2021 05:20:35 -0700 (PDT)
-Date:   Tue,  5 Oct 2021 13:20:31 +0100
-Message-Id: <20211005122031.809857-1-qperret@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.800.g4c38ced690-goog
-Subject: [PATCH] KVM: arm64: Release mmap_lock when using VM_SHARED with MTE
-From:   Quentin Perret <qperret@google.com>
-To:     Marc Zyngier <maz@kernel.org>, James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3F2qtoIxG3zxkrEUzzRxzrLqwcXtB72sgHyP3li3dqk=;
+        b=KmEi9SjtJsmhWVSPGCwyahNxzCpULMf0fCbPuoxfIwxdpFU8v21bnK3uq5yJEzwB0m
+         HR9SmMXFO0Grd0IhlAXcLRmH2bUh8TCKWopAZOit0d6PID5sV+7NXtQ1P8E6SP5RydEJ
+         sXgrWVJMTK7z6GxU5JyEprKMQAFRKnSySO2V7pHCQ5H0oFrhH1V/in6oWkK3D8EG4jfb
+         HpIejNhgrzVN4M4ByCTosArxCVb+AlvGMtpMotqLzEVyIXSCaxkO35CCY9TUo9ZKXgrq
+         GnIeU1O2DaqFqacYYOTXH9rIo8O4uAl89Bl4p7fNpoL4XfrrgGHc89Xxym2tu+IxlxIO
+         mC4A==
+X-Gm-Message-State: AOAM531Ixp8cwRQmebCZPMiGIgInoQxzNfrZTFNAl4OyLPR8aFQOagyR
+        4fhy+B5fPMqiPyfD8z8dZAZdEChbgpGQ+8BS3G2R7g==
+X-Google-Smtp-Source: ABdhPJxvTX4d8/lLaexThVRDLWSA6FrSivw8/LGtGSORiHIxNVOrvc6NPluyz7K+/R5/4mr3xxdiNp2IdzRrGJV88Sc=
+X-Received: by 2002:a05:6512:12c6:: with SMTP id p6mr2934362lfg.40.1633436581665;
+ Tue, 05 Oct 2021 05:23:01 -0700 (PDT)
+MIME-Version: 1.0
+References: <20211005103208.2763305-1-sumit.garg@linaro.org> <20211005104131.GB1664@C02TD0UTHF1T.local>
+In-Reply-To: <20211005104131.GB1664@C02TD0UTHF1T.local>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Tue, 5 Oct 2021 17:52:50 +0530
+Message-ID: <CAFA6WYNej=GLE5qxSdJfWt3pEfe6s5qHNLZDpaCRrK-GTasgUg@mail.gmail.com>
+Subject: Re: [PATCH] arm64: ftrace: use function_nocfi for _mcount as well
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
         Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>,
-        Steven Price <steven.price@arm.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org
-Cc:     kernel-team@android.com, Quentin Perret <qperret@google.com>
+        Sami Tolvanen <samitolvanen@google.com>, ben.dai@unisoc.com,
+        nathan@kernel.org, Kees Cook <keescook@chromium.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VM_SHARED mappings are currently forbidden in a memslot with MTE to
-prevent two VMs racing to sanitise the same page. However, this check
-is performed while holding current->mm's mmap_lock, but fails to release
-it. Fix this by releasing the lock when needed.
+On Tue, 5 Oct 2021 at 16:11, Mark Rutland <mark.rutland@arm.com> wrote:
+>
+> On Tue, Oct 05, 2021 at 04:02:08PM +0530, Sumit Garg wrote:
+> > Commit 800618f955a9 ("arm64: ftrace: use function_nocfi for ftrace_call")
+> > only fixed address of ftrace_call but address of _mcount needs to be
+> > fixed as well. Use function_nocfi() to get the actual address of _mcount
+> > function as with CONFIG_CFI_CLANG, the compiler replaces function pointers
+> > with jump table addresses which breaks dynamic ftrace as the address of
+> > _mcount is replaced with the address of _mcount.cfi_jt.
+>
+> It might be worth noting that where the toolchain implements
+> patchable-function-entry, we'll use that in preference to regular -pg,
+> and this problem won't apply. i.e. this won't show with recent versions
+> of clang.
 
-Fixes: ea7fc1bb1cd1 ("KVM: arm64: Introduce MTE VM feature")
-Signed-off-by: Quentin Perret <qperret@google.com>
----
- arch/arm64/kvm/mmu.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+Okay, I will add it to the commit description.
 
-diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
-index 1a94a7ca48f2..69bd1732a299 100644
---- a/arch/arm64/kvm/mmu.c
-+++ b/arch/arm64/kvm/mmu.c
-@@ -1529,8 +1529,10 @@ int kvm_arch_prepare_memory_region(struct kvm *kvm,
- 		 * when updating the PG_mte_tagged page flag, see
- 		 * sanitise_mte_tags for more details.
- 		 */
--		if (kvm_has_mte(kvm) && vma->vm_flags & VM_SHARED)
--			return -EINVAL;
-+		if (kvm_has_mte(kvm) && vma->vm_flags & VM_SHARED) {
-+			ret = -EINVAL;
-+			break;
-+		}
- 
- 		if (vma->vm_flags & VM_PFNMAP) {
- 			/* IO region dirty page logging not allowed */
--- 
-2.33.0.800.g4c38ced690-goog
+>
+> > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+>
+> This probably wants:
+>
+> Fixes: 9186ad8e66bab6a1 ("arm64: allow CONFIG_CFI_CLANG to be selected")
+>
 
+Okay, I will add it in v2.
+
+> With that:
+>
+> Acked-by: Mark Rutland <mark.rutland@arm.com>
+>
+
+Thanks,
+Sumit
+
+> Mark.
+>
+> > ---
+> >  arch/arm64/include/asm/ftrace.h | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/arch/arm64/include/asm/ftrace.h b/arch/arm64/include/asm/ftrace.h
+> > index 91fa4baa1a93..347b0cc68f07 100644
+> > --- a/arch/arm64/include/asm/ftrace.h
+> > +++ b/arch/arm64/include/asm/ftrace.h
+> > @@ -15,7 +15,7 @@
+> >  #ifdef CONFIG_DYNAMIC_FTRACE_WITH_REGS
+> >  #define ARCH_SUPPORTS_FTRACE_OPS 1
+> >  #else
+> > -#define MCOUNT_ADDR          ((unsigned long)_mcount)
+> > +#define MCOUNT_ADDR          ((unsigned long)function_nocfi(_mcount))
+> >  #endif
+> >
+> >  /* The BL at the callsite's adjusted rec->ip */
+> > --
+> > 2.17.1
+> >
