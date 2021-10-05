@@ -2,112 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44B7F4232BD
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 23:16:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8BA44232C0
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 23:18:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236316AbhJEVSc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 17:18:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56694 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235545AbhJEVS1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 17:18:27 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50799C061749
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 14:16:36 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id t2so1931730wrb.8
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 14:16:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=PlGyYXdHnRb3uBFBFPOmPhSz+6CwwP78f00acOXfK5s=;
-        b=Fi0qjIZLQ52mrZjTeuH3S5xGIaUaG45rRcYdiWsbBgwLYSEJJEZYSIzCeVoWkQoP0v
-         +ZtUBxkeftA3Btr//ExtEXledeE4O6sQh/pbNB/V3NFwntHK92Hir126Lrp3SQBvv2ht
-         pymBZIh4Nz/aBWxGUVt0YdBj9TPN3jkyy2S8H778TW2WcLsL3QRHja9S6mNiQwVe+lFg
-         1hEHNc1pcYnzLuXnr5iW6B9SOBYHgqWaIaFeq2qz5bhFPN1KMgH559SUP/4J1Nb1ysRB
-         2C5tXnfYjkSA6UPDg8yrEl5Vr4zR36jihiRIlfk7fjipdz2ZEnN7VVcbKnPGkogkjTQl
-         gkgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=PlGyYXdHnRb3uBFBFPOmPhSz+6CwwP78f00acOXfK5s=;
-        b=bPa5mHkD2z0+7qaf8+q+imySCwVpPwD3iaYrLOMJZ7R8F5qIN9s4wQ57+qfAyRuvHv
-         x+K0LjG3UV/hpYqoJKLuFXpERMPtviHu9A/+5K8dNMkr8ko5kBe3+l6uEqeT7LEmIbRV
-         3kApfJ0WC/CcEZKbBNzUysURYgMlIVGep0Ee4vWcYvmYq5vHT4Qy6ySXpNwosbdEdvUj
-         AlRD99uaDPQ+e5tWI/hLJlZYArifARaCbHwunPSyIesy26VCX0LF6c6btCO3V3Avnc2F
-         jnLsZ5Z/BMEydKsrwIWnmjX8I+pMk4xoH66cbFxCWUU7sfQ2pBvAAOSSMGmjbFfL+MUc
-         B7ug==
-X-Gm-Message-State: AOAM532L0NKfTFu9HENGb34AR00djCKM0Lj2XJAywraRkhLpJHMZa4Yt
-        VLVbUvIehmZGZ9q9qBp/tSzwuN0y5nsABRuK
-X-Google-Smtp-Source: ABdhPJxbk1T7tbndW0Vc+vuX6+xaIh20l7NhzfmeUzYXGzp6pgzr7ZjpEs1oMLR/YXzDB7d9SDWP7Q==
-X-Received: by 2002:adf:906a:: with SMTP id h97mr23666547wrh.220.1633468594592;
-        Tue, 05 Oct 2021 14:16:34 -0700 (PDT)
-Received: from ?IPv6:2a02:8084:20c7:8d80:d71c:ed62:e10a:e7ca? ([2a02:8084:20c7:8d80:d71c:ed62:e10a:e7ca])
-        by smtp.gmail.com with ESMTPSA id s13sm3177074wmc.47.2021.10.05.14.16.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Oct 2021 14:16:34 -0700 (PDT)
-Subject: Re: [PATCH v2] staging: r8188eu: Fix misspelling in comment
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <7bc392d5-11e4-7ad0-dab6-295ccadf63b9@gmail.com>
- <YVwpEa5T4HnOX5/g@kroah.com>
-From:   "Siou-Jhih, Guo" <hallblazzar@gmail.com>
-Message-ID: <f1569e97-8996-e538-182c-cc5f6510dc35@gmail.com>
-Date:   Tue, 5 Oct 2021 22:16:33 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
-MIME-Version: 1.0
-In-Reply-To: <YVwpEa5T4HnOX5/g@kroah.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+        id S236580AbhJEVUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 17:20:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42756 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236042AbhJEVUY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 17:20:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1116C61159;
+        Tue,  5 Oct 2021 21:18:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1633468713;
+        bh=Q6enXg4bysVMT9olwJ7KUXyPIz0nbbHdJJJglJELuyg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=2G6uyDBi6sLSKrs+sYErDvwM9fF1TEpnAxLApQBBQQ+ni+IOf/pBvpefh9eBgJjtG
+         xbncFN0EolZcTVSAJGSXLShpdHgEKjtCwp1hIszOByK+bVn6uFSkEKfHWtTOSxdE57
+         yfYm3iG28bW99wjzCb2jAlmEaY+HXFIO7QOFkg/Q=
+Date:   Tue, 5 Oct 2021 14:18:32 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: Re: [PATCH] mm: don't call should_failslab() for !CONFIG_FAILSLAB
+Message-Id: <20211005141832.d6f3d4e06c4ad7a06cd554dd@linux-foundation.org>
+In-Reply-To: <e01e5e40-692a-519c-4cba-e3331f173c82@kernel.dk>
+References: <e01e5e40-692a-519c-4cba-e3331f173c82@kernel.dk>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 5 Oct 2021 09:31:43 -0600 Jens Axboe <axboe@kernel.dk> wrote:
 
-On 05/10/2021 11:29, Greg Kroah-Hartman wrote:
-> On Wed, Sep 29, 2021 at 12:29:01PM +0100, hallblazzar wrote:
->> As format check raised by scripts/checkpatch.pl, comment in the rtw_ap.c
->> looks misspelled by accident. Help fix it.
->>
->> The original error is as below shows:
->>
->> CHECK: 'followign' may be misspelled - perhaps 'following'?
->> +Set to 0 (HT pure) under the followign conditions
->>
->> Signed-off-by: Siou-Jhih, Guo <hallblazzar@gmail.com>
->
-> This does not match with your "From" line in your email header :(
->
->> ---
->>  drivers/staging/r8188eu/core/rtw_ap.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> What changed from v1?  That always has to go below the --- line as per
-> the documentation, right?
->
-> Please fix up and send a v3.
->
-> thanks,
->
+> Allocations can be a very hot path, and this out-of-line function
+> call is noticeable.
+> 
+> --- a/include/linux/fault-inject.h
+> +++ b/include/linux/fault-inject.h
+> @@ -64,8 +64,8 @@ static inline struct dentry *fault_create_debugfs_attr(const char *name,
+>  
+>  struct kmem_cache;
+>  
+> -int should_failslab(struct kmem_cache *s, gfp_t gfpflags);
+>  #ifdef CONFIG_FAILSLAB
+> +int should_failslab(struct kmem_cache *s, gfp_t gfpflags);
+>  extern bool __should_failslab(struct kmem_cache *s, gfp_t gfpflags);
+>  #else
+>  static inline bool __should_failslab(struct kmem_cache *s, gfp_t gfpflags)
+> diff --git a/mm/slab.h b/mm/slab.h
+> index 58c01a34e5b8..92fd6fe01877 100644
+> --- a/mm/slab.h
+> +++ b/mm/slab.h
+> @@ -491,8 +491,10 @@ static inline struct kmem_cache *slab_pre_alloc_hook(struct kmem_cache *s,
+>  
+>  	might_alloc(flags);
+>  
+> +#ifdef CONFIG_FAILSLAB
+>  	if (should_failslab(s, flags))
+>  		return NULL;
+> +#endif
 
-> greg k-h
+Can we avoid the ifdefs here?
 
-Hello Greg,
+>  
+>  	if (!memcg_slab_pre_alloc_hook(s, objcgp, size, flags))
+>  		return NULL;
+> diff --git a/mm/slab_common.c b/mm/slab_common.c
+> index ec2bb0beed75..c21bd447f237 100644
+> --- a/mm/slab_common.c
+> +++ b/mm/slab_common.c
+> @@ -1323,6 +1323,7 @@ EXPORT_TRACEPOINT_SYMBOL(kmem_cache_alloc_node);
+>  EXPORT_TRACEPOINT_SYMBOL(kfree);
+>  EXPORT_TRACEPOINT_SYMBOL(kmem_cache_free);
+>  
+> +#ifdef CONFIG_FAILSLAB
+>  int should_failslab(struct kmem_cache *s, gfp_t gfpflags)
+>  {
+>  	if (__should_failslab(s, gfpflags))
+> @@ -1330,3 +1331,4 @@ int should_failslab(struct kmem_cache *s, gfp_t gfpflags)
+>  	return 0;
+>  }
+>  ALLOW_ERROR_INJECTION(should_failslab, ERRNO);
+> +#endif
 
-Really thankful for your time and point those issues out. I've fixed
-the issues and re-sent v3 patch
+Like,
 
-  [PATCH v2] staging: r8188eu: Fix misspelling in comment   
-
-If anything should I additionally aware, I'd like to fix them.
-
-Regards,
-Bill G.
+--- a/include/linux/fault-inject.h~mm-dont-call-should_failslab-for-config_failslab-fix
++++ a/include/linux/fault-inject.h
+@@ -68,6 +68,10 @@ struct kmem_cache;
+ int should_failslab(struct kmem_cache *s, gfp_t gfpflags);
+ extern bool __should_failslab(struct kmem_cache *s, gfp_t gfpflags);
+ #else
++static inline int should_failslab(struct kmem_cache *s, gfp_t gfpflags)
++{
++	return 0;
++}
+ static inline bool __should_failslab(struct kmem_cache *s, gfp_t gfpflags)
+ {
+ 	return false;
+--- a/mm/slab.h~mm-dont-call-should_failslab-for-config_failslab-fix
++++ a/mm/slab.h
+@@ -491,10 +491,8 @@ static inline struct kmem_cache *slab_pr
+ 
+ 	might_alloc(flags);
+ 
+-#ifdef CONFIG_FAILSLAB
+ 	if (should_failslab(s, flags))
+ 		return NULL;
+-#endif
+ 
+ 	if (!memcg_slab_pre_alloc_hook(s, objcgp, size, flags))
+ 		return NULL;
+_
 
