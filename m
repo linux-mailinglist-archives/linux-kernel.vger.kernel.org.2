@@ -2,141 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08A784233B4
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 00:44:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A02A34233C5
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 00:46:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236889AbhJEWqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 18:46:37 -0400
-Received: from foss.arm.com ([217.140.110.172]:36998 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230113AbhJEWqg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 18:46:36 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 601336D;
-        Tue,  5 Oct 2021 15:44:45 -0700 (PDT)
-Received: from [192.168.122.166] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7633C3F66F;
-        Tue,  5 Oct 2021 15:44:44 -0700 (PDT)
-Subject: Re: [PATCH v3 3/4] PCI/ACPI: Add Broadcom bcm2711 MCFG quirk
-To:     =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>, bhelgaas@google.com
-Cc:     linux-pci@vger.kernel.org, lorenzo.pieralisi@arm.com,
-        nsaenz@kernel.org, rjw@rjwysocki.net, lenb@kernel.org,
-        robh@kernel.org, kw@linux.com, f.fainelli@gmail.com,
-        bcm-kernel-feedback-list@broadcom.com, linux-acpi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rpi-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210826071557.29239-1-jeremy.linton@arm.com>
- <20210826071557.29239-4-jeremy.linton@arm.com>
- <20211005200227.ltl6owwksfn7l4xx@pali>
-From:   Jeremy Linton <jeremy.linton@arm.com>
-Message-ID: <8cdc1b1a-7ea0-da3e-e6f1-2ae3f4c057db@arm.com>
-Date:   Tue, 5 Oct 2021 17:44:35 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
-MIME-Version: 1.0
-In-Reply-To: <20211005200227.ltl6owwksfn7l4xx@pali>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S236906AbhJEWr7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 18:47:59 -0400
+Received: from mail-oi1-f169.google.com ([209.85.167.169]:46931 "EHLO
+        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236866AbhJEWr4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 18:47:56 -0400
+Received: by mail-oi1-f169.google.com with SMTP id s69so1319201oie.13;
+        Tue, 05 Oct 2021 15:46:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=1pxND7BCUQcsSSy7TZxTVSdJeMVhe7/yxhkqlpU5RsE=;
+        b=qhHXB0KOH9CJzlOz5wyVTJohOosZCupknk+SiLbXzmTUEMrkrB4K2dHyeqgaYS5t/7
+         dKlEX8vGbCkIZEE5L8Rt5vX3ZeDZzCob1vYd/wIVkYztTCxnY0dD8dC+hZTmg+A4U1mT
+         PRdD6X3zHbgtmLinUiyqQFkYctdQw2A16f2Hi3EUGr7ysagE/bMsvbGS1kgRjTe1YThw
+         RbJ6RHTD0o1Dq56HoQxaisWw6m2xixVk/Xhow9T8CXoT2o3maiv8SzKDbZ+OT7ZVl05G
+         8LmwiSmkX5mK0c/sh1eLPIsk3tC+Z9sBbE7kMOSDe6Xm4YQ6WNC7iYVg7FBwQPzzoskB
+         5EHQ==
+X-Gm-Message-State: AOAM533TiLPdFkKLBQE50uzgDy8D43rJ/a/556wsOxlOhjmQbZPgROQg
+        NbabXMtDHpa7SDKrbQsud2zoMjj+nQ==
+X-Google-Smtp-Source: ABdhPJzOguD4l2kCjKfnxpvalktU+y3R8MfzP+cj3IqJDlV+LBYM1M+tbREdb4g60bxvG1vfkOBTew==
+X-Received: by 2002:a05:6808:bcf:: with SMTP id o15mr4696483oik.171.1633473965166;
+        Tue, 05 Oct 2021 15:46:05 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id k23sm3760510ook.45.2021.10.05.15.46.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Oct 2021 15:46:04 -0700 (PDT)
+Received: (nullmailer pid 106773 invoked by uid 1000);
+        Tue, 05 Oct 2021 22:45:59 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Cc:     rohitkr@codeaurora.org, perex@perex.cz, agross@kernel.org,
+        linux-arm-msm@vger.kernel.org, plai@codeaurora.org,
+        devicetree@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com,
+        linux-kernel@vger.kernel.org, bjorn.andersson@linaro.org,
+        srinivas.kandagatla@linaro.org, broonie@kernel.org,
+        robh+dt@kernel.org, bgoswami@codeaurora.org,
+        alsa-devel@alsa-project.org, swboyd@chromium.org,
+        Venkata Prasad Potturu <potturu@codeaurora.org>,
+        judyhsiao@chromium.org
+In-Reply-To: <1633441974-15353-7-git-send-email-srivasam@codeaurora.org>
+References: <1633441974-15353-1-git-send-email-srivasam@codeaurora.org> <1633441974-15353-7-git-send-email-srivasam@codeaurora.org>
+Subject: Re: [PATCH v2 6/9] ASoC: dt-bindings: Add SC7280 sound card bindings
+Date:   Tue, 05 Oct 2021 17:45:59 -0500
+Message-Id: <1633473959.357662.106769.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 10/5/21 3:02 PM, Pali Rohár wrote:
-> On Thursday 26 August 2021 02:15:56 Jeremy Linton wrote:
->> Now that there is a bcm2711 quirk, it needs to be enabled when the
->> MCFG is missing. Use an ACPI namespace _DSD property
->> "linux-ecam-quirk-id" as an alternative to the MCFG OEM.
->>
->> Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
->> Acked-by: Florian Fainelli <f.fainelli@gmail.com>
->> Acked-by: Bjorn Helgaas <bhelgaas@google.com>
->> ---
->>   drivers/acpi/pci_mcfg.c | 17 +++++++++++++++++
->>   1 file changed, 17 insertions(+)
->>
->> diff --git a/drivers/acpi/pci_mcfg.c b/drivers/acpi/pci_mcfg.c
->> index 53cab975f612..04c517418365 100644
->> --- a/drivers/acpi/pci_mcfg.c
->> +++ b/drivers/acpi/pci_mcfg.c
->> @@ -169,6 +169,9 @@ static struct mcfg_fixup mcfg_quirks[] = {
->>   	ALTRA_ECAM_QUIRK(1, 13),
->>   	ALTRA_ECAM_QUIRK(1, 14),
->>   	ALTRA_ECAM_QUIRK(1, 15),
->> +
->> +	{ "bc2711", "", 0, 0, MCFG_BUS_ANY, &bcm2711_pcie_ops,
->> +	  DEFINE_RES_MEM(0xFD500000, 0xA000) },
+On Tue, 05 Oct 2021 19:22:51 +0530, Srinivasa Rao Mandadapu wrote:
+> Add bindings for lpass sc7280 based soundcards which supports
+> audio over i2s based speaker, soundwire based headset, msm dmics
+> and HDMI Port.
 > 
-> Hello!
+> Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
+> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+> ---
+>  .../devicetree/bindings/sound/qcom,lpass-cpu.yaml  | 69 +++++++++++++++++++---
+>  1 file changed, 61 insertions(+), 8 deletions(-)
 > 
-> According to discussion described in email [1], adding a new MCFG quirk
-> (like above) into kernel requires adding some errata entry for
-> documenting buggy HW.
-> 
-> But this patch series does not introduce any new errata entry.
 
-Nor did the quirk following that email, which was merged. Presumably 
-because I'm not sure anyone can predict the future, and some of the 
-points in that posting were made simply to fill gaps in the arguments 
-around why the SMC is/was a better plan. The final point about requiring 
-a MCFG is also flies in the face of the fact that there is an Arm/Pci 
-Standardized way to deal with these problems which is supported by other 
-OS's running on these platforms and it requires that MFCG is missing. 
-The idea that MCFG will magically appear for only Linux and contain 
-relevant info (like the non even power of two cfg region on this SoC) is 
-a bit wishful.
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-I'm certainly in no place to claim future PCIe compliance for Broadcom's 
-SoC's, nor its lifecycle. I'm betting few people submitting Linux 
-patches are, particularly for mostly community supported projects like 
-the RPi4/CM4/ACPI port. I'm more than happy to hack/tweak future 
-problems with this code, and possibly even extend it if needed. Thats 
-about the extent of what I can do.
+yamllint warnings/errors:
 
+dtschema/dtc warnings/errors:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.example.dt.yaml: lpass@62d80000: reg: [[0, 1658351616, 0, 425984], [0, 1659895808, 0, 167936]] is too short
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.example.dt.yaml: lpass@62d80000: reg-names: ['lpass-hdmiif', 'lpass-lpaif'] is too short
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.example.dt.yaml: lpass@62d80000: interrupts: [[0, 160, 1], [0, 268, 1]] is too short
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.example.dt.yaml: lpass@62d80000: interrupt-names: ['lpass-irq-lpaif', 'lpass-irq-hdmi'] is too short
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.example.dt.yaml: lpass@62d80000: iommus: [[4294967295, 4128, 0], [4294967295, 4146, 0]] is too short
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
 
-Thanks,
+doc reference errors (make refcheckdocs):
 
+See https://patchwork.ozlabs.org/patch/1536654
 
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
 
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
 
-> 
-> Bjorn, could you look at how to properly document these "hw bugs"?
-> I guess there would be lot of more requests for adding MCFG quirks as
-> now according to [1], doors are open for them. And it is possible that
-> after more years nobody would be able to maintain these quirks if would
-> not be properly documented.
-> 
-> [1] - https://lore.kernel.org/linux-pci/20210325131231.GA18590@e121166-lin.cambridge.arm.com/
-> 
->>   };
->>   
->>   static char mcfg_oem_id[ACPI_OEM_ID_SIZE];
->> @@ -198,8 +201,22 @@ static void pci_mcfg_apply_quirks(struct acpi_pci_root *root,
->>   	u16 segment = root->segment;
->>   	struct resource *bus_range = &root->secondary;
->>   	struct mcfg_fixup *f;
->> +	const char *soc;
->>   	int i;
->>   
->> +	/*
->> +	 * This may be a machine with a PCI/SMC conduit, which means it doesn't
->> +	 * have an MCFG. Use an ACPI namespace definition instead.
->> +	 */
->> +	if (!fwnode_property_read_string(acpi_fwnode_handle(root->device),
->> +					 "linux-ecam-quirk-id", &soc)) {
->> +		if (strlen(soc) != ACPI_OEM_ID_SIZE)
->> +			dev_err(&root->device->dev, "ECAM quirk should be %d characters\n",
->> +				ACPI_OEM_ID_SIZE);
->> +		else
->> +			memcpy(mcfg_oem_id, soc, ACPI_OEM_ID_SIZE);
->> +	}
->> +
->>   	for (i = 0, f = mcfg_quirks; i < ARRAY_SIZE(mcfg_quirks); i++, f++) {
->>   		if (pci_mcfg_quirk_matches(f, segment, bus_range)) {
->>   			if (f->cfgres.start)
->> -- 
->> 2.31.1
->>
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
 
