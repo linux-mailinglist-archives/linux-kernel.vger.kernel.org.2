@@ -2,122 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB3D44222E4
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 11:57:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 963844222EA
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 11:57:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233635AbhJEJ7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 05:59:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37204 "EHLO
+        id S233852AbhJEJ7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 05:59:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233365AbhJEJ7C (ORCPT
+        with ESMTP id S233954AbhJEJ72 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 05:59:02 -0400
-Received: from mail-vk1-xa2a.google.com (mail-vk1-xa2a.google.com [IPv6:2607:f8b0:4864:20::a2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B60A3C061745
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 02:57:11 -0700 (PDT)
-Received: by mail-vk1-xa2a.google.com with SMTP id x207so9029675vke.2
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 02:57:11 -0700 (PDT)
+        Tue, 5 Oct 2021 05:59:28 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37D77C061764
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 02:57:35 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id d8so7364162edx.9
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 02:57:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=5tyZ1L4nPxHAH57fPWcCNfvTj6DGtahCV/QiQgPB4f0=;
-        b=w6WrpcoLhjiXUHF0pSlcCde3W3uqzcYz6OKbgnEaoYfsjMFccUF39SiE6HKJr2E9yf
-         OgR6+50MXyzsGvfduM48g3XoZFulVjK2VFTXlV3QueU4lT2Wk8CN9GsvSBi55UbJXOXX
-         wQ/7uJUi1+Hfweauq0/hWJ3nQaNQVo1FMIi3WkwTHzeyShGK08Y81G9Atx2+tNgXkuEZ
-         tRXZTIp08hpwg7VDQzccA5vCO2iuySmkCxMwVYaGZ5vwmR6Ccj6lLOaQjkkiIJITaEAV
-         P1qNBxRz4O6H8klxQbXOUo3Xdm9oM27ER8/RGyJploTJkGBCCYGw4iRZegjux/pdwMHU
-         8n0A==
+        bh=mcUx6mFpPjRWb+s/DSiH7CSR1lxitUSgQfuJXwjrEzM=;
+        b=XxjVUrlzLpLKzpxmT+9cuXU4t7FWXSQ+5JK+kHlkVE+zALIUo6EP0uLi69A7WEhfcs
+         Hd630y3z8QG+bgU5PGoV0r4iklRHOhbpy7us9MKQUczYD1lH0yUmu3c7Sw1PX/iwJzLi
+         Lf2iDxuAAMZHS9Utm25mtNWFCxVXjd1+hIa7Y=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=5tyZ1L4nPxHAH57fPWcCNfvTj6DGtahCV/QiQgPB4f0=;
-        b=RIPVhyWONJt7VqVuN7AlavnJGyfKOVF5ZUEX6p2zotvj+pXiWbIwWpkaetMjmvdVfM
-         weuqAI85KEgJ/3XtDfzTCC+bKt+2fcujmdeXAsuDv71YzMFOaXcW95bPNLAAmuAJ0FZ5
-         qcp3HMxCfYHw8raD97/i73uzuyEhVanIqjdYiNKIllzzXATUdoQMF7Cbp0CF+FaeVnm+
-         wPId89W5jjTyU7qmKeS2Q77qsILjG2rErgvD9uYkGlA6RWxEGP3MaF/hp7IREaOJYy3V
-         3txKCSqMjX9kf95lSp+yV9YYMducaHlR5sKVhC+MGwMQWU8lBob7NE1x5YhsdCanJYlw
-         Ch3Q==
-X-Gm-Message-State: AOAM531JKVRsEgTi5TyzCPPSGU2wvt9cLIHmpju6htc32i6b4AcQ9Iq4
-        iResKWUUFQSi0YWq7UfzsMl2Y+VKRoFVYGvAjLulig==
-X-Google-Smtp-Source: ABdhPJxkOlO4SYnOan3kE1N3PVnE07RjPPQhgqdJa8q8rTuO1aJhb1yAzCCR3efsvdB7JDWMo19sbFRbS33OTJ8AmG0=
-X-Received: by 2002:a1f:1bc6:: with SMTP id b189mr19231679vkb.15.1633427830840;
- Tue, 05 Oct 2021 02:57:10 -0700 (PDT)
+        bh=mcUx6mFpPjRWb+s/DSiH7CSR1lxitUSgQfuJXwjrEzM=;
+        b=qCpWViYvR2lXPhDTlUw4CtO/vv/rPnpFJzRNyr4e2SxJ89Ke/fa8xf84oYK/cknJDf
+         lQfHJuGXl1bl9UywSVE2F7tK0BwI7raHjyAEcmLkSHGrJS9Ak57RZBvRseoGMUBwMzbA
+         qY7fd/GMg0MHQxaLCWk0U4/UB8hutnhyhyXBBZMPBXOUIXarvHthHCy2G8YfsN7SbhHH
+         8oeG8sShwqXTWKniEuAyB8m2V4bSFnToViVNCeNAer1uVtVnDJxk1K2puyH8wCx6lmPm
+         FgWI7mfQjHDRSe6aPMYqpHb/7Z8jmpphG7yKTx/Wfq2IYpmfCFxktaqt2FzWU/3izYlR
+         Z8yw==
+X-Gm-Message-State: AOAM533yn+LdbBs6pY2IDF8uQ4WqYJqCalxwUlWnXpJ9fcJniBZSejEl
+        evC4eIJh8DO/nsNrp34J6a79c3pj1SZDRQ==
+X-Google-Smtp-Source: ABdhPJxHX/xYstw8iwzFrVUO85q6vhfUwNhpKCLHMwe/0UFT06z1RgEiaiHXG5YJskrVgXE4z6nIRg==
+X-Received: by 2002:a50:d511:: with SMTP id u17mr23708050edi.105.1633427853027;
+        Tue, 05 Oct 2021 02:57:33 -0700 (PDT)
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com. [209.85.221.42])
+        by smtp.gmail.com with ESMTPSA id jt24sm7704740ejb.59.2021.10.05.02.57.32
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Oct 2021 02:57:32 -0700 (PDT)
+Received: by mail-wr1-f42.google.com with SMTP id v25so25566591wra.2
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 02:57:32 -0700 (PDT)
+X-Received: by 2002:adf:a184:: with SMTP id u4mr20543894wru.69.1633427851714;
+ Tue, 05 Oct 2021 02:57:31 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210914142315.26596-1-semen.protsenko@linaro.org> <6efec37b-4392-dffe-1bda-d4f7aac6643f@canonical.com>
-In-Reply-To: <6efec37b-4392-dffe-1bda-d4f7aac6643f@canonical.com>
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-Date:   Tue, 5 Oct 2021 12:56:59 +0300
-Message-ID: <CAPLW+4nJ6yumqRC8YqUSVaWJSWrfj+fjWRTe0Opc1qa2L=F6+A@mail.gmail.com>
-Subject: Re: [PATCH] tty: serial: samsung: Improve naming for common macro
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210928034634.333785-1-senozhatsky@chromium.org>
+In-Reply-To: <20210928034634.333785-1-senozhatsky@chromium.org>
+From:   Tomasz Figa <tfiga@chromium.org>
+Date:   Tue, 5 Oct 2021 18:57:20 +0900
+X-Gmail-Original-Message-ID: <CAAFQd5DLiW23a0U_JjnpvoYmpcbiKbStq7=w=7KvbDP7zLvBaA@mail.gmail.com>
+Message-ID: <CAAFQd5DLiW23a0U_JjnpvoYmpcbiKbStq7=w=7KvbDP7zLvBaA@mail.gmail.com>
+Subject: Re: [PATCH] media: videobuf2: always set buffer vb2 pointer
+To:     Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Ricardo Ribalda <ribalda@chromium.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 15 Sept 2021 at 10:28, Krzysztof Kozlowski
-<krzysztof.kozlowski@canonical.com> wrote:
+On Tue, Sep 28, 2021 at 12:46 PM Sergey Senozhatsky
+<senozhatsky@chromium.org> wrote:
 >
-> On 14/09/2021 16:23, Sam Protsenko wrote:
-> > Having "_USI" suffix in EXYNOS_COMMON_SERIAL_DRV_DATA_USI() macro is
-> > confusing. Rename it to just EXYNOS_COMMON_SERIAL_DRV_DATA() and provide
-> > USI registers availability for all Exynos variants instead.
-> >
-> > Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
-> > ---
-> >  drivers/tty/serial/samsung_tty.c | 11 ++++-------
-> >  1 file changed, 4 insertions(+), 7 deletions(-)>
-> > diff --git a/drivers/tty/serial/samsung_tty.c b/drivers/tty/serial/samsung_tty.c
-> > index e2f49863e9c2..542b7e2b99dc 100644
-> > --- a/drivers/tty/serial/samsung_tty.c
-> > +++ b/drivers/tty/serial/samsung_tty.c
-> > @@ -2780,7 +2780,7 @@ static struct s3c24xx_serial_drv_data s5pv210_serial_drv_data = {
-> >  #endif
-> >
-> >  #if defined(CONFIG_ARCH_EXYNOS)
-> > -#define EXYNOS_COMMON_SERIAL_DRV_DATA_USI(_has_usi)          \
-> > +#define EXYNOS_COMMON_SERIAL_DRV_DATA(_has_usi)                      \
-> >       .info = &(struct s3c24xx_uart_info) {                   \
-> >               .name           = "Samsung Exynos UART",        \
-> >               .type           = TYPE_S3C6400,                 \
-> > @@ -2804,21 +2804,18 @@ static struct s3c24xx_serial_drv_data s5pv210_serial_drv_data = {
-> >               .has_fracval    = 1,                            \
-> >       }                                                       \
-> >
-> > -#define EXYNOS_COMMON_SERIAL_DRV_DATA                                \
-> > -     EXYNOS_COMMON_SERIAL_DRV_DATA_USI(0)
-> > -
-> >  static struct s3c24xx_serial_drv_data exynos4210_serial_drv_data = {
-> > -     EXYNOS_COMMON_SERIAL_DRV_DATA,
-> > +     EXYNOS_COMMON_SERIAL_DRV_DATA(0),
-> >       .fifosize = { 256, 64, 16, 16 },
-> >  };
-> >
-> >  static struct s3c24xx_serial_drv_data exynos5433_serial_drv_data = {
-> > -     EXYNOS_COMMON_SERIAL_DRV_DATA,
-> > +     EXYNOS_COMMON_SERIAL_DRV_DATA(0),
-> >       .fifosize = { 64, 256, 16, 256 },
-> >  };
-> >
-> >  static struct s3c24xx_serial_drv_data exynos850_serial_drv_data = {
-> > -     EXYNOS_COMMON_SERIAL_DRV_DATA_USI(1),
+> We need to always link allocated vb2_dc_buf back to vb2_buffer because
+> we dereference vb2 in prepare() and finish() callbacks.
 >
-> Makes sense, although I would prefer to have here true or false. More
-> obvious. Otherwise "1" looks like counter/number for some property.
->
-> The has_usi field in struct could be then also converted to bool.
+> Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+> ---
+>  drivers/media/common/videobuf2/videobuf2-dma-contig.c | 3 +++
+>  1 file changed, 3 insertions(+)
 >
 
-No problem, will send v2 shortly.
+Acked-by: Tomasz Figa <tfiga@chromium.org>
 
+Best regards,
+Tomasz
+
+> diff --git a/drivers/media/common/videobuf2/videobuf2-dma-contig.c b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
+> index b052a4e36961..38767791955d 100644
+> --- a/drivers/media/common/videobuf2/videobuf2-dma-contig.c
+> +++ b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
+> @@ -600,6 +600,7 @@ static void *vb2_dc_get_userptr(struct vb2_buffer *vb, struct device *dev,
 >
-> Best regards,
-> Krzysztof
+>         buf->dev = dev;
+>         buf->dma_dir = vb->vb2_queue->dma_dir;
+> +       buf->vb = vb;
+>
+>         offset = lower_32_bits(offset_in_page(vaddr));
+>         vec = vb2_create_framevec(vaddr, size);
+> @@ -788,6 +789,8 @@ static void *vb2_dc_attach_dmabuf(struct vb2_buffer *vb, struct device *dev,
+>                 return ERR_PTR(-ENOMEM);
+>
+>         buf->dev = dev;
+> +       buf->vb = vb;
+> +
+>         /* create attachment for the dmabuf with the user device */
+>         dba = dma_buf_attach(dbuf, buf->dev);
+>         if (IS_ERR(dba)) {
+> --
+> 2.33.0.685.g46640cef36-goog
+>
