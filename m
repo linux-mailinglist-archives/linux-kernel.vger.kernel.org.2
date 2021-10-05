@@ -2,105 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 455674231D1
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 22:25:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D83DD4231D8
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 22:25:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235157AbhJEU1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 16:27:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57262 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230027AbhJEU1M (ORCPT
+        id S235679AbhJEU1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 16:27:19 -0400
+Received: from sibelius.xs4all.nl ([83.163.83.176]:58948 "EHLO
+        sibelius.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235545AbhJEU1S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 16:27:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633465521;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=fphjzfCNo4ZpuqMZyls+oQxve30/shqr62DPT4ol2Kk=;
-        b=R42K2PpGzQebBVmX66VxdDAkkaUE/P80NDBx9vTPx/PcKaUvUu0CoCldRNTIP/+WrsKOQr
-        MQ+XwznikhSUCCD7cpOM+gIZ5s0q0mtXuNuTB+bQHekCk8NL9zaGbj/Enslg4Mc9V7dXgZ
-        MjUkYgFG40JEFdHPXgXQQETAduCjI6s=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-542-0Zf8uCHhPCqIIoHyVyTwIg-1; Tue, 05 Oct 2021 16:25:20 -0400
-X-MC-Unique: 0Zf8uCHhPCqIIoHyVyTwIg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 62BB71966320;
-        Tue,  5 Oct 2021 20:25:18 +0000 (UTC)
-Received: from llong.com (unknown [10.22.34.147])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B59FF5D9D5;
-        Tue,  5 Oct 2021 20:25:16 +0000 (UTC)
-From:   Waiman Long <longman@redhat.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Waiman Long <longman@redhat.com>
-Subject: [PATCH v2] mm/memcg: Remove obsolete memcg_free_kmem()
-Date:   Tue,  5 Oct 2021 16:24:50 -0400
-Message-Id: <20211005202450.11775-1-longman@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+        Tue, 5 Oct 2021 16:27:18 -0400
+Received: from localhost (bloch.sibelius.xs4all.nl [local])
+        by bloch.sibelius.xs4all.nl (OpenSMTPD) with ESMTPA id 37e863b1;
+        Tue, 5 Oct 2021 22:25:24 +0200 (CEST)
+Date:   Tue, 5 Oct 2021 22:25:24 +0200 (CEST)
+From:   Mark Kettenis <mark.kettenis@xs4all.nl>
+To:     Hector Martin <marcan@marcan.st>
+Cc:     linux-arm-kernel@lists.infradead.org, marcan@marcan.st,
+        maz@kernel.org, robh+dt@kernel.org, arnd@kernel.org,
+        linus.walleij@linaro.org, alyssa@rosenzweig.io, krzk@kernel.org,
+        gregkh@linuxfoundation.org, p.zabel@pengutronix.de,
+        rafael@kernel.org, devicetree@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org, linux-serial@vger.kernel.org
+In-Reply-To: <20211005155923.173399-6-marcan@marcan.st> (message from Hector
+        Martin on Wed, 6 Oct 2021 00:59:21 +0900)
+Subject: Re: [PATCH 5/7] arm64: dts: apple: t8103: Add the UART PMGR tree
+References: <20211005155923.173399-1-marcan@marcan.st> <20211005155923.173399-6-marcan@marcan.st>
+Message-ID: <d3ca3c225d101c67@bloch.sibelius.xs4all.nl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit d648bcc7fe65 ("mm: kmem: make memcg_kmem_enabled()
-irreversible"), the only thing memcg_free_kmem() does is to call
-memcg_offline_kmem() when the memcg is still online which can happen when
-online_css() fails due to -ENOMEM. However, the name memcg_free_kmem()
-is confusing and it is more clear and straight forward to call
-memcg_offline_kmem() directly from mem_cgroup_css_free().
+> From: Hector Martin <marcan@marcan.st>
+> Date: Wed,  6 Oct 2021 00:59:21 +0900
+> Content-Type: text/plain; charset="us-ascii"
+> 
+> Note that the UART driver does not currently support runtime-pm, so this
+> effectively always keeps the UART0 device on. However, this does clockgate
+> all the other UARTs, as those are not currently instantiated.
+> 
+> Signed-off-by: Hector Martin <marcan@marcan.st>
+> ---
+>  arch/arm64/boot/dts/apple/t8103.dtsi | 116 +++++++++++++++++++++++++++
+>  1 file changed, 116 insertions(+)
 
-Suggested-by: Roman Gushchin <guro@fb.com>
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- mm/memcontrol.c | 14 +++-----------
- 1 file changed, 3 insertions(+), 11 deletions(-)
+Reviewed-by: Mark Kettenis <kettenis@openbsd.org>
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 6da5020a8656..96a93c608d80 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -3656,13 +3656,6 @@ static void memcg_offline_kmem(struct mem_cgroup *memcg)
- 
- 	memcg_free_cache_id(kmemcg_id);
- }
--
--static void memcg_free_kmem(struct mem_cgroup *memcg)
--{
--	/* css_alloc() failed, offlining didn't happen */
--	if (unlikely(memcg->kmem_state == KMEM_ONLINE))
--		memcg_offline_kmem(memcg);
--}
- #else
- static int memcg_online_kmem(struct mem_cgroup *memcg)
- {
-@@ -3671,9 +3664,6 @@ static int memcg_online_kmem(struct mem_cgroup *memcg)
- static void memcg_offline_kmem(struct mem_cgroup *memcg)
- {
- }
--static void memcg_free_kmem(struct mem_cgroup *memcg)
--{
--}
- #endif /* CONFIG_MEMCG_KMEM */
- 
- static int memcg_update_kmem_max(struct mem_cgroup *memcg,
-@@ -5308,7 +5298,9 @@ static void mem_cgroup_css_free(struct cgroup_subsys_state *css)
- 	cancel_work_sync(&memcg->high_work);
- 	mem_cgroup_remove_from_trees(memcg);
- 	free_shrinker_info(memcg);
--	memcg_free_kmem(memcg);
-+
-+	/* Need to offline kmem if online_css() fails */
-+	memcg_offline_kmem(memcg);
- 	mem_cgroup_free(memcg);
- }
- 
--- 
-2.18.1
-
+> diff --git a/arch/arm64/boot/dts/apple/t8103.dtsi b/arch/arm64/boot/dts/apple/t8103.dtsi
+> index 9f60f9e48ea0..63056ddc7ef7 100644
+> --- a/arch/arm64/boot/dts/apple/t8103.dtsi
+> +++ b/arch/arm64/boot/dts/apple/t8103.dtsi
+> @@ -122,6 +122,7 @@ serial0: serial@235200000 {
+>  			 */
+>  			clocks = <&clkref>, <&clkref>;
+>  			clock-names = "uart", "clk_uart_baud0";
+> +			power-domains = <&ps_uart0>;
+>  			status = "disabled";
+>  		};
+>  
+> @@ -131,5 +132,120 @@ aic: interrupt-controller@23b100000 {
+>  			interrupt-controller;
+>  			reg = <0x2 0x3b100000 0x0 0x8000>;
+>  		};
+> +
+> +		pmgr: power-management@23b700000 {
+> +			compatible = "apple,t8103-pmgr", "apple,pmgr", "syscon", "simple-mfd";
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +
+> +			reg = <0x2 0x3b700000 0x0 0x14000>;
+> +
+> +			ps_sio_busif: power-controller@1c0 {
+> +				compatible = "apple,t8103-pmgr-pwrstate", "apple,pmgr-pwrstate";
+> +				reg = <0x1c0>;
+> +				#power-domain-cells = <0>;
+> +				#reset-cells = <0>;
+> +				apple,domain-name = "sio_busif";
+> +			};
+> +
+> +			ps_sio: power-controller@1c8 {
+> +				compatible = "apple,t8103-pmgr-pwrstate", "apple,pmgr-pwrstate";
+> +				reg = <0x1c8>;
+> +				#power-domain-cells = <0>;
+> +				#reset-cells = <0>;
+> +				apple,domain-name = "sio";
+> +				power-domains = <&ps_sio_busif>;
+> +			};
+> +
+> +			ps_uart_p: power-controller@220 {
+> +				compatible = "apple,t8103-pmgr-pwrstate", "apple,pmgr-pwrstate";
+> +				reg = <0x220>;
+> +				#power-domain-cells = <0>;
+> +				#reset-cells = <0>;
+> +				apple,domain-name = "uart_p";
+> +				power-domains = <&ps_sio>;
+> +			};
+> +
+> +			ps_uart0: power-controller@270 {
+> +				compatible = "apple,t8103-pmgr-pwrstate", "apple,pmgr-pwrstate";
+> +				reg = <0x270>;
+> +				#power-domain-cells = <0>;
+> +				#reset-cells = <0>;
+> +				apple,domain-name = "uart0";
+> +				power-domains = <&ps_uart_p>;
+> +			};
+> +
+> +			ps_uart1: power-controller@278 {
+> +				compatible = "apple,t8103-pmgr-pwrstate", "apple,pmgr-pwrstate";
+> +				reg = <0x278>;
+> +				#power-domain-cells = <0>;
+> +				#reset-cells = <0>;
+> +				apple,domain-name = "uart1";
+> +				power-domains = <&ps_uart_p>;
+> +			};
+> +
+> +			ps_uart2: power-controller@280 {
+> +				compatible = "apple,t8103-pmgr-pwrstate", "apple,pmgr-pwrstate";
+> +				reg = <0x280>;
+> +				#power-domain-cells = <0>;
+> +				#reset-cells = <0>;
+> +				apple,domain-name = "uart2";
+> +				power-domains = <&ps_uart_p>;
+> +			};
+> +
+> +			ps_uart3: power-controller@288 {
+> +				compatible = "apple,t8103-pmgr-pwrstate", "apple,pmgr-pwrstate";
+> +				reg = <0x288>;
+> +				#power-domain-cells = <0>;
+> +				#reset-cells = <0>;
+> +				apple,domain-name = "uart3";
+> +				power-domains = <&ps_uart_p>;
+> +			};
+> +
+> +			ps_uart4: power-controller@290 {
+> +				compatible = "apple,t8103-pmgr-pwrstate", "apple,pmgr-pwrstate";
+> +				reg = <0x290>;
+> +				#power-domain-cells = <0>;
+> +				#reset-cells = <0>;
+> +				apple,domain-name = "uart4";
+> +				power-domains = <&ps_uart_p>;
+> +			};
+> +
+> +			ps_uart5: power-controller@298 {
+> +				compatible = "apple,t8103-pmgr-pwrstate", "apple,pmgr-pwrstate";
+> +				reg = <0x298>;
+> +				#power-domain-cells = <0>;
+> +				#reset-cells = <0>;
+> +				apple,domain-name = "uart5";
+> +				power-domains = <&ps_uart_p>;
+> +			};
+> +
+> +			ps_uart6: power-controller@2a0 {
+> +				compatible = "apple,t8103-pmgr-pwrstate", "apple,pmgr-pwrstate";
+> +				reg = <0x2a0>;
+> +				#power-domain-cells = <0>;
+> +				#reset-cells = <0>;
+> +				apple,domain-name = "uart6";
+> +				power-domains = <&ps_uart_p>;
+> +			};
+> +
+> +			ps_uart7: power-controller@2a8 {
+> +				compatible = "apple,t8103-pmgr-pwrstate", "apple,pmgr-pwrstate";
+> +				reg = <0x2a8>;
+> +				#power-domain-cells = <0>;
+> +				#reset-cells = <0>;
+> +				apple,domain-name = "uart7";
+> +				power-domains = <&ps_uart_p>;
+> +			};
+> +
+> +			ps_uart8: power-controller@2b0 {
+> +				compatible = "apple,t8103-pmgr-pwrstate", "apple,pmgr-pwrstate";
+> +				reg = <0x2b0>;
+> +				#power-domain-cells = <0>;
+> +				#reset-cells = <0>;
+> +				apple,domain-name = "uart8";
+> +				power-domains = <&ps_uart_p>;
+> +			};
+> +		};
+>  	};
+>  };
+> -- 
+> 2.33.0
+> 
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> 
