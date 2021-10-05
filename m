@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E87274226EC
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 14:40:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B665F4226F3
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 14:41:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234303AbhJEMl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 08:41:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47356 "EHLO
+        id S234388AbhJEMnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 08:43:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233842AbhJEMl5 (ORCPT
+        with ESMTP id S234275AbhJEMnN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 08:41:57 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68548C061749;
-        Tue,  5 Oct 2021 05:40:06 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id i4so86369421lfv.4;
-        Tue, 05 Oct 2021 05:40:06 -0700 (PDT)
+        Tue, 5 Oct 2021 08:43:13 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4249C061749;
+        Tue,  5 Oct 2021 05:41:22 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id g41so85515716lfv.1;
+        Tue, 05 Oct 2021 05:41:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=56g+f47LG+7NwwLmTAwXFmCavIf0OsJkTi6i6izLBEM=;
-        b=oG9Y1Q1UY1dSECzyWbV+5gHboovVOEP8dzgj3bSciTu6fdkDkwDI3A5I8Buh0MJp8o
-         6wsALw8bdFB68WTYulpp904AJgy4Xn+N3/HiQ2xaAwfsiYSjgqSDEGuKmIfOHccvSHZC
-         /b3evmrS2B0wkUvd/TpDUKiuy6+NXs+g3pSysEkm8HDX28QTpbF9ygr9chuX2WymGIXk
-         k9rLZMboqEgkjBP+petzQOPRnGGiKqloVzyyHaJLU0B619TIEeU5Cn2xMXhWBdWdyDWy
-         eNgtj3UeEE/REVJedaRvcer7G4tdN8ZQLuzEOhqi1v2yJFy+ulo+X5TuQBX3Wgpq6y9q
-         e3vw==
+        bh=XpKYD9E3rJIEfDrcb6VLQtwXgInFx9KzFG4M4majEQs=;
+        b=S1fWl9EdPHAlX7K0qHKuTB1OaqcSn/Bz2Fd6glU5/vPoLdVhGkj9qJaY2luQY7I2Zu
+         0+qTRJtDuOAXcl5zwuQFJCwU5xFX9Hoy+ZzO1TQ1YJabSQzqgAKGKDmHrARYJ16ahRtC
+         ShF3xtTvJwh5lZeiQwV+P3+YpHQ+bQbx3bwPgp5a5vaKSkfW/uV4RKjHZrXt0Ok/mcUd
+         Kze2SINUPtngd9FhJCh0/Lfqv5CW2FAEFGcV+pt5/XR5nKNoSdjjBGBWm5QETqrzRaKe
+         y5L+YfUkbp+g0CcrDClm3V/Ilfbihxl3X93qASAWV4zrRCd6qb93saYLDPhpLFNofErQ
+         aX5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=56g+f47LG+7NwwLmTAwXFmCavIf0OsJkTi6i6izLBEM=;
-        b=oU+h8+bGYv0BSIyrlrsxEfyqo6dBC8rVRLScO4MDJc02Q5RVpOQHQuggvYzsimWk0y
-         lC3dgS7o73azgNNVP1BY1hArJGl4RWN36cSrM1WdgzeAZ4HFHX6Sh1pSd4CyTPUmpwPH
-         CkVXJWbl0BjunqhXa4B7QKlTRFPNfv6aS+BoCuKMvRK2tvOhX5EsprOKprWMSalfCJHv
-         u/QZ2krMe2piWI5hwmUMydW+DDDKUUFeJfa9hxsmd3zUp5qf/HU2VwbDZHbPZIJozU0/
-         jzRqEyc8MRKzq+T8Rwngt58a9Fcp7QqQD/2S79ASIK9bHXUrM84Q3YBOI/+IjIjiVGy8
-         Gf8Q==
-X-Gm-Message-State: AOAM532RBorgPmOXT1rTKcn+raHMsGdw8w8PwWCt3Z70fufcuGSdtzKx
-        EXbT/eayWPq7VQ01SbejHI0FXulS4wZoX0fPeys=
-X-Google-Smtp-Source: ABdhPJxTGn+Sz7koXZ0EUatuFym5j3w4GRMkZ8Ov89oLDTj+4uHPboB5rhglPyEmAtkv3hcu4KxnUTBosUXR38dL3bg=
-X-Received: by 2002:a05:651c:44f:: with SMTP id g15mr23091575ljg.396.1633437604608;
- Tue, 05 Oct 2021 05:40:04 -0700 (PDT)
+        bh=XpKYD9E3rJIEfDrcb6VLQtwXgInFx9KzFG4M4majEQs=;
+        b=i+EA/fqf9FjCShzdy74YYizrY6C23vsihf4DqTcmze7B6kzqqe5TkIkAS34p3AbrdN
+         22K50Djf8ZP9YpdMDNF3os/zkqNDpziDBeTX4eec/nmQzolRWq2Ejs9crD6Pu8CsTkkR
+         4U0ZJ03yxa1gkS16dwpvIJZ8R2NqmN8BmmGZ0qDVJd9Vg0QkU/Wy7wTXXQ+icoDzfF/P
+         hzh09F0uRJy9VtrE2sKxxMtdHwnQMrvBelzKhQojIEN1+yPdgTlqLWoMP7cU/yyhjSlu
+         fhkFr8wXRTjNJct0MO+sU2ESNuZy15uMgB+xCsAFTItiveZTPkLztoevP7XnRqWhTBMW
+         BI7A==
+X-Gm-Message-State: AOAM533ISGEVYtNOuZ4oaZbXOyuUShN/is8z2XbuTj72UYaxh2Gojd4a
+        ArebbPf5bJyB/JlGo9qUp+oZPMrWw+VRts0APRI=
+X-Google-Smtp-Source: ABdhPJww6f4HJYe7iGnS8kWLpGh3Jt6HAF+txW7zmITtvuGzTPaqOdExkraL5Yg3BNi0MU978iZrxzkbkd8upGznyzk=
+X-Received: by 2002:a2e:530b:: with SMTP id h11mr22385687ljb.372.1633437681114;
+ Tue, 05 Oct 2021 05:41:21 -0700 (PDT)
 MIME-Version: 1.0
 References: <1633396615-14043-1-git-send-email-u0084500@gmail.com>
- <YVw7vbpu4TS+7Su8@sirena.org.uk> <CADiBU39dvKS_a5FDgw9yMVFe8Uycn6bfjGwBWq+7MN_DdxkL1g@mail.gmail.com>
- <YVxFMaPhZdAFniMa@sirena.org.uk>
-In-Reply-To: <YVxFMaPhZdAFniMa@sirena.org.uk>
+ <1633396615-14043-2-git-send-email-u0084500@gmail.com> <YVw87lc4uXSvCiyC@sirena.org.uk>
+ <CADiBU38X6nY1D7NpgW8+61AX6rUU7jngnPagryDKxUAKdtGjAg@mail.gmail.com>
+In-Reply-To: <CADiBU38X6nY1D7NpgW8+61AX6rUU7jngnPagryDKxUAKdtGjAg@mail.gmail.com>
 From:   ChiYuan Huang <u0084500@gmail.com>
-Date:   Tue, 5 Oct 2021 20:39:53 +0800
-Message-ID: <CADiBU3_TuHKiVG-r1TG-8WK_tW2GXi4VuqkidPwTyebOgE60OA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] ASoC: dt-bindings: rt9120: Add initial bindings
+Date:   Tue, 5 Oct 2021 20:41:09 +0800
+Message-ID: <CADiBU38=k9JcceGzjCUwO4OpgC3+zK_Pw2G0uOyOYg0FRvvzBQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] ASoC: rt9120: Add rt9210 audio amplifier support
 To:     Mark Brown <broonie@kernel.org>
 Cc:     oder_chiou@realtek.com, perex@perex.cz, tiwai@suse.com,
         Rob Herring <robh+dt@kernel.org>,
@@ -67,36 +67,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mark Brown <broonie@kernel.org> =E6=96=BC 2021=E5=B9=B410=E6=9C=885=E6=97=
-=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=888:29=E5=AF=AB=E9=81=93=EF=BC=9A
+ChiYuan Huang <u0084500@gmail.com> =E6=96=BC 2021=E5=B9=B410=E6=9C=885=E6=
+=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=888:36=E5=AF=AB=E9=81=93=EF=BC=9A
 >
-> On Tue, Oct 05, 2021 at 08:25:43PM +0800, ChiYuan Huang wrote:
-> > Mark Brown <broonie@kernel.org> =E6=96=BC 2021=E5=B9=B410=E6=9C=885=E6=
-=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=887:49=E5=AF=AB=E9=81=93=EF=BC=9A
-> > > On Tue, Oct 05, 2021 at 09:16:54AM +0800, cy_huang wrote:
->
-> > > > +  richtek,use-dvdd-1p8v:
-> > > > +    description: Indicate DVDD 1P8V is used, default for 3P3V or 5=
-V design
-> > > > +    type: boolean
->
-> > > I would expect this to be done through the regulator bindings, they
-> > > would allow the driver to query the supply voltage.
->
-> > It's more like as the I/O pad voltage.
-> > Must be the same as I2C and I2S signal high level.
-> > It depends on the application SOC design.
-> > From my understanding, not all application SOC I/O voltage uses
-> > regulator interface.
->
-> It doesn't really matter what the SoC is doing here, you can always add
-> regulator support to your device - you'd be requesting the supplies to
-> your device, if the SoC doesn't request the supplies that go to it that
-> doesn't really make a difference to what your driver does.
->
-> Please don't take things off-list unless there is a really strong reason
-> to do so.  Sending things to the list ensures that everyone gets a
-> chance to read and comment on things.
+> Mark Brown <broonie@kernel.org> =E6=96=BC 2021=E5=B9=B410=E6=9C=885=E6=97=
+=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=887:54=E5=AF=AB=E9=81=93=EF=BC=9A
+> >
+> > On Tue, Oct 05, 2021 at 09:16:55AM +0800, cy_huang wrote:
+> >
+> > > +static const char * const sdo_select_text[] =3D {
+> > > +     "NONE", "INTF", "FINAL", "RMS Detect"
+> > > +};
+> >
+> > Why not None and Final?
+> >
+> Just follow the datasheet to write the text.
+> Whatever, Ack in next.
+> > > +     if (event =3D=3D SND_SOC_DAPM_PRE_PMU)
+> > > +             snd_soc_component_write(comp, RT9120_REG_ERRRPT, 0);
+> > > +     else if (event =3D=3D SND_SOC_DAPM_POST_PMU)
+> > > +             msleep(RT9120_AMPON_WAITMS);
+> > > +     else if (event =3D=3D SND_SOC_DAPM_POST_PMD)
+> > > +             msleep(RT9120_AMPOFF_WAITMS);
+> >
+> > This should be a switch statement, it'd be clearer.
+> >
+> Ack in next.
+> > > +     /* Default config volume to 0dB */
+> > > +     snd_soc_component_write(comp, RT9120_REG_MSVOL, 0x180);
+> > > +     /* Mute by default */
+> > > +     snd_soc_component_update_bits(comp, RT9120_REG_VOLRAMP,
+> > > +                                   RT9120_MUTE_MASK, RT9120_MUTE_MAS=
+K);
+> >
+> > As ever you should leave the defaults at whatever the hardware defaults
+> > to, the defaults for one machine may not be suitable for another so we
+> > shouldn't be trying to do that in software.
+> The default volume will be kept in value 0x7ff (mute).
+> I just want to follow the ASoC flow to control mute/unmute mask by AMP on=
+/off.
+> If to default set volume to 0dB and mute is improper, user have to use
+> mixer control to configure the volume.
+> Does mute function also need to be removed also?
 
-Sorry, my fault.
-I just noticed the mail not reply all. Loop all again.
+Sorry, loop all again.
