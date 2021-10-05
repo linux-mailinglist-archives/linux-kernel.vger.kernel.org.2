@@ -2,115 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 012AB422482
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 13:04:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E65B4422408
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 12:59:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234209AbhJELFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 07:05:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52902 "EHLO
+        id S234199AbhJELBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 07:01:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233449AbhJELFq (ORCPT
+        with ESMTP id S234145AbhJELBf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 07:05:46 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0686FC06161C;
-        Tue,  5 Oct 2021 04:03:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=5RXETHUeK0IoWDd8SaOUu8GrGBoYdj45miweofV1tqI=; b=KupXzRHIt3+Y/Pzu29D8sWyaiV
-        Xww0f73lBH9/jQ1W6k5CN0T8+6XGrOEE0VowKEnf82Ymy1v+pzvl69mhpp95GqSwAgZRkqAIWwTOU
-        eVaXoG9lTXX+Dd6eG+JH6CKCmxwfpcVVVxdyMjZf4tCqSKvkExxEGACjV2k2y6aLv9zqz9VIvb2P6
-        faUolqJPjdESdCk4G5yDrJBb/08d6RMMGlr6xHY1bDVGzovCBnYhU//mmwo3eymZBO6nsABlzQ5AM
-        QPo4IbwrzlGzTKyuzLWYLcAcfy6eX28dn08pSpPEeNkXGOMasPdqdIEoTv+jhpojLHDcig1tWM89V
-        aF03Nfxw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mXi9O-000FQG-II; Tue, 05 Oct 2021 10:59:00 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2305B30019C;
-        Tue,  5 Oct 2021 12:58:21 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 0F544201A0530; Tue,  5 Oct 2021 12:58:21 +0200 (CEST)
-Date:   Tue, 5 Oct 2021 12:58:21 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Barry Song <21cnbao@gmail.com>
-Cc:     Tim Chen <tim.c.chen@linux.intel.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
+        Tue, 5 Oct 2021 07:01:35 -0400
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36B37C061749
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 03:59:44 -0700 (PDT)
+Received: by mail-qv1-xf4a.google.com with SMTP id kj19-20020a056214529300b00382b3cb8ec5so10289686qvb.20
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 03:59:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=7p97hglZNgfpwLYScP5gJSznCljkQgJf1oM6gC4sW1s=;
+        b=C+l/ThvUROjSZj3WgNiRhFh/iKAes2tpTY59M3jBlJt1rMc1JuzxrSzdI6yfw+nSvX
+         9/DIymhhEHv/WEyxbhbWp6jAdLJwcYr6ebOxFD9ffGEfKQWVutaM1kKYoOxqAzFCo0m+
+         VUsJRx7fleGCq8czAZUq6m0rK4IcO2dl8DywRC2ZJOZtnaO/c5xvwp9pWEUmYYnfUWzD
+         FTTrc8Np3ydXHObUwkrfxJDiJJK+oiVGXZhfP6huEaYO4eQnq0TTxJzBq51kvUjk3wyU
+         AySN++yGjmq9dU838IWIdR+/E4kZSER9GqWlZzIDjO5G+k7pCP9aFNXp6pUC3NkimQ2D
+         lY+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=7p97hglZNgfpwLYScP5gJSznCljkQgJf1oM6gC4sW1s=;
+        b=zQ9owbeTh64T79bwexg6Eiq3S5Skv0IiQYYH0PdLrTUEoW2lYkl1Tpq6cEbVSIIqsI
+         zB5yWh5nrwXRm2/kmkNrd75wmxZ+JRgrCZ9xkxGCJts65RtRnVNgLnK2GeaUf0ciGeSP
+         N0lGCp0OZnSDDRrGTsII21pWGpRCaRLIMAUh/wBQ6pVemz/CuvjuLncGlWKUQmKs05bT
+         v8D6XnWxE6uzYQgHBH9z8cRsl9EI/wx/hatPcIha/INXg6ubUGHyL6U5oaXzCBGRCOUR
+         MOe6Z9Qet6HdIo1SN7A/rO5mBLxXvu015lbhLuz9P0T/VC93Nzy5Wc1OCZQ1n3Ugjda3
+         lAVw==
+X-Gm-Message-State: AOAM530H6PzD14AsKXYAuNKpnAyAkTsYCn/ast57Ince6XuOxjQiirhC
+        8jIwhLD/N74wJTuZy5PjmvfMwCuylQ==
+X-Google-Smtp-Source: ABdhPJxAJaG0cIPFEGzdLeaP0ICszNZi0oHL1XII6owt4EA7b097238oGaxzgagUHkjyFc9C5B3vYmiJxA==
+X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:e44f:5054:55f8:fcb8])
+ (user=elver job=sendgmr) by 2002:a0c:aa15:: with SMTP id d21mr26637930qvb.18.1633431583153;
+ Tue, 05 Oct 2021 03:59:43 -0700 (PDT)
+Date:   Tue,  5 Oct 2021 12:58:42 +0200
+Message-Id: <20211005105905.1994700-1-elver@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.800.g4c38ced690-goog
+Subject: [PATCH -rcu/kcsan 00/23] kcsan: Support detecting a subset of missing
+ memory barriers
+From:   Marco Elver <elver@google.com>
+To:     elver@google.com, "Paul E . McKenney" <paulmck@kernel.org>
+Cc:     Alexander Potapenko <glider@google.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
         Borislav Petkov <bp@alien8.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Ben Segall <bsegall@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Guodong Xu <guodong.xu@linaro.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        "Cc: Len Brown" <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        LAK <linux-arm-kernel@lists.infradead.org>,
-        Linuxarm <linuxarm@huawei.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
         Mark Rutland <mark.rutland@arm.com>,
-        Mel Gorman <mgorman@suse.de>, msys.mizuma@gmail.com,
-        "Zengtao (B)" <prime.zeng@hisilicon.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Will Deacon <will@kernel.org>, x86 <x86@kernel.org>,
-        yangyicong <yangyicong@huawei.com>
-Subject: Re: [PATCH RESEND 0/3] Represent cluster topology and enable load
- balance between clusters
-Message-ID: <YVwvzchbP5qbogjq@hirez.programming.kicks-ass.net>
-References: <20210924085104.44806-1-21cnbao@gmail.com>
- <CAGsJ_4yW72mktbWjRfE9ngXoq9oXBXyAd_TPjKBNdGiRSoh9LA@mail.gmail.com>
- <CAKfTPtAtfJRFBbo+kBCYf42hxcc2iP8kkmg3Wcr5aW7Rnf=rfw@mail.gmail.com>
- <YVch0/R9PHzUwqea@hirez.programming.kicks-ass.net>
- <ece8838d112840bf26adbb09f653babcf298eb28.camel@linux.intel.com>
- <20211005075001.GJ4323@worktop.programming.kicks-ass.net>
- <CAGsJ_4xZD0sG0Df666f0bvHOzuPMjnw0dN_mArER5k1pJ6LPLw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGsJ_4xZD0sG0Df666f0bvHOzuPMjnw0dN_mArER5k1pJ6LPLw@mail.gmail.com>
+        Waiman Long <longman@redhat.com>,
+        Will Deacon <will@kernel.org>, kasan-dev@googlegroups.com,
+        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05, 2021 at 10:15:39PM +1300, Barry Song wrote:
+Detection of some missing memory barriers has been on the KCSAN feature
+wishlist for some time: this series adds support for modeling a subset
+of weak memory as defined by the LKMM, which enables detection of a
+subset of data races due to missing memory barriers.
 
-> > (also, all this stuff being replicated across arch/*/Kconfig seems
-> > unfortunate)
-> 
-> perhaps worth a separate patchset to do some cleanup so that SCHED_MC,
-> SCHED_SMT etc
-> won't be replicated in different architectures. Right now, this kind
-> of Kconfig option is copied
-> everywhere. I am seeing SCHED_SMT in all of
-> arch/arm/Kconfig
-> arch/arm64/Kconfig
-> arch/ia64/Kconfig
-> arch/mips/Kconfig
-> arch/powerpc/Kconfig
-> arch/s390/Kconfig
-> arch/sparc/Kconfig
-> arch/x86/Kconfig
-> ...
-> 
-> Is it a better way to move them to a common Kconfig and let the architectures to
-> declare things like ARCH_HAVE_SMT?
+KCSAN's approach to detecting missing memory barriers is based on
+modeling access reordering. Each memory access for which a watchpoint is
+set up, is also selected for simulated reordering within the scope of
+its function (at most 1 in-flight access).
 
-Dunno, it's all a bit of a mess :/ I can't quickly see a sane
-pattern there.
+We are limited to modeling the effects of "buffering" (delaying the
+access), since the runtime cannot "prefetch" accesses. Once an access
+has been selected for reordering, it is checked along every other access
+until the end of the function scope. If an appropriate memory barrier is
+encountered, the access will no longer be considered for reordering.
+
+When the result of a memory operation should be ordered by a barrier,
+KCSAN can then detect data races where the conflict only occurs as a
+result of a missing barrier due to reordering accesses.
+
+Some more details and an example are captured in the updated
+<Documentation/dev-tools/kcsan.rst>.
+
+Some light fuzzing with the feature also resulted in a discussion [1]
+around an issue which appears to be allowed, but unlikely in practice.
+
+[1] https://lkml.kernel.org/r/YRo58c+JGOvec7tc@elver.google.com
+
+
+The first half of the series are core KCSAN changes, documentation
+updates, and test changes. The second half adds instrumentation to
+barriers, atomics, bitops, along with enabling barrier instrumentation
+for some currently uninstrumented subsystems. The last two patches are
+objtool changes to add the usual entries to the uaccess whitelist, but
+also instruct objtool to remove memory barrier instrumentation from
+noinstr code (on x86).
+
+The series is rebased on -rcu/kcsan. The objtool patches currently
+conflict with pending changes in -tip/objtool/core, which could be
+separated from this series if needed.
+
+Marco Elver (23):
+  kcsan: Refactor reading of instrumented memory
+  kcsan: Remove redundant zero-initialization of globals
+  kcsan: Avoid checking scoped accesses from nested contexts
+  kcsan: Add core support for a subset of weak memory modeling
+  kcsan: Add core memory barrier instrumentation functions
+  kcsan, kbuild: Add option for barrier instrumentation only
+  kcsan: Call scoped accesses reordered in reports
+  kcsan: Show location access was reordered to
+  kcsan: Document modeling of weak memory
+  kcsan: test: Match reordered or normal accesses
+  kcsan: test: Add test cases for memory barrier instrumentation
+  kcsan: Ignore GCC 11+ warnings about TSan runtime support
+  kcsan: selftest: Add test case to check memory barrier instrumentation
+  locking/barriers, kcsan: Add instrumentation for barriers
+  locking/barriers, kcsan: Support generic instrumentation
+  locking/atomics, kcsan: Add instrumentation for barriers
+  asm-generic/bitops, kcsan: Add instrumentation for barriers
+  x86/barriers, kcsan: Use generic instrumentation for non-smp barriers
+  x86/qspinlock, kcsan: Instrument barrier of pv_queued_spin_unlock()
+  mm, kcsan: Enable barrier instrumentation
+  sched, kcsan: Enable memory barrier instrumentation
+  objtool, kcsan: Add memory barrier instrumentation to whitelist
+  objtool, kcsan: Remove memory barrier instrumentation from noinstr
+
+ Documentation/dev-tools/kcsan.rst             |  72 ++-
+ arch/x86/include/asm/barrier.h                |  10 +-
+ arch/x86/include/asm/qspinlock.h              |   1 +
+ include/asm-generic/barrier.h                 |  54 ++-
+ .../asm-generic/bitops/instrumented-atomic.h  |   3 +
+ .../asm-generic/bitops/instrumented-lock.h    |   3 +
+ include/linux/atomic/atomic-instrumented.h    | 135 +++++-
+ include/linux/kcsan-checks.h                  |  51 ++-
+ include/linux/kcsan.h                         |  11 +-
+ include/linux/sched.h                         |   3 +
+ include/linux/spinlock.h                      |   2 +-
+ init/init_task.c                              |   9 +-
+ kernel/kcsan/Makefile                         |   2 +
+ kernel/kcsan/core.c                           | 326 +++++++++++---
+ kernel/kcsan/kcsan_test.c                     | 416 ++++++++++++++++--
+ kernel/kcsan/report.c                         |  51 ++-
+ kernel/kcsan/selftest.c                       | 141 ++++++
+ kernel/sched/Makefile                         |   7 +-
+ lib/Kconfig.kcsan                             |  16 +
+ mm/Makefile                                   |   2 +
+ scripts/Makefile.kcsan                        |  15 +-
+ scripts/Makefile.lib                          |   5 +
+ scripts/atomic/gen-atomic-instrumented.sh     |  41 +-
+ tools/objtool/check.c                         |  36 +-
+ 24 files changed, 1240 insertions(+), 172 deletions(-)
+
+-- 
+2.33.0.800.g4c38ced690-goog
 
