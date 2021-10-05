@@ -2,356 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BA68422C7B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:27:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 203BC422C7E
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:28:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235917AbhJEP2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 11:28:48 -0400
-Received: from relaydlg-01.paragon-software.com ([81.5.88.159]:58477 "EHLO
-        relaydlg-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230059AbhJEP2r (ORCPT
+        id S235710AbhJEPa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 11:30:28 -0400
+Received: from mail-ua1-f41.google.com ([209.85.222.41]:45650 "EHLO
+        mail-ua1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232866AbhJEPa1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 11:28:47 -0400
-Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
-        by relaydlg-01.paragon-software.com (Postfix) with ESMTPS id 5B29082246;
-        Tue,  5 Oct 2021 18:26:54 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paragon-software.com; s=mail; t=1633447614;
-        bh=+ZnTe0+e6pt46xkHcMh2XLrpyQ1A7TZkhNsacRXaPuw=;
-        h=Date:To:CC:From:Subject;
-        b=Tc6h/L+r9Tpf6rKMF+KD13z5M8fvcGKpozzdlF519OTHlLXrdDHzMW1tOakJlmXgV
-         V5talOh8SfyD1vA/ug/Vn8UMY2UZDv/FjX92a5w0FNrtucCpZUm/hFfq0uEuox5EPM
-         fRH+cKE4FH1qO7qPD5gnD0behUs9bapHGmcecxz0=
-Received: from [192.168.211.181] (192.168.211.181) by
- vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 5 Oct 2021 18:26:53 +0300
-Message-ID: <79791816-db23-f3b4-3ea8-139add705c45@paragon-software.com>
-Date:   Tue, 5 Oct 2021 18:26:53 +0300
+        Tue, 5 Oct 2021 11:30:27 -0400
+Received: by mail-ua1-f41.google.com with SMTP id 64so15147912uab.12;
+        Tue, 05 Oct 2021 08:28:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FGxM0m6YGDsMlNbNdB6JoL6JeLNFkPlp2uYBIY2Dz8o=;
+        b=35mspoO6Scpb5uQYZamxSjZZHZCBwhcg8k7hxBfc+Ngb8sFPZfDS52YLsk8i6Eofef
+         kaviXy7E27RyTMSknC7HabhqyjwyFU5bayqPINsdHZsKb3va7+1o2n0imY9XLJ8zjo5o
+         E4F6ch+I3tWBGY8Yc/7FPvPPKIpKltGBK7c5YCYLyuD7mNi2ou8H2gUUOIKbe6udOFBK
+         VN9PTJDFAHA6NhmVMenny94QUNC4Xim5832JBdfCAr8egOdjJ28U6zErzYSZ32ZRgh6m
+         DW7bkdxoxXOuzq0wSCM4Q6+dSDjNOAn4XkfXDHOqSi0qi8oXJ3TVQkPQJlp/sNUDWtTQ
+         fXBQ==
+X-Gm-Message-State: AOAM531d2R+B/8GbIh1HCu6CbacLom0x5tHfubOfrKBkbGRh7Ff9OFVd
+        dY+wL68M47R/9uhr8794gqQIGj/wxWlH1bhoVuQ=
+X-Google-Smtp-Source: ABdhPJwDFzQof3AJh8v2ske2pk5SFmjA4JGdgIX0iKUEF6Iewfyo1boBKExuu7fd03WYdasfyBDV2ZhNoirxJl0DQSY=
+X-Received: by 2002:ab0:538a:: with SMTP id k10mr13154381uaa.14.1633447716455;
+ Tue, 05 Oct 2021 08:28:36 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.2
-Content-Language: en-US
-To:     <ntfs3@lists.linux.dev>
-CC:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-        <kari.argillander@gmail.com>
-From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Subject: [PATCH v2] fs/ntfs3: Fix memory leak if fill_super failed
+References: <d4383bd1a97c0490c0bdc9dae5695f4230d4a420.1633447185.git.geert+renesas@glider.be>
+In-Reply-To: <d4383bd1a97c0490c0bdc9dae5695f4230d4a420.1633447185.git.geert+renesas@glider.be>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 5 Oct 2021 17:28:25 +0200
+Message-ID: <CAMuHMdUk15wKCDb_N7Nqg=5G35Y+r7U5aymL4R2UoLXeM__ZGw@mail.gmail.com>
+Subject: Re: [PATCH] memory: RENESAS_RPCIF should select RESET_CONTROLLER
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [192.168.211.181]
-X-ClientProxiedBy: vobn-exch-01.paragon-software.com (172.30.72.13) To
- vdlg-exch-02.paragon-software.com (172.30.1.105)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In ntfs_init_fs_context we allocate memory in fc->s_fs_info.
-In case of failed mount we must free it in ntfs_fill_super.
-We can't do it in ntfs_fs_free, because ntfs_fs_free called
-with fc->s_fs_info == NULL.
-fc->s_fs_info became NULL in sget_fc.
+On Tue, Oct 5, 2021 at 5:23 PM Geert Uytterhoeven
+<geert+renesas@glider.be> wrote:
+> The Renesas RPC-IF driver calls devm_reset_control_get_exclusive(),
+> which returns -ENOTSUPP if CONFIG_RESET_CONTROLLER is not enabled.
+> Even if this error is ignored, later calls to reset_control_reset() will
+> fail with a scary WARN_ON() backtrace.
 
-Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
----
-v2:
-  Changed fix - now we free memory instead of restoring pointer to memory.
-  Added context how we allocate and free memory.
-  Many commits affected, so no fixes tag.
+Oops, the latter is not true.
+reset_control_reset() returns 0 if CONFIG_RESET_CONTROLLER=n.
 
- fs/ntfs3/super.c | 90 ++++++++++++++++++++++++++++++------------------
- 1 file changed, 56 insertions(+), 34 deletions(-)
+>
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> ---
+>  drivers/memory/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/memory/Kconfig b/drivers/memory/Kconfig
+> index 72c0df129d5c5065..547f956f6c29e9bd 100644
+> --- a/drivers/memory/Kconfig
+> +++ b/drivers/memory/Kconfig
+> @@ -210,6 +210,7 @@ config RENESAS_RPCIF
+>         tristate "Renesas RPC-IF driver"
+>         depends on ARCH_RENESAS || COMPILE_TEST
+>         select REGMAP_MMIO
+> +       select RESET_CONTROLLER
+>         help
+>           This supports Renesas R-Car Gen3 or RZ/G2 RPC-IF which provides
+>           either SPI host or HyperFlash. You'll have to select individual
+> --
+> 2.25.1
+>
 
-diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
-index 705d8b4f4894..d41d76979e12 100644
---- a/fs/ntfs3/super.c
-+++ b/fs/ntfs3/super.c
-@@ -908,7 +908,8 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
- 	if (IS_ERR(sbi->options->nls)) {
- 		sbi->options->nls = NULL;
- 		errorf(fc, "Cannot load nls %s", sbi->options->nls_name);
--		return -EINVAL;
-+		err = -EINVAL;
-+		goto out;
- 	}
- 
- 	rq = bdev_get_queue(bdev);
-@@ -922,7 +923,7 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
- 	err = ntfs_init_from_boot(sb, rq ? queue_logical_block_size(rq) : 512,
- 				  bdev->bd_inode->i_size);
- 	if (err)
--		return err;
-+		goto out;
- 
- 	/*
- 	 * Load $Volume. This should be done before $LogFile
-@@ -933,7 +934,8 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
- 	inode = ntfs_iget5(sb, &ref, &NAME_VOLUME);
- 	if (IS_ERR(inode)) {
- 		ntfs_err(sb, "Failed to load $Volume.");
--		return PTR_ERR(inode);
-+		err = PTR_ERR(inode);
-+		goto out;
- 	}
- 
- 	ni = ntfs_i(inode);
-@@ -954,19 +956,19 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
- 	} else {
- 		/* Should we break mounting here? */
- 		//err = -EINVAL;
--		//goto out;
-+		//goto put_inode_out;
- 	}
- 
- 	attr = ni_find_attr(ni, attr, NULL, ATTR_VOL_INFO, NULL, 0, NULL, NULL);
- 	if (!attr || is_attr_ext(attr)) {
- 		err = -EINVAL;
--		goto out;
-+		goto put_inode_out;
- 	}
- 
- 	info = resident_data_ex(attr, SIZEOF_ATTRIBUTE_VOLUME_INFO);
- 	if (!info) {
- 		err = -EINVAL;
--		goto out;
-+		goto put_inode_out;
- 	}
- 
- 	sbi->volume.major_ver = info->major_ver;
-@@ -980,7 +982,8 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
- 	inode = ntfs_iget5(sb, &ref, &NAME_MIRROR);
- 	if (IS_ERR(inode)) {
- 		ntfs_err(sb, "Failed to load $MFTMirr.");
--		return PTR_ERR(inode);
-+		err = PTR_ERR(inode);
-+		goto out;
- 	}
- 
- 	sbi->mft.recs_mirr =
-@@ -994,14 +997,15 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
- 	inode = ntfs_iget5(sb, &ref, &NAME_LOGFILE);
- 	if (IS_ERR(inode)) {
- 		ntfs_err(sb, "Failed to load \x24LogFile.");
--		return PTR_ERR(inode);
-+		err = PTR_ERR(inode);
-+		goto out;
- 	}
- 
- 	ni = ntfs_i(inode);
- 
- 	err = ntfs_loadlog_and_replay(ni, sbi);
- 	if (err)
--		goto out;
-+		goto put_inode_out;
- 
- 	iput(inode);
- 
-@@ -1009,14 +1013,16 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
- 		if (!sb_rdonly(sb)) {
- 			ntfs_warn(sb,
- 				  "failed to replay log file. Can't mount rw!");
--			return -EINVAL;
-+			err = -EINVAL;
-+			goto out;
- 		}
- 	} else if (sbi->volume.flags & VOLUME_FLAG_DIRTY) {
- 		if (!sb_rdonly(sb) && !sbi->options->force) {
- 			ntfs_warn(
- 				sb,
- 				"volume is dirty and \"force\" flag is not set!");
--			return -EINVAL;
-+			err = -EINVAL;
-+			goto out;
- 		}
- 	}
- 
-@@ -1027,7 +1033,8 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
- 	inode = ntfs_iget5(sb, &ref, &NAME_MFT);
- 	if (IS_ERR(inode)) {
- 		ntfs_err(sb, "Failed to load $MFT.");
--		return PTR_ERR(inode);
-+		err = PTR_ERR(inode);
-+		goto out;
- 	}
- 
- 	ni = ntfs_i(inode);
-@@ -1038,11 +1045,11 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
- 
- 	err = wnd_init(&sbi->mft.bitmap, sb, tt);
- 	if (err)
--		goto out;
-+		goto put_inode_out;
- 
- 	err = ni_load_all_mi(ni);
- 	if (err)
--		goto out;
-+		goto put_inode_out;
- 
- 	sbi->mft.ni = ni;
- 
-@@ -1052,7 +1059,8 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
- 	inode = ntfs_iget5(sb, &ref, &NAME_BADCLUS);
- 	if (IS_ERR(inode)) {
- 		ntfs_err(sb, "Failed to load $BadClus.");
--		return PTR_ERR(inode);
-+		err = PTR_ERR(inode);
-+		goto out;
- 	}
- 
- 	ni = ntfs_i(inode);
-@@ -1075,13 +1083,14 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
- 	inode = ntfs_iget5(sb, &ref, &NAME_BITMAP);
- 	if (IS_ERR(inode)) {
- 		ntfs_err(sb, "Failed to load $Bitmap.");
--		return PTR_ERR(inode);
-+		err = PTR_ERR(inode);
-+		goto out;
- 	}
- 
- #ifndef CONFIG_NTFS3_64BIT_CLUSTER
- 	if (inode->i_size >> 32) {
- 		err = -EINVAL;
--		goto out;
-+		goto put_inode_out;
- 	}
- #endif
- 
-@@ -1089,21 +1098,21 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
- 	tt = sbi->used.bitmap.nbits;
- 	if (inode->i_size < bitmap_size(tt)) {
- 		err = -EINVAL;
--		goto out;
-+		goto put_inode_out;
- 	}
- 
- 	/* Not necessary. */
- 	sbi->used.bitmap.set_tail = true;
- 	err = wnd_init(&sbi->used.bitmap, sb, tt);
- 	if (err)
--		goto out;
-+		goto put_inode_out;
- 
- 	iput(inode);
- 
- 	/* Compute the MFT zone. */
- 	err = ntfs_refresh_zone(sbi);
- 	if (err)
--		return err;
-+		goto out;
- 
- 	/* Load $AttrDef. */
- 	ref.low = cpu_to_le32(MFT_REC_ATTR);
-@@ -1111,18 +1120,19 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
- 	inode = ntfs_iget5(sb, &ref, &NAME_ATTRDEF);
- 	if (IS_ERR(inode)) {
- 		ntfs_err(sb, "Failed to load $AttrDef -> %d", err);
--		return PTR_ERR(inode);
-+		err = PTR_ERR(inode);
-+		goto out;
- 	}
- 
- 	if (inode->i_size < sizeof(struct ATTR_DEF_ENTRY)) {
- 		err = -EINVAL;
--		goto out;
-+		goto put_inode_out;
- 	}
- 	bytes = inode->i_size;
- 	sbi->def_table = t = kmalloc(bytes, GFP_NOFS);
- 	if (!t) {
- 		err = -ENOMEM;
--		goto out;
-+		goto put_inode_out;
- 	}
- 
- 	for (done = idx = 0; done < bytes; done += PAGE_SIZE, idx++) {
-@@ -1131,7 +1141,7 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
- 
- 		if (IS_ERR(page)) {
- 			err = PTR_ERR(page);
--			goto out;
-+			goto put_inode_out;
- 		}
- 		memcpy(Add2Ptr(t, done), page_address(page),
- 		       min(PAGE_SIZE, tail));
-@@ -1139,7 +1149,7 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
- 
- 		if (!idx && ATTR_STD != t->type) {
- 			err = -EINVAL;
--			goto out;
-+			goto put_inode_out;
- 		}
- 	}
- 
-@@ -1173,12 +1183,13 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
- 	inode = ntfs_iget5(sb, &ref, &NAME_UPCASE);
- 	if (IS_ERR(inode)) {
- 		ntfs_err(sb, "Failed to load $UpCase.");
--		return PTR_ERR(inode);
-+		err = PTR_ERR(inode);
-+		goto out;
- 	}
- 
- 	if (inode->i_size != 0x10000 * sizeof(short)) {
- 		err = -EINVAL;
--		goto out;
-+		goto put_inode_out;
- 	}
- 
- 	for (idx = 0; idx < (0x10000 * sizeof(short) >> PAGE_SHIFT); idx++) {
-@@ -1188,7 +1199,7 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
- 
- 		if (IS_ERR(page)) {
- 			err = PTR_ERR(page);
--			goto out;
-+			goto put_inode_out;
- 		}
- 
- 		src = page_address(page);
-@@ -1214,7 +1225,7 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
- 		/* Load $Secure. */
- 		err = ntfs_security_init(sbi);
- 		if (err)
--			return err;
-+			goto out;
- 
- 		/* Load $Extend. */
- 		err = ntfs_extend_init(sbi);
-@@ -1239,19 +1250,30 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
- 	inode = ntfs_iget5(sb, &ref, &NAME_ROOT);
- 	if (IS_ERR(inode)) {
- 		ntfs_err(sb, "Failed to load root.");
--		return PTR_ERR(inode);
-+		err = PTR_ERR(inode);
-+		goto out;
- 	}
- 
- 	sb->s_root = d_make_root(inode);
--	if (!sb->s_root)
--		return -ENOMEM;
-+	if (!sb->s_root) {
-+		err = -ENOMEM;
-+		goto put_inode_out;
-+	}
- 
- 	fc->fs_private = NULL;
--	fc->s_fs_info = NULL;
- 
- 	return 0;
--out:
-+
-+put_inode_out:
- 	iput(inode);
-+out:
-+	/*
-+	 * Free resources here.
-+	 * ntfs_fs_free will be called with fc->s_fs_info = NULL
-+	 */
-+	put_ntfs(sbi);
-+	sb->s_fs_info = NULL;
-+
- 	return err;
- }
- 
+
 -- 
-2.33.0
+Gr{oetje,eeting}s,
 
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
