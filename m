@@ -2,99 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7502D422DBD
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 18:18:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF874422D97
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 18:14:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236525AbhJEQUd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 12:20:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43608 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235876AbhJEQUc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 12:20:32 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E86C4C061749
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 09:18:41 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id n8so31881614lfk.6
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 09:18:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9pR87ZxffODNYHX3y8wIUUlOXsoFep7W3KkITUWQQdA=;
-        b=TpNQeD0xD3/3W2Huts2s1yHnNDHO08/TvqGsxKknqz53fnCGeGEUqEVbfpYl1NdwF4
-         xJpyZzE3P+DphdGWSaAERkfy6zE0yQxVQJzxFtwf2PG26X4bXpACjDTFkKxp99R+RSkM
-         OtWyX3w8eTxmkzyy/0NhGAMfrer3tnjCwq++I=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9pR87ZxffODNYHX3y8wIUUlOXsoFep7W3KkITUWQQdA=;
-        b=N4JlTA6OHrcIBe4oiNFiaDMJPtVyoFQ+XzDWcnTadVv302hETJAPCI34iFBzao94/0
-         Y37yzKFjaGdCbKyjagTsnYDsI+9LofQnZyK+wXHRbmO7Qoqw6fXj2x/lWlnTRQB2rt95
-         uZgaAwIAkTMjyWXCMhFuRAqfC/vYnhIRQFEShusk9Uq6wNgIdvf+hLDGEosOn3dIJzSh
-         K8Y1BXmBEAswbNu2Lq4DbkQ1xHtRcerraMzetfGI+6SA1TsHeCTmETXnIaoBaI+sx18o
-         r66BfP9Tv1kKFxsDcUdpSZBRAP3UMaWhHb4VuBumgt4ROqPA6lxYYxOuTYLRHQQO64Iy
-         hGTQ==
-X-Gm-Message-State: AOAM531W0dHWQayOMdCzC9d583JUTnvvZ9/3bQ1Ai1gYRQvJM2f/L7WY
-        qcEjzb/wF/3vvUJ7PVAg5OlL3+Orr8F4GAwi
-X-Google-Smtp-Source: ABdhPJxkyHdGDG9WkwpR7Z2WoNOtA865ayrkyXigpeaErgJQrtotfYMxrWor+FdFmqS3DS+nOHVXFw==
-X-Received: by 2002:a19:5e0d:: with SMTP id s13mr4216023lfb.174.1633450713029;
-        Tue, 05 Oct 2021 09:18:33 -0700 (PDT)
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com. [209.85.167.54])
-        by smtp.gmail.com with ESMTPSA id t20sm648125lft.240.2021.10.05.09.18.30
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Oct 2021 09:18:32 -0700 (PDT)
-Received: by mail-lf1-f54.google.com with SMTP id n8so31879535lfk.6
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 09:18:30 -0700 (PDT)
-X-Received: by 2002:a05:6512:b8e:: with SMTP id b14mr4429467lfv.655.1633450701008;
- Tue, 05 Oct 2021 09:18:21 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211005094728.203ecef2@gandalf.local.home>
-In-Reply-To: <20211005094728.203ecef2@gandalf.local.home>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 5 Oct 2021 09:18:04 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wj0AJAv9o2sW7ReCFRaD+TatSiLMYjK=FzG9-X=q5ZWwA@mail.gmail.com>
-Message-ID: <CAHk-=wj0AJAv9o2sW7ReCFRaD+TatSiLMYjK=FzG9-X=q5ZWwA@mail.gmail.com>
-Subject: Re: [RFC][PATCH] rcu: Use typeof(p) instead of typeof(*p) *
+        id S235424AbhJEQQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 12:16:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54036 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229488AbhJEQQA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 12:16:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B24A61354;
+        Tue,  5 Oct 2021 16:14:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633450449;
+        bh=MBB+CD222y/glG9TAbC0mn/d0jqKuUWaZk+3cqS82/o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rCT3la+/KGHpyGvYsOcS2OKn11G0aoTtGqGwcKb8IEQw6kPbs/scerm25rLjMGsbJ
+         NnqhzJEVP4zC2y6SeOe6XCkFMhUkM20pyfff3hD5WcbOv9FVx60rsKqnRA3cLzwDPL
+         5i3mi6zIF5zItB+BIXhzVjx5BTShUKyISPovGXIGaiMuJHMwv+0Z6qH3YT75Q3YZBg
+         5F4NuUMkM0uR5Hk8eJGESaukj9jFWSinClDqjDgw+JzZYNCQpkz8PpPYwjWaOxNcsm
+         Jp5EjnJviczn7UnPnctSEoZVTGtc3NTz2WmXbhVV3+NWWk2B30V1gGMfqeyMV66i5p
+         y1hC9fBGi3n1w==
+Date:   Tue, 5 Oct 2021 11:18:12 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
 To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        David Miller <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, rcu <rcu@vger.kernel.org>,
-        NetFilter <netfilter-devel@vger.kernel.org>,
-        coreteam@netfilter.org, Netdev <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Daniel Bristot de Oliveira <bristot@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] ftrace: Fix -Wcast-function-type warnings on
+ powerpc64
+Message-ID: <20211005161812.GA768055@embeddedor>
+References: <20211005053922.GA702049@embeddedor>
+ <20211005111714.18ebea2b@gandalf.local.home>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211005111714.18ebea2b@gandalf.local.home>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 5, 2021 at 6:47 AM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> Also had to update a lot of the function pointer initialization in the
-> networking code, as a function address must be passed as an argument in
-> RCU_INIT_POINTER() and not just the function name, otherwise the following
-> error occurs:
+On Tue, Oct 05, 2021 at 11:17:14AM -0400, Steven Rostedt wrote:
+> On Tue, 5 Oct 2021 00:39:22 -0500
+> "Gustavo A. R. Silva" <gustavoars@kernel.org> wrote:
+> 
+> > In order to make sure new function cast mismatches are not introduced
+> > in the kernel (to avoid tripping CFI checking), the kernel should be
+> > globally built with -Wcast-function-type.
+> > 
+> > So, fix the following -Wcast-function-type warnings on powerpc64
+> > (ppc64_defconfig):
+> 
+> I think I'll go back and add my linker magic.
+> 
+>   https://lore.kernel.org/all/20200617165616.52241bde@oasis.local.home/
+> 
+> I'll clean it up a bit too. I'll have a patch in a bit.
 
-Ugh.
+Awesome. :)
 
-I think this is a sign of why we did it the way we did with that odd
-"typeof(*p)*" thing in the first place.
-
-The thing is, in any normal C, the function name should just stand in
-for the pointer to the function, so having to add a '&' to get the
-function pointer is somehow odd..
-
-So I think you should just expose your type to anybody who uses a pointer to it.
-
-               Linus
+Thanks
+--
+Gustavo
