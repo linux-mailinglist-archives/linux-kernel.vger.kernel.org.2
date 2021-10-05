@@ -2,130 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30FA2421E9C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 08:03:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C71F1421EAB
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 08:04:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232365AbhJEGEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 02:04:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230403AbhJEGEu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 02:04:50 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 292BDC061745;
-        Mon,  4 Oct 2021 23:03:00 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id pf6-20020a17090b1d8600b0019fa884ab85so1121762pjb.5;
-        Mon, 04 Oct 2021 23:03:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=gzef1HFOeoLXJqleO1fOGlTyje30IPeXbt3r58qE+Ak=;
-        b=nco9rgRDk+B1nKQ6FVfecmPR8A9HPl0WOoBwaDBnOtyXpcRV9i8Vq4j2P2r/MYVSCw
-         WLULzsM7w10YQghnw648fJBgsTS6x0VhyrFx8kXXQvaZrsEx66klq9vHVeAMulA4lKq3
-         DggvOnbCryglThNVuITBjfBtcS1sMlxyTMDDcuBbJvDUhJ/NLk1Ix+p7AwDoPwO4khzi
-         MPzVPGKHdfTZQE3Sq8rbaTPfRNKdsTA4e62AIolGDjbCDNoze5bPfJiWG7chhFZpDZZk
-         dchSnLVYeW1aKoWEnGDt/tHXk2Lg1YqtSjzt97tmu2rBLhTN17S+V6ydolJpd6bqlDZG
-         VxlQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gzef1HFOeoLXJqleO1fOGlTyje30IPeXbt3r58qE+Ak=;
-        b=gJqymrElQG44Fg14gq4T6QxW4NcmEkoOP7ggoe4iZ+pfMlTVZzsrvwQ5V5ESARVb9x
-         7GjZTGAGMcKEvkCUjpYTfRgAE6crtK+eDnLbHXg5l6PqVjN1RiKEzDZConwyWHwBu46r
-         6wR0jZkjgm9vqTz7l3GLeVoS7o5ObvqoLEoPaLP1QwQ4DiSCUACdPl9tKeaSe/X04pEH
-         lFz0W0d/Zimchn4fd2ldWHU8PlgJLWkd4zYOrlkBtyTHHnIpDuu01UhPveFNbHpAQhm8
-         8ux9Lj9Oy+iVmguSweOZoPec8oaT+/wB6TpurX6s7ew9dH8QZ57Wpzt3lA5xbrbOFHrN
-         WRRA==
-X-Gm-Message-State: AOAM530bcVuZjmHQNchkV+7WvwkOK9HQ9ezLZ0VTwZr55tO5s1wLpx7K
-        /1Syc24ajPQL6UlddERFpuY=
-X-Google-Smtp-Source: ABdhPJzFK1EgWaKR+WJonporhyi5eFBQxv/m/L1aR8uouKq16OFCvh2H1cwfgYqnxP4l9X7zJIw4lw==
-X-Received: by 2002:a17:90a:1912:: with SMTP id 18mr1713453pjg.24.1633413779728;
-        Mon, 04 Oct 2021 23:02:59 -0700 (PDT)
-Received: from shinobu (113x37x72x24.ap113.ftth.ucom.ne.jp. [113.37.72.24])
-        by smtp.gmail.com with ESMTPSA id q2sm732470pjo.27.2021.10.04.23.02.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Oct 2021 23:02:58 -0700 (PDT)
-Date:   Tue, 5 Oct 2021 15:02:52 +0900
-From:   William Breathitt Gray <vilhelm.gray@gmail.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Subject: Re: [PATCH -next] counter: fix docum. build problems after filename
- change
-Message-ID: <YVvqjOYTo1+zd4bn@shinobu>
-References: <20211005055157.22937-1-rdunlap@infradead.org>
+        id S232841AbhJEGGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 02:06:06 -0400
+Received: from mout.perfora.net ([74.208.4.197]:47955 "EHLO mout.perfora.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232429AbhJEGFx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 02:05:53 -0400
+Received: from toolbox.soleil.gust ([63.147.84.106]) by mrelay.perfora.net
+ (mreueus002 [74.208.5.2]) with ESMTPSA (Nemesis) id 0M3i1X-1mokrY1IIb-00rHkS;
+ Tue, 05 Oct 2021 08:03:45 +0200
+From:   Marcel Ziswiler <marcel@ziswiler.com>
+To:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Marcel Ziswiler <marcel@ziswiler.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Olof Johansson <olof@lixom.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>, soc@kernel.org
+Subject: [PATCH v1 0/4] ARM: prepare and add netgear gs110emx support
+Date:   Tue,  5 Oct 2021 08:03:30 +0200
+Message-Id: <20211005060334.203818-1-marcel@ziswiler.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="oYq9vOgAm50vohTR"
-Content-Disposition: inline
-In-Reply-To: <20211005055157.22937-1-rdunlap@infradead.org>
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:PHZoUWbg+wewrRDzZRFpkPO+la0hiffCSnS48JQgyvbfQBxdxal
+ p+9TtNNMHp6vTPS36lRHMte5osoJBw7cEr1nEdexu0OX0tNpeD6ibRG9wpuBBgsqeWfPegL
+ MaLNPyzVvZWN62Bkio9WP8W7UC2dkVa2lVjoJb1SGXRCw6EDoZhTmVajRsiqlzUfMx3MIbx
+ Wp4tj2rNCuMDsevU7xfkA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:TCXgmKTrsOg=:HkEzz4khVLTBJfI+EmcSJC
+ F+3Qrah5ofmBt0yP04evSgdAMrpyM8V92TSqYpLAwgZSiDoB1+TcuZIle0Ru2fPvv5CAtP86D
+ lVxEALw7xkq+Krc2Mad6iB77RQq3XWSK9V/VhS81535F1B5NeSZYQzKhDhjRcdfJcFuLhsR2/
+ UwShkj7SFm5NQ40TQQ6m9zMOBgESjwnoCqi0N2LRRMIy7uOh6vkSCenMZAQo3OC9Co7st0Jk4
+ hZk8LSqV8eHciMyZLFEdWGBC+or5SnT5yY0GV6jjFdnWmxetB27Ckvp5FCaI6Ts0PxlXiM/hw
+ +pjxYYS7ii1E2NSrNS8SgkUdI9vteezup2Zymc4X4YU8z7WiYsHtyq1XMMi/HgZ1qjX72xoUh
+ U3lFkmUjZVqqeJf9z+GeE1YptiC+3/RhQsVfQLc3cSgz/ASqmQBnWt5g1P4ROcQ5JbSUn+jMQ
+ KplXkfwF52lfBP1B3QrDIgt28Vs0lofsXVrWn4yHPhPqP1pL7/LOO85p0K+7jqLiCJkzeAUr3
+ PRs1mgcvgjxwEw85o8HkfhnsRKUpz5yuSgIJ2DMn+0Y7kFgetLbiEyFI4xWl1QlIbznjpxoMp
+ t/wJC8HUgKS/9OrSz1q24iJNQ21L5goMV3l30P78pTGmlPoS/DLhJfrHMBRv6OJS8xK2uLCPM
+ 2ows0/TnholAQAGpXRjZudYGBFAulan4TgwHprS1Es2YJqPCdfPEOpyPzpaJVu2D/HqKOgA6q
+ bNsfjuv7yuEeT8AaEK9Ea9SFc9ic3FyvlRAkqg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---oYq9vOgAm50vohTR
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Cleanup mvebu_v7_defconfig and then add support for the Netgear
+GS110EMX which is an 8 port Gigabit switch with two additional
+Multi-Gig ports. An 88E6390X switch sits at its core connecting to two
+88X3310P 10G PHYs while the control plane is handled by an 88F6811
+Armada 381 SoC.
 
-On Mon, Oct 04, 2021 at 10:51:57PM -0700, Randy Dunlap wrote:
-> Fix documentation build warnings due to a source file being
-> renamed.
->=20
-> WARNING: kernel-doc '../scripts/kernel-doc -rst -enable-lineno -sphinx-ve=
-rsion 1.8.5 -export ../drivers/counter/counter.c' failed with return code 2
->=20
-> Error: Cannot open file ../drivers/counter/counter.c
->=20
-> Fixes: d70e46af7531 ("counter: Internalize sysfs interface code")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: William Breathitt Gray <vilhelm.gray@gmail.com>
-> Cc: linux-iio@vger.kernel.org
-> Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> Cc: Jonathan Corbet <corbet@lwn.net>
-> Cc: linux-doc@vger.kernel.org
 
-Acked-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+Marcel Ziswiler (4):
+  dt-bindings: net: dsa: marvell: fix compatible in example
+  ARM: mvebu_v7_defconfig: enable mtd physmap
+  ARM: mvebu_v7_defconfig: rebuild default configuration
+  ARM: dts: mvebu: add device tree for netgear gs110emx switch
 
-> ---
->  Documentation/driver-api/generic-counter.rst |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> --- linux-next-20211001.orig/Documentation/driver-api/generic-counter.rst
-> +++ linux-next-20211001/Documentation/driver-api/generic-counter.rst
-> @@ -247,7 +247,7 @@ for defining a counter device.
->  .. kernel-doc:: include/linux/counter.h
->     :internal:
-> =20
-> -.. kernel-doc:: drivers/counter/counter.c
-> +.. kernel-doc:: drivers/counter/counter-core.c
->     :export:
-> =20
->  Driver Implementation
+ .../devicetree/bindings/net/dsa/marvell.txt   |   2 +-
+ arch/arm/boot/dts/Makefile                    |   1 +
+ .../boot/dts/armada-381-netgear-gs110emx.dts  | 293 ++++++++++++++++++
+ arch/arm/configs/mvebu_v7_defconfig           |  18 +-
+ 4 files changed, 303 insertions(+), 11 deletions(-)
+ create mode 100644 arch/arm/boot/dts/armada-381-netgear-gs110emx.dts
 
---oYq9vOgAm50vohTR
-Content-Type: application/pgp-signature; name="signature.asc"
+-- 
+2.26.2
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAmFb6n8ACgkQhvpINdm7
-VJJW0hAAtQNwKIOaXA8JY3+v3CljlOYzoY9Qq5Yf/4iOieRlXLc2GYupzfaEi1j+
-0SriM/MPX9If/0dThJvES6OldkY969jdR45bB02v7yWfHiIcr7bNRrvQ+RUFqXdk
-iJOfKTrJtT9c2jM2sBxC2IeJHUjMYceEhTV9VfyB9C+Vmw35jAHVu2eBzv/i/5y4
-9838IiCj/HUKOgpeC0MskqdI2QuHYCxzExo+hTSZOloOUGWboMLht07N+s2nxF75
-AdIcwf2HK7DGweoFmIJ+iP29lQpQewb9KPpxB8K3uOvy892cRdUA9Ue9F42BkxN2
-FOdaf7524JunHU3BZs7iAVP2IPIL9DM7X2dgA2XR46f2zoG/3laa6igik5fLsaSW
-+d2fBOePZePNcIIo2kNJuTQx763y4IDni0HGntHmIfEVYVdhvwNmBFVwW2ZLcTMa
-xqiZaLJ66wBmtNioCjXnN7Tte68hA2VS6eSw0YNriJGVWqeuSQsFGcR/tZry641t
-4ALvJ/L9hGQiFRezpuZI7pOsG/zRNtKrFdB7fyxeDWdc3vWzvWYcrUPINOB3TW53
-13HOFjzu1pbWNp0tORfqFihz11eU4n6TKM1Rhzuqkw1GnLIr54euBCnYTep8ZcFu
-g4mfuZ65nP0QIuNsgFs8+j9vwT6v0AWdr7FbLwmUsae1L747ks4=
-=vtw7
------END PGP SIGNATURE-----
-
---oYq9vOgAm50vohTR--
