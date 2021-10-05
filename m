@@ -2,262 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7D43421F8E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 09:41:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EECB3421F90
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 09:42:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232834AbhJEHnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 03:43:14 -0400
-Received: from outbound-smtp30.blacknight.com ([81.17.249.61]:52362 "EHLO
-        outbound-smtp30.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232108AbhJEHnM (ORCPT
+        id S232758AbhJEHo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 03:44:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:52616 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230526AbhJEHo0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 03:43:12 -0400
-Received: from mail.blacknight.com (pemlinmail04.blacknight.ie [81.17.254.17])
-        by outbound-smtp30.blacknight.com (Postfix) with ESMTPS id D197DBA9D9
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 08:41:21 +0100 (IST)
-Received: (qmail 6350 invoked from network); 5 Oct 2021 07:41:21 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.29])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 5 Oct 2021 07:41:21 -0000
-Date:   Tue, 5 Oct 2021 08:41:20 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Mike Galbraith <efault@gmx.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] sched/fair: Scale wakeup granularity relative to
- nr_running
-Message-ID: <20211005074120.GO3959@techsingularity.net>
-References: <20210922173853.GB3959@techsingularity.net>
- <CAKfTPtDc39fCLbQqA2BhC6dsb+MyYYMdk9HUvrU0fRqULuQB-g@mail.gmail.com>
- <ba60262d15891702cae0d59122388c6a18caaf53.camel@gmx.de>
- <CAKfTPtBBqLghrXrayyoBQQyDqdv6+pdCjiZkmzLaGvdNtN=Aug@mail.gmail.com>
- <50400427070018eff83b0782d2e26c0cc9ff4521.camel@gmx.de>
- <CAKfTPtDHYtskM7wR0w=fDry+6JJae2_q8Lw7ETcW_gBJ+n4NBA@mail.gmail.com>
- <20210927111730.GG3959@techsingularity.net>
- <ae821481769c4cd82a1672f0aac427c52e0a1647.camel@gmx.de>
- <20211004080547.GK3959@techsingularity.net>
- <CAKfTPtD5=VQfSdL6YqdET99XFbPxT359oH0UZ78O=wWn6G8mAg@mail.gmail.com>
+        Tue, 5 Oct 2021 03:44:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633419755;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=hdh6ajdDzhpIekGGpi0K51OPld4n6Pfnxhu7uKZt4wQ=;
+        b=Z3gstj0VNnBLGQFitCieCemRexZh2Qsi5TPeI8Kyj16rB/HxBRGklfm8VDCTgIpPe8JSJ+
+        Dx9IzYr87sHPqeZzfFZHvSP5zivmhtJrjofSMcWwR9f1281okIBVRpQM4cbCCT2GkO5YfR
+        vPHKWR7uGMlH0V0udniEdHm08UPNw54=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-218-mOyT2mIENq65YYXo2Kz7DA-1; Tue, 05 Oct 2021 03:42:34 -0400
+X-MC-Unique: mOyT2mIENq65YYXo2Kz7DA-1
+Received: by mail-ed1-f69.google.com with SMTP id c30-20020a50f61e000000b003daf3955d5aso5243498edn.4
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 00:42:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hdh6ajdDzhpIekGGpi0K51OPld4n6Pfnxhu7uKZt4wQ=;
+        b=P8jqUSS7pH2us3aiSkhGbZcixolnDdJn3B6v6BD3woRWjqhfT0epGl9nFXuLn59s3n
+         30MMMV4BwiATYpdFo8InSQ35/cqt9k/iUZTnasMjSYi5+69HlFAdfxXfStu2FbuV0V/M
+         7vaPkPrgh/x3OywmOdWWGq4b7s3krwWhKN++XXUn9wKj0R2kWIrFwxOunZCovCRQW/W0
+         Ol4CcuA0ak/MSxyGsDp4ruyJBCVyJs07VcEjCy0bzaUDsWqBFbzcgvcMR6GBYVLeVIlZ
+         TX3+KdWCmPqZbBEd9Oas/ZAZVknWc741z3Se08VzgJfVE3ztL/zw1vLdli2sXLjkKU+6
+         FyBw==
+X-Gm-Message-State: AOAM530JV9I9UowvgLpG2YnGPOQMrNj/vbb7pz6GtFjgl8imLFAaRBp6
+        /Er19Ugd5JhaFbFKKiIWd+99Y4Aj9sTYUDCYzEf3rE0nDqp+xEyP/GDP4o6EyW8uI9ElacbFj1+
+        AxnmIGMSCWrgHLM7stc8zS9nQ
+X-Received: by 2002:a50:da8f:: with SMTP id q15mr24812771edj.139.1633419753316;
+        Tue, 05 Oct 2021 00:42:33 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw6gJQrrFofN/nnKlla94Bn55mQ1vSe2CTR69P0rD4NoYrvXgQ7h0i+F77LXOMSwecauICbcQ==
+X-Received: by 2002:a50:da8f:: with SMTP id q15mr24812754edj.139.1633419753121;
+        Tue, 05 Oct 2021 00:42:33 -0700 (PDT)
+Received: from redhat.com ([2.55.147.134])
+        by smtp.gmail.com with ESMTPSA id q17sm8347882edd.57.2021.10.05.00.42.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Oct 2021 00:42:32 -0700 (PDT)
+Date:   Tue, 5 Oct 2021 03:42:29 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, f.hetzelt@tu-berlin.de,
+        david.kaplan@amd.com, konrad.wilk@oracle.com
+Subject: Re: [PATCH 0/9] More virtio hardening
+Message-ID: <20211005032924-mutt-send-email-mst@kernel.org>
+References: <20210913055353.35219-1-jasowang@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAKfTPtD5=VQfSdL6YqdET99XFbPxT359oH0UZ78O=wWn6G8mAg@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210913055353.35219-1-jasowang@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 04, 2021 at 06:37:02PM +0200, Vincent Guittot wrote:
-> On Mon, 4 Oct 2021 at 10:05, Mel Gorman <mgorman@techsingularity.net> wrote:
-> >
-> > On Mon, Sep 27, 2021 at 04:17:25PM +0200, Mike Galbraith wrote:
-> > > On Mon, 2021-09-27 at 12:17 +0100, Mel Gorman wrote:
-> > > > On Thu, Sep 23, 2021 at 02:41:06PM +0200, Vincent Guittot wrote:
-> > > > > On Thu, 23 Sept 2021 at 11:22, Mike Galbraith <efault@gmx.de> wrote:
-> > > > > >
-> > > > > > On Thu, 2021-09-23 at 10:40 +0200, Vincent Guittot wrote:
-> > > > > > >
-> > > > > > > a 100us value should even be enough to fix Mel's problem without
-> > > > > > > impacting common wakeup preemption cases.
-> > > > > >
-> > > > > > It'd be nice if it turn out to be something that simple, but color me
-> > > > > > skeptical.  I've tried various preemption throttling schemes, and while
-> > > > >
-> > > > > Let's see what the results will show. I tend to agree that this will
-> > > > > not be enough to cover all use cases and I don't see any other way to
-> > > > > cover all cases than getting some inputs from the threads about their
-> > > > > latency fairness which bring us back to some kind of latency niceness
-> > > > > value
-> > > > >
-> > > >
-> > > > Unfortunately, I didn't get a complete set of results but enough to work
-> > > > with. The missing tests have been requeued. The figures below are based
-> > > > on a single-socket Skylake machine with 8 CPUs as it had the most set of
-> > > > results and is the basic case.
-> > >
-> > > There's something missing, namely how does whatever load you measure
-> > > perform when facing dissimilar competition. Instead of only scaling
-> > > loads running solo from underutilized to heavily over-committed, give
-> > > them competition. eg something switch heavy, say tbench, TCP_RR et al
-> > > (latency bound load) pairs=CPUS vs something hefty like make -j CPUS or
-> > > such.
-> > >
-> >
-> > Ok, that's an interesting test. I've been out intermittently and will be
-> > for the next few weeks but I managed to automate something that can test
-> > this. The test runs a kernel compile with -jNR_CPUS and TCP_RR running
-> > NR_CPUS pairs of clients/servers in the background with the default
-> > openSUSE Leap kernel config (CONFIG_PREEMPT_NONE) with the two patches
-> > and no tricks done with task priorities.  5 kernel compilations are run
-> > and TCP_RR is shutdown when the compilation finishes.
-> >
-> > This can be reproduced with the mmtests config
-> > config-multi-kernbench__netperf-tcp-rr-multipair using xfs as the
-> > filesystem for the kernel compilation.
-> >
-> > sched-scalewakegran-v2r5: my patch
-> > sched-moveforward-v1r1: Vincent's patch
+On Mon, Sep 13, 2021 at 01:53:44PM +0800, Jason Wang wrote:
+> Hi All:
 > 
-> If I'm not wrong, you refer to the 1st version which scales with the
-> number of cpu by sched-moveforward-v1r1. We don't want to scale with
-> the number of cpu because this can create some quite large non
-> preemptable duration. We want to ensure a fix small runtime like the
-> last version with 100us
+> This series treis to do more hardening for virito.
 > 
+> patch 1 validates the num_queues for virio-blk device.
+> patch 2-4 validates max_nr_ports for virito-console device.
+> patch 5-7 harden virtio-pci interrupts to make sure no exepcted
+> interrupt handler is tiggered. If this makes sense we can do similar
+> things in other transport drivers.
+> patch 8-9 validate used ring length.
+> 
+> Smoking test on blk/net with packed=on/off and iommu_platform=on/off.
+> 
+> Please review.
+> 
+> Thanks
 
-It was a modified version based on feedback that limited the scale that
-preemption would be disabled. It was still based on h_nr_running as a
-basis for comparison
+So I poked at console at least, and I think I see
+an issue: if interrupt handler queues a work/bh,
+then it can still run while reset is in progress.
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index ff69f245b939..964f76a95c04 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -84,6 +84,14 @@ static unsigned int normalized_sysctl_sched_wakeup_granularity	= 1000000UL;
- 
- const_debug unsigned int sysctl_sched_migration_cost	= 500000UL;
- 
-+/*
-+ * This value is kept at sysctl_sched_latency / sysctl_sched_wakeup_granularity
-+ *
-+ * This influences the decision on whether a waking task can preempt a running
-+ * task.
-+ */
-+static unsigned int sched_nr_disable_gran = 6;
-+
- int sched_thermal_decay_shift;
- static int __init setup_sched_thermal_decay_shift(char *str)
- {
-@@ -627,6 +635,9 @@ int sched_update_scaling(void)
- 	sched_nr_latency = DIV_ROUND_UP(sysctl_sched_latency,
- 					sysctl_sched_min_granularity);
- 
-+	sched_nr_disable_gran = DIV_ROUND_UP(sysctl_sched_latency,
-+					sysctl_sched_wakeup_granularity);
-+
- #define WRT_SYSCTL(name) \
- 	(normalized_sysctl_##name = sysctl_##name / (factor))
- 	WRT_SYSCTL(sched_min_granularity);
-@@ -4511,7 +4522,8 @@ set_next_entity(struct cfs_rq *cfs_rq, struct sched_entity *se)
- }
- 
- static int
--wakeup_preempt_entity(struct sched_entity *curr, struct sched_entity *se);
-+wakeup_preempt_entity(struct cfs_rq *cfs_rq, struct sched_entity *curr,
-+						struct sched_entity *se);
- 
- /*
-  * Pick the next process, keeping these things in mind, in this order:
-@@ -4550,16 +4562,16 @@ pick_next_entity(struct cfs_rq *cfs_rq, struct sched_entity *curr)
- 				second = curr;
- 		}
- 
--		if (second && wakeup_preempt_entity(second, left) < 1)
-+		if (second && wakeup_preempt_entity(NULL, second, left) < 1)
- 			se = second;
- 	}
- 
--	if (cfs_rq->next && wakeup_preempt_entity(cfs_rq->next, left) < 1) {
-+	if (cfs_rq->next && wakeup_preempt_entity(NULL, cfs_rq->next, left) < 1) {
- 		/*
- 		 * Someone really wants this to run. If it's not unfair, run it.
- 		 */
- 		se = cfs_rq->next;
--	} else if (cfs_rq->last && wakeup_preempt_entity(cfs_rq->last, left) < 1) {
-+	} else if (cfs_rq->last && wakeup_preempt_entity(NULL, cfs_rq->last, left) < 1) {
- 		/*
- 		 * Prefer last buddy, try to return the CPU to a preempted task.
- 		 */
-@@ -7044,9 +7056,42 @@ balance_fair(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
- }
- #endif /* CONFIG_SMP */
- 
--static unsigned long wakeup_gran(struct sched_entity *se)
-+static unsigned long
-+select_wakeup_gran(struct cfs_rq *cfs_rq)
-+{
-+	unsigned int nr_running, threshold;
-+
-+	if (!cfs_rq || !sched_feat(SCALE_WAKEUP_GRAN))
-+		return sysctl_sched_wakeup_granularity;
-+
-+	/* !GENTLE_FAIR_SLEEPERS has one overload threshold. */
-+	if (!sched_feat(GENTLE_FAIR_SLEEPERS)) {
-+		if (cfs_rq->h_nr_running <= sched_nr_disable_gran)
-+			return sysctl_sched_wakeup_granularity;
-+
-+		return sysctl_sched_latency;
-+	}
-+
-+	/* GENTLE_FAIR_SLEEPER has two overloaded thresholds. */
-+	nr_running = cfs_rq->h_nr_running;
-+	threshold = sched_nr_disable_gran >> 1;
-+
-+	/* No overload. */
-+	if (nr_running <= threshold)
-+		return sysctl_sched_wakeup_granularity;
-+
-+	/* Light overload. */
-+	if (nr_running <= sched_nr_disable_gran)
-+		return sysctl_sched_latency >> 1;
-+
-+	/* Heavy overload. */
-+	return sysctl_sched_latency;
-+}
-+
-+static unsigned long
-+wakeup_gran(struct cfs_rq *cfs_rq, struct sched_entity *se)
- {
--	unsigned long gran = sysctl_sched_wakeup_granularity;
-+	unsigned long gran = select_wakeup_gran(cfs_rq);
- 
- 	/*
- 	 * Since its curr running now, convert the gran from real-time
-@@ -7079,14 +7124,15 @@ static unsigned long wakeup_gran(struct sched_entity *se)
-  *
-  */
- static int
--wakeup_preempt_entity(struct sched_entity *curr, struct sched_entity *se)
-+wakeup_preempt_entity(struct cfs_rq *cfs_rq, struct sched_entity *curr,
-+						struct sched_entity *se)
- {
- 	s64 gran, vdiff = curr->vruntime - se->vruntime;
- 
- 	if (vdiff <= 0)
- 		return -1;
- 
--	gran = wakeup_gran(se);
-+	gran = wakeup_gran(cfs_rq, se);
- 	if (vdiff > gran)
- 		return 1;
- 
-@@ -7190,8 +7236,9 @@ static void check_preempt_wakeup(struct rq *rq, struct task_struct *p, int wake_
- 	if (cse_is_idle != pse_is_idle)
- 		return;
- 
--	update_curr(cfs_rq_of(se));
--	if (wakeup_preempt_entity(se, pse) == 1) {
-+	cfs_rq = cfs_rq_of(se);
-+	update_curr(cfs_rq);
-+	if (wakeup_preempt_entity(cfs_rq, se, pse) == 1) {
- 		/*
- 		 * Bias pick_next to pick the sched entity that is
- 		 * triggering this preemption.
-diff --git a/kernel/sched/features.h b/kernel/sched/features.h
-index 7f8dace0964c..d041d7023029 100644
---- a/kernel/sched/features.h
-+++ b/kernel/sched/features.h
-@@ -95,3 +95,9 @@ SCHED_FEAT(LATENCY_WARN, false)
- 
- SCHED_FEAT(ALT_PERIOD, true)
- SCHED_FEAT(BASE_SLICE, true)
-+
-+/*
-+ * Scale sched_wakeup_granularity dynamically based on the number of running
-+ * tasks up to a cap of sysctl_sched_latency.
-+ */
-+SCHED_FEAT(SCALE_WAKEUP_GRAN, true)
+I sent a patch to fix it for console removal specifically,
+but I suspect it's not enough e.g. freeze is still broken.
+And note this has been reported without any TDX things -
+it's not a malicious device issue, can be triggered just
+by module unload.
+
+I am vaguely thinking about new APIs to disable/enable callbacks.
+An alternative:
+
+1. adding new remove_nocb/freeze_nocb calls
+2. disabling/enabling interrupts automatically around these
+3. gradually moving devices to using these
+4. once/if all device move, removing the old callbacks
+
+the advantage here is that we'll be sure calls are always
+paired correctly.
+
+
+
+
+
+> Jason Wang (9):
+>   virtio-blk: validate num_queues during probe
+>   virtio: add doc for validate() method
+>   virtio-console: switch to use .validate()
+>   virtio_console: validate max_nr_ports before trying to use it
+>   virtio_config: introduce a new ready method
+>   virtio_pci: harden MSI-X interrupts
+>   virtio-pci: harden INTX interrupts
+>   virtio_ring: fix typos in vring_desc_extra
+>   virtio_ring: validate used buffer length
+> 
+>  drivers/block/virtio_blk.c         |  3 +-
+>  drivers/char/virtio_console.c      | 51 +++++++++++++++++++++---------
+>  drivers/virtio/virtio_pci_common.c | 43 +++++++++++++++++++++----
+>  drivers/virtio/virtio_pci_common.h |  7 ++--
+>  drivers/virtio/virtio_pci_legacy.c |  5 +--
+>  drivers/virtio/virtio_pci_modern.c |  6 ++--
+>  drivers/virtio/virtio_ring.c       | 27 ++++++++++++++--
+>  include/linux/virtio.h             |  1 +
+>  include/linux/virtio_config.h      |  6 ++++
+>  9 files changed, 118 insertions(+), 31 deletions(-)
+> 
+> -- 
+> 2.25.1
+
