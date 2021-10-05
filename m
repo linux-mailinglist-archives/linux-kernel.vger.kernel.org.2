@@ -2,115 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31AC7422A11
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:05:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B445C4229E0
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:01:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235354AbhJEOHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 10:07:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38502 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235104AbhJEOHb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 10:07:31 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D46A4C0A8871
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 06:58:57 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id z1so123594edb.8
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 06:58:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ydiiyK+wpbk7UxQ50u+adlLScXLCqDKFy6StZqfKg3U=;
-        b=YBfRYfV+QNhAJqBRfZJXha90EPi5gdr/Cd3w/WW1m9BFS68pOek+lMdVj3e8QbcFv+
-         fAuLjob2kk4+XHyg/3ueG+ks8TjqyGTGPd/hksSTIevKqaXMNosJxKWxkt54FbnGmuxv
-         xAO1LL8chdxlrnVtd0IZghXgpXQueT8R266wT7LnKEginFxtzzRgqyohE4LjMsOP78Mg
-         r+lqq231j1XwIrTjv5BvbABovErMOJYQEmRfDag/M+5oltjVB3X07A1c2RE6EEALTyzD
-         /93mXwNwrAQIcwhN+BLyz7qMAAiTNDF+/9hb5ocoH9+q2rtREvVbh4jZIjUeUPien3Gx
-         x40w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ydiiyK+wpbk7UxQ50u+adlLScXLCqDKFy6StZqfKg3U=;
-        b=VfuqBTxA2zYndyr+irbiX7ALw4sqFCaVTsySZ4qUknnSAfatmybjESYjocyZ5s4AGf
-         Wg62l1tgmwbBd2JNMqrGKgK99H9JwEDdcNhV/+fiNEQFWk6tIl3FOM7j9TLO9X1odNLt
-         jwr7YHDr5pj50puHDYZSLFGrn0/p1p6wWbjAo5ckMHIOOjSqbKALI7Neio2XE2pxdpxU
-         /uAwMN9iJWbqhbXstHpYCBo2axozCThIfS098xvTuFdDjEhMbdgUx/KEtkrOdztlzf1o
-         c6355XNu7eVKTLa7cI81NPdJD+ZhL5JAlxJ8CmiWvS9U5IZLU990nX/qnUB4vHaZ2OnX
-         lE+Q==
-X-Gm-Message-State: AOAM531CgQV+H+ZsYPguCFcEcVb69BNy+XpjxjAJniK2uYQ30Qb1/w9S
-        /EeHE+w55TTXKGEwzTJ8h0BysMh8HXOUNjpjtbGF
-X-Google-Smtp-Source: ABdhPJye7l/NC4J8jsBBtlk8/qsWg/kaUBolQP86irPk7sRZSsSK8GzaXihW+sTLjzgiuhc6bZvpvyCUZwst58Gqils=
-X-Received: by 2002:a50:9b06:: with SMTP id o6mr26331985edi.284.1633442265649;
- Tue, 05 Oct 2021 06:57:45 -0700 (PDT)
+        id S236322AbhJEODG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 10:03:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40902 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236014AbhJEOB7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 10:01:59 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CCDCE613D5;
+        Tue,  5 Oct 2021 13:58:28 +0000 (UTC)
+Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
+        (envelope-from <rostedt@goodmis.org>)
+        id 1mXkxf-0055ji-T8; Tue, 05 Oct 2021 09:58:27 -0400
+Message-ID: <20211005135827.746867602@goodmis.org>
+User-Agent: quilt/0.66
+Date:   Tue, 05 Oct 2021 09:57:45 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>, X86 ML <x86@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Abhishek Sagar <sagar.abhishek@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Paul McKenney <paulmck@kernel.org>, stable@vger.kernel.org,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Subject: [for-linus][PATCH 12/27] ia64: kprobes: Fix to pass correct trampoline address to the handler
+References: <20211005135733.485175654@goodmis.org>
 MIME-Version: 1.0
-References: <20211005141012.31e20a26@canb.auug.org.au>
-In-Reply-To: <20211005141012.31e20a26@canb.auug.org.au>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Tue, 5 Oct 2021 09:57:34 -0400
-Message-ID: <CAHC9VhRBviwB_AcLASUeXjZtnEKB7RSOuNBFWeVbjcr_JeSCXQ@mail.gmail.com>
-Subject: Re: linux-next: build failure after merge of the selinux tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Pavel Begunkov <asml.silence@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 4, 2021 at 11:10 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> Hi all,
->
-> After merging the selinux tree, today's linux-next build (powerpc
-> ppc64_defconfig) failed like this:
->
-> fs/io_uring.c: In function 'io_init_req':
-> fs/io_uring.c:7069:3: error: 'ret' undeclared (first use in this function); did you mean 'req'?
->  7069 |   ret = security_uring_override_creds(req->creds);
->       |   ^~~
->       |   req
-> fs/io_uring.c:7069:3: note: each undeclared identifier is reported only once for each function it appears in
->
-> Caused by commit
->
->   cdc1404a4046 ("lsm,io_uring: add LSM hooks to io_uring")
->
-> interacting with commit
->
->   1e1e4658e108 ("io_uring: init opcode in io_init_req()")
->
-> from the block tree.
+From: Masami Hiramatsu <mhiramat@kernel.org>
 
-Thanks Stephen, your fix looks sane to me.
+The following commit:
 
-> I have applied the following merge fix patch:
->
-> From: Stephen Rothwell <sfr@canb.auug.org.au>
-> Date: Tue, 5 Oct 2021 14:01:10 +1100
-> Subject: [PATCH] fixup for "io_uring: init opcode in io_init_req()"
->
-> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> ---
->  fs/io_uring.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/fs/io_uring.c b/fs/io_uring.c
-> index 9a3c3198ff90..c36ae439e64f 100644
-> --- a/fs/io_uring.c
-> +++ b/fs/io_uring.c
-> @@ -7062,6 +7062,8 @@ static int io_init_req(struct io_ring_ctx *ctx, struct io_kiocb *req,
->
->         personality = READ_ONCE(sqe->personality);
->         if (personality) {
-> +               int ret;
-> +
->                 req->creds = xa_load(&ctx->personalities, personality);
->                 if (!req->creds)
->                         return -EINVAL;
+   Commit e792ff804f49 ("ia64: kprobes: Use generic kretprobe trampoline handler")
 
+Passed the wrong trampoline address to __kretprobe_trampoline_handler(): it
+passes the descriptor address instead of function entry address.
+
+Pass the right parameter.
+
+Also use correct symbol dereference function to get the function address
+from 'kretprobe_trampoline' - an IA64 special.
+
+Link: https://lkml.kernel.org/r/163163042696.489837.12551102356265354730.stgit@devnote2
+
+Fixes: e792ff804f49 ("ia64: kprobes: Use generic kretprobe trampoline handler")
+Cc: Josh Poimboeuf <jpoimboe@redhat.com>
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: X86 ML <x86@kernel.org>
+Cc: Daniel Xu <dxu@dxuuu.xyz>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Abhishek Sagar <sagar.abhishek@gmail.com>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Paul McKenney <paulmck@kernel.org>
+Cc: stable@vger.kernel.org
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+---
+ arch/ia64/kernel/kprobes.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/arch/ia64/kernel/kprobes.c b/arch/ia64/kernel/kprobes.c
+index 441ed04b1037..d4048518a1d7 100644
+--- a/arch/ia64/kernel/kprobes.c
++++ b/arch/ia64/kernel/kprobes.c
+@@ -398,7 +398,8 @@ static void kretprobe_trampoline(void)
+ 
+ int __kprobes trampoline_probe_handler(struct kprobe *p, struct pt_regs *regs)
+ {
+-	regs->cr_iip = __kretprobe_trampoline_handler(regs, kretprobe_trampoline, NULL);
++	regs->cr_iip = __kretprobe_trampoline_handler(regs,
++		dereference_function_descriptor(kretprobe_trampoline), NULL);
+ 	/*
+ 	 * By returning a non-zero value, we are telling
+ 	 * kprobe_handler() that we don't want the post_handler
+@@ -414,7 +415,7 @@ void __kprobes arch_prepare_kretprobe(struct kretprobe_instance *ri,
+ 	ri->fp = NULL;
+ 
+ 	/* Replace the return addr with trampoline addr */
+-	regs->b0 = ((struct fnptr *)kretprobe_trampoline)->ip;
++	regs->b0 = (unsigned long)dereference_function_descriptor(kretprobe_trampoline);
+ }
+ 
+ /* Check the instruction in the slot is break */
+@@ -902,14 +903,14 @@ static struct kprobe trampoline_p = {
+ int __init arch_init_kprobes(void)
+ {
+ 	trampoline_p.addr =
+-		(kprobe_opcode_t *)((struct fnptr *)kretprobe_trampoline)->ip;
++		dereference_function_descriptor(kretprobe_trampoline);
+ 	return register_kprobe(&trampoline_p);
+ }
+ 
+ int __kprobes arch_trampoline_kprobe(struct kprobe *p)
+ {
+ 	if (p->addr ==
+-		(kprobe_opcode_t *)((struct fnptr *)kretprobe_trampoline)->ip)
++		dereference_function_descriptor(kretprobe_trampoline))
+ 		return 1;
+ 
+ 	return 0;
 -- 
-paul moore
-www.paul-moore.com
+2.32.0
