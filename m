@@ -2,137 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07FAD422309
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 12:04:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3CEE42230A
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 12:05:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233881AbhJEKFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 06:05:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38852 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233819AbhJEKFr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 06:05:47 -0400
-Received: from relay07.th.seeweb.it (relay07.th.seeweb.it [IPv6:2001:4b7a:2000:18::168])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46E5EC06174E
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 03:03:56 -0700 (PDT)
-Received: from SoMainline.org (94-209-165-62.cable.dynamic.v4.ziggo.nl [94.209.165.62])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        id S233835AbhJEKHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 06:07:24 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:55194 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232658AbhJEKHT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 06:07:19 -0400
+Received: from zn.tnic (p200300ec2f0d200055ee2d4b24a868fc.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:2000:55ee:2d4b:24a8:68fc])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 02B013F585;
-        Tue,  5 Oct 2021 12:03:51 +0200 (CEST)
-Date:   Tue, 5 Oct 2021 12:03:50 +0200
-From:   Marijn Suijten <marijn.suijten@somainline.org>
-To:     Daniel Thompson <daniel.thompson@linaro.org>
-Cc:     phone-devel@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Martin Botka <martin.botka@somainline.org>,
-        Jami Kettunen <jami.kettunen@somainline.org>,
-        Pavel Dubrova <pashadubrova@gmail.com>,
-        Kiran Gunda <kgunda@codeaurora.org>,
-        Courtney Cavin <courtney.cavin@sonymobile.com>,
-        Bryan Wu <cooloney@gmail.com>, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 04/10] backlight: qcom-wled: Validate enabled string
- indices in DT
-Message-ID: <20211005100350.p56xuq74qsc7vhyp@SoMainline.org>
-Mail-Followup-To: Daniel Thompson <daniel.thompson@linaro.org>,
-        phone-devel@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Lee Jones <lee.jones@linaro.org>, Jingoo Han <jingoohan1@gmail.com>,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Martin Botka <martin.botka@somainline.org>,
-        Jami Kettunen <jami.kettunen@somainline.org>,
-        Pavel Dubrova <pashadubrova@gmail.com>,
-        Kiran Gunda <kgunda@codeaurora.org>,
-        Courtney Cavin <courtney.cavin@sonymobile.com>,
-        Bryan Wu <cooloney@gmail.com>, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211004192741.621870-1-marijn.suijten@somainline.org>
- <20211004192741.621870-5-marijn.suijten@somainline.org>
- <20211005091452.4ecqhlhrdxdgvs3c@maple.lan>
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 23C0B1EC01CE;
+        Tue,  5 Oct 2021 12:05:28 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1633428328;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=fl3NTy+7nyl8fbo+eYvlq63lYu5XDMffAVCQYpFvDvQ=;
+        b=HeyzxtCdm6AqnINVMzpXNMKVbjxq0H8Hza7OHD7dVn1RmbF+XelY4qrh8fCLL7tBfH+b2y
+        vuJECUJZ05x4pW5IbjPcvMsfDbIneBMxMhCJ30tRGrVoFoL6dwddT2YQbt9+uoJ0pduZqn
+        QXEB2zpxMxTERimgdsCijW2rFZgOj10=
+Date:   Tue, 5 Oct 2021 12:05:23 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Ser Olmy <ser.olmy@protonmail.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        x86-ml <x86@kernel.org>
+Subject: Re: [x86] Kernel v5.14 series panic on Celeron Mendocino CPU
+Message-ID: <YVwjY9TX6XMxkM2f@zn.tnic>
+References: <CPeoI7yf4421QpWLM-CbgeDR17BBmhlLoixeYI3mu2WbDkgrZItfgImOO6BZez7CXQXXO9liq-rmZzgRVB95TP5MN0xUA8-d7-fSQZdyIZE=@protonmail.com>
+ <YVtA67jImg3KlBTw@zn.tnic>
+ <lxqAtqDf_kLUxIlvmYPvuKB36LOK-z_cVbS9OOl0MbjZKZEaCaEFmHCbSy5sWBer6f9V_WAPLxUuSNrDBvyzEeQOJXepkVUztPXAOhPZniQ=@protonmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20211005091452.4ecqhlhrdxdgvs3c@maple.lan>
+In-Reply-To: <lxqAtqDf_kLUxIlvmYPvuKB36LOK-z_cVbS9OOl0MbjZKZEaCaEFmHCbSy5sWBer6f9V_WAPLxUuSNrDBvyzEeQOJXepkVUztPXAOhPZniQ=@protonmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-10-05 10:14:52, Daniel Thompson wrote:
-> On Mon, Oct 04, 2021 at 09:27:35PM +0200, Marijn Suijten wrote:
-> > The strings passed in DT may possibly cause out-of-bounds register
-> > accesses and should be validated before use.
-> > 
-> > Fixes: 775d2ffb4af6 ("backlight: qcom-wled: Restructure the driver for WLED3")
+On Mon, Oct 04, 2021 at 06:17:42PM +0000, Ser Olmy wrote:
+> On Monday, October 4th, 2021 at 7:59 PM, Borislav Petkov <bp@alien8.de> wrote:
+> >
+> > I'm assuming your CPU cannot do 64-bit mode?
 > 
-> The first half of this patch actually fixes patch 1 from this patch set.
-> It would be better to move that code there.
+> Correct, it's an old Socket 370 Celeron
 
-It only helps guarding against a maximum of 3 leds for WLED3, while
-using string_len instead of an unintentional sizeof(u32) (resulting in
-a fixed size of 4) is a different issue requiring a separate patch to
-fix.
+Ok, thanks for the info.
 
-Would it help to reorder this patch before 1/10, and mention in patch
-1/10 (then 2/10) that, besides properly using string_len instead of
-hardcoded 4 (which causes wrong reads from DT on top of this), it relies
-on the previous patch to prevent against an array longer than 3 for
-WLED3?
+On your next reply, can you please hit the "reply-to-all" button so that
+I can get your reply and not have to go fish it out of the lkml flood? I
+would've easily missed it if tglx didn't point me to it.
 
-- Marijn
+In any case, your CPU is too old for me to even find such a box and your
+.config boots fine in qemu so I guess we'll have to debug it.
 
-> Daniel.
-> 
-> 
-> > Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
-> > Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-> > ---
-> >  drivers/video/backlight/qcom-wled.c | 14 ++++++++++++++
-> >  1 file changed, 14 insertions(+)
-> > 
-> > diff --git a/drivers/video/backlight/qcom-wled.c b/drivers/video/backlight/qcom-wled.c
-> > index 29910e603c42..27e8949c7922 100644
-> > --- a/drivers/video/backlight/qcom-wled.c
-> > +++ b/drivers/video/backlight/qcom-wled.c
-> > @@ -1526,6 +1526,12 @@ static int wled_configure(struct wled *wled)
-> >  						     "qcom,enabled-strings",
-> >  						     sizeof(u32));
-> >  	if (string_len > 0) {
-> > +		if (string_len > wled->max_string_count) {
-> > +			dev_err(dev, "Cannot have more than %d strings\n",
-> > +				wled->max_string_count);
-> > +			return -EINVAL;
-> > +		}
-> > +
-> >  		rc = of_property_read_u32_array(dev->of_node,
-> >  						"qcom,enabled-strings",
-> >  						wled->cfg.enabled_strings,
-> > @@ -1537,6 +1543,14 @@ static int wled_configure(struct wled *wled)
-> >  			return -EINVAL;
-> >  		}
-> >  
-> > +		for (i = 0; i < string_len; ++i) {
-> > +			if (wled->cfg.enabled_strings[i] >= wled->max_string_count) {
-> > +				dev_err(dev, "qcom,enabled-strings index %d at %d is out of bounds\n",
-> > +					wled->cfg.enabled_strings[i], i);
-> > +				return -EINVAL;
-> > +			}
-> > +		}
-> > +
-> >  		cfg->num_strings = string_len;
-> >  	}
-> >  
-> > -- 
-> > 2.33.0
-> > 
+Can you apply the diff below on your 5.14.9 kernel, boot with it and
+send full dmesg again?
+
+Thx.
+
+---
+diff --git a/arch/x86/kernel/fpu/init.c b/arch/x86/kernel/fpu/init.c
+index 64e29927cc32..5c6c11f831ed 100644
+--- a/arch/x86/kernel/fpu/init.c
++++ b/arch/x86/kernel/fpu/init.c
+@@ -112,7 +112,11 @@ static void __init fpu__init_system_mxcsr(void)
+ 		if (mask == 0)
+ 			mask = 0x0000ffbf;
+ 	}
++
+ 	mxcsr_feature_mask &= mask;
++
++	pr_info("%s: mxcsr_feature_mask: 0x%x, mask: 0x%x\n",
++		__func__, mxcsr_feature_mask, mask);
+ }
+ 
+ /*
+diff --git a/arch/x86/kernel/fpu/signal.c b/arch/x86/kernel/fpu/signal.c
+index 445c57c9c539..808a0ff85141 100644
+--- a/arch/x86/kernel/fpu/signal.c
++++ b/arch/x86/kernel/fpu/signal.c
+@@ -380,8 +380,11 @@ static int __fpu_restore_sig(void __user *buf, void __user *buf_fx,
+ 			return -EFAULT;
+ 
+ 		/* Reject invalid MXCSR values. */
+-		if (fpu->state.fxsave.mxcsr & ~mxcsr_feature_mask)
++		if (fpu->state.fxsave.mxcsr & ~mxcsr_feature_mask) {
++			WARN_ONCE(1, "fpu->state.fxsave.mxcsr: 0x%x, mxcsr_feature_mask: 0x%x\n",
++				  fpu->state.fxsave.mxcsr, mxcsr_feature_mask);
+ 			return -EINVAL;
++		}
+ 
+ 		/* Enforce XFEATURE_MASK_FPSSE when XSAVE is enabled */
+ 		if (use_xsave())
+
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
