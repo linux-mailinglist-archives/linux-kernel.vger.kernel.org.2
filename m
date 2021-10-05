@@ -2,126 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 526EF422BC1
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:04:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36E8B422BD1
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:06:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234515AbhJEPF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 11:05:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53542 "EHLO
+        id S235268AbhJEPIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 11:08:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230141AbhJEPF5 (ORCPT
+        with ESMTP id S229488AbhJEPIf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 11:05:57 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAA3EC06174E
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 08:04:06 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id oa12-20020a17090b1bcc00b0019f715462a8so2727623pjb.3
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 08:04:06 -0700 (PDT)
+        Tue, 5 Oct 2021 11:08:35 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA273C061749
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 08:06:44 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id g10so108190edj.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 08:06:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ezjhWNNLffOxacY2MX3oY+yRcl8+NMzjlUvbMffez5U=;
-        b=LUivbkzaoWTjkEdbE8lk8teCg6efdKH8/wjpX2qcvCu/pkS1+s/8i5QyKFTUrnG0VA
-         loD6W5+SuCiURjr21bbRCEofY/Poc3L35Mjhbi+LM9Qxd4nnDQEary3T7nRxsz/FuJF8
-         Pq0Et8Z6iI3E9YAD0mtjGFlrlCLMgeAC3t4+olrHLrIZss6yBWOUe1hXJ/LElUcrW/Fi
-         86A/sDgVYZDFBQIq4KsEubm//oHObpA/iag4xoHXumjUf3OXKCjht6w6rc64DRlhKe4v
-         4UHewUCjNfNc+Gzid2a1wkz/K7nBAFuDx5QskA+LQexy72eDh/jgbd1VGRBtqfkwnPNX
-         TLSQ==
+        d=linaro.org; s=google;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=B8uXCv2C6+GSSeMdgdBton+YbzKIB7LnM1rY0GCnX/g=;
+        b=ZkU1b4eHiCIl1eIHdsqKrZr4cUqDLqtQV9NogsR4nI9wxXtjsiyLrpO61hKlWYbwYg
+         yUGmtKB8J9QWxlC/syD0OljNCUC21vlGu9vdaKpheEN2AUmGnJh3C9gdk6hkbxSGgNQ4
+         WHI9TGxgUJG6dzTylLzaQf36iQjl2YHEKe32wQGwJqi9B94MMRXKN3csUq/ZiEzsKRm3
+         03i6DdtawHPhO7PvrTlvyAP1yAI3Du2Zxkr4GE5zd4vc3ZkWWW/6BIX1FqvABXiC8fzP
+         2hQ8fE+C+30/PDgXq5HwU7vFW6eWAjEekPrgeSxQuylO3hYIK2X+4zzcO9C7fXFA5cP8
+         uBtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=ezjhWNNLffOxacY2MX3oY+yRcl8+NMzjlUvbMffez5U=;
-        b=V92Zsz7W82BONNLbx1eJUTvE5fLkg+IyG78+hvus9EuYYjWYnJ2pva6QWKRkhDduJO
-         dtSvgKkox5qn7+ls35mXrj3PUti3mKHIYbwaJxBx4J+Ys8WDg7k7TS9Ll6v99wL4jh7+
-         ye4nUkUsfVqgoMM9r4EhyIKWZUR6+EJ8xfawnGuGD9msatOqw2nv4uob6vDMjtM6FsjZ
-         NaAO+hKPhBN7jrxyVGksuEnEh4e1OOJHe26GY0Vl2TR7MIWbmItqYiS4+7zUWj8p6/Ac
-         3p4C1CvnT2cjYhzsAnPMkBwhFuca7+293c4YnXUkt6Ek/mLcPpHCFeXWg5KJWM+hhOHA
-         tw1g==
-X-Gm-Message-State: AOAM530j+ftJ3L85c9SnVyEFEloAHHmMZowhbGOpu2jH8YWRDnNYoAcL
-        9rLxIoOaRoY67ScxaBUse5W3HA==
-X-Google-Smtp-Source: ABdhPJzne960yQOEugoxpMdT5nmc2Pr8zbT8eorkTZOXrYJHIozaHR2Qh0E83P1AYKMiIlWKARd9xg==
-X-Received: by 2002:a17:902:7fcf:b0:13e:c994:ee67 with SMTP id t15-20020a1709027fcf00b0013ec994ee67mr5679359plb.12.1633446245936;
-        Tue, 05 Oct 2021 08:04:05 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id 23sm19811865pfw.97.2021.10.05.08.04.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Oct 2021 08:04:05 -0700 (PDT)
-Date:   Tue, 05 Oct 2021 08:04:05 -0700 (PDT)
-X-Google-Original-Date: Tue, 05 Oct 2021 08:04:03 PDT (-0700)
-Subject:     Re: [PATCH v20 00/17] KVM RISC-V Support
-In-Reply-To: <ea3a9bab-28f2-48e7-761e-b41d7bc7d0a5@redhat.com>
-CC:     Anup Patel <Anup.Patel@wdc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, graf@amazon.com,
-        Atish Patra <Atish.Patra@wdc.com>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        Damien Le Moal <Damien.LeMoal@wdc.com>, anup@brainfault.org,
-        kvm@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-From:   Palmer Dabbelt <palmerdabbelt@google.com>
-To:     pbonzini@redhat.com
-Message-ID: <mhng-daf7c58d-d8ef-4d68-b387-ba258be48ed3@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=B8uXCv2C6+GSSeMdgdBton+YbzKIB7LnM1rY0GCnX/g=;
+        b=vr4BhJvageMIjAbrvwwIz4jUnGN11GZ36/U86Qr0NzKR5pj896CH/6rVm7/1Aqjsg3
+         hTiyCsV7xkA5Yto0ImWze0gAebtPOTfV/v/Xupb+CS5AoTEgItqG3jjw6tazpQgUh3Cw
+         BXX9JlXigCa9W0BgHTjdbconpc9rd4+w5XG8SpGifZLjXh0n65VAxfENu0+QXIzmBgzx
+         94Ib/u3dler771OIA/tHap8sCuqEAVNU4UEe51ooYbpHgVnu8982GLgQFUDiDknY9heA
+         9zFThZ+wPfke3PYSm46c9Kwby1GQg7U3Z96/emL45fPO83aRIviBoBGe9UhC3URHLY8C
+         ZTQQ==
+X-Gm-Message-State: AOAM530bQXZkPY9U1jKiLdzDcG/KWhf9/qIyL9tmU9/wQw0lCD/cX0qL
+        U+NGTPOvI7ndHI1pXSG7L/fq9tG6ONQ/oIJ/
+X-Google-Smtp-Source: ABdhPJwcdJXnqbNIwfAFbrEZqAHd3YOfj6wW0VUlQIIPdljisx0oDY7gDey438t9NasjjDzrUoTFfA==
+X-Received: by 2002:a17:906:1806:: with SMTP id v6mr25810713eje.420.1633446402723;
+        Tue, 05 Oct 2021 08:06:42 -0700 (PDT)
+Received: from [192.168.0.13] ([83.216.184.132])
+        by smtp.gmail.com with ESMTPSA id u16sm7776526ejy.14.2021.10.05.08.06.41
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 05 Oct 2021 08:06:42 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
+Subject: Re: [BUG] kernel BUG at mm/slub.c - possible BFQ issue?
+From:   Paolo Valente <paolo.valente@linaro.org>
+X-Priority: 3
+In-Reply-To: <1889051823.161943.1633100469857@office.mailbox.org>
+Date:   Tue, 5 Oct 2021 17:06:40 +0200
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>
+Content-Transfer-Encoding: 7bit
+Message-Id: <C9A02A5F-1713-4A42-B923-FD1D636AB4C8@linaro.org>
+References: <1624640454.149631.1632987871186@office.mailbox.org>
+ <1889051823.161943.1633100469857@office.mailbox.org>
+To:     torvic9@mailbox.org
+X-Mailer: Apple Mail (2.3445.104.11)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 05 Oct 2021 00:37:27 PDT (-0700), pbonzini@redhat.com wrote:
-> On 04/10/21 20:01, Palmer Dabbelt wrote:
->> 
->> Just to make sure we're on the same page here, I've got
->> 
->>     commit 6c341a285912ddb2894ef793a58ad4f8462f26f4 (HEAD -> for-next)
->>     Merge: 08da1608a1ca 3f2401f47d29
->>     Author: Palmer Dabbelt <palmerdabbelt@google.com>
->>     Date:   Mon Oct 4 10:12:44 2021 -0700
->>         Merge tag 'for-riscv' of 
->> https://git.kernel.org/pub/scm/virt/kvm/kvm.git into for-next
->>         H extension definitions, shared by the KVM and RISC-V trees.
->>         * tag 'for-riscv' of 
->> ssh://gitolite.kernel.org/pub/scm/virt/kvm/kvm: (301 commits)
->>           RISC-V: Add hypervisor extension related CSR defines
->>           KVM: selftests: Ensure all migrations are performed when test 
->> is affined
->>           KVM: x86: Swap order of CPUID entry "index" vs. "significant 
->> flag" checks
->>           ptp: Fix ptp_kvm_getcrosststamp issue for x86 ptp_kvm
->>           x86/kvmclock: Move this_cpu_pvti into kvmclock.h
->>           KVM: s390: Function documentation fixes
->>           selftests: KVM: Don't clobber XMM register when read
->>           KVM: VMX: Fix a TSX_CTRL_CPUID_CLEAR field mask issue
->>           selftests: KVM: Explicitly use movq to read xmm registers
->>           selftests: KVM: Call ucall_init when setting up in rseq_test
->>           KVM: Remove tlbs_dirty
->>           KVM: X86: Synchronize the shadow pagetable before link it
->>           KVM: X86: Fix missed remote tlb flush in rmap_write_protect()
->>           KVM: x86: nSVM: don't copy virt_ext from vmcb12
->>           KVM: x86: nSVM: test eax for 4K alignment for GP errata 
->> workaround
->>           KVM: x86: selftests: test simultaneous uses of V_IRQ from L1 
->> and L0
->>           KVM: x86: nSVM: restore int_vector in svm_clear_vintr
->>           kvm: x86: Add AMD PMU MSRs to msrs_to_save_all[]
->>           KVM: x86: nVMX: re-evaluate emulation_required on nested VM exit
->>           KVM: x86: nVMX: don't fail nested VM entry on invalid guest 
->> state if !from_vmentry
->>           ...
->> 
->> into 
->> ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/palmer/linux.git 
->> for-next
->> (I know that's kind of a confusing name, but it's what I've been using 
->> as my short-term staging branch so I can do all my tests before saying 
->> "it's on for-next").
->> 
->> If that looks OK I can make it a touch more official by putting into the 
->> RISC-V tree.
->
-> Yes.  All of the patches in there, except the last, are already in 
-> Linus's tree.
 
-Great, it's up.
+
+> Il giorno 1 ott 2021, alle ore 17:01, torvic9@mailbox.org ha scritto:
+> 
+>> torvic9@mailbox.org hat am 30.09.2021 09:44 geschrieben:
+>> 
+>> 
+>> Hello,
+>> 
+>> I encounter a hard freeze on both 5.14 and 5.15 when using BFQ.
+>> Unfortunately, I do not have a full error log, because the computer
+>> totally freezes and slightly corrupts the display, so it's
+>> impossible to read the entire message.
+>> 
+>> However, what I could get is the following:
+>> 
+>>  kernel BUG at mm/slub.c:379
+>>  invalid opcode: 0000 [#1]
+>>  RIP: 0010:__slab_free
+>>  [...]
+>>  Call Trace:
+>>  bfq_set_next_ioprio_data
+>>  [...]
+>>  bfq_put_queue
+>>  bfq_insert_requests
+>>  [...]
+>> 
+>> This issue appears more or less randomly and it sometimes takes a
+>> little while to reproduce it (running fio helps).
+>> The call trace always contains references to BFQ, but they are not
+>> always the exact same. Once, I could see on the corrupted display
+>> the message "general protection fault".
+>> I could reproduce this issue on two computers.
+>> 
+>> Not quite sure but I *think* the issue first appeared somewhere around
+>> 5.14.5 or 5.14.6, during which time BFQ only got the following commit:
+>> 
+>>  (88013a0c5d99) block, bfq: honor already-setup queue merges
+> 
+> I have now reverted the above commit and launched some heavy I/O like
+> e.g. git kernel, fio, xz compression, and so far, no freezes anymore!
+> Too early to say that this commit really is the cause though.
+> Would be great if someone could have a look at it.
+> 
+
+Hi,
+sorry for the delay and that you very much for reporting this crash.
+I have prepared a dev version of BFQ, to try to solve this problem.
+It's based on a 5.12.0, and should hopefully provide more information
+upon failure.  Could you please give it a try?  You can find it here:
+https://github.com/Algodev-github/bfq-mq/tree/dev-bfq-on-5.12
+
+Thanks for your help,
+Paolo
+
+
+>> 
+>> 5.13 doesn't seem to be affected AFAICS.
+>> 
+>> Does anyone have an idea what is going on?
+>> I will now revert the above commit and see if that helps...
+>> 
+>> Thanks,
+>> Tor
+
