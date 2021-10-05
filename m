@@ -2,80 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4D24422B23
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:36:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 533F9422B2B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:37:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235381AbhJEOi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 10:38:27 -0400
-Received: from mail-oi1-f170.google.com ([209.85.167.170]:37721 "EHLO
-        mail-oi1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234355AbhJEOi0 (ORCPT
+        id S235438AbhJEOj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 10:39:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47226 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234084AbhJEOjZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 10:38:26 -0400
-Received: by mail-oi1-f170.google.com with SMTP id w206so26494884oiw.4;
-        Tue, 05 Oct 2021 07:36:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=o00KyEWco01TxEwUad/z3+tPtEbuVbgl1TjuLeOWTEc=;
-        b=cty5ds51cJJPznQu9I4M/OXEJarrSlvfmxcuzuOrIxbjeyX73MyIgqAX0RbO/idd9s
-         M95vnX8lP9TaFjoCwhmIXLIEykgnlHzxdIPfAhtEZOqROMfB5yr7yJmdICae0f5U0Xgl
-         xgpciNeyoFjH4ZOsWVaynwGlhXZIaGwRc1bRmwzZPU21nfKcDMbxDW/Flx+zQ1h5pGm7
-         DZaJ9Oi+dL3LDe9r0roUxNd+kVF2Gt5/y+gXnT2siD41K04PBavEE3nN+J90IYjZ9ppr
-         KfQtlK78cy0/4IbAP4dTUh4Btmnk5AVCwc3sJXKw9ZpXrYXO1g6pNgpg6QNvLzQfpV6E
-         dt5Q==
-X-Gm-Message-State: AOAM533YbZQj88K1p4yQUxh/NcgpGslzZZYbj5JBJ3H4gSnPjSg7+jMD
-        LUTUfdAv9mEz22wIqVEphYz+LXHlLEm2TRQDbFM+VvTO
-X-Google-Smtp-Source: ABdhPJxmUGMzQy4xaQJ4D/xcXxOXnvsl5XECKNhmq04hZZl4UcsycnbNHlsnnLY+S9MrIwuSYtExY4Bml9oda3xKH0c=
-X-Received: by 2002:a05:6808:178c:: with SMTP id bg12mr2934456oib.157.1633444595315;
- Tue, 05 Oct 2021 07:36:35 -0700 (PDT)
+        Tue, 5 Oct 2021 10:39:25 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBCDCC061749;
+        Tue,  5 Oct 2021 07:37:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=NXVT547q11vxBmN0JnCHuyJ+/+kUBjr0nC1nL/Y5gs8=; b=mP1JnpeUdMoGUG0of2rU8oOvaR
+        n7csvi9rY8/SEFwTuD6fzd+RSWW8AjhudXBQEJl2V5sOSMGFsjQbWG/AH5UhHDHKEuXfglXOGm25M
+        JgVLJRTXxeg/i3Gq7waOsj2cBgOS3kPVMTolADirJaGu8H0NCsnkgZtZ7+Mf5WKWa/8kRTyIUFUBI
+        q8PL3uMiyVJJmGBXP7KUAhgouW2MeZzn4zZny0oK8FZ18stFi47qmgU3NROIBuavFPsqzM/F+bNuZ
+        xmAPZ5YvZqGVFtxTLfqX9PFJdQW9XVgPe1GCuqvR59RoAecUagUq6sUF1/NG3yy8HzY6st8oSDua+
+        Njbx8NBw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mXlZI-00846d-FS; Tue, 05 Oct 2021 14:37:20 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9DD7930019C;
+        Tue,  5 Oct 2021 16:37:19 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 7D60D2038E211; Tue,  5 Oct 2021 16:37:19 +0200 (CEST)
+Date:   Tue, 5 Oct 2021 16:37:19 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Marco Elver <elver@google.com>
+Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
+        Alexander Potapenko <glider@google.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Waiman Long <longman@redhat.com>,
+        Will Deacon <will@kernel.org>, kasan-dev@googlegroups.com,
+        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, x86@kernel.org
+Subject: Re: [PATCH -rcu/kcsan 23/23] objtool, kcsan: Remove memory barrier
+ instrumentation from noinstr
+Message-ID: <YVxjH2AtjvB8BDMD@hirez.programming.kicks-ass.net>
+References: <20211005105905.1994700-1-elver@google.com>
+ <20211005105905.1994700-24-elver@google.com>
 MIME-Version: 1.0
-References: <20210920203849.32136-1-rikard.falkeborn@gmail.com>
-In-Reply-To: <20210920203849.32136-1-rikard.falkeborn@gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 5 Oct 2021 16:36:24 +0200
-Message-ID: <CAJZ5v0jrXbuyQez1rX7-9CEjazTFp32SSH60Tx5Oqf+D2Czv5Q@mail.gmail.com>
-Subject: Re: [PATCH] thermal: thermal_mmio: Constify static struct thermal_mmio_ops
-To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     Talel Shenhar <talel@amazon.com>, Zhang Rui <rui.zhang@intel.com>,
-        Amit Kucheria <amitk@kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211005105905.1994700-24-elver@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 3:55 AM Rikard Falkeborn
-<rikard.falkeborn@gmail.com> wrote:
->
-> The only usage of thermal_mmio_ops is to pass its address to
-> devm_thermal_zone_of_sensor_register(), which has a pointer to const
-> struct thermal_zone_of_device_ops as argument. Make it const to allow
-> the compiler to put it in read-only memory.
->
-> Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
-> ---
->  drivers/thermal/thermal_mmio.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/thermal/thermal_mmio.c b/drivers/thermal/thermal_mmio.c
-> index ded1dd0d4ef7..360b0dfdc3b0 100644
-> --- a/drivers/thermal/thermal_mmio.c
-> +++ b/drivers/thermal/thermal_mmio.c
-> @@ -34,7 +34,7 @@ static int thermal_mmio_get_temperature(void *private, int *temp)
->         return 0;
->  }
->
-> -static struct thermal_zone_of_device_ops thermal_mmio_ops = {
-> +static const struct thermal_zone_of_device_ops thermal_mmio_ops = {
->         .get_temp = thermal_mmio_get_temperature,
->  };
->
-> --
+On Tue, Oct 05, 2021 at 12:59:05PM +0200, Marco Elver wrote:
+> Teach objtool to turn instrumentation required for memory barrier
+> modeling into nops in noinstr text.
+> 
+> The __tsan_func_entry/exit calls are still emitted by compilers even
+> with the __no_sanitize_thread attribute. The memory barrier
+> instrumentation will be inserted explicitly (without compiler help), and
+> thus needs to also explicitly be removed.
 
-I'm not sure what happened to this patch.
+How is arm64 and others using kernel/entry + noinstr going to fix this?
 
-Daniel, are you going to pick it up?
+ISTR they fully rely on the compilers not emitting instrumentation,
+since they don't have objtool to fix up stray issues like this.
