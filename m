@@ -2,119 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E11BC421B81
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 03:12:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 356CC421B87
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 03:13:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230437AbhJEBNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 21:13:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58200 "EHLO
+        id S230293AbhJEBPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 21:15:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229659AbhJEBNr (ORCPT
+        with ESMTP id S229659AbhJEBPS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 21:13:47 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC2D4C061745;
-        Mon,  4 Oct 2021 18:11:57 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HNfgb633Bz4xbQ;
-        Tue,  5 Oct 2021 12:11:55 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1633396316;
-        bh=QcnoFg9wrYYDMZj3ftLGLzrX3IjtvRl4VMlIHDnSDWQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=NYeaX52ycFqmW90xJStCD1DZ2BSYd5cIVs3p4NXGASU6pb28y555gxidQ2FretFau
-         NE70HAsDecek2ECi9A9VJgFNtOTdIkUTpiUxjVX7p1l6sMX+aPoTtgZYZZZreIdWrx
-         3FnIVj+jR0UV4JmjaUUvrIFmbTg5HplSJLz7WfHiDNvlSjNwef3dL5rjlwzzpLJ6nt
-         d1W5P4qIXmALpDYYz0yAIFHYlArhDPOEGxkPGN92h0iEY4UGu44pYVf+6hh+j86VTY
-         hvwWsVex73STrGW39WPuwVitk5PgSDxBvOL56k5+IazYiImnZ4z7Ro3m2adyZ1LAb2
-         BTWxff727APWQ==
-Date:   Tue, 5 Oct 2021 12:11:54 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Miller <davem@davemloft.net>
-Cc:     netdev@vger.kernel.org, edumazet@google.com, weiwan@google.com,
-        linux-kernel@vger.kernel.org, linux-next@vger.kernel.org
-Subject: Re: linux-next: build failure after merge of the net-next tree
-Message-ID: <20211005121154.08641258@canb.auug.org.au>
-In-Reply-To: <20211001.144046.309542880703739165.davem@davemloft.net>
-References: <20211001161849.51b6deca@canb.auug.org.au>
-        <20211001.144046.309542880703739165.davem@davemloft.net>
+        Mon, 4 Oct 2021 21:15:18 -0400
+Received: from mail-oo1-xc2f.google.com (mail-oo1-xc2f.google.com [IPv6:2607:f8b0:4864:20::c2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB51AC061755
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 18:13:28 -0700 (PDT)
+Received: by mail-oo1-xc2f.google.com with SMTP id y16-20020a4ade10000000b002b5dd6f4c8dso5926071oot.12
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 18:13:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=/QiyAF8stN6WXJkebMYhEKCk+J6tjZCzO5t5KsxkaW8=;
+        b=Pwmy9PVWT3pIfz5Si5cRGpSEO6knwSKfjSbmckUtWqpjCvAj4Ewq+zy34wQipF5NOP
+         BzEsmNRu/QOV7C0QgcTfv6H/wBxKyfTo/o3vhNXrXI6nZ777vdXbSqjwvkx0raD5xYVS
+         ZbieAVrbTEAhJ40hDVqGATk6csUZ14pz0VIQI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=/QiyAF8stN6WXJkebMYhEKCk+J6tjZCzO5t5KsxkaW8=;
+        b=mhsUKsk8Mx+nRtByUO47cQ23Z9ryaKRxvDU63SnJADIpE3yoJR2Yvgn1OXobDe+WNE
+         qOTH3VwJlArn8niKntmtjMSmx6ya/iMXEtAsrfYRWRyV6lq3TQqunMRU6NL3Lw2Wp6QA
+         dpU+9qd7lLUZAQs5aJe7rLeHPr0rSer/Tdk+ap9SqW7LCIled23P+Nbs+ZxFhrPUw/Q+
+         0IwkrR2bP8vN+njF4pyCf1DhJrMmI33n89548xpFNx5QszdMZgSnxd+7aAmQhRfcH/aH
+         R6H29V2wShsDXqdOPCFfde5T+2sex6jt3wXMDEYvMGSwoVDbvRy0smVc7yP0SqgANY07
+         /grQ==
+X-Gm-Message-State: AOAM533wHD+7nJBZPhF0cCdfLPA86Qy9R/ITr+0SabqI750Rzi0R9PRb
+        X6R2uTD0sfgX3OW4HtTjLPZ5ow6kyh8Xx76Vz0rNpQ==
+X-Google-Smtp-Source: ABdhPJzGa90ACbuF6mgv6oFURLXi+3lJ8M+6w5Brhzs0n9UVBZGhvuUbVVBefiJt5y9Yi2qiXsK00OBN15wA9+TjFYc=
+X-Received: by 2002:a4a:8508:: with SMTP id k8mr5453028ooh.25.1633396407883;
+ Mon, 04 Oct 2021 18:13:27 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Mon, 4 Oct 2021 21:13:27 -0400
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/K5PWtTQ4z25yGFL2XQT1aEi";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <1633376488-545-5-git-send-email-pmaliset@codeaurora.org>
+References: <1633376488-545-1-git-send-email-pmaliset@codeaurora.org> <1633376488-545-5-git-send-email-pmaliset@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Mon, 4 Oct 2021 21:13:27 -0400
+Message-ID: <CAE-0n51S8VV5b5SEuh041dUvgd2_nqQ3JTXAjMzJfcok0xhi8w@mail.gmail.com>
+Subject: Re: [PATCH v10 4/5] PCI: qcom: Add a flag in match data along with ops
+To:     Prasad Malisetty <pmaliset@codeaurora.org>, agross@kernel.org,
+        bhelgaas@google.com, bjorn.andersson@linaro.org,
+        lorenzo.pieralisi@arm.com, robh+dt@kernel.org, svarbanov@mm-sol.com
+Cc:     devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dianders@chromium.org, mka@chromium.org, vbadigan@codeaurora.org,
+        sallenki@codeaurora.org, manivannan.sadhasivam@linaro.org,
+        linux-pci@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/K5PWtTQ4z25yGFL2XQT1aEi
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Hi Dave,
-
-On Fri, 01 Oct 2021 14:40:46 +0100 (BST) David Miller <davem@davemloft.net>=
- wrote:
+Quoting Prasad Malisetty (2021-10-04 12:41:27)
+> @@ -1488,7 +1528,13 @@ static int qcom_pcie_probe(struct platform_device *pdev)
 >
-> From: Stephen Rothwell <sfr@canb.auug.org.au>
-> Date: Fri, 1 Oct 2021 16:18:49 +1000
->=20
-> > Hi all,
-> >=20
-> > After merging the net-next tree, today's linux-next build (sparc64
-> > defconfig) failed like this:
-> >=20
-> > net/core/sock.c: In function 'sock_setsockopt':
-> > net/core/sock.c:1417:7: error: 'SO_RESERVE_MEM' undeclared (first use i=
-n this function); did you mean 'IORESOURCE_MEM'?
-> >   case SO_RESERVE_MEM:
-> >        ^~~~~~~~~~~~~~
-> >        IORESOURCE_MEM
-> > net/core/sock.c:1417:7: note: each undeclared identifier is reported on=
-ly once for each function it appears in
-> > net/core/sock.c: In function 'sock_getsockopt':
-> > net/core/sock.c:1817:7: error: 'SO_RESERVE_MEM' undeclared (first use i=
-n this function); did you mean 'IORESOURCE_MEM'?
-> >   case SO_RESERVE_MEM:
-> >        ^~~~~~~~~~~~~~
-> >        IORESOURCE_MEM
-> >=20
-> > Caused by commit
-> >=20
-> >   2bb2f5fb21b0 ("net: add new socket option SO_RESERVE_MEM")
-> >=20
-> > arch/sparc/include/uapi/socket.h does not include uapi/asm/socket.h and
-> > some other architectures do not as well.
-> >=20
-> > I have added the following patch for today (I searched for SO_BUF_LOCK
-> > and, of these architectures, I have only compile tested sparc64 and
-> > sparc): =20
->=20
-> I committed the sparc part into net-next today, thanks.
+>         pcie->pci = pci;
+>
+> -       pcie->ops = of_device_get_match_data(dev);
+> +       pcie_cfg = of_device_get_match_data(dev);
+> +       pcie->ops = pcie_cfg->ops;
+> +       if (!pcie->ops) {
 
-Unfortunately, there is a typo in what you committed in bfaf03935f74
-("sparc: add SO_RESERVE_MEM definition."), SO_RESEVE_MEM instead of
-SO_RESERVE_MEM ...
+Sorry I meant check for pcie_cfg being NULL too.
+of_device_get_match_data() can return NULL if the match doesn't work for
+some reason.
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/K5PWtTQ4z25yGFL2XQT1aEi
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFbploACgkQAVBC80lX
-0Gyo1gf/dnSvjxx13Gkwpx84SSOykZFD7FbLiHsgn2ZK4E+dKRkMP+0SRvzrZcFB
-+gPDB0AodxmtwtXX0G/kgoquYFBj/75Y5wNEUGti/C8KOn09ifsz1uP0GB76XRNG
-wbU97JfEU9ndRvHjgKrpZg67b4ML6rJTNcTlh73L2QZca5Do4MpdlpER8bUc+42/
-SWkir51JextoUOdaRyAHhHz9qad2Wec/owm1NZLRZuwUjpw2xntBK2ocokvmHckb
-IZy37ZKT3x0pSVG4hl/MeXhPYEwLKQMNbgw1BzLPbfCPLNzlY7Xvf+sEZBnC7fav
-M+VSB5841hft1hSrPjbsLRKhvLP25A==
-=pHAX
------END PGP SIGNATURE-----
-
---Sig_/K5PWtTQ4z25yGFL2XQT1aEi--
+> +               dev_err(dev, "Invalid platform data\n");
+> +               return -EINVAL;
+> +       }
+> +       pcie->pipe_clk_need_muxing = pcie_cfg->pipe_clk_need_muxing;
+>
+>         pcie->reset = devm_gpiod_get_optional(dev, "perst", GPIOD_OUT_HIGH);
+>         if (IS_ERR(pcie->reset)) {
