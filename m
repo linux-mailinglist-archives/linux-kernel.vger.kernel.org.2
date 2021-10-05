@@ -2,147 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 833764230B3
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 21:21:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C8514230B8
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 21:21:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235371AbhJETXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 15:23:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57770 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235101AbhJETXT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 15:23:19 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC1E5C061753
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 12:21:28 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id t11so86662plq.11
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 12:21:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7y0UQJo2ebCqon0Bb7OI4csD0ePdDv5zBX9x3Gtz6Mg=;
-        b=ftC3Y73kipN8EROGIeJDV8NTUjflmrLwE19qsFs3y5p12F2JvJ1fDy3W7Ypic1NX81
-         2v3cMbEpRUcZWhC6ttcRhGFCOMwikEjPQa8wJrz32tAVOxWEOBLrUobOQT01GkU2+fRm
-         W4qbRjDRbrdUfClhtSjntPBzH4/bRmjW/H1v8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7y0UQJo2ebCqon0Bb7OI4csD0ePdDv5zBX9x3Gtz6Mg=;
-        b=cmjsgnBNDOkms2q2NNqYnVOZJ2ZvV8aFuC2Cbr/IgTs1KePsPDT1iHodwG145aEFjB
-         9mZ3uNcLwb1Tz4U1f5ROiBrLQ77LD1Te2/1o9xvoQ2MONi7eBB+H3fSL9sHBq20y4R7D
-         JSvri/LBhuCMTa4Cu8nyBt42QC5gwJMEGpsV8CrpTox5QXxsl4oox68cI/oXa6iArCX6
-         zpB+te03taih7nVmHVMakq7ebAmdJgPG3a2MatXIx1d5QSOmBIaz17O3nE0B65LDWXjh
-         iQkYD5vtK5SBPICdSFQ8Y+V09zp1xxFiVc9KygxN4G6FMVNZCGbWubKJY4DqWvtUkv5o
-         3d4Q==
-X-Gm-Message-State: AOAM533+rizmiUhcKhcS5G32I2VKjL3jr/vmPwyhX4ZvoT5/hW3rnCnA
-        n6xylYOgZ4IX0N1KM8YSR3erKP2Owo8oYQ==
-X-Google-Smtp-Source: ABdhPJyhFhlHvFyTny6/WNk6Ig9+caf+mAUNDcnaTFi+ahWod561++5rBCQaVJ14Az2u9Yj+ZyBbXw==
-X-Received: by 2002:a17:90a:ead3:: with SMTP id ev19mr5828725pjb.136.1633461688139;
-        Tue, 05 Oct 2021 12:21:28 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id y3sm19257860pfr.140.2021.10.05.12.21.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Oct 2021 12:21:27 -0700 (PDT)
-Date:   Tue, 5 Oct 2021 12:21:26 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     Pavel Machek <pavel@ucw.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Colin Cross <ccross@google.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        vincenzo.frascino@arm.com,
-        Chinwen Chang =?utf-8?B?KOW8temMpuaWhyk=?= 
-        <chinwen.chang@mediatek.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Jann Horn <jannh@google.com>, apopple@nvidia.com,
-        John Hubbard <jhubbard@nvidia.com>,
-        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
-        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
-        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
-        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
-        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
-        chris.hyser@oracle.com, Peter Collingbourne <pcc@google.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Jens Axboe <axboe@kernel.dk>, legion@kernel.org,
-        Rolf Eike Beer <eb@emlix.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Thomas Cedeno <thomascedeno@google.com>, sashal@kernel.org,
-        cxfcosmos@gmail.com, Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-mm <linux-mm@kvack.org>,
-        kernel-team <kernel-team@android.com>
-Subject: Re: [PATCH v10 3/3] mm: add anonymous vma name refcounting
-Message-ID: <202110051220.FFD4C604EF@keescook>
-References: <20211001205657.815551-1-surenb@google.com>
- <20211001205657.815551-3-surenb@google.com>
- <20211005184211.GA19804@duo.ucw.cz>
- <CAJuCfpE5JEThTMhwKPUREfSE1GYcTx4YSLoVhAH97fJH_qR0Zg@mail.gmail.com>
+        id S235432AbhJETX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 15:23:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60152 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235361AbhJETXY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 15:23:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AA57761154;
+        Tue,  5 Oct 2021 19:21:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633461693;
+        bh=M62TAUo+09n/pFjm3mE9/03lQLtfj7sPmGMZwJ6g/bA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=Ql+LqFMIoFiVmsk2GVJiJC/64iVnAjQjwndueuqwbKdSVeiEnuh+YfbXn8j/2/RAi
+         y/dn9eLG4VCUEphU8AgVjSoqf0Ixg4AWMDsDRY3PSa3d99ya8O/IdqYKbxWF4tbJ9Q
+         ccJ7su+bSpUIPmnEWqVSFwOvjA7xnb2OiPxoECAt1yvogP10qH7ATPF+ZtWEfR7ZEi
+         UMkBzXk2jlAdJtMB5qcFnnMKHvUNr4QXOod2rL8u73IP3Kb30VcYIXnI6SCfXVHTxE
+         P+e7DdAlqO4NzuQiymtOgExlzeNObIwfaZ8gc3hjYI/ZtcDiaIFsAFvvivRS1+WFV2
+         WxoehdS+fH6Mg==
+Date:   Tue, 5 Oct 2021 14:21:31 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Prasad Malisetty <pmaliset@codeaurora.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, bhelgaas@google.com,
+        robh+dt@kernel.org, swboyd@chromium.org, lorenzo.pieralisi@arm.com,
+        svarbanov@mm-sol.com, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dianders@chromium.org,
+        mka@chromium.org, vbadigan@codeaurora.org, sallenki@codeaurora.org,
+        manivannan.sadhasivam@linaro.org, linux-pci@vger.kernel.org
+Subject: Re: [PATCH v11 4/5] PCI: qcom: Add a flag in match data along with
+ ops
+Message-ID: <20211005192131.GA1111392@bhelgaas>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAJuCfpE5JEThTMhwKPUREfSE1GYcTx4YSLoVhAH97fJH_qR0Zg@mail.gmail.com>
+In-Reply-To: <1633459359-31517-5-git-send-email-pmaliset@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05, 2021 at 12:14:59PM -0700, Suren Baghdasaryan wrote:
-> On Tue, Oct 5, 2021 at 11:42 AM Pavel Machek <pavel@ucw.cz> wrote:
-> >
-> > On Fri 2021-10-01 13:56:57, Suren Baghdasaryan wrote:
-> > > While forking a process with high number (64K) of named anonymous vmas the
-> > > overhead caused by strdup() is noticeable. Experiments with ARM64
-> > Android
-> >
-> > I still believe you should simply use numbers and do the
-> > numbers->strings mapping in userspace. We should not need to optimize
-> > strdups in kernel...
+On Wed, Oct 06, 2021 at 12:12:38AM +0530, Prasad Malisetty wrote:
+> Add pipe_clk_need_muxing flag in match data and configure
+> If the platform needs to switch pipe_clk_src.
 > 
-> Here are complications with mapping numbers to strings in the userspace:
-> Approach 1: hardcode number->string in some header file and let all
-> tools use that mapping. The issue is that whenever that mapping
-> changes all the tools that are using it (including 3rd party ones)
-> have to be rebuilt. This is not really maintainable since we don't
-> control 3rd party tools and even for the ones we control, it will be a
-> maintenance issue figuring out which version of the tool used which
-> header file.
-> Approach 2: have a centralized facility (a process or a DB)
-> maintaining number->string mapping. This would require an additional
-> request to this facility whenever we want to make a number->string
-> conversion. Moreover, when we want to name a VMA, we would have to
-> register a new VMA name in that facility or check that one already
-> exists and get its ID. So each prctl() call to name a VMA will be
-> preceded by such a request (IPC call), maybe with some optimizations
-> to cache already known number->string pairs. This would be quite
-> expensive performance-wise. Additional issue with this approach is
-> that this mapping will have to be persistent to handle a case when the
-> facility crashes and has to be restored.
+> Signed-off-by: Prasad Malisetty <pmaliset@codeaurora.org>
+> ---
+>  drivers/pci/controller/dwc/pcie-qcom.c | 70 ++++++++++++++++++++++++++++------
+>  1 file changed, 59 insertions(+), 11 deletions(-)
 > 
-> As I said before, it complicates userspace quite a bit. Is that a good
-> enough reason to store the names in the kernel and pay a little more
-> memory for that? IMHO yes, but I might be wrong.
+> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
+> index 8a7a300..1d7a9cb 100644
+> --- a/drivers/pci/controller/dwc/pcie-qcom.c
+> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
+> @@ -189,6 +189,11 @@ struct qcom_pcie_ops {
+>  	int (*config_sid)(struct qcom_pcie *pcie);
+>  };
+>  
+> +struct qcom_pcie_cfg {
+> +	const struct qcom_pcie_ops *ops;
+> +	unsigned int pipe_clk_need_muxing:1;
+> +};
 
-FWIW, I prefer the strings. It's more human-readable, which is important
-for the kinds of cases where the maps are being used for diagnostics,
-etc.
+Thanks for splitting this up; it's 90% of the way there.
 
--- 
-Kees Cook
+It would be better if this patch added only the definition and use of
+qcom_pcie_cfg:
+
+  +struct qcom_pcie_cfg {
+  +     const struct qcom_pcie_ops *ops;
+  +};
+
+and then the subsequent patch added the clock muxing stuff:
+
+   struct qcom_pcie_cfg {
+  +	unsigned int pipe_clk_need_muxing:1;
+
+   struct qcom_pcie {
+  +	unsigned int pipe_clk_need_muxing:1;
+
+   static const struct qcom_pcie_cfg sc7280_cfg = {
+  +	.pipe_clk_need_muxing = true,
+
+  static int qcom_pcie_probe(struct platform_device *pdev)
+  +	pcie->pipe_clk_need_muxing = pcie_cfg->pipe_clk_need_muxing;
+
+That way everything related to pipe_clk_need_muxing would be in a
+single patch.
+
+>  struct qcom_pcie {
+>  	struct dw_pcie *pci;
+>  	void __iomem *parf;			/* DT parf */
+> @@ -197,6 +202,7 @@ struct qcom_pcie {
+>  	struct phy *phy;
+>  	struct gpio_desc *reset;
+>  	const struct qcom_pcie_ops *ops;
+> +	unsigned int pipe_clk_need_muxing:1;
+>  };
+>  
+>  #define to_qcom_pcie(x)		dev_get_drvdata((x)->dev)
+> @@ -1456,6 +1462,39 @@ static const struct qcom_pcie_ops ops_1_9_0 = {
+>  	.config_sid = qcom_pcie_config_sid_sm8250,
+>  };
+>  
+> +static const struct qcom_pcie_cfg apq8084_cfg = {
+> +	.ops = &ops_1_0_0,
+> +};
+> +
+> +static const struct qcom_pcie_cfg ipq8064_cfg = {
+> +	.ops = &ops_2_1_0,
+> +};
+> +
+> +static const struct qcom_pcie_cfg msm8996_cfg = {
+> +	.ops = &ops_2_3_2,
+> +};
+> +
+> +static const struct qcom_pcie_cfg ipq8074_cfg = {
+> +	.ops = &ops_2_3_3,
+> +};
+> +
+> +static const struct qcom_pcie_cfg ipq4019_cfg = {
+> +	.ops = &ops_2_4_0,
+> +};
+> +
+> +static const struct qcom_pcie_cfg sdm845_cfg = {
+> +	.ops = &ops_2_7_0,
+> +};
+> +
+> +static const struct qcom_pcie_cfg sm8250_cfg = {
+> +	.ops = &ops_1_9_0,
+> +};
+> +
+> +static const struct qcom_pcie_cfg sc7280_cfg = {
+> +	.ops = &ops_1_9_0,
+> +	.pipe_clk_need_muxing = true,
+> +};
+> +
+>  static const struct dw_pcie_ops dw_pcie_ops = {
+>  	.link_up = qcom_pcie_link_up,
+>  	.start_link = qcom_pcie_start_link,
+> @@ -1467,6 +1506,7 @@ static int qcom_pcie_probe(struct platform_device *pdev)
+>  	struct pcie_port *pp;
+>  	struct dw_pcie *pci;
+>  	struct qcom_pcie *pcie;
+> +	const struct qcom_pcie_cfg *pcie_cfg;
+>  	int ret;
+>  
+>  	pcie = devm_kzalloc(dev, sizeof(*pcie), GFP_KERNEL);
+> @@ -1488,7 +1528,14 @@ static int qcom_pcie_probe(struct platform_device *pdev)
+>  
+>  	pcie->pci = pci;
+>  
+> -	pcie->ops = of_device_get_match_data(dev);
+> +	pcie_cfg = of_device_get_match_data(dev);
+> +	if (!pcie_cfg || !pcie_cfg->ops) {
+> +		dev_err(dev, "Invalid platform data\n");
+> +		return NULL;
+> +	}
+> +
+> +	pcie->ops = pcie_cfg->ops;
+> +	pcie->pipe_clk_need_muxing = pcie_cfg->pipe_clk_need_muxing;
+>  
+>  	pcie->reset = devm_gpiod_get_optional(dev, "perst", GPIOD_OUT_HIGH);
+>  	if (IS_ERR(pcie->reset)) {
+> @@ -1545,16 +1592,17 @@ static int qcom_pcie_probe(struct platform_device *pdev)
+>  }
+>  
+>  static const struct of_device_id qcom_pcie_match[] = {
+> -	{ .compatible = "qcom,pcie-apq8084", .data = &ops_1_0_0 },
+> -	{ .compatible = "qcom,pcie-ipq8064", .data = &ops_2_1_0 },
+> -	{ .compatible = "qcom,pcie-ipq8064-v2", .data = &ops_2_1_0 },
+> -	{ .compatible = "qcom,pcie-apq8064", .data = &ops_2_1_0 },
+> -	{ .compatible = "qcom,pcie-msm8996", .data = &ops_2_3_2 },
+> -	{ .compatible = "qcom,pcie-ipq8074", .data = &ops_2_3_3 },
+> -	{ .compatible = "qcom,pcie-ipq4019", .data = &ops_2_4_0 },
+> -	{ .compatible = "qcom,pcie-qcs404", .data = &ops_2_4_0 },
+> -	{ .compatible = "qcom,pcie-sdm845", .data = &ops_2_7_0 },
+> -	{ .compatible = "qcom,pcie-sm8250", .data = &ops_1_9_0 },
+> +	{ .compatible = "qcom,pcie-apq8084", .data = &apq8084_cfg },
+> +	{ .compatible = "qcom,pcie-ipq8064", .data = &ipq8064_cfg },
+> +	{ .compatible = "qcom,pcie-ipq8064-v2", .data = &ipq8064_cfg },
+> +	{ .compatible = "qcom,pcie-apq8064", .data = &ipq8064_cfg },
+> +	{ .compatible = "qcom,pcie-msm8996", .data = &msm8996_cfg },
+> +	{ .compatible = "qcom,pcie-ipq8074", .data = &ipq8074_cfg },
+> +	{ .compatible = "qcom,pcie-ipq4019", .data = &ipq4019_cfg },
+> +	{ .compatible = "qcom,pcie-qcs404", .data = &ipq4019_cfg },
+> +	{ .compatible = "qcom,pcie-sdm845", .data = &sdm845_cfg },
+> +	{ .compatible = "qcom,pcie-sm8250", .data = &sm8250_cfg },
+> +	{ .compatible = "qcom,pcie-sc7280", .data = &sc7280_cfg },
+>  	{ }
+>  };
+>  
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+> 
