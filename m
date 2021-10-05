@@ -2,92 +2,397 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53CF7422D66
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 18:08:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE784422D5D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 18:06:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236341AbhJEQKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 12:10:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41046 "EHLO
+        id S236218AbhJEQIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 12:08:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234416AbhJEQKM (ORCPT
+        with ESMTP id S235588AbhJEQIX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 12:10:12 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DA14C061749
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 09:08:21 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id x27so88556309lfu.5
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 09:08:21 -0700 (PDT)
+        Tue, 5 Oct 2021 12:08:23 -0400
+Received: from mail-oo1-xc36.google.com (mail-oo1-xc36.google.com [IPv6:2607:f8b0:4864:20::c36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC54EC06174E
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 09:06:32 -0700 (PDT)
+Received: by mail-oo1-xc36.google.com with SMTP id y16-20020a4ade10000000b002b5dd6f4c8dso6545476oot.12
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 09:06:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dzfx3fsRo7F5xw3fHSg8nKJV024hLxYFAlzOMQp4+E4=;
-        b=uFqA5Cc3evmiBrUl9z6ToXQIVBU296s5VunLco/GeXPzwXHxuPpMdOxZBBU7FsQwzb
-         ohznDJht5Qkj9hI2kFgCESrzSMkuWoMc90R6zOxOlAA2xntHYdgt90DkQVT5LQ8qb588
-         yeaPyQhKooeku/8QQQEEN67WGwghh7Y3uBzNWseOHcM4GkhJ7PxJERPwq8fjoQgRjhKu
-         ektxYB62gxECriYpa30+gxG5IcaPhA8YZ6wowtlTqeamGaePiWoxBgyJjGgLIysYZXUa
-         yUCFn8xxFpTQScVpxMRkJM2ZQ7x9YmbSz3Ut/7OJ3qYgAhFiQhHy8Zv0Z/J+7G8gKW2K
-         wx0w==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=HNCR1J5Ok9P6uIqZ13evC15Pk+RaZVa8qzf0iQdxZGQ=;
+        b=L0cOCRNH9CAgp0ZXaUys4uqt8yduyzEz9jItxNB/IPr9qVEfR9wZdPokxWaszeDcYP
+         JENLkglGao+l14MNVdR2HPJ2fuX2kUq8nAF9GOwYUXXkel8I/eTPwz5LozhTpBOrXlhV
+         AkuxxOKETsbn122XllKWWrup7VvcPx4OHb5brazX6ovOsZ+6dZbzlZf5JKf/nG88dWRG
+         AGa3F6uYRpLz1Q9SNoaJkw6yUNdqWFqo2hkd8noN5yYRPB5ygzbsQv4Rq/t011oBAsge
+         bRy7WUekVELdamv7vQkAbo6WPh7wXeV1gGcAqpFeevelgHRqowwe6S58o4WaySamMlL0
+         R/1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dzfx3fsRo7F5xw3fHSg8nKJV024hLxYFAlzOMQp4+E4=;
-        b=svMo8Itq6T2AFUsU4SNSspvZ6u00V1eSJiRLFNx64PsHUNntYFOajSfHvf5KDuehR2
-         ZdhNuqzodvC3b1KORre63ByPq9W/2uLhZ/38B1f14FI5kua0uP3Q/hmikY10XlCFezAO
-         FQ43DXi4s3F4/jOw+OuXObNqvNFtjukvA3h1fm2bfhUGl/sGZD7Bp1F0U34usd2oqPY5
-         vArq52w0ja9szfdletqlrqd2mlOv6qibYfe2ZnYZ160ojjDiSQtsh5QjjY/wqkGDAWH7
-         VgaA0pQ8hknJTNayX255ixi8Jn5uirnRD1955dh7cFE7B6b9GnMW/hR59JgOQWjPE17v
-         NbyA==
-X-Gm-Message-State: AOAM532j3Hws+ftB86F9ia13nBz3jPPjfRCFtDNQ37gbaBV+sBdoV/s2
-        PFL1gIKxgwe0GFYAfAmhpm+v68RHBvrkDL0M3xcSPw==
-X-Google-Smtp-Source: ABdhPJwnC31+Ik6u2dpcC0CWhMVXL1AHvSjtDIcmiq1/SWE794/6DgQfUSDzkEj3yIm9x+wD7DVu/FMKUe34DDg+Je4=
-X-Received: by 2002:a05:6512:10cc:: with SMTP id k12mr4520941lfg.72.1633450099935;
- Tue, 05 Oct 2021 09:08:19 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HNCR1J5Ok9P6uIqZ13evC15Pk+RaZVa8qzf0iQdxZGQ=;
+        b=ygbzrG8PtpEkO61fU/pdaBekvmAp4IEfL1WfJ7Sadtw25LEGpdXc0PClGKmMjj8AG/
+         o3wchKIavAZWkXhD9Z2dJd3xty13I9XA3b7rb35Jefzreiahxd6jdR5kZzmNtv4B+QEJ
+         gx7lgIlQzG90uywoOhBXqYB179iG1b/uzfWF6iAWXTfaElar4aMhowBNYE9JXdhiNMpB
+         ue97AbwlQHA12bymdzD53qOev4L6Vv20jOloQETPxK3+h1a1mQFs0NlI4Lr35vSCytpJ
+         xBaa13siM/f/rbOItCoBSkg4teLfeB5iPfMnt5hmzCp808zxPAkT7cTLCzV247gPCBEg
+         kCfQ==
+X-Gm-Message-State: AOAM530KDPaxpd7TpYDeylr24yJ1kJCkPrnI+UczELlwZMN4AbYFVSSn
+        iPt28zUGne/WK2bI9WZxmYlw0A==
+X-Google-Smtp-Source: ABdhPJyHJ05Ff1XRCdal81vi7yjpPU8cH4FwD8m7sb6pgfMicO4O15nK2AMEeMdWAToHPhHvbK5I8w==
+X-Received: by 2002:a4a:d385:: with SMTP id i5mr13970074oos.4.1633449991332;
+        Tue, 05 Oct 2021 09:06:31 -0700 (PDT)
+Received: from ripper ([2600:1700:a0:3dc8:205:1bff:fec0:b9b3])
+        by smtp.gmail.com with ESMTPSA id h5sm3547616oti.58.2021.10.05.09.06.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Oct 2021 09:06:30 -0700 (PDT)
+Date:   Tue, 5 Oct 2021 09:08:12 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Maulik Shah <mkshah@codeaurora.org>
+Cc:     swboyd@chromium.org, mka@chromium.org, evgreen@chromium.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        agross@kernel.org, dianders@chromium.org, linux@roeck-us.net,
+        rnayak@codeaurora.org, lsrao@codeaurora.org,
+        Mahesh Sivasubramanian <msivasub@codeaurora.org>,
+        Lina Iyer <ilina@codeaurora.org>
+Subject: Re: [PATCH v10 2/5] soc: qcom: Add SoC sleep stats driver
+Message-ID: <YVx4bFN05OPLll6u@ripper>
+References: <1633425065-7927-1-git-send-email-mkshah@codeaurora.org>
+ <1633425065-7927-3-git-send-email-mkshah@codeaurora.org>
 MIME-Version: 1.0
-References: <20211005155923.173399-1-marcan@marcan.st> <20211005155923.173399-4-marcan@marcan.st>
-In-Reply-To: <20211005155923.173399-4-marcan@marcan.st>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 5 Oct 2021 18:08:08 +0200
-Message-ID: <CACRpkdanbovvXXLAGGZEEiKXXrNnW+8p1sCONQYWmAjVi-m-9A@mail.gmail.com>
-Subject: Re: [PATCH 3/7] soc: apple: Add driver for Apple PMGR power state controls
-To:     Hector Martin <marcan@marcan.st>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1633425065-7927-3-git-send-email-mkshah@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hector,
+On Tue 05 Oct 02:11 PDT 2021, Maulik Shah wrote:
 
-On Tue, Oct 5, 2021 at 6:00 PM Hector Martin <marcan@marcan.st> wrote:
+> From: Mahesh Sivasubramanian <msivasub@codeaurora.org>
+> 
+> Let's add a driver to read the stats from remote processor and
+> export to debugfs.
+> 
+> The driver creates "qcom_sleep_stats" directory in debugfs and
+> adds files for various low power mode available. Below is sample
+> output with command
+> 
+> cat /sys/kernel/debug/qcom_sleep_stats/ddr
+> count = 0
+> Last Entered At = 0
+> Last Exited At = 0
+> Accumulated Duration = 0
+> 
 
->  drivers/soc/apple/Kconfig               |  21 ++
->  drivers/soc/apple/Makefile              |   2 +
->  drivers/soc/apple/apple-pmgr-pwrstate.c | 281 ++++++++++++++++++++++++
+What's the minimal effort needed to get any of these values to become
+non-zero, on any of the upstream boards?
 
-This is traditionally where we put the ARM SoC drivers, but
-Mac has traditionally used drivers/macintosh for their custom
-board etc stuff. Or is that just for any off-chip stuff?
+> Signed-off-by: Mahesh Sivasubramanian <msivasub@codeaurora.org>
+> Signed-off-by: Lina Iyer <ilina@codeaurora.org>
+> [mkshah: add subsystem sleep stats, create one file for each stat]
+> Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
+> ---
+>  drivers/soc/qcom/Kconfig            |  10 ++
+>  drivers/soc/qcom/Makefile           |   1 +
+>  drivers/soc/qcom/qcom_sleep_stats.c | 240 ++++++++++++++++++++++++++++++++++++
+>  3 files changed, 251 insertions(+)
+>  create mode 100644 drivers/soc/qcom/qcom_sleep_stats.c
+> 
+> diff --git a/drivers/soc/qcom/Kconfig b/drivers/soc/qcom/Kconfig
+> index abfef20..ad45f59 100644
+> --- a/drivers/soc/qcom/Kconfig
+> +++ b/drivers/soc/qcom/Kconfig
+> @@ -182,6 +182,16 @@ config QCOM_SMSM
+>  	  Say yes here to support the Qualcomm Shared Memory State Machine.
+>  	  The state machine is represented by bits in shared memory.
+>  
+> +config QCOM_SLEEP_STATS
+> +	tristate "Qualcomm Technologies, Inc. (QTI) Sleep stats driver"
+> +	depends on ARCH_QCOM && DEBUG_FS || COMPILE_TEST
 
-I suppose it doesn't matter much (unless there is code under
-drivers/macintosh we want to reuse for M1), but it could be a bit
-confusing?
+Is this equivalent to (QCOM && DBGFS) || COMPILE_TEST or
+QCOM && (DBGFS || COMPILE_TEST) ?
 
-Yours,
-Linus Walleij
+The prior seems like what we want.
+
+
+I think the rest looks good now.
+
+Thanks,
+Bjorn
+
+> +	depends on QCOM_SMEM
+> +	help
+> +	  Qualcomm Technologies, Inc. (QTI) Sleep stats driver to read
+> +	  the shared memory exported by the remote processor related to
+> +	  various SoC level low power modes statistics and export to debugfs
+> +	  interface.
+> +
+>  config QCOM_SOCINFO
+>  	tristate "Qualcomm socinfo driver"
+>  	depends on QCOM_SMEM
+> diff --git a/drivers/soc/qcom/Makefile b/drivers/soc/qcom/Makefile
+> index 24514c7..ad84f7b 100644
+> --- a/drivers/soc/qcom/Makefile
+> +++ b/drivers/soc/qcom/Makefile
+> @@ -19,6 +19,7 @@ obj-$(CONFIG_QCOM_SMEM) +=	smem.o
+>  obj-$(CONFIG_QCOM_SMEM_STATE) += smem_state.o
+>  obj-$(CONFIG_QCOM_SMP2P)	+= smp2p.o
+>  obj-$(CONFIG_QCOM_SMSM)	+= smsm.o
+> +obj-$(CONFIG_QCOM_SLEEP_STATS)	+= qcom_sleep_stats.o
+>  obj-$(CONFIG_QCOM_SOCINFO)	+= socinfo.o
+>  obj-$(CONFIG_QCOM_SPM)		+= spm.o
+>  obj-$(CONFIG_QCOM_WCNSS_CTRL) += wcnss_ctrl.o
+> diff --git a/drivers/soc/qcom/qcom_sleep_stats.c b/drivers/soc/qcom/qcom_sleep_stats.c
+> new file mode 100644
+> index 0000000..c85e19b
+> --- /dev/null
+> +++ b/drivers/soc/qcom/qcom_sleep_stats.c
+> @@ -0,0 +1,240 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Copyright (c) 2011-2021, The Linux Foundation. All rights reserved.
+> + */
+> +
+> +#include <linux/debugfs.h>
+> +#include <linux/device.h>
+> +#include <linux/io.h>
+> +#include <linux/module.h>
+> +#include <linux/of.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/seq_file.h>
+> +
+> +#include <linux/soc/qcom/smem.h>
+> +#include <clocksource/arm_arch_timer.h>
+> +
+> +#define STAT_TYPE_OFFSET	0x0
+> +#define COUNT_OFFSET		0x4
+> +#define LAST_ENTERED_AT_OFFSET	0x8
+> +#define LAST_EXITED_AT_OFFSET	0x10
+> +#define ACCUMULATED_OFFSET	0x18
+> +#define CLIENT_VOTES_OFFSET	0x1c
+> +
+> +struct subsystem_data {
+> +	const char *name;
+> +	u32 smem_item;
+> +	u32 pid;
+> +};
+> +
+> +static const struct subsystem_data subsystems[] = {
+> +	{ "modem", 605, 1 },
+> +	{ "wpss", 605, 13 },
+> +	{ "adsp", 606, 2 },
+> +	{ "cdsp", 607, 5 },
+> +	{ "slpi", 608, 3 },
+> +	{ "gpu", 609, 0 },
+> +	{ "display", 610, 0 },
+> +	{ "adsp_island", 613, 2 },
+> +	{ "slpi_island", 613, 3 },
+> +};
+> +
+> +struct stats_config {
+> +	size_t stats_offset;
+> +	size_t num_records;
+> +	bool appended_stats_avail;
+> +};
+> +
+> +struct stats_data {
+> +	bool appended_stats_avail;
+> +	void __iomem *base;
+> +};
+> +
+> +struct sleep_stats {
+> +	u32 stat_type;
+> +	u32 count;
+> +	u64 last_entered_at;
+> +	u64 last_exited_at;
+> +	u64 accumulated;
+> +};
+> +
+> +struct appended_stats {
+> +	u32 client_votes;
+> +	u32 reserved[3];
+> +};
+> +
+> +static void qcom_print_stats(struct seq_file *s, const struct sleep_stats *stat)
+> +{
+> +	u64 accumulated = stat->accumulated;
+> +	/*
+> +	 * If a subsystem is in sleep when reading the sleep stats adjust
+> +	 * the accumulated sleep duration to show actual sleep time.
+> +	 */
+> +	if (stat->last_entered_at > stat->last_exited_at)
+> +		accumulated += arch_timer_read_counter() - stat->last_entered_at;
+> +
+> +	seq_printf(s, "Count: %u\n", stat->count);
+> +	seq_printf(s, "Last Entered At: %llu\n", stat->last_entered_at);
+> +	seq_printf(s, "Last Exited At: %llu\n", stat->last_exited_at);
+> +	seq_printf(s, "Accumulated Duration: %llu\n", accumulated);
+> +}
+> +
+> +static int qcom_subsystem_sleep_stats_show(struct seq_file *s, void *unused)
+> +{
+> +	struct subsystem_data *subsystem = s->private;
+> +	struct sleep_stats *stat;
+> +
+> +	/* Items are allocated lazily, so lookup pointer each time */
+> +	stat = qcom_smem_get(subsystem->pid, subsystem->smem_item, NULL);
+> +	if (IS_ERR(stat))
+> +		return -EIO;
+> +
+> +	qcom_print_stats(s, stat);
+> +
+> +	return 0;
+> +}
+> +
+> +static int qcom_soc_sleep_stats_show(struct seq_file *s, void *unused)
+> +{
+> +	struct stats_data *d = s->private;
+> +	void __iomem *reg = d->base;
+> +	struct sleep_stats stat;
+> +
+> +	memcpy_fromio(&stat, reg, sizeof(stat));
+> +	qcom_print_stats(s, &stat);
+> +
+> +	if (d->appended_stats_avail) {
+> +		struct appended_stats votes;
+> +
+> +		memcpy_fromio(&votes, reg + CLIENT_VOTES_OFFSET, sizeof(votes));
+> +		seq_printf(s, "Client Votes: %#x\n", votes.client_votes);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +DEFINE_SHOW_ATTRIBUTE(qcom_soc_sleep_stats);
+> +DEFINE_SHOW_ATTRIBUTE(qcom_subsystem_sleep_stats);
+> +
+> +static void qcom_create_soc_sleep_stat_files(struct dentry *root, void __iomem *reg,
+> +					     struct stats_data *d,
+> +					     const struct stats_config *config)
+> +{
+> +	char stat_type[sizeof(u32) + 1] = {0};
+> +	u32 offset = 0, type;
+> +	int i, j;
+> +
+> +	for (i = 0; i < config->num_records; i++) {
+> +		d[i].base = reg + offset + config->stats_offset;
+> +
+> +		/*
+> +		 * Read the low power mode name and create debugfs file for it.
+> +		 * The names read could be of below,
+> +		 * (may change depending on low power mode supported).
+> +		 * For rpmh-sleep-stats: "aosd", "cxsd" and "ddr".
+> +		 * For rpm-sleep-stats: "vmin" and "vlow".
+> +		 */
+> +		type = readl(d[i].base);
+> +		for (j = 0; j < sizeof(u32); j++) {
+> +			stat_type[j] = type & 0xff;
+> +			type = type >> 8;
+> +		}
+> +		strim(stat_type);
+> +		debugfs_create_file(stat_type, 0400, root, &d[i],
+> +				    &qcom_soc_sleep_stats_fops);
+> +
+> +		offset += sizeof(struct sleep_stats);
+> +		if (d[i].appended_stats_avail)
+> +			offset += sizeof(struct appended_stats);
+> +	}
+> +}
+> +
+> +static void qcom_create_subsystem_stat_files(struct dentry *root)
+> +{
+> +	const struct sleep_stats *stat;
+> +	int i;
+> +
+> +	for (i = 0; i < ARRAY_SIZE(subsystems); i++) {
+> +		stat = qcom_smem_get(subsystems[i].pid, subsystems[i].smem_item, NULL);
+> +		if (IS_ERR(stat))
+> +			continue;
+> +
+> +		debugfs_create_file(subsystems[i].name, 0400, root, (void *)&subsystems[i],
+> +				    &qcom_subsystem_sleep_stats_fops);
+> +	}
+> +}
+> +
+> +static int qcom_sleep_stats_probe(struct platform_device *pdev)
+> +{
+> +	void __iomem *reg;
+> +	struct dentry *root;
+> +	const struct stats_config *config;
+> +	struct stats_data *d;
+> +	int i;
+> +
+> +	config = device_get_match_data(&pdev->dev);
+> +	if (!config)
+> +		return -ENODEV;
+> +
+> +	reg = devm_platform_get_and_ioremap_resource(pdev, 0, NULL);
+> +	if (IS_ERR(reg))
+> +		return -ENOMEM;
+> +
+> +	d = devm_kcalloc(&pdev->dev, config->num_records,
+> +			 sizeof(*d), GFP_KERNEL);
+> +	if (!d)
+> +		return -ENOMEM;
+> +
+> +	for (i = 0; i < config->num_records; i++)
+> +		d[i].appended_stats_avail = config->appended_stats_avail;
+> +
+> +	root = debugfs_create_dir("qcom_sleep_stats", NULL);
+> +
+> +	qcom_create_subsystem_stat_files(root);
+> +	qcom_create_soc_sleep_stat_files(root, reg, d, config);
+> +
+> +	platform_set_drvdata(pdev, root);
+> +
+> +	return 0;
+> +}
+> +
+> +static int qcom_sleep_stats_remove(struct platform_device *pdev)
+> +{
+> +	struct dentry *root = platform_get_drvdata(pdev);
+> +
+> +	debugfs_remove_recursive(root);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct stats_config rpm_data = {
+> +	.stats_offset = 0x2e8,
+> +	.num_records = 2,
+> +	.appended_stats_avail = true,
+> +};
+> +
+> +static const struct stats_config rpmh_data = {
+> +	.stats_offset = 0x48,
+> +	.num_records = 3,
+> +	.appended_stats_avail = false,
+> +};
+> +
+> +static const struct of_device_id qcom_sleep_stats_table[] = {
+> +	{ .compatible = "qcom,rpm-sleep-stats", .data = &rpm_data },
+> +	{ .compatible = "qcom,rpmh-sleep-stats", .data = &rpmh_data },
+> +	{ }
+> +};
+> +MODULE_DEVICE_TABLE(of, qcom_sleep_stats_table);
+> +
+> +static struct platform_driver qcom_sleep_stats = {
+> +	.probe = qcom_sleep_stats_probe,
+> +	.remove = qcom_sleep_stats_remove,
+> +	.driver = {
+> +		.name = "qcom_sleep_stats",
+> +		.of_match_table = qcom_sleep_stats_table,
+> +	},
+> +};
+> +module_platform_driver(qcom_sleep_stats);
+> +
+> +MODULE_DESCRIPTION("Qualcomm Technologies, Inc. (QTI) Sleep Stats driver");
+> +MODULE_LICENSE("GPL v2");
+> -- 
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+> of Code Aurora Forum, hosted by The Linux Foundation
+> 
