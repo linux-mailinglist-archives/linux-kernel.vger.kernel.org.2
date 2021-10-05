@@ -2,182 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9EF7423102
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 21:49:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F5044230FE
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 21:49:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235648AbhJETv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 15:51:27 -0400
-Received: from out01.mta.xmission.com ([166.70.13.231]:55402 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230333AbhJETvY (ORCPT
+        id S235783AbhJETvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 15:51:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35772 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235763AbhJETvH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 15:51:24 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51]:54136)
-        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mXqRI-00BOhD-Fk; Tue, 05 Oct 2021 13:49:24 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:41390 helo=email.xmission.com)
-        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mXqRH-008ayT-2v; Tue, 05 Oct 2021 13:49:24 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Alexander Popov <alex.popov@linux.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Petr Mladek <pmladek@suse.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Maciej Rozycki <macro@orcam.me.uk>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Luis Chamberlain <mcgrof@kernel.org>, Wei Liu <wl@xen.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Jann Horn <jannh@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Will Deacon <will.deacon@arm.com>,
-        David S Miller <davem@davemloft.net>,
-        Borislav Petkov <bp@alien8.de>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-hardening@vger.kernel.org,
-        "open list\:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        notify@kernel.org
-References: <20210929185823.499268-1-alex.popov@linux.com>
-        <d290202d-a72d-0821-9edf-efbecf6f6cef@linux.com>
-        <20210929194924.GA880162@paulmck-ThinkPad-P17-Gen-1>
-        <YVWAPXSzFNbHz6+U@alley>
-        <CAHk-=widOm3FXMPXXK0cVaoFuy3jCk65=5VweLceQCuWdep=Hg@mail.gmail.com>
-        <ba67ead7-f075-e7ad-3274-d9b2bc4c1f44@linux.com>
-        <CAHk-=whrLuVEC0x+XzYUNV2de5kM-k39GkJWwviQNuCdZ0nfKg@mail.gmail.com>
-        <0e847d7f-7bf0-cdd4-ba6e-a742ce877a38@linux.com>
-Date:   Tue, 05 Oct 2021 14:48:47 -0500
-In-Reply-To: <0e847d7f-7bf0-cdd4-ba6e-a742ce877a38@linux.com> (Alexander
-        Popov's message of "Sun, 3 Oct 2021 00:05:56 +0300")
-Message-ID: <87zgrnqmlc.fsf@disp2133>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Tue, 5 Oct 2021 15:51:07 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FE07C061755
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 12:49:16 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id r19so513893lfe.10
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 12:49:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hSuSoFxOGCn2dKc1HCjcYz8H8NJV0h0NOInNBU1gpMA=;
+        b=r5wtOsIeugQcbSyjEU/905zrWR2yTnrfd3lG/w4v8yln/ZETnNb15iirXrqb21Q/SO
+         TEkfrPxqqAWodYR8/iZ0w+09qmRwPy7SPYIbNrIieEdDujUiMOG0kyqZv85hzLj98DXH
+         y2issgbN9WDO+jaoPuyZ2Bw995Nwtlvn7qQs+2QC1QtjPEruZLJ6h1NVwg90mo0swtGl
+         Gqtzl3zB1FwcLxIZqLbQa28WNWcdigta1v0d0BTNgYIo4l82y7hJdMvDVTwuYpWgugRB
+         q5IGQRWZ6oYxSo7vVocD3QCq5TzZLWiRn/S2Ud82TfBBpk/5ZtIb4oG/hk30EUA43SXm
+         xwnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hSuSoFxOGCn2dKc1HCjcYz8H8NJV0h0NOInNBU1gpMA=;
+        b=47q/VjN0w0fAVmDIv2Bn+IBvoaElQs2PG4avWvX7k/OaO+dnH5HRfqBe+Zs9vXcobx
+         B6jNSp3iVEbVKRiihfDf45vuhzDiz2E9xficH/yQdk9zZDpyxJgNf12b9JpR7gc1QBId
+         Rl/ywksXFjCRUYCMud3Jfd9Y07Ht/Ee28AEz5E7Dyv3FfVn38LtaALRpiAehsBAIsGSC
+         VZzJ7bLmyedsvi2hOMfcOX+NW/j7aCEPWlCP3BDVTmd0gWUCfdI+C2AHnTMbPIgZkXNX
+         USrdGkch4ThbCewSBHgaTw4MRXWazXcaq04gXfbq+PUZ3jCHaaNj145Dw4YKd5UsgnbM
+         B2ug==
+X-Gm-Message-State: AOAM530guh7UpOns/gA+8a+OWpnVI4y6hG9nQqbP1HjeoMz64MC+vsbi
+        lI+jITBVHKNYByNoYR96CMOl+zfT6teT4QxRy6OhXA==
+X-Google-Smtp-Source: ABdhPJykTThNIeCyH9BpbVcn03w3Un13AqDopS7RhmmTGPabmxfsRDhqrRXTaLxBykgm3tcdjFmpnL7g7PfeGoPlFYI=
+X-Received: by 2002:a2e:7f05:: with SMTP id a5mr23623339ljd.261.1633463354742;
+ Tue, 05 Oct 2021 12:49:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1mXqRH-008ayT-2v;;;mid=<87zgrnqmlc.fsf@disp2133>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX19LbUxC2F3Wifzbmkmxv5sYTECcq8ioZjc=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa08.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=0.4 required=8.0 tests=ALL_TRUSTED,BAYES_20,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XM_B_SpammyWords,
-        XM_Multi_Part_URI autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        * -0.0 BAYES_20 BODY: Bayes spam probability is 5 to 20%
-        *      [score: 0.1076]
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        *  1.2 XM_Multi_Part_URI URI: Long-Multi-Part URIs
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa08 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.2 XM_B_SpammyWords One or more commonly used spammy words
-X-Spam-DCC: XMission; sa08 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Alexander Popov <alex.popov@linux.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 820 ms - load_scoreonly_sql: 0.15 (0.0%),
-        signal_user_changed: 17 (2.1%), b_tie_ro: 15 (1.8%), parse: 1.85
-        (0.2%), extract_message_metadata: 18 (2.2%), get_uri_detail_list: 2.2
-        (0.3%), tests_pri_-1000: 10 (1.2%), tests_pri_-950: 1.49 (0.2%),
-        tests_pri_-900: 1.32 (0.2%), tests_pri_-90: 138 (16.8%), check_bayes:
-        105 (12.8%), b_tokenize: 14 (1.7%), b_tok_get_all: 14 (1.8%),
-        b_comp_prob: 5 (0.6%), b_tok_touch_all: 65 (7.9%), b_finish: 1.54
-        (0.2%), tests_pri_0: 616 (75.1%), check_dkim_signature: 0.63 (0.1%),
-        check_dkim_adsp: 3.6 (0.4%), poll_dns_idle: 1.40 (0.2%), tests_pri_10:
-        2.3 (0.3%), tests_pri_500: 10 (1.2%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH] Introduce the pkill_on_warn boot parameter
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+References: <20211005155923.173399-1-marcan@marcan.st> <20211005155923.173399-4-marcan@marcan.st>
+ <CACRpkdanbovvXXLAGGZEEiKXXrNnW+8p1sCONQYWmAjVi-m-9A@mail.gmail.com> <3bad7bc3-30ac-851f-57a3-7781dfa23521@marcan.st>
+In-Reply-To: <3bad7bc3-30ac-851f-57a3-7781dfa23521@marcan.st>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 5 Oct 2021 21:49:03 +0200
+Message-ID: <CACRpkdaZ5p1P1S6j5cphVB8dC6JZT+nc9VMdy7qTmT2EFExqng@mail.gmail.com>
+Subject: Re: [PATCH 3/7] soc: apple: Add driver for Apple PMGR power state controls
+To:     Hector Martin <marcan@marcan.st>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alexander Popov <alex.popov@linux.com> writes:
+On Tue, Oct 5, 2021 at 6:15 PM Hector Martin <marcan@marcan.st> wrote:
 
-> On 02.10.2021 19:52, Linus Torvalds wrote:
->> On Sat, Oct 2, 2021 at 4:41 AM Alexander Popov <alex.popov@linux.com> wrote:
->>>
->>> And what do you think about the proposed pkill_on_warn?
->> 
->> Honestly, I don't see the point.
->> 
->> If you can reliably trigger the WARN_ON some way, you can probably
->> cause more problems by fooling some other process to trigger it.
->> 
->> And if it's unintentional, then what does the signal help?
->> 
->> So rather than a "rationale" that makes little sense, I'd like to hear
->> of an actual _use_ case. That's different. That's somebody actually
->> _using_ that pkill to good effect for some particular load.
->
-> I was thinking about a use case for you and got an insight.
->
-> Bugs usually don't come alone. Killing the process that got WARN_ON() prevents
-> possible bad effects **after** the warning. For example, in my exploit for
-> CVE-2019-18683, the kernel warning happens **before** the memory corruption
-> (use-after-free in the V4L2 subsystem).
-> https://a13xp0p0v.github.io/2020/02/15/CVE-2019-18683.html
->
-> So pkill_on_warn allows the kernel to stop the process when the first signs of
-> wrong behavior are detected. In other words, proceeding with the code execution
-> from the wrong state can bring more disasters later.
->
->> That said, I don't much care in the end. But it sounds like a
->> pointless option to just introduce yet another behavior to something
->> that should never happen anyway, and where the actual
->> honest-to-goodness reason for WARN_ON() existing is already being
->> fulfilled (ie syzbot has been very effective at flushing things like
->> that out).
->
-> Yes, we slowly get rid of kernel warnings.
-> However, the syzbot dashboard still shows a lot of them.
-> Even my small syzkaller setup finds plenty of new warnings.
-> I believe fixing all of them will take some time.
-> And during that time, pkill_on_warn may be a better reaction to WARN_ON() than
-> ignoring and proceeding with the execution.
->
-> Is that reasonable?
+> We already broke tradition with the "apple," DT compatible prefix (used
+> to be AAPL for the PowerPC Macs), and these chips aren't even just used
+> in Macs (e.g. the iPad, which in theory people would be able to run
+> Linux on if someone figures out a jailbreak), so perhaps it's time for
+> another break here?
 
-I won't comment on the sanity of the feature but I will say that calling
-it oops_on_warn (rather than pkill_on_warn), and using the usual oops
-facilities rather than rolling oops by hand sounds like a better
-implementation.
+Yeah fair enough. It's probably more intuitive under drivers/soc anyway.
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
 
-Especially as calling do_group_exit(SIGKILL) from a random location is
-not a clean way to kill a process.  Strictly speaking it is not even
-killing the process.
-
-Partly this is just me seeing the introduction of a
-do_group_exit(SIGKILL) call and not likely the maintenance that will be
-needed.  I am still sorting out the problems with other randomly placed
-calls to do_group_exit(SIGKILL) and interactions with ptrace and
-PTRACE_EVENT_EXIT in particular.
-
-Which is a long winded way of saying if I can predictably trigger a
-warning that calls do_group_exit(SIGKILL), on some architectures I can
-use ptrace and  can convert that warning into a way to manipulate the
-kernel stack to have the contents of my choice.
-
-If anyone goes forward with this please use the existing oops
-infrastructure so the ptrace interactions and anything else that comes
-up only needs to be fixed once.
-
-Eric
+Yours,
+Linus Walleij
