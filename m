@@ -2,72 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17C95422B41
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:39:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36C90422B43
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:41:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235549AbhJEOkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 10:40:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47664 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234636AbhJEOky (ORCPT
+        id S235175AbhJEOmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 10:42:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22797 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234084AbhJEOmt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 10:40:54 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DBCEC061753
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 07:39:03 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0d20008b62c5101b4e88fa.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:2000:8b62:c510:1b4e:88fa])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 2DD0D1EC0489;
-        Tue,  5 Oct 2021 16:39:02 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1633444742;
+        Tue, 5 Oct 2021 10:42:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633444858;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=7dBI3lASetDpNcd+YaZnzQv/73q7wDSsq3FUu+gvanQ=;
-        b=lUDmpPcKn3PQ688uR08pB/MGzBROHkFehFVkZgF+sbELIf8nSsW3ghxQ65HYf1Y4hm+B4h
-        bkwKarKtZ/4V2UKSHEf1sYyHmMoj2rcL7MHKo0NFKsmYhAiSoxhc+Uf/QK6bx933QFAyH0
-        iNe7vnQ6D+V9FeIKkGewdkPnJQrrlgE=
-Date:   Tue, 5 Oct 2021 16:38:56 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Paul Menzel <pmenzel@molgen.mpg.de>
-Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx@lists.freedesktop.org
-Subject: Re: `AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT=y` causes AMDGPU to fail on
- Ryzen: amdgpu: SME is not compatible with RAVEN
-Message-ID: <YVxjgFScCZNwliMi@zn.tnic>
-References: <8bbacd0e-4580-3194-19d2-a0ecad7df09c@molgen.mpg.de>
+        bh=wzU/i4Pg+46qgDCgZNJOC2Q5GF1N36X0X0hspBjPG1E=;
+        b=LLWBuOCyUtI0SbhTXUVjoTpBIHsTyoFefhrOybKTuqOOrPukW6mvYXTMKmM7uxDLkCHgu4
+        tcXcQT9iPAG5XLaFFKJJP5WYf2Y0ka8+cBMy6Vua78B6Jsad4LMQL3qw06n/wGBpecRAgS
+        lqTowjZAMUHqwE0tJoM1vEhVjlYUQqI=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-338-0uRaLsIuNNG3Dmd5EsTCAg-1; Tue, 05 Oct 2021 10:40:57 -0400
+X-MC-Unique: 0uRaLsIuNNG3Dmd5EsTCAg-1
+Received: by mail-qv1-f72.google.com with SMTP id z6-20020a056214060600b0037a3f6bd9abso21386472qvw.3
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 07:40:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wzU/i4Pg+46qgDCgZNJOC2Q5GF1N36X0X0hspBjPG1E=;
+        b=UZxzYL69h0Drcv3d4MPY3atcnL2ZJl2yJzxyukadeascR6b/w3UtJ5m3GnXvujHIXJ
+         rr3lf1eeTU33pVRtXDHG6RW887rIGywoLz+q0HQDefIowuOGeeeEx0atiIHrHSkVI+P6
+         3Tb5uRQRs0BCnNjtWBuBcuYaMZsrLEyU+SmKGBISH/vLhJZbp8MnEuH0jI9qAtsN/0cd
+         pESvPT38KUzQ3Gtlu9CgO4tBvqZH+sLTNB04aC9YtK8lgSVfVr0nDrKSxfOA/fPb4SVv
+         dEJjybsS+qRMxX4dDCAbPeB8qm6ee7qRU7GxH5PWlmc/YUH1KtGzFWFuhkuHVSO4jH3d
+         PBnQ==
+X-Gm-Message-State: AOAM533TXV1h1+KhERZT77i1a0/EJn7pcjZJvElSdkTNJY4ievE26htS
+        x0DNayGJSj4wvRTCYGz0XbBT78/GYMQhg5v3va99Xu4Fsx0pqtRB8KtBcR2mPX2qzSiIknJel/c
+        JRIOWUkumdqrzWut2whikpZPQ
+X-Received: by 2002:ac8:12:: with SMTP id a18mr19699739qtg.157.1633444853046;
+        Tue, 05 Oct 2021 07:40:53 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy+t2B4lIEFPAbmTXO3075yF8VAAPnvFzGUfF6eQo+6mowEgcIC92iA+n3CUeM44w62NVx2MQ==
+X-Received: by 2002:ac8:12:: with SMTP id a18mr19699434qtg.157.1633444849664;
+        Tue, 05 Oct 2021 07:40:49 -0700 (PDT)
+Received: from t490s ([2607:fea8:56a2:9100::bed8])
+        by smtp.gmail.com with ESMTPSA id m5sm11623756qtk.88.2021.10.05.07.40.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Oct 2021 07:40:48 -0700 (PDT)
+Date:   Tue, 5 Oct 2021 10:40:47 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>
+Subject: Re: [PATCH 3/3] mm/smaps: Simplify shmem handling of pte holes
+Message-ID: <YVxj753GsZB/m7/J@t490s>
+References: <20210917164756.8586-1-peterx@redhat.com>
+ <20210917164756.8586-4-peterx@redhat.com>
+ <4bcf5e1d-cd86-319a-889f-782755955e04@suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <8bbacd0e-4580-3194-19d2-a0ecad7df09c@molgen.mpg.de>
+In-Reply-To: <4bcf5e1d-cd86-319a-889f-782755955e04@suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05, 2021 at 04:29:41PM +0200, Paul Menzel wrote:
-> Selecting the symbol `AMD_MEM_ENCRYPT` – as
-> done in Debian 5.13.9-1~exp1 [1] – also selects
-> `AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT`, as it defaults to yes,
+Hi, Vlastimil,
 
-I'm assuming that "selecting" is done automatically: alldefconfig,
-olddefconfig?
+On Tue, Oct 05, 2021 at 01:15:05PM +0200, Vlastimil Babka wrote:
+> > Since at it, use the pte_hole() helper rather than dup the page cache lookup.
+> 
+> pte_hole() is for checking a range and we are calling it for single page,
+> isnt't that causing larger overhead in the end? There's xarray involved, so
+> maybe Matthew will know best.
 
-Because CONFIG_AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT only depends on
-CONFIG_AMD_MEM_ENCRYPT and former can be disabled in oldconfig or
-menuconfig etc.
+Per my understanding, pte_hole() calls xas_load() too at last, just like the
+old code; it's just that the xas_for_each() of shmem_partial_swap_usage() will
+only run one iteration, iiuc.
+
+> 
+> > Still keep the CONFIG_SHMEM part so the code can be optimized to nop for !SHMEM.
+> > 
+> > There will be a very slight functional change in smaps_pte_entry(), that for
+> > !SHMEM we'll return early for pte_none (before checking page==NULL), but that's
+> > even nicer.
+> 
+> I don't think this is true, 'unlikely(IS_ENABLED(CONFIG_SHMEM))' will be a
+> compile-time constant false and shortcut the rest of the 'if' evaluation
+> thus there will be no page check? Or I misunderstood.
+
+The page check I was referring is this one in smaps_pte_entry():
+
+	if (!page)
+		return;
+
+After the change, with !SHMEM the "else" block will be kept there (unlike the
+old code as you mentioned it'll be optimized), the smaps_pte_hole_lookup() will
+be noop so it'll be a direct "return" in that "else", then it should return a
+bit earlier by not checking "!page" (because in that case pte_none must have
+page==NULL).
+
+Thanks,
 
 -- 
-Regards/Gruss,
-    Boris.
+Peter Xu
 
-https://people.kernel.org/tglx/notes-about-netiquette
