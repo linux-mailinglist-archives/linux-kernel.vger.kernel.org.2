@@ -2,70 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 538CA422C4E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:23:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2024422C4F
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:23:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235679AbhJEPZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 11:25:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58202 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbhJEPZB (ORCPT
+        id S229936AbhJEPZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 11:25:11 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:23349 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235704AbhJEPZJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 11:25:01 -0400
-Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2558C061749
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 08:23:10 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:9ca4:a53a:9ffa:e003])
-        by albert.telenet-ops.be with bizsmtp
-        id 2FP72600e11933306FP7wH; Tue, 05 Oct 2021 17:23:08 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1mXmHb-002HVs-Hj; Tue, 05 Oct 2021 17:23:07 +0200
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1mXmHa-005kzp-ON; Tue, 05 Oct 2021 17:23:06 +0200
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Sergey Shtylyov <s.shtylyov@omp.ru>
-Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] memory: RENESAS_RPCIF should select RESET_CONTROLLER
-Date:   Tue,  5 Oct 2021 17:23:02 +0200
-Message-Id: <d4383bd1a97c0490c0bdc9dae5695f4230d4a420.1633447185.git.geert+renesas@glider.be>
-X-Mailer: git-send-email 2.25.1
+        Tue, 5 Oct 2021 11:25:09 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HP1Ss45H7zRfk4;
+        Tue,  5 Oct 2021 23:18:53 +0800 (CST)
+Received: from dggpeml100016.china.huawei.com (7.185.36.216) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Tue, 5 Oct 2021 23:23:15 +0800
+Received: from DESKTOP-27KDQMV.china.huawei.com (10.174.148.223) by
+ dggpeml100016.china.huawei.com (7.185.36.216) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Tue, 5 Oct 2021 23:23:15 +0800
+From:   "Longpeng(Mike)" <longpeng2@huawei.com>
+To:     <baolu.lu@linux.intel.com>, <dwmw2@infradead.org>,
+        <will@kernel.org>, <joro@8bytes.org>
+CC:     <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
+        <arei.gonglei@huawei.com>, "Longpeng(Mike)" <longpeng2@huawei.com>
+Subject: [PATCH v2 0/2] iommu/vt-d: boost the mapping process
+Date:   Tue, 5 Oct 2021 23:23:06 +0800
+Message-ID: <20211005152308.1061-1-longpeng2@huawei.com>
+X-Mailer: git-send-email 2.25.0.windows.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.148.223]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpeml100016.china.huawei.com (7.185.36.216)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Renesas RPC-IF driver calls devm_reset_control_get_exclusive(),
-which returns -ENOTSUPP if CONFIG_RESET_CONTROLLER is not enabled.
-Even if this error is ignored, later calls to reset_control_reset() will
-fail with a scary WARN_ON() backtrace.
+Hi guys,
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
- drivers/memory/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+We found that the __domain_mapping() would take too long when
+the memory region is too large, we try to make it faster in this
+patchset. The performance number can be found in PATCH 2, please
+review when you free, thanks.
 
-diff --git a/drivers/memory/Kconfig b/drivers/memory/Kconfig
-index 72c0df129d5c5065..547f956f6c29e9bd 100644
---- a/drivers/memory/Kconfig
-+++ b/drivers/memory/Kconfig
-@@ -210,6 +210,7 @@ config RENESAS_RPCIF
- 	tristate "Renesas RPC-IF driver"
- 	depends on ARCH_RENESAS || COMPILE_TEST
- 	select REGMAP_MMIO
-+	select RESET_CONTROLLER
- 	help
- 	  This supports Renesas R-Car Gen3 or RZ/G2 RPC-IF which provides
- 	  either SPI host or HyperFlash. You'll have to select individual
+Changes v1 -> v2:
+ - Fix compile warning on i386  [Baolu]
+
+Longpeng(Mike) (2):
+  iommu/vt-d: convert the return type of first_pte_in_page to bool
+  iommu/vt-d: avoid duplicated removing in __domain_mapping
+
+ drivers/iommu/intel/iommu.c | 12 +++++++-----
+ include/linux/intel-iommu.h |  8 +++++++-
+ 2 files changed, 14 insertions(+), 6 deletions(-)
+
 -- 
-2.25.1
+1.8.3.1
 
