@@ -2,106 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64E01423376
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 00:25:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B03B0423379
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 00:26:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236799AbhJEW11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 18:27:27 -0400
-Received: from foss.arm.com ([217.140.110.172]:34334 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236697AbhJEW10 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 18:27:26 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D02B56D;
-        Tue,  5 Oct 2021 15:25:34 -0700 (PDT)
-Received: from [192.168.122.166] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D5B2B3F66F;
-        Tue,  5 Oct 2021 15:25:33 -0700 (PDT)
-Subject: Re: [PATCH v3 2/4] PCI: brcmstb: Add ACPI config space quirk
-To:     =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org,
-        lorenzo.pieralisi@arm.com, nsaenz@kernel.org, bhelgaas@google.com,
-        rjw@rjwysocki.net, lenb@kernel.org, robh@kernel.org, kw@linux.com,
-        f.fainelli@gmail.com, bcm-kernel-feedback-list@broadcom.com,
-        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rpi-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20211005153209.GA1083986@bhelgaas>
- <d4b34193-31e5-2f95-6365-b58239c0dabb@arm.com>
- <20211005194301.enb5jddzdgczcolx@pali>
-From:   Jeremy Linton <jeremy.linton@arm.com>
-Message-ID: <694bb355-3b5e-9801-3772-ff784b49a603@arm.com>
-Date:   Tue, 5 Oct 2021 17:25:33 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S236832AbhJEW2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 18:28:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44456 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229974AbhJEW2h (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 18:28:37 -0400
+Received: from a3.inai.de (a3.inai.de [IPv6:2a01:4f8:10b:45d8::f5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB820C061749;
+        Tue,  5 Oct 2021 15:26:46 -0700 (PDT)
+Received: by a3.inai.de (Postfix, from userid 25121)
+        id 5858F586F49B5; Wed,  6 Oct 2021 00:26:45 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by a3.inai.de (Postfix) with ESMTP id 5726960D2142F;
+        Wed,  6 Oct 2021 00:26:45 +0200 (CEST)
+Date:   Wed, 6 Oct 2021 00:26:45 +0200 (CEST)
+From:   Jan Engelhardt <jengelh@inai.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Paul <paulmck@linux.vnet.ibm.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        "Joel Fernandes, Google" <joel@joelfernandes.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, rcu <rcu@vger.kernel.org>,
+        netfilter-devel <netfilter-devel@vger.kernel.org>,
+        coreteam <coreteam@netfilter.org>,
+        netdev <netdev@vger.kernel.org>
+Subject: Re: [RFC][PATCH] rcu: Use typeof(p) instead of typeof(*p) *
+In-Reply-To: <CAHk-=whFhTofNk5G6dYFoFJC10EKzGdZVQdQygXHXWm_jodwBQ@mail.gmail.com>
+Message-ID: <qpnqonn-qr21-pr7s-sno5-70s1o1pq1or@vanv.qr>
+References: <20211005094728.203ecef2@gandalf.local.home> <ef5b1654-1f75-da82-cab8-248319efbe3f@rasmusvillemoes.dk> <639278914.2878.1633457192964.JavaMail.zimbra@efficios.com> <826o327o-3r46-3oop-r430-8qr0ssp537o3@vanv.qr> <20211005144002.34008ea0@gandalf.local.home>
+ <srqsppq-p657-43qq-np31-pq5pp03271r6@vanv.qr> <20211005154029.46f9c596@gandalf.local.home> <20211005163754.66552fb3@gandalf.local.home> <pn2qp6r2-238q-rs8n-p8n0-9s37sr614123@vanv.qr> <CAHk-=whFhTofNk5G6dYFoFJC10EKzGdZVQdQygXHXWm_jodwBQ@mail.gmail.com>
+User-Agent: Alpine 2.25 (LSU 592 2021-09-18)
 MIME-Version: 1.0
-In-Reply-To: <20211005194301.enb5jddzdgczcolx@pali>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On 10/5/21 2:43 PM, Pali Rohár wrote:
-> Hello!
-> 
-> On Tuesday 05 October 2021 10:57:18 Jeremy Linton wrote:
->> Hi,
+On Tuesday 2021-10-05 23:27, Linus Torvalds wrote:
+>On Tue, Oct 5, 2021 at 2:09 PM Jan Engelhardt <jengelh@inai.de> wrote:
 >>
->> On 10/5/21 10:32 AM, Bjorn Helgaas wrote:
->>> On Thu, Aug 26, 2021 at 02:15:55AM -0500, Jeremy Linton wrote:
->>>> Additionally, some basic bus/device filtering exist to avoid sending
->>>> config transactions to invalid devices on the RP's primary or
->>>> secondary bus. A basic link check is also made to assure that
->>>> something is operational on the secondary side before probing the
->>>> remainder of the config space. If either of these constraints are
->>>> violated and a config operation is lost in the ether because an EP
->>>> doesn't respond an unrecoverable SERROR is raised.
->>>
->>> It's not "lost"; I assume the root port raises an error because it
->>> can't send a transaction over a link that is down.
->>
->> The problem is AFAIK because the root port doesn't do that.
-> 
-> Interesting! Does it mean that PCIe Root Complex / Host Bridge (which I
-> guess contains also logic for Root Port) does not signal transaction
-> failure for config requests? Or it is just your opinion? Because I'm
-> dealing with similar issues and I'm trying to find a way how to detect
-> if some PCIe IP signal transaction error via AXI SLVERR response OR it
-> just does not send any response back. So if you know some way how to
-> check which one it is, I would like to know it too.
+>> Illegal.
+>> https://en.cppreference.com/w/c/language/conversion
+>> subsection "Pointer conversion"
+>> "No other guarantees are offered"
+>
+>Well, we happily end up casting pointers to 'unsigned long' and back,
 
-This is my _opinion_ based on what I've heard of some other IP 
-integration issues, and what i've seen poking at this one from the 
-perspective of a SW guy rather than a HW guy. So, basically worthless. 
-But, you should consider that most of these cores/interconnects aren't 
-aware of PCIe completion semantics so its the root ports responsibility 
-to say, gracefully translate a non-posted write that doesn't have a 
-completion for the interconnects its attached to, rather than tripping 
-something generic like a SLVERR.
+Yes, that wiki had only a succinct summary of pointer-pointer conversions.
+http://www.open-std.org/jtc1/sc22/wg14/www/docs/n1256.pdf section 6.3.2.3
+(pdfpage 59) has the details, including pointer-integer conversions.
 
-Anyway, for this I would poke around the pile of exception registers, 
-with your specific processors manual handy because a lot of them are 
-implementation defined.
->>>
->>> Is "SERROR" an ARM64 thing?  My guess is the root port would raise an
->>> Unsupported Request error or similar, and the root complex turns that
->>> into a system-specific SERROR?
-> 
-> Yes, SError is arm64 specific. It is asynchronous CPU interrupt and
-> syndrome code then contains what happened.
-> 
->> AFAIK, what is happening here the CPU core has an outstanding R/W request
->> for which it never receives a response from the root port. So basically its
->> an interconnect protocol violation that the CPU is complaining about rather
->> than something PCIe specific.
-> 
-> Could you describe (ideally in commit message) which SError is
-> triggered? Normally if kernel receive SError interrupt it also puts into
-> dmesg or oops message also syndrome code which describe what kind of
-> error / event occurred. It could help also to other understand what is
-> happening there.
-> 
+>So it's not like the kernel deeply cares about theoretical portability.
 
+All things considered, that's good enough.
+Needless to say, how many times has the compiler changed and then
+someone complaind and someone else replied "standard told you so". ;-)
