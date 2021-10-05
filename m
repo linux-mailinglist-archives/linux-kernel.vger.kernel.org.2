@@ -2,95 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96844422CDE
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:45:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 732DF422CE0
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:45:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236039AbhJEPrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 11:47:20 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:57064 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236085AbhJEPrM (ORCPT
+        id S236229AbhJEPr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 11:47:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35454 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236196AbhJEPrX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 11:47:12 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 630B2223E4;
-        Tue,  5 Oct 2021 15:45:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1633448720;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=uuo619kt7bkNKFrrKl8h3u4o5idsWzi7mbnu9WkaSzE=;
-        b=kGvHdt8iCTviLzycUyVbHF8p7RLV1h3jNsLKBo0E+dEG1RLkyRNFoHbyIFXBHO3anrBH0M
-        2BxkE0b3xNkKYP6uhWyoQwhhJu7mgKamcG9lMv5+J1ZFAYunL5tgdlkUcC68VrIkbi2yQq
-        rPx9vU+GalY6hhJzhs0JBX/+l8dSmm0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1633448720;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=uuo619kt7bkNKFrrKl8h3u4o5idsWzi7mbnu9WkaSzE=;
-        b=E9aKGj5wuWtUQDJLDtfVoqVyBgSc5dnpxcov91wLXfjBk2U+Z/CVtuB3m21UQEvz2lwj7Y
-        Gfx3+C5CTaYQLfCA==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 59DF7A3B81;
-        Tue,  5 Oct 2021 15:45:20 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 9057DDA7F3; Tue,  5 Oct 2021 17:45:00 +0200 (CEST)
-Date:   Tue, 5 Oct 2021 17:45:00 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Hamza Mahfooz <someguy@effective-light.com>
-Cc:     linux-kernel@vger.kernel.org, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: send: add otime support to send_utimes()
-Message-ID: <20211005154500.GG9286@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        Hamza Mahfooz <someguy@effective-light.com>,
-        linux-kernel@vger.kernel.org, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20211005153514.4281-1-someguy@effective-light.com>
+        Tue, 5 Oct 2021 11:47:23 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2378CC061749
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 08:45:33 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id b8so553761edk.2
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 08:45:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=K2e0futlAUbG+ZdLC/9LMtsaBsYQ0WPqxpYvW+YkyEo=;
+        b=VRCTSDdGeAGVvNS1RUoTz5PszOfL72feK18/dfZnw9XHNt+6kQUg80oHAV7pKyB4yT
+         AWZC5ymtzB39r5pB8ciNshfO6VEtHwvOS/gRieB40iZnMAUKRumhOabt3IYkHfbuMlws
+         LqTSE5POXxu7Csyv+DCju2OliIXZM9am8CZMlHPnP0lkKbf8h5zaDnPgGkYkyGWlwH6s
+         VQ6/TbjksPZgUh4cZGq1c1vfDJCu7CjxlF/U9JMSoE+3SwMTaRwsI9RI12aPOrjWxaK2
+         7on9qeQptckV/kDe8Awtzs6rA/wLBNDl4ZsWXSpuYgbXNNUhiAYTZ2AP3Q3BtzK+qSzL
+         OdZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=K2e0futlAUbG+ZdLC/9LMtsaBsYQ0WPqxpYvW+YkyEo=;
+        b=FeqW+xCuYetGQjbj8/2zcLkRO6WwIwEKNtob7cpYJKY7c5JSbrzyjbkG0DpgNcQ6Be
+         y0pIsVdXaoKvGLNULLlFyLTnxNQuqmbjH6Unur1VCCK+q6dhftrJu7CHKcBUmoOVy9Bh
+         BQGInJximCEcyupe9Isf3SWVkgF0DqR8R7yrvtvcOkhQt0T6wiWI6QbpeK5ERql9AHxE
+         gIYEoEm8L6rWbQ6a3Fylp9RPaCePsNCcZR2Npi9Z4jVdLFJVZpR/S9ocGPH6gBp+OQcJ
+         u2EI1xg3lEXRXNIvoAsq/MIt2HCfi9TMFiGXgjHWW4hMM/FOhboCQolqKuo85OC4uZhd
+         JUDA==
+X-Gm-Message-State: AOAM530OHjy3xV5/RJaptCyoubQtBH67mbN++B7GjqdcNwM/nA+I8iYB
+        KfTrH9AkEacTUqKS/KIf2pBNVXYSFWCFTl8Hps2a
+X-Google-Smtp-Source: ABdhPJwSAmk0A7TVnFboIgJpdzqg4ajMWT69rrynDmD428vE3IVUAInjGd+MJVcv0aCPu2UuQlLCg1XO4RvUZ0WzUhY=
+X-Received: by 2002:a17:906:2cd6:: with SMTP id r22mr24839647ejr.398.1633448731742;
+ Tue, 05 Oct 2021 08:45:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211005153514.4281-1-someguy@effective-light.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+References: <20210809101609.148-1-xieyongji@bytedance.com> <20211004112623-mutt-send-email-mst@kernel.org>
+ <20211005062359-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20211005062359-mutt-send-email-mst@kernel.org>
+From:   Yongji Xie <xieyongji@bytedance.com>
+Date:   Tue, 5 Oct 2021 23:45:31 +0800
+Message-ID: <CACycT3tUSem1ovOjykmg2Y5+uUaqsiDkFAjrt7SFkJCc9LGbAA@mail.gmail.com>
+Subject: Re: [PATCH v5] virtio-blk: Add validation for block size in config space
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        linux-block@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Kevin Wolf <kwolf@redhat.com>, Christoph Hellwig <hch@lst.de>,
+        Jens Axboe <axboe@kernel.dk>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05, 2021 at 11:35:14AM -0400, Hamza Mahfooz wrote:
-> Commit 766702ef49b8 ("Btrfs: add/fix comments/documentation for
-> send/receive") suggests that, otime support should be added to
-> send_utimes() after btrfs gets otime support. So, since btrfs has had otime
-> support for many years, we should add otime support to send_utimes().
-> 
-> Signed-off-by: Hamza Mahfooz <someguy@effective-light.com>
-> ---
->  fs/btrfs/send.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-> index 72f9b865e847..0bee9f7a45da 100644
-> --- a/fs/btrfs/send.c
-> +++ b/fs/btrfs/send.c
-> @@ -2544,7 +2544,7 @@ static int send_utimes(struct send_ctx *sctx, u64 ino, u64 gen)
->  	TLV_PUT_BTRFS_TIMESPEC(sctx, BTRFS_SEND_A_ATIME, eb, &ii->atime);
->  	TLV_PUT_BTRFS_TIMESPEC(sctx, BTRFS_SEND_A_MTIME, eb, &ii->mtime);
->  	TLV_PUT_BTRFS_TIMESPEC(sctx, BTRFS_SEND_A_CTIME, eb, &ii->ctime);
-> -	/* TODO Add otime support when the otime patches get into upstream */
+On Tue, Oct 5, 2021 at 6:42 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+>
+> On Mon, Oct 04, 2021 at 11:27:29AM -0400, Michael S. Tsirkin wrote:
+> > On Mon, Aug 09, 2021 at 06:16:09PM +0800, Xie Yongji wrote:
+> > > An untrusted device might presents an invalid block size
+> > > in configuration space. This tries to add validation for it
+> > > in the validate callback and clear the VIRTIO_BLK_F_BLK_SIZE
+> > > feature bit if the value is out of the supported range.
+> > >
+> > > And we also double check the value in virtblk_probe() in
+> > > case that it's changed after the validation.
+> > >
+> > > Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
+> >
+> > So I had to revert this due basically bugs in QEMU.
+> >
+> > My suggestion at this point is to try and update
+> > blk_queue_logical_block_size to BUG_ON when the size
+> > is out of a reasonable range.
+> >
+> > This has the advantage of fixing more hardware, not just virtio.
+> >
+>
+> Stefan also pointed out this duplicates the logic from
+>
+>         if (blksize < 512 || blksize > PAGE_SIZE || !is_power_of_2(blksize))
+>                 return -EINVAL;
+>
+>
+> and a bunch of other places.
+>
+>
+> Would it be acceptable for blk layer to validate the input
+> instead of having each driver do it's own thing?
+> Maybe inside blk_queue_logical_block_size?
+>
 
-Are you going after TODOs in the btrfs code? Some of them are stale or
-don't reveal the real scope of the required changes.
+Now the nbd and loop driver will validate the blksize and return error
+if it's invalid. But the nvme and null_blk driver just corrects the
+blksize to a reasonable range without returning any error. I'm not
+sure which way the block layer should follow. Or just simplify the
+logic in nbd and loop driver?
 
-> +	TLV_PUT_BTRFS_TIMESPEC(sctx, BTRFS_SEND_A_OTIME, eb, &ii->otime);
-
-For example this adds a new data to 'utimes' in the protocol v1, which
-would require a major update. One such update is in progress and would
-probably gather all pending updates though I'm not sure is this one in
-particular is there.
-
-So the reason why it can't be done by that is that the send steam would
-be invalid and would break the receive. Also, testing changes is good.
+Thanks,
+Yongji
