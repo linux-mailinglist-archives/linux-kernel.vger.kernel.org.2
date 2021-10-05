@@ -2,107 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D835142324D
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 22:46:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AD0D42324F
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 22:47:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235994AbhJEUse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 16:48:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49696 "EHLO
+        id S236059AbhJEUsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 16:48:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235545AbhJEUsc (ORCPT
+        with ESMTP id S231387AbhJEUsu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 16:48:32 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DA5FC061749
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 13:46:41 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 124-20020a251182000000b005a027223ed9so344183ybr.13
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 13:46:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=FO2aPS6pZorVRBf50npiyQHLDER/25pHVLgerA3vbnw=;
-        b=nxZ5J3JjL9zO6250ntxxadz7P6bGzDZZbF0uQ1Nezk/oZEzsxgLwA6oiYSR36lkAju
-         XO/vTS3YP+f1a3vaXlYnmDgkMbqA9+jcW03Uf7nfjRoe3hE5fhSIHWjodDpo1R5hGsJR
-         42v/HL+BMlskuKM4D/fpVCZi8FGeoMIEL7cg/JLIFCToHF72KbXhBN5rbdjMt1yjkLZW
-         xAoQKbZlBtBJH/XQtemXl6pzSVqX/UwNNgj8NhADrJ4WBWmmQ3qmYrB5G+jT5aoJ5Sxl
-         FlLhHGEjArqRWhCm+C1pPWMItceRx8BzWfvWYkdyVoN2sNEYzBPIa5ahwc8t8cC5GW/u
-         pQUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=FO2aPS6pZorVRBf50npiyQHLDER/25pHVLgerA3vbnw=;
-        b=YamRcRlF7L8kvfm6a1+LKIVihMl5X0toqwuwF++2DfGuL/lXThkytHz1cMOjKfO9eX
-         bjZ/7wDNrpjZHE0BaaFMDeVSaRWshtPO2+8E5B1B9Uc6Wd5250/q8fDSJOOE89l+L0on
-         oLLLdHLW7b065w+tDxC2NYZfC/lYvh51nSwcnlOViGSJ40ACUwb8D+z7YnH4rCJUQdWB
-         xm15zyDaq7zwy2kXME8NKAjeBcAnJZ4Da2GFIKmOok1xrWdwVKyUtnqyJhhQyNss6Dq5
-         BWiJUZmw/asRCIiVjX2MUQrXjPujsI5171j7dXFfEcTEtq0CLLwooHzWq+paYrbPTdMV
-         q2tg==
-X-Gm-Message-State: AOAM531FkPLZ/ansLTyvJiiGsNG8jPckkH+9Wo804acgukqYJYI2IFKD
-        4BU4ieTeNkLKmrkrucoNKaWyZCoimrvwSA==
-X-Google-Smtp-Source: ABdhPJywvvfcad0JOqum5sPHoZaLr0HdhWwsl/ZHK4gSxz2cvmVMuygei4IJ4c+14g7d2HnICdzK01c/hRyFHw==
-X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:d252:3bd5:53cc:fc46])
- (user=dlatypov job=sendgmr) by 2002:a25:3fc1:: with SMTP id
- m184mr25047881yba.236.1633466800517; Tue, 05 Oct 2021 13:46:40 -0700 (PDT)
-Date:   Tue,  5 Oct 2021 13:46:32 -0700
-Message-Id: <20211005204632.3132652-1-dlatypov@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.882.g93a45727a2-goog
-Subject: [PATCH] kunit: fix kernel-doc warnings due to mismatched arg names
-From:   Daniel Latypov <dlatypov@google.com>
-To:     brendanhiggins@google.com, davidgow@google.com
-Cc:     linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org,
-        Daniel Latypov <dlatypov@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 5 Oct 2021 16:48:50 -0400
+Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 840A3C061749;
+        Tue,  5 Oct 2021 13:46:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=04u3WsEUre5JoPn7YphGqtZyhd7Lgt+VnEthZ3R9VFU=; b=eFRIsc6dkAlQmzKiDNsowjX2Fw
+        AdSF71DjCvnbMmpHPYjcCP8p9S4V7GxMTbVL0/UD1aM1CyHDJ5aBQii3NtpUX9GxM/5Qd3Bwexk5L
+        RlRMySPXGG9EcS8mf+BXBb0Pvmbw0VwghCJi3xwZoGwQVPneSzEks0DGoQjaQr9AiOHdNCN/7mIw+
+        ZDb+8SWH8P7pKKibcGxI7XGBi/kgiYl6y29QacKlECACIRhe0ME8StVYbmKWv8gYGP7y1Y5+cVtnW
+        Apk8/p4HjVyXc/g198byJRUmTKjdsGXD+FBUrhTw/PbB6RQZ5QdTR0BjKeMy54YXtybszdZ8QoG3v
+        MePQa/qA==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mXrKw-00BrXA-6w; Tue, 05 Oct 2021 20:46:54 +0000
+Subject: Re: linux-next: Tree for Oct 5 (warnings: a. trace; b. mm/migrate)
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+References: <20211005190628.1f26b13d@canb.auug.org.au>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <c1d9e328-ad7c-920b-6c24-9e1598a6421c@infradead.org>
+Date:   Tue, 5 Oct 2021 13:46:52 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <20211005190628.1f26b13d@canb.auug.org.au>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 7122debb4367 ("kunit: introduce
-kunit_kmalloc_array/kunit_kcalloc() helpers") added new functions but
-called last arg `flags`, unlike the existing code that used `gfp`.
-This only is an issue in test.h, test.c still used `gfp`.
+On 10/5/21 1:06 AM, Stephen Rothwell wrote:
+> Hi all,
+> 
+> Changes since 20211001:
+> 
 
-But the documentation was copy-pasted with the old names, leading to
-kernel-doc warnings.
+on x86_64:
 
-Do s/flags/gfp to make the names consistent and fix the warnings.
+a. randconfig: KCONFIG_SEED=0xBFBEA13C
+../kernel/trace/trace.c:1712:13: error: 'trace_create_maxlat_file' defined but not used [-Werror=unused-function]
+  static void trace_create_maxlat_file(struct trace_array *tr,
 
-Fixes: 7122debb4367 ("kunit: introduce kunit_kmalloc_array/kunit_kcalloc() helpers")
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Daniel Latypov <dlatypov@google.com>
----
- include/kunit/test.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+b. randconfig: KCONFIG_SEED=0xFD1CE406
 
-diff --git a/include/kunit/test.h b/include/kunit/test.h
-index 24b40e5c160b..018e776a34b9 100644
---- a/include/kunit/test.h
-+++ b/include/kunit/test.h
-@@ -613,7 +613,7 @@ void kunit_remove_resource(struct kunit *test, struct kunit_resource *res);
-  * and is automatically cleaned up after the test case concludes. See &struct
-  * kunit_resource for more information.
-  */
--void *kunit_kmalloc_array(struct kunit *test, size_t n, size_t size, gfp_t flags);
-+void *kunit_kmalloc_array(struct kunit *test, size_t n, size_t size, gfp_t gfp);
- 
- /**
-  * kunit_kmalloc() - Like kmalloc() except the allocation is *test managed*.
-@@ -657,9 +657,9 @@ static inline void *kunit_kzalloc(struct kunit *test, size_t size, gfp_t gfp)
-  *
-  * See kcalloc() and kunit_kmalloc_array() for more information.
-  */
--static inline void *kunit_kcalloc(struct kunit *test, size_t n, size_t size, gfp_t flags)
-+static inline void *kunit_kcalloc(struct kunit *test, size_t n, size_t size, gfp_t gfp)
- {
--	return kunit_kmalloc_array(test, n, size, flags | __GFP_ZERO);
-+	return kunit_kmalloc_array(test, n, size, gfp | __GFP_ZERO);
- }
- 
- void kunit_cleanup(struct kunit *test);
+../mm/migrate.c:3216:22: error: 'migrate_on_reclaim_callback' defined but not used [-Werror=unused-function]
+  static int __meminit migrate_on_reclaim_callback(struct notifier_block *self,
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+../mm/migrate.c:3197:13: error: 'set_migration_target_nodes' defined but not used [-Werror=unused-function]
+  static void set_migration_target_nodes(void)
+              ^~~~~~~~~~~~~~~~~~~~~~~~~~
 
-base-commit: 3b29021ddd10cfb6b2565c623595bd3b02036f33
+
+(example usage to get the randconfig files:
+KCONFIG_SEED=0xBFBEA13C make [ARCH=x86_64] randconfig
+)
+
 -- 
-2.33.0.882.g93a45727a2-goog
-
+~Randy
