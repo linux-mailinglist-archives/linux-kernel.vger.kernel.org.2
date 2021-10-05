@@ -2,258 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17EB1421B8D
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 03:13:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79BEC421B8A
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 03:13:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230490AbhJEBPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 21:15:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58650 "EHLO
+        id S229659AbhJEBP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 21:15:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230405AbhJEBPf (ORCPT
+        with ESMTP id S230402AbhJEBP1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 21:15:35 -0400
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 188C7C061745
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 18:13:46 -0700 (PDT)
-Received: by mail-qk1-x749.google.com with SMTP id v17-20020ae9e311000000b0045ecf8d62fdso1544015qkf.22
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 18:13:46 -0700 (PDT)
+        Mon, 4 Oct 2021 21:15:27 -0400
+Received: from mail-oo1-xc34.google.com (mail-oo1-xc34.google.com [IPv6:2607:f8b0:4864:20::c34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05E48C061745
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 18:13:38 -0700 (PDT)
+Received: by mail-oo1-xc34.google.com with SMTP id z11-20020a4ad1ab000000b0029f085f5f64so5939991oor.5
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 18:13:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=PskLaVlu3EvLnhUt+DKXJ60aRt8aTWENBT4fm4khzhI=;
-        b=BCEj+Fi9962Qvds1QBfK8ZZr5QbVRxEYyRgYxhlguhj9I6DidgTfOEYgSOLW0C6RF9
-         eS5DXCKp0JAB0Fs7MIMOQI2mZbBo4peFTPMtBlbQaZ5uRYS3BP8MgMLMD+I3x0HoTHeK
-         khsGVprTYE+GZS2ClyYi5eYxX7+YwVqMNtlq1Ich9+GpHyPlq5IfuGKMRKRNtNsXxbLj
-         Zetf2TV0p3ZnursJ6cDO/2tgkx7LPom72IKYFmuLDwmRi0yGT2Dw3oKSbaERwtnAwuLn
-         +uEQuM6VKG0PQSO/9mcX5fyAVpe547fZaUJXHRYzj1MLirvnPc12LoYyb52B/kEX0T7Z
-         jQAg==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=FhjJcl5G08f1Lwd0tiKxFVrUfQIhp84hVF46bA3Hyt0=;
+        b=eXtRfDd/uRe04F7H2s/WLRp6HjPItczeLz25u0o5/iLUwkOKlcSQ2KOsXyPjImrvap
+         fOteC7wUutj7TnTZcmRl/4uyHPmtsw+FNqk5LC0xqpcq2WOkjUzDxFw/seQTAgaZEq0u
+         Z064tyCeIctDwkVWTg4gyr3Id/tmo7LBLJw9LcmkFtOOyLMc9hmUl+ZIjf10BuD9DRJG
+         r0dHyrI1e6Ary/AtEVDCmTJYmb450d/2e0+HkevTEz12RXRLHDccCQoVwDzyUdaL25J1
+         rTbSP1IxwteK0V92PC9Cu6V6ZM00vQ5ItzJpWj7PP+AMyxEt4XrcyA6XOn8BL85vUY61
+         KQiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=PskLaVlu3EvLnhUt+DKXJ60aRt8aTWENBT4fm4khzhI=;
-        b=tZAjLK0daAMkgVUWDZBDHHXUx/QZ0G4po4dbuddJ3b200GhDRpgnYFjDyzW9w/qdw+
-         dTGIfUJU2klJjoF5RXnCwCm9FYXppcj+2+52lkEdaUAvfdyiJaSgcnlFGWUKR1FQrHpq
-         WCkFjTAnh6Z7CA1KmP351fIHTu5bN5D8OVi3mT/RYnc47/tq28cYWDis45uQxiEHtDOv
-         pS0jBy/GRZAWRbVaJCDgHKCgxx7uNwyIpMjHwHEEw/U7g86oQkwYtiFEFBengUBNHDd/
-         4hxaMRLqh3vHxajXgSKQ2qc8BGaXzNejA/up1mZQMkHLErV5D1ZPJORoFfOrTbdpbh2l
-         NNBg==
-X-Gm-Message-State: AOAM530/tya8S40I/VnUyG3CjjmuPjTG5bmjrTM4d7taEbcUPx0C9DSq
-        QSnwlOcBNPXO4KAfkO6vi/CSrsIVB2SwXA==
-X-Google-Smtp-Source: ABdhPJz4/2NMAjDLlM8O2q8EtsCYY0jRMlGW2p4CqsOdY/EMUM/1WorWGvrZiGc5v971wx08KT60UAnxES3i/A==
-X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:ee03:329e:90be:b395])
- (user=dlatypov job=sendgmr) by 2002:a05:6214:2026:: with SMTP id
- 6mr13866408qvf.61.1633396425279; Mon, 04 Oct 2021 18:13:45 -0700 (PDT)
-Date:   Mon,  4 Oct 2021 18:13:40 -0700
-Message-Id: <20211005011340.2826268-1-dlatypov@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.800.g4c38ced690-goog
-Subject: [PATCH v2] kunit: tool: yield output from run_kernel in real time
-From:   Daniel Latypov <dlatypov@google.com>
-To:     brendanhiggins@google.com, davidgow@google.com
-Cc:     linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org,
-        Daniel Latypov <dlatypov@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FhjJcl5G08f1Lwd0tiKxFVrUfQIhp84hVF46bA3Hyt0=;
+        b=8AvESZhAf8qe9lUIDyDeje7K2dPt1B/WK5SFpxhZgNklBe0AsdwVwIj6qgzWwJlMZ2
+         Hcu559VMn9vxzbK8KbikZcMsq+ry9skGFC3Vd6O6QZYDl3OK9NZr+SMIvHcLpddKO13W
+         MirjIyrK7Uzydo29ku1gYOSPTareVnQO4Jv7lNU0iM6oL5dsat0kR38Ml/EAMLTUKZ4m
+         t591qfZH6q8IwvD6+BMruo9BfA76VikUi3DBWlbD+D000XhPU0SVcg8Uk4pORrH5vrOu
+         GrfYt2X83U/lsC0qdt0VIX1XeK6uF5VqrUtWFwkgzpoFd5PsOlpj5rYQJhhcX2ttYXd+
+         PzLg==
+X-Gm-Message-State: AOAM530Ij4PxmTXy3src690WGn7/UYQAruYPiaqvD5QWF/W4/hzgm56S
+        EvVTYvhWnM1ZzX0a1QUEfHh6wg==
+X-Google-Smtp-Source: ABdhPJwscAu3XElmUS4NzdpIXUSeVwlzXO/gNzH94JgHtRT4nX8WBTBx10/B6U/hLsgRKreF0K15LA==
+X-Received: by 2002:a4a:eb12:: with SMTP id f18mr11394452ooj.98.1633396417336;
+        Mon, 04 Oct 2021 18:13:37 -0700 (PDT)
+Received: from ripper ([2600:1700:a0:3dc8:205:1bff:fec0:b9b3])
+        by smtp.gmail.com with ESMTPSA id l1sm2246068oop.28.2021.10.04.18.13.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Oct 2021 18:13:36 -0700 (PDT)
+Date:   Mon, 4 Oct 2021 18:15:20 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Abhinav Kumar <abhinavk@codeaurora.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Kalyan Thota <kalyan_t@codeaurora.org>,
+        Kuogee Hsieh <khsieh@codeaurora.org>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 3/5] drm/msm/dp: Support up to 3 DP controllers
+Message-ID: <YVunKNXj+fxH/e1L@ripper>
+References: <20211001180058.1021913-1-bjorn.andersson@linaro.org>
+ <20211001180058.1021913-4-bjorn.andersson@linaro.org>
+ <CAE-0n50=EWg1GKuTnRi=zA0ufO1Xg4mucYaqNUZ+wgYNDRcWLA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAE-0n50=EWg1GKuTnRi=zA0ufO1Xg4mucYaqNUZ+wgYNDRcWLA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, `run_kernel()` dumps all the kernel output to a file
-(.kunit/test.log) and then opens the file and yields it to callers.
-This made it easier to respect the requested timeout, if any.
+On Mon 04 Oct 17:58 PDT 2021, Stephen Boyd wrote:
 
-But it means that we can't yield the results in real time, either to the
-parser or to stdout (if --raw_output is set).
+> Quoting Bjorn Andersson (2021-10-01 11:00:56)
+> > Based on the removal of the g_dp_display and the movement of the
+> > priv->dp lookup into the DP code it's now possible to have multiple
+> > DP instances.
+> >
+> > In line with the other controllers in the MSM driver, introduce a
+> > per-compatible list of base addresses which is used to resolve the
+> > "instance id" for the given DP controller. This instance id is used as
+> > index in the priv->dp[] array.
+> >
+> > Then extend the initialization code to initialize struct drm_encoder for
+> > each of the registered priv->dp[] and update the logic for associating
+> > each struct msm_dp with the struct dpu_encoder_virt.
+> >
+> > Lastly, bump the number of struct msm_dp instances carries by priv->dp
+> > to 3, the currently known maximum number of controllers found in a
+> > Qualcomm SoC.
+> >
+> > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > ---
+> 
+> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+> 
+> Some nits below.
+> 
+> >
+> > Changes since v2:
+> > - Added MSM_DRM_DP_COUNT to link the two 3s
+> > - Moved NULL check for msm_dp_debugfs_init() to the call site
+> > - Made struct dp_display_private->id unsigned
+> >
+> > I also implemented added connector_type to each of the DP instances and
+> > propagated this to dp_drm_connector_init() but later dropped this again per
+> > Doug's suggestion that we'll base this on the presence/absence of a associated
+> > drm bridge or panel.
+> 
+> Sad but OK. We can take up that topic in another patch.
+> 
 
-This change spins up a background thread to enforce the timeout, which
-allows us to yield the kernel output in real time, while also copying it
-to the .kunit/test.log file.
-It's also careful to ensure that the .kunit/test.log file is complete,
-even in the kunit_parser throws an exception/otherwise doesn't consume
-every line, see the new `finally` block and unit test.
+So you don't agree with the solution from sn65dsi86?
 
-For example:
+The only reason I haven't yet send this other patch is the of_graph
+thing Doug an I are discussing on the RFC. But if we agree to base this
+on compatible we could decide to look only for panels for the edp
+instances and avoid that problem...
 
-$ ./tools/testing/kunit/kunit.py run --arch=x86_64 --raw_output
-<configure + build steps>
-...
-<can now see output from QEMU in real time>
+We would however never be able to describe the USB-less DP instance with
+a panel explicitly described in DT going that route.
 
-This does not currently have a visible effect when --raw_output is not
-passed, as kunit_parser.py currently only outputs everything at the end.
-But that could change, and this patch is a necessary step towards
-showing parsed test results in real time.
+> > diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
+> > index f655adbc2421..875b07e7183d 100644
+> > --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
+> > +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
+> > @@ -203,8 +204,10 @@ static int dpu_kms_debugfs_init(struct msm_kms *kms, struct drm_minor *minor)
+> >         dpu_debugfs_vbif_init(dpu_kms, entry);
+> >         dpu_debugfs_core_irq_init(dpu_kms, entry);
+> >
+> > -       if (priv->dp)
+> > -               msm_dp_debugfs_init(priv->dp, minor);
+> > +       for (i = 0; i < ARRAY_SIZE(priv->dp); i++) {
+> > +               if (priv->dp[i])
+> > +                       msm_dp_debugfs_init(priv->dp[i], minor);
+> 
+> This seems to cause a bunch of debugfs warnings when there are multiple
+> nodes created with the same name.
+> 
 
-Signed-off-by: Daniel Latypov <dlatypov@google.com>
----
-v1 -> v2: restore stdin=subprocess.PIPE to avoid a UML (?) bug.
-https://lore.kernel.org/linux-kselftest/CABVgOSnXBtCHEMDYYqrbXWvKcrSbY9BXP4MJjsT+vzZS6W4J=w@mail.gmail.com/
----
- tools/testing/kunit/kunit_kernel.py    | 75 +++++++++++++++-----------
- tools/testing/kunit/kunit_tool_test.py | 17 ++++++
- 2 files changed, 62 insertions(+), 30 deletions(-)
+Yes, that's true. I have a half-baked follow up that attempts to create
+instance-specific debugfs directories. Can we take that in a follow up?
 
-diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
-index 2c6f916ccbaf..450f1c386e01 100644
---- a/tools/testing/kunit/kunit_kernel.py
-+++ b/tools/testing/kunit/kunit_kernel.py
-@@ -12,7 +12,8 @@ import subprocess
- import os
- import shutil
- import signal
--from typing import Iterator, Optional, Tuple
-+import threading
-+from typing import Iterator, List, Optional, Tuple
- 
- from contextlib import ExitStack
- 
-@@ -103,8 +104,8 @@ class LinuxSourceTreeOperations(object):
- 		if stderr:  # likely only due to build warnings
- 			print(stderr.decode())
- 
--	def run(self, params, timeout, build_dir, outfile) -> None:
--		pass
-+	def start(self, params: List[str], build_dir: str) -> subprocess.Popen:
-+		raise RuntimeError('not implemented!')
- 
- 
- class LinuxSourceTreeOperationsQemu(LinuxSourceTreeOperations):
-@@ -123,7 +124,7 @@ class LinuxSourceTreeOperationsQemu(LinuxSourceTreeOperations):
- 		kconfig.parse_from_string(self._kconfig)
- 		base_kunitconfig.merge_in_entries(kconfig)
- 
--	def run(self, params, timeout, build_dir, outfile):
-+	def start(self, params: List[str], build_dir: str) -> subprocess.Popen:
- 		kernel_path = os.path.join(build_dir, self._kernel_path)
- 		qemu_command = ['qemu-system-' + self._qemu_arch,
- 				'-nodefaults',
-@@ -134,18 +135,11 @@ class LinuxSourceTreeOperationsQemu(LinuxSourceTreeOperations):
- 				'-nographic',
- 				'-serial stdio'] + self._extra_qemu_params
- 		print('Running tests with:\n$', ' '.join(qemu_command))
--		with open(outfile, 'w') as output:
--			process = subprocess.Popen(' '.join(qemu_command),
--						   stdin=subprocess.PIPE,
--						   stdout=output,
--						   stderr=subprocess.STDOUT,
--						   text=True, shell=True)
--		try:
--			process.wait(timeout=timeout)
--		except Exception as e:
--			print(e)
--			process.terminate()
--		return process
-+		return subprocess.Popen(' '.join(qemu_command),
-+					   stdin=subprocess.PIPE,
-+					   stdout=subprocess.PIPE,
-+					   stderr=subprocess.STDOUT,
-+					   text=True, shell=True)
- 
- class LinuxSourceTreeOperationsUml(LinuxSourceTreeOperations):
- 	"""An abstraction over command line operations performed on a source tree."""
-@@ -175,17 +169,14 @@ class LinuxSourceTreeOperationsUml(LinuxSourceTreeOperations):
- 		kunit_parser.print_with_timestamp(
- 			'Starting Kernel with all configs takes a few minutes...')
- 
--	def run(self, params, timeout, build_dir, outfile):
-+	def start(self, params: List[str], build_dir: str) -> subprocess.Popen:
- 		"""Runs the Linux UML binary. Must be named 'linux'."""
- 		linux_bin = get_file_path(build_dir, 'linux')
--		outfile = get_outfile_path(build_dir)
--		with open(outfile, 'w') as output:
--			process = subprocess.Popen([linux_bin] + params,
--						   stdin=subprocess.PIPE,
--						   stdout=output,
--						   stderr=subprocess.STDOUT,
--						   text=True)
--			process.wait(timeout)
-+		return subprocess.Popen([linux_bin] + params,
-+					   stdin=subprocess.PIPE,
-+					   stdout=subprocess.PIPE,
-+					   stderr=subprocess.STDOUT,
-+					   text=True)
- 
- def get_kconfig_path(build_dir) -> str:
- 	return get_file_path(build_dir, KCONFIG_PATH)
-@@ -330,12 +321,36 @@ class LinuxSourceTree(object):
- 		args.extend(['mem=1G', 'console=tty', 'kunit_shutdown=halt'])
- 		if filter_glob:
- 			args.append('kunit.filter_glob='+filter_glob)
--		outfile = get_outfile_path(build_dir)
--		self._ops.run(args, timeout, build_dir, outfile)
--		subprocess.call(['stty', 'sane'])
--		with open(outfile, 'r') as file:
--			for line in file:
-+
-+		process = self._ops.start(args, build_dir)
-+		assert process.stdout is not None  # tell mypy it's set
-+
-+		# Enforce the timeout in a background thread.
-+		def _wait_proc():
-+			try:
-+				process.wait(timeout=timeout)
-+			except Exception as e:
-+				print(e)
-+				process.terminate()
-+				process.wait()
-+		waiter = threading.Thread(target=_wait_proc)
-+		waiter.start()
-+
-+		output = open(get_outfile_path(build_dir), 'w')
-+		try:
-+			# Tee the output to the file and to our caller in real time.
-+			for line in process.stdout:
-+				output.write(line)
- 				yield line
-+		# This runs even if our caller doesn't consume every line.
-+		finally:
-+			# Flush any leftover output to the file
-+			output.write(process.stdout.read())
-+			output.close()
-+			process.stdout.close()
-+
-+			waiter.join()
-+			subprocess.call(['stty', 'sane'])
- 
- 	def signal_handler(self, sig, frame) -> None:
- 		logging.error('Build interruption occurred. Cleaning console.')
-diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
-index 619c4554cbff..f9a7398a9584 100755
---- a/tools/testing/kunit/kunit_tool_test.py
-+++ b/tools/testing/kunit/kunit_tool_test.py
-@@ -14,6 +14,7 @@ import tempfile, shutil # Handling test_tmpdir
- import itertools
- import json
- import signal
-+import subprocess
- import os
- 
- import kunit_config
-@@ -291,6 +292,22 @@ class LinuxSourceTreeTest(unittest.TestCase):
- 				pass
- 			tree = kunit_kernel.LinuxSourceTree('', kunitconfig_path=dir)
- 
-+	def test_run_kernel_hits_exception(self):
-+		def fake_start(unused_args, unused_build_dir):
-+			return subprocess.Popen(['echo "hi\nbye"'], shell=True, text=True, stdout=subprocess.PIPE)
-+
-+		with tempfile.TemporaryDirectory('') as build_dir:
-+			tree = kunit_kernel.LinuxSourceTree(build_dir, load_config=False)
-+			mock.patch.object(tree._ops, 'start', side_effect=fake_start).start()
-+
-+			with self.assertRaises(ValueError):
-+				for line in tree.run_kernel(build_dir=build_dir):
-+					self.assertEqual(line, 'hi\n')
-+					raise ValueError('uh oh, did not read all output')
-+
-+			with open(kunit_kernel.get_outfile_path(build_dir), 'rt') as outfile:
-+				self.assertEqual(outfile.read(), 'hi\nbye\n', msg='Missing some output')
-+
- 	# TODO: add more test cases.
- 
- 
+> > +       }
+> >
+> >         return dpu_core_perf_debugfs_init(dpu_kms, entry);
+> >  }
+> > diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+> > index 5d3ee5ef07c2..ff3477474c5d 100644
+> > --- a/drivers/gpu/drm/msm/dp/dp_display.c
+> > +++ b/drivers/gpu/drm/msm/dp/dp_display.c
+> > @@ -1180,10 +1192,31 @@ int dp_display_request_irq(struct msm_dp *dp_display)
+> >         return 0;
+> >  }
+> >
+> > +static int dp_display_find_id(struct platform_device *pdev)
+> > +{
+> > +       const struct msm_dp_config *cfg = of_device_get_match_data(&pdev->dev);
+> > +       struct resource *res;
+> > +       int i;
+> > +
+> > +
+> 
+> Nitpick: Remove a newline here.
+> 
+> > +       res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> > +       if (!res)
+> > +               return -EINVAL;
+> > +
+> > +       for (i = 0; i < cfg->num_descs; i++) {
+> > +               if (cfg->io_start[i] == res->start)
+> > +                       return i;
+> > +       }
+> 
+> Nitpick: Drop braces on single line if inside for loop.
+> 
 
-base-commit: 3b29021ddd10cfb6b2565c623595bd3b02036f33
--- 
-2.33.0.800.g4c38ced690-goog
+Not when the loop spans multiple lines?
 
+> > +
+> > +       dev_err(&pdev->dev, "unknown displayport instance\n");
+> > +       return -EINVAL;
+> > +}
+> > +
