@@ -2,85 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 178B1421B66
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 03:04:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 328C9421B6D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 03:08:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230097AbhJEBGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 21:06:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56446 "EHLO
+        id S229659AbhJEBKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 21:10:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229934AbhJEBGQ (ORCPT
+        with ESMTP id S229563AbhJEBKm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 21:06:16 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 148A7C061753
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 18:04:27 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id t189so24028430oie.7
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 18:04:27 -0700 (PDT)
+        Mon, 4 Oct 2021 21:10:42 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B74A7C061749
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 18:08:52 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id t8so34182160wri.1
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 18:08:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=AD4ntWnk6xy141WJ5eSD3VNPPmOSSryVzLkskjX3TQw=;
-        b=BlLMVXco8MKkLfoYVrWtbG6ZlSQ0rP8Pfgi4HI/royWJD9pexjRZi+sAb3wxSsZpjF
-         u6uIpVHylQ4GkUNv39I1brHqxTOmYQEg73VySR3ZYzdSob/Svl7gqZUzTRLjkPX2g5tH
-         gYxjGuWw6K9diz+BcdE0pqny5ByE+dBggV2Mg=
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PlXIOA8cnA3mtXiZEUOvasWxQMcXXZ6+gQS85Trl9kg=;
+        b=e5j/jefjr2innilKbb2wPU640Kx8t8wSTBMzeOv3ra2R1PY5cews4ZjIIqsvRd2TIO
+         a2Nx0ail20Jd15Cau3EMajfv6f4pgOzyQphPEUbCY+W9pBbB33UIjo88X4GEf87+UwiY
+         GCLorXYN+v0Zg3ocSa08nbPPNe6gKiw3PqH/DoOrO8yvX1yugQuQe0kNVRCu50EFlv2q
+         a6tKQH1cfsWeWx+Egm0WcaCcuKjDbOhWHM94h2JSsgQf9kRpqF7Ytxum7iX/Db3k1KLd
+         zx3KVOyDTWn4e1MugL/zz5IWmDsnpbsurrHOQLNBaGnIyds8gEzqkdk584ziBEMs08tg
+         QThQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=AD4ntWnk6xy141WJ5eSD3VNPPmOSSryVzLkskjX3TQw=;
-        b=3K5aWQgUwIJ2Ww3PkjZxuUK8Iuj3O5no8bgy+nGLXcqFd8u7O5gM0vM42vD+BMtXEE
-         jUFSrW7fL4UY7nLJACEANnag0aR2MjQByp7wVlJMVjFje7ZmuSM39DgJs9p3/Gj/c0df
-         vi+oWRLr3tJnO8TSQ+QyH1EDm2UzWyEhORU79gwIXYNT3dX6mu6GcEKfbRIQsoy8JSVy
-         HPn59uiLmTdx5Fseip2ewpfEobpO9tSkXOZDF7bzH+fIXhMQFQe0/M7I6pKzbD5JITes
-         1YL926Q5rX0BLALXPsmRzAGGygODy1iGh0NKGqKxLy2XImzJsLlhEnK+3HL8ahZ/1+ZG
-         JqcQ==
-X-Gm-Message-State: AOAM5332XSmUL/l+TN2mJi07Q02NebUrxIw6uA5y8PvKCPZnM8/9ye8n
-        eH0ivfd7fCtnFzQk5z7VDAsG3Jmx2JQ8gGZJOe+1Fg==
-X-Google-Smtp-Source: ABdhPJxcUdbrGerYfkCTPf/PwoSth3WvU4LBsMpt+DUDQ6/rOPEOVLhYZsKx1xZnQv15BKA9nAwgwS6G5Ye9CrwRt5w=
-X-Received: by 2002:aca:3110:: with SMTP id x16mr240108oix.64.1633395864926;
- Mon, 04 Oct 2021 18:04:24 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Mon, 4 Oct 2021 21:04:24 -0400
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PlXIOA8cnA3mtXiZEUOvasWxQMcXXZ6+gQS85Trl9kg=;
+        b=wv/3tPlGZZ5Umcd1LZWgTmc6iKUJcfhmB4qd1I9Vv4B/emKm2eUG+d/bZJqAWK0V/c
+         4Q5QLgzNR0z+fwx0DxyfJtWBthwKkXQDoOy/oK7+Ag53ew089YTeAcxiTJLOXKl936QE
+         m8GPjJVOX04rST22ZIvk0xB18FO+70y14q2Jw4JwZwzLrkNQQPnoHRFL4fwyA29Mr4fX
+         dOCFI1R6LsuuEDwFmkedqab3isuug58oQReskvJXDH6ogbW/9dy4/aQuqIp5hNYK5h9I
+         QzdA39YkCtAt9KxyTI21A7AYlf7cqolxuTGarNp+Xml8isQq9v8GSKw/Iob7tr1SvQ+H
+         pHTQ==
+X-Gm-Message-State: AOAM531A4StJJKjsvPVIYXluMz/gO3QbxHTQPxTBP3trf51DJAEqN0Qv
+        b0reuwJ911X45rIkQtvXpR5SYoejOLtkXZn58ICFig==
+X-Google-Smtp-Source: ABdhPJxh68TX7qgLnyoHIH21tT9vFp02VI3kizAsopH+bpUvIDx5C78ILtMiBAAlFfjuDLQ1wGwwYnXHMBUkKfKMPo4=
+X-Received: by 2002:adf:f6c7:: with SMTP id y7mr17944187wrp.44.1633396130645;
+ Mon, 04 Oct 2021 18:08:50 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20211001174400.981707-4-bjorn.andersson@linaro.org>
-References: <20211001174400.981707-1-bjorn.andersson@linaro.org> <20211001174400.981707-4-bjorn.andersson@linaro.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Mon, 4 Oct 2021 21:04:24 -0400
-Message-ID: <CAE-0n52bY27rZzarqrgjh37W3SsyvKTH70H++SmqoZOyETZKPw@mail.gmail.com>
-Subject: Re: [PATCH v3 3/5] drm/msm/dp: Refactor ioremap wrapper
-To:     Abhinav Kumar <abhinavk@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Rob Clark <robdclark@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, Sean Paul <sean@poorly.run>
-Cc:     Kuogee Hsieh <khsieh@codeaurora.org>,
-        Tanmay Shah <tanmay@codeaurora.org>,
-        Chandan Uddaraju <chandanu@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+References: <20211004170102.2522514-1-dlatypov@google.com> <CABVgOS=LsVTvX-RnsfE775fnq4aGQt7SUCeRpBpEd03My99NTQ@mail.gmail.com>
+ <CAGS_qxpzB0r1piC9S1z9vWy-2Dz=frfN0uK-UAar6i+zvtjdjg@mail.gmail.com>
+ <CABVgOS==C7r+9JAV5+NcCqgCdqdYy+Yyr8ht7RUVwrpAmqR1vg@mail.gmail.com> <CAGS_qxpo0xLYWzUib6drELbE-PvbwmaB80Y25H2_S5KOGeW7iA@mail.gmail.com>
+In-Reply-To: <CAGS_qxpo0xLYWzUib6drELbE-PvbwmaB80Y25H2_S5KOGeW7iA@mail.gmail.com>
+From:   David Gow <davidgow@google.com>
+Date:   Tue, 5 Oct 2021 09:08:39 +0800
+Message-ID: <CABVgOSnXBtCHEMDYYqrbXWvKcrSbY9BXP4MJjsT+vzZS6W4J=w@mail.gmail.com>
+Subject: Re: [PATCH] kunit: tool: yield output from run_kernel in real time
+To:     Daniel Latypov <dlatypov@google.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Bjorn Andersson (2021-10-01 10:43:58)
-> In order to deal with multiple memory ranges in the following commit
-> change the ioremap wrapper to not poke directly into the dss_io_data
-> struct.
+On Tue, Oct 5, 2021 at 8:36 AM Daniel Latypov <dlatypov@google.com> wrote:
 >
-> While at it, devm_ioremap_resource() already prints useful error
-> messages on failure, so omit the unnecessary prints from the caller.
+> On Mon, Oct 4, 2021 at 4:58 PM David Gow <davidgow@google.com> wrote:
+> >
+> > On Tue, Oct 5, 2021 at 7:46 AM Daniel Latypov <dlatypov@google.com> wrote:
+> > >
+> > > On Mon, Oct 4, 2021 at 4:34 PM 'David Gow' via KUnit Development
+> > > <kunit-dev@googlegroups.com> wrote:
+> > > >
+> > > > On Tue, Oct 5, 2021 at 1:01 AM Daniel Latypov <dlatypov@google.com> wrote:
+> > > > >
+> > > > > Currently, `run_kernel()` dumps all the kernel output to a file
+> > > > > (.kunit/test.log) and then opens the file and yields it to callers.
+> > > > > This made it easier to respect the requested timeout, if any.
+> > > > >
+> > > > > But it means that we can't yield the results in real time, either to the
+> > > > > parser or to stdout (if --raw_output is set).
+> > > > >
+> > > > > This change spins up a background thread to enforce the timeout, which
+> > > > > allows us to yield the kernel output in real time, while also copying it
+> > > > > to the .kunit/test.log file.
+> > > > > It's also careful to ensure that the .kunit/test.log file is complete,
+> > > > > even in the kunit_parser throws an exception/otherwise doesn't consume
+> > > > > every line, see the new `finally` block and unit test.
+> > > > >
+> > > > > For example:
+> > > > >
+> > > > > $ ./tools/testing/kunit/kunit.py run --arch=x86_64 --raw_output
+> > > > > <configure + build steps>
+> > > > > ...
+> > > > > <can now see output from QEMU in real time>
+> > > > >
+> > > > > This does not currently have a visible effect when --raw_output is not
+> > > > > passed, as kunit_parser.py currently only outputs everything at the end.
+> > > > > But that could change, and this patch is a necessary step towards
+> > > > > showing parsed test results in real time.
+> > > > >
+> > > > > Signed-off-by: Daniel Latypov <dlatypov@google.com>
+> > > > > ---
+> > > > >  tools/testing/kunit/kunit_kernel.py    | 73 +++++++++++++++-----------
+> > > > >  tools/testing/kunit/kunit_tool_test.py | 17 ++++++
+> > > > >  2 files changed, 60 insertions(+), 30 deletions(-)
+> > > > >
+> > > > > diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
+> > > > > index 2c6f916ccbaf..b8cba8123aa3 100644
+> > > > > --- a/tools/testing/kunit/kunit_kernel.py
+> > > > > +++ b/tools/testing/kunit/kunit_kernel.py
+> > > > > @@ -12,7 +12,8 @@ import subprocess
+> > > > >  import os
+> > > > >  import shutil
+> > > > >  import signal
+> > > > > -from typing import Iterator, Optional, Tuple
+> > > > > +import threading
+> > > > > +from typing import Iterator, List, Optional, Tuple
+> > > > >
+> > > > >  from contextlib import ExitStack
+> > > > >
+> > > > > @@ -103,8 +104,8 @@ class LinuxSourceTreeOperations(object):
+> > > > >                 if stderr:  # likely only due to build warnings
+> > > > >                         print(stderr.decode())
+> > > > >
+> > > > > -       def run(self, params, timeout, build_dir, outfile) -> None:
+> > > > > -               pass
+> > > > > +       def start(self, params: List[str], build_dir: str) -> subprocess.Popen:
+> > > > > +               raise RuntimeError('not implemented!')
+> > > > >
+> > > > >
+> > > > >  class LinuxSourceTreeOperationsQemu(LinuxSourceTreeOperations):
+> > > > > @@ -123,7 +124,7 @@ class LinuxSourceTreeOperationsQemu(LinuxSourceTreeOperations):
+> > > > >                 kconfig.parse_from_string(self._kconfig)
+> > > > >                 base_kunitconfig.merge_in_entries(kconfig)
+> > > > >
+> > > > > -       def run(self, params, timeout, build_dir, outfile):
+> > > > > +       def start(self, params: List[str], build_dir: str) -> subprocess.Popen:
+> > > > >                 kernel_path = os.path.join(build_dir, self._kernel_path)
+> > > > >                 qemu_command = ['qemu-system-' + self._qemu_arch,
+> > > > >                                 '-nodefaults',
+> > > > > @@ -134,18 +135,10 @@ class LinuxSourceTreeOperationsQemu(LinuxSourceTreeOperations):
+> > > > >                                 '-nographic',
+> > > > >                                 '-serial stdio'] + self._extra_qemu_params
+> > > > >                 print('Running tests with:\n$', ' '.join(qemu_command))
+> > > > > -               with open(outfile, 'w') as output:
+> > > > > -                       process = subprocess.Popen(' '.join(qemu_command),
+> > > > > -                                                  stdin=subprocess.PIPE,
+> > > > > -                                                  stdout=output,
+> > > > > -                                                  stderr=subprocess.STDOUT,
+> > > > > -                                                  text=True, shell=True)
+> > > > > -               try:
+> > > > > -                       process.wait(timeout=timeout)
+> > > > > -               except Exception as e:
+> > > > > -                       print(e)
+> > > > > -                       process.terminate()
+> > > > > -               return process
+> > > > > +               return subprocess.Popen(' '.join(qemu_command),
+> > > > > +                                          stdout=subprocess.PIPE,
+> > > > > +                                          stderr=subprocess.STDOUT,
+> > > > > +                                          text=True, shell=True)
+> > > > >
+> > > > >  class LinuxSourceTreeOperationsUml(LinuxSourceTreeOperations):
+> > > > >         """An abstraction over command line operations performed on a source tree."""
+> > > > > @@ -175,17 +168,13 @@ class LinuxSourceTreeOperationsUml(LinuxSourceTreeOperations):
+> > > > >                 kunit_parser.print_with_timestamp(
+> > > > >                         'Starting Kernel with all configs takes a few minutes...')
+> > > > >
+> > > > > -       def run(self, params, timeout, build_dir, outfile):
+> > > > > +       def start(self, params: List[str], build_dir: str) -> subprocess.Popen:
+> > > > >                 """Runs the Linux UML binary. Must be named 'linux'."""
+> > > > >                 linux_bin = get_file_path(build_dir, 'linux')
+> > > > > -               outfile = get_outfile_path(build_dir)
+> > > > > -               with open(outfile, 'w') as output:
+> > > > > -                       process = subprocess.Popen([linux_bin] + params,
+> > > > > -                                                  stdin=subprocess.PIPE,
+> > > >
+> > > > This breaks --raw_output under UML for me. Including the
+> > > > stdin=subprocess.PIPE again seems to fix it.
+> > >
+> > > Can you give an example of what it does?
+> > >
+> > > I don't see any issues with --raw_output under UML with the patch as-is.
+> > > I was mainly testing this with UML, and I must have ran it some 10s of
+> > > times, so I'm a bit surprised.
+> > >
+> > > On an earlier version, I saw some mangling of --raw_output (\n was
+> > > missing), but that went away after some revisions.
+> > >
+> >
+> > Yeah, that's the sort of thing I'm seeing: \n being treated as just a
+> > new line (without the carriage return).
+> > It happens pretty consistently, though sometimes the text wraps and
+> > sometimes (well, once) everything gets forced into the last column of
+> > the terminal. I've not been able to get it to work at all without
+> > having stdin be subprocess.PIPE.
 >
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
+> I can't repro in the shell I was using while writing this.
+> Starting up a new session, I get:
+> * good
+> * bad x3
+> * good
+> * bad x3
+> * good
+> * bad x3
+> * bad, but not as bad (phew, I thought this was cursed)
+>
+> .kunit/test.log contains the output with proper \n each time I checked.
+>
+> Doesn't seem to repro when redirected into a file:
+>
+> $ ./tools/testing/kunit/kunit.py exec --raw_output > /tmp/out && diff
+> /tmp/out .kunit/test.log | grep -m1 '^>'
+>
+> Piping it through cat also seems 100% fine:
+> $ ./tools/testing/kunit/kunit.py exec --raw_output | cat
+>
+> So having stdin be subprocess.PIPE sorta makes sense in some twisted way.
+> I can also now repro that setting stdin=subprocess.PIPE seems to fix it.
+>
+> I don't want to put back subprocess.PIPE, but I'm not confident in
+> being able to find a better solution...
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+So it turns out that there are a few issues with UML assuming stdin ==
+stdout (or at least that stdin and stdout are related), as seen in
+this ongoing thread on linux-um:
+http://lists.infradead.org/pipermail/linux-um/2021-October/001805.html
 
-I realize this will cause some prints when we use old DTs. I suppose
-that's OK though because we'll have more incentive to update existing
-DT.
+Some of the coments in UML's chan_user.c seem pretty related, too, in
+that termios is used to set this weird
+"mostly-raw-but-\n-includes-carriage-returns" mode:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/um/drivers/chan_user.c#n90
+
+My theory is that UML sets "raw" mode based on what stdin is, then
+only sets OPOST if stdout is a tty, so there's a mismatch here. So,
+probably this is fundamentally a UML bug, but worth us working around
+in it kunit_tool for the time being. That being said, I've not been
+able to find anything obviously stdin-y setting raw mode thus far, so
+I could be wrong.
+
+My preference is that we put stdin=subprocess.PIPE back for now, since
+we don't want a regression, and if a cause in UML is found and fixed,
+we can remove it after the fix has propagated comfortably everywhere.
+
+-- David
+
+>
+> >
+> > It occurs both under tmux and not, and under Konsole and xterm, so it
+> > doesn't appear to be specific to any given terminal implementation.
+> > Still occurs even after running 'reset', and with a clean build.
+> > QEMU-based --raw_output works fine.
+> >
+> >
