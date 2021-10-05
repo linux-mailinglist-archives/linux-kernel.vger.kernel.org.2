@@ -2,123 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 886A7422C88
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:31:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B706422C8B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:32:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235394AbhJEPdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 11:33:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60326 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229626AbhJEPdf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 11:33:35 -0400
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E18C6C061749
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 08:31:44 -0700 (PDT)
-Received: by mail-il1-x12a.google.com with SMTP id t11so11714811ilf.11
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 08:31:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=to:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=tVuQHObub2YNkMXj0VdNY1wP8i2BNR3veQbUik+SlKs=;
-        b=tr0pADEUH6MVI60YI4iYvD82dol4p6zxiEPt9Uvw8Qn05LlXRqJhO59D0SIKDngSfw
-         zmV8locsvef2a6+reUDFlrasoUwklCU52eE+O+MPVZF9kfAkhm4Ad4w52+kI+y6h67iV
-         sG73suJbBtfeU/bhksIXMH7daeyuKOlSaV90+CUL+ux9/0eEbjiyQ0VfgUvRXAlCNgMB
-         Zh9sW8jfYW9CkmVII+Nny1So2AakkStn7UaZI/rPd/qDlefxQEsoVqiV58eWws/yun3G
-         lzJPZDyCMjVw38lcLlPxXFbKYHcSaDqJdN+lCWnjYHSuHrybjNglHaJ15IIIGNl2hvxo
-         Ycfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:to:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=tVuQHObub2YNkMXj0VdNY1wP8i2BNR3veQbUik+SlKs=;
-        b=UpcrPnoKOZMj2qcB65f3e08Pgo6W/KuJPupkQP/J0AKZ4tacUpDdCs0xDhWqvVZOEZ
-         FAYoSeN2I9e6D9h8kFq6LrnDMaSd9govnekipQZIYhCqfQpV0cR4Xp3OCMwIdF8H6XZM
-         RtgRz9j/NBiqxLfuFOCuouvZNMXoTqIvLJR/Qzm5AB0M2PuCRiFNJwHnfi1W9mevtRK4
-         KOjt4So2dB87ZioRYQ5LP30L7zM5QO+FxOD5vKVVOXe70XTHlc3Ukx7HthF6ateKk5jN
-         DJnjM8ImLsXskLVJG1XvntSvPUy4/a3M8f+nxeG92LPIz3pAt+OdAR7C2utC6AYQ6mnZ
-         GZkQ==
-X-Gm-Message-State: AOAM5319ftQTAtDB/0VQ67de2sFffyPWpq/2L9luQkKm0XbHBFhI3EQh
-        wxE2buWJ6DPxNAt6wwHJ8AlD91FCW1fD50P4W98=
-X-Google-Smtp-Source: ABdhPJzLni+rsnmQVPlhbLAVIyVjpQ14PZPb7Tizzee1xyL/Z3EPYMktlTDKiaprnhaEjLOh/4ItlA==
-X-Received: by 2002:a92:2902:: with SMTP id l2mr3149258ilg.276.1633447904257;
-        Tue, 05 Oct 2021 08:31:44 -0700 (PDT)
-Received: from [192.168.1.30] ([207.135.234.126])
-        by smtp.gmail.com with ESMTPSA id v17sm10858206ilh.67.2021.10.05.08.31.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Oct 2021 08:31:43 -0700 (PDT)
-To:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-From:   Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH] mm: don't call should_failslab() for !CONFIG_FAILSLAB
-Message-ID: <e01e5e40-692a-519c-4cba-e3331f173c82@kernel.dk>
-Date:   Tue, 5 Oct 2021 09:31:43 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S235906AbhJEPeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 11:34:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42252 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229626AbhJEPeB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 11:34:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A61A61506;
+        Tue,  5 Oct 2021 15:32:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633447931;
+        bh=H3pKhwTklWLaDsL51TfQhZRDZK2KeR8lRiAX6OaEU6Q=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=EFrgucdfZog0KduaFPgrblqhgreWtpb0AB1/VA1+qCFTqwOaKbeKUkmLETjUig0A9
+         RmvKLqlG7mCkIirr6jt+n4Lefl1DIJZxNWsWIPJIG/NF5GAovVn5JalR1TOceiMn1v
+         jFpREVWQiSh5FnftJAssB1p2O0QG9JV3CwLNl+zgiAED3ZZlZrNQWRixkrjuvtUXPZ
+         6VHVKmHFWSunjhwXhM4youuxPuDpmliH029p3zOvTVETR1VWe2bQhc5jl9gCJXjdc0
+         sS55UEM0tgJoC44WXUc1jtflTcqosK5tBH1F/KUEh4vU8U+yLidIw/4fRbg39NKRtK
+         8ctmZlWFdp3UQ==
+Date:   Tue, 5 Oct 2021 10:32:09 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Jeremy Linton <jeremy.linton@arm.com>
+Cc:     linux-pci@vger.kernel.org, lorenzo.pieralisi@arm.com,
+        nsaenz@kernel.org, bhelgaas@google.com, rjw@rjwysocki.net,
+        lenb@kernel.org, robh@kernel.org, kw@linux.com,
+        f.fainelli@gmail.com, bcm-kernel-feedback-list@broadcom.com,
+        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rpi-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/4] PCI: brcmstb: Add ACPI config space quirk
+Message-ID: <20211005153209.GA1083986@bhelgaas>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210826071557.29239-3-jeremy.linton@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allocations can be a very hot path, and this out-of-line function
-call is noticeable.
+On Thu, Aug 26, 2021 at 02:15:55AM -0500, Jeremy Linton wrote:
+> The Pi Firmware Task Force (PFTF: https://github.com/pftf) Compute
+> Module 4 (CM4: an embedded form factor RPi4) is an ACPI platform that
+> isn't ECAM compliant. Its config space is in two parts. One part is for
+> the root port registers and a second moveable window pointing at a
+> device's 4K config space. Thus it doesn't have an MCFG, and any MCFG
+> provided would be nonsense anyway.
+> 
+> Instead, a custom pci_ecam_ops quirk is created. The custom ops override
+> the .init and .map_bus functions. The former to assure that cfg->win
+> points at a single mapping that contains the root port registers and the
+> device config window, as well as disabling MSIs due to lack of a
+> GICv2M. map_bus() then provides the address of either the standard
+> portion of the root port registers or to the device config window after
+> it has been moved.
+> 
+> Additionally, some basic bus/device filtering exist to avoid sending
+> config transactions to invalid devices on the RP's primary or
+> secondary bus. A basic link check is also made to assure that
+> something is operational on the secondary side before probing the
+> remainder of the config space. If either of these constraints are
+> violated and a config operation is lost in the ether because an EP
+> doesn't respond an unrecoverable SERROR is raised.
 
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+It's not "lost"; I assume the root port raises an error because it
+can't send a transaction over a link that is down.
 
----
+Is "SERROR" an ARM64 thing?  My guess is the root port would raise an
+Unsupported Request error or similar, and the root complex turns that
+into a system-specific SERROR?
 
-diff --git a/include/linux/fault-inject.h b/include/linux/fault-inject.h
-index e525f6957c49..3128d2c8b3b4 100644
---- a/include/linux/fault-inject.h
-+++ b/include/linux/fault-inject.h
-@@ -64,8 +64,8 @@ static inline struct dentry *fault_create_debugfs_attr(const char *name,
- 
- struct kmem_cache;
- 
--int should_failslab(struct kmem_cache *s, gfp_t gfpflags);
- #ifdef CONFIG_FAILSLAB
-+int should_failslab(struct kmem_cache *s, gfp_t gfpflags);
- extern bool __should_failslab(struct kmem_cache *s, gfp_t gfpflags);
- #else
- static inline bool __should_failslab(struct kmem_cache *s, gfp_t gfpflags)
-diff --git a/mm/slab.h b/mm/slab.h
-index 58c01a34e5b8..92fd6fe01877 100644
---- a/mm/slab.h
-+++ b/mm/slab.h
-@@ -491,8 +491,10 @@ static inline struct kmem_cache *slab_pre_alloc_hook(struct kmem_cache *s,
- 
- 	might_alloc(flags);
- 
-+#ifdef CONFIG_FAILSLAB
- 	if (should_failslab(s, flags))
- 		return NULL;
-+#endif
- 
- 	if (!memcg_slab_pre_alloc_hook(s, objcgp, size, flags))
- 		return NULL;
-diff --git a/mm/slab_common.c b/mm/slab_common.c
-index ec2bb0beed75..c21bd447f237 100644
---- a/mm/slab_common.c
-+++ b/mm/slab_common.c
-@@ -1323,6 +1323,7 @@ EXPORT_TRACEPOINT_SYMBOL(kmem_cache_alloc_node);
- EXPORT_TRACEPOINT_SYMBOL(kfree);
- EXPORT_TRACEPOINT_SYMBOL(kmem_cache_free);
- 
-+#ifdef CONFIG_FAILSLAB
- int should_failslab(struct kmem_cache *s, gfp_t gfpflags)
- {
- 	if (__should_failslab(s, gfpflags))
-@@ -1330,3 +1331,4 @@ int should_failslab(struct kmem_cache *s, gfp_t gfpflags)
- 	return 0;
- }
- ALLOW_ERROR_INJECTION(should_failslab, ERRNO);
-+#endif
+> Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
+> Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+> Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+> ---
+>  drivers/pci/controller/Makefile            |  1 +
+>  drivers/pci/controller/pcie-brcmstb-acpi.c | 79 ++++++++++++++++++++++
+>  include/linux/pci-ecam.h                   |  1 +
+>  3 files changed, 81 insertions(+)
+>  create mode 100644 drivers/pci/controller/pcie-brcmstb-acpi.c
+> 
+> diff --git a/drivers/pci/controller/Makefile b/drivers/pci/controller/Makefile
+> index aaf30b3dcc14..65aa6fd3ed89 100644
+> --- a/drivers/pci/controller/Makefile
+> +++ b/drivers/pci/controller/Makefile
+> @@ -57,5 +57,6 @@ ifdef CONFIG_PCI_QUIRKS
+>  obj-$(CONFIG_ARM64) += pci-thunder-ecam.o
+>  obj-$(CONFIG_ARM64) += pci-thunder-pem.o
+>  obj-$(CONFIG_ARM64) += pci-xgene.o
+> +obj-$(CONFIG_ARM64) += pcie-brcmstb-acpi.o
+>  endif
+>  endif
+> diff --git a/drivers/pci/controller/pcie-brcmstb-acpi.c b/drivers/pci/controller/pcie-brcmstb-acpi.c
+> new file mode 100644
+> index 000000000000..528b2b3ffbd2
+> --- /dev/null
+> +++ b/drivers/pci/controller/pcie-brcmstb-acpi.c
+> @@ -0,0 +1,79 @@
+> +// SPDX-License-Identifier: GPL-2.0+
+> +/*
+> + * ACPI quirks for Brcm2711 PCIe host controller
+> + * As used on the Raspberry Pi Compute Module 4
+> + *
+> + * Copyright (C) 2021 Arm Ltd.
+> + */
+> +
+> +#include <linux/io.h>
+> +#include <linux/pci.h>
+> +#include <linux/pci-ecam.h>
+> +#include "../pci.h"
+> +#include "pcie-brcmstb.h"
+> +
+> +static int brcm_acpi_init(struct pci_config_window *cfg)
+> +{
+> +	/*
+> +	 * This platform doesn't technically have anything that could be called
+> +	 * ECAM. Its config region has root port specific registers between
+> +	 * standard PCIe defined config registers. Thus the region setup by the
+> +	 * generic ECAM code needs to be adjusted. The HW can access bus 0-ff
+> +	 * but the footprint isn't a nice power of 2 (40k). For purposes of
+> +	 * mapping the config region we are just going to squash the standard
+> +	 * and nonstandard registers together rather than mapping them separately.
 
--- 
-Jens Axboe
+Wrap this and comment below to fit in 80 columns.  Nothing magic about
+80 columns except for the fact that all the other code in drivers/pci
+fits in that width and consistency is helpful.
 
+> +	 */
+> +	iounmap(cfg->win);
+> +	cfg->win = pci_remap_cfgspace(cfg->res.start, resource_size(&cfg->res));
+> +	if (!cfg->win)
+> +		goto err_exit;
+> +
+> +	/* MSI is nonstandard as well */
+> +	pci_no_msi();
+
+This doesn't seem to fit in an MCFG quirk.
+
+> +	return 0;
+> +err_exit:
+> +	dev_err(cfg->parent, "PCI: Failed to remap config\n");
+> +	return -ENOMEM;
+> +}
+> +
+> +static void __iomem *brcm_pcie_map_conf2(struct pci_bus *bus,
+> +					unsigned int devfn, int where)
+> +{
+> +	struct pci_config_window *cfg = bus->sysdata;
+> +	void __iomem *base = cfg->win;
+> +	int idx;
+> +	u32 up;
+> +
+> +	/* Accesses to the RC go right to the RC registers if slot==0 */
+> +	if (pci_is_root_bus(bus))
+> +		return PCI_SLOT(devfn) ? NULL : base + where;
+> +
+> +	/*
+> +	 * Assure the link is up before sending requests downstream. This is done
+> +	 * to avoid sending transactions to EPs that don't exist. Link flap
+> +	 * conditions/etc make this race more probable. The resulting unrecoverable
+> +	 * SERRORs will result in the machine crashing.
+
+Is the crash because SERROR is fundamentally unrecoverable?  Is there
+any control over what kind of system-specific error the PCIe errors
+are mapped to?
+
+I know there are other systems where PCIe errors always cause a system
+crash, but most platforms seem to be moving toward at least the
+theoretical ability to recover from I/O errors.
+
+> +	 */
+> +	up = readl(base + PCIE_MISC_PCIE_STATUS);
+> +	if (!(up & PCIE_MISC_PCIE_STATUS_PCIE_DL_ACTIVE_MASK))
+> +		return NULL;
+> +
+> +	if (!(up & PCIE_MISC_PCIE_STATUS_PCIE_PHYLINKUP_MASK))
+> +		return NULL;
+> +
+> +	/* For devices, write to the config space index register */
+> +	idx = PCIE_ECAM_OFFSET(bus->number, devfn, 0);
+> +	writel(idx, base + PCIE_EXT_CFG_INDEX);
+> +	return base + PCIE_EXT_CFG_DATA + where;
+> +}
+> +
+> +const struct pci_ecam_ops bcm2711_pcie_ops = {
+> +	.init		= brcm_acpi_init,
+> +	.bus_shift	= 1,
+> +	.pci_ops	= {
+> +		.map_bus	= brcm_pcie_map_conf2,
+> +		.read		= pci_generic_config_read,
+> +		.write		= pci_generic_config_write,
+> +	}
+> +};
+> diff --git a/include/linux/pci-ecam.h b/include/linux/pci-ecam.h
+> index adea5a4771cf..a5de0285bb7f 100644
+> --- a/include/linux/pci-ecam.h
+> +++ b/include/linux/pci-ecam.h
+> @@ -87,6 +87,7 @@ extern const struct pci_ecam_ops xgene_v1_pcie_ecam_ops; /* APM X-Gene PCIe v1 *
+>  extern const struct pci_ecam_ops xgene_v2_pcie_ecam_ops; /* APM X-Gene PCIe v2.x */
+>  extern const struct pci_ecam_ops al_pcie_ops;	/* Amazon Annapurna Labs PCIe */
+>  extern const struct pci_ecam_ops tegra194_pcie_ops; /* Tegra194 PCIe */
+> +extern const struct pci_ecam_ops bcm2711_pcie_ops; /* Bcm2711 PCIe */
+>  #endif
+>  
+>  #if IS_ENABLED(CONFIG_PCI_HOST_COMMON)
+> -- 
+> 2.31.1
+> 
