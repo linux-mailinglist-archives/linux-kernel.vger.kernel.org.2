@@ -2,104 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EB85421C58
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 04:08:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF23B421C5B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 04:10:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231222AbhJECKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 22:10:32 -0400
-Received: from mx.socionext.com ([202.248.49.38]:46766 "EHLO mx.socionext.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230514AbhJECKT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 22:10:19 -0400
-Received: from unknown (HELO iyokan2-ex.css.socionext.com) ([172.31.9.54])
-  by mx.socionext.com with ESMTP; 05 Oct 2021 11:08:28 +0900
-Received: from mail.mfilter.local (m-filter-1 [10.213.24.61])
-        by iyokan2-ex.css.socionext.com (Postfix) with ESMTP id 11F702058B40;
-        Tue,  5 Oct 2021 11:08:28 +0900 (JST)
-Received: from 172.31.9.51 (172.31.9.51) by m-FILTER with ESMTP; Tue, 5 Oct 2021 11:08:28 +0900
-Received: from plum.e01.socionext.com (unknown [10.212.243.119])
-        by kinkan2.css.socionext.com (Postfix) with ESMTP id 9ECE4AB192;
-        Tue,  5 Oct 2021 11:08:27 +0900 (JST)
-From:   Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-Subject: [PATCH 5/5] clk: uniphier: Add SoC-glue clock source selector support for Pro4
-Date:   Tue,  5 Oct 2021 11:08:26 +0900
-Message-Id: <1633399706-1251-6-git-send-email-hayashi.kunihiko@socionext.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1633399706-1251-1-git-send-email-hayashi.kunihiko@socionext.com>
-References: <1633399706-1251-1-git-send-email-hayashi.kunihiko@socionext.com>
+        id S231169AbhJECM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 22:12:28 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:46807 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230237AbhJECM0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 22:12:26 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HNgzF04Vrz4xbX;
+        Tue,  5 Oct 2021 13:10:32 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1633399836;
+        bh=fIc3aROPEW2TdVb69B4RtwxCSq7X4qRoJk8L1unsRl8=;
+        h=Date:From:To:Cc:Subject:From;
+        b=HGWJC5iGw3MgZfFdjk353kqj+PhOsttDXA60c8rbAP4sCcQso8vVlBdDXHKIYQWZH
+         EgMMZwVVGbT8GPl9vyyXw1sYyzqDNz+zf0YI29x6pf4Y1YZp5oWSjgxjHb0k8f7JiP
+         AxwTc2lRBmWJerIU4hv+v7h3ntz0lUMxCd6uX1ppPiIcoqel9WAs2/q9ydUTzy59gn
+         svNhhduQKD5Uj6sbdZ+ZIs19pl68bseTgpeVtvZ+ho8INBsAPh5BFF4iKgyXH9Oj1Z
+         gcyHz7de+f6m2J/Ua7wJ0D1BW3vAG69rtpieT3jygJ8KsbeeWAaOfz0KJGkhypozud
+         jBOI41St2vmpw==
+Date:   Tue, 5 Oct 2021 13:10:32 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Rob Clark <robdclark@gmail.com>, Sean Paul <seanpaul@chromium.org>,
+        Dave Airlie <airlied@linux.ie>,
+        DRI <dri-devel@lists.freedesktop.org>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Rob Clark <robdclark@chromium.org>
+Subject: linux-next: manual merge of the drm-msm tree with the drm tree
+Message-ID: <20211005131032.502a16d6@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/vvs4NLlv=FRmBCL/A4bnsLJ";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add SoC-glue clock source selector for ahci controller on UniPhier SoCs.
-Currently this supports Pro4 only.
+--Sig_/vvs4NLlv=FRmBCL/A4bnsLJ
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
----
- drivers/clk/uniphier/clk-uniphier-core.c |  5 +++++
- drivers/clk/uniphier/clk-uniphier-sys.c  | 17 +++++++++++++++++
- drivers/clk/uniphier/clk-uniphier.h      |  1 +
- 3 files changed, 23 insertions(+)
+Hi all,
 
-diff --git a/drivers/clk/uniphier/clk-uniphier-core.c b/drivers/clk/uniphier/clk-uniphier-core.c
-index 0a947e7..46c66fa 100644
---- a/drivers/clk/uniphier/clk-uniphier-core.c
-+++ b/drivers/clk/uniphier/clk-uniphier-core.c
-@@ -210,6 +210,11 @@ static const struct of_device_id uniphier_clk_match[] = {
- 		.compatible = "socionext,uniphier-nx1-peri-clock",
- 		.data = uniphier_pro4_peri_clk_data,
- 	},
-+	/* SoC-glue clock */
-+	{
-+		.compatible = "socionext,uniphier-pro4-sg-clock",
-+		.data = uniphier_pro4_sg_clk_data,
-+	},
- 	{ /* sentinel */ }
- };
- 
-diff --git a/drivers/clk/uniphier/clk-uniphier-sys.c b/drivers/clk/uniphier/clk-uniphier-sys.c
-index e8bf85c..0180470 100644
---- a/drivers/clk/uniphier/clk-uniphier-sys.c
-+++ b/drivers/clk/uniphier/clk-uniphier-sys.c
-@@ -330,3 +330,20 @@ const struct uniphier_clk_data uniphier_nx1_sys_clk_data[] = {
- 			     "cpll/32"),
- 	{ /* sentinel */ }
- };
-+
-+const struct uniphier_clk_data uniphier_pro4_sg_clk_data[] = {
-+	UNIPHIER_CLK_DIV("gpll", 4),
-+	{
-+		.name = "sata-ref",
-+		.type = UNIPHIER_CLK_TYPE_MUX,
-+		.idx = 0,
-+		.data.mux = {
-+			.parent_names = { "gpll/4", "ref", },
-+			.num_parents = 2,
-+			.reg = 0x1a28,
-+			.masks = { 0x1, 0x1, },
-+			.vals  = { 0x0, 0x1, },
-+		},
-+	},
-+	{ /* sentinel */ }
-+};
-diff --git a/drivers/clk/uniphier/clk-uniphier.h b/drivers/clk/uniphier/clk-uniphier.h
-index c54fb78..dea0c78 100644
---- a/drivers/clk/uniphier/clk-uniphier.h
-+++ b/drivers/clk/uniphier/clk-uniphier.h
-@@ -155,5 +155,6 @@ extern const struct uniphier_clk_data uniphier_ld4_mio_clk_data[];
- extern const struct uniphier_clk_data uniphier_pro5_sd_clk_data[];
- extern const struct uniphier_clk_data uniphier_ld4_peri_clk_data[];
- extern const struct uniphier_clk_data uniphier_pro4_peri_clk_data[];
-+extern const struct uniphier_clk_data uniphier_pro4_sg_clk_data[];
- 
- #endif /* __CLK_UNIPHIER_H__ */
--- 
-2.7.4
+Today's linux-next merge of the drm-msm tree got a conflict in:
 
+  drivers/gpu/drm/msm/msm_gem_submit.c
+
+between commit:
+
+  0e10e9a1db23 ("drm/sched: drop entity parameter from drm_sched_push_job")
+
+from the drm tree and commit:
+
+  68002469e571 ("drm/msm: One sched entity per process per priority")
+
+from the drm-msm tree.
+
+The conflict was this:
+
+        /* The scheduler owns a ref now: */
+        msm_gem_submit_get(submit);
+
+<<<<<<< HEAD
+        drm_sched_entity_push_job(&submit->base);
+=3D=3D=3D=3D=3D=3D=3D=20
+        drm_sched_entity_push_job(&submit->base, queue->entity);
+>>>>>>> drm-msm/msm-next
+
+        args->fence =3D submit->fence_id;
+
+I fixed it up (I just used the HEAD version) and can carry the fix as
+necessary. This is now fixed as far as linux-next is concerned, but any
+non trivial conflicts should be mentioned to your upstream maintainer
+when your tree is submitted for merging.  You may also want to consider
+cooperating with the maintainer of the conflicting tree to minimise any
+particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/vvs4NLlv=FRmBCL/A4bnsLJ
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFbtBgACgkQAVBC80lX
+0GwHwgf9HY6t8i1Exfs0UtU1b/lpduyBqDJH68h0SBe6KzleCmPXfrC0LteFYW4r
+u9HINb0poJ3ijiINRjp8cXzK++8A8aTPlBDngJKLOQqHkh/L+ZtC55puhF+CeNjd
+36IrFTEN+7GssJ55grXPMVVAB0H8QjtKhXWB/SMvuCtiqHKuXfR0voj4s5+csEy+
+KDGYyC8lL+DfRJR+zc2wqcKgiZvGLqC8tM9b1vT+6M4eZdrGU2DLamCueqVUBlyy
+5Litrk4Qqw9IllfM1DLyryGmZ61YhjDbagVw29sH1JC/kZ5hP9FFLmEBITjMaCmx
+2/KZkB6K5xYqtATcFcZ/Ca8B3Vl76Q==
+=e2MP
+-----END PGP SIGNATURE-----
+
+--Sig_/vvs4NLlv=FRmBCL/A4bnsLJ--
