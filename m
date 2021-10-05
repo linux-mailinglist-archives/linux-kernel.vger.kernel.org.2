@@ -2,137 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F033A421B2B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 02:35:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFF6E421B2E
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 02:36:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229636AbhJEAhe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 20:37:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50034 "EHLO
+        id S229704AbhJEAiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 20:38:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229486AbhJEAhd (ORCPT
+        with ESMTP id S229486AbhJEAiO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 20:37:33 -0400
-Received: from mail-ua1-x934.google.com (mail-ua1-x934.google.com [IPv6:2607:f8b0:4864:20::934])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A05DC061745
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 17:35:43 -0700 (PDT)
-Received: by mail-ua1-x934.google.com with SMTP id 64so13674065uab.12
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 17:35:43 -0700 (PDT)
+        Mon, 4 Oct 2021 20:38:14 -0400
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50144C061745
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 17:36:25 -0700 (PDT)
+Received: by mail-il1-x136.google.com with SMTP id l13so3426059ilo.3
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 17:36:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=0l5p0oE25SqlRLFMCCo2EWRTCPhDAqiXcOcdg7xVq1M=;
-        b=ejuDgM8fmefZMUg3Jx2LeaRwi6b9kq8lSJKUxN8jCsFqiTUmXH3Svzmal9VU5eVFum
-         Zg7tuD/lrSRPLUFFQTVcqjkO5q8zL4TA4a2zz8IgPZCArY7VUWYbxEF49COMMoP0nkTM
-         teh8alqCaTTktQL69QAezC/jeF+DfIxnp0SEWUVbogUrB13IIBCmXbS3bRgLN9OxfRu4
-         pNXAozDqp0gt/aO3BFvj6AvvkkuzwTOJWYXaP6J5fl0eptabu8o2uk+pW30JXyBK6bcM
-         2gshRIWzj2LaRUMVRSXSh0LSxG8uHN8xqYY6iwU9jeAvs7Ogt9aIf/rEKhY83mDwm/HR
-         0fwA==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cIEfmhHMWRR+UfbfarKixY0VfYOQ7qrc2Yu2ffv5Aws=;
+        b=HVKYKpLYZsQ9UTyyVy1Vf68F9k+FOnBn7+9LJBhoCIDGj4DtpqnbiLLEuHoP7URbRu
+         yWbC7e48enorTEgwAc9q+sBTCplD/Nk3G42Ixoy6VrM2x9T1VsqUikRntsEX0fSkrzfT
+         mapzJmRojmYesEyumCJd5at2lucUUJNvK2HSE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=0l5p0oE25SqlRLFMCCo2EWRTCPhDAqiXcOcdg7xVq1M=;
-        b=S5Kk3EXVNHnlq0npnMGoKMb7htOvLKWd0/eDy1x5MyS2FtgrUgvoYTNOjURKClDp1M
-         jfOBhvLoiq8RWKbMgna6NI8GK7r/K+71RTpfmFTCR+fcnwe2driS8u0anyCS1fT21oNW
-         /3c3A8v5cRdiQ5jcUyfJU13ScQHVbA/RH6dIczNIhBo85s27CBuBd+5Yto+FBn6lW+Ex
-         zwmhYvlx1fsPaBPPxS5DoQe2RkPmsOu6CF42zlzgWWDIIV0QfMslqoG1+C1NvHfpno/G
-         q6Zj/WFU3h5vtmUXMNFWXZk04D39sX2L9JKvtt3nqnvBYlSC/odL/Dw6lQ4AQZFjOJii
-         72Cg==
-X-Gm-Message-State: AOAM533e/ktWvOZ5rdkWMFhOjMVQ+pB1K+5/b9D4/7ZqDr3n7b6YVWxG
-        HjKgacIhHRSY1t04fyazJHOBlQ==
-X-Google-Smtp-Source: ABdhPJwwCbODZAmdlHTct0WG9V3q+5xFprMFyk6J4nicYFya2JLGnSGHMjclaFE/ckmqCOs8CKTF1w==
-X-Received: by 2002:ab0:4a9d:: with SMTP id s29mr10047253uae.104.1633394142354;
-        Mon, 04 Oct 2021 17:35:42 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id o3sm7542542vsc.26.2021.10.04.17.35.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Oct 2021 17:35:40 -0700 (PDT)
-Date:   Mon, 04 Oct 2021 17:35:40 -0700 (PDT)
-X-Google-Original-Date: Mon, 04 Oct 2021 17:35:36 PDT (-0700)
-Subject:     Re: [PATCH] RISC-V: Include clone3() on rv32
-In-Reply-To: <20211004111758.rl2zq6l575hmcv22@wittgenstein>
-CC:     Arnd Bergmann <arnd@arndb.de>, linux-riscv@lists.infradead.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, christian@brauner.io,
-        linux-kernel@vger.kernel.org, kernel-team@android.com
-From:   Palmer Dabbelt <palmerdabbelt@google.com>
-To:     christian.brauner@ubuntu.com
-Message-ID: <mhng-73210076-6df9-44e7-8c1a-09ced50fe4c0@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cIEfmhHMWRR+UfbfarKixY0VfYOQ7qrc2Yu2ffv5Aws=;
+        b=JbDiN3ldPOj+zIt9EWhXBGz1S9Vi+3ACVNOOzNl9JD24Gpk1kubwLPfYTWKTTYSOr2
+         cvA0HS2mPIGFaCe6FToqqf+xZwG7XAT8iBnWvaPD2WjqwejvjKcXvUiMCf06NVdEPfmc
+         rc0PM5o1u+bKkNQ1TGtrry9MdBWzkFw+VCdphUOXuF5YhexX1hxtc0MdbItTgwuhLHVQ
+         pH6R3sx11K8PH2H4Cgy0gEJTJsOeeze7RWffrSf2+Xqf4Qa4whaTJaAd1i4wjMNMFRJa
+         gvWo3CaXtRbnTeZPiJES6DWN1Jgw2OqotNvmiM0oX1+eodiqDOiFqD9C5LMnAuhUnxJJ
+         p01A==
+X-Gm-Message-State: AOAM532ey7Ag4pPAbvAfPmESI1q+NVT9OFGL43gf8A1FfpLNKy55pRKx
+        HwI2hDXXZbKxF6mOk/CueiQlJzUL/d0zMg==
+X-Google-Smtp-Source: ABdhPJxIf27aAKi8ZoEVvHhezElldFpCwLuq16m411qNWGvXL2ily5+nMjXmcKQHFOkq8Aey/ESffQ==
+X-Received: by 2002:a05:6e02:1445:: with SMTP id p5mr764748ilo.11.1633394184662;
+        Mon, 04 Oct 2021 17:36:24 -0700 (PDT)
+Received: from mail-io1-f46.google.com (mail-io1-f46.google.com. [209.85.166.46])
+        by smtp.gmail.com with ESMTPSA id y124sm10154201iof.8.2021.10.04.17.36.23
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Oct 2021 17:36:23 -0700 (PDT)
+Received: by mail-io1-f46.google.com with SMTP id r75so22384023iod.7
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 17:36:23 -0700 (PDT)
+X-Received: by 2002:a02:c7d2:: with SMTP id s18mr175853jao.68.1633394182579;
+ Mon, 04 Oct 2021 17:36:22 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210726231351.655302-1-bjorn.andersson@linaro.org>
+ <CAD=FV=UGtHXD==Yy8CVCOioYGb=2hqGQOoNWftD1Jj7OiEp51g@mail.gmail.com> <YVd3YdfgFVc0Br5T@ripper>
+In-Reply-To: <YVd3YdfgFVc0Br5T@ripper>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Mon, 4 Oct 2021 17:36:10 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=U=xVLuKOYHbGPTkLjGa8_U+F1ZtEvJt4LGaRuR5SsKFw@mail.gmail.com>
+Message-ID: <CAD=FV=U=xVLuKOYHbGPTkLjGa8_U+F1ZtEvJt4LGaRuR5SsKFw@mail.gmail.com>
+Subject: Re: [RFC] drm/msm/dp: Allow attaching a drm_panel
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Kuogee Hsieh <khsieh@codeaurora.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Vara Reddy <varar@codeaurora.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Chandan Uddaraju <chandanu@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 04 Oct 2021 04:17:58 PDT (-0700), christian.brauner@ubuntu.com wrote:
-> On Sun, Oct 03, 2021 at 05:30:24PM +0200, Arnd Bergmann wrote:
->> On Sun, Oct 3, 2021 at 2:58 AM Palmer Dabbelt <palmer@dabbelt.com> wrote:
->> >
->> > From: Palmer Dabbelt <palmerdabbelt@google.com>
->> >
->> > As far as I can tell this should be enabled on rv32 as well, I'm not
->> > sure why it's rv64-only.  checksyscalls is complaining about our lack of
->> > clone3() on rv32.
->> >
->> > Fixes: 56ac5e213933 ("riscv: enable sys_clone3 syscall for rv64")
->> > Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
->>
->> We should probably reverse the polarity of this symbol and force
->> architectures that don't implement it properly to say they don't
->> have it, but for now, it definitely makes sense to treat this the same
->> way on 32-bit and 64-bit risc-v.
->
-> I think we had that discussion back when I added it and I think I even
-> proposed that or you did but then we settled on __ARCH_WANT_SYS_CLONE3.
-> Most likely because it fell in line with the other
-> __ARCH_WANT_SYS_{CLONE,FORK}.
->
-> I think at this point its alpha, ia64, nios, sparc, and sh that don't
-> implement it. For some it looks trivial at first glance at least (Fwiw,
-> nios implements sys_clone() but doesn't select __ARCH_WANT_SYS_CLONE3):
->
-> diff --git a/arch/nios2/include/uapi/asm/unistd.h b/arch/nios2/include/uapi/asm/unistd.h
-> index 0b4bb1d41b28..6c4f45abd3ab 100644
-> --- a/arch/nios2/include/uapi/asm/unistd.h
-> +++ b/arch/nios2/include/uapi/asm/unistd.h
-> @@ -18,6 +18,7 @@
->
->   #define sys_mmap2 sys_mmap_pgoff
->
-> +#define __ARCH_WANT_SYS_CLONE3
->  #define __ARCH_WANT_RENAMEAT
->  #define __ARCH_WANT_STAT64
->  #define __ARCH_WANT_SET_GET_RLIMIT
-> diff --git a/arch/nios2/kernel/entry.S b/arch/nios2/kernel/entry.S
-> index 0794cd7803df..c1804bda8259 100644
-> --- a/arch/nios2/kernel/entry.S
-> +++ b/arch/nios2/kernel/entry.S
-> @@ -396,6 +396,15 @@ ENTRY(sys_clone)
->         RESTORE_SWITCH_STACK
->         ret
->
-> +/*
-> + * int clone3(struct clone_args __user *, uargs, size_t, size)
-> + */
-> +ENTRY(sys_clone3)
-> +       SAVE_SWITCH_STACK
-> +       call    sys_clone3
-> +       RESTORE_SWITCH_STACK
-> +       ret
-> +
->  ENTRY(sys_rt_sigreturn)
->         SAVE_SWITCH_STACK
->         mov     r4, sp
+Hi,
 
-Thanks.
+On Fri, Oct 1, 2021 at 2:00 PM Bjorn Andersson
+<bjorn.andersson@linaro.org> wrote:
+>
+> On Fri 27 Aug 13:52 PDT 2021, Doug Anderson wrote:
+>
+> > Hi,
+> >
+> > On Mon, Jul 26, 2021 at 4:15 PM Bjorn Andersson
+> > <bjorn.andersson@linaro.org> wrote:
+> > >
+> > > +static int dp_parser_find_panel(struct dp_parser *parser)
+> > > +{
+> > > +       struct device_node *np = parser->pdev->dev.of_node;
+> > > +       int rc;
+> > > +
+> > > +       rc = drm_of_find_panel_or_bridge(np, 2, 0, &parser->drm_panel, NULL);
+> >
+> > Why port 2? Shouldn't this just be port 1 always? The yaml says that
+> > port 1 is "Output endpoint of the controller". We should just use port
+> > 1 here, right?
+> >
+>
+> Finally got back to this, changed it to 1 and figured out why I left it
+> at 2.
+>
+> drm_of_find_panel_or_bridge() on a DP controller will find the of_graph
+> reference to the USB-C controller, scan through the registered panels
+> and conclude that the of_node of the USB-C controller isn't a registered
+> panel and return -EPROBE_DEFER.
 
-I've put this on fixes, but if you're trying to do that refactoring I've 
-merged it in as a single patch on top of 5.15-rc1.  That's on 
-palmer/riscv-clone3, in case it helps someone avoid a conflict when 
-doing that refactoring.  I'd usually offer to do the refactoring, but 
-I'm super buried right now with all the RISC-V stuff ;)
+I'm confused, but maybe it would help if I could see something
+concrete. Is there a specific board this was happening on?
 
-I want to call this fix because it's breaking my builds, these 
-checksyscall warnings have recently turned into errors.
+Under the DP node in the device tree I expect:
+
+ports {
+  port@1 {
+    reg = <1>;
+    edp_out: endpoint {
+      remote-endpoint = <&edp_panel_in>;
+    };
+  };
+};
+
+If you have "port@1" pointing to a USB-C controller but this instance
+of the DP controller is actually hooked up straight to a panel then
+you should simply delete the "port@1" that points to the typeC and
+replace it with one that points to a panel, right?
+
+-Doug
