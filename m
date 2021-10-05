@@ -2,122 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12DA44227BD
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 15:26:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF7FA4227C2
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 15:27:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234853AbhJEN2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 09:28:25 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:8622 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234103AbhJEN2Y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 09:28:24 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 195D5aPR030991;
-        Tue, 5 Oct 2021 09:26:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=sE+jmMJrpKu3c07k9/lx4goRWbVThzC1XRpesW6sRyA=;
- b=FOKySmPyn5tJv7JuqME8L5JQeNwyVK1bYVw24AKSgVeQHsKxWAS626oyaoMV/nIm7GLP
- G87WQ0n3M+D1updRh8GY54yRExQmpG6err6rmkXw25p45tQL633wzk2JEeRN6usxjAWP
- g3AraBRsA/aqcTmjpkqcD2m/VIJHuAPUBvCEs1ZI2dyjmMPoBSXDy4rKTERV52h2Palu
- SSpt1eslcDnHG1gVHP6DD47CBvnyy57KtQiUXUI229KBg34RNC5yznS3yHXyxIlD/fhT
- 96c/xlpoD9mqCh57HRSdDW1gYhGGHna4qupo8R7TuQyNxhxc7rNws1Uc2H8y19tezBR4 Ow== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bgpych0r4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Oct 2021 09:26:32 -0400
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 195D5hmd031480;
-        Tue, 5 Oct 2021 09:26:32 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bgpych0q4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Oct 2021 09:26:32 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 195DDBja015037;
-        Tue, 5 Oct 2021 13:26:29 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma03ams.nl.ibm.com with ESMTP id 3bef2a2s3n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Oct 2021 13:26:29 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 195DQOCe49348870
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 5 Oct 2021 13:26:24 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E1365A406F;
-        Tue,  5 Oct 2021 13:26:23 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6A2AAA404D;
-        Tue,  5 Oct 2021 13:26:23 +0000 (GMT)
-Received: from [9.145.45.132] (unknown [9.145.45.132])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue,  5 Oct 2021 13:26:23 +0000 (GMT)
-Message-ID: <fcfd5d04-1a08-f91e-7bc2-8878c6dcd1eb@linux.ibm.com>
-Date:   Tue, 5 Oct 2021 15:26:23 +0200
+        id S234875AbhJEN3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 09:29:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49240 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234950AbhJEN3c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 09:29:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5EE5E61251;
+        Tue,  5 Oct 2021 13:27:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633440461;
+        bh=MOH/wIgGZg6o0CoLkFJQmfzWGtCwlnQSYLFTb25uQlE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=OSXc2LRUI4jwymWNkorUMTx3IFqUVd8nGbunxnV4tDHJIzKX/UmPIEKW1LZC+dqhg
+         fj4xIOWMU+FrFQnf8liB/iuwu8aPd7Ebrrqu/+/2D/tbDLdnBGDQ/iLWqGIAIoGQAj
+         dhBY9itF4VbZYAQV87Cj+YGui9E4aYT6LvtQz6cibckn3yYskVxxMsYwLpKQR/WjQc
+         540JNRJwmIx/zi16917RkiXb4UjmQs9RGD25YrwBNJNfICyVjI6Ft639964CpbVSWz
+         bVZ1dR7Px+wZgFhhrlNWlWiWIfgXYUpOMu2wzqtoHCp+OF7MmyAhxPBvxmLK2ItSIe
+         8awC367gFY1fA==
+Received: by mail-qt1-f182.google.com with SMTP id r16so19001491qtw.11;
+        Tue, 05 Oct 2021 06:27:41 -0700 (PDT)
+X-Gm-Message-State: AOAM533VO+z33Rj879OrOmE79gktQMMahsUdD6RlY6hQ+e+QHcvzNwAI
+        Yt5ceVXUkdh88ILyETbdjevklsaVtnXakY5bfw==
+X-Google-Smtp-Source: ABdhPJxQAFhHe4+av141S3+5nqxD6ijBY6lLkb+QsF2zqe+Qv+Dlzut6+e0uaRWT3UFTk7nE4P0ehgvDvleY8Qztn3c=
+X-Received: by 2002:ac8:1090:: with SMTP id a16mr19819375qtj.297.1633440459286;
+ Tue, 05 Oct 2021 06:27:39 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH v5 00/14] KVM: s390: pv: implement lazy destroy for reboot
-Content-Language: en-US
-To:     Claudio Imbrenda <imbrenda@linux.ibm.com>, kvm@vger.kernel.org
-Cc:     cohuck@redhat.com, borntraeger@de.ibm.com, thuth@redhat.com,
-        pasic@linux.ibm.com, david@redhat.com, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ulrich.Weigand@de.ibm.com
-References: <20210920132502.36111-1-imbrenda@linux.ibm.com>
-From:   Janosch Frank <frankja@linux.ibm.com>
-In-Reply-To: <20210920132502.36111-1-imbrenda@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 3nAXINJR6Us8crhYMrZ3JiACMP5OZZP_
-X-Proofpoint-ORIG-GUID: HaVw2bjXPeXRNuxOT4zOKXbdqfVn9OwF
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-10-05_02,2021-10-04_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- bulkscore=0 mlxscore=0 mlxlogscore=999 lowpriorityscore=0 spamscore=0
- malwarescore=0 clxscore=1015 phishscore=0 impostorscore=0 suspectscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110050078
+References: <20210926145931.14603-1-sergio.paracuellos@gmail.com>
+ <20210926145931.14603-3-sergio.paracuellos@gmail.com> <YVtCtGcLjNcO2NJ0@robh.at.kernel.org>
+ <CAMhs-H9TDEWEffDn7hBQxT127RNU4eUtPxaSciuiis0fPqTN_w@mail.gmail.com>
+In-Reply-To: <CAMhs-H9TDEWEffDn7hBQxT127RNU4eUtPxaSciuiis0fPqTN_w@mail.gmail.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 5 Oct 2021 08:27:25 -0500
+X-Gmail-Original-Message-ID: <CAL_Jsq+U_0JnCoJVaHH0T+kdmxX_OosD9=OT0dWyNdwbe=CLoQ@mail.gmail.com>
+Message-ID: <CAL_Jsq+U_0JnCoJVaHH0T+kdmxX_OosD9=OT0dWyNdwbe=CLoQ@mail.gmail.com>
+Subject: Re: [PATCH 2/3] dt: bindings: add ralink RT2880 resets device tree
+ binding documentation
+To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Cc:     linux-staging@lists.linux.dev, John Crispin <john@phrozen.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Greg KH <gregkh@linuxfoundation.org>,
+        NeilBrown <neil@brown.name>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/20/21 15:24, Claudio Imbrenda wrote:
-> Previously, when a protected VM was rebooted or when it was shut down,
-> its memory was made unprotected, and then the protected VM itself was
-> destroyed. Looping over the whole address space can take some time,
-> considering the overhead of the various Ultravisor Calls (UVCs). This
-> means that a reboot or a shutdown would take a potentially long amount
-> of time, depending on the amount of used memory.
-> 
-> This patchseries implements a deferred destroy mechanism for protected
-> guests. When a protected guest is destroyed, its memory is cleared in
-> background, allowing the guest to restart or terminate significantly
-> faster than before.
-> 
-> There are 2 possibilities when a protected VM is torn down:
-> * it still has an address space associated (reboot case)
-> * it does not have an address space anymore (shutdown case)
-> 
-> For the reboot case, the reference count of the mm is increased, and
-> then a background thread is started to clean up. Once the thread went
-> through the whole address space, the protected VM is actually
-> destroyed.
-> 
-> This means that the same address space can have memory belonging to
-> more than one protected guest, although only one will be running, the
-> others will in fact not even have any CPUs.
-> 
-> The shutdown case is more controversial, and it will be dealt with in a
-> future patchseries.
-> 
-> When a guest is destroyed, its memory still counts towards its memory
-> control group until it's actually freed (I tested this experimentally)
+On Mon, Oct 4, 2021 at 1:23 PM Sergio Paracuellos
+<sergio.paracuellos@gmail.com> wrote:
+>
+> Hi Rob,
+>
+> On Mon, Oct 4, 2021 at 8:06 PM Rob Herring <robh@kernel.org> wrote:
+> >
+> > On Sun, Sep 26, 2021 at 04:59:30PM +0200, Sergio Paracuellos wrote:
+> > > Adds device tree binding documentation for resets in the ralink RT2880 SoCs.
+> > >
+> > > Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> > > ---
+> > >  .../bindings/reset/ralink,rt2880-reset.yaml   | 39 +++++++++++++++++++
+> > >  1 file changed, 39 insertions(+)
+> > >  create mode 100644 Documentation/devicetree/bindings/reset/ralink,rt2880-reset.yaml
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/reset/ralink,rt2880-reset.yaml b/Documentation/devicetree/bindings/reset/ralink,rt2880-reset.yaml
+> > > new file mode 100644
+> > > index 000000000000..88eddeb4ee45
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/reset/ralink,rt2880-reset.yaml
+> > > @@ -0,0 +1,39 @@
+> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > +%YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/reset/ralink,rt2880-reset.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: Ralink RT2880 Reset Controller Device Tree Bindings
+> > > +
+> > > +maintainers:
+> > > +  - Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> > > +
+> > > +description: |
+> > > +  Ralink RT2880 reset controller driver which supports the SoC
+> > > +  system controller supplied reset registers for the various peripherals
+> > > +  of the SoC.
+> > > +
+> > > +  See also:
+> > > +  - dt-bindings/reset/ralink-rt2880.h
+> > > +
+> > > +properties:
+> > > +  compatible:
+> > > +    const: ralink,rt2880-reset
+> > > +
+> > > +  '#reset-cells':
+> > > +    const: 1
+> > > +
+> > > +required:
+> > > +  - '#reset-cells'
+> > > +  - compatible
+> > > +
+> > > +additionalProperties: false
+> > > +
+> > > +examples:
+> > > +  - |
+> > > +    #include <dt-bindings/reset/ralink-rt2880.h>
+> > > +    rstctrl: reset-controller {
+> > > +      compatible = "ralink,rt2880-reset";
+> > > +      #reset-cells = <1>;
+> >
+> > How is this h/w controlled? If this is part of a system controller, then
+> > it needs to be documented as such. IOW, you need to document the binding
+> > for the whole block.
+> >
+> > Do you really need a child node here? All you need to make a system
+> > controller a reset provider is add '#reset-cells' to it.
+>
+> I am just documenting what is already mainlined (see [0]) in order to
+> get mt7621-dts out of staging at some point of my life. What am I
+> supposed to do? Should I rewrite all already mainlined code? Because
+> if that is the case we need to rewrite tons of things from the ralink
+> platform...
+
+On the flip side, am I not supposed to review bindings because the dts
+is already in staging? Code dependent on DT bindings shouldn't have
+been mainlined without any documented binding.
+
+Looks like the resets are part of "mediatek,mt7621-sysc" to answer my
+question. Add a #reset-cell to that node (and binding) and then change
+this line to "mediatek,mt7621-sysc":
+
+        reset_dev.of_node = of_find_compatible_node(NULL, NULL,
+                                                "ralink,rt2880-reset");
+
+That's the minimal change, but really I would move the reset code to
+the clock driver as that is what handles the sysc node.
 
 
-@Christian: I'd like to have #1-3 in early so we can focus on the more 
-complicated stuff.
+> I'd also like to know what we should do with those nodes already added
+> to the dtsi file that have not got associated compatible driver
+> mainlined. Can we just get rid of them?
+
+Yes. Typically dts files start with minimal support.
+
+A dts file in staging is odd. We shouldn't be adding them there.
+
+Rob
