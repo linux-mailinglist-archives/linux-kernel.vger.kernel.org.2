@@ -2,76 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81C5A421F4F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 09:14:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF78E421F50
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 09:15:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232631AbhJEHQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 03:16:27 -0400
-Received: from smtprelay0048.hostedemail.com ([216.40.44.48]:58156 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232251AbhJEHQ0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 03:16:26 -0400
-Received: from omf14.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id C071F1807D7C1;
-        Tue,  5 Oct 2021 07:14:30 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf14.hostedemail.com (Postfix) with ESMTPA id 3DE5B268E45;
-        Tue,  5 Oct 2021 07:14:27 +0000 (UTC)
-Message-ID: <c56e78bc85cbe6b05dd16c750e596ab331c37dee.camel@perches.com>
-Subject: Re: [PATCH V0 4/7] usb: common: eud: Added the driver support for
- Embedded USB Debugger(EUD)
-From:   Joe Perches <joe@perches.com>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Souradeep Chowdhury <schowdhu@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Bryan O'Donoghue <pure.logic@nexus-software.ie>,
-        Greg KH <greg@kroah.com>, linux-kernel@vger.kernel.org,
-        ckadabi@codeaurora.org, tsoni@codeaurora.org,
-        bryanh@codeaurora.org, psodagud@codeaurora.org,
-        satyap@codeaurora.org, pheragu@codeaurora.org,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Date:   Tue, 05 Oct 2021 00:14:25 -0700
-In-Reply-To: <YVsu602phHbZLMOT@ripper>
-References: <cover.1633343547.git.schowdhu@codeaurora.org>
-         <e6df4a21a283e822d15dedb7ffb3ae62c241999c.1633343547.git.schowdhu@codeaurora.org>
-         <YVsu602phHbZLMOT@ripper>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.0-1 
+        id S232644AbhJEHRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 03:17:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55414 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230526AbhJEHR2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 03:17:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0EC5561506;
+        Tue,  5 Oct 2021 07:15:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1633418138;
+        bh=AWOoDnZwAjqHTNASt9nix/Q85Dw8cfXYbiHOK3MMejM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=csL4m8QH45VKFthT1lySjOv83vntsdiv83yC4cMo+cxzwDMydDBDJOfyx311AsbRl
+         +PQ8q+0nSL/dXhHkl5EjqjJM35dFer3UPpwkrqTodyFuF5eZxRTQYjuh/imV6J8Afc
+         aBSXK+jUjxrNmoV5QoQM4yrjky/Fcv+pFEhgoL9Q=
+Date:   Tue, 5 Oct 2021 09:15:36 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     ast@kernel.org, cuibixuan@huawei.com,
+        syzbot+f3e749d4c662818ae439@syzkaller.appspotmail.com, yhs@fb.com,
+        stable-commits@vger.kernel.org
+Subject: Re: Patch "bpf: Add oversize check before call kvcalloc()" has been
+ added to the 5.14-stable tree
+Message-ID: <YVv7mCe4eQ23X8Bx@kroah.com>
+References: <163341735610637@kroah.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: 3DE5B268E45
-X-Spam-Status: No, score=-2.03
-X-Stat-Signature: p41cre9disuxr4e5bn6qwko7y6z19gz4
-X-Rspamd-Server: rspamout02
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1/wX7nCYcBjYI3ylpNeDbHYE4g46+Sy/Cw=
-X-HE-Tag: 1633418067-584561
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <163341735610637@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-10-04 at 09:42 -0700, Bjorn Andersson wrote:
-> On Mon 04 Oct 04:16 PDT 2021, Souradeep Chowdhury wrote:
+On Tue, Oct 05, 2021 at 09:02:36AM +0200, gregkh@linuxfoundation.org wrote:
 > 
-> > Add support for control peripheral of EUD (Embedded USB Debugger) to
-> > listen to events such as USB attach/detach, pet EUD to indicate software
-> > is functional.Reusing the platform device kobj, sysfs entry 'enable' is
-> > created to enable or disable EUD.
-[]
-> > diff --git a/drivers/usb/common/qcom_eud.c b/drivers/usb/common/qcom_eud.c
-[]
-> > +static ssize_t enable_show(struct device *dev,
-> > +		struct device_attribute *attr, char *buf)
-> > +{
-> > +	struct eud_chip *chip = dev_get_drvdata(dev);
-> > +
-> > +	return sprintf(buf, "%d", chip->enable);
+> This is a note to let you know that I've just added the patch titled
+> 
+>     bpf: Add oversize check before call kvcalloc()
+> 
+> to the 5.14-stable tree which can be found at:
+>     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
+> 
+> The filename of the patch is:
+>      bpf-add-oversize-check-before-call-kvcalloc.patch
+> and it can be found in the queue-5.14 subdirectory.
+> 
+> If you, or anyone else, feels it should not be added to the stable tree,
+> please let <stable@vger.kernel.org> know about it.
 
-trivia:
+Oops, this is already in the tree, dropping it...
 
-should probably use sysfs_emit and have a trailing '\n' in the format.
-
-
+greg k-h
