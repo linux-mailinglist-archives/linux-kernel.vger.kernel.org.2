@@ -2,90 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4752422CDC
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:45:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5BC7422CEC
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:48:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236188AbhJEPrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 11:47:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35384 "EHLO
+        id S236153AbhJEPuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 11:50:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236039AbhJEPrL (ORCPT
+        with ESMTP id S235588AbhJEPuU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 11:47:11 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B330C06174E
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 08:45:20 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id z11so26802457oih.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 08:45:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=DyGC1o0ExiPXVEzbLwM161zjxcLwXtL3mQFHYbOsiDo=;
-        b=L9DrO2uUoQ/UpmFwlKvuVaRiu12KqmtBMCrJ2DKw5oxUJeW34nCAUCbRoMUM6Vk34w
-         ZEn1A7xPxnl9G2tq4BMjqrXkoR4FGN/0sfLPauqPM5neqBW/CcBHVsADJLnA+lZ7mVFw
-         9DD9epEqNj0CvNGEDlT7pmoNOmmBhaQpa3QpMAQjbsdvnfwwISp5B88IwHqK2dZFo7Xh
-         bHzU0WBMncx9+eKP0uX+iaLmoCw8dixxGSFSzseCChZCE9hYyK5niUZYosyY5BYPkRSN
-         DKYsTQM9tjlwCAvC8pZl5xAh7D9/yjgiUPUmC96sdR0cdjpy5xXgmxALmFMajHyfUX5D
-         LQew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DyGC1o0ExiPXVEzbLwM161zjxcLwXtL3mQFHYbOsiDo=;
-        b=RYHv2zURxyeWU2YN6oQeStMpb6WXhRDp+1NVNfohbMAwYn+AZYAM/aO4lTZhghVPLt
-         571YxdRM+ALMGNMVOjy/v2UhG7RTeDOF9azjNVuJ3Y6oP7PFZHSfgYQ9ZSvyG33XPl8t
-         Mf2YA+nqLy4m0cmdFGb/pOvoWadqAIPEKk1jCiX6s9ARaNryEVIBa6Qt5Fw7/+XcOi+J
-         T9LvbHvfpsJg5EXYSorXGgSYBU9nU1Tf8oDvXbvo07I1qmTzYBGOXgav/hQY3ch7l782
-         KsYBfysoz2oDGMF5VsGnh+nCtMhAWbPSJuUbEVw+IVISbBZkKckijPdUQpUn7g1Qltgs
-         i8OQ==
-X-Gm-Message-State: AOAM5301zHbSuBrySpGdLm0VObCPa8Tu+WM3WNLX5VnKWOQhdfXzF+Fo
-        FGl8PdG51LRrhxJT9nKa6/1cOw==
-X-Google-Smtp-Source: ABdhPJxcdpxGev1KAnRYwHDx/rf+AN5tzztCSHqw6+k+f4FyxvAWAqXGrACRtPVl44iPi8MVcXXF7Q==
-X-Received: by 2002:aca:110e:: with SMTP id 14mr3093834oir.18.1633448719808;
-        Tue, 05 Oct 2021 08:45:19 -0700 (PDT)
-Received: from ripper ([2600:1700:a0:3dc8:205:1bff:fec0:b9b3])
-        by smtp.gmail.com with ESMTPSA id a3sm3345617oie.3.2021.10.05.08.45.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Oct 2021 08:45:19 -0700 (PDT)
-Date:   Tue, 5 Oct 2021 08:47:02 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Shawn Guo <shawn.guo@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 02/10] dt-bindings: phy: qcom,qmp: IPQ6018 and IPQ8074
- PCIe PHY require no supply
-Message-ID: <YVxzdiVKWOF9AVVV@ripper>
-References: <20210929034253.24570-1-shawn.guo@linaro.org>
- <20210929034253.24570-3-shawn.guo@linaro.org>
- <YVvx9jEGS3g9LD8X@matsya>
+        Tue, 5 Oct 2021 11:50:20 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D784C061749
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 08:48:30 -0700 (PDT)
+Date:   Tue, 5 Oct 2021 17:48:27 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1633448908;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=VSZyxM2r/CBcFXTQ9wKe2flyiU3VGPai8WyWlx7Gs5U=;
+        b=kj3t6RU18pFKtLYgHf7PB6U2Lb9/HC3oVKido8zAa9G2HUmVtII0nRiqTSM1a0VYVFqN2J
+        RD/zE3xxV6XqD8ZeblS+47h/gPNk5jx+bng4W2lTir2jgXZFjejuBBtqawuaEpf8tFVMYP
+        ZejavDKuj/Yuh1iWcuA7q6X30yqZfowg62d5K/6hpayBm34/XxQolTM0/R8SEHRXqd66om
+        QTcZsHZVOBtjdcN4UBXtdcHa/JBUGC0J6jEZAFQPbD4Wl/hhr7iG3vAYXUsG53JY6LzOM/
+        Ux9nYItAyAlFwfVUYoRiGFWViTEr0+gEKFtC2liKkN9Hv/Vbnwi86X2i/PoOcg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1633448908;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=VSZyxM2r/CBcFXTQ9wKe2flyiU3VGPai8WyWlx7Gs5U=;
+        b=NBTS35qgiE9YQpiXRC4GMGGDgswGdgl2G1klJWOdjedCmqdy4OKMf/h8oEWVN2BRhnWPnd
+        vLL2JNRsaoGXhODA==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     linux-kernel@vger.kernel.org
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH 2/5] irq_work: Ensure that irq_work runs in in-IRQ
+ context.
+Message-ID: <20211005154827.h2pna3vfqbo7icjn@linutronix.de>
+References: <20210927211919.310855-1-bigeasy@linutronix.de>
+ <20210927211919.310855-3-bigeasy@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YVvx9jEGS3g9LD8X@matsya>
+In-Reply-To: <20210927211919.310855-3-bigeasy@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 04 Oct 23:34 PDT 2021, Vinod Koul wrote:
-
-> On 29-09-21, 11:42, Shawn Guo wrote:
-> > The qmp-phy driver suggests that 'vdda-phy-supply' and 'vdda-pll-supply'
-> > are not required for IPQ6018 and IPQ8074 QMP PCIe PHY.  Update the
-> > bindings to reflect it.
-> > 
-> > While at it, also correct the clock properies for IPQ8074 QMP PCIe PHY.
-> > And as the result, 'qcom,ipq8074-qmp-pcie-phy' and
-> > 'qcom,ipq6018-qmp-pcie-phy' share the same clock, reset and supply
-> > bindings.
+On 2021-09-27 23:19:16 [+0200], To linux-kernel@vger.kernel.org wrote:
+> The irq-work callback should be invoked in hardirq context and some
+> callbacks rely on this behaviour. At the time irq_work_run_list()
+> interrupts should be disabled but the important part is that the
+> callback is invoked from a in-IRQ context.
+> The "disabled interrupts" check can be satisfied by disabling interrupts
+> from a kworker which is not the intended context.
 > 
-> Acked-By: Vinod Koul <vkoul@kernel.org>
+> Ensure that the callback is invoked from hardirq context and not just
+> with disabled interrupts.
+
+As noted by lkp, this triggers from smpcfd_dying_cpu().
+Do we care enough to change this or should I rather drop this one?
+
+> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> ---
+>  kernel/irq_work.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
+> diff --git a/kernel/irq_work.c b/kernel/irq_work.c
+> index db8c248ebc8c8..caf2edffa20d5 100644
+> --- a/kernel/irq_work.c
+> +++ b/kernel/irq_work.c
+> @@ -167,7 +167,7 @@ static void irq_work_run_list(struct llist_head *list)
+>  	struct irq_work *work, *tmp;
+>  	struct llist_node *llnode;
+>  
+> -	BUG_ON(!irqs_disabled());
+> +	BUG_ON(!in_hardirq());
+>  
+>  	if (llist_empty(list))
+>  		return;
 
-I think it's better if you take the two dt-bindings through your tree,
-so we avoid any potential merge conflicts related to possible other
-changes.
-
-Regards,
-Bjorn
+Sebastian
