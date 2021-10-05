@@ -2,108 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF5A242211D
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 10:48:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB499422120
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 10:49:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233216AbhJEIuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 04:50:35 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:25522 "EHLO
+        id S232992AbhJEIvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 04:51:00 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:51350 "EHLO
         esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232723AbhJEIuY (ORCPT
+        with ESMTP id S233325AbhJEIux (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 04:50:24 -0400
+        Tue, 5 Oct 2021 04:50:53 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1633423714; x=1664959714;
+  t=1633423743; x=1664959743;
   h=message-id:subject:from:to:cc:date:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=oAHa3Ext8eq1O+ssgw3md3aIV7iiyLnSkSOZaV8PZeI=;
-  b=QSqOhE8t9FRJjYDqmEdlkCeqG5osD10JD/sf6g/IA9hOVd4xnJ+1jqSF
-   xd+BVapw+UYvAC/1tx25De5HQS4U5CcHNLySLW/fmevIM0+0IaN/ATeGu
-   tFsFAhEq84obHGbDvWbGkxrtnu/2gqKrd0mdIY12dwIGOJsmeAGjGNxV8
-   AosTaM64ZCQW4qvYEOnPOSlDuWe3b8vA6+cTG5r884JLVPkwyWBIDCw6q
-   B5w9t6tPzqKR7uTlSbk9G/xtQTvgZYFR3p6OG8z5aN1GFVrDAP3W/g7xf
-   FE1pBKLPoQk9tUKwX/lI1ascMRSUb7vyQbW/vFBMGctjQ9l3tG7TDeTlB
-   Q==;
-IronPort-SDR: rb/8TfmN5pmN4fC5pLb6sECmyZcjdwWR6g9vR/6BsqF3614M5OB3ZocAItHetrfENe+t71cZKG
- OlOVz3G1ZfYPLBxUgeXK9OUN1aHzNpZTgPFXyK+TaJQSVKMCOKCBxVui3q5g2r1Sbdzggkco7R
- +BoKLZAuHNhDw1wnqBIf3Luzj/x0u0j7WHuZtQmVXG5JEmwm/YrznO0a96nwCIGG+n3yvIe2QN
- PiW4S9e795v7/qT+lDqMkGOBNw6NrU6XYWUi8bMM0YrqozI/0YC4D78TVdCS7llBq/sUIgJJ0T
- Yvf9RWVbN5HYyIQ2r97NGbr/
+  bh=iZlrk7uywMeq/85KjyVIcfTSnwi5lQWNkV1DMEL7uFo=;
+  b=MjinRfiUWdUcnq7yV2Uex0SgD6VWg7KVM75XpVZ86LOsb3pC7rNv2RTY
+   h9mpLfJGqEU6WU1e9jFBTpFnOyGMXf2DXeJLQbGCl8TTB3Vvu3aicgTP3
+   QdEdNXfAfRlO+Qv+V6SlGBQjqHNhBubmfSq8XnfNp43xGLlL4knwDMb7A
+   KsSFkeY4c9E6up4giu/nacstY6nrAMIbmxWrW4k5BfzDWtVOT+p5eyrrN
+   pi0fowLnJ0QykhvGIXq5FV3LfIXDEkRB94wOhI5dJd179bpT1hgpGYmW2
+   5l1PU5sMI+nkCKlnGmY1+MG9YFttphFuazstFkOycwdygw9iycv1dhuZC
+   A==;
+IronPort-SDR: ACshjsa+fXZqfl83diuH01xiydt2EfNOLbi1RMCzCrKC+s+M5DAwfcNIxEzwWK8MnnG7yK+Sfu
+ shrxOKkzF3Q+1iKrxXARpjWpoYFkyNA+uH1RC/Rg0hLiZpu/Kv7uWpKOJ52EHqSAcCgDv/Xlu+
+ xX7U/TMqZXZDBhXgyrP5LiY4u+MTbU1EuUvcGOwahrjT7UFfpLv7SL9juPOIu97j7Ksi4ZmYso
+ pnnjcUqCSKEUsqtiLb8tZqgn8sX+QrPFNWt/bg+R2spP9gyv5KXvbtYGn9AviqGYCimt9DqxR3
+ cl//dZzIYdv9UDQdWGLIJtii
 X-IronPort-AV: E=Sophos;i="5.85,348,1624345200"; 
-   d="scan'208";a="146790060"
+   d="scan'208";a="71726345"
 Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 05 Oct 2021 01:48:34 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 05 Oct 2021 01:48:59 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Tue, 5 Oct 2021 01:48:34 -0700
+ 15.1.2176.14; Tue, 5 Oct 2021 01:48:59 -0700
 Received: from CHE-LT-I41642.mchp-main.com (10.10.115.15) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Tue, 5 Oct 2021 01:48:30 -0700
-Message-ID: <2b37141fcb1067f9322bca5f6d83818d380b7c6a.camel@microchip.com>
-Subject: Re: [PATCH v1 0/3] serial:8250:Add driver support for MCHP PCI1XXXX
- UART module
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
+ 15.1.2176.14 via Frontend Transport; Tue, 5 Oct 2021 01:48:55 -0700
+Message-ID: <43c25d97a64010b9785a4cd75821564d511bc090.camel@microchip.com>
+Subject: Re: [PATCH v1 2/2] i2c:busses:Read and Write routines for PCI1XXXX
+ I2C module
 From:   LakshmiPraveen Kopparthi <LakshmiPraveen.Kopparthi@microchip.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-CC:     <gregkh@linuxfoundation.org>, <jirislaby@kernel.org>,
-        <macro@orcam.me.uk>, <zev@bewilderbeest.net>, <vigneshr@ti.com>,
-        <linux-serial@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <UNGLinuxDriver@microchip.com>
-Date:   Tue, 5 Oct 2021 14:18:29 +0530
-In-Reply-To: <YVSY8L6A6H71DvM5@smile.fi.intel.com>
-References: <20210929113049.64557-1-LakshmiPraveen.Kopparthi@microchip.com>
-         <YVSY8L6A6H71DvM5@smile.fi.intel.com>
+To:     Dmitry Osipenko <digetx@gmail.com>, <wsa@kernel.org>,
+        <andriy.shevchenko@linux.intel.com>, <treding@nvidia.com>,
+        <mirq-linux@rere.qmqm.pl>, <s.shtylyov@omp.ru>,
+        <linux-i2c@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <UNGLinuxDriver@microchip.com>
+Date:   Tue, 5 Oct 2021 14:18:54 +0530
+In-Reply-To: <ff447184-b510-4e70-c941-1f0c5b7d0fb5@gmail.com>
+References: <20210929062215.23905-1-LakshmiPraveen.Kopparthi@microchip.com>
+         <20210929062215.23905-3-LakshmiPraveen.Kopparthi@microchip.com>
+         <ff447184-b510-4e70-c941-1f0c5b7d0fb5@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-09-29 at 19:48 +0300, Andy Shevchenko wrote:
+On Wed, 2021-09-29 at 10:20 +0300, Dmitry Osipenko wrote:
 > [Some people who received this message don't often get email from
-> andriy.shevchenko@linux.intel.com. Learn why this is important at 
+> digetx@gmail.com. Learn why this is important at 
 > http://aka.ms/LearnAboutSenderIdentification.]
 > 
 > EXTERNAL EMAIL: Do not click links or open attachments unless you
 > know the content is safe
 > 
-> On Wed, Sep 29, 2021 at 05:00:46PM +0530, LakshmiPraveen Kopparthi
-> wrote:
-> > PCI1XXXX UART is a PCIe to UART module. It has 5 SKUs, each is
-> > differentiated by the device IDs in the PCIe config space. Each
-> > SKU supports a maximum of 4 UART ports(UART0,1,2,3) with fixed
-> > offests.Based on the sub device ID, the combinations of UART
-> > ports shall be enumerated.
+> 29.09.2021 09:22, LakshmiPraveen Kopparthi пишет:
+> > Read and Write callbacks for PCI1XXXX I2C adapter is added.
 > > 
-> > The UART port is compatible with the standard 16550A, but has some
-> > modifications.The modifications includes a change in the baud rate
-> > settings,auto control of RTS signal for RS485 feature and an
-> > increase of TX & RX FIFO size to 256 Bytes.Also, it has a
-> > capability
-> > to wake up the CPU.
-> > 
-> > These patches adds the support to enumerate and exercise all the
-> > combinations of UART ports in all the SKUs.
-> >  drivers/tty/serial/8250/8250_pci.c  | 384
-> > ++++++++++++++++++++++++++++
+> > Signed-off-by: LakshmiPraveen Kopparthi <
+> > LakshmiPraveen.Kopparthi@microchip.com>
+> > ---
+> >  drivers/i2c/busses/i2c-mchp-pci1xxxx.c | 485
+> > +++++++++++++++++++++++++
+> >  1 file changed, 485 insertions(+)
 > 
-> Please, do not add this to 8250_pci.c. Use separate quirk driver as
-> it's done
-> in plenty of examples:
-> 
->         8250_lpss.c, 8250_mid.c, 8250_exar.c, ...
+> Why this is a separate patch?
 
-Thanks for pointing the examples. I have looked into these examples and
-the required functionality can be achieved with a separate driver. But
-I would like to know the reason for not adding this to 8250_pci.c. 
-
-> 
-> --
-> With Best Regards,
-> Andy Shevchenko
-> 
-> 
+I thought of splitting the driver into two patches.
+1. Contains the intialisations,ISR, supend and resume callbacks.
+2. Contains read and write functions.
+If it make sense to merge these into a single patch, I will do it.  
 
