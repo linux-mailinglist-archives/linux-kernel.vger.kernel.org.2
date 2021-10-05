@@ -2,106 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3CEE42230A
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 12:05:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2638D42230E
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 12:06:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233835AbhJEKHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 06:07:24 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:55194 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232658AbhJEKHT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 06:07:19 -0400
-Received: from zn.tnic (p200300ec2f0d200055ee2d4b24a868fc.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:2000:55ee:2d4b:24a8:68fc])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S233638AbhJEKIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 06:08:04 -0400
+Received: from relay05.th.seeweb.it ([5.144.164.166]:43233 "EHLO
+        relay05.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232658AbhJEKIA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 06:08:00 -0400
+Received: from SoMainline.org (94-209-165-62.cable.dynamic.v4.ziggo.nl [94.209.165.62])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 23C0B1EC01CE;
-        Tue,  5 Oct 2021 12:05:28 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1633428328;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=fl3NTy+7nyl8fbo+eYvlq63lYu5XDMffAVCQYpFvDvQ=;
-        b=HeyzxtCdm6AqnINVMzpXNMKVbjxq0H8Hza7OHD7dVn1RmbF+XelY4qrh8fCLL7tBfH+b2y
-        vuJECUJZ05x4pW5IbjPcvMsfDbIneBMxMhCJ30tRGrVoFoL6dwddT2YQbt9+uoJ0pduZqn
-        QXEB2zpxMxTERimgdsCijW2rFZgOj10=
-Date:   Tue, 5 Oct 2021 12:05:23 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Ser Olmy <ser.olmy@protonmail.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        x86-ml <x86@kernel.org>
-Subject: Re: [x86] Kernel v5.14 series panic on Celeron Mendocino CPU
-Message-ID: <YVwjY9TX6XMxkM2f@zn.tnic>
-References: <CPeoI7yf4421QpWLM-CbgeDR17BBmhlLoixeYI3mu2WbDkgrZItfgImOO6BZez7CXQXXO9liq-rmZzgRVB95TP5MN0xUA8-d7-fSQZdyIZE=@protonmail.com>
- <YVtA67jImg3KlBTw@zn.tnic>
- <lxqAtqDf_kLUxIlvmYPvuKB36LOK-z_cVbS9OOl0MbjZKZEaCaEFmHCbSy5sWBer6f9V_WAPLxUuSNrDBvyzEeQOJXepkVUztPXAOhPZniQ=@protonmail.com>
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id C2A4E3EE89;
+        Tue,  5 Oct 2021 12:06:07 +0200 (CEST)
+Date:   Tue, 5 Oct 2021 12:06:06 +0200
+From:   Marijn Suijten <marijn.suijten@somainline.org>
+To:     Daniel Thompson <daniel.thompson@linaro.org>
+Cc:     phone-devel@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Martin Botka <martin.botka@somainline.org>,
+        Jami Kettunen <jami.kettunen@somainline.org>,
+        Pavel Dubrova <pashadubrova@gmail.com>,
+        Kiran Gunda <kgunda@codeaurora.org>,
+        Courtney Cavin <courtney.cavin@sonymobile.com>,
+        Bryan Wu <cooloney@gmail.com>, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 05/10] backlight: qcom-wled: Fix off-by-one maximum with
+ default num_strings
+Message-ID: <20211005100606.faxra73mzkvjd4f6@SoMainline.org>
+Mail-Followup-To: Daniel Thompson <daniel.thompson@linaro.org>,
+        phone-devel@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Lee Jones <lee.jones@linaro.org>, Jingoo Han <jingoohan1@gmail.com>,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Martin Botka <martin.botka@somainline.org>,
+        Jami Kettunen <jami.kettunen@somainline.org>,
+        Pavel Dubrova <pashadubrova@gmail.com>,
+        Kiran Gunda <kgunda@codeaurora.org>,
+        Courtney Cavin <courtney.cavin@sonymobile.com>,
+        Bryan Wu <cooloney@gmail.com>, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211004192741.621870-1-marijn.suijten@somainline.org>
+ <20211004192741.621870-6-marijn.suijten@somainline.org>
+ <20211005091947.7msztp5l554c7cy4@maple.lan>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <lxqAtqDf_kLUxIlvmYPvuKB36LOK-z_cVbS9OOl0MbjZKZEaCaEFmHCbSy5sWBer6f9V_WAPLxUuSNrDBvyzEeQOJXepkVUztPXAOhPZniQ=@protonmail.com>
+In-Reply-To: <20211005091947.7msztp5l554c7cy4@maple.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 04, 2021 at 06:17:42PM +0000, Ser Olmy wrote:
-> On Monday, October 4th, 2021 at 7:59 PM, Borislav Petkov <bp@alien8.de> wrote:
-> >
-> > I'm assuming your CPU cannot do 64-bit mode?
+On 2021-10-05 10:19:47, Daniel Thompson wrote:
+> On Mon, Oct 04, 2021 at 09:27:36PM +0200, Marijn Suijten wrote:
+> > When not specifying num-strings in the DT the default is used, but +1 is
+> > added to it which turns wled3 into 4 and wled4/5 into 5 strings instead
+> > of 3 and 4 respectively, causing out of bounds reads and register
+> > read/writes.  This +1 exists for a deficiency in the DT parsing code,
+> > and is simply omitted entirely - solving this oob issue - by allowing
+> > one extra iteration of the wled_var_cfg function parsing this particular
+> > property.
+> > 
+> > Fixes: 93c64f1ea1e8 ("leds: add Qualcomm PM8941 WLED driver")
+> > Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
+> > Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+> > ---
+> >  drivers/video/backlight/qcom-wled.c | 8 +++-----
+> >  1 file changed, 3 insertions(+), 5 deletions(-)
+> > 
+> > diff --git a/drivers/video/backlight/qcom-wled.c b/drivers/video/backlight/qcom-wled.c
+> > index 27e8949c7922..66ce77ee3099 100644
+> > --- a/drivers/video/backlight/qcom-wled.c
+> > +++ b/drivers/video/backlight/qcom-wled.c
+> > @@ -1255,17 +1255,17 @@ static const struct wled_var_cfg wled5_ovp_cfg = {
+> >  
+> >  static u32 wled3_num_strings_values_fn(u32 idx)
+> >  {
+> > -	return idx + 1;
+> > +	return idx;
+> >  }
+> >  
+> >  static const struct wled_var_cfg wled3_num_strings_cfg = {
+> >  	.fn = wled3_num_strings_values_fn,
+> > -	.size = 3,
+> > +	.size = 4, /* [0, 3] */
 > 
-> Correct, it's an old Socket 370 Celeron
+> 0 is not a valid value for this property.
 
-Ok, thanks for the info.
+These comments represent the possible loop iterations the DT "cfg
+parser" runs through, starting at j=0 and running up until and including
+j=3.  Should I make that more clear or omit these comments entirely?
 
-On your next reply, can you please hit the "reply-to-all" button so that
-I can get your reply and not have to go fish it out of the lkml flood? I
-would've easily missed it if tglx didn't point me to it.
+- Marijn
 
-In any case, your CPU is too old for me to even find such a box and your
-.config boots fine in qemu so I guess we'll have to debug it.
-
-Can you apply the diff below on your 5.14.9 kernel, boot with it and
-send full dmesg again?
-
-Thx.
-
----
-diff --git a/arch/x86/kernel/fpu/init.c b/arch/x86/kernel/fpu/init.c
-index 64e29927cc32..5c6c11f831ed 100644
---- a/arch/x86/kernel/fpu/init.c
-+++ b/arch/x86/kernel/fpu/init.c
-@@ -112,7 +112,11 @@ static void __init fpu__init_system_mxcsr(void)
- 		if (mask == 0)
- 			mask = 0x0000ffbf;
- 	}
-+
- 	mxcsr_feature_mask &= mask;
-+
-+	pr_info("%s: mxcsr_feature_mask: 0x%x, mask: 0x%x\n",
-+		__func__, mxcsr_feature_mask, mask);
- }
- 
- /*
-diff --git a/arch/x86/kernel/fpu/signal.c b/arch/x86/kernel/fpu/signal.c
-index 445c57c9c539..808a0ff85141 100644
---- a/arch/x86/kernel/fpu/signal.c
-+++ b/arch/x86/kernel/fpu/signal.c
-@@ -380,8 +380,11 @@ static int __fpu_restore_sig(void __user *buf, void __user *buf_fx,
- 			return -EFAULT;
- 
- 		/* Reject invalid MXCSR values. */
--		if (fpu->state.fxsave.mxcsr & ~mxcsr_feature_mask)
-+		if (fpu->state.fxsave.mxcsr & ~mxcsr_feature_mask) {
-+			WARN_ONCE(1, "fpu->state.fxsave.mxcsr: 0x%x, mxcsr_feature_mask: 0x%x\n",
-+				  fpu->state.fxsave.mxcsr, mxcsr_feature_mask);
- 			return -EINVAL;
-+		}
- 
- 		/* Enforce XFEATURE_MASK_FPSSE when XSAVE is enabled */
- 		if (use_xsave())
-
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+> >  };
+> >  
+> >  static const struct wled_var_cfg wled4_num_strings_cfg = {
+> >  	.fn = wled3_num_strings_values_fn,
+> > -	.size = 4,
+> > +	.size = 5, /* [0, 4] */
+> 
+> Ditto.
+> 
+> 
+> >  };
+> >  
+> >  static u32 wled3_switch_freq_values_fn(u32 idx)
+> > @@ -1520,8 +1520,6 @@ static int wled_configure(struct wled *wled)
+> >  			*bool_opts[i].val_ptr = true;
+> >  	}
+> >  
+> > -	cfg->num_strings = cfg->num_strings + 1;
+> > -
+> >  	string_len = of_property_count_elems_of_size(dev->of_node,
+> >  						     "qcom,enabled-strings",
+> >  						     sizeof(u32));
+> > -- 
+> > 2.33.0
+> > 
