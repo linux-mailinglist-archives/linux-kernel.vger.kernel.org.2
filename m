@@ -2,132 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0B8A422EF0
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 19:17:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 283DB422EF5
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 19:17:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236757AbhJERTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 13:19:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234938AbhJERTE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 13:19:04 -0400
-Received: from metanate.com (unknown [IPv6:2001:8b0:1628:5005::111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9BB2C061749;
-        Tue,  5 Oct 2021 10:17:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=metanate.com; s=stronger; h=Content-Transfer-Encoding:Content-Type:
-        References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID
-        :Content-Description; bh=Wew2RwQRuWp0xOeGxUW+24Kcrt1I9ESupnkXfF0tLJI=; b=mzR+
-        Zvm7wpsXbDkkyMjsVY5N4dLp5BgzeOtDzj8W7ekrljcUJ1ad5z3huW8PYY5sI4QPf9os1kduGsDp5
-        GCQYmJ8wy0whJpWleW5/6GW13utc314F92nVorAe96+Kunz/4midC58uZl1RC4YrtDmErWco+4P1I
-        Wmm3L9h1cno3WZBBCNKQXs5sd9KJq73SG8CXMH8IyJWLlrW1FP5LDfIHiDa8hyOHRWoGWJdWru8Pd
-        MTtYCfN7w7PLdtDLFCk0vurY2Ou7oAXfW4sgSAyRMP8WapIbK1GZWk8T5L+z2P2L7Q4x++pn21YND
-        YdxqhayTxX8R26+NTBhSzH82ViamPg==;
-Received: from [81.174.171.191] (helo=donbot)
-        by email.metanate.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <john@metanate.com>)
-        id 1mXo3v-0002f8-K4; Tue, 05 Oct 2021 18:17:07 +0100
-Date:   Tue, 5 Oct 2021 18:17:06 +0100
-From:   John Keeping <john@metanate.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     linux-rt-users@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
-        Len Brown <len.brown@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH RT] PM: runtime: avoid retry loops on RT
-Message-ID: <20211005181706.66102578.john@metanate.com>
-In-Reply-To: <CAJZ5v0gPwUQzGBa2VDeC3xAF9zJVm486BC0eue10-urJ8Xz+iw@mail.gmail.com>
-References: <20211005155427.1591196-1-john@metanate.com>
-        <CAJZ5v0gPwUQzGBa2VDeC3xAF9zJVm486BC0eue10-urJ8Xz+iw@mail.gmail.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S236785AbhJERTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 13:19:11 -0400
+Received: from mail-vi1eur05on2096.outbound.protection.outlook.com ([40.107.21.96]:49761
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234938AbhJERTI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 13:19:08 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ekj9iRf4gSxOWKLsg3YU06Idr7e0rJY9ROqGH++eihLGNOoQdlT/zgkj9Cs4dlshtY5iqYhPPRUK1ZxXSCT2ZrqW6BXD3qqSF6e/qHWvFI+Idw0JsSNoPqozt/6e4vwMd9op0VMIi8v6w96uSWxmwMmWV0eotdmRxcPWTS72A55xRVTxk55qmWqjeJA7GGzEg19xxFzv1svm0uaf4ghHsHaYpdm90CYhCOllsdigOhNlT0ZaJUO2Z1XxIc7m1V2q9dDelFo/B5pm8nh9doEACR+yV+ju8y0NCm6oq2QMIpc1drSeD3Iw+A4VxTib0lWzusoFafiGOENnoKh2dKYetQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=H1gL9pa/96GcysYb4dnL81fj0rY0i8LVeYSxLGeVDaE=;
+ b=T+YgIGfT/3VDU3QSfQzBL43FA5qZbiFnDYb1G/2CDEH9at1DjIbGlCBZ6x7p5Q4n6U9vQccy6JrdzqKSytjrHxkaO5twysTH3KfW4XM+HdMv7MGVdlj7Hik+uPFz3FvFBJfBGb/BmTkqcT/Nkkz1jExmX4cjQEfjvf3+ivJc3BLiejvxwPqT1bvVtrgtsleDYnZKP6OOplVsAPZ9sq7hEM2xfk8yJEg8A3Cnw5rPHVJ8J4nHKpWseBdtOxIqTHtDb/RRqIoB2hsyNTy9zd9b1ZObklvEJwCMvRT+tYtLU+tD4SxGFN3LjvK524S9W802SY4e9o42Iw5ulYAeCkXcVA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=kontron.de; dmarc=pass action=none header.from=kontron.de;
+ dkim=pass header.d=kontron.de; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mysnt.onmicrosoft.com;
+ s=selector2-mysnt-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=H1gL9pa/96GcysYb4dnL81fj0rY0i8LVeYSxLGeVDaE=;
+ b=EzA96OSOViZPXZevJ481D773I423SYKblfq+5cG6XkW51B3JjPaEbSYZY4zF6YhVtL03KZrHi4yir/wbbtuEZ0OTrWs7VsBmZ5FBQJ4njoY7N9MyJsHQEJAJgenoUj+/g2kSbyyLJL9UIyv09oQ8k0Z5LzWmWDoS73OhGc6PlkU=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=kontron.de;
+Received: from AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:157::14)
+ by AM0PR10MB2579.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:12f::25) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.19; Tue, 5 Oct
+ 2021 17:17:15 +0000
+Received: from AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::216b:62be:3272:2560]) by AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::216b:62be:3272:2560%6]) with mapi id 15.20.4566.022; Tue, 5 Oct 2021
+ 17:17:15 +0000
+Message-ID: <37c1845d-9323-3187-ed0b-b9795758649d@kontron.de>
+Date:   Tue, 5 Oct 2021 19:17:13 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.2
+Subject: Re: [PATCH 5/8] arm64: dts: imx8mm-kontron: Fix CAN SPI clock
+ frequency
+Content-Language: en-US
+To:     Shawn Guo <shawnguo@kernel.org>, Frieder Schrempf <frieder@fris.de>
+Cc:     devicetree@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>, stable@vger.kernel.org,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>
+References: <20210930155633.2745201-1-frieder@fris.de>
+ <20210930155633.2745201-6-frieder@fris.de> <20211005071230.GC20743@dragon>
+From:   Frieder Schrempf <frieder.schrempf@kontron.de>
+In-Reply-To: <20211005071230.GC20743@dragon>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Authenticated: YES
+X-ClientProxiedBy: AS8P250CA0011.EURP250.PROD.OUTLOOK.COM
+ (2603:10a6:20b:330::16) To AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:208:157::14)
+MIME-Version: 1.0
+Received: from [192.168.10.40] (88.130.78.70) by AS8P250CA0011.EURP250.PROD.OUTLOOK.COM (2603:10a6:20b:330::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.18 via Frontend Transport; Tue, 5 Oct 2021 17:17:14 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f6a492e3-d98c-4e25-f84f-08d98823f9f0
+X-MS-TrafficTypeDiagnostic: AM0PR10MB2579:
+X-Microsoft-Antispam-PRVS: <AM0PR10MB2579853988C11FB8A88428CDE9AF9@AM0PR10MB2579.EURPRD10.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: kv2N4fvr9RM8fOBvrIJFZn6PHMIc+uJfuDP+yS164Si/4So35ncDGwpNegC62fGAM6kvPAnZz/tH9ZJ3ngiCr8qJW76mcLppEw+GsytDbUo+rSKwTRpZvSrD5JU51uJ1ZVlLD8KzETyd9anU0lBMhU8C3eMnKUUHvS7Iec46bGaPiNhrZ6So9+4KeMeD8TdqSnEjmDGLWJ7xWWRMPrRkCBUY844mzfFkraNVa6k5o/87yQsCIzEk8K7IVdjv8x7sI/0zWZpDXAvsHDdnI4KHEDpL1A3JoyyXltejSvvkWXeGEpjajiO/xmLZ27XV5xCIcuFaHT1sc6ULYl480+hJEuRaZR1OvkMXqK6n7qKrqerQAirCOt1CBACjVaKc2OTfuGKyn2iEAZg9XDgksGIc6hWkLQMw16M4tVdypTMF/U/+CWp4MA+NlcYu2UMHdo3+j2jKla0+Vox5v2bGbrgyiOCO9GXMt7THtJUdMiXcXOQXFpu4RhRZ/lOTkLzRK1lHvlQvTFQ6YvPvGOiP7BqCykjiDNANgWsLRsIEUY0maZo4afaDC8pJCvVy1AKURJDRK/u8c6gD4WbffMAGvRxr2sPFbWGLy1tuaOf/J2b5tNjol6v2yKfJDoQVq0MR7O+rEh/aJHa1DZQnx6x/ltF8adf6jVVvsfTWKg8QNZfTRRM/8N5WNEtvqw2vTBmWWa+5iHQ+cCndg3JSQYsljlwJ1ocE+5UDL0OeNhIoV/vd9mIn+PLyKu3svWV+To7frsFw8UwSPd4M3ewi+gjdhDwm1Q==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(366004)(66476007)(66556008)(26005)(2906002)(508600001)(66946007)(53546011)(86362001)(7416002)(8936002)(8676002)(186003)(5660300002)(38100700002)(83380400001)(4326008)(316002)(110136005)(16576012)(6486002)(54906003)(36756003)(31686004)(956004)(44832011)(2616005)(31696002)(32563001)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?b2kyMXVBUDdmbnhPNnJ3bTFsWEpRU1JnUEZqa1B6KzFmdjRycFgxZTNpQ0lO?=
+ =?utf-8?B?MlhxS2VkTFRyR3REdDE3bjQrQmU5MUxmckFUdkVTejE4MWFTNW0vMHF6bXo0?=
+ =?utf-8?B?TVhrQTJuL2d4RXBtYmVnOThyRXVUYTJxbjNHZFVES3VQVlRleXl6UzBFdlJS?=
+ =?utf-8?B?dU1CUmkrcjREOXdKQW1XWFdRWUpidlJnSURmTzJPLzRyN3hJbmNrZ0VvcXQw?=
+ =?utf-8?B?T2dKWG5NeVN2c3ZFSklEZzdTRzVxUERqcXhvZmRqbUxnSkVsVnNJVElqcW51?=
+ =?utf-8?B?TXJtWkFnMEd4dUFkbzNxdVgwQytuTXByR2lMQzFRMWM2THZVQUZIOEUzdjJI?=
+ =?utf-8?B?MU03eGlSemYvdE96dUNuSTducWRoekdXakRiQXVETG9aUVBUOWthZ3FTWEds?=
+ =?utf-8?B?allSbkxlN0FoS200Umw0VmsyNlJzK3g1M0VhRUh3Njgzb3c1b21scThZbHpI?=
+ =?utf-8?B?UzVEZDhzT2w2WnBNVTNmemRJTzFadWdGNVJxRE9Fcm5jdnIvOEFYcDZwOWVN?=
+ =?utf-8?B?WTg1UXMwUXFCaElUeGpYeFhYV0hZS1ZNazl5cC9DOXFuQnAxSWQxcW03akc2?=
+ =?utf-8?B?MHk1M0ZPMmQrSHkzdDNLcWRnYWY4Wk4ySVV4UnhXWmNHSWNTNFdxamJ2N2wv?=
+ =?utf-8?B?ekJVUFVORUdJQ3dZdkh0ZjZqcnJ6S0E5WG1ZLzRXNFRId24zalozNjgxTE5H?=
+ =?utf-8?B?UTJqMFpCYjZvWC9tWUxZUkNFNFpCaGMvQm1YVFNYUGZpNnUyR1ZGQXlwdkVq?=
+ =?utf-8?B?L0xXNFdxcWd2OW9mbmRvY2YvVlZnY2kxWFFMVkhXbDlQOUUvbTRqYkhJWFV6?=
+ =?utf-8?B?RUsyc05td3dvN1BpeUNQNVRnRUhpdVZYNGxQTkQ4Z1RyWHRRK2xFK005UGtN?=
+ =?utf-8?B?cjRaNmxDeGd1OU9Nb0ZhVTN1VGJJTnVtSGtLSjkxV25OSEcrcVNFSHFVek1x?=
+ =?utf-8?B?aEJ5V2xrdVJXSmc0bmdMT0cwcUhDSjl0REk5eVNBWFdNSHB4UTlZUzd4L3Zh?=
+ =?utf-8?B?R05rOGQ0VklDWC9McVRPa0FNT0w2NmJVVU9hN0NGbk55UG1GTmxNakhtUTVF?=
+ =?utf-8?B?WldvYkUvR2NMVWlxME5OTkE3S1EyalBabEl2RGd1VTN5M3Zkc1BqbFlDUTJT?=
+ =?utf-8?B?V0h2ZXFLSmZVNy9xdDJPbE5kQmxSYnZ6NUVUUWpDaUY5OVlhT3BWMk52NEww?=
+ =?utf-8?B?RTF4UTJpM2IrNnZNbVJ2SnlGUVNpUXpIOWVmbWJPSHI5K0lhOW5VSDBIS0FI?=
+ =?utf-8?B?Y2pnQjN6akJUV05YRytBTnVXYVFRNGlmVUtHNW40enZOUTYwUDhDY0dOSWtv?=
+ =?utf-8?B?RzhwK1lDODZYVGpVd2YxcUN6STRmUnM3Q3NodWYrd1k4d2srQWFTZzF5bHVz?=
+ =?utf-8?B?ZjIwRS9FcDE4b2tFOWFaS1d4YXVHOUozR3hJdnJLaVA5QTBLSTZsaVF3NjVY?=
+ =?utf-8?B?dm12Z2VZSmdVc0JNOU5TUWdYWGFuL2hsN0dDNVFBQjBGV1JLKzNJQ1QrbFVm?=
+ =?utf-8?B?ZWpPQmlHeGkrQXJsUkxHSVI5d3FNcktGVzJJOEFKUmxCK3ZJdm4vcGs4dXEy?=
+ =?utf-8?B?NStoTXJ6V3RZTFBoajQ5eU9lSDduTFNsMUtzVjFCYUxUcHRYVkZScVRSbU1q?=
+ =?utf-8?B?R0trbkh6bG0yQjh5Z05nN2hNVGtpcm94UDIrMm9CY3Y5ZFcvQlRDc1RHQVhv?=
+ =?utf-8?B?QzhtT1NMTXJMb1k0bjg0cDV4UTdSYThyZDdpMTVTL29ka1NrOEhLb0ZkOWVw?=
+ =?utf-8?Q?vTuQn0cgP/mGbHEaCS2lfwD9hwUgnRGVN6PJXfy?=
+X-OriginatorOrg: kontron.de
+X-MS-Exchange-CrossTenant-Network-Message-Id: f6a492e3-d98c-4e25-f84f-08d98823f9f0
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Oct 2021 17:17:14.9407
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8c9d3c97-3fd9-41c8-a2b1-646f3942daf1
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: OqRt88s7/9lIkuccR0D+KEmKYGc5gixtaYxUSJqkGlR1pMdVJjLJaQMYzqNcCVGTOrdURR/U7fwAEF6XJBSYv/mpGOIK0hmckvPkLOLG4mQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR10MB2579
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 5 Oct 2021 18:38:27 +0200
-"Rafael J. Wysocki" <rafael@kernel.org> wrote:
-
-> On Tue, Oct 5, 2021 at 6:14 PM John Keeping <john@metanate.com> wrote:
-> >
-> > With PREEMPT_RT spin_unlock() is identical to spin_unlock_irq() so there
-> > is no reason to have a special case using the former.  Furthermore,
-> > spin_unlock() enables preemption meaning that a task in RESUMING or
-> > SUSPENDING state may be preempted by a higher priority task running
-> > pm_runtime_get_sync() leading to a livelock.
-> >
-> > Use the non-irq_safe path for all waiting so that the waiting task will
-> > block.
-> >
-> > Note that this changes only the waiting behaviour of irq_safe, other
-> > uses are left unchanged so that the parent device always remains active
-> > in the same way as !RT.
-> >
-> > Signed-off-by: John Keeping <john@metanate.com>  
+On 05.10.21 09:12, Shawn Guo wrote:
+> On Thu, Sep 30, 2021 at 05:56:28PM +0200, Frieder Schrempf wrote:
+>> From: Frieder Schrempf <frieder.schrempf@kontron.de>
+>>
+>> The MCP2515 can be used with an SPI clock of up to 10 MHz. Set the
+>> limit accordingly to prevent any performance issues caused by the
+>> really low clock speed of 100 kHz.
 > 
-> So basically, the idea is that the irq_safe flag should have no effect
-> when CONFIG_PREEMPT_RT is set, right?
+> Could you share some testing result of this change?
+
+Without this change, receiving CAN messages on the board beyond a
+certain bitrate will cause overrun errors (see 'ip -det -stat link show
+can0').
+
+With this fix, receiving messages on the bus works without any overrun
+errors for bitrates up to 1 MBit.
+
+
 > 
-> Wouldn't it be cleaner to make it not present at all in that case?
+>>
+>> Fixes: 21c4f45b335f ("arm64: dts: Add the Kontron i.MX8M Mini SoMs and baseboards")
+> 
+> It's really an optimization rather than fix, isn't it?
 
-Yes, just replacing pm_runtime_irq_safe() with an empty function would
-also fix it, but I'm not sure if that will have unexpected effects from
-the parent device suspending/resuming, especially in terms of latency
-for handling interrupts.
+It removes the arbitrarily low limit on the SPI frequency, that was
+caused by a typo in the original dts. As the usage of the CAN bus is
+seriously affected by this I would consider it a fix. But if you think
+otherwise, feel free to remove the Fixes tag.
 
-> > ---
-> >  drivers/base/power/runtime.c | 9 +++++----
-> >  1 file changed, 5 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/drivers/base/power/runtime.c b/drivers/base/power/runtime.c
-> > index 96972d5f6ef3..5e0d349fab4e 100644
-> > --- a/drivers/base/power/runtime.c
-> > +++ b/drivers/base/power/runtime.c
-> > @@ -347,8 +347,9 @@ static int __rpm_callback(int (*cb)(struct device *), struct device *dev)
-> >  {
-> >         int retval = 0, idx;
-> >         bool use_links = dev->power.links_count > 0;
-> > +       bool irq_safe = dev->power.irq_safe && !IS_ENABLED(CONFIG_PREEMPT_RT);
-> >
-> > -       if (dev->power.irq_safe) {
-> > +       if (irq_safe) {
-> >                 spin_unlock(&dev->power.lock);
-> >         } else {
-> >                 spin_unlock_irq(&dev->power.lock);
-> > @@ -376,7 +377,7 @@ static int __rpm_callback(int (*cb)(struct device *), struct device *dev)
-> >         if (cb)
-> >                 retval = cb(dev);
-> >
-> > -       if (dev->power.irq_safe) {
-> > +       if (irq_safe) {
-> >                 spin_lock(&dev->power.lock);
-> >         } else {
-> >                 /*
-> > @@ -596,7 +597,7 @@ static int rpm_suspend(struct device *dev, int rpmflags)
-> >                         goto out;
-> >                 }
-> >
-> > -               if (dev->power.irq_safe) {
-> > +               if (dev->power.irq_safe && !IS_ENABLED(CONFIG_PREEMPT_RT)) {
-> >                         spin_unlock(&dev->power.lock);
-> >
-> >                         cpu_relax();
-> > @@ -777,7 +778,7 @@ static int rpm_resume(struct device *dev, int rpmflags)
-> >                         goto out;
-> >                 }
-> >
-> > -               if (dev->power.irq_safe) {
-> > +               if (dev->power.irq_safe && !IS_ENABLED(CONFIG_PREEMPT_RT)) {
-> >                         spin_unlock(&dev->power.lock);
-> >
-> >                         cpu_relax();
-> > --
-> > 2.33.0
-> >  
-
+> 
+> Shawn
+> 
+>> Cc: stable@vger.kernel.org
+>> Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
+>> ---
+>>  arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-s.dts | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-s.dts b/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-s.dts
+>> index f2c8ccefd1bf..dbf11e03ecce 100644
+>> --- a/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-s.dts
+>> +++ b/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-s.dts
+>> @@ -98,7 +98,7 @@ can0: can@0 {
+>>  		clocks = <&osc_can>;
+>>  		interrupt-parent = <&gpio4>;
+>>  		interrupts = <28 IRQ_TYPE_EDGE_FALLING>;
+>> -		spi-max-frequency = <100000>;
+>> +		spi-max-frequency = <10000000>;
+>>  		vdd-supply = <&reg_vdd_3v3>;
+>>  		xceiver-supply = <&reg_vdd_5v>;
+>>  	};
+>> -- 
+>> 2.33.0
+>>
