@@ -2,119 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B290042267C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 14:27:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12FB742267E
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 14:27:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234944AbhJEM24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 08:28:56 -0400
-Received: from mail-ot1-f42.google.com ([209.85.210.42]:44637 "EHLO
-        mail-ot1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234864AbhJEM2q (ORCPT
+        id S234803AbhJEM32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 08:29:28 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:50608 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234962AbhJEM3R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 08:28:46 -0400
-Received: by mail-ot1-f42.google.com with SMTP id h9-20020a9d2f09000000b005453f95356cso25595864otb.11;
-        Tue, 05 Oct 2021 05:26:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=TOadmaZADYOC0ybRj6l7qb8U5jTl328RS0X/LcbFx4w=;
-        b=cL3GOE0aGjFEZwYn9wypqnLnFwfD/VmlBnoprxq6SEAGBH3Ys9eoqUSOCwZ6SRVlM3
-         riF86dsgZCO5LWSV/DyPS8d5XrygII/AJ+XXK0uBachkSZx+d4ruuglLm/ka5gQpd/c2
-         IRG4EXyjmb8s9nW2Wu9KPSanAuDdmWzztRHh/VucgiH4YsU5E36AdzLD+QWyGRXMnoCX
-         FtIaIVrlR3BEcYc6+t++NmiIzglkZOJ55pMxhJYMP4fI7XIsMwo7W5RzmDZbMh0sAzxI
-         lg1wVD5++V5Uc93s2NbKBjFIyAiw4vk7BvTq37RZV8PGARs5F1rZXM+H9OE6whDMjwm2
-         ltmg==
-X-Gm-Message-State: AOAM533FuhA0cs8wSKzPFE8D6awDAyvPSl6/vmI1ldfZ4TDKNp66mIGc
-        6py+lOWogMukKsQHWjI/0g==
-X-Google-Smtp-Source: ABdhPJzckPj7NT01ADc6LB6dFM+WwHwMGdM5cLn46F8PK9A+owlZeq8wwUc/UyeSGE7FPc6mrpatRQ==
-X-Received: by 2002:a9d:7257:: with SMTP id a23mr14495329otk.311.1633436815163;
-        Tue, 05 Oct 2021 05:26:55 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id t17sm3516145otl.56.2021.10.05.05.26.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Oct 2021 05:26:54 -0700 (PDT)
-Received: (nullmailer pid 3226796 invoked by uid 1000);
-        Tue, 05 Oct 2021 12:26:38 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Sean Anderson <sean.anderson@seco.com>
-Cc:     Michal Simek <michal.simek@xilinx.com>, devicetree@vger.kernel.org,
-        netdev@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
-        Andrew Lunn <andrew@lunn.ch>, linux-kernel@vger.kernel.org,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>
-In-Reply-To: <20211004191527.1610759-3-sean.anderson@seco.com>
-References: <20211004191527.1610759-1-sean.anderson@seco.com> <20211004191527.1610759-3-sean.anderson@seco.com>
-Subject: Re: [RFC net-next PATCH 02/16] dt-bindings: net: Add binding for Xilinx PCS
-Date:   Tue, 05 Oct 2021 07:26:38 -0500
-Message-Id: <1633436798.527798.3226795.nullmailer@robh.at.kernel.org>
+        Tue, 5 Oct 2021 08:29:17 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1633436846;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3kK9xoGY9q1BQ0iWLjqmNJRsd+6Y8c8/p/triD44+A8=;
+        b=dbEzOarTS2bW+LMoROS2TCV2vrfbcgNAhGt0RycohPw2dlgEr6+HZCNm3pmL5PdQSkN70W
+        VSUW3vhx/2ccVbRSTvyTNTGk+G8/6wLucHAqHF0xfKR6Cb4C8uAzajPCXpfBBhpnYoBSha
+        zn1CQs+lojcAX+wUze97tc8N9I+0jZpKX6k/dnx1lWwjYRDwuNzKjTcN0LKWXxxYx5CSQW
+        P6qy1+7WBQ5xY++7Ye4nyxAD2ay0xUIjxnWgU0jr9H1QeTXEr00VbPm1JeQ7dPsDO2Jb29
+        ZirgvEWCaFsU0emZc8C/Oi5mZDscR+lS1h183yq+6bph2TbosV0cS2VPr+3tWA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1633436846;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3kK9xoGY9q1BQ0iWLjqmNJRsd+6Y8c8/p/triD44+A8=;
+        b=/NulxX9OXeYr5zfckOvKqSRlTF4Ndg3DaYtDB4G9qUMLP+3WMdJjPmkGHLn6nFGyPH/Yb1
+        Gna3QtBEOiTHaDAA==
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     "Chang S. Bae" <chang.seok.bae@intel.com>, bp@suse.de,
+        luto@kernel.org, mingo@kernel.org, x86@kernel.org,
+        len.brown@intel.com, lenb@kernel.org, dave.hansen@intel.com,
+        thiago.macieira@intel.com, jing2.liu@intel.com,
+        ravi.v.shankar@intel.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v11 15/29] x86/arch_prctl: Create
+ ARCH_SET_STATE_ENABLE/ARCH_GET_STATE_ENABLE
+In-Reply-To: <YVw1vvy0QUKcKaxU@hirez.programming.kicks-ass.net>
+References: <20211001223728.9309-1-chang.seok.bae@intel.com>
+ <20211001223728.9309-16-chang.seok.bae@intel.com> <87o884fh3g.ffs@tglx>
+ <87ilybg5ta.ffs@tglx> <YVw1vvy0QUKcKaxU@hirez.programming.kicks-ass.net>
+Date:   Tue, 05 Oct 2021 14:27:25 +0200
+Message-ID: <878rz7fyhe.ffs@tglx>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 04 Oct 2021 15:15:13 -0400, Sean Anderson wrote:
-> This adds a binding for the Xilinx 1G/2.5G Ethernet PCS/PMA or SGMII
-> LogiCORE IP. This device is a soft device typically used to adapt between
-> GMII and SGMII or 1000BASE-X (in combination with a suitable SERDES). The
-> standard property is roughly analogous to the interface property of
-> ethernet controllers, except that it has an additional value used to
-> indicate that dynamic switching is supported. Note that switching is
-> supported only between SGMII and 1000BASE-X, and only if the appropriate
-> parameter is set when the device is synthesized. The property name was
-> chosen to align with the terminology in the datasheet. I also considered
-> "mdi", but that is a bit of a misnomer in the case of SGMII.
-> 
-> Signed-off-by: Sean Anderson <sean.anderson@seco.com>
-> ---
-> 
->  .../devicetree/bindings/net/xilinx,pcs.yaml   | 83 +++++++++++++++++++
->  1 file changed, 83 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/net/xilinx,pcs.yaml
-> 
+On Tue, Oct 05 2021 at 13:23, Peter Zijlstra wrote:
+> On Tue, Oct 05, 2021 at 11:49:05AM +0200, Thomas Gleixner wrote:
+>> So this gives us two options:
+>> 
+>>    1) Bitmap with proper sanity checks
+>> 
+>>       reject (1 << 17) and (1 << 18)
+>>       grant (1 << 17 | 1 << 18)
+>> 
+>>       but for sanity sake and also for ease of filtering, we want to
+>>       restrict a permission request to one functional block at a time.
+>> 
+>>       #define X86_XCOMP_AMX	(1 << 17 | 1 << 18)
+>>       #define X86_XCOMP_XYZ1    (1 << 19)
+>> 
+>>       But that gets a bit odd when there is a component which depends on
+>>       others:
+>> 
+>>       #define X86_XCOMP_XYZ2    (1 << 19 | 1 << 20)
+>> 
+>>    2) Facility based numerical interface, i.e.
+>> 
+>>       #define X86_XCOMP_AMX	1
+>>       #define X86_XCOMP_XYZ1    2
+>>       #define X86_XCOMP_XYZ2    3
+>> 
+>>       is way simpler to understand IMO.
+>
+> I'm thinking 2 makes most sense. Perhaps we could use the highest
+> feature number involved in the facility to denote it? The rationale
+> being that we don't have to invent yet another enumeration and it's
+> easier to figure out what's what.
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+That makes sense. So the above would be:
 
-yamllint warnings/errors:
+      #define X86_XCOMP_AMX	18      (implies 17)
+      #define X86_XCOMP_XYZ1    19
+      #define X86_XCOMP_XYZ2    20      (implies 19)
 
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/net/xilinx,pcs.yaml: properties:compatible:contains:const: ['xilinx,pcs-16.2'] is not of type 'string'
-	from schema $id: http://devicetree.org/meta-schemas/string-array.yaml#
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/net/xilinx,pcs.yaml: properties:clocks: {'maxItems': 1, 'items': [{'description': 'The reference clock for the PMD, which is typically a SERDES but may be a direct interface to LVDS I/Os. Depending on your setup, this may be the gtrefclk, refclk, or clk125m signal.'}]} should not be valid under {'required': ['maxItems']}
-	hint: "maxItems" is not needed with an "items" list
-	from schema $id: http://devicetree.org/meta-schemas/items.yaml#
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/net/xilinx,pcs.yaml: properties:clocks: 'oneOf' conditional failed, one must be fixed:
-	/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/net/xilinx,pcs.yaml: properties:clocks: 'anyOf' conditional failed, one must be fixed:
-		'items' is not one of ['maxItems', 'description', 'deprecated']
-			hint: Only "maxItems" is required for a single entry if there are no constraints defined for the values.
-		'maxItems' is not one of ['description', 'deprecated', 'const', 'enum', 'minimum', 'maximum', 'multipleOf', 'default', '$ref']
-		'items' is not one of ['description', 'deprecated', 'const', 'enum', 'minimum', 'maximum', 'multipleOf', 'default', '$ref']
-		1 is less than the minimum of 2
-			hint: Arrays must be described with a combination of minItems/maxItems/items
-		hint: cell array properties must define how many entries and what the entries are when there is more than one entry.
-		from schema $id: http://devicetree.org/meta-schemas/clocks.yaml#
-	'maxItems' is not one of ['type', 'description', 'dependencies', 'properties', 'patternProperties', 'additionalProperties', 'unevaluatedProperties', 'deprecated', 'required', 'allOf', 'anyOf', 'oneOf', '$ref']
-	'items' is not one of ['type', 'description', 'dependencies', 'properties', 'patternProperties', 'additionalProperties', 'unevaluatedProperties', 'deprecated', 'required', 'allOf', 'anyOf', 'oneOf', '$ref']
-	'type' is a required property
-		hint: DT nodes ("object" type in schemas) can only use a subset of json-schema keywords
-	from schema $id: http://devicetree.org/meta-schemas/clocks.yaml#
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/net/xilinx,pcs.yaml: ignoring, error in schema: properties: compatible: contains: const
-warning: no schema found in file: ./Documentation/devicetree/bindings/net/xilinx,pcs.yaml
-Documentation/devicetree/bindings/net/xilinx,pcs.example.dt.yaml:0:0: /example-0/mdio/ethernet-pcs@0: failed to match any schema with compatible: ['xlnx,pcs-16.2']
+Thanks,
 
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/patch/1536331
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+        tglx
