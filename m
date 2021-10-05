@@ -2,102 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA53A423134
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 21:59:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB2B1423139
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 22:02:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235946AbhJEUB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 16:01:26 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:39781 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S235134AbhJEUBV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 16:01:21 -0400
-Received: (qmail 635423 invoked by uid 1000); 5 Oct 2021 15:59:29 -0400
-Date:   Tue, 5 Oct 2021 15:59:29 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Dmitry Torokhov <dtor@google.com>
-Cc:     Rajat Jain <rajatja@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Mathias Nyman <mathias.nyman@linux.intel.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Chris Chiu <chris.chiu@canonical.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        levinale@google.com, bleung@google.com, rajatxjain@gmail.com,
-        jsbarnes@google.com, pmalani@google.com
-Subject: Re: [PATCH 2/2] usb: hub: Mark devices downstream a removable hub,
- as removable
-Message-ID: <20211005195929.GA634685@rowland.harvard.edu>
-References: <20210929224823.556943-1-rajatja@google.com>
- <20210929224823.556943-2-rajatja@google.com>
- <YVVLxi/on9x6nfCZ@kroah.com>
- <CACK8Z6EamamgYExt629gyNrYKpvnu2Gh0eGOOvOa5LH-jnOmaQ@mail.gmail.com>
- <20211005145655.GJ621017@rowland.harvard.edu>
- <CAE_wzQ-XG3YBtKTmbn1LSGETCUg5AYjTmcnwOnc1h57OaL9+Cw@mail.gmail.com>
+        id S235520AbhJEUEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 16:04:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45890 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230333AbhJEUEV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 16:04:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 606C26120A;
+        Tue,  5 Oct 2021 20:02:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633464150;
+        bh=m2Pch5PBNpHn9fpdx33/OXtGVAsq5SNn8+Ee+4hkSvg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=G2eBNKq0Ek/OFeyD3p7RsKRBXx+3RsdkR8iD1OSFUXnriuwOeB98FR40Sbg1ugWRs
+         X1HUcb3mKDBrS/RotPZ4xg+LowBFy/hQVKTquPfSzERCO3scHEK79IyHzbUtOAIgWQ
+         7UhPphi/d3DkY8k1QIuSSz9cXlsQnPqYT4RNfQ98mHpL2VoFMRqXVxK7Sa07VvQUDp
+         PKLpxtDEA4j5VSFr1ELLTmXN1THAPsnubILodciQqYzRZeayQFHL8H3N2dD1O0qomj
+         8RQ1eik93nT1nEIVI3lMs6HLkS5BFc4tnU8x/S0D3knTHH1l/pLRQLEnvnxZF9nWtx
+         fqDmyybsHgpxQ==
+Received: by pali.im (Postfix)
+        id DDD28812; Tue,  5 Oct 2021 22:02:27 +0200 (CEST)
+Date:   Tue, 5 Oct 2021 22:02:27 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     bhelgaas@google.com, Jeremy Linton <jeremy.linton@arm.com>
+Cc:     linux-pci@vger.kernel.org, lorenzo.pieralisi@arm.com,
+        nsaenz@kernel.org, bhelgaas@google.com, rjw@rjwysocki.net,
+        lenb@kernel.org, robh@kernel.org, kw@linux.com,
+        f.fainelli@gmail.com, bcm-kernel-feedback-list@broadcom.com,
+        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rpi-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 3/4] PCI/ACPI: Add Broadcom bcm2711 MCFG quirk
+Message-ID: <20211005200227.ltl6owwksfn7l4xx@pali>
+References: <20210826071557.29239-1-jeremy.linton@arm.com>
+ <20210826071557.29239-4-jeremy.linton@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAE_wzQ-XG3YBtKTmbn1LSGETCUg5AYjTmcnwOnc1h57OaL9+Cw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210826071557.29239-4-jeremy.linton@arm.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05, 2021 at 09:51:02AM -0700, Dmitry Torokhov wrote:
-> Hi Alan,
+On Thursday 26 August 2021 02:15:56 Jeremy Linton wrote:
+> Now that there is a bcm2711 quirk, it needs to be enabled when the
+> MCFG is missing. Use an ACPI namespace _DSD property
+> "linux-ecam-quirk-id" as an alternative to the MCFG OEM.
 > 
-> On Tue, Oct 5, 2021 at 7:56 AM Alan Stern <stern@rowland.harvard.edu> wrote:
-> >
-> > As I understand it, the "removable" property refers specifically to
-> > the device's upstream link, not to whether _any_ of the links leading
-> > from the device to the computer could be removed.
+> Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
+> Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+> Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+> ---
+>  drivers/acpi/pci_mcfg.c | 17 +++++++++++++++++
+>  1 file changed, 17 insertions(+)
 > 
-> No, that is not what it means. I'll cite our sysfs ABI:
-> 
-> What:           /sys/devices/.../removable
-> Date:           May 2021
-> Contact:        Rajat Jain <rajatxjain@gmail.com>
-> Description:
->                 Information about whether a given device can be removed from the
->                 platform by the user. This is determined by its subsystem in a
->                 bus / platform-specific way. This attribute is only present for
->                 devices that can support determining such information:
-> 
->                 "removable": device can be removed from the platform by the user
->                 "fixed":     device is fixed to the platform / cannot be removed
->                              by the user.
->                 "unknown":   The information is unavailable / cannot be deduced.
-> 
->                 Currently this is only supported by USB (which infers the
->                 information from a combination of hub descriptor bits and
->                 platform-specific data such as ACPI) and PCI (which gets this
->                 from ACPI / device tree).
-> 
-> It specifically talks about _platform_, not about properties of some
-> peripheral attached to a system. Note that the wording is very similar
-> to what we had for USB devices that originally implemented "removable"
-> attribute:
+> diff --git a/drivers/acpi/pci_mcfg.c b/drivers/acpi/pci_mcfg.c
+> index 53cab975f612..04c517418365 100644
+> --- a/drivers/acpi/pci_mcfg.c
+> +++ b/drivers/acpi/pci_mcfg.c
+> @@ -169,6 +169,9 @@ static struct mcfg_fixup mcfg_quirks[] = {
+>  	ALTRA_ECAM_QUIRK(1, 13),
+>  	ALTRA_ECAM_QUIRK(1, 14),
+>  	ALTRA_ECAM_QUIRK(1, 15),
+> +
+> +	{ "bc2711", "", 0, 0, MCFG_BUS_ANY, &bcm2711_pcie_ops,
+> +	  DEFINE_RES_MEM(0xFD500000, 0xA000) },
 
-In that case, shouldn't Rajat's patch change go into the driver core 
-rather than the hub driver?  _Every_ device downstream from a 
-removable link should count as removable, yes?  Not just the USB 
-devices.
+Hello!
 
-And to say that the attribute is supported only by USB and PCI is 
-misleading, since it applies to every device downstream from a 
-removable link.
+According to discussion described in email [1], adding a new MCFG quirk
+(like above) into kernel requires adding some errata entry for
+documenting buggy HW.
 
-> > This is probably what Oliver meant when he complained about losing
-> > information.  With the knowledge of whether each individual link is
-> > removable, you can easily tell whether there's some way to remove a
-> > device from the system.  But if you only know whether the device is
-> > removable from the system overall, you generally can't tell whether
-> > the link to the device's parent is removable.
+But this patch series does not introduce any new errata entry.
+
+Bjorn, could you look at how to properly document these "hw bugs"?
+I guess there would be lot of more requests for adding MCFG quirks as
+now according to [1], doors are open for them. And it is possible that
+after more years nobody would be able to maintain these quirks if would
+not be properly documented.
+
+[1] - https://lore.kernel.org/linux-pci/20210325131231.GA18590@e121166-lin.cambridge.arm.com/
+
+>  };
+>  
+>  static char mcfg_oem_id[ACPI_OEM_ID_SIZE];
+> @@ -198,8 +201,22 @@ static void pci_mcfg_apply_quirks(struct acpi_pci_root *root,
+>  	u16 segment = root->segment;
+>  	struct resource *bus_range = &root->secondary;
+>  	struct mcfg_fixup *f;
+> +	const char *soc;
+>  	int i;
+>  
+> +	/*
+> +	 * This may be a machine with a PCI/SMC conduit, which means it doesn't
+> +	 * have an MCFG. Use an ACPI namespace definition instead.
+> +	 */
+> +	if (!fwnode_property_read_string(acpi_fwnode_handle(root->device),
+> +					 "linux-ecam-quirk-id", &soc)) {
+> +		if (strlen(soc) != ACPI_OEM_ID_SIZE)
+> +			dev_err(&root->device->dev, "ECAM quirk should be %d characters\n",
+> +				ACPI_OEM_ID_SIZE);
+> +		else
+> +			memcpy(mcfg_oem_id, soc, ACPI_OEM_ID_SIZE);
+> +	}
+> +
+>  	for (i = 0, f = mcfg_quirks; i < ARRAY_SIZE(mcfg_quirks); i++, f++) {
+>  		if (pci_mcfg_quirk_matches(f, segment, bus_range)) {
+>  			if (f->cfgres.start)
+> -- 
+> 2.31.1
 > 
-> If we need this data then we need to establish some new attribute to
-> convey this info.
-
-I don't know if we need it, but such an attribute seems like a good 
-idea.
-
-Alan Stern
