@@ -2,126 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CD624223ED
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 12:52:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 822234223F0
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 12:53:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234178AbhJEKxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 06:53:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50106 "EHLO
+        id S234084AbhJEKzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 06:55:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233672AbhJEKxv (ORCPT
+        with ESMTP id S233514AbhJEKzH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 06:53:51 -0400
-Received: from mail-vs1-xe31.google.com (mail-vs1-xe31.google.com [IPv6:2607:f8b0:4864:20::e31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00BA2C06161C;
-        Tue,  5 Oct 2021 03:52:01 -0700 (PDT)
-Received: by mail-vs1-xe31.google.com with SMTP id d18so496537vsh.1;
-        Tue, 05 Oct 2021 03:52:00 -0700 (PDT)
+        Tue, 5 Oct 2021 06:55:07 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07199C061745
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 03:53:17 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id g198-20020a1c20cf000000b0030d60cd7fd6so2584053wmg.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 03:53:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=q+QFrqKGB0j7m6S9frhdYXSVQB6nI+oRzUWTBQ56AKc=;
-        b=hMo4pH7KAtaYW32hFVQn45VdK9FTXqt401Oc6ycqrAQRCl/6RuW4UhuwGhUeSZGpc1
-         R5BgZaiR6pOSwItCz1GvRGSbDQQexiFeAwpqewreiF1bahsdFfpl6rhDqrYQ5NKRF8b2
-         BfHY1aOuyNRXJmsjoVp3+7SMrwnfnHffNg2Gdv7cRumKfvQ1WYpVtNtGmFeaU8EsLN2T
-         WAoH2IKu2RpO3qhKXG4gV8qcbTvCMnabDt89+bH4Qr+auP5GeNxkdaXewpTpLAm68Wna
-         ccPeIX6H5W5N+Am5PUWfUvzPbXcTcKCYBpRR7ebNPnir9QkLEVhfVSUyI0YpOA47Dj3F
-         eTzw==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=oTS2oBDfu2qK2s9U2SS48/r8vYyQ0sH7yh9TkjSLfg4=;
+        b=wtqDN2BUF7B+RsSZ1cv9rGw41+p10e4VjPqj3DoifND0YwO+uY7viRKIpGmwZvTB0r
+         DqfxgDCIqJKnJDUGLlVSepXKGwX+/+efSvUYu8Z3PxOHpCMux9G9hgk1ICrp9ODo978a
+         zznvAA7JMsJ7ADIqeAZVmWI2bZBs+S5OHjX7ip4R5rAq7vOC5DiTd2fzA1teRF4KBe14
+         hV35RWAPtdSN3wHB9kwXMft2BloQfEo1NZVWIbGu8PD8r2Mq0SZBTmr9KK51ZlHr+vHu
+         8LGefWt7njELwZZiMAvzDOA0Dc3vPFgxLwSUXsQnFa7zn0CanlW54HFBrUbj9U+moaRR
+         CZDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=q+QFrqKGB0j7m6S9frhdYXSVQB6nI+oRzUWTBQ56AKc=;
-        b=fv9nN1R4F94hbOQ00DXk10fwO3hfUgmf2iw4czr0nxAja4d/zAohYFRIdn6L5jdYNE
-         5JA/QEP73ih4KjOpE+B2zAWy34LBa44ItsYFb5bCziMKrqxAAjPDT5VRn+ZY8go7ua4B
-         uQC/RIsvRy+43ZbcUdjUnHzyFkSDrOj7r6HeEkAHzNTKHhMDT7E6bKXFdoqyx9uf7QR0
-         nX0mwj72w0PtL6FhYOKz2hqu9xcSpLv3myxcldQb9qZzi10m3dq2XW8Y9d5aW1I1K5hg
-         J2V73kbctKDTf0EwZd9M2Hf/1vyC/gCsBB8o03oRGW2Z0pk+3rOGDEM/BfZ9YK2+7f9W
-         SnrQ==
-X-Gm-Message-State: AOAM530mAgxU2NvPG9lQGmkekrVPvY8pY0hU6gvqgBGYrTtier4eko+f
-        xfhVsamkTc1I+ksnEPdS9+bQhd8AwvjqlCWPQns=
-X-Google-Smtp-Source: ABdhPJwtV82P/rZoW/OgbX6bsC8jyoZ2nArcMJsVFUQINMfUERam1ukL/4J8XK4rPbjDxOEP0HGWPscydS36Ux35YHw=
-X-Received: by 2002:a67:f618:: with SMTP id k24mr17736934vso.48.1633431120157;
- Tue, 05 Oct 2021 03:52:00 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=oTS2oBDfu2qK2s9U2SS48/r8vYyQ0sH7yh9TkjSLfg4=;
+        b=A9oLyIeChI2LG0ict6CVuBSqzn0737RvF1VeVNB82KiRsPEul/pGoK/zvMoUEz8uW9
+         vcKlwV/DDIuP6qQwJjw2c5fyviPof+HvpYGbbBYx672cPrZwa6DSlgp8bzL4MK5CZY8U
+         AjIh4vAo4x5aYEi4a/W1fE+Vmi8YDIUVKxND0nHxW0ItOZH1ApbVccVRnKqaRfhscjF/
+         QRlawYtRoDs3XdkUaDncsJ8Wms8le3jUpEnStFsG5mkW/l+f0n7k/Sd2q5moGHTGN7Hk
+         83cWWHU4mikWI5ze8A1q0rEKj/z5EuXm+RRg7V3OWTeL0cqqevOgvS/5ybjRFju/7fYl
+         gk9w==
+X-Gm-Message-State: AOAM533itIgj1Oq3lqbWWBbiieZIRhUlt45qz4lupFGgU592bX9wAS4h
+        fI69SSDcHrgle4Q1HAhM1rIl4Q==
+X-Google-Smtp-Source: ABdhPJyixh7+Xhqge46v4VUyw24e//BY5vWBinq6c7+AnLp/aMzF80GlAm88p3o4d1k2Lvi8OuYWgg==
+X-Received: by 2002:a7b:cc96:: with SMTP id p22mr2645777wma.26.1633431195487;
+        Tue, 05 Oct 2021 03:53:15 -0700 (PDT)
+Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
+        by smtp.gmail.com with ESMTPSA id h15sm9413745wrt.0.2021.10.05.03.53.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Oct 2021 03:53:14 -0700 (PDT)
+Date:   Tue, 5 Oct 2021 11:53:12 +0100
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Marijn Suijten <marijn.suijten@somainline.org>
+Cc:     phone-devel@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Martin Botka <martin.botka@somainline.org>,
+        Jami Kettunen <jami.kettunen@somainline.org>,
+        Pavel Dubrova <pashadubrova@gmail.com>,
+        Kiran Gunda <kgunda@codeaurora.org>,
+        Courtney Cavin <courtney.cavin@sonymobile.com>,
+        Bryan Wu <cooloney@gmail.com>, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 05/10] backlight: qcom-wled: Fix off-by-one maximum with
+ default num_strings
+Message-ID: <20211005105312.kqiyzoqtzzjxayhg@maple.lan>
+References: <20211004192741.621870-1-marijn.suijten@somainline.org>
+ <20211004192741.621870-6-marijn.suijten@somainline.org>
+ <20211005091947.7msztp5l554c7cy4@maple.lan>
+ <20211005100606.faxra73mzkvjd4f6@SoMainline.org>
+ <20211005103843.heufyonycnudxnzd@maple.lan>
 MIME-Version: 1.0
-References: <20210925203224.10419-1-sergio.paracuellos@gmail.com>
- <CAMhs-H9p4xmPO2F_byk4DQncTGZayW1HwAzrPn_W0eEW5UUn9A@mail.gmail.com> <YVwqpCbYzxUWm5LJ@kroah.com>
-In-Reply-To: <YVwqpCbYzxUWm5LJ@kroah.com>
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Date:   Tue, 5 Oct 2021 12:51:48 +0200
-Message-ID: <CAMhs-H-YDg=q6sJhhawkqkfdLCj=EhcX8G-1WGH4K928ToLYLw@mail.gmail.com>
-Subject: Re: [PATCH v3 0/6] MIPS: ralink: fix PCI IO resources
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Rob Herring <robh@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Liviu Dudau <Liviu.Dudau@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        linux-staging@lists.linux.dev, NeilBrown <neil@brown.name>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211005103843.heufyonycnudxnzd@maple.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 5, 2021 at 12:36 PM Greg KH <gregkh@linuxfoundation.org> wrote:
->
-> On Sun, Oct 03, 2021 at 06:21:21PM +0200, Sergio Paracuellos wrote:
-> > Hi Greg,
-> >
-> > On Sat, Sep 25, 2021 at 10:32 PM Sergio Paracuellos
-> > <sergio.paracuellos@gmail.com> wrote:
-> > >
-> > > MIPs ralink need a special tratement regarding the way it handles PCI IO
-> > > resources. On MIPS I/O ports are memory mapped, so we access them using normal
-> > > load/store instructions. MIPS 'plat_mem_setup()' function does a call to
-> > > 'set_io_port_base(KSEG1)'. There, variable 'mips_io_port_base'
-> > > is set then using this address which is a virtual address to which all
-> > > ports are being mapped. Ralink I/O space has a mapping of bus address
-> > > equal to the window into the mmio space, with an offset of IO start range
-> > > cpu address. This means that to have this working we need:
-> > > - linux port numbers in the range 0-0xffff.
-> > > - pci port numbers in the range 0-0xffff.
-> > > - io_offset being zero.
-> > >
-> > > These means at the end to have bus address 0 mapped to IO range cpu address.
-> > > We need a way of properly set 'mips_io_port_base' with a virtually mapped
-> > > value of the IO cpu address.
-> > >
-> > > This series do the following approach:
-> > > 1) Revert two bad commit from a previous attempt of make this work [0].
-> > > 2) Set PCI_IOBASE to mips 'mips_io_port_base'.
-> > > 3) Allow architecture dependent 'pci_remap_iospace'.
-> > > 4) Implement 'pci_remap_iospace' for MIPS.
-> > > 5) Be sure IOBASE address for IO window is set with correct value.
-> > >
-> > > More context about this series appoach in this mail thread [1].
-> > >
-> > > Patches related with reverts are from this merge cycle so they are only
-> > > added to the staging git tree. So to have all stuff together I'd like to
-> > > get everybody Ack's to get all of this series through staging tree if
-> > > possible :).
-> > >
-> > > Thanks in advance for your time.
-> > >
-> > > Changes in v3:
-> > >  - Collect Arnd's Acked-by for the patches.
-> > >  - Be sure IO resource start address is zero and WARN_ONCE if it is not
-> > >    on MIPS pci_remap_iospace() patch. Also make use of 'resource_size'
-> > >    instead of do the logic explicitly again.
-> >
-> > I think nothing is missing to get this added through the staging tree.
->
-> Great, thanks for sticking with this, will go queue it up now.
+On Tue, Oct 05, 2021 at 11:38:43AM +0100, Daniel Thompson wrote:
+> On Tue, Oct 05, 2021 at 12:06:06PM +0200, Marijn Suijten wrote:
+> > On 2021-10-05 10:19:47, Daniel Thompson wrote:
+> > > On Mon, Oct 04, 2021 at 09:27:36PM +0200, Marijn Suijten wrote:
+> > > > When not specifying num-strings in the DT the default is used, but +1 is
+> > > > added to it which turns wled3 into 4 and wled4/5 into 5 strings instead
+> > > > of 3 and 4 respectively, causing out of bounds reads and register
+> > > > read/writes.  This +1 exists for a deficiency in the DT parsing code,
+> > > > and is simply omitted entirely - solving this oob issue - by allowing
+> > > > one extra iteration of the wled_var_cfg function parsing this particular
+> > > > property.
+> > > > 
+> > > > Fixes: 93c64f1ea1e8 ("leds: add Qualcomm PM8941 WLED driver")
+> > > > Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
+> > > > Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+> > > > ---
+> > > >  drivers/video/backlight/qcom-wled.c | 8 +++-----
+> > > >  1 file changed, 3 insertions(+), 5 deletions(-)
+> > > > 
+> > > > diff --git a/drivers/video/backlight/qcom-wled.c b/drivers/video/backlight/qcom-wled.c
+> > > > index 27e8949c7922..66ce77ee3099 100644
+> > > > --- a/drivers/video/backlight/qcom-wled.c
+> > > > +++ b/drivers/video/backlight/qcom-wled.c
+> > > > @@ -1255,17 +1255,17 @@ static const struct wled_var_cfg wled5_ovp_cfg = {
+> > > >  
+> > > >  static u32 wled3_num_strings_values_fn(u32 idx)
+> > > >  {
+> > > > -	return idx + 1;
+> > > > +	return idx;
+> 
+> 
+> > > >  }
+> > > >  
+> > > >  static const struct wled_var_cfg wled3_num_strings_cfg = {
+> > > >  	.fn = wled3_num_strings_values_fn,
+> > > > -	.size = 3,
+> > > > +	.size = 4, /* [0, 3] */
+> > > 
+> > > 0 is not a valid value for this property.
+> > 
+> > These comments represent the possible loop iterations the DT "cfg
+> > parser" runs through, starting at j=0 and running up until and including
+> > j=3.  Should I make that more clear or omit these comments entirely?
+> 
+> The role of wled3_num_strings_values_fn() is to enumerate the list of
+> legal values for the property [ 1, 2, 3 ]. Your changes cause the
+> enumeration to include a non-legal value so that you can have an
+> identity mapping between the symbol and the enumerate value.
+> 
+> An alternative approach would be to leave the enumeration logic
+> alone but set the num_string default to UINT_MAX in all cases:
+> 
+> -	cfg->num_strings = cfg->num_strings + 1;
+> +	if (cfg->num_strings == UINT_MAX)
+> +		cfg->num_strings = 
 
-Thanks!
+Oops... looks like I missed the cfg->max_string_count here.
 
-Best regards,
-    Sergio Paracuellos
 
->
-> greg k-h
+> +	else
+> +               /* Convert from enumerated to numeric form */
+> +		cfg->num_strings = wled3_num_strings_values_fn(
+> +						cfg->num_strings);
+
+
+PS the alternative option is not to treat num-strings as an enumerated
+   value at all and just read it directly without using wled_values()...
