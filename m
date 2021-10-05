@@ -2,101 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2212E4222D7
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 11:56:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D00524222DE
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 11:56:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233913AbhJEJ5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 05:57:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36892 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233812AbhJEJ5u (ORCPT
+        id S233977AbhJEJ6N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 05:58:13 -0400
+Received: from mail-ua1-f41.google.com ([209.85.222.41]:36572 "EHLO
+        mail-ua1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233933AbhJEJ6K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 05:57:50 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC706C06161C;
-        Tue,  5 Oct 2021 02:55:59 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1633427757;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Bmn6fbfwZkIlTzBjYvoDp1zcPlgN5COrQVMZmJfTwEI=;
-        b=RTMmlBCWfAb6HZkmAxgWOKxmPQBw4qfLKpq+7TMOLihK0S7QRje+Yn/qNaltXTkxmO6t3n
-        bVL47Ypnq5pl5xj74rpb5TrLlukVXVwpvCFuErnrbwZm65YlBsM4bWI33Zb29iIBnSmmo9
-        MFqmw7NgB6kHCChvLyOvum2cKHptrqB0I5a9N6bS2xUi5ORpBaRIj8MBRQt09lZrUjTU/I
-        0DhmqTYtK50dCrYAmEzxv7Qwuqj4uLVILJUcZpZwI1sbN5H1EmLT3nmFNcLg3EJFWe8l4n
-        ujFsNjJvtzU2dl2P0Qdb5sW3oAbTYRvPNFFwkUBHbl6AEU4GEMXQ2xTpTT5S6Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1633427757;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Bmn6fbfwZkIlTzBjYvoDp1zcPlgN5COrQVMZmJfTwEI=;
-        b=8jomF9fA0hlpuTAblonNYz3gbDHbpUW/rmYa9lkGrOIj9F+nMHmHbx94E43d1Xf1+cs+jK
-        d6+f3NGJDAPhQTBg==
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        "Chang S. Bae" <chang.seok.bae@intel.com>, bp@suse.de,
-        luto@kernel.org, mingo@kernel.org, x86@kernel.org
-Cc:     len.brown@intel.com, lenb@kernel.org, dave.hansen@intel.com,
-        thiago.macieira@intel.com, jing2.liu@intel.com,
-        ravi.v.shankar@intel.com, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Subject: Re: [PATCH v10 10/28] x86/fpu/xstate: Update the XSTATE save
- function to support dynamic states
-In-Reply-To: <a5a5812a-6501-ccce-5d42-18131cf26779@redhat.com>
-References: <87pmsnglkr.ffs@tglx>
- <a5a5812a-6501-ccce-5d42-18131cf26779@redhat.com>
-Date:   Tue, 05 Oct 2021 11:55:56 +0200
-Message-ID: <87ee8zg5hv.ffs@tglx>
+        Tue, 5 Oct 2021 05:58:10 -0400
+Received: by mail-ua1-f41.google.com with SMTP id u11so14412044uaw.3;
+        Tue, 05 Oct 2021 02:56:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7f7La1K3j/sf3y6WAPsiJ3HiHMfo9c5sHomKDoZBG7U=;
+        b=k2IKov7jB0n+UA2Ba6xXi/dtkzWMyvN8/oXdRDjW/TVGcXQs5GyrZCahRsU9ZUzoSk
+         qXfb3TdiyKbNjQI2i2tlB32LSBrDG2mHcucnAAPxaZatqc0lz4ujs+g4Boz1/yOTQltl
+         VVYAXO9LhU2an/YvvnzO9e59P8m8QfNu6UJOD76u5w0lmLnUzjW6Zg+pAh97G1d0YN4b
+         yIcWwqrIlfIfLGbzPUvgTgzWXD8Ec7A6n5UMWjYOtUJKQjvvxirZS1f+AGXdSYOYo4VV
+         nDZzSMEPh8sRK2DfZcqwoVFSha3/emEyeiwO/zPUntHjwzyKiYFO65GDv0Jw4gJHv3Fk
+         SCPA==
+X-Gm-Message-State: AOAM531c3rkWFNKd9MWvG9S5We1t54akg894yzQ4balVf22SemmRUco6
+        9ZKSs6prEmfXhMyF7ZWVwYcmrOJvVbbl4aU24fc=
+X-Google-Smtp-Source: ABdhPJwoedqIMTs/zp1tZCy9OstAKU8ntmrhQvtFdRYOoHyHH+E8MpEzp9P57PSyaiMXuRqdCgIgcecFKpCx4qab0jY=
+X-Received: by 2002:ab0:311a:: with SMTP id e26mr10862299ual.122.1633427779260;
+ Tue, 05 Oct 2021 02:56:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210921193028.13099-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20210921193028.13099-4-prabhakar.mahadev-lad.rj@bp.renesas.com> <CACRpkdaJk-G0YE63uvH9C=G3n7k2gZqf9QrwGfAZC2O4hhps=A@mail.gmail.com>
+In-Reply-To: <CACRpkdaJk-G0YE63uvH9C=G3n7k2gZqf9QrwGfAZC2O4hhps=A@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 5 Oct 2021 11:56:07 +0200
+Message-ID: <CAMuHMdUvThtOKrhTqW+U1qijW7dRc6GYg4_Owt_GnUxX4DrGog@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 3/4] pinctrl: renesas: pinctrl-rzg2l: Add IRQ
+ domain to handle GPIO interrupt
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Rob Herring <robh+dt@kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05 2021 at 09:50, Paolo Bonzini wrote:
-> On 02/10/21 23:31, Thomas Gleixner wrote:
->> You have two options:
->> 
->>    1) Always allocate the large buffer size which is required to
->>       accomodate all possible features.
->> 
->>       Trivial, but waste of memory.
->> 
->>    2) Make the allocation dynamic which seems to be trivial to do in
->>       kvm_load_guest_fpu() at least for vcpu->user_fpu.
->> 
->>       The vcpu->guest_fpu handling can probably be postponed to the
->>       point where AMX is actually exposed to guests, but it's probably
->>       not the worst idea to think about the implications now.
->> 
->> Paolo, any opinions?
->
-> Unless we're missing something, dynamic allocation should not be hard to 
-> do for both guest_fpu and user_fpu; either near the call sites of 
-> kvm_save_current_fpu, or in the function itself.  Basically adding 
-> something like
->
-> 	struct kvm_fpu {
-> 		struct fpu *state;
-> 		unsigned size;
-> 	} user_fpu, guest_fpu;
->
-> to struct kvm_vcpu.  Since the size can vary, it can be done simply with 
-> kzalloc instead of the x86_fpu_cache that KVM has now.
->
-> The only small complication is that kvm_save_current_fpu is called 
-> within fpregs_lock; the allocation has to be outside so that you can use 
-> GFP_KERNEL even on RT kernels.   If the code looks better with 
-> fpregs_lock moved within kvm_save_current_fpu, go ahead and do it like that.
+Hi Linus,
 
-I'm reworking quite some of this already and with the new bits you don't
-have to do anything in kvm_fpu because the size and allowed feature bits
-are going to be part of fpu->fpstate.
+On Thu, Sep 23, 2021 at 11:38 PM Linus Walleij <linus.walleij@linaro.org> wrote:
+> On Tue, Sep 21, 2021 at 9:30 PM Lad Prabhakar
+> <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> > Add IRQ domian to RZ/G2L pinctrl driver to handle GPIO interrupt.
+> >
+> > GPIO0-GPIO122 pins can be used as IRQ lines but only 32 pins can be
+> > used as IRQ lines at given time. Selection of pins as IRQ lines
+> > is handled by IA55 (which is the IRQC block) which sits in between the
+> > GPIO and GIC.
+> >
+> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+>
+> Why can't you just use the hierarchical IRQ domain handling inside
+> gpiolib?
 
-Stay tuned.
+Out of interest (not related to this patch), does this support multiple
+parent domains?
 
-Thanks,
+Thanks!
 
-        tglx
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
