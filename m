@@ -2,128 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54798422158
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 10:54:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A064042215B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 10:55:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233194AbhJEI43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 04:56:29 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:38010 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232739AbhJEI42 (ORCPT
+        id S232920AbhJEI5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 04:57:33 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:49456 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230526AbhJEI5b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 04:56:28 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1958g3Qw024789;
-        Tue, 5 Oct 2021 04:54:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=Oc3GvTQfzksAh7Ij8tpg94WjZ7As1pYxcRGBnzkR4T8=;
- b=dLgwPOutMeYkpMw37ClaXMEdDAhlIkT/sBzRFGJZP/hZwpKBXQEi2lK30JibLFAYXFfd
- a20t5DNCIjFefY1fj0Ve/fZSkSBBtFQcRnWEyfqKbqOnja0EikWUC+8ul8sdstrBnsLQ
- RkGtIjgZB6/Qx1wri6zKsCbmpQugUN1nLDIOH8dklslG3Q2/AY3MfNV5XCcG53r6IX6H
- VPseOXWo6UbTrB0welEAvKKBLF1yeS5nZ4Le7SiBUMrFdcaLw70z8EMkfyYr/7If7qK2
- kFUjDQC/4fN0SarBd6IJQqXgHDD5jKVpmaPy6PsTVY2+VPiKX5kOTsu5mPrRynBAiJtU jA== 
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3bgkdw86h2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Oct 2021 04:54:36 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1958mWCG020471;
-        Tue, 5 Oct 2021 08:54:34 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma06ams.nl.ibm.com with ESMTP id 3beepjg740-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Oct 2021 08:54:34 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1958sUrU38994194
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 5 Oct 2021 08:54:30 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A5A4152065;
-        Tue,  5 Oct 2021 08:54:30 +0000 (GMT)
-Received: from osiris (unknown [9.145.46.219])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTPS id 64D205205F;
-        Tue,  5 Oct 2021 08:54:30 +0000 (GMT)
-Date:   Tue, 5 Oct 2021 10:54:28 +0200
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>
-Subject: Re: [PATCH v1 1/1] s390: Use string_upper() instead of open coded
- variant
-Message-ID: <YVwSxGyx45gs2+ZW@osiris>
-References: <20211001130201.72545-1-andriy.shevchenko@linux.intel.com>
- <YVtksmjj1eGqw5GY@osiris>
- <YVwKXn1Nqwk+Ahsx@smile.fi.intel.com>
+        Tue, 5 Oct 2021 04:57:31 -0400
+Date:   Tue, 5 Oct 2021 10:55:39 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1633424140;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mToF1A35rc8FkkqdsQ+ngAvlAmPoX09sNn76CPlVkyY=;
+        b=A2DPMkGE6HLKyycsZ5X3hyf7Pfc/yliNtfqTHHnVJDn8kuaxJd8pPoskwVd72Ca0zuBlDn
+        16Nx1POgFhbr8AB/EB9T9LtAlyE3tikf429StFGv+0JmKJbhQo6Co+D63bwTkAAmjj9pXT
+        k/hPBzDKVVKeIN1IdECg4K1oCdxFHI+T1Ynu52CbXuh7g0SQfItKvFXYil4ztloTX2/mSQ
+        AFpyl0f+SiGw80z8V7ziANk67eVDcOdMcBgCSE0O2H4Ss16z12MZRgA6c0IpPJV5zH5jAH
+        Rn2fHhDgWzz4wKtB1WH6ASkl27tBdh48A/QTMXv62T/PInA4H6kbREVLwE2EbQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1633424140;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mToF1A35rc8FkkqdsQ+ngAvlAmPoX09sNn76CPlVkyY=;
+        b=OM91k6NfPbMyWwZwSfhT25SwF3ao/k4NC1C6AruwGdpvBQLnAoN9B2BWNI3qxoXZXvA32b
+        /125J6amO720JfBA==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     linux-kernel@vger.kernel.org
+Cc:     Stefani Seibold <stefani@seibold.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH] samples/kfifo: Rename read_lock/write_lock
+Message-ID: <20211005085539.kqi5542z6wgoxnlk@linutronix.de>
+References: <20210923172918.o22iwgvn3w7ilh44@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YVwKXn1Nqwk+Ahsx@smile.fi.intel.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: cPPcssBzOwyyeEHkFO6Sgkp5Pyo4XnJf
-X-Proofpoint-GUID: cPPcssBzOwyyeEHkFO6Sgkp5Pyo4XnJf
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-10-04_05,2021-10-04_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 adultscore=0
- priorityscore=1501 lowpriorityscore=0 malwarescore=0 bulkscore=0
- suspectscore=0 impostorscore=0 clxscore=1015 mlxscore=0 mlxlogscore=999
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110050049
+In-Reply-To: <20210923172918.o22iwgvn3w7ilh44@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05, 2021 at 11:18:38AM +0300, Andy Shevchenko wrote:
-> On Mon, Oct 04, 2021 at 10:31:46PM +0200, Heiko Carstens wrote:
-> > On Fri, Oct 01, 2021 at 04:02:01PM +0300, Andy Shevchenko wrote:
-> > > +	/* Segment name is limited by 8 characters + NUL */
-> > > +	char tmp[8 + 1];
-> > >  	int i;
-> > >  
-> > > -	for (i = 0; i < 8; i++) {
-> > > -		if (name[i] == '\0')
-> > > -			break;
-> > > -		dcss_name[i] = toupper(name[i]);
-> > > -	}
-> > > -	for (; i < 8; i++)
-> > > -		dcss_name[i] = ' ';
-> > > +	/*
-> > > +	 * This snprintf() call does two things:
-> > > +	 * - makes a NUL-terminated copy of the input string
-> > > +	 * - pads it with spaces
-> > > +	 */
-> > > +	snprintf(tmp, sizeof(tmp), "%s        ", name);
-> > 
-> > I can't say I like code where I have to count spaces in order to
-> > verify if the code is actually correct.
+On 2021-09-23 19:29:19 [+0200], To linux-kernel@vger.kernel.org wrote:
+> The variables names read_lock and write_lock can clash with functions used for
+> read/writer locks.
 > 
-> I understand your point, but have any idea how to make it differently
-> and not ugly at the same time?
+> Rename read_lock to read_access and write_lock to write_access to avoid a name
+> collision.
+> 
+> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> Link: https://lkml.kernel.org/r/20210806152551.qio7c3ho6pexezup@linutronix.de
+> ---
+> 
+> Repost.
 
-Don't know. You could use strncopy+strlen+memset (with space
-character). After all I'm not very convinced that the resulting code
-buys us anything compared to the current variant.
+ping.
 
-> > > +	string_upper(dcss_name, tmp);
-> 
-> ...
-> 
-> > >  static struct dcss_segment *
-> > >  segment_by_name (char *name)
-> > >  {
-> > > -	char dcss_name[9];
-> > > +	char dcss_name[8];
-> > 
-> > string_upper will copy the terminating NUL-byte. By reducing the size
-> > of dcss_name to 8 bytes this will result in stack corruption.
-> 
-> Nope. Even in the original code this additional byte is left unused.
-
-I'm talking about the new code, not the old code: If "name" points to
-a NUL terminated eight chararacter string, then the new code will use
-snprintf to copy it 1:1 to tmp, and the subsequent string_upper() will
-copy the string (upper cased) to dcss_name, now including the NUL
-terminating byte, which won't fit into dcss_name.
-Am I missing something here?
+Sebastian
