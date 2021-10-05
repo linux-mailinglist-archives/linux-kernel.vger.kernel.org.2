@@ -2,104 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CFEC422B07
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:29:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8758E422B09
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:29:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235520AbhJEObX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 10:31:23 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:51421 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235038AbhJEObV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 10:31:21 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1633444170; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=FxJv+xfRfX0wiXpi4iHFEWoHOtv7gBTnYPqMLSJu+pQ=;
- b=tfdL9FkNU8FsW0QVF6/EtrmCiGeFoWa9oMbH2RkaOosuuIrVbPlQEBHPGSyrEbM6st7st367
- Ov/1iBwbm+eCGKTWYRkl8Z1XyUUdXLm0gvz9fElop2L/JOzqujeU6C5IWHlxk/+nzPMdCAd0
- fNHZqMFP3D7cBs7L/G0uqPGasGY=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 615c614a03355859c8c7a889 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 05 Oct 2021 14:29:30
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 6413FC43617; Tue,  5 Oct 2021 14:29:30 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.0
-Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S235192AbhJEObg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 10:31:36 -0400
+Received: from mx3.molgen.mpg.de ([141.14.17.11]:47265 "EHLO mx1.molgen.mpg.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234899AbhJEObe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 10:31:34 -0400
+Received: from [192.168.0.2] (ip5f5ae91d.dynamic.kabel-deutschland.de [95.90.233.29])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A00F6C4338F;
-        Tue,  5 Oct 2021 14:29:27 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org A00F6C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        (Authenticated sender: pmenzel)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id EF0BD61EA1936;
+        Tue,  5 Oct 2021 16:29:41 +0200 (CEST)
+From:   Paul Menzel <pmenzel@molgen.mpg.de>
+To:     Tom Lendacky <thomas.lendacky@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx@lists.freedesktop.org
+Subject: `AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT=y` causes AMDGPU to fail on Ryzen:
+ amdgpu: SME is not compatible with RAVEN
+Message-ID: <8bbacd0e-4580-3194-19d2-a0ecad7df09c@molgen.mpg.de>
+Date:   Tue, 5 Oct 2021 16:29:41 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH] ath11k: Remove unused variable in
- ath11k_dp_rx_mon_merg_msdus()
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20210927150743.19816-1-tim.gardner@canonical.com>
-References: <20210927150743.19816-1-tim.gardner@canonical.com>
-To:     Tim Gardner <tim.gardner@canonical.com>
-Cc:     ath11k@lists.infradead.org, tim.gardner@canonical.com,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
-Message-Id: <20211005142930.6413FC43617@smtp.codeaurora.org>
-Date:   Tue,  5 Oct 2021 14:29:30 +0000 (UTC)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tim Gardner <tim.gardner@canonical.com> wrote:
+Dear Tom, dear Linux folks,
 
-> Coverity complains that a constant variable guards dead code. In fact,
-> mpdu_buf is set NULL and never updated.
-> 
-> 4834err_merge_fail:
->         null: At condition mpdu_buf, the value of mpdu_buf must be NULL.
->         dead_error_condition: The condition mpdu_buf cannot be true.
-> CID 92162 (#1 of 1): 'Constant' variable guards dead code (DEADCODE)
-> dead_error_line: Execution cannot reach the expression decap_format !=
->   DP_RX_DECAP_TYPE_RAW inside this statement: if (mpdu_buf && decap_forma....
-> Local variable mpdu_buf is assigned only once, to a constant value, making it
->   effectively constant throughout its scope. If this is not the intent, examine
->   the logic to see if there is a missing assignment that would make mpdu_buf not
->   remain constant.
-> 4835        if (mpdu_buf && decap_format != DP_RX_DECAP_TYPE_RAW) {
-> 
-> Fix this by removing mpdu_buf and unreachable code.
-> 
-> Cc: Kalle Valo <kvalo@codeaurora.org>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: ath11k@lists.infradead.org
-> Cc: linux-wireless@vger.kernel.org
-> Cc: netdev@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Tim Gardner <tim.gardner@canonical.com>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-Patch applied to ath-next branch of ath.git, thanks.
+Selecting the symbol `AMD_MEM_ENCRYPT` – as done in Debian 5.13.9-1~exp1 
+[1] – also selects `AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT`, as it defaults 
+to yes, causing boot failures on AMD Raven systems. On the MSI B350M 
+MORTAR with AMD Ryzen 3 2200G, Linux logs and the AMDGPU graphics 
+driver, despite being loaded, does not work, and the framebuffer driver 
+is used instead.
 
-7210b4b77fe4 ath11k: Remove unused variable in ath11k_dp_rx_mon_merg_msdus()
+     [   19.679824] amdgpu 0000:26:00.0: amdgpu: SME is not compatible 
+with RAVEN
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20210927150743.19816-1-tim.gardner@canonical.com/
+It even causes black screens on other systems as reported to the Debian 
+bug tracking system *Black screen on AMD Ryzen based systems (AMDGPU 
+related when AMD Secure Memory Encryption not disabled -- 
+mem_encrypt=off)* [2].
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Should the default be changed?
 
+
+Kind regards,
+
+Paul
+
+
+[1]: 
+https://salsa.debian.org/kernel-team/linux/-/blob/master/debian/changelog#L1138
+[2]: https://bugs.debian.org/994453
