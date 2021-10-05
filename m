@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 768B2423181
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 22:17:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C203423182
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 22:17:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236056AbhJEUT1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 16:19:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42514 "EHLO
+        id S234130AbhJEUTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 16:19:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234130AbhJEUTT (ORCPT
+        with ESMTP id S236032AbhJEUT0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 16:19:19 -0400
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBE47C061749
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 13:17:28 -0700 (PDT)
-Received: by mail-qt1-x831.google.com with SMTP id t2so322623qtx.8
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 13:17:28 -0700 (PDT)
+        Tue, 5 Oct 2021 16:19:26 -0400
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43AE9C061755
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 13:17:35 -0700 (PDT)
+Received: by mail-qk1-x72b.google.com with SMTP id 72so234488qkk.7
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 13:17:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=MLpOU2gtDlN/t3YQqeM1ZuC76+nni+Jjgvk3fLJVQKY=;
-        b=RwfG7yaYvor7iaI3TZc1YwftZ27vcx7i0037yizes8DSPwQ9lcL5MSDT9l0mqhKyDH
-         iDX1hitbLAWnMbfQmw3tbHYlmxNMNVkmvzVUIzny978etjMoJ3e1qWgFHkDRtt8JwXA9
-         i47D7HgfjzL2YD7gkhYn/54tIbtcy4aBVkRJGWDZ/OgtY57gOYWOUPAELR/PDh4hoxku
-         eKZe0ahF45G8hlDXaxhqw58JImQGwL1d6aFoHNYUuUmFzpk2SRailTLrmUqbTjYvMn5c
-         Ox7Kvr29srBP1p5VHj5DAZKpqPg7TfoAx1VHqBDbTlrRTnoDx1ctxptAu85c7Y7chNTL
-         iO1Q==
+        bh=SiGk0N0u2kNmWFJE+qdtUv44eJh4PhxY8jpg4qljUIo=;
+        b=qE6FbcNe2zE3FSLev1D+zWw+UKU+QeBXsQty/MKhWK0IvqdeeYmE78XFNh/CxVu9M+
+         CRr18MughfBb73ehlJuIF6pQJP/KI9oun8LBbJRgnYqt05Wp8GkxOEyEol1jDMt5m9V9
+         VtR9n+zCggYsSynnn5/NIa5t621y+J0ZxqLcWxuzG12QjfVCy4zR22iy62INZJdffPcy
+         SUuHOU85a2i+rO+ZJ0JyPwYkPi4/U6qjCJvLDtQjvi7iEl91nIFeMnONSBtBOBVFaCSG
+         oOdnTJKymsTdmMUBwH00rcVmv5JV1KHfGY0qcE0R72ilfjxst8THzteIWiVdI7gbuxsY
+         S3Yg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=MLpOU2gtDlN/t3YQqeM1ZuC76+nni+Jjgvk3fLJVQKY=;
-        b=Zyt+uCbB1m74MJKzPiWboSzpa0ISphEu/PZrbSHWQxcVyWrWTmneqpBaLq+Jq5xPiQ
-         x9ctfmH94eWP+IBVjbHqjxxZasdRZ2UG0i5pmYzMz5Yej7Ok1xmgVW2kmL4o7NrybkQ7
-         ZwShgcNCKYUMu6ymf2Mue4loFBTrcB9pNKADvsidMaoFnGgJN472TJghL4dTqbrkq4N6
-         Qyht9FmpHgcfktbC4EcYcX55Yx7bEPfnjJ0FEpsKt6Tbu7gLJg7qv22XfGZhaUb8oqnh
-         vrCuWTd99Feo7jQdaEavQRFSmPCKFD7cZeLD77dtnRmeWlQmTxJTt+AyxO6iF6cUzp6R
-         Plvg==
-X-Gm-Message-State: AOAM531By9YT+lnFr3QNH59juplVRwJBAEgZJTNTclckH21t6LMtHUkO
-        MQxTpZTjpqHlNzsG2C4B5pw=
-X-Google-Smtp-Source: ABdhPJyctVOHylaCsucvT+4OfzMwlJtBm8lqPYlWmlvb3RV4i5pAD1BpFisEj8qbW1OkcJN2waEaMA==
-X-Received: by 2002:aed:27d9:: with SMTP id m25mr22303427qtg.85.1633465048127;
-        Tue, 05 Oct 2021 13:17:28 -0700 (PDT)
+        bh=SiGk0N0u2kNmWFJE+qdtUv44eJh4PhxY8jpg4qljUIo=;
+        b=6ZPFkazwusg24r05G+T5oirU8tgtJJLVZD+MXN0WZluBJe5JTdNzhqAR6md6i6jgqm
+         mndbyoFdbbN8/Cg8dj0JnTrkhx6kDd0o1qBc35O6rXH0xvZFUSfQLuaDRGGhojja6j6E
+         O/e6GPndktHwVEaUhP6fD4Y5Kt9MgsuJ3wjwLL4vNbMOeZM3CrvoXE41De1aIbDlHDfU
+         hzxas3huzFZQ4XG7Jaf4MaaRb5QIMy32Cjt8R9AfcMfGVJkjsfOHHWe7iwNrEi4824iS
+         o6Lqtzp14dmjYRqe0WgMxXIqs1R+B1pdrBZyxV8XJmupkgbdG26mztOKJGQuEVLPmdEp
+         VXaA==
+X-Gm-Message-State: AOAM532jyY9/Pxv9qdY8bPuEBvw4DsgsxmUwlcFzcmwnxyaLrcwOOwzq
+        NQu+asSkfiG9qfieng6mY+4=
+X-Google-Smtp-Source: ABdhPJy1bwOZXI7Zcw2koJzJ4UlX9eEJnk7Ohg5sT+jmVMGoMNjwr+0+Vy8SsIL6b1mk+I/7CRPNEQ==
+X-Received: by 2002:a37:8941:: with SMTP id l62mr16661388qkd.100.1633465054491;
+        Tue, 05 Oct 2021 13:17:34 -0700 (PDT)
 Received: from localhost.localdomain ([2804:14c:125:9b98::1007])
-        by smtp.googlemail.com with ESMTPSA id j2sm13056905qta.84.2021.10.05.13.17.25
+        by smtp.googlemail.com with ESMTPSA id j2sm13056905qta.84.2021.10.05.13.17.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Oct 2021 13:17:27 -0700 (PDT)
+        Tue, 05 Oct 2021 13:17:34 -0700 (PDT)
 From:   Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
 To:     rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com
 Cc:     Igor Matheus Andrade Torrente <igormtorrente@gmail.com>,
@@ -55,9 +55,9 @@ Cc:     Igor Matheus Andrade Torrente <igormtorrente@gmail.com>,
         contact@emersion.fr, leandro.ribeiro@collabora.com,
         dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
         lkcamp@lists.libreplanetbr.org
-Subject: [PATCH 3/6] drm: vkms: Replace hardcoded value of `vkms_composer.map` to DRM_FORMAT_MAX_PLANES
-Date:   Tue,  5 Oct 2021 17:16:34 -0300
-Message-Id: <20211005201637.58563-4-igormtorrente@gmail.com>
+Subject: [PATCH 4/6] drm: vkms: Add fb information to `vkms_writeback_job`
+Date:   Tue,  5 Oct 2021 17:16:35 -0300
+Message-Id: <20211005201637.58563-5-igormtorrente@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20211005201637.58563-1-igormtorrente@gmail.com>
 References: <20211005201637.58563-1-igormtorrente@gmail.com>
@@ -67,32 +67,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The `map` vector at `vkms_composer` uses a hardcoded value to define its
-size.
+This commit is the groundwork to introduce new formats to the planes and
+writeback buffer. As part of it, a new buffer metadata field is added to
+`vkms_writeback_job`, this metadata is represented by the `vkms_composer`
+struct.
 
-If someday the maximum number of planes increases, this hardcoded value
-can be a problem.
-
-This value is being replaced with the DRM_FORMAT_MAX_PLANES macro.
+This will allow us, in the future, to have different compositing and wb
+format types.
 
 Signed-off-by: Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
 ---
- drivers/gpu/drm/vkms/vkms_drv.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/vkms/vkms_drv.h       | 10 +++++-----
+ drivers/gpu/drm/vkms/vkms_writeback.c | 16 +++++++++++++---
+ 2 files changed, 18 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/gpu/drm/vkms/vkms_drv.h b/drivers/gpu/drm/vkms/vkms_drv.h
-index d48c23d40ce5..64e62993b06f 100644
+index 64e62993b06f..d62f8ebd454b 100644
 --- a/drivers/gpu/drm/vkms/vkms_drv.h
 +++ b/drivers/gpu/drm/vkms/vkms_drv.h
-@@ -28,7 +28,7 @@ struct vkms_writeback_job {
+@@ -20,11 +20,6 @@
+ #define XRES_MAX  8192
+ #define YRES_MAX  8192
+ 
+-struct vkms_writeback_job {
+-	struct dma_buf_map map[DRM_FORMAT_MAX_PLANES];
+-	struct dma_buf_map data[DRM_FORMAT_MAX_PLANES];
+-};
+-
  struct vkms_composer {
  	struct drm_framebuffer fb;
  	struct drm_rect src, dst;
--	struct dma_buf_map map[4];
-+	struct dma_buf_map map[DRM_FORMAT_MAX_PLANES];
- 	unsigned int offset;
- 	unsigned int pitch;
+@@ -34,6 +29,11 @@ struct vkms_composer {
  	unsigned int cpp;
+ };
+ 
++struct vkms_writeback_job {
++	struct dma_buf_map data[DRM_FORMAT_MAX_PLANES];
++	struct vkms_composer composer;
++};
++
+ /**
+  * vkms_plane_state - Driver specific plane state
+  * @base: base plane state
+diff --git a/drivers/gpu/drm/vkms/vkms_writeback.c b/drivers/gpu/drm/vkms/vkms_writeback.c
+index 8694227f555f..5a3e12f105dc 100644
+--- a/drivers/gpu/drm/vkms/vkms_writeback.c
++++ b/drivers/gpu/drm/vkms/vkms_writeback.c
+@@ -75,7 +75,7 @@ static int vkms_wb_prepare_job(struct drm_writeback_connector *wb_connector,
+ 	if (!vkmsjob)
+ 		return -ENOMEM;
+ 
+-	ret = drm_gem_fb_vmap(job->fb, vkmsjob->map, vkmsjob->data);
++	ret = drm_gem_fb_vmap(job->fb, vkmsjob->composer.map, vkmsjob->data);
+ 	if (ret) {
+ 		DRM_ERROR("vmap failed: %d\n", ret);
+ 		goto err_kfree;
+@@ -99,7 +99,7 @@ static void vkms_wb_cleanup_job(struct drm_writeback_connector *connector,
+ 	if (!job->fb)
+ 		return;
+ 
+-	drm_gem_fb_vunmap(job->fb, vkmsjob->map);
++	drm_gem_fb_vunmap(job->fb, vkmsjob->composer.map);
+ 
+ 	vkmsdev = drm_device_to_vkms_device(job->fb->dev);
+ 	vkms_set_composer(&vkmsdev->output, false);
+@@ -116,14 +116,24 @@ static void vkms_wb_atomic_commit(struct drm_connector *conn,
+ 	struct drm_writeback_connector *wb_conn = &output->wb_connector;
+ 	struct drm_connector_state *conn_state = wb_conn->base.state;
+ 	struct vkms_crtc_state *crtc_state = output->composer_state;
++	struct drm_framebuffer *fb = connector_state->writeback_job->fb;
++	struct vkms_writeback_job *active_wb;
++	struct vkms_composer *wb_composer;
+ 
+ 	if (!conn_state)
+ 		return;
+ 
+ 	vkms_set_composer(&vkmsdev->output, true);
+ 
++	active_wb = conn_state->writeback_job->priv;
++	wb_composer = &active_wb->composer;
++
+ 	spin_lock_irq(&output->composer_lock);
+-	crtc_state->active_writeback = conn_state->writeback_job->priv;
++	crtc_state->active_writeback = active_wb;
++	memcpy(&wb_composer->fb, fb, sizeof(struct drm_framebuffer));
++	wb_composer->offset = fb->offsets[0];
++	wb_composer->pitch = fb->pitches[0];
++	wb_composer->cpp = fb->format->cpp[0];
+ 	crtc_state->wb_pending = true;
+ 	spin_unlock_irq(&output->composer_lock);
+ 	drm_writeback_queue_job(wb_conn, connector_state);
 -- 
 2.30.2
 
