@@ -2,71 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E38F422C84
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:29:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 886A7422C88
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:31:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235793AbhJEPbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 11:31:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59798 "EHLO
+        id S235394AbhJEPdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 11:33:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233705AbhJEPbS (ORCPT
+        with ESMTP id S229626AbhJEPdf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 11:31:18 -0400
-Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F363C06174E
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 08:29:27 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:9ca4:a53a:9ffa:e003])
-        by albert.telenet-ops.be with bizsmtp
-        id 2FVR2600L11933306FVRFb; Tue, 05 Oct 2021 17:29:26 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1mXmNh-002Hd8-6Z; Tue, 05 Oct 2021 17:29:25 +0200
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1mXmNg-005lAW-2g; Tue, 05 Oct 2021 17:29:24 +0200
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Sergey Shtylyov <s.shtylyov@omp.ru>
-Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH v2] memory: RENESAS_RPCIF should select RESET_CONTROLLER
-Date:   Tue,  5 Oct 2021 17:29:22 +0200
-Message-Id: <e443aa66d146da5646b7ebece8876545b8621063.1633447756.git.geert+renesas@glider.be>
-X-Mailer: git-send-email 2.25.1
+        Tue, 5 Oct 2021 11:33:35 -0400
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E18C6C061749
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 08:31:44 -0700 (PDT)
+Received: by mail-il1-x12a.google.com with SMTP id t11so11714811ilf.11
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 08:31:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=to:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=tVuQHObub2YNkMXj0VdNY1wP8i2BNR3veQbUik+SlKs=;
+        b=tr0pADEUH6MVI60YI4iYvD82dol4p6zxiEPt9Uvw8Qn05LlXRqJhO59D0SIKDngSfw
+         zmV8locsvef2a6+reUDFlrasoUwklCU52eE+O+MPVZF9kfAkhm4Ad4w52+kI+y6h67iV
+         sG73suJbBtfeU/bhksIXMH7daeyuKOlSaV90+CUL+ux9/0eEbjiyQ0VfgUvRXAlCNgMB
+         Zh9sW8jfYW9CkmVII+Nny1So2AakkStn7UaZI/rPd/qDlefxQEsoVqiV58eWws/yun3G
+         lzJPZDyCMjVw38lcLlPxXFbKYHcSaDqJdN+lCWnjYHSuHrybjNglHaJ15IIIGNl2hvxo
+         Ycfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:to:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=tVuQHObub2YNkMXj0VdNY1wP8i2BNR3veQbUik+SlKs=;
+        b=UpcrPnoKOZMj2qcB65f3e08Pgo6W/KuJPupkQP/J0AKZ4tacUpDdCs0xDhWqvVZOEZ
+         FAYoSeN2I9e6D9h8kFq6LrnDMaSd9govnekipQZIYhCqfQpV0cR4Xp3OCMwIdF8H6XZM
+         RtgRz9j/NBiqxLfuFOCuouvZNMXoTqIvLJR/Qzm5AB0M2PuCRiFNJwHnfi1W9mevtRK4
+         KOjt4So2dB87ZioRYQ5LP30L7zM5QO+FxOD5vKVVOXe70XTHlc3Ukx7HthF6ateKk5jN
+         DJnjM8ImLsXskLVJG1XvntSvPUy4/a3M8f+nxeG92LPIz3pAt+OdAR7C2utC6AYQ6mnZ
+         GZkQ==
+X-Gm-Message-State: AOAM5319ftQTAtDB/0VQ67de2sFffyPWpq/2L9luQkKm0XbHBFhI3EQh
+        wxE2buWJ6DPxNAt6wwHJ8AlD91FCW1fD50P4W98=
+X-Google-Smtp-Source: ABdhPJzLni+rsnmQVPlhbLAVIyVjpQ14PZPb7Tizzee1xyL/Z3EPYMktlTDKiaprnhaEjLOh/4ItlA==
+X-Received: by 2002:a92:2902:: with SMTP id l2mr3149258ilg.276.1633447904257;
+        Tue, 05 Oct 2021 08:31:44 -0700 (PDT)
+Received: from [192.168.1.30] ([207.135.234.126])
+        by smtp.gmail.com with ESMTPSA id v17sm10858206ilh.67.2021.10.05.08.31.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Oct 2021 08:31:43 -0700 (PDT)
+To:     LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+From:   Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH] mm: don't call should_failslab() for !CONFIG_FAILSLAB
+Message-ID: <e01e5e40-692a-519c-4cba-e3331f173c82@kernel.dk>
+Date:   Tue, 5 Oct 2021 09:31:43 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Renesas RPC-IF driver calls devm_reset_control_get_exclusive(),
-which returns -ENOTSUPP if CONFIG_RESET_CONTROLLER is not enabled.
+Allocations can be a very hot path, and this out-of-line function
+call is noticeable.
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
-v2:
-  - Drop bogus part about reset_control_reset() failures.
----
- drivers/memory/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 
-diff --git a/drivers/memory/Kconfig b/drivers/memory/Kconfig
-index 72c0df129d5c5065..547f956f6c29e9bd 100644
---- a/drivers/memory/Kconfig
-+++ b/drivers/memory/Kconfig
-@@ -210,6 +210,7 @@ config RENESAS_RPCIF
- 	tristate "Renesas RPC-IF driver"
- 	depends on ARCH_RENESAS || COMPILE_TEST
- 	select REGMAP_MMIO
-+	select RESET_CONTROLLER
- 	help
- 	  This supports Renesas R-Car Gen3 or RZ/G2 RPC-IF which provides
- 	  either SPI host or HyperFlash. You'll have to select individual
+---
+
+diff --git a/include/linux/fault-inject.h b/include/linux/fault-inject.h
+index e525f6957c49..3128d2c8b3b4 100644
+--- a/include/linux/fault-inject.h
++++ b/include/linux/fault-inject.h
+@@ -64,8 +64,8 @@ static inline struct dentry *fault_create_debugfs_attr(const char *name,
+ 
+ struct kmem_cache;
+ 
+-int should_failslab(struct kmem_cache *s, gfp_t gfpflags);
+ #ifdef CONFIG_FAILSLAB
++int should_failslab(struct kmem_cache *s, gfp_t gfpflags);
+ extern bool __should_failslab(struct kmem_cache *s, gfp_t gfpflags);
+ #else
+ static inline bool __should_failslab(struct kmem_cache *s, gfp_t gfpflags)
+diff --git a/mm/slab.h b/mm/slab.h
+index 58c01a34e5b8..92fd6fe01877 100644
+--- a/mm/slab.h
++++ b/mm/slab.h
+@@ -491,8 +491,10 @@ static inline struct kmem_cache *slab_pre_alloc_hook(struct kmem_cache *s,
+ 
+ 	might_alloc(flags);
+ 
++#ifdef CONFIG_FAILSLAB
+ 	if (should_failslab(s, flags))
+ 		return NULL;
++#endif
+ 
+ 	if (!memcg_slab_pre_alloc_hook(s, objcgp, size, flags))
+ 		return NULL;
+diff --git a/mm/slab_common.c b/mm/slab_common.c
+index ec2bb0beed75..c21bd447f237 100644
+--- a/mm/slab_common.c
++++ b/mm/slab_common.c
+@@ -1323,6 +1323,7 @@ EXPORT_TRACEPOINT_SYMBOL(kmem_cache_alloc_node);
+ EXPORT_TRACEPOINT_SYMBOL(kfree);
+ EXPORT_TRACEPOINT_SYMBOL(kmem_cache_free);
+ 
++#ifdef CONFIG_FAILSLAB
+ int should_failslab(struct kmem_cache *s, gfp_t gfpflags)
+ {
+ 	if (__should_failslab(s, gfpflags))
+@@ -1330,3 +1331,4 @@ int should_failslab(struct kmem_cache *s, gfp_t gfpflags)
+ 	return 0;
+ }
+ ALLOW_ERROR_INJECTION(should_failslab, ERRNO);
++#endif
+
 -- 
-2.25.1
+Jens Axboe
 
