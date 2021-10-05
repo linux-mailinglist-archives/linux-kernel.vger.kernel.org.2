@@ -2,188 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79BEC421B8A
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 03:13:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A069421BA6
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 03:17:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229659AbhJEBP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 21:15:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58604 "EHLO
+        id S230372AbhJEBS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 21:18:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230402AbhJEBP1 (ORCPT
+        with ESMTP id S229563AbhJEBSz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 21:15:27 -0400
-Received: from mail-oo1-xc34.google.com (mail-oo1-xc34.google.com [IPv6:2607:f8b0:4864:20::c34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05E48C061745
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 18:13:38 -0700 (PDT)
-Received: by mail-oo1-xc34.google.com with SMTP id z11-20020a4ad1ab000000b0029f085f5f64so5939991oor.5
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 18:13:37 -0700 (PDT)
+        Mon, 4 Oct 2021 21:18:55 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 582B4C061745;
+        Mon,  4 Oct 2021 18:17:05 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id d13-20020a17090ad3cd00b0019e746f7bd4so749774pjw.0;
+        Mon, 04 Oct 2021 18:17:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=FhjJcl5G08f1Lwd0tiKxFVrUfQIhp84hVF46bA3Hyt0=;
-        b=eXtRfDd/uRe04F7H2s/WLRp6HjPItczeLz25u0o5/iLUwkOKlcSQ2KOsXyPjImrvap
-         fOteC7wUutj7TnTZcmRl/4uyHPmtsw+FNqk5LC0xqpcq2WOkjUzDxFw/seQTAgaZEq0u
-         Z064tyCeIctDwkVWTg4gyr3Id/tmo7LBLJw9LcmkFtOOyLMc9hmUl+ZIjf10BuD9DRJG
-         r0dHyrI1e6Ary/AtEVDCmTJYmb450d/2e0+HkevTEz12RXRLHDccCQoVwDzyUdaL25J1
-         rTbSP1IxwteK0V92PC9Cu6V6ZM00vQ5ItzJpWj7PP+AMyxEt4XrcyA6XOn8BL85vUY61
-         KQiA==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id;
+        bh=eaTwpWsRaFKGnfCAdX99R61MOjsjEGVDtlmehFUQR94=;
+        b=VhmDSsCPWMODDy3LzdVPvGLPmUFTY9HOxXUx0NUcLyTMGbDH1BQvLau4J0YqsD/2T4
+         X61s+cdliYaxSifO4R4pi+3F5mv3jQjsnXJYmj8L+8Aym788Xb0gW0bicIK0aSsv0XDP
+         lBisQ8B6rk6+dP8NsTy0N3nDh+99EEayXCiCuxn9lLxauUOTtgFpJHQJPI0aL+ibFTYK
+         KvwWOHYE8OFptF/susMYXoxvpsXki0ivghddSwf6I5/cJTgu4fi8GWlRGnhtLX+bZqRI
+         LUtBvdB3Fm2Z+FdmPtGv7vYxlo4JP807H6ieYAd69+WXGC43vf+CZPz37cvN6Y2YAKKN
+         2b6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FhjJcl5G08f1Lwd0tiKxFVrUfQIhp84hVF46bA3Hyt0=;
-        b=8AvESZhAf8qe9lUIDyDeje7K2dPt1B/WK5SFpxhZgNklBe0AsdwVwIj6qgzWwJlMZ2
-         Hcu559VMn9vxzbK8KbikZcMsq+ry9skGFC3Vd6O6QZYDl3OK9NZr+SMIvHcLpddKO13W
-         MirjIyrK7Uzydo29ku1gYOSPTareVnQO4Jv7lNU0iM6oL5dsat0kR38Ml/EAMLTUKZ4m
-         t591qfZH6q8IwvD6+BMruo9BfA76VikUi3DBWlbD+D000XhPU0SVcg8Uk4pORrH5vrOu
-         GrfYt2X83U/lsC0qdt0VIX1XeK6uF5VqrUtWFwkgzpoFd5PsOlpj5rYQJhhcX2ttYXd+
-         PzLg==
-X-Gm-Message-State: AOAM530Ij4PxmTXy3src690WGn7/UYQAruYPiaqvD5QWF/W4/hzgm56S
-        EvVTYvhWnM1ZzX0a1QUEfHh6wg==
-X-Google-Smtp-Source: ABdhPJwscAu3XElmUS4NzdpIXUSeVwlzXO/gNzH94JgHtRT4nX8WBTBx10/B6U/hLsgRKreF0K15LA==
-X-Received: by 2002:a4a:eb12:: with SMTP id f18mr11394452ooj.98.1633396417336;
-        Mon, 04 Oct 2021 18:13:37 -0700 (PDT)
-Received: from ripper ([2600:1700:a0:3dc8:205:1bff:fec0:b9b3])
-        by smtp.gmail.com with ESMTPSA id l1sm2246068oop.28.2021.10.04.18.13.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Oct 2021 18:13:36 -0700 (PDT)
-Date:   Mon, 4 Oct 2021 18:15:20 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Abhinav Kumar <abhinavk@codeaurora.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Kalyan Thota <kalyan_t@codeaurora.org>,
-        Kuogee Hsieh <khsieh@codeaurora.org>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/5] drm/msm/dp: Support up to 3 DP controllers
-Message-ID: <YVunKNXj+fxH/e1L@ripper>
-References: <20211001180058.1021913-1-bjorn.andersson@linaro.org>
- <20211001180058.1021913-4-bjorn.andersson@linaro.org>
- <CAE-0n50=EWg1GKuTnRi=zA0ufO1Xg4mucYaqNUZ+wgYNDRcWLA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAE-0n50=EWg1GKuTnRi=zA0ufO1Xg4mucYaqNUZ+wgYNDRcWLA@mail.gmail.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=eaTwpWsRaFKGnfCAdX99R61MOjsjEGVDtlmehFUQR94=;
+        b=e/o8yCCXMBvbZ/fWHbYvpqvhyPvnl1viFG3+1etZP4ikrafcApGgrBQtCwKUkr10hz
+         IW+HEPtuWyPz3gao2QHGcmAHNG3WZHyOkhpGdCWz0zbMOHlz2NdhPdzhPZ66gIZDnBVn
+         hwxZ9vDxbfGmhIr+I2B/vYmfLxDSUC1/vL5BaDMZUVp2LkkTjvjjaOn5KfhorjyyrvgY
+         S9kiJ7YTiUPcojEFuDzCX+Cqr8ffdtIiwctM80sI6SJza6YS5JgWMEq3QhxrFKukJz+4
+         K2n/fQgvFdUNBYyqCLBuIOJ7rDr8Uau2BJfpHEpKOWWPFHJkQ+8WvENKqHna9xE2YoIx
+         t5og==
+X-Gm-Message-State: AOAM532eZ0N8eMB6LwQQYJjdoAIK4WlTGyG3zrBLokRRERKkVmUNfKs+
+        3TIu0k4rYiFcZfyFzRs1ltE=
+X-Google-Smtp-Source: ABdhPJxP/w2Xb+76tCMIsUN823o7tQJ2KGNHg1jx7s2daH1B4eHnCWSDFOJJhcXkoTsYotshi+PPbA==
+X-Received: by 2002:a17:90a:29a6:: with SMTP id h35mr376547pjd.188.1633396624774;
+        Mon, 04 Oct 2021 18:17:04 -0700 (PDT)
+Received: from localhost.localdomain ([2402:7500:578:6fac:e123:108:2f69:cff1])
+        by smtp.gmail.com with ESMTPSA id j6sm15162454pgq.0.2021.10.04.18.17.00
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 04 Oct 2021 18:17:04 -0700 (PDT)
+From:   cy_huang <u0084500@gmail.com>
+To:     oder_chiou@realtek.com, perex@perex.cz, tiwai@suse.com,
+        robh+dt@kernel.org
+Cc:     lgirdwood@gmail.com, broonie@kernel.org,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        cy_huang@richtek.com, devicetree@vger.kernel.org,
+        allen_lin@richtek.com
+Subject: [PATCH 1/2] ASoC: dt-bindings: rt9120: Add initial bindings
+Date:   Tue,  5 Oct 2021 09:16:54 +0800
+Message-Id: <1633396615-14043-1-git-send-email-u0084500@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 04 Oct 17:58 PDT 2021, Stephen Boyd wrote:
+From: ChiYuan Huang <cy_huang@richtek.com>
 
-> Quoting Bjorn Andersson (2021-10-01 11:00:56)
-> > Based on the removal of the g_dp_display and the movement of the
-> > priv->dp lookup into the DP code it's now possible to have multiple
-> > DP instances.
-> >
-> > In line with the other controllers in the MSM driver, introduce a
-> > per-compatible list of base addresses which is used to resolve the
-> > "instance id" for the given DP controller. This instance id is used as
-> > index in the priv->dp[] array.
-> >
-> > Then extend the initialization code to initialize struct drm_encoder for
-> > each of the registered priv->dp[] and update the logic for associating
-> > each struct msm_dp with the struct dpu_encoder_virt.
-> >
-> > Lastly, bump the number of struct msm_dp instances carries by priv->dp
-> > to 3, the currently known maximum number of controllers found in a
-> > Qualcomm SoC.
-> >
-> > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > ---
-> 
-> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-> 
-> Some nits below.
-> 
-> >
-> > Changes since v2:
-> > - Added MSM_DRM_DP_COUNT to link the two 3s
-> > - Moved NULL check for msm_dp_debugfs_init() to the call site
-> > - Made struct dp_display_private->id unsigned
-> >
-> > I also implemented added connector_type to each of the DP instances and
-> > propagated this to dp_drm_connector_init() but later dropped this again per
-> > Doug's suggestion that we'll base this on the presence/absence of a associated
-> > drm bridge or panel.
-> 
-> Sad but OK. We can take up that topic in another patch.
-> 
+Add initial bindings for rt9120 audio amplifier.
 
-So you don't agree with the solution from sn65dsi86?
+Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
+---
+ .../devicetree/bindings/sound/richtek,rt9120.yaml  | 53 ++++++++++++++++++++++
+ 1 file changed, 53 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/richtek,rt9120.yaml
 
-The only reason I haven't yet send this other patch is the of_graph
-thing Doug an I are discussing on the RFC. But if we agree to base this
-on compatible we could decide to look only for panels for the edp
-instances and avoid that problem...
+diff --git a/Documentation/devicetree/bindings/sound/richtek,rt9120.yaml b/Documentation/devicetree/bindings/sound/richtek,rt9120.yaml
+new file mode 100644
+index 00000000..4d47a78
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/richtek,rt9120.yaml
+@@ -0,0 +1,53 @@
++# SPDX-License-Identifier: GPL-2.0
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/richtek,rt9120.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Richtek RT9120 Class-D audio amplifier
++
++maintainers:
++  - ChiYuan Huang <cy_huang@richtek.com>
++
++description: |
++  The RT9120 is a high efficiency, I2S-input, stereo audio power amplifier
++  delivering 2*20W into 8 Ohm BTL speaker loads. It supports the wide input
++  voltage  range from 4.5V to 26.4V to meet the need on most common
++  applications like as TV, monitors. home entertainment, electronic music
++  equipment.
++
++properties:
++  compatible:
++    enum:
++      - richtek,rt9120
++
++  reg:
++    description: I2C device address
++    maxItems: 1
++
++  pwdnn-gpios:
++    description: GPIO used for power down, low active
++    maxItems: 1
++
++  richtek,use-dvdd-1p8v:
++    description: Indicate DVDD 1P8V is used, default for 3P3V or 5V design
++    type: boolean
++
++required:
++  - compatible
++  - reg
++
++additionalProperties: false
++
++examples:
++  - |
++    i2c {
++      #address-cells = <1>;
++      #size-cells = <0>;
++      rt9120@1a {
++        compatible = "richtek,rt9120";
++        reg = <0x1a>;
++        pwdnn-gpios = <&gpio26 2 0>;
++        richtek,use-dvdd-1p8v;
++      };
++    };
+-- 
+2.7.4
 
-We would however never be able to describe the USB-less DP instance with
-a panel explicitly described in DT going that route.
-
-> > diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-> > index f655adbc2421..875b07e7183d 100644
-> > --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-> > +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-> > @@ -203,8 +204,10 @@ static int dpu_kms_debugfs_init(struct msm_kms *kms, struct drm_minor *minor)
-> >         dpu_debugfs_vbif_init(dpu_kms, entry);
-> >         dpu_debugfs_core_irq_init(dpu_kms, entry);
-> >
-> > -       if (priv->dp)
-> > -               msm_dp_debugfs_init(priv->dp, minor);
-> > +       for (i = 0; i < ARRAY_SIZE(priv->dp); i++) {
-> > +               if (priv->dp[i])
-> > +                       msm_dp_debugfs_init(priv->dp[i], minor);
-> 
-> This seems to cause a bunch of debugfs warnings when there are multiple
-> nodes created with the same name.
-> 
-
-Yes, that's true. I have a half-baked follow up that attempts to create
-instance-specific debugfs directories. Can we take that in a follow up?
-
-> > +       }
-> >
-> >         return dpu_core_perf_debugfs_init(dpu_kms, entry);
-> >  }
-> > diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
-> > index 5d3ee5ef07c2..ff3477474c5d 100644
-> > --- a/drivers/gpu/drm/msm/dp/dp_display.c
-> > +++ b/drivers/gpu/drm/msm/dp/dp_display.c
-> > @@ -1180,10 +1192,31 @@ int dp_display_request_irq(struct msm_dp *dp_display)
-> >         return 0;
-> >  }
-> >
-> > +static int dp_display_find_id(struct platform_device *pdev)
-> > +{
-> > +       const struct msm_dp_config *cfg = of_device_get_match_data(&pdev->dev);
-> > +       struct resource *res;
-> > +       int i;
-> > +
-> > +
-> 
-> Nitpick: Remove a newline here.
-> 
-> > +       res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> > +       if (!res)
-> > +               return -EINVAL;
-> > +
-> > +       for (i = 0; i < cfg->num_descs; i++) {
-> > +               if (cfg->io_start[i] == res->start)
-> > +                       return i;
-> > +       }
-> 
-> Nitpick: Drop braces on single line if inside for loop.
-> 
-
-Not when the loop spans multiple lines?
-
-> > +
-> > +       dev_err(&pdev->dev, "unknown displayport instance\n");
-> > +       return -EINVAL;
-> > +}
-> > +
