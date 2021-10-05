@@ -2,229 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10D5D423321
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 00:01:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A38D6423329
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 00:04:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236711AbhJEWDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 18:03:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38630 "EHLO
+        id S236750AbhJEWGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 18:06:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236093AbhJEWDR (ORCPT
+        with ESMTP id S229974AbhJEWGd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 18:03:17 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68425C06174E
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 15:01:26 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id z20so1982197edc.13
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 15:01:26 -0700 (PDT)
+        Tue, 5 Oct 2021 18:06:33 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDB98C061749
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 15:04:41 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id v17so2284365wrv.9
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 15:04:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BHOd9BkPqIwkTPsGc8DrilYdEXntmuvUTY0BtU2RG6Y=;
-        b=QQzJbFMLks75yUDxtki3gKgbiTPxN9sjyUj49MipC7Xg+oFnNvjnRLuHQTGAwl6gSi
-         LWSzC4Y0If85FgihiH/SGsGZxffKlAVR0at2mQmu8tFXGMvkjNbyXeUL5vHoY2MpMn4s
-         b+NqBeHiP9sWCCsxct4eZiKeQ4KBxPem94zMhsWJKOitN/RGLqeCzrmyl5w5Vx0rzw+u
-         CXMYtZsrFf+srzP09h5YPxWJAlJKnoYB2DQx71XcJm0LE+CbUZI7DeEjP7Q5/o7hhG+t
-         6vFguvyVg3gUpgEULgJbhuEQUOsSM6T9z99g12UyGsNTIEjDr8Ye/+dE2VzhLh9N2LLS
-         DQag==
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=wWGT6wyYNrHQcVjKvvDi6depYNBPBPoEJbTYnS4YHRE=;
+        b=oMaqA3o9QB94TpF7CppOdrcV4haz930ZF4+Q3iSjOXfqsmWCdei2kltW3OvQJU19kd
+         /V59SHINqQjwDzbyAYjjrf4QWS5WUlsx8P3x9EXaatOnSqxvbEoepxQzx2stjYfASETq
+         BUVIcAZvX2YPsATGazdGcy2Z3bnQxTYFcv4AMI7z55NhgW9pRgad2/PlOkB1Gw8p3NO0
+         gB2f/Fr1QhgZTdCrnC3bIXpAqdllyjpvErazZEXE9l4pePYmnNroUlbFuvKibj+7197V
+         HF0WJEU4IfhNkmwDqBhilfR/zAJIaHcHYgWMxYL8Nf4ZKIJKDkRFFGPbcdVXnIKxomtr
+         xO1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BHOd9BkPqIwkTPsGc8DrilYdEXntmuvUTY0BtU2RG6Y=;
-        b=6T5gv2KY3oN0tl7p9fIgfZykmz5wRsiYgZWH5YFvPFHGmNrDUkjhuT/SYmtzvbUKMf
-         FSinMmW+mGY0yNqhzqoSfRd+Qcf5jcpIWN+laJsXFDVvLCXtfADUe3f5YCKsMlEwFt9M
-         oOjtSqq0ITMv0RZqq894qnBY5xk87ln97LDGN69HSD6zGJKZL8xytS+6bHM7xroAj6dN
-         hF4oeNzr60Q7y1sY4j4y3/eZn0YMqMczjVZJURpuO2lD1itxrPRhz0qJbjxjeaW9GuS5
-         SXLw6N183mZ8KI2xcGy9t78aDbaLvJPO5kl6ArqzcU2+v0A3/r9/zfQ6MdgW9V7Zl1cO
-         ZoZQ==
-X-Gm-Message-State: AOAM530xfTkZPYKiygDb9pjNOrWw154yMfEyxAg9b0nuyIK57aVHYJGe
-        j4u2c6F3Bo1mA/vxOiA+dzggQE/f/NvJPU01pE70
-X-Google-Smtp-Source: ABdhPJzBXG3C4e30gCQNoo0PSqowH+G4Q6buGHoGi5VbUNtMOPFnay7TkL2arTibDCK8AxofF+ooDTfR+ejxRXPQeEM=
-X-Received: by 2002:a17:907:784b:: with SMTP id lb11mr28047433ejc.307.1633471284736;
- Tue, 05 Oct 2021 15:01:24 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=wWGT6wyYNrHQcVjKvvDi6depYNBPBPoEJbTYnS4YHRE=;
+        b=Sd+xGJCv5sbTT6yMl4UFnbhjA3ajiSxSA1N5lvfjiirpOY0BHdBJa0XbHb8Jt5BAOa
+         oY0CL7nmgRhggWiPXl48XYO5dNXsBwzvxMHYnNg1li3k2+7lmuenK1hJR1+Etxkp64uM
+         JgnpX/gQsZKwwOdQxLkghlXwA7Kw79HtyoHyRIDaDe9TDrvMN9Q3DF4/doQWL7lgaUeU
+         0bnFQHr52yuE8m2Wj4XvbizJTC7XxewPtGvvwSarP4QxtUMl5LDBHBh1hzzhom54GQ/y
+         ifFwNeZSVX9omHWlNwZUZsTpFmRiC8r9GlAkpOvi6bN//EJe0GnDtojDSAVBv5FSqdse
+         1eVA==
+X-Gm-Message-State: AOAM532NZ3zhA+bDbXt793k0NOhyLRHLa90HQe0zRWXGmwdqJiqzAN2x
+        mf1CWF3kZwMbIw0dpLSpbWQ=
+X-Google-Smtp-Source: ABdhPJy9S4jOKQChoQmLTDTvyvbf/rfKtqtNfqEC4t7BRNUobE80G3hGH22bvz5nxHqCc9dzxqYnuw==
+X-Received: by 2002:adf:a292:: with SMTP id s18mr5861731wra.42.1633471480523;
+        Tue, 05 Oct 2021 15:04:40 -0700 (PDT)
+Received: from ?IPV6:2a02:8108:96c0:3b88::f816? ([2a02:8108:96c0:3b88::f816])
+        by smtp.gmail.com with ESMTPSA id z79sm3216353wmc.17.2021.10.05.15.04.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Oct 2021 15:04:40 -0700 (PDT)
+Message-ID: <82be310c-6e8f-8ec8-fbb0-a08ee62ae220@gmail.com>
+Date:   Wed, 6 Oct 2021 00:04:39 +0200
 MIME-Version: 1.0
-References: <20211001175521.3853257-1-tkjos@google.com> <c6a650e4-15e4-2943-f759-0e9577784c7a@schaufler-ca.com>
- <CAG48ez2tejBUXJGf0R9qpEiauL9-ABgkds6mZTQD7sZKLMdAAQ@mail.gmail.com>
- <CAG48ez1SRau1Tnge5HVqxCFsNCizmnQLErqnC=eSeERv8jg-zQ@mail.gmail.com>
- <f59c6e9f-2892-32da-62f8-8bbeec18ee4c@schaufler-ca.com> <CAG48ez0yF0u=QBLVL2XrGB8r8ouQj-_aS9SScu4O4f+LhZxCDw@mail.gmail.com>
- <e0c1fab9-cb97-d5af-1f4b-f15b6b2097fd@schaufler-ca.com> <CAG48ez3qc+2sc6xTJQVqLTRcjCiw_Adx13KT3OvPMCjBLjZvgA@mail.gmail.com>
- <6bd2de29-b46a-1d24-4c73-9e4e0f3f6eea@schaufler-ca.com> <CAG48ez0RM6NGZLdEjaqU9KmaOgeFR6cSeNo50XG9oaFxC_ayYw@mail.gmail.com>
- <CAEjxPJ4X4N_zgH4oRbdkZi21mvS--ExDb_1gad09buMHshB_hQ@mail.gmail.com>
- <CAHRSSEwVONsmf8JHo0PsDmexOqamKTsLF2BkpXZfAvsJvDw0ew@mail.gmail.com> <CAEjxPJ4MB4nEBSNOVZtM9N9XRiSB6qsmsCMuWN=Ocm8TcP64GA@mail.gmail.com>
-In-Reply-To: <CAEjxPJ4MB4nEBSNOVZtM9N9XRiSB6qsmsCMuWN=Ocm8TcP64GA@mail.gmail.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Tue, 5 Oct 2021 18:01:13 -0400
-Message-ID: <CAHC9VhQbNAgiAaX_bmgYrooM1K-DfgfZei8PvoaF4VHGMb3Pjg@mail.gmail.com>
-Subject: Re: [PATCH v2] binder: use cred instead of task for selinux checks
-To:     Stephen Smalley <stephen.smalley.work@gmail.com>
-Cc:     Todd Kjos <tkjos@google.com>, Jann Horn <jannh@google.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        arve@android.com, tkjos@android.com, maco@android.com,
-        christian@brauner.io, James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Kees Cook <keescook@chromium.org>,
-        Jeffrey Vander Stoep <jeffv@google.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        SElinux list <selinux@vger.kernel.org>,
-        devel@driverdev.osuosl.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
+Subject: Re: [PATCH 1/9] staging: r8188eu: remove an obsolete comment
+Content-Language: en-US
+To:     Martin Kaiser <martin@kaiser.cx>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20211005200821.19783-1-martin@kaiser.cx>
+From:   Michael Straube <straube.linux@gmail.com>
+In-Reply-To: <20211005200821.19783-1-martin@kaiser.cx>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 5, 2021 at 1:12 PM Stephen Smalley
-<stephen.smalley.work@gmail.com> wrote:
->
-> On Tue, Oct 5, 2021 at 12:49 PM Todd Kjos <tkjos@google.com> wrote:
-> >
-> > On Tue, Oct 5, 2021 at 8:21 AM Stephen Smalley
-> > <stephen.smalley.work@gmail.com> wrote:
-> > >
-> > > On Mon, Oct 4, 2021 at 8:27 PM Jann Horn <jannh@google.com> wrote:
-> > > >
-> > > > On Tue, Oct 5, 2021 at 1:38 AM Casey Schaufler <casey@schaufler-ca.com> wrote:
-> > > > > On 10/4/2021 3:28 PM, Jann Horn wrote:
-> > > > > > On Mon, Oct 4, 2021 at 6:19 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
-> > > > > >> On 10/1/2021 3:58 PM, Jann Horn wrote:
-> > > > > >>> On Fri, Oct 1, 2021 at 10:10 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
-> > > > > >>>> On 10/1/2021 12:50 PM, Jann Horn wrote:
-> > > > > >>>>> On Fri, Oct 1, 2021 at 9:36 PM Jann Horn <jannh@google.com> wrote:
-> > > > > >>>>>> On Fri, Oct 1, 2021 at 8:46 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
-> > > > > >>>>>>> On 10/1/2021 10:55 AM, Todd Kjos wrote:
-> > > > > >>>>>>>> Save the struct cred associated with a binder process
-> > > > > >>>>>>>> at initial open to avoid potential race conditions
-> > > > > >>>>>>>> when converting to a security ID.
-> > > > > >>>>>>>>
-> > > > > >>>>>>>> Since binder was integrated with selinux, it has passed
-> > > > > >>>>>>>> 'struct task_struct' associated with the binder_proc
-> > > > > >>>>>>>> to represent the source and target of transactions.
-> > > > > >>>>>>>> The conversion of task to SID was then done in the hook
-> > > > > >>>>>>>> implementations. It turns out that there are race conditions
-> > > > > >>>>>>>> which can result in an incorrect security context being used.
-> > > > > >>>>>>> In the LSM stacking patch set I've been posting for a while
-> > > > > >>>>>>> (on version 29 now) I use information from the task structure
-> > > > > >>>>>>> to ensure that the security information passed via the binder
-> > > > > >>>>>>> interface is agreeable to both sides. Passing the cred will
-> > > > > >>>>>>> make it impossible to do this check. The task information
-> > > > > >>>>>>> required is not appropriate to have in the cred.
-> > > > > >>>>>> Why not? Why can't you put the security identity of the task into the creds?
-> > > > > >>>>> Ah, I get it now, you're concerned about different processes wanting
-> > > > > >>>>> to see security contexts formatted differently (e.g. printing the
-> > > > > >>>>> SELinux label vs printing the AppArmor label), right?
-> > > > > >>>> That is correct.
-> > > > > >>>>
-> > > > > >>>>> But still, I don't think you can pull that information from the
-> > > > > >>>>> receiving task. Maybe the easiest solution would be to also store that
-> > > > > >>>>> in the creds? Or you'd have to manually grab that information when
-> > > > > >>>>> /dev/binder is opened.
-> > > > > >>>> I'm storing the information in the task security blob because that's
-> > > > > >>>> the appropriate scope. Today the LSM hook is given both task_struct's.
-> > > > > >>> Which is wrong, because you have no idea who the semantic "recipient
-> > > > > >>> task" is - any task that has a mapping of the binder fd can
-> > > > > >>> effectively receive transactions from it.
-> > > > > >>>
-> > > > > >>> (And the current "sender task" is also wrong, because binder looks at
-> > > > > >>> the task that opened the binder device, not the task currently
-> > > > > >>> performing the action.)
-> > > > > >> I'm confused. Are you saying that the existing binder code is
-> > > > > >> completely broken? Are you saying that neither "task" is correct?
-> > > > > > Yeah, basically
-> > > > >
-> > > > > Well, hot biscuits and gravy!
-> > > > >
-> > > > > >  - but luckily the actual impact this has is limited by
-> > > > > > the transitions that SELinux permits. If domain1 has no way to
-> > > > > > transition to domain2, then it can't abuse this bug to pretend to be
-> > > > > > domain2. I do have a reproducer that lets Android's "shell" domain
-> > > > > > send a binder transaction that appears to come from "runas", but
-> > > > > > luckily "runas" has no interesting privileges with regards to binder,
-> > > > > > so that's not exploitable.
-> > > > >
-> > > > > You're counting on the peculiarities of the SELinux policy you're
-> > > > > assuming is used to mask the fact that the hook isn't really doing
-> > > > > what it is supposed to?  Ouch.
-> > > >
-> > > > I'm not saying I like the current situation - I do think that this
-> > > > needs to change. I'm just saying it probably isn't *exploitable*, and
-> > > > exploitability often hinges on these little circumstantial details.
-> > > >
-> > > > > >> How does passing the creds from the wrong tasks "fix" the problem?
-> > > > > > This patch is not passing the creds from the "wrong" tasks at all. It
-> > > > > > relies on the basic idea that when a security context opens a
-> > > > > > resource, and then hands that resource to another context for
-> > > > > > read/write operations, then you can effectively treat this as a
-> > > > > > delegation of privileges from the original opener, and perform access
-> > > > > > checks against the credentials using which the resource was opened.
-> > > > >
-> > > > > OK. I can understand that without endorsing it.
-> > > > >
-> > > > > > In particular, we already have those semantics in the core kernel for
-> > > > > > ->read() and ->write() VFS operations - they are *not allowed* to look
-> > > > > > at the credentials of the caller, and if they want to make security
-> > > > > > checks, they have to instead check against file->f_cred, which are the
-> > > > > > credentials using which the file was originally opened. (Yes, some
-> > > > > > places still get that wrong.) Passing a file descriptor to another
-> > > > > > task is a delegation of access, and the other task can then call
-> > > > > > syscalls like read() / write() / mmap() on the file descriptor without
-> > > > > > needing to have any access to the underlying file.
-> > > > >
-> > > > > A mechanism sufficiently entrenched.
-> > > >
-> > > > It's not just "entrenched", it is a fundamental requirement for being
-> > > > able to use file descriptor passing with syscalls like write(). If
-> > > > task A gives a file descriptor to task B, then task B must be able to
-> > > > write() to that FD without having to worry that the FD actually refers
-> > > > to some sort of special file that interprets the written data as some
-> > > > type of command, or something like that, and that this leads to task B
-> > > > unknowingly passing through access checks.
-> > > >
-> > > > > > You can't really attribute binder transactions to specific tasks that
-> > > > > > are actually involved in the specific transaction, neither on the
-> > > > > > sending side nor on the receiving side, because binder is built around
-> > > > > > passing data through memory mappings. Memory mappings can be accessed
-> > > > > > by multiple tasks, and even a task that does not currently have it
-> > > > > > mapped could e.g. map it at a later time. And on top of that you have
-> > > > > > the problem that the receiving task might also go through privileged
-> > > > > > execve() transitions.
-> > > > >
-> > > > > OK. I'm curious now as to why the task_struct was being passed to the
-> > > > > hook in the first place.
-> > > >
-> > > > Probably because that's what most other LSM hooks looked like and the
-> > > > authors/reviewers of the patch didn't realize that this model doesn't
-> > > > really work for binder? FWIW, these hooks were added in commit
-> > > > 79af73079d75 ("Add security hooks to binder and implement the hooks
-> > > > for SELinux."). The commit message also just talks about "processes".
-> > >
-> > > Note that in the same code path (binder_transaction), sender_euid is
-> > > set from proc->tsk and security_ctx is based on proc->tsk. If we are
-> > > changing the hooks to operate on the opener cred, then presumably we
-> > > should be doing that for sender_euid and replace the
-> > > security_task_getsecid_obj() call with security_cred_getsecid()?
-> >
-> > Stephan, do you want that to be included in this patch? Or should I
-> > follow this up with another patch for the sender_euid case?
->
-> Either way is fine with me. Fixing sender_euid arguably is a fix that
-> should go all the way back to the introduction of binder unless I
-> misunderstand; it is independent of SELinux. Fixing the
-> security_task_getsecid -> cred_secid only goes back to
-> ec74136ded792deed80780a2f8baf3521eeb72f9. So having it as 3 separate
-> patches may help with the different Fixes tags and back-porting
-> purposes.
+On 10/5/21 22:08, Martin Kaiser wrote:
+> The function that this comment describes is not present in the
+> r8188eu driver. The comment can be removed.
+> 
+> Signed-off-by: Martin Kaiser <martin@kaiser.cx>
+> ---
+>   drivers/staging/r8188eu/hal/usb_halinit.c | 15 ---------------
+>   1 file changed, 15 deletions(-)
+> 
+> diff --git a/drivers/staging/r8188eu/hal/usb_halinit.c b/drivers/staging/r8188eu/hal/usb_halinit.c
+> index 83813388de24..ab7b80144403 100644
+> --- a/drivers/staging/r8188eu/hal/usb_halinit.c
+> +++ b/drivers/staging/r8188eu/hal/usb_halinit.c
+> @@ -624,21 +624,6 @@ static void _InitAntenna_Selection(struct adapter *Adapter)
+>   	DBG_88E("%s,Cur_ant:(%x)%s\n", __func__, haldata->CurAntenna, (haldata->CurAntenna == Antenna_A) ? "Antenna_A" : "Antenna_B");
+>   }
+>   
+> -/*-----------------------------------------------------------------------------
+> - * Function:	HwSuspendModeEnable92Cu()
+> - *
+> - * Overview:	HW suspend mode switch.
+> - *
+> - * Input:		NONE
+> - *
+> - * Output:	NONE
+> - *
+> - * Return:	NONE
+> - *
+> - * Revised History:
+> - *	When		Who		Remark
+> - *	08/23/2010	MHC		HW suspend mode switch test..
+> - *---------------------------------------------------------------------------*/
+>   enum rt_rf_power_state RfOnOffDetect(struct adapter *adapt)
+>   {
+>   	u8 val8;
+> 
 
-Yes, as annoying as it may be, please do separate patches as the
--stable and distro folks will have an easier time that way.
+Hi Martin,
 
--- 
-paul moore
-www.paul-moore.com
+patch looks good, just one note. The function RfOnOffDetect() is not
+used and could be removed as well.
+
+Regards,
+Michael
