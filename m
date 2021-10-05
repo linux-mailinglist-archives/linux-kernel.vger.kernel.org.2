@@ -2,201 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDCBF421B0F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 02:19:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E8E9421B1C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 02:27:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230357AbhJEAVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 20:21:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46248 "EHLO
+        id S229652AbhJEA3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 20:29:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230189AbhJEAVH (ORCPT
+        with ESMTP id S229549AbhJEA3C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 20:21:07 -0400
-Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF05CC061749;
-        Mon,  4 Oct 2021 17:19:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=M0GxxOUNM2NCgc5+UlE92aSv5qcyndOY+ydhMBjsJuA=; b=M+samDPbBs8WEBQlqyC8UWsnso
-        INCEEuWpzxdztDVkEkDFALllDIhLEKOPKjtTuukoxlVvHLGoFybt7rNachompFDKZml05SSXoak5r
-        FbhV85DZu4RtQOBuBPEYun553dRabsESNB/rmeKuay40gpvCclDfl6wsii8lIRNDgm6S+kukWAXl6
-        yAXqLn//QbBzuuXYSdO98dEhs8MCFMojhIoKi4iSV3YyeIw0vt5upSiu7dajuyC6S5WZiWB+tmwb9
-        wUlrNSJfDYQrZoklRhhcAEEbiiQBgyWUcopSsUVMAE36hB4/42HeLtF3tigAD9LCZdI6EfJG3E78E
-        tI3oyb/A==;
-Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mXYAv-008SGi-GY; Tue, 05 Oct 2021 00:19:17 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Takashi YOSHII <takasi-y@ops.dti.ne.jp>
-Subject: [PATCH 5/5 v3] sh: fix READ/WRITE redefinition warnings
-Date:   Mon,  4 Oct 2021 17:19:14 -0700
-Message-Id: <20211005001914.28574-6-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211005001914.28574-1-rdunlap@infradead.org>
-References: <20211005001914.28574-1-rdunlap@infradead.org>
+        Mon, 4 Oct 2021 20:29:02 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53494C061749
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 17:27:12 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id i4so79471858lfv.4
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 17:27:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UVlSFdygO4E81GY8Xs3v4g5uv7710hgeQMd3u1XpX6U=;
+        b=RnFMDEtFnx2rglU90YeoKUEBkPfb7GqttQG7utDbNjpQEgt+iZ2GtMlYI7I04UgnZN
+         tc+VJOdd4jDJfj9JiABS1G4BlNRXZWIdXpu5l52Yp5rfZxD0/vJ4PW7+oyLPkz61oPW9
+         wi3gv41hMVlEHdyCX3X1M3e2LnTcelumQaLk0bcDLYqMvHTzBDAZ7VR10mxBurIPkjK+
+         5dg8O6Ismio4BJn1xPQJMyAYYr3X3eHplWXfd5jknUTyL8BKAjZYcLQw7gL5RHEA8oYf
+         7WaWbE/t+4rvhyA8tWl2tJ7lKRMzeTIiI9lK715Z9Iup6LqTCfTI0ivwBSJLAxJTWQ4U
+         kKLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UVlSFdygO4E81GY8Xs3v4g5uv7710hgeQMd3u1XpX6U=;
+        b=DiZy+H0O0YYixLg3P5Cp4+O4ZferFB95Isq7Zxg5qc74XQtYeYKPD9lwkG+VCH15Gu
+         UoLxTpyex+KC6GayD4H1HkuMQGYdx+Y8OU6k1YZ2H22qV5TDS3OA1DMT9IhikpvzVEMY
+         83BueOf/RA4s+R9fgUVKGvwOMKJPD2AeswCw8UDipJVLDFz7cIEy9OvXGpho+pU7Bw20
+         T+ckd5jVrePF3uBPzqhBXDA13WkLsqjdqtdAZMfIsZAYlaBS8jnC7cJCZYZPLn7tuytP
+         IxHF57/WnzYahHadhMTRVUeSPSlCkqUqTCu27vv3JI1QrPoPK2Nf9D86eYQu+wSLOT2M
+         PuQQ==
+X-Gm-Message-State: AOAM531a1xN+pTGMGcSdyS4Rco53s1IQv1292gXKYowaE1q7KSjkZnrt
+        N4bKWFrLgNXQIeoyW4DB8PGo/JBpzU8ZZvhzHAv9jw==
+X-Google-Smtp-Source: ABdhPJx0nePGYkjcexz/xyRST348c+6u7s0QeG/8Po9mqHGc6rVX+iqPqNca7KWskyfxE3rCcCNlTPC+ZPz4Ouet7Ck=
+X-Received: by 2002:a2e:80ca:: with SMTP id r10mr19582692ljg.347.1633393630344;
+ Mon, 04 Oct 2021 17:27:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211001175521.3853257-1-tkjos@google.com> <c6a650e4-15e4-2943-f759-0e9577784c7a@schaufler-ca.com>
+ <CAG48ez2tejBUXJGf0R9qpEiauL9-ABgkds6mZTQD7sZKLMdAAQ@mail.gmail.com>
+ <CAG48ez1SRau1Tnge5HVqxCFsNCizmnQLErqnC=eSeERv8jg-zQ@mail.gmail.com>
+ <f59c6e9f-2892-32da-62f8-8bbeec18ee4c@schaufler-ca.com> <CAG48ez0yF0u=QBLVL2XrGB8r8ouQj-_aS9SScu4O4f+LhZxCDw@mail.gmail.com>
+ <e0c1fab9-cb97-d5af-1f4b-f15b6b2097fd@schaufler-ca.com> <CAG48ez3qc+2sc6xTJQVqLTRcjCiw_Adx13KT3OvPMCjBLjZvgA@mail.gmail.com>
+ <6bd2de29-b46a-1d24-4c73-9e4e0f3f6eea@schaufler-ca.com>
+In-Reply-To: <6bd2de29-b46a-1d24-4c73-9e4e0f3f6eea@schaufler-ca.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Tue, 5 Oct 2021 02:26:44 +0200
+Message-ID: <CAG48ez0RM6NGZLdEjaqU9KmaOgeFR6cSeNo50XG9oaFxC_ayYw@mail.gmail.com>
+Subject: Re: [PATCH v2] binder: use cred instead of task for selinux checks
+To:     Casey Schaufler <casey@schaufler-ca.com>
+Cc:     Todd Kjos <tkjos@google.com>, gregkh@linuxfoundation.org,
+        arve@android.com, tkjos@android.com, maco@android.com,
+        christian@brauner.io, jmorris@namei.org, serge@hallyn.com,
+        paul@paul-moore.com, stephen.smalley.work@gmail.com,
+        eparis@parisplace.org, keescook@chromium.org, jeffv@google.com,
+        zohar@linux.ibm.com, linux-security-module@vger.kernel.org,
+        selinux@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org, joel@joelfernandes.org,
+        kernel-team@android.com, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kernel.h defines READ and WRITE, so rename the SH math-emu macros
-to MREAD and MWRITE.
+On Tue, Oct 5, 2021 at 1:38 AM Casey Schaufler <casey@schaufler-ca.com> wrote:
+> On 10/4/2021 3:28 PM, Jann Horn wrote:
+> > On Mon, Oct 4, 2021 at 6:19 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
+> >> On 10/1/2021 3:58 PM, Jann Horn wrote:
+> >>> On Fri, Oct 1, 2021 at 10:10 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
+> >>>> On 10/1/2021 12:50 PM, Jann Horn wrote:
+> >>>>> On Fri, Oct 1, 2021 at 9:36 PM Jann Horn <jannh@google.com> wrote:
+> >>>>>> On Fri, Oct 1, 2021 at 8:46 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
+> >>>>>>> On 10/1/2021 10:55 AM, Todd Kjos wrote:
+> >>>>>>>> Save the struct cred associated with a binder process
+> >>>>>>>> at initial open to avoid potential race conditions
+> >>>>>>>> when converting to a security ID.
+> >>>>>>>>
+> >>>>>>>> Since binder was integrated with selinux, it has passed
+> >>>>>>>> 'struct task_struct' associated with the binder_proc
+> >>>>>>>> to represent the source and target of transactions.
+> >>>>>>>> The conversion of task to SID was then done in the hook
+> >>>>>>>> implementations. It turns out that there are race conditions
+> >>>>>>>> which can result in an incorrect security context being used.
+> >>>>>>> In the LSM stacking patch set I've been posting for a while
+> >>>>>>> (on version 29 now) I use information from the task structure
+> >>>>>>> to ensure that the security information passed via the binder
+> >>>>>>> interface is agreeable to both sides. Passing the cred will
+> >>>>>>> make it impossible to do this check. The task information
+> >>>>>>> required is not appropriate to have in the cred.
+> >>>>>> Why not? Why can't you put the security identity of the task into the creds?
+> >>>>> Ah, I get it now, you're concerned about different processes wanting
+> >>>>> to see security contexts formatted differently (e.g. printing the
+> >>>>> SELinux label vs printing the AppArmor label), right?
+> >>>> That is correct.
+> >>>>
+> >>>>> But still, I don't think you can pull that information from the
+> >>>>> receiving task. Maybe the easiest solution would be to also store that
+> >>>>> in the creds? Or you'd have to manually grab that information when
+> >>>>> /dev/binder is opened.
+> >>>> I'm storing the information in the task security blob because that's
+> >>>> the appropriate scope. Today the LSM hook is given both task_struct's.
+> >>> Which is wrong, because you have no idea who the semantic "recipient
+> >>> task" is - any task that has a mapping of the binder fd can
+> >>> effectively receive transactions from it.
+> >>>
+> >>> (And the current "sender task" is also wrong, because binder looks at
+> >>> the task that opened the binder device, not the task currently
+> >>> performing the action.)
+> >> I'm confused. Are you saying that the existing binder code is
+> >> completely broken? Are you saying that neither "task" is correct?
+> > Yeah, basically
+>
+> Well, hot biscuits and gravy!
+>
+> >  - but luckily the actual impact this has is limited by
+> > the transitions that SELinux permits. If domain1 has no way to
+> > transition to domain2, then it can't abuse this bug to pretend to be
+> > domain2. I do have a reproducer that lets Android's "shell" domain
+> > send a binder transaction that appears to come from "runas", but
+> > luckily "runas" has no interesting privileges with regards to binder,
+> > so that's not exploitable.
+>
+> You're counting on the peculiarities of the SELinux policy you're
+> assuming is used to mask the fact that the hook isn't really doing
+> what it is supposed to?  Ouch.
 
-Fixes these warnings:
+I'm not saying I like the current situation - I do think that this
+needs to change. I'm just saying it probably isn't *exploitable*, and
+exploitability often hinges on these little circumstantial details.
 
-../arch/sh/math-emu/math.c:54: warning: "WRITE" redefined
-   54 | #define WRITE(d,a) ({if(put_user(d, (typeof (d) __user *)a)) return -EFAULT;})
-In file included from ../arch/sh/math-emu/math.c:10:
-../include/linux/kernel.h:37: note: this is the location of the previous definition
-   37 | #define WRITE   1
-../arch/sh/math-emu/math.c:55: warning: "READ" redefined
-   55 | #define READ(d,a) ({if(get_user(d, (typeof (d) __user *)a)) return -EFAULT;})
-In file included from ../arch/sh/math-emu/math.c:10:
-../include/linux/kernel.h:36: note: this is the location of the previous definition
-   36 | #define READ   0
+> >> How does passing the creds from the wrong tasks "fix" the problem?
+> > This patch is not passing the creds from the "wrong" tasks at all. It
+> > relies on the basic idea that when a security context opens a
+> > resource, and then hands that resource to another context for
+> > read/write operations, then you can effectively treat this as a
+> > delegation of privileges from the original opener, and perform access
+> > checks against the credentials using which the resource was opened.
+>
+> OK. I can understand that without endorsing it.
+>
+> > In particular, we already have those semantics in the core kernel for
+> > ->read() and ->write() VFS operations - they are *not allowed* to look
+> > at the credentials of the caller, and if they want to make security
+> > checks, they have to instead check against file->f_cred, which are the
+> > credentials using which the file was originally opened. (Yes, some
+> > places still get that wrong.) Passing a file descriptor to another
+> > task is a delegation of access, and the other task can then call
+> > syscalls like read() / write() / mmap() on the file descriptor without
+> > needing to have any access to the underlying file.
+>
+> A mechanism sufficiently entrenched.
 
-Fixes: 4b565680d163 ("sh: math-emu support")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
-Cc: Rich Felker <dalias@libc.org>
-Cc: linux-sh@vger.kernel.org
-Cc: Takashi YOSHII <takasi-y@ops.dti.ne.jp>
-Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc: Geert Uytterhoeven <geert+renesas@glider.be>
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
-v2: renumber patches, otherwise no change;
-v3: renumber, rebase, & resend;
-    add Rev-by: Geert;
+It's not just "entrenched", it is a fundamental requirement for being
+able to use file descriptor passing with syscalls like write(). If
+task A gives a file descriptor to task B, then task B must be able to
+write() to that FD without having to worry that the FD actually refers
+to some sort of special file that interprets the written data as some
+type of command, or something like that, and that this leads to task B
+unknowingly passing through access checks.
 
- arch/sh/math-emu/math.c |   44 +++++++++++++++++++-------------------
- 1 file changed, 22 insertions(+), 22 deletions(-)
+> > You can't really attribute binder transactions to specific tasks that
+> > are actually involved in the specific transaction, neither on the
+> > sending side nor on the receiving side, because binder is built around
+> > passing data through memory mappings. Memory mappings can be accessed
+> > by multiple tasks, and even a task that does not currently have it
+> > mapped could e.g. map it at a later time. And on top of that you have
+> > the problem that the receiving task might also go through privileged
+> > execve() transitions.
+>
+> OK. I'm curious now as to why the task_struct was being passed to the
+> hook in the first place.
 
---- linux-next-20211001.orig/arch/sh/math-emu/math.c
-+++ linux-next-20211001/arch/sh/math-emu/math.c
-@@ -51,8 +51,8 @@
- #define Rn	(regs->regs[n])
- #define Rm	(regs->regs[m])
- 
--#define WRITE(d,a)	({if(put_user(d, (typeof (d) __user *)a)) return -EFAULT;})
--#define READ(d,a)	({if(get_user(d, (typeof (d) __user *)a)) return -EFAULT;})
-+#define MWRITE(d,a)	({if(put_user(d, (typeof (d) __user *)a)) return -EFAULT;})
-+#define MREAD(d,a)	({if(get_user(d, (typeof (d) __user *)a)) return -EFAULT;})
- 
- #define PACK_S(r,f)	FP_PACK_SP(&r,f)
- #define UNPACK_S(f,r)	FP_UNPACK_SP(f,&r)
-@@ -157,11 +157,11 @@ fmov_idx_reg(struct sh_fpu_soft_struct *
- {
- 	if (FPSCR_SZ) {
- 		FMOV_EXT(n);
--		READ(FRn, Rm + R0 + 4);
-+		MREAD(FRn, Rm + R0 + 4);
- 		n++;
--		READ(FRn, Rm + R0);
-+		MREAD(FRn, Rm + R0);
- 	} else {
--		READ(FRn, Rm + R0);
-+		MREAD(FRn, Rm + R0);
- 	}
- 
- 	return 0;
-@@ -173,11 +173,11 @@ fmov_mem_reg(struct sh_fpu_soft_struct *
- {
- 	if (FPSCR_SZ) {
- 		FMOV_EXT(n);
--		READ(FRn, Rm + 4);
-+		MREAD(FRn, Rm + 4);
- 		n++;
--		READ(FRn, Rm);
-+		MREAD(FRn, Rm);
- 	} else {
--		READ(FRn, Rm);
-+		MREAD(FRn, Rm);
- 	}
- 
- 	return 0;
-@@ -189,12 +189,12 @@ fmov_inc_reg(struct sh_fpu_soft_struct *
- {
- 	if (FPSCR_SZ) {
- 		FMOV_EXT(n);
--		READ(FRn, Rm + 4);
-+		MREAD(FRn, Rm + 4);
- 		n++;
--		READ(FRn, Rm);
-+		MREAD(FRn, Rm);
- 		Rm += 8;
- 	} else {
--		READ(FRn, Rm);
-+		MREAD(FRn, Rm);
- 		Rm += 4;
- 	}
- 
-@@ -207,11 +207,11 @@ fmov_reg_idx(struct sh_fpu_soft_struct *
- {
- 	if (FPSCR_SZ) {
- 		FMOV_EXT(m);
--		WRITE(FRm, Rn + R0 + 4);
-+		MWRITE(FRm, Rn + R0 + 4);
- 		m++;
--		WRITE(FRm, Rn + R0);
-+		MWRITE(FRm, Rn + R0);
- 	} else {
--		WRITE(FRm, Rn + R0);
-+		MWRITE(FRm, Rn + R0);
- 	}
- 
- 	return 0;
-@@ -223,11 +223,11 @@ fmov_reg_mem(struct sh_fpu_soft_struct *
- {
- 	if (FPSCR_SZ) {
- 		FMOV_EXT(m);
--		WRITE(FRm, Rn + 4);
-+		MWRITE(FRm, Rn + 4);
- 		m++;
--		WRITE(FRm, Rn);
-+		MWRITE(FRm, Rn);
- 	} else {
--		WRITE(FRm, Rn);
-+		MWRITE(FRm, Rn);
- 	}
- 
- 	return 0;
-@@ -240,12 +240,12 @@ fmov_reg_dec(struct sh_fpu_soft_struct *
- 	if (FPSCR_SZ) {
- 		FMOV_EXT(m);
- 		Rn -= 8;
--		WRITE(FRm, Rn + 4);
-+		MWRITE(FRm, Rn + 4);
- 		m++;
--		WRITE(FRm, Rn);
-+		MWRITE(FRm, Rn);
- 	} else {
- 		Rn -= 4;
--		WRITE(FRm, Rn);
-+		MWRITE(FRm, Rn);
- 	}
- 
- 	return 0;
-@@ -445,11 +445,11 @@ id_sys(struct sh_fpu_soft_struct *fregs,
- 	case 0x4052:
- 	case 0x4062:
- 		Rn -= 4;
--		WRITE(*reg, Rn);
-+		MWRITE(*reg, Rn);
- 		break;
- 	case 0x4056:
- 	case 0x4066:
--		READ(*reg, Rn);
-+		MREAD(*reg, Rn);
- 		Rn += 4;
- 		break;
- 	default:
+Probably because that's what most other LSM hooks looked like and the
+authors/reviewers of the patch didn't realize that this model doesn't
+really work for binder? FWIW, these hooks were added in commit
+79af73079d75 ("Add security hooks to binder and implement the hooks
+for SELinux."). The commit message also just talks about "processes".
+
+> And about where you are getting the cred from
+> if not a task.
+
+This patch still ultimately gets the creds from a task. But it's not
+looking at the *current* credentials of any task, but instead looks at
+the credentials that the task that opened /dev/binder had at that
+point.
+
+> >>>> It's easy to compare to make sure the tasks are compatible.
+> >>> It would be, if you actually had a pair of tasks that accurately
+> >>> represent the sender and the recipient.
+> >>>
+> >>>> Adding the
+> >>>> information to the cred would be yet another case where the scope of
+> >>>> security information is wrong.
+> >>> Can you elaborate on why you think that?
+> >> The information identifies how the task is going to display
+> >> the security "context". It isn't used in access checks.
+> > But it is data that AFAICS needs to be preserved in the same places
+> > where the creds need to be preserved, and it is also related to
+> > security labels, so isn't "struct cred" a logical place to stuff it
+> > anyway?
+>
+> I am probably the only person on the planet who dislikes shared creds.
+> One of the things that made me happiest when I switched from UNIX
+> development to Linux was that it didn't have shared creds and all the
+> associated management. Oh well. Yes, it could go in the cred.
+>
+> But that raises another question. Where are the creds coming from?
+
+They are the creds that the task that opened /dev/binder had.
+
+> Is it even rational to make access decisions based on them?
+
+Yes, if you assume that handing file descriptors or memory mappings to
+other security contexts constitutes delegation of privilege.
+
+> You've
+> explained how SELinux ends up with an Uncle Bob, but that's doesn't
+> leave me confident that another security module would be able to
+> come up with something sensible.
+
+Just like SELinux, they can stuff information about a task's identity
+into the cred security blob. See e.g. AppArmor, which AFAICS also does
+that.
+
+> At this point I'm really looking for something that I can put in
+> the change log explaining why creds work and task_structs don't.
+
+creds work because they can snapshot the privileges a task had at some
+point in time for future security checks. task_structs don't work
+because you can't use them to figure out which privileges a task had
+in the past (or will have in the future).
