@@ -2,84 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CB2C422797
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 15:15:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0D1D4227A1
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 15:18:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234965AbhJENRc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 09:17:32 -0400
-Received: from hostingweb31-40.netsons.net ([89.40.174.40]:40403 "EHLO
-        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234919AbhJENRb (ORCPT
+        id S234634AbhJENUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 09:20:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56466 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233825AbhJENUd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 09:17:31 -0400
-Received: from [185.56.157.72] (port=34808 helo=[192.168.101.73])
-        by hostingweb31.netsons.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <luca@lucaceresoli.net>)
-        id 1mXkIF-00GPVT-64; Tue, 05 Oct 2021 15:15:39 +0200
-Subject: Re: [PATCH 2/2] power: supply: max77976: add Maxim MAX77976 charger
- driver
-To:     Randy Dunlap <rdunlap@infradead.org>, linux-pm@vger.kernel.org
-Cc:     Sebastian Reichel <sre@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211004130732.950512-1-luca@lucaceresoli.net>
- <20211004130732.950512-2-luca@lucaceresoli.net>
- <a6ea9a21-e9df-b596-eb80-4df4b8d8115e@infradead.org>
-From:   Luca Ceresoli <luca@lucaceresoli.net>
-Message-ID: <cce10251-c092-c06b-dbc4-d257bb7aa305@lucaceresoli.net>
-Date:   Tue, 5 Oct 2021 15:15:37 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Tue, 5 Oct 2021 09:20:33 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59A2CC061749
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 06:18:43 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id oa6-20020a17090b1bc600b0019ffc4b9c51so1959040pjb.2
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 06:18:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/n9PLhbLsN9GMz2w62Bl5DPNT8suG6RwT9DktILrPW8=;
+        b=QPo2WWLTJLKUtOaB2PwOJ7t+f+KTcEEzQsRr6qtgej6BLzhFex4Y+rdGC/9nesJntn
+         GqqIHxYnc7BfbCugj0P9j+sa1dWU0Oo2UlVcrmoW3QBASG6pretxz+TrB9icSOCoo+rT
+         D47FfIPUIXjhJM1lJdqMEhM7jP+m2P5UqEG/+PIci9jFn8udsGy60BHsWo2R/FgFC0Em
+         jilZuVr+Sr+I/329qAuPMbI2pBJofIOVUf4ERzvwm7wj+G02Htmq9MmuYfVSIc5GhpZv
+         VED+vAZNStXnsT72TvY7sZqPz7Vop3LaKCBb+OXjroAGaEWy8ie+ub/2ZC6Ugrdzn5rB
+         bxGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/n9PLhbLsN9GMz2w62Bl5DPNT8suG6RwT9DktILrPW8=;
+        b=DBbMfE4pReveNi38hrVYErMAqZjckrt1HR7RBjvM2P9T7q53WX9BNVf01vTw9H+KbW
+         TyDCCGxBKGSHJxNnfIE/RNcejngqbujtKQwq0HGc0vlJ2Hx5p0Q2886GWiNfULfzN7Rp
+         X6Gf1YpYMz1dhr9Vdd8fLBNpA9Y8kfD0pbkvqrT1TntytNO2CKUkgIL1BlOIsq46E0e5
+         8Oh9PbNsqP2RyHLCI/vwLxzYk82eqoRS6XECmX1LBpSSO6X20eUafH6xWo8TFsTgISPo
+         ti0WEXVfGnEh+0MrJpJq3/7/EsyjuALC3DL0zz+EXVpALPnvI79WcEqE3qGl4Q5iZ0su
+         t0cw==
+X-Gm-Message-State: AOAM530c+4Kf59xB9agru96hjrhBP7z7lOHVh3bUpk8Vh+bJRzwrUhWY
+        4CwAxILVApswJyyOoCma+zA=
+X-Google-Smtp-Source: ABdhPJwQjViUqWak699WeKcPTk4zroZTMRPdopk9dLVR+VgDEGXyfWxlobxoJWVnl1M/frxrJ/pFSg==
+X-Received: by 2002:a17:90b:1e47:: with SMTP id pi7mr1190797pjb.206.1633439922936;
+        Tue, 05 Oct 2021 06:18:42 -0700 (PDT)
+Received: from kvm.asia-northeast3-a.c.our-ratio-313919.internal (24.151.64.34.bc.googleusercontent.com. [34.64.151.24])
+        by smtp.gmail.com with ESMTPSA id t2sm2271062pjf.1.2021.10.05.06.18.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Oct 2021 06:18:42 -0700 (PDT)
+Date:   Tue, 5 Oct 2021 13:18:38 +0000
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+To:     Christoph Lameter <cl@gentwo.de>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [RFC PATCH] mm, slab: Reduce space complexity of alien_cache
+ using rbtree
+Message-ID: <20211005131838.GA2760@kvm.asia-northeast3-a.c.our-ratio-313919.internal>
+References: <20211003051750.8296-1-42.hyeyoo@gmail.com>
+ <alpine.DEB.2.22.394.2110041601170.294708@gentwo.de>
 MIME-Version: 1.0
-In-Reply-To: <a6ea9a21-e9df-b596-eb80-4df4b8d8115e@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lucaceresoli.net
-X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca+lucaceresoli.net/only user confirmed/virtual account not confirmed
-X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.22.394.2110041601170.294708@gentwo.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Randy,
-
-On 04/10/21 17:28, Randy Dunlap wrote:
-> On 10/4/21 6:07 AM, Luca Ceresoli wrote:
->> diff --git a/drivers/power/supply/Kconfig b/drivers/power/supply/Kconfig
->> index ad93b3550d6d..622d690c883a 100644
->> --- a/drivers/power/supply/Kconfig
->> +++ b/drivers/power/supply/Kconfig
->> @@ -557,6 +557,17 @@ config CHARGER_MAX77693
->>       help
->>         Say Y to enable support for the Maxim MAX77693 battery charger.
->>   +config CHARGER_MAX77976
->> +    tristate "Maxim MAX77976 battery charger driver"
->> +    depends on REGMAP_I2C
->> +    help
->> +      The Maxim MAX77976 is a 19 Vin, 5.5A 1-Cell Li+ Battery Charger
->> +      USB OTG support. It has an I2C interface for configuration.
->> +
->> +      Say Y to enable support for the Maxim MAX77976 battery charger.
->> +      This driver can also be built as a module. If so, the module
->> will be
->> +      called max77976_charger.
+On Mon, Oct 04, 2021 at 04:05:23PM +0200, Christoph Lameter wrote:
+> On Sun, 3 Oct 2021, Hyeonggon Yoo wrote:
 > 
-> REGMAP_I2C is not a user-settable config option, so drivers should not
-> "depend on" it. This should be more like:
+> > As remote node allocation isn't that frequent and better avoided,
+> > this patch tries to compromise some execution time for memory usage.
 > 
->     depends on I2C
->     select REGMAP_I2C
+> Remote node allocation is typical for large memory loads and essential to
+> balance the memory allocation over multiple nodes. Large NUMA systems
+> exist because the memory requirements of the application cannot be
+> satisfied by what a single node has to offer and usually code threads from
+> multiple nodes may access remote memory.
+>
 
-Ouch, thanks for spotting, will fix in v2.
+> > Remove init_reap_node, next_reap_node and related variables
+> > introduced by commit 8fce4d8e3b9e ("[PATCH] slab: Node rotor for freeing
+> > alien caches and remote per cpu pages."), Because it has only one tree
+> > for all remote nodes.
+> 
+> Rotors to spread the memory allocated are essential for the performance
+> of large memory loads! Memory must be spread evenly otherwise memory
+> accesses will overload a single node.
 
--- 
-Luca
+Sorry for making a noise. It was because I misunderstood NUMA.
+Thought it should be not frequent because kernel's default memory allocation policy was
+allocating from local node.
+
+It would have been better If I asked why it uses much memory first, not writing code.
+I'll be more careful next time. Thank you for reviewing!
+
+Thanks,
+Hyeonggon
+
