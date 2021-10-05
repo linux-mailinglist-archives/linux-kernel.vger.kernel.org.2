@@ -2,55 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44C64422A96
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:14:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E26EA422A95
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:14:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236053AbhJEOPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 10:15:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40932 "EHLO
+        id S236707AbhJEOPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 10:15:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236245AbhJEOO3 (ORCPT
+        with ESMTP id S236253AbhJEOOa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 10:14:29 -0400
+        Tue, 5 Oct 2021 10:14:30 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D398C061749;
-        Tue,  5 Oct 2021 07:12:18 -0700 (PDT)
-Date:   Tue, 05 Oct 2021 14:12:16 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7DC7C061753;
+        Tue,  5 Oct 2021 07:12:19 -0700 (PDT)
+Date:   Tue, 05 Oct 2021 14:12:17 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1633443137;
+        s=2020; t=1633443138;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=S/gU/mWFuyfWCuisv6UgtYV1qEFHp4D877OI1IX9YIg=;
-        b=MvBWe4fR1fYeTJBsGQuQWoUMTwYwBtu+MiXtVFpA4BndsaZ+c2it2dEk7YI1EguJzOoPwv
-        EAtUmJFxunBJ4YgbEJW8R4j6rROo8f86N3BIQ/UrC7tuIQCRJVdqCNyxFy1xWSLCKgjtmT
-        JUlDo4QW4N4psw1A1SU1zGJ80Zq8RxBas380F0Wdk70HfsVx5gCu3/SC3ROjTrmIgMXdGF
-        3bR8hUQfxOAKpJ8PmRsVO0x1w/gqZoy+45dY4qH++t37eFsdCNOoROzP5oTlzY6cizqXla
-        QxJZYTwBanavscuFRFMYQQAEz8r4lKbfYlDCdS/9Vqlm7+zHVeDMmIHlUW1fWw==
+        bh=eOkrHdNlPrgixVaL03EuvuVh9Kuwmjo/1R5phpwQnyY=;
+        b=1B4H+8Tr60u6tD+ruiveQkSJnQbQfKIAPSMIDt2KUGiM8RfiuuNPMWzp75SM7W2EAIT4Au
+        zkfGa7Goekto87RnNpZItgmOr1fIRXUa/35SUdElEjOZQgZrQOLw2mOPoMPvTURGO9gIiH
+        PhgdKXpmfHScMmfJuR/F46VtjZBeiWFe4fpzABgoCqPSfQliWCuZn7pNglPcKQL7pgi6Ar
+        MpYDLuy5/3cdCYxKUwNrhgG+af0ObYz8JXSoIj43bsGZ0O7MiYZCwxF3qSWlA8kFSiOuE8
+        rrjY8RzU5NvBZD4MauOyEocvrvHVJBtbsZH9kVSmfqpaGnfy5dBcZt9c8DggIQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1633443137;
+        s=2020e; t=1633443138;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=S/gU/mWFuyfWCuisv6UgtYV1qEFHp4D877OI1IX9YIg=;
-        b=CG4gC8vo7HpW4nsB2zUrkrQA5AvTTMpak0kYsUKhOVaoOd8j2AFEB98joy9S7f1crA5a/v
-        zihTTB3vSiyO1hCg==
-From:   "tip-bot2 for Sebastian Andrzej Siewior" <tip-bot2@linutronix.de>
+        bh=eOkrHdNlPrgixVaL03EuvuVh9Kuwmjo/1R5phpwQnyY=;
+        b=Y7B1HU/Qzlqu+/MyeLalWDcKIbwSgNw385UK7r3mpuHwBPVQudf/7L0HfGApHLmi7Kpr1e
+        WL/GI0PGsXOaTaCQ==
+From:   "tip-bot2 for Valentin Schneider" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched: Switch wait_task_inactive to HRTIMER_MODE_REL_HARD
-Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+Subject: [tip: sched/core] sched/fair: Add NOHZ balancer flag for
+ nohz.next_balance updates
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210826170408.vm7rlj7odslshwch@linutronix.de>
-References: <20210826170408.vm7rlj7odslshwch@linutronix.de>
+In-Reply-To: <20210823111700.2842997-2-valentin.schneider@arm.com>
+References: <20210823111700.2842997-2-valentin.schneider@arm.com>
 MIME-Version: 1.0
-Message-ID: <163344313615.25758.6716658962039922651.tip-bot2@tip-bot2>
+Message-ID: <163344313747.25758.9373643662177952195.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -61,49 +63,145 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     c33627e9a1143afb988fb98d917c4a2faa16f9d9
-Gitweb:        https://git.kernel.org/tip/c33627e9a1143afb988fb98d917c4a2faa16f9d9
-Author:        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-AuthorDate:    Thu, 26 Aug 2021 19:04:08 +02:00
+Commit-ID:     efd984c481abb516fab8bafb25bf41fd9397a43c
+Gitweb:        https://git.kernel.org/tip/efd984c481abb516fab8bafb25bf41fd9397a43c
+Author:        Valentin Schneider <valentin.schneider@arm.com>
+AuthorDate:    Mon, 23 Aug 2021 12:16:59 +01:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Tue, 05 Oct 2021 15:51:32 +02:00
+CommitterDate: Tue, 05 Oct 2021 15:51:30 +02:00
 
-sched: Switch wait_task_inactive to HRTIMER_MODE_REL_HARD
+sched/fair: Add NOHZ balancer flag for nohz.next_balance updates
 
-With PREEMPT_RT enabled all hrtimers callbacks will be invoked in
-softirq mode unless they are explicitly marked as HRTIMER_MODE_HARD.
-During boot kthread_bind() is used for the creation of per-CPU threads
-and then hangs in wait_task_inactive() if the ksoftirqd is not
-yet up and running.
-The hang disappeared since commit
-   26c7295be0c5e ("kthread: Do not preempt current task if it is going to call schedule()")
+A following patch will trigger NOHZ idle balances as a means to update
+nohz.next_balance. Vincent noted that blocked load updates can have
+non-negligible overhead, which should be avoided if the intent is to only
+update nohz.next_balance.
 
-but enabling function trace on boot reliably leads to the freeze on boot
-behaviour again.
-The timer in wait_task_inactive() can not be directly used by a user
-interface to abuse it and create a mass wake up of several tasks at the
-same time leading to long sections with disabled interrupts.
-Therefore it is safe to make the timer HRTIMER_MODE_REL_HARD.
+Add a new NOHZ balance kick flag, NOHZ_NEXT_KICK. Gate NOHZ blocked load
+update by the presence of NOHZ_STATS_KICK - currently all NOHZ balance
+kicks will have the NOHZ_STATS_KICK flag set, so no change in behaviour is
+expected.
 
-Switch the timer to HRTIMER_MODE_REL_HARD.
-
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Suggested-by: Vincent Guittot <vincent.guittot@linaro.org>
+Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20210826170408.vm7rlj7odslshwch@linutronix.de
+Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+Link: https://lkml.kernel.org/r/20210823111700.2842997-2-valentin.schneider@arm.com
 ---
- kernel/sched/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/sched/fair.c  | 24 ++++++++++++++----------
+ kernel/sched/sched.h |  8 +++++++-
+ 2 files changed, 21 insertions(+), 11 deletions(-)
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 1bba412..2672694 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -3251,7 +3251,7 @@ unsigned long wait_task_inactive(struct task_struct *p, unsigned int match_state
- 			ktime_t to = NSEC_PER_SEC / HZ;
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index f6a05d9..f4de7f5 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -10375,7 +10375,7 @@ static void nohz_balancer_kick(struct rq *rq)
+ 		goto out;
  
- 			set_current_state(TASK_UNINTERRUPTIBLE);
--			schedule_hrtimeout(&to, HRTIMER_MODE_REL);
-+			schedule_hrtimeout(&to, HRTIMER_MODE_REL_HARD);
- 			continue;
+ 	if (rq->nr_running >= 2) {
+-		flags = NOHZ_KICK_MASK;
++		flags = NOHZ_STATS_KICK | NOHZ_BALANCE_KICK;
+ 		goto out;
+ 	}
+ 
+@@ -10389,7 +10389,7 @@ static void nohz_balancer_kick(struct rq *rq)
+ 		 * on.
+ 		 */
+ 		if (rq->cfs.h_nr_running >= 1 && check_cpu_capacity(rq, sd)) {
+-			flags = NOHZ_KICK_MASK;
++			flags = NOHZ_STATS_KICK | NOHZ_BALANCE_KICK;
+ 			goto unlock;
  		}
+ 	}
+@@ -10403,7 +10403,7 @@ static void nohz_balancer_kick(struct rq *rq)
+ 		 */
+ 		for_each_cpu_and(i, sched_domain_span(sd), nohz.idle_cpus_mask) {
+ 			if (sched_asym_prefer(i, cpu)) {
+-				flags = NOHZ_KICK_MASK;
++				flags = NOHZ_STATS_KICK | NOHZ_BALANCE_KICK;
+ 				goto unlock;
+ 			}
+ 		}
+@@ -10416,7 +10416,7 @@ static void nohz_balancer_kick(struct rq *rq)
+ 		 * to run the misfit task on.
+ 		 */
+ 		if (check_misfit_status(rq, sd)) {
+-			flags = NOHZ_KICK_MASK;
++			flags = NOHZ_STATS_KICK | NOHZ_BALANCE_KICK;
+ 			goto unlock;
+ 		}
+ 
+@@ -10443,7 +10443,7 @@ static void nohz_balancer_kick(struct rq *rq)
+ 		 */
+ 		nr_busy = atomic_read(&sds->nr_busy_cpus);
+ 		if (nr_busy > 1) {
+-			flags = NOHZ_KICK_MASK;
++			flags = NOHZ_STATS_KICK | NOHZ_BALANCE_KICK;
+ 			goto unlock;
+ 		}
+ 	}
+@@ -10605,7 +10605,8 @@ static void _nohz_idle_balance(struct rq *this_rq, unsigned int flags,
+ 	 * setting the flag, we are sure to not clear the state and not
+ 	 * check the load of an idle cpu.
+ 	 */
+-	WRITE_ONCE(nohz.has_blocked, 0);
++	if (flags & NOHZ_STATS_KICK)
++		WRITE_ONCE(nohz.has_blocked, 0);
+ 
+ 	/*
+ 	 * Ensures that if we miss the CPU, we must see the has_blocked
+@@ -10627,13 +10628,15 @@ static void _nohz_idle_balance(struct rq *this_rq, unsigned int flags,
+ 		 * balancing owner will pick it up.
+ 		 */
+ 		if (need_resched()) {
+-			has_blocked_load = true;
++			if (flags & NOHZ_STATS_KICK)
++				has_blocked_load = true;
+ 			goto abort;
+ 		}
+ 
+ 		rq = cpu_rq(balance_cpu);
+ 
+-		has_blocked_load |= update_nohz_stats(rq);
++		if (flags & NOHZ_STATS_KICK)
++			has_blocked_load |= update_nohz_stats(rq);
+ 
+ 		/*
+ 		 * If time for next balance is due,
+@@ -10664,8 +10667,9 @@ static void _nohz_idle_balance(struct rq *this_rq, unsigned int flags,
+ 	if (likely(update_next_balance))
+ 		nohz.next_balance = next_balance;
+ 
+-	WRITE_ONCE(nohz.next_blocked,
+-		now + msecs_to_jiffies(LOAD_AVG_PERIOD));
++	if (flags & NOHZ_STATS_KICK)
++		WRITE_ONCE(nohz.next_blocked,
++			   now + msecs_to_jiffies(LOAD_AVG_PERIOD));
+ 
+ abort:
+ 	/* There is still blocked load, enable periodic update */
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index 3d3e579..1fec313 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -2709,12 +2709,18 @@ extern void cfs_bandwidth_usage_dec(void);
+ #define NOHZ_BALANCE_KICK_BIT	0
+ #define NOHZ_STATS_KICK_BIT	1
+ #define NOHZ_NEWILB_KICK_BIT	2
++#define NOHZ_NEXT_KICK_BIT	3
+ 
++/* Run rebalance_domains() */
+ #define NOHZ_BALANCE_KICK	BIT(NOHZ_BALANCE_KICK_BIT)
++/* Update blocked load */
+ #define NOHZ_STATS_KICK		BIT(NOHZ_STATS_KICK_BIT)
++/* Update blocked load when entering idle */
+ #define NOHZ_NEWILB_KICK	BIT(NOHZ_NEWILB_KICK_BIT)
++/* Update nohz.next_balance */
++#define NOHZ_NEXT_KICK		BIT(NOHZ_NEXT_KICK_BIT)
+ 
+-#define NOHZ_KICK_MASK	(NOHZ_BALANCE_KICK | NOHZ_STATS_KICK)
++#define NOHZ_KICK_MASK	(NOHZ_BALANCE_KICK | NOHZ_STATS_KICK | NOHZ_NEXT_KICK)
+ 
+ #define nohz_flags(cpu)	(&cpu_rq(cpu)->nohz_flags)
  
