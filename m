@@ -2,107 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B671E4224CF
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 13:16:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D79FD4224D7
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 13:18:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234355AbhJELR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 07:17:58 -0400
-Received: from mga12.intel.com ([192.55.52.136]:14206 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232658AbhJELRx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 07:17:53 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10127"; a="205835950"
-X-IronPort-AV: E=Sophos;i="5.85,348,1624345200"; 
-   d="scan'208";a="205835950"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2021 04:16:02 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,348,1624345200"; 
-   d="scan'208";a="483736181"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga007.fm.intel.com with ESMTP; 05 Oct 2021 04:16:02 -0700
-Received: from linux.intel.com (vwong3-ilbpg3.png.intel.com [10.88.229.80])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id 53B435805EE;
-        Tue,  5 Oct 2021 04:15:59 -0700 (PDT)
-Date:   Tue, 5 Oct 2021 19:15:56 +0800
-From:   Wong Vee Khee <vee.khee.wong@linux.intel.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
-        Wong Vee Khee <veekhee@gmail.com>
-Subject: Re: [PATCH net v1 1/1] net: stmmac: fix EEE init issue when paired
- with EEE capable PHYs
-Message-ID: <20211005111556.GA28642@linux.intel.com>
-References: <20210930064436.1502516-1-vee.khee.wong@linux.intel.com>
- <YVZI2GWxUNZdL2SX@lunn.ch>
+        id S234084AbhJELUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 07:20:10 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:1456 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232658AbhJELUI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 07:20:08 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 195BBvJ5028865;
+        Tue, 5 Oct 2021 07:18:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=OyYWH4n+eBIhENYLYr5jBW2Hb+tHjob3ODXbs8wipp8=;
+ b=SrrzCRe+5reJ0R/Dh8WhO9AN+drfMuU8H+45ns6xJh0f8AtWlJXFk8y0d1jiNkJgvpWv
+ eJYmOR9XoMuB/AOZloy9kM8MCX3jQe2j5wGoawuha5BgTIP3mDmhfiQXJujiy63aUnXW
+ v2k70N6Fx/GkLMHpwzCY8/sMXcZA7nh3jjmcy1oXGDPZgj2lPFCAEq0b2TIjxmoiGAT9
+ d1GbEYlHt/b+bZpojdq1oSH4FH+o3AVrFi5JU0BnDGCuZeYWTqnqNrKaYI1Ci1XIxir1
+ EoAR+oQvL3oe+bpiOXebycnKt9YIT7A5SToMgr4zPr8TPTYebXaJhluvpMQgDJtvT6tV oA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bgnm904s7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Oct 2021 07:18:15 -0400
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 195BDNIR031914;
+        Tue, 5 Oct 2021 07:18:15 -0400
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bgnm904rb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Oct 2021 07:18:15 -0400
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 195BCbg7006291;
+        Tue, 5 Oct 2021 11:18:13 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma04fra.de.ibm.com with ESMTP id 3bef29yb53-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Oct 2021 11:18:13 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 195BCnR130998822
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 5 Oct 2021 11:12:49 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 247A1AE063;
+        Tue,  5 Oct 2021 11:18:09 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 07067AE045;
+        Tue,  5 Oct 2021 11:18:08 +0000 (GMT)
+Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.45.119])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Tue,  5 Oct 2021 11:18:07 +0000 (GMT)
+Date:   Tue, 5 Oct 2021 13:17:51 +0200
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Cornelia Huck <cohuck@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Xie Yongji <xieyongji@bytedance.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, markver@us.ibm.com,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org, virtio-dev@lists.oasis-open.org,
+        Halil Pasic <pasic@linux.ibm.com>
+Subject: Re: [virtio-dev] Re: [RFC PATCH 1/1] virtio: write back features
+ before verify
+Message-ID: <20211005131751.53175b10.pasic@linux.ibm.com>
+In-Reply-To: <20211004160005-mutt-send-email-mst@kernel.org>
+References: <87fstm47no.fsf@redhat.com>
+        <20211002141351-mutt-send-email-mst@kernel.org>
+        <20211003070030.658fc94e.pasic@linux.ibm.com>
+        <20211003021027-mutt-send-email-mst@kernel.org>
+        <20211003032253-mutt-send-email-mst@kernel.org>
+        <87ee912e45.fsf@redhat.com>
+        <20211004083455-mutt-send-email-mst@kernel.org>
+        <878rz83lx0.fsf@redhat.com>
+        <20211004110152-mutt-send-email-mst@kernel.org>
+        <87zgro23r1.fsf@redhat.com>
+        <20211004160005-mutt-send-email-mst@kernel.org>
+Organization: IBM
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YVZI2GWxUNZdL2SX@lunn.ch>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 9gaiqSXmPn_x9AjMuITDUyXUKN9UZVPY
+X-Proofpoint-ORIG-GUID: NtvF1X0oiMGcW3bFKnAES-ppYgqouYHn
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-10-04_05,2021-10-04_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
+ lowpriorityscore=0 spamscore=0 phishscore=0 impostorscore=0 mlxscore=0
+ malwarescore=0 mlxlogscore=999 adultscore=0 priorityscore=1501
+ clxscore=1011 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2109230001 definitions=main-2110050065
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 01, 2021 at 01:31:36AM +0200, Andrew Lunn wrote:
-> On Thu, Sep 30, 2021 at 02:44:36PM +0800, Wong Vee Khee wrote:
-> > When STMMAC is paired with Energy-Efficient Ethernet(EEE) capable PHY,
-> > and the PHY is advertising EEE by default, we need to enable EEE on the
-> > xPCS side too, instead of having user to manually trigger the enabling
-> > config via ethtool.
-> > 
-> > Fixed this by adding xpcs_config_eee() call in stmmac_eee_init().
-> > 
-> > Fixes: 7617af3d1a5e ("net: pcs: Introducing support for DWC xpcs Energy Efficient Ethernet")
-> > Cc: Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>
-> > Signed-off-by: Wong Vee Khee <vee.khee.wong@linux.intel.com>
-> > ---
-> >  drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 4 ++++
-> >  1 file changed, 4 insertions(+)
-> > 
-> > diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> > index 553c4403258a..981ccf47dcea 100644
-> > --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> > +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> > @@ -486,6 +486,10 @@ bool stmmac_eee_init(struct stmmac_priv *priv)
-> >  		timer_setup(&priv->eee_ctrl_timer, stmmac_eee_ctrl_timer, 0);
-> >  		stmmac_set_eee_timer(priv, priv->hw, STMMAC_DEFAULT_LIT_LS,
-> >  				     eee_tw_timer);
-> > +		if (priv->hw->xpcs)
-> > +			xpcs_config_eee(priv->hw->xpcs,
-> > +					priv->plat->mult_fact_100ns,
-> > +					true);
-> >  	}
-> 
-> 
->        /* Check if it needs to be deactivated */
->         if (!priv->eee_active) {
->                 if (priv->eee_enabled) {
->                         netdev_dbg(priv->dev, "disable EEE\n");
->                         stmmac_lpi_entry_timer_config(priv, 0);
->                         del_timer_sync(&priv->eee_ctrl_timer);
->                         stmmac_set_eee_timer(priv, priv->hw, 0, eee_tw_timer);
->                 }
->                 mutex_unlock(&priv->lock);
->                 return false;
->         }
-> 
-> Don't you want to turn it of in here?
-> 
->       Andrew
+On Mon, 4 Oct 2021 16:01:12 -0400
+"Michael S. Tsirkin" <mst@redhat.com> wrote:
 
-You're right.
+> > 
+> > Ok, so what about something like
+> > 
+> > "If FEATURES_OK is not set, the driver MAY change the set of features it
+> > accepts."
+> > 
+> > in the device initialization section?  
+> 
+> Maybe "as long as". However Halil implied that some features are not
+> turned off properly if that happens. Halil could you pls provide
+> some examples?
 
-Will introduce a new patch for that.
+
+
+static void virtio_net_set_features(VirtIODevice *vdev, uint64_t features)
+{
+...
+    if (virtio_has_feature(features, VIRTIO_NET_F_STANDBY)) {
+        qapi_event_send_failover_negotiated(n->netclient_name);
+        qatomic_set(&n->failover_primary_hidden, false);
+        failover_add_primary(n, &err);
+        if (err) {
+            warn_report_err(err);
+        }
+    }
+}
+
+This is probably the only one in QEMU. Back then I stopped looking
+after the first hit.
 
 Regards,
-Vee Khee
+Halil
