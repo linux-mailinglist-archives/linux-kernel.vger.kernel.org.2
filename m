@@ -2,143 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8888142206B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 10:15:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 034B1422076
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 10:17:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231816AbhJEIQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 04:16:49 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:17948 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S233215AbhJEIQp (ORCPT
+        id S232965AbhJEISu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 04:18:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39829 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230286AbhJEISs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 04:16:45 -0400
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1958C2OW011278;
-        Tue, 5 Oct 2021 04:14:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=A/Kl7e2gSTzCXrt+H1zCaP5VbCTaG1lDxyQaGTKuQ6E=;
- b=R8oXJLNfP8kNH3r0EkmBE9C7YGSW1zFybQeSKpV5xvk2FfpxR4Hi7OfHbKKobQTbPpJG
- dWqpiorySW4rdK3r9eZ7tbnFAVwiWv8qsNIa9RAgekRFboUTiH4646+Ni461j4dYGH2/
- /IDnDATe/uHUVwTAZJ6cTvKyVB+TGs5DjNeceOrPc32AdC7sc61xYjW7IkaCPR0RX9tr
- tKSlHRxcZhTnmix7YyNWlyvXGA37tWeGtj2bCKztV2GXT85jbpKNT24eo56rtosN5SKs
- 3aVd+bvTjj1q4J5T+jRyBzS7L/6YyeWnlIAM/jwd+e2sJtvWg9n1mvs+RPFJjveInfGe jw== 
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3bgjyyr1md-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Oct 2021 04:14:50 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19586VnG021270;
-        Tue, 5 Oct 2021 08:14:49 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma06ams.nl.ibm.com with ESMTP id 3beepjfw67-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Oct 2021 08:14:48 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19589NVs44826984
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 5 Oct 2021 08:09:23 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DDDBF4C058;
-        Tue,  5 Oct 2021 08:14:42 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CE52D4C046;
-        Tue,  5 Oct 2021 08:14:38 +0000 (GMT)
-Received: from [9.43.70.175] (unknown [9.43.70.175])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue,  5 Oct 2021 08:14:38 +0000 (GMT)
-Message-ID: <b2844a83-d2b2-6e88-780c-3a41be882086@linux.ibm.com>
-Date:   Tue, 5 Oct 2021 13:44:36 +0530
+        Tue, 5 Oct 2021 04:18:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633421818;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DeXqgvhgZgba5cIjEbA+9+dV2VIz1J/oWf8XDFTEfK8=;
+        b=TIWt8QpgIG0h4BiN5pJEKug5lL6wmBSsc07u8t5LM1j4L5tGGiGYrkuqcyAZ+CxULRSr8S
+        mpgEvQkXKkJbj5lt/CdKrukd7e8ZzyqKQZEXGUlhvTmWmpfAAuRXQCeSAfHVbyOBTgHuZm
+        Ddl6mGnAYIN7UuqqmnE7zjB3InrTZrA=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-396-0r9GAdoFPDuEWWF3g1VEwA-1; Tue, 05 Oct 2021 04:16:57 -0400
+X-MC-Unique: 0r9GAdoFPDuEWWF3g1VEwA-1
+Received: by mail-ed1-f72.google.com with SMTP id n19-20020a509353000000b003dad185759bso11943949eda.6
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 01:16:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=DeXqgvhgZgba5cIjEbA+9+dV2VIz1J/oWf8XDFTEfK8=;
+        b=Rs44mgJODLViXoSwhgWC+8Oih97bQa+LzeN19karXgQbaLY7OXP9tblRbsV7Dy5pPt
+         S48J19W5JosKqN923H2pgO8yQl09mmETquBDbnZR+MOjlx1oDlq1FvMWVK9Dt6/oN7Ke
+         El4w2KowdGyA2JMRUg028LdMNi0DiUghKZWJhNoCZuWvfMlfpEn6OV6ucjZJbXoWQVsZ
+         wHcEWCu2VFGdGj/gisBpVwKH/wEf0QWXyKoK+IVdQ81QVoby1ED+I9VtCaz7Iy+wXdWy
+         kw4hFTwNL7PB8BAt8Opr4zdk+1tlNwKfrY7q8nstqVGbxJMHQwCsPqdjHITCUbanKeU6
+         D7gA==
+X-Gm-Message-State: AOAM531Cu3rdRx4TpU9WsjI5j7B1vC1LNQDE8c9aVzyiyV9kfi5kmaRB
+        AYJvubmbgZGLtJh3C408KQ2kJdjt7+RftSvGyC2JdSV1svsibuvr1zD7PaJCJ9NVbKwmeV3memy
+        ZKtBXxxFqrsiHiL5AjJoSmq9S
+X-Received: by 2002:a17:907:7752:: with SMTP id kx18mr23187400ejc.276.1633421815923;
+        Tue, 05 Oct 2021 01:16:55 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzmXIYwBOhjzUkkaolL36RKArL5ziaNRpgjgyrCtjtf0CYVdBeKNCWcMb3UURJlB/NfDNp5cA==
+X-Received: by 2002:a17:907:7752:: with SMTP id kx18mr23187377ejc.276.1633421815739;
+        Tue, 05 Oct 2021 01:16:55 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
+        by smtp.gmail.com with ESMTPSA id b2sm8435115edv.73.2021.10.05.01.16.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Oct 2021 01:16:55 -0700 (PDT)
+Message-ID: <e99f0dcc-0748-9754-cca1-916ff6be406e@redhat.com>
+Date:   Tue, 5 Oct 2021 10:16:53 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.1.0
-Subject: Re: [PATCH 3/3] powerpc: Set crashkernel offset to mid of RMA region
+Subject: Re: [PATCH v10 10/28] x86/fpu/xstate: Update the XSTATE save function
+ to support dynamic states
 Content-Language: en-US
-To:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>, mpe@ellerman.id.au
-Cc:     Abdul haleem <abdhalee@linux.vnet.ibm.com>,
-        mahesh@linux.vnet.ibm.com, linux-kernel@vger.kernel.org,
-        hbathini@linux.ibm.com, linuxppc-dev@ozlabs.org
-References: <20211004151142.256251-1-sourabhjain@linux.ibm.com>
- <20211004151142.256251-4-sourabhjain@linux.ibm.com>
- <f13e218e-4e38-4076-672f-d555d7abfc02@linux.ibm.com>
-From:   Sourabh Jain <sourabhjain@linux.ibm.com>
-In-Reply-To: <f13e218e-4e38-4076-672f-d555d7abfc02@linux.ibm.com>
+To:     "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     "bp@suse.de" <bp@suse.de>, "Lutomirski, Andy" <luto@kernel.org>,
+        "mingo@kernel.org" <mingo@kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "Brown, Len" <len.brown@intel.com>,
+        "lenb@kernel.org" <lenb@kernel.org>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "Macieira, Thiago" <thiago.macieira@intel.com>,
+        "Liu, Jing2" <jing2.liu@intel.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
+References: <87pmsnglkr.ffs@tglx>
+ <0F4DCBED-7A0B-4C0C-A63A-3C7E9AC065D5@intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <0F4DCBED-7A0B-4C0C-A63A-3C7E9AC065D5@intel.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: AjfoHP62Lh3HZ-7hkkLuGzsRw7sC1HmF
-X-Proofpoint-ORIG-GUID: AjfoHP62Lh3HZ-7hkkLuGzsRw7sC1HmF
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-10-04_05,2021-10-04_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 adultscore=0
- clxscore=1015 mlxscore=0 malwarescore=0 phishscore=0 priorityscore=1501
- suspectscore=0 lowpriorityscore=0 mlxlogscore=999 bulkscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110050046
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 03/10/21 00:54, Bae, Chang Seok wrote:
+> FWIW, the proposed KVM patch for AMX looks to take (1) here [1] and
+> Paolo said [2]:
+> 
+>      Most guests will not need the whole xstate feature set.  So perhaps you
+>      could set XFD to the host value | the guest value, trap #NM if the
+>      host XFD is zero, and possibly reflect the exception to the guest's XFD
+                    ^^^^
 
-On 04/10/21 21:36, Aneesh Kumar K.V wrote:
-> On 10/4/21 20:41, Sourabh Jain wrote:
->> On large config LPARs (having 192 and more cores), Linux fails to boot
->> due to insufficient memory in the first memory block. It is due to the
->> reserve crashkernel area starts at 128MB offset by default and which
->> doesn't leave enough space in the first memory block to accommodate
->> memory for other essential system resources.
->>
->> Given that the RMA region size can be 512MB or more, setting the
->> crashkernel offset to mid of RMA size will leave enough space to
->> kernel to allocate memory for other system resources in the first
->> memory block.
->>
->> Signed-off-by: Sourabh Jain <sourabhjain@linux.ibm.com>
->> Reported-and-tested-by: Abdul haleem <abdhalee@linux.vnet.ibm.com>
->> ---
->>   arch/powerpc/kernel/rtas.c |  3 +++
->>   arch/powerpc/kexec/core.c  | 13 +++++++++----
->>   2 files changed, 12 insertions(+), 4 deletions(-)
->>
->> diff --git a/arch/powerpc/kernel/rtas.c b/arch/powerpc/kernel/rtas.c
->> index ff80bbad22a5..ce5e62bb4d8e 100644
->> --- a/arch/powerpc/kernel/rtas.c
->> +++ b/arch/powerpc/kernel/rtas.c
->> @@ -1235,6 +1235,9 @@ int __init early_init_dt_scan_rtas(unsigned 
->> long node,
->>       entryp = of_get_flat_dt_prop(node, "linux,rtas-entry", NULL);
->>       sizep  = of_get_flat_dt_prop(node, "rtas-size", NULL);
->>   +    if (of_get_flat_dt_prop(node, "ibm,hypertas-functions", NULL))
->> +        powerpc_firmware_features |= FW_FEATURE_LPAR;
->> +
->
-> The equivalent check that we currently do more than checking 
-> ibm,hypertas-functions.
->
->     if (!strcmp(uname, "rtas") || !strcmp(uname, "rtas@0")) {
->         prop = of_get_flat_dt_prop(node, "ibm,hypertas-functions",
->                        &len);
->         if (prop) {
->             powerpc_firmware_features |= FW_FEATURE_LPAR;
->             fw_hypertas_feature_init(prop, len);
->         }
->
->
-> also do we expect other firmware features to be set along with 
-> FW_FEATURE_LPAR?
+(better: if the host XFD is nonzero, and the guest XCR0 includes any bit 
+whose state is optional).
 
-This patch needs to move crash kernel reservation to mid point of rma 
-size for LPAR in reserve_crashkernel() function. Since 
-reserve_crashkernel() is called too early even before 
-powerpc_firmware_features is set with FW_FEATURE_LPAR, the check for if 
-(firmware_has_feature(FW_FEATURE_LPAR)) fails and hence we only need to 
-make sure that we set this flag early during early_init_dt_scan_rtas().
+>      and XFD_ERR.
 
-The rest of the LPAR specific initialization isn't required at this 
-point and will be still done during pseries_probe_fw_features() as usual.
+This comment is about letting arch/x86/kernel resize current->thread.fpu 
+while the guest runs.  It's not necessary before KVM supports AMX, 
+because KVM will never let a guest set XCR0[18] (__kvm_set_xcr).
+
+Thomas instead was talking about allocation of vcpu->arch.guest_fpu and 
+vcpu->arch.user_fpu.
+
+For dynamic allocation in kvm_save_current_fpu, you can retrieve the 
+XINUSE bitmask (XGETBV with RCX=1).  If it contains any bits that have 
+optional state, you check if KVM's vcpu->arch.guest_fpu or 
+vcpu->arch.user_fpu are already big enough, and if not do the reallocation.
+
+If X86_FEATURE_XGETBV1 is not available, you will not need to resize. 
+If XFD is supported but X86_FEATURE_XGETBV1 is not, you can just make 
+kvm_arch_init fail with -ENODEV.  It's a nonsensical combination.
 
 Thanks,
-Sourabh Jain
+
+Paolo
+
+>      In addition, loading the guest XFD MSRs should use the MSR autoload
+>      feature (add_atomic_switch_msr).
+> 
+> And then I guess discussion goes on..
 
