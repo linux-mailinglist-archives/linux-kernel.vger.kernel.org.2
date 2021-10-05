@@ -2,142 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 143354227EE
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 15:33:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC2F44227F1
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 15:33:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235023AbhJENe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 09:34:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59950 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234103AbhJENe4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 09:34:56 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42EC6C061749
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 06:33:05 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id x27so86427128lfu.5
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 06:33:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cogentembedded-com.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=MZBsxeP3JQSj3L9+9cIv9tClpw0dUUkSR3BWuM0kHGw=;
-        b=DsQlnwUHXvbWcyhexAagbrNJFfgdvWRsEaN7MFHK5H6TPlSnpdxbsDcGyqwxaY3/tk
-         xymDcZRrP8m4GzcHpZAwYJPqS9AYYj3Rm7VbvX7c8i7vg+lcPxjzAmfIwgWKauQypA+w
-         UIeoLXgOlJ7eVut7VScj8I2qak7O/6HuomCNYxMjaslZYIgFlbGkCdzkla2wcFWytGv0
-         1OLc9vVkSzBlUuP4p5MXcTBjwkzC6FMIgsbcyy8QH7fd6gs8JWxwo9gqwtcTf09hynvK
-         ls2KhmhE9J9vwxl6otWNTfz4OGOPFlm6802PkmuJmXvI/cmeqZl7R3cATJb9Hx/VtKK0
-         /hDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=MZBsxeP3JQSj3L9+9cIv9tClpw0dUUkSR3BWuM0kHGw=;
-        b=Vl3dPm2CnTq1VFM1GTB3Wj9d4UahNKW/XOKnq1KwLQeI2MKzN/vHhjHy0Wi77Uu8/q
-         RySbE0LiiH2/WJ2nLawf+gPmxTRwEi4qDK/ll7erlEKfkNKFnARyJXB9hPWh6n8AlMRS
-         VPvrzXmVICIlO6X89D6o+0urn4qs5PDgFTx9gAh2O75TFRrAlTpxctzOLl2oQy/Z3B84
-         +fwUPvPjpOJW8tg7AGlV7yAS/3bhOPT4uVzefRRrOcyVGt5hWn2rwgFVJ5YzaiZtVKPk
-         Q6kgvfzVv2Cm/qX5qaN8KYK4fWk33sKrlwOjQVbdlWob3bncTenSpAf1BBIcSkCJfZps
-         Qayg==
-X-Gm-Message-State: AOAM532w4iq0p9uD7k5zgdEhuR7WtZPqrvWYC3A6+QArYSghuEcv0drx
-        x1EVY0J5vhfCITjq+vpV4XcIrg==
-X-Google-Smtp-Source: ABdhPJwSiw3QMYbPWjsbaTLH2D4VeURZI1m1YGkUm+DOqMdUuBqWSgZqx2RxlULdOX/HVIB/vKtcaw==
-X-Received: by 2002:a05:6512:3095:: with SMTP id z21mr3434912lfd.167.1633440783455;
-        Tue, 05 Oct 2021 06:33:03 -0700 (PDT)
-Received: from [192.168.112.17] (nikaet.starlink.ru. [94.141.168.29])
-        by smtp.gmail.com with ESMTPSA id z16sm1974264lji.41.2021.10.05.06.33.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Oct 2021 06:33:03 -0700 (PDT)
-Subject: Re: [PATCH] staging: most: dim2: fix device registration
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Lee Jones <lee.jones@linaro.org>, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Christian Gromm <christian.gromm@microchip.com>
-References: <20210929205619.2800-1-nikita.yoush@cogentembedded.com>
- <YVwofSvwGTv3kHjh@kroah.com>
-From:   Nikita Yushchenko <nikita.yoush@cogentembedded.com>
-Message-ID: <d309b4cf-12f5-5f49-fcbe-3141dff9e73f@cogentembedded.com>
-Date:   Tue, 5 Oct 2021 16:33:02 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <YVwofSvwGTv3kHjh@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S235047AbhJENfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 09:35:20 -0400
+Received: from mail-bn7nam10on2061.outbound.protection.outlook.com ([40.107.92.61]:14379
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234103AbhJENfQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 09:35:16 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AHWamEuwvq9QI3qlNud+nVo3zJDIr/Ix3cS6xZWSs28rl+KENfM1PclrFg9N16agSjn+XfoOhNEwHkpk6oO7TtTeONHUjZDeh3PHa2a00fuNeUBkvrZs7aXDRLMG5VJ8SWTq7L91/ofkQJv6dV5zLNW3Zp3/gw12NzwbfAFDoWrZ35TuNbbg6w284FKVHnb82iMCyPegBL18Jp8i4I/TxaquoJz38aToUtnw0h1Kl31KWpamFRMr/ZScV0qDIIFa5Sx3WjjhX6MXzdPQNz4rQNM8DKNtw3IKyelFjvpudw1dJ7cbIBgbCpZ4W5t7gN6lfLcxJry1IBQkVh/dHj25Ig==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=lEu6p/5kon9t2pf1pT4bJGeTQxg+g3YOuuKfN8vwqV0=;
+ b=TP5CvPzsDUBz0ee//L3aBr8sh350LzwQkoJlkj5Nl99eHqY33tj2ly0qZIjnVGQZzj9U7wodVFEUX+/J46i1CrdqyCCLaaS3KenBTCQGjtqQRejENUm1EtRCasttKYpG81pxvqachI2EM0fnTBKh681VO8p2AyHx4EWSbxJu6A9VJe43f2ti/Gk4L9rxEMPGDQFEiQK8m2WfxxlsTCfSLN33EXGDsjsCEoRX/6x0X3FiGJ1Qf+WzufvA5RA8bCanktf9VAj3nTLe+uSXQ80wXxE7fPPJ8/ajEu/vBDFNWK+nz6VBO1NU4I4nnlPXwEXsMAgGhSdHfkARxYoRAk+j2A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lEu6p/5kon9t2pf1pT4bJGeTQxg+g3YOuuKfN8vwqV0=;
+ b=rldvafjXSJzdh1wTaaTahOnL0MjbsHfDE4w/B5BkIb1ZOEFr6J4pnBJYZEmRVxIynKD4rmHPLt0RH46HdVibKYepoxxROLTT3vTOMMilKF7148AYScN2EsxD9MX3BnOK1vbEvWVsDZ7g8wsOHYWUuansscJyadMJUKtsTyM/dUo=
+Received: from DM6PR12MB4912.namprd12.prod.outlook.com (2603:10b6:5:20b::24)
+ by DM6PR12MB3644.namprd12.prod.outlook.com (2603:10b6:5:118::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.22; Tue, 5 Oct
+ 2021 13:33:23 +0000
+Received: from DM6PR12MB4912.namprd12.prod.outlook.com
+ ([fe80::81f5:b123:f485:e51a]) by DM6PR12MB4912.namprd12.prod.outlook.com
+ ([fe80::81f5:b123:f485:e51a%7]) with mapi id 15.20.4566.022; Tue, 5 Oct 2021
+ 13:33:23 +0000
+From:   "Zuo, Jerry" <Jerry.Zuo@amd.com>
+To:     =?iso-8859-1?Q?Ville_Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>,
+        Douglas Anderson <dianders@chromium.org>
+CC:     "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "geert@linux-m68k.org" <geert@linux-m68k.org>,
+        "oliver.sang@intel.com" <oliver.sang@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Jani Nikula <jani.nikula@intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Wentland, Harry" <Harry.Wentland@amd.com>,
+        "Siqueira, Rodrigo" <Rodrigo.Siqueira@amd.com>
+Subject: RE: [PATCH] drm/edid: Fix crash with zero/invalid EDID
+Thread-Topic: [PATCH] drm/edid: Fix crash with zero/invalid EDID
+Thread-Index: AQHXuVhR2MkzGJ154UiIxDl4KkcjuavEZ8Zg
+Date:   Tue, 5 Oct 2021 13:33:23 +0000
+Message-ID: <DM6PR12MB49127B8B63079E6533197EA6E5AF9@DM6PR12MB4912.namprd12.prod.outlook.com>
+References: <20211004092100.1.Ic90a5ebd44c75db963112be167a03cc96f9fb249@changeid>
+ <YVtZstInQxXfPmsZ@intel.com>
+In-Reply-To: <YVtZstInQxXfPmsZ@intel.com>
+Accept-Language: en-CA, en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_ActionId=42eef3ab-1206-491f-ae02-620214db2f3b;MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_ContentBits=0;MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_Enabled=true;MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_Method=Standard;MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_Name=AMD
+ Official Use Only-AIP
+ 2.0;MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_SetDate=2021-10-05T13:30:58Z;MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
+authentication-results: linux.intel.com; dkim=none (message not signed)
+ header.d=none;linux.intel.com; dmarc=none action=none header.from=amd.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 2ed22681-67dc-4ce8-4897-08d98804b438
+x-ms-traffictypediagnostic: DM6PR12MB3644:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM6PR12MB364499320C0CF841AEDE2D72E5AF9@DM6PR12MB3644.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:216;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 62sCCOqQLQf73thSfqmBGM4eRV8o/ivJvuImcpqxjQt+baAzIlGuKBZKZQKi/mTCOBSC1QkTbIl40XLDVOuag6A/gpUjEvtB76l1tAC9uDT81RzKsSi/PvS3yWnUWNm7dT65XhCCSr2vbK9RheQ2btWb7g7WbvU9c3TypROM8GnwJWEHz9dhLH/CXB9SVntIe5lZRwjPhM06m/jsUPedmXdHpHQ0GEM3U8w6eQsNy3z8kVrjSNVRKLuEt9Iwyb2j6eqLATm4V/7XDvt0hd0lzeimtO8N0z/ujbi+DnsDELsQ6ml85PfFf5ikUOlTIr+qAYrNeEQcaEJagobcJTKceYXP2U+QH0dP76PsD3TitICQ3gb813NFZ+d/sXlsDbxnRbv2eHteQ6TiUhhcoTt0yCtmcs86dEo/11gT16BaBRwRiF9kownJetGgIUBVcbn0B3a/XaS6LBfOKnGIZL1FNSGyU/nY+QEzdK0TWqf1q3LjPAV2eWMzEhM9s7RUupLtR3Xo+5rez/OijDsR6D+pxPHLiyfYwPOkDRknhKS2CVXUDgOurdxKAPv/8kbs+tIOL3apABTisr0w38n9MPjMJ90HP/HgWjQy5zkh5NKJtNkAb58EUPRRF9ee+JHE7AFyVcjDnLtCFsJJVV8eCcoSS4ClWxmTZ0yldKbjCT1JUooCXvN53+4fCtLWHxC+Dn920uHMrp+3CvBUJGC3re+UJA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB4912.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(86362001)(66946007)(64756008)(53546011)(54906003)(71200400001)(7416002)(5660300002)(76116006)(7696005)(8936002)(8676002)(2906002)(33656002)(4326008)(66476007)(186003)(52536014)(55016002)(6506007)(9686003)(66556008)(66446008)(26005)(122000001)(38070700005)(508600001)(83380400001)(110136005)(38100700002)(316002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?fFo1mxx1OhFmVewGlpVFRB59gv+ttjF4CmRWamk0TKQSFeLYP8L2a+WcI/?=
+ =?iso-8859-1?Q?ta4JQANliq8DqHtH5BnJt/4ve5lTp4/9vIZxnc+nabZBZQZNFayFGxefgk?=
+ =?iso-8859-1?Q?qjwiY/XdbvjK2+/eppR3BLfNKVJFFT/WBS3q4bZlfo19WIKceaYXg+STHD?=
+ =?iso-8859-1?Q?CHU0a/zmT+7Vk5bM5batywcVXK/1WdQxucFtqQm6v3h1GEuIVKGsWZQvqQ?=
+ =?iso-8859-1?Q?UYTCm3e/pJFY5bhhGBVCxCEsG4UfLkery0h6hOwLdJnil3tPtinwnetTTq?=
+ =?iso-8859-1?Q?HcxXPQOfi2Nk4LS+6hnhbLKkBBBd9x+j21jB8UiFxw9qPtQV/MRSCAcOiB?=
+ =?iso-8859-1?Q?0eeuhVd6cS5x9Xiy8eCKCDtczoKED8Ro7qslpf+qceAk1Pn+suX4yUS32b?=
+ =?iso-8859-1?Q?4lUULknUO1lBRAFdHCrgbpXk0rvO2/0PezeFP0T06gkq9CrOXJ9bNuBonb?=
+ =?iso-8859-1?Q?u+O1AmgvhR/VhhctofvbiFP3ThIjCVd/1idAkrijlfb7e1FXceLxKAS1dL?=
+ =?iso-8859-1?Q?nTOtn3KS9dIsT6aqL5SZYWChxMD60Yk46L14T+uOEp7YFTu95FdwVYduzg?=
+ =?iso-8859-1?Q?8Q7uN+Aejcsz8x1StZlbpxb8znKw1VTyo8P/68dTTvFMgJupbunlBvT9l9?=
+ =?iso-8859-1?Q?s+vQNxEsEDJ1Ith0gFoHXjFUSOukh7apUrO8MCfEWW86TuHdWQVBAlFTLJ?=
+ =?iso-8859-1?Q?oBsD4kcNMpjaG60x+MOyrpBVmOqGHyMlir2SIc8P6wOcnB1P5Y40566ZoQ?=
+ =?iso-8859-1?Q?x9lHtHOf+pPzJBTuCCc6glGxTrvTp2VR3hx4aJAGBoHixRkCYO1sLIJwnx?=
+ =?iso-8859-1?Q?sEdRk9xB1rdQhJquawWfrwWekgD7BeehyRmPfKEtLcIP96Ietr8MQ6+fvO?=
+ =?iso-8859-1?Q?y9XQJc/NsaKb6EfIYGqS1Ph8OSbv7n/9RKg7LRYBI4WDX4PFG94GpxOjPh?=
+ =?iso-8859-1?Q?9lxcE2yrCZRBNuoagP3ISnx3AHirbJ6REDLoXAQt5m8Ujii0GI0s58zS5e?=
+ =?iso-8859-1?Q?N3u9Iuo03q0uo9O4p94pIm7Pa11nukg88W7U5OpVshd3vgABUvU4hOLhLI?=
+ =?iso-8859-1?Q?x1oPkONknmREUNg0KB1brceSUrbgDud2ZQGpKYkqyNWpgxHye2PK5h+NPC?=
+ =?iso-8859-1?Q?HLa8k7y5sC06nFyu/o9mZIV3YHUVjSWKSA9Vd2wm4pDOqIFXrH2b0abOGg?=
+ =?iso-8859-1?Q?1TlZEA52cvDjsLy2770m+kxOS+jhWNoacLT3Kr+1nnC2p/68CcfM0bU283?=
+ =?iso-8859-1?Q?8ABie4f/qfzrz/5VFtwxAl5IB31iLOESmwZOPiypNSzWfypGG47QGrCqB9?=
+ =?iso-8859-1?Q?VqED5/Y0FQNwBYqbvx4M0v6vWkNWnYKR7BfIhXLvM4AeN3PzUNnkofZfgZ?=
+ =?iso-8859-1?Q?IYGHAOUeoM?=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB4912.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2ed22681-67dc-4ce8-4897-08d98804b438
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Oct 2021 13:33:23.2419
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ASRv3rKtO2c3IW0Ln7XyUf/i12WTpjj4WzEHIYuvo2j3jhXiEss6ajJ6esqI98QZ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3644
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->> Commit 723de0f9171e ("staging: most: remove device from interface
->> structure") moved registration of driver-provided struct device to
->> the most subsystem, but did not properly update dim2 driver to
->> work with that change.
->>
->> After most subsystem passes driver's dev to register_device(), it
->> becomes refcounted, and can be only deallocated in the release method.
->> Provide that by:
->> - not using devres to allocate the device,
->> - moving shutdown actions from _remove() to the device release method,
->> - not calling shutdown actions in _probe() after the device becomes
->>    refcounted.
-> 
-> Should this be 3 patches?
+[AMD Official Use Only]
 
-But these three items are deeply interconnected, and fix the issue together. Must not manually free 
-device structure passed to register_device(), thus must not allocate via devres (because otherwise, 
-devres will free it). Once not using devres for it, must deallocate it somehow else, thus must rework 
-the release paths.
+Hi Ville:
 
-Perhaps I just shall not go into these details in the commit message.
+     Yhea, it is pretty old change from two years ago, and it is no long va=
+lid anymore. Please simply drop it.
 
->> Also, driver used to register it's dev itself, to provide a custom
->> attribute. With the modified most subsystem, this causes duplicate
->> registration of the same device object. Fix that by adding that custom
->> attribute to the platform device - that is a better location for
->> a platform-specific attribute anyway.
-> 
-> Nope, it should be 4 patches.
+Regards,
+Jerry
 
-Unlike the above three, this item could be separated.
-Will split into two patches now - the first for this (and with fix to the attributes issue noted below) 
-and the second for proper device releasing.
-
-> Also, why have you not cc:ed the original author of the commit you are
-> "fixing" here?   They are the maintainer of this code, right?
-
-I was under impression that "git send-email" does that automatically...
-
-CCing them now.
-
-> One note on your change that would keep me from accepting it even if all
-> of the above was not an issue:
-> 
->> diff --git a/drivers/staging/most/dim2/sysfs.c b/drivers/staging/most/dim2/sysfs.c
->> index c85b2cdcdca3..22836c8ed554 100644
->> --- a/drivers/staging/most/dim2/sysfs.c
->> +++ b/drivers/staging/most/dim2/sysfs.c
->> @@ -39,11 +39,10 @@ static const struct attribute_group *dev_attr_groups[] = {
->>   
->>   int dim2_sysfs_probe(struct device *dev)
->>   {
->> -	dev->groups = dev_attr_groups;
->> -	return device_register(dev);
->> +	return sysfs_create_groups(&dev->kobj, dev_attr_groups);
-> 
-> No driver code should ever be calling a sysfs_* function, which is a
-> huge hint that this is incorrect.
-> 
-> You also just raced with userspace and lost, please use the default
-> attributes for the driver or bus for this, but NEVER manually add and
-> remove sysfs files, that way lies madness and hard to maintain code.
-I'm aware of this race, but still creating attributes on device probe is under wide use in the kernel:
-
-nikita@cobook:~/kernel$ grep -r device_create_file drivers | wc -l
-448
-
-Still, in case of dim2 driver, moving to driver's dev_groups is trivial. Preparing that patch now.
-
-Nikita
-
+> -----Original Message-----
+> From: Ville Syrj=E4l=E4 <ville.syrjala@linux.intel.com>
+> Sent: October 4, 2021 3:45 PM
+> To: Douglas Anderson <dianders@chromium.org>
+> Cc: dri-devel@lists.freedesktop.org; geert@linux-m68k.org;
+> oliver.sang@intel.com; Daniel Vetter <daniel@ffwll.ch>; David Airlie
+> <airlied@linux.ie>; Jani Nikula <jani.nikula@intel.com>; Linus Walleij
+> <linus.walleij@linaro.org>; Maarten Lankhorst
+> <maarten.lankhorst@linux.intel.com>; Maxime Ripard
+> <mripard@kernel.org>; Sam Ravnborg <sam@ravnborg.org>; Thomas
+> Zimmermann <tzimmermann@suse.de>; linux-kernel@vger.kernel.org; Zuo,
+> Jerry <Jerry.Zuo@amd.com>; Wentland, Harry <Harry.Wentland@amd.com>;
+> Siqueira, Rodrigo <Rodrigo.Siqueira@amd.com>
+> Subject: Re: [PATCH] drm/edid: Fix crash with zero/invalid EDID
+>
+> On Mon, Oct 04, 2021 at 09:21:27AM -0700, Douglas Anderson wrote:
+> > In the commit bac9c2948224 ("drm/edid: Break out reading block 0 of
+> > the EDID") I broke out reading the base block of the EDID to its own
+> > function. Unfortunately, when I did that I messed up the handling when
+> > drm_edid_is_zero() indicated that we had an EDID that was all 0x00 or
+> > when we went through 4 loops and didn't get a valid EDID. Specifically
+> > I needed to pass the broken EDID to connector_bad_edid() but now I was
+> > passing an error-pointer.
+> >
+> > Let's re-jigger things so we can pass the bad EDID in properly.
+> >
+> > Fixes: bac9c2948224 ("drm/edid: Break out reading block 0 of the
+> > EDID")
+> > Reported-by: kernel test robot <oliver.sang@intel.com>
+> > Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> > Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> > ---
+> >
+> >  drivers/gpu/drm/drm_edid.c | 27 +++++++++++----------------
+> >  1 file changed, 11 insertions(+), 16 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
+> > index 9b19eee0e1b4..9c9463ec5465 100644
+> > --- a/drivers/gpu/drm/drm_edid.c
+> > +++ b/drivers/gpu/drm/drm_edid.c
+> > @@ -1911,13 +1911,15 @@ int drm_add_override_edid_modes(struct
+> > drm_connector *connector)  }
+> > EXPORT_SYMBOL(drm_add_override_edid_modes);
+> >
+> > -static struct edid *drm_do_get_edid_base_block(
+> > +static struct edid *drm_do_get_edid_base_block(struct drm_connector
+> > +*connector,
+> >     int (*get_edid_block)(void *data, u8 *buf, unsigned int block,
+> >                           size_t len),
+> > -   void *data, bool *edid_corrupt, int *null_edid_counter)
+> > +   void *data)
+> >  {
+> > -   int i;
+> > +   int *null_edid_counter =3D connector ? &connector-
+> >null_edid_counter : NULL;
+> > +   bool *edid_corrupt =3D connector ? &connector->edid_corrupt : NULL;
+> >     void *edid;
+> > +   int i;
+> >
+> >     edid =3D kmalloc(EDID_LENGTH, GFP_KERNEL);
+> >     if (edid =3D=3D NULL)
+> > @@ -1941,9 +1943,8 @@ static struct edid
+> *drm_do_get_edid_base_block(
+> >     return edid;
+> >
+> >  carp:
+> > -   kfree(edid);
+> > -   return ERR_PTR(-EINVAL);
+> > -
+> > +   if (connector)
+> > +           connector_bad_edid(connector, edid, 1);
+>
+> BTW I believe connector_bad_edid() itself is broken since commit
+> e11f5bd8228f ("drm: Add support for DP 1.4 Compliance edid corruption
+> test"). Before we've even allocated the memory for the extension blocks
+> that code now assumes edid[0x7e] is to be 100% trusted and goes and
+> calculates the checksum on a block based on that. So that's likely going =
+to be
+> pointing somewhere beyond the base block into memory we've not even
+> allocated. So anyone who wanted could craft a bogus EDID and maybe get
+> something interesting to happen.
+>
+> Would be good if someone could fix that while at it. Or just revert the
+> offending commit if there is no simple solution immediately in sight.
+>
+> The fact that we're parsing entirely untrustworthy crap in the kernel alw=
+ays
+> worries me. Either we need super careful review of all relevant code, and=
+/or
+> we need to think about moving the parser out of the kernel.
+> I was considering playing around with the usermode helper stuff. IIRC the=
+re
+> is a way to embed the userspace binary into the kernel and just fire it u=
+p
+> when needed. But so far it's been the usual -ENOTIME for me...
+>
+> --
+> Ville Syrj=E4l=E4
+> Intel
