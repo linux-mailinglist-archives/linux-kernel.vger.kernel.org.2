@@ -2,155 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40D98422310
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 12:06:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6051422311
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 12:06:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233911AbhJEKIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 06:08:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39366 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233784AbhJEKIB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 06:08:01 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C1F0C06161C;
-        Tue,  5 Oct 2021 03:06:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=x5LyrEZtyTYgVW8P7eEdPEoGjAnPMtn7SJqGAKJ+WAM=; b=xcPaIYgXlOo2smSUYYX6a3wMi+
-        Z3QY34kICgFD+S/huIFroTkxJUAiwbL4z7zZsBhbqviiC8lZ2Ace5P+fx6FwMoo660DfRJvR/GOIl
-        gzTVGFdQdsMxQ6ZafP+x/0tbhoXYFUbFZObP1qt3ViPNghfb2pxRc/PPB0A39wSVA8MiythyYW9A2
-        hayH3VYhxeNhbVK7rQK+M4xQBceIdjhAibAegPmZI1igzduL8UVst9H1LlSFWaP+QKfGCPtEfQ9xV
-        pIW8y+QfBl3Tn9IKlGIXU5WTSBm9tRa6WGizDDaIevuItbW+3GDkO0lBM3dBa/uIu+iVkVMCvkwkv
-        Sp07Fyig==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:54950)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1mXhKq-00007Y-KF; Tue, 05 Oct 2021 11:06:08 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1mXhKo-0008NG-Dp; Tue, 05 Oct 2021 11:06:06 +0100
-Date:   Tue, 5 Oct 2021 11:06:06 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Sean Anderson <sean.anderson@seco.com>
-Cc:     netdev@vger.kernel.org, "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>
-Subject: Re: [RFC net-next PATCH 10/16] net: macb: Move PCS settings to PCS
- callbacks
-Message-ID: <YVwjjghGcXaEYgY+@shell.armlinux.org.uk>
-References: <20211004191527.1610759-1-sean.anderson@seco.com>
- <20211004191527.1610759-11-sean.anderson@seco.com>
+        id S233988AbhJEKIM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 06:08:12 -0400
+Received: from foss.arm.com ([217.140.110.172]:37840 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233946AbhJEKIH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 06:08:07 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 784BD6D;
+        Tue,  5 Oct 2021 03:06:16 -0700 (PDT)
+Received: from [10.1.31.140] (e127744.cambridge.arm.com [10.1.31.140])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1A86A3F766;
+        Tue,  5 Oct 2021 03:06:13 -0700 (PDT)
+Subject: Re: [RFC] perf arm-spe: Track task context switch for cpu-mode events
+To:     Leo Yan <leo.yan@linaro.org>, James Clark <james.clark@arm.com>
+Cc:     Namhyung Kim <namhyung@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+References: <20210916001748.1525291-1-namhyung@kernel.org>
+ <20210916135418.GA383600@leoy-ThinkPad-X240s>
+ <CAM9d7chQjzEm7=UpjtTBbsob7kT+=9v16P30hWxnna7mbHu=2g@mail.gmail.com>
+ <20210923142305.GA603008@leoy-ThinkPad-X240s>
+ <363c4107-fc6f-51d0-94d8-a3f579c8f5a2@arm.com>
+ <20211004062638.GB174271@leoy-ThinkPad-X240s>
+From:   German Gomez <german.gomez@arm.com>
+Message-ID: <f877cfa6-9b25-6445-3806-ca44a4042eaf@arm.com>
+Date:   Tue, 5 Oct 2021 11:06:12 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211004191527.1610759-11-sean.anderson@seco.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <20211004062638.GB174271@leoy-ThinkPad-X240s>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 04, 2021 at 03:15:21PM -0400, Sean Anderson wrote:
-> +static void macb_pcs_get_state(struct phylink_pcs *pcs,
-> +			       struct phylink_link_state *state)
-> +{
-> +	struct macb *bp = pcs_to_macb(pcs);
-> +
-> +	if (gem_readl(bp, NCFGR) & GEM_BIT(SGMIIEN))
-> +		state->interface = PHY_INTERFACE_MODE_SGMII;
-> +	else
-> +		state->interface = PHY_INTERFACE_MODE_1000BASEX;
+Hi Leo,
 
-There is no requirement to set state->interface here. Phylink doesn't
-cater for interface changes when reading the state. As documented,
-phylink will set state->interface already before calling this function
-to indicate what interface mode it is currently expecting from the
-hardware.
+On 04/10/2021 07:26, Leo Yan wrote:
+> Hi James,
+>
+> On Thu, Sep 30, 2021 at 04:08:52PM +0100, James Clark wrote:
+>> On 23/09/2021 15:23, Leo Yan wrote:
+>>> On Thu, Sep 16, 2021 at 02:01:21PM -0700, Namhyung Kim wrote:
+> [...]
+> I'd like to use the comparison method for the test:
+> We should enable PID tracing and capture in the perf.data, when decode
+> the trace data, we can based on context packet and based on the switch
+> events to generate out two results, so we can check how the difference
+> between these results.
 
-> +static int macb_pcs_config_an(struct macb *bp, unsigned int mode,
-> +			      phy_interface_t interface,
-> +			      const unsigned long *advertising)
-> +{
-> +	bool changed = false;
-> +	u16 old, new;
-> +
-> +	old = gem_readl(bp, PCSANADV);
-> +	new = phylink_mii_c22_pcs_encode_advertisement(interface, advertising,
-> +						       old);
-> +	if (old != new) {
-> +		changed = true;
-> +		gem_writel(bp, PCSANADV, new);
-> +	}
-> +
-> +	old = new = gem_readl(bp, PCSCNTRL);
-> +	if (mode == MLO_AN_INBAND)
+Yesterday we did some testing and found that there seems to be an exact
+match between using context packets and switch events. However this only
+applies when tracing in userspace (by adding the 'u' suffix to the perf
+event). Otherwise we still see as much as 2% of events having the wrong
+PID around the time of the switch.
 
-Please use phylink_autoneg_inband(mode) here.
+In order to measure this I applied Namhyung's patch and James's patch
+from [1]. Then added a printf line to the function arm_spe_prep_sample
+where I have access to both PID values, as a quick way to compare them
+later in a perf-report run. This is the diff of the printf patch:
 
-> +		new |= BMCR_ANENABLE;
-> +	else
-> +		new &= ~BMCR_ANENABLE;
-> +	if (old != new) {
-> +		changed = true;
-> +		gem_writel(bp, PCSCNTRL, new);
-> +	}
+diff --git a/tools/perf/util/arm-spe.c b/tools/perf/util/arm-spe.c
+index 41385ab96fbc..591985c66ac4 100644
+--- a/tools/perf/util/arm-spe.c
++++ b/tools/perf/util/arm-spe.c
+@@ -247,6 +247,8 @@ static void arm_spe_prep_sample(struct arm_spe *spe,
+    event->sample.header.type = PERF_RECORD_SAMPLE;
+    event->sample.header.misc = sample->cpumode;
+    event->sample.header.size = sizeof(struct perf_event_header);
++
++       printf(">>>>>> %d / %lu\n", speq->tid, record->context_id & 0x7fff);
+ }
 
-There has been the suggestion that we should allow in-band AN to be
-disabled in 1000base-X if we're in in-band mode according to the
-ethtool state. I have a patch that adds that.
+The differences obtained as error % were obtained by running the
+following perf-record commands for different configurations:
 
-> +	return changed;
-> +}
-> +
-> +static int macb_pcs_config(struct phylink_pcs *pcs, unsigned int mode,
-> +			   phy_interface_t interface,
-> +			   const unsigned long *advertising,
-> +			   bool permit_pause_to_mac)
-> +{
-> +	bool changed = false;
-> +	struct macb *bp = pcs_to_macb(pcs);
-> +	u16 old, new;
-> +	unsigned long flags;
-> +
-> +	spin_lock_irqsave(&bp->lock, flags);
-> +	old = new = gem_readl(bp, NCFGR);
-> +	if (interface == PHY_INTERFACE_MODE_SGMII) {
-> +		new |= GEM_BIT(SGMIIEN);
-> +	} else if (interface == PHY_INTERFACE_MODE_1000BASEX) {
-> +		new &= ~GEM_BIT(SGMIIEN);
-> +	} else {
-> +		spin_lock_irqsave(&bp->lock, flags);
-> +		return -EOPNOTSUPP;
+$ sudo ./perf record -e arm_spe/ts_enable=1,load_filter=1,store_filter=1/u -a -- sleep 60
+$ sudo ./perf report --stdio \
+    | grep ">>>>>>" \
+    | awk '{total++; if($2!=$4) miss++} END {print "Error: " (100*miss/total) "% out of " total " samples"}'
 
-You can't actually abort at this point - phylink will print the error
-and carry on regardless. The checking is all done via the validate()
-callback and if that indicates the interface mode is acceptable, then
-it should be accepted.
+Error: 0% out of 11839328 samples
 
->  static const struct phylink_pcs_ops macb_phylink_usx_pcs_ops = {
->  	.pcs_get_state = macb_usx_pcs_get_state,
->  	.pcs_config = macb_usx_pcs_config,
-> -	.pcs_link_up = macb_usx_pcs_link_up,
->  };
->  
->  static const struct phylink_pcs_ops macb_phylink_pcs_ops = {
->  	.pcs_get_state = macb_pcs_get_state,
-> -	.pcs_an_restart = macb_pcs_an_restart,
+$ sudo ./perf record -e arm_spe/ts_enable=1,load_filter=1,store_filter=1/ -a -- sleep 10
+$ sudo ./perf report --stdio \
+    | grep ">>>>>>" \
+    | awk '{total++; if($2!=$4) miss++} END {print "Error: " (100*miss/total) "% out of " total " samples"}'
 
-You don't want to remove this. When operating in 1000BASE-X mode, it
-will be called if a restart is required (e.g. macb_pcs_config()
-returning positive, or an ethtool request.) You need to keep the empty
-function. That may also help the diff algorithm to produce a cleaner
-patch too.
+Error: 1.30624% out of 3418731 samples
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+>> German Gomez actually starting looking into the switch events for SPE at the
+>> same time, so I've CCd him and maybe he can do some testing of the patch.
+> Cool!  German is welcome to continue the related work; since I am in
+> holiday this week, I will try this as well, if I have any conclusion
+> will get back to you guys.
+>
+> If the test result shows good enough, I personally think we need finish
+> below items:
+>
+> - Enable PID tracing and decode with context packets;
+> - Provide interface to user space so perf tool knows if should use
+>   hardware PID or rollback to context switch events;
+> - Merge Namhyung's patch for using switch events for samples.
+>
+> Thanks,
+> Leo
+
+I think the fallback to using switch when we can't use the CONTEXTIDR
+register is a viable option for userspace events, but maybe not so much
+for non-userspace.
+
+Thanks,
+German
+
+[1] https://www.spinics.net/lists/linux-perf-users/msg12543.html
