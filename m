@@ -2,114 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C824422CB0
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:38:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79E84422CB2
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:39:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236159AbhJEPkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 11:40:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43674 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235510AbhJEPkq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 11:40:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 65FCB60F9D;
-        Tue,  5 Oct 2021 15:38:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633448335;
-        bh=pBSidePIZmv7cMKM71ZiKSTLg+cBESHQ6KdxPlo5gw0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vPfYcbO1PGWwXe7yY2YM48mc/C0B5n1e7SHbjLCYUxlTn3/d1A9PS0W9hqJlED0Tk
-         z0qldShdGSj7bFaK19dpf2M3EXZln+GxvSElqYce0aqB14M4xan9gk0x1GpsJAolhG
-         DsK7UGKrSwOvyLGsgM6gKDKJb3peOUTbxGjzMqGw=
-Date:   Tue, 5 Oct 2021 17:38:53 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Flavio Suligoi <f.suligoi@asem.it>
-Cc:     Alan Stern <stern@rowland.harvard.edu>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Mathias Nyman <mathias.nyman@linux.intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Bixuan Cui <cuibixuan@huawei.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Chris Chiu <chris.chiu@canonical.com>,
-        Rajat Jain <rajatja@google.com>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] usb: core: hub: improve port over-current alert msg
-Message-ID: <YVxxjUZDh8abDNjc@kroah.com>
-References: <20211005151644.288932-1-f.suligoi@asem.it>
+        id S236165AbhJEPlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 11:41:11 -0400
+Received: from smtprelay0237.hostedemail.com ([216.40.44.237]:52002 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S235510AbhJEPlK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 11:41:10 -0400
+Received: from omf14.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 3D34218023431;
+        Tue,  5 Oct 2021 15:39:18 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf14.hostedemail.com (Postfix) with ESMTPA id 40ABF268E40;
+        Tue,  5 Oct 2021 15:39:16 +0000 (UTC)
+Message-ID: <7f6e53d04849daabd3e85c23f9974b2eb4a20c13.camel@perches.com>
+Subject: Re: [PATCH v5] docs: Explain the desired position of function
+ attributes
+From:   Joe Perches <joe@perches.com>
+To:     Kees Cook <keescook@chromium.org>, Jonathan Corbet <corbet@lwn.net>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-hardening@vger.kernel.org,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Tue, 05 Oct 2021 08:39:14 -0700
+In-Reply-To: <20211005152611.4120605-1-keescook@chromium.org>
+References: <20211005152611.4120605-1-keescook@chromium.org>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211005151644.288932-1-f.suligoi@asem.it>
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=3.06
+X-Stat-Signature: d93h65981twpu9xb5t5gm9xwms5aac86
+X-Rspamd-Server: rspamout03
+X-Rspamd-Queue-Id: 40ABF268E40
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1+gLwb8Zq/2h+GassA6/3wo/iCEkKB2LdA=
+X-HE-Tag: 1633448356-978975
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05, 2021 at 05:16:44PM +0200, Flavio Suligoi wrote:
-> At the moment the port over-current message is
-> displayed only if the over-current condition is permanent.
-> 
-> But in case of permanent short-circuit or
-> over-current, some USB power-distribution switches
-> (such as the TPS20xx, etc.), after the over-current
-> detection and the consequent shutdown, return
-> in the normal state.
+On Tue, 2021-10-05 at 08:26 -0700, Kees Cook wrote:
+> While discussing how to format the addition of various function
+> attributes, some "unwritten rules" of ordering surfaced[1]. Capture as
+> close as possible to Linus's preferences for future reference.
+> +For example, using this function declaration example::
+> +
+> + __init void * __must_check action(enum magic value, size_t size, u8 count,
+> +				   char *fmt, ...) __printf(4, 5) __malloc;
 
-Please use the full 72 columns of the changelog text.
+trivia: almost all fmt declarations should be const char *
 
+> +Note that for a function **definition** (i.e. the actual function body),
+> +the compiler does not allow function parameter attributes after the
+> +function parameters. In these cases, they should go after the storage
+> +class attributes (e.g. note the changed position of ``__printf(4, 5)``
+> +below, compared to the **declaration** example above)::
+> +
+> + static __always_inline __init __printf(4, 5) void * __must_check action(enum magic value,
+> +		size_t size, u8 count, char *fmt, ...) __malloc
 
-> 
-> So, in these cases, the over-current error message
-> never appears.
-> 
-> To overcome this problem, the "over-current condition"
-> message is displayed even after some over-current events.
-> 
-> Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
-> ---
->  arch/arm64/boot/dts/Makefile | 1 +
->  drivers/usb/core/hub.c       | 5 +++--
->  2 files changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/Makefile b/arch/arm64/boot/dts/Makefile
-> index 639e01a4d855..bf26ce60d78a 100644
-> --- a/arch/arm64/boot/dts/Makefile
-> +++ b/arch/arm64/boot/dts/Makefile
-> @@ -8,6 +8,7 @@ subdir-y += amlogic
->  subdir-y += apm
->  subdir-y += apple
->  subdir-y += arm
-> +subdir-y += asem
->  subdir-y += bitmain
->  subdir-y += broadcom
->  subdir-y += cavium
+here too, and 80 columns?
 
-I do not think this change is part of this :(
+> + {
+> +	...
+> + }
 
-> diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
-> index 86658a81d284..ff6c8e0e2673 100644
-> --- a/drivers/usb/core/hub.c
-> +++ b/drivers/usb/core/hub.c
-> @@ -5577,7 +5577,8 @@ static void port_event(struct usb_hub *hub, int port1)
->  		msleep(100);	/* Cool down */
->  		hub_power_on(hub, true);
->  		hub_port_status(hub, port1, &status, &unused);
-> -		if (status & USB_PORT_STAT_OVERCURRENT)
-> +		if ((status & USB_PORT_STAT_OVERCURRENT) ||
-> +		    !(port_dev->over_current_count % 15))
+Or just put all the attributes before the storage class... <grumble/chuckle>
 
-What is 15?
+cheers, Joe
 
->  			dev_err(&port_dev->dev, "over-current condition\n");
->  	}
->  
-> @@ -5738,7 +5739,7 @@ static void hub_event(struct work_struct *work)
->  			u16 status = 0;
->  			u16 unused;
->  
-> -			dev_dbg(hub_dev, "over-current change\n");
-> +			dev_info(hub_dev, "over-current change\n");
-
-This is just going to be noisy, what can a user do with this?
-
-thanks,
-
-greg k-h
