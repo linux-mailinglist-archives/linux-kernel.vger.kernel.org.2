@@ -2,131 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E79FB4222F0
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 11:58:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DDA24222F2
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 11:59:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233895AbhJEJ76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 05:59:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37464 "EHLO
+        id S233808AbhJEKAt convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 5 Oct 2021 06:00:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233870AbhJEJ7y (ORCPT
+        with ESMTP id S233077AbhJEKAq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 05:59:54 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45699C061745
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 02:58:04 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id m3so82862655lfu.2
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 02:58:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=rq7MKM2zrv9Ik3HYA0sfeiFO+Ud/aiQ0uN8CoLNzjP8=;
-        b=q6xeJSXDEJCDu7zY5yhSM415ImPMMcJXjo5jezsYRWmGPbMU3MD9kDDhCzV8xbhh5J
-         xuMucvdJ8sKJZQ9rq29tm0S7V0FTdEzd/dty+Z7IbagtQbFRaf6p5f8IOGfIk1tqbWYh
-         /mGljqys/66QZoamXvHtEXjHm8AOLPxo99x26Dsrh3Kbtm9mbpx3cQcNji8t+en5PtOF
-         EeTVWMIPYYeA7cU54LsXvZg/lcix3FPyEBW0m+61lAIdBBuG0TnqY0iSVxkt8tedVGEn
-         rHhY+AcXYhBj4VURLrWv4Kft89rkEL7tqv2xZu1kLgdMp/cBH5dDbI0HQYCHHrtB9ecO
-         AvRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=rq7MKM2zrv9Ik3HYA0sfeiFO+Ud/aiQ0uN8CoLNzjP8=;
-        b=L7Zp/EVishcz5JGQ7fV3LK4eMpdx6FzCQxlwnQtFEWRiomGc6Q5QBRitsslGk9s/NH
-         mBAf8MFH6TB/zRi4/dwfX0SfYzJkERZHwrfOoVD8j+XEih76XZGKqVC+olggXQn72xjd
-         9a9NsqT/EBwl0QbNxHbmdvfbltQ9upMGD4+eurXfmAfoAVSoaHweZk8zhe9goKBNk8hw
-         FHHcixxqRaupG+FHFOdgH8KJFnLfMXF+OK9ZEipKlzx+PFrDWxoI7Pexym+tmEwHPgJS
-         yEQHxEDd01tQxzT8evwG25DQKINnQX5SJyY/SAr9vWoyETpFxkMtK+I2JIrrgzNPqLIv
-         0Z9g==
-X-Gm-Message-State: AOAM533g2AG0l19QjZY8qw09wIwvW3BGxQ6a7BDjiIHTmSBvdA9AKN6z
-        H9o5YQQL+hcj39Ft+DsvHhi8Bg==
-X-Google-Smtp-Source: ABdhPJztJNS0D67j+1Xh2JJk3ONd902XRoJ8JO2wypn685qKb8NkIEto9fs/OTRtiLIIdaA347rP9A==
-X-Received: by 2002:a19:790c:: with SMTP id u12mr2535757lfc.490.1633427881861;
-        Tue, 05 Oct 2021 02:58:01 -0700 (PDT)
-Received: from localhost ([31.134.121.151])
-        by smtp.gmail.com with ESMTPSA id b15sm2088546lji.126.2021.10.05.02.58.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Oct 2021 02:58:01 -0700 (PDT)
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Jiri Slaby <jirislaby@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-serial@vger.kernel.org,
+        Tue, 5 Oct 2021 06:00:46 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 652AFC06161C
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 02:58:56 -0700 (PDT)
+Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1mXhDq-0007cQ-Tk; Tue, 05 Oct 2021 11:58:54 +0200
+Received: from pza by lupine with local (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1mXhDq-0004n4-8u; Tue, 05 Oct 2021 11:58:54 +0200
+Message-ID: <2c2f76c93e963c19c22976548bef8380975b2730.camel@pengutronix.de>
+Subject: Re: [PATCH] reset: Allow building Broadcom STB RESCAL as module
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     Florian Fainelli <f.fainelli@gmail.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2] tty: serial: samsung: Improve naming for common macro
-Date:   Tue,  5 Oct 2021 12:58:00 +0300
-Message-Id: <20211005095800.2165-1-semen.protsenko@linaro.org>
-X-Mailer: git-send-email 2.30.2
+Cc:     bcm-kernel-feedback-list@Broadcom.com,
+        linux-arm-kernel@lists.infradead.org
+Date:   Tue, 05 Oct 2021 11:58:54 +0200
+In-Reply-To: <20210924030840.9650-1-f.fainelli@gmail.com>
+References: <20210924030840.9650-1-f.fainelli@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.30.5-1.1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Having "_USI" suffix in EXYNOS_COMMON_SERIAL_DRV_DATA_USI() macro is
-confusing. Rename it to just EXYNOS_COMMON_SERIAL_DRV_DATA() and provide
-USI registers availability for all Exynos variants instead. While at it,
-also convert .has_usi field type to bool, so its usage is more obvious.
+On Thu, 2021-09-23 at 20:08 -0700, Florian Fainelli wrote:
+> The driver can be built as a module and uses device managed resources.
+> 
+> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+> ---
+>  drivers/reset/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
+> index be799a5abf8a..f9d8b364db5f 100644
+> --- a/drivers/reset/Kconfig
+> +++ b/drivers/reset/Kconfig
+> @@ -58,7 +58,7 @@ config RESET_BRCMSTB
+>  	  a SUN_TOP_CTRL_SW_INIT style controller.
+>  
+>  config RESET_BRCMSTB_RESCAL
+> -	bool "Broadcom STB RESCAL reset controller"
+> +	tristate "Broadcom STB RESCAL reset controller"
+>  	depends on HAS_IOMEM
+>  	depends on ARCH_BRCMSTB || COMPILE_TEST
+>  	default ARCH_BRCMSTB
 
-Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
----
-Changes in v2:
-  - Converted .has_usi field to boolean
-  - Used true/false instead of 1/0 values in
-    EXYNOS_COMMON_SERIAL_DRV_DATA() macro
+Thank you, applied to reset/next.
 
- drivers/tty/serial/samsung_tty.c | 13 +++++--------
- 1 file changed, 5 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/tty/serial/samsung_tty.c b/drivers/tty/serial/samsung_tty.c
-index e2f49863e9c2..ca084c10d0bb 100644
---- a/drivers/tty/serial/samsung_tty.c
-+++ b/drivers/tty/serial/samsung_tty.c
-@@ -65,7 +65,7 @@ enum s3c24xx_port_type {
- struct s3c24xx_uart_info {
- 	char			*name;
- 	enum s3c24xx_port_type	type;
--	unsigned int		has_usi;
-+	bool			has_usi;
- 	unsigned int		port_type;
- 	unsigned int		fifosize;
- 	unsigned long		rx_fifomask;
-@@ -2780,7 +2780,7 @@ static struct s3c24xx_serial_drv_data s5pv210_serial_drv_data = {
- #endif
- 
- #if defined(CONFIG_ARCH_EXYNOS)
--#define EXYNOS_COMMON_SERIAL_DRV_DATA_USI(_has_usi)		\
-+#define EXYNOS_COMMON_SERIAL_DRV_DATA(_has_usi)			\
- 	.info = &(struct s3c24xx_uart_info) {			\
- 		.name		= "Samsung Exynos UART",	\
- 		.type		= TYPE_S3C6400,			\
-@@ -2804,21 +2804,18 @@ static struct s3c24xx_serial_drv_data s5pv210_serial_drv_data = {
- 		.has_fracval	= 1,				\
- 	}							\
- 
--#define EXYNOS_COMMON_SERIAL_DRV_DATA				\
--	EXYNOS_COMMON_SERIAL_DRV_DATA_USI(0)
--
- static struct s3c24xx_serial_drv_data exynos4210_serial_drv_data = {
--	EXYNOS_COMMON_SERIAL_DRV_DATA,
-+	EXYNOS_COMMON_SERIAL_DRV_DATA(false),
- 	.fifosize = { 256, 64, 16, 16 },
- };
- 
- static struct s3c24xx_serial_drv_data exynos5433_serial_drv_data = {
--	EXYNOS_COMMON_SERIAL_DRV_DATA,
-+	EXYNOS_COMMON_SERIAL_DRV_DATA(false),
- 	.fifosize = { 64, 256, 16, 256 },
- };
- 
- static struct s3c24xx_serial_drv_data exynos850_serial_drv_data = {
--	EXYNOS_COMMON_SERIAL_DRV_DATA_USI(1),
-+	EXYNOS_COMMON_SERIAL_DRV_DATA(true),
- 	.fifosize = { 256, 64, 64, 64 },
- };
- 
--- 
-2.30.2
-
+regards
+Philipp
