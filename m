@@ -2,75 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAA474225AC
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 13:49:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38F684225B0
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 13:50:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234483AbhJELvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 07:51:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59612 "EHLO mail.kernel.org"
+        id S234516AbhJELwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 07:52:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60012 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230500AbhJELvK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 07:51:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DF56361244;
-        Tue,  5 Oct 2021 11:49:19 +0000 (UTC)
+        id S233672AbhJELv7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 07:51:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id D4A5F61502;
+        Tue,  5 Oct 2021 11:50:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633434560;
-        bh=OYKLoUxga2Z9QEKV7pqLX90gCdbIV7CSTh1BJVCbJoM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CYThp0I24XkY1HoLCdXYs4Haf9/qWmESYx39fldrtD26bgsa1Dkp1SGek6xVMyXW2
-         z+UJpkigdK49F1AYblHNRnNTXqj6Rs80gGyXXR6Xh/Dq67bYzzlpNd3fIuYpU/6H7e
-         f8tRClr7CuNwPIwdEaKnF4bwJy3yPQ9oMjxNRZY3tJOjL84uYvkXZ3KCxhcXQfTgu2
-         TPz5CCwdj1eSsLedfVyKd6wkkfP9zmm1GrTYrs+C/8FPlPFmMgp7wbOBOqYiDdSoU8
-         x3h17eopCN7WqgBapnZdnq2Jf4tLRRLBPuq4hv7wFXNcZCWLPhxhf27dxaL6ra+0Mk
-         2KC5ehL3rAQww==
-Date:   Tue, 5 Oct 2021 12:49:17 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     cy_huang <u0084500@gmail.com>
-Cc:     oder_chiou@realtek.com, perex@perex.cz, tiwai@suse.com,
-        robh+dt@kernel.org, lgirdwood@gmail.com,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        cy_huang@richtek.com, devicetree@vger.kernel.org,
-        allen_lin@richtek.com
-Subject: Re: [PATCH 1/2] ASoC: dt-bindings: rt9120: Add initial bindings
-Message-ID: <YVw7vbpu4TS+7Su8@sirena.org.uk>
-References: <1633396615-14043-1-git-send-email-u0084500@gmail.com>
+        s=k20201202; t=1633434608;
+        bh=5H1e9VG8V483wq01PzCvLBbuUnY2XCEq4xrGesCLCUk=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=Kn6N5Aj+5TRKJNv99nINGDvyhIeqf0aH4MBSLE3lOshHWZpxQbjPcmA/31hkEyPGY
+         LJrw1pC3jp3ZS9bdW9ZFiq06vyHH1jcOgYVvK0iCUNwwiRKYLovjYbkL5p+giEfo98
+         wfM37m0SoI1SXW4LBdpbvL5Heu9PKedv/9/R9qFI1SbNd+af4TTdk/c8toCg2PTx+x
+         RwbhtZCOm8Zhz6WEBM7XtJhlTwxe0Mi9BckXriIhN5RJzGkU5f0Y1PNTb93eUcT6/c
+         sLg2tvpHfLVqR4eKd1+vb6UKjroj/T3AxPn+FuUqLBW1ZuMW1SUdBwlBiAwFUIOEG2
+         ZNMEglnxf6ENg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id CEA7360A53;
+        Tue,  5 Oct 2021 11:50:08 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="1uf5R5Qh6EaOZEfX"
-Content-Disposition: inline
-In-Reply-To: <1633396615-14043-1-git-send-email-u0084500@gmail.com>
-X-Cookie: A is for Apple.
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net] r8152: avoid to resubmit rx immediately
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163343460884.12488.8334221276223981398.git-patchwork-notify@kernel.org>
+Date:   Tue, 05 Oct 2021 11:50:08 +0000
+References: <20211004062858.1679-381-nic_swsd@realtek.com>
+In-Reply-To: <20211004062858.1679-381-nic_swsd@realtek.com>
+To:     Hayes Wang <hayeswang@realtek.com>
+Cc:     jason-ch.chen@mediatek.com, kuba@kernel.org, davem@davemloft.net,
+        netdev@vger.kernel.org, nic_swsd@realtek.com,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello:
 
---1uf5R5Qh6EaOZEfX
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This patch was applied to netdev/net.git (refs/heads/master):
 
-On Tue, Oct 05, 2021 at 09:16:54AM +0800, cy_huang wrote:
+On Mon, 4 Oct 2021 14:28:58 +0800 you wrote:
+> For the situation that the disconnect event comes very late when the
+> device is unplugged, the driver would resubmit the RX bulk transfer
+> after getting the callback with -EPROTO immediately and continually.
+> Finally, soft lockup occurs.
+> 
+> This patch avoids to resubmit RX immediately. It uses a workqueue to
+> schedule the RX NAPI. And the NAPI would resubmit the RX. It let the
+> disconnect event have opportunity to stop the submission before soft
+> lockup.
+> 
+> [...]
 
-> +  richtek,use-dvdd-1p8v:
-> +    description: Indicate DVDD 1P8V is used, default for 3P3V or 5V design
-> +    type: boolean
+Here is the summary with links:
+  - [net] r8152: avoid to resubmit rx immediately
+    https://git.kernel.org/netdev/net/c/baf33d7a7564
 
-I would expect this to be done through the regulator bindings, they
-would allow the driver to query the supply voltage.
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
---1uf5R5Qh6EaOZEfX
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFcO70ACgkQJNaLcl1U
-h9ABHwf6A3xy1bgkNIerD9TnHgMwpJijHvMW21OjyqwDF+uG7yxxoG3Div1cwEAY
-fbBFC5RMEB+oR4RsKiY7+dwC5niavCbgH//Sv7Ylk+oi9UeWRXnTV7cDIZ6TSBBh
-xmJprY83kaDlasiD+wWoES3v09jy+TRCWHluCp22Iv2+ZoP5ljT6EUFWeJ/t5FQc
-5oI3zoIXHJCSpbKLjf7s5UUdF69SeAKj5CA9QeaSKR6FkV5tGsyUKII0+mKy0PzC
-iBrp/xxKCAets2qxF8AllbjtKvNUt0lyDw54DZAzweZ44Cxr1Cfht1JudKGmCJuP
-ZYQoeMTMN8x/39hHIxq7dCLdQ87V2Q==
-=Ukfp
------END PGP SIGNATURE-----
-
---1uf5R5Qh6EaOZEfX--
