@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D72E421FCF
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 09:55:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A844D421FD4
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 09:55:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232884AbhJEH5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 03:57:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36120 "EHLO
+        id S233039AbhJEH5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 03:57:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232866AbhJEH5D (ORCPT
+        with ESMTP id S232972AbhJEH5F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 03:57:03 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD9EDC061745;
-        Tue,  5 Oct 2021 00:55:12 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id r10so19246113wra.12;
-        Tue, 05 Oct 2021 00:55:12 -0700 (PDT)
+        Tue, 5 Oct 2021 03:57:05 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 718CDC06174E;
+        Tue,  5 Oct 2021 00:55:15 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id r18so8418711wrg.6;
+        Tue, 05 Oct 2021 00:55:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=jYgx3udHfzPehpWqU0/YSG3YZlHkzavvjpxyA5BS7XM=;
-        b=fbjASsA3DGJ71865lWBZ9xSdZMesWqr28KbtZnlA5msr0AIGqERDXmoPDCoYj5TRd7
-         49fGlGiVPqXZQiS8Pux1y/vhFE2HI93lq/hpH1X8ms/4DIS4x8pZlLjXt834uT6zSCpC
-         874wElQSHI5Z93NVBgF9bwm8rHp7U4Proh8JCyUuxtmsdlz0X8mFwOw7A0dp39VAcian
-         YPHssiPdsoHmrG6DOs5KTB5epJOg3f8f0DBrrMFp74TJ1mRZIdYmj9ROzlxz9Mc/k2nS
-         XQPrfXMNp+U8S1cabY2rfxgtmgSiwt/NpfW2IsV6sRmT48dCcg+jDW1DP9esc7hogcxr
-         N1Uw==
+        bh=MWHTo+XRSGYiCKOh5BlWAncj+C5oL18K4OJn3wqBUvc=;
+        b=RUaEq41QPmQWfIHjCKWg49PUmhqCDf5hxGVMgyL4NOZrhjIr2WhT2yYKzOEO86bCG8
+         /Mwt255trIDzltwQJBPxf0IZxK5GgA1dJKiy7bxBeL6hyYq/VSg76ksmDgNY4yRQ4SkU
+         e0HF3tlje7R7qKjMpacOdX1QqPLpp9Rx9ih/ypmwwIubewqbI1j1cKepIlwhAoxFvkNM
+         1uybbCRV8OFY1MbKkjrPnvgKcs1J/6T3YDMwZwRswjpfYEYnOu1CreM5/OHtRWVzV6vV
+         XVWVZsNkOWEqN2tQceKD5uGpFdehDRx272aCr9UPTF3fcBN5C59fAkP5wIWtjZOpquN1
+         x2LA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=jYgx3udHfzPehpWqU0/YSG3YZlHkzavvjpxyA5BS7XM=;
-        b=emJ8U5r0nQ6KkF8Lyvprg5y5s7nLL5A1Od5Kn4eUX9GLnW99zVGhTVhl9N2GpVt8gJ
-         ENIjQeU2e5qY8E+7ut8oskcsB2nlds9k0ySt+RUaX0utrOh5pdZRR1D+HMyDlYYJO/36
-         EBe7CQsNHufTyhBS+QsO0Wp2TM2eIyF+zNtyU2DcVCZx/EHqZIIVzlEtEgFvehZL90xE
-         7xYPTQb7F23XOY3gaJxpx4ramwgb5JoTi6+uKi8/iNU2aEjsjduD7M8AP1RmYlOAS1uR
-         vnwGsT7E860PAOD5dDWE6prNKnLxNAXJbgXVd4DgEn9XkGLZLpB8PHKhTSQ3dh7C/PC6
-         c/8g==
-X-Gm-Message-State: AOAM5312dKoUnWQkWGB2B2h72y53tDWj3vIyLb/LYAxGVjEwK971PeBB
-        SJrc7+j/D4Dh0yJsKWgmG+Q=
-X-Google-Smtp-Source: ABdhPJzoKzXqhAdKizQcVi24z8GRCruLLcueSh2LjcwFbgN4lmnfwFHrQKkA3kNlly/idLRQhlzXMw==
-X-Received: by 2002:adf:8bcf:: with SMTP id w15mr20505384wra.144.1633420511433;
-        Tue, 05 Oct 2021 00:55:11 -0700 (PDT)
+        bh=MWHTo+XRSGYiCKOh5BlWAncj+C5oL18K4OJn3wqBUvc=;
+        b=U2UUKA3CZtOSn8OlkF90zoCGtyFZY0OSlY4769ALbyYr9rJ5XspbBbcf0zRfJtQeIu
+         glHlHJJ1UhTDiPbr0bCxUE6wusHJBnWE4wio/SjB1AELcqYtN11e0waEUWiS6m0e1DQu
+         JJJ2YaCd+eO3EKC7IA7OiP34maThA/tu/Ejgl9hTgukmxiSwekuOcYYSaf73fFkXvR5j
+         VY9IcT2TrfKu7n/NshdIB+H2/PsT+af08m6fzS/QqdgdES3A5aA58p17/LWt1NK/sJmg
+         IqWh3corw+4Uy2t8pJqvxH/YahMNTutx6A4C9etQkWoADZAFPLrRk8Dv1wk6jB0dkfz/
+         dhZA==
+X-Gm-Message-State: AOAM530kJBxyThRNp4+l5byaMYEpZP7YuHl4mxqFG4+lRId93+6jY587
+        kTkUW95dbh1nH04+D/Krzgo=
+X-Google-Smtp-Source: ABdhPJwHNge0HaFDWk+ufwEQCKuNYqjSnSSlZlTguVCiy4ZUE+hadlr1LwtRBAxvoDcij4G3nVFy3Q==
+X-Received: by 2002:adf:a2c8:: with SMTP id t8mr19954663wra.215.1633420514015;
+        Tue, 05 Oct 2021 00:55:14 -0700 (PDT)
 Received: from localhost.localdomain (i59F67A83.versanet.de. [89.246.122.131])
-        by smtp.gmail.com with ESMTPSA id o1sm1176984wmq.26.2021.10.05.00.55.10
+        by smtp.gmail.com with ESMTPSA id o1sm1176984wmq.26.2021.10.05.00.55.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Oct 2021 00:55:11 -0700 (PDT)
+        Tue, 05 Oct 2021 00:55:13 -0700 (PDT)
 From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
 To:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
 Cc:     Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
@@ -72,9 +72,9 @@ Cc:     Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
         Dmitry Torokhov <dmitry.torokhov@gmail.com>,
         kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
         Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH v4 01/11] MAINTAINERS: rectify entry for ARM/TOSHIBA VISCONTI ARCHITECTURE
-Date:   Tue,  5 Oct 2021 09:54:41 +0200
-Message-Id: <20211005075451.29691-2-lukas.bulwahn@gmail.com>
+Subject: [PATCH v4 02/11] MAINTAINERS: rectify entry for HIKEY960 ONBOARD USB GPIO HUB DRIVER
+Date:   Tue,  5 Oct 2021 09:54:42 +0200
+Message-Id: <20211005075451.29691-3-lukas.bulwahn@gmail.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20211005075451.29691-1-lukas.bulwahn@gmail.com>
 References: <20211005075451.29691-1-lukas.bulwahn@gmail.com>
@@ -84,37 +84,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 836863a08c99 ("MAINTAINERS: Add information for Toshiba Visconti ARM
-SoCs") refers to the non-existing file toshiba,tmpv7700-pinctrl.yaml in
-./Documentation/devicetree/bindings/pinctrl/. Commit 1825c1fe0057
-("pinctrl: Add DT bindings for Toshiba Visconti TMPV7700 SoC") originating
-from the same patch series however adds the file
-toshiba,visconti-pinctrl.yaml in that directory instead.
+Commit 7a6ff4c4cbc3 ("misc: hisi_hikey_usb: Driver to support onboard USB
+gpio hub on Hikey960") refers to the non-existing file
+./Documentation/devicetree/bindings/misc/hisilicon-hikey-usb.yaml, but this
+commit's patch series does not add any related devicetree binding in misc.
 
-So, refer to toshiba,visconti-pinctrl.yaml in the ARM/TOSHIBA VISCONTI
-ARCHITECTURE section instead.
+So, just drop this file reference in HIKEY960 ONBOARD USB GPIO HUB DRIVER.
 
-Fixes: 836863a08c99 ("MAINTAINERS: Add information for Toshiba Visconti ARM SoCs")
-Acked-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-Reviewed-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+Fixes: 7a6ff4c4cbc3 ("misc: hisi_hikey_usb: Driver to support onboard USB gpio hub on Hikey960")
 Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 ---
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ MAINTAINERS | 1 -
+ 1 file changed, 1 deletion(-)
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 369a00af62c7..2543b6344949 100644
+index 2543b6344949..3eb7154df430 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -2758,7 +2758,7 @@ F:	Documentation/devicetree/bindings/arm/toshiba.yaml
- F:	Documentation/devicetree/bindings/net/toshiba,visconti-dwmac.yaml
- F:	Documentation/devicetree/bindings/gpio/toshiba,gpio-visconti.yaml
- F:	Documentation/devicetree/bindings/pci/toshiba,visconti-pcie.yaml
--F:	Documentation/devicetree/bindings/pinctrl/toshiba,tmpv7700-pinctrl.yaml
-+F:	Documentation/devicetree/bindings/pinctrl/toshiba,visconti-pinctrl.yaml
- F:	Documentation/devicetree/bindings/watchdog/toshiba,visconti-wdt.yaml
- F:	arch/arm64/boot/dts/toshiba/
- F:	drivers/net/ethernet/stmicro/stmmac/dwmac-visconti.c
+@@ -8512,7 +8512,6 @@ M:	John Stultz <john.stultz@linaro.org>
+ L:	linux-kernel@vger.kernel.org
+ S:	Maintained
+ F:	drivers/misc/hisi_hikey_usb.c
+-F:	Documentation/devicetree/bindings/misc/hisilicon-hikey-usb.yaml
+ 
+ HISILICON PMU DRIVER
+ M:	Shaokun Zhang <zhangshaokun@hisilicon.com>
 -- 
 2.26.2
 
