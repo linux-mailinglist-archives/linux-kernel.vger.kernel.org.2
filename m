@@ -2,361 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACEDA422A3C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:07:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 404654229FF
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:03:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236306AbhJEOJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 10:09:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38506 "EHLO
+        id S234694AbhJEOFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 10:05:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235841AbhJEOIK (ORCPT
+        with ESMTP id S235319AbhJEOCe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 10:08:10 -0400
-Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [IPv6:2001:67c:2050::465:102])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D62A7C08E89D;
-        Tue,  5 Oct 2021 07:03:36 -0700 (PDT)
-Received: from smtp102.mailbox.org (smtp102.mailbox.org [IPv6:2001:67c:2050:105:465:1:3:0])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4HNznz0VLHzQkjm;
-        Tue,  5 Oct 2021 16:03:35 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=robgreener.com;
-        s=MBO0001; t=1633442613;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:to:
-         cc:in-reply-to:in-reply-to:references:references;
-        bh=ug6rDDzpKnA56k+77e0aEXwzq5oBN6KdvkwcQyZ0wkg=;
-        b=OQEop257I0oKisJVYuxZnizx4T6JSIK/bdk+gxoKzoTC/1r6cp31FqKuSYoR/LX/XysGCv
-        4b1xTlNZ2TtBOQWgxQFyd9SuC5Ashu2bCG5xzp/+8oVO/GZGAsh0tWlCUWP7uPMpngIEsE
-        gKHrXuDf68YRVjQXFpfrsWmUX2G/ookPQleyy7iYbw9Cdzn4pFBKoQoVZ31jK+PWOO6ckO
-        YfKtTVaiFdxqBYx0YGezBSFYYAf0jYb4w2Sx7dT+SxU0lCR+/5IWv4Ug+rMe1LgFjawHJV
-        Kncu+iHWo5J2Ln1x4VTx30/OY8wgTcvnxgJ+NHk6VfsKogRFGIo0pALOe8pd2Q==
-X-Mailbox-Line: From 835bbc4e27ca989674fb916f70b81038deaf47e5 Mon Sep 17 00:00:00 2001
-Message-Id: <835bbc4e27ca989674fb916f70b81038deaf47e5.1633442131.git.rob@robgreener.com>
-In-Reply-To: <cover.1633442131.git.rob@robgreener.com>
-References: <cover.1633442131.git.rob@robgreener.com>
-From:   Robert Greener <rob@robgreener.com>
-Date:   Tue, 5 Oct 2021 14:52:43 +0100
-Subject: [PATCH 13/13] usb: core: config: fix parenthesis alignment
-X-Rspamd-Queue-Id: 4981426E
-To:     unlisted-recipients:; (no To-header on input)
+        Tue, 5 Oct 2021 10:02:34 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CFE9C08C5CA
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 06:53:16 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id 72so19824998qkk.7
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 06:53:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=from:references:in-reply-to:mime-version:thread-index:date
+         :message-id:subject:to:cc;
+        bh=lSS1vC9uVxxcwZIADFqXPAJM19XirM4ca49vCzGpFDg=;
+        b=C5hAb7zsC7D9XLZGcxsVpKW/5oJvjCgXngYPBdYhC2ComL5TIJfcqp+W/F3irmwT2w
+         K69qWIqZLkMpPgIXzkDZ+k+wRW0XRVNML7V+apMvEJhysVBbhPY8TcMPGp9VHDRO0KyV
+         wlacmG2rBvBmTHPnbEUaJDTzo5gB2KrKyEmsc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:references:in-reply-to:mime-version
+         :thread-index:date:message-id:subject:to:cc;
+        bh=lSS1vC9uVxxcwZIADFqXPAJM19XirM4ca49vCzGpFDg=;
+        b=dnkF+6Jr+DP2VgZDaITfunRKoPUuXqa7M/fJL0WfJ6eQVfakCESVv5dUiSDE+d3ehE
+         uy+riaoWK/faF8aOgxKxHxbQRXMUb8Cw8YbRcW3FUwx5dBrJ75/QSdH53D/+3o0rO9HQ
+         MUgL5/ChbOdiSAEGmazDEZGrX9HWsuMp9EQVlhavzKqC3CBIqYS6DzftYTtIGWBElhqs
+         wG6rsIi3Goyk/Bz0uCJYjpH1MMvl45943Rb9gD3DapVncZkc53iYsXZ7FCRLUbfbcn4a
+         3R5Rc2vWQuEXj4hr9dtVvQicU+e1RVbUI4vzs+mDAO6+nOc6AxlC0TtdE/DJbfV0rUje
+         XQWQ==
+X-Gm-Message-State: AOAM531O9pgid0x+ufGEjBi61v3AvykBE6MTzFLXWkg1GetDjZ+lbJIv
+        Ow0FUhWEeLSIUzT2g6cY4K38FQqdajT+MQwemuRqIOQ9NFw=
+X-Google-Smtp-Source: ABdhPJxOzWQHTttWe3IjCBtlULxFzl8+MBVCWrQvdkyxI+zv2cyhv24AZxKRrkGi35iAwAMhcJ7m94pmrJgy3z6hqCo=
+X-Received: by 2002:a37:8242:: with SMTP id e63mr15363774qkd.294.1633441995106;
+ Tue, 05 Oct 2021 06:53:15 -0700 (PDT)
+From:   Kashyap Desai <kashyap.desai@broadcom.com>
+References: <1633429419-228500-1-git-send-email-john.garry@huawei.com>
+ <ae33dde8-96e8-2978-5f32-c7e0a6136e8e@kernel.dk> <81d9e019-b730-221e-a8c0-f72a8422a2ec@huawei.com>
+In-Reply-To: <81d9e019-b730-221e-a8c0-f72a8422a2ec@huawei.com>
+MIME-Version: 1.0
+X-Mailer: Microsoft Outlook 15.0
+Thread-Index: AQGgGyzjlHsoUBOKQforaoyr3oYZHgFiajqbAYnHiCCsHEhW8A==
+Date:   Tue, 5 Oct 2021 19:23:13 +0530
+Message-ID: <d3a11ba59cc0a912fa6486a148a7458a@mail.gmail.com>
+Subject: RE: [PATCH v5 00/14] blk-mq: Reduce static requests memory footprint
+ for shared sbitmap
+To:     John Garry <john.garry@huawei.com>, Jens Axboe <axboe@kernel.dk>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ming.lei@redhat.com, hare@suse.de, linux-scsi@vger.kernel.org
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="000000000000e6181605cd9b5945"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following checkpatch.pl warnings at various locations:
+--000000000000e6181605cd9b5945
+Content-Type: text/plain; charset="UTF-8"
 
-CHECK:PARENTHESIS_ALIGNMENT: Alignment should match open parenthesis
+> -----Original Message-----
+> From: John Garry [mailto:john.garry@huawei.com]
+> Sent: Tuesday, October 5, 2021 7:05 PM
+> To: Jens Axboe <axboe@kernel.dk>; kashyap.desai@broadcom.com
+> Cc: linux-block@vger.kernel.org; linux-kernel@vger.kernel.org;
+> ming.lei@redhat.com; hare@suse.de; linux-scsi@vger.kernel.org
+> Subject: Re: [PATCH v5 00/14] blk-mq: Reduce static requests memory
+> footprint for shared sbitmap
+>
+> On 05/10/2021 13:35, Jens Axboe wrote:
+> >> Baseline is 1b2d1439fc25 (block/for-next) Merge branch
+> >> 'for-5.16/io_uring'
+> >> into for-next
+> > Let's get this queued up for testing, thanks John.
+>
+> Cheers, appreciated
+>
+> @Kashyap, You mentioned that when testing you saw a performance
+> regression from v5.11 -> v5.12 - any idea on that yet? Can you describe
+> the
+> scenario, like IO scheduler and how many disks and the type? Does
+> disabling
+> host_tagset_enable restore performance?
 
-Signed-off-by: Robert Greener <rob@robgreener.com>
----
- drivers/usb/core/config.c | 87 +++++++++++++++++++++------------------
- 1 file changed, 47 insertions(+), 40 deletions(-)
+John - I am still working on this. System was not available due to some
+other debugging.
 
-diff --git a/drivers/usb/core/config.c b/drivers/usb/core/config.c
-index 1fe995a66182..94de1476e9d0 100644
---- a/drivers/usb/core/config.c
-+++ b/drivers/usb/core/config.c
-@@ -23,7 +23,7 @@ static inline const char *plural(int n)
- }
- 
- static int find_next_descriptor(unsigned char *buffer, int size,
--		int dt1, int dt2, int *num_skipped)
-+				int dt1, int dt2, int *num_skipped)
- {
- 	struct usb_descriptor_header *h;
- 	int n = 0;
-@@ -48,8 +48,11 @@ static int find_next_descriptor(unsigned char *buffer, int size,
- }
- 
- static void usb_parse_ssp_isoc_endpoint_companion(struct device *ddev,
--		int cfgno, int inum, int asnum, struct usb_host_endpoint *ep,
--		unsigned char *buffer, int size)
-+						  int cfgno, int inum,
-+						  int asnum,
-+						  struct usb_host_endpoint *ep,
-+						  unsigned char *buffer,
-+						  int size)
- {
- 	struct usb_ssp_isoc_ep_comp_descriptor *desc;
- 
-@@ -69,8 +72,9 @@ static void usb_parse_ssp_isoc_endpoint_companion(struct device *ddev,
- }
- 
- static void usb_parse_ss_endpoint_companion(struct device *ddev, int cfgno,
--		int inum, int asnum, struct usb_host_endpoint *ep,
--		unsigned char *buffer, int size)
-+					    int inum, int asnum,
-+					    struct usb_host_endpoint *ep,
-+					    unsigned char *buffer, int size)
- {
- 	struct usb_ss_ep_comp_descriptor *desc;
- 	int max_tx;
-@@ -81,7 +85,7 @@ static void usb_parse_ss_endpoint_companion(struct device *ddev, int cfgno,
- 	desc = (struct usb_ss_ep_comp_descriptor *)buffer;
- 
- 	if (desc->bDescriptorType != USB_DT_SS_ENDPOINT_COMP ||
--			size < USB_DT_SS_EP_COMP_SIZE) {
-+	    size < USB_DT_SS_EP_COMP_SIZE) {
- 		dev_warn(ddev,
- 			 "No SuperSpeed endpoint companion for config %d interface %d altsetting %d ep %d: using minimum values\n",
- 			 cfgno, inum, asnum, ep->desc.bEndpointAddress);
-@@ -96,7 +100,7 @@ static void usb_parse_ss_endpoint_companion(struct device *ddev, int cfgno,
- 		ep->ss_ep_comp.bLength = USB_DT_SS_EP_COMP_SIZE;
- 		ep->ss_ep_comp.bDescriptorType = USB_DT_SS_ENDPOINT_COMP;
- 		if (usb_endpoint_xfer_isoc(&ep->desc) ||
--				usb_endpoint_xfer_int(&ep->desc))
-+		    usb_endpoint_xfer_int(&ep->desc))
- 			ep->ss_ep_comp.wBytesPerInterval =
- 					ep->desc.wMaxPacketSize;
- 		return;
-@@ -121,8 +125,8 @@ static void usb_parse_ss_endpoint_companion(struct device *ddev, int cfgno,
- 	}
- 
- 	if ((usb_endpoint_xfer_control(&ep->desc) ||
--			usb_endpoint_xfer_int(&ep->desc)) &&
--				desc->bmAttributes != 0) {
-+	     usb_endpoint_xfer_int(&ep->desc)) &&
-+	    desc->bmAttributes != 0) {
- 		dev_warn(ddev,
- 			 "%s endpoint with bmAttributes = %d in config %d interface %d altsetting %d ep %d: setting to zero\n",
- 			 usb_endpoint_xfer_control(&ep->desc) ? "Control" : "Bulk",
-@@ -167,7 +171,7 @@ static void usb_parse_ss_endpoint_companion(struct device *ddev, int cfgno,
- 	if (usb_endpoint_xfer_isoc(&ep->desc) &&
- 	    USB_SS_SSP_ISOC_COMP(desc->bmAttributes))
- 		usb_parse_ssp_isoc_endpoint_companion(ddev, cfgno, inum, asnum,
--							ep, buffer, size);
-+						      ep, buffer, size);
- }
- 
- static const unsigned short low_speed_maxpacket_maxes[4] = {
-@@ -201,7 +205,7 @@ static const unsigned short super_speed_maxpacket_maxes[4] = {
- };
- 
- static bool endpoint_is_duplicate(struct usb_endpoint_descriptor *e1,
--		struct usb_endpoint_descriptor *e2)
-+				  struct usb_endpoint_descriptor *e2)
- {
- 	if (e1->bEndpointAddress == e2->bEndpointAddress)
- 		return true;
-@@ -219,7 +223,8 @@ static bool endpoint_is_duplicate(struct usb_endpoint_descriptor *e1,
-  * altsetting currently being parsed.
-  */
- static bool config_endpoint_is_duplicate(struct usb_host_config *config,
--		int inum, int asnum, struct usb_endpoint_descriptor *d)
-+					 int inum, int asnum,
-+					 struct usb_endpoint_descriptor *d)
- {
- 	struct usb_endpoint_descriptor *epd;
- 	struct usb_interface_cache *intfc;
-@@ -233,7 +238,7 @@ static bool config_endpoint_is_duplicate(struct usb_host_config *config,
- 			alt = &intfc->altsetting[j];
- 
- 			if (alt->desc.bInterfaceNumber == inum &&
--					alt->desc.bAlternateSetting != asnum)
-+			    alt->desc.bAlternateSetting != asnum)
- 				continue;
- 
- 			for (k = 0; k < alt->desc.bNumEndpoints; ++k) {
-@@ -249,9 +254,9 @@ static bool config_endpoint_is_duplicate(struct usb_host_config *config,
- }
- 
- static int usb_parse_endpoint(struct device *ddev, int cfgno,
--		struct usb_host_config *config, int inum, int asnum,
--		struct usb_host_interface *ifp, int num_ep,
--		unsigned char *buffer, int size)
-+			      struct usb_host_config *config, int inum,
-+			      int asnum, struct usb_host_interface *ifp,
-+			      int num_ep, unsigned char *buffer, int size)
- {
- 	struct usb_device *udev = to_usb_device(ddev);
- 	unsigned char *buffer0 = buffer;
-@@ -291,7 +296,7 @@ static int usb_parse_endpoint(struct device *ddev, int cfgno,
- 	/* Check for duplicate endpoint addresses */
- 	if (config_endpoint_is_duplicate(config, inum, asnum, d)) {
- 		dev_warn(ddev, "config %d interface %d altsetting %d has a duplicate endpoint with address 0x%X, skipping\n",
--				cfgno, inum, asnum, d->bEndpointAddress);
-+			 cfgno, inum, asnum, d->bEndpointAddress);
- 		goto skip_to_next_endpoint_or_interface_descriptor;
- 	}
- 
-@@ -299,8 +304,7 @@ static int usb_parse_endpoint(struct device *ddev, int cfgno,
- 	if (udev->quirks & USB_QUIRK_ENDPOINT_IGNORE) {
- 		if (usb_endpoint_is_ignored(udev, ifp, d)) {
- 			dev_warn(ddev, "config %d interface %d altsetting %d has an ignored endpoint with address 0x%X, skipping\n",
--					cfgno, inum, asnum,
--					d->bEndpointAddress);
-+				 cfgno, inum, asnum, d->bEndpointAddress);
- 			goto skip_to_next_endpoint_or_interface_descriptor;
- 		}
- 	}
-@@ -407,7 +411,7 @@ static int usb_parse_endpoint(struct device *ddev, int cfgno,
- 	maxp = usb_endpoint_maxp(&endpoint->desc);
- 	if (maxp == 0 && !(usb_endpoint_xfer_isoc(d) && asnum == 0)) {
- 		dev_warn(ddev, "config %d interface %d altsetting %d endpoint 0x%X has invalid wMaxPacketSize 0\n",
--		    cfgno, inum, asnum, d->bEndpointAddress);
-+			 cfgno, inum, asnum, d->bEndpointAddress);
- 	}
- 
- 	/* Find the highest legal maxpacket size for this endpoint */
-@@ -438,7 +442,7 @@ static int usb_parse_endpoint(struct device *ddev, int cfgno,
- 
- 	if (maxp > j) {
- 		dev_warn(ddev, "config %d interface %d altsetting %d endpoint 0x%X has invalid maxpacket %d, setting to %d\n",
--		    cfgno, inum, asnum, d->bEndpointAddress, maxp, j);
-+			 cfgno, inum, asnum, d->bEndpointAddress, maxp, j);
- 		maxp = j;
- 		endpoint->desc.wMaxPacketSize = cpu_to_le16(i | maxp);
- 	}
-@@ -459,24 +463,24 @@ static int usb_parse_endpoint(struct device *ddev, int cfgno,
- 	/* Parse a possible SuperSpeed endpoint companion descriptor */
- 	if (udev->speed >= USB_SPEED_SUPER)
- 		usb_parse_ss_endpoint_companion(ddev, cfgno,
--				inum, asnum, endpoint, buffer, size);
-+						inum, asnum, endpoint, buffer, size);
- 
- 	/* Skip over any Class Specific or Vendor Specific descriptors;
- 	 * find the next endpoint or interface descriptor
- 	 */
- 	endpoint->extra = buffer;
- 	i = find_next_descriptor(buffer, size, USB_DT_ENDPOINT,
--			USB_DT_INTERFACE, &n);
-+				 USB_DT_INTERFACE, &n);
- 	endpoint->extralen = i;
- 	retval = buffer - buffer0 + i;
- 	if (n > 0)
- 		dev_dbg(ddev, "skipped %d descriptor%s after %s\n",
--		    n, plural(n), "endpoint");
-+			n, plural(n), "endpoint");
- 	return retval;
- 
- skip_to_next_endpoint_or_interface_descriptor:
- 	i = find_next_descriptor(buffer, size, USB_DT_ENDPOINT,
--	    USB_DT_INTERFACE, NULL);
-+				 USB_DT_INTERFACE, NULL);
- 	return buffer - buffer0 + i;
- }
- 
-@@ -495,8 +499,9 @@ void usb_release_interface_cache(struct kref *ref)
- }
- 
- static int usb_parse_interface(struct device *ddev, int cfgno,
--		struct usb_host_config *config, unsigned char *buffer, int size,
--		s[], u8 nalts[])
-+			       struct usb_host_config *config,
-+			       unsigned char *buffer, int size, s[],
-+			       u8 nalts[])
- {
- 	unsigned char *buffer0 = buffer;
- 	struct usb_interface_descriptor	*d;
-@@ -547,11 +552,11 @@ static int usb_parse_interface(struct device *ddev, int cfgno,
- 	 */
- 	alt->extra = buffer;
- 	i = find_next_descriptor(buffer, size, USB_DT_ENDPOINT,
--	    USB_DT_INTERFACE, &n);
-+				 USB_DT_INTERFACE, &n);
- 	alt->extralen = i;
- 	if (n > 0)
- 		dev_dbg(ddev, "skipped %d descriptor%s after %s\n",
--		    n, plural(n), "interface");
-+			n, plural(n), "interface");
- 	buffer += i;
- 	size -= i;
- 
-@@ -581,7 +586,7 @@ static int usb_parse_interface(struct device *ddev, int cfgno,
- 		     == USB_DT_INTERFACE)
- 			break;
- 		retval = usb_parse_endpoint(ddev, cfgno, config, inum, asnum,
--				alt, num_ep, buffer, size);
-+					    alt, num_ep, buffer, size);
- 		if (retval < 0)
- 			return retval;
- 		++n;
-@@ -598,12 +603,13 @@ static int usb_parse_interface(struct device *ddev, int cfgno,
- 
- skip_to_next_interface_descriptor:
- 	i = find_next_descriptor(buffer, size, USB_DT_INTERFACE,
--	    USB_DT_INTERFACE, NULL);
-+				 USB_DT_INTERFACE, NULL);
- 	return buffer - buffer0 + i;
- }
- 
- static int usb_parse_configuration(struct usb_device *dev, int cfgidx,
--		struct usb_host_config *config, unsigned char *buffer, int size)
-+				   struct usb_host_config *config,
-+				   unsigned char *buffer, int size)
- {
- 	struct device *ddev = &dev->dev;
- 	unsigned char *buffer0 = buffer;
-@@ -785,18 +791,18 @@ static int usb_parse_configuration(struct usb_device *dev, int cfgidx,
- 	 */
- 	config->extra = buffer;
- 	i = find_next_descriptor(buffer, size, USB_DT_INTERFACE,
--	    USB_DT_INTERFACE, &n);
-+				 USB_DT_INTERFACE, &n);
- 	config->extralen = i;
- 	if (n > 0)
- 		dev_dbg(ddev, "skipped %d descriptor%s after %s\n",
--		    n, plural(n), "configuration");
-+			n, plural(n), "configuration");
- 	buffer += i;
- 	size -= i;
- 
- 	/* Parse all the interface/altsetting descriptors */
- 	while (size > 0) {
- 		retval = usb_parse_interface(ddev, cfgno, config,
--		    buffer, size, inums, nalts);
-+					     buffer, size, inums, nalts);
- 		if (retval < 0)
- 			return retval;
- 
-@@ -847,7 +853,7 @@ void usb_destroy_configuration(struct usb_device *dev)
- 		for (i = 0; i < cf->desc.bNumInterfaces; i++) {
- 			if (cf->intf_cache[i])
- 				kref_put(&cf->intf_cache[i]->ref,
--					  usb_release_interface_cache);
-+					 usb_release_interface_cache);
- 		}
- 	}
- 	kfree(dev->config);
-@@ -901,7 +907,7 @@ int usb_get_configuration(struct usb_device *dev)
- 		 * the whole configuration is
- 		 */
- 		result = usb_get_descriptor(dev, USB_DT_CONFIG, cfgno,
--		    desc, USB_DT_CONFIG_SIZE);
-+					    desc, USB_DT_CONFIG_SIZE);
- 		if (result < 0) {
- 			dev_err(ddev,
- 				"unable to read config index %d descriptor/%s: %d\n",
-@@ -919,7 +925,7 @@ int usb_get_configuration(struct usb_device *dev)
- 			goto err;
- 		}
- 		length = max((int)le16_to_cpu(desc->wTotalLength),
--		    USB_DT_CONFIG_SIZE);
-+			     USB_DT_CONFIG_SIZE);
- 
- 		/* Now that we know the length, get the whole thing */
- 		bigbuffer = kmalloc(length, GFP_KERNEL);
-@@ -932,7 +938,7 @@ int usb_get_configuration(struct usb_device *dev)
- 			msleep(200);
- 
- 		result = usb_get_descriptor(dev, USB_DT_CONFIG, cfgno,
--		    bigbuffer, length);
-+					    bigbuffer, length);
- 		if (result < 0) {
- 			dev_err(ddev,
- 				"unable to read config index %d descriptor/%s\n",
-@@ -950,7 +956,8 @@ int usb_get_configuration(struct usb_device *dev)
- 		dev->rawdescriptors[cfgno] = bigbuffer;
- 
- 		result = usb_parse_configuration(dev, cfgno,
--		    &dev->config[cfgno], bigbuffer, length);
-+						 &dev->config[cfgno],
-+						 bigbuffer, length);
- 		if (result < 0) {
- 			++cfgno;
- 			goto err;
--- 
-2.32.0
+>
+>  From checking differences between those kernels, I don't see anything
+> directly relevant in sbitmap support or in the megaraid sas driver.
+>
+> Thanks,
+> John
 
+--000000000000e6181605cd9b5945
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+P3lSxcw4Cg90iKHqfpwLnGNc9AGXHMxUCukpnAHRlivljilKHMx1ymb180BLmtF+ZLm6KrFLQWzB
+4KeiUOMtKM13wJrQubqTeZgB1XA+89jeLYlxagVsMyksdwIDAQABo4IB2zCCAdcwDgYDVR0PAQH/
+BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3VyZS5nbG9i
+YWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEGCCsGAQUF
+BzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAy
+MDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xv
+YmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6hjhodHRw
+Oi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNybDAlBgNV
+HREEHjAcgRprYXNoeWFwLmRlc2FpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAf
+BgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUkTOZp9jXE3yPj4ieKeDT
+OiNyCtswDQYJKoZIhvcNAQELBQADggEBABG1KCh7cLjStywh4S37nKE1eE8KPyAxDzQCkhxYLBVj
+gnnhaLmEOayEucPAsM1hCRAm/vR3RQ27lMXBGveCHaq9RZkzTjGSbzr8adOGK3CluPrasNf5StX3
+GSk4HwCapA39BDUrhnc/qG5vHwLrgA1jwAvSy8e/vn4F4h+KPrPoFNd1OnCafedbuiEXTqTkn5Rk
+vZ2AOTcSbxvmyKBMb/iu1vn7AAoui0d8GYCPoz8shf2iWMSUXVYJAMrtRHVJr47J5jlopF5F2ghC
+MzNfx6QsmJhYiRByd8L9sUOjp/DMgkC6H93PyYpYMiBGapgNf6UMsLg/1kx5DATNwhPAJbkxggJt
+MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
+VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgxwO04DXOeYbZtr
+4mAwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIPxOtBi35tMoA1K3S9uPFQceSGu1
+pehSO2Q5K8PrmxXjMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIx
+MTAwNTEzNTMxNVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
+CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
+AwQCATANBgkqhkiG9w0BAQEFAASCAQByESsl2hP8MtGRSRz56t5gKGM6iRBuDfSsI2d3sfJ8bJ1D
+v6JpWvtq85YiMtVMTy9fTRwC7u+oMsQhZClkF1FQj5RomNanQgFjO7cxfa45VfJszFDRIEWD8vHr
+To4w/E7qb08clHH75PXqciMkfVSp5V55/8NyssGaqKwBDbC2i+nVzQ1fEli0XpidskQJE52CAGC+
+kXq0p6KLOzkQM1xqh1RlI/+KpyEXvK5FNUVRsZ9PNnkeBDy1rRU+XtnrO161o0X1K5xgb2TlmcgC
+czFVYPBgDwin4DA1nmz0J8URpBhAVK6zSwKqshpwqo4CuYYBXOpDGVv/hdOzs6Ye2jru
+--000000000000e6181605cd9b5945--
