@@ -2,72 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 966824223E7
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 12:50:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB0564223E4
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 12:50:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234210AbhJEKwD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 06:52:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39442 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233449AbhJEKwC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 06:52:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8152761502;
-        Tue,  5 Oct 2021 10:50:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633431011;
-        bh=SLgYcczN9LsLWDYmQolP27i4eos161EtVoDB7lKNWms=;
-        h=References:From:To:Cc:Subject:Date:In-reply-to:From;
-        b=L+zT0R5057LTJqOM8a8ye3OJiLpJotecIhHXJEuk2owUvRQsKay1wAA63Voni6AOD
-         XpQRwbJBzThtEfzSyQiMUuqLeOjt/WWd4h/22J1Kucw+IZ3TDpPkZA4u9ioc5vMg+W
-         2Uh3i6P3U3mCHLPBxHPjBRytXtDW0GjpqhesDmh7Q9vrlff5XHZSOS+6TBXhH5PpPf
-         blY5tlkQqPj0r5qai9y5uCy7m3k6E0Ly7p3sGP3KCavhHUerRwhV7wshkR+EW0+ET4
-         AFJjEwiIff5E34N6DgOrCwyxC8CKc6DycgLwmw3mFT1ubRMmHdqUaV3FwcJ7+jg36C
-         JJFCzPOfyaGZQ==
-References: <20211004141839.49079-1-andriy.shevchenko@linux.intel.com>
- <7019ca3e-f076-e65b-f207-c23a379ade29@gmail.com>
- <20211005085100.GB17524@pengutronix.de>
-User-agent: mu4e 1.6.6; emacs 27.2
-From:   Felipe Balbi <balbi@kernel.org>
-To:     Michael Grzeschik <mgr@pengutronix.de>
-Cc:     Ferry Toth <fntoth@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 1/1] usb: dwc3: gadget: Revert "set gadgets parent to
- the right controller"
-Date:   Tue, 05 Oct 2021 13:49:32 +0300
-In-reply-to: <20211005085100.GB17524@pengutronix.de>
-Message-ID: <87ee8zzqxr.fsf@kernel.org>
+        id S234133AbhJEKwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 06:52:01 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:48538 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233449AbhJEKwA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 06:52:00 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 4018322399;
+        Tue,  5 Oct 2021 10:50:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1633431009; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2DQaqPggyWWoMxTaHdXWjVgb1l7WIagrAmguoKg/TnA=;
+        b=msbAxrcHNubAn4zcdV6E1sjtDeOExeet6Mk1x5PUjh5jk4CYXlnUsbHi7l5lErdO8Pr3rt
+        Kty8j4tjrm+his1g8oAdAa+8rbUxPJemSspEcbeZrOUnAoLgCnIV2/Yju3ddhjs/fC2yRn
+        I9fYpJEQbzEkY05n8+os4d/UVagTtC4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1633431009;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2DQaqPggyWWoMxTaHdXWjVgb1l7WIagrAmguoKg/TnA=;
+        b=33vDENUIGNRWQAb7RlL6sSYQ2YLfGmED7HTQCx9nMia+qHjH+MfivbCfE4Zh6mCpfT92LA
+        mHO++pdnkc/8vWCg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EC2A613C2B;
+        Tue,  5 Oct 2021 10:50:08 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id jyGIOOAtXGGsKgAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Tue, 05 Oct 2021 10:50:08 +0000
+Message-ID: <25db026b-76bc-cad3-7913-c310fc6cd822@suse.cz>
+Date:   Tue, 5 Oct 2021 12:50:08 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.2
+Subject: Re: [PATCH 5/5] mm, slub: fix incorrect memcg slab count for bulk
+ free
+Content-Language: en-US
+To:     Miaohe Lin <linmiaohe@huawei.com>, akpm@linux-foundation.org,
+        cl@linux.com, penberg@kernel.org, rientjes@google.com,
+        iamjoonsoo.kim@lge.com
+Cc:     gregkh@linuxfoundation.org, faiyazm@codeaurora.org,
+        andreyknvl@gmail.com, ryabinin.a.a@gmail.com, thgarnie@google.com,
+        keescook@chromium.org, bharata@linux.ibm.com, guro@fb.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20210916123920.48704-1-linmiaohe@huawei.com>
+ <20210916123920.48704-6-linmiaohe@huawei.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20210916123920.48704-6-linmiaohe@huawei.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 9/16/21 14:39, Miaohe Lin wrote:
+> kmem_cache_free_bulk() will call memcg_slab_free_hook() for all objects
+> when doing bulk free. So we shouldn't call memcg_slab_free_hook() again
+> for bulk free to avoid incorrect memcg slab count.
+> 
+> Fixes: d1b2cf6cb84a ("mm: memcg/slab: uncharge during kmem_cache_free_bulk()")
+> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 
-Michael Grzeschik <mgr@pengutronix.de> writes:
+Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
 
-> [[PGP Signed Part:Undecided]]
-> On Mon, Oct 04, 2021 at 10:35:57PM +0200, Ferry Toth wrote:
->>Hi,
->>
->>Op 04-10-2021 om 16:18 schreef Andy Shevchenko:
->>>The commit c6e23b89a95d ("usb: dwc3: gadget: set gadgets parent to the right
->>>controller") changed the device for the UDC and broke the user space scripts
->>>that instantiate the USB gadget(s) via ConfigFS.
->>
->> I confirm this regression on Intel Edison since at least 5.15-rc2
->> while in 5.14.0 it was working fine.
->>
->>This patch resolves the issue as tested on 5.15-rc4.
->>
->>Tested-by: Ferry Toth<fntoth@gmail.com>
->
-> NACK! Why should we resolv an issue by reverting it to solve not working
-> userspace. We already have this patch as a solution for solving a deeper
+I now noticed the series doesn't Cc: stable and it should, so I hope Andrew
+can add those together with the review tags. Thanks.
 
-heh, there is only one rule in this community: thou shalt not break
-userspace :-)
+> ---
+>  mm/slub.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/mm/slub.c b/mm/slub.c
+> index f3df0f04a472..d8f77346376d 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -3420,7 +3420,9 @@ static __always_inline void do_slab_free(struct kmem_cache *s,
+>  	struct kmem_cache_cpu *c;
+>  	unsigned long tid;
+>  
+> -	memcg_slab_free_hook(s, &head, 1);
+> +	/* memcg_slab_free_hook() is already called for bulk free. */
+> +	if (!tail)
+> +		memcg_slab_free_hook(s, &head, 1);
+>  redo:
+>  	/*
+>  	 * Determine the currently cpus per cpu slab.
+> 
 
--- 
-balbi
