@@ -2,152 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BF93421E99
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 08:02:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30FA2421E9C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 08:03:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232349AbhJEGEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 02:04:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38780 "EHLO
+        id S232365AbhJEGEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 02:04:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231597AbhJEGET (ORCPT
+        with ESMTP id S230403AbhJEGEu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 02:04:19 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3838C061745;
-        Mon,  4 Oct 2021 23:02:29 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HNn6Z0Lw4z4xbT;
-        Tue,  5 Oct 2021 17:02:14 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1633413746;
-        bh=NxMykwAtSBGQYw1NN1b8tuLk3z/eu8KgxmvlevpwR08=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=AuN21dHC9+MvuIwLhRD96bDPhCznYUF4mW6sVZScbRUzl9khYXUvaDeVKY7j3EpSi
-         SxLzKS1Bs4wrte7aWbXpZFWoemH0PNGO4D37mni3TZjB1HF9v41Jp65nKUZ8k7EWb7
-         1WS06ttvm7jDrexi/wdAcBbdmsaNmdqfqkCfLltRleNNHw6/4tsoys9pHDR4kMpQ3X
-         hiZ975kZUM946XlJkVfu3fcj8ixvWtI9+4vCQ14o+3BoPZXOQo2KwupnUaz3BSOQLv
-         PP+voIhGccH2rnqTb4t4QCc3N3EFgiuOYx9ydItftfDiXwetSYPCE98mkJ03f/99MZ
-         0OvLwF5mq8Z4Q==
-Date:   Tue, 5 Oct 2021 17:02:13 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        kvm@vger.kernel.org,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Alexey Klimov <aklimov@redhat.com>,
-        Andrea Merello <andrea.merello@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>, Ben Gardon <bgardon@google.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Brian Cain <bcain@codeaurora.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Lameter <cl@linux.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Dennis Zhou <dennis@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Ian Rogers <irogers@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, Jiri Olsa <jolsa@redhat.com>,
-        Joe Perches <joe@perches.com>, Jonas Bonn <jonas@southpole.se>,
-        Leo Yan <leo.yan@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Xu <peterx@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Rich Felker <dalias@libc.org>,
-        Samuel Mendoza-Jonas <sam@mendozajonas.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Tejun Heo <tj@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Will Deacon <will@kernel.org>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>
-Subject: Re: [PATCH RESEND 3 00/16] Bitmap patches for 5.15
-Message-ID: <20211005170213.6e4ca629@canb.auug.org.au>
-In-Reply-To: <20211005054059.475634-1-yury.norov@gmail.com>
-References: <20211005054059.475634-1-yury.norov@gmail.com>
+        Tue, 5 Oct 2021 02:04:50 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 292BDC061745;
+        Mon,  4 Oct 2021 23:03:00 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id pf6-20020a17090b1d8600b0019fa884ab85so1121762pjb.5;
+        Mon, 04 Oct 2021 23:03:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=gzef1HFOeoLXJqleO1fOGlTyje30IPeXbt3r58qE+Ak=;
+        b=nco9rgRDk+B1nKQ6FVfecmPR8A9HPl0WOoBwaDBnOtyXpcRV9i8Vq4j2P2r/MYVSCw
+         WLULzsM7w10YQghnw648fJBgsTS6x0VhyrFx8kXXQvaZrsEx66klq9vHVeAMulA4lKq3
+         DggvOnbCryglThNVuITBjfBtcS1sMlxyTMDDcuBbJvDUhJ/NLk1Ix+p7AwDoPwO4khzi
+         MPzVPGKHdfTZQE3Sq8rbaTPfRNKdsTA4e62AIolGDjbCDNoze5bPfJiWG7chhFZpDZZk
+         dchSnLVYeW1aKoWEnGDt/tHXk2Lg1YqtSjzt97tmu2rBLhTN17S+V6ydolJpd6bqlDZG
+         VxlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gzef1HFOeoLXJqleO1fOGlTyje30IPeXbt3r58qE+Ak=;
+        b=gJqymrElQG44Fg14gq4T6QxW4NcmEkoOP7ggoe4iZ+pfMlTVZzsrvwQ5V5ESARVb9x
+         7GjZTGAGMcKEvkCUjpYTfRgAE6crtK+eDnLbHXg5l6PqVjN1RiKEzDZConwyWHwBu46r
+         6wR0jZkjgm9vqTz7l3GLeVoS7o5ObvqoLEoPaLP1QwQ4DiSCUACdPl9tKeaSe/X04pEH
+         lFz0W0d/Zimchn4fd2ldWHU8PlgJLWkd4zYOrlkBtyTHHnIpDuu01UhPveFNbHpAQhm8
+         8ux9Lj9Oy+iVmguSweOZoPec8oaT+/wB6TpurX6s7ew9dH8QZ57Wpzt3lA5xbrbOFHrN
+         WRRA==
+X-Gm-Message-State: AOAM530bcVuZjmHQNchkV+7WvwkOK9HQ9ezLZ0VTwZr55tO5s1wLpx7K
+        /1Syc24ajPQL6UlddERFpuY=
+X-Google-Smtp-Source: ABdhPJzFK1EgWaKR+WJonporhyi5eFBQxv/m/L1aR8uouKq16OFCvh2H1cwfgYqnxP4l9X7zJIw4lw==
+X-Received: by 2002:a17:90a:1912:: with SMTP id 18mr1713453pjg.24.1633413779728;
+        Mon, 04 Oct 2021 23:02:59 -0700 (PDT)
+Received: from shinobu (113x37x72x24.ap113.ftth.ucom.ne.jp. [113.37.72.24])
+        by smtp.gmail.com with ESMTPSA id q2sm732470pjo.27.2021.10.04.23.02.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Oct 2021 23:02:58 -0700 (PDT)
+Date:   Tue, 5 Oct 2021 15:02:52 +0900
+From:   William Breathitt Gray <vilhelm.gray@gmail.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
+Subject: Re: [PATCH -next] counter: fix docum. build problems after filename
+ change
+Message-ID: <YVvqjOYTo1+zd4bn@shinobu>
+References: <20211005055157.22937-1-rdunlap@infradead.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/UQDD3e=d/fr65N4eQ6HWDaN";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="oYq9vOgAm50vohTR"
+Content-Disposition: inline
+In-Reply-To: <20211005055157.22937-1-rdunlap@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/UQDD3e=d/fr65N4eQ6HWDaN
-Content-Type: text/plain; charset=US-ASCII
+
+--oYq9vOgAm50vohTR
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi Yury,
+On Mon, Oct 04, 2021 at 10:51:57PM -0700, Randy Dunlap wrote:
+> Fix documentation build warnings due to a source file being
+> renamed.
+>=20
+> WARNING: kernel-doc '../scripts/kernel-doc -rst -enable-lineno -sphinx-ve=
+rsion 1.8.5 -export ../drivers/counter/counter.c' failed with return code 2
+>=20
+> Error: Cannot open file ../drivers/counter/counter.c
+>=20
+> Fixes: d70e46af7531 ("counter: Internalize sysfs interface code")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: William Breathitt Gray <vilhelm.gray@gmail.com>
+> Cc: linux-iio@vger.kernel.org
+> Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> Cc: Jonathan Corbet <corbet@lwn.net>
+> Cc: linux-doc@vger.kernel.org
 
-On Mon,  4 Oct 2021 22:40:43 -0700 Yury Norov <yury.norov@gmail.com> wrote:
->
-> Please pull this bitmap series. The git tree is here:
->         https://github.com/norov/linux/tree/bitmap-master-5.15
+Acked-by: William Breathitt Gray <vilhelm.gray@gmail.com>
 
-Actually branch bitmap-master-5.15 of https://github.com/norov/linux.git
+> ---
+>  Documentation/driver-api/generic-counter.rst |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> --- linux-next-20211001.orig/Documentation/driver-api/generic-counter.rst
+> +++ linux-next-20211001/Documentation/driver-api/generic-counter.rst
+> @@ -247,7 +247,7 @@ for defining a counter device.
+>  .. kernel-doc:: include/linux/counter.h
+>     :internal:
+> =20
+> -.. kernel-doc:: drivers/counter/counter.c
+> +.. kernel-doc:: drivers/counter/counter-core.c
+>     :export:
+> =20
+>  Driver Implementation
 
-I would prefer a more generic branch name (unless this is a short term
-tree - since I will fetch it every day until you tell me to stop)
-
-Added to linux-next from today.
-
-Thanks for adding your subsystem tree as a participant of linux-next.  As
-you may know, this is not a judgement of your code.  The purpose of
-linux-next is for integration testing and to lower the impact of
-conflicts between subsystems in the next merge window.=20
-
-You will need to ensure that the patches/commits in your tree/series have
-been:
-     * submitted under GPL v2 (or later) and include the Contributor's
-        Signed-off-by,
-     * posted to the relevant mailing list,
-     * reviewed by you (or another maintainer of your subsystem tree),
-     * successfully unit tested, and=20
-     * destined for the current or next Linux merge window.
-
-Basically, this should be just what you would send to Linus (or ask him
-to fetch).  It is allowed to be rebased if you deem it necessary.
-
---=20
-Cheers,
-Stephen Rothwell=20
-sfr@canb.auug.org.au
-
---Sig_/UQDD3e=d/fr65N4eQ6HWDaN
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+--oYq9vOgAm50vohTR
+Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFb6mUACgkQAVBC80lX
-0Gxbewf/Ww/E+XPHdQ1mp59XC0GkoUKOxCBfGR1vs7uFtk/jjJjQgZczaO5K0V8B
-5AV4HEuVQrACgBuuHnKuciVhbzgu5zwK6AitIcZTU904LwEr+mUZuhKteKdGMzlp
-fIWXLaQEDg3eHhTk3IYFiCJK/xQqU4TxVD4vCCGveKRh2C603nww/En/sYfFrmOk
-1ofCL8wN1uxqI+rsm21e2cXvb4IlMto5uimejQmP55fyX9zsdZ95ZUHg3jLb4sy3
-JAP298Vgeqhv3ynmkjYzYilP4TC0psiyQMGvwuzlFMN/qaywyQ1OeKYCm0ymgAXr
-lnHzfD2RdD0mlcaxkqWAWThdw6GFag==
-=qIlm
+iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAmFb6n8ACgkQhvpINdm7
+VJJW0hAAtQNwKIOaXA8JY3+v3CljlOYzoY9Qq5Yf/4iOieRlXLc2GYupzfaEi1j+
+0SriM/MPX9If/0dThJvES6OldkY969jdR45bB02v7yWfHiIcr7bNRrvQ+RUFqXdk
+iJOfKTrJtT9c2jM2sBxC2IeJHUjMYceEhTV9VfyB9C+Vmw35jAHVu2eBzv/i/5y4
+9838IiCj/HUKOgpeC0MskqdI2QuHYCxzExo+hTSZOloOUGWboMLht07N+s2nxF75
+AdIcwf2HK7DGweoFmIJ+iP29lQpQewb9KPpxB8K3uOvy892cRdUA9Ue9F42BkxN2
+FOdaf7524JunHU3BZs7iAVP2IPIL9DM7X2dgA2XR46f2zoG/3laa6igik5fLsaSW
++d2fBOePZePNcIIo2kNJuTQx763y4IDni0HGntHmIfEVYVdhvwNmBFVwW2ZLcTMa
+xqiZaLJ66wBmtNioCjXnN7Tte68hA2VS6eSw0YNriJGVWqeuSQsFGcR/tZry641t
+4ALvJ/L9hGQiFRezpuZI7pOsG/zRNtKrFdB7fyxeDWdc3vWzvWYcrUPINOB3TW53
+13HOFjzu1pbWNp0tORfqFihz11eU4n6TKM1Rhzuqkw1GnLIr54euBCnYTep8ZcFu
+g4mfuZ65nP0QIuNsgFs8+j9vwT6v0AWdr7FbLwmUsae1L747ks4=
+=vtw7
 -----END PGP SIGNATURE-----
 
---Sig_/UQDD3e=d/fr65N4eQ6HWDaN--
+--oYq9vOgAm50vohTR--
