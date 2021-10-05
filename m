@@ -2,72 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60B25422109
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 10:45:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C5F2422113
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 10:46:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232920AbhJEIrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 04:47:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47958 "EHLO
+        id S233329AbhJEIsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 04:48:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230526AbhJEIq7 (ORCPT
+        with ESMTP id S233090AbhJEIsH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 04:46:59 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87BAEC061745
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 01:45:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=EPwDe2DUzm060XW9tRJU3VkqkXdZqPBj6sTBo+C/lDs=; b=YbsaAn6hrxSeol5lMUr+t2YH2N
-        ITaOISCVNO+WJvuvYu908xaVgaXrUDL2WIqBL9q1AtMA6KXbGR5p6+CVYM35Wvvru+Goq6jNxuKwN
-        m2mtjRsZNJAeH/CjMWAWVzH4BQGmSp9b7RTMYP0DGRRnjSdK9nVz4wKvWYgaB+FM5pbA7u5uXyeFn
-        4HlGa0D94LAeFdvmQleh9qi1Px1Yd1oLYL3PRKf8UgnFGk/PaAJHD2cevL5v+ixr32fq8yhUAE0jl
-        U0/SYMyhPPQPTZjlffcRFuyWvqUDN+ibwBJItamR458m4oKP757cnWq/bXsRDwyam7k2QV4jnB8aw
-        YwA2yK8A==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mXg4N-00819R-Hb; Tue, 05 Oct 2021 08:45:03 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 76CDF30019C;
-        Tue,  5 Oct 2021 10:45:02 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 67253212E312E; Tue,  5 Oct 2021 10:45:02 +0200 (CEST)
-Date:   Tue, 5 Oct 2021 10:45:02 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Miroslav Benes <mbenes@suse.cz>
-Subject: Re: [PATCH] objtool: Remove reloc symbol type checks in
- get_alt_entry()
-Message-ID: <YVwQjlC50b0a23OC@hirez.programming.kicks-ass.net>
-References: <feadbc3dfb3440d973580fad8d3db873cbfe1694.1633367242.git.jpoimboe@redhat.com>
+        Tue, 5 Oct 2021 04:48:07 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8BB3C061760
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 01:46:16 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id x27so82486194lfa.9
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 01:46:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=2XcUpJPfTy5QEwAH/Xm2eJXv/Zjhn/CbqgwcIVdR3Ko=;
+        b=StXvAQCBgcoX52kszMxZz5N8R1x7Jgws/vzvdghPVQAxrXcGRe2RV40TtiBs01cHvb
+         4a5hw6zBLLU11txa6ewFuW9GpUN94HGnLOEV6ABOkN/9NWcwu7jcjaojZzLlNklwrgPD
+         dpIvqQ39l/x1H3aGnXsOZUFdHRyasRBY5NQd8N8R3/OV70vtN1crrVBsGUPIpB2iOyv0
+         UZx+tqDe1nAs0yHDAToyTIIFcp9uipa16SSJ3+3DlZT3pK7Ak8o+tJ1Rnlf5JuyuntNb
+         XAyihgpLL6GB1mGseG20od2eroj4LTOulwyKeLzypAzWsA4UW3y49HvFCk9klXyRwvmI
+         pPbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=2XcUpJPfTy5QEwAH/Xm2eJXv/Zjhn/CbqgwcIVdR3Ko=;
+        b=ClYLZ2ZcqyND1fLxFVovkF/t1vfyNo2I/PDzfu1IvPZTfgMHHiNppI8wvSyOw52VBk
+         b2ZcyxRcKf5PNj9XTOVw0owSXTqnZOf2oPQvfU96W/lVe3auPiGxAW4hKZNhem2wWq10
+         qeiPR9x9Qi0JKI2+m3kWlbsb2sPA885OHiN8Dkl12Z439H/VuMw2AfSv+rVD0hNf78jU
+         pmX+A2hGzr3nyONALi6N8+F+O9lhMo3TPvxul2dsOPgV60fEJTNeWEctdRrulCmMk99Z
+         jgxGJvJm6yvFf6q6IFgmx6QkbTEGLK4LkkiJXdSQ8DKe0km0PksIaqNESLYj515ZvwSb
+         SMbw==
+X-Gm-Message-State: AOAM532Os+pLgpi5kRD6g4DuRyWy1JL7kgFU7p4oO4+9Mh21fe0AOW9g
+        nZTm1PqypRssHMDzYMgvwcwouPOlOGhK/BwU9gSNyw==
+X-Google-Smtp-Source: ABdhPJykqgW510fRv0PXxhEsYvLSC1wn3+yBs/rj2+Acwz1tRjhApok8H3vRKI1vEzEqYcUMDwpiGAqI/4xOyfOJSWs=
+X-Received: by 2002:a19:e307:: with SMTP id a7mr1560996lfh.358.1633423575163;
+ Tue, 05 Oct 2021 01:46:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <feadbc3dfb3440d973580fad8d3db873cbfe1694.1633367242.git.jpoimboe@redhat.com>
+References: <20210926224058.1252-1-digetx@gmail.com> <20210926224058.1252-14-digetx@gmail.com>
+ <CAPDyKFpzhv1UxjM0q5AWHVxTWC_cCO_Kg_6exO0o_=EoVvjo+w@mail.gmail.com>
+ <aad7a508-7fb5-3418-f902-def80c365094@gmail.com> <CAPDyKFppSuP6FfaBaGn3o+8WvTT=vJ8XMzZ47WPQ1JKiUYyEpw@mail.gmail.com>
+ <8d75436d-864a-7ce0-ba53-daa8b663035a@gmail.com> <CAPDyKFpqs5gUcym4q+GuiJy13eXqjEnx-eFdUT4bQpcfPAOEYw@mail.gmail.com>
+ <f5b5e06a-71ed-1250-f0ad-692062e00e01@gmail.com>
+In-Reply-To: <f5b5e06a-71ed-1250-f0ad-692062e00e01@gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 5 Oct 2021 10:45:38 +0200
+Message-ID: <CAPDyKFpWzLdKr0bYX4VYwNpPuJNEs=weEpNpDH6zfv9e8SaxJQ@mail.gmail.com>
+Subject: Re: [PATCH v13 13/35] drm/tegra: gr2d: Support generic power domain
+ and runtime PM
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        Peter Chen <peter.chen@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Nishanth Menon <nm@ti.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        linux-staging@lists.linux.dev, linux-pwm@vger.kernel.org,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Richard Weinberger <richard@nod.at>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        David Heidelberg <david@ixit.cz>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 04, 2021 at 10:07:50AM -0700, Josh Poimboeuf wrote:
-> Converting a special section's relocation reference to a symbol is
-> straightforward.  No need for objtool to complain that it doesn't know
-> how to handle it.  Just handle it.
-> 
-> This fixes the following warning:
-> 
->   arch/x86/kvm/emulate.o: warning: objtool: __ex_table+0x4: don't know how to handle reloc symbol type: kvm_fastop_exception
-> 
-> Fixes: 24ff65257375 ("objtool: Teach get_alt_entry() about more relocation types")
-> Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
-> Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+On Mon, 4 Oct 2021 at 17:57, Dmitry Osipenko <digetx@gmail.com> wrote:
+>
+> 04.10.2021 14:01, Ulf Hansson =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> > On Fri, 1 Oct 2021 at 21:00, Dmitry Osipenko <digetx@gmail.com> wrote:
+> >>
+> >> 01.10.2021 17:55, Ulf Hansson =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> >>> On Fri, 1 Oct 2021 at 16:29, Dmitry Osipenko <digetx@gmail.com> wrote=
+:
+> >>>>
+> >>>> 01.10.2021 16:39, Ulf Hansson =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> >>>>> On Mon, 27 Sept 2021 at 00:42, Dmitry Osipenko <digetx@gmail.com> w=
+rote:
+> >>>>>>
+> >>>>>> Add runtime power management and support generic power domains.
+> >>>>>>
+> >>>>>> Tested-by: Peter Geis <pgwipeout@gmail.com> # Ouya T30
+> >>>>>> Tested-by: Paul Fertser <fercerpav@gmail.com> # PAZ00 T20
+> >>>>>> Tested-by: Nicolas Chauvet <kwizart@gmail.com> # PAZ00 T20 and TK1=
+ T124
+> >>>>>> Tested-by: Matt Merhar <mattmerhar@protonmail.com> # Ouya T30
+> >>>>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> >>>>>> ---
+> >>>>>>  drivers/gpu/drm/tegra/gr2d.c | 155 ++++++++++++++++++++++++++++++=
++++--
+> >>>>>
+> >>>>> [...]
+> >>>>>
+> >>>>>>  static int gr2d_remove(struct platform_device *pdev)
+> >>>>>> @@ -259,15 +312,101 @@ static int gr2d_remove(struct platform_devi=
+ce *pdev)
+> >>>>>>                 return err;
+> >>>>>>         }
+> >>>>>>
+> >>>>>> +       pm_runtime_dont_use_autosuspend(&pdev->dev);
+> >>>>>> +       pm_runtime_disable(&pdev->dev);
+> >>>>>
+> >>>>> There is no guarantee that the ->runtime_suspend() has been invoked
+> >>>>> here, which means that clock may be left prepared/enabled beyond th=
+is
+> >>>>> point.
+> >>>>>
+> >>>>> I suggest you call pm_runtime_force_suspend(), instead of
+> >>>>> pm_runtime_disable(), to make sure that gets done.
+> >>>>
+> >>>> The pm_runtime_disable() performs the final synchronization, please =
+see [1].
+> >>>>
+> >>>> [1]
+> >>>> https://elixir.bootlin.com/linux/v5.15-rc3/source/drivers/base/power=
+/runtime.c#L1412
+> >>>
+> >>> pm_runtime_disable() end up calling _pm_runtime_barrier(), which call=
+s
+> >>> cancel_work_sync() if dev->power.request_pending has been set.
+> >>>
+> >>> If the work that was punted to the pm_wq in rpm_idle() has not been
+> >>> started yet, we end up just canceling it. In other words, there are n=
+o
+> >>> guarantees it runs to completion.
+> >>
+> >> You're right. Although, in a case of this particular patch, the syncin=
+g
+> >> is actually implicitly done by pm_runtime_dont_use_autosuspend().
+> >>
+> >> But for drivers which don't use auto-suspend, there is no sync. This
+> >> looks like a disaster, it's a very common pattern for drivers to
+> >> 'put+disable'.
+> >>
+> >>> Moreover, use space may have bumped the usage count via sysfs for the
+> >>> device (pm_runtime_forbid()) to keep the device runtime resumed.
+> >>
+> >> Right, this is also a disaster in a case of driver removal.
+> >>
+> >>>> Calling pm_runtime_force_suspend() isn't correct because each 'enabl=
+e'
+> >>>> must have the corresponding 'disable'. Hence there is no problem her=
+e.
+> >>>
+> >>> pm_runtime_force_suspend() calls pm_runtime_disable(), so I think tha=
+t
+> >>> should be fine. No?
+> >>
+> >> [adding Rafael]
+> >>
+> >> Rafael, could you please explain how drivers are supposed to properly
+> >> suspend and disable RPM to cut off power and reset state that was
+> >> altered by the driver's resume callback? What we're missing? Is Ulf's
+> >> suggestion acceptable?
+> >>
+> >> The RPM state of a device is getting reset on driver's removal, hence
+> >> all refcounts that were bumped by the rpm-resume callback of the devic=
+e
+> >> driver will be screwed up if device is kept resumed after removal. I
+> >> just verified that it's true in practice.
+> >
+> > Note that, what makes the Tegra drivers a bit special is that they are
+> > always built with CONFIG_PM being set (selected from the "SoC"
+> > Kconfig).
+> >
+> > Therefore, pm_runtime_force_suspend() can work for some of these
+> > cases. Using this, would potentially avoid the driver from having to
+> > runtime resume the device in ->remove(), according to the below
+> > generic sequence, which is used in many drivers.
+> >
+> > pm_runtime_get_sync()
+> > clk_disable_unprepare() (+ additional things to turn off the device)
+> > pm_runtime_disable()
+> > pm_runtime_put_noidle()
+>
+> It's not a problem to change this patchset. The problem is that if
+> you'll grep mainline for 'pm_runtime_disable', you will find that there
+> are a lot of drivers in a potential trouble.
 
-Thanks!
+Let's start by fixing this patchset, please - then we can consider
+what to do with the other cases separately.
 
-Does not in fact apply due to Linus' patch. Fixed that up and will run
-more careful tests this time :-)
+>
+> I'm proposing that we should change pm_runtime_disable() to perform the
+> syncing with this oneliner:
+>
+> diff --git a/drivers/base/power/runtime.c b/drivers/base/power/runtime.c
+> index ec94049442b9..5c9f28165824 100644
+> --- a/drivers/base/power/runtime.c
+> +++ b/drivers/base/power/runtime.c
+> @@ -1380,6 +1380,8 @@ EXPORT_SYMBOL_GPL(pm_runtime_barrier);
+>   */
+>  void __pm_runtime_disable(struct device *dev, bool check_resume)
+>  {
+> +       flush_work(&dev->power.work);
+> +
+
+What about the latency this may introduce? I am not sure that is
+acceptable here!?
+
+>         spin_lock_irq(&dev->power.lock);
+>
+>         if (dev->power.disable_depth > 0) {
+>
+> Objections?
+>
+> The sysfs rpm-forbid is a separate problem and it's less troublesome
+> since it requires root privileges. It's also not something that
+> userspace touches casually. For now I don't know what could be done
+> about it.
+
+As I said, the common method to address this problem is to run the
+following sequence:
+
+pm_runtime_get_sync()
+"power off the device"
+pm_runtime_disable()
+pm_runtime_put_noidle()
+
+This works even if user space, via sysfs, has triggered a call to
+pm_runtime_forbid(). Or doesn't it?
+
+If you don't like it, pm_runtime_force_suspend() should work too, at
+least for your cases, I believe.
+
+Kind regards
+Uffe
