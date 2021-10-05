@@ -2,96 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1903E422BD4
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:07:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2E75422BDC
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:08:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235648AbhJEPJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 11:09:04 -0400
-Received: from mail-ua1-f54.google.com ([209.85.222.54]:37726 "EHLO
-        mail-ua1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbhJEPJD (ORCPT
+        id S235660AbhJEPKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 11:10:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54550 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235519AbhJEPKH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 11:09:03 -0400
-Received: by mail-ua1-f54.google.com with SMTP id i13so443927uat.4;
-        Tue, 05 Oct 2021 08:07:12 -0700 (PDT)
+        Tue, 5 Oct 2021 11:10:07 -0400
+Received: from mail-vs1-xe34.google.com (mail-vs1-xe34.google.com [IPv6:2607:f8b0:4864:20::e34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04A3DC061749
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 08:08:17 -0700 (PDT)
+Received: by mail-vs1-xe34.google.com with SMTP id y28so10252973vsd.3
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 08:08:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=kHkROjDqImNrCORBYAHwY53VEsgwyF5aAqEMBu+eK6E=;
+        b=noyq/gE5em+auZqeQu3Unla6PAe5Zol/+7/qaCtKQ7YTTWF0judEmUl1yARMWwu3My
+         SzCdH8NPc/PU3zdNrmuP9qNr2wIiDIaw2pYKI2XtOr6Lhw9nW/RrImXPRRVB44NeCQO6
+         5VC9xELy8R/bBR+OBjmwDhBijzD7z6nUp1eBMUKMCvfmu3MzPgYkB+CloOJDV7Zux+57
+         TY77O0865dWUSMTIc6DznYZjqoazoK7DZihTThurWD/9xpx08WyEwUuybnCw1wFqDyaO
+         vWHYbrqjlm1zlQwTX3BDTqqU0Ns40PqqyTCzMLxG5c0EitqJcJkOr9iXPtOKOYZYv6/G
+         1AOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bk0G/z1T/uosdH3nhuVAPRarw22NSmvJmajc0ie3v6A=;
-        b=bN53d8riJpjCyaARGHXvJW88vILTqKU2VwG8/fdJRTH3rxfwBDBC32In8GohAuiuxr
-         g4vsVsfAg3ijBNWs9Rq5rhdG3dR17TrkNqKHgd0dQ6pszTElkcV6XTQxNVzUUWJ8A1iN
-         foWlfYHv/IdvJ7xTAqCX6RyompmmI6ssO6kx0u7N1SSz+qT825wm/I3IGPntixoGl5dl
-         LTEkfTQOPux2us0cnZquNpItbX8GnRibsgDSGw+r4RgXGM1BQu3d6VY8yWk234dzK+9s
-         sfiMrKCQBOLaOzz+feZwOOIK3HYyNTjRfA7ok49yj3aa2ZyEKqd8d9wEBhn9/OuxEAic
-         aCkw==
-X-Gm-Message-State: AOAM531sPTEydhQrq6Fv6S/l6dg8W5uzGA49w//lnn4VAiyvZm1bqaS4
-        Kk/nQB26YU+O4oem5Gkh7RmBM8I+hPt9Wy3pnhc=
-X-Google-Smtp-Source: ABdhPJzxRXB84hERP6o6WD8zVyYzPaZTAX750wbPz4I9CTy02fziulaptkej0GIkEyJDLO2QdDkhEc1GsBZ/isZxSXk=
-X-Received: by 2002:ab0:538a:: with SMTP id k10mr13022243uaa.14.1633446432404;
- Tue, 05 Oct 2021 08:07:12 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=kHkROjDqImNrCORBYAHwY53VEsgwyF5aAqEMBu+eK6E=;
+        b=uQwL3FmqHv99Bgio/hg9IGcqSfI63A/lWQxj66cUPABCl+MFI5nqg87h4KZ4nezNk2
+         /QEsvfGyjB7XJCHRTpxwvkLl6n8VMsRiwPxA4+F6TPIi2jupyyVGh66AbJixS1Jvq1HS
+         WQXf/gQpBTbwHYNbsxFprJsxXcs0uaiMeFabKinDi3r5AAccgDGksYK1JSqTWsMBZbzT
+         lVAAw/dgw3RcB7S079VwQTSW55aI1YdT9YGhiNDmOBEfdh29ffN0Hb/yYUlvLKlGWFgk
+         SwEjUwmJgdiU6DN4kfbAix8fcggPpXaFkBDOa3ikWqGJbKOebJjDPkAdfkvX0P4XWcHM
+         Ja/A==
+X-Gm-Message-State: AOAM530Mp1Tb4Yor2mtJGMS6yftjl/RFzmDmerKENf56Mz93FZ8/a2l4
+        MC6aqr1Nc5cDqOfmN5oFp/GKL9ryLiLbIoLUvUYkCLe5xZSdIA==
+X-Google-Smtp-Source: ABdhPJzbHxnkknmBI+EMIhxqHyEVNlOav0hsr5eOPoET/pnjvmV6SDjMymtzxQOOB/Zwxb4ZZE6d9YNhQuOOPdR8v0Y=
+X-Received: by 2002:a67:d88c:: with SMTP id f12mr2646332vsj.33.1633446496202;
+ Tue, 05 Oct 2021 08:08:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210929000735.585237-1-saravanak@google.com> <20210929000735.585237-2-saravanak@google.com>
-In-Reply-To: <20210929000735.585237-2-saravanak@google.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 5 Oct 2021 17:07:01 +0200
-Message-ID: <CAMuHMdXG1MLQiwoaa6W5R8fJUBEUePUPnmqQ3baoVzLzp=JMLQ@mail.gmail.com>
-Subject: Re: [PATCH v4 1/2] drivers: bus: simple-pm-bus: Add support for
- probing simple bus only devices
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-oxnas@groups.io,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:TI ETHERNET SWITCH DRIVER (CPSW)" 
-        <linux-omap@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>
+Received: by 2002:a59:5d10:0:b0:235:cc09:d8f with HTTP; Tue, 5 Oct 2021
+ 08:08:15 -0700 (PDT)
+Reply-To: Salemchantal2@mail.com
+From:   MRS Salem Chantal Lawrence <patrickmurphy791@gmail.com>
+Date:   Tue, 5 Oct 2021 08:08:15 -0700
+Message-ID: <CAEsU2=hDF=MDPo89HuKjevBYDgKp7okrhGP0fPtekeZsw8UDWw@mail.gmail.com>
+Subject: Attention
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 2:07 AM Saravana Kannan <saravanak@google.com> wrote:
-> fw_devlink could end up creating device links for bus only devices.
-> However, bus only devices don't get probed and can block probe() or
-> sync_state() [1] call backs of other devices. To avoid this, probe these
-> devices using the simple-pm-bus driver.
->
-> However, there are instances of devices that are not simple buses (they get
-> probed by their specific drivers) that also list the "simple-bus" (or other
-> bus only compatible strings) in their compatible property to automatically
-> populate their child devices. We still want these devices to get probed by
-> their specific drivers. So, we make sure this driver only probes devices
-> that are only buses.
->
-> [1] - https://lore.kernel.org/lkml/CAPDyKFo9Bxremkb1dDrr4OcXSpE0keVze94Cm=zrkOVxHHxBmQ@mail.gmail.com/
-> Fixes: c442a0d18744 ("driver core: Set fw_devlink to "permissive" behavior by default")
-> Signed-off-by: Saravana Kannan <saravanak@google.com>
-> Tested-by: Saravana Kannan <saravanak@google.com>
-> Tested-by: Ulf Hansson <ulf.hansson@linaro.org>
+Attention
 
-Works fine on R-Car Gen/Gen3 (simple-bus), and SH-Mobile AG5
-and R-Mobile APE6 (simple-pm-bus).
-Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
+You have been compensated with the sum of 4.6 million dollars in this
+United Nation the payment will be issue into Atm Visa Card and send to you
+from the Bank we need your Address Passport and your whatsapp number.
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+THANKS
+MRS Salem Chantal Lawrence
