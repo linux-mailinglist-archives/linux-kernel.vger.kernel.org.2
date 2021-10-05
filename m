@@ -2,128 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B68B3422AB2
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:15:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57841422ACA
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:17:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235543AbhJEORe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 10:17:34 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:27146 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236433AbhJEORU (ORCPT
+        id S236317AbhJEOSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 10:18:08 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:16736 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235859AbhJEOR6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 10:17:20 -0400
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 195D2WpO022810;
-        Tue, 5 Oct 2021 10:15:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=2WILOUitcrndYCn8gziycm16SrxxQDqEUbiXZpkLSBc=;
- b=KYqiANCZaR2SwkqjfRGwgtTLBU8NVJTg1X5cDvcAn6f0B3ZlbxHu14SwY3zSm3/eFqgt
- AKdieYwKzYzRDi0XNhCvH9q20ffDBe80KUa+06DAKUh5RVg5gp8PqeFRWy5ZA41+dPVx
- JL8wjMa/h/AX6HYEPlmGbvoPXmhJdlowXKBNW7ZDZP6lwv9SF1gjQuq/1QbSxwZ/nf1y
- zzrxWNj9d8HgZ9BcPqfzllXb/U1FtjrB7wHmZjKo440/2My6t5SFpn4fA6tb8WXaFkiL
- 9O/ErvnemFBjTymLAGFHtkgxcQaaftDw7USzgjLQQJ/wIxPJsIy4NPp/yqeCuxqVmszk QA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bgq7u28hh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Oct 2021 10:15:30 -0400
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 195DrY80005687;
-        Tue, 5 Oct 2021 10:15:29 -0400
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bgq7u28gd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Oct 2021 10:15:29 -0400
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 195EDGkM017382;
-        Tue, 5 Oct 2021 14:15:27 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma01fra.de.ibm.com with ESMTP id 3bef29s4cb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Oct 2021 14:15:27 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 195EA4Rh49611256
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 5 Oct 2021 14:10:04 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8A2FFA406D;
-        Tue,  5 Oct 2021 14:15:21 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 91D27A4062;
-        Tue,  5 Oct 2021 14:15:20 +0000 (GMT)
-Received: from li-43c5434c-23b8-11b2-a85c-c4958fb47a68.ibm.com (unknown [9.171.76.223])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue,  5 Oct 2021 14:15:20 +0000 (GMT)
-Subject: Re: [PATCH v5 00/14] KVM: s390: pv: implement lazy destroy for reboot
-To:     Janosch Frank <frankja@linux.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>, kvm@vger.kernel.org
-Cc:     cohuck@redhat.com, thuth@redhat.com, pasic@linux.ibm.com,
-        david@redhat.com, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ulrich.Weigand@de.ibm.com
-References: <20210920132502.36111-1-imbrenda@linux.ibm.com>
- <fcfd5d04-1a08-f91e-7bc2-8878c6dcd1eb@linux.ibm.com>
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-Message-ID: <566654e2-92fd-4e91-325e-ced6a89b7a0e@de.ibm.com>
-Date:   Tue, 5 Oct 2021 16:15:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Tue, 5 Oct 2021 10:17:58 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1633443367; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Message-ID: In-Reply-To: Date: References: Subject: Cc:
+ To: From: Sender; bh=wbRlR3S9un/VrDX7Y3W0hcFvNCAKaY9PkJGHjSDPKeo=; b=UzKz1pMlvXwxMHU9CiY8RMxq6OUQxyOrSi/u6BMt5BOJ8b8Ki4SB+oQqvJrqhLZfsxiwCAL4
+ jg6Yjd/QL3C/5QGMGpalmo+gyexibIBGVsdICvdUSnb8t5tM3XvS1Agd3gT755x6BdHO2eDC
+ WYuS9wB/kHmWrix3j9nv+gjIGlU=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 615c5e038ea00a941f67647e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 05 Oct 2021 14:15:31
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 9913BC43150; Tue,  5 Oct 2021 14:15:31 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from tykki (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0FB13C43164;
+        Tue,  5 Oct 2021 14:15:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 0FB13C43164
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Jerome Pouiller <Jerome.Pouiller@silabs.com>
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        linux-mmc@vger.kernel.org,
+        Pali =?utf-8?Q?Roh?= =?utf-8?Q?=C3=A1r?= <pali@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: Re: [PATCH v8 00/24] wfx: get out from the staging area
+References: <20211005135400.788058-1-Jerome.Pouiller@silabs.com>
+Date:   Tue, 05 Oct 2021 17:15:22 +0300
+In-Reply-To: <20211005135400.788058-1-Jerome.Pouiller@silabs.com> (Jerome
+        Pouiller's message of "Tue, 5 Oct 2021 15:53:36 +0200")
+Message-ID: <875yubfthh.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <fcfd5d04-1a08-f91e-7bc2-8878c6dcd1eb@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: eVrRzcQILvBPOgMZwrE0DEstCjF0LlWz
-X-Proofpoint-ORIG-GUID: _7xoNjSY8p5ENEbm2NnULYhM2UUi-ajy
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-10-05_02,2021-10-04_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
- priorityscore=1501 mlxlogscore=999 spamscore=0 malwarescore=0
- lowpriorityscore=0 bulkscore=0 clxscore=1015 mlxscore=0 suspectscore=0
- impostorscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2109230001 definitions=main-2110050084
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Jerome Pouiller <Jerome.Pouiller@silabs.com> writes:
 
+> From: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
+>
+> Hello,
+>
+> I think the wfx driver is now mature enough to be accepted in the
+> drivers/net/wireless directory.
+>
+> The firmware is now a part of the linux-firmware repository since relase
+> 20210315[1]. It had taken a bit of time because I have worked with the le=
+gal
+> department to simplify the redistribution terms of the firmware.
+>
+> [1]: https://lore.kernel.org/linux-firmware/2833354.gXvVfaC4I7@pc-42/
+>
+>
+> As requested by Kalle[2], I send one file per patch. At the end, all the
+> patches (or at least the patches 3 to 24) will be squashed (therefore, I
+> didn't bother to write real commit messages).
+>
+> [2]: https://lore.kernel.org/lkml/87ft6p2n0h.fsf@codeaurora.org/
+>
+> Here is a diagram of the global architecture that may help to understand
+> the code:
+>
+>     ,------------------------------------.
+>     |                mac80211            |
+>     `------------------------------------'
+>     ,------------+-----------+-----------.
+>     |    sta     |           |           |
+>     |    scan    |           |           |
+>     |    main    |           |           |
+>     +------------+  data_tx  |           |
+>     |    key     |           |  data_rx  |
+>     | hif_tx_mib |   queue   |           |
+>     |   hif_tx   |           |           |
+>     |   hif_rx   |           |           |
+>     |  hif_api_* |           |           |
+>     +------------+-----------+-----------+--------.
+>     |                  bh                |  fwio  |
+>     +------------------------------------+--------+
+>     |                     hwio                    |
+>     +---------------------------------------------+
+>     |                   bus_sdio                  |
+>     |                   bus_spi                   |
+>     `---------------------------------------------'
+>     ,---------------------------------------------.
+>     |                  spi / sdio                 |
+>     `---------------------------------------------'
+>
+> Roughly, I have sent the files from the bottom to the top.
+>
+>
+> v8:
+>   - Change the way the DT is handled. The user can now specify the name of
+>     the board (=3D chip + antenna) he use. It easier for board designers =
+to
+>     add new entries. I plan to send a PR to linux-firmware to include PDS
+>     files of the developpement boards belong the firmware (I also plan to
+>     relocate these file into wfx/ instead of silabs/). (Kalle, Pali)
+>   - Prefix visible functions and structs with "wfx_". I mostly kept the
+>     code under 80 columns. (Kalle, Pali, Greg)
+>   - Remove support for force_ps_timeout for now. (Kalle)
+>   - Fix licenses of Makefile, Kconfig and hif_api*.h. (Kalle)
+>   - Do not mix and match endianess in struct hif_ind_startup. (Kalle)
+>   - Remove magic values. (Kalle)
+>   - Use IS_ALIGNED(). (BTW, PTR_IS_ALIGNED() does not exist?) (Kalle)
+>   - I have also noticed that some headers files did not declare all the
+>     struct they used.
+>
+>   These issues remain (I hope they are not blockers):
+>   - I have currently no ideas how to improve/simplify the parsing PDS fil=
+e.
+>     (Kalle)
 
-Am 05.10.21 um 15:26 schrieb Janosch Frank:
-> On 9/20/21 15:24, Claudio Imbrenda wrote:
->> Previously, when a protected VM was rebooted or when it was shut down,
->> its memory was made unprotected, and then the protected VM itself was
->> destroyed. Looping over the whole address space can take some time,
->> considering the overhead of the various Ultravisor Calls (UVCs). This
->> means that a reboot or a shutdown would take a potentially long amount
->> of time, depending on the amount of used memory.
->>
->> This patchseries implements a deferred destroy mechanism for protected
->> guests. When a protected guest is destroyed, its memory is cleared in
->> background, allowing the guest to restart or terminate significantly
->> faster than before.
->>
->> There are 2 possibilities when a protected VM is torn down:
->> * it still has an address space associated (reboot case)
->> * it does not have an address space anymore (shutdown case)
->>
->> For the reboot case, the reference count of the mm is increased, and
->> then a background thread is started to clean up. Once the thread went
->> through the whole address space, the protected VM is actually
->> destroyed.
->>
->> This means that the same address space can have memory belonging to
->> more than one protected guest, although only one will be running, the
->> others will in fact not even have any CPUs.
->>
->> The shutdown case is more controversial, and it will be dealt with in a
->> future patchseries.
->>
->> When a guest is destroyed, its memory still counts towards its memory
->> control group until it's actually freed (I tested this experimentally)
-> 
-> 
-> @Christian: I'd like to have #1-3 in early so we can focus on the more complicated stuff.
+For the PDS file problem it would help if you could actually describe
+what the firmware requires/needs and then we can start from that. I had
+some questions about this in v7 but apparently you missed those.
 
-Yes, makes perfect sense.
+--=20
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
+hes
