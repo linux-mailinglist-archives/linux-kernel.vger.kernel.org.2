@@ -2,111 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ECD0422128
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 10:49:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8EC442212E
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 10:49:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233329AbhJEIvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 04:51:36 -0400
-Received: from first.geanix.com ([116.203.34.67]:37336 "EHLO first.geanix.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233376AbhJEIvc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 04:51:32 -0400
-Received: from skn-laptop (_gateway [172.25.0.1])
-        by first.geanix.com (Postfix) with ESMTPSA id 7570EC24F2;
-        Tue,  5 Oct 2021 08:49:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
-        t=1633423779; bh=AUnXTubOTobfFxzBcRJ9H6QzFIiTxSYi3vnBtn38bE4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=ca4ypouvW1ZLkNzvJktUrFio8Kx3ez/L0TDZ04MxVnDZWsLpZps1HPPgy92L88FD3
-         DOE+KYItMLf/YMYSsIKOsH6R3nAWf+dKcp60WubGprP6x3zGMiwxUPmqs8f+QYE2QP
-         IOi9tSbHpqTHBm7zeiRbnZsE9VHEwCA0edl5jLc2v9NzXpd+U4f86DBtuVoh2fd1IB
-         8BaXbDg8F2chpFewkSHSWA2Gk78MQNh8kDaZ9uvZwPbxWScL/EH6DMGHqaoNJYHZSX
-         RDMFRTti1Fp7WVOUcEu6Safg+xRcPCOS66HlhBc4ZIblKCvWSTJm10iyteW4B3kl2g
-         PkOX+oxqbq+Kw==
-Date:   Tue, 5 Oct 2021 10:49:38 +0200
-From:   Sean Nyekjaer <sean@geanix.com>
-To:     Boris Brezillon <boris.brezillon@collabora.com>
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] mtd: rawnand: use mutex to protect access while in
- suspend
-Message-ID: <20211005084938.jcbw24umhehoiirs@skn-laptop>
-References: <20211004065608.3190348-1-sean@geanix.com>
- <20211004104147.579f3b01@collabora.com>
- <20211004085509.iikxtdvxpt6bri5c@skn-laptop>
- <20211004115817.18739936@collabora.com>
- <20211004101246.kagtezizympxupat@skn-laptop>
- <20211004134700.26327f6f@collabora.com>
- <20211005070930.epgxb5qzumk4awxq@skn-laptop>
- <20211005102300.5da6d480@collabora.com>
+        id S233478AbhJEIvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 04:51:46 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26370 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233472AbhJEIvn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 04:51:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633423792;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TosRxRN3WQ/up4K+sevrujbcFo3VdyvSQBYM4g+OCZ8=;
+        b=ZhwHVMD5QoI8jSFXmCAECg60xtmZI3H+62iz3PnPWXMm4t6ZFojC8xeNpHfmHfYkBjgF1Z
+        sFvrQVKrkr0Za1Cy/pbnvDj+IbjXcxOqI1x4dInYt88lzN8jT2zW80XqUSGyF8n3ZTML/M
+        TcnlBIAw1J3Vvbo2Su+2e7ltMYV3tCo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-564-y7FN56EqNL6ai9kMOm7Viw-1; Tue, 05 Oct 2021 04:49:51 -0400
+X-MC-Unique: y7FN56EqNL6ai9kMOm7Viw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1DBCF1006AA2;
+        Tue,  5 Oct 2021 08:49:50 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.33.36.44])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6E7D560843;
+        Tue,  5 Oct 2021 08:49:42 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+Subject: [PATCH v3 1/5] nfs: Fix kerneldoc warning shown up by W=1
+From:   David Howells <dhowells@redhat.com>
+To:     Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Dominique Martinet <asmadeus@codewreck.org>
+Cc:     Jeff Layton <jlayton@kernel.org>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-nfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-doc@vger.kernel.org, dhowells@redhat.com,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        torvalds@linux-foundation.org,
+        v9fs-developer@lists.sourceforge.net,
+        linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org,
+        linux-cachefs@redhat.com, linux-fsdevel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Tue, 05 Oct 2021 09:49:41 +0100
+Message-ID: <163342378161.876192.6553771342861206270.stgit@warthog.procyon.org.uk>
+In-Reply-To: <163342376338.876192.10313278824682848704.stgit@warthog.procyon.org.uk>
+References: <163342376338.876192.10313278824682848704.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211005102300.5da6d480@collabora.com>
-X-Spam-Status: No, score=-3.1 required=4.0 tests=ALL_TRUSTED,BAYES_00,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,URIBL_BLOCKED
-        autolearn=disabled version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on 13e2a5895688
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05, 2021 at 10:23:00AM +0200, Boris Brezillon wrote:
-> On Tue, 5 Oct 2021 09:09:30 +0200
-> Sean Nyekjaer <sean@geanix.com> wrote:
+Fix a kerneldoc warning in nfs due to documentation for a parameter that
+isn't present.
 
-[ ... ]
+Signed-off-by: David Howells <dhowells@redhat.com>
+Reviewed-by: Jeff Layton <jlayton@kernel.org>
+cc: Trond Myklebust <trond.myklebust@hammerspace.com>
+cc: Anna Schumaker <anna.schumaker@netapp.com>
+cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+cc: linux-nfs@vger.kernel.org
+cc: linux-fsdevel@vger.kernel.org
+cc: linux-doc@vger.kernel.org
+Link: https://lore.kernel.org/r/163214005516.2945267.7000234432243167892.stgit@warthog.procyon.org.uk/ # rfc v1
+Link: https://lore.kernel.org/r/163281899704.2790286.9177774252843775348.stgit@warthog.procyon.org.uk/ # rfc v2
+---
 
-> > 
-> > Have you seen the reproducer script?
-> 
-> How would I know about this script or your previous attempt (mentioned
-> at the end of this email) given I was not Cc-ed on the previous
-> discussion, and nothing mentions it in this RFC...
-> 
+ fs/nfs_common/grace.c |    1 -
+ 1 file changed, 1 deletion(-)
 
-That's why I shared it here ;)
-Initially I thought this was a bug introduced by exec_op.
+diff --git a/fs/nfs_common/grace.c b/fs/nfs_common/grace.c
+index edec45831585..0a9b72685f98 100644
+--- a/fs/nfs_common/grace.c
++++ b/fs/nfs_common/grace.c
+@@ -42,7 +42,6 @@ EXPORT_SYMBOL_GPL(locks_start_grace);
+ 
+ /**
+  * locks_end_grace
+- * @net: net namespace that this lock manager belongs to
+  * @lm: who this grace period is for
+  *
+  * Call this function to state that the given lock manager is ready to
 
-> > ---
-> > root@iwg26-v1:/data/root# cat /data/crash.sh
-> > #!/bin/sh -x
-> > 
-> > echo enabled > /sys/devices/platform/soc/2100000.bus/21f4000.serial/tty/ttymxc4/power/wakeup
-> > 
-> > rm /data/test50M
-> > dd if=/dev/urandom of=/tmp/test50M bs=1M count=50
-> > cp /tmp/test50M /data/ &
-> > sleep 1
-> > echo mem > /sys/power/state
-> > ---
-> > 
-> > As seen in the log above disk is synced before suspend.
-> > cp is continuing to copy data to ubifs.
-> > And then user space processes are frozen.
-> > At this point the kernel thread would have unwritten data.
-> > 
-> > We tried to solve this with:
-> > https://lkml.org/lkml/2021/9/1/280
-> 
-> I see. It's still unclear to me when the write happens. Is it in the
-> suspend path (before the system is actually suspended), or in the
-> resume path (when the system is being resumed).
-> 
-> Anyway, let's admit writing to a storage device while it's suspended is
-> a valid use case and requires the storage layer to put this request on
-> old. This wait should not, IMHO, be handled at the NAND level, but at
-> the MTD level (using a waitqueue, and an atomic to make
-> suspended/resumed transitions safe). And abusing a mutex to implement
-> that is certainly not a good idea.
 
-I did't say this was the right solution ;) I actually asked in the RFC:
-"Should we introduce a new mutex? Or maybe a spin_lock?"
-
-What are you proposing, a waitqueue in mtd_info? That gets checked in
-mtd_write()/mtd_read()?
-
-/Sean
