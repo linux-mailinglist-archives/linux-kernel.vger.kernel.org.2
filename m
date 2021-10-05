@@ -2,177 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B1B44223FE
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 12:58:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 012AB422482
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 13:04:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233672AbhJELAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 07:00:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57328 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233449AbhJELAL (ORCPT
+        id S234209AbhJELFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 07:05:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52902 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233449AbhJELFq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 07:00:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633431500;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ut8PpYxDYU3fYKnKki/cVS6jUVTnoqzGtGuHNfj9bQ8=;
-        b=FSq/4nM57tvM0tj60vdZ078y/ZZmZjQ7iTaAwbjcNIUpgMC/G83kTWE/pQCC6O0HTAU/Fk
-        hbawP+y6fhlC3tfFQcq58VSyo4nOzOjbYQcTeoM9mF+ZJfs+Rm7wtk8rQrRzTbggcCvSLQ
-        oN7DB/AQy723Wbp5WxpUHhKb8WpdSF4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-596-3qFPprxJOWCB924yXGoXLg-1; Tue, 05 Oct 2021 06:58:19 -0400
-X-MC-Unique: 3qFPprxJOWCB924yXGoXLg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 45F04362FB;
-        Tue,  5 Oct 2021 10:58:18 +0000 (UTC)
-Received: from fuller.cnet (ovpn-112-2.gru2.redhat.com [10.97.112.2])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id BF3C460843;
-        Tue,  5 Oct 2021 10:58:17 +0000 (UTC)
-Received: by fuller.cnet (Postfix, from userid 1000)
-        id C9604416D862; Tue,  5 Oct 2021 07:58:12 -0300 (-03)
-Date:   Tue, 5 Oct 2021 07:58:12 -0300
-From:   Marcelo Tosatti <mtosatti@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Nitesh Narayan Lal <nitesh@redhat.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        seanjc@google.com, vkuznets@redhat.com, tglx@linutronix.de,
-        frederic@kernel.org, mingo@kernel.org, nilal@redhat.com,
-        Wanpeng Li <kernellwp@gmail.com>
-Subject: Re: [PATCH v1] KVM: isolation: retain initial mask for kthread VM
- worker
-Message-ID: <20211005105812.GA130626@fuller.cnet>
-References: <20211004222639.239209-1-nitesh@redhat.com>
- <e734691b-e9e1-10a0-88ee-73d8fceb50f9@redhat.com>
+        Tue, 5 Oct 2021 07:05:46 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0686FC06161C;
+        Tue,  5 Oct 2021 04:03:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=5RXETHUeK0IoWDd8SaOUu8GrGBoYdj45miweofV1tqI=; b=KupXzRHIt3+Y/Pzu29D8sWyaiV
+        Xww0f73lBH9/jQ1W6k5CN0T8+6XGrOEE0VowKEnf82Ymy1v+pzvl69mhpp95GqSwAgZRkqAIWwTOU
+        eVaXoG9lTXX+Dd6eG+JH6CKCmxwfpcVVVxdyMjZf4tCqSKvkExxEGACjV2k2y6aLv9zqz9VIvb2P6
+        faUolqJPjdESdCk4G5yDrJBb/08d6RMMGlr6xHY1bDVGzovCBnYhU//mmwo3eymZBO6nsABlzQ5AM
+        QPo4IbwrzlGzTKyuzLWYLcAcfy6eX28dn08pSpPEeNkXGOMasPdqdIEoTv+jhpojLHDcig1tWM89V
+        aF03Nfxw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mXi9O-000FQG-II; Tue, 05 Oct 2021 10:59:00 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2305B30019C;
+        Tue,  5 Oct 2021 12:58:21 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 0F544201A0530; Tue,  5 Oct 2021 12:58:21 +0200 (CEST)
+Date:   Tue, 5 Oct 2021 12:58:21 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Barry Song <21cnbao@gmail.com>
+Cc:     Tim Chen <tim.c.chen@linux.intel.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Ben Segall <bsegall@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Guodong Xu <guodong.xu@linaro.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        "Cc: Len Brown" <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        LAK <linux-arm-kernel@lists.infradead.org>,
+        Linuxarm <linuxarm@huawei.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mel Gorman <mgorman@suse.de>, msys.mizuma@gmail.com,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Will Deacon <will@kernel.org>, x86 <x86@kernel.org>,
+        yangyicong <yangyicong@huawei.com>
+Subject: Re: [PATCH RESEND 0/3] Represent cluster topology and enable load
+ balance between clusters
+Message-ID: <YVwvzchbP5qbogjq@hirez.programming.kicks-ass.net>
+References: <20210924085104.44806-1-21cnbao@gmail.com>
+ <CAGsJ_4yW72mktbWjRfE9ngXoq9oXBXyAd_TPjKBNdGiRSoh9LA@mail.gmail.com>
+ <CAKfTPtAtfJRFBbo+kBCYf42hxcc2iP8kkmg3Wcr5aW7Rnf=rfw@mail.gmail.com>
+ <YVch0/R9PHzUwqea@hirez.programming.kicks-ass.net>
+ <ece8838d112840bf26adbb09f653babcf298eb28.camel@linux.intel.com>
+ <20211005075001.GJ4323@worktop.programming.kicks-ass.net>
+ <CAGsJ_4xZD0sG0Df666f0bvHOzuPMjnw0dN_mArER5k1pJ6LPLw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <e734691b-e9e1-10a0-88ee-73d8fceb50f9@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <CAGsJ_4xZD0sG0Df666f0bvHOzuPMjnw0dN_mArER5k1pJ6LPLw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paolo,
+On Tue, Oct 05, 2021 at 10:15:39PM +1300, Barry Song wrote:
 
-On Tue, Oct 05, 2021 at 11:38:29AM +0200, Paolo Bonzini wrote:
-> [+Wanpeng]
+> > (also, all this stuff being replicated across arch/*/Kconfig seems
+> > unfortunate)
 > 
-> On 05/10/21 00:26, Nitesh Narayan Lal wrote:
-> > From: Marcelo Tosatti <mtosatti@redhat.com>
-> > 
-> > kvm_vm_worker_thread() creates a kthread VM worker and migrates it
-> > to the parent cgroup using cgroup_attach_task_all() based on its
-> > effective cpumask.
-> > 
-> > In an environment that is booted with the nohz_full kernel option, cgroup's
-> > effective cpumask can also include CPUs running in nohz_full mode. These
-> > CPUs often run SCHED_FIFO tasks which may result in the starvation of the
-> > VM worker if it has been migrated to one of these CPUs.
+> perhaps worth a separate patchset to do some cleanup so that SCHED_MC,
+> SCHED_SMT etc
+> won't be replicated in different architectures. Right now, this kind
+> of Kconfig option is copied
+> everywhere. I am seeing SCHED_SMT in all of
+> arch/arm/Kconfig
+> arch/arm64/Kconfig
+> arch/ia64/Kconfig
+> arch/mips/Kconfig
+> arch/powerpc/Kconfig
+> arch/s390/Kconfig
+> arch/sparc/Kconfig
+> arch/x86/Kconfig
+> ...
 > 
-> There are other effects of cgroups (e.g. memory accounting) than just the
-> cpumask; for v1 you could just skip the cpuset, but if
-> cgroup_attach_task_all is ever ported to v2's cgroup_attach_task, we will
-> not be able to separate the cpuset cgroup from the others.
+> Is it a better way to move them to a common Kconfig and let the architectures to
+> declare things like ARCH_HAVE_SMT?
 
-cgroup_attach_task_all does use cgroup_attach_task on linux-2.6.git...
-It would be good to have this working on both cgroup-v1 and cgroup-v2.
-
-Is kvm-nx-hpage using significant amounts of memory?
-
-> Why doesn't the scheduler move the task to a CPU that is not being hogged by
-> vCPU SCHED_FIFO tasks?  
-
-Because cpuset placement is enforced:
-
-CPUSET(7)                            Linux Programmer's Manual                           CPUSET(7)
-
-       Cpusets are integrated with the sched_setaffinity(2) scheduling affinity mechanism and  the
-       mbind(2)  and set_mempolicy(2) memory-placement mechanisms in the kernel.  Neither of these
-       mechanisms let a process make use of a CPU or memory node  that  is  not  allowed  by  that
-       process's  cpuset.   If  changes  to a process's cpuset placement conflict with these other
-       mechanisms, then cpuset placement is enforced even if it means overriding these other mech‐
-       anisms.   The kernel accomplishes this overriding by silently restricting the CPUs and mem‐
-       ory nodes requested by these other mechanisms to those allowed by  the  invoking  process's
-       cpuset.   This  can  result in these other calls returning an error, if for example, such a
-       call ends up requesting an empty set of  CPUs  or  memory  nodes,  after  that  request  is
-       restricted to the invoking process's cpuset.
-
-
-> The parent cgroup should always have one for
-> userspace's own housekeeping.
-> 
-> As an aside, if we decide that KVM's worker threads count as housekeeping,
-> you'd still want to bind the kthread to the housekeeping CPUs(*).
-
-This is being done automatically by HK_FLAG_KTHREAD (see
-kernel/thread.c).
-
-> 
-> Paolo
-> 
-> (*) switching from kthread_run to kthread_create+kthread_bind_mask
-> 
-> > Since unbounded kernel threads allowed CPU mask already respects nohz_full
-> > CPUs at the time of their setup (because of 9cc5b8656892: "isolcpus: Affine
-> > unbound kernel threads to housekeeping cpus"), retain the initial CPU mask
-> > for the kthread by stopping its migration to the parent cgroup's effective
-> > CPUs.
-> > 
-> > Signed-off-by: Marcelo Tosatti <mtosatti@redhat.com>
-> > Signed-off-by: Nitesh Narayan Lal <nitesh@redhat.com>
-> > ---
-> >   virt/kvm/kvm_main.c | 20 +++++++++++++++-----
-> >   1 file changed, 15 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> > index 7851f3a1b5f7..87bc193fd020 100644
-> > --- a/virt/kvm/kvm_main.c
-> > +++ b/virt/kvm/kvm_main.c
-> > @@ -56,6 +56,7 @@
-> >   #include <asm/processor.h>
-> >   #include <asm/ioctl.h>
-> >   #include <linux/uaccess.h>
-> > +#include <linux/sched/isolation.h>
-> >   #include "coalesced_mmio.h"
-> >   #include "async_pf.h"
-> > @@ -5634,11 +5635,20 @@ static int kvm_vm_worker_thread(void *context)
-> >   	if (err)
-> >   		goto init_complete;
-> > -	err = cgroup_attach_task_all(init_context->parent, current);
-> > -	if (err) {
-> > -		kvm_err("%s: cgroup_attach_task_all failed with err %d\n",
-> > -			__func__, err);
-> > -		goto init_complete;
-> > +	/*
-> > +	 * For nohz_full enabled environments, don't migrate the worker thread
-> > +	 * to parent cgroup as its effective mask may have a CPU running in
-> > +	 * nohz_full mode. nohz_full CPUs often run SCHED_FIFO task which could
-> > +	 * result in starvation of the worker thread if it is pinned on the same
-> > +	 * CPU.
-> > +	 */
-
-Actually, we don't want the kthread in the isolated CPUs (irrespective
-of nohz_full=, starvation, or anything). Its just about
-"don't run a kernel thread on isolated CPUs".
-
-> > +	if (!housekeeping_enabled(HK_FLAG_KTHREAD)) {
-> > +		err = cgroup_attach_task_all(init_context->parent, current);
-> > +		if (err) {
-> > +			kvm_err("%s: cgroup_attach_task_all failed with err %d\n",
-> > +				__func__, err);
-> > +			goto init_complete;
-> > +		}
-> >   	}
-> >   	set_user_nice(current, task_nice(init_context->parent));
-> > 
-> 
-> 
+Dunno, it's all a bit of a mess :/ I can't quickly see a sane
+pattern there.
 
