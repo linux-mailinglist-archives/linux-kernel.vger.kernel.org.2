@@ -2,3000 +2,1408 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B66824226B2
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 14:32:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 295254226B7
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 14:32:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234590AbhJEMeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 08:34:37 -0400
-Received: from mail-eopbgr100109.outbound.protection.outlook.com ([40.107.10.109]:26144
-        "EHLO GBR01-LO2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233602AbhJEMeg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 08:34:36 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JEBDymTxog0vFvhlDt0G0OmoZpmmp7GmAaYo2Mdos8LKvfU1HR04Jrne3GRCx6TEuWKobLaphYLVtQwcc5fYwVfvljfrWSl/l+e+OSvnY7zMAgDi8BP7m8PaRRiQRqksZf/30b2zRV4/ARCleKYX6lP52dAbz+sKdQctkDsH0tvKTdVv7H9ItcknMU+M03te3SLSsSgmr6G8zHRof3kpiyzPtyTbHXVU1fWCNASL/5yePO0dtEyNNNA/6D/LSkjY8J5jAXQ5xZdkfMSQ2pEQ1mA6QbtaK1kRPw3GfNUYIaL0krfT75hTFB0EdlULKNU2GzNvI9BHSVTmJWBzhxSIrQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=rjmA6DP7rzmgIjOd+rAyO3hMB+YEAgeCUfgxVKOFSmM=;
- b=WCJh6/K5Z7KGCzuKyYT0R4qtvrJK5PjhFJOKQ2DU2vsWurdreFRJ4z91BPoIZzl227k+/Jvaf9K7xfjLRleD/tH2wIybQknvlQhb3lNu12o/kYIa11h5pDzYjDU8yLTJD4bjAwAr+0TzZOin47B0eDNvuxKmoyU5RW7A0Uv3MlIvvBjni4Wwpe3soyW8p81KqJe+Ghdjl7E9qaeduAkjWYYjd+doO9fFRJQHTl54gyylD2H20870fZfFi5W6aZoqhBTHN2uXz/hvwEZp9tCuVugmAA8Ypbd/zPN5Nad2IGfFVRHy1mruONqTYMbbLl0UNj8H60kW0axfh215koJ9TQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=purelifi.com; dmarc=pass action=none header.from=purelifi.com;
- dkim=pass header.d=purelifi.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=purevlc.onmicrosoft.com; s=selector2-purevlc-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rjmA6DP7rzmgIjOd+rAyO3hMB+YEAgeCUfgxVKOFSmM=;
- b=psYLsviiUT9GVXWiXYfQYs3hLmbNu88e7837Jy95tCJX2iC6+XqroU4dA/FyZekq3NnY9/bXgYMkKR5EaDW49mDOQrz/JhsqamR3Q38i0u/lMoeNflSeFL8QQlcFlhO96eZLSnb6PGFIZNXodkF4WdHUa/wHFDb/4M0t3OZem38=
-Authentication-Results: purelifi.com; dkim=none (message not signed)
- header.d=none;purelifi.com; dmarc=none action=none header.from=purelifi.com;
-Received: from CWLP265MB3217.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:bb::9) by
- CWXP265MB3607.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:f9::7) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4566.14; Tue, 5 Oct 2021 12:32:42 +0000
-Received: from CWLP265MB3217.GBRP265.PROD.OUTLOOK.COM
- ([fe80::544a:ff7d:45fc:f79b]) by CWLP265MB3217.GBRP265.PROD.OUTLOOK.COM
- ([fe80::544a:ff7d:45fc:f79b%5]) with mapi id 15.20.4566.022; Tue, 5 Oct 2021
- 12:32:42 +0000
-From:   Srinivasan Raju <srini.raju@purelifi.com>
-Cc:     mostafa.afgani@purelifi.com,
-        Srinivasan Raju <srini.raju@purelifi.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-kernel@vger.kernel.org (open list),
-        linux-wireless@vger.kernel.org (open list:NETWORKING DRIVERS (WIRELESS)),
-        netdev@vger.kernel.org (open list:NETWORKING DRIVERS)
-Subject: [PATCH] [v18 2/2] wireless: Initial driver submission for pureLiFi STA devices
-Date:   Tue,  5 Oct 2021 13:31:43 +0100
-Message-Id: <20211005123230.13813-1-srini.raju@purelifi.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200928102008.32568-1-srini.raju@purelifi.com>
-References: <20200928102008.32568-1-srini.raju@purelifi.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: LO4P123CA0252.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:1a7::23) To CWLP265MB3217.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:400:bb::9)
+        id S233602AbhJEMeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 08:34:44 -0400
+Received: from mga12.intel.com ([192.55.52.136]:19845 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234146AbhJEMek (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 08:34:40 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10127"; a="205848150"
+X-IronPort-AV: E=Sophos;i="5.85,348,1624345200"; 
+   d="gz'50?scan'50,208,50";a="205848150"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2021 05:32:41 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,348,1624345200"; 
+   d="gz'50?scan'50,208,50";a="439498852"
+Received: from lkp-server01.sh.intel.com (HELO 72c3bd3cf19c) ([10.239.97.150])
+  by orsmga003.jf.intel.com with ESMTP; 05 Oct 2021 05:32:37 -0700
+Received: from kbuild by 72c3bd3cf19c with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mXjca-0005uW-KU; Tue, 05 Oct 2021 12:32:36 +0000
+Date:   Tue, 5 Oct 2021 20:32:01 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Souradeep Chowdhury <schowdhu@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Bryan O'Donoghue <pure.logic@nexus-software.ie>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Greg KH <greg@kroah.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        ckadabi@codeaurora.org, tsoni@codeaurora.org, bryanh@codeaurora.org
+Subject: Re: [PATCH V0 3/7] usb: dwc3: drd: Register the eud connector child
+ node for dwc3
+Message-ID: <202110052047.E8BoSwkq-lkp@intel.com>
+References: <2006cf6c5662f70ca3348b683551bae4a8e4a0e2.1633343547.git.schowdhu@codeaurora.org>
 MIME-Version: 1.0
-Received: from localhost.localdomain (46.226.5.242) by LO4P123CA0252.GBRP123.PROD.OUTLOOK.COM (2603:10a6:600:1a7::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.15 via Frontend Transport; Tue, 5 Oct 2021 12:32:41 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 02796099-5f64-4428-553b-08d987fc39cb
-X-MS-TrafficTypeDiagnostic: CWXP265MB3607:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <CWXP265MB36073567391DDEFD92E2545EE0AF9@CWXP265MB3607.GBRP265.PROD.OUTLOOK.COM>
-X-MS-Oob-TLC-OOBClassifiers: OLM:204;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: YqJ0cAXaDmw0sVkgku1Y7cxEQzExdpiXuedYaQjm9rf9UkdnADwwJbggJCCw6yvMbJTOu2Z76K6cBjpSnJQF3tqq4vt0z+sEOKyrxaMf/sudP2QDOpt1Ba4rJcGv6R6A/pZD7F5XhMvGguCT8MvAZeYCZ+lo6KbQYy2qXuKWMtjzg9q0Y00nCUyccMQrUDUx5j689i09k828P3vGFMNjkJDF/pLOTYJ2AZccnuVCnbC3mS7zvcB3BPqSCyxRwGTKqbQHdN7Cx/5wr+/BrKgJhtVt6rpdqp8/lmPXBevsQug0EkRl8sFPWc5HPjv9whh/4cy3U5RrDK/KGQ0815T51EEPTU9nsjwbDSJKgil3pZ8sypmb6pOqP0emVI9Jv12CE1XksHFB0v2LXmII0Ykf0lIPHRu42YFqjGOBQ6hPdKw+iFa4EZk2zODuIErTi2QdcPY2mYQQIzPWEbhAy6L7FNgOx46dPfPKhhEh3Zzl6QnPjivldB/4at0rFXIAtCZPkssKL94jyEPlaFl6yyCPHNcE5rHA4n4+B5hUKEwHeSKlbOxLe0YsjjufBu8/4DsJmmKuv4w2JK1C/GniImZwaj74MT+swEU8X/UM3LP1Uwy4XzUsGX+0zvgkFSIE00hS8Tbr18pkIr4xoC6q15ownX4afgFsgiUtuz+opNJI/keFkc+b2/RV0D0bbLuCXTiOsA7tpcSt0pDCBpxPeIXlIM7rKdViwDZUbobR7jnAPc4=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CWLP265MB3217.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(6029001)(4636009)(366004)(66476007)(38350700002)(38100700002)(6506007)(6512007)(6486002)(36756003)(316002)(30864003)(8676002)(66946007)(66556008)(83380400001)(26005)(52116002)(508600001)(2616005)(8936002)(109986005)(54906003)(1076003)(4326008)(2906002)(86362001)(956004)(186003)(5660300002)(266003)(559001)(579004);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?KmwhKR5gxHlnfVFLBHpkZaLDuJ0U+Z2awPevgOI5SXmCJdXsz4C6Wquv3itM?=
- =?us-ascii?Q?wAwaK+C0DXOn8iXTB701niViuSupHpiF5VG81TrkQ0MCxjwwzcrVufQxmxWI?=
- =?us-ascii?Q?YBcQLgqUNULPAukQPIEH/LBzJ3CX2yNfeqZ1QASzEivz5xtQ7rCKwusIpfbV?=
- =?us-ascii?Q?CokM4fHYoLtelSK8ryCCJoLDUfLzCKO1DvpqbnW9G4fcrqn/fUzI0q9y4QlI?=
- =?us-ascii?Q?jqnihOK812K4Njpzeotee3bU65qeq5DeVu43hbvtbVxrcJFfbk7sRTI5fuLt?=
- =?us-ascii?Q?39b+5w26SjmEOxAB63RXZODcbq+kQ5G4ElGPXkcVNpMpgCdfy0uWexTsEKhF?=
- =?us-ascii?Q?/kYl16WVg0yESGJS9cUdaUIxalqJaE4Z1IDWPZ+U9aZ7DTXOShU77Po+E7Jy?=
- =?us-ascii?Q?SSmaaQnrr/H3It2/2A9BFC9VBdYlHSioWmcUqDsvXtMtVs4KGHWPzhLc2W3z?=
- =?us-ascii?Q?1WKwPGfCAj7u6JlRa4KCHn8IP5HsVd80Rhp9SfOOs9xA+Ak3QCDxCBN1bSU6?=
- =?us-ascii?Q?WVgo+grJlAXRe56FLN29KLx90apCUIfx6j+Vw6oaxuBG5JJSRxvgMQ8r0sdO?=
- =?us-ascii?Q?QEStlnRijgPgnM+IzR5r8mtjlXMMTJwIlVGSiycUtvEgdFf40LvbXn4zrq+7?=
- =?us-ascii?Q?g7RGoAVMO1L43/izpJMHhUnC8ur4e/xUi5x+BdhxCAXk2ve4Afo0wVOmZ/hG?=
- =?us-ascii?Q?u1wDqRFL0yUy6klxWOq30ct9bhYhqj5LFWs7kJbqfpA5qVeA8LR2zz5kIHc+?=
- =?us-ascii?Q?Ip36Q7p3oT1nU2Wpcakl4AyIn/0z6NTaIzXvTYf/xY2S1qvJoK03Rdn1BL21?=
- =?us-ascii?Q?UXBvZcVse5WbfPW+S5wzjQIY/ylF6JHCVTQN4ZKStTf47zrKQXRByTs3soJ3?=
- =?us-ascii?Q?F3LN2GAgGEWFdDNhgMbfWo8HUnVQ1UsWdPGWAXvKRVCChmkY0WVVuholbvDg?=
- =?us-ascii?Q?HAuQLOS8tjIwwCBAxjDb/CjuzEBfCk6eNTC8Hry2dKLcDum+1NMtbNgFWJ3Y?=
- =?us-ascii?Q?Yaiz1GFxsApKjrWOtprdpyeJQgRrprKNvpX5oGBJRpRJeJ5Gt3G2tjVUIWla?=
- =?us-ascii?Q?+lbqQ71ZAUQrCo4+92CI6o5e3OzhYvb9ytGMP8KAZFYvOaB0Of286v+/ORCg?=
- =?us-ascii?Q?wM+mIZwZCbcS0zx31JUsGKF26OwtXkps6ZFNvUpYRSV1mwunfF1OxO4KQkku?=
- =?us-ascii?Q?a5TZQRuiq4MPxRQRIQfP3joUw8ZievkD2EAlXNWToVMLKi03B/J/PHwFyPDA?=
- =?us-ascii?Q?hQbAoSWDv4L+nqg6IAWuiE6nImhWygh91ffDAG0IlYeJFBmG1wQ237+OLId5?=
- =?us-ascii?Q?I+tx7ol0r1Gm9zuBp1PL19DQ?=
-X-OriginatorOrg: purelifi.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 02796099-5f64-4428-553b-08d987fc39cb
-X-MS-Exchange-CrossTenant-AuthSource: CWLP265MB3217.GBRP265.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Oct 2021 12:32:42.2642
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 5cf4eba2-7b8f-4236-bed4-a2ac41f1a6dc
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: cJZeAvJEncJZdWLkDDSjO9uV3FM0w/JIUGDk7NV69dVCJYJJJju2wC5touSvI4/HDCdHKEK7E+xbuynh85hmrg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CWXP265MB3607
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: multipart/mixed; boundary="EVF5PPMfhYS0aIcm"
+Content-Disposition: inline
+In-Reply-To: <2006cf6c5662f70ca3348b683551bae4a8e4a0e2.1633343547.git.schowdhu@codeaurora.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This introduces the pureLiFi LiFi driver for LiFi-X, LiFi-XC
-and LiFi-XL USB devices.
 
-LiFi is a mobile wireless technology that uses light
-rather than radio frequencies to transmit data.
+--EVF5PPMfhYS0aIcm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-802.11 bb is focused on introducing necessary changes to
-IEEE 802.11 to enable communications in the light medium
+Hi Souradeep,
 
-This driver implementation has been based on the zd1211rw driver.
+Thank you for the patch! Yet something to improve:
 
-Driver is based on 802.11 softMAC Architecture and uses
-native 802.11 for configuration and management.
+[auto build test ERROR on usb/usb-testing]
+[also build test ERROR on robh/for-next linus/master v5.15-rc3 next-20210922]
+[cannot apply to balbi-usb/testing/next]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch]
 
-The driver is compiled and tested in ARM, x86 architectures and
-compiled in powerpc architecture.
+url:    https://github.com/0day-ci/linux/commits/Souradeep-Chowdhury/Add-Embedded-USB-Debugger-EUD-driver/20211004-191901
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
+config: arc-allyesconfig (attached as .config)
+compiler: arceb-elf-gcc (GCC) 11.2.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/0day-ci/linux/commit/4f53df1d9b6786f951384f59e3ffa7fed1817a2d
+        git remote add linux-review https://github.com/0day-ci/linux
+        git fetch --no-tags linux-review Souradeep-Chowdhury/Add-Embedded-USB-Debugger-EUD-driver/20211004-191901
+        git checkout 4f53df1d9b6786f951384f59e3ffa7fed1817a2d
+        # save the attached .config to linux build tree
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross ARCH=arc 
 
-Signed-off-by: Srinivasan Raju <srini.raju@purelifi.com>
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+
+All errors (new ones prefixed by >>):
+
+   drivers/usb/dwc3/drd.c: In function 'dwc3_register_eud':
+>> drivers/usb/dwc3/drd.c:171:54: error: variable 'con_np' set but not used [-Werror=unused-but-set-variable]
+     171 |         struct device_node      *np = dev->of_node, *con_np;
+         |                                                      ^~~~~~
+   cc1: all warnings being treated as errors
+
+
+vim +/con_np +171 drivers/usb/dwc3/drd.c
+
+   167	
+   168	static int dwc3_register_eud(struct dwc3 *dwc)
+   169	{
+   170		struct device           *dev = dwc->dev;
+ > 171		struct device_node      *np = dev->of_node, *con_np;
+   172		int                     ret;
+   173	
+   174		con_np = of_get_child_by_name(np, "eud_usb_connector");
+   175		if (!np) {
+   176			dev_dbg(dev, "no usb_connector child node specified\n");
+   177			return 0;
+   178		}
+   179	
+   180		ret = of_platform_populate(np, NULL, NULL, dev);
+   181		if (ret) {
+   182			dev_err(dev, "failed to register usb_connector - %d\n", ret);
+   183			return ret;
+   184		}
+   185	
+   186		return 0;
+   187	}
+   188	
 
 ---
-v18:
- - Use light communication band
-v16:
- - Fixed atomic variable misuses
- - Fixed comments spacing
- - Removed static variables used
- - Moved #defines to header file
- - Removed doxygen style comments
- - Removed magic numbers and cleanup code
-v15:
- - resubmit v14 of the patch
-v14:
- - Endianess comments addressed
- - Sparse checked and fixed warnings
- - Firmware files renamed to lowercase
- - All other review comments in v13 addressed
-v13:
-- Removed unused #defines
-v12:
-- Removed sysfs, procfs related code
-- Addressed race condition bug
-- Used macros instead of magic numbers in firmware.c
-- Added copyright in all files
-v11, v10:
-- Addressed review comment on readability
-- Changed firmware names to match products
-v9:
-- Addressed review comments on style and content defects
-- Used kmemdup instead of alloc and memcpy
-v7 , v8:
-- Magic numbers removed and used IEEE80211 macors
-- Other code style and timer function fixes (mod_timer)
-v6:
-- Code style fix patch from Joe Perches
-v5:
-- Code refactoring for clarity and redundnacy removal
-- Fix warnings from kernel test robot
-v4:
-- Code refactoring based on kernel code guidelines
-- Remove multi level macors and use kernel debug macros
-v3:
-- Code style fixes kconfig fix
-v2:
-- Driver submitted to wireless-next
-- Code style fixes and copyright statement fix
-v1:
-- Driver submitted to staging
----
- MAINTAINERS                                   |   6 +
- drivers/net/wireless/Kconfig                  |   1 +
- drivers/net/wireless/Makefile                 |   1 +
- drivers/net/wireless/purelifi/Kconfig         |  17 +
- drivers/net/wireless/purelifi/Makefile        |   2 +
- drivers/net/wireless/purelifi/plfxlc/Kconfig  |  14 +
- drivers/net/wireless/purelifi/plfxlc/Makefile |   3 +
- drivers/net/wireless/purelifi/plfxlc/chip.c   |  95 ++
- drivers/net/wireless/purelifi/plfxlc/chip.h   |  89 ++
- .../net/wireless/purelifi/plfxlc/firmware.c   | 271 +++++
- drivers/net/wireless/purelifi/plfxlc/intf.h   |  52 +
- drivers/net/wireless/purelifi/plfxlc/mac.c    | 772 ++++++++++++++
- drivers/net/wireless/purelifi/plfxlc/mac.h    | 190 ++++
- drivers/net/wireless/purelifi/plfxlc/usb.c    | 975 ++++++++++++++++++
- drivers/net/wireless/purelifi/plfxlc/usb.h    | 196 ++++
- 15 files changed, 2684 insertions(+)
- create mode 100644 drivers/net/wireless/purelifi/Kconfig
- create mode 100644 drivers/net/wireless/purelifi/Makefile
- create mode 100644 drivers/net/wireless/purelifi/plfxlc/Kconfig
- create mode 100644 drivers/net/wireless/purelifi/plfxlc/Makefile
- create mode 100644 drivers/net/wireless/purelifi/plfxlc/chip.c
- create mode 100644 drivers/net/wireless/purelifi/plfxlc/chip.h
- create mode 100644 drivers/net/wireless/purelifi/plfxlc/firmware.c
- create mode 100644 drivers/net/wireless/purelifi/plfxlc/intf.h
- create mode 100644 drivers/net/wireless/purelifi/plfxlc/mac.c
- create mode 100644 drivers/net/wireless/purelifi/plfxlc/mac.h
- create mode 100644 drivers/net/wireless/purelifi/plfxlc/usb.c
- create mode 100644 drivers/net/wireless/purelifi/plfxlc/usb.h
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index eeb4c70b3d5b..1d271e9e9223 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -15193,6 +15193,12 @@ T:	git git://linuxtv.org/media_tree.git
- F:	Documentation/admin-guide/media/pulse8-cec.rst
- F:	drivers/media/cec/usb/pulse8/
- 
-+PURELIFI USB DRIVER
-+M:	Srinivasan Raju <srini.raju@purelifi.com>
-+L:	linux-wireless@vger.kernel.org
-+S:	Supported
-+F:	drivers/net/wireless/purelifi/
-+
- PVRUSB2 VIDEO4LINUX DRIVER
- M:	Mike Isely <isely@pobox.com>
- L:	pvrusb2@isely.net	(subscribers-only)
-diff --git a/drivers/net/wireless/Kconfig b/drivers/net/wireless/Kconfig
-index 7add2002ff4c..404afe574920 100644
---- a/drivers/net/wireless/Kconfig
-+++ b/drivers/net/wireless/Kconfig
-@@ -28,6 +28,7 @@ source "drivers/net/wireless/intersil/Kconfig"
- source "drivers/net/wireless/marvell/Kconfig"
- source "drivers/net/wireless/mediatek/Kconfig"
- source "drivers/net/wireless/microchip/Kconfig"
-+source "drivers/net/wireless/purelifi/Kconfig"
- source "drivers/net/wireless/ralink/Kconfig"
- source "drivers/net/wireless/realtek/Kconfig"
- source "drivers/net/wireless/rsi/Kconfig"
-diff --git a/drivers/net/wireless/Makefile b/drivers/net/wireless/Makefile
-index 80b324499786..e3345893c9c5 100644
---- a/drivers/net/wireless/Makefile
-+++ b/drivers/net/wireless/Makefile
-@@ -13,6 +13,7 @@ obj-$(CONFIG_WLAN_VENDOR_INTERSIL) += intersil/
- obj-$(CONFIG_WLAN_VENDOR_MARVELL) += marvell/
- obj-$(CONFIG_WLAN_VENDOR_MEDIATEK) += mediatek/
- obj-$(CONFIG_WLAN_VENDOR_MICROCHIP) += microchip/
-+obj-$(CONFIG_WLAN_VENDOR_PURELIFI) += purelifi/
- obj-$(CONFIG_WLAN_VENDOR_RALINK) += ralink/
- obj-$(CONFIG_WLAN_VENDOR_REALTEK) += realtek/
- obj-$(CONFIG_WLAN_VENDOR_RSI) += rsi/
-diff --git a/drivers/net/wireless/purelifi/Kconfig b/drivers/net/wireless/purelifi/Kconfig
-new file mode 100644
-index 000000000000..e39afec3dcae
---- /dev/null
-+++ b/drivers/net/wireless/purelifi/Kconfig
-@@ -0,0 +1,17 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+config WLAN_VENDOR_PURELIFI
-+	bool "pureLiFi devices"
-+	default y
-+	help
-+	  If you have a pureLiFi device, say Y.
-+
-+	  Note that the answer to this question doesn't directly affect the
-+	  kernel: saying N will just cause the configurator to skip all the
-+	  questions about these cards. If you say Y, you will be asked for
-+	  your specific card in the following questions.
-+
-+if WLAN_VENDOR_PURELIFI
-+
-+source "drivers/net/wireless/purelifi/plfxlc/Kconfig"
-+
-+endif # WLAN_VENDOR_PURELIFI
-diff --git a/drivers/net/wireless/purelifi/Makefile b/drivers/net/wireless/purelifi/Makefile
-new file mode 100644
-index 000000000000..56ebf96bd298
---- /dev/null
-+++ b/drivers/net/wireless/purelifi/Makefile
-@@ -0,0 +1,2 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+obj-$(CONFIG_PURELIFI_XLC)		:= plfxlc/
-diff --git a/drivers/net/wireless/purelifi/plfxlc/Kconfig b/drivers/net/wireless/purelifi/plfxlc/Kconfig
-new file mode 100644
-index 000000000000..400ab2ee660c
---- /dev/null
-+++ b/drivers/net/wireless/purelifi/plfxlc/Kconfig
-@@ -0,0 +1,14 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+config PURELIFI_XLC
-+	tristate "pureLiFi X, XL, XC device support"
-+	depends on CFG80211 && MAC80211 && USB
-+	help
-+	   This option adds support for pureLiFi LiFi wireless USB adapters.
-+
-+	   The pureLiFi X, XL, XC USB devices are based on 802.11 OFDM PHY.
-+
-+	   Supports common 802.11 encryption/authentication methods including
-+	   Open, WPA, WPA2-Personal and WPA2-Enterprise (802.1X).
-+
-+	   To compile this driver as a module, choose m here. The module will
-+	   be called purelifi_xlc.
-diff --git a/drivers/net/wireless/purelifi/plfxlc/Makefile b/drivers/net/wireless/purelifi/plfxlc/Makefile
-new file mode 100644
-index 000000000000..3d66f485c024
---- /dev/null
-+++ b/drivers/net/wireless/purelifi/plfxlc/Makefile
-@@ -0,0 +1,3 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+obj-$(CONFIG_PURELIFI_XLC)	:= purelifi_xlc.o
-+purelifi_xlc-objs 		+= chip.o firmware.o usb.o mac.o
-diff --git a/drivers/net/wireless/purelifi/plfxlc/chip.c b/drivers/net/wireless/purelifi/plfxlc/chip.c
-new file mode 100644
-index 000000000000..ece74682d413
---- /dev/null
-+++ b/drivers/net/wireless/purelifi/plfxlc/chip.c
-@@ -0,0 +1,95 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (c) 2021 pureLiFi
-+ */
-+
-+#include <linux/kernel.h>
-+#include <linux/errno.h>
-+
-+#include "chip.h"
-+#include "mac.h"
-+#include "usb.h"
-+
-+void purelifi_chip_init(struct purelifi_chip *chip,
-+			struct ieee80211_hw *hw,
-+			struct usb_interface *intf)
-+{
-+	memset(chip, 0, sizeof(*chip));
-+	mutex_init(&chip->mutex);
-+	purelifi_usb_init(&chip->usb, hw, intf);
-+}
-+
-+void purelifi_chip_release(struct purelifi_chip *chip)
-+{
-+	purelifi_usb_release(&chip->usb);
-+	mutex_destroy(&chip->mutex);
-+}
-+
-+int purelifi_set_beacon_interval(struct purelifi_chip *chip, u16 interval,
-+				 u8 dtim_period, int type)
-+{
-+	if (!interval ||
-+	    (chip->beacon_set &&
-+	     le16_to_cpu(chip->beacon_interval) == interval))
-+		return 0;
-+
-+	chip->beacon_interval = cpu_to_le16(interval);
-+	chip->beacon_set = true;
-+	return plf_usb_wreq(&chip->beacon_interval,
-+			     sizeof(chip->beacon_interval),
-+			     USB_REQ_BEACON_INTERVAL_WR);
-+}
-+
-+int purelifi_chip_init_hw(struct purelifi_chip *chip)
-+{
-+	unsigned char *addr = purelifi_mac_get_perm_addr(purelifi_chip_to_mac(chip));
-+	struct usb_device *udev = interface_to_usbdev(chip->usb.intf);
-+
-+	pr_info("purelifi chip %04x:%04x v%02x %pM %s\n",
-+		le16_to_cpu(udev->descriptor.idVendor),
-+		le16_to_cpu(udev->descriptor.idProduct),
-+		le16_to_cpu(udev->descriptor.bcdDevice),
-+		addr,
-+		purelifi_speed(udev->speed));
-+
-+	return purelifi_set_beacon_interval(chip, 100, 0, 0);
-+}
-+
-+int purelifi_chip_switch_radio(struct purelifi_chip *chip, u16 value)
-+{
-+	int r;
-+	__le16 radio_on = cpu_to_le16(value);
-+
-+	r = plf_usb_wreq(&radio_on, sizeof(value), USB_REQ_POWER_WR);
-+	if (r)
-+		dev_err(purelifi_chip_dev(chip), "POWER_WR failed (%d)\n", r);
-+	return r;
-+}
-+
-+int purelifi_chip_enable_rxtx(struct purelifi_chip *chip)
-+{
-+	purelifi_usb_enable_tx(&chip->usb);
-+	return purelifi_usb_enable_rx(&chip->usb);
-+}
-+
-+void purelifi_chip_disable_rxtx(struct purelifi_chip *chip)
-+{
-+	u8 value = 0;
-+
-+	plf_usb_wreq(&value, sizeof(value), USB_REQ_RXTX_WR);
-+	purelifi_usb_disable_rx(&chip->usb);
-+	purelifi_usb_disable_tx(&chip->usb);
-+}
-+
-+int purelifi_chip_set_rate(struct purelifi_chip *chip, u8 rate)
-+{
-+	int r;
-+
-+	if (!chip)
-+		return -EINVAL;
-+
-+	r = plf_usb_wreq(&rate, sizeof(rate), USB_REQ_RATE_WR);
-+	if (r)
-+		dev_err(purelifi_chip_dev(chip), "RATE_WR failed (%d)\n", r);
-+	return r;
-+}
-diff --git a/drivers/net/wireless/purelifi/plfxlc/chip.h b/drivers/net/wireless/purelifi/plfxlc/chip.h
-new file mode 100644
-index 000000000000..167e9b9bd7a7
---- /dev/null
-+++ b/drivers/net/wireless/purelifi/plfxlc/chip.h
-@@ -0,0 +1,89 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Copyright (c) 2021 pureLiFi
-+ */
-+
-+#ifndef _LF_X_CHIP_H
-+#define _LF_X_CHIP_H
-+
-+#include <net/mac80211.h>
-+
-+#include "usb.h"
-+
-+enum unit_type {
-+	STA = 0,
-+	AP = 1,
-+};
-+
-+enum {
-+	PLFXLC_RADIO_OFF = 0,
-+	PLFXLC_RADIO_ON = 1,
-+};
-+
-+struct purelifi_chip {
-+	struct purelifi_usb usb;
-+	struct mutex mutex; /* lock to protect chip data */
-+	enum unit_type unit_type;
-+	u16 link_led;
-+	u8 beacon_set;
-+	__le16 beacon_interval;
-+};
-+
-+struct purelifi_mc_hash {
-+	u32 low;
-+	u32 high;
-+};
-+
-+#define purelifi_chip_dev(chip) (&(chip)->usb.intf->dev)
-+
-+void purelifi_chip_init(struct purelifi_chip *chip,
-+			struct ieee80211_hw *hw,
-+			struct usb_interface *intf);
-+
-+void purelifi_chip_release(struct purelifi_chip *chip);
-+
-+void purelifi_chip_disable_rxtx(struct purelifi_chip *chip);
-+
-+int purelifi_chip_init_hw(struct purelifi_chip *chip);
-+
-+int purelifi_chip_enable_rxtx(struct purelifi_chip *chip);
-+
-+int purelifi_chip_set_rate(struct purelifi_chip *chip, u8 rate);
-+
-+int purelifi_set_beacon_interval(struct purelifi_chip *chip, u16 interval,
-+				 u8 dtim_period, int type);
-+
-+int purelifi_chip_switch_radio(struct purelifi_chip *chip, u16 value);
-+
-+static inline struct purelifi_chip *purelifi_usb_to_chip(struct purelifi_usb
-+							 *usb)
-+{
-+	return container_of(usb, struct purelifi_chip, usb);
-+}
-+
-+static inline void purelifi_mc_clear(struct purelifi_mc_hash *hash)
-+{
-+	hash->low = 0;
-+	/* The interfaces must always received broadcasts.
-+	 * The hash of the broadcast address ff:ff:ff:ff:ff:ff is 63.
-+	 */
-+	hash->high = 0x80000000;
-+}
-+
-+static inline void purelifi_mc_add_all(struct purelifi_mc_hash *hash)
-+{
-+	hash->low  = 0xffffffff;
-+	hash->high = 0xffffffff;
-+}
-+
-+static inline void purelifi_mc_add_addr(struct purelifi_mc_hash *hash,
-+					u8 *addr)
-+{
-+	unsigned int i = addr[5] >> 2;
-+
-+	if (i < 32)
-+		hash->low |= 1U << i;
-+	else
-+		hash->high |= 1 << (i - 32);
-+}
-+#endif /* _LF_X_CHIP_H */
-diff --git a/drivers/net/wireless/purelifi/plfxlc/firmware.c b/drivers/net/wireless/purelifi/plfxlc/firmware.c
-new file mode 100644
-index 000000000000..884751bd5a1a
---- /dev/null
-+++ b/drivers/net/wireless/purelifi/plfxlc/firmware.c
-@@ -0,0 +1,271 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (c) 2021 pureLiFi
-+ */
-+
-+#include <linux/firmware.h>
-+#include <linux/bitrev.h>
-+
-+#include "mac.h"
-+#include "usb.h"
-+
-+static int send_vendor_request(struct usb_device *udev, int request,
-+			       unsigned char *buffer, int buffer_size)
-+{
-+	return usb_control_msg(udev,
-+			       usb_rcvctrlpipe(udev, 0),
-+			       request, 0xC0, 0, 0,
-+			       buffer, buffer_size, PLF_USB_TIMEOUT);
-+}
-+
-+static int send_vendor_command(struct usb_device *udev, int request,
-+			       unsigned char *buffer, int buffer_size)
-+{
-+	return usb_control_msg(udev,
-+			       usb_sndctrlpipe(udev, 0),
-+			       request, USB_TYPE_VENDOR /*0x40*/, 0, 0,
-+			       buffer, buffer_size, PLF_USB_TIMEOUT);
-+}
-+
-+int download_fpga(struct usb_interface *intf)
-+{
-+	int r, actual_length;
-+	int fw_data_i, blk_tran_len = PLF_BULK_TLEN;
-+	const char *fw_name;
-+	unsigned char *fpga_dmabuff = NULL;
-+	unsigned char *fw_data;
-+	const struct firmware *fw = NULL;
-+	struct usb_device *udev = interface_to_usbdev(intf);
-+
-+	if ((le16_to_cpu(udev->descriptor.idVendor) ==
-+				PURELIFI_X_VENDOR_ID_0) &&
-+	    (le16_to_cpu(udev->descriptor.idProduct) ==
-+				PURELIFI_X_PRODUCT_ID_0)) {
-+		fw_name = "plfxlc/lifi-x.bin";
-+		dev_dbg(&intf->dev, "bin file for X selected\n");
-+
-+	} else if ((le16_to_cpu(udev->descriptor.idVendor)) ==
-+					PURELIFI_XC_VENDOR_ID_0 &&
-+		   (le16_to_cpu(udev->descriptor.idProduct) ==
-+					PURELIFI_XC_PRODUCT_ID_0)) {
-+		fw_name = "plfxlc/lifi-xc.bin";
-+		dev_dbg(&intf->dev, "bin file for XC selected\n");
-+
-+	} else {
-+		r = -EINVAL;
-+		goto error;
-+	}
-+
-+	r = request_firmware(&fw, fw_name, &intf->dev);
-+	if (r) {
-+		dev_err(&intf->dev, "request_firmware failed (%d)\n", r);
-+		goto error;
-+	}
-+	fpga_dmabuff = kmalloc(PLF_FPGA_STATUS_LEN, GFP_KERNEL);
-+
-+	if (!fpga_dmabuff) {
-+		r = -ENOMEM;
-+		goto error_free_fw;
-+	}
-+	send_vendor_request(udev, PLF_VNDR_FPGA_SET_REQ,
-+			    fpga_dmabuff, PLF_FPGA_STATUS_LEN);
-+
-+	send_vendor_command(udev, PLF_VNDR_FPGA_SET_CMD, NULL, 0);
-+
-+	if (fpga_dmabuff[0] != PLF_FPGA_MG) {
-+		dev_err(&intf->dev, "fpga_dmabuff[0] is wrong\n");
-+		r = -EINVAL;
-+		goto error_free_fw;
-+	}
-+
-+	for (fw_data_i = 0; fw_data_i < fw->size;) {
-+		int tbuf_idx;
-+
-+		if ((fw->size - fw_data_i) < blk_tran_len)
-+			blk_tran_len = fw->size - fw_data_i;
-+
-+		fw_data = kmemdup(&fw->data[fw_data_i], blk_tran_len,
-+				  GFP_KERNEL);
-+
-+		for (tbuf_idx = 0; tbuf_idx < blk_tran_len; tbuf_idx++) {
-+			/* u8 bit reverse */
-+			fw_data[tbuf_idx] = bitrev8(fw_data[tbuf_idx]);
-+		}
-+		r = usb_bulk_msg(udev,
-+				 usb_sndbulkpipe(interface_to_usbdev(intf),
-+						 fpga_dmabuff[0] & 0xff),
-+				 fw_data,
-+				 blk_tran_len,
-+				 &actual_length,
-+				 2 * PLF_USB_TIMEOUT);
-+
-+		if (r)
-+			dev_err(&intf->dev, "Bulk msg failed (%d)\n", r);
-+
-+		kfree(fw_data);
-+		fw_data_i += blk_tran_len;
-+	}
-+
-+	kfree(fpga_dmabuff);
-+	fpga_dmabuff = kmalloc(PLF_FPGA_STATE_LEN, GFP_KERNEL);
-+	if (!fpga_dmabuff) {
-+		r = -ENOMEM;
-+		goto error_free_fw;
-+	}
-+	memset(fpga_dmabuff, 0xff, PLF_FPGA_STATE_LEN);
-+
-+	send_vendor_request(udev, PLF_VNDR_FPGA_STATE_REQ, fpga_dmabuff,
-+			    PLF_FPGA_STATE_LEN);
-+
-+	dev_dbg(&intf->dev, "%*ph\n", 8, fpga_dmabuff);
-+
-+	if (fpga_dmabuff[0] != 0) {
-+		r = -EINVAL;
-+		goto error_free_fw;
-+	}
-+
-+	send_vendor_command(udev, PLF_VNDR_FPGA_STATE_CMD, NULL, 0);
-+
-+	msleep(PLF_MSLEEP_TIME);
-+
-+error_free_fw:
-+	kfree(fpga_dmabuff);
-+	release_firmware(fw);
-+error:
-+	return r;
-+}
-+
-+int download_xl_firmware(struct usb_interface *intf)
-+{
-+	const struct firmware *fwp = NULL;
-+	struct firmware_file file = {0};
-+	int s, r;
-+	u8 *buf;
-+	u32 i;
-+	const char *fw_pack;
-+	struct usb_device *udev = interface_to_usbdev(intf);
-+
-+	r = send_vendor_command(udev, PLF_VNDR_XL_FW_CMD, NULL, 0);
-+	msleep(PLF_MSLEEP_TIME);
-+
-+	if (r) {
-+		dev_err(&intf->dev, "vendor command failed (%d)\n", r);
-+		return -EINVAL;
-+	}
-+	/* Code for single pack file download */
-+
-+	fw_pack = "plfxlc/lifi-xl.bin";
-+
-+	r = request_firmware(&fwp, fw_pack, &intf->dev);
-+	if (r) {
-+		dev_err(&intf->dev, "Request_firmware failed (%d)\n", r);
-+		return -EINVAL;
-+	}
-+	file.total_files = get_unaligned_le32(&fwp->data[0]);
-+	file.total_size = get_unaligned_le32(&fwp->size);
-+
-+	dev_dbg(&intf->dev, "XL Firmware (%d, %d)\n",
-+		file.total_files, file.total_size);
-+
-+	buf = kzalloc(PLF_XL_BUF_LEN, GFP_KERNEL);
-+	if (!buf) {
-+		release_firmware(fwp);
-+		return -ENOMEM;
-+	}
-+
-+	if (file.total_files > 10) {
-+		dev_err(&intf->dev, "Too many files (%d)\n", file.total_files);
-+		release_firmware(fwp);
-+		kfree(buf);
-+		return -EINVAL;
-+	}
-+
-+	/* Download firmware files in multiple steps */
-+	for (s = 0; s < file.total_files; s++) {
-+		buf[0] = s;
-+		r = send_vendor_command(udev, PLF_VNDR_XL_FILE_CMD, buf,
-+					PLF_XL_BUF_LEN);
-+
-+		if (s < file.total_files - 1)
-+			file.size = get_unaligned_le32(&fwp->data[4 + ((s + 1) * 4)])
-+				    - get_unaligned_le32(&fwp->data[4 + (s) * 4]);
-+		else
-+			file.size = file.total_size -
-+				    get_unaligned_le32(&fwp->data[4 + (s) * 4]);
-+
-+		if (file.size > file.total_size || file.size > 60000) {
-+			dev_err(&intf->dev, "File size is too large (%d)\n", file.size);
-+			break;
-+		}
-+
-+		file.start_addr = get_unaligned_le32(&fwp->data[4 + (s * 4)]);
-+
-+		if (file.size % PLF_XL_BUF_LEN && s < 2)
-+			file.size += PLF_XL_BUF_LEN - file.size % PLF_XL_BUF_LEN;
-+
-+		file.control_packets = file.size / PLF_XL_BUF_LEN;
-+
-+		for (i = 0; i < file.control_packets; i++) {
-+			memcpy(buf,
-+			       &fwp->data[file.start_addr + (i * PLF_XL_BUF_LEN)],
-+			       PLF_XL_BUF_LEN);
-+			r = send_vendor_command(udev, PLF_VNDR_XL_DATA_CMD, buf,
-+						PLF_XL_BUF_LEN);
-+		}
-+		dev_dbg(&intf->dev, "fw-dw step=%d,r=%d size=%d\n", s, r,
-+			file.size);
-+	}
-+	release_firmware(fwp);
-+	kfree(buf);
-+
-+	/* Code for single pack file download ends fw download finish*/
-+
-+	r = send_vendor_command(udev, PLF_VNDR_XL_EX_CMD, NULL, 0);
-+	dev_dbg(&intf->dev, "Download fpga (4) (%d)\n", r);
-+
-+	return 0;
-+}
-+
-+int upload_mac_and_serial(struct usb_interface *intf,
-+			  unsigned char *hw_address,
-+			  unsigned char *serial_number)
-+{
-+	struct usb_device *udev = interface_to_usbdev(intf);
-+	unsigned char *dma_buffer = NULL;
-+	unsigned long long firmware_version;
-+
-+	dma_buffer = kmalloc(PLF_SERIAL_LEN, GFP_KERNEL);
-+	if (!dma_buffer)
-+		return -ENOMEM;
-+
-+	BUILD_BUG_ON(ETH_ALEN > PLF_SERIAL_LEN);
-+	BUILD_BUG_ON(PLF_FW_VER_LEN > PLF_SERIAL_LEN);
-+
-+	send_vendor_request(udev, PLF_MAC_VENDOR_REQUEST, dma_buffer,
-+			    ETH_ALEN);
-+
-+	memcpy(hw_address, dma_buffer, ETH_ALEN);
-+
-+	send_vendor_request(udev, PLF_SERIAL_NUMBER_VENDOR_REQUEST,
-+			    dma_buffer, PLF_SERIAL_LEN);
-+
-+	send_vendor_request(udev, PLF_SERIAL_NUMBER_VENDOR_REQUEST,
-+			    dma_buffer, PLF_SERIAL_LEN);
-+
-+	memcpy(serial_number, dma_buffer, PLF_SERIAL_LEN);
-+
-+	memset(dma_buffer, 0x00, PLF_SERIAL_LEN);
-+
-+	send_vendor_request(udev, PLF_FIRMWARE_VERSION_VENDOR_REQUEST,
-+			    (unsigned char *)dma_buffer, PLF_FW_VER_LEN);
-+
-+	memcpy(&firmware_version, dma_buffer, PLF_FW_VER_LEN);
-+
-+	dev_info(&intf->dev, "Firmware Version: %llu\n", firmware_version);
-+	kfree(dma_buffer);
-+
-+	dev_dbg(&intf->dev, "Mac: %pM\n", hw_address);
-+
-+	return 0;
-+}
-+
-diff --git a/drivers/net/wireless/purelifi/plfxlc/intf.h b/drivers/net/wireless/purelifi/plfxlc/intf.h
-new file mode 100644
-index 000000000000..5ae89343b579
---- /dev/null
-+++ b/drivers/net/wireless/purelifi/plfxlc/intf.h
-@@ -0,0 +1,52 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Copyright (c) 2021 pureLiFi
-+ */
-+
-+#define PURELIFI_BYTE_NUM_ALIGNMENT 4
-+#define ETH_ALEN 6
-+#define AP_USER_LIMIT 8
-+
-+#define PLF_VNDR_FPGA_STATE_REQ 0x30
-+#define PLF_VNDR_FPGA_SET_REQ 0x33
-+#define PLF_VNDR_FPGA_SET_CMD 0x34
-+#define PLF_VNDR_FPGA_STATE_CMD 0x35
-+
-+#define PLF_VNDR_XL_FW_CMD 0x80
-+#define PLF_VNDR_XL_DATA_CMD 0x81
-+#define PLF_VNDR_XL_FILE_CMD 0x82
-+#define PLF_VNDR_XL_EX_CMD 0x83
-+
-+#define PLF_MAC_VENDOR_REQUEST 0x36
-+#define PLF_SERIAL_NUMBER_VENDOR_REQUEST 0x37
-+#define PLF_FIRMWARE_VERSION_VENDOR_REQUEST 0x39
-+#define PLF_SERIAL_LEN 14
-+#define PLF_FW_VER_LEN 8
-+
-+struct rx_status {
-+	__be16 rssi;
-+	u8     rate_idx;
-+	u8     pad;
-+	__be64 crc_error_count;
-+} __packed;
-+
-+enum plf_usb_req_enum {
-+	USB_REQ_TEST_WR            = 0,
-+	USB_REQ_MAC_WR             = 1,
-+	USB_REQ_POWER_WR           = 2,
-+	USB_REQ_RXTX_WR            = 3,
-+	USB_REQ_BEACON_WR          = 4,
-+	USB_REQ_BEACON_INTERVAL_WR = 5,
-+	USB_REQ_RTS_CTS_RATE_WR    = 6,
-+	USB_REQ_HASH_WR            = 7,
-+	USB_REQ_DATA_TX            = 8,
-+	USB_REQ_RATE_WR            = 9,
-+	USB_REQ_SET_FREQ           = 15
-+};
-+
-+struct plf_usb_req {
-+	__be32         id; /* should be plf_usb_req_enum */
-+	__be32	       len;
-+	u8             buf[512];
-+};
-+
-diff --git a/drivers/net/wireless/purelifi/plfxlc/mac.c b/drivers/net/wireless/purelifi/plfxlc/mac.c
-new file mode 100644
-index 000000000000..ba16687803ce
---- /dev/null
-+++ b/drivers/net/wireless/purelifi/plfxlc/mac.c
-@@ -0,0 +1,772 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (c) 2021 pureLiFi
-+ */
-+
-+#include <linux/netdevice.h>
-+#include <linux/etherdevice.h>
-+#include <linux/slab.h>
-+#include <linux/usb.h>
-+#include <linux/gpio.h>
-+#include <linux/jiffies.h>
-+#include <net/ieee80211_radiotap.h>
-+
-+#include "chip.h"
-+#include "mac.h"
-+#include "usb.h"
-+
-+static const struct ieee80211_rate purelifi_rates[] = {
-+	{ .bitrate = 10,
-+		.hw_value = PURELIFI_CCK_RATE_1M,
-+		.flags = 0 },
-+	{ .bitrate = 20,
-+		.hw_value = PURELIFI_CCK_RATE_2M,
-+		.hw_value_short = PURELIFI_CCK_RATE_2M
-+			| PURELIFI_CCK_PREA_SHORT,
-+		.flags = IEEE80211_RATE_SHORT_PREAMBLE },
-+	{ .bitrate = 55,
-+		.hw_value = PURELIFI_CCK_RATE_5_5M,
-+		.hw_value_short = PURELIFI_CCK_RATE_5_5M
-+			| PURELIFI_CCK_PREA_SHORT,
-+		.flags = IEEE80211_RATE_SHORT_PREAMBLE },
-+	{ .bitrate = 110,
-+		.hw_value = PURELIFI_CCK_RATE_11M,
-+		.hw_value_short = PURELIFI_CCK_RATE_11M
-+			| PURELIFI_CCK_PREA_SHORT,
-+		.flags = IEEE80211_RATE_SHORT_PREAMBLE },
-+	{ .bitrate = 60,
-+		.hw_value = PURELIFI_OFDM_RATE_6M,
-+		.flags = 0 },
-+	{ .bitrate = 90,
-+		.hw_value = PURELIFI_OFDM_RATE_9M,
-+		.flags = 0 },
-+	{ .bitrate = 120,
-+		.hw_value = PURELIFI_OFDM_RATE_12M,
-+		.flags = 0 },
-+	{ .bitrate = 180,
-+		.hw_value = PURELIFI_OFDM_RATE_18M,
-+		.flags = 0 },
-+	{ .bitrate = 240,
-+		.hw_value = PURELIFI_OFDM_RATE_24M,
-+		.flags = 0 },
-+	{ .bitrate = 360,
-+		.hw_value = PURELIFI_OFDM_RATE_36M,
-+		.flags = 0 },
-+	{ .bitrate = 480,
-+		.hw_value = PURELIFI_OFDM_RATE_48M,
-+		.flags = 0 },
-+	{ .bitrate = 540,
-+		.hw_value = PURELIFI_OFDM_RATE_54M,
-+		.flags = 0 }
-+};
-+
-+static const struct ieee80211_channel purelifi_channels[] = {
-+	{ .center_freq = 2412, .hw_value = 1 },
-+	{ .center_freq = 2417, .hw_value = 2 },
-+	{ .center_freq = 2422, .hw_value = 3 },
-+	{ .center_freq = 2427, .hw_value = 4 },
-+	{ .center_freq = 2432, .hw_value = 5 },
-+	{ .center_freq = 2437, .hw_value = 6 },
-+	{ .center_freq = 2442, .hw_value = 7 },
-+	{ .center_freq = 2447, .hw_value = 8 },
-+	{ .center_freq = 2452, .hw_value = 9 },
-+	{ .center_freq = 2457, .hw_value = 10 },
-+	{ .center_freq = 2462, .hw_value = 11 },
-+	{ .center_freq = 2467, .hw_value = 12 },
-+	{ .center_freq = 2472, .hw_value = 13 },
-+	{ .center_freq = 2484, .hw_value = 14 },
-+};
-+
-+static int purelifi_mac_config_beacon(struct ieee80211_hw *hw,
-+				      struct sk_buff *beacon);
-+
-+int purelifi_mac_preinit_hw(struct ieee80211_hw *hw, const u8 *hw_address)
-+{
-+	SET_IEEE80211_PERM_ADDR(hw, hw_address);
-+	return 0;
-+}
-+
-+int purelifi_mac_init_hw(struct ieee80211_hw *hw)
-+{
-+	int r;
-+	struct purelifi_mac *mac = purelifi_hw_mac(hw);
-+	struct purelifi_chip *chip = &mac->chip;
-+
-+	r = purelifi_chip_init_hw(chip);
-+	if (r) {
-+		dev_warn(purelifi_mac_dev(mac), "init hw failed (%d)\n", r);
-+		return r;
-+	}
-+
-+	dev_dbg(purelifi_mac_dev(mac), "irq_disabled (%d)\n", irqs_disabled());
-+	regulatory_hint(hw->wiphy, "00");
-+	return r;
-+}
-+
-+void purelifi_mac_release(struct purelifi_mac *mac)
-+{
-+	purelifi_chip_release(&mac->chip);
-+	lockdep_assert_held(&mac->lock);
-+}
-+
-+int plfxlc_op_start(struct ieee80211_hw *hw)
-+{
-+	purelifi_hw_mac(hw)->chip.usb.initialized = 1;
-+	return 0;
-+}
-+
-+void plfxlc_op_stop(struct ieee80211_hw *hw)
-+{
-+	struct purelifi_mac *mac = purelifi_hw_mac(hw);
-+
-+	clear_bit(PURELIFI_DEVICE_RUNNING, &mac->flags);
-+}
-+
-+int purelifi_restore_settings(struct purelifi_mac *mac)
-+{
-+	struct sk_buff *beacon;
-+	int beacon_interval, beacon_period;
-+
-+	spin_lock_irq(&mac->lock);
-+	beacon_interval = mac->beacon.interval;
-+	beacon_period = mac->beacon.period;
-+	spin_unlock_irq(&mac->lock);
-+
-+	if (mac->type != NL80211_IFTYPE_ADHOC)
-+		return 0;
-+
-+	if (mac->vif) {
-+		beacon = ieee80211_beacon_get(mac->hw, mac->vif);
-+		if (beacon) {
-+			purelifi_mac_config_beacon(mac->hw, beacon);
-+			kfree_skb(beacon);
-+			/* Returned skb is used only once and lowlevel
-+			 *  driver is responsible for freeing it.
-+			 */
-+		}
-+	}
-+
-+	purelifi_set_beacon_interval(&mac->chip, beacon_interval,
-+				     beacon_period, mac->type);
-+
-+	spin_lock_irq(&mac->lock);
-+	mac->beacon.last_update = jiffies;
-+	spin_unlock_irq(&mac->lock);
-+
-+	return 0;
-+}
-+
-+static void purelifi_mac_tx_status(struct ieee80211_hw *hw,
-+				   struct sk_buff *skb,
-+				   int ackssi,
-+				   struct tx_status *tx_status)
-+{
-+	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
-+	int success = 1;
-+
-+	ieee80211_tx_info_clear_status(info);
-+
-+	if (tx_status)
-+		success = !tx_status->failure;
-+
-+	if (success)
-+		info->flags |= IEEE80211_TX_STAT_ACK;
-+	else
-+		info->flags &= ~IEEE80211_TX_STAT_ACK;
-+
-+	info->status.ack_signal = 50;
-+	ieee80211_tx_status_irqsafe(hw, skb);
-+}
-+
-+void purelifi_mac_tx_to_dev(struct sk_buff *skb, int error)
-+{
-+	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
-+	struct ieee80211_hw *hw = info->rate_driver_data[0];
-+	struct purelifi_mac *mac = purelifi_hw_mac(hw);
-+
-+	ieee80211_tx_info_clear_status(info);
-+	skb_pull(skb, sizeof(struct purelifi_ctrlset));
-+
-+	if (unlikely(error ||
-+		     (info->flags & IEEE80211_TX_CTL_NO_ACK))) {
-+		ieee80211_tx_status_irqsafe(hw, skb);
-+	} else {
-+		struct sk_buff_head *q = &mac->ack_wait_queue;
-+
-+		skb_queue_tail(q, skb);
-+		while (skb_queue_len(q)/* > PURELIFI_MAC_MAX_ACK_WAITERS*/) {
-+			purelifi_mac_tx_status(hw, skb_dequeue(q),
-+					       mac->ack_pending ?
-+					       mac->ack_signal : 0,
-+					       NULL);
-+			mac->ack_pending = 0;
-+		}
-+	}
-+}
-+
-+static int purelifi_mac_config_beacon(struct ieee80211_hw *hw,
-+				      struct sk_buff *beacon)
-+{
-+	return plf_usb_wreq(beacon->data, beacon->len,
-+			USB_REQ_BEACON_WR);
-+}
-+
-+static int fill_ctrlset(struct purelifi_mac *mac, struct sk_buff *skb)
-+{
-+	unsigned int frag_len = skb->len;
-+	unsigned int tmp;
-+	u32 temp_len = 0;
-+	u32 temp_payload_len = 0;
-+	struct purelifi_ctrlset *cs;
-+
-+	if (skb_headroom(skb) < sizeof(struct purelifi_ctrlset)) {
-+		dev_dbg(purelifi_mac_dev(mac), "Not enough hroom(1)\n");
-+		return 1;
-+	}
-+
-+	cs = (void *)skb_push(skb, sizeof(struct purelifi_ctrlset));
-+	temp_payload_len = frag_len;
-+	temp_len = temp_payload_len +
-+		  sizeof(struct purelifi_ctrlset) -
-+		  sizeof(cs->id) - sizeof(cs->len);
-+
-+	/* data packet lengths must be multiple of four bytes
-+	 * and must not be a multiple of 512
-+	 * bytes. First, it is attempted to append the
-+	 * data packet in the tailroom of the skb. In rare
-+	 * ocasions, the tailroom is too small. In this case,
-+	 * the content of the packet is shifted into
-+	 * the headroom of the skb by memcpy. Headroom is allocated
-+	 * at startup (below in this file). Therefore,
-+	 * there will be always enough headroom. The call skb_headroom
-+	 * is an additional safety which might be
-+	 * dropped.
-+	 */
-+
-+	/* check if 32 bit aligned and align data */
-+	tmp = skb->len & 3;
-+	if (tmp) {
-+		if (skb_tailroom(skb) < (3 - tmp)) {
-+			if (skb_headroom(skb) >= 4 - tmp) {
-+				u8 len;
-+				u8 *src_pt;
-+				u8 *dest_pt;
-+
-+				len = skb->len;
-+				src_pt = skb->data;
-+				dest_pt = skb_push(skb, 4 - tmp);
-+				memmove(dest_pt, src_pt, len);
-+			} else {
-+				return -ENOBUFS;
-+			}
-+		} else {
-+			skb_put(skb, 4 - tmp);
-+		}
-+		temp_len += 4 - tmp;
-+	}
-+
-+	/* check if not multiple of 512 and align data */
-+	tmp = skb->len & 0x1ff;
-+	if (!tmp) {
-+		if (skb_tailroom(skb) < 4) {
-+			if (skb_headroom(skb) >= 4) {
-+				u8 len = skb->len;
-+				u8 *src_pt = skb->data;
-+				u8 *dest_pt = skb_push(skb, 4);
-+
-+				memcpy(dest_pt, src_pt, len);
-+			} else {
-+				/* should never happen because
-+				 * sufficient headroom was reserved
-+				 */
-+				return -ENOBUFS;
-+			}
-+		} else {
-+			skb_put(skb, 4);
-+		}
-+		temp_len += 4;
-+	}
-+
-+	cs->id = cpu_to_be32(USB_REQ_DATA_TX);
-+	cs->len = cpu_to_be32(temp_len);
-+	cs->payload_len_nw = cpu_to_be32(temp_payload_len);
-+
-+	return 0;
-+}
-+
-+static void plfxlc_op_tx(struct ieee80211_hw *hw,
-+			 struct ieee80211_tx_control *control,
-+			 struct sk_buff *skb)
-+{
-+	struct purelifi_mac *mac = purelifi_hw_mac(hw);
-+	struct purelifi_usb *usb = &mac->chip.usb;
-+	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
-+	struct purelifi_header *plhdr = (void *)skb->data;
-+	unsigned long flags;
-+	int r;
-+
-+	r = fill_ctrlset(mac, skb);
-+	if (r)
-+		goto fail;
-+
-+	info->rate_driver_data[0] = hw;
-+
-+	if (plhdr->frametype  == IEEE80211_FTYPE_DATA) {
-+		u8 *dst_mac = plhdr->dmac;
-+		u8 sidx;
-+		bool found = false;
-+		struct purelifi_usb_tx *tx = &usb->tx;
-+
-+		for (sidx = 0; sidx < MAX_STA_NUM; sidx++) {
-+			if (!(tx->station[sidx].flag & STATION_CONNECTED_FLAG))
-+				continue;
-+			if (!memcmp(tx->station[sidx].mac, dst_mac, ETH_ALEN)) {
-+				found = true;
-+				break;
-+			}
-+		}
-+
-+		/* Default to broadcast address for unknown MACs */
-+		if (!found)
-+			sidx = STA_BROADCAST_INDEX;
-+
-+		/* Stop OS from sending packets, if the queue is half full */
-+		if (skb_queue_len(&tx->station[sidx].data_list) > 60)
-+			ieee80211_stop_queues(purelifi_usb_to_hw(usb));
-+
-+		/* Schedule packet for transmission if queue is not full */
-+		if (skb_queue_len(&tx->station[sidx].data_list) < 256) {
-+			skb_queue_tail(&tx->station[sidx].data_list, skb);
-+			purelifi_send_packet_from_data_queue(usb);
-+		} else {
-+			goto fail;
-+		}
-+	} else {
-+		spin_lock_irqsave(&usb->tx.lock, flags);
-+		r = plf_usb_wreq_async(&mac->chip.usb, skb->data, skb->len,
-+				       USB_REQ_DATA_TX, tx_urb_complete, skb);
-+		spin_unlock_irqrestore(&usb->tx.lock, flags);
-+		if (r)
-+			goto fail;
-+	}
-+	return;
-+
-+fail:
-+	dev_kfree_skb(skb);
-+}
-+
-+static int purelifi_filter_ack(struct ieee80211_hw *hw, struct ieee80211_hdr *rx_hdr,
-+			       struct ieee80211_rx_status *stats)
-+{
-+	struct purelifi_mac *mac = purelifi_hw_mac(hw);
-+	struct sk_buff *skb;
-+	struct sk_buff_head *q;
-+	unsigned long flags;
-+	bool found = 0;
-+	int i, position = 0;
-+
-+	if (!ieee80211_is_ack(rx_hdr->frame_control))
-+		return 0;
-+
-+	dev_dbg(purelifi_mac_dev(mac), "ACK Received\n");
-+
-+	/* code based on zy driver, this logic may need fix */
-+	q = &mac->ack_wait_queue;
-+	spin_lock_irqsave(&q->lock, flags);
-+
-+	skb_queue_walk(q, skb) {
-+		struct ieee80211_hdr *tx_hdr;
-+
-+		position++;
-+
-+		if (mac->ack_pending && skb_queue_is_first(q, skb))
-+			continue;
-+		else if (mac->ack_pending == 0)
-+			break;
-+
-+		tx_hdr = (struct ieee80211_hdr *)skb->data;
-+		if (likely(ether_addr_equal(tx_hdr->addr2, rx_hdr->addr1))) {
-+			found = 1;
-+			break;
-+		}
-+	}
-+
-+	if (found) {
-+		for (i = 1; i < position; i++)
-+			skb = __skb_dequeue(q);
-+		if (i == position) {
-+			purelifi_mac_tx_status(hw, skb,
-+					       mac->ack_pending ?
-+					       mac->ack_signal : 0,
-+					       NULL);
-+			mac->ack_pending = 0;
-+		}
-+
-+		mac->ack_pending = skb_queue_len(q) ? 1 : 0;
-+		mac->ack_signal = stats->signal;
-+	}
-+
-+	spin_unlock_irqrestore(&q->lock, flags);
-+	return 1;
-+}
-+
-+int purelifi_mac_rx(struct ieee80211_hw *hw, const u8 *buffer,
-+		    unsigned int length)
-+{
-+	struct purelifi_mac *mac = purelifi_hw_mac(hw);
-+	struct ieee80211_rx_status stats;
-+	const struct rx_status *status;
-+	struct sk_buff *skb;
-+	int bad_frame = 0;
-+	__le16 fc;
-+	int need_padding;
-+	unsigned int payload_length;
-+	static unsigned short int min_exp_seq_nmb;
-+	int sidx;
-+	struct purelifi_usb_tx *tx;
-+	/* Packet blockade during disabled interface. */
-+	if (!mac->vif)
-+		return 0;
-+
-+	memset(&stats, 0, sizeof(stats));
-+	status = (struct rx_status *)buffer;
-+
-+	stats.flag     = 0;
-+	stats.freq     = 2412;
-+	stats.band     = NL80211_BAND_LC;
-+	mac->rssi      = -15 * be16_to_cpu(status->rssi) / 10;
-+
-+	stats.signal   = mac->rssi;
-+
-+	if (status->rate_idx > 7)
-+		stats.rate_idx = 0;
-+	else
-+		stats.rate_idx = status->rate_idx;
-+
-+	mac->crc_errors = be64_to_cpu(status->crc_error_count);
-+
-+	if (!bad_frame &&
-+	    purelifi_filter_ack(hw, (struct ieee80211_hdr *)buffer, &stats) &&
-+	    !mac->pass_ctrl)
-+		return 0;
-+
-+	buffer += sizeof(struct rx_status);
-+	payload_length = get_unaligned_be32(buffer);
-+
-+	/* MTU = 1500, MAC header = 36, CRC = 4, sum = 1540 */
-+	if (payload_length > 1560) {
-+		dev_err(purelifi_mac_dev(mac), " > MTU %u\n", payload_length);
-+		return 0;
-+	}
-+	buffer += sizeof(u32);
-+
-+	fc = get_unaligned((__le16 *)buffer);
-+	need_padding = ieee80211_is_data_qos(fc) ^ ieee80211_has_a4(fc);
-+
-+	tx = &mac->chip.usb.tx;
-+
-+	for (sidx = 0; sidx < MAX_STA_NUM - 1; sidx++) {
-+		if (memcmp(&buffer[10], tx->station[sidx].mac, ETH_ALEN))
-+			continue;
-+		if (tx->station[sidx].flag & STATION_CONNECTED_FLAG) {
-+			tx->station[sidx].flag |= STATION_HEARTBEAT_FLAG;
-+			break;
-+		}
-+	}
-+
-+	if (sidx == MAX_STA_NUM - 1) {
-+		for (sidx = 0; sidx < MAX_STA_NUM - 1; sidx++) {
-+			if (tx->station[sidx].flag & STATION_CONNECTED_FLAG)
-+				continue;
-+			memcpy(tx->station[sidx].mac, &buffer[10], ETH_ALEN);
-+			tx->station[sidx].flag |= STATION_CONNECTED_FLAG;
-+			tx->station[sidx].flag |= STATION_HEARTBEAT_FLAG;
-+			break;
-+		}
-+	}
-+
-+	switch (buffer[0]) {
-+	case IEEE80211_STYPE_PROBE_REQ:
-+		dev_dbg(purelifi_mac_dev(mac), "Probe request\n");
-+		break;
-+	case IEEE80211_STYPE_ASSOC_REQ:
-+		dev_dbg(purelifi_mac_dev(mac), "Association request\n");
-+		break;
-+	case IEEE80211_STYPE_AUTH:
-+		dev_dbg(purelifi_mac_dev(mac), "Authentication req\n");
-+		min_exp_seq_nmb = 0;
-+		break;
-+	case IEEE80211_FTYPE_DATA:
-+		dev_dbg(purelifi_mac_dev(mac), "802.11 data frame\n");
-+		break;
-+	}
-+
-+	skb = dev_alloc_skb(payload_length + (need_padding ? 2 : 0));
-+	if (!skb)
-+		return -ENOMEM;
-+
-+	if (need_padding)
-+		/* Make sure that the payload data is 4 byte aligned. */
-+		skb_reserve(skb, 2);
-+
-+	skb_put_data(skb, buffer, payload_length);
-+	memcpy(IEEE80211_SKB_RXCB(skb), &stats, sizeof(stats));
-+	ieee80211_rx_irqsafe(hw, skb);
-+	return 0;
-+}
-+
-+static int plfxlc_op_add_interface(struct ieee80211_hw *hw,
-+				   struct ieee80211_vif *vif)
-+{
-+	struct purelifi_mac *mac = purelifi_hw_mac(hw);
-+	static const char * const iftype80211[] = {
-+		[NL80211_IFTYPE_STATION]	= "Station",
-+		[NL80211_IFTYPE_ADHOC]		= "Adhoc"
-+	};
-+
-+	if (mac->type != NL80211_IFTYPE_UNSPECIFIED)
-+		return -EOPNOTSUPP;
-+
-+	if (vif->type == NL80211_IFTYPE_ADHOC ||
-+	    vif->type == NL80211_IFTYPE_STATION) {
-+		dev_dbg(purelifi_mac_dev(mac), "%s %s\n", __func__,
-+			iftype80211[vif->type]);
-+		mac->type = vif->type;
-+		mac->vif = vif;
-+	} else {
-+		dev_dbg(purelifi_mac_dev(mac), "unsupported iftype\n");
-+		return -EOPNOTSUPP;
-+	}
-+
-+	return 0;
-+}
-+
-+static void plfxlc_op_remove_interface(struct ieee80211_hw *hw,
-+				       struct ieee80211_vif *vif)
-+{
-+	struct purelifi_mac *mac = purelifi_hw_mac(hw);
-+
-+	mac->type = NL80211_IFTYPE_UNSPECIFIED;
-+	mac->vif = NULL;
-+}
-+
-+static int plfxlc_op_config(struct ieee80211_hw *hw, u32 changed)
-+{
-+	return 0;
-+}
-+
-+#define SUPPORTED_FIF_FLAGS \
-+	(FIF_ALLMULTI | FIF_FCSFAIL | FIF_CONTROL | \
-+	 FIF_OTHER_BSS | FIF_BCN_PRBRESP_PROMISC)
-+static void plfxlc_op_configure_filter(struct ieee80211_hw *hw,
-+				       unsigned int changed_flags,
-+				       unsigned int *new_flags,
-+				       u64 multicast)
-+{
-+	struct purelifi_mc_hash hash = {
-+		.low = multicast,
-+		.high = multicast >> 32,
-+	};
-+	struct purelifi_mac *mac = purelifi_hw_mac(hw);
-+	unsigned long flags;
-+
-+	/* Only deal with supported flags */
-+	changed_flags &= SUPPORTED_FIF_FLAGS;
-+	*new_flags &= SUPPORTED_FIF_FLAGS;
-+
-+	/* If multicast parameter
-+	 * (as returned by plfxlc_op_prepare_multicast)
-+	 * has changed, no bit in changed_flags is set. To handle this
-+	 * situation, we do not return if changed_flags is 0. If we do so,
-+	 * we will have some issue with IPv6 which uses multicast for link
-+	 * layer address resolution.
-+	 */
-+	if (*new_flags & (FIF_ALLMULTI))
-+		purelifi_mc_add_all(&hash);
-+
-+	spin_lock_irqsave(&mac->lock, flags);
-+	mac->pass_failed_fcs = !!(*new_flags & FIF_FCSFAIL);
-+	mac->pass_ctrl = !!(*new_flags & FIF_CONTROL);
-+	mac->multicast_hash = hash;
-+	spin_unlock_irqrestore(&mac->lock, flags);
-+
-+	/* no handling required for FIF_OTHER_BSS as we don't currently
-+	 * do BSSID filtering
-+	 */
-+	/* FIXME: in future it would be nice to enable the probe response
-+	 * filter (so that the driver doesn't see them) until
-+	 * FIF_BCN_PRBRESP_PROMISC is set. however due to atomicity here, we'd
-+	 * have to schedule work to enable prbresp reception, which might
-+	 * happen too late. For now we'll just listen and forward them all the
-+	 * time.
-+	 */
-+}
-+
-+static void plfxlc_op_bss_info_changed(struct ieee80211_hw *hw,
-+				       struct ieee80211_vif *vif,
-+				       struct ieee80211_bss_conf *bss_conf,
-+				       u32 changes)
-+{
-+	struct purelifi_mac *mac = purelifi_hw_mac(hw);
-+	int associated;
-+
-+	dev_dbg(purelifi_mac_dev(mac), "changes: %x\n", changes);
-+
-+	if (mac->type != NL80211_IFTYPE_ADHOC) { /* for STATION */
-+		associated = is_valid_ether_addr(bss_conf->bssid);
-+		goto exit_all;
-+	}
-+	/* for ADHOC */
-+	associated = true;
-+	if (changes & BSS_CHANGED_BEACON) {
-+		struct sk_buff *beacon = ieee80211_beacon_get(hw, vif);
-+
-+		if (beacon) {
-+			purelifi_mac_config_beacon(hw, beacon);
-+			kfree_skb(beacon);
-+			/*Returned skb is used only once and
-+			 * low-level driver is
-+			 * responsible for freeing it.
-+			 */
-+		}
-+	}
-+
-+	if (changes & BSS_CHANGED_BEACON_ENABLED) {
-+		u16 interval = 0;
-+		u8 period = 0;
-+
-+		if (bss_conf->enable_beacon) {
-+			period = bss_conf->dtim_period;
-+			interval = bss_conf->beacon_int;
-+		}
-+
-+		spin_lock_irq(&mac->lock);
-+		mac->beacon.period = period;
-+		mac->beacon.interval = interval;
-+		mac->beacon.last_update = jiffies;
-+		spin_unlock_irq(&mac->lock);
-+
-+		purelifi_set_beacon_interval(&mac->chip, interval,
-+					     period, mac->type);
-+	}
-+exit_all:
-+	spin_lock_irq(&mac->lock);
-+	mac->associated = associated;
-+	spin_unlock_irq(&mac->lock);
-+}
-+
-+static int purelifi_get_stats(struct ieee80211_hw *hw,
-+			      struct ieee80211_low_level_stats *stats)
-+{
-+	stats->dot11ACKFailureCount = 0;
-+	stats->dot11RTSFailureCount = 0;
-+	stats->dot11FCSErrorCount = 0;
-+	stats->dot11RTSSuccessCount = 0;
-+	return 0;
-+}
-+
-+static const char et_strings[][ETH_GSTRING_LEN] = {
-+	"phy_rssi",
-+	"phy_rx_crc_err"
-+};
-+
-+static int purelifi_get_et_sset_count(struct ieee80211_hw *hw,
-+				      struct ieee80211_vif *vif, int sset)
-+{
-+	if (sset == ETH_SS_STATS)
-+		return ARRAY_SIZE(et_strings);
-+
-+	return 0;
-+}
-+
-+static void purelifi_get_et_strings(struct ieee80211_hw *hw,
-+				    struct ieee80211_vif *vif,
-+				    u32 sset, u8 *data)
-+{
-+	if (sset == ETH_SS_STATS)
-+		memcpy(data, *et_strings, sizeof(et_strings));
-+}
-+
-+static void purelifi_get_et_stats(struct ieee80211_hw *hw,
-+				  struct ieee80211_vif *vif,
-+				  struct ethtool_stats *stats, u64 *data)
-+{
-+	struct purelifi_mac *mac = purelifi_hw_mac(hw);
-+
-+	data[0] = mac->rssi;
-+	data[1] = mac->crc_errors;
-+}
-+
-+static int purelifi_set_rts_threshold(struct ieee80211_hw *hw, u32 value)
-+{
-+	return 0;
-+}
-+
-+static const struct ieee80211_ops plfxlc_ops = {
-+	.tx                 = plfxlc_op_tx,
-+	.start              = plfxlc_op_start,
-+	.stop               = plfxlc_op_stop,
-+	.add_interface      = plfxlc_op_add_interface,
-+	.remove_interface   = plfxlc_op_remove_interface,
-+	.set_rts_threshold  = purelifi_set_rts_threshold,
-+	.config             = plfxlc_op_config,
-+	.configure_filter   = plfxlc_op_configure_filter,
-+	.bss_info_changed   = plfxlc_op_bss_info_changed,
-+	.get_stats          = purelifi_get_stats,
-+	.get_et_sset_count  = purelifi_get_et_sset_count,
-+	.get_et_stats       = purelifi_get_et_stats,
-+	.get_et_strings     = purelifi_get_et_strings,
-+};
-+
-+struct ieee80211_hw *purelifi_mac_alloc_hw(struct usb_interface *intf)
-+{
-+	struct purelifi_mac *mac;
-+	struct ieee80211_hw *hw;
-+
-+	hw = ieee80211_alloc_hw(sizeof(struct purelifi_mac), &plfxlc_ops);
-+	if (!hw) {
-+		dev_dbg(&intf->dev, "out of memory\n");
-+		return NULL;
-+	}
-+	set_wiphy_dev(hw->wiphy, &intf->dev);
-+
-+	mac = purelifi_hw_mac(hw);
-+	memset(mac, 0, sizeof(*mac));
-+	spin_lock_init(&mac->lock);
-+	mac->hw = hw;
-+
-+	mac->type = NL80211_IFTYPE_UNSPECIFIED;
-+
-+	memcpy(mac->channels, purelifi_channels, sizeof(purelifi_channels));
-+	memcpy(mac->rates, purelifi_rates, sizeof(purelifi_rates));
-+	mac->band.n_bitrates = ARRAY_SIZE(purelifi_rates);
-+	mac->band.bitrates = mac->rates;
-+	mac->band.n_channels = ARRAY_SIZE(purelifi_channels);
-+	mac->band.channels = mac->channels;
-+	hw->wiphy->bands[NL80211_BAND_LC] = &mac->band;
-+	hw->conf.chandef.width = NL80211_CHAN_WIDTH_20;
-+
-+	ieee80211_hw_set(hw, RX_INCLUDES_FCS);
-+	ieee80211_hw_set(hw, SIGNAL_DBM);
-+	ieee80211_hw_set(hw, HOST_BROADCAST_PS_BUFFERING);
-+	ieee80211_hw_set(hw, MFP_CAPABLE);
-+
-+	hw->wiphy->interface_modes =
-+		BIT(NL80211_IFTYPE_STATION) |
-+		BIT(NL80211_IFTYPE_ADHOC);
-+	hw->max_signal = 100;
-+	hw->queues = 1;
-+	/* 4 for 32 bit alignment if no tailroom */
-+	hw->extra_tx_headroom = sizeof(struct purelifi_ctrlset) + 4;
-+	/* Tell mac80211 that we support multi rate retries */
-+	hw->max_rates = IEEE80211_TX_MAX_RATES;
-+	hw->max_rate_tries = 18;   /* 9 rates * 2 retries/rate */
-+
-+	skb_queue_head_init(&mac->ack_wait_queue);
-+	mac->ack_pending = 0;
-+
-+	purelifi_chip_init(&mac->chip, hw, intf);
-+
-+	SET_IEEE80211_DEV(hw, &intf->dev);
-+	return hw;
-+}
-diff --git a/drivers/net/wireless/purelifi/plfxlc/mac.h b/drivers/net/wireless/purelifi/plfxlc/mac.h
-new file mode 100644
-index 000000000000..3852d7343a40
---- /dev/null
-+++ b/drivers/net/wireless/purelifi/plfxlc/mac.h
-@@ -0,0 +1,190 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Copyright (c) 2021 pureLiFi
-+ */
-+
-+#ifndef _PURELIFI_MAC_H
-+#define _PURELIFI_MAC_H
-+
-+#include <linux/kernel.h>
-+#include <net/mac80211.h>
-+
-+#include "chip.h"
-+
-+#define PURELIFI_CCK                  0x00
-+#define PURELIFI_OFDM                 0x10
-+#define PURELIFI_CCK_PREA_SHORT       0x20
-+
-+#define PURELIFI_OFDM_PLCP_RATE_6M	0xb
-+#define PURELIFI_OFDM_PLCP_RATE_9M	0xf
-+#define PURELIFI_OFDM_PLCP_RATE_12M	0xa
-+#define PURELIFI_OFDM_PLCP_RATE_18M	0xe
-+#define PURELIFI_OFDM_PLCP_RATE_24M	0x9
-+#define PURELIFI_OFDM_PLCP_RATE_36M	0xd
-+#define PURELIFI_OFDM_PLCP_RATE_48M	0x8
-+#define PURELIFI_OFDM_PLCP_RATE_54M	0xc
-+
-+#define PURELIFI_CCK_RATE_1M	(PURELIFI_CCK | 0x00)
-+#define PURELIFI_CCK_RATE_2M	(PURELIFI_CCK | 0x01)
-+#define PURELIFI_CCK_RATE_5_5M	(PURELIFI_CCK | 0x02)
-+#define PURELIFI_CCK_RATE_11M	(PURELIFI_CCK | 0x03)
-+#define PURELIFI_OFDM_RATE_6M	(PURELIFI_OFDM | PURELIFI_OFDM_PLCP_RATE_6M)
-+#define PURELIFI_OFDM_RATE_9M	(PURELIFI_OFDM | PURELIFI_OFDM_PLCP_RATE_9M)
-+#define PURELIFI_OFDM_RATE_12M	(PURELIFI_OFDM | PURELIFI_OFDM_PLCP_RATE_12M)
-+#define PURELIFI_OFDM_RATE_18M	(PURELIFI_OFDM | PURELIFI_OFDM_PLCP_RATE_18M)
-+#define PURELIFI_OFDM_RATE_24M	(PURELIFI_OFDM | PURELIFI_OFDM_PLCP_RATE_24M)
-+#define PURELIFI_OFDM_RATE_36M	(PURELIFI_OFDM | PURELIFI_OFDM_PLCP_RATE_36M)
-+#define PURELIFI_OFDM_RATE_48M	(PURELIFI_OFDM | PURELIFI_OFDM_PLCP_RATE_48M)
-+#define PURELIFI_OFDM_RATE_54M	(PURELIFI_OFDM | PURELIFI_OFDM_PLCP_RATE_54M)
-+
-+#define PURELIFI_RX_ERROR		0x80
-+#define PURELIFI_RX_CRC32_ERROR		0x10
-+
-+#define PLF_REGDOMAIN_FCC	0x10
-+#define PLF_REGDOMAIN_IC	0x20
-+#define PLF_REGDOMAIN_ETSI	0x30
-+#define PLF_REGDOMAIN_SPAIN	0x31
-+#define PLF_REGDOMAIN_FRANCE	0x32
-+#define PLF_REGDOMAIN_JAPAN_2	0x40
-+#define PLF_REGDOMAIN_JAPAN	0x41
-+#define PLF_REGDOMAIN_JAPAN_3	0x49
-+
-+enum {
-+	MODULATION_RATE_BPSK_1_2 = 0,
-+	MODULATION_RATE_BPSK_3_4,
-+	MODULATION_RATE_QPSK_1_2,
-+	MODULATION_RATE_QPSK_3_4,
-+	MODULATION_RATE_QAM16_1_2,
-+	MODULATION_RATE_QAM16_3_4,
-+	MODULATION_RATE_QAM64_1_2,
-+	MODULATION_RATE_QAM64_3_4,
-+	MODULATION_RATE_AUTO,
-+	MODULATION_RATE_NUM
-+};
-+
-+#define purelifi_mac_dev(mac) purelifi_chip_dev(&(mac)->chip)
-+
-+#define PURELIFI_MAC_STATS_BUFFER_SIZE 16
-+#define PURELIFI_MAC_MAX_ACK_WAITERS 50
-+
-+struct purelifi_ctrlset {
-+	/* id should be plf_usb_req_enum */
-+	__be32		id;
-+	__be32		len;
-+	u8              modulation;
-+	u8              control;
-+	u8              service;
-+	u8		pad;
-+	__le16		packet_length;
-+	__le16		current_length;
-+	__le16		next_frame_length;
-+	__le16		tx_length;
-+	__be32		payload_len_nw;
-+} __packed;
-+
-+/* overlay */
-+struct purelifi_header {
-+	struct purelifi_ctrlset plf_ctrl;
-+	u32    frametype;
-+	u8    *dmac;
-+} __packed;
-+
-+struct tx_status {
-+	u8 type;
-+	u8 id;
-+	u8 rate;
-+	u8 pad;
-+	u8 mac[ETH_ALEN];
-+	u8 retry;
-+	u8 failure;
-+} __packed;
-+
-+struct beacon {
-+	struct delayed_work watchdog_work;
-+	struct sk_buff *cur_beacon;
-+	unsigned long last_update;
-+	u16 interval;
-+	u8 period;
-+};
-+
-+enum purelifi_device_flags {
-+	PURELIFI_DEVICE_RUNNING,
-+};
-+
-+struct purelifi_mac {
-+	struct purelifi_chip chip;
-+	spinlock_t lock; /* lock for mac data */
-+	struct ieee80211_hw *hw;
-+	struct ieee80211_vif *vif;
-+	struct beacon beacon;
-+	struct work_struct set_rts_cts_work;
-+	struct work_struct process_intr;
-+	struct purelifi_mc_hash multicast_hash;
-+	u8 intr_buffer[USB_MAX_EP_INT_BUFFER];
-+	u8 regdomain;
-+	u8 default_regdomain;
-+	u8 channel;
-+	int type;
-+	int associated;
-+	unsigned long flags;
-+	struct sk_buff_head ack_wait_queue;
-+	struct ieee80211_channel channels[14];
-+	struct ieee80211_rate rates[12];
-+	struct ieee80211_supported_band band;
-+
-+	/* whether to pass frames with CRC errors to stack */
-+	bool pass_failed_fcs;
-+
-+	/* whether to pass control frames to stack */
-+	bool pass_ctrl;
-+
-+	/* whether we have received a 802.11 ACK that is pending */
-+	bool ack_pending;
-+
-+	/* signal strength of the last 802.11 ACK received */
-+	int ack_signal;
-+
-+	unsigned char hw_address[ETH_ALEN];
-+	char serial_number[PURELIFI_SERIAL_LEN];
-+	u64 crc_errors;
-+	u64 rssi;
-+};
-+
-+static inline struct purelifi_mac *
-+purelifi_hw_mac(struct ieee80211_hw *hw)
-+{
-+	return hw->priv;
-+}
-+
-+static inline struct purelifi_mac *
-+purelifi_chip_to_mac(struct purelifi_chip *chip)
-+{
-+	return container_of(chip, struct purelifi_mac, chip);
-+}
-+
-+static inline struct purelifi_mac *
-+purelifi_usb_to_mac(struct purelifi_usb *usb)
-+{
-+	return purelifi_chip_to_mac(purelifi_usb_to_chip(usb));
-+}
-+
-+static inline u8 *purelifi_mac_get_perm_addr(struct purelifi_mac *mac)
-+{
-+	return mac->hw->wiphy->perm_addr;
-+}
-+
-+struct ieee80211_hw *purelifi_mac_alloc_hw(struct usb_interface *intf);
-+void purelifi_mac_release(struct purelifi_mac *mac);
-+
-+int purelifi_mac_preinit_hw(struct ieee80211_hw *hw, const u8 *hw_address);
-+int purelifi_mac_init_hw(struct ieee80211_hw *hw);
-+
-+int purelifi_mac_rx(struct ieee80211_hw *hw, const u8 *buffer,
-+		    unsigned int length);
-+void purelifi_mac_tx_failed(struct urb *urb);
-+void purelifi_mac_tx_to_dev(struct sk_buff *skb, int error);
-+int plfxlc_op_start(struct ieee80211_hw *hw);
-+void plfxlc_op_stop(struct ieee80211_hw *hw);
-+int purelifi_restore_settings(struct purelifi_mac *mac);
-+
-+#endif
-diff --git a/drivers/net/wireless/purelifi/plfxlc/usb.c b/drivers/net/wireless/purelifi/plfxlc/usb.c
-new file mode 100644
-index 000000000000..8cd9f223025e
---- /dev/null
-+++ b/drivers/net/wireless/purelifi/plfxlc/usb.c
-@@ -0,0 +1,975 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (c) 2021 pureLiFi
-+ */
-+
-+#include <linux/kernel.h>
-+#include <linux/init.h>
-+#include <linux/device.h>
-+#include <linux/errno.h>
-+#include <linux/slab.h>
-+#include <linux/skbuff.h>
-+#include <linux/usb.h>
-+#include <linux/workqueue.h>
-+#include <linux/proc_fs.h>
-+#include <linux/fs.h>
-+#include <linux/string.h>
-+#include <linux/module.h>
-+#include <net/mac80211.h>
-+#include <asm/unaligned.h>
-+#include <linux/version.h>
-+#include <linux/sysfs.h>
-+
-+#include "mac.h"
-+#include "usb.h"
-+
-+struct usb_interface *ez_usb_interface;
-+
-+static const struct usb_device_id usb_ids[] = {
-+	{ USB_DEVICE(PURELIFI_X_VENDOR_ID_0, PURELIFI_X_PRODUCT_ID_0),
-+	  .driver_info = DEVICE_LIFI_X },
-+	{ USB_DEVICE(PURELIFI_XC_VENDOR_ID_0, PURELIFI_XC_PRODUCT_ID_0),
-+	  .driver_info = DEVICE_LIFI_XC },
-+	{ USB_DEVICE(PURELIFI_XL_VENDOR_ID_0, PURELIFI_XL_PRODUCT_ID_0),
-+	  .driver_info = DEVICE_LIFI_XL },
-+	{}
-+};
-+
-+static inline u16 get_bcd_device(const struct usb_device *udev)
-+{
-+	return le16_to_cpu(udev->descriptor.bcdDevice);
-+}
-+
-+void purelifi_send_packet_from_data_queue(struct purelifi_usb *usb)
-+{
-+	struct sk_buff *skb = NULL;
-+	unsigned long flags;
-+	static u8 sidx;
-+	u8 last_served_sidx;
-+	struct purelifi_usb_tx *tx = &usb->tx;
-+
-+	spin_lock_irqsave(&tx->lock, flags);
-+	last_served_sidx = sidx;
-+	do {
-+		sidx = (sidx + 1) % MAX_STA_NUM;
-+		if (!tx->station[sidx].flag & STATION_CONNECTED_FLAG)
-+			continue;
-+		if (!(tx->station[sidx].flag & STATION_FIFO_FULL_FLAG))
-+			skb = skb_peek(&tx->station[sidx].data_list);
-+	} while ((sidx != last_served_sidx) && (!skb));
-+
-+	if (skb) {
-+		skb = skb_dequeue(&tx->station[sidx].data_list);
-+		plf_usb_wreq_async(usb, skb->data, skb->len, USB_REQ_DATA_TX,
-+				   tx_urb_complete, skb);
-+		if (skb_queue_len(&tx->station[sidx].data_list) <= 60)
-+			ieee80211_wake_queues(purelifi_usb_to_hw(usb));
-+	}
-+	spin_unlock_irqrestore(&tx->lock, flags);
-+}
-+
-+static void handle_rx_packet(struct purelifi_usb *usb, const u8 *buffer,
-+			     unsigned int length)
-+{
-+	purelifi_mac_rx(purelifi_usb_to_hw(usb), buffer, length);
-+}
-+
-+static void rx_urb_complete(struct urb *urb)
-+{
-+	int r;
-+	struct purelifi_usb *usb;
-+	struct purelifi_usb_tx *tx;
-+	const u8 *buffer;
-+	unsigned int length;
-+	u16 status;
-+	u8 sidx;
-+
-+	if (!urb) {
-+		pr_err("urb is NULL\n");
-+		return;
-+	} else if (!urb->context) {
-+		pr_err("urb ctx is NULL\n");
-+		return;
-+	}
-+	usb = urb->context;
-+
-+	if (usb->initialized != 1) {
-+		pr_err("usb is not initialized\n");
-+		return;
-+	}
-+
-+	tx = &usb->tx;
-+	switch (urb->status) {
-+	case 0:
-+		break;
-+	case -ESHUTDOWN:
-+	case -EINVAL:
-+	case -ENODEV:
-+	case -ENOENT:
-+	case -ECONNRESET:
-+	case -EPIPE:
-+		dev_dbg(urb_dev(urb), "urb %p error %d\n", urb, urb->status);
-+		return;
-+	default:
-+		dev_dbg(urb_dev(urb), "urb %p error %d\n", urb, urb->status);
-+		if (tx->submitted_urbs++ < PURELIFI_URB_RETRY_MAX) {
-+			dev_dbg(urb_dev(urb), "urb %p resubmit %d", urb,
-+				tx->submitted_urbs++);
-+			goto resubmit;
-+		} else {
-+			dev_dbg(urb_dev(urb), "urb %p  max resubmits reached", urb);
-+			tx->submitted_urbs = 0;
-+			return;
-+		}
-+	}
-+
-+	buffer = urb->transfer_buffer;
-+	length = le32_to_cpu(*(__le32 *)(buffer + sizeof(struct rx_status)))
-+		 + sizeof(u32);
-+
-+	if (urb->actual_length != (PLF_MSG_STATUS_OFFSET + 1)) {
-+		if (usb->initialized && usb->link_up)
-+			handle_rx_packet(usb, buffer, length);
-+		goto resubmit;
-+	}
-+
-+	status = buffer[PLF_MSG_STATUS_OFFSET];
-+
-+	switch (status) {
-+	case STATION_FIFO_ALMOST_FULL_NOT_MESSAGE:
-+		dev_dbg(&usb->intf->dev,
-+			"FIFO full not packet receipt\n");
-+		tx->mac_fifo_full = 1;
-+		for (sidx = 0; sidx < MAX_STA_NUM; sidx++)
-+			tx->station[sidx].flag |= STATION_FIFO_FULL_FLAG;
-+		break;
-+	case STATION_FIFO_ALMOST_FULL_MESSAGE:
-+		dev_dbg(&usb->intf->dev, "FIFO full packet receipt\n");
-+
-+		for (sidx = 0; sidx < MAX_STA_NUM; sidx++)
-+			tx->station[sidx].flag &= STATION_ACTIVE_FLAG;
-+
-+		purelifi_send_packet_from_data_queue(usb);
-+		break;
-+	case STATION_CONNECT_MESSAGE:
-+		usb->link_up = 1;
-+		dev_dbg(&usb->intf->dev, "ST_CONNECT_MSG packet receipt\n");
-+		break;
-+	case STATION_DISCONNECT_MESSAGE:
-+		usb->link_up = 0;
-+		dev_dbg(&usb->intf->dev, "ST_DISCONN_MSG packet receipt\n");
-+		break;
-+	default:
-+		dev_dbg(&usb->intf->dev, "Unknown packet receipt\n");
-+		break;
-+	}
-+
-+resubmit:
-+	r = usb_submit_urb(urb, GFP_ATOMIC);
-+	if (r)
-+		dev_dbg(urb_dev(urb), "urb %p resubmit fail (%d)\n", urb, r);
-+}
-+
-+static struct urb *alloc_rx_urb(struct purelifi_usb *usb)
-+{
-+	struct usb_device *udev = purelifi_usb_to_usbdev(usb);
-+	struct urb *urb;
-+	void *buffer;
-+
-+	urb = usb_alloc_urb(0, GFP_KERNEL);
-+	if (!urb)
-+		return NULL;
-+
-+	buffer = usb_alloc_coherent(udev, USB_MAX_RX_SIZE, GFP_KERNEL,
-+				    &urb->transfer_dma);
-+	if (!buffer) {
-+		usb_free_urb(urb);
-+		return NULL;
-+	}
-+
-+	usb_fill_bulk_urb(urb, udev, usb_rcvbulkpipe(udev, EP_DATA_IN),
-+			  buffer, USB_MAX_RX_SIZE,
-+			  rx_urb_complete, usb);
-+	urb->transfer_flags |= URB_NO_TRANSFER_DMA_MAP;
-+
-+	return urb;
-+}
-+
-+static void free_rx_urb(struct urb *urb)
-+{
-+	if (!urb)
-+		return;
-+	usb_free_coherent(urb->dev, urb->transfer_buffer_length,
-+			  urb->transfer_buffer, urb->transfer_dma);
-+	usb_free_urb(urb);
-+}
-+
-+static int __lf_x_usb_enable_rx(struct purelifi_usb *usb)
-+{
-+	int i, r;
-+	struct purelifi_usb_rx *rx = &usb->rx;
-+	struct urb **urbs;
-+
-+	r = -ENOMEM;
-+	urbs = kcalloc(RX_URBS_COUNT, sizeof(struct urb *), GFP_KERNEL);
-+	if (!urbs)
-+		goto error;
-+
-+	for (i = 0; i < RX_URBS_COUNT; i++) {
-+		urbs[i] = alloc_rx_urb(usb);
-+		if (!urbs[i])
-+			goto error;
-+	}
-+
-+	spin_lock_irq(&rx->lock);
-+
-+	dev_dbg(purelifi_usb_dev(usb), "irq_disabled %d\n", irqs_disabled());
-+
-+	if (rx->urbs) {
-+		spin_unlock_irq(&rx->lock);
-+		r = 0;
-+		goto error;
-+	}
-+	rx->urbs = urbs;
-+	rx->urbs_count = RX_URBS_COUNT;
-+	spin_unlock_irq(&rx->lock);
-+
-+	for (i = 0; i < RX_URBS_COUNT; i++) {
-+		r = usb_submit_urb(urbs[i], GFP_KERNEL);
-+		if (r)
-+			goto error_submit;
-+	}
-+
-+	return 0;
-+
-+error_submit:
-+	for (i = 0; i < RX_URBS_COUNT; i++)
-+		usb_kill_urb(urbs[i]);
-+	spin_lock_irq(&rx->lock);
-+	rx->urbs = NULL;
-+	rx->urbs_count = 0;
-+	spin_unlock_irq(&rx->lock);
-+error:
-+	if (urbs) {
-+		for (i = 0; i < RX_URBS_COUNT; i++)
-+			free_rx_urb(urbs[i]);
-+	}
-+	return r;
-+}
-+
-+int purelifi_usb_enable_rx(struct purelifi_usb *usb)
-+{
-+	int r;
-+	struct purelifi_usb_rx *rx = &usb->rx;
-+
-+	mutex_lock(&rx->setup_mutex);
-+	r = __lf_x_usb_enable_rx(usb);
-+	if (!r)
-+		usb->rx_usb_enabled = 1;
-+
-+	mutex_unlock(&rx->setup_mutex);
-+
-+	return r;
-+}
-+
-+static void __lf_x_usb_disable_rx(struct purelifi_usb *usb)
-+{
-+	int i;
-+	unsigned long flags;
-+	struct urb **urbs;
-+	unsigned int count;
-+	struct purelifi_usb_rx *rx = &usb->rx;
-+
-+	spin_lock_irqsave(&rx->lock, flags);
-+	urbs = rx->urbs;
-+	count = rx->urbs_count;
-+	spin_unlock_irqrestore(&rx->lock, flags);
-+
-+	if (!urbs)
-+		return;
-+
-+	for (i = 0; i < count; i++) {
-+		usb_kill_urb(urbs[i]);
-+		free_rx_urb(urbs[i]);
-+	}
-+	kfree(urbs);
-+	rx->urbs = NULL;
-+	rx->urbs_count = 0;
-+}
-+
-+void purelifi_usb_disable_rx(struct purelifi_usb *usb)
-+{
-+	struct purelifi_usb_rx *rx = &usb->rx;
-+
-+	mutex_lock(&rx->setup_mutex);
-+	__lf_x_usb_disable_rx(usb);
-+	usb->rx_usb_enabled = 0;
-+	mutex_unlock(&rx->setup_mutex);
-+}
-+
-+/**
-+ * purelifi_usb_disable_tx - disable transmission
-+ * @usb: the driver USB structure
-+ *
-+ * Frees all URBs in the free list and marks the transmission as disabled.
-+ */
-+void purelifi_usb_disable_tx(struct purelifi_usb *usb)
-+{
-+	struct purelifi_usb_tx *tx = &usb->tx;
-+	unsigned long flags;
-+
-+	clear_bit(PLF_BIT_ENABLED, &tx->enabled);
-+
-+	/* kill all submitted tx-urbs */
-+	usb_kill_anchored_urbs(&tx->submitted);
-+
-+	spin_lock_irqsave(&tx->lock, flags);
-+	WARN_ON(!skb_queue_empty(&tx->submitted_skbs));
-+	WARN_ON(tx->submitted_urbs != 0);
-+	tx->submitted_urbs = 0;
-+	spin_unlock_irqrestore(&tx->lock, flags);
-+
-+	/* The stopped state is ignored, relying on ieee80211_wake_queues()
-+	 * in a potentionally following purelifi_usb_enable_tx().
-+	 */
-+}
-+
-+/**
-+ * purelifi_usb_enable_tx - enables transmission
-+ * @usb: a &struct purelifi_usb pointer
-+ *
-+ * This function enables transmission and prepares the &purelifi_usb_tx data
-+ * structure.
-+ */
-+void purelifi_usb_enable_tx(struct purelifi_usb *usb)
-+{
-+	unsigned long flags;
-+	struct purelifi_usb_tx *tx = &usb->tx;
-+
-+	spin_lock_irqsave(&tx->lock, flags);
-+	set_bit(PLF_BIT_ENABLED, &tx->enabled);
-+	tx->submitted_urbs = 0;
-+	ieee80211_wake_queues(purelifi_usb_to_hw(usb));
-+	tx->stopped = 0;
-+	spin_unlock_irqrestore(&tx->lock, flags);
-+}
-+
-+/**
-+ * tx_urb_complete - completes the execution of an URB
-+ * @urb: a URB
-+ *
-+ * This function is called if the URB has been transferred to a device or an
-+ * error has happened.
-+ */
-+void tx_urb_complete(struct urb *urb)
-+{
-+	struct sk_buff *skb;
-+	struct ieee80211_tx_info *info;
-+	struct purelifi_usb *usb;
-+
-+	skb = urb->context;
-+	info = IEEE80211_SKB_CB(skb);
-+	/* grab 'usb' pointer before handing off the skb (since
-+	 * it might be freed by purelifi_mac_tx_to_dev or mac80211)
-+	 */
-+	usb = &purelifi_hw_mac(info->rate_driver_data[0])->chip.usb;
-+
-+	switch (urb->status) {
-+	case 0:
-+		break;
-+	case -ESHUTDOWN:
-+	case -EINVAL:
-+	case -ENODEV:
-+	case -ENOENT:
-+	case -ECONNRESET:
-+	case -EPIPE:
-+		dev_dbg(urb_dev(urb), "urb %p error %d\n", urb, urb->status);
-+		break;
-+	default:
-+		dev_dbg(urb_dev(urb), "urb %p error %d\n", urb, urb->status);
-+		return;
-+	}
-+
-+	purelifi_mac_tx_to_dev(skb, urb->status);
-+	purelifi_send_packet_from_data_queue(usb);
-+	usb_free_urb(urb);
-+}
-+
-+int purelifi_usb_tx(struct purelifi_usb *usb, struct sk_buff *skb)
-+{
-+	int r;
-+	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
-+	struct usb_device *udev = purelifi_usb_to_usbdev(usb);
-+	struct urb *urb;
-+	struct purelifi_usb_tx *tx = &usb->tx;
-+
-+	if (!test_bit(PLF_BIT_ENABLED, &tx->enabled)) {
-+		r = -ENOENT;
-+		goto out;
-+	}
-+
-+	urb = usb_alloc_urb(0, GFP_ATOMIC);
-+	if (!urb) {
-+		r = -ENOMEM;
-+		goto out;
-+	}
-+
-+	usb_fill_bulk_urb(urb, udev, usb_sndbulkpipe(udev, EP_DATA_OUT),
-+			  skb->data, skb->len, tx_urb_complete, skb);
-+
-+	info->rate_driver_data[1] = (void *)jiffies;
-+	skb_queue_tail(&tx->submitted_skbs, skb);
-+	usb_anchor_urb(urb, &tx->submitted);
-+
-+	r = usb_submit_urb(urb, GFP_ATOMIC);
-+	if (r) {
-+		dev_dbg(purelifi_usb_dev(usb), "urb %p submit failed (%d)\n",
-+			urb, r);
-+		usb_unanchor_urb(urb);
-+		skb_unlink(skb, &tx->submitted_skbs);
-+		goto error;
-+	}
-+	return 0;
-+error:
-+	usb_free_urb(urb);
-+out:
-+	return r;
-+}
-+
-+static inline void init_usb_rx(struct purelifi_usb *usb)
-+{
-+	struct purelifi_usb_rx *rx = &usb->rx;
-+
-+	spin_lock_init(&rx->lock);
-+	mutex_init(&rx->setup_mutex);
-+
-+	if (interface_to_usbdev(usb->intf)->speed == USB_SPEED_HIGH)
-+		rx->usb_packet_size = 512;
-+	else
-+		rx->usb_packet_size = 64;
-+
-+	if (rx->fragment_length != 0)
-+		dev_dbg(purelifi_usb_dev(usb), "fragment_length error\n");
-+}
-+
-+static inline void init_usb_tx(struct purelifi_usb *usb)
-+{
-+	struct purelifi_usb_tx *tx = &usb->tx;
-+
-+	spin_lock_init(&tx->lock);
-+	clear_bit(PLF_BIT_ENABLED, &tx->enabled);
-+	tx->stopped = 0;
-+	skb_queue_head_init(&tx->submitted_skbs);
-+	init_usb_anchor(&tx->submitted);
-+}
-+
-+void purelifi_usb_init(struct purelifi_usb *usb, struct ieee80211_hw *hw,
-+		       struct usb_interface *intf)
-+{
-+	memset(usb, 0, sizeof(*usb));
-+	usb->intf = usb_get_intf(intf);
-+	usb_set_intfdata(usb->intf, hw);
-+	init_usb_tx(usb);
-+	init_usb_rx(usb);
-+}
-+
-+void purelifi_usb_release(struct purelifi_usb *usb)
-+{
-+	plfxlc_op_stop(purelifi_usb_to_hw(usb));
-+	purelifi_usb_disable_tx(usb);
-+	purelifi_usb_disable_rx(usb);
-+	usb_set_intfdata(usb->intf, NULL);
-+	usb_put_intf(usb->intf);
-+}
-+
-+const char *purelifi_speed(enum usb_device_speed speed)
-+{
-+	switch (speed) {
-+	case USB_SPEED_LOW:
-+		return "low";
-+	case USB_SPEED_FULL:
-+		return "full";
-+	case USB_SPEED_HIGH:
-+		return "high";
-+	default:
-+		return "unknown";
-+	}
-+}
-+
-+int purelifi_usb_init_hw(struct purelifi_usb *usb)
-+{
-+	int r;
-+
-+	r = usb_reset_configuration(purelifi_usb_to_usbdev(usb));
-+	if (r) {
-+		dev_err(purelifi_usb_dev(usb), "cfg reset failed (%d)\n", r);
-+		return r;
-+	}
-+	return 0;
-+}
-+
-+static void get_usb_req(struct usb_device *udev, void *buffer,
-+			u32 buffer_len, enum plf_usb_req_enum usb_req_id,
-+			struct plf_usb_req *usb_req)
-+{
-+	u8 *buffer_dst = usb_req->buf;
-+	const u8 *buffer_src_p = buffer;
-+	__be32 payload_len_nw = cpu_to_be32(buffer_len + FCS_LEN);
-+	u32 temp_usb_len = 0;
-+
-+	usb_req->id = cpu_to_be32(usb_req_id);
-+	usb_req->len  = cpu_to_be32(0);
-+
-+	/* Copy buffer length into the transmitted buffer, as it is important
-+	 * for the Rx MAC to know its exact length.
-+	 */
-+	if (usb_req->id == cpu_to_be32(USB_REQ_BEACON_WR)) {
-+		memcpy(buffer_dst, &payload_len_nw, sizeof(payload_len_nw));
-+		buffer_dst += sizeof(payload_len_nw);
-+		temp_usb_len += sizeof(payload_len_nw);
-+	}
-+
-+	memcpy(buffer_dst, buffer_src_p, buffer_len);
-+	buffer_dst += buffer_len;
-+	buffer_src_p += buffer_len;
-+	temp_usb_len +=  buffer_len;
-+
-+	/* Set the FCS_LEN (4) bytes as 0 for CRC checking. */
-+	memset(buffer_dst, 0, FCS_LEN);
-+	buffer_dst += FCS_LEN;
-+	temp_usb_len += FCS_LEN;
-+
-+	/* Round the packet to be transmitted to 4 bytes. */
-+	if (temp_usb_len % PURELIFI_BYTE_NUM_ALIGNMENT) {
-+		memset(buffer_dst, 0, PURELIFI_BYTE_NUM_ALIGNMENT -
-+		       (temp_usb_len %
-+			PURELIFI_BYTE_NUM_ALIGNMENT));
-+		buffer_dst += PURELIFI_BYTE_NUM_ALIGNMENT -
-+				(temp_usb_len %
-+				PURELIFI_BYTE_NUM_ALIGNMENT);
-+		temp_usb_len += PURELIFI_BYTE_NUM_ALIGNMENT -
-+				(temp_usb_len % PURELIFI_BYTE_NUM_ALIGNMENT);
-+	}
-+
-+	usb_req->len = cpu_to_be32(temp_usb_len);
-+}
-+
-+int plf_usb_wreq_async(struct purelifi_usb *usb, const u8 *buffer,
-+		       int buffer_len, enum plf_usb_req_enum usb_req_id,
-+		       usb_complete_t complete_fn,
-+		       void *context)
-+{
-+	int r;
-+	struct usb_device *udev = interface_to_usbdev(ez_usb_interface);
-+	struct urb *urb = usb_alloc_urb(0, GFP_ATOMIC);
-+
-+	usb_fill_bulk_urb(urb, udev, usb_sndbulkpipe(udev, EP_DATA_OUT),
-+			  (void *)buffer, buffer_len, complete_fn, context);
-+
-+	r = usb_submit_urb(urb, GFP_ATOMIC);
-+
-+	if (r)
-+		dev_err(&udev->dev, "Async write submit failed (%d)\n", r);
-+
-+	return r;
-+}
-+
-+int plf_usb_wreq(void *buffer, int buffer_len,
-+		 enum plf_usb_req_enum usb_req_id)
-+{
-+	int r;
-+	int actual_length;
-+	int usb_bulk_msg_len;
-+	unsigned char *dma_buffer = NULL;
-+	struct usb_device *udev = interface_to_usbdev(ez_usb_interface);
-+	struct plf_usb_req usb_req;
-+
-+	get_usb_req(udev, buffer, buffer_len, usb_req_id, &usb_req);
-+	usb_bulk_msg_len = sizeof(__le32) + sizeof(__le32) +
-+			   be32_to_cpu(usb_req.len);
-+
-+	dma_buffer = kmemdup(&usb_req, usb_bulk_msg_len, GFP_KERNEL);
-+
-+	if (!dma_buffer) {
-+		r = -ENOMEM;
-+		goto error;
-+	}
-+
-+	r = usb_bulk_msg(udev,
-+			 usb_sndbulkpipe(udev, EP_DATA_OUT),
-+			 dma_buffer, usb_bulk_msg_len,
-+			 &actual_length, USB_BULK_MSG_TIMEOUT_MS);
-+	kfree(dma_buffer);
-+error:
-+	if (r)
-+		dev_err(&udev->dev, "usb_bulk_msg failed (%d)\n", r);
-+
-+	return r;
-+}
-+
-+static void slif_data_plane_sap_timer_callb(struct timer_list *t)
-+{
-+	struct purelifi_usb *usb = from_timer(usb, t, tx.tx_retry_timer);
-+
-+	purelifi_send_packet_from_data_queue(usb);
-+	timer_setup(&usb->tx.tx_retry_timer,
-+		    slif_data_plane_sap_timer_callb, 0);
-+	mod_timer(&usb->tx.tx_retry_timer, jiffies + TX_RETRY_BACKOFF_JIFF);
-+}
-+
-+static void sta_queue_cleanup_timer_callb(struct timer_list *t)
-+{
-+	struct purelifi_usb *usb = from_timer(usb, t, sta_queue_cleanup);
-+	struct purelifi_usb_tx *tx = &usb->tx;
-+	int sidx;
-+
-+	for (sidx = 0; sidx < MAX_STA_NUM - 1; sidx++) {
-+		if (!(tx->station[sidx].flag & STATION_CONNECTED_FLAG))
-+			continue;
-+		if (tx->station[sidx].flag & STATION_HEARTBEAT_FLAG) {
-+			tx->station[sidx].flag ^= STATION_HEARTBEAT_FLAG;
-+		} else {
-+			memset(tx->station[sidx].mac, 0, ETH_ALEN);
-+			tx->station[sidx].flag = 0;
-+		}
-+	}
-+	timer_setup(&usb->sta_queue_cleanup,
-+		    sta_queue_cleanup_timer_callb, 0);
-+	mod_timer(&usb->sta_queue_cleanup, jiffies + STA_QUEUE_CLEANUP_JIFF);
-+}
-+
-+static int probe(struct usb_interface *intf,
-+		 const struct usb_device_id *id)
-+{
-+	int r = 0;
-+	struct purelifi_chip *chip;
-+	struct purelifi_usb *usb;
-+	struct purelifi_usb_tx *tx;
-+	struct ieee80211_hw *hw = NULL;
-+	u8 hw_address[ETH_ALEN];
-+	u8 serial_number[PURELIFI_SERIAL_LEN];
-+	unsigned int i;
-+
-+	ez_usb_interface = intf;
-+
-+	hw = purelifi_mac_alloc_hw(intf);
-+
-+	if (!hw) {
-+		r = -ENOMEM;
-+		goto error;
-+	}
-+
-+	chip = &purelifi_hw_mac(hw)->chip;
-+	usb = &chip->usb;
-+	tx = &usb->tx;
-+
-+	r = upload_mac_and_serial(intf, hw_address, serial_number);
-+
-+	if (r) {
-+		dev_err(&intf->dev, "MAC and Serial upload failed (%d)\n", r);
-+		goto error;
-+	}
-+	chip->unit_type = STA;
-+	dev_err(&intf->dev, "Unit type is station");
-+
-+	r = purelifi_mac_preinit_hw(hw, hw_address);
-+	if (r) {
-+		dev_err(&intf->dev, "Init mac failed (%d)\n", r);
-+		goto error;
-+	}
-+
-+	r = ieee80211_register_hw(hw);
-+	if (r) {
-+		dev_err(&intf->dev, "Register device failed (%d)\n", r);
-+		goto error;
-+	}
-+
-+	if ((le16_to_cpu(interface_to_usbdev(intf)->descriptor.idVendor) ==
-+				PURELIFI_XL_VENDOR_ID_0) &&
-+	    (le16_to_cpu(interface_to_usbdev(intf)->descriptor.idProduct) ==
-+				PURELIFI_XL_PRODUCT_ID_0)) {
-+		r = download_xl_firmware(intf);
-+	} else {
-+		r = download_fpga(intf);
-+	}
-+	if (r != 0) {
-+		dev_err(&intf->dev, "FPGA download failed (%d)\n", r);
-+		goto error;
-+	}
-+
-+	tx->mac_fifo_full = 0;
-+	spin_lock_init(&tx->lock);
-+
-+	msleep(PLF_MSLEEP_TIME);
-+	r = purelifi_usb_init_hw(usb);
-+	if (r < 0) {
-+		dev_err(&intf->dev, "usb_init_hw failed (%d)\n", r);
-+		goto error;
-+	}
-+
-+	msleep(PLF_MSLEEP_TIME);
-+	r = purelifi_chip_switch_radio(chip, PLFXLC_RADIO_ON);
-+	if (r < 0) {
-+		dev_dbg(&intf->dev, "chip_switch_radio_on failed (%d)\n", r);
-+		goto error;
-+	}
-+
-+	msleep(PLF_MSLEEP_TIME);
-+	r = purelifi_chip_set_rate(chip, 8);
-+	if (r < 0) {
-+		dev_dbg(&intf->dev, "chip_set_rate failed (%d)\n", r);
-+		goto error;
-+	}
-+
-+	msleep(PLF_MSLEEP_TIME);
-+	r = plf_usb_wreq(hw_address, ETH_ALEN, USB_REQ_MAC_WR);
-+	if (r < 0) {
-+		dev_dbg(&intf->dev, "MAC_WR failure (%d)\n", r);
-+		goto error;
-+	}
-+
-+	purelifi_chip_enable_rxtx(chip);
-+
-+	/* Initialise the data plane Tx queue */
-+	for (i = 0; i < MAX_STA_NUM; i++) {
-+		skb_queue_head_init(&tx->station[i].data_list);
-+		tx->station[i].flag = 0;
-+	}
-+
-+	tx->station[STA_BROADCAST_INDEX].flag |= STATION_CONNECTED_FLAG;
-+	for (i = 0; i < ETH_ALEN; i++)
-+		tx->station[STA_BROADCAST_INDEX].mac[i] = 0xFF;
-+
-+	timer_setup(&tx->tx_retry_timer, slif_data_plane_sap_timer_callb, 0);
-+	tx->tx_retry_timer.expires = jiffies + TX_RETRY_BACKOFF_JIFF;
-+	add_timer(&tx->tx_retry_timer);
-+
-+	timer_setup(&usb->sta_queue_cleanup,
-+		    sta_queue_cleanup_timer_callb, 0);
-+	usb->sta_queue_cleanup.expires = jiffies + STA_QUEUE_CLEANUP_JIFF;
-+	add_timer(&usb->sta_queue_cleanup);
-+
-+	usb->initialized = 1;
-+	return 0;
-+error:
-+	if (hw) {
-+		purelifi_mac_release(purelifi_hw_mac(hw));
-+		ieee80211_unregister_hw(hw);
-+		ieee80211_free_hw(hw);
-+	}
-+	dev_err(&intf->dev, "pureLifi:Device error");
-+	return r;
-+}
-+
-+static void disconnect(struct usb_interface *intf)
-+{
-+	struct ieee80211_hw *hw = purelifi_intf_to_hw(intf);
-+	struct purelifi_mac *mac;
-+	struct purelifi_usb *usb;
-+
-+	/* Either something really bad happened, or
-+	 * we're just dealing with
-+	 * a DEVICE_INSTALLER.
-+	 */
-+	if (!hw)
-+		return;
-+
-+	mac = purelifi_hw_mac(hw);
-+	usb = &mac->chip.usb;
-+
-+	del_timer_sync(&usb->tx.tx_retry_timer);
-+	del_timer_sync(&usb->sta_queue_cleanup);
-+
-+	ieee80211_unregister_hw(hw);
-+
-+	purelifi_usb_disable_tx(usb);
-+	purelifi_usb_disable_rx(usb);
-+
-+	/* If the disconnect has been caused by a removal of the
-+	 * driver module, the reset allows reloading of the driver. If the
-+	 * reset will not be executed here,
-+	 * the upload of the firmware in the
-+	 * probe function caused by the reloading of the driver will fail.
-+	 */
-+	usb_reset_device(interface_to_usbdev(intf));
-+
-+	purelifi_mac_release(mac);
-+	ieee80211_free_hw(hw);
-+}
-+
-+static void purelifi_usb_resume(struct purelifi_usb *usb)
-+{
-+	struct purelifi_mac *mac = purelifi_usb_to_mac(usb);
-+	int r;
-+
-+	r = plfxlc_op_start(purelifi_usb_to_hw(usb));
-+	if (r < 0) {
-+		dev_warn(purelifi_usb_dev(usb),
-+			 "Device resume failed (%d)\n", r);
-+
-+		if (usb->was_running)
-+			set_bit(PURELIFI_DEVICE_RUNNING, &mac->flags);
-+
-+		usb_queue_reset_device(usb->intf);
-+		return;
-+	}
-+
-+	if (mac->type != NL80211_IFTYPE_UNSPECIFIED) {
-+		r = purelifi_restore_settings(mac);
-+		if (r < 0) {
-+			dev_dbg(purelifi_usb_dev(usb),
-+				"Restore failed (%d)\n", r);
-+			return;
-+		}
-+	}
-+}
-+
-+static void purelifi_usb_stop(struct purelifi_usb *usb)
-+{
-+	plfxlc_op_stop(purelifi_usb_to_hw(usb));
-+	purelifi_usb_disable_tx(usb);
-+	purelifi_usb_disable_rx(usb);
-+
-+	usb->initialized = 0;
-+}
-+
-+static int pre_reset(struct usb_interface *intf)
-+{
-+	struct ieee80211_hw *hw = usb_get_intfdata(intf);
-+	struct purelifi_mac *mac;
-+	struct purelifi_usb *usb;
-+
-+	if (!hw || intf->condition != USB_INTERFACE_BOUND)
-+		return 0;
-+
-+	mac = purelifi_hw_mac(hw);
-+	usb = &mac->chip.usb;
-+
-+	usb->was_running = test_bit(PURELIFI_DEVICE_RUNNING, &mac->flags);
-+
-+	purelifi_usb_stop(usb);
-+
-+	return 0;
-+}
-+
-+static int post_reset(struct usb_interface *intf)
-+{
-+	struct ieee80211_hw *hw = usb_get_intfdata(intf);
-+	struct purelifi_mac *mac;
-+	struct purelifi_usb *usb;
-+
-+	if (!hw || intf->condition != USB_INTERFACE_BOUND)
-+		return 0;
-+
-+	mac = purelifi_hw_mac(hw);
-+	usb = &mac->chip.usb;
-+
-+	if (usb->was_running)
-+		purelifi_usb_resume(usb);
-+
-+	return 0;
-+}
-+
-+#ifdef CONFIG_PM
-+
-+static struct purelifi_usb *get_purelifi_usb(struct usb_interface *intf)
-+{
-+	struct ieee80211_hw *hw = purelifi_intf_to_hw(intf);
-+	struct purelifi_mac *mac;
-+
-+	/* Either something really bad happened, or
-+	 * we're just dealing with
-+	 * a DEVICE_INSTALLER.
-+	 */
-+	if (!hw)
-+		return NULL;
-+
-+	mac = purelifi_hw_mac(hw);
-+	return &mac->chip.usb;
-+}
-+
-+static int suspend(struct usb_interface *interface,
-+		   pm_message_t message)
-+{
-+	struct purelifi_usb *pl = get_purelifi_usb(interface);
-+	struct purelifi_mac *mac = purelifi_usb_to_mac(pl);
-+
-+	if (!pl || !purelifi_usb_dev(pl))
-+		return -ENODEV;
-+	if (pl->initialized == 0)
-+		return 0;
-+	pl->was_running = test_bit(PURELIFI_DEVICE_RUNNING, &mac->flags);
-+	purelifi_usb_stop(pl);
-+	return 0;
-+}
-+
-+static int resume(struct usb_interface *interface)
-+{
-+	struct purelifi_usb *pl = get_purelifi_usb(interface);
-+
-+	if (!pl || !purelifi_usb_dev(pl))
-+		return -ENODEV;
-+	if (pl->was_running)
-+		purelifi_usb_resume(pl);
-+	return 0;
-+}
-+
-+#endif
-+
-+static struct usb_driver driver = {
-+	.name        = KBUILD_MODNAME,
-+	.id_table    = usb_ids,
-+	.probe        = probe,
-+	.disconnect    = disconnect,
-+	.pre_reset    = pre_reset,
-+	.post_reset    = post_reset,
-+#ifdef CONFIG_PM
-+	.suspend        = suspend,
-+	.resume         = resume,
-+#endif
-+	.disable_hub_initiated_lpm = 1,
-+};
-+
-+static struct workqueue_struct *plfxlc_workqueue;
-+
-+static int __init usb_init(void)
-+{
-+	int r;
-+
-+	plfxlc_workqueue = create_singlethread_workqueue(driver.name);
-+	if (!plfxlc_workqueue) {
-+		pr_err("%s couldn't create workqueue\n", driver.name);
-+		r = -ENOMEM;
-+		goto error;
-+	}
-+
-+	r = usb_register(&driver);
-+	if (r) {
-+		destroy_workqueue(plfxlc_workqueue);
-+		pr_err("%s usb_register() failed %d\n", driver.name, r);
-+		return r;
-+	}
-+
-+	pr_debug("Driver initialized :%s\n", driver.name);
-+	return 0;
-+
-+error:
-+	return r;
-+}
-+
-+static void __exit usb_exit(void)
-+{
-+	usb_deregister(&driver);
-+	destroy_workqueue(plfxlc_workqueue);
-+	pr_debug("%s %s\n", driver.name, __func__);
-+}
-+
-+MODULE_LICENSE("GPL");
-+MODULE_DESCRIPTION("USB driver for pureLiFi devices");
-+MODULE_AUTHOR("pureLiFi");
-+MODULE_VERSION("1.0");
-+MODULE_FIRMWARE("plfxlc/lifi-x.bin");
-+MODULE_DEVICE_TABLE(usb, usb_ids);
-+
-+module_init(usb_init);
-+module_exit(usb_exit);
-diff --git a/drivers/net/wireless/purelifi/plfxlc/usb.h b/drivers/net/wireless/purelifi/plfxlc/usb.h
-new file mode 100644
-index 000000000000..b44d446d87ee
---- /dev/null
-+++ b/drivers/net/wireless/purelifi/plfxlc/usb.h
-@@ -0,0 +1,196 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Copyright (c) 2021 pureLiFi
-+ */
-+
-+#ifndef _PURELIFI_USB_H
-+#define _PURELIFI_USB_H
-+
-+#include <linux/completion.h>
-+#include <linux/netdevice.h>
-+#include <linux/spinlock.h>
-+#include <linux/skbuff.h>
-+#include <linux/usb.h>
-+
-+#include "intf.h"
-+
-+#define USB_BULK_MSG_TIMEOUT_MS 2000
-+
-+#define PURELIFI_X_VENDOR_ID_0   0x16C1
-+#define PURELIFI_X_PRODUCT_ID_0  0x1CDE
-+#define PURELIFI_XC_VENDOR_ID_0  0x2EF5
-+#define PURELIFI_XC_PRODUCT_ID_0 0x0008
-+#define PURELIFI_XL_VENDOR_ID_0  0x2EF5
-+#define PURELIFI_XL_PRODUCT_ID_0 0x000A /* Station */
-+
-+#define PLF_FPGA_STATUS_LEN 2
-+#define PLF_FPGA_STATE_LEN 9
-+#define PLF_BULK_TLEN 16384
-+#define PLF_FPGA_MG 6 /* Magic check */
-+#define PLF_XL_BUF_LEN 64
-+#define PLF_MSG_STATUS_OFFSET 7
-+
-+#define PLF_USB_TIMEOUT 1000
-+#define PLF_MSLEEP_TIME 200
-+
-+#define PURELIFI_URB_RETRY_MAX 5
-+
-+#define purelifi_usb_dev(usb) (&(usb)->intf->dev)
-+
-+/* Tx retry backoff timer (in milliseconds) */
-+#define TX_RETRY_BACKOFF_MS 10
-+#define STA_QUEUE_CLEANUP_MS 5000
-+
-+/* Tx retry backoff timer (in jiffies) */
-+#define TX_RETRY_BACKOFF_JIFF ((TX_RETRY_BACKOFF_MS * HZ) / 1000)
-+#define STA_QUEUE_CLEANUP_JIFF ((STA_QUEUE_CLEANUP_MS * HZ) / 1000)
-+
-+/* Ensures that MAX_TRANSFER_SIZE is even. */
-+#define MAX_TRANSFER_SIZE (USB_MAX_TRANSFER_SIZE & ~1)
-+#define urb_dev(urb) (&(urb)->dev->dev)
-+
-+#define STATION_FIFO_ALMOST_FULL_MESSAGE     0
-+#define STATION_FIFO_ALMOST_FULL_NOT_MESSAGE 1
-+#define STATION_CONNECT_MESSAGE              2
-+#define STATION_DISCONNECT_MESSAGE           3
-+
-+int plf_usb_wreq(void *buffer, int buffer_len,
-+		 enum plf_usb_req_enum usb_req_id);
-+void tx_urb_complete(struct urb *urb);
-+
-+enum {
-+	USB_MAX_RX_SIZE       = 4800,
-+	USB_MAX_EP_INT_BUFFER = 64,
-+};
-+
-+struct purelifi_usb_interrupt {
-+	spinlock_t lock; /* spin lock for usb interrupt buffer */
-+	struct urb *urb;
-+	void *buffer;
-+	int interval;
-+};
-+
-+#define RX_URBS_COUNT 5
-+
-+struct purelifi_usb_rx {
-+	spinlock_t lock; /* spin lock for rx urb */
-+	struct mutex setup_mutex; /* mutex lockt for rx urb */
-+	u8 fragment[2 * USB_MAX_RX_SIZE];
-+	unsigned int fragment_length;
-+	unsigned int usb_packet_size;
-+	struct urb **urbs;
-+	int urbs_count;
-+};
-+
-+struct plf_station {
-+   /*  7...3    |    2      |     1     |     0	    |
-+    * Reserved  | Heartbeat | FIFO full | Connected |
-+    */
-+	unsigned char flag;
-+	unsigned char mac[ETH_ALEN];
-+	struct sk_buff_head data_list;
-+};
-+
-+struct firmware_file {
-+	u32 total_files;
-+	u32 total_size;
-+	u32 size;
-+	u32 start_addr;
-+	u32 control_packets;
-+} __packed;
-+
-+#define STATION_CONNECTED_FLAG 0x1
-+#define STATION_FIFO_FULL_FLAG 0x2
-+#define STATION_HEARTBEAT_FLAG 0x4
-+#define STATION_ACTIVE_FLAG    0xFD
-+
-+#define PURELIFI_SERIAL_LEN 256
-+#define STA_BROADCAST_INDEX (AP_USER_LIMIT)
-+#define MAX_STA_NUM         (AP_USER_LIMIT + 1)
-+
-+struct purelifi_usb_tx {
-+	unsigned long enabled;
-+	spinlock_t lock; /* spinlock for USB tx */
-+	u8 mac_fifo_full;
-+	struct sk_buff_head submitted_skbs;
-+	struct usb_anchor submitted;
-+	int submitted_urbs;
-+	bool stopped;
-+	struct timer_list tx_retry_timer;
-+	struct plf_station station[MAX_STA_NUM];
-+};
-+
-+/* Contains the usb parts. The structure doesn't require a lock because intf
-+ * will not be changed after initialization.
-+ */
-+struct purelifi_usb {
-+	struct timer_list sta_queue_cleanup;
-+	struct purelifi_usb_rx rx;
-+	struct purelifi_usb_tx tx;
-+	struct usb_interface *intf;
-+	u8 req_buf[64]; /* purelifi_usb_iowrite16v needs 62 bytes */
-+	bool rx_usb_enabled;
-+	bool initialized;
-+	bool was_running;
-+	bool link_up;
-+};
-+
-+enum endpoints {
-+	EP_DATA_IN  = 2,
-+	EP_DATA_OUT = 8,
-+};
-+
-+enum devicetype {
-+	DEVICE_LIFI_X  = 0,
-+	DEVICE_LIFI_XC  = 1,
-+	DEVICE_LIFI_XL  = 1,
-+};
-+
-+enum {
-+	PLF_BIT_ENABLED = 1,
-+	PLF_BIT_MAX = 2,
-+};
-+
-+int plf_usb_wreq_async(struct purelifi_usb *usb, const u8 *buffer,
-+		       int buffer_len, enum plf_usb_req_enum usb_req_id,
-+		       usb_complete_t complete_fn, void *context);
-+
-+static inline struct usb_device *
-+purelifi_usb_to_usbdev(struct purelifi_usb *usb)
-+{
-+	return interface_to_usbdev(usb->intf);
-+}
-+
-+static inline struct ieee80211_hw *
-+purelifi_intf_to_hw(struct usb_interface *intf)
-+{
-+	return usb_get_intfdata(intf);
-+}
-+
-+static inline struct ieee80211_hw *
-+purelifi_usb_to_hw(struct purelifi_usb *usb)
-+{
-+	return purelifi_intf_to_hw(usb->intf);
-+}
-+
-+void purelifi_usb_init(struct purelifi_usb *usb, struct ieee80211_hw *hw,
-+		       struct usb_interface *intf);
-+void purelifi_send_packet_from_data_queue(struct purelifi_usb *usb);
-+void purelifi_usb_release(struct purelifi_usb *usb);
-+void purelifi_usb_disable_rx(struct purelifi_usb *usb);
-+void purelifi_usb_enable_tx(struct purelifi_usb *usb);
-+void purelifi_usb_disable_tx(struct purelifi_usb *usb);
-+int purelifi_usb_tx(struct purelifi_usb *usb, struct sk_buff *skb);
-+int purelifi_usb_enable_rx(struct purelifi_usb *usb);
-+int purelifi_usb_init_hw(struct purelifi_usb *usb);
-+const char *purelifi_speed(enum usb_device_speed speed);
-+
-+/* Firmware declarations */
-+int download_xl_firmware(struct usb_interface *intf);
-+int download_fpga(struct usb_interface *intf);
-+
-+int upload_mac_and_serial(struct usb_interface *intf,
-+			  unsigned char *hw_address,
-+			  unsigned char *serial_number);
-+
-+#endif
--- 
-2.25.1
+--EVF5PPMfhYS0aIcm
+Content-Type: application/gzip
+Content-Disposition: attachment; filename=".config.gz"
+Content-Transfer-Encoding: base64
 
+H4sICHgkXGEAAy5jb25maWcAlFxLc9w4kr73r6hQX2YObetljXc3dABJsApdJEETYD10YZTl
+slvRssohlWa759dvJvhCAmDJO4dp88vEK5HIF1D69ZdfZ+z1ePi+Oz7c7x4f/5592z/tn3fH
+/ZfZ14fH/f/MEjkrpJ7xROh3wJw9PL3+9X73fD/78O7iw7vz357vr2bL/fPT/nEWH56+Pnx7
+hdYPh6dffv0llkUq5k0cNyteKSGLRvONvj2D1vvPv+0fv/727f5+9o95HP9zdnHx7vLd+ZnV
+RqgGKLd/99B87Of24uL88vx8YM5YMR9oA8yU6aOoxz4A6tkur/419pAlyBqlycgKUJjVIpxb
+011A30zlzVxqOfbiEBpZ67LWQbooMlFwj1TIpqxkKjLepEXDtK4sFlkoXdWxlpUaUVF9atay
+Wo5IVIss0SLnjWYRdKRkhXOALfp1Njf7/Th72R9ff4ybJgqhG16sGlbBmkUu9O3V5ThuXuKE
+NFfWWta8qqQ1u0zGLOtFdXZGJtMolmkLXLAVb5a8KnjWzO9EOfZiU7K7nI0Uyv7rjMLIO3t4
+mT0djri2vlHCU1Zn2qzPGr+HF1LpguX89uwfT4en/T8HBrVm1qTUVq1EGXsA/jfW2YiXUolN
+k3+qec3DqNdkzXS8aJwWcSWVanKey2qLSsDixUisFc9EZGl5DYe131/QhtnL6+eXv1+O++/j
+/s55wSsRG2VRC7m2zllHKXmRiMKok0/EZqL4nccaNzdIjhf2NiKSyJyJgmJK5CGmZiF4xap4
+saXUlCnNpRjJoB9FknFb//tJ5EqEJ98RvPm0XfUzmFx3wqN6niqjc/unL7PDV0fIbqMYTsKS
+r3ihrVma47is8Zh1x8hsl374vn9+Ce2YFvGykQWH3bIOHZiHxR0eyNzsw3AKACxhcJmIOHAK
+2lYCVuv0ZAlDzBdNxZWZaEVW681xONpl2q8D/hlaBMBG4VlmaTyCdVFWYjWcQ5mmRL+rXCaw
+M8DCK3sqdJjhfFWc56WGJRmDOgilx1cyqwvNqq0tGpcrILa+fSyheb/SuKzf693Ln7MjiGW2
+g3m9HHfHl9nu/v7w+nR8ePrm7CE0aFhs+oDzZYlBJWjqYw4nHeh6mtKsrixFYmqpNCO6BRCI
+MmNbpyND2AQwIYNTKpUgH8P+JEKhJ0nsvfgJQQzmDEQglMxYZz6MIKu4nqmA3oPQG6CNE4GP
+hm9Ava1VKMJh2jgQisk07Y5lgORBdcJDuK5YHJgT7EKWjWfRohScg8vj8zjKhO0ykZayAqIC
+y7uOYJNxlt5ejqrZkpRuD2tAQ81gMo5QwpOzhmPNkiaP7M2jwqe+OhLFpSUusWz/4SNGSW14
+AQMR25xJ7BRswEKk+vbiXzaOSpGzjU2/HE+eKPQSooaUu31cOTyiSPjGt9wqXsAeGFPcK5y6
+/2P/5fVx/zz7ut8dX5/3LwbuJBKgDuo7r2RdWssq2Zy3VoFbARC463jufDqBRIst4T/Wac+W
+3QiW/zffzboSmkcsXnoUs7wRTZmomiAlTiHQBUe3Fom2YohKT7C3aCkS5YFVYodjHZjC0buz
+pQDbqrhtnVBJsMOO4vWQ8JWIuQcDNzVc/dR4lXpg64kolgsVBwYDZ26ZERkvBxLT1vIwKlQl
+nCBrJbWG+NyOvCECtL/RcREAV21/F1yTb5B9vCwl6DG6XgjrLTG0CsxqLR3dAH8Ke5pw8E4x
+0/bmuZRmdWntOPoHqnUgeRMYV1Yf5pvl0I+SdQX7MgbNVeLE6gBEAFwShAbtAGzuHLp0vq/J
+953S1nQiKdH/UvsDqZIsIU4Rd5AkycqohKxyVsTE/Z9ga+RVMBZwmyj4R8DsujG8651y8JkC
+tcHamznXObpeLxxqd82D0zY8dbOIITwjVtDO/SxB8SwF4dlaFTEFK6vJQLW2Daj5BM11UrIW
+jvNyEy/sEUpJ1iLmBcvsvNrM1wZMYGwDakHMIROWfkCcUlckRGHJSijei8sSBHQSsaoSttCX
+yLLNlY80RNYDasSDJ0VD5EkPtgmE7HkvQRjWsvKIJ4l9Go3YUOcaNxcwIPTZrHIY2HahZXxx
+ft37q67MUu6fvx6ev++e7vcz/u/9E4RYDFxWjEEWxOVj5BQcyxi80IiD4/vJYfoOV3k7Ru//
+rLFUVkeuhcXaAdNNZOoTwzlTGYtC5wo6oGwyzMYi2O8KnHAXoNpzABo6JYy8mgrOkMynqAtW
+JRAuEF2s0xRyQuPgjaSYtmscZoUYuJSs0oLRU6x5bpwI1otEKmJGk+W2rEOU2YRoxv6ThIvW
+aAbNryxFwbgGDH2j6rKUJDA2bkPmkGemYMdhKdi9fSiGNFXV9rGD7LpJQfHhHDW8wGjfOlu5
+FV1CLCokDgrRWxnolmUiqsD9tBmJz7BYc8g17SlriHDaaHVcjjkBMKkZe77/4+G4v8eQzCs5
+Dlzl4+6I6vteHeL30WH3/GU8F0BvSlhZo6OL8w1ZcouzjaIE/L6ijBApNAuVLO19mhh41F/I
+mrAxHoE4lGB2dOOmh6WAek2VVnEiqH0LRSen64I3OeYAo7dGvggNU5EIZqmhsq1WUZmo7Paa
+LDUv4WhgVl5gWGKHbEjOYzsGMFNioHQBqMEKZxe339hULHSKQCvEk8ne8FAqv4GIY6rHBmnU
+3e3Ntd+5y5sEeQ2KzuD2/C923v6PyCCvm9W1o0poMzBgaD4SW0dpFzfLYORBua6XAW0xi6jn
+3LBd5u4YA+niJg8VM+ZtMTgD6w1+89LuNQVdUeiuvCi0Fxz4x9hHMblxmNHJ1BADQCAAdgiN
+CUTxXAX2LcturgPbL1Ywi9wnQDcZUOZOT4kqvbpPj7el4UlxIwt6dhPmn+Ri8zrMaStd9QlN
+IwbsKEo6y6yM+hqKa0D84z7YeFHUG/z/Za+KHx1VbDnAzE8xYFUvD0mzZPz6nMLLFUuSNuS9
+vfxAzmtcVxVkBih+K765u71wTgXXbM0q3ixw0s4+RXMHWF+CoqwhffcYm99rMEHgqnlGaVif
+0DCPREdNW7Y/o8I84SyG+FZCVmMKD3egNhIigOr24mI4JZasytwNZgCB+BMTiMQlJUAzpfxE
+TqAmFMbSz8XludVhnC3JAL2bbMvSlravP4EvX0OGyVMILgSGYF7047dv5FCj7cOKnSWk377s
+f4D8INybHX6gnKx4Mq6YWjj5A3iDJrXjaYhqItsqh7YOy5UwoyXfgsmAnITeI5k4eVzTaDxc
+w7GsuHaHM40FTBFiEYyw3H69+bVooKc2AIFTDEHQXPmBlWlooiTDuZDS2reh6gSLxzJ7oxdY
+dHPCq6vLSJhadxPsNyS6TMvevIXmUYBFqlBqvfF3+HKZtLyq5DHGpFZMJ5M648oYbMwTMeux
+wvYMBm2w9AQHmtSC2ni+XQpqNI1J7dzAlbqZSJkWzQp2OBm0Mpar3z7vXvZfZn+2mciP58PX
+h0dSSEemzpyTQPlUWzeafkPt+6EwrsVc19YNkxYqTJ3GO+BWfpjxNqaqoD3RukBnejJpK0ZH
+qosg3LYIELt7Vn8MBeFkd/tOUtxxuiGsHShImegFwjp2YTtdSrq8vA56VIfrw81PcF19/Jm+
+PlxcBjyzxQNub3F79vLH7uLMoaJOV3jZ4gYSLh3LX6emMjBu7n6KDWtd05PG/HONZUyF97JD
+QbIROVomuvXGmoFX17DE9y+fH57efz98gcPweX/mHnhzWZKB+bKLilFXKB8+lw3EMyYDdk75
+WK5uqjVadkrCmmKk5t61iEUjl9djHVLzeSV0sETZkRp9ce6T0Y0nPgwWWGpN822fBoJYU/o6
+0h7Q5J+CAhB4pcWLeBukpnHDylIkE01jqfQEqazsIlg7ayzj2J7XRkMyUFgGKO0SBaLtqxNI
+CuNqW9L6RJDcpKAD3Q2EMdfl7vn4gBZzpv/+sberT1gRMU36EMnyfhBEFCPHJAECzZwVbJrO
+uZKbabKI1TSRJekJqgmtNI+nOSqhYmEPLjahJUmVBleaizkLEjSrRIiQszgIq0SqEAFvjSHH
+WDoRRC4KmKiqo0ATvJKFZTWbjzehHmtoaeL5QLdZkoeaIOzescyDy4O4tQpLUNVBXVky8LIh
+Ak+DA+AbnZuPIUqcJ0bNbdIQLrgKbh+PHELwWNAjA9hKQD/Sg+l9GYIlufbDcGkhM0hA6G1O
++45HjjeS1imDboVsa3wJBJj0CZlFXG4ju+bXw1FqG7L0U9NbHOcaEEnOjdn4+IXMbDz+9P6M
+qeKCaFJrWVQJ6RvGMzHNDxd9wA2JvpY5hNJVbhlmE5G1jeEkynVhLw7cEM+niEbKE7Tx7tKI
+nP+1v3897j4/7s1byJkphx8t4UeiSHON0bKlfFlKMyT8ahIM5fvHExhdezfjXV8qrkSpPdi5
+u4QusUd7F6Yma1aS778fnv+e5bun3bf992By15V6LRG3j83sZxr9QSoziPVLbURJy4VdowgD
+BWKLWqDpSp/09AUwU7eqOCoAcdhgNCvmNi90G5aSi5MF5JamfqGbm+tI2CKFXCSmxWwI9DRk
+Q+SqSFmy6Hcux6wSDKjp+fb6/L+Gqsjp3CtEhRmv2VbZ4WWQLW9vuAJhYZxx8Ku0OppWIA76
+xiAmt/RgMt0bmR6y3SGC5iKSQjA3pm6HZxt33UjDCgwwxLOyGh8McVSw0Comm7QXw293/fH6
+Mhhcn+g4nD+carCI/39NJiL5Kf7bs8f/HM4o110pZTZ2GNWJLw6H5yoF93Fiog67ai//JudJ
+2G/P/vP59Yszx+G9nnUgTSvrs514/2WmaH0r98qzRxqaS5izYEopWI+xPFnSX89hGWZJ74bR
+j2B10759wHLmWIfIczjP9N1yySu8K3He1M3B9dE6lXlFJYsM0pBFaV4HpCowdql5W22xQ+8l
+GhLzQLp3NsnuuJux+/v9y8ssPzw9HA/PpOKRMJI+mU/6fpRQTO02CJ5olETEBlggbTQ4nalJ
+9/Rpv9OPUdi3SfgcBjawIlU+BHkAAxcoIEay7w2XUcM3kH/1lRAj2GJ//N/D858wL9/pgd9Z
+cqJk+A3hra1hGPXSL/DSdgk9bUEpI4eN9qPt1wnw4T10QkxLC9ikVU6/sFhIaz8GZdlcOhB9
+bWIgc++bstgZAXMBSHcyYaethtB6W48dq7dKk9yqncXCAbgq3SmUaPvoRi751gMmhuYYuOnY
+fvyUx+TDkfkmKc2bLvIAzQIddkHUUZTtw52YKYoONX8IiMlVOtBSEYElEty1H31nZdb9CoPS
+TE8dB7Mf5g20Fa8iqXiAEmdMKbusAJSyKN3vJlnEPogPqny0YpWzS6IUHjLHyJbn9cYl4AV0
+YWeHA3+oi6gCjfaEnHeLc+pGAyXEfErCpchV3qwuQqD1Yk1tMUqVS8GVO9eVFhSqk/BKU1l7
+wCgVRfWNHBsDkGPTI/7J7ynOiRDtZOk5M6A5Qu58DSUI+kejgYFCMMohAFdsHYIRArVRupLW
+wceu4Z/zQLVoIEXk1XaPxnUYX8MQaylDHS2IxEZYTeDbyL4LGfAVnzMVwItVAMT3afQVzUDK
+QoOueCED8Jbb+jLAIoPoRorQbJI4vKo4mYdkHFV2mNkHeFHwdyQ9td8CrxkKOhiPDgwo2pMc
+RshvcBTyJEOvCSeZjJhOcoDATtJBdCfplTNPh9xvwe3Z/evnh/sze2vy5AO5qQFjdEO/Ol+E
+v1FJQxQ4e6l0CO3TVnTlEOs5luXGs0s3vmG6mbZMNxOm6ca3TTiVXJTugoR95tqmkxbsxkex
+C2KxDaKE9pHmhrx4RrRIhIqbQiZcb0vuEINjEedmEOIGeiTc+ITjwinWEV7SuLDvBwfwjQ59
+t9eOw+c3TbYOztDQFjmLQzh5bt/qXJlN9SQky0PDwDa6perS92wGc9xKi9Ez0WKhXAd6wZ/H
+wszjnNk/k8XuS1128VS69ZuUi625/YLYLi9JqgkcqchIMDhAAZcWVSKBlNVu1f6Y7PC8x4zl
+68Pjcf889exv7DmULXUkFCd5dTOSUpYLSFvbSZxgcINA2nNDnzz4dPpzDZ/u/MbVZ8hkSMID
+WSpL6wp82V4UpghAUPy5kNqqib6wTf9zvkBPjaMhNsnXH5uKN3Bqgoa/gEmniO6DbULsnwxN
+U41qTtDN8XK61uaVjMQXjmWYQqN2i6BiPdEEAsJMaD4xDZazImETxNTtc6Asri6vJkjCfgpN
+KIHcgtBBEyIh6c946C4Xk+Isy8m5KlZMrV6JqUbaW7sOnGIbDuvDSF7wrAybpJ5jntWQY9EO
+CuZ9h/YMYXfGiLmbgZi7aMS85SLoV3U6Qs4U2IuKJUGLAVkbaN5mS5q5rm+AnDx/xAFO+Mqm
+gCzrfM4LitH5gRjwYYYXBhlO90eBLVgU7d9UIDA1UQj4PCgGihiJOVNmTivP1QImo99JqIiY
+a5ENJMnP4MyIv3NXAi3mCVZ378MoZl7eUAHaT0A6INAZLYgh0tZxnJUpZ1na0w0d1pikLoM6
+MIWn6ySMw+xDeCcln9RqUPsg21POkRZS/c2g5iaC2Jg7wJfZ/eH754en/ZfZ9wPezL6EooeN
+dv2bTUItPUFufwdAxjzunr/tj1NDaVbNsdzR/XWKEyzmZ5Dk1yhBrlCY5nOdXoXFFYoHfcY3
+pp6oOBgzjRyL7A3625PAOw/zO7rTbJkdcQYZwjHRyHBiKtTGBNoW+PvGN2RRpG9OoUgnw0SL
+SbpxX4AJ68luIuAz+f4nKJdTzmjkgwHfYHBtUIinIiX7EMtPqS7kQ3k4VSA8stRKV8Zfk8P9
+fXe8/+OEHcG/WoP3SzRfDjCRZDFAd3/7HmLJajWRa408Ms95MbWRPU9RRFvNp6QycjmZ6RSX
+47DDXCe2amQ6pdAdV1mfpDsRfYCBr94W9QmD1jLwuDhNV6fbYzDwttymI9mR5fT+BK6efJaK
+FeGM2OJZndaW7FKfHiXjxdy+4QmxvCkPUogJ0t/QsbZARH7REOAq0qkkfmCh0VaATt9YBTjc
+u8cQy2KraMgU4FnqN22PG836HKe9RMfDWTYVnPQc8Vu2x8meAwxuaBtg0eSOdILDVHjf4KrC
+1ayR5aT36FjIu/AAQ32FFcfxDwadKnb13YiyUc6lrDIeeGP/KK1DI4ExR0P+8JhDcSqYNpGe
+ho6G5inUYYfTc0Zpp/ozL9sme0VqEVj1MKi/BkOaJEBnJ/s8RThFm14iEAV9a9BRzS/t3S1d
+KefTu+FAzHm41oKQ/uAGKvxrQe1LWbDQs+Pz7unlx+H5iL8AOh7uD4+zx8Puy+zz7nH3dI+P
+QV5efyDd+pOHpru2gKWdm/KBUCcTBOZ4Ops2SWCLMN7ZhnE5L/0DW3e6VeX2sPahLPaYfIje
+DiEiV6nXU+Q3RMwbMvFWpjwk93l44kLFJ2/D11IR4ajFtHxAEwcF+Wi1yU+0yds27R+SIlq1
++/Hj8eHeGKjZH/vHH37bVHtbXaSxq+xNybuSWNf3f/9E0T/Fm8KKmVsU64fSgLeewsfb7CKA
+d1UwBx+rOB4BCyA+aoo0E53TuwNa4HCbhHo3dXu3E8Q8xolJt3XHIi/x13rCL0l61VsEaY0Z
+9gpwUQZekwDepTyLME7CYptQle5FkU3VOnMJYfYhX6W1OEL0a1wtmeTupEUosSUMblbvTMZN
+nvulFfNsqsculxNTnQYE2Servqwqtnah/2Ps2prbxpnsX3HlYWv3ITO6WbYf8gCSoMiINxOU
+ROeF5UmUGdc4dsp2ZvbbX79ogKTQjaaSqRorPAcEcb80Gt16b7zD98gsrtsWX69iqoY0ccrK
+6frDmc7b9+5/1r/Wv0/9eI271NiP11xXo7jbjwnR9zSC9v0YR447LOa4aKY+OnRaNJuvpzrW
+eqpnOYTcpa6lCMTBADlBgWBjgkqyCQLSba9qTATIpxLJNSKXbiYIVfsxMpLDnpn4xuTg4LLc
+6LDmu+ua6Vvrqc61ZoYY97v8GOOGKKoG97BzHYidH9fD1BrJ8On49gvdTwcsjLix29Qi2GW9
+naeTqvNPIvK7pXe8HjfDuT8YxmAJ/2gFnWXiCAclgriTAe1JPacJOAJFaiIO1XgNCJGoEh3m
+erboliwDGuMbnnGncgdPp+A1ixPJiMPgnZhDeHIBh1MN//l95ppIwtmoZZXdsWQ0VWCQto6n
+/DnTTd5UhEhs7uBEoB5wMxmWC1qVzPCkU2O7jQYuwjCNXqf6Sx9RB4EWzM5sJJcT8NQ7TQz2
+cdzzQMR41w8nk3rKSG/RLrn//De6UzFEzMdJ3nJewqIbeDJWasrgY+gKfSwxKA8anWKjQQXa
+fB9cq3ZT4cCkAqtROPkGGCzgDORBeD8FU2xvysFtIfaLSOsKmQHRD+R+KyBoGw0AqfMGGdGH
+Jz006q90bvU7MNp9G9zcSy8JiNMpmhw96BUnMljWI8aOHTLhCEyGFDkAyatSYCSoF+vrFYfp
+xkI7IBYPw5N/+c6gro1vA6T0PelKkdFItkGjbe4Pvd7gkW70RkkVZYnV2noWhsN+quBo5gNd
+GGMJaRcp4QF6qoRN3s1yOee5oA5z7woADXDm1UxuBBEt4wAwmssi4kMkMsvCWsotT2/Ugd6J
+GCj4PZfsycKQk0zeTCRjqz7xRN1kq24itjKUGfIj4HEwy89v+RC34US0up3cLF1TiS6pPor5
+fHbJk3qJk2bkoGAk21pdzVyLjKZBkgSesG6zd1ukQ+SIsGs++uzd6slcmZd+cNRmRSNcc11g
+S0RUVSYxnFYRFhvqR7Cp4W6k24VTMJmonAGwSkqUzLXemVXu+qQH/IFkIIokZEFzDYNnYCWN
+z09dNikrnsAbPZfJyyDN0FbBZaHM0dDikmjYH4iNJmSrd0VRzSdnc+5NGOm5lLqx8oXjhsC7
+TS4EVdGWUkJLvFxxWFdk/T+MAekUyt+9NeqEpIdDDuU1Dz2l02/aKT05mZe4/XH8cdTLnN97
+Uw5ondSH7sLg1ouiS5qAAWMV+iiaiQcQ27YZUHM8yXytJjotBlQxkwQVM6838jZj0CD2wTBQ
+PigbJmQj+Dxs2MRGytc6B1z/SqZ4orpmSueW/6LaBjwRJuVW+vAtV0ZhGdELbQCDBRCeCQUX
+Nxd1kjDFV6Xs2zzOXg82sWS7DVdfTNCTlUTvik58e/4GEBTA2RBDKf0skM7c2SAKp4SwelUZ
+l8YTiDv3WK7P5Yd3378+fH3uvt6/vr3rLxc83r++PnztDzBw9w4zUlAa8ATnPdyExMfGQJjB
+buXj8cHH7FlwD/YA9eXQo35/MR9T+4pH10wKkFmvAWU0jWy+iYbSGAVdnwBuxHbIKB4w0sAc
+Zs1bO/5eHCqkd6N73CgpsQwqRgcnEqYTYVzwcUQoijRimbRS9Jb+yDR+gQiiMAKA1fGQPr5B
+oTfCXiEI/IBgpYEOp4ArkVcZE7GXNACp0qJNmqQKqTbilFaGQbcBHzyk+qo21RXtV4Bi6dKA
+eq3ORMvpi1mmwTf6nBTmJVNQacyUklUM96/g2w9w1UXboY7WfNJLY0/481FPsKNIEw5WHJgp
+IXWzG4VOI4kKBaaqy2yPZJl6vSGM+TkOG/45QbqXDx08QgK5E16ELJzjqyduRFgS4jAg7EVL
+4VLvUPd6r4kGFAfEN3RcYt+ilobekYV0rVLvPTMJe95GwghnZVlhX0TW7hkXFSa4rbG5jUKv
+9dHOA4jedpc4jL95MKgeAZi7+YWrh5AourgyhUM1zbpsCacWjTHM5lC3teuNE546lUcE0Ykg
+SJ4QOwJF6PpZg6eulDmYpevsgUk4wW6lrEA37kRXYLoGtqG1jJEwsnb9VdWxsZ+ObDKDMa+6
+tVdAwJMDFgS17uvJIXDGut4uHGQEd3aH8ExUmH02+PpSdx12GRO4K3TjL7CppTDGBRWdf80Z
+5XAk4Fp7uXg7vr55e5hq2+CrPCBiqMtK702LlJz3eBERwrUnM5aLyGsRmSLobWN+/vv4dlHf
+f3l4HvWQHA1qgTb98AQ2dwR4JdnjYbZ2nZbU1gyIdRDR/ra4vHjqE/vl+M/D5+PFl5eHf7CV
+wG3qrpnXFeq2QXUrmwSPnHe6i3bgviqOWhZPGFxXkYfJyplF70TulvHZxI+tyB3B9AM+hwQg
+cEWAAGxIgI/zm+UNhlJVnlSsNHAR2a9HtOgg8N5Lw771IJV5EBosAAhFFoIuEly7d3sXcKK5
+mWMkzqT/mU3tQR9F8QncZxRLjG/3AmqqClPp+ikyid0VqxRDLfiiwd+r7LKQ5GECMq5TwPI1
+y4Xka2F4dTVjIHCBwsF85Gmcwi/NXe4nMeeTkZ9JueUa/WfVXraYq6TYsgWra6f2ES6RIA2d
+zUgZyFz5ibRgHqakZOLr+Xo2n6pzPsET2QgJnrV+4D7Bfg0NBF+Mqowbr7H3YBeOmnzQB1WV
+XjyAd6mv95+PpA8m6XI+J7WQh9XicgL02sQAw91cK4Y8KSL73x7TtFPBZJquYaLVAfzq8kEV
+AbggaCOUpi6vSR42TAx9zXp4HgbCR03NeujO9guUcZJBPH6BOWlrpkzR98iAOQ777nIXlA+k
+a4cODrxjWP0xUNcgY9/63UJWHqDz6yst9JRVnmXYMG9wTEkaEUChR3dHqR89kaoJEuF3chXj
+zTWoC5SqopgnpYeDfs8LhgN2MnTVaV3GOm+yHpcffxzfnp/f/ppcBYBaRdG4iz4ouJDURYN5
+dNQDBRWmQYMalgNabzc7hY/U3AD0cyOBjrdcgibIECpC9pUNuhN1w2GwXEEzsUMlKxYuym3q
+ZdswQagqlhBNsvRyYJjMS7+Bl4e0lizjV9Lp617pGZwpI4MzlWcTu1m3Lcvk9d4v7jBfzJZe
++KASyEtaj8ZM44iabO5X4jL0sGwn9XTptZ19gqxsM8kEoPNahV8pupl5oTTmtZ1bPSKhvZxN
+SK1wOkZL3yeP5FPdcFzmx3rjU7t6DwNCDs9OcGEUK7MSec0aWCJIqNst8jMTg1/K0/PEZipH
+Gi2gD1pjjyXQWDMkeB8QLKw5SHNz3G3ZBsKeoQ2kqjsvUOoumOMNHFu5mgHmeGxu7PmAQ3g/
+LExWMisrPVEeRF3oJYZiAoWybkaHjF1Z7LhAtbzd6SwaF6Zg6lFuooAJBu5yrCMaG8R4NWLC
+6fzV4hQEbDY4vvlOH9UPMst2mV40JikyBIMCgXee1qis1Gwp9OcE3Ou+reexXOpI+I6ORvqA
+ahrBcGCJXsrSgFTegFiVHf1WNcmFSA5OyGabciTpBv2Z59xHjFFe10TJSIDHsrSAHpLx7GgG
+/FdCfXj37eHp9e3l+Nj99fbOC5hLVxA1wnhVMcJenbnxqMH6MZaBoXd1uGLHkEVpDfEzVG9w
+dKpkuzzLp0nVeHbGTxXQTFLgun6KSwPlKZCNZDVN5VV2htNTxDSbHHLPRTiqQVCi9oZgHCJU
+0yVhApxJehNl06StV9/rLqqD/lpga+1ej86q6nibuusS+0xaXw+mReVaGOrRTUXl+jcVffYc
+YfQwVhTsQWqVXqQxfuJCwMtEypLGZN8jqwTrkw4IKH/pPQeNdmBhZOcPFooYXScChcNNijQ1
+ACzcNUsPgOcJH8SrD0AT+q5KIqOF1As5718u4ofjI7hj/vbtx9NwJ+2/ddD/6RcerqUGHUFT
+x1c3VzNBok1zDMAoPnelEgBCNe5E5ucodndRPdClC1I6VXG5WjEQG3K5ZCBcoyeYjWDBlGee
+hnWJPfAh2I8JrzAHxE+IRf0PAsxG6jcB1Szm+pdWTY/6sajGrwmLTYVlml1bMQ3Ugkwsy/hQ
+F5csOBX6mqsH1dxcGh0QR5z+S215iKTiznvR0aZvWHJA8AlrpIuGOM/Y1KVZfbkuzOFYxPgn
+BA/WLTXLMO7EqZoJvJYropGiRypszM34LcDuEmKRZiUabWSTNOCHoRhNwVnN9gmBtXUz71Yt
+fQBziCHSWAARIPT8wF0JJ2UDSjXmDQiAgws3iT3Q71Qw3snQXW2ZoAq5Ve0RTi9n5Iw7LvCj
+y2rN4GCwhP2lwLI2nhoL1oevSXuVk2x3UUUy01UNzoyu99QDjDtg64IVc7DJ2CqMUS+zGgKT
+E+AUw3piN3IWUqfNLsCIOTqjILJJD4Deb5PkD9dJ8h1uIV1a7skXapLRSthDPlTWcMhnPZKX
+cTxV0BBmov4Np0Q8XZsmxERtcgFlvYA/TFqcNs93hHCSUUk1TtD6+eLz89Pby/Pj4/HFl8SZ
+mhB1tEdaEyaF9himKw6k8ONG/0UzM6DgCFGQGMyBQ4KcCZ5wd9cFEUA47zh+JHo3tmwS+XSH
+pGd3LcTBQH4v2S/1aJpTEDpyk2a0GwqQ8dKcW9CP2eSlSXYFuFarZH6G9bqDLjc9lodJWk3A
+bFEPnKRvmXssjaS1PsBQ4kvCwT0F1ZB+DN60NopUmrQLGjdV/VTx+vDn0+H+5WhaprG7oqj5
+Czu6HUiE0YHLn0ZpQ4pqcdW2HOZHMBBe6eh44RCJRycSYiiaGtneFSUZ6dK8XZPXVSVFPV/S
+dIMIpylpsx1QJj8jRdORiTvdgENRySnc75Epab7SCCNpU9cjXSS6a9qQ9IqrkiHNZ49yJThQ
+Xl2MbZhvAkZIjU7aDbyVMg/EHY9y8QyU9/1tWqe0eUPZdF5f0LtoryOYgXF+s5qAuZSMnJeU
+fapC8DLHvbUr0ipJ6WJohP3IBFl3dfHuajVzl8Tnuqt15/f8h55QHh6BPp7rznDnYi9T+sUB
+5vIzckxHdFqtHqdWbprPJMkepd5/OT59Plr6NDW++mZ4zJdCEUnkpM9FuWQPlFfcA8Fkx6XO
+xcmOMB+vFnPJQMzoYHGJ3DX+vDxG/6P8WmJcZ8inL9+fH55wCep1YlSVaUFSMqCdxWK6FtRL
+RnwKOaCF6XMoTeN3x5S8/vvw9vmvny581KFXs7PedVGk01EMMYRt1qFtCgDIcWUPGPczsLIR
+RUSCVzleA+AjJ6pqYZ+Nm/YudD2swGs2KX0RvP98//Ll4o+Xhy9/uuKXO7jGc3rNPHblgiJ6
+oVUmFHQdWFgE1k6wmvZClipJAzfd0fpq4ag9pdeL2c2C5huuDBsjcc4qrxZVig7JeqBrVKrb
+so8bZxmDLfLljNL9pqVuu6btiK/yMYocsrZBouiRI0dcY7S7nN5RGLgwyd3z+gE2ntK70IoM
+Ta3V998fvoALW9vyvBbrZP3yqmU+VKmuZXAIv77mw+vBc+EzdauG5d/YJyZSZ1K+OT4dXx4+
+9xKAi5I6txM7WJMLcMfq9pedcTDgGdREcO84fjy10OXV5BXyDdgjer5AzhN0UyoikeHFU23j
+jtM6N+6jg12ajTfP4oeXb//CXAf22VyDWvHB9DnkoHeAjOQk0hG5nnfNCdvwESf1p7d2RnOR
+5JylXT/nXrjBf6dbUzQbw1sHURjBj+u0d6igDNRXeW4KNQo5dYoERKOaTi0VRY2WiH2hq2Ve
+unqlVd7dlor1kWJeE/Zww74MtzLkh29j7D0q2ddVGeJGV8sNMhtlnzsR3lx5IJIn9pjK0pyJ
+EMs1Ryz3wcPcg/IcDXH9x+tbP0LdxCOsrUGZLg+Y90L3jsLwgSWTuyrtxN5VioLRUCW6GZs2
+HqPa1lRs1iWDYeixDU6MCFY96MerfzAgeq+Q4GuxrLsMaZfMO3QL2QCtU7J52TbuvSBYnGd6
+Diu6zJWR2Y1C2lYr2PE5Ed4a9eAgdZ3vpSDchYaJKjtPUhbwjsZ6GFYZJ9HFSTXDKYJxDi+L
+QoYN8v9ag5yNeGHZFIo8gVoR8ulqwLzZ8oRK65hndkHrEXkToYfOypi/DXrlg0v67/cvr1jT
+W4cV9ZVxZa9wFEGYr/VWl6PC3HiO56gyPodCpKub2fUEC/JqdYe9q0AAq36id+R6FG/QlY8T
+2dQtxqE/VCrjkqP7CfixPEdZKzvGOblxNv9+PhmB3rwZYatoZHTmO8YBMPj/xWGs5pDMx8Sc
+FrhetZna3Ol/6v2T8dJwIXTQBmyXPtpTkOz+P179BtlWD/a0dk2uhgPC57fjxdtf928XD08X
+r8/f9Bbj/lXHvgvSiz8enz//DaLP7y/Hr8eXl+OX3y7U8XgBkWjeRvSbMw036ByMPnW1axUM
+83Uc4deViiPkrxXTpu2UFckZ9mbet5AmBd0dPTzaeznjak7kv9dl/nv8eP+qtxF/PXxnLkNA
+g49THOVHGcnQznEI18NIx8D6fXNXCzzolbR1A1mU1DX6wAR6/XMHPqE1zwqqh4DZREASbCPL
+XDY1aYUwrQSi2HaHNGqSbn6WXZxlV2fZ6/PfXZ+llwu/5NI5g3HhVgxGB6KmYgLBhIRUmcYa
+zSNFB17A9aJW+OiuSUnbrV3ZsQFKAohAWZsapxX+dIu1sp7779/hrlEPXnx9frGh7o3bbdKs
+S5g/2+H6Fh11kzuVe33Jgp6fHpfT+a+bD7P/vZ6Z/7ggmSw+sATUtqnsDwuOLmP+k7Da8Epv
+IJlDAZfeyDwt0gmu0jst7BvdjDHh5WIWRqRsCtkYgkzF6vJyRjB0KmQBLEQ4YZ3QO+47vW0i
+tWPXSftaDx0kcSB/qvHNqZ+1CtN01PHx63sQpdwbR0A6qukLYvCZPLy8JJ3PYh0on6UtS9El
+mGYi0Yg4Qz6eENwd6tQ6tEbee3AYr+vmYVItltvFJR1SNL66ztYrUiVGtq+nGFIxSjWLS9Jv
+Veb13CrxIP0/xfRz15SNyKx61Wp2syasrIWSlp0vrr0Je2EXevaU5uH17/fl0/sQ6nHqdN8U
+UhluXPOL1mOI3rDlH+YrH20+rE4N5+dtwi4g9C4efxQQothrRthCAsOCfQ3b6uZDeAeMLqlE
+rnbFhie99jEQixYm7I0/FotD1ye1F/z8+7teh90/Ph4fTX4vvtoh+CSMZUog0h/JSJNyCH8g
+cMmoYTidSc1njWC4Ug9ZiwkcavgMNQpZaIB+Gc0woYgll8Aml1zwXNR7mXGMykLYAy4Xbcu9
+d5aF006/RVlK7zWu2rZgxhab9bYQisE3VZ52E3HGekORxiHD7OP1fIZV/U5ZaDlUj1pxFtIF
+rW0AYp8WbNNo2vamiOKci/Djp9XV9Ywh9Nwui1TvUsOp11azM+TiMphoPfaLE2Ss2FTqPtpy
+OQN5wOVsxTD4PPNUqu4VIKes6fhgyw1rPpxS0+TLRafLk+s35KTQaSGuKGiE/QuNTl8hB1Sn
+7qJHfMF9xE7w2SYfRqD84fUzHmKUb+xwfB3+IHXNkSEHB6dGl6ptWWDVBYa0+xvGSfG5sJGR
+f85+HjRJN+fT1gVBw8wQIBNzh2vdmvUc9qeetfwjwzFWvslrFA6dEpHjW9cTATq+mfeBbNcY
+51MuWaNqI0yiJvFZpQvs4r/s7+JCLwQvvh2/Pb/8h1+JmWA4Cbdg7GXciY6f+HnEXpnS1WUP
+GnXnlfFq3JS1ojvXIZQ6gBlYBec5E3tSJqSem7t9mQ1L9smIwZwFZ70WxKN6OScjXDWAW42A
+mKCgyKp/6SZ/F/hAd8i6JtGtOSn1dElWcFYgIoPexsRiRjkwweVtqYAAv7rc1wYxjQMnd5Ws
+seZlkId6XbB2LfZFjZNHd9dUxqBs0GABvAZFlumXXCN2JRj1Fw24kkegXidndzy1LYOPCIju
+CpGnIf5SPxq4GJKjl0ZPHz3rF6RePkT46NYSoG2PMNCHzZBSiV7CoOtGPdCJ9vr66mbtE3rx
+vfLRAmR57i3EbIuNNvRAV+x0aQauTU/KdPZqkNWATd0RPIzQRnZ4EVQMlIJZL63wWugTWrvC
+E6hGmh16l30qa9yJMP9J6RU9J1Wi0ax+KVT5a3El4S+Eu14tmM6Nwnx49/h/z+9fHo/vEG2m
+B3wYZ3DddkCga6zjY7vEfRmDiSIehTtc9u7Mh2vKW5vS/LtRHTgzJDxNV/zYRNxXBlC11z6I
+Kt4B+5TO1xznbT1NgwNjN2G0j0g7HOD+WEmdco/pA1GNF6CyACd+yOh0b9eJ7Rg1l+taoXvH
+/8/Zuza5jSNrg3+lIjbiPTOxp3d4ESVqI/oDRVISXbwVQUksf2HU2DXdjuO2e+3qc3r21y8S
+4AWZSMj97kRMu/Q8uBHXBJDInFG2hgAFy9zICC0i1RSynP3W1yq39aAAJfvWpV2uyF8dBNRe
+ERPknhHw8w3bqwLsmByk5CUISt42qYApAZBZdI0oxxcsCErVQq5QF57F3dRkmJJMjF2gGXen
+psu8yjZmZS/SrH3DKPJaSHECvL6F5dULzKfJWRREw5i1ph1qA8QXwSaBbn2zS1U94/WmPSd1
+b865fXGsSCdQkNxNmobuU7EPA7Exbaqoze8oTGu2Uu4vG3GBp8Gy/02mMSbulJ/lyp2a5pbP
+xXYT+NctWE4xC3lux6I0dh3qOjRt5DYRbaoVDGIGfjLeZmIfe0FivlUpRBnsPdP6tkbMA8y5
+PXrJRBFDHM4+sswz4yrHvfne/1yl2zAytlmZ8LcxUjACx53mCwQQMQrQ0kvbcNJBM3JCs192
+Gwc4DbSfnqxabFjmmTTQRXY0zdlUoJrU9cIsOMiM5+IxfyYvBYNJqNAbjlxK25W92dC47BiB
+IVCsYGSB1Ab9BFfJsI13dvB9mJp6ygs6DBsbLrJ+jPfnNje/b+Ly3Pc8pKRJPmn57sPO98jw
+0Bh9GrmCUiAXl2q5/VI11r/++fL9oYBHz3/89vrl7fvD919fvr1+NJwxfoaN0kc5U3z6Hf5c
+a7WHWxazrP8/EuPmHDxXIAZPL/rpgOiT1hh8eXo2TUWk1Xh9pL+x2RrV3ZJSViY5Cpy7oQtG
+PfGcHJI6GRMj5AXs9Rnj4NomNXqZoQGi1TKjOtP1+sCcq/VdQSqK+STY6vJAjsioaJcUcDDY
+m++OVSh6fCGQaUMVBC1LCllftpmo0sM4Lr1LlXAq2sPbv39/ffibbPv/+s+Ht5ffX//zIc1+
+kn3774a1m1nQMkWgc6cxRqIwTUEu4RiZ8mCCS0DzwEyVflklrAoCdUukW6LwsjmdkAyrUKEs
+w4EeFqqGfh4D30kjqa0y0yzHlIUL9V+OEYlw4mVxEAkfgbYsoOp9jTDV2DTVtUsO6/UE+TpS
+RbcSzHuY6xvg2FmrgpSWhngWR6t/DqdDqAMxzIZlDvUQOIlB1m1jCpd5QILOHSeUK5r8nxo7
+JKFzK2jNydD7wRSWZ9Su+gTrL2ssSZl8kiLdoUQnABSA1Au6ydiXYZ16DgEbdlBklPvwsRI/
+R8Y98BxELwxa2dfOYjJDkYjHn62YYNFEP8aHN4XYh9JU7D0t9v6Hxd7/uNj7u8Xe3yn2/i8V
+e78hxQaALqu6CxR6uDjg2QLIYoOEllfP0Vc7BYWxWWqml59W5rTs1fVS0e6uTojFs9X94H1a
+R8BcJh2YJ41SCFKLRp3fkA3WhTDVH1cwKcpDMzAMlaoWgqmBtg9ZNIDvV8YxTuh61ox1jw+4
+VIuwopUBHh/69onW5+UozikdohrEUsJMSKE4BRPZLKliWRcWS9QUTFnc4eek3SHww7QF7q23
+MAuFlsoFpW/z1iISX15rzqYe6oI6z12mKVWCdM2pnjuakoRMz1vFwdwcq5/m7I5/6cZFYtgC
+TROHtQBl1RD6e582+5G+DTdRpsGL1lrL6wLZWpnBBD0a1uXrc7qwiOcqCtNYTk6BkwHN4+ms
+F65JlAUu3xV2mqb65CSMcysSCsaWCrHduEJU9je1dHxJZFGGpjhWoFfwk5S1ZAPJAU0r5qlM
+0OFILyV8iQVozTRAdlqFRIgI8JRn+NeRxMmRj3DdUdJwH/1J51qol/1uQ+BatCFtt1u28/e0
+mbnythUnKrRV7JkHIVrgOeL6USA18qOlqXNeiqLhBswsxrkeWiXnxI+CYX1rMOHzEKF4LaeA
+RG80KKVb2oJ19wIlrt9w7VAhPjuPXZbQD5bouR3FzYbzigmblJfEknHJVmuREJAEDccf5Dlh
+ot6EVVi5D8DZWlfedeYNH1ByPkdDQ52qrIZDU+P14f98evv14cvXLz+J4/Hhy8vbp/9+XY3D
+GnsNSCJBRooUpHx85WOpLHGUhVyfPSsKs8QouKgGgqT5NSEQsSagsKemMz1FqYyoCqACJZL6
+22AgsBKfua8RRWme8SjoeFw2YrKGPtCq+/DH97evvz3ImZKrtjaT2zC8/YVEnwR6f6DzHkjO
+h0pH1HlLhC+ACmY88ICmLgr6yXKxt5GxKbPRLh0wdNqY8StHwI0/aH3SvnElQE0BOJwqBO2p
+2KL23DAWIihyvRHkUtIGvhb0Y69FL1e3xbp++1frWY1LpBimEdOCqEaUdsiYHi28N6UVjfWy
+5WywjbfmQ0SFyo3QdmOBIkLKqwsYsuCWgs8tvtZVqFzXOwJJUSvc0tgAWsUEcAhqDg1ZEPdH
+RRR9HPg0tAJpbu+UNQyam6W2ptA671MGhaXFXFk1KuLdxo8IKkcPHmkalWKo/Q1yIgi8wKoe
+mB+aknYZcCmBdl0aNR9SKESkfuDRlkUHUxpRl2a3BlsdmobVNrYSKGgw+6GxQrsC/BUQFI0w
+hdyK+tCsaj1t0fz09cvnf9NRRoaW6t8eloN1w+t3ZdZ4qpi20O1GPxBaiLYDFUwUaC1bOvrR
+xXTvJ/v+6LXuv14+f/7ny4f/evjHw+fXX14+MCpAegGjlncAtTa9zLWpiVWZshSV5T0yyyVh
+eO5lDuQqU+dSnoX4NmIH2iCl7Iy7Rq2mi3JU+jEtLwIbayf3zvq35S1Jo9MJq3W6MdH6/WqX
+nwohdwf83XxWKUXZvmC5FcsqmomKeTQF3zmMVvKRE02dnPJuhB/oZJeEU/7gbPutkH4BKl8F
+0lnMlN0yOSp7eFKdIYFRchewTFu0phqfRNXOGiGiTlpxbjDYnwv12ukqd/pNTUtDWmZGRlE9
+IVRpa9iBkbkmiIwfiUsEXLw16KUrnIqrV9miRbu7rCKnqBJ4n3e4LZhOaKKj6WcIEaJ3EGcn
+UzQJaV+krwTIhUSG/TpuOvXmFEHHMkGu2SQEOvU9B83a9l3T9MrqqyhOfzEYKP3JORlMBcjs
+OtrwU0R0rQpdiHgkm5pLNb8gnwraurTY7+H93opMegbkll7utQuiMwfYUW4zzKEHWIv33ABB
+1zFW79ljmaVuoZI03yzrewUSykT1dYEhPR5aK/zxItCco3/jG8kJMzOfg5lnixPGnEVODFI7
+nzDk+23GlmsmtSqB2+AHP9xvHv52/PTt9Sb//3f7/u9YdDl+/z4jY4O2TQssqyNgYKQFuKKN
+QO5Y7hZqjq0N/2Lti6ogjtWI3o/s47hvg+rI+hMKc7qgu5QForN//nSR4v57yyGZ2YmoV+I+
+NxUcZkSdo42Hrkky7CwQB+jA1EAn99e1M0RSZ40zgyTti6tSoqMeT9cwYN7ikJQJVmxPUuyv
+EoDe1HktWuVhvQwFxdBvFId4JqTeCA9JlyPf3Sf03CdJhTkZgfDe1KIhdmEnzNZZlRz2Oaec
+w0kEbmf7Tv6B2rU/WGamuwK7ZNe/wbwNfeo1MZ3NIMeAqHIkM15V/+0aIZAzmiunf4eKUpfU
+teJ4Nb3qKieM+InBucBJwKsreMBuOhZMuhSF0b9HueXwbdCLbBC5bZuw1PzqGWuqvffnny7c
+nPXnlAu5SHDh5XbI3P8SAu8mKJmi87VqMnhCQTyBAIQuowGQ/dzU4wAor22ATjAzrAynHi6d
+OTPMnIKh0/nb2x02vkdu7pGBk+zuZtrdy7S7l2lnZ1oXKTxAZkH1akF218LNFlm/28keiUMo
+NDC110yUa4yF69LriKwnI5YvkLmb1L+5LOQmMpe9L+dRlbR1W4tC9HAnDbYA1hsXxOs8PZM7
+k9zOueMT5FRq3tppi/x0UCgUKUQpZLkimB+6vn379M8/3l4/zoatkm8ffv309vrh7Y9vnOOq
+yHzuGimlLssKEuCVshbGEfAqkiNElxx4ApxGEavemUiU0pc4BjZBVGcn9Fx0Qtkiq8GwVJl2
+ef7IxE3qvngaT1KkZtKo+h06slvwaxznW2/LUYsd2EfxnnO3a4fab3a7vxCEmHt3BsMW57lg
+8W4f/YUgfyWleBvil964itD1nUWNbc9VukhTueUpCy4qcEJKnyW1RA9s0u3D0LdxcJOI5iFC
+8OWYyT5hOuNMXkubGzqx8zym9BPBN+RMVhn12wHsU5rETPcF4+RgvJhtAiFrCzr4PjQ1kzmW
+LxEKwRdrOrWXok26C7m2JgH4LkUDGcd6q2nWvzh1LdsE8KuL5Cb7C+SuP2u6MSRGftVNZZhG
+5mXvisaGYcf+uT03lsynU01SYqCmuZVjjj1KG6GzpO1zpHWvAGUB5Ih2gGasU24yee+H/sCH
+LJNUnQ6ZF61gM0wIR/g+Nz8sSXOkbaF/j00FFuiKk9zfmouWVunthaPUVfLeVWnmGar8Efvg
+wMsUvFsQFtHFwHQXXaVoXyMjj8PJtB40I9iBPWRO7jYXaLwGfCnlFlQuG6Zk8YQPOc3Apg8G
++UP1AbI/nmGjKSGQbf/cTBc6eIPE4hIJVaWPf+X4J1LB5juN3hqjJ3SmOxn5Q9vTB9eTeYkO
+uicOPvMebwDanBkYWe0ReiJIPZiuXFGnVB0xpL/pEyKlO0p+SmkE+Vg4nFBrqJ9QmIRijNbW
+s+jzCj+SlHmQX1aGgIFT9bwDZw1wHkBI1GsVQp9GoYaDZ/Jm+IQNaD+mT8xs4JcSSs83OQ9V
+LWFQA+pdZTnkmVzLTq55Lk2uxaXiKa24YjTupMnS+xw2+icGDhlsw2G4Pg0c682sxPVoo9i5
+1QRqt26WTp3+rZ85zomab4iW6K3I05H6hjOizCq3bB0WXYdMNIt4/6dHfzO9Nm/hnQuealG6
+IjW+Ba8FZjjZ7Quzr2l1EGY1Tgfw+IAO3ffIKbf+rVVoFvOU5+cRnx9l+ARmLUlGjqnkdr40
+Z9IsD3zPvLifACmQlOs+jURSP8fqVlgQUpbTWJ20VjjA5GCSQrScm8jF2HQ/O8YbXAu+Z0x4
+MpUo2CKvCWr5G4oupUeQc03gFx5ZGZgKIpc6w6eOM0K+yUgQ/NOY982HPMBTtPptTbsalf8w
+WGhh6iy0s2Dx+HxObo98ud7jxVL/HutWTDeCFVzc5a4ec0w6KXQZG+hjL2cxpMN57E8UMhOQ
+W0xw72Se1pu9ECzeHJFxbEDaJyKZAqgmUIKfiqRGKiAQMGuTJLAuhICB70wZaDQnshUtclNB
+d8XtsmlcbpngIhGZaV7Ip4aXKo+Xd0UvLlbvPVbXd37MCyGnpjnRzd5ELXZvV/ZcDNE5C0a8
+ACld/mNOsNbb4AnvXPjh4NO4tSCVcDaleqDlHuaIEdzJJBLiX+M5LU85wdCKtIYy28v8+Ety
+ywuWKuIgopuxmcIernPUl3Pfs34ahSxOB/SDjnAJmWUtBhQeC+Pqp5WALZ5rSK2JBKRZScAK
+t0HF33g08QQlInn025wVj5XvPZqfyq9/6nBENEej8d+ZT90fm65wiGJlgXTD1U/1X9eabFsB
+u2431iJeXXHnreB6A5QarXcsmmFCmlCLrKLBT3x40g6Jv41xEcSj2dXhl6XWCBgI+lib8PE5
+wL8s/2xdLog3qgmxZdO51mSVJTV62FIOch6oLQD3FQUSK3wAUSuMczDiakDikR09GuFtaUmw
+Y3tKmJi0jBGUMemQb+IJ7QZsPQ1g7EVAh6TrhkK1FzpaACl3JkiTCVA51XMY9RRpfoJVqxNT
+tE1BCagIOqYVwWEyaQ5WaSBBW5fSQmR8GwSPKXIEYsUMzRwtYNY7QoS42c0+YXT6MxgQl6uk
+pBx+wawgdHKnIdHKrXZn7rIwbjWBAIG0LmiGxxv6eThKEeTEr8Qw75n9+FHE8SbAv82bSf1b
+porivJeRBvfInQ+ejRWqToP4nXkMPyNaGYYaOpXsEGwkbcSQs8FOTpvGRNMmnWp6PDasWR55
+zFMH040cy/D6VcXEm0Ob51N+Nh07wi/fOyF5MilrfmWvkx4XyQZEHMYBL7vKP/MOv+UKzGXj
+OpjFgF+zmwt4/YNv5XCyXVM3yNrLEXkubsekbaeTDxtPDupKERNkyjWzM79WvVn4S5J/HO6R
+d0f9GGbAt+7UvtUEUKsRdR48Em1ZnV6burKvr0VmHiaqLW+GltCyTd3Fbx5RbucRSVoynYYX
+Vtokfcz7yfePKdImUgA+I/dH4C/lSBVg5mTyWoACDEtO74AW6qlMQnQp9FTiMzz9mx6PTSia
+uCbMPgUb5FSO0zS13eSPsTRPSgGg2eXm4RkEsJ+VkYMiQJrGUQkXsEthPrN9SpMdkrUnAN+P
+zCD25qy9d6A9Sle5+gZSVu+23oYf/tM90srFfrg39Sngd29+3gSMyH7nDCrVif5WYA3jmY19
+0zkWoOoBTDe9GTfKG/vbvaO8dY6fAJ+xzNkl1wMfU25ZzULR30ZQywqyUJsRlzwu8vyJJ5pS
+imllgixSoMd84KDcNH+vgDQD0x81RklHXQLaRizAJzx0u5rDcHZmWQt0iyLSfeDRK9UlqFn/
+hdij166F8Pd8X4NrRSNgle59+zxLwanpNC1vC3zyooKYUSFhBtk4ljzRpKAhZp7MixrcAeUY
+kFGoztuSRK9EASN8X8HBDd7+aIzxVz4x9mlsdgMc3nmBmyiUmqasRwoalmsdXsQ1PBkttuD2
+KfbMs0QNy7XGjwcLtv3nzriwcyQGoTWoJ67+jE6HNGXfdGlcthHeDU2w+XBkhirzVnACsYHk
+BYwtsKhMq4BztYHZYOy+UjOzW1Kr6izfwHMTO2RaYWoinqXE81zlphSu9QHX32kCL8CRlHPh
+E36umxa9XYLeNJT4bGvFnCXs8/PF/FD62wxqBitmy9tkqTIIfDDRg4tv2OOcn2GsWIQdUsvR
+SDtUUeYQ69F0ZhQWvY+SP8bujC5cFoicgwN+lWJ8ipTqjYRvxXu0GOvf4y1Ck9eChp72QItx
+5WJL+U1izXsaoYraDmeHSupnvkS2Qsb0GdTV+GTjDRqzRCajJyIZaEtPRFnKPuO6DqTXFsZt
+RmDaWThm5jP+LD8i+zyP5pZCziLINV2TZN2lrvGaP2Ny99fJTUKHX3WriapozWOl8zO+RVGA
+adHihnR2SykN9l1xgldIiDgWQ55hSByXB+FVUTxIzuksBFQYUFw1+Y4n8KyKVIYzeE6EkEll
+gaB6D3PA6HztT9C0ijY+PAUkqHZtRkBlXIiC8SaOfRvdMUHH9PlUg0M5ikPnoZWfFim45EZh
+p5tIDMLMY31YkbYlzakcehJIrQXDLXkmAcGERO97vp+SltGnszwoN/U8EcdDIP9HyUE/GhxP
+pPEX1/UkgjqNsTGttueAe59h4ACBwE3fwJgllViry8yEZArWwNNNNPagLUdbGUiWSPrYCwn2
+ZJdk1n0joNoYEHB2qI7HHai3YaTPfc989w0nybLDFSlJMGvhJCWwwT6NfZ8Ju4kZcLvjwD0G
+Z904BE5T60nOF0F3Qo9vprZ/FPF+H612C6q0b92ubbSrX6xVoEBkHP14q+GtCl62myMB5sSQ
+S1QFSmFmUxCMqF4pTFucpyUp+kOCTmEVCq/UwFwhg1/gRJMSVP9EgcQJBUDcjaEi8Hmr8mx8
+RRYkNQbHfbJdaE5VM6C9vAKbFOva6Xzap43n721UiuybpVUl9lD98fnt0++fX/+02xSW/uoy
+2I0K6Lx4+EHiCKAmd9OVMmX5up94plaXnNXzzTIf0GE5CiGFri5fXsu1qXAuipIbh9Z8NQJI
++aykF8PHuZXCEhzpeLQt/jEeRKYspCNQiiByX5Bj8FiU6MADsKptSSj18USaaNsm6SsMoGg9
+zr8pA4IstioNSL3CRm8CBPpUUZrmkoFbHCyb408RypIawdTTNfjLOP+UY0Hr9dIHCkCkiamS
+AMhjckPbW8Da/JSIC4na9WXsm2aTVzDAIBzoo/0rgPL/SCqfiwkSkL8bXMR+9HdxYrNpliqV
+JpYZc3PLZhJ1yhD6It/NA1EdCobJqv3WfAQ246Lb7zyPxWMWl9PVLqJVNjN7ljmV28BjaqYG
+aShmMgEh62DDVSp2cciE7+TGRhAjTGaViMtB5LY1RjsI5sAbWBVtQ9JpkjrYBaQUh7x8NM+8
+VbiukkP3Qiokb+VMGsRxTDp3GqBDsLls75NLR/u3KvMQB6HvjdaIAPIxKauCqfAnKRfdbgkp
+51k0dlApxEb+QDoMVFR7bqzRUbRnqxyiyLtOmWzB+LXccv0qPe8DDk+eUt8nxdBDORxzcwjc
+0O4dfq368hU6i5K/48BHGs9n6/UNSsD8NghsvQo767stZfBcYALMj05vW7XregDOfyFcmnfa
+eDo6q5VBo0fykylPpG1VmLOORvFzSh0Q3Min50RucktcqP3jeL5RhNaUiTIlkVx2XCyjUurQ
+p00+yNHXYi1oxdLAtOwSSs4HKzc+J9GrbYf+V/RFaoXoh/2eKzo0RHEszGVuImVzpVYpb41V
+Zd3xscBvEVWV6SpXz5nR0fL8tY25NixVMNbNZDzeaitzxVwgV4Wcb11tNdXUjPr63zxdTJOu
+3Pumz4EZgQMMwcBWtgtzM50kLKhdnu1jSX+PAm0gJhCtFhNm90RALQMuEy5HH7XtmXRRFBi6
+eLdCLmO+ZwFjIZQys01Ymc0E1yJIZ0z/Hs091gTRMQAYHQSAWfUEIK0nFbBuUgu0K29B7WIz
+vWUiuNpWCfGj6pbW4dYUICaAz9h/pL/tivCZCvPZz/Mdn+c7vsLnPhsvGsghJ/mp3sJQSOsS
+0Hi7bRp5xPWAmRH38iZEP+hrFIkIMzUVRK45QgUclYNGxS+HyDgEe868BpFxmRNm4N0vgMIf
+vAAKSYeevwrfKat0LOD8PJ5sqLahsrWxMykGnuwAIfMWQNTS1SakNsEW6F6drCHu1cwUyirY
+hNvFmwhXIbE1P6MYpGLX0KrHtOrIIstJtzFCAevqOmseVrA5UJdW2Jk7IAK/vZLIkUXAYFYP
+Zz2Zm6zE6XA5MjTpejOMRuSaFvKEA7A9gQCaHcyFwRjP5P1MUnQNsnNhhiUq2kV7C9DV0QSA
+bkCBzJfOBOkEAAc0gcCVABBg97AhhmY0ow2FphfkQ30m0b3uDJLClMVBMvS3VeQbHVsS2ey3
+EQLC/QYAdUD06X8+w8+Hf8BfEPIhe/3nH7/8Aq7am9/fPn39YpwYzcm7sjVWjeX86K9kYKRz
+Qy4wJ4CMZ4lm1wr9rshvFesA1ommwyXDgtT9D1Qx7e9b4aPgCDgDNvr2+vza+bG063bIRizs
+382OpH+DBarqhhRiCDHWV+SUaqJb86XqjJnCwISZYwtUaXPrtzLvV1moNqx3vIHjVGwnTmZt
+JdVXmYXVcs8jNwAUhiWBYvAYoEkbPOm00cbajgFmBcJKhhJAV7kTsHqtILsL4HF3NBvSelsg
+x6mU7UydjhnBBVtQPL+usFnGBbUnCY3L2jozMFhLhI5yh3ImuQTAh/bQ/c3nFxNAPmNG8Xow
+oyTF0jTYgCrX0qSppEDo+RcMUL1xgHCLKQjnCggps4T+9AKijjyBdmT5dw2aLHZoxkE2wBcK
+kDL/GfARAyscSckLSQg/YlPyIxIuCMYbvriR4DbUJ1jqEohJZRteKIBrek/z2SPXG6iBbU11
+uUtM8euqGSHNtcLmSFnQs5yZmgNMtB2ft9y7oKuFrg8GM1v5e+N5aO6QUGRBW5+Gie1oGpJ/
+hcj4B2IiFxO54wR7jxYP9dSu34UEgNg85CjexDDFm5ldyDNcwSfGkdqlfqybW00pPMpWjKgc
+6Sa8T9CWmXFaJQOT6xzWXpQNkj5nNyg8KRmEJWdMHJmbUfelisjqXDj2KLCzAKsYJRxDESj2
+90GaW5CwoYxAuyBMbOhAI8ZxbqdFoTjwaVpQrguCsAQ5AbSdNUgamZX95kysyW/6Eg7XB7mF
+eQMDoYdhuNiI7ORw6Gye/XT9zbwSUT/JqqYx8lUAyUoKDhyYWqAsPc0UQvp2SEjTylwlaqOQ
+KhfWt8NaVb2AR4d81ZmPCeSPEelAd4KR0QHESwUguOmVl0NTjDHzNJsxvWGL9fq3Do4zQQxa
+koyke4T7gfnUS/+mcTWGVz4JooPCEqsh30rcdfRvmrDG6JIql8RFzZqY7ja/4/1zZoq4MHW/
+z7ChTfjt+93NRu5Na0r7Lq/Np79PfY2PNSbAcrurThC75BlrOChU7oEjs3AyeuzJwoC9Fu7C
+WN+p4ls1sBA44skG3SaeszLFv7BB0RkhT+kBJaceCjt2BED6FgoZTFe+sjZk/xPPNSregM5Y
+Q89Db1OOSYeVIcAywSVNybeA/asxE8E2CkxT1Ul7IHf7YBYZ6lVumSy1BoM7Jo95eWCppI+3
+3TEw77k5ltmZr6EqGWTzbsMnkaYB8jiCUkeThMlkx11gPtM0E0xidDFiUffLmnZIO8Cg5q6p
+zjDAwvTn1+/fH2SbrscX+DobftEODYZzFZ72XcnAWF+iaytxQuGXcw1UgGVIVPD2z5D+ZAVu
+8K13rcwSozLBADsmRdkgi5aFyGr8C2zvGoMNflEfakswuZXIsjLHUlmF01Q/ZT9uKVT6TbGo
+Fv8G0MOvL98+/s8LZ+lTRzkfU+olWaNKaYnB8QZSocm1OnZF/57iSqvvmAwUh/14jRXgFH7b
+bs33PxqUlfwOGfXTBUHjekq2TWxMKPsp2gD7l9//eHM6Xi7q9mIaoIef9PhOYcej3M9XJXLX
+oxl4RyzyxwqdoyqmSvquGCZGFeby/fXb5xfZJRffVd9JWcaquYgcPXbA+NiKxNRLIawAA6j1
+OPzse8Hmfpjnn3fbGAd51zwzWedXFtSroFHJLr1THeExfz40yPb7jMgJKmXRFrtXwowpchJm
+zzH944HL+6n3vYjLBIgdTwT+liPSshU79DBtoZRxJnjqsY0jhi4f+cJpc10MgZUuEawsZ+Vc
+an2abDf+lmfijc9VqO7DXJGrODSv2BERckSVDLsw4tqmMmWeFW07KXExhKivYmxvHfLcsbDI
+zd2C1vmtN+eehWjavAZhkitBWxXgI5NLz3o0urZBU2bHAh6qgrcRLlnRN7fklnCFF2qcgFNy
+jrzUfDeRmalYbIKVqZi61tKTQI761vqQ09WG7SKhHFhcjL4Kxr65pGe+PfpbufFCbrwMjiEJ
+DxLGnPsauVbCOwKGOZj6ZGsX6h9VI7LTpbFqwE85sQYMNCal+UJpxQ/PGQfDQ3j5ryntrqQU
+V5MW6y8x5CgqpJC/BrE8xq0UiBaPSomNY3MwgI2swtqcO1uRw12lWY1GvqrlCzbXY5PCMQ+f
+LZubyLsCmSdRaNK2Za4yogy8VkLeWjWcPifmsy4NwncSvX6E3+XY0l6FnBwSKyOiEa8/bGlc
+JpeVxCL8vCaDyptxVjYj8A5YdjeOME9KVtRcZg20YNC0OZj2lhb8dAy4kpw68xQcwWPFMhew
+7V2Z/rEWTl0vIitECyWKLL8VdWaK3gvZV+wHFsQ9KyFwnVMyMDWIF1IK6l3RcGWokpOyPMWV
+HVxsNR2XmaIOyLrKyoESKf+9tyKTPxjm/Tmvzxeu/bLDnmuNpAIHVVwel+7QnLrkOHBdR0Se
+qYy7ECBHXth2H9qE65oAj8eji8ESudEM5aPsKVJM4wrRChUXHRwxJJ9tO3RcX3q6FQWHH0WR
+bK2h24POuukFS/3WCuZpniYZTxUtOho3qHNS39DrKIN7PMgfLGM9tJg4PdnKWkybamOVHaZb
+vVMwIq7gGMdtFW9N+/cmm2RiF2+2LnIXm74QLG5/j8MzKMOjFse8K2Int0v+nYRBsW+sTEVf
+lh770PVZF7ChMqRFx/OHS+B7ptdViwwclQIXkE2dj0Vax6Epw6NAz3HaV4lvHivZ/Mn3nXzf
+i5b6jrMDOGtw4p1No3lqeo8L8YMsNu48smTvhRs3Z74wQhwsz6b5D5M8J1UrzoWr1HneO0oj
+B2WZOEaP5ixpCAUZ4DzU0VyWAVaTPDVNVjgyPsv1NW8d3LME5X83SM/XDFGUheyobhJPayaH
+3xealNiK593Wd3zKpX7vqvjH/hj4gWM45miJxoyjodU0Od5iz3MURgdwdk+5/fX92BVZboEj
+Z3NWlfB9R8eVM88RVGiK1hVAnIJt6JgXKiJVo0aphu2lHHvh+KCizofCUVnV4853jCa535ZS
+b+2YSvOsH499NHiOpaMqTo1jClV/d8Xp7Eha/X0rHO3eF2NShWE0uD/4kh7kBOpoo3uT+y3r
+lfUDZ9+4VTHy6IG5/c414IAzHd5QztUGinMsNuqxWFO1jUD2P1AjDGIsO+dqWqGbHdzL/XAX
+38n43qSoRJmkflc42hf4sHJzRX+HzJWg6+bvzDRAZ1UK/ca1fKrsuztjTQXIqFKEVQgwByUl
+th8kdGqQq3tKv0sEckFjVYVrBlRk4FjO1CXqM5iBLO6l3UsZKd1EaM9FA92ZV1QaiXi+UwPq
+76IPXP27F5vYNYhlE6pF15G7pAPw3eQWUnQIx0ysScfQ0KRjuZrIsXCVrEWOHk2mq0ZkKMlc
+WosyR3sQxAn3dCV6H+2LMVcdnRniw0hEYaMRmOpcYqukjnInFbplPjHE28jVHq3YRt7OMd28
+z/ttEDg60XtypoDk0KYsDl0xXo+Ro9hdc64mod6RfvEkItek/x4Ulgv7CqgQ1jnnvEcbmxod
+zhqsi5R7KX9jZaJR3DMQgxpiYroCrNTcusOlR2fwC/2+qRMwi4ZPRie6TwPnF+iNl+z7ZD7Q
+7EFueMwmmC6uwsEb+aLI6thvfOtqYSHB2NFVtm2Cn1NMtL4rcMSGy4+d7G38d2h2H06VwNDx
+PoicceP9fueKqldcd/VXVRJv7FpSN0kHuRfIrS9VVJanTebgVBVRJoUp6k4vkPJXB+eBpt+Q
+5eJQyHV/oi126N/trcYAM8NVYod+zone7FS4yvesRMAxdQlN7ajaTsoM7g9Sk0vgx3c+eWgD
+2bHb3CrOdGVyJ/EpAFvTkgQDsDx5YW+826SsEuHOr03lXLYNZTeqLgwXIx96E3yrHP0HGLZs
+3WMMThrZ8aM6Vtf0SfcM5r25vpcluyD2XPOI3uDzQ0hxjuEF3DbkOS22j1x92doASTaUITej
+KpifUjXFzKlFJVsrtdpCLhvBdm9VrLrs29pDskrwEQKCuRJl3VVNxq46Bnob3ad3LlrZYlIj
+l6nqLrmCDqC7i0oJaTdPzxbXw+zs00bsqoIeOCkIfbhCUAtopDoQ5Gh635wRKk0qPMjgRk2Y
+a4gOb56lT0hAEfMmdUI2FpJQJLLCRMubuvOsLFT8o3kA9RhDdYMUX/2E/2KLDxpukw7d505o
+WqCLVY1KCYlBkcKhhiYfk0xgCYG2khWhS7nQSctl2IDB9aQ1daqmTwRxlEtHa1iY+IXUEdyl
+4OqZkbEWURQzeLlhwLy6+N6jzzDHSh8jLdptXAvOHKv/pNo9/fXl28uHt9dvE2s0OzImdTUV
+ihvZb0v1dLAWZUJcn177OcCKnW82du0NeDyAbVPzUuNSF8NeLpy9add2fmXsAGVqcKYURItf
+7jKTArF6eD15WVQfLV6/fXr5bOvFTXchedKVcMyJm10ScWDKSAYoJaG2Axd3YBi+JRVihvO3
+UeQl41XKuwnSCzEDHeHu85HnrGpEpTAffpsE0vMziXwwnYyhjByFq9QJzoEn607Zrxc/bzi2
+k41TVPm9IPnQ53WWZ468kxp8AnauitPGBMcrtqFvhhBneG9adE+uZuzztHfznXBUcHbDFmIN
+6pBWQRxGSF8PtbYoXWk62qzi8aJJQ0ex+yCOHdk3SGeRMjAJNGDI9uIIZBkQR+3VbyPzis/k
+5Phuz0Xu6H2WFXOcp3B1zsLRc9rB0XB9fuocFFi2DXa+RTZH04q7mlDqr19+gjgP3/XMAvOr
+rWc6xU+qg1zLSs+355KVcg50Yl7ERO/HGdvMrk/NyEZO7AHzeMoOY13ZMwexAm+iziLYapGE
+cMa0PTMgXM8m4+Y+b802M+vKle8XCh17U+amjDNFuUUPsU8DE7crBqkwrpgzfeCcKxdUAjbl
+TQhnskuAZW73aVWepdxt9xINr9ECnnc2u6adXzTx3JJ3FjAthQEzLa2Uu6eivYAB2jFm4QW7
+qZ3bA5n0mcB3wsYqHnMWUFksh+nRzTjjXvs4Yvqghp2x2DVCLQ/O1iuOxdUFO2OBDmJhL70a
+dtcHk0+a1oNdZA27C53620LsBnq2T+k7EdGu0WLRDnKeOIrqkHdZwpRnsrfuwt3Tvd4uveuT
+EysJEf6vprPK6s9twqzAU/B7Wapk5ISnZTg6J5uBDskl6+DszvejwPPuhHSVHpxjsWWZCfdM
+PQi5ZeCiLowz7mStuxV83ph2lwB0Y/9aCLuqO2aZ71J3K0tOTtK6Sejc3rWBFUFi66we0mkd
+nt+VLVuylXIWRgUp6mOZD+4kVv7OJF7LrU3dj1lxkhNx2dhyph3EPTH0cmvBDGwFu5sIrmn8
+MLLjtZ0tpgJ4pwDI4Y2JurO/5ocL30U05Zztb/ZiJjFneDl5cZi7YEV5yBM4hhb0WImyIz9R
+4DDO1URKLeznzwTMRI5+vwRZE18OU8jpAS0bvDok2t8TVcu0+qTO0PsnsBKvzYCVWGF8SLQd
+bpTQc52qR0Qn83kieRK3vD1BBzgmqqUqu+Lq8WTKInXzvkE+JS9liRM9X9Pplaz1sfDGDGnL
+G7iqIpkQPiGDgrWdrIpHDhvL/Co3PsvJjkLNfEtmYW9b9GgNnj9zHaZoqwLUarMSXSgACjs9
+8ohc4wn4I1Sve1hG9NiPrKImk1uq4Ef8CBRo006ABqS8RKBbAm6QGpqyOjFvjjT0YyrGQ2Wa
+B9UnJICrAIisW+XLxcGaCY4pNCMgDh4au7GyPfR8uoc7NXO+jR14nKwYCIQnyKjKWfaQbEx3
+ditRDO3GlKtWRvcQNo7cXnW16Qp85cj0vBJkp2wQZidf4Xx4rk3DeisDbcPhcC/aNzVXYWMq
+x5nZB1dmAIPf5v4WHtdMG5bJBwPYHHj44D4dXqYi86AQjLBUST1u0I3SipoqHCLtAnQT1t6K
+Lp8e1xquHBwFmaPJnoOaX/4m00oq/9/y3ceEVbhCUL0ejdrBsLLJCo5phzQ+JgaeD7kZcqhj
+UvaLaZOtL9emp+RVfhdYbxyemRL2Yfi+DTZuhmj8UBZ9txRny2dw45GWaEcw40xIbPFigZsj
+AbGxk6m9uouUuQ5N08Npvpqrl45iX2ToR8lByjz4RpeashrVQ0FZ0w2GQQPSPBhT2FkGRS+h
+Jaj9rmg3LauHFpV5+uun39kSSMH7oG+SZJJlmdem0+UpUSJHrChy9DLDZZ9uQlNndibaNNlH
+G99F/MkQRY2tLcyE9tNigFl+N3xVDmlbZmZL3a0hM/45L9u8U7c3OGHyDk9VZnlqDkVvg/IT
+56aBzJZbssMf341mmSa9B5myxH/9+v3t4cPXL2/fvn7+DD3KesyuEi/8yJTuF3AbMuBAwSrb
+RVsLi5GzBFULxRCdswCDBdIhV4hAuk8SaYti2GCoVhprJC3tklp2qgup5UJE0T6ywC2ybKKx
+/Zb0R+RycQL084l1WP77+9vrbw//lBU+VfDD336TNf/53w+vv/3z9ePH148P/5hC/fT1y08f
+ZD/5O22DHi1jCiMepfT8uvdtZBQlKBTkg+xlBXgNT0gHToaBfsZ0m2OB9PXCDD82NU0BrB73
+BwymMAfag33ynklHnChOtTKcitcqQqqvc7K2I1oawMrX3koDnJ8Cj4y7vMqvpJNpyYbUm/3B
+aj7URkyL+l2e9jS3c3E6lwl++6lxQYpbVCcKyCmyteb+omnRIRtg795vdjHp5Y95pScyAyvb
+1HwJqyY9LPIpqN9GNAdlu5LOyNftZrACDmSmm6R0DDbEeoHCsDUSQG6kg8vJ0dER2prkgG7Q
+JoDrYuoMOqV9hzmzBrhDDykV8hiSjEWYBhufTjlnuUM+FCXJXBQV0mpXGDptUUhPf0vx/bjh
+wB0BL/VWbraCG/kOKQw/XbC3FoDJJdICjYe2Ik1jX4ea6HjEOJilSnrr828V+TLq2FVhZUeB
+dk/7U5euxnPyP6VU9eXlM0za/9AL5MvHl9/fXAtjVjTwYP5CB1pW1mRSSNtg65M5oU2IXpEq
+TnNo+uPl/fuxwVtiqNEEDEVcSf/ti/qZPKRXi5Cc6mcDNOrjmrdftRgyfZmxGuGvWgUZ8wO0
+kYqxBwezZGwd6YS07C1XtRyXQII74uXw828IsUfdtJIRu88rA9YaLzWVj5RVL3YRARykJw7X
+shf6CKvcoekgJqsFIGMFb06MzpfdWFhcUxavCrm7AuKMbhtb/INa5gPIygGwfNnsyp8P1ct3
+6NDpKvRZFowgFhU4VozeGa1EdiwJ3u2RDqjC+rP54FkHq8DTbYjcu+mwWAVAQVKcuQh82jkH
+BYuEmVVP4MQZ/pUbD+QMGzBLyjFArMiicXJNtYLjWVgZg1j0ZKPU56cCLz0cCJXPGE7l5q9O
+cxbkP5ZRP1BdZZZ2CH4j98oaa1Pa1W7ESO8EHnqfw8D0E75JBQrNiqpBiL0nZZ5AFBSAuxTr
+OwFmK0Dp1T5e6jandawYcZTzk5UrXJbCVYuVGjnehnFZwb/HgqIkxXf2KCkrcEFVkmop2zje
++GNnesRavhupWk0gWxV2PWgtFflXmjqIIyWI9KYxLL1p7BH8AZAalMLaeCwuDGo33nTPLQQp
+QaOXMwLKnhRsaMH6ghla6qbe90z/VAruCqRXISFZLWHAQKN4ImlK6S+gmWvMHiazS2Yehb5H
+GJnCkUDWRz1dSHqcWoSEpfi4tapJpH4sN7Ie+VaQKkXRHClqhTpbxbEUHgBTS2/VBzsrf3wD
+OCHYCo9Cyb3fDDGNLHroOBsC4gd1E7SlkC29qg49FKRhlPAK5kBhimEo9D59jeDJJi4TWo0L
+h9/iKKpp07I4HuGqHjOM1qBEB7BnTSAi+SqMTjKgbCoS+c+xPZHp/r2sE6aWAa7a8WQzSbWq
+F4M8YRxy2YqAULvrkSGEb799ffv64evnSRAhYof8PzpzVLNF07SHJNXuH1cBUdVfmW+DwWN6
+I9dB4RKFw8WzlJqUGlLfNUTemBxdmiBSFFQXanJhCbc7j8Cg2gQvMeD8c6XO5gInf6AjWf1C
+QRTGmdz3+dBOwZ8/vX4xXyxAAnBQuybZmvbb5I9FTNQnf62YE7FbC0LL7pjX/fioLpxwQhOl
+NM1ZxtrRGNy0kC6F+OX1y+u3l7ev3+zDyb6VRfz64b+YAvZyeo/A3HrZmCbCMD4ppptnXCRA
+hnxcY+5JrhaGZha4r99uPOypnkSRUqVwkmhk04hZHwetaT7SDmDehtHvTGGYrzdIVsUt8eih
+tXpaX6QzMZ665oL6TVGjg3cjPJx1Hy8yGtb9h5TkX3wWiNB7K6tIc1ESEe5My9ULDu8H9wwu
+NwSyb20Ypsps8FD5sXngNeNZEoP29KVl4qhHcUyRLJXwmajkfj8UXozvXywWTa2UtRlbupgZ
+UdQnpA0w44MfeUz52kL0iUyqYaL01ZH7IvVkN2AqTj+mtHFLsX35DHj3aMNNmpemfbwl59nt
+zCiwML5EvDG9SCDlzwXdseieQ+npOsbHE9fhJor5upnaMj0Sdps+142szalB4I0oInym7ygi
+cBGRi+B6vSaceXCMujIY+eZLn0/1RYxoupk5OsForHWkVIvAlUzLE4e8K00LOeYcxHQJHXw8
+nDYp01Gt4+plhJgHygYYRHzgYMcNQFNfaSln+xR7W64nAhEzRNE+bTyfmUYLV1KK2PHE1uP6
+mixqHARMTwdiu2UqFog9S2SVxHcOwmeGBiQ1cMVVefiOUu2j0EHsXDH2rjz2zhhMXT2lYuMx
+Kak9npIisUFfzIuDixfpzueWOYkHPA7+iJh+J7KKbTKJxxum/kU2RBxcbX2uuQAPWDxGxiwM
+PHDgIYeXoMANl2Gz7NlJufP7y/eH3z99+fD2jXkauSxTUn4R3MImd8XtkatyhTvmJkmC0ORg
+IR65SjSpLk52u/2eqaaVZfqQEZVbt2d2x8wGa9R7MfdcjRusfy9XZjCsUZnRuJL3kkXeVBn2
+boG3d1O+2zjcmFpZbjFZ2eQeu7lDhgnT6t37hPkMiTLl796fAkZ4WjO/W3Bu+K/kvera3Gvf
+zb2uvEnvlii/14IbrmJW9sBWW+2II867wHN8BnDcUrpwjhEnuR0rYs+co06BC9357SJmAZ25
+2NGIimNWsokLXZ1WldNdL7vAWU6lN7RsZl3ztDWx0keTM0E1TDEOd073OK751P08J+BZJ68L
+gU4/TVQuuPuYXVfxQSiCj5uA6TkTxXWq6Wp/w7TjRDljndlBqqiq9blNycxxva0vxqLJ8tL0
+AjFz9kknZcYyY5pjYeXm4h4tyoxZa8zYzMes9CCY5jBKZtrBZmifmT8MmhvuZt7hLLdUrx8/
+vfSv/+UWXPKi7rG69SJ9OsCREzgArxp0eWVSbdIVzKiCs3+P+VR1f8TJ1oAzfa/qY7ZzAR5w
++wCZr89+xXbHiQKAcwIP4Hs2ffC8y5dny4aP/R37vVK+duCcZKFwvh5C/rviiN3c9NtQfdeq
+lOrqSJbo3KTnOjklzMCsQCeZ2dTKzcyu5MR8RXDtqghuDVIEJ31qgqmyK/jlq3vmSK2v2uuO
+PfrpDz636cmfLoWyangxFgkQ3dGF7ASMx0T0bdKfx7Koiv7nyF9eCjZHIvDPUYruCZ/k6UNR
+OzDcTZje6LQaNboiWaDx6hN0OoMlaJef0OW8ApW7Im9V7n797eu3fz/89vL7768fHyCEPeGo
+eDu58BHdAIVT/RENkjM1A6Sne5rCuiK69DL8Ie+6Z1AgGOhn2JqoCzycBNVd1RxVU9UVSjUv
+NGppV2jzgLekpQnkBdXI03BFAWSYRquF9vAPMpthNiejyKjpjqlCrC6qofJGS1U0tCLBsU96
+pXVlnXjPKLZBoHvUId6KnYXm9Xs0k2u0JZ6nNEqUDzQ40EIhxVFtsQpu3RwNgE7jdI9KrRZA
+Lz0nY3z08F0Pz6RKoiyQM0dzuFCO3JRPYEM/U9RwTYbeG2jcLrycaMYB+dKaJ4nU1HBQIJnb
+NIb1NFfMN2V9DRPDwQq0ZbXJBCadejU8xOZZkMJuaYZ1whQ6QNceBR1D9G5bgyVthKTKxqN5
+zab7dNaHwUYp2RqLn3NaW7T1Ffr65+8vXz7a053li89EsTmlialpaU+3EalXGtMvrW6FBtaw
+0CiTm3rlEtLwE+oKv6O5ahOXVtdpizSIrTlJdhN9fYLUJEkd6iXlmP2Fug1oBpPBXDppZzsv
+Cmg7SNSPfdrlFMqElZ/uVze6klLXGCtI08UKbQp6l9Tvx74vCUw16qdZM9ybe6wJjHdWAwIY
+bWn2VAhb+ga+pzPgyGppcnc3TYdRH8W0YKIM4tT+CGLjWncJ6jtPo4z5j6ljgV1qe/6ZLMpy
+cLy1e6eE93bv1DBtJstJ34xu0cNNPeVRNwh6GiMuDBbQquPbfFewTkL2QJheZRX3B0hVyoWa
+TnOtNfHJdOTkJ//waZ3Ck0RNmccw04on13AfTZZMeRYtnrvllDKhv6UZKOtPe6vO9MRnLfJp
+GKJrel38QjSCrj1DB35+aHetmqFXvqhWYwZ2qbWTWnG4/zVIlX5Jjommkrt++vb2x8vneyJz
+cjrJxR5b1Z4KnT5e6HJhK9OzWcxxbqaTen/UYoEqmf/T/3yatO8t1SsZUquOKw+opoSyMpkI
+NuaGDDNxwDFIWDMj+LeKI7AAu+LiVJg1wHyK+Yni88t/v+KvmxTAznmH850UwNDD6gWG7zJV
+FTAROwm5w0oy0FhzhDB9NeCoWwcROGLEzuKFnovwXYSrVGEopdPURTqqAemdmAR6boYJR8ni
+3LwhxYy/Y/rF1P5zDGUyQraJMJ3TGaCtcmRy2iA/T8LWEe82KYs2liZ5yqui5sxZoEBoOFAG
+/uzRQwgzBCibSrpHqs9mAK1wc69e1LvaHxSxlPWzjxyVB6dP6PTP4BZ78y76zrfZIoPJ2pYi
+TJbulWzuB1/c0fd4XQ4P9eXsnZnapToplkNZplhpugYjD/eiiUvbms9ETJQ+CULc+Vah784S
+zRvrzXS+kGTpeEjgQYqRz+yVgcSZjMLDbGcuXRPMBAYtO4yCWi/FpuwZt4ug7XqCx/Jyt+CZ
+N7ZzlCTt4/0mSmwmxYbqF/gWeOamYcZhTjKvaEw8duFMgRQe2HiZn5oxv4Y2A4a6bdTSqJsJ
+6jNrxsVB2PWGwCqpEwucox+eoGsy6U4E1m6k5Dl7cpNZP15kB5QtDx2eqTLwXchVMdmczR8l
+caQuYoRH+NJ5lDMKpu8QfHZawXdO8HG3QzsGwjCNrpjAZ/KevVxUyNPYXGL3QJi9VdgpdoOp
+gjGHJ6NghgvRQpFtQg18U8CeCWsXNROwXzWP+EzcPDuZcbzMrfmqvskk04db7sPAKoi/NRUa
+jE/wN8hA89JxlB3sZgqyNe1UGJHJ3hkze6ZqJi81LoKpg6oN0IXYgssldMvkrRXAqsPBpuQg
+2/gR01MUsWcSAyKImOICsTPvbQwicuUhN/98HhFSkzEJ5GNzmamqQ7hhCqVXfy6P6cxgZw+F
+U3I55VpY2TBT9GwzjhlDfeSFTAt3vVxjmIpRD6Xl5tDUI0ec3K+fmG+VYoApmR8veTkVmkoI
+c5RLKnzPYybDQ7bf75ELjDrqt+Cbh5/G4EHUmCCFaSIrqJ9yJ5pRaHpXrc/FtYHwlze5IeU8
+DoALEAGOs0L0eGrFN0485vAKnBi7iMhFbF3E3kGEjjx8bO99IfYBsv21EP1u8B1E6CI2boIt
+lSRMjW1E7FxJ7bi6Ovds1vB6rqnai9rER3VuuoheAmHl6RVOyVPSmRiK8ZjUzPOrJSa+NVzw
+fmiZ9OD9cXtlCjYRY1ImXSVsPpX/SQpYILvGzbamo+GZVKYh+9y0dbFQAh3HrrDP1sbkuCnB
+JuwNjmmtInoEg/o2IdpEygA2fgTl4OjIE3FwPHFMFO4iptZOginp7IeN/YxjL/r80oP0xyRX
+Rn6M7YQvROCxhBTSExZmhoK+X01qmzkX560fMi1VHKokZ/KVeJsPDA5XrHj+XKg+ZiaNd+mG
+KamcrDs/4LqO3NnniWlDbSFsjY2FUisf0xU0wZRqIqihb0zix6EmuecKrgjmW5XkFjGjAYjA
+54u9CQJHUoHjQzfBli+VJJjMlQtrbqIFImCqDPCtt2UyV4zPLDGK2DLrGxB7Po/Q33Ffrhmu
+B0tmy042igj5Ym23XK9UROTKw11grjtUaRuyS3hVDl1+4odpnyIHpwvciiCM2VbM62Pgg6lW
+x6Csul2EVHnX1TEdmPFdVlsmMBh3YFE+LNdBK06ikCjTO8oqZnOL2dxiNjduKiordtxW7KCt
+9mxu+ygImRZSxIYb44pgitim8S7kRiwQG24A1n2qz/gL0TfMLFinvRxsTKmB2HGNIold7DFf
+D8TeY77Tega2ECIJuem8fj/042OXPOY1k0+TpmMb87Ow4vajODBrQZMyEdTNPno/URHL1VM4
+HgaxN9g6JOiAq74DeOM5MsU7tMnYia3H1MdRtGP4bONyvR3T47FlCpa1Yh94CSMBFbVoL91Y
+tIKLV3RhFHAzkCS27NQkCfxMbiVaEW08Looot7EUh7ieH0QeV59qoWTHvSa4w3MjSBhzSyas
+KFHIlXBat5iv0suTI07guVYbyXCruV4KuNkImM2G2zjBgck25hbINogd+J7rim1RbdAL2LWz
+b3fbTc9UZTvkctVmCvUUbcQ734sTZsCKvs2ylJu25Bq18Tbc0i2ZKNzumIX4kmZ7jxslQAQc
+MWRt7nOZvC+3PhcBHNSyS62paelYO4WlFbIwh14wsqE4dBUHy/0m02YS5gahhMM/WXjDwymX
+CDX6ukwmVS7FKGa45nJXs+EEBUkEvoPYwuUCk3sl0s2uusNwS67mDiEnZ4n0DMdoYMqZbyrg
+uUVTESEzC4m+F+w4FlW15aRcKTD5QZzF/HmN2MXc8FPEjjsXkJUXs3NwnSBLECbOLbwSD9lZ
+vk93nCh5rlJOwu2r1uckAYUzja9w5oMlzq4TgLOlrNrIZ9K/Fsk23jI732vvB9y25drHAXea
+dYvD3S5k9vxAxD4zuIHYO4nARTAfoXCmK2kc5iVQyGf5Uq4kPbOoa2pb8x8kh8CZOfjQTM5S
+RNXLxLl+olycjJXvjcymQ0mnpmWaCRjrvMfmoWZC3eEL7EF65vIq7055DT5hpyvrUT2yGivx
+s0cD8yVB9uhn7NYVfXJQjm+Llsk3y7Xl4lNzleXL2/FWCO055k7AI5yeKbekD5++P3z5+vbw
+/fXtfhRwNgyHWCmKQiLgtO3C0kIyNNhjHLFRRpNei7HyaXuxGzPLr8cuf3K3cl5dSqKSMVP4
+DYWyVWglA4adOTCuKht/DG1sVg+1GWX2yIZFmycdA1/qmCnfYunOZlIuGYXKDsyU9LHoHm9N
+kzGV3MyaXCY62RC1QyvbPUxN9I8GqJW/v7y9fn4AM7m/IZ/JikzStniQQzvceAMTZlFBuh9u
+dVPNZaXSOXz7+vLxw9ffmEymooNZmJ3v29802YthCK2JxMaQ+1IeF2aDLSV3Fk8Vvn/98+W7
+/Lrvb9/++E0ZGXN+RV+MokmZocL0K7DryPQRgDc8zFRC1iW7KOC+6cel1nqvL799/+PLL+5P
+mp4PMzm4ouorM+WWQJbil28vd+pL2dOWVUaUGFc720xdAhfK0a7XJrNEdzOd45sKQWSwPP3x
+8ll2gzvdVN1Qq5yNWWYxa6KSrCKOgnsUfUljFtiZ4ZzA8myWmcQ6Zh55PMsJA04hL+r6yeJt
+B1QzQiwgL3Dd3JLn5tIzlPa5pTy6jHkNa2vGhGravFZWCiERz6LJW8A18U5Z6xvbLp8jT610
+e3n78OvHr788tN9e3z799vr1j7eH01dZbV++IvXfOaU1BVj4mKxwACnzlKtBRlegujFfl7lC
+KW9ipgzBBTSFA0iWEQt+FG3OB9dPplzpMKawm2PP9AQE43qfZ1B4XjJUlyMTe7rjcxCRg9iG
+LoJLSr89uA+DR8yzlFeLPk1Mv77rkbmdALzf87Z7bnRolT+eiDyGmHyE2sT7ouhAxddmFCxa
+rmClTCkzr32nswkm7GJwfOByT0S1D7ZcgcHWYFfBuYuDFEm155LUzwQ3DDMb87aZYy8/Bxyk
+M8lpTxFcf7gxoLazzRDKXrINt/Ww8byY7W7KTQvDSGlTzkJci03KJ8xXXOqBizF757OZWUWO
+SUvukkPQLOx6rtfqx4wssQvYrOA+i6+0RYZmPBRWQ4A7oUR2l7LFoJwuLlzCzQCOOHEn7uF1
+LVdwtezbuFpGURLa3vdpOBzY4Qwkh0vpoM8fuT6weJG1uel9MNcNtDktWhEa7N4nCJ+ehHPN
+DE97fYZZVn8m6z7zfX5YgmDA9H9lKY4h5neuXIWJNPRDbhwnZVHtfM8nDZtG0IVQX9mGnpeL
+A0b120FSb/qxFgalzL5Rw4aAaktAQfVI3o1SRXLJ7bwwpn371EopDne2Fr7Loz2wHpOAVMCl
+Ks3Kml/A/fTPl++vH9eFOX359tG0zpYWbcosMVmvjbHPT7p+kAwo6DHJCFn5bSNEcUBeds13
+yRBEYOcjAB3AIC9yFQBJpcW5UbrtTJIzS9LZhOr93qErspMVATxE3k1xDkDKmxXNnWgzjVHt
+7RYKA9KuIyoOxHJYuVd2pIRJC2ASyKpRherPSAtHGgvPwcI0/aDgtfg8UaHTL112YuBdgdTq
+uwJrDpwrpUrSMa1qB2tXGTLirUyu/+uPLx/ePn39MnmBtPdf1TEjGxVA7NcRChXhzjwynjH0
+KkqZMqdvtFXIpA/incflxnhr0Th4awGPG6k5klbqXKam6thKiIrAsnqivWee+yvUft2t0iD6
+/SuGb9hV3U0uj5CxFSDow+sVsxOZcKQnpRKnlnIWMOTAmAP3HgcGtBWLNCSNqF5XDAwYkcjT
+RsUq/YRbX0sVFGdsy6RrKtFMGHqqoTD0wh4QMBPxeAj3IQk5Hb0oc5+YOUkx5tZ0j0RTUTVO
+6ocD7TkTaH/0TNhtTFT3FTbIwnQJ7cNSPoykzGnh52K7kQsktuVqENjpwERE0UBinHtwK4Zb
+HDBZZHRJCyJlYb4bB0C71Vy235CJvspoq57ZZyv+SWwDUn/KBEJaNRly8i4JagQBMPWqxfM4
+MGLALR279sOOCSVGEFaUdjGNmk8JV3QfMmi8sdF479lFgNdyDLjnQpovQhRIXn3MmBV53qmv
+cP5eebttccDUhtC7dgOv+yEnvRA2LBixHx3NCNb5XVC8pk1GFZgVQ7ayNSQZO8iqVIvJAhPs
+N3HoUwy/4VAYtXKhwMfYIy0xbV9JgfKUKbooNrvtwBKy5+d6xNDJw9agUGgVeT4DkWpU+ONz
+LMcAmSf1oxFSaclhiNhKn6146GPuvvr04dvX18+vH96+ff3y6cP3B8WrS4tv/3phj8kgAFFS
+U5CeRddz8L+eNiqf9kbZpURWoG95AevBQ00YyrmxF6k10VKjKxrDz9KmVMqK9Hl1WiJ3DiMW
+llWvJYZU4CGS75nvo/SjJVOZSCM70n/tp80rShd8+7nTXHRiRcaAkR0ZIxH6/ZaZlQVFVlYM
+NOBRu8svjLXESkauBubwnU987D47M8kFrTSTERcmwq30g13IEGUVRnR64KzVKJzatlHgUzXQ
+FiO2r1Q+tnq+ktCogSMDtCtvJniJ0jTror65ipDOyozRJlRGanYMFlvYhi7XVD9ixezST7hV
+eKpLsWJsGsj4vp7AbpvYWgqac6WNP9EFZWawCSkcx8FMp/rW/BkGcngRp0krpQhBGXWWZQU/
+0rqkFtNUN6BmKQzQrrL1qotEmF/+jXTFV8eISjYzqmE+fLeHENJ5IfUmqotdIoWSxeHutnYp
+g635ukD01GoljsWQyzHZlD16OLMGACs7l6SER2jighpxDQNqIEoL5G4oKaie0MSJKCztEgp5
+ulg52LLH5rSNKbybN7gsCs3xazC1/KdlGb2TZ6lp4imzxr/Hyz4NBifYIOSUATPmWYPB0I5u
+UGQzvzL2mYDBURtxhArYKrOmEZOyjhoIiSeMlSRCuUHoowe2i5O9O2Yitg7pthwzW2ccc4uO
+GD9gW1Eygc92HsWwcY5JHYURXzrFITNgK4cF4RXXG2Y3c41CNj29n74Tb8sP3EKU+9Bjiw+K
+/8HOZwenlDm2fDMyUoJBSvF1x36dYtiWVNYY+KyImIgZvk0sGRJTMTt6Si02uait6WRnpezN
+Peai2BWN7P4pF7m4eLthC6morTNWvGcHinUwQKiArUVF8eNYUTt3Xnt3XvxCYB9+UM75ZTv8
+LIpyAZ/mdISGBQjM72I+S0nFez7HtPVlm/JcG218vixtHEd8a0uGX8Cr9mm3d/SsfhvyM5xi
++KYm5rEwE/FNBgxfbHJmhBl+FqVnSitDd7QGcygcRJpIWYTNx7XQ2cdIBneMB37ObY+X97nv
+4K5yweCrQVF8PShqz1OmpcIVVgJy11ZnJymqDAK4eXSmS0g4ZriiR3hrAPNdTt9c0rNIuxyu
+WHvsPNuIQQ+7DAofeRkEPfgyKLkVYvF+E3vsGKCnciaDz+ZMZuvzDSkZ9GDUZJ4C33x9alLV
+lR+6MtJ2x8+4IqjahP8koAQ/4kVUxbstO6yonReDsc7xDK48yX083+H1BvPQNGAo0x3g2uXH
+Ay+G6gDtzRGb7FJNSm26x2tVsaKqkB/kbVnxR1JxsGHnWEXtao6CZ3L+NmSryD5xw1zgmBv1
+yRo/C9sndJTjl077tI5wvvsb8HmexbHjUXN8ddoHeYTb8xK7faiHOHJMZ3DUKNhK2cbjV+6K
+n/msBD1dwgy/2tBTKsSgsyMy65bJoTAtanX0mF8CyHVGWZiGUQ/tUSHKbmOAYmV5KjHzCKjo
+xjpfCITL6dqBb1n83ZVPRzT1M08k9XPDM+eka1mmSuHmNWO5oeLjFNpGFPclVWUTqp6uRWra
+hZFY0heyoarGdNot08hr/PtcDNE5C6wC2CXqkhv9tIup4wPh+nxMC1zoI5xyPeKYoD5nI2M/
+YLDH0erLtelJxC7PuqQPcWuY56Twu+/ypHpv9kCJ3or60NSZVd7i1HRteTlZ33a6JOZ5s4T6
+XgYi0bH1QFV3J/rbqkrAzjZUm4cZE/buamPQY20Q+qSNQh+2y5NGDLZF/alsmhZbZy66yb0L
+qQJtFh63JTyXNiGZoHkbBK0Eeq0YybsCPdmaobHvklpURd/TcVjgcTEcmmHMrhlutcaorNS6
+kwSkbvriiOZcQFvT6bFS9VSwOZdNwUYpZ8JRRv2OiwAHfY2p26MKcd6F5lmewuiBFoB6qCQN
+h578ILEoYicSCqC9/0mJqyWE6YxEA8ivHkDEGQqI3O2lFHkMLMa7pKhlN8yaG+Z0VVjVgGA5
+b5SoeWf2kHXXMbn0jcjLPF3ebCgHXfPx99u/fzctmU9Vn1RKqYjPVo7tsjmN/dUVABR4e+h7
+zhBdAj4CXJ+VdS5qdkzk4pWl35XDPsnwJ88Rr0WWN0QHS1eCNhdXmjWbXQ/zGJiM8X98/bop
+P33548+Hr7/DtYJRlzrl66Y0usWK4SsLA4d2y2W7mVOzppPsSm8gNKFvH6qiVpu3+mSubzpE
+f6nN71AZvWtzOZfmZWsxZ+RdVEFVXgVgOBpVlGKUFuJYygKkJVKO0uytRjamFZiI55p+vNw7
+wHMwBs1AAZJ+MxDXKinLhksIokD7FaefkV8Du7WMEfHh65e3b18/f379Zrcl7RLQE9wdRq61
+TxfoisnqF7r9/Pry/RWUnFQf/PXlDR6ayaK9/PPz60e7CN3r//PH6/e3B5kEKEflg2ymospr
+ObDM56DOoqtA2adfPr29fH7or/YnQV+ukLAJSG3aaldBkkF2vKTtQbj0tyaVPdcJaPapjidw
+tCyvLgPoscBjZLkigpNspOQvw1zKfOnPywcxRTZnLfxodtLlePjXp89vr99kNb58f/iulD/g
+77eH/zgq4uE3M/J/0GaFCXidNPS7rdd/fnj5bZoxsF73NKJIZyeEXNDaSz/mVzReINBJtClZ
+FKpoax4uquL0Vw/ZrFVRS+TRdUltPOT1E4dLIKdpaKItTF/FK5H1qUDHJSuV900lOEKKrXlb
+sPm8y+EF1juWKgPPiw5pxpGPMsm0Z5mmLmj9aaZKOrZ4VbcHA6hsnPqGfNKvRHONTGt6iDCP
+fwgxsnHaJA3MY3rE7ELa9gbls40kcmTfwyDqvczJvGCkHPuxUh4qhoOTYZsP/oMs+lKKL6Ci
+Ije1dVP8VwG1deblR47KeNo7SgFE6mBCR/X1j57P9gnJ+MjbrEnJAR7z9Xep5a6K7cv91mfH
+Zt8gk7ImcWnRntKgrnEUsl3vmnrIKZzByLFXccRQdGBdRG5w2FH7Pg3pZNbeUgug0s0Ms5Pp
+NNvKmYx8xPsuxN6y9YT6eMsPVulFEJjXkDpNSfTXeSVIvrx8/voLLEfgkclaEHSM9tpJ1pLz
+Jpi+q8YkkiQIBdVRHC058ZzJEBRUnW3rWfaZEEvhU7PzzKnJREe0r0dM2SToYIVGU/XqjbPy
+r1GR//i4ru93KjS5eEhRwkRZkXqiOquu0iEIfbM3INgdYUxKkbg4ps36aosO0E2UTWuidFJU
+WmOrRslMZptMAB02C1wcQpmFeXg+UwlSEzIiKHmEy2KmRvXS/dkdgslNUt6Oy/BS9SPSWZ2J
+dGA/VMHTBtRm4eH0wOUut6NXG7+2O8+85THxgEnn1MateLTxurnK2XTEE8BMqoMvBs/6Xso/
+F5topJxvymZLix33nseUVuPW+eVMt2l/3UQBw2S3AKluLnUsZa/u9Dz2bKmvkc81ZPJeirA7
+5vPz9FwXInFVz5XB4It8x5eGHF4/i5z5wOSy3XJ9C8rqMWVN820QMuHz1DcNKC/doUTmgGe4
+rPIg4rKthtL3fXG0ma4vg3gYmM4g/xWPzFh7n/nI0CbgqqeNh0t2ols4zWTmuZKohM6gIwPj
+EKTB9G6utScbynIzTyJ0tzL2Uf8JU9rfXtAC8Pd7039eBbE9Z2uUnf4niptnJ4qZsiemW6x1
+iK//evufl2+vslj/+vRFbiG/vXz89JUvqOpJRSdao3kAOyfpY3fEWCWKAAnL02lWWtB957Sd
+f/n97Q9ZjO9//P77129vtHZEUzZb5OxhWlFuUYwObiZ0ay2kgKkrOzvTf7wsAo8j++LaW2IY
+YGztHw9s+HM+FJdqclLnIJuusOWYarCaMetDXwlxzo/5x6///ue3Tx/vfFM6+FYlAeaUAmL0
+YlKfiyqP9GNqfY8MHyFDkwh2ZBEz5Yld5ZHEoZQd71CYj60Mlun9CtemguSSF3qR1XNUiDtU
+1ebWUeShjzdkspSQPZZFkuyQIgWC2c+cOVtkmxnmK2eKF3QVaw+ZtDnIxsQ9ypBbwW9t8lH2
+MPRESX2qmn3JNclKcBjqLwac3JuYWysSYbmJWW4q+4ast+BnhkoVbe9TwHy8ktR9IZhP1ATG
+zk3b0vNzcDJHomYZNUdgojB96n6KeVEV4G+YpJ73lxY0AVBf0PcNyzEmwfs8iXZIs0NfTxSb
+Hd3xU6wIUgtbY9PNOsXW6wxCzMma2JrslhSq6mJ6EpOJQ0ejVoncpSfoMdOU5jnpHlmQ7Kwf
+c9R0SnZJQPKsyeFDleyRUtNazeZgQ/A49Mhyoy6EHJ87b3u24xzlAhZYMPOoSjP6bRaHxubU
+tCknRoqsk7EEq7cU5sykIbCx1FOw6zt0B2yio1rzQ+9fHGl91gTPkT6QXv0ehGyrryt0ihJ5
+mJTLLjoUMtEpyuYDT3bNwapccfS3R6RraMCd3Up51yU9en2g8e4irFpUoOMz+uf23JgiAoKn
+SOuVBWari+xEXf70c7yTohkO874p+66whvQE64SDtR3m6x84d5H7N7jxEPPiARYF4bGRunpw
+3RGCQLHxrTWyv+Y5tgTTgxWakaLpc9vlQozHoqtuyETtfCEWkPl6xRlhWuGVHNUtPbNSDLpb
+s9Nz3ckFzns8cgRGl7M7Cx17GarW9M3WAY9XY12FXZAoklrOjVnP4l3KoSpf+0RP3W32rVki
+OaEsk7w1n0yNnxzzMU0LS6qpqna6ibcyWu7o7cSUtTcHPKZyI9LZZ2EG21vsbJLt2hbHMSuE
+/J7nu2FSucperN4mm3+7kfWfIrsrMxVGkYvZRnLKLY7uLA+5q1jwoFp2SbDQeO2Olmy40pSh
+HuGmLnSGwHZjWFB1sWpRWZhlQb4Xt0MS7P6kqFIilC0vrF4kwhQIu5608m2WVta2ZDaOlubW
+Byx2lsFpqz2StE6MNomyGQurMCvjOo2OWjlbVbYgL3Ep1RXQFR2pqnhjWfRWB5tzVQHuFarV
+cxjfTZNqE+4G2a2OFqXNSfLoNLTshploPC2YzLW3qkGZrYYEWeJaWPWpTRcVwkpJE4OTkcR4
+SIRdCxNrdRrZ8hvVPAyxZYleoqZkZ6LotBgmy0XNhJ8r5dqSnzo5+K/WkE2bzJoNwZz5NWtY
+vB1aBo6VVow1nmdjhXfJa2tPBDNXZVZuazzQUrVnf0zfTX0KIlImk1ltB3RLuzKx14ZJHy4P
+7PluVX4bT/dprmJMvrIvscCUZQ4KKJ1VajzDYLtK86xWjAeY9TnifLXPDjTsWrmBzvKyZ+Mp
+YqzYT1xo3WFdU+wxs6fRmXtnN+wSzW7QmboyE/Mya3cn+7YJVkqr7TXKr0Bqrbnm9cWuLWWc
+/06X0gG6BlxwsllmFVdAu5lhlhDkQsktTyntvBh0jrBLsKz7oRCmJlbJHWe5varSf4DdwgeZ
+6MOLddijZEHYE6ADdJjBlAqiI5crs+Rdi2thDS0FYk1QkwCdrCy/ip+3GyuDoLLjkAlG3Qmw
+xQRGRlpvv4+fvr3e5P8f/lbkef7gh/vN3x1nX3L3kWf0nm0C9Q3+z7ZGpmmmXkMvXz58+vz5
+5du/GYOD+pi17xO139U+FbqHIkjn/dXLH29ff1oUwP7574f/SCSiATvl/7BOtrtJK1NfWP8B
+h/8fXz98/SgD/+fD79++fnj9/v3rt+8yqY8Pv336E5Vu3rMRezETnCW7TWit5xLexxv7ID9L
+/P1+Z28I82S78SN7mAAeWMlUog039p10KsLQs0+XRRRuLFUIQMswsEdreQ0DLynSILTE6oss
+fbixvvVWxcgD4oqaDkKnLtsGO1G19qkxPDg59MdRc6tTjL/UVKpVu0wsAa2LlSTZRurgfUkZ
+BV91fp1JJNkVfB9bgouCrQ0AwJvY+kyAt551LD3B3LwAVGzX+QRzMQ597Fv1LsHI2jlLcGuB
+j8JDLmqnHlfGW1nGLX/Qbt9Yadju5/Caf7exqmvGue/pr23kb5gzFAlH9giDS37PHo+3ILbr
+vb/t955dGECtegHU/s5rO4QBM0CTYR+oJ35Gz4IO+4L6M9NNd749O6j7JDWZYI1ntv++frmT
+tt2wCo6t0au69Y7v7fZYBzi0W1XBexaOfEvImWB+EOzDeG/NR8ljHDN97Cxi7d+Q1NZSM0Zt
+ffpNzij//Qq+Wx4+/Prpd6vaLm223Xihb02UmlAjn+Rjp7muOv/QQT58lWHkPAbmithsYcLa
+RcFZWJOhMwV90Z11D29/fJErJkkWZCXwr6lbbzWrR8Lr9frT9w+vckH98vr1j+8Pv75+/t1O
+b6nrXWiPoCoKkN/maRG230VIUQVOBTI1YFcRwp2/Kl/68tvrt5eH769f5ELgVDRr+6KGhyXW
+DjVNBQefi8ieIsEuv72kAupbs4lCrZkX0IhNYcemwNRbNYRsuqF9zapQa3wCamtDSnTjWzNl
+c/WCxJ7ommuwteUZQCOraIDaK6VCrUJIdMelG7G5SZRJQaLWvKZQq9qbK/ZBvoa15zqFsrnt
+GXQXRNaMJlFkP2dB2W/bsWXYsbUTM6s5oFumZHIhYhp5z5Zhz9bOfmd3tObqh7Hdr69iuw2s
+wFW/rzzPqh8F27IzwL69Pki4RU/HF7jn0+59u3dL+OqxaV/5klyZkojOC702Da2qqpum9nyW
+qqKqKa19o5ITdv5YFtbi1mVJWtmShYbtE4J30aa2Cxo9bhP76ANQa86W6CZPT7ZkHj1Gh8Q6
+fU5T+xy2j/NHq0eIKN2FFVom+flbTe2lxOz94SwFRLFdIcnjLrSHaXbb7+wZGlBbZ0qisbcb
+rynyGoZKorfMn1++/+pcbjIwJWTVKlgItZWzwYaXushacsNp66W8Le6uvSfhb7do3bRiGLtv
+4OztfTpkQRx78Fx8OvAg+3gUbY41PcmcXh7qJfmP729ff/v0/76CGo0SKKztvQo/WTReK8Tk
+YHccB8iaJ2ZjtDpaJLKIa6VrWj8j7D6Odw5S6TC4YirSEbMSBZqWENcH2O8A4baOr1Rc6OQC
+czdHOD90lOWp95GitskN5NER5iLP1nycuY2Tq4ZSRozEPXZnv//VbLrZiNhz1QCIt1tLe8/s
+A77jY46ph1YFiwvucI7iTDk6YubuGjqmUmB01V4cdwKeFzhqqL8ke2e3E0XgR47uWvR7P3R0
+yU5Ou64WGcrQ8021WNS3Kj/zZRVtHJWg+IP8mg1aHpi5xJxkvr+qs9vjt69f3mSU5c2osgL7
+/U1us1++fXz42/eXN7mJ+PT2+veHfxlBp2IoPbP+4MV7Q3ydwK2lCQ+PuvbenwxIFcIluPV9
+JugWCRJKr072dXMWUFgcZyLUXsG5j/oAj4of/s8HOR/L3d/bt0+gb+34vKwbyKOGeSJMgywj
+BSzw0FFlqeN4sws4cCmehH4Sf6Wu0yHY+LSyFGhaUFI59KFPMn1fyhYxHc2vIG296OyjA9O5
+oQJT7XZuZ49r58DuEapJuR7hWfUbe3FoV7qH7D3NQQP6zOCaC3/Y0/jT+Mx8q7ia0lVr5yrT
+H2j4xO7bOvqWA3dcc9GKkD2H9uJeyHWDhJPd2ip/dYi3Cc1a15darZcu1j/87a/0eNHKhXyw
+Ch1YT5Q0GDB9J6R6tN1Ahkopd5sxfaKhyrwhWddDb3cx2b0jpnuHEWnA+Y3XgYdTC94BzKKt
+he7trqS/gAwS9WKHFCxP2ekx3Fq9RcqWgUeNbAC68anusHopQ9/oaDBgQTjQYqYwWn54sjIe
+iSqxfmQDlgwa0rb6JZgVYRKTzR6ZTnOxsy/CWI7pINC1HLC9h86Dei7azZkmvZB51l+/vf36
+kMj906cPL1/+8fj12+vLl4d+HRv/SNUKkfVXZ8lktww8+p6u6SI/oCsUgD5tgEMq9zR0OixP
+WR+GNNEJjVjUtO+n4QC9Y12GpEfm4+QSR0HAYaN1TTnh103JJMwsyNv98sKpENlfn3j2tE3l
+IIv5+S7wBMoCL5//638r3z4Fy93cEr0Jl1dA8+tTI8GHr18+/3uSrf7RliVOFR2OrusMPPb0
+duwSpKj9MkBEns6WS+Y97cO/5FZfSQuWkBLuh+d3pC/Uh3NAuw1gewtrac0rjFQJGNTe0H6o
+QBpbg2QowsYzpL1VxKfS6tkSpIth0h+kVEfnNjnmt9uIiInFIHe/EenCSuQPrL6kHk2SQp2b
+7iJCMq4SkTY9fSd6zkut8a8Fa63LvLrS+VteR14Q+H83DdBYxzLz1OhZElOLziVccrvKu//6
+9fP3hze4zPrv189ff3/48vo/Ton2UlXPenYm5xS2coFK/PTt5fdfwVeQ/TrslIxJZ566aUCp
+YJzai2kSB7TKivZypS5gsq5CP7SGY3YoOFQQNGvl5DSMyFKvgafnpENWERQH6jxjVXGoyMsj
+6H5g7rESliWoNY7MqxI9GJloyub0PHb5kZTmqExW5RXYukSP9layueadVg33V3X7lS7z5HFs
+z89iFFVOSg7WBka5H8wYDfepLtBtIGB9TxK5dknFfqMMyeKnvBqVa0+Gg/pycRBPnEHpjmNF
+es4XkwiguTJdNz7IeY8/xoNY8B4oPUshbYtT0++ESvSEbcbroVWHVntTv8AiI3QDeq9AWrzo
+KsYugUz0nJWmKZ8FklXR3MZLneVddyEdo0rKwlbdVvXbyP1/YpbMzNgM2SVZTjucxpQ7lbYn
+9Z9U2clUuFuxkQ69CU6LRxZfk9c1k7YPf9N6KOnXdtY/+bv88eVfn37549sLvPzAdSYTGhOl
+4rd+5l9KZVqvv//++eXfD/mXXz59ef1RPllqfYTEZBuZKoYGgSpDzQKPeVfnpU7IsNZ1pxBm
+snVzueaJUfETIAf+KUmfx7QfbKN+cxitnxixsPyvskjxc8jTVcVkqik5fZ/xx888WO8si9PZ
+miYPfH+9nuicdX2syByplVmXtbTrUzKEdIBoE4bKcm3NRZerxECnlIm5FtlibC6fdBiUMsnh
+26ePv9DxOkWy1psJP2cVT2h/f1p8++OfP9mL/RoUqQwbeNG2LI4fBBiEUiRt+K8WaVI6KgSp
+Dat5YdKPXdFFY1abFCmGMePYNKt5IruRmjIZe0Ffn1XUdeOKWV4zwcDd6cChj3KHtGWa65KV
+GEjoml+dklOAxEWoIqUHS79qYXDZAH4aSD7g6AreC9JJtk3k7LHuNfS00b58ef1Meo8KOCaH
+fnz25FZx8La7hElKSmGgntwJKXGUORtAXMT43vOk5FJFbTTWfRhF+y0X9NDk47kARybBbp+5
+QvRX3/NvFzlNlGwqsq3HtOIYu940Tq+5ViYviywZH7Mw6n0kvy8hjnkxFPX4KMskRc/gkKCD
+KjPYc1KfxuOz3JQFm6wItknosd9YwKuaR/nPHtnXZQIU+3Dj/yBEHPspG0T2/VKKrvk72bw1
+27RzkNbb7d+nbJB3WTGWvfykKvfwDdMaZvJK1wsv4vmiPk3Tuaxpb7/LvA3benmSwVeV/aNM
+6Rz6m+3tB+Fkkc6ZH6ON6Nrq0/OGMtt7G7ZkpSQPXhg98W0K9GkT7dh+AUbf6zL2NvG59NlG
+AoNFUE41IHy2AEaQ7XYXsE1ghNl7PjsilE2AYazK5OhFu1seseVpyqLKhxGkRflnfZHdumHD
+dYXI1bPmpgc/d3u2WI3I4P9yWPRBFO/GKOzZsSf/m4B9w3S8XgffO3rhpub7kcMfCh/0OQPb
+JV213fl79muNILE1/05BmvrQjB0YzcpCNsTchZK+TsIQLmDvhcoOu839dMQ287fZD4Lk4Tlh
++6MRZBu+8waP7ZgoVPWjvCAItk/vDmZJMVawOE48KdoKMIV19Nh2MUMnyf3iNUeZCh8kLx6b
+cRPerkf/xAZQDhDKJ9k/O18MjrLoQMILd9dddvtBoE3Y+2XuCFT0HRjxHEW/2/2VIHzTmUHi
+/ZUNA7r5STpsgk3y2N4LEW2j5JFdJ/sMnhbIbn8TZ77D9i08j/CCuJcTAfs5U4hNWPV54g7R
+nnx+6uu7S/k8CQu78fY0nNhp5lqIoqmbAcbxHl8GLmFuhRTkpZgmxpsINnzty8muzWWfGtrW
+i6I02KEzMSIomdEtkymrrDIzSNZaj+3YDYGUcZntAJS+qfOxSOttQFeT9Cw7BfhlhaMJKqRM
+FvmlZD3stuhWFU5splVXQmDol8r2JZgXkFNk2cd7Pzi4yP2Wlghzl4EIIOB0o+i3W+ReUsWT
+8tlIX0mBjAybU9WAos/aAVzLnfLxEEfeNRyPRAiob6XjEA9OW9q+Djdbq8fBWcXYinhrS1wL
+RWUEUcCILOItnfUluMemCycwCDcUVB7juT7UnwvZ4P053YayWnwvIFH7RpyLQzI9xtgGd9n7
+cXd32fgea+ryKVYuzcd2Q4c0vCqst5FskTh0Mls7qTbzA4GtEMIeat4lyk69Ra+lKLtDJq8Q
+m9EDFzPaNiCJwmGd9RKCENRFOaWtw1E11qtz1sbRZnuHGt/tAp8etnKbwwkck/OBK8xMF4G4
+R1vlxJtoa1K0ZzRUAxU994RX3wkcQsNejTvGgRD9NbfBMjvYoF0NBdi2Kuiko0G4GiA75ZDs
+wq7pxgIcNZNLue9aXFlQjt28qxKyL68GYQFH8lVJl7YnUspDk55JzLToOrm1fsorEvZU+cEl
+tGclmGsy8xYE/AgCdR7iMNplNgEbyMAcCyaB9p4msTGH8kxUhZQWwqfeZrq8TdAB/UxIKSfi
+kgLpJ4zIYtWWPh2bsg9Zkr3c49hyxFEukuRYRpseGU9H0nurNKMTdZEJ0jLvn+sncJXVigtp
+2tOFdDZ97kpSzGiunR+Qabii4tC1IIBIrgldVPJBe6oBB2654DdkcnsH7i2Uw4inS9E9ClqD
+YG6szpTpI61q/e3lt9eHf/7xr3+9fnvI6LXE8TCmVSY3lEZZjgftsejZhIy/p/sldduEYmXm
+Abr8fWiaHpQ3GC85kO8Rnj6XZYe8GExE2rTPMo/EImQPOeWHsrCjdPl1bIshL8GxxHh47vEn
+iWfBZwcEmx0QfHayifLiVI95nRVJTb65P6/4//FgMPIfTYCvki9f3x6+v76hEDKbXgocdiDy
+FcjoFNR7fpQ7bzkgzEUDAl9PCXoOcYQ72RQc4+EEmKN8CCrDTfdzODgcJkKdyCF/YrvZry/f
+PmobsfToG9pKzYwowbYK6G/ZVscGVqBJ/MXNXbYCv4lVPQP/Tp8PeYcv+03U6q1Jh3+n2lUN
+DiPFStk2PclY9Bi5QKdHyOmQ099gd+TnjfnV1w5XQyM3PXBNjitL+Jly4IwLBrZo8BCGu46E
+gfDjwRUmBi5Wgu8dXXFNLMBKW4F2ygrm0y3QKy3VY2UzDAwkVy0pptRyL8OSz6Ivni45x504
+kBZ9Tie55niI0+vUBbK/XsOOCtSkXTlJ/4xWlAVyJJT0z/T3mFpBwHFU3kkZC91BzxztTc+O
+vERIflrDiK5sC2TVzgQnaUq6LrJrpX+PIRnHCjP3HscDXmX1bzmDwIQPNhnTo7BY8IJetXI5
+PcChPK7GOm/k5F/gMj8+d3iODZE4MAHMNymY1sC1abKm8THWyz0rruVe7kBzMukga6RqysRx
+0qSr6Ko+YVJQSKS0cVXS77L+IDK9iL6p+CXoVsXIPY2Cetjzd3RhaocE6ZFCUJ825FkuNLL6
+c+iYuHr6iixoAOi6JR0mTOnv6fq6y0+3rqCiQIVc7yhEpBfSkOh2ECamg5QQh34TkQ84NWV2
+LMxbcliSk5jM0HDnd0lwklUOR4ZNRSapg+wBJPaEKbPFJ1JNM0d716Frkkyc85wMYQE6uzvy
+/TufrD1g989GZg0pRp7TfH0BbSWxahqsMZXHr4KLhGR0FMGeHQl3dMVMwcucHPlF9yT3JEnv
+zME8PkeMnPdTB6U3nMRs3xRis4SwqMhN6XRF5mLQeRli5Kgdj2AuN+9k93j82eNTLvO8HZNj
+L0PBh8mRIfLFfDeEOx70CarSh5iUI2bncUiA04mCaJLJxJo2CbdcT5kD0CMnO4B9kLSESefD
+zzG7chWw8o5aXQMsLjmZUNPdNNsV5uvE9izXiFaYl47LacsP629OFeyVYpNsM8L60lxIdMkD
+6HJKf76am02g1GZtfQ7L7f9Uox9ePvzX50+//Pr28L8e5Nw7u/609DvhzlE77NOOodfcgCk3
+R88LNkFv3oooohJBHJ6O5lqh8P4aRt7TFaP6MGOwQXRUAmCfNcGmwtj1dAo2YZBsMDxbNMNo
+Uolwuz+eTEXBqcByXXg80g/RBzAYa8BiaBAZNb/IS466WnltNxKvdiv72GeB+YBlZeABdMgy
+7a3i4CzZe+ZDRMyYT2dWBvQ79uah0kopY3e30rT5upJdv4nNd7ErQ53HGxWRtVFkNi+iYuTI
+kVA7lorjtpKx2Mza9Bh5W77+kqQPHEnC+/LQY9tZUXuWaeMoYkshmZ150WOUD05tOjYj8fgc
++xu+vfpWbKPAfF5mfJYIdz7bJtiJs1G8q2yPXdly3CHb+h6fT5cOaV2z3ULunkbBpqc70jJP
+/WA2muPL2U4wJhP5s4ppTZgU8798//r59eHjdDA+WcOzZjutGC9/iAZpHZkwCBeXqhY/xx7P
+d81N/BwsyphHKVNLYeV4hCeGNGWGlJNHr3ctRZV0z/fDKs0/pFDOpzidEfXJY95oM5zrq4L7
+dbNMfM3J6DXwa1SqKCN2bmAQsrVMpReDSctLHwTosbL1wmCOJppLbUw66ufYCOpgA+Oy8nI5
+ExfGzChQKjJsX1TmagtQm1YWMOZlZoNFnu5Nqy2AZ1WS1yfYRlnpnG9Z3mJI5E/WMgF4l9yq
+wpQEAYSNqrJg3xyPoOyP2XfIjcKMTE4h0eMHoesI3iFgUGnNAmV/qgsEdynyaxmSqdlzx4Au
+98iqQMkAu9JMbiYCVG2TS3e578IewFXmcqM/HklKsrsfGpFbpwCYK+qe1CHZfSzQHMn+7qG7
+WEc6qvX6cpQb7iIjQ9VoqXeTH2gm9rWSkx6tOkgSLcZTl7qAnfqO6WkwQzlC2y0MMaYWW7TH
+rQDQS8f8is4mTM4Vw+p7QMkNsh2nai8bzx8vSUeyaNoyxLZ+TBQSJFU42KGTdL+jGg2qjanJ
+VwXa1Sf3Ew0Z0vxH9G1ypZAw7/11HXRFUo4XfxuZqphrLZDeJodAldTBsGE+qm1uYKQiueZ3
+yaVlPdyPSfmTzI/jPcH6ohhaDlP3BmTySy5x7Hs2FjBYSLFbgIFDj16mL5B6PpWWDZ0J08Tz
+TVlfYcovEuk8w/Mpr5lOpXASX2yC2Lcw5I58xcY6v8ldeEu5KAojctevR/ZwJGXLkq5MaG3J
+qdfCyuTZDqhjb5jYGy42AeXqnhCkIECenpuQTFpFnRWnhsPo92o0e8eHHfjABM5r4Yc7jwNJ
+Mx2rmI4lBc0uruDakkxPZ912WlXs65f/eIMnuL+8vsFby5ePH+Xu+tPnt58+fXn416dvv8HF
+l36jC9EmWcqwHjmlR0aIFAL8Ha15MB5exoPHoySFx6Y7+chIjmrRprQab7Bm07oKIjJC2nQ4
+k1WkK9q+yKiwUuVhYEH7LQNFJNy1SOKAjpgJ5GYRdYTaCNJ7rkMQkISfq6Me3arFztlP6rUY
+bYOENnKy3pHkmbBZVfE2zEh2AHe5Brh0QCo75FyslVM18LNPA7RJn54t59Izq50cdDn4WXx0
+0dQ3MGZFcaoS9kMnJwt08K8UPoPDHL32JayIkXECwjZ1PiRUyjB4OcPT5QWztItS1p6djRDK
+zpK7urDvR9KVbOJHy+/S0/QpsyhKKV+NopeNiqzqLd3aLleX29nKD7zTayrQYOUqOB+oq8bl
+O6CXydVWlvB9bljZX6YolSU3BsBvz8DIY4IK80m/C9PAtJpionIr24EXyEPRg6+0nzdgJcIM
+iFzzTgDVrUMwvFddPJXZp7Fz2Evi0xVE+UZOiuTJAS/G/WlSwg+C0sa34BTAhs/FMaG7xUOa
+YS2HOTBo9WxtuG0yFjwzcC97Bb7omZlrIqVVMnVDmW9WuWfUbu/M2vk2g6kwrHqSwHfQS4oN
+0n1SFZEfmoMjb/Bvjgy1ILZPRJpUDrJq+otN2e0gt38pnSauQyvF0ZyUv81Ub0uPpPs3qQVo
+if1AJ05g5rXqzpkDBJvPDWxmtlXgZsbHS130I7aFsJTM2t9pcEwGpcXqJkWbFfa3G0+9GSJ9
+P3Y92CwGDaYzDqMP1K3qW2BZ4U4KeVnBlBDOWJK6lyjQTMJ7X7NJtT8Fnnbr4LvSkOzeo3s7
+M4kh+kEK6h4ic9dJRVenlWSbryoeu0YdovRkAq3SczvHkz9SB6vavR/usR3d2KVVEIeRu1Dp
+86mmo0NG2obqQlyMt3MhemsWz9s9BLC6TJbL6aZW2o1WbganB9rkDj2dPGuAxH/89vr6/cPL
+59eHtL0s1hQnmzBr0MnFJRPl/8ZCqlCHWfBMt2PmBmBEwoxCIKonprZUWhfZ8oMjNeFIzTFk
+gcrdRSjSY0FPeuZY7k8a0is9vlqLHpxpB5rJrq3EyaaURnta2eNxJvXK/4PYd2iozwvdpFZz
+5yKdZDraJi3/6f+qhod/fn359pHrAJBYLuIwiPkCiFNfRpYEsLDulkvUAEo6eoZofBjXUWy9
+fpO5U1NTVquR5XtjB1WnHMjnYhv4nj0s373f7DYeP0E8Ft3jrWmYpdVk4JV8kiXhzhszKpGq
+krOfc1KlKmo311CBbyaXBxbOEKrRnIlr1p28nPHgRVajxPBObvbGLGHGmhbShbZaVOZXuuXT
+4kdbTAEr2Hi6UnnM8+qQMKLEHNcdFWzEjEfQa8/KZ3iddhrrpMqZ2UuHP2Q3JQpE3t1k52C7
+3f1goCR1y0tXGWf/gQzTP46HPr3SJVZzsW+6NsC4/GcbRntZPLmP2KtSxoutvARGhTlNJL99
+/vrLpw8Pv39+eZO/f/uOZwjtmjApiIw6wcNJKVI7uS7LOhfZN/fIrAI1eNkprIsJHEj1QVta
+RoFoR0ek1c9XVt/42TOYEQKGyr0UgHdnL4UkjoIcx0tflPTGSrPqXOBUXthPPg0/KPbJDxJZ
+9wlzMYECwBTMrYU6UL/XClWr1aQf9yuU1SD4DYki2BVn2tazsUB3xEbLFjRl0vbiovhlRnO2
+cg/mi/Yp9rZMBWk6AdrfumiRYhdlMyt6NssptVEcHB9vaQsuZCba7Q9ZuqleueR4j5IzP1OB
+K62uS5ipdgpBu/9KdXJQ6ecffEzhjCmpO6ViOpyQOyF6nqyaIqviDTPJyvABvUFTuKNJbZNH
+lOG3HgtrzRKIdQhgCw+OS2Jvf6dg086XCfAohcJ4elbKHOpOYcL9fjx1F0uPYq4XbbGBEJMZ
+B/tMYbbvwHzWRLG1tcSrskelQ86OLhJov6eXpKp9k65/+kFkR60bCfPHJaLNn4V1yaEPRQ55
+VzUdI+QcpPzAfHLZ3MqEq3H90AuerzAFqJubjTZZ1xRMSklXZ0nJlHaujL4K5PdG1vG4GSaR
+wpdwV/cUqirAUNCt8mN/MSjOb2y61y+v31++A/vd3s6I80buPpjxD9azGPQ9v2VwZmjl1xzv
+CLjAglK9pSNjkDwBorGbcSfYcN1S4pO9vU52M274qBDyExrQ87b0781gclFMc53QCMekT5ec
+iiJz0LphpAxC3s9M9F2R9mNyKMb0nLNryfJx94o7Z6Yuve7Uj1KwkYswM1uvgWadnqJ1fJoO
+pnOWgca2EYWtmIND53VyKPP51YEU3+T3/oXwy3PZvrOEYBwBCnIsYVPKH7iuIbu8T4p6vl/p
+84EP7ejQS8cY7/QM9cz/7qiBEK489N7qB/H1HZcUv8e8dTeVDpb0UoSawt4L55KjIITcn8o2
+4A6kFDtvBHm6yrtOZm9pApJito7oSduUcBX/6Kjuk1wN6sLNT19XO5JPk7puanf0tDke8/we
+X+X9j3IvUldLpneSfgeP9bsfpd2fHGn3xele7Lx8PEtpwB0gKbN78afbT2ef0Red7ikZ+LKo
+H2XnEjl+Rm9/pJK/pquwH0YZ+rwWzJGlaLnzOkDB/AE3EfSLJoToq08fvn1Vrr6/ff0CurYC
+HjI8yHCTP11LH3pNpgJXEZzgrile6tOxuKP9lc6OIkNX2/8b5dRnJp8//8+nL+B61ZIPyIdc
+6k3BqfxJIv4RwYvYlzryfhBgw92HKZiTUv8/yr6tuXEcWfOvOObpnIidbZEUL9qNeQAvktjm
+zQQpy/XC8FSpqx3jLte6XDHT++sXCd6QQELqfamyvg/EJQEkbomETJClsuHB/cWSYe/HV8pq
+TFmzQ0s0IQm7G3m2aGfFbM9OkpU9k5a5t6Q9keyxJ7ZZZ/ZKzM7Vb4E2z7QQbY/biQIYTolt
+vjXptGTWYk2nCOKv5mjZUh/DwS7jeM2WmB6OQeRqj5iujyyc+fneFRY9w62zu1A3EFtZMZMr
+eWGcyStlLBI/0C1p1KLZFrJruUJbg1P3lNY3ntEsv7v8R8zx828/Pt5/wovQtgVGJyYJoq7o
+9R24tLpG9is5vqlgJJqyXM0WcWCTslNeiTUF022KVLJMrtKnhGprcM/Q0sglVSYxFenEjfsU
+FumOx093/375+P0vSxri9YbusdhudKvdJVkmJpsiRLChmrQMQW/ySbdaQ3ZCA8NfbhR6bH2V
+N8fcMItXmIHpZkGILVLHuUI3Z070i4UWs2BGji4i0DkXk4AzrZsmblQulu12JZxF8Z67fXNg
+dArSBxr83aw3pSCfpuuWZcuhKMaiELGZF/DWjYr8k2FHDMSjmNf3MRGXIJhhlSejAt+CG5s4
+bUb9kkudyCN2EgW+86hMS9y0S1M4dOle5ajtLZaGnke1I5aynjpQmDnHC4nmNTO2TEysJfuS
+JYYKyYS6gdvKnK1McIW5kkdg7XkMdTN7lbkWa3Qt1h01EM3M9e/saYabjaWWQschDu9nZjgS
+O34LaUvuFJH9TBK0yE4RNTUQncxx9AsVkrjfOroF0oyTxbnfbvULcRPue8TuNeC65eyEB7rN
+54xvqZIBTgle4Lrx/4j7XkRpgXvfJ/MP0x6XypBtPhSnbkR+EXcDT4hhJmkSRmi65GGz2Xkn
+ov5nz7EWRZdwzy+onI0EkbORIGpjJIjqGwlCjnA3pqAqRBI+USMTQTf1kbRGZ8sApdqAoMu4
+dQOyiFtXv1Oy4JZyhFeKEVpUEnDnM9H0JsIao+dQ8y4gqI4i8R2Jh4VDlz8s9EspC0E3CkFE
+NoJaG4wEWb2+V5DFO7ubLdm+BBG6hCabbIQsnQVY14+v0cHVj0MrWxCNMGViZksUS+K28ETb
+kDhRmwL3KCFInw9EzdDLicnDDVmqjIcO1Y0E7lLtDozXqJN2m1HbiNONfuLIbnToyoAa+o4p
+o+6mKBRlGih7C6VD5cM08KgMpfxyzuA0kFhDF+V2t6VW7kWdHCt2YO2gGxwDW8KVDSJ/42o7
+IsRnX4dPDGWYBIznh7aEjFt0C+NTUwTJBMQUSxLIv4jGUAYAI2OLjZzEzgzdiBaWp8TMa2St
+8qNMC8byUgQYLzjB8Ah+Zywn9GoYuKfQMWIvvElKJ6CmwkCE+u1chaAlIMkdoSUm4upXdO8D
+MqLsbSbCHiWQtii9zYZo4pKg5D0R1rQkaU1LSJjoADNjj1Sytlh9Z+PSsfqO+x8rYU1NkmRi
+YOpB6dP2PnKI3tMWYo5KtCiBe1tKE7SdGxKdXcDUdFrAOyozYPRIpQo4ZeMicco4R1pPkjh6
+JxnhdIYETqsC4MCqi+Z83yHFAbilhjo/oEZCwMmqsGwFWw2CwC7WEo9PysoPqG4kcUKtStyS
+bkDK1g+oCbRtK3gy2LXKLiKG4xGnu8vEWeovpGzmJWz9gm65Ar7yhaASZudJcQr4yhdXYuTw
+HkCd3PfUMbn1ogDPxRyXOp+Du8DkJtzM0HJf2OX8yggg39Zg4l84VSe2NKcQxtUKyVmMu3jp
+kl0fCJ+aQwMRUJs2E0G3xJmki87LrU9NfXjHyHk54KS5Ysd8l+izYNy/CwPKIBION8hTO8Zd
+n1pCSyKwEKHhoWQmqC4tCH9DjQNAhA5RcEnoriomIthSy85OrG22lM7v9mwXhTaCmud0xclz
+NyxPqG0ahaQrWQ1ANpE1ACWRmfQc3fsBpg3nLgZ9I3syyPUMUvveCnkrAcvMbQwgFlfUXtP0
+dZqcHfKck3vMdUPqGJKPGyIWhtpMtB5OWc+k+pQ5HrW8lcSWSFwS1H6/mNHvPGqbBKb6ZXwk
+JCs/oRKRRGQn6OHgsXBcan30WG421CbEY+m4/mbITsQ491ia98wn3KVx37HihM6xmamCA0lK
+QQp8S8cf+ZZ4fKq3S5yob5uRMpzAU/MAwKlVqsSJwYe6vbvglnio7RVpEWDJJ7XfADilwSVO
+qCvAqYmXwCNq8T/itOKYOFJnSNsFOl+kTQN1Q3rGqY4NOLUBBjg1CZY4Le8dNWYCTm2TSNyS
+z5BuF7vIUl5qa1XilnioXQyJW/K5s6RLGYZL3JIf6r6GxOl2vaNWio/lbkPteABOl2sXUrM/
+m9WLxKnychZF1ITlUyG0PNVSinIb+Zb9qZBad0mCWjDJjSRqZVQmjhdSraIs3MCh1Je8ZEjt
+2gFOJS0vJdpwcLuf6o4sJppcQlasjzxqcQOET/XPivIStxC6j6eVIMo+EkTiXcMCsdxnRGTj
+vS9R+WCj1RKHdGOA0w2+PV/nu5Vf/a8iiwv03bgKsl04VGhMXDdHG98fXzHFycjoMStPTfvJ
+o3r/RPwYYmmM8iRdE1WH7ojYlimzkd74dvWONBqmfr98fnl+lQkbhicQnm3hTWMch2iRvXxq
+WIdbdc24QMN+r6ENeld8gfJWA7nqYEIiPfg+0qSRFffqRdIR6+rGSDfOD3FWGXByhOeTdSwX
+v3SwbjnTM5nU/YFpmGhnrCi0r5u2TvP77Ekrku7kSmKN66iKU2Ki5F0OTp3jDerFknzSXM0A
+KJrCoa7gWeoVXzFDDFnJTaxglY5k6EbpiNUa8EmUE0P7zg02elMs47zV2+e+1WI/FHWb13pL
+ONbY0dr42yjAoa4Pop8eWYk84AJ1yk+sUF3pyPBdEHlaQFEWorXfP2lNuE/gpcwEg4+sQFdm
+xoSzR/m2t5b0U6v5qAU0T1iqJYReVQHgVxa3WgvqHvPqqNfdfVbxXCgMPY0ika7RNDBLdaCq
+T1pFQ4lN/TCjg+pZEhHiR6NIZcHV6gOw7cu4yBqWugZ1EFNNA3w8ZvAMnd4K5HNCpWhDmY4X
+8A6MDj7tC8a1MrXZ2HW0sDnYg9T7ToPhblCrd4GyL7qcaElVl+tAq3puA6hucWsHfcIqeEtT
+9A6lohTQkEKTVUIGVaejHSueKk1xN0L9ofeqFHBQHyVUceLlKpW2xoedPqpMomvbRigk+dp3
+on9RsCeu+2NXQFMa4OL9rFeyiFvvbm2dJEwrkhgGjPowbvNKMCuJkGhkkQ+P67mT72zCZRUN
+7jJWGpBo8hncJNWIvmoKXW22pa7w2iyrGFdHoAUycwUXgH+tn3C8Kmp8IoYsTWcIfcgzXbnA
+u86HUsfanne6B24VNVLrYfozNOpjaRJ295+yVsvHIzMGssc8L2tdu55z0W0wBJFhGcyIkaNP
+TylMOiu9WVQcns7pYxIfXwGbfmkzoKLRqrQUswVXvhm+XuMhZnVyutfzmJ5jjj4Ojf6pAFOI
+8XbtkpIeoUwldxM6FbB5ltpMEdKKwWCdSr9HS/R6TPpHk3+GMdVvH5fXu5wftbTXyMgAo1V+
+md7x/UhwPdfgBU+Qk3xWk3jqm8VHKJFpkGB9THL83CiWsHHlVzqy1O7JSR+T8KIEGiakV8ui
+ybHTwvH7qtJeHpGeN1sYiRkfjgmuZxwM3cOW31WVGEbg6jA415bPKCwLmPLlx+fL6+vzt8vb
+zx+ydUwu13BTm/yvwtNZPOdacfciWnivTKpjpNbkp5aHC6R0u4MByHl3n3SFkQ6QKZgNQV2c
+J4dNqEvOofaqU41J+lyK/yCUkADMOmNihSSWL2LMBQd28Ji3q9Jjfa598u3HBzwG8vH+9vpK
+vf4lqzEIz5uNUVvDGdoUjabxAdm3LoRRqTMqhF5l6CxrZQ2/L2vqQrgxgZfqww4resrinsCx
+HwKAM4DjNimN6EkwIyUh0RaeRBaVO3QdwXYdNGYuVoLUt4awJLrnBZ36UDVJGaqHJYiF1Uxl
+4UR7IUUguY7KBTDgnZKg1CnsAmbnp6rmBFGeMJhUHB67laQlXbpB1OfedTbHxqyInDeOE5xp
+wgtck9iL3gdXAA1CTN28reuYRE02gfqKgGurgFfGS1z0lB5iiwaO+84W1qychZK3uCzcdB3N
+whotcs2qrr5rqinUtqYw13pt1Hp9vdZ7Uu49ePg2UF5EDlF1CyzaQ01RiZbZNmJB4O9CM6pJ
+icHfR3N8k2nEieqXckYN8QEIXiE0/xhGIqo2Hx/7u0ten3/8MHfV5OiQaOKTj+BkWst8TLVQ
+Xbls3FVinvq/7qRsulqsTLO7L5fvYvLx4w4cniY8v/vnz4+7uLiHEXrg6d0fz3/OblGfX3+8
+3f3zcvftcvly+fK/735cLiim4+X1u7zj98fb++Xu5dtvbzj3UzitikZQdziiUoZ3/AmQg2VT
+WuJjHduzmCb3YqmCZvEqmfMUHY+qnPibdTTF07RVPeLrnHqSpXK/9mXDj7UlVlawPmU0V1eZ
+ti2gsvfgJZOmpm0/oWNYYpGQaKNDHwfIL9foSh012fyP568v375Oj79prbVMk0gXpNz5QJUp
+0LzRPKaN2InSDSsuX9Th/4gIshJrJNHrHUwda20qB8F71Sv0iBFNMUkrbplkA2PELGGPgIYD
+Sw8ZFdgWyaAPLyOal9rIUXa99w/lfegZk/GqL0ObIcY8Ea9HLyHSXsxxW/QM3sqZ4iqlCkyl
+w2CcnCSuZgj+uZ4hOZ1XMiRbYzN5Rbw7vP683BXPf6pvuCyfdeKfYKMPyWOMvOEE3J99ow3L
+f1Y/o+MKRmrwkgnl9+WypizDiiWU6Kzqxr5M8DHxTESuxXSxSeKq2GSIq2KTIW6IbVw/mEvZ
+5fu61JcFEqamBGOemS5UCcNxBjxVQFCry0yCBP9V8gSN4PTOI8EHQ8tLWHSeqDQL4hJydw25
+S7kdnr98vXz8kv58fv37OzzFCNV+9375Pz9f4DUhaAxjkOXy+4ccOy/fnv/5evky3dvGCYlV
+bd4cs5YV9ip0bV1xjEGffY1fmB1U4sajeAsDrq/uha7mPINtx71Zh/PD4pDnOs0TTUUd8yZP
+M0ajg65zV4bQgTNllG1hSn2ZvTCGklwY47UXxGp+WOa1RhhsSJBemcA16bGkqKqXb0RRZT1a
++/QccuzWRlgipNG9oR3K1kdOJ3vOkT2nnADIV+0ozHwJVeFIeU4c1WUniuVi8R7byPbec1Tr
+e4XTT2/VbB7RZUqFeTzmXXbMjBncyMJVHjijzorMHObnuBuxrDzT1DSpKiOSzsom0+e3I7Pv
+Ung1SF+6jOQpR1u5CpM36uM1KkGHz0QjspZrJo3JxpzHyHHVq3WY8j1aJAcxBbVUUt480njf
+kziMGA2r4CmWazzNFZwu1X0d56J5JrRMyqQbelupSzjyoZmah5ZeNXKODw7lrVUBYaKt5ftz
+b/2uYqfSIoCmcL2NR1J1lweRTzfZh4T1dMU+CD0Du8t0d2+SJjrrq52JQ96PNUKIJU31nbRF
+h2Rty8AXW4EMFtQgT2UsHwJESnQiu9yiOpfeG2ctfpRXVRyPFsnWTWfsys1UWeWVPtNXPkss
+353h+EbMrOmM5PwYGxOnWQC8d4yF61RhHd2M+yYNo/0m9OjPzrQqmScUyxCDt+/JsSYr80DL
+g4BcTbuztO/MNnfiuuosskPdYeMDCevj8KyUk6cwCfT12BMceWttOE+1834ApYbGNi0ys2B8
+lIqxt1AfUpDoUO7zYc94lxzhzTOtQDkX/50OmiYrtLyLSViVZKc8blmnjwF5/chaMfPSYOyH
+VMr4yLPxQahhn5+7XltlT8917TVl/CTC6fvQn6Qkzlodwta4+N/1nbO+A8bzBP7wfF31zMw2
+UK2BpQjAzaKQZtYSRRGirDkyEILNfEk1eWUsTFinqyc4Gyc2TJIzmJthrM/YociMKM497P+U
+atNvfv/zx8vn59dxyUm3/eaoZHpe+5hMVTdjKkmWK7vqrPQ8/zw/cAchDE5Eg3GIBk7uhhM6
+1evY8VTjkAs0TkjjJ/P16HmG6W20aVV5Mo/ORudwqFxSoEWTm4i0acIj2uSfYYwAnRdbJI2K
+TGyuTLNnYhE0MeQySP1K9JxCP07EPE2C7AdpWOkS7LzTVvXlEPf7PTxgvYYz59xri7u8v3z/
+/fIuJLEe/eEGRx4tzIcixurr0JrYvEeuoWh/3PxopbUuD09NhPqG1cmMATBPnwFUxPagRMXn
+8lhBiwMyrqmpOE3MxFiZ+r4XGLgYtV03dEkQP0u1EJE2fh7qe02jZAd3Q7fM0RecVgZ5TkXU
+FZNabDgZ583yufNpIYq7DdlcsNaN5YOiHFkIyiZjnjjsxTRjKLTE5+aqoxmMsDqoPeg5RUp8
+vx/qWB+G9kNl5igzoeZYG5MvETAzS9PH3AzYVmJc18FSvjNCHWLsDRWwH3qWOBQGcxeWPBGU
+a2CnxMgDeqx+xI66vc2ePhfaD50uqPFPPfMzStbKQhpNY2HMalsoo/YWxqhElSGraQlA1Nb6
+sV7lC0M1kYW01/USZC+6waCvRRTWKlWqbWgk2UhwGNdKmm1EIY3GosaqtzeFI1uUwncJmhZN
+m5/f3y+f3/74/vbj8uXu89u3316+/nx/Jgx7sJndjAzHqjHngZr+mLQoFqkCkqLMOt3IoTtS
+zQhgowUdzFY8pmcogb5KYH1ox82MKBylhFaW3HGzN9tJIuMTzHp5qH4OrYieUFnaQjq+XUsM
+IzC1vc+ZDgoFMpT61Gk0dyZBSiAzlRiTGrOlH8CuafTNbaBjme4tmwRTGEpMh+Exi9FjxHIm
+xB5X2aHh+HbHWGbmT43qzEv+FN1MPfBeMHVvfATbzgkd56jDcDlM3cVWYoBJR25EvofJnHr7
+d/qi4WKWpV5vHvFj6nHuua6RBIejNwe5mh0J+dhWU653i0BK3Z/fL39P7sqfrx8v318v/7m8
+/5JelF93/N8vH59/N01Fp1L2Yk2UezLrvufqdfD/G7ueLfb6cXn/9vxxuSvh1MdY842ZSJuB
+FR22/xiZ6pTDk+UrS+XOkghqZWJlMPDHHL3zWJZKo2keW549DBkF8jQKo9CEtd168ekQw6tj
+BDRbUy5n8Fw+ys7UBR0ExkockKR9auSrxOPhaZn8wtNf4OvbNo3wubaaA4inyPZogQaRI9jV
+5xzZfa58o38mtGp9xHJUQhfdvqQIeLuiZVzdJMKknLlfJQk5rSGQPRiiMvjLwqWPScmtLG9Y
+q+7UriRcH6qSjKRGWy+KkjnBp24rmdYnMj7tsG0luEfXwJmdPBvhkhFh6z2UAl7QrVQsBqd7
+5AB75fbwv7plulJlXsQZ68lazJu21ko0PzFJofAWsFGxCqVOgiRVn42ONxVTQ0cv7lpngB19
+UkjoeFX25nwvJuRaUzYMD2UEjQ4YVSpq4Pg46o28fTDJ0fx8GbFnGCwtzLF6zPTYfxOys+PX
+WGRpSpE03l+YYSMCU7+IGJ845MZsqrnynK/Bm/7tpVaMQ0drVqccHEcZykj1HTL+pjSTQOOi
+z7RnkCZGN9qY4GPuhbsoOSEbuIm798xUjTqXqlN19ySL0YuhWIuwNxRTD2ILxLCmhZwN/kxV
+PRFoS1Pmoq/OWtjkwRggjlxrcV3Nj3nMzISmd+21HtfdU23snFU1PQqgTeoVZ2WgusKRXfSx
+oEIu9w2w1spK3uVohJ4QfFRTXv54e/+Tf7x8/pc5aVk+6St5GNdmvC/VTiG6Tm3MBPiCGCnc
+HsjnFKVCUVcCC/OrtBesBuRIZ2FbtM+3wmRr0VnUZOBKCr5OKK9qJAXjJDZoVz0VRq5HkrpQ
+lamk4xaOWio4jhIaLzmy6iDnA1JwIoRZJfIz84kGCbNKzMr9HdPhNlffbxuxR3ej+s0Yc5OU
+AXI+uaK+jmrezkes3WycraM6VJR4Vji+u/GQ46Hx2kvftjmXx6J6povS8z09vARdCtSLIkDk
+T34Bd64uNVj+uPr30kz/rAdN6lg0lOGhjzOaaVX7C0kIMe3MPE+odpNKUgRUNN5uqwsVQN8o
+YeNvjFwL0D+fjatfC+c6FGhIVICBmV7kb8zPxSJCby8CRM51VzH4en4nlJIEUIGnfwDOpZwz
+ONXrer1r6o6nJAhutI1YpG9tvYApSxx3yzeqz54xJ4+lhrTZoS/wsezYf1I32hiC6zx/p4uY
+pSB4PbOG1xiJVlyPssq6c6ze4hvj5Hmif9slLPA3oY4Wib9zjNZTsnMYBoYIBYw9AS190f+P
+Btada/T8Mqv2rhOrUxiJ59xz9oXn7PRsTIRr5I8nbihad1x0y27BqjjHV5FeX77967+c/5Yr
+6fYQS15MFH9++wLrevOC691/rfeI/1tTvTGcR+tVL+Z7idG1hIreGGqzLM5tptdRzzO90XC4
+fPnU6Wqmy4WIe0tXBu1GVEiAHP6O0TQ8cDZGx8sbQ+OyBF5V8o36Kw7L1u7+9fnH73fP377c
+dW/vn3+/Mmwx1jnuzkiCC1Xt6/r/vkvdYEdp8I1DN1GjO7Xd1t/o/bbtIt/RQX4ovdGN4dJ+
+uveXr1/NIkwXNXUtM9/f7PLSqMqZq8Uwj+50IDbN+b2FKrvUwhzFGraLkfEi4gkvCohPmt7C
+sKTLT3n3ZKEJ1bwUZLqPu95Kffn+AQbOP+4+Rpmufa+6fPz2Anta037n3X+B6D+e379ePvSO
+t4i4ZRXPs8paJlYiX/uIbBjylYI4oT/Re8/ah+AnSe9yi7Tw8QPOryrEcdMpj/MCyZY5zpOY
+C7K8AEdQ+Hhf6Kfnf/38DhL6AUblP75fLp9/V570ajKGPQWPwLQzjR5Em5mnqjuKvFQdepzU
+YNFzvpiVT+Fa2T5tutbGxhW3UWmWdMX9FRa/kqyzIr9/WMgr0d5nT/aCFlc+xM5aNK65r3sr
+252b1l4QOLX/B3bBQLWA+etc/FuJBar6SP2KycEFHqCwk2OjvPKxetilkGINlmYl/NWwQ666
+K1ECsTSd+uwNmjh3VsKV3TFhdkbf/FX45HyItySTt3jFXIArXkKYgvBvSblOcGQKdRqfDm9O
+1hB5U+exnRkSWv4jaS+5wsurj2Qg3jY2vKNjRZMVjaA/abuWrlUgxBIZa3OdF9Ge1CTbLgHz
+FAxoq3KAjklX8ycanHxN/ONv7x+fN39TA3CwxFP3oBTQ/pVWCVMWh/sefE/gHXzgqtPYp6SC
+F8DdyzcxCP72jK5LQsC86vaQ+l4rhsTx1vECo0FMRYc+z4as7AtMp+1pzuLicgXyZMzh5sDm
+7gNiKILFsf8pU28/rkxWf9pR+JmMyXDWsHzAvVD1LznjKXc8da2D8SERba9XXfapvDpxxvjw
+mHYkF4REHo5PZeQHROn1pfKMixltgPzoKkS0o4ojCdVbJiJ2dBp4BacQYjqtuoGfmfY+2hAx
+tdxPPKrcOS8cl/piJKjqmhgi8bPAifI1yR67hEbEhpK6ZDwrYyUigii3ThdRFSVxupnEabjx
+XUIs8YPn3puw4f98yRUrSsaJD+AkHr3jg5idQ8QlmGizUX1ZL9Wb+B1ZdiACh+i83PO93YaZ
+xL7Er90tMYnOTmVK4H5EZUmEpxp7Vnobl2jS7UngVMsVuEe0wvYUoXc2l4L5JQGmQpFEy3y9
+ya+rT2gZO0tL2lkUzsam2AgZAL4l4pe4RRHuaFUT7BxKC+zQy7JrnWzpugLtsLUqOaJkorO5
+DtWly6QJd1qRicePoQpgP+LmSJZyz6Wqf8SH4yPaZcHZs7WyXUK2J2BsEbbnYHSaj69f38i6
+41IqWuC+Q9QC4D7dKoLIH/aszAt6FAzk3udy2oqYHXlRVQkSupF/M8z2L4SJcBgqFrIi3e2G
+6lPaXi/CqT4lcGpY4N29E3aMatzbqKPqB3CPGqYF7hOqtORl4FJFix+2EdV52sZPqO4JLZDo
+5ePeOY37RPhxu5XAsT2F0ldgDCZE9+mpelDv28/49CquSVTdOVu2eN++/T1p+utdhPFyhzwF
+r7Wp2SUsRH7Qj+mWkYvDrdwSnK+0xBggbTAs8HBqO6I8+OR3HTqJoFmz8yihn9qtQ+FgGNSK
+wlMzSOA4K4mmZliPLsl0kU9FxfsqIKSonbMvsjgRmWlLljJ0kru0A93aaKmJTvxFzhZ4RzUo
+fFC5DiUOtliaifGdWWqqrp0IKgQ+llgSLiMyBc24acnRmRC9AIcT0ct5dSLmfbq5z4J3Lno9
+YcUDj1wBdGFATc7P0EQIlRN6lMYR1UENrgldIW2XOujYZ+3Gk5Hc4taeX779eHu/3vkVF6iw
+KU+09rpI97l6YJ/CM62zC0oD09f4CnNCFhVghpTqvo8Yf6oSeDcgq6STSDjqr7LCsNQUH4sg
+h1wVM2Dg7b+XjgzkdziHyAkqWDK04ADjgLab2DnXTI7Amo3HbGiZahQN0UEXUNc0gHHmOGcd
+w/0/fSRSGVUXtk0BXZoh5JjzHIfJywM4i9LAqhMyywUWbA20bgaGQt97mklMsteSnS3z4GFh
+ZI0142fdSqsZGs04sBk6jIhugozmzhxno4qb/SSnFWzAxTkCCk1osjdZIPzAnkRLHLJpU+3b
+0cBBqy2pmtzNwJoYBx8JZ6OJWHQtLeBsxCYzkBC4JlKpUnAU4+W3aYIwpJrAu/vhyA0oeTAg
+MDkWBUG4NCw/QgMayoN6n34lUHuGvGqGgBNqBkOmRWBLp0cGAIRSnULzXquWvdbA5vuTOJRs
+LNkQM/WO6oQq3yas1TKrXMfUmU96W8j1IoCmQZOWTrZiOWUTmgRtC0OXLMbPF62YvL5cvn1Q
+WlFPB2+ZrkpxVlZzlHG/N70Cy0jhfq4imkeJKs1x/BilIX6LEfSUDVXd5fsngzMHAEB5Vuwh
+u9xgjhnydDWHh91caati+ULuNsvt4eUESCvpIr7+bLgaAOcC2Dt+ugVtbtgMTDjWuIwnea55
+1++c4B7ZVyWpq2R98lsCR6uqlZn8uTg12WhwW8v68TE82r/BpJmju0ojG4Pb3Zn729/WZeJU
+5CEuxEC4J1eSapCKWEcqvGbFpxWrR9dUwUpYtWoFoJmm0shyGYi0zEqSYOpqBwCetUmNXAVC
+vElO3O8SBNj9aEHbHt1BFFC5D9Q3lmR+9kq5Tnu1YPALphwP+1QDqzoX7ajXUMgb1pILXCKF
+scBCQZxNWEcM97ASZmXMLCHFqqE4Zyk7H0Ajtxm6H4pDsjI9H+LseiAxR9oX2Vn8RQUr0VGL
+ENcQP8n3oUpWiUaq6EOYvolZZ35CpiP6E07jbykfdMA14WVW9VRgOgLthuNEndKGmeHRCe8E
+xqwoalVhTHheNerB9py3kihIKc3oS3h8IhuMqfUUSE4kRffL0snlgRICZ1b8gptIJjKgO7sL
+qtklSxybWuX75KQapcNBL050gbQ0Gj1z0lNGXnfqNfgRbNHR+Am7sxuDaDUrMZyehMAXr46d
+OC7kCBJ5k4P09FDA2jomT/uf399+vP32cXf88/vl/e+nu68/Lz8+qIcPbgWd0zy02RNyMzIB
+Q6baLYoxKVPvJY+/9YF2QUfDIjmI5p+y4T7+h7vZRleCleyshtxoQcucJ2avnMi4Vo/6JxDP
+SybQ8Nw14ZyfhrRqDDznzJpqkxToXVIFVvW3CgckrJ6yrHDkGNIfYTKSSH1ue4FLj8oKvAIu
+hJnX7mYDJbQEaBLXC67zgUfyQlkgz8EqbBYqZQmJcicoTfEKfBORqcovKJTKCwS24MGWyk7n
+RhsiNwIm2oCETcFL2KfhkIRVC/gZLsWakZlNeF/4RIthMAjnteMOZvsALs/beiDElsuLle7m
+PjGoJDjD5mttEGWTBFRzSx8cNzbgSjBi0ec6vlkLE2cmIYmSSHsmnMDUBIIrWNwkZKsRnYSZ
+nwg0ZWQHLKnUBdxTAoG7JA+egXOf1AS5VdVEru/j6cMiW/HPI+uSY1qbaliyDCJ20NGpSftE
+V1BpooWodEDV+kIHZ7MVr7R7PWv4rWuD9hz3Ku0TnVahz2TWCpB1gKwhMBeePet3QkFT0pDc
+ziGUxcpR6cGmeO6ge4U6R0pg5szWt3JUPicusMY5pERLR0MK2VCVIeUqL4aUa3zuWgc0IImh
+NIFX+RJrzsfxhEoy7fA1qBl+quTWkLMh2s5BzFKODTFPEou6s5nxPGl0hxlLth7imrWpS2Xh
+15YW0j1YJPfYt8csBfmikxzd7JyNSU21OTKl/aOS+qrMtlR5Snjv4cGAhd4OfNccGCVOCB9w
+ZOum4CGNj+MCJctKamSqxYwMNQy0XeoTnZEHhLovkZuVNWqxzhJjDzXCJLl9LipkLqc/6No0
+auEEUclmNoSiy9pZ6NNbCz9Kj+bketJkHno2vhHKHhqKl5udlkKm3Y6aFFfyq4DS9AJPe7Pi
+Rxj8e1oonh9Ks/WeyvuI6vRidDY7FQzZ9DhOTELux//RTgKhWa9pVbrarbVmaXoU3NZ9h9bF
+E6XtpKrokJ0ZdkOC2ClSdYeBd5pdetPmvHTxNd+2E+ucnduvVwcEAkLTfk/uSYYkKRsb193n
+Vu4xwxQkmmFEDKwxV6AodFxlX6AV67Eog4wu+5rwW8w65ItCpHmMmBWqFVYnXVZXow8+vMHQ
+BYFoW3+g34H4PZoE5/Xdj4/pWZflxHV87vDz58vr5f3tj8sHOodlaS5Uh6sa0U2QPFxfnz7E
+349xfnt+ffsKryN8efn68vH8ClcfRKJ6CiFat4rfo8/FNe5r8agpzfQ/X/7+5eX98hm22S1p
+dqGHE5UA9moxg7mbENm5ldj4DsTz9+fPIti3z5e/IIdwG6gJ3f54PD+RqYv/Rpr/+e3j98uP
+FxT1LlIn0vL3Vk3KGsf4stTl499v7/+SJf/z/17e/8dd/sf3yxeZsYQsir/zPDX+vxjD1BQ/
+RNMUX17ev/55JxsUNNg8URPIwkhVrBMwVZUG8unVlaWp2uIf7fgvP95e4c7pzfpyueM6qKXe
++nZ5d5ToiHO8+3jgZag/zpSV57OhEceXapTen6dZPRzle8g0Oj6PYuE4K5mfbi1sWyf38IqG
+TosYl3yM9wT/Z3n2fwl+CX+J7srLl5fnO/7zn+YzUuvXeDt0hsMJX4R2PV78/WSwlapHMiMD
+J59GEeeykV9odlAKOCRZ2iInzNJD8kl1CzYG/1S3rCLBIU3UhYnKfGq9YBNYyLj/ZIvPsXxS
+lIV6AGhQre1DduJB9oTsaU6xQEPH2aA3KVaYDFqrnoUAj3vpubBh2HjmBB69oyhcbGnZty/v
+by9f1BPnY4nPVucgeheRK6U17qLLhkNaivXteR0l93mbwfsDhhfA/WPXPcH289DVHby2IJ8l
+C7Ymn4hUJtpbXD0f+LBvDgxOPJXeXOX8iYN7LjQDKkV7TYr74VxUZ/jj8ZOabaEUOvWW4vh7
+YIfScYPt/aCeAU5cnAaBt1WvvkzE8SyU/yauaCI0UpW471lwIryYq+4c1cxWwT11DYRwn8a3
+lvDqOzAKvo1seGDgTZKK4cEUUMtE2zOzw4N04zIzeoE7jkvgWSOmbUQ8R9EXzNxwnjputCNx
+dEEA4XQ8nkdkB3CfwLsw9PyWxKPdycDFfP8JWRbMeMEjd2NKs0+cwDGTFTC6fjDDTSqCh0Q8
+j/Lqdq0+1lvKAzFwTFpllbreKI2TN4lInaZhaV66GoQmEfc8REaq8wGY7qpWhaXdVVKjsWQO
+AMqgVV8umwmhhOQNU5NB3k5nUPMHsMDqVu8K1k2MHkCZmQY/tDHD4NjeAM3nKpYytbnQ4yl+
+GmAmsY+BGUUyXnLzSMiFk3JGE/UZxN4pF1RdJi711CZHRdRgRClbBzZ/mFyDDScxOVD2oOTP
+IUFmA7xKTU9i4yBqwChaMK1QDW7yrTpIn/MCrDGheewVMUi3b/INAjUPxxKcR0H5OH7yXZT2
+PDFyz7Oti0Ktd/hQGvOgPvNQqNY7j3tlAmpa3c6IKECjru2PorFniyWGuiegXxCYANw0ZrBt
+Sn4wYdQMZlCUpKtNGIyDkLhmQnYlZPc2M6eYyIo81t6bJZnslJH7/oXCd39nWPMDLGHRXJsU
++jGyPFEo3aytzIqCVfWZsLMZ3dQMx7prCuRUdcTVjlUXTYKqQwLn2lFHwhVDQY/slMGcxURE
+XWQNUmrrVIec/iz3WMbl8+vb4s9O+gBibSkWWb9d3i+wcvwilqhfVZPBPEHbdiI+MY/ES7S/
+GKUax5Gnqk+X8n6zjbRzqTn75p1bTIp5iE9y2pVchTnmAfKtpVA8KXML0ViI3EczJ43yrZR2
+Yq0wWysTbkgmLp0ooqkkTbJwQ0sPOHQzWuU4nIUMSUOy8s5PkZ25RSjAc0Zzh6zMK5rSvf6q
+hXfLhqPjPAF2j0Ww2dIFB0Ny8f8hq/A3D3WrDjwAFdzZuBETvb1I8wMZm3a/Q2GKOjlW7GBZ
+e+j3kFVKHZoVvD5Xli9OCV1XZdm4+uxJbR1p6ERnur3v87OYZWin7CA96TifY7B+FLWKz65n
+NCTRnY6yigk1HOcdHx5bIW4BVm50RBvkkGOW38MzdFp1x50zJEkP9UQTqfoSlCTEtECsk8X6
+tzEJNIGYwCFA18lUdDgwdIY0UdjtsSJazYHxHD55OlQ9N/Fj65pgxc18Ywd3M8hbjLWiL8VZ
+2z5ZeugxF6opSE7ehu4+kt9ZKeRLE3NBYI0xsOgv0osuVtjISb40OZVXY5TZYtfHZGCFsOYt
+ruGVMWU0PyfaeAoVCht9JYFVBNYQ2MM8COffvl6+vXy+428J8QBgXoEttMjAwfRnp3L6fTyd
+c/3YTgZXPgyvcJGFOzvoqBlTkUdQneiwo4zXTVxKLkR1mS9id/nkanCKkp7ryD3O7vIvSGCV
+t6pJs+WdcoLs3HBDD+cjJfQocqtjBsjLw40QsF16I8gx398IkXXHGyHitLkRQownN0IcvKsh
+HMt8TlK3MiBC3JCVCPFrc7ghLRGo3B+SPT2ozyGu1poIcKtOIEhWXQkShIFl5JbUOHZf/xy8
+990IcUiyGyGulVQGuCpzGeIkN2FupbO/FU2ZN/mG/ZVA8V8I5PyVmJy/EpP7V2Jyr8YU0qPm
+SN2oAhHgRhVAiOZqPYsQN9qKCHG9SY9BbjRpKMy1viVDXNUiQbgLr1A3ZCUC3JCVCHGrnBDk
+ajnxdW+Duq5qZYir6lqGuCokEcLWoIC6mYHd9QxEjmdTTZET2KoHqOvZliGu1o8McbUFjSGu
+NAIZ4HoVR07oXaFuRB/Zv428W2pbhrnaFWWIG0KCEA1MBNuMnrtqgWwTlCUQS4vb8VTVtTA3
+ai26LdabtQZBrnZMsBK6Qt1qnSLEjarZ3ZiCTCGaIReT2ceW0Tslc7hrOluGKK9NiMYQ16W+
+uz6TGQPwNLnG8wRcBfCrRblVc7tbs6FIt2/H1Fpz9h1GNJFX5vrTZatxF/KP17evYjHxffIa
+9WMMZ6TKzoexJ+P7sSjp6/Euq0besVb8m3iO6AF4l0LZ98lFsOSo7rjIO/aHlCca1DZlQtcX
+0Fpg5nsoyREMTUwWukk4eFCKkB8zTPP0rBpVLiQvU8gZwQhUOb9gzYOYkyZDtIm2GC1LA84F
+zBrO8ebOggYb1Vw/n2LebtQtihmlw0Yb1esfoAWJjmHVQ34hphFFuwcLiiS4ot6OQvUYChNN
+x7ACDClUvdEEaGGiIt5RwkZyYyZUb2crqhd5isIC7ygB2dCAjoKUm+qQU6JNT+JzJJHaDvnU
+LJRs8AQUvUBDR927gPuNOW+u4a6GH6jAB1tIMYSpRvACLeQNaBijyYhkOW2wnkIpYjLCjset
+RCQLgaNJy0k00dbHsOxGgRZWStxAxwwiGOqh6+F2L64KwB8Czru60epoStLMx1j5OjyXxyCm
+qjNwKXqTOMtUVSXHF5G4qr0gX6PWcSkqx/EJ0CVAj/g8ciiQSigyPh8FZEQwwnoUi9z08AuB
+v2jKXD42Csod7a2PTmH2SFffg54+J9qW92E/SV8kg2NfVijaLv/kiAWDWZmdtF3v9hPTvwz5
+znW0JNqIhR7bmiDaO11BPRUJehToU2BIRmrkVKIxiSZkDBkVNowocEeAOyrSHRXnjhLAjpLf
+jhIAGnIUlEwqIGMgRbiLSJQuF50zpocVSHDA9yEnODxstlqR+VE0Iz0GcCOUNAfslGJhDlnl
+Ak1TnoXqeSy+kg/G8kw76Go/HVwdmvwWQTbEqKAfAyG2a2hW9G16Rs7FEqlX74lwLwm2y5NZ
+EEbh/Ob/sXYlzY3jyPqv+DhzmGhxlXSYA0VSEsukBBOUrKoLw2OrqxRRXp6XiO759Q8JgFRm
+AnJ1v3gHL/gSG7Emti/3QITlkxnziX2kRoDP5PFnwuQXgZMw/Vwef565JA4/lWdtk36aQVi4
+SF1uOT6zsVKFU8MXwDN2IUdGFl6WxZFXpuusWlb70of1oiVP75TA0FHJbQ63aj8R8U5ChPiR
+o+ZT82YbBDKfz6CS/IIo83wNvSo+QqaHSJ9EfWXDGfhc6exT6RyfLJr08h2Bqn2/DPJgMpGO
+KJlUfQZNxYcHcKvikqD1itbpBTi4JPBEFOskXP/ul6XKZxQ48EzBYeSFIz88izofvvb63kdu
+Qc6AtCT0wW3sfsocknRh8E1BNMB18NDauU/g2psFtF41cJ55Bi0d3/5C3JzHd30rRbWh1Dtn
+jBHIIQFd6yMBNc+LBZRfFEtot1jLsul3lsMW7aPI54/Xe5+tdrDiRUg1DSLa7YIOObLN2bWS
+4YomswQ23KHguKUiduCBiNgR3Oo7wgxddl3TTlS7Z3h1EDCNMVS/cUk5CldZGNQWTn5NF3NB
+1cHWksHmUQsDDZcwRzcib6ZuTi0HcN91ORdZcmcnhKmTYnGAVGCcw622FnIaBG6BHKSTIdWW
+2tIpz43+pk7VSyYuJO3Z+LIS1QuJeQcLG77OWrgNS+ArMFlry0D6sD6NF1WHJY1ttFLM8CJU
+CfbTRnMMEuvAWdcAMR+JQ0PsYqTOsdGX6N2ugSCbNyu459W3wilhoOjk7QjmSH+pfoENBZo9
+ubZfmDc+tOl2mHzY6oBbVdoezx1uJuVYdF3lZAQekWcdIZccKv6ACW1nEbTypp15MLyVZkFs
+iM8kDg/cwFJR3rmlITtgncY1lauiCdx+Nd5C8cMqfsJGNuAE1OaW9SM3lYZqZv92tqzZODoG
+zKp6scUbj/DijyAj0V6z3pE2mqmhJ4IRob1VbYoGGh/dUXggPiaguQ3lgHB3ioE2t4ziS2zr
+rF3qJ17b3P0is/sM28gVrg8Y7UWRsxRMR1ceMaMwcNc2xQ33qvWTRq4oCv2jcTNAo9QEjer3
+PuNYhm/JGUjuhOUu0/PiCh63nu6vtPBK3H0/atONV3JkgmOJ9GLVAaG1m/wggX2RX4lHEtVP
+/OmBS/7SA45qbKa/+iwap3NPf4ANsZwmLOzaKjdJXPRTZ9++eslIqVfYNerW7Xa3Wnte8G+X
+PSPcBAXqMuZYIhv6CgthdWiGVgKi2DeYTSITogYqlZbNLpKEHBDLLNgXXb+oNoUaUKTHU1FJ
+XWWWLnPxdSgNlMFoDkrurZNxwN0SgH7EfUJvGTD7Qvvx+f348vp87+GNL5ttVzKTaiPG3uwM
+4+Re7NTURsJARqS+T44edzvJmuy8PL599+SEvljRTv0GhWP44rJBzokT2By8geHiyxJ61uVI
+JaEIRWKJeWUMPtKankuAfOlYQdvdpoDns0P9qHnk6eH29Hp0+fNHv8M6wQTY5lf/kH++vR8f
+r7ZPV/mP08s/wTzm/el31dsLXrKg4oqmL1R3qTayX5e14BrwWTykMRyEymePtQHzXDzPNnu8
+lWtR2PktM7nDr1iMaHWA6aTa4JdZo4RkgQjL8hNhg+M8v2725N58ln6E4P8qIwMVA7QPtGpE
+ArnZboUjEWHmD+LLmpuDsz4zD/SEix8wjqBctkPlLF6f7x7unx/93zGsxdhjRYhDiegdeA1y
+24LWF49AT+8NUYS8GTEcGAfx2/L1eHy7v1Mzzs3za3Xjz+3Nrspzx/gDnHDIentLEUoztMPT
+/00JBgmoXr7aEbJxkWWw6TaYGT6TbfwiqyNLg/8DQL1biXwfeluprk5LIkGoGdwkYNn6xx8X
+EjFL2ptm5a5zN4J8jicaHX35pCf/+vR+NIkvPk4/wRz1OHK45surrsRWx8GpvyjHjyLHlP96
+CoZ/F93z8IwxVkWkc4yajzLB5h3Vw9qMXJ4BVB9t0Zs7dp4gl1fOmH+Q6a7HizdnNmBfxvUn
+3Xzc/VTd4ULHNGoz8BGTrSNzw0LN2GDPrVgwAUy5PbZ3YFC5qBhU1zm/YiKK1g73kklumuqC
+hF7zGCFRuKCD0elymCg990nAozYGwL9LNiLkRSMb6YTn04hGb/ONlGwgtksV0k69tYQ7rHNK
+2QKhdY51EXiQ4IWcMyoEx37PEx+MT/qQZ6/fC8kFXjT1e079Maf+SEIvOvPHMfXDmQM32wW1
+XzF6jv1xxN5vib25w+e8CM39EZfe7yZnvQjGh73j2mPVLj1otTWDjEd0af5wDuqGIympTYk5
+OESGVQgL+6K3orZc7Wq9wZdvd6Jmu5wHNQC1WUMzNdjM2W/rLluVnoCDp+hXntBIttMbmKMO
+pAfVw+nn6YnPi2Nn9klHE/J/SVEe0obyKffLthyfclnn1epZeXx6xmO5FfWr7R5Y92GxuN0Y
+u/BI5UCe1FALWz4ZMe5GPIC2JbP9BTFQ+EuRXQytVpTmZJDk3FkMwGLUVrrlQ7AfjOSg0VwU
+mu1tR3QuvL7cE8PmBB7S3mzxes3rRQi8rKVexi5TLCvcmLtcn80afeeP9/vnJ7umcgvCeO6z
+Iu+/EK4PK1jKbB7jAc3ilJ/Dgk12COJkOvUJogjfQTrj02mK7eFiwSz2CqjdaovzR8gD3G0S
+chHI4mb6hLs/YAbAEbfdbD6NMgeXTZJgKncLA9Wat0CUIHcpK7CwU78Ju5FSCbbYInlR4HMP
+sylfqGEo52iJVSG7mFHa/hITk3RBXyvlv0OaAZwOlk1Fjrt6CugNppXASY4Q33KCs3IwLsOi
+aPbKG7ReQjACqxPY2t+UXZ8vKV4tUXLmVWa/KRu+2YKpDIpsBjbNipZ84LD53wpircfsxy6b
+PKQlNxxvNKTCoCsmcQj21hxczQr48NKMDNjbMEeUDhj5wCCMPSjcOlFozzZcsQwtiXBbrMCe
+CzOucsb6fOGFqek9gvNVKpKub/XSctfwxK6BiaYnRrcA7toKGEs85l9Aav4lm7HnMI5XnaqE
+GWb0EmIv8taaoaEhFeyN8Zy1YST/S5SnSAUaoDmGDnU0DR2AU4gakHDaLJqMvPlW7njiuJ0w
+gJHIF02uRsQ+y3N88wqjPA4kYTFVk9nMjemMUv9FRu7mFlmEyS5Uw2oLzOJhgDkD8N3H5aGW
+s3kaZksfRj8D4SRTyFSoyTKmrNMty7LuGCm3rHR9kMWcOWkCBqLsYIf8y3UwCfAd9TwiVPNq
+GazU+sQBaEQDSBIEkF7jb7JZjA1eK2CeJEFPaassygGcyUOumlNCgJSwUss8oxT3ABD+Bdld
+zyL8bhqARZb8v/EC95pqW3V1pWvjLjWdzIM2IUiAmf/BPSc9cxqmjGF4HjA3849v6it3PKXh
+04njVvOcUmbBilBW17gbETEbHZTOlDL3rKdZIyQG4GZZn2KlC8iUZ1PinodUPo/n1I2N9WbF
+PE5J+Epz02T4JZbdC6YY7Oq6iKGUDZnkIMLJwcVgrCnY8avmJaFwDvfYJiw1bY2YQkU2h+Fu
+JShab1h2ys2+rLcCTJt1ZU4I7oZ1KfYOt0zqFtRsAoOm0xzChKLrSqm+qKmuD8Qs1HAARcIA
+9y0r3VrMprx0apEDUY4DghFrBnZ5GE8DBmAiKg3gFy4GwE961IJgEjIgCPB4YJAZBULMNgVA
+hIlBgRGLkEM2uVA69IECMX7UDMCcBLEsGNoKdjphlYWEajkDpjaZfNN/C3jRmpMYmbUUFSE8
+UCbYJttNid0quAFFvZj1DG+Getmyh1Zk7uAxibE53h+2biC91qku4PsLuIJRdZtL3V/bLc1p
+u0m6NGBlMa5MeXHo293Ur8zDKW98aqxQiVFIt24guzd7NHgGAVXelAqe0EacQ8VSvwvyeDYS
+HkT1cgLpG5X5ZBZ4MHwpccBiOcEvQAwchEE0c8DJDIi6XL8zOUlcOA2oJRANqwjwUx2DTed4
+FWywWYQfAFgsnfFMSdUdieEHi0ZBydFGrfIPTll1dR4nMS2ATtX6JMZZv63jiVoPNTQ0sJ9F
+znC8X6YB67P7Sin+mraZ4vYCq+3Af986wPL1+en9qnx6wMdQSi1sS6Xa0BM0N4Q9Q375efr9
+xNSUWYTn8HWTx/opFTq7HUP9H2wCBFSf+os2AfIfx8fTPTD5H5/eyD5f1tVqNBJrqyrj+RoE
+5betI1k0ZTqbcDdfW2iMUuzlkhjAq7Ib2lNFA1RseBs7L6IJ784aI4kZiJN1Q7artoKReyWw
+Bk4E+B2VFDLiTpaShnhK+28zrTSda4UXN25flB5Uss/z+PhU2NdqmZNtVvW4Nbo+Pdh0tV2B
+/Pnx8fnpXOFoWWSW13S6YeLzAnr8OH/8OIuNHHNnSm+0NgIMlagNEgMIRGbugUgxpMS/Qq/v
+pUCFCJ/BiurswZCwnvfNnYhJsI5l3y8jbZvJbJ1aexymT6rueWfGEX/XTiYpWbQkUTqhbqr5
+J3EYUHecMjfR7JNkHrbMtrxFGRAxYELzlYZxyxcuCSE5NW7XzzzlFjmSaZIw94y604C5Y+am
+6U6nE5p7vj6KqO2aGTHVWYhtB0ZGESLjGC8mBzWbeFLqcUAW5qAvp1hhaNIwIu7skARUfU5m
+IdV8gQSPAvOQLK+1XpO5SlDG9aXOWE6dhWq2TzicJNOAY1OygWOxFC/uzURtUkdmYz5p6uMg
+8PDx+PinPcyiPbrYNc3XvtwT3lPdtcwJlJZflpj9PD4IYA/jXiQZeUiGdDaXr8f/+Tg+3f85
+mr75r/qEq6KQv4m6HowkmWvS+hbq3fvz62/F6e399fSfDzD9Q6ztJCGxfvNpOB2z+HH3dvxX
+rbwdH67q5+eXq3+odP959fuYrzeUL5zWMiavrDWg63dM/e/GPYT7RZmQse77n6/Pb/fPL8er
+N0fh0HunEzqWARREHijlUEgHxUMrwzlH4oRoJ6sgddxcW9EYGa+Wh0yGakFLtxoHjG9Bjvil
+LUi9vMI7kI3YRROcUQt45xwTGojf/SIV5jOxypQj7laRYSx1eq9beUavON79fP+BZu8BfX2/
+au/ej1fN89Ppndb1soxjMt5qAPNsZIdowrcNAAmJyuFLBAlxvkyuPh5PD6f3Pz3NrwkjvIgq
+1h0e6tawUsMbDgoIicEHVKfrXVMVVYdGpHUnQzyKGzetUovRhtLtcDBZTcluLLhDUlfOB1pq
+VjXWnlQVPh7v3j5ej49HtV75UAXm9D9ywGCh1IWmiQNRzb9ifavy9K3K07e2ckZYlweE9yuL
+0n335pCSTbN9X+VNrEaGiR9lXQpLqBKnJKoXproXkoM2LOBxDQKfPljLJi3k4RLu7euD7JP4
++ioi8+4n9Y4jgBqkr/0xep4cdVuqT99/vPuG7y+q/RP1ICt2sBmIW08dkT6j3GqwIa8PCjkn
+pwcaIZe0MjmNQpzOYh0QO2jgJsQKSvkJsL0fAMjb70ZlIyLuFHczcKf4nASvt7RVCHgris1e
+iDATE7yrYxD1rZMJPhC9kanq8lmNLz4NSwxZqxkM75NSSYjpoAAhzCz4kAvHjnCa5S8yC0Ks
+yLWinSRk8BkWlk2UYNMjddcSu6n1XtVxjO2yqqE7pkZ7LYLWIZttRs0XbQXYTkbxCpXBcEIx
+WQUBzgu4yd247jqKcItTfWW3ryQhsRkgtqQfYdLhulxGMbZyoAF8wDuUU6cqJcG72BqYcQAv
+QwCY4rgUECfYSNNOJsEsROrCPt/UtGwNQszLlI3eVOMIvlu4r1NCsPRNlX9oDrfH4YR2fXOX
++e770/HdHNt5BoVrSrWl3XjquJ7MySa9PXpustXGC3oPqrWAHohmqyi4MDmD77LbNmVXtlTx
+avIoCQn3uBlcdfx+LWrI02dij5I1NJF1kyfkzhMTsBbJhOSTB2HbRERtorg/Qisj8X3Nmmyd
+qT8yiYiG4a1x0xY+fr6fXn4e/6A3+GHjZ0e2wYhHq6Dc/zw9XWpGeO9pk9fVxlN7yI+589G3
+2y4Dew90QvSkg3MKTwl7fV9xvP/RvZ6+f4cVzb/AFufTg1q/Ph3p961b+67Yd60EXpG37U50
+fvHwHvyTGIyXTzx0MAeB9a4L4cGqkG/Lzv9pdpp/Usq1Wq4/qJ/vHz/V/y/PbydtvdapID2P
+xb3Y+meafCc7eLeq6VXWcJhJR5Vfp0QWkS/P70qPOXku5CSk0yt3iAfTQqoRjp4qJjHffCGG
+AQ2At2NyEZM5GYAgYvszCQcCovV0ouYLmQuf5v1sVVNYb68bMbdmCi5GZ4KYHYTX4xuogp7B
+eiEm6aRBV/sWjQipWg9uPgZrzFFKB/VokWEbs0W9VvMOviksZHRhoBZtKXF7ErjuqlwEbH0o
+akJYZ9zs9ozB6Fwh6ogGlAk9a9ZuFpHBaEQKi6b/Zj2XfwZGvWq+kVCdIyGL5bUIJykK+E1k
+Sp1NHYBGP4DMyrHTHs5K/hOYHXabiYzmETm4cj3blvb8x+kR1qLQtR9Ob+Y0yolwaCnN9UJo
+pbRqyNpZK7dUw6yKrNWvsnrMn9csAqLWC2IMvl2C4Wysk8t2SfgaD3OqKh7mxCwQeEc9H9Ss
+iKxu9nUS1ZNh8YZK+NNy+NvGpOm2FhiXpp3/F3GZOe34+AKbjN6BQI/mk0zNVyV+rgV71/MZ
+HT+rpgfb8s3WPHDw9mMaS1Mf5pMUK9AGIafojVo8pcw9Je4Ab5J3aoKbBMyNlWTYOwpmCbGa
+7iuCcTGCX4Uqh+rbFQWqoqNAKZZnQ8EAyNuqy9cdvgYOMDRKscUNE9Buu62ZvxK/orF5YGwV
+OmSbbaTldBjaYVNas466rpXzavF6evjueQwAXju1aIpnNPgyuy5J+Oe71wdf8Ap8q9V2gn1f
+enoAfuE5B+qimFJGObgBRIDYfXOA9P13D9Sv67zI3ViNsMMXnwEeL465MDWAZVFqXEuDZVvj
+J00a48+KARy4iBjKHwro771lQCnm5O0yYJZ+h4LrarHvKFQ1Kw4cAgfBF7YspLQUFrtR3+oV
+h81oQUFuxQmw67JsFtlXCtYimuMFkMHMUZrMO0cAt9Y4KKWL9AKTAp5Rx/QliPQ9LgbBm9sK
+c8Ybj9ySkkYPLAOb7sArVT+fKBpGzAMSkWfzdMbaFSEXAgBZPlNqdsmE5DmmRuwTCEI0pAX2
+mhbrdfyhnQYZ5aLG6nCWi7pgKNzd4lDLPXUVBwif2wgRbiyLCp4P4CWjkH4XwaCqzDPhYOvW
+GSC629oB+rpkn7CvwBgX/w5DcTaMf1V7c3X/4/QysOujabW9oSWfqS5c4SNlQ/ZWkccsTVYA
+zZEKfMa+aHasDIcdKlx10hw8C/LQchCqHLgoUA4z0VDNOjo0ry4CUG+I107GM9hXwPnDxtCI
+YEhyPZMsauVtJChUX1Zg+8IwGim57EqysAV005mtBYvZe7gQWb5tFtUGB1Dr480KLmyKHKwP
+5xckZKpvwMy3/oLzFgKv4DFDIsuvqT1lczutU2NRSPdk4J6QCrDNu4w8XAILgLnH8LKRZN0a
+v4624EEG+GDKoJrKAu+EWpjNVxblMxaB7cU3LqXWbg0GV5IdTE8bq1uOXxNSa4PVmepdNw5q
+5gMON/laqHEmaw/OZ7IBHYGD4fXW+Vq4kcsxD7mfEYyMBl6BIPdfNW5uwYJh5vVX9lLfeKA2
+ei2mryg4KOe1tTDllDXgaEGQC1wyUIr3q3rnpAzcn2fMkoIOZiu9ZigHoTVeadaF669X8uM/
+b/p58nl4BFu0rRo0qHH4M6iNlPUFEQM8aAvwJHPbrahwrEBq3R1EzPgtBAcuVCf+PNsYJTsv
+1XTYUqHhx3Titnxu/gwbUldfGKDogtehVKDb7WyhKbQ9kn51qC/LgjD7pTACZan0+QArMp/J
+9BeCB2sD91N/bkkMfDsqD2tW6NqerCdtYxWWlt5ItqpJxn2p9BvpKYWzgJX4RoaepAGFVlIQ
+zQbi0fTKGX58NMJONdsPcKMfyU+3bUvekWOhW4aDRKpO22YXZFm931KRfnCrzbe6WWyqgxqx
+L9SZJVN0AlnmRS8+9eIwtcAs7UlCrXSrzWbrqbNBtXDiM1NHv28PITDBOsVr5a1SSWishn0y
+mib6eXa9k3Cy4DYiPXH6atkI3ELU759VvCo3uw6P7Vg606TzTmpGnIsg8AVWi4M+nG3Uek9i
+LYaI3JIDkZvLRkQXUDdyTeHq5lWhO7Jmt+BBev2uC6cwgGtItzbJJGZ2B32pKFkK5iGXm/VM
+iPV2U4IVoZRc/ADpNi/rbeeNT+tWbnyWcPMGjDJdkEJbCz044To6o27NaBxGlrW8IJAbIfvl
+/1b2bU9tJD3f/wrF1ftWZTfYGEIucjGegz3xnJiDMdxMseBNqA2QAvI82e+v/yT1HKRujZO3
+aiuLf9L0udXqbrUUpnUuDjytj+3+YiQaFFOJa7lClTGKlNLAFNzE2l4DXnrkONDhHwNDuHJ2
+9GZBv3YnE2SSBe64kXS3XSXdr2JXmkmW4CCLK1MGUn1dhFbjd1uRoDBhaFQiDfppspth76rA
+mW8DwWmEPn6FS+l8HCDFWdIGNdD9jJNOJ0huyce93doeOWgejwcIs1MoJjSJoy8N9MUEPV4v
+Tj4oGhWdJhid2+od43bh46It5o2kGJcSTlpBejHTpoOXnp8tVIHy+cN8FrZX8c0I0yGQb7Z3
+cokBPb2Ii9BqT3QVMhPbJELjdpXGsYyjYtZG3Gl1x2xtmKb+IbpTleF8j1blfIropts9uBoi
+A4w3H0LTHz5Bfz/iXCYQZ40pP6aFH1LWIGCcYZvNxP4FwxXSjcqjMQF1T17QfU+Q+uegtxjf
+OmMJD3w+7H24lxlotYX81fsPbq/KuA4t2gbGfW2d2puPUq+Hu7dn9y/PD/eszFlQ5sIfpgHI
+zy76CxcOwQWNCwfrK2MaUX06/uvh6X7/8u7rf7s//vN0b/46ns5P9bXcF7z/LImX2TaIU9ah
+y4T8F0Lbcy95WYAE8dtPvNjiqFnDiR95ZKdHucLw5l4OA28H+rrctwHGfkC5BJBtrVTJY5+8
+lTAgHUDFDi/CuZ/zqESdM5swavgbG8Peb19DdDzsJNZTRXKGhO/LrXxQkVIzyXD6ZkEu0zH6
+SKTlS4+Bq4D7PhsWOyuHAVfKiJsdq4xd+iSaIWPe1sMaodbBPCyxa9z7wlU/qbJtBU24Kvgx
+h7dF7wpOe3dvkq10yKm0mnapDBPa8WVb4zLO2JtfHb293N7R3bgtlWRogjrFu29Q8JaeUORG
+ArrqrCXBeveCUJU3pR8yd68ubQ2Lab0MvVqlRnUpnK0ZyV+vXUQK5gFdqbyVioLWoqVba+n2
+94CjrbvbuP1H8oCMXFSlq9I9OrMpGE2ICU8TYqBA6We9nHJIdLWkJNwzWiYdNt3fFgoRl9Sp
+unSrrp4qCPmFbVvf01LPX+/yuUJdlnGwcisZlWF4EzrUrgAFriqOf0NKrwxXMT96BJmt4r0L
+MRdpozTU0VZ4BBYUu6CCOJV360WNgmZxXnVDsPD8NpO+bgY2MRNE96XFVAdSaJHEpvItMPxo
+s5CcWLVZHoSSknp0VCHd0DGCedvq4vCv5XuNkdBjiyRVIlATIcsQfXtJMOdOeOtwsB6APzXv
+lRwehHmT1DEMo9342IBZiiqekhv0PLD68HHOGrADq9mCG+sgKhsKkS6Uk2aX6hSugJWsYHO0
+ikWoDvhFriNlJlUSp+JCCIHO77G4AyAbUfg7C/mdN0dRr5imXHB9yyVmh4iXE0QqZo7hnE8n
+OJxrY0E1+8uRCDICyRY3Gcb6mVyLBmtXhdBbygoSejC8DLkIrfGoxQsCvi8fQ9vUsIuALUgt
+nPWbaS6SSWVonBwfBeCBCve4TqgMGEFQRR5RR5tMaRRjnpM+fNsfme0RN5Px0MCthqW4QjdR
+wmAGoFjGVAt39bzl2mkHtDuv5rGEerjIqximiJ+4pCr0m1LY3gHl1E78dDqV08lUFnYqi+lU
+FgdSsYyBCBs3WSyLz8tgLn85jiurNl36sBiKe664wg2UKO0AAqu/UXDyPSX9crOE7I7gJKUB
+ONlthM9W2T7riXye/NhqBGJEO3mMD8bS3Vn54O8ueFC7XUj8ssn5qfhOLxLC3EoNf+cZqBCg
+jvslX6sYpQwLLy4lyaoBQl4FTVa3kSeu02FTLmdGB7QYNBDjeAcJm8agAFrsPdLmc34kMcCD
+Z+K2uzZQeLBtnSSpBrjmbsSdGSfycixre0T2iNbOA41GaxfDTgyDgaNs8EYDJs+1PXsMi9XS
+BjRtraUWRqjTxBHLKosTu1WjuVUZArCdNDZ78vSwUvGe5I57opjmcLOgqExx9hmWLKkYdsnh
+/QyaZKvE5CZXwZJvvUZ8oYJr34VvqjqwUNBEa77FuMmz0G7KSh5mTIlYnMZSHhukXZqgnQVP
+M8aoXWbGiJTDzC+vC6vROAz7h1U1RYvNBKffggeHkOi8HlLkd0dYNjFojhn6gcw8XNNFrlle
+izEZ2EBsAMs0NfJsvh4hx6AV+Z1NYxoYPJaEFIb0E5T4mm5HSOOJxPa6KAHs2K68MhOtbGCr
+3gasy5DHkIhSkMszG5hbXwnLMq+p86iSC7PB5JiCZhGAL05DTPQn9wsxDnPoqMS7ltJ1wEBy
+BHGJKmPAZb3G4CVX3jWUL09EjBzGiqeVas5tGkID5AV2aOdf6+4rjzkFnTQuckyEGVjK8aiy
+FIcOmOCzu5BAnFiVhrknHV1RTbGDP8o8fR9sA1IfHe0xrvKPeBMvtIQ8iblF3Q0wcXoTRIZ/
+zFHPxTxIyqv3sNS+D3f4b1br5YgsgZ5W8J1AtjYL/u7j5Pmw3y082MYvTj9o9DjHGGkV1Or4
+4fX54uLs4x+zY42xqaMLmYV2KE91sXTUiex+vP19MeSU1dZ0IcDqbsLKKwmcOp+dwmKwa3fW
+g6GeV0jycVdxqC/MDcnr/sf989HfWh+R4iruEhHYWN7XEEMrMi48CMT+gb0OtCZ3A2cC6K3j
+JCi5u55NWGY8K+tMvU4L56e2eBmCpRWkYRoFsJaEIrCO+V/fP+Odj9sgQzpx5dOCh/Fyw5RL
+q9LLVvZy6wU6IPraiyymkNY8HcID7cpbiUVgbX0PvwvQN6VCaBeNAFt/swvi7CVsXa1HupRO
+HJzuvGxH7iMVKI5KaKhVk6Ze6cBu1w64usvptWxlq4MkpruhPwG5UhuWG+H3wmBCqzMQPfB1
+wGYZm+fFMtcUZFebgXqmRPjkLLD2512x1SSq+CZUQ4pypsjb5k0JRVYyg/JZfdwjMFS3GJIl
+MG2kMIhGGFDZXCMs1FUDe9hk7no6fGN19IC7nTkWuqnXYQY7VU+qnX7ppUJFod9GmxUHMx0h
+5aWtLhuvWgvR1CFG9+1X+qH1JdloJkrjD2x4PJ4W0JudN0Y3oY6DDkDVDlc5UQH1i+ZQ1lYb
+D7jsxgEWOxSG5gq6u9HSrbSWbRd0AYz3wDikFYYwXYZBEGrfRqW3SjH2TadgYQKngwphn1Ok
+cQZSQuiZqS0/Cwu4zHYLFzrXISfgrp28QZaev8EYF9dmEPJetxlgMKp97iSU11rIYMMGAq7P
+qF+Gq1ou4/R7UGg2GLp1eQ1a0KfZyXxx4rIleATZS1AnHRgUh4iLg8S1P02+WMyniTi+pqmT
+BLs2LP7w0NxKvXo2tXuUqv4mP6v973zBG+R3+EUbaR/ojTa0yfH9/u9vt2/7Y4fRulLucBm/
+uANl2LTraitXIXtVMuLdtqBxp1tY2tvTHpnidI7Be1w7GOlpyuFzT7rhL7hgb3iVlxtdZczs
+nQEeWMyt36f2b1kiwhbyd3XFj/8NB48F0SHcbC/rFyvYCudNbVFswUHcCewotC/6/Fp6m4KC
+2TPnOUEXZO/T8T/7l6f9tz+fX74cO1+l8aq0Fu+O1rc55Ljklm1lntdtZjekswFHEM8d+oDk
+mfWBvSVDqAtL3gSFsu3vWrGFTUXQosItaIH8BR3rdFxg926gdW9g929AHWBB1EVKVwRt5Vex
+Suh7UCVSzeg0qq14NLSeONUZq5Jil4BKn7MWIDXL+ukMW6i43sq2p+mh5aFkTtDuqslKbvlm
+frcrLvQ7DFdO2LRnGa9AR5NzCBCoMCbSbsrlmcPdD5Q4o3YJ8RwTTX7dPK1R1qGwpa/bUsTX
+8sNiLU/VDGCN6g7VhFVPmuoqPxbJx/0h1twCPTxKG6tmhzsinqbwgc0CLcFKGJXTwuyzrwGz
+S2JuPoIG9FtpxWeoU+WorrIJQrrstHOL4DYzoihoWNfBx1VYCsvBEcM/7aQZ1dw14AMFDHTn
+BSl/c8n4NmG5hJWlOhNUZU74eeDJkwb75MFtaE+r6cDXQm8L7/0fC5Eg/bQ+Jkwbi4bgrpoZ
+dz0IP0Ydwz2zQ3J/6NcuuCMdQfkwTeGe5QTlgnuHtCjzScp0alMluDifzIc7JrUokyXgvgMt
+ymKSMllq7g/donycoHw8nfrm42SLfjydqo8IKCVL8MGqT1zlODrai4kPZvPJ/IFkNbVX+XGs
+pz/T4bkOn+rwRNnPdPhchz/o8MeJck8UZTZRlplVmE0eX7SlgjUSSz0f95de5sJ+mNTcTnXE
+QatouM+vgVLmoPmpaV2XcZJoqa28UMfLkHvh6OEYSiUCEQ+ErInribqpRaqbchNXa0mQVwnC
+egB+2PK3yWJfGO11QJuhe8EkvjGKMzOq7/jivL0SLgeEmZCJgLG/+/GCLqWev6OfPHakL1dO
+/AUa7GWDbg0taQ56VRXDniWrka2MM35Zu3SSqku0cQgstLvRdXD41QbrNodMPOvcFUl0kdod
+43EtqtdlgjSs6NV5XcZijXWWmOET3DySlrbO842SZqTl023gFEoMP7N4KUaT/Vm7i7grmYFc
+eNzYOalSDKxY4NkU6AJB+en87Oz0vCev0SB97ZVBmEEr4h00XlKSWubLqFcO0wFSG0ECSxHf
+2eVBgVkVfPiTKZBPHHi47GjfGtlU9/j9618PT+9/vO5fHp/v93983X/7zl6TDG0Dwx0m405p
+tY7SLkEPw+iIWsv2PJ1GfogjpGh9Bzi8rW9f1zo8pMjB/EELfLTLa8LxEsRhruIARiC0c7WG
++QPpfjzEOoexzc8052fnLnsqelDiaOecrRq1ikTHm+s4EXZJFodXFGEWGLuJRGuHOk/z63yS
+gI7VyBqiqEES1OX1p/nJ4uIgcxPEdYtmT3jqOMWZp3HNzKuSHJ3gTJdi2LwMhiBhXYs7tOEL
+qLEHY1dLrCdRB/6Kzk4QJ/nszaDO0BlUaa1vMZq7wfAgp3a3Pe4QoR2FYyCbAp0Y5aWvzSv0
+B6yNIy9CFx+xJiXpHCCH3RlIwF+Q29ArEybPyAyJiHhtHCYtFYvu1D6xM9sJtsHmTT0mnfiI
+qAHeLsHaLD91Sg6rgjwzU6zsBmg0S9KIXnWdpiEuc9YKOrKwlbeMbXNrw9L7NTvEQ1OPEUS4
+79SD4eVVOIkKv2zjYAcTlFOxk8rGWKwMTRnTK8YUc9fuOpGcrQYO+8sqXv3q6/62Ykji+OHx
+9o+n8WCRM9G8rNbezM7IZgBRq44MjfdsNv893qvit1mr9PQX9SURdPz69XYmakoH5LABB534
+WnaeOaVUCCAZSi/mFluElugD6wA7idLDKZJeGcOAieIyvfJKXMe4CqnybsIdxqj7NSNF/fyt
+JE0ZD3EqGoWgQ17wtSROTzog9vqyMQGsaYZ3l3TdCgSiGMRFngXCyAG/XSaw8iageOtJoyRu
+d2c8NALCiPSK1v7t7v0/+39f3/9EECbEn/zdrqhZVzDQZGt9sk+LH2CCbUMTGtFMbaiw9Eej
+61rqY+E2FT9aPCxso6pp+FKBhHBXl16nj9CRYmV9GAQqrjQUwtMNtf/Po2iofq4pqukwdV0e
+LKc6yx1Wo5z8Hm+/fv8ed+D5ivzAVfb42+3TPUYRe4f/3D//9+ndv7ePt/Dr9v77w9O719u/
+9/DJw/27h6e3/RfcQr573X97ePrx893r4y189/b8+Pzv87vb799vQZF/effX97+PzZ5zQ9c6
+R19vX+735O153Huat1p74P/36OHpAUPOPPy/WxnuDMcg6tuomOaZWAuBQNbCsKYOlc0zlwMf
+IqoMvo8Ss70Jy7zFg2DUHQN86sfGjE4c337ppe/J05UfYkfaW/I+4x3IArq/4ce11XVmB+Mz
+WBqmPt/ZGXQnIrASVFzaCEz54Bwq5udbm1QPWyb4DjcyrbiNcJiwzA4X7fRxM2DsUF/+/f72
+fHT3/LI/en45Mvs97tUbmdEE3BOxXjk8d3FYxlTQZa02flys+bbAIrifSMWegS5ryeXyiKmM
+7l6gL/hkSbypwm+KwuXe8IeHfQp4b++ypl7mrZR0O9z9QBq9S+5hOFivQzquVTSbX6RN4hCy
+JtFBN/vCegDQwfQ/ZSSQ/Zfv4HK/04Fhtoqz4R1q8eOvbw93f8BycHRHI/fLy+33r/86A7as
+nBHfBu6oCX23FKGvMgZKiqFfanCVui0EMn8bzs/OZh/7qng/3r5iWIe727f9/VH4RPXBaBn/
+fXj7euS9vj7fPRApuH27dSroczeXfU8qmL/24L/5CahX1zIy0zAtV3E142Go+lqEl/FWqfLa
+A0G+7WuxpGCXeFb06pZx6bauHy1drHbHrq+M1NB3v024kW6H5UoehVaYnZIJKEdXpefO1Gw9
+3YRB7GV14zY+2qwOLbW+ff061VCp5xZurYE7rRpbw9mHGdm/vrk5lP7pXOkNhN1MdqqIBZV3
+E87dpjW425KQeD07CeLIHahq+pPtmwYLBVP4Yhic5PPQrWmZBiKWYT/IzT7TAedn5xp8NlNW
+sLV36oKpguFjn2Xurki05xwW5IfvX/cv7hjxQreFAWtrZVnOmmWscJe+246g0lxFsdrbhuBe
+Yne966VhksSu9PPJM8HUR1Xt9huibnMHSoUjfZ3ZrL0bRePoZZ8i2kKXG1bQQnjsHLrSbbU6
+dOtdX+VqQ3b42CSmm58fv2PMFqFcDzWPEvkEopN13IK3wy4W7ogU9r8jtnZnRWfoa4KXwJ7j
++fEo+/H41/6lD1+sFc/Lqrj1C023CsolHnBmjU5RRZqhaAKBKNrigAQH/BzXdYg+V0txp8IU
+pFbTYXuCXoSBOqmnDhxae3AiDPOtu6wMHKrOPFDDjDS4fIm2m8rQsG5AmFLcv2jn2v63h79e
+bmGb9PL84+3hSVmQMF6oJnAI18QIBRg160Dv7fkQj0oz0/Xg54ZFJw0K1uEUuB7mkjWhg3i/
+NoFiibc8s0Msh7KfXOPG2h3Q1ZBpYnEikiKp1q56hH5oYAN9FWeZMp6RWjXZBUxxd5hxomMR
+prDo05pz6GKEc9SHOSq3wzjxl6XEF8C/yuFAPZLTs5m2dvWkA/l3/kEnMz9zpQV1HUXBmdpD
+MQ5lKI/UWhvpI7lSZtlIjRVVcqRqmyqR8vxkoad+OTHkLtH79ZQAHhgmiow0Vbj2xE62GsvD
+4bhOZ+pLoZ7wTXyy9v4P3FhS5VTQrusVXcMmYfYJVEeVKU8nR1acrurQnx7UncOrqQHkr8Ok
+il1VBGnmHbk+nr0o3Pmhe6RAafriITyjkBvxKpwYUmmSr2Ifnef/in5IEHhz5fgDKb2X1dyv
+SNnWJOwEn7pbneLVdrs279pXtCqXh5QsmmVzHrJXXBCQp2OVWDTLpOOpmuUkW12kOg+d2/th
+2dkFhY7no2LjVxf4ZHKLVEzD5ujT1r780N+eT1Ap7it8POLd1UkRmpcT9Ix1fHholCKMrv43
+ncO8Hv2NrmMfvjyZiHJ3X/d3/zw8fWHeyoYLLcrn+A4+fn2PXwBb+8/+3z+/7x+PdW5q9u5o
+ahADGgudNmlX1/Q4ZfpSy6VXn46PLaq5qWF95HzvcBjTlsXJR27bYm7FflmYAxdlDgfpq/iX
+W+oy3Oam2wyDnQij99UevSD8Rgf3yS3jDGtF/jyifoQkk/qyOaznh/g90i5heYa5yM3S0FeK
+V7b0CJ0/b/MstyzLuIb6hCW/7+1jqFSgD/loGVaS43c+BzgLLA0TVLRlb+qYGwr1pCjOArwH
+hq5Y8qtGPy8D4Za+xDfBWZMuQ36fZ2wEhe+mPvCLH9sOzzAcWOfImIs1H5aCuBa7cF8qWCB9
+nFMlv43rppVfyYMt+KnYaHY4iLxweX0hl39GWUws4MTilVeW5YPFAU2pruj+uVhM5K7K/8CH
+zdI9v/PZia19YGfMs5x9CIy7IE/VhtCfayJqnipLHN8d475SnlLcmA2UheovTBHVUtafnE69
+NUVutXz6+1KCNf7dTSs8DJrf7e7i3MHI7Xnh8sYe780O9Lhd6YjVa5g5DgGjZLjpLv3PDia7
+bqxQuxLPGhlhCYS5Sklu+N0gI/CH4YI/n8AXKi6fkvfyQDGLBf0vaKs8yVMZ5mpE0Ur5YoIE
+OU6R4CsuQOzPOG3ps0lUwzJYhWhio2HthscFYfgyVeGIG88tpdsnesGH97QS3nllCXodOQng
+WliV+zFI2i1sFpBhJOHleSydcSMkbn/RY71wDJZheyCKts14jMQ1Piw50tDeua3b84VYFgIy
+dfITj54Vr0MZ8Ig+xvyrsG4KN+ORjrfWSI7y0lkRdC6fB8QcWJAKo65QCoOkLM96AllyS+pA
+KkQQ34CsshzuzpGVQsHTOmurIeC2sijY7oquUK0SM02Y0Kf3aIodIjQHuiFs8ygi0wxBaUtZ
+xku+Pif5Uv5S1oYskU8Ek7KxHyH4yU1beywpjN1Y5Pz+OC1i6a3CrUYQp4IFfkQ8QDPGMUDH
+z1XNrbGiPKvdJ6mIVhbTxc8LB+HTn6DznzxqPEEffvIXOQRhJJNESdADVSlTcHRo0S5+Kpmd
+WNDs5OfM/hrPodySAjqb/5zPLRhkyez856kNn/MyVegTP+FzuVpZAx/EiO1km8ZWEBbigSWZ
+ApHiDkoi6Jvz0bIehIUYemgcxZ8p5MvP3kp4SHMU7eHTJEgj7o6pymYo2fNg9DI9GPf0WzZC
+v788PL39Y4K2P+5fv7hvbUjX37TSNVAHoqWR9XTC35Br/c60ktvB+ca1AtrFJ/huYbAo+TDJ
+cdmgR7fF2Ohmd+ukMHCQAV9XuABfhbPpc515aey8XhawZawEO/ol2l22YVkCV8j7YrLhhvur
+h2/7P94eHrtd1Cux3hn8xW3mqIQMyDmifDRQl3EB/YnhObjfBTSFNSdifOVch/iGAP0DQk9w
+8dLJVuP+Ez2ApV7tS/t/QaGCoH/aazsNY0ceNZnfeb8EQYUr38i3Tc3zDylX2cdXobdBo9Ju
+nRo3or/baNTEdAX3cNeP62D/148vX9BoLX56fXv58bh/euNu1D086ILdMI/Uy8DB4s4cNH4C
+MaNxmaC2egpdwNsKH6JlsEgfH1uVr5zm6B+mW4erAxVNk4ghRbfiE3aTIqUJh1z0/sooZquA
+9ZX7q13nWd50xnzyLIHIXS19208KES0TqhEj1z3i6Tmj0aTFgQ6b/OPtLJqdnBwLto0oZLA8
+0FlI3YTXFJNYfuNjUOusQVdXtVfhNegadn+DOG6WlecaWxIKBWyyQPgXm0ZxzkyQqnUc1TYY
+xFuy2rTxJoMp7q+lwXGfMV+JDBZmjdCs0Yc71ehRDIGNj8y4/YiN4B4m329NJzl8zcsSe1Cj
+e8F+zensTYfE2KqCchz0/zCTPodNGki1tDuL0F8IOFaJlHB+Je7uCCvyuMql59kxTfTrbOOw
+/obi5FnAiiYo6ZHYrUgaOfefTFk+1pQ0DO25Ftc1km68pblhCCSX1XjD7KmSZtmzcs0GYesO
+nYZTNw5AGUpAptu5/QpHJYrUKnOAOjs/OTmZ4KSGfpwgDsbSkdOHAw/6/G0r33OGmtHQGtQr
+WIVBfQ86Er4dtHzij1sqSmILtVhZTwN6iouQPZrcHwwkHrCbpR0l3soZLdO5Qp3z8tp6D9GN
+dbPq4trsJLjBrRYePDhTeh2v1ta+eeh8aiR0QBwJZ8UHiZ1wxXGOHuqznPyzwxignbQ5e7Jt
+1kcZYmWxNqHrjXkfMh3lz99f3x0lz3f//PhuNIj17dMXrtJ6GF0X3WWKLbeAu4ewM0nEiYuO
+hoZxiqskbt/DGiaWeHGZR/UkcXirw9koh9/hsYtm0m/XGBsTljYx37qXVj1pqMBs3IiMGY1s
+k2WxWOyiXF2C5gj6Y8Dt+Gg1MhWAOcxihRzqLOMBALTA+x+o+ilLiJmk9vtTAmWYCsJ68TU+
+ZVDSlkML22oThoVZM8xVB5rzjmvj/7x+f3hCE1+owuOPt/3PPfyxf7v7888//3csqHmLiUmi
+z1t3M16UMEVc7/MGLr0rk0AGrSjohEpv+abcJWyomzrchc4Ur6Au8k1nJzF09qsrQ4EFIL+S
+7/27nK4q4Q3OoFQwa/k2TkoLBzBvyGdnNkx21FVHPbepRjJ3G01i+XiIZXysPls4GcWwpCZe
+2b0DM1xzt0Ki8N2b5jrHnWOVhC6tj75BxnGdplBZfQciAU94rAPrsdEdBaPyI/uj8Wzg/zAy
+h4lJrQPyU11gXHzc3rPi4kaRHhxlaDeKj47oHsVZXYzuMQGD/gXLdDU8ZDCywfjYO7q/fbs9
+QiX0Di8lmRzvmjp2lbBCAytH9TMeOoQqZnSfNoBNAp4GYOQmo6BacmuibDJ9vwy7x9ZVXzMY
+bao+bCY7N2IYIKuG+rBBPtBvEg2f/gLDmUx9hXoCHSMMi8Z8JlKVAwGh8NL1HYvlIgcntl+9
+oUFlk1gi6LI7NCitY228Rsv865p7v8jywpSK20vQb7IHsgpsRr8v5SFuQlvb13e4xZNv5BcC
+GHeUsIVpq6sYj0zsnFlS3eZcOuQrYIOQwugqL82nsEERh7JOfv31kFZFdWGxo1ziMk7+qp2k
+oRCgZURO0mY5tdH1FbS+g+ZVluNzXKd4uNnRPui6pspAGV3zswGLMGitsv2WIGjwgXeZk+2K
+7Tahx70MZrmHNhjmg7DS/cr27DDeNcY+0y7Mb5zbw6k/SKTBwoXmdVavHdQMPjOwTFwei0aj
+Qbv54MNKIfcJewldnWCd2Ajy8+1QU3t0mN/KstMTaq/EqyorpsQwN36Hg1RBDLMAzVzpddIT
+4RxD6Dgay0GY1Dx4NZtWdAJs7R1Zd+CEGtfRnu6hy1d9jHRyDPofdkOcgyT77cudJtln5xta
+N4XyKXn5+Xy9f33DBRw1Yf/5P/uX2y975viqEZs64wili81tw7IBDRbuqHoqjSS9VFP69REP
+wPNSCyBVpDoTEwsRvdadTo9lF9YmCuhBrulgVl6cVAm/Z0PEnO9Y6qiVhuJsij5NvU3Yexaz
+SCgAumVREiJU3qZzcs+CTU6pP5GR7QzWTpDdudiOkLp9Nuyucd4bHp5U2WRmOTBbC+tpSrIJ
+avtMkezQKrHIEI5ev9ahV1iwwhnEW24KsgFptAwrHqGNSfihZiiUbIlAZgI2yM0XLIdz3IzA
+onWnZlJSGPX+fKFIRP4UXVKojutwhw5eueJM8stNyLSSoRpHY5VLrMRbeWPECXDNY7MSOpjl
+iQR8L7Mx++rRnBcLrxUE7SwTCgLd8xyCS9xlWedRpjWE8RVBIL7toluXn2a0bdKxO/qC45GN
+BLepmd0SpcdBNKetJIrIRtDCcp3Tgeh2pJG5H2SorrL4Xe8Sxm5wK4oQJAHSLAls4V2GXTBy
+1Z0VJaKSjLWoSmD2k/Zz8TSgUHTad7jntbPHE1+NtzdiVImm3a17124Uk089sj2Vjb9JYTMg
+IfQOAeqiPT6H+3ArYdxox45AClMFJd8aRedezHZ7oa68/ee0zaVAeOgKIfebVOpzZhu8jM2a
+pSXfX7z/f7byWyQGfQQA
+
+--EVF5PPMfhYS0aIcm--
