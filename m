@@ -2,126 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A95B3421F33
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 09:00:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B113F421F38
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 09:03:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232481AbhJEHCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 03:02:18 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:53540 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231816AbhJEHCO (ORCPT
+        id S232531AbhJEHFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 03:05:13 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:45058 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230526AbhJEHFL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 03:02:14 -0400
-X-UUID: be0b5d5e78f24b48875d241a10957d00-20211005
-X-UUID: be0b5d5e78f24b48875d241a10957d00-20211005
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
-        (envelope-from <mark-pk.tsai@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 4802693; Tue, 05 Oct 2021 15:00:20 +0800
-Received: from mtkexhb02.mediatek.inc (172.21.101.103) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3;
- Tue, 5 Oct 2021 15:00:19 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by mtkexhb02.mediatek.inc
- (172.21.101.103) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 5 Oct
- 2021 15:00:19 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 5 Oct 2021 15:00:18 +0800
-From:   Mark-PK Tsai <mark-pk.tsai@mediatek.com>
-To:     <mturquette@baylibre.com>, <sboyd@kernel.org>
-CC:     <mark-pk.tsai@mediatek.com>, <yj.chiang@mediatek.com>,
-        <matthias.bgg@gmail.com>, <linux-clk@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>
-Subject: [PATCH] clk: make clk_core_lookup faster by using clk name hash
-Date:   Tue, 5 Oct 2021 14:59:49 +0800
-Message-ID: <20211005065948.10092-1-mark-pk.tsai@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        Tue, 5 Oct 2021 03:05:11 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 0571D1FE37;
+        Tue,  5 Oct 2021 07:03:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1633417401; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=oJzanskWVV3j7+XNGt4NLM5ATeulaEMUdbY78QfwQk8=;
+        b=ar2P+TAzqqXOqAYxlhmM4uGh7nC/AD/G42oeMi1XBuJHP7RXIeVOaKe3AjX/kuQ5yCZsLq
+        ecUvVYwv+5gA4fMCpfVY3lxCuVZZykjc4wt+NhAXtwX7MAoul7QZam4r/w53pZjghwVz4N
+        xw9H6HcWyTzG0L2uek/C66v27fCvvKs=
+Received: from suse.cz (unknown [10.100.224.162])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id A611EA3B84;
+        Tue,  5 Oct 2021 07:03:20 +0000 (UTC)
+Date:   Tue, 5 Oct 2021 09:03:17 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Pingfan Liu <kernelfans@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, Sumit Garg <sumit.garg@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Wang Qing <wangqing@vivo.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Santosh Sivaraj <santosh@fossix.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCHv2 3/4] kernel/watchdog: adapt the watchdog_hld interface
+ for async model
+Message-ID: <YVv4tT3WXrKvPe0g@alley>
+References: <20210923140951.35902-1-kernelfans@gmail.com>
+ <20210923140951.35902-4-kernelfans@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210923140951.35902-4-kernelfans@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Compare hash value before strcmp the full name to make
-clk_core_lookup faster.
+On Thu 2021-09-23 22:09:50, Pingfan Liu wrote:
+> When lockup_detector_init()->watchdog_nmi_probe(), PMU may be not ready
+> yet. E.g. on arm64, PMU is not ready until
+> device_initcall(armv8_pmu_driver_init).  And it is deeply integrated
+> with the driver model and cpuhp. Hence it is hard to push this
+> initialization before smp_init().
+> 
+> But it is easy to take an opposite approach by enabling watchdog_hld to
+> get the capability of PMU async.
+> 
+> The async model is achieved by expanding watchdog_nmi_probe() with
+> -EBUSY, and a re-initializing work_struct which waits on a wait_queue_head.
+> 
+> Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
+> Cc: Sumit Garg <sumit.garg@linaro.org>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+> Cc: Jiri Olsa <jolsa@redhat.com>
+> Cc: Namhyung Kim <namhyung@kernel.org>
+> Cc: Marc Zyngier <maz@kernel.org>
+> Cc: Kees Cook <keescook@chromium.org>
+> Cc: Masahiro Yamada <masahiroy@kernel.org>
+> Cc: Sami Tolvanen <samitolvanen@google.com>
+> Cc: Petr Mladek <pmladek@suse.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Wang Qing <wangqing@vivo.com>
+> Cc: "Peter Zijlstra (Intel)" <peterz@infradead.org>
+> Cc: Santosh Sivaraj <santosh@fossix.org>
+> Cc: linux-arm-kernel@lists.infradead.org
+> To: linux-kernel@vger.kernel.org
+> ---
+>  include/linux/nmi.h |  3 +++
+>  kernel/watchdog.c   | 37 +++++++++++++++++++++++++++++++++++--
+>  2 files changed, 38 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/linux/nmi.h b/include/linux/nmi.h
+> index b7bcd63c36b4..270d440fe4b7 100644
+> --- a/include/linux/nmi.h
+> +++ b/include/linux/nmi.h
+> @@ -118,6 +118,9 @@ static inline int hardlockup_detector_perf_init(void) { return 0; }
+>  
+>  void watchdog_nmi_stop(void);
+>  void watchdog_nmi_start(void);
+> +
+> +extern bool hld_detector_delay_initialized;
+> +extern struct wait_queue_head hld_detector_wait;
+>  int watchdog_nmi_probe(void);
+>  void watchdog_nmi_enable(unsigned int cpu);
+>  void watchdog_nmi_disable(unsigned int cpu);
+> diff --git a/kernel/watchdog.c b/kernel/watchdog.c
+> index 6e6dd5f0bc3e..bd4ae1839b72 100644
+> --- a/kernel/watchdog.c
+> +++ b/kernel/watchdog.c
+> @@ -103,7 +103,10 @@ void __weak watchdog_nmi_disable(unsigned int cpu)
+>  	hardlockup_detector_perf_disable();
+>  }
+>  
+> -/* Return 0, if a NMI watchdog is available. Error code otherwise */
+> +/*
+> + * Return 0, if a NMI watchdog is available. -EBUSY if not ready.
+> + * Other negative value if not support.
+> + */
+>  int __weak __init watchdog_nmi_probe(void)
+>  {
+>  	return hardlockup_detector_perf_init();
+> @@ -739,15 +742,45 @@ int proc_watchdog_cpumask(struct ctl_table *table, int write,
+>  }
+>  #endif /* CONFIG_SYSCTL */
+>  
+> +static void lockup_detector_delay_init(struct work_struct *work);
+> +bool hld_detector_delay_initialized __initdata;
+> +
+> +struct wait_queue_head hld_detector_wait __initdata =
+> +		__WAIT_QUEUE_HEAD_INITIALIZER(hld_detector_wait);
+> +
+> +static struct work_struct detector_work __initdata =
+> +		__WORK_INITIALIZER(detector_work, lockup_detector_delay_init);
+> +
+> +static void __init lockup_detector_delay_init(struct work_struct *work)
+> +{
+> +	int ret;
+> +
+> +	wait_event(hld_detector_wait, hld_detector_delay_initialized);
+> +	ret = watchdog_nmi_probe();
+> +	if (!ret) {
+> +		nmi_watchdog_available = true;
+> +		lockup_detector_setup();
 
-It make clk driver probe 30 percent faster on the platform
-have 1483 registered clks and average clock name length 20.
+Is it really safe to call the entire lockup_detector_setup()
+later?
 
-Signed-off-by: Mark-PK Tsai <mark-pk.tsai@mediatek.com>
----
- drivers/clk/clk.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+It manipulates also softlockup detector. And more importantly,
+the original call is before smp_init(). It means that it was
+running when only single CPU was on.
 
-diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
-index 65508eb89ec9..d5f65fda3db8 100644
---- a/drivers/clk/clk.c
-+++ b/drivers/clk/clk.c
-@@ -89,6 +89,7 @@ struct clk_core {
- 	struct hlist_node	debug_node;
- #endif
- 	struct kref		ref;
-+	unsigned int		hash;
- };
- 
- #define CREATE_TRACE_POINTS
-@@ -292,16 +293,17 @@ struct clk_hw *clk_hw_get_parent(const struct clk_hw *hw)
- EXPORT_SYMBOL_GPL(clk_hw_get_parent);
- 
- static struct clk_core *__clk_lookup_subtree(const char *name,
-+					     unsigned int hash,
- 					     struct clk_core *core)
- {
- 	struct clk_core *child;
- 	struct clk_core *ret;
- 
--	if (!strcmp(core->name, name))
-+	if (hash == core->hash && !strcmp(core->name, name))
- 		return core;
- 
- 	hlist_for_each_entry(child, &core->children, child_node) {
--		ret = __clk_lookup_subtree(name, child);
-+		ret = __clk_lookup_subtree(name, hash, child);
- 		if (ret)
- 			return ret;
- 	}
-@@ -313,20 +315,22 @@ static struct clk_core *clk_core_lookup(const char *name)
- {
- 	struct clk_core *root_clk;
- 	struct clk_core *ret;
-+	unsigned int hash;
- 
- 	if (!name)
- 		return NULL;
- 
-+	hash = full_name_hash(NULL, name, strlen(name));
- 	/* search the 'proper' clk tree first */
- 	hlist_for_each_entry(root_clk, &clk_root_list, child_node) {
--		ret = __clk_lookup_subtree(name, root_clk);
-+		ret = __clk_lookup_subtree(name, hash, root_clk);
- 		if (ret)
- 			return ret;
- 	}
- 
- 	/* if not found, then search the orphan tree */
- 	hlist_for_each_entry(root_clk, &clk_orphan_list, child_node) {
--		ret = __clk_lookup_subtree(name, root_clk);
-+		ret = __clk_lookup_subtree(name, hash, root_clk);
- 		if (ret)
- 			return ret;
- 	}
-@@ -3827,6 +3831,7 @@ __clk_register(struct device *dev, struct device_node *np, struct clk_hw *hw)
- 		goto fail_name;
- 	}
- 
-+	core->hash = full_name_hash(NULL, core->name, strlen(core->name));
- 	if (WARN_ON(!init->ops)) {
- 		ret = -EINVAL;
- 		goto fail_ops;
--- 
-2.18.0
+It seems that x86 has some problem with hardlockup detector as
+well. It later manipulates only the hardlockup detector. Also it uses
+cpus_read_lock() to prevent races with CPU hotplug, see
+fixup_ht_bug().
 
+
+> +	} else {
+> +		WARN_ON(ret == -EBUSY);
+> +		pr_info("Perf NMI watchdog permanently disabled\n");
+> +	}
+> +}
+> +
+>  void __init lockup_detector_init(void)
+>  {
+> +	int ret;
+> +
+>  	if (tick_nohz_full_enabled())
+>  		pr_info("Disabling watchdog on nohz_full cores by default\n");
+>  
+>  	cpumask_copy(&watchdog_cpumask,
+>  		     housekeeping_cpumask(HK_FLAG_TIMER));
+>  
+> -	if (!watchdog_nmi_probe())
+> +	ret = watchdog_nmi_probe();
+> +	if (!ret)
+>  		nmi_watchdog_available = true;
+> +	else if (ret == -EBUSY)
+> +		queue_work_on(smp_processor_id(), system_wq, &detector_work);
+
+IMHO, this is not acceptable. It will block one worker until someone
+wakes it. Only arm64 will have a code to wake up the work and only
+when pmu is successfully initialized. In all other cases, the worker
+will stay blocked forever.
+
+The right solution is to do it the other way. Queue the work
+from arm64-specific code when armv8_pmu_driver_init() succeeded.
+
+Also I suggest to flush the work to make sure that it is finished
+before __init code gets removed.
+
+
+The open question is what code the work will call. As mentioned
+above, I am not sure that lockup_detector_delay_init() is safe.
+IMHO, we need to manipulate only hardlockup detector and
+we have to serialize it against CPU hotplug.
+
+Best Regards,
+Petr
