@@ -2,71 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30C29422291
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 11:43:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D6F6422294
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 11:44:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233683AbhJEJp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 05:45:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33906 "EHLO
+        id S233490AbhJEJq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 05:46:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232658AbhJEJp2 (ORCPT
+        with ESMTP id S232658AbhJEJqZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 05:45:28 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50FC5C06161C;
-        Tue,  5 Oct 2021 02:43:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=Fv/eTlFhdwJO4aKyPVZQzN2g3Wxr+4+vdkJDkaI1jhE=; b=1TfSU7PNMuwf3g5JgAb2wO6Wt8
-        Bs6bVYQE28iJhdlNKdKcRSg1D+TzuT0jie7meCtwv8jRiyerPcmtAHJZ6UCgi5G3gqv1kAoK12tU3
-        oK0ppCxEHi6aU3RJ180kNehOYM6Ctnm4WitpWn2sm08aUGJ47d7I8TR2z3EqT6kqVwWJE6DXGckR7
-        5jI9ft9s6VYktKKjPUb5AZG+nqcMM9wpjslcv4JPtGNggI6WSIEh62v8/1qScsDgP4TJXZ9ZKIrBp
-        us71AtvDgNV0ZWDD05HBA2ZD0X5Q9aId9tBLYUWJBZMAUfqMmr6dFeE89mVO6jv+ioNS/uHAYRDG0
-        uQlPVGTw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:54944)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1mXgz2-00005a-HP; Tue, 05 Oct 2021 10:43:36 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1mXgz1-0008Mo-TK; Tue, 05 Oct 2021 10:43:35 +0100
-Date:   Tue, 5 Oct 2021 10:43:35 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Sean Anderson <sean.anderson@seco.com>
-Cc:     netdev@vger.kernel.org, "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>
-Subject: Re: [RFC net-next PATCH 04/16] net: phylink: Move phylink_set_pcs
- before phylink_create
-Message-ID: <YVweRwtV+ScT4mIe@shell.armlinux.org.uk>
-References: <20211004191527.1610759-1-sean.anderson@seco.com>
- <20211004191527.1610759-5-sean.anderson@seco.com>
+        Tue, 5 Oct 2021 05:46:25 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4A97C06161C;
+        Tue,  5 Oct 2021 02:44:34 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id f9so13609782edx.4;
+        Tue, 05 Oct 2021 02:44:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DbpmwGOB8UZjIrH2A8gEQhTIPZbQIbes9ZyQqIS/Ums=;
+        b=iO4e+OL2CYkGpbwB2GDhfyIdB/ZcbbWoZYWb4bHNpZm4StzvqVFx5sq/1md0WmOns7
+         yGyog9ALAMG75FVDRgP1vpga7gxbQ2GLj3Mx2p3xtXT9HI8QqZUSejgYOW9E5YVhZBp7
+         SQOGHvdpc7ozWjHb9o8x/8bQoclMRdYYFqmxMNe4yXUNttOYScRen6pNm/uJ7SDLZmZu
+         bpfUDGkCYBzx+/QimSJb+GW4B/dScuQRbe7oqHA5NB4aD+a9RadF6lBYe/iYreCCldA9
+         Esz4Q4hl5K3t4nSzIhq1zz/jKKDeLJmVzl8nWNa+pYhAuw14IVRcDtBm5Il/LKhWc1Gp
+         7EWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DbpmwGOB8UZjIrH2A8gEQhTIPZbQIbes9ZyQqIS/Ums=;
+        b=c3QqqeKDb6zUHmmfTWXdatJLcd5EcObSq6pvjQ7OITkduVsdEL8ylENWb+6xHX9Bub
+         0K12bzwGJe7GBgvLiR/AcTRjomfzIKu5avyh+UPhp6iV75YgWt4zOXzq8nYdbD8ftPQM
+         PjKhk2G+K4PXWlbPgV310QshR51fcit5srldOq1BNhuGpbHSn+IIWXs9Qs8rIsBdfbvv
+         cE1rffvvcF7L5YaBm92CXk/3ZUUHcIsl7dXFLEQ/JnwNqiD6s+Q0j9vVnAFAE6D/kpnB
+         ElRCbDccPcbx+OZ1pXvRYCjaMTZEQ11g1nhgZpr27uA3Ot1wbxJcVCEt81Hd0TFKAq/x
+         vCaw==
+X-Gm-Message-State: AOAM533DFcyDB6FpiOIY7R5ElOJdb03BwE2z+/ciPvdjicdhtAJgwiMY
+        FQVAEfDV3N1yP/yNKLPAbH1CQ344iDqgRsMQrnU=
+X-Google-Smtp-Source: ABdhPJywE3s/Nc+1mp99v/K1zxg0WXmKi7nBzRtEX4wh48HCV9HzwccOJLCj2IMHuGxILvWwksBkDUEk5uIA4ovjdHU=
+X-Received: by 2002:a17:906:2887:: with SMTP id o7mr23131365ejd.425.1633427073480;
+ Tue, 05 Oct 2021 02:44:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211004191527.1610759-5-sean.anderson@seco.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+References: <20211005093731.62743-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20211005093731.62743-1-andriy.shevchenko@linux.intel.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 5 Oct 2021 12:43:57 +0300
+Message-ID: <CAHp75Vey95aSGoWg-XZtpX6UXj54208Vi4=VuiU5s7Z6w-fdtw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] gpio: mockup: Convert to use software nodes
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bamvor Jian Zhang <bamv2005@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Kent Gibson <warthog618@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 04, 2021 at 03:15:15PM -0400, Sean Anderson wrote:
-> The new pcs-related functions in the next few commits fit better before
-> phylink_create, so move phylink_set_pcs in preparation. No functional
-> change intended.
-> 
-> Signed-off-by: Sean Anderson <sean.anderson@seco.com>
+On Tue, Oct 5, 2021 at 12:37 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
 
-Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+> Reported-tested-by: Kent Gibson <warthog618@gmail.com>
 
-Thanks.
+Oopsista, should be "Reported-and-tested-by:". I hope you can fix it
+when applying, but tell me if I need to send a v3.
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+With Best Regards,
+Andy Shevchenko
