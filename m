@@ -2,95 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00D38422012
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 10:04:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2767F422023
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 10:07:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232871AbhJEIFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 04:05:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38134 "EHLO
+        id S233024AbhJEIJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 04:09:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232920AbhJEIFj (ORCPT
+        with ESMTP id S232511AbhJEIJU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 04:05:39 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50461C061745
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 01:03:49 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id o4-20020a05600c510400b0030d55d6449fso2177402wms.5
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 01:03:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=FMhGY7C4erACOrtNGWdyPG3fPCsKUPZ4ssc9loYl6pM=;
-        b=ZoeMflsFYVySlgWgIEjG/K1qmzO3CDj7gLY+OpRpCjf6EZsMIIRlB9/vyDlAzkNm5k
-         Wncvqw0RT8K4uC5ipSSyBuZNxVr+bG3/1WYl+Oed7iQarvJlcLJchWUqIdT0/Kl9euZs
-         Zl4YuEeGG/zdA8SPk7Znn7BEUO9GGMwl5PGyoLYKU9RnCDqI3DuZqmQaL2iXPnCUNajO
-         BILj3AX2PC5sOmRtjvFlUUhE0gLhzW5OUik6szQbAwZDZ4769VQKzn980Of1/ba6Jytl
-         8AMeNQCAKUhJfnx8DdM2C+NLCBosxm1YkJDIT/F1NxqPnjQvQZF0fzP8eCR6PlIE9lr5
-         vfbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=FMhGY7C4erACOrtNGWdyPG3fPCsKUPZ4ssc9loYl6pM=;
-        b=nNJjRCLGG6iFmTtIbydUYlMqM8GgeWCx6epDU93AXAWxQrporY4J1BIJOH1ngqpKHF
-         ZRSOtEV1Y0A9VBwslAAzlaqCjtdsTQa9uedxHTlmxskINPQqfWyGF8CuGkf2/E9viQel
-         tSZ18alb/7tK3oZyb5nXQJfx6uwPhjrRIuYGcCOhIecmDehXzrEaekXaetT/t1uVExVT
-         xo/5i+JYV6eeyusYMhKaN5X/5QDZFKt1/9xN2+TGwiPsSMzhyG4sVOvy5uWLwD5FieJI
-         fGs2M7Mj7GQRANd4nopgP/k1C/+ZywJD+iVJ55U2+M0CvhxXNqazajyLJH1QGYaRx4aD
-         Nm2g==
-X-Gm-Message-State: AOAM533133292vEiV9K6wH5zYhEEjwvsjAf2gf0C3BgVZxgDJdUClt1K
-        ZIV3qepw3iDVp1w+X0Osk7Bouw==
-X-Google-Smtp-Source: ABdhPJwH+SL83NXNyv9pNPnnhhHVpHp2yakF3NjqgwRt6yZWZwnCko0+0kNYtrvEbNE6LVA0xb5fZg==
-X-Received: by 2002:a1c:8054:: with SMTP id b81mr1907961wmd.87.1633421027875;
-        Tue, 05 Oct 2021 01:03:47 -0700 (PDT)
-Received: from google.com ([95.148.6.175])
-        by smtp.gmail.com with ESMTPSA id l124sm1009147wml.8.2021.10.05.01.03.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Oct 2021 01:03:47 -0700 (PDT)
-Date:   Tue, 5 Oct 2021 09:03:45 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Arnd Bergmann <arnd@arndb.de>,
+        Tue, 5 Oct 2021 04:09:20 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48BEEC061745;
+        Tue,  5 Oct 2021 01:07:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=fTYy+JsPp0Luxwf+jQWWHB2bXvTIbDSFNvdErOAVSfU=; b=TFueyENHYRQaO/5AkXnMZFErfu
+        dCo/57hrVzgG6W8MQiffUDe+6QbULCs0oQlPQ+Swhf359Yk5CiAGmxs3w6wgx5HeCMN/jgPgmzVne
+        wERlayxLdLN4zfJwbHoB72Klc3r0fCHHRGLmRErQHON7MNY6JrtT3btE3ZLydYLBYzErPW6xzea5t
+        IXrppEwU4ltBFfMK6NsboV+UizetAnojTdwFX9g5xRCyNiDtht9g8ShhWiXkplzntmZ6cnov8kCNS
+        9xJiak0SeGLOS4W6feosLerqZVIPyaMoXL4UpVPrwWn2rY0tO1FZ8edyaHr/BG2BVZ8omonD5kP/6
+        4gnVLzDg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mXfQr-0007BD-SM; Tue, 05 Oct 2021 08:04:27 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 7AAA198631C; Tue,  5 Oct 2021 10:04:13 +0200 (CEST)
+Date:   Tue, 5 Oct 2021 10:04:13 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Barry Song <21cnbao@gmail.com>
+Cc:     Tim Chen <tim.c.chen@linux.intel.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Ben Segall <bsegall@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mfd: hi6421-spmi-pmic: cleanup drvdata
-Message-ID: <YVwG4RhXKCPuB1Wp@google.com>
-References: <1828cb783b1ebca0b98bf0b3077d8701adb228f7.1630586862.git.mchehab+huawei@kernel.org>
+        Guodong Xu <guodong.xu@linaro.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        "Cc: Len Brown" <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        LAK <linux-arm-kernel@lists.infradead.org>,
+        Linuxarm <linuxarm@huawei.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mel Gorman <mgorman@suse.de>, msys.mizuma@gmail.com,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Will Deacon <will@kernel.org>, x86 <x86@kernel.org>,
+        yangyicong <yangyicong@huawei.com>
+Subject: Re: [PATCH RESEND 0/3] Represent cluster topology and enable load
+ balance between clusters
+Message-ID: <20211005080413.GL4323@worktop.programming.kicks-ass.net>
+References: <20210924085104.44806-1-21cnbao@gmail.com>
+ <CAGsJ_4yW72mktbWjRfE9ngXoq9oXBXyAd_TPjKBNdGiRSoh9LA@mail.gmail.com>
+ <CAKfTPtAtfJRFBbo+kBCYf42hxcc2iP8kkmg3Wcr5aW7Rnf=rfw@mail.gmail.com>
+ <YVch0/R9PHzUwqea@hirez.programming.kicks-ass.net>
+ <ece8838d112840bf26adbb09f653babcf298eb28.camel@linux.intel.com>
+ <CAGsJ_4wvLw=US1ddJr=Jrim1vs-F2hpcQ29LQyqDENd7Fk=ssA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1828cb783b1ebca0b98bf0b3077d8701adb228f7.1630586862.git.mchehab+huawei@kernel.org>
+In-Reply-To: <CAGsJ_4wvLw=US1ddJr=Jrim1vs-F2hpcQ29LQyqDENd7Fk=ssA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 02 Sep 2021, Mauro Carvalho Chehab wrote:
+On Sat, Oct 02, 2021 at 08:09:58PM +1300, Barry Song wrote:
 
-> There are lots of fields at struct hi6421_spmi_pmic that aren't
-> used. In a matter of fact, only regmap is needed.
+> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> index 7e4651a1aaf4..86821e83b935 100644
+> --- a/arch/arm64/Kconfig
+> +++ b/arch/arm64/Kconfig
+> @@ -993,8 +993,13 @@ config SCHED_CLUSTER
+>         bool "Cluster scheduler support"
+>         help
+>           Cluster scheduler support improves the CPU scheduler's decision
+> +         making when dealing with machines that have clusters of CPUs.
+> +         Cluster usually means a couple of CPUs which are placed closely
+> +         by sharing mid-level caches, last-level cache tags or internal
+> +         busses. For example, on Hisilicon Kunpeng920, each 4 CPUs share
+> +         LLC cache tags. This feature isn't a universal win because it
+> +         can bring a cost of slightly increased overhead in some places.
+> +         If unsure say N here.
 > 
-> So, drop the struct as a hole, and set just the regmap as
-> the drvdata.
+>  config SCHED_SMT
+>         bool "SMT scheduler support"
+> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> index bd27b1cdac34..940eb1fe0abb 100644
+> --- a/arch/x86/Kconfig
+> +++ b/arch/x86/Kconfig
+> @@ -1002,12 +1002,17 @@ config NR_CPUS
+>           to the kernel image.
 > 
-> Acked-by: Mark Brown <broonie@kernel.org>
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->  drivers/mfd/hi6421-spmi-pmic.c           | 16 +++++----------
->  drivers/misc/hi6421v600-irq.c            |  9 ++++-----
->  drivers/regulator/hi6421v600-regulator.c | 10 +++++-----
->  include/linux/mfd/hi6421-spmi-pmic.h     | 25 ------------------------
->  4 files changed, 14 insertions(+), 46 deletions(-)
->  delete mode 100644 include/linux/mfd/hi6421-spmi-pmic.h
+>  config SCHED_CLUSTER
+> +       def_bool y
+> +       prompt "Cluster scheduler support"
+>         help
+>          Cluster scheduler support improves the CPU scheduler's decision
+> +        making when dealing with machines that have clusters of CPUs.
+> +        Cluster usually means a couple of CPUs which are placed closely
+> +        by sharing mid-level caches, last-level cache tags or internal
+> +        busses. For example, on x86 Jacobsville, each 4 CPUs share one
+> +        L2 cache. 
 
-Applied, thanks.
+			This feature isn't a universal win because it can bring
+> +        a cost of slightly increased overhead in some places. If unsure
+> +        say N here.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+That is a really odd addition to a default-y feature.
+
+How about I make both:
+
+	help
+	  Cluster scheduler support improves the CPU scheduler's decision
+	  making when dealing with machines that have clusters of CPUs.
+	  Cluster usually means a couple of CPUs which are placed closely
+	  by sharing mid-level caches, last-level cache tags or internal
+	  busses.
+
