@@ -2,154 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 609B1422AE2
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:20:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C4D4422AEB
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:21:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235912AbhJEOWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 10:22:30 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:48914 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234437AbhJEOW2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 10:22:28 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1633443637; h=Content-Transfer-Encoding: Content-Type:
- MIME-Version: Message-ID: In-Reply-To: Date: References: Subject: Cc:
- To: From: Sender; bh=iXaHQCDcTat4B7XjXBM6ERGc8OaY+eIv7u8gl6/j0qg=; b=N7RnSvNXmzuAzrwuhdZx689MYqG8mspp2pMtrlW9maZ42mrP79Czdm7Q4TzxwbhBuBA8urZH
- ZAK2k6nTG+c9EaxTxcQTp0HtGIiawPQgElugnF36PAJq7HBI7UTs6kwFuJDoWQmYoNlZGe6O
- Y+Wjb8s17uWp6mIWAsbT0NkYQ84=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 615c5f2aff0285fb0ab466d6 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 05 Oct 2021 14:20:26
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 087F0C4361B; Tue,  5 Oct 2021 14:20:26 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from tykki (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id EF3B7C4338F;
-        Tue,  5 Oct 2021 14:20:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org EF3B7C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Jerome Pouiller <Jerome.Pouiller@silabs.com>
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        linux-mmc@vger.kernel.org,
-        Pali =?utf-8?Q?Roh?= =?utf-8?Q?=C3=A1r?= <pali@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: Re: [PATCH v8 00/24] wfx: get out from the staging area
-References: <20211005135400.788058-1-Jerome.Pouiller@silabs.com>
-Date:   Tue, 05 Oct 2021 17:20:19 +0300
-In-Reply-To: <20211005135400.788058-1-Jerome.Pouiller@silabs.com> (Jerome
-        Pouiller's message of "Tue, 5 Oct 2021 15:53:36 +0200")
-Message-ID: <871r4zft98.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S236045AbhJEOWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 10:22:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43184 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235294AbhJEOWp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 10:22:45 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33077C061749;
+        Tue,  5 Oct 2021 07:20:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=9cd4fflbhPi+WS75BLlYH8Lxr29xEplX+5DiCepdM6M=; b=OnNnDZAKK+pQ6EIA+ZWx48Di7m
+        tMp2OUnjS87vId8Dy0d5hZTjGs7cBq59swnhV9JCKGUAzFnr4WwA+9tlVSLgeXL/JLufkRzubC33Q
+        2l6MC4iBv8AJKNMMFJIyUSiJGVQMVoVnkPXvew12mA05UqHbUmiSw5/xcYTn8smG0rJ7m4vpEQQri
+        uJzZ1wwm3TM8a92IqmGWFaJB9LOc9VPHqCAvbTIjN2+tUGfSHPwL5UelwKcDGytuynF2iS4WBAAmX
+        cYg84BxxaLFmdMUPQ4PYoo8sij9dMymbE4t8KP5tgclSAt9k3YtZPnwReEUI5PfzlKFGo4C/q161H
+        qyQQ4eEw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mXlJ8-0083tX-1Y; Tue, 05 Oct 2021 14:20:38 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 28D5230003C;
+        Tue,  5 Oct 2021 16:20:37 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 100B321339B6B; Tue,  5 Oct 2021 16:20:37 +0200 (CEST)
+Date:   Tue, 5 Oct 2021 16:20:37 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Marco Elver <elver@google.com>
+Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
+        Alexander Potapenko <glider@google.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Waiman Long <longman@redhat.com>,
+        Will Deacon <will@kernel.org>, kasan-dev@googlegroups.com,
+        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, x86@kernel.org
+Subject: Re: [PATCH -rcu/kcsan 04/23] kcsan: Add core support for a subset of
+ weak memory modeling
+Message-ID: <YVxfNbTgT7GN21I1@hirez.programming.kicks-ass.net>
+References: <20211005105905.1994700-1-elver@google.com>
+ <20211005105905.1994700-5-elver@google.com>
+ <YVxKplLAMJJUlg/w@hirez.programming.kicks-ass.net>
+ <CANpmjNMk0ubjYEVjdx=gg-S=zy7h=PSjZDXZRVfj_BsNzd6zkg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANpmjNMk0ubjYEVjdx=gg-S=zy7h=PSjZDXZRVfj_BsNzd6zkg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jerome Pouiller <Jerome.Pouiller@silabs.com> writes:
+On Tue, Oct 05, 2021 at 03:13:25PM +0200, Marco Elver wrote:
+> On Tue, 5 Oct 2021 at 14:53, Peter Zijlstra <peterz@infradead.org> wrote:
 
-> From: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
->
-> Hello,
->
-> I think the wfx driver is now mature enough to be accepted in the
-> drivers/net/wireless directory.
->
-> The firmware is now a part of the linux-firmware repository since relase
-> 20210315[1]. It had taken a bit of time because I have worked with the le=
-gal
-> department to simplify the redistribution terms of the firmware.
->
-> [1]: https://lore.kernel.org/linux-firmware/2833354.gXvVfaC4I7@pc-42/
->
->
-> As requested by Kalle[2], I send one file per patch. At the end, all the
-> patches (or at least the patches 3 to 24) will be squashed (therefore, I
-> didn't bother to write real commit messages).
->
-> [2]: https://lore.kernel.org/lkml/87ft6p2n0h.fsf@codeaurora.org/
->
-> Here is a diagram of the global architecture that may help to understand
-> the code:
->
->     ,------------------------------------.
->     |                mac80211            |
->     `------------------------------------'
->     ,------------+-----------+-----------.
->     |    sta     |           |           |
->     |    scan    |           |           |
->     |    main    |           |           |
->     +------------+  data_tx  |           |
->     |    key     |           |  data_rx  |
->     | hif_tx_mib |   queue   |           |
->     |   hif_tx   |           |           |
->     |   hif_rx   |           |           |
->     |  hif_api_* |           |           |
->     +------------+-----------+-----------+--------.
->     |                  bh                |  fwio  |
->     +------------------------------------+--------+
->     |                     hwio                    |
->     +---------------------------------------------+
->     |                   bus_sdio                  |
->     |                   bus_spi                   |
->     `---------------------------------------------'
->     ,---------------------------------------------.
->     |                  spi / sdio                 |
->     `---------------------------------------------'
->
-> Roughly, I have sent the files from the bottom to the top.
->
->
-> v8:
->   - Change the way the DT is handled. The user can now specify the name of
->     the board (=3D chip + antenna) he use. It easier for board designers =
-to
->     add new entries. I plan to send a PR to linux-firmware to include PDS
->     files of the developpement boards belong the firmware (I also plan to
->     relocate these file into wfx/ instead of silabs/). (Kalle, Pali)
->   - Prefix visible functions and structs with "wfx_". I mostly kept the
->     code under 80 columns. (Kalle, Pali, Greg)
->   - Remove support for force_ps_timeout for now. (Kalle)
->   - Fix licenses of Makefile, Kconfig and hif_api*.h. (Kalle)
->   - Do not mix and match endianess in struct hif_ind_startup. (Kalle)
->   - Remove magic values. (Kalle)
->   - Use IS_ALIGNED(). (BTW, PTR_IS_ALIGNED() does not exist?) (Kalle)
->   - I have also noticed that some headers files did not declare all the
->     struct they used.
->
->   These issues remain (I hope they are not blockers):
->   - I have currently no ideas how to improve/simplify the parsing PDS fil=
-e.
->     (Kalle)
->   - We would like to relate the SDIO quirks into mmc/core/quirks.h, but t=
-he
->     API to do that does not yet exist. (Ulf, Pali)
+> > And since you want to mark these functions as uaccess_safe, there must
+> > not be any tracing on, hence notrace.
+> 
+> In the Makefile we've relied on:
+> 
+>   CFLAGS_REMOVE_core.o = $(CC_FLAGS_FTRACE)
+> 
+> just to disable it for all code here. That should be enough, right?
 
-So is this a direct version from staging-next? If yes, what commit id did
-you use? Or do you have your own set of patches on top of staging-next?
+I find these implicit notrace thingies terribly confusing :/ I've
+reported fail to rostedt a number of times only to be (re)told about
+these Makefile level thingies.
 
---=20
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
-hes
+Ideally we'd script notrace on every implicit symbol or something.
