@@ -2,132 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0541422C19
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:14:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F077C422C21
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:14:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235763AbhJEPPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 11:15:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231940AbhJEPPw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 11:15:52 -0400
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39360C061749
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 08:14:02 -0700 (PDT)
-Received: by mail-io1-xd34.google.com with SMTP id y197so24692373iof.11
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 08:14:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sh8VNE4FCLdSm5VCdPfycmMPvw4PtVqb68V0H1ZpEUk=;
-        b=HtcGpyyh2UUVNrAb5Igdog262j6GdlcgBCBggIlt8jnaHyk4jpyGysSyBfHZba0mdm
-         pDC1Acu7d9xqLvWCmW3TynL/Iw1DjKCWed9Iw2sJZ/8HJ8dhcrJzRSHOsg1v8+xashTp
-         skKhyltA89Q0HPRLVE510wa50TQNxyIKcppPg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sh8VNE4FCLdSm5VCdPfycmMPvw4PtVqb68V0H1ZpEUk=;
-        b=8QkcghaHv6mjAZJjpJfEqhSW5q8WKKP+iMNrFHhMoyj28e3Q4MLaJp9s0Leb/DQ0M/
-         gliw6alx0GZERtFOt5DEU5enYfHBjcVUd9SLfAEhHDx9i0ZsOxJU/5frarLE1YdKxgfp
-         Pm+p+t6J5GNdpXaItVe7uLnd7EL7jpVivvwgx7dDIWXEJJ/j91fLdd6nORoAukobKsR/
-         k5LTYdmPSlYRSUqeienPpjOWt5LWiZ10qcIoPCgtxlsdnbsd9yfi8EW8wx2BUkpgrnOv
-         9aNv0trSP5xPXDoM3qhBx3j9JnqRuE29gNK/21Cf6p4ZiVTY23jcnEvKMJEDqbhyS47L
-         7ebQ==
-X-Gm-Message-State: AOAM533NykAyxN3f+CoFSY2VkkEo29rPUuB5h/DWW95zT4FYbubegjMp
-        7GcccfvU7zY2p8off/2m8cGi796Lcww24Q==
-X-Google-Smtp-Source: ABdhPJzjyw+j0mRaR817oks1TqP8pTdZRH7fMrzspRm1/9+FjgkLTHcdsUenLxIQQuo1f8ePMcGmjA==
-X-Received: by 2002:a05:6602:2e95:: with SMTP id m21mr280226iow.198.1633446841417;
-        Tue, 05 Oct 2021 08:14:01 -0700 (PDT)
-Received: from mail-il1-f181.google.com (mail-il1-f181.google.com. [209.85.166.181])
-        by smtp.gmail.com with ESMTPSA id w11sm5231878ior.40.2021.10.05.08.13.59
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Oct 2021 08:14:00 -0700 (PDT)
-Received: by mail-il1-f181.google.com with SMTP id b6so22249109ilv.0
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 08:13:59 -0700 (PDT)
-X-Received: by 2002:a05:6e02:1847:: with SMTP id b7mr3420583ilv.180.1633446839293;
- Tue, 05 Oct 2021 08:13:59 -0700 (PDT)
+        id S235805AbhJEPQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 11:16:40 -0400
+Received: from mga07.intel.com ([134.134.136.100]:46206 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231513AbhJEPQi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 11:16:38 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10128"; a="289274430"
+X-IronPort-AV: E=Sophos;i="5.85,349,1624345200"; 
+   d="scan'208";a="289274430"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2021 08:14:47 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,349,1624345200"; 
+   d="scan'208";a="458093483"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga002.jf.intel.com with ESMTP; 05 Oct 2021 08:14:44 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 66B7C1C8; Tue,  5 Oct 2021 18:14:50 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Guenter Roeck <linux@roeck-us.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org
+Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: [PATCH v1 1/1] watchdog: wdt_pci: Correct the PCI ID vendor name
+Date:   Tue,  5 Oct 2021 18:14:45 +0300
+Message-Id: <20211005151445.89620-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-References: <20211004092100.1.Ic90a5ebd44c75db963112be167a03cc96f9fb249@changeid>
- <YVtZstInQxXfPmsZ@intel.com> <DM6PR12MB49127B8B63079E6533197EA6E5AF9@DM6PR12MB4912.namprd12.prod.outlook.com>
-In-Reply-To: <DM6PR12MB49127B8B63079E6533197EA6E5AF9@DM6PR12MB4912.namprd12.prod.outlook.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Tue, 5 Oct 2021 08:13:47 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=VvKsrB9RZKdB6vQJ-38BZEYLnuENxb1+1v-PahcdBtiQ@mail.gmail.com>
-Message-ID: <CAD=FV=VvKsrB9RZKdB6vQJ-38BZEYLnuENxb1+1v-PahcdBtiQ@mail.gmail.com>
-Subject: Re: connector_bad_edid() is broken (was: Re: [PATCH] drm/edid: Fix
- crash with zero/invalid EDID)
-To:     "Zuo, Jerry" <Jerry.Zuo@amd.com>
-Cc:     =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "geert@linux-m68k.org" <geert@linux-m68k.org>,
-        "oliver.sang@intel.com" <oliver.sang@intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Jani Nikula <jani.nikula@intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Wentland, Harry" <Harry.Wentland@amd.com>,
-        "Siqueira, Rodrigo" <Rodrigo.Siqueira@amd.com>,
-        Kuogee Hsieh <khsieh@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+The proper name of Acces I/O is with a single 's'. Correct it respectively.
 
-On Tue, Oct 5, 2021 at 6:33 AM Zuo, Jerry <Jerry.Zuo@amd.com> wrote:
->
-> > BTW I believe connector_bad_edid() itself is broken since commit
-> > e11f5bd8228f ("drm: Add support for DP 1.4 Compliance edid corruption
-> > test"). Before we've even allocated the memory for the extension blocks
-> > that code now assumes edid[0x7e] is to be 100% trusted and goes and
-> > calculates the checksum on a block based on that. So that's likely going to be
-> > pointing somewhere beyond the base block into memory we've not even
-> > allocated. So anyone who wanted could craft a bogus EDID and maybe get
-> > something interesting to happen.
-> >
-> > Would be good if someone could fix that while at it. Or just revert the
-> > offending commit if there is no simple solution immediately in sight.
-> >
-> > The fact that we're parsing entirely untrustworthy crap in the kernel always
-> > worries me. Either we need super careful review of all relevant code, and/or
-> > we need to think about moving the parser out of the kernel.
-> > I was considering playing around with the usermode helper stuff. IIRC there
-> > is a way to embed the userspace binary into the kernel and just fire it up
-> > when needed. But so far it's been the usual -ENOTIME for me...
-> >
-> [AMD Official Use Only]
->
-> Hi Ville:
->
->      Yhea, it is pretty old change from two years ago, and it is no long valid anymore. Please simply drop it.
->
-> Regards,
-> Jerry
+While at it, convert to use PCI_DEVICE() macro, drop unneeded initializer
+and comma.
 
-I've cut out other bits from this email and changed the subject line
-since I think this is an issue unrelated to the one my original patch
-was fixing.
+Fixes: 9f2cc6f759ca ("watchdog: wdt_pci.c: move ids to pci_ids.h")
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/watchdog/wdt_pci.c | 9 ++-------
+ include/linux/pci_ids.h    | 4 ++--
+ 2 files changed, 4 insertions(+), 9 deletions(-)
 
-I don't actually know a ton about DP compliance testing, but I
-attempted to try to be helpful and revert commit e11f5bd8228f ("drm:
-Add support for DP 1.4 Compliance edid corruption test"). It wasn't
-too hard to deal with the conflicts in the revert itself, but then
-things didn't compile because there are two places that use
-`real_edid_checksum` and that goes away if I revert the patch.
+diff --git a/drivers/watchdog/wdt_pci.c b/drivers/watchdog/wdt_pci.c
+index d5e56b601351..ba63f442438d 100644
+--- a/drivers/watchdog/wdt_pci.c
++++ b/drivers/watchdog/wdt_pci.c
+@@ -717,13 +717,8 @@ static void wdtpci_remove_one(struct pci_dev *pdev)
+ 
+ 
+ static const struct pci_device_id wdtpci_pci_tbl[] = {
+-	{
+-		.vendor	   = PCI_VENDOR_ID_ACCESSIO,
+-		.device	   = PCI_DEVICE_ID_ACCESSIO_WDG_CSM,
+-		.subvendor = PCI_ANY_ID,
+-		.subdevice = PCI_ANY_ID,
+-	},
+-	{ 0, }, /* terminate list */
++	{ PCI_DEVICE(PCI_VENDOR_ID_ACCESIO, PCI_DEVICE_ID_ACCESIO_WDG_CSM) },
++	{ } /* terminate list */
+ };
+ MODULE_DEVICE_TABLE(pci, wdtpci_pci_tbl);
+ 
+diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
+index 011f2f1ea5bb..37a9f12b4def 100644
+--- a/include/linux/pci_ids.h
++++ b/include/linux/pci_ids.h
+@@ -2611,8 +2611,8 @@
+ #define PCI_VENDOR_ID_AKS		0x416c
+ #define PCI_DEVICE_ID_AKS_ALADDINCARD	0x0100
+ 
+-#define PCI_VENDOR_ID_ACCESSIO		0x494f
+-#define PCI_DEVICE_ID_ACCESSIO_WDG_CSM	0x22c0
++#define PCI_VENDOR_ID_ACCESIO		0x494f
++#define PCI_DEVICE_ID_ACCESIO_WDG_CSM	0x22c0
+ 
+ #define PCI_VENDOR_ID_S3		0x5333
+ #define PCI_DEVICE_ID_S3_TRIO		0x8811
+-- 
+2.33.0
 
-I've made an attempt to fix the problem by just adding a bounds check.
-Perhaps you can see if that looks good to you:
-
-https://lore.kernel.org/r/20211005081022.1.Ib059f9c23c2611cb5a9d760e7d0a700c1295928d@changeid
-
--Doug
