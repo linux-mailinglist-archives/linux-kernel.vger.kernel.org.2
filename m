@@ -2,134 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53B5C42304E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 20:43:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D966423034
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 20:43:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235192AbhJESpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 14:45:36 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:24729 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235277AbhJESpb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 14:45:31 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1633459421; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=X876Ahdw47GXHYVdK4dXG/Umyyfo1APYAeN0CffMWTg=; b=eV9Sxs6bFUd6XsUP3f5JJj7BUnC1cV19BOHiSPU6yVvjhSF+pgH7Ng582ngga9KTBj8aAlRI
- Nwa+HAlxlqEbXcHMHY3Nt+x52rZ233kzY15KsIUq0dWDjQ01jzwK7wAAqILaXUlSbeFpu2Wq
- BO0HFF1OR8xvqfl7s8ipSB1D434=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 615c9cd37ae92c7fc90114fd (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 05 Oct 2021 18:43:31
- GMT
-Sender: pmaliset=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 2C0CFC4360C; Tue,  5 Oct 2021 18:43:31 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from pmaliset-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: pmaliset)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2839CC43617;
-        Tue,  5 Oct 2021 18:43:24 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 2839CC43617
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Prasad Malisetty <pmaliset@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, bhelgaas@google.com,
-        robh+dt@kernel.org, swboyd@chromium.org, lorenzo.pieralisi@arm.com,
-        svarbanov@mm-sol.com
-Cc:     devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dianders@chromium.org, mka@chromium.org, vbadigan@codeaurora.org,
-        sallenki@codeaurora.org, manivannan.sadhasivam@linaro.org,
-        linux-pci@vger.kernel.org,
-        Prasad Malisetty <pmaliset@codeaurora.org>
-Subject: [PATCH v11 5/5] PCI: qcom: Switch pcie_1_pipe_clk_src after PHY init in SC7280
-Date:   Wed,  6 Oct 2021 00:12:39 +0530
-Message-Id: <1633459359-31517-6-git-send-email-pmaliset@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1633459359-31517-1-git-send-email-pmaliset@codeaurora.org>
-References: <1633459359-31517-1-git-send-email-pmaliset@codeaurora.org>
+        id S235134AbhJESpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 14:45:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48970 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235014AbhJESpL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 14:45:11 -0400
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 822AFC061749
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 11:43:20 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id x12so3588526qkf.9
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 11:43:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SXjHDPHVkAfuTdG94OroOzGod0/baVo6NNkVzktujtw=;
+        b=jxfUmTlMonkGB7Nwi3dCLGX7gsHGgpk3O04BG//JtP6g8bmsXyL4EStJ/8PDxuks6f
+         LGTytYFjER09fkFMQCgS26wAfioUz5LQqJ4fMdG5sAkjyQI2pUaVha5s2T2Hzk8ZOsgn
+         x2J4AfhkYlNjvoP8KE7cdkQ7xwQur+jp+jrLzpU1l74unsujJMJqy/q5wyjqnyIVc2ka
+         59nuLeMuDQciWH6kpJE7R522BwfzjXAe0VdpxB/tkAkPUsG3FvU0s6coCDqga0rbCGVv
+         PZ/1iBqqmVmSNHGWD4F699F3lAoSlB+BoV5/7QTC44dfUlN6KVTaXQ6pberrLV07QK6O
+         HMIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SXjHDPHVkAfuTdG94OroOzGod0/baVo6NNkVzktujtw=;
+        b=j8PBpXZDKfl+HszVy0T+4aeH3VrqP+yAmwrbQ6rj01T4Z2YRXLxuTdfdq+cwPqcHSo
+         QMnhbBJAGggZ6miCjt52xJzAWG1GLKmBZsvXjj1U+JWCtTY7kEDElL9rHh2HpHXqC5AH
+         Wj51/ZbwRXHUhd7e+ABWqaS82FOfalGEctMR4SbEkQC9axQjtNKboidX0wkUDWm7F+5z
+         6pWI9O0GQzWQH1L4PgDV3lMBp8ZY86xYJJMdDBqy6MqukXsYWDzTxlUbnYIdakqKruuI
+         2eNZIVzyrrlWXClNCPm6R9uLNeBXvkzuiHwoa21fktwsxtkyZVMJ3Q1CfVtRqiI/35eL
+         SsVw==
+X-Gm-Message-State: AOAM533By/3OdvMitN1LwaSMO9pguy1dyd5U99+DMwhKM1dFlkPxbMGz
+        sCOgHh9P0188wTgwTvWUFFxo+gj2f1HtDS8UCF5rNw==
+X-Google-Smtp-Source: ABdhPJyxniKf1EdWzW8rx6eXVPi7baRIZaKvVG30qwSlIIPgF3tKXIdAlrFKTmm+mPQHEPW614IgcC36G+UBit/GTxU=
+X-Received: by 2002:a37:8883:: with SMTP id k125mr15639166qkd.458.1633459399337;
+ Tue, 05 Oct 2021 11:43:19 -0700 (PDT)
+MIME-Version: 1.0
+References: <20211004230431.2321009-1-adelg@google.com> <CAKwvOdnGrKbsfreQHQQprSTeHRaqadJtKi3N9LE+mZGgmUCf1g@mail.gmail.com>
+In-Reply-To: <CAKwvOdnGrKbsfreQHQQprSTeHRaqadJtKi3N9LE+mZGgmUCf1g@mail.gmail.com>
+From:   Andrew Delgadillo <adelg@google.com>
+Date:   Tue, 5 Oct 2021 11:43:08 -0700
+Message-ID: <CAEHm+vHNorGNxPMzrhqWhsKnQrLxfciAVmaMtgPk0E-7b0D8FA@mail.gmail.com>
+Subject: Re: [PATCH] selftests: Remove explicit headers for clang
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Shuah Khan <shuah@kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Greg Thelen <gthelen@google.com>, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On the SC7280, the clock source for gcc_pcie_1_pipe_clk_src
-must be the TCXO while gdsc is enabled. After PHY init successful
-clock source should switch to pipe clock for gcc_pcie_1_pipe_clk_src.
+On Tue, Oct 5, 2021 at 9:59 AM Nick Desaulniers <ndesaulniers@google.com> wrote:
+>
+> On Mon, Oct 4, 2021 at 4:04 PM Andrew Delgadilo <adelg@google.com> wrote:
+> >
+> > From: Andrew Delgadillo <adelg@google.com>
+> >
+> > GCC allows paths to header files to be passed on the command line while
+> > using -o, but clang does not:
+>
+> Ah, it's because `-I` *insn't* being used more so than `-o` being present.
+> >
+> > $ make -C tools/testing/selftests TARGETS=futex
+> >
+> > $ make -C tools/testing/selftests TARGETS=futex LLVM=1
+> > clang -Wall   -g -O2 -Wall -D_GNU_SOURCE -pthread -I../include \
+> > -I../../ -I../../../../../usr/include/ -I/kselftest/usr/include \
+> > futex_wait_timeout.c ../include/futextest.h ../include/atomic.h \
+> > ../include/logging.h -lpthread -lrt -o \
+> > tools/testing/selftests/futex/functional/futex_wait_timeout
+> > clang: error: cannot specify -o when generating multiple output files
+>
+> Why aren't `-I` flags being passed? Rather than:
+>
+> $ clang ... ../include/futextest.h ../include/atomic.h ../include/logging.h ...
+>
+> shouldn't this be:
+>
+> $ clang ... -I ../include/futextest.h -I ../include/atomic.h -I
+> ../include/logging.h
 
-Signed-off-by: Prasad Malisetty <pmaliset@codeaurora.org>
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
----
- drivers/pci/controller/dwc/pcie-qcom.c | 25 +++++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
+Okay, I see, so the fix here wouldn't be to remove the headers from
+the commandline, we should just prepend them with `-l`.
 
-diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-index 1d7a9cb..ded70e6 100644
---- a/drivers/pci/controller/dwc/pcie-qcom.c
-+++ b/drivers/pci/controller/dwc/pcie-qcom.c
-@@ -166,6 +166,9 @@ struct qcom_pcie_resources_2_7_0 {
- 	struct regulator_bulk_data supplies[2];
- 	struct reset_control *pci_reset;
- 	struct clk *pipe_clk;
-+	struct clk *pipe_clk_src;
-+	struct clk *phy_pipe_clk;
-+	struct clk *ref_clk_src;
- };
- 
- union qcom_pcie_resources {
-@@ -1173,6 +1176,20 @@ static int qcom_pcie_get_resources_2_7_0(struct qcom_pcie *pcie)
- 	if (ret < 0)
- 		return ret;
- 
-+	if (pcie->pipe_clk_need_muxing) {
-+		res->pipe_clk_src = devm_clk_get(dev, "pipe_mux");
-+		if (IS_ERR(res->pipe_clk_src))
-+			return PTR_ERR(res->pipe_clk_src);
-+
-+		res->phy_pipe_clk = devm_clk_get(dev, "phy_pipe");
-+		if (IS_ERR(res->phy_pipe_clk))
-+			return PTR_ERR(res->phy_pipe_clk);
-+
-+		res->ref_clk_src = devm_clk_get(dev, "ref");
-+		if (IS_ERR(res->ref_clk_src))
-+			return PTR_ERR(res->ref_clk_src);
-+	}
-+
- 	res->pipe_clk = devm_clk_get(dev, "pipe");
- 	return PTR_ERR_OR_ZERO(res->pipe_clk);
- }
-@@ -1191,6 +1208,10 @@ static int qcom_pcie_init_2_7_0(struct qcom_pcie *pcie)
- 		return ret;
- 	}
- 
-+	/* Set TCXO as clock source for pcie_pipe_clk_src */
-+	if (pcie->pipe_clk_need_muxing)
-+		clk_set_parent(res->pipe_clk_src, res->ref_clk_src);
-+
- 	ret = clk_bulk_prepare_enable(res->num_clks, res->clks);
- 	if (ret < 0)
- 		goto err_disable_regulators;
-@@ -1262,6 +1283,10 @@ static int qcom_pcie_post_init_2_7_0(struct qcom_pcie *pcie)
- {
- 	struct qcom_pcie_resources_2_7_0 *res = &pcie->res.v2_7_0;
- 
-+	/* Set pipe clock as clock source for pcie_pipe_clk_src */
-+	if (pcie->pipe_clk_need_muxing)
-+		clk_set_parent(res->pipe_clk_src, res->phy_pipe_clk);
-+
- 	return clk_prepare_enable(res->pipe_clk);
- }
- 
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+> >
+> > To fix this, remove explicit paths to headers from the commandline in
+> > lib.mk. We must explicitly remove them for x86 and binderfs as they are
+> > not filtered out by the change to lib.mk, but the compiler search paths
+> > for includes are already setup correctly, so the compiler finds the
+> > correct headers.
+> >
+> > Tested: selftests build with LLVM=1 now.
+>
+> With this patch applied
+> $ make -C tools/testing/selftests TARGETS=futex LLVM=1
+> WFM but
+> $ make -C tools/testing/selftests LLVM=1
+> fails, horribly. Are you always expected to pass TARGETS when building
+> the selftests?
 
+I specifically passed TARGETS=futex because I want to point out a
+specific example where this is in an issue as there are other errors I
+see when I build all of selftests with LLVM=1. But to answer your
+question, no, I do not think you are expected to always pass TARGETS.
+
+When I run (without this patch)
+
+$ make -C tools/testing/selftests LLVM=1
+ I get a bunch of errors as well ranging from:
+- clang: error: cannot specify -o when generating multiple output
+files <-- the specific one I'm trying to fix
+- clang: warning: argument unused during compilation: '-pie'
+[-Wunused-command-line-argument]
+- include/x86_64/processor.h:344:25: warning: variable 'xmm7' is
+uninitialized when used here [-Wuninitialized]
+
+                return (unsigned long)xmm7;
+- fuse_mnt.c:17:10: fatal error: 'fuse.h' file not found
+
+#include <fuse.h>
+
+         ^~~~~~~~
+
+However with the patch applied, I no longer see any "clang: error:
+cannot specify -o when generating multiple output files", meaning that
+I fixed one class of errors when building with LLVM=1.
+
+Do you see a clean build currently when building selftests with
+LLVM=1? I'm not arguing that this patch fixes *all* the errors seen,
+but it at least fixes one class of them. Although, it seems I went
+about fixing it in the wrong manner. I can respin this to prepend -l
+before header includes to get rid of the "clang: error: cannot specify
+-o when generating multiple output files" errors.
+
+
+
+
+> > Cc: stable@vger.kernel.org
+> > Signed-off-by: Andrew Delgadillo <adelg@google.com>
+> > ---
+> >  tools/testing/selftests/filesystems/binderfs/Makefile | 2 +-
+> >  tools/testing/selftests/lib.mk                        | 2 +-
+> >  tools/testing/selftests/x86/Makefile                  | 4 ++--
+> >  3 files changed, 4 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/tools/testing/selftests/filesystems/binderfs/Makefile b/tools/testing/selftests/filesystems/binderfs/Makefile
+> > index 8af25ae96049..58e41bd98200 100644
+> > --- a/tools/testing/selftests/filesystems/binderfs/Makefile
+> > +++ b/tools/testing/selftests/filesystems/binderfs/Makefile
+> > @@ -3,6 +3,6 @@
+> >  CFLAGS += -I../../../../../usr/include/ -pthread
+> >  TEST_GEN_PROGS := binderfs_test
+> >
+> > -binderfs_test: binderfs_test.c ../../kselftest.h ../../kselftest_harness.h
+> > +binderfs_test: binderfs_test.c
+> >
+> >  include ../../lib.mk
+> > diff --git a/tools/testing/selftests/lib.mk b/tools/testing/selftests/lib.mk
+> > index fa2ac0e56b43..fb152e20c86a 100644
+> > --- a/tools/testing/selftests/lib.mk
+> > +++ b/tools/testing/selftests/lib.mk
+> > @@ -142,7 +142,7 @@ endif
+> >  ifeq ($(OVERRIDE_TARGETS),)
+> >  LOCAL_HDRS := $(selfdir)/kselftest_harness.h $(selfdir)/kselftest.h
+> >  $(OUTPUT)/%:%.c $(LOCAL_HDRS)
+> > -       $(LINK.c) $(filter-out $(LOCAL_HDRS),$^) $(LDLIBS) -o $@
+> > +       $(LINK.c) $(filter-out %.h,$^) $(LDLIBS) -o $@
+>
+> What? Aren't kselftest.h and kselftest_harness.h already part of
+> LOCAL_HDRS?  Perhaps that filter-out is broken, or LOCAL_HDRS.  Yeah,
+> adding some debugging:
+>
+> diff --git a/tools/testing/selftests/lib.mk b/tools/testing/selftests/lib.mk
+> index fe7ee2b0f29c..827f766d6057 100644
+> --- a/tools/testing/selftests/lib.mk
+> +++ b/tools/testing/selftests/lib.mk
+> @@ -142,6 +142,7 @@ endif
+>  # OVERRIDE_TARGETS = 1.
+>  ifeq ($(OVERRIDE_TARGETS),)
+>  LOCAL_HDRS := $(selfdir)/kselftest_harness.h $(selfdir)/kselftest.h
+> +$(info $$LOCAL_HDRS is [${LOCAL_HDRS}])
+>  $(OUTPUT)/%:%.c $(LOCAL_HDRS)
+>         $(LINK.c) $(filter-out $(LOCAL_HDRS),$^) $(LDLIBS) -o $@
+>
+> prints:
+>
+> $LOCAL_HDRS is [/android0/kernel-all/tools/testing/selftests/kselftest_harness.h
+> /android0/kernel-all/tools/testing/selftests/kselftest.h]
+>
+> so of course filter-out isn't going to match `../include/futextest.h
+> ../include/atomic.h ../include/logging.h`.
+
+Like you mentioned above, it seems a better way to about this would be
+to prepend -I before the includes. I'll go ahead and send a new patch
+to do that.
+> >
+> >  $(OUTPUT)/%.o:%.S
+> >         $(COMPILE.S) $^ -o $@
+> > diff --git a/tools/testing/selftests/x86/Makefile b/tools/testing/selftests/x86/Makefile
+> > index b4142cd1c5c2..68967006b3e9 100644
+> > --- a/tools/testing/selftests/x86/Makefile
+> > +++ b/tools/testing/selftests/x86/Makefile
+> > @@ -72,10 +72,10 @@ all_64: $(BINARIES_64)
+> >  EXTRA_CLEAN := $(BINARIES_32) $(BINARIES_64)
+> >
+> >  $(BINARIES_32): $(OUTPUT)/%_32: %.c helpers.h
+> > -       $(CC) -m32 -o $@ $(CFLAGS) $(EXTRA_CFLAGS) $^ -lrt -ldl -lm
+> > +       $(CC) -m32 -o $@ $(CFLAGS) $(EXTRA_CFLAGS) $(filter-out %.h,$^) -lrt -ldl -lm
+> >
+> >  $(BINARIES_64): $(OUTPUT)/%_64: %.c helpers.h
+> > -       $(CC) -m64 -o $@ $(CFLAGS) $(EXTRA_CFLAGS) $^ -lrt -ldl
+> > +       $(CC) -m64 -o $@ $(CFLAGS) $(EXTRA_CFLAGS) $(filter-out %.h,$^) -lrt -ldl
+> >
+> >  # x86_64 users should be encouraged to install 32-bit libraries
+> >  ifeq ($(CAN_BUILD_I386)$(CAN_BUILD_X86_64),01)
+> > --
+> > 2.33.0.800.g4c38ced690-goog
+> >
+>
+>
+> --
+> Thanks,
+> ~Nick Desaulniers
