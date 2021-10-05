@@ -2,494 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67802421E68
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 07:47:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AD3F421E6F
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 07:51:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231928AbhJEFti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 01:49:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35442 "EHLO
+        id S231752AbhJEFws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 01:52:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231142AbhJEFtg (ORCPT
+        with ESMTP id S231142AbhJEFwo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 01:49:36 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1F54C061745;
-        Mon,  4 Oct 2021 22:47:46 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id w14so1538118pll.2;
-        Mon, 04 Oct 2021 22:47:46 -0700 (PDT)
+        Tue, 5 Oct 2021 01:52:44 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53E73C06174E
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 22:50:54 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id d13-20020a17090ad3cd00b0019e746f7bd4so1145494pjw.0
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 22:50:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xOb3K2Ebij+Qlj3yxeLZ8J9EhkXKLfFOS/Yt+71A8A0=;
-        b=miBNCvp8zGXpSTj6TwIvrEO3iv0uO13u+W8f3vFWS/oSqGDATP7QOu0zrjW+t5obfV
-         WjDeqtLhS+zzreccsYKGBpKQ4X2/f1q9XruLlQDvlEzPZGT2Er1+Vt6ChIy+pweg16ZI
-         6kMeAhpFyteN1Ep1hrzXGAXpMaPsvEUAbtN+Oi36QQUY9EFnsV2F1RNRUuG3KIblLDQS
-         m/9Ca2ebzs/QdYBwalWF807m36ChI7fwh+BdKgZkenSGf7jyo8mZnH1aUoT4FpsI7mfi
-         2A7ZnmH7F4lj/jhHZHA240PFzRZ5/nU4qdWc5flD1XefzH/G106IWauc8cTGNha+qo8g
-         bK/w==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=4NeMuZezzbqxNlXi1LQWclIxq6eDR6pm/+jHI0J3aK8=;
+        b=S4xmUCWSrgXLjCPnoSiwsI+cxVNnf61RlJdSSJRG4uUK5Fmt7nNkR4VtIycRv4we/8
+         DnC2PZX7rqJo6MW/+1Ri+eIAab8E1cCRQ9BR6/apHgI8rN4gUgL4Joz/d5DMqPQ+1rcL
+         Fz7U9pn36SzARq/Jf6Ei1V4o38Giw6cIjoZhwcQLevcE/8Q5Id8LpaFN4NTXNYVbwBcu
+         5m14tmrdglqtOjN7jCcGtHod88o7xzlUjHB17pxT4l/mcqgPsg2ue8R0BzPm2+P8mReJ
+         bSa+M9d3DzRQOthZT6+FGhhxLaoiLhZUk1+NwdMjY3HbBaRXpEr4epJElREUQsGktIU8
+         Bm0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xOb3K2Ebij+Qlj3yxeLZ8J9EhkXKLfFOS/Yt+71A8A0=;
-        b=qA2hpZeNu9e9RwbHHCUPz0h6k5m0gKGFvG/MWd7aVz7eRtyyFw1feZb4ZOc+xMnPPy
-         r6+lORW0hJyF8Hp6SBG5DTJxF9PHdzFRbibLYioxgFWj/DbnLl4ecNtEap0RUAQeySMa
-         GpP5iqhzbbeXzDZZjn8BKXXLorCHlMync1gmJUoSt1zsosf+HG8ifTexjexKJVkN0ztf
-         8703Q8h9u3vTqqgyv3WrVmhfLzUkvVvu/tFLmw1HZUiujnH5i+/xCMuL79W8xkqts+6c
-         Gtmz+FpJS8LLgtFahXP7HliP8LJWx9rJZgHdeGCKFsZVxi6qxMUdNR3nljba1C/irJUX
-         SrPA==
-X-Gm-Message-State: AOAM530a/kVu8wLxeMMwggqeyzX8Y7JYghvrAnVab2q6nQl7g1uJxmH6
-        Xg82Zr8Vp2sTpoFwWvT8nZ0f839MWV/hXA==
-X-Google-Smtp-Source: ABdhPJwWSBjjDpj6TlE2UpZ1sWmoZTgI8bPV6mqfnKUzvJCj2uWGCfD/KFsGtDvPTdWw1GORMzO+1w==
-X-Received: by 2002:a17:90b:3e86:: with SMTP id rj6mr1564486pjb.78.1633412866172;
-        Mon, 04 Oct 2021 22:47:46 -0700 (PDT)
-Received: from localhost.localdomain ([223.72.69.155])
-        by smtp.gmail.com with ESMTPSA id c11sm16577557pfm.55.2021.10.04.22.47.40
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 04 Oct 2021 22:47:45 -0700 (PDT)
-From:   Zhenguo Yao <yaozhenguo1@gmail.com>
-To:     mike.kravetz@oracle.com, akpm@linux-foundation.org
-Cc:     dan.carpenter@oracle.com, nathan@kernel.org, mpe@ellerman.id.au,
-        benh@kernel.crashing.org, paulus@samba.org, corbet@lwn.net,
-        rppt@kernel.org, yaozhenguo@jd.com, willy@infradead.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-mm@kvack.org, Zhenguo Yao <yaozhenguo1@gmail.com>
-Subject: [PATCH v8] hugetlbfs: Extend the definition of hugepages parameter to support node allocation
-Date:   Tue,  5 Oct 2021 13:47:29 +0800
-Message-Id: <20211005054729.86457-1-yaozhenguo1@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=4NeMuZezzbqxNlXi1LQWclIxq6eDR6pm/+jHI0J3aK8=;
+        b=t1scruCG41uIhd0+6Wn2BBqr/YmqhNFnp8xW6O63wIwtJO1c8nFKfJFq64gIIcCd6x
+         JGf8Ni82l8B7qVmZlfFPC4LLXco+9mAte8obRSMAVlvAJKVOMOzjzZ7qZlp9RU1wsk/Z
+         XZ7g3ZsjB7OyeRYBBeYfVnFdR++MVi9rNsS/eXxMIz57OXe8rWXnkAyRZTIEohwZvZPp
+         pG55Mx/xWYRKtI90dR6IZD37Z+Ts2s24REC9+U2/ehjKgrNBOiU8LehsHWZtS8tNWq8c
+         Xo7l95Bzxa3WFJTlrQsNjQO7a4q5S/GZ9cBUFkwglE8TX1P+zYKIBzxcVR1a604Ypw4V
+         VK3g==
+X-Gm-Message-State: AOAM530BB5sLe8AxhDR5hCjq5ipuP+pY04jomcxGA4CVcUumMgwBH2Bz
+        t4kgMbQjYod/+oQ1QJ1CFo3vGQ==
+X-Google-Smtp-Source: ABdhPJypXaVT+p/dnAD+BO/o1OCK/fiXD9C3n/HU4n11SrE4tZJkADqT4WCFBjvmvgvHny+cPP+moA==
+X-Received: by 2002:a17:90a:b382:: with SMTP id e2mr1562944pjr.119.1633413053613;
+        Mon, 04 Oct 2021 22:50:53 -0700 (PDT)
+Received: from localhost ([122.171.247.18])
+        by smtp.gmail.com with ESMTPSA id s10sm673204pjn.38.2021.10.04.22.50.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Oct 2021 22:50:52 -0700 (PDT)
+Date:   Tue, 5 Oct 2021 11:20:50 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Enrico@rox.of.borg, Weigelt@rox.of.borg,
+        metux IT consult <lkml@metux.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Arnd Bergmann <arnd@kernel.org>, linux-gpio@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        stratos-dev@op-lists.linaro.org
+Subject: Re: [PATCH] gpio: aggregator: Add interrupt support
+Message-ID: <20211005055050.ggimidaqis5tfxav@vireshk-i7>
+References: <c987d0bf744150ca05bd952f5f9e5fb3244d27b0.1633350340.git.geert+renesas@glider.be>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c987d0bf744150ca05bd952f5f9e5fb3244d27b0.1633350340.git.geert+renesas@glider.be>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We can specify the number of hugepages to allocate at boot. But the
-hugepages is balanced in all nodes at present. In some scenarios,
-we only need hugepages in one node. For example: DPDK needs hugepages
-which are in the same node as NIC.
+On 04-10-21, 14:44, Geert Uytterhoeven wrote:
+> Currently the GPIO Aggregator does not support interrupts.  This means
+> that kernel drivers going from a GPIO to an IRQ using gpiod_to_irq(),
+> and userspace applications using line events do not work.
+> 
+> Add interrupt support by providing a gpio_chip.to_irq() callback, which
+> just calls into the parent GPIO controller.
+> 
+> Note that this does not implement full interrupt controller (irq_chip)
+> support, so using e.g. gpio-keys with "interrupts" instead of "gpios"
+> still does not work.
 
-If DPDK needs four hugepages of 1G size in node1 and system has 16 numa
-nodes we must reserve 64 hugepages on the kernel cmdline.  But only four
-hugepages are used.  The others should be free after boot.  If the system
-memory is low(for example: 64G), it will be an impossible task.
+Hi Geert,
 
-So extend the hugepages parameter to support specifying hugepages on a
-specific node.  For example add following parameter:
+Thanks for looking into this. I am not sure of the difference it makes
+with and without full irq-chip, but lemme explain the use case that we
+are concerned about with virtio.
 
-hugepagesz=1G hugepages=0:1,1:3
+Eventually the interrupt should be visible to userspace, with
+something like libgpiod. Which can then send the information over
+virtio to the guest.
 
-It will allocate 1 hugepage in node0 and 3 hugepages in node1.
+Will the interrupts be visible in userspace with your patch ?
 
-Signed-off-by: Zhenguo Yao <yaozhenguo1@gmail.com>
-Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
-
----
-v7->v8 changes:
-	- fix smatch warning.
-	- rename node_specific_alloc_support to hugetlb_node_alloc_supported.
-	- fix clang warning. 
-	- remove useless codes.
-v6->v7 changes:
-	- replace nodes_weight(node_states[N_MEMORY] with nr_online_nodes.
-v5->v6 changes:
-	- Remove v5 codes: using return value to disable node specific alloc.
-	- Add node_specific_alloc_support weak function to disable node
-	  specific alloc when arch can't support it.
-	- Remove useless variable addr in alloc_bootmem_huge_page.
-	- Add powerpc version of node_specific_alloc_support when
-	  CONFIG_PPC_BOOK3S_64 is defined.
-v4->v5 changes:
-	- remove BUG_ON in __alloc_bootmem_huge_page.
-	- add nid parameter in __alloc_bootmem_huge_page to support
-	  called in both specific node alloc and normal alloc.
-	- do normal alloc if architecture can't support node specific alloc.
-	- return -1 in powerpc version of alloc_bootmem_huge_page when
-	  nid is not NUMA_NO_NODE.
-v3->v4 changes:
-	- fix wrong behavior for parameter:
-	  hugepages=0:1,1:3 default_hugepagesz=1G
-	- make the change of documentation more reasonable.
-v2->v3 changes:
-	- Skip gigantic hugepages allocation if hugetlb_cma is enabled.
-	- Fix wrong behavior for parameter:
-	  hugepagesz=2M hugepages=2 hugepages=5.
-	- Update hugetlbpage.rst.
-	- Fix side effects which v2 brings in.
-	- add cond_resched in hugetlb_hstate_alloc_pages_onenode.
-v1->v2 changes:
-	- add checking for max node to avoid array out of bounds.
-	- fix wrong max_huge_pages after failed allocation.
-	- fix wrong behavior when parsing parameter: hugepages=0:1,2,3:4.
-	- return 0 when parsing invalid parameter in hugepages_setup
----
- .../admin-guide/kernel-parameters.txt         |   8 +-
- Documentation/admin-guide/mm/hugetlbpage.rst  |  12 +-
- arch/powerpc/mm/hugetlbpage.c                 |   9 +-
- include/linux/hugetlb.h                       |   6 +-
- mm/hugetlb.c                                  | 153 +++++++++++++++---
- 5 files changed, 155 insertions(+), 33 deletions(-)
-
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 91ba391f9b32..9b3d8791586d 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -1599,9 +1599,11 @@
- 			the number of pages of hugepagesz to be allocated.
- 			If this is the first HugeTLB parameter on the command
- 			line, it specifies the number of pages to allocate for
--			the default huge page size.  See also
--			Documentation/admin-guide/mm/hugetlbpage.rst.
--			Format: <integer>
-+			the default huge page size. If using node format, the
-+			number of pages to allocate per-node can be specified.
-+			See also Documentation/admin-guide/mm/hugetlbpage.rst.
-+			Format: <integer> or (node format)
-+				<node>:<integer>[,<node>:<integer>]
- 
- 	hugepagesz=
- 			[HW] The size of the HugeTLB pages.  This is used in
-diff --git a/Documentation/admin-guide/mm/hugetlbpage.rst b/Documentation/admin-guide/mm/hugetlbpage.rst
-index 8abaeb144e44..d70828c07658 100644
---- a/Documentation/admin-guide/mm/hugetlbpage.rst
-+++ b/Documentation/admin-guide/mm/hugetlbpage.rst
-@@ -128,7 +128,9 @@ hugepages
- 	implicitly specifies the number of huge pages of default size to
- 	allocate.  If the number of huge pages of default size is implicitly
- 	specified, it can not be overwritten by a hugepagesz,hugepages
--	parameter pair for the default size.
-+	parameter pair for the default size.  This parameter also has a
-+	node format.  The node format specifies the number of huge pages
-+	to allocate on specific nodes.
- 
- 	For example, on an architecture with 2M default huge page size::
- 
-@@ -138,6 +140,14 @@ hugepages
- 	indicating that the hugepages=512 parameter is ignored.  If a hugepages
- 	parameter is preceded by an invalid hugepagesz parameter, it will
- 	be ignored.
-+
-+	Node format example::
-+
-+		hugepagesz=2M hugepages=0:1,1:2
-+
-+	It will allocate 1 2M hugepage on node0 and 2 2M hugepages on node1.
-+	If the node number is invalid,  the parameter will be ignored.
-+
- default_hugepagesz
- 	Specify the default huge page size.  This parameter can
- 	only be specified once on the command line.  default_hugepagesz can
-diff --git a/arch/powerpc/mm/hugetlbpage.c b/arch/powerpc/mm/hugetlbpage.c
-index 9a75ba078e1b..82d8b368ca6d 100644
---- a/arch/powerpc/mm/hugetlbpage.c
-+++ b/arch/powerpc/mm/hugetlbpage.c
-@@ -229,17 +229,22 @@ static int __init pseries_alloc_bootmem_huge_page(struct hstate *hstate)
- 	m->hstate = hstate;
- 	return 1;
- }
-+
-+bool __init hugetlb_node_alloc_supported(void)
-+{
-+	return false;
-+}
- #endif
- 
- 
--int __init alloc_bootmem_huge_page(struct hstate *h)
-+int __init alloc_bootmem_huge_page(struct hstate *h, int nid)
- {
- 
- #ifdef CONFIG_PPC_BOOK3S_64
- 	if (firmware_has_feature(FW_FEATURE_LPAR) && !radix_enabled())
- 		return pseries_alloc_bootmem_huge_page(h);
- #endif
--	return __alloc_bootmem_huge_page(h);
-+	return __alloc_bootmem_huge_page(h, nid);
- }
- 
- #ifndef CONFIG_PPC_BOOK3S_64
-diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-index 1faebe1cd0ed..07a94289abeb 100644
---- a/include/linux/hugetlb.h
-+++ b/include/linux/hugetlb.h
-@@ -605,6 +605,7 @@ struct hstate {
- 	unsigned long nr_overcommit_huge_pages;
- 	struct list_head hugepage_activelist;
- 	struct list_head hugepage_freelists[MAX_NUMNODES];
-+	unsigned int max_huge_pages_node[MAX_NUMNODES];
- 	unsigned int nr_huge_pages_node[MAX_NUMNODES];
- 	unsigned int free_huge_pages_node[MAX_NUMNODES];
- 	unsigned int surplus_huge_pages_node[MAX_NUMNODES];
-@@ -637,8 +638,9 @@ void restore_reserve_on_error(struct hstate *h, struct vm_area_struct *vma,
- 				unsigned long address, struct page *page);
- 
- /* arch callback */
--int __init __alloc_bootmem_huge_page(struct hstate *h);
--int __init alloc_bootmem_huge_page(struct hstate *h);
-+int __init __alloc_bootmem_huge_page(struct hstate *h, int nid);
-+int __init alloc_bootmem_huge_page(struct hstate *h, int nid);
-+bool __init hugetlb_node_alloc_supported(void);
- 
- void __init hugetlb_add_hstate(unsigned order);
- bool __init arch_hugetlb_valid_size(unsigned long size);
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 95dc7b83381f..60f9b6a9582e 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -66,6 +66,7 @@ static struct hstate * __initdata parsed_hstate;
- static unsigned long __initdata default_hstate_max_huge_pages;
- static bool __initdata parsed_valid_hugepagesz = true;
- static bool __initdata parsed_default_hugepagesz;
-+static unsigned int default_hugepages_in_node[MAX_NUMNODES] __initdata;
- 
- /*
-  * Protects updates to hugepage_freelists, hugepage_activelist, nr_huge_pages,
-@@ -2868,33 +2869,39 @@ struct page *alloc_huge_page(struct vm_area_struct *vma,
- 	return ERR_PTR(-ENOSPC);
- }
- 
--int alloc_bootmem_huge_page(struct hstate *h)
-+int alloc_bootmem_huge_page(struct hstate *h, int nid)
- 	__attribute__ ((weak, alias("__alloc_bootmem_huge_page")));
--int __alloc_bootmem_huge_page(struct hstate *h)
-+int __alloc_bootmem_huge_page(struct hstate *h, int nid)
- {
--	struct huge_bootmem_page *m;
-+	struct huge_bootmem_page *m = NULL; /* initialize for clang */
- 	int nr_nodes, node;
- 
-+	if (nid >= nr_online_nodes)
-+		return 0;
-+	/* do node specific alloc */
-+	if (nid != NUMA_NO_NODE) {
-+		m = memblock_alloc_try_nid_raw(huge_page_size(h), huge_page_size(h),
-+				0, MEMBLOCK_ALLOC_ACCESSIBLE, nid);
-+		if (!m)
-+			return 0;
-+		goto found;
-+	}
-+	/* allocate from next node when distributing huge pages */
- 	for_each_node_mask_to_alloc(h, nr_nodes, node, &node_states[N_MEMORY]) {
--		void *addr;
--
--		addr = memblock_alloc_try_nid_raw(
-+		m = memblock_alloc_try_nid_raw(
- 				huge_page_size(h), huge_page_size(h),
- 				0, MEMBLOCK_ALLOC_ACCESSIBLE, node);
--		if (addr) {
--			/*
--			 * Use the beginning of the huge page to store the
--			 * huge_bootmem_page struct (until gather_bootmem
--			 * puts them into the mem_map).
--			 */
--			m = addr;
--			goto found;
--		}
-+		/*
-+		 * Use the beginning of the huge page to store the
-+		 * huge_bootmem_page struct (until gather_bootmem
-+		 * puts them into the mem_map).
-+		 */
-+		if (!m)
-+			return 0;
-+		goto found;
- 	}
--	return 0;
- 
- found:
--	BUG_ON(!IS_ALIGNED(virt_to_phys(m), huge_page_size(h)));
- 	/* Put them into a private list first because mem_map is not up yet */
- 	INIT_LIST_HEAD(&m->list);
- 	list_add(&m->list, &huge_boot_pages);
-@@ -2934,12 +2941,61 @@ static void __init gather_bootmem_prealloc(void)
- 		cond_resched();
- 	}
- }
-+static void __init hugetlb_hstate_alloc_pages_onenode(struct hstate *h, int nid)
-+{
-+	unsigned long i;
-+	char buf[32];
-+
-+	for (i = 0; i < h->max_huge_pages_node[nid]; ++i) {
-+		if (hstate_is_gigantic(h)) {
-+			if (!alloc_bootmem_huge_page(h, nid))
-+				break;
-+		} else {
-+			struct page *page;
-+			gfp_t gfp_mask = htlb_alloc_mask(h) | __GFP_THISNODE;
-+
-+			page = alloc_fresh_huge_page(h, gfp_mask, nid,
-+					&node_states[N_MEMORY], NULL);
-+			if (!page)
-+				break;
-+			put_page(page); /* free it into the hugepage allocator */
-+		}
-+		cond_resched();
-+	}
-+	if (i == h->max_huge_pages_node[nid])
-+		return;
-+
-+	string_get_size(huge_page_size(h), 1, STRING_UNITS_2, buf, 32);
-+	pr_warn("HugeTLB: allocating %u of page size %s failed node%d.  Only allocated %lu hugepages.\n",
-+		h->max_huge_pages_node[nid], buf, nid, i);
-+	h->max_huge_pages -= (h->max_huge_pages_node[nid] - i);
-+	h->max_huge_pages_node[nid] = i;
-+}
- 
- static void __init hugetlb_hstate_alloc_pages(struct hstate *h)
- {
- 	unsigned long i;
- 	nodemask_t *node_alloc_noretry;
-+	bool node_specific_alloc = false;
- 
-+	/* skip gigantic hugepages allocation if hugetlb_cma enabled */
-+	if (hstate_is_gigantic(h) && hugetlb_cma_size) {
-+		pr_warn_once("HugeTLB: hugetlb_cma is enabled, skip boot time allocation\n");
-+		return;
-+	}
-+
-+	/* do node specific alloc */
-+	for (i = 0; i < nr_online_nodes; i++) {
-+		if (h->max_huge_pages_node[i] > 0) {
-+			hugetlb_hstate_alloc_pages_onenode(h, i);
-+			node_specific_alloc = true;
-+		}
-+	}
-+
-+	if (node_specific_alloc)
-+		return;
-+
-+	/* below will do all node balanced alloc */
- 	if (!hstate_is_gigantic(h)) {
- 		/*
- 		 * Bit mask controlling how hard we retry per-node allocations.
-@@ -2960,11 +3016,7 @@ static void __init hugetlb_hstate_alloc_pages(struct hstate *h)
- 
- 	for (i = 0; i < h->max_huge_pages; ++i) {
- 		if (hstate_is_gigantic(h)) {
--			if (hugetlb_cma_size) {
--				pr_warn_once("HugeTLB: hugetlb_cma is enabled, skip boot time allocation\n");
--				goto free;
--			}
--			if (!alloc_bootmem_huge_page(h))
-+			if (!alloc_bootmem_huge_page(h, NUMA_NO_NODE))
- 				break;
- 		} else if (!alloc_pool_huge_page(h,
- 					 &node_states[N_MEMORY],
-@@ -2980,7 +3032,6 @@ static void __init hugetlb_hstate_alloc_pages(struct hstate *h)
- 			h->max_huge_pages, buf, i);
- 		h->max_huge_pages = i;
- 	}
--free:
- 	kfree(node_alloc_noretry);
- }
- 
-@@ -3671,6 +3722,10 @@ static int __init hugetlb_init(void)
- 			}
- 			default_hstate.max_huge_pages =
- 				default_hstate_max_huge_pages;
-+
-+			for (i = 0; i < nr_online_nodes; i++)
-+				default_hstate.max_huge_pages_node[i] =
-+					default_hugepages_in_node[i];
- 		}
- 	}
- 
-@@ -3731,6 +3786,10 @@ void __init hugetlb_add_hstate(unsigned int order)
- 	parsed_hstate = h;
- }
- 
-+bool __init __weak hugetlb_node_alloc_supported(void)
-+{
-+	return true;
-+}
- /*
-  * hugepages command line processing
-  * hugepages normally follows a valid hugepagsz or default_hugepagsz
-@@ -3742,6 +3801,10 @@ static int __init hugepages_setup(char *s)
- {
- 	unsigned long *mhp;
- 	static unsigned long *last_mhp;
-+	int node = NUMA_NO_NODE;
-+	int count;
-+	unsigned long tmp;
-+	char *p = s;
- 
- 	if (!parsed_valid_hugepagesz) {
- 		pr_warn("HugeTLB: hugepages=%s does not follow a valid hugepagesz, ignoring\n", s);
-@@ -3765,8 +3828,40 @@ static int __init hugepages_setup(char *s)
- 		return 0;
- 	}
- 
--	if (sscanf(s, "%lu", mhp) <= 0)
--		*mhp = 0;
-+	while (*p) {
-+		count = 0;
-+		if (sscanf(p, "%lu%n", &tmp, &count) != 1)
-+			goto invalid;
-+		/* Parameter is node format */
-+		if (p[count] == ':') {
-+			if (!hugetlb_node_alloc_supported()) {
-+				pr_warn("HugeTLB: architecture can't support node specific alloc, ignoring!\n");
-+				return 0;
-+			}
-+			node = tmp;
-+			p += count + 1;
-+			if (node < 0 || node >= nr_online_nodes)
-+				goto invalid;
-+			/* Parse hugepages */
-+			if (sscanf(p, "%lu%n", &tmp, &count) != 1)
-+				goto invalid;
-+			if (!hugetlb_max_hstate)
-+				default_hugepages_in_node[node] = tmp;
-+			else
-+				parsed_hstate->max_huge_pages_node[node] = tmp;
-+			*mhp += tmp;
-+			/* Go to parse next node*/
-+			if (p[count] == ',')
-+				p += count + 1;
-+			else
-+				break;
-+		} else {
-+			if (p != s)
-+				goto invalid;
-+			*mhp = tmp;
-+			break;
-+		}
-+	}
- 
- 	/*
- 	 * Global state is always initialized later in hugetlb_init.
-@@ -3779,6 +3874,10 @@ static int __init hugepages_setup(char *s)
- 	last_mhp = mhp;
- 
- 	return 1;
-+
-+invalid:
-+	pr_warn("HugeTLB: Invalid hugepages parameter %s\n", p);
-+	return 0;
- }
- __setup("hugepages=", hugepages_setup);
- 
-@@ -3840,6 +3939,7 @@ __setup("hugepagesz=", hugepagesz_setup);
- static int __init default_hugepagesz_setup(char *s)
- {
- 	unsigned long size;
-+	int i;
- 
- 	parsed_valid_hugepagesz = false;
- 	if (parsed_default_hugepagesz) {
-@@ -3868,6 +3968,9 @@ static int __init default_hugepagesz_setup(char *s)
- 	 */
- 	if (default_hstate_max_huge_pages) {
- 		default_hstate.max_huge_pages = default_hstate_max_huge_pages;
-+		for (i = 0; i < nr_online_nodes; i++)
-+			default_hstate.max_huge_pages_node[i] =
-+				default_hugepages_in_node[i];
- 		if (hstate_is_gigantic(&default_hstate))
- 			hugetlb_hstate_alloc_pages(&default_hstate);
- 		default_hstate_max_huge_pages = 0;
 -- 
-2.27.0
-
+viresh
