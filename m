@@ -2,95 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A5E7421DA7
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 06:46:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0283421DA8
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 06:47:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231631AbhJEEsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 00:48:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50024 "EHLO
+        id S231705AbhJEEtX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 00:49:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231364AbhJEEsU (ORCPT
+        with ESMTP id S230526AbhJEEtW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 00:48:20 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B992BC061753
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 21:46:30 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id 133so18658858pgb.1
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 21:46:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=oU0y/L1Kv7h8rjDf7ezD8KvTWO00EJ3BiI+ZclBMT+w=;
-        b=pRO4hYs7dy8DnFLkzsum1hayDKhtSmwJ0KwVN49yNiKOTVcDCqgL6Nym+QWQ6KKGIk
-         u0Qm1EhsfiI10jUTsTm//HiUtUjPTywNgnnbPFQ1tbXidYSXeuIaOliknF/ksiDu0YM9
-         8hfwIKq2Y86O0Tr5RccWvDaM8rfVK6wD0Q2ZlPbxBbkPG+pW3FL7cN4+JdFH1E5l2e50
-         uqVTAMlaZWEUHkLtsAnYLgXsXA44W3xV7UdHN+cmH0chEH3MPPuQ2IfIGy/Z3vyOslPu
-         SspaBL6ccG4F+0nd7B8TJIVKrkF0cXXN/WCgqLdQwJU9x9QyuqYadxUYh2Qu8Nu7y1yP
-         eONA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=oU0y/L1Kv7h8rjDf7ezD8KvTWO00EJ3BiI+ZclBMT+w=;
-        b=ZHJ965TNOi4abclLzquhJbzXU8FNYg+xEhvvIABKMV/pIiTJrSvKy6IrYN906mqSiE
-         dhAnRCVdVw1KgxtL/6Vsyqmm4jSJAImefhOFWwzGgFwDpda8hDqZOrvqC4vjlXD4n1Ys
-         wmKDH7XQ4MQGxFeaiL2eGgfowLJvRrORk1e+Btyv2vq/yNVecotV+0idYEUU/4Q4RUiN
-         CEMZgkMWfN4uorWUfykbQXjFtuR1zzizj1YKguIEr3F3/p+z6qySQIduLKUyygrMCF7t
-         lJ2eG1R1TchDCHdy+vl2D3xR2euvDZSJq97nLUO7CPXwDmmGMlTVO7Q3EhT962I/g8ej
-         fnyw==
-X-Gm-Message-State: AOAM5313HoI17IQEzXAQbHCfLp6YuX7Tiytv1aAJIrehvNrut08stmxz
-        l7m8aL07m6ZLyYZCH4DViScE0eb/PJgY
-X-Google-Smtp-Source: ABdhPJxhXUmFhJYMG650PXT4U5Cg8sHpINcD7y5trS4JlMzsEZwxtjoLOtzNO02sROfoinqm3g6TTA==
-X-Received: by 2002:a63:b707:: with SMTP id t7mr13893203pgf.55.1633409190133;
-        Mon, 04 Oct 2021 21:46:30 -0700 (PDT)
-Received: from workstation ([120.138.13.79])
-        by smtp.gmail.com with ESMTPSA id z33sm15305980pga.20.2021.10.04.21.46.24
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 04 Oct 2021 21:46:28 -0700 (PDT)
-Date:   Tue, 5 Oct 2021 10:16:23 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     rafael@kernel.org, robh+dt@kernel.org, bjorn.andersson@linaro.org,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH] dt-bindings: cpufreq: cpufreq-qcom-hw: Convert to YAML
- bindings
-Message-ID: <20211005044623.GA4195@workstation>
-References: <20211004044317.34809-1-manivannan.sadhasivam@linaro.org>
- <20211005042300.ix46h3ceu7aiwrg7@vireshk-i7>
+        Tue, 5 Oct 2021 00:49:22 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71CADC061745
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 21:47:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=PhbjEGM2n1Fc82VkHwTU+uA5vUT19ZB/Op/qghm6Xsc=; b=I6itD9q01fvJJt6IfSbshaZPne
+        fQ3dGyoUfKiawkdRty5NQMZgvqZ8ON3zaunInA/iMEVL5yxzCbszmvbOI0zwAmxVcIHk1nuNTukuP
+        9HspbH9KCePEDSLfQdcHj499WgqoFuTegA44ueZF6yt8y5JlAnHcev+m+Gmno9EljFUwCrupLD1U/
+        SntgDkIEHa0aPe+2aNKlCtb74/4iuDMbZJ7xVsjUB3h0qwzL/G8tynTosabc7eYFUEaswdCaXLmKc
+        9xoCtCdfn+PeIx8qjBUEKZj1r6ZYBkJ/i7fO5hy0Gkz63jZRB2hDpNdHo9ynar5L9NIyfuWOdd8xX
+        yVbnjf9g==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mXcMK-008udL-JI; Tue, 05 Oct 2021 04:47:20 +0000
+Subject: Re: [PATCH v8 04/11] x86/tdx: Add Intel ARCH support to
+ cc_platform_has()
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
+        VMware Inc <pv-drivers@vmware.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        linux-kernel@vger.kernel.org
+References: <20211005025205.1784480-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20211005025205.1784480-5-sathyanarayanan.kuppuswamy@linux.intel.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <50eaabfc-50b2-7617-ed9f-61f61b619cd8@infradead.org>
+Date:   Mon, 4 Oct 2021 21:47:17 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211005042300.ix46h3ceu7aiwrg7@vireshk-i7>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20211005025205.1784480-5-sathyanarayanan.kuppuswamy@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05, 2021 at 09:53:00AM +0530, Viresh Kumar wrote:
-> On 04-10-21, 10:13, Manivannan Sadhasivam wrote:
-> > Convert Qualcomm cpufreq devicetree binding to YAML.
-> > 
-> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-> > Reviewed-by: Rob Herring <robh@kernel.org>
-> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > ---
-> 
-> I hope you will be resending this after fixing the DT warnings ?
+On 10/4/21 7:51 PM, Kuppuswamy Sathyanarayanan wrote:
+> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> index c42dd8a2d1f4..abb249dc829d 100644
+> --- a/arch/x86/Kconfig
+> +++ b/arch/x86/Kconfig
+> @@ -871,6 +871,7 @@ config INTEL_TDX_GUEST
+>   	depends on SECURITY
+>   	select X86_X2APIC
+>   	select SECURITY_LOCKDOWN_LSM
+> +	select ARCH_HAS_CC_PLATFORM
 
-Yes, but I'm not sure why I can't reproduce the warnings locally. I did
-upgrade dtschema package and installed yamllint.
+Where is ARCH_HAS_CC_PLATFORM defined, please?
+I can't seem to find it.
 
-Anyway, will remove "maxItems" property as reported by the bot.
+>   	help
+>   	  Provide support for running in a trusted domain on Intel processors
+>   	  equipped with Trusted Domain eXtensions. TDX is a Intel technology
 
-Thanks,
-Mani
 
-> 
-> -- 
-> viresh
+thanks.
+-- 
+~Randy
