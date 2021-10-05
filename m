@@ -2,95 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D11E94223A9
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 12:36:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F1CE4223B0
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 12:38:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234068AbhJEKi0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 06:38:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34586 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233855AbhJEKiM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 06:38:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5A34D6124F;
-        Tue,  5 Oct 2021 10:36:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633430181;
-        bh=7IHAoNDtwUnipee3OL2fgVGFmswEGIi2rXrg8IrZjYM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=wy1SczWqqBOs6aGrPN1HEcDd0Z4f4m/TkPixhpjvStyx3RtLMBBIU9kHFaiOa3zsX
-         fQVQOUCfPRSXe03Zm6un0AZm4MjMWddCdCVqo21CWqnG64uL2y107/eRQV5sPk2NdI
-         B69ckeATvm4tpoALz5gyUkWR2SkpZd23sOAh9JN8=
-Date:   Tue, 5 Oct 2021 12:36:20 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Rob Herring <robh@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Liviu Dudau <Liviu.Dudau@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        linux-staging@lists.linux.dev, NeilBrown <neil@brown.name>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 0/6] MIPS: ralink: fix PCI IO resources
-Message-ID: <YVwqpCbYzxUWm5LJ@kroah.com>
-References: <20210925203224.10419-1-sergio.paracuellos@gmail.com>
- <CAMhs-H9p4xmPO2F_byk4DQncTGZayW1HwAzrPn_W0eEW5UUn9A@mail.gmail.com>
+        id S233963AbhJEKkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 06:40:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46966 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233290AbhJEKkM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 06:40:12 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C03BC06161C
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 03:38:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=t9uwTcpRAkuxtDd8N8WgM5ZhUGx0canA4I39+YkmP/0=; b=kTqPsDsFhZu+P+KsHET12MMsJb
+        MJ2cUoF7pzVQQUry2j8Ms7vabgpWxJLV38z4/yS0SmuvKY+Osxx3Dz+WFy+lu0BmCV92F5OUvcE8R
+        tYTZEhhLDp0fIyrreBbxljABrYySML4A6htwIQF5J/Usq9vBCs3hgiLKDkuFPvmld5kWJXm6AgB85
+        0m3gsWE3i/suIaONkRdYdH8W7W7tbdcp3clcJgrWVvPQWqA0kNpi+KB5uEaJ1kKcqZflMdvZLL42A
+        rSM88GmJ5vSsMeP8ZeGZ+Y7w8MDl/Q9uzlA7HALYKQd2mob2E1jZDj1bhxMmPhWUM3A811ATl2Nys
+        wSL3/LAA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mXho7-000EXp-Mq; Tue, 05 Oct 2021 10:36:31 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E879C30003C;
+        Tue,  5 Oct 2021 12:36:22 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id A3A682038E20D; Tue,  5 Oct 2021 12:36:22 +0200 (CEST)
+Date:   Tue, 5 Oct 2021 12:36:22 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Phil Auld <pauld@redhat.com>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        Mike Galbraith <efault@gmx.de>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Ingo Molnar <mingo@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] sched/fair: Scale wakeup granularity relative to
+ nr_running
+Message-ID: <YVwqphxxNSDL828Y@hirez.programming.kicks-ass.net>
+References: <ea2f9038f00d3b4c0008235079e1868145b47621.camel@gmx.de>
+ <20210922132002.GX3959@techsingularity.net>
+ <CAKfTPtCxhzz1XgNXM8jaQC2=tGHm0ap88HneUgWTpCSeWVZwsw@mail.gmail.com>
+ <20210922150457.GA3959@techsingularity.net>
+ <CAKfTPtB3tXwBZ_tVaDdiwMt-=sGH1iV6eUV6Rsnpw7q=tEpBwA@mail.gmail.com>
+ <20210922173853.GB3959@techsingularity.net>
+ <CAKfTPtDc39fCLbQqA2BhC6dsb+MyYYMdk9HUvrU0fRqULuQB-g@mail.gmail.com>
+ <ba60262d15891702cae0d59122388c6a18caaf53.camel@gmx.de>
+ <CAKfTPtBBqLghrXrayyoBQQyDqdv6+pdCjiZkmzLaGvdNtN=Aug@mail.gmail.com>
+ <YUxx42W3K2Ur7W84@lorien.usersys.redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAMhs-H9p4xmPO2F_byk4DQncTGZayW1HwAzrPn_W0eEW5UUn9A@mail.gmail.com>
+In-Reply-To: <YUxx42W3K2Ur7W84@lorien.usersys.redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 03, 2021 at 06:21:21PM +0200, Sergio Paracuellos wrote:
-> Hi Greg,
-> 
-> On Sat, Sep 25, 2021 at 10:32 PM Sergio Paracuellos
-> <sergio.paracuellos@gmail.com> wrote:
-> >
-> > MIPs ralink need a special tratement regarding the way it handles PCI IO
-> > resources. On MIPS I/O ports are memory mapped, so we access them using normal
-> > load/store instructions. MIPS 'plat_mem_setup()' function does a call to
-> > 'set_io_port_base(KSEG1)'. There, variable 'mips_io_port_base'
-> > is set then using this address which is a virtual address to which all
-> > ports are being mapped. Ralink I/O space has a mapping of bus address
-> > equal to the window into the mmio space, with an offset of IO start range
-> > cpu address. This means that to have this working we need:
-> > - linux port numbers in the range 0-0xffff.
-> > - pci port numbers in the range 0-0xffff.
-> > - io_offset being zero.
-> >
-> > These means at the end to have bus address 0 mapped to IO range cpu address.
-> > We need a way of properly set 'mips_io_port_base' with a virtually mapped
-> > value of the IO cpu address.
-> >
-> > This series do the following approach:
-> > 1) Revert two bad commit from a previous attempt of make this work [0].
-> > 2) Set PCI_IOBASE to mips 'mips_io_port_base'.
-> > 3) Allow architecture dependent 'pci_remap_iospace'.
-> > 4) Implement 'pci_remap_iospace' for MIPS.
-> > 5) Be sure IOBASE address for IO window is set with correct value.
-> >
-> > More context about this series appoach in this mail thread [1].
-> >
-> > Patches related with reverts are from this merge cycle so they are only
-> > added to the staging git tree. So to have all stuff together I'd like to
-> > get everybody Ack's to get all of this series through staging tree if
-> > possible :).
-> >
-> > Thanks in advance for your time.
-> >
-> > Changes in v3:
-> >  - Collect Arnd's Acked-by for the patches.
-> >  - Be sure IO resource start address is zero and WARN_ONCE if it is not
-> >    on MIPS pci_remap_iospace() patch. Also make use of 'resource_size'
-> >    instead of do the logic explicitly again.
-> 
-> I think nothing is missing to get this added through the staging tree.
+On Thu, Sep 23, 2021 at 08:24:03AM -0400, Phil Auld wrote:
 
-Great, thanks for sticking with this, will go queue it up now.
+> It's capped at 8 cpus, which is pretty easy to reach these days, so the
+> values don't get too large.  That scaling is almost a no-op these days.
 
-greg k-h
+  https://lkml.kernel.org/r/YVwdrh5pg0zSv2/b@hirez.programming.kicks-ass.net
+
+Ooh, hey, we already fixed that :-)
+
+So the reasoning there is that if the values get too big, interactiviy
+get *really* bad, but if you go from say 1 to 4 CPUs, interactivity can
+improve due to being able to run on other CPUs.
+
+At 8 CPUs we end up at 6ms*4=24ms, which is already pretty terrible.
