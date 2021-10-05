@@ -2,96 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA889422DAE
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 18:16:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B92A422DB2
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 18:17:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236419AbhJEQSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 12:18:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43130 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233975AbhJEQSl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 12:18:41 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 747A8C061749;
-        Tue,  5 Oct 2021 09:16:50 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id s55so16777660pfw.4;
-        Tue, 05 Oct 2021 09:16:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Nh+5upXdEhtuQ1MmKMpGJdn+SFhp5tfbyBTQ8db9sCU=;
-        b=RP7+4tIktOJIiwIGW7FCb0dNobsLneSd6uy85ut6w6V+85mIcZybF120xSrPPeOgRN
-         aU6Iyzl55d0Bd18Hd7krvvTl79YiCzxNLyGgpfg037P2gBJX1xn0ofLYWH8oESe9iHxF
-         UgmQ0la29Z5JRmAH32MW698+WYx0MQiL/hAzk7g3qnMiGMU+++Hh6aPP+RV4ylwerinX
-         TLpSfNI2TcYpzHxRvyR/HA4YBTJSqW8MENrx/6SWllIwcw7D8Jp0sfcgvmIBZs9FITas
-         ktkWSd7jKbCQHWhjz70l//jsaVtFCeMTL9VU2eKzgCSFgEm89n7JR11P+QOOSqoITyNX
-         W9zg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Nh+5upXdEhtuQ1MmKMpGJdn+SFhp5tfbyBTQ8db9sCU=;
-        b=3L8q9ortu627XfiZ0ul6LQCoKpRcYmoqQYv7y92FUPu+Y4n49vF2Bs6XqBNNbdhjL8
-         JuYvBvtVzPFJKmpFsbStSnhxAcKMOq+v2DWHe7jQ8NfA2f1oeX8YgXHB2oCWUjmbeN1h
-         7ff/7X3o35abS5fouCMZ66cNRDwpn9WmYSQza0mDQsBDyrw1LxtXfWnmf2I1hQNSJwpa
-         f9upQSZRh5Npwbqe9ySsrPT3WTzf3XexTf7qvtxrG5K7H5tYZp87uVPpMONfen76hb4p
-         jzBtUvZUXri19g6axXgzp4Zk1kgCjinWsCYW/ELbP56usFo2H683kAipEt8XYibUJaeZ
-         3JGw==
-X-Gm-Message-State: AOAM531eDVDgQPf/n8MhGZ5m7eURcVyE27m/v2zeRx37wV/4sU/BOjF4
-        i5N+L+DI3xQosqtavFOV8XTyH8OGxrE=
-X-Google-Smtp-Source: ABdhPJxtZPs/kLdnNzd/qMFQHh2cA+i8UVD4me8WG9dglGrfskFqBBsYDZM2/CxuOkaZCB/6X0hiwA==
-X-Received: by 2002:a05:6a00:22d5:b0:440:3750:f5f4 with SMTP id f21-20020a056a0022d500b004403750f5f4mr31481964pfj.64.1633450609161;
-        Tue, 05 Oct 2021 09:16:49 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id u5sm2641220pjn.48.2021.10.05.09.16.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Oct 2021 09:16:48 -0700 (PDT)
-Subject: Re: [PATCH 5.14 000/173] 5.14.10-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20211005083311.830861640@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <98bd3c55-49c5-cfc2-6f55-77bdd623a7a3@gmail.com>
-Date:   Tue, 5 Oct 2021 09:16:44 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S236412AbhJEQTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 12:19:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56168 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229488AbhJEQTQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 12:19:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D77486137C;
+        Tue,  5 Oct 2021 16:17:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1633450645;
+        bh=nQv7TJEC1TeCgBAiwKp27Mfu6BsaQKwTda6n316fuX8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=1nIyA7ALvDj7ddhUgoWPXH8vgwq94IAIJdqo1jbt9uBl8yB/kAUrjMkADZMnkeVXJ
+         YF9olLZHFpkYLvizwAqn+4wt1vFvoqq1FhMLUGGTsQq+YQTs1OqFiBhzC/LdCvZPwH
+         eNZ/cxOLnq544/4tcHA9JzvMfske7q6VX8tJSFOk=
+Date:   Tue, 5 Oct 2021 18:17:23 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
+Cc:     Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Jiri Slaby <jirislaby@kernel.org>, Suman Anna <s-anna@ti.com>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org
+Subject: Re: [PATCH v8 2/2] tty: add rpmsg driver
+Message-ID: <YVx6k1MMx0BTmgO6@kroah.com>
+References: <20210930160520.19678-1-arnaud.pouliquen@foss.st.com>
+ <20210930160520.19678-3-arnaud.pouliquen@foss.st.com>
+ <YVxMKekWW0w0+qoM@kroah.com>
+ <4cfc7497-ac85-828b-0b2f-a212c5a0503c@foss.st.com>
 MIME-Version: 1.0
-In-Reply-To: <20211005083311.830861640@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4cfc7497-ac85-828b-0b2f-a212c5a0503c@foss.st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/5/21 1:38 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.14.10 release.
-> There are 173 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Tue, Oct 05, 2021 at 06:03:25PM +0200, Arnaud POULIQUEN wrote:
+> Hello Greg,
 > 
-> Responses should be made by Thu, 07 Oct 2021 08:32:44 +0000.
-> Anything received after that time might be too late.
+> On 10/5/21 2:59 PM, Greg Kroah-Hartman wrote:
+> > On Thu, Sep 30, 2021 at 06:05:20PM +0200, Arnaud Pouliquen wrote:
+> >> This driver exposes a standard TTY interface on top of the rpmsg
+> >> framework through a rpmsg service.
+> >>
+> >> This driver supports multi-instances, offering a /dev/ttyRPMSGx entry
+> >> per rpmsg endpoint.
+> >>
+> >> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+> >> ---
+> >>  Documentation/serial/tty_rpmsg.rst |  15 ++
+> >>  drivers/tty/Kconfig                |   9 +
+> >>  drivers/tty/Makefile               |   1 +
+> >>  drivers/tty/rpmsg_tty.c            | 275 +++++++++++++++++++++++++++++
+> >>  4 files changed, 300 insertions(+)
+> >>  create mode 100644 Documentation/serial/tty_rpmsg.rst
+> >>  create mode 100644 drivers/tty/rpmsg_tty.c
+> >>
+> >> diff --git a/Documentation/serial/tty_rpmsg.rst b/Documentation/serial/tty_rpmsg.rst
+> >> new file mode 100644
+> >> index 000000000000..b055107866c9
+> >> --- /dev/null
+> >> +++ b/Documentation/serial/tty_rpmsg.rst
+> >> @@ -0,0 +1,15 @@
+> >> +.. SPDX-License-Identifier: GPL-2.0
+> >> +
+> >> +=========
+> >> +RPMsg TTY
+> >> +=========
+> >> +
+> >> +The rpmsg tty driver implements serial communication on the RPMsg bus to makes possible for
+> >> +user-space programs to send and receive rpmsg messages as a standard tty protocol.
+> >> +
+> >> +The remote processor can instantiate a new tty by requesting a "rpmsg-tty" RPMsg service.
+> >> +
+> >> +The "rpmsg-tty" service is directly used for data exchange. No flow control is implemented.
+> >> +
+> >> +Information related to the RPMsg and associated tty device is available in
+> >> +/sys/bus/rpmsg/devices/.
+> > 
+> > 
+> > Why is this file needed?  Nothing references it, and this would be the
+> > only file in this directory.
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.10-rc2.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+> This file is created by the RPMsg framework, it allows to have information about
+> RPMsg endpoint addresses associated to the rpmsg tty service instance.
+> I can add this additional information to clarify the sentence.
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
+As you are not tying in this into the kernel documentation build at all,
+it makes no sense to add it.
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+Just use normal kernel-doc comments in your .c file and tie _THAT_ into
+the kernel documentation build.  No need for a .rst file at all.
+
+thanks,
+
+greg k-h
