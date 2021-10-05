@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 761AA421FE1
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 09:55:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C00E7421FE3
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 09:55:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233319AbhJEH5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 03:57:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36162 "EHLO
+        id S233376AbhJEH51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 03:57:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232965AbhJEH5M (ORCPT
+        with ESMTP id S232972AbhJEH5O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 03:57:12 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48BC6C061765;
-        Tue,  5 Oct 2021 00:55:22 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id s198-20020a1ca9cf000000b0030d6986ea9fso2173730wme.1;
-        Tue, 05 Oct 2021 00:55:22 -0700 (PDT)
+        Tue, 5 Oct 2021 03:57:14 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFD7DC061745;
+        Tue,  5 Oct 2021 00:55:23 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id m14-20020a05600c3b0e00b0030d4dffd04fso2160658wms.3;
+        Tue, 05 Oct 2021 00:55:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=rnxkwu+jla6ut+IvJVQYqIBJUbwnUPabboo+Da4W4N0=;
-        b=m8HoarMf1s6bCFaOn4CAiigvWMxLZaKUuCApzgBtO13KGqb7AL+XMf/vcB6EwZ81vr
-         lKvNjWiIgPb/ptbHjUWaeRq6hU3RfQ0AkSDBRllvHYp3vo1lAyCNAJYHLeyagQpAYSl6
-         YyNqZ4rngJuXv/mVHLUleOuHmJPkGJHI1eJU1Ba0X8aURaBZgm+Y9SWOyZTM19IwNzzs
-         GKASX840Y7oZQ0IvSPoBRXTR9mfVksBaKC7Mss5ySeAp1rmiAjZM02HilS7m+lfPAJTo
-         0/36WefREyNKwSsfp8wAfNYhQJMP8XXCEujbrpc07Kk19FAultk7a0C2cC3xWWIRfRvh
-         ufow==
+        bh=pf84AIn9FjQpSRJFnQBCMelTEoJaH75pJ7KofEhQL+I=;
+        b=RBQ+DO8IIzYP29+JTDV6BMZLBPaJ9csggF5Nvt7fpWdxrMhhRXQJ2uy5TEmtEXWH8I
+         hHFVUdECpMlD7W0KvV0CW29VSimDd8BNVtjJqTKe/beHeSedfTEEY+lyTVZOP3EsSQcW
+         o2i303wmL892TorCIHVL8kUCnHSq16PonmadhH08yIYeRQKzy+umpKnfDvX/upxpHNZc
+         ZY7QCJPpmS8ruunnbn7UCpEpQrQQYIqiuo/UBoyIMo9tNiSrsFnJcypbQxYh7DS/mWOi
+         0SdAp094L0g9bV94ULmGbq1nOQf4w4zCIoH/RFy0fAjrEHhLq5nEPgmgeUtBm473SHnK
+         FXCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=rnxkwu+jla6ut+IvJVQYqIBJUbwnUPabboo+Da4W4N0=;
-        b=7OEt4Fx0WC2T9vL16WlJbv2mCgpQ2qm0WNg5sVanQS/ZhlF5eaW/aBRcK16Of2sVRW
-         L6UOnWUzFkHk4M8g1b79BQZO5Q2pJwnk5lSeQHEs3MeGRGUdDLuyape/HoAV3U32dC5C
-         5UPfXEumeC9dDMr1wTDaLTOysZ+iFA7N4oFaUk3jCgwFzS6yM+zq5Wv0CBFM+bu6ec/z
-         BfwPOOsq47wHnLG/0un7wsVXp3xXlTQR3rKAL97reseY8JiR5EG+FKPv/2RjpsLJbOsu
-         uLm5CF2TLiD4e75TvXordP64r+jI23M/GpuiqPu2U+ym16gFjg8one6lbVdVDJystTbL
-         xLSA==
-X-Gm-Message-State: AOAM533TPVSz04yrYmQAPmfWRlxlMmUjfXIBf6EF49xgpfxzEsQgvmwY
-        gKp1WYjsm1LINap14u01bbHDxZVYvQ7Kwg==
-X-Google-Smtp-Source: ABdhPJzRuWG43QbOjd2qa0K9HJVF6+r67DkGymvaqQc4rEARzw15ugPywEADgmXlbE8131GSOgEEGg==
-X-Received: by 2002:a1c:ed13:: with SMTP id l19mr1874484wmh.48.1633420520850;
-        Tue, 05 Oct 2021 00:55:20 -0700 (PDT)
+        bh=pf84AIn9FjQpSRJFnQBCMelTEoJaH75pJ7KofEhQL+I=;
+        b=mFf84F4tyzL3eLnyaed74PYf1nERcssy2Ntr0WxXa+VMJBSfNcbBAd0lbO5CmqcgR2
+         XkYU6FyRRLvT9gRB+/4QhpdwirTPs5rl+ExHgZ634zO9fyFL8/UsFR8v8eZ5w6Oq1WO+
+         kIXgMrS0SC1G/FZIKLtTse/EEuuHsKsvfC1rKAUTyGysHmNFDcH1ZLXKj0oYhOiEWsup
+         8+l/UBR97/TB9sjndlxyLRG8PKZAFvHhnOm0cf2RXr6h/Z0OnuIpdP9QNhBN3DDqZkj3
+         NYB6q4OFeLqr9Ow7x0Eq6wIUJJLEZVevTmK3zaqh4k1B9geLsluHDaWNsBNFrr97ZMAC
+         fEaA==
+X-Gm-Message-State: AOAM532BX+GK4C6gHYw+6xBT4uZZULUlg3mbAr1KyHTNtrprtximQ+Tr
+        PZeaEl5bNi81oSMy4EQWYwY=
+X-Google-Smtp-Source: ABdhPJz89isDx4oMXTdQdMlV5ArVR2wcf4Qv7dTcE9vaJz9g+8jAqeKHuBEfK3ErKjA4F/EYcDc3iQ==
+X-Received: by 2002:a1c:158:: with SMTP id 85mr1787004wmb.187.1633420522106;
+        Tue, 05 Oct 2021 00:55:22 -0700 (PDT)
 Received: from localhost.localdomain (i59F67A83.versanet.de. [89.246.122.131])
-        by smtp.gmail.com with ESMTPSA id o1sm1176984wmq.26.2021.10.05.00.55.19
+        by smtp.gmail.com with ESMTPSA id o1sm1176984wmq.26.2021.10.05.00.55.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Oct 2021 00:55:20 -0700 (PDT)
+        Tue, 05 Oct 2021 00:55:21 -0700 (PDT)
 From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
 To:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
 Cc:     Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
@@ -72,9 +72,9 @@ Cc:     Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
         Dmitry Torokhov <dmitry.torokhov@gmail.com>,
         kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
         Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH v4 05/11] MAINTAINERS: rectify entry for ALLWINNER HARDWARE SPINLOCK SUPPORT
-Date:   Tue,  5 Oct 2021 09:54:45 +0200
-Message-Id: <20211005075451.29691-6-lukas.bulwahn@gmail.com>
+Subject: [PATCH v4 06/11] MAINTAINERS: rectify entries to mtd-physmap.yaml
+Date:   Tue,  5 Oct 2021 09:54:46 +0200
+Message-Id: <20211005075451.29691-7-lukas.bulwahn@gmail.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20211005075451.29691-1-lukas.bulwahn@gmail.com>
 References: <20211005075451.29691-1-lukas.bulwahn@gmail.com>
@@ -84,37 +84,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit f9e784dcb63f ("dt-bindings: hwlock: add sun6i_hwspinlock") adds
-Documentation/devicetree/bindings/hwlock/allwinner,sun6i-a31-hwspinlock.yaml,
-but the related commit 3c881e05c814 ("hwspinlock: add sun6i hardware
-spinlock support") adds a file reference to allwinner,sun6i-hwspinlock.yaml
-instead.
+Commit 63f8e9e0ac65 ("dt-bindings: mtd: Convert mtd-physmap to DT schema")
+aggregated, amongst others, arm-versatile.txt and cypress,hyperflash.txt,
+into mtd-physmap.yaml in ./Documentation/devicetree/bindings/mtd/.
 
-Hence, ./scripts/get_maintainer.pl --self-test=patterns complains:
+The two .txt files are however mentioned in MAINTAINERS; hence,
+./scripts/get_maintainer.pl --self-test=patterns complains about broken
+references.
 
-  warning: no file matches  F:  Documentation/devicetree/bindings/hwlock/allwinner,sun6i-hwspinlock.yaml
+Refer to mtd-physmap.yaml, so that the maintainers and reviewers of
+ARM INTEGRATOR, VERSATILE AND REALVIEW SUPPORT and HYPERBUS SUPPORT are
+informed on any changes in the yaml file.
 
-Rectify this file reference in ALLWINNER HARDWARE SPINLOCK SUPPORT.
-
-Reviewed-by: Wilken Gottwalt <wilken.gottwalt@posteo.net>
+Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 ---
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ MAINTAINERS | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 09c166e2a239..9db2012ebae4 100644
+index 9db2012ebae4..0650954f1570 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -776,7 +776,7 @@ F:	drivers/crypto/allwinner/
- ALLWINNER HARDWARE SPINLOCK SUPPORT
- M:	Wilken Gottwalt <wilken.gottwalt@posteo.net>
- S:	Maintained
--F:	Documentation/devicetree/bindings/hwlock/allwinner,sun6i-hwspinlock.yaml
-+F:	Documentation/devicetree/bindings/hwlock/allwinner,sun6i-a31-hwspinlock.yaml
- F:	drivers/hwspinlock/sun6i_hwspinlock.c
- 
- ALLWINNER THERMAL DRIVER
+@@ -1427,7 +1427,7 @@ F:	Documentation/devicetree/bindings/auxdisplay/arm,versatile-lcd.yaml
+ F:	Documentation/devicetree/bindings/clock/arm,syscon-icst.yaml
+ F:	Documentation/devicetree/bindings/i2c/i2c-versatile.txt
+ F:	Documentation/devicetree/bindings/interrupt-controller/arm,versatile-fpga-irq.txt
+-F:	Documentation/devicetree/bindings/mtd/arm-versatile.txt
++F:	Documentation/devicetree/bindings/mtd/mtd-physmap.yaml
+ F:	arch/arm/boot/dts/arm-realview-*
+ F:	arch/arm/boot/dts/integrator*
+ F:	arch/arm/boot/dts/versatile*
+@@ -8768,7 +8768,7 @@ S:	Supported
+ Q:	http://patchwork.ozlabs.org/project/linux-mtd/list/
+ C:	irc://irc.oftc.net/mtd
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git cfi/next
+-F:	Documentation/devicetree/bindings/mtd/cypress,hyperflash.txt
++F:	Documentation/devicetree/bindings/mtd/mtd-physmap.yaml
+ F:	Documentation/devicetree/bindings/mtd/ti,am654-hbmc.yaml
+ F:	drivers/mtd/hyperbus/
+ F:	include/linux/mtd/hyperbus.h
 -- 
 2.26.2
 
