@@ -2,95 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF4AB42214E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 10:51:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D233422156
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 10:54:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232997AbhJEIxb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 04:53:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33619 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233576AbhJEIxX (ORCPT
+        id S232834AbhJEIzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 04:55:50 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:37034 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232739AbhJEIzt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 04:53:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633423893;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SzIKShd8U21M23BZYRLg2njihFTOZw5S9K9ysZYMhAI=;
-        b=bvVxMUIbpdi3HzGQ1QqzeS7vCJREOJysSt20DwLYm6cN7BCcjLi7ono2/ECzr7IQIqkKG/
-        qOxMSpZvc52u6t94ulnOemMkQpwUABWPaDl6wFQdjYxLVfzpHDqH6+AumR+kiN+SSlYKNv
-        0oP6C7rJfYjlE8Qewa7GMUrOULhDJ0s=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-261-4-VfjO1uPCCAi3wRDiEUYA-1; Tue, 05 Oct 2021 04:51:30 -0400
-X-MC-Unique: 4-VfjO1uPCCAi3wRDiEUYA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Tue, 5 Oct 2021 04:55:49 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1633424039; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=XGvgtp0AX96gfU5biA7tguc9gNgcpbuj4vK8IW5EGAo=; b=JlK0gvzVtzowNhJrmcfHKl5/yeEOi6xZ0eocQJKt4pOPm6NNL38OqckqA/RIgdHqgJ/4IbrW
+ 2tsy/T75u2dwuAjl2+Bn3CIairtJkbF5MaqW3FWJhefFwTZVBXHgDs9YEBqlkc4OBi33JgbC
+ VeWPi6ifBBcz7cqGBXKkE9bt59w=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 615c129247d64efb6deb2400 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 05 Oct 2021 08:53:38
+ GMT
+Sender: mkshah=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A25E4C4360D; Tue,  5 Oct 2021 08:53:38 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.29.129] (unknown [49.36.85.177])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 19F991084694;
-        Tue,  5 Oct 2021 08:51:28 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.33.36.44])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B1FB39AA36;
-        Tue,  5 Oct 2021 08:51:19 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH v3 5/5] fscache: Remove an unused static variable
-From:   David Howells <dhowells@redhat.com>
-To:     Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Dominique Martinet <asmadeus@codewreck.org>
-Cc:     Jeff Layton <jlayton@kernel.org>, linux-fsdevel@vger.kernel.org,
-        linux-doc@vger.kernel.org, dhowells@redhat.com,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        torvalds@linux-foundation.org,
-        v9fs-developer@lists.sourceforge.net,
-        linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org,
-        linux-cachefs@redhat.com, linux-fsdevel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Tue, 05 Oct 2021 09:51:18 +0100
-Message-ID: <163342387890.876192.10223297869496086216.stgit@warthog.procyon.org.uk>
-In-Reply-To: <163342376338.876192.10313278824682848704.stgit@warthog.procyon.org.uk>
-References: <163342376338.876192.10313278824682848704.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        (Authenticated sender: mkshah)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 64CBBC4338F;
+        Tue,  5 Oct 2021 08:53:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 64CBBC4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Subject: Re: [PATCH v9 1/5] dt-bindings: Introduce SoC sleep stats bindings
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     swboyd@chromium.org, mka@chromium.org, evgreen@chromium.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        agross@kernel.org, dianders@chromium.org, linux@roeck-us.net,
+        rnayak@codeaurora.org, lsrao@codeaurora.org,
+        Mahesh Sivasubramanian <msivasub@codeaurora.org>,
+        devicetree@vger.kernel.org, Lina Iyer <ilina@codeaurora.org>
+References: <1630906083-32194-1-git-send-email-mkshah@codeaurora.org>
+ <1630906083-32194-2-git-send-email-mkshah@codeaurora.org>
+ <YU5d4PhKRvF3wzGX@builder.lan>
+From:   Maulik Shah <mkshah@codeaurora.org>
+Message-ID: <5d6fe646-5110-0fba-fc30-0ff7aad6de03@codeaurora.org>
+Date:   Tue, 5 Oct 2021 14:23:30 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <YU5d4PhKRvF3wzGX@builder.lan>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The fscache object CREATE_OBJECT work state isn't ever referred to, so
-remove it and avoid the unused variable warning caused by W=1.
+Hi,
 
-Signed-off-by: David Howells <dhowells@redhat.com>
-Reviewed-by: Jeff Layton <jlayton@kernel.org>
-cc: linux-fsdevel@vger.kernel.org
-cc: linux-doc@vger.kernel.org
-Link: https://lore.kernel.org/r/163214005516.2945267.7000234432243167892.stgit@warthog.procyon.org.uk/ # rfc v1
-Link: https://lore.kernel.org/r/163281899704.2790286.9177774252843775348.stgit@warthog.procyon.org.uk/ # rfc v2
----
+On 9/25/2021 4:53 AM, Bjorn Andersson wrote:
+> On Mon 06 Sep 00:27 CDT 2021, Maulik Shah wrote:
+> 
+>> From: Mahesh Sivasubramanian <msivasub@codeaurora.org>
+>>
+>> Add device binding documentation for Qualcomm Technologies, Inc. (QTI)
+>> SoC sleep stats driver. The driver is used for displaying SoC sleep
+>> statistic maintained by Always On Processor or Resource Power Manager.
+>>
+>> Cc: devicetree@vger.kernel.org
+>> Signed-off-by: Mahesh Sivasubramanian <msivasub@codeaurora.org>
+>> Signed-off-by: Lina Iyer <ilina@codeaurora.org>
+>> Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
+>> Reviewed-by: Rob Herring <robh@kernel.org>
+>> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+>> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+>> ---
+>>   .../bindings/soc/qcom/soc-sleep-stats.yaml         | 48 ++++++++++++++++++++++
+>>   1 file changed, 48 insertions(+)
+>>   create mode 100644 Documentation/devicetree/bindings/soc/qcom/soc-sleep-stats.yaml
+>>
+>> diff --git a/Documentation/devicetree/bindings/soc/qcom/soc-sleep-stats.yaml b/Documentation/devicetree/bindings/soc/qcom/soc-sleep-stats.yaml
+>> new file mode 100644
+>> index 0000000..4161156
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/soc/qcom/soc-sleep-stats.yaml
+>> @@ -0,0 +1,48 @@
+>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/soc/qcom/soc-sleep-stats.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: Qualcomm Technologies, Inc. (QTI) SoC sleep stats bindings
+>> +
+>> +maintainers:
+>> +  - Maulik Shah <mkshah@codeaurora.org>
+>> +  - Lina Iyer <ilina@codeaurora.org>
+> 
+> Lina's address is no longer valid.
 
- fs/fscache/object.c |    1 -
- 1 file changed, 1 deletion(-)
+Removed in v10.
 
-diff --git a/fs/fscache/object.c b/fs/fscache/object.c
-index 7b9e7a366226..6a675652129b 100644
---- a/fs/fscache/object.c
-+++ b/fs/fscache/object.c
-@@ -77,7 +77,6 @@ static WORK_STATE(INIT_OBJECT,		"INIT", fscache_initialise_object);
- static WORK_STATE(PARENT_READY,		"PRDY", fscache_parent_ready);
- static WORK_STATE(ABORT_INIT,		"ABRT", fscache_abort_initialisation);
- static WORK_STATE(LOOK_UP_OBJECT,	"LOOK", fscache_look_up_object);
--static WORK_STATE(CREATE_OBJECT,	"CRTO", fscache_look_up_object);
- static WORK_STATE(OBJECT_AVAILABLE,	"AVBL", fscache_object_available);
- static WORK_STATE(JUMPSTART_DEPS,	"JUMP", fscache_jumpstart_dependents);
- 
+> 
+>> +
+>> +description:
+>> +  Always On Processor/Resource Power Manager maintains statistics of the SoC
+>> +  sleep modes involving powering down of the rails and oscillator clock.
+>> +
+>> +  Statistics includes SoC sleep mode type, number of times low power mode were
+>> +  entered, time of last entry, time of last exit and accumulated sleep duration.
+>> +
+>> +properties:
+>> +  compatible:
+>> +    enum:
+>> +      - qcom,rpmh-sleep-stats
+>> +      - qcom,rpm-sleep-stats
+>> +
+>> +  reg:
+>> +    maxItems: 1
+>> +
+>> +required:
+>> +  - compatible
+>> +  - reg
+>> +
+>> +additionalProperties: false
+>> +
+>> +examples:
+>> +  # Example of rpmh sleep stats
+>> +  - |
+>> +    aop_msgram@c3f0048 {
+>> +      compatible = "qcom,rpmh-sleep-stats";
+>> +      reg = <0x0c3f0048 0x400>;
+> 
+> As I tested this series I did find it quite odd that the start address
+> of this block is $48 bytes into a page and still the length is an even
+> $400.
+> 
+> Is there any single platform where qcom,rpmh-sleep-stats doesn't start
+> at an offset of $48 from the beginning of its msgram? Could we move this
+> number to the driver?
+> 
+> Regards,
+> Bjorn
 
+Sure, i have moved 0x48 into driver in v10.
 
+Thanks,
+Maulik
+
+> 
+>> +    };
+>> +  # Example of rpm sleep stats
+>> +  - |
+>> +    rpm_msgram@4690000 {
+>> +      compatible = "qcom,rpm-sleep-stats";
+>> +      reg = <0x04690000 0x400>;
+>> +    };
+>> +...
+>> -- 
+>> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+>> of Code Aurora Forum, hosted by The Linux Foundation
+>>
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member of Code Aurora Forum, hosted by The Linux Foundation
