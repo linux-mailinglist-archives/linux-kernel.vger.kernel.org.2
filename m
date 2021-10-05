@@ -2,108 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BBB6422FA2
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 20:06:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B8F3422FA7
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 20:06:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234894AbhJESI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 14:08:26 -0400
-Received: from mail.efficios.com ([167.114.26.124]:58954 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229796AbhJESIZ (ORCPT
+        id S229796AbhJESI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 14:08:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40532 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234805AbhJESI0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 14:08:25 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id B0E2438EEEF;
-        Tue,  5 Oct 2021 14:06:33 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id iZsE1lZA6tlX; Tue,  5 Oct 2021 14:06:33 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 2ABCC38EEEE;
-        Tue,  5 Oct 2021 14:06:33 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 2ABCC38EEEE
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1633457193;
-        bh=tfKh6mHkN2x9qWMzx/jgb3e4/+PZ5d3ilSaKBX4BnfE=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=J1O8CHuaXrbI7ETe8Lggn0Ls3THmmH6Z255M+LFzCsvbwZvBjLaWEfdtRLINCrWKF
-         h+hFmLwjsWKIFlLaxcszT1refvDhhwvXpKU0PgW+dj2kjV4E98m+bevWK2dxNpkV5M
-         Qe/iIuKd4hwBKoQRGEVNQVmBIRi2/KxaS0E3saN0ArKs82vUSXgdzIGctghBcm5mlI
-         bdQx2RQCRwI7UTH7y3Au+l6horu4X28A/qMAUyWPTaJxqElbOhvK9Ujp8p1e9xeR5h
-         MvWQjVHa4IekTRKcmedzI4kcmRCof5bK/Jz+8LUOgiYWVnRydMteIRMgQQTnz/+47W
-         2i7Fugh/Da13Q==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id PKk_2bA41C_h; Tue,  5 Oct 2021 14:06:33 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 0EC1B38F196;
-        Tue,  5 Oct 2021 14:06:33 -0400 (EDT)
-Date:   Tue, 5 Oct 2021 14:06:32 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     rostedt <rostedt@goodmis.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Paul <paulmck@linux.vnet.ibm.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        "Joel Fernandes, Google" <joel@joelfernandes.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, rcu <rcu@vger.kernel.org>,
-        netfilter-devel <netfilter-devel@vger.kernel.org>,
-        coreteam <coreteam@netfilter.org>,
-        netdev <netdev@vger.kernel.org>
-Message-ID: <639278914.2878.1633457192964.JavaMail.zimbra@efficios.com>
-In-Reply-To: <ef5b1654-1f75-da82-cab8-248319efbe3f@rasmusvillemoes.dk>
-References: <20211005094728.203ecef2@gandalf.local.home> <ef5b1654-1f75-da82-cab8-248319efbe3f@rasmusvillemoes.dk>
-Subject: Re: [RFC][PATCH] rcu: Use typeof(p) instead of typeof(*p) *
+        Tue, 5 Oct 2021 14:08:26 -0400
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48073C061749
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 11:06:35 -0700 (PDT)
+Received: by mail-oi1-x22c.google.com with SMTP id x124so373303oix.9
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 11:06:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=ZhJmS/oaFcG0CCC1jcKsenxPXA1oO8fnKa8QfXuwC6Y=;
+        b=P7Ks9E3jRuLaebd0/Wgoc5DyaqIFcAoRmR/amJcDKI4CaK0QQU9tSBKiH9TeEonza9
+         dPqOzNonsSRhVVPt1vmxKtKvXmkLnWG1nFcbJlQeV85bHrVIQHqSC79AN1TE9cchxjUC
+         xQdRIiwPCeK3dAGVmMlBOIcoSJpYJ7prn2A34=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=ZhJmS/oaFcG0CCC1jcKsenxPXA1oO8fnKa8QfXuwC6Y=;
+        b=F7nn0iJH+M6tnHlXnJo4yXV/UkOzuVWmLOyZhKN/495ka3Td1jI92fSxUdS4IsMLVw
+         R48HzI+5aCRKtRrrrdJ7h2Z3i3MMiwziNwY2kV2fXL0WBtJICc3MRHk1kruiR48sW3RV
+         8FkhuQvIs6CQno92ixEtXsYhqomHsG8L1Z3a+6LSbAYNA45+SXqu8GHNplNfGWVYxBuM
+         rBgQJSLMNsAqzE6E2+QyTwnSz4eoCevoO70Eo6aMVraFwfdYPlQDTDuhdIEa9bIsBlrt
+         sXh0nPusa+/iy9Yrcxdw5r7YTWPsaiRkzDkdAElKwdxW1UqGGGvvKWihIS0WJlxWyPE1
+         CDtQ==
+X-Gm-Message-State: AOAM533RcmAXiugNsPXV5vbffgEbYemjv9CCNBf/D2+WmtrkIfL3CGp7
+        5Q6vl/+luOi9EHz/ww5iHKzdDTC+KLKZAcnGuUhWKQ==
+X-Google-Smtp-Source: ABdhPJwy7XEXx1crzpVbI98jIWwyHysBUIuro9gRyQtRlRRB27rta23ocJ1zayjMe/m6FjoIgKNVHGMbx873MznmCeE=
+X-Received: by 2002:aca:42d7:: with SMTP id p206mr3684143oia.32.1633457194655;
+ Tue, 05 Oct 2021 11:06:34 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Tue, 5 Oct 2021 11:06:33 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_4156 (ZimbraWebClient - FF92 (Linux)/8.8.15_GA_4156)
-Thread-Topic: Use typeof(p) instead of typeof(*p) *
-Thread-Index: RjCoJoA6Ynqqjw2vHnEn40XORyRWhA==
+In-Reply-To: <1633427071-19523-1-git-send-email-mkrishn@codeaurora.org>
+References: <1633427071-19523-1-git-send-email-mkrishn@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Tue, 5 Oct 2021 11:06:33 -0700
+Message-ID: <CAE-0n535JFD9QDeeDk5Tik4DKqt68pQRsHTbW9sxvHijXhOE3g@mail.gmail.com>
+Subject: Re: [PATCH v1] drm/msm: use compatible string to find mdp node
+To:     Krishna Manikandan <mkrishn@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     kalyan_t@codeaurora.org, robdclark@gmail.com,
+        bjorn.andersson@linaro.org, freedreno@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Oct 5, 2021, at 2:01 PM, Rasmus Villemoes linux@rasmusvillemoes.dk wrote:
+Quoting Krishna Manikandan (2021-10-05 02:44:31)
+> In the current implementation, substring comparison
+> using device node name is used to find mdp node
+> during driver probe. Use compatible string instead
+> of node name to get mdp node from the parent mdss node.
+>
+> Signed-off-by: Krishna Manikandan <mkrishn@codeaurora.org>
+> ---
+>  drivers/gpu/drm/msm/msm_drv.c | 13 ++++++++++---
+>  1 file changed, 10 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
+> index 2e6fc18..50a23cf 100644
+> --- a/drivers/gpu/drm/msm/msm_drv.c
+> +++ b/drivers/gpu/drm/msm/msm_drv.c
+> @@ -1241,9 +1241,16 @@ static int add_components_mdp(struct device *mdp_dev,
+>         return 0;
+>  }
+>
+> -static int compare_name_mdp(struct device *dev, void *data)
+> +static int find_mdp_node(struct device *dev, void *data)
+>  {
+> -       return (strstr(dev_name(dev), "mdp") != NULL);
+> +       return of_device_is_compatible(dev->of_node, "qcom,mdp4") ||
 
-> On 05/10/2021 15.47, Steven Rostedt wrote:
-> 
->> That is, instead of declaring: typeof(*p) *_p; just do:
->>  typeof(p) _p;
->> 
->> Also had to update a lot of the function pointer initialization in the
->> networking code, as a function address must be passed as an argument in
->> RCU_INIT_POINTER()
-> 
-> I would think that one could avoid that churn by saying
-> 
->  typeof((p) + 0)
-> 
-> instead of just "typeof(p)", to force the decay to a pointer.
+Why do we care about mdp4? It looks like this function is only called if
+get_mdp_ver() returns 5 or DPU, in which case 4 isn't relevant?
 
-If the type of @p is an integer, (p) + 0 is still valid, so it will not
-prevent users from passing an integer type as argument, which is what
-the current implementation prevents.
+> +               of_device_is_compatible(dev->of_node, "qcom,mdp5") ||
+> +               of_device_is_compatible(dev->of_node, "qcom,mdss_mdp") ||
+> +               of_device_is_compatible(dev->of_node, "qcom,sdm845-dpu") ||
+> +               of_device_is_compatible(dev->of_node, "qcom,sm8150-dpu") ||
+> +               of_device_is_compatible(dev->of_node, "qcom,sm8250-dpu") ||
+> +               of_device_is_compatible(dev->of_node, "qcom,sc7180-dpu") ||
+> +               of_device_is_compatible(dev->of_node, "qcom,sc7280-dpu");
 
-Also, AFAIU, the compiler wants to know the sizeof(p) in order to evaluate
-(p + 0). Steven's goal is to hide the structure declaration, so that would
-not work either.
+Instead of this duplicate string check why not use canonical compatible
+lists?
 
-Thanks,
+	return of_match_node(dpu_dt_match, dev->of_node) ||
+	       of_match_node(mdp5_dt_match, dev->of_node);
 
-Mathieu
 
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+This way we're not constantly updating this list of compatibles in two
+places.
+
+>  }
+>
+>  static int add_display_components(struct platform_device *pdev,
+> @@ -1268,7 +1275,7 @@ static int add_display_components(struct platform_device *pdev,
+>                         return ret;
+>                 }
+>
+> -               mdp_dev = device_find_child(dev, NULL, compare_name_mdp);
+> +               mdp_dev = device_find_child(dev, NULL, find_mdp_node);
+>                 if (!mdp_dev) {
+>                         DRM_DEV_ERROR(dev, "failed to find MDSS MDP node\n");
+>                         of_platform_depopulate(dev);
