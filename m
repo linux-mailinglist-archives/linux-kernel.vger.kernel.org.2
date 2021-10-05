@@ -2,106 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F855422EA9
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 19:01:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EC41422EA6
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 19:00:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235381AbhJERDM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 13:03:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51810 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234860AbhJERDI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 13:03:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 720D361163;
-        Tue,  5 Oct 2021 17:01:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633453277;
-        bh=NSeU9hatA+OgYytZUerd6FhqBr/+f6oCC1iiS3hjtyM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tnkAA6c978V63SAO4/YH8gtNjniPFUNdDA7mBHyQ+m0FE0sKGA7DKUGFsHtoWGvFx
-         rKwKAC9hT1IKt0mHC9L6Zf1riQrGEZgIDel+o/hrrliGkRuM4XLK9BNY43VCMIpJF6
-         /mVCzW8nkKWc4C6QiOJvxQMlT2AhaBM+7zOjlUst8dRZXaM+ux6uovRQ7Y7tq5MtLd
-         Vd9EcWRpMfohgZ5qzxvUoIPoAm2vsiWRsIAkGzs3c71LAyN4x76hGmpGJDN4JHQlV/
-         dLgT27BM7+Rb1SkVr3y17ybYfcFa8YWuxUtKQJIhJ8Jmw0IYPHcE0b+abU0NzUQ1wM
-         iekPxpiPTEl3w==
-Date:   Tue, 5 Oct 2021 10:01:16 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, David Howells <dhowells@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        keyrings@vger.kernel.org, Adam Langley <agl@google.com>
-Subject: Re: [PATCH 1/1] sign-file: Use OpenSSL provided define to compile
- out deprecated APIs
-Message-ID: <YVyE3Ax1PRtiBwf+@gmail.com>
-References: <20211005161833.1522737-1-lee.jones@linaro.org>
+        id S236659AbhJERB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 13:01:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53564 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236585AbhJERB4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 13:01:56 -0400
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1F89C06174E
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 10:00:05 -0700 (PDT)
+Received: by mail-ot1-x329.google.com with SMTP id c6-20020a9d2786000000b005471981d559so26654658otb.5
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 10:00:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=eT4QRWTiJcs1knqD0fms3lf+fPlsl7moqQX0wdYcY2M=;
+        b=sLzQMGXP4lgmvW6RIos0qJsSgfnvDPNPlxKz2aHtLdzE6GdRTycaBnkCKNjXGOEDRC
+         wrzfyJIZNmfz0HPapn33yfabQJTY5IZQNOzdjM3rXsVolGMtMpmAe40khV59mmixH6CM
+         whbo3qoGSQxWG/UHNB169e90vg9khpC5JY1Zd12yJCa3tNsluVTzjHVdfKJG9eYENNBv
+         U3gqZe+LI9wtybSg/larb2Nq2bMKax1sf1aWgwrR15QKY0l5h5ocm+Bgiskj6+NlZM4+
+         nu8WfFDGDV1NaNMsyKV3rlECx6QgSz7avNXjrrpIoLoMdb7LttswJTUeRvkHjnV5qB2e
+         Cymg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=eT4QRWTiJcs1knqD0fms3lf+fPlsl7moqQX0wdYcY2M=;
+        b=Z6YVrXD58LzlcazO67SwxuEXXC4iNx7XF/sQH0yo3gR0mU1e5ysJOzoP8tcTxCaDlr
+         5oIgrdqEz5gQVYEbpOdd2HghiHLdNWIl6xZi3Aj3JXzf3BcqH2AYa1j+ZEKXciDXbhA1
+         zEgfZoyl2FwOU+iKvmVTdBdZ+19Na9grIpavqOlxv81h5KkHH4wxXW8dvCVm1iegVZS/
+         IthzqSYstuy+DH7d82pxBHHtrs7zTFv88rIIr5voC0XTOhjCALWTIeM8ckZZDWd8TeLn
+         gQVOZR1OMQbj8UVJuRE6beafptOwA5T8aq7H/jUdEEcwpwMDiQlYaflcOGBd9iRPT1/Z
+         3VYg==
+X-Gm-Message-State: AOAM530Nxvs2NnlZV+7ZxWBEmm9xP3CRFB4KddwFWBGbQx+ZsnJE/CsP
+        3JeKkF5LUubQwtQPK1ryTeYYxg==
+X-Google-Smtp-Source: ABdhPJxY2jmsRmi0yUIG27/p4uC6tH4JPn1TN2xDpW8nkkRfeciD9lUi6d1YiRKW4hjAqu6mxi4HeQ==
+X-Received: by 2002:a05:6830:2906:: with SMTP id z6mr15861929otu.257.1633453205311;
+        Tue, 05 Oct 2021 10:00:05 -0700 (PDT)
+Received: from ripper ([2600:1700:a0:3dc8:205:1bff:fec0:b9b3])
+        by smtp.gmail.com with ESMTPSA id u2sm3664543otg.51.2021.10.05.10.00.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Oct 2021 10:00:04 -0700 (PDT)
+Date:   Tue, 5 Oct 2021 10:01:47 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Cc:     agross@kernel.org, lgirdwood@gmail.com, broonie@kernel.org,
+        robh+dt@kernel.org, plai@codeaurora.org, bgoswami@codeaurora.org,
+        perex@perex.cz, tiwai@suse.com, srinivas.kandagatla@linaro.org,
+        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, swboyd@chromium.org,
+        judyhsiao@chromium.org,
+        Venkata Prasad Potturu <potturu@codeaurora.org>
+Subject: Re: [PATCH] ASoC: qcom: soundwire: Enable soundwire bus clock for
+ version 1.6
+Message-ID: <YVyE+ytKVmOh85c3@ripper>
+References: <1633105471-30928-1-git-send-email-srivasam@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211005161833.1522737-1-lee.jones@linaro.org>
+In-Reply-To: <1633105471-30928-1-git-send-email-srivasam@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05, 2021 at 05:18:33PM +0100, Lee Jones wrote:
-> OpenSSL's ENGINE API is deprecated in OpenSSL v3.0.
+On Fri 01 Oct 09:24 PDT 2021, Srinivasa Rao Mandadapu wrote:
+
+> Add support for soundwire 1.6 version to gate RX/TX bus clock.
 > 
-> Use OPENSSL_NO_ENGINE to disallow its use and fall back on the BIO API.
-> 
-> Cc: David Howells <dhowells@redhat.com>
-> Cc: David Woodhouse <dwmw2@infradead.org>
-> Cc: keyrings@vger.kernel.org
-> Co-developed-by: Adam Langley <agl@google.com>
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
+> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
 > ---
->  scripts/sign-file.c | 19 ++++++++++---------
->  1 file changed, 10 insertions(+), 9 deletions(-)
+>  drivers/soundwire/qcom.c | 12 +++++++++++-
+>  1 file changed, 11 insertions(+), 1 deletion(-)
 > 
-> diff --git a/scripts/sign-file.c b/scripts/sign-file.c
-> index fbd34b8e8f578..fa3fa59db6669 100644
-> --- a/scripts/sign-file.c
-> +++ b/scripts/sign-file.c
-> @@ -135,7 +135,9 @@ static int pem_pw_cb(char *buf, int len, int w, void *v)
->  static EVP_PKEY *read_private_key(const char *private_key_name)
->  {
->  	EVP_PKEY *private_key;
-> +	BIO *b;
+> diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
+> index 0ef79d6..599b3ed 100644
+> --- a/drivers/soundwire/qcom.c
+> +++ b/drivers/soundwire/qcom.c
+> @@ -127,6 +127,7 @@ struct qcom_swrm_ctrl {
+>  	struct device *dev;
+>  	struct regmap *regmap;
+>  	void __iomem *mmio;
+> +	char __iomem *swrm_hctl_reg;
+>  	struct completion broadcast;
+>  	struct completion enumeration;
+>  	struct work_struct slave_work;
+> @@ -610,6 +611,12 @@ static int qcom_swrm_init(struct qcom_swrm_ctrl *ctrl)
+>  	val = FIELD_PREP(SWRM_MCP_FRAME_CTRL_BANK_ROW_CTRL_BMSK, ctrl->rows_index);
+>  	val |= FIELD_PREP(SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_BMSK, ctrl->cols_index);
 >  
-> +#ifndef OPENSSL_NO_ENGINE
->  	if (!strncmp(private_key_name, "pkcs11:", 7)) {
->  		ENGINE *e;
+> +	if (ctrl->swrm_hctl_reg) {
+> +		val = ioread32(ctrl->swrm_hctl_reg);
+> +		val &= 0xFFFFFFFD;
+
+That's a tricky way of saying:
+
+	val &= ~BIT(1);
+
+That said, naming bit 1 is still a very good thing.
+
+> +		iowrite32(val, ctrl->swrm_hctl_reg);
+> +	}
+> +
+>  	ctrl->reg_write(ctrl, SWRM_MCP_FRAME_CTRL_BANK_ADDR(0), val);
 >  
-> @@ -153,17 +155,16 @@ static EVP_PKEY *read_private_key(const char *private_key_name)
->  		private_key = ENGINE_load_private_key(e, private_key_name,
->  						      NULL, NULL);
->  		ERR(!private_key, "%s", private_key_name);
-> -	} else {
-> -		BIO *b;
-> -
-> -		b = BIO_new_file(private_key_name, "rb");
-> -		ERR(!b, "%s", private_key_name);
-> -		private_key = PEM_read_bio_PrivateKey(b, NULL, pem_pw_cb,
-> -						      NULL);
-> -		ERR(!private_key, "%s", private_key_name);
-> -		BIO_free(b);
-> +		return private_key;
->  	}
-> +#endif
+>  	/* Enable Auto enumeration */
+> @@ -1200,7 +1207,7 @@ static int qcom_swrm_probe(struct platform_device *pdev)
+>  	struct qcom_swrm_ctrl *ctrl;
+>  	const struct qcom_swrm_data *data;
+>  	int ret;
+> -	u32 val;
+> +	int val, swrm_hctl_reg = 0;
 >  
-> +	b = BIO_new_file(private_key_name, "rb");
-> +	ERR(!b, "%s", private_key_name);
-> +	private_key = PEM_read_bio_PrivateKey(b, NULL, pem_pw_cb,
-> +					      NULL);
-> +	ERR(!private_key, "%s", private_key_name);
-> +	BIO_free(b);
->  	return private_key;
->  }
+>  	ctrl = devm_kzalloc(dev, sizeof(*ctrl), GFP_KERNEL);
+>  	if (!ctrl)
+> @@ -1251,6 +1258,9 @@ static int qcom_swrm_probe(struct platform_device *pdev)
+>  	ctrl->bus.port_ops = &qcom_swrm_port_ops;
+>  	ctrl->bus.compute_params = &qcom_swrm_compute_params;
+>  
+> +	if (!of_property_read_u32(dev->of_node, "qcom,swrm-hctl-reg", &swrm_hctl_reg))
+> +		ctrl->swrm_hctl_reg = devm_ioremap(&pdev->dev, swrm_hctl_reg, 0x4);
 
-I ran into these same -Wdeprecated-declarations compiler warnings on another
-project that uses the ENGINE API to access OpenSSL's support for PKCS#11 tokens.
-The conclusion was that in OpenSSL 3.0, the new API for PKCS#11 support isn't
-actually ready yet, so we had to keep using the ENGINE API and just add
--Wno-deprecated-declarations to the compiler flags.
+Nack.
 
-Your patch just removes support for PKCS#11 in that case, which seems
-undesirable.  (Unless no one is actually using it?)
+You may not pull an address to a single register out of an undocumented
+DT property and blindly ioremap that.
 
-- Eric
+And you surely should check for errors here, to avoid magical errors
+caused by this ioremap failing and your bit not being cleared.
+
+Thanks,
+Bjorn
+
+> +
+>  	ret = qcom_swrm_get_port_config(ctrl);
+>  	if (ret)
+>  		goto err_clk;
+> -- 
+> Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+> is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+> 
