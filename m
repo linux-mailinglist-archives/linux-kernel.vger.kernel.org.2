@@ -2,503 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C27504230F3
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 21:47:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9EF7423102
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 21:49:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235673AbhJETtR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 15:49:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35324 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235520AbhJETtO (ORCPT
+        id S235648AbhJETv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 15:51:27 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:55402 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230333AbhJETvY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 15:49:14 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EA4DC06174E
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 12:47:24 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id 145so409111pfz.11
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 12:47:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=qkCPekbpEDYGwhlOfyAIA3I+UiuzlYJMJltSakAIdZc=;
-        b=S13VUg/QnYYkvQ+R1A1zbvAPOkCbL2fLfrYDbRam9Ekzbn6gRSQM4wc9pVUQyPK2Nd
-         EnBjSxt7knLmlUt7qHqO8cIcDkNQ8ZUa5EVfr/BZsNcIAQ/diKpkAc/MiWI6eaih820H
-         Jcjlu3OoF3cA5IXl5FSVPE7ZrzW23UcdTPOS8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qkCPekbpEDYGwhlOfyAIA3I+UiuzlYJMJltSakAIdZc=;
-        b=q+NTyt4YTbQc48vmq5Qm9ron1T6ldedzWdHU0GIGJPIQMlX9xsDbTCORdCiHXRU3Q4
-         1JPdBIN5YwNSYtRErA9Pb+lny2+Bcy61TKWmfL7wxCF55+WxNlPGoxd0rj9tmN5mDLqu
-         VhtH629FA2Ab5oCWHRnphaGjEwz5zvLz265c3/QoXjcxpnyNYxOskzHxnu5osPBGO0go
-         FeisPrOGJumjwW3cIHxfx+seEC3sOWk4qygJ/AG3AAhpAKDH/U1tyBZ3RtRqM5f4V4fH
-         USIfLnP4o/IoDH8c8bcVf0ujBVXl2TLphMnRXvTm3i0xVJpj6EnWr3L3wTBdRneAlyPf
-         oDJw==
-X-Gm-Message-State: AOAM533nJfvvvZ4vVPOhJ9J4M6AAoqCvGempXlDWlQkSamFTEegGJBPQ
-        sFW4pPavfL3H57Jh2pKrh6Tdrw==
-X-Google-Smtp-Source: ABdhPJxkJ/A7j051CT/sSu9pcT/gf0qUN0UbUyp7hIb1ZYaEsjs7D8BL/cJPyqsTp/vJhryzKuYBzQ==
-X-Received: by 2002:a62:cd0f:0:b0:447:b8fe:d6c2 with SMTP id o15-20020a62cd0f000000b00447b8fed6c2mr33105130pfg.70.1633463243376;
-        Tue, 05 Oct 2021 12:47:23 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id l19sm3295785pff.131.2021.10.05.12.47.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Oct 2021 12:47:22 -0700 (PDT)
-Date:   Tue, 5 Oct 2021 12:47:22 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     tj@kernel.org, gregkh@linuxfoundation.org,
-        akpm@linux-foundation.org, minchan@kernel.org, jeyu@kernel.org,
-        shuah@kernel.org, bvanassche@acm.org, dan.j.williams@intel.com,
-        joe@perches.com, tglx@linutronix.de, rostedt@goodmis.org,
-        linux-spdx@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 04/12] kernfs: add initial failure injection support
-Message-ID: <202110051225.419CD64@keescook>
-References: <20210927163805.808907-1-mcgrof@kernel.org>
- <20210927163805.808907-5-mcgrof@kernel.org>
+        Tue, 5 Oct 2021 15:51:24 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51]:54136)
+        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mXqRI-00BOhD-Fk; Tue, 05 Oct 2021 13:49:24 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:41390 helo=email.xmission.com)
+        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mXqRH-008ayT-2v; Tue, 05 Oct 2021 13:49:24 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Alexander Popov <alex.popov@linux.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Petr Mladek <pmladek@suse.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        Maciej Rozycki <macro@orcam.me.uk>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Luis Chamberlain <mcgrof@kernel.org>, Wei Liu <wl@xen.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Jann Horn <jannh@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will.deacon@arm.com>,
+        David S Miller <davem@davemloft.net>,
+        Borislav Petkov <bp@alien8.de>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        linux-hardening@vger.kernel.org,
+        "open list\:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        notify@kernel.org
+References: <20210929185823.499268-1-alex.popov@linux.com>
+        <d290202d-a72d-0821-9edf-efbecf6f6cef@linux.com>
+        <20210929194924.GA880162@paulmck-ThinkPad-P17-Gen-1>
+        <YVWAPXSzFNbHz6+U@alley>
+        <CAHk-=widOm3FXMPXXK0cVaoFuy3jCk65=5VweLceQCuWdep=Hg@mail.gmail.com>
+        <ba67ead7-f075-e7ad-3274-d9b2bc4c1f44@linux.com>
+        <CAHk-=whrLuVEC0x+XzYUNV2de5kM-k39GkJWwviQNuCdZ0nfKg@mail.gmail.com>
+        <0e847d7f-7bf0-cdd4-ba6e-a742ce877a38@linux.com>
+Date:   Tue, 05 Oct 2021 14:48:47 -0500
+In-Reply-To: <0e847d7f-7bf0-cdd4-ba6e-a742ce877a38@linux.com> (Alexander
+        Popov's message of "Sun, 3 Oct 2021 00:05:56 +0300")
+Message-ID: <87zgrnqmlc.fsf@disp2133>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210927163805.808907-5-mcgrof@kernel.org>
+Content-Type: text/plain
+X-XM-SPF: eid=1mXqRH-008ayT-2v;;;mid=<87zgrnqmlc.fsf@disp2133>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX19LbUxC2F3Wifzbmkmxv5sYTECcq8ioZjc=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa08.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=0.4 required=8.0 tests=ALL_TRUSTED,BAYES_20,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XM_B_SpammyWords,
+        XM_Multi_Part_URI autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        * -0.0 BAYES_20 BODY: Bayes spam probability is 5 to 20%
+        *      [score: 0.1076]
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        *  1.2 XM_Multi_Part_URI URI: Long-Multi-Part URIs
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa08 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  0.2 XM_B_SpammyWords One or more commonly used spammy words
+X-Spam-DCC: XMission; sa08 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Alexander Popov <alex.popov@linux.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 820 ms - load_scoreonly_sql: 0.15 (0.0%),
+        signal_user_changed: 17 (2.1%), b_tie_ro: 15 (1.8%), parse: 1.85
+        (0.2%), extract_message_metadata: 18 (2.2%), get_uri_detail_list: 2.2
+        (0.3%), tests_pri_-1000: 10 (1.2%), tests_pri_-950: 1.49 (0.2%),
+        tests_pri_-900: 1.32 (0.2%), tests_pri_-90: 138 (16.8%), check_bayes:
+        105 (12.8%), b_tokenize: 14 (1.7%), b_tok_get_all: 14 (1.8%),
+        b_comp_prob: 5 (0.6%), b_tok_touch_all: 65 (7.9%), b_finish: 1.54
+        (0.2%), tests_pri_0: 616 (75.1%), check_dkim_signature: 0.63 (0.1%),
+        check_dkim_adsp: 3.6 (0.4%), poll_dns_idle: 1.40 (0.2%), tests_pri_10:
+        2.3 (0.3%), tests_pri_500: 10 (1.2%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH] Introduce the pkill_on_warn boot parameter
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 09:37:57AM -0700, Luis Chamberlain wrote:
-> This adds initial failure injection support to kernfs. We start
-> off with debug knobs which when enabled allow test drivers, such as
-> test_sysfs, to then make use of these to try to force certain
-> difficult races to take place with a high degree of certainty.
-> 
-> This only adds runtime code *iff* the new bool CONFIG_FAIL_KERNFS_KNOBS is
-> enabled in your kernel. If you don't have this enabled this provides
-> no new functional. When CONFIG_FAIL_KERNFS_KNOBS is disabled the new
-> routine kernfs_debug_should_wait() ends up being transformed to if
-> (false), and so the compiler should optimize these out as dead code
-> producing no new effective binary changes.
-> 
-> We start off with enabling failure injections in kernfs by allowing us to
-> alter the way kernfs_fop_write_iter() behaves. We allow for the routine
-> kernfs_fop_write_iter() to wait for a certain condition in the kernel to
-> occur, after which it will sleep a predefined amount of time. This lets
-> kernfs users to time exactly when it want kernfs_fop_write_iter() to
-> complete, allowing for developing race conditions and test for correctness
-> in kernfs.
-> 
-> You'd boot with this enabled on your kernel command line:
-> 
-> fail_kernfs_fop_write_iter=1,100,0,1
-> 
-> The values are <interval,probability,size,times>, we don't care for
-> size, so for now we ignore it. The above ensures a failure will trigger
-> only once.
-> 
-> *How* we allow for this routine to change behaviour is left to knobs we
-> expose under debugfs:
-> 
->  # ls -1 /sys/kernel/debug/kernfs/config_fail_kernfs_fop_write_iter/
+Alexander Popov <alex.popov@linux.com> writes:
 
-I'd expect this to live under /sys/kernel/debug/fail_kernfs, like the
-other fault injectors.
+> On 02.10.2021 19:52, Linus Torvalds wrote:
+>> On Sat, Oct 2, 2021 at 4:41 AM Alexander Popov <alex.popov@linux.com> wrote:
+>>>
+>>> And what do you think about the proposed pkill_on_warn?
+>> 
+>> Honestly, I don't see the point.
+>> 
+>> If you can reliably trigger the WARN_ON some way, you can probably
+>> cause more problems by fooling some other process to trigger it.
+>> 
+>> And if it's unintentional, then what does the signal help?
+>> 
+>> So rather than a "rationale" that makes little sense, I'd like to hear
+>> of an actual _use_ case. That's different. That's somebody actually
+>> _using_ that pkill to good effect for some particular load.
+>
+> I was thinking about a use case for you and got an insight.
+>
+> Bugs usually don't come alone. Killing the process that got WARN_ON() prevents
+> possible bad effects **after** the warning. For example, in my exploit for
+> CVE-2019-18683, the kernel warning happens **before** the memory corruption
+> (use-after-free in the V4L2 subsystem).
+> https://a13xp0p0v.github.io/2020/02/15/CVE-2019-18683.html
+>
+> So pkill_on_warn allows the kernel to stop the process when the first signs of
+> wrong behavior are detected. In other words, proceeding with the code execution
+> from the wrong state can bring more disasters later.
+>
+>> That said, I don't much care in the end. But it sounds like a
+>> pointless option to just introduce yet another behavior to something
+>> that should never happen anyway, and where the actual
+>> honest-to-goodness reason for WARN_ON() existing is already being
+>> fulfilled (ie syzbot has been very effective at flushing things like
+>> that out).
+>
+> Yes, we slowly get rid of kernel warnings.
+> However, the syzbot dashboard still shows a lot of them.
+> Even my small syzkaller setup finds plenty of new warnings.
+> I believe fixing all of them will take some time.
+> And during that time, pkill_on_warn may be a better reaction to WARN_ON() than
+> ignoring and proceeding with the execution.
+>
+> Is that reasonable?
 
-> wait_after_active
-> wait_after_mutex
-> wait_at_start
-> wait_before_mutex
-> 
-> A debugfs entry also exists to allow us to sleep a configurabler amount
-> of time after the completion:
-> 
-> /sys/kernel/debug/kernfs/sleep_after_wait_ms
-> 
-> These two sets of knobs allow us to construct races and demonstrate
-> how the kernfs active reference should suffice to project against
-> races.
-> 
-> Enabling CONFIG_FAULT_INJECTION_DEBUG_FS enables us to configure the
-> differnt fault injection parametres for the new fail_kernfs_fop_write_iter
-> fault injection at run time:
-> 
-> ls -1 /sys/kernel/debug/kernfs/fail_kernfs_fop_write_iter/
-> interval
-> probability
-> space
-> times
-> task-filter
-> verbose
-> verbose_ratelimit_burst
-> verbose_ratelimit_interval_ms
-> 
-> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
-> ---
->  .../fault-injection/fault-injection.rst       | 22 +++++
->  MAINTAINERS                                   |  2 +-
->  fs/kernfs/Makefile                            |  1 +
->  fs/kernfs/failure-injection.c                 | 91 +++++++++++++++++++
->  fs/kernfs/file.c                              | 13 +++
->  fs/kernfs/kernfs-internal.h                   | 72 +++++++++++++++
->  include/linux/kernfs.h                        |  5 +
->  lib/Kconfig.debug                             | 10 ++
->  8 files changed, 215 insertions(+), 1 deletion(-)
->  create mode 100644 fs/kernfs/failure-injection.c
-> 
-> diff --git a/Documentation/fault-injection/fault-injection.rst b/Documentation/fault-injection/fault-injection.rst
-> index 4a25c5eb6f07..d4d34b082f47 100644
-> --- a/Documentation/fault-injection/fault-injection.rst
-> +++ b/Documentation/fault-injection/fault-injection.rst
-> @@ -28,6 +28,28 @@ Available fault injection capabilities
->  
->    injects kernel RPC client and server failures.
->  
-> +- fail_kernfs_fop_write_iter
-> +
-> +  Allows for failures to be enabled inside kernfs_fop_write_iter(). Enabling
-> +  this does not immediately enable any errors to occur. You must configure
-> +  how you want this routine to fail or change behaviour by using the debugfs
-> +  knobs for it:
-> +
-> +  # ls -1 /sys/kernel/debug/kernfs/config_fail_kernfs_fop_write_iter/
-> +  wait_after_active
-> +  wait_after_mutex
-> +  wait_at_start
-> +  wait_before_mutex
+I won't comment on the sanity of the feature but I will say that calling
+it oops_on_warn (rather than pkill_on_warn), and using the usual oops
+facilities rather than rolling oops by hand sounds like a better
+implementation.
 
-This should be split up and detailed in the "debugfs entries" section
-below here.
+Especially as calling do_group_exit(SIGKILL) from a random location is
+not a clean way to kill a process.  Strictly speaking it is not even
+killing the process.
 
-> +
-> +  You can also configure how long to sleep after a wait under
-> +
-> +  /sys/kernel/debug/kernfs/sleep_after_wait_ms
-> +
-> +  If you enable CONFIG_FAULT_INJECTION_DEBUG_FS the fail_add_disk failure
-> +  injection parameters are placed under:
-> +
-> +  /sys/kernel/debug/kernfs/fail_kernfs_fop_write_iter/
-> +
->  - fail_make_request
->  
->    injects disk IO errors on devices permitted by setting
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 1b4cefcb064c..fadfd961ad80 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -10384,7 +10384,7 @@ M:	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->  M:	Tejun Heo <tj@kernel.org>
->  S:	Supported
->  T:	git git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git
-> -F:	fs/kernfs/
-> +F:	fs/kernfs/*
->  F:	include/linux/kernfs.h
->  
->  KEXEC
-> diff --git a/fs/kernfs/Makefile b/fs/kernfs/Makefile
-> index 4ca54ff54c98..bc5b32ca39f9 100644
-> --- a/fs/kernfs/Makefile
-> +++ b/fs/kernfs/Makefile
-> @@ -4,3 +4,4 @@
->  #
->  
->  obj-y		:= mount.o inode.o dir.o file.o symlink.o
-> +obj-$(CONFIG_FAIL_KERNFS_KNOBS)    += failure-injection.o
-> diff --git a/fs/kernfs/failure-injection.c b/fs/kernfs/failure-injection.c
-> new file mode 100644
-> index 000000000000..4130d202c13b
-> --- /dev/null
-> +++ b/fs/kernfs/failure-injection.c
+Partly this is just me seeing the introduction of a
+do_group_exit(SIGKILL) call and not likely the maintenance that will be
+needed.  I am still sorting out the problems with other randomly placed
+calls to do_group_exit(SIGKILL) and interactions with ptrace and
+PTRACE_EVENT_EXIT in particular.
 
-I'd name this fault_inject.c, which matches the more common case:
+Which is a long winded way of saying if I can predictably trigger a
+warning that calls do_group_exit(SIGKILL), on some architectures I can
+use ptrace and  can convert that warning into a way to manipulate the
+kernel stack to have the contents of my choice.
 
-$ find . -type f -name '*fault*inject*.c'
-./fs/nfsd/fault_inject.c
-./drivers/nvme/host/fault_inject.c
-./drivers/scsi/ufs/ufs-fault-injection.c
-./lib/fault-inject.c
-./lib/fault-inject-usercopy.c
+If anyone goes forward with this please use the existing oops
+infrastructure so the ptrace interactions and anything else that comes
+up only needs to be fixed once.
 
-> @@ -0,0 +1,91 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +#include <linux/fault-inject.h>
-> +#include <linux/delay.h>
-> +
-> +#include "kernfs-internal.h"
-> +
-> +static DECLARE_FAULT_ATTR(fail_kernfs_fop_write_iter);
-> +struct kernfs_config_fail kernfs_config_fail;
-> +
-> +#define kernfs_config_fail(when) \
-> +	kernfs_config_fail.kernfs_fop_write_iter_fail.wait_ ## when
-> +
-> +#define kernfs_config_fail(when) \
-> +	kernfs_config_fail.kernfs_fop_write_iter_fail.wait_ ## when
-> +
-> +static int __init setup_fail_kernfs_fop_write_iter(char *str)
-> +{
-> +	return setup_fault_attr(&fail_kernfs_fop_write_iter, str);
-> +}
-> +
-> +__setup("fail_kernfs_fop_write_iter=", setup_fail_kernfs_fop_write_iter);
-> +
-> +struct dentry *kernfs_debugfs_root;
-> +struct dentry *config_fail_kernfs_fop_write_iter;
-> +
-> +static int __init kernfs_init_failure_injection(void)
-> +{
-> +	kernfs_config_fail.sleep_after_wait_ms = 100;
-> +	kernfs_debugfs_root = debugfs_create_dir("kernfs", NULL);
-> +
-> +	fault_create_debugfs_attr("fail_kernfs_fop_write_iter",
-> +				  kernfs_debugfs_root, &fail_kernfs_fop_write_iter);
-> +
-> +	config_fail_kernfs_fop_write_iter =
-> +		debugfs_create_dir("config_fail_kernfs_fop_write_iter",
-> +				   kernfs_debugfs_root);
-> +
-> +	debugfs_create_u32("sleep_after_wait_ms", 0600,
-> +			   kernfs_debugfs_root,
-> +			   &kernfs_config_fail.sleep_after_wait_ms);
-> +
-> +	debugfs_create_bool("wait_at_start", 0600,
-> +			    config_fail_kernfs_fop_write_iter,
-> +			    &kernfs_config_fail(at_start));
-> +	debugfs_create_bool("wait_before_mutex", 0600,
-> +			    config_fail_kernfs_fop_write_iter,
-> +			    &kernfs_config_fail(before_mutex));
-> +	debugfs_create_bool("wait_after_mutex", 0600,
-> +			    config_fail_kernfs_fop_write_iter,
-> +			    &kernfs_config_fail(after_mutex));
-> +	debugfs_create_bool("wait_after_active", 0600,
-> +			    config_fail_kernfs_fop_write_iter,
-> +			    &kernfs_config_fail(after_active));
-> +	return 0;
-> +}
-> +late_initcall(kernfs_init_failure_injection);
-> +
-> +int __kernfs_debug_should_wait_kernfs_fop_write_iter(bool evaluate)
-> +{
-> +	if (!evaluate)
-> +		return 0;
-> +
-> +	return should_fail(&fail_kernfs_fop_write_iter, 0);
-> +}
-
-Every caller ends up doing the wait, so how about just including that
-here instead? It should make things much less intrusive and more readable.
-
-And for the naming, other fault injectors use "should_fail_$topic", so
-maybe better here would be something like may_wait_kernfs(...).
-
-> +
-> +DECLARE_COMPLETION(kernfs_debug_wait_completion);
-> +EXPORT_SYMBOL_NS_GPL(kernfs_debug_wait_completion, KERNFS_DEBUG_PRIVATE);
-> +
-> +void kernfs_debug_wait(void)
-> +{
-> +	unsigned long timeout;
-> +
-> +	timeout = wait_for_completion_timeout(&kernfs_debug_wait_completion,
-> +					      msecs_to_jiffies(3000));
-> +	if (!timeout)
-> +		pr_info("%s waiting for kernfs_debug_wait_completion timed out\n",
-> +			__func__);
-> +	else
-> +		pr_info("%s received completion with time left on timeout %u ms\n",
-> +			__func__, jiffies_to_msecs(timeout));
-> +
-> +	/**
-> +	 * The goal is wait for an event, and *then* once we have
-> +	 * reached it, the other side will try to do something which
-> +	 * it thinks will break. So we must give it some time to do
-> +	 * that. The amount of time is configurable.
-> +	 */
-> +	msleep(kernfs_config_fail.sleep_after_wait_ms);
-> +	pr_info("%s ended\n", __func__);
-> +}
-
-All the uses of "__func__" here seems redundant; I would drop them.
-
-> diff --git a/fs/kernfs/file.c b/fs/kernfs/file.c
-> index 60e2a86c535e..4479c6580333 100644
-> --- a/fs/kernfs/file.c
-> +++ b/fs/kernfs/file.c
-> @@ -259,6 +259,9 @@ static ssize_t kernfs_fop_write_iter(struct kiocb *iocb, struct iov_iter *iter)
->  	const struct kernfs_ops *ops;
->  	char *buf;
->  
-> +	if (kernfs_debug_should_wait(kernfs_fop_write_iter, at_start))
-> +		kernfs_debug_wait();
-
-So this could just be:
-
-	may_wait_kernfs(kernfs_fop_write_iter, at_start);
-
-> +
->  	if (of->atomic_write_len) {
->  		if (len > of->atomic_write_len)
->  			return -E2BIG;
-> @@ -280,17 +283,27 @@ static ssize_t kernfs_fop_write_iter(struct kiocb *iocb, struct iov_iter *iter)
->  	}
->  	buf[len] = '\0';	/* guarantee string termination */
->  
-> +	if (kernfs_debug_should_wait(kernfs_fop_write_iter, before_mutex))
-> +		kernfs_debug_wait();
-> +
->  	/*
->  	 * @of->mutex nests outside active ref and is used both to ensure that
->  	 * the ops aren't called concurrently for the same open file.
->  	 */
->  	mutex_lock(&of->mutex);
-> +
-> +	if (kernfs_debug_should_wait(kernfs_fop_write_iter, after_mutex))
-> +		kernfs_debug_wait();
-> +
->  	if (!kernfs_get_active(of->kn)) {
->  		mutex_unlock(&of->mutex);
->  		len = -ENODEV;
->  		goto out_free;
->  	}
->  
-> +	if (kernfs_debug_should_wait(kernfs_fop_write_iter, after_active))
-> +		kernfs_debug_wait();
-> +
->  	ops = kernfs_ops(of->kn);
->  	if (ops->write)
->  		len = ops->write(of, buf, len, iocb->ki_pos);
-> diff --git a/fs/kernfs/kernfs-internal.h b/fs/kernfs/kernfs-internal.h
-> index f9cc912c31e1..9e3abf597e2d 100644
-> --- a/fs/kernfs/kernfs-internal.h
-> +++ b/fs/kernfs/kernfs-internal.h
-> @@ -18,6 +18,7 @@
->  
->  #include <linux/kernfs.h>
->  #include <linux/fs_context.h>
-> +#include <linux/stringify.h>
->  
->  struct kernfs_iattrs {
->  	kuid_t			ia_uid;
-> @@ -147,4 +148,75 @@ void kernfs_drain_open_files(struct kernfs_node *kn);
->   */
->  extern const struct inode_operations kernfs_symlink_iops;
->  
-> +/*
-> + * failure-injection.c
-> + */
-> +#ifdef CONFIG_FAIL_KERNFS_KNOBS
-> +
-> +/**
-> + * struct kernfs_fop_write_iter_fail - how kernfs_fop_write_iter_fail fails
-> + *
-> + * This lets you configure what part of kernfs_fop_write_iter() should behave
-> + * in a specific way to allow userspace to capture possible failures in
-> + * kernfs. The wait knobs are allowed to let you design capture possible
-> + * race conditions which would otherwise be difficult to reproduce. A
-> + * secondary driver would tell kernfs's wait completion when it is done.
-> + *
-> + * The point to the wait completion failure injection tests are to confirm
-> + * that the kernfs active refcount suffice to ensure other objects in other
-> + * layers are also gauranteed to exist, even they are opaque to kernfs. This
-> + * includes kobjects, devices, and other objects built on top of this, like
-> + * the block layer when using sysfs block device attributes.
-> + *
-> + * @wait_at_start: waits for completion from a third party at the start of
-> + *	the routine.
-> + * @wait_before_mutex: waits for completion from a third party before we
-> + *	are allowed to continue before the of->mutex is held.
-> + * @wait_after_mutex: waits for completion from a third party after we
-> + *	have held the of->mutex.
-> + * @wait_after_active: waits for completion from a thid party after we
-> + *	have refcounted the struct kernfs_node.
-> + */
-> +struct kernfs_fop_write_iter_fail {
-> +	bool wait_at_start;
-> +	bool wait_before_mutex;
-> +	bool wait_after_mutex;
-> +	bool wait_after_active;
-> +};
-> +
-> +/**
-> + * struct kernfs_config_fail - kernfs configuration for failure injection
-> + *
-> + * You can kernfs failure injection on boot, and in particular we currently
-> + * only support failures for kernfs_fop_write_iter(). However, we don't
-> + * want to always enable errors on this call when failure injection is enabled
-> + * as this routine is used by many parts of the kernel for proper functionality.
-> + * The compromise we make is we let userspace start enabling which parts it
-> + * wants to fail after boot, if and only if failure injection has been enabled.
-> + *
-> + * @kernfs_fop_write_iter_fail: configuration for how we want to allow
-> + *	for failure injection on kernfs_fop_write_iter()
-> + * @sleep_after_wait_ms: how many ms to wait after completion is received.
-> + */
-> +struct kernfs_config_fail {
-> +	struct kernfs_fop_write_iter_fail kernfs_fop_write_iter_fail;
-> +	u32 sleep_after_wait_ms;
-> +};
-> +
-> +extern struct kernfs_config_fail kernfs_config_fail;
-> +
-> +#define __kernfs_config_wait_var(func, when) \
-> +	(kernfs_config_fail.  func  ## _fail.wait_  ## when)
-                            ^^     ^               ^
-nit: needless spaces
-
-> +#define __kernfs_debug_should_wait_func_name(func) __kernfs_debug_should_wait_## func
-> +
-> +#define kernfs_debug_should_wait(func, when) \
-> +	__kernfs_debug_should_wait_func_name(func)(__kernfs_config_wait_var(func, when))
-> +int __kernfs_debug_should_wait_kernfs_fop_write_iter(bool evaluate);
-> +void kernfs_debug_wait(void);
-> +#else
-> +static inline void kernfs_init_failure_injection(void) {}
-> +#define kernfs_debug_should_wait(func, when) (false)
-> +static inline void kernfs_debug_wait(void) {}
-> +#endif
-> +
->  #endif	/* __KERNFS_INTERNAL_H */
-> diff --git a/include/linux/kernfs.h b/include/linux/kernfs.h
-> index 3ccce6f24548..cd968ee2b503 100644
-> --- a/include/linux/kernfs.h
-> +++ b/include/linux/kernfs.h
-> @@ -411,6 +411,11 @@ void kernfs_init(void);
->  
->  struct kernfs_node *kernfs_find_and_get_node_by_id(struct kernfs_root *root,
->  						   u64 id);
-> +
-> +#ifdef CONFIG_FAIL_KERNFS_KNOBS
-> +extern struct completion kernfs_debug_wait_completion;
-> +#endif
-> +
->  #else	/* CONFIG_KERNFS */
->  
->  static inline enum kernfs_node_type kernfs_type(struct kernfs_node *kn)
-> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> index ae19bf1a21b8..a29b7d398c4e 100644
-> --- a/lib/Kconfig.debug
-> +++ b/lib/Kconfig.debug
-> @@ -1902,6 +1902,16 @@ config FAULT_INJECTION_USERCOPY
->  	  Provides fault-injection capability to inject failures
->  	  in usercopy functions (copy_from_user(), get_user(), ...).
->  
-> +config FAIL_KERNFS_KNOBS
-> +	bool "Fault-injection support in kernfs"
-> +	depends on FAULT_INJECTION
-> +	help
-> +	  Provide fault-injection capability for kernfs. This only enables
-> +	  the error injection functionality. To use it you must configure which
-> +	  which path you want to trigger on error on using debugfs under
-> +	  /sys/kernel/debug/kernfs/config_fail_kernfs_fop_write_iter/. By
-> +	  default all of these are disabled.
-> +
->  config FAIL_MAKE_REQUEST
->  	bool "Fault-injection capability for disk IO"
->  	depends on FAULT_INJECTION && BLOCK
-> -- 
-> 2.30.2
-> 
-
--- 
-Kees Cook
+Eric
