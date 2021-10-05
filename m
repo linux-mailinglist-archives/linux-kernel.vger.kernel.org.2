@@ -2,82 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E82F3422715
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 14:53:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A8DB42271B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 14:53:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234226AbhJEMzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 08:55:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50306 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233825AbhJEMzB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 08:55:01 -0400
-Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68C43C061753
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 05:53:11 -0700 (PDT)
-Received: by mail-vs1-xe2d.google.com with SMTP id v4so8865444vsg.12
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 05:53:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=xQrYULKok+hL+AIRGJuG9CojAZcnV9Xr+it7yxQJVlY=;
-        b=fC/V5qvQgq0UbfMWPFtb9YCBW5Lfuh/PStcSnU7dB5zD3ur5LOXDOjae3Jop5bZK5n
-         bMXiOT1Oq3SZWLJXtYEXqIZ/VVQ1lA3f8z3ARp5ICAKwQcGnIn8kItJTXCUAEB0R0dQs
-         dDTrPr7ekVka1p1f8Mwv897ZVCzyTCf0eHrTuSDXP2Ucr9xQE3UypbkJfwniOKY73Nk2
-         pk0IqAOQOlCOixzeXuNrtp2UV6hU8rrVP0JCfg9u/o4Xz8U3bU2VKoaEe36PJ3e0XY0J
-         xJJLxPJ78EWwFW8wK4CcrtS9KqTWu/7UDgAaqT/JYXGrwsrM9S0X1NfXH+FvMbDRHVgy
-         as6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=xQrYULKok+hL+AIRGJuG9CojAZcnV9Xr+it7yxQJVlY=;
-        b=mOpXw7Hw9V44SEVFJCNRuamLCPQzNaphOa7yazIqVVkFTK1gFeYqwVdjO9fcFxhw9N
-         DfSpcSjUkVnGlTtGX4XdppUZOscFpqkdN1ptaMimXisCqxTOXWGh2iX5RH7Yn7Q5PAaH
-         RhQ2Hk7wbrzNvi2P8gB+t9q55m+hyQx6xy3mXhARz+XJqrzLwBdb+c54VIzQZMPYwP7Y
-         cTBTw/hCwX/u7QjcpVWg/Xcf4Sr2FZrIUB9dq0XPUdrpy/31MPnxZ2Da4vZKdnp774q8
-         n1E5OSyCQklOR4Si3g4YF40PU4+a6h8zvgmJQXvK3TXTbakGeF83+SuRvnrDDEPjB45K
-         4Vvg==
-X-Gm-Message-State: AOAM532eOSQionD8P/HZOvPzCBM7mcB7b9HciMiX5N1AQvjZTXri0kk8
-        7tw7jWq3ryPxrI0XHsUr6mF72iOtc0I1Nj6HCg==
-X-Google-Smtp-Source: ABdhPJytNHLYgmInPxsoxQlF1OkGVhDqyNSGxuBINejs9qbO2aIN71whPU2ovmm3LhKGuk+udySlzTp7kTBswSUJ9OI=
-X-Received: by 2002:a67:ea16:: with SMTP id g22mr7822462vso.14.1633438390421;
- Tue, 05 Oct 2021 05:53:10 -0700 (PDT)
+        id S234701AbhJEMzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 08:55:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57862 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233825AbhJEMzU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 08:55:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DB344611C3;
+        Tue,  5 Oct 2021 12:53:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1633438410;
+        bh=0oD/T6QtDflRB88pbKyb2S+SSnig767ocUT6GBM9gks=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iaHGj1ntScbS6GUz/3/GVvT3fGzaxI8GAtEff+VM2nXLI8tqzmFPD+MWPaCU9SUog
+         GbC0rEKujRlig6ZhAR7787KUmKMemPEjDFQ2GZefg1m2ZsWHazrrmC/mOMbU8rKowL
+         Mk4Ko3SPzMe5dmTJLi90jO3RopQJGOqKEHg3N/gs=
+Date:   Tue, 5 Oct 2021 14:53:28 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jiri Slaby <jirislaby@kernel.org>
+Subject: Re: [PATCH v1 1/2] serial: 8250_lpss: Extract
+ dw8250_do_set_termios() for common use
+Message-ID: <YVxKyOODe3ZWmnFZ@kroah.com>
+References: <20211002185141.31652-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Received: by 2002:ab0:594c:0:0:0:0:0 with HTTP; Tue, 5 Oct 2021 05:53:10 -0700 (PDT)
-Reply-To: mrsaishag45@gmail.com
-From:   Mrs Aisha Al-Qaddafi <mrsaishag8@gmail.com>
-Date:   Tue, 5 Oct 2021 05:53:10 -0700
-Message-ID: <CAMoG4bXdQ_Cs-ZNuUSTRzsc80f81kGwWkC01XKfFhQV9yHx6Lw@mail.gmail.com>
-Subject: Dear Friend,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211002185141.31652-1-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend,
+On Sat, Oct 02, 2021 at 09:51:40PM +0300, Andy Shevchenko wrote:
+> Some of the code currently used in dw8250_set_termios(), byt_set_termios()
+> may be reused by other methods in the future. Extract it to a common helper
+> function.
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  drivers/tty/serial/8250/8250_dw.c    |  8 ++------
+>  drivers/tty/serial/8250/8250_dwlib.c | 10 ++++++++++
+>  drivers/tty/serial/8250/8250_dwlib.h |  1 +
+>  drivers/tty/serial/8250/8250_lpss.c  |  6 +-----
+>  4 files changed, 14 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/tty/serial/8250/8250_dw.c b/drivers/tty/serial/8250/8250_dw.c
+> index a3a0154da567..e3c90c9e2448 100644
+> --- a/drivers/tty/serial/8250/8250_dw.c
+> +++ b/drivers/tty/serial/8250/8250_dw.c
+> @@ -338,7 +338,7 @@ static void dw8250_set_termios(struct uart_port *p, struct ktermios *termios,
+>  	rate = clk_round_rate(d->clk, newrate);
+>  	if (rate > 0) {
+>  		/*
+> -		 * Premilinary set the uartclk to the new clock rate so the
+> +		 * Preliminary set the uartclk to the new clock rate so the
 
-I came across your e-mail contact prior to a private search while in
-need of your assistance. I am Aisha Al-Qaddafi, the only biological
-Daughter of Former President of Libya Col. Muammar Al-Qaddafi. Am a
-single Mother and a Widow with three Children.
+Different change, not mentioned in the changelog, please make this a
+separate patch.
 
-I have investment funds worth Twenty Seven Million Five Hundred
-Thousand United State Dollar ($27.500.000.00 ) and i need a trusted
-investment Manager/Partner because of my current refugee status,
-however, I am interested in you for investment project assistance in
-your country, may be from there, we can build business relationship in
-the nearest future.
+thanks,
 
-I am willing to negotiate an investment/business profit sharing ratio
-with you based on the future investment earning profits.
-
-If you are willing to handle this project on my behalf kindly reply
-urgently to enable me to provide you more information about the
-investment funds.
-
-Your Urgent Reply Will Be Appreciated
-
-Best Regards
-Mrs Aisha Al-Qaddafi
+greg k-h
