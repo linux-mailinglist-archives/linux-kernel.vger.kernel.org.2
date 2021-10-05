@@ -2,127 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B6304221EA
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 11:14:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB8944221EB
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 11:14:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233329AbhJEJQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 05:16:38 -0400
-Received: from www.zeus03.de ([194.117.254.33]:37438 "EHLO mail.zeus03.de"
+        id S233477AbhJEJQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 05:16:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34856 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232773AbhJEJQh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 05:16:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=k1; bh=Ko//vJyuyzkPLobdWRfp+yv7tyBc
-        7iVoX1/SJmxO3TA=; b=VtlR4bgMqXIBd5DWuugHtGk9yyyDygAneVjffLA5ldjl
-        pAWSNhrqUERs8oyt4OKXq1q/a9QpTPiC7Rt2L+RJz5NqL/LSj5dPB5jCzcm3z6I6
-        xfvrh+wqR/siH9eEiLFS2V4S5GVnbUGickqtE8JS6mabXe0R/olbq6f5D5LA/4I=
-Received: (qmail 3740740 invoked from network); 5 Oct 2021 11:14:44 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 5 Oct 2021 11:14:44 +0200
-X-UD-Smtp-Session: l3s3148p1@JUPbdZfNBoogAwDPXw1kABtQsg8UzxVo
-Date:   Tue, 5 Oct 2021 11:14:44 +0200
-From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Mark Brown <broonie@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Subject: Re: [PATCH 6/6] memory: renesas-rpc-if: Add support for RZ/G2L
-Message-ID: <YVwXhFalcYr72CZT@kunai>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Mark Brown <broonie@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-References: <20210928140721.8805-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20210928140721.8805-7-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        id S233478AbhJEJQp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 05:16:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0EA48613D5;
+        Tue,  5 Oct 2021 09:14:52 +0000 (UTC)
+Date:   Tue, 5 Oct 2021 11:14:50 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Palmer Dabbelt <palmerdabbelt@google.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-riscv@lists.infradead.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, christian@brauner.io,
+        linux-kernel@vger.kernel.org, kernel-team@android.com
+Subject: Re: [PATCH] RISC-V: Include clone3() on rv32
+Message-ID: <20211005091450.yltwsjlzq6y732nv@wittgenstein>
+References: <20211004111758.rl2zq6l575hmcv22@wittgenstein>
+ <mhng-73210076-6df9-44e7-8c1a-09ced50fe4c0@palmerdabbelt-glaptop>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="1E6oOfbK851bS2lO"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210928140721.8805-7-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <mhng-73210076-6df9-44e7-8c1a-09ced50fe4c0@palmerdabbelt-glaptop>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Oct 04, 2021 at 05:35:40PM -0700, Palmer Dabbelt wrote:
+> On Mon, 04 Oct 2021 04:17:58 PDT (-0700), christian.brauner@ubuntu.com wrote:
+> > On Sun, Oct 03, 2021 at 05:30:24PM +0200, Arnd Bergmann wrote:
+> > > On Sun, Oct 3, 2021 at 2:58 AM Palmer Dabbelt <palmer@dabbelt.com> wrote:
+> > > >
+> > > > From: Palmer Dabbelt <palmerdabbelt@google.com>
+> > > >
+> > > > As far as I can tell this should be enabled on rv32 as well, I'm not
+> > > > sure why it's rv64-only.  checksyscalls is complaining about our lack of
+> > > > clone3() on rv32.
+> > > >
+> > > > Fixes: 56ac5e213933 ("riscv: enable sys_clone3 syscall for rv64")
+> > > > Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+> > > 
+> > > We should probably reverse the polarity of this symbol and force
+> > > architectures that don't implement it properly to say they don't
+> > > have it, but for now, it definitely makes sense to treat this the same
+> > > way on 32-bit and 64-bit risc-v.
+> > 
+> > I think we had that discussion back when I added it and I think I even
+> > proposed that or you did but then we settled on __ARCH_WANT_SYS_CLONE3.
+> > Most likely because it fell in line with the other
+> > __ARCH_WANT_SYS_{CLONE,FORK}.
+> > 
+> > I think at this point its alpha, ia64, nios, sparc, and sh that don't
+> > implement it. For some it looks trivial at first glance at least (Fwiw,
+> > nios implements sys_clone() but doesn't select __ARCH_WANT_SYS_CLONE3):
+> > 
+> > diff --git a/arch/nios2/include/uapi/asm/unistd.h b/arch/nios2/include/uapi/asm/unistd.h
+> > index 0b4bb1d41b28..6c4f45abd3ab 100644
+> > --- a/arch/nios2/include/uapi/asm/unistd.h
+> > +++ b/arch/nios2/include/uapi/asm/unistd.h
+> > @@ -18,6 +18,7 @@
+> > 
+> >   #define sys_mmap2 sys_mmap_pgoff
+> > 
+> > +#define __ARCH_WANT_SYS_CLONE3
+> >  #define __ARCH_WANT_RENAMEAT
+> >  #define __ARCH_WANT_STAT64
+> >  #define __ARCH_WANT_SET_GET_RLIMIT
+> > diff --git a/arch/nios2/kernel/entry.S b/arch/nios2/kernel/entry.S
+> > index 0794cd7803df..c1804bda8259 100644
+> > --- a/arch/nios2/kernel/entry.S
+> > +++ b/arch/nios2/kernel/entry.S
+> > @@ -396,6 +396,15 @@ ENTRY(sys_clone)
+> >         RESTORE_SWITCH_STACK
+> >         ret
+> > 
+> > +/*
+> > + * int clone3(struct clone_args __user *, uargs, size_t, size)
+> > + */
+> > +ENTRY(sys_clone3)
+> > +       SAVE_SWITCH_STACK
+> > +       call    sys_clone3
+> > +       RESTORE_SWITCH_STACK
+> > +       ret
+> > +
+> >  ENTRY(sys_rt_sigreturn)
+> >         SAVE_SWITCH_STACK
+> >         mov     r4, sp
+> 
+> Thanks.
+> 
+> I've put this on fixes, but if you're trying to do that refactoring I've
+> merged it in as a single patch on top of 5.15-rc1.  That's on
+> palmer/riscv-clone3, in case it helps someone avoid a conflict when doing
+> that refactoring.  I'd usually offer to do the refactoring, but I'm super
+> buried right now with all the RISC-V stuff ;)
+> 
+> I want to call this fix because it's breaking my builds, these checksyscall
+> warnings have recently turned into errors.
 
---1E6oOfbK851bS2lO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-Hi Prabhakar,
-
-some updates after internal discussions I had.
-
-> +#define RPCIF_CMNCR_MOIIO_HIZ(val) (RPCIF_CMNCR_MOIIO0(val) | \
-> +				 RPCIF_CMNCR_MOIIO1(val) | \
-> +				 RPCIF_CMNCR_MOIIO2(val) | RPCIF_CMNCR_MOIIO3(val))
-
-Shimoda-san rightfully said that '_HIZ' should be removed from the macro
-name because HIZ implies the value 3.
-
-
->  #define RPCIF_CMNCR_IO3FV(val)	(((val) & 0x3) << 14) /* undocumented */
->  #define RPCIF_CMNCR_IO2FV(val)	(((val) & 0x3) << 12) /* undocumented */
-
-As discussed before, mention here that they are documented for G2L.
-Sadly, we can't use them with Gen3...
-
-> -#define RPCIF_CMNCR_IOFV_HIZ	(RPCIF_CMNCR_IO0FV(3) | RPCIF_CMNCR_IO2FV(3) | \
-> -				 RPCIF_CMNCR_IO3FV(3))
-> +#define RPCIF_CMNCR_IOFV_HIZ(val) (RPCIF_CMNCR_IO0FV(val) | RPCIF_CMNCR_IO2FV(val) | \
-> +				 RPCIF_CMNCR_IO3FV(val))
-
-... which means we should remove this macro entirely because it is
-forbidden for Gen3. I think it is best to use the RPCIF_CMNCR_IO<n>FV
-macros directly where we need them.
-
-Do you agree?
-
-Kind regards,
-
-   Wolfram
-
-
---1E6oOfbK851bS2lO
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmFcF4QACgkQFA3kzBSg
-KbbnLRAAl70bTAB+aCkvy4wf5a037bvW472u2V73Husi70cFbyNZccWvjYNENHbA
-w15RefXBgSpefwx3hNndCw9hvXBW5TyLVHaKjGyN23G9y+d7clBKGUUzXI/8Wkko
-cfYmv+T9Sx+EhH+ZX2fuYId22CcR4DY7q++BDytTmgeQ9iXqvgch1fNhol/XAoVo
-8ADih0NYeq2qBD23OGejJxEQVzLSc3RX8p7oi4rNrr78nqVD+bPtKlqH7mX1s/5m
-UtjXlgc3jqRWKfCq3anpE/ketF+F/D2reqsAE29dQP8Pnwhy64XmEvsJbwy+n0xl
-GeQ7ZRS4maXgVPMcH157aPL77OgiUczqTNGYnpXGGQtUaxMNx7GOir+xtsHv9NaO
-FTczDB4l0tx7E155wgKl3+bImYvnrFPTblJpQhBkzkzzu0fF2l4HNlLkUQ2Wusb0
-MTlPa4efYMzK0Yo+BNeOf6962cjlA/Fmu+MZ1udD/Ko9NVvSfSgZH17LAX31cOGo
-pI5eDH2LHZCkP7zhH7hIKYVAn8jKqJYX6aUk5/6yt1Rj/FLSRZzSiIb2UcRwC6Hs
-gB2Ang+Rou0Dpu2rnhYxVG25tho+SeEx7I+RFXUZTQSrMCKpFIh67Oid5HY7RmaJ
-v6EsYsI4+qDVRfamnyNTjS+Hwt5/fs+uRYyHMOAj2UXeSgZiOBk=
-=3XAi
------END PGP SIGNATURE-----
-
---1E6oOfbK851bS2lO--
+Oh yeah, please just merge your fix here for this issue. I think
+flipping the symbol isn't that pressing right now and fixing your builds
+is more urgent! :)
