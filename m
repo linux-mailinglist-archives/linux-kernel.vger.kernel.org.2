@@ -2,247 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C200D422274
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 11:36:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06521422259
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 11:33:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233216AbhJEJif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 05:38:35 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:50426 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233703AbhJEJiX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 05:38:23 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1633426593; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=R+LERM0seDW8SBOw059obORoY8z/0IQsjwzbtxrxc5Q=; b=mM7vocjBq/ntxPhHr7/Rg8Wco9zxDAC8D4s/meg7ulHdbtZ33ZOl/NR3J5QINjrQqwXGeDiQ
- PYxmKXrW11zUDdrFHN8jzN3pwUxXkeCMxOeF3Ms0RcBu32CP1UQwHX/HSgDDZFzTJ5b7Ve2d
- ijfgKzL+YyrF8NQ7CgIpWfsciPs=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 615c1c8a47d64efb6d061c0e (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 05 Oct 2021 09:36:10
- GMT
-Sender: deesin=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id A3C65C43616; Tue,  5 Oct 2021 09:36:10 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from deesin-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        id S233289AbhJEJfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 05:35:15 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:35564 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232658AbhJEJfO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 05:35:14 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        (Authenticated sender: deesin)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1EB4CC4360D;
-        Tue,  5 Oct 2021 09:36:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 1EB4CC4360D
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Deepak Kumar Singh <deesin@codeaurora.org>
-To:     bjorn.andersson@linaro.org, clew@codeaurora.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org,
-        Deepak Kumar Singh <deesin@codeaurora.org>,
-        Andy Gross <agross@kernel.org>
-Subject: [PATCH V3 2/2] soc: qcom: smem: validate fields of shared structures
-Date:   Tue,  5 Oct 2021 15:02:45 +0530
-Message-Id: <1633426371-4827-3-git-send-email-deesin@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1633426371-4827-1-git-send-email-deesin@codeaurora.org>
-References: <1633426371-4827-1-git-send-email-deesin@codeaurora.org>
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 46A3A223DC;
+        Tue,  5 Oct 2021 09:33:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1633426403; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HAkjnMZVZvrpnMAU3yhNhqnfSKBwfeJfs42ZqvYDQ1Y=;
+        b=1KumHG76VHzfHN2eakwr7m9Rc6GOy1OJfBHrjb4jpEMb/HbyLu/N1YH3r+9su3ixr8o3Up
+        6D46D8zPhUq34xHqEqWG7UiVVa2qPiS48BCjSrcLEa9Id7DXSDK0q1Y3tNvrhzUiP+F8Fu
+        EiRepmwDV4fLz8vk15FbI5UzdxLHpVM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1633426403;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HAkjnMZVZvrpnMAU3yhNhqnfSKBwfeJfs42ZqvYDQ1Y=;
+        b=OO6tJsgZZ+3OA7Loi8gYvviGwUKYllMZVI9QLngFAXg5XYSQCi6OuBdODB6ZqC8NTBaI8q
+        7+STM7QX4c2hwqDQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AA6C713C1E;
+        Tue,  5 Oct 2021 09:33:22 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id g4cOJ+IbXGGKBQAAMHmgww
+        (envelope-from <osalvador@suse.de>); Tue, 05 Oct 2021 09:33:22 +0000
+Date:   Tue, 5 Oct 2021 11:33:21 +0200
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        David Hildenbrand <david@redhat.com>,
+        Michal Hocko <mhocko@suse.com>, Zi Yan <ziy@nvidia.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Naoya Horiguchi <naoya.horiguchi@linux.dev>,
+        David Rientjes <rientjes@google.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v3 3/5] hugetlb: be sure to free demoted CMA pages to CMA
+Message-ID: <20211005093320.GC20412@linux>
+References: <20211001175210.45968-1-mike.kravetz@oracle.com>
+ <20211001175210.45968-4-mike.kravetz@oracle.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211001175210.45968-4-mike.kravetz@oracle.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Structures in shared memory that can be modified by remote
-processors may have untrusted values, they should be validated
-before use.
+On Fri, Oct 01, 2021 at 10:52:08AM -0700, Mike Kravetz wrote:
+> When huge page demotion is fully implemented, gigantic pages can be
+> demoted to a smaller huge page size.  For example, on x86 a 1G page
+> can be demoted to 512 2M pages.  However, gigantic pages can potentially
+> be allocated from CMA.  If a gigantic page which was allocated from CMA
+> is demoted, the corresponding demoted pages needs to be returned to CMA.
+> 
+> Use the new interface cma_pages_valid() to determine if a non-gigantic
+> hugetlb page should be freed to CMA.  Also, clear mapping field of these
+> pages as expected by cma_release.
+> 
+> This also requires a change to CMA reservations for gigantic pages.
+> Currently, the 'order_per_bit' is set to the gigantic page size.
+> However, if gigantic pages can be demoted this needs to be set to the
+> order of the smallest huge page.  At CMA reservation time we do not know
 
-Adding proper validation before using fields of shared
-structures.
+to the smallest, or to the next smaller? Would you mind elaborating why?
 
-Signed-off-by: Deepak Kumar Singh <deesin@codeaurora.org>
----
- drivers/soc/qcom/smem.c | 79 ++++++++++++++++++++++++++++++++++++++++++-------
- 1 file changed, 69 insertions(+), 10 deletions(-)
+> @@ -3003,7 +3020,8 @@ static void __init hugetlb_init_hstates(void)
+>  		 *   is not supported.
+>  		 */
+>  		if (!hstate_is_gigantic(h) ||
+> -		    gigantic_page_runtime_supported()) {
+> +		    gigantic_page_runtime_supported() ||
+> +		    !hugetlb_cma_size || !(h->order <= HUGETLB_PAGE_ORDER)) {
 
-diff --git a/drivers/soc/qcom/smem.c b/drivers/soc/qcom/smem.c
-index dfbd06b..5cd3ddb 100644
---- a/drivers/soc/qcom/smem.c
-+++ b/drivers/soc/qcom/smem.c
-@@ -366,13 +366,18 @@ static int qcom_smem_alloc_private(struct qcom_smem *smem,
- 	struct smem_partition_header *phdr;
- 	size_t alloc_size;
- 	void *cached;
-+	void *p_end;
- 
- 	phdr = (struct smem_partition_header __force *)part->virt_base;
-+	p_end = (void *)phdr + part->size;
- 
- 	hdr = phdr_to_first_uncached_entry(phdr);
- 	end = phdr_to_last_uncached_entry(phdr);
- 	cached = phdr_to_last_cached_entry(phdr);
- 
-+	if (WARN_ON((void *)end > p_end || (void *)cached > p_end))
-+		return -EINVAL;
-+
- 	while (hdr < end) {
- 		if (hdr->canary != SMEM_PRIVATE_CANARY)
- 			goto bad_canary;
-@@ -382,6 +387,9 @@ static int qcom_smem_alloc_private(struct qcom_smem *smem,
- 		hdr = uncached_entry_next(hdr);
- 	}
- 
-+	if (WARN_ON((void *)hdr > p_end))
-+		return -EINVAL;
-+
- 	/* Check that we don't grow into the cached region */
- 	alloc_size = sizeof(*hdr) + ALIGN(size, 8);
- 	if ((void *)hdr + alloc_size > cached) {
-@@ -500,6 +508,8 @@ static void *qcom_smem_get_global(struct qcom_smem *smem,
- 	struct smem_header *header;
- 	struct smem_region *region;
- 	struct smem_global_entry *entry;
-+	u64 entry_offset;
-+	u32 e_size;
- 	u32 aux_base;
- 	unsigned i;
- 
-@@ -514,9 +524,16 @@ static void *qcom_smem_get_global(struct qcom_smem *smem,
- 		region = &smem->regions[i];
- 
- 		if (region->aux_base == aux_base || !aux_base) {
-+			e_size = le32_to_cpu(entry->size);
-+			entry_offset = le32_to_cpu(entry->offset);
-+
-+			if (WARN_ON(e_size + entry_offset > region->size))
-+				return ERR_PTR(-EINVAL);
-+
- 			if (size != NULL)
--				*size = le32_to_cpu(entry->size);
--			return region->virt_base + le32_to_cpu(entry->offset);
-+				*size = e_size;
-+
-+			return region->virt_base + entry_offset;
- 		}
- 	}
- 
-@@ -530,8 +547,12 @@ static void *qcom_smem_get_private(struct qcom_smem *smem,
- {
- 	struct smem_private_entry *e, *end;
- 	struct smem_partition_header *phdr;
-+	void *item_ptr, *p_end;
-+	u32 padding_data;
-+	u32 e_size;
- 
- 	phdr = (struct smem_partition_header __force *)part->virt_base;
-+	p_end = (void *)phdr + part->size;
- 
- 	e = phdr_to_first_uncached_entry(phdr);
- 	end = phdr_to_last_uncached_entry(phdr);
-@@ -541,36 +562,65 @@ static void *qcom_smem_get_private(struct qcom_smem *smem,
- 			goto invalid_canary;
- 
- 		if (le16_to_cpu(e->item) == item) {
--			if (size != NULL)
--				*size = le32_to_cpu(e->size) -
--					le16_to_cpu(e->padding_data);
-+			if (size != NULL) {
-+				e_size = le32_to_cpu(e->size);
-+				padding_data = le16_to_cpu(e->padding_data);
-+
-+				if (WARN_ON(e_size > part->size || padding_data > e_size))
-+					return ERR_PTR(-EINVAL);
-+
-+				*size = e_size - padding_data;
-+			}
-+
-+			item_ptr = uncached_entry_to_item(e);
-+			if (WARN_ON(item_ptr > p_end))
-+				return ERR_PTR(-EINVAL);
- 
--			return uncached_entry_to_item(e);
-+			return item_ptr;
- 		}
- 
- 		e = uncached_entry_next(e);
- 	}
- 
-+	if (WARN_ON((void *)e > p_end))
-+		return ERR_PTR(-EINVAL);
-+
- 	/* Item was not found in the uncached list, search the cached list */
- 
- 	e = phdr_to_first_cached_entry(phdr, part->cacheline);
- 	end = phdr_to_last_cached_entry(phdr);
- 
-+	if (WARN_ON((void *)e < (void *)phdr || (void *)end > p_end))
-+		return ERR_PTR(-EINVAL);
-+
- 	while (e > end) {
- 		if (e->canary != SMEM_PRIVATE_CANARY)
- 			goto invalid_canary;
- 
- 		if (le16_to_cpu(e->item) == item) {
--			if (size != NULL)
--				*size = le32_to_cpu(e->size) -
--					le16_to_cpu(e->padding_data);
-+			if (size != NULL) {
-+				e_size = le32_to_cpu(e->size);
-+				padding_data = le16_to_cpu(e->padding_data);
-+
-+				if (WARN_ON(e_size > part->size || padding_data > e_size))
-+					return ERR_PTR(-EINVAL);
-+
-+				*size = e_size - padding_data;
-+			}
- 
--			return cached_entry_to_item(e);
-+			item_ptr = cached_entry_to_item(e);
-+			if (WARN_ON(item_ptr < (void *)phdr))
-+				return ERR_PTR(-EINVAL);
-+
-+			return item_ptr;
- 		}
- 
- 		e = cached_entry_next(e, part->cacheline);
- 	}
- 
-+	if (WARN_ON((void *)e < (void *)phdr))
-+		return ERR_PTR(-EINVAL);
-+
- 	return ERR_PTR(-ENOENT);
- 
- invalid_canary:
-@@ -647,14 +697,23 @@ int qcom_smem_get_free_space(unsigned host)
- 		phdr = part->virt_base;
- 		ret = le32_to_cpu(phdr->offset_free_cached) -
- 		      le32_to_cpu(phdr->offset_free_uncached);
-+
-+		if (ret > le32_to_cpu(part->size))
-+			return -EINVAL;
- 	} else if (__smem->global_partition.virt_base) {
- 		part = &__smem->global_partition;
- 		phdr = part->virt_base;
- 		ret = le32_to_cpu(phdr->offset_free_cached) -
- 		      le32_to_cpu(phdr->offset_free_uncached);
-+
-+		if (ret > le32_to_cpu(part->size))
-+			return -EINVAL;
- 	} else {
- 		header = __smem->regions[0].virt_base;
- 		ret = le32_to_cpu(header->available);
-+
-+		if (ret > __smem->regions[0].size)
-+			return -EINVAL;
- 	}
- 
- 	return ret;
+I am bit lost in the CMA area, so bear with me.
+We do not allow to demote if we specify we want hugetlb pages from the CMA?
+Also, can h->order be smaller than HUGETLB_PAGE_ORDER? I though
+HUGETLB_PAGE_ORDER was the smallest one.
+
+The check for HUGETLB_PAGE_ORDER can probably be squashed into patch#1.
+
+
+>  			for_each_hstate(h2) {
+>  				if (h2 == h)
+>  					continue;
+> @@ -3555,6 +3573,8 @@ static ssize_t demote_size_store(struct kobject *kobj,
+>  	if (!t_hstate)
+>  		return -EINVAL;
+>  	demote_order = t_hstate->order;
+> +	if (demote_order < HUGETLB_PAGE_ORDER)
+> +		return -EINVAL;
+
+This could probably go in the first patch.
+
+
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+Oscar Salvador
+SUSE Labs
