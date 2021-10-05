@@ -2,59 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32E40421FAB
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 09:49:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25FAA421FB9
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 09:52:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232875AbhJEHvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 03:51:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37278 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232591AbhJEHuz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 03:50:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A5649610FC;
-        Tue,  5 Oct 2021 07:49:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633420145;
-        bh=tFJL+0DpCWgSGCfmXxt3TK8h/kbuntvLMc+Ww+vUnNg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fkZAJVb2fFMTw22pJ/zm+L7TVhjP82c41AW7Cu4/vdoeQpdJn4iDqfnTqlhvq32w9
-         ojmUDms7Nsr9cptLXcUHfXaHQmGwJ9OgyY5MDGTez7iDriBBFi5nmVsRK31AJNJt7L
-         6SUplVJnmtE59eyfILADp9YYFIEJimasV/Ce38tcldygucQRZV++gL5W3ucPPSlu7K
-         bYJgeKIPE4HvLxzomKNkMYrA+xD8E4d7/q6I4AWZVfqjOy1drsBp3c3ciIEHRjxzV8
-         BurrTUrFlzU3dRwQ0iGIBVptr5JaUYR4MaIuyQNYVQpVpCIernid8hbbx92ZN6X8Zu
-         Jv56sCqo+Hjzg==
-Date:   Tue, 5 Oct 2021 13:19:01 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Shawn Guo <shawn.guo@linaro.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
-        Jami Kettunen <jamipkettunen@gmail.com>,
-        linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] arm64: dts: qcom: Add missing vdd-supply for
- QUSB2 PHY
-Message-ID: <YVwDbUC5WUHmcRJh@matsya>
-References: <20210928022002.26286-1-shawn.guo@linaro.org>
- <20210928022002.26286-4-shawn.guo@linaro.org>
+        id S232919AbhJEHy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 03:54:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232511AbhJEHyZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 03:54:25 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CE4EC061745;
+        Tue,  5 Oct 2021 00:52:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Mb1ebH9NpOSymYrwurOQhqV4b/SOhG5oKbLWs3+sfew=; b=eQ40yLk9ADR7QoIBFAGVtqfh1z
+        yFBhjqJavAeCCAC2q1KmrTt8NGc5h4kV3Qt/oBP0X+HCCCdEeRosZIqJQHv9K8lU241tPMEt0G5gU
+        yB8Bj3pmYv+iJApBI1FNtZHArI9U/f4Dl7i15fhMXq4WEvVhYP4VRXboYlyoub2/+O4AqZylpPdFu
+        gxq2H4p9gNXQx70rS3sdPZWm0LEorWFMXpYrDnN2gQ28IM9G7Z4/48H2OEPf0KIUQ2304hHpWmJhv
+        VF1R66f+sQwbJ5iLqyAg2Q/Pgt2T5qnaV96eHMAet5f/4Q8jCiuKCeooSlgkggp7FxjFDRQI7Eh3r
+        nRo7wSyw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mXfD7-0006aO-Vb; Tue, 05 Oct 2021 07:50:11 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 44E8F98631C; Tue,  5 Oct 2021 09:50:01 +0200 (CEST)
+Date:   Tue, 5 Oct 2021 09:50:01 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Tim Chen <tim.c.chen@linux.intel.com>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        Barry Song <21cnbao@gmail.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Ben Segall <bsegall@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Guodong Xu <guodong.xu@linaro.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        "Cc: Len Brown" <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        LAK <linux-arm-kernel@lists.infradead.org>,
+        Linuxarm <linuxarm@huawei.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mel Gorman <mgorman@suse.de>, msys.mizuma@gmail.com,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Will Deacon <will@kernel.org>, x86 <x86@kernel.org>,
+        yangyicong <yangyicong@huawei.com>
+Subject: Re: [PATCH RESEND 0/3] Represent cluster topology and enable load
+ balance between clusters
+Message-ID: <20211005075001.GJ4323@worktop.programming.kicks-ass.net>
+References: <20210924085104.44806-1-21cnbao@gmail.com>
+ <CAGsJ_4yW72mktbWjRfE9ngXoq9oXBXyAd_TPjKBNdGiRSoh9LA@mail.gmail.com>
+ <CAKfTPtAtfJRFBbo+kBCYf42hxcc2iP8kkmg3Wcr5aW7Rnf=rfw@mail.gmail.com>
+ <YVch0/R9PHzUwqea@hirez.programming.kicks-ass.net>
+ <ece8838d112840bf26adbb09f653babcf298eb28.camel@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210928022002.26286-4-shawn.guo@linaro.org>
+In-Reply-To: <ece8838d112840bf26adbb09f653babcf298eb28.camel@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28-09-21, 10:20, Shawn Guo wrote:
-> QUSB2 PHY requires vdd-supply for digital circuit operation.  Add it for
-> platforms that miss it.
+On Fri, Oct 01, 2021 at 04:22:46PM -0700, Tim Chen wrote:
+> On Fri, 2021-10-01 at 16:57 +0200, Peter Zijlstra wrote:
+
+> > The one questino I have is, do we want default y?
+> 
+> I also agree that default y is preferable.
+
+I'll change at least the x86 one to:
+
+	default y
+	depends on SMP
+
+> > The one nit I have is the Kconfig text, I'm not really sure that's
+> > clarifying what a cluster is.
+> 
+> Do you have a preference of a different name other than cluster?
+> Or simply better documentation on what a cluster is for ARM64
+> and x86 in Kconfig?
+
+Yes, better wording as to what a cluster is. Currently the x86 and arm64
+ones actually differ:
+
+x86:
+	help
+	 Cluster scheduler support improves the CPU scheduler's decision
+	 making when dealing with machines that have clusters of CPUs
+	 sharing L2 cache. If unsure say N here.
+
+arm64:
+	help
+	  Cluster scheduler support improves the CPU scheduler's decision
+	  making when dealing with machines that have clusters(sharing internal
+	  bus or sharing LLC cache tag). If unsure say N here.
 
 
-Acked-By: Vinod Koul <vkoul@kernel.org>
-
-Bjorn, I have picked 1,2 feel free to pick this
-
--- 
-~Vinod
+(also, all this stuff being replicated across arch/*/Kconfig seems
+unfortunate)
