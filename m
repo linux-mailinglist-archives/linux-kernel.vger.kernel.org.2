@@ -2,54 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64D09421ED9
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 08:26:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFEB2421EE0
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 08:33:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232346AbhJEG23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 02:28:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55364 "EHLO mail.kernel.org"
+        id S232305AbhJEGfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 02:35:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59092 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230526AbhJEG22 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 02:28:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 132D5604AC;
-        Tue,  5 Oct 2021 06:26:36 +0000 (UTC)
+        id S230526AbhJEGe7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 02:34:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9244661251;
+        Tue,  5 Oct 2021 06:33:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633415198;
-        bh=LeabsSKRoCCwiHF+8StZsPpO/wbGB9n95G0mwU1iFrc=;
+        s=k20201202; t=1633415589;
+        bh=QFHAeDRRSiQyrtHsYxia9CmhBdGDJKJLZc5S01XcQWI=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qJ3AADEmluygFB42luDKhrWPoW2GjmMJ5FHx3A4Dvqdtw9ct0vuqUiDsoiWU5amEd
-         2xdN2oAlYN15FYy2u+62L0PsT/uHWgSrpZigN4TuxZcpBwbz4UEv6PwzEEcKPcdwek
-         lRy2QpczNqzzSV14cbBcjY6vmGnzCoCrNsCB+W7NppzxMVSax1Ovk/wbZXrjBREHIB
-         mKjCGLQZwWsCcyH/vm82aaT/72HcpcKExwLI+iYZDmqJ6ZI7fH/fPYgAwQjiMcWOMU
-         XD4IIDMnxxTxRi0vnoXKpY62961eL/nRQVV28PAJIG0KYtvIXvgRS5it72phEAk5vb
-         6f1TwU9a/ezcA==
-Date:   Tue, 5 Oct 2021 14:26:33 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Tim Harvey <tharvey@gateworks.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] arm64: dts: imx8m*-venice-gw7902: fix M2_RST# gpio
-Message-ID: <20211005062632.GU20743@dragon>
-References: <20211004222341.27949-1-tharvey@gateworks.com>
+        b=VYMQdaGZCHaGOSxekgQOpfwZS4fA8PeVUETCQ9P0v0TpMTw5jRM4AFMjOBII4WjXQ
+         r4tZIqZlZKewHNzBdg95E0KacIxrCkrjLMR75xB9Txnj6TbckNCjrLH4rb9S1C/71Q
+         gDrnxC2i6Hijnkmg8CN+bpadCkpGBFlISSLMdic/yThYfMh1Xf+q2nr/hVNmGOoHGr
+         XTFtjVsyMI5GdyeLJV1l7xJj0wTjXtEJyQ1SdbTGs8tytq9V1HUPC6ASwg4oP356oJ
+         SmXHfNQHgwC92gWpX3elE/Yk8WinBz6MddVTatu+XhdEVCj9+1MuMB8gtLHVkYvD9l
+         /jp84T94POfEQ==
+Date:   Tue, 5 Oct 2021 12:03:05 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Sameer Pujar <spujar@nvidia.com>
+Cc:     jonathanh@nvidia.com, ldewangan@nvidia.com,
+        thierry.reding@gmail.com, dmaengine@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RESEND PATCH 0/3] Few Tegra210 ADMA fixes
+Message-ID: <YVvxoSChGm0lN4rZ@matsya>
+References: <1631722025-19873-1-git-send-email-spujar@nvidia.com>
+ <564a850a-41e4-31fc-9ebe-51ac6b859f62@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211004222341.27949-1-tharvey@gateworks.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <564a850a-41e4-31fc-9ebe-51ac6b859f62@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 04, 2021 at 03:23:41PM -0700, Tim Harvey wrote:
-> Fix invalid M2_RST# gpio pinmux.
+On 04-10-21, 21:19, Sameer Pujar wrote:
+> Hi Vinod,
 > 
-> Fixes: ef484dfcf6f7 ("arm64: dts: imx: Add i.mx8mm/imx8mn Gateworks gw7902 dts support")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Tim Harvey <tharvey@gateworks.com>
+> On 9/15/2021 9:37 PM, Sameer Pujar wrote:
+> > Following are the fixes in the series:
+> >   - Couple of minor fixes (non functional fixes)
+> > 
+> >   - ADMA FIFO size fix: The slave ADMAIF channels have different default
+> >     FIFO sizes (ADMAIF FIFO is actually a ring buffer and it is divided
+> >     amongst all available channels). As per HW recommendation the sizes
+> >     should match with the corresponding ADMA channels to which ADMAIF
+> >     channel is mapped to at runtime. Thus program ADMA channel FIFO sizes
+> >     accordingly. Otherwise FIFO corruption is observed.
+> > 
+> > Sameer Pujar (3):
+> >    dmaengine: tegra210-adma: Re-order 'has_outstanding_reqs' member
+> >    dmaengine: tegra210-adma: Add description for 'adma_get_burst_config'
+> >    dmaengine: tegra210-adma: Override ADMA FIFO size
+> > 
+> >   drivers/dma/tegra210-adma.c | 55 +++++++++++++++++++++++++++++++--------------
+> >   1 file changed, 38 insertions(+), 17 deletions(-)
+> > 
+> 
+> Are these patches good to be picked up? or I need to resend these?
 
-Applied, thanks!
+Pls do not send unnecessary pings, I was on vacation, back now and going
+thru the queue!
+ 
+-- 
+~Vinod
