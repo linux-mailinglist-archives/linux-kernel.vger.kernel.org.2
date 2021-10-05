@@ -2,130 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 200424232BC
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 23:16:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44B7F4232BD
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 23:16:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236085AbhJEVSK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 17:18:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20877 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235545AbhJEVSI (ORCPT
+        id S236316AbhJEVSc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 17:18:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56694 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235545AbhJEVS1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 17:18:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633468577;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LTNivPlifppN7dLR240NN9xgDpFZ1XpURCcBZB0vwI8=;
-        b=Yo2CQ4NghKwep4U9jTuaTbz5lKrQ5yJwnkxHxOH+1pIgUw08vmzHOovLlCMnh7leU1UnVw
-        Qaeig5ZkJgO1FbyAo6x66K+LptBBDRbedPPz1oPycgiVtV014OL11ToG7dnTgYQW4tvIEf
-        pwh/JJ/j2ach7mPjkh6ZP9K6PP8GSo0=
-Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com
- [209.85.210.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-281-Wb_fu8g8Mimk6aEWmY2SkQ-1; Tue, 05 Oct 2021 17:16:16 -0400
-X-MC-Unique: Wb_fu8g8Mimk6aEWmY2SkQ-1
-Received: by mail-ot1-f72.google.com with SMTP id p7-20020a056830318700b0054749cce9bcso262916ots.18
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 14:16:16 -0700 (PDT)
+        Tue, 5 Oct 2021 17:18:27 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50799C061749
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 14:16:36 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id t2so1931730wrb.8
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 14:16:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=PlGyYXdHnRb3uBFBFPOmPhSz+6CwwP78f00acOXfK5s=;
+        b=Fi0qjIZLQ52mrZjTeuH3S5xGIaUaG45rRcYdiWsbBgwLYSEJJEZYSIzCeVoWkQoP0v
+         +ZtUBxkeftA3Btr//ExtEXledeE4O6sQh/pbNB/V3NFwntHK92Hir126Lrp3SQBvv2ht
+         pymBZIh4Nz/aBWxGUVt0YdBj9TPN3jkyy2S8H778TW2WcLsL3QRHja9S6mNiQwVe+lFg
+         1hEHNc1pcYnzLuXnr5iW6B9SOBYHgqWaIaFeq2qz5bhFPN1KMgH559SUP/4J1Nb1ysRB
+         2C5tXnfYjkSA6UPDg8yrEl5Vr4zR36jihiRIlfk7fjipdz2ZEnN7VVcbKnPGkogkjTQl
+         gkgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=LTNivPlifppN7dLR240NN9xgDpFZ1XpURCcBZB0vwI8=;
-        b=53RSW1YcOYPu2cFUM+ikCoG/G2yG5CnhONW4v/30yFMZOREpYoUlQCDSoqbgJGIG1X
-         dMantHgGfZUAIYmkx/KeuGfVCzGkZRAgUCCaZSC0EhcCiarhne1JpoPspftrn2goBK40
-         pzhOwG5TbxiO+l1UgBDajz+jrzZYRz00CZkBG3dceKubza5Cth6XQ33kEH8cSuabNA0x
-         V1pXaaymePqXu562VcYPMB8E2/YkNsFXOT3bxrmUsRccU6wT+eGk56mRRfjAZ/7bXFUA
-         VyZMS6/XXrxOJ4Rjy+dKVxORWJXjZ+gOrRqkyLV4ex5p7o4u6wKOXMAsOtSQy73xFHGJ
-         rONg==
-X-Gm-Message-State: AOAM5309pM7CxdVd/Me6GmgjRfZ2PMKbc52NjK4HRw/gO/CPpGVsZk4i
-        2rHvJYH/y2QYr7sN0vBX92Z4r7atF7JZNTbLoThkNX5KzHCnED/Z6P80F6qyb+WF6OxRgfdKIoR
-        WQfBTvvwondlobLpXRyQNSbLy
-X-Received: by 2002:a4a:8789:: with SMTP id b9mr5679742ooi.9.1633468575515;
-        Tue, 05 Oct 2021 14:16:15 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxtb8LTfG/dRjz36MwYMT+NJj6lnh+qHKrO3g9J6YLdlRJ50NicY6382ueBCb6u7YJyaAIV0Q==
-X-Received: by 2002:a4a:8789:: with SMTP id b9mr5679705ooi.9.1633468575245;
-        Tue, 05 Oct 2021 14:16:15 -0700 (PDT)
-Received: from treble ([2600:1700:6e32:6c00::15])
-        by smtp.gmail.com with ESMTPSA id j4sm3573872oia.56.2021.10.05.14.16.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Oct 2021 14:16:14 -0700 (PDT)
-Date:   Tue, 5 Oct 2021 14:16:11 -0700
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
-        VMware Inc <pv-drivers@vmware.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 04/11] x86/tdx: Add Intel ARCH support to
- cc_platform_has()
-Message-ID: <20211005211611.ys42txybaed4ffpz@treble>
-References: <20211005025205.1784480-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211005025205.1784480-5-sathyanarayanan.kuppuswamy@linux.intel.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=PlGyYXdHnRb3uBFBFPOmPhSz+6CwwP78f00acOXfK5s=;
+        b=bPa5mHkD2z0+7qaf8+q+imySCwVpPwD3iaYrLOMJZ7R8F5qIN9s4wQ57+qfAyRuvHv
+         x+K0LjG3UV/hpYqoJKLuFXpERMPtviHu9A/+5K8dNMkr8ko5kBe3+l6uEqeT7LEmIbRV
+         3kApfJ0WC/CcEZKbBNzUysURYgMlIVGep0Ee4vWcYvmYq5vHT4Qy6ySXpNwosbdEdvUj
+         AlRD99uaDPQ+e5tWI/hLJlZYArifARaCbHwunPSyIesy26VCX0LF6c6btCO3V3Avnc2F
+         jnLsZ5Z/BMEydKsrwIWnmjX8I+pMk4xoH66cbFxCWUU7sfQ2pBvAAOSSMGmjbFfL+MUc
+         B7ug==
+X-Gm-Message-State: AOAM532L0NKfTFu9HENGb34AR00djCKM0Lj2XJAywraRkhLpJHMZa4Yt
+        VLVbUvIehmZGZ9q9qBp/tSzwuN0y5nsABRuK
+X-Google-Smtp-Source: ABdhPJxbk1T7tbndW0Vc+vuX6+xaIh20l7NhzfmeUzYXGzp6pgzr7ZjpEs1oMLR/YXzDB7d9SDWP7Q==
+X-Received: by 2002:adf:906a:: with SMTP id h97mr23666547wrh.220.1633468594592;
+        Tue, 05 Oct 2021 14:16:34 -0700 (PDT)
+Received: from ?IPv6:2a02:8084:20c7:8d80:d71c:ed62:e10a:e7ca? ([2a02:8084:20c7:8d80:d71c:ed62:e10a:e7ca])
+        by smtp.gmail.com with ESMTPSA id s13sm3177074wmc.47.2021.10.05.14.16.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Oct 2021 14:16:34 -0700 (PDT)
+Subject: Re: [PATCH v2] staging: r8188eu: Fix misspelling in comment
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <7bc392d5-11e4-7ad0-dab6-295ccadf63b9@gmail.com>
+ <YVwpEa5T4HnOX5/g@kroah.com>
+From:   "Siou-Jhih, Guo" <hallblazzar@gmail.com>
+Message-ID: <f1569e97-8996-e538-182c-cc5f6510dc35@gmail.com>
+Date:   Tue, 5 Oct 2021 22:16:33 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
+In-Reply-To: <YVwpEa5T4HnOX5/g@kroah.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211005025205.1784480-5-sathyanarayanan.kuppuswamy@linux.intel.com>
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 04, 2021 at 07:51:58PM -0700, Kuppuswamy Sathyanarayanan wrote:
-> +#if defined(CONFIG_CPU_SUP_INTEL) && defined(CONFIG_ARCH_HAS_CC_PLATFORM)
-> +bool intel_cc_platform_has(enum cc_attr attr);
-> +#else
-> +static inline bool intel_cc_platform_has(enum cc_attr attr) { return false; }
-> +#endif
-> +
 
-I assume this needs a rebase on -tip since cc_platform.c already has an
-empty version of this function (and it's static so it doesn't need to be
-declared in a header).
+On 05/10/2021 11:29, Greg Kroah-Hartman wrote:
+> On Wed, Sep 29, 2021 at 12:29:01PM +0100, hallblazzar wrote:
+>> As format check raised by scripts/checkpatch.pl, comment in the rtw_ap.c
+>> looks misspelled by accident. Help fix it.
+>>
+>> The original error is as below shows:
+>>
+>> CHECK: 'followign' may be misspelled - perhaps 'following'?
+>> +Set to 0 (HT pure) under the followign conditions
+>>
+>> Signed-off-by: Siou-Jhih, Guo <hallblazzar@gmail.com>
+>
+> This does not match with your "From" line in your email header :(
+>
+>> ---
+>>  drivers/staging/r8188eu/core/rtw_ap.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> What changed from v1?  That always has to go below the --- line as per
+> the documentation, right?
+>
+> Please fix up and send a v3.
+>
+> thanks,
+>
 
->  #endif	/* __ASSEMBLY__ */
->  
->  #endif	/* __X86_MEM_ENCRYPT_H__ */
-> diff --git a/arch/x86/kernel/Makefile b/arch/x86/kernel/Makefile
-> index 159fccfece65..8e5b49be65bd 100644
-> --- a/arch/x86/kernel/Makefile
-> +++ b/arch/x86/kernel/Makefile
-> @@ -28,6 +28,7 @@ KASAN_SANITIZE_dumpstack.o				:= n
->  KASAN_SANITIZE_dumpstack_$(BITS).o			:= n
->  KASAN_SANITIZE_stacktrace.o				:= n
->  KASAN_SANITIZE_paravirt.o				:= n
-> +KASAN_SANITIZE_cc_platform.o				:= n
->  KASAN_SANITIZE_sev.o					:= n
->  KASAN_SANITIZE_tdx.o					:= n
+> greg k-h
 
-This change is already in -tip as well.
+Hello Greg,
 
-> +	/**
-> +	 * @CC_ATTR_GUEST_TDX: Trusted Domain Extension Support
-> +	 *
-> +	 * The platform/OS is running as a TDX guest/virtual machine.
-> +	 *
-> +	 * Examples include Intel TDX.
-> +	 */
-> +	CC_ATTR_GUEST_TDX,
+Really thankful for your time and point those issues out. I've fixed
+the issues and re-sent v3 patch
 
-Examples of TDX include TDX? :-)
+  [PATCH v2] staging: r8188eu: Fix misspelling in comment   
 
--- 
-Josh
+If anything should I additionally aware, I'd like to fix them.
+
+Regards,
+Bill G.
 
