@@ -2,200 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AA3F422319
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 12:09:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1DE8422302
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 12:02:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233739AbhJEKLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 06:11:46 -0400
-Received: from www84.your-server.de ([213.133.104.84]:40794 "EHLO
-        www84.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232658AbhJEKLp (ORCPT
+        id S233855AbhJEKEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 06:04:46 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:57746 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232658AbhJEKEn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 06:11:45 -0400
-X-Greylist: delayed 1603 seconds by postgrey-1.27 at vger.kernel.org; Tue, 05 Oct 2021 06:11:45 EDT
-Received: from [88.134.96.152] (helo=skynet.local)
-        by www84.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <stefani@seibold.net>)
-        id 1mXgyT-0003K5-6Q; Tue, 05 Oct 2021 11:43:01 +0200
-Message-ID: <5cb013d281fc064a7e928eb16bdfa9d5d77987e1.camel@seibold.net>
-Subject: Re: [PATCH] samples/kfifo: Rename read_lock/write_lock
-From:   Stefani Seibold <stefani@seibold.net>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Date:   Tue, 05 Oct 2021 11:42:57 +0200
-In-Reply-To: <20210923172918.o22iwgvn3w7ilh44@linutronix.de>
-References: <20210923172918.o22iwgvn3w7ilh44@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.4 
+        Tue, 5 Oct 2021 06:04:43 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id C840A20002;
+        Tue,  5 Oct 2021 10:02:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1633428172; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TRF8ELWEC1qxhJ/5dNducCWpR3zUfGm/bOvx5X3DSHI=;
+        b=s19IdSWkE5zR/troGKl9mvP+u8j19UbOU8PoyoL8Ux7UCwD9p0xWdooHQ78dl54a6mBX7Z
+        RX9U/vKiF8JVGaKS2mV4a8dzH3KUCrByLNZ13T/UMs4JtJ97e99RBc8a6E75c4wzo4GErq
+        6l8OCe6YthEr/agulzhvh/RKVMAW2wk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1633428172;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TRF8ELWEC1qxhJ/5dNducCWpR3zUfGm/bOvx5X3DSHI=;
+        b=iRkP23tVh0lUdovrpOcT6fJIIbCcaJ4yxuMuShuQ1VVnrL8g683YHad2QzRWVbZ5C4bdW0
+        MWniqZ6ITQy7FUAA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 903B913C23;
+        Tue,  5 Oct 2021 10:02:52 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id GTmDIswiXGH2EwAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Tue, 05 Oct 2021 10:02:52 +0000
+Message-ID: <0c6203b3-5f25-d3d1-aefa-d975201c7637@suse.cz>
+Date:   Tue, 5 Oct 2021 12:02:52 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: stefani@seibold.net
-X-Virus-Scanned: Clear (ClamAV 0.103.3/26313/Tue Oct  5 11:04:18 2021)
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.2
+Subject: Re: [PATCH 3/5] mm, slub: fix potential memoryleak in
+ kmem_cache_open()
+Content-Language: en-US
+To:     Miaohe Lin <linmiaohe@huawei.com>, akpm@linux-foundation.org,
+        cl@linux.com, penberg@kernel.org, rientjes@google.com,
+        iamjoonsoo.kim@lge.com
+Cc:     gregkh@linuxfoundation.org, faiyazm@codeaurora.org,
+        andreyknvl@gmail.com, ryabinin.a.a@gmail.com, thgarnie@google.com,
+        keescook@chromium.org, bharata@linux.ibm.com, guro@fb.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20210916123920.48704-1-linmiaohe@huawei.com>
+ <20210916123920.48704-4-linmiaohe@huawei.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20210916123920.48704-4-linmiaohe@huawei.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Acked by Stefani Seibold <stefani@seibold.net>
+On 9/16/21 14:39, Miaohe Lin wrote:
+> In error path, the random_seq of slub cache might be leaked. Fix this by
+> using __kmem_cache_release() to release all the relevant resources.
+> 
+> Fixes: 210e7a43fa90 ("mm: SLUB freelist randomization")
+> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 
-On Thu, 2021-09-23 at 19:29 +0200, Sebastian Andrzej Siewior wrote:
-> The variables names read_lock and write_lock can clash with functions
-> used for
-> read/writer locks.
-> 
-> Rename read_lock to read_access and write_lock to write_access to avoid
-> a name
-> collision.
-> 
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> Link:
-> https://lkml.kernel.org/r/20210806152551.qio7c3ho6pexezup@linutronix.de
-> ---
-> 
-> Repost.
-> 
->  samples/kfifo/bytestream-example.c |   12 ++++++------
->  samples/kfifo/inttype-example.c    |   12 ++++++------
->  samples/kfifo/record-example.c     |   12 ++++++------
->  3 files changed, 18 insertions(+), 18 deletions(-)
-> ---
-> --- a/samples/kfifo/bytestream-example.c
-> +++ b/samples/kfifo/bytestream-example.c
-> @@ -22,10 +22,10 @@
->  #define        PROC_FIFO       "bytestream-fifo"
->  
->  /* lock for procfs read access */
-> -static DEFINE_MUTEX(read_lock);
-> +static DEFINE_MUTEX(read_access);
->  
->  /* lock for procfs write access */
-> -static DEFINE_MUTEX(write_lock);
-> +static DEFINE_MUTEX(write_access);
->  
->  /*
->   * define DYNAMIC in this example for a dynamically allocated fifo.
-> @@ -116,12 +116,12 @@ static ssize_t fifo_write(struct file *f
->         int ret;
->         unsigned int copied;
->  
-> -       if (mutex_lock_interruptible(&write_lock))
-> +       if (mutex_lock_interruptible(&write_access))
->                 return -ERESTARTSYS;
->  
->         ret = kfifo_from_user(&test, buf, count, &copied);
->  
-> -       mutex_unlock(&write_lock);
-> +       mutex_unlock(&write_access);
->         if (ret)
->                 return ret;
->  
-> @@ -134,12 +134,12 @@ static ssize_t fifo_read(struct file *fi
->         int ret;
->         unsigned int copied;
->  
-> -       if (mutex_lock_interruptible(&read_lock))
-> +       if (mutex_lock_interruptible(&read_access))
->                 return -ERESTARTSYS;
->  
->         ret = kfifo_to_user(&test, buf, count, &copied);
->  
-> -       mutex_unlock(&read_lock);
-> +       mutex_unlock(&read_access);
->         if (ret)
->                 return ret;
->  
-> --- a/samples/kfifo/inttype-example.c
-> +++ b/samples/kfifo/inttype-example.c
-> @@ -22,10 +22,10 @@
->  #define        PROC_FIFO       "int-fifo"
->  
->  /* lock for procfs read access */
-> -static DEFINE_MUTEX(read_lock);
-> +static DEFINE_MUTEX(read_access);
->  
->  /* lock for procfs write access */
-> -static DEFINE_MUTEX(write_lock);
-> +static DEFINE_MUTEX(write_access);
->  
->  /*
->   * define DYNAMIC in this example for a dynamically allocated fifo.
-> @@ -109,12 +109,12 @@ static ssize_t fifo_write(struct file *f
->         int ret;
->         unsigned int copied;
->  
-> -       if (mutex_lock_interruptible(&write_lock))
-> +       if (mutex_lock_interruptible(&write_access))
->                 return -ERESTARTSYS;
->  
->         ret = kfifo_from_user(&test, buf, count, &copied);
->  
-> -       mutex_unlock(&write_lock);
-> +       mutex_unlock(&write_access);
->         if (ret)
->                 return ret;
->  
-> @@ -127,12 +127,12 @@ static ssize_t fifo_read(struct file *fi
->         int ret;
->         unsigned int copied;
->  
-> -       if (mutex_lock_interruptible(&read_lock))
-> +       if (mutex_lock_interruptible(&read_access))
->                 return -ERESTARTSYS;
->  
->         ret = kfifo_to_user(&test, buf, count, &copied);
->  
-> -       mutex_unlock(&read_lock);
-> +       mutex_unlock(&read_access);
->         if (ret)
->                 return ret;
->  
-> --- a/samples/kfifo/record-example.c
-> +++ b/samples/kfifo/record-example.c
-> @@ -22,10 +22,10 @@
->  #define        PROC_FIFO       "record-fifo"
->  
->  /* lock for procfs read access */
-> -static DEFINE_MUTEX(read_lock);
-> +static DEFINE_MUTEX(read_access);
->  
->  /* lock for procfs write access */
-> -static DEFINE_MUTEX(write_lock);
-> +static DEFINE_MUTEX(write_access);
->  
->  /*
->   * define DYNAMIC in this example for a dynamically allocated fifo.
-> @@ -123,12 +123,12 @@ static ssize_t fifo_write(struct file *f
->         int ret;
->         unsigned int copied;
->  
-> -       if (mutex_lock_interruptible(&write_lock))
-> +       if (mutex_lock_interruptible(&write_access))
->                 return -ERESTARTSYS;
->  
->         ret = kfifo_from_user(&test, buf, count, &copied);
->  
-> -       mutex_unlock(&write_lock);
-> +       mutex_unlock(&write_access);
->         if (ret)
->                 return ret;
->  
-> @@ -141,12 +141,12 @@ static ssize_t fifo_read(struct file *fi
->         int ret;
->         unsigned int copied;
->  
-> -       if (mutex_lock_interruptible(&read_lock))
-> +       if (mutex_lock_interruptible(&read_access))
->                 return -ERESTARTSYS;
->  
->         ret = kfifo_to_user(&test, buf, count, &copied);
->  
-> -       mutex_unlock(&read_lock);
-> +       mutex_unlock(&read_access);
->         if (ret)
->                 return ret;
->  
+Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
 
+> ---
+>  mm/slub.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/mm/slub.c b/mm/slub.c
+> index a56a6423d4e8..bf1793fb4ce5 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -4210,8 +4210,8 @@ static int kmem_cache_open(struct kmem_cache *s, slab_flags_t flags)
+>  	if (alloc_kmem_cache_cpus(s))
+>  		return 0;
+>  
+> -	free_kmem_cache_nodes(s);
+>  error:
+> +	__kmem_cache_release(s);
+>  	return -EINVAL;
+>  }
+>  
+> 
 
