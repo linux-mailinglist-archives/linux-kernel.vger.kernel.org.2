@@ -2,91 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CC384222A9
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 11:48:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACC554222A7
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 11:48:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233738AbhJEJuQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 05:50:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35050 "EHLO
+        id S233666AbhJEJuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 05:50:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233773AbhJEJuP (ORCPT
+        with ESMTP id S233077AbhJEJuF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 05:50:15 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8D4AC06161C;
-        Tue,  5 Oct 2021 02:48:24 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id v18so74983945edc.11;
-        Tue, 05 Oct 2021 02:48:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eG8e9Uk1W9GSBqcgDiTroWFBkz64SIsFxYG5rFb/vd8=;
-        b=SE4duXLzwA25k01iGgWFP2fR8dQHXfMyk6EhJ3QKkOOK67Q7Xb0vIdsgc/wf2PyQ4K
-         NPUIDD6Cr0fuxiNGEkVhLUdWQREqMqSBNKwSNilx/RTXfZ1HOS5IcZ8J5NwQMYEoGNX2
-         teD6TkrgPImaZVrvMzmfO3NQt7Qlc6u4DCCCjtMUscZ9fUMchR38Qive93Hhdb5ETOGk
-         a0IIEW2T5m3st5b4skT46eqJjViqrGHcI/czQE8Z+PgHBdmc/4FiCCfXnvgTM2PwYOmq
-         y8L8awV44LxAWiO7p0QP95VsuKegWzr1QQwNFcJ+Ip61cjxR/J7CuWXtnURVivTMxu5V
-         Frww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eG8e9Uk1W9GSBqcgDiTroWFBkz64SIsFxYG5rFb/vd8=;
-        b=eONaug122+yUeJH1cZhaIE/hSF6JAtmFZlGZTXc7FBVE0ab0GcTTJKysDof//8hym7
-         M/24ookqZO+eC2rLRZQ2OS5kBN4e6I5V04shommvD3ik6kRdA5gWjfko631+8lyVwKJf
-         D22t2VUqfHsOXVPUpwa9/PNw4LseL4lx7ySXaThqLvsMn7i37PiUjaJImgasRYSIaRFS
-         B+hqCtvWlwDFr3bsVWRxl9nRfQQAymu+6JfCikRkulgjENRrFmlGMwrfWCcrs2PLjI3K
-         F5LxSBGqRfL0UMcRFb9kLlBj5Qmg8b6iPSU0Ibd+XvKdgih5scQQ800+sjSvfof9yPTn
-         FXRw==
-X-Gm-Message-State: AOAM530FSqf1wiBNGMruzfUqKgKWBJfd4h3/i/B8Eyct9J4nT6P/gefF
-        OlzOdQqfqVQLWTckUwqWxQHuggpQpm2P4FT6pN8=
-X-Google-Smtp-Source: ABdhPJwkKMftU9jYk4o4DLrKZdpmpAizkinnNgweahIJMDBLU7PntuXpqEztqIWiFLfX8D0CIFqMVmr0TAEppSSflLo=
-X-Received: by 2002:a17:907:62a2:: with SMTP id nd34mr2187647ejc.356.1633427303304;
- Tue, 05 Oct 2021 02:48:23 -0700 (PDT)
+        Tue, 5 Oct 2021 05:50:05 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75FB6C06161C;
+        Tue,  5 Oct 2021 02:48:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=HIo2aCXY4RPVQU/Hm5Gq2nvMpxEwV3G/HpRH5pcWZsw=; b=DpEcNNx2E0xJDw7NvmJ/OWgyPG
+        /uRe1Cg741kuptggFNyO55EaIohJO7+3l+pwqDeyLtWSQ4kCeemFe4dlhwSGErenebiovozoEVN3k
+        XqQW0OLG/fZIN8kqmnO8l6QOEZNJOgJcjGzOECSQBJbtx2ZzUTQoZ71mS3hGdNRGzr67cplpTbBgq
+        qKU9nSDelAYUm62EgYFytltMIJBOfwcfGp84/flNol3aucUa2189ComRBHikmW+RxOLW2eeOinCN5
+        LXI2IM/wV+5jxjfqbZjWGEbCNW+jQ1WFqZSh38s/sJXMsR3one4KMbVcU9KnqYWBBLWstlLr5FX+i
+        GdFjwZVQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:54946)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1mXh3U-00005s-3G; Tue, 05 Oct 2021 10:48:12 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1mXh3T-0008Mw-12; Tue, 05 Oct 2021 10:48:11 +0100
+Date:   Tue, 5 Oct 2021 10:48:10 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Sean Anderson <sean.anderson@seco.com>
+Cc:     netdev@vger.kernel.org, "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Saravana Kannan <saravanak@google.com>
+Subject: Re: [RFC net-next PATCH 05/16] net: phylink: Automatically attach
+ PCS devices
+Message-ID: <YVwfWiMOQH0U5bay@shell.armlinux.org.uk>
+References: <20211004191527.1610759-1-sean.anderson@seco.com>
+ <20211004191527.1610759-6-sean.anderson@seco.com>
 MIME-Version: 1.0
-References: <20210929113049.64557-1-LakshmiPraveen.Kopparthi@microchip.com>
- <YVSY8L6A6H71DvM5@smile.fi.intel.com> <2b37141fcb1067f9322bca5f6d83818d380b7c6a.camel@microchip.com>
-In-Reply-To: <2b37141fcb1067f9322bca5f6d83818d380b7c6a.camel@microchip.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 5 Oct 2021 12:47:47 +0300
-Message-ID: <CAHp75VdYqOVNGY7-FdNkTy8hLn-2OWVEZrPuXDYufEC-yOM=BQ@mail.gmail.com>
-Subject: Re: [PATCH v1 0/3] serial:8250:Add driver support for MCHP PCI1XXXX
- UART module
-To:     LakshmiPraveen Kopparthi <LakshmiPraveen.Kopparthi@microchip.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        Zev Weiss <zev@bewilderbeest.net>, Vignesh R <vigneshr@ti.com>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211004191527.1610759-6-sean.anderson@seco.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 5, 2021 at 11:49 AM LakshmiPraveen Kopparthi
-<LakshmiPraveen.Kopparthi@microchip.com> wrote:
-> On Wed, 2021-09-29 at 19:48 +0300, Andy Shevchenko wrote:
+On Mon, Oct 04, 2021 at 03:15:16PM -0400, Sean Anderson wrote:
+> This adds support for automatically attaching PCS devices when creating
+> a phylink. To do this, drivers must first register with
+> phylink_register_pcs. After that, new phylinks will attach the PCS
+> device specified by the "pcs" property.
+> 
+> At the moment there is no support for specifying the interface used to
+> talk to the PCS. The MAC driver is expected to know how to talk to the
+> PCS. This is not a change, but it is perhaps an area for improvement.
+> 
+> I believe this is mostly correct with regard to registering/
+> unregistering. However I am not too familiar with the guts of Linux's
+> device subsystem. It is possible (likely, even) that the current system
+> is insufficient to prevent removing PCS devices which are still in-use.
+> I would really appreciate any feedback, or suggestions of subsystems to
+> use as reference. In particular: do I need to manually create device
+> links? Should I instead add an entry to of_supplier_bindings? Do I need
+> a call to try_module_get?
 
-...
+I think this is an area that needs to be thought about carefully.
+Things are not trivial here.
 
-> > Please, do not add this to 8250_pci.c. Use separate quirk driver as
-> > it's done
-> > in plenty of examples:
-> >
-> >         8250_lpss.c, 8250_mid.c, 8250_exar.c, ...
->
-> Thanks for pointing the examples. I have looked into these examples and
-> the required functionality can be achieved with a separate driver. But
-> I would like to know the reason for not adding this to 8250_pci.c.
+The first mistake I see below is the use of device links. pl->dev is
+the "struct device" embedded within "struct net_device". This doesn't
+have a driver associated with it, and so using device links is likely
+ineffectual.
 
-Maintainability. And we may check, btw, the LOC difference when you
-will be ready with a separate driver.
-In some cases it would even be a good win.
+Even with the right device, I think careful thought is needed - we have
+network drivers where one "struct device" contains multiple network
+interfaces. Should the removal of a PCS from one network interface take
+out all of them?
+
+Alternatively, could we instead use phylink to "unplug" the PCS and
+mark the link down - would that be a better approach than trying to
+use device links?
 
 -- 
-With Best Regards,
-Andy Shevchenko
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
