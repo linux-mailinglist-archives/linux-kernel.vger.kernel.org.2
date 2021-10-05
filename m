@@ -2,108 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0051C4225FB
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 14:09:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB01D4225FD
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 14:10:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234551AbhJEMLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 08:11:39 -0400
-Received: from mga03.intel.com ([134.134.136.65]:52866 "EHLO mga03.intel.com"
+        id S234639AbhJEML6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 08:11:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37106 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233808AbhJEMLi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 08:11:38 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10127"; a="225662756"
-X-IronPort-AV: E=Sophos;i="5.85,348,1624345200"; 
-   d="scan'208";a="225662756"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2021 05:09:47 -0700
-X-IronPort-AV: E=Sophos;i="5.85,348,1624345200"; 
-   d="scan'208";a="589332377"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2021 05:09:45 -0700
-Received: from andy by smile with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mXjGR-008sGX-11;
-        Tue, 05 Oct 2021 15:09:43 +0300
-Date:   Tue, 5 Oct 2021 15:09:43 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Heiko Carstens <hca@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>
-Subject: Re: [PATCH v1 1/1] s390: Use string_upper() instead of open coded
- variant
-Message-ID: <YVxAh+0SeLEgh85e@smile.fi.intel.com>
-References: <20211001130201.72545-1-andriy.shevchenko@linux.intel.com>
- <YVtksmjj1eGqw5GY@osiris>
- <YVwKXn1Nqwk+Ahsx@smile.fi.intel.com>
- <YVwSxGyx45gs2+ZW@osiris>
+        id S233808AbhJEML5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 08:11:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 4BD6E61166;
+        Tue,  5 Oct 2021 12:10:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633435807;
+        bh=tQ1PrR11XN1QXy/YyooEMn8lxi309ux+mV6CSzGbzC8=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=K05HggHF54sgYhgNXHumh68mFx2rizdYvCxSwum1iA1VjOgVQeuIWz93slKCNt0Ah
+         UQGnwaN/23257gW+EESqY1ij9Fo1UeW+VEPP/9DhtDBnH9YKV5Z9kC74TfBmR7eF2Q
+         AomjqnMJa8hCnMK3oaXn0aOqHHhwGkQ0QZosoJc/k4aHU+AoL76ZsUlcLokQ/xQfIj
+         K77BjxVuASPYe6kroa3sM87aET+CRejbHqO+Bvsw4D+AmrQEpvEgaAnkJbjY39JaLE
+         vdiSH02tyqkGlU+6M8aqVDMZlyOqHY2VpZp3qWAg+fcW6Ib7AKxYAEiL6VXHLzMjX7
+         IIVnYWJOaC3+A==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 36D2A60A1B;
+        Tue,  5 Oct 2021 12:10:07 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YVwSxGyx45gs2+ZW@osiris>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
+Subject: Re: [net PATCH] net: sfp: Fix typo in state machine debug string
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163343580721.21299.18004142188617727761.git-patchwork-notify@kernel.org>
+Date:   Tue, 05 Oct 2021 12:10:07 +0000
+References: <20211004215002.1647148-1-sean.anderson@seco.com>
+In-Reply-To: <20211004215002.1647148-1-sean.anderson@seco.com>
+To:     Sean Anderson <sean.anderson@seco.com>
+Cc:     linux@armlinux.org.uk, netdev@vger.kernel.org,
+        hkallweit1@gmail.com, f.fainelli@gmail.com, kuba@kernel.org,
+        davem@davemloft.net, linux-kernel@vger.kernel.org, andrew@lunn.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05, 2021 at 10:54:28AM +0200, Heiko Carstens wrote:
-> On Tue, Oct 05, 2021 at 11:18:38AM +0300, Andy Shevchenko wrote:
-> > On Mon, Oct 04, 2021 at 10:31:46PM +0200, Heiko Carstens wrote:
-> > > On Fri, Oct 01, 2021 at 04:02:01PM +0300, Andy Shevchenko wrote:
+Hello:
 
-...
+This patch was applied to netdev/net.git (refs/heads/master):
 
-> > > > +	char tmp[8 + 1];
-> > > >  	int i;
-> > > >  
-> > > > -	for (i = 0; i < 8; i++) {
-> > > > -		if (name[i] == '\0')
-> > > > -			break;
-> > > > -		dcss_name[i] = toupper(name[i]);
-> > > > -	}
-> > > > -	for (; i < 8; i++)
-> > > > -		dcss_name[i] = ' ';
-> > > > +	/*
-> > > > +	 * This snprintf() call does two things:
-> > > > +	 * - makes a NUL-terminated copy of the input string
-> > > > +	 * - pads it with spaces
-> > > > +	 */
-> > > > +	snprintf(tmp, sizeof(tmp), "%s        ", name);
-> > > 
-> > > I can't say I like code where I have to count spaces in order to
-> > > verify if the code is actually correct.
-> > 
-> > I understand your point, but have any idea how to make it differently
-> > and not ugly at the same time?
+On Mon,  4 Oct 2021 17:50:02 -0400 you wrote:
+> The string should be "tx_disable" to match the state enum.
 > 
-> Don't know. You could use strncopy+strlen+memset (with space
-> character). After all I'm not very convinced that the resulting code
-> buys us anything compared to the current variant.
-
-Yup, so let's convert only the first part then.
-
-...
-
-> > > > -	char dcss_name[9];
-> > > > +	char dcss_name[8];
-> > > 
-> > > string_upper will copy the terminating NUL-byte. By reducing the size
-> > > of dcss_name to 8 bytes this will result in stack corruption.
-> > 
-> > Nope. Even in the original code this additional byte is left unused.
+> Fixes: 4005a7cb4f55 ("net: phy: sftp: print debug message with text, not numbers")
+> Signed-off-by: Sean Anderson <sean.anderson@seco.com>
+> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+> ---
+> This was first submitted as [1], but has been submitted separately, per
+> request.
 > 
-> I'm talking about the new code, not the old code: If "name" points to
-> a NUL terminated eight chararacter string, then the new code will use
-> snprintf to copy it 1:1 to tmp, and the subsequent string_upper() will
-> copy the string (upper cased) to dcss_name, now including the NUL
-> terminating byte, which won't fit into dcss_name.
-> Am I missing something here?
+> [...]
 
-Ah, indeed, although it's rather bug in the implementation of above.
-But original code has it not in use.
+Here is the summary with links:
+  - [net] net: sfp: Fix typo in state machine debug string
+    https://git.kernel.org/netdev/net/c/25a9da6641f1
 
--- 
-With Best Regards,
-Andy Shevchenko
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
