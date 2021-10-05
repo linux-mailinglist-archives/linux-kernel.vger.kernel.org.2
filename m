@@ -2,97 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B6F6421D6B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 06:25:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7BCD421D70
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 06:30:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231393AbhJEE1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 00:27:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45336 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229780AbhJEE1V (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 00:27:21 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53E92C061749
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 21:25:31 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id on12-20020a17090b1d0c00b001997c60aa29so1158111pjb.1
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 21:25:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=cJ4r8bXgEb5jKjVNnDvod4XPSiNRHdxIF6FJQ8qHJbE=;
-        b=ztI9W9MEhRnIlg53CngDGMzbJG+2l/nTMF+hjvCOAvw8aGY0Z7J86Epfnlc5aSqBNF
-         ymQlgrtpZxIkNtjCP/RLIiI+Ff7IO+WTD1n7yCeTu21undHEPz7eZ/7zb0epqQ0mpj3d
-         W8/NDiqqv16f+vP07vGXAgOgc+2T7ZiHMjNTayD23v/qTk1dI5Tgl1l+AP/gUPXqypk4
-         zaixj0E9CFZQqSxOkfVQBfc9R6yxv+J+3syE2DCxBwq5K2I/eVZR1DOePbJToET/VYgx
-         /6J4Rec+wAq3uKzsBBIk/XTAA8Jr+/HtcVjGbXrtP2ula1rvjzHR/qMqYug2T/XSkTv7
-         cfhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=cJ4r8bXgEb5jKjVNnDvod4XPSiNRHdxIF6FJQ8qHJbE=;
-        b=oa/AeAPxBihQKkxAuw9bsBY3+PygHyWI9Bq0bBjrPnt1EKtSq+g0EsizMAKMsbGtMK
-         Oii+kdC7viEXrMruZw6OifbpHheJmy+I0BZZ4Cynx4x6kJrcsdyEpE+YG3JBqHlnHMn3
-         XqZlp8v7ZxWYnZqXOUKxlJ1r+NNuUOI9dINdjp0tnILwZeu56Zsmeaf0q6wkwNu8/E5F
-         Cj0LrcrVMWx0ZNTvLfCKjkRIGg+UthNCkEV09IGAfByw71Q1N6bX/GaFPL8jnkdxubuM
-         cMpej1DR6zBMIoYGjS9NVvZY7KT6SVEuSUhUFea8whf30ybFV6iGD1d8597CmEfjyQ96
-         yiaw==
-X-Gm-Message-State: AOAM532RiPWtQISKX/Wh/7Lv12R6fXGkpNkUUx2b6AcBMUnv6fRCl5Vf
-        k+2V4qTb63Y4Zh419PZrAJOUCA==
-X-Google-Smtp-Source: ABdhPJwU0v+nT2RDODXfs6zoCAuNaRXJikpcU8BiZ8Yw0UkMCT/BK0v/kgJClwGqtBNo90wdJ4/JVg==
-X-Received: by 2002:a17:90a:d3cb:: with SMTP id d11mr1192295pjw.109.1633407930894;
-        Mon, 04 Oct 2021 21:25:30 -0700 (PDT)
-Received: from localhost ([122.171.247.18])
-        by smtp.gmail.com with ESMTPSA id e6sm296214pfm.212.2021.10.04.21.25.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Oct 2021 21:25:30 -0700 (PDT)
-Date:   Tue, 5 Oct 2021 09:55:26 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Subject: Re: [PATCH v2 0/4] Make probe() of Tegra devfreq driver completely
- resource-managed
-Message-ID: <20211005042526.mklgm4yzeiu6s7jv@vireshk-i7>
-References: <20210920172249.28206-1-digetx@gmail.com>
+        id S230115AbhJEEcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 00:32:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35846 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229659AbhJEEcP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 00:32:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3368D611C5;
+        Tue,  5 Oct 2021 04:30:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633408225;
+        bh=mwtLlNGveq30btzEOHDXQtBFRIVY1CXFp5WcbtYwSiA=;
+        h=In-Reply-To:References:From:Date:Subject:To:Cc:From;
+        b=Iguk8LBgCPt73EUPiPAtU5RnMaIgAdPFTSloae6afkaFqQNHxJ2TyvSj3r/AiLUPA
+         OlM8p2S/NG+Xa3KBL2Tyvk07LB1TlVuEQqzrzsUF9ZTGHG58ebjW9OQBka6H6Y8zSv
+         J4dKdTAvAy5Fc6vVoEsfgqdmYlxT8B60WQcX2xzfmcKeOh8mZk66bLI0xqI6ZfICEs
+         eKJmlItq1fFrq8H1sTLfiEp8s0tRrNFYEyD7NoNYves6iIAwsdoU2OFp/rPCnnZaZA
+         JwnOMwesCayRzoJLYLuVuRb6GoK+X2KsnqVcqlWhACg1D4YMUIXRVKnkHXvBMxP2i3
+         5kWVkUeheILaQ==
+Received: by mail-ot1-f51.google.com with SMTP id c6-20020a9d2786000000b005471981d559so24310449otb.5;
+        Mon, 04 Oct 2021 21:30:25 -0700 (PDT)
+X-Gm-Message-State: AOAM5329LqoQE6/R+DVa3VPT0i1dJHyha4pY+xzKLucW2bERgCA10em7
+        brOMl/nWmD7OBiOQFE/T6ZI9V8Ep6vpbflOzEcw=
+X-Google-Smtp-Source: ABdhPJwc17nyFy1jKaSEyhnnRbq1wlsup111LLUDb+pD6/MI+un5hpI0gLDhCKb+MYffFLg2ic1evHZsc+7xAmtzqsU=
+X-Received: by 2002:a05:6830:1147:: with SMTP id x7mr12574781otq.18.1633408224429;
+ Mon, 04 Oct 2021 21:30:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210920172249.28206-1-digetx@gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Received: by 2002:ac9:31e7:0:0:0:0:0 with HTTP; Mon, 4 Oct 2021 21:30:23 -0700 (PDT)
+In-Reply-To: <c28301d7b99e$37fb5af0$a7f210d0$@samsung.com>
+References: <20210909065543.164329-1-cccheng@synology.com> <CGME20210910010035epcas1p496dd515369b9f2481ccd1c0de5904bbd@epcas1p4.samsung.com>
+ <CAKYAXd_1ys-xQ9HusgqSr5GHaP6R2pK4JswfZzoqZ=wTnwSiOw@mail.gmail.com>
+ <997a01d7b6c6$ea0c3f50$be24bdf0$@samsung.com> <CAKYAXd9COEWU_QF3p0mnEnH4nHMrHQ5ujwBZ6rt4ZBjEFBnB=w@mail.gmail.com>
+ <c28301d7b99e$37fb5af0$a7f210d0$@samsung.com>
+From:   Namjae Jeon <linkinjeon@kernel.org>
+Date:   Tue, 5 Oct 2021 13:30:23 +0900
+X-Gmail-Original-Message-ID: <CAKYAXd_vFjVcHJxn5xau5hFNHBXc2K7o1wFHbkhz9TcCteG2Rw@mail.gmail.com>
+Message-ID: <CAKYAXd_vFjVcHJxn5xau5hFNHBXc2K7o1wFHbkhz9TcCteG2Rw@mail.gmail.com>
+Subject: Re: [PATCH] exfat: use local UTC offset when EXFAT_TZ_VALID isn't set
+To:     Sungjong Seo <sj1557.seo@samsung.com>
+Cc:     Chung-Chiang Cheng <cccheng@synology.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        shepjeng@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20-09-21, 20:22, Dmitry Osipenko wrote:
-> This series adds new resource-managed helpers and makes Tegra devfreq
-> driver to use them, improving the driver's error-handling code.
-> 
-> Changelog:
-> 
-> v2: - Added WARN_ON() to devm_devfreq_remove_governor() and moved
->       devm_devfreq_add_governor() as was requested by Chanwoo Choi.
-> 
->     - Added ack from Chanwoo Choi to the "Check whether clk_round_rate()
->       returns zero rate" patch.
-> 
-> Dmitry Osipenko (4):
->   opp: Add more resource-managed variants of dev_pm_opp_of_add_table()
->   PM / devfreq: Add devm_devfreq_add_governor()
->   PM / devfreq: tegra30: Use resource-managed helpers
->   PM / devfreq: tegra30: Check whether clk_round_rate() returns zero
->     rate
+2021-10-05 13:05 GMT+09:00, Sungjong Seo <sj1557.seo@samsung.com>:
+>> 2021-10-01 22:19 GMT+09:00, Sungjong Seo <sj1557.seo@samsung.com>:
+>> > Hello, Namjae,
+>> Hi Sungjong,
+>> >
+>> > I found an important difference between the code we first wrote and
+>> > the code that has changed since our initial patch review. This
+>> > difference seems to cause compatibility issues when reading saved
+>> timestamps without timezone.
+>> > (In our initial patch review, there were concerns about possible
+>> > compatibility issues.) I think the code that reads timestamps without
+>> > timezone should go back to the concept we wrote in the first place
+>> > like reported patch.
+>> Are you talking about using sys_tz?
+> Yes, exactly, a part like below.
+Have you read discussion about this before ?
+Let me know what I am missing something.
 
-Applied. Thanks.
+>
+> +static inline int exfat_tz_offset(struct exfat_sb_info *sbi) {
+> +	return (sbi->options.tz_set ? -sbi->options.time_offset :
+> +			sys_tz.tz_minuteswest) * SECS_PER_MIN; }
+> +
+>
+>>
+>> > It could be an answer of another timestamp issue.
+>> What is another timestamp issue ?
+>
+> What I'm saying is "timestamp incompatibilities in exfat-fs" from Reiner
+> <reinerstallknecht@gmail.com>
+> I think it might be the same issue with this.
+Have you checked fuse-exfat patch he shared ? It was exfat timezone support.
+I am not sure how it is related to sys_tz...
 
--- 
-viresh
+Thanks!
+>
+>>
+>> >
+>> > Could you please let me know what you think?
+>> >
+>> > Thanks.
+>> >> -----Original Message-----
+>> >> From: Namjae Jeon [mailto:linkinjeon@kernel.org]
+>> >> Sent: Friday, September 10, 2021 10:01 AM
+>> >> To: Chung-Chiang Cheng <cccheng@synology.com>
+>> >> Cc: sj1557.seo@samsung.com; linux-fsdevel@vger.kernel.org; linux-
+>> >> kernel@vger.kernel.org; shepjeng@gmail.com
+>> >> Subject: Re: [PATCH] exfat: use local UTC offset when EXFAT_TZ_VALID
+>> >> isn't set
+>> >>
+>> >> 2021-09-09 15:55 GMT+09:00, Chung-Chiang Cheng <cccheng@synology.com>:
+>> >> > EXFAT_TZ_VALID is corresponding to OffsetValid field in exfat
+>> >> > specification [1]. If this bit isn't set, timestamps should be
+>> >> > treated as having the same UTC offset as the current local time.
+>> >> >
+>> >> > This patch uses the existing mount option 'time_offset' as fat does.
+>> >> > If time_offset isn't set, local UTC offset in sys_tz will be used
+>> >> > as the default value.
+>> >> >
+>> >> > Link: [1]
+>> >> > https://protect2.fireeye.com/v1/url?k=cba4edf5-943fd4c8-cba566ba-0c
+>> >> > c47
+>> >> > a31309a-e70aa065be678729&q=1&e=225feff2-841f-404c-9a2e-c12064b232d0
+>> >> > &u=
+>> >> > https%3A%2F%2Fdocs.microsoft.com%2Fen-us%2Fwindows%2Fwin32%2Ffileio
+>> >> > %2F exfat-specification%2374102-offsetvalid-field
+>> >> > Signed-off-by: Chung-Chiang Cheng <cccheng@synology.com>
+>> >> Please read this discussion:
+>> >>  https://patchwork.kernel.org/project/linux-
+>> >> fsdevel/patch/20200115082447.19520-10-namjae.jeon@samsung.com/
+>> >>
+>> >> Thanks!
+>> >
+>> >
+>
+>
