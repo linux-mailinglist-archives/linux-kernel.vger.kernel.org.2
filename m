@@ -2,126 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89BC9422C16
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:13:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0541422C19
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:14:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235760AbhJEPPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 11:15:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55922 "EHLO
+        id S235763AbhJEPPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 11:15:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235541AbhJEPPe (ORCPT
+        with ESMTP id S231940AbhJEPPw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 11:15:34 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB37EC061753
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 08:13:43 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id u18so38010296wrg.5
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 08:13:43 -0700 (PDT)
+        Tue, 5 Oct 2021 11:15:52 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39360C061749
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 08:14:02 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id y197so24692373iof.11
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 08:14:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=PWCYDGGbLpSMPRQR7ZAmGiH0fGx9oqlU5WKkX0Mb0qU=;
-        b=C1yvQF0yUncj5rEDsqvtLNOh+x9A7zVvyBPM9/XAkJfELhfc8AMhISJj64NOPiegea
-         6JaYRoh2a4a8Ncik3T0v2Z6LPHWswvBeUX8M6NZ4jCkN4IEr3RdBho3Kd9rLpWJpM0V7
-         nAz428jBaLXsB3HI0R0UXCgzALnskQ+gT1Wuytyc91NjoM4QkNs6yNoNLLP+H7Kf3aF7
-         4mPFuU3GM98fENzdmGwNxmmAh6ePRObn3Xcmc0CdJfqyOPb1S20AuzfRXoOXfq0YejFs
-         5rUMpTiUdv/XOm8Bnfc39Y8QxXGwt9qYF2AbGEI/cO9MnsFx/isXdnG/CQge/XznLXKO
-         qP7w==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sh8VNE4FCLdSm5VCdPfycmMPvw4PtVqb68V0H1ZpEUk=;
+        b=HtcGpyyh2UUVNrAb5Igdog262j6GdlcgBCBggIlt8jnaHyk4jpyGysSyBfHZba0mdm
+         pDC1Acu7d9xqLvWCmW3TynL/Iw1DjKCWed9Iw2sJZ/8HJ8dhcrJzRSHOsg1v8+xashTp
+         skKhyltA89Q0HPRLVE510wa50TQNxyIKcppPg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=PWCYDGGbLpSMPRQR7ZAmGiH0fGx9oqlU5WKkX0Mb0qU=;
-        b=oGV3kDEddq466pYFaKe+JoQ+e5X8UP0jcZ+lcWAs6Bmw2TaZmlFuIl55wc1etG13YX
-         VF3pKgu7ymUV7SlbPeXDZPcSf7Pk/GP5KBskdHjRRVDZlEBEjPN1k6KRUHdwRfvk44md
-         AovthfgXdMVYCdlb12hWC6ndmWB0WCsdP11vr34KY53uk0nyJyThHlCIWKWGXUQS/nVr
-         YtGyUK0xSdotjQMOtPzgKdERrYrv29XwmjmLFZyLnZvTqbbrpuNcfTZsHxNtVRKmnnRm
-         qgRVCAnzUx7hZCkDpvUnsJWBYpGAIGQkl9OQFuH92ZInr9kn3tJqsM0W0GI1rfpHvl+I
-         +S7g==
-X-Gm-Message-State: AOAM531TWDB9wVgOTfKc0uUzuaRnkRAHYk7hyq/aPnH9PVy8lsCpzk+N
-        +Fzbr90F5a3/VC+lS3bHK4nlNQ==
-X-Google-Smtp-Source: ABdhPJyHHQBSLIiixiOSj+09iVqstHSdw/JX82YLQyteKWj/W+BkVDOWUO25EZpQcPNg2mg9qLt/bg==
-X-Received: by 2002:adf:e6d0:: with SMTP id y16mr22269412wrm.181.1633446822192;
-        Tue, 05 Oct 2021 08:13:42 -0700 (PDT)
-Received: from elver.google.com ([2a00:79e0:15:13:e44f:5054:55f8:fcb8])
-        by smtp.gmail.com with ESMTPSA id a2sm4377335wru.82.2021.10.05.08.13.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Oct 2021 08:13:41 -0700 (PDT)
-Date:   Tue, 5 Oct 2021 17:13:35 +0200
-From:   Marco Elver <elver@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
-        Alexander Potapenko <glider@google.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Waiman Long <longman@redhat.com>,
-        Will Deacon <will@kernel.org>, kasan-dev@googlegroups.com,
-        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, x86@kernel.org
-Subject: Re: [PATCH -rcu/kcsan 23/23] objtool, kcsan: Remove memory barrier
- instrumentation from noinstr
-Message-ID: <YVxrn2658Xdf0Asf@elver.google.com>
-References: <20211005105905.1994700-1-elver@google.com>
- <20211005105905.1994700-24-elver@google.com>
- <YVxjH2AtjvB8BDMD@hirez.programming.kicks-ass.net>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sh8VNE4FCLdSm5VCdPfycmMPvw4PtVqb68V0H1ZpEUk=;
+        b=8QkcghaHv6mjAZJjpJfEqhSW5q8WKKP+iMNrFHhMoyj28e3Q4MLaJp9s0Leb/DQ0M/
+         gliw6alx0GZERtFOt5DEU5enYfHBjcVUd9SLfAEhHDx9i0ZsOxJU/5frarLE1YdKxgfp
+         Pm+p+t6J5GNdpXaItVe7uLnd7EL7jpVivvwgx7dDIWXEJJ/j91fLdd6nORoAukobKsR/
+         k5LTYdmPSlYRSUqeienPpjOWt5LWiZ10qcIoPCgtxlsdnbsd9yfi8EW8wx2BUkpgrnOv
+         9aNv0trSP5xPXDoM3qhBx3j9JnqRuE29gNK/21Cf6p4ZiVTY23jcnEvKMJEDqbhyS47L
+         7ebQ==
+X-Gm-Message-State: AOAM533NykAyxN3f+CoFSY2VkkEo29rPUuB5h/DWW95zT4FYbubegjMp
+        7GcccfvU7zY2p8off/2m8cGi796Lcww24Q==
+X-Google-Smtp-Source: ABdhPJzjyw+j0mRaR817oks1TqP8pTdZRH7fMrzspRm1/9+FjgkLTHcdsUenLxIQQuo1f8ePMcGmjA==
+X-Received: by 2002:a05:6602:2e95:: with SMTP id m21mr280226iow.198.1633446841417;
+        Tue, 05 Oct 2021 08:14:01 -0700 (PDT)
+Received: from mail-il1-f181.google.com (mail-il1-f181.google.com. [209.85.166.181])
+        by smtp.gmail.com with ESMTPSA id w11sm5231878ior.40.2021.10.05.08.13.59
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Oct 2021 08:14:00 -0700 (PDT)
+Received: by mail-il1-f181.google.com with SMTP id b6so22249109ilv.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 08:13:59 -0700 (PDT)
+X-Received: by 2002:a05:6e02:1847:: with SMTP id b7mr3420583ilv.180.1633446839293;
+ Tue, 05 Oct 2021 08:13:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YVxjH2AtjvB8BDMD@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/2.0.5 (2021-01-21)
+References: <20211004092100.1.Ic90a5ebd44c75db963112be167a03cc96f9fb249@changeid>
+ <YVtZstInQxXfPmsZ@intel.com> <DM6PR12MB49127B8B63079E6533197EA6E5AF9@DM6PR12MB4912.namprd12.prod.outlook.com>
+In-Reply-To: <DM6PR12MB49127B8B63079E6533197EA6E5AF9@DM6PR12MB4912.namprd12.prod.outlook.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Tue, 5 Oct 2021 08:13:47 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=VvKsrB9RZKdB6vQJ-38BZEYLnuENxb1+1v-PahcdBtiQ@mail.gmail.com>
+Message-ID: <CAD=FV=VvKsrB9RZKdB6vQJ-38BZEYLnuENxb1+1v-PahcdBtiQ@mail.gmail.com>
+Subject: Re: connector_bad_edid() is broken (was: Re: [PATCH] drm/edid: Fix
+ crash with zero/invalid EDID)
+To:     "Zuo, Jerry" <Jerry.Zuo@amd.com>
+Cc:     =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "geert@linux-m68k.org" <geert@linux-m68k.org>,
+        "oliver.sang@intel.com" <oliver.sang@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Jani Nikula <jani.nikula@intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Wentland, Harry" <Harry.Wentland@amd.com>,
+        "Siqueira, Rodrigo" <Rodrigo.Siqueira@amd.com>,
+        Kuogee Hsieh <khsieh@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05, 2021 at 04:37PM +0200, Peter Zijlstra wrote:
-> On Tue, Oct 05, 2021 at 12:59:05PM +0200, Marco Elver wrote:
-> > Teach objtool to turn instrumentation required for memory barrier
-> > modeling into nops in noinstr text.
-> > 
-> > The __tsan_func_entry/exit calls are still emitted by compilers even
-> > with the __no_sanitize_thread attribute. The memory barrier
-> > instrumentation will be inserted explicitly (without compiler help), and
-> > thus needs to also explicitly be removed.
-> 
-> How is arm64 and others using kernel/entry + noinstr going to fix this?
-> 
-> ISTR they fully rely on the compilers not emitting instrumentation,
-> since they don't have objtool to fix up stray issues like this.
+Hi,
 
-So this is where I'd like to hear if the approach of:
+On Tue, Oct 5, 2021 at 6:33 AM Zuo, Jerry <Jerry.Zuo@amd.com> wrote:
+>
+> > BTW I believe connector_bad_edid() itself is broken since commit
+> > e11f5bd8228f ("drm: Add support for DP 1.4 Compliance edid corruption
+> > test"). Before we've even allocated the memory for the extension blocks
+> > that code now assumes edid[0x7e] is to be 100% trusted and goes and
+> > calculates the checksum on a block based on that. So that's likely going to be
+> > pointing somewhere beyond the base block into memory we've not even
+> > allocated. So anyone who wanted could craft a bogus EDID and maybe get
+> > something interesting to happen.
+> >
+> > Would be good if someone could fix that while at it. Or just revert the
+> > offending commit if there is no simple solution immediately in sight.
+> >
+> > The fact that we're parsing entirely untrustworthy crap in the kernel always
+> > worries me. Either we need super careful review of all relevant code, and/or
+> > we need to think about moving the parser out of the kernel.
+> > I was considering playing around with the usermode helper stuff. IIRC there
+> > is a way to embed the userspace binary into the kernel and just fire it up
+> > when needed. But so far it's been the usual -ENOTIME for me...
+> >
+> [AMD Official Use Only]
+>
+> Hi Ville:
+>
+>      Yhea, it is pretty old change from two years ago, and it is no long valid anymore. Please simply drop it.
+>
+> Regards,
+> Jerry
 
- | #if !defined(CONFIG_ARCH_WANTS_NO_INSTR) || defined(CONFIG_STACK_VALIDATION)
- | ...
- | #else
- | #define kcsan_noinstr noinstr
- | static __always_inline bool within_noinstr(unsigned long ip)
- | {
- | 	return (unsigned long)__noinstr_text_start <= ip &&
- | 	       ip < (unsigned long)__noinstr_text_end;
- | }
- | #endif
+I've cut out other bits from this email and changed the subject line
+since I think this is an issue unrelated to the one my original patch
+was fixing.
 
-and then (using the !STACK_VALIDATION definitions)
+I don't actually know a ton about DP compliance testing, but I
+attempted to try to be helpful and revert commit e11f5bd8228f ("drm:
+Add support for DP 1.4 Compliance edid corruption test"). It wasn't
+too hard to deal with the conflicts in the revert itself, but then
+things didn't compile because there are two places that use
+`real_edid_checksum` and that goes away if I revert the patch.
 
- | kcsan_noinstr void instrumentation_may_appear_in_noinstr(void)
- | {
- | 	if (within_noinstr(_RET_IP_))
- | 		return;
+I've made an attempt to fix the problem by just adding a bounds check.
+Perhaps you can see if that looks good to you:
 
-works for the non-x86 arches that select ARCH_WANTS_NO_INSTR.
+https://lore.kernel.org/r/20211005081022.1.Ib059f9c23c2611cb5a9d760e7d0a700c1295928d@changeid
 
-If it doesn't I can easily just remove kcsan_noinstr/within_noinstr, and
-add a "depends on !ARCH_WANTS_NO_INSTR || STACK_VALIDATION" to the
-KCSAN_WEAK_MEMORY option.
-
-Looking at a previous discussion [1], however, I was under the
-impression that this would work.
-
-[1] https://lkml.kernel.org/r/CANpmjNMAZiW-Er=2QDgGP+_3hg1LOvPYcbfGSPMv=aR6MVTB-g@mail.gmail.com
+-Doug
