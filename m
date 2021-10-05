@@ -2,155 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C218422654
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 14:23:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF07F422658
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 14:24:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234734AbhJEMZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 08:25:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43410 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234712AbhJEMZe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 08:25:34 -0400
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15BD7C06174E
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 05:23:44 -0700 (PDT)
-Received: by mail-qt1-x835.google.com with SMTP id x9so8666764qtv.0
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 05:23:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Ev+eS5M9hvPrzvsIFblfUE+sDw8UAqk1zX+42Sn5iM8=;
-        b=i1FzT/9ka/sAlV7aez5j6yberi5dZKRnKXDrkqXSk1jTkvDHcCLQcBHhUbfbUw30Zx
-         uC+6dxmgR9DzkyvfuejaATdTq7ue8q6KXvz11ZTWU7iSG5YskbUyyNGuU0iLJabEwQAE
-         FeHMjD8tc1KzLwyriMedFRzxZmSiZP+pncfj4TUEVEO7SrMKFtUfkQwmw0R3bSC60VgC
-         MAmjTeLWj7NsOQxywe/scAuziCIEA71jQHlhLQU5k9vXK1oYZO3KFW9b+IEId9nl/kbg
-         MT4911R9eFxrpLnA2jkWvape1zXEO94T5XpKgQJ9vuxXGBvlqO1t6qwi5sTZZMeSMo8Q
-         Drgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Ev+eS5M9hvPrzvsIFblfUE+sDw8UAqk1zX+42Sn5iM8=;
-        b=jWnFqwRKPKSRyRahuZsXPx6jZsAf3nO640PE5mvTpbZGRDlZA8kweQj2Xh00aJPiBI
-         jPWrTDqJSoINkqnSzOEH6DFXmCkNbcmwfrVnU8XFzlhQDtiwzA7A+9utEb49SlWQY1FB
-         W2InVpcsqNudbfs10M4GFxufQlT8OnJShbMMfM6L2IysAzY6whm2FN7NfyJOpr7DY4ZW
-         Rzuhr0O03d0wR+IgKV0DxXrhv025/9ghYlEJkWR9KgZjXKJcyCKT5M0bnZ+PO4v2bCN1
-         G852Aygw3uPUZWUFhTcm93K20tu93sBplCH26UsFuRh2xQEd6xkdpXQxFNhdtB1cl6vX
-         yzVQ==
-X-Gm-Message-State: AOAM5307lavxZa5EDUI4vk1a4qyDAAYN0tmS+u3+SY0mshiMwVrc+pG6
-        Eg+XIpd3MDY4JeckeJQgGPf+/g==
-X-Google-Smtp-Source: ABdhPJzp9k62IhzfLACBD7mr0LQZ6x14wZEcUNoAWMonLo522jHFlJeNfuK6q1yI4ZmbtWoBnmQN2A==
-X-Received: by 2002:ac8:7d12:: with SMTP id g18mr19593328qtb.82.1633436623225;
-        Tue, 05 Oct 2021 05:23:43 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
-        by smtp.gmail.com with ESMTPSA id d17sm12077721qte.0.2021.10.05.05.23.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Oct 2021 05:23:42 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1mXjTx-00B5KK-Vh; Tue, 05 Oct 2021 09:23:42 -0300
-Date:   Tue, 5 Oct 2021 09:23:41 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        syzbot <syzbot+dc3dfba010d7671e05f5@syzkaller.appspotmail.com>,
-        dledford@redhat.com, leon@kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        Aleksandr Nogikh <nogikh@google.com>
-Subject: Re: [syzbot] KASAN: use-after-free Read in addr_handler (4)
-Message-ID: <20211005122341.GE3544071@ziepe.ca>
-References: <000000000000ffdae005cc08037e@google.com>
- <20210915193601.GI3544071@ziepe.ca>
- <CACT4Y+bxDuLggCzkLAchrGkKQxC2v4bhc01ciBg+oc17q2=HHw@mail.gmail.com>
- <20210916130459.GJ3544071@ziepe.ca>
- <CACT4Y+aUFbj3_+iBpeP2qrQ=RbGrssr0-6EZv1nx73at7fdbfA@mail.gmail.com>
- <20210916162850.GQ3544071@ziepe.ca>
- <20211005032901.1876-1-hdanton@sina.com>
+        id S234749AbhJEM0c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 08:26:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44400 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233784AbhJEM0W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 08:26:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C3CB861425;
+        Tue,  5 Oct 2021 12:24:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633436671;
+        bh=PMEu3vu3IEOanN6r5ndzxe4q8fSyh9+dWvBFRR9BaU4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=tXpWRCmizUMIdKoGi+34DQpQ8yjB8VZfZuGBYKwEsVJE95rErXQd16rtLbaK8T4tL
+         FMz3pnUPtz8MTPuOiojzK7LfrTdjUDhKSza7M2k2I9srzqT5+AJnm7vhLiFNqU9nMO
+         OxPnpGQkoaDqcr1FJXVlgQVINMf3yEBsH4zpf9ZSXebLbpNXSMHLqnv/UumJWC/gPu
+         yeFuVTA2iyfTHZ25he/VIvCeoTltppl/LmBHUbl5OCqDH4Otg7/yC2CNGtbYc9Ucrl
+         MIAmhlIPqeCeUBwrD13yzyS29FGn1vKlushOQ5+RVpC8ZlYAQZ4krIxEaC96hdzUNN
+         7rgt0rfSTp+dQ==
+Date:   Tue, 5 Oct 2021 14:24:28 +0200
+From:   Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Ian Pilcher <arequipeno@gmail.com>, pavel@ucw.cz,
+        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/2] docs: Add block device (blkdev) LED trigger
+ documentation
+Message-ID: <20211005142428.6c6c83c8@dellmb>
+In-Reply-To: <YUgtqL4zUEV2YPnQ@infradead.org>
+References: <20210916202127.1216994-1-arequipeno@gmail.com>
+        <20210916202127.1216994-2-arequipeno@gmail.com>
+        <YUQzdyG+WWoiJ2I9@kroah.com>
+        <e09257e0-ce95-623c-3a04-cc033aa9fec2@gmail.com>
+        <YUWQSlXjIb58eCJZ@kroah.com>
+        <YUgtqL4zUEV2YPnQ@infradead.org>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211005032901.1876-1-hdanton@sina.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05, 2021 at 11:29:01AM +0800, Hillf Danton wrote:
-> On Mon, 20 Sep 2021 10:13:10 +0200 Dmitry Vyukov wrote:
-> >On Thu, 16 Sept 2021 at 18:28, Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> >>
-> >> On Thu, Sep 16, 2021 at 04:45:27PM +0200, Dmitry Vyukov wrote:
-> >>
-> >> > Answering your question re what was running concurrently with what.
-> >> > Each of the syscalls in these programs can run up to 2 times and
-> >> > ultimately any of these calls can race with any. Potentially syzkaller
-> >> > can predict values kernel will return (e.g. id's) before kernel
-> >> > actually returned them. I guess this does not restrict search area for
-> >> > the bug a lot...
-> >>
-> >> I have a reasonable theory now..
-> >>
-> >> Based on the ops you provided this FSM sequence is possible
-> >>
-> >> RDMA_USER_CM_CMD_RESOLVE_IP
-> >>   RDMA_CM_IDLE -> RDMA_CM_ADDR_QUERY
-> >>   does rdma_resolve_ip(addr_handler)
-> >>
-> >>                           addr_handler
-> >>                             RDMA_CM_ADDR_QUERY -> RDMA_CM_ADDR_BOUND
-> >>                             [.. handler still running ..]
-> >>
-> >> RDMA_USER_CM_CMD_RESOLVE_IP
-> >>   RDMA_CM_ADDR_BOUND -> RDMA_CM_ADDR_QUERY
-> >>   does rdma_resolve_ip(addr_handler)
-> >>
-> >> RDMA_DESTROY_ID
-> >>   rdma_addr_cancel()
-> >>
-> >> Which, if it happens fast enough, could trigger a situation where the
-> >> '&id_priv->id.route.addr.dev_addr' "handle" is in the req_list twice
-> >> beacause the addr_handler work queue hasn't yet got to the point of
-> >> deleting it from the req_list before the the 2nd one is added.
-> >>
-> >> The issue is rdma_addr_cancel() has to be called rdma_resolve_ip() can
-> >> be called again.
-> >>
-> >> Skipping it will cause 'req_list' to have two items in the internal
-> >> linked list with the same key and it will not cancel the newest one
-> >> with the active timer. This would cause the use after free syndrome
-> >> like this trace is showing.
-> >>
-> >> I can make a patch, but have no way to know if it is any good :\
-> >
-> >Good detective work!
-> >
-> >But if you have a theory of what happens, it's usually easy to write a
-> >reproducer that aims at triggering this exact scenario.
-> 
-> Greate to know the gadgets on the syzkaller side!
-> 
-> In the scenario derived from the log of 2ee9bf346fbf
-> ("RDMA/addr: Fix race with netevent_callback()/rdma_addr_cancel()"),
-> 
->  CPU1			CPU2			CPU3
->  netevent_callback()	rdma_addr_cancel()	process_one_req()
->  
->  spin_lock_bh()
->  set_timeout()					req->callback()
->    mod_delayed_work(addr_wq,
->            &req->work, delay);
->  spin_unlock_bh()
->  			spin_lock_bh()
->  			list_del_init(&req->list)
->  			spin_unlock_bh()
->  			cancel_delayed_work_sync(&req->work)
->  			kfree(req)
->  						req->callback = NULL
->  
-> the chance for uaf on CPU3 is not zero, given that canceling of the requeued
-> work will not wait for the worker running the callback to complete.
+On Mon, 20 Sep 2021 07:43:52 +0100
+Christoph Hellwig <hch@infradead.org> wrote:
 
-I'm not sure what you are trying to say
+> On Sat, Sep 18, 2021 at 09:07:54AM +0200, Greg KH wrote:
+> > > Honestly, I wasn't particularly enthusiastic about it in the first
+> > > place; it feels like something that should be done in user space.
+> > >  I wouldn't have included it if I didn't have to make a writable
+> > > copy of the buffer anyway, in order to trim a trailing newline.
+> > > 
+> > > I can certainly remove the re-check logic.  The end result will
+> > > be an API that is slightly less "user friendly" in return for
+> > > saving a bit of pointer arithmetic and a 5-byte memcpy().  
+> > 
+> > Just use the kernel block device name and that way you do not have
+> > to parse anything as it is unique and no paths are having to be
+> > followed.
+> > 
+> > That's the way that other LED apis are working, right?  
+> 
+> The "kernel block device name" is the a block device special path
+> that a normal VFS path lookup is done on.  This is the preferred block
+> device API used by everyone.  And yes, this includes resolving
+> symlinks. The only other API is by dev_t, but it is highly
+> discouraged and should really not grow any new users.
 
-Jason
+Christoph,
+
+/sys/class/block lists block devices' kernel object names.
+I don't understand why can't blk API provide a function returns a block
+device given such name as seen in /sys/class/block directory.
+
+Can you elaborate on this?
+
+It seems really strange to me to not be able to do
+  cd /sys/class/leds/<LED>
+  echo blkdev >trigger
+  echo sda1 >block_device
+and instead having to do (as the last command)
+  echo /dev/sda1 >block_device
+
+And whas should we show when /dev/sda1 is paried to the trigger, and
+userspace reads the block_device sysfs file? Should we show the full
+path which was given when pairing, even if it may not be valid anymore?
+(Such as when the device file is removed from /dev.)
+
+Marek
