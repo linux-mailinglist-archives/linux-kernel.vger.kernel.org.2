@@ -2,52 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 136C1422A5A
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:12:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0851422A6B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:12:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235548AbhJEOOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 10:14:00 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:51144 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235221AbhJEONv (ORCPT
+        id S235978AbhJEOOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 10:14:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40894 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235419AbhJEON4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 10:13:51 -0400
-Date:   Tue, 05 Oct 2021 14:11:59 -0000
+        Tue, 5 Oct 2021 10:13:56 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAAB8C061764;
+        Tue,  5 Oct 2021 07:12:02 -0700 (PDT)
+Date:   Tue, 05 Oct 2021 14:12:00 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1633443120;
+        s=2020; t=1633443121;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=OvqCmnSP+s6gd8HZngeCRNoxHYcNhIJxJ4S4RNPeyZQ=;
-        b=vYTzMGmr7Ww61wSDULObkuAxE/Z3jPzb2Sec7a9w3NAmiRb4y9yMgiP9LZ4MLRO+Y5z03a
-        Gw3zxunR1J4VUBPQ93w3sVx7lsz1JAlGrvZsMvji5zmM+R/VZ7mELVf5ffZitkWpUHPV65
-        CFaAuGfjBDwEzky4/eanu0P/4b2rXU18LAwu8IdznAqeYltC86HxgTTEPyM4KmG7VWU+K8
-        uRXsv2mzr8vYQUsTWjS/ZoTX0FAIRPo3FGE39qdjjw7HZDRZl3nWexaEI1JcCOqzrqAnsU
-        k5DKzHsa2jraFEsyrXRbnAmjEfME0E8na9KB4kvWBjAtU25BIevegxHI7ALjWg==
+        bh=9L62M+shQg1PSDCWvpsyEj3zmJ4T6clGwxMoW8l4yCM=;
+        b=YAS8AIx2XPuW8U59++LhDcDkegfpHeqUWszY0B1ThCwKfWOcivmAyGuvgyNmczyp0hxcZz
+        3+A/mHy9c6nA7wE56yvDHDlOSfKSnwwaGMbryMQx4IdiK9A6WeH1Y8zczuxZJlW5Srrvok
+        5FeBj7a8vJDfQOk+Ox496CgVa2iIL2gjGgkkS9+kBhWjDTnXAfi4psIBEF0q4LYqsngcWz
+        MLFykypWCbagFxmTFcLlM8edEeczhZ0nczNvzLPoylXfRlgnvXUGkEekVwbF7qofEMG/6U
+        67RS3hvzZcQfey/tFfyVQoCBGNombZ9oIZ8IjEdbyHfgBSDgEm1FHkyxJ64eqg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1633443120;
+        s=2020e; t=1633443121;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=OvqCmnSP+s6gd8HZngeCRNoxHYcNhIJxJ4S4RNPeyZQ=;
-        b=Gfwx5fiFPfwKrWfag+1FSB7ApUFtfCvYf/yxCv7PNL2H23oMUI4CD4lM9iC8cXKaPEM+P/
-        zEjbPq9HxTJoeoBA==
-From:   "tip-bot2 for Shaokun Zhang" <tip-bot2@linutronix.de>
+        bh=9L62M+shQg1PSDCWvpsyEj3zmJ4T6clGwxMoW8l4yCM=;
+        b=/GucrzRCBbKwGgalGM2jeI1Ii1SBf4ZelaYlLjc5kZ1slLZyT2jHQdINK7BVZrXp0doUUk
+        KhmX+RViN1e/bBCw==
+From:   "tip-bot2 for Ricardo Neri" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched: Make cookie functions static
-Cc:     Shaokun Zhang <zhangshaokun@hisilicon.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
+Subject: [tip: sched/core] sched/fair: Carve out logic to mark a group for
+ asymmetric packing
+Cc:     Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Len Brown <len.brown@intel.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210922085735.52812-1-zhangshaokun@hisilicon.com>
-References: <20210922085735.52812-1-zhangshaokun@hisilicon.com>
+In-Reply-To: <20210911011819.12184-6-ricardo.neri-calderon@linux.intel.com>
+References: <20210911011819.12184-6-ricardo.neri-calderon@linux.intel.com>
 MIME-Version: 1.0
-Message-ID: <163344311944.25758.11773100900688304106.tip-bot2@tip-bot2>
+Message-ID: <163344312070.25758.14465078515657887073.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -58,82 +65,71 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     d07b2eee4501c393cbf5bfcad36143310cfd72f9
-Gitweb:        https://git.kernel.org/tip/d07b2eee4501c393cbf5bfcad36143310cfd72f9
-Author:        Shaokun Zhang <zhangshaokun@hisilicon.com>
-AuthorDate:    Wed, 22 Sep 2021 16:57:35 +08:00
+Commit-ID:     aafc917a3c31dcc76cb0279cd7617dda11b15f2a
+Gitweb:        https://git.kernel.org/tip/aafc917a3c31dcc76cb0279cd7617dda11b15f2a
+Author:        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+AuthorDate:    Fri, 10 Sep 2021 18:18:18 -07:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Tue, 05 Oct 2021 15:52:07 +02:00
+CommitterDate: Tue, 05 Oct 2021 15:52:04 +02:00
 
-sched: Make cookie functions static
+sched/fair: Carve out logic to mark a group for asymmetric packing
 
-Make cookie functions static as these are no longer invoked directly
-by other code.
+Create a separate function, sched_asym(). A subsequent changeset will
+introduce logic to deal with SMT in conjunction with asmymmetric
+packing. Such logic will need the statistics of the scheduling
+group provided as argument. Update them before calling sched_asym().
 
-No functional change intended.
-
-Signed-off-by: Shaokun Zhang <zhangshaokun@hisilicon.com>
+Co-developed-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20210922085735.52812-1-zhangshaokun@hisilicon.com
+Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Reviewed-by: Len Brown <len.brown@intel.com>
+Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+Link: https://lkml.kernel.org/r/20210911011819.12184-6-ricardo.neri-calderon@linux.intel.com
 ---
- kernel/sched/core_sched.c |  9 +++++----
- kernel/sched/sched.h      |  5 -----
- 2 files changed, 5 insertions(+), 9 deletions(-)
+ kernel/sched/fair.c | 20 +++++++++++++-------
+ 1 file changed, 13 insertions(+), 7 deletions(-)
 
-diff --git a/kernel/sched/core_sched.c b/kernel/sched/core_sched.c
-index 9a80e9a..48ac726 100644
---- a/kernel/sched/core_sched.c
-+++ b/kernel/sched/core_sched.c
-@@ -11,7 +11,7 @@ struct sched_core_cookie {
- 	refcount_t refcnt;
- };
- 
--unsigned long sched_core_alloc_cookie(void)
-+static unsigned long sched_core_alloc_cookie(void)
- {
- 	struct sched_core_cookie *ck = kmalloc(sizeof(*ck), GFP_KERNEL);
- 	if (!ck)
-@@ -23,7 +23,7 @@ unsigned long sched_core_alloc_cookie(void)
- 	return (unsigned long)ck;
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 2e8ef33..1c8b5fa 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -8571,6 +8571,13 @@ group_type group_classify(unsigned int imbalance_pct,
+ 	return group_has_spare;
  }
  
--void sched_core_put_cookie(unsigned long cookie)
-+static void sched_core_put_cookie(unsigned long cookie)
- {
- 	struct sched_core_cookie *ptr = (void *)cookie;
- 
-@@ -33,7 +33,7 @@ void sched_core_put_cookie(unsigned long cookie)
++static inline bool
++sched_asym(struct lb_env *env, struct sd_lb_stats *sds,  struct sg_lb_stats *sgs,
++	   struct sched_group *group)
++{
++	return sched_asym_prefer(env->dst_cpu, group->asym_prefer_cpu);
++}
++
+ /**
+  * update_sg_lb_stats - Update sched_group's statistics for load balancing.
+  * @env: The load balancing environment.
+@@ -8631,18 +8638,17 @@ static inline void update_sg_lb_stats(struct lb_env *env,
+ 		}
  	}
- }
  
--unsigned long sched_core_get_cookie(unsigned long cookie)
-+static unsigned long sched_core_get_cookie(unsigned long cookie)
- {
- 	struct sched_core_cookie *ptr = (void *)cookie;
++	sgs->group_capacity = group->sgc->capacity;
++
++	sgs->group_weight = group->group_weight;
++
+ 	/* Check if dst CPU is idle and preferred to this group */
+ 	if (!local_group && env->sd->flags & SD_ASYM_PACKING &&
+-	    env->idle != CPU_NOT_IDLE &&
+-	    sgs->sum_h_nr_running &&
+-	    sched_asym_prefer(env->dst_cpu, group->asym_prefer_cpu)) {
++	    env->idle != CPU_NOT_IDLE && sgs->sum_h_nr_running &&
++	    sched_asym(env, sds, sgs, group)) {
+ 		sgs->group_asym_packing = 1;
+ 	}
  
-@@ -53,7 +53,8 @@ unsigned long sched_core_get_cookie(unsigned long cookie)
-  *
-  * Returns: the old cookie
-  */
--unsigned long sched_core_update_cookie(struct task_struct *p, unsigned long cookie)
-+static unsigned long sched_core_update_cookie(struct task_struct *p,
-+					      unsigned long cookie)
- {
- 	unsigned long old_cookie;
- 	struct rq_flags rf;
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index e5c4d4d..a00fc70 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -1258,11 +1258,6 @@ extern void sched_core_dequeue(struct rq *rq, struct task_struct *p);
- extern void sched_core_get(void);
- extern void sched_core_put(void);
- 
--extern unsigned long sched_core_alloc_cookie(void);
--extern void sched_core_put_cookie(unsigned long cookie);
--extern unsigned long sched_core_get_cookie(unsigned long cookie);
--extern unsigned long sched_core_update_cookie(struct task_struct *p, unsigned long cookie);
+-	sgs->group_capacity = group->sgc->capacity;
 -
- #else /* !CONFIG_SCHED_CORE */
+-	sgs->group_weight = group->group_weight;
+-
+ 	sgs->group_type = group_classify(env->sd->imbalance_pct, group, sgs);
  
- static inline bool sched_core_enabled(struct rq *rq)
+ 	/* Computing avg_load makes sense only when group is overloaded */
