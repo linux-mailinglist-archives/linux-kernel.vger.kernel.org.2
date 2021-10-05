@@ -2,64 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 971B74229F3
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:02:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED71D422A37
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:07:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236203AbhJEOEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 10:04:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42194 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236439AbhJEOER (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 10:04:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2008761165;
-        Tue,  5 Oct 2021 14:02:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633442546;
-        bh=nZSWn8xN++BfadytUcz08RDgfDMR1W47HBlabr9TEfQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=hNQgiK4FGZhI10JNZYVYWjO+QRPLaEFGDmRwvJ9o3x1J8FZmi8fNmssq6/Y3dNvRB
-         RqFV7AtmmbybHUDhi9tVU2C2D4lWscyC1lD8pP82dIUcaeCHpylIEgZjiYjhouauqb
-         S5eXt8g+jV01OKZpF/PHUy4wP+xd/Nte615PrFsixhpzZ72yfFX/ca/UvftpyK75pF
-         8BvMrkfJMNkMcbMMHwihr1jeVTj4Qsx1vA8lgMJ52ej2upTSL8YrksbYKiYPK1tuuX
-         TAm4CRYcdPCnRUJrfe3d+juVa/Np+Bu07fmAKOsXzrh78OZQQcYH+k05G3pHdaLKbX
-         jyrdGviqSBFiw==
-Date:   Tue, 5 Oct 2021 07:02:25 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Kalle Valo <kvalo@codeaurora.org>
-Cc:     Pali =?UTF-8?B?Um9ow6Fy?= <pali@kernel.org>,
-        =?UTF-8?B?SsOpcsO0bWU=?= Pouiller <jerome.pouiller@silabs.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        linux-mmc@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>
-Subject: Re: [PATCH v7 13/24] wfx: add hif_tx*.c/hif_tx*.h
-Message-ID: <20211005070225.4d5f038a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <87tuhwf19w.fsf@codeaurora.org>
-References: <20210920161136.2398632-1-Jerome.Pouiller@silabs.com>
-        <20210920161136.2398632-14-Jerome.Pouiller@silabs.com>
-        <87fstlkr1m.fsf@codeaurora.org>
-        <2873071.CAOYYqaKbK@pc-42>
-        <20211001161316.w3cwsigacznjbowl@pali>
-        <87tuhwf19w.fsf@codeaurora.org>
+        id S235490AbhJEOJY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 10:09:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38484 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236255AbhJEOIQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 10:08:16 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 510BFC0613BA;
+        Tue,  5 Oct 2021 07:04:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=e7v7PgfqKA1O480Vt1LMStZzMGGiTJbUW/3KjDTXWqM=; b=fcNQPCe35aWXS6SbfEGP9yj71a
+        hYik+IgGGs2MJkrDVTal+MkJK+h0lPJlYrkQUlUFnMEAicKK5In2IMGs2fBNyvypEgNfrJnuzlyl5
+        LVRT/NmAUiT75ankqPn2Je78zQHN6oGmZxi2uK4rBK1RywdjBMo9MNxN7IS7KrKlH7QV3dZ7gd5iF
+        wxYSDA1LRLmit8o9G25aWJzpwRhEtU74NEkts2c7YII6J8uTLr28EAuHNvHdT7nKYYL024Oz/bKiP
+        56zFQFhZZb8TVek/18pPmthSHwDnLhgEcfE+QE4COD4n+xgRnHT9bKkkqMXaCiBS1on6f9k917Ysh
+        0nnDkqiA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mXl2v-0083k9-5v; Tue, 05 Oct 2021 14:03:53 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 61D4530026F;
+        Tue,  5 Oct 2021 16:03:43 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 45912200B5F47; Tue,  5 Oct 2021 16:03:43 +0200 (CEST)
+Date:   Tue, 5 Oct 2021 16:03:43 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     gor@linux.ibm.com, jpoimboe@redhat.com, jikos@kernel.org,
+        mbenes@suse.cz, mingo@kernel.org, linux-kernel@vger.kernel.org,
+        joe.lawrence@redhat.com, fweisbec@gmail.com, tglx@linutronix.de,
+        hca@linux.ibm.com, svens@linux.ibm.com, sumanthk@linux.ibm.com,
+        live-patching@vger.kernel.org, paulmck@kernel.org,
+        rostedt@goodmis.org, x86@kernel.org
+Subject: Re: [PATCH v2 03/11] sched,livepatch: Use task_call_func()
+Message-ID: <YVxbP5fFLY10mqhy@hirez.programming.kicks-ass.net>
+References: <20210929151723.162004989@infradead.org>
+ <20210929152428.709906138@infradead.org>
+ <YVw5qO0rLA/GduFm@alley>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YVw5qO0rLA/GduFm@alley>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 05 Oct 2021 09:12:27 +0300 Kalle Valo wrote:
-> >> I didn't know it was mandatory to prefix all the functions with the
-> >> same prefix.  
+On Tue, Oct 05, 2021 at 01:40:24PM +0200, Petr Mladek wrote:
+> On Wed 2021-09-29 17:17:26, Peter Zijlstra wrote:
+> > Instead of frobbing around with scheduler internals, use the shiny new
+> > task_call_func() interface.
+> > 
+> > --- a/kernel/livepatch/transition.c
+> > +++ b/kernel/livepatch/transition.c
+> > @@ -274,6 +266,22 @@ static int klp_check_stack(struct task_s
+> >  	return 0;
+> >  }
+> >  
+> > +static int klp_check_and_switch_task(struct task_struct *task, void *arg)
+> > +{
+> > +	int ret;
+> > +
+> > +	if (task_curr(task))
 > 
-> I don't know either if this is mandatory or not, for example I do not
-> have any recollection what Linus and other maintainers think of this. I
-> just personally think it's good practise to use driver prefix ("wfx_")
-> in all non-static functions.
+> This must be
+> 
+> 	if (task_curr(task) && task != current)
+> 
+> , otherwise the task is not able to migrate itself. The condition was
+> lost when reshuffling the original code, see below.
 
-I'd even say all functions. The prefixes are usually 3 chars, it's no
-hassle to add and makes reading the code and looking at stack traces
-much more intuitive for people who are not intimately familiar with 
-the code.
+Urgh, yeah, I misread that and figued task_curr() should already capture
+current, but the extra clause excludes current :/
+
+> JFYI, I have missed it during review. I am actually surprised that the
+> process could check its own stack reliably. But it seems to work.
+
+Ah, unwinding yourself is actually the only sane option ;-)
+
+> > -	rq = task_rq_lock(task, &flags);
+> > +	ret = task_call_func(task, klp_check_and_switch_task, &old_name);
+> 
+> It looks correct. JFYI, this is why:
+> 
+> The logic seems to be exactly the same, except for the one fallout
+> mentioned above. So the only problem might be races.
+> 
+> The only important thing is that the task must not be running on any CPU
+> when klp_check_stack(task, arg) is called. By other word, the stack
+> must stay the same when being checked.
+> 
+> The original code prevented races by taking task_rq_lock().
+> And task_call_func() is slightly more relaxed but it looks safe enough:
+> 
+>   + it still takes rq lock when the task is in runnable state.
+>   + it always takes p->pi_lock that prevents moving the task
+>     into runnable state by try_to_wake_up().
+
+Correct, the new task_call_func() is trying hard to not take rq->lock,
+but should be effectively identical to task_rq_lock().
+
+> With the added (task != current) check:
+
+Done
+
+> Reviewed-by: Petr Mladek <pmladek@suse.com>
+> Tested-by: Petr Mladek <pmladek@suse.com>
+
+Thanks!
