@@ -2,111 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AB2B422D12
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:54:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A058422D18
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:55:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235067AbhJEP4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 11:56:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37684 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233705AbhJEP4j (ORCPT
+        id S235789AbhJEP5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 11:57:40 -0400
+Received: from relayfre-01.paragon-software.com ([176.12.100.13]:33702 "EHLO
+        relayfre-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233913AbhJEP5i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 11:56:39 -0400
-Received: from metanate.com (unknown [IPv6:2001:8b0:1628:5005::111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CE4AC061749
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 08:54:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=metanate.com; s=stronger; h=Content-Transfer-Encoding:Message-Id:Date:
-        Subject:Cc:To:From:Content-Type:Reply-To:Content-ID:Content-Description:
-        In-Reply-To:References; bh=csrmaSQcoepErVbpC8vwvkqM/QnjnY7CODP5fd4S9m0=; b=RQ
-        SKx6JPMyv/YavFF9kzdaP07GENOkrc0EcHep5YFAuiVV5WR7pFU1bdwF7tGOIxqLFdk8blro7snQz
-        n3IayK3tX/GyJUesI1qFn5BQIK3mjF7XVYqF2IQq1C7TacXdR7Fb9rnq0SfJvws7mfFr0v81KocIJ
-        2wMajU5GVbA/Dsz78+r9JC+UeSCWVriGMwjPwAh4ZlKEO1HboZripUS5PJl2GYOzsWq7RWqjGgT9d
-        niCRTkRDrA24+SFzyjXTxoKUZ8zPyDx9LcWh2PLFERjtKJdLEToT+mcg15z6oYO6mF96kmfSz5V+2
-        QwdvTxqaPSqpJcw565VBHwsK6qN0zYMQ==;
-Received: from [81.174.171.191] (helo=donbot.metanate.com)
-        by email.metanate.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <john@metanate.com>)
-        id 1mXmmB-0001ef-7s; Tue, 05 Oct 2021 16:54:43 +0100
-From:   John Keeping <john@metanate.com>
-To:     linux-rt-users@vger.kernel.org
-Cc:     John Keeping <john@metanate.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RFC PATCH RT] PM: runtime: avoid retry loops on RT
-Date:   Tue,  5 Oct 2021 16:54:27 +0100
-Message-Id: <20211005155427.1591196-1-john@metanate.com>
-X-Mailer: git-send-email 2.33.0
+        Tue, 5 Oct 2021 11:57:38 -0400
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+        by relayfre-01.paragon-software.com (Postfix) with ESMTPS id 2CFE31D39;
+        Tue,  5 Oct 2021 18:55:45 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paragon-software.com; s=mail; t=1633449345;
+        bh=/gfbbuiOSNq4drucxDzOCK9oky1obIbH1XZM3jxuHik=;
+        h=Date:To:CC:From:Subject;
+        b=HBH7eNdTjDZv8pLrprVHBehsFzRcgCAIq2knQDb9nYWFPAvAgLDibbWj/nkpT1Xpe
+         sHaUwTK+kKe8fYgIZd2xpr1Q0Mtq/oJrV2ZmZwYUIjOYRTkjQuePuGLJO0r5lHoTYC
+         TAiXAagdd2F8GTv3fSjXZO3uCW4qyYvaemvHFjj0=
+Received: from [192.168.211.181] (192.168.211.181) by
+ vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 5 Oct 2021 18:55:44 +0300
+Message-ID: <bb2782a2-d6af-ef7e-2e35-3b1d87a11ff7@paragon-software.com>
+Date:   Tue, 5 Oct 2021 18:55:44 +0300
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Authenticated: YES
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.2
+Content-Language: en-US
+To:     <ntfs3@lists.linux.dev>
+CC:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+        <kari.argillander@gmail.com>
+From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Subject: [PATCH v2] fs/ntfs3: Keep prealloc for all types of files
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [192.168.211.181]
+X-ClientProxiedBy: vobn-exch-01.paragon-software.com (172.30.72.13) To
+ vdlg-exch-02.paragon-software.com (172.30.1.105)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With PREEMPT_RT spin_unlock() is identical to spin_unlock_irq() so there
-is no reason to have a special case using the former.  Furthermore,
-spin_unlock() enables preemption meaning that a task in RESUMING or
-SUSPENDING state may be preempted by a higher priority task running
-pm_runtime_get_sync() leading to a livelock.
+Before we haven't kept prealloc for sparse files because we thought that
+it will speed up create / write operations.
+It lead to situation, when user reserved some space for sparse file,
+filled volume, and wasn't able to write in reserved file.
+With this commit we keep prealloc.
+Now xfstest generic/274 pass.
+Fixes: be71b5cba2e6 ("fs/ntfs3: Add attrib operations")
 
-Use the non-irq_safe path for all waiting so that the waiting task will
-block.
-
-Note that this changes only the waiting behaviour of irq_safe, other
-uses are left unchanged so that the parent device always remains active
-in the same way as !RT.
-
-Signed-off-by: John Keeping <john@metanate.com>
+Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
 ---
- drivers/base/power/runtime.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+v2:
+  Expanded commit message.
 
-diff --git a/drivers/base/power/runtime.c b/drivers/base/power/runtime.c
-index 96972d5f6ef3..5e0d349fab4e 100644
---- a/drivers/base/power/runtime.c
-+++ b/drivers/base/power/runtime.c
-@@ -347,8 +347,9 @@ static int __rpm_callback(int (*cb)(struct device *), struct device *dev)
- {
- 	int retval = 0, idx;
- 	bool use_links = dev->power.links_count > 0;
-+	bool irq_safe = dev->power.irq_safe && !IS_ENABLED(CONFIG_PREEMPT_RT);
+ fs/ntfs3/attrib.c | 8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
+
+diff --git a/fs/ntfs3/attrib.c b/fs/ntfs3/attrib.c
+index 8a00fa978f5f..e8c00dda42ad 100644
+--- a/fs/ntfs3/attrib.c
++++ b/fs/ntfs3/attrib.c
+@@ -447,11 +447,8 @@ int attr_set_size(struct ntfs_inode *ni, enum ATTR_TYPE type,
+ again_1:
+ 	align = sbi->cluster_size;
  
--	if (dev->power.irq_safe) {
-+	if (irq_safe) {
- 		spin_unlock(&dev->power.lock);
- 	} else {
- 		spin_unlock_irq(&dev->power.lock);
-@@ -376,7 +377,7 @@ static int __rpm_callback(int (*cb)(struct device *), struct device *dev)
- 	if (cb)
- 		retval = cb(dev);
+-	if (is_ext) {
++	if (is_ext)
+ 		align <<= attr_b->nres.c_unit;
+-		if (is_attr_sparsed(attr_b))
+-			keep_prealloc = false;
+-	}
  
--	if (dev->power.irq_safe) {
-+	if (irq_safe) {
- 		spin_lock(&dev->power.lock);
- 	} else {
- 		/*
-@@ -596,7 +597,7 @@ static int rpm_suspend(struct device *dev, int rpmflags)
- 			goto out;
- 		}
+ 	old_valid = le64_to_cpu(attr_b->nres.valid_size);
+ 	old_size = le64_to_cpu(attr_b->nres.data_size);
+@@ -461,9 +458,6 @@ int attr_set_size(struct ntfs_inode *ni, enum ATTR_TYPE type,
+ 	new_alloc = (new_size + align - 1) & ~(u64)(align - 1);
+ 	new_alen = new_alloc >> cluster_bits;
  
--		if (dev->power.irq_safe) {
-+		if (dev->power.irq_safe && !IS_ENABLED(CONFIG_PREEMPT_RT)) {
- 			spin_unlock(&dev->power.lock);
- 
- 			cpu_relax();
-@@ -777,7 +778,7 @@ static int rpm_resume(struct device *dev, int rpmflags)
- 			goto out;
- 		}
- 
--		if (dev->power.irq_safe) {
-+		if (dev->power.irq_safe && !IS_ENABLED(CONFIG_PREEMPT_RT)) {
- 			spin_unlock(&dev->power.lock);
- 
- 			cpu_relax();
+-	if (keep_prealloc && is_ext)
+-		keep_prealloc = false;
+-
+ 	if (keep_prealloc && new_size < old_size) {
+ 		attr_b->nres.data_size = cpu_to_le64(new_size);
+ 		mi_b->dirty = true;
 -- 
 2.33.0
 
