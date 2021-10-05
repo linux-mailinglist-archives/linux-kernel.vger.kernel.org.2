@@ -2,92 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F077C422C21
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:14:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26B55422C25
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:15:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235805AbhJEPQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 11:16:40 -0400
-Received: from mga07.intel.com ([134.134.136.100]:46206 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231513AbhJEPQi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 11:16:38 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10128"; a="289274430"
-X-IronPort-AV: E=Sophos;i="5.85,349,1624345200"; 
-   d="scan'208";a="289274430"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2021 08:14:47 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,349,1624345200"; 
-   d="scan'208";a="458093483"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga002.jf.intel.com with ESMTP; 05 Oct 2021 08:14:44 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 66B7C1C8; Tue,  5 Oct 2021 18:14:50 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: [PATCH v1 1/1] watchdog: wdt_pci: Correct the PCI ID vendor name
-Date:   Tue,  5 Oct 2021 18:14:45 +0300
-Message-Id: <20211005151445.89620-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.33.0
+        id S235874AbhJEPRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 11:17:06 -0400
+Received: from mail.efficios.com ([167.114.26.124]:55550 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231513AbhJEPRE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 11:17:04 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id EE21B38D87B;
+        Tue,  5 Oct 2021 11:15:12 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id kZ6Ruhz5_vwz; Tue,  5 Oct 2021 11:15:12 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 771A738DEA5;
+        Tue,  5 Oct 2021 11:15:12 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 771A738DEA5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1633446912;
+        bh=F2x+Hi5WGEvzSTS/iYSt+2Kq3IbtXMx7Ua5K43Tf+8Q=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=fWZyv80Hc57O72INVh6dzebvppxNTTpSCWD6RX6UcVz0TCIG7KNJFBruatsJlbExw
+         a8m1LH2syppBinNohKsGX7Let/OXR1df6ma27SCVmH/cJOlyEpjOnjXwgezNfnyBtT
+         Ysfzbmm+lo0m6osH+K1EFWYLctbOmd5Blockkwo7Y10QWtKV+RwuP+99Djm81eXW80
+         KKtj5gqs35x3yuV0hBt3DwAHpdU+xi2TuYGECth+9gfop5OvVk2mBE8x9LiSpqNf43
+         YxLhniS72qCXG3Dxuv3pvMVdS43CxGasiiw7HWsLrHsg5K6ejL9ZnYlk9EpHxqrs7h
+         h/K7AP6Vrbjjg==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id tJJJRKMZDi4F; Tue,  5 Oct 2021 11:15:12 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id 5A3A838DE3F;
+        Tue,  5 Oct 2021 11:15:12 -0400 (EDT)
+Date:   Tue, 5 Oct 2021 11:15:12 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Paul <paulmck@linux.vnet.ibm.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        "Joel Fernandes, Google" <joel@joelfernandes.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, rcu <rcu@vger.kernel.org>,
+        netfilter-devel <netfilter-devel@vger.kernel.org>,
+        coreteam@netfilter.org, netdev <netdev@vger.kernel.org>
+Message-ID: <505004021.2637.1633446912223.JavaMail.zimbra@efficios.com>
+In-Reply-To: <20211005094728.203ecef2@gandalf.local.home>
+References: <20211005094728.203ecef2@gandalf.local.home>
+Subject: Re: [RFC][PATCH] rcu: Use typeof(p) instead of typeof(*p) *
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_4156 (ZimbraWebClient - FF92 (Linux)/8.8.15_GA_4156)
+Thread-Topic: Use typeof(p) instead of typeof(*p) *
+Thread-Index: 7dSlbpn4ImaK0wI9+IMWa3C1UuJxjA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The proper name of Acces I/O is with a single 's'. Correct it respectively.
+----- On Oct 5, 2021, at 9:47 AM, rostedt rostedt@goodmis.org wrote:
+[...]
+> #define rcu_dereference_raw(p) \
+> ({ \
+> 	/* Dependency order vs. p above. */ \
+> 	typeof(p) ________p1 = READ_ONCE(p); \
+> -	((typeof(*p) __force __kernel *)(________p1)); \
+> +	((typeof(p) __force __kernel)(________p1)); \
+> })
 
-While at it, convert to use PCI_DEVICE() macro, drop unneeded initializer
-and comma.
+AFAIU doing so removes validation that @p is indeed a pointer, so a user might mistakenly
+try to use rcu_dereference() on an integer, and get away with it. I'm not sure we want to
+loosen this check. I wonder if there might be another way to achieve the same check without
+requiring the structure to be declared, e.g. with __builtin_types_compatible_p ?
 
-Fixes: 9f2cc6f759ca ("watchdog: wdt_pci.c: move ids to pci_ids.h")
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/watchdog/wdt_pci.c | 9 ++-------
- include/linux/pci_ids.h    | 4 ++--
- 2 files changed, 4 insertions(+), 9 deletions(-)
+Thanks,
 
-diff --git a/drivers/watchdog/wdt_pci.c b/drivers/watchdog/wdt_pci.c
-index d5e56b601351..ba63f442438d 100644
---- a/drivers/watchdog/wdt_pci.c
-+++ b/drivers/watchdog/wdt_pci.c
-@@ -717,13 +717,8 @@ static void wdtpci_remove_one(struct pci_dev *pdev)
- 
- 
- static const struct pci_device_id wdtpci_pci_tbl[] = {
--	{
--		.vendor	   = PCI_VENDOR_ID_ACCESSIO,
--		.device	   = PCI_DEVICE_ID_ACCESSIO_WDG_CSM,
--		.subvendor = PCI_ANY_ID,
--		.subdevice = PCI_ANY_ID,
--	},
--	{ 0, }, /* terminate list */
-+	{ PCI_DEVICE(PCI_VENDOR_ID_ACCESIO, PCI_DEVICE_ID_ACCESIO_WDG_CSM) },
-+	{ } /* terminate list */
- };
- MODULE_DEVICE_TABLE(pci, wdtpci_pci_tbl);
- 
-diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
-index 011f2f1ea5bb..37a9f12b4def 100644
---- a/include/linux/pci_ids.h
-+++ b/include/linux/pci_ids.h
-@@ -2611,8 +2611,8 @@
- #define PCI_VENDOR_ID_AKS		0x416c
- #define PCI_DEVICE_ID_AKS_ALADDINCARD	0x0100
- 
--#define PCI_VENDOR_ID_ACCESSIO		0x494f
--#define PCI_DEVICE_ID_ACCESSIO_WDG_CSM	0x22c0
-+#define PCI_VENDOR_ID_ACCESIO		0x494f
-+#define PCI_DEVICE_ID_ACCESIO_WDG_CSM	0x22c0
- 
- #define PCI_VENDOR_ID_S3		0x5333
- #define PCI_DEVICE_ID_S3_TRIO		0x8811
+Mathieu
+
 -- 
-2.33.0
-
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
