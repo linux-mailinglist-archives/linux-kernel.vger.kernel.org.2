@@ -2,96 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70C01423417
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 01:05:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D574423416
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 01:05:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236911AbhJEXHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 19:07:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53300 "EHLO
+        id S236942AbhJEXHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 19:07:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236898AbhJEXHC (ORCPT
+        with ESMTP id S236929AbhJEXHB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 19:07:02 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3D00C061753;
+        Tue, 5 Oct 2021 19:07:01 -0400
+Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CBBBC06174E;
         Tue,  5 Oct 2021 16:05:10 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HPCpm55Mbz4xbP;
-        Wed,  6 Oct 2021 10:05:04 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1633475105;
-        bh=ewpFWfW0q5hk3lR5Cu+DXpceMnTH8rPJHNPPIJHe+9A=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Vzp51VBZ6rbSS5wzBgOJmJ059KySNak5U+HFJyf38s0WgUe+pABJC29TJQwLlIfKA
-         ryrCibbzbh7yaJfTuQh+UVTGe7wItIciutNQ9VWHllU/HI0javMXYEjyJU2hBFmHtH
-         BMW2J7xXTxuLdWLM4Na8smpD83Ev/NQxxVEo6Ls0/7E2aq1ka0gdQu8N+LD3JMaM77
-         a3DTZ1aroDyX95Lu3DxQNnmNPc6hNrTL+uobsDysfMF9C4/G4e0eQqPn50+CoTWw69
-         1HTupG8QRnCBqkGPVtgK0bRK07K0Pe7rMdWnUIIUmwYRhzaASDTNrVAWIx8UKgZhPU
-         GcSSkysLCEv0A==
-Date:   Wed, 6 Oct 2021 10:05:02 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Howells <dhowells@redhat.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the fscache tree with Linus' tree
-Message-ID: <20211006100502.78cff1c7@canb.auug.org.au>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:From:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=tnLXVBAH0Pqxsz5bF5y0/CjsNy9V/uSRp0OTZ0xDb0s=; b=JSeb1tGkLzqd6hpH8DTDEJjS8n
+        twUlztODeiWCscTU/4zKfrZXuezxZAkIIz5EM/RY/wdnD7EeAbrDfoMfsi5H4ecD6Ln//jPYK366+
+        zDiU71i8xrN9Drufn7zfrW0sJFRtE4pZ10RRx3g5uNBkPYX37EJQI34rUHXpzTWfIJx14+djto+8Y
+        oWs5oDPlffGIxIi+dvEghktNGu/Z2717RZZJ1Js6MKwoCt39p4uqrJ/i6fVZWy/2aMPu0Ex20sd4j
+        kt4WtbqNBh1xKXmfAa9+fmEJXNxEVYdpNVhDyPj0/wKRQi3weR+UN43BD8OcO+07qfZj9zq4U5vCE
+        feB2Rs4w==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mXtUj-00CF5J-Gx; Tue, 05 Oct 2021 23:05:09 +0000
+Subject: Re: [PATCH] usb: typec: STUSB160X should select REGMAP_I2C
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Amelie Delaunay <amelie.delaunay@st.com>,
+        linux-usb@vger.kernel.org
+References: <20211004232103.23893-1-rdunlap@infradead.org>
+ <YVw7lJ5TeFsYwAgC@kroah.com>
+ <7c405d70-5001-e4d4-57d1-fbdee5a7a464@infradead.org>
+Message-ID: <87dc2073-553f-6b02-639e-c65a71e3e13f@infradead.org>
+Date:   Tue, 5 Oct 2021 16:05:08 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Pboin9D8r6p/42l+KYnA7u1";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <7c405d70-5001-e4d4-57d1-fbdee5a7a464@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Pboin9D8r6p/42l+KYnA7u1
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 10/5/21 12:04 PM, Randy Dunlap wrote:
+> On 10/5/21 4:48 AM, Greg Kroah-Hartman wrote:
+>> On Mon, Oct 04, 2021 at 04:21:03PM -0700, Randy Dunlap wrote:
+>>> REGMAP_I2C is not a user visible kconfig symbol so driver configs
+>>> should not "depend on" it. They should depend on I2C and then
+>>> select REGMAP_I2C.
+>>>
+>>> If this worked, it was only because some other driver had set/enabled
+>>> REGMAP_I2C.
+>>>
+>>> Fixes: da0cb6310094 ("usb: typec: add support for STUSB160x Type-C controller family")
+>>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+>>> Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+>>> Cc: Amelie Delaunay <amelie.delaunay@st.com>
+>>> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>>> Cc: linux-usb@vger.kernel.org
+>>> ---
+>>>   drivers/usb/typec/Kconfig |    4 ++--
+>>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> With this applied, I get the following build error:
+>>
+>> drivers/of/Kconfig:69:error: recursive dependency detected!
+>> drivers/of/Kconfig:69:    symbol OF_IRQ depends on IRQ_DOMAIN
+>> kernel/irq/Kconfig:59:    symbol IRQ_DOMAIN is selected by REGMAP
+>> drivers/base/regmap/Kconfig:7:    symbol REGMAP default is visible depending on REGMAP_I2C
+>> drivers/base/regmap/Kconfig:20:symbol REGMAP_I2C is selected by TYPEC_STUSB160X
+>> drivers/usb/typec/Kconfig:66:    symbol TYPEC_STUSB160X depends on USB_ROLE_SWITCH
+>> drivers/usb/roles/Kconfig:3:    symbol USB_ROLE_SWITCH is selected by USB_MUSB_MEDIATEK
+>> drivers/usb/musb/Kconfig:119:    symbol USB_MUSB_MEDIATEK depends on GENERIC_PHY
+>> drivers/phy/Kconfig:8:    symbol GENERIC_PHY is selected by PHY_BCM_NS_USB3
+>> drivers/phy/broadcom/Kconfig:49:    symbol PHY_BCM_NS_USB3 depends on MDIO_BUS
+>> drivers/net/mdio/Kconfig:13:    symbol MDIO_BUS depends on MDIO_DEVICE
+>> drivers/net/mdio/Kconfig:6:    symbol MDIO_DEVICE is selected by PHYLIB
+>> drivers/net/phy/Kconfig:16:    symbol PHYLIB is selected by ARC_EMAC_CORE
+>> drivers/net/ethernet/arc/Kconfig:19:    symbol ARC_EMAC_CORE is selected by ARC_EMAC
+>> drivers/net/ethernet/arc/Kconfig:25:    symbol ARC_EMAC depends on OF_IRQ
+>> For a resolution refer to Documentation/kbuild/kconfig-language.rst
+>> subsection "Kconfig recursive dependency limitations"
+>>
+>> So I can't take it as-is :(
+> 
+> Darn, I never saw that, but I'll look into it.
 
-Hi all,
+Yeah, I easily see that in linux-next instead of mainline.
 
-Today's linux-next merge of the fscache tree got conflicts in:
+Still digging into it.  :(
 
-  fs/9p/cache.c
-  fs/9p/vfs_addr.c
-
-between commit:
-
-  bc868036569e ("9p: Fix a bunch of kerneldoc warnings shown up by W=3D1")
-
-from Linus' tree and commit:
-
-  fcd4c99b70ce ("9p: Convert to using the netfs helper lib to do reads and =
-caching")
-
-from the fscache tree.
-
-I fixed it up (I used the latter versions) and can carry the fix as
-necessary. This is now fixed as far as linux-next is concerned, but any
-non trivial conflicts should be mentioned to your upstream maintainer
-when your tree is submitted for merging.  You may also want to consider
-cooperating with the maintainer of the conflicting tree to minimise any
-particularly complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/Pboin9D8r6p/42l+KYnA7u1
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFc2h4ACgkQAVBC80lX
-0GyL5Af+P+N+oS2ZtWCkehFlh0wZtMJAls/gQHIjmEF9qbq06ImQJyMMEoQu1stI
-Yt7uOEDSL1bdH4dNNJnZCmSOm3sHBU8RFiZ1PQ76OQMMZJJREg/tMhdOPfOloSF8
-FlYVamkiv6OZ4FMZIlGq8CaKKzzhd9IaWVseEMSgwxarKooAuvXpl0fozyFWpCit
-LCag08AhKwE4kQ16I+G2HXz6bze08kVA4hg/he7hxA/xL3j3xg4WNJ/vZn2WZJEb
-T5rKlo6QC3Oz2UVeiR/QyRw5XiyhvJg1Fb6dYQPh6SI9zuR17UW0uv63MX7uuoII
-6JtcKB694Q+04O+pJOeWqKJLe+tUcw==
-=x3Qh
------END PGP SIGNATURE-----
-
---Sig_/Pboin9D8r6p/42l+KYnA7u1--
+-- 
+~Randy
