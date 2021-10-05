@@ -2,205 +2,470 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07680423405
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 01:01:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26CA4423410
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 01:05:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236953AbhJEXDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 19:03:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52396 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237059AbhJEXDM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 19:03:12 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82E5DC061793;
-        Tue,  5 Oct 2021 16:01:20 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id j11-20020a9d190b000000b00546fac94456so848205ota.6;
-        Tue, 05 Oct 2021 16:01:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=0YL6VWajjTGQ1GgtkINChYvgF1AEvaNuFX3QoY8zTxs=;
-        b=jwmbRbXRHVHU+kk1NzJqRMosaE3RGbpCbon7EvbvZSfk1N1fm2rpB+1k7RWn+z9+in
-         FpeJvYAUrkZptWrlgmxj6dBw2egzSwHTzsNYwJjCt/nmEFom6xV5RbP59GD9Z/BwLS3V
-         O4+pCfpoaWMyIOx0/y9DwbOJhNOeUCdwwT0asI2UBRVnSPmc1kEu9l7Z2D1VnSI0R5jj
-         C7j7dZ0XGkZU8YezFo22odkvW9nBV0u/C8iCkHawzG4iDAUh4nJ130IwROZ9jqmKMxys
-         jDtMZPu5vv4Cd+bd187sBYZta1COMfT9gIFda3UUgj5ZCTgOEHJ+8JMvOM9yyD5qaFVn
-         brtA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=0YL6VWajjTGQ1GgtkINChYvgF1AEvaNuFX3QoY8zTxs=;
-        b=cF2/w2zgCoDAH1W362bQWoyMn0JvNsM23GkOUzlMzxEYUZtWym9Cfo0ggtbS104mhb
-         PGz+xZhQxo300kK96w+MiTtnlrOOPhyXMcenOh2p2rwdJ1cojn2dEEIAWCK5bvkV6Wio
-         4dyc/e+yhr+XvrKBVhZYrC8UeA59zdo8HA8ztfhqcujBGagT0TMK6R4z81dPtwqUkL14
-         b2N8GNSQee7+gJo4NhfecyOUEiX4v9q+5mJMp4941MKVmm4VUcgt4L6m3piErzdjR5Y/
-         9/yhH7h0LZr7mG2JFFYFBJFnEcY4nkxTxhP3RBWRrZ1JP5MQJc0X7TVfuWPvG3jl4anE
-         dVIw==
-X-Gm-Message-State: AOAM532yALp4hTNH0AFJzk6aZ8x8zkl1vhlw5xgXacZLBN7rZb77ettc
-        kNnLMNr4IUNnP4pQ+dGqYxk=
-X-Google-Smtp-Source: ABdhPJxIGOdFpVbucv9WmwxH811ywlzWNVKxf0pA9mFuEeXpbU6Fe/IFqtyr17ygo5niN4VC91IQFQ==
-X-Received: by 2002:a9d:6396:: with SMTP id w22mr16385771otk.26.1633474879522;
-        Tue, 05 Oct 2021 16:01:19 -0700 (PDT)
-Received: from ?IPv6:2603:8081:140c:1a00:1df4:5ddc:54c4:9e0f? (2603-8081-140c-1a00-1df4-5ddc-54c4-9e0f.res6.spectrum.com. [2603:8081:140c:1a00:1df4:5ddc:54c4:9e0f])
-        by smtp.gmail.com with ESMTPSA id u6sm3794283ooh.15.2021.10.05.16.01.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Oct 2021 16:01:18 -0700 (PDT)
-Subject: Re: [syzbot] BUG: RESTRACK detected leak of resources
-To:     Zhu Yanjun <zyjzyj2000@gmail.com>,
-        Haakon Bugge <haakon.bugge@oracle.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Doug Ledford <dledford@redhat.com>,
-        syzbot <syzbot+3a992c9e4fd9f0e6fd0e@syzkaller.appspotmail.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        OFED mailing list <linux-rdma@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>
-References: <0000000000005a800a05cd849c36@google.com>
- <CACT4Y+ZRrxmLoor53nkD54sA5PJcRjWqheo262tudjrLO2rXzQ@mail.gmail.com>
- <20211004131516.GV3544071@ziepe.ca>
- <CACT4Y+bTB3DCGnem7V2ODpwgmiQdGuJae+h93kfniYn1Pr_x2g@mail.gmail.com>
- <4F4604B1-6EF7-4435-BB12-87664EF852C3@oracle.com>
- <CAD=hENdbCdjPCEnfz0-to81qGGAN4ONkHdrhQEPc1bC+-peYMQ@mail.gmail.com>
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-Message-ID: <50f592c2-38e8-19ce-c0d1-c16683bc4eb8@gmail.com>
-Date:   Tue, 5 Oct 2021 18:01:17 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S236873AbhJEXGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 19:06:48 -0400
+Received: from ixit.cz ([94.230.151.217]:57616 "EHLO ixit.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233540AbhJEXGr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 19:06:47 -0400
+Received: from localhost.localdomain (ip-89-176-96-70.net.upcbroadband.cz [89.176.96.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ixit.cz (Postfix) with ESMTPSA id BB35423B26;
+        Wed,  6 Oct 2021 01:04:53 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
+        t=1633475094;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=W6JD2RUHMkvhsDjZn/n54ExG/U3/P1gU8DcQ9xkbIDU=;
+        b=UpJrZa6yn1VT7s7zXnOWYYWJnLxGuVpTHYh0tm4zVYXkzXjN+s/uNZnsKWbQ3eou/UlIDA
+        6YUU9EuV8vX7Z7eLfNXK/j+2EJnhIW091DsyFiQU50n1om39EozufhcCF0fpTYZu1dyBwN
+        giZIuXr9SAeYo2ddIGrXBilL5wnB5aA=
+From:   David Heidelberg <david@ixit.cz>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Ivan Belokobylskiy <belokobylskij@gmail.com>,
+        David Heidelberg <david@ixit.cz>
+Subject: [PATCH] [RFC v2] ARM: dts: nexus4: initial dts
+Date:   Wed,  6 Oct 2021 01:03:29 +0200
+Message-Id: <20211005230329.64604-1-david@ixit.cz>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-In-Reply-To: <CAD=hENdbCdjPCEnfz0-to81qGGAN4ONkHdrhQEPc1bC+-peYMQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/5/21 8:11 AM, Zhu Yanjun wrote:
-> On Tue, Oct 5, 2021 at 1:56 AM Haakon Bugge <haakon.bugge@oracle.com> wrote:
->>
->>
->>
->>> On 4 Oct 2021, at 15:22, Dmitry Vyukov <dvyukov@google.com> wrote:
->>>
->>> On Mon, 4 Oct 2021 at 15:15, Jason Gunthorpe <jgg@ziepe.ca> wrote:
->>>>
->>>> On Mon, Oct 04, 2021 at 02:42:11PM +0200, Dmitry Vyukov wrote:
->>>>> On Mon, 4 Oct 2021 at 12:45, syzbot
->>>>> <syzbot+3a992c9e4fd9f0e6fd0e@syzkaller.appspotmail.com> wrote:
->>>>>>
->>>>>> Hello,
->>>>>>
->>>>>> syzbot found the following issue on:
->>>>>>
->>>>>> HEAD commit:    c7b4d0e56a1d Add linux-next specific files for 20210930
->>>>>> git tree:       linux-next
->>>>>> console output: https://syzkaller.appspot.com/x/log.txt?x=104be6cb300000
->>>>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=c9a1f6685aeb48bd
->>>>>> dashboard link: https://syzkaller.appspot.com/bug?extid=3a992c9e4fd9f0e6fd0e
->>>>>> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
->>>>>>
->>>>>> Unfortunately, I don't have any reproducer for this issue yet.
->>>>>>
->>>>>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
->>>>>> Reported-by: syzbot+3a992c9e4fd9f0e6fd0e@syzkaller.appspotmail.com
->>>>>
->>>>> +RESTRACK maintainers
->>>>>
->>>>> (it would also be good if RESTRACK would print a more standard oops
->>>>> with stack/filenames, so that testing systems can attribute issues to
->>>>> files/maintainers).
->>>>
->>>> restrack certainly should trigger a WARN_ON to stop the kernel.. But I
->>>> don't know what stack track would be useful here. The culprit is
->>>> always the underlying driver, not the core code..
->>>
->>> There seems to be a significant overlap between
->>> drivers/infiniband/core/restrack.c and drivers/infiniband/sw/rxe/rxe.c
->>> maintainers, so perhaps restrack.c is good enough approximation to
->>> extract relevant people (definitely better then no CC at all :))
->>
->> Looks to me as this is rxe:
->>
->> [ 1892.778632][ T8958] BUG: KASAN: use-after-free in __rxe_drop_index_locked+0xb5/0x100
->> [snip]
->> [ 1892.822375][ T8958] Call Trace:
->> [ 1892.825655][ T8958]  <TASK>
->> [ 1892.828594][ T8958]  dump_stack_lvl+0xcd/0x134
->> [ 1892.833273][ T8958]  print_address_description.constprop.0.cold+0x6c/0x30c
->> [ 1892.840316][ T8958]  ? __rxe_drop_index_locked+0xb5/0x100
->> [ 1892.845864][ T8958]  ? __rxe_drop_index_locked+0xb5/0x100
->> [ 1892.851424][ T8958]  kasan_report.cold+0x83/0xdf
->> [ 1892.856200][ T8958]  ? __rxe_drop_index_locked+0xb5/0x100
->> [ 1892.861761][ T8958]  kasan_check_range+0x13d/0x180
->> [ 1892.866780][ T8958]  __rxe_drop_index_locked+0xb5/0x100
->> [ 1892.872164][ T8958]  __rxe_drop_index+0x3f/0x60
->> [ 1892.876850][ T8958]  rxe_dereg_mr+0x14b/0x240
->> [ 1892.881381][ T8958]  ib_dealloc_pd_user+0x96/0x230
->> [ 1892.886566][ T8958]  rds_ib_dev_free+0xd4/0x3a0
->>
->> So, RDS de-allocs its PD, ib core must first de-register the PD's local MR, calls rxe_dereg_mr(), ...
-> 
-> int rxe_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
-> {
->         struct rxe_mr *mr = to_rmr(ibmr);
-> 
->         if (atomic_read(&mr->num_mw) > 0) {
->                 pr_warn("%s: Attempt to deregister an MR while bound to MWs\n",
->                         __func__);
->                 return -EINVAL;
->         }
-> 
->         mr->state = RXE_MR_STATE_ZOMBIE;
->         rxe_drop_ref(mr_pd(mr));
->         rxe_drop_index(mr);            <-------This is call trace beginning.
->         rxe_drop_ref(mr);
-> 
->         return 0;
-> }
-> 
-> struct rxe_mr {
->         struct rxe_pool_entry   pelem; <-----A ref_cnt in this struct.
->         struct ib_mr            ibmr;
-> 
->         struct ib_umem          *umem;
-> 
-> struct rxe_pool_entry {
->         struct rxe_pool         *pool;
->         struct kref             ref_cnt;        <-------This ref_cnt may help.
->         struct list_head        list;
-> 
-> Zhu Yanjun
-> 
->>
->>
->> Thxs, Håkon
->>
->>
->>>
->>>> Anyhow, this report is either rxe or rds by the look of it.
->>>>
->>>> Jason
->>
+From: Ivan Belokobylskiy <belokobylskij@gmail.com>
 
-It looks like not all the objects are getting freed before the CA is deallocated.
-If this happens the pool cleanup code issues the warning that the pool is being
-cleaned up with some objects still in the pool. It then goes ahead and frees the
-index table for indexed objects (like MRs). If the MR is later freed it tries to
-remove its index in the index bit map which has already been freed causing the oops.
-The MR not getting freed in time is the cause of the late deallocation of the PD
-which was noticed by restrak. I am not sure if these late deletions are just the
-normal flow of the program or caused by rdma core trying to clean up afterwards.
+Add initial support for LG Nexus 4 (mako).
 
-Normally MRs get a reference taken when they are created and dropped when they are
-freed. Additionally references are taken when an lkey or rkey is looked up an turned
-into a pointer to the MR object. These are normally dropped when the key goes out
-of scope. If an error occurs it may be possible that the key goes out of scope without
-dropping the reference to the MR which would cause what we are seeing. In this case
-in order for the late deletion of the MR someone would have to call dereg mr a second
-time to remove the lost ref count.
+Features currently working: regulators, eMMC, WiFi, LCD backlight and volume keys.
 
-It would be helpful to have a test case to trigger this oops.
+Signed-off-by: Ivan Belokobylskiy <belokobylskij@gmail.com>
+Signed-off-by: David Heidelberg <david@ixit.cz>
+---
+v2
+ - lge vendor doesn't exist anymore, rename to lg
+
+ arch/arm/boot/dts/Makefile                    |   1 +
+ .../boot/dts/qcom-apq8064-lg-nexus4-mako.dts  | 387 ++++++++++++++++++
+ 2 files changed, 388 insertions(+)
+ create mode 100644 arch/arm/boot/dts/qcom-apq8064-lg-nexus4-mako.dts
+
+diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+index 5ffab0486665..97340450d5b8 100644
+--- a/arch/arm/boot/dts/Makefile
++++ b/arch/arm/boot/dts/Makefile
+@@ -948,6 +948,7 @@ dtb-$(CONFIG_ARCH_QCOM) += \
+ 	qcom-apq8064-ifc6410.dtb \
+ 	qcom-apq8064-sony-xperia-yuga.dtb \
+ 	qcom-apq8064-asus-nexus7-flo.dtb \
++	qcom-apq8064-lg-nexus4-mako.dtb \
+ 	qcom-apq8074-dragonboard.dtb \
+ 	qcom-apq8084-ifc6540.dtb \
+ 	qcom-apq8084-mtp.dtb \
+diff --git a/arch/arm/boot/dts/qcom-apq8064-lg-nexus4-mako.dts b/arch/arm/boot/dts/qcom-apq8064-lg-nexus4-mako.dts
+new file mode 100644
+index 000000000000..590c5bd2f935
+--- /dev/null
++++ b/arch/arm/boot/dts/qcom-apq8064-lg-nexus4-mako.dts
+@@ -0,0 +1,387 @@
++// SPDX-License-Identifier: GPL-2.0-only
++#include "qcom-apq8064-v2.0.dtsi"
++#include <dt-bindings/gpio/gpio.h>
++#include <dt-bindings/input/input.h>
++#include <dt-bindings/mfd/qcom-rpm.h>
++#include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
++/ {
++	model = "LG Nexus 4 (mako)";
++	compatible = "lg,nexus4-mako", "qcom,apq8064";
++
++	aliases {
++		serial0 = &gsbi7_serial;
++		serial1 = &gsbi6_serial;
++		serial2 = &gsbi4_serial;
++	};
++
++	chosen {
++		stdout-path = "serial2:115200n8";
++	};
++
++	reserved-memory {
++		#address-cells = <1>;
++		#size-cells = <1>;
++		ranges;
++
++		ramoops@88d00000{
++			compatible = "ramoops";
++			reg = <0x88d00000 0x100000>;
++			record-size	 = <0x00020000>;
++			console-size	= <0x00020000>;
++			ftrace-size	 = <0x00020000>;
++		};
++	};
++
++	battery_cell: battery-cell {
++		compatible = "simple-battery";
++		constant-charge-current-max-microamp = <900000>;
++		operating-range-celsius = <0 45>;
++	};
++
++	soc {
++		pinctrl@800000 {
++			gsbi4_uart_pin_a: gsbi4-uart-pin-active {
++				rx {
++					pins = "gpio11";
++					function = "gsbi4";
++					drive-strength = <2>;
++					bias-disable;
++				};
++
++				tx {
++					pins = "gpio10";
++					function = "gsbi4";
++					drive-strength = <4>;
++					bias-disable;
++				};
++			};
++		};
++
++		rpm@108000 {
++			regulators {
++				vdd_l1_l2_l12_l18-supply = <&pm8921_s4>;
++				vin_lvs1_3_6-supply = <&pm8921_s4>;
++				vin_lvs4_5_7-supply = <&pm8921_s4>;
++
++				vdd_l24-supply = <&pm8921_s1>;
++				vdd_l25-supply = <&pm8921_s1>;
++				vin_lvs2-supply = <&pm8921_s1>;
++
++				vdd_l26-supply = <&pm8921_s7>;
++				vdd_l27-supply = <&pm8921_s7>;
++				vdd_l28-supply = <&pm8921_s7>;
++
++				/* Buck SMPS */
++				s1 {
++					regulator-always-on;
++					regulator-min-microvolt = <1225000>;
++					regulator-max-microvolt = <1225000>;
++					qcom,switch-mode-frequency = <3200000>;
++					bias-pull-down;
++				};
++				s2 {
++					regulator-min-microvolt = <1300000>;
++					regulator-max-microvolt = <1300000>;
++					qcom,switch-mode-frequency = <1600000>;
++					bias-pull-down;
++				};
++
++				/* msm otg HSUSB_VDDCX */
++				s3 {
++					regulator-min-microvolt = <500000>;
++					regulator-max-microvolt = <1150000>;
++					qcom,switch-mode-frequency = <4800000>;
++					bias-pull-down;
++				};
++
++				/*
++				 * msm_sdcc.1-sdc-vdd_io
++				 * tabla2x-slim-CDC_VDDA_RX
++				 * tabla2x-slim-CDC_VDDA_TX
++				 * tabla2x-slim-CDC_VDD_CP
++				 * tabla2x-slim-VDDIO_CDC
++				 */
++				s4 {
++					regulator-always-on;
++					regulator-min-microvolt	= <1800000>;
++					regulator-max-microvolt	= <1800000>;
++					qcom,switch-mode-frequency = <1600000>;
++					bias-pull-down;
++					qcom,force-mode = <QCOM_RPM_FORCE_MODE_AUTO>;
++				};
++
++				/*
++				 * supply vdd_l26, vdd_l27, vdd_l28
++				 */
++				s7 {
++					regulator-min-microvolt = <1300000>;
++					regulator-max-microvolt = <1300000>;
++					qcom,switch-mode-frequency = <3200000>;
++				};
++
++				s8 {
++					regulator-min-microvolt = <2200000>;
++					regulator-max-microvolt = <2200000>;
++					qcom,switch-mode-frequency = <1600000>;
++				};
++
++				l1 {
++					regulator-min-microvolt = <1100000>;
++					regulator-max-microvolt = <1100000>;
++					regulator-always-on;
++					bias-pull-down;
++				};
++
++				/* mipi_dsi.1-dsi1_pll_vdda */
++				l2 {
++					regulator-min-microvolt = <1200000>;
++					regulator-max-microvolt = <1200000>;
++					bias-pull-down;
++				};
++
++				/* msm_otg-HSUSB_3p3 */
++				l3 {
++					regulator-min-microvolt = <3075000>;
++					regulator-max-microvolt = <3500000>;
++					bias-pull-down;
++				};
++
++				/* msm_otg-HSUSB_1p8 */
++				l4 {
++					regulator-always-on;
++					regulator-min-microvolt = <1800000>;
++					regulator-max-microvolt = <1800000>;
++				};
++
++				/* msm_sdcc.1-sdc_vdd */
++				l5 {
++					regulator-min-microvolt = <2950000>;
++					regulator-max-microvolt = <2950000>;
++					bias-pull-down;
++				};
++
++				/* earjack_debug */
++				l6 {
++					regulator-min-microvolt = <3000000>;
++					regulator-max-microvolt = <3000000>;
++					bias-pull-down;
++				};
++
++				/* mipi_dsi.1-dsi_vci */
++				l8 {
++					regulator-min-microvolt = <2800000>;
++					regulator-max-microvolt = <3000000>;
++					bias-pull-down;
++				};
++
++				/* wcnss_wlan.0-iris_vddpa */
++				l10 {
++					regulator-min-microvolt = <2900000>;
++					regulator-max-microvolt = <2900000>;
++					bias-pull-down;
++				};
++
++				/* mipi_dsi.1-dsi1_avdd */
++				l11 {
++					regulator-min-microvolt = <2850000>;
++					regulator-max-microvolt = <2850000>;
++					bias-pull-down;
++				};
++
++				/* touch_vdd */
++				l15 {
++					regulator-min-microvolt = <1800000>;
++					regulator-max-microvolt = <2950000>;
++					bias-pull-down;
++				};
++
++				/* slimport_dvdd */
++				l18 {
++					regulator-min-microvolt = <1100000>;
++					regulator-max-microvolt = <1100000>;
++					bias-pull-down;
++				};
++
++				/* touch_io */
++				l22 {
++					regulator-min-microvolt = <1800000>;
++					regulator-max-microvolt = <1800000>;
++					bias-pull-down;
++				};
++
++				/*
++				 * mipi_dsi.1-dsi_vddio
++				 * pil_qdsp6v4.1-pll_vdd
++				 * pil_qdsp6v4.2-pll_vdd
++				 * msm_ehci_host.0-HSUSB_1p8
++				 * msm_ehci_host.1-HSUSB_1p8
++				 */
++				l23 {
++					regulator-min-microvolt = <1800000>;
++					regulator-max-microvolt = <1800000>;
++					bias-pull-down;
++				};
++
++				/*
++				 * tabla2x-slim-CDC_VDDA_A_1P2V
++				 * tabla2x-slim-VDDD_CDC_D
++				 */
++				l24 {
++					regulator-min-microvolt = <750000>;
++					regulator-max-microvolt = <1150000>;
++					bias-pull-down;
++				};
++
++				l25 {
++					regulator-min-microvolt = <1250000>;
++					regulator-max-microvolt = <1250000>;
++					regulator-always-on;
++					bias-pull-down;
++				};
++
++				l26 {
++					regulator-min-microvolt = <375000>;
++					regulator-max-microvolt = <1050000>;
++					regulator-always-on;
++					bias-pull-down;
++				};
++
++				l27 {
++					regulator-min-microvolt = <1100000>;
++					regulator-max-microvolt = <1100000>;
++				};
++
++				l28 {
++					regulator-min-microvolt = <1050000>;
++					regulator-max-microvolt = <1050000>;
++					bias-pull-down;
++				};
++
++				/* wcnss_wlan.0-iris_vddio */
++				lvs1 {
++					bias-pull-down;
++				};
++
++				/* wcnss_wlan.0-iris_vdddig */
++				lvs2 {
++					bias-pull-down;
++				};
++
++				lvs3 {
++					bias-pull-down;
++				};
++
++				lvs4 {
++					bias-pull-down;
++				};
++
++				lvs5 {
++					bias-pull-down;
++				};
++
++				/* mipi_dsi.1-dsi_iovcc */
++				lvs6 {
++					bias-pull-down;
++				};
++
++				/*
++				 * pil_riva-pll_vdd
++				 * lvds.0-lvds_vdda
++				 * mipi_dsi.1-dsi1_vddio
++				 * hdmi_msm.0-hdmi_vdda
++				 */
++				lvs7 {
++					bias-pull-down;
++				};
++
++				ncp {
++					regulator-min-microvolt = <1800000>;
++					regulator-max-microvolt = <1800000>;
++					qcom,switch-mode-frequency = <1600000>;
++				};
++			};
++		};
++
++		qcom,ssbi@500000 {
++			pmic@0 {
++				keypad@148 {
++					compatible = "qcom,pm8921-keypad";
++					reg = <0x148>;
++					interrupt-parent = <&pmicintc>;
++					interrupts = <74 1>, <75 1>;
++					linux,keymap = <
++						MATRIX_KEY(0, 0, KEY_VOLUMEDOWN)
++						MATRIX_KEY(0, 1, KEY_VOLUMEUP)
++					>;
++
++					keypad,num-rows = <1>;
++					keypad,num-columns = <5>;
++					debounce = <15>;
++					scan-delay = <32>;
++					row-hold = <91500>;
++				};
++			};
++		};
++
++		gsbi@12440000 {
++			status = "okay";
++			qcom,mode = <GSBI_PROT_I2C>;
++
++			gsbi1_i2c: i2c@12460000 {
++				status = "okay";
++				clock-frequency = <200000>;
++				pinctrl-0 = <&i2c1_pins>;
++				pinctrl-names = "default";
++
++				backlight: lm3530@38 {
++					compatible = "backlight,lm3530";
++					status = "okay";
++					reg = <0x38>;
++					lm3530,en_gpio = <&pm8921_gpio 24 GPIO_ACTIVE_HIGH>;
++					lm3530,max_current = /bits/ 8 <0x17>;
++					lm3530,default_brt = /bits/ 8 <0x10>;
++					lm3530,max_brt = /bits/ 8 <0x72>;
++					lm3530,mode = /bits/ 8 <0>; /* Manual Mode */
++					lm3530,linear_map = /bits/ 8 <1>; /* Linear map */
++					lm3530,brt_ramp_fall = /bits/ 8 <0>;
++					lm3530,brt_ramp_rise = /bits/ 8 <0>;
++					lm3530,no_regulator;
++				};
++			};
++		};
++
++		gsbi@16300000 {
++			status = "okay";
++			qcom,mode = <GSBI_PROT_I2C_UART>;
++
++			gsbi4_serial: serial@16340000 {
++				compatible = "qcom,msm-uartdm-v1.3", "qcom,msm-uartdm";
++				reg = <0x16340000 0x1000>,
++				  <0x16300000 0x1000>;
++				interrupts = <GIC_SPI 152 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&gcc GSBI4_UART_CLK>, <&gcc GSBI4_H_CLK>;
++				clock-names = "core", "iface";
++				status = "okay";
++
++				pinctrl-names = "default";
++				pinctrl-0 = <&gsbi4_uart_pin_a>;
++			};
++		};
++
++		amba {
++			/* eMMC */
++			sdcc@12400000 {
++				status = "okay";
++				vmmc-supply = <&pm8921_l5>;
++				vqmmc-supply = <&pm8921_s4>;
++			};
++		};
++
++		riva-pil@3204000 {
++			status = "okay";
++			pinctrl-names = "default";
++			pinctrl-0 = <&riva_wlan_pin_a>;
++		};
++	};
++};
++
+-- 
+2.33.0
+
