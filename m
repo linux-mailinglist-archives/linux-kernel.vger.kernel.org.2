@@ -2,87 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5BC7422CEC
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:48:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4CFA422CF6
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:51:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236153AbhJEPuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 11:50:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36146 "EHLO
+        id S235976AbhJEPxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 11:53:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235588AbhJEPuU (ORCPT
+        with ESMTP id S231513AbhJEPxd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 11:50:20 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D784C061749
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 08:48:30 -0700 (PDT)
-Date:   Tue, 5 Oct 2021 17:48:27 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1633448908;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VSZyxM2r/CBcFXTQ9wKe2flyiU3VGPai8WyWlx7Gs5U=;
-        b=kj3t6RU18pFKtLYgHf7PB6U2Lb9/HC3oVKido8zAa9G2HUmVtII0nRiqTSM1a0VYVFqN2J
-        RD/zE3xxV6XqD8ZeblS+47h/gPNk5jx+bng4W2lTir2jgXZFjejuBBtqawuaEpf8tFVMYP
-        ZejavDKuj/Yuh1iWcuA7q6X30yqZfowg62d5K/6hpayBm34/XxQolTM0/R8SEHRXqd66om
-        QTcZsHZVOBtjdcN4UBXtdcHa/JBUGC0J6jEZAFQPbD4Wl/hhr7iG3vAYXUsG53JY6LzOM/
-        Ux9nYItAyAlFwfVUYoRiGFWViTEr0+gEKFtC2liKkN9Hv/Vbnwi86X2i/PoOcg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1633448908;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VSZyxM2r/CBcFXTQ9wKe2flyiU3VGPai8WyWlx7Gs5U=;
-        b=NBTS35qgiE9YQpiXRC4GMGGDgswGdgl2G1klJWOdjedCmqdy4OKMf/h8oEWVN2BRhnWPnd
-        vLL2JNRsaoGXhODA==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     linux-kernel@vger.kernel.org
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH 2/5] irq_work: Ensure that irq_work runs in in-IRQ
- context.
-Message-ID: <20211005154827.h2pna3vfqbo7icjn@linutronix.de>
-References: <20210927211919.310855-1-bigeasy@linutronix.de>
- <20210927211919.310855-3-bigeasy@linutronix.de>
+        Tue, 5 Oct 2021 11:53:33 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69EAEC061749;
+        Tue,  5 Oct 2021 08:51:42 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id g41so87870245lfv.1;
+        Tue, 05 Oct 2021 08:51:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=exd7cB2eRheopuzqHRQfFwH00Rjr9jsRGEU+VKQb+OU=;
+        b=YGNSNFgWHko3MSQM349fQ1TclyPzlMTwzkG8qW0+rC8w064y2W5vjW3PiFpaAMfeMx
+         CC5ZNTt8rhljZdzN6fxZ5HbJsiqYY7bPdQXdyH9gCyrqNvhO8cYw2ElAcyD5HBPEfH6U
+         A16ZZesBpj5Vnz9o7XjZBaZlqMU3P1WNLfCB3w85aqVPcr4lu42gVfPTsn071YzW3zy/
+         Y2Xr9uk9d6HkYMOACBwVbQHdSSz/kUUhRFbR+zilHbZBUp33IKdRLxVlUofU4dslatfR
+         NBIURTr7Q+gA1+3sTJqp3vRkKNnMVBxqA59n0s4rnvcc5Jdcz3iFsXfKNxKAdkGev53S
+         2qMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=exd7cB2eRheopuzqHRQfFwH00Rjr9jsRGEU+VKQb+OU=;
+        b=hidsey8Xg8QoFpD0kbWMTUOelyVpU2E0UHrUq6M9+oVyUjghwX6X4nG1PpaybQZmEQ
+         nc4k13JH/9sE9ihVysMtyzOGVM3xawEQZOaOE8GfbHbkrfIRZcrRkW3SB85Z4FZb7pNJ
+         biuCCbJWJTLkSqKtuoQ09k4QexZyC7stasmcNldavcHdiD+MTvsKbY8BEaD12YYZ5rYD
+         iGqWvlhj1Ol9wKh7nyOWdH1jsO/oFaK8BYsNqxR0zmChOBKcpncI7k9jZvYRZInUoFVC
+         zod/+kpJfSGoxb0ERLWAXCfOak60OFjSc0tGVAlJ5tYsgtNcJHgjwFDqG3O4OFeTallx
+         2MFw==
+X-Gm-Message-State: AOAM5322zIITCEpPayr+ZGAESImd1hJjoXJ1HwuXLhJ2DfrX3/WlsLOq
+        U007Dt7dIx8ooD9CYWAdd1bMOnzDG1s=
+X-Google-Smtp-Source: ABdhPJzBiEVmlzJPY5GRtGkvRmKB7fT9JdDE2faKoCdfuHCYL73UPh4luaMu94FdiTftNaSY6mwgiw==
+X-Received: by 2002:a05:651c:1067:: with SMTP id y7mr24234481ljm.481.1633449099938;
+        Tue, 05 Oct 2021 08:51:39 -0700 (PDT)
+Received: from [192.168.2.145] (79-139-163-57.dynamic.spd-mgts.ru. [79.139.163.57])
+        by smtp.googlemail.com with ESMTPSA id n9sm903128lfq.100.2021.10.05.08.51.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Oct 2021 08:51:39 -0700 (PDT)
+Subject: Re: [PATCH v3 4/4] memory: tegra20-emc: Support matching timings by
+ LPDDR2 configuration
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+References: <20211003013235.2357-1-digetx@gmail.com>
+ <20211003013235.2357-5-digetx@gmail.com>
+ <636b147b-0a71-8c40-7038-1227918986e5@canonical.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <dc730748-04a5-f5bd-727c-a8b7d67b2a26@gmail.com>
+Date:   Tue, 5 Oct 2021 18:51:38 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <636b147b-0a71-8c40-7038-1227918986e5@canonical.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210927211919.310855-3-bigeasy@linutronix.de>
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-09-27 23:19:16 [+0200], To linux-kernel@vger.kernel.org wrote:
-> The irq-work callback should be invoked in hardirq context and some
-> callbacks rely on this behaviour. At the time irq_work_run_list()
-> interrupts should be disabled but the important part is that the
-> callback is invoked from a in-IRQ context.
-> The "disabled interrupts" check can be satisfied by disabling interrupts
-> from a kworker which is not the intended context.
+04.10.2021 12:09, Krzysztof Kozlowski пишет:
+>> +static void emc_read_lpddr_sdram_info(struct tegra_emc *emc,
+>> +				      unsigned int emem_dev,
+>> +				      bool print_out)
+>> +{
+>> +	/* these registers are standard for all LPDDR JEDEC memory chips */
+>> +	emc_read_lpddr_mode_register(emc, emem_dev, 5, &emc->manufacturer_id);
+>> +	emc_read_lpddr_mode_register(emc, emem_dev, 6, &emc->revision_id1);
+>> +	emc_read_lpddr_mode_register(emc, emem_dev, 7, &emc->revision_id2);
+>> +	emc_read_lpddr_mode_register(emc, emem_dev, 8, &emc->basic_conf4.value);
+> You ignore the return codes but you should not try to load timings in
+> such case. The DT could (by mistake or on purpose) have values '0' for
+> the fields you compare.
 > 
-> Ensure that the callback is invoked from hardirq context and not just
-> with disabled interrupts.
 
-As noted by lkp, this triggers from smpcfd_dying_cpu().
-Do we care enough to change this or should I rather drop this one?
-
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> ---
->  kernel/irq_work.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/irq_work.c b/kernel/irq_work.c
-> index db8c248ebc8c8..caf2edffa20d5 100644
-> --- a/kernel/irq_work.c
-> +++ b/kernel/irq_work.c
-> @@ -167,7 +167,7 @@ static void irq_work_run_list(struct llist_head *list)
->  	struct irq_work *work, *tmp;
->  	struct llist_node *llnode;
->  
-> -	BUG_ON(!irqs_disabled());
-> +	BUG_ON(!in_hardirq());
->  
->  	if (llist_empty(list))
->  		return;
-
-Sebastian
+Good suggestion. I'll add a flag that will prevent loading timings if
+there was MRR error, thanks.
