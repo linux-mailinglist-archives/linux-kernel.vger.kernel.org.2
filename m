@@ -2,77 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC245422597
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 13:45:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 989404225A2
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 13:47:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234568AbhJELrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 07:47:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58034 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234405AbhJELr3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 07:47:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5A0CE6159A;
-        Tue,  5 Oct 2021 11:45:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633434338;
-        bh=NIra20hcsUHRkedpcLvDTNl826PaAkXsb/ZidiMq6Tc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Rmjl8B3U1XQSrhvF4OQDxaWuRe+VZy265wUVs+8+NEyXDsRMqXUstocsmlDiBH98O
-         EoeeBkELLrt0hO5d4GRs3Ccm3ZLgdqo7XmyYp9c5N9Px1maoN5nl8zVmKecrTTN5cY
-         O8bPFVNBW9rAp4LL/O7k87wlzpqDZemiQR3Yg5oY=
-Date:   Tue, 5 Oct 2021 13:45:36 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Salvatore Bonaccorso <carnil@debian.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ben Hutchings <ben@decadent.org.uk>
-Subject: Re: [PATCH] Partially revert "usb: Kconfig: using select for
- USB_COMMON dependency"
-Message-ID: <YVw64IFwkvOk2Eu1@kroah.com>
-References: <20210921143442.340087-1-carnil@debian.org>
- <YVTMUp7UUKUbsKwn@eldamar.lan>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YVTMUp7UUKUbsKwn@eldamar.lan>
+        id S234070AbhJELtX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 07:49:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230500AbhJELtU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 07:49:20 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2873C061749;
+        Tue,  5 Oct 2021 04:47:29 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id g13-20020a17090a3c8d00b00196286963b9so1795352pjc.3;
+        Tue, 05 Oct 2021 04:47:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=/qeZJF/DjVv0OSOUHcuL+U2oI15czJP1GzeBGDs6VcQ=;
+        b=O6eFC0vAgyZZM6iaerOYZSnoxamNfDfW/ZJOjuMLRrED/ffe8J4gBssdRBQm04YWTh
+         cAtucQJzmRk2UlmzvHQyoFHQrZJUdqadD0LKcmDTVVNSGI/t1XU438a8PAuGLkd5aRnJ
+         DWKch21wXDv9+ELAMHYVOLQs9Cn4mYOZeYJdEVlKsydrU6Ko6IxzgwXRhP2bQNmVRQlS
+         JJMlkltTHWgtLW3PSQ4ooC2oNoPdzkBniMT3eCAbKCS5oj6wuVnLIerDRCIipeQSMdVT
+         omTETH0WWSALTQ44DkTtOwyPQTVTXNCzITb+s3xgULoHc/TdmVshjZpGOVE/YTSy4GUH
+         XrsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=/qeZJF/DjVv0OSOUHcuL+U2oI15czJP1GzeBGDs6VcQ=;
+        b=DraLAGq4WlLqbNHg5ridYFfUEjwDe26as3/ZxrFCdSN/FxTCAfB14sVlsF/XeiVgp4
+         33M0NC6j2EkMN3nEioH0CABB8fkiLpTDZ09Adl0aD+CifbmmRA8ddQCwcmQDxThm8LwL
+         VlyizIPww04KUbySw0re0s69o3iGmBXXqljP3dLntsUbalrdesg3AFWL9cWWEeVvUPOp
+         2jy2UzZPWWLhshBAmOWOsFoBqbX3sBnADH5QoCizHqQywwuB74GgBL2WCCpMt7E4wKAj
+         Y5q5fs5sDrKpUdYeCm30I4OCPBsJnDDHPfUoaS4jkgvRuY9/U+iQmuL0rELDJ8RUg7mY
+         Jj7A==
+X-Gm-Message-State: AOAM530Pye6mXq4aK4UbowHFqbe1TdLQ9L1oCOFRyLCbAgLxUbx5PcPG
+        eIF0gf3nKbGHBO+CvvhJjI7R95CyNljXzpS9zhI=
+X-Google-Smtp-Source: ABdhPJz04XcEduymmQjK02vaOjyUbcmeLHPGK6rgDjyv0xC/JskXuW7wQ8Twk7xouUJKEQtIP9J2yQ==
+X-Received: by 2002:a17:90b:17c9:: with SMTP id me9mr3287628pjb.197.1633434448945;
+        Tue, 05 Oct 2021 04:47:28 -0700 (PDT)
+Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [71.19.144.195])
+        by smtp.gmail.com with ESMTPSA id s25sm17687561pfm.138.2021.10.05.04.47.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Oct 2021 04:47:28 -0700 (PDT)
+Message-ID: <615c3b50.1c69fb81.3a387.4f59@mx.google.com>
+Date:   Tue, 05 Oct 2021 04:47:28 -0700 (PDT)
+X-Google-Original-Date: Tue, 05 Oct 2021 11:47:22 GMT
+From:   Fox Chen <foxhlchen@gmail.com>
+In-Reply-To: <20211005083301.812942169@linuxfoundation.org>
+Subject: RE: [PATCH 5.10 00/92] 5.10.71-rc2 review
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Fox Chen <foxhlchen@gmail.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 10:28:02PM +0200, Salvatore Bonaccorso wrote:
-> Hi Greg,
+On Tue,  5 Oct 2021 10:38:32 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> This is the start of the stable review cycle for the 5.10.71 release.
+> There are 92 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> On Tue, Sep 21, 2021 at 04:34:42PM +0200, Salvatore Bonaccorso wrote:
-> > From: Ben Hutchings <ben@decadent.org.uk>
-> > 
-> > This reverts commit cb9c1cfc86926d0e86d19c8e34f6c23458cd3478 for
-> > USB_LED_TRIG.  This config symbol has bool type and enables extra code
-> > in usb_common itself, not a separate driver.  Enabling it should not
-> > force usb_common to be built-in!
-> > 
-> > Fixes: cb9c1cfc8692 ("usb: Kconfig: using select for USB_COMMON dependency")
-> > Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
-> > Signed-off-by: Salvatore Bonaccorso <carnil@debian.org>
-> > ---
-> >  drivers/usb/common/Kconfig | 3 +--
-> >  1 file changed, 1 insertion(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/usb/common/Kconfig b/drivers/usb/common/Kconfig
-> > index 5e8a04e3dd3c..b856622431a7 100644
-> > --- a/drivers/usb/common/Kconfig
-> > +++ b/drivers/usb/common/Kconfig
-> > @@ -6,8 +6,7 @@ config USB_COMMON
-> >  
-> >  config USB_LED_TRIG
-> >  	bool "USB LED Triggers"
-> > -	depends on LEDS_CLASS && LEDS_TRIGGERS
-> > -	select USB_COMMON
-> > +	depends on LEDS_CLASS && USB_COMMON && LEDS_TRIGGERS
-> >  	help
-> >  	  This option adds LED triggers for USB host and/or gadget activity.
+> Responses should be made by Thu, 07 Oct 2021 08:32:44 +0000.
+> Anything received after that time might be too late.
 > 
-> Sorry for bothering you again. Is this patch now ok, or do you need me
-> to change something else? Or do I miss something?
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.71-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Nope, sorry for the delay, now applied.
+5.10.71-rc2 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
+                
+Tested-by: Fox Chen <foxhlchen@gmail.com>
 
-greg k-h
