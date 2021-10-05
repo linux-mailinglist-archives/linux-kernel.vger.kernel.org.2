@@ -2,187 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 754D54222AB
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 11:49:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D10864222AA
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 11:49:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233564AbhJEJva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 05:51:30 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:22190 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S233077AbhJEJvX (ORCPT
+        id S233639AbhJEJvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 05:51:03 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:49732 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233077AbhJEJvA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 05:51:23 -0400
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1959ZCaP010497;
-        Tue, 5 Oct 2021 05:48:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=eO4uXlRS6S9nvlj+QSvAE+fS6kbSQnna5E/0txyYWFg=;
- b=Sd/EXhwZRgvDbqICy1h0YtwbgRT1G6m+1jRKD12GZRwmRrxrsYpdGqURzXZu/Wc9zZA9
- 6t3bFBPw90tHh+9w4kAXjs9RPJqu3znkkHZfAIIA6vgjbhTzYFUrvVu2tTDm7J0nlSe7
- pyflPhWmrP3WxeoZaBGeTDZuFrazJGqTUsemgrUnYQ7wQiJQMYzLNYVzdGccWDAEoIDi
- Vpr7Ef1aZmqqc3DSnlHCqmri1OO6fXZjl0ehmWorBhU3PSVlrFHfjcSQ1phpr6R04mHs
- fFgNmbn/0mgql4NL0lf5Op7uuxOj55H3+yL3Q9YVYlIz6/bdbIFfanHUKeFO1CSXAjHS ew== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3bghr0kquh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Oct 2021 05:48:54 -0400
-Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1959mjUo031724;
-        Tue, 5 Oct 2021 05:48:53 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3bghr0kqu3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Oct 2021 05:48:53 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1959lB7P026575;
-        Tue, 5 Oct 2021 09:48:51 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma03ams.nl.ibm.com with ESMTP id 3bef2a0qk6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Oct 2021 09:48:51 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1959mlbD26214722
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 5 Oct 2021 09:48:47 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2B1DFA406B;
-        Tue,  5 Oct 2021 09:48:47 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B471EA404D;
-        Tue,  5 Oct 2021 09:48:41 +0000 (GMT)
-Received: from li-e8dccbcc-2adc-11b2-a85c-bc1f33b9b810.ibm.com (unknown [9.43.64.84])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue,  5 Oct 2021 09:48:41 +0000 (GMT)
-Subject: Re: [PATCH 1/4] perf: Add comment about current state of
- PERF_MEM_LVL_* namespace and remove an extra line
-To:     mpe@ellerman.id.au, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, peterz@infradead.org,
-        mingo@redhat.com, acme@kernel.org, jolsa@kernel.org,
-        namhyung@kernel.org, ak@linux.intel.com
-Cc:     linux-perf-users@vger.kernel.org, maddy@linux.ibm.com,
-        atrajeev@linux.vnet.ibm.com, rnsastry@linux.ibm.com,
-        yao.jin@linux.intel.com, ast@kernel.org, daniel@iogearbox.net,
-        songliubraving@fb.com, kan.liang@linux.intel.com,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        paulus@samba.org
-References: <20211005091837.250044-1-kjain@linux.ibm.com>
-From:   kajoljain <kjain@linux.ibm.com>
-Message-ID: <b069104c-73ee-6210-16d4-00bb0087933d@linux.ibm.com>
-Date:   Tue, 5 Oct 2021 15:18:40 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-In-Reply-To: <20211005091837.250044-1-kjain@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: Orcyn_HibsoF6e3Oq47juoF6G2yo0bl8
-X-Proofpoint-GUID: WOz0dxa4UOPomjWx1ZQWLyfAl9OiOzJw
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Tue, 5 Oct 2021 05:51:00 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1633427346;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=oRXnYL4+s1LYc72XdqgEFipmb2VWxMXqdFbyDd4Q3xo=;
+        b=mbRIAUI56Wj6og9zzMdtTHRo9KCD4GvJlNV7RvRrAHpehj8c3PjXaKcVQyNz5gTWaTpSob
+        lBUZzBY/vQmgXL2BlCeIbLHbKmZCyj6kYQlDRuDqeOkhHUAKlb3dA78eihTiTIGGrsveYs
+        GgL59RjSmD2L8keSYVktK5CZgtd0XRnT+NhxNz2mEJc+tQDYN3LCw7NzVCQaV3i7zh/VgE
+        NRkSQESMGUr9uNFcyuKf1O3J394IMdxkef4NOkYaWvoiqNGsdWMxKMgrKImLtWmXT7k4Q1
+        r+BZggfPSXkE5ihM3qdp1iSaj0cTWhFu+UVrhV2XKyo/7475oJw6/BfoUT4Oww==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1633427346;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=oRXnYL4+s1LYc72XdqgEFipmb2VWxMXqdFbyDd4Q3xo=;
+        b=oxGhmJ973iF47rglsSA+08stwkok24Vfag0LhUHyYl5XNmGmoWLBFD/4VnL3zP+z9UBpjM
+        uIvZTc6jlizybVDQ==
+To:     "Chang S. Bae" <chang.seok.bae@intel.com>, bp@suse.de,
+        luto@kernel.org, mingo@kernel.org, x86@kernel.org
+Cc:     len.brown@intel.com, lenb@kernel.org, dave.hansen@intel.com,
+        thiago.macieira@intel.com, jing2.liu@intel.com,
+        ravi.v.shankar@intel.com, linux-kernel@vger.kernel.org,
+        chang.seok.bae@intel.com
+Subject: Re: [PATCH v11 15/29] x86/arch_prctl: Create
+ ARCH_SET_STATE_ENABLE/ARCH_GET_STATE_ENABLE
+In-Reply-To: <87o884fh3g.ffs@tglx>
+References: <20211001223728.9309-1-chang.seok.bae@intel.com>
+ <20211001223728.9309-16-chang.seok.bae@intel.com> <87o884fh3g.ffs@tglx>
+Date:   Tue, 05 Oct 2021 11:49:05 +0200
+Message-ID: <87ilybg5ta.ffs@tglx>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-10-04_05,2021-10-04_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
- priorityscore=1501 suspectscore=0 mlxscore=0 clxscore=1015 adultscore=0
- bulkscore=0 malwarescore=0 lowpriorityscore=0 impostorscore=0 spamscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110050054
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-  Sorry I missed to update correct version details.
+On Tue, Oct 05 2021 at 02:30, Thomas Gleixner wrote:
+> On Fri, Oct 01 2021 at 15:37, Chang S. Bae wrote:
+>> +		if (state_perm & ~features_mask)
+>> +			return -EINVAL;
+>> +
+>> +		state_perm &= xfeatures_mask_user_perm();
+>> +		if (!state_perm)
+>> +			return 0;
+>
+> I really do not get the semantics of this prctl at all.
+>
+> GET stores _all_ permitted bits in the user space variable which makes
+> sense.
+>
+> SET is just accepting everything except not supported bits, but as it
+> takes a feature bitmask it suggests that this sets the xfeature bits
+> which are available for the task or the process.
+>
+> How does prctl(..., SET, 0) make sense?
+>
+> It does not make any sense at all. There is no support for downgrading
+> the permitted features:
+>
+>     1) Default features up to AVX512 cannot be disabled
+>     
+>     2) Once AMX (or any upcoming state) is enabled there is not way back.
+>
+> So no. This really want's to be
+>
+>    prctl(SET, xfeature_number)
+>
+> and not something which is semanticaly ill defined.
 
-Link to the previous patch-set, where discussion related to addition of
-new data source encoding field 'mem_hops' happened:
+So of course this is odd at all ends because AMX requires two feature
+bits to be enabled (17 and 18).
 
-https://lkml.org/lkml/2021/9/4/37
+Now with the above bitmap based thing prctl(SET, 1 << 17) is valid
+because it's supported and of course there is no sanity check at all.
 
-Changelog:
+With a feature number based interface it's even worse. Duh, should have
+thought about that.
 
-- Rather then adding new macros for L2.1/L3.1 (same chip, different
-core) entries as part of field lvlnum, we are introducing new field
-called 'mem_hops' which can be used to get hops
-level data(intra-chip/package or inter-chip/off-package details).
-As suggested by Peter Zijlstra.
+So this gives us two options:
 
-- Using OnChip to denote data accesses from 'another core of same chip'
-  is not too clear. Update it to 'remote core, same chip' as pointed by
-  Michael Ellerman.
+   1) Bitmap with proper sanity checks
 
-- Update the fix patch of correcting data source encodings to use new
-added field 'mem_hops'.
+      reject (1 << 17) and (1 << 18)
+      grant (1 << 17 | 1 << 18)
+
+      but for sanity sake and also for ease of filtering, we want to
+      restrict a permission request to one functional block at a time.
+
+      #define X86_XCOMP_AMX	(1 << 17 | 1 << 18)
+      #define X86_XCOMP_XYZ1    (1 << 19)
+
+      But that gets a bit odd when there is a component which depends on
+      others:
+
+      #define X86_XCOMP_XYZ2    (1 << 19 | 1 << 20)
+
+   2) Facility based numerical interface, i.e.
+
+      #define X86_XCOMP_AMX	1
+      #define X86_XCOMP_XYZ1    2
+      #define X86_XCOMP_XYZ2    3
+
+      is way simpler to understand IMO.
 
 Thanks,
-Kajol Jain
 
-
-On 10/5/21 2:48 PM, Kajol Jain wrote:
-> Add a comment about PERF_MEM_LVL_* namespace being depricated
-> to some extent in favour of added PERF_MEM_{LVLNUM_,REMOTE_,SNOOPX_}
-> fields.
-> 
-> Remove an extra line present in perf_mem__lvl_scnprintf function.
-> 
-> Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
-> ---
->  include/uapi/linux/perf_event.h       | 8 +++++++-
->  tools/include/uapi/linux/perf_event.h | 8 +++++++-
->  tools/perf/util/mem-events.c          | 1 -
->  3 files changed, 14 insertions(+), 3 deletions(-)
-> 
-> diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
-> index f92880a15645..e1701e9c7858 100644
-> --- a/include/uapi/linux/perf_event.h
-> +++ b/include/uapi/linux/perf_event.h
-> @@ -1241,7 +1241,13 @@ union perf_mem_data_src {
->  #define PERF_MEM_OP_EXEC	0x10 /* code (execution) */
->  #define PERF_MEM_OP_SHIFT	0
->  
-> -/* memory hierarchy (memory level, hit or miss) */
-> +/*
-> + * PERF_MEM_LVL_* namespace being depricated to some extent in the
-> + * favour of newer composite PERF_MEM_{LVLNUM_,REMOTE_,SNOOPX_} fields.
-> + * Supporting this namespace inorder to not break defined ABIs.
-> + *
-> + * memory hierarchy (memory level, hit or miss)
-> + */
->  #define PERF_MEM_LVL_NA		0x01  /* not available */
->  #define PERF_MEM_LVL_HIT	0x02  /* hit level */
->  #define PERF_MEM_LVL_MISS	0x04  /* miss level  */
-> diff --git a/tools/include/uapi/linux/perf_event.h b/tools/include/uapi/linux/perf_event.h
-> index f92880a15645..e1701e9c7858 100644
-> --- a/tools/include/uapi/linux/perf_event.h
-> +++ b/tools/include/uapi/linux/perf_event.h
-> @@ -1241,7 +1241,13 @@ union perf_mem_data_src {
->  #define PERF_MEM_OP_EXEC	0x10 /* code (execution) */
->  #define PERF_MEM_OP_SHIFT	0
->  
-> -/* memory hierarchy (memory level, hit or miss) */
-> +/*
-> + * PERF_MEM_LVL_* namespace being depricated to some extent in the
-> + * favour of newer composite PERF_MEM_{LVLNUM_,REMOTE_,SNOOPX_} fields.
-> + * Supporting this namespace inorder to not break defined ABIs.
-> + *
-> + * memory hierarchy (memory level, hit or miss)
-> + */
->  #define PERF_MEM_LVL_NA		0x01  /* not available */
->  #define PERF_MEM_LVL_HIT	0x02  /* hit level */
->  #define PERF_MEM_LVL_MISS	0x04  /* miss level  */
-> diff --git a/tools/perf/util/mem-events.c b/tools/perf/util/mem-events.c
-> index f0e75df72b80..ff7289e28192 100644
-> --- a/tools/perf/util/mem-events.c
-> +++ b/tools/perf/util/mem-events.c
-> @@ -320,7 +320,6 @@ int perf_mem__lvl_scnprintf(char *out, size_t sz, struct mem_info *mem_info)
->  	/* already taken care of */
->  	m &= ~(PERF_MEM_LVL_HIT|PERF_MEM_LVL_MISS);
->  
-> -
->  	if (mem_info && mem_info->data_src.mem_remote) {
->  		strcat(out, "Remote ");
->  		l += 7;
-> 
+        tglx
