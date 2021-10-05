@@ -2,66 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC1284227E6
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 15:32:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E27304227FD
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 15:34:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235099AbhJENdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 09:33:55 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3935 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234103AbhJENdx (ORCPT
+        id S235096AbhJENgm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 09:36:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39980 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234318AbhJENgl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 09:33:53 -0400
-Received: from fraeml735-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HNz2P5GFfz67bWP;
-        Tue,  5 Oct 2021 21:29:17 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml735-chm.china.huawei.com (10.206.15.216) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Tue, 5 Oct 2021 15:32:01 +0200
-Received: from [10.47.95.252] (10.47.95.252) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2308.8; Tue, 5 Oct 2021
- 14:32:00 +0100
-Subject: Re: [PATCH v5 00/14] blk-mq: Reduce static requests memory footprint
- for shared sbitmap
-To:     Jens Axboe <axboe@kernel.dk>, <kashyap.desai@broadcom.com>
-CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <ming.lei@redhat.com>, <hare@suse.de>, <linux-scsi@vger.kernel.org>
-References: <1633429419-228500-1-git-send-email-john.garry@huawei.com>
- <ae33dde8-96e8-2978-5f32-c7e0a6136e8e@kernel.dk>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <81d9e019-b730-221e-a8c0-f72a8422a2ec@huawei.com>
-Date:   Tue, 5 Oct 2021 14:34:39 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        Tue, 5 Oct 2021 09:36:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633440890;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=KbQMyQ3OBXFxJwor2dj+AzBaJlpfPumA3y+3T9hS3ck=;
+        b=QHPCPnKOvr64ktw012kT9Ifp7S93uK0JXRy9gKNyTAmogmT2jIqreQf6/jPS/pwQdshLb3
+        TbhEqfIGtoCHKPxSl0S0ofdVNcU6ogqji7J/s7ioKZkwFoPVIs9lGdzqpn1A2Z4vUTibe3
+        3bJ4PPDHutYUAQE3+hrCX8Vm4b5aXz8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-405-p9vWSj-wP-G3pUDdrQWKnw-1; Tue, 05 Oct 2021 09:34:47 -0400
+X-MC-Unique: p9vWSj-wP-G3pUDdrQWKnw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 50907802921;
+        Tue,  5 Oct 2021 13:34:45 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.33.36.44])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7085B2619A;
+        Tue,  5 Oct 2021 13:34:40 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+To:     torvalds@linux-foundation.org
+Cc:     dhowells@redhat.com, Dominique Martinet <asmadeus@codewreck.org>,
+        Jeff Layton <jlayton@kernel.org>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        v9fs-developer@lists.sourceforge.net,
+        linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] fscache, 9p, afs, nfs: Fix kerneldoc warnings and one unused variable
 MIME-Version: 1.0
-In-Reply-To: <ae33dde8-96e8-2978-5f32-c7e0a6136e8e@kernel.dk>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.95.252]
-X-ClientProxiedBy: lhreml709-chm.china.huawei.com (10.201.108.58) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1082804.1633440879.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Tue, 05 Oct 2021 14:34:39 +0100
+Message-ID: <1082805.1633440879@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/10/2021 13:35, Jens Axboe wrote:
->> Baseline is 1b2d1439fc25 (block/for-next) Merge branch 'for-5.16/io_uring'
->> into for-next
-> Let's get this queued up for testing, thanks John.
+Hi Linus,
 
-Cheers, appreciated
+Could you consider pulling these changes please?
 
-@Kashyap, You mentioned that when testing you saw a performance 
-regression from v5.11 -> v5.12 - any idea on that yet? Can you describe 
-the scenario, like IO scheduler and how many disks and the type? Does 
-disabling host_tagset_enable restore performance?
+The first four patches fix kerneldoc warnings in fscache, afs, 9p and nfs =
+-
+they're mostly just comment changes, though there's one place in 9p where =
+a
+comment got detached from the function it was attached to (v9fs_fid_add)
+and has to switch places with a function that got inserted between
+(__add_fid).
 
- From checking differences between those kernels, I don't see anything 
-directly relevant in sbitmap support or in the megaraid sas driver.
+The patch on the end removes an unused symbol in fscache - I moved it last
+so you can discard it if you'd rather not pull that one just now.
 
-Thanks,
-John
+David
+
+Link: https://lore.kernel.org/r/163214005516.2945267.7000234432243167892.s=
+tgit@warthog.procyon.org.uk/ # rfc v1
+Link: https://lore.kernel.org/r/163281899704.2790286.9177774252843775348.s=
+tgit@warthog.procyon.org.uk/ # rfc v2
+Link: https://lore.kernel.org/r/163342376338.876192.10313278824682848704.s=
+tgit@warthog.procyon.org.uk/ # split up
+
+---
+The following changes since commit 9e1ff307c779ce1f0f810c7ecce3d95bbae4089=
+6:
+
+  Linux 5.15-rc4 (2021-10-03 14:08:47 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git tags=
+/warning-fixes-20211005
+
+for you to fetch changes up to ef31499a87cf842bdf6719f44473d93e99d09fe2:
+
+  fscache: Remove an unused static variable (2021-10-04 22:13:12 +0100)
+
+----------------------------------------------------------------
+Warning fixes
+
+----------------------------------------------------------------
+David Howells (5):
+      nfs: Fix kerneldoc warning shown up by W=3D1
+      afs: Fix kerneldoc warning shown up by W=3D1
+      9p: Fix a bunch of kerneldoc warnings shown up by W=3D1
+      fscache: Fix some kerneldoc warnings shown up by W=3D1
+      fscache: Remove an unused static variable
+
+ fs/9p/cache.c          |  8 ++++----
+ fs/9p/fid.c            | 14 +++++++-------
+ fs/9p/v9fs.c           |  8 +++-----
+ fs/9p/vfs_addr.c       | 14 +++++++++-----
+ fs/9p/vfs_file.c       | 33 ++++++++++++---------------------
+ fs/9p/vfs_inode.c      | 24 ++++++++++++++++--------
+ fs/9p/vfs_inode_dotl.c | 11 +++++++++--
+ fs/afs/dir_silly.c     |  4 ++--
+ fs/fscache/object.c    |  2 +-
+ fs/fscache/operation.c |  3 +++
+ fs/nfs_common/grace.c  |  1 -
+ 11 files changed, 66 insertions(+), 56 deletions(-)
+
