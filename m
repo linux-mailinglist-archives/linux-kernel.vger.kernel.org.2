@@ -2,151 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF7FA4227C2
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 15:27:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F10E14227CB
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 15:28:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234875AbhJEN3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 09:29:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49240 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234950AbhJEN3c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 09:29:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5EE5E61251;
-        Tue,  5 Oct 2021 13:27:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633440461;
-        bh=MOH/wIgGZg6o0CoLkFJQmfzWGtCwlnQSYLFTb25uQlE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=OSXc2LRUI4jwymWNkorUMTx3IFqUVd8nGbunxnV4tDHJIzKX/UmPIEKW1LZC+dqhg
-         fj4xIOWMU+FrFQnf8liB/iuwu8aPd7Ebrrqu/+/2D/tbDLdnBGDQ/iLWqGIAIoGQAj
-         dhBY9itF4VbZYAQV87Cj+YGui9E4aYT6LvtQz6cibckn3yYskVxxMsYwLpKQR/WjQc
-         540JNRJwmIx/zi16917RkiXb4UjmQs9RGD25YrwBNJNfICyVjI6Ft639964CpbVSWz
-         bVZ1dR7Px+wZgFhhrlNWlWiWIfgXYUpOMu2wzqtoHCp+OF7MmyAhxPBvxmLK2ItSIe
-         8awC367gFY1fA==
-Received: by mail-qt1-f182.google.com with SMTP id r16so19001491qtw.11;
-        Tue, 05 Oct 2021 06:27:41 -0700 (PDT)
-X-Gm-Message-State: AOAM533VO+z33Rj879OrOmE79gktQMMahsUdD6RlY6hQ+e+QHcvzNwAI
-        Yt5ceVXUkdh88ILyETbdjevklsaVtnXakY5bfw==
-X-Google-Smtp-Source: ABdhPJxQAFhHe4+av141S3+5nqxD6ijBY6lLkb+QsF2zqe+Qv+Dlzut6+e0uaRWT3UFTk7nE4P0ehgvDvleY8Qztn3c=
-X-Received: by 2002:ac8:1090:: with SMTP id a16mr19819375qtj.297.1633440459286;
- Tue, 05 Oct 2021 06:27:39 -0700 (PDT)
+        id S235005AbhJENan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 09:30:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58902 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234170AbhJENal (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 09:30:41 -0400
+Received: from mail-oo1-xc34.google.com (mail-oo1-xc34.google.com [IPv6:2607:f8b0:4864:20::c34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BF34C061749
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 06:28:51 -0700 (PDT)
+Received: by mail-oo1-xc34.google.com with SMTP id v17-20020a4ae051000000b002b5a56e3da3so199879oos.2
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 06:28:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kali.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=/c/eEsD9A8CxATtvLzMZQW23g57As6UAdQJI9w6Phqg=;
+        b=bg5XmOUO242fmOQv8vEUB0Cjo6mWlkROXJONC02dINX3+OI8ALc60dv0KtIbK2+c7p
+         IHmpGY/1PO3CPlIsxo04yhI3jQj+N0QDEowHxbVtBnBqDkBXt7cFH8RYIw4XaFeSH+d9
+         tK0bNVb2W9f1bvU8MyOogwyuOkkg0eVLc02r/dMNPE5ydZkWETleFwvfBb4y1QtfvmgK
+         VF3WTyceJJmEaHQh9JC7D2mt4a6yFJMJQNPwEiBWCChxia9pgQCzKyDtvZpxKtpHzoeO
+         pwWwl2b4silmLI8jp9Jz7Ny4w1GIKKO67tjMLexLI7O2XFc8ito9YIv6FGm6ZPpaTQ/p
+         4MKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=/c/eEsD9A8CxATtvLzMZQW23g57As6UAdQJI9w6Phqg=;
+        b=7jOiEEq0nrGPdxvZGz0HAAM7BMqhosodR1IrnQQvixk9JoUtYBdociz8J7Rr0hGwKa
+         EBDl5JZS2HgUF47xhE0TOKZ0FedhotSKE58X2zqbtsXlaTDfYlM4W2LbuhVa8sHn680p
+         ouZRk447bCwQaZ9W6baYFItSWa7w1Ai82aFI9sK+rPZMCQ8SQmkWAXs77gkiWQNVEd0f
+         yH29O2Q+gcfLz73nX6IekVztdUnqO/XlvC5x9rY+zpU0nT0IYj9KEoAOsMeyPZRydjpI
+         MyolDkFs0a+MTWw5i25h2hORUQc1pzuiyG/wfVSRWO3zhdTr1lOsH6hXBaKPDkw/kSKJ
+         ommQ==
+X-Gm-Message-State: AOAM530ma5HVfwTuqwc3vGthxBb/y+5QOExdCRwCQd6qD0TbcI6P5t1p
+        hr4M4uLy6AqSNH+38kDArg3BDKp8EAeNvD6o
+X-Google-Smtp-Source: ABdhPJz3CfmfGZl6xSv0Z4HSYsSEnz8bqO7Nzcc52AAmW4xAyZEI7fUz3MewVmDxzFH7LxRJa1xCYQ==
+X-Received: by 2002:a4a:ac47:: with SMTP id q7mr13415845oon.90.1633440530656;
+        Tue, 05 Oct 2021 06:28:50 -0700 (PDT)
+Received: from MacBook-Pro.hackershack.net (cpe-173-173-107-246.satx.res.rr.com. [173.173.107.246])
+        by smtp.gmail.com with ESMTPSA id c12sm3498484oos.16.2021.10.05.06.28.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Oct 2021 06:28:50 -0700 (PDT)
+Subject: Re: [PATCH 2/5] arm64: dts: qcom: sdm845: Disable Adreno, modem and
+ Venus by default
+To:     Konrad Dybcio <konrad.dybcio@somainline.org>,
+        ~postmarketos/upstreaming@lists.sr.ht
+Cc:     martin.botka@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211002001358.45920-1-konrad.dybcio@somainline.org>
+ <20211002001358.45920-3-konrad.dybcio@somainline.org>
+ <67e12e31-2eb3-fea6-822e-56836aabc0d2@kali.org>
+ <255059cf-b91c-1d29-0474-6b4b8fcef141@somainline.org>
+From:   Steev Klimaszewski <steev@kali.org>
+Message-ID: <afcde09c-c930-ca6c-9ccc-7888d86a150a@kali.org>
+Date:   Tue, 5 Oct 2021 08:28:48 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <20210926145931.14603-1-sergio.paracuellos@gmail.com>
- <20210926145931.14603-3-sergio.paracuellos@gmail.com> <YVtCtGcLjNcO2NJ0@robh.at.kernel.org>
- <CAMhs-H9TDEWEffDn7hBQxT127RNU4eUtPxaSciuiis0fPqTN_w@mail.gmail.com>
-In-Reply-To: <CAMhs-H9TDEWEffDn7hBQxT127RNU4eUtPxaSciuiis0fPqTN_w@mail.gmail.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Tue, 5 Oct 2021 08:27:25 -0500
-X-Gmail-Original-Message-ID: <CAL_Jsq+U_0JnCoJVaHH0T+kdmxX_OosD9=OT0dWyNdwbe=CLoQ@mail.gmail.com>
-Message-ID: <CAL_Jsq+U_0JnCoJVaHH0T+kdmxX_OosD9=OT0dWyNdwbe=CLoQ@mail.gmail.com>
-Subject: Re: [PATCH 2/3] dt: bindings: add ralink RT2880 resets device tree
- binding documentation
-To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Cc:     linux-staging@lists.linux.dev, John Crispin <john@phrozen.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Greg KH <gregkh@linuxfoundation.org>,
-        NeilBrown <neil@brown.name>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <255059cf-b91c-1d29-0474-6b4b8fcef141@somainline.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 4, 2021 at 1:23 PM Sergio Paracuellos
-<sergio.paracuellos@gmail.com> wrote:
+
+On 10/2/21 5:51 PM, Konrad Dybcio wrote:
+> On 03.10.2021 00:25, Steev Klimaszewski wrote:
+>> This missed the Lenovo Yoga C630 inherits from sdm845 and breaks it.
+> Welp, qcom decided to give laptops +5 sdm points and that made me overlook it :P
 >
-> Hi Rob,
 >
-> On Mon, Oct 4, 2021 at 8:06 PM Rob Herring <robh@kernel.org> wrote:
-> >
-> > On Sun, Sep 26, 2021 at 04:59:30PM +0200, Sergio Paracuellos wrote:
-> > > Adds device tree binding documentation for resets in the ralink RT2880 SoCs.
-> > >
-> > > Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
-> > > ---
-> > >  .../bindings/reset/ralink,rt2880-reset.yaml   | 39 +++++++++++++++++++
-> > >  1 file changed, 39 insertions(+)
-> > >  create mode 100644 Documentation/devicetree/bindings/reset/ralink,rt2880-reset.yaml
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/reset/ralink,rt2880-reset.yaml b/Documentation/devicetree/bindings/reset/ralink,rt2880-reset.yaml
-> > > new file mode 100644
-> > > index 000000000000..88eddeb4ee45
-> > > --- /dev/null
-> > > +++ b/Documentation/devicetree/bindings/reset/ralink,rt2880-reset.yaml
-> > > @@ -0,0 +1,39 @@
-> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > +%YAML 1.2
-> > > +---
-> > > +$id: http://devicetree.org/schemas/reset/ralink,rt2880-reset.yaml#
-> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > +
-> > > +title: Ralink RT2880 Reset Controller Device Tree Bindings
-> > > +
-> > > +maintainers:
-> > > +  - Sergio Paracuellos <sergio.paracuellos@gmail.com>
-> > > +
-> > > +description: |
-> > > +  Ralink RT2880 reset controller driver which supports the SoC
-> > > +  system controller supplied reset registers for the various peripherals
-> > > +  of the SoC.
-> > > +
-> > > +  See also:
-> > > +  - dt-bindings/reset/ralink-rt2880.h
-> > > +
-> > > +properties:
-> > > +  compatible:
-> > > +    const: ralink,rt2880-reset
-> > > +
-> > > +  '#reset-cells':
-> > > +    const: 1
-> > > +
-> > > +required:
-> > > +  - '#reset-cells'
-> > > +  - compatible
-> > > +
-> > > +additionalProperties: false
-> > > +
-> > > +examples:
-> > > +  - |
-> > > +    #include <dt-bindings/reset/ralink-rt2880.h>
-> > > +    rstctrl: reset-controller {
-> > > +      compatible = "ralink,rt2880-reset";
-> > > +      #reset-cells = <1>;
-> >
-> > How is this h/w controlled? If this is part of a system controller, then
-> > it needs to be documented as such. IOW, you need to document the binding
-> > for the whole block.
-> >
-> > Do you really need a child node here? All you need to make a system
-> > controller a reset provider is add '#reset-cells' to it.
+> If the rest of the patch looks good, could you add this diff Bjorn to fix that?:
 >
-> I am just documenting what is already mainlined (see [0]) in order to
-> get mt7621-dts out of staging at some point of my life. What am I
-> supposed to do? Should I rewrite all already mainlined code? Because
-> if that is the case we need to rewrite tons of things from the ralink
-> platform...
+>
+> diff --git a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
+> index a3b61cb3cfad..b96ecf537ff1 100644
+> --- a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
+> +++ b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
+> @@ -343,7 +343,12 @@ &gcc {
+>                            <GCC_LPASS_SWAY_CLK>;
+>  };
+>  
+> +&gmu {
+> +       status = "okay";
+> +};
+> +
+>  &gpu {
+> +       status = "okay";
+>         zap-shader {
+>                 memory-region = <&gpu_mem>;
+>                 firmware-name = "qcom/LENOVO/81JL/qcdxkmsuc850.mbn";
+> @@ -461,6 +466,7 @@ &mdss {
+>  };
+>  
+>  &mss_pil {
+> +       status = "okay";
+>         firmware-name = "qcom/LENOVO/81JL/qcdsp1v2850.mbn", "qcom/LENOVO/81JL/qcdsp2850.mbn";
+>  };
+>  
+> @@ -722,6 +728,10 @@ &usb_2_qmpphy {
+>         vdda-pll-supply = <&vdda_usb2_ss_core>;
+>  };
+>  
+> +&venus {
+> +       status = "okay";
+> +};
+> +
+>  &wcd9340{
+>         pinctrl-0 = <&wcd_intr_default>;
+>         pinctrl-names = "default";
+>
+>
+> Konrad
+>
+With the above applied, all is well on the Lenovo Yoga C630.
 
-On the flip side, am I not supposed to review bindings because the dts
-is already in staging? Code dependent on DT bindings shouldn't have
-been mainlined without any documented binding.
+Tested-By: Steev Klimaszewski <steev@kali.org>
 
-Looks like the resets are part of "mediatek,mt7621-sysc" to answer my
-question. Add a #reset-cell to that node (and binding) and then change
-this line to "mediatek,mt7621-sysc":
-
-        reset_dev.of_node = of_find_compatible_node(NULL, NULL,
-                                                "ralink,rt2880-reset");
-
-That's the minimal change, but really I would move the reset code to
-the clock driver as that is what handles the sysc node.
-
-
-> I'd also like to know what we should do with those nodes already added
-> to the dtsi file that have not got associated compatible driver
-> mainlined. Can we just get rid of them?
-
-Yes. Typically dts files start with minimal support.
-
-A dts file in staging is odd. We shouldn't be adding them there.
-
-Rob
