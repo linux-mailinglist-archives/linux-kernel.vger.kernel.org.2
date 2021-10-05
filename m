@@ -2,65 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5C0E422BA1
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:59:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 506A3422BA3
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:00:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235134AbhJEPBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 11:01:40 -0400
-Received: from smtprelay0217.hostedemail.com ([216.40.44.217]:34622 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231663AbhJEPBg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 11:01:36 -0400
-Received: from omf19.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id BBB192774C;
-        Tue,  5 Oct 2021 14:59:44 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf19.hostedemail.com (Postfix) with ESMTPA id 414E320D76E;
-        Tue,  5 Oct 2021 14:59:44 +0000 (UTC)
-Message-ID: <3ee1984f331b6b283f95bed303dc3d3e7e363460.camel@perches.com>
-Subject: Re: [PATCH 01/13] usb: core: config: Use tabs rather than spaces
- for new lines of args
-From:   Joe Perches <joe@perches.com>
-To:     Robert Greener <rob@robgreener.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Date:   Tue, 05 Oct 2021 07:59:43 -0700
-In-Reply-To: <3e27773cc94bfc740374d0432e70e4b215c08c9a.1633442131.git.rob@robgreener.com>
-References: <cover.1633442131.git.rob@robgreener.com>
-         <3e27773cc94bfc740374d0432e70e4b215c08c9a.1633442131.git.rob@robgreener.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.0-1 
+        id S235401AbhJEPCE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 11:02:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60518 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234964AbhJEPCC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 11:02:02 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1B2D861381;
+        Tue,  5 Oct 2021 15:00:11 +0000 (UTC)
+Date:   Tue, 5 Oct 2021 11:00:09 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Punit Agrawal <punitagrawal@gmail.com>
+Subject: Re: [for-linus][PATCH 00/27] tracing: Updates for 5.16
+Message-ID: <20211005110009.3baac4cf@gandalf.local.home>
+In-Reply-To: <20211005135733.485175654@goodmis.org>
+References: <20211005135733.485175654@goodmis.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Server: rspamout01
-X-Rspamd-Queue-Id: 414E320D76E
-X-Spam-Status: No, score=0.10
-X-Stat-Signature: npk88fekj6em1j8f3strzcdms13g4ymz
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1+ykvpIhNf6YUa47ef+eWtBvFbQYbXMvuY=
-X-HE-Tag: 1633445984-646722
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-10-05 at 13:22 +0100, Robert Greener wrote:
-> This fixes the following checkpatch.pl warning at lines 28, 499, 500, 606:
+On Tue, 05 Oct 2021 09:57:33 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-Please do not bcc an entire patch set.
+>   git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
+> for-next
+> 
+> Head SHA1: bf094cffea2a6503ce84062f9f0243bef77c58f9
+> 
+> 
 
-> diff --git a/drivers/usb/core/config.c b/drivers/usb/core/config.c
-[]
-> @@ -496,8 +496,8 @@ void usb_release_interface_cache(struct kref *ref)
->  }
->  
->  static int usb_parse_interface(struct device *ddev, int cfgno,
-> -    struct usb_host_config *config, unsigned char *buffer, int size,
-> -    u8 inums[], u8 nalts[])
-> +		struct usb_host_config *config, unsigned char *buffer, int size,
-> +		s[], u8 nalts[])
+I just realized I used the wrong subject tag. This was suppose to be
+"[for-next]" not "[for-linus]".
 
-And don't send patches that likely don't compile.
-
-A patch described as a whitespace only patch should not change
-anything other that whitespace.
-
-
+-- Steve
