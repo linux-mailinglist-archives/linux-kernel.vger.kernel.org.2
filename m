@@ -2,118 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9418D4227AC
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 15:20:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28E554227AE
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 15:22:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234925AbhJENWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 09:22:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56928 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233910AbhJENW3 (ORCPT
+        id S234814AbhJENYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 09:24:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36854 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234170AbhJENYG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 09:22:29 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3626FC061749
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 06:20:39 -0700 (PDT)
-Received: from [IPV6:2804:14c:137:85b2:dfef:cce1:3539:7b45] (unknown [IPv6:2804:14c:137:85b2:dfef:cce1:3539:7b45])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        Tue, 5 Oct 2021 09:24:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633440135;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=K7QiTigWnRE0qebTdUZknIPdi6HRMo3UWM5OiPBiicY=;
+        b=CrBFXkjbnrQzuUYqN0vNLMbLHCcTUaYnHJutGP0m/NPbgr9UMetxEdRNifr99eiqsHK1e5
+        Gn7bWmI+ISXG4QGPnwFsNteDY4CIsuyr4xaoPZ6Rhi37X6TPv0RcTlNryVdQkSEIFF1jU6
+        l1cqfgJRofmwUPNzg2LtHjfja/pH3yk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-144-emQhK1cwMMKfZRNZNWIIcA-1; Tue, 05 Oct 2021 09:22:14 -0400
+X-MC-Unique: emQhK1cwMMKfZRNZNWIIcA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: padovan)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 812321F43A9B;
-        Tue,  5 Oct 2021 14:20:36 +0100 (BST)
-Message-ID: <ad9e9763-8345-1a6f-f138-73cd4d8a7458@collabora.com>
-Date:   Tue, 5 Oct 2021 10:20:31 -0300
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CFFA7835DE0;
+        Tue,  5 Oct 2021 13:22:12 +0000 (UTC)
+Received: from fuller.cnet (ovpn-112-2.gru2.redhat.com [10.97.112.2])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id B1ECB5F4E7;
+        Tue,  5 Oct 2021 13:22:02 +0000 (UTC)
+Received: by fuller.cnet (Postfix, from userid 1000)
+        id 27BCA416D862; Tue,  5 Oct 2021 10:21:59 -0300 (-03)
+Date:   Tue, 5 Oct 2021 10:21:59 -0300
+From:   Marcelo Tosatti <mtosatti@redhat.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Nitesh Narayan Lal <nitesh@redhat.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        seanjc@google.com, vkuznets@redhat.com, tglx@linutronix.de,
+        frederic@kernel.org, mingo@kernel.org, nilal@redhat.com,
+        Wanpeng Li <kernellwp@gmail.com>
+Subject: Re: [PATCH v1] KVM: isolation: retain initial mask for kthread VM
+ worker
+Message-ID: <20211005132159.GA134926@fuller.cnet>
+References: <20211004222639.239209-1-nitesh@redhat.com>
+ <e734691b-e9e1-10a0-88ee-73d8fceb50f9@redhat.com>
+ <20211005105812.GA130626@fuller.cnet>
+ <96f38a69-2ff8-a78c-a417-d32f1eb742be@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [kernelci-members] KernelCI working group: Web Dashboard
-Content-Language: en-US
-From:   Gustavo Padovan <gustavo.padovan@collabora.com>
-To:     kernelci-members@groups.io
-Cc:     "kernelci@groups.io" <kernelci@groups.io>,
-        automated-testing@lists.yoctoproject.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kernelci-tsc@groups.io" <kernelci-tsc@groups.io>
-Reply-To: kernelci-members@groups.io
-References: <1695B2FF4ECA569A.21772@groups.io>
-Organization: Collabora Ltd.
-In-Reply-To: <1695B2FF4ECA569A.21772@groups.io>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <96f38a69-2ff8-a78c-a417-d32f1eb742be@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Oct 05, 2021 at 01:25:52PM +0200, Paolo Bonzini wrote:
+> On 05/10/21 12:58, Marcelo Tosatti wrote:
+> > > There are other effects of cgroups (e.g. memory accounting) than just the
+> > > cpumask;
+> > 
+> > Is kvm-nx-hpage using significant amounts of memory?
+> 
+> No, that was just an example (and not a good one indeed, because
+> kvm-nx-hpage is not using a substantial amount of either memory or CPU).
+> But for example vhost also uses cgroup_attach_task_all, so it should have
+> the same issue with SCHED_FIFO?
 
-On 7/27/21 13:34, Gustavo Padovan wrote:
-> Hi Greg,
->
-> On Tuesday, July 27, 2021 12:58 -03, "Greg KH" <gregkh@linuxfoundation.org> wrote:
->
->> On Tue, Jul 27, 2021 at 04:54:46PM +0100, Guillaume Tucker wrote:
->>> Last year's KernelCI Community Survey[1] showed the importance of
->>> having a good web dashboard.  About 70% of respondents would use
->>> one if it provided the information they needed efficiently.
->>> While other things are arguably even more important, such as
->>> testing patches from mailing lists, replying to stable reviews
->>> and sending email reports directly to contributors in a "natural"
->>> workflow, the web dashboard has been a sticking point for a
->>> while.
->>>
->>> There have been several attempts at solving this problem, using
->>> Elastic Stack and Grafana among other things, but there isn't a
->>> single framework able to directly provide an off-the-shelf
->>> solution to the community's needs.  In fact, the first issue is
->>> the lack of understanding of these needs: who wants to use the
->>> web dashboard, and how?  Then, how does one translate those needs
->>> into a user interface?  Doing this requires skills that engineers
->>> who regularly contribute to KernelCI typically don't have.  As
->>> such, a dedicated working group is being created in order to fill
->>> this gap.
->>>
->>> The aim is to coordinate efforts and try to follow best practices
->>> to make steady progress and avoid repeating the same mistakes.
->>> Most likely, we will need some help from proper web developers
->>> who aren't part of the usual KernelCI community.  This may be
->>> facilitated by the KernelCI LF project budget if approved by the
->>> governing board.
->>>
->>> In order to get started, we would need to have maybe 3 to 5
->>> people available to focus on this.  It doesn't necessarily mean a
->>> lot of hours spent but actions to be carried out on a daily or
->>> weekly basis.  So far we have Gustavo Padovan as our new KernelCI
->>> Project Manager and a few people have expressed interest but we
->>> still need formal confirmation.
->>>
->>>
->>> Here's a GitHub project dedicated to the new web dashboard:
->>>
->>>    https://github.com/orgs/kernelci/projects/4
->>>
->>> I've created a couple of issues to get started about user
->>> stories, and some initial milestones as a basic skeleton:
->>>
->>>    https://github.com/kernelci/kernelci-project/milestones
->>>
->>>
->>> This is ultimately a community-driven effort to address the needs
->>> of the kernel community.  Please share any thoughts you may have
->>> on this, whether you want to add some user stories, share some
->>> expertise, be officially in the working group or take part in
->>> this effort in any other way.
->> How do we "join" the working group?  I'm willing to help out from the
->> "user who will use this a lot and complain about things that do not
->> work well" point of view :)
-> Congratulations! You are now part of the working group. :) For now, anyone that is interested can step up, and maybe in a few weeks we can formalize with those who wants to take on the journey together with us in this working group.
->
-> Based on the replies to this thread I can put together an initial agenda and follow up with the potential times for a kick-off meeting.
+Yes. Would need to fix vhost as well.
 
-Here's a poll with some proposed times for us to schedule the first 
-meeting next week: https://doodle.com/poll/pbhpeu5cbxp49ghz
+> 
+> > > Why doesn't the scheduler move the task to a CPU that is not being hogged by
+> > > vCPU SCHED_FIFO tasks?
+> > Because cpuset placement is enforced:
+> 
+> Yes, but I would expect the parent cgroup to include both isolated CPUs (for
+> the vCPU threads) and non-isolated housekeeping vCPUs (for the QEMU I/O
+> thread).  
 
-Please reply to it ASAP.
+Yes, the parent, but why would that matter? If you are in a child
+cpuset, you are restricted to the child cpuset mask (and not the
+parents).
 
-Regards,
+> The QEMU I/O thread is not hogging the CPU 100% of the time, and
+> therefore the nx-recovery thread should be able to run on that CPU.
 
-Gustavo
+Yes, but:
+
+1) The cpumask of the parent thread is not inherited 
+
+	set_cpus_allowed_ptr(task, housekeeping_cpumask(HK_FLAG_KTHREAD));
+
+On __kthread_create_on_node should fail (because its cgroup, the one
+inherited from QEMU, contains only isolated CPUs).
+
+(The QEMU I/O thread runs on an isolated CPU, and is moved by libvirt
+to HK-cgroup as mentioned before).
+
+2) What if kernel threads that should be pinned to non-isolated CPUs are created
+from vcpus? 
+
+
+
+> 
+> Thanks,
+> 
+> Paolo
+> 
+> > CPUSET(7)                            Linux Programmer's Manual                           CPUSET(7)
+> > 
+> >         Cpusets are integrated with the sched_setaffinity(2) scheduling affinity mechanism and  the
+> >         mbind(2)  and set_mempolicy(2) memory-placement mechanisms in the kernel.  Neither of these
+> >         mechanisms let a process make use of a CPU or memory node  that  is  not  allowed  by  that
+> >         process's  cpuset.   If  changes  to a process's cpuset placement conflict with these other
+> >         mechanisms, then cpuset placement is enforced even if it means overriding these other mech‐
+> >         anisms.   The kernel accomplishes this overriding by silently restricting the CPUs and mem‐
+> >         ory nodes requested by these other mechanisms to those allowed by  the  invoking  process's
+> >         cpuset.   This  can  result in these other calls returning an error, if for example, such a
+> >         call ends up requesting an empty set of  CPUs  or  memory  nodes,  after  that  request  is
+> >         restricted to the invoking process's cpuset.
+> > 
+> > 
+> 
+> 
 
