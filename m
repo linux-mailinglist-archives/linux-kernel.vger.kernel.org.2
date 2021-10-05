@@ -2,96 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD67F422865
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 15:50:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC93F42284F
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 15:50:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235351AbhJENwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 09:52:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58802 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235291AbhJENwS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 09:52:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 05654613D5;
-        Tue,  5 Oct 2021 13:50:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633441827;
-        bh=6okTawUyTOxI3B3Z4YalRMWEYkJW/0Z3oG7uqjvHnbw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IMxO7PnEjk5kvkUFYWQtpvk4pt0KNjT/ywawHG/OTf+DPZw39z+8fiHwJVg+r2sX1
-         UQYXWsO7XRM2NvdG0FdXmiMV37fwWK8ea1CacmUeqpEj1Q/MQW7EdRvdCSBMZle85W
-         eY5C2wsPT+N4KA/+1RFs07xshgkEK8qPcNICryWNcVAoVO2FzJScZnxkI40Em20uvE
-         xo14Dc1ZuzdOY3klY12rp7epxNPZhShaUxIvbxBctGmmRY4hnG5JBTIdzlWBz8g411
-         3PxjYZExYAKkYwcu+1Lo9bgpkkQch06YIwfbfaf9J3Ruf8crzZaLCSOq4SEsdTIK7u
-         ob8nd48kus4zQ==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Takashi Iwai <tiwai@suse.de>,
-        Rander Wang <rander.wang@intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Bard Liao <bard.liao@intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, cezary.rojewski@intel.com,
-        liam.r.girdwood@linux.intel.com, yang.jie@linux.intel.com,
-        perex@perex.cz, tiwai@suse.com, kai.vehmanen@linux.intel.com,
-        yung-chuan.liao@linux.intel.com, libin.yang@intel.com,
-        vamshi.krishna.gopal@intel.com, yong.zhi@intel.com,
-        alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 5.14 03/40] ASoC: Intel: sof_sdw: tag SoundWire BEs as non-atomic
-Date:   Tue,  5 Oct 2021 09:49:42 -0400
-Message-Id: <20211005135020.214291-3-sashal@kernel.org>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211005135020.214291-1-sashal@kernel.org>
-References: <20211005135020.214291-1-sashal@kernel.org>
+        id S235147AbhJENvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 09:51:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:37712 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234274AbhJENvs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 09:51:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633441797;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NwRUK5QQPWeF1trrs+wsxCyXJhcpX/CxoItjVPGldec=;
+        b=PRGbZCbzMcFOi+fGoLF/axb2SgsjO6eSGjNe5Y+zVl4GSlrd5DNqBm2Xbh3iWD2F2NG5Hf
+        shUAZyAd32o0yZHB7iNTLIc9JHM/F7Q2QFcBz4ST+dc7ggIytVzWQU9u5g0+bJDxZ1rcQR
+        58H4gSw9NNR0bdjznlgbGlvsrhUf0zg=
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
+ [209.85.167.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-27-vCvt23nVNgSvAGL_de4iRg-1; Tue, 05 Oct 2021 09:49:56 -0400
+X-MC-Unique: vCvt23nVNgSvAGL_de4iRg-1
+Received: by mail-lf1-f71.google.com with SMTP id x29-20020ac259dd000000b003f950c726e1so9003911lfn.14
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 06:49:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NwRUK5QQPWeF1trrs+wsxCyXJhcpX/CxoItjVPGldec=;
+        b=ZuvCHKW8eV+bA8IVYFGDe8CnY3/8Em1Gg7FrJKXYM04G9YK0gK7mNbBgwjqPs/34mt
+         YXr+N5ev0cuKTn8oDKpQmKJAeHe9DNK9EFdYN6lkWYSJAhO7YuORDnIJU1AcZep7Bf4I
+         ThkNcw+TRWCSrIKmEQhQBfoakofstD5BZfE1SxR1MatFhmpvcOpmOlcn8A+dm7JexKxT
+         Jf21VBArx7dFPLtv6KEza/NCj7f/n7fz8u6r1eLddYPvtGiQnr4/SNuwkrYPvHu4Cg7n
+         RyUsyLrwvQ8Iuf5Xn/xrWA/GBNRm8027ZnA267hOsNjVmQWG5iTPs7jWg+hNJKExO4Vy
+         k9Lg==
+X-Gm-Message-State: AOAM531HQy3LxTmpvD7eZhKDo9NwEjaTTs5+8rEGXehiJYx+/g9Ug2a3
+        uinwFL8rJ8T3DzhTAUHas0cw/uhIFqQkxVFPHzYCwX2ht5L5KJJcy10gawRW9ybWB7VHyjR15jR
+        jx1cydCuqJqvvWwSOoh99vdIGZUP4fF4rHluAR6K1
+X-Received: by 2002:a2e:978a:: with SMTP id y10mr22201373lji.317.1633441795114;
+        Tue, 05 Oct 2021 06:49:55 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwTSOKxo8w5tu1zRnqUEtSRVav6LKD5IoSfTUbcxbGCkSh6Fdwm9ShQmWQsDK/EbuKsGt3x0bh9Xr9XmV9fZJA=
+X-Received: by 2002:a2e:978a:: with SMTP id y10mr22201346lji.317.1633441794875;
+ Tue, 05 Oct 2021 06:49:54 -0700 (PDT)
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+References: <20211004222639.239209-1-nitesh@redhat.com> <e734691b-e9e1-10a0-88ee-73d8fceb50f9@redhat.com>
+ <20211005105812.GA130626@fuller.cnet> <96f38a69-2ff8-a78c-a417-d32f1eb742be@redhat.com>
+ <20211005132159.GA134926@fuller.cnet>
+In-Reply-To: <20211005132159.GA134926@fuller.cnet>
+From:   Nitesh Lal <nilal@redhat.com>
+Date:   Tue, 5 Oct 2021 09:49:43 -0400
+Message-ID: <CAFki+LmR9bL67D9+dim25J8w3N71eA_BkNcNi3_dEmAB-J553A@mail.gmail.com>
+Subject: Re: [PATCH v1] KVM: isolation: retain initial mask for kthread VM worker
+To:     Marcelo Tosatti <mtosatti@redhat.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Nitesh Narayan Lal <nitesh@redhat.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Wanpeng Li <kernellwp@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+On Tue, Oct 5, 2021 at 9:22 AM Marcelo Tosatti <mtosatti@redhat.com> wrote:
+>
+> On Tue, Oct 05, 2021 at 01:25:52PM +0200, Paolo Bonzini wrote:
+> > On 05/10/21 12:58, Marcelo Tosatti wrote:
+> > > > There are other effects of cgroups (e.g. memory accounting) than just the
+> > > > cpumask;
+> > >
+> > > Is kvm-nx-hpage using significant amounts of memory?
+> >
+> > No, that was just an example (and not a good one indeed, because
+> > kvm-nx-hpage is not using a substantial amount of either memory or CPU).
+> > But for example vhost also uses cgroup_attach_task_all, so it should have
+> > the same issue with SCHED_FIFO?
+>
+> Yes. Would need to fix vhost as well.
+>
+> >
+> > > > Why doesn't the scheduler move the task to a CPU that is not being hogged by
+> > > > vCPU SCHED_FIFO tasks?
+> > > Because cpuset placement is enforced:
+> >
+> > Yes, but I would expect the parent cgroup to include both isolated CPUs (for
+> > the vCPU threads) and non-isolated housekeeping vCPUs (for the QEMU I/O
+> > thread).
+>
+> Yes, the parent, but why would that matter? If you are in a child
+> cpuset, you are restricted to the child cpuset mask (and not the
+> parents).
 
-[ Upstream commit 58eafe1ff52ee1ce255759fc15729519af180cbb ]
+Yes, and at the time of cpuset_attach, the task is attached to any one of
+the CPUs that are in the effective cpumask.
 
-The SoundWire BEs make use of 'stream' functions for .prepare and
-.trigger. These functions will in turn force a Bank Switch, which
-implies a wait operation.
+>
+> > The QEMU I/O thread is not hogging the CPU 100% of the time, and
+> > therefore the nx-recovery thread should be able to run on that CPU.
+>
+> Yes, but:
+>
+> 1) The cpumask of the parent thread is not inherited
+>
+>         set_cpus_allowed_ptr(task, housekeeping_cpumask(HK_FLAG_KTHREAD));
+>
+> On __kthread_create_on_node should fail (because its cgroup, the one
+> inherited from QEMU, contains only isolated CPUs).
+>
 
-Mark SoundWire BEs as nonatomic for consistency, but keep all other
-types of BEs as is. The initialization of .nonatomic is done outside
-of the create_sdw_dailink helper to avoid adding more parameters to
-deal with a single exception to the rule that BEs are atomic.
+Just to confirm, do you mean fail only for unbounded kthreads?
 
-Suggested-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Bard Liao <bard.liao@intel.com>
-Link: https://lore.kernel.org/r/20210907184436.33152-1-pierre-louis.bossart@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- sound/soc/intel/boards/sof_sdw.c | 5 +++++
- 1 file changed, 5 insertions(+)
 
-diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-index 1a867c73a48e..cb3afc4519cf 100644
---- a/sound/soc/intel/boards/sof_sdw.c
-+++ b/sound/soc/intel/boards/sof_sdw.c
-@@ -860,6 +860,11 @@ static int create_sdw_dailink(struct device *dev, int *be_index,
- 			      cpus + *cpu_id, cpu_dai_num,
- 			      codecs, codec_num,
- 			      NULL, &sdw_ops);
-+		/*
-+		 * SoundWire DAILINKs use 'stream' functions and Bank Switch operations
-+		 * based on wait_for_completion(), tag them as 'nonatomic'.
-+		 */
-+		dai_links[*be_index].nonatomic = true;
- 
- 		ret = set_codec_init_func(link, dai_links + (*be_index)++,
- 					  playback, group_id);
 -- 
-2.33.0
+Thanks
+Nitesh
 
