@@ -2,108 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 294C0422E71
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 18:53:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0B37422E58
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 18:48:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236576AbhJEQzK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 12:55:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51948 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233825AbhJEQzH (ORCPT
+        id S236697AbhJEQuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 12:50:23 -0400
+Received: from relaydlg-01.paragon-software.com ([81.5.88.159]:49357 "EHLO
+        relaydlg-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236600AbhJEQuW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 12:55:07 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A51EC061749
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 09:53:16 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id q7-20020a17090a2e0700b001a01027dd88so840240pjd.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 09:53:16 -0700 (PDT)
+        Tue, 5 Oct 2021 12:50:22 -0400
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+        by relaydlg-01.paragon-software.com (Postfix) with ESMTPS id A5F4681FEE;
+        Tue,  5 Oct 2021 19:48:30 +0300 (MSK)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=3y9/xex1IBG3Kf9w0DVpqN0KcuLp3munVqeoWolkHSo=;
-        b=PentxmITW8nM8VeiGHj+6B4cRZwjDrTB8EZ9qIAH1JeaDxkcucT0uPop+/Psw9Bbws
-         S1MlGKDMMPdJXHwueMTgCOjc9vqOTttLxZw4OhdH4hJ/SmmwXmHfOmiRE9aU4wUSiga3
-         MrvMRVY3qNzMqGgpLCGH0NKBrMWv9V5z3XjyuZ+J/5oj6xlWk6gdB9RQDLRBvrdjVL6M
-         rdu23t03peKHg2sRsTvoxT6NKj1odphgifP1T/bcBuhEU/lOvzrXsGeuD2T7E2dbS10Q
-         s1n0iUKKrWxRz/lrorPwfxPaok0/u2CiFYXjaE13krIKetwcuWUYmZZ+1qYQZJBVSO59
-         7SSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=3y9/xex1IBG3Kf9w0DVpqN0KcuLp3munVqeoWolkHSo=;
-        b=iV1dPw+B4DlhwnwNmqxsJ8bcZjH4bGpx6Y37gJpxrGAwm+VyUMwmmRJnfGaM3lIJYi
-         /D2Ac9lNcnpupsQtmvRFalAcW1uj+H2HOtPn4YKp/qamo9SmG2+6lVd/UxhUQNm2LBzQ
-         C+I3+dwP1EZ2goTJhBQG+q7NLzHaPvtGSfkY5VImozkrOpGJMOrBURB+M8cc8ayVCl/q
-         7L+yGSU4vIYo8ldeXzr+pqbrPPIKKAiyVVwPpkExTWYPiWyr4ECeZ+QF4bT1PvJnlRRm
-         n46DHxCbdr3Ir9cm8lL0QxoiU87PUefbGvbZMbXraU2OErz+TuGRKOx68E9CQRZ83NEt
-         L2Ng==
-X-Gm-Message-State: AOAM530XNNA2egpVXilAxv7K+tpoz0y+rEoEqsD9VHsthS0zyBImqiwk
-        e7FIhws2Fz0QYCYH67ArcrpWhVqNTHdxHQ==
-X-Google-Smtp-Source: ABdhPJwFPERCFazb+VU976epN6bRWoI3SrFOSR9uX1Lo6BRPQhtDqHgut/AyHa1RY3cuvQMybsR+ZQ==
-X-Received: by 2002:a17:90a:b78d:: with SMTP id m13mr5053686pjr.17.1633452795563;
-        Tue, 05 Oct 2021 09:53:15 -0700 (PDT)
-Received: from laptop.hsd1.wa.comcast.net ([2601:600:8500:5f14:d627:c51e:516e:a105])
-        by smtp.gmail.com with ESMTPSA id n19sm17615473pff.37.2021.10.05.09.53.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Oct 2021 09:53:15 -0700 (PDT)
-From:   Andrei Vagin <avagin@gmail.com>
-To:     linux-kernel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Andrei Vagin <avagin@gmail.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH] x86: move arch_get_vdso_data under CONFIG_TIME_NS
-Date:   Tue,  5 Oct 2021 09:48:27 -0700
-Message-Id: <20211005164827.103876-1-avagin@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        d=paragon-software.com; s=mail; t=1633452510;
+        bh=Zre4cSfIxDvE43kuIW5Oeh8hW2AAvbtXh8IQ7/+ZDcs=;
+        h=Date:Subject:From:To:CC:References:In-Reply-To;
+        b=UYuie3A7wmuGhbI41tthfPTda1G616JH5ZT6R5rpmokX9evrCztGcEtqNOPcMrN2a
+         hZlhVFA0ZVtO4qXxifBW5OGdGbpYQVjUwTRwO94WrNCy0KN+LxFwcftvaTkCImExaO
+         4rUG+gweNN+FY5z/PEoNfOYpOf66LTrzxKeXEdS0=
+Received: from [192.168.211.181] (192.168.211.181) by
+ vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 5 Oct 2021 19:48:30 +0300
+Message-ID: <0310433c-d9dc-da5b-f642-2ad4298a8918@paragon-software.com>
+Date:   Tue, 5 Oct 2021 19:48:29 +0300
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.2
+Subject: [PATCH 5/5] fs/ntfs3: Refactor ntfs_read_mft
+Content-Language: en-US
+From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+To:     <ntfs3@lists.linux.dev>
+CC:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>
+References: <98a166e4-f894-8bff-9479-05ef5435f1ed@paragon-software.com>
+In-Reply-To: <98a166e4-f894-8bff-9479-05ef5435f1ed@paragon-software.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [192.168.211.181]
+X-ClientProxiedBy: vobn-exch-01.paragon-software.com (172.30.72.13) To
+ vdlg-exch-02.paragon-software.com (172.30.1.105)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes the warning:
->> vma.c:32:19: warning: no previous prototype for 'arch_get_vdso_data'
-      32 | struct vdso_data *arch_get_vdso_data(void *vvar_page)
-         |                   ^~~~~~~~~~~~~~~~~~
+[PATCH 5/5] fs/ntfs3: Refactor ntfs_read_mft
 
-Cc: Dmitry Safonov <0x7f454c46@gmail.com>
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Andrei Vagin <avagin@gmail.com>
+Don't save size of attribute reparse point as size of symlink.
+
+Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
 ---
- arch/x86/entry/vdso/vma.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ fs/ntfs3/inode.c | 22 ++++++++--------------
+ 1 file changed, 8 insertions(+), 14 deletions(-)
 
-diff --git a/arch/x86/entry/vdso/vma.c b/arch/x86/entry/vdso/vma.c
-index 235a5794296a..427bc56c152b 100644
---- a/arch/x86/entry/vdso/vma.c
-+++ b/arch/x86/entry/vdso/vma.c
-@@ -31,11 +31,6 @@
- #define EMIT_VVAR(name, offset)	\
- 	const size_t name ## _offset = offset;
- #include <asm/vvar.h>
--
--struct vdso_data *arch_get_vdso_data(void *vvar_page)
--{
--	return (struct vdso_data *)(vvar_page + _vdso_data_offset);
--}
- #undef EMIT_VVAR
+diff --git a/fs/ntfs3/inode.c b/fs/ntfs3/inode.c
+index bdebbbd53e76..859951d785cb 100644
+--- a/fs/ntfs3/inode.c
++++ b/fs/ntfs3/inode.c
+@@ -222,9 +222,6 @@ static struct inode *ntfs_read_mft(struct inode *inode,
+ 		if (!attr->non_res) {
+ 			ni->i_valid = inode->i_size = rsize;
+ 			inode_set_bytes(inode, rsize);
+-			t32 = asize;
+-		} else {
+-			t32 = le16_to_cpu(attr->nres.run_off);
+ 		}
  
- unsigned int vclocks_used __read_mostly;
-@@ -98,6 +93,11 @@ static int vdso_mremap(const struct vm_special_mapping *sm,
- }
+ 		mode = S_IFREG | (0777 & sbi->options->fs_fmask_inv);
+@@ -313,17 +310,14 @@ static struct inode *ntfs_read_mft(struct inode *inode,
+ 		rp_fa = ni_parse_reparse(ni, attr, &rp);
+ 		switch (rp_fa) {
+ 		case REPARSE_LINK:
+-			if (!attr->non_res) {
+-				inode->i_size = rsize;
+-				inode_set_bytes(inode, rsize);
+-				t32 = asize;
+-			} else {
+-				inode->i_size =
+-					le64_to_cpu(attr->nres.data_size);
+-				t32 = le16_to_cpu(attr->nres.run_off);
+-			}
++			/*
++			 * Normal symlink.
++			 * Assume one unicode symbol == one utf8.
++			 */
++			inode->i_size = le16_to_cpu(rp.SymbolicLinkReparseBuffer
++							    .PrintNameLength) /
++					sizeof(u16);
  
- #ifdef CONFIG_TIME_NS
-+struct vdso_data *arch_get_vdso_data(void *vvar_page)
-+{
-+	return (struct vdso_data *)(vvar_page + _vdso_data_offset);
-+}
-+
- static struct page *find_timens_vvar_page(struct vm_area_struct *vma)
- {
- 	if (likely(vma->vm_mm == current->mm))
+-			/* Looks like normal symlink. */
+ 			ni->i_valid = inode->i_size;
+ 
+ 			/* Clear directory bit. */
+@@ -420,7 +414,7 @@ static struct inode *ntfs_read_mft(struct inode *inode,
+ 		ni->std_fa &= ~FILE_ATTRIBUTE_DIRECTORY;
+ 		inode->i_op = &ntfs_link_inode_operations;
+ 		inode->i_fop = NULL;
+-		inode_nohighmem(inode); // ??
++		inode_nohighmem(inode);
+ 	} else if (S_ISREG(mode)) {
+ 		ni->std_fa &= ~FILE_ATTRIBUTE_DIRECTORY;
+ 		inode->i_op = &ntfs_file_inode_operations;
 -- 
-2.31.1
+2.33.0
+
 
