@@ -2,157 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E55E742312C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 21:59:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E87C423133
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 21:59:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235936AbhJEUA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 16:00:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38132 "EHLO
+        id S236006AbhJEUBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 16:01:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235224AbhJEUA6 (ORCPT
+        with ESMTP id S235744AbhJEUBU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 16:00:58 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76774C061749;
-        Tue,  5 Oct 2021 12:59:07 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0d20002fd498dc90ccb948.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:2000:2fd4:98dc:90cc:b948])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 06F001EC01CE;
-        Tue,  5 Oct 2021 21:59:06 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1633463946;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=Qmxm7CefUtXt2Yw0nJkZhWFc7mEAr8RAL5qiQWAIgjQ=;
-        b=aSGhz2XdrluOcHf5GknU/TWBcN0flEOQjeJ+D5kPaeDbADVwbC6pk4PyY+J0GZzENG3k0s
-        VUsIEAaUAt5w+BYv27Ok+k01yDeAPUyxodBV6W2V2iCq0uh6vvHPe0onGuKhk3NqihuJ+k
-        mijk1z8p0enA8ynnnDH9I2eoKZMMZSw=
-Date:   Tue, 5 Oct 2021 21:59:06 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Lubomir Rintel <lkundrak@v3.sk>, Pavel Machek <pavel@ucw.cz>,
-        Lee Jones <lee.jones@linaro.org>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        platform-driver-x86@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 9/9] x86: ia32.h: adjust comment for endif of
- CONFIG_IA32_EMULATION
-Message-ID: <YVyuihupLwW3o0XR@zn.tnic>
-References: <20210803113531.30720-1-lukas.bulwahn@gmail.com>
- <20210803113531.30720-10-lukas.bulwahn@gmail.com>
+        Tue, 5 Oct 2021 16:01:20 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B900C061755
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 12:59:29 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id k26so460502pfi.5
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 12:59:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=BLskmJGo49ZaTs/IEwf4eelOY6LUBobTHpbH6xAX+XU=;
+        b=C4oz6O22VwbnCqeRwIEzTyWG4IJlAggJctWXP59hSluxvHEkhwFYAAPxg1l2UNqpxF
+         38kkSkTr5PDSeErTWpzs5MbF9PswqncYXBaid/dxnMcz+kzIN6EBQlKGfI2DlXNk1tMe
+         Cb6VqRU8XlsDiW2tphrLc4oKWMb2XjuQRjPdw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BLskmJGo49ZaTs/IEwf4eelOY6LUBobTHpbH6xAX+XU=;
+        b=5gOt+u/KHFnoj3FR8gDiAKt9JNqKi7Ul4robMFo79VIo/yKb64oWwlfQ0aQayQbj5Y
+         MX7kZc3muCFgbxAeEJTGsIYx7OZ4EXQOtQHVnTJxMig9nNbpm04hJxGESHdmQ18l+Wsw
+         FFgfsjbi+Ms0Lp1OiOSJpernqZuLDwgB+BkdEnRh5HreDnX7EvvM4GrOgTHlsP+U11FH
+         M8F0V+MAJ4thx2pWZ3SSqw5EI9PlDTcjt19V18AgTTt2v/HkYRqYCQT4BUrTnr7aYLIj
+         5FusQlEQ5i9ylpQoS+PacMVVlcONa6gCKlRIPjZjk1bzYqdF50KXMN7E+RTz4R2xqpNN
+         Qowg==
+X-Gm-Message-State: AOAM531BjdBPL3tdxIPlFnOWAvzPi1rBt1/9LEZabyjO5JkLSTEZtVIU
+        YB3AhC1b6DlZUHleFUGT9KoSXA==
+X-Google-Smtp-Source: ABdhPJwdgsDyx3NnPDfhmE8VO584mG7R66yp0PUsB2CyUiSP+UhWnJZHpKQTQjAnxYVzb5C9o3n37w==
+X-Received: by 2002:a62:5297:0:b0:3f4:263a:b078 with SMTP id g145-20020a625297000000b003f4263ab078mr32448286pfb.20.1633463968778;
+        Tue, 05 Oct 2021 12:59:28 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id k13sm8757894pfc.197.2021.10.05.12.59.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Oct 2021 12:59:28 -0700 (PDT)
+Date:   Tue, 5 Oct 2021 12:59:27 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     tj@kernel.org, gregkh@linuxfoundation.org,
+        akpm@linux-foundation.org, minchan@kernel.org, jeyu@kernel.org,
+        shuah@kernel.org, bvanassche@acm.org, dan.j.williams@intel.com,
+        joe@perches.com, tglx@linutronix.de, rostedt@goodmis.org,
+        linux-spdx@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 07/12] fs/kernfs/symlink.c: replace S_IRWXUGO with
+ 0777 on kernfs_create_link()
+Message-ID: <202110051259.8DE82F3@keescook>
+References: <20210927163805.808907-1-mcgrof@kernel.org>
+ <20210927163805.808907-8-mcgrof@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210803113531.30720-10-lukas.bulwahn@gmail.com>
+In-Reply-To: <20210927163805.808907-8-mcgrof@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 03, 2021 at 01:35:31PM +0200, Lukas Bulwahn wrote:
-> The content of the ia32 header is guarded by
-> "ifdef CONFIG_IA32_EMULATION". The comment on the corresponding endif
-> refers slightly mismatching to CONFIG_IA32_SUPPORT instead.
+On Mon, Sep 27, 2021 at 09:38:00AM -0700, Luis Chamberlain wrote:
+> If one ends up extending this line checkpatch will complain about the
+> use of S_IRWXUGO suggesting it is not preferred and that 0777
+> should be used instead. Take the tip from checkpatch and do that
+> change before we do our subsequent changes.
 > 
-> Hence, ./scripts/checkkconfigsymbols.py warns:
+> This makes no functional changes.
 > 
-> IA32_SUPPORT
-> Referencing files: arch/x86/include/asm/ia32.h
-> 
-> Adjust the comment on endif to the actual ifdef condition.
-> 
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+
+Reviewed-by: Kees Cook <keescook@chromium.org>
+
 > ---
->  arch/x86/include/asm/ia32.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-
-Merged the last 4 into a single patch because they're trivial:
-
----
-From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date: Tue, 5 Oct 2021 21:48:30 +0200
-Subject: [PATCH] x86: Fix misspelled Kconfig symbols
-
-Fix misspelled Kconfig symbols as detected by
-scripts/checkkconfigsymbols.py.
-
- [ bp: Combine into a single patch. ]
-
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20210803113531.30720-7-lukas.bulwahn@gmail.com
----
- arch/x86/include/asm/ia32.h      | 2 +-
- arch/x86/include/asm/irq_stack.h | 2 +-
- arch/x86/include/asm/page_32.h   | 2 +-
- arch/x86/include/asm/uaccess.h   | 2 +-
- 4 files changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/arch/x86/include/asm/ia32.h b/arch/x86/include/asm/ia32.h
-index 2c5f7861d373..fada857f0a1e 100644
---- a/arch/x86/include/asm/ia32.h
-+++ b/arch/x86/include/asm/ia32.h
-@@ -68,6 +68,6 @@ extern void ia32_pick_mmap_layout(struct mm_struct *mm);
- 
- #endif
- 
--#endif /* !CONFIG_IA32_SUPPORT */
-+#endif /* CONFIG_IA32_EMULATION */
- 
- #endif /* _ASM_X86_IA32_H */
-diff --git a/arch/x86/include/asm/irq_stack.h b/arch/x86/include/asm/irq_stack.h
-index 562854c60808..8912492a78f1 100644
---- a/arch/x86/include/asm/irq_stack.h
-+++ b/arch/x86/include/asm/irq_stack.h
-@@ -58,7 +58,7 @@
-  *     the output constraints to make the compiler aware that R11 cannot be
-  *     reused after the asm() statement.
-  *
-- *     For builds with CONFIG_UNWIND_FRAME_POINTER ASM_CALL_CONSTRAINT is
-+ *     For builds with CONFIG_UNWINDER_FRAME_POINTER, ASM_CALL_CONSTRAINT is
-  *     required as well as this prevents certain creative GCC variants from
-  *     misplacing the ASM code.
-  *
-diff --git a/arch/x86/include/asm/page_32.h b/arch/x86/include/asm/page_32.h
-index 94dbd51df58f..b13f8488ac85 100644
---- a/arch/x86/include/asm/page_32.h
-+++ b/arch/x86/include/asm/page_32.h
-@@ -43,7 +43,7 @@ static inline void copy_page(void *to, void *from)
- {
- 	memcpy(to, from, PAGE_SIZE);
- }
--#endif	/* CONFIG_X86_3DNOW */
-+#endif	/* CONFIG_X86_USE_3DNOW */
- #endif	/* !__ASSEMBLY__ */
- 
- #endif /* _ASM_X86_PAGE_32_H */
-diff --git a/arch/x86/include/asm/uaccess.h b/arch/x86/include/asm/uaccess.h
-index c9fa7be3df82..e7fc2c515e08 100644
---- a/arch/x86/include/asm/uaccess.h
-+++ b/arch/x86/include/asm/uaccess.h
-@@ -411,7 +411,7 @@ do {									\
- 		     : [umem] "m" (__m(addr)),				\
- 		       [efault] "i" (-EFAULT), "0" (err))
- 
--#endif // CONFIG_CC_ASM_GOTO_OUTPUT
-+#endif // CONFIG_CC_HAS_ASM_GOTO_OUTPUT
- 
- /* FIXME: this hack is definitely wrong -AK */
- struct __large_struct { unsigned long buf[100]; };
--- 
-2.29.2
+>  fs/kernfs/symlink.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/fs/kernfs/symlink.c b/fs/kernfs/symlink.c
+> index c8f8e41b8411..19a6c71c6ff5 100644
+> --- a/fs/kernfs/symlink.c
+> +++ b/fs/kernfs/symlink.c
+> @@ -36,8 +36,7 @@ struct kernfs_node *kernfs_create_link(struct kernfs_node *parent,
+>  		gid = target->iattr->ia_gid;
+>  	}
+>  
+> -	kn = kernfs_new_node(parent, name, S_IFLNK|S_IRWXUGO, uid, gid,
+> -			     KERNFS_LINK);
+> +	kn = kernfs_new_node(parent, name, S_IFLNK|0777, uid, gid, KERNFS_LINK);
+>  	if (!kn)
+>  		return ERR_PTR(-ENOMEM);
+>  
+> -- 
+> 2.30.2
+> 
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Kees Cook
