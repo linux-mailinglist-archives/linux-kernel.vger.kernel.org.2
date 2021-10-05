@@ -2,53 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 547DE422A8E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:13:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81F4C422A92
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:13:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236350AbhJEOPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 10:15:37 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:51450 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235772AbhJEOOG (ORCPT
+        id S236696AbhJEOPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 10:15:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40898 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236244AbhJEOO3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 10:14:06 -0400
-Date:   Tue, 05 Oct 2021 14:12:14 -0000
+        Tue, 5 Oct 2021 10:14:29 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5C39C0617A8;
+        Tue,  5 Oct 2021 07:12:17 -0700 (PDT)
+Date:   Tue, 05 Oct 2021 14:12:15 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1633443135;
+        s=2020; t=1633443136;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=SEEFXF0eIt9E1eVyqgciSyLaI8/n13IoGCGBRDW//98=;
-        b=KfLrT4eN1DwYVEylIdZs4DCsJ/m9w9Hk3ziwnMQadW/DQI3Tl5J5ATEr5lYvy9LLcIpvjj
-        Sy8frzSxXPBweEQ5uWHW9QPGImq+GCqwokv1XiR/alIinNB7R0/27QvQ5ARTEUrEVOFvvb
-        q2WysL73Nfrkl8rmpSyE+t/9DgSkCKpalMv/+PJDXmAQu7W1kdZKxr6shGo2i1LZOyZ6mR
-        LC2m5jICbcil66g16784LNxqd89ntir0Gummr5jX0U2UMr1Y0gSeclxJM5+bp4vCjMt3aU
-        3ws1aL3pMxCLcQk8nUZdECyXB+mrx4+F9WjGg+4NamhYoe4jP9tHHZU3Ycc/ZA==
+        bh=ldVr3xR+JMfuaZGsL409aCdLecuj8145HmwM9LtScu8=;
+        b=a836WwP96RV0wB8kJHKpmiN5aUz5Oi9Hr2g1LkJyrAiyEcCOXZRH/1RRaEY6NoxtDRdJ08
+        nPa8AltuZI2YMdW0iIx038uvhiXmeE8QkHmmjs0rugIgB/9LpdGgA+TYM+IixpMIcsgaPg
+        Bt8/3dSjxyq/Cd9EEiRJnSKGoYOC29Z5CaHcapf9WnLsg/2Ymp32awP8g0nHsdQNj8oXq1
+        X68MvIjOliHrERqCrCKLWVnaKRiP+lcn7Ar1UtKuAnmLkuQMSpu8ocGRmKItaqxDDtB0oS
+        snlfKRq3yzYlttKmUWVkzkPXEpErbqxOA+F0xbECboAkuTXuuWsoVGnPkfnLFA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1633443135;
+        s=2020e; t=1633443136;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=SEEFXF0eIt9E1eVyqgciSyLaI8/n13IoGCGBRDW//98=;
-        b=Vy4rGL+8IkD+Ktot0h01CvbYZZ50EkBALtjbjkA+/XN6QyxaEgIT99T6z8QnJ1rTsdDjfK
-        w+U6ZnwIsQcYZcBA==
-From:   "tip-bot2 for Josh Don" <tip-bot2@linutronix.de>
+        bh=ldVr3xR+JMfuaZGsL409aCdLecuj8145HmwM9LtScu8=;
+        b=LgjmpbidJilmWbxMqrNhkj3SXomWWOUG7k2iUuP9wU79PeKgsfQAF3Wwg8rZzuyHeAR67h
+        ZoQLKGHPxJN8VhDA==
+From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched: Account number of SCHED_IDLE entities on each cfs_rq
-Cc:     Josh Don <joshdon@google.com>,
+Subject: [tip: sched/core] sched/core: Simplify core-wide task selection
+Cc:     Tao Zhou <tao.zhou@linux.dev>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>, x86@kernel.org,
+        Josh Don <joshdon@google.com>,
+        "Vineeth Pillai (Microsoft)" <vineethrp@gmail.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210820010403.946838-3-joshdon@google.com>
-References: <20210820010403.946838-3-joshdon@google.com>
+In-Reply-To: <YSS9+k1teA9oPEKl@hirez.programming.kicks-ass.net>
+References: <YSS9+k1teA9oPEKl@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Message-ID: <163344313422.25758.278041965196407269.tip-bot2@tip-bot2>
+Message-ID: <163344313552.25758.13436048366889885086.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -59,114 +63,252 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     a480addecc0d89c200ec0b41da62ae8ceddca8d7
-Gitweb:        https://git.kernel.org/tip/a480addecc0d89c200ec0b41da62ae8ceddca8d7
-Author:        Josh Don <joshdon@google.com>
-AuthorDate:    Thu, 19 Aug 2021 18:04:01 -07:00
+Commit-ID:     bc9ffef31bf59819c9fc032178534ff9ed7c4981
+Gitweb:        https://git.kernel.org/tip/bc9ffef31bf59819c9fc032178534ff9ed7c4981
+Author:        Peter Zijlstra <peterz@infradead.org>
+AuthorDate:    Tue, 24 Aug 2021 11:05:47 +02:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Tue, 05 Oct 2021 15:51:36 +02:00
+CommitterDate: Tue, 05 Oct 2021 15:51:33 +02:00
 
-sched: Account number of SCHED_IDLE entities on each cfs_rq
+sched/core: Simplify core-wide task selection
 
-Adds cfs_rq->idle_nr_running, which accounts the number of idle entities
-directly enqueued on the cfs_rq.
+Tao suggested a two-pass task selection to avoid the retry loop.
 
-Signed-off-by: Josh Don <joshdon@google.com>
+Not only does it avoid the retry loop, it results in *much* simpler
+code.
+
+This also fixes an issue spotted by Josh Don where, for SMT3+, we can
+forget to update max on the first pass and get to do an extra round.
+
+Suggested-by: Tao Zhou <tao.zhou@linux.dev>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
-Link: https://lore.kernel.org/r/20210820010403.946838-3-joshdon@google.com
+Reviewed-by: Josh Don <joshdon@google.com>
+Reviewed-by: Vineeth Pillai (Microsoft) <vineethrp@gmail.com>
+Link: https://lkml.kernel.org/r/YSS9+k1teA9oPEKl@hirez.programming.kicks-ass.net
 ---
- kernel/sched/debug.c |  2 ++
- kernel/sched/fair.c  | 25 ++++++++++++++++++++++++-
- kernel/sched/sched.h |  1 +
- 3 files changed, 27 insertions(+), 1 deletion(-)
+ kernel/sched/core.c | 156 ++++++++++++-------------------------------
+ 1 file changed, 45 insertions(+), 111 deletions(-)
 
-diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
-index 17a653b..2e5fdd9 100644
---- a/kernel/sched/debug.c
-+++ b/kernel/sched/debug.c
-@@ -614,6 +614,8 @@ void print_cfs_rq(struct seq_file *m, int cpu, struct cfs_rq *cfs_rq)
- 			cfs_rq->nr_spread_over);
- 	SEQ_printf(m, "  .%-30s: %d\n", "nr_running", cfs_rq->nr_running);
- 	SEQ_printf(m, "  .%-30s: %d\n", "h_nr_running", cfs_rq->h_nr_running);
-+	SEQ_printf(m, "  .%-30s: %d\n", "idle_nr_running",
-+			cfs_rq->idle_nr_running);
- 	SEQ_printf(m, "  .%-30s: %d\n", "idle_h_nr_running",
- 			cfs_rq->idle_h_nr_running);
- 	SEQ_printf(m, "  .%-30s: %ld\n", "load", cfs_rq->load.weight);
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 6cc958e..9c78c16 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -2995,6 +2995,8 @@ account_entity_enqueue(struct cfs_rq *cfs_rq, struct sched_entity *se)
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 2672694..f963c81 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -5580,8 +5580,7 @@ restart:
+ 			return p;
  	}
- #endif
- 	cfs_rq->nr_running++;
-+	if (se_is_idle(se))
-+		cfs_rq->idle_nr_running++;
+ 
+-	/* The idle class should always have a runnable task: */
+-	BUG();
++	BUG(); /* The idle class should always have a runnable task. */
  }
  
- static void
-@@ -3008,6 +3010,8 @@ account_entity_dequeue(struct cfs_rq *cfs_rq, struct sched_entity *se)
- 	}
- #endif
- 	cfs_rq->nr_running--;
-+	if (se_is_idle(se))
-+		cfs_rq->idle_nr_running--;
+ #ifdef CONFIG_SCHED_CORE
+@@ -5603,54 +5602,18 @@ static inline bool cookie_match(struct task_struct *a, struct task_struct *b)
+ 	return a->core_cookie == b->core_cookie;
  }
  
- /*
-@@ -5577,6 +5581,17 @@ static int sched_idle_rq(struct rq *rq)
- 			rq->nr_running);
- }
- 
-+/*
-+ * Returns true if cfs_rq only has SCHED_IDLE entities enqueued. Note the use
-+ * of idle_nr_running, which does not consider idle descendants of normal
-+ * entities.
-+ */
-+static bool sched_idle_cfs_rq(struct cfs_rq *cfs_rq)
-+{
-+	return cfs_rq->nr_running &&
-+		cfs_rq->nr_running == cfs_rq->idle_nr_running;
-+}
-+
- #ifdef CONFIG_SMP
- static int sched_idle_cpu(int cpu)
+-// XXX fairness/fwd progress conditions
+-/*
+- * Returns
+- * - NULL if there is no runnable task for this class.
+- * - the highest priority task for this runqueue if it matches
+- *   rq->core->core_cookie or its priority is greater than max.
+- * - Else returns idle_task.
+- */
+-static struct task_struct *
+-pick_task(struct rq *rq, const struct sched_class *class, struct task_struct *max, bool in_fi)
++static inline struct task_struct *pick_task(struct rq *rq)
  {
-@@ -11575,7 +11590,7 @@ int sched_group_set_idle(struct task_group *tg, long idle)
- 	for_each_possible_cpu(i) {
- 		struct rq *rq = cpu_rq(i);
- 		struct sched_entity *se = tg->se[i];
--		struct cfs_rq *grp_cfs_rq = tg->cfs_rq[i];
-+		struct cfs_rq *parent_cfs_rq, *grp_cfs_rq = tg->cfs_rq[i];
- 		bool was_idle = cfs_rq_is_idle(grp_cfs_rq);
- 		long idle_task_delta;
- 		struct rq_flags rf;
-@@ -11586,6 +11601,14 @@ int sched_group_set_idle(struct task_group *tg, long idle)
- 		if (WARN_ON_ONCE(was_idle == cfs_rq_is_idle(grp_cfs_rq)))
- 			goto next_cpu;
+-	struct task_struct *class_pick, *cookie_pick;
+-	unsigned long cookie = rq->core->core_cookie;
+-
+-	class_pick = class->pick_task(rq);
+-	if (!class_pick)
+-		return NULL;
+-
+-	if (!cookie) {
+-		/*
+-		 * If class_pick is tagged, return it only if it has
+-		 * higher priority than max.
+-		 */
+-		if (max && class_pick->core_cookie &&
+-		    prio_less(class_pick, max, in_fi))
+-			return idle_sched_class.pick_task(rq);
++	const struct sched_class *class;
++	struct task_struct *p;
  
-+		if (se->on_rq) {
-+			parent_cfs_rq = cfs_rq_of(se);
-+			if (cfs_rq_is_idle(grp_cfs_rq))
-+				parent_cfs_rq->idle_nr_running++;
-+			else
-+				parent_cfs_rq->idle_nr_running--;
-+		}
+-		return class_pick;
++	for_each_class(class) {
++		p = class->pick_task(rq);
++		if (p)
++			return p;
+ 	}
+ 
+-	/*
+-	 * If class_pick is idle or matches cookie, return early.
+-	 */
+-	if (cookie_equals(class_pick, cookie))
+-		return class_pick;
+-
+-	cookie_pick = sched_core_find(rq, cookie);
+-
+-	/*
+-	 * If class > max && class > cookie, it is the highest priority task on
+-	 * the core (so far) and it must be selected, otherwise we must go with
+-	 * the cookie pick in order to satisfy the constraint.
+-	 */
+-	if (prio_less(cookie_pick, class_pick, in_fi) &&
+-	    (!max || prio_less(max, class_pick, in_fi)))
+-		return class_pick;
+-
+-	return cookie_pick;
++	BUG(); /* The idle class should always have a runnable task. */
+ }
+ 
+ extern void task_vruntime_update(struct rq *rq, struct task_struct *p, bool in_fi);
+@@ -5658,11 +5621,12 @@ extern void task_vruntime_update(struct rq *rq, struct task_struct *p, bool in_f
+ static struct task_struct *
+ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+ {
+-	struct task_struct *next, *max = NULL;
+-	const struct sched_class *class;
++	struct task_struct *next, *p, *max = NULL;
+ 	const struct cpumask *smt_mask;
+ 	bool fi_before = false;
+-	int i, j, cpu, occ = 0;
++	unsigned long cookie;
++	int i, cpu, occ = 0;
++	struct rq *rq_i;
+ 	bool need_sync;
+ 
+ 	if (!sched_core_enabled(rq))
+@@ -5735,12 +5699,7 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+ 	 * and there are no cookied tasks running on siblings.
+ 	 */
+ 	if (!need_sync) {
+-		for_each_class(class) {
+-			next = class->pick_task(rq);
+-			if (next)
+-				break;
+-		}
+-
++		next = pick_task(rq);
+ 		if (!next->core_cookie) {
+ 			rq->core_pick = NULL;
+ 			/*
+@@ -5753,76 +5712,51 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+ 		}
+ 	}
+ 
+-	for_each_cpu(i, smt_mask) {
+-		struct rq *rq_i = cpu_rq(i);
+-
+-		rq_i->core_pick = NULL;
++	/*
++	 * For each thread: do the regular task pick and find the max prio task
++	 * amongst them.
++	 *
++	 * Tie-break prio towards the current CPU
++	 */
++	for_each_cpu_wrap(i, smt_mask, cpu) {
++		rq_i = cpu_rq(i);
+ 
+ 		if (i != cpu)
+ 			update_rq_clock(rq_i);
 +
- 		idle_task_delta = grp_cfs_rq->h_nr_running -
- 				  grp_cfs_rq->idle_h_nr_running;
- 		if (!cfs_rq_is_idle(grp_cfs_rq))
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 1fec313..f2965b5 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -530,6 +530,7 @@ struct cfs_rq {
- 	struct load_weight	load;
- 	unsigned int		nr_running;
- 	unsigned int		h_nr_running;      /* SCHED_{NORMAL,BATCH,IDLE} */
-+	unsigned int		idle_nr_running;   /* SCHED_IDLE */
- 	unsigned int		idle_h_nr_running; /* SCHED_IDLE */
++		p = rq_i->core_pick = pick_task(rq_i);
++		if (!max || prio_less(max, p, fi_before))
++			max = p;
+ 	}
  
- 	u64			exec_clock;
++	cookie = rq->core->core_cookie = max->core_cookie;
++
+ 	/*
+-	 * Try and select tasks for each sibling in descending sched_class
+-	 * order.
++	 * For each thread: try and find a runnable task that matches @max or
++	 * force idle.
+ 	 */
+-	for_each_class(class) {
+-again:
+-		for_each_cpu_wrap(i, smt_mask, cpu) {
+-			struct rq *rq_i = cpu_rq(i);
+-			struct task_struct *p;
+-
+-			if (rq_i->core_pick)
+-				continue;
++	for_each_cpu(i, smt_mask) {
++		rq_i = cpu_rq(i);
++		p = rq_i->core_pick;
+ 
+-			/*
+-			 * If this sibling doesn't yet have a suitable task to
+-			 * run; ask for the most eligible task, given the
+-			 * highest priority task already selected for this
+-			 * core.
+-			 */
+-			p = pick_task(rq_i, class, max, fi_before);
++		if (!cookie_equals(p, cookie)) {
++			p = NULL;
++			if (cookie)
++				p = sched_core_find(rq_i, cookie);
+ 			if (!p)
+-				continue;
++				p = idle_sched_class.pick_task(rq_i);
++		}
+ 
+-			if (!is_task_rq_idle(p))
+-				occ++;
++		rq_i->core_pick = p;
+ 
+-			rq_i->core_pick = p;
+-			if (rq_i->idle == p && rq_i->nr_running) {
++		if (p == rq_i->idle) {
++			if (rq_i->nr_running) {
+ 				rq->core->core_forceidle = true;
+ 				if (!fi_before)
+ 					rq->core->core_forceidle_seq++;
+ 			}
+-
+-			/*
+-			 * If this new candidate is of higher priority than the
+-			 * previous; and they're incompatible; we need to wipe
+-			 * the slate and start over. pick_task makes sure that
+-			 * p's priority is more than max if it doesn't match
+-			 * max's cookie.
+-			 *
+-			 * NOTE: this is a linear max-filter and is thus bounded
+-			 * in execution time.
+-			 */
+-			if (!max || !cookie_match(max, p)) {
+-				struct task_struct *old_max = max;
+-
+-				rq->core->core_cookie = p->core_cookie;
+-				max = p;
+-
+-				if (old_max) {
+-					rq->core->core_forceidle = false;
+-					for_each_cpu(j, smt_mask) {
+-						if (j == i)
+-							continue;
+-
+-						cpu_rq(j)->core_pick = NULL;
+-					}
+-					occ = 1;
+-					goto again;
+-				}
+-			}
++		} else {
++			occ++;
+ 		}
+ 	}
+ 
+@@ -5842,7 +5776,7 @@ again:
+ 	 * non-matching user state.
+ 	 */
+ 	for_each_cpu(i, smt_mask) {
+-		struct rq *rq_i = cpu_rq(i);
++		rq_i = cpu_rq(i);
+ 
+ 		/*
+ 		 * An online sibling might have gone offline before a task
