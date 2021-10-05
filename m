@@ -2,187 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCFB9422AF4
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:24:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2E14422AF6
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:25:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235268AbhJEO0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 10:26:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44074 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234437AbhJEO0Q (ORCPT
+        id S235230AbhJEO0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 10:26:50 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:25277 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235312AbhJEO0p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 10:26:16 -0400
-Received: from mail-ua1-x92f.google.com (mail-ua1-x92f.google.com [IPv6:2607:f8b0:4864:20::92f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7680FC061749;
-        Tue,  5 Oct 2021 07:24:25 -0700 (PDT)
-Received: by mail-ua1-x92f.google.com with SMTP id f13so9160937uan.6;
-        Tue, 05 Oct 2021 07:24:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fkUZ7DdFeWkEpyDRZ/1dM/ty+cqUyDxv2VSxJU7d1zc=;
-        b=bU5JIPdpARDVB55z0K2+CLoUJgHYBy6m9RQhkSHDIhiVsRqGHWwn1rHOEi9hKGl345
-         rbytzpzJXF89ylrynFg9UnGnph3EHP40DqVbiriw6oF3io73pcJNqv6cKVZ1KTvpposF
-         UkD7gZYhfkG9qcSjHP7X8xTdrb1W2OoYvnVgFliw+uINq6Cp16FyvBWwIdIcpSBSw9K3
-         r+7glMFCnUt3LW6IuttDWBqIY7v0vuxbPUP5A4sPQfOKkp8SO+6v8jOGKEBkro6hAE/D
-         lGVTwDvAeTr0IzrtN0icLbweNZgPH7lT30H9bAJplbQZ3I8XIHlSYBW311J5lQI9AJRd
-         Os3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fkUZ7DdFeWkEpyDRZ/1dM/ty+cqUyDxv2VSxJU7d1zc=;
-        b=au2mCCeNyisJvfupD/gB045B2gY0On6cX5eeV6pQSmfHb792o1aY6SlVopIXBuUqe6
-         NVPyndZK20nidak6l7ezSq7v38Ql5y3Loa3EpBPJV01W8jvVcDc6fIZ94p/LZ9PvzIWr
-         yyYvPpW3fxPldgWzJjpVxLnFI20BqNXVT1pnZZqC4e+vfhlLl8rQ0X2E8Zg3mKVjSzub
-         lSgzHIFQe1Xx0xggfQHffNdK3vI2vKO4VpjJraJdsG1ucEbwk9q+E153TuBeaUbJdly8
-         AkZc8d2u6LsCWv24LE4GPG1uKeny19xS1ty5LfxYBG1SmopZjPhqka8rLl9qH5vpf8PV
-         obtw==
-X-Gm-Message-State: AOAM533BMWPOZGn6CYn2fGjK8Qnl42dxZcN/YqMnxfvW75hzRGi8Cm64
-        i9pNsCTXt6Etf9PPwPLjjGucu5RZo6sIlk2lm8rec5st8mg=
-X-Google-Smtp-Source: ABdhPJyvi75JWiWJrIbgesEtwwpwS2QwxXNTC393L1igtxGKdv0pJbR/hj13HjwDvZJngNIPNVjl0CV2RV76dVUFLJg=
-X-Received: by 2002:ab0:538b:: with SMTP id k11mr12027715uaa.131.1633443864593;
- Tue, 05 Oct 2021 07:24:24 -0700 (PDT)
+        Tue, 5 Oct 2021 10:26:45 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1633443895; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Message-ID: In-Reply-To: Date: References: Subject: Cc:
+ To: From: Sender; bh=Ww0Ve07mMasz5L9jVhgn12WcbFLxKZLtDHJlPaIMDwA=; b=CtcJzFkkxz5m2vXSJJqP+Hrwp4Gny3lG3T3Mhx72q6iZSBUrquQR8Cn3h4m89XOo7EWSzXps
+ QcoP++gwhnywO4KTXOrYxCK3dt+t98FxnZpJXWkP9k//pNdFX2cy4FGrDbejZp6RCZtIa0/e
+ L8moXZ/xKar8be+/vmgd8y5C61Q=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 615c6022b8ab9916b3b451c2 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 05 Oct 2021 14:24:34
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 43FC6C4361A; Tue,  5 Oct 2021 14:24:34 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from tykki (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 82DBDC4338F;
+        Tue,  5 Oct 2021 14:24:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 82DBDC4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Linus =?utf-8?Q?L=C3=BCssing?= <linus.luessing@c0d3.blue>
+Cc:     Felix Fietkau <nbd@nbd.name>, ath9k-devel@qca.qualcomm.com,
+        linux-wireless@vger.kernel.org,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "John W . Linville" <linville@tuxdriver.com>,
+        Felix Fietkau <nbd@openwrt.org>,
+        Simon Wunderlich <sw@simonwunderlich.de>,
+        Sven Eckelmann <sven@narfation.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] ath9k: interrupt fixes on queue reset
+References: <20210914192515.9273-1-linus.luessing@c0d3.blue>
+        <YVxdRHvpiHVpdu4H@sellars>
+Date:   Tue, 05 Oct 2021 17:24:26 +0300
+In-Reply-To: <YVxdRHvpiHVpdu4H@sellars> ("Linus \=\?utf-8\?Q\?L\=C3\=BCssing\=22'\?\=
+ \=\?utf-8\?Q\?s\?\= message of "Tue, 5
+        Oct 2021 16:12:20 +0200")
+Message-ID: <87wnmreehx.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-References: <20210926145931.14603-1-sergio.paracuellos@gmail.com>
- <20210926145931.14603-3-sergio.paracuellos@gmail.com> <YVtCtGcLjNcO2NJ0@robh.at.kernel.org>
- <CAMhs-H9TDEWEffDn7hBQxT127RNU4eUtPxaSciuiis0fPqTN_w@mail.gmail.com> <CAL_Jsq+U_0JnCoJVaHH0T+kdmxX_OosD9=OT0dWyNdwbe=CLoQ@mail.gmail.com>
-In-Reply-To: <CAL_Jsq+U_0JnCoJVaHH0T+kdmxX_OosD9=OT0dWyNdwbe=CLoQ@mail.gmail.com>
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Date:   Tue, 5 Oct 2021 16:24:12 +0200
-Message-ID: <CAMhs-H_3Z34e3_n4VrMayvbOt0MJ_RuJ=jYDgQynT6Zdo1eDVw@mail.gmail.com>
-Subject: Re: [PATCH 2/3] dt: bindings: add ralink RT2880 resets device tree
- binding documentation
-To:     Rob Herring <robh@kernel.org>
-Cc:     linux-staging@lists.linux.dev, John Crispin <john@phrozen.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Greg KH <gregkh@linuxfoundation.org>,
-        NeilBrown <neil@brown.name>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+Linus L=C3=BCssing <linus.luessing@c0d3.blue> writes:
 
-On Tue, Oct 5, 2021 at 3:27 PM Rob Herring <robh@kernel.org> wrote:
+> On Tue, Sep 14, 2021 at 09:25:12PM +0200, Linus L=C3=BCssing wrote:
+>> Hi,
+>>=20
+>> The following are two patches for ath9k to fix a potential interrupt
+>> storm (PATCH 2/3) and to fix potentially resetting the wifi chip while
+>> its interrupts were accidentally reenabled (PATCH 3/3).
+>>=20
+>> PATCH 1/3 adds the possibility to trigger the ath9k queue reset through
+>> the ath9k reset file in debugfs. Which was helpful to reproduce and debug
+>> this issue and might help for future debugging.
+>>=20
+>> PATCH 2/3 and PATCH 3/3 should be applicable for stable.
+>>=20
+>> Regards, Linus
+>>=20
 >
-> On Mon, Oct 4, 2021 at 1:23 PM Sergio Paracuellos
-> <sergio.paracuellos@gmail.com> wrote:
-> >
-> > Hi Rob,
-> >
-> > On Mon, Oct 4, 2021 at 8:06 PM Rob Herring <robh@kernel.org> wrote:
-> > >
-> > > On Sun, Sep 26, 2021 at 04:59:30PM +0200, Sergio Paracuellos wrote:
-> > > > Adds device tree binding documentation for resets in the ralink RT2880 SoCs.
-> > > >
-> > > > Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
-> > > > ---
-> > > >  .../bindings/reset/ralink,rt2880-reset.yaml   | 39 +++++++++++++++++++
-> > > >  1 file changed, 39 insertions(+)
-> > > >  create mode 100644 Documentation/devicetree/bindings/reset/ralink,rt2880-reset.yaml
-> > > >
-> > > > diff --git a/Documentation/devicetree/bindings/reset/ralink,rt2880-reset.yaml b/Documentation/devicetree/bindings/reset/ralink,rt2880-reset.yaml
-> > > > new file mode 100644
-> > > > index 000000000000..88eddeb4ee45
-> > > > --- /dev/null
-> > > > +++ b/Documentation/devicetree/bindings/reset/ralink,rt2880-reset.yaml
-> > > > @@ -0,0 +1,39 @@
-> > > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > > +%YAML 1.2
-> > > > +---
-> > > > +$id: http://devicetree.org/schemas/reset/ralink,rt2880-reset.yaml#
-> > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > > +
-> > > > +title: Ralink RT2880 Reset Controller Device Tree Bindings
-> > > > +
-> > > > +maintainers:
-> > > > +  - Sergio Paracuellos <sergio.paracuellos@gmail.com>
-> > > > +
-> > > > +description: |
-> > > > +  Ralink RT2880 reset controller driver which supports the SoC
-> > > > +  system controller supplied reset registers for the various peripherals
-> > > > +  of the SoC.
-> > > > +
-> > > > +  See also:
-> > > > +  - dt-bindings/reset/ralink-rt2880.h
-> > > > +
-> > > > +properties:
-> > > > +  compatible:
-> > > > +    const: ralink,rt2880-reset
-> > > > +
-> > > > +  '#reset-cells':
-> > > > +    const: 1
-> > > > +
-> > > > +required:
-> > > > +  - '#reset-cells'
-> > > > +  - compatible
-> > > > +
-> > > > +additionalProperties: false
-> > > > +
-> > > > +examples:
-> > > > +  - |
-> > > > +    #include <dt-bindings/reset/ralink-rt2880.h>
-> > > > +    rstctrl: reset-controller {
-> > > > +      compatible = "ralink,rt2880-reset";
-> > > > +      #reset-cells = <1>;
-> > >
-> > > How is this h/w controlled? If this is part of a system controller, then
-> > > it needs to be documented as such. IOW, you need to document the binding
-> > > for the whole block.
-> > >
-> > > Do you really need a child node here? All you need to make a system
-> > > controller a reset provider is add '#reset-cells' to it.
-> >
-> > I am just documenting what is already mainlined (see [0]) in order to
-> > get mt7621-dts out of staging at some point of my life. What am I
-> > supposed to do? Should I rewrite all already mainlined code? Because
-> > if that is the case we need to rewrite tons of things from the ralink
-> > platform...
->
-> On the flip side, am I not supposed to review bindings because the dts
-> is already in staging? Code dependent on DT bindings shouldn't have
-> been mainlined without any documented binding.
+> I've marked PATCH 3/3 as "rejected" in Patchwork now due to
+> Felix's legitimate remarks.
 
-Thanks for reviewing this. I guess I should have sent a complete
-patchset with all remaining bindings and the move for the complete
-binding instead of sending single binding doc patches.
+BTW I prefer to mark patches as rejected myself in patchwork so that I
+know what's happening (patchwork is lacking in this respect as it
+doesn't notify me if there are any changes in patches). But good that
+you mentioned this via email so I didn't need to wonder what happened.
 
->
-> Looks like the resets are part of "mediatek,mt7621-sysc" to answer my
-> question. Add a #reset-cell to that node (and binding) and then change
-> this line to "mediatek,mt7621-sysc":
->
->         reset_dev.of_node = of_find_compatible_node(NULL, NULL,
->                                                 "ralink,rt2880-reset");
->
-> That's the minimal change, but really I would move the reset code to
-> the clock driver as that is what handles the sysc node.
+> For patches 1/3 and and 2/3 I'd still like to see them merged upstream
+> if there is no objection to those.
 
-It is not that easy since the code in reset.c is shared for all ralink
-platforms and the mediatek,mt7621-sysc node is only for mt7621. So I
-guess I have to "duplicate" the reset code and put it in the clock
-driver for mt7621 as you are pointing out here. I have to also review
-how other drivers are using the reset, using reset apis or directly
-through the syscon.
+Thanks, I was about to ask what I should do with this patchset.
 
->
->
-> > I'd also like to know what we should do with those nodes already added
-> > to the dtsi file that have not got associated compatible driver
-> > mainlined. Can we just get rid of them?
->
-> Yes. Typically dts files start with minimal support.
->
-> A dts file in staging is odd. We shouldn't be adding them there.
+--=20
+https://patchwork.kernel.org/project/linux-wireless/list/
 
-Thanks for clarification.
-
-Best regards,
-    Sergio Paracuellos
-
->
-> Rob
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
+hes
