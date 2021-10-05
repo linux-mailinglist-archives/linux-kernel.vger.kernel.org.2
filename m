@@ -2,102 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 716AA422B4B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:42:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA5E2422B4D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:43:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235194AbhJEOoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 10:44:09 -0400
-Received: from mail-oi1-f177.google.com ([209.85.167.177]:43923 "EHLO
-        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233705AbhJEOoH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 10:44:07 -0400
-Received: by mail-oi1-f177.google.com with SMTP id o4so2583766oia.10;
-        Tue, 05 Oct 2021 07:42:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eZwLpL3VR1cDxPTIuLWceDkViaFbLKix0Hx3TUG7elc=;
-        b=SU3ofwoQli/UBW8PwznNzXTHtUtlVI4P8/WZCpJpEqcK8RL01sekP7dwCQR+MDjHND
-         /KpyGNU3I99K4La/USw4iDmhCctIoSsEVdLraq5QhBeS8SwHv8f96yGAZZnuBXdUvQUH
-         +vlcuund9X/mgXJEGjDCdN5JufBizxDDuHkP5Ic2NOZR87VJJdo0QN02oBFoi59IjqSx
-         aBr6LLlGZ+awJO717qiEOcdWmlUk6m/vaiZrPKdXAQk84yHrAS7exsX4mGQ/CTA4Yygd
-         DD1Hrz1vJ3mM2PzdeUgFUnZryf+sa/THKDigJ9mkuVaOjm0zbUTXVne5HY6FFolUIa90
-         YkFg==
-X-Gm-Message-State: AOAM532ui/9KjAR90Tumk/5CGV7I4KSIobrsGDcdebbd7+h8e6ZTkENt
-        cH+RhUAzsivjmxAAgXIq2RoqRyz/Tt7M8FENxoI=
-X-Google-Smtp-Source: ABdhPJwBSQTruG4tXHdQMFKRNdq9o7SvD0P5bn3E9E1CZEYOchSGi2uTsPDGXPY9h9SA95cqB2Yd2ha3bikKX6rl05E=
-X-Received: by 2002:a05:6808:1816:: with SMTP id bh22mr2786784oib.69.1633444936747;
- Tue, 05 Oct 2021 07:42:16 -0700 (PDT)
+        id S235259AbhJEOpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 10:45:03 -0400
+Received: from mga06.intel.com ([134.134.136.31]:64035 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234084AbhJEOpC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 10:45:02 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10128"; a="286638942"
+X-IronPort-AV: E=Sophos;i="5.85,349,1624345200"; 
+   d="scan'208";a="286638942"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2021 07:43:11 -0700
+X-IronPort-AV: E=Sophos;i="5.85,349,1624345200"; 
+   d="scan'208";a="656586278"
+Received: from cthurman-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.209.18.154])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2021 07:43:09 -0700
+Subject: Re: [PATCH v8 02/11] x86/tdx: Introduce INTEL_TDX_GUEST config option
+To:     Dave Hansen <dave.hansen@intel.com>,
+        Sathyanarayanan Kuppuswamy Natarajan 
+        <sathyanarayanan.nkuppuswamy@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
+        VMware Inc <pv-drivers@vmware.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, Peter H Anvin <hpa@zytor.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20211005025205.1784480-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20211005025205.1784480-3-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <cf33750f-615a-1edd-0fee-28e720bb38ce@infradead.org>
+ <CAC41dw-U85dCGDm_QzyyOQfhbbaZZ5m9CvLuDjdXjuxEyid8qw@mail.gmail.com>
+ <8a484fb1-21c5-5181-3e77-c818bcc2ffa7@intel.com>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <65d75ccf-dbf5-5f29-3a26-a2ee9d2ec96f@linux.intel.com>
+Date:   Tue, 5 Oct 2021 07:43:02 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <f7513027ae9242643b5ddb6ed48a3aeca1b0f2a8.1632640557.git.christophe.jaillet@wanadoo.fr>
-In-Reply-To: <f7513027ae9242643b5ddb6ed48a3aeca1b0f2a8.1632640557.git.christophe.jaillet@wanadoo.fr>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 5 Oct 2021 16:42:05 +0200
-Message-ID: <CAJZ5v0hSRn2Au5phOHnoR3SMtA0B-H_tn+dskHSZEfHt1g9G_g@mail.gmail.com>
-Subject: Re: [PATCH] thermal: intel_powerclamp: Use bitmap_zalloc/bitmap_free
- when applicable
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     "Zhang, Rui" <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <8a484fb1-21c5-5181-3e77-c818bcc2ffa7@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 26, 2021 at 9:17 AM Christophe JAILLET
-<christophe.jaillet@wanadoo.fr> wrote:
->
-> 'cpu_clamping_mask' is a bitmap. So use 'bitmap_zalloc()' and
-> 'bitmap_free()' to simplify code, improve the semantic of the code and
-> avoid some open-coded arithmetic in allocator arguments.
->
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
->  drivers/thermal/intel/intel_powerclamp.c | 8 +++-----
->  1 file changed, 3 insertions(+), 5 deletions(-)
->
-> diff --git a/drivers/thermal/intel/intel_powerclamp.c b/drivers/thermal/intel/intel_powerclamp.c
-> index a5b58ea89cc6..9b68489a2356 100644
-> --- a/drivers/thermal/intel/intel_powerclamp.c
-> +++ b/drivers/thermal/intel/intel_powerclamp.c
-> @@ -705,10 +705,8 @@ static enum cpuhp_state hp_state;
->  static int __init powerclamp_init(void)
->  {
->         int retval;
-> -       int bitmap_size;
->
-> -       bitmap_size = BITS_TO_LONGS(num_possible_cpus()) * sizeof(long);
-> -       cpu_clamping_mask = kzalloc(bitmap_size, GFP_KERNEL);
-> +       cpu_clamping_mask = bitmap_zalloc(num_possible_cpus(), GFP_KERNEL);
->         if (!cpu_clamping_mask)
->                 return -ENOMEM;
->
-> @@ -753,7 +751,7 @@ static int __init powerclamp_init(void)
->  exit_unregister:
->         cpuhp_remove_state_nocalls(hp_state);
->  exit_free:
-> -       kfree(cpu_clamping_mask);
-> +       bitmap_free(cpu_clamping_mask);
->         return retval;
->  }
->  module_init(powerclamp_init);
-> @@ -764,7 +762,7 @@ static void __exit powerclamp_exit(void)
->         cpuhp_remove_state_nocalls(hp_state);
->         free_percpu(worker_data);
->         thermal_cooling_device_unregister(cooling_dev);
-> -       kfree(cpu_clamping_mask);
-> +       bitmap_free(cpu_clamping_mask);
->
->         cancel_delayed_work_sync(&poll_pkg_cstate_work);
->         debugfs_remove_recursive(debug_dir);
-> --
 
-Applied as 5.16 material, thanks!
+
+On 10/5/21 7:09 AM, Dave Hansen wrote:
+>> For the TDX guest, x2apic will be emulated. So it will exist in our
+>> case. Even if x2apic or TDX guest is not supported by CPU, it will
+>> boot just fine.
+> This doesn't really explain the "select X86_X2APIC", though.
+> 
+> You just said that TDX doesn't*require*  X2APIC.  So, why is it being
+
+I meant for a valid TD guest, x2APIC will *always* be emulated. It is
+also specified in the spec.
+
+Please check sec "TD Hardware" in Intel TDX Virtual Firmware Design Guide
+or "Interrupt Handling and APIC Virtualization" section in Intel Trust
+Domain Extensions Module specification.
+
+For the case without x2APIC, TDX initialization should fail (hence TDX)
+will not be enabled). So in non-TDX mode, kernel will boot fine. But
+in TDX mode, current behavior should be "kernel hang"
+
+> selected?  What is the specific connection between TDX and X2APIC?
+
+X2APIC is used manage interrupts in virtualized environment (like TDX
+guest). So it is required for interrupt management.
+
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
