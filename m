@@ -2,105 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C409B42239A
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 12:32:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A79642239D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 12:33:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233784AbhJEKe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 06:34:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45572 "EHLO
+        id S234039AbhJEKfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 06:35:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233077AbhJEKe2 (ORCPT
+        with ESMTP id S233490AbhJEKfT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 06:34:28 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2B4AC06161C;
-        Tue,  5 Oct 2021 03:32:37 -0700 (PDT)
-Date:   Tue, 05 Oct 2021 10:32:35 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1633429956;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YJsXPZvCT1QH2N6CtrKUIp+7vL0DCRxtWZike5cM/Ms=;
-        b=0CvdxiRUrFVmLMMqGDPWuCbYX8g32XIrEsl0yz+qDSHh5EqnTzWHcWuTntZGupzfdg66s8
-        7sx8c7CeJYK5iBPncHq7807v5hSWS69OMjt9oa0G+2J3s6F4II3eCium8gMgr7/g4NHw6w
-        1NG1balxTkbsy53Yy9C/bXIKl8aLag+gKrV77Yx5XLoS+/QsBZKJ4j7Y24vlBFkDPSRZ0w
-        7HhJjstKnNTZ0ZbM6j84B4go6Kmyk8HCjqNAaWhgLK4LY/K0xl6Gj7dEkH2hD7DpfgEaaV
-        jZheVFaK/vMbHbiBJbLr9XaVTQ11rheT5EaYVtnS49sQXK4NIVU1caySi1ZWng==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1633429956;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YJsXPZvCT1QH2N6CtrKUIp+7vL0DCRxtWZike5cM/Ms=;
-        b=g9mlaeH2TEQWHYjAiM7BZp3YnWRVfTNqdtUiEYs6+sFa1q4jeJw66PxEmMeJ+JW0SbQlEa
-        9R/iC+3MdatQcVAA==
-From:   "tip-bot2 for Lukas Bulwahn" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/entry: Correct reference to intended CONFIG_64_BIT
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Borislav Petkov <bp@suse.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210803113531.30720-2-lukas.bulwahn@gmail.com>
-References: <20210803113531.30720-2-lukas.bulwahn@gmail.com>
+        Tue, 5 Oct 2021 06:35:19 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 009B4C06161C;
+        Tue,  5 Oct 2021 03:33:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=kT0Hjr/F9NQrOS6/YDbtKD9/7NDOpyJOJCXmfpl4TQY=; b=sAozXbhwy6ljtDTsQq6amThNlY
+        HnVkHvaEeJCEe0cJDtdlEe1tzejoJP4C5YZ8ndryKD7f78Tg/fxa1C34ciWHUZEjHpCVeLfHaTXyT
+        36fnMw6UtlydkRd8fT1FXHgZ9n9NavNLrusL09kYe1OU+bRvvKatFQkGrLCyHpS7a6Gi1aFAyKeLr
+        SI9gaL5EulVjCI+MM2EUbOgL/Ab1K/AihTz+QYIi5b7Q69A7pQ5AFioocV5gRxUXp93Nnh0pPwq1i
+        DQpQksVuweSFVnOmT9U1cqBMgT3/G1hfueSiYDMnchwfpnsx+c1rJr8VhbVnpFWJzr+ZyKAQzDzrD
+        aiC3/jzA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:54954)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1mXhlG-000095-Lh; Tue, 05 Oct 2021 11:33:26 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1mXhlF-0008OZ-L9; Tue, 05 Oct 2021 11:33:25 +0100
+Date:   Tue, 5 Oct 2021 11:33:25 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Sean Anderson <sean.anderson@seco.com>
+Cc:     netdev@vger.kernel.org, "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>
+Subject: Re: [RFC net-next PATCH 16/16] net: sfp: Add quirk to ignore PHYs
+Message-ID: <YVwp9R40r0ZWJzTa@shell.armlinux.org.uk>
+References: <20211004191527.1610759-1-sean.anderson@seco.com>
+ <20211004191527.1610759-17-sean.anderson@seco.com>
 MIME-Version: 1.0
-Message-ID: <163342995542.25758.18109528027795851140.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211004191527.1610759-17-sean.anderson@seco.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
+On Mon, Oct 04, 2021 at 03:15:27PM -0400, Sean Anderson wrote:
+> Some modules have something at SFP_PHY_ADDR which isn't a PHY. If we try to
+> probe it, we might attach genphy anyway if addresses 2 and 3 return
+> something other than all 1s. To avoid this, add a quirk for these modules
+> so that we do not probe their PHY.
+> 
+> The particular module in this case is a Finisar SFP-GB-GE-T. This module is
+> also worked around in xgbe_phy_finisar_phy_quirks() by setting the support
+> manually. However, I do not believe that it has a PHY in the first place:
+> 
+> $ i2cdump -y -r 0-31 $BUS 0x56 w
+>      0,8  1,9  2,a  3,b  4,c  5,d  6,e  7,f
+> 00: ff01 ff01 ff01 c20c 010c 01c0 0f00 0120
+> 08: fc48 000e ff78 0000 0000 0000 0000 00f0
+> 10: 7800 00bc 0000 401c 680c 0300 0000 0000
+> 18: ff41 0000 0a00 8890 0000 0000 0000 0000
 
-Commit-ID:     b2c238397b8f737590a7f1b4e8f9dbbd5043e340
-Gitweb:        https://git.kernel.org/tip/b2c238397b8f737590a7f1b4e8f9dbbd5043e340
-Author:        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-AuthorDate:    Tue, 03 Aug 2021 13:35:23 +02:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Tue, 05 Oct 2021 11:10:21 +02:00
+Actually, I think that is a PHY. It's byteswapped (which is normal using
+i2cdump in this way). The real contents of the registers are:
 
-x86/entry: Correct reference to intended CONFIG_64_BIT
+00: 01ff 01ff 01ff 0cc2 0c01 c001 000f 2001
+08: 48fc 0e00 78ff 0000 0000 0000 0000 f000
+10: 0078 bc00 0000 1c40 0c68 0003 0000 0000
+18: 41ff 0000 000a 9088 0000 0000 0000 0000
 
-Commit in Fixes adds a condition with IS_ENABLED(CONFIG_64_BIT),
-but the intended config item is called CONFIG_64BIT, as defined in
-arch/x86/Kconfig.
+It's advertising pause + asym pause, 1000BASE-T FD, link partner is also
+advertising 1000BASE-T FD but no pause abilities.
 
-Fortunately, scripts/checkkconfigsymbols.py warns:
+When comparing this with a Marvell 88e1111:
 
-64_BIT
-Referencing files: arch/x86/include/asm/entry-common.h
+00: 1140 7949 0141 0cc2 05e1 0000 0004 2001
+08: 0000 0e00 4000 0000 0000 0000 0000 f000
+10: 0078 8100 0000 0040 0568 0000 0000 0000
+18: 4100 0000 0002 8084 0000 0000 0000 0000
 
-Correct the reference to the intended config symbol.
+It looks remarkably similar. However, The first few reads seem to be
+corrupted with 0x01ff. It may be that the module is slow to allow the
+PHY to start responding - we've had similar with Champion One SFPs.
 
-Fixes: 662a0221893a ("x86/entry: Fix AC assertion")
-Suggested-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20210803113531.30720-2-lukas.bulwahn@gmail.com
----
- arch/x86/include/asm/entry-common.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+It looks like it's a Marvell 88e1111. The register at 0x11 is the
+Marvell status register, and 0xbc00 indicates 1000Mbit, FD, AN
+resolved, link up which agrees with what's in the various other
+registers.
 
-diff --git a/arch/x86/include/asm/entry-common.h b/arch/x86/include/asm/entry-common.h
-index 14ebd21..4318464 100644
---- a/arch/x86/include/asm/entry-common.h
-+++ b/arch/x86/include/asm/entry-common.h
-@@ -25,7 +25,7 @@ static __always_inline void arch_check_user_regs(struct pt_regs *regs)
- 		 * For !SMAP hardware we patch out CLAC on entry.
- 		 */
- 		if (boot_cpu_has(X86_FEATURE_SMAP) ||
--		    (IS_ENABLED(CONFIG_64_BIT) && boot_cpu_has(X86_FEATURE_XENPV)))
-+		    (IS_ENABLED(CONFIG_64BIT) && boot_cpu_has(X86_FEATURE_XENPV)))
- 			mask |= X86_EFLAGS_AC;
- 
- 		WARN_ON_ONCE(flags & mask);
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
