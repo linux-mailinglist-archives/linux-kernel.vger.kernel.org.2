@@ -2,96 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF9BC4229D3
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:00:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F63B4229DA
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:01:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236363AbhJEOCK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 10:02:10 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:19581 "EHLO m43-7.mailgun.net"
+        id S235915AbhJEOCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 10:02:47 -0400
+Received: from relay.sw.ru ([185.231.240.75]:33224 "EHLO relay.sw.ru"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236349AbhJEOAZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 10:00:25 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1633442314; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=XKX6aXfP6Ig98Jdme9GL3cR1S40DlB+q0uUeu4G3KDY=;
- b=Eal8rAHwgv72MGJDgrA1RWmk6Y0nScUM+znhlJIzW1IkX5dS2ciASChfxj1ELZ7PuA5kzByq
- GrUzd85fBvAih7eTSJqeT2x+o8Omg7HBOzSjzFelMM1P/gZYhxRZ7LVJIta4eJ02K6tVvYBy
- zmuVDl4lXY/995sJFJYdSx+iqlo=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 615c5a095f16bce668a116bb (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 05 Oct 2021 13:58:33
- GMT
-Sender: schowdhu=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id ED0F5C359D5; Tue,  5 Oct 2021 13:58:31 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: schowdhu)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 44F17C43150;
-        Tue,  5 Oct 2021 13:58:30 +0000 (UTC)
+        id S235734AbhJEOB6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 10:01:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
+        Subject; bh=Ed1xsp8lTrCrW27f1J4vH57YUUHw0q5d5pOknhx3OhI=; b=dlg9oxUUL9ON2P7NI
+        FPotPplwDm0pN9yRtW6uR6cImMJygenILBxuPbXKwHqwkrR4Xsm7PM70jOo1HQjb2RHaPSRAf8sNN
+        43yHyfSpf5DwKO2Vlo3GxDZ1spky8JiojDNWL2JimTvGua0MPzIGIEIvEsmMJTyevyQJZawJhUsLI
+        =;
+Received: from [10.93.0.56]
+        by relay.sw.ru with esmtp (Exim 4.94.2)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1mXkzF-0054Yv-SG; Tue, 05 Oct 2021 17:00:05 +0300
+Subject: Re: [PATCH mm v2] vmalloc: back off when the current task is
+ OOM-killed
+From:   Vasily Averin <vvs@virtuozzo.com>
+To:     Michal Hocko <mhocko@kernel.org>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel@openvz.org
+References: <YVGmMSJ3NrQZjLP8@dhcp22.suse.cz>
+ <83efc664-3a65-2adb-d7c4-2885784cf109@virtuozzo.com>
+Message-ID: <dd6f3cc5-70f3-4275-6458-118c463bf38a@virtuozzo.com>
+Date:   Tue, 5 Oct 2021 17:00:05 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <83efc664-3a65-2adb-d7c4-2885784cf109@virtuozzo.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date:   Tue, 05 Oct 2021 19:28:30 +0530
-From:   schowdhu@codeaurora.org
-To:     Joe Perches <joe@perches.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Bryan O'Donoghue <pure.logic@nexus-software.ie>,
-        Greg KH <greg@kroah.com>, linux-kernel@vger.kernel.org,
-        ckadabi@codeaurora.org, tsoni@codeaurora.org,
-        bryanh@codeaurora.org, psodagud@codeaurora.org,
-        satyap@codeaurora.org, pheragu@codeaurora.org,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Subject: Re: [PATCH V0 4/7] usb: common: eud: Added the driver support for
- Embedded USB Debugger(EUD)
-In-Reply-To: <c56e78bc85cbe6b05dd16c750e596ab331c37dee.camel@perches.com>
-References: <cover.1633343547.git.schowdhu@codeaurora.org>
- <e6df4a21a283e822d15dedb7ffb3ae62c241999c.1633343547.git.schowdhu@codeaurora.org>
- <YVsu602phHbZLMOT@ripper>
- <c56e78bc85cbe6b05dd16c750e596ab331c37dee.camel@perches.com>
-Message-ID: <576a1eac007ac512ba47d5d3f761ec9a@codeaurora.org>
-X-Sender: schowdhu@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-10-05 12:44, Joe Perches wrote:
-> On Mon, 2021-10-04 at 09:42 -0700, Bjorn Andersson wrote:
->> On Mon 04 Oct 04:16 PDT 2021, Souradeep Chowdhury wrote:
->> 
->> > Add support for control peripheral of EUD (Embedded USB Debugger) to
->> > listen to events such as USB attach/detach, pet EUD to indicate software
->> > is functional.Reusing the platform device kobj, sysfs entry 'enable' is
->> > created to enable or disable EUD.
-> []
->> > diff --git a/drivers/usb/common/qcom_eud.c b/drivers/usb/common/qcom_eud.c
-> []
->> > +static ssize_t enable_show(struct device *dev,
->> > +		struct device_attribute *attr, char *buf)
->> > +{
->> > +	struct eud_chip *chip = dev_get_drvdata(dev);
->> > +
->> > +	return sprintf(buf, "%d", chip->enable);
+On 10/5/21 4:52 PM, Vasily Averin wrote:
+> Huge vmalloc allocation on heavy loaded node can lead to a global
+> memory shortage. Task called vmalloc can have worst badness and
+> be selected by OOM-killer, however taken fatal signal does not
+> interrupt allocation cycle. Vmalloc repeat page allocaions
+> again and again, exacerbating the crisis and consuming the memory
+> freed up by another killed tasks.
 > 
-> trivia:
+> After a successful completion of the allocation procedure, a fatal
+> signal will be processed and task will be destroyed finally.
+> However it may not release the consumed memory, since the allocated
+> object may have a lifetime unrelated to the completed task.
+> In the worst case, this can lead to the host will panic
+> due to "Out of memory and no killable processes..."
 > 
-> should probably use sysfs_emit and have a trailing '\n' in the format.
+> This patch allows OOM-killer to break vmalloc cycle, makes OOM more
+> effective and avoid host panic. It does not check oom condition directly,
+> however, and breaks page allocation cycle when fatal signal was received.
+> 
+> This may trigger some hidden problems, when caller does not handle
+> vmalloc failures, or when rollaback after failed vmalloc calls own
+> vmallocs inside. However all of these scenarios are incorrect:
+> vmalloc does not guarantee successful allocation, it has never been called
+> with __GFP_NOFAIL and threfore either should not be used for any rollbacks
+> or should handle such errors correctly and not lead to critical
+> failures.
 
-Ack
+I briefly checked this patch together with 
+ v3 memcg: prohibit unconditional exceeding the limit of dying tasks
+ over v5.15-rc4.
+I executed LTP on host, all oom, cgroup and memcg tests was successfully finished.
+and then experimented with memcg limited LXC containers.
+I did not noticed any troubles on my test node.
+Thank you,
+	Vasily Averin
