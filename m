@@ -2,71 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38F684225B0
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 13:50:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC4E04225BC
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 13:50:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234516AbhJELwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 07:52:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60012 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233672AbhJELv7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 07:51:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id D4A5F61502;
-        Tue,  5 Oct 2021 11:50:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633434608;
-        bh=5H1e9VG8V483wq01PzCvLBbuUnY2XCEq4xrGesCLCUk=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=Kn6N5Aj+5TRKJNv99nINGDvyhIeqf0aH4MBSLE3lOshHWZpxQbjPcmA/31hkEyPGY
-         LJrw1pC3jp3ZS9bdW9ZFiq06vyHH1jcOgYVvK0iCUNwwiRKYLovjYbkL5p+giEfo98
-         wfM37m0SoI1SXW4LBdpbvL5Heu9PKedv/9/R9qFI1SbNd+af4TTdk/c8toCg2PTx+x
-         RwbhtZCOm8Zhz6WEBM7XtJhlTwxe0Mi9BckXriIhN5RJzGkU5f0Y1PNTb93eUcT6/c
-         sLg2tvpHfLVqR4eKd1+vb6UKjroj/T3AxPn+FuUqLBW1ZuMW1SUdBwlBiAwFUIOEG2
-         ZNMEglnxf6ENg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id CEA7360A53;
-        Tue,  5 Oct 2021 11:50:08 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S234533AbhJELwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 07:52:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35664 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234397AbhJELwo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 07:52:44 -0400
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC58DC06174E
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 04:50:53 -0700 (PDT)
+Received: by mail-oi1-x22b.google.com with SMTP id n63so526715oif.7
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 04:50:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZXyHYhWprLF6VOTKKbJ9elBPTHHvHE5sqZFrMqC4ukc=;
+        b=AdpPxdZ9CqU5FBxAA98Y3fzXjRIpzwI+jLyQpXlS0B2Zag9lwe0Tm/W8yG54SJ9A9u
+         ZloN1JllYx08BhPRvTu5lLeMVb90zvrbUzw51Q/oTdDElg8798X7vT7CKO7GyYUcONLE
+         k9O1RUB4qxTUoeLEVIq3Grm6ll7KDg+JufpDII0qJIcg/GKTG35cmkQ5XWHVutEWOyV9
+         afmn3IVBAGabm9Ko1S1/pP/T924r2z5QRlfubG528dYb2KvZAfCV+7dPjVhxdNnppO46
+         HYvS1v3YPsVAuU8KqDjulvXw2WkI0lv0lSxJUhzjPCzS4XqZ3dFKVW9ScGGE+fi2AxGF
+         NvfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZXyHYhWprLF6VOTKKbJ9elBPTHHvHE5sqZFrMqC4ukc=;
+        b=qd7stoyDfgfL8qfD6vFWB31GEWQUnSM84j1OXJ5flPQrvTfpQdcZl/YFPMb4rVRZzl
+         +IeLMHxe1zwKJbUc2I+FJtMlNkP37oTkPA8uor95xijYQgGmg9QcCYX0Y7uUp0BwqFH9
+         V8ccGZX4eFC/1PmZpi/okrc2h5mQHiQ4ftkru9Hb/q0pAi/fYH7EP8bHnJAUEA17gRsx
+         wPTq7gQrC/wMwZFk6kxVWzIhFU/MX++Rmgrx9HsqCs8XJ0insuEf35pOZyoqD8ao/6c4
+         /PR3ThoI3YyLQjOYOO/KUl1ePcCkmNfGsTREjWQ8poYR1aOxDLjz+VUZ/5cFPVgVPRnY
+         9u/w==
+X-Gm-Message-State: AOAM532bvSOtLoMTpz4vpIQimLv7UBeF9nmkWH9jbgxCb/ji1mZAjuIV
+        1jkdUEJ3urWQogTCLm61L6vhO5H7Ua8c4F6Xn9jm1Q==
+X-Google-Smtp-Source: ABdhPJxU3FVSA1SHRlaHXINF41V/Q42Bl2cBP1TOm69/Ej2eU70kaiasNkoR/CPckzvekLYzclXnlPHunaY5s8EHghQ=
+X-Received: by 2002:a54:4618:: with SMTP id p24mr2068916oip.134.1633434652953;
+ Tue, 05 Oct 2021 04:50:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net] r8152: avoid to resubmit rx immediately
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163343460884.12488.8334221276223981398.git-patchwork-notify@kernel.org>
-Date:   Tue, 05 Oct 2021 11:50:08 +0000
-References: <20211004062858.1679-381-nic_swsd@realtek.com>
-In-Reply-To: <20211004062858.1679-381-nic_swsd@realtek.com>
-To:     Hayes Wang <hayeswang@realtek.com>
-Cc:     jason-ch.chen@mediatek.com, kuba@kernel.org, davem@davemloft.net,
-        netdev@vger.kernel.org, nic_swsd@realtek.com,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+References: <20211005105905.1994700-1-elver@google.com> <20211005105905.1994700-6-elver@google.com>
+ <YVw53mP3VkWyCzxn@hirez.programming.kicks-ass.net> <YVw63tqctCMm+d7M@hirez.programming.kicks-ass.net>
+In-Reply-To: <YVw63tqctCMm+d7M@hirez.programming.kicks-ass.net>
+From:   Marco Elver <elver@google.com>
+Date:   Tue, 5 Oct 2021 13:50:41 +0200
+Message-ID: <CANpmjNOXWtUg9qsLJ6m9n3GYZf-AHE_21=zLnFnUMDBHMP2umg@mail.gmail.com>
+Subject: Re: [PATCH -rcu/kcsan 05/23] kcsan: Add core memory barrier
+ instrumentation functions
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
+        Alexander Potapenko <glider@google.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Waiman Long <longman@redhat.com>,
+        Will Deacon <will@kernel.org>, kasan-dev@googlegroups.com,
+        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Tue, 5 Oct 2021 at 13:45, Peter Zijlstra <peterz@infradead.org> wrote:
+> On Tue, Oct 05, 2021 at 01:41:18PM +0200, Peter Zijlstra wrote:
+> > On Tue, Oct 05, 2021 at 12:58:47PM +0200, Marco Elver wrote:
+> > > +static __always_inline void kcsan_atomic_release(int memorder)
+> > > +{
+> > > +   if (memorder == __ATOMIC_RELEASE ||
+> > > +       memorder == __ATOMIC_SEQ_CST ||
+> > > +       memorder == __ATOMIC_ACQ_REL)
+> > > +           __kcsan_release();
+> > > +}
+> > > +
+[...]
+> > > +   kcsan_atomic_release(memorder);
+> > >     __atomic_thread_fence(memorder);
+> > >  }
+> > >  EXPORT_SYMBOL(__tsan_atomic_thread_fence);
+> >
+> > I find that very hard to read.. kcsan_atomic_release() it not in fact a
+> > release. It might be a release if @memorder implies one.
 
-This patch was applied to netdev/net.git (refs/heads/master):
+You're right, this name can be improved.
+`kcsan_atomic_builtin_memorder(..)` is probably better
 
-On Mon, 4 Oct 2021 14:28:58 +0800 you wrote:
-> For the situation that the disconnect event comes very late when the
-> device is unplugged, the driver would resubmit the RX bulk transfer
-> after getting the callback with -EPROTO immediately and continually.
-> Finally, soft lockup occurs.
-> 
-> This patch avoids to resubmit RX immediately. It uses a workqueue to
-> schedule the RX NAPI. And the NAPI would resubmit the RX. It let the
-> disconnect event have opportunity to stop the submission before soft
-> lockup.
-> 
-> [...]
+> Also, what's the atomic part signify? Is that because you're modeling
+> the difference in acquire/release semantics between
+> smp_load_{acquire,release}() and atomic*_{acquire,release}() ?
 
-Here is the summary with links:
-  - [net] r8152: avoid to resubmit rx immediately
-    https://git.kernel.org/netdev/net/c/baf33d7a7564
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Sorry, just a bad name. It's about the builtins. The above suggested
+name should hopefully be clearer.
