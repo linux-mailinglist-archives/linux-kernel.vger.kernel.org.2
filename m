@@ -2,304 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E74A642338F
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 00:33:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAA1F423391
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 00:35:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236855AbhJEWfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 18:35:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46092 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231304AbhJEWfd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 18:35:33 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CD27C061749
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 15:33:42 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id kk10so722891pjb.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 15:33:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NVaNuqsh2cbkaLybruNHatXvA5elgWSJDPvzOcbacUE=;
-        b=EVm/hrha1IfLe4BiCQirvgf7RAapRUWd5OY2P/INgYjGkVj8hc9n6QLCp874tJH4B8
-         c59PijgCMCeR1ww75e7BgxIoTbMuTYzR9/moG5aTuzHYfPG7MAW0gYXmAVqBIaYxB6u3
-         pGT84S6wLaVtEx10zHX31KymEwCtGRBIM7nGxaEsjYxCLvHTfzY6xa7y7SldE/mqIVvK
-         oPnKGRn3Lv3ooPEL9qBqRzUnM8cnjxO5Piw2uYrVwcD14kajcyQSUHHfM8bMcuD/Rg2L
-         iTmJ3+gEulvEGrDRcURXy5eNQOactv7eOZqPRc7WNm1y+P0cIcKdewJWYVmtxJ5+4Jcu
-         GLMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NVaNuqsh2cbkaLybruNHatXvA5elgWSJDPvzOcbacUE=;
-        b=1llFu8TQGB86u1/s8RCUh1Lx43mhXEMCJAF8XafFgHQlVXZXBFrFfp0CHckwsZCrwg
-         4MHsUiFdGcqD/0g38h3OGw1F11Svsi9jiHzi+fX9i+bMWV1KS0yEOgt7zNj8T+CIcVif
-         a8lWOCnRnOINXxRhNvON01yqvwSGrnYOP7twRpTRzZvqOki1o4lPdR00DtHaVXtJt0y6
-         U4mYwP/arrq47DgCdtwftDVyLHQ3tLGtqQswkOxGmwpo283NLay5RSk6gvQpc2ZIp/lI
-         iKqwIIR95sLHI3EbMJfZLupw4NGf+UfXu4Sk8u3BCImQ98Pt3nDCb7TG4XfLARDf3C0a
-         azzQ==
-X-Gm-Message-State: AOAM530NGIJpz44A7zEjTFwEp2tDGmJ4q+IawR0gwOq3SJEu0DzCfD/w
-        DMgKbwuhLbtiML7rQbNJK0iyN4oA7V5MMAi4yt4Ftw==
-X-Google-Smtp-Source: ABdhPJyNUK8tRKcu+8Dd6LTnJN+R73YCyL6OGLWiFBrQ/OXrJOoHzTAHLH3By0qn+wa4u+t5oNVbKSM82eOjyEdBbGQ=
-X-Received: by 2002:a17:90a:d686:: with SMTP id x6mr6764886pju.8.1633473221792;
- Tue, 05 Oct 2021 15:33:41 -0700 (PDT)
+        id S236738AbhJEWhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 18:37:08 -0400
+Received: from foss.arm.com ([217.140.110.172]:35688 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229831AbhJEWhH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 18:37:07 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8C44C6D;
+        Tue,  5 Oct 2021 15:35:16 -0700 (PDT)
+Received: from [10.57.72.173] (unknown [10.57.72.173])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 924273F66F;
+        Tue,  5 Oct 2021 15:35:14 -0700 (PDT)
+Subject: Re: [PATCH v2 12/17] coresight: trbe: Add a helper to fetch cpudata
+ from perf handle
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        maz@kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com,
+        james.morse@arm.com, anshuman.khandual@arm.com, leo.yan@linaro.org,
+        mike.leach@linaro.org, will@kernel.org, lcherian@marvell.com,
+        coresight@lists.linaro.org
+References: <20210921134121.2423546-1-suzuki.poulose@arm.com>
+ <20210921134121.2423546-13-suzuki.poulose@arm.com>
+ <20211004174239.GB3263478@p14s>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <0ff450f4-ab3e-b409-5278-35cdfb883284@arm.com>
+Date:   Tue, 5 Oct 2021 23:35:13 +0100
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <CAPcyv4hP6mtzKS-CVb-aKf-kYuiLM771PMxN2zeBEfoj6NbctA@mail.gmail.com>
- <6d1e2701-5095-d110-3b0a-2697abd0c489@linux.intel.com> <YVXWaF73gcrlvpnf@kroah.com>
- <1cfdce51-6bb4-f7af-a86b-5854b6737253@linux.intel.com> <YVaywQLAboZ6b36V@kroah.com>
- <CAPcyv4gqs=KuGyxFR61QWqF6HKrRg851roCGUqrq585+s2Cm=w@mail.gmail.com>
- <20211001164533.GC505557@rowland.harvard.edu> <CAPcyv4i__reKFRP1KjWUov_W5jBQN9_vbUbKRL_V7KMM3oPuuQ@mail.gmail.com>
- <20211001190048.GA512418@rowland.harvard.edu> <CAPcyv4hYL51DcBuSuyMRFo5Jcc=zLd=Ugo+H_2saELcZ5AJBeQ@mail.gmail.com>
- <YVqONA0vhl0/H3QE@lahna>
-In-Reply-To: <YVqONA0vhl0/H3QE@lahna>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Tue, 5 Oct 2021 15:33:29 -0700
-Message-ID: <CAPcyv4im4Tsj1SnxSWe=cAHBP1mQ=zgO-D81n2BpD+_HkpitbQ@mail.gmail.com>
-Subject: Re: [PATCH v2 4/6] virtio: Initialize authorized attribute for
- confidential guest
-To:     Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc:     Alan Stern <stern@rowland.harvard.edu>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Borislav Petkov <bp@alien8.de>, X86 ML <x86@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andreas Noever <andreas.noever@gmail.com>,
-        Michael Jamet <michael.jamet@intel.com>,
-        Yehezkel Bernat <YehezkelShB@gmail.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jason Wang <jasowang@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211004174239.GB3263478@p14s>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 3, 2021 at 10:16 PM Mika Westerberg
-<mika.westerberg@linux.intel.com> wrote:
->
-> Hi,
->
-> On Fri, Oct 01, 2021 at 12:57:18PM -0700, Dan Williams wrote:
-> > > > Ah, so are you saying that it would be sufficient for USB if the
-> > > > generic authorized implementation did something like:
-> > > >
-> > > > dev->authorized = 1;
-> > > > device_attach(dev);
-> > > >
-> > > > ...for the authorize case, and:
-> > > >
-> > > > dev->authorize = 0;
-> > > > device_release_driver(dev);
-> > > >
-> > > > ...for the deauthorize case?
-> > >
-> > > Yes, I think so.  But I haven't tried making this change to test and
-> > > see what really happens.
-> >
-> > Sounds like a useful path for this effort to explore. Especially as
-> > Greg seems to want the proposed "has_probe_authorization" flag in the
-> > bus_type to disappear and make this all generic. It just seems that
-> > Thunderbolt would need deeper surgery to move what it does in the
-> > authorization toggle path into the probe and remove paths.
-> >
-> > Mika, do you see a path for Thunderbolt to align its authorization
-> > paths behind bus ->probe() ->remove() events similar to what USB might
-> > be able to support for a generic authorization path?
->
-> In Thunderbolt "authorization" actually means whether there is a PCIe
-> tunnel to the device or not. There is no driver bind/unbind happening
-> when authorization toggles (well on Thunderbolt bus, there can be on PCI
-> bus after the tunnel is established) so I'm not entirely sure how we
-> could use the bus ->probe() or ->remove for that to be honest.
+Hi Mathieu
 
-Greg, per your comment:
+On 04/10/2021 18:42, Mathieu Poirier wrote:
+> On Tue, Sep 21, 2021 at 02:41:16PM +0100, Suzuki K Poulose wrote:
+>> Add a helper to get the CPU specific data for TRBE instance, from
+>> a given perf handle. This also adds extra checks to make sure that
+>> the event associated with the handle is "bound" to the CPU and is
+>> active on the TRBE.
+>>
+>> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+>> Cc: Mike Leach <mike.leach@linaro.org>
+>> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+>> Cc: Leo Yan <leo.yan@linaro.org>
+>> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+>> ---
+>>   drivers/hwtracing/coresight/coresight-trbe.c | 12 ++++++++++--
+>>   1 file changed, 10 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
+>> index 983dd5039e52..797d978f9fa7 100644
+>> --- a/drivers/hwtracing/coresight/coresight-trbe.c
+>> +++ b/drivers/hwtracing/coresight/coresight-trbe.c
+>> @@ -268,6 +268,15 @@ static unsigned long trbe_snapshot_offset(struct perf_output_handle *handle)
+>>   	return buf->nr_pages * PAGE_SIZE;
+>>   }
+>>   
+>> +static inline struct trbe_cpudata *
+>> +trbe_handle_to_cpudata(struct perf_output_handle *handle)
+>> +{
+>> +	struct trbe_buf *buf = etm_perf_sink_config(handle);
+>> +
+>> +	BUG_ON(!buf || !buf->cpudata);
+>> +	return buf->cpudata;
+>> +}
+>> +
+>>   /*
+>>    * TRBE Limit Calculation
+>>    *
+>> @@ -533,8 +542,7 @@ static enum trbe_fault_action trbe_get_fault_act(struct perf_output_handle *hand
+>>   {
+>>   	int ec = get_trbe_ec(trbsr);
+>>   	int bsc = get_trbe_bsc(trbsr);
+>> -	struct trbe_buf *buf = etm_perf_sink_config(handle);
+>> -	struct trbe_cpudata *cpudata = buf->cpudata;
+>> +	struct trbe_cpudata *cpudata = trbe_handle_to_cpudata(handle);
+> 
+> There is two other places where this pattern is present:  is_perf_trbe() and
+> __trbe_normal_offset().
 
-"... which was to move the way that busses are allowed to authorize
-the devices they wish to control into a generic way instead of being
-bus-specific logic."
+I skipped them, as they have to get access to the "trbe_buf" anyways.
+So the step by step, made sense. But I could replace them too to make it
+transparent.
 
-We have USB and TB that have already diverged on the ABI here. The USB
-behavior is more in line with the "probe authorization" concept, while
-TB is about tunnel establishment and not cleanly tied to probe
-authorization. So while I see a path to a common authorization
-implementation for USB and other buses (per the insight from Alan), TB
-needs to retain the ability to record the authorization state as an
-enum rather than a bool, and emit a uevent on authorization status
-change.
+What do you think ?
 
-So how about something like the following that moves the attribute
-into the core, but still calls back to TB and USB to perform their
-legacy authorization work. This new authorized attribute only shows up
-when devices default to not authorized, i.e. when userspace owns the
-allow list past critical-boot built-in drivers, or if the bus (USB /
-TB) implements ->authorize().
+Suzuki
 
 
-diff --git a/drivers/base/core.c b/drivers/base/core.c
-index e65dd803a453..8f8fbe2637d1 100644
---- a/drivers/base/core.c
-+++ b/drivers/base/core.c
-@@ -2414,6 +2414,58 @@ static ssize_t online_store(struct device *dev,
-struct device_attribute *attr,
- }
- static DEVICE_ATTR_RW(online);
-
-+static ssize_t authorized_show(struct device *dev,
-+                              struct device_attribute *attr, char *buf)
-+{
-+       return sysfs_emit(buf, "%u\n", dev->authorized);
-+}
-+
-+static ssize_t authorized_store(struct device *dev,
-+                               struct device_attribute *attr, const char *buf,
-+                               size_t count)
-+{
-+       unsigned int val, save;
-+       ssize_t rc;
-+
-+       rc = kstrtouint(buf, 0, &val);
-+       if (rc < 0)
-+               return rc;
-+
-+       /* some buses (Thunderbolt) support authorized values > 1 */
-+       if (val > 1 && !dev->bus->authorize)
-+               return -EINVAL;
-+
-+       device_lock(dev);
-+       save = dev->authorized;
-+       if (save == val) {
-+               rc = count;
-+               goto err;
-+       }
-+
-+       dev->authorized = val;
-+       if (dev->bus->authorize) {
-+               /* notify bus about change in authorization state */
-+               rc = dev->bus->authorize(dev);
-+               if (rc) {
-+                       dev->authorized = save;
-+                       goto err;
-+               }
-+       }
-+       device_unlock(dev);
-+
-+       if (dev->authorized) {
-+               if (!device_attach(dev))
-+                       dev_dbg(dev, "failed to probe after authorize\n");
-+       } else
-+               device_release_driver(dev);
-+       return count;
-+
-+err:
-+       device_unlock(dev);
-+       return rc < 0 ? rc : count;
-+}
-+static DEVICE_ATTR_RW(authorized);
-+
- static ssize_t removable_show(struct device *dev, struct
-device_attribute *attr,
-                              char *buf)
- {
-@@ -2616,8 +2668,16 @@ static int device_add_attrs(struct device *dev)
-                        goto err_remove_dev_waiting_for_supplier;
-        }
-
-+       if (dev_needs_authorization(dev)) {
-+               error = device_create_file(dev, &dev_attr_authorized);
-+               if (error)
-+                       goto err_remove_dev_removable;
-+       }
-+
-        return 0;
-
-+ err_remove_dev_removable:
-+       device_remove_file(dev, &dev_attr_removable);
-  err_remove_dev_waiting_for_supplier:
-        device_remove_file(dev, &dev_attr_waiting_for_supplier);
-  err_remove_dev_online:
-@@ -2639,6 +2699,7 @@ static void device_remove_attrs(struct device *dev)
-        struct class *class = dev->class;
-        const struct device_type *type = dev->type;
-
-+       device_remove_file(dev, &dev_attr_authorized);
-        device_remove_file(dev, &dev_attr_removable);
-        device_remove_file(dev, &dev_attr_waiting_for_supplier);
-        device_remove_file(dev, &dev_attr_online);
-@@ -2805,6 +2866,8 @@ static void klist_children_put(struct klist_node *n)
-        put_device(dev);
- }
-
-+unsigned int dev_default_authorization;
-+
- /**
-  * device_initialize - init device structure.
-  * @dev: device.
-diff --git a/include/linux/device.h b/include/linux/device.h
-index e270cb740b9e..fbb83e46af9d 100644
---- a/include/linux/device.h
-+++ b/include/linux/device.h
-@@ -561,6 +561,7 @@ struct device {
-        struct dev_iommu        *iommu;
-
-        enum device_removable   removable;
-+       unsigned int            authorized;
-
-        bool                    offline_disabled:1;
-        bool                    offline:1;
-@@ -814,6 +815,19 @@ static inline bool dev_removable_is_valid(struct
-device *dev)
-        return dev->removable != DEVICE_REMOVABLE_NOT_SUPPORTED;
- }
-
-+extern unsigned int dev_default_authorization;
-+
-+/*
-+ * If the bus has custom authorization, or if devices default to not
-+ * authorized, register the 'authorized' attribute for @dev.
-+ */
-+static inline bool dev_needs_authorization(struct device *dev)
-+{
-+       if (dev->bus->authorize || dev_default_authorization == 0)
-+               return true;
-+       return false;
-+}
-+
- /*
-  * High level routines for use by the bus drivers
-  */
-diff --git a/include/linux/device/bus.h b/include/linux/device/bus.h
-index 062777a45a74..3202a2b13374 100644
---- a/include/linux/device/bus.h
-+++ b/include/linux/device/bus.h
-@@ -40,6 +40,11 @@ struct fwnode_handle;
-  *             that generate uevents to add the environment variables.
-  * @probe:     Called when a new device or driver add to this bus, and callback
-  *             the specific driver's probe to initial the matched device.
-+ * @authorize: Called after authorized_store() changes the
-+ *             authorization state of the device. Do not use for new
-+ *             bus implementations, revalidate dev->authorized in
-+ *             @probe and @remove to take any bus specific
-+ *             authorization actions.
-  * @sync_state:        Called to sync device state to software state
-after all the
-  *             state tracking consumers linked to this device (present at
-  *             the time of late_initcall) have successfully bound to a
-@@ -90,6 +95,7 @@ struct bus_type {
-        int (*match)(struct device *dev, struct device_driver *drv);
-        int (*uevent)(struct device *dev, struct kobj_uevent_env *env);
-        int (*probe)(struct device *dev);
-+       int (*authorize)(struct device *dev);
-        void (*sync_state)(struct device *dev);
-        void (*remove)(struct device *dev);
-        void (*shutdown)(struct device *dev);
