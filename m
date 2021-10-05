@@ -2,442 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B648542310F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 21:51:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4601423114
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 21:52:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230333AbhJETx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 15:53:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36342 "EHLO
+        id S235581AbhJETyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 15:54:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235224AbhJETxZ (ORCPT
+        with ESMTP id S235163AbhJETyH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 15:53:25 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DFBDC061760
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 12:51:35 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id s75so349381pgs.5
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 12:51:35 -0700 (PDT)
+        Tue, 5 Oct 2021 15:54:07 -0400
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 297D5C06174E
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 12:52:17 -0700 (PDT)
+Received: by mail-pg1-x549.google.com with SMTP id z7-20020a63c047000000b0026b13e40309so173702pgi.19
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 12:52:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=c248+YsMzL9W0qCEd1iDHyrRshzyg80e+KsJR5NsZNM=;
-        b=I6EHoGSdu3KoBtbKasywVsL+zTRgSEXt22cxdTFwLWr4xn/flSD2xtXn1VaSpCqPhp
-         g88hv14ARss37ze+/b8ioywDIwAU/qCuH0Xlb4lnNlfMXDFaS3NbbU+lnpD39poKxNtm
-         i//q0VDL8a9ea6JTn1lH7LSvf1aOAvMS+9KoU=
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=GYjYv2lfViakCsNns4R+hOdMsK5mYgMHQz2UmonsX7M=;
+        b=PKz1dvFaJD2xCDaBdwJfFiZi8oyGPOIKssYrKOpxNITyFzraZ1WYs2xvsYUFTw1e8r
+         Xy1bsAW0ffhZtlmysuIIT9PxZw5lkr7g52epTgKZrddJfsGYP+XW9OiVlIetOqKpQXTr
+         7uiS+2XzBQwWEN0NSOf6vjNiYYLY0jPKC+26y3c/cRFXf8uCnoGDS1A6Z+KkaRStw9T/
+         lk9xM7WIAzM2C0VTEgx4ifnEbad3fHd5XD/enn9BhwTzJ4eLieC1R2WE1zjL1UJuuHV6
+         /cvJ9igeUz8SAMQlvYFEplGPxhY+jmm/1KoQ5kFUJzvzH0w5k/doo9wFfKwczL+/M5AA
+         0knQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=c248+YsMzL9W0qCEd1iDHyrRshzyg80e+KsJR5NsZNM=;
-        b=3RxizK9lPFOnepj5CaNOcwttPewBwBwiF2kv3HNT5Opjzhs7ZY6dxQlyt7m3nxjn/x
-         km+wM7dX89fnnXvn0Z6uEavmts/eZP5B79CicTO9wyN+9+U00vvspBeCxZir8nbz/UaT
-         Wm0bg7XU2K1S82LnahXpaNDAHzjw0gBq0BbuWxt9sJe+yg5DaSarRYkCKt9IT3vet8XO
-         WOr/FpO+aUlZFuq92oS95SX9EyI0G7w1bf42a8Ky8xsLXIQMpiJdJOLp5dIn4Sb5+buB
-         yF0hhPX6NRCETxBc/AqpHKePX507yLupa/bV2pJPlD6Pwa0Ta/mr4PSIqiXpSRC38RzE
-         JvFA==
-X-Gm-Message-State: AOAM533D2dMighqlRrEUIqBU6PqngSdRwGdcQwO95IGBxB8HwF23KYSf
-        pI9gMgCqEQF4QldczcVftISGGg==
-X-Google-Smtp-Source: ABdhPJz7SItMl/gwavRck2FczeV8C2olPc8vu/fElDdn6AKXulzTkdGczLNMtutPlrJXnUhl6xgBZQ==
-X-Received: by 2002:a05:6a00:1ad4:b0:44c:619e:f386 with SMTP id f20-20020a056a001ad400b0044c619ef386mr12723497pfv.66.1633463494468;
-        Tue, 05 Oct 2021 12:51:34 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id t2sm2886284pjf.1.2021.10.05.12.51.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Oct 2021 12:51:34 -0700 (PDT)
-Date:   Tue, 5 Oct 2021 12:51:33 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     tj@kernel.org, gregkh@linuxfoundation.org,
-        akpm@linux-foundation.org, minchan@kernel.org, jeyu@kernel.org,
-        shuah@kernel.org, bvanassche@acm.org, dan.j.williams@intel.com,
-        joe@perches.com, tglx@linutronix.de, rostedt@goodmis.org,
-        linux-spdx@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 05/12] test_sysfs: add support to use kernfs failure
- injection
-Message-ID: <202110051248.FCF2E89@keescook>
-References: <20210927163805.808907-1-mcgrof@kernel.org>
- <20210927163805.808907-6-mcgrof@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210927163805.808907-6-mcgrof@kernel.org>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=GYjYv2lfViakCsNns4R+hOdMsK5mYgMHQz2UmonsX7M=;
+        b=UCmlDXkSTxuidCv71ct7depYnp7p2wjN3bw0p5oVHiyapyEzafh9KiZ55pwIHvMRHy
+         7pjmveXdzB2DIPs8LIWg3wrXMdhSlA8YmS5PjSG7Iwy7Q8zvxGbz4+gkliPMfM87bAiH
+         GKkwv4IbJ6yPRmnTSbCf18Ja4ffvRcrxhjpgMXHVKgEnXu2t7P2UkxXJjQZ6SXzlQc0d
+         ezqXbBhXVlQq4n/IygtybFytZw69c7Dp8EVqPXlud+qoD0Pip3deT3EZb66QWJCKoUDu
+         FX0mBn9mq/wSZ38yWRE/+JrolwoMrs0teYbRR75bYiaTxp8IlbVuRPjaK5fxoc91m3mG
+         pQ3A==
+X-Gm-Message-State: AOAM533dkUlnIcdofzceyOSDyxsf61OHZ17plFj6a/qOequYwe22doxd
+        pCEzcLgE02MFO8brcVt4x3bYPnE820k=
+X-Google-Smtp-Source: ABdhPJyrR9Hxve8OLbSqYgFTqbgqERpjWe3edUJF1XZdKQtwmUzRab2fiP4NQrKcojdkvyjTo3aEAGlNVwE=
+X-Received: from pgonda1.kir.corp.google.com ([2620:15c:29:204:b603:db5:e90f:74aa])
+ (user=pgonda job=sendgmr) by 2002:a17:902:6f01:b0:138:9aca:efda with SMTP id
+ w1-20020a1709026f0100b001389acaefdamr7064594plk.19.1633463536550; Tue, 05 Oct
+ 2021 12:52:16 -0700 (PDT)
+Date:   Tue,  5 Oct 2021 12:52:13 -0700
+Message-Id: <20211005195213.2905030-1-pgonda@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.800.g4c38ced690-goog
+Subject: [PATCH] crypto: ccp - Consolidate sev INIT logic
+From:   Peter Gonda <pgonda@google.com>
+To:     thomas.lendacky@amd.com
+Cc:     Peter Gonda <pgonda@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Marc Orr <marcorr@google.com>, Joerg Roedel <jroedel@suse.de>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        David Rientjes <rientjes@google.com>,
+        John Allen <john.allen@amd.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 09:37:58AM -0700, Luis Chamberlain wrote:
-> This extends test_sysfs with support for using the failure injection
-> wait completion and knobs to force a few race conditions which
-> demonstrates that kernfs active reference protection is sufficient
-> for kobject / device protection at higher layers.
-> 
-> This adds 4 new tests which tries to remove the device attribute
-> store operation in 4 different situations:
-> 
->   1) at the start of kernfs_kernfs_fop_write_iter()
->   2) before the of->mutex is held in kernfs_kernfs_fop_write_iter()
->   3) after the of->mutex is held in kernfs_kernfs_fop_write_iter()
->   4) after the kernfs node active reference is taken
-> 
-> A write fails in call cases except the last one, test number #32. There
-> is a good explanation for this: *once* kernfs_get_active() gets called
-> we have a guarantee that the kernfs entry cannot be removed. If
-> kernfs_get_active() succeeds that entry cannot be removed and so
-> anything trying to remove that entry will have to wait. It is perhaps
-> not obvious but since a sysfs write will trigger eventually a
-> kernfs_get_active() call, and *only* if this succeeds will the sysfs
-> op be called, this and the fact that you cannot remove the kernfs
-> entry while the kenfs entry is active implies that a module that
-> created the respective sysfs / kernfs entry *cannot* possibly be
-> removed during a sysfs operation. And test number 32 provides us with
-> proof of this. If it were not true test #32 should crash.
-> 
-> No null dereferences are reproduced, even though this has been observed
-> in some complex testing cases [0]. If this issue really exists we should
-> have enough tools on the sysfs_test toolbox now to try to reproduce
-> this easily without having to poke around other drivers. It very likley
-> was the case that the issue reported [0] was possibly a side issue after
-> the first bug which was zram specific. This is why it is important to
-> isolate the issue and try to reproduce it in a generic form using the
-> test_sysfs driver.
-> 
-> [0] https://lkml.kernel.org/r/20210623215007.862787-1-mcgrof@kernel.org
-> 
-> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
-> ---
->  lib/Kconfig.debug                      |   3 +
->  lib/test_sysfs.c                       |  31 +++++
->  tools/testing/selftests/sysfs/config   |   3 +
->  tools/testing/selftests/sysfs/sysfs.sh | 175 +++++++++++++++++++++++++
->  4 files changed, 212 insertions(+)
-> 
-> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> index a29b7d398c4e..176b822654e5 100644
-> --- a/lib/Kconfig.debug
-> +++ b/lib/Kconfig.debug
-> @@ -2358,6 +2358,9 @@ config TEST_SYSFS
->  	depends on SYSFS
->  	depends on NET
->  	depends on BLOCK
-> +	select FAULT_INJECTION
-> +	select FAULT_INJECTION_DEBUG_FS
-> +	select FAIL_KERNFS_KNOBS
+Adds new helper function sev_init_if_required() for use in sev_ioctl().
+The function calls __sev_platform_init_locked() if the command requires
+the PSP's internal state be at least SEV_STATE_INIT. This consolidates
+many checks scattered through out the ioctl delegation functions.
 
-I don't like seeing "select" for user-configurable CONFIGs -- things
-tend to end up weird. This should simply be:
+Signed-off-by: Peter Gonda <pgonda@google.com>
+Cc: Tom Lendacky <thomas.lendacky@amd.com>
+Cc: Brijesh Singh <brijesh.singh@amd.com>
+Cc: Marc Orr <marcorr@google.com>
+Cc: Joerg Roedel <jroedel@suse.de>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: David Rientjes <rientjes@google.com>
+Cc: John Allen <john.allen@amd.com>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: linux-crypto@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+---
+ drivers/crypto/ccp/sev-dev.c | 63 +++++++++++++++---------------------
+ 1 file changed, 26 insertions(+), 37 deletions(-)
 
-	depends on FAIL_KERNFS_KNOBS
-
->  	help
->  	  This builds the "test_sysfs" module. This driver enables to test the
->  	  sysfs file system safely without affecting production knobs which
-> diff --git a/lib/test_sysfs.c b/lib/test_sysfs.c
-> index 2043ca494af8..c6e62de61403 100644
-> --- a/lib/test_sysfs.c
-> +++ b/lib/test_sysfs.c
-> @@ -38,6 +38,11 @@
->  #include <linux/rtnetlink.h>
->  #include <linux/genhd.h>
->  #include <linux/blkdev.h>
-> +#include <linux/kernfs.h>
-> +
-> +#ifdef CONFIG_FAIL_KERNFS_KNOBS
-
-This isn't an optional config here (and following)?
-
-> +MODULE_IMPORT_NS(KERNFS_DEBUG_PRIVATE);
-> +#endif
->  
->  static bool enable_lock;
->  module_param(enable_lock, bool_enable_only, 0644);
-> @@ -82,6 +87,13 @@ static bool enable_verbose_rmmod;
->  module_param(enable_verbose_rmmod, bool_enable_only, 0644);
->  MODULE_PARM_DESC(enable_verbose_rmmod, "enable verbose print messages on rmmod");
->  
-> +#ifdef CONFIG_FAIL_KERNFS_KNOBS
-> +static bool enable_completion_on_rmmod;
-> +module_param(enable_completion_on_rmmod, bool_enable_only, 0644);
-> +MODULE_PARM_DESC(enable_completion_on_rmmod,
-> +		 "enable sending a kernfs completion on rmmod");
-> +#endif
-> +
->  static int sysfs_test_major;
->  
->  /**
-> @@ -285,6 +297,12 @@ static ssize_t config_show(struct device *dev,
->  			"enable_verbose_writes:\t%s\n",
->  			enable_verbose_writes ? "true" : "false");
->  
-> +#ifdef CONFIG_FAIL_KERNFS_KNOBS
-> +	len += snprintf(buf+len, PAGE_SIZE - len,
-> +			"enable_completion_on_rmmod:\t%s\n",
-> +			enable_completion_on_rmmod ? "true" : "false");
-> +#endif
-> +
->  	test_dev_config_unlock(test_dev);
->  
->  	return len;
-> @@ -904,10 +922,23 @@ static int __init test_sysfs_init(void)
->  }
->  module_init(test_sysfs_init);
->  
-> +#ifdef CONFIG_FAIL_KERNFS_KNOBS
-> +/* The goal is to race our device removal with a pending kernfs -> store call */
-> +static void test_sysfs_kernfs_send_completion_rmmod(void)
-> +{
-> +	if (!enable_completion_on_rmmod)
-> +		return;
-> +	complete(&kernfs_debug_wait_completion);
-> +}
-> +#else
-> +static inline void test_sysfs_kernfs_send_completion_rmmod(void) {}
-> +#endif
-> +
->  static void __exit test_sysfs_exit(void)
->  {
->  	if (enable_debugfs)
->  		debugfs_remove(debugfs_dir);
-> +	test_sysfs_kernfs_send_completion_rmmod();
->  	if (delay_rmmod_ms)
->  		msleep(delay_rmmod_ms);
->  	unregister_test_dev_sysfs(first_test_dev);
-> diff --git a/tools/testing/selftests/sysfs/config b/tools/testing/selftests/sysfs/config
-> index 9196f452ecd5..2876a229f95b 100644
-> --- a/tools/testing/selftests/sysfs/config
-> +++ b/tools/testing/selftests/sysfs/config
-> @@ -1,2 +1,5 @@
->  CONFIG_SYSFS=m
->  CONFIG_TEST_SYSFS=m
-> +CONFIG_FAULT_INJECTION=y
-> +CONFIG_FAULT_INJECTION_DEBUG_FS=y
-> +CONFIG_FAIL_KERNFS_KNOBS=y
-> diff --git a/tools/testing/selftests/sysfs/sysfs.sh b/tools/testing/selftests/sysfs/sysfs.sh
-> index b3f4c2236c7f..f928635d0e35 100755
-> --- a/tools/testing/selftests/sysfs/sysfs.sh
-> +++ b/tools/testing/selftests/sysfs/sysfs.sh
-> @@ -62,6 +62,10 @@ ALL_TESTS="$ALL_TESTS 0025:1:1:test_dev_y:block"
->  ALL_TESTS="$ALL_TESTS 0026:1:1:test_dev_y:block"
->  ALL_TESTS="$ALL_TESTS 0027:1:0:test_dev_x:block" # deadlock test
->  ALL_TESTS="$ALL_TESTS 0028:1:0:test_dev_x:block" # deadlock test with rntl_lock
-> +ALL_TESTS="$ALL_TESTS 0029:1:1:test_dev_x:block" # kernfs race removal of store
-> +ALL_TESTS="$ALL_TESTS 0030:1:1:test_dev_x:block" # kernfs race removal before mutex
-> +ALL_TESTS="$ALL_TESTS 0031:1:1:test_dev_x:block" # kernfs race removal after mutex
-> +ALL_TESTS="$ALL_TESTS 0032:1:1:test_dev_x:block" # kernfs race removal after active
->  
->  allow_user_defaults()
->  {
-> @@ -92,6 +96,9 @@ allow_user_defaults()
->  	if [ -z $SYSFS_DEBUGFS_DIR ]; then
->  		SYSFS_DEBUGFS_DIR="/sys/kernel/debug/test_sysfs"
->  	fi
-> +	if [ -z $KERNFS_DEBUGFS_DIR ]; then
-> +		KERNFS_DEBUGFS_DIR="/sys/kernel/debug/kernfs"
-> +	fi
->  	if [ -z $PAGE_SIZE ]; then
->  		PAGE_SIZE=$(getconf PAGESIZE)
->  	fi
-> @@ -167,6 +174,14 @@ modprobe_reset_enable_rtnl_lock_on_rmmod()
->  	unset FIRST_MODPROBE_ARGS
->  }
->  
-> +modprobe_reset_enable_completion()
-> +{
-> +	FIRST_MODPROBE_ARGS="enable_completion_on_rmmod=1 enable_verbose_writes=1"
-> +	FIRST_MODPROBE_ARGS="$FIRST_MODPROBE_ARGS enable_verbose_rmmod=1 delay_rmmod_ms=0"
-> +	modprobe_reset
-> +	unset FIRST_MODPROBE_ARGS
-> +}
-> +
->  load_req_mod()
->  {
->  	modprobe_reset
-> @@ -197,6 +212,63 @@ debugfs_reset_first_test_dev_ignore_errors()
->  	echo -n "1" >"$SYSFS_DEBUGFS_DIR"/reset_first_test_dev
->  }
->  
-> +debugfs_kernfs_kernfs_fop_write_iter_exists()
-> +{
-> +	KNOB_DIR="${KERNFS_DEBUGFS_DIR}/config_fail_kernfs_fop_write_iter"
-> +	if [[ ! -d $KNOB_DIR ]]; then
-> +		echo "kernfs debugfs does not exist $KNOB_DIR"
-> +		return 0;
-> +	fi
-> +	KNOB_DEBUGFS="${KERNFS_DEBUGFS_DIR}/fail_kernfs_fop_write_iter"
-> +	if [[ ! -d $KNOB_DEBUGFS ]]; then
-> +		echo -n "kernfs debugfs for coniguring fail_kernfs_fop_write_iter "
-> +		echo "does not exist $KNOB_DIR"
-> +		return 0;
-> +	fi
-> +	return 1
-> +}
-> +
-> +debugfs_kernfs_kernfs_fop_write_iter_set_fail_once()
-> +{
-> +	KNOB_DEBUGFS="${KERNFS_DEBUGFS_DIR}/fail_kernfs_fop_write_iter"
-> +	echo 1 > $KNOB_DEBUGFS/interval
-> +	echo 100 > $KNOB_DEBUGFS/probability
-> +	echo 0 > $KNOB_DEBUGFS/space
-> +	# Disable verbose messages on the kernel ring buffer which may
-> +	# confuse developers with a kernel panic.
-> +	echo 0 > $KNOB_DEBUGFS/verbose
-> +
-> +	# Fail only once
-> +	echo 1 > $KNOB_DEBUGFS/times
-> +}
-> +
-> +debugfs_kernfs_kernfs_fop_write_iter_set_fail_never()
-> +{
-> +	KNOB_DEBUGFS="${KERNFS_DEBUGFS_DIR}/fail_kernfs_fop_write_iter"
-> +	echo 0 > $KNOB_DEBUGFS/times
-> +}
-> +
-> +debugfs_kernfs_set_wait_ms()
-> +{
-> +	SLEEP_AFTER_WAIT_MS="${KERNFS_DEBUGFS_DIR}/sleep_after_wait_ms"
-> +	echo $1 > $SLEEP_AFTER_WAIT_MS
-> +}
-> +
-> +debugfs_kernfs_disable_wait_kernfs_fop_write_iter()
-> +{
-> +	ENABLE_WAIT_KNOB="${KERNFS_DEBUGFS_DIR}/config_fail_kernfs_fop_write_iter/wait_"
-> +	for KNOB in ${ENABLE_WAIT_KNOB}*; do
-> +		echo 0 > $KNOB
-> +	done
-> +}
-> +
-> +debugfs_kernfs_enable_wait_kernfs_fop_write_iter()
-> +{
-> +	ENABLE_WAIT_KNOB="${KERNFS_DEBUGFS_DIR}/config_fail_kernfs_fop_write_iter/wait_$1"
-> +	echo -n "1" > $ENABLE_WAIT_KNOB
-> +	return $?
-> +}
-> +
->  set_orig()
->  {
->  	if [[ ! -z $TARGET ]] && [[ ! -z $ORIG ]]; then
-> @@ -972,6 +1044,105 @@ sysfs_test_0028()
->  	fi
->  }
->  
-> +sysfs_race_kernfs_kernfs_fop_write_iter()
-> +{
-> +	TARGET="${DIR}/$(get_test_target $1)"
-> +	WAIT_AT=$2
-> +	EXPECT_WRITE_RETURNS=$3
-> +	MSDELAY=$4
-> +
-> +	modprobe_reset_enable_completion
-> +	ORIG=$(cat "${TARGET}")
-> +	TEST_STR=$(( $ORIG + 1 ))
-> +
-> +	echo -n "Test racing removal of sysfs store op with kernfs $WAIT_AT ... "
-> +
-> +	if debugfs_kernfs_kernfs_fop_write_iter_exists; then
-> +		echo -n "skipping test as CONFIG_FAIL_KERNFS_KNOBS "
-> +		echo " or CONFIG_FAULT_INJECTION_DEBUG_FS is disabled"
-> +		return $ksft_skip
-> +	fi
-> +
-> +	# Allow for failing the kernfs_kernfs_fop_write_iter call once,
-> +	# we'll provide exact context shortly afterwards.
-> +	debugfs_kernfs_kernfs_fop_write_iter_set_fail_once
-> +
-> +	# First disable all waits
-> +	debugfs_kernfs_disable_wait_kernfs_fop_write_iter
-> +
-> +	# Enable a wait_for_completion(&kernfs_debug_wait_completion) at the
-> +	# specified location inside the kernfs_fop_write_iter() routine
-> +	debugfs_kernfs_enable_wait_kernfs_fop_write_iter $WAIT_AT
-> +
-> +	# Configure kernfs so that after its wait_for_completion() it
-> +	# will msleep() this amount of time and schedule(). We figure this
-> +	# will be sufficient time to allow for our module removal to complete.
-> +	debugfs_kernfs_set_wait_ms $MSDELAY
-> +
-> +	# Now we trigger a kernfs write op, which will run kernfs_fop_write_iter,
-> +	# but will wait until our driver sends a respective completion
-> +	set_test_ignore_errors &
-> +	write_pid=$!
-> +
-> +	# At this point kernfs_fop_write_iter() hasn't run our op, its
-> +	# waiting for our completion at the specified time $WAIT_AT.
-> +	# We now remove our module which will send a
-> +	# complete(&kernfs_debug_wait_completion) right before we deregister
-> +	# our device and the sysfs device attributes are removed.
-> +	#
-> +	# After the completion is sent, the test_sysfs driver races with
-> +	# kernfs to do the device deregistration with the kernfs msleep
-> +	# and schedule(). This should mean we've forced trying to remove the
-> +	# module prior to allowing kernfs to run our store operation. If the
-> +	# race did happen we'll panic with a null dereference on the store op.
-> +	#
-> +	# If no race happens we should see no write operation triggered.
-> +	modprobe -r $TEST_DRIVER > /dev/null 2>&1
-> +
-> +	debugfs_kernfs_kernfs_fop_write_iter_set_fail_never
-> +
-> +	wait $write_pid
-> +	if [[ $? -eq $EXPECT_WRITE_RETURNS ]]; then
-> +		echo "ok"
-> +	else
-> +		echo "FAIL" >&2
-> +	fi
-> +}
-> +
-> +sysfs_test_0029()
-> +{
-> +	for delay in 0 2 4 8 16 32 64 128 246 512 1024; do
-> +		echo "Using delay-after-completion: $delay"
-> +		sysfs_race_kernfs_kernfs_fop_write_iter 0029 at_start 1 $delay
-> +	done
-> +}
-> +
-> +sysfs_test_0030()
-> +{
-> +	for delay in 0 2 4 8 16 32 64 128 246 512 1024; do
-> +		echo "Using delay-after-completion: $delay"
-> +		sysfs_race_kernfs_kernfs_fop_write_iter 0030 before_mutex 1 $delay
-> +	done
-> +}
-> +
-> +sysfs_test_0031()
-> +{
-> +	for delay in 0 2 4 8 16 32 64 128 246 512 1024; do
-> +		echo "Using delay-after-completion: $delay"
-> +		sysfs_race_kernfs_kernfs_fop_write_iter 0031 after_mutex 1 $delay
-> +	done
-> +}
-> +
-> +# A write only succeeds *iff* a module removal happens *after* the
-> +# kernfs active reference is obtained with kernfs_get_active().
-> +sysfs_test_0032()
-> +{
-> +	for delay in 0 2 4 8 16 32 64 128 246 512 1024; do
-> +		echo "Using delay-after-completion: $delay"
-> +		sysfs_race_kernfs_kernfs_fop_write_iter 0032 after_active 0 $delay
-> +	done
-> +}
-> +
->  test_gen_desc()
->  {
->  	echo -n "$1 x $(get_test_count $1)"
-> @@ -1013,6 +1184,10 @@ list_tests()
->  	echo "$(test_gen_desc 0026) - block test writing y larger delay and resetting device"
->  	echo "$(test_gen_desc 0027) - test rmmod deadlock while writing x ... "
->  	echo "$(test_gen_desc 0028) - test rmmod deadlock using rtnl_lock while writing x ..."
-> +	echo "$(test_gen_desc 0029) - racing removal of store op with kernfs at start"
-> +	echo "$(test_gen_desc 0030) - racing removal of store op with kernfs before mutex"
-> +	echo "$(test_gen_desc 0031) - racing removal of store op with kernfs after mutex"
-> +	echo "$(test_gen_desc 0032) - racing removal of store op with kernfs after active"
->  }
->  
->  usage()
-> -- 
-> 2.30.2
-> 
-
+diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
+index e09925d86bf3..071d57fec4c4 100644
+--- a/drivers/crypto/ccp/sev-dev.c
++++ b/drivers/crypto/ccp/sev-dev.c
+@@ -386,24 +386,14 @@ static int sev_ioctl_do_platform_status(struct sev_issue_cmd *argp)
+ 
+ static int sev_ioctl_do_pek_pdh_gen(int cmd, struct sev_issue_cmd *argp, bool writable)
+ {
+-	struct sev_device *sev = psp_master->sev_data;
+-	int rc;
+-
+ 	if (!writable)
+ 		return -EPERM;
+ 
+-	if (sev->state == SEV_STATE_UNINIT) {
+-		rc = __sev_platform_init_locked(&argp->error);
+-		if (rc)
+-			return rc;
+-	}
+-
+ 	return __sev_do_cmd_locked(cmd, NULL, &argp->error);
+ }
+ 
+ static int sev_ioctl_do_pek_csr(struct sev_issue_cmd *argp, bool writable)
+ {
+-	struct sev_device *sev = psp_master->sev_data;
+ 	struct sev_user_data_pek_csr input;
+ 	struct sev_data_pek_csr data;
+ 	void __user *input_address;
+@@ -435,12 +425,6 @@ static int sev_ioctl_do_pek_csr(struct sev_issue_cmd *argp, bool writable)
+ 	data.len = input.length;
+ 
+ cmd:
+-	if (sev->state == SEV_STATE_UNINIT) {
+-		ret = __sev_platform_init_locked(&argp->error);
+-		if (ret)
+-			goto e_free_blob;
+-	}
+-
+ 	ret = __sev_do_cmd_locked(SEV_CMD_PEK_CSR, &data, &argp->error);
+ 
+ 	 /* If we query the CSR length, FW responded with expected data. */
+@@ -586,7 +570,6 @@ static int sev_update_firmware(struct device *dev)
+ 
+ static int sev_ioctl_do_pek_import(struct sev_issue_cmd *argp, bool writable)
+ {
+-	struct sev_device *sev = psp_master->sev_data;
+ 	struct sev_user_data_pek_cert_import input;
+ 	struct sev_data_pek_cert_import data;
+ 	void *pek_blob, *oca_blob;
+@@ -617,17 +600,10 @@ static int sev_ioctl_do_pek_import(struct sev_issue_cmd *argp, bool writable)
+ 	data.oca_cert_address = __psp_pa(oca_blob);
+ 	data.oca_cert_len = input.oca_cert_len;
+ 
+-	/* If platform is not in INIT state then transition it to INIT */
+-	if (sev->state != SEV_STATE_INIT) {
+-		ret = __sev_platform_init_locked(&argp->error);
+-		if (ret)
+-			goto e_free_oca;
+-	}
+-
+ 	ret = __sev_do_cmd_locked(SEV_CMD_PEK_CERT_IMPORT, &data, &argp->error);
+ 
+-e_free_oca:
+ 	kfree(oca_blob);
++
+ e_free_pek:
+ 	kfree(pek_blob);
+ 	return ret;
+@@ -730,7 +706,6 @@ static int sev_ioctl_do_get_id(struct sev_issue_cmd *argp)
+ 
+ static int sev_ioctl_do_pdh_export(struct sev_issue_cmd *argp, bool writable)
+ {
+-	struct sev_device *sev = psp_master->sev_data;
+ 	struct sev_user_data_pdh_cert_export input;
+ 	void *pdh_blob = NULL, *cert_blob = NULL;
+ 	struct sev_data_pdh_cert_export data;
+@@ -738,16 +713,6 @@ static int sev_ioctl_do_pdh_export(struct sev_issue_cmd *argp, bool writable)
+ 	void __user *input_pdh_cert_address;
+ 	int ret;
+ 
+-	/* If platform is not in INIT state then transition it to INIT. */
+-	if (sev->state != SEV_STATE_INIT) {
+-		if (!writable)
+-			return -EPERM;
+-
+-		ret = __sev_platform_init_locked(&argp->error);
+-		if (ret)
+-			return ret;
+-	}
+-
+ 	if (copy_from_user(&input, (void __user *)argp->data, sizeof(input)))
+ 		return -EFAULT;
+ 
+@@ -819,6 +784,26 @@ static int sev_ioctl_do_pdh_export(struct sev_issue_cmd *argp, bool writable)
+ 	return ret;
+ }
+ 
++static int sev_init_if_required(int cmd_id, bool writable,
++				struct sev_issue_cmd *argp)
++{
++	struct sev_device *sev = psp_master->sev_data;
++
++	lockdep_assert_held(&sev_cmd_mutex);
++
++	if (!writable)
++		return -EPERM;
++
++	if (cmd_id == SEV_FACTORY_RESET || cmd_id == SEV_PLATFORM_STATUS ||
++	    cmd_id == SEV_GET_ID || cmd_id == SEV_GET_ID2)
++		return 0;
++
++	if (sev->state == SEV_STATE_UNINIT)
++		return __sev_platform_init_locked(&argp->error);
++
++	return 0;
++}
++
+ static long sev_ioctl(struct file *file, unsigned int ioctl, unsigned long arg)
+ {
+ 	void __user *argp = (void __user *)arg;
+@@ -840,8 +825,11 @@ static long sev_ioctl(struct file *file, unsigned int ioctl, unsigned long arg)
+ 
+ 	mutex_lock(&sev_cmd_mutex);
+ 
+-	switch (input.cmd) {
++	ret = sev_init_if_required(input.cmd, writable, &input);
++	if (ret)
++		goto copy_out;
+ 
++	switch (input.cmd) {
+ 	case SEV_FACTORY_RESET:
+ 		ret = sev_ioctl_do_reset(&input, writable);
+ 		break;
+@@ -875,6 +863,7 @@ static long sev_ioctl(struct file *file, unsigned int ioctl, unsigned long arg)
+ 		goto out;
+ 	}
+ 
++copy_out:
+ 	if (copy_to_user(argp, &input, sizeof(struct sev_issue_cmd)))
+ 		ret = -EFAULT;
+ out:
 -- 
-Kees Cook
+2.33.0.800.g4c38ced690-goog
+
