@@ -2,119 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DAA0422763
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 15:08:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70E15422768
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 15:10:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234661AbhJENKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 09:10:39 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:37886 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233365AbhJENKi (ORCPT
+        id S234855AbhJENL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 09:11:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54296 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233365AbhJENLz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 09:10:38 -0400
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 195D2YWs015076;
-        Tue, 5 Oct 2021 09:08:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=0cSgTjVyv6tdhQk1BtAF/4xpZYYLqoXHRra4hgJ0sy8=;
- b=nn/zraNTPagQKyUc1zBDpvyWZibUEpK4wpHAMz8ko8yQRpnqA2/TY8wJe97XTb2uaTTy
- oyhzepW7Zv/d6I76Tgx8AkYX05DdbEUdpMocbD9D691RzhK1XRxtDkjz/kaXnhNeGlFw
- Tj0DMXCDRQaJrrbcEVyksPOyF74Ntz9TnaK9SH8YNhtJSH7ABiTWkUqXCrnDYO0olwum
- FOMBsVL/83PHSyDRd/+xrMfJQ6waOuR5tAOgMUwJD53hJDsQ0xOt8rNbCYvrQKN6RSBP
- ZVuDj8VE680/GAUoE76yLnG+IUmZ6WyQs3Y6ivuCZyQKF8AqGtZOmanc06/vnX/kVh8j Ug== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bgq7tg85g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Oct 2021 09:08:47 -0400
-Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 195D2iuk016353;
-        Tue, 5 Oct 2021 09:08:47 -0400
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bgq7tg84k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Oct 2021 09:08:47 -0400
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 195D6wcf002831;
-        Tue, 5 Oct 2021 13:08:44 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma03fra.de.ibm.com with ESMTP id 3bef29gexf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Oct 2021 13:08:44 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 195D8daj46006548
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 5 Oct 2021 13:08:39 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id ED02AA4053;
-        Tue,  5 Oct 2021 13:08:38 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 61706A4055;
-        Tue,  5 Oct 2021 13:08:38 +0000 (GMT)
-Received: from [9.145.45.132] (unknown [9.145.45.132])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue,  5 Oct 2021 13:08:38 +0000 (GMT)
-Message-ID: <3724d415-0434-b0ca-0701-6eea509ec6b5@linux.ibm.com>
-Date:   Tue, 5 Oct 2021 15:08:38 +0200
+        Tue, 5 Oct 2021 09:11:55 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73265C061749;
+        Tue,  5 Oct 2021 06:10:05 -0700 (PDT)
+Received: from [IPv6:2401:4900:1c20:6ff1:a04:f397:fd5d:ecb8] (unknown [IPv6:2401:4900:1c20:6ff1:a04:f397:fd5d:ecb8])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: shreeya)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 1FE401F43751;
+        Tue,  5 Oct 2021 14:10:03 +0100 (BST)
+Subject: Re: [PATCH 1/2] fs: dcache: Handle case-exact lookup in
+ d_alloc_parallel
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, krisman@collabora.com,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel@collabora.com
+References: <cover.1632909358.git.shreeya.patel@collabora.com>
+ <0b8fd2677b797663bfcb97f6aa108193fedf9767.1632909358.git.shreeya.patel@collabora.com>
+ <YVmyYP25kgGq9uEy@zeniv-ca.linux.org.uk>
+From:   Shreeya Patel <shreeya.patel@collabora.com>
+Message-ID: <589db4cf-5cab-2d1f-10ce-3a5009685948@collabora.com>
+Date:   Tue, 5 Oct 2021 18:39:59 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH v5 01/14] KVM: s390: pv: add macros for UVC CC values
-Content-Language: en-US
-To:     Claudio Imbrenda <imbrenda@linux.ibm.com>, kvm@vger.kernel.org
-Cc:     cohuck@redhat.com, borntraeger@de.ibm.com, thuth@redhat.com,
-        pasic@linux.ibm.com, david@redhat.com, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ulrich.Weigand@de.ibm.com
-References: <20210920132502.36111-1-imbrenda@linux.ibm.com>
- <20210920132502.36111-2-imbrenda@linux.ibm.com>
-From:   Janosch Frank <frankja@linux.ibm.com>
-In-Reply-To: <20210920132502.36111-2-imbrenda@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+In-Reply-To: <YVmyYP25kgGq9uEy@zeniv-ca.linux.org.uk>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: rs5EcQhP-8CFkWzg4xcS0-ptZ4qV_5XC
-X-Proofpoint-GUID: EaOK_0jS70yFO-I1xdu6OVKavYg4_l8C
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-10-05_01,2021-10-04_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 mlxscore=0
- mlxlogscore=999 spamscore=0 impostorscore=0 priorityscore=1501
- lowpriorityscore=0 phishscore=0 bulkscore=0 suspectscore=0 adultscore=0
- clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110050078
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/20/21 15:24, Claudio Imbrenda wrote:
-> Add macros to describe the 4 possible CC values returned by the UVC
-> instruction.
-> 
-> Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
-> Reviewed-by: Christian Borntraeger <borntraeger@de.ibm.com>
 
-Reviewed-by: Janosch Frank <frankja@linux.ibm.com>
+On 03/10/21 7:08 pm, Al Viro wrote:
+> On Wed, Sep 29, 2021 at 04:23:38PM +0530, Shreeya Patel wrote:
+>> There is a soft hang caused by a deadlock in d_alloc_parallel which
+>> waits up on lookups to finish for the dentries in the parent directory's
+>> hash_table.
+>> In case when d_add_ci is called from the fs layer's lookup functions,
+>> the dentry being looked up is already in the hash table (created before
+>> the fs lookup function gets called). We should not be processing the
+>> same dentry that is being looked up, hence, in case of case-insensitive
+>> filesystems we are making it a case-exact match to prevent this from
+>> happening.
+> NAK.  What you are doing would lead to parallel calls of ->lookup() in the
+> same directory for names that would compare as equal.  Which violates
+> all kinds of assumptions in the analysis of dentry tree locking.
+>
+> d_add_ci() is used to force the "exact" spelling of the name on lookup -
+> that's the whole point of that thing.  What are you trying to achieve,
+> and what's the point of mixing that with non-trivial ->d_compare()?
+>
+Sending again as plain text...
 
-> ---
->   arch/s390/include/asm/uv.h | 5 +++++
->   1 file changed, 5 insertions(+)
-> 
-> diff --git a/arch/s390/include/asm/uv.h b/arch/s390/include/asm/uv.h
-> index 12c5f006c136..b35add51b967 100644
-> --- a/arch/s390/include/asm/uv.h
-> +++ b/arch/s390/include/asm/uv.h
-> @@ -18,6 +18,11 @@
->   #include <asm/page.h>
->   #include <asm/gmap.h>
->   
-> +#define UVC_CC_OK	0
-> +#define UVC_CC_ERROR	1
-> +#define UVC_CC_BUSY	2
-> +#define UVC_CC_PARTIAL	3
-> +
->   #define UVC_RC_EXECUTED		0x0001
->   #define UVC_RC_INV_CMD		0x0002
->   #define UVC_RC_INV_STATE	0x0003
-> 
+Hi Al Viro,
 
+This patch was added to resolve some of the issues faced in patch 02/02 
+of the series.
+
+Originally, the 'native', per-directory case-insensitive implementation
+merged in ext4/f2fs stores the case of the first lookup on the dcache,
+regardless of the disk exact file name case. This gets reflected in symlink
+returned by /proc/self/cwd.
+
+To solve this we are calling d_add_ci from the fs lookup function to 
+store the
+disk exact name in the dcache even if an inexact-match string is used on 
+the FIRST lookup.
+But this caused a soft hang since there was a deadlock in d_wait_lookup 
+called from d_alloc_parallel.
+
+The reason for the hang is that d_same_name uses d_compare which does a
+case-insensitive match and is able to find the dentry name in the 
+secondary hash table
+leading it to d_wait_lookup which would wait for the lookup to finish on 
+that dentry
+causing a deadlock.
+
+To avoid the hang, we are doing a case-sensitive match using dentry_cmp 
+here.
+
+
+Thanks
+
+> If it's "force to exact spelling on lookup, avoid calling ->lookup() on
+> aliases", d_add_ci() is simply not a good match.
