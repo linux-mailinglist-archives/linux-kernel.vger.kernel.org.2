@@ -2,129 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6051422311
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 12:06:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 614FD422313
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 12:07:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233988AbhJEKIM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 06:08:12 -0400
-Received: from foss.arm.com ([217.140.110.172]:37840 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233946AbhJEKIH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 06:08:07 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 784BD6D;
-        Tue,  5 Oct 2021 03:06:16 -0700 (PDT)
-Received: from [10.1.31.140] (e127744.cambridge.arm.com [10.1.31.140])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1A86A3F766;
-        Tue,  5 Oct 2021 03:06:13 -0700 (PDT)
-Subject: Re: [RFC] perf arm-spe: Track task context switch for cpu-mode events
-To:     Leo Yan <leo.yan@linaro.org>, James Clark <james.clark@arm.com>
-Cc:     Namhyung Kim <namhyung@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-References: <20210916001748.1525291-1-namhyung@kernel.org>
- <20210916135418.GA383600@leoy-ThinkPad-X240s>
- <CAM9d7chQjzEm7=UpjtTBbsob7kT+=9v16P30hWxnna7mbHu=2g@mail.gmail.com>
- <20210923142305.GA603008@leoy-ThinkPad-X240s>
- <363c4107-fc6f-51d0-94d8-a3f579c8f5a2@arm.com>
- <20211004062638.GB174271@leoy-ThinkPad-X240s>
-From:   German Gomez <german.gomez@arm.com>
-Message-ID: <f877cfa6-9b25-6445-3806-ca44a4042eaf@arm.com>
-Date:   Tue, 5 Oct 2021 11:06:12 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S233896AbhJEKJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 06:09:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:53587 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233739AbhJEKJG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 06:09:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633428435;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=OYae2yiwAMbmoddnDd/+N8S6CedyqQgF0pFGpEEhW0A=;
+        b=KUOQrtzv2IZDr0uWBaHRwkCmCgtdaVRlk/xQul7LP/iQxTd8JV+3fLok9AtWZ2guSUB9Rj
+        2veB79FVEmvT1zwu7E3Qp1TO6WhcU/j+2jtm3nEAA4XNORHpUEDYTsEgix9kFDpcBIhwvC
+        BYIedDzq8shDkMaT9tarooqFTn56lwk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-53-5A82fE3ZNgWIVGUPDym7lQ-1; Tue, 05 Oct 2021 06:07:14 -0400
+X-MC-Unique: 5A82fE3ZNgWIVGUPDym7lQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 67F3491271;
+        Tue,  5 Oct 2021 10:07:12 +0000 (UTC)
+Received: from localhost (unknown [10.39.192.167])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id EEA3219D9D;
+        Tue,  5 Oct 2021 10:06:59 +0000 (UTC)
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Halil Pasic <pasic@linux.ibm.com>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        Xie Yongji <xieyongji@bytedance.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, markver@us.ibm.com,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org, stefanha@redhat.com,
+        qemu-devel@nongnu.org,
+        Raphael Norwitz <raphael.norwitz@nutanix.com>
+Subject: Re: [RFC PATCH 1/1] virtio: write back features before verify
+In-Reply-To: <20211004040937-mutt-send-email-mst@kernel.org>
+Organization: Red Hat GmbH
+References: <20210930012049.3780865-1-pasic@linux.ibm.com>
+ <87r1d64dl4.fsf@redhat.com> <20210930130350.0cdc7c65.pasic@linux.ibm.com>
+ <87ilyi47wn.fsf@redhat.com> <20211001162213.18d7375e.pasic@linux.ibm.com>
+ <87v92g3h9l.fsf@redhat.com>
+ <20211002082128-mutt-send-email-mst@kernel.org>
+ <20211004042323.730c6a5e.pasic@linux.ibm.com>
+ <20211004040937-mutt-send-email-mst@kernel.org>
+User-Agent: Notmuch/0.32.1 (https://notmuchmail.org)
+Date:   Tue, 05 Oct 2021 12:06:57 +0200
+Message-ID: <87o88323b2.fsf@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20211004062638.GB174271@leoy-ThinkPad-X240s>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Leo,
+On Mon, Oct 04 2021, "Michael S. Tsirkin" <mst@redhat.com> wrote:
 
-On 04/10/2021 07:26, Leo Yan wrote:
-> Hi James,
+> On Mon, Oct 04, 2021 at 04:23:23AM +0200, Halil Pasic wrote:
+>> --------------------------8<---------------------
+>> 
+>> From: Halil Pasic <pasic@linux.ibm.com>
+>> Date: Thu, 30 Sep 2021 02:38:47 +0200
+>> Subject: [PATCH] virtio: write back feature VERSION_1 before verify
+>> 
+>> This patch fixes a regression introduced by commit 82e89ea077b9
+>> ("virtio-blk: Add validation for block size in config space") and
+>> enables similar checks in verify() on big endian platforms.
+>> 
+>> The problem with checking multi-byte config fields in the verify
+>> callback, on big endian platforms, and with a possibly transitional
+>> device is the following. The verify() callback is called between
+>> config->get_features() and virtio_finalize_features(). That we have a
+>> device that offered F_VERSION_1 then we have the following options
+>> either the device is transitional, and then it has to present the legacy
+>> interface, i.e. a big endian config space until F_VERSION_1 is
+>> negotiated, or we have a non-transitional device, which makes
+>> F_VERSION_1 mandatory, and only implements the non-legacy interface and
+>> thus presents a little endian config space. Because at this point we
+>> can't know if the device is transitional or non-transitional, we can't
+>> know do we need to byte swap or not.
 >
-> On Thu, Sep 30, 2021 at 04:08:52PM +0100, James Clark wrote:
->> On 23/09/2021 15:23, Leo Yan wrote:
->>> On Thu, Sep 16, 2021 at 02:01:21PM -0700, Namhyung Kim wrote:
-> [...]
-> I'd like to use the comparison method for the test:
-> We should enable PID tracing and capture in the perf.data, when decode
-> the trace data, we can based on context packet and based on the switch
-> events to generate out two results, so we can check how the difference
-> between these results.
-
-Yesterday we did some testing and found that there seems to be an exact
-match between using context packets and switch events. However this only
-applies when tracing in userspace (by adding the 'u' suffix to the perf
-event). Otherwise we still see as much as 2% of events having the wrong
-PID around the time of the switch.
-
-In order to measure this I applied Namhyung's patch and James's patch
-from [1]. Then added a printf line to the function arm_spe_prep_sample
-where I have access to both PID values, as a quick way to compare them
-later in a perf-report run. This is the diff of the printf patch:
-
-diff --git a/tools/perf/util/arm-spe.c b/tools/perf/util/arm-spe.c
-index 41385ab96fbc..591985c66ac4 100644
---- a/tools/perf/util/arm-spe.c
-+++ b/tools/perf/util/arm-spe.c
-@@ -247,6 +247,8 @@ static void arm_spe_prep_sample(struct arm_spe *spe,
-    event->sample.header.type = PERF_RECORD_SAMPLE;
-    event->sample.header.misc = sample->cpumode;
-    event->sample.header.size = sizeof(struct perf_event_header);
-+
-+       printf(">>>>>> %d / %lu\n", speq->tid, record->context_id & 0x7fff);
- }
-
-The differences obtained as error % were obtained by running the
-following perf-record commands for different configurations:
-
-$ sudo ./perf record -e arm_spe/ts_enable=1,load_filter=1,store_filter=1/u -a -- sleep 60
-$ sudo ./perf report --stdio \
-    | grep ">>>>>>" \
-    | awk '{total++; if($2!=$4) miss++} END {print "Error: " (100*miss/total) "% out of " total " samples"}'
-
-Error: 0% out of 11839328 samples
-
-$ sudo ./perf record -e arm_spe/ts_enable=1,load_filter=1,store_filter=1/ -a -- sleep 10
-$ sudo ./perf report --stdio \
-    | grep ">>>>>>" \
-    | awk '{total++; if($2!=$4) miss++} END {print "Error: " (100*miss/total) "% out of " total " samples"}'
-
-Error: 1.30624% out of 3418731 samples
-
->> German Gomez actually starting looking into the switch events for SPE at the
->> same time, so I've CCd him and maybe he can do some testing of the patch.
-> Cool!  German is welcome to continue the related work; since I am in
-> holiday this week, I will try this as well, if I have any conclusion
-> will get back to you guys.
+> Well we established that we can know. Here's an alternative explanation:
 >
-> If the test result shows good enough, I personally think we need finish
-> below items:
+> 	The virtio specification virtio-v1.1-cs01 states:
 >
-> - Enable PID tracing and decode with context packets;
-> - Provide interface to user space so perf tool knows if should use
->   hardware PID or rollback to context switch events;
-> - Merge Namhyung's patch for using switch events for samples.
+> 	Transitional devices MUST detect Legacy drivers by detecting that
+> 	VIRTIO_F_VERSION_1 has not been acknowledged by the driver.
+> 	This is exactly what QEMU as of 6.1 has done relying solely
+> 	on VIRTIO_F_VERSION_1 for detecting that.
 >
-> Thanks,
-> Leo
+> 	However, the specification also says:
+> 	driver MAY read (but MUST NOT write) the device-specific
+> 	configuration fields to check that it can support the device before
+> 	accepting it.
+>
+> 	In that case, any device relying solely on VIRTIO_F_VERSION_1
+> 	for detecting legacy drivers will return data in legacy format.
+> 	In particular, this implies that it is in big endian format
+> 	for big endian guests. This naturally confuses the driver
+> 	which expects little endian in the modern mode.
+>
+> 	It is probably a good idea to amend the spec to clarify that
+> 	VIRTIO_F_VERSION_1 can only be relied on after the feature negotiation
+> 	is complete. However, we already have regression so let's
+> 	try to address it.
 
-I think the fallback to using switch when we can't use the CONTEXTIDR
-register is a viable option for userspace events, but maybe not so much
-for non-userspace.
+I prefer that explanation.
 
-Thanks,
-German
+>
+>
+>> 
+>> The virtio spec explicitly states that the driver MAY read config
+>> between reading and writing the features so saying that first accessing
+>> the config before feature negotiation is done is not an option. The
+>> specification ain't clear about setting the features multiple times
+>> before FEATURES_OK, so I guess that should be fine to set F_VERSION_1
+>> since at this point we already know that we are about to negotiate
+>> F_VERSION_1.
+>> 
+>> I don't consider this patch super clean, but frankly I don't think we
+>> have a ton of options. Another option that may or man not be cleaner,
+>> but is also IMHO much uglier is to figure out whether the device is
+>> transitional by rejecting _F_VERSION_1, then resetting it and proceeding
+>> according tho what we have figured out, hoping that the characteristics
+>> of the device didn't change.
+>
+> An empty line before tags.
+>
+>> Signed-off-by: Halil Pasic <pasic@linux.ibm.com>
+>> Fixes: 82e89ea077b9 ("virtio-blk: Add validation for block size in config space")
+>> Reported-by: markver@us.ibm.com
+>
+> Let's add more commits that are affected. E.g. virtio-net with MTU
+> feature bit set is affected too.
+>
+> So let's add Fixes tag for:
+> commit 14de9d114a82a564b94388c95af79a701dc93134
+> Author: Aaron Conole <aconole@redhat.com>
+> Date:   Fri Jun 3 16:57:12 2016 -0400
+>
+>     virtio-net: Add initial MTU advice feature
+>     
+> I think that's all, but pls double check me.
 
-[1] https://www.spinics.net/lists/linux-perf-users/msg12543.html
+I could not find anything else after a quick check.
+
+>
+>
+>> ---
+>>  drivers/virtio/virtio.c | 6 ++++++
+>>  1 file changed, 6 insertions(+)
+>> 
+>> diff --git a/drivers/virtio/virtio.c b/drivers/virtio/virtio.c
+>> index 0a5b54034d4b..2b9358f2e22a 100644
+>> --- a/drivers/virtio/virtio.c
+>> +++ b/drivers/virtio/virtio.c
+>> @@ -239,6 +239,12 @@ static int virtio_dev_probe(struct device *_d)
+>>  		driver_features_legacy = driver_features;
+>>  	}
+>>  
+>> +	/* Write F_VERSION_1 feature to pin down endianness */
+>> +	if (device_features & (1ULL << VIRTIO_F_VERSION_1) & driver_features) {
+>> +		dev->features = (1ULL << VIRTIO_F_VERSION_1);
+>> +		dev->config->finalize_features(dev);
+>> +	}
+>> +
+>>  	if (device_features & (1ULL << VIRTIO_F_VERSION_1))
+>>  		dev->features = driver_features & device_features;
+>>  	else
+>> -- 
+>> 2.31.1
+
+I think we should go with this just to fix the nasty regression for now.
+
