@@ -2,571 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA029421C74
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 04:12:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E0FC421C75
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 04:12:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231752AbhJECOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 22:14:04 -0400
-Received: from mx.socionext.com ([202.248.49.38]:41272 "EHLO mx.socionext.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231273AbhJECNx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 22:13:53 -0400
-Received: from unknown (HELO iyokan2-ex.css.socionext.com) ([172.31.9.54])
-  by mx.socionext.com with ESMTP; 05 Oct 2021 11:12:01 +0900
-Received: from mail.mfilter.local (m-filter-2 [10.213.24.62])
-        by iyokan2-ex.css.socionext.com (Postfix) with ESMTP id DD6AF2058B40;
-        Tue,  5 Oct 2021 11:12:01 +0900 (JST)
-Received: from 172.31.9.51 (172.31.9.51) by m-FILTER with ESMTP; Tue, 5 Oct 2021 11:12:01 +0900
-Received: from plum.e01.socionext.com (unknown [10.212.243.119])
-        by kinkan2.css.socionext.com (Postfix) with ESMTP id 3C188AB192;
-        Tue,  5 Oct 2021 11:12:01 +0900 (JST)
-From:   Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-Subject: [PATCH 3/3] pinctrl: uniphier: Add UniPhier NX1 pinctrl driver
-Date:   Tue,  5 Oct 2021 11:12:00 +0900
-Message-Id: <1633399920-1537-4-git-send-email-hayashi.kunihiko@socionext.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1633399920-1537-1-git-send-email-hayashi.kunihiko@socionext.com>
-References: <1633399920-1537-1-git-send-email-hayashi.kunihiko@socionext.com>
+        id S231466AbhJECO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 22:14:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44056 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231381AbhJECO0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 22:14:26 -0400
+Received: from mail-vk1-xa2d.google.com (mail-vk1-xa2d.google.com [IPv6:2607:f8b0:4864:20::a2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 149BEC061745
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 19:12:37 -0700 (PDT)
+Received: by mail-vk1-xa2d.google.com with SMTP id z202so8616915vkd.1
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 19:12:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=AZ805/C+DO95puS3gpWQrJg7B10IPlw3kxeZGNcrz50=;
+        b=SfJLrLrmF0Cu9+p9OEXXWVkAI5yhwNIDZ9kYGBJxB9ZfFM4UBUq9lT/jOjzbF7D9dI
+         mr3uvs/nRrajGJ1en4K9XVpi8lzUaQKa4cQT7STAJVrxMCVb7mVnGrPrTcmcGk9EFK7p
+         R0avwu9M468OzrQa3+r/q9cOND66estY15Ei8NKYyLWpb/1aTCGMwaZePcKVYG01FV8N
+         bAymkiNSas8oBCGZ7y8d8pBxh9HvjUlX798D+EF/+w0ijDKXGV6vx8o1yGtL9I2OcHNb
+         2ro5DlIXc7zS8HwZbL1zQJWnc3qhrmu64D3isH2ZHf6Kv4aHiP46KVA9S/ebbz5znLf1
+         REDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=AZ805/C+DO95puS3gpWQrJg7B10IPlw3kxeZGNcrz50=;
+        b=uebp7KPCcXz3sq8OMKyOU53XVyRHsQ22ZHCfAJ80kZRMBSVMmzEf5PEkQWQon0e2EI
+         VCb7mrVX1AgCAVoyqelFIxEFiNI6zKekHQW58g7FPYhia3fJ7UNVuXGNrjvEbsvW7NRa
+         Q1V/fa/btsLk6UAm3aPQMcNa8gRDJRoXXz88Fb4CKT6xSxG51qtdh27GaSrTA8zjgM/o
+         Sa/F3ziCo1PGkp4Qcyro0w1Rnu0eB9XyIqkRQVajtVhtx7U/NJgJPCuPNwuGLXi1jZg3
+         pzq6wY6YOe1rRoP/vX8ThxRtWNW3xkIG2VUR9kvnnTd+VaK1LdWatMJ6lxCJ55fqruwU
+         i8OA==
+X-Gm-Message-State: AOAM533lecaIo3I6OGPTOZvp1UNUaKcPV175euNKe/SKSI/aRy1D7wWH
+        AvSQUI0xyFUo7FKdMK3sxHGZcMlC8cNMOF73KQQ=
+X-Google-Smtp-Source: ABdhPJxfM6BrYyl11I+zrvOuqDDzuDgL2DfNdSPRPwgcAp3x5ccWRamSyapRSb2So9aw2m/TV6U4/KJOBO7orUZcebQ=
+X-Received: by 2002:a1f:a00e:: with SMTP id j14mr5471665vke.5.1633399956110;
+ Mon, 04 Oct 2021 19:12:36 -0700 (PDT)
+MIME-Version: 1.0
+References: <cover.1631121222.git.greentime.hu@sifive.com> <0e65c165e3d54a38cbba01603f325dca727274de.1631121222.git.greentime.hu@sifive.com>
+ <c81267bc-4c91-3978-8c1f-78925c46c78b@bluespec.com> <CAHCEehJ1uuSFqFWreS1kh+fR5GFfnEycdLMe+4FHXpFsHrRUvA@mail.gmail.com>
+ <YVRp5uWFGQrwBpgf@bruce.bluespec.com> <CAFiDJ5_eoUNjQbCcwgHtXHfykeD7MiSw3xJzx83+bXOFHv-dQQ@mail.gmail.com>
+ <CAHCEeh+yXwAyc=G+JEfNx5tk6XXuVgZSF74yuEanBiz7JCiApQ@mail.gmail.com>
+In-Reply-To: <CAHCEeh+yXwAyc=G+JEfNx5tk6XXuVgZSF74yuEanBiz7JCiApQ@mail.gmail.com>
+From:   Ley Foon Tan <lftan.linux@gmail.com>
+Date:   Tue, 5 Oct 2021 10:12:25 +0800
+Message-ID: <CAFiDJ5-=Om5rBQ9xWUC_ShdauHkeXbNMFJhE0K37nwsydppzHQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v8 09/21] riscv: Add task switch support for vector
+To:     Greentime Hu <greentime.hu@sifive.com>
+Cc:     Darius Rad <darius@bluespec.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Vincent Chen <vincent.chen@sifive.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add pin configuration and pinmux support for UniPhier NX1 SoC.
+On Mon, Oct 4, 2021 at 8:41 PM Greentime Hu <greentime.hu@sifive.com> wrote=
+:
+>
+> Ley Foon Tan <lftan.linux@gmail.com> =E6=96=BC 2021=E5=B9=B410=E6=9C=881=
+=E6=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8A=E5=8D=8810:46=E5=AF=AB=E9=81=93=EF=
+=BC=9A
+> >
+> > On Wed, Sep 29, 2021 at 11:54 PM Darius Rad <darius@bluespec.com> wrote=
+:
+> > >
+> > > On Tue, Sep 28, 2021 at 10:56:52PM +0800, Greentime Hu wrote:
+> > > > Darius Rad <darius@bluespec.com> =E6=96=BC 2021=E5=B9=B49=E6=9C=881=
+3=E6=97=A5 =E9=80=B1=E4=B8=80 =E4=B8=8B=E5=8D=888:21=E5=AF=AB=E9=81=93=EF=
+=BC=9A
+> > > > >
+[....]
 
-Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
-Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
----
- drivers/pinctrl/uniphier/Kconfig                |   4 +
- drivers/pinctrl/uniphier/Makefile               |   1 +
- drivers/pinctrl/uniphier/pinctrl-uniphier-nx1.c | 491 ++++++++++++++++++++++++
- 3 files changed, 496 insertions(+)
- create mode 100644 drivers/pinctrl/uniphier/pinctrl-uniphier-nx1.c
 
-diff --git a/drivers/pinctrl/uniphier/Kconfig b/drivers/pinctrl/uniphier/Kconfig
-index c51a4db..b71c07d 100644
---- a/drivers/pinctrl/uniphier/Kconfig
-+++ b/drivers/pinctrl/uniphier/Kconfig
-@@ -45,4 +45,8 @@ config PINCTRL_UNIPHIER_PXS3
- 	bool "UniPhier PXs3 SoC pinctrl driver"
- 	default ARM64
- 
-+config PINCTRL_UNIPHIER_NX1
-+	bool "UniPhier NX1 SoC pinctrl driver"
-+	default ARM64
-+
- endif
-diff --git a/drivers/pinctrl/uniphier/Makefile b/drivers/pinctrl/uniphier/Makefile
-index ec66c86..59932cb 100644
---- a/drivers/pinctrl/uniphier/Makefile
-+++ b/drivers/pinctrl/uniphier/Makefile
-@@ -10,3 +10,4 @@ obj-$(CONFIG_PINCTRL_UNIPHIER_LD6B)	+= pinctrl-uniphier-ld6b.o
- obj-$(CONFIG_PINCTRL_UNIPHIER_LD11)	+= pinctrl-uniphier-ld11.o
- obj-$(CONFIG_PINCTRL_UNIPHIER_LD20)	+= pinctrl-uniphier-ld20.o
- obj-$(CONFIG_PINCTRL_UNIPHIER_PXS3)	+= pinctrl-uniphier-pxs3.o
-+obj-$(CONFIG_PINCTRL_UNIPHIER_NX1)	+= pinctrl-uniphier-nx1.o
-diff --git a/drivers/pinctrl/uniphier/pinctrl-uniphier-nx1.c b/drivers/pinctrl/uniphier/pinctrl-uniphier-nx1.c
-new file mode 100644
-index 0000000..29ffc3c
---- /dev/null
-+++ b/drivers/pinctrl/uniphier/pinctrl-uniphier-nx1.c
-@@ -0,0 +1,491 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+//
-+// Copyright (C) 2019 Socionext Inc.
-+//   Author: Masahiro Yamada <yamada.masahiro@socionext.com>
-+
-+#include <linux/init.h>
-+#include <linux/kernel.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/pinctrl/pinctrl.h>
-+#include <linux/platform_device.h>
-+
-+#include "pinctrl-uniphier.h"
-+
-+static const struct pinctrl_pin_desc uniphier_nx1_pins[] = {
-+	UNIPHIER_PINCTRL_PIN(0, "LPST", UNIPHIER_PIN_IECTRL_EXIST,
-+			     0, UNIPHIER_PIN_DRV_3BIT,
-+			     0, UNIPHIER_PIN_PULL_DOWN),
-+	UNIPHIER_PINCTRL_PIN(1, "SDCLK", UNIPHIER_PIN_IECTRL_EXIST,
-+			     12, UNIPHIER_PIN_DRV_2BIT,
-+			     1, UNIPHIER_PIN_PULL_UP),
-+	UNIPHIER_PINCTRL_PIN(2, "SDCMD", UNIPHIER_PIN_IECTRL_EXIST,
-+			     13, UNIPHIER_PIN_DRV_2BIT,
-+			     2, UNIPHIER_PIN_PULL_UP),
-+	UNIPHIER_PINCTRL_PIN(3, "SDDAT0", UNIPHIER_PIN_IECTRL_EXIST,
-+			     14, UNIPHIER_PIN_DRV_2BIT,
-+			     3, UNIPHIER_PIN_PULL_UP),
-+	UNIPHIER_PINCTRL_PIN(4, "SDDAT1", UNIPHIER_PIN_IECTRL_EXIST,
-+			     15, UNIPHIER_PIN_DRV_2BIT,
-+			     4, UNIPHIER_PIN_PULL_UP),
-+	UNIPHIER_PINCTRL_PIN(5, "SDDAT2", UNIPHIER_PIN_IECTRL_EXIST,
-+			     16, UNIPHIER_PIN_DRV_2BIT,
-+			     5, UNIPHIER_PIN_PULL_UP),
-+	UNIPHIER_PINCTRL_PIN(6, "SDDAT3", UNIPHIER_PIN_IECTRL_EXIST,
-+			     17, UNIPHIER_PIN_DRV_2BIT,
-+			     6, UNIPHIER_PIN_PULL_UP),
-+	UNIPHIER_PINCTRL_PIN(7, "SDCD", UNIPHIER_PIN_IECTRL_EXIST,
-+			     1, UNIPHIER_PIN_DRV_3BIT,
-+			     7, UNIPHIER_PIN_PULL_UP),
-+	UNIPHIER_PINCTRL_PIN(8, "SDWP", UNIPHIER_PIN_IECTRL_EXIST,
-+			     2, UNIPHIER_PIN_DRV_3BIT,
-+			     8, UNIPHIER_PIN_PULL_UP),
-+	UNIPHIER_PINCTRL_PIN(9, "SDVOLC", UNIPHIER_PIN_IECTRL_EXIST,
-+			     3, UNIPHIER_PIN_DRV_3BIT,
-+			     9, UNIPHIER_PIN_PULL_UP),
-+	UNIPHIER_PINCTRL_PIN(10, "XERST", UNIPHIER_PIN_IECTRL_EXIST,
-+			     0, UNIPHIER_PIN_DRV_2BIT,
-+			     10, UNIPHIER_PIN_PULL_DOWN),
-+	UNIPHIER_PINCTRL_PIN(11, "MDC", UNIPHIER_PIN_IECTRL_EXIST,
-+			     18, UNIPHIER_PIN_DRV_2BIT,
-+			     11, UNIPHIER_PIN_PULL_UP),
-+	UNIPHIER_PINCTRL_PIN(12, "MDIO", UNIPHIER_PIN_IECTRL_EXIST,
-+			     19, UNIPHIER_PIN_DRV_2BIT,
-+			     12, UNIPHIER_PIN_PULL_UP),
-+	UNIPHIER_PINCTRL_PIN(13, "MDIO_INTL", UNIPHIER_PIN_IECTRL_EXIST,
-+			     20, UNIPHIER_PIN_DRV_2BIT,
-+			     13, UNIPHIER_PIN_PULL_UP),
-+	UNIPHIER_PINCTRL_PIN(14, "PHYRSTL", UNIPHIER_PIN_IECTRL_EXIST,
-+			     -1, UNIPHIER_PIN_DRV_FIXED4,
-+			     -1, UNIPHIER_PIN_PULL_NONE),
-+	UNIPHIER_PINCTRL_PIN(15, "RGMII_RXCLK", UNIPHIER_PIN_IECTRL_EXIST,
-+			     22, UNIPHIER_PIN_DRV_2BIT,
-+			     15, UNIPHIER_PIN_PULL_UP),
-+	UNIPHIER_PINCTRL_PIN(16, "RGMII_RXD0", UNIPHIER_PIN_IECTRL_EXIST,
-+			     23, UNIPHIER_PIN_DRV_2BIT,
-+			     16, UNIPHIER_PIN_PULL_UP),
-+	UNIPHIER_PINCTRL_PIN(17, "RGMII_RXD1", UNIPHIER_PIN_IECTRL_EXIST,
-+			     24, UNIPHIER_PIN_DRV_2BIT,
-+			     17, UNIPHIER_PIN_PULL_UP),
-+	UNIPHIER_PINCTRL_PIN(18, "RGMII_RXD2", UNIPHIER_PIN_IECTRL_EXIST,
-+			     25, UNIPHIER_PIN_DRV_2BIT,
-+			     18, UNIPHIER_PIN_PULL_UP),
-+	UNIPHIER_PINCTRL_PIN(19, "RGMII_RXD3", UNIPHIER_PIN_IECTRL_EXIST,
-+			     26, UNIPHIER_PIN_DRV_2BIT,
-+			     19, UNIPHIER_PIN_PULL_UP),
-+	UNIPHIER_PINCTRL_PIN(20, "RGMII_RXCTL", UNIPHIER_PIN_IECTRL_EXIST,
-+			     27, UNIPHIER_PIN_DRV_2BIT,
-+			     20, UNIPHIER_PIN_PULL_UP),
-+	UNIPHIER_PINCTRL_PIN(21, "RGMII_TXCLK", UNIPHIER_PIN_IECTRL_EXIST,
-+			     28, UNIPHIER_PIN_DRV_2BIT,
-+			     21, UNIPHIER_PIN_PULL_DOWN),
-+	UNIPHIER_PINCTRL_PIN(22, "RGMII_TXD0", UNIPHIER_PIN_IECTRL_EXIST,
-+			     29, UNIPHIER_PIN_DRV_2BIT,
-+			     22, UNIPHIER_PIN_PULL_DOWN),
-+	UNIPHIER_PINCTRL_PIN(23, "RGMII_TXD1", UNIPHIER_PIN_IECTRL_EXIST,
-+			     30, UNIPHIER_PIN_DRV_2BIT,
-+			     23, UNIPHIER_PIN_PULL_DOWN),
-+	UNIPHIER_PINCTRL_PIN(24, "RGMII_TXD2", UNIPHIER_PIN_IECTRL_EXIST,
-+			     31, UNIPHIER_PIN_DRV_2BIT,
-+			     24, UNIPHIER_PIN_PULL_DOWN),
-+	UNIPHIER_PINCTRL_PIN(25, "RGMII_TXD3", UNIPHIER_PIN_IECTRL_EXIST,
-+			     32, UNIPHIER_PIN_DRV_2BIT,
-+			     25, UNIPHIER_PIN_PULL_DOWN),
-+	UNIPHIER_PINCTRL_PIN(26, "RGMII_TXCTL", UNIPHIER_PIN_IECTRL_EXIST,
-+			     33, UNIPHIER_PIN_DRV_2BIT,
-+			     26, UNIPHIER_PIN_PULL_DOWN),
-+	UNIPHIER_PINCTRL_PIN(27, "TXD0", UNIPHIER_PIN_IECTRL_EXIST,
-+			     4, UNIPHIER_PIN_DRV_3BIT,
-+			     27, UNIPHIER_PIN_PULL_UP),
-+	UNIPHIER_PINCTRL_PIN(28, "RXD0", UNIPHIER_PIN_IECTRL_EXIST,
-+			     5, UNIPHIER_PIN_DRV_3BIT,
-+			     28, UNIPHIER_PIN_PULL_UP),
-+	UNIPHIER_PINCTRL_PIN(29, "TXD1", UNIPHIER_PIN_IECTRL_EXIST,
-+			     6, UNIPHIER_PIN_DRV_3BIT,
-+			     29, UNIPHIER_PIN_PULL_UP),
-+	UNIPHIER_PINCTRL_PIN(30, "RXD1", UNIPHIER_PIN_IECTRL_EXIST,
-+			     7, UNIPHIER_PIN_DRV_3BIT,
-+			     30, UNIPHIER_PIN_PULL_UP),
-+	UNIPHIER_PINCTRL_PIN(31, "XRTS1", UNIPHIER_PIN_IECTRL_EXIST,
-+			     8, UNIPHIER_PIN_DRV_3BIT,
-+			     31, UNIPHIER_PIN_PULL_UP),
-+	UNIPHIER_PINCTRL_PIN(32, "XDTR1", UNIPHIER_PIN_IECTRL_EXIST,
-+			     9, UNIPHIER_PIN_DRV_3BIT,
-+			     32, UNIPHIER_PIN_PULL_UP),
-+	UNIPHIER_PINCTRL_PIN(33, "XCTS1", UNIPHIER_PIN_IECTRL_EXIST,
-+			     10, UNIPHIER_PIN_DRV_3BIT,
-+			     33, UNIPHIER_PIN_PULL_UP),
-+	UNIPHIER_PINCTRL_PIN(34, "XDSR1", UNIPHIER_PIN_IECTRL_EXIST,
-+			     11, UNIPHIER_PIN_DRV_3BIT,
-+			     34, UNIPHIER_PIN_PULL_UP),
-+	UNIPHIER_PINCTRL_PIN(35, "XDCD1", UNIPHIER_PIN_IECTRL_EXIST,
-+			     12, UNIPHIER_PIN_DRV_3BIT,
-+			     35, UNIPHIER_PIN_PULL_UP),
-+	UNIPHIER_PINCTRL_PIN(36, "TXD2", UNIPHIER_PIN_IECTRL_EXIST,
-+			     13, UNIPHIER_PIN_DRV_3BIT,
-+			     36, UNIPHIER_PIN_PULL_UP),
-+	UNIPHIER_PINCTRL_PIN(37, "RXD2", UNIPHIER_PIN_IECTRL_EXIST,
-+			     14, UNIPHIER_PIN_DRV_3BIT,
-+			     37, UNIPHIER_PIN_PULL_UP),
-+	UNIPHIER_PINCTRL_PIN(38, "XRTS2", UNIPHIER_PIN_IECTRL_EXIST,
-+			     15, UNIPHIER_PIN_DRV_3BIT,
-+			     38, UNIPHIER_PIN_PULL_UP),
-+	UNIPHIER_PINCTRL_PIN(39, "XCTS2", UNIPHIER_PIN_IECTRL_EXIST,
-+			     16, UNIPHIER_PIN_DRV_3BIT,
-+			     39, UNIPHIER_PIN_PULL_UP),
-+	UNIPHIER_PINCTRL_PIN(40, "TXD3", UNIPHIER_PIN_IECTRL_EXIST,
-+			     17, UNIPHIER_PIN_DRV_3BIT,
-+			     40, UNIPHIER_PIN_PULL_UP),
-+	UNIPHIER_PINCTRL_PIN(41, "RXD3", UNIPHIER_PIN_IECTRL_EXIST,
-+			     18, UNIPHIER_PIN_DRV_3BIT,
-+			     41, UNIPHIER_PIN_PULL_UP),
-+	UNIPHIER_PINCTRL_PIN(42, "SPISYNC0", UNIPHIER_PIN_IECTRL_EXIST,
-+			     19, UNIPHIER_PIN_DRV_3BIT,
-+			     42, UNIPHIER_PIN_PULL_UP),
-+	UNIPHIER_PINCTRL_PIN(43, "SPISCLK0", UNIPHIER_PIN_IECTRL_EXIST,
-+			     20, UNIPHIER_PIN_DRV_3BIT,
-+			     43, UNIPHIER_PIN_PULL_DOWN),
-+	UNIPHIER_PINCTRL_PIN(44, "SPITXD0", UNIPHIER_PIN_IECTRL_EXIST,
-+			     21, UNIPHIER_PIN_DRV_3BIT,
-+			     44, UNIPHIER_PIN_PULL_DOWN),
-+	UNIPHIER_PINCTRL_PIN(45, "SPIRXD0", UNIPHIER_PIN_IECTRL_EXIST,
-+			     22, UNIPHIER_PIN_DRV_3BIT,
-+			     45, UNIPHIER_PIN_PULL_DOWN),
-+	UNIPHIER_PINCTRL_PIN(46, "SPISYNC1", UNIPHIER_PIN_IECTRL_EXIST,
-+			     23, UNIPHIER_PIN_DRV_3BIT,
-+			     46, UNIPHIER_PIN_PULL_UP),
-+	UNIPHIER_PINCTRL_PIN(47, "SPISCLK1", UNIPHIER_PIN_IECTRL_EXIST,
-+			     24, UNIPHIER_PIN_DRV_3BIT,
-+			     47, UNIPHIER_PIN_PULL_DOWN),
-+	UNIPHIER_PINCTRL_PIN(48, "SPITXD1", UNIPHIER_PIN_IECTRL_EXIST,
-+			     25, UNIPHIER_PIN_DRV_3BIT,
-+			     48, UNIPHIER_PIN_PULL_DOWN),
-+	UNIPHIER_PINCTRL_PIN(49, "SPIRXD1", UNIPHIER_PIN_IECTRL_EXIST,
-+			     26, UNIPHIER_PIN_DRV_3BIT,
-+			     49, UNIPHIER_PIN_PULL_DOWN),
-+	UNIPHIER_PINCTRL_PIN(50, "SDA0", UNIPHIER_PIN_IECTRL_EXIST,
-+			     -1, UNIPHIER_PIN_DRV_FIXED4,
-+			     -1, UNIPHIER_PIN_PULL_NONE),
-+	UNIPHIER_PINCTRL_PIN(51, "SCL0", UNIPHIER_PIN_IECTRL_EXIST,
-+			     -1, UNIPHIER_PIN_DRV_FIXED4,
-+			     -1, UNIPHIER_PIN_PULL_NONE),
-+	UNIPHIER_PINCTRL_PIN(52, "SDA1", UNIPHIER_PIN_IECTRL_EXIST,
-+			     -1, UNIPHIER_PIN_DRV_FIXED4,
-+			     -1, UNIPHIER_PIN_PULL_NONE),
-+	UNIPHIER_PINCTRL_PIN(53, "SCL1", UNIPHIER_PIN_IECTRL_EXIST,
-+			     -1, UNIPHIER_PIN_DRV_FIXED4,
-+			     -1, UNIPHIER_PIN_PULL_NONE),
-+	UNIPHIER_PINCTRL_PIN(54, "SDA2", UNIPHIER_PIN_IECTRL_EXIST,
-+			     -1, UNIPHIER_PIN_DRV_FIXED4,
-+			     -1, UNIPHIER_PIN_PULL_NONE),
-+	UNIPHIER_PINCTRL_PIN(55, "SCL2", UNIPHIER_PIN_IECTRL_EXIST,
-+			     -1, UNIPHIER_PIN_DRV_FIXED4,
-+			     -1, UNIPHIER_PIN_PULL_NONE),
-+	UNIPHIER_PINCTRL_PIN(56, "SDA3", UNIPHIER_PIN_IECTRL_EXIST,
-+			     -1, UNIPHIER_PIN_DRV_FIXED4,
-+			     -1, UNIPHIER_PIN_PULL_NONE),
-+	UNIPHIER_PINCTRL_PIN(57, "SCL3", UNIPHIER_PIN_IECTRL_EXIST,
-+			     -1, UNIPHIER_PIN_DRV_FIXED4,
-+			     -1, UNIPHIER_PIN_PULL_NONE),
-+	UNIPHIER_PINCTRL_PIN(58, "XIRQ0", UNIPHIER_PIN_IECTRL_EXIST,
-+			     27, UNIPHIER_PIN_DRV_3BIT,
-+			     58, UNIPHIER_PIN_PULL_DOWN),
-+	UNIPHIER_PINCTRL_PIN(59, "XIRQ1", UNIPHIER_PIN_IECTRL_EXIST,
-+			     28, UNIPHIER_PIN_DRV_3BIT,
-+			     59, UNIPHIER_PIN_PULL_DOWN),
-+	UNIPHIER_PINCTRL_PIN(60, "XIRQ2", UNIPHIER_PIN_IECTRL_EXIST,
-+			     29, UNIPHIER_PIN_DRV_3BIT,
-+			     60, UNIPHIER_PIN_PULL_DOWN),
-+	UNIPHIER_PINCTRL_PIN(61, "XIRQ3", UNIPHIER_PIN_IECTRL_EXIST,
-+			     30, UNIPHIER_PIN_DRV_3BIT,
-+			     61, UNIPHIER_PIN_PULL_DOWN),
-+	UNIPHIER_PINCTRL_PIN(62, "XIRQ4", UNIPHIER_PIN_IECTRL_EXIST,
-+			     31, UNIPHIER_PIN_DRV_3BIT,
-+			     62, UNIPHIER_PIN_PULL_DOWN),
-+	UNIPHIER_PINCTRL_PIN(63, "XIRQ5", UNIPHIER_PIN_IECTRL_EXIST,
-+			     32, UNIPHIER_PIN_DRV_3BIT,
-+			     63, UNIPHIER_PIN_PULL_DOWN),
-+	UNIPHIER_PINCTRL_PIN(64, "PORT00", UNIPHIER_PIN_IECTRL_EXIST,
-+			     33, UNIPHIER_PIN_DRV_3BIT,
-+			     64, UNIPHIER_PIN_PULL_DOWN),
-+	UNIPHIER_PINCTRL_PIN(65, "PORT01", UNIPHIER_PIN_IECTRL_EXIST,
-+			     34, UNIPHIER_PIN_DRV_3BIT,
-+			     65, UNIPHIER_PIN_PULL_DOWN),
-+	UNIPHIER_PINCTRL_PIN(66, "PORT02", UNIPHIER_PIN_IECTRL_EXIST,
-+			     35, UNIPHIER_PIN_DRV_3BIT,
-+			     66, UNIPHIER_PIN_PULL_DOWN),
-+	UNIPHIER_PINCTRL_PIN(67, "PORT03", UNIPHIER_PIN_IECTRL_EXIST,
-+			     36, UNIPHIER_PIN_DRV_3BIT,
-+			     67, UNIPHIER_PIN_PULL_DOWN),
-+	UNIPHIER_PINCTRL_PIN(68, "PORT04", UNIPHIER_PIN_IECTRL_EXIST,
-+			     37, UNIPHIER_PIN_DRV_3BIT,
-+			     68, UNIPHIER_PIN_PULL_DOWN),
-+	UNIPHIER_PINCTRL_PIN(69, "PORT05", UNIPHIER_PIN_IECTRL_EXIST,
-+			     38, UNIPHIER_PIN_DRV_3BIT,
-+			     69, UNIPHIER_PIN_PULL_DOWN),
-+	UNIPHIER_PINCTRL_PIN(70, "PORT06", UNIPHIER_PIN_IECTRL_EXIST,
-+			     39, UNIPHIER_PIN_DRV_3BIT,
-+			     70, UNIPHIER_PIN_PULL_DOWN),
-+	UNIPHIER_PINCTRL_PIN(71, "PORT07", UNIPHIER_PIN_IECTRL_EXIST,
-+			     40, UNIPHIER_PIN_DRV_3BIT,
-+			     71, UNIPHIER_PIN_PULL_DOWN),
-+	UNIPHIER_PINCTRL_PIN(72, "PORT10", UNIPHIER_PIN_IECTRL_EXIST,
-+			     41, UNIPHIER_PIN_DRV_3BIT,
-+			     72, UNIPHIER_PIN_PULL_DOWN),
-+	UNIPHIER_PINCTRL_PIN(73, "PORT11", UNIPHIER_PIN_IECTRL_EXIST,
-+			     42, UNIPHIER_PIN_DRV_3BIT,
-+			     73, UNIPHIER_PIN_PULL_DOWN),
-+	UNIPHIER_PINCTRL_PIN(74, "PORT12", UNIPHIER_PIN_IECTRL_EXIST,
-+			     43, UNIPHIER_PIN_DRV_3BIT,
-+			     74, UNIPHIER_PIN_PULL_DOWN),
-+	UNIPHIER_PINCTRL_PIN(75, "PORT13", UNIPHIER_PIN_IECTRL_EXIST,
-+			     44, UNIPHIER_PIN_DRV_3BIT,
-+			     75, UNIPHIER_PIN_PULL_DOWN),
-+	UNIPHIER_PINCTRL_PIN(76, "PORT14", UNIPHIER_PIN_IECTRL_EXIST,
-+			     45, UNIPHIER_PIN_DRV_3BIT,
-+			     76, UNIPHIER_PIN_PULL_DOWN),
-+	UNIPHIER_PINCTRL_PIN(77, "PORT15", UNIPHIER_PIN_IECTRL_EXIST,
-+			     46, UNIPHIER_PIN_DRV_3BIT,
-+			     77, UNIPHIER_PIN_PULL_DOWN),
-+	UNIPHIER_PINCTRL_PIN(78, "USBAVBUS", UNIPHIER_PIN_IECTRL_EXIST,
-+			     47, UNIPHIER_PIN_DRV_3BIT,
-+			     78, UNIPHIER_PIN_PULL_DOWN),
-+	UNIPHIER_PINCTRL_PIN(79, "USBAOD", UNIPHIER_PIN_IECTRL_EXIST,
-+			     48, UNIPHIER_PIN_DRV_3BIT,
-+			     79, UNIPHIER_PIN_PULL_UP),
-+	UNIPHIER_PINCTRL_PIN(80, "USBBVBUS", UNIPHIER_PIN_IECTRL_EXIST,
-+			     49, UNIPHIER_PIN_DRV_3BIT,
-+			     80, UNIPHIER_PIN_PULL_DOWN),
-+	UNIPHIER_PINCTRL_PIN(81, "USBBOD", UNIPHIER_PIN_IECTRL_EXIST,
-+			     50, UNIPHIER_PIN_DRV_3BIT,
-+			     81, UNIPHIER_PIN_PULL_UP),
-+	UNIPHIER_PINCTRL_PIN(82, "HTDDCSDA0", UNIPHIER_PIN_IECTRL_EXIST,
-+			     -1, UNIPHIER_PIN_DRV_FIXED4,
-+			     -1, UNIPHIER_PIN_PULL_NONE),
-+	UNIPHIER_PINCTRL_PIN(83, "HTDDCSCL0", UNIPHIER_PIN_IECTRL_EXIST,
-+			     -1, UNIPHIER_PIN_DRV_FIXED4,
-+			     -1, UNIPHIER_PIN_PULL_NONE),
-+	UNIPHIER_PINCTRL_PIN(84, "HTHPDI0", UNIPHIER_PIN_IECTRL_EXIST,
-+			     -1, UNIPHIER_PIN_DRV_FIXED4,
-+			     -1, UNIPHIER_PIN_PULL_NONE),
-+	UNIPHIER_PINCTRL_PIN(85, "MMCCLK", UNIPHIER_PIN_IECTRL_EXIST,
-+			     1, UNIPHIER_PIN_DRV_2BIT,
-+			     85, UNIPHIER_PIN_PULL_DOWN),
-+	UNIPHIER_PINCTRL_PIN(86, "MMCCMD", UNIPHIER_PIN_IECTRL_EXIST,
-+			     2, UNIPHIER_PIN_DRV_2BIT,
-+			     86, UNIPHIER_PIN_PULL_UP),
-+	UNIPHIER_PINCTRL_PIN(87, "MMCDS", UNIPHIER_PIN_IECTRL_EXIST,
-+			     3, UNIPHIER_PIN_DRV_2BIT,
-+			     87, UNIPHIER_PIN_PULL_DOWN),
-+	UNIPHIER_PINCTRL_PIN(88, "MMCDAT0", UNIPHIER_PIN_IECTRL_EXIST,
-+			     4, UNIPHIER_PIN_DRV_2BIT,
-+			     88, UNIPHIER_PIN_PULL_UP),
-+	UNIPHIER_PINCTRL_PIN(89, "MMCDAT1", UNIPHIER_PIN_IECTRL_EXIST,
-+			     5, UNIPHIER_PIN_DRV_2BIT,
-+			     89, UNIPHIER_PIN_PULL_UP),
-+	UNIPHIER_PINCTRL_PIN(90, "MMCDAT2", UNIPHIER_PIN_IECTRL_EXIST,
-+			     6, UNIPHIER_PIN_DRV_2BIT,
-+			     90, UNIPHIER_PIN_PULL_UP),
-+	UNIPHIER_PINCTRL_PIN(91, "MMCDAT3", UNIPHIER_PIN_IECTRL_EXIST,
-+			     7, UNIPHIER_PIN_DRV_2BIT,
-+			     91, UNIPHIER_PIN_PULL_UP),
-+	UNIPHIER_PINCTRL_PIN(92, "MMCDAT4", UNIPHIER_PIN_IECTRL_EXIST,
-+			     8, UNIPHIER_PIN_DRV_2BIT,
-+			     92, UNIPHIER_PIN_PULL_UP),
-+	UNIPHIER_PINCTRL_PIN(93, "MMCDAT5", UNIPHIER_PIN_IECTRL_EXIST,
-+			     9, UNIPHIER_PIN_DRV_2BIT,
-+			     93, UNIPHIER_PIN_PULL_UP),
-+	UNIPHIER_PINCTRL_PIN(94, "MMCDAT6", UNIPHIER_PIN_IECTRL_EXIST,
-+			     10, UNIPHIER_PIN_DRV_2BIT,
-+			     94, UNIPHIER_PIN_PULL_UP),
-+	UNIPHIER_PINCTRL_PIN(95, "MMCDAT7", UNIPHIER_PIN_IECTRL_EXIST,
-+			     11, UNIPHIER_PIN_DRV_2BIT,
-+			     95, UNIPHIER_PIN_PULL_UP),
-+};
-+
-+static const unsigned int emmc_pins[] = {85, 86, 87, 88, 89, 90, 91};
-+static const int emmc_muxvals[] = {-1, -1, -1, -1, -1, -1, -1};
-+static const unsigned int emmc_dat8_pins[] = {92, 93, 94, 95};
-+static const int emmc_dat8_muxvals[] = {-1, -1, -1, -1};
-+static const unsigned int ether_rgmii_pins[] = {11, 12, 13, 14, 15, 16, 17, 18,
-+						19, 20, 21, 22, 23, 24, 25, 26};
-+static const int ether_rgmii_muxvals[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-+					  0, 0, 0};
-+static const unsigned int ether_rmii_pins[] = {11, 12, 13, 14, 15, 16, 17, 18,
-+					       20, 22, 23, 26};
-+static const int ether_rmii_muxvals[] = {0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1};
-+static const unsigned int i2c0_pins[] = {50, 51};
-+static const int i2c0_muxvals[] = {0, 0};
-+static const unsigned int i2c1_pins[] = {52, 53};
-+static const int i2c1_muxvals[] = {0, 0};
-+static const unsigned int i2c2_pins[] = {54, 55};
-+static const int i2c2_muxvals[] = {0, 0};
-+static const unsigned int i2c3_pins[] = {56, 57};
-+static const int i2c3_muxvals[] = {0, 0};
-+static const unsigned int i2c4_pins[] = {72, 73};
-+static const int i2c4_muxvals[] = {1, 1};
-+static const unsigned int i2c5_pins[] = {74, 75};
-+static const int i2c5_muxvals[] = {1, 1};
-+static const unsigned int i2c6_pins[] = {82, 83};
-+static const int i2c6_muxvals[] = {1, 1};
-+static const unsigned int sd_pins[] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
-+static const int sd_muxvals[] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
-+static const unsigned spi0_pins[] = {42, 43, 44, 45};
-+static const int spi0_muxvals[] = {0, 0, 0, 0};
-+static const unsigned spi1_pins[] = {46, 47, 48, 49};
-+static const int spi1_muxvals[] = {0, 0, 0, 0};
-+static const unsigned int uart0_pins[] = {27, 28};
-+static const int uart0_muxvals[] = {0, 0};
-+static const unsigned int uart1_pins[] = {29, 30};
-+static const int uart1_muxvals[] = {0, 0};
-+static const unsigned int uart1_ctsrts_pins[] = {31, 33};
-+static const int uart1_ctsrts_muxvals[] = {0, 0};
-+static const unsigned int uart1_modem_pins[] = {32, 34, 35};
-+static const int uart1_modem_muxvals[] = {0, 0, 0};
-+static const unsigned int uart2_pins[] = {36, 37};
-+static const int uart2_muxvals[] = {0, 0};
-+static const unsigned int uart2_ctsrts_pins[] = {38, 39};
-+static const int uart2_ctsrts_muxvals[] = {0, 0};
-+static const unsigned int uart3_pins[] = {40, 41};
-+static const int uart3_muxvals[] = {0, 0};
-+static const unsigned int usb0_pins[] = {78, 79};
-+static const int usb0_muxvals[] = {0, 0};
-+static const unsigned int usb1_pins[] = {80, 81};
-+static const int usb1_muxvals[] = {0, 0};
-+static const unsigned int gpio_range0_pins[] = {
-+	64, 65, 66, 67, 68, 69, 70, 71,			/* PORT0x */
-+	72, 73, 74, 75, 76, 77, 0, 1,			/* PORT1x */
-+	2, 3, 4, 5, 6, 7, 8, 9,				/* PORT2x */
-+	10, 78, 79, 80, 81,				/* PORT30-34 */
-+};
-+static const unsigned int gpio_range1_pins[] = {
-+	11, 12, 13,					/* PORT61-63 */
-+};
-+static const unsigned int gpio_range2_pins[] = {
-+	15, 16, 17,					/* PORT65-67 */
-+	18, 19, 20, 21, 22, 23, 24, 25,			/* PORT7x */
-+	26, 27, 28, 29, 30, 31, 32, 33,			/* PORT8x */
-+	34, 35, 36, 37, 38, 39, 40, 41,			/* PORT9x */
-+	42, 43, 44, 45, 46, 47, 48, 49,			/* PORT10x */
-+};
-+static const unsigned int gpio_range3_pins[] = {
-+	58, 59, 60, 61, 62, 63,				/* PORT12x */
-+};
-+static const unsigned int gpio_range4_pins[] = {
-+	58, 59, 60, 61, 62, 63,				/* XIRQ0-5 */
-+};
-+
-+static const struct uniphier_pinctrl_group uniphier_nx1_groups[] = {
-+	UNIPHIER_PINCTRL_GROUP(emmc),
-+	UNIPHIER_PINCTRL_GROUP(emmc_dat8),
-+	UNIPHIER_PINCTRL_GROUP(ether_rgmii),
-+	UNIPHIER_PINCTRL_GROUP(ether_rmii),
-+	UNIPHIER_PINCTRL_GROUP(i2c0),
-+	UNIPHIER_PINCTRL_GROUP(i2c1),
-+	UNIPHIER_PINCTRL_GROUP(i2c2),
-+	UNIPHIER_PINCTRL_GROUP(i2c3),
-+	UNIPHIER_PINCTRL_GROUP(i2c4),
-+	UNIPHIER_PINCTRL_GROUP(i2c5),
-+	UNIPHIER_PINCTRL_GROUP(i2c6),
-+	UNIPHIER_PINCTRL_GROUP(sd),
-+	UNIPHIER_PINCTRL_GROUP(spi0),
-+	UNIPHIER_PINCTRL_GROUP(spi1),
-+	UNIPHIER_PINCTRL_GROUP(uart0),
-+	UNIPHIER_PINCTRL_GROUP(uart1),
-+	UNIPHIER_PINCTRL_GROUP(uart1_ctsrts),
-+	UNIPHIER_PINCTRL_GROUP(uart1_modem),
-+	UNIPHIER_PINCTRL_GROUP(uart2),
-+	UNIPHIER_PINCTRL_GROUP(uart2_ctsrts),
-+	UNIPHIER_PINCTRL_GROUP(uart3),
-+	UNIPHIER_PINCTRL_GROUP(usb0),
-+	UNIPHIER_PINCTRL_GROUP(usb1),
-+	UNIPHIER_PINCTRL_GROUP_GPIO(gpio_range0),
-+	UNIPHIER_PINCTRL_GROUP_GPIO(gpio_range1),
-+	UNIPHIER_PINCTRL_GROUP_GPIO(gpio_range2),
-+	UNIPHIER_PINCTRL_GROUP_GPIO(gpio_range3),
-+	UNIPHIER_PINCTRL_GROUP_GPIO(gpio_range4),
-+};
-+
-+static const char * const emmc_groups[] = {"emmc", "emmc_dat8"};
-+static const char * const ether_rgmii_groups[] = {"ether_rgmii"};
-+static const char * const ether_rmii_groups[] = {"ether_rmii"};
-+static const char * const i2c0_groups[] = {"i2c0"};
-+static const char * const i2c1_groups[] = {"i2c1"};
-+static const char * const i2c2_groups[] = {"i2c2"};
-+static const char * const i2c3_groups[] = {"i2c3"};
-+static const char * const i2c4_groups[] = {"i2c4"};
-+static const char * const i2c5_groups[] = {"i2c5"};
-+static const char * const i2c6_groups[] = {"i2c6"};
-+static const char * const sd_groups[] = {"sd"};
-+static const char * const spi0_groups[] = {"spi0"};
-+static const char * const spi1_groups[] = {"spi1"};
-+static const char * const uart0_groups[] = {"uart0"};
-+static const char * const uart1_groups[] = {"uart1", "uart1_ctsrts",
-+					    "uart1_modem"};
-+static const char * const uart2_groups[] = {"uart2", "uart2_ctsrts"};
-+static const char * const uart3_groups[] = {"uart3"};
-+static const char * const usb0_groups[] = {"usb0"};
-+static const char * const usb1_groups[] = {"usb1"};
-+static const char * const usb2_groups[] = {"usb2"};
-+static const char * const usb3_groups[] = {"usb3"};
-+
-+static const struct uniphier_pinmux_function uniphier_nx1_functions[] = {
-+	UNIPHIER_PINMUX_FUNCTION(emmc),
-+	UNIPHIER_PINMUX_FUNCTION(ether_rgmii),
-+	UNIPHIER_PINMUX_FUNCTION(ether_rmii),
-+	UNIPHIER_PINMUX_FUNCTION(i2c0),
-+	UNIPHIER_PINMUX_FUNCTION(i2c1),
-+	UNIPHIER_PINMUX_FUNCTION(i2c2),
-+	UNIPHIER_PINMUX_FUNCTION(i2c3),
-+	UNIPHIER_PINMUX_FUNCTION(i2c4),
-+	UNIPHIER_PINMUX_FUNCTION(i2c5),
-+	UNIPHIER_PINMUX_FUNCTION(i2c6),
-+	UNIPHIER_PINMUX_FUNCTION(sd),
-+	UNIPHIER_PINMUX_FUNCTION(spi0),
-+	UNIPHIER_PINMUX_FUNCTION(spi1),
-+	UNIPHIER_PINMUX_FUNCTION(uart0),
-+	UNIPHIER_PINMUX_FUNCTION(uart1),
-+	UNIPHIER_PINMUX_FUNCTION(uart2),
-+	UNIPHIER_PINMUX_FUNCTION(uart3),
-+	UNIPHIER_PINMUX_FUNCTION(usb0),
-+	UNIPHIER_PINMUX_FUNCTION(usb1),
-+};
-+
-+static int uniphier_nx1_get_gpio_muxval(unsigned int pin,
-+					unsigned int gpio_offset)
-+{
-+	if (gpio_offset >= 120)	/* XIRQx */
-+		return 14;
-+
-+	return 15;
-+}
-+
-+static const struct uniphier_pinctrl_socdata uniphier_nx1_pindata = {
-+	.pins = uniphier_nx1_pins,
-+	.npins = ARRAY_SIZE(uniphier_nx1_pins),
-+	.groups = uniphier_nx1_groups,
-+	.groups_count = ARRAY_SIZE(uniphier_nx1_groups),
-+	.functions = uniphier_nx1_functions,
-+	.functions_count = ARRAY_SIZE(uniphier_nx1_functions),
-+	.get_gpio_muxval = uniphier_nx1_get_gpio_muxval,
-+	.caps = UNIPHIER_PINCTRL_CAPS_PERPIN_IECTRL,
-+};
-+
-+static int uniphier_nx1_pinctrl_probe(struct platform_device *pdev)
-+{
-+	return uniphier_pinctrl_probe(pdev, &uniphier_nx1_pindata);
-+}
-+
-+static const struct of_device_id uniphier_nx1_pinctrl_match[] = {
-+	{ .compatible = "socionext,uniphier-nx1-pinctrl" },
-+	{ /* sentinel */ }
-+};
-+
-+static struct platform_driver uniphier_nx1_pinctrl_driver = {
-+	.probe = uniphier_nx1_pinctrl_probe,
-+	.driver = {
-+		.name = "uniphier-nx1-pinctrl",
-+		.of_match_table = uniphier_nx1_pinctrl_match,
-+		.pm = &uniphier_pinctrl_pm_ops,
-+	},
-+};
-+builtin_platform_driver(uniphier_nx1_pinctrl_driver);
--- 
-2.7.4
+> > > > >
+> > > > > So this will unconditionally enable vector instructions, and allo=
+cate
+> > > > > memory for vector state, for all processes, regardless of whether=
+ vector
+> > > > > instructions are used?
+> > > > >
+> > > >
+> > > > Hi Darius,
+> > > >
+> > > > Yes, it will enable vector if has_vector() is true. The reason that=
+ we
+> > > > choose to enable and allocate memory for user space program is beca=
+use
+> > > > we also implement some common functions in the glibc such as memcpy
+> > > > vector version and it is called very often by every process. So tha=
+t
+> > > > we assume if the user program is running in a CPU with vector ISA
+> > > > would like to use vector by default. If we disable it by default an=
+d
+> > > > make it trigger the illegal instruction, that might be a burden sin=
+ce
+> > > > almost every process will use vector glibc memcpy or something like
+> > > > that.
+> > >
+> > > Do you have any evidence to support the assertion that almost every p=
+rocess
+> > > would use vector operations?  One could easily argue that the convers=
+e is
+> > > true: no existing software uses the vector extension now, so most lik=
+ely a
+> > > process will not be using it.
+> > >
+> > > >
+> > > > > Given the size of the vector state and potential power and perfor=
+mance
+> > > > > implications of enabling the vector engine, it seems like this sh=
+ould
+> > > > > treated similarly to Intel AMX on x86.  The full discussion of th=
+at is
+> > > > > here:
+> > > > >
+> > > > > https://lore.kernel.org/lkml/CALCETrW2QHa2TLvnUuVxAAheqcbSZ-5_WRX=
+tDSAGcbG8N+gtdQ-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org/
+> > > > >
+> > > > > The cover letter for recent Intel AMX patches has a summary of th=
+e x86
+> > > > > implementation:
+> > > > >
+> > > > > https://lore.kernel.org/lkml/20210825155413.19673-1-chang.seok.ba=
+e@intel.com/
+> > > > >
+> > > > > If RISC-V were to adopt a similar approach, I think the significa=
+nt
+> > > > > points are:
+> > > > >
+> > > > >   1. A process (or thread) must specifically request the desire t=
+o use
+> > > > > vector extensions (perhaps with some new arch_prctl() API),
+> > > > >
+> > > > >   2. The kernel is free to deny permission, perhaps based on
+> > > > > administrative rules or for other reasons, and
+> > > > >
+> > > > >   3. If a process attempts to use vector extensions before doing =
+the
+> > > > > above, the process will die due to an illegal instruction.
+> > > >
+> > > > Thank you for sharing this, but I am not sure if we should treat
+> > > > vector like AMX on x86. IMHO, compiler might generate code with vec=
+tor
+> > > > instructions automatically someday, maybe we should treat vector
+> > > > extensions like other extensions.
+> > > > If user knows the vector extension is supported in this CPU and he
+> > > > would like to use it, it seems we should let user use it directly j=
+ust
+> > > > like other extensions.
+> > > > If user don't know it exists or not, user should use the library AP=
+I
+> > > > transparently and let glibc or other library deal with it. The glib=
+c
+> > > > ifunc feature or multi-lib should be able to choose the correct
+> > > > implementation.
+> > >
+> > > What makes me think that the vector extension should be treated like =
+AMX is
+> > > that they both (1) have a significant amount of architectural state, =
+and
+> > > (2) likely have a significant power and/or area impact on (non-emulat=
+ed)
+> > > designs.
+> > >
+> > > For example, I think it is possible, maybe even likely, that vector
+> > > implementations will have one or more of the following behaviors:
+> > >
+> > >   1. A single vector unit shared among two or more harts,
+> > >
+> > >   2. Additional power consumption when the vector unit is enabled and=
+ idle
+> > > versus not being enabled at all,
+> > >
+> > >   3. For a system which supports variable operating frequency, a redu=
+ction
+> > > in the maximum frequency when the vector unit is enabled, and/or
+> > >
+> > >   4. The inability to enter low power states and/or delays to low pow=
+er
+> > > states transitions when the vector unit is enabled.
+> > >
+> > > None of the above constraints apply to more ordinary extensions like
+> > > compressed or the various bit manipulation extensions.
+> > >
+> > > The discussion I linked to has some well reasoned arguments on why
+> > > substantial extensions should have a mechanism to request using them =
+by
+> > > user space.  The discussion was in the context of Intel AMX, but appl=
+ies to
+> > > further x86 extensions, and I think should also apply to similar exte=
+nsions
+> > > on RISC-V, like vector here.
+> > >
+> > There is possible use case where not all cores support vector
+> > extension due to size, area and power.
+> > Perhaps can have the mechanism or flow to determine the
+> > application/thread require vector extension or it specifically request
+> > the desire to use
+> > vector extensions. Then this app/thread run on cpu with vector
+> > extension capability only.
+> >
+>
+> IIRC, we assume all harts has the same ability in Linux because of SMP
+> assumption.
+> If we have more information of hw capability and we may use this
+> information for scheduler to switch the correct process to the correct
+> CPU.
+> Do you have any idea how to implement it in Linux kernel? Maybe we can
+> list in the TODO list.
+I think we can refer to other arch implementations as reference:
 
+1. ARM64 supports 32-bit thread on asymmetric AArch32 systems. There
+is a flag in ELF to check, then start the thread on the core that
+supports 32-bit execution. This patchset is merged to mainline 5.15.
+https://lore.kernel.org/linux-arm-kernel/20210730112443.23245-8-will@kernel=
+.org/T/
+
+2. Link shared by Darius, on-demand request implementation on Intel AMX
+https://lore.kernel.org/lkml/20210825155413.19673-1-chang.seok.bae@intel.co=
+m/
+
+glibc support optimized library functions with vector, this is enabled
+by default if compiler is with vector extension enabled? If yes, then
+most of the app required vector core.
+
+Regards
+Ley Foon
