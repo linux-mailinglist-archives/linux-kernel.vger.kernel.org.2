@@ -2,162 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99CF9421D00
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 05:36:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E076421D05
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 05:39:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231326AbhJEDhs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 23:37:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34322 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229659AbhJEDhl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 23:37:41 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77DA8C061745
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 20:35:51 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id e66-20020a9d2ac8000000b0054da8bdf2aeso22022723otb.12
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 20:35:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=n1sIofEKORsTR+BKeozYVhAx4/whk5x8HA7cir8+0Rs=;
-        b=bqdhqIyb/rrIB3tr4O1+Y5bzOlc/VapTa2T6YM2GSnffpAN6gA5SSi2TG/O83hmClo
-         482YwpGqNQTJRjUXkEVyCxzeJ/wOKJBNQOCMYEmkefYIypNd7pxu9qyioG/AnIUcy91Y
-         L39eL4FFDO/UZZIP2uL+bLHXDi6Vc0dSghkqO1XCwqJxO7aWShNx7YrjIHfgt+gDnruj
-         8LLfyLn6Q6vRCuZhEU1mc6F6hjcy1E/ZJQbUF7FLzvae5ISUF7Eoz1F8Uv4osvGOMZFv
-         WdVYuPYZIpNTXsDSejLgSKy5OUd9/RPD1zS73rw6yxh0jU7dbhrPumnMFjDvsNKFXpoH
-         nreA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=n1sIofEKORsTR+BKeozYVhAx4/whk5x8HA7cir8+0Rs=;
-        b=RIqN+oiYZDOQFjZvhHvo3TSplZZSQ0nXgvq09vgvmqYeze5MUSfjSzji7qk4Bjhew6
-         HI2XpFd8QKbZXd5Q1q56Lt6D5yyghoDqGD3Z+ihsVeIEFoNdlF/1GLn+Rlm2IKnAfZZN
-         PjxG1GnyvWZpkJgZwc3I93OfomJrNya7y1tvAJ7oX4NAtT+QM5CUUrHexCBi0tZyh9Af
-         CJt37TUH5R1ZCj35a9kq4o+W9s3QQXexRO5o5nv2LB6K/563fx4zmPbafEgLMprarcNN
-         ucG57VbD8h4J5FYmPZI+9pvR6MgJ1uEArZkaQv15Qn99YuZvTpzyGi5RNlSe8lo2eFlI
-         4duw==
-X-Gm-Message-State: AOAM532oHp21imVaUBNABjEEdSAjauLmdy+OxNH6uyQPbvCIquAcWO/n
-        wpGOqFd9+2NMkD09JOzTcEnNbw==
-X-Google-Smtp-Source: ABdhPJzDMQWh9R0Akj/n4iwivgOsF6bWnpo67N8Y0fKzCgGtLK0N9e+9JiW5btQzwzjFxPMj52KJUA==
-X-Received: by 2002:a05:6830:128d:: with SMTP id z13mr12717938otp.19.1633404950695;
-        Mon, 04 Oct 2021 20:35:50 -0700 (PDT)
-Received: from localhost.localdomain ([2600:1700:a0:3dc8:205:1bff:fec0:b9b3])
-        by smtp.gmail.com with ESMTPSA id e16sm3075101oie.17.2021.10.04.20.35.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Oct 2021 20:35:50 -0700 (PDT)
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3] soc: qcom: rpmhpd: Make power_on actually enable the domain
-Date:   Mon,  4 Oct 2021 20:37:32 -0700
-Message-Id: <20211005033732.2284447-1-bjorn.andersson@linaro.org>
-X-Mailer: git-send-email 2.29.2
+        id S231495AbhJEDlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 23:41:04 -0400
+Received: from mga14.intel.com ([192.55.52.115]:55059 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229659AbhJEDlC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Oct 2021 23:41:02 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10127"; a="225957957"
+X-IronPort-AV: E=Sophos;i="5.85,347,1624345200"; 
+   d="scan'208";a="225957957"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2021 20:39:12 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,347,1624345200"; 
+   d="scan'208";a="544610054"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga004.fm.intel.com with ESMTP; 04 Oct 2021 20:39:12 -0700
+Received: from glass.png.intel.com (glass.png.intel.com [10.158.65.69])
+        by linux.intel.com (Postfix) with ESMTP id ABF72580A6C;
+        Mon,  4 Oct 2021 20:39:09 -0700 (PDT)
+From:   Wong Vee Khee <vee.khee.wong@linux.intel.com>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Jose Abreu <Jose.Abreu@synopsys.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Wong Vee Khee <veekhee@gmail.com>
+Subject: [PATCH net v4 1/1] net: pcs: xpcs: fix incorrect CL37 AN sequence
+Date:   Tue,  5 Oct 2021 11:45:21 +0800
+Message-Id: <20211005034521.534125-1-vee.khee.wong@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The general expectation is that powering on a power-domain should make
-the power domain deliver some power, and if a specific performance state
-is needed further requests has to be made.
+According to Synopsys DesignWare Cores Ethernet PCS databook, it is
+required to disable Clause 37 auto-negotiation by programming bit-12
+(AN_ENABLE) to 0 if it is already enabled, before programming various
+fields of VR_MII_AN_CTRL registers.
 
-But in contrast with other power-domain implementations (e.g. rpmpd) the
-RPMh does not have an interface to enable the power, so the driver has
-to vote for a particular corner (performance level) in rpmh_power_on().
+After all these programming are done, it is then required to enable
+Clause 37 auto-negotiation by programming bit-12 (AN_ENABLE) to 1.
 
-But the corner is never initialized, so a typical request to simply
-enable the power domain would not actually turn on the hardware. Further
-more, when no more clients vote for a performance state (i.e. the
-aggregated vote is 0) the power domain would be turned off.
-
-Fix both of these issues by always voting for a corner with non-zero
-value, when the power domain is enabled.
-
-The tracking of the lowest non-zero corner is performed to handle the
-corner case if there's ever a domain with a non-zero lowest corner, in
-which case both rpmh_power_on() and rpmh_rpmhpd_set_performance_state()
-would be allowed to use this lowest corner.
-
-Fixes: 279b7e8a62cc ("soc: qcom: rpmhpd: Add RPMh power domain driver")
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Fixes: b97b5331b8ab ("net: pcs: add C37 SGMII AN support for intel mGbE controller")
+Cc: Vladimir Oltean <vladimir.oltean@nxp.com>
+Signed-off-by: Wong Vee Khee <vee.khee.wong@linux.intel.com>
 ---
+v3 -> v4:
+ - Removed redunctant 'changed' variable.
+v2 -> v3:
+ - Added error handling after xpcs_write().
+ - Added 'changed' flag.
+ - Added fixes tag.
+v1 -> v2:
+ - Removed use of xpcs_modify() helper function.
+ - Add conditional check on inband auto-negotiation.
+---
+ drivers/net/pcs/pcs-xpcs.c | 32 +++++++++++++++++++++++++++-----
+ 1 file changed, 27 insertions(+), 5 deletions(-)
 
-Changes since v2:
-- Fixed two spelling mistakes in the commit message
-- Changed the last hunk to search for first non-zero level, rather than the
-  first non-zero index (i.e. 1)
-
- drivers/soc/qcom/rpmhpd.c | 18 ++++++++++++++----
- 1 file changed, 14 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/soc/qcom/rpmhpd.c b/drivers/soc/qcom/rpmhpd.c
-index e280a8194725..0ca77ed22c6c 100644
---- a/drivers/soc/qcom/rpmhpd.c
-+++ b/drivers/soc/qcom/rpmhpd.c
-@@ -30,6 +30,7 @@
-  * @active_only:	True if it represents an Active only peer
-  * @corner:		current corner
-  * @active_corner:	current active corner
-+ * @enable_corner:	lowest non-zero corner
-  * @level:		An array of level (vlvl) to corner (hlvl) mappings
-  *			derived from cmd-db
-  * @level_count:	Number of levels supported by the power domain. max
-@@ -47,6 +48,7 @@ struct rpmhpd {
- 	const bool	active_only;
- 	unsigned int	corner;
- 	unsigned int	active_corner;
-+	unsigned int	enable_corner;
- 	u32		level[RPMH_ARC_MAX_LEVELS];
- 	size_t		level_count;
- 	bool		enabled;
-@@ -401,13 +403,13 @@ static int rpmhpd_aggregate_corner(struct rpmhpd *pd, unsigned int corner)
- static int rpmhpd_power_on(struct generic_pm_domain *domain)
+diff --git a/drivers/net/pcs/pcs-xpcs.c b/drivers/net/pcs/pcs-xpcs.c
+index fb0a83dc09ac..a3e806cfa684 100644
+--- a/drivers/net/pcs/pcs-xpcs.c
++++ b/drivers/net/pcs/pcs-xpcs.c
+@@ -697,14 +697,17 @@ EXPORT_SYMBOL_GPL(xpcs_config_eee);
+ 
+ static int xpcs_config_aneg_c37_sgmii(struct dw_xpcs *xpcs, unsigned int mode)
  {
- 	struct rpmhpd *pd = domain_to_rpmhpd(domain);
--	int ret = 0;
-+	unsigned int corner;
-+	int ret;
+-	int ret;
++	int ret, mdio_ctrl;
  
- 	mutex_lock(&rpmhpd_lock);
- 
--	if (pd->corner)
--		ret = rpmhpd_aggregate_corner(pd, pd->corner);
--
-+	corner = max(pd->corner, pd->enable_corner);
-+	ret = rpmhpd_aggregate_corner(pd, corner);
- 	if (!ret)
- 		pd->enabled = true;
- 
-@@ -452,6 +454,10 @@ static int rpmhpd_set_performance_state(struct generic_pm_domain *domain,
- 		i--;
- 
- 	if (pd->enabled) {
-+		/* Ensure that the domain isn't turn off */
-+		if (i < pd->enable_corner)
-+			i = pd->enable_corner;
+ 	/* For AN for C37 SGMII mode, the settings are :-
+-	 * 1) VR_MII_AN_CTRL Bit(2:1)[PCS_MODE] = 10b (SGMII AN)
+-	 * 2) VR_MII_AN_CTRL Bit(3) [TX_CONFIG] = 0b (MAC side SGMII)
++	 * 1) VR_MII_MMD_CTRL Bit(12) [AN_ENABLE] = 0b (Disable SGMII AN in case
++	      it is already enabled)
++	 * 2) VR_MII_AN_CTRL Bit(2:1)[PCS_MODE] = 10b (SGMII AN)
++	 * 3) VR_MII_AN_CTRL Bit(3) [TX_CONFIG] = 0b (MAC side SGMII)
+ 	 *    DW xPCS used with DW EQoS MAC is always MAC side SGMII.
+-	 * 3) VR_MII_DIG_CTRL1 Bit(9) [MAC_AUTO_SW] = 1b (Automatic
++	 * 4) VR_MII_DIG_CTRL1 Bit(9) [MAC_AUTO_SW] = 1b (Automatic
+ 	 *    speed/duplex mode change by HW after SGMII AN complete)
++	 * 5) VR_MII_MMD_CTRL Bit(12) [AN_ENABLE] = 1b (Enable SGMII AN)
+ 	 *
+ 	 * Note: Since it is MAC side SGMII, there is no need to set
+ 	 *	 SR_MII_AN_ADV. MAC side SGMII receives AN Tx Config from
+@@ -712,6 +715,17 @@ static int xpcs_config_aneg_c37_sgmii(struct dw_xpcs *xpcs, unsigned int mode)
+ 	 *	 between PHY and Link Partner. There is also no need to
+ 	 *	 trigger AN restart for MAC-side SGMII.
+ 	 */
++	mdio_ctrl = xpcs_read(xpcs, MDIO_MMD_VEND2, DW_VR_MII_MMD_CTRL);
++	if (mdio_ctrl < 0)
++		return mdio_ctrl;
 +
- 		ret = rpmhpd_aggregate_corner(pd, i);
- 		if (ret)
- 			goto out;
-@@ -488,6 +494,10 @@ static int rpmhpd_update_level_mapping(struct rpmhpd *rpmhpd)
- 	for (i = 0; i < rpmhpd->level_count; i++) {
- 		rpmhpd->level[i] = buf[i];
- 
-+		/* Remember the first corner with non-zero level */
-+		if (!rpmhpd->level[rpmhpd->enable_corner] && rpmhpd->level[i])
-+			rpmhpd->enable_corner = i;
++	if (mdio_ctrl & AN_CL37_EN) {
++		ret = xpcs_write(xpcs, MDIO_MMD_VEND2, DW_VR_MII_MMD_CTRL,
++				 mdio_ctrl & ~AN_CL37_EN);
++		if (ret < 0)
++			return ret;
++	}
 +
- 		/*
- 		 * The AUX data may be zero padded.  These 0 valued entries at
- 		 * the end of the map must be ignored.
+ 	ret = xpcs_read(xpcs, MDIO_MMD_VEND2, DW_VR_MII_AN_CTRL);
+ 	if (ret < 0)
+ 		return ret;
+@@ -736,7 +750,15 @@ static int xpcs_config_aneg_c37_sgmii(struct dw_xpcs *xpcs, unsigned int mode)
+ 	else
+ 		ret &= ~DW_VR_MII_DIG_CTRL1_MAC_AUTO_SW;
+ 
+-	return xpcs_write(xpcs, MDIO_MMD_VEND2, DW_VR_MII_DIG_CTRL1, ret);
++	ret = xpcs_write(xpcs, MDIO_MMD_VEND2, DW_VR_MII_DIG_CTRL1, ret);
++	if (ret < 0)
++		return ret;
++
++	if (phylink_autoneg_inband(mode))
++		ret = xpcs_write(xpcs, MDIO_MMD_VEND2, DW_VR_MII_MMD_CTRL,
++				 mdio_ctrl | AN_CL37_EN);
++
++	return ret;
+ }
+ 
+ static int xpcs_config_2500basex(struct dw_xpcs *xpcs)
 -- 
-2.29.2
+2.25.1
 
