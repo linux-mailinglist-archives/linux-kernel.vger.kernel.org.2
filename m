@@ -2,145 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEE56422236
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 11:24:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25ACC422209
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 11:20:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233400AbhJEJ0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 05:26:01 -0400
-Received: from forward500o.mail.yandex.net ([37.140.190.195]:59362 "EHLO
-        forward500o.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232871AbhJEJ0B (ORCPT
+        id S233478AbhJEJV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 05:21:59 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:64340 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232658AbhJEJV6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 05:26:01 -0400
-X-Greylist: delayed 377 seconds by postgrey-1.27 at vger.kernel.org; Tue, 05 Oct 2021 05:25:59 EDT
-Received: from myt5-6c0659e8c6cb.qloud-c.yandex.net (myt5-6c0659e8c6cb.qloud-c.yandex.net [IPv6:2a02:6b8:c12:271e:0:640:6c06:59e8])
-        by forward500o.mail.yandex.net (Yandex) with ESMTP id A206F941E36;
-        Tue,  5 Oct 2021 12:17:48 +0300 (MSK)
-Received: from myt5-ca5ec8faf378.qloud-c.yandex.net (2a02:6b8:c12:2514:0:640:ca5e:c8fa [2a02:6b8:c12:2514:0:640:ca5e:c8fa])
-        by myt5-6c0659e8c6cb.qloud-c.yandex.net (mxback/Yandex) with ESMTP id IyV6tEzelD-HkDqMhNI;
-        Tue, 05 Oct 2021 12:17:48 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maquefel.me; s=mail; t=1633425468;
-        bh=CrnGMerQ4LBYjjGbgeqFgGHVtZrQ+QTtn5a0VX0cO1Y=;
-        h=In-Reply-To:Message-ID:Subject:To:From:References:Date:Cc;
-        b=dehZ7uZt+fO6YaaLE03MQykhBGAWbnTmJAz787q5v+kP+tnjCX9x7H9RnogO2XnQp
-         o2LRZpnAlGHdRWJteqIyL14dh5xgLy2vRi3CnyXYsauaUBuFMzC+aXli5//Spgpk63
-         AQfi00eYfDiMTtzwMWrmEkxl0sCLVfek9C7+wa9k=
-Authentication-Results: myt5-6c0659e8c6cb.qloud-c.yandex.net; dkim=pass header.i=@maquefel.me
-Received: by myt5-ca5ec8faf378.qloud-c.yandex.net (smtp/Yandex) with ESMTPS id 43frcM9OPL-HjPCRD6R;
-        Tue, 05 Oct 2021 12:17:46 +0300
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client certificate not present)
-Date:   Tue, 5 Oct 2021 12:17:44 +0300
-From:   Nikita Shubin <nikita.shubin@maquefel.me>
-To:     Atish Patra <atish.patra@wdc.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Anup Patel <anup.patel@wdc.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        "Darrick J. Wong" <djwong@kernel.org>, devicetree@vger.kernel.org,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Heinrich Schuchardt <xypron.glpk@gmx.de>,
-        Jiri Olsa <jolsa@redhat.com>,
-        John Garry <john.garry@huawei.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, linux-riscv@lists.infradead.org,
-        Nick Kossifidis <mick@ics.forth.gr>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Vincent Chen <vincent.chen@sifive.com>
-Subject: Re: [v3 00/10] Improve RISC-V Perf support using SBI PMU and
- sscofpmf extension
-Message-ID: <20211005121744.728385be@redslave.neermore.group>
-In-Reply-To: <20210910192757.2309100-1-atish.patra@wdc.com>
-References: <20210910192757.2309100-1-atish.patra@wdc.com>
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Tue, 5 Oct 2021 05:21:58 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1958g82k024319;
+        Tue, 5 Oct 2021 05:19:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=4KWtlySNTnqXB8CFgnNbWgTinUBqt+TDSXQNhwqkcs0=;
+ b=TaBfo1H0odQKIJBKeAPqkw8VXiyPhQMhJIR5owlTZLhHog8FXrsCVWXWXyPYHfZm+RC+
+ wFJHT5OzLobwG7Anodh4DVj2sX55UrkE6VLlyGNPziCV2DZhdgeSoFsUuBgGre3PmZHl
+ hRf17OTsO51rYn8mIdWa7cr5r2d55O+2Omnce4g5vjfrm3fHeUzcUVFr2SvNdqBqoiY+
+ VfV5MEwXQgfW75tJ1Sw496Rw5HZB3FkynwrGUOsExHc29DsK5w2R880380+yw8ehoG0f
+ EKG++wHnKtdpHhjN/7TVTdVpfAgtsHD9Zi4qIgleLvp3j7/dRD4nCMnDVp+UIeEowaXZ eQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bgkdw8rx9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Oct 2021 05:19:22 -0400
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1959I2sL025054;
+        Tue, 5 Oct 2021 05:19:22 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bgkdw8rw9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Oct 2021 05:19:21 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1959CViH022035;
+        Tue, 5 Oct 2021 09:19:18 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma06ams.nl.ibm.com with ESMTP id 3beepjgfkm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Oct 2021 09:19:18 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1959JDuA40173884
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 5 Oct 2021 09:19:13 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4EAD8A4080;
+        Tue,  5 Oct 2021 09:19:13 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E7A96A406F;
+        Tue,  5 Oct 2021 09:19:03 +0000 (GMT)
+Received: from li-e8dccbcc-2adc-11b2-a85c-bc1f33b9b810.ibm.com.com (unknown [9.43.64.84])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue,  5 Oct 2021 09:19:03 +0000 (GMT)
+From:   Kajol Jain <kjain@linux.ibm.com>
+To:     mpe@ellerman.id.au, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, peterz@infradead.org,
+        mingo@redhat.com, acme@kernel.org, jolsa@kernel.org,
+        namhyung@kernel.org, ak@linux.intel.com
+Cc:     linux-perf-users@vger.kernel.org, maddy@linux.ibm.com,
+        atrajeev@linux.vnet.ibm.com, rnsastry@linux.ibm.com,
+        yao.jin@linux.intel.com, ast@kernel.org, daniel@iogearbox.net,
+        songliubraving@fb.com, kan.liang@linux.intel.com,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        paulus@samba.org, kjain@linux.ibm.com
+Subject: [PATCH 1/4] perf: Add comment about current state of PERF_MEM_LVL_* namespace and remove an extra line
+Date:   Tue,  5 Oct 2021 14:48:34 +0530
+Message-Id: <20211005091837.250044-1-kjain@linux.ibm.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: tGFMIXsCZcH_fh0aN6SIELorgBuR0UKd
+X-Proofpoint-GUID: 1wCRPklwI3u1dYJI1JF0PA0VZpJADI8p
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-10-04_05,2021-10-04_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 spamscore=0
+ suspectscore=0 impostorscore=0 lowpriorityscore=0 malwarescore=0
+ phishscore=0 priorityscore=1501 clxscore=1011 mlxlogscore=999 bulkscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110050052
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 10 Sep 2021 12:27:47 -0700
-Atish Patra <atish.patra@wdc.com> wrote:
+Add a comment about PERF_MEM_LVL_* namespace being depricated
+to some extent in favour of added PERF_MEM_{LVLNUM_,REMOTE_,SNOOPX_}
+fields.
 
-Hello Atish,
+Remove an extra line present in perf_mem__lvl_scnprintf function.
 
-> Perf stat:
-> =========
-> 
-> [root@fedora-riscv riscv]# perf stat -e r8000000000000005 -e
-> r8000000000000007 -e r8000000000000006 -e r0000000000020002 -e
-> r0000000000020004 -e branch-misses -e cache-misses -e
-> dTLB-load-misses -e dTLB-store-misses -e iTLB-load-misses -e cycles
-> -e instructions ./hackbench -pipe 15 process Running with 15*40 (==
-> 600) tasks. Time: 6.578
-> 
->  Performance counter stats for './hackbench -pipe 15 process':
-> 
->              6,491      r8000000000000005      (52.59%) -->
-> SBI_PMU_FW_SET_TIMER 20,433      r8000000000000007      (60.74%) -->
-> SBI_PMU_FW_IPI_RECVD 21,271      r8000000000000006      (68.71%) -->
-> SBI_PMU_FW_IPI_SENT 0      r0000000000020002      (76.55%)
->      <not counted>      r0000000000020004      (0.00%)
->      <not counted>      branch-misses          (0.00%)
->      <not counted>      cache-misses           (0.00%)
->         57,537,853      dTLB-load-misses       (9.49%)
->          2,821,147      dTLB-store-misses      (18.64%)
->         52,928,130      iTLB-load-misses       (27.53%)
->     89,521,791,110      cycles                 (36.08%)
->     90,678,132,464      instructions #    1.01  insn per cycle
-> (44.44%)
-> 
->        6.975908032 seconds time elapsed
-> 
->        3.130950000 seconds user
->       24.353310000 seconds sys
-> 
+Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
+---
+ include/uapi/linux/perf_event.h       | 8 +++++++-
+ tools/include/uapi/linux/perf_event.h | 8 +++++++-
+ tools/perf/util/mem-events.c          | 1 -
+ 3 files changed, 14 insertions(+), 3 deletions(-)
 
-Tested your patch series with qemu and got results as expected:
-
-perf stat -e r8000000000000005 -e r8000000000000007 \
--e r8000000000000006 -e r0000000000020002 -e r0000000000020004 -e
-branch-misses \ -e cache-misses -e dTLB-load-misses -e
-dTLB-store-misses -e iTLB-load-misses \ -e cycles -e instructions
-./hackbench -pipe 15 process
-
-Running with 15*40 (== 600) tasks.nch -pipe 15 process
-Time: 20.027
-
- Performance counter stats for './hackbench -pipe 15 process':
-
-              4896      r8000000000000005
-                            (53.34%) 0      r8000000000000007
-                                                (61.20%) 0
-              r8000000000000006
-                  (68.88%) 0      r0000000000020002
-                                      (76.53%) <not counted>
-              r0000000000020004
-                  (0.00%) <not counted>      branch-misses
-                                                 (0.00%) <not counted>
-                  cache-misses
-                      (0.00%) 48414917      dTLB-load-misses
-                                                (9.87%) 2427413
-              dTLB-store-misses
-                  (19.43%) 46958092      iTLB-load-misses
-                                             (28.58%) 69245163600
-              cycles
-                  (37.09%) 70334279943      instructions              #
-                 1.02  insn per cycle           (45.24%)
-
-      20.895871900 seconds time elapsed
-
-       2.724942000 seconds user
-      18.126277000 seconds sys
-
-perf top/record also works.
-
-Tested-by: Nikita Shubin <n.shubin@yadro.com>
-
-Yours,
-Nikita Shubin
-
+diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
+index f92880a15645..e1701e9c7858 100644
+--- a/include/uapi/linux/perf_event.h
++++ b/include/uapi/linux/perf_event.h
+@@ -1241,7 +1241,13 @@ union perf_mem_data_src {
+ #define PERF_MEM_OP_EXEC	0x10 /* code (execution) */
+ #define PERF_MEM_OP_SHIFT	0
+ 
+-/* memory hierarchy (memory level, hit or miss) */
++/*
++ * PERF_MEM_LVL_* namespace being depricated to some extent in the
++ * favour of newer composite PERF_MEM_{LVLNUM_,REMOTE_,SNOOPX_} fields.
++ * Supporting this namespace inorder to not break defined ABIs.
++ *
++ * memory hierarchy (memory level, hit or miss)
++ */
+ #define PERF_MEM_LVL_NA		0x01  /* not available */
+ #define PERF_MEM_LVL_HIT	0x02  /* hit level */
+ #define PERF_MEM_LVL_MISS	0x04  /* miss level  */
+diff --git a/tools/include/uapi/linux/perf_event.h b/tools/include/uapi/linux/perf_event.h
+index f92880a15645..e1701e9c7858 100644
+--- a/tools/include/uapi/linux/perf_event.h
++++ b/tools/include/uapi/linux/perf_event.h
+@@ -1241,7 +1241,13 @@ union perf_mem_data_src {
+ #define PERF_MEM_OP_EXEC	0x10 /* code (execution) */
+ #define PERF_MEM_OP_SHIFT	0
+ 
+-/* memory hierarchy (memory level, hit or miss) */
++/*
++ * PERF_MEM_LVL_* namespace being depricated to some extent in the
++ * favour of newer composite PERF_MEM_{LVLNUM_,REMOTE_,SNOOPX_} fields.
++ * Supporting this namespace inorder to not break defined ABIs.
++ *
++ * memory hierarchy (memory level, hit or miss)
++ */
+ #define PERF_MEM_LVL_NA		0x01  /* not available */
+ #define PERF_MEM_LVL_HIT	0x02  /* hit level */
+ #define PERF_MEM_LVL_MISS	0x04  /* miss level  */
+diff --git a/tools/perf/util/mem-events.c b/tools/perf/util/mem-events.c
+index f0e75df72b80..ff7289e28192 100644
+--- a/tools/perf/util/mem-events.c
++++ b/tools/perf/util/mem-events.c
+@@ -320,7 +320,6 @@ int perf_mem__lvl_scnprintf(char *out, size_t sz, struct mem_info *mem_info)
+ 	/* already taken care of */
+ 	m &= ~(PERF_MEM_LVL_HIT|PERF_MEM_LVL_MISS);
+ 
+-
+ 	if (mem_info && mem_info->data_src.mem_remote) {
+ 		strcat(out, "Remote ");
+ 		l += 7;
+-- 
+2.26.2
 
