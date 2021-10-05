@@ -2,159 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ED174232C4
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 23:20:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C56DC4232C7
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 23:24:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236655AbhJEVWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 17:22:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57542 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235679AbhJEVWM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 17:22:12 -0400
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90E3BC061749
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 14:20:21 -0700 (PDT)
-Received: by mail-il1-x131.google.com with SMTP id l20so807774ilk.2
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 14:20:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=kC50MuF3+X16QbRLByewBMz1E35GzjVs9lAfPxIXfYY=;
-        b=5gAjizCN0+xg1wqdFirBr2akZtrNHJBUUYuXonWwu9LHMnEb1Nx34amz+UXEg/QmeZ
-         u+GmFPDT1tknv1UW4nSxIV7k+sXHKr0cOSpNFaHexwzAnHmncsm98gIRigvW3BIUc2Ev
-         rnYo8tn/3F9k0pg3zFai44OOv2zKR45ocJEPF5tLwmPiHjQXfD0DJ35g3jnV46QS8Sl0
-         p4aWHW6fTiUl0Poh5fpkDCq5yx10Vsf+4tCAbwBpZyJTiuw7ik+VQmZFy1e+GKJCZA7u
-         4sVeIDRAvP4t32aL+FvA5NBftnDwJyoPm5DRCM24eOpTOFLsORRdsMpgFtZ+DFF1lXmD
-         wj+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=kC50MuF3+X16QbRLByewBMz1E35GzjVs9lAfPxIXfYY=;
-        b=R2UG5ALsEwNhAlWbgGTdKZB1hy5gJlKqApTgDd8vhaCMihMBjVw0CoWn8AD40VyYbB
-         lTDZj/eKGencPHts00xWBO5aM2R4Mn+oFuC8aMDBE5Hjm0/huzzgfAxHloKwMJ+Bc4i7
-         AZbCIrwCRQgzk/UQHZ+Ya4CpaCreRzmb9vAgnb3gJ5Dcqmw4P8G5pKEmpnk6Mr8aqqzD
-         //gtQcm0/d6FZR2uBSXoKhcnoOucnHB1kX1+yQZWegqHiFaqEDkRfaKCNAKM7fOaBv/G
-         c9c6zJHWF1wSAt4udI29G1XtuRu/HZWxjPET9TotXRrPCFoHTyco+gFnQ0gXfc7nifCm
-         RYnA==
-X-Gm-Message-State: AOAM532WHXlRiFBdB8zoWh3t8pavuSv6zWbnOFIwYxAVTA8ATIJbr2ZS
-        2txMpETpy4zJYhpvMlQx5JUVj5/euERf+Q==
-X-Google-Smtp-Source: ABdhPJyxDvD4dpKia8kex6Jq5Da7OfkFnRilk6VuiKOkhyP69RgWjQ7LEhDA3tnIHZT/L45BaIJ3/w==
-X-Received: by 2002:a92:c012:: with SMTP id q18mr4614971ild.84.1633468820840;
-        Tue, 05 Oct 2021 14:20:20 -0700 (PDT)
-Received: from [192.168.1.116] ([66.219.217.159])
-        by smtp.gmail.com with ESMTPSA id b11sm6006843ile.12.2021.10.05.14.20.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Oct 2021 14:20:20 -0700 (PDT)
-Subject: Re: [PATCH] mm: don't call should_failslab() for !CONFIG_FAILSLAB
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-References: <e01e5e40-692a-519c-4cba-e3331f173c82@kernel.dk>
- <20211005141832.d6f3d4e06c4ad7a06cd554dd@linux-foundation.org>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <316ad54a-67e9-879d-c406-6a4a606924aa@kernel.dk>
-Date:   Tue, 5 Oct 2021 15:20:18 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S236580AbhJEV0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 17:26:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47766 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235679AbhJEV03 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 17:26:29 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 917CE6120A;
+        Tue,  5 Oct 2021 21:24:36 +0000 (UTC)
+Date:   Tue, 5 Oct 2021 17:24:35 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Jan Engelhardt <jengelh@inai.de>
+Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Paul <paulmck@linux.vnet.ibm.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        "Joel Fernandes, Google" <joel@joelfernandes.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, rcu <rcu@vger.kernel.org>,
+        netfilter-devel <netfilter-devel@vger.kernel.org>,
+        coreteam <coreteam@netfilter.org>,
+        netdev <netdev@vger.kernel.org>
+Subject: Re: [RFC][PATCH] rcu: Use typeof(p) instead of typeof(*p) *
+Message-ID: <20211005172435.190c62d9@gandalf.local.home>
+In-Reply-To: <pn2qp6r2-238q-rs8n-p8n0-9s37sr614123@vanv.qr>
+References: <20211005094728.203ecef2@gandalf.local.home>
+        <ef5b1654-1f75-da82-cab8-248319efbe3f@rasmusvillemoes.dk>
+        <639278914.2878.1633457192964.JavaMail.zimbra@efficios.com>
+        <826o327o-3r46-3oop-r430-8qr0ssp537o3@vanv.qr>
+        <20211005144002.34008ea0@gandalf.local.home>
+        <srqsppq-p657-43qq-np31-pq5pp03271r6@vanv.qr>
+        <20211005154029.46f9c596@gandalf.local.home>
+        <20211005163754.66552fb3@gandalf.local.home>
+        <pn2qp6r2-238q-rs8n-p8n0-9s37sr614123@vanv.qr>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20211005141832.d6f3d4e06c4ad7a06cd554dd@linux-foundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/5/21 3:18 PM, Andrew Morton wrote:
-> On Tue, 5 Oct 2021 09:31:43 -0600 Jens Axboe <axboe@kernel.dk> wrote:
-> 
->> Allocations can be a very hot path, and this out-of-line function
->> call is noticeable.
->>
->> --- a/include/linux/fault-inject.h
->> +++ b/include/linux/fault-inject.h
->> @@ -64,8 +64,8 @@ static inline struct dentry *fault_create_debugfs_attr(const char *name,
->>  
->>  struct kmem_cache;
->>  
->> -int should_failslab(struct kmem_cache *s, gfp_t gfpflags);
->>  #ifdef CONFIG_FAILSLAB
->> +int should_failslab(struct kmem_cache *s, gfp_t gfpflags);
->>  extern bool __should_failslab(struct kmem_cache *s, gfp_t gfpflags);
->>  #else
->>  static inline bool __should_failslab(struct kmem_cache *s, gfp_t gfpflags)
->> diff --git a/mm/slab.h b/mm/slab.h
->> index 58c01a34e5b8..92fd6fe01877 100644
->> --- a/mm/slab.h
->> +++ b/mm/slab.h
->> @@ -491,8 +491,10 @@ static inline struct kmem_cache *slab_pre_alloc_hook(struct kmem_cache *s,
->>  
->>  	might_alloc(flags);
->>  
->> +#ifdef CONFIG_FAILSLAB
->>  	if (should_failslab(s, flags))
->>  		return NULL;
->> +#endif
-> 
-> Can we avoid the ifdefs here?
-> 
->>  
->>  	if (!memcg_slab_pre_alloc_hook(s, objcgp, size, flags))
->>  		return NULL;
->> diff --git a/mm/slab_common.c b/mm/slab_common.c
->> index ec2bb0beed75..c21bd447f237 100644
->> --- a/mm/slab_common.c
->> +++ b/mm/slab_common.c
->> @@ -1323,6 +1323,7 @@ EXPORT_TRACEPOINT_SYMBOL(kmem_cache_alloc_node);
->>  EXPORT_TRACEPOINT_SYMBOL(kfree);
->>  EXPORT_TRACEPOINT_SYMBOL(kmem_cache_free);
->>  
->> +#ifdef CONFIG_FAILSLAB
->>  int should_failslab(struct kmem_cache *s, gfp_t gfpflags)
->>  {
->>  	if (__should_failslab(s, gfpflags))
->> @@ -1330,3 +1331,4 @@ int should_failslab(struct kmem_cache *s, gfp_t gfpflags)
->>  	return 0;
->>  }
->>  ALLOW_ERROR_INJECTION(should_failslab, ERRNO);
->> +#endif
-> 
-> Like,
-> 
-> --- a/include/linux/fault-inject.h~mm-dont-call-should_failslab-for-config_failslab-fix
-> +++ a/include/linux/fault-inject.h
-> @@ -68,6 +68,10 @@ struct kmem_cache;
->  int should_failslab(struct kmem_cache *s, gfp_t gfpflags);
->  extern bool __should_failslab(struct kmem_cache *s, gfp_t gfpflags);
->  #else
-> +static inline int should_failslab(struct kmem_cache *s, gfp_t gfpflags)
-> +{
-> +	return 0;
-> +}
->  static inline bool __should_failslab(struct kmem_cache *s, gfp_t gfpflags)
->  {
->  	return false;
-> --- a/mm/slab.h~mm-dont-call-should_failslab-for-config_failslab-fix
-> +++ a/mm/slab.h
-> @@ -491,10 +491,8 @@ static inline struct kmem_cache *slab_pr
->  
->  	might_alloc(flags);
->  
-> -#ifdef CONFIG_FAILSLAB
->  	if (should_failslab(s, flags))
->  		return NULL;
-> -#endif
->  
->  	if (!memcg_slab_pre_alloc_hook(s, objcgp, size, flags))
->  		return NULL;
-> _
+On Tue, 5 Oct 2021 23:09:08 +0200 (CEST)
+Jan Engelhardt <jengelh@inai.de> wrote:
 
-Yep, that'll work!
+> On Tuesday 2021-10-05 22:37, Steven Rostedt wrote:
+> >
+> >Really, thinking about abstraction, I don't believe there's anything wrong
+> >with returning a pointer of one type, and then typecasting it to a pointer
+> >of another type. Is there? As long as whoever uses the returned type does
+> >nothing with it.  
+> 
+> Illegal.
+> https://en.cppreference.com/w/c/language/conversion
+> subsection "Pointer conversion"
+> "No other guarantees are offered"
 
--- 
-Jens Axboe
+Basically (one alternative I was looking at) was simply passing around a
+void pointer. Not sure how the RCU macros would handle that. But to
+completely abstract it out, I was thinking of just returning void * and
+accepting void *, but I didn't want to do that because now we just lost any
+kind of type checking done by the compiler. The tricks I was playing was to
+keep some kind of type checking.
+
+> 
+> >struct trace_pid_list *trace_pid_list_alloc(void)
+> >{
+> >	struct pid_list *pid_list;
+> >
+> >	pid_list = kmalloc(sizeof(*pid_list), GFP_KERNEL);
+> >	[..]
+> >
+> >	return (struct trace_pid_list *)pid_list;
+> >}  
+> 
+> struct trace_pid_list { void *pid_list; };
+> struct trace_pid_list trace_pid_list_alloc(void)
+> {
+> 	struct trace_pid_list t;
+> 	t.pid_list = kmalloc(sizeof(t.orig), GFP_KERNEL);
+> 	return t;
+> }
+> void freethat(struct strace_pid_list x)
+> {
+> 	kfree(x.pid_list);
+> }
+> 
+> Might run afoul of -Waggregate-return in C.
+
+The above isn't exactly what I was suggesting.
+
+And really, not that I'm going to do this, I could have followed the rest
+of the kernel with:
+
+struct trace_pid_list {
+	int max;
+	[..]
+};
+
+int *trace_pid_list_alloc(void)
+{
+	struct trace_pid_list *pid_list;
+
+	pid_list = kmalloc(sizeof(*pid_list), GFP_KERNEL);
+
+	[..]
+	return &pid_list->max;
+}
+
+void trace_pid_list_free(int *p)
+{
+	struct trace_pid_list *pid_list = container_of(p, struct pid_list, max);
+
+	[..]
+	free(pid_list);
+}
+
+
+Because we do this all over the kernel. Talk about lying to the compiler ;-)
+
+-- Steve
 
