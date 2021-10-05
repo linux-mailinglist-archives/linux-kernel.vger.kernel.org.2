@@ -2,96 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26B55422C25
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:15:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D9DD422C29
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:16:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235874AbhJEPRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 11:17:06 -0400
-Received: from mail.efficios.com ([167.114.26.124]:55550 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231513AbhJEPRE (ORCPT
+        id S235884AbhJEPSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 11:18:05 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:60900
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235709AbhJEPSD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 11:17:04 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id EE21B38D87B;
-        Tue,  5 Oct 2021 11:15:12 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id kZ6Ruhz5_vwz; Tue,  5 Oct 2021 11:15:12 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 771A738DEA5;
-        Tue,  5 Oct 2021 11:15:12 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 771A738DEA5
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1633446912;
-        bh=F2x+Hi5WGEvzSTS/iYSt+2Kq3IbtXMx7Ua5K43Tf+8Q=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=fWZyv80Hc57O72INVh6dzebvppxNTTpSCWD6RX6UcVz0TCIG7KNJFBruatsJlbExw
-         a8m1LH2syppBinNohKsGX7Let/OXR1df6ma27SCVmH/cJOlyEpjOnjXwgezNfnyBtT
-         Ysfzbmm+lo0m6osH+K1EFWYLctbOmd5Blockkwo7Y10QWtKV+RwuP+99Djm81eXW80
-         KKtj5gqs35x3yuV0hBt3DwAHpdU+xi2TuYGECth+9gfop5OvVk2mBE8x9LiSpqNf43
-         YxLhniS72qCXG3Dxuv3pvMVdS43CxGasiiw7HWsLrHsg5K6ejL9ZnYlk9EpHxqrs7h
-         h/K7AP6Vrbjjg==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id tJJJRKMZDi4F; Tue,  5 Oct 2021 11:15:12 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 5A3A838DE3F;
-        Tue,  5 Oct 2021 11:15:12 -0400 (EDT)
-Date:   Tue, 5 Oct 2021 11:15:12 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Paul <paulmck@linux.vnet.ibm.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        "Joel Fernandes, Google" <joel@joelfernandes.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, rcu <rcu@vger.kernel.org>,
-        netfilter-devel <netfilter-devel@vger.kernel.org>,
-        coreteam@netfilter.org, netdev <netdev@vger.kernel.org>
-Message-ID: <505004021.2637.1633446912223.JavaMail.zimbra@efficios.com>
-In-Reply-To: <20211005094728.203ecef2@gandalf.local.home>
-References: <20211005094728.203ecef2@gandalf.local.home>
-Subject: Re: [RFC][PATCH] rcu: Use typeof(p) instead of typeof(*p) *
+        Tue, 5 Oct 2021 11:18:03 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 9C8753FFEA;
+        Tue,  5 Oct 2021 15:16:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1633446971;
+        bh=QvIq1h9e/NhyWPRySEGTralffxgGmERWgEP2mQB01KM=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=WQCsf16xlonqTKrvB6VvrnLWy3lGEt1zYlmSjqrfimyiIJ602hd1J4b0ZKRgS6qDQ
+         jkFEVgJNKJ4osEMI71osYYHSRCbXMHe4ZyVj9NLD4BElT5na+cUXSgjYoWO9PvkUMV
+         k6BOgCCDtFFVAST9Ej25fe+EWj/enZOzM2h7SUFfSUHXQhcRFQATnl1O4WlIodQ2BO
+         fG+J0BzxztbALuShndTtaY57SntV5nwZfEtgEJ3xV8XA6AbRSyfrQnHtMVwwl1/AAB
+         APV2XlXHgWLMGSadJ9irMSldQbuGISY8qE5mLJHUT1tUBFU4tVdolduxurZi1sMkxs
+         oKZKXcYg/6mgg==
+From:   Colin King <colin.king@canonical.com>
+To:     Corey Minyard <minyard@acm.org>,
+        openipmi-developer@lists.sourceforge.net
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] ipmi: ipmb: Fix off-by-one size check on rcvlen
+Date:   Tue,  5 Oct 2021 16:16:11 +0100
+Message-Id: <20211005151611.305383-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_4156 (ZimbraWebClient - FF92 (Linux)/8.8.15_GA_4156)
-Thread-Topic: Use typeof(p) instead of typeof(*p) *
-Thread-Index: 7dSlbpn4ImaK0wI9+IMWa3C1UuJxjA==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Oct 5, 2021, at 9:47 AM, rostedt rostedt@goodmis.org wrote:
-[...]
-> #define rcu_dereference_raw(p) \
-> ({ \
-> 	/* Dependency order vs. p above. */ \
-> 	typeof(p) ________p1 = READ_ONCE(p); \
-> -	((typeof(*p) __force __kernel *)(________p1)); \
-> +	((typeof(p) __force __kernel)(________p1)); \
-> })
+From: Colin Ian King <colin.king@canonical.com>
 
-AFAIU doing so removes validation that @p is indeed a pointer, so a user might mistakenly
-try to use rcu_dereference() on an integer, and get away with it. I'm not sure we want to
-loosen this check. I wonder if there might be another way to achieve the same check without
-requiring the structure to be declared, e.g. with __builtin_types_compatible_p ?
+There is an off-by-one bounds check on the rcvlen causing a potential
+out of bounds write on iidev->rcvmsg. Fix this by using the >= operator
+on the bounds check rather than the > operator.
 
-Thanks,
+Addresses-Coverity: ("Out-of-bounds write")
+Fixes: 0ba0c3c5d1c1 ("ipmi:ipmb: Add initial support for IPMI over IPMB")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/char/ipmi/ipmi_ipmb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Mathieu
-
+diff --git a/drivers/char/ipmi/ipmi_ipmb.c b/drivers/char/ipmi/ipmi_ipmb.c
+index b10a1fd9c563..77ebec4ed28e 100644
+--- a/drivers/char/ipmi/ipmi_ipmb.c
++++ b/drivers/char/ipmi/ipmi_ipmb.c
+@@ -192,7 +192,7 @@ static int ipmi_ipmb_slave_cb(struct i2c_client *client,
+ 		break;
+ 
+ 	case I2C_SLAVE_WRITE_RECEIVED:
+-		if (iidev->rcvlen > sizeof(iidev->rcvmsg))
++		if (iidev->rcvlen >= sizeof(iidev->rcvmsg))
+ 			iidev->overrun = true;
+ 		else
+ 			iidev->rcvmsg[iidev->rcvlen++] = *val;
 -- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+2.32.0
+
