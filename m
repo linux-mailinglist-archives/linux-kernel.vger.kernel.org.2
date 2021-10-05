@@ -2,104 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF3DC4233E5
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 00:52:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 808684233E9
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 00:55:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236902AbhJEWyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 18:54:31 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:54142 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230113AbhJEWy2 (ORCPT
+        id S236585AbhJEW5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 18:57:09 -0400
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:51140 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236700AbhJEW5I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 18:54:28 -0400
-Date:   Tue, 05 Oct 2021 22:52:34 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1633474356;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1mORWf0172sm+BisG0N1WyeXognkoKrkSS5hBAwMsiw=;
-        b=tH3y/KAeFNmeJJ/GjLKSh/u3X/IMWu+WoXBAby1XAoRV9Lwfs7maTtAAbAXfJT9hZc9ouW
-        ReYmKkP7BuJo9kGue0APLB5LVUlYhjrBGNQa1bx3R66TXyuzs1ppQ+XEQIybzlL7dPQn22
-        vkthMHO7KeG8Rn1dndqWfHNWh7dtmcOIdPJ0ixbYiswon498a0va5k22vsS3/UitrtbW0Z
-        HEF8ZfEjrhr1FOBAbAwfw2I4HA44zrAJVztogVPt1Xrkt5XiCPaBKPmh2eEMO+DYtJLdO+
-        WZpZrtGd7a6Jm6mR+4Zkic6asKHcbzk1+BPQAgH6aN/vTrimncbuTxzM9/Es2A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1633474356;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1mORWf0172sm+BisG0N1WyeXognkoKrkSS5hBAwMsiw=;
-        b=mkb5io2L+ohG9AQZbzQ1gn0bSD0YWtXjwq1Kv39jR6T3lo2Yu1ADuloYiBoxUOKSwi+BVe
-        qj+xoIERAjVTx+Cg==
-From:   "tip-bot2 for Lukas Bulwahn" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/platform/olpc: Correct ifdef symbol to intended
- CONFIG_OLPC_XO15_SCI
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Borislav Petkov <bp@suse.de>, <stable@vger.kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20210803113531.30720-3-lukas.bulwahn@gmail.com>
-References: <20210803113531.30720-3-lukas.bulwahn@gmail.com>
+        Tue, 5 Oct 2021 18:57:08 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 195MtDBx034240;
+        Tue, 5 Oct 2021 17:55:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1633474513;
+        bh=Vqrb8OITY86uTHg7VFPfnXDWjzx60PvTJ572wpmOzZ8=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=dKN66XlYtCc6c3D1rAmx6svJagvbeUp3JQ0cPrb1M7AAVtQRy9mo91kn9fo8XbM5v
+         hlA1HuVQXbZN1SlwRij+PVdieRJ3XH5rVSlkDdZsuyNOsqwYHVeBfMcYX1LVd8DuvT
+         /wBvYuchgi2vhIYJLR6Am8JUnRuvgii4CuS6cor4=
+Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 195MtDDk105984
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 5 Oct 2021 17:55:13 -0500
+Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Tue, 5
+ Oct 2021 17:55:12 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Tue, 5 Oct 2021 17:55:12 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 195MtCpj095350;
+        Tue, 5 Oct 2021 17:55:12 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>, Nishanth Menon <nm@ti.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
+Subject: Re: [PATCH] arm64: dts: ti: Makefile: Collate AM64 platforms together
+Date:   Tue, 5 Oct 2021 17:55:12 -0500
+Message-ID: <163347449345.3031.3768295833456220957.b4-ty@ti.com>
+X-Mailer: git-send-email 2.31.0
+In-Reply-To: <20210915121442.27112-1-nm@ti.com>
+References: <20210915121442.27112-1-nm@ti.com>
 MIME-Version: 1.0
-Message-ID: <163347435478.25758.5867182553865653470.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
+On Wed, 15 Sep 2021 07:14:42 -0500, Nishanth Menon wrote:
+> Make sure that the platforms are grouped together per SoC. This helps
+> keep the Makefile readable as newer platforms get added to the list.
+> 
+> 
 
-Commit-ID:     4f90c68790aaa260fb5852406c28e25018872e45
-Gitweb:        https://git.kernel.org/tip/4f90c68790aaa260fb5852406c28e25018872e45
-Author:        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-AuthorDate:    Tue, 03 Aug 2021 13:35:24 +02:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Wed, 06 Oct 2021 00:46:10 +02:00
+Hi Nishanth Menon,
 
-x86/platform/olpc: Correct ifdef symbol to intended CONFIG_OLPC_XO15_SCI
+I have applied the following to branch ti-k3-dts-next on [1].
+Thank you!
 
-The refactoring in the commit in Fixes introduced an ifdef
-CONFIG_OLPC_XO1_5_SCI, however the config symbol is actually called
-"CONFIG_OLPC_XO15_SCI".
+[1/1] arm64: dts: ti: Makefile: Collate AM64 platforms together
+      commit: e94575e1b05c057895ad36b5cbc539209f2cd64e
 
-Fortunately, ./scripts/checkkconfigsymbols.py warns:
 
-OLPC_XO1_5_SCI
-Referencing files: arch/x86/platform/olpc/olpc.c
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent up the chain during
+the next merge window (or sooner if it is a relevant bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-Correct this ifdef condition to the intended config symbol.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-Fixes: ec9964b48033 ("Platform: OLPC: Move EC-specific functionality out from x86")
-Suggested-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Cc: <stable@vger.kernel.org>
-Link: https://lkml.kernel.org/r/20210803113531.30720-3-lukas.bulwahn@gmail.com
----
- arch/x86/platform/olpc/olpc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-diff --git a/arch/x86/platform/olpc/olpc.c b/arch/x86/platform/olpc/olpc.c
-index ee2beda..1d4a00e 100644
---- a/arch/x86/platform/olpc/olpc.c
-+++ b/arch/x86/platform/olpc/olpc.c
-@@ -274,7 +274,7 @@ static struct olpc_ec_driver ec_xo1_driver = {
- 
- static struct olpc_ec_driver ec_xo1_5_driver = {
- 	.ec_cmd = olpc_xo1_ec_cmd,
--#ifdef CONFIG_OLPC_XO1_5_SCI
-+#ifdef CONFIG_OLPC_XO15_SCI
- 	/*
- 	 * XO-1.5 EC wakeups are available when olpc-xo15-sci driver is
- 	 * compiled in
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+[1] git://git.kernel.org/pub/scm/linux/kernel/git/nmenon/linux.git
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D)/Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+
