@@ -2,50 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D616E423269
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 22:54:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D97542326A
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 22:55:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235957AbhJEU42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 16:56:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58598 "EHLO mail.kernel.org"
+        id S236093AbhJEU5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 16:57:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58742 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230027AbhJEU41 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 16:56:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BDFDC6121F;
-        Tue,  5 Oct 2021 20:54:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1633467276;
-        bh=vrx4nycNQWe2zmH+Kp1Mpj5jptOEbE1oU7OEdqQQccs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=E5hcnzj+39m9VFZG2KWUDcC8VTs69ZGMY/BhDLHVq725LOL7svRszbZU3EtkyYacn
-         kmlxB1l9gYYSsmSMpnkgE7f2H129rVkpJWzWCgBmRDn41RVZo5ZjDxC2l8wt6xLMt/
-         HCMnMX+CsoW0f//3reQDnRYwM1uUQm/UAYxuBq1U=
-Date:   Tue, 5 Oct 2021 13:54:35 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Barry Song <song.bao.hua@hisilicon.com>, stable@vger.kernel.org
-Subject: Re: [PATCH] arm64/hugetlb: fix CMA gigantic page order for non-4K
- PAGE_SIZE
-Message-Id: <20211005135435.341477bb4b50b84202c32450@linux-foundation.org>
-In-Reply-To: <20211005202529.213812-1-mike.kravetz@oracle.com>
-References: <20211005202529.213812-1-mike.kravetz@oracle.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S230027AbhJEU5D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 16:57:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F2D3C6121F;
+        Tue,  5 Oct 2021 20:55:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633467312;
+        bh=5DI92K8fU187OIQjppmogTi3if+UJLwQEk5wETuGMUI=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=osV4iGT9Q4LGi3G+M3FepkWV80kaG6XR0KANRzwcGqAltSsP7pxfyxrsLK4MDWxo8
+         4YK4xmj8F1+cI1nGuM/yvJY5i+FLoLGIF/wWYkVnf9V6pYHCK2wtF1ipAr3665PQct
+         JSXlpJC76AuIWJ4vCwRweMqnj4AILxf8CkQq67lrDkOPyUkz7u8EElFvRQ5/r5lkEL
+         nj6QUmEqBvvGGpy0Uvm1GZjz1hoVkEwxMAWRnpSuFZgGvURYeQfdeEeSTGeFim7yCn
+         nB2C4yCK9MBS6z4Uq1DLMGxgEyXeMDWebbzvVcW+QFjMNg/sLcGjtcpvwV4gnJ5nQp
+         y59oBQDEIeq9Q==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id BBFD65C0921; Tue,  5 Oct 2021 13:55:11 -0700 (PDT)
+Date:   Tue, 5 Oct 2021 13:55:11 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     Valentin Schneider <valentin.schneider@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
+Subject: Re: [PATCH 08/11] rcu/nocb: Limit number of softirq callbacks only
+ on softirq
+Message-ID: <20211005205511.GY880162@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210929221012.228270-1-frederic@kernel.org>
+ <20210929221012.228270-9-frederic@kernel.org>
+ <877dewmy5v.mognet@arm.com>
+ <20211004134227.GC273854@lothringen>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211004134227.GC273854@lothringen>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue,  5 Oct 2021 13:25:29 -0700 Mike Kravetz <mike.kravetz@oracle.com> wrote:
+On Mon, Oct 04, 2021 at 03:42:27PM +0200, Frederic Weisbecker wrote:
+> On Fri, Oct 01, 2021 at 06:51:08PM +0100, Valentin Schneider wrote:
+> > On 30/09/21 00:10, Frederic Weisbecker wrote:
+> > > The current condition to limit the number of callbacks executed in a
+> > > row checks the offloaded state of the rdp. Not only is it volatile
+> > > but it is also misleading: the rcu_core() may well be executing
+> > > callbacks concurrently with NOCB kthreads, and the offloaded state
+> > > would then be verified on both cases. As a result the limit would
+> > > spuriously not apply anymore on softirq while in the middle of
+> > > (de-)offloading process.
+> > >
+> > > Another issue with the condition is that rcu_is_callbacks_kthread()
+> > > doesn't check if we are actually running callbacks from rcuc itself or
+> > > from a softirq interrupting rcuc.
+> > >
+> > 
+> > Doesn't rcutree.use_softirq imply rcuc is never woken, in which case
+> > RCU_SOFTIRQ can't interrupt rcuc (e.g. while run atop an IRQ exit)?
+> > I suppose during the (de)offload sequence we could have RCU_SOFTIRQ running
+> > atop the NOCB CB kthread, but that's not something
+> > rcu_is_callbacks_kthread() detects.
+> 
+> Yes good point, I don't know if rcuc can be ever be interrupted by
+> irq_exit() -> do_softirq() -> rcu_core() itself after all.
+> 
+> Paul can probably confirm your point?
 
-> For non-4K PAGE_SIZE configs, the largest gigantic huge page size is
-> CONT_PMD_SHIFT order.
+This is supposed to be prohibited by the fact that rcutree.use_softirq
+prevents the rcuc kthreads from being spawned in the first place.
 
-What are the user visible effects of this bug?
+That said, I do not recall having thought through the de-offloading
+process with the rcuc kthreads in mind.  There could easily be bugs
+in this case.  (I -think- that it is OK because each rcuc kthread is
+confined to running on the corresponding CPU and because it disables BH.
+But it is the system's opinion that counts.)
 
+> > Also, why is rcu_is_callbacks_kthread() hardcoded to false for
+> > !CONFIG_RCU_BOOST? Isn't it relevant for do_rcu_batch() ratelimiting
+> > regardless (at least before your patches)?
+> 
+> I believe rcuc is only used on CONFIG_RCU_BOOST?
 
+They are independent, though by default RT arranges for rcuc kthreads and
+CONFIG_RCU_BOOST.  Now there are kthreads created for CONFIG_RCU_BOOST,
+but these are the rcub kthreads, and they are not per CPU, but rather
+per leaf rcu_node structure.
+
+							Thanx, Paul
