@@ -2,63 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E725D422AD9
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:20:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A8BA422ADF
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:20:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235469AbhJEOVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 10:21:51 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:47787 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S234899AbhJEOVu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 10:21:50 -0400
-Received: (qmail 622086 invoked by uid 1000); 5 Oct 2021 10:19:58 -0400
-Date:   Tue, 5 Oct 2021 10:19:58 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Nikita Yushchenko <nikita.yoush@cogentembedded.com>,
-        Felipe Balbi <balbi@kernel.org>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Petr Nechaev <petr.nechaev@cogentembedded.com>
-Subject: Re: [PATCH v3] usb: gadget: storage: add support for media larger
- than 2T
-Message-ID: <20211005141958.GA621017@rowland.harvard.edu>
-References: <YUnsSxUERYj/oXTO@kroah.com>
- <20210921145901.11952-1-nikita.yoush@cogentembedded.com>
- <YVwyDsuIT9lZWi2v@kroah.com>
+        id S235831AbhJEOV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 10:21:57 -0400
+Received: from mx.socionext.com ([202.248.49.38]:10312 "EHLO mx.socionext.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235640AbhJEOVz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 10:21:55 -0400
+Received: from unknown (HELO kinkan2-ex.css.socionext.com) ([172.31.9.52])
+  by mx.socionext.com with ESMTP; 05 Oct 2021 23:20:04 +0900
+Received: from mail.mfilter.local (m-filter-2 [10.213.24.62])
+        by kinkan2-ex.css.socionext.com (Postfix) with ESMTP id 4A40B2059034;
+        Tue,  5 Oct 2021 23:20:04 +0900 (JST)
+Received: from 172.31.9.53 (172.31.9.53) by m-FILTER with ESMTP; Tue, 5 Oct 2021 23:20:04 +0900
+Received: from yuzu2.css.socionext.com (yuzu2 [172.31.9.57])
+        by iyokan2.css.socionext.com (Postfix) with ESMTP id 02111B62B7;
+        Tue,  5 Oct 2021 23:20:03 +0900 (JST)
+Received: from [10.212.181.36] (unknown [10.212.181.36])
+        by yuzu2.css.socionext.com (Postfix) with ESMTP id 8BB89B62B3;
+        Tue,  5 Oct 2021 23:20:02 +0900 (JST)
+Subject: Re: [PATCH 3/3] pinctrl: uniphier: Add UniPhier NX1 pinctrl driver
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <1633399920-1537-4-git-send-email-hayashi.kunihiko@socionext.com>
+ <202110052101.CZroR9ku-lkp@intel.com>
+From:   Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Message-ID: <9acc6fe3-ff06-106b-4289-92319d43f100@socionext.com>
+Date:   Tue, 5 Oct 2021 23:20:02 +0900
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YVwyDsuIT9lZWi2v@kroah.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <202110052101.CZroR9ku-lkp@intel.com>
+Content-Type: text/plain; charset=iso-2022-jp; format=flowed; delsp=yes
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05, 2021 at 01:07:58PM +0200, Greg Kroah-Hartman wrote:
-> On Tue, Sep 21, 2021 at 05:59:02PM +0300, Nikita Yushchenko wrote:
-> > This adds support for READ_CAPACITY(16), READ(16) and WRITE(16)
-> > commands, and fixes READ_CAPACITY command to return 0xffffffff if
-> > media size does not fit in 32 bits.
-> > 
-> > This makes f_mass_storage to export a 16T disk array correctly.
-> > 
-> > Signed-off-by: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
-> > ---
-> > v3:
-> > - added this changelog
-> > 
-> > v2:
-> > - fixed call to check_command() for READ_CAPACITY(16)
-> > - fixed alphabetical order of commands in switch statement
-> > - renamed variable, added comments, and fixed formatting, per advices by
-> >   Alan Stern <stern@rowland.harvard.edu>
+
+On 2021/10/05 22:06, kernel test robot wrote:
+> Hi Kunihiko,
 > 
-> Felipe and Alan, any objections to this change?
+> I love your patch! Yet something to improve:
+> 
+> [auto build test ERROR on linusw-pinctrl/devel]
+> [also build test ERROR on robh/for-next v5.15-rc3 next-20210922]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch]
+> 
+> url:
+> https://github.com/0day-ci/linux/commits/Kunihiko-Hayashi/pinctrl-uniphier
+> -Introduce-some-features-and-NX1-support/20211005-101346
+> base:
+> https://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git
+> devel
+> config: powerpc-allyesconfig (attached as .config)
+> compiler: powerpc64-linux-gcc (GCC) 11.2.0
+> reproduce (this is a W=1 build):
+>          wget
+> https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross
+> -O ~/bin/make.cross
+>          chmod +x ~/bin/make.cross
+>          #
+> https://github.com/0day-ci/linux/commit/c68781cbddcc323070eee04896f6f85884
+> 0a60dc
+>          git remote add linux-review https://github.com/0day-ci/linux
+>          git fetch --no-tags linux-review
+> Kunihiko-Hayashi/pinctrl-uniphier-Introduce-some-features-and-NX1-support/
+> 20211005-101346
+>          git checkout c68781cbddcc323070eee04896f6f858840a60dc
+>          # save the attached .config to linux build tree
+>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross
+> ARCH=powerpc
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All errors (new ones prefixed by >>):
+> 
+>>> drivers/pinctrl/uniphier/pinctrl-uniphier-nx1.c:429:27: error:
+> 'usb3_groups' defined but not used [-Werror=unused-const-variable=]
+>       429 | static const char * const usb3_groups[] = {"usb3"};
+>           |                           ^~~~~~~~~~~
+>>> drivers/pinctrl/uniphier/pinctrl-uniphier-nx1.c:428:27: error:
+> 'usb2_groups' defined but not used [-Werror=unused-const-variable=]
+>       428 | static const char * const usb2_groups[] = {"usb2"};
+>           |                           ^~~~~~~~~~~
+>     cc1: all warnings being treated as errors
 
-No objections.  In fact, I already sent my Acked-by for v2 of the 
-patch (which is the same as v3):
+The usb2 and usb3 groups don't exist. I'll remove them in next.
 
-https://marc.info/?l=linux-usb&m=163165151506682&w=2
+Thank you,
 
-Alan Stern
+---
+Best Regards
+Kunihiko Hayashi
