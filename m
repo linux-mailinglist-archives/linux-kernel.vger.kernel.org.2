@@ -2,137 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D79FD4224D7
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 13:18:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E9624224D4
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 13:18:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234084AbhJELUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 07:20:10 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:1456 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232658AbhJELUI (ORCPT
+        id S233975AbhJELUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 07:20:07 -0400
+Received: from mail-ot1-f50.google.com ([209.85.210.50]:37455 "EHLO
+        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232658AbhJELUG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 07:20:08 -0400
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 195BBvJ5028865;
-        Tue, 5 Oct 2021 07:18:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=OyYWH4n+eBIhENYLYr5jBW2Hb+tHjob3ODXbs8wipp8=;
- b=SrrzCRe+5reJ0R/Dh8WhO9AN+drfMuU8H+45ns6xJh0f8AtWlJXFk8y0d1jiNkJgvpWv
- eJYmOR9XoMuB/AOZloy9kM8MCX3jQe2j5wGoawuha5BgTIP3mDmhfiQXJujiy63aUnXW
- v2k70N6Fx/GkLMHpwzCY8/sMXcZA7nh3jjmcy1oXGDPZgj2lPFCAEq0b2TIjxmoiGAT9
- d1GbEYlHt/b+bZpojdq1oSH4FH+o3AVrFi5JU0BnDGCuZeYWTqnqNrKaYI1Ci1XIxir1
- EoAR+oQvL3oe+bpiOXebycnKt9YIT7A5SToMgr4zPr8TPTYebXaJhluvpMQgDJtvT6tV oA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bgnm904s7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Oct 2021 07:18:15 -0400
-Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 195BDNIR031914;
-        Tue, 5 Oct 2021 07:18:15 -0400
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bgnm904rb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Oct 2021 07:18:15 -0400
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 195BCbg7006291;
-        Tue, 5 Oct 2021 11:18:13 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma04fra.de.ibm.com with ESMTP id 3bef29yb53-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Oct 2021 11:18:13 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 195BCnR130998822
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 5 Oct 2021 11:12:49 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 247A1AE063;
-        Tue,  5 Oct 2021 11:18:09 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 07067AE045;
-        Tue,  5 Oct 2021 11:18:08 +0000 (GMT)
-Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.45.119])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Tue,  5 Oct 2021 11:18:07 +0000 (GMT)
-Date:   Tue, 5 Oct 2021 13:17:51 +0200
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Cornelia Huck <cohuck@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Xie Yongji <xieyongji@bytedance.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, markver@us.ibm.com,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-s390@vger.kernel.org, virtio-dev@lists.oasis-open.org,
-        Halil Pasic <pasic@linux.ibm.com>
-Subject: Re: [virtio-dev] Re: [RFC PATCH 1/1] virtio: write back features
- before verify
-Message-ID: <20211005131751.53175b10.pasic@linux.ibm.com>
-In-Reply-To: <20211004160005-mutt-send-email-mst@kernel.org>
-References: <87fstm47no.fsf@redhat.com>
-        <20211002141351-mutt-send-email-mst@kernel.org>
-        <20211003070030.658fc94e.pasic@linux.ibm.com>
-        <20211003021027-mutt-send-email-mst@kernel.org>
-        <20211003032253-mutt-send-email-mst@kernel.org>
-        <87ee912e45.fsf@redhat.com>
-        <20211004083455-mutt-send-email-mst@kernel.org>
-        <878rz83lx0.fsf@redhat.com>
-        <20211004110152-mutt-send-email-mst@kernel.org>
-        <87zgro23r1.fsf@redhat.com>
-        <20211004160005-mutt-send-email-mst@kernel.org>
-Organization: IBM
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Tue, 5 Oct 2021 07:20:06 -0400
+Received: by mail-ot1-f50.google.com with SMTP id r43-20020a05683044ab00b0054716b40005so25375835otv.4
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 04:18:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yDmU0VgBA9vOzJ9RSmX1fbVOE1mv6Y0iue/bMC74Urs=;
+        b=WJZ/GU+smu4dvgIgYp5MRehFUFpuDSggEGvTPpdy0O0goLMuen0Aj9shj+ngLniuN6
+         9qppTEj/iW3komADw6HWtDPpTUqQVTePA0OgluzEW4Qp3W88BMvVYidhZJf0xH3nzjad
+         V4GmjXldbmnBLj7PD5j2TXSoNoPOzfBe3xdAPDcz2BL1AuL1Hlebv6PAdZG43mEqNYSg
+         3uPPn0wxcwyeZsyr2qnEFfE94YS62SBOufq7AY2V9FKG9+FP/l6oIvGWTSC1CHKb8L1m
+         3RcD4lU04aB674jzn9WBTLg3Ow5P5h3XhOdMku8vmzAlCldAJazK3DfXVx9xQ5uFbKrW
+         hsRw==
+X-Gm-Message-State: AOAM532oABS56GsXhGwwfmnfRz6FOKQZbvgBiQSaj4PXL95YvWfqDEhB
+        fs+81/Nsb0q/T18yie5BSxz+3AdhfwCweHcnxDgQQFkA
+X-Google-Smtp-Source: ABdhPJz7PCntfDMd9boPlYXoBVWeGh5ELMLfEfs7qyDGV2HcVHpZYQPAGFt1AeTF0eHhYncVvsuBvQrLZo9ArVbpJqI=
+X-Received: by 2002:a05:6830:2784:: with SMTP id x4mr13878832otu.86.1633432695908;
+ Tue, 05 Oct 2021 04:18:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 9gaiqSXmPn_x9AjMuITDUyXUKN9UZVPY
-X-Proofpoint-ORIG-GUID: NtvF1X0oiMGcW3bFKnAES-ppYgqouYHn
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-10-04_05,2021-10-04_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
- lowpriorityscore=0 spamscore=0 phishscore=0 impostorscore=0 mlxscore=0
- malwarescore=0 mlxlogscore=999 adultscore=0 priorityscore=1501
- clxscore=1011 suspectscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2109230001 definitions=main-2110050065
+References: <20210930085714.2057460-1-yangyingliang@huawei.com>
+In-Reply-To: <20210930085714.2057460-1-yangyingliang@huawei.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 5 Oct 2021 13:17:59 +0200
+Message-ID: <CAJZ5v0hYrU+wRLPE_BaAL_RyVxJDdFjKJUb+tZqBTWaQNet22A@mail.gmail.com>
+Subject: Re: [PATCH] driver core: Fix possible memory leak in device_link_add()
+To:     Yang Yingliang <yangyingliang@huawei.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Saravana Kannan <saravanak@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 4 Oct 2021 16:01:12 -0400
-"Michael S. Tsirkin" <mst@redhat.com> wrote:
+On Thu, Sep 30, 2021 at 10:52 AM Yang Yingliang
+<yangyingliang@huawei.com> wrote:
+>
+> I got memory leak as follows:
+>
+> unreferenced object 0xffff88801f0b2200 (size 64):
+>   comm "i2c-lis2hh12-21", pid 5455, jiffies 4294944606 (age 15.224s)
+>   hex dump (first 32 bytes):
+>     72 65 67 75 6c 61 74 6f 72 3a 72 65 67 75 6c 61  regulator:regula
+>     74 6f 72 2e 30 2d 2d 69 32 63 3a 31 2d 30 30 31  tor.0--i2c:1-001
+>   backtrace:
+>     [<00000000bf5b0c3b>] __kmalloc_track_caller+0x19f/0x3a0
+>     [<0000000050da42d9>] kvasprintf+0xb5/0x150
+>     [<000000004bbbed13>] kvasprintf_const+0x60/0x190
+>     [<00000000cdac7480>] kobject_set_name_vargs+0x56/0x150
+>     [<00000000bf83f8e8>] dev_set_name+0xc0/0x100
+>     [<00000000cc1cf7e3>] device_link_add+0x6b4/0x17c0
+>     [<000000009db9faed>] _regulator_get+0x297/0x680
+>     [<00000000845e7f2b>] _devm_regulator_get+0x5b/0xe0
+>     [<000000003958ee25>] st_sensors_power_enable+0x71/0x1b0 [st_sensors]
+>     [<000000005f450f52>] st_accel_i2c_probe+0xd9/0x150 [st_accel_i2c]
+>     [<00000000b5f2ab33>] i2c_device_probe+0x4d8/0xbe0
+>     [<0000000070fb977b>] really_probe+0x299/0xc30
+>     [<0000000088e226ce>] __driver_probe_device+0x357/0x500
+>     [<00000000c21dda32>] driver_probe_device+0x4e/0x140
+>     [<000000004e650441>] __device_attach_driver+0x257/0x340
+>     [<00000000cf1891b8>] bus_for_each_drv+0x166/0x1e0
+>
+> When device_register() returns an error, the name allocated in dev_set_name()
+> will be leaked, the put_device() should be used instead of kfree() to give up
+> the device reference, then the name will be freed in kobject_cleanup() and the
+> references of consumer and supplier will be decreased in device_link_release_fn().
+>
+> Fixes: 287905e68dd2 ("driver core: Expose device link details in sysfs")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 
-> > 
-> > Ok, so what about something like
-> > 
-> > "If FEATURES_OK is not set, the driver MAY change the set of features it
-> > accepts."
-> > 
-> > in the device initialization section?  
-> 
-> Maybe "as long as". However Halil implied that some features are not
-> turned off properly if that happens. Halil could you pls provide
-> some examples?
+Reviewed-by: Rafael J. Wysocki <rafael@kernel.org>
 
-
-
-static void virtio_net_set_features(VirtIODevice *vdev, uint64_t features)
-{
-...
-    if (virtio_has_feature(features, VIRTIO_NET_F_STANDBY)) {
-        qapi_event_send_failover_negotiated(n->netclient_name);
-        qatomic_set(&n->failover_primary_hidden, false);
-        failover_add_primary(n, &err);
-        if (err) {
-            warn_report_err(err);
-        }
-    }
-}
-
-This is probably the only one in QEMU. Back then I stopped looking
-after the first hit.
-
-Regards,
-Halil
+> ---
+>  drivers/base/core.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+>
+> diff --git a/drivers/base/core.c b/drivers/base/core.c
+> index e65dd803a453..4a123e58711f 100644
+> --- a/drivers/base/core.c
+> +++ b/drivers/base/core.c
+> @@ -809,9 +809,7 @@ struct device_link *device_link_add(struct device *consumer,
+>                      dev_bus_name(supplier), dev_name(supplier),
+>                      dev_bus_name(consumer), dev_name(consumer));
+>         if (device_register(&link->link_dev)) {
+> -               put_device(consumer);
+> -               put_device(supplier);
+> -               kfree(link);
+> +               put_device(&link->link_dev);
+>                 link = NULL;
+>                 goto out;
+>         }
+> --
+> 2.25.1
+>
