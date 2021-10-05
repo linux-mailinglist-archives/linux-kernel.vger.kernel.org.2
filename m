@@ -2,101 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57FF6422671
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 14:27:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0008B422668
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 14:26:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234894AbhJEM2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 08:28:48 -0400
-Received: from mail-ot1-f48.google.com ([209.85.210.48]:44631 "EHLO
-        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234732AbhJEM2j (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S234805AbhJEM2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 5 Oct 2021 08:28:39 -0400
-Received: by mail-ot1-f48.google.com with SMTP id h9-20020a9d2f09000000b005453f95356cso25595567otb.11;
-        Tue, 05 Oct 2021 05:26:49 -0700 (PDT)
+Received: from mail-oi1-f181.google.com ([209.85.167.181]:38779 "EHLO
+        mail-oi1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234732AbhJEM2d (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 08:28:33 -0400
+Received: by mail-oi1-f181.google.com with SMTP id w190so858693oif.5;
+        Tue, 05 Oct 2021 05:26:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=w/FK/ML78245XHAIchDVDOq8/sxzIBzb2YgmaSlt68M=;
-        b=BNmj+N/ixDvm9UXW0KHDpUe09qO1ZqlJseu17K0pNM7Hp+6EjLtsyRxsApGJltf8iQ
-         Scjv2h8eBupi9FmJoBJuG1vOnyQRKQaBRCshZw80Yo2tYQCWzwX6BPWaod46+2HQc9hL
-         VQIaogH66m+Wu1LTrXERb0eANEDHtVcKJckyACCZz3OVffv8O7Y6YRZ+HQazrsEqi71I
-         0GtBHIW1XLl6DIfr9BdJBZmbJpTaeneuUWDVk5Fl6jWczZWf5kUCS4zk5bP+wBnGUJVt
-         7JgAfl0EtECVSesQ9l1VJYay0Es1m/zDNX2WOhAe99zxOMODMcEDR2OKU8n0sFAi3bkw
-         SLnw==
-X-Gm-Message-State: AOAM533XquHuVScvQaos+QVpBzYiPJy1c/QqTjBXaFwOmmE6IEaOBSoA
-        QZ8vEhTPIrldL/yb/bhW9g==
-X-Google-Smtp-Source: ABdhPJysfIpY+AlZGPd1aq069xpRzqdiEWvovmqueORSOfYiFbk/wJ4mm+HHZh3UGFbHFe4HlLF1Mg==
-X-Received: by 2002:a05:6830:1bc6:: with SMTP id v6mr13950334ota.299.1633436808863;
-        Tue, 05 Oct 2021 05:26:48 -0700 (PDT)
+        bh=yIgUhu7G6czXFO6ebeJdfMc193Tu4/8LB2OpU0TT3Ns=;
+        b=3UoFEa7CDUSup8u2giBbzjUMT2leQkn3rxYFaIGKyRuh9KMcx3yS6NUvi6TTpHAsNo
+         mI182Q7v25UoOyRBzT6v7EGiwz8wJzyXho4lo04nK+7xX+RbOXlVzTngmwMeI6MGYLJB
+         5yVPPIHlyLl5AFFIO587/uPz8qfKh3jcZsq6dJjrEWeq5kyrJrNAad8l1+LAnGqGWEEQ
+         bTxKnIIe4LoFrXiaFb32LYEkzj8+W7uCW/qCNol2bgLUzB+PJyHUBUuM3anBfcg2e6di
+         QncvscylB11N7nTT6gxk+MOx6MQmdok4zsCaDP0IAunw358P5B4sX/bwjgLnziV8/Sao
+         cP8A==
+X-Gm-Message-State: AOAM532vW5UZmWHAVqftBvUW/Er1JVrlEJx6R5ze1aQUJopcnt8QZRBu
+        Emu6kBO57lEMHHHvWh79XKzOQT14uw==
+X-Google-Smtp-Source: ABdhPJyG5fdOJLbVr22TivKYurISzS9pyWYFd8K412AFAxNwLKZMEoRo8Zed3HzbfPI5Sw5Ua+torA==
+X-Received: by 2002:a05:6808:1912:: with SMTP id bf18mr2292547oib.118.1633436803179;
+        Tue, 05 Oct 2021 05:26:43 -0700 (PDT)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id h26sm3505109otn.67.2021.10.05.05.26.47
+        by smtp.gmail.com with ESMTPSA id e12sm3528754otq.4.2021.10.05.05.26.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Oct 2021 05:26:48 -0700 (PDT)
-Received: (nullmailer pid 3226814 invoked by uid 1000);
+        Tue, 05 Oct 2021 05:26:42 -0700 (PDT)
+Received: (nullmailer pid 3226823 invoked by uid 1000);
         Tue, 05 Oct 2021 12:26:38 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Maulik Shah <mkshah@codeaurora.org>
-Cc:     devicetree@vger.kernel.org, bjorn.andersson@linaro.org,
-        evgreen@chromium.org, agross@kernel.org, swboyd@chromium.org,
-        linux-arm-msm@vger.kernel.org, Lina Iyer <ilina@codeaurora.org>,
-        dianders@chromium.org,
-        Mahesh Sivasubramanian <msivasub@codeaurora.org>,
-        mka@chromium.org, rnayak@codeaurora.org, linux@roeck-us.net,
-        lsrao@codeaurora.org, linux-kernel@vger.kernel.org
-In-Reply-To: <1633425065-7927-2-git-send-email-mkshah@codeaurora.org>
-References: <1633425065-7927-1-git-send-email-mkshah@codeaurora.org> <1633425065-7927-2-git-send-email-mkshah@codeaurora.org>
-Subject: Re: [PATCH v10 1/5] dt-bindings: Introduce SoC sleep stats bindings
+To:     Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <1633399842-1402-3-git-send-email-hayashi.kunihiko@socionext.com>
+References: <1633399842-1402-1-git-send-email-hayashi.kunihiko@socionext.com> <1633399842-1402-3-git-send-email-hayashi.kunihiko@socionext.com>
+Subject: Re: [PATCH 2/3] dt-bindings: reset: uniphier: Add NX1 reset control binding
 Date:   Tue, 05 Oct 2021 07:26:38 -0500
-Message-Id: <1633436798.669118.3226812.nullmailer@robh.at.kernel.org>
+Message-Id: <1633436798.721139.3226822.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 05 Oct 2021 14:41:01 +0530, Maulik Shah wrote:
-> From: Mahesh Sivasubramanian <msivasub@codeaurora.org>
+On Tue, 05 Oct 2021 11:10:41 +0900, Kunihiko Hayashi wrote:
+> Update reset controller binding document for UniPhier NX1 SoC.
 > 
-> Add device binding documentation for Qualcomm Technologies, Inc. (QTI)
-> SoC sleep stats driver. The driver is used for displaying SoC sleep
-> statistic maintained by Always On Processor or Resource Power Manager.
-> 
-> Cc: devicetree@vger.kernel.org
-> Signed-off-by: Mahesh Sivasubramanian <msivasub@codeaurora.org>
-> Signed-off-by: Lina Iyer <ilina@codeaurora.org>
-> Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+> Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
 > ---
->  .../bindings/soc/qcom/soc-sleep-stats.yaml         | 47 ++++++++++++++++++++++
->  1 file changed, 47 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/soc/qcom/soc-sleep-stats.yaml
+>  .../devicetree/bindings/reset/socionext,uniphier-glue-reset.yaml       | 1 +
+>  Documentation/devicetree/bindings/reset/socionext,uniphier-reset.yaml  | 3 +++
+>  2 files changed, 4 insertions(+)
 > 
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+Running 'make dtbs_check' with the schema in this patch gives the
+following warnings. Consider if they are expected or the schema is
+incorrect. These may not be new warnings.
 
-yamllint warnings/errors:
+Note that it is not yet a requirement to have 0 warnings for dtbs_check.
+This will change in the future.
 
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/soc/qcom/soc-sleep-stats.example.dt.yaml: memory@c3f0000: 'device_type' is a required property
-	From schema: /usr/local/lib/python3.8/dist-packages/dtschema/schemas/memory.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/soc/qcom/soc-sleep-stats.example.dt.yaml: memory@4690000: 'device_type' is a required property
-	From schema: /usr/local/lib/python3.8/dist-packages/dtschema/schemas/memory.yaml
+Full log is available here: https://patchwork.ozlabs.org/patch/1536452
 
-doc reference errors (make refcheckdocs):
 
-See https://patchwork.ozlabs.org/patch/1536587
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
+reset: 'resets' does not match any of the regexes: 'pinctrl-[0-9]+'
+	arch/arm64/boot/dts/socionext/uniphier-ld11-global.dt.yaml
+	arch/arm64/boot/dts/socionext/uniphier-ld11-ref.dt.yaml
 
