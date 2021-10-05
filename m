@@ -2,88 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 647E14224C1
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 13:13:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E3984224C3
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 13:13:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233998AbhJELPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S234307AbhJELPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 07:15:25 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:6386 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234165AbhJELPW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 5 Oct 2021 07:15:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47128 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232658AbhJELPV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 07:15:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B9D3161251;
-        Tue,  5 Oct 2021 11:13:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633432410;
-        bh=MP0zBtemtkQdqL8OmFU92hKaTF3Fwa0EJ8Ni7xN2MQQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=p5SeEDKNWmorB1aERVWlJrUJFNy/bgmsyZlYjmB3i1z8diKCJrkTeRRXXsDR1DVom
-         vA/MJE/AFcPSB7aY81e7aJIyYyDZYDHj7qs+vd91HSgxU0eKGET9tmmoJ6i3ANm9FM
-         jdxd8XKbujTchHiCgeDtVOAdYyH6EpZRsbfZRwWkq55cn3sjzFFM3cQdj4Aqbj94C/
-         omvocXtmtHPl9IdL5aCe5H/JJr8e1Njtxj9H/+gIxaSAOsgabAiB3+hwOuZYIus8J0
-         /7CIUdFgGFw4g1Rx+dsQCOAipwswntmJVk///9p/yAakrUZ7zUuNqOizGigR12U11B
-         1AbpqgAb0iRow==
-Received: by mail-wr1-f41.google.com with SMTP id t8so36773293wri.1;
-        Tue, 05 Oct 2021 04:13:30 -0700 (PDT)
-X-Gm-Message-State: AOAM5321zMsOUB6n9ABYt9RYXqEqIvoJcdgO5bDcnBSpnVn93vYRablm
-        YxYV5JxiKgMirfGB7ONVvZLRhFsv9xZSB69h5S4=
-X-Google-Smtp-Source: ABdhPJxm8Hkv+U2qTgwd7JgG4bmf7LJ55i18N0rZnyQafyKdjpcuy+trai2GX3XtqF4Cbb2Tz/frlo0hsiDd1SJyDKE=
-X-Received: by 2002:adf:a3da:: with SMTP id m26mr965033wrb.336.1633432409306;
- Tue, 05 Oct 2021 04:13:29 -0700 (PDT)
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 195A1XYJ029266;
+        Tue, 5 Oct 2021 07:13:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=SOXWXcwMIz8uBqfL4uXH929m8bQsgVNK65Ah6LpznGQ=;
+ b=OIKqNZk0wkSh5HhidfqCK13cQzLMFNTWv2TOyUV9C1pW7lTvwzFrver6cGA6sFOycDeH
+ fgtKQfol11MHusUCHKeLDd/1OKbuX9QU4wFCFH5lnx9D9XM1fRghIL1LgNR9lSj/VaUn
+ ixms0lcUSBTluQZDPwbvWiYQxCOfNULfzHysoVGh1HHX0/kfPkhEEIjGTHLTn/iOJibl
+ aULu2hNeQcwj3ZfoLjKiAv+bvBAaownu/pd89bFwA/n/x7V9t7ZlDyxUyVBYja5ApozP
+ M812RAYXZg0F1706U638VIoHi2QWOxGaBUX8PETWYkGwaedpoHG1mx3tEMt2hon21++T BQ== 
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bgmkeshfq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Oct 2021 07:13:29 -0400
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 195BD0Sj003217;
+        Tue, 5 Oct 2021 11:13:27 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma06fra.de.ibm.com with ESMTP id 3beepjfevq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Oct 2021 11:13:27 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 195B86r243057486
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 5 Oct 2021 11:08:06 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6F38F42041;
+        Tue,  5 Oct 2021 11:13:23 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2E8CE42042;
+        Tue,  5 Oct 2021 11:13:23 +0000 (GMT)
+Received: from osiris (unknown [9.145.46.219])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Tue,  5 Oct 2021 11:13:23 +0000 (GMT)
+Date:   Tue, 5 Oct 2021 13:13:21 +0200
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Roberto Sassu <roberto.sassu@huawei.com>
+Cc:     gor@linux.ibm.com, borntraeger@de.ibm.com,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] s390: Fix strrchr() implementation
+Message-ID: <YVwzUbHcZkHQT0K4@osiris>
+References: <20211005072621.53500-1-roberto.sassu@huawei.com>
 MIME-Version: 1.0
-References: <20210927142258.1863321-1-arnd@kernel.org> <YVwxxywC5iSGSaXM@kroah.com>
-In-Reply-To: <YVwxxywC5iSGSaXM@kroah.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Tue, 5 Oct 2021 13:13:13 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3nmutn8ZHQkzH99mht9RPAUCTOvqTfEGPUKLoeqTs-pA@mail.gmail.com>
-Message-ID: <CAK8P3a3nmutn8ZHQkzH99mht9RPAUCTOvqTfEGPUKLoeqTs-pA@mail.gmail.com>
-Subject: Re: [PATCH] [RESEND] usb: xhci: tegra: mark PM functions as __maybe_unused
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Mathias Nyman <mathias.nyman@intel.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        JC Kuo <jckuo@nvidia.com>, Arnd Bergmann <arnd@arndb.de>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        USB list <linux-usb@vger.kernel.org>,
-        "open list:TEGRA ARCHITECTURE SUPPORT" <linux-tegra@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211005072621.53500-1-roberto.sassu@huawei.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 8w7pAMI7f5L0qqi08dJmVxy8k8iKjIwo
+X-Proofpoint-ORIG-GUID: 8w7pAMI7f5L0qqi08dJmVxy8k8iKjIwo
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-10-04_05,2021-10-04_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
+ impostorscore=0 mlxlogscore=946 clxscore=1011 adultscore=0
+ priorityscore=1501 bulkscore=0 mlxscore=0 spamscore=0 malwarescore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110050065
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 5, 2021 at 1:07 PM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Mon, Sep 27, 2021 at 04:22:52PM +0200, Arnd Bergmann wrote:
-> > From: Arnd Bergmann <arnd@arndb.de>
-> >
-> > The added #ifdefs in the PM rework were almost correct, but still
-> > cause warnings in some randconfig builds:
-> >
-> > drivers/usb/host/xhci-tegra.c:2147:12: error: 'tegra_xusb_resume' defined but not used [-Werror=unused-function]
-> >  2147 | static int tegra_xusb_resume(struct device *dev)
-> >       |            ^~~~~~~~~~~~~~~~~
-> > drivers/usb/host/xhci-tegra.c:2105:12: error: 'tegra_xusb_suspend' defined but not used [-Werror=unused-function]
-> >  2105 | static int tegra_xusb_suspend(struct device *dev)
-> >
-> > Replace the #ifdef checks with simpler __maybe_unused annotations to
-> > reliably shut up these warnings.
-> >
-> > Fixes: d64d362f1d8b ("usb: xhci: tegra: Enable ELPG for runtime/system PM")
->
-> What tree does this commit come in from?  I don't see it in my usb tree
-> :(
+On Tue, Oct 05, 2021 at 09:26:21AM +0200, Roberto Sassu wrote:
+> Access the string at len - 1 instead of len.
+> 
+> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> ---
+>  arch/s390/lib/string.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/arch/s390/lib/string.c b/arch/s390/lib/string.c
+> index cfcdf76d6a95..162a391788ad 100644
+> --- a/arch/s390/lib/string.c
+> +++ b/arch/s390/lib/string.c
+> @@ -261,12 +261,12 @@ char *strrchr(const char *s, int c)
+>  {
+>         size_t len = __strend(s) - s;
+>  
+> -       if (len)
+> -	       do {
+> -		       if (s[len] == (char) c)
+> -			       return (char *) s + len;
+> -	       } while (--len > 0);
+> -       return NULL;
+> +	if (len)
+> +		do {
+> +			if (s[len - 1] == (char) c)
+> +				return (char *) s + len - 1;
+> +		} while (--len > 0);
+> +	return NULL;
 
-I don't know, I originally created the patch back in April when the
-problem first
-showed up in my randconfig build tree, and picked up the commit now when I saw
-the bug still exists in v5.15-rc.
+You missed to tell what this is supposed to fix. The patch however is
+incorrect: the terminating null byte is considered part of the
+string. With your patch strrchr(somestring, 0) would not work
+correctly anymore.
 
-Apparently the commit ID that has made it into mainline through your tree was
-971ee247060d ("usb: xhci: tegra: Enable ELPG for runtime/system PM").
-I'll resend with that reference fixed.
-
-      Arnd
+However our strrchr implementation is indeed broken, since for an
+empty string and searching for the null byte would incorrectly return
+NULL. Luckily there is not a single invocation in the kernel which
+doing that.
