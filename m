@@ -2,53 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1DBE421E8D
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 08:00:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 190B2421E93
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 08:01:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232300AbhJEGCT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 02:02:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42868 "EHLO mail.kernel.org"
+        id S232334AbhJEGDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 02:03:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43058 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231688AbhJEGCQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 02:02:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 918AD61528;
-        Tue,  5 Oct 2021 06:00:25 +0000 (UTC)
+        id S232108AbhJEGDV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 02:03:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 92CD361506;
+        Tue,  5 Oct 2021 06:01:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633413626;
-        bh=Bk6/mMhROwyPtlCFI1g+JgM6tv/dp/NyH0OOXI/lBho=;
+        s=k20201202; t=1633413691;
+        bh=8WQC+dzyl2tjTbCuTZwAxt3vQ3mPoLMuElaefonyfAY=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DJSX4zYjDBbp8/10bx8IAfbnPMwtUGgvURtmJxjZG+NwAe74zh6Vc0lAjIUN6wVhB
-         QUAJgLhCVjtwWY1lllwDf9WAUgrMr53FpuN2K8q3+aSL95HRS0iB8zfI103Sr2GABC
-         MZFmaDlKY0/HKdQuuGBRwdP1pKHdK0y7NgsYnY/eOpKDb+czJP7sAxKrTpjeH7LtuO
-         7869+AruZ3jtaf0EVVonx9nQCkBtYfkzJC6smBSpxrNbB7Piyepg9NkWyAvWoNeKHZ
-         Tz5HZlSGpm18KdHA5hhnWjf56coN0PqlMQVVvccjrzbrwp/YcAdUO3afO9ayJrWf3A
-         xf1rOuHVmOHhw==
-Date:   Tue, 5 Oct 2021 14:00:22 +0800
+        b=a31KrGQAWEDUESVLtDZcnrbZoaJM95PzWC4EcMS76iGdwpNCsckN0HWHDZe+RSJuX
+         8e5TJ249gyZAGkLjuHWBfIfmxMKOls0pZtojJkJvfW4EKc2i58vVTOJgaYtjGV0vPZ
+         o6/fbQBk6u7hBq3g1P/xn6RaD3PFdDydeqp2Kzv2gFft6hypWZPZqq5Wj+U1tFl/mZ
+         BhR/SZusSUS9RUXEtnYZJ+jYvJqkNsP76G0zIPUXHx6kdwNeiR0i1YiBLib4jOgYoY
+         g+LHT+F6WIXorKg8P0SNgZlWyHCwsYIZ+UJTDAG498NmJ6i8QzeUfK4edpvVSdwCnw
+         fA6cdM2LL3jjQ==
+Date:   Tue, 5 Oct 2021 14:01:27 +0800
 From:   Shawn Guo <shawnguo@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Li Yang <leoyang.li@nxp.com>, linux-arm-kernel@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: dts: freescale: Fix 'interrupt-map' parent
- address cells
-Message-ID: <20211005060021.GQ20743@dragon>
-References: <20210928192154.1841889-1-robh@kernel.org>
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>, Li Yang <leoyang.li@nxp.com>
+Subject: Re: [PATCH devicetree] arm64: dts: ls1028a: mark internal links
+ between Felix and ENETC as capable of flow control
+Message-ID: <20211005060126.GR20743@dragon>
+References: <20210929115226.1383925-1-vladimir.oltean@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210928192154.1841889-1-robh@kernel.org>
+In-Reply-To: <20210929115226.1383925-1-vladimir.oltean@nxp.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 02:21:54PM -0500, Rob Herring wrote:
-> The 'interrupt-map' in several Layerscape SoCs is malformed. The
-> '#address-cells' size of the parent interrupt controller (the GIC) is not
-> accounted for.
+On Wed, Sep 29, 2021 at 02:52:26PM +0300, Vladimir Oltean wrote:
+> The internal Ethernet switch suffers from erratum A-050484 ("Ethernet
+> flow control not functional on L2 switch NPI port when XFH is used").
+> XFH stands for "Extraction Frame Header" - which basically means the
+> default "ocelot" DSA tagging protocol.
 > 
-> Cc: Shawn Guo <shawnguo@kernel.org>
-> Cc: Li Yang <leoyang.li@nxp.com>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Signed-off-by: Rob Herring <robh@kernel.org>
+> However, the switch supports one other tagging protocol - "ocelot-8021q",
+> and this is not subject to the erratum above. So describe the hardware
+> ability to pass PAUSE frames in the device tree, and let the driver
+> figure out whether it should use flow control on the CPU port or not,
+> depending on whether the "ocelot" or "ocelot-8021q" tagging protocol is
+> being used.
+> 
+> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
 
 Applied, thanks!
