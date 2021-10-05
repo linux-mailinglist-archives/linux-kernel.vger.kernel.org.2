@@ -2,240 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ED8F422BEB
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:10:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0789422BF3
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:11:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233821AbhJEPMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 11:12:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27867 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229626AbhJEPMH (ORCPT
+        id S235600AbhJEPMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 11:12:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55216 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235533AbhJEPMs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 11:12:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633446616;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=0OwdoLnukRcDnr5f8N5G60U0CJNS0NMG5GG625pv56Q=;
-        b=C90HHqsIdzeCWIKxsO/iekuEvAsYTHIp7Eopw5DDfNaMY0C3x8a/jsUztcrfhMPBAXnhJ5
-        MDMt6Qm314ZClBR+yb0U4v/Gc4Gk4HH42i4vZNJEPzP1BzQRUrNUsS6f2T0/jpqNJP3Hwa
-        0zjRmEJ+jZDAkM1VSV0gjIQRxXk0ZuY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-581-bOPZ7l1HMP6aCh_QyAcvyQ-1; Tue, 05 Oct 2021 11:10:12 -0400
-X-MC-Unique: bOPZ7l1HMP6aCh_QyAcvyQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 541491922962;
-        Tue,  5 Oct 2021 15:10:11 +0000 (UTC)
-Received: from x1.localdomain (unknown [10.39.192.128])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 985B160C81;
-        Tue,  5 Oct 2021 15:09:57 +0000 (UTC)
-From:   Hans de Goede <hdegoede@redhat.com>
-To:     Bjorn Helgaas <bhelgaas@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>, linux-pci@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] x86/PCI: Add pci=no_e820 cmdline option to ignore E820 reservations for bridge windows
-Date:   Tue,  5 Oct 2021 17:09:56 +0200
-Message-Id: <20211005150956.303707-1-hdegoede@redhat.com>
+        Tue, 5 Oct 2021 11:12:48 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C2FEC061749
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 08:10:58 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id ls14-20020a17090b350e00b001a00e2251c8so1187286pjb.4
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 08:10:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+QnKdMD67+rQVIo2b0/8Hr/i0O4OC/30heYtQ6dc/js=;
+        b=MWGHadB5myjzG7hi7dEWEPb8pOcALr2pFYDh0ztFd5+60GiynIznraGmKCFLG9e1J/
+         60NqPZOBhULuBWXwnucxJ/AWgtP8nKcV9vTLWvlpBYy6FbdRgHG+xKzEJFloyTLEUIs4
+         QzOxy+kLAS/LJ3leSqgLOjJlx23/8zJ9MRXAs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+QnKdMD67+rQVIo2b0/8Hr/i0O4OC/30heYtQ6dc/js=;
+        b=esEOGLVSm0jNxj494GtbcucOsNTv0/bxLeaNG/7+wMfNkyXnbRbsaJk2NZOOmUZNsP
+         PsGBc65z2Xww3VOSc+uhETXdNTi1TC4DJFjXLKioAMOb9EEB6TUyKJ43S6AlwLj8gavp
+         XvtcsHBNs/jAoZ05Z7gZAwqbDmm6b1SXrhtxnu5Vg1iT43e8NMX29lwvR8NclqkmVPBW
+         06ErG1MRU8SUQSwrwxwTrjGeMZlaYAsYU57Jw6Hcfs+J+5hPQPIrRteAnJy64wCoj8Vm
+         OgZYKmYcPdBeLWSYF5nCYOhQftigEd0rMHbvdv0puUSSb6s0oL/pb3d6tv0WljkJ6PHK
+         xT9Q==
+X-Gm-Message-State: AOAM531lKJt1DmR5EbIKztZHPpsWIcXSfdWhYmj5rARUG5Yk9D5nivNa
+        akSLiXsq7hE6OXuhIZ32EO6iwg==
+X-Google-Smtp-Source: ABdhPJzSVCahQti09JKEx8hW7Dg7wwwmo3seeZ5OZCLdMc6jbjcG482M1ZiVw+8V4Fx/bV899Alhjw==
+X-Received: by 2002:a17:90a:1a4c:: with SMTP id 12mr4467161pjl.89.1633446657910;
+        Tue, 05 Oct 2021 08:10:57 -0700 (PDT)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:201:68e6:d130:478e:edbd])
+        by smtp.gmail.com with ESMTPSA id a15sm6280000pfg.53.2021.10.05.08.10.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Oct 2021 08:10:57 -0700 (PDT)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     dri-devel@lists.freedesktop.org
+Cc:     Rodrigo.Siqueira@amd.com, ville.syrjala@linux.intel.com,
+        Harry.Wentland@amd.com, khsieh@codeaurora.org, Jerry.Zuo@amd.com,
+        alexander.deucher@amd.com,
+        Douglas Anderson <dianders@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/edid: In connector_bad_edid() cap num_of_ext by num_blocks read
+Date:   Tue,  5 Oct 2021 08:10:28 -0700
+Message-Id: <20211005081022.1.Ib059f9c23c2611cb5a9d760e7d0a700c1295928d@changeid>
+X-Mailer: git-send-email 2.33.0.800.g4c38ced690-goog
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some BIOS-es contain a bug where they add addresses which map to system RAM
-in the PCI bridge memory window returned by the ACPI _CRS method, see
-commit 4dc2287c1805 ("x86: avoid E820 regions when allocating address
-space").
+In commit e11f5bd8228f ("drm: Add support for DP 1.4 Compliance edid
+corruption test") the function connector_bad_edid() started assuming
+that the memory for the EDID passed to it was big enough to hold
+`edid[0x7e] + 1` blocks of data (1 extra for the base block). It
+completely ignored the fact that the function was passed `num_blocks`
+which indicated how much memory had been allocated for the EDID.
 
-To avoid this Linux by default excludes E820 reservations when allocating
-addresses since 2010. Windows however ignores E820 reserved regions for PCI
-mem allocations, instead it avoids these BIOS bugs by allocates addresses
-top-down.
+Let's fix this by adding a bounds check.
 
-Recently (2020) some systems have shown-up with E820 reservations which
-cover the entire _CRS returned PCI bridge memory window, causing all
-attempts to assign memory to PCI bars which have not been setup by the BIOS
-to fail. For example here are the relevant dmesg bits from a
-Lenovo IdeaPad 3 15IIL 81WE:
+This is important for handling the case where there's an error in the
+first block of the EDID. In that case we will call
+connector_bad_edid() without having re-allocated memory based on
+`edid[0x7e]`.
 
-[    0.000000] BIOS-e820: [mem 0x000000004bc50000-0x00000000cfffffff] reserved
-[    0.557473] pci_bus 0000:00: root bus resource [mem 0x65400000-0xbfffffff window]
-
-Add a pci=no_e820 option which allows disabling the E820 reservations
-check, while still honoring the _CRS provided resources.
-
-And automatically enable this on the "Lenovo IdeaPad 3 15IIL05" to fix
-the touchpad not working on this laptop.
-
-Also add a pci=use_e820 option to allow overruling the results of
-DMI quirks defaulting to no_e820 on some systems.
-
-BugLink: https://bugzilla.redhat.com/show_bug.cgi?id=1868899
-BugLink: https://bugzilla.redhat.com/show_bug.cgi?id=1871793
-BugLink: https://bugs.launchpad.net/ubuntu/+source/linux-signed-hwe/+bug/1878279
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Fixes: e11f5bd8228f ("drm: Add support for DP 1.4 Compliance edid corruption test")
+Reported-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
 ---
- arch/x86/include/asm/pci_x86.h | 10 ++++++++++
- arch/x86/kernel/resource.c     | 17 +++++++++++++++++
- arch/x86/pci/acpi.c            | 26 ++++++++++++++++++++++++++
- arch/x86/pci/common.c          |  6 ++++++
- 4 files changed, 59 insertions(+)
+This problem report came up in the context of a patch I sent out [1]
+and this is my attempt at a fix. The problem predates my patch,
+though. I don't personally know anything about DP compliance testing
+and what should be happening here, nor do I apparently have any
+hardware that actually reports a bad EDID. Thus this is just compile
+tested. I'm hoping that someone here can test this and make sure it
+seems OK to them.
 
-diff --git a/arch/x86/include/asm/pci_x86.h b/arch/x86/include/asm/pci_x86.h
-index 490411dba438..e45d661f81de 100644
---- a/arch/x86/include/asm/pci_x86.h
-+++ b/arch/x86/include/asm/pci_x86.h
-@@ -39,6 +39,8 @@ do {						\
- #define PCI_ROOT_NO_CRS		0x100000
- #define PCI_NOASSIGN_BARS	0x200000
- #define PCI_BIG_ROOT_WINDOW	0x400000
-+#define PCI_USE_E820		0x800000
-+#define PCI_NO_E820		0x1000000
+ drivers/gpu/drm/drm_edid.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
+index 9b19eee0e1b4..ccfa08631c57 100644
+--- a/drivers/gpu/drm/drm_edid.c
++++ b/drivers/gpu/drm/drm_edid.c
+@@ -1843,8 +1843,9 @@ static void connector_bad_edid(struct drm_connector *connector,
+ 	u8 num_of_ext = edid[0x7e];
  
- extern unsigned int pci_probe;
- extern unsigned long pirq_table_addr;
-@@ -64,6 +66,8 @@ void pcibios_scan_specific_bus(int busn);
+ 	/* Calculate real checksum for the last edid extension block data */
+-	connector->real_edid_checksum =
+-		drm_edid_block_checksum(edid + num_of_ext * EDID_LENGTH);
++	if (num_of_ext <= num_blocks - 1)
++		connector->real_edid_checksum =
++			drm_edid_block_checksum(edid + num_of_ext * EDID_LENGTH);
  
- /* pci-irq.c */
- 
-+struct pci_dev;
-+
- struct irq_info {
- 	u8 bus, devfn;			/* Bus, device and function */
- 	struct {
-@@ -232,3 +236,9 @@ static inline void mmio_config_writel(void __iomem *pos, u32 val)
- # define x86_default_pci_init_irq	NULL
- # define x86_default_pci_fixup_irqs	NULL
- #endif
-+
-+#if defined CONFIG_PCI && defined CONFIG_ACPI
-+extern bool pci_use_e820;
-+#else
-+#define pci_use_e820 false
-+#endif
-diff --git a/arch/x86/kernel/resource.c b/arch/x86/kernel/resource.c
-index 9b9fb7882c20..6069d86021f0 100644
---- a/arch/x86/kernel/resource.c
-+++ b/arch/x86/kernel/resource.c
-@@ -1,6 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
- #include <linux/ioport.h>
- #include <asm/e820/api.h>
-+#include <asm/pci_x86.h>
- 
- static void resource_clip(struct resource *res, resource_size_t start,
- 			  resource_size_t end)
-@@ -23,11 +24,27 @@ static void resource_clip(struct resource *res, resource_size_t start,
- 		res->start = end + 1;
- }
- 
-+/*
-+ * Some BIOS-es contain a bug where they add addresses which map to system RAM
-+ * in the PCI bridge memory window returned by the ACPI _CRS method, see
-+ * commit 4dc2287c1805 ("x86: avoid E820 regions when allocating address space").
-+ * To avoid this Linux by default excludes E820 reservations when allocating
-+ * addresses since 2010. Windows however ignores E820 reserved regions for PCI
-+ * mem allocations, instead it avoids these BIOS bugs by allocates addresses
-+ * top-down.
-+ * Recently (2020) some systems have shown-up with E820 reservations which
-+ * cover the entire _CRS returned PCI bridge memory window, causing all
-+ * attempts to assign memory to PCI bars which have not been setup by the BIOS
-+ * to fail. The pci_use_e820 check is there as a workaround for these systems.
-+ */
- static void remove_e820_regions(struct resource *avail)
- {
- 	int i;
- 	struct e820_entry *entry;
- 
-+	if (!pci_use_e820)
-+		return;
-+
- 	for (i = 0; i < e820_table->nr_entries; i++) {
- 		entry = &e820_table->entries[i];
- 
-diff --git a/arch/x86/pci/acpi.c b/arch/x86/pci/acpi.c
-index 948656069cdd..4fc95f5308e3 100644
---- a/arch/x86/pci/acpi.c
-+++ b/arch/x86/pci/acpi.c
-@@ -21,6 +21,8 @@ struct pci_root_info {
- 
- static bool pci_use_crs = true;
- static bool pci_ignore_seg = false;
-+/* Consumed in arch/x86/kernel/resource.c */
-+bool pci_use_e820 = true;
- 
- static int __init set_use_crs(const struct dmi_system_id *id)
- {
-@@ -34,6 +36,12 @@ static int __init set_nouse_crs(const struct dmi_system_id *id)
- 	return 0;
- }
- 
-+static int __init set_no_e820(const struct dmi_system_id *id)
-+{
-+	pci_use_e820 = false;
-+	return 0;
-+}
-+
- static int __init set_ignore_seg(const struct dmi_system_id *id)
- {
- 	printk(KERN_INFO "PCI: %s detected: ignoring ACPI _SEG\n", id->ident);
-@@ -135,6 +143,16 @@ static const struct dmi_system_id pci_crs_quirks[] __initconst = {
- 			DMI_MATCH(DMI_PRODUCT_NAME, "HP xw9300 Workstation"),
- 		},
- 	},
-+	/* https://bugzilla.redhat.com/show_bug.cgi?id=1868899 */
-+	{
-+		.callback = set_no_e820,
-+		.ident = "Lenovo IdeaPad 3 15IIL05",
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "81WE"),
-+			DMI_MATCH(DMI_PRODUCT_VERSION, "IdeaPad 3 15IIL05"),
-+		},
-+	},
- 	{}
- };
- 
-@@ -160,6 +178,14 @@ void __init pci_acpi_crs_quirks(void)
- 	       "if necessary, use \"pci=%s\" and report a bug\n",
- 	       pci_use_crs ? "Using" : "Ignoring",
- 	       pci_use_crs ? "nocrs" : "use_crs");
-+
-+	if (pci_probe & PCI_NO_E820)
-+		pci_use_e820 = false;
-+	else if (pci_probe & PCI_USE_E820)
-+		pci_use_e820 = true;
-+
-+	printk(KERN_INFO "PCI: %s E820 reservations for host bridge windows\n",
-+	       pci_use_e820 ? "Honoring" : "Ignoring");
- }
- 
- #ifdef	CONFIG_PCI_MMCONFIG
-diff --git a/arch/x86/pci/common.c b/arch/x86/pci/common.c
-index 3507f456fcd0..091ec7e94fcb 100644
---- a/arch/x86/pci/common.c
-+++ b/arch/x86/pci/common.c
-@@ -595,6 +595,12 @@ char *__init pcibios_setup(char *str)
- 	} else if (!strcmp(str, "nocrs")) {
- 		pci_probe |= PCI_ROOT_NO_CRS;
- 		return NULL;
-+	} else if (!strcmp(str, "use_e820")) {
-+		pci_probe |= PCI_USE_E820;
-+		return NULL;
-+	} else if (!strcmp(str, "no_e820")) {
-+		pci_probe |= PCI_NO_E820;
-+		return NULL;
- #ifdef CONFIG_PHYS_ADDR_T_64BIT
- 	} else if (!strcmp(str, "big_root_window")) {
- 		pci_probe |= PCI_BIG_ROOT_WINDOW;
+ 	if (connector->bad_edid_counter++ && !drm_debug_enabled(DRM_UT_KMS))
+ 		return;
 -- 
-2.31.1
+2.33.0.800.g4c38ced690-goog
 
