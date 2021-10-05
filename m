@@ -2,297 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26F0B421C8E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 04:23:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9DC9421C93
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 04:26:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231311AbhJECZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 22:25:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46432 "EHLO
+        id S231140AbhJEC2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 22:28:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230237AbhJECY7 (ORCPT
+        with ESMTP id S230237AbhJEC2e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 22:24:59 -0400
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0496EC061745
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 19:23:10 -0700 (PDT)
-Received: by mail-oi1-x229.google.com with SMTP id z11so24225573oih.1
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 19:23:09 -0700 (PDT)
+        Mon, 4 Oct 2021 22:28:34 -0400
+Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36AE3C061745
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 19:26:45 -0700 (PDT)
+Received: by mail-qv1-xf34.google.com with SMTP id z3so4382830qvl.9
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 19:26:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZD53yNMkUcIS01qS154onKXzIL/7b69q2M6uMmvAQkA=;
-        b=x9C1c/f1FtKmThspqGNvBb6HREv06FT+WE8tjB1GFzMdK/rM6MSthINq/+5N279tLW
-         D8ZuCsCDziGf7rMmt8xUZuo9b/9M3/2XYdAfbI7LpvmZPY5fvCcdAgvM+5IeIH19iEVD
-         XK0Q2pGHa/5nwewwuCxQ4LW5nFypOawxAM3X9Vq/rOWSGT3yj6rRA+g3PqncZZ26oD7u
-         scB4Oswm6WeiKL/Sh+f9/Qzndre8Mv9Og6PcMgNnUKzpZeqcsnyYxqcYvVCsKK8ZgKGO
-         jopnmLdvYksvuExsnHaUDNkmE6C6OGaIgOj3fpsqiTRdKiYOD54cGac6yrJQPxASEjVI
-         p2Cg==
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=8cHPpsVizZea7NsbBw7SVnOsWB/6elo5w86EKzAOmIk=;
+        b=j8DLVwTUpEAf6Y73mxShEhwi4H+DQpscONlj8i3Trup9IZM1OOuqRsEnn2w4sUqOSb
+         B0+h1fbOcqYElpz7+3jKi943bfvpRx+sO6+ih7Ls1A4IAgB7nDqrn6wYnlhk4TTv6/01
+         AlmNFEzTggVNRd7dEvu/H80Z/52RcszT9UpYLOmC5gu8Tc9mew6AK8y6iHDw3LdiqCm2
+         /N/iIkiVr1cwGgitq+z9gjJd+tKbqX8+ZOSJhQSTsONflHCMs1gkmz609oXoL/tiCeGO
+         phYPa9EqrK/cQGGsY/J2vWq2SF85ogcWz9AyQwtFr9/qoCQJAf8FYLdp9Ts11gAJ5Rs3
+         kEcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZD53yNMkUcIS01qS154onKXzIL/7b69q2M6uMmvAQkA=;
-        b=H9Xpah3GdjdlKtBuQoFACFWBPmNE9wziD7309gXdoLfJOVBE/sW81qzyw/j4LGCvT4
-         fDXyaLSnKRf5J6VF/maqBD66fjJKWbB0JOUn8A1cV/xdLXG3uRSfvx+RAdTNJlJavX9I
-         OZZyp+qnYUqcq/iwBBtlJUXgflF1FVe3Fk/DDuUmKcJVnipZEMq4w2sE77tHkR6P0TXv
-         SvEqWeKizrCGxE+E1HCs2S6nqr8SsqqfjYk8hSe+igH4GMjcTU/Ux7x2scylVEep2c1F
-         2wTagcdTxSGg2daJvZweSYXc+u6DwHJtGlJ9uLWe9VOAORu4zuB/vmCdjo8O6zp/6FD1
-         JOHg==
-X-Gm-Message-State: AOAM5317yhC8F9WMJB/VygrffCiqao5UKIoFcUdw6Bq/1ImGRs36kFWo
-        Ag6NUncfsP6j2LkCSbj32g5O7A==
-X-Google-Smtp-Source: ABdhPJzcvoRfuFqJL//8/g70TI12ylSA9Yfkhp0zPB5/pSjhAAUz5HLOzjZWwoL8CIpy0Oz1Gk1Ldg==
-X-Received: by 2002:a54:4887:: with SMTP id r7mr462772oic.124.1633400589252;
-        Mon, 04 Oct 2021 19:23:09 -0700 (PDT)
-Received: from localhost.localdomain ([2600:1700:a0:3dc8:205:1bff:fec0:b9b3])
-        by smtp.gmail.com with ESMTPSA id a67sm3180435otb.0.2021.10.04.19.23.08
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=8cHPpsVizZea7NsbBw7SVnOsWB/6elo5w86EKzAOmIk=;
+        b=snrGGhKZ+vMihqWGdq3Ck+2054Wf493rcv/ERLv1RA9GMp+4PArnJAIJuguo3ErNJm
+         lla2feWZRQQl9BXWYOh+D1B48sJYzRrF20zWK58BsWKcQj43kilSxuAKyit/wTIewz9B
+         qjlKpsaZYa1leqTYhDCgIYcQ2lWj5X7IN/wbZ4JewCa3kNiyoGvrjAf7aKfCfMrsoFK3
+         bC6A0UGjIeLKgSu4cIrst0rLVNYUJ2DuwdOsr/36P4fZILaPvUt6uKH5NdzaahfPeACZ
+         eJ3ATXHGAMbgD63CRaKHK0NJHVVDEnUAjpvQA5weBCTPBVaxQcPrR49dLg5cNgh/leSD
+         7aCQ==
+X-Gm-Message-State: AOAM530sO7EzM6nP/GVMLaCW44mLgV/2GaJKLeN4fNi+3e0Tkw3U/KlB
+        q3iZLRrufFoMiPIchPuDNuSqyg==
+X-Google-Smtp-Source: ABdhPJzyonfVmn1mBoFuvKgBM5UYIT9oqXrt17Nhvj6nKQ/v3gorQs900qw5CuXCpbP+//3WR3Eluw==
+X-Received: by 2002:ad4:4b09:: with SMTP id r9mr5044184qvw.10.1633400804146;
+        Mon, 04 Oct 2021 19:26:44 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id 130sm8713094qkh.99.2021.10.04.19.26.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Oct 2021 19:23:08 -0700 (PDT)
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Kuogee Hsieh <khsieh@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Abhinav Kumar <abhinavk@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [RFC] drm/msm/dp: Add typec_mux implementation
-Date:   Mon,  4 Oct 2021 19:24:51 -0700
-Message-Id: <20211005022451.2037405-1-bjorn.andersson@linaro.org>
-X-Mailer: git-send-email 2.29.2
+        Mon, 04 Oct 2021 19:26:43 -0700 (PDT)
+Date:   Mon, 4 Oct 2021 19:26:23 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.anvils
+To:     Matthew Wilcox <willy@infradead.org>
+cc:     Yang Shi <shy828301@gmail.com>, Hao Sun <sunhao.th@gmail.com>,
+        Hugh Dickins <hughd@google.com>, Song Liu <song@kernel.org>,
+        Rongwei Wang <rongwei.wang@linux.alibaba.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        William Kucharski <william.kucharski@oracle.com>
+Subject: Re: [PATCH v2 1/2] mm, thp: check page mapping when truncating page
+ cache
+In-Reply-To: <YVtWhVNFhLbA9+Tl@casper.infradead.org>
+Message-ID: <a07564a3-b2fc-9ffe-3ace-3f276075ea5c@google.com>
+References: <YVSopxYWegtQJ3iD@casper.infradead.org> <CAPhsuW6_2_LxQRrs7xF3omgO22+6goDR=bEjKGRopaS-pHJB2Q@mail.gmail.com> <67906bf5-4de9-8433-3d70-cc8fc5cc2347@linux.alibaba.com> <CAPhsuW4_-ju9QgB7J4imrhQvH6ZqoOkVtVOVX11Yk_ZRakwQ+A@mail.gmail.com>
+ <3d264ed9-f8fd-60d4-7125-f9f745ebeb52@google.com> <YVXXq0ssvW6P525J@casper.infradead.org> <f889db88-7b7d-ddb0-a7ed-3eda85d3eb96@google.com> <CAHbLzkq7=FsXtp4YcjeruJwbYyhsRGCq+eC8uwC-Tg06JBTUUA@mail.gmail.com> <YViSGYhn+zTShwFP@casper.infradead.org>
+ <CAHbLzkosZr_ugNAMbXreUumSyAUMH1hPhTaiXXXRUNx88J9Xsw@mail.gmail.com> <YVtWhVNFhLbA9+Tl@casper.infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Implement a typec_mux in order to allow a Type-C controller to signal
-the connection and attention of DisplayPort to the related USB-C port.
+On Mon, 4 Oct 2021, Matthew Wilcox wrote:
+> On Mon, Oct 04, 2021 at 11:28:45AM -0700, Yang Shi wrote:
+> > On Sat, Oct 2, 2021 at 10:09 AM Matthew Wilcox <willy@infradead.org> wrote:
+> > > On Thu, Sep 30, 2021 at 10:39:14AM -0700, Yang Shi wrote:
+> > > > On Thu, Sep 30, 2021 at 9:49 AM Hugh Dickins <hughd@google.com> wrote:
+> > > > > I assume you're thinking of one of the fuzzer blkdev ones:
+> > > > > https://lore.kernel.org/linux-mm/CACkBjsbtF_peC7N_4mRfHML_BeiPe+O9DahTfr84puSG_J9rcQ@mail.gmail.com/
+> > > > > or
+> > > > > https://lore.kernel.org/lkml/CACkBjsYwLYLRmX8GpsDpMthagWOjWWrNxqY6ZLNQVr6yx+f5vA@mail.gmail.com/
+> > > > >
+> > > > > I haven't started on those ones yet: yes, I imagine one or both of those
+> > > > > will need a further fix (S_ISREG() check somewhere if we're lucky; but
+> > > > > could well be nastier); but for the bug in this thread, I expect
+> > > >
+> > > > Makes sense to me. We should be able to check S_ISREG() in khugepaged,
+> > > > if it is not a regular file, just bail out. Sounds not that nasty to
+> > > > me AFAIU.
+> > >
+> > > I don't see why we should have an S_ISREG() check.  I agree it's not the
+> > > intended usecase, but it ought to work fine.  Unless there's something
+> > > I'm missing?
+> > 
+> > Check out this bug report:
+> > https://lore.kernel.org/lkml/CACkBjsYwLYLRmX8GpsDpMthagWOjWWrNxqY6ZLNQVr6yx+f5vA@mail.gmail.com/
+> > and the patch from me:
+> > https://lore.kernel.org/linux-mm/20210917205731.262693-1-shy828301@gmail.com/
+> > 
+> > I don't think we handle buffers correctly for file THP, right? My
+> > patch is ad hoc, so I thought Hugh's suggestion makes some sense to
+> > me. Why do we have THP collapsed for unintended usecase in the first
+> > place?
+> 
+> OK, I've done some more digging.  I think what's going on with this
+> report is userspace opens the block device RO, causes the page cache to
+> be loaded with data, then khugepaged comes in and creates THPs.
 
-The remains of support for something along this lines was left in
-the dp_display as the driver was upstreamed, so these are reused with
-minimal modifications necessary.
+Yes.
 
-When operating in this mode, HPD interrupts has still been observed in
-the ISR so, in line with the downstream kernel, these are ignored.
+> What confuses me is that these THPs have private data attached to them.
+> I don't know how that happens.  If it's block device specific, then
+> yes, something like your S_ISREG() idea should work fine.  Otherwise,
+> we might need to track down another problem.
 
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
----
+Agreed, the file THP is created without PagePrivate, so the puzzle was
+why the read-only cached page would later become page_has_private().
 
-This applies on top of https://lore.kernel.org/linux-arm-msm/20211001180058.1021913-1-bjorn.andersson@linaro.org/
+The C repro showed that it uses (a BTRFS_IOC_ADD_DEV ioctl which might
+not be relevant and) a BLKRRPART ioctl 0x125f: I didn't follow BLKRRPART
+all the way down, but imagine it has to attach buffer-heads to re-read
+the partition table.  Which would explain it.
 
- drivers/gpu/drm/msm/Kconfig         |  1 +
- drivers/gpu/drm/msm/dp/dp_display.c | 52 ++++++++++++++++-----------
- drivers/gpu/drm/msm/dp/dp_hpd.c     | 54 +++++++++++++++++++++++++++++
- 3 files changed, 87 insertions(+), 20 deletions(-)
+Aside from that particular ioctl, it seems a good idea to insist on
+S_ISREG just to shrink the attack surface: as Yang Shi says, executable
+THP on block device was never an intended usecase, and not a usecase
+anyone is likely to miss! And that fuzzer appears to delight in
+tormenting /dev/nullb0, so let's just seal off that avenue.
 
-diff --git a/drivers/gpu/drm/msm/Kconfig b/drivers/gpu/drm/msm/Kconfig
-index 5879f67bc88c..4e4b98c448cb 100644
---- a/drivers/gpu/drm/msm/Kconfig
-+++ b/drivers/gpu/drm/msm/Kconfig
-@@ -9,6 +9,7 @@ config DRM_MSM
- 	depends on QCOM_OCMEM || QCOM_OCMEM=n
- 	depends on QCOM_LLCC || QCOM_LLCC=n
- 	depends on QCOM_COMMAND_DB || QCOM_COMMAND_DB=n
-+	depends on TYPEC || TYPEC=n
- 	select IOMMU_IO_PGTABLE
- 	select QCOM_MDT_LOADER if ARCH_QCOM
- 	select REGULATOR
-diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
-index 56a79aeffed4..e863f537047a 100644
---- a/drivers/gpu/drm/msm/dp/dp_display.c
-+++ b/drivers/gpu/drm/msm/dp/dp_display.c
-@@ -85,6 +85,8 @@ struct dp_display_private {
- 	bool hpd_irq_on;
- 	bool audio_supported;
+You're right to have some doubt, as to whether there might be other
+ways for buffer-heads to get attached, even on a read-only regular
+file; but no way has sprung to my mind, and READ_ONLY_THP_FOR_FS has
+survived well in its intended usage: so I think we should proceed on
+the assumption that no further bugs remain - then fix them when found.
+
+I wasn't able to reproduce the problem with the repro, would need to
+waste many hours to do so.  But here's the untested S_ISREG patch I
+came up with.  Sorry, I've mixed something else in: in moving the
+alignment part to clarify the conditions, I was alarmed to see that
+shmem with !shmem_huge_enabled was falling through to THP_FOR_FS to
+give unexpected huge pages: fixed that, though later found there's
+a separate shmem_huge_enabled() check which should exclude it.
+
+--- 5.15-rc4/mm/khugepaged.c	2021-09-12 17:39:21.943438422 -0700
++++ linux/khugepaged.c	2021-10-03 20:41:13.194822795 -0700
+@@ -445,22 +445,25 @@ static bool hugepage_vma_check(struct vm
+ 	if (!transhuge_vma_enabled(vma, vm_flags))
+ 		return false;
  
-+	bool use_hw_hpd;
++	if (vma->vm_file && !IS_ALIGNED((vma->vm_start >> PAGE_SHIFT) -
++					vma->vm_pgoff, HPAGE_PMD_NR))
++		return false;
 +
- 	struct platform_device *pdev;
- 	struct dentry *root;
+ 	/* Enabled via shmem mount options or sysfs settings. */
+-	if (shmem_file(vma->vm_file) && shmem_huge_enabled(vma)) {
+-		return IS_ALIGNED((vma->vm_start >> PAGE_SHIFT) - vma->vm_pgoff,
+-				HPAGE_PMD_NR);
+-	}
++	if (shmem_file(vma->vm_file))
++		return shmem_huge_enabled(vma);
  
-@@ -466,11 +468,10 @@ static int dp_display_handle_irq_hpd(struct dp_display_private *dp)
- 	return 0;
- }
+ 	/* THP settings require madvise. */
+ 	if (!(vm_flags & VM_HUGEPAGE) && !khugepaged_always())
+ 		return false;
  
--static int dp_display_usbpd_attention_cb(struct device *dev)
-+static int dp_display_usbpd_attention(struct dp_display_private *dp)
- {
- 	int rc = 0;
- 	u32 sink_request;
--	struct dp_display_private *dp = dev_get_dp_display_private(dev);
- 
- 	/* check for any test request issued by sink */
- 	rc = dp_link_process_request(dp->link);
-@@ -690,7 +691,7 @@ static int dp_irq_hpd_handle(struct dp_display_private *dp, u32 data)
- 		return 0;
+ 	/* Read-only file mappings need to be aligned for THP to work. */
+-	if (IS_ENABLED(CONFIG_READ_ONLY_THP_FOR_FS) && vma->vm_file &&
+-	    !inode_is_open_for_write(vma->vm_file->f_inode) &&
+-	    (vm_flags & VM_EXEC)) {
+-		return IS_ALIGNED((vma->vm_start >> PAGE_SHIFT) - vma->vm_pgoff,
+-				HPAGE_PMD_NR);
++	if (IS_ENABLED(CONFIG_READ_ONLY_THP_FOR_FS) &&
++	    (vm_flags & VM_EXEC) && vma->vm_file) {
++		struct inode *inode = vma->vm_file->f_inode;
++
++	        return !inode_is_open_for_write(inode) &&
++			S_ISREG(inode->i_mode);
  	}
  
--	ret = dp_display_usbpd_attention_cb(&dp->pdev->dev);
-+	ret = dp_display_usbpd_attention(dp);
- 	if (ret == -ECONNRESET) { /* cable unplugged */
- 		dp->core_initialized = false;
- 	}
-@@ -709,6 +710,13 @@ static void dp_display_deinit_sub_modules(struct dp_display_private *dp)
- 	dp_audio_put(dp->audio);
- }
- 
-+static int dp_display_usbpd_attention_cb(struct device *dev)
-+{
-+	struct dp_display_private *dp = dev_get_dp_display_private(dev);
-+
-+	return dp_irq_hpd_handle(dp, 0);
-+}
-+
- static int dp_init_sub_modules(struct dp_display_private *dp)
- {
- 	int rc = 0;
-@@ -731,6 +739,8 @@ static int dp_init_sub_modules(struct dp_display_private *dp)
- 		goto error;
- 	}
- 
-+	dp->use_hw_hpd = !of_property_read_bool(dev->of_node, "mode-switch");
-+
- 	dp->parser = dp_parser_get(dp->pdev);
- 	if (IS_ERR(dp->parser)) {
- 		rc = PTR_ERR(dp->parser);
-@@ -1135,27 +1145,29 @@ static irqreturn_t dp_display_irq_handler(int irq, void *dev_id)
- 		return IRQ_NONE;
- 	}
- 
--	hpd_isr_status = dp_catalog_hpd_get_intr_status(dp->catalog);
-+	if (dp->use_hw_hpd) {
-+		hpd_isr_status = dp_catalog_hpd_get_intr_status(dp->catalog);
- 
--	DRM_DEBUG_DP("hpd isr status=%#x\n", hpd_isr_status);
--	if (hpd_isr_status & 0x0F) {
--		/* hpd related interrupts */
--		if (hpd_isr_status & DP_DP_HPD_PLUG_INT_MASK)
--			dp_add_event(dp, EV_HPD_PLUG_INT, 0, 0);
-+		DRM_DEBUG_DP("hpd isr status=%#x\n", hpd_isr_status);
-+		if (hpd_isr_status & 0x0F) {
-+			/* hpd related interrupts */
-+			if (hpd_isr_status & DP_DP_HPD_PLUG_INT_MASK)
-+				dp_add_event(dp, EV_HPD_PLUG_INT, 0, 0);
- 
--		if (hpd_isr_status & DP_DP_IRQ_HPD_INT_MASK) {
--			/* stop sentinel connect pending checking */
--			dp_del_event(dp, EV_CONNECT_PENDING_TIMEOUT);
--			dp_add_event(dp, EV_IRQ_HPD_INT, 0, 0);
--		}
-+			if (hpd_isr_status & DP_DP_IRQ_HPD_INT_MASK) {
-+				/* stop sentinel connect pending checking */
-+				dp_del_event(dp, EV_CONNECT_PENDING_TIMEOUT);
-+				dp_add_event(dp, EV_IRQ_HPD_INT, 0, 0);
-+			}
- 
--		if (hpd_isr_status & DP_DP_HPD_REPLUG_INT_MASK) {
--			dp_add_event(dp, EV_HPD_UNPLUG_INT, 0, 0);
--			dp_add_event(dp, EV_HPD_PLUG_INT, 0, 3);
--		}
-+			if (hpd_isr_status & DP_DP_HPD_REPLUG_INT_MASK) {
-+				dp_add_event(dp, EV_HPD_UNPLUG_INT, 0, 0);
-+				dp_add_event(dp, EV_HPD_PLUG_INT, 0, 3);
-+			}
- 
--		if (hpd_isr_status & DP_DP_HPD_UNPLUG_INT_MASK)
--			dp_add_event(dp, EV_HPD_UNPLUG_INT, 0, 0);
-+			if (hpd_isr_status & DP_DP_HPD_UNPLUG_INT_MASK)
-+				dp_add_event(dp, EV_HPD_UNPLUG_INT, 0, 0);
-+		}
- 	}
- 
- 	/* DP controller isr */
-diff --git a/drivers/gpu/drm/msm/dp/dp_hpd.c b/drivers/gpu/drm/msm/dp/dp_hpd.c
-index e1c90fa47411..2a7ed9b8354e 100644
---- a/drivers/gpu/drm/msm/dp/dp_hpd.c
-+++ b/drivers/gpu/drm/msm/dp/dp_hpd.c
-@@ -7,6 +7,9 @@
- 
- #include <linux/slab.h>
- #include <linux/device.h>
-+#include <linux/usb/typec_altmode.h>
-+#include <linux/usb/typec_dp.h>
-+#include <linux/usb/typec_mux.h>
- 
- #include "dp_hpd.h"
- 
-@@ -22,6 +25,8 @@ struct dp_hpd_private {
- 	struct device *dev;
- 	struct dp_usbpd_cb *dp_cb;
- 	struct dp_usbpd dp_usbpd;
-+	struct typec_mux *mux;
-+	bool connected;
- };
- 
- int dp_hpd_connect(struct dp_usbpd *dp_usbpd, bool hpd)
-@@ -47,9 +52,45 @@ int dp_hpd_connect(struct dp_usbpd *dp_usbpd, bool hpd)
- 	return rc;
- }
- 
-+static int dp_hpd_mux_set(struct typec_mux *mux, struct typec_mux_state *state)
-+{
-+	struct dp_hpd_private *dp_hpd = typec_mux_get_drvdata(mux);
-+	struct dp_usbpd *usbpd = &dp_hpd->dp_usbpd;
-+	struct typec_displayport_data *dp_data = state->data;
-+	int pin_assign = 0;
-+
-+	if (dp_data) {
-+		pin_assign = DP_CONF_GET_PIN_ASSIGN(dp_data->conf);
-+		usbpd->hpd_high = !!(dp_data->status & DP_STATUS_HPD_STATE);
-+		usbpd->hpd_irq = !!(dp_data->status & DP_STATUS_IRQ_HPD);
-+		usbpd->multi_func = pin_assign == DP_PIN_ASSIGN_C || DP_PIN_ASSIGN_E;
-+	}
-+
-+	if (!pin_assign) {
-+		if (dp_hpd->connected) {
-+			dp_hpd->connected = false;
-+			dp_hpd->dp_cb->disconnect(dp_hpd->dev);
-+		}
-+	} else if (!dp_hpd->connected) {
-+		dp_hpd->connected = true;
-+		dp_hpd->dp_cb->configure(dp_hpd->dev);
-+	} else {
-+		dp_hpd->dp_cb->attention(dp_hpd->dev);
-+	}
-+
-+	return 0;
-+}
-+
-+static void dp_hpd_unregister_typec_mux(void *data)
-+{
-+	typec_mux_unregister(data);
-+}
-+
- struct dp_usbpd *dp_hpd_get(struct device *dev, struct dp_usbpd_cb *cb)
- {
-+	struct typec_mux_desc mux_desc = {};
- 	struct dp_hpd_private *dp_hpd;
-+	int rc;
- 
- 	if (!cb) {
- 		pr_err("invalid cb data\n");
-@@ -65,5 +106,18 @@ struct dp_usbpd *dp_hpd_get(struct device *dev, struct dp_usbpd_cb *cb)
- 
- 	dp_hpd->dp_usbpd.connect = dp_hpd_connect;
- 
-+	mux_desc.fwnode = dev->fwnode;
-+	mux_desc.set = dp_hpd_mux_set;
-+	mux_desc.drvdata = dp_hpd;
-+	dp_hpd->mux = typec_mux_register(dev, &mux_desc);
-+	if (IS_ERR(dp_hpd->mux)) {
-+		dev_err(dev, "unable to register typec mux\n");
-+		return ERR_CAST(dp_hpd->mux);
-+	}
-+
-+	rc = devm_add_action_or_reset(dev, dp_hpd_unregister_typec_mux, dp_hpd->mux);
-+	if (rc)
-+		return ERR_PTR(rc);
-+
- 	return &dp_hpd->dp_usbpd;
- }
--- 
-2.29.2
-
+ 	if (!vma->anon_vma || vma->vm_ops)
