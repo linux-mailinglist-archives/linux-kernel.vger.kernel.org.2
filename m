@@ -2,116 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3268422211
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 11:20:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7736422217
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 11:21:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233712AbhJEJWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 05:22:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233645AbhJEJWb (ORCPT
+        id S233762AbhJEJWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 05:22:47 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:51142 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233723AbhJEJWo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 05:22:31 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53C36C061755
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 02:20:41 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id p21so6058776wmq.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 02:20:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7gKDpwbZLaAcnMd5IdgFrDWDVBJ3bkgLfDyEEukPWNE=;
-        b=EyEMINozBywEEeiMAn8tEaNJqnso4K/VdIluVrInmf4Z4p+RxZlX6ZeIjbefpWwAr7
-         ri2MFbWfElAGCwEs03Vpbi8qMwAYOwL/DiaPID6X3fS0okD9X19kly4G7CUdpL1m3UmR
-         iM9ZdkliFcBpWB4v6zDFSlg7MnGvIJGjUe3MBZCFeNPmXtZN6qnyhq+DVCTEuZlDzhhH
-         5qiFZFFj6xNwdxFb++jgfGEc3Ro51h6QPZ8ynuEk8nZ15sjlyW7vwh86EZ1OS+Poc3Iw
-         XjExL+D1Hn6QHeiCzPfqkoRaXG0hVFxf6U7BiVS97QBdIOjgK9cKu9jsJxClDf/b+Kh7
-         elpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7gKDpwbZLaAcnMd5IdgFrDWDVBJ3bkgLfDyEEukPWNE=;
-        b=gq8T0KFsapx1SqRDMr+rIhC1OTVM2bXZICZhd75WQQXa9FxcfnXdqgt3mSwdnI4xN6
-         g1BDxYS2kPoOpzpgyzPMe/XkKF5n3lgFAFNovV8YX2OgdZ1Ex9kpodHG8XI913APd0Pa
-         CtjmxJfh3HGeA+4fTyV/oCn+D/hVjy4zkpV0s9BYnhNzB3u6oiCkFiyjghu2IptMQ06w
-         RmpbKmNrH0nRnjX4Gj9Q2rVmkJIgLMKWFgLFr/70fo0rFeoZ59RsyM94uzJ8LA7O6kZ3
-         gDU0IrytzCUknSIdjx9Y9toMVG6KVXWN0LqZpT9RxGVEw3Mq421tVYFg45Udqh5zH6rS
-         GkzQ==
-X-Gm-Message-State: AOAM5323NMEk9JUhcQsb2p589EcioDBpU3ulIFJ9VeCTFE8twmYMxBSA
-        IIgsj+v8Iz+guHPvk2hl6Z3HlA==
-X-Google-Smtp-Source: ABdhPJwFtqDSEPdGNe3pPku5649xK84QFeT9vQH8lgS3MjqmbxQegWN4EDIp3ZNLU69Z5Wu+9B5BIg==
-X-Received: by 2002:a7b:cc14:: with SMTP id f20mr2142080wmh.137.1633425639863;
-        Tue, 05 Oct 2021 02:20:39 -0700 (PDT)
-Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
-        by smtp.gmail.com with ESMTPSA id d8sm18118248wrv.80.2021.10.05.02.20.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Oct 2021 02:20:39 -0700 (PDT)
-Date:   Tue, 5 Oct 2021 10:20:36 +0100
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Marijn Suijten <marijn.suijten@somainline.org>
-Cc:     phone-devel@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Martin Botka <martin.botka@somainline.org>,
-        Jami Kettunen <jami.kettunen@somainline.org>,
-        Pavel Dubrova <pashadubrova@gmail.com>,
-        Kiran Gunda <kgunda@codeaurora.org>,
-        Courtney Cavin <courtney.cavin@sonymobile.com>,
-        Bryan Wu <cooloney@gmail.com>, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 06/10] backlight: qcom-wled: Remove unnecessary 4th
- default string in wled3
-Message-ID: <20211005092036.yuttwrjhvnkkhyhr@maple.lan>
-References: <20211004192741.621870-1-marijn.suijten@somainline.org>
- <20211004192741.621870-7-marijn.suijten@somainline.org>
+        Tue, 5 Oct 2021 05:22:44 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 59A8B1FFFB;
+        Tue,  5 Oct 2021 09:20:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1633425652; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Mf8VJfVMIA+k3Bsw/G2xHgLY8J7xFCmSVY3uxV1UuE0=;
+        b=ousjmab2qPFeIHEyaA7FI4cVaHn6d2U1WkOqmsNx571ZG9fss2RfjzhZ8M2XbZxFeNoJut
+        KkYSX089bN7jIbrTgOwwXYFMwvWswTBP/vi8h3HbkHe2KkEykNTk7WTzhHZ5CClMXJP+2e
+        0wG6YtaEosgYvr/jFZA+2QKduI2z/d8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1633425652;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Mf8VJfVMIA+k3Bsw/G2xHgLY8J7xFCmSVY3uxV1UuE0=;
+        b=1SXNJ+3yLxZznTYY6j5SXI3wv8HosWt7G25kBydvsEv+oBV7oAdP/MKz5tZF1x3YWKGM2B
+        d5dtPPwK3UTu7ZCQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1753713C1B;
+        Tue,  5 Oct 2021 09:20:52 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id VxndBPQYXGHkfQAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Tue, 05 Oct 2021 09:20:52 +0000
+Message-ID: <b680fb87-439b-0ba4-cf9f-33d729f27941@suse.cz>
+Date:   Tue, 5 Oct 2021 11:20:51 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211004192741.621870-7-marijn.suijten@somainline.org>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.2
+Subject: Re: [PATCH 2/6] MM: improve documentation for __GFP_NOFAIL
+Content-Language: en-US
+To:     NeilBrown <neilb@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@suse.com>,
+        ". Dave Chinner" <david@fromorbit.com>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org
+References: <163184698512.29351.4735492251524335974.stgit@noble.brown>
+ <163184741778.29351.16920832234899124642.stgit@noble.brown>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <163184741778.29351.16920832234899124642.stgit@noble.brown>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 04, 2021 at 09:27:37PM +0200, Marijn Suijten wrote:
-> The previous commit improves num_strings parsing to not go over the
-> maximum of 3 strings for wled3 anymore.  Likewise this default index for
-> a hypothetical 4th string is invalid and could access registers that are
-> not mapped to the desired purpose.
-> Removing this value gets rid of undesired confusion and avoids the
-> possibility of accessing registers at this offset even if the 4th array
-> element is used by accident.
+On 9/17/21 04:56, NeilBrown wrote:
+> __GFP_NOFAIL is documented both in gfp.h and memory-allocation.rst.
+> The details are not entirely consistent.
 > 
-> Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
-> Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-
-Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
-
-
-> ---
->  drivers/video/backlight/qcom-wled.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> This patch ensures both places state that:
+>  - there is a risk of deadlock with reclaim/writeback/oom-kill
+>  - it should only be used when there is no real alternative
+>  - it is preferable to an endless loop
+>  - it is strongly discourages for costly-order allocations.
 > 
-> diff --git a/drivers/video/backlight/qcom-wled.c b/drivers/video/backlight/qcom-wled.c
-> index 66ce77ee3099..9ec1bdd374d2 100644
-> --- a/drivers/video/backlight/qcom-wled.c
-> +++ b/drivers/video/backlight/qcom-wled.c
-> @@ -946,7 +946,7 @@ static const struct wled_config wled3_config_defaults = {
->  	.cs_out_en = false,
->  	.ext_gen = false,
->  	.cabc = false,
-> -	.enabled_strings = {0, 1, 2, 3},
-> +	.enabled_strings = {0, 1, 2},
->  };
->  
->  static int wled4_setup(struct wled *wled)
-> -- 
-> 2.33.0
+> Signed-off-by: NeilBrown <neilb@suse.de>
+
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+
+Nit below:
+
+> diff --git a/include/linux/gfp.h b/include/linux/gfp.h
+> index 55b2ec1f965a..1d2a89e20b8b 100644
+> --- a/include/linux/gfp.h
+> +++ b/include/linux/gfp.h
+> @@ -209,7 +209,11 @@ struct vm_area_struct;
+>   * used only when there is no reasonable failure policy) but it is
+>   * definitely preferable to use the flag rather than opencode endless
+>   * loop around allocator.
+> - * Using this flag for costly allocations is _highly_ discouraged.
+> + * Use of this flag may lead to deadlocks if locks are held which would
+> + * be needed for memory reclaim, write-back, or the timely exit of a
+> + * process killed by the OOM-killer.  Dropping any locks not absolutely
+> + * needed is advisable before requesting a %__GFP_NOFAIL allocate.
+> + * Using this flag for costly allocations (order>1) is _highly_ discouraged.
+
+We define costly as 3, not 1. But sure it's best to avoid even order>0 for
+__GFP_NOFAIL. Advising order>1 seems arbitrary though?
+
+>   */
+>  #define __GFP_IO	((__force gfp_t)___GFP_IO)
+>  #define __GFP_FS	((__force gfp_t)___GFP_FS)
 > 
+> 
+> 
+
