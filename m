@@ -2,130 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22A404221AA
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 11:06:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7567C4221AF
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 11:06:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233400AbhJEJHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 05:07:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52974 "EHLO
+        id S233365AbhJEJIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 05:08:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233290AbhJEJHs (ORCPT
+        with ESMTP id S232773AbhJEJIe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 05:07:48 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ED0CC061755
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 02:05:57 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id p21so6026185wmq.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 02:05:57 -0700 (PDT)
+        Tue, 5 Oct 2021 05:08:34 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9182EC061745;
+        Tue,  5 Oct 2021 02:06:43 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id f9so13214992edx.4;
+        Tue, 05 Oct 2021 02:06:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Sch0aWxDBNQdpah51FulP42zKP3FSOyTJMCjs7CVLTM=;
-        b=bY1lQ0osNyWKNqBAua4Kg5sBOYow4ldD0jTiPF6AlazJXq8jACkl3c0roM248Trihg
-         IP1KhGgFlPLVdLbcJ1LQeVgaTZDTX8dl62IlXg5NzbZv3pc/nkiVxgPatKf/tZaHm1dL
-         kWzZPcxsZ1+0mJeUm2cRo7GK1UtZzJCa6edlGwQPdzpIgr6QnEosRGm68aQsotwzRJXF
-         CDbleSXqI0i4BrCEaC5F1nDeuw3Wo75cHlLNBDTaOZrwrqkmq0tiaCjWf2eIqL13yYp3
-         wOpHJgeVAURft6aB7hMKER+PDuAzkvCD3WYlBBpsOe5ccbcbMWKY+sZV6UI69i1B+isa
-         q/4Q==
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BSFeclzRnwoQe2g5vZuTvAXMAyEYQaztfOLftQqfUtM=;
+        b=YmNaz1joJZn98bJslZ8JvRfZjSlvIUIZwh+wPVIkvi2EyNDOil4zbt3q6VYFsiDfSR
+         hZxtkS1GCZ4harzY1cNsetvftMwSeCLPw8BllbmesZ0hkOouYIE3YJeX7FWfP77P2KKg
+         cxN6ApVdJeA5IB0iRVV22irbru5DPS85ffV/dDNO/gsNe8hslgkwXpJnTW6sbFJZFvkq
+         I40VQZrsHepvtk37i+dXWGBxXXI1T4+N+WdVAa4ds+5f7qwoRrwDZaUja+Ferh7Nvc3n
+         GZMq/4z4Li/fR4vEeBQU0qOSSsafs5hJtPbftfkPDlXj/gwpLpvqKPCTayNxATjLQq32
+         591Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Sch0aWxDBNQdpah51FulP42zKP3FSOyTJMCjs7CVLTM=;
-        b=PvmxE2Wlc/4w6p6wBAEkWZa/t+Nol7qiGWK6D3cex/kjvdwk4rxR0Hi+bMeQvsaADd
-         0AdXgYY23h4/skJubpdffun+thIuwiB2NxGKVfjJikUAzrRSHv3X2s638tvTYDo6T7tn
-         kcUfRHIpx/Qw+hGUxgpPdilhTlApWoRjSEoSADIDmLGrUoXeS8TFiZu4zCywg6FyBM9e
-         y4K27BbZAQL0MWcOAU0fQ8C1LVWQWaFylG7gBYh2EIExu/6yfCLZ3ZlsX6mnzaDA4Vfd
-         bLxtqPMMOJA7yKWz6f5e7MIrkDLpLPZTdv+1Y+CSzoffwY3WdDiOTJzKQxSTVa8NUvyU
-         Kpww==
-X-Gm-Message-State: AOAM531T4MN5VQWQxFC42YHQVNMY01VjQuvcDIRA0XRU8nTVrHrquo8O
-        8nKuDMAO0hp05wlEcCNdhKaoBA==
-X-Google-Smtp-Source: ABdhPJxihmBnUHQnbQ4fyua0XZJasSFmZfAkJOHSSqxnk0Vb1yLrCSgSEA7VR57yIqbCyZjlKhl21w==
-X-Received: by 2002:a05:600c:4e86:: with SMTP id f6mr2195141wmq.52.1633424756122;
-        Tue, 05 Oct 2021 02:05:56 -0700 (PDT)
-Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
-        by smtp.gmail.com with ESMTPSA id k9sm16658777wrz.22.2021.10.05.02.05.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Oct 2021 02:05:55 -0700 (PDT)
-Date:   Tue, 5 Oct 2021 10:05:53 +0100
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Marijn Suijten <marijn.suijten@somainline.org>
-Cc:     phone-devel@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Martin Botka <martin.botka@somainline.org>,
-        Jami Kettunen <jami.kettunen@somainline.org>,
-        Pavel Dubrova <pashadubrova@gmail.com>,
-        Kiran Gunda <kgunda@codeaurora.org>,
-        Courtney Cavin <courtney.cavin@sonymobile.com>,
-        Bryan Wu <cooloney@gmail.com>, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 01/10] backlight: qcom-wled: Pass number of elements to
- read to read_u32_array
-Message-ID: <20211005090553.zoqzzz4767srvwzb@maple.lan>
-References: <20211004192741.621870-1-marijn.suijten@somainline.org>
- <20211004192741.621870-2-marijn.suijten@somainline.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BSFeclzRnwoQe2g5vZuTvAXMAyEYQaztfOLftQqfUtM=;
+        b=QLXFLKjr3NmVa4oFEiE/oMggj6XxBKZrxsGQngzhgLh6TOiChfbH5jYO399WE6qjLw
+         Tbt7Zuulv4jINI9APhP2STT6MtIeG3F5Gbxqkfwd2b9TzrEOnif7aHs5D6Lb6zH+/tff
+         SkECNZUdtJu/1817ebj6qsesttbH2JXfwi+FWH1nQAi5SRvNijUxQD3eXX/dyFSzwM+o
+         Y3GccAtVU/HayYdfo50OfV9XpRPDWZv2T1RXQZjsWiuEy+DM2FHfL1yzSzpvB5oOHnL8
+         iyrHnN0dZwXjgv59+v3KX26f2f7sBrwdPQMjwBAdAU3GrXZLByHTbY03CNxq4/qDCST2
+         D6mQ==
+X-Gm-Message-State: AOAM531G0Ho9fngCPF8heWNkawCfYQMO4Gn2Jzxs85t6AsodJp7SgiUp
+        VnotVCxqyFd+6dB8NxRDNFIBZ0wCUBINCW96Zpk=
+X-Google-Smtp-Source: ABdhPJxKIjvjMGKHK4XqSHN8WgAXsuEOAR6flGcTg0VSrubjWT2cwGhKMbfk3K4O98PlTBJtbVQLqCWEQsknDVf/9XU=
+X-Received: by 2002:a17:907:767a:: with SMTP id kk26mr22828213ejc.134.1633424802040;
+ Tue, 05 Oct 2021 02:06:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211004192741.621870-2-marijn.suijten@somainline.org>
+References: <20210924085104.44806-1-21cnbao@gmail.com> <CAGsJ_4yW72mktbWjRfE9ngXoq9oXBXyAd_TPjKBNdGiRSoh9LA@mail.gmail.com>
+ <CAKfTPtAtfJRFBbo+kBCYf42hxcc2iP8kkmg3Wcr5aW7Rnf=rfw@mail.gmail.com>
+ <YVch0/R9PHzUwqea@hirez.programming.kicks-ass.net> <ece8838d112840bf26adbb09f653babcf298eb28.camel@linux.intel.com>
+ <CAGsJ_4wvLw=US1ddJr=Jrim1vs-F2hpcQ29LQyqDENd7Fk=ssA@mail.gmail.com> <20211005080413.GL4323@worktop.programming.kicks-ass.net>
+In-Reply-To: <20211005080413.GL4323@worktop.programming.kicks-ass.net>
+From:   Barry Song <21cnbao@gmail.com>
+Date:   Tue, 5 Oct 2021 22:06:30 +1300
+Message-ID: <CAGsJ_4zgYcne+pOTfLV-pvgQ6R=n4n2Vmc6rC9En_9VGs+BM_w@mail.gmail.com>
+Subject: Re: [PATCH RESEND 0/3] Represent cluster topology and enable load
+ balance between clusters
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Tim Chen <tim.c.chen@linux.intel.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Ben Segall <bsegall@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Guodong Xu <guodong.xu@linaro.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        "Cc: Len Brown" <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        LAK <linux-arm-kernel@lists.infradead.org>,
+        Linuxarm <linuxarm@huawei.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mel Gorman <mgorman@suse.de>, msys.mizuma@gmail.com,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Will Deacon <will@kernel.org>, x86 <x86@kernel.org>,
+        yangyicong <yangyicong@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 04, 2021 at 09:27:32PM +0200, Marijn Suijten wrote:
-> of_property_read_u32_array takes the number of elements to read as last
-> argument. This does not always need to be 4 (sizeof(u32)) but should
-> instead be the size of the array in DT as read just above with
-> of_property_count_elems_of_size.
-> 
-> To not make such an error go unnoticed again the driver now bails
-> accordingly when of_property_read_u32_array returns an error.
-> 
-> Fixes: 775d2ffb4af6 ("backlight: qcom-wled: Restructure the driver for WLED3")
-> Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
-> Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+On Tue, Oct 5, 2021 at 9:05 PM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Sat, Oct 02, 2021 at 08:09:58PM +1300, Barry Song wrote:
+>
+> > diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> > index 7e4651a1aaf4..86821e83b935 100644
+> > --- a/arch/arm64/Kconfig
+> > +++ b/arch/arm64/Kconfig
+> > @@ -993,8 +993,13 @@ config SCHED_CLUSTER
+> >         bool "Cluster scheduler support"
+> >         help
+> >           Cluster scheduler support improves the CPU scheduler's decision
+> > +         making when dealing with machines that have clusters of CPUs.
+> > +         Cluster usually means a couple of CPUs which are placed closely
+> > +         by sharing mid-level caches, last-level cache tags or internal
+> > +         busses. For example, on Hisilicon Kunpeng920, each 4 CPUs share
+> > +         LLC cache tags. This feature isn't a universal win because it
+> > +         can bring a cost of slightly increased overhead in some places.
+> > +         If unsure say N here.
+> >
+> >  config SCHED_SMT
+> >         bool "SMT scheduler support"
+> > diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> > index bd27b1cdac34..940eb1fe0abb 100644
+> > --- a/arch/x86/Kconfig
+> > +++ b/arch/x86/Kconfig
+> > @@ -1002,12 +1002,17 @@ config NR_CPUS
+> >           to the kernel image.
+> >
+> >  config SCHED_CLUSTER
+> > +       def_bool y
+> > +       prompt "Cluster scheduler support"
+> >         help
+> >          Cluster scheduler support improves the CPU scheduler's decision
+> > +        making when dealing with machines that have clusters of CPUs.
+> > +        Cluster usually means a couple of CPUs which are placed closely
+> > +        by sharing mid-level caches, last-level cache tags or internal
+> > +        busses. For example, on x86 Jacobsville, each 4 CPUs share one
+> > +        L2 cache.
+>
+>                         This feature isn't a universal win because it can bring
+> > +        a cost of slightly increased overhead in some places. If unsure
+> > +        say N here.
+>
+> That is a really odd addition to a default-y feature.
+>
+> How about I make both:
+>
+>         help
+>           Cluster scheduler support improves the CPU scheduler's decision
+>           making when dealing with machines that have clusters of CPUs.
+>           Cluster usually means a couple of CPUs which are placed closely
+>           by sharing mid-level caches, last-level cache tags or internal
+>           busses.
 
-Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
+looks good to me. thanks!
 
-
-> ---
->  drivers/video/backlight/qcom-wled.c | 13 ++++++++++---
->  1 file changed, 10 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/video/backlight/qcom-wled.c b/drivers/video/backlight/qcom-wled.c
-> index d094299c2a48..6af808af2328 100644
-> --- a/drivers/video/backlight/qcom-wled.c
-> +++ b/drivers/video/backlight/qcom-wled.c
-> @@ -1528,11 +1528,18 @@ static int wled_configure(struct wled *wled)
->  	string_len = of_property_count_elems_of_size(dev->of_node,
->  						     "qcom,enabled-strings",
->  						     sizeof(u32));
-> -	if (string_len > 0)
-> -		of_property_read_u32_array(dev->of_node,
-> +	if (string_len > 0) {
-> +		rc = of_property_read_u32_array(dev->of_node,
->  						"qcom,enabled-strings",
->  						wled->cfg.enabled_strings,
-> -						sizeof(u32));
-> +						string_len);
-> +		if (rc) {
-> +			dev_err(dev, "Failed to read %d elements from "
-> +				"qcom,enabled-strings: %d\n",
-> +				string_len, rc);
-> +			return -EINVAL;
-> +		}
-> +	}
->  
->  	return 0;
->  }
-> -- 
-> 2.33.0
-> 
+barry
