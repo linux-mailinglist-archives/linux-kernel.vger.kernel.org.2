@@ -2,126 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 428A242323F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 22:43:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DD82423241
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 22:43:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235546AbhJEUpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 16:45:23 -0400
-Received: from mga05.intel.com ([192.55.52.43]:29026 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230019AbhJEUpW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 16:45:22 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10128"; a="312056904"
-X-IronPort-AV: E=Sophos;i="5.85,349,1624345200"; 
-   d="scan'208";a="312056904"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2021 13:42:25 -0700
-X-IronPort-AV: E=Sophos;i="5.85,349,1624345200"; 
-   d="scan'208";a="523981090"
-Received: from ftbalow-mobl.amr.corp.intel.com (HELO [10.212.210.174]) ([10.212.210.174])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2021 13:42:24 -0700
-Subject: Re: [PATCH v8 02/11] x86/tdx: Introduce INTEL_TDX_GUEST config option
-To:     Sean Christopherson <seanjc@google.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
-        VMware Inc <pv-drivers@vmware.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, Peter H Anvin <hpa@zytor.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        linux-kernel@vger.kernel.org
-References: <20211005025205.1784480-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211005025205.1784480-3-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211005201758.o5eikzp33kfepdag@treble> <YVy2mfCyvasXIOYn@google.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
- oAiUXvGAOxPDsB/P6UEOISPpLl5IuYsSwAeZGkdQ5g6m1xq7AlDJQZddhr/1DC/nMVa/2BoY
- 2UnKuZuSBu7lgOE193+7Uks3416N2hTkyKUSNkduyoZ9F5twiBhxPJwPtn/wnch6n5RsoXsb
- ygOEDxLEsSk/7eyFycjE+btUtAWZtx+HseyaGfqkZK0Z9bT1lsaHecmB203xShwCPT49Blxz
- VOab8668QpaEOdLGhtvrVYVK7x4skyT3nGWcgDCl5/Vp3TWA4K+IofwvXzX2ON/Mj7aQwf5W
- iC+3nWC7q0uxKwwsddJ0Nu+dpA/UORQWa1NiAftEoSpk5+nUUi0WE+5DRm0H+TXKBWMGNCFn
- c6+EKg5zQaa8KqymHcOrSXNPmzJuXvDQ8uj2J8XuzCZfK4uy1+YdIr0yyEMI7mdh4KX50LO1
- pmowEqDh7dLShTOif/7UtQYrzYq9cPnjU2ZW4qd5Qz2joSGTG9eCXLz5PRe5SqHxv6ljk8mb
- ApNuY7bOXO/A7T2j5RwXIlcmssqIjBcxsRRoIbpCwWWGjkYjzYCjgsNFL6rt4OL11OUF37wL
- QcTl7fbCGv53KfKPdYD5hcbguLKi/aCccJK18ZwNjFhqr4MliQARAQABzShEYXZpZCBDaHJp
- c3RvcGhlciBIYW5zZW4gPGRhdmVAc3I3MS5uZXQ+wsF7BBMBAgAlAhsDBgsJCAcDAgYVCAIJ
- CgsEFgIDAQIeAQIXgAUCTo3k0QIZAQAKCRBoNZUwcMmSsMO2D/421Xg8pimb9mPzM5N7khT0
- 2MCnaGssU1T59YPE25kYdx2HntwdO0JA27Wn9xx5zYijOe6B21ufrvsyv42auCO85+oFJWfE
- K2R/IpLle09GDx5tcEmMAHX6KSxpHmGuJmUPibHVbfep2aCh9lKaDqQR07gXXWK5/yU1Dx0r
- VVFRaHTasp9fZ9AmY4K9/BSA3VkQ8v3OrxNty3OdsrmTTzO91YszpdbjjEFZK53zXy6tUD2d
- e1i0kBBS6NLAAsqEtneplz88T/v7MpLmpY30N9gQU3QyRC50jJ7LU9RazMjUQY1WohVsR56d
- ORqFxS8ChhyJs7BI34vQusYHDTp6PnZHUppb9WIzjeWlC7Jc8lSBDlEWodmqQQgp5+6AfhTD
- kDv1a+W5+ncq+Uo63WHRiCPuyt4di4/0zo28RVcjtzlGBZtmz2EIC3vUfmoZbO/Gn6EKbYAn
- rzz3iU/JWV8DwQ+sZSGu0HmvYMt6t5SmqWQo/hyHtA7uF5Wxtu1lCgolSQw4t49ZuOyOnQi5
- f8R3nE7lpVCSF1TT+h8kMvFPv3VG7KunyjHr3sEptYxQs4VRxqeirSuyBv1TyxT+LdTm6j4a
- mulOWf+YtFRAgIYyyN5YOepDEBv4LUM8Tz98lZiNMlFyRMNrsLV6Pv6SxhrMxbT6TNVS5D+6
- UorTLotDZKp5+M7BTQRUY85qARAAsgMW71BIXRgxjYNCYQ3Xs8k3TfAvQRbHccky50h99TUY
- sqdULbsb3KhmY29raw1bgmyM0a4DGS1YKN7qazCDsdQlxIJp9t2YYdBKXVRzPCCsfWe1dK/q
- 66UVhRPP8EGZ4CmFYuPTxqGY+dGRInxCeap/xzbKdvmPm01Iw3YFjAE4PQ4hTMr/H76KoDbD
- cq62U50oKC83ca/PRRh2QqEqACvIH4BR7jueAZSPEDnzwxvVgzyeuhwqHY05QRK/wsKuhq7s
- UuYtmN92Fasbxbw2tbVLZfoidklikvZAmotg0dwcFTjSRGEg0Gr3p/xBzJWNavFZZ95Rj7Et
- db0lCt0HDSY5q4GMR+SrFbH+jzUY/ZqfGdZCBqo0cdPPp58krVgtIGR+ja2Mkva6ah94/oQN
- lnCOw3udS+Eb/aRcM6detZr7XOngvxsWolBrhwTQFT9D2NH6ryAuvKd6yyAFt3/e7r+HHtkU
- kOy27D7IpjngqP+b4EumELI/NxPgIqT69PQmo9IZaI/oRaKorYnDaZrMXViqDrFdD37XELwQ
- gmLoSm2VfbOYY7fap/AhPOgOYOSqg3/Nxcapv71yoBzRRxOc4FxmZ65mn+q3rEM27yRztBW9
- AnCKIc66T2i92HqXCw6AgoBJRjBkI3QnEkPgohQkZdAb8o9WGVKpfmZKbYBo4pEAEQEAAcLB
- XwQYAQIACQUCVGPOagIbDAAKCRBoNZUwcMmSsJeCEACCh7P/aaOLKWQxcnw47p4phIVR6pVL
- e4IEdR7Jf7ZL00s3vKSNT+nRqdl1ugJx9Ymsp8kXKMk9GSfmZpuMQB9c6io1qZc6nW/3TtvK
- pNGz7KPPtaDzvKA4S5tfrWPnDr7n15AU5vsIZvgMjU42gkbemkjJwP0B1RkifIK60yQqAAlT
- YZ14P0dIPdIPIlfEPiAWcg5BtLQU4Wg3cNQdpWrCJ1E3m/RIlXy/2Y3YOVVohfSy+4kvvYU3
- lXUdPb04UPw4VWwjcVZPg7cgR7Izion61bGHqVqURgSALt2yvHl7cr68NYoFkzbNsGsye9ft
- M9ozM23JSgMkRylPSXTeh5JIK9pz2+etco3AfLCKtaRVysjvpysukmWMTrx8QnI5Nn5MOlJj
- 1Ov4/50JY9pXzgIDVSrgy6LYSMc4vKZ3QfCY7ipLRORyalFDF3j5AGCMRENJjHPD6O7bl3Xo
- 4DzMID+8eucbXxKiNEbs21IqBZbbKdY1GkcEGTE7AnkA3Y6YB7I/j9mQ3hCgm5muJuhM/2Fr
- OPsw5tV/LmQ5GXH0JQ/TZXWygyRFyyI2FqNTx4WHqUn3yFj8rwTAU1tluRUYyeLy0ayUlKBH
- ybj0N71vWO936MqP6haFERzuPAIpxj2ezwu0xb1GjTk4ynna6h5GjnKgdfOWoRtoWndMZxbA
- z5cecg==
-Message-ID: <6682234f-06d8-1e66-07e6-446358e2e181@intel.com>
-Date:   Tue, 5 Oct 2021 13:42:22 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S236205AbhJEUp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 16:45:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48920 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235949AbhJEUp0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 16:45:26 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04AA2C061753;
+        Tue,  5 Oct 2021 13:43:35 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id f9so1525576edx.4;
+        Tue, 05 Oct 2021 13:43:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Og2M5waf4fA2uPXVR7x75f+2DQk+Er2YOKkUnKX3nZk=;
+        b=ap2vC8X6KAv1QHqhkz2q8YofK57fi+puC8XosK5Nz10ZYlMruG5LLHwPvClyBQpMWm
+         8berVuZXF7txYIkit8yuznvzVaI7C5Ow7olHViNWKOyjE1GPlrb/sEujo/OeYcpMl0yW
+         MGc36PE5YBgGXJINGW+BwkKb5gAXA54fzGFdXkIYFvAG+LRXz6brZlhNz6Onv6ydLvPA
+         M1TbBxjrpifn65fpmH8mxNkDUY/1J/M2fyK2AKDW0b1wpD9gYXodLEHKlntCWBUDgknL
+         yl+rJICcXGUvjFf6Cs7+U754p4ffpaW1FLQULNv0meKZUU91HvWYgH0yiQIxMZeBSLcY
+         EZ8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Og2M5waf4fA2uPXVR7x75f+2DQk+Er2YOKkUnKX3nZk=;
+        b=rhumTp6UJyJII+Nocf6isD35feiC6s4nGHv4PU40qDPV3BWOdt1hMNioCMh0BvIK4q
+         ixEnopPyHd7Po4majZPrOfYDXbLXyU4q20LWP5wgTLZGFUmlaTGgWXydmJAjz6u0g94q
+         zf+6FxhqannxHHP37A2atp1O5XVJYoFYeB0KJe1qRW4gYCFboKyvftwuZ7vDpKSs9asT
+         8DtoX0BDDN8xT21woXWQ7xgpWLJeE/JeDjak3QqPtAbzPwGRgSm228boIGjksmbtujPN
+         Cy/6vRMWxZISb2lMnGDODveoFHa6A0/7uQrzzgYm8HPcJr60w67O3sMmC9bMZkSk2g/H
+         /yfQ==
+X-Gm-Message-State: AOAM531LRHTj/4q96TC8unNBQJOSfdKKKQagFoTMs4ajcpYkSxmgeeqk
+        pOvHi1TkwJxobJJhO6vbfcS/EQ1l62OcZCrmc6U=
+X-Google-Smtp-Source: ABdhPJwy6b5QSPhwn9KbIlfOEPHwI/1HnWTI9L+Y+T7NDIRuCf954BxzRKe+Af1JsOXVAXjVYwbdF768KuUur7Usvb8=
+X-Received: by 2002:a17:906:280f:: with SMTP id r15mr26029552ejc.559.1633466613592;
+ Tue, 05 Oct 2021 13:43:33 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YVy2mfCyvasXIOYn@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210924085104.44806-1-21cnbao@gmail.com> <20210924085104.44806-2-21cnbao@gmail.com>
+ <87o883l9c8.mognet@arm.com>
+In-Reply-To: <87o883l9c8.mognet@arm.com>
+From:   Barry Song <21cnbao@gmail.com>
+Date:   Wed, 6 Oct 2021 09:43:22 +1300
+Message-ID: <CAGsJ_4zCYjha8E6km9fDO8gFR-_vO1Nr0=a7V-b9yLRZGGAC9g@mail.gmail.com>
+Subject: Re: [PATCH RESEND 1/3] topology: Represent clusters of CPUs within a die
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Ben Segall <bsegall@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Guodong Xu <guodong.xu@linaro.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        "Cc: Len Brown" <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        LAK <linux-arm-kernel@lists.infradead.org>,
+        Linuxarm <linuxarm@huawei.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mel Gorman <mgorman@suse.de>, msys.mizuma@gmail.com,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Will Deacon <will@kernel.org>, x86 <x86@kernel.org>,
+        yangyicong <yangyicong@huawei.com>,
+        Tian Tao <tiantao6@hisilicon.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/5/21 1:33 PM, Sean Christopherson wrote:
-> On Tue, Oct 05, 2021, Josh Poimboeuf wrote:
->> On Mon, Oct 04, 2021 at 07:51:56PM -0700, Kuppuswamy Sathyanarayanan wrote:
->>> +config INTEL_TDX_GUEST
->>> +	bool "Intel Trusted Domain eXtensions Guest Support"
->> ...
->>
->>> +	  Provide support for running in a trusted domain on Intel processors
->>> +	  equipped with Trusted Domain eXtensions. TDX is a Intel technology
->> I haven't seen this particular punctuation "eXtensions" anywhere.  Intel
->> documentation writes it as "Extensions".  Better to be consistent.
+On Wed, Oct 6, 2021 at 5:34 AM Valentin Schneider
+<valentin.schneider@arm.com> wrote:
+>
+> On 24/09/21 20:51, Barry Song wrote:
+> >  void update_siblings_masks(unsigned int cpuid)
+> >  {
+> >       struct cpu_topology *cpu_topo, *cpuid_topo = &cpu_topology[cpuid];
+> > @@ -617,6 +622,11 @@ void update_siblings_masks(unsigned int cpuid)
+> >               if (cpuid_topo->package_id != cpu_topo->package_id)
+> >                       continue;
+> >
+> > +             if (cpuid_topo->cluster_id == cpu_topo->cluster_id) {
+> > +                     cpumask_set_cpu(cpu, &cpuid_topo->cluster_sibling);
+> > +                     cpumask_set_cpu(cpuid, &cpu_topo->cluster_sibling);
+> > +             }
+> > +
+>
+> Hm so without cluster information (e.g. DT system), we have
+> ->cluster_id=-1, we'll essentially copy the package mask into the cluster
+> mask.
+>
+> The exposed cluster mask is still <= package mask which is sensible. Are we
+> fine with that, or do we need/want the mask to be empty in the -1 case? I'm
+> guessing userspace tools should check for either id!=-1 or if the exclusive
+> disjucntion of cluster vs package masks is non-empty.
 
-It's less about what Intel calls it and more defining acronyms by
-capitalizing the letters used in the acronym.  This:
+Hi Valentin,
+Yep, this is a very good question. I'd like change the code to:
+diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
+index 7cb31d959f33..fc0836f460fb 100644
+--- a/drivers/base/arch_topology.c
++++ b/drivers/base/arch_topology.c
+@@ -622,7 +622,8 @@ void update_siblings_masks(unsigned int cpuid)
+                if (cpuid_topo->package_id != cpu_topo->package_id)
+                        continue;
 
-	git log -p arch/x86/ | grep eXtension
+-               if (cpuid_topo->cluster_id == cpu_topo->cluster_id) {
++               if (cpuid_topo->cluster_id == cpu_topo->cluster_id &&
++                   cpuid_topo->cluster_id != -1) {
+                        cpumask_set_cpu(cpu, &cpuid_topo->cluster_sibling);
+                        cpumask_set_cpu(cpuid, &cpu_topo->cluster_sibling);
+                }
 
-shows at least SGX and MPX in the past have done the "eXtension" thing.
+This should be consistent with Tim's patch3/3 for x86 in case
+id is BAD_APICID:
+static bool match_l2c(struct cpuinfo_x86 *c, struct cpuinfo_x86 *o)
+{
+        ...
+        /* Do not match if we do not have a valid APICID for cpu: */
+        if (per_cpu(cpu_l2c_id, cpu1) == BAD_APICID)
+                return false;
+        ...
+}
 
-So, yes, please pick one.  But, don't throw out "eXtension" because it
-hasn't been used before.  It has.  I'd also advise against using the
-Intel documentation as gospel here.  It's *not* a good example to
-blindly follow.
+Thanks
+Barry
