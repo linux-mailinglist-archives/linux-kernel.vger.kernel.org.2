@@ -2,100 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1AA5422A14
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:05:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93C034229F6
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:03:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235661AbhJEOHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 10:07:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38630 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235341AbhJEOHm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 10:07:42 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACBE0C061793
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 07:00:42 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id p11so26019240edy.10
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 07:00:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aSourPOIwSX7kx4jyt8e85SDL0DvMZa6V01c8HSKy7s=;
-        b=ShpvYaiHSDEent9VqRSGe92DSbd2o849TMh57/SY9s7UL0W7S7nCkcTLk5Gws8n2qi
-         cfy0duEhDL0KmuXrgNCWIePf95/Q8XmSlnqj3yFg6qJoXMjTDSgeBp5P8gCUZLVNaJm7
-         79SVyHrRJoT9j/VKPXLk/GGsYRJUY59Dn2YDqxz0nGcw7iDt+9cxGinQub7uQsYkfUFS
-         iDlkZsyJ5NzA6zpf7cvHUUMf96puZNaw9Bte+xas3N4kaFyixhX1KpJ6WxH4jmuE+YZR
-         3/3sIXkO5ja36pr3VWzlOfS/VdlQM4yF/gmeVTgsUJzUJzS5kdDw/fopYfhxlCwOIVAb
-         IsAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aSourPOIwSX7kx4jyt8e85SDL0DvMZa6V01c8HSKy7s=;
-        b=vbYJ7eVyArVyouohiNqQEfTGMhzJNK76SwgvBrMtCsolJeDJ0qQZrqgoTQPA6pqX5U
-         LU7oycHfGXsa0C9bJL4Vh7LGxWM8TEMoDjsWQwHLCLtUOOzAMtigZE2sopbBknJIwU7P
-         6WnuYWNnRSOQYjWxrmU9mV41R/HW93xFGAZvZVsQvyJBJN6n62OaRjfUXYFl7afxRN5X
-         lWascWDafKuVENtUtKovLGuwuv1d1dxj3TcGwMgZC2D1h3dJWQJ2/wnI6Qmz2eA3nMuf
-         I2aJdBU6Wug34wLl/aEepyaXfmPg3klcCkrKOSqSK7LLZW7VmI78gdDPbv00myiwV52k
-         rNXg==
-X-Gm-Message-State: AOAM531+vbYeX+baboRewk2kSAF9G6j/yOAQea1pYwBqQlRnXO34MpY7
-        NVZJym5rO/69PD3jHaRvmqFhjB9in2sPfvQSLJEP
-X-Google-Smtp-Source: ABdhPJzBSrn0DuVEY5bG4zQToeS/yKCGqXINeTqa9cNEui6CKXw/P7dsZycHt+cj+jNWxIvuvGOwRbZg6y3n+0Wv3v4=
-X-Received: by 2002:a17:906:3d22:: with SMTP id l2mr9820580ejf.187.1633442345839;
- Tue, 05 Oct 2021 06:59:05 -0700 (PDT)
+        id S235495AbhJEOEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 10:04:51 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:50016 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235946AbhJEOEb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 10:04:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=lk6JWB2KOp3ewiwXACvmReryVSjhtXfoVoFaRHFT30w=; b=1I4waaUYVzC6dE9DSzMJMIjfwX
+        uknVZVZeHPWi4TCzm5Wv1IS30qID6nFWTox0MJfhEEWQBdsI1VT9tlMhg+Cms5O7WTZIwhTGdwE7p
+        RuYj0EazVFHe9mYzGVfZUUVLlHCOt8FPA0RsPf8/340HweKC0nqSsJQTfeKflB/NtwJw=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mXl1U-009hb1-0Z; Tue, 05 Oct 2021 16:02:24 +0200
+Date:   Tue, 5 Oct 2021 16:02:23 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Yanfei Xu <yanfei.xu@windriver.com>,
+        syzbot+398e7dc692ddbbb4cfec@syzkaller.appspotmail.com,
+        "David S . Miller" <davem@davemloft.net>, hkallweit1@gmail.com,
+        kuba@kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 5.14 28/40] net: mdiobus: Fix memory leak in
+ __mdiobus_register
+Message-ID: <YVxa7w8JWOMPOQsp@lunn.ch>
+References: <20211005135020.214291-1-sashal@kernel.org>
+ <20211005135020.214291-28-sashal@kernel.org>
 MIME-Version: 1.0
-References: <20211005141934.705eaa1c@canb.auug.org.au>
-In-Reply-To: <20211005141934.705eaa1c@canb.auug.org.au>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Tue, 5 Oct 2021 09:58:55 -0400
-Message-ID: <CAHC9VhQxddE8b3F1giSXXWhY+YVrKh0HHtpe9KipSPYUMn8U=Q@mail.gmail.com>
-Subject: Re: linux-next: manual merge of the audit tree with the selinux tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Richard Guy Briggs <rgb@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211005135020.214291-28-sashal@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 4, 2021 at 11:19 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->
-> Hi all,
->
-> Today's linux-next merge of the audit tree got a conflict in:
->
->   include/uapi/linux/audit.h
->
-> between commit:
->
->   5bd2182d58e9 ("audit,io_uring,io-wq: add some basic audit support to io_uring")
->
-> from the selinux tree and commit:
->
->   571e5c0efcb2 ("audit: add OPENAT2 record to list "how" info")
->
-> from the audit tree.
+On Tue, Oct 05, 2021 at 09:50:07AM -0400, Sasha Levin wrote:
+> From: Yanfei Xu <yanfei.xu@windriver.com>
+> 
+> [ Upstream commit ab609f25d19858513919369ff3d9a63c02cd9e2e ]
+> 
+> Once device_register() failed, we should call put_device() to
+> decrement reference count for cleanup. Or it will cause memory
+> leak.
 
-Thanks Stephen, your fix below is correct and I'll make sure to
-mention this to Linus when sending the SELinux and audit trees to him
-during the next merge window.
+Hi Sasha
 
-> diff --cc include/uapi/linux/audit.h
-> index ecf1edd2affa,afa2472ad5d6..000000000000
-> --- a/include/uapi/linux/audit.h
-> +++ b/include/uapi/linux/audit.h
-> @@@ -118,7 -118,7 +118,8 @@@
->   #define AUDIT_TIME_ADJNTPVAL  1333    /* NTP value adjustment */
->   #define AUDIT_BPF             1334    /* BPF subsystem */
->   #define AUDIT_EVENT_LISTENER  1335    /* Task joined multicast read socket */
->  +#define AUDIT_URINGOP         1336    /* io_uring operation */
-> + #define AUDIT_OPENAT2         1337    /* Record showing openat2 how args */
->
->   #define AUDIT_AVC             1400    /* SE Linux avc denial or grant */
->   #define AUDIT_SELINUX_ERR     1401    /* Internal SE Linux Errors */
+https://lkml.org/lkml/2021/10/4/1427
 
--- 
-paul moore
-www.paul-moore.com
+Please don't backport for any stable kernel.
+
+	Andrew
