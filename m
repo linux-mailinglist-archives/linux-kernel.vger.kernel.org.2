@@ -2,86 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E84D04222C9
+	by mail.lfdr.de (Postfix) with ESMTP id 27CBA4222C7
 	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 11:53:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233501AbhJEJzg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 05:55:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36284 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233865AbhJEJzd (ORCPT
+        id S233864AbhJEJzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 05:55:31 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:39184 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233575AbhJEJzY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 05:55:33 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E72BCC061745;
-        Tue,  5 Oct 2021 02:53:42 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id b8so41701209edk.2;
-        Tue, 05 Oct 2021 02:53:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vqBff3Ef3KNLtTXqUihmgQLUfF7J6Ba5JI9GvX/qpqw=;
-        b=A3uwVvQgAcTvWB7YXnbKFFRpIKc27mwIRcaIf3CwkHwH+MMtxiOR1q/ZcnL0LqS6/c
-         8A0ErbtdihZhd36XSIVe8gEIyPuu03yxn7yxHmvKGL/kP4ypzlXhT0viiJdVR/bxOe9I
-         2eniBRKRpwmeRTLalPhCYOUj9w3rzxcSvpgGInpf4B09OiQ714+BvTSHy97AuN0zFBY0
-         Qh1yn62gVKElN2k9/a+2ihIfHukQGfdL2ye4kO7hb6zP+QZlSpSyr6/79kElYz7Xj2mR
-         JHe8cQWjjwGfl74xHUQWSQvdsUeOE+YRIm8NasfWQZlCUx7ZPglYAt7H/AwKOnFVesnv
-         gUlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vqBff3Ef3KNLtTXqUihmgQLUfF7J6Ba5JI9GvX/qpqw=;
-        b=nmSBB+Ye5OA37ucKi2jrznuagrqEZpGnocEWbO19atbUSUeP8QzZkwEtaIld2+BJd+
-         i2tc3lvebaMOwJ2E6Hm6icJMKKe4en2Bjcvs82x2ArCCITVXJVZJF8LYiR5xwK8rGO/q
-         txLhb+Jr/3d1zDombY0BIwcIhAlQIhN6Z0YZMFyKkmEIAsoKGKwSwFIFQ2u21Ldpuljt
-         3MTU1xwD/fOlxViawJ8C9ma/zWZcKAGrsnt2WbBXuhaIz4zpr9yzzFu2II2b4kZN/bN1
-         /rzmTBibg7cjt0s2sSwEDZ8j0USs4Pk+abdQFbr9A7otP+z7L5xEMl4xGu29pfD4n3eP
-         yJFA==
-X-Gm-Message-State: AOAM533sDCz2SbT7mo4aB8IE1XdLEAfP90QE/isp0EGPNmM6O8n2yH57
-        Yfi34IMyiH7YVYrHt19LX4qytgElTw2dZbgRfZI=
-X-Google-Smtp-Source: ABdhPJz+hqVZWNLge79zzbiDStrJDfBslZ9U/+CorMJUX7k31oAw3jV815Fy+7wdtKn+/QK6TtYq35XnNEsGws3vLok=
-X-Received: by 2002:a50:e188:: with SMTP id k8mr25656849edl.119.1633427620774;
- Tue, 05 Oct 2021 02:53:40 -0700 (PDT)
+        Tue, 5 Oct 2021 05:55:24 -0400
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1957xYTJ021079;
+        Tue, 5 Oct 2021 11:53:27 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=selector1;
+ bh=wweka5+rm/iZxNVCavZNRmcqK0qefYrjFKhGZb/g97Y=;
+ b=5Pqdj2/SmeSPMe7zFG/kAqPWpdJJePsriVkIqXr/UlhaOYy0RtpGzhOKsPp/oJ1zMdFG
+ h1vdGyQz7E0zK/29J6/pRU2O9gPXdO+q8cAPZ7JUjHvypKZkyGvTPpWjvCFh+S6+py11
+ N7YGuaL0t0C/vla+4xVH31rgB8WglUxOS8ZpUwitfBzML1eSjZcGVVsy1r+x3eEeyvDD
+ zY7ggSX3gdoqDJqfea9edmb/G+CnKsgk8BJugkI/5TMOXGfub5QQm5n9swBOYGe44JQB
+ vf2GdtGawoJLVauImZb0dgozVNxC0Jo/+5IIDDY3yR0XuI94qBj+3fNy8Z94mtSSVtFV ig== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3bgjt8rq5g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Oct 2021 11:53:27 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 3F5C310002A;
+        Tue,  5 Oct 2021 11:53:27 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 37BF8226FA7;
+        Tue,  5 Oct 2021 11:53:27 +0200 (CEST)
+Received: from localhost (10.75.127.45) by SFHDAG2NODE2.st.com (10.75.127.5)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 5 Oct 2021 11:53:26
+ +0200
+From:   Amelie Delaunay <amelie.delaunay@foss.st.com>
+To:     Minas Harutyunyan <hminas@synopsys.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
+        Amelie Delaunay <amelie.delaunay@foss.st.com>
+Subject: [PATCH 2/3] usb: dwc2: drd: fix dwc2_drd_role_sw_set when clock could be disabled
+Date:   Tue, 5 Oct 2021 11:53:04 +0200
+Message-ID: <20211005095305.66397-3-amelie.delaunay@foss.st.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20211005095305.66397-1-amelie.delaunay@foss.st.com>
+References: <20211005095305.66397-1-amelie.delaunay@foss.st.com>
 MIME-Version: 1.0
-References: <YVrM8VdLKZUt0i8R@kroah.com> <20211004121942.GA3343713@sol>
- <YVrz86m3+7wDSYlh@kuha.fi.intel.com> <20211004124701.GA3418302@sol>
- <YVr/t7AbmP/h08GX@kuha.fi.intel.com> <20211004141754.GA3510607@sol>
- <20211004152844.GA3825382@sol> <CAHp75VeBc3AN+5f680LeK8V6NpiiaPUTgE14FFonUM1W-xrjNA@mail.gmail.com>
- <20211005004035.GA29779@sol> <YVwLIWrqY9TRLjwG@smile.fi.intel.com> <YVwf7uzL1aydysVl@kuha.fi.intel.com>
-In-Reply-To: <YVwf7uzL1aydysVl@kuha.fi.intel.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 5 Oct 2021 12:53:04 +0300
-Message-ID: <CAHp75VfZPDwwvB1sqobSVmqjSePMBPw1igrYwaTkUkxC84cOqQ@mail.gmail.com>
-Subject: Re: linux 5.15-rc4: refcount underflow when unloading gpio-mockup
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     Kent Gibson <warthog618@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.45]
+X-ClientProxiedBy: SFHDAG1NODE3.st.com (10.75.127.3) To SFHDAG2NODE2.st.com
+ (10.75.127.5)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-10-04_05,2021-10-04_01,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 5, 2021 at 12:50 PM Heikki Krogerus
-<heikki.krogerus@linux.intel.com> wrote:
->
-> On Tue, Oct 05, 2021 at 11:21:53AM +0300, Andy Shevchenko wrote:
-> > On Tue, Oct 05, 2021 at 08:40:35AM +0800, Kent Gibson wrote:
+In case of USB_DR_MODE_PERIPHERAL, the OTG clock is disabled at the end of
+the probe (it is not the case if USB_DR_MODE_HOST or USB_DR_MODE_OTG).
+The clock is then enabled on udc_start.
+If dwc2_drd_role_sw_set is called before udc_start (it is the case if the
+usb cable is plugged at boot), GOTGCTL and GUSBCFG registers cannot be
+read/written, so session cannot be overridden.
+To avoid this case, check the ll_hw_enabled value and enable the clock if
+it is available, and disable it after the override.
 
-...
+Fixes: 17f934024e84 ("usb: dwc2: override PHY input signals with usb role switch support")
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+---
+ drivers/usb/dwc2/drd.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-> > I'll see what I can do about.
->
-> So, something like this (attached)?
-
-Actually I have sent another solution:
-https://lore.kernel.org/linux-gpio/20211005093731.62743-1-andriy.shevchenko@linux.intel.com/T/#u
-
+diff --git a/drivers/usb/dwc2/drd.c b/drivers/usb/dwc2/drd.c
+index 80eae88d76dd..99672360f34b 100644
+--- a/drivers/usb/dwc2/drd.c
++++ b/drivers/usb/dwc2/drd.c
+@@ -7,6 +7,7 @@
+  * Author(s): Amelie Delaunay <amelie.delaunay@st.com>
+  */
+ 
++#include <linux/clk.h>
+ #include <linux/iopoll.h>
+ #include <linux/platform_device.h>
+ #include <linux/usb/role.h>
+@@ -86,6 +87,20 @@ static int dwc2_drd_role_sw_set(struct usb_role_switch *sw, enum usb_role role)
+ 	}
+ #endif
+ 
++	/*
++	 * In case of USB_DR_MODE_PERIPHERAL, clock is disabled at the end of
++	 * the probe and enabled on udc_start.
++	 * If role-switch set is called before the udc_start, we need to enable
++	 * the clock to read/write GOTGCTL and GUSBCFG registers to override
++	 * mode and sessions. It is the case if cable is plugged at boot.
++	 */
++	if (!hsotg->ll_hw_enabled && hsotg->clk) {
++		int ret = clk_prepare_enable(hsotg->clk);
++
++		if (ret)
++			return ret;
++	}
++
+ 	spin_lock_irqsave(&hsotg->lock, flags);
+ 
+ 	if (role == USB_ROLE_HOST) {
+@@ -110,6 +125,9 @@ static int dwc2_drd_role_sw_set(struct usb_role_switch *sw, enum usb_role role)
+ 		/* This will raise a Connector ID Status Change Interrupt */
+ 		dwc2_force_mode(hsotg, role == USB_ROLE_HOST);
+ 
++	if (!hsotg->ll_hw_enabled && hsotg->clk)
++		clk_disable_unprepare(hsotg->clk);
++
+ 	dev_dbg(hsotg->dev, "%s-session valid\n",
+ 		role == USB_ROLE_NONE ? "No" :
+ 		role == USB_ROLE_HOST ? "A" : "B");
 -- 
-With Best Regards,
-Andy Shevchenko
+2.25.1
+
