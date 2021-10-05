@@ -2,92 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77F7742227C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 11:38:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89FDC42227F
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 11:38:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233602AbhJEJkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 05:40:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60818 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233472AbhJEJkP (ORCPT
+        id S233501AbhJEJkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 05:40:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39528 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233472AbhJEJk1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 05:40:15 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64752C061749
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 02:38:25 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id s15so8023751wrv.11
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 02:38:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=vt9oy+0kcElMx6lSJpjsV9uP82l0Z+RoA+ivzl5gLLQ=;
-        b=py36VqET7Mcd78BQTYkjhaGkz6+fhMmSLSICQIezDBrLNYaQ4htKIDZqTdBgNycNpV
-         UEnXtku01BKhzZo4K59hnJSf0mXC2DtG4d+7g1s8SmFcXtk0LpDf/brT7GQYRQsCvhFn
-         9emCFWPLaQM0DvrHvq2Ivibwx5F3AXpzgn6eczf6Xttaj1l1bm7zjj0MecyyLdgTaGtp
-         2lOV1VlUCvV93Y/NZInzWI1c1xTpCXrd/kX/tw3syYeRfPeW+5VcbbVODEq4lIS7z6qn
-         vq6XgzTvW5DDe8xp/NJj25+D8dqytOVAcE/xzOVKFELPxrBmGnJRwzZ7AjRDojsgLCg/
-         N3Iw==
+        Tue, 5 Oct 2021 05:40:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633426716;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=n2ablajv2gCgBYeJPHEpMUrKIOVkNd+b3atjbSFrddc=;
+        b=JZY5f0h9QOvA9nzVeNAjm90Q9Wn6IXulYPD81UPvfSWVNI4AB46NSudfd2BXvVkSPS7tS+
+        A3rHiZtA9Cbyl0tWdfgyGaApOwBKYWB+Vq6Wqn3Bv6myunTUucyyp5FsnIe5t7uf+kawt2
+        wocBuQqReotixbdUCcZqmLfDb7lgk6E=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-257-WqZ4gM_zMPCJraNKzfXDGA-1; Tue, 05 Oct 2021 05:38:35 -0400
+X-MC-Unique: WqZ4gM_zMPCJraNKzfXDGA-1
+Received: by mail-ed1-f70.google.com with SMTP id k2-20020a50ce42000000b003dadf140b15so8388060edj.19
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 02:38:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vt9oy+0kcElMx6lSJpjsV9uP82l0Z+RoA+ivzl5gLLQ=;
-        b=xVERoFJdt/IYLJ+kVZe1VRbZvxVUBcY4z54GrgOK53wzfB44Qy1kEsVBROEgNxQYW6
-         //tzbbIyYU0/d9h6AVSfrCwvCRGS8X4HhfIzg5Ao29Vul+vGqIOpGX9nrl5+kqaZox6d
-         o+axDoaVA/zzhiJkqVX8Mkr1kvDh5jkMMIQ5IS/41Wh/OpC0I7d7yoW33Kn8I+4V3fbo
-         n5CfMOadiw8lWdgPZtBbXG4/I82VMpINrdgJOZSSsZQyKAhLRieTX0fOszmd/07ucdFN
-         xYl7eeGEgx8CGncacDXMO1u8y9IhrxrPaT5grT9plD76qRASNhgwh3MMZ+MaZ0moFB+g
-         ZGWA==
-X-Gm-Message-State: AOAM532UBaCS2UaQKUAOM1og9ZIUzsHziV5+p81CtiAYmRyxdU+lmfy+
-        1P0Ge2rzx25wUKujxPKfGJbv2Q==
-X-Google-Smtp-Source: ABdhPJy2Cv4VLFXCmn/y9qaTgx5H3ZhL33c2RWwwNK7Ws33XZqkeaVtFR0N8phhQcgpM8qjPLyvO8A==
-X-Received: by 2002:adf:97cd:: with SMTP id t13mr20122276wrb.312.1633426703978;
-        Tue, 05 Oct 2021 02:38:23 -0700 (PDT)
-Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
-        by smtp.gmail.com with ESMTPSA id c185sm1321846wma.8.2021.10.05.02.38.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Oct 2021 02:38:23 -0700 (PDT)
-Date:   Tue, 5 Oct 2021 10:38:21 +0100
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Marijn Suijten <marijn.suijten@somainline.org>
-Cc:     phone-devel@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Martin Botka <martin.botka@somainline.org>,
-        Jami Kettunen <jami.kettunen@somainline.org>,
-        Pavel Dubrova <pashadubrova@gmail.com>,
-        Kiran Gunda <kgunda@codeaurora.org>,
-        Courtney Cavin <courtney.cavin@sonymobile.com>,
-        Bryan Wu <cooloney@gmail.com>, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 03/10] backlight: qcom-wled: Override num-strings when
- enabled-strings is set
-Message-ID: <20211005093821.6kj6wuoszz2ruodl@maple.lan>
-References: <20211004192741.621870-1-marijn.suijten@somainline.org>
- <20211004192741.621870-4-marijn.suijten@somainline.org>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=n2ablajv2gCgBYeJPHEpMUrKIOVkNd+b3atjbSFrddc=;
+        b=05+1m0DKzSGCf6d+TaNdDXUzxEQEXbkh9ULSdme3NhwVkrkXKZUKUrIK0Q4JHbO9lV
+         DDhcNDQ5aTRxsGt9b+gudDb67/hS3duTTDfTn59IHYgDeUD2NhXOPR8tHyaoEZ9F/bfe
+         W5VOYM+pPnHxKi3ZTdMYZRuDXecViLpV5V63CCgFvUMnT4D/9f0+ec7TPCQFCe1hJrZ/
+         fI7vFic54iLvV1fMzFEvqky7+PcsT1qXg7F59SqlUwfoOXYZdwEAGvE9dlhBv4uKXJRr
+         rH1DJxxV0xuTnJHhCDMlzagr3qskgTPCqxeKryZZlaY6eu6j0bqo1DGh3Ui0EZfdsgCp
+         MOcQ==
+X-Gm-Message-State: AOAM53320t2inYqru7BgDjlAjyIafLOK71OS0Nz28uc0QZq6j67Awafl
+        ilK78wB3jTJCo+tK73PyaYQk9V124tBHIBa2NiVbvKh1WiZ40w+wUIKJdto8lErs+k3pPKsQJ/0
+        DbcNl27k8mw4Wy4zMuMWu/j/y
+X-Received: by 2002:a05:6402:42d5:: with SMTP id i21mr25080409edc.14.1633426714366;
+        Tue, 05 Oct 2021 02:38:34 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwK+KMnSyUT3I651YmFN7W2jovRftriuXTNGSfTjg/rZz3ZiIye/SpfUhktb5wXtw619xAHhA==
+X-Received: by 2002:a05:6402:42d5:: with SMTP id i21mr25080386edc.14.1633426714120;
+        Tue, 05 Oct 2021 02:38:34 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
+        by smtp.gmail.com with ESMTPSA id bt24sm7563604ejb.77.2021.10.05.02.38.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Oct 2021 02:38:33 -0700 (PDT)
+Message-ID: <e734691b-e9e1-10a0-88ee-73d8fceb50f9@redhat.com>
+Date:   Tue, 5 Oct 2021 11:38:29 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211004192741.621870-4-marijn.suijten@somainline.org>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH v1] KVM: isolation: retain initial mask for kthread VM
+ worker
+Content-Language: en-US
+To:     Nitesh Narayan Lal <nitesh@redhat.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        seanjc@google.com, vkuznets@redhat.com, mtosatti@redhat.com,
+        tglx@linutronix.de, frederic@kernel.org, mingo@kernel.org,
+        nilal@redhat.com, Wanpeng Li <kernellwp@gmail.com>
+References: <20211004222639.239209-1-nitesh@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <20211004222639.239209-1-nitesh@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 04, 2021 at 09:27:34PM +0200, Marijn Suijten wrote:
-> DT-bindings do not specify num-strings as mandatory property, yet it is
-> required to be specified even if enabled-strings is used.  The length of
-> that property-array should already be enough to determine exactly which
-> and how many strings to enable.
-> 
-> Fixes: 775d2ffb4af6 ("backlight: qcom-wled: Restructure the driver for WLED3")
-> Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
-> Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+[+Wanpeng]
 
-Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
+On 05/10/21 00:26, Nitesh Narayan Lal wrote:
+> From: Marcelo Tosatti <mtosatti@redhat.com>
+> 
+> kvm_vm_worker_thread() creates a kthread VM worker and migrates it
+> to the parent cgroup using cgroup_attach_task_all() based on its
+> effective cpumask.
+> 
+> In an environment that is booted with the nohz_full kernel option, cgroup's
+> effective cpumask can also include CPUs running in nohz_full mode. These
+> CPUs often run SCHED_FIFO tasks which may result in the starvation of the
+> VM worker if it has been migrated to one of these CPUs.
+
+There are other effects of cgroups (e.g. memory accounting) than just 
+the cpumask; for v1 you could just skip the cpuset, but if 
+cgroup_attach_task_all is ever ported to v2's cgroup_attach_task, we 
+will not be able to separate the cpuset cgroup from the others.
+
+Why doesn't the scheduler move the task to a CPU that is not being 
+hogged by vCPU SCHED_FIFO tasks?  The parent cgroup should always have 
+one for userspace's own housekeeping.
+
+As an aside, if we decide that KVM's worker threads count as 
+housekeeping, you'd still want to bind the kthread to the housekeeping 
+CPUs(*).
+
+Paolo
+
+(*) switching from kthread_run to kthread_create+kthread_bind_mask
+
+> Since unbounded kernel threads allowed CPU mask already respects nohz_full
+> CPUs at the time of their setup (because of 9cc5b8656892: "isolcpus: Affine
+> unbound kernel threads to housekeeping cpus"), retain the initial CPU mask
+> for the kthread by stopping its migration to the parent cgroup's effective
+> CPUs.
+> 
+> Signed-off-by: Marcelo Tosatti <mtosatti@redhat.com>
+> Signed-off-by: Nitesh Narayan Lal <nitesh@redhat.com>
+> ---
+>   virt/kvm/kvm_main.c | 20 +++++++++++++++-----
+>   1 file changed, 15 insertions(+), 5 deletions(-)
+> 
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index 7851f3a1b5f7..87bc193fd020 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -56,6 +56,7 @@
+>   #include <asm/processor.h>
+>   #include <asm/ioctl.h>
+>   #include <linux/uaccess.h>
+> +#include <linux/sched/isolation.h>
+>   
+>   #include "coalesced_mmio.h"
+>   #include "async_pf.h"
+> @@ -5634,11 +5635,20 @@ static int kvm_vm_worker_thread(void *context)
+>   	if (err)
+>   		goto init_complete;
+>   
+> -	err = cgroup_attach_task_all(init_context->parent, current);
+> -	if (err) {
+> -		kvm_err("%s: cgroup_attach_task_all failed with err %d\n",
+> -			__func__, err);
+> -		goto init_complete;
+> +	/*
+> +	 * For nohz_full enabled environments, don't migrate the worker thread
+> +	 * to parent cgroup as its effective mask may have a CPU running in
+> +	 * nohz_full mode. nohz_full CPUs often run SCHED_FIFO task which could
+> +	 * result in starvation of the worker thread if it is pinned on the same
+> +	 * CPU.
+> +	 */
+> +	if (!housekeeping_enabled(HK_FLAG_KTHREAD)) {
+> +		err = cgroup_attach_task_all(init_context->parent, current);
+> +		if (err) {
+> +			kvm_err("%s: cgroup_attach_task_all failed with err %d\n",
+> +				__func__, err);
+> +			goto init_complete;
+> +		}
+>   	}
+>   
+>   	set_user_nice(current, task_nice(init_context->parent));
+> 
+
