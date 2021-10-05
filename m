@@ -2,111 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C8C3421F26
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 08:55:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7CEA421F23
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 08:54:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232531AbhJEG4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 02:56:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50690 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231816AbhJEG4p (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 02:56:45 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99637C061745
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 23:54:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=Qr22602shIdzzG2+Obu3zaMUVwn4jZ1NQIj+6vzc1lo=; b=P4J3v3j7xLp7hyJWqzhO0yGpj8
-        Xjzn5UPhR+dBYwUCMfMEpEY6kBEZfZIf7h9GQU6M5KlPR4T3E9t4zWarsuxneRlYJ2WAnE9934EZa
-        4AME/jedTwabAuyHP8YltPfLh7l6Qjb/cLFH1TNgqIgP7p31I4jnYJVNs50AQXgRkyaasqpWcb/oq
-        493+ts8zxHuPj3/qjhZRsjUqrKKiupnBEv5Zw6IeKIcTNEMksRcmpYAEpuiqJw7zSueaE0dI4AGge
-        UihAu33VdZ47vO4EhFDIY7i7rGi2o7FhFz13HZSdQ6nXlrpdS1nMWGTOFQeECFxmNE5BuxKWtBV6r
-        i6QUTB4Q==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mXeKW-0004jQ-1X; Tue, 05 Oct 2021 06:53:40 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id DE3739811EE; Tue,  5 Oct 2021 08:53:35 +0200 (CEST)
-Date:   Tue, 5 Oct 2021 08:53:35 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Nadav Amit <nadav.amit@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>, Peter Xu <peterx@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>,
-        Nick Piggin <npiggin@gmail.com>, x86@kernel.org
-Subject: Re: [PATCH 1/2] mm/mprotect: use mmu_gather
-Message-ID: <20211005065335.GG4323@worktop.programming.kicks-ass.net>
-References: <20210925205423.168858-1-namit@vmware.com>
- <20210925205423.168858-2-namit@vmware.com>
- <20211003121019.GF4323@worktop.programming.kicks-ass.net>
- <620B1A38-1457-4F77-8666-E73A318392B6@gmail.com>
+        id S232447AbhJEGz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 02:55:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39012 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230526AbhJEGzz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 02:55:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3180E6138F;
+        Tue,  5 Oct 2021 06:54:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633416845;
+        bh=b7QzjFO7hZD8ywQA6H3ZkbswlXTN6z1Bpr2GKwUdVzU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=j23HgdkHVmGIY0nYmkth4nMgVrSa3DVFN2Dv/+lXDkBtmVhrcDVWO9UlGh9lkAjx2
+         AvP1BzSAS6zxqU5BnGSlSPJiXf/hrtoYwj5yfvIZ6N5R2QmL1jfzvLEpshoXm9Z+DH
+         Tz5OhuCkE8QhreB3rdKAgNMVJhs8x8NO+tCdfAyQLcjQFFVeP+aMYEXHD1Ix5SQBh8
+         JdWbJ6C40ejjsii+HPs6JRXVv7KDzuHDH9ztFE7wnwycq0PsRCbX2Wu/yaq5XEBWbW
+         388Wxw3PBJFU0oG67yVygy39pZDiWn/QU5AKsxRJbKotvTAFG2RvH3zzPlPn9YTYj/
+         MvdEL9jmK2z4Q==
+Date:   Tue, 5 Oct 2021 14:53:59 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Frieder Schrempf <frieder@fris.de>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Frieder Schrempf <frieder.schrempf@kontron.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>
+Subject: Re: [PATCH 2/8] arm64: dts: imx8mm-kontron: Make sure SOC and DRAM
+ supply voltages are correct
+Message-ID: <20211005065358.GZ20743@dragon>
+References: <20210930155633.2745201-1-frieder@fris.de>
+ <20210930155633.2745201-3-frieder@fris.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <620B1A38-1457-4F77-8666-E73A318392B6@gmail.com>
+In-Reply-To: <20210930155633.2745201-3-frieder@fris.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 04, 2021 at 12:24:14PM -0700, Nadav Amit wrote:
+On Thu, Sep 30, 2021 at 05:56:25PM +0200, Frieder Schrempf wrote:
+> From: Frieder Schrempf <frieder.schrempf@kontron.de>
 > 
+> VDD_SOC should be 800 mV in suspend and 850 mV in run mode. VDD_DRAM
+> should be 950 mV for DDR clock frequencies of 1.5 GHz.
 > 
-> > On Oct 3, 2021, at 5:10 AM, Peter Zijlstra <peterz@infradead.org> wrote:
-> > 
-> > On Sat, Sep 25, 2021 at 01:54:22PM -0700, Nadav Amit wrote:
-> > 
-> >> @@ -338,25 +344,25 @@ static unsigned long change_protection_range(struct vm_area_struct *vma,
-> >> 	struct mm_struct *mm = vma->vm_mm;
-> >> 	pgd_t *pgd;
-> >> 	unsigned long next;
-> >> -	unsigned long start = addr;
-> >> 	unsigned long pages = 0;
-> >> +	struct mmu_gather tlb;
-> >> 
-> >> 	BUG_ON(addr >= end);
-> >> 	pgd = pgd_offset(mm, addr);
-> >> 	flush_cache_range(vma, addr, end);
-> >> 	inc_tlb_flush_pending(mm);
-> > 
-> > That seems unbalanced...
-> 
-> Bad rebase. Thanks for catching it!
-> 
-> > 
-> >> +	tlb_gather_mmu(&tlb, mm);
-> >> +	tlb_start_vma(&tlb, vma);
-> >> 	do {
-> >> 		next = pgd_addr_end(addr, end);
-> >> 		if (pgd_none_or_clear_bad(pgd))
-> >> 			continue;
-> >> -		pages += change_p4d_range(vma, pgd, addr, next, newprot,
-> >> +		pages += change_p4d_range(&tlb, vma, pgd, addr, next, newprot,
-> >> 					  cp_flags);
-> >> 	} while (pgd++, addr = next, addr != end);
-> >> 
-> >> -	/* Only flush the TLB if we actually modified any entries: */
-> >> -	if (pages)
-> >> -		flush_tlb_range(vma, start, end);
-> >> -	dec_tlb_flush_pending(mm);
-> > 
-> > ... seeing you do remove the extra decrement.
-> 
-> Is it really needed? We do not put this comment elsewhere for
-> tlb_finish_mmu(). But no problem, I’ll keep it.
+> This information is taken from the datasheet and the uboot-imx code.
 
--ENOPARSE, did you read decrement as comment? In any case, I don't
-particularly care about the comment, and tlb_*_mmu() imply the inc/dec
-thingies.
+I'm wondering where the existing settings were coming from?
 
-All I tried to do is point out that removing the dec but leaving the inc
-is somewhat inconsistent :-)
+Shawn
+
+> 
+> Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
+> ---
+>  arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-som.dtsi | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-som.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-som.dtsi
+> index 03b3516abd64..b12fb7ce6686 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-som.dtsi
+> +++ b/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-som.dtsi
+> @@ -92,10 +92,12 @@ regulators {
+>  			reg_vdd_soc: BUCK1 {
+>  				regulator-name = "buck1";
+>  				regulator-min-microvolt = <800000>;
+> -				regulator-max-microvolt = <900000>;
+> +				regulator-max-microvolt = <850000>;
+>  				regulator-boot-on;
+>  				regulator-always-on;
+>  				regulator-ramp-delay = <3125>;
+> +				nxp,dvs-run-voltage = <850000>;
+> +				nxp,dvs-standby-voltage = <800000>;
+>  			};
+>  
+>  			reg_vdd_arm: BUCK2 {
+> @@ -111,7 +113,7 @@ reg_vdd_arm: BUCK2 {
+>  			reg_vdd_dram: BUCK3 {
+>  				regulator-name = "buck3";
+>  				regulator-min-microvolt = <850000>;
+> -				regulator-max-microvolt = <900000>;
+> +				regulator-max-microvolt = <950000>;
+>  				regulator-boot-on;
+>  				regulator-always-on;
+>  			};
+> -- 
+> 2.33.0
+> 
