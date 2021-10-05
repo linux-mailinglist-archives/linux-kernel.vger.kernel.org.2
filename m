@@ -2,65 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE79D422830
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 15:45:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 935F54227D5
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 15:30:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235101AbhJENrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 09:47:16 -0400
-Received: from mga04.intel.com ([192.55.52.120]:2990 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235063AbhJENrO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 09:47:14 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10127"; a="224514276"
-X-IronPort-AV: E=Sophos;i="5.85,348,1624345200"; 
-   d="scan'208";a="224514276"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2021 06:30:50 -0700
-X-IronPort-AV: E=Sophos;i="5.85,348,1624345200"; 
-   d="scan'208";a="458055582"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2021 06:30:48 -0700
-Received: from andy by smile with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mXkWr-008tDS-Fa;
-        Tue, 05 Oct 2021 16:30:45 +0300
-Date:   Tue, 5 Oct 2021 16:30:45 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jiri Slaby <jirislaby@kernel.org>
-Subject: Re: [PATCH v1 1/2] serial: 8250_lpss: Extract
- dw8250_do_set_termios() for common use
-Message-ID: <YVxThfAznxsJVi+n@smile.fi.intel.com>
-References: <20211002185141.31652-1-andriy.shevchenko@linux.intel.com>
- <YVxKyOODe3ZWmnFZ@kroah.com>
+        id S235014AbhJENcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 09:32:39 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3934 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234103AbhJENci (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 09:32:38 -0400
+Received: from fraeml710-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HNz0T740vz67Lvm;
+        Tue,  5 Oct 2021 21:27:37 +0800 (CST)
+Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
+ fraeml710-chm.china.huawei.com (10.206.15.59) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Tue, 5 Oct 2021 15:30:45 +0200
+Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
+ fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2308.008;
+ Tue, 5 Oct 2021 15:30:45 +0200
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     Juergen Gross <jgross@suse.com>, Heiko Carstens <hca@linux.ibm.com>
+CC:     "gor@linux.ibm.com" <gor@linux.ibm.com>,
+        "borntraeger@de.ibm.com" <borntraeger@de.ibm.com>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: RE: [PATCH v2] s390: Fix strrchr() implementation
+Thread-Topic: [PATCH v2] s390: Fix strrchr() implementation
+Thread-Index: AQHXueHATFLOi7wt6E68WgfJPL6IPqvEQLAAgAACsICAACMUYA==
+Date:   Tue, 5 Oct 2021 13:30:45 +0000
+Message-ID: <923ea0761d4d45158acbd1347d9bb6b5@huawei.com>
+References: <20211005120836.60630-1-roberto.sassu@huawei.com>
+ <YVxP0OoUWQvhmqkq@osiris> <4eb4c1ea-d392-62fd-201f-472f24496f46@suse.com>
+In-Reply-To: <4eb4c1ea-d392-62fd-201f-472f24496f46@suse.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.221.98.153]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YVxKyOODe3ZWmnFZ@kroah.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05, 2021 at 02:53:28PM +0200, Greg Kroah-Hartman wrote:
-> On Sat, Oct 02, 2021 at 09:51:40PM +0300, Andy Shevchenko wrote:
-> > Some of the code currently used in dw8250_set_termios(), byt_set_termios()
-> > may be reused by other methods in the future. Extract it to a common helper
-> > function.
-
-...
-
-> > -		 * Premilinary set the uartclk to the new clock rate so the
-> > +		 * Preliminary set the uartclk to the new clock rate so the
-> 
-> Different change, not mentioned in the changelog, please make this a
-> separate patch.
-
-Done, v2 has been just sent.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+PiBGcm9tOiBKdWVyZ2VuIEdyb3NzIFttYWlsdG86amdyb3NzQHN1c2UuY29tXQ0KPiBTZW50OiBU
+dWVzZGF5LCBPY3RvYmVyIDUsIDIwMjEgMzoyNSBQTQ0KPiBPbiAwNS4xMC4yMSAxNToxNCwgSGVp
+a28gQ2Fyc3RlbnMgd3JvdGU6DQo+ID4gT24gVHVlLCBPY3QgMDUsIDIwMjEgYXQgMDI6MDg6MzZQ
+TSArMDIwMCwgUm9iZXJ0byBTYXNzdSB3cm90ZToNCj4gPj4gRml4IHR3byBwcm9ibGVtcyBmb3Vu
+ZCBpbiB0aGUgc3RycmNocigpIGltcGxlbWVudGF0aW9uIGZvciBzMzkwDQo+ID4+IGFyY2hpdGVj
+dHVyZXM6IGV2YWx1YXRlIGVtcHR5IHN0cmluZ3MgKHJldHVybiB0aGUgc3RyaW5nIGFkZHJlc3Mg
+aW5zdGVhZCBvZg0KPiA+PiBOVUxMLCBpZiAnXDAnIGlzIHBhc3NlZCBhcyBzZWNvbmQgYXJndW1l
+bnQpOyBldmFsdWF0ZSB0aGUgZmlyc3QgY2hhcmFjdGVyDQo+ID4+IG9mIG5vbi1lbXB0eSBzdHJp
+bmdzICh0aGUgY3VycmVudCBpbXBsZW1lbnRhdGlvbiBzdG9wcyBhdCB0aGUgc2Vjb25kKS4NCj4g
+Pj4NCj4gPj4gRml4ZXM6IDFkYTE3N2U0YzNmNCAoIkxpbnV4LTIuNi4xMi1yYzIiKQ0KPiA+PiBD
+Yzogc3RhYmxlQHZnZXIua2VybmVsLm9yZw0KPiA+PiBSZXBvcnRlZC1ieTogSGVpa28gQ2Fyc3Rl
+bnMgPGhjYUBsaW51eC5pYm0uY29tPiAoaW5jb3JyZWN0IGJlaGF2aW9yIHdpdGgNCj4gZW1wdHkg
+c3RyaW5ncykNCj4gPj4gU2lnbmVkLW9mZi1ieTogUm9iZXJ0byBTYXNzdSA8cm9iZXJ0by5zYXNz
+dUBodWF3ZWkuY29tPg0KPiA+PiAtLS0NCj4gPj4gICBhcmNoL3MzOTAvbGliL3N0cmluZy5jIHwg
+MTUgKysrKysrKy0tLS0tLS0tDQo+ID4+ICAgMSBmaWxlIGNoYW5nZWQsIDcgaW5zZXJ0aW9ucygr
+KSwgOCBkZWxldGlvbnMoLSkNCj4gPg0KPiA+IEFwcGxpZWQsIHRoYW5rcyENCj4gPg0KPiANCj4g
+UmVhbGx5PyBJIGp1c3Qgd2FudGVkIHRvIHdyaXRlIGEgcmVzcG9uc2U6IGxlbiBpcyB1bnNpZ25l
+ZCAoc2l6ZV90KQ0KPiBhbmQgY29tcGFyZWQgdG8gYmUgPj0gMCwgd2hpY2ggc291bmRzIGxpa2Ug
+YWx3YXlzIHRydWUuDQoNClRoYW5rcyBmb3IgY2F0Y2hpbmcgdGhpcy4gV2lsbCBmaXggaXQuDQoN
+ClJvYmVydG8NCg0KSFVBV0VJIFRFQ0hOT0xPR0lFUyBEdWVzc2VsZG9yZiBHbWJILCBIUkIgNTYw
+NjMNCk1hbmFnaW5nIERpcmVjdG9yOiBMaSBQZW5nLCBaaG9uZyBSb25naHVhDQo=
