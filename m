@@ -2,138 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A9CA423301
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 23:44:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BF1D423303
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 23:45:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236764AbhJEVqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 17:46:21 -0400
-Received: from smtp2.de.opalstack.com ([139.162.136.213]:42774 "EHLO
-        smtp2.de.opalstack.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236600AbhJEVqS (ORCPT
+        id S236773AbhJEVrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 17:47:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34952 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229974AbhJEVrB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 17:46:18 -0400
-Received: from jason.localnet (host-37-191-188-128.lynet.no [37.191.188.128])
-        by smtp2.de.opalstack.com (Postfix) with ESMTPSA id 5930C12D79C;
-        Tue,  5 Oct 2021 21:44:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=boddie.org.uk;
-        s=dkim; t=1633470264;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=N89vCJUW5C6PtAMTKhh3UWrrTYPPd5RQPb+6C/bnXP0=;
-        b=OBPnxKdiqKld2PpKdYUuuf2z2vVAzv9gylAWz0SapUlAh+v+UrgjvoAyMJTf+XRusgQcLf
-        +2Nt1sCaOh0Xi/crCfrZYEC6Y7vsepQ5rO5t4Y7twjBZH6ECF4xa2Nv+cHDdjYD++/fLoE
-        h4WAdxUzAT5gC6SX/v3jEuUzxAj0HOE=
-From:   Paul Boddie <paul@boddie.org.uk>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     "H. Nikolaus Schaller" <hns@goldelico.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        letux-kernel@openphoenux.org, Jon as Karlman <jonas@kwiboo.se>,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH v5 5/7] MIPS: DTS: jz4780: Account for Synopsys HDMI driver and LCD controllers
-Date:   Tue, 05 Oct 2021 23:44:12 +0200
-Message-ID: <3514743.EH6qe8WxYI@jason>
-In-Reply-To: <O7VI0R.CRIG8R7O0OOI3@crapouillou.net>
-References: <cover.1633436959.git.hns@goldelico.com> <c243176cb5e5a3ab5df1fe77f9246b6d5ec4f88e.1633436959.git.hns@goldelico.com> <O7VI0R.CRIG8R7O0OOI3@crapouillou.net>
+        Tue, 5 Oct 2021 17:47:01 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98EC3C061749;
+        Tue,  5 Oct 2021 14:45:10 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id j5so1700692lfg.8;
+        Tue, 05 Oct 2021 14:45:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7rbxU13hCRR7VNtMghpdfjVdrshNjD4ry7dhfbLByAY=;
+        b=Q07ixe2MgbpweeYDtyXyEgv+dP3TG4SAB2MVNy3uKo6iAMn45i0rJ2u0KfHq4jQjz8
+         uWXEAcovrKFjfsscARzCjN519xmJBcGIsjmB7z2qB5H4Bo64DoKbZC2ZsDUcyBvA09WZ
+         RoGEvtWEQIyKYXllb8FDo7EJTw6ZJkxOv0DNkh3Pui5BLs0OEJ9Nx2cyyrCsL3I9SkA9
+         UrvCkjUp/we0WCusUniFj+PmkrWfaPyN3Et0riar2OQJASlbqb6glkoOkfIMbMQWK+dU
+         FlQCplymi/p/jOKB2DmQaeeEvk3+iKVaoyhCs7SIYKngdWdVwqGLydZ5ebvPDLlW834C
+         E6mw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7rbxU13hCRR7VNtMghpdfjVdrshNjD4ry7dhfbLByAY=;
+        b=t00Mdic249QY77zMkL7BrhTNLGMXUTNqqfAUzonEvhAMeg5yGmReudtY/I9PjR5GSh
+         c6jpu4RgE3emwt3o7KQP9Yq0bDBJ/ryuJwYaqKemEusBX5Qp0WU5+BsE4HvyySYPVFHq
+         aSyoF1X8YOmRaLwnykwJWWgiq6wLAB7U6UkWfFfWyr0qB7XEM38YN8hs7Lf1QV77eUpS
+         0/nkUH+O8aLz1fm9e+TdYs6bnFVnAbx/OxjljKfmcdfVflXxVfgZX3r+fY8TWnXDxJYO
+         lqLBKU3UUpwu5+dry6CDcAlS2XHwX3MpuPF41BTZmFYc2WIrqGUBzgJKUGNxqtldMhaI
+         E/rg==
+X-Gm-Message-State: AOAM531KqzEa8etK85ZV8cESDKNQBxe9ycYofahkhUBKHBQFoU4HLumO
+        thmyxEOgxIIsoCwpSVMDSoU=
+X-Google-Smtp-Source: ABdhPJxQJgy3ahinA6WXe6sRnhSDKJuz6wSeiHzxPvCpY95PBROuNKZOmtWb6XrZSoh0MaoAvOTPwQ==
+X-Received: by 2002:a05:6512:6c9:: with SMTP id u9mr5582410lff.319.1633470307383;
+        Tue, 05 Oct 2021 14:45:07 -0700 (PDT)
+Received: from localhost.localdomain (h-155-4-129-96.NA.cust.bahnhof.se. [155.4.129.96])
+        by smtp.gmail.com with ESMTPSA id h10sm1054046lfp.7.2021.10.05.14.45.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Oct 2021 14:45:07 -0700 (PDT)
+From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     Bingbu Cao <bingbu.cao@intel.com>,
+        Tianshu Qiu <tian.shu.qiu@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Subject: [PATCH] media: staging/intel-ipu3: Constify static struct v4l2_subdev_internal_ops
+Date:   Tue,  5 Oct 2021 23:45:01 +0200
+Message-Id: <20211005214501.15453-1-rikard.falkeborn@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
-X-Spam-Status: No, score=1.66
-X-Spam-Level: *
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday, 5 October 2021 22:50:12 CEST Paul Cercueil wrote:
-> Hi Nikolaus & Paul,
->=20
-> Le mar., oct. 5 2021 at 14:29:17 +0200, H. Nikolaus Schaller=20
-<hns@goldelico.com> a =E9crit :
-> >=20
-> > diff --git a/arch/mips/boot/dts/ingenic/jz4780.dtsi
-> > b/arch/mips/boot/dts/ingenic/jz4780.dtsi
-> > index 9e34f433b9b5..c3c18a59c377 100644
-> > --- a/arch/mips/boot/dts/ingenic/jz4780.dtsi
-> > +++ b/arch/mips/boot/dts/ingenic/jz4780.dtsi
-> > @@ -424,6 +424,51 @@ i2c4: i2c@10054000 {
-> >=20
-> >  		status =3D "disabled";
-> >  =09
-> >  	};
-> >=20
-> > +	hdmi: hdmi@10180000 {
-> > +		compatible =3D "ingenic,jz4780-dw-hdmi";
-> > +		reg =3D <0x10180000 0x8000>;
-> > +		reg-io-width =3D <4>;
-> > +
-> > +		clocks =3D <&cgu JZ4780_CLK_AHB0>, <&cgu JZ4780_CLK_HDMI>;
-> > +		clock-names =3D "iahb", "isfr";
-> > +
-> > +		assigned-clocks =3D <&cgu JZ4780_CLK_HDMI>;
-> > +		assigned-clock-rates =3D <27000000>;
->=20
-> Any reason why this is set to 27 MHz? Is it even required? Because with
-> the current ci20.dts, it won't be clocked at anything but 48 MHz.
+The only usage of imgu_subdev_internal_ops is to assign its address to
+the internal_ops field in the v4l2_subdev struct, which is a pointer to
+const v4l2_subdev_internal_ops. Make it const to allow the compiler to
+put it in read-only memory.
 
-EXCLK will be 48MHz, but the aim is to set the HDMI peripheral clock to 27M=
-Hz,=20
-which is supposedly required. I vaguely recall a conversation about whether=
- we=20
-were doing this right, but I don't recall any conclusion.
+Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+---
+ drivers/staging/media/ipu3/ipu3-v4l2.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> > +
-> > +		interrupt-parent =3D <&intc>;
-> > +		interrupts =3D <3>;
-> > +
-> > +		/* ddc-i2c-bus =3D <&i2c4>; */
-> > +
-> > +		status =3D "disabled";
-> > +	};
-> > +
-> > +	lcdc0: lcdc0@13050000 {
-> > +		compatible =3D "ingenic,jz4780-lcd";
-> > +		reg =3D <0x13050000 0x1800>;
-> > +
-> > +		clocks =3D <&cgu JZ4780_CLK_TVE>, <&cgu JZ4780_CLK_LCD0PIXCLK>;
-> > +		clock-names =3D "lcd", "lcd_pclk";
-> > +
-> > +		interrupt-parent =3D <&intc>;
-> > +		interrupts =3D <31>;
-> > +
-> > +		status =3D "disabled";
->=20
-> I think you can keep lcdc0 enabled by default (not lcdc1 though), since
-> it is highly likely that you'd want that.
-
-As far as I know, the clock gating for the LCD controllers acts like a seri=
-es=20
-circuit, meaning that they both need to be enabled. Some testing seemed to=
-=20
-confirm this. Indeed, I seem to remember only enabling one clock and not=20
-getting any output until I figured this weird arrangement out.
-
-Paul
-
+diff --git a/drivers/staging/media/ipu3/ipu3-v4l2.c b/drivers/staging/media/ipu3/ipu3-v4l2.c
+index 38a240764509..b723186d2134 100644
+--- a/drivers/staging/media/ipu3/ipu3-v4l2.c
++++ b/drivers/staging/media/ipu3/ipu3-v4l2.c
+@@ -864,7 +864,7 @@ static int imgu_vidioc_g_meta_fmt(struct file *file, void *fh,
+ 
+ /******************** function pointers ********************/
+ 
+-static struct v4l2_subdev_internal_ops imgu_subdev_internal_ops = {
++static const struct v4l2_subdev_internal_ops imgu_subdev_internal_ops = {
+ 	.open = imgu_subdev_open,
+ };
+ 
+-- 
+2.33.0
 
