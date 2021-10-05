@@ -2,91 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 098CD422F7F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 19:58:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1D2E422F91
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 20:02:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229523AbhJESAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 14:00:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36716 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229626AbhJESAO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 14:00:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ECBF560F38;
-        Tue,  5 Oct 2021 17:58:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633456704;
-        bh=fGEQ/Kh6I+hpl2vaInO9ive8KNBkj7H+QlaS2vgQWPg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lfuUWu2adxlvevelEwEloBqVcapbe/s/56NvMxmycuIlkxafkigYvnTTK2Su0V/G0
-         fa7x20DnYpSBV7ZNu8wv84fC5sMUBRkwo+ZbprilphJwccj8Cf9RQkTnCvtxDaTy/J
-         gOV3AcZA/+W6aCY1LeW3nkt+dg+28MkSTyQr7uUk7tosvVEQfxuA9WDEmL6pom6MgI
-         IFsVKnec/CejMGWZm802zvBktm4h6A/sbNrKqSXcMJVbJGFphg0e6nK7TQaiXwmdII
-         h13ppKMJ7WD4Tl1M16OCUBQFaIDOHBsqRXFpwV1GylUkjDKgc5jAWWiaV26xPQD+dM
-         8Y7vhYDWi7n8Q==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 962B6410A1; Tue,  5 Oct 2021 14:58:21 -0300 (-03)
-Date:   Tue, 5 Oct 2021 14:58:21 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     John Garry <john.garry@huawei.com>
-Cc:     Andrew Kilroy <andrew.kilroy@arm.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 4/4] perf vendor events: Add the Neoverse V1 to arm64
- mapfile
-Message-ID: <YVySPe1LRz4bGZFy@kernel.org>
-References: <20211004160008.21645-1-andrew.kilroy@arm.com>
- <20211004160008.21645-4-andrew.kilroy@arm.com>
- <424d066b-30d5-4512-bd8c-15b700af2864@huawei.com>
+        id S232831AbhJESD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 14:03:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39508 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229796AbhJESDz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 14:03:55 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07EEAC06174E
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 11:02:04 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id p11so2016025edy.10
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 11:02:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rasmusvillemoes.dk; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=8soODRKahVCrtRlGdz3itpTz6efHriNTM+iAlgAUdyU=;
+        b=bYv7DnuO0RwkyA+l2MKeegZst/fh5ECeydJbnQ9QG8NQQ8b2dDTFDpxbhrFgAtrWcO
+         PNfl0qr8UxOX9DiiorStolrwbPL57AOAtego0kcSajMSiwv3CSlTuVg3egOK6yxfa4Sw
+         MEz6Stdn1nAyy5hLsBb1h69M0tzHD+xBqEThU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=8soODRKahVCrtRlGdz3itpTz6efHriNTM+iAlgAUdyU=;
+        b=tJXsOkp0inHbPHPrNt0ZigeSXM2Q7s5rN/bEB3k9fH9J56wcbPdli0ogXu5ZPfx6bS
+         kc2lTw0BpVMz3Zzs/HiT4U2XKEbGaLCoYfm6cP/mqThwOhYqtmYSouNjlvTLzPpM5Uz/
+         /dJSTvmHa6g1P3pzRii/df7Qk/i/EPaEXddFNAhK5j2frvjSHY3WFQtE+ro6o+dhdQlf
+         uC1OmbL2Ot6ATn9xtZGAQmwreW/5VnJa01gcgZ77JcUmuF9VMRVfZFntIi6SIljcaIky
+         PO/c8LX8b3oqTdgCdz/mbnPCmFT8+Nunj5jfwbg7keF8CTlvUdNsd+YFyfbnGS+7OvKB
+         r2QQ==
+X-Gm-Message-State: AOAM531fPJRvRswKd7RQ1CN016liLg+9QeoKDZHZIVIeoqWQ4nmYYFEi
+        Wbho1RyfBphI9pDWxcQt/uG2Wg==
+X-Google-Smtp-Source: ABdhPJztLA+4bqrgciuGWV2Utz46byIwXyxUhs5Eyhx9lSWiXnu0KLr/rnzC3xlvcwqMkfGmPec67Q==
+X-Received: by 2002:a17:906:c317:: with SMTP id s23mr23300124ejz.127.1633456922542;
+        Tue, 05 Oct 2021 11:02:02 -0700 (PDT)
+Received: from [192.168.1.149] ([80.208.69.72])
+        by smtp.gmail.com with ESMTPSA id e7sm9799784edk.3.2021.10.05.11.02.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Oct 2021 11:02:02 -0700 (PDT)
+Subject: Re: [RFC][PATCH] rcu: Use typeof(p) instead of typeof(*p) *
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        David Miller <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, rcu@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org
+References: <20211005094728.203ecef2@gandalf.local.home>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <ef5b1654-1f75-da82-cab8-248319efbe3f@rasmusvillemoes.dk>
+Date:   Tue, 5 Oct 2021 20:01:59 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <424d066b-30d5-4512-bd8c-15b700af2864@huawei.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20211005094728.203ecef2@gandalf.local.home>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Oct 05, 2021 at 10:33:49AM +0100, John Garry escreveu:
-> On 04/10/2021 17:00, Andrew Kilroy wrote:
-> > This is so that performance counters for the Neoverse V1 appear
-> > categorised upon running 'perf list' on the CPU.
-> > 
+On 05/10/2021 15.47, Steven Rostedt wrote:
+
+> That is, instead of declaring: typeof(*p) *_p; just do:
+>  typeof(p) _p;
 > 
-> this really belongs with the previous patch
+> Also had to update a lot of the function pointer initialization in the
+> networking code, as a function address must be passed as an argument in
+> RCU_INIT_POINTER() 
 
-Waiting for a resolution on this one.
+I would think that one could avoid that churn by saying
 
-- Arnaldo
- 
-> Thanks,
-> John
-> 
-> > Signed-off-by: Andrew Kilroy <andrew.kilroy@arm.com>
-> > ---
-> >   tools/perf/pmu-events/arch/arm64/mapfile.csv | 1 +
-> >   1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/tools/perf/pmu-events/arch/arm64/mapfile.csv b/tools/perf/pmu-events/arch/arm64/mapfile.csv
-> > index c43591d831b8..31d8b57ca9bb 100644
-> > --- a/tools/perf/pmu-events/arch/arm64/mapfile.csv
-> > +++ b/tools/perf/pmu-events/arch/arm64/mapfile.csv
-> > @@ -18,6 +18,7 @@
-> >   0x00000000410fd080,v1,arm/cortex-a57-a72,core
-> >   0x00000000410fd0b0,v1,arm/cortex-a76-n1,core
-> >   0x00000000410fd0c0,v1,arm/cortex-a76-n1,core
-> > +0x00000000410fd400,v1,arm/neoverse-v1,core
-> >   0x00000000420f5160,v1,cavium/thunderx2,core
-> >   0x00000000430f0af0,v1,cavium/thunderx2,core
-> >   0x00000000460f0010,v1,fujitsu/a64fx,core
-> > 
+  typeof((p) + 0)
 
--- 
+instead of just "typeof(p)", to force the decay to a pointer.
 
-- Arnaldo
+Rasmus
