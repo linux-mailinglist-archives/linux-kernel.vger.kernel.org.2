@@ -2,151 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A59354223BD
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 12:42:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 182444223BF
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 12:42:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234091AbhJEKoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 06:44:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47872 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233077AbhJEKoM (ORCPT
+        id S234107AbhJEKop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 06:44:45 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21111 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233490AbhJEKon (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 06:44:12 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4676C061749
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 03:42:20 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id m42so5432798wms.2
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 03:42:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=pVmRMn4rUtOm+1OEO0FywEMDowWiLVKHkRDbrijKrwg=;
-        b=ZS4YWF0OVkd9jDh40UlLY2uWt9d78SYkfjqGVKzM8G7JktwnA3ZteL30wEy+4PTRQ4
-         XemlL5BOCByzoBuNx8gMHUkinaI3VAsxs3agCljtjM2BJ4R7QMgIr2glQ/g0PXhB2nCR
-         tsfYgj9lJY3iPWBf/OmK4QTrupPJGVj1MdGUb2lHG5tt3aYvEPIFvmZPqkNkvOHH2EqN
-         juUBaWFSztsy/ioPPpV+e4Vr+Iv7Ce5UflDsH3oMJUoTR8y9CjLz6P/xHautUGrUdYNm
-         8nDQjmCoHgV7KEXm3LLN3JPxmk+wXRxcZ1j7ig9qgk6ZPKxaQxptiOnOorsFd6RyEciP
-         AKuA==
+        Tue, 5 Oct 2021 06:44:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633430573;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=bnN0iAzDh/S8fsii9MloUrds9D80Vyvt+Eh8JOcls+c=;
+        b=jAAGSj/1A9pe5/4ev1aSj2zdS6zPNf/13cTpMXeDaPa/wMUOiiIqVobXYAAEzfjh54W0Nb
+        PUT/OEzxTFkYyyvY924F3A4W6uj0CVAGxMdFdWU+GGJVSwdQm6zRxaGFSOcMOJ/FCvz7aN
+        UOE7/X39LkN4xlfs3B8G2gxA2MQiGcM=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-381-ExL-mijlMlyTOGJjGw5cbQ-1; Tue, 05 Oct 2021 06:42:52 -0400
+X-MC-Unique: ExL-mijlMlyTOGJjGw5cbQ-1
+Received: by mail-ed1-f71.google.com with SMTP id y15-20020a50ce0f000000b003dab997cf7dso16705143edi.9
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 03:42:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=pVmRMn4rUtOm+1OEO0FywEMDowWiLVKHkRDbrijKrwg=;
-        b=lwWo3iH7Dv0c6D1xXecGrkqAs8JE7TBMZfyLiMSK3Jh3MxirAhQsUltufkAtxkl0Kv
-         ib96Z/BxM13j01EC7R3XujhBeJiHhQHut5bS8oe2l11leJ0+yv22OznPTwt8z7KaCouD
-         nLh1mJi9PHQP2yGgQsAPfOW79iIAWgohaiRBWqDAguoUOJ3JOepFTKgS9kKBgiSm/RKp
-         41YkXShMNDJ9bFADEWIVoXBIi+t34A7gEWjbdbTPbgs8Stt763e4sfG8FTlGb5vg2XSj
-         orLDAnuYZx1/UYfYpapSgziXQNuoOtoFVFDB27i78QD2sPs92VNTT/mfEuYm4+fRDQPz
-         TiNQ==
-X-Gm-Message-State: AOAM533dSxyee0EHrEQ3eHPsYYWZfxPDa+QD7o60CqUqi09CbNoTst2f
-        sRt6cGygzxTMjyMCWkaSGS45ig==
-X-Google-Smtp-Source: ABdhPJzk4476G45fhoT/tD2ExwshD2DdotRERLbyFyzc5wY17wFdvvLODEf4w4SPO9mjXk77xKdD6w==
-X-Received: by 2002:a1c:f008:: with SMTP id a8mr2588809wmb.140.1633430539291;
-        Tue, 05 Oct 2021 03:42:19 -0700 (PDT)
-Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
-        by smtp.gmail.com with ESMTPSA id k18sm699320wrn.81.2021.10.05.03.42.18
+        bh=bnN0iAzDh/S8fsii9MloUrds9D80Vyvt+Eh8JOcls+c=;
+        b=Z0L7PKHxcFbjHJwfhABPDuhohmgpJUEaq0KCmPU9lrgxXm6pr+4x78TzWnRiXBym16
+         CHzcstJN0Wkpk6f9aWi1p6jA0AnSPLJTBND7ZF551kfW9xdFAVh88iOl1eZtuKitSmy5
+         3gz5Fwj79ZzvVCrjiD/+1hbaiz7xQZdV9vxt8iClLPui/I7TKFvyJJixyexJ+JD62gSe
+         sqT3AlWClFoYOozdUEyEg38AG2HehQmopymd8EfgcTjjpr5jybOyUU0SKTNwkG0s8MZg
+         pSPuTU7GI4BQi8TL0ets+FM8YEpEck/vtpdAYhLZJMCLQBB1kiTc5WtUd2Dib2+sl3oQ
+         /TIA==
+X-Gm-Message-State: AOAM532+ToNhoBJxZirgMC5MhtPisCy/yTNpmDAb+3vWpr2gYuWJhQ9p
+        Yp/ZMpGME9CoX8LwgoRNgNqadGlEfF/ogCOYu1PyltFxgIwrTSbq5UqX3zHgU/ZOgqsZD4ZZi6r
+        8w3q7IVV8ahgWrEOLIRJk7QKf
+X-Received: by 2002:a17:906:608e:: with SMTP id t14mr23510388ejj.441.1633430570492;
+        Tue, 05 Oct 2021 03:42:50 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwACM112IUCa3fOx7O5XRyDrZ+g5wNyCBCOWtDMMiRFBtNmFLZZKgE9j8Wc70F7xxIuqg+/cw==
+X-Received: by 2002:a17:906:608e:: with SMTP id t14mr23510362ejj.441.1633430570315;
+        Tue, 05 Oct 2021 03:42:50 -0700 (PDT)
+Received: from redhat.com ([2.55.147.134])
+        by smtp.gmail.com with ESMTPSA id a1sm8000402edu.43.2021.10.05.03.42.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Oct 2021 03:42:18 -0700 (PDT)
-Date:   Tue, 5 Oct 2021 11:42:16 +0100
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     phone-devel@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Martin Botka <martin.botka@somainline.org>,
-        Jami Kettunen <jami.kettunen@somainline.org>,
-        Pavel Dubrova <pashadubrova@gmail.com>,
-        Kiran Gunda <kgunda@codeaurora.org>,
-        Courtney Cavin <courtney.cavin@sonymobile.com>,
-        Bryan Wu <cooloney@gmail.com>, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 04/10] backlight: qcom-wled: Validate enabled string
- indices in DT
-Message-ID: <20211005104216.7hqqdyqcqekqhg56@maple.lan>
-References: <20211004192741.621870-1-marijn.suijten@somainline.org>
- <20211004192741.621870-5-marijn.suijten@somainline.org>
- <20211005091452.4ecqhlhrdxdgvs3c@maple.lan>
- <20211005100350.p56xuq74qsc7vhyp@SoMainline.org>
+        Tue, 05 Oct 2021 03:42:49 -0700 (PDT)
+Date:   Tue, 5 Oct 2021 06:42:43 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Xie Yongji <xieyongji@bytedance.com>
+Cc:     jasowang@redhat.com, stefanha@redhat.com,
+        virtualization@lists.linux-foundation.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Kevin Wolf <kwolf@redhat.com>, Christoph Hellwig <hch@lst.de>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: Re: [PATCH v5] virtio-blk: Add validation for block size in config
+ space
+Message-ID: <20211005062359-mutt-send-email-mst@kernel.org>
+References: <20210809101609.148-1-xieyongji@bytedance.com>
+ <20211004112623-mutt-send-email-mst@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211005100350.p56xuq74qsc7vhyp@SoMainline.org>
+In-Reply-To: <20211004112623-mutt-send-email-mst@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05, 2021 at 12:03:50PM +0200, Marijn Suijten wrote:
-> On 2021-10-05 10:14:52, Daniel Thompson wrote:
-> > On Mon, Oct 04, 2021 at 09:27:35PM +0200, Marijn Suijten wrote:
-> > > The strings passed in DT may possibly cause out-of-bounds register
-> > > accesses and should be validated before use.
-> > > 
-> > > Fixes: 775d2ffb4af6 ("backlight: qcom-wled: Restructure the driver for WLED3")
+On Mon, Oct 04, 2021 at 11:27:29AM -0400, Michael S. Tsirkin wrote:
+> On Mon, Aug 09, 2021 at 06:16:09PM +0800, Xie Yongji wrote:
+> > An untrusted device might presents an invalid block size
+> > in configuration space. This tries to add validation for it
+> > in the validate callback and clear the VIRTIO_BLK_F_BLK_SIZE
+> > feature bit if the value is out of the supported range.
 > > 
-> > The first half of this patch actually fixes patch 1 from this patch set.
-> > It would be better to move that code there.
+> > And we also double check the value in virtblk_probe() in
+> > case that it's changed after the validation.
+> > 
+> > Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
 > 
-> It only helps guarding against a maximum of 3 leds for WLED3, while
-> using string_len instead of an unintentional sizeof(u32) (resulting in
-> a fixed size of 4) is a different issue requiring a separate patch to
-> fix.
+> So I had to revert this due basically bugs in QEMU.
 > 
-> Would it help to reorder this patch before 1/10, and mention in patch
-> 1/10 (then 2/10) that, besides properly using string_len instead of
-> hardcoded 4 (which causes wrong reads from DT on top of this), it relies
-> on the previous patch to prevent against an array longer than 3 for
-> WLED3?
+> My suggestion at this point is to try and update
+> blk_queue_logical_block_size to BUG_ON when the size
+> is out of a reasonable range.
+> 
+> This has the advantage of fixing more hardware, not just virtio.
+> 
 
-Reordering is OK for me.
+Stefan also pointed out this duplicates the logic from 
+
+        if (blksize < 512 || blksize > PAGE_SIZE || !is_power_of_2(blksize))
+                return -EINVAL;
 
 
-Daniel.
+and a bunch of other places.
 
 
-> > > Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
-> > > Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-> > > ---
-> > >  drivers/video/backlight/qcom-wled.c | 14 ++++++++++++++
-> > >  1 file changed, 14 insertions(+)
-> > > 
-> > > diff --git a/drivers/video/backlight/qcom-wled.c b/drivers/video/backlight/qcom-wled.c
-> > > index 29910e603c42..27e8949c7922 100644
-> > > --- a/drivers/video/backlight/qcom-wled.c
-> > > +++ b/drivers/video/backlight/qcom-wled.c
-> > > @@ -1526,6 +1526,12 @@ static int wled_configure(struct wled *wled)
-> > >  						     "qcom,enabled-strings",
-> > >  						     sizeof(u32));
-> > >  	if (string_len > 0) {
-> > > +		if (string_len > wled->max_string_count) {
-> > > +			dev_err(dev, "Cannot have more than %d strings\n",
-> > > +				wled->max_string_count);
-> > > +			return -EINVAL;
-> > > +		}
-> > > +
-> > >  		rc = of_property_read_u32_array(dev->of_node,
-> > >  						"qcom,enabled-strings",
-> > >  						wled->cfg.enabled_strings,
-> > > @@ -1537,6 +1543,14 @@ static int wled_configure(struct wled *wled)
-> > >  			return -EINVAL;
-> > >  		}
-> > >  
-> > > +		for (i = 0; i < string_len; ++i) {
-> > > +			if (wled->cfg.enabled_strings[i] >= wled->max_string_count) {
-> > > +				dev_err(dev, "qcom,enabled-strings index %d at %d is out of bounds\n",
-> > > +					wled->cfg.enabled_strings[i], i);
-> > > +				return -EINVAL;
-> > > +			}
-> > > +		}
-> > > +
-> > >  		cfg->num_strings = string_len;
-> > >  	}
-> > >  
-> > > -- 
-> > > 2.33.0
-> > > 
+Would it be acceptable for blk layer to validate the input
+instead of having each driver do it's own thing?
+Maybe inside blk_queue_logical_block_size?
+
+
+
+> 
+> > ---
+> >  drivers/block/virtio_blk.c | 39 +++++++++++++++++++++++++++++++++------
+> >  1 file changed, 33 insertions(+), 6 deletions(-)
+> > 
+> > diff --git a/drivers/block/virtio_blk.c b/drivers/block/virtio_blk.c
+> > index 4b49df2dfd23..afb37aac09e8 100644
+> > --- a/drivers/block/virtio_blk.c
+> > +++ b/drivers/block/virtio_blk.c
+> > @@ -692,6 +692,28 @@ static const struct blk_mq_ops virtio_mq_ops = {
+> >  static unsigned int virtblk_queue_depth;
+> >  module_param_named(queue_depth, virtblk_queue_depth, uint, 0444);
+> >  
+> > +static int virtblk_validate(struct virtio_device *vdev)
+> > +{
+> > +	u32 blk_size;
+> > +
+> > +	if (!vdev->config->get) {
+> > +		dev_err(&vdev->dev, "%s failure: config access disabled\n",
+> > +			__func__);
+> > +		return -EINVAL;
+> > +	}
+> > +
+> > +	if (!virtio_has_feature(vdev, VIRTIO_BLK_F_BLK_SIZE))
+> > +		return 0;
+> > +
+> > +	blk_size = virtio_cread32(vdev,
+> > +			offsetof(struct virtio_blk_config, blk_size));
+> > +
+> > +	if (blk_size < SECTOR_SIZE || blk_size > PAGE_SIZE)
+> > +		__virtio_clear_bit(vdev, VIRTIO_BLK_F_BLK_SIZE);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> >  static int virtblk_probe(struct virtio_device *vdev)
+> >  {
+> >  	struct virtio_blk *vblk;
+> > @@ -703,12 +725,6 @@ static int virtblk_probe(struct virtio_device *vdev)
+> >  	u8 physical_block_exp, alignment_offset;
+> >  	unsigned int queue_depth;
+> >  
+> > -	if (!vdev->config->get) {
+> > -		dev_err(&vdev->dev, "%s failure: config access disabled\n",
+> > -			__func__);
+> > -		return -EINVAL;
+> > -	}
+> > -
+> >  	err = ida_simple_get(&vd_index_ida, 0, minor_to_index(1 << MINORBITS),
+> >  			     GFP_KERNEL);
+> >  	if (err < 0)
+> > @@ -823,6 +839,14 @@ static int virtblk_probe(struct virtio_device *vdev)
+> >  	else
+> >  		blk_size = queue_logical_block_size(q);
+> >  
+> > +	if (unlikely(blk_size < SECTOR_SIZE || blk_size > PAGE_SIZE)) {
+> > +		dev_err(&vdev->dev,
+> > +			"block size is changed unexpectedly, now is %u\n",
+> > +			blk_size);
+> > +		err = -EINVAL;
+> > +		goto err_cleanup_disk;
+> > +	}
+> > +
+> >  	/* Use topology information if available */
+> >  	err = virtio_cread_feature(vdev, VIRTIO_BLK_F_TOPOLOGY,
+> >  				   struct virtio_blk_config, physical_block_exp,
+> > @@ -881,6 +905,8 @@ static int virtblk_probe(struct virtio_device *vdev)
+> >  	device_add_disk(&vdev->dev, vblk->disk, virtblk_attr_groups);
+> >  	return 0;
+> >  
+> > +err_cleanup_disk:
+> > +	blk_cleanup_disk(vblk->disk);
+> >  out_free_tags:
+> >  	blk_mq_free_tag_set(&vblk->tag_set);
+> >  out_free_vq:
+> > @@ -983,6 +1009,7 @@ static struct virtio_driver virtio_blk = {
+> >  	.driver.name			= KBUILD_MODNAME,
+> >  	.driver.owner			= THIS_MODULE,
+> >  	.id_table			= id_table,
+> > +	.validate			= virtblk_validate,
+> >  	.probe				= virtblk_probe,
+> >  	.remove				= virtblk_remove,
+> >  	.config_changed			= virtblk_config_changed,
+> > -- 
+> > 2.11.0
+
