@@ -2,163 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B549942223F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 11:24:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18928422249
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 11:28:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233575AbhJEJ0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 05:26:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39098 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232773AbhJEJ0p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 05:26:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9FF1D6154B;
-        Tue,  5 Oct 2021 09:24:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633425895;
-        bh=IEdllWxDaEmWx3XyCkSILsBxQd/sSHr6TrZzjfQkKzg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=pIXQ5hiu3AwH8jtQRSWFMo3uXgoRqoh3CQm7L/4LRPlO4UA1+bde5S1JNdZnpFMv6
-         928AVBioWQDkV95uWuX8yWEkjnAdTACm8zuv+tzajp//n7WTh1qRjAGGnoK4V1MkNP
-         vzjOMxZrhgvt/sULIVj/WAr7nx5PihNWAQZj4s/BhBTHdVTVmskDdMUG2kNTwZ11ia
-         RZGzxthsaYK11QCuow14kFr6+BCwXkGD5DBy6nFAxYZASw5Ln3Nbe9BEPKOWiY2RP6
-         iKwBp7qiB9Sm1Ga7bFf1jJxkqOihHcSOwC/+eoABY/aeYMQ3CMUyk0e8Hs4JGPeN+6
-         +0oeKMOSn2lpw==
-Date:   Tue, 5 Oct 2021 11:24:48 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Bjorn Helgaas <bhelgaas@google.com>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Krzysztof =?UTF-8?B?V2ls?= =?UTF-8?B?Y3p5xYRza2k=?= 
-        <kw@linux.com>, Binghui Wang <wangbinghui@hisilicon.com>,
-        Rob Herring <robh@kernel.org>,
-        Xiaowei Song <songxiaowei@hisilicon.com>,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-phy@lists.infradead.org
-Subject: Re: [PATCH v12 00/11] Add support for Hikey 970 PCIe
-Message-ID: <20211005112448.2c40dc10@coco.lan>
-In-Reply-To: <cover.1632814194.git.mchehab+huawei@kernel.org>
-References: <cover.1632814194.git.mchehab+huawei@kernel.org>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
+        id S233372AbhJEJ3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 05:29:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58306 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232658AbhJEJ3u (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 05:29:50 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6105EC061745;
+        Tue,  5 Oct 2021 02:28:00 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id oa6-20020a17090b1bc600b0019ffc4b9c51so1478643pjb.2;
+        Tue, 05 Oct 2021 02:28:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=CA5ma1syhGxnu+EE+5GSn6LcOZlUj8lR5fWg3Na+rYQ=;
+        b=oXcAbu54Crk148KxoltKOF3Mts3dCD1+cYPLs4Y5rUOR9qdfOiqAabkdsEjYWh8lHP
+         GHCWhW5Fq2USULD53W+J19cf2xPyMP/zIuCoSmmM2lQuuXFi3sekSCYQCYI9EMkMVjlf
+         zrk561/cxdC0jWuYFsjZLO8SYcLNcCIqeblBVQMnwBE3l5yaR+3hYfjmV5mZen8SLGHM
+         HiiOza/OOZtD5ocVyEuLpeNEmyPCYD2aKE6ery7vt6weVD7WoM2vBNhBrntoIsDExTFi
+         VArBxO647XVliqU9kw+pTfPYeeOYWqixTUzw+kXGGWjVT91U1JcI1A/7dVwBKhvGzPay
+         4PAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CA5ma1syhGxnu+EE+5GSn6LcOZlUj8lR5fWg3Na+rYQ=;
+        b=Aka8VlBYdDCdfnwtLLu+KnFF8snu/9dp7QA8EMIe9nIrHd7Sg1CKYr5BvvS/w8Cfc/
+         Jphpa2125OI9+rLmMGpXFzEcEdaJAyzHVtKqHI8z2OQlmEHN0MUq5S4sKZR4ZcxAYkM7
+         4S7dp9HcuZJvRa8l8MQaLqRnnNBOv7CgyO9Y9lt4sWjQyAZQOib/Ro9WbROY1pJxe1hY
+         OJUz+wvRuQEY2fWz4DceijR4RHD4Ts2kehb1Si1/5JvbYayU1vdh+d7ygpZafgwodxWZ
+         WL6Zemddn9Z2EHFycgf5W85Pbg1sCWavkWmPdfOSSihB/S5ffSrnIbViTk/kKCEQUnVh
+         uSzw==
+X-Gm-Message-State: AOAM533XM4NmNzExSQAIkhs+8JlpS8SztKdKwwZvwOn0tQnxMUvqm1pN
+        7zUPCbl8Pj8Sdcj3cgCS4Ee/skcZpU4=
+X-Google-Smtp-Source: ABdhPJzTKgnppHous94XwPJDH++/9/+YbdbHkbadGt4XfTAtHA4LT+n6BH0mUiispxPM3Tfs1Gw0rQ==
+X-Received: by 2002:a17:90a:ead3:: with SMTP id ev19mr2553572pjb.136.1633426079712;
+        Tue, 05 Oct 2021 02:27:59 -0700 (PDT)
+Received: from sol (106-69-170-56.dyn.iinet.net.au. [106.69.170.56])
+        by smtp.gmail.com with ESMTPSA id z3sm18950473pfe.78.2021.10.05.02.27.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Oct 2021 02:27:59 -0700 (PDT)
+Date:   Tue, 5 Oct 2021 17:27:53 +0800
+From:   Kent Gibson <warthog618@gmail.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bamvor Jian Zhang <bamv2005@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>
+Subject: Re: [PATCH v1 1/1] gpio: mockup: Convert to use software nodes
+Message-ID: <20211005092753.GA911482@sol>
+References: <20211005091016.18519-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211005091016.18519-1-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn,
+On Tue, Oct 05, 2021 at 12:10:16PM +0300, Andy Shevchenko wrote:
+> The gpio-mockup driver creates a properties that are shared between
+> platform and GPIO devices. Because of that, the properties may not
+> be removed at the proper point of time without provoking use-after-free
+> as shown in the backtrace:
+> 
+>   refcount_t: underflow; use-after-free.
+>   WARNING: CPU: 0 PID: 103 at lib/refcount.c:28 refcount_warn_saturate+0xd1/0x120
+>   ...
+>   Call Trace:
+>   kobject_put+0xdc/0xf0
+>   software_node_notify_remove+0xa8/0xc0
+>   device_del+0x15a/0x3e0
+> 
+> That's why the driver has to manage lifetime of the software nodes by itself.
+> 
+> The problem originates by the old device_add_properties() API, but has been
+> only revealed after the commit 5aeb05b27f81 ("software node: balance refcount
+> for managed software nodes"). Hence, it's used as landmark for the backporting.
+> 
+> Fixes: 5aeb05b27f81 ("software node: balance refcount for managed software nodes")
 
-Em Tue, 28 Sep 2021 09:34:10 +0200
-Mauro Carvalho Chehab <mchehab+huawei@kernel.org> escreveu:
+Shouldn't that be:
+Fixes: bd1e336aa853 ("driver core: platform: Remove platform_device_add_properties()")
 
-> The pcie-kirin PCIe driver contains internally a PHY interface for
-> Kirin 960, but it misses support for Kirin 970.
-> 
-> Patch1 contains a PHY for Kirin 970 PCIe.
-> 
-> The remaining patches add support for Kirin 970 at the pcie-kirin driver, and
-> add the needed logic to compile it as module and to allow to dynamically
-> remove the driver in runtime.
-> 
-> Tested on HiKey970:
-> 
->   # lspci -D -PP
->   0000:00:00.0 PCI bridge: Huawei Technologies Co., Ltd. Device 3670 (rev 01)
->   0000:00:00.0/01:00.0 PCI bridge: PLX Technology, Inc. PEX 8606 6 Lane, 6 Port PCI Express Gen 2 (5.0 GT/s) Switch (rev ba)
->   0000:00:00.0/01:00.0/02:01.0 PCI bridge: PLX Technology, Inc. PEX 8606 6 Lane, 6 Port PCI Express Gen 2 (5.0 GT/s) Switch (rev ba)
->   0000:00:00.0/01:00.0/02:04.0 PCI bridge: PLX Technology, Inc. PEX 8606 6 Lane, 6 Port PCI Express Gen 2 (5.0 GT/s) Switch (rev ba)
->   0000:00:00.0/01:00.0/02:05.0 PCI bridge: PLX Technology, Inc. PEX 8606 6 Lane, 6 Port PCI Express Gen 2 (5.0 GT/s) Switch (rev ba)
->   0000:00:00.0/01:00.0/02:07.0 PCI bridge: PLX Technology, Inc. PEX 8606 6 Lane, 6 Port PCI Express Gen 2 (5.0 GT/s) Switch (rev ba)
->   0000:00:00.0/01:00.0/02:09.0 PCI bridge: PLX Technology, Inc. PEX 8606 6 Lane, 6 Port PCI Express Gen 2 (5.0 GT/s) Switch (rev ba)
->   0000:00:00.0/01:00.0/02:01.0/03:00.0 Non-Volatile memory controller: Samsung Electronics Co Ltd Device a809
->   0000:00:00.0/01:00.0/02:07.0/06:00.0 Ethernet controller: Realtek Semiconductor Co., Ltd. RTL8111/8168/8411 PCI Express Gigabit Ethernet Controller (rev 07)
-> 
-> Tested on HiKey960:
-> 
->   # lspci -D 
->   0000:00:00.0 PCI bridge: Huawei Technologies Co., Ltd. Device 3660 (rev 01)
-> 
+> Reported-by: Kent Gibson <warthog618@gmail.com>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+
+Other than that, looks good and works for me.
+
+Tested-by: Kent Gibson <warthog618@gmail.com>
+
+Cheers,
+Kent.
+
 > ---
+>  drivers/gpio/gpio-mockup.c | 22 +++++++++++++++++++---
+>  1 file changed, 19 insertions(+), 3 deletions(-)
 > 
-> v12:
->   - Change a comment at patch 1 to not use c99 style.
+> diff --git a/drivers/gpio/gpio-mockup.c b/drivers/gpio/gpio-mockup.c
+> index 0a9d746a0fe0..8b147b565e92 100644
+> --- a/drivers/gpio/gpio-mockup.c
+> +++ b/drivers/gpio/gpio-mockup.c
+> @@ -478,8 +478,18 @@ static void gpio_mockup_unregister_pdevs(void)
+>  {
+>  	int i;
+>  
+> -	for (i = 0; i < GPIO_MOCKUP_MAX_GC; i++)
+> -		platform_device_unregister(gpio_mockup_pdevs[i]);
+> +	for (i = 0; i < GPIO_MOCKUP_MAX_GC; i++) {
+> +		struct platform_device *pdev;
+> +		struct fwnode_handle *fwnode;
+> +
+> +		pdev = gpio_mockup_pdevs[i];
+> +		if (!pdev)
+> +			continue;
+> +
+> +		fwnode = dev_fwnode(&pdev->dev);
+> +		platform_device_unregister(pdev);
+> +		fwnode_remove_software_node(fwnode);
+> +	}
+>  }
+>  
+>  static __init char **gpio_mockup_make_line_names(const char *label,
+> @@ -508,6 +518,7 @@ static int __init gpio_mockup_register_chip(int idx)
+>  	struct property_entry properties[GPIO_MOCKUP_MAX_PROP];
+>  	struct platform_device_info pdevinfo;
+>  	struct platform_device *pdev;
+> +	struct fwnode_handle *fwnode;
+>  	char **line_names = NULL;
+>  	char chip_label[32];
+>  	int prop = 0, base;
+> @@ -536,13 +547,18 @@ static int __init gpio_mockup_register_chip(int idx)
+>  					"gpio-line-names", line_names, ngpio);
+>  	}
+>  
+> +	fwnode = fwnode_create_software_node(properties, NULL);
+> +	if (IS_ERR(fwnode))
+> +		return PTR_ERR(fwnode);
+> +
+>  	pdevinfo.name = "gpio-mockup";
+>  	pdevinfo.id = idx;
+> -	pdevinfo.properties = properties;
+> +	pdevinfo.fwnode = fwnode;
+>  
+>  	pdev = platform_device_register_full(&pdevinfo);
+>  	kfree_strarray(line_names, ngpio);
+>  	if (IS_ERR(pdev)) {
+> +		fwnode_remove_software_node(fwnode);
+>  		pr_err("error registering device");
+>  		return PTR_ERR(pdev);
+>  	}
+> -- 
+> 2.33.0
 > 
-> v11:
->   - patch 5 changed to use the right PCIe topology
->   - all other patches are identical to v10.
-> 
-> v10:
->   - patch 1: dropped magic numbers from PHY driver
->   - patch 5: allow pcie child nodes without reset-gpios
->   - all other patches are identical to v9.
-> 
-> v9:
->   - Did some cleanups at patches 1 and 5
-> 
-
-As the DT changes needed by HiKey 970 PCIe support are already upstream:
-
-	commit cfcf126fc6795e843d090d98754391ece55e8b0c
-	Author:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-	AuthorDate: Wed Aug 4 09:18:56 2021 +0200
-	Commit:     Rob Herring <robh@kernel.org>
-	CommitDate: Mon Aug 16 16:00:52 2021 -0500
-
-	    dt-bindings: PCI: kirin: Add support for Kirin970
-	    
-	    Add a new compatible, plus the new bindings needed by
-	    HiKey970 board.
-    
-	    Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-	    Link: https://lore.kernel.org/r/875a4571e253040d3885ee1f37467b0bade7361b.1628061310.git.mchehab+huawei@kernel.org
-	    Signed-off-by: Rob Herring <robh@kernel.org>
-
-> 
-> Mauro Carvalho Chehab (11):
->   phy: HiSilicon: Add driver for Kirin 970 PCIe PHY
-
-And the PHY patch was already accepted and merged at today's
-linux-next:
-
-	commit 73075011ffff876de8516a1e583dc41869293da9
-	Author:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-	AuthorDate: Tue Sep 28 09:34:11 2021 +0200
-	Commit:     Vinod Koul <vkoul@kernel.org>
-	CommitDate: Fri Oct 1 13:42:18 2021 +0530
-
-	    phy: HiSilicon: Add driver for Kirin 970 PCIe PHY
-    
-	    The Kirin 970 PHY is somewhat similar to the Kirin 960, but it
-	    does a lot more. Add the needed bits for PCIe to start working on
-	    HiKey 970 boards.
-    
-	    Co-developed-by: Manivannan Sadhasivam <mani@kernel.org>
-	    Signed-off-by: Manivannan Sadhasivam <mani@kernel.org>
-	    Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-	    Link: https://lore.kernel.org/r/b7a4ff41b57d861b003f1a00cae81f3d226fbe18.1632814194.git.mchehab+huawei@kernel.org
-	    Signed-off-by: Vinod Koul <vkoul@kernel.org>
-
->   PCI: kirin: Reorganize the PHY logic inside the driver
->   PCI: kirin: Add support for a PHY layer
->   PCI: kirin: Use regmap for APB registers
->   PCI: kirin: Add support for bridge slot DT schema
->   PCI: kirin: Add Kirin 970 compatible
->   PCI: kirin: Add MODULE_* macros
->   PCI: kirin: Allow building it as a module
->   PCI: kirin: Add power_off support for Kirin 960 PHY
->   PCI: kirin: fix poweroff sequence
->   PCI: kirin: Allow removing the driver
-
-I guess everything is already satisfying the review feedbacks.
-If so, could you please merge the PCI ones?
-
-> 
->  drivers/pci/controller/dwc/Kconfig      |   2 +-
->  drivers/pci/controller/dwc/pcie-kirin.c | 644 +++++++++++++-----
->  drivers/phy/hisilicon/Kconfig           |  10 +
->  drivers/phy/hisilicon/Makefile          |   1 +
->  drivers/phy/hisilicon/phy-hi3670-pcie.c | 845 ++++++++++++++++++++++++
->  5 files changed, 1354 insertions(+), 148 deletions(-)
->  create mode 100644 drivers/phy/hisilicon/phy-hi3670-pcie.c
-
-Thanks,
-Mauro
