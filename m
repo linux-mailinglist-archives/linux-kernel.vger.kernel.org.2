@@ -2,90 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0545421DFD
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 07:33:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37CBA421E06
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 07:37:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231967AbhJEFfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 01:35:15 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:15347 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230526AbhJEFfO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 01:35:14 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1633412004; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=k8lSqHnJAUansCD00Twm75ZHHDIkxHaVX0p0kJSvRCQ=;
- b=RsBgl/Kc2TqUK0l8AYMyF2mdergxwmzOVCs19iQ+wnNt5rw+MNrACtZjhET9iz68tykOT5AM
- mqpuUe/3Be3uwOHa8scZIpVdG1H4r7KdXr5aSRKN7wDpxN4r0xq2+wtkP607aK38M9nlfBQB
- NiAIE+Ywh6a4D81lwuGbrbkbbvQ=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 615be3a20d9325367bca65af (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 05 Oct 2021 05:33:22
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D556FC43460; Tue,  5 Oct 2021 05:33:22 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.0
-Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id AA143C4338F;
-        Tue,  5 Oct 2021 05:33:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org AA143C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        id S231889AbhJEFjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 01:39:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33096 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231142AbhJEFjS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 01:39:18 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81722C061745;
+        Mon,  4 Oct 2021 22:37:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=fBUNICS3Pwixz65i7Q16asMz+5dJwJkx8E+lnKdL6pM=; b=NOGKtj/TuRDL8tYrGmh5tKGLad
+        0vcYwUc4cBC0yi8/RJmof0ZhcYYxvGr5GBgZvKonrwPnMCQzQelqr+gOlf7SGA8gW3dw0I/lhqUON
+        8wEw1pMABWdvE09WdVSXtHtz9ISinJBow4dxvnO6/3zzPlHdIIzSZ4iBf13+l34dUyaLI5TKpAv2M
+        XHIdwZA1V9SdTXbDGzCnnp50QPL4vuI5XCwtXHtOLEF7hteu7Z/vMTYWkCB83KqFiHva7oWg25/Fx
+        0kaezQ8liuZQStVfWhYzDdycuwXzxdqCB8XV77XGFwgx+AEH7fo6KIZILNzG02X5C5cnU3Ylc7STI
+        skhpPPzw==;
+Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mXd8p-008zfR-BN; Tue, 05 Oct 2021 05:37:27 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Subject: [PATCH v2] host1x: bus.c: drop excess kernel-doc entry @key
+Date:   Mon,  4 Oct 2021 22:37:26 -0700
+Message-Id: <20211005053726.14738-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH v2] rtl8xxxu: Use lower tx rates for the ack packet
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20211001040044.1028708-1-chris.chiu@canonical.com>
-References: <20211001040044.1028708-1-chris.chiu@canonical.com>
-To:     Chris Chiu <chris.chiu@canonical.com>
-Cc:     Jes.Sorensen@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        code@reto-schneider.ch, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Chris Chiu <chris.chiu@canonical.com>
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
-Message-Id: <20211005053322.D556FC43460@smtp.codeaurora.org>
-Date:   Tue,  5 Oct 2021 05:33:22 +0000 (UTC)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Chris Chiu <chris.chiu@canonical.com> wrote:
+Fix kernel-doc warning in host1x:
 
-> According to the Realtek propritary driver and the rtw88 driver, the
-> tx rates of the ack (includes block ack) are initialized with lower
-> tx rates (no HT rates) which is set by the RRSR register value. In
-> real cases, ack rate higher than current tx rate could lead to
-> difficulty for the receiving end to receive management/control frames.
-> The retransmission rate would be higher then expected when the driver
-> is acting as receiver and the RSSI is not good.
-> 
-> Cross out higer rates for ack packet before implementing dynamic rrsr
-> configuration like the commit 4830872685f8 ("rtw88: add dynamic rrsr
-> configuration").
-> 
-> Signed-off-by: Chris Chiu <chris.chiu@canonical.com>
-> Acked-by: Jes Sorensen <Jes.Sorensen@gmail.com>
+../drivers/gpu/host1x/bus.c:774: warning: Excess function parameter 'key' description in '__host1x_client_register'
 
-Patch applied to wireless-drivers-next.git, thanks.
+Fixes: 0cfe5a6e758f ("gpu: host1x: Split up client initalization and registration")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Thierry Reding <thierry.reding@gmail.com>
+Cc: dri-devel@lists.freedesktop.org
+Cc: linux-tegra@vger.kernel.org
+Cc: David Airlie <airlied@linux.ie>
+Cc: Daniel Vetter <daniel@ffwll.ch>
+---
+v2: rebase and resend
 
-7acd723c30c0 rtl8xxxu: Use lower tx rates for the ack packet
+ drivers/gpu/host1x/bus.c |    1 -
+ 1 file changed, 1 deletion(-)
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20211001040044.1028708-1-chris.chiu@canonical.com/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+--- lnx-515-rc4.orig/drivers/gpu/host1x/bus.c
++++ lnx-515-rc4/drivers/gpu/host1x/bus.c
+@@ -761,7 +761,6 @@ EXPORT_SYMBOL(host1x_client_exit);
+ /**
+  * __host1x_client_register() - register a host1x client
+  * @client: host1x client
+- * @key: lock class key for the client-specific mutex
+  *
+  * Registers a host1x client with each host1x controller instance. Note that
+  * each client will only match their parent host1x controller and will only be
