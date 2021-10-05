@@ -2,107 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75533421B52
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 02:56:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 988FB421B53
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 02:57:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229850AbhJEA6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Oct 2021 20:58:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54688 "EHLO
+        id S230017AbhJEA7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Oct 2021 20:59:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229564AbhJEA6c (ORCPT
+        with ESMTP id S229549AbhJEA73 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Oct 2021 20:58:32 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36560C061745;
-        Mon,  4 Oct 2021 17:56:42 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HNfKz5qMrz4xbQ;
-        Tue,  5 Oct 2021 11:56:39 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1633395399;
-        bh=BJx3d+iMRLmlvADPU/KIuamhxlcDbXGaAkEgkznrmnw=;
-        h=Date:From:To:Cc:Subject:From;
-        b=O1lgCBw6gGiKJ60IyHeVNbhbDDHQh88XDD8SaeE79L4d4Rkd9bLV9i2zKXLdxqq74
-         8XLfukLKG7MV8FyYyvgrHk6m3bboe56iRgBUJTzLeU6p3F4fSITyO94Sj9MK5ShJNj
-         QZzqJdTKgEoIXSuzWii8/F4RQzgCNFu093+f7j/hXmhA0KK6OMmnmaPETqLwDg86QN
-         GFCmPpIke67ism2oYTzjfXe4V8+D7rfxDN30yBTtVrCgLUnsdhTY7b0iEO7qAMKzH1
-         DZ3whukvb9BzrMzAvlvOAb0MeDeCTC7rxnwytiWsG9wB4RVtG86DkYZgYhQMkmm1TK
-         2gpaVZ1rp5AfQ==
-Date:   Tue, 5 Oct 2021 11:56:37 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the net-next tree
-Message-ID: <20211005115637.3eacc45f@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/6hcYF3hGO.iGVsbj4.nP4M6";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        Mon, 4 Oct 2021 20:59:29 -0400
+Received: from mail-vs1-xe2a.google.com (mail-vs1-xe2a.google.com [IPv6:2607:f8b0:4864:20::e2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 872D6C061745
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Oct 2021 17:57:39 -0700 (PDT)
+Received: by mail-vs1-xe2a.google.com with SMTP id n17so21790149vsr.10
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Oct 2021 17:57:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20210112.gappssmtp.com; s=20210112;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sF9hNK+5Q8kvuTjnhNF2i15pqYB6ARh7CyQsrGGk5Nk=;
+        b=3rDZP7rDxkPm4BRicpP7c18tETvV9lhAEStAgfxE784aSkZF8p0I7xRBHZ+kJyrAyg
+         iPqFbTTomjZkq30xmNd0Wl6cIv1fp6Zi35lRRIL0gt7ylAlCellwGfQlKyhcdc8wnPXN
+         o1ql62CI+cdEz+C53mbFztu/lP/p9vOz4TI4kL05lWmcJl4eITyEFP2NBndsLpKOinEv
+         K0T4BXFgPm63yhjj8HwFSaMMcFOBIlCbWCqx/637FnacxHjPD7cdkPgXUckKP18A1E2k
+         YZb9vyz2qfeHke+Sx0GoWhAYXZd0oeoHSmjuz14SPf/ckAcaY2JBM6KS7wVO8kHGU5nV
+         wLHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=sF9hNK+5Q8kvuTjnhNF2i15pqYB6ARh7CyQsrGGk5Nk=;
+        b=pzVCQr/2+zWV4mgWgobNaeR3NwEUTf0IAnZcGVY1SOPy79MhvbN83ern0Yh05Ek4In
+         s59FTHsMSXKghsakrL/gYIUXarUa+1PdZJk3q4UuWnXbYgoA/IGUw3JUhagshfMD+va2
+         zUP2u1y3Rhdnun6lFwPBVA2sMskHQSWcNlzO6FyF5YMpDEE7soyNSjFEvd1ArjGSMdjy
+         6qe0nheVJWsf8JIIExpPguCc4jd0n2L1GgGuJWgcJVHlKrRcN0842MIAPuYb8Sfx9cT2
+         CLQVFGnynIDKJw4FdesAFoN/Frwx7xAWMS8tAnjLQworu+KGEhRkqAaiJM837TctcuKV
+         ULeA==
+X-Gm-Message-State: AOAM533+dIBI0GlyO0t5duOX0nKJ/BNgZCD5BKCUrwcskGuGYU9Ori5M
+        0etxcKg+i8tek5l6j7YKTzDzLTIKfNInMw==
+X-Google-Smtp-Source: ABdhPJxM4t0iAKZap7UMdl4qygCi5eAr9HooSKcNeMwHx46JHFIzp9NOtETibJEIQYYuR3phsIxt4g==
+X-Received: by 2002:a67:d11e:: with SMTP id u30mr13617063vsi.58.1633395458360;
+        Mon, 04 Oct 2021 17:57:38 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id h69sm7880300vka.42.2021.10.04.17.57.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Oct 2021 17:57:38 -0700 (PDT)
+Date:   Mon, 04 Oct 2021 17:57:38 -0700 (PDT)
+X-Google-Original-Date: Mon, 04 Oct 2021 17:57:18 PDT (-0700)
+Subject:     Re: [PATCH v2] riscv: add rv32 and rv64 randconfig build targets
+In-Reply-To: <20210912034538.19404-1-rdunlap@infradead.org>
+CC:     linux-kernel@vger.kernel.org, rdunlap@infradead.org,
+        mpe@ellerman.id.au, Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, linux-riscv@lists.infradead.org
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     rdunlap@infradead.org
+Message-ID: <mhng-88e4dc9f-726f-4229-942b-083c9bdb61f8@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/6hcYF3hGO.iGVsbj4.nP4M6
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Sat, 11 Sep 2021 20:45:38 PDT (-0700), rdunlap@infradead.org wrote:
+> Add the ability to do randconfig build targets for both
+> rv32 and rv64.
+>
+> Based on a similar patch by Michael Ellerman for PowerPC.
+>
+> Usage:
+>   make ARCH=riscv rv32_randconfig
+> or
+>   make ARCH=riscv rv64_randconfig
+>
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Paul Walmsley <paul.walmsley@sifive.com>
+> Cc: Palmer Dabbelt <palmer@dabbelt.com>
+> Cc: Albert Ou <aou@eecs.berkeley.edu>
+> Cc: linux-riscv@lists.infradead.org
+> ---
+> v2: add missing S-o-b
+>
+>  arch/riscv/Makefile              |   10 ++++++++++
+>  arch/riscv/configs/32-bit.config |    2 ++
+>  arch/riscv/configs/64-bit.config |    2 ++
+>  3 files changed, 14 insertions(+)
+>
+> --- linux-next-20210910.orig/arch/riscv/Makefile
+> +++ linux-next-20210910/arch/riscv/Makefile
+> @@ -141,3 +141,13 @@ install zinstall:
+>
+>  archclean:
+>  	$(Q)$(MAKE) $(clean)=$(boot)
+> +
+> +PHONY += rv32_randconfig
+> +rv32_randconfig:
+> +	$(Q)$(MAKE) KCONFIG_ALLCONFIG=$(srctree)/arch/riscv/configs/32-bit.config \
+> +		-f $(srctree)/Makefile randconfig
+> +
+> +PHONY += rv64_randconfig
+> +rv64_randconfig:
+> +	$(Q)$(MAKE) KCONFIG_ALLCONFIG=$(srctree)/arch/riscv/configs/64-bit.config \
+> +		-f $(srctree)/Makefile randconfig
+> --- /dev/null
+> +++ linux-next-20210910/arch/riscv/configs/32-bit.config
+> @@ -0,0 +1,2 @@
+> +CONFIG_ARCH_RV32I=y
+> +CONFIG_32BIT=y
+> --- /dev/null
+> +++ linux-next-20210910/arch/riscv/configs/64-bit.config
+> @@ -0,0 +1,2 @@
+> +CONFIG_ARCH_RV64I=y
+> +CONFIG_64BIT=y
 
-Hi all,
-
-After merging the net-next tree, today's linux-next build (powerpc
-ppc64_defconfig) failed like this:
-
-drivers/net/ethernet/ibm/ehea/ehea_main.c: In function 'ehea_setup_single_p=
-ort':
-drivers/net/ethernet/ibm/ehea/ehea_main.c:2989:23: error: passing argument =
-2 of 'eth_hw_addr_set' from incompatible pointer type [-Werror=3Dincompatib=
-le-pointer-types]
- 2989 |  eth_hw_addr_set(dev, &port->mac_addr);
-      |                       ^~~~~~~~~~~~~~~
-      |                       |
-      |                       u64 * {aka long long unsigned int *}
-In file included from include/linux/if_vlan.h:11,
-                 from include/linux/filter.h:19,
-                 from include/net/sock.h:59,
-                 from include/linux/tcp.h:19,
-                 from drivers/net/ethernet/ibm/ehea/ehea_main.c:20:
-include/linux/etherdevice.h:309:70: note: expected 'const u8 *' {aka 'const=
- unsigned char *'} but argument is of type 'u64 *' {aka 'long long unsigned=
- int *'}
-  309 | static inline void eth_hw_addr_set(struct net_device *dev, const u8=
- *addr)
-      |                                                            ~~~~~~~~=
-~~^~~~
-cc1: some warnings being treated as errors
-
-Caused by commit
-
-  a96d317fb1a3 ("ethernet: use eth_hw_addr_set()")
-
-I have used the net-next tree from next-20211001 for today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/6hcYF3hGO.iGVsbj4.nP4M6
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFbosUACgkQAVBC80lX
-0GxRNgf9HU6AmdI4mMfxpZfYBUFrivixE9iXM+3wljKNkRnhdNLvsu5ZuR8MD0yA
-5BoFI2s/ovXngR7f3p3NJ3dhcllbzncRg8xaXipH+tCNXMx+CAmlGiJcAg0hncPW
-1cHxgY2Mv+cmPNZF+Z6XkHFq0ExKG+A8KseAvO2e+UMWc7VPapfmlHDUx3llrIh9
-H7aYZKHQLS5yNQRYyES7se1FA/CA9Wfb1DM5uvlTlZB26dG1uUWMJgO8baUoyaFN
-x/dlDha6A2Kg8D6ZEFJTfx89pTbknCrXiWDBnfINpoip3j6l9umodVwA0VjlziPw
-TxwVI/51oIiZYBoCLBf3MgQ7DTF/EA==
-=7frF
------END PGP SIGNATURE-----
-
---Sig_/6hcYF3hGO.iGVsbj4.nP4M6--
+Thanks, this is on for-next.
