@@ -2,145 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A075422FCC
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 20:14:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88887422FCE
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 20:17:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234520AbhJESQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 14:16:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42352 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232861AbhJESQX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 14:16:23 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 159FFC061749;
-        Tue,  5 Oct 2021 11:14:32 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id p11so2139705edy.10;
-        Tue, 05 Oct 2021 11:14:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=qrVDa6iqwbI1N1i5Vvsk2q6J4SqfjK9r6QKza8oCivI=;
-        b=AA0eXZM6Nho5oZvo6al2SeGKlZfJensqta3LehDMmebtXUXElVigfZhvJJE3M9f+yA
-         cQQ2Z7QGwIO3ZVvRLLaWezv6d1Mnr3W3EYvfkfZEwJKZYFPBAGM1jKP3NonsiiI51srq
-         4Rsu09nvxptF67f10at7blY211KI5vSmsJwCYo2xABCS3xaZfp+xFO+82Ug301IP4/Eq
-         MZ8YGC0IUXmz/YBMZTOlGE+76tJWtcyd/bjCfkwcgWJAnxwL5lTeoFOvffKATZp+1iVc
-         weiaPXIYbqOCi4yaXitOID2JZbDZU2UvjiSWQUzLLBKSG/e4qaOTYuVyDAT0ElxmiTQM
-         yhIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qrVDa6iqwbI1N1i5Vvsk2q6J4SqfjK9r6QKza8oCivI=;
-        b=nB3NC1DcS/gi8wvucN+YtQbY0mxH+8C2TAlKvvBlOohvWzVrddYYMYrlGYeikzavPw
-         ePBuy2btgsliME1iWB1PLhFj8rrjKHSjJuG2yrNQXJkpiuWSTafTALv+MzpRcDj7tuwf
-         EXdErrTsS3gHf5+Y9gqZ9qmmZGDX6kP8/vM/Tv5FCYnylmGmgAYQ4PTSPu7Q6vF+qOuF
-         O7TQO2yzjR3AXVbNndDlZrecugvd6RlKdjroMqqZRDXd8dDiENKiRf0ojdfdNPvIyrzR
-         APXyF2NeSY4C3U56xvxXaYmiwNtqsrQYxp0rIMFtoPa7w/FpPs5wTAnkdOPDZPwIArNX
-         tYOQ==
-X-Gm-Message-State: AOAM533AVT5zu0uSjdI7mNKn1NPsj5N/o25naO3ejT/nbt69sncpvYmu
-        fyhpRf2+7en4G43TpaV9/ek=
-X-Google-Smtp-Source: ABdhPJxnZiAFCgH3mNtRtBZf9s+olbhESF2EJDUaPjin0mTkfZiEUY4Vd94Go43dgya325nYhMt1Nw==
-X-Received: by 2002:a17:906:e011:: with SMTP id cu17mr23108770ejb.244.1633457670478;
-        Tue, 05 Oct 2021 11:14:30 -0700 (PDT)
-Received: from anparri (host-79-49-65-228.retail.telecomitalia.it. [79.49.65.228])
-        by smtp.gmail.com with ESMTPSA id e7sm7259482edv.39.2021.10.05.11.14.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Oct 2021 11:14:29 -0700 (PDT)
-Date:   Tue, 5 Oct 2021 20:14:21 +0200
-From:   Andrea Parri <parri.andrea@gmail.com>
-To:     Michael Kelley <mikelley@microsoft.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Dexuan Cui <decui@microsoft.com>
-Subject: Re: [PATCH] scsi: storvsc: Fix validation for unsolicited incoming
- packets
-Message-ID: <20211005181421.GA1714@anparri>
-References: <20211005114103.3411-1-parri.andrea@gmail.com>
- <MWHPR21MB15935C9A0C33A858AFF1A825D7AF9@MWHPR21MB1593.namprd21.prod.outlook.com>
+        id S234217AbhJESSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 14:18:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41258 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229626AbhJESSx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 14:18:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CD8AF61027;
+        Tue,  5 Oct 2021 18:17:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633457822;
+        bh=GrQg4i+Kn9UsRqAFclYapchuQg+fis5m66a9DYHkI+k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QQEeWy2LjckQJBDZrOnredv591I7TIFIViCBvuhYd0rE0c/dsBiOrMazeelOyz8bA
+         TscUmby/CJ0t691bflv05jkf46Kl80HcREgdgKl0RBGs8tpqwccmYCWc1qXytlQZ5X
+         CD1ir2xX9EoU1lKWZPwcP5/CH2aHS1ESqs9k/ou+pkyC5tOGOUBnuiOV3DM32Jd3IF
+         Bv8yFR3krCX+8NwzqKCCwa9XhqOAWGKr9nTnbi90BdOXKHoeBv6kUD37ZFOFKJ/JtZ
+         Chjjh1LS9JO91Wr+4BmdIqaSxrNJW2xdRMLrhbJVdZCBlYJ1RlQGn0YTmNFL0W0/c0
+         yfqnBTyhi5k9A==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 2F787410A1; Tue,  5 Oct 2021 15:16:59 -0300 (-03)
+Date:   Tue, 5 Oct 2021 15:16:59 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Antonov <alexander.antonov@linux.intel.com>,
+        Alexei Budankov <abudankov@huawei.com>,
+        Riccardo Mancini <rickyman7@gmail.com>
+Subject: Re: [PATCH v2 5/5] perf session: Load single file for analysis
+Message-ID: <YVyWmwSOx5iXJ8pJ@kernel.org>
+References: <cover.1633424934.git.alexey.v.bayduraev@linux.intel.com>
+ <ccf01f8ac3bb9c29ef10f7b1c31db6a2fe8173c4.1633424934.git.alexey.v.bayduraev@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <MWHPR21MB15935C9A0C33A858AFF1A825D7AF9@MWHPR21MB1593.namprd21.prod.outlook.com>
+In-Reply-To: <ccf01f8ac3bb9c29ef10f7b1c31db6a2fe8173c4.1633424934.git.alexey.v.bayduraev@linux.intel.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > @@ -292,6 +292,9 @@ struct vmstorage_protocol_version {
-> >  #define STORAGE_CHANNEL_REMOVABLE_FLAG		0x1
-> >  #define STORAGE_CHANNEL_EMULATED_IDE_FLAG	0x2
-> > 
-> > +/* Lower bound on the size of unsolicited packets with ID of 0 */
-> > +#define VSTOR_MIN_UNSOL_PKT_SIZE		48
-> > +
-> 
-> I know you have determined experimentally that Hyper-V sends
-> unsolicited packets with the above length, so the idea is to validate
-> that the guest actually gets packets at least that big.  But I wonder if
-> we should think about this slightly differently.
-> 
-> The goal is for the storvsc driver to protect itself against bad or
-> malicious messages from Hyper-V.  For the unsolicited messages, the
-> only field that this storvsc driver needs to access is the
-> vstor_packet->operation field.
+Em Tue, Oct 05, 2021 at 01:27:02PM +0300, Alexey Bayduraev escreveu:
+> Adding reader EOF return code and moving the check of EOF state to
+> reader__mmap. Adding reader OK and NODATA return codes to simplify
+> the code and separating reading code of single event into
+> reader__read_event function. Introducing read_event/remap loop
+> in __perf_session__process_events.
 
-Eh, this is one piece of information I was looking for...  ;-)
+You are listing a series of changes done into just one cset, isn't it
+possible to break this down to ease review (now and when looking for
+bugs in the future :) )?
 
-
->So an alternate approach is to set
-> the minimum length as small as possible while ensuring that field is valid.
-
-The fact is, I'm not sure how to do it for unsolicited messages.
-Current code ensures/checks != COMPLETE_IO.  Your comment above
-and code audit suggest that we should add a check != FCHBA_DATA.
-I saw ENUMERATE_BUS messages, code only using their "operation".
-
-And, again, this is only based on current code/observations...
-
-So, maybe you mean something like this (on top of this patch)?
-
-diff --git a/drivers/scsi/storvsc_drv.c b/drivers/scsi/storvsc_drv.c
-index 349c1071a98d4..8fedac3c7597a 100644
---- a/drivers/scsi/storvsc_drv.c
-+++ b/drivers/scsi/storvsc_drv.c
-@@ -292,9 +292,6 @@ struct vmstorage_protocol_version {
- #define STORAGE_CHANNEL_REMOVABLE_FLAG		0x1
- #define STORAGE_CHANNEL_EMULATED_IDE_FLAG	0x2
+- Arnaldo
  
--/* Lower bound on the size of unsolicited packets with ID of 0 */
--#define VSTOR_MIN_UNSOL_PKT_SIZE		48
--
- struct vstor_packet {
- 	/* Requested operation type */
- 	enum vstor_packet_operation operation;
-@@ -1291,7 +1288,7 @@ static void storvsc_on_channel_callback(void *context)
- 		u32 pktlen = hv_pkt_datalen(desc);
- 		u64 rqst_id = desc->trans_id;
- 		u32 minlen = rqst_id ? sizeof(struct vstor_packet) -
--			stor_device->vmscsi_size_delta : VSTOR_MIN_UNSOL_PKT_SIZE;
-+			stor_device->vmscsi_size_delta : sizeof(enum vstor_packet_operation);
- 
- 		if (pktlen < minlen) {
- 			dev_err(&device->device,
-@@ -1315,7 +1312,8 @@ static void storvsc_on_channel_callback(void *context)
- 				 * storvsc_on_io_completion() with a guest memory address that is
- 				 * zero if Hyper-V were to construct and send such a bogus packet.
- 				 */
--				if (packet->operation == VSTOR_OPERATION_COMPLETE_IO) {
-+				if (packet->operation == VSTOR_OPERATION_COMPLETE_IO ||
-+				    packet->operation == VSTOR_OPERATION_FCHBA_DATA) {
- 					dev_err(&device->device, "Invalid packet with ID of 0\n");
- 					continue;
- 				}
+> Suggested-by: Jiri Olsa <jolsa@kernel.org>
+> Acked-by: Namhyung Kim <namhyung@gmail.com>
+> Reviewed-by: Riccardo Mancini <rickyman7@gmail.com>
+> Tested-by: Riccardo Mancini <rickyman7@gmail.com>
+> Signed-off-by: Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
+> ---
+>  tools/perf/util/session.c | 74 +++++++++++++++++++++++++--------------
+>  1 file changed, 47 insertions(+), 27 deletions(-)
+> 
+> diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
+> index 6c825e4a9dfe..1915714747a1 100644
+> --- a/tools/perf/util/session.c
+> +++ b/tools/perf/util/session.c
+> @@ -2167,6 +2167,12 @@ typedef s64 (*reader_cb_t)(struct perf_session *session,
+>  			   union perf_event *event,
+>  			   u64 file_offset);
+>  
+> +enum {
+> +	READER_OK,
+> +	READER_NODATA,
+> +	READER_EOF,
+> +};
+> +
+>  struct reader_state {
+>  	char	*mmaps[NUM_MMAPS];
+>  	size_t	 mmap_size;
+> @@ -2229,6 +2235,9 @@ reader__mmap(struct reader *rd, struct perf_session *session)
+>  	char *buf, **mmaps = st->mmaps;
+>  	u64 page_offset;
+>  
+> +	if (st->file_pos >= st->data_size)
+> +		return READER_EOF;
+> +
+>  	mmap_prot  = PROT_READ;
+>  	mmap_flags = MAP_SHARED;
+>  
+> @@ -2257,36 +2266,26 @@ reader__mmap(struct reader *rd, struct perf_session *session)
+>  	mmaps[st->mmap_idx] = st->mmap_cur = buf;
+>  	st->mmap_idx = (st->mmap_idx + 1) & (ARRAY_SIZE(st->mmaps) - 1);
+>  	st->file_pos = st->file_offset + st->head;
+> -	return 0;
+> +	return READER_OK;
+>  }
+>  
+>  static int
+> -reader__process_events(struct reader *rd, struct perf_session *session,
+> -		       struct ui_progress *prog)
+> +reader__read_event(struct reader *rd, struct perf_session *session,
+> +		   struct ui_progress *prog)
+>  {
+>  	struct reader_state *st = &rd->state;
+> -	u64 size;
+> -	int err = 0;
+> +	int err = READER_OK;
+>  	union perf_event *event;
+> +	u64 size;
+>  	s64 skip;
+>  
+> -remap:
+> -	err = reader__mmap(rd, session);
+> -	if (err)
+> -		goto out;
+> -	if (session->one_mmap) {
+> -		session->one_mmap_addr   = rd->state.mmap_cur;
+> -		session->one_mmap_offset = rd->state.file_offset;
+> -	}
+> -
+> -more:
+>  	event = fetch_mmaped_event(st->head, st->mmap_size, st->mmap_cur,
+>  				   session->header.needs_swap);
+>  	if (IS_ERR(event))
+>  		return PTR_ERR(event);
+>  
+>  	if (!event)
+> -		goto remap;
+> +		return READER_NODATA;
+>  
+>  	session->active_decomp = &rd->decomp_data;
+>  	size = event->header.size;
+> @@ -2308,18 +2307,12 @@ reader__process_events(struct reader *rd, struct perf_session *session,
+>  	st->head += size;
+>  	st->file_pos += size;
+>  
+> -	err = __perf_session__process_decomp_events(session);
+> -	if (err)
+> -		goto out;
+> +	skip = __perf_session__process_decomp_events(session);
+> +	if (skip)
+> +		err = skip;
+>  
+>  	ui_progress__update(prog, size);
+>  
+> -	if (session_done())
+> -		goto out;
+> -
+> -	if (st->file_pos < st->data_size)
+> -		goto more;
+> -
+>  out:
+>  	session->active_decomp = &session->decomp_data;
+>  	return err;
+> @@ -2356,9 +2349,36 @@ static int __perf_session__process_events(struct perf_session *session)
+>  	err = reader__init(&rd, &session->one_mmap);
+>  	if (err)
+>  		goto out_err;
+> -	err = reader__process_events(&rd, session, &prog);
+> -	if (err)
+> +
+> +	err = reader__mmap(&rd, session);
+> +	if (err < 0) {
+>  		goto out_err;
+> +	} else if (err == READER_EOF) {
+> +		err = -EINVAL;
+> +		goto out_err;
+> +	}
+> +
+> +	if (session->one_mmap) {
+> +		session->one_mmap_addr   = rd.state.mmap_cur;
+> +		session->one_mmap_offset = rd.state.file_offset;
+> +	}
+> +
+> +	while (true) {
+> +		if (session_done())
+> +			break;
+> +
+> +		err = reader__read_event(&rd, session, &prog);
+> +		if (err < 0) {
+> +			goto out_err;
+> +		} else if (err == READER_NODATA) {
+> +			err = reader__mmap(&rd, session);
+> +			if (err < 0)
+> +				goto out_err;
+> +			else if (err == READER_EOF)
+> +				break;
+> +		}
+> +	}
+> +
+>  	/* do the final flush for ordered samples */
+>  	err = ordered_events__flush(oe, OE_FLUSH__FINAL);
+>  	if (err)
+> -- 
+> 2.19.0
 
-Thanks,
-  Andrea
+-- 
 
+- Arnaldo
