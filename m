@@ -2,65 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DDB9422BD8
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 17:08:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5C0E422BA1
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 16:59:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235067AbhJEPJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 11:09:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54488 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbhJEPJy (ORCPT
+        id S235134AbhJEPBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 11:01:40 -0400
+Received: from smtprelay0217.hostedemail.com ([216.40.44.217]:34622 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231663AbhJEPBg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 11:09:54 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFCBDC061749
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 08:08:03 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id r10so21482889wra.12
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 08:08:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=3PYTT8kJpyzpxpd4IUA8A7KEa4VhIQYWn6d7OgYbvSg=;
-        b=KERGXjexTo6cOXkAYp9NeVFF1j7TpkR0lVoPRsoCIB+kmnP/8n6s+zvTkf6tsFCecr
-         vZ9FRYvFmTxxzFwKdKWM+uM0x+wN0H3yMuvFNYzX78pN9o8DhY/ZO/6hbERBsRDa8xZP
-         xpAXXsxsnRCFdI3Ka8LS6oT/gUUU7mBmAUSJPQ/4ort1q/vMa2IjhHMwSv70g8mrJDor
-         dgpNr1HzJbWIhz0GRanpvlvTwoRJqdZnNshyIe4F1EzZPuOo5KOwTPvv/dYikUfSlpqX
-         l85CvkPP9iZG1gHQTCg0DrfTPIpcJr7Vaea1tRSWqAbNwteYA7nG1XgBtOOdVlvrNd51
-         0TTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=3PYTT8kJpyzpxpd4IUA8A7KEa4VhIQYWn6d7OgYbvSg=;
-        b=bYNQwhx5NDqrmo+RiW7t9l6PRv1Ipn+4gVnDkftiVyLJrM5R07qRkj3Hopzq0Qskrq
-         0be4iK4E1SmfZFgd4R32ag4joFR5BiW5HKfG47sPxkQdbe5P2JrF5O8PzDWNZpJDMtts
-         Tl/uIfVV6rZPGY2+x9uI/C6SX8yUBNnS/oQ18/2AqM/mS+TIEcqP+ZDYpr0tmB7Jm+0X
-         ZmILHHlgofeNmJqEOCHn9XbwmkkWNhv++85fEJzn3tnDl83bfPsKj96swnGAYrJyd5rk
-         V0I1w+V3evqpYbXTjzg05OFVbQpHVfOFOlepfszPk/ek1qxwN8qlI/UL9I+y9uKzBc++
-         Kd1Q==
-X-Gm-Message-State: AOAM531bosbUBtsCoSGip6+p7Zib4Mj7Y4Q00fAhsjBlk+JOU1glCafR
-        2FbOGWrNNhOZpWjA6Hky+v49xeEoeL4JrZfsId/98vulOt+G/g==
-X-Google-Smtp-Source: ABdhPJyUp1x/cWdPucDJ6okgZpkOQhsDDJnVqxlzzbG81M3zi7RVVB3lbiUo1rSZ8tPyt86cJAL8QU7PzUNXBlRIcgo=
-X-Received: by 2002:a17:906:7811:: with SMTP id u17mr24835486ejm.562.1633445916762;
- Tue, 05 Oct 2021 07:58:36 -0700 (PDT)
+        Tue, 5 Oct 2021 11:01:36 -0400
+Received: from omf19.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id BBB192774C;
+        Tue,  5 Oct 2021 14:59:44 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf19.hostedemail.com (Postfix) with ESMTPA id 414E320D76E;
+        Tue,  5 Oct 2021 14:59:44 +0000 (UTC)
+Message-ID: <3ee1984f331b6b283f95bed303dc3d3e7e363460.camel@perches.com>
+Subject: Re: [PATCH 01/13] usb: core: config: Use tabs rather than spaces
+ for new lines of args
+From:   Joe Perches <joe@perches.com>
+To:     Robert Greener <rob@robgreener.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Date:   Tue, 05 Oct 2021 07:59:43 -0700
+In-Reply-To: <3e27773cc94bfc740374d0432e70e4b215c08c9a.1633442131.git.rob@robgreener.com>
+References: <cover.1633442131.git.rob@robgreener.com>
+         <3e27773cc94bfc740374d0432e70e4b215c08c9a.1633442131.git.rob@robgreener.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-Received: by 2002:a54:2410:0:0:0:0:0 with HTTP; Tue, 5 Oct 2021 07:58:36 -0700 (PDT)
-From:   Kokou Mensah <kokou.associes228@gmail.com>
-Date:   Tue, 5 Oct 2021 14:58:36 +0000
-Message-ID: <CAMTsTFRnDN1FBN6af8ypgWo+n-KtndFXVXZYs21k8nbjSAuWoQ@mail.gmail.com>
-Subject: Re: Hello
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Server: rspamout01
+X-Rspamd-Queue-Id: 414E320D76E
+X-Spam-Status: No, score=0.10
+X-Stat-Signature: npk88fekj6em1j8f3strzcdms13g4ymz
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1+ykvpIhNf6YUa47ef+eWtBvFbQYbXMvuY=
+X-HE-Tag: 1633445984-646722
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Good day,
+On Tue, 2021-10-05 at 13:22 +0100, Robert Greener wrote:
+> This fixes the following checkpatch.pl warning at lines 28, 499, 500, 606:
 
-In my honor as the personal attorney to your late relative, I hereby
-officially invite you to his inheritance claim.
-With your permission, I will give you more information .
+Please do not bcc an entire patch set.
 
-Yours faithfully,
+> diff --git a/drivers/usb/core/config.c b/drivers/usb/core/config.c
+[]
+> @@ -496,8 +496,8 @@ void usb_release_interface_cache(struct kref *ref)
+>  }
+>  
+>  static int usb_parse_interface(struct device *ddev, int cfgno,
+> -    struct usb_host_config *config, unsigned char *buffer, int size,
+> -    u8 inums[], u8 nalts[])
+> +		struct usb_host_config *config, unsigned char *buffer, int size,
+> +		s[], u8 nalts[])
 
--- 
-Kokou Mensah. Esq
+And don't send patches that likely don't compile.
+
+A patch described as a whitespace only patch should not change
+anything other that whitespace.
+
+
