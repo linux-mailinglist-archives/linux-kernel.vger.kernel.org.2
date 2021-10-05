@@ -2,80 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5621422607
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 14:13:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84A55422616
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Oct 2021 14:15:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234392AbhJEMPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 08:15:30 -0400
-Received: from mailgate.ics.forth.gr ([139.91.1.2]:44724 "EHLO
-        mailgate.ics.forth.gr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233672AbhJEMP3 (ORCPT
+        id S234636AbhJEMRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 08:17:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56973 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234605AbhJEMRD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 08:15:29 -0400
-Received: from av3.ics.forth.gr (av3in.ics.forth.gr [139.91.1.77])
-        by mailgate.ics.forth.gr (8.15.2/ICS-FORTH/V10-1.8-GATE) with ESMTP id 195CDaew012089
-        for <linux-kernel@vger.kernel.org>; Tue, 5 Oct 2021 15:13:36 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; d=ics.forth.gr; s=av; c=relaxed/simple;
-        q=dns/txt; i=@ics.forth.gr; t=1633436011; x=1636028011;
-        h=From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=AebaI2Opn2KDPkehW8betq17Udp5gRls6N7tILPVKdE=;
-        b=KMDZ/rH7xbXqfOwJ8A7rPVPIT9MNC9dNxDabBtR4M1cDWlKWoam//LqvePaiKJXR
-        H+TPaiyHMTojAsZL5TWy7S9DNal5iUggaf/ARI2GCBxokPs8tyoseTpJTCYNtPSj
-        kzDxzZPJOxVNpsTEPW8A4rLq+LzMDnLKW4zRLtH3Hu01Ftz/v6zKZMqJftZ8xyn6
-        anhYehK7NTsoVnYoDrL1/QKE37D8tRQho+3wPRyiOSdMrMV0wM43eX10tTdwzIo2
-        gF5bwSSF0o87RWootROYfpqu8yEYYJ2rflIuUAsFIuaEby22QBoQwBbYr/L4+/r6
-        0NY5nSXF7NBBr/s8Z9HUxQ==;
-X-AuditID: 8b5b014d-ba8f670000005d46-88-615c416b4968
-Received: from enigma.ics.forth.gr (webmail.ics.forth.gr [139.91.151.35])
-        by av3.ics.forth.gr (Symantec Messaging Gateway) with SMTP id A6.62.23878.B614C516; Tue,  5 Oct 2021 15:13:31 +0300 (EEST)
-X-ICS-AUTH-INFO: Authenticated user:  at ics.forth.gr
+        Tue, 5 Oct 2021 08:17:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633436112;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=dCCO8fvaNG5kRPHcw+pvgkkQZNNkJ5hJCAeGZXd3qtE=;
+        b=dHQHRo+6wVFxkAjuk5jxt0wtpbdLCNk9PkU3VBSi1nNMa1Fk32eAwZLMvuJqcF3nYRZ8Wx
+        SBVPBSVBT+/ykyxhuztJGOPWwg+tAfA3YDKVFUzgIjErAb6WpwVBcsWKCoHb0CWa3CeEHM
+        Bnn0gFzAPfF2ShQDOm4fkMRLcfy6eL8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-193-sWb1MEcANPiv2spGvuCfbQ-1; Tue, 05 Oct 2021 08:15:11 -0400
+X-MC-Unique: sWb1MEcANPiv2spGvuCfbQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 57CCC802921;
+        Tue,  5 Oct 2021 12:15:08 +0000 (UTC)
+Received: from t480s.redhat.com (unknown [10.39.193.58])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A227F1F6;
+        Tue,  5 Oct 2021 12:14:31 +0000 (UTC)
+From:   David Hildenbrand <david@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Dave Young <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Mike Rapoport <rppt@kernel.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, x86@kernel.org,
+        xen-devel@lists.xenproject.org,
+        virtualization@lists.linux-foundation.org,
+        kexec@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: [PATCH v2 0/9] proc/vmcore: sanitize access to virtio-mem memory
+Date:   Tue,  5 Oct 2021 14:14:21 +0200
+Message-Id: <20211005121430.30136-1-david@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 05 Oct 2021 15:13:30 +0300
-From:   Nick Kossifidis <mick@ics.forth.gr>
-To:     ebiederm@xmission.com, kexec@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        alex@ghiti.fr, rppt@kernel.org, geert+renesas@glider.be,
-        Stephano Cetola <scetola@linuxfoundation.org>,
-        Philipp Tomsich <philipp.tomsich@vrull.eu>, palmer@dabbelt.com,
-        anup.patel@wdc.com, atish.patra@wdc.com
-Subject: RISC-V: patched kexec-tools on github for review/testing
-Organization: FORTH
-Message-ID: <00c521b5b872b06c9350145c7d39fe7c@mailhost.ics.forth.gr>
-X-Sender: mick@mailhost.ics.forth.gr
-User-Agent: Roundcube Webmail/1.3.16
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrLLMWRmVeSWpSXmKPExsXSHT1dWTfbMSbRoOWtisWzO19ZLZ58mMhm
-        sWjFdxaL/9ta2C3mzp7EaLH79Fcmi8u75rBZbPvcwmbx8nIPs0X3ymqLI+u3M1nM/rCExYHH
-        483Llywe905MY/WYeFbXY9OqTjaP/XPXsHtsXlLv8XmTnMfO2w+ZPNoPdDN5TDnUzhLAFcVl
-        k5Kak1mWWqRvl8CVcbvhMXvBZOaK3ysSGxjvMHUxcnJICJhIPFt6Asjm4hASOMYosWvmM3aI
-        hKnE7L2djCA2r4CgxMmZT1i6GDk4mAWsJdr3GICEmQXkJba/ncMMYrMIqEqsnvQYrJVNQFNi
-        /qWDLCAzRQQ+M0l0XGgEmyMs4Cix8t9tMJtfQFji092LrBDzXSReP/rEBrFXReLD7wfsILtE
-        gezNc5UmMPLNQnLFLIQrZiG5YgEj8ypGgcQyY73M5GK9tPyikgy99KJNjOAYYPTdwXh781u9
-        Q4xMHIyHGCU4mJVEeK96RSYK8aYkVlalFuXHF5XmpBYfYpTmYFES5+XVmxAvJJCeWJKanZpa
-        kFoEk2Xi4JRqYMoqv2tkW7Rki6SG4Ifk8oVe59arzCx+dLv9ljCLwqJflRwXl/bwTgvUmxs9
-        e0XIpIP+Mo57Vy/36F/o/nJiejJLaJWm6b3dkWtTvl6XPBGsq7VEIX+W++P/Hq2WswN3xa/w
-        F5sYW295oCZIajPHnb+vjYVsDme8jBKtYuLdnt76npHXckLfgnXSyQp51tHezodazv5QPLaB
-        mTXxgJnz6XTevJmbTBpiZv4LEFaq0pNeFuqvGuB/8fFNqcC13Ov/Zhi8LJivmtakmla3r+vF
-        feXZR1x3Ld2zpmU750k9LobUPuHv3hf2aV6LPSyasWxHffj9si+zbJ5k8bw5EdgbobzlfI+7
-        gr711lWzT4sdUmIpzkg01GIuKk4EALq7jjfwAgAA
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello all,
+As so often with virtio-mem changes that mess with common MM
+infrastructure, this might be a good candiate to go via Andrew's tree.
 
-I've uploaded my kexec-tools patches for riscv on github for 
-testing/review before sending them upstream.
-https://github.com/riscv-collab/kexec-tools/tree/riscv
+--
 
-Both kexec and kdump were tested on latest rv64 qemu, using for-next 
-branch with this patch applied:
-https://patchwork.kernel.org/project/linux-riscv/patch/20211002122026.1451269-1-mick@ics.forth.gr/
+After removing /dev/kmem, sanitizing /proc/kcore and handling /dev/mem,
+this series tackles the last sane way how a VM could accidentially access
+logically unplugged memory managed by a virtio-mem device: /proc/vmcore
 
-Regards,
-Nick
+When dumping memory via "makedumpfile", PG_offline pages, used by
+virtio-mem to flag logically unplugged memory, are already properly
+excluded; however, especially when accessing/copying /proc/vmcore "the
+usual way", we can still end up reading logically unplugged memory part of
+a virtio-mem device.
+
+Patch #1-#3 are cleanups. Patch #4 extends the existing oldmem_pfn_is_ram
+mechanism. Patch #5-#7 are virtio-mem refactorings for patch #8, which
+implements the virtio-mem logic to query the state of device blocks.
+
+Patch #8:
+
+"
+Although virtio-mem currently supports reading unplugged memory in the
+hypervisor, this will change in the future, indicated to the device via
+a new feature flag. We similarly sanitized /proc/kcore access recently.
+[...]
+Distributions that support virtio-mem+kdump have to make sure that the
+virtio_mem module will be part of the kdump kernel or the kdump initrd;
+dracut was recently [2] extended to include virtio-mem in the generated
+initrd. As long as no special kdump kernels are used, this will
+automatically make sure that virtio-mem will be around in the kdump initrd
+and sanitize /proc/vmcore access -- with dracut.
+"
+
+This is the last remaining bit to support
+VIRTIO_MEM_F_UNPLUGGED_INACCESSIBLE [3] in the Linux implementation of
+virtio-mem.
+
+Note: this is best-effort. We'll never be able to control what runs inside
+the second kernel, really, but we also don't have to care: we only care
+about sane setups where we don't want our VM getting zapped once we
+touch the wrong memory location while dumping. While we usually expect sane
+setups to use "makedumfile", nothing really speaks against just copying
+/proc/vmcore, especially in environments where HWpoisioning isn't typically
+expected. Also, we really don't want to put all our trust completely on the
+memmap, so sanitizing also makes sense when just using "makedumpfile".
+
+[1] https://lkml.kernel.org/r/20210526093041.8800-1-david@redhat.com
+[2] https://github.com/dracutdevs/dracut/pull/1157
+[3] https://lists.oasis-open.org/archives/virtio-comment/202109/msg00021.html
+
+v1 -> v2:
+- "x86/xen: simplify xen_oldmem_pfn_is_ram()"
+-- Simplify even more
+- "x86/xen: print a warning when HVMOP_get_mem_type fails"
+-- Added
+- "virtio-mem: kdump mode to sanitize /proc/vmcore access"
+-- Fix wrong range check
+
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Cc: Juergen Gross <jgross@suse.com>
+Cc: Stefano Stabellini <sstabellini@kernel.org>
+Cc: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: Jason Wang <jasowang@redhat.com>
+Cc: Dave Young <dyoung@redhat.com>
+Cc: Baoquan He <bhe@redhat.com>
+Cc: Vivek Goyal <vgoyal@redhat.com>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Oscar Salvador <osalvador@suse.de>
+Cc: Mike Rapoport <rppt@kernel.org>
+Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Cc: x86@kernel.org
+Cc: xen-devel@lists.xenproject.org
+Cc: virtualization@lists.linux-foundation.org
+Cc: kexec@lists.infradead.org
+Cc: linux-fsdevel@vger.kernel.org
+Cc: linux-mm@kvack.org
+
+David Hildenbrand (9):
+  x86/xen: update xen_oldmem_pfn_is_ram() documentation
+  x86/xen: simplify xen_oldmem_pfn_is_ram()
+  x86/xen: print a warning when HVMOP_get_mem_type fails
+  proc/vmcore: let pfn_is_ram() return a bool
+  proc/vmcore: convert oldmem_pfn_is_ram callback to more generic vmcore
+    callbacks
+  virtio-mem: factor out hotplug specifics from virtio_mem_init() into
+    virtio_mem_init_hotplug()
+  virtio-mem: factor out hotplug specifics from virtio_mem_probe() into
+    virtio_mem_init_hotplug()
+  virtio-mem: factor out hotplug specifics from virtio_mem_remove() into
+    virtio_mem_deinit_hotplug()
+  virtio-mem: kdump mode to sanitize /proc/vmcore access
+
+ arch/x86/kernel/aperture_64.c |  13 +-
+ arch/x86/xen/mmu_hvm.c        |  37 ++---
+ drivers/virtio/virtio_mem.c   | 297 ++++++++++++++++++++++++----------
+ fs/proc/vmcore.c              | 105 ++++++++----
+ include/linux/crash_dump.h    |  26 ++-
+ 5 files changed, 333 insertions(+), 145 deletions(-)
+
+
+base-commit: 9e1ff307c779ce1f0f810c7ecce3d95bbae40896
+-- 
+2.31.1
+
