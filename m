@@ -2,70 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF611423D6A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 14:02:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CBBB423D6D
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 14:04:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238341AbhJFMEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 08:04:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49416 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238167AbhJFMEU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 08:04:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6600B610A3;
-        Wed,  6 Oct 2021 12:02:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633521748;
-        bh=2/tfgl7tE1BMYiKB5jIW2uqSM51Wly0B5OQm5nL4dSw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TKjDB40wkXxV/t9MG4/ltx1gUjlSCK65ufOMY2mRKLERGAYN0YvEMVQdUrE3Z+JUI
-         /EiXy/zUxBUqtdcZ9S3fUTvtjijnKTn+gnv/+TTuWDgq0ZewFoMsiXFwdJ6rwTEs+N
-         3UgvGEC2uSTUqUVoSJcUQDWLOBkT48xoU9KtWLYsSWDNIVE14bw7F9s0z0InE6Ttcu
-         EHyPbRAzNeotQE/ZaZDt6Jg8UCdEqb4ODbZ3ecHxy49UxgHvuOJUsp0ny3j34sk3d9
-         evh+tYlKTO0KNtDk2f7yeTFHIiYXwh96JVWyKdv7Q9DYwDfXJuJ+5qH3s+s+Y0Eg/N
-         AOYb/vkCho1pw==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1mY5cv-0004Rp-V5; Wed, 06 Oct 2021 14:02:26 +0200
-Date:   Wed, 6 Oct 2021 14:02:25 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Fabio Estevam <festevam@denx.de>
-Cc:     gregkh@linuxfoundation.org, michael@walle.cc,
-        linux-serial@vger.kernel.org, marex@denx.de,
-        u.kleine-koenig@pengutronix.de, Tejun Heo <tj@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3]  serial: imx: Suppress false positive sysrq lockdep
- warning
-Message-ID: <YV2QUcdyMtGGq65P@hovoldconsulting.com>
-References: <20211001101815.729648-1-festevam@denx.de>
- <YVcTluYb6XOiOXZn@hovoldconsulting.com>
- <0bbe2832eb2dc3a7c32f3d484ab42208@denx.de>
- <YV1Z8JslFiBSFGJF@hovoldconsulting.com>
- <c774fe18362b4cc19111078f2cd9ae82@denx.de>
+        id S238390AbhJFMFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 08:05:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60244 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231172AbhJFMFw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 08:05:52 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0D51C061749;
+        Wed,  6 Oct 2021 05:03:59 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id u18so8132966wrg.5;
+        Wed, 06 Oct 2021 05:03:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=e/aej7GbV3RNso2QLtyef0SKYF6ZtFllJDqUDN4OhOw=;
+        b=pjApfVmGa2U6cE/pKb0yScYS7aJhpSbaYToMzszxXiVVy2EDizgOZUD3J8Q5YsL+F5
+         9HUvXaMOkG5oPHBD1j/LYmlKuvwuayhCudKU8f9Q1Z2uxSNmnqhMNCI4Js7fELco8vCt
+         MLhss5+DO8Gqapjz5T1jPN3+VM8UjOLqlrqtZoW6fP/pDVFZDOPD8V8AStpscxfb3HFe
+         qGQur6Zv6FXEUF9UvuSDo0/fXeL0wUQP8Ngak97RI9QxOD6+MMISkC9EksmPDCCvVVAr
+         2kucbFm0pzLWHHrIRZCzPuUuL+h0eqlQJyU6LZgNWRJBJzVljGUITi1mbSgpv4OVtBup
+         HJ5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=e/aej7GbV3RNso2QLtyef0SKYF6ZtFllJDqUDN4OhOw=;
+        b=Gtr1QYNVVpfi+8bBLn5c1fj8VT76rMlhOPqoJwN0T1UM6UDUboLChBJL1h1ZK3LSS7
+         JLB/dI/VFyjmRZSiAG7P4RGFm5+sJf61DbRHnBw/6td/H97It/agc+zxq7amNXzelreS
+         44w/fZE9mTJPcK7yWORPMKr74wFLXK0vk7fhlAxxZU95Vc+f3uJr/KuOBL6i5qGeMDRz
+         gu5sAY/HsFGOGptdDhN05iFdXvwwXSxDLG5K5gpT9uWNAFuZEn5ct0fIzuSbgOfbI3mG
+         uqTskChvfl/pEB+v9cMIwS9iSec+GR5S/i+ptAXD9bQLtw8feXizKdke5f5FTJyUIe+i
+         PX/Q==
+X-Gm-Message-State: AOAM5318rS0+zgxstoy55rJRaKaXfI8m/taNk/sFr4i1x4T92ZEcsb9h
+        OitbZVFNnQ3QhYzcfm809tVXHY6KRy8=
+X-Google-Smtp-Source: ABdhPJx25D0gRSn90gByos6lL+f5LoTcfRdO2Q2woo7Eg/ad9i7u9KhZ3isEjsydfgyH0nxeaU9m6Q==
+X-Received: by 2002:adf:a550:: with SMTP id j16mr20811802wrb.384.1633521838318;
+        Wed, 06 Oct 2021 05:03:58 -0700 (PDT)
+Received: from localhost.localdomain (i577BCBA0.versanet.de. [87.123.203.160])
+        by smtp.gmail.com with ESMTPSA id a2sm7178336wru.82.2021.10.06.05.03.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Oct 2021 05:03:57 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>, linux-mm@kvack.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] memory: remove unused CONFIG_MEM_BLOCK_SIZE
+Date:   Wed,  6 Oct 2021 14:03:54 +0200
+Message-Id: <20211006120354.7468-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c774fe18362b4cc19111078f2cd9ae82@denx.de>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 06, 2021 at 07:52:25AM -0300, Fabio Estevam wrote:
+Commit 3947be1969a9 ("[PATCH] memory hotplug: sysfs and add/remove
+functions") defines CONFIG_MEM_BLOCK_SIZE, but this has never been
+utilized anywhere.
 
-> On 06/10/2021 05:10, Johan Hovold wrote:
+It is a good practice to keep the CONFIG_* defines exclusively for the
+Kbuild system. So, drop this unused definition.
 
-> > I've prepared a patch that takes care of the workqueue state dumping,
-> > which I'll send as a reply to this mail. Would you mind giving it a 
-> > spin
-> > with the imx driver as well?
-> 
-> Yes, after applying only your patch I no longer get the lockdep
-> splat. I have replied with my Tested-by, thanks.
+This issue was noticed due to running ./scripts/checkkconfigsymbols.py.
 
-Perfect, thanks for confirming.
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+ include/linux/memory.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-Johan
+diff --git a/include/linux/memory.h b/include/linux/memory.h
+index c46ff374d48d..a216829df280 100644
+--- a/include/linux/memory.h
++++ b/include/linux/memory.h
+@@ -143,7 +143,6 @@ typedef int (*walk_memory_blocks_func_t)(struct memory_block *, void *);
+ extern int walk_memory_blocks(unsigned long start, unsigned long size,
+ 			      void *arg, walk_memory_blocks_func_t func);
+ extern int for_each_memory_block(void *arg, walk_memory_blocks_func_t func);
+-#define CONFIG_MEM_BLOCK_SIZE	(PAGES_PER_SECTION<<PAGE_SHIFT)
+ 
+ extern int memory_group_register_static(int nid, unsigned long max_pages);
+ extern int memory_group_register_dynamic(int nid, unsigned long unit_pages);
+-- 
+2.26.2
+
