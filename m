@@ -2,89 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AD63423554
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 03:05:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CD0A423556
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 03:06:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237059AbhJFBG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 21:06:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52146 "EHLO
+        id S237086AbhJFBIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 21:08:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231582AbhJFBGy (ORCPT
+        with ESMTP id S230218AbhJFBIY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 21:06:54 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7AE2C061749
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 18:05:03 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id k23so963434pji.0
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 18:05:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=axtens.net; s=google;
-        h=from:to:subject:date:message-id:mime-version;
-        bh=A4VJniHKXgRvhM9CB9NqAoMDuZnGdMIB2tESsniPS5Y=;
-        b=TH36DqQf1moGQssfh4QgEdwXQvhAEmenHRbwdfAHRx7OYEjvUKPDIvA65DiWpKadfr
-         jgR+P2cUnr/DFKc+ZhfOGY2pHijmE2lPE9a/szbwDNJ0qofyiUQQz9wlTGcCGJqTlgWm
-         mf1KomYOTZNqPDKQyDhgqLAvvKvMyIrlfn8d4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version;
-        bh=A4VJniHKXgRvhM9CB9NqAoMDuZnGdMIB2tESsniPS5Y=;
-        b=c7H5nGV2FN2kASr5S00tr5azu85Ea3cfbxYN/8I1igV8vgYEqh5jKR/I9zdVs3DCV8
-         ncV5IQGDnIMK6FOoAjs1tigkBE3I0KbttbT+CKXPg5SfelBuKblFE2GpGOC/5jEdJLep
-         e7LFDej8bx3dfEqjmZYGcrHvFcSn3lzIpqnKavXvpK1qHGrnKXFfrFGTxO5vxKZELoyw
-         sz9SYMyYiUjy+7VhGvFNdWJyYtpgBNXvd8MpE75SRApoZPuo5Nd+vP7Fad6gr1lR7Rl4
-         LAg8bfCfTE8CUhEvRp/1w1upRnzTzDxtcVg1iQUh458YEApunkDB0UlkyvYMj+DzSObz
-         bUHg==
-X-Gm-Message-State: AOAM531u5OFz3RNNKEfG1qeck0vS/jAFPTrZ4eW801CnrLm77os2QOWF
-        jKeCPR637LZmvVP3ddBITIvI1Q==
-X-Google-Smtp-Source: ABdhPJwMdryG4AdKdWKK2MFAk/p+BOVs/L4iZbITxjJxjI2CqYrwvdF8NvcHiMlf0GMa3woH2FXn5w==
-X-Received: by 2002:a17:90b:4a07:: with SMTP id kk7mr7417246pjb.37.1633482303184;
-        Tue, 05 Oct 2021 18:05:03 -0700 (PDT)
-Received: from localhost ([2001:4479:e300:600:ce15:427:ed6f:99de])
-        by smtp.gmail.com with ESMTPSA id e4sm14781238pfj.130.2021.10.05.18.05.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Oct 2021 18:05:02 -0700 (PDT)
-From:   Daniel Axtens <dja@axtens.net>
-To:     kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, paulmck@kernel.org,
-        rcu@vger.kernel.org
-Subject: instrument_atomic_read()/_write() in noinstr functions?
-Date:   Wed, 06 Oct 2021 12:05:00 +1100
-Message-ID: <871r4z55fn.fsf@dja-thinkpad.axtens.net>
+        Tue, 5 Oct 2021 21:08:24 -0400
+Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 966A5C061749;
+        Tue,  5 Oct 2021 18:06:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=+vWBHl1EvmMiSu6+JjZhRe8Jw+YmxOZ94aEmbzilIbI=; b=Da/e5LMYCYkiyu2IOmDMfH/+Ne
+        2hpxm9k3+mI0LypXmrAhfXHwzMLhvWkWaY+mkyHIZXwp1OUDtwx8eH3vCiqgHTMInuvfGLppQ5GNz
+        UhIPLuRTQj0hsokf8xzmhtwtkKODfaErYFd45bZps78IszlkLSUKMIvTsVedDRHbckgrXTTLOdaA9
+        0K/DrYcroRklJ2+m0XnU3FN8cRmgtp9nhhfOK+hZ2MdBBS3Xuup6cDHWszadlcWrjJFyQSH0bUm+m
+        qZaKz4IQ9HLnF9LnGAAb3PWsWfHoL89W/VtAAtnWJ7fTtf25d5KZO691sakA96RN0ZcxCBMkvPgHs
+        q67bNanQ==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mXvO3-00CUaB-3C; Wed, 06 Oct 2021 01:06:23 +0000
+Subject: Re: [PATCH 3/5 v3] sh: math-emu: drop unused functions
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Takashi YOSHII <takasi-y@ops.dti.ne.jp>
+References: <20211005001914.28574-1-rdunlap@infradead.org>
+ <20211005001914.28574-4-rdunlap@infradead.org>
+ <CAMuHMdUwkOwLgbxjSwO0QCq+=jBL+e1z8X6NZHrrx0bv_zFq1A@mail.gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <d5f5735a-ab8b-0da6-c530-06426dbb2457@infradead.org>
+Date:   Tue, 5 Oct 2021 18:06:21 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <CAMuHMdUwkOwLgbxjSwO0QCq+=jBL+e1z8X6NZHrrx0bv_zFq1A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 10/5/21 12:26 AM, Geert Uytterhoeven wrote:
+> Hi Randy,
+> 
+> Thanks for your patch!
+> 
+> On Tue, Oct 5, 2021 at 2:19 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+>> Delete ieee_fpe_handler() since it is not used. After that is done,
+>> delete denormal_to_double() since it is not used:
+>>
+>> ../arch/sh/math-emu/math.c:505:12: error: 'ieee_fpe_handler' defined but not used [-Werror=unused-function]
+>>    505 | static int ieee_fpe_handler(struct pt_regs *regs)
+>>
+>> ../arch/sh/math-emu/math.c:477:13: error: 'denormal_to_double' defined but not used [-Werror=unused-function]
+>>    477 | static void denormal_to_double(struct sh_fpu_soft_struct *fpu, int n)
+>>
+>> Fixes: 4b565680d163 ("sh: math-emu support")
+> 
+> Shouldn't that be
+> Fixes: 7caf62de25554da3 ("sh: remove unused do_fpu_error")
+> ?
 
-commit b58e733fd774 ("rcu: Fixup noinstr warnings") adds some
-instrument_atomic_read calls to rcu_nmi_enter - a function marked
-noinstr. Similar calls are added to some other functions as well.
+oh, ah, um. Yes, it should. Thanks!
 
-This is causing me some grief on powerpc64 while trying to enable
-KASAN. powerpc64 book3s takes some NMIs in real mode, and in real mode
-we can't access where I'm proposing to put the KASAN shadow - we can
-only access it with translations on. So I end up taking a fault in the
-kasan_check_read path via rcu_nmi_enter.
+> 
+>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> 
+> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> 
+> Gr{oetje,eeting}s,
+> 
+>                          Geert
+> 
 
-As far as I can tell `instrumentation_begin()` and
-`instrumentation_end()` don't make it safe to call instrumentation, they
-just tell the developer that instrumentation is safe. (And they are used
-to check the balance of _begin()/_end() blocks.)
 
-Is the underlying assumption that the KASAN shadow will always be safe
-to access, even in functions marked noinstr? It seems to undercut what
-an architecture can assume about a function marked noinstr...
-
-Kind regards,
-Daniel
-
-P.S. On a more generic note instrumentation_begin()/_end() is now
-scattered across the kernel and it makes me a bit nervous. It's making a
-statement about something that is in part a property of how the arch
-implements instrumentation. Are arches expected to implement things in
-such a way as to make these blocks accurate? For example in
-arch/powerpc/include/asm/interrupt.h::interrupt_nmi_enter_prepare we
-currently sometimes call nmi_enter in real mode; should we instead only
-call it when we have translations on?
+-- 
+~Randy
