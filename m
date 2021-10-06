@@ -2,71 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12791423DE4
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 14:40:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7707A423DEC
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 14:43:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238387AbhJFMmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 08:42:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40352 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231207AbhJFMmS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 08:42:18 -0400
-Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5543AC061749
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 05:40:26 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:dcc1:3235:c5c1:b8e0])
-        by albert.telenet-ops.be with bizsmtp
-        id 2cgP2600P1CcfcG06cgPbz; Wed, 06 Oct 2021 14:40:24 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1mY6Df-002UvT-Fv; Wed, 06 Oct 2021 14:40:23 +0200
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1mY6Df-0064GA-54; Wed, 06 Oct 2021 14:40:23 +0200
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     "H. Peter Anvin" <hpa@zytor.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] compiler-intel: Remove duplicate RELOC_HIDE()
-Date:   Wed,  6 Oct 2021 14:40:22 +0200
-Message-Id: <691ab4fcf6b6b69d1db91b94d404cb80fca36f6c.1633523760.git.geert+renesas@glider.be>
-X-Mailer: git-send-email 2.25.1
+        id S238116AbhJFMpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 08:45:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60518 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229894AbhJFMpM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 08:45:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E8A5B60F23;
+        Wed,  6 Oct 2021 12:43:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633524200;
+        bh=NXX/YVeSC1/xMv0e7rgZCXBKEbXgorLqIvzRSnMfkfA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KiwZEZTBaFLkFv2VNrd0e9f56QbQwT/fvCufaFLfozr4TRjxw1yntvxAKGYX8gbtL
+         s9Ilw6I4jGZr/w9X7NtIvuZBR2GqSG6mxyfJASQ3v5p7+U+SARrT3cEhZb+M6CmAzf
+         wuc/FZIYjZdMGAyTNDB5etmzBwMaNXjlOqmrartbq1wcGlBcESlsAvP/siFZz9aO1j
+         RFXVme+4roOdlkjaxzxSKMj3IdwVZUGhE+w6aTMpGS/UywqEhpcmvZDPU4sAByK1Ao
+         rjEd7tzi+ZToE5W7ngVUO56CiBeG1rbLXAbpkrlhLeDRWbVXD8ZuyJN685m37EY1C+
+         2Ja2arWnSxQeA==
+Date:   Wed, 6 Oct 2021 18:13:16 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Rob Clark <robdclark@gmail.com>, linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org
+Subject: Re: [PATCH 08/11] drm/msm/disp/dpu1: Add support for DSC in encoder
+Message-ID: <YV2Z5JbfFAgLo0n6@matsya>
+References: <20210715065203.709914-1-vkoul@kernel.org>
+ <20210715065203.709914-9-vkoul@kernel.org>
+ <0227846a-47b1-96e7-f14c-7dc3b4f1ba47@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0227846a-47b1-96e7-f14c-7dc3b4f1ba47@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The RELOC_HIDE() implementation for the Intel compiler is identical to
-the generic version in <linux/compiler.h>, so the former can just be
-removed.
+On 29-07-21, 23:54, Dmitry Baryshkov wrote:
+> On 15/07/2021 09:52, Vinod Koul wrote:
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
-Not even compile-tested.
----
- include/linux/compiler-intel.h | 5 -----
- 1 file changed, 5 deletions(-)
+> > diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+> > index 8d942052db8a..41140b781e66 100644
+> > --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+> > +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+> > @@ -21,12 +21,17 @@
+> >   #include "dpu_hw_intf.h"
+> >   #include "dpu_hw_ctl.h"
+> >   #include "dpu_hw_dspp.h"
+> > +#include "dpu_hw_dsc.h"
+> >   #include "dpu_formats.h"
+> >   #include "dpu_encoder_phys.h"
+> >   #include "dpu_crtc.h"
+> >   #include "dpu_trace.h"
+> >   #include "dpu_core_irq.h"
+> > +#define DSC_MODE_SPLIT_PANEL		BIT(0)
+> > +#define DSC_MODE_MULTIPLEX		BIT(1)
+> > +#define DSC_MODE_VIDEO			BIT(2)
+> 
+> This should go into dpu_hw_dsc.h. Ah. They are already defined there and
+> just redefined there. Remove the defines here.
 
-diff --git a/include/linux/compiler-intel.h b/include/linux/compiler-intel.h
-index b17f3cd18334df3d..efc8fafb58f595b2 100644
---- a/include/linux/compiler-intel.h
-+++ b/include/linux/compiler-intel.h
-@@ -16,11 +16,6 @@
- #define barrier() __memory_barrier()
- #define barrier_data(ptr) barrier()
- 
--#define RELOC_HIDE(ptr, off)					\
--  ({ unsigned long __ptr;					\
--     __ptr = (unsigned long) (ptr);				\
--    (typeof(ptr)) (__ptr + (off)); })
--
- /* This should act as an optimization barrier on var.
-  * Given that this compiler does not have inline assembly, a compiler barrier
-  * is the best we can do.
+Sure, updated
+
+> It might be cleaner to add bool flags to struct msm_display_dsc_config and
+> then calculate common mode in the dpu_hw_dsc_config().
+
+How would that be better than calculating here? I dont see much of an
+advantage.
+
+> > +static void dpu_encoder_dsc_pipe_cfg(struct dpu_hw_dsc *hw_dsc,
+> > +				     struct dpu_hw_pingpong *hw_pp,
+> > +				     struct msm_display_dsc_config *dsc,
+> > +				     u32 common_mode)
+> > +{
+> > +	if (hw_dsc->ops.dsc_config)
+> > +		hw_dsc->ops.dsc_config(hw_dsc, dsc, common_mode);
+> > +
+> > +	if (hw_dsc->ops.dsc_config_thresh)
+> > +		hw_dsc->ops.dsc_config_thresh(hw_dsc, dsc);
+> > +
+> > +	if (hw_pp->ops.setup_dsc)
+> > +		hw_pp->ops.setup_dsc(hw_pp);
+> > +
+> > +	if (hw_pp->ops.enable_dsc)
+> > +		hw_pp->ops.enable_dsc(hw_pp);
+> 
+> I think, we do not need to split these operations, I'd suggest having just
+> hw_dsc->ops.dsc_config() and hw_pp->ops.enable_dsc(), merging
+> dsc_config_thres() and setup_dsc() into respective methods.
+
+Merging hw_dsc->ops.dsc_config() and hw_dsc->ops.dsc_config_thresh() would make
+it from L to XL size, so lets keep them split.
+
+We could merge the small hw_pp->ops.setup_dsc() and
+hw_pp->ops.enable_dsc() though.
+
+> >   void dpu_encoder_prepare_for_kickoff(struct drm_encoder *drm_enc)
+> >   {
+> >   	struct dpu_encoder_virt *dpu_enc;
+> >   	struct dpu_encoder_phys *phys;
+> > +	struct msm_drm_private *priv;
+> >   	bool needs_hw_reset = false;
+> >   	unsigned int i;
+> > @@ -1841,6 +1977,10 @@ void dpu_encoder_prepare_for_kickoff(struct drm_encoder *drm_enc)
+> >   			dpu_encoder_helper_hw_reset(dpu_enc->phys_encs[i]);
+> >   		}
+> >   	}
+> > +
+> > +	priv = drm_enc->dev->dev_private;
+> > +	if (priv->dsc)
+> > +		dpu_encoder_prep_dsc(dpu_enc, priv->dsc);
+> 
+> Not quite. This makes dsc config global, while we can have several encoders
+> enabled at once (think of DSI + DP). So the dsc should be a per-encoder
+> setting rather than global.
+
+I agree it would make sense to have per-encoder. The DP part needs to be
+comprehended for DSC and would need more changes. I think updating this
+for DP then and making it generic as required for DP would be better,
+right? In that case I will skip moving to encoder for now.
+
 -- 
-2.25.1
-
+~Vinod
