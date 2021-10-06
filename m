@@ -2,82 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49F3A424271
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 18:19:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B10B424277
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 18:20:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232064AbhJFQVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 12:21:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35336 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231998AbhJFQUn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 12:20:43 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FD57C061746
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 09:18:50 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id d131so6698672ybd.5
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 09:18:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0xSr56/FvBezCYYGx3+o4d+Zu6KknfVugxQiabr0PAg=;
-        b=ROWUzPTJH5eoyrWzGpzD7/tmiI6BjNNDx+jUOWos5LDC0tL8up07naBJtCsz5ivk0X
-         F8L/uHQwWrQuDaHUiSDKs/bwW8f8ZQm5K/ZNN40lum6ukHkm7KrgCijjRJEP4BLRvwqW
-         aMbTXrFtVzgqAlRBpb0RDUfsVFPBbs1LsAKU3nbnnSX+3qp+eE+svWeq0pGbjbu/Opxd
-         F57y7R1W/xzLvElYGKLUSG2v6MvaJvmsHN/qcWfRi/0oirWSiWe+AMqMe2HsyB8+myh2
-         5Ru4r4fKWVyhq1YT+uaJVAjrbfvJbkMfILqXuywBdk/I1rmUEFHauNLPCzFBpCgNPWRJ
-         TGIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0xSr56/FvBezCYYGx3+o4d+Zu6KknfVugxQiabr0PAg=;
-        b=2Xstxg7nvg/KvjljN/Gbk4EKpuul/neL/pZkPjaA333MNCw8jwBmdKOFc80nS9rEeJ
-         hXCBI2yDcUk9E3QTS2K0/JcXLFEofcUsHG1kxMNfI1n4dSYkEunw5gWb9VFfjyShC0bC
-         oJxbJF/J6XGgiBfaNAvUhA1HYrNDQzIsVDagOgBvd9KJ9/Qh4YMhX9KBk8tirlDeyIyK
-         Esa/T7SQOPyHzo6YL+1i/g/JQ2jK1Nvw5/39AvsjfnLZRdqbXajMH0f2jPwLtakBBF47
-         C1WE2R+Suam2xnKB98SUrzh6dpZzdeGC/yTuu+gyP0FBQQflqboryyZa6U1uziFH4yzq
-         qd/Q==
-X-Gm-Message-State: AOAM533KTVoOlN+KAvtd1TzqRcuoOiHAfPnDM5g99oQgO2PmxJmD6I/i
-        R/8c8DZpiyqs0jr1qfJXfCvqAnPk6TrStS/czsIIWw==
-X-Google-Smtp-Source: ABdhPJwemM49g4lurr2EVbGRS4V8hk9Z0Hc4uossGIWkyIbYn2O+YuiWfVtEhLR9ekPnQWZPIVa+q1GjhT3duHORo6s=
-X-Received: by 2002:a25:1c45:: with SMTP id c66mr31679935ybc.133.1633537129410;
- Wed, 06 Oct 2021 09:18:49 -0700 (PDT)
+        id S239345AbhJFQWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 12:22:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43196 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230021AbhJFQV6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 12:21:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A7DA610EA;
+        Wed,  6 Oct 2021 16:20:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633537206;
+        bh=pGzTV3esiIv298q9BXKhGUzD+f9XRjx1SUiQN9dwFBY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aFzjtpdXCVTqawava5IljBa+/tcy/RpCd62RroTXoFADFrgIN7a7nbqhZR3FNa+5u
+         n6vpDB4cL8O0y8JrseDB0TyqzlXdR+W1B7Ofy3p9ULIh4hajefc6MQFJbx6A9fOlKE
+         TQXcV2juY27R2xwpm0OHNrAh/RN6Y76ND4wztZIPFRjNY/noEbWVI/l7pcTK4mAYo2
+         ZZeqnuk6nWtAJi1bNQxBAxpwNXfMMsYqe0qkO9ps/VXfUM3LFHYHqJ9Fs94tShKJd9
+         YArdRonQoxF6gYglcqx/Qj21TcntUkX8vqLTq7BJtHWvP0qWJqp3Pb6bZcUnaIngwf
+         OuOpforfcU63w==
+Date:   Wed, 6 Oct 2021 17:20:04 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Joe Perches <joe@perches.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Subject: Re: [PATCH v1 2/4] ASoC: Intel: bytcr_rt5640: Use temporary variable
+ for struct device
+Message-ID: <YV3MtOrpziyKqkxA@sirena.org.uk>
+References: <20211006150442.16503-1-andriy.shevchenko@linux.intel.com>
+ <20211006150442.16503-2-andriy.shevchenko@linux.intel.com>
+ <4b81a10dca78e286a9f806464b97111b5a15a91e.camel@perches.com>
+ <YV3ER4uIL4aRWBjz@smile.fi.intel.com>
+ <YV3FaZ+afuZZSIth@sirena.org.uk>
+ <YV3JWzNgGInZ1Bt5@smile.fi.intel.com>
 MIME-Version: 1.0
-References: <20210930180531.1190642-1-samitolvanen@google.com>
- <20210930180531.1190642-2-samitolvanen@google.com> <20211006033626.hfjke5jrvvzxhc67@treble>
-In-Reply-To: <20211006033626.hfjke5jrvvzxhc67@treble>
-From:   Sami Tolvanen <samitolvanen@google.com>
-Date:   Wed, 6 Oct 2021 09:18:38 -0700
-Message-ID: <CABCJKufSX7yoZ5qcDjQcsg4P=soP+q9Yrf2Qiaa2JHdsn=s8_w@mail.gmail.com>
-Subject: Re: [PATCH v4 01/15] objtool: Add CONFIG_CFI_CLANG support
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     X86 ML <x86@kernel.org>, Kees Cook <keescook@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        linux-hardening@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>, llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="pvNYqT1s2XmLNWBp"
+Content-Disposition: inline
+In-Reply-To: <YV3JWzNgGInZ1Bt5@smile.fi.intel.com>
+X-Cookie: A is for Apple.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 5, 2021 at 8:36 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
->
-> On Thu, Sep 30, 2021 at 11:05:17AM -0700, Sami Tolvanen wrote:
-> > With CONFIG_CFI_CLANG, the compiler replaces function references with
-> > references to the CFI jump table, which confuses objtool. This change,
-> > based on Josh's initial patch [1], goes through the list of relocations
-> > and replaces jump table symbols with the actual function symbols.
-> >
-> > [1] https://lore.kernel.org/r/d743f4b36e120c06506567a9f87a062ae03da47f.1611263462.git.jpoimboe@redhat.com/
->
-> I found the original patch description to be much more useful than this
-> one ;-)
 
-Sure, I'll just copy that for the next version.
+--pvNYqT1s2XmLNWBp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Sami
+On Wed, Oct 06, 2021 at 07:05:47PM +0300, Andy Shevchenko wrote:
+> On Wed, Oct 06, 2021 at 04:48:57PM +0100, Mark Brown wrote:
+> > On Wed, Oct 06, 2021 at 06:44:07PM +0300, Andy Shevchenko wrote:
+> > > On Wed, Oct 06, 2021 at 08:21:01AM -0700, Joe Perches wrote:
+
+> > > > Some will complain about a lack of commit message.
+
+> > > Yeah, sorry for that, it wasn't deliberate. I forgot to run `git msg-filter`
+> > > on these three patches to add it.
+
+> > > Mark, do you want me resend entire bunch(es) or just starting from these
+> > > patches? Or...?
+
+> > If you're adding a commit message with automation it's probably not
+> > adding any value.
+
+> What do you mean? I add it exceptionally for the same (by nature) patches.
+> What do you expect to be altered in these three, if the idea behind the change
+> is very well the same?
+
+I really don't care if there's a separate changelog for trivial patches
+like this, it adds nothing of value.
+
+--pvNYqT1s2XmLNWBp
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFdzLMACgkQJNaLcl1U
+h9AeiAf/WqCqXROZjxlY7thdJTvoxPef03P18FKvWx2PcZs8ydd2++38FMk9Kt1E
+8SY7llTHx97Sy/7MohSU/I5RyxMb/16nBfc6G75elHUzZPpYMscrgNHvDsruNM50
+dDl5jgXeah4PA/zkdYnyKdB5PsgDHfUH6fqlen5DdvZkBD8bgcsDmGNm5Au30XPL
+fytYGo8lKxq6mbHouLyqw+Cp01n75TVaz/V1v5tCSpYrLX2j5fEIMd58rPy52/hV
+mGrt+61/oqOJ6y0vwCH9aw1TRuHUgOX6iUfBV4d5AHpwpqqiNfA79+leR5VjUn0j
+7Ax5qxo33fPbRqZQCvBqQDgktUY2Gg==
+=I4Dh
+-----END PGP SIGNATURE-----
+
+--pvNYqT1s2XmLNWBp--
