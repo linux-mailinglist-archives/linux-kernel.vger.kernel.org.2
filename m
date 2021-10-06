@@ -2,71 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EA16424A23
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 00:49:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2428424A40
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 00:52:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239939AbhJFWvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 18:51:01 -0400
-Received: from mail-il1-f198.google.com ([209.85.166.198]:47631 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231559AbhJFWvA (ORCPT
+        id S239593AbhJFWyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 18:54:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42086 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230047AbhJFWyD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 18:51:00 -0400
-Received: by mail-il1-f198.google.com with SMTP id i2-20020a056e02152200b002587ac62443so2746980ilu.14
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 15:49:08 -0700 (PDT)
+        Wed, 6 Oct 2021 18:54:03 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98202C061746
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 15:52:10 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id np13so3329405pjb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 15:52:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=X9+rzqyyLmnUi5V9eAJJM1v9frRed3OJmyIch0eqPL0=;
+        b=e3SL+nSUGhThIontz9MC6LQV9uc/k7lXXP1LdB+BIT8SvnItXfWFOQeT3NFyWAxOdd
+         nZG55+J2daSpVBGKHM+0QEPoZU0jFE/HVZ2iBINV5sBPQ3UXQI++SzdHxu/W0Fc0dAk3
+         QMi7Tv+4CW2+oXAuTb2v7Su40+X/8ng9F+pQIT4yWnR7E5Gyrf/WACGsyLjOsABowEJS
+         +oVFzzeUhYm7A55yr9zJPwJnFT+MX7cpdG91bsTxFAusxsPsl+6aqqGOBUoMzERmtlod
+         sO16/sQDZ2lPzWkWWMQ1mEwK4P0kX5e8r6BmM8YKNXyk5UM+0I1PjpGcomMG8CMSiN/H
+         Z08w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=ALMwBzPbcoiTV5PvRTqV3OLyZh+7yR20m1kSW7tZ0Q8=;
-        b=Gqd/YSwMGoODuTxJVCYj0ND+DaWLzF1G8zYVfEKoKXXUT64ziExvxCk5zVQHlnyPq8
-         CE+OnPsWoBUW7jA5Nc8hB96HS+ixSPiSvlhhY4/x3PpBwopm/9EeIxBZNXqvS7a52nR3
-         XDw5U1kDm0zzhcmpt+/1RikdPYOce1q6xIT45twJiKP8RJSj/ZBKSQvf9C+2GiSoXE8I
-         PoB6oA5pUY5KVs0d6XDcvnHDHEWDKpQvQUbeLQwj9NB4WODHGnrF3OBA2H8XmLvGzb5y
-         Mbb4qSyBpoGrjtPIfoL37hn8rfU2StcRPgdLaZP5Fjr7UZ2QnHrLxP1WZyyQhh7Y80fN
-         noVQ==
-X-Gm-Message-State: AOAM530WSe4Bxv/MHelNIDJODBUj0ZZfqz2abbi36Udg4ZVt3QpiVfKW
-        cMs0RJKmEsZ/zGUbYBc9PVjr3DpheYzn7L8kTzdPznSnIBdh
-X-Google-Smtp-Source: ABdhPJwgwn/+rLH5RBRah4vMGortYwfLv2GVM+OBafmkhb+7f5XXAOfDEsT5zmnO/gT3pUMne6hbUFquDJ/YSRFvAwQE1LhtB5Xz
-MIME-Version: 1.0
-X-Received: by 2002:a05:6638:d0e:: with SMTP id q14mr262061jaj.139.1633560548022;
- Wed, 06 Oct 2021 15:49:08 -0700 (PDT)
-Date:   Wed, 06 Oct 2021 15:49:08 -0700
-In-Reply-To: <00000000000084943605c64a9cbd@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000002f208405cdb6f447@google.com>
-Subject: Re: [syzbot] general protection fault in rcu_segcblist_enqueue
-From:   syzbot <syzbot+7590ddacf9f333c18f6c@syzkaller.appspotmail.com>
-To:     axboe@kernel.dk, bp@alien8.de, hpa@zytor.com, jack@suse.cz,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=X9+rzqyyLmnUi5V9eAJJM1v9frRed3OJmyIch0eqPL0=;
+        b=v7en9ztmOg/gXIxp9cYj5/YJgQHQHnFjDnLDw42uLJs+IWLqsjOXD/weP3qrhYiMru
+         gI/OZWK7O4PYx8eS0PX8dQDBf5J0M9D/PRgBKRsSIH9Inx4QduKyp+uyxl3PHazeO7zs
+         cxbX8kgJUwZPsfMggBvec2ZTxEMZZX4Wu32rvZVJCL2kK+8czaaZ1yB9oku0ahEXWN5/
+         FFSP65mkbmvDTTS99O1lWK5Pj9mEucOf6tr8UQ0qsc4RZ7wUwAuXSBlSa16w+825gq8e
+         eDnc8PEAPSzwEoZFtZe+NHyLFvkWFUF33Wn2kZATgm8zXLEv3biefL3wPDr5q6yJ9iaJ
+         7VHQ==
+X-Gm-Message-State: AOAM530uxQ0WPZFhrMOkhlubzeD6lBE2q3gRPA5gZHboWbqI7jynfBi4
+        I+T2Uz+1+zIw6nXjn9bGV+CQ6Q==
+X-Google-Smtp-Source: ABdhPJxbjLJju96OyFLkHu4aAAUct/Jk4TlYl9RxbnDwdQRzR7Zy/MRUeBfIjj1chkE51TkITn8NMw==
+X-Received: by 2002:a17:90a:bb82:: with SMTP id v2mr305066pjr.57.1633560729928;
+        Wed, 06 Oct 2021 15:52:09 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id y8sm22118302pfe.217.2021.10.06.15.52.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Oct 2021 15:52:09 -0700 (PDT)
+Date:   Wed, 6 Oct 2021 22:52:05 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     syzbot <syzbot+7590ddacf9f333c18f6c@syzkaller.appspotmail.com>
+Cc:     axboe@kernel.dk, bp@alien8.de, hpa@zytor.com, jack@suse.cz,
         jmattson@google.com, joro@8bytes.org, kvm@vger.kernel.org,
         linux-kernel@vger.kernel.org, mingo@redhat.com,
         paolo.valente@linaro.org, pbonzini@redhat.com, reijiw@google.com,
-        seanjc@google.com, syzkaller-bugs@googlegroups.com,
-        tglx@linutronix.de, vkuznets@redhat.com, wanpengli@tencent.com,
-        x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
+        vkuznets@redhat.com, wanpengli@tencent.com, x86@kernel.org
+Subject: Re: [syzbot] general protection fault in rcu_segcblist_enqueue
+Message-ID: <YV4olbHUKr7edo9L@google.com>
+References: <00000000000084943605c64a9cbd@google.com>
+ <0000000000002f208405cdb6f447@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0000000000002f208405cdb6f447@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
+On Wed, Oct 06, 2021, syzbot wrote:
+> syzbot suspects this issue was fixed by commit:
+> 
+> commit 067a456d091d05fdae32cae350410d905968b645
+> Author: Sean Christopherson <seanjc@google.com>
+> Date:   Tue Jul 13 16:32:43 2021 +0000
+> 
+>     KVM: SVM: Require exact CPUID.0x1 match when stuffing EDX at INIT
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15d871b7300000
+> start commit:   0319b848b155 binfmt: a.out: Fix bogus semicolon
+> git tree:       upstream
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=faed7df0f442c217
+> dashboard link: https://syzkaller.appspot.com/bug?extid=7590ddacf9f333c18f6c
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1308d0ed300000
+> 
+> If the result looks correct, please mark the issue as fixed by replying with:
+> 
+> #syz fix: KVM: SVM: Require exact CPUID.0x1 match when stuffing EDX at INIT
 
-commit 067a456d091d05fdae32cae350410d905968b645
-Author: Sean Christopherson <seanjc@google.com>
-Date:   Tue Jul 13 16:32:43 2021 +0000
+LOL, close?  At least syzbot found a KVM commit.
 
-    KVM: SVM: Require exact CPUID.0x1 match when stuffing EDX at INIT
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15d871b7300000
-start commit:   0319b848b155 binfmt: a.out: Fix bogus semicolon
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=faed7df0f442c217
-dashboard link: https://syzkaller.appspot.com/bug?extid=7590ddacf9f333c18f6c
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1308d0ed300000
-
-If the result looks correct, please mark the issue as fixed by replying with:
-
-#syz fix: KVM: SVM: Require exact CPUID.0x1 match when stuffing EDX at INIT
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+#syz fix: KVM: x86: Handle SRCU initialization failure during page track init
