@@ -2,131 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8D20423C8D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 13:22:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 289CF423C91
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 13:22:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238235AbhJFLYM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 07:24:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34605 "EHLO
+        id S237860AbhJFLY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 07:24:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45200 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229824AbhJFLYI (ORCPT
+        by vger.kernel.org with ESMTP id S238270AbhJFLYT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 07:24:08 -0400
+        Wed, 6 Oct 2021 07:24:19 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633519335;
+        s=mimecast20190719; t=1633519347;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=v/JfOMi35WLM2+MZzOUHUTk7On4MySnDCb/mEC3ZCeE=;
-        b=CFtC+3Uv3G/BmiCFIJ6DvBDtwYOXmMHwCI2Rj2GwmUe62qp0GyKIJdHWIC0XiCiNEi0H9o
-        yrqViganksXsvjy5PmbLYu2yyuS+Zw+o5Au2CbJt5+tvbUHqI/PmmYqYCH1OWbJumlwONf
-        0uH1We5wip3zCZkuIP7qHKWEPydr1eM=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-262-o8z1lhE0N3-VZxei36PLtg-1; Wed, 06 Oct 2021 07:22:14 -0400
-X-MC-Unique: o8z1lhE0N3-VZxei36PLtg-1
-Received: by mail-ed1-f69.google.com with SMTP id z6-20020a50cd06000000b003d2c2e38f1fso2356499edi.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 04:22:14 -0700 (PDT)
+        bh=jWX5sU8D1+Ly4mm1f35q3sYrq7WIwVRiVd8SgiHRgOs=;
+        b=JJozpYtc+lht4K+GR9dJN5iVdGpxBjbKn7W+xoieRxxQ8phKA4tZS2P8GEffRp5wvYpdCU
+        SxZhMU+0m/ogneH6G953wzBOFfdZS4zdZbfYmzmV+0y3bbjtJiuxBF6cAZTYXDdA26zSeS
+        9AR6TvwvluTsM0a+vcwiYZgNpBinv8g=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-473-dmP0G7BtNjeI9JEK8OJ-4g-1; Wed, 06 Oct 2021 07:22:26 -0400
+X-MC-Unique: dmP0G7BtNjeI9JEK8OJ-4g-1
+Received: by mail-ed1-f70.google.com with SMTP id c8-20020a50d648000000b003daa53c7518so2269110edj.21
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 04:22:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=v/JfOMi35WLM2+MZzOUHUTk7On4MySnDCb/mEC3ZCeE=;
-        b=oo1xq7gf1aOAuGiU6kMNeSfH4s3r98Jx29+vEukPLhf7YNC1TLS/2rj6MmjDxee+nS
-         O6HT6246mpc/8a5Jc8SsPB3HCpRy9wJmTInYvRJT69ZzCYdOYAdu3Y3PIiieq1SQt1WK
-         mxo6HHOLlG6K4WQP/m5XYXIRQUJNK/1CTXaUOayvPKZWnbi1EHxfnFNe413mGMCkyN0B
-         brsK8PrQOLZemaiNfIoyEaddm9+CjIvbpHZXm1uV9mI46h6AvzUvbDzBYtNqByaA/FC/
-         ZvSAK8JXI3txn2NILesVAW1YJ9Qy+b7kVCFdmJ7ixjKSqu1qRxy+Wo/+0BQ9l0wWiclR
-         B0oA==
-X-Gm-Message-State: AOAM531PZ1gZ/q4Vk7fa+SrtY0j1xYDOYy6VUcJIsGYU/tbsX/YvGnHi
-        6x7617MigAZ4JheoE//HU08KPGbGnd59DQ/iQK9J1rZ9jKS6m9aJ+mGLM0xrGT+Qk+Upp9G/6UZ
-        AYvqTxyRla+5zcNPtZCeUdGJI
-X-Received: by 2002:a17:906:254b:: with SMTP id j11mr21131208ejb.513.1633519333535;
-        Wed, 06 Oct 2021 04:22:13 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJylcfz1yIK5h80nly+MZgOukICPmd/XRFVIy5VZ7eKeiW48E0oVYz9JloSTXJaFKV1/u78H3g==
-X-Received: by 2002:a17:906:254b:: with SMTP id j11mr21131186ejb.513.1633519333342;
-        Wed, 06 Oct 2021 04:22:13 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
-        by smtp.gmail.com with ESMTPSA id b17sm2149920edd.77.2021.10.06.04.22.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Oct 2021 04:22:12 -0700 (PDT)
-Message-ID: <689f5883-54aa-51f8-a06b-69d18d6a3c82@redhat.com>
-Date:   Wed, 6 Oct 2021 13:22:10 +0200
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jWX5sU8D1+Ly4mm1f35q3sYrq7WIwVRiVd8SgiHRgOs=;
+        b=s0kghtwZtqLES3GFrHoOTUHG1u8AkCCGcAgbdhx0EyUT5qL0VY1qL28vBakeAIjG0+
+         5sk0GqCYRfIcQ82jN0pXs9jebzKbqiC/JDRoC8+zpfkP62wwDYbcZVmCet17d0DEYXMa
+         ZTb2wavhkF0CdcEnFfNuOLI+RnUhasj4NIReEmMvuTNGiwFOYgpL0r6LioQ5RC8MgonY
+         6xQnSfA2sMRbybc1EsK/FZP3RGsEjlklMOGsl6MKJyyGqwXuTjDB0PfbFnhcsQ3JsPXo
+         ax8kekBbuK6gPMaEFfvLMwQYVBTpV9pz51rFEkdkqc/T4v/72l4O77tHl7mKE8gSP6a7
+         kBwQ==
+X-Gm-Message-State: AOAM531KIyV/JXbDXidru/X7SihpEl8MGVBWEjiZgfSYlu4t5lifMnh1
+        euuA+G8SgRijXlLsII9HrFqV2Eo6koQcZzIJWFOnRnuM3MyXx+0q18+rYNpJYMZLfW0nq4e3bcl
+        w0sAQyeclmZfoTSE+q6HMq6fW
+X-Received: by 2002:a17:906:4f82:: with SMTP id o2mr31730769eju.10.1633519344814;
+        Wed, 06 Oct 2021 04:22:24 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwIBjVZ1NUXsGTtniMInafdYKeFUjjcDRuQOp+LY5ONfLP3y1FH0sVTnhS2J3YnXmmsoLjhGg==
+X-Received: by 2002:a17:906:4f82:: with SMTP id o2mr31730745eju.10.1633519344572;
+        Wed, 06 Oct 2021 04:22:24 -0700 (PDT)
+Received: from gator.home (cst2-174-28.cust.vodafone.cz. [31.30.174.28])
+        by smtp.gmail.com with ESMTPSA id u4sm1158745edj.33.2021.10.06.04.22.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Oct 2021 04:22:24 -0700 (PDT)
+Date:   Wed, 6 Oct 2021 13:22:22 +0200
+From:   Andrew Jones <drjones@redhat.com>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org, will@kernel.org,
+        qperret@google.com, dbrazdil@google.com,
+        Steven Price <steven.price@arm.com>,
+        Fuad Tabba <tabba@google.com>,
+        Srivatsa Vaddagiri <vatsa@codeaurora.org>,
+        Shanker R Donthineni <sdonthineni@nvidia.com>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        kernel-team@android.com
+Subject: Re: [PATCH v2 03/16] KVM: arm64: Turn kvm_pgtable_stage2_set_owner
+ into kvm_pgtable_stage2_annotate
+Message-ID: <20211006112222.ahfhtkhamdi3svm5@gator.home>
+References: <20211004174849.2831548-1-maz@kernel.org>
+ <20211004174849.2831548-4-maz@kernel.org>
+ <20211006110211.y6kzmjlzgardmwif@gator.home>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH MANUALSEL 5.10 4/7] KVM: x86: VMX: synthesize invalid VM
- exit when emulating invalid guest state
-Content-Language: en-US
-To:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Cc:     Maxim Levitsky <mlevitsk@redhat.com>,
-        Sean Christopherson <seanjc@google.com>, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, kvm@vger.kernel.org
-References: <20211006111234.264020-1-sashal@kernel.org>
- <20211006111234.264020-4-sashal@kernel.org>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <20211006111234.264020-4-sashal@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211006110211.y6kzmjlzgardmwif@gator.home>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/10/21 13:12, Sasha Levin wrote:
-> From: Maxim Levitsky <mlevitsk@redhat.com>
+On Wed, Oct 06, 2021 at 01:02:11PM +0200, Andrew Jones wrote:
+> On Mon, Oct 04, 2021 at 06:48:36PM +0100, Marc Zyngier wrote:
+> > kvm_pgtable_stage2_set_owner() could be generalised into a way
+> > to store up to 63 bits in the page tables, as long as we don't
+> > set bit 0.
+> > 
+> > Let's just do that.
+> > 
+> > Signed-off-by: Marc Zyngier <maz@kernel.org>
+> > ---
+> >  arch/arm64/include/asm/kvm_pgtable.h          | 12 ++++++-----
+> >  arch/arm64/kvm/hyp/include/nvhe/mem_protect.h |  2 +-
+> >  arch/arm64/kvm/hyp/nvhe/mem_protect.c         | 11 ++++------
+> >  arch/arm64/kvm/hyp/nvhe/setup.c               | 10 +++++++++-
+> >  arch/arm64/kvm/hyp/pgtable.c                  | 20 ++++++-------------
+> >  5 files changed, 27 insertions(+), 28 deletions(-)
+> > 
+> > diff --git a/arch/arm64/include/asm/kvm_pgtable.h b/arch/arm64/include/asm/kvm_pgtable.h
+> > index 027783829584..d4d3ae0b5edb 100644
+> > --- a/arch/arm64/include/asm/kvm_pgtable.h
+> > +++ b/arch/arm64/include/asm/kvm_pgtable.h
+> > @@ -329,14 +329,16 @@ int kvm_pgtable_stage2_map(struct kvm_pgtable *pgt, u64 addr, u64 size,
+> >  			   void *mc);
+> >  
+> >  /**
+> > - * kvm_pgtable_stage2_set_owner() - Unmap and annotate pages in the IPA space to
+> > - *				    track ownership.
+> > + * kvm_pgtable_stage2_annotate() - Unmap and annotate pages in the IPA space
+> > + *				   to track ownership (and more).
+> >   * @pgt:	Page-table structure initialised by kvm_pgtable_stage2_init*().
+> >   * @addr:	Base intermediate physical address to annotate.
+> >   * @size:	Size of the annotated range.
+> >   * @mc:		Cache of pre-allocated and zeroed memory from which to allocate
+> >   *		page-table pages.
+> > - * @owner_id:	Unique identifier for the owner of the page.
+> > + * @annotation:	A 63 bit value that will be stored in the page tables.
+> > + *		@annotation[0] must be 0, and @annotation[63:1] is stored
+> > + *		in the page tables.
+> >   *
+> >   * By default, all page-tables are owned by identifier 0. This function can be
+> >   * used to mark portions of the IPA space as owned by other entities. When a
+> > @@ -345,8 +347,8 @@ int kvm_pgtable_stage2_map(struct kvm_pgtable *pgt, u64 addr, u64 size,
+> >   *
+> >   * Return: 0 on success, negative error code on failure.
+> >   */
+> > -int kvm_pgtable_stage2_set_owner(struct kvm_pgtable *pgt, u64 addr, u64 size,
+> > -				 void *mc, u8 owner_id);
+> > +int kvm_pgtable_stage2_annotate(struct kvm_pgtable *pgt, u64 addr, u64 size,
+> > +				void *mc, kvm_pte_t annotation);
+> >  
+> >  /**
+> >   * kvm_pgtable_stage2_unmap() - Remove a mapping from a guest stage-2 page-table.
+> > diff --git a/arch/arm64/kvm/hyp/include/nvhe/mem_protect.h b/arch/arm64/kvm/hyp/include/nvhe/mem_protect.h
+> > index b58c910babaf..9d2ca173ea9a 100644
+> > --- a/arch/arm64/kvm/hyp/include/nvhe/mem_protect.h
+> > +++ b/arch/arm64/kvm/hyp/include/nvhe/mem_protect.h
+> > @@ -53,7 +53,7 @@ int __pkvm_host_share_hyp(u64 pfn);
+> >  
+> >  bool addr_is_memory(phys_addr_t phys);
+> >  int host_stage2_idmap_locked(phys_addr_t addr, u64 size, enum kvm_pgtable_prot prot);
+> > -int host_stage2_set_owner_locked(phys_addr_t addr, u64 size, u8 owner_id);
+> > +int host_stage2_annotate_locked(phys_addr_t addr, u64 size, kvm_pte_t owner_id);
+> >  int kvm_host_prepare_stage2(void *pgt_pool_base);
+> >  void handle_host_mem_abort(struct kvm_cpu_context *host_ctxt);
+> >  
+> > diff --git a/arch/arm64/kvm/hyp/nvhe/mem_protect.c b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
+> > index bacd493a4eac..8cd0c3bdb911 100644
+> > --- a/arch/arm64/kvm/hyp/nvhe/mem_protect.c
+> > +++ b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
+> > @@ -286,17 +286,14 @@ static int host_stage2_adjust_range(u64 addr, struct kvm_mem_range *range)
+> >  int host_stage2_idmap_locked(phys_addr_t addr, u64 size,
+> >  			     enum kvm_pgtable_prot prot)
+> >  {
+> > -	hyp_assert_lock_held(&host_kvm.lock);
+> > -
+> >  	return host_stage2_try(__host_stage2_idmap, addr, addr + size, prot);
+> >  }
+> >  
+> > -int host_stage2_set_owner_locked(phys_addr_t addr, u64 size, u8 owner_id)
+> > +int host_stage2_annotate_locked(phys_addr_t addr, u64 size,
+> > +				kvm_pte_t annotation)
+> >  {
+> > -	hyp_assert_lock_held(&host_kvm.lock);
 > 
-> [ Upstream commit c42dec148b3e1a88835e275b675e5155f99abd43 ]
+> Hi Marc,
 > 
-> Since no actual VM entry happened, the VM exit information is stale.
-> To avoid this, synthesize an invalid VM guest state VM exit.
-> 
-> Suggested-by: Sean Christopherson <seanjc@google.com>
-> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
-> Message-Id: <20210913140954.165665-6-mlevitsk@redhat.com>
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
->   arch/x86/kvm/vmx/vmx.c | 17 ++++++++++++++---
->   1 file changed, 14 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index fcd8bcb7e0ea..e3af56f05a37 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -6670,10 +6670,21 @@ static fastpath_t vmx_vcpu_run(struct kvm_vcpu *vcpu)
->   		     vmx->loaded_vmcs->soft_vnmi_blocked))
->   		vmx->loaded_vmcs->entry_time = ktime_get();
->   
-> -	/* Don't enter VMX if guest state is invalid, let the exit handler
-> -	   start emulation until we arrive back to a valid state */
-> -	if (vmx->emulation_required)
-> +	/*
-> +	 * Don't enter VMX if guest state is invalid, let the exit handler
-> +	 * start emulation until we arrive back to a valid state.  Synthesize a
-> +	 * consistency check VM-Exit due to invalid guest state and bail.
-> +	 */
-> +	if (unlikely(vmx->emulation_required)) {
-> +		vmx->fail = 0;
-> +		vmx->exit_reason.full = EXIT_REASON_INVALID_STATE;
-> +		vmx->exit_reason.failed_vmentry = 1;
-> +		kvm_register_mark_available(vcpu, VCPU_EXREG_EXIT_INFO_1);
-> +		vmx->exit_qualification = ENTRY_FAIL_DEFAULT;
-> +		kvm_register_mark_available(vcpu, VCPU_EXREG_EXIT_INFO_2);
-> +		vmx->exit_intr_info = 0;
->   		return EXIT_FASTPATH_NONE;
-> +	}
->   
->   	if (vmx->ple_window_dirty) {
->   		vmx->ple_window_dirty = false;
-> 
+> Why are the lock asserts getting dropped?
 
-NACK for this one.
+Ah, I see. host_stage2_try already has the same assert.
 
-The others are good, I'll ack them individually though.  Thanks for 
-setting this up!
+Reviewed-by: Andrew Jones <drjones@redhat.com>
 
-Paolo
+Thanks,
+drew
 
