@@ -2,79 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A6694239D6
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 10:35:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53E524239DB
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 10:39:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237729AbhJFIhq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 04:37:46 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3937 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237593AbhJFIho (ORCPT
+        id S237637AbhJFIlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 04:41:44 -0400
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:38407 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231415AbhJFIlm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 04:37:44 -0400
-Received: from fraeml740-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HPSPK4s3Qz67Wpc;
-        Wed,  6 Oct 2021 16:32:21 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml740-chm.china.huawei.com (10.206.15.221) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Wed, 6 Oct 2021 10:35:51 +0200
-Received: from [10.47.95.252] (10.47.95.252) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2308.8; Wed, 6 Oct 2021
- 09:35:50 +0100
-Subject: Re: [PATCH v2 3/3] perf vendor events: Categorise the Neoverse V1
- counters
-To:     Andrew Kilroy <andrew.kilroy@arm.com>,
-        <linux-kernel@vger.kernel.org>, <linux-perf-users@vger.kernel.org>,
-        <acme@kernel.org>
-CC:     Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        "Namhyung Kim" <namhyung@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20211006081106.8649-1-andrew.kilroy@arm.com>
- <20211006081106.8649-3-andrew.kilroy@arm.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <03152b9d-2ad1-7bd3-e5a7-fc899c8c567c@huawei.com>
-Date:   Wed, 6 Oct 2021 09:38:27 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        Wed, 6 Oct 2021 04:41:42 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=rongwei.wang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0Uqjldqo_1633509587;
+Received: from 192.168.31.179(mailfrom:rongwei.wang@linux.alibaba.com fp:SMTPD_---0Uqjldqo_1633509587)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 06 Oct 2021 16:39:48 +0800
+Message-ID: <ad61320f-7903-997f-b468-8d260ea0ad66@linux.alibaba.com>
+Date:   Wed, 6 Oct 2021 16:39:47 +0800
 MIME-Version: 1.0
-In-Reply-To: <20211006081106.8649-3-andrew.kilroy@arm.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:93.0)
+ Gecko/20100101 Thunderbird/93.0
+Subject: Re: [PATCH v3 v3 2/2] mm, thp: bail out early in collapse_file for
+ writeback page
 Content-Language: en-US
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        akpm@linux-foundation.org, song@kernel.org,
+        william.kucharski@oracle.com, hughd@google.com
+References: <20210906121200.57905-1-rongwei.wang@linux.alibaba.com>
+ <20211006021837.59721-1-rongwei.wang@linux.alibaba.com>
+ <20211006021837.59721-3-rongwei.wang@linux.alibaba.com>
+ <YV0M9NHi6I4ULFe6@casper.infradead.org>
+From:   Rongwei Wang <rongwei.wang@linux.alibaba.com>
+In-Reply-To: <YV0M9NHi6I4ULFe6@casper.infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.95.252]
-X-ClientProxiedBy: lhreml709-chm.china.huawei.com (10.201.108.58) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/10/2021 09:11, Andrew Kilroy wrote:
-> This is so they are categorised in the perf list output.  The pmus all
-> exist in the armv8-common-and-microarch.json and arm-recommended.json
-> files, so this commit places them into each category's own file under
+
+
+On 10/6/21 10:41 AM, Matthew Wilcox wrote:
+> On Wed, Oct 06, 2021 at 10:18:37AM +0800, Rongwei Wang wrote:
+>> Currently collapse_file does not explicitly check PG_writeback, instead,
+>> page_has_private and try_to_release_page are used to filter writeback
+>> pages. This does not work for xfs with blocksize equal to or larger
+>> than pagesize, because in such case xfs has no page->private.
+>>
+>> This makes collapse_file bail out early for writeback page. Otherwise,
+>> xfs end_page_writeback will panic as follows.
 > 
->    tools/perf/pmu-events/arch/arm64/arm/neoverse-v1
+> Could you cut the timestamps out?  They don't add any value.
+OK, no problem!
 > 
-> Also add the Neoverse V1 to the arm64 mapfile
+>> [ 6411.448211] page:fffffe00201bcc80 refcount:0 mapcount:0 mapping:ffff0003f88c86a8 index:0x0 pfn:0x84ef32
+>> [ 6411.448304] aops:xfs_address_space_operations [xfs] ino:30000b7 dentry name:"libtest.so"
+>> [ 6411.448312] flags: 0x57fffe0000008027(locked|referenced|uptodate|active|writeback)
+>> [ 6411.448317] raw: 57fffe0000008027 ffff80001b48bc28 ffff80001b48bc28 ffff0003f88c86a8
+>> [ 6411.448321] raw: 0000000000000000 0000000000000000 00000000ffffffff ffff0000c3e9a000
+>> [ 6411.448324] page dumped because: VM_BUG_ON_PAGE(((unsigned int) page_ref_count(page) + 127u <= 127u))
+>> [ 6411.448327] page->mem_cgroup:ffff0000c3e9a000
+>> [ 6411.448340] ------------[ cut here ]------------
+>> [ 6411.448343] kernel BUG at include/linux/mm.h:1212!
+>> [ 6411.449288] Internal error: Oops - BUG: 0 [#1] SMP
+>> [ 6411.449786] Modules linked in:
+>> [ 6411.449790] BUG: Bad page state in process khugepaged  pfn:84ef32
+>> [ 6411.450143]  xfs(E)
+>> [ 6411.450459] page:fffffe00201bcc80 refcount:0 mapcount:0 mapping:0 index:0x0 pfn:0x84ef32
+>> [ 6411.451361]  libcrc32c(E) rfkill(E) aes_ce_blk(E) crypto_simd(E) ...
+>> [ 6411.451387] CPU: 25 PID: 0 Comm: swapper/25 Kdump: loaded Tainted: ...
+>> [ 6411.451389] pstate: 60400005 (nZCv daif +PAN -UAO -TCO BTYPE=--)
+>> [ 6411.451393] pc : end_page_writeback+0x1c0/0x214
+>> [ 6411.451394] lr : end_page_writeback+0x1c0/0x214
+>> [ 6411.451395] sp : ffff800011ce3cc0
+>> [ 6411.451396] x29: ffff800011ce3cc0 x28: 0000000000000000
+>> [ 6411.451398] x27: ffff000c04608040 x26: 0000000000000000
+>> [ 6411.451399] x25: ffff000c04608040 x24: 0000000000001000
+>> [ 6411.451401] x23: ffff0003f88c8530 x22: 0000000000001000
+>> [ 6411.451403] x21: ffff0003f88c8530 x20: 0000000000000000
+>> [ 6411.451404] x19: fffffe00201bcc80 x18: 0000000000000030
+>> [ 6411.451406] x17: 0000000000000000 x16: 0000000000000000
+>> [ 6411.451407] x15: ffff000c018f9760 x14: ffffffffffffffff
+>> [ 6411.451409] x13: ffff8000119d72b0 x12: ffff8000119d6ee3
+>> [ 6411.451410] x11: ffff8000117b69b8 x10: 00000000ffff8000
+>> [ 6411.451412] x9 : ffff800010617534 x8 : 0000000000000000
+>> [ 6411.451413] x7 : ffff8000114f69b8 x6 : 000000000000000f
+>> [ 6411.451415] x5 : 0000000000000000 x4 : 0000000000000000
+>> [ 6411.451416] x3 : 0000000000000400 x2 : 0000000000000000
+>> [ 6411.451418] x1 : 0000000000000000 x0 : 0000000000000000
+>> [ 6411.451420] Call trace:
+>> [ 6411.451421]  end_page_writeback+0x1c0/0x214
+>> [ 6411.451424]  iomap_finish_page_writeback+0x13c/0x204
+>> [ 6411.451425]  iomap_finish_ioend+0xe8/0x19c
+>> [ 6411.451426]  iomap_writepage_end_bio+0x38/0x50
+>> [ 6411.451427]  bio_endio+0x168/0x1ec
+>> [ 6411.451430]  blk_update_request+0x278/0x3f0
+>> [ 6411.451432]  blk_mq_end_request+0x34/0x15c
+>> [ 6411.451435]  virtblk_request_done+0x38/0x74 [virtio_blk]
+>> [ 6411.451437]  blk_done_softirq+0xc4/0x110
+>> [ 6411.451439]  __do_softirq+0x128/0x38c
+>> [ 6411.451441]  __irq_exit_rcu+0x118/0x150
+>> [ 6411.451442]  irq_exit+0x1c/0x30
+>> [ 6411.451445]  __handle_domain_irq+0x8c/0xf0
+>> [ 6411.451446]  gic_handle_irq+0x84/0x108
+>> [ 6411.451447]  el1_irq+0xcc/0x180
+>> [ 6411.451448]  arch_cpu_idle+0x18/0x40
+>> [ 6411.451450]  default_idle_call+0x4c/0x1a0
+>> [ 6411.451453]  cpuidle_idle_call+0x168/0x1e0
+>> [ 6411.451454]  do_idle+0xb4/0x104
+>> [ 6411.451455]  cpu_startup_entry+0x30/0x9c
+>> [ 6411.451458]  secondary_start_kernel+0x104/0x180
+>> [ 6411.451460] Code: d4210000 b0006161 910c8021 94013f4d (d4210000)
+>> [ 6411.451462] ---[ end trace 4a88c6a074082f8c ]---
+>> [ 6411.451464] Kernel panic - not syncing: Oops - BUG: Fatal exception in interrupt
+>>
+>> Fixes: eb6ecbed0aa2 ("mm, thp: relax the VM_DENYWRITE constraint on file-backed THPs")
+>> Suggested-by: Yang Shi <shy828301@gmail.com>
+>> Signed-off-by: Xu Yu <xuyu@linux.alibaba.com>
+>> Signed-off-by: Rongwei Wang <rongwei.wang@linux.alibaba.com>
 > 
-> Signed-off-by: Andrew Kilroy<andrew.kilroy@arm.com>
-> ---
+> Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> 
+> Although I think the Fixes: line is wrong.  This bug goes all the
+> way back to 99cb0dbd47a1.
+In fact, I understand it this way: the 99cb0dbd47a1 only introduce 
+file-backed THP for VMA with MAP_DENYWRITE, denying write directly not 
+to truncate pagecache when it is opened. And eb6ecbed0aa2 will to 
+truncate pagecache when DSO is opened by a writer, then will trigger ...
 
-Reviewed-by: John Garry <john.garry@huawei.com>
-
-Note: for the other 2x patches in the series, you should have picked up 
-my reviewed-by tag for v2 (unless they have changed significantly from 
-when the tag was originally granted).
-
-Thanks,
-John
-
-
+It seems 'Fixes: eb6ecbed0aa2' is more reasonable.
+> 
