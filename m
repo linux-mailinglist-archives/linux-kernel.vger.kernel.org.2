@@ -2,69 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CF7F424892
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 23:11:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20674424899
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 23:13:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239614AbhJFVNk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 17:13:40 -0400
-Received: from mail-ot1-f43.google.com ([209.85.210.43]:45579 "EHLO
-        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239541AbhJFVNj (ORCPT
+        id S239578AbhJFVPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 17:15:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47708 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239506AbhJFVPn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 17:13:39 -0400
-Received: by mail-ot1-f43.google.com with SMTP id 66-20020a9d0548000000b0054e21cd00f4so4694126otw.12;
-        Wed, 06 Oct 2021 14:11:46 -0700 (PDT)
+        Wed, 6 Oct 2021 17:15:43 -0400
+Received: from mail-oo1-xc30.google.com (mail-oo1-xc30.google.com [IPv6:2607:f8b0:4864:20::c30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49AFCC061746
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 14:13:51 -0700 (PDT)
+Received: by mail-oo1-xc30.google.com with SMTP id l8-20020a4ae2c8000000b002b5ec765d9fso1242646oot.13
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 14:13:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxtx.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=aTiLHQvN2/RB825CLKLyg0WrQPgmCRAg70VnJF4FMIU=;
+        b=fn20euU7mPei/hbt5L1WCCoWECAFFWSfshU4dUA1uZBnlG7mZPn300AVWL65Z95fOL
+         pUYvNN/Dft/fHTwJVC/+J08NPI/u1K1W1wIaP5IbAfs/UW3vyheEK6gH4hw0JGZWWaqo
+         4neCcRyvUBRKwkQwnuI5sRxbt7aRvCE1r8lYk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=TMbBbaTkeRvCJm9ZSb70KRzbl0JkE0P9uF9VW3nfCtQ=;
-        b=WrYX5KvB79Gn9i6h0i/d6qZ6MPSj+pS2QL5mlo/rh0lruKI18K5axXhOn9WCYtmfH4
-         D6CeUkhygWD8mKZouOPMhR07ZD2qJ8qjwYep8kGkMspg9vjwDnDMA7tlL+4nKDnqYWiE
-         PkZqopq8Ij7jUHNQRG150cwQXueqQ20M6b4CSPVI3TfycfAuwrVbrIzamggpnyfYzSka
-         Ljq/Ol/kZ5FBraHNy3XMlIy7004Flo1o2KL1TnsBE2KXSqwiiXhJV7woFqnJnF8TSvHz
-         oTm7S3orsJhunN96sh46IxKCHHPjHNj9OWN2T2DZK0B2qJm863lTqoIeHp8xBu1hxcCg
-         OiMQ==
-X-Gm-Message-State: AOAM5331kK3AddwIsD2LyKHNgsdgwSdkSEu3ZCrHxleIBk5ScOoLHQiL
-        K5tfBOFY9C+Ns9nBSxBLyg==
-X-Google-Smtp-Source: ABdhPJysTlpXIwh+eH0MNk3KRrWFzHG9RUfNxtyx3upahYuQW6NDt0Jb1U1HAxVzlGHOIU8B9ArvBA==
-X-Received: by 2002:a9d:7410:: with SMTP id n16mr417037otk.71.1633554706283;
-        Wed, 06 Oct 2021 14:11:46 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id bl23sm2552476oib.40.2021.10.06.14.11.45
+        bh=aTiLHQvN2/RB825CLKLyg0WrQPgmCRAg70VnJF4FMIU=;
+        b=C+VA88454pwyMw25Qbx/jeaBzXAhyg2wJ7UkrLMhYYIxvC5+23dRayNRsEbd9eTqMG
+         bBFYavCsSZ9JnPaEUDQStqT6IOXVQFQQEoJsFkZoZJ/NBPVpe1tb10BLmg8kA1mnWb6b
+         HjOs9DRzjzxMDrQDebpr1picG2ynaHIizVhtCRNbk6VngvXKB4O1p5zJm0gMPaM+vsuu
+         nrBKi6Wl1zmqdFbFGONkRRfj6vRNbHigqJaEhtZtVsd0fr+Ay6gnPlnWD6MNW/7wNBSJ
+         DEC+sPLml6n0kqgRueq4hBb573nl5zXv6WKHGCQnXpruFNgmpzecyu00QTBkv+hrLwOh
+         GDmQ==
+X-Gm-Message-State: AOAM532pFvk9S659/lK5eFIcP+fcKQ0Km1VosqUqjKhHHPjJGoviC098
+        niEHPA6kPfse/i2b4Yy1DGRh9B0v8QCyfcar
+X-Google-Smtp-Source: ABdhPJyp+2MuF24Dkonz2SJbog0oRgLhzkfHKwgC9he1Q9Y46/tmMWv7z966Mf7FHiAZp+LzGTYPoA==
+X-Received: by 2002:a4a:9510:: with SMTP id m16mr501367ooi.14.1633554829373;
+        Wed, 06 Oct 2021 14:13:49 -0700 (PDT)
+Received: from fedora64.linuxtx.org (104-189-158-32.lightspeed.rcsntx.sbcglobal.net. [104.189.158.32])
+        by smtp.gmail.com with ESMTPSA id bn38sm1648951oib.21.2021.10.06.14.13.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Oct 2021 14:11:45 -0700 (PDT)
-Received: (nullmailer pid 2882794 invoked by uid 1000);
-        Wed, 06 Oct 2021 21:11:44 -0000
-Date:   Wed, 6 Oct 2021 16:11:44 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Sam Ravnborg <sam@ravnborg.org>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, devicetree@vger.kernel.org,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        dri-devel@lists.freedesktop.org, Rob Herring <robh+dt@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 1/3] dt-bindings: display: simple: add Innolux
- G070Y2-T02 panel
-Message-ID: <YV4REJzcUezYmAMN@robh.at.kernel.org>
-References: <20210930100501.15690-1-o.rempel@pengutronix.de>
+        Wed, 06 Oct 2021 14:13:49 -0700 (PDT)
+Date:   Wed, 6 Oct 2021 16:13:47 -0500
+From:   Justin Forbes <jmforbes@linuxtx.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.14 000/172] 5.14.10-rc3 review
+Message-ID: <YV4Ri6k4S9VlaS04@fedora64.linuxtx.org>
+References: <20211006073100.650368172@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210930100501.15690-1-o.rempel@pengutronix.de>
+In-Reply-To: <20211006073100.650368172@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 30 Sep 2021 12:04:59 +0200, Oleksij Rempel wrote:
-> Add binding for the Innolux G070Y2-T02 panel. It is 7" WVGA (800x480)
-> TFT LCD panel with TTL interface and a backlight unit.
+On Wed, Oct 06, 2021 at 10:19:58AM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.14.10 release.
+> There are 172 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> ---
->  .../devicetree/bindings/display/panel/panel-simple.yaml         | 2 ++
->  1 file changed, 2 insertions(+)
+> Responses should be made by Fri, 08 Oct 2021 07:30:34 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.10-rc3.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 > 
 
-Acked-by: Rob Herring <robh@kernel.org>
+Tested rc3 against the Fedora build system (aarch64, armv7, ppc64le,
+s390x, x86_64), and boot tested x86_64. No regressions noted.
+
+Tested-by: Justin M. Forbes <jforbes@fedoraproject.org>
