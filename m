@@ -2,113 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52C6C4242C3
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 18:34:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 038434242D2
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 18:38:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233080AbhJFQgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 12:36:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46448 "EHLO mail.kernel.org"
+        id S231641AbhJFQkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 12:40:11 -0400
+Received: from mga03.intel.com ([134.134.136.65]:9887 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229719AbhJFQgP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 12:36:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 622A9610E5;
-        Wed,  6 Oct 2021 16:34:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633538063;
-        bh=ctlyh/MM/ZO1vAziMpXnSjbXLCBHhorGWU3Y4W6Lq/Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RkNXjzbdX5MCmCfXVkHWaWb2gGEEnzx2z8pkKs/2PZ4y3s2bPvSbF2h8KpdKmLJ4W
-         UUNUavhpVkKqZT7phW5nnNaBJ/vCNyikpZ9oY1Aiuooj/j23c4JLXYP5MtmiUTpY+i
-         jFHtPAJmCZUsJoT4wdzEIaRrXpmKG+4Sp1U8AWT8W8FdiRMPZo9SE2JVqMgFVmX7De
-         AfwzYccfPCXKRQUprMR1UZYU1qJzR4PlF/HKHzD5IFD8hmArQdGd7tefjG9WoC+RJt
-         Zqx+CUv9YYa8Hhy9FjPpwEZ2uOXrivJ7VzlyV17aEWTir3IxFq8GTkJ9Z6y+QdyAAf
-         C1jMib4pXElyw==
-Date:   Wed, 6 Oct 2021 09:34:23 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Stephen <stephenackerman16@gmail.com>, kvm@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: kvm crash in 5.14.1?
-Message-ID: <20211006163423.GB24266@magnolia>
-References: <2b5ca6d3-fa7b-5e2f-c353-f07dcff993c1@gmail.com>
- <16c7a433-6e58-4213-bc00-5f6196fe22f5@gmail.com>
- <YVSEZTCbFZ+HD/f0@google.com>
- <20210930175957.GA10573@magnolia>
- <20211004165432.GA24266@magnolia>
+        id S229548AbhJFQkI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 12:40:08 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10129"; a="225987827"
+X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; 
+   d="scan'208";a="225987827"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2021 09:37:28 -0700
+X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; 
+   d="scan'208";a="439181042"
+Received: from nbasa-mobl2.amr.corp.intel.com (HELO [10.213.170.135]) ([10.213.170.135])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2021 09:37:27 -0700
+Subject: Re: [PATCH v1 3/4] ASoC: Intel: bytcr_rt5651: use
+ devm_clk_get_optional() for mclk
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>
+Cc:     Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+References: <20211006150451.16561-1-andriy.shevchenko@linux.intel.com>
+ <20211006150451.16561-3-andriy.shevchenko@linux.intel.com>
+ <2d190513-7ac4-731c-7c9a-1f60a98f6345@linux.intel.com>
+ <YV3NZnb6mg43nUC1@smile.fi.intel.com>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <015e084e-70ed-7b5c-b103-8426ef0842d4@linux.intel.com>
+Date:   Wed, 6 Oct 2021 11:37:24 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211004165432.GA24266@magnolia>
+In-Reply-To: <YV3NZnb6mg43nUC1@smile.fi.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 04, 2021 at 09:54:32AM -0700, Darrick J. Wong wrote:
-> On Thu, Sep 30, 2021 at 10:59:57AM -0700, Darrick J. Wong wrote:
-> > On Wed, Sep 29, 2021 at 03:21:09PM +0000, Sean Christopherson wrote:
-> > > On Tue, Sep 28, 2021, Stephen wrote:
-> > > > Hello,
-> > > > 
-> > > > I got this crash again on 5.14.7 in the early morning of the 27th.
-> > > > Things hung up shortly after I'd gone to bed. Uptime was 1 day 9 hours 9
-> > > > minutes.
-> > > 
-> > > ...
-> > > 
-> > > > BUG: kernel NULL pointer dereference, address: 0000000000000068
-> > > > #PF: supervisor read access in kernel mode
-> > > > #PF: error_code(0x0000) - not-present page
-> > > > PGD 0 P4D 0
-> > > > Oops: 0000 [#1] SMP NOPTI
-> > > > CPU: 21 PID: 8494 Comm: CPU 7/KVM Tainted: G            E     5.14.7 #32
-> > > > Hardware name: Gigabyte Technology Co., Ltd. X570 AORUS ELITE WIFI/X570
-> > > > AORUS ELITE WIFI, BIOS F35 07/08/2021
-> > > > RIP: 0010:internal_get_user_pages_fast+0x738/0xda0
-> > > > Code: 84 24 a0 00 00 00 65 48 2b 04 25 28 00 00 00 0f 85 54 06 00 00 48
-> > > > 81 c4 a8 00 00 00 44 89 e0 5b 5d 41 5c 41 5d 41 5e 41 5f c3 <48> 81 78
-> > > > 68 a0 a3 >
-> > > 
-> > > I haven't reproduced the crash, but the code signature (CMP against an absolute
-> > > address) is quite distinct, and is consistent across all three crashes.  I'm pretty
-> > > sure the issue is that page_is_secretmem() doesn't check for a null page->mapping,
-> > > e.g. if the page is truncated, which IIUC can happen in parallel since gup() doesn't
-> > > hold the lock.
-> > > 
-> > > I think this should fix the problems?
-> > > 
-> > > diff --git a/include/linux/secretmem.h b/include/linux/secretmem.h
-> > > index 21c3771e6a56..988528b5da43 100644
-> > > --- a/include/linux/secretmem.h
-> > > +++ b/include/linux/secretmem.h
-> > > @@ -23,7 +23,7 @@ static inline bool page_is_secretmem(struct page *page)
-> > >         mapping = (struct address_space *)
-> > >                 ((unsigned long)page->mapping & ~PAGE_MAPPING_FLAGS);
-> > > 
-> > > -       if (mapping != page->mapping)
-> > > +       if (!mapping || mapping != page->mapping)
-> > 
-> > I'll roll this out on my vm host and try to re-run the mass fuzztest
-> > overnight, though IT claims they're going to kill power to the whole
-> > datacenter until Monday(!)...
+
+
+On 10/6/21 11:23 AM, Andy Shevchenko wrote:
+> On Wed, Oct 06, 2021 at 10:51:52AM -0500, Pierre-Louis Bossart wrote:
+>> On 10/6/21 10:04 AM, Andy Shevchenko wrote:
+>>> The devm_clk_get_optional() helper returns NULL when devm_clk_get()
+>>> returns -ENOENT. This makes things slightly cleaner. The added benefit
+>>> is mostly cosmetic.
 > 
-> ...which they did, 30 minutes after I sent this email. :(
+> ...
 > 
-> I'll hopefully be able to report back to the list in a day or two.
-
-Looks like everything went smoothly with the mass fuzz fstesting.
-I'll let you know if I see any further failures, but for now:
-
-Tested-by: Darrick J. Wong <djwong@kernel.org>
-
---D
-
-> --D
+>>>  	if (SND_SOC_DAPM_EVENT_ON(event)) {
+>>> -		if (byt_rt5651_quirk & BYT_RT5651_MCLK_EN) {
+>>> -			ret = clk_prepare_enable(priv->mclk);
+>>> -			if (ret < 0) {
+>>> -				dev_err(card->dev,
+>>> -					"could not configure MCLK state");
+>>> -				return ret;
+>>> -			}
+>>> +		ret = clk_prepare_enable(priv->mclk);
+>>> +		if (ret < 0) {
+>>> +			dev_err(card->dev, "could not configure MCLK state");
+>>> +			return ret;
+>>>  		}
+>>
+>> I don't get why you removed the test on the BYT_RT5651_MCLK_EN quirk,
+>> see below it was designed as a fall-back mode. We don't want to return
+>> an error when we know the clock is not present/desired.
 > 
-> > 
-> > --D
-> > 
-> > >                 return false;
-> > > 
-> > >         return mapping->a_ops == &secretmem_aops;
+> Why should we do a unneeded test? When we switch to the optional, there
+> will be no error from these CCF APIs. Besides that it drops indentation
+> level and makes code neat.
+
+By looking at this code only one cannot really visualize that it's a
+no-op. I personally prefer to see explicit intent rather than have to
+dig hundreds of lines below what this clock is optional.
+
+I am also not even sure that in real products this clock is actually
+optional, the default is to make use of it:
+
+#define BYT_RT5651_DEFAULT_QUIRKS	(BYT_RT5651_MCLK_EN | \
+
+and the only platform without this clock is "Minnowboard Max B3" -
+probably not used by anyone. I fried mine a long time ago.
+
+We'd need to Hans to comment on this since he's really the only one
+maintaining this code.
+
+> ...
+> 
+>> same here, why was the quirk removed?
+> 
+> Same answer.
+> 
+> ...
+> 
+>> that part in the probe looks fine, but the changes above are controversial.
+> 
+> I didn't get. How controversial? Why? The whole point of _optional is to get
+> rid of unneeded checks (since they are _anyway_ be called).
+
+It's inconsistent since you kept the following part but no longer use it:
+
++		/*
++		 * Fall back to bit clock usage when clock is not
++		 * available likely due to missing dependencies.
++		 */
++		if (!priv->mclk)
++			byt_rt5651_quirk &= ~BYT_RT5651_MCLK_EN;
+
+
+
