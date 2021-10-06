@@ -2,118 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C4C7424A67
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 01:14:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE571424A6D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 01:15:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231341AbhJFXQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 19:16:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47078 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231231AbhJFXQW (ORCPT
+        id S232234AbhJFXQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 19:16:55 -0400
+Received: from mail108.syd.optusnet.com.au ([211.29.132.59]:59676 "EHLO
+        mail108.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230213AbhJFXQx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 19:16:22 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BB9DC061753
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 16:14:29 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id g6so9139025ybb.3
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 16:14:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lULMGd5GZW1y8ndmaEvAhKZ0JUKBUzKO4h28P5jqIJs=;
-        b=qO9dik5FfbA0dX2gNzLU+kw9CbaiNDSII55EN/1wxycoUK/480TZFUVnwl3abuua3U
-         QFO7GQE2jXUdcipFtc0kFZF5+dH46i3YBGkmBXFa8EZEryjMZ3NIasnPQx3m5WyF76WX
-         QLfuDBU8WsN5EWfq4RZs+n1Vz25wU2kvLYcDCV1FCJNx7T3HLDY2OIoOtTmvRwVx6/Xd
-         T7iWXv9piqUPNLhyaTtDq8DU1ve9XVF2N40M6QZWYxIpKKpgdjSoCxHgG899a2+1RHms
-         Tety22sCDPNC4lnk2KwS61fuxZfC1W2Or9k1AWkfIpU9DPLI/JeZMA/HDfx2krJgTdfe
-         dd0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lULMGd5GZW1y8ndmaEvAhKZ0JUKBUzKO4h28P5jqIJs=;
-        b=fHJvf4ob8lOGRpvaYEKT8yKaPhVPOjw9eKmMeNoC0lVjkcGZInfTVECvfao/JKkUbt
-         jU1dVtB3pTSBfT6I0PioAL4iCop02JpjLuNgdblFRNNYWWHIzkIh/tp0FCOWLoKupCco
-         NEF4dPy7HIVSNGuLOz80+YjLJeiTXMkSnGwnzjDNNAshMGGeE7EuN1M7pz4hEwedz2bx
-         5sFrM4EIv3iSPE/C9nSUEnr+JMfu5ORffOVWQUXS/FbixjQsw2YOCAORlVzBnLr2P4xP
-         bUUWqy3zZyEfSMMoSE4iqcJoplXCWtml0vE/djySkqwyBKQtCe3WAWU1ReYrMZHrD3Xi
-         4g+A==
-X-Gm-Message-State: AOAM532ovlbnchBryRN3HqGnL6D8RzmmBH2lGPEA8Nkb5HGsilgF551t
-        /hTWM23G2MVxmNmprsV6Wxp3f7DrcrgSVeyeZkOfdA==
-X-Google-Smtp-Source: ABdhPJz6dus+mwN033rB5yGF/Z1PlDqJbDyipNTdsGY0Nzy8NGkrS8nLbhrVxXZuAvMIaajFhypqm8P9bVngwYXedbs=
-X-Received: by 2002:a25:8881:: with SMTP id d1mr1016177ybl.289.1633562068292;
- Wed, 06 Oct 2021 16:14:28 -0700 (PDT)
+        Wed, 6 Oct 2021 19:16:53 -0400
+Received: from dread.disaster.area (pa49-195-238-16.pa.nsw.optusnet.com.au [49.195.238.16])
+        by mail108.syd.optusnet.com.au (Postfix) with ESMTPS id 3BA985E92DF;
+        Thu,  7 Oct 2021 10:14:54 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1mYG7g-003Hvo-Gu; Thu, 07 Oct 2021 10:14:52 +1100
+Date:   Thu, 7 Oct 2021 10:14:52 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Michal Hocko <mhocko@suse.com>, NeilBrown <neilb@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mel Gorman <mgorman@suse.de>, Jonathan Corbet <corbet@lwn.net>,
+        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH 2/6] MM: improve documentation for __GFP_NOFAIL
+Message-ID: <20211006231452.GF54211@dread.disaster.area>
+References: <163184698512.29351.4735492251524335974.stgit@noble.brown>
+ <163184741778.29351.16920832234899124642.stgit@noble.brown>
+ <b680fb87-439b-0ba4-cf9f-33d729f27941@suse.cz>
+ <YVwyhDnE/HEnoLAi@dhcp22.suse.cz>
+ <eba04a07-99da-771a-ab6b-36de41f9f120@suse.cz>
 MIME-Version: 1.0
-References: <20210930180531.1190642-1-samitolvanen@google.com>
- <20210930180531.1190642-7-samitolvanen@google.com> <20211006032945.axlqh3vehgar6adr@treble>
- <20211006090249.248c65b0@gandalf.local.home> <CABCJKueL4Ebaan=JBUyO3oewq7RTHHXWUQpixgf2AfC_r5T3uA@mail.gmail.com>
- <20211006125809.5389b2a3@gandalf.local.home> <CABCJKudTuheEd5jyhXmfJHup7iYzOz3_OcO92hFnpRK1MapJSg@mail.gmail.com>
- <20211006204335.xtymxt6wk4akx6fc@treble> <20211006171016.07d90b59@gandalf.local.home>
- <20211006212355.mfuyci3pnsdlbp3w@treble>
-In-Reply-To: <20211006212355.mfuyci3pnsdlbp3w@treble>
-From:   Sami Tolvanen <samitolvanen@google.com>
-Date:   Wed, 6 Oct 2021 16:14:17 -0700
-Message-ID: <CABCJKufCaOXOUF43a-PQshO8aEsMNhZ2EiyGMSOp9ZGn57G=pg@mail.gmail.com>
-Subject: Re: [PATCH v4 06/15] ftrace: Use an opaque type for functions not
- callable from C
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>, X86 ML <x86@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        linux-hardening@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>, llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <eba04a07-99da-771a-ab6b-36de41f9f120@suse.cz>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.4 cv=VuxAv86n c=1 sm=1 tr=0 ts=615e2df0
+        a=DzKKRZjfViQTE5W6EVc0VA==:117 a=DzKKRZjfViQTE5W6EVc0VA==:17
+        a=kj9zAlcOel0A:10 a=8gfv0ekSlNoA:10 a=VwQbUJbxAAAA:8 a=7-415B0cAAAA:8
+        a=y7N-FL6dZ1VV32BAIJQA:9 a=CjuIK1q_8ugA:10 a=AjGcO6oz07-iQ99wixmX:22
+        a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 6, 2021 at 2:24 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
->
-> On Wed, Oct 06, 2021 at 05:10:16PM -0400, Steven Rostedt wrote:
-> > On Wed, 6 Oct 2021 13:43:35 -0700
-> > Josh Poimboeuf <jpoimboe@redhat.com> wrote:
-> >
-> > > On Wed, Oct 06, 2021 at 10:45:41AM -0700, Sami Tolvanen wrote:
-> > > > On Wed, Oct 6, 2021 at 9:58 AM Steven Rostedt <rostedt@goodmis.org> wrote:
-> > > > >
-> > > > > On Wed, 6 Oct 2021 09:31:04 -0700
-> > > > > Sami Tolvanen <samitolvanen@google.com> wrote:
-> > > > >
-> > > > > > > > On Thu, Sep 30, 2021 at 11:05:22AM -0700, Sami Tolvanen wrote:
-> > > > > > > > > With CONFIG_CFI_CLANG, the compiler changes function references to point
-> > > > > > > > > to the CFI jump table. As ftrace_call, ftrace_regs_call, and mcount_call
-> > > > > > > > > are not called from C, use DECLARE_ASM_FUNC_SYMBOL to declare them.
-> > > > > > >
-> > > > > > > "not called from C" is a bit confusing.
-> > > > > >
-> > > > > > Any thoughts on how to make this less confusing?
-> > > > >
-> > > > >  "Not called by C code, but injected by the compiler."
-> > > > >
-> > > > > ?
-> > > >
-> > > > Sure, sounds good to me. I'll update this in v5.
-> > >
-> > > "injected by the compiler" sounds even more confusing.  It almost sounds
-> > > like those functions are generated by GCC, which they are most
-> > > definitely not.
-> > >
-> >
-> > Heh, I was thinking of the locations that are injected (mcount / fentry) as
-> > these are just replacements for them. Those injections are added by GCC.
-> >
-> > So, continuing the bikeshedding, what about "not called by C code, but are
-> > trampolines injected as calls replacing the nops at the start of
-> > functions added by the compiler." ?
->
-> I'm not quite sure what that means, but I'll allow it ;-)
+On Tue, Oct 05, 2021 at 02:27:45PM +0200, Vlastimil Babka wrote:
+> On 10/5/21 13:09, Michal Hocko wrote:
+> > On Tue 05-10-21 11:20:51, Vlastimil Babka wrote:
+> > [...]
+> >> > --- a/include/linux/gfp.h
+> >> > +++ b/include/linux/gfp.h
+> >> > @@ -209,7 +209,11 @@ struct vm_area_struct;
+> >> >   * used only when there is no reasonable failure policy) but it is
+> >> >   * definitely preferable to use the flag rather than opencode endless
+> >> >   * loop around allocator.
+> >> > - * Using this flag for costly allocations is _highly_ discouraged.
+> >> > + * Use of this flag may lead to deadlocks if locks are held which would
+> >> > + * be needed for memory reclaim, write-back, or the timely exit of a
+> >> > + * process killed by the OOM-killer.  Dropping any locks not absolutely
+> >> > + * needed is advisable before requesting a %__GFP_NOFAIL allocate.
+> >> > + * Using this flag for costly allocations (order>1) is _highly_ discouraged.
+> >> 
+> >> We define costly as 3, not 1. But sure it's best to avoid even order>0 for
+> >> __GFP_NOFAIL. Advising order>1 seems arbitrary though?
+> > 
+> > This is not completely arbitrary. We have a warning for any higher order
+> > allocation.
+> > rmqueue:
+> > 	WARN_ON_ONCE((gfp_flags & __GFP_NOFAIL) && (order > 1));
+> 
+> Oh, I missed that.
+> 
+> > I do agree that "Using this flag for higher order allocations is
+> > _highly_ discouraged.
+> 
+> Well, with the warning in place this is effectively forbidden, not just
+> discouraged.
 
-Alright, I'll go with the updated version then. I'll also rename
-DECLARE_ASM_FUNC_SYMBOL() to DECLARE_NOT_CALLED_FROM_C() unless
-someone has strong objections about that.
+Yup, especially as it doesn't obey __GFP_NOWARN.
 
-Sami
+See commit de2860f46362 ("mm: Add kvrealloc()") as a direct result
+of unwittingly tripping over this warning when adding __GFP_NOFAIL
+annotations to replace open coded high-order kmalloc loops that have
+been in place for a couple of decades without issues.
+
+Personally I think that the way __GFP_NOFAIL is first of all
+recommended over open coded loops and then only later found to be
+effectively forbidden and needing to be replaced with open coded
+loops to be a complete mess.
+
+Not to mention on the impossibility of using __GFP_NOFAIL with
+kvmalloc() calls. Just what do we expect kmalloc_node(__GFP_NORETRY
+| __GFP_NOFAIL) to do, exactly?
+
+So, effectively, we have to open-code around kvmalloc() in
+situations where failure is not an option. Even if we pass
+__GFP_NOFAIL to __vmalloc(), it isn't guaranteed to succeed because
+of the "we won't honor gfp flags passed to __vmalloc" semantics it
+has.
+
+Even the API constaints of kvmalloc() w.r.t. only doing the vmalloc
+fallback if the gfp context is GFP_KERNEL - we already do GFP_NOFS
+kvmalloc via memalloc_nofs_save/restore(), so this behavioural
+restriction w.r.t. gfp flags just makes no sense at all.
+
+That leads to us having to go back to writing extremely custom open
+coded loops to avoid awful high-order kmalloc direct reclaim
+behaviour and still fall back to vmalloc and to still handle NOFAIL
+semantics we need:
+
+https://lore.kernel.org/linux-xfs/20210902095927.911100-8-david@fromorbit.com/
+
+So, really, the problems are much deeper here than just badly
+documented, catch-22 rules for __GFP_NOFAIL - we can't even use
+__GFP_NOFAIL consistently across the allocation APIs because it
+changes allocation behaviours in unusable, self-defeating ways....
+
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
