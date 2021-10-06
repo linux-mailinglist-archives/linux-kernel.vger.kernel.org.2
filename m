@@ -2,86 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 375514248CE
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 23:20:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A2BC4248D0
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 23:22:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239679AbhJFVWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 17:22:37 -0400
-Received: from mail-ot1-f44.google.com ([209.85.210.44]:38873 "EHLO
-        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239680AbhJFVWg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 17:22:36 -0400
-Received: by mail-ot1-f44.google.com with SMTP id c6-20020a9d2786000000b005471981d559so4863851otb.5;
-        Wed, 06 Oct 2021 14:20:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Wsk8RujENKPF2c4h64RRnI6VLfD/b5uYWJziNgJB7M0=;
-        b=7hoBXHQnSVB1GM5P5S1vsI7bVDjrAKr7KAUlPPFUM4WVTFcwGPZ7VRDkIq/52XQFcg
-         5vOz3h2pPTgvMscsSb/grySk7VdecMZguG4CkZ2j89sZk/sLl+bma6LxiM2WTIYUTxU2
-         l2eQV5cXn300Ak1axjaX2wWa8xvw4+ACvLLZXig3FT5dnqP2oWAYfnWZeaMLmHWnsyo5
-         /2uY1OvnC5QDCZ9jYFyxYVhbkwAKLQ4Dhb57a8wgSd0TJuEGuH0vBRm3rnTNS9WJqxsF
-         tg5CFoKX4DE7P3XvzdOMkb0IX6YKWVyhJhdJ3q8WtpXxSGSLjkSCr9cE2PGj3thDUIgy
-         SeTQ==
-X-Gm-Message-State: AOAM530lg2mP0/h+NJeo1a08o9JWWwllhKK6c7jqdxrCuDurerZGaikl
-        01fr6gK0xYPZ9mI2F7Muog==
-X-Google-Smtp-Source: ABdhPJzk0l6OpNMLfyVJq6uEk7MSbYP8iSur8KxaREovhFU5d98gqEVN2G7ijUssdWzjCshNN35VWg==
-X-Received: by 2002:a9d:4049:: with SMTP id o9mr455235oti.161.1633555243743;
-        Wed, 06 Oct 2021 14:20:43 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id s10sm4189966oib.58.2021.10.06.14.20.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Oct 2021 14:20:43 -0700 (PDT)
-Received: (nullmailer pid 2897196 invoked by uid 1000);
-        Wed, 06 Oct 2021 21:20:42 -0000
-Date:   Wed, 6 Oct 2021 16:20:42 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Chris Lew <clew@codeaurora.org>,
-        Deepak Kumar Singh <deesin@codeaurora.org>
-Subject: Re: [PATCH v2 3/4] soc: qcom: smem: Support reserved-memory
- description
-Message-ID: <YV4TKh3XJYGOpGM3@robh.at.kernel.org>
-References: <20210930182111.57353-1-bjorn.andersson@linaro.org>
- <20210930182111.57353-4-bjorn.andersson@linaro.org>
+        id S239657AbhJFVYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 17:24:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37014 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232152AbhJFVYC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 17:24:02 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D757861040;
+        Wed,  6 Oct 2021 21:22:08 +0000 (UTC)
+Date:   Wed, 6 Oct 2021 17:22:07 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: linux-next: Tree for Oct 5 (warnings: a. trace; b. mm/migrate)
+Message-ID: <20211006172207.11982951@gandalf.local.home>
+In-Reply-To: <c1d9e328-ad7c-920b-6c24-9e1598a6421c@infradead.org>
+References: <20211005190628.1f26b13d@canb.auug.org.au>
+        <c1d9e328-ad7c-920b-6c24-9e1598a6421c@infradead.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210930182111.57353-4-bjorn.andersson@linaro.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 11:21:10AM -0700, Bjorn Andersson wrote:
-> Practically all modern Qualcomm platforms has a single reserved-memory
-> region for SMEM. So rather than having to describe SMEM in the form of a
-> node with a reference to a reserved-memory node, allow the SMEM device
-> to be instantiated directly from the reserved-memory node.
-> 
-> The current means of falling back to dereferencing the "memory-region"
-> is kept as a fallback, if it's determined that the SMEM node is a
-> reserved-memory node.
-> 
-> The "qcom,smem" compatible is added to the reserved_mem_matches list, to
-> allow the reserved-memory device to be probed.
-> 
-> In order to retain the readability of the code, the resolution of
-> resources is split from the actual ioremapping.
-> 
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
-> 
-> Changes since v1:
-> - None
-> 
->  drivers/of/platform.c   |  1 +
+On Tue, 5 Oct 2021 13:46:52 -0700
+Randy Dunlap <rdunlap@infradead.org> wrote:
 
-Acked-by: Rob Herring <robh@kernel.org>
+> a. randconfig: KCONFIG_SEED=0xBFBEA13C
+> ../kernel/trace/trace.c:1712:13: error: 'trace_create_maxlat_file' defined but not used [-Werror=unused-function]
+>   static void trace_create_maxlat_file(struct trace_array *tr,
 
->  drivers/soc/qcom/smem.c | 57 ++++++++++++++++++++++++++++-------------
->  2 files changed, 40 insertions(+), 18 deletions(-)
+Does this fix it?
+
+-- Steve
+
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index 7896d30d90f7..4520cbab0da5 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -1744,16 +1744,15 @@ void latency_fsnotify(struct trace_array *tr)
+ 	irq_work_queue(&tr->fsnotify_irqwork);
+ }
+ 
+-/*
+- * (defined(CONFIG_TRACER_MAX_TRACE) || defined(CONFIG_HWLAT_TRACER)) && \
+- *  defined(CONFIG_FSNOTIFY)
+- */
+-#else
++/* CONFIG_FSNOTIFY else */
++#elif CREATE_MAX_TRACE_FILE
+ 
+ #define trace_create_maxlat_file(tr, d_tracer)				\
+ 	trace_create_file("tracing_max_latency", 0644, d_tracer,	\
+ 			  &tr->max_latency, &tracing_max_lat_fops)
+ 
++#else
++#define trace_create_maxlat_file(tr, d_tracer) do { } while (0)
+ #endif
+ 
+ #ifdef CONFIG_TRACER_MAX_TRACE
+@@ -9473,9 +9472,7 @@ init_tracer_tracefs(struct trace_array *tr, struct dentry *d_tracer)
+ 
+ 	create_trace_options_dir(tr);
+ 
+-#if defined(CONFIG_TRACER_MAX_TRACE) || defined(CONFIG_HWLAT_TRACER)
+ 	trace_create_maxlat_file(tr, d_tracer);
+-#endif
+ 
+ 	if (ftrace_create_function_files(tr, d_tracer))
+ 		MEM_FAIL(1, "Could not allocate function filter files");
+diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
+index b7c0f8e160fb..680935949aef 100644
+--- a/kernel/trace/trace.h
++++ b/kernel/trace/trace.h
+@@ -679,8 +679,11 @@ void update_max_tr_single(struct trace_array *tr,
+ #endif /* CONFIG_TRACER_MAX_TRACE */
+ 
+ #if (defined(CONFIG_TRACER_MAX_TRACE) || defined(CONFIG_HWLAT_TRACER) \
+-	|| defined(CONFIG_OSNOISE_TRACER)) && defined(CONFIG_FSNOTIFY)
+-#define LATENCY_FS_NOTIFY
++	|| defined(CONFIG_OSNOISE_TRACER))
++# define CREATE_MAX_TRACE_FILE
++# ifdef CONFIG_FSNOTIFY
++#  define LATENCY_FS_NOTIFY
++# endif
+ #endif
+ 
+ #ifdef LATENCY_FS_NOTIFY
