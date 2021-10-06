@@ -2,86 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A7AF423752
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 07:01:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE5A4423756
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 07:03:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230527AbhJFFCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 01:02:53 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:51315 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229621AbhJFFCv (ORCPT
+        id S231128AbhJFFFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 01:05:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40141 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229554AbhJFFFJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 01:02:51 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1633496460; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=asupr90LKsNaEFoWBmYQd4HeemIExSGhJTwTT6Jn+b0=;
- b=QKUqXOEQJpp5IvNsVzrK966TrEsSkVXW6RlL+KOJaUlllIn5zRNzkDVuzVMwyX7IcfgudagS
- Q6RIMiyZpZlEIPGzVEsiTBp6JDAuerzy9PpBiXQxxcxveRJGHel+4Xb8ylZaioV0I8kMiBYn
- ffrGUeFVfZGo1tcl2rIMb74Qj5k=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 615d2d77ff0285fb0a057398 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 06 Oct 2021 05:00:39
- GMT
-Sender: vgarodia=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 8817CC4360C; Wed,  6 Oct 2021 05:00:38 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: vgarodia)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id E84C8C4338F;
-        Wed,  6 Oct 2021 05:00:37 +0000 (UTC)
+        Wed, 6 Oct 2021 01:05:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633496597;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jpUquQ+TSbcBWrdGCbweYOaUjNx4Fqghxa/0j010Ebw=;
+        b=R8E0JbTwSZbbenVNosITNJ9MH50H1h4eY82i5NlvPyLqptKiFIGDqmpkTQgl4oll89Gbst
+        XndgBDgzOzD3dsjuDxS3ZB2ltZFNQH9kZj7XpDeXaRXntUYhCUkbQFomug/K/NHkny6rdT
+        9BfpkbmGxy3acOANzCJQ5iJ4c+gEAT0=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-91-XDlFp0sGNMa4vz7LPlTWeg-1; Wed, 06 Oct 2021 01:03:16 -0400
+X-MC-Unique: XDlFp0sGNMa4vz7LPlTWeg-1
+Received: by mail-qv1-f72.google.com with SMTP id gi5-20020a056214248500b00382f7a7c7e6so1737559qvb.21
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 22:03:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jpUquQ+TSbcBWrdGCbweYOaUjNx4Fqghxa/0j010Ebw=;
+        b=gPO6upTHBwTpTBT/Z/H+qM4V2ZSFEUeOPbKk++evL8gTWX9pm0eUXiZBUTABj0Hdz6
+         6ddl9yEQYYXkoVmFKM24nomjPgktq3pYoF1BSZjxWRJthT0LLIlv6Y23Dro/FjF2Xe3J
+         4VENH+6SEPlXy3JFI2a2anOKD/KpVYKtefYFdcMe0SpB+XLHbJWkjwg11kz1PWYGNElX
+         aCO0+joJ/rTrR2rHk0pdjk1Wlg+ocEez6UBA7XOF7ldTVbiHRusQzUybJFobsVITU+xT
+         knv11i8kSHbgteFU/kB9sCHpeG4dB4ovj3fmToaArfWkJhg1XEfhfCWMy8DeRppG2Foe
+         g8bw==
+X-Gm-Message-State: AOAM5314pm+Cizl1tiQz48NO/DMbjen1G1VRQmq1kmOgtNK73WpUliXY
+        6NQDvXx8pKSDkXwckp/vaxMxVE9GxXCtYYly/1S9Y9OPmCEtQls1y6rTN9W+iNqKeCwX/86SJ6t
+        yW9grtaijrpp3ROjXs11DAhwu
+X-Received: by 2002:a37:66d6:: with SMTP id a205mr18163175qkc.138.1633496595889;
+        Tue, 05 Oct 2021 22:03:15 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyF58i/a0BwQvg07ObRSR19xQUEcvhNdFoeXrq8AUT7fQydUAOuUbV+a/MDafQBNVPh8moXbA==
+X-Received: by 2002:a37:66d6:: with SMTP id a205mr18163156qkc.138.1633496595642;
+        Tue, 05 Oct 2021 22:03:15 -0700 (PDT)
+Received: from treble ([2600:1700:6e32:6c00::15])
+        by smtp.gmail.com with ESMTPSA id l195sm10881615qke.98.2021.10.05.22.03.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Oct 2021 22:03:15 -0700 (PDT)
+Date:   Tue, 5 Oct 2021 22:03:09 -0700
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
+        VMware Inc <pv-drivers@vmware.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 03/11] x86/cpufeatures: Add TDX Guest CPU feature
+Message-ID: <20211006050309.ldn5myznmpurnomm@treble>
+References: <20211005025205.1784480-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20211005025205.1784480-4-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20211005210423.yfftpxxmj3cjprtv@treble>
+ <15a07997-2659-6be1-b8a3-da57e72562b5@linux.intel.com>
+ <20211006034218.ynamwigsvpgad7sr@treble>
+ <f15d1b41-e4fb-0203-88f7-dbac3f4e5307@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 06 Oct 2021 10:30:37 +0530
-From:   vgarodia@codeaurora.org
-To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Mansur Alisha Shaik <mansur@codeaurora.org>
-Subject: Re: [PATCH v2 0/5] Venus fatal error handling
-In-Reply-To: <20210608114156.87018-1-stanimir.varbanov@linaro.org>
-References: <20210608114156.87018-1-stanimir.varbanov@linaro.org>
-Message-ID: <df1faba0582c8e60730e7d86900a38d6@codeaurora.org>
-X-Sender: vgarodia@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <f15d1b41-e4fb-0203-88f7-dbac3f4e5307@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-08 17:11, Stanimir Varbanov wrote:
-> Changes since v1:
->   * replace pm_runtime_get_sync with pm_runtime_resume_and_get in 1/5.
+On Tue, Oct 05, 2021 at 09:33:35PM -0700, Kuppuswamy, Sathyanarayanan wrote:
 > 
-> regards,
-> Stan
 > 
-> Stanimir Varbanov (5):
->   venus: venc: Use pmruntime autosuspend
->   venus: Make sys_error flag an atomic bitops
->   venus: hfi: Check for sys error on session hfi functions
->   venus: helpers: Add helper to mark fatal vb2 error
->   venus: Handle fatal errors during encoding and decoding
+> On 10/5/21 8:42 PM, Josh Poimboeuf wrote:
+> > > is_tdx_guest was mainly introduced to support cc_platform_has()
+> > > API in early boot calls (similar to sme_me_mask in AMD code).
+> > > Regarding FEATURE flag it will be useful for userspace tools to
+> > > check the TDX feature support.
+> > FEATURE flags can also be checked in the kernel, with boot_cpu_has().
+> > Or am I missing something?
 > 
->  drivers/media/platform/qcom/venus/core.c    |  13 ++-
->  drivers/media/platform/qcom/venus/core.h    |   6 +-
->  drivers/media/platform/qcom/venus/helpers.c |  16 ++-
->  drivers/media/platform/qcom/venus/helpers.h |   1 +
->  drivers/media/platform/qcom/venus/hfi.c     |  48 +++++++-
->  drivers/media/platform/qcom/venus/vdec.c    |  18 ++-
->  drivers/media/platform/qcom/venus/venc.c    | 116 ++++++++++++++++++--
->  7 files changed, 201 insertions(+), 17 deletions(-)
+> Yes, previously we have been using x86_feature_enabled() check in
+> cc_platform_has() call. Now with the introduction of is_tdx_guest
+> global variable, we don't use it in kernel. But I still want to
+> keep the feature flag for user space use case.
 
-Tested-by: Vikash Garodia <vgarodia@codeaurora.org>
+I'm not suggesting getting rid of the feature flag.  I'm suggesting
+getting rid of the global variable.  Is there a reason you can't check
+the feature flag instead of checking the global variable?
+
+-- 
+Josh
+
