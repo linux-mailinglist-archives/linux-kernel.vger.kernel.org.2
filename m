@@ -2,87 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C4274241B7
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 17:46:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DC2B4241BA
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 17:47:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239064AbhJFPsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 11:48:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55908 "EHLO
+        id S231944AbhJFPs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 11:48:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231851AbhJFPsp (ORCPT
+        with ESMTP id S231851AbhJFPs6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 11:48:45 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56504C061746
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 08:46:53 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id r10so10169292wra.12
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 08:46:53 -0700 (PDT)
+        Wed, 6 Oct 2021 11:48:58 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E49E9C061746;
+        Wed,  6 Oct 2021 08:47:05 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id y23so12572837lfb.0;
+        Wed, 06 Oct 2021 08:47:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/Mt4hVpDDLiJFsnMiqpoJ5N43/Wwws8Ndb8qPcKFmxw=;
-        b=f0AVYTcoxBUvDB+PZ28jxbJWZJAypXAwPJqhaXZfm/Uime5f/Yhmgfbr2vxhsWmhYl
-         LiUOvxCM3o2JmesOltJ9yeJdvVQCbfYIViMDm06IxV5ywXDD2YRQ5pJfj4pvTaRYFBgz
-         j81BNp6w8n7dISmaxYFQ8VxezlnL3h/c0MLv4TeRb9NHiB1eh0TabmPYrwpNdPbYJkTQ
-         udhRaUwC2CqjtX6v2wRsHuHBc2fuGGLC5SOIrjoPO/C+btc99Z5vTF6sk7BDlui3TztC
-         Mwj1oWYXon3bqMeHS9d0GQxqWACJWc96A4OSookRus8HzLS4zXG5+LlYf4f/AM8LqlEo
-         uE/Q==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=GfVVERpziq4truOunJikxrUf6BXuZD7+3TCMiv3eHCw=;
+        b=hKwuv0BI3AUNCW2oo7hJUMPCzxZ0HarLZGF6aKZX5ckpHDhJcqe7QKdKy7m2o/opVC
+         66tEV2jRCeFHIt/Gv6ZJqzlo+nhBqojbNpPtT81ngcDKdSw+fFaauzhCumJu7a9Nj0YV
+         YLKi2Cmnm9Kgw/JMaQhpyud9oH+UGo02Y004QMAiGFVG/fXiAnHg4Poq14tmRBdWHoVk
+         Jd4DDlFgykxqr/55sZrYCI5x1wPVyXwWnnSQeRI4hPCXKPAU28abn8LA+y61tuQb5cmN
+         3Suia1TAUS4Lb4yYjLfHy/UsvzWdgYFKr6DMQwNQ5JH4SDZfPvtKHk+CAz5iYxAY1eu2
+         D/Sg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=/Mt4hVpDDLiJFsnMiqpoJ5N43/Wwws8Ndb8qPcKFmxw=;
-        b=OAmkJRaTRFtA7e2OWKWlrtbOvsrR1dEmzF5Rntk32WwVo+cKGOVPEn7JFIB8F5uXFT
-         0ObGLfx/U2Kd+8nUT4I5ycqvfguUxGWP0LoQdRiV7/tJ0FBLxK1TgmhFvn9mfYDMwb12
-         ZoVtmX26bvvGjquPB5JFyQA+NnedmPeLWzfH0bxyTp6c9sw5b/qmEbGF2VWcDSC48vNR
-         6Q+zzwGSwqQeIhWuUM+8QMeG87OmOm5b+58AQ7dQy8k34dcq00Q0Nzuwsrnnpz6f7xNb
-         1x/nHxGVkOoFkNRZSzPRiZa0tShIENsYGeX8DSWUMIgRM6ScBjUdWmoqHhRAVT7p9yRj
-         /Fow==
-X-Gm-Message-State: AOAM532fJe2giIIrTtHqssW1o5uGb6YmlvYjvgj9VO9FiGZZmxn2M9WB
-        3kXl689AmhUHPUREDQFi0n6DPHI4JOBSVQ==
-X-Google-Smtp-Source: ABdhPJyI30sTsalaSH1M4b+oD0ejZDsI5TTr4n3hmyd9xdp8QX634Rs1+6R3TcQ4AD2CpwDf//gwQw==
-X-Received: by 2002:a5d:6d8a:: with SMTP id l10mr29904565wrs.121.1633535211935;
-        Wed, 06 Oct 2021 08:46:51 -0700 (PDT)
-Received: from localhost.localdomain ([197.49.35.129])
-        by smtp.gmail.com with ESMTPSA id r205sm2007276wma.3.2021.10.06.08.46.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Oct 2021 08:46:51 -0700 (PDT)
-From:   Sohaib Mohamed <sohaib.amhmd@gmail.com>
-To:     sohaib.amhmd@gmail.com
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] Documentation: Fix typo in stable/sysfs-module
-Date:   Wed,  6 Oct 2021 17:46:48 +0200
-Message-Id: <20211006154649.134924-1-sohaib.amhmd@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        bh=GfVVERpziq4truOunJikxrUf6BXuZD7+3TCMiv3eHCw=;
+        b=Gz2po3YSgNZpaS0k9X5le76k8LJEiYDrM2I79BYYKv2ZCNYDFglyE5SqAt4auFIbGJ
+         qT+NNU4yHrvpSK3tFLafQsjCU607A039KPduaBoISaRMieJvVf5gs1UD3LcBgE0lgtqG
+         S7PsiVf+S32oHKbXHQktFX5xO6bLkmatR3O4z5t6b3QKrdWiyFqwkxofnRW0uWTgV6Ob
+         4cDJfnVSn/QBymryv3oV8E7Bw1WQJK5n4invcAeIcvThfguqM2+FqK4VrySl/7E1C/95
+         wpxdlW2u7nl5pXHMwzgc8GbQdUI6ByolebTL0WNdEaMs8unrVqolHhUnWHNxe0bjcehD
+         3CQw==
+X-Gm-Message-State: AOAM532/Tma0TUt3ejxsOpenl45KWVgXaKFcIFh/xMmzOrtXwYpd2iu/
+        6nUg8uR7ATYH+wHDQRbaWv0QCrYC3Ec=
+X-Google-Smtp-Source: ABdhPJxcxUvNK9BCNsepaPErBne/gtT50oxUO7KhKgcMzfQupjYKdHdT1m9ES2kcbWsy2IefeHEwyw==
+X-Received: by 2002:a05:651c:179a:: with SMTP id bn26mr29489526ljb.528.1633535224146;
+        Wed, 06 Oct 2021 08:47:04 -0700 (PDT)
+Received: from [192.168.2.145] (79-139-163-57.dynamic.spd-mgts.ru. [79.139.163.57])
+        by smtp.googlemail.com with ESMTPSA id h10sm88397ljb.60.2021.10.06.08.47.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Oct 2021 08:47:03 -0700 (PDT)
+Subject: Re: [PATCH v4 3/7] dt-bindings: memory: lpddr2: Add revision-id
+ properties
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+References: <20211005230009.3635-1-digetx@gmail.com>
+ <20211005230009.3635-4-digetx@gmail.com>
+ <545e4036-a9fe-a0f1-dd8c-f5948fee6c4e@canonical.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <b24831e5-653c-e3e6-fd96-9746e8e96d8d@gmail.com>
+Date:   Wed, 6 Oct 2021 18:47:03 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <545e4036-a9fe-a0f1-dd8c-f5948fee6c4e@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove repeated word: "the the source"
+06.10.2021 13:59, Krzysztof Kozlowski пишет:
+> On 06/10/2021 01:00, Dmitry Osipenko wrote:
+>> Add optional revision-id standard LPDDR2 properties which will help to
+>> identify memory chip.
+>>
+>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>> ---
+>>  .../memory-controllers/ddr/jedec,lpddr2.yaml         | 12 ++++++++++++
+>>  1 file changed, 12 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/memory-controllers/ddr/jedec,lpddr2.yaml b/Documentation/devicetree/bindings/memory-controllers/ddr/jedec,lpddr2.yaml
+>> index d99ccad54938..01efb43c3425 100644
+>> --- a/Documentation/devicetree/bindings/memory-controllers/ddr/jedec,lpddr2.yaml
+>> +++ b/Documentation/devicetree/bindings/memory-controllers/ddr/jedec,lpddr2.yaml
+>> @@ -24,6 +24,16 @@ properties:
+>>            - enum:
+>>                - jedec,lpddr2-nvm
+>>  
+>> +  revision-id1:
+>> +    maximum: 255
+>> +    description: |
+>> +      Revision 1 value of SDRAM chip. Obtained from device datasheet.
+>> +
+> 
+> Also type/ref for uint32 needed.
 
-Signed-off-by: Sohaib Mohamed <sohaib.amhmd@gmail.com>
----
- Documentation/ABI/stable/sysfs-module | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/Documentation/ABI/stable/sysfs-module b/Documentation/ABI/stable/sysfs-module
-index 560b4a3278df..41b1f16e8795 100644
---- a/Documentation/ABI/stable/sysfs-module
-+++ b/Documentation/ABI/stable/sysfs-module
-@@ -38,7 +38,7 @@ What:		/sys/module/<MODULENAME>/srcversion
- Date:		Jun 2005
- Description:
- 		If the module source has MODULE_VERSION, this file will contain
--		the checksum of the the source code.
-+		the checksum of the source code.
-
- What:		/sys/module/<MODULENAME>/version
- Date:		Jun 2005
---
-2.25.1
-
+Also unnecessary :) It's uint32 by default, inferred from the 'maximum'.
