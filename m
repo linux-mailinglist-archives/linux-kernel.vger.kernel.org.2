@@ -2,201 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49C04423AA8
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 11:36:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE611423AA6
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 11:36:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237926AbhJFJib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 05:38:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53846 "EHLO
+        id S237915AbhJFJi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 05:38:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237908AbhJFJi0 (ORCPT
+        with ESMTP id S237916AbhJFJiZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 05:38:26 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69E18C061753
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 02:36:34 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id p11so7410183edy.10
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 02:36:34 -0700 (PDT)
+        Wed, 6 Oct 2021 05:38:25 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC620C061749
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 02:36:33 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id k26so1863580pfi.5
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 02:36:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=rcNh0r9T7kBrXbUl4kwoWlPX/sZ4eZ8cwO79sUZA8X4=;
-        b=EVESwHctwsBLZQxT4NZ4k2CF1+9YMTfY6riM/UzylXVP6Q1hamfHIJPpHCfoo2gVv4
-         oeNbRUs6acnCuFAz+HJ5wbyzwtKa6mDR/lZe2zsyfxUuSkbAZFqN65HyhbGdQXYrB8ui
-         IV+qmQ6iJIBQ1SrrcZa4S5fU6NDbF20FSXbpbHKn8fBSa3ANYs39Q3C/A19zt/tqjH1A
-         cvLYdgVip6zJ+NED+VAsKou7JM33+gXIZRVAGpABpvKiJXy2J0UXB/SqHOcJolE8O2fC
-         xa6UqdAInGJoR2Ur4VKXoQyELZdjsyd13VnOp4jnZMkOs+T1g1wxXzctTKfS7cihbHZO
-         uGGg==
+         :cc;
+        bh=ivmiliHmVECNs+tD9udvPPT9X7ypsbwVELS3/VdaCXA=;
+        b=LfUpHYEvt7VV6Mdx7h4bj9pOel5YkPzUldKd/bm8n18wrDpNkEvVC9MFoYYMznrQX9
+         q70igHA+HOTbMl46LZYxeKqyYPK/ylQiw6Z9/kA/ll78Oip4iU7MKTwckaodArsV4ucm
+         u/sWpOpJ5HdZb19oYyH3ZBuV8wwoINrgwkBXGD8ih1+X+N7Bdp/RkMw9UEq8pQhikMV7
+         1leJV2Rv2B/1tRv5kklho3zxOW+rcftV8ToWMJmZcyZLSphNgL6YiX6vR/+vLVWQL8ls
+         r0Nv3ETJQgcmSaq9LzYfgUMhD/UR1KWzshjGRioZfEq2/dnGgSyxaQo6PhAGcqvNBOJt
+         jGTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=rcNh0r9T7kBrXbUl4kwoWlPX/sZ4eZ8cwO79sUZA8X4=;
-        b=Xd2J6DBuliE1GYeHR8uL1XPQja/ejCsT7dFYl9U2rAyXMX8phDOAlngrbVqvN5CExA
-         JCTBHhnz9XA/RVtyyfKNe03TaB2yJiH67EHMAYo0GcS3mpeJAOzjxPGPq5AiSBmaCSlb
-         erQckNq+Lu0gR9YFsC/FgUVSVkS7kKjko+pB2rG2deTmjdlruebxqB4DMLvbNsGeoPBV
-         V0OHIyj+mRVEyKpzveNv5N3UT/RGL/Ay2D0nX54K8rSbzOdk2F9og4yi2k8zXsuDuOrZ
-         pnHcnw7UwUV+a+8+6IkAqepCWDH1dT2YtDb9eBbL7hFcqNlZXv7/vVeyMUugR9cgljun
-         Orfw==
-X-Gm-Message-State: AOAM531R0/IMYLh6S5x+AJMCpd9ldCZ3XJnasW6OE5Ukhd+yjZVjPBf6
-        wPeY8j3pUVOU0PW4oiKlFcbntpwBUftGDC8REiiQuw==
-X-Google-Smtp-Source: ABdhPJwV8nChSokFlOIMg6kZ0ARPzKO+d6ycSmuNYFHme9oxJewenlyUkr5aRjxeroI30BwiUe3To/lOHrglB81lMiQ=
-X-Received: by 2002:a05:6402:5146:: with SMTP id n6mr32426966edd.357.1633512992885;
- Wed, 06 Oct 2021 02:36:32 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=ivmiliHmVECNs+tD9udvPPT9X7ypsbwVELS3/VdaCXA=;
+        b=5qjHE6spr8LmE7Ytl22XPJdVU2fI+RCJ1VEsge3Srq/5CFeNo5zPjgXlCCPJHpPQ/R
+         x8irysGHa3Gl5lMIt5Yy7/qLjWpBoojp0NFRcD2FeRIBCt4dBfDTxbAZUKGAhcKUK8AY
+         eyhmPPNUlcOzRpAyvtzZ4fCqzboVrSRlYVOySq6LJDeR/vyCzjrRTJvFw6LId1lw0Xuu
+         nHAhXm14DRKdpeKsIzdMBSGUff3qAJjYeVh8k8ppsFfGagAoBqQuvD51EM+4b31TmIjw
+         DCvJd8j61Tinbo1AwSyU3AXqkYor+WTxMKfScT05LYG8fDpKRdboa7NeqpBPSpO05s/z
+         lYAg==
+X-Gm-Message-State: AOAM531xglw1B1RzkOdZpIFjZsYUXrn9/lnvVvP2Z7O2Mr5YuAuqewN0
+        uwUlkyTEUclcMytThEhWje5sp9lH+rEwb7YrPXSm0w==
+X-Google-Smtp-Source: ABdhPJyJHFp7PxiNzFM0uNAU6r9bpQS9fJ2YelL4yw+Op2yk3u/S0zWg7QK4dZ1PlLtBS6v0H7mi0oh0Axno0UHAcFw=
+X-Received: by 2002:a65:4345:: with SMTP id k5mr19758632pgq.410.1633512993175;
+ Wed, 06 Oct 2021 02:36:33 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211005083253.853051879@linuxfoundation.org>
-In-Reply-To: <20211005083253.853051879@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 6 Oct 2021 15:06:21 +0530
-Message-ID: <CA+G9fYubvAp1PpuMqabSvXnQjnKyhwTD5u82HfGPy0uYTmLLBA@mail.gmail.com>
-Subject: Re: [PATCH 4.4 00/41] 4.4.286-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-stable <stable@vger.kernel.org>
+References: <20210922125909.215-1-caihuoqing@baidu.com> <YUu6AukldZ482TDf@pendragon.ideasonboard.com>
+In-Reply-To: <YUu6AukldZ482TDf@pendragon.ideasonboard.com>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Wed, 6 Oct 2021 11:36:21 +0200
+Message-ID: <CAG3jFyvy6G15-aA=OPEfHzycpXMjEXAfYs_n4yFmUUAjwe5LRw@mail.gmail.com>
+Subject: Re: [PATCH] drm/bridge: dw-hdmi-cec: Make use of the helper function devm_add_action_or_reset()
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Cai Huoqing <caihuoqing@baidu.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 5 Oct 2021 at 14:08, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+Applied to drm-misc-next
+
+On Thu, 23 Sept 2021 at 01:19, Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> wrote:
 >
-> This is the start of the stable review cycle for the 4.4.286 release.
-> There are 41 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> Hi Cai,
 >
-> Responses should be made by Thu, 07 Oct 2021 08:32:44 +0000.
-> Anything received after that time might be too late.
+> Thank you for the patch.
 >
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.4.286-rc2.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.4.y
-> and the diffstat can be found below.
+> On Wed, Sep 22, 2021 at 08:59:08PM +0800, Cai Huoqing wrote:
+> > The helper function devm_add_action_or_reset() will internally
+> > call devm_add_action(), and if devm_add_action() fails then it will
+> > execute the action mentioned and return the error code. So
+> > use devm_add_action_or_reset() instead of devm_add_action()
+> > to simplify the error handling, reduce the code.
+> >
+> > Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
 >
-> thanks,
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 >
-> greg k-h
-
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
-
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-## Build
-* kernel: 4.4.286-rc2
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-4.4.y
-* git commit: 72b93c7258429eb65b95794f69218e8d8e0caeaa
-* git describe: v4.4.285-42-g72b93c725842
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.4.y/build/v4.4.2=
-85-42-g72b93c725842
-
-## No regressions (compared to v4.4.285-38-gf70f9a082d64)
-
-## No fixes (compared to v4.4.285-38-gf70f9a082d64)
-
-## Test result summary
-total: 43887, pass: 34824, fail: 167, skip: 7877, xfail: 1019
-
-## Build Summary
-* i386: 1 total, 1 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-
-## Test suites summary
-* fwts
-* kselftest-android
-* kselftest-bpf
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-membarrier
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
+> > ---
+> >  drivers/gpu/drm/bridge/synopsys/dw-hdmi-cec.c | 6 ++----
+> >  1 file changed, 2 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/bridge/synopsys/dw-hdmi-cec.c b/drivers/gpu/drm/bridge/synopsys/dw-hdmi-cec.c
+> > index 70ab4fbdc23e..c8f44bcb298a 100644
+> > --- a/drivers/gpu/drm/bridge/synopsys/dw-hdmi-cec.c
+> > +++ b/drivers/gpu/drm/bridge/synopsys/dw-hdmi-cec.c
+> > @@ -265,11 +265,9 @@ static int dw_hdmi_cec_probe(struct platform_device *pdev)
+> >       /* override the module pointer */
+> >       cec->adap->owner = THIS_MODULE;
+> >
+> > -     ret = devm_add_action(&pdev->dev, dw_hdmi_cec_del, cec);
+> > -     if (ret) {
+> > -             cec_delete_adapter(cec->adap);
+> > +     ret = devm_add_action_or_reset(&pdev->dev, dw_hdmi_cec_del, cec);
+> > +     if (ret)
+> >               return ret;
+> > -     }
+> >
+> >       ret = devm_request_threaded_irq(&pdev->dev, cec->irq,
+> >                                       dw_hdmi_cec_hardirq,
+>
+> --
+> Regards,
+>
+> Laurent Pinchart
