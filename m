@@ -2,122 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59E5D423945
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 09:58:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DCB3423944
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 09:58:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237664AbhJFIAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 04:00:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59432 "EHLO
+        id S237653AbhJFIAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 04:00:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237384AbhJFIAU (ORCPT
+        with ESMTP id S237384AbhJFIAS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 04:00:20 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 807E4C061749
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 00:58:28 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id v18so6396421edc.11
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 00:58:28 -0700 (PDT)
+        Wed, 6 Oct 2021 04:00:18 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14881C061749
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 00:58:26 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id v17so5994406wrv.9
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 00:58:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=XQWQgm5VcZfwx8EzNe7mxtfcL9BKDaqUq1fkeXHfikM=;
-        b=go2U0cZ/aA/3NlaoPZZ6FEAxyPlr7Aag5bsPxBltHNCGKtsLteGuw3p0Zm0tpT6nDg
-         LVfkjy3shRzmwvTA1cpZYw6dwe2DiZOxoYOjxFL0ahoYDvRMk5bKKx00bQOq/4bk8+5z
-         OwVLwtxs/1Cwsb8tqqDuoq4cbU+tHuIDRhNwcXCYIKWvL/NhvK0JKeGIUs3bsFKq+vG3
-         DjOXpLRTOMv4lj57RyY/J2DwfZlONcbFfzb9dDYCWXZY1acpXIhuGBd4plNXejMKtpUf
-         Zh5hCdzayuLXMmXN5fvMdgRUn+wDH/U/qC0hj85S6xmLCVVnbZljjFGOH68U2iIdcAFS
-         jMQA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=uCvLZpthRtLw9J2e0dZt5jixJRR9nvmQHa4fpaouL4s=;
+        b=s7AhNCJnIZYraVKPzqQf/DlIWMkCrQk5/W9khEPcQIae3YaF4aYv0rjqaEJjdszDrt
+         ygEqCw/gSMjwvk/4rClXWZfcXAZRoZFsR7pp2QoOW3iexddVyEbweLDdtsFKVngwGpSc
+         zwe/rntlB5PmLq4U81LohZH4+QOF4AbW4guT/pZcHtTavfsYlSAg1TReQh0Ac86H7ek4
+         eA8Kr6/u6e52LSQhHk38XZ+w0c3Xz9nBS/QDyKFFYAFmZbGebSZP6M6obKsaGrGasYp+
+         K9/oHYVqoXZVHG7xbSxEnEiErKYuOe1cSW6rIUmyQkhobfkodpVQIigwhOzeRZfsTZe3
+         istA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=XQWQgm5VcZfwx8EzNe7mxtfcL9BKDaqUq1fkeXHfikM=;
-        b=Z4kOsBw1bmGfT8LFkWrpC1xt+3Htp3Bxdz0X4LFYoUkc/RzVqoc0JoKEkdSAekE/5H
-         H1if8EtUIiK8Pk0epWbPGnd1beqsiDAcMhUOsp6W/Sq4xTPvnYlrlEHlOjIS2FJk3TEs
-         s8GYUxXBfS7xLREpM0jyuMHuQjAtSkxaPVMd1586djWlb6L1+gz2gDPUsauRlYjKBhdw
-         FkbreyNsGFMFTz4QviCX9HQnwdTEO7j43uM61xzRAS52KLkvJ/K/0xul6Di36s6peGcW
-         /Gx8gAgYnFEnJLtRR6rzxIm7MXNiMhnMuoWmaKz2FoBQsUK2wJaCO44IkPjRghkbUqdl
-         tq1g==
-X-Gm-Message-State: AOAM533bAt7g4zMH38GKeKpACqcW3D0xLRMJOJq0ThuRFqRZwafeaPRG
-        tpU+4+9gauM814a0dvxECDgDxYNm7GzKP/PH1d8=
-X-Google-Smtp-Source: ABdhPJywczBI9jhEPZFGmv+cCh3Y4y0E1Q5f7f64/ji6b1R1/AHKHuAeI+tOuJbvNj3FJdtxuUAPLUMgj3BjWxJnVlE=
-X-Received: by 2002:a50:dacf:: with SMTP id s15mr32715768edj.385.1633507107111;
- Wed, 06 Oct 2021 00:58:27 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=uCvLZpthRtLw9J2e0dZt5jixJRR9nvmQHa4fpaouL4s=;
+        b=kqMad1IC8gaImu5qD6i0ukBqslkSJJYXguO6ipDvpCxSrO61WRfWWB2/xeVlP4ZDtT
+         GzAYtciWtNWZs+0js5OsBdpYqcDEtiGumu1oGo8lsro+MT1S6Oht5cCK5U+ID6d9pHPo
+         HlnkuLCDmwVwSET5q1ZCcLlgRY5TmUQCB4/yqL7NjQgWZo1lvI/56ckZO4OXRhRQ2vYK
+         ag5QckukPu9Eao8yUHkCmcGLHE2Yv/nRp+ufMRY0MHZGj8d5fRqiaWp2qy+/Pxl5RAf9
+         xZgkAojQiAMTOMlJ3I3Yf2vYhnANXfORety1ueWQ/Hfg+UgQdt+E8X2cDKdEjX+PTC4e
+         Y1gw==
+X-Gm-Message-State: AOAM53199c5J7hNXHarV03HHLBWQctJNMlST1R5dAYMQ3B/Itrjd65PZ
+        AdFFRXHz5kCf8OioBWZ/psxriQ==
+X-Google-Smtp-Source: ABdhPJxY14nEcYn74AmPQN8Q/ord0ogQGSaDZZ/ooO7AF54xAZtR0QPR+DvBy8xZ3aDDvr7DswORmA==
+X-Received: by 2002:adf:b19c:: with SMTP id q28mr27001218wra.348.1633507104602;
+        Wed, 06 Oct 2021 00:58:24 -0700 (PDT)
+Received: from google.com ([95.148.6.175])
+        by smtp.gmail.com with ESMTPSA id d8sm21288609wrv.80.2021.10.06.00.58.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Oct 2021 00:58:24 -0700 (PDT)
+Date:   Wed, 6 Oct 2021 08:58:22 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Samuel Ortiz <sameo@linux.intel.com>, linux-kernel@vger.kernel.org
+Subject: Re: [RESEND PATCH] mfd: Add missing of_node_put for loop iteration
+Message-ID: <YV1XHt0ykUKCfibv@google.com>
+References: <20210528115126.18370-1-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
-References: <20211004143650.699120-1-tvrtko.ursulin@linux.intel.com>
- <20211004143650.699120-2-tvrtko.ursulin@linux.intel.com> <562d45e1-4a27-3252-f615-3ab1ef531f2b@huawei.com>
-In-Reply-To: <562d45e1-4a27-3252-f615-3ab1ef531f2b@huawei.com>
-From:   Barry Song <21cnbao@gmail.com>
-Date:   Wed, 6 Oct 2021 20:58:15 +1300
-Message-ID: <CAGsJ_4w5Y4=v93YmTrXJ6hDgjKshxiAZ-ox-Nz_7uRwe4ECtdw@mail.gmail.com>
-Subject: Re: [RFC 1/8] sched: Add nice value change notifier
-To:     "Wanghui (John)" <john.wanghui@huawei.com>
-Cc:     Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        Intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210528115126.18370-1-krzysztof.kozlowski@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 6, 2021 at 5:15 PM Wanghui (John) <john.wanghui@huawei.com> wro=
-te:
->
-> HI Tvrtko
->
-> On 2021/10/4 22:36, Tvrtko Ursulin wrote:
-> >   void set_user_nice(struct task_struct *p, long nice)
-> >   {
-> >       bool queued, running;
-> > -     int old_prio;
-> > +     int old_prio, ret;
-> >       struct rq_flags rf;
-> >       struct rq *rq;
-> >
-> > @@ -6915,6 +6947,9 @@ void set_user_nice(struct task_struct *p, long ni=
-ce)
-> >
-> >   out_unlock:
-> >       task_rq_unlock(rq, p, &rf);
-> > +
-> > +     ret =3D atomic_notifier_call_chain(&user_nice_notifier_list, nice=
-, p);
-> > +     WARN_ON_ONCE(ret !=3D NOTIFY_DONE);
-> >   }
-> How about adding a new "io_nice" to task_struct=EF=BC=8Cand move the call=
- chain to
-> sched_setattr/getattr, there are two benefits:
+On Fri, 28 May 2021, Krzysztof Kozlowski wrote:
 
-We already have an ionice for block io scheduler. hardly can this new io_ni=
-ce
-be generic to all I/O. it seems the patchset is trying to link
-process' nice with
-GPU's scheduler, to some extent, it makes more senses than having a
-common ionice because we have a lot of IO devices in the systems, we don't
-know which I/O the ionice of task_struct should be applied to.
+> Early exits from for_each_child_of_node() should decrement the
+> node reference counter.  Reported by Coccinelle:
+> 
+>   drivers/mfd/mfd-core.c:197:2-24: WARNING:
+>     Function "for_each_child_of_node" should have of_node_put() before goto around lines 209.
+> 
+> Fixes: c94bb233a9fe ("mfd: Make MFD core code Device Tree and IRQ domain aware")
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> ---
+>  drivers/mfd/mfd-core.c | 2 ++
+>  1 file changed, 2 insertions(+)
 
-Maybe we could have an ionice dedicated for GPU just like ionice for CFQ
-of bio/request scheduler.
+Applied, thanks.
 
->
-> 1. Decoupled with fair scheduelr. In our use case, high priority tasks of=
-ten
->     use rt scheduler.
-
-Is it possible to tell GPU RT as we are telling them CFS nice?
-
-> 2. The range of value don't need to be bound to -20~19 or 0~139
->
-
-could build a mapping between the priorities of process and GPU. It seems
-not a big deal.
-
-Thanks
-barry
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
