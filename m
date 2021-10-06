@@ -2,72 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59EEB42411A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 17:17:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3492F42411D
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 17:18:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239097AbhJFPTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 11:19:31 -0400
-Received: from marcansoft.com ([212.63.210.85]:52834 "EHLO mail.marcansoft.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231874AbhJFPT3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 11:19:29 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: marcan@marcan.st)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id AC02B3FA5E;
-        Wed,  6 Oct 2021 15:17:27 +0000 (UTC)
-Subject: Re: [PATCH 1/7] dt-bindings: arm: apple: Add apple,pmgr binding
-To:     Rob Herring <robh@kernel.org>
-Cc:     Mark Kettenis <mark.kettenis@xs4all.nl>,
-        linux-serial@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Marc Zyngier <maz@kernel.org>, linux-pm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-samsung-soc@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>
-References: <20211005155923.173399-1-marcan@marcan.st>
- <20211005155923.173399-2-marcan@marcan.st>
- <1633473959.420655.106783.nullmailer@robh.at.kernel.org>
-From:   Hector Martin <marcan@marcan.st>
-Message-ID: <a80d8bbd-0e71-af81-b3c2-b2e8e5efed63@marcan.st>
-Date:   Thu, 7 Oct 2021 00:17:25 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S239190AbhJFPTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 11:19:50 -0400
+Received: from mout.kundenserver.de ([212.227.126.134]:50943 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231874AbhJFPTs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 11:19:48 -0400
+Received: from mail-wr1-f41.google.com ([209.85.221.41]) by
+ mrelayeu.kundenserver.de (mreue009 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MNKuI-1mAX1c2hNi-00OrM3; Wed, 06 Oct 2021 17:17:54 +0200
+Received: by mail-wr1-f41.google.com with SMTP id j8so9901411wro.7;
+        Wed, 06 Oct 2021 08:17:54 -0700 (PDT)
+X-Gm-Message-State: AOAM532Q43ElqS2UQ23hjzSfwnj9OHkRE/+A3QS9kCMKb5NMJhd1yV6h
+        3dpik9wlo4MbVO/nfyJlfMAb7zKPlzSZnBPfB6I=
+X-Google-Smtp-Source: ABdhPJzzqvoHYlQk2fQWJUzRcXdqZhuq+vNm94ftkYZ7RMylClUbZjxaLkQtrEJaWxkhu1k6wukF1ikvRUsQcoSXV/M=
+X-Received: by 2002:adf:b1c4:: with SMTP id r4mr28248153wra.428.1633533474265;
+ Wed, 06 Oct 2021 08:17:54 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1633473959.420655.106783.nullmailer@robh.at.kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: es-ES
-Content-Transfer-Encoding: 7bit
+References: <20211006145859.9564-1-lukas.bulwahn@gmail.com>
+In-Reply-To: <20211006145859.9564-1-lukas.bulwahn@gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Wed, 6 Oct 2021 17:17:38 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a12-atmqjtjqi-RhFXH2Kwa-hxYcxy3Ftz2YjY5yyPHqg@mail.gmail.com>
+Message-ID: <CAK8P3a12-atmqjtjqi-RhFXH2Kwa-hxYcxy3Ftz2YjY5yyPHqg@mail.gmail.com>
+Subject: Re: [PATCH] asm-generic: correct reference to GENERIC_LIB_DEVMEM_IS_ALLOWED
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:nIl25lFbfNeOMxdEthhqs0MK70ahLfP3x9ECRWZNMgCj2qfywzL
+ WDhlPDN210R8SBPhm7di6dzIa+rskaw3oXzZ7uNjuJ8YD8abpemXGWJIFAyS3BZs+jnDQKH
+ xhjNq3EOkJa44N/03wjzYl6dSSjr63UehjLs8n5wQDvPgsJ7iyh8oInYrwz6EQmIunsxFwA
+ SYd2tb46E0WRa9EK9XZtw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Mtxe3FpY1yw=:JhWVhEk8cwwRWfgc4FGWD2
+ JkxnfiPYNYdaLjquCNPhuYbjynIBCtWx3fdXnPslZ84EVOpa+r9zLI0xlP45HVXmfUO8uyKe7
+ zvQaE9XPmnitnKg2tMkcEs/w9fzNgvPWVsnllAHr48bya5GzUG8UUtvTjastYS7KDT8/JUfWR
+ YE2tCSiCbWGZMUoY7nqjiWe3kYvCncPyoZqyOj5se6jTxS8h81/xaV/E5NHxVODeY0LuhhzsR
+ 5UG04wZNC+P7JqKHWJDHg0shZt1hvFFeTpvFq6p3HdrdU2mDJALMkEWeuU3Tj1OiM1JdEt+A2
+ SutSVenVH9lHg+r6xnAiuSp99U87tBBUDDZN+7YRnllasZAhSTBnuxxrv3EupMTHOkwd2ciN5
+ NWUsEpyfbtq1tw3TZR7xtRR+FG5TQLl2vfqAyOjfZiEb6zYywelkoHL9U9vqo3Ty2wVLXeyFC
+ tGRuqWK39ZRmXC6XDlYvNmU7G1dRC91NAJa+ieW2mtvcQncuSXTiAn3zmA71iBMnpnCR8RoWL
+ zZEpWIc2DZZ1PvyA4uGBEc3EQ2Ooa/fhw+94i1LdVOcKSdXztsbm+YHCCKrrxvhlf/fH6G4QU
+ Wzs4MceK4dJWU/VfCBMf5KXm7eKQJlNWQF6uaRkzgm9gtn3k5H5dDDX9pNnJAeBxQjffuNC27
+ TRrteIsMWyDmsYV4CuTyhgrCJpuh1vgXHcV5m3roGlBROWdUEFM6qEJTzxsfhCawqPmjphsRH
+ Xn68GFVhPk00Ay7KjKQf3Dz8yaCtVDRKvHEeSA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/10/2021 07.45, Rob Herring wrote:
-> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-> on your patch (DT_CHECKER_FLAGS is new in v5.13):
-> 
-> yamllint warnings/errors:
-> 
-> dtschema/dtc warnings/errors:
-> Documentation/devicetree/bindings/arm/apple/apple,pmgr.example.dts:30.40-35.15: ERROR (duplicate_node_names): /example-0/soc/power-management@23b700000: Duplicate node name
-> ERROR: Input tree has errors, aborting (use -f to force output)
-> make[1]: *** [scripts/Makefile.lib:385: Documentation/devicetree/bindings/arm/apple/apple,pmgr.example.dt.yaml] Error 2
-> make[1]: *** Waiting for unfinished jobs....
-> make: *** [Makefile:1441: dt_binding_check] Error 2
+On Wed, Oct 6, 2021 at 5:00 PM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
+>
+> Commit 527701eda5f1 ("lib: Add a generic version of devmem_is_allowed()")
+> introduces the config symbol GENERIC_LIB_DEVMEM_IS_ALLOWED, but then
+> falsely refers to CONFIG_GENERIC_DEVMEM_IS_ALLOWED (note the missing LIB
+> in the reference) in ./include/asm-generic/io.h.
+>
+> Luckily, ./scripts/checkkconfigsymbols.py warns on non-existing configs:
+>
+> GENERIC_DEVMEM_IS_ALLOWED
+> Referencing files: include/asm-generic/io.h
+>
+> Correct the name of the config to the intended one.
+>
+> Fixes: 527701eda5f1 ("lib: Add a generic version of devmem_is_allowed()")
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 
-Argh, sorry about that. I ran the check before adding the mini-pmgr node 
-to the example right before sending out the series, and of course I 
-screwed it up. It'll be fixed and double checked for v2.
-
--- 
-Hector Martin (marcan@marcan.st)
-Public Key: https://mrcn.st/pub
+Acked-by: Arnd Bergmann <arnd@arndb.de>
