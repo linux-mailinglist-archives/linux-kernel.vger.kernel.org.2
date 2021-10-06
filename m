@@ -2,119 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74283423FC1
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 16:03:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAB99423FC7
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 16:06:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238802AbhJFOFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 10:05:11 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:53704
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230131AbhJFOFK (ORCPT
+        id S231771AbhJFOIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 10:08:16 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:58466 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230131AbhJFOIP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 10:05:10 -0400
-Received: from mail-pg1-f199.google.com (mail-pg1-f199.google.com [209.85.215.199])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 6E9563FFE1
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 14:03:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1633528997;
-        bh=ibn5Z26Pr65te2VbiLuW3pAaYOxdHH6AdO7mMM/2Eiw=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-        b=Gt5S355VXGxsHgOUnw2osBPnM9+Xo6NKNF5waY9aD/YKPmta2UhAztYR7NSaEUc3T
-         utzYPg5EjuooZCP1ejOcPi548kXUs7eFbiziNcrWKeA74jrPAzZ+SzR3fdk2aAp3cS
-         +Dd5c2jbuKYUSKscGKYhN8qZEwAs73ejjLLcoOxVv8IbRNbwSzglcPX3pckwZEkBUJ
-         glSQb/zt9U9EU60hBzkac3X91e7nDet+fdTKi3rKVky6aex9S/RQVSQh3HjN+iu4JJ
-         99e/c5db62R8ZgAzzNWe4urHDqQMbcgMrlSpLZS7E1+FBaoiYtafRGpjQv+36UsiPq
-         c+o8869k2Uk/g==
-Received: by mail-pg1-f199.google.com with SMTP id n22-20020a6563d6000000b0029261ffde9bso1622887pgv.22
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 07:03:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ibn5Z26Pr65te2VbiLuW3pAaYOxdHH6AdO7mMM/2Eiw=;
-        b=L/C5rUeQOo1+3dK08kbgm6jwCgi/qu34tIz4pEcDZpwi7os7/SVLhN+AkdxYHo5skM
-         wcqz3LgVouwx9lrDL7GBvtX2QUatxPMP4RparcBsduC6Kdb9rJfSwk8CyyE3009n6qom
-         2SDYH2f7Ee8RR1XUxmwxS8rUSIBBD51hIAxOtANXcXyXlV6fjJQVncpzUqYZVIOcLJ9L
-         WC0WfKnSKQua7t27zdLEoFbojqzP4+DvIFyxziPlpmxTo9aJ5AQdI8KCIJeKZSVXUMG5
-         tEcCgdBj60n8EUGYpmYDMm7TOfks41OrmVFEZz8vX4XR1Jun0YNVi2dTuiPa3Uh+LTQw
-         N2sg==
-X-Gm-Message-State: AOAM531CL8hrtGLATfcFZDGIKVYESVGPwx+xJt27cM740kqls2hHniSR
-        ++68nXivsQMZyby2NRHguhsWyyqngUf3sXbEEeAlVX2aYmMXwrP/Uwc965kD40z0g4XRqMYnDsG
-        Fd/w4ibK3mMDFc8eP9xMHUPyOPxOR+vRO0kXiwN89kQ==
-X-Received: by 2002:a63:530e:: with SMTP id h14mr20578573pgb.279.1633528993851;
-        Wed, 06 Oct 2021 07:03:13 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyKBRbnsaBXi8Wo3tc4fwij7fOUyYDsU281VcBiDVS2nS7CeoWGyPlnwDIvWDYDAhlfLpnrRg==
-X-Received: by 2002:a63:530e:: with SMTP id h14mr20578337pgb.279.1633528991535;
-        Wed, 06 Oct 2021 07:03:11 -0700 (PDT)
-Received: from localhost.localdomain ([69.163.84.166])
-        by smtp.gmail.com with ESMTPSA id h74sm13448222pfe.196.2021.10.06.07.03.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Oct 2021 07:03:10 -0700 (PDT)
-From:   Tim Gardner <tim.gardner@canonical.com>
-To:     aelior@marvell.com
-Cc:     tim.gardner@canonical.com, GR-everest-linux-l2@marvell.com,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Shai Malin <smalin@marvell.com>,
-        Omkar Kulkarni <okulkarni@marvell.com>,
-        Prabhakar Kushwaha <pkushwaha@marvell.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next][RFC] qed: Initialize debug string array
-Date:   Wed,  6 Oct 2021 08:02:59 -0600
-Message-Id: <20211006140259.12689-1-tim.gardner@canonical.com>
-X-Mailer: git-send-email 2.33.0
+        Wed, 6 Oct 2021 10:08:15 -0400
+Date:   Wed, 06 Oct 2021 14:06:20 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1633529181;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7TnqXDE+epmRCsb/NQwigc92wqJaLY9A6+4Ozd7SRXw=;
+        b=aaJrKCFBtbFNaHnmLNM2mCeuidhqzM1i+KNpUYSFSb8KRYipfXBcwXrKjeQM3mK2Vuol4V
+        lT+1k7y9lCYlFFMrJOhpULzFkDdi/wexhlYOMW7u4Bq+QEkBqc3iwpu4Ei/Gu/G3NImrB7
+        rD56oOxkMIOb1HStjtFcHiwtDGdAXoIiQIZ/YkVVbZs/dmoIlk4eCaamPcl87/7KGPRaOK
+        leCCCBlox2HSNVeYdBjbuGieiMRBeUoWAOJ1rXQzQs46p8xsU2shEVx6uClsN3904aJYlb
+        xxrRmqRVJ074juuHBzOotXFWiib7TPDDG/oGRl7jNHDzyT92HTj81s6ylzuqTw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1633529181;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7TnqXDE+epmRCsb/NQwigc92wqJaLY9A6+4Ozd7SRXw=;
+        b=BCysXDsA7Q1aKbPNCpIFVTnBKLcBOVwdJAl2B3/phq0RYmEBwbOt8TNUf/Vt5llMMbwSDJ
+        o1Etsvwv+w4IvuCg==
+From:   "tip-bot2 for Lukas Bulwahn" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/cleanups] x86: Fix misspelled Kconfig symbols
+Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Borislav Petkov <bp@suse.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210803113531.30720-7-lukas.bulwahn@gmail.com>
+References: <20210803113531.30720-7-lukas.bulwahn@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID: <163352918036.25758.5930935592079646342.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Coverity complains of an uninitialized variable.
+The following commit has been merged into the x86/cleanups branch of tip:
 
-CID 120847 (#1 of 1): Uninitialized scalar variable (UNINIT)
-3. uninit_use_in_call: Using uninitialized value *sw_platform_str when calling qed_dump_str_param. [show details]
-1344        offset += qed_dump_str_param(dump_buf + offset,
-1345                                     dump, "sw-platform", sw_platform_str);
+Commit-ID:     6bf8a55d8344df1f61a29b18c398bcdf3539e163
+Gitweb:        https://git.kernel.org/tip/6bf8a55d8344df1f61a29b18c398bcdf3539e163
+Author:        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+AuthorDate:    Tue, 05 Oct 2021 21:48:30 +02:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Tue, 05 Oct 2021 21:48:30 +02:00
 
-Fix this by initializing the string array with '\0'.
+x86: Fix misspelled Kconfig symbols
 
-Fixes: 6c95dd8f0aa1d ("qed: Update debug related changes")
+Fix misspelled Kconfig symbols as detected by
+scripts/checkkconfigsymbols.py.
 
-Cc: Ariel Elior <aelior@marvell.com>
-Cc: GR-everest-linux-l2@marvell.com
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Shai Malin <smalin@marvell.com>
-Cc: Omkar Kulkarni <okulkarni@marvell.com>
-Cc: Prabhakar Kushwaha <pkushwaha@marvell.com>
-Cc: netdev@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org (open list)
-Signed-off-by: Tim Gardner <tim.gardner@canonical.com>
+ [ bp: Combine into a single patch. ]
+
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20210803113531.30720-7-lukas.bulwahn@gmail.com
 ---
+ arch/x86/include/asm/ia32.h      | 2 +-
+ arch/x86/include/asm/irq_stack.h | 2 +-
+ arch/x86/include/asm/page_32.h   | 2 +-
+ arch/x86/include/asm/uaccess.h   | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
 
-I'm not sure what the value of sw_platform_str should be, but this patch is
-clearly a bandaid and not a proper solution.
-
----
- drivers/net/ethernet/qlogic/qed/qed_debug.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/net/ethernet/qlogic/qed/qed_debug.c b/drivers/net/ethernet/qlogic/qed/qed_debug.c
-index 6d693ee380f1..a393b786c5dc 100644
---- a/drivers/net/ethernet/qlogic/qed/qed_debug.c
-+++ b/drivers/net/ethernet/qlogic/qed/qed_debug.c
-@@ -1319,6 +1319,8 @@ static u32 qed_dump_common_global_params(struct qed_hwfn *p_hwfn,
- 	u32 offset = 0;
- 	u8 num_params;
+diff --git a/arch/x86/include/asm/ia32.h b/arch/x86/include/asm/ia32.h
+index 2c5f786..fada857 100644
+--- a/arch/x86/include/asm/ia32.h
++++ b/arch/x86/include/asm/ia32.h
+@@ -68,6 +68,6 @@ extern void ia32_pick_mmap_layout(struct mm_struct *mm);
  
-+	sw_platform_str[0] = '\0';
-+
- 	/* Dump global params section header */
- 	num_params = NUM_COMMON_GLOBAL_PARAMS + num_specific_global_params +
- 		(dev_data->chip_id == CHIP_BB ? 1 : 0);
--- 
-2.33.0
-
+ #endif
+ 
+-#endif /* !CONFIG_IA32_SUPPORT */
++#endif /* CONFIG_IA32_EMULATION */
+ 
+ #endif /* _ASM_X86_IA32_H */
+diff --git a/arch/x86/include/asm/irq_stack.h b/arch/x86/include/asm/irq_stack.h
+index 562854c..8912492 100644
+--- a/arch/x86/include/asm/irq_stack.h
++++ b/arch/x86/include/asm/irq_stack.h
+@@ -58,7 +58,7 @@
+  *     the output constraints to make the compiler aware that R11 cannot be
+  *     reused after the asm() statement.
+  *
+- *     For builds with CONFIG_UNWIND_FRAME_POINTER ASM_CALL_CONSTRAINT is
++ *     For builds with CONFIG_UNWINDER_FRAME_POINTER, ASM_CALL_CONSTRAINT is
+  *     required as well as this prevents certain creative GCC variants from
+  *     misplacing the ASM code.
+  *
+diff --git a/arch/x86/include/asm/page_32.h b/arch/x86/include/asm/page_32.h
+index 94dbd51..b13f848 100644
+--- a/arch/x86/include/asm/page_32.h
++++ b/arch/x86/include/asm/page_32.h
+@@ -43,7 +43,7 @@ static inline void copy_page(void *to, void *from)
+ {
+ 	memcpy(to, from, PAGE_SIZE);
+ }
+-#endif	/* CONFIG_X86_3DNOW */
++#endif	/* CONFIG_X86_USE_3DNOW */
+ #endif	/* !__ASSEMBLY__ */
+ 
+ #endif /* _ASM_X86_PAGE_32_H */
+diff --git a/arch/x86/include/asm/uaccess.h b/arch/x86/include/asm/uaccess.h
+index c9fa7be..e7fc2c5 100644
+--- a/arch/x86/include/asm/uaccess.h
++++ b/arch/x86/include/asm/uaccess.h
+@@ -411,7 +411,7 @@ do {									\
+ 		     : [umem] "m" (__m(addr)),				\
+ 		       [efault] "i" (-EFAULT), "0" (err))
+ 
+-#endif // CONFIG_CC_ASM_GOTO_OUTPUT
++#endif // CONFIG_CC_HAS_ASM_GOTO_OUTPUT
+ 
+ /* FIXME: this hack is definitely wrong -AK */
+ struct __large_struct { unsigned long buf[100]; };
