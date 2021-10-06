@@ -2,89 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CED614237A0
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 07:52:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC4A94237AA
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 07:54:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231576AbhJFFx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 01:53:59 -0400
-Received: from mail-wr1-f51.google.com ([209.85.221.51]:36609 "EHLO
-        mail-wr1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229621AbhJFFx6 (ORCPT
+        id S236466AbhJFF40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 01:56:26 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:58916 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229621AbhJFF4Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 01:53:58 -0400
-Received: by mail-wr1-f51.google.com with SMTP id o20so5100446wro.3;
-        Tue, 05 Oct 2021 22:52:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=BkOpEzM1CX+eRiBhQMKA99SLtxDmiqOiqqpzJVLe8ik=;
-        b=omRLnSBp7xq31CyrmycqdE/zMG0v6W3Vu8Q+qyqiKKZ6rMa7Z+mU+dNn96KYPHtyF2
-         M4sRrXeA0hvZ8xu4jUmEKTLQ/84dKxUp78MZ9x9CQq6/Vq2jKhMSAhYxIxd3HXz0F0Ur
-         eaZ7YoNSWeoIqwLKkMTS38ywT9AHssqpGaLkAJdYZzlsBOaFbK8WrAc98rK1t79eBHFu
-         I8vEFAJ8MoOraKl0MgedW6jis45zEm1bgGtgsJfKAZg5ri8HYWvfX9TN2x7IMdsjhJzf
-         Xu8yktfnJrzBj0pWIxWY6MOLBqY8nKLzhBy6dPGfbkSut1VhVE44BMMohUmmwImRHJHy
-         kmeg==
-X-Gm-Message-State: AOAM531xIiZHOz70OxnqbadWbs4nbClz3MZ7f/cvVHwm6C7R6zFpJf+Q
-        gLkCOSDjVveAIlLd9BK+KbNUVXs3ags=
-X-Google-Smtp-Source: ABdhPJwURq7nUgvaQAZ72eDz1WSMDCa3nyptszxwsCT9XQcKAm8DtZPP9lTqrwK2ImtE5pKYnXVz2g==
-X-Received: by 2002:a5d:453b:: with SMTP id j27mr26785597wra.324.1633499525656;
-        Tue, 05 Oct 2021 22:52:05 -0700 (PDT)
-Received: from [192.168.1.49] (185-219-167-24-static.vivo.cz. [185.219.167.24])
-        by smtp.gmail.com with ESMTPSA id i3sm4011149wrn.34.2021.10.05.22.52.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Oct 2021 22:52:05 -0700 (PDT)
-Message-ID: <e614e753-5eec-225e-7437-f2ad650585ba@kernel.org>
-Date:   Wed, 6 Oct 2021 07:52:03 +0200
+        Wed, 6 Oct 2021 01:56:16 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1965rxxa004725;
+        Wed, 6 Oct 2021 00:53:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1633499639;
+        bh=71iTNYvSXz7PJ6/1p3pzVlud0Eg7uyTxPUQOHqjQ5fk=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=P7iafUpUj7A3v194Kab68htAoynfz6NtqNCJU9PBYEvGRUUWTAzq9ea3P8vJcMTJc
+         wfNZN0i49R7Cg4hsDivtCEHAzU1wJuNczplckgsKoO0trnOO0khjNrO61gx5CWY3oU
+         tHY3RsZLklbAamMpda4oPTXKBswANEaWUR6VfsFE=
+Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1965rwTd083572
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 6 Oct 2021 00:53:58 -0500
+Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Wed, 6
+ Oct 2021 00:53:58 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Wed, 6 Oct 2021 00:53:58 -0500
+Received: from gsaswath-HP-ProBook-640-G5.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1965rjkD070213;
+        Wed, 6 Oct 2021 00:53:53 -0500
+From:   Aswath Govindraju <a-govindraju@ti.com>
+CC:     Marc Kleine-Budde <mkl@pengutronix.de>,
+        Aswath Govindraju <a-govindraju@ti.com>,
+        Faiz Abbas <faiz_abbas@ti.com>, Nishanth Menon <nm@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>
+Subject: [PATCH v4 1/6] arm64: dts: ti: k3-am65-mcu: Add Support for MCAN
+Date:   Wed, 6 Oct 2021 11:23:38 +0530
+Message-ID: <20211006055344.22662-2-a-govindraju@ti.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20211006055344.22662-1-a-govindraju@ti.com>
+References: <20211006055344.22662-1-a-govindraju@ti.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
-Subject: Re: [PATCH] tty: n_gsm: clean up indenting in gsm_queue()
-Content-Language: en-US
-To:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Zhenguo Zhao <Zhenguo.Zhao1@unisoc.com>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-References: <20211004104343.GF25015@kili>
-From:   Jiri Slaby <jirislaby@kernel.org>
-In-Reply-To: <20211004104343.GF25015@kili>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04. 10. 21, 12:43, Dan Carpenter wrote:
-> These two lines need to be indented one more tab.
+From: Faiz Abbas <faiz_abbas@ti.com>
 
-Right, the indentation is incorrect (and not the closing brace).
+Add Support for two MCAN controllers present on the am65x SOC. Both support
+classic CAN messages as well as CAN-FD.
 
-Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
+Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
+Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+---
+ arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi | 30 +++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
 
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-> ---
->   drivers/tty/n_gsm.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/tty/n_gsm.c b/drivers/tty/n_gsm.c
-> index 157b51ce9cc0..3bbfcccd79d3 100644
-> --- a/drivers/tty/n_gsm.c
-> +++ b/drivers/tty/n_gsm.c
-> @@ -1854,8 +1854,8 @@ static void gsm_queue(struct gsm_mux *gsm)
->   				if (address_tmp == address) {
->   					for (k = j; k < addr_cnt; k++)
->   						addr_open[k] = addr_open[k+1];
-> -				addr_cnt--;
-> -				break;
-> +					addr_cnt--;
-> +					break;
->   				}
->   			}
->   		}
-> 
-
-
+diff --git a/arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi b/arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi
+index c93ff1520a0e..8d592bf41d6f 100644
+--- a/arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi
+@@ -159,6 +159,36 @@
+ 		};
+ 	};
+ 
++	m_can0: mcan@40528000 {
++		compatible = "bosch,m_can";
++		reg = <0x0 0x40528000 0x0 0x400>,
++		      <0x0 0x40500000 0x0 0x4400>;
++		reg-names = "m_can", "message_ram";
++		power-domains = <&k3_pds 102 TI_SCI_PD_EXCLUSIVE>;
++		clocks = <&k3_clks 102 5>, <&k3_clks 102 0>;
++		clock-names = "hclk", "cclk";
++		interrupt-parent = <&gic500>;
++		interrupts = <GIC_SPI 544 IRQ_TYPE_LEVEL_HIGH>,
++			     <GIC_SPI 545 IRQ_TYPE_LEVEL_HIGH>;
++		interrupt-names = "int0", "int1";
++		bosch,mram-cfg = <0x0 128 64 64 64 64 32 32>;
++	};
++
++	m_can1: mcan@40568000 {
++		compatible = "bosch,m_can";
++		reg = <0x0 0x40568000 0x0 0x400>,
++		      <0x0 0x40540000 0x0 0x4400>;
++		reg-names = "m_can", "message_ram";
++		power-domains = <&k3_pds 103 TI_SCI_PD_EXCLUSIVE>;
++		clocks = <&k3_clks 103 5>, <&k3_clks 103 0>;
++		clock-names = "hclk", "cclk";
++		interrupt-parent = <&gic500>;
++		interrupts = <GIC_SPI 547 IRQ_TYPE_LEVEL_HIGH>,
++			     <GIC_SPI 548 IRQ_TYPE_LEVEL_HIGH>;
++		interrupt-names = "int0", "int1";
++		bosch,mram-cfg = <0x0 128 64 64 64 64 32 32>;
++	};
++
+ 	fss: fss@47000000 {
+ 		compatible = "simple-bus";
+ 		#address-cells = <2>;
 -- 
-js
-suse labs
+2.17.1
+
