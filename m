@@ -2,79 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E3DD423774
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 07:21:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 849D1423778
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 07:24:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231281AbhJFFWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 01:22:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51902 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229852AbhJFFWu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 01:22:50 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B04FC06174E
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 22:20:58 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id t9so5347393lfd.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 22:20:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ciDVGqsYOH35J7AcMoo3IqFXoCRGKtna/4nNh2oAa8I=;
-        b=PX0XPkQdsK6VcV1+qe5E+Ws3MuZHQRH5zK2EJhibfZ1p+ae4ZLUqE2uyBANAjRuZCx
-         GeXpFV/AWrWBo/t32n6nw7eG4uGD/5B7/23okivlIH+KKES5dAZfgyXnQ8zz89hrnhPM
-         liKp70d2Hxfq9gkAMHIEsKT5+fjZa7TZwmjSBJXjsXXQEkrxQdL0FD32ljWrdxHAMCbX
-         WnJASMLr+YbRvIAuQ2AVgfQQBurUUPQzn36gJAv4Bo6RUWXkC5/e0yQ0j6zENpg0Y1xI
-         6hc+6ZYVIm6sWazuZZAzbzbGlbefkJHxqehgLmcH6zD4QcLJtCvSBX/YGszd1nb/k+W0
-         vdTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ciDVGqsYOH35J7AcMoo3IqFXoCRGKtna/4nNh2oAa8I=;
-        b=X36I6zCYMMF97tirT9F4nzH/fp1aaG5Ck4fZBdBEhJbESJdBZrT/k1mpwkoKudW9Hn
-         xhwh/nvkgKTWCYLudORgjRgAxtKYfw7QKSkyuPJRdGlzn4d42w2lImFEPdDq6yCYmVBN
-         zmRKPVRGIwKmWlKPCCjEP7oDDJdVXgtM8SSuOLe5DFDnp6UmYe9TUftt1dSIhnOGI0ws
-         nXjkIOUwIRLqR0udhjaDQZrJRHPR1XcZftDUHdbTwRCE0m82TN2Gtz3tRXerz8aLIz8N
-         vBe/oD1qJ61ekwS9ax5jAaEyiNzf5r/6zgFJMxhtbu1R/HOs+L56v3vBT1ciJXCjgplv
-         UyXA==
-X-Gm-Message-State: AOAM533fA1oRoQb8o8rLtmBcUMT23MfdrH+EVuwotbbSGf7a+Sf2Qgda
-        yOO4hiPHE++0xSwvN7JogA3EmDIR3spDaGnJOLWUvQ==
-X-Google-Smtp-Source: ABdhPJwOOgy1WotQnWFPm8n0pGDBcluDmJgc+49p7hGhcTZ2QvP2pF5lVEYlLy0mnXHpJxuod/wIwBgpVBsKuG446WM=
-X-Received: by 2002:a05:6512:3b21:: with SMTP id f33mr7906462lfv.8.1633497656441;
- Tue, 05 Oct 2021 22:20:56 -0700 (PDT)
+        id S231621AbhJFF0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 01:26:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37122 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229579AbhJFF0l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 01:26:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3AAEE611C5;
+        Wed,  6 Oct 2021 05:24:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633497890;
+        bh=cMNu6FCqgjsDuLKBexlofzbQh1accEh+KkJp8jMeKJU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ROe8Bm8gBydsupMVtG3HdpW6qsLjipMrqBLxHcBeI/cajE/eRrtK0/lq7FmVQ3Gng
+         VnxBvjDgsTRqJy52DHX6DcQqOqmUNt4c10cEAX/dlyBN0XZQR+BVnx31TfLjqMARLt
+         VOJy4AhiwfalHBNSnBswAuPnauM+0T/9lIyNyhJnpLP6PQeIWBbj68DTvCI3yY+AoB
+         Lxu4m3QCR4x8jxAQseu0ordikEPgXJw7P6HDbcQ+lBYWs67hjVtxULMLWawUk/Kl+o
+         +pGAstLJ3m2I8So2VbmFikcXCZ3gMhd0CamS4SyW2hrfkZLiG9K6HZrUn76PBj3wg8
+         REkVQXxX5rLww==
+Date:   Wed, 6 Oct 2021 10:54:45 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     abhinavk@codeaurora.org
+Cc:     Rob Clark <robdclark@gmail.com>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
+        David Airlie <airlied@linux.ie>, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        freedreno@lists.freedesktop.org,
+        Sumit Semwal <sumit.semwal@linaro.org>
+Subject: Re: [Freedreno] [PATCH 01/11] drm/msm/dsi: add support for dsc data
+Message-ID: <YV0zHet/25Zx9ld5@matsya>
+References: <20210715065203.709914-1-vkoul@kernel.org>
+ <20210715065203.709914-2-vkoul@kernel.org>
+ <c411e4d60efd3029b2dc6b0d899ea8a9@codeaurora.org>
 MIME-Version: 1.0
-References: <20211005202450.11775-1-longman@redhat.com>
-In-Reply-To: <20211005202450.11775-1-longman@redhat.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 5 Oct 2021 22:20:45 -0700
-Message-ID: <CALvZod4Rhv8vSVRGnqHwRuuBHQ=E-YZk7JGjRWHftM4+9cSQ5A@mail.gmail.com>
-Subject: Re: [PATCH v2] mm/memcg: Remove obsolete memcg_free_kmem()
-To:     Waiman Long <longman@redhat.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Muchun Song <songmuchun@bytedance.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c411e4d60efd3029b2dc6b0d899ea8a9@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 5, 2021 at 1:25 PM Waiman Long <longman@redhat.com> wrote:
->
-> Since commit d648bcc7fe65 ("mm: kmem: make memcg_kmem_enabled()
-> irreversible"), the only thing memcg_free_kmem() does is to call
-> memcg_offline_kmem() when the memcg is still online which can happen when
-> online_css() fails due to -ENOMEM. However, the name memcg_free_kmem()
-> is confusing and it is more clear and straight forward to call
-> memcg_offline_kmem() directly from mem_cgroup_css_free().
->
-> Suggested-by: Roman Gushchin <guro@fb.com>
-> Signed-off-by: Waiman Long <longman@redhat.com>
+Hi Abhinav,
 
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
+On 02-08-21, 15:55, abhinavk@codeaurora.org wrote:
+
+> > +static int dsi_populate_dsc_params(struct msm_display_dsc_config *dsc)
+> > +{
+> > +	int mux_words_size;
+> > +	int groups_per_line, groups_total;
+> > +	int min_rate_buffer_size;
+> > +	int hrd_delay;
+> > +	int pre_num_extra_mux_bits, num_extra_mux_bits;
+> > +	int slice_bits;
+> > +	int target_bpp_x16;
+> > +	int data;
+> > +	int final_value, final_scale;
+> > +	int i;
+> > +
+> > +	dsc->drm->rc_model_size = 8192;
+> > +	dsc->drm->first_line_bpg_offset = 12;
+> > +	dsc->drm->rc_edge_factor = 6;
+> > +	dsc->drm->rc_tgt_offset_high = 3;
+> > +	dsc->drm->rc_tgt_offset_low = 3;
+> > +	dsc->drm->simple_422 = 0;
+> > +	dsc->drm->convert_rgb = 1;
+> > +	dsc->drm->vbr_enable = 0;
+> > +
+> > +	/* handle only bpp = bpc = 8 */
+> > +	for (i = 0; i < DSC_NUM_BUF_RANGES - 1 ; i++)
+> > +		dsc->drm->rc_buf_thresh[i] = dsi_dsc_rc_buf_thresh[i];
+> > +
+> > +	for (i = 0; i < DSC_NUM_BUF_RANGES; i++) {
+> > +		dsc->drm->rc_range_params[i].range_min_qp = min_qp[i];
+> > +		dsc->drm->rc_range_params[i].range_max_qp = max_qp[i];
+> > +		dsc->drm->rc_range_params[i].range_bpg_offset = bpg_offset[i];
+> > +	}
+> > +
+> > +	dsc->drm->initial_offset = 6144; /* Not bpp 12 */
+> > +	if (dsc->drm->bits_per_pixel != 8)
+> > +		dsc->drm->initial_offset = 2048;	/* bpp = 12 */
+> > +
+> > +	mux_words_size = 48;		/* bpc == 8/10 */
+> > +	if (dsc->drm->bits_per_component == 12)
+> > +		mux_words_size = 64;
+> > +
+> > +	dsc->drm->initial_xmit_delay = 512;
+> > +	dsc->drm->initial_scale_value = 32;
+> > +	dsc->drm->first_line_bpg_offset = 12;
+> > +	dsc->drm->line_buf_depth = dsc->drm->bits_per_component + 1;
+> > +
+> > +	/* bpc 8 */
+> > +	dsc->drm->flatness_min_qp = 3;
+> > +	dsc->drm->flatness_max_qp = 12;
+> > +	dsc->det_thresh_flatness = 7 + 2 * (dsc->drm->bits_per_component - 8);
+> > +	dsc->drm->rc_quant_incr_limit0 = 11;
+> > +	dsc->drm->rc_quant_incr_limit1 = 11;
+> > +	dsc->drm->mux_word_size = DSC_MUX_WORD_SIZE_8_10_BPC;
+> > +
+> > +	/* FIXME: need to call drm_dsc_compute_rc_parameters() so that rest of
+> > +	 * params are calculated
+> > +	 */
+> > +	dsc->slice_last_group_size = 3 - (dsc->drm->slice_width % 3);
+> > +	groups_per_line = DIV_ROUND_UP(dsc->drm->slice_width, 3);
+> > +	dsc->drm->slice_chunk_size = dsc->drm->slice_width *
+> > dsc->drm->bits_per_pixel / 8;
+> > +	if ((dsc->drm->slice_width * dsc->drm->bits_per_pixel) % 8)
+> > +		dsc->drm->slice_chunk_size++;
+> > +
+> > +	/* rbs-min */
+> > +	min_rate_buffer_size =  dsc->drm->rc_model_size -
+> > dsc->drm->initial_offset +
+> > +				dsc->drm->initial_xmit_delay * dsc->drm->bits_per_pixel +
+> > +				groups_per_line * dsc->drm->first_line_bpg_offset;
+> > +
+> > +	hrd_delay = DIV_ROUND_UP(min_rate_buffer_size,
+> > dsc->drm->bits_per_pixel);
+> > +
+> > +	dsc->drm->initial_dec_delay = hrd_delay -
+> > dsc->drm->initial_xmit_delay;
+> > +
+> > +	dsc->drm->initial_scale_value = 8 * dsc->drm->rc_model_size /
+> > +				       (dsc->drm->rc_model_size - dsc->drm->initial_offset);
+> > +
+> > +	slice_bits = 8 * dsc->drm->slice_chunk_size * dsc->drm->slice_height;
+> > +
+> > +	groups_total = groups_per_line * dsc->drm->slice_height;
+> > +
+> > +	data = dsc->drm->first_line_bpg_offset * 2048;
+> > +
+> > +	dsc->drm->nfl_bpg_offset = DIV_ROUND_UP(data, (dsc->drm->slice_height
+> > - 1));
+> > +
+> > +	pre_num_extra_mux_bits = 3 * (mux_words_size + (4 *
+> > dsc->drm->bits_per_component + 4) - 2);
+> > +
+> > +	num_extra_mux_bits = pre_num_extra_mux_bits - (mux_words_size -
+> > +			     ((slice_bits - pre_num_extra_mux_bits) % mux_words_size));
+> > +
+> > +	data = 2048 * (dsc->drm->rc_model_size - dsc->drm->initial_offset +
+> > num_extra_mux_bits);
+> > +	dsc->drm->slice_bpg_offset = DIV_ROUND_UP(data, groups_total);
+> > +
+> > +	/* bpp * 16 + 0.5 */
+> > +	data = dsc->drm->bits_per_pixel * 16;
+> > +	data *= 2;
+> > +	data++;
+> > +	data /= 2;
+> > +	target_bpp_x16 = data;
+> > +
+> > +	data = (dsc->drm->initial_xmit_delay * target_bpp_x16) / 16;
+> > +	final_value =  dsc->drm->rc_model_size - data + num_extra_mux_bits;
+> As we discussed, can you please check why there is an additional + 8 and /16
+> in the upstream final_offset calculation?
+> If we can eliminate or root-cause the difference in the calculations, either
+> this patch can be substantially reduced or
+> we will atleast know for future reference what was the delta and can leave a
+> comment.
+
+I am checking this as well, I think there is something more, so will
+continue to debug on that.
+
+Meanwhile I propose we continue this and then switch once we have
+concluded.
+
+> > +/* DSC config */
+> > +struct msm_display_dsc_config {
+> > +	struct drm_dsc_config *drm;
+> > +	u8 scr_rev;
+> Can scr_rev also move into drm_dsc_config? SCR itself is not QC specific.
+> Its just telling there was a change request
+> for that DSC revision.
+> In QC side, we only use this scr_rev to have some different tables. This can
+> even be true for other vendors.
+> So moving this to drm_dsc_config will only help.
+
+So I checked and looks like this is not used here in the code, so will
+drop it for now. Once we add support for this, we can add this back in
+drm_dsc_config
+
+-- 
+~Vinod
