@@ -2,212 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A158E423881
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 09:05:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 989A0423884
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 09:06:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237378AbhJFHHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 03:07:33 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:34814
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229861AbhJFHHc (ORCPT
+        id S237390AbhJFHIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 03:08:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47256 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229715AbhJFHIL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 03:07:32 -0400
-Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com [209.85.167.71])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 384703FFDD
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 07:05:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1633503940;
-        bh=nAaopoD7THJlOCA5cGnPBgaBffQraHOd+wkpq9Lg/oo=;
-        h=To:Cc:References:From:Subject:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=lE2IzW6Iq7psO+FwFOug6v7GLD4DmMxtU3TMcX+zDnXQCV+oUslzTPYUvd5Upj+/N
-         135Sl2nfqhE1F89FNEA1qzDL64qP3HvNDJtvy+Q/JvKUnUJ2SBUQv754yEYEmGvtTL
-         mr3/bEMzPCNDIuA4hBh1Ie2uEu3H8049JPV1V8PC9Fo0LHUZrNsi6WgWIURZRhfxQQ
-         /T5nN8rJJGyfoUffGguEa/vphijPjHCI5a+c/MHA0h4jvlQeHlSzBLBEdZFedRclIA
-         lXTaiYv2OP1DZje+9KbR/nW17dhyzazKWYawpIi1MSrCRVs6EjnLvieCa5BkeQKIXD
-         YOZjrL7O4BK6A==
-Received: by mail-lf1-f71.google.com with SMTP id g9-20020a0565123b8900b003f33a027130so1197444lfv.18
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 00:05:40 -0700 (PDT)
+        Wed, 6 Oct 2021 03:08:11 -0400
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27D04C06174E
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 00:06:20 -0700 (PDT)
+Received: by mail-ot1-x330.google.com with SMTP id c6-20020a9d2786000000b005471981d559so1946059otb.5
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 00:06:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=4+AoYf/OhV1VyH0tXfxR0DX1hUbxxT1+MAsxTdaf+rk=;
+        b=F3mITCr5NtXNxJVu9yaAUUTdlx6VZlpquZk7vVtotNwK0d7RUrYQRzb489ufEyFLdm
+         ARjmrLcHxIRmvZE7YIYukW5MlJ5kC/H/dszACaMihdOJRofMROiy6utVFR5JTBOqJzOi
+         Ptl3tyVI1Ob9qAszKbplUILdMj15GhI6EJCHY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=nAaopoD7THJlOCA5cGnPBgaBffQraHOd+wkpq9Lg/oo=;
-        b=1CXUJIcAw1ykpyGzYsiTUoW3lRFNq+7zWCf4GcMm7a934PE4RhTje00tD+A+m+gDgQ
-         wYVjJcavaxz/Gb4yR834cGjbKQc4W1Tpkck29h/Ayuh0IUaCPiRnyTT8oO8K+yeg6rv5
-         bmxAPXmRLj0JeeC2djNSeI29uPtSE8E/pFoE0JdtFymAPk8yXt/ZQDM1AU2CT84152if
-         gqdOrCojBga9UGIURyIt1ZoTRRNzz9rp/0Cm+zOShAd2KHBMf/+1hO1wKMifCU4AR9vs
-         pj6tySnmXV2pwkPy+8DUpCSgmIvWKuCiVJgzotpT4TVciL4jv7DHPu3in3PLm2YZ6ADF
-         tZGQ==
-X-Gm-Message-State: AOAM532VwWamtsEuxHipB4mRbJrk8srSzEbiJCG61vEtDSRxDZMWHg8m
-        BJTQ3Y/SX/ioDJw3S9mGa3tuKWwhkkOpDw6Ftidd+ieCo38hul/lzCsY/rkd8cRyYCHwf9FrbOI
-        G3zRfKB/SbzFOHAWd4YpyNRVvOPB6VoY1sRr3ejlNgg==
-X-Received: by 2002:a05:651c:3c2:: with SMTP id f2mr27464300ljp.282.1633503939468;
-        Wed, 06 Oct 2021 00:05:39 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzqjP/ZlfCNmIjtfZP8v/DwYAmTZBGOomHxxpnyH8hP9lZlzbI9SDqyzFFWwnJY47k/i6lNzA==
-X-Received: by 2002:a05:651c:3c2:: with SMTP id f2mr27464269ljp.282.1633503939160;
-        Wed, 06 Oct 2021 00:05:39 -0700 (PDT)
-Received: from [192.168.0.20] (78-11-189-27.static.ip.netia.com.pl. [78.11.189.27])
-        by smtp.gmail.com with ESMTPSA id y3sm2177779lfh.132.2021.10.06.00.05.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Oct 2021 00:05:38 -0700 (PDT)
-To:     Hector Martin <marcan@marcan.st>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     Marc Zyngier <maz@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-serial@vger.kernel.org
-References: <20211005155923.173399-1-marcan@marcan.st>
- <20211005155923.173399-3-marcan@marcan.st>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Subject: Re: [PATCH 2/7] dt-bindings: power: Add apple,pmgr-pwrstate binding
-Message-ID: <b5b3fcb4-077b-d33d-03cc-ac0611cb56a1@canonical.com>
-Date:   Wed, 6 Oct 2021 09:05:37 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=4+AoYf/OhV1VyH0tXfxR0DX1hUbxxT1+MAsxTdaf+rk=;
+        b=WOk08LRQYG22DYDSbSCphuqaziVzugnrszw7K+NaNPvb3NbUQNDxITWrJExq+TCo/Z
+         e33o7r3h7vi1aBtgt0eYJ0yGFSuO9/ncXmyA4XOBpXM78xMxNUPlEhPyU9d9Kt229Dle
+         eFxLEJsMUFb4mgiqywgMZV9nBDFIzGsTr/1c1s+STCvyyhQRo+MQbNYwGcnQzt+ecLKg
+         ANiUyBUvx7JzLbEu1RGKBIktN+EQAIMGcL3pxJiHeqM/6aRKL1aBDubmUFaLET59TMvC
+         U91wtY+Zp1BlTPEv5mcUPDFlplAD3RHx0zHeNXra5qdgbX4xeKFyTlepL11GI+QMDPwM
+         XqNw==
+X-Gm-Message-State: AOAM5319iIr6AG25+bDpw/6Y4WpE7a1xuIf9h/Ixvf4Rc3v/gpiKVFI9
+        vfzQlbnX7EfKXQMw78NRaebcxMVjQbVv8+uhRFqM5g==
+X-Google-Smtp-Source: ABdhPJw48rdo5e1ZW+QR52Q24ZkmJdTYIjAd5h9wKn0M6gqkx8fjUTQwdIReJmbpiqsEXjU/MSNvNJfuGluz1PiKA9U=
+X-Received: by 2002:a9d:1f4:: with SMTP id e107mr17790334ote.77.1633503979455;
+ Wed, 06 Oct 2021 00:06:19 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Wed, 6 Oct 2021 00:06:18 -0700
 MIME-Version: 1.0
-In-Reply-To: <20211005155923.173399-3-marcan@marcan.st>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAA8EJpou8ssBD2VGqfKKg43Gu031X-Bm+eirS_AL3Dr2AcdOJg@mail.gmail.com>
+References: <20211005231323.2663520-1-bjorn.andersson@linaro.org>
+ <20211005231323.2663520-6-bjorn.andersson@linaro.org> <CAE-0n52gOCC8bUfMFnNHRKFoq2=q4Ho8a-UYH5JKgumguhUD2A@mail.gmail.com>
+ <YVz/NOL3AFn2zBA0@ripper> <CAE-0n513cs282Dh_YFMHK2uKCVFSWxtNyfRaFwWGyUvpfShixw@mail.gmail.com>
+ <YV0MAF/Y5BR1e6My@ripper> <CAE-0n53TwEyycpAaWVpRUKPpos4z-gqwrvyUdgobh1V88VUsXg@mail.gmail.com>
+ <CAA8EJpou8ssBD2VGqfKKg43Gu031X-Bm+eirS_AL3Dr2AcdOJg@mail.gmail.com>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Wed, 6 Oct 2021 00:06:18 -0700
+Message-ID: <CAE-0n51S+DRXfJPWY93DS+4MMqVadfuP0bg0dJMH10pDvtabBg@mail.gmail.com>
+Subject: Re: [PATCH v4 5/7] drm/msm/dp: Support up to 3 DP controllers
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Kalyan Thota <kalyan_t@codeaurora.org>,
+        Kuogee Hsieh <khsieh@codeaurora.org>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/10/2021 17:59, Hector Martin wrote:
-> This syscon child node represents a single SoC device controlled by the
-> PMGR block. This layout allows us to declare all device power state
-> controls (power/clock gating and reset) in the device tree, including
-> dependencies, instead of hardcoding it into the driver. The register
-> layout is uniform.
-> 
-> Each pmgr-pwrstate node provides genpd and reset features, to be
-> consumed by downstream device nodes.
-> 
-> Future SoCs are expected to use backwards compatible registers, and the
-> "apple,pmgr-pwrstate" represents any such interfaces (possibly with
-> additional features gated by the more specific compatible), allowing
-> them to be bound without driver updates. If a backwards incompatible
-> change is introduced in future SoCs, it will require a new compatible,
-> such as "apple,pmgr-pwrstate-v2".
-> 
-> Signed-off-by: Hector Martin <marcan@marcan.st>
-> ---
->  .../bindings/power/apple,pmgr-pwrstate.yaml   | 117 ++++++++++++++++++
->  MAINTAINERS                                   |   1 +
->  2 files changed, 118 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/power/apple,pmgr-pwrstate.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/power/apple,pmgr-pwrstate.yaml b/Documentation/devicetree/bindings/power/apple,pmgr-pwrstate.yaml
-> new file mode 100644
-> index 000000000000..a14bf5f30ff0
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/power/apple,pmgr-pwrstate.yaml
-> @@ -0,0 +1,117 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/power/apple,pmgr-pwrstate.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Apple SoC PMGR Power States
-> +
-> +maintainers:
-> +  - Hector Martin <marcan@marcan.st>
-> +
-> +allOf:
-> +  - $ref: "power-domain.yaml#"
-> +
-> +description: |
-> +  Apple SoCs include a PMGR block responsible for power management,
-> +  which can control various clocks, resets, power states, and
-> +  performance features. This binding describes the device power
-> +  state registers, which control power states and resets.
-> +
-> +  Each instance of a power controller within the PMGR syscon node
-> +  represents a generic power domain provider, as documented in
-> +  Documentation/devicetree/bindings/power/power-domain.yaml.
-> +  The provider controls a single SoC block. The power hierarchy is
-> +  represented via power-domains relationships between these nodes.
-> +
-> +  See Documentation/devicetree/bindings/arm/apple/apple,pmgr.yaml
-> +  for the top-level PMGR node documentation.
-> +
-> +  IP cores belonging to a power domain should contain a
-> +  "power-domains" property that is a phandle for the
-> +  power domain node representing the domain.
+Quoting Dmitry Baryshkov (2021-10-05 23:10:22)
+> On Wed, 6 Oct 2021 at 07:26, Stephen Boyd <swboyd@chromium.org> wrote:
+> >
+> > Quoting Bjorn Andersson (2021-10-05 19:37:52)
+> > > On Tue 05 Oct 19:06 PDT 2021, Stephen Boyd wrote:
+> > >
+> > > > Quoting Bjorn Andersson (2021-10-05 18:43:16)
+> > > > > On Tue 05 Oct 17:43 PDT 2021, Stephen Boyd wrote:
+> > > > >
+> > > > > > Quoting Bjorn Andersson (2021-10-05 16:13:21)
+> > > > > > > diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+> > > > > > > index bdaf227f05dc..674cddfee5b0 100644
+> > > > > > > --- a/drivers/gpu/drm/msm/dp/dp_display.c
+> > > > > > > +++ b/drivers/gpu/drm/msm/dp/dp_display.c
+> > > > > > > @@ -1233,7 +1239,7 @@ static int dp_display_probe(struct platform_device *pdev)
+> > > > > > >         if (!dp)
+> > > > > > >                 return -ENOMEM;
+> > > > > > >
+> > > > > > > -       desc = dp_display_get_desc(pdev);
+> > > > > > > +       desc = dp_display_get_desc(pdev, &dp->id);
+> > > > > >
+> > > > > > I'm sad that dp->id has to match the number in the SoC specific
+> > > > > > dpu_intf_cfg array in drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
+> > > > > > still. Is there any way we can avoid that? Also, notice how those arrays
+> > > > > > already have INTF_DP macros, which makes me think that it may be better
+> > > > > > to connect this to those arrays instead of making an msm_dp_desc
+> > > > > > structure and then make sure the 'type' member matches a connector
+> > > > > > type number. Otherwise this code is super fragile.
+> > > > > >
+> > > > >
+> > > > > I'm afraid I don't understand what you're proposing. Or which part you
+> > > > > consider fragile, the indices of the INTF_DP instances aren't going to
+> > > > > move around...
+> > > > >
+> > > > > I have N instances of the DP driver that I need to match to N entries
+> > > > > from the platform specific intf array, I need some stable reference
+> > > > > between them. When I started this journey I figured I could rely on the
+> > > > > of_graph between the DPU and the interface controllers, but the values
+> > > > > used there today are just bogus, so that was a no go.
+> > > > >
+> > > > > We can use whatever, as long as _dpu_kms_initialize_displayport() can
+> > > > > come up with an identifier to put in h_tile_instance[0] so that
+> > > > > dpu_encoder_setup_display() can find the relevant INTF.
+> > > > >
+> > > >
+> > > > To make it more concrete we can look at sc7180
+> > > >
+> > > > static const struct dpu_intf_cfg sc7180_intf[] = {
+> > > >         INTF_BLK("intf_0", INTF_0, 0x6A000, INTF_DP, 0, 24,
+> > > > INTF_SC7180_MASK, MDP_SSPP_TOP0_INTR, 24, 25),
+> > > >                                                      ^
+> > > >                                                      |
+> > > >
+> > > > intf0 is irrelevant. Also the address is irrelevant. But here we have a
+> > > > zero, the number after INTF_DP, and that is very relevant. That number
+> > > > needs to match the dp->id. Somewhere we have a match between
+> > > > controller_id and dp->id in the code.
+> > >
+> > > That number (the 0, not INTF_0) is what the code matches against dp->id
+> > > in _dpu_kms_initialize_displayport(), in order to figure out that this
+> > > is INTF_0 in dpu_encoder_setup_display().
+> > >
+> > > I.e. look at the sc8180x patch:
+> > >
+> > > INTF_BLK("intf_0", INTF_0, 0x6A000, INTF_DP, 0, 24, INTF_SC8180X_MASK, MDP_SSPP_TOP0_INTR, 24, 25),
+> > > INTF_BLK("intf_1", INTF_1, 0x6A800, INTF_DSI, 0, 24, INTF_SC8180X_MASK, MDP_SSPP_TOP0_INTR, 26, 27),
+> > > INTF_BLK("intf_2", INTF_2, 0x6B000, INTF_DSI, 1, 24, INTF_SC8180X_MASK, MDP_SSPP_TOP0_INTR, 28, 29),
+> > > /* INTF_3 is for MST, wired to INTF_DP 0 and 1, use dummy index until this is supported */
+> > > INTF_BLK("intf_3", INTF_3, 0x6B800, INTF_DP, 999, 24, INTF_SC8180X_MASK, MDP_SSPP_TOP0_INTR, 30, 31),
+> > > INTF_BLK("intf_4", INTF_4, 0x6C000, INTF_DP, 1, 24, INTF_SC8180X_MASK, MDP_SSPP_TOP0_INTR, 20, 21),
+> > > INTF_BLK("intf_5", INTF_5, 0x6C800, INTF_DP, 2, 24, INTF_SC8180X_MASK, MDP_SSPP_TOP0_INTR, 22, 23),
+> > >
+> > > Where the DP driver defines the 3 controllers with dp->id of 0, 1 and 2,
+> > > which the DPU code will match against to INTF_0, INTF_4 and INTF_5.
+> > >
+> >
+> > Yep. I'm saying that having to make that number in this intf array match
+> > the order of the register mapping descriptor array is fragile. Why can't
+> > we indicate the interface is DP or eDP with INTF_DP or INTF_EDP and then
+> > map from the descriptor array to this intf array somehow so that the
+> > order of the descriptor array doesn't matter? Then we don't have to put
+> > the connector type in the descriptor array, and we don't have to keep
+> > the order of the array a certain way to match this intf descriptor.
+>
+> The order of the descriptor array does not matter currently (or we do
+> not understand fully your concern).
+> The encoder is mapped to intf using type + controller_id (next field
+> after INTF_foo).
+> Also having the controller_id in the descs array allows us to simplify
+> DSI code (where DSI_0 is master and DSI_1 is slave, no matter which
+> INTF they are associated with).
 
-Skip this last paragraph - it is obvious in usage of power domains.
-Specific bindings should not duplicate generic knowledge.
+The order seems to matter for me. Otherwise I get various vblank
+timeouts and the eDP panel doesn't light up. I'm using the previous
+version of this patch series though so maybe something got fixed in the
+meantime. If I change the controller_id to match my new ordering of the
+descriptor array then it works again. So somehow controller_id needs to
+match dp->id?
 
-> +
-> +properties:
-> +  $nodename:
-> +    pattern: "^power-controller@[0-9a-f]+$"
+>
+> Last, but not least, maybe I'd point you to one of the proposed
+> cleanup patches:
+> https://lore.kernel.org/linux-arm-msm/20210515225757.1989955-5-dmitry.baryshkov@linaro.org/
+> It removes one extra level of indirection in interface association.
+>
 
-Usually we call nodes as power-domain.
-
-> +
-> +  compatible:
-> +    items:
-> +      - enum:
-> +          - apple,t8103-pmgr-pwrstate
-> +      - const: apple,pmgr-pwrstate
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  "#power-domain-cells":
-> +    const: 0
-> +
-> +  "#reset-cells":
-> +    const: 0
-> +
-> +  power-domains:
-> +    description:
-> +      Reference to parent power domains. A domain may have multiple parents,
-> +      and all will be powered up when it is powered.
-
-How many items?
-
-> +
-> +  apple,domain-name:
-
-Use existing binding "label".
-
-> +    description: |
-> +      Specifies the name of the SoC device being controlled. This is used to
-> +      name the power/reset domains.
-> +    $ref: /schemas/types.yaml#/definitions/string
-> +
-> +  apple,always-on:
-> +    description: |
-> +      Forces this power domain to always be powered up.
-> +    type: boolean
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - "#power-domain-cells"
-> +  - "#reset-cells"
-> +  - "apple,domain-name"
-> +
-> +additionalProperties: false
-
-Your parent schema should include this one for evaluating children.
-
-
-
-Best regards,
-Krzysztof
+Thanks for the link.
