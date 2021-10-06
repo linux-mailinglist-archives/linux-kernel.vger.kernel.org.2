@@ -2,112 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 785E3424231
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 18:08:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0E66424236
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 18:08:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239310AbhJFQKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 12:10:06 -0400
-Received: from marcansoft.com ([212.63.210.85]:37368 "EHLO mail.marcansoft.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231768AbhJFQKE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 12:10:04 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: marcan@marcan.st)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id 942A441EA7;
-        Wed,  6 Oct 2021 16:08:05 +0000 (UTC)
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     Marc Zyngier <maz@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-serial@vger.kernel.org
-References: <20211005155923.173399-1-marcan@marcan.st>
- <20211005155923.173399-4-marcan@marcan.st>
- <bee16b95-964c-f515-a196-cd267391d4eb@canonical.com>
-From:   Hector Martin <marcan@marcan.st>
-Subject: Re: [PATCH 3/7] soc: apple: Add driver for Apple PMGR power state
- controls
-Message-ID: <48d3996e-9f96-2e68-56f2-d445475cf131@marcan.st>
-Date:   Thu, 7 Oct 2021 01:08:03 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S239332AbhJFQK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 12:10:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32860 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239335AbhJFQKZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 12:10:25 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 828F7C061746;
+        Wed,  6 Oct 2021 09:08:33 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id p4so3018113qki.3;
+        Wed, 06 Oct 2021 09:08:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SfABEpKo5aCNhWWFRp+nIlEvRuLr9UIoJUGA9Ex395U=;
+        b=ayv51O0gLvoEXmat4PQ4z81/U1Hvza8JetE3UwN63L2VeYSuntgDlAsTfyUWewvaS2
+         7L5BoW/KH6T2XG5GAfKJ3yo00j/GZ/Dpldamrg0i21AmXPp07Hf7ic2ff0ew9NTKcWIc
+         YPCLZYW1zdba7lW5zoAVuQ97Vsy4mC+UK4aiIYYJNYfWHD+61t7jGHSyTO+0XYd0OiEt
+         njb8zQXKhS5GcC6/2N3ccFG5W/3mNGoC6IcIFM7TDglKzOsG8QyRMZ1rE/sUTooXepYz
+         nHnWNsCISbBMUKz9eO/XMVkc0zVwWnM7jrEP04PNjWNYppILtixsk83iPqy17GO9yhDR
+         ry9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SfABEpKo5aCNhWWFRp+nIlEvRuLr9UIoJUGA9Ex395U=;
+        b=Vo0MTXUiZHRwJpW0BHc7/TXax3UgLNXZ5yhSRuRTL89psskDvDOmRuXERMclyxlQfi
+         pqmtS1uBz7nnwDFJ04hYxmL+lldEu9tknKwXRgBr1u/v2zMXk2sLiLV7csXLc6KkS9rw
+         mRP1A19fJBATMcM1DOEUEcfwvzWQcz8qxo4ops7NG/Ml14+g/CBPmAtRTDS8/6mNvl8v
+         wz3N12xT0Vup0AXR6ny0H734sw1A5HsjqZdPrGdRm/ccyrdr+Lr4LytmwI6Z7L4iYG+g
+         /gQwx2XUjlt0TvDU6t7vhLcD4DnIih/2bkIBfWTqmSEUASeKGJPFpVHO/dQJnzkXH6aN
+         /IJg==
+X-Gm-Message-State: AOAM531kEsL4vPfCqn3u3K9Ka5dnM8hiJCZuEtyPkLghHhWDUSQDe04I
+        NNbo3KKWXyEB1zgHShtm2zwOFgqxRn4=
+X-Google-Smtp-Source: ABdhPJxV+DBdtxktwW++z9lHxpFRu6s4Ph6nQw4TBCFM2s860zrVlXxr9ws71JBix1XdPplQoI506Q==
+X-Received: by 2002:ae9:dc45:: with SMTP id q66mr20456170qkf.2.1633536512064;
+        Wed, 06 Oct 2021 09:08:32 -0700 (PDT)
+Received: from localhost.localdomain (pppoe-209-91-167-254.vianet.ca. [209.91.167.254])
+        by smtp.gmail.com with ESMTPSA id k10sm11917526qkk.124.2021.10.06.09.08.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Oct 2021 09:08:31 -0700 (PDT)
+From:   Trevor Woerner <twoerner@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Javier Martinez Canillas <javierm@redhat.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>, Chen-Yu Tsai <wens@csie.org>,
+        Peter Robinson <pbrobinson@gmail.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
+        DEVICE TREE BINDINGS),
+        linux-arm-kernel@lists.infradead.org (moderated list:ARM/Rockchip SoC
+        support),
+        linux-rockchip@lists.infradead.org (open list:ARM/Rockchip SoC support)
+Subject: [PATCH] rk3399-nanopi4.dtsi: enable sdmmc regulator on boot
+Date:   Wed,  6 Oct 2021 12:08:17 -0400
+Message-Id: <20211006160817.13808-1-twoerner@gmail.com>
+X-Mailer: git-send-email 2.30.0.rc0
 MIME-Version: 1.0
-In-Reply-To: <bee16b95-964c-f515-a196-cd267391d4eb@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: es-ES
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/10/2021 16.28, Krzysztof Kozlowski wrote:
->> +static int apple_pmgr_ps_set(struct generic_pm_domain *genpd, u32 pstate)
->> +{
->> +	int ret;
->> +	struct apple_pmgr_ps *ps = genpd_to_apple_pmgr_ps(genpd);
->> +	u32 reg;
->> +
->> +	regmap_read(ps->regmap, ps->offset, &reg);
-> 
-> MMIO accesses should not fail, but regmap API could fail if for example
-> clk_enable() fails. In such case you will write below value based on
-> random stack init. Please check the return value here.
+When trying to boot a nanopi-m4 board with an SDHC-class uSD card, the boot
+comes to a full stop shortly after initializing the mmc subsystem. The boot
+can be cajoled into continuing if, after waiting a minute or so, the uSD
+card is ejected and re-inserted. Waiting a minute or so before ejecting and
+re-inserting the uSD card is crucial since the boot will not continue if
+the card is ejected/re-inserted too soon after the boot has stopped.
 
-Ack, will fix for v2 (as well as the related ones below).
+The nanopi-m4 has a uSD card and an optional eMMC module, either of which
+can be used for booting. In my case I don't have the optional eMMC module,
+therefore I'm booting from the uSD card. When booting from the uSD card,
+its regulator needs to be enabled at boot.
 
->> +static int apple_pmgr_reset_deassert(struct reset_controller_dev *rcdev, unsigned long id)
->> +{
->> +	struct apple_pmgr_ps *ps = rcdev_to_apple_pmgr_ps(rcdev);
->> +
->> +	mutex_lock(&ps->genpd.mlock);
-> 
-> This looks wrong: it can be a spin-lock, not mutex, so you should use
-> genpd_lock.
+Curiously, this should have been an issue from day one, but it only started
+to become a problem after commit 98e48cd9283d ("regulator: core: resolve
+supply for boot-on/always-on regulators") was merged. Additionally, by
+coincidence, I happened to be using an SDHC-class card in my device, and
+saw the failure. However, if I use an SDXC-class uSD card the problem does
+not occur.
 
-genpd_lock() is not part of the public API, which is why I did it like 
-this. This gets decided by whether the GENPD_FLAG_IRQ_SAFE flag is set, 
-so it should be a mutex in this case, as that is not set.
+Much thanks to Mark Brown and Javier Martinez Canillas for their assistance
+on irc!
 
-> However now I wonder if there could be a case when a reset-controller
-> consumer calls it from it's GENPD_NOTIFY_ON notifier? In such case you
-> would have this lock taken.
+Signed-off-by: Trevor Woerner <twoerner@gmail.com>
+---
+ arch/arm64/boot/dts/rockchip/rk3399-nanopi4.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
 
-Hm, yeah, I wonder if we'll hit that use case. Probably not, though. I 
-mostly expect our drivers to only reset devices on initial probe or in 
-some kind of panic recovery scenario, not while doing PM stuff.
-
->> +static const struct of_device_id apple_pmgr_ps_of_match[] = {
->> +	{ .compatible = "apple,t8103-pmgr-pwrstate" },
->> +	{ .compatible = "apple,pmgr-pwrstate" },
-> 
-> You call the device/driver "pwrstate", which it seems is "power state".
-> These are not power states. These are power controllers or power
-> domains. Power state is rather a state of power domain - e.g. on or
-> gated. How about renaming it to power domain or pd?
-
-It's a bit confusing. Apple calls these registers "ps" registers, which 
-presumably stands for "power state". They can both clockgate and 
-powergate devices (where supported), as well as enable auto-PM and also 
-handle reset. So they're a bit more complex and higher level than a 
-simple power domain, which is why I called the driver "pwrstate", since 
-it controls the power state of a specific SoC domain or block. In fact, 
-the device PM is controlled via a 4-bit power state index, though right 
-now only 0, 4, 15 are used (power gated, clock gated, active). Many 
-devices will not support individual power gating and would just 
-clockgate at 0, and right now the driver never uses 4, but might in the 
-future. If that needs to be exposed to consumers, then it'd have to be 
-via genpd idle states.
-
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399-nanopi4.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-nanopi4.dtsi
+index 8c0ff6c96e03..5cf02e2ef9b3 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399-nanopi4.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3399-nanopi4.dtsi
+@@ -71,6 +71,7 @@ vcc3v0_sd: vcc3v0-sd {
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&sdmmc0_pwr_h>;
+ 		regulator-always-on;
++		regulator-boot-on;
+ 		regulator-min-microvolt = <3000000>;
+ 		regulator-max-microvolt = <3000000>;
+ 		regulator-name = "vcc3v0_sd";
 -- 
-Hector Martin (marcan@marcan.st)
-Public Key: https://mrcn.st/pub
+2.30.0.rc0
+
