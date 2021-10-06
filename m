@@ -2,195 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC15642461E
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 20:30:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD27F4245FB
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 20:24:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238458AbhJFScj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 14:32:39 -0400
-Received: from esa4.mentor.iphmx.com ([68.232.137.252]:38545 "EHLO
-        esa4.mentor.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229992AbhJFSch (ORCPT
+        id S238458AbhJFS0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 14:26:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37170 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231804AbhJFS0R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 14:32:37 -0400
-X-Greylist: delayed 427 seconds by postgrey-1.27 at vger.kernel.org; Wed, 06 Oct 2021 14:32:37 EDT
-IronPort-SDR: r27yQSxGvtZbSnwFAh3yReJHwEsOww5jK27gvdaYSf7nfw53VcxaOgxksJfbmf28JpneMnqcNR
- Rn2Dl71ikEFjzBclRft2tRO0EPjtJXf/URSreljPhJklOmucOvjA4b1BhoxxG7pe9CZmsQgSlD
- qubX8ZxHAxgXOnpXkIXTfQ7e1f0HHxtVjhkujohIt8SxrxequhykI/06ftPXrpoulZgUVPEZCE
- S6KtMtvBJkkAzz+dceFc4gKln71xl6vpG0gAcwh2Z5MvY3tXy82+sTH9MCxtNLPsEEeYMfuDid
- 093kppB8FWRIM8PGYmeVSCa2
-X-IronPort-AV: E=Sophos;i="5.85,352,1624348800"; 
-   d="scan'208";a="66897571"
-Received: from orw-gwy-01-in.mentorg.com ([192.94.38.165])
-  by esa4.mentor.iphmx.com with ESMTP; 06 Oct 2021 10:23:36 -0800
-IronPort-SDR: oqcF/UaaU1HU5Rny0BXoSMKOMVQvo6pg5nlOfc5s6XZ1XPP6R9Az/HeWGEruPWwPl5zvjBDJ1J
- Jk3H4o24EPH6x8K6x1oeQE+18qSCx/F3x/FVUjlqBPEEXFCUWFlzMqKaqCp3A4uwwbvbHXicZ6
- NkwScd9AVfWMBtlYE4Ox73V/SZ4AcnRt/7/Gfn+3UMssDijuZwQpEBNmECPaMvxxNB8cJlDV06
- AdxgWdnGqRiNiBvEpjBP6crL5vjrW0+Omx3tBqzh0vdfWLprHMiKYKUndkGhZuwRluNhlDvlpa
- ZJc=
-From:   Andrew Gabbasov <andrew_gabbasov@mentor.com>
-To:     <linux-renesas-soc@vger.kernel.org>, <linux-i2c@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Bhuvanesh Surachari <bhuvanesh_surachari@mentor.com>
-Subject: [PATCH v2] i2c: rcar: add SMBus block read support
-Date:   Wed, 6 Oct 2021 13:23:14 -0500
-Message-ID: <20211006182314.10585-1-andrew_gabbasov@mentor.com>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <000001d7badd$a8512d30$f8f38790$@mentor.com>
-References: <20210922160649.28449-1-andrew_gabbasov@mentor.com> <CAMuHMdVVDpBAQR+H1TAnpf65aVbAL0Mm0km7Z9L7+1JuF6n1gQ@mail.gmail.com> <000001d7badd$a8512d30$f8f38790$@mentor.com>
+        Wed, 6 Oct 2021 14:26:17 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0000C061746
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 11:24:24 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id na16-20020a17090b4c1000b0019f5bb661f9so3110597pjb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 11:24:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7H/DPJoWMp11tmUoPKSZMQxmcZJGqCLHjQqOxlkRT3I=;
+        b=JG/yky1tdDSKqvCvLBDptJd6qpCbJk/pCGNJdvJqZCaNkuwtgO8Qcc53jj4oEh+bVI
+         Y3SkLqQq4cKC7q0QZpPuNzG+M8X2j8l/IFom9760x7KzzcvF2WYleCx8dF9vUIRUKYPD
+         Pr00IFbquO++J1KP3uf96wTDf/XVEBiQqfLMunzqSkZ4oTOG3WTf+hv7vjGVVS6lfUTJ
+         9N3531JVgATjf1E0x/bax8PmJliIbHkS5ieVenjBOxeQ73K4lyErXAf3uYE55NIf0Iag
+         rs6Zs3Q2CD4weHPYYUkfnRVShQk8XkXeoGF0+ItEnTyWNzxm7G4mtp+l81P69cjNXMPB
+         4WeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7H/DPJoWMp11tmUoPKSZMQxmcZJGqCLHjQqOxlkRT3I=;
+        b=36PZcnaMllX8dHQUODHtJ0kuptc8wGywIcc3vGdF2tkgwIO8oe5AM9x4eI3q/dKDIE
+         hxnXvUzsbvW4diRW79bcM5ZxKOWSQu51Wqfs8oxrXpkQ0C4PNO7ECmhIinCSxN+j6qx0
+         IQjvzVWDljPtMHc7MqQ2bZiIqn0TvJGfgE0NPmU/FzFUPaau4FeufmY5y9Bih1W92Cim
+         v10OXii1SfFAxkkezphvTLzxk7Y4l4N80D4+mDe9jKalgh+lktaeKzYidBgfTKtNvugq
+         ePJwacErHbsVa2x+kFCL/GZ/D+pmWzhHhciz2QkYITkHtHnt3upcSMWyCVizN66iycpU
+         YaAw==
+X-Gm-Message-State: AOAM532nEBZHZ3RCfRkJVLbzuf9/D5ZKJFdTuBD78Hrzg56l04eHjHzc
+        m7jToACRnLP/7SPG+qmvaUtM
+X-Google-Smtp-Source: ABdhPJysFUYu3grPoRZB/ukVEQ0LvQQELodUHWFXUGYINOwkWLYtdIvPWLtAW0ZjczNSHWD6nINBDA==
+X-Received: by 2002:a17:90b:946:: with SMTP id dw6mr248431pjb.49.1633544664308;
+        Wed, 06 Oct 2021 11:24:24 -0700 (PDT)
+Received: from thinkpad ([117.202.189.72])
+        by smtp.gmail.com with ESMTPSA id u74sm12366435pfc.87.2021.10.06.11.24.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Oct 2021 11:24:23 -0700 (PDT)
+Date:   Wed, 6 Oct 2021 23:54:19 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Robert Marko <robimarko@gmail.com>,
+        Kathiravan T <kathirav@codeaurora.org>, agross@kernel.org,
+        robh+dt@kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] arm64: dts: qcom: ipq8074: add SMEM support
+Message-ID: <20211006182419.GC33862@thinkpad>
+References: <20210902214708.1776690-1-robimarko@gmail.com>
+ <YUf3aKn78+41Cb/G@builder.lan>
+ <CAOX2RU5b46H7nqm6G4mHLSqEhGiWktwWjUKF5w10Ut+AdKea-A@mail.gmail.com>
+ <632a7d28c23a8497d35ea009bfe89883@codeaurora.org>
+ <CAOX2RU5+jeXiqz8oss8Sd-BWa059uAv5xu=7nx_YF4RYpG2S6w@mail.gmail.com>
+ <YUurqDL/S15RziCQ@builder.lan>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [137.202.0.90]
-X-ClientProxiedBy: SVR-IES-MBX-08.mgc.mentorg.com (139.181.222.8) To
- svr-ies-mbx-02.mgc.mentorg.com (139.181.222.2)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YUurqDL/S15RziCQ@builder.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The smbus block read is not currently supported for rcar i2c devices.
-This patchset adds the support to rcar i2c bus so that blocks of data
-can be read using SMbus block reads.(using i2c_smbus_read_block_data()
-function from the i2c-core-smbus.c).
+On Wed, Sep 22, 2021 at 05:18:16PM -0500, Bjorn Andersson wrote:
+> On Wed 22 Sep 15:23 CDT 2021, Robert Marko wrote:
+> 
+> > On Tue, 21 Sept 2021 at 08:24, Kathiravan T <kathirav@codeaurora.org> wrote:
+> > >
+> > > On 2021-09-20 14:55, Robert Marko wrote:
+> > > > On Mon, 20 Sept 2021 at 04:52, Bjorn Andersson
+> > > > <bjorn.andersson@linaro.org> wrote:
+> > > >>
+> > > >> On Thu 02 Sep 16:47 CDT 2021, Robert Marko wrote:
+> > > >>
+> > > >> > IPQ8074 uses SMEM like other modern QCA SoC-s, so since its already
+> > > >> > supported by the kernel add the required DT nodes.
+> > > >> >
+> > > >> > Signed-off-by: Robert Marko <robimarko@gmail.com>
+> > > >>
+> > > >> Thanks for your patch Robert.
+> > > >>
+> > > >> > ---
+> > > >> >  arch/arm64/boot/dts/qcom/ipq8074.dtsi | 28 +++++++++++++++++++++++++++
+> > > >> >  1 file changed, 28 insertions(+)
+> > > >> >
+> > > >> > diff --git a/arch/arm64/boot/dts/qcom/ipq8074.dtsi b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
+> > > >> > index a620ac0d0b19..83e9243046aa 100644
+> > > >> > --- a/arch/arm64/boot/dts/qcom/ipq8074.dtsi
+> > > >> > +++ b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
+> > > >> > @@ -82,6 +82,29 @@ scm {
+> > > >> >               };
+> > > >> >       };
+> > > >> >
+> > > >> > +     reserved-memory {
+> > > >> > +             #address-cells = <2>;
+> > > >> > +             #size-cells = <2>;
+> > > >> > +             ranges;
+> > > >> > +
+> > > >> > +             smem_region: memory@4ab00000 {
+> > > >> > +                     no-map;
+> > > >> > +                     reg = <0x0 0x4ab00000 0x0 0x00100000>;
+> > > >> > +             };
+> > > >> > +     };
+> > > >> > +
+> > > >> > +     tcsr_mutex: hwlock {
+> > > >> > +             compatible = "qcom,tcsr-mutex";
+> > > >> > +             syscon = <&tcsr_mutex_regs 0 0x80>;
+> > > >>
+> > > >> Since it's not okay to have a lone "syscon" and I didn't think it was
+> > > >> worth coming up with a binding for the TCSR mutex "syscon" I rewrote
+> > > >> the
+> > > >> binding a while back. As such qcom,tcsr-mutex should now live in /soc
+> > > >> directly.
+> > > >>
+> > > >> So can you please respin accordingly?
+> > > >
+> > > > Sure, can you just confirm that the:
+> > > > reg = <0x01905000 0x8000>;
+> > > >
+> > > > Is the whole TCSR range as I don't have docs?
+> > >
+> > > Robert,
+> > >
+> > > TCSR_MUTEX block starts from 0x01905000 and has size 0x20000 (128KB)
+> > 
+> > Thanks, Kathiravan,
+> > TSCR mutex with MMIO reg under it works, but there is some weird probe
+> > ordering issue.
+> > 
+> > For whatever reason, SMEM will get probed only after MTD does and this
+> > will cause issues
+> > if SMEM parser is used as it will return -EPROBE_DEFER but the MTD
+> > core does not really
+> > handle it correctly and causes the device to reboot after failed parsing.
+> > 
+> > Now, I have no idea why does this variant which uses MMIO regmap probe
+> > so much later?
+> > 
+> 
+> Mani, do you have any input related to the probe deferral of the SMEM
+> partition parser, because SMEM not yet probed?
+> 
 
-Inspired by commit 8e8782c71595 ("i2c: imx: add SMBus block read support")
+Sorry, missed this earlier. I did face the probe deferral issue before and
+submitted a small series for fixing that:
 
-This patch (adapted) was tested with v4.14, but due to lack of real
-hardware with SMBus block read operations support, using "simulation",
-that is manual analysis of data, read from plain I2C devices with
-SMBus block read request.
+https://lore.kernel.org/linux-mtd/20210302132757.225395-1-manivannan.sadhasivam@linaro.org/
 
-Signed-off-by: Bhuvanesh Surachari <bhuvanesh_surachari@mentor.com>
-Signed-off-by: Andrew Gabbasov <andrew_gabbasov@mentor.com>
----
- drivers/i2c/busses/i2c-rcar.c | 49 +++++++++++++++++++++++++++++------
- 1 file changed, 41 insertions(+), 8 deletions(-)
+These 2 patches are in mainline now. Robert, can you make sure that you have
+these 2 patches in your tree?
 
-diff --git a/drivers/i2c/busses/i2c-rcar.c b/drivers/i2c/busses/i2c-rcar.c
-index bff9913c37b8..e4b603f425fa 100644
---- a/drivers/i2c/busses/i2c-rcar.c
-+++ b/drivers/i2c/busses/i2c-rcar.c
-@@ -105,6 +105,7 @@
- #define ID_DONE		(1 << 2)
- #define ID_ARBLOST	(1 << 3)
- #define ID_NACK		(1 << 4)
-+#define ID_EPROTO	(1 << 5)
- /* persistent flags */
- #define ID_P_HOST_NOTIFY	BIT(28)
- #define ID_P_REP_AFTER_RD	BIT(29)
-@@ -412,6 +413,7 @@ static bool rcar_i2c_dma(struct rcar_i2c_priv *priv)
- 	struct device *dev = rcar_i2c_priv_to_dev(priv);
- 	struct i2c_msg *msg = priv->msg;
- 	bool read = msg->flags & I2C_M_RD;
-+	bool block_data = msg->flags & I2C_M_RECV_LEN;
- 	enum dma_data_direction dir = read ? DMA_FROM_DEVICE : DMA_TO_DEVICE;
- 	struct dma_chan *chan = read ? priv->dma_rx : priv->dma_tx;
- 	struct dma_async_tx_descriptor *txdesc;
-@@ -425,19 +427,22 @@ static bool rcar_i2c_dma(struct rcar_i2c_priv *priv)
- 	    !(msg->flags & I2C_M_DMA_SAFE) || (read && priv->flags & ID_P_NO_RXDMA))
- 		return false;
- 
-+	buf = priv->msg->buf;
-+	len = priv->msg->len;
-+
- 	if (read) {
- 		/*
- 		 * The last two bytes needs to be fetched using PIO in
- 		 * order for the STOP phase to work.
- 		 */
--		buf = priv->msg->buf;
--		len = priv->msg->len - 2;
--	} else {
-+		len -= 2;
-+	}
-+	if (!read || block_data) {
- 		/*
--		 * First byte in message was sent using PIO.
-+		 * First byte in message was sent or received using PIO.
- 		 */
--		buf = priv->msg->buf + 1;
--		len = priv->msg->len - 1;
-+		buf++;
-+		len--;
- 	}
- 
- 	dma_addr = dma_map_single(chan->device->dev, buf, len, dir);
-@@ -530,6 +535,7 @@ static void rcar_i2c_irq_send(struct rcar_i2c_priv *priv, u32 msr)
- static void rcar_i2c_irq_recv(struct rcar_i2c_priv *priv, u32 msr)
- {
- 	struct i2c_msg *msg = priv->msg;
-+	bool block_data = msg->flags & I2C_M_RECV_LEN;
- 
- 	/* FIXME: sometimes, unknown interrupt happened. Do nothing */
- 	if (!(msr & MDR))
-@@ -538,8 +544,29 @@ static void rcar_i2c_irq_recv(struct rcar_i2c_priv *priv, u32 msr)
- 	if (msr & MAT) {
- 		/*
- 		 * Address transfer phase finished, but no data at this point.
--		 * Try to use DMA to receive data.
-+		 * Try to use DMA to receive data if it is not SMBus block
-+		 * data read.
- 		 */
-+		if (block_data)
-+			goto next_txn;
-+
-+		rcar_i2c_dma(priv);
-+	} else if (priv->pos == 0 && block_data) {
-+		/*
-+		 * First byte is the length of remaining packet
-+		 * in the SMBus block data read. Add it to
-+		 * msg->len.
-+		 */
-+		u8 data = rcar_i2c_read(priv, ICRXTX);
-+
-+		if (data == 0 || data > I2C_SMBUS_BLOCK_MAX) {
-+			priv->flags |= ID_DONE | ID_EPROTO;
-+			return;
-+		}
-+		msg->len += data;
-+		msg->buf[priv->pos] = data;
-+		priv->pos++;
-+		/* Still try to use DMA to receive the rest of data */
- 		rcar_i2c_dma(priv);
- 	} else if (priv->pos < msg->len) {
- 		/* get received data */
-@@ -557,6 +584,7 @@ static void rcar_i2c_irq_recv(struct rcar_i2c_priv *priv, u32 msr)
- 		}
- 	}
- 
-+next_txn:
- 	if (priv->pos == msg->len && !(priv->flags & ID_LAST_MSG))
- 		rcar_i2c_next_msg(priv);
- 	else
-@@ -855,6 +883,8 @@ static int rcar_i2c_master_xfer(struct i2c_adapter *adap,
- 		ret = -ENXIO;
- 	} else if (priv->flags & ID_ARBLOST) {
- 		ret = -EAGAIN;
-+	} else if (priv->flags & ID_EPROTO) {
-+		ret = -EPROTO;
- 	} else {
- 		ret = num - priv->msgs_left; /* The number of transfer */
- 	}
-@@ -917,6 +947,8 @@ static int rcar_i2c_master_xfer_atomic(struct i2c_adapter *adap,
- 		ret = -ENXIO;
- 	} else if (priv->flags & ID_ARBLOST) {
- 		ret = -EAGAIN;
-+	} else if (priv->flags & ID_EPROTO) {
-+		ret = -EPROTO;
- 	} else {
- 		ret = num - priv->msgs_left; /* The number of transfer */
- 	}
-@@ -983,7 +1015,8 @@ static u32 rcar_i2c_func(struct i2c_adapter *adap)
- 	 * I2C_M_IGNORE_NAK (automatically sends STOP after NAK)
- 	 */
- 	u32 func = I2C_FUNC_I2C | I2C_FUNC_SLAVE |
--		   (I2C_FUNC_SMBUS_EMUL & ~I2C_FUNC_SMBUS_QUICK);
-+		   (I2C_FUNC_SMBUS_EMUL & ~I2C_FUNC_SMBUS_QUICK) |
-+		   I2C_FUNC_SMBUS_READ_BLOCK_DATA;
- 
- 	if (priv->flags & ID_P_HOST_NOTIFY)
- 		func |= I2C_FUNC_SMBUS_HOST_NOTIFY;
--- 
-2.21.0
+Thanks,
+Mani
 
+> Thanks,
+> Bjorn
