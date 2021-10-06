@@ -2,158 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6BA74245C5
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 20:12:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA87A4245B0
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 20:08:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238130AbhJFSN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 14:13:59 -0400
-Received: from esa1.mentor.iphmx.com ([68.232.129.153]:45087 "EHLO
-        esa1.mentor.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232060AbhJFSN5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 14:13:57 -0400
-IronPort-SDR: OSp/viys+sJE0Omf6cdzmsxDTqOET/ylT8lgLh20G9u+TePfsymFCD5W9qYy3Z7jGM9n954GpR
- M2OnkUDiJbHnT7aMroXIUn5dnJz8vdNLhAuEmQlK+UWGz+Kcrml5c71cQwJF9znBABY3GLOqSW
- ugIDD/FGrHMI/Jim7pX0nZcW7KEPjVOVz7mY/kDoLwzU5uzl9tYfBpxDSH7yp+oO046s4/7AqP
- rxVgBk2sAlefTfx9WX1WfH9G43Rmk9vIR42mjyXF0ysdPWYofVqBqQs5RDPeHev5tJyR/Lxdx4
- 7rz/6vKnZE4DPQ4cVQHKRgMO
-X-IronPort-AV: E=Sophos;i="5.85,352,1624348800"; 
-   d="scan'208";a="69304206"
-Received: from orw-gwy-01-in.mentorg.com ([192.94.38.165])
-  by esa1.mentor.iphmx.com with ESMTP; 06 Oct 2021 10:12:05 -0800
-IronPort-SDR: bOJ0//032ffDQdJa+MvKKqEi4kO/mOVjGeIG8kgg3dKoynHfGsQwH2rZLhm/44GcUfifRT+uPm
- B8H7ZDQebSKY48fad37Xc+m4B9bhpuu0s8/as9mfXymqQKv8haGx6QIOi21v98H/4q+sFOViN6
- 95TRxcUZZ082FqJB0MSuQvRa1JdOkifE+KVnwUqNj38HbqA3YkX4N3X8JWvc+qJc4Ugd7ANAOD
- qKfubhIKXkMJUAdEeUfhE1bFeHTbxhRaHCqDIVjSo6o7JkhnlpWdUnXLPJEvXWzmckvlnxe77e
- 0OY=
-From:   Andrew Gabbasov <andrew_gabbasov@mentor.com>
-To:     'Geert Uytterhoeven' <geert@linux-m68k.org>
-CC:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        "Surachari, Bhuvanesh" <Bhuvanesh_Surachari@mentor.com>
-References: <20210922160649.28449-1-andrew_gabbasov@mentor.com> <CAMuHMdVVDpBAQR+H1TAnpf65aVbAL0Mm0km7Z9L7+1JuF6n1gQ@mail.gmail.com>
-In-Reply-To: <CAMuHMdVVDpBAQR+H1TAnpf65aVbAL0Mm0km7Z9L7+1JuF6n1gQ@mail.gmail.com>
-Subject: RE: [PATCH] i2c: rcar: add SMBus block read support
-Date:   Wed, 6 Oct 2021 21:11:51 +0300
-Organization: Mentor Graphics Corporation
-Message-ID: <000001d7badd$a8512d30$f8f38790$@mentor.com>
+        id S239144AbhJFSJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 14:09:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42404 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229992AbhJFSJw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 14:09:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F174961039;
+        Wed,  6 Oct 2021 18:07:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633543679;
+        bh=4H3UbAzOvhL7VvGwxsIUhSjoYwJuXz+t9/UCE0IhIcA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=A/Y1PTcGhYR2SWXNRvxtC7lddnL5VsWZ80djNr0oiFXb2HltlVb9hQaiTTsd0abpP
+         xmBVlcixn0lMZHFcOMtx1M9eLLABaseXSlE9NIlqoM/SGyD55xAVlkBH7l7x306x6d
+         2bNEQOklusyFgJqhpk8aJYWAlKG3FeXVAkbiejBlbu7SazegjcXXZaF1xUoHL5Htop
+         wqo8U+OEM0a12bY2L4xO4Ok9zYzIuHOgOG7Xkxkt2daPpUfRjIibM6mA7ww1vCSClN
+         g4VOrH6k+fbV6eRET7p6upCT5/3dt+85rKjoQgSIlVdTM6W9n7ENm2bLh+pkxdUlwF
+         pI+trbHwr/emw==
+Date:   Wed, 6 Oct 2021 13:12:04 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     ath11k@lists.infradead.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH][next] ath11k: Use kcalloc() instead of kzalloc()
+Message-ID: <20211006181204.GA913553@embeddedor>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQHXue1eCQdNXjaiK021FrevUeTu7qvGRbCQ
-Content-Language: en-us
-X-Originating-IP: [137.202.0.90]
-X-ClientProxiedBy: svr-ies-mbx-09.mgc.mentorg.com (139.181.222.9) To
- svr-ies-mbx-02.mgc.mentorg.com (139.181.222.2)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
+Use 2-factor multiplication argument form kcalloc() instead
+of kzalloc().
 
-Thank you for your review!
+Link: https://github.com/KSPP/linux/issues/162
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/net/wireless/ath/ath11k/wmi.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-> -----Original Message-----
-> From: Geert Uytterhoeven <geert@linux-m68k.org>
-> Sent: Tuesday, October 05, 2021 4:32 PM
-> To: Gabbasov, Andrew <Andrew_Gabbasov@mentor.com>
-> Cc: Linux-Renesas <linux-renesas-soc@vger.kernel.org>; Linux I2C <linux-i2c@vger.kernel.org>; Linux Kernel
-> Mailing List <linux-kernel@vger.kernel.org>; Wolfram Sang <wsa+renesas@sang-engineering.com>; Surachari,
-> Bhuvanesh <Bhuvanesh_Surachari@mentor.com>
-> Subject: Re: [PATCH] i2c: rcar: add SMBus block read support
-> 
-> Hi Andrew,
-> 
-> On Wed, Sep 22, 2021 at 6:14 PM Andrew Gabbasov
-> <andrew_gabbasov@mentor.com> wrote:
-> > The smbus block read is not currently supported for rcar i2c devices.
-> > This patchset adds the support to rcar i2c bus so that blocks of data
-> > can be read using SMbus block reads.(using i2c_smbus_read_block_data()
-> > function from the i2c-core-smbus.c).
-> >
-> > Inspired by commit 8e8782c71595 ("i2c: imx: add SMBus block read support")
-> >
-> > This patch (adapted) was tested with v4.14, but due to lack of real
-> > hardware with SMBus block read operations support, using "simulation",
-> > that is manual analysis of data, read from plain I2C devices with
-> > SMBus block read request.
-> >
-> > Signed-off-by: Bhuvanesh Surachari <bhuvanesh_surachari@mentor.com>
-> > Signed-off-by: Andrew Gabbasov <andrew_gabbasov@mentor.com>
-> 
-> Thanks for your patch!
-> 
-> > --- a/drivers/i2c/busses/i2c-rcar.c
-> > +++ b/drivers/i2c/busses/i2c-rcar.c
-> > @@ -429,9 +431,16 @@ static bool rcar_i2c_dma(struct rcar_i2c_priv *priv)
-> >                 /*
-> >                  * The last two bytes needs to be fetched using PIO in
-> >                  * order for the STOP phase to work.
-> > +                *
-> > +                * For SMBus block read the first byte was received using PIO.
-> 
-> So it might be easier to read, and more maintainable, to keep the
-> old assignments:
-> 
->     buf = priv->msg->buf;
->     len = priv->msg->len - 2;
-> 
-> and adjust them for SMBus afterwards:
-> 
->     if (block_data) {
->             /* For SMBus block read the first byte was received using PIO */
->             buf++;
->             len--;
->     }
-> 
-> ?
-> 
-> >                  */
-> > -               buf = priv->msg->buf;
-> > -               len = priv->msg->len - 2;
-> > +               if (block_data) {
-> > +                       buf = priv->msg->buf + 1;
-> > +                       len = priv->msg->len - 3;
-> > +               } else {
-> > +                       buf = priv->msg->buf;
-> > +                       len = priv->msg->len - 2;
-> > +               }
-> >         } else {
-> >                 /*
-> >                  * First byte in message was sent using PIO.
-> 
-> And below we have another case handling buf and len :-(
-> 
-> So perhaps:
-> 
->     buf = priv->msg->buf;
->     len = priv->msg->len;
-> 
->     if (read) {
->             /*
->              * The last two bytes needs to be fetched using PIO in
->              * order for the STOP phase to work.
->              */
->             len -= 2;
->     }
->     if (!read || block_data) {
->             /* First byte in message was sent using PIO *
->             buf++;
->             len--;
->     }
-
-Probably I was trying to minimize the changes ;-)
-
-However, I agree with you that the whole code fragment can be simplified
-and your variant indeed looks more clean and understandable.
-Thank you for your suggestion, I'll submit version 2 of the patch
-with this fragment changed.
-
-Thanks!
-
-Best regards,
-Andrew
+diff --git a/drivers/net/wireless/ath/ath11k/wmi.c b/drivers/net/wireless/ath/ath11k/wmi.c
+index 6c253eae9d06..0bbda81117df 100644
+--- a/drivers/net/wireless/ath/ath11k/wmi.c
++++ b/drivers/net/wireless/ath/ath11k/wmi.c
+@@ -4046,8 +4046,8 @@ static int ath11k_wmi_tlv_mac_phy_caps_parse(struct ath11k_base *soc,
+ 
+ 	len = min_t(u16, len, sizeof(struct wmi_mac_phy_capabilities));
+ 	if (!svc_rdy_ext->n_mac_phy_caps) {
+-		svc_rdy_ext->mac_phy_caps = kzalloc((svc_rdy_ext->tot_phy_id) * len,
+-						    GFP_ATOMIC);
++		svc_rdy_ext->mac_phy_caps = kcalloc(svc_rdy_ext->tot_phy_id,
++						    len, GFP_ATOMIC);
+ 		if (!svc_rdy_ext->mac_phy_caps)
+ 			return -ENOMEM;
+ 	}
+@@ -4447,8 +4447,8 @@ static struct cur_reg_rule
+ 	struct cur_reg_rule *reg_rule_ptr;
+ 	u32 count;
+ 
+-	reg_rule_ptr =  kzalloc((num_reg_rules * sizeof(*reg_rule_ptr)),
+-				GFP_ATOMIC);
++	reg_rule_ptr = kcalloc(num_reg_rules, sizeof(*reg_rule_ptr),
++			       GFP_ATOMIC);
+ 
+ 	if (!reg_rule_ptr)
+ 		return NULL;
+-- 
+2.27.0
 
