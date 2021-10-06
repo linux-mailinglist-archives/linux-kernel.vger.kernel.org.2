@@ -2,100 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E1314238BD
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 09:21:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 690654238C3
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 09:22:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237493AbhJFHWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 03:22:52 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:60069 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229861AbhJFHWu (ORCPT
+        id S237523AbhJFHYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 03:24:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50990 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237452AbhJFHYI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 03:22:50 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HPQpv135dz4xbC;
-        Wed,  6 Oct 2021 18:20:53 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1633504857;
-        bh=5xLfVkrTGqN/HJjioq+vxTiY7Z/CCJV7NwAHksIQlwo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Ap4KEyNJxlqFppjTdHI9ntGJz2X9R7/2EpBdM+G1YRpkBDnKCtDBEGtNsd4lPjlWP
-         RKxIVvRy5d/ALyz3HNs6JE2rV7Df0O8QgoaTwxcnGBPSS64Ny+FVan8MN+P2tm6KLU
-         kxhltuYM1WDq3qGNZvCrL/pKRXSg6kexsTcPBwkaBV9tFln+3ziK8wkzixRZ7ytCkR
-         3n95lHlHyq/mVifnvxkMElaGLxzV8/fcIh/NNfMge6tO7YPbAd3L5r+t0/4CD8JaxP
-         6Ty39mdTPD9zaOwc96hZJaQA6RRMy34hH9lmEYoLxRZqb2Qv90pXWM0n/8CW2aQk0g
-         Qv7WL8Unf71lg==
-Date:   Wed, 6 Oct 2021 18:20:52 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     akpm@linux-foundation.org, broonie@kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-next@vger.kernel.org, mhocko@suse.cz,
-        mm-commits@vger.kernel.org, Rob Clark <robdclark@gmail.com>,
-        Sean Paul <sean@poorly.run>, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org,
-        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>
-Subject: Re: mmotm 2021-10-05-19-53 uploaded
- (drivers/gpu/drm/msm/hdmi/hdmi_phy.o)
-Message-ID: <20211006182052.6ecc17cf@canb.auug.org.au>
-In-Reply-To: <58fbf2ff-b367-2137-aa77-fcde6c46bbb7@infradead.org>
-References: <20211006025350.a5PczFZP4%akpm@linux-foundation.org>
-        <58fbf2ff-b367-2137-aa77-fcde6c46bbb7@infradead.org>
+        Wed, 6 Oct 2021 03:24:08 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61779C061749
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 00:22:16 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <l.stach@pengutronix.de>)
+        id 1mY1Fi-00076j-AC; Wed, 06 Oct 2021 09:22:10 +0200
+Message-ID: <459e00f5c3320d70937d7300b31a0ef730dab8db.camel@pengutronix.de>
+Subject: Re: [PATCH] arm64: dts: imx8mm-venice-gw7901.dts: disable pgc_gpumix
+From:   Lucas Stach <l.stach@pengutronix.de>
+To:     Tim Harvey <tharvey@gateworks.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Date:   Wed, 06 Oct 2021 09:22:08 +0200
+In-Reply-To: <20211005152348.17325-1-tharvey@gateworks.com>
+References: <20211005152348.17325-1-tharvey@gateworks.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.4 (3.40.4-1.fc34) 
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/8lmLGN7R8.LIgbOOVm06hk1";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: l.stach@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/8lmLGN7R8.LIgbOOVm06hk1
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Am Dienstag, dem 05.10.2021 um 08:23 -0700 schrieb Tim Harvey:
+> Since commit d39d4bb15310 ("arm64: dts: imx8mm: add GPC node") the
+> GW7901 will hang during kernel init because it does not power the unused GPU
+> voltage rails on the IMX8MM. Disable pgc_gpumix to work around this.
+> 
+> We also disable the GPU devices that depend on the gpumix power domain
+> to avoid them staying in a probe deferred state forever.
+> 
+> Cc: Lucas Stach <l.stach@pengutronix.de>
+> Signed-off-by: Tim Harvey <tharvey@gateworks.com>
+> ---
+>  .../boot/dts/freescale/imx8mm-venice-gw7901.dts      | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7901.dts b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7901.dts
+> index bafd5c8ea4e2..e0153ce35722 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7901.dts
+> +++ b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7901.dts
+> @@ -282,6 +282,14 @@
+>  	};
+>  };
+>  
+> +&gpu_2d {
+> +	status = "disabled";
+> +};
+> +
+> +&gpu_3d {
+> +	status = "disabled";
+> +};
+> +
+>  &i2c1 {
+>  	clock-frequency = <100000>;
+>  	pinctrl-names = "default";
+> @@ -632,6 +640,10 @@
+>  	status = "okay";
+>  };
+>  
+> +&pgc_gpumix {
+> +	status = "disabled";
+> +};
 
-Hi Randy,
+I suggest to also disable the pgc_gpu, as that one is in the same
+situation as the GPU devices and will stay in probe deferred state
+forever, as the gpumix domain is not available.
 
-On Tue, 5 Oct 2021 22:48:03 -0700 Randy Dunlap <rdunlap@infradead.org> wrot=
-e:
->
-> on i386:
->=20
-> ld: drivers/gpu/drm/msm/hdmi/hdmi_phy.o:(.rodata+0x3f0): undefined refere=
-nce to `msm_hdmi_phy_8996_cfg'
->=20
->=20
-> Full randconfig fle is attached.
+Regards,
+Lucas
 
-This would be because CONFIG_DRM_MSM is set but CONFIG_COMMON_CLOCK is
-not and has been exposed by commit
+> +
+>  &uart1 {
+>  	pinctrl-names = "default";
+>  	pinctrl-0 = <&pinctrl_uart1>, <&pinctrl_uart1_gpio>;
 
-  b3ed524f84f5 ("drm/msm: allow compile_test on !ARM")
 
-from the drm-misc tree.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/8lmLGN7R8.LIgbOOVm06hk1
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFdTlQACgkQAVBC80lX
-0GxFqggAoHnUDKXJzMXUDWJ9VVsg/j6q0XdAv2bkB5kFOB2Ze0YDuQfPouTmgW2j
-JXMPeBswphq91GNUCjHi9/rzSgugDJ3Z9RY5NJU090Ldx+8BJ2fasHwMqwDUIO/K
-JRAeSffxlfunKiGfjVmtkTtTYV/ejVP6DXJLw3aeToop3xJSaDwBDp/tZxZFFfnl
-77hBxteurp1EDJKsyTWUbjXL2swhd0ekMh8ZK2xlL7wzb6IBGSSNyQdluOaBQxJg
-uH97ebQ7gbSXYIGrKrOAKtttwNKSqvDl2BB4M9gwi6uoiGixf0NmBEls+iZoW265
-3nOiKtVNsnBGjQZ+d9fFM8CyFtBToQ==
-=XhpG
------END PGP SIGNATURE-----
-
---Sig_/8lmLGN7R8.LIgbOOVm06hk1--
