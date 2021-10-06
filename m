@@ -2,77 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDB74423BC0
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 12:50:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A779F423BC4
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 12:50:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238116AbhJFKw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 06:52:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57276 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229824AbhJFKw1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 06:52:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3965A61039;
-        Wed,  6 Oct 2021 10:50:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633517435;
-        bh=v8y1N4gIhukedV+p7pkwbFPb5wyssQGcXOteiYdVAs0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DSY2cZ3YrqRxq8WBCGCQbM8+YMm1eFDmDfYPtcHVk7LSQSFtl1xhEnNh4P92pBXUn
-         KXHLotS9hUcjB9439HF+g9ewZcAXF1qa0QPISFqmY4PYy5A3fXI+dWZIPJUx1aFx/F
-         0fNRTQOHjPu9cX2HuwDRvlU7HuAb3tzs3tOmgNWZrlQ0l5bCwDDoe8Ngqj2v3Y1L0F
-         xB4PJZJrGoqT7VvU8vkIysdTSbXv9IFVCQeU3foA/7vUI2SNxbOvj56AhY0mme9p+c
-         HKOe/Ru7Xsn2F9S6eon/GiBDI72BzGODCo2h9tEcO3GeR5p+9erlVf86BYiXunhYn/
-         RFfLp+ZVOBuTQ==
-Date:   Wed, 6 Oct 2021 16:20:30 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Rob Clark <robdclark@gmail.com>, linux-arm-msm@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org
-Subject: Re: [PATCH 05/11] drm/msm/disp/dpu1: Add DSC for SDM845 to hw_catalog
-Message-ID: <YV1/dj3/5ej+soMb@matsya>
-References: <20210715065203.709914-1-vkoul@kernel.org>
- <20210715065203.709914-6-vkoul@kernel.org>
- <927826ce-eae5-0089-6874-eb14d8e16169@linaro.org>
+        id S238119AbhJFKwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 06:52:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238157AbhJFKwk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 06:52:40 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E05F3C061755;
+        Wed,  6 Oct 2021 03:50:47 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id v18so8128785edc.11;
+        Wed, 06 Oct 2021 03:50:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/RnP//V6796HoXyW5g91DrP6v6JppXFbXNsT/OGvyG8=;
+        b=qImZXBHHeRk0lUf6RDWqAGl5sjDtD9AeVQdko0eV+76rBlnqrSrvFl4eTYXPcOYLXb
+         4HeNnlBR17kx8AMvZqVkR8LHooVlXcAQnT5ZEnUIyWaYpXOr4FxYwjRo8rgc+8DPwoCu
+         CIqeNQEu6KJjCkuM20ygR8puiEeAVh0XiDzvGlK/ejb/7Uqz7RcTCcqofdrUFRR3/Mmc
+         gvnMNkNTQf+iHGrNEF049FSpa9YXPUAs9F/hro+AzyS5AxtLPL6W2xg/qagAVqj9hfvo
+         /5bKSDDqxluO5XrOOa+UyRSAAG6U6PTdSGd0NS/4rWq19n7Yr8UNwJt82JeRCGUvOf78
+         rVNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/RnP//V6796HoXyW5g91DrP6v6JppXFbXNsT/OGvyG8=;
+        b=sLIxSkKuy7VholT9XSOqgxKr59Cvooe+MCUPtDc5RSuOHeRofXmEOoCHhk89Lnbdf2
+         l2fDiRYSAMvANE3Ldsl1AIgKWBohj8CYAF/Z3bZ8bPzRVeJIBVGyFor1ct2/H5q+lb00
+         7uhCeznQQlKoZlBlE1iLvC5OzvZNWfK4BtOm+pjZ81t5kpxee6oCrc5E2C9CRXIb7deD
+         XBN7bgX1/7E2gRp6hKFtFzIiWHLRxKUCKXewxLLa8iMaWfrqYSHdLPqVPzK4khW66jww
+         7jMI9xzGbNugF2SZ/4Vb5v9r4Frxt7b+wqfCxKL1v40U9piZJaRHqbdiNUT2icbZqB1v
+         ObSw==
+X-Gm-Message-State: AOAM533Z3zdQQ9eamLlDt0fkkoT3Mc79Z/Lt+7V1gKaBB+QCVTdiAjTB
+        MdRGH66yuGfDYrQkXjsCWE28bxneF+V/rL+CbNY=
+X-Google-Smtp-Source: ABdhPJw75xV19FmERlZGZH9B0wc18Fupm3yUyEd9K8GKVfiJR8Cw7kDe/8ziN/hJHKheeXgJWUlFrfxi1VS71DUg3H4=
+X-Received: by 2002:aa7:dd16:: with SMTP id i22mr33372235edv.167.1633517446492;
+ Wed, 06 Oct 2021 03:50:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <927826ce-eae5-0089-6874-eb14d8e16169@linaro.org>
+References: <20210924085104.44806-1-21cnbao@gmail.com> <20210924085104.44806-2-21cnbao@gmail.com>
+ <87o883l9c8.mognet@arm.com> <CAGsJ_4zCYjha8E6km9fDO8gFR-_vO1Nr0=a7V-b9yLRZGGAC9g@mail.gmail.com>
+In-Reply-To: <CAGsJ_4zCYjha8E6km9fDO8gFR-_vO1Nr0=a7V-b9yLRZGGAC9g@mail.gmail.com>
+From:   Barry Song <21cnbao@gmail.com>
+Date:   Wed, 6 Oct 2021 23:50:35 +1300
+Message-ID: <CAGsJ_4ycKDfFY+LoaUBJ5huH8+kUsGGsC1po4DDQQPU5-ikf8A@mail.gmail.com>
+Subject: Re: [PATCH RESEND 1/3] topology: Represent clusters of CPUs within a die
+To:     Valentin Schneider <valentin.schneider@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Ben Segall <bsegall@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Guodong Xu <guodong.xu@linaro.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        "Cc: Len Brown" <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        LAK <linux-arm-kernel@lists.infradead.org>,
+        Linuxarm <linuxarm@huawei.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mel Gorman <mgorman@suse.de>, msys.mizuma@gmail.com,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Will Deacon <will@kernel.org>, x86 <x86@kernel.org>,
+        yangyicong <yangyicong@huawei.com>,
+        Tian Tao <tiantao6@hisilicon.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29-07-21, 23:25, Dmitry Baryshkov wrote:
-> On 15/07/2021 09:51, Vinod Koul wrote:
-> > This add SDM845 DSC blocks into hw_catalog
-> > 
-> > Signed-off-by: Vinod Koul <vkoul@kernel.org>
-> > ---
-> > Changes since RFC:
-> >   - use BIT values from MASK
-> > 
-> >   .../gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c    | 22 +++++++++++++++++++
-> >   1 file changed, 22 insertions(+)
-> > 
-> > diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
-> > index b569030a0847..b45a08303c99 100644
-> > --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
-> > +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
-> > @@ -40,6 +40,8 @@
-> >   #define PINGPONG_SDM845_MASK BIT(DPU_PINGPONG_DITHER)
-> > +#define DSC_SDM845_MASK BIT(1)
-> > +
-> 
-> This does not seem used. You can pass (0) as the feature mask.
+On Wed, Oct 6, 2021 at 9:43 AM Barry Song <21cnbao@gmail.com> wrote:
+>
+> On Wed, Oct 6, 2021 at 5:34 AM Valentin Schneider
+> <valentin.schneider@arm.com> wrote:
+> >
+> > On 24/09/21 20:51, Barry Song wrote:
+> > >  void update_siblings_masks(unsigned int cpuid)
+> > >  {
+> > >       struct cpu_topology *cpu_topo, *cpuid_topo = &cpu_topology[cpuid];
+> > > @@ -617,6 +622,11 @@ void update_siblings_masks(unsigned int cpuid)
+> > >               if (cpuid_topo->package_id != cpu_topo->package_id)
+> > >                       continue;
+> > >
+> > > +             if (cpuid_topo->cluster_id == cpu_topo->cluster_id) {
+> > > +                     cpumask_set_cpu(cpu, &cpuid_topo->cluster_sibling);
+> > > +                     cpumask_set_cpu(cpuid, &cpu_topo->cluster_sibling);
+> > > +             }
+> > > +
+> >
+> > Hm so without cluster information (e.g. DT system), we have
+> > ->cluster_id=-1, we'll essentially copy the package mask into the cluster
+> > mask.
+> >
+> > The exposed cluster mask is still <= package mask which is sensible. Are we
+> > fine with that, or do we need/want the mask to be empty in the -1 case? I'm
+> > guessing userspace tools should check for either id!=-1 or if the exclusive
+> > disjucntion of cluster vs package masks is non-empty.
+>
+> Hi Valentin,
+> Yep, this is a very good question. I'd like change the code to:
+> diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
+> index 7cb31d959f33..fc0836f460fb 100644
+> --- a/drivers/base/arch_topology.c
+> +++ b/drivers/base/arch_topology.c
+> @@ -622,7 +622,8 @@ void update_siblings_masks(unsigned int cpuid)
+>                 if (cpuid_topo->package_id != cpu_topo->package_id)
+>                         continue;
+>
+> -               if (cpuid_topo->cluster_id == cpu_topo->cluster_id) {
+> +               if (cpuid_topo->cluster_id == cpu_topo->cluster_id &&
+> +                   cpuid_topo->cluster_id != -1) {
+>                         cpumask_set_cpu(cpu, &cpuid_topo->cluster_sibling);
+>                         cpumask_set_cpu(cpuid, &cpu_topo->cluster_sibling);
+>                 }
+>
 
-Yes fixed
+Hi Peter,
+Would you like to change this line in your tree? Or do you want me to send
+a new patchset with this small change?
 
--- 
-~Vinod
+> This should be consistent with Tim's patch3/3 for x86 in case
+> id is BAD_APICID:
+> static bool match_l2c(struct cpuinfo_x86 *c, struct cpuinfo_x86 *o)
+> {
+>         ...
+>         /* Do not match if we do not have a valid APICID for cpu: */
+>         if (per_cpu(cpu_l2c_id, cpu1) == BAD_APICID)
+>                 return false;
+>         ...
+> }
+
+Thanks
+Barry
