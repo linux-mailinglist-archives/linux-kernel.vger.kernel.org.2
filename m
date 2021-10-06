@@ -2,63 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4363D4246E3
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 21:39:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 883974246E0
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 21:38:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239459AbhJFTkq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 15:40:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53858 "EHLO
+        id S239502AbhJFTko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 15:40:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239465AbhJFTk1 (ORCPT
+        with ESMTP id S239471AbhJFTk2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 15:40:27 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAC39C061770
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 12:38:33 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id g2so3285638pfc.6
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 12:38:33 -0700 (PDT)
+        Wed, 6 Oct 2021 15:40:28 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E06ECC061755
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 12:38:34 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id m14so3268520pfc.9
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 12:38:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=tyFhWuo5Hgtey/EJ0ER9SojRROyEQ1lmEqqEKYabFj8=;
-        b=WbivjpxeeLzpbDhsokO1QAyB+XeHitmcvYdTvkg9A9dVGb5dDzGxavDwdHcpUlgwDU
-         V8/p9ZJfFgtjFFTBIQCPzL9Jc4iZN4LdjP1xFwucOfErOWq5i7zqiM9yhCRiZAlMDOFp
-         XVvHkDRFsICOg23ZGy7WLJVSYgKUKLIWw454A=
+        bh=g366T6z/wDv+u0z2UhkHLqZZ67YI06zaB4um2FhnwRI=;
+        b=OCjckHmgVomhirlm4yoY3Ii16VFEkoGpnVb/rg7YeA9Sjs5pjK51XrAmhnZUCGbp1/
+         rLuw8BarUAEtec6v5IBx/bM9/4DYawTek70dpAnQIfVDm1gxpDPo6TSS0cBAAUyed0XI
+         Qi1hDriSwrnO6jbb9hK30iPFf3toj4LokQlbA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=tyFhWuo5Hgtey/EJ0ER9SojRROyEQ1lmEqqEKYabFj8=;
-        b=kY9RTPk4aQA/jZIt7Ekw2bbYS0TEeKELllgsVerK2gF7kn4dwQcPIb4uwAp9qPks5i
-         i6OeKkQK1aBL3f7NTw7qR//Znl/5hWFRcc+lIK1/OLROrY2c8j0NV/3ZQ5PDcu4vpewd
-         yRfwET+D2T3VvmaTETtV3tG0QdeGhjns1yznXoF7+UQLnu8ORHxw8b65XPyCefXhO4os
-         SLeJ5+sAeJ3EqKaEq2N+vUfxz24/T7axh3TWy20bPgv0yIFMmghXRXGfE9VNjFRdz13w
-         wDuGPnHGJDc0J5A70F8VpjN/GslYGwYGq8n7E3BOrviBEUKe56L92mJKl8pvE/mDuu2a
-         KprQ==
-X-Gm-Message-State: AOAM532PXK/VyqM+nXOSo7R2MSrNi+BuKeDKluolADP58DdElvfDXD6F
-        b++bA6WWsZjOlx85fj8b+0ndIg==
-X-Google-Smtp-Source: ABdhPJznGJCOeCeyKq8Z/Qhtw8kvrQb8bZRBLDlNwr9nxrZXmfzjPyXz1pMYkJN8S5TO6MRfL6Q8fg==
-X-Received: by 2002:a05:6a00:1789:b0:43d:ea98:7ea8 with SMTP id s9-20020a056a00178900b0043dea987ea8mr39552269pfg.67.1633549113415;
-        Wed, 06 Oct 2021 12:38:33 -0700 (PDT)
+        bh=g366T6z/wDv+u0z2UhkHLqZZ67YI06zaB4um2FhnwRI=;
+        b=AB/RFoKAYncp0Ld4iPEq1rjSsA8KS4YFgtIluhi6RYuwt9qNxfLSBlrgrj2d9opJsy
+         VqtfCpjLoictyEL2RsNl6j9yN4ePgr1rnVndBeltMhuGmFsbRY9rEc6aY8nly0y4XvY0
+         uK4gdY3Yir1p/V6SyDrg4cPFbRQjZfyqKiXY92soxOcJrCVjVTsvxA2vGqW5uP4kfG5U
+         ZaEkHz5V3GOlTm3rEPf6pcR8Oxalg6t9/nNpCa+iQX1ODDfkF1XQ5o8ZhQw6nOO71ytZ
+         w5M+d4aKSz/M683Q+/df15mNKh7GgZaLa0hyBFpj4gLFUxi9da4FCTvX6kgTNv98r73W
+         YyAA==
+X-Gm-Message-State: AOAM532TnY0NmgWGSoZTk0NqBeeuoS7jwJkZLINtYjHAvz/wHozk2hna
+        iU8xFwRUVXqr0ewcNy9PSAPQIg==
+X-Google-Smtp-Source: ABdhPJwlpdVfUHse1Xy2t9sgc+u/2pmr9Y0Keygn1AiwMH09mIKYOSQgDQcnSyQQly48RrXK1A/jQg==
+X-Received: by 2002:a63:2484:: with SMTP id k126mr420094pgk.297.1633549114473;
+        Wed, 06 Oct 2021 12:38:34 -0700 (PDT)
 Received: from smtp.gmail.com ([2620:15c:202:201:d412:c5eb:4aca:4738])
-        by smtp.gmail.com with ESMTPSA id o14sm22011296pfh.84.2021.10.06.12.38.32
+        by smtp.gmail.com with ESMTPSA id o14sm22011296pfh.84.2021.10.06.12.38.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Oct 2021 12:38:33 -0700 (PDT)
+        Wed, 06 Oct 2021 12:38:34 -0700 (PDT)
 From:   Stephen Boyd <swboyd@chromium.org>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
         dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Liviu Dudau <liviu.dudau@arm.com>,
+        Russell King <linux@armlinux.org.uk>,
         Daniel Vetter <daniel.vetter@ffwll.ch>,
         "Rafael J. Wysocki" <rafael@kernel.org>,
         Rob Clark <robdclark@gmail.com>,
-        Russell King <rmk+kernel@arm.linux.org.uk>,
         Saravana Kannan <saravanak@google.com>
-Subject: [PATCH v2 09/34] drm/malidp: Migrate to aggregate driver
-Date:   Wed,  6 Oct 2021 12:37:54 -0700
-Message-Id: <20211006193819.2654854-10-swboyd@chromium.org>
+Subject: [PATCH v2 10/34] drm/armada: Migrate to aggregate driver
+Date:   Wed,  6 Oct 2021 12:37:55 -0700
+Message-Id: <20211006193819.2654854-11-swboyd@chromium.org>
 X-Mailer: git-send-email 2.33.0.800.g4c38ced690-goog
 In-Reply-To: <20211006193819.2654854-1-swboyd@chromium.org>
 References: <20211006193819.2654854-1-swboyd@chromium.org>
@@ -72,77 +70,81 @@ Use an aggregate driver instead of component ops so that we can get
 proper driver probe ordering of the aggregate device with respect to all
 the component devices that make up the aggregate device.
 
-TODO: This can be updated to move the drm helper logic into the
-aggregate driver shutdown op.
-
-Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc: Liviu Dudau <liviu.dudau@arm.com>
+Cc: Russell King <linux@armlinux.org.uk>
 Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
 Cc: "Rafael J. Wysocki" <rafael@kernel.org>
 Cc: Rob Clark <robdclark@gmail.com>
-Cc: Russell King <rmk+kernel@arm.linux.org.uk>
 Cc: Saravana Kannan <saravanak@google.com>
 Signed-off-by: Stephen Boyd <swboyd@chromium.org>
 ---
- drivers/gpu/drm/arm/malidp_drv.c | 21 +++++++++++++--------
- 1 file changed, 13 insertions(+), 8 deletions(-)
+ drivers/gpu/drm/armada/armada_drv.c | 23 ++++++++++++++---------
+ 1 file changed, 14 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/gpu/drm/arm/malidp_drv.c b/drivers/gpu/drm/arm/malidp_drv.c
-index 78d15b04b105..e6ee4d1e3bb8 100644
---- a/drivers/gpu/drm/arm/malidp_drv.c
-+++ b/drivers/gpu/drm/arm/malidp_drv.c
-@@ -702,8 +702,9 @@ static int malidp_runtime_pm_resume(struct device *dev)
- 	return 0;
- }
+diff --git a/drivers/gpu/drm/armada/armada_drv.c b/drivers/gpu/drm/armada/armada_drv.c
+index 8e3e98f13db4..b3559363ea43 100644
+--- a/drivers/gpu/drm/armada/armada_drv.c
++++ b/drivers/gpu/drm/armada/armada_drv.c
+@@ -60,8 +60,9 @@ static const struct drm_mode_config_funcs armada_drm_mode_config_funcs = {
+ 	.atomic_commit		= drm_atomic_helper_commit,
+ };
  
--static int malidp_bind(struct device *dev)
-+static int malidp_bind(struct aggregate_device *adev)
+-static int armada_drm_bind(struct device *dev)
++static int armada_drm_bind(struct aggregate_device *adev)
  {
 +	struct device *dev = adev->parent;
- 	struct resource *res;
- 	struct drm_device *drm;
- 	struct malidp_drm *malidp;
-@@ -894,8 +895,9 @@ static int malidp_bind(struct device *dev)
+ 	struct armada_private *priv;
+ 	struct resource *mem = NULL;
+ 	int ret, n;
+@@ -159,8 +160,9 @@ static int armada_drm_bind(struct device *dev)
  	return ret;
  }
  
--static void malidp_unbind(struct device *dev)
-+static void malidp_unbind(struct aggregate_device *adev)
+-static void armada_drm_unbind(struct device *dev)
++static void armada_drm_unbind(struct aggregate_device *adev)
  {
 +	struct device *dev = adev->parent;
  	struct drm_device *drm = dev_get_drvdata(dev);
- 	struct malidp_drm *malidp = drm->dev_private;
- 	struct malidp_hw_device *hwdev = malidp->dev;
-@@ -921,9 +923,13 @@ static void malidp_unbind(struct device *dev)
- 	of_reserved_mem_device_release(dev);
+ 	struct armada_private *priv = drm_to_armada_dev(drm);
+ 
+@@ -202,9 +204,13 @@ static void armada_add_endpoints(struct device *dev,
+ 	}
  }
  
--static const struct component_master_ops malidp_master_ops = {
--	.bind = malidp_bind,
--	.unbind = malidp_unbind,
-+static struct aggregate_driver malidp_aggregate_driver = {
-+	.probe = malidp_bind,
-+	.remove = malidp_unbind,
+-static const struct component_master_ops armada_master_ops = {
+-	.bind = armada_drm_bind,
+-	.unbind = armada_drm_unbind,
++static struct aggregate_driver armada_aggregate_driver = {
++	.probe = armada_drm_bind,
++	.remove = armada_drm_unbind,
 +	.driver = {
-+		.name = "malidp_drm",
++		.name = "armada_drm",
 +		.owner = THIS_MODULE,
 +	},
  };
  
- static int malidp_compare_dev(struct device *dev, void *data)
-@@ -949,13 +955,12 @@ static int malidp_platform_probe(struct platform_device *pdev)
- 	drm_of_component_match_add(&pdev->dev, &match, malidp_compare_dev,
- 				   port);
- 	of_node_put(port);
--	return component_master_add_with_match(&pdev->dev, &malidp_master_ops,
+ static int armada_drm_probe(struct platform_device *pdev)
+@@ -213,7 +219,7 @@ static int armada_drm_probe(struct platform_device *pdev)
+ 	struct device *dev = &pdev->dev;
+ 	int ret;
+ 
+-	ret = drm_of_component_probe(dev, compare_dev_name, &armada_master_ops);
++	ret = drm_of_aggregate_probe(dev, compare_dev_name, &armada_aggregate_driver);
+ 	if (ret != -EINVAL)
+ 		return ret;
+ 
+@@ -240,13 +246,12 @@ static int armada_drm_probe(struct platform_device *pdev)
+ 		}
+ 	}
+ 
+-	return component_master_add_with_match(&pdev->dev, &armada_master_ops,
 -					       match);
-+	return component_aggregate_register(&pdev->dev, &malidp_aggregate_driver, match);
++	return component_aggregate_register(&pdev->dev, &armada_aggregate_driver, match);
  }
  
- static int malidp_platform_remove(struct platform_device *pdev)
+ static int armada_drm_remove(struct platform_device *pdev)
  {
--	component_master_del(&pdev->dev, &malidp_master_ops);
-+	component_aggregate_unregister(&pdev->dev, &malidp_aggregate_driver);
+-	component_master_del(&pdev->dev, &armada_master_ops);
++	component_aggregate_unregister(&pdev->dev, &armada_aggregate_driver);
  	return 0;
  }
  
