@@ -2,92 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3228A4242BE
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 18:33:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EA944242C1
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 18:34:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231804AbhJFQfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 12:35:38 -0400
-Received: from mail-oi1-f182.google.com ([209.85.167.182]:37545 "EHLO
-        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231175AbhJFQfh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 12:35:37 -0400
-Received: by mail-oi1-f182.google.com with SMTP id w206so4814214oiw.4;
-        Wed, 06 Oct 2021 09:33:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1j54Hi+9SvvzYGXgri/LfJoVt95gHrji9h1JTTlfc8s=;
-        b=M9CHYGE06Jari8MkqyipDI6K7KYl/ZRhwL7a8l3bAkfhAVNq7xVZJU1Uui6TWag6/7
-         I1QMrzojKfg1XRxk9LU4MULpTAcW6VjHf/ejFf9hpgdegNmAU5FtEGGAuKBjKkToPthX
-         YUWkrYY5tXc5P3KQ+uMYI3+LJw5hhqrL4qRNWD69qwg7bPB2GA9VLG3s3nkXMOqq4j7z
-         n0ZSdhmrJl9zyCztXcdBSfz42YpFuAI44JlVZlgZplxIQiDOxCU/VY9SoZEOLWGoix8a
-         BZww3/cPr5qGnvQ0voUxlgWtzNznkE7A7wGCEy0TT2Qy9yWgDW4lzK9HovP6ETS67Zfx
-         JLfQ==
-X-Gm-Message-State: AOAM533TbA5HzRmMHqrz5tn89ztLHnbRcQ/adj/VbarYUdivwfD9wY7m
-        mnSMwyDPw3s6vS5JhhjdqFxYNGyClN175HYNW90=
-X-Google-Smtp-Source: ABdhPJyaLmK0B69/hQ8esizcD0gT2ybEV86tgEHX/mOV9UzZvkZYkmgeEhLicEB//8w30lt7CiTv9YSyORGC69fSj0E=
-X-Received: by 2002:aca:6009:: with SMTP id u9mr8226144oib.71.1633538024876;
- Wed, 06 Oct 2021 09:33:44 -0700 (PDT)
+        id S232257AbhJFQgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 12:36:15 -0400
+Received: from mga02.intel.com ([134.134.136.20]:46337 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229719AbhJFQgN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 12:36:13 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10129"; a="213161376"
+X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; 
+   d="scan'208";a="213161376"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2021 09:34:21 -0700
+X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; 
+   d="scan'208";a="439957347"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2021 09:34:18 -0700
+Received: from andy by smile with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mY9ry-009FyW-JQ;
+        Wed, 06 Oct 2021 19:34:14 +0300
+Date:   Wed, 6 Oct 2021 19:34:14 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Joe Perches <joe@perches.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Subject: Re: [PATCH v1 2/4] ASoC: Intel: bytcr_rt5640: Use temporary variable
+ for struct device
+Message-ID: <YV3QBsj2gLzmePWE@smile.fi.intel.com>
+References: <20211006150442.16503-1-andriy.shevchenko@linux.intel.com>
+ <20211006150442.16503-2-andriy.shevchenko@linux.intel.com>
+ <4b81a10dca78e286a9f806464b97111b5a15a91e.camel@perches.com>
+ <YV3ER4uIL4aRWBjz@smile.fi.intel.com>
+ <YV3FaZ+afuZZSIth@sirena.org.uk>
+ <YV3JWzNgGInZ1Bt5@smile.fi.intel.com>
+ <YV3MtOrpziyKqkxA@sirena.org.uk>
 MIME-Version: 1.0
-References: <1633537640-15800-1-git-send-email-mojha@codeaurora.org>
-In-Reply-To: <1633537640-15800-1-git-send-email-mojha@codeaurora.org>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 6 Oct 2021 18:33:34 +0200
-Message-ID: <CAJZ5v0iee_7fnrQsxBTg9A+GOtUqsK8c5RcEbYzQE=gd-Z3bRQ@mail.gmail.com>
-Subject: Re: [PATCH] PM / suspend: Abort suspend if somebody holds wakelock
-To:     Mukesh Ojha <mojha@codeaurora.org>
-Cc:     Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YV3MtOrpziyKqkxA@sirena.org.uk>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 6, 2021 at 6:27 PM Mukesh Ojha <mojha@codeaurora.org> wrote:
->
-> There could be a scenario, where request_firmware() call results in
-> user land process trying to load firmwares into memory and
-> parallely one miscellaneous process is trying to invoke manual
-> suspend and due to which user mode helper gets disabled during
-> freezing of processes and that aborts loading of firmware even
-> though request_firmware() thread has taken wakelock.
->
-> Although, we are checking for any wakeup event inside
-> try_to_freeze_tasks() but that could be too late for the
-> above scenario.
->
-> Let's add a check before freezing/disable user land process in
-> suspend path.
+On Wed, Oct 06, 2021 at 05:20:04PM +0100, Mark Brown wrote:
+> On Wed, Oct 06, 2021 at 07:05:47PM +0300, Andy Shevchenko wrote:
+> > On Wed, Oct 06, 2021 at 04:48:57PM +0100, Mark Brown wrote:
+> > > On Wed, Oct 06, 2021 at 06:44:07PM +0300, Andy Shevchenko wrote:
+> > > > On Wed, Oct 06, 2021 at 08:21:01AM -0700, Joe Perches wrote:
+> 
+> > > > > Some will complain about a lack of commit message.
+> 
+> > > > Yeah, sorry for that, it wasn't deliberate. I forgot to run `git msg-filter`
+> > > > on these three patches to add it.
+> 
+> > > > Mark, do you want me resend entire bunch(es) or just starting from these
+> > > > patches? Or...?
+> 
+> > > If you're adding a commit message with automation it's probably not
+> > > adding any value.
+> 
+> > What do you mean? I add it exceptionally for the same (by nature) patches.
+> > What do you expect to be altered in these three, if the idea behind the change
+> > is very well the same?
+> 
+> I really don't care if there's a separate changelog for trivial patches
+> like this, it adds nothing of value.
 
-If a laptop lid is closed and the system is expected to suspend, it
-must suspend.
+I see. In any case I'll add something meaningful here.
 
-This takes precedence over the loading of firmware.  Sorry.
+-- 
+With Best Regards,
+Andy Shevchenko
 
-> Signed-off-by: Mukesh Ojha <mojha@codeaurora.org>
-> ---
->  kernel/power/process.c | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/kernel/power/process.c b/kernel/power/process.c
-> index 37401c9..3e0d3d6 100644
-> --- a/kernel/power/process.c
-> +++ b/kernel/power/process.c
-> @@ -124,6 +124,9 @@ int freeze_processes(void)
->  {
->         int error;
->
-> +       if (pm_wakeup_pending())
-> +               return -EBUSY;
-> +
->         error = __usermodehelper_disable(UMH_FREEZING);
->         if (error)
->                 return error;
-> --
-> Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center,
-> Inc. is a member of the Code Aurora Forum, a Linux Foundation Collaborative Project
->
+
