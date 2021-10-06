@@ -2,80 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 899F1423542
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 02:49:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76EBB423545
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 02:51:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236969AbhJFAu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 20:50:56 -0400
-Received: from mga01.intel.com ([192.55.52.88]:56785 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230218AbhJFAuu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 20:50:50 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10128"; a="249162348"
-X-IronPort-AV: E=Sophos;i="5.85,350,1624345200"; 
-   d="scan'208";a="249162348"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2021 17:48:58 -0700
-X-IronPort-AV: E=Sophos;i="5.85,350,1624345200"; 
-   d="scan'208";a="477916976"
-Received: from rriesen-ivm.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.209.35.74])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2021 17:48:57 -0700
-Subject: Re: [PATCH v8 09/11] x86/tdx: Add MSR support for TDX guest
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
-        VMware Inc <pv-drivers@vmware.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        linux-kernel@vger.kernel.org
-References: <20211005025205.1784480-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211005025205.1784480-10-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211005232209.ozugpocq2cvx22li@treble>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <c0241c38-e27d-ad82-218b-8c9f77c0e736@linux.intel.com>
-Date:   Tue, 5 Oct 2021 17:48:56 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
+        id S237062AbhJFAx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 20:53:29 -0400
+Received: from smtprelay0097.hostedemail.com ([216.40.44.97]:39696 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230218AbhJFAx2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 20:53:28 -0400
+Received: from omf17.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 8E2E1837F24A;
+        Wed,  6 Oct 2021 00:51:35 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf17.hostedemail.com (Postfix) with ESMTPA id AFB4F27DD2E;
+        Wed,  6 Oct 2021 00:51:33 +0000 (UTC)
+Message-ID: <b59c7f33ff9c8443cf08204ec37383d734fbbf60.camel@perches.com>
+Subject: Re: [PATCH v5] docs: Explain the desired position of function
+ attributes
+From:   Joe Perches <joe@perches.com>
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        Kees Cook <keescook@chromium.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-hardening@vger.kernel.org,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Tue, 05 Oct 2021 17:51:31 -0700
+In-Reply-To: <742567f3-f043-6fab-235a-5835ca025f54@infradead.org>
+References: <20211005152611.4120605-1-keescook@chromium.org>
+         <7f6e53d04849daabd3e85c23f9974b2eb4a20c13.camel@perches.com>
+         <202110051004.C4D9EBA0@keescook>
+         <742567f3-f043-6fab-235a-5835ca025f54@infradead.org>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-In-Reply-To: <20211005232209.ozugpocq2cvx22li@treble>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=1.61
+X-Stat-Signature: 1prmcwyjmgygdxkfhijpkjwfsy6hinz9
+X-Rspamd-Server: rspamout03
+X-Rspamd-Queue-Id: AFB4F27DD2E
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX19BpTF+UZGYfSoG/T6NSdvICE9NN8lR8bk=
+X-HE-Tag: 1633481493-933631
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 10/5/21 4:22 PM, Josh Poimboeuf wrote:
-> This fails to build:
+On Tue, 2021-10-05 at 12:15 -0700, Randy Dunlap wrote:
+> On 10/5/21 10:04 AM, Kees Cook wrote:
+> > On Tue, Oct 05, 2021 at 08:39:14AM -0700, Joe Perches wrote:
+> > > On Tue, 2021-10-05 at 08:26 -0700, Kees Cook wrote:
+> > > > While discussing how to format the addition of various function
+> > > > attributes, some "unwritten rules" of ordering surfaced[1]. Capture as
+> > > > close as possible to Linus's preferences for future reference.
+> > > > +For example, using this function declaration example::
+> > > > +
+> > > > + __init void * __must_check action(enum magic value, size_t size, u8 count,
+> > > > +				   char *fmt, ...) __printf(4, 5) __malloc;
+> > > 
+> > > trivia: almost all fmt declarations should be const char *
+> > 
+> > Heh, good point!
+> > 
+> > > > +Note that for a function **definition** (i.e. the actual function body),
+> > > > +the compiler does not allow function parameter attributes after the
+> > > > +function parameters. In these cases, they should go after the storage
+> > > > +class attributes (e.g. note the changed position of ``__printf(4, 5)``
+> > > > +below, compared to the **declaration** example above)::
+> > > > +
+> > > > + static __always_inline __init __printf(4, 5) void * __must_check action(enum magic value,
+> > > > +		size_t size, u8 count, char *fmt, ...) __malloc
+> > > 
+> > > here too, and 80 columns?
+> > 
+> > Kernel standard is now 100. *shrug*
 > 
-> arch/x86/kernel/tdx.c: In function ‘tdx_write_msr_safe’:
-> arch/x86/kernel/tdx.c:135:22: error: implicit declaration of function ‘tdx_is_context_switched_msr’ [-Werror=implicit-function-declaration]
->    135 |         WARN_ON_ONCE(tdx_is_context_switched_msr(msr));
->        |                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-> ./include/asm-generic/bug.h:104:32: note: in definition of macro ‘WARN_ON_ONCE’
->    104 |         int __ret_warn_on = !!(condition);                      \
->        |                                ^~~~~~~~~
+> That's more for exceptions, not the common rule.
+> AFAIUI.
+
+And for function definitions that are not static inline, when
+separate function declarations exist, the function definition
+does not need any attribute marking at all.
 
 
-Sorry, it looks like the removal is split across two patches. So I did not catch
-it in my compilation test. I will fix this and repost it.
-
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
