@@ -2,90 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D3E4424226
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 18:06:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 799DA42423F
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 18:10:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239041AbhJFQIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 12:08:21 -0400
-Received: from mga14.intel.com ([192.55.52.115]:28648 "EHLO mga14.intel.com"
+        id S239315AbhJFQMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 12:12:18 -0400
+Received: from mga14.intel.com ([192.55.52.115]:29074 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232071AbhJFQIP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 12:08:15 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10129"; a="226340677"
+        id S230021AbhJFQMQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 12:12:16 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10129"; a="226342179"
 X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; 
-   d="scan'208";a="226340677"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2021 09:01:52 -0700
+   d="scan'208";a="226342179"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2021 09:05:53 -0700
 X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; 
-   d="scan'208";a="439942003"
+   d="scan'208";a="568222307"
 Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2021 09:01:51 -0700
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2021 09:05:50 -0700
 Received: from andy by smile with local (Exim 4.95)
         (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mY9Ma-009FT7-5E;
-        Wed, 06 Oct 2021 19:01:48 +0300
-Date:   Wed, 6 Oct 2021 19:01:48 +0300
+        id 1mY9QR-009FXV-97;
+        Wed, 06 Oct 2021 19:05:47 +0300
+Date:   Wed, 6 Oct 2021 19:05:47 +0300
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Daniel Palmer <daniel@0x0f.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-serial@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] serial: 8250_dw: Mark acpi match table as maybe unused
-Message-ID: <YV3IbKBrK0C7GtG0@smile.fi.intel.com>
-References: <20210930124950.3069638-1-daniel@0x0f.com>
- <YVXWiQWGkzmp6O1A@smile.fi.intel.com>
- <CAFr9PXkgDaXPb+h3TFmS4VVzzmPqjJJj0Y4cd_ZTUgqMbNZUSA@mail.gmail.com>
- <YVYmTL8WsgYnxPwc@smile.fi.intel.com>
- <CAFr9PXmVQFDdMiMUgg4v7DAcFkdaUtFeaXOyW4_NrVd5oYKSSA@mail.gmail.com>
- <YVxBphzSDG2VmM4I@smile.fi.intel.com>
- <CAFr9PXkN-6MAExF-P8-Biej2yoQYB6eQDezwfPRX4bcXaayZfA@mail.gmail.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Joe Perches <joe@perches.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Subject: Re: [PATCH v1 2/4] ASoC: Intel: bytcr_rt5640: Use temporary variable
+ for struct device
+Message-ID: <YV3JWzNgGInZ1Bt5@smile.fi.intel.com>
+References: <20211006150442.16503-1-andriy.shevchenko@linux.intel.com>
+ <20211006150442.16503-2-andriy.shevchenko@linux.intel.com>
+ <4b81a10dca78e286a9f806464b97111b5a15a91e.camel@perches.com>
+ <YV3ER4uIL4aRWBjz@smile.fi.intel.com>
+ <YV3FaZ+afuZZSIth@sirena.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAFr9PXkN-6MAExF-P8-Biej2yoQYB6eQDezwfPRX4bcXaayZfA@mail.gmail.com>
+In-Reply-To: <YV3FaZ+afuZZSIth@sirena.org.uk>
 Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05, 2021 at 09:41:33PM +0900, Daniel Palmer wrote:
-> On Tue, 5 Oct 2021 at 21:14, Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-
-...
-
-> > > For what it's worth I think the OF ids are a bit wasteful.
-> >
-> > Exactly my point, but fixing one driver of zillions does not solve the issue
-> > in general.
+On Wed, Oct 06, 2021 at 04:48:57PM +0100, Mark Brown wrote:
+> On Wed, Oct 06, 2021 at 06:44:07PM +0300, Andy Shevchenko wrote:
+> > On Wed, Oct 06, 2021 at 08:21:01AM -0700, Joe Perches wrote:
 > 
-> I looked into making OF ids smaller globally. There seems to be 64
-> bytes wasted from the start for the name and type fields as nothing
-> uses them as far as I can tell.
-> Then you have the array for the compatible string which is currently
-> 128 bytes but the longest compatible string in the kernel is less than
-> 64 from what I can tell.
-> I understand that it's for future proofing etc. Adding a few hacks to
-> my kernel to remove the unused fields and reduce the size of the
-> compatible string saved a few tens of K.
-> Which isn't a lot but might be the difference between the kernel
-> fitting in a tiny SPI NOR partition or not.
+> > > Some will complain about a lack of commit message.
+> 
+> > Yeah, sorry for that, it wasn't deliberate. I forgot to run `git msg-filter`
+> > on these three patches to add it.
+> 
+> > Mark, do you want me resend entire bunch(es) or just starting from these
+> > patches? Or...?
+> 
+> If you're adding a commit message with automation it's probably not
+> adding any value.
 
-What can you try is to somehow cut the sections during linking phase
-if you know, that OF=n, or ACPI=n. Not sure how it would work, because
-basically we will need to replace them with stubs to prevent drivers
-from crashing. Nevertheless, One terminator entry is much better than
-full bloated ID table(s)!
-
-...
-
-> Anyhow, thankyou for the interesting discussion. I'll just leave this
-> in my tree for now so I don't have to see the warning.
-
-You're welcome!
-
-FWIW, I have sent my version of the patch, you are in Cc list there,
-can you test and confirm that warning is gone for you?
+What do you mean? I add it exceptionally for the same (by nature) patches.
+What do you expect to be altered in these three, if the idea behind the change
+is very well the same?
 
 -- 
 With Best Regards,
