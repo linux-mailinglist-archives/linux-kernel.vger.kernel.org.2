@@ -2,92 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C09042526A
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 14:01:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B3194254F2
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 16:01:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241138AbhJGMDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 08:03:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33827 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241121AbhJGMDu (ORCPT
+        id S241920AbhJGODe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 10:03:34 -0400
+Received: from slot0.radyoskop.com ([92.52.218.124]:36786 "EHLO
+        vps.radyoskop.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S241731AbhJGODd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 08:03:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633608116;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=Q0DHA6PLEStWhML4k30x8iHQyL0+mjBxtrjprx4sMyA=;
-        b=JZaQc0DLiV3C9tBzDXR7VEfjwyyzbvt6QSxvYMpEdlSsSrjWd6J2MHAu4kHUEtnlhgjZwE
-        Y6jIZaKhNUnUBH8UqPAY4ig8uwh74ps6TqiNWHMDCzPkU6GRLNE3eVaIbS9evXC9DwYSYz
-        mUH8+Mb56uLx02Ks4iC4Bxee7+HSXvo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-265-3JbSJiIIPdWbNdk-BlmspA-1; Thu, 07 Oct 2021 08:01:53 -0400
-X-MC-Unique: 3JbSJiIIPdWbNdk-BlmspA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 584D5835DE3;
-        Thu,  7 Oct 2021 12:01:51 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.33.36.44])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id AC2D960C05;
-        Thu,  7 Oct 2021 12:01:49 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [RFC PATCH] mm: Stop filemap_read() from grabbing a superfluous page
-From:   David Howells <dhowells@redhat.com>
-To:     kent.overstreet@gmail.com, willy@infradead.org
-Cc:     dhowells@redhat.com, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Thu, 07 Oct 2021 13:01:48 +0100
-Message-ID: <163360810881.1636291.17477809397516812670.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        Thu, 7 Oct 2021 10:03:33 -0400
+X-Greylist: delayed 105650 seconds by postgrey-1.27 at vger.kernel.org; Thu, 07 Oct 2021 10:03:32 EDT
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=radyoskop.com; s=mail; h=Message-ID:From:Date:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:Subject:To:Sender:Reply-To:Cc:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=y+41y/dujOIga9fLz/q9b2iyW0CBQ42mkzt2C4eGiXs=; b=U6Eai2Xi36xBrvoUueP2ndnLb4
+        TjVUZ95edM92eEqKHGc5k7VOK6nb07oyPBpyt7jt2h3yzIIdxbNJ/fOj+K5mr20GKEelITOB/iYRj
+        /iteSDcbG1Z3WV2sYnSMeyKafQomEz90y/ibTp05RWyr8HzHzxkqw1Sgd78jWdFO4Gio=;
+Received: from admin by vps.radyoskop.com with local (Exim 4.92.3)
+        (envelope-from <oce.cox@radyoskop.com>)
+        id 1mY2ML-0004u7-MC; Wed, 06 Oct 2021 10:33:05 +0200
+To:     undisclosed-recipients:;
+Subject: Business Deal
+X-PHP-Originating-Script: 0:rcube.php
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Date:   Wed, 06 Oct 2021 09:33:04 +0100
+From:   oce.cox@radyoskop.com
+Message-ID: <29582e388512a11aa7f6b2ce94c1869f@radyoskop.com>
+X-Sender: oce.cox@radyoskop.com
+User-Agent: Roundcube Webmail/1.0.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Under some circumstances, filemap_read() will allocate sufficient pages to
-read to the end of the file, call readahead/readpages on them and copy the
-data over - and then it will allocate another page at the EOF and call
-readpage on that and then ignore it.  This is unnecessary and a waste of
-time and resources.
+Good day. I'm a consultant for Capital Corporation.
+We Manage investor Finances into Profitable Project.
+Lending certified entrepreneurs to boost their Business Growth is our 
+principal Aim.
+If you are interested then reply to the email address below let's 
+discuss business with mutual benefit.
+(Nicholediaz080@gmail.com)
 
-filemap_read() *does* check for this, but only after it has already done
-the allocation and I/O.  Fix this by checking before calling
-filemap_get_pages() also.
-
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: Kent Overstreet <kent.overstreet@gmail.com>
-cc: Matthew Wilcox (Oracle) <willy@infradead.org>
-cc: linux-mm@kvack.org
-cc: linux-fsdevel@vger.kernel.org
-Link: https://lore.kernel.org/r/160588481358.3465195.16552616179674485179.stgit@warthog.procyon.org.uk/
----
-
- mm/filemap.c |    4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/mm/filemap.c b/mm/filemap.c
-index dae481293b5d..c0cdc44c844e 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -2625,6 +2625,10 @@ ssize_t filemap_read(struct kiocb *iocb, struct iov_iter *iter,
- 		if ((iocb->ki_flags & IOCB_WAITQ) && already_read)
- 			iocb->ki_flags |= IOCB_NOWAIT;
- 
-+		isize = i_size_read(inode);
-+		if (unlikely(iocb->ki_pos >= isize))
-+			goto put_pages;
-+
- 		error = filemap_get_pages(iocb, iter, &pvec);
- 		if (error < 0)
- 			break;
-
+Regards
+Ms Diaz
 
