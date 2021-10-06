@@ -2,125 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D52764235DD
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 04:35:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F6934235E4
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 04:38:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237201AbhJFChl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 22:37:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43942 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229908AbhJFChj (ORCPT
+        id S237210AbhJFCkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 22:40:15 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:45462 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230301AbhJFCkL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 22:37:39 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D3E8C061749;
-        Tue,  5 Oct 2021 19:35:48 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id l7so4026452edq.3;
-        Tue, 05 Oct 2021 19:35:48 -0700 (PDT)
+        Tue, 5 Oct 2021 22:40:11 -0400
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1961gkE7024877;
+        Wed, 6 Oct 2021 02:37:55 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : content-type :
+ mime-version; s=corp-2021-07-09;
+ bh=EXEibEB4DrEfmJdvBQRLhki7gxaX0l5EhJKVlGIhKKg=;
+ b=HJuZlagr/Wc5FK8UKXMkomWIPfG6ib3GKOtTgabDfaMGR985Oz1L96BVIAXnE6Dh2Ls7
+ ICDbjnXUc0yhUTzSnI0iHUJS1zAgAdAnaEAyQWEe5v2vVcGG9Kvuyyvprl3aYAPm8WI4
+ SLw9QqPzh3lWdR33i2Wvdhoir2Tts7K4kUsCCTa18egLYkWqsJ0lCvGd5DYn3sXuEaFI
+ srBWdvSympLO8PnATf+diY3X2zr/2jnwnDowaQ+L5fqkFa79ju/MI1sTnFKsVqpNYlrv
+ lOv+qHX6/rp2r/WZNJDVTRP/4RjDZ8rO37V9Kuw+u5aae92+qMMCrrQiAq31LF4jjM7r Mg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3bh10g8nqe-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 06 Oct 2021 02:37:55 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1962a2GH049790;
+        Wed, 6 Oct 2021 02:37:54 GMT
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2103.outbound.protection.outlook.com [104.47.55.103])
+        by aserp3030.oracle.com with ESMTP id 3bev7u6acc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 06 Oct 2021 02:37:54 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=l05uGO+ltptuj1JLh6axjAGhn20DLCPB5OXS+eymFMioQyn3PQSUhHiqt7x5QK+JTw442jDP6zuHs5uJobHupHRqnkEku0vk3O19/gpo8skk2/Y9BLWF4SX7LfapF5wliIzzUlM5k9dYOhrKNf6/MQ3rixmhsgIE33Re6b7GQb3GQxryJg9eU0C+2AApU1z83Bl9FvcS/pVAff1V3iDf783VgxtOk7xqE+IdO9OV3IPtuT7sPLfHGGbcBEKsb+m096FRrnW2t+wAmKc/WKCipSDt2kjh1/adQbvs5+DQSJBCK/psFah8TG3OYQVV0RfwujCEHaO59YeGeYOhAei2gw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=EXEibEB4DrEfmJdvBQRLhki7gxaX0l5EhJKVlGIhKKg=;
+ b=e1mPCa4yVx/8bXuQdj4Asm1RmxRtcDsNb1cFHrD1+iP5tbOPcG0lWoL6Ahz2+/DiVOEV1Bpb37V7vLodFtv/WzJnSA87HVp0W0ksYuLxj0bQQ/A9ZSRNYNVTPsivcZd6RILtatre+Axtg1oZlHcFKp9Q25/lV480mHOFHHweU85bOdu9vlH0QoYJZDA5Tl+CkLAnNboK7pFx8tBJeVmJVJsaDdY6ZykktWVuNNp5VxW34uAgt0RiW+FX7b/SWz2qyjnsyCg/7l3KFr2LAJpJmm/BCgtdRricUqX8FmjUj4hrzzcd4E+o8COm7ZXaPauUY0suTyDnWRKgGbm7ZWSIyg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=85A/CcRPHhhXw8lA9VmoZH5xmu6YeHwEGNssFuE34AM=;
-        b=alPUn4l6o6zYJDg47kJX2QWqgVy1dfmAl6MARjpJwoFFmt6O9svnYVl17zWhBuHyJk
-         V2yp/fI9QC5UMDWbsL58PiIGY3Djgw5xVFae0JgbNrLyuRGQFcdgrQ21DnJuTG77LSI8
-         aBi+OGA7HT3C2vMnN+NeEvZl8U2AsDcNjgMMP/LtSjR6CnmuD0NDJRQti43dzJMQcoFj
-         FzCQNsKnHa+XaRvi2Si1r4UYGt3S4vNOmZEvHE4KOfpsx2iKx4ZVqeNSOD7s4UsEwQgG
-         ut1DNHUUgP8l3Hv4bQ7shtXEYnC9+/TPfQTCHvJva+pIfOu5LEJKowM6Ptf7HKPpt6ux
-         1BKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=85A/CcRPHhhXw8lA9VmoZH5xmu6YeHwEGNssFuE34AM=;
-        b=y3q9CjNWEXO+CvzvYx/Ocdb2kkIz3loXKjzSdfNnEWH0ouv5f0qUIbuPYS9sYlr9N5
-         n7bC5w6XnGbqYpimJ1eYwrQC2HpQjUamZ8n7jFuSoj5IucoQr/H6rHZg43n6NxoZAehe
-         nglGyECbyUywFw9sNXHYVORSebZJnjdjuMp7Q1fxu/g6Qo+tUy+bmIXmt97/8MCxqz2B
-         zFszpHIaqAjjqlPVMlRfxhB+Rn4Kxs6zB/eo0lyrFPa0lcV58QsvPfIT/PXTKWEOtdy0
-         ipUlYrdL29ZFW/+LzVlFzKnn8GOcGJnMCK5SvkCEXTvu+hfmmT4zQDJyB/QNneNpOGIA
-         zcTg==
-X-Gm-Message-State: AOAM5324/oTHQW5gpPVcYxyUK7BXv2U9H3017+lYhY0K40hQkdfCILRf
-        elOgquAMJSJfNeZC+cxgPcNVv3vCfPvUuTsdJZcjGZfQ
-X-Google-Smtp-Source: ABdhPJyjAEY2McGhuJwN9uhBXqn2n0pq+eQv3ZQT2FMbgOKU8q35tglFj/tBCEY2Y6naGmP74j/r/2eCHEd1y05zMKQ=
-X-Received: by 2002:a50:8d85:: with SMTP id r5mr30685431edh.312.1633487747024;
- Tue, 05 Oct 2021 19:35:47 -0700 (PDT)
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EXEibEB4DrEfmJdvBQRLhki7gxaX0l5EhJKVlGIhKKg=;
+ b=Gh/My529RyW+UVn7+Zjor18nFXCU+bqZl3MKLkXL2IiNlfB7JocVDtf/iZIy4/EOnsOJSh28bXuyrBQ37nldcQq4LsySmIYPr+tvYym29osH8sft+/waSG8Fr/TuM35Z2Dq9RsmbQIpTTn3lfTQDrFVOaYoUOAAj6Nwo98ynWF8=
+Authentication-Results: microchip.com; dkim=none (message not signed)
+ header.d=none;microchip.com; dmarc=none action=none header.from=oracle.com;
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
+ by PH0PR10MB4695.namprd10.prod.outlook.com (2603:10b6:510:3f::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.18; Wed, 6 Oct
+ 2021 02:37:52 +0000
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::a457:48f2:991f:c349]) by PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::a457:48f2:991f:c349%7]) with mapi id 15.20.4566.023; Wed, 6 Oct 2021
+ 02:37:51 +0000
+To:     <Don.Brace@microchip.com>
+Cc:     <pmenzel@molgen.mpg.de>, <Kevin.Barnett@microchip.com>,
+        <Scott.Teel@microchip.com>, <Justin.Lindley@microchip.com>,
+        <Scott.Benesh@microchip.com>, <Gerry.Morong@microchip.com>,
+        <Mahesh.Rajashekhara@microchip.com>, <Mike.McGowen@microchip.com>,
+        <Murthy.Bhat@microchip.com>, <Balsundar.P@microchip.com>,
+        <joseph.szczypek@hpe.com>, <jeff@canonical.com>,
+        <POSWALD@suse.com>, <john.p.donnelly@oracle.com>,
+        <mwilck@suse.com>, <linux-kernel@vger.kernel.org>,
+        <hch@infradead.org>, <martin.petersen@oracle.com>,
+        <jejb@linux.vnet.ibm.com>, <linux-scsi@vger.kernel.org>
+Subject: Re: [smartpqi updates PATCH V2 09/11] smartpqi: fix duplicate
+ device nodes for tape changers
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1y2763mr9.fsf@ca-mkp.ca.oracle.com>
+References: <20210928235442.201875-1-don.brace@microchip.com>
+        <20210928235442.201875-10-don.brace@microchip.com>
+        <1351a25f-5310-cae3-ae47-01c842e0a185@molgen.mpg.de>
+        <SN6PR11MB2848E6A6F6824C55641FB6FEE1AF9@SN6PR11MB2848.namprd11.prod.outlook.com>
+Date:   Tue, 05 Oct 2021 22:37:48 -0400
+In-Reply-To: <SN6PR11MB2848E6A6F6824C55641FB6FEE1AF9@SN6PR11MB2848.namprd11.prod.outlook.com>
+        (Don Brace's message of "Tue, 5 Oct 2021 20:23:22 +0000")
+Content-Type: text/plain
+X-ClientProxiedBy: SN4PR0601CA0009.namprd06.prod.outlook.com
+ (2603:10b6:803:2f::19) To PH0PR10MB4759.namprd10.prod.outlook.com
+ (2603:10b6:510:3d::12)
 MIME-Version: 1.0
-References: <20210930215311.240774-1-shy828301@gmail.com> <20210930215311.240774-2-shy828301@gmail.com>
-In-Reply-To: <20210930215311.240774-2-shy828301@gmail.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Tue, 5 Oct 2021 19:35:35 -0700
-Message-ID: <CAHbLzkpyxnvm3w0M_CEU7cYRCYr0coNCoiY1DvtnBzqb1R1nsw@mail.gmail.com>
-Subject: Re: [v3 PATCH 1/5] mm: hwpoison: remove the unnecessary THP check
-To:     =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
-        <naoya.horiguchi@nec.com>, Hugh Dickins <hughd@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Peter Xu <peterx@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Linux MM <linux-mm@kvack.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Received: from ca-mkp.ca.oracle.com (138.3.201.19) by SN4PR0601CA0009.namprd06.prod.outlook.com (2603:10b6:803:2f::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.14 via Frontend Transport; Wed, 6 Oct 2021 02:37:51 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 6ed50d86-9217-4793-9775-08d988724b1e
+X-MS-TrafficTypeDiagnostic: PH0PR10MB4695:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <PH0PR10MB469536263C9443CD14C6A7BE8EB09@PH0PR10MB4695.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3631;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: K/4nli6kAgLEpnAwIqDqrzjJMh1dkj2uJjkZ/PVhEw3EzZSJcmzfc9tQZvmjtwHYCC/uhtOq87sdqc5O4rB6ZHiYChVgGq6B0h7UOwwmHQ8az4x0AwftthPFdRbU+vWMDd1pgYd/CYqIvP/tUS/8AUUzmkGKQqt5ViO7d+5hFA12Y7u5GznSP7m9SlbH8HNfbUABWabQH5XGx3dPLyJPyh1jB4kGmKghbpN2/SQldpaVmHcOZS39BdSqObB/uzOv/RQ/NdPGp4V1SO4diu/ok1rLu4C33KngrdRS70IQzp2NvXdeF5DaD/O24G7mtPD8qna+3n2Foe8uGI3oGKQY8YyVNFZQmqosXghQwKkbxoVP2smOfDJp7dDGFCVPISZPcAWfGZI4NEJOUfdUkElgboqpfGC0Ltjn0dSW/aQ0LYFiAqq/vOPYjZomnZvyalKprVqPPBXRwWDlTy+e2z67BqgWi4rpjTNlSoo6wYyGOA7kHJn104Ygmr3fc1yh+rTkUt7PgHklolCsj2Z2tv2X7EWjwkygZkKUFYGn6lO9eNELKilmhmZ48qAW59q5gHNt8ufVxM5o19K9x7/82Lm/2bGNYLkYtHDjbXqI3R5FuM0fa4P3XJiAzx+3bOjItyPjY/f005su5u48P1JUMJpfhD6Roz5nay8cUuIbB+LXBqrk1ufKvRLKvrxEeCxItjcJmjIjLJfu29+KqiVzmAAxqA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(55016002)(508600001)(2906002)(316002)(6666004)(186003)(26005)(66556008)(66476007)(8676002)(66946007)(38350700002)(38100700002)(36916002)(4326008)(8936002)(52116002)(6916009)(86362001)(54906003)(7696005)(558084003)(5660300002)(7416002)(956004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?W6er/190UCW15HJsaMhY4ePhcfvHfgeZnm12/YHICA5dhvPuMNkzCp1z/y2n?=
+ =?us-ascii?Q?AUXAUPjRu4ziPEco/QQRbU2TCiRU+wHZ+D0rxORLoX3YbQ/ohJmH8/n+Fqgn?=
+ =?us-ascii?Q?+tWk2fQ6v+17KOFUKy6T3/XOAkSguTQ+nHej4GDuruOt9DObrZeL3MjJeoSt?=
+ =?us-ascii?Q?K6IakaiavH2igQB5nk8ZL1muen6kUlT+t9F4MV60hsi4vvEmYvwBoiFSODoH?=
+ =?us-ascii?Q?cf5kVlpM+A4/h2khyZ8bDjIzi9m6rG6t2yBp+lpvBy29TzGQaVnt46ukBHQ2?=
+ =?us-ascii?Q?t0hSFrJuA9vTzvXpQBsdEqPlLiamHk8HgWDZmhL8IBTlsc2EU6klb+dKG0G1?=
+ =?us-ascii?Q?gHqh/HqMORDXYokKtn4tWwHgMC4aDW5/1MdObRoCCrSvj0+489S2siiVXlF3?=
+ =?us-ascii?Q?Pu73cx7zH/KlBrkTTKu5r8x2Iv/clS7BsHe06A+jL+JXXPf/ALBp8gYPjnpg?=
+ =?us-ascii?Q?urkyx1XCZxwZtabDGcRrtgGqOF4AZA6Q2hDU/6TkDblmBvzgycNYKZQffLjE?=
+ =?us-ascii?Q?SFLNICjL5Rqq6lftf7ounVrzQ+oeAryEbMlh2gY9eXl4vuK42TBhZMlk7z1b?=
+ =?us-ascii?Q?u11YB3pkoamjwks+vYF+aG8fFNGAvHmxUlN6dUE95yMjklS4/keK1A7aPFbF?=
+ =?us-ascii?Q?lNziEBOH3S7+n5dhdKUYbhbALg/aJXfKHktaiByg32s5P92R7DNsOksppHL4?=
+ =?us-ascii?Q?7lKoSWFrDOTUoHyOWbzwC4q98paldOSPBc/X5uIc8eObAUe1j4lukfM4CaUY?=
+ =?us-ascii?Q?AdMogKBGh62UYPpwvBagnK5lT/5txMbF8tTbUlxaxE14NQO1DMcid3+nxUyW?=
+ =?us-ascii?Q?COMEmfvwJBBN3RBcWLx/FAShn6eQNcHUfyRP9Q8C83rElDOAMQZEv9GUxA0v?=
+ =?us-ascii?Q?iO5yqs69GlYfptRWqQg5DseA3fvdECdcqxTirgOssYZLHMB03/VwvkZR51AF?=
+ =?us-ascii?Q?XPF0uKhsQW2h68yS6C8FAQrWPs4SEzVnP/mkU9ybeUr7uS/LKiwfWWw2rN73?=
+ =?us-ascii?Q?mlqTDCYs5E+SF5HwrvYacDBGpq7g7TuFJusd4wrGvJowc+zTcvvZ9xryivVD?=
+ =?us-ascii?Q?AI3b0pCGVuTpwxQGHrKk+hxu1JvJy1hw3ttFNdILJX+7v/aJvgSdJaIJZ5u3?=
+ =?us-ascii?Q?z/P32om9OZUtueT/EiJ2IFIXVB5m0ndHbtnsm2Ava8WxbUtQtbz2Sgx5BmeO?=
+ =?us-ascii?Q?a/KMt3uEGuW8bb34iV0j4jjlhFabUFLHlCaX5SRqZ4Mn5w81L+rXnrpWp9iH?=
+ =?us-ascii?Q?pb5BjckACBmer9SUIQEVt/NVMtBYWgvBi4brPIEpF46FOJ00XH2HPwvE9CFZ?=
+ =?us-ascii?Q?+rj10Wu05FE0tt73wVU5zhLm?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6ed50d86-9217-4793-9775-08d988724b1e
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Oct 2021 02:37:51.8616
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: P/NTKbaV1o7rovjc1IalRfXE2EtLUXvAVlGBipd1AjYLdvARsxFHCtBvS375CpRlz9MmLm6Gd+3MoNCbMAkssFyY920h1fwA6ylO8sCvZIc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4695
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10128 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=999 adultscore=0
+ bulkscore=0 suspectscore=0 malwarescore=0 spamscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109230001
+ definitions=main-2110060014
+X-Proofpoint-GUID: BLBJH4Gu79xOMom8ESirx_U508VRHoh8
+X-Proofpoint-ORIG-GUID: BLBJH4Gu79xOMom8ESirx_U508VRHoh8
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Naoya,
 
-Any comment on this patch and patch #3? I'd prefer to fix more
-comments for a new version.
+Don,
 
-Thanks,
-Yang
+> DON: Done in V3, thanks for your review.
 
+Just a heads up that I already staged this for zeroday testing
+yesterday. If you post a v3 I'll drop what I have. But I would prefer an
+incremental patch.
 
-On Thu, Sep 30, 2021 at 2:53 PM Yang Shi <shy828301@gmail.com> wrote:
->
-> When handling THP hwpoison checked if the THP is in allocation or free
-> stage since hwpoison may mistreat it as hugetlb page.  After
-> commit 415c64c1453a ("mm/memory-failure: split thp earlier in memory error
-> handling") the problem has been fixed, so this check is no longer
-> needed.  Remove it.  The side effect of the removal is hwpoison may
-> report unsplit THP instead of unknown error for shmem THP.  It seems not
-> like a big deal.
->
-> The following patch depends on this, which fixes shmem THP with
-> hwpoisoned subpage(s) are mapped PMD wrongly.  So this patch needs to be
-> backported to -stable as well.
->
-> Cc: <stable@vger.kernel.org>
-> Suggested-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
-> Signed-off-by: Yang Shi <shy828301@gmail.com>
-> ---
->  mm/memory-failure.c | 14 --------------
->  1 file changed, 14 deletions(-)
->
-> diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-> index 54879c339024..ed28eba50f98 100644
-> --- a/mm/memory-failure.c
-> +++ b/mm/memory-failure.c
-> @@ -1147,20 +1147,6 @@ static int __get_hwpoison_page(struct page *page)
->         if (!HWPoisonHandlable(head))
->                 return -EBUSY;
->
-> -       if (PageTransHuge(head)) {
-> -               /*
-> -                * Non anonymous thp exists only in allocation/free time. We
-> -                * can't handle such a case correctly, so let's give it up.
-> -                * This should be better than triggering BUG_ON when kernel
-> -                * tries to touch the "partially handled" page.
-> -                */
-> -               if (!PageAnon(head)) {
-> -                       pr_err("Memory failure: %#lx: non anonymous thp\n",
-> -                               page_to_pfn(page));
-> -                       return 0;
-> -               }
-> -       }
-> -
->         if (get_page_unless_zero(head)) {
->                 if (head == compound_head(page))
->                         return 1;
-> --
-> 2.26.2
->
+Thanks!
+
+-- 
+Martin K. Petersen	Oracle Linux Engineering
