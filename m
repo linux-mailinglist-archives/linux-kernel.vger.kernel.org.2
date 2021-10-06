@@ -2,97 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2AF44248FB
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 23:35:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6829D4248FE
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 23:35:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230182AbhJFVg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 17:36:57 -0400
-Received: from mail-oi1-f177.google.com ([209.85.167.177]:37792 "EHLO
-        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229464AbhJFVg4 (ORCPT
+        id S239692AbhJFVhL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 17:37:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52744 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229926AbhJFVhK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 17:36:56 -0400
-Received: by mail-oi1-f177.google.com with SMTP id w206so6037287oiw.4;
-        Wed, 06 Oct 2021 14:35:04 -0700 (PDT)
+        Wed, 6 Oct 2021 17:37:10 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D4D3C061753;
+        Wed,  6 Oct 2021 14:35:17 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id r18so15038991edv.12;
+        Wed, 06 Oct 2021 14:35:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=k2aWKq81FbwNlwh5R8TQ/Jg8udU/6vv2IjPzFQ2xQYI=;
+        b=MO3EPnYEBmt3cY4QIjuUzEkrBOj4RXjpfwB77pM/xDipuhauDTCEAa0cxkz4+HNQYT
+         X5Q2SiOx7f0uGD/i5MeGXjde3rwJitLh/fVa1rEAezu5HnKriP66VUePWE/rygi6Sbnf
+         bb3zh3Ksmr5MDjCa8yHLVDkl5c1ka1SJSbR78NVLqBkKd01SLJd+rYM5VWg5fyg3Aif1
+         8AU46DcA9DVczx6lpEjNFkVj4YuDPj/v2+R4YZOvu060ahg5n11qhpbDNJB5bZAki/Eg
+         k8NkaANEd6zsct2IALxXqGIO3EO/oyULIpSXd/o/iCbdbmIOW78RuNPXs6L/qZAdBJj9
+         UUnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=jlaMBb+PXzLm9v2gfdRM6nmNdN1Ikyp2veWkLLyMHFA=;
-        b=qdte5e0sfw+3ILNtzz7ziTz+N9IyeqDrfsPZnMp7cxcWvAik6oABZ6Sh6w7Fk4dbR+
-         2CILh+WxN4jo4dpqyzuAh1Ixb1l+dDNNYHmREfQCbk/NdAAopCOpSLTVw6Cl66D4vlDL
-         h2Py/o7fecCbkEqU3uukdYMpUqGe0MRynTKgnS7d8bAjEZeJ/TIn7SltDf5kbDzGnQaE
-         STEQPaeQ2FxR3ZMie9TmyQQNq6O5+EVW8WiBt4v+ZxdsMO++/6AcrG7nyPcCLLfnpH3Q
-         bEpYkTaRQUSkxIQIa+1a3b/mkxLgEFowk7W/iHu+suugmSlnQZvji2ZdRsTyObvI3DOa
-         Y59w==
-X-Gm-Message-State: AOAM530neW/TcJZePK4Odu19TcijltjrWngMzonTZ87+Ao1ZlKE8yoc4
-        69neMWc8emlNivYprZms/zvgLWvBUg==
-X-Google-Smtp-Source: ABdhPJyJ113+jKX1dZCRWhNWr4t5PaazrGDt9LDPqVMQsBlmlHlcpVTm5Uj/fVJwTSgh7C0bxVia9Q==
-X-Received: by 2002:aca:4b09:: with SMTP id y9mr3045460oia.80.1633556103835;
-        Wed, 06 Oct 2021 14:35:03 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id x34sm4377324ott.52.2021.10.06.14.35.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Oct 2021 14:35:03 -0700 (PDT)
-Received: (nullmailer pid 2921399 invoked by uid 1000);
-        Wed, 06 Oct 2021 21:35:02 -0000
-Date:   Wed, 6 Oct 2021 16:35:02 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Frank Rowand <frowand.list@gmail.com>
-Subject: [GIT PULL] Devicetree fixes for v5.15, take 3
-Message-ID: <YV4WhkB4PQVMCCvu@robh.at.kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=k2aWKq81FbwNlwh5R8TQ/Jg8udU/6vv2IjPzFQ2xQYI=;
+        b=KmuSj2VX5jkYIiSAFUcOHFT0SZUeACQIR4v9jCZXjPsqmDIY4qkTMKSAZigwIQ37UE
+         tqeCedlHGI0qZNe6nC69W293s0XpM1yXY6K0dn2PPCX7DpBQasXHYmVUHaw77ViV6gWe
+         KgMKC4kgj06ZRP4G1F8U6qGtyIoGhUFiY9PeCrfDOf6NC8432jQ81KFNSSNTRXGN1xTY
+         zEZCW5ylNKWd8Pc7sunt+EHXISnLijtSCpt+NF11sLwL8zKJTxMsV6UAf/RckXqdXhmL
+         cLyX5k4y4ppBwafekiBduXIesxDqS2TkQsjt7876Fto6Nv0GhcGNz0s6/YYSh0GhkYk+
+         w3Dg==
+X-Gm-Message-State: AOAM530qJEKbufcEhdqXX6eSLmZ5KPLM+w5TuUKcC1oxVxFqim18oIlj
+        DCjY1qnPAOk8ZSWZvimgCV5luth7LylH5JAKTMadvA==
+X-Google-Smtp-Source: ABdhPJwjMTd1GVQw9RB1UdIg9jNf4eF/3QHYTlF9HB2C7uy1+9qeoPgzPYQVzkTrMNVt3FJzNYtZEQ==
+X-Received: by 2002:a17:906:5855:: with SMTP id h21mr780128ejs.230.1633556115999;
+        Wed, 06 Oct 2021 14:35:15 -0700 (PDT)
+Received: from ?IPv6:2a04:241e:501:3870:473a:8ebc:828b:d6c6? ([2a04:241e:501:3870:473a:8ebc:828b:d6c6])
+        by smtp.gmail.com with ESMTPSA id d17sm6302991edv.58.2021.10.06.14.35.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Oct 2021 14:35:15 -0700 (PDT)
+Subject: Re: [PATCH 08/11] selftests: net/fcnal: Replace sleep after server
+ start with -k
+To:     David Ahern <dsahern@gmail.com>, Jakub Kicinski <kuba@kernel.org>,
+        Shuah Khan <shuah@kernel.org>, David Ahern <dsahern@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Ido Schimmel <idosch@nvidia.com>,
+        Seth David Schoen <schoen@loyalty.org>,
+        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1633520807.git.cdleonard@gmail.com>
+ <ec40bd7128a30e93b90ba888f3468f394617a010.1633520807.git.cdleonard@gmail.com>
+ <43210038-b04b-3726-1355-d5f132f6c64e@gmail.com>
+From:   Leonard Crestez <cdleonard@gmail.com>
+Message-ID: <d6882c3f-4ecf-4b4e-c20e-09b88da4fbd6@gmail.com>
+Date:   Thu, 7 Oct 2021 00:35:14 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <43210038-b04b-3726-1355-d5f132f6c64e@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
-
-Please pull a couple more DT fixes.
-
-Rob
 
 
-The following changes since commit 55c21d57eafb7b379bb7b3e93baf9ca2695895b0:
+On 06.10.2021 17:54, David Ahern wrote:
+> On 10/6/21 5:47 AM, Leonard Crestez wrote:
+>> The -k switch makes the server fork into the background after the listen
+>> call is succesful, this can be used to replace most of the `sleep 1`
+>> statements in this script.
+>>
+>> Change performed with a vim command:
+>>
+>> s/nettest \(.*-s.*\) &\n\s*sleep 1\n/nettest \1 -k\r
+>>
+>> Signed-off-by: Leonard Crestez <cdleonard@gmail.com>
+>> ---
+>>   tools/testing/selftests/net/fcnal-test.sh | 641 ++++++++--------------
+>>   1 file changed, 219 insertions(+), 422 deletions(-)
+>>
+> 
+> I have a change from January [1] that runs the tests with 1 binary -
+> takes both client and server side arguments, does the server setup,
+> switches namespaces as needed and then runs the client side. I got
+> bogged down validating the before and after which takes a long time
+> given the number of tests. The output in verbose mode is as important as
+> the pass / fail. Many of the tests document existing behavior as well as
+> intended behavior.
+> 
+> You used a search and replace to update the tests. Did you then do the
+> compare of test results - not pass / fail but output?
 
-  dt-bindings: arm: Fix Toradex compatible typo (2021-09-17 16:02:41 -0500)
+I counted the [FAIL] or [ OK ] markers but not the output of nettest 
+itself. I don't know what to look for, I guess I could diff the outputs?
 
-are available in the Git repository at:
+Shouldn't it be sufficient to compare the exit codes of the nettest client?
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git tags/devicetree-fixes-for-5.15-3
+The output is also modified by a previous change to not capture server 
+output separately and instead let it be combined with that of the 
+client. That change is required for this one, doing out=$(nettest -k) 
+does not return on fork unless the pipe is also closed.
 
-for you to fetch changes up to b2d70c0dbf2731a37d1c7bcc86ab2387954d5f56:
+I did not look at your change, mine is relatively minimal because it 
+only changes who decide when the server goes into the background: the 
+shell script or the server itself. This makes it work very easily even 
+for tests with multiple server instances.
 
-  dt-bindings: drm/bridge: ti-sn65dsi86: Fix reg value (2021-10-04 12:01:59 -0500)
-
-----------------------------------------------------------------
-Devicetree fixes for v5.15, take 3:
-
-- Add another allowed address for TI sn65dsi86
-
-- Drop more redundant minItems/maxItems
-
-- Fix more graph 'unevaluatedProperties' warnings in media bindings
-
-----------------------------------------------------------------
-Geert Uytterhoeven (1):
-      dt-bindings: drm/bridge: ti-sn65dsi86: Fix reg value
-
-Rob Herring (2):
-      dt-bindings: media: Fix more graph 'unevaluatedProperties' related warnings
-      dt-bindings: Drop more redundant 'maxItems/minItems'
-
- Documentation/devicetree/bindings/display/bridge/ti,sn65dsi83.yaml | 2 --
- Documentation/devicetree/bindings/display/bridge/ti,sn65dsi86.yaml | 2 +-
- Documentation/devicetree/bindings/media/i2c/ovti,ov5647.yaml       | 2 +-
- Documentation/devicetree/bindings/media/i2c/ovti,ov9282.yaml       | 2 +-
- Documentation/devicetree/bindings/media/i2c/sony,imx335.yaml       | 2 +-
- Documentation/devicetree/bindings/media/i2c/sony,imx412.yaml       | 2 +-
- Documentation/devicetree/bindings/mmc/snps,dwcmshc-sdhci.yaml      | 4 +---
- Documentation/devicetree/bindings/net/nxp,dwmac-imx.yaml           | 1 -
- Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.yaml          | 1 -
- 9 files changed, 6 insertions(+), 12 deletions(-)
+--
+Regards,
+Leonard
