@@ -2,135 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BA81423A20
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 10:59:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6940C423A26
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 11:00:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237757AbhJFJAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 05:00:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45944 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237653AbhJFJAt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 05:00:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2882761154;
-        Wed,  6 Oct 2021 08:58:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633510737;
-        bh=++lqEzQxtoW7xfOop+3aaHSFfCOnbuI0IZsaxmI1SwU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=U44MV0I+Y7MJ6VUgb5Zmwxs0dfF1p2KQU2+dd0zK8in5c21w8sAH6CYVHJwBOQOk7
-         39H45Z4x4k3pZXCNWfODnm981s+m9HOW6SEDaoDmIcY7xpTx4fiQG0p9nDenpY+iju
-         fVnxn0DPgcGoXk5LI8V9r5/SRkWIMwX2c0JN3UIxJhd2IVHPc5fb0HSIMFmu76qM0A
-         PSb/xnshsD3UX4CyqpPxGU16aruhSp9jJKdlOmKEm1Oeq47Bj/Idb+lg2GgGUJj+y6
-         IvIk/o+WKLjeohjaADhQBSr1mktt4YyFribvW1F+KEtBTdeitHEo/gGqv2LPT0VN1V
-         iCNt2bDWNSiuA==
-Date:   Wed, 6 Oct 2021 11:58:52 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     "David E. Box" <david.e.box@linux.intel.com>
-Cc:     lee.jones@linaro.org, hdegoede@redhat.com, mgross@linux.intel.com,
-        bhelgaas@google.com, gregkh@linuxfoundation.org,
-        andriy.shevchenko@linux.intel.com, srinivas.pandruvada@intel.com,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: Re: [PATCH 2/5] platform/x86/intel: Move intel_pmt from MFD to
- Auxiliary Bus
-Message-ID: <YV1lTMwBSVlvadiG@unreal>
-References: <20211001012815.1999501-1-david.e.box@linux.intel.com>
- <20211001012815.1999501-3-david.e.box@linux.intel.com>
+        id S237758AbhJFJB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 05:01:56 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:47356 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237594AbhJFJBv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 05:01:51 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 29B7320345;
+        Wed,  6 Oct 2021 08:59:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1633510799; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=eKqMImRNd0c3k50j3g01wRgNX9Ro+v9p2fDSwGsbLWk=;
+        b=ycSY7PllWcAZH5HUjpCQ/mnzsotzRcdf2xhSaBStYkQTsp3fOEZQLii3vhiEPPWIqYb/ez
+        zb89U/vaMecCmIRNYdvLMM46Nlh7b97SRVaL+IQ8VUbR4pOAuDKTYonEZ0LU1JNGnBFFDE
+        YOrLAtrmphkzPZPlxH1rbxhck4Q+ZCg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1633510799;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=eKqMImRNd0c3k50j3g01wRgNX9Ro+v9p2fDSwGsbLWk=;
+        b=7pa+pdfXc0TEWsqKiHvtgRldreVZaRlAZv7WEOTM2J3lxPOwUpuQja4evxxfBwmvcYWniF
+        mgvXF8iJZkvcWEDw==
+Received: from pobox.suse.cz (pobox.suse.cz [10.100.2.14])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id DCCB9A3B84;
+        Wed,  6 Oct 2021 08:59:58 +0000 (UTC)
+Date:   Wed, 6 Oct 2021 10:59:58 +0200 (CEST)
+From:   Miroslav Benes <mbenes@suse.cz>
+To:     Peter Zijlstra <peterz@infradead.org>
+cc:     gor@linux.ibm.com, jpoimboe@redhat.com, jikos@kernel.org,
+        pmladek@suse.com, mingo@kernel.org, linux-kernel@vger.kernel.org,
+        joe.lawrence@redhat.com, fweisbec@gmail.com, tglx@linutronix.de,
+        hca@linux.ibm.com, svens@linux.ibm.com, sumanthk@linux.ibm.com,
+        live-patching@vger.kernel.org, paulmck@kernel.org,
+        rostedt@goodmis.org, x86@kernel.org
+Subject: Re: [PATCH v2 03/11] sched,livepatch: Use task_call_func()
+In-Reply-To: <20210929152428.709906138@infradead.org>
+Message-ID: <alpine.LSU.2.21.2110061058470.2311@pobox.suse.cz>
+References: <20210929151723.162004989@infradead.org> <20210929152428.709906138@infradead.org>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211001012815.1999501-3-david.e.box@linux.intel.com>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 06:28:12PM -0700, David E. Box wrote:
-> Intel Platform Monitoring Technology (PMT) support is indicated by presence
-> of an Intel defined PCIe DVSEC structure with a PMT ID. However DVSEC
-> structures may also be used by Intel to indicate support for other
-> capabilities unrelated to PMT.  The Out Of Band Management Services Module
-> (OOBMSM) is an example of a device that can have both PMT and non-PMT
-> capabilities. In order to support these capabilities it is necessary to
-> modify the intel_pmt driver to handle the creation of platform devices more
-> generically. To that end the following changes are made.
+On Wed, 29 Sep 2021, Peter Zijlstra wrote:
+
+> Instead of frobbing around with scheduler internals, use the shiny new
+> task_call_func() interface.
 > 
-> Convert the driver and child drivers from MFD to the Auxiliary Bus. This
-> architecture is more suitable anyway since the driver partitions a
-> multifunctional PCIe device. This also moves the driver out of the MFD
-> subsystem and into platform/x86/intel.
-> 
-> Before, devices were named by their capability (e.g. pmt_telemetry).
-> Instead, generically name them by their capability ID (e.g.
-> intel_extended_cap.2). This allows the IDs to be created automatically,
-> minimizing the code needed to support future capabilities. However, to
-> ensure that unsupported devices aren't created, use an allow list to
-> specify supported capabilities. Along these lines, rename the driver from
-> intel_pmt to intel_extended_caps to better reflect the purpose.
-> 
-> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
-> ---
-> 
-> V1:	New patch. However incorporates some elements of [1] which was
-> 	dropped. Namely enumerating features generically and creating an
-> 	allow list. Also cleans up probe by moving some code to functions
-> 	and using a bool instead of an int to track whether a device was
-> 	added.
-> 
-> [1] https://lore.kernel.org/all/20210922213007.2738388-3-david.e.box@linux.intel.com/
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 
-<...>
+This looks really nice. With the added check for "task != current" 
+that Petr pointed out
 
-> +static int extended_caps_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
-> +{
-> +	struct extended_caps_platform_info *info;
-> +	bool have_devices = false;
-> +	unsigned long quirks = 0;
-> +	int ret;
-> +
-> +	ret = pcim_enable_device(pdev);
-> +	if (ret)
-> +		return ret;
-> +
-> +	info = (struct extended_caps_platform_info *)id->driver_data;
+Acked-by: Miroslav Benes <mbenes@suse.cz>
 
-pci_get_drvdata() in all places and no need to cast void *.
-
-> +	if (info)
-> +		quirks = info->quirks;
-> +
-> +	have_devices |= extended_caps_walk_dvsec(pdev, quirks);
-> +
-> +	if (info && (info->quirks & EXT_CAPS_QUIRK_NO_DVSEC))
-> +		have_devices |= extended_caps_walk_header(pdev, quirks, info->capabilities);
-> +
-> +	if (!have_devices)
-> +		return -ENODEV;
-> +
-> +	return 0;
-> +}
-
-<...>
-
-> -static struct platform_driver pmt_telem_driver = {
-> -	.driver = {
-> -		.name   = TELEM_DEV_NAME,
-> -	},
-> -	.remove = pmt_telem_remove,
-> -	.probe  = pmt_telem_probe,
-> +static const struct auxiliary_device_id pmt_telem_aux_id_table[] = {
-> +	{ .name = "intel_extended_caps.2", },
-
-Why "2" in the name?
-
-Thanks
-
-> +	{},
-> +};
-> +MODULE_DEVICE_TABLE(auxiliary, pmt_telem_aux_id_table);
-> +
-> +static struct auxiliary_driver pmt_telem_aux_driver = {
-> +	.id_table	= pmt_telem_aux_id_table,
-> +	.remove		= pmt_telem_remove,
-> +	.probe		= pmt_telem_probe,
->  };
->  
+M
