@@ -2,116 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D08742452C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 19:49:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ABA4424545
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 19:51:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238898AbhJFRv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 13:51:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56936 "EHLO
+        id S239083AbhJFRxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 13:53:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239163AbhJFRvR (ORCPT
+        with ESMTP id S239158AbhJFRvf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 13:51:17 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C797BC061764
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 10:49:18 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id n2so2131129plk.12
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 10:49:18 -0700 (PDT)
+        Wed, 6 Oct 2021 13:51:35 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDF37C061753
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 10:49:42 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id oa12-20020a17090b1bcc00b0019f715462a8so2969023pjb.3
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 10:49:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mforney-org.20210112.gappssmtp.com; s=20210112;
-        h=date:to:cc:subject:from:references:in-reply-to:message-id
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=XOrLreEsAuVDxgUxU0x2eSWaOLostnJXpsKIuIcC4bY=;
-        b=O64bnKH6KoKyvWVSyqsE/LKur6GdHTj0Y+7e5nyW8QRvasi2/E6oSdzxy+t0qnj4Xp
-         COFS13bw8Nc/5nXiOjUWGNciFr7Q24v659AECXVa89pDdoG9I8sczFxW9ExlVQFTBEkh
-         8BTS2GwYBT99RYUJSupN7so85Jx0cN11OqU1+Onri0yO/GrB8HFzSzDOa2szyKasKyl4
-         HPKDu2XGcsUOMdBC9zGj1AhuHThAOyduETNOD93ZscYsX9MuzfhQ9VQNVxRCgEH/5IwE
-         DIvJV2AXKyRhrRj3W6kw/1LE2dzsvDONt+mkKGh9NLuHB/cQeRodbeEv9LkTFzT1NRMq
-         c/Wg==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BSEO6SLg5H8RZkrrLoY0SelFJ1hO+5cBI62v/ESgIpU=;
+        b=SgTxqXJ69J1MJNL9dE5pwTzyaW+HG95CnUbz0sCChkCzI/3pCMzDmlt1R3ikUwU9ek
+         i5pvVifXQSrUMLvTj7wjhJm2j8cISbu3VNaOsWcK4FkJhT/4Sm8bLN6eHDQ1fspYiPDE
+         u5mjkIqkyiiY+jGBPZH+e76/XMkVvHAA8xNLsraCR483BikE82I9agpzmEqeVAi6r+Vp
+         3IXpx/ox0jwEEufY9WYLZ9KAgP/oHCxquHMZu64AoDV3sZhIvHYnqxXz7N0Lj5RCvvTY
+         5yAJZkKbLfB5tcBV45exAAZCBdoASiDtL0RpfsuBhSIVtpOp2YZu/bfoTDekSVjXmxsb
+         56Tw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:to:cc:subject:from:references:in-reply-to
-         :message-id:user-agent:mime-version:content-transfer-encoding;
-        bh=XOrLreEsAuVDxgUxU0x2eSWaOLostnJXpsKIuIcC4bY=;
-        b=k7g760b6qft5jj68SEtT4ZcwD8g2iGjX95X1zeHtcsJqRQDPnf+0kwhrikDfJDedAO
-         u60pDEc4bxqmYijtu2iazhE+UkIuEFr6WEpuHjl8j0iCJ/rZZ3gJS2dQEnnib3tCmYmz
-         k6f3ilmIGN6Ic4l0s4lngeDK42O/oJ3jMCuIeJIB9T3CxKHdQ2X0sTRRA/q99qhqrqTI
-         pNsUJJyfUnEhOhr56bI1jCXCBDvz4+YGAYp+MWcPXmZ3Osh/D6uazjiKSLyjEvg3b1tk
-         4jLPKtGMwB+8T4WqT/kQm418JQEbnXQA5L3GlGiDraa1W2/1sT79bOt9xKl/cYMKwKux
-         ZJAA==
-X-Gm-Message-State: AOAM532rRInjyII1u2/lW24B1DGsmxmeWD+VNMzvhP6DHcqkoPtl5Wcm
-        Oyd7jkJFvBs6N2vjHYn02oIkPqmLMzteLdlS6tpz+Q==
-X-Google-Smtp-Source: ABdhPJz5bzd0Ll3u46SkBJss+W4S4Nr59Wl1BFpeQCxvVpqg12wwq7XaF2OPnMoJnGmqYHr4xnQO4Q==
-X-Received: by 2002:a17:90a:ac0d:: with SMTP id o13mr86949pjq.74.1633542558298;
-        Wed, 06 Oct 2021 10:49:18 -0700 (PDT)
-Received: from localhost ([98.45.152.168])
-        by smtp.gmail.com with ESMTPSA id z10sm20718583pfn.70.2021.10.06.10.49.17
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 06 Oct 2021 10:49:18 -0700 (PDT)
-Date:   Wed, 06 Oct 2021 10:49:17 -0700
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
-        Baolin Wang <baolin.wang@linaro.org>, y2038@lists.linaro.org,
-        linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
-        Baolin Wang <baolin.wang7@gmail.com>
-Subject: Re: [alsa-devel] [PATCH v7 8/9] ALSA: add new 32-bit layout for
- snd_pcm_mmap_status/control
-From:   Michael Forney <mforney@mforney.org>
-References: <20191211212025.1981822-1-arnd@arndb.de>
- <20191211212025.1981822-9-arnd@arndb.de>
-In-Reply-To: <20191211212025.1981822-9-arnd@arndb.de>
-Message-Id: <29QBMJU8DE71E.2YZSH8IHT5HMH@mforney.org>
-User-Agent: mblaze/1.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BSEO6SLg5H8RZkrrLoY0SelFJ1hO+5cBI62v/ESgIpU=;
+        b=Bu/cTjYrHf4uDzHR3QNyIhLHNY63yBIaGsIPXsD69Q7+1dZsiUIKYN7ctBjpirHx8S
+         2tqJ7O23Xu087x/MZhN9co75lp7KEf+NWFIGvFZZe0l40k3pHIvx20PcBPVQ4oN77ajZ
+         eCDvCIcOZ14s8qc1JQYYfSREtU6xNu4WfYN1+PrG5I6H/FTfp28QvHK2brjVmSz/42Jt
+         SwGIT4Exz0aYVJSJkRjq+Ry/ABpqCdGPRhlTjtDnWqKlacEFEn36gSeV1lWFyP4qK9X8
+         CqAZrmj+pcVxfDcSQ3G+UOe8kp0OhI9b5KKp/QBOssYsCMkQxiIZywSM3zKNn5zkrWFF
+         flKw==
+X-Gm-Message-State: AOAM530H5CzcDl+FauNMSv0Tx/q7Hjv8rDGvw1MCWo0iLUS5VHlS4kai
+        XYHNT1gHoUCNaNfKnHdT5tOTmG54O+BW5eB9wv2YeERj2cu4HQ==
+X-Google-Smtp-Source: ABdhPJyNWMvwSzWU+KRjwbIpNloablcFluidmdSC6ypItnUMNKelanRCRJ7nAwDZXakZnQJ9XTDJ6o2UH9KE3nr410I=
+X-Received: by 2002:a17:902:6f17:b0:139:eec4:867e with SMTP id
+ w23-20020a1709026f1700b00139eec4867emr12228038plk.77.1633542581985; Wed, 06
+ Oct 2021 10:49:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+References: <20211005011340.2826268-1-dlatypov@google.com>
+In-Reply-To: <20211005011340.2826268-1-dlatypov@google.com>
+From:   Brendan Higgins <brendanhiggins@google.com>
+Date:   Wed, 6 Oct 2021 10:49:30 -0700
+Message-ID: <CAFd5g445HFVd0e=r7y3JELCPkD=_T7QUq2K0BgKEeyG2Hi2qgw@mail.gmail.com>
+Subject: Re: [PATCH v2] kunit: tool: yield output from run_kernel in real time
+To:     Daniel Latypov <dlatypov@google.com>
+Cc:     davidgow@google.com, linux-kernel@vger.kernel.org,
+        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
+        skhan@linuxfoundation.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Arnd Bergmann <arnd@arndb.de> wrote:
-> +#if defined(__BYTE_ORDER) ? __BYTE_ORDER =3D=3D __BIG_ENDIAN : defined(_=
-_BIG_ENDIAN)
-> +typedef char __pad_before_uframe[sizeof(__u64) - sizeof(snd_pcm_uframes_=
-t)];
-> +typedef char __pad_after_uframe[0];
-> +#endif
-> +
-> +#if defined(__BYTE_ORDER) ? __BYTE_ORDER =3D=3D __LITTLE_ENDIAN : define=
-d(__LITTLE_ENDIAN)
-> +typedef char __pad_before_uframe[0];
-> +typedef char __pad_after_uframe[sizeof(__u64) - sizeof(snd_pcm_uframes_t=
-)];
-> +#endif
-> +
-> +struct __snd_pcm_mmap_status64 {
-> +	__s32 state;			/* RO: state - SNDRV_PCM_STATE_XXXX */
-> +	__u32 pad1;			/* Needed for 64 bit alignment */
-> +	__pad_before_uframe __pad1;
-> +	snd_pcm_uframes_t hw_ptr;	/* RO: hw ptr (0...boundary-1) */
-> +	__pad_after_uframe __pad2;
-> +	struct __snd_timespec64 tstamp;	/* Timestamp */
-> +	__s32 suspended_state;		/* RO: suspended stream state */
-> +	__u32 pad3;			/* Needed for 64 bit alignment */
-> +	struct __snd_timespec64 audio_tstamp; /* sample counter or wall clock *=
-/
-> +};
-> +
-> +struct __snd_pcm_mmap_control64 {
-> +	__pad_before_uframe __pad1;
-> +	snd_pcm_uframes_t appl_ptr;	 /* RW: appl ptr (0...boundary-1) */
-> +	__pad_before_uframe __pad2;
+On Mon, Oct 4, 2021 at 6:13 PM Daniel Latypov <dlatypov@google.com> wrote:
+>
+> Currently, `run_kernel()` dumps all the kernel output to a file
+> (.kunit/test.log) and then opens the file and yields it to callers.
+> This made it easier to respect the requested timeout, if any.
+>
+> But it means that we can't yield the results in real time, either to the
+> parser or to stdout (if --raw_output is set).
+>
+> This change spins up a background thread to enforce the timeout, which
+> allows us to yield the kernel output in real time, while also copying it
+> to the .kunit/test.log file.
+> It's also careful to ensure that the .kunit/test.log file is complete,
+> even in the kunit_parser throws an exception/otherwise doesn't consume
+> every line, see the new `finally` block and unit test.
+>
+> For example:
+>
+> $ ./tools/testing/kunit/kunit.py run --arch=x86_64 --raw_output
+> <configure + build steps>
+> ...
+> <can now see output from QEMU in real time>
+>
+> This does not currently have a visible effect when --raw_output is not
+> passed, as kunit_parser.py currently only outputs everything at the end.
+> But that could change, and this patch is a necessary step towards
+> showing parsed test results in real time.
+>
+> Signed-off-by: Daniel Latypov <dlatypov@google.com>
 
-I was looking through this header and happened to notice that this
-padding is wrong. I believe it should be __pad_after_uframe here.
+Awesome! Thanks for finally fixing this!
 
-I'm not sure of the implications of this typo, but I suspect it
-breaks something on 32-bit systems with 64-bit time (regardless of
-the endianness, since it changes the offset of avail_min).
-
-> +
-> +	__pad_before_uframe __pad3;
-> +	snd_pcm_uframes_t  avail_min;	 /* RW: min available frames for wakeup *=
-/
-> +	__pad_after_uframe __pad4;
-> +};
+Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
