@@ -2,93 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1D52423E81
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 15:17:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52D7A423E86
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 15:19:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238501AbhJFNTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 09:19:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29238 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231259AbhJFNTp (ORCPT
+        id S238607AbhJFNVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 09:21:06 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:36888 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231524AbhJFNVF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 09:19:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633526273;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+zbCfVnHe3hEOXNTzkBOuBqFXs5HnnXgmi37Lbo5cf0=;
-        b=YMqDlv12XO2LnjUUBU7lDeQni7BKIxaMyHTQqVWPWXft4KFCfOMSqL12RVnRMouNTETfmf
-        jrWOdwRjrRby3Jy0hPeDmK14VgYTF7la6A9qFIuKrtNXAXeMna7parq+IOeYWqalHw6Byz
-        QcrNR6gRllLs4ajMGeE0CkPiRWDi6sI=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-237-fl_FKUOyPnOkVvqX53q8xg-1; Wed, 06 Oct 2021 09:17:52 -0400
-X-MC-Unique: fl_FKUOyPnOkVvqX53q8xg-1
-Received: by mail-qt1-f200.google.com with SMTP id k1-20020ac80201000000b002a7200b449eso2227597qtg.18
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 06:17:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+zbCfVnHe3hEOXNTzkBOuBqFXs5HnnXgmi37Lbo5cf0=;
-        b=JAZy5ltVeTMbTRqK9bWjtaYj9ocDN5af85ELjsVVqEKT/IKPm2lCf2OImjcSQOBFph
-         FidPTBuBAGP/a7XihboFstw5tfz7KCwwQaDKNyGlmpZEiFEO2ptRWdEWaS5ZBir9i/UJ
-         B/nCWR8DfLM4bR5Orh0vAFSKASDOYA5bJL+HD5FKEADpYnsAWjJrvTQlBtvFqgIeQd71
-         Zfcjs3Mwsl/8VQDhZiSr8Jaboikx3AIy5pnq0xC/nnO0fCmxuz4kcfAyh3I8iF1nWn1K
-         QVqm6AoGxJg2d1/OKdXYl4EGRJmbzJ+xEObTfjO7g2ByAX9aWIWX8KIv2/E8bwRQkJnc
-         MraA==
-X-Gm-Message-State: AOAM5315Pwxii4/kPmdO/HZdj4o7yJWZnBwI3K/Z6efpEIGC2c1MLXml
-        Gv7/CYZoQ6Z7wy8aXIDe/DT+4H/5coznzeLRegiwFnIM5uXbHz8SBzR3ngZjnMHi3w5tqGbtCZb
-        0RcZjsAShPuj3/fplyXjZF9A=
-X-Received: by 2002:a05:622a:180f:: with SMTP id t15mr25944896qtc.314.1633526271470;
-        Wed, 06 Oct 2021 06:17:51 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxJ/dfz8opFCb2v5qUfLE0aMcIttTRFyUR16Rj5nDfAcBalXCGeyEeOx/El3NjgM1QYp0hnaw==
-X-Received: by 2002:a05:622a:180f:: with SMTP id t15mr25944862qtc.314.1633526271274;
-        Wed, 06 Oct 2021 06:17:51 -0700 (PDT)
-Received: from localhost (pool-68-160-176-52.bstnma.fios.verizon.net. [68.160.176.52])
-        by smtp.gmail.com with ESMTPSA id r17sm12574405qtx.17.2021.10.06.06.17.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Oct 2021 06:17:50 -0700 (PDT)
-Date:   Wed, 6 Oct 2021 09:17:50 -0400
-From:   Mike Snitzer <snitzer@redhat.com>
-To:     axboe@kernel.dk, martin.petersen@oracle.com, jejb@linux.ibm.com,
-        sagi@grimberg.me, adrian.hunter@intel.com, beanhuo@micron.com,
-        ulf.hansson@linaro.org, avri.altman@wdc.com, swboyd@chromium.org,
-        agk@redhat.com, josef@toxicpanda.com
-Cc:     hch@infradead.org, hare@suse.de, bvanassche@acm.org,
-        ming.lei@redhat.com, linux-scsi@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-mmc@vger.kernel.org,
-        dm-devel@redhat.com, nbd@other.debian.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 4/6] dm: add add_disk() error handling
-Message-ID: <YV2h/iA79JhMJt07@redhat.com>
-References: <20210927215958.1062466-1-mcgrof@kernel.org>
- <20210927215958.1062466-5-mcgrof@kernel.org>
+        Wed, 6 Oct 2021 09:21:05 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 196DJ8iR055040;
+        Wed, 6 Oct 2021 08:19:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1633526349;
+        bh=Nb8U4U2trMtARelPANdTerZUVjPr3+IxvmjVKxEf6QM=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=GkQAffm8zbALvXMB3C69UTdCQ4x2AlQtRmcVstYXcgVUKv4pKRck9b/Teg3EiBH22
+         HcZ4v32n2MZdMwvGBda3zIFlA24fIWn6xi672N/7H96CswPAcVD9ABT8RYl71YXqbx
+         7B1j/AC2lxV7iqpYdnzIHu/MwkfsNotUecGVVS4Y=
+Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 196DJ8uG113063
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 6 Oct 2021 08:19:08 -0500
+Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Wed, 6
+ Oct 2021 08:19:08 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Wed, 6 Oct 2021 08:19:08 -0500
+Received: from [10.250.233.140] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 196DJ4e9064609;
+        Wed, 6 Oct 2021 08:19:05 -0500
+Subject: Re: [PATCH 1/4] dt-bindings: thermal: k3-j72xx: Add VTM bindings
+ documentation
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Tero Kristo <kristo@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Amit Kucheria <amitk@kernel.org>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>
+References: <20211004112550.27546-1-j-keerthy@ti.com>
+ <20211004112550.27546-2-j-keerthy@ti.com>
+ <1633436798.497006.3226792.nullmailer@robh.at.kernel.org>
+ <CAL_JsqKLuE+RhH+T4UKecMhRjbm69rwA1a2+FjrnMPKUf13J6A@mail.gmail.com>
+ <edb3e75a-1092-7e90-40d0-225dd4d4764c@linaro.org>
+From:   "J, KEERTHY" <j-keerthy@ti.com>
+Message-ID: <03549a90-4bf7-70a8-39f9-b3dd15d5ca45@ti.com>
+Date:   Wed, 6 Oct 2021 18:49:04 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210927215958.1062466-5-mcgrof@kernel.org>
+In-Reply-To: <edb3e75a-1092-7e90-40d0-225dd4d4764c@linaro.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 27 2021 at  5:59P -0400,
-Luis Chamberlain <mcgrof@kernel.org> wrote:
 
-> We never checked for errors on add_disk() as this function
-> returned void. Now that this is fixed, use the shiny new
-> error handling.
+
+On 10/6/2021 3:12 PM, Daniel Lezcano wrote:
 > 
-> There are two calls to dm_setup_md_queue() which can fail then,
-> one on dm_early_create() and we can easily see that the error path
-> there calls dm_destroy in the error path. The other use case is on
-> the ioctl table_load case. If that fails userspace needs to call
-> the DM_DEV_REMOVE_CMD to cleanup the state - similar to any other
-> failure.
+> Keerthy,
 > 
-> Reviewed-by: Hannes Reinecke <hare@suse.de>
-> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+> did you receive this answer ?
 
-Reviewed-by: Mike Snitzer <snitzer@redhat.com>
+Daniel,
 
+Thanks for sending this. I did not receive Rob's responses.
+
+Rob,
+
+Apologies. I will get this rectified before i send the V2 with the 
+reported issue fixed. It seems issue with my particular e-mail account.
+
+Apologies for the inconvenience once again!
+
+Best Regards,
+Keerthy
+
+
+> 
+> 
+> On 05/10/2021 15:05, Rob Herring wrote:
+>> On Tue, Oct 5, 2021 at 7:26 AM Rob Herring <robh@kernel.org> wrote:
+>>>
+>>> On Mon, 04 Oct 2021 16:55:47 +0530, Keerthy wrote:
+>>>> Add VTM bindings documentation. In the Voltage Thermal
+>>>> Management Module(VTM), K3 J72XX supplies a voltage
+>>>> reference and a temperature sensor feature that are gathered in the band
+>>>> gap voltage and temperature sensor (VBGAPTS) module. The band
+>>>> gap provides current and voltage reference for its internal
+>>>> circuits and other analog IP blocks. The analog-to-digital
+>>>> converter (ADC) produces an output value that is proportional
+>>>> to the silicon temperature.
+>>>>
+>>>> Signed-off-by: Keerthy <j-keerthy@ti.com>
+>>>> ---
+>>>>   .../bindings/thermal/ti,j72xx-thermal.yaml    | 58 +++++++++++++++++++
+>>>>   1 file changed, 58 insertions(+)
+>>>>   create mode 100644 Documentation/devicetree/bindings/thermal/ti,j72xx-thermal.yaml
+>>>>
+>>>
+>>> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+>>> on your patch (DT_CHECKER_FLAGS is new in v5.13):
+>>
+>> Woot, TI has blacklisted me:
+>>
+>> The response from the remote server was:
+>> 553 Sorry, your email address has been blacklisted. Please contact
+>> Texas Instruments Inc to have yourself removed.
+>>
+> 
+> 
