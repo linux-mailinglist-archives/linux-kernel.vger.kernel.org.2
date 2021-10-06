@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 308354237DD
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 08:13:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 643904237E0
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 08:17:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236829AbhJFGPm convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 6 Oct 2021 02:15:42 -0400
-Received: from ni.piap.pl ([195.187.100.5]:50362 "EHLO ni.piap.pl"
+        id S231635AbhJFGTC convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 6 Oct 2021 02:19:02 -0400
+Received: from ni.piap.pl ([195.187.100.5]:51728 "EHLO ni.piap.pl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229797AbhJFGPl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 02:15:41 -0400
-From:   =?utf-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>
-To:     Philipp Zabel <p.zabel@pengutronix.de>,
-        Steve Longerbeam <slongerbeam@gmail.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-arm-kernel@lists.infradead.org
-Subject: [PATCH] i.MX6: Support 16-bit BT.1120 video input
-Date:   Wed, 06 Oct 2021 08:13:48 +0200
-Message-ID: <m3o882n0ir.fsf@t19.piap.pl>
+        id S229638AbhJFGTB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 02:19:01 -0400
+From:   Krzysztof =?utf-8?Q?Ha=C5=82asa?= <khalasa@piap.pl>
+To:     Bjorn Helgaas <bhelgaas@google.com>
+Cc:     linux-pci@vger.kernel.org, Artem Lapkin <email2tema@gmail.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Huacai Chen <chenhuacai@gmail.com>,
+        Rob Herring <robh@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Richard Zhu <hongxing.zhu@nxp.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 REPOST] PCIe: limit Max Read Request Size on i.MX to 512
+ bytes
+Date:   Wed, 06 Oct 2021 08:17:07 +0200
+Message-ID: <m3lf36n0d8.fsf@t19.piap.pl>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8BIT
@@ -33,94 +33,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Confirmed to work with ADV7610 HDMI receiver.
+DWC PCIe controller imposes limits on the Read Request Size that it can
+handle. For i.MX6 family it's fixed at 512 bytes by default.
+
+If a memory read larger than the limit is requested, the CPU responds
+with Completer Abort (CA) (on i.MX6 Unsupported Request (UR) is returned
+instead due to a design error).
+
+The i.MX6 documentation states that the limit can be changed by writing
+to the PCIE_PL_MRCCR0 register, however there is a fixed (and
+undocumented) maximum (CX_REMOTE_RD_REQ_SIZE constant). Tests indicate
+that values larger than 512 bytes don't work, though.
+
+This patch makes the RTL8111 work on i.MX6.
 
 Signed-off-by: Krzysztof Hałasa <khalasa@piap.pl>
+---
+While ATM needed only on ARM, this version is compiled in on all
+archs.
 
-diff --git a/drivers/gpu/ipu-v3/ipu-csi.c b/drivers/gpu/ipu-v3/ipu-csi.c
-index 658c173bebdf..2893b68f1f7a 100644
---- a/drivers/gpu/ipu-v3/ipu-csi.c
-+++ b/drivers/gpu/ipu-v3/ipu-csi.c
-@@ -261,10 +261,24 @@ static int mbus_code_to_bus_cfg(struct ipu_csi_bus_config *cfg, u32 mbus_code,
- 		cfg->data_width = IPU_CSI_DATA_WIDTH_8;
- 		break;
- 	case MEDIA_BUS_FMT_UYVY8_1X16:
-+		if (mbus_type == V4L2_MBUS_BT656) {
-+			cfg->data_fmt = CSI_SENS_CONF_DATA_FMT_YUV422_UYVY;
-+			cfg->data_width = IPU_CSI_DATA_WIDTH_8;
-+		} else {
-+			cfg->data_fmt = CSI_SENS_CONF_DATA_FMT_BAYER;
-+			cfg->data_width = IPU_CSI_DATA_WIDTH_16;
-+		}
-+		cfg->mipi_dt = MIPI_DT_YUV422;
-+		break;
- 	case MEDIA_BUS_FMT_YUYV8_1X16:
--		cfg->data_fmt = CSI_SENS_CONF_DATA_FMT_BAYER;
-+		if (mbus_type == V4L2_MBUS_BT656) {
-+			cfg->data_fmt = CSI_SENS_CONF_DATA_FMT_YUV422_YUYV;
-+			cfg->data_width = IPU_CSI_DATA_WIDTH_8;
-+		} else {
-+			cfg->data_fmt = CSI_SENS_CONF_DATA_FMT_BAYER;
-+			cfg->data_width = IPU_CSI_DATA_WIDTH_16;
-+		}
- 		cfg->mipi_dt = MIPI_DT_YUV422;
--		cfg->data_width = IPU_CSI_DATA_WIDTH_16;
- 		break;
- 	case MEDIA_BUS_FMT_SBGGR8_1X8:
- 	case MEDIA_BUS_FMT_SGBRG8_1X8:
-@@ -352,7 +366,7 @@ static int fill_csi_bus_cfg(struct ipu_csi_bus_config *csicfg,
- 			    const struct v4l2_mbus_config *mbus_cfg,
- 			    const struct v4l2_mbus_framefmt *mbus_fmt)
- {
--	int ret;
-+	int ret, is_bt1120;
+diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
+index 80fc98acf097..225380e75fff 100644
+--- a/drivers/pci/controller/dwc/pci-imx6.c
++++ b/drivers/pci/controller/dwc/pci-imx6.c
+@@ -1148,6 +1148,7 @@ static int imx6_pcie_probe(struct platform_device *pdev)
+ 		imx6_pcie->vph = NULL;
+ 	}
  
- 	memset(csicfg, 0, sizeof(*csicfg));
++	max_pcie_mrrs = 512;
+ 	platform_set_drvdata(pdev, imx6_pcie);
  
-@@ -373,11 +387,18 @@ static int fill_csi_bus_cfg(struct ipu_csi_bus_config *csicfg,
- 		break;
- 	case V4L2_MBUS_BT656:
- 		csicfg->ext_vsync = 0;
-+		/* UYVY10_1X20 etc. should be supported as well */
-+		is_bt1120 = mbus_fmt->code == MEDIA_BUS_FMT_UYVY8_1X16 ||
-+			mbus_fmt->code == MEDIA_BUS_FMT_YUYV8_1X16;
- 		if (V4L2_FIELD_HAS_BOTH(mbus_fmt->field) ||
- 		    mbus_fmt->field == V4L2_FIELD_ALTERNATE)
--			csicfg->clk_mode = IPU_CSI_CLK_MODE_CCIR656_INTERLACED;
-+			csicfg->clk_mode = is_bt1120 ?
-+				IPU_CSI_CLK_MODE_CCIR1120_INTERLACED_SDR :
-+				IPU_CSI_CLK_MODE_CCIR656_INTERLACED;
- 		else
--			csicfg->clk_mode = IPU_CSI_CLK_MODE_CCIR656_PROGRESSIVE;
-+			csicfg->clk_mode = is_bt1120 ?
-+				IPU_CSI_CLK_MODE_CCIR1120_PROGRESSIVE_SDR :
-+				IPU_CSI_CLK_MODE_CCIR656_PROGRESSIVE;
- 		break;
- 	case V4L2_MBUS_CSI2_DPHY:
- 		/*
-diff --git a/drivers/staging/media/imx/imx-media-csi.c b/drivers/staging/media/imx/imx-media-csi.c
-index 45f9d797b9da..ba93512f8c71 100644
---- a/drivers/staging/media/imx/imx-media-csi.c
-+++ b/drivers/staging/media/imx/imx-media-csi.c
-@@ -139,6 +139,8 @@ static inline bool is_parallel_16bit_bus(struct v4l2_fwnode_endpoint *ep)
-  * Check for conditions that require the IPU to handle the
-  * data internally as generic data, aka passthrough mode:
-  * - raw bayer media bus formats, or
-+ * - BT.656 and BT.1120 (8/10-bit YUV422) data can always be processed
-+ *   on-the-fly (converted to YUV420)
-  * - the CSI is receiving from a 16-bit parallel bus, or
-  * - the CSI is receiving from an 8-bit parallel bus and the incoming
-  *   media bus format is other than UYVY8_2X8/YUYV8_2X8.
-@@ -147,6 +149,9 @@ static inline bool requires_passthrough(struct v4l2_fwnode_endpoint *ep,
- 					struct v4l2_mbus_framefmt *infmt,
- 					const struct imx_media_pixfmt *incc)
- {
-+	if (ep->bus_type == V4L2_MBUS_BT656) // including BT.1120
-+		return 0;
+ 	ret = imx6_pcie_attach_pd(dev);
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+index aacf575c15cf..abeb48a64ee3 100644
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -112,6 +112,8 @@ enum pcie_bus_config_types pcie_bus_config = PCIE_BUS_PEER2PEER;
+ enum pcie_bus_config_types pcie_bus_config = PCIE_BUS_DEFAULT;
+ #endif
+ 
++u16 max_pcie_mrrs = 4096; // no limit
 +
- 	return incc->bayer || is_parallel_16bit_bus(ep) ||
- 		(is_parallel_bus(ep) &&
- 		 infmt->code != MEDIA_BUS_FMT_UYVY8_2X8 &&
+ /*
+  * The default CLS is used if arch didn't set CLS explicitly and not
+  * all pci devices agree on the same value.  Arch can override either
+@@ -5816,6 +5818,9 @@ int pcie_set_readrq(struct pci_dev *dev, int rq)
+ 			rq = mps;
+ 	}
+ 
++	if (rq > max_pcie_mrrs)
++		rq = max_pcie_mrrs;
++
+ 	v = (ffs(rq) - 8) << 12;
+ 
+ 	ret = pcie_capability_clear_and_set_word(dev, PCI_EXP_DEVCTL,
+diff --git a/include/linux/pci.h b/include/linux/pci.h
+index 06ff1186c1ef..2b95a8204819 100644
+--- a/include/linux/pci.h
++++ b/include/linux/pci.h
+@@ -996,6 +996,7 @@ enum pcie_bus_config_types {
+ };
+ 
+ extern enum pcie_bus_config_types pcie_bus_config;
++extern u16 max_pcie_mrrs;
+ 
+ extern struct bus_type pci_bus_type;
+ 
 
 -- 
 Krzysztof "Chris" Hałasa
