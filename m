@@ -2,139 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E4414235C2
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 04:18:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AEEA4235C4
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 04:20:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237205AbhJFCUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 22:20:35 -0400
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:45677 "EHLO
-        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229908AbhJFCUd (ORCPT
+        id S237218AbhJFCWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 22:22:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40502 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229908AbhJFCWH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 22:20:33 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R811e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=rongwei.wang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0Uqi9lTZ_1633486717;
-Received: from localhost.localdomain(mailfrom:rongwei.wang@linux.alibaba.com fp:SMTPD_---0Uqi9lTZ_1633486717)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 06 Oct 2021 10:18:39 +0800
-From:   Rongwei Wang <rongwei.wang@linux.alibaba.com>
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Cc:     akpm@linux-foundation.org, willy@infradead.org, song@kernel.org,
-        william.kucharski@oracle.com, hughd@google.com
-Subject: [PATCH v3 v3 2/2] mm, thp: bail out early in collapse_file for writeback page
-Date:   Wed,  6 Oct 2021 10:18:37 +0800
-Message-Id: <20211006021837.59721-3-rongwei.wang@linux.alibaba.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20211006021837.59721-1-rongwei.wang@linux.alibaba.com>
-References: <20210906121200.57905-1-rongwei.wang@linux.alibaba.com>
- <20211006021837.59721-1-rongwei.wang@linux.alibaba.com>
+        Tue, 5 Oct 2021 22:22:07 -0400
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0515DC061749
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 19:20:16 -0700 (PDT)
+Received: by mail-io1-xd2b.google.com with SMTP id p80so1102879iod.10
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 19:20:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=qw5ALBDvPGn69OlbxmlXviRczREpAygguJSlIswWdLw=;
+        b=gouZhV8KTp3FExHNgmSHQ9NHjT/H6/1XmoQCCbIXdLmuBMdoHLkUyKYpnhvJm5m9TR
+         mCA9H/CGQFKjUHotNj3soqKVAz3xOTjg+B2dFqVtFImI8FxSasJg8IyJKA0a6hAapP8L
+         BMiPDMN9+TBopb54525kdJsgwGGqZLTPYFYaI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=qw5ALBDvPGn69OlbxmlXviRczREpAygguJSlIswWdLw=;
+        b=ys8P7GGIqtMgDJY+PDO9u5TmFIMSv1KzKXJzdaoaT6QVSCzQNEOqhw5f8o2ZGOutBB
+         mLbVJ1Ee4MsIUXrbtTNsLCDYMLWmoMNqgI2jT8AGGzoVFUWmMEQDXXj/7Rfvct8PODiZ
+         rBE6Mh8hwqVd73RwCCe1m337yWJ02qkf6zHx1fUujtbHP+/ry6aMJSdYNSZXM9+MnsSl
+         Eo3wqZj6WHGi+U4+5bm3wcGMWF4zHl3pl27YG9QBuamP0KB0/LgJcN9xjBRruN/wij95
+         JHm2X2l3C6OxONOksNQRTG3nnoMjGT2WsC5NhzYNV3m7AWfQeWAA6uaL8hqiK4T6pV6u
+         WGzQ==
+X-Gm-Message-State: AOAM530K/wDjKmaQCZscswZLJ9K4DTjjKBxQJMe7vYkqnucPR8abhqzI
+        t/mczr/mUM92za1EfYkSM0BfG6JlYpF1Jg==
+X-Google-Smtp-Source: ABdhPJxrLhkyBa9Xor4J+4VylhDVkjNvWVbZn9ncqI3nc4ExKvqHZPdfbtXCAel65q3Z1CWdsjv/Dw==
+X-Received: by 2002:a5e:a916:: with SMTP id c22mr4516595iod.211.1633486815220;
+        Tue, 05 Oct 2021 19:20:15 -0700 (PDT)
+Received: from mail-il1-f177.google.com (mail-il1-f177.google.com. [209.85.166.177])
+        by smtp.gmail.com with ESMTPSA id v4sm570977ile.24.2021.10.05.19.20.13
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Oct 2021 19:20:13 -0700 (PDT)
+Received: by mail-il1-f177.google.com with SMTP id g2so225197ild.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 19:20:13 -0700 (PDT)
+X-Received: by 2002:a05:6e02:17ce:: with SMTP id z14mr5414711ilu.120.1633486812940;
+ Tue, 05 Oct 2021 19:20:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211004092100.1.Ic90a5ebd44c75db963112be167a03cc96f9fb249@changeid>
+ <YVyAutDoR4otVBS9@intel.com>
+In-Reply-To: <YVyAutDoR4otVBS9@intel.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Tue, 5 Oct 2021 19:20:00 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=UD0BN55DCCRdFqpvsh9bCnKx0hpoc=5Fqc1F9qDXbyjA@mail.gmail.com>
+Message-ID: <CAD=FV=UD0BN55DCCRdFqpvsh9bCnKx0hpoc=5Fqc1F9qDXbyjA@mail.gmail.com>
+Subject: Re: [PATCH] drm/edid: Fix crash with zero/invalid EDID
+To:     =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        kernel test robot <oliver.sang@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Jani Nikula <jani.nikula@intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently collapse_file does not explicitly check PG_writeback, instead,
-page_has_private and try_to_release_page are used to filter writeback
-pages. This does not work for xfs with blocksize equal to or larger
-than pagesize, because in such case xfs has no page->private.
+Hi,
 
-This makes collapse_file bail out early for writeback page. Otherwise,
-xfs end_page_writeback will panic as follows.
+On Tue, Oct 5, 2021 at 9:43 AM Ville Syrj=C3=A4l=C3=A4
+<ville.syrjala@linux.intel.com> wrote:
+>
+> On Mon, Oct 04, 2021 at 09:21:27AM -0700, Douglas Anderson wrote:
+> > In the commit bac9c2948224 ("drm/edid: Break out reading block 0 of
+> > the EDID") I broke out reading the base block of the EDID to its own
+> > function. Unfortunately, when I did that I messed up the handling when
+> > drm_edid_is_zero() indicated that we had an EDID that was all 0x00 or
+> > when we went through 4 loops and didn't get a valid EDID. Specifically
+> > I needed to pass the broken EDID to connector_bad_edid() but now I was
+> > passing an error-pointer.
+> >
+> > Let's re-jigger things so we can pass the bad EDID in properly.
+> >
+> > Fixes: bac9c2948224 ("drm/edid: Break out reading block 0 of the EDID")
+> > Reported-by: kernel test robot <oliver.sang@intel.com>
+> > Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> > Signed-off-by: Douglas Anderson <dianders@chromium.org>
+>
+> A bit of historical fallout zone this part of the code. So
+> not the easiest thing to read in general. But looks like what
+> you have here should work.
+>
+> Reviewed-by: Ville Syrj=C3=A4l=C3=A4 <ville.syrjala@linux.intel.com>
 
-[ 6411.448211] page:fffffe00201bcc80 refcount:0 mapcount:0 mapping:ffff0003f88c86a8 index:0x0 pfn:0x84ef32
-[ 6411.448304] aops:xfs_address_space_operations [xfs] ino:30000b7 dentry name:"libtest.so"
-[ 6411.448312] flags: 0x57fffe0000008027(locked|referenced|uptodate|active|writeback)
-[ 6411.448317] raw: 57fffe0000008027 ffff80001b48bc28 ffff80001b48bc28 ffff0003f88c86a8
-[ 6411.448321] raw: 0000000000000000 0000000000000000 00000000ffffffff ffff0000c3e9a000
-[ 6411.448324] page dumped because: VM_BUG_ON_PAGE(((unsigned int) page_ref_count(page) + 127u <= 127u))
-[ 6411.448327] page->mem_cgroup:ffff0000c3e9a000
-[ 6411.448340] ------------[ cut here ]------------
-[ 6411.448343] kernel BUG at include/linux/mm.h:1212!
-[ 6411.449288] Internal error: Oops - BUG: 0 [#1] SMP
-[ 6411.449786] Modules linked in:
-[ 6411.449790] BUG: Bad page state in process khugepaged  pfn:84ef32
-[ 6411.450143]  xfs(E)
-[ 6411.450459] page:fffffe00201bcc80 refcount:0 mapcount:0 mapping:0 index:0x0 pfn:0x84ef32
-[ 6411.451361]  libcrc32c(E) rfkill(E) aes_ce_blk(E) crypto_simd(E) ...
-[ 6411.451387] CPU: 25 PID: 0 Comm: swapper/25 Kdump: loaded Tainted: ...
-[ 6411.451389] pstate: 60400005 (nZCv daif +PAN -UAO -TCO BTYPE=--)
-[ 6411.451393] pc : end_page_writeback+0x1c0/0x214
-[ 6411.451394] lr : end_page_writeback+0x1c0/0x214
-[ 6411.451395] sp : ffff800011ce3cc0
-[ 6411.451396] x29: ffff800011ce3cc0 x28: 0000000000000000
-[ 6411.451398] x27: ffff000c04608040 x26: 0000000000000000
-[ 6411.451399] x25: ffff000c04608040 x24: 0000000000001000
-[ 6411.451401] x23: ffff0003f88c8530 x22: 0000000000001000
-[ 6411.451403] x21: ffff0003f88c8530 x20: 0000000000000000
-[ 6411.451404] x19: fffffe00201bcc80 x18: 0000000000000030
-[ 6411.451406] x17: 0000000000000000 x16: 0000000000000000
-[ 6411.451407] x15: ffff000c018f9760 x14: ffffffffffffffff
-[ 6411.451409] x13: ffff8000119d72b0 x12: ffff8000119d6ee3
-[ 6411.451410] x11: ffff8000117b69b8 x10: 00000000ffff8000
-[ 6411.451412] x9 : ffff800010617534 x8 : 0000000000000000
-[ 6411.451413] x7 : ffff8000114f69b8 x6 : 000000000000000f
-[ 6411.451415] x5 : 0000000000000000 x4 : 0000000000000000
-[ 6411.451416] x3 : 0000000000000400 x2 : 0000000000000000
-[ 6411.451418] x1 : 0000000000000000 x0 : 0000000000000000
-[ 6411.451420] Call trace:
-[ 6411.451421]  end_page_writeback+0x1c0/0x214
-[ 6411.451424]  iomap_finish_page_writeback+0x13c/0x204
-[ 6411.451425]  iomap_finish_ioend+0xe8/0x19c
-[ 6411.451426]  iomap_writepage_end_bio+0x38/0x50
-[ 6411.451427]  bio_endio+0x168/0x1ec
-[ 6411.451430]  blk_update_request+0x278/0x3f0
-[ 6411.451432]  blk_mq_end_request+0x34/0x15c
-[ 6411.451435]  virtblk_request_done+0x38/0x74 [virtio_blk]
-[ 6411.451437]  blk_done_softirq+0xc4/0x110
-[ 6411.451439]  __do_softirq+0x128/0x38c
-[ 6411.451441]  __irq_exit_rcu+0x118/0x150
-[ 6411.451442]  irq_exit+0x1c/0x30
-[ 6411.451445]  __handle_domain_irq+0x8c/0xf0
-[ 6411.451446]  gic_handle_irq+0x84/0x108
-[ 6411.451447]  el1_irq+0xcc/0x180
-[ 6411.451448]  arch_cpu_idle+0x18/0x40
-[ 6411.451450]  default_idle_call+0x4c/0x1a0
-[ 6411.451453]  cpuidle_idle_call+0x168/0x1e0
-[ 6411.451454]  do_idle+0xb4/0x104
-[ 6411.451455]  cpu_startup_entry+0x30/0x9c
-[ 6411.451458]  secondary_start_kernel+0x104/0x180
-[ 6411.451460] Code: d4210000 b0006161 910c8021 94013f4d (d4210000)
-[ 6411.451462] ---[ end trace 4a88c6a074082f8c ]---
-[ 6411.451464] Kernel panic - not syncing: Oops - BUG: Fatal exception in interrupt
+Thanks! Pushed to drm-misc/drm-misc-next:
 
-Fixes: eb6ecbed0aa2 ("mm, thp: relax the VM_DENYWRITE constraint on file-backed THPs")
-Suggested-by: Yang Shi <shy828301@gmail.com>
-Signed-off-by: Xu Yu <xuyu@linux.alibaba.com>
-Signed-off-by: Rongwei Wang <rongwei.wang@linux.alibaba.com>
----
- mm/khugepaged.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
-
-diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-index 045cc579f724..48de4e1b0783 100644
---- a/mm/khugepaged.c
-+++ b/mm/khugepaged.c
-@@ -1763,6 +1763,10 @@ static void collapse_file(struct mm_struct *mm,
- 				filemap_flush(mapping);
- 				result = SCAN_FAIL;
- 				goto xa_unlocked;
-+			} else if (PageWriteback(page)) {
-+				xas_unlock_irq(&xas);
-+				result = SCAN_FAIL;
-+				goto xa_unlocked;
- 			} else if (trylock_page(page)) {
- 				get_page(page);
- 				xas_unlock_irq(&xas);
-@@ -1798,7 +1802,8 @@ static void collapse_file(struct mm_struct *mm,
- 			goto out_unlock;
- 		}
- 
--		if (!is_shmem && PageDirty(page)) {
-+		if (!is_shmem && (PageDirty(page) ||
-+				  PageWriteback(page))) {
- 			/*
- 			 * khugepaged only works on read-only fd, so this
- 			 * page is dirty because it hasn't been flushed
--- 
-2.27.0
-
+e7bd95a7ed4e drm/edid: Fix crash with zero/invalid EDID
