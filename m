@@ -2,151 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7A2D423DB5
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 14:27:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 112B9423DC5
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 14:30:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238154AbhJFM3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 08:29:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36613 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231277AbhJFM3P (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 08:29:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633523242;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=z94u7XbK2wF6s34vY9KUD9mohTYfAbMaUfJBt8dLs3c=;
-        b=cueJmjSu5UokN2pDzUgq5AT5WSrrYI4OVf7tSo4KA4dmB0u1s/UFF7/jiGcU6kGM4BZdfQ
-        7Q+uVqR/o+9Stv6/s0p7v2kQwp/dajA2oad4nH7HXypbQAm60t3znvINdIKh3eA8oz0IEV
-        bn8HmMNVA+EUAj3606GeV51EPonMg8Q=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-527-_bzA9wiOMvO9ETZzWd959w-1; Wed, 06 Oct 2021 08:27:20 -0400
-X-MC-Unique: _bzA9wiOMvO9ETZzWd959w-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S238501AbhJFMco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 08:32:44 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:40601 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238475AbhJFMcm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 08:32:42 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1633523451; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=G5VectM1qHdAaz1q+gplVOdSjt+FyTefrjOw0flqLEM=; b=HZ1FejSvIRoC1yIuD7Nko789aP7oQqYDgNHxQecEzhTBTyFpOO8U6rvPKqM8arITcDxZLEAp
+ O7ONLBccws7lRv3PngEtD/tnmE4SMxKCILD9VArRtbyYpKTATgYYCITYUww7Fb7Osf63kXQQ
+ 4Coph25V7trkz0rd8BrHC/QUUho=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 615d96db4ccc4cf2c7bf633a (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 06 Oct 2021 12:30:19
+ GMT
+Sender: bgodavar=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 71769C43460; Wed,  6 Oct 2021 12:30:19 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from bgodavar-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7946579EDF;
-        Wed,  6 Oct 2021 12:27:18 +0000 (UTC)
-Received: from t480s.redhat.com (unknown [10.39.194.152])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A083E5F4E3;
-        Wed,  6 Oct 2021 12:27:10 +0000 (UTC)
-From:   David Hildenbrand <david@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     virtualization@lists.linux-foundation.org,
-        David Hildenbrand <david@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Marek Kedzierski <mkedzier@redhat.com>,
-        Hui Zhu <teawater@gmail.com>,
-        Sebastien Boeuf <sebastien.boeuf@intel.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>
-Subject: [PATCH v2] virtio-mem: support VIRTIO_MEM_F_UNPLUGGED_INACCESSIBLE
-Date:   Wed,  6 Oct 2021 14:27:09 +0200
-Message-Id: <20211006122709.27885-1-david@redhat.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+        (Authenticated sender: bgodavar)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E3798C4338F;
+        Wed,  6 Oct 2021 12:30:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org E3798C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Balakrishna Godavarthi <bgodavar@codeaurora.org>
+To:     marcel@holtmann.org, bjorn.andersson@linaro.org,
+        johan.hedberg@gmail.com
+Cc:     mka@chromium.org, linux-kernel@vger.kernel.org,
+        linux-bluetooth@vger.kernel.org, hemantg@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
+        rjliao@codeaurora.org, pharish@codeaurora.org,
+        abhishekpandit@chromium.org
+Subject: [PATCH v1 1/2] arm64: dts: qcom: sc7280: Add bluetooth node on SC7280 IDP board
+Date:   Wed,  6 Oct 2021 18:00:02 +0530
+Message-Id: <1633523403-32264-1-git-send-email-bgodavar@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The initial virtio-mem spec states that while unplugged memory should not
-be read, the device still has to allow for reading unplugged memory inside
-the usable region. The primary motivation for this default handling was
-to simplify bringup of virtio-mem, because there were corner cases where
-Linux might have accidentially read unplugged memory inside added Linux
-memory blocks.
+Add bluetooth SoC WCN6750 node for SC7280 IDP board.
 
-In the meantime, we:
-* Removed /dev/kmem
-* Disallowed access to virtio-mem device memory via /dev/mem
-* Sanitized access to virtio-mem device memory via /proc/kcore
-* Sanitized access to virtio-mem device memory via /proc/vmcore
-
-"Accidential" access to unplugged memory is no longer possible; we can
-support the new VIRTIO_MEM_F_UNPLUGGED_INACCESSIBLE feature that will be
-required by some hypervisors implementing virtio-mem in the near future.
-
-Cc: "Michael S. Tsirkin" <mst@redhat.com>
-Cc: Jason Wang <jasowang@redhat.com>
-Cc: Cornelia Huck <cohuck@redhat.com>
-Cc: Marek Kedzierski <mkedzier@redhat.com>
-Cc: Hui Zhu <teawater@gmail.com>
-Cc: Sebastien Boeuf <sebastien.boeuf@intel.com>
-Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
-Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
-Signed-off-by: David Hildenbrand <david@redhat.com>
+Signed-off-by: Balakrishna Godavarthi <bgodavar@codeaurora.org>
 ---
+ arch/arm64/boot/dts/qcom/sc7280-idp.dts  |  2 ++
+ arch/arm64/boot/dts/qcom/sc7280-idp.dtsi | 31 +++++++++++++++++++++++++++++++
+ 2 files changed, 33 insertions(+)
 
-Michael, I want this patch in v5.16 if the following two series that
-are already queued by Andrew via the -MM tree go into v5.16 (which I
-I assume but we never know :) ):
-* [PATCH v5 0/3] virtio-mem: disallow mapping virtio-mem memory via
-  /dev/mem
-  https://lkml.kernel.org/r/20210920142856.17758-1-david@redhat.com
-* [PATCH v2 0/9] proc/vmcore: sanitize access to virtio-mem memory
-  https://lkml.kernel.org/r/20211005121430.30136-1-david@redhat.com
-
-This is the follow-up of:
-  https://lkml.kernel.org/r/20210215122143.27608-1-david@redhat.com
-The spec updated was proposed in:
-  https://lists.oasis-open.org/archives/virtio-comment/202109/msg00027.html
-
-v1 -> v2:
-- Now that we handle /dev/mem and /proc/vmcore cleaner, we can get
-  simplify and just support the flag unconditionally
-
----
- drivers/virtio/virtio_mem.c     | 1 +
- include/uapi/linux/virtio_mem.h | 9 ++++++---
- 2 files changed, 7 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
-index bef8ad6bf466..78dfdc9c98a1 100644
---- a/drivers/virtio/virtio_mem.c
-+++ b/drivers/virtio/virtio_mem.c
-@@ -2758,6 +2758,7 @@ static unsigned int virtio_mem_features[] = {
- #if defined(CONFIG_NUMA) && defined(CONFIG_ACPI_NUMA)
- 	VIRTIO_MEM_F_ACPI_PXM,
- #endif
-+	VIRTIO_MEM_F_UNPLUGGED_INACCESSIBLE,
+diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dts b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+index 64fc22a..d3f5393 100644
+--- a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
++++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+@@ -17,6 +17,8 @@
+ 
+ 	aliases {
+ 		serial0 = &uart5;
++		bluetooth0 = &bluetooth;
++		hsuart0 = &uart7;
+ 	};
+ 
+ 	chosen {
+diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
+index 272d5ca..05aa729 100644
+--- a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
+@@ -393,6 +393,24 @@
+ 				<&tlmm 31 IRQ_TYPE_EDGE_FALLING>;
+ 	pinctrl-names = "default", "sleep";
+ 	pinctrl-1 = <&qup_uart7_sleep_cts>, <&qup_uart7_sleep_rts>, <&qup_uart7_sleep_tx>, <&qup_uart7_sleep_rx>;
++
++	bluetooth: wcn6750-bt {
++		compatible = "qcom,wcn6750-bt";
++		pinctrl-names = "default";
++		pinctrl-0 = <&bt_en_default>;
++		enable-gpios = <&tlmm 85 GPIO_ACTIVE_HIGH>; /* BT_EN */
++		swctrl-gpios = <&tlmm 86 GPIO_ACTIVE_HIGH>; /* SW_CTRL */
++		vddio-supply = <&vreg_l19b_1p8>;
++		vddaon-supply = <&vreg_s7b_0p9>;
++		vddbtcxmx-supply = <&vreg_s7b_0p9>;
++		vddrfacmn-supply = <&vreg_s7b_0p9>;
++		vddrfa0p8-supply = <&vreg_s7b_0p9>;
++		vddrfa1p7-supply = <&vreg_s1b_1p8>;
++		vddrfa1p2-supply = <&vreg_s8b_1p2>;
++		vddrfa2p2-supply = <&vreg_s1c_2p2>;
++		vddasd-supply = <&vreg_l11c_2p8>;
++		max-speed = <3200000>;
++	};
  };
  
- static const struct virtio_device_id virtio_mem_id_table[] = {
-diff --git a/include/uapi/linux/virtio_mem.h b/include/uapi/linux/virtio_mem.h
-index 70e01c687d5e..e9122f1d0e0c 100644
---- a/include/uapi/linux/virtio_mem.h
-+++ b/include/uapi/linux/virtio_mem.h
-@@ -68,9 +68,10 @@
-  * explicitly triggered (VIRTIO_MEM_REQ_UNPLUG).
-  *
-  * There are no guarantees what will happen if unplugged memory is
-- * read/written. Such memory should, in general, not be touched. E.g.,
-- * even writing might succeed, but the values will simply be discarded at
-- * random points in time.
-+ * read/written. In general, unplugged memory should not be touched, because
-+ * the resulting action is undefined. There is one exception: without
-+ * VIRTIO_MEM_F_UNPLUGGED_INACCESSIBLE, unplugged memory inside the usable
-+ * region can be read, to simplify creation of memory dumps.
-  *
-  * It can happen that the device cannot process a request, because it is
-  * busy. The device driver has to retry later.
-@@ -87,6 +88,8 @@
+ /* PINCTRL - additions to nodes defined in sc7280.dtsi */
+@@ -504,6 +522,19 @@
+ 		 */
+ 		bias-pull-up;
+ 	};
++
++	bt_en_default: bt_en_default {
++		pinmux {
++			pins = "gpio85";
++			function = "gpio";
++		};
++		pinconf {
++			pins = "gpio85";
++			drive-strength = <2>;
++			output-low;
++			bias-pull-down;
++		};
++	};
+ };
  
- /* node_id is an ACPI PXM and is valid */
- #define VIRTIO_MEM_F_ACPI_PXM		0
-+/* unplugged memory must not be accessed */
-+#define VIRTIO_MEM_F_UNPLUGGED_INACCESSIBLE	1
- 
- 
- /* --- virtio-mem: guest -> host requests --- */
-
-base-commit: 9e1ff307c779ce1f0f810c7ecce3d95bbae40896
+ &sdc1_on {
 -- 
-2.31.1
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
