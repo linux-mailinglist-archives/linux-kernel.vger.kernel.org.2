@@ -2,203 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76173423D9F
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 14:20:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFE84423DA5
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 14:21:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238416AbhJFMWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 08:22:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35862 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238149AbhJFMWk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 08:22:40 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2383FC061749
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 05:20:48 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id e12so8264504wra.4
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 05:20:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Tu1xtgEkYty/PIegA82o+6LZkpUw1A+ZXk3x5u90I1k=;
-        b=LLkpZ7uo3KRMksQIVfJneZVtINq6roEAmndjT3u0BQPu7Us1sKOyan0xM2SlLAtEjC
-         L5ErMwdYyZVMhapuiMM8H5LbgBFOBmwRaFmpHJ1aK9m14jokvwJq6DnqOWZqyxeTTZK6
-         TFnljEXO6dqIfhwJBuigISBVpBFHzxWtlZVDQiOissGFMl0ANQ5HoYk+0HVbg1ChS1XV
-         t9kfc0kcS19gZ6yTu4Qnqpk5LLfZ5dPzeOk0XDq5LT5XGPpWaYuIZWiIWq4vbVp637ng
-         AAkZ6/aPvGhgNHbhyCVu+KuI5UQUUc4jlkWGsK9Usgv2zB7lA2crfzWFtXLYl5mD1LTp
-         ipEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Tu1xtgEkYty/PIegA82o+6LZkpUw1A+ZXk3x5u90I1k=;
-        b=oqL4mmnAYX7ucNT94gwMdpzsgudPq1w9AEwocj6mQUiVEnMmyG5kzCWSYD44IFJZnx
-         ST1D2wFoXqV2IEOpcnxU4Q5Lt/1iqwEVvHf6abUZQvB3n5XIWIXLGSeUVJ3VU56UNUlE
-         /22awNkGDDVf+K6WvcKFdUsZ2YqtbCh9BDen2TDMARUd0UftDDA+cATyJTE73S0sDmW1
-         usvKawuJcRY4EETyC0leptPHK5SIbO31eY6eCAodCLm8jXKR5f97LTZ0aLQsnZzIrHjT
-         8Psf5ZUtTW1SN6ICxXoaBPF7IYGWdG8Il4B7HGFpg+shZFg2o+5o+1yJ9KjeiO+8LZ5x
-         KNlw==
-X-Gm-Message-State: AOAM533j/AReiyK1vASzzi0bXxRTs5i9k/QAR9Pnkw+KGMuLEqLfTRA3
-        Cw+riR1cGnhUkd1tEBVhYpepoA==
-X-Google-Smtp-Source: ABdhPJwJegLLCtMVaJCfMDU2HhL4qWXk5XJO3dVZmr5hru0RW/Kow+iRwJ9XRWN/VAm3r2/YcLPq0w==
-X-Received: by 2002:a1c:9d50:: with SMTP id g77mr9356331wme.58.1633522846559;
-        Wed, 06 Oct 2021 05:20:46 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:278:1f59:2992:87fe? ([2a01:e34:ed2f:f020:278:1f59:2992:87fe])
-        by smtp.googlemail.com with ESMTPSA id b15sm24606394wru.9.2021.10.06.05.20.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Oct 2021 05:20:45 -0700 (PDT)
-Subject: Re: [PATCH RESEND] thermal/drivers/netlink: Add the temperature when
- crossing a trip point
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        "Zhang, Rui" <rui.zhang@intel.com>, rkumbako@quicinc.com,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Amit Kucheria <amitk@kernel.org>
-References: <20211001223323.1836640-1-daniel.lezcano@linaro.org>
- <CAJZ5v0hcHq2WJ6UkdDbHynnQYv4MukCWXob_rH=Sa=aYDrr7Cw@mail.gmail.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <dfbdfdab-8817-3792-9361-b238dc256219@linaro.org>
-Date:   Wed, 6 Oct 2021 14:20:44 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S238436AbhJFMXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 08:23:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54030 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238197AbhJFMXN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 08:23:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 91B4D610A2;
+        Wed,  6 Oct 2021 12:21:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633522881;
+        bh=GlThTDzBAd5thEStBftgifgtznEXIW3TSZCzgZWRZTI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KaKKiACjqlqzEvj9oeeX+pYahECM+10wBZS5riS3oZe6nm4gbOUIQXRnPVxcVmWmd
+         JzuysCiH+Atm+DnnlsDHx8M/Si+ZngFoXxEG0zUzBH4HLB75AoGz+DDoJ39ZUQXHK/
+         bZZh3Yrfxj4dy0aN+M9ZdQetLiaCEgW1axodVQg8M2sVVunbu3BASYvuoZwNIGOTm9
+         V18+17ezDPeWQyz7Rebb28aXY01hq4x1DJj0E/nyrIC5Un11svUGgP2zoM6h+lsLQx
+         5C6I4yvWnQtgo0/qC9SLdQqXgQwYjg6n8f+HRPNQFlwzBpB0xQJPmate4ojKjQ5gcA
+         delg3LsdSPZag==
+Date:   Wed, 6 Oct 2021 17:51:17 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Rob Clark <robdclark@gmail.com>, linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org
+Subject: Re: [PATCH 06/11] drm/msm/disp/dpu1: Add DSC support in hw_ctl
+Message-ID: <YV2Uvb0VAAxNO1f0@matsya>
+References: <20210715065203.709914-1-vkoul@kernel.org>
+ <20210715065203.709914-7-vkoul@kernel.org>
+ <79e693c8-ff9c-d4a8-d4a8-8a1f075f77c7@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <CAJZ5v0hcHq2WJ6UkdDbHynnQYv4MukCWXob_rH=Sa=aYDrr7Cw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <79e693c8-ff9c-d4a8-d4a8-8a1f075f77c7@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/10/2021 17:20, Rafael J. Wysocki wrote:
-> On Sat, Oct 2, 2021 at 12:33 AM Daniel Lezcano
-> <daniel.lezcano@linaro.org> wrote:
->>
->> The slope of the temperature increase or decrease can be high and when
->> the temperature crosses the trip point, there could be a significant
->> difference between the trip temperature and the measured temperatures.
->>
->> That forces the userspace to read the temperature back right after
->> receiving a trip violation notification.
->>
->> In order to be efficient, give the temperature which resulted in the
->> trip violation.
->>
->> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
->> Acked-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+On 30-07-21, 01:15, Dmitry Baryshkov wrote:
+> On 15/07/2021 09:51, Vinod Koul wrote:
+> > Later gens of hardware have DSC bits moved to hw_ctl, so configure these
+> > bits so that DSC would work there as well
+> > 
+> > Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> > ---
+> >   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c | 7 ++++++-
+> >   1 file changed, 6 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
+> > index 2d4645e01ebf..aeea6add61ee 100644
+> > --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
+> > +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
+> > @@ -25,6 +25,8 @@
+> >   #define   CTL_MERGE_3D_ACTIVE           0x0E4
+> >   #define   CTL_INTF_ACTIVE               0x0F4
+> >   #define   CTL_MERGE_3D_FLUSH            0x100
+> > +#define   CTL_DSC_ACTIVE                0x0E8
+> > +#define   CTL_DSC_FLUSH                0x104
+> >   #define   CTL_INTF_FLUSH                0x110
+> >   #define   CTL_INTF_MASTER               0x134
+> >   #define   CTL_FETCH_PIPE_ACTIVE         0x0FC
+> > @@ -34,6 +36,7 @@
+> >   #define DPU_REG_RESET_TIMEOUT_US        2000
+> >   #define  MERGE_3D_IDX   23
+> > +#define  DSC_IDX        22
+> >   #define  INTF_IDX       31
+> >   #define CTL_INVALID_BIT                 0xffff
+> > @@ -120,6 +123,7 @@ static u32 dpu_hw_ctl_get_pending_flush(struct dpu_hw_ctl *ctx)
+> >   static inline void dpu_hw_ctl_trigger_flush_v1(struct dpu_hw_ctl *ctx)
+> >   {
+> > +	DPU_REG_WRITE(&ctx->hw, CTL_DSC_FLUSH, BIT(0) | BIT(1) | BIT(2) | BIT(3));
 > 
-> This looks fine to me too.
-> 
->> ---
->>  drivers/thermal/thermal_core.c    |  6 ++++--
->>  drivers/thermal/thermal_netlink.c | 11 ++++++-----
->>  drivers/thermal/thermal_netlink.h |  8 ++++----
->>  3 files changed, 14 insertions(+), 11 deletions(-)
->>
->> diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
->> index 51374f4e1cca..9e243d9f929e 100644
->> --- a/drivers/thermal/thermal_core.c
->> +++ b/drivers/thermal/thermal_core.c
->> @@ -375,10 +375,12 @@ static void handle_thermal_trip(struct thermal_zone_device *tz, int trip)
->>         if (tz->last_temperature != THERMAL_TEMP_INVALID) {
->>                 if (tz->last_temperature < trip_temp &&
->>                     tz->temperature >= trip_temp)
->> -                       thermal_notify_tz_trip_up(tz->id, trip);
->> +                       thermal_notify_tz_trip_up(tz->id, trip,
->> +                                                 tz->temperature);
->>                 if (tz->last_temperature >= trip_temp &&
->>                     tz->temperature < (trip_temp - hyst))
->> -                       thermal_notify_tz_trip_down(tz->id, trip);
->> +                       thermal_notify_tz_trip_down(tz->id, trip,
->> +                                                   tz->temperature);
-> 
-> While at it, I'm not sure if all of the additional line breaks due to
-> the line length limit are really necessary.  The code would be easier
-> to follow without them IMV.
+> Please pass DSC indices using intf cfg and use them to configure register
+> writes.
 
-Ok let me write another patch to wrap those into a single function and
-reduce the indentation.
-
->>         }
->>
->>         if (type == THERMAL_TRIP_CRITICAL || type == THERMAL_TRIP_HOT)
->> diff --git a/drivers/thermal/thermal_netlink.c b/drivers/thermal/thermal_netlink.c
->> index 1234dbe95895..a16dd4d5d710 100644
->> --- a/drivers/thermal/thermal_netlink.c
->> +++ b/drivers/thermal/thermal_netlink.c
->> @@ -121,7 +121,8 @@ static int thermal_genl_event_tz(struct param *p)
->>  static int thermal_genl_event_tz_trip_up(struct param *p)
->>  {
->>         if (nla_put_u32(p->msg, THERMAL_GENL_ATTR_TZ_ID, p->tz_id) ||
->> -           nla_put_u32(p->msg, THERMAL_GENL_ATTR_TZ_TRIP_ID, p->trip_id))
->> +           nla_put_u32(p->msg, THERMAL_GENL_ATTR_TZ_TRIP_ID, p->trip_id) ||
->> +           nla_put_u32(p->msg, THERMAL_GENL_ATTR_TZ_TEMP, p->temp))
->>                 return -EMSGSIZE;
->>
->>         return 0;
->> @@ -285,16 +286,16 @@ int thermal_notify_tz_disable(int tz_id)
->>         return thermal_genl_send_event(THERMAL_GENL_EVENT_TZ_DISABLE, &p);
->>  }
->>
->> -int thermal_notify_tz_trip_down(int tz_id, int trip_id)
->> +int thermal_notify_tz_trip_down(int tz_id, int trip_id, int temp)
->>  {
->> -       struct param p = { .tz_id = tz_id, .trip_id = trip_id };
->> +       struct param p = { .tz_id = tz_id, .trip_id = trip_id, .temp = temp };
->>
->>         return thermal_genl_send_event(THERMAL_GENL_EVENT_TZ_TRIP_DOWN, &p);
->>  }
->>
->> -int thermal_notify_tz_trip_up(int tz_id, int trip_id)
->> +int thermal_notify_tz_trip_up(int tz_id, int trip_id, int temp)
->>  {
->> -       struct param p = { .tz_id = tz_id, .trip_id = trip_id };
->> +       struct param p = { .tz_id = tz_id, .trip_id = trip_id, .temp = temp };
->>
->>         return thermal_genl_send_event(THERMAL_GENL_EVENT_TZ_TRIP_UP, &p);
->>  }
->> diff --git a/drivers/thermal/thermal_netlink.h b/drivers/thermal/thermal_netlink.h
->> index 828d1dddfa98..e554f76291f4 100644
->> --- a/drivers/thermal/thermal_netlink.h
->> +++ b/drivers/thermal/thermal_netlink.h
->> @@ -11,8 +11,8 @@ int thermal_notify_tz_create(int tz_id, const char *name);
->>  int thermal_notify_tz_delete(int tz_id);
->>  int thermal_notify_tz_enable(int tz_id);
->>  int thermal_notify_tz_disable(int tz_id);
->> -int thermal_notify_tz_trip_down(int tz_id, int id);
->> -int thermal_notify_tz_trip_up(int tz_id, int id);
->> +int thermal_notify_tz_trip_down(int tz_id, int id, int temp);
->> +int thermal_notify_tz_trip_up(int tz_id, int id, int temp);
->>  int thermal_notify_tz_trip_delete(int tz_id, int id);
->>  int thermal_notify_tz_trip_add(int tz_id, int id, int type,
->>                                int temp, int hyst);
->> @@ -49,12 +49,12 @@ static inline int thermal_notify_tz_disable(int tz_id)
->>         return 0;
->>  }
->>
->> -static inline int thermal_notify_tz_trip_down(int tz_id, int id)
->> +static inline int thermal_notify_tz_trip_down(int tz_id, int id, int temp)
->>  {
->>         return 0;
->>  }
->>
->> -static inline int thermal_notify_tz_trip_up(int tz_id, int id)
->> +static inline int thermal_notify_tz_trip_up(int tz_id, int id, int temp)
->>  {
->>         return 0;
->>  }
->> --
->> 2.25.1
->>
-
+Yes I have modified the intf cfg dsc from bool to pass actual indices.
+So this patch goes next (as a dependency reorder) and we use this only
+when DSC is enabled and use the indices set. Thanks for the suggestion
 
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+~Vinod
