@@ -2,66 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85972424421
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 19:27:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21758424424
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 19:28:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238898AbhJFR3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 13:29:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51740 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238661AbhJFR3m (ORCPT
+        id S238119AbhJFRa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 13:30:27 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:60696
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229564AbhJFRaY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 13:29:42 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 862C1C061755
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 10:27:49 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id x27so13477040lfa.9
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 10:27:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=wG4f0Chx/eVuxxWC4rfWByWfD7XejH99o9MfvNU27Ls=;
-        b=jaySmYKNXsMb1jh9eJFbbV2jTx1l/3B3eiccq43bxcl4iPrewXtmyoNqSwn3R7Xc7E
-         YiTMq4hVso9IcqOGRB8ZzxM99TnAOojmGUoOZ8A/e7ee9zee84xunHkPIhhKitw+wBdN
-         BRoqXuncoM2XUlJ8gYmvGONiqFCqYGqLDI7vxNLW5wUgM1SHZ8Ubx6hFuFQM5c3L8P3p
-         Q/lzH524TxosZJRSZvoVGwN6yMSzzvZMogkvLS/VYBbug+9iueUIN4GO/TNp/bUyAMkp
-         HNTjNyX2eA5ynV1tMKU9lsjCQonuYdbrBYwov1B7wjDEnEzVLk67BiGgaRvLbMJqTBI1
-         uhyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=wG4f0Chx/eVuxxWC4rfWByWfD7XejH99o9MfvNU27Ls=;
-        b=Gda4beJznVduPmaLE3UKnn2RD39JRq2GW2q5WRXj23YIlkeVZq7nlsZDSCQRLOPpJ6
-         BSpKcUrQXSe25ikWTd0/aSBjs95Arrpx0LSN9zzAf4jejoqEAbqAr5Ro8MpRI+UJglBP
-         4ERejhOGFbPrNhFwLChr7GZwyFFQa4wgk2Rrm9mAcAda4rriLXu0uN8JTJHQSFxShDfI
-         ULHKW4IJI0SsRXZx9zCAB7r/JHfh7HD8sYyc5nyfNpJ2Ot/F876xXJbxwpP+eVTFfBtC
-         /bKqUC7R9mg3vp64G4dpYlHuOB2HZty2dqPJcawGuFhQ6A047JgJ+jSk+10XM6+B0sl3
-         MPAg==
-X-Gm-Message-State: AOAM533m+MtI3byvrMKAirZ2XlPObMFBi9i7yeuQB1dQ38V1ZleKILW3
-        Ykbq8jZZivFhZNZgFa+HxLRTTBbKmTgNADqJ6T4=
-X-Google-Smtp-Source: ABdhPJwj66Jmod6gAAU6gBYuOXPbtc9UD9mIIlK9D2SLI5K2mDBwWWz7RE3KXb4GseR278Z0oS6WckG57hmY4WR80oY=
-X-Received: by 2002:a05:6512:224b:: with SMTP id i11mr10325158lfu.281.1633541267750;
- Wed, 06 Oct 2021 10:27:47 -0700 (PDT)
+        Wed, 6 Oct 2021 13:30:24 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id E7DC83FFE4;
+        Wed,  6 Oct 2021 17:28:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1633541311;
+        bh=pPk5dCPPW2RNEpebScPcrw2OoSwA7+zGEwKS8BQvN9I=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=YWol+DExS1hl6PHDrTTgNS62HQKzz9IKOoNxRNWPT5XpoqCigHZ8U8rm5d0zww7Q5
+         3SDilFT6z0/Kw/EyFGtMAc/8hecB0NXNXcLZm9yWISOuh+2EwBwIDD3k6MUMsebQsA
+         F9nk28RYha/wbUbJ5lHlPBhVDCoKQnrqPZhMuijJ5+bM6PS9gkkw47TGV/jr3A8r4b
+         H30P/RK5zJiiiUikewGeFPbphDbYfZZNFVAXnXKjAZqtv8+ubGFcNPuajMBNc7TZu1
+         UAkOaopZPl+qQZaq/+Agd5PpYq+Qg5twVWti0xiL7rdD9D657IkN65Xo9zeiIbhpo5
+         GG4dfOR2QhEmQ==
+From:   Colin King <colin.king@canonical.com>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] tracing: fix missing * in comment block
+Date:   Wed,  6 Oct 2021 18:28:30 +0100
+Message-Id: <20211006172830.1025336-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Received: by 2002:a2e:719:0:0:0:0:0 with HTTP; Wed, 6 Oct 2021 10:27:47 -0700 (PDT)
-Reply-To: alimaanwari48@gmail.com
-From:   Mr Joshua Kunte <kekererukaya6@gmail.com>
-Date:   Wed, 6 Oct 2021 18:27:47 +0100
-Message-ID: <CAAnXHzRma5ekngDMFXadMbGz-G8jUUWm9irpeQyABYUPgjqN0w@mail.gmail.com>
-Subject: =?UTF-8?B?0JTQvtCx0YDRi9C5INC00LXQvdGM?=
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LS0gDQrQl9C00YDQsNCy0YHRgtCy0YPQudGC0LUsINC00L7RgNC+0LPQvtC5INC00YDRg9CzLCDR
-jyDQkNC70LjQvNCwINCQ0L3QstCw0YDQuCDQuNC3INCQ0YTQs9Cw0L3QuNGB0YLQsNC90LAsINC/
-0L7QttCw0LvRg9C50YHRgtCwLCDQvtGC0LLQtdGC0YzRgtC1DQrQstC10YDQvdGD0YLRjNGB0Y8g
-0LrQviDQvNC90LUsINGDINC80LXQvdGPINGB0YDQvtGH0L3QsNGPINC/0YDQvtCx0LvQtdC80LAs
-INC60L7RgtC+0YDQvtC5INGPINGF0L7Rh9GDINGBINCy0LDQvNC4DQrQv9C+0LTQtdC70LjRgtGM
-0YHRjy4g0Y8g0LHRg9C00YMg0LbQtNCw0YLRjA0K0LfQsCDQstCw0Ygg0L7RgtCy0LXRgi4NCtCh
-0L/QsNGB0LjQsdC+Lg0K0JvQsNC50LwuDQo=
+From: Colin Ian King <colin.king@canonical.com>
+
+There is a missing * in a comment block, add it in.
+
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ kernel/trace/trace_events_hist.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
+index a6061a69aa84..f01e442716e2 100644
+--- a/kernel/trace/trace_events_hist.c
++++ b/kernel/trace/trace_events_hist.c
+@@ -2506,7 +2506,7 @@ find_synthetic_field_var(struct hist_trigger_data *target_hist_data,
+  * events.  However, for convenience, users are allowed to directly
+  * specify an event field in an action, which will be automatically
+  * converted into a variable on their behalf.
+-
++ *
+  * If a user specifies a field on an event that isn't the event the
+  * histogram currently being defined (the target event histogram), the
+  * only way that can be accomplished is if a new hist trigger is
+-- 
+2.32.0
+
