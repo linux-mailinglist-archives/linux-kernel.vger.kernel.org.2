@@ -2,105 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DA3A424175
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 17:38:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0667642417D
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 17:41:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232698AbhJFPkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 11:40:43 -0400
-Received: from finn.gateworks.com ([108.161.129.64]:52404 "EHLO
-        finn.localdomain" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230014AbhJFPkm (ORCPT
+        id S233287AbhJFPnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 11:43:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54544 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230014AbhJFPnJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 11:40:42 -0400
-Received: from 068-189-091-139.biz.spectrum.com ([68.189.91.139] helo=tharvey.pdc.gateworks.com)
-        by finn.localdomain with esmtp (Exim 4.93)
-        (envelope-from <tharvey@gateworks.com>)
-        id 1mY90C-007Az4-24; Wed, 06 Oct 2021 15:38:40 +0000
-From:   Tim Harvey <tharvey@gateworks.com>
-To:     Shawn Guo <shawnguo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Tim Harvey <tharvey@gateworks.com>
-Subject: [PATCH v2] arm64: dts: imx8mm-venice-gw7901.dts: disable pgc_gpumix
-Date:   Wed,  6 Oct 2021 08:38:36 -0700
-Message-Id: <20211006153836.13760-1-tharvey@gateworks.com>
-X-Mailer: git-send-email 2.17.1
+        Wed, 6 Oct 2021 11:43:09 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D488C061746;
+        Wed,  6 Oct 2021 08:41:17 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id r19so11419619lfe.10;
+        Wed, 06 Oct 2021 08:41:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=EcWwiS6s+2hsdKW38DDnyx0jTkPf8lZT967mi4aaVRU=;
+        b=OSx2SIFa3QZatPqQ1/1JhIMHW9/xVzpWbWJ3JRx38+vkc7yD3VhW0qZPTRXo9BHPAb
+         jqThRDpZ0kg6ZpAqxG2JtHeMn3hkxCgfz6NEKIJ7VCvOhBjv8tEvA+F+ola4MKtey4W6
+         6tkAdoqeo5YgJ+ccviV414q5ymKWqXmOHWR03wrBvLcC1hyucYUejAbGeEBHMdkt6pNZ
+         8HWP4CFxNNf4YTbPRr/OlQ8ucASJWFLCMnmZRQ+kMjzWnezyK5gHEkf2wflkjyStAtpK
+         CH0vEiVb7u1tSojwaalDHZzv61AptJr6u6640FPdb069l7IzleOKJabZjkqRSGs5cxlh
+         zq+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=EcWwiS6s+2hsdKW38DDnyx0jTkPf8lZT967mi4aaVRU=;
+        b=WHdzqRjCuBSQvIE6NL+CyHsCd6RTwoBr3NxNexvpuoXIOJkdvChn7Ax+lXFYyw0td+
+         Ywn0QOHFa4UWaOQSbbcFTsk+HiOXkZuv04F+lBR6Mu4Uvng/unPFCkSSTYfhD0t5Q7Wy
+         mdGZ4exljrOLSX11yL0kdQXxjeSJW5Bhcb9fV0lJnSTy4maM6yuYSkS8Xh4/PCz7XDNr
+         kyWbyXXpNOM+vUb3ZEu0U8JIvC91x74/++3eTT/R0sIKXLDE9lEnGhyrLYhgsBbZ7NOU
+         o+efWj8BMCKQrFk+beTSkmb8vDH1k+HFM939uJ9GPW2GvMazl0bdrkMBUl8pUYWFigV/
+         w+1A==
+X-Gm-Message-State: AOAM531I124dJsVt+2NgP10lK5+nlQTha87kOGYqIEmiSLAZSDJ8y82m
+        eXPGVt4nDKY4XDfpDLjjUa9JE7bDtMs=
+X-Google-Smtp-Source: ABdhPJyyPif7tIwRD8TIt+Gr8SE2XFik/v8luje5qQy8jYQOg+e2WrqhmAoSQ0MfKf9L2+5J+fDukw==
+X-Received: by 2002:ac2:4e09:: with SMTP id e9mr7989973lfr.308.1633534865724;
+        Wed, 06 Oct 2021 08:41:05 -0700 (PDT)
+Received: from [192.168.2.145] (79-139-163-57.dynamic.spd-mgts.ru. [79.139.163.57])
+        by smtp.googlemail.com with ESMTPSA id t9sm300124ljk.39.2021.10.06.08.41.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Oct 2021 08:41:05 -0700 (PDT)
+Subject: Re: [PATCH v4 2/7] dt-bindings: memory: lpddr2: Convert to schema
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+References: <20211005230009.3635-1-digetx@gmail.com>
+ <20211005230009.3635-3-digetx@gmail.com>
+ <6b8f6ef7-cfc5-3a8b-d44d-f4080a85ecf3@canonical.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <7047ad7b-52d6-0c91-b7d2-b115ea69506f@gmail.com>
+Date:   Wed, 6 Oct 2021 18:41:04 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <6b8f6ef7-cfc5-3a8b-d44d-f4080a85ecf3@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit b21269b12e48 ("arm64: dts: imx8mm: add GPC node") the
-GW7901 will hang during kernel init because it does not power the unused
-GPU voltage rails on the IMX8MM. Disable pgc_gpumix to work around this.
+06.10.2021 13:57, Krzysztof Kozlowski пишет:
+>> +  density:
+>> +    description: |
+>> +      Density in megabits of SDRAM chip. Obtained from device datasheet.
+> You need here a type/ref, so uint32.
+> 
 
-We also disable the GPU devices that depend on the gpumix power domain
-and pgc_gpu to avoid them staying in a probe deferred state forever.
-
-Additionally as the MIPI voltage rail is also not connected on this
-board we disable pgc_mipi and disp_blk_ctrl.
-
-Signed-off-by: Tim Harvey <tharvey@gateworks.com>
----
-v2:
- - also disable pgc_gpu to keep gpu from getting in probe deferred state
- - also disable pgc_mipi and disp_blk_ctrl as the MIPI power rails are
-   not connected
----
- .../dts/freescale/imx8mm-venice-gw7901.dts    | 24 +++++++++++++++++++
- 1 file changed, 24 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7901.dts b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7901.dts
-index bafd5c8ea4e2..21c546c4628d 100644
---- a/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7901.dts
-+++ b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7901.dts
-@@ -255,6 +255,10 @@
- 	};
- };
- 
-+&disp_blk_ctrl {
-+	status = "disabled";
-+};
-+
- &ecspi1 {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_spi1>;
-@@ -282,6 +286,14 @@
- 	};
- };
- 
-+&gpu_2d {
-+	status = "disabled";
-+};
-+
-+&gpu_3d {
-+	status = "disabled";
-+};
-+
- &i2c1 {
- 	clock-frequency = <100000>;
- 	pinctrl-names = "default";
-@@ -632,6 +644,18 @@
- 	status = "okay";
- };
- 
-+&pgc_gpu {
-+	status = "disabled";
-+};
-+
-+&pgc_gpumix {
-+	status = "disabled";
-+};
-+
-+&pgc_mipi {
-+	status = "disabled";
-+};
-+
- &uart1 {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_uart1>, <&pinctrl_uart1_gpio>;
--- 
-2.17.1
-
+The type is uint32 by default. I can add it, but it's not really necessary.
