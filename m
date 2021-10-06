@@ -2,68 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 493ED42454F
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 19:54:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE5C5424556
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 19:55:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231756AbhJFR4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 13:56:06 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:40544 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229496AbhJFR4D (ORCPT
+        id S238337AbhJFR5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 13:57:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58454 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229496AbhJFR5P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 13:56:03 -0400
-Received: by mail-il1-f199.google.com with SMTP id d12-20020a92680c000000b00258ec365becso2312634ilc.7
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 10:54:11 -0700 (PDT)
+        Wed, 6 Oct 2021 13:57:15 -0400
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 778E6C061753
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 10:55:23 -0700 (PDT)
+Received: by mail-il1-x135.google.com with SMTP id r9so3730744ile.5
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 10:55:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=LzP/88KrusQ0w58mk5OJSWvFTggsi0OhcfnP+HTJN6c=;
+        b=iJyN3HP0JJn6LDNUOeUzuLam0RdidVSOkEMqXwk1oSmzAcmGkRVHaJIe+QtcFAOdmC
+         ubDhhmphJfowHsW9UK6Xa3VC8YQSx/Jn9DVEHnuT0wyGP093a+8wj13BxQOu+GYRYVZO
+         +/FJ2uKOj5YOj+3Zx3BRbdqu405Vy/qNEb1bp4SYil2Wl+qkG77grCnFl3Bm3utgIMf8
+         fsQ3zSn6N5hqpBH7QU+LzYx2yT5A3nO0GhMTs068vKJUtnT1eN3GC1vgqY+gtS5fXvqL
+         3RLaDObiHDF11beAtIDDVHYRrDJMVvY6e2ilYHni3vXCPTauTzRwv7RdFOsQ3s+lakxk
+         B6mA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=V+I890c20q7qNEdOd1hUGCnKcSpI6F+6PfMtuEIOa7E=;
-        b=Ho9/yROXF56uk1KEnWfMDMjsXj0s15oFdXFwJZM5xQMNC9Zzf0Ah/86ZWC0TC0mTMP
-         SyXwLRaHu3N2ddO13P+UVyvM5k4RtRqvlGdMM6WA59H5OQeupg4VyLPa02YHlNR0jO0B
-         Y+y9YEWPen3jhsW+JmzsxoVovoCjcFaD+WMWFjANxak1na8k3Eloog4rDkKhBQ7bUJd6
-         1C7IrLesCHgkE4CJfRzcdWTQGhYgR4R/ryopYLEsO0rSiVb6BH9smxC2rARIGz4hwihr
-         /QhCwW9yQI+BrImf/dqIpGKenIHPLkbdOm/aLaGdliQVSKtSkM89Ruva3Xdjtxgnjcdk
-         GRtw==
-X-Gm-Message-State: AOAM532RkY4Nf4d961s7kLY64zNMHMOTIv6VVoOFuwZRMGWGvlduNDN0
-        WVgtL8REWBxQ8JX8LI8vA30Xaf2ptJPBXdEzrihjmqAYMpOe
-X-Google-Smtp-Source: ABdhPJwsyjZ6t7YeGUzi2E7eUx+7aaW1DzCy0NGrvQJYbyqWVCx9ftgACQozGvaotlyE8L8gj9MZAt+RjYMH/QNwTTn5gv04aF9b
-MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1c05:: with SMTP id l5mr1984571ilh.7.1633542850801;
- Wed, 06 Oct 2021 10:54:10 -0700 (PDT)
-Date:   Wed, 06 Oct 2021 10:54:10 -0700
-In-Reply-To: <0000000000006d354305cae2253f@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000058faf705cdb2d5f6@google.com>
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=LzP/88KrusQ0w58mk5OJSWvFTggsi0OhcfnP+HTJN6c=;
+        b=OBOgwOIwhEIpM86Bg+Grrxaz2c6UY0Y0Ukj8fy0MxSlrclc+dL7ISvV2bwI4rcVs6j
+         ZRJNbFHhqP5GhkTJrwbhM8U+FqmLaT5pb0IGnzYD2/k2DH0qPOdU+TmgWQrJdF3v57oJ
+         EKVDJ09Fpmsd/mSeQZsYGaiU8nH0iyg4Q1oS9MFIaUuds/Cz9MYuh/MCFpTrQjE2hU+q
+         sHJUbbUNy5/QwVpAfBQYtTfd85v4MnX9uRMXixkIp3yCq4sIqs4IFezSfB073mlFvzlq
+         HRJaTjNf7EXK1/2Dr9pHC6MNMTY6vhTZ7Xp4CybDUT6sfSdWYQB0gbVpaA+1QTF5e/b+
+         mq9Q==
+X-Gm-Message-State: AOAM532Q9/vzPxG4JEamLn1t+9x4B/e+P7A4TIkuGVlgbMfI8vjj8GqI
+        uTrDuHr0zpVecAQy92TzJTeHNw==
+X-Google-Smtp-Source: ABdhPJyKDZw6BJKb1oktk4SAfdGcXVbH9R4EjrZ5kfLM2uiK7nDM5vZxWN4haPwjTAZYtW/1nHKsIA==
+X-Received: by 2002:a05:6e02:198d:: with SMTP id g13mr8278137ilf.300.1633542922839;
+        Wed, 06 Oct 2021 10:55:22 -0700 (PDT)
+Received: from [192.168.1.30] ([207.135.234.126])
+        by smtp.gmail.com with ESMTPSA id q17sm12483504iod.51.2021.10.06.10.55.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Oct 2021 10:55:22 -0700 (PDT)
 Subject: Re: [syzbot] general protection fault in __io_file_supports_nowait
-From:   syzbot <syzbot+e51249708aaa9b0e4d2c@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, haoxu@linux.alibaba.com,
+To:     syzbot <syzbot+e51249708aaa9b0e4d2c@syzkaller.appspotmail.com>,
+        asml.silence@gmail.com, haoxu@linux.alibaba.com,
         io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
         syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+References: <00000000000058faf705cdb2d5f6@google.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <c3797510-2fc9-53f5-7984-446159e0374a@kernel.dk>
+Date:   Wed, 6 Oct 2021 11:55:21 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <00000000000058faf705cdb2d5f6@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
-
-commit c6d3d9cbd659de8f2176b4e4721149c88ac096d4
-Author: Pavel Begunkov <asml.silence@gmail.com>
-Date:   Tue Aug 31 13:13:10 2021 +0000
-
-    io_uring: fix queueing half-created requests
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=174ee814b00000
-start commit:   b91db6a0b52e Merge tag 'for-5.15/io_uring-vfs-2021-08-30' ..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=961d30359ac81f8c
-dashboard link: https://syzkaller.appspot.com/bug?extid=e51249708aaa9b0e4d2c
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10a91625300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12512291300000
-
-If the result looks correct, please mark the issue as fixed by replying with:
-
 #syz fix: io_uring: fix queueing half-created requests
+-- 
+Jens Axboe
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
