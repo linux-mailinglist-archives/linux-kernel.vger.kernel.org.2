@@ -2,68 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06A2F4240F9
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 17:12:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D331B4240FC
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 17:12:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239106AbhJFPOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 11:14:09 -0400
-Received: from foss.arm.com ([217.140.110.172]:35868 "EHLO foss.arm.com"
+        id S239207AbhJFPOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 11:14:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53388 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230486AbhJFPOI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 11:14:08 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D0E706D;
-        Wed,  6 Oct 2021 08:12:15 -0700 (PDT)
-Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 485D23F66F;
-        Wed,  6 Oct 2021 08:12:14 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
-Subject: Re: [PATCH 10/11] rcu: Apply callbacks processing time limit only on softirq
-In-Reply-To: <20211004134748.GD273854@lothringen>
-References: <20210929221012.228270-1-frederic@kernel.org> <20210929221012.228270-11-frederic@kernel.org> <874ka0my57.mognet@arm.com> <20211004134748.GD273854@lothringen>
-Date:   Wed, 06 Oct 2021 16:12:12 +0100
-Message-ID: <87ilyakx0z.mognet@arm.com>
+        id S238124AbhJFPOP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 11:14:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BBADF60E94;
+        Wed,  6 Oct 2021 15:12:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633533142;
+        bh=Sn6xAQq4cN/hOpF85QY+PACDZDzO2M6VmNGmM+0OmEI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jWG5kdHEOgYeuqPo2BYKsVo+OpJ4s+JsQkD1phUUbjY134b1/KFtJymIqgSp5NMMU
+         WaUw1Nqo0aSfhYhmxUrebcRi2sbuGOvTqWDoPA0AFJmyaZrb/aQ5DoovV8E2hY+jWF
+         SE7GhR1e7fNIhUtg5RZS+Ive/oOwGYhJS5fvpCgpy/bYEZ9aOFC6U2oocu1BcTP3BZ
+         kHezkOddYqOknCMjA/1Y51f1Zrp1CJBv51s52E5mU0bgIQWBTRh7C05EENfb2PGsu4
+         Zx2+TkcfK05ExJGvO3CFLXp6lnUqK8nkz7Pe9oA9PW+MIRjWwZWscUD4f+Z8YpBSw0
+         sHdjPRv5W6OdA==
+Date:   Wed, 6 Oct 2021 11:12:21 -0400
+From:   Sasha Levin <sashal@kernel.org>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Yanfei Xu <yanfei.xu@windriver.com>,
+        syzbot+398e7dc692ddbbb4cfec@syzkaller.appspotmail.com,
+        "David S . Miller" <davem@davemloft.net>, hkallweit1@gmail.com,
+        kuba@kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 5.14 28/40] net: mdiobus: Fix memory leak in
+ __mdiobus_register
+Message-ID: <YV281dk7FLrJKBab@sashalap>
+References: <20211005135020.214291-1-sashal@kernel.org>
+ <20211005135020.214291-28-sashal@kernel.org>
+ <YVxa7w8JWOMPOQsp@lunn.ch>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <YVxa7w8JWOMPOQsp@lunn.ch>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/10/21 15:47, Frederic Weisbecker wrote:
-> On Fri, Oct 01, 2021 at 06:51:32PM +0100, Valentin Schneider wrote:
->> On 30/09/21 00:10, Frederic Weisbecker wrote:
->> > Time limit only makes sense when callbacks are serviced in softirq mode
->> > because:
->> >
->> > _ In case we need to get back to the scheduler,
->> >   cond_resched_tasks_rcu_qs() is called after each callback.
->> >
->> > _ In case some other softirq vector needs the CPU, the call to
->> >   local_bh_enable() before cond_resched_tasks_rcu_qs() takes care about
->> >   them via a call to do_softirq().
->> >
->> > _ The time spent on other tasks after scheduling out, or on softirqs
->> >   processing, is spuriously accounted to the time limit.
->> >
+On Tue, Oct 05, 2021 at 04:02:23PM +0200, Andrew Lunn wrote:
+>On Tue, Oct 05, 2021 at 09:50:07AM -0400, Sasha Levin wrote:
+>> From: Yanfei Xu <yanfei.xu@windriver.com>
 >>
->> That wasn't the case before ("rcu: Fix callbacks processing time limit
->> retaining cond_resched()")
+>> [ Upstream commit ab609f25d19858513919369ff3d9a63c02cd9e2e ]
+>>
+>> Once device_register() failed, we should call put_device() to
+>> decrement reference count for cleanup. Or it will cause memory
+>> leak.
 >
-> But if cond_resched_tasks_rcu_qs() was called and then on the next iteration
-> tlimit is checked, the time spent scheduling out is included, right?
+>Hi Sasha
 >
+>https://lkml.org/lkml/2021/10/4/1427
+>
+>Please don't backport for any stable kernel.
 
-if tlimit was set, then that branch would either continue or break; both
-cases would have skipped over the cond_resched_tasks_rcu_qs() (which the
-aforementioned patch addresses).
+Dropped, thanks!
+
+-- 
+Thanks,
+Sasha
