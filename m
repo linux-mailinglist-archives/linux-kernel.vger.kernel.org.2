@@ -2,62 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 837E34248A6
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 23:14:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 692364248AB
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 23:14:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239636AbhJFVQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 17:16:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33062 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239488AbhJFVQi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 17:16:38 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2B63C61152;
-        Wed,  6 Oct 2021 21:14:45 +0000 (UTC)
-Date:   Wed, 6 Oct 2021 17:14:43 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@kernel.org>,
-        linux-kernel@vger.kernel.org, Jann Horn <jannh@google.com>
-Subject: Re: [PATCH][next] ftrace: Fix -Wcast-function-type warnings on
- powerpc64
-Message-ID: <20211006171443.4faecbe9@gandalf.local.home>
-In-Reply-To: <20211006211426.GA916113@embeddedor>
-References: <20211005053922.GA702049@embeddedor>
-        <20211005111714.18ebea2b@gandalf.local.home>
-        <20211005161812.GA768055@embeddedor>
-        <20211005123522.244281e6@gandalf.local.home>
-        <20211005165027.GA797862@embeddedor>
-        <20211005150807.03da5e54@gandalf.local.home>
-        <20211005193557.GA881195@embeddedor>
-        <20211005200935.2429ec2c@rorschach.local.home>
-        <20211006211426.GA916113@embeddedor>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S239654AbhJFVQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 17:16:46 -0400
+Received: from mail-ot1-f41.google.com ([209.85.210.41]:36810 "EHLO
+        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239646AbhJFVQp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 17:16:45 -0400
+Received: by mail-ot1-f41.google.com with SMTP id 5-20020a9d0685000000b0054706d7b8e5so4867091otx.3;
+        Wed, 06 Oct 2021 14:14:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lak8Kr6S28oWWnCbDixiphSYTCbXgMBHH9/qqV4Giyc=;
+        b=1Mlm9+OC7ZdJp/6YYm78hcul4b2nMToWIb94JdwE1gCoGR1M8e+Aj+CZK/y9Fbft1j
+         PYe9c/i02O0YOG9YLdp5yxNNGgj9LNwgH/3NlrVsJ/evU/vKkv6gvj7tUBz6zAHdZ7Vz
+         OvPLsPhcls2xBGpqpT8hs/1mqE9Tm3ukN4OoIdIcgeGtYAGyuk8Eugzc3kjm3lPzdhu+
+         JaPfjXtjM3dNK/XYZu6yk1KuiMSBzgTd8zsoU/kXF5GNV/0VPjL3SMBlcZ7O52WKg6pI
+         8JPD/OWTPRVMr2wyXnQrTGbsVHicVvLDL5aNox1WqcjKT/uG1o07dzxdEhiv+t9WxsUV
+         4MlA==
+X-Gm-Message-State: AOAM53066FWbw6hNWH1xZ/4h62+XCtt/Jf2LLwl/iEyighvGCy06+Kcc
+        z4Qgt3r+Sxl3l5TPInwPYdYx4bFl+Q==
+X-Google-Smtp-Source: ABdhPJwjkpOHrD8M6tpuzasy4z7/puEHow6aB3HnOWHU8azVI5+r8jJyF/JJjo6sBcNSVtVIjY967g==
+X-Received: by 2002:a9d:71d4:: with SMTP id z20mr432620otj.29.1633554892688;
+        Wed, 06 Oct 2021 14:14:52 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id s22sm1100539ois.32.2021.10.06.14.14.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Oct 2021 14:14:51 -0700 (PDT)
+Received: (nullmailer pid 2887704 invoked by uid 1000);
+        Wed, 06 Oct 2021 21:14:50 -0000
+Date:   Wed, 6 Oct 2021 16:14:50 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Subject: Re: [RFC PATCH 1/4] dt-bindings: pincfg-node: Add "output-impedance"
+ property
+Message-ID: <YV4RypY6/n23Bl2T@robh.at.kernel.org>
+References: <20210930121630.17449-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20210930121630.17449-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210930121630.17449-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 6 Oct 2021 16:14:26 -0500
-"Gustavo A. R. Silva" <gustavoars@kernel.org> wrote:
-
-> > Which I guess leaves us with either the linker trick, or having all
-> > the archs get updated to support the latest ftrace features, and we can
-> > remove the current #ifdefs.  
+On Thu, Sep 30, 2021 at 01:16:27PM +0100, Lad Prabhakar wrote:
+> On RZ/G2L SoC for Group-B pins, output impedance can be configured.
+> This patch documents "output-impedance" property in pincfg-node.yaml so
+> that other platforms requiring such feature can make use of this property.
 > 
-> OK. Are you going to apply your patch any time soon? So, I can go and
-> enable -Wcast-function-type in my -next tree. :)
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> ---
+>  Documentation/devicetree/bindings/pinctrl/pincfg-node.yaml | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/pinctrl/pincfg-node.yaml b/Documentation/devicetree/bindings/pinctrl/pincfg-node.yaml
+> index 71ed0a9def84..cdcb23daeca2 100644
+> --- a/Documentation/devicetree/bindings/pinctrl/pincfg-node.yaml
+> +++ b/Documentation/devicetree/bindings/pinctrl/pincfg-node.yaml
+> @@ -114,6 +114,10 @@ properties:
+>      description: enable output on a pin without actively driving it
+>        (such as enabling an output buffer)
+>  
+> +  output-impedance:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
 
-Sure. I only did not add it because of the issue Jann brought up. But if it
-is needed, and I do not want more #ifdef all over the code, I'll add it,
-and perhaps even mark it for stable.
+Use standard unit suffix and drop the type.
 
-I'm working on some other fixes now anyway.
-
--- Steve
-
+> +    description: set the pins output impedance at most X ohm
+> +
+>    output-low:
+>      type: boolean
+>      description: set the pin to output mode with low level
+> -- 
+> 2.17.1
+> 
+> 
