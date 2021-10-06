@@ -2,86 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F7E8423D5D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 13:57:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61848423D68
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 14:01:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238273AbhJFL7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 07:59:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58818 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238167AbhJFL7b (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 07:59:31 -0400
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7D25C061749
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 04:57:39 -0700 (PDT)
-Received: by mail-io1-xd2c.google.com with SMTP id p80so2453047iod.10
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 04:57:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qP8qUdurFon+vS8eyUqKuAmxlr00Ucs7J31uCZEKlng=;
-        b=RHqUFEetTG/eYk7o+keixgzTsx76qze7UUJ06SBYaebyHUQ2d5IplJMpy/dauoI6iB
-         dXDfk49UADHMti+mCSw3jTWGQjE/NgyfiGmOE5qL/lL/MPBMO0UjMMvD7P5hwfEGmnTp
-         fswdFmXWOJINyEbFlJ8T5NobRk2GBLe1NKBcVcC+ueLeV1X1P5jxzNRiQvzBt/26KEZs
-         fgXpPBMzaFop8NrepFeSG5d5inz6n9u76TL2FuJjgOh0lxhzA98scObInb5Bpu/19LBT
-         pEsirjNTqtAilTcjDnmEoaZ0eH2ebJd6P7nA1tXnCkBRiyLQcvZYF13hpRZrB5GMogAt
-         Fk1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qP8qUdurFon+vS8eyUqKuAmxlr00Ucs7J31uCZEKlng=;
-        b=wW/f79lO8Xw7cdnHhjvgKXYRx2npdKosPbs7XI1QOw1NeKamh9BTt1QjdgRCJQMH8A
-         RjdWNzeqDMneL9/SXL9RdFK6IW5rONL+EbJcWF6hGCsQnatJwKt5CpsrViszewYT8YFx
-         eDc2yuZASIRmRCW+AI0e10BbuFQe3gSCZZiglbYd+6IIlF60f7zgxBU9WvH7WYgsVIUM
-         pOC/3d5GhKHcDoiUCpiVk2fgNjW8T/PcCqRYLethYaqsBYkxGnPAJdkclouMfYOXETJC
-         FNXE0hsSH0+RcFE/BXYuZs9s6olg5KERqedtp2wAWk49uzDLIYNNlD2eoZarrtLlXp26
-         Vg1w==
-X-Gm-Message-State: AOAM531z7Cc5/pa+8Gzj7ZjQwR5Kh1SJn4Byvq8gSZXFzobjI8a37x/Z
-        7E+C7yxeovili6cLWkT8TOSTs2+rmLtKgUlIZ14g0uxrarA=
-X-Google-Smtp-Source: ABdhPJzrUCrbL4qoMWWF4ycdUPgt1QQgBnX/C1pCX8aC6wNFiNRQWvoYqGnSTsMpnJdJpFN7PKPT/9sQv64HdBNoy10=
-X-Received: by 2002:a5e:9b18:: with SMTP id j24mr6049480iok.202.1633521459169;
- Wed, 06 Oct 2021 04:57:39 -0700 (PDT)
+        id S238373AbhJFMDE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 08:03:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49212 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238167AbhJFMDD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 08:03:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 40DF661151;
+        Wed,  6 Oct 2021 12:01:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633521671;
+        bh=ymrJ8GEZjJOzlz8voJgghmaov/XpttXyjUhcxY3Gz5g=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Lyz32HR1VzD/3w+DJNVDuSy+v2TPRL6ZH+9MDsRo30BKKIOXWSQ2Op+MKyS2DHdMP
+         CFIWxlBgNKuNPPk/r9ikRSKvboVM2EE4ZgR+pMbXNYzqXXdep2bLwo+tqP9aMfArjd
+         gCN7+B8I5oofoLm0wTPXuTliLWFWj5Lpa6P+vG98HsmGPy4jy9tBNypEL+2R8mralF
+         78cH5OLkm6XlILQHD/YsgjndJ0m0jzXvmOZnOrdUUf2RaGeMQkIrpnq1WTrZ+kCQLZ
+         y2u62R3FRf+PRfbi4s98Ar+5BlpW7B9dQFEjXOinajTBAuLC+z4bO/kvR9DBrcJhVS
+         kx6NLoyKyWs5w==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1mY5bg-0004RO-Pw; Wed, 06 Oct 2021 14:01:08 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Lai Jiangshan <jiangshanlai@gmail.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Fabio Estevam <festevam@denx.de>, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>,
+        stable@vger.kernel.org
+Subject: [PATCH v2] workqueue: fix state-dump console deadlock
+Date:   Wed,  6 Oct 2021 13:58:52 +0200
+Message-Id: <20211006115852.16986-1-johan@kernel.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <20210922205525.570068-1-nathan@kernel.org> <CA+fCnZdfMYvQ1o8n41dDzgJUArsUyhnb9Y_azgCVuzj6_KBifA@mail.gmail.com>
- <YV0NPnUbElw7cTRH@archlinux-ax161>
-In-Reply-To: <YV0NPnUbElw7cTRH@archlinux-ax161>
-From:   Andrey Konovalov <andreyknvl@gmail.com>
-Date:   Wed, 6 Oct 2021 13:57:28 +0200
-Message-ID: <CA+fCnZc5=fqM=eEZ3RLqBFaxR72bjxndDdnM_rOkiSBi3+2L6A@mail.gmail.com>
-Subject: Re: [PATCH] kasan: Always respect CONFIG_KASAN_STACK
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Marco Elver <elver@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>, llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 6, 2021 at 4:43 AM Nathan Chancellor <nathan@kernel.org> wrote:
->
-> > This part of code always looked weird to me.
-> >
-> > Shouldn't we be able to pull all these options out of the else section?
-> >
-> > Then, the code structure would make sense: first, try applying
-> > KASAN_SHADOW_OFFSET; if failed, use CFLAGS_KASAN_MINIMAL; and then try
-> > applying all these options one by one.
->
-> Prior to commit 1a69e7ce8391 ("kasan/Makefile: support LLVM style asan
-> parameters"), all the flags were run under one cc-option, meaning that
-> if $(KASAN_SHADOW_OFFSET) was not set, the whole call would fail.
-> However, after that commit, it is possible to do this but I was not sure
-> if that was intentional so I went for the minimal fix.
+Console drivers often queue work while holding locks also taken in their
+console write paths, something which can lead to deadlocks on SMP when
+dumping workqueue state (e.g. sysrq-t or on suspend failures).
 
-Ack. Filed https://bugzilla.kernel.org/show_bug.cgi?id=214629 for the rest.
+For serial console drivers this could look like:
 
-Thanks!
+	CPU0				CPU1
+	----				----
+
+	show_workqueue_state();
+	  lock(&pool->lock);		<IRQ>
+	  				  lock(&port->lock);
+					  schedule_work();
+					    lock(&pool->lock);
+	  printk();
+	    lock(console_owner);
+	    lock(&port->lock);
+
+where workqueues are, for example, used to push data to the line
+discipline, process break signals and handle modem-status changes. Line
+disciplines and serdev drivers can also queue work on write-wakeup
+notifications, etc.
+
+Reworking every console driver to avoid queuing work while holding locks
+also taken in their write paths would complicate drivers and is neither
+desirable or feasible.
+
+Instead use the deferred-printk mechanism to avoid printing while
+holding pool locks when dumping workqueue state.
+
+Note that there are a few WARN_ON() assertions in the workqueue code
+which could potentially also trigger a deadlock. Hopefully the ongoing
+printk rework will provide a general solution for this eventually.
+
+This was originally reported after a lockdep splat when executing
+sysrq-t with the imx serial driver.
+
+Fixes: 3494fc30846d ("workqueue: dump workqueues on sysrq-t")
+Cc: stable@vger.kernel.org	# 4.0
+Reported-by: Fabio Estevam <festevam@denx.de>
+Tested-by: Fabio Estevam <festevam@denx.de>
+Signed-off-by: Johan Hovold <johan@kernel.org>
+---
+
+Changes in v2
+ - defer printing also of worker pool state (Peter Mladek)
+ - add Fabio's tested-by tag
+
+
+ kernel/workqueue.c | 18 ++++++++++++++++--
+ 1 file changed, 16 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+index 33a6b4a2443d..1b3eb1e9531f 100644
+--- a/kernel/workqueue.c
++++ b/kernel/workqueue.c
+@@ -4830,8 +4830,16 @@ void show_workqueue_state(void)
+ 
+ 		for_each_pwq(pwq, wq) {
+ 			raw_spin_lock_irqsave(&pwq->pool->lock, flags);
+-			if (pwq->nr_active || !list_empty(&pwq->inactive_works))
++			if (pwq->nr_active || !list_empty(&pwq->inactive_works)) {
++				/*
++				 * Defer printing to avoid deadlocks in console
++				 * drivers that queue work while holding locks
++				 * also taken in their write paths.
++				 */
++				printk_deferred_enter();
+ 				show_pwq(pwq);
++				printk_deferred_exit();
++			}
+ 			raw_spin_unlock_irqrestore(&pwq->pool->lock, flags);
+ 			/*
+ 			 * We could be printing a lot from atomic context, e.g.
+@@ -4849,7 +4857,12 @@ void show_workqueue_state(void)
+ 		raw_spin_lock_irqsave(&pool->lock, flags);
+ 		if (pool->nr_workers == pool->nr_idle)
+ 			goto next_pool;
+-
++		/*
++		 * Defer printing to avoid deadlocks in console drivers that
++		 * queue work while holding locks also taken in their write
++		 * paths.
++		 */
++		printk_deferred_enter();
+ 		pr_info("pool %d:", pool->id);
+ 		pr_cont_pool_info(pool);
+ 		pr_cont(" hung=%us workers=%d",
+@@ -4864,6 +4877,7 @@ void show_workqueue_state(void)
+ 			first = false;
+ 		}
+ 		pr_cont("\n");
++		printk_deferred_exit();
+ 	next_pool:
+ 		raw_spin_unlock_irqrestore(&pool->lock, flags);
+ 		/*
+-- 
+2.32.0
+
