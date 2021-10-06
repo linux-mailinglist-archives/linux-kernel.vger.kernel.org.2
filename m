@@ -2,122 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 338F2423E8A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 15:20:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E2BB423E91
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 15:20:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238474AbhJFNWD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 09:22:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49554 "EHLO
+        id S231532AbhJFNWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 09:22:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231497AbhJFNV7 (ORCPT
+        with ESMTP id S231384AbhJFNWn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 09:21:59 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8269C061749
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 06:20:06 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id r18so8800710wrg.6
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 06:20:06 -0700 (PDT)
+        Wed, 6 Oct 2021 09:22:43 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27624C061749;
+        Wed,  6 Oct 2021 06:20:51 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id x7so9642859edd.6;
+        Wed, 06 Oct 2021 06:20:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=p6gdpQMOmptKubvJ742KDDFUbo9hEV0sBfCaJk3WkUE=;
-        b=c6QDqpPiXtNIV7dzN5ll+FQ6KvfswcGWcaP2rST+y9EevgjCepx7n6lQ/Ywkm7gsK5
-         LHCTTJVgjJrhnLdE5oiKlNUPQ2Kg3yuhCZYBT7PREtbfd0xN0IeZtqeZ8osgZB0JSznl
-         12pmuBiPPD7N/XKULR6fiMUPS45M1jy/BcwO+eEAfWGYo/hUdXIbtUSsrr3orlw4p8vn
-         UhQoF+aaOVl4fqg5jkQcohYx50IblNjHP1ZqiFMh7vpFYoAWRMyyjDuOzjyu7h2qrEkw
-         TX1cslnGgnwvZU5pixPfmoiKDlUjTjehwomD/EOGuzvC+BnGjKNek/TeMsxj1n/BxC76
-         Bx9w==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vOkTBrJ8rFY8f9IVX0lA4SgMpHXgic0fky3oKRvqHqk=;
+        b=mUVLyEYqh9+b5aOkFH+/WeECuuGtmvZkHphEI2tlT6gRdiywDz1xqhzW5W7E9xEWmv
+         5NReq7Fj7EFtSeVWE0nul7Rw8VG9wHSHqthUclc6QxgWH7/c4nqnKwC6EYBfwevJm3x6
+         AKqs22eCqVb6XPalNajSXItmeTULrJhkyVuwPbTqvtXPNoIhYHQWpd1CFYz9UdVCCk2Q
+         ytp2YvK0205TSd7/vQCR+pNZDHa1JjGHE+kR6zg6HHXvoV/xCye0xPVMI+b8r8O5L6A2
+         IPvdT2aEp1yN9eOkaJkLT/ETKTvmqHncvK6ARonCHBgHCzwBe465PvemsnfNGKWAMw2f
+         O+jQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=p6gdpQMOmptKubvJ742KDDFUbo9hEV0sBfCaJk3WkUE=;
-        b=cUU6K2vv2KDDKtgzZBqApTXMb/aq2L8OpSNAbv9+LXgzsxK17TfmqgQUBAQcPRu0gK
-         6tPq2iPLjMfP6QCIULRfDHJQZwNSvVtkuRUdXLxafYUZT4pUkcuY6dNcm+8WUInT+xVC
-         7NEy6NAs6zvV4nyK4OnviOTbI0nd5R50hn2mpjEDtVWqJ/2H526uGt0lVLxcGmjunlW5
-         dhwZTynVKMud7iiuBEC9BSIfUkAxoKZLLak9tcxNGinZOln+ficlhisiB3QErE6cLbUW
-         A7lgoGxbLriEBi263oaX+LsndqewcMhCgH7qbe6g8rawnKZnLucWvpWFv9f1N5o9pWrB
-         R25w==
-X-Gm-Message-State: AOAM531POI9V9hKD7RLsW4pgQSmNu+L9hGzf6+DWVo0uoGu8AwC5cYwV
-        5LIW4mFLsc6zXkPLGIaQxWlIPA==
-X-Google-Smtp-Source: ABdhPJzoqukl/i94XHKcFnleptcwa9ahZaEF/VFUkN64z5eHIVt0qazWn5ydLdseOD3cVrnXwiPuvQ==
-X-Received: by 2002:a5d:544c:: with SMTP id w12mr29472633wrv.398.1633526405385;
-        Wed, 06 Oct 2021 06:20:05 -0700 (PDT)
-Received: from google.com ([95.148.6.175])
-        by smtp.gmail.com with ESMTPSA id d16sm5029441wmb.2.2021.10.06.06.20.04
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vOkTBrJ8rFY8f9IVX0lA4SgMpHXgic0fky3oKRvqHqk=;
+        b=J+uydIRkmafsK9OhDSSx4VfZYD8PPpslFu7/SSpXY9ZkEZ6MMmcmI1o+cp9OJQ6cXz
+         1PpYAMIs5NeH7DgUmVww2rigYNqzyQBi5gMbeMHuh56ng4+se5c8kxthSDoprjwiUjbW
+         FeZohP8S4ZQcuPgjg4obuf0TMARkXduGYRzqzd2v13XeP0jzCq81ZngxpWBvW/SEu39s
+         H3t4bL8vdC/E1o7tHdbP9gCd7PWBNyBedTHXwlCzXitMezRXQtjUQQTyeb64v8iY9xzd
+         OegayFQQDfWnvIXA3H2TTaBYLnX+pc9xFwa5kOTe+QpLk7g++w6gFgdRZSjzLZaAMhQg
+         WoWQ==
+X-Gm-Message-State: AOAM532Yo8AAyyvWTlJ6HP2emuiPK9xg4MEMDG5BLxD5mGleTGQVUWB1
+        hte0F/XHSljQtQsvIH9NTh/3omjRcRXKMP7L
+X-Google-Smtp-Source: ABdhPJzRURCze2Xv2ON9Gus1R3C8IKipkTMAWw0JtJHFsMZNdEZtD9geIVbN6L+cKhA7GEBDjl2Yfw==
+X-Received: by 2002:a17:906:c317:: with SMTP id s23mr29050930ejz.127.1633526441458;
+        Wed, 06 Oct 2021 06:20:41 -0700 (PDT)
+Received: from anparri.mshome.net (host-79-49-65-228.retail.telecomitalia.it. [79.49.65.228])
+        by smtp.gmail.com with ESMTPSA id e7sm10952836edk.3.2021.10.06.06.20.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Oct 2021 06:20:04 -0700 (PDT)
-Date:   Wed, 6 Oct 2021 14:20:03 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Liam Girdwood <lgirdwood@gmail.com>, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org
-Subject: Re: [PATCH v2 00/10] regulator/mfd/clock: dt-bindings: Samsung S2M
- and S5M to dtschema
-Message-ID: <YV2ig7q0UWQQC5N2@google.com>
-References: <20211001094106.52412-1-krzysztof.kozlowski@canonical.com>
- <YVxBuEvHVdyDvaGD@sirena.org.uk>
- <YVxP0+kVxI0xQmQQ@google.com>
- <41226a6d-999d-b1bb-d6a2-294a9e34d271@canonical.com>
+        Wed, 06 Oct 2021 06:20:40 -0700 (PDT)
+From:   "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>
+To:     linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        linux-scsi@vger.kernel.org
+Cc:     "K . Y . Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>,
+        Dexuan Cui <decui@microsoft.com>
+Subject: [PATCH v2] scsi: storvsc: Fix validation for unsolicited incoming packets
+Date:   Wed,  6 Oct 2021 15:20:26 +0200
+Message-Id: <20211006132026.4089-1-parri.andrea@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <41226a6d-999d-b1bb-d6a2-294a9e34d271@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 06 Oct 2021, Krzysztof Kozlowski wrote:
+The validation on the length of incoming packets performed in
+storvsc_on_channel_callback() does not apply to unsolicited
+packets with ID of 0 sent by Hyper-V.  Adjust the validation
+for such unsolicited packets.
 
-> On 05/10/2021 15:14, Lee Jones wrote:
-> > On Tue, 05 Oct 2021, Mark Brown wrote:
-> > 
-> >> On Fri, Oct 01, 2021 at 11:40:56AM +0200, Krzysztof Kozlowski wrote:
-> >>
-> >>> Merging/dependencies
-> >>> ====================
-> >>> 1. Regulator related binding changes depend on first two commits (the
-> >>>    fixes), because of context.
-> >>> 2. The mfd bindings depend on clock and regulator bindings.
-> >>>
-> >>> The fixes and bindings changes (patches 1-10) should go via the same
-> >>> tree.  For example regulator or mfd tree.  I propose the regulator tree,
-> >>> since it will have also one driver change (the fix, first commit).
-> >>
-> >> Lee, Stephen, Michael does Krzysztof's plan make sense to you?
-> > 
-> > I tend to take cross subsystem patches.  MFD is usually in the centre
-> > of these scenarios and I have tooling to easily set-up immutable
-> > branches/pull-requests.
-> > 
-> > Always happy to discuss if others have different/better ideas though.
-> > 
-> 
-> Another alternative is that regulator patches (1-2, 4-6) go via Mark who
-> later gives you a stable branch/tag to pull. Then the clock and MFD
-> bindings would go on top via MFD tree.
+Fixes: 91b1b640b834b2 ("scsi: storvsc: Validate length of incoming packet in storvsc_on_channel_callback()")
+Reported-by: Dexuan Cui <decui@microsoft.com>
+Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
+---
+Changes since v1[1]:
+  - Use sizeof(enum vstor_packet_operation) instead of 48 (Michael Kelley)
+  - Filter out FCHBA_DATA packets (Michael Kelley)
 
-It shouldn't matter where they are first applied.  Creating 2
-immutable branches when just 1 will do would be a pain.
+Changes since RFC[2]:
+  - Merge length checks (Haiyang Zhang)
 
-> There is a comment from Rob which I will fix in v3.
+[1] https://lkml.kernel.org/r/20211005114103.3411-1-parri.andrea@gmail.com
+[2] https://lkml.kernel.org/r/20210928163732.5908-1-parri.andrea@gmail.com
 
-Sure.
+ drivers/scsi/storvsc_drv.c | 34 +++++++++++++++++++++++++---------
+ 1 file changed, 25 insertions(+), 9 deletions(-)
 
+diff --git a/drivers/scsi/storvsc_drv.c b/drivers/scsi/storvsc_drv.c
+index ebbbc1299c625..4869ebad7ec97 100644
+--- a/drivers/scsi/storvsc_drv.c
++++ b/drivers/scsi/storvsc_drv.c
+@@ -1285,11 +1285,15 @@ static void storvsc_on_channel_callback(void *context)
+ 	foreach_vmbus_pkt(desc, channel) {
+ 		struct vstor_packet *packet = hv_pkt_data(desc);
+ 		struct storvsc_cmd_request *request = NULL;
++		u32 pktlen = hv_pkt_datalen(desc);
+ 		u64 rqst_id = desc->trans_id;
++		u32 minlen = rqst_id ? sizeof(struct vstor_packet) -
++			stor_device->vmscsi_size_delta : sizeof(enum vstor_packet_operation);
+ 
+-		if (hv_pkt_datalen(desc) < sizeof(struct vstor_packet) -
+-				stor_device->vmscsi_size_delta) {
+-			dev_err(&device->device, "Invalid packet len\n");
++		if (pktlen < minlen) {
++			dev_err(&device->device,
++				"Invalid pkt: id=%llu, len=%u, minlen=%u\n",
++				rqst_id, pktlen, minlen);
+ 			continue;
+ 		}
+ 
+@@ -1302,13 +1306,25 @@ static void storvsc_on_channel_callback(void *context)
+ 			if (rqst_id == 0) {
+ 				/*
+ 				 * storvsc_on_receive() looks at the vstor_packet in the message
+-				 * from the ring buffer.  If the operation in the vstor_packet is
+-				 * COMPLETE_IO, then we call storvsc_on_io_completion(), and
+-				 * dereference the guest memory address.  Make sure we don't call
+-				 * storvsc_on_io_completion() with a guest memory address that is
+-				 * zero if Hyper-V were to construct and send such a bogus packet.
++				 * from the ring buffer.
++				 *
++				 * - If the operation in the vstor_packet is COMPLETE_IO, then
++				 *   we call storvsc_on_io_completion(), and dereference the
++				 *   guest memory address.  Make sure we don't call
++				 *   storvsc_on_io_completion() with a guest memory address
++				 *   that is zero if Hyper-V were to construct and send such
++				 *   a bogus packet.
++				 *
++				 * - If the operation in the vstor_packet is FCHBA_DATA, then
++				 *   we call cache_wwn(), and access the data payload area of
++				 *   the packet (wwn_packet); however, there is no guarantee
++				 *   that the packet is big enough to contain such area.
++				 *   Future-proof the code by rejecting such a bogus packet.
++				 *
++				 * XXX.  Filter out all "invalid" operations.
+ 				 */
+-				if (packet->operation == VSTOR_OPERATION_COMPLETE_IO) {
++				if (packet->operation == VSTOR_OPERATION_COMPLETE_IO ||
++				    packet->operation == VSTOR_OPERATION_FCHBA_DATA) {
+ 					dev_err(&device->device, "Invalid packet with ID of 0\n");
+ 					continue;
+ 				}
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.25.1
+
