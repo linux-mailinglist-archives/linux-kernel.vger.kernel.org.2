@@ -2,126 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6211342485A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 22:55:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8752442485F
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 22:57:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239500AbhJFU5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 16:57:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43530 "EHLO
+        id S239547AbhJFU7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 16:59:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230043AbhJFU5b (ORCPT
+        with ESMTP id S229657AbhJFU7W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 16:57:31 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC786C061746
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 13:55:38 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id n64so5932862oih.2
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 13:55:38 -0700 (PDT)
+        Wed, 6 Oct 2021 16:59:22 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48988C061753
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 13:57:30 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id pi19-20020a17090b1e5300b0019fdd3557d3so3382425pjb.5
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 13:57:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=JvTa2lKBoI8pDHEiWBkxH9Br7TgFSzn7gNvMea8puyE=;
-        b=GHKG4f+JDyBw783UV6ULROcl/lb/K5rec7Me193E2Cz3VdjF9s4lYC1jmlGbFMV1Nt
-         Qq6Nn8d/3JKLDPjKiNUH/GLZLpRUhAXzPss6G1JN3VH7S7eweRd1sxuXWNxZD315d7EN
-         PFyIb5ARTlTUSievJPL7tj4LJ4ydtt1xbLyzs=
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5cro8T8lb7lgZU9x32Bgh7IJds0gE/AUhAt67PgW2U0=;
+        b=OOHTmEackZPTn1u41cjp30lBmsToU4UvfFE27FwJx1mIsPIFtXSaNs/NkCJOIN04GI
+         8sl4d4Tq/n7hlYcZdrB7WFquBncfavHAq1pSbLLsXg3UU0k3Kjtj/Oi9T5Qf9i4vVriN
+         yK/Jv2X0RQVD04UEquS0VFM1rD1mSkqUXhZnBxjOr24L+bO/6RnCTeJ4zIt5n0KRivcz
+         RPbnagp4JBo3ILllGdp3JUCwnq2z1u2OaWKr9AFZFTOJQc1KpWdlQCKuhw+BHqOmDWeX
+         EBdz2kkp9uYW92IR0EmvGvvwQqFMlEquUZEJzpRRMZXEvxJgNtrLoA/iDlUpEXhxqzrD
+         VWzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=JvTa2lKBoI8pDHEiWBkxH9Br7TgFSzn7gNvMea8puyE=;
-        b=cz7nahp8Hx37qGfEW+0GzMQTInNmVWlmIIGR/c/EqtlPo31zNmfgagQs3BRSZN5Jya
-         ef4ZTgP6G3AoGaAUji15+S+M6/wD9OMteWX1olBxhX0QLeNlltuN/ayeKsieQj9aei5A
-         f5Bjtja7/ce+SbGR8WipJ55y0c4ukQXgW+MK8JtPtnyENZRdHOhNjmkB901HMusBcADQ
-         kRN1STst4brx/9+GDLt6PnYn5hxL3mPry95D6mMGuAVzPV9OnRb+qjFXmInXX+cmkWvW
-         1wyMn6R15SuHVSutsHo+XVaWmrvfTt6rI5snqVN/VxSVKHigvZuEEz7kaYFPWt/d5GHm
-         ZgaQ==
-X-Gm-Message-State: AOAM533ebvDN9Ns2NHUowzKhibpWqJsoHyjrn9ekzIKsYy2B6ivUHdjS
-        U3Grpk4+nRVfkUdA+4JIvneBVA==
-X-Google-Smtp-Source: ABdhPJzkTmkeqt1d1IgAw8uqylMn+U2CKvyQpd1md95wOPaS5qvtKnrya6+H/PaGK2fiqa20u55PRA==
-X-Received: by 2002:aca:dbc2:: with SMTP id s185mr305618oig.141.1633553738147;
-        Wed, 06 Oct 2021 13:55:38 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id l1sm3351258oop.28.2021.10.06.13.55.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Oct 2021 13:55:37 -0700 (PDT)
-Subject: Re: dm: change dm_get_target_type() to check for module load error
-To:     Mike Snitzer <snitzer@redhat.com>
-Cc:     agk@redhat.com, dm-devel@redhat.com, linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20211004200641.378496-1-skhan@linuxfoundation.org>
- <YV4IecLg56NpzkYx@redhat.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <f1eebe07-492e-3152-8070-ea622d36bd33@linuxfoundation.org>
-Date:   Wed, 6 Oct 2021 14:55:36 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5cro8T8lb7lgZU9x32Bgh7IJds0gE/AUhAt67PgW2U0=;
+        b=igMvpeqi9gUvjyY3bPsVtNInKR7nWKCxPF8G7Gu2+ldGSxWAJ4/tOxUDN1NWUABLyB
+         UcBj8jxX/6t41zgx3HEm3o+1S8VUz3nZzqNSMKp5/rx/qjn6ZrM80IAP+WHjAZGWbYXC
+         OOnZehCmjV1KA5aQOiI718KCCgBu7k3GHhX3EGxNn6uvg+BLWAhTNiE9w+Xgna66chVg
+         jEEcQnQruTprn9PsYv9HT/a+utW2vlij9CqDZlL1cGhTv2Pc20N/iiRnH0ntglEegKpI
+         PSJaXVbdSR62z44TqGeNT3o2HTjPFYdmC0iR5moC66SWIfaLKs3042VJ1ceyKCwvRrhE
+         ZW+g==
+X-Gm-Message-State: AOAM532p6I2yyBrl9yx6KPiBXilZxtDyc5zm78l+NMObHqbl1XpYV5/B
+        5b+ljyDa4FY/93RmCbnBIRGvGwa2uze/TVqWijKwGg==
+X-Google-Smtp-Source: ABdhPJwsS9psEbLuG48IwDIvCu/mtGIOS+73Q2CuJ6vYwseJ9mbPy3DemzdOJBYVA27mNqNvTk6fWYhygPEg0X3+jYQ=
+X-Received: by 2002:a17:90b:3552:: with SMTP id lt18mr974214pjb.63.1633553849440;
+ Wed, 06 Oct 2021 13:57:29 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YV4IecLg56NpzkYx@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20211006071112.2206942-1-davidgow@google.com> <CAGS_qxodEp+HwWJCEaz39T-QEOxhev5a0KjLx+nUfbuM-ZLOcg@mail.gmail.com>
+In-Reply-To: <CAGS_qxodEp+HwWJCEaz39T-QEOxhev5a0KjLx+nUfbuM-ZLOcg@mail.gmail.com>
+From:   Brendan Higgins <brendanhiggins@google.com>
+Date:   Wed, 6 Oct 2021 13:57:18 -0700
+Message-ID: <CAFd5g44k2UB3T7Ow=isSAMVjgT6vWo_iwtGQ_-RZG_UB9QCg-Q@mail.gmail.com>
+Subject: Re: [PATCH] kunit: Report test parameter results as (K)TAP subtests
+To:     Daniel Latypov <dlatypov@google.com>
+Cc:     David Gow <davidgow@google.com>, Rae Moar <rmr167@gmail.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/6/21 2:35 PM, Mike Snitzer wrote:
-> On Mon, Oct 04 2021 at  4:06P -0400,
-> Shuah Khan <skhan@linuxfoundation.org> wrote:
-> 
->> dm_get_target_type() doesn't check error return from request_module().
->> Change to check for error and return NULL instead of trying to get
->> target type again which would fail.
->>
->> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
->> ---
->>   drivers/md/dm-target.c | 11 ++++++++---
->>   1 file changed, 8 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/md/dm-target.c b/drivers/md/dm-target.c
->> index 64dd0b34fcf4..0789e9f91d3a 100644
->> --- a/drivers/md/dm-target.c
->> +++ b/drivers/md/dm-target.c
->> @@ -41,17 +41,22 @@ static struct target_type *get_target_type(const char *name)
->>   	return tt;
->>   }
->>   
->> -static void load_module(const char *name)
->> +static int load_module(const char *name)
->>   {
->> -	request_module("dm-%s", name);
->> +	return request_module("dm-%s", name);
->>   }
->>   
->>   struct target_type *dm_get_target_type(const char *name)
->>   {
->>   	struct target_type *tt = get_target_type(name);
->> +	int ret;
->>   
->>   	if (!tt) {
->> -		load_module(name);
->> +		ret = load_module(name);
->> +		if (ret < 0) {
->> +			pr_err("Module %s load failed %d\n", name, ret);
->> +			return NULL;
->> +		}
->>   		tt = get_target_type(name);
->>   	}
->>   
->> -- 
->> 2.30.2
->>
-> 
-> While I appreciate your intent, the reality is that multiple targets
-> may be made available in a given module.  And so loading one dm module
-> may bring in access to N targets.  There isn't a rigid 1:1 mapping of
-> target modules to names.  And there may not even be a loadable module
-> that has the name dm-${name} -- but that doesn't mean the target_type
-> won;t have been loaded into DM for it to access.
-> 
+On Wed, Oct 6, 2021 at 1:32 PM Daniel Latypov <dlatypov@google.com> wrote:
+>
+> On Wed, Oct 6, 2021 at 12:11 AM David Gow <davidgow@google.com> wrote:
+> >
+> > Currently, the results for individial parameters in a parameterised test
+> > are simply output as (K)TAP diagnostic lines. However, the plan was
+> > always[1] to make these (K)TAP subtests when kunit_tool supported them.
+> >
+> > With [2], these are now supported. (v5 will print out an error about the
+> > missing plan line, but this can safely be ignored, and will hopefully be
+> > changed). As a result, individual test parameter results are parsed,
+>
+> Hmm, I'd rather not condition users to ignore warnings.
+> It's possible we can get this all fixed up in time for 5.16, but we
+> have quite a bit we're trying to get in already, so I'm not sure.
 
-Thanks for the explanation.
+I agree with Daniel. I think we should just get that fixed first. I
+will poke Shuah to start applying patches for 5.16 to give us a place
+to work.
 
--- Shuah
-
+> > displayed in the formatted results, and counted for test statistics.
+> >
+> > [1]: https://lore.kernel.org/linux-kselftest/CABVgOSnJAgWvTTABaF082LuYjAoAWzrBsyu9sT7x4GGMVsOD6Q@mail.gmail.com/
+> > [2]: https://lore.kernel.org/linux-kselftest/20211006001447.20919-1-dlatypov@google.com/
+> >
+> > Signed-off-by: David Gow <davidgow@google.com>
+> > ---
+> >  lib/kunit/test.c | 7 ++++---
+> >  1 file changed, 4 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/lib/kunit/test.c b/lib/kunit/test.c
+> > index f246b847024e..02a9fdadcae2 100644
+> > --- a/lib/kunit/test.c
+> > +++ b/lib/kunit/test.c
+> > @@ -508,6 +508,8 @@ int kunit_run_tests(struct kunit_suite *suite)
+> >                         /* Get initial param. */
+> >                         param_desc[0] = '\0';
+> >                         test.param_value = test_case->generate_params(NULL, param_desc);
+> > +                       kunit_log(KERN_INFO, &test, KUNIT_SUBTEST_INDENT KUNIT_SUBTEST_INDENT
+> > +                                 "# Subtest: %s", test_case->name);
+> >                 }
+> >
+> >                 do {
+> > @@ -520,9 +522,8 @@ int kunit_run_tests(struct kunit_suite *suite)
+> >                                 }
+> >
+> >                                 kunit_log(KERN_INFO, &test,
+> > -                                         KUNIT_SUBTEST_INDENT
+> > -                                         "# %s: %s %d - %s",
+> > -                                         test_case->name,
+> > +                                         KUNIT_SUBTEST_INDENT KUNIT_SUBTEST_INDENT
+> > +                                         "%s %d - %s",
+> >                                           kunit_status_to_ok_not_ok(test.status),
+> >                                           test.param_index + 1, param_desc);
+> >
+> > --
+> > 2.33.0.800.g4c38ced690-goog
+> >
