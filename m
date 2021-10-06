@@ -2,95 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E56B0424A86
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 01:29:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E3D1424A89
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 01:31:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234538AbhJFXac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 19:30:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50188 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230300AbhJFXa2 (ORCPT
+        id S234048AbhJFXdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 19:33:21 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:53306 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231361AbhJFXdS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 19:30:28 -0400
-Received: from mail-vs1-xe2b.google.com (mail-vs1-xe2b.google.com [IPv6:2607:f8b0:4864:20::e2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 944D0C061746
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 16:28:35 -0700 (PDT)
-Received: by mail-vs1-xe2b.google.com with SMTP id i30so4738010vsj.13
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 16:28:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mliJ3L4jhXygNAQVvyfh3C51SF5VAYCq+PUY3yCWUww=;
-        b=qi5Ix5Ey0HFp6L9+Tb4s0zGqPaWH11DuG+iN3lkQA45yIab1Igz9/t/wCd7KCEV28y
-         JxYKiC9codL3nn9bXsqMDsfa+SeQx8h3Nvr7trPCbJDT8y8sfyHK6MeY640ofUooBqwE
-         ZnWo2XX3gmZo9YozyxTto3ZVKMMM8zoNmKa9L9nfcbIevffVD/B8HV4B0AX+IFaDu0u/
-         9RLvfgL6PhTG7pbofxOwM2VphykA2gfzrP0NVMOAyQxiNwxFLKJXZE0FiN/gZ0Y4hWbV
-         6ehP2QTUVK1K7Ddq+kPCPs28QD5j5PLJ3qrOBNFwhLJ5V9zhf8eM1uCNO6iEZG/pCOFW
-         UUnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mliJ3L4jhXygNAQVvyfh3C51SF5VAYCq+PUY3yCWUww=;
-        b=aFTp2iRBPdYGZBD9Nb1ZD69UfvYdW3WoLO6YP5+UOsCaSKXEOP8B+Ln+A1cpVEww9k
-         toy2CL7g6vH4V7Sv3+HF3ud/bhJ0xo2b8tRYSFtO9lzhSmX7YNlBqtBUGxtZtWgdWKe5
-         d2N4kCOZiGqBYSzpdzVZ9v/1sGxk0tYxLREWIp8vFnn3ACAAd81yVzUwikO43GXpF6fy
-         fGYt5VG66gMHxbBP4yr52vq8Xl+S9YuwjObqMwFViHYR9LgjcCw6Z/4xDPzGHnLcmFO4
-         EqhKhwv65YkV2bPp1TR9dtTahaAtqQ5CROY3RFS4oqjACLWFYfPkDyWlVm+Q+UP3soo3
-         OQpw==
-X-Gm-Message-State: AOAM533Lrb8DvaQ1lQl4VQzkjF1ddy/9MiIbx8VW87QixGH6OXsNvr2x
-        i1btBLyy1WLmQFi5Pv0jVZHhsqhaWun9QiDQy60FRg==
-X-Google-Smtp-Source: ABdhPJyHZF+bCbZ/lhqhjeh4XfDC8463ZxocSj5ca/etIelqyFKTTO3mnN4tAgT9tT0+uYirAM20MNrBJZXma3nZNAM=
-X-Received: by 2002:a67:df16:: with SMTP id s22mr1310976vsk.47.1633562914708;
- Wed, 06 Oct 2021 16:28:34 -0700 (PDT)
+        Wed, 6 Oct 2021 19:33:18 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 702139DC;
+        Thu,  7 Oct 2021 01:31:23 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1633563083;
+        bh=HUFmwxiZ46w1+hW64n0QX0dQp8cWb6tqfnPkGfaXtdQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QE98plgCTTwn6JjHVrOJXMzk1y0YlcggNinsisbb/AEGnDvWntCR2sp/VN3lVJJJ2
+         sZhvivoeagZusw16RwlTru8hnuITFi+TcyXOVrTcB6VYrAkBdcdqD0FjSACFIFe0te
+         +m9jZW7Gg4lzbtkLMZutQpq/nM5K+q7tNThzT86U=
+Date:   Thu, 7 Oct 2021 02:31:14 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Pratyush Yadav <p.yadav@ti.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Nikhil Devshatwar <nikhil.nd@ti.com>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Benoit Parrot <bparrot@ti.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Niklas =?utf-8?Q?S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org
+Subject: Re: [PATCH v4 01/11] media: cadence: csi2rx: Unregister v4l2 async
+ notifier
+Message-ID: <YV4xwiUVGUi3biAT@pendragon.ideasonboard.com>
+References: <20210915120240.21572-1-p.yadav@ti.com>
+ <20210915120240.21572-2-p.yadav@ti.com>
 MIME-Version: 1.0
-References: <20211006224311.26662-1-ramjiyani@google.com> <YV4nnko8rmWAWj2+@gmail.com>
-In-Reply-To: <YV4nnko8rmWAWj2+@gmail.com>
-From:   Ramji Jiyani <ramjiyani@google.com>
-Date:   Wed, 6 Oct 2021 16:28:23 -0700
-Message-ID: <CAKUd0B-9ifaMBAxhaUZjppks8PCy4oCy=erRNnPBjrRxOGKUxQ@mail.gmail.com>
-Subject: Re: [PATCH v3] aio: Add support for the POLLFREE
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     arnd@arndb.de, viro@zeniv.linux.org.uk, bcrl@kvack.org, hch@lst.de,
-        kernel-team@android.com, linux-aio@kvack.org,
-        linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, oleg@redhat.com,
-        Jeff Moyer <jmoyer@redhat.com>, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210915120240.21572-2-p.yadav@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 6, 2021 at 3:48 PM Eric Biggers <ebiggers@kernel.org> wrote:
->
-> On Wed, Oct 06, 2021 at 10:43:11PM +0000, Ramji Jiyani wrote:
-> > Fixes: f5cb779ba163 ("ANDROID: binder: remove waitqueue when thread exits.")
-> > Signed-off-by: Ramji Jiyani <ramjiyani@google.com>
-> > Reviewed-by: Jeff Moyer <jmoyer@redhat.com>
-> > Cc: stable@vger.kernel.org # 4.19+
->
-> The commit that this claims to be fixing is in linux-4.4.y, so either the fixes
-> tag is wrong or the Cc stable tag is wrong.  It's important to provide correct
-> information here for backporting purposes, so please do so.
->
+Hi Pratyush,
 
-Stable tag is correct; Fixes tag in this case is tricky.
+Thank you for the patch.
 
-In 4.4 only way to poll binder file was via eventpoll and since binder wasn't
-flagging the POLLFREE before thread exit there was an UAF. Which got fixed
-by the commit currently Fixes tag is referring.
+On Wed, Sep 15, 2021 at 05:32:30PM +0530, Pratyush Yadav wrote:
+> The notifier is added to the global notifier list when registered. When
+> the module is removed, the struct csi2rx_priv in which the notifier is
+> embedded, is destroyed. As a result the notifier list has a reference to
+> a notifier that no longer exists. This causes invalid memory accesses
+> when the list is iterated over. Similar for when the probe fails.
+> 
+> Unregister and clean up the notifier to avoid this.
+> 
+> Fixes: 1fc3b37f34f6 ("media: v4l: cadence: Add Cadence MIPI-CSI2 RX driver")
+> Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
 
-Later, aio got enhanced by adding a polling feature in 4.19 [1].
-That introduced one more way to poll binder files; but it did not include
-support for POLLFREE, so UAF exists.
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
-Should the Fixes tag refer to Commit bfe4037e722e ("aio: implement
-IOCB_CMD_POLL") [2] in this case?
+Note that there are other issues in the driver in cleanup paths, in
+particular a missing v4l2_async_notifier_cleanup() call in
+csi2rx_parse_dt() when v4l2_async_notifier_add_fwnode_remote_subdev()
+fails (moving the one from the other error path to an err label would be
+best), and missing media_entity_cleanup() calls in both the probe error
+path and the remove handler. Would you like to submit fixes for those ?
 
-[1] https://lore.kernel.org/lkml/20180110155853.32348-32-hch@lst.de/
-[2] https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/fs/aio.c?h=v4.19.209&id=bfe4037e722ec672c9dafd5730d9132afeeb76e9
+> ---
+> 
+> (no changes since v3)
+> 
+> Changes in v3:
+> - New in v3.
+> 
+>  drivers/media/platform/cadence/cdns-csi2rx.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/media/platform/cadence/cdns-csi2rx.c b/drivers/media/platform/cadence/cdns-csi2rx.c
+> index 7b44ab2b8c9a..d60975f905d6 100644
+> --- a/drivers/media/platform/cadence/cdns-csi2rx.c
+> +++ b/drivers/media/platform/cadence/cdns-csi2rx.c
+> @@ -469,6 +469,7 @@ static int csi2rx_probe(struct platform_device *pdev)
+>  	return 0;
+>  
+>  err_cleanup:
+> +	v4l2_async_nf_unregister(&csi2rx->notifier);
+>  	v4l2_async_nf_cleanup(&csi2rx->notifier);
+>  err_free_priv:
+>  	kfree(csi2rx);
+> @@ -479,6 +480,8 @@ static int csi2rx_remove(struct platform_device *pdev)
+>  {
+>  	struct csi2rx_priv *csi2rx = platform_get_drvdata(pdev);
+>  
+> +	v4l2_async_nf_unregister(&csi2rx->notifier);
+> +	v4l2_async_nf_cleanup(&csi2rx->notifier);
+>  	v4l2_async_unregister_subdev(&csi2rx->subdev);
+>  	kfree(csi2rx);
+>  
 
-> - Eric
+-- 
+Regards,
 
-~ Ramji
+Laurent Pinchart
