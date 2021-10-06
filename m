@@ -2,500 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CDEE423970
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 10:11:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4503B423979
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 10:12:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237696AbhJFINb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 04:13:31 -0400
-Received: from foss.arm.com ([217.140.110.172]:56878 "EHLO foss.arm.com"
+        id S237780AbhJFIOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 04:14:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39958 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237647AbhJFIN2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 04:13:28 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3127C101E;
-        Wed,  6 Oct 2021 01:11:36 -0700 (PDT)
-Received: from ubuntu-18-04-aarch64-spe-2.warwick.arm.com (ubuntu-18-04-aarch64-spe-2.warwick.arm.com [10.32.33.30])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 5B95D3F766;
-        Wed,  6 Oct 2021 01:11:34 -0700 (PDT)
-From:   Andrew Kilroy <andrew.kilroy@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        acme@kernel.org
-Cc:     Andrew Kilroy <andrew.kilroy@arm.com>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v2 3/3] perf vendor events: Categorise the Neoverse V1 counters
-Date:   Wed,  6 Oct 2021 09:11:05 +0100
-Message-Id: <20211006081106.8649-3-andrew.kilroy@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211006081106.8649-1-andrew.kilroy@arm.com>
-References: <20211006081106.8649-1-andrew.kilroy@arm.com>
+        id S237771AbhJFIOP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 04:14:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D721960F9D;
+        Wed,  6 Oct 2021 08:12:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633507943;
+        bh=aJyTVkoBDT25cCj9K161A8klU5lEuxkvGK6eMdnsbKM=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=FLeAHFkMAjVAlwbAS8mJEu0Escwr0IctrL+9zn5ePsnJijA69oN7nkf/XsTOb1amz
+         WLUiZqUozao1QXB4ucQXDGcM9tIp96qFy9SL+WqI2nrZ1g2ibAnCLL1xuD9180+Xor
+         R1Q7Vz9RtQvUKewh0W3EzliNov81WwiLCr1WNHsXaAG/VXLVcXKNHE/yw+4aoJiPcr
+         UxR8icm+iNTYCASy/C+65/lTAyY7GtXdzaaWr8jLcLxpq+3zMW1+8HJ81O6mbK10BO
+         zHzRmWWxULuSWiuB8CDqFzdoFXyZwNzAFvimy7AT/eVFEo73cIiPtNBzStqqPi0fHb
+         5Wh5I/5Mj2nUg==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1mY22K-0005L3-DB; Wed, 06 Oct 2021 10:12:24 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Lai Jiangshan <jiangshanlai@gmail.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Fabio Estevam <festevam@denx.de>, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>,
+        stable@vger.kernel.org
+Subject: [PATCH] workqueue: fix state-dump console deadlock
+Date:   Wed,  6 Oct 2021 10:11:15 +0200
+Message-Id: <20211006081115.20451-1-johan@kernel.org>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <YV1Z8JslFiBSFGJF@hovoldconsulting.com>
+References: <YV1Z8JslFiBSFGJF@hovoldconsulting.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is so they are categorised in the perf list output.  The pmus all
-exist in the armv8-common-and-microarch.json and arm-recommended.json
-files, so this commit places them into each category's own file under
+Console drivers often queue work while holding locks also taken in their
+console write paths, something which can lead to deadlocks on SMP when
+dumping workqueue state (e.g. sysrq-t or on suspend failures).
 
-  tools/perf/pmu-events/arch/arm64/arm/neoverse-v1
+For serial console drivers this could look like:
 
-Also add the Neoverse V1 to the arm64 mapfile
+	CPU0				CPU1
+	----				----
 
-Signed-off-by: Andrew Kilroy <andrew.kilroy@arm.com>
+	show_workqueue_state();
+	  lock(&pool->lock);		<IRQ>
+	  				  lock(&port->lock);
+					  schedule_work();
+					    lock(&pool->lock);
+	  printk();
+	    lock(console_owner);
+	    lock(&port->lock);
+
+where workqueues are, for example, used to push data to the line
+discipline, process break signals and handle modem-status changes. Line
+disciplines and serdev drivers can also queue work on write-wakeup
+notifications, etc.
+
+Reworking every console driver to avoid queuing work while holding locks
+also taken in their write paths would complicate drivers and is neither
+desirable or feasible.
+
+Instead use the deferred-printk mechanism to avoid printing while
+holding pool locks when dumping workqueue state.
+
+Note that there are a few WARN_ON() assertions in the workqueue code
+which could potentially also trigger a deadlock. Hopefully the ongoing
+printk rework will provide a general solution for this eventually.
+
+This was originally reported after a lockdep splat when executing
+sysrq-t with the imx serial driver.
+
+Fixes: 3494fc30846d ("workqueue: dump workqueues on sysrq-t")
+Cc: stable@vger.kernel.org	# 4.0
+Reported-by: Fabio Estevam <festevam@denx.de>
+Signed-off-by: Johan Hovold <johan@kernel.org>
 ---
- .../arch/arm64/arm/neoverse-v1/branch.json    |   8 +
- .../arch/arm64/arm/neoverse-v1/bus.json       |  20 +++
- .../arch/arm64/arm/neoverse-v1/cache.json     | 155 ++++++++++++++++++
- .../arch/arm64/arm/neoverse-v1/exception.json |  47 ++++++
- .../arm64/arm/neoverse-v1/instruction.json    |  89 ++++++++++
- .../arch/arm64/arm/neoverse-v1/memory.json    |  20 +++
- .../arch/arm64/arm/neoverse-v1/other.json     |   5 +
- .../arch/arm64/arm/neoverse-v1/pipeline.json  |  23 +++
- tools/perf/pmu-events/arch/arm64/mapfile.csv  |   1 +
- 9 files changed, 368 insertions(+)
- create mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-v1/branch.json
- create mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-v1/bus.json
- create mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-v1/cache.json
- create mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-v1/exception.json
- create mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-v1/instruction.json
- create mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-v1/memory.json
- create mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-v1/other.json
- create mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-v1/pipeline.json
+ kernel/workqueue.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/tools/perf/pmu-events/arch/arm64/arm/neoverse-v1/branch.json b/tools/perf/pmu-events/arch/arm64/arm/neoverse-v1/branch.json
-new file mode 100644
-index 000000000000..79f2016c53b0
---- /dev/null
-+++ b/tools/perf/pmu-events/arch/arm64/arm/neoverse-v1/branch.json
-@@ -0,0 +1,8 @@
-+[
-+    {
-+        "ArchStdEvent": "BR_MIS_PRED"
-+    },
-+    {
-+        "ArchStdEvent": "BR_PRED"
-+    }
-+]
-diff --git a/tools/perf/pmu-events/arch/arm64/arm/neoverse-v1/bus.json b/tools/perf/pmu-events/arch/arm64/arm/neoverse-v1/bus.json
-new file mode 100644
-index 000000000000..579c1c993d17
---- /dev/null
-+++ b/tools/perf/pmu-events/arch/arm64/arm/neoverse-v1/bus.json
-@@ -0,0 +1,20 @@
-+[
-+    {
-+        "ArchStdEvent": "CPU_CYCLES"
-+    },
-+    {
-+        "ArchStdEvent": "BUS_ACCESS"
-+    },
-+    {
-+        "ArchStdEvent": "BUS_CYCLES"
-+    },
-+    {
-+        "ArchStdEvent": "BUS_ACCESS_RD"
-+    },
-+    {
-+        "ArchStdEvent": "BUS_ACCESS_WR"
-+    },
-+    {
-+        "ArchStdEvent": "CNT_CYCLES"
-+    }
-+]
-diff --git a/tools/perf/pmu-events/arch/arm64/arm/neoverse-v1/cache.json b/tools/perf/pmu-events/arch/arm64/arm/neoverse-v1/cache.json
-new file mode 100644
-index 000000000000..0141f749bff3
---- /dev/null
-+++ b/tools/perf/pmu-events/arch/arm64/arm/neoverse-v1/cache.json
-@@ -0,0 +1,155 @@
-+[
-+    {
-+        "ArchStdEvent": "L1I_CACHE_REFILL"
-+    },
-+    {
-+        "ArchStdEvent": "L1I_TLB_REFILL"
-+    },
-+    {
-+        "ArchStdEvent": "L1D_CACHE_REFILL"
-+    },
-+    {
-+        "ArchStdEvent": "L1D_CACHE"
-+    },
-+    {
-+        "ArchStdEvent": "L1D_TLB_REFILL"
-+    },
-+    {
-+        "ArchStdEvent": "L1I_CACHE"
-+    },
-+    {
-+        "ArchStdEvent": "L1D_CACHE_WB"
-+    },
-+    {
-+        "ArchStdEvent": "L2D_CACHE"
-+    },
-+    {
-+        "ArchStdEvent": "L2D_CACHE_REFILL"
-+    },
-+    {
-+        "ArchStdEvent": "L2D_CACHE_WB"
-+    },
-+    {
-+        "ArchStdEvent": "L2D_CACHE_ALLOCATE"
-+    },
-+    {
-+        "ArchStdEvent": "L1D_TLB"
-+    },
-+    {
-+        "ArchStdEvent": "L1I_TLB"
-+    },
-+    {
-+        "ArchStdEvent": "L3D_CACHE_ALLOCATE"
-+    },
-+    {
-+        "ArchStdEvent": "L3D_CACHE_REFILL"
-+    },
-+    {
-+        "ArchStdEvent": "L3D_CACHE"
-+    },
-+    {
-+        "ArchStdEvent": "L2D_TLB_REFILL"
-+    },
-+    {
-+        "ArchStdEvent": "L2D_TLB"
-+    },
-+    {
-+        "ArchStdEvent": "DTLB_WALK"
-+    },
-+    {
-+        "ArchStdEvent": "ITLB_WALK"
-+    },
-+    {
-+        "ArchStdEvent": "LL_CACHE_RD"
-+    },
-+    {
-+        "ArchStdEvent": "LL_CACHE_MISS_RD"
-+    },
-+    {
-+        "ArchStdEvent": "L1D_CACHE_LMISS_RD"
-+    },
-+    {
-+        "ArchStdEvent": "L1D_CACHE_RD"
-+    },
-+    {
-+        "ArchStdEvent": "L1D_CACHE_WR"
-+    },
-+    {
-+        "ArchStdEvent": "L1D_CACHE_REFILL_RD"
-+    },
-+    {
-+        "ArchStdEvent": "L1D_CACHE_REFILL_WR"
-+    },
-+    {
-+        "ArchStdEvent": "L1D_CACHE_REFILL_INNER"
-+    },
-+    {
-+        "ArchStdEvent": "L1D_CACHE_REFILL_OUTER"
-+    },
-+    {
-+        "ArchStdEvent": "L1D_CACHE_WB_VICTIM"
-+    },
-+    {
-+        "ArchStdEvent": "L1D_CACHE_WB_CLEAN"
-+    },
-+    {
-+        "ArchStdEvent": "L1D_CACHE_INVAL"
-+    },
-+    {
-+        "ArchStdEvent": "L1D_TLB_REFILL_RD"
-+    },
-+    {
-+        "ArchStdEvent": "L1D_TLB_REFILL_WR"
-+    },
-+    {
-+        "ArchStdEvent": "L1D_TLB_RD"
-+    },
-+    {
-+        "ArchStdEvent": "L1D_TLB_WR"
-+    },
-+    {
-+        "ArchStdEvent": "L2D_CACHE_RD"
-+    },
-+    {
-+        "ArchStdEvent": "L2D_CACHE_WR"
-+    },
-+    {
-+        "ArchStdEvent": "L2D_CACHE_REFILL_RD"
-+    },
-+    {
-+        "ArchStdEvent": "L2D_CACHE_REFILL_WR"
-+    },
-+    {
-+        "ArchStdEvent": "L2D_CACHE_WB_VICTIM"
-+    },
-+    {
-+        "ArchStdEvent": "L2D_CACHE_WB_CLEAN"
-+    },
-+    {
-+        "ArchStdEvent": "L2D_CACHE_INVAL"
-+    },
-+    {
-+        "ArchStdEvent": "L2D_TLB_REFILL_RD"
-+    },
-+    {
-+        "ArchStdEvent": "L2D_TLB_REFILL_WR"
-+    },
-+    {
-+        "ArchStdEvent": "L2D_TLB_RD"
-+    },
-+    {
-+        "ArchStdEvent": "L2D_TLB_WR"
-+    },
-+    {
-+        "ArchStdEvent": "L3D_CACHE_RD"
-+    },
-+    {
-+        "ArchStdEvent": "L1I_CACHE_LMISS"
-+    },
-+    {
-+        "ArchStdEvent": "L2D_CACHE_LMISS_RD"
-+    },
-+    {
-+        "ArchStdEvent": "L3D_CACHE_LMISS_RD"
-+    }
-+]
-diff --git a/tools/perf/pmu-events/arch/arm64/arm/neoverse-v1/exception.json b/tools/perf/pmu-events/arch/arm64/arm/neoverse-v1/exception.json
-new file mode 100644
-index 000000000000..344a2d552ad5
---- /dev/null
-+++ b/tools/perf/pmu-events/arch/arm64/arm/neoverse-v1/exception.json
-@@ -0,0 +1,47 @@
-+[
-+    {
-+        "ArchStdEvent": "EXC_TAKEN"
-+    },
-+    {
-+        "ArchStdEvent": "MEMORY_ERROR"
-+    },
-+    {
-+        "ArchStdEvent": "EXC_UNDEF"
-+    },
-+    {
-+        "ArchStdEvent": "EXC_SVC"
-+    },
-+    {
-+        "ArchStdEvent": "EXC_PABORT"
-+    },
-+    {
-+        "ArchStdEvent": "EXC_DABORT"
-+    },
-+    {
-+        "ArchStdEvent": "EXC_IRQ"
-+    },
-+    {
-+        "ArchStdEvent": "EXC_FIQ"
-+    },
-+    {
-+        "ArchStdEvent": "EXC_SMC"
-+    },
-+    {
-+        "ArchStdEvent": "EXC_HVC"
-+    },
-+    {
-+        "ArchStdEvent": "EXC_TRAP_PABORT"
-+    },
-+    {
-+        "ArchStdEvent": "EXC_TRAP_DABORT"
-+    },
-+    {
-+        "ArchStdEvent": "EXC_TRAP_OTHER"
-+    },
-+    {
-+        "ArchStdEvent": "EXC_TRAP_IRQ"
-+    },
-+    {
-+        "ArchStdEvent": "EXC_TRAP_FIQ"
-+    }
-+]
-diff --git a/tools/perf/pmu-events/arch/arm64/arm/neoverse-v1/instruction.json b/tools/perf/pmu-events/arch/arm64/arm/neoverse-v1/instruction.json
-new file mode 100644
-index 000000000000..25825e14c535
---- /dev/null
-+++ b/tools/perf/pmu-events/arch/arm64/arm/neoverse-v1/instruction.json
-@@ -0,0 +1,89 @@
-+[
-+    {
-+        "ArchStdEvent": "SW_INCR"
-+    },
-+    {
-+        "ArchStdEvent": "INST_RETIRED"
-+    },
-+    {
-+        "ArchStdEvent": "EXC_RETURN"
-+    },
-+    {
-+        "ArchStdEvent": "CID_WRITE_RETIRED"
-+    },
-+    {
-+        "ArchStdEvent": "INST_SPEC"
-+    },
-+    {
-+        "ArchStdEvent": "TTBR_WRITE_RETIRED"
-+    },
-+    {
-+        "ArchStdEvent": "BR_RETIRED"
-+    },
-+    {
-+        "ArchStdEvent": "BR_MIS_PRED_RETIRED"
-+    },
-+    {
-+        "ArchStdEvent": "OP_RETIRED"
-+    },
-+    {
-+        "ArchStdEvent": "OP_SPEC"
-+    },
-+    {
-+        "ArchStdEvent": "LDREX_SPEC"
-+    },
-+    {
-+        "ArchStdEvent": "STREX_PASS_SPEC"
-+    },
-+    {
-+        "ArchStdEvent": "STREX_FAIL_SPEC"
-+    },
-+    {
-+        "ArchStdEvent": "STREX_SPEC"
-+    },
-+    {
-+        "ArchStdEvent": "LD_SPEC"
-+    },
-+    {
-+        "ArchStdEvent": "ST_SPEC"
-+    },
-+    {
-+        "ArchStdEvent": "DP_SPEC"
-+    },
-+    {
-+        "ArchStdEvent": "ASE_SPEC"
-+    },
-+    {
-+        "ArchStdEvent": "VFP_SPEC"
-+    },
-+    {
-+        "ArchStdEvent": "PC_WRITE_SPEC"
-+    },
-+    {
-+        "ArchStdEvent": "CRYPTO_SPEC"
-+    },
-+    {
-+        "ArchStdEvent": "BR_IMMED_SPEC"
-+    },
-+    {
-+        "ArchStdEvent": "BR_RETURN_SPEC"
-+    },
-+    {
-+        "ArchStdEvent": "BR_INDIRECT_SPEC"
-+    },
-+    {
-+        "ArchStdEvent": "ISB_SPEC"
-+    },
-+    {
-+        "ArchStdEvent": "DSB_SPEC"
-+    },
-+    {
-+        "ArchStdEvent": "DMB_SPEC"
-+    },
-+    {
-+        "ArchStdEvent": "RC_LD_SPEC"
-+    },
-+    {
-+        "ArchStdEvent": "RC_ST_SPEC"
-+    }
-+]
-diff --git a/tools/perf/pmu-events/arch/arm64/arm/neoverse-v1/memory.json b/tools/perf/pmu-events/arch/arm64/arm/neoverse-v1/memory.json
-new file mode 100644
-index 000000000000..e3d08f1f7c92
---- /dev/null
-+++ b/tools/perf/pmu-events/arch/arm64/arm/neoverse-v1/memory.json
-@@ -0,0 +1,20 @@
-+[
-+    {
-+        "ArchStdEvent": "MEM_ACCESS"
-+    },
-+    {
-+        "ArchStdEvent": "MEM_ACCESS_RD"
-+    },
-+    {
-+        "ArchStdEvent": "MEM_ACCESS_WR"
-+    },
-+    {
-+        "ArchStdEvent": "UNALIGNED_LD_SPEC"
-+    },
-+    {
-+        "ArchStdEvent": "UNALIGNED_ST_SPEC"
-+    },
-+    {
-+        "ArchStdEvent": "UNALIGNED_LDST_SPEC"
-+    }
-+]
-diff --git a/tools/perf/pmu-events/arch/arm64/arm/neoverse-v1/other.json b/tools/perf/pmu-events/arch/arm64/arm/neoverse-v1/other.json
-new file mode 100644
-index 000000000000..20d8365756c5
---- /dev/null
-+++ b/tools/perf/pmu-events/arch/arm64/arm/neoverse-v1/other.json
-@@ -0,0 +1,5 @@
-+[
-+    {
-+        "ArchStdEvent": "REMOTE_ACCESS"
-+    }
-+]
-diff --git a/tools/perf/pmu-events/arch/arm64/arm/neoverse-v1/pipeline.json b/tools/perf/pmu-events/arch/arm64/arm/neoverse-v1/pipeline.json
-new file mode 100644
-index 000000000000..f9fae15f7555
---- /dev/null
-+++ b/tools/perf/pmu-events/arch/arm64/arm/neoverse-v1/pipeline.json
-@@ -0,0 +1,23 @@
-+[
-+    {
-+        "ArchStdEvent": "STALL_FRONTEND"
-+    },
-+    {
-+        "ArchStdEvent": "STALL_BACKEND"
-+    },
-+    {
-+        "ArchStdEvent": "STALL"
-+    },
-+    {
-+        "ArchStdEvent": "STALL_SLOT_BACKEND"
-+    },
-+    {
-+        "ArchStdEvent": "STALL_SLOT_FRONTEND"
-+    },
-+    {
-+        "ArchStdEvent": "STALL_SLOT"
-+    },
-+    {
-+        "ArchStdEvent": "STALL_BACKEND_MEM"
-+    }
-+]
-diff --git a/tools/perf/pmu-events/arch/arm64/mapfile.csv b/tools/perf/pmu-events/arch/arm64/mapfile.csv
-index c43591d831b8..31d8b57ca9bb 100644
---- a/tools/perf/pmu-events/arch/arm64/mapfile.csv
-+++ b/tools/perf/pmu-events/arch/arm64/mapfile.csv
-@@ -18,6 +18,7 @@
- 0x00000000410fd080,v1,arm/cortex-a57-a72,core
- 0x00000000410fd0b0,v1,arm/cortex-a76-n1,core
- 0x00000000410fd0c0,v1,arm/cortex-a76-n1,core
-+0x00000000410fd400,v1,arm/neoverse-v1,core
- 0x00000000420f5160,v1,cavium/thunderx2,core
- 0x00000000430f0af0,v1,cavium/thunderx2,core
- 0x00000000460f0010,v1,fujitsu/a64fx,core
+diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+index 33a6b4a2443d..fded64b48b96 100644
+--- a/kernel/workqueue.c
++++ b/kernel/workqueue.c
+@@ -4830,8 +4830,16 @@ void show_workqueue_state(void)
+ 
+ 		for_each_pwq(pwq, wq) {
+ 			raw_spin_lock_irqsave(&pwq->pool->lock, flags);
+-			if (pwq->nr_active || !list_empty(&pwq->inactive_works))
++			if (pwq->nr_active || !list_empty(&pwq->inactive_works)) {
++				/*
++				 * Defer printing to avoid deadlocks in console
++				 * drivers that queue work while holding locks
++				 * also taken in their write paths.
++				 */
++				printk_deferred_enter();
+ 				show_pwq(pwq);
++				printk_deferred_exit();
++			}
+ 			raw_spin_unlock_irqrestore(&pwq->pool->lock, flags);
+ 			/*
+ 			 * We could be printing a lot from atomic context, e.g.
 -- 
-2.17.1
+2.32.0
 
