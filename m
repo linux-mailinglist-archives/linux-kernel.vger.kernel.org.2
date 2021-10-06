@@ -2,174 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2234A424618
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 20:28:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D540C424622
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 20:35:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239174AbhJFSai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 14:30:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38280 "EHLO
+        id S232498AbhJFSg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 14:36:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238900AbhJFSah (ORCPT
+        with ESMTP id S229564AbhJFSg5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 14:30:37 -0400
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B74CC061753
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 11:28:44 -0700 (PDT)
-Received: by mail-yb1-xb2a.google.com with SMTP id q189so7607360ybq.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 11:28:44 -0700 (PDT)
+        Wed, 6 Oct 2021 14:36:57 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A42F0C061746
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 11:35:04 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id x12so3506135qkf.9
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 11:35:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atishpatra.org; s=google;
+        d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=0n7XTaYuNuU3GQROpWlHveon37tQGGRs8ekBzlKCoOE=;
-        b=J6lI24iVpCdHoWTtNM7a/8ZwFedTCp/QYd7FALh8Tpc0VTNH/H/a/A6zY/gO4qGFL5
-         HiApsBuVnVxYyelJMV5w4M+PnZ6pKWEzylR/zFMx7qxiTGvyfr8sdCpE/Hv4O59NCf7J
-         PFL/3b+ZlF7hsCL35SoZvUe1X//m/4EWglNIU=
+        bh=pEruuwb7cFwr8Ofs6shqqJVVofNEKWYdi6q9NkQEo5U=;
+        b=V0jNzxJMeyddmMFs1uAHg88DuwmoRlW6I1WULYxGh5c4yht9k8VM5GWrRah9BKjsJ8
+         eF+yfgWFZZ3zV9wSH2fOqwmZ5ti4skmxpJJ8U18MAx6+18/sVEfZKu5tyM2hyACUJ3h1
+         Kgp1GwTX5s7IOTaaBKFKmk3dcC2kQtnV7gWT3N1Qo8f3+2Z0Ky5KU5YgItZb5bvDzV48
+         ehn0TiDRTGVn23f7lg9QktVnm7MbpLqX8CiZvcIkW9yazLT6x5Tn3D4otRgBJJAR94O2
+         v3SgtlnmBDnhbWZi3oFoyjSpUcQJ2g7rovgKEQidM0wrf80ASJtjoe9f/KejepSxbxrE
+         0QNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=0n7XTaYuNuU3GQROpWlHveon37tQGGRs8ekBzlKCoOE=;
-        b=NbDmdJay6IwD5NPU9IiyeBfbpQfNfRP18KfK7NDH/xcDiQDxTSg8pchleTvKtmeyse
-         +dduCpm0Oh8LC/BY0t0wMVNA8BT8q/5O4Jgm/wVb0Ck1jNmQKSxO/cdKi6DA7FlByYRX
-         K3eSK3794479N1LoETm0Isyo0JUskJiVdhdRgCNy+rIcW8WVvV6cyI23lvwO9xtg+nRa
-         XKuCF4U+d1VV0oqKL/m6T+XOt0W8ePk0CWOfir8YoEUtiGMEiWg6pGsQYcHKVtMTenj+
-         iYzQi9W+szi1Faw8i+bjhunx7aKQMP8fCE56EqidBGl5wWxcNmXNDmbT7CZC6MKumLt8
-         uN5A==
-X-Gm-Message-State: AOAM531Vg+ejsddvcWrZjGoVHLknY+2FKIrWG2xTmKQYTwhH2x4x3B0c
-        0fYb/3fjJOQsQj0YHaPj8hSRZRb4cvBpF8fr+Ghc
-X-Google-Smtp-Source: ABdhPJy4ghJUXe860sK/73CDH7bq+Ep1/YOkYbT2u0s7Dyc2ylF3jCsuAhbF7KTPSGqFvXAumb8QRRuDBQVZ+tVWJMo=
-X-Received: by 2002:a25:d47:: with SMTP id 68mr31232340ybn.204.1633544923738;
- Wed, 06 Oct 2021 11:28:43 -0700 (PDT)
+        bh=pEruuwb7cFwr8Ofs6shqqJVVofNEKWYdi6q9NkQEo5U=;
+        b=pVhHaEYxadQ6Es/f8BTbB3stXiNFwNqtC6ZvpuVvNWJ2erC26QlMs/IYK478R7T836
+         +iqu+l3rsltopAD6723eP0s12yNepYOt4yEVgpZZw+M9Z9k7h+oOlIdHdfH/FmdjmbnA
+         Au1AXym7nb9tEcc8atiUckVcJTtIXt33S/F+V7pPnsk5TYlZz/QeKFDXl9nSkz1L0Ly9
+         JkVlthhKyRwrfXy88gxCDYRJMLZgYUNlvcFdTt078gi4AilvTDBu+RZJRuW11JmlQrGh
+         rPdk7rBwWWTMDS2/FU1dzXYb/5EW/EhyifQPGbYmoy5hDPzCYlj02QDggpTkFGbK0O1j
+         ZXVw==
+X-Gm-Message-State: AOAM531CU9omHVPBf4fHQRU45JbyXtVbcO8eFhGzvj25hJxXouOy62q1
+        xRSV0r5Ydoji0Q5t3xRZX9nv7n+/YmO6+VbwyTniYw==
+X-Google-Smtp-Source: ABdhPJy3jjCRVqXoNRtJJpwgI9yhI0CVPdM/QofbR3SvmvtTbaf6ap4RgHTiernJVUxL284FMGOVtXzT9EWW+OHkdSs=
+X-Received: by 2002:a37:b142:: with SMTP id a63mr209095qkf.393.1633545302972;
+ Wed, 06 Oct 2021 11:35:02 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210910192757.2309100-1-atish.patra@wdc.com> <20211005121744.728385be@redslave.neermore.group>
-In-Reply-To: <20211005121744.728385be@redslave.neermore.group>
-From:   Atish Patra <atishp@atishpatra.org>
-Date:   Wed, 6 Oct 2021 11:28:32 -0700
-Message-ID: <CAOnJCU+0=9FG+cUT0V16TEN_ar7d9F+Me_nkQtK+5mKrFFZOqg@mail.gmail.com>
-Subject: Re: [v3 00/10] Improve RISC-V Perf support using SBI PMU and sscofpmf extension
-To:     Nikita Shubin <nikita.shubin@maquefel.me>
-Cc:     Atish Patra <atish.patra@wdc.com>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Anup Patel <anup.patel@wdc.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Heinrich Schuchardt <xypron.glpk@gmx.de>,
-        Jiri Olsa <jolsa@redhat.com>,
-        John Garry <john.garry@huawei.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Nick Kossifidis <mick@ics.forth.gr>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Vincent Chen <vincent.chen@sifive.com>,
-        Anish Khurana <akhurana@ventanamicro.com>
+References: <20211006161805.938950-1-brent.lu@intel.com> <20211006161805.938950-4-brent.lu@intel.com>
+In-Reply-To: <20211006161805.938950-4-brent.lu@intel.com>
+From:   Curtis Malainey <cujomalainey@google.com>
+Date:   Wed, 6 Oct 2021 11:34:52 -0700
+Message-ID: <CAOReqxjGX6fwqNjX0i31JiQJ+vRCMNTTFBhn7L=iPzYvVMk9mQ@mail.gmail.com>
+Subject: Re: [PATCH 3/3] ASoC: Intel: sof_rt5682: use id_alt to enumerate rt5682s
+To:     Brent Lu <brent.lu@intel.com>
+Cc:     ALSA development <alsa-devel@alsa-project.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Yong Zhi <yong.zhi@intel.com>,
+        Vamshi Krishna Gopal <vamshi.krishna.gopal@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Rander Wang <rander.wang@intel.com>,
+        Bard Liao <bard.liao@intel.com>,
+        Malik_Hsu <malik_hsu@wistron.corp-partner.google.com>,
+        Libin Yang <libin.yang@intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Paul Olaru <paul.olaru@oss.nxp.com>,
+        Curtis Malainey <cujomalainey@chromium.org>,
+        Mac Chiang <mac.chiang@intel.com>,
+        Gongjun Song <gongjun.song@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 5, 2021 at 2:18 AM Nikita Shubin <nikita.shubin@maquefel.me> wrote:
+>  };
 >
-> On Fri, 10 Sep 2021 12:27:47 -0700
-> Atish Patra <atish.patra@wdc.com> wrote:
->
-> Hello Atish,
->
-> > Perf stat:
-> > =========
-> >
-> > [root@fedora-riscv riscv]# perf stat -e r8000000000000005 -e
-> > r8000000000000007 -e r8000000000000006 -e r0000000000020002 -e
-> > r0000000000020004 -e branch-misses -e cache-misses -e
-> > dTLB-load-misses -e dTLB-store-misses -e iTLB-load-misses -e cycles
-> > -e instructions ./hackbench -pipe 15 process Running with 15*40 (==
-> > 600) tasks. Time: 6.578
-> >
-> >  Performance counter stats for './hackbench -pipe 15 process':
-> >
-> >              6,491      r8000000000000005      (52.59%) -->
-> > SBI_PMU_FW_SET_TIMER 20,433      r8000000000000007      (60.74%) -->
-> > SBI_PMU_FW_IPI_RECVD 21,271      r8000000000000006      (68.71%) -->
-> > SBI_PMU_FW_IPI_SENT 0      r0000000000020002      (76.55%)
-> >      <not counted>      r0000000000020004      (0.00%)
-> >      <not counted>      branch-misses          (0.00%)
-> >      <not counted>      cache-misses           (0.00%)
-> >         57,537,853      dTLB-load-misses       (9.49%)
-> >          2,821,147      dTLB-store-misses      (18.64%)
-> >         52,928,130      iTLB-load-misses       (27.53%)
-> >     89,521,791,110      cycles                 (36.08%)
-> >     90,678,132,464      instructions #    1.01  insn per cycle
-> > (44.44%)
-> >
-> >        6.975908032 seconds time elapsed
-> >
-> >        3.130950000 seconds user
-> >       24.353310000 seconds sys
-> >
->
-> Tested your patch series with qemu and got results as expected:
->
-> perf stat -e r8000000000000005 -e r8000000000000007 \
-> -e r8000000000000006 -e r0000000000020002 -e r0000000000020004 -e
-> branch-misses \ -e cache-misses -e dTLB-load-misses -e
-> dTLB-store-misses -e iTLB-load-misses \ -e cycles -e instructions
-> ./hackbench -pipe 15 process
->
-> Running with 15*40 (== 600) tasks.nch -pipe 15 process
-> Time: 20.027
->
->  Performance counter stats for './hackbench -pipe 15 process':
->
->               4896      r8000000000000005
->                             (53.34%) 0      r8000000000000007
->                                                 (61.20%) 0
->               r8000000000000006
->                   (68.88%) 0      r0000000000020002
->                                       (76.53%) <not counted>
->               r0000000000020004
->                   (0.00%) <not counted>      branch-misses
->                                                  (0.00%) <not counted>
->                   cache-misses
->                       (0.00%) 48414917      dTLB-load-misses
->                                                 (9.87%) 2427413
->               dTLB-store-misses
->                   (19.43%) 46958092      iTLB-load-misses
->                                              (28.58%) 69245163600
->               cycles
->                   (37.09%) 70334279943      instructions              #
->                  1.02  insn per cycle           (45.24%)
->
->       20.895871900 seconds time elapsed
->
->        2.724942000 seconds user
->       18.126277000 seconds sys
->
-> perf top/record also works.
->
-> Tested-by: Nikita Shubin <n.shubin@yadro.com>
->
+> +static struct snd_soc_acpi_codecs adl_rt5682s_hp = {
+> +       .num_codecs = 1,
+> +       .codecs = {"RTL5682"}
+> +};
+> +
+>  struct snd_soc_acpi_mach snd_soc_acpi_intel_adl_machines[] = {
+>         {
+>                 .id = "10EC5682",
+> +               .id_alt = &adl_rt5682s_hp,
+>                 .drv_name = "adl_mx98373_rt5682",
+>                 .machine_quirk = snd_soc_acpi_codec_list,
+>                 .quirk_data = &adl_max98373_amp,
+> @@ -296,6 +302,7 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_adl_machines[] = {
+>         },
+>         {
+>                 .id = "10EC5682",
+> +               .id_alt = &adl_rt5682s_hp,
+>                 .drv_name = "adl_mx98357_rt5682",
+>                 .machine_quirk = snd_soc_acpi_codec_list,
+>                 .quirk_data = &adl_max98357a_amp,
+> @@ -304,6 +311,7 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_adl_machines[] = {
+>         },
+>         {
+>                 .id = "10EC5682",
+> +               .id_alt = &adl_rt5682s_hp,
+>                 .drv_name = "adl_mx98360_rt5682",
+>                 .machine_quirk = snd_soc_acpi_codec_list,
+>                 .quirk_data = &adl_max98360a_amp,
 
-Thanks for the testing.
-
-> Yours,
-> Nikita Shubin
->
->
->
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
-
-
-
--- 
-Regards,
-Atish
+Is there any way we can collapse this and the primary id into a single
+list to avoid having 2 locations to track for the IDs?
