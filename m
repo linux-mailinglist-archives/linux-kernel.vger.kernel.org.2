@@ -2,288 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F69B423514
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 02:35:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1477423519
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 02:36:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237096AbhJFAho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 20:37:44 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:45268 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234027AbhJFAhm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 20:37:42 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1633480551; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=LQboSA03/AonDIOzGhDOGEo+U3kzH/52zxf3cHKNCmY=;
- b=bJ8PPt8QwS7eqEmt29OmJ6xxqkjdvDqOG7i4yemwque73YlmktMNq/TKDDspuewrfQjZti7Y
- 8xm1KVce1+EJ+8L6uC3zLISQbq0wlrDLizNFves9Kb1cYQ12oB/fS9JJwtxRUONY7AppxrXX
- 0oqZ2M+RJ106mJrSlSDm56k4hnk=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 615cef65ff0285fb0a5f130d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 06 Oct 2021 00:35:49
- GMT
-Sender: abhinavk=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id BF511C43618; Wed,  6 Oct 2021 00:35:48 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: abhinavk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id BF9E5C43460;
-        Wed,  6 Oct 2021 00:35:46 +0000 (UTC)
+        id S237115AbhJFAh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 20:37:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36770 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237127AbhJFAhx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 20:37:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A6F5261207;
+        Wed,  6 Oct 2021 00:35:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633480561;
+        bh=8xj9E6op+Rg8PTXffqt5Iu6I5QYdPwtUpE27T1OKFzU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iu6vyfwg4W/tfIH5vF6EJ8rw4IAH6oyZstjQ+k71TftnxAoc/pd8Vg7g809vYXSmw
+         HqBqPXNn18TKQQVolBCdPUBQNjbRZENvt/N4z6bD5KXEN7vh2A1ska4yQbc/iG3LBv
+         9+PzqFOlfYw7EWsnTtgXQ3BetmXc3txVFFIYY2newPWMttQOXa9Z5OdONOzRjfJewv
+         OlVGXBfO8XkC/k/4KN1DjHTDnLNTp55uKMab8YAyYWXAnirslZET9T3W1dieK8A9Lt
+         f858nm0SZ+QfOwVHGG2EUsgGuL7mfwROiNowH7gIpRq8xDCM3duxbib9wjTXMRsty9
+         9ElPf2xXwHi1w==
+Date:   Tue, 5 Oct 2021 17:35:57 -0700
+From:   Mike Rapoport <rppt@kernel.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Jianyong Wu <Jianyong.Wu@arm.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Vineet Gupta <vgupta@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-snps-arc@lists.infradead.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-mm@kvack.org,
+        kexec@lists.infradead.org
+Subject: Re: [PATCH v2 2/5] memblock: improve MEMBLOCK_HOTPLUG documentation
+Message-ID: <YVzvbUr2zO/Nw0Xf@kernel.org>
+References: <20211004093605.5830-1-david@redhat.com>
+ <20211004093605.5830-3-david@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 05 Oct 2021 17:35:46 -0700
-From:   abhinavk@codeaurora.org
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Kalyan Thota <kalyan_t@codeaurora.org>,
-        Kuogee Hsieh <khsieh@codeaurora.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [Freedreno] [PATCH v4 4/7] drm/msm/dp: Allow attaching a
- drm_panel
-In-Reply-To: <20211005231323.2663520-5-bjorn.andersson@linaro.org>
-References: <20211005231323.2663520-1-bjorn.andersson@linaro.org>
- <20211005231323.2663520-5-bjorn.andersson@linaro.org>
-Message-ID: <28fbd8f5b2d6bae7bedfc7e81e3fddd9@codeaurora.org>
-X-Sender: abhinavk@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211004093605.5830-3-david@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn
+On Mon, Oct 04, 2021 at 11:36:02AM +0200, David Hildenbrand wrote:
+> The description of MEMBLOCK_HOTPLUG is currently short and consequently
+> misleading: we're actually dealing with a memory region that might get
+> hotunplugged later (i.e., the platform+firmware supports it), yet it is
+> indicated in the firmware-provided memory map as system ram that will just
+> get used by the system for any purpose when not taking special care. The
+> firmware marked this memory region as a hot(un)plugged (e.g., hotplugged
+> before reboot), implying that it might get hotunplugged again later.
+> 
+> Whether we consider this information depends on the "movable_node" kernel
+> commandline parameter: only with "movable_node" set, we'll try keeping
+> this memory hotunpluggable, for example, by not serving early allocations
+> from this memory region and by letting the buddy manage it using the
+> ZONE_MOVABLE.
+> 
+> Let's make this clearer by extending the documentation.
+> 
+> Note: kexec *has to* indicate this memory to the second kernel. With
+> "movable_node" set, we don't want to place kexec-images on this memory.
+> Without "movable_node" set, we don't care and can place kexec-images on
+> this memory. In both cases, after successful memory hotunplug, kexec has to
+> be re-armed to update the memory map for the second kernel and to place the
+> kexec-images somewhere else.
+> 
+> Signed-off-by: David Hildenbrand <david@redhat.com>
 
-On 2021-10-05 16:13, Bjorn Andersson wrote:
-> eDP panels might need some power sequencing and backlight management,
-> so make it possible to associate a drm_panel with an eDP instance and
-> prepare and enable the panel accordingly.
-> 
-> Now that we know which hardware instance is DP and which is eDP,
-> parser->parse() is passed the connector_type and the parser is limited
-> to only search for a panel in the eDP case.
-> 
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Reviewed-by: Mike Rapoport <rppt@linux.ibm.com>
+
 > ---
+>  include/linux/memblock.h | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
 > 
-> Changes since v3:
-> - Previously posted separately, now added to series
-> - Make the search for a panel conditional on it being an eDP connector
-> - Move the search to of_graph port 1 (was 2 to distinguish from DP
-> link to USB-C connector)
-> 
->  drivers/gpu/drm/msm/dp/dp_display.c |  9 ++++++---
->  drivers/gpu/drm/msm/dp/dp_display.h |  1 +
->  drivers/gpu/drm/msm/dp/dp_drm.c     | 11 +++++++++++
->  drivers/gpu/drm/msm/dp/dp_parser.c  | 30 ++++++++++++++++++++++++++++-
->  drivers/gpu/drm/msm/dp/dp_parser.h  |  3 ++-
->  5 files changed, 49 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c
-> b/drivers/gpu/drm/msm/dp/dp_display.c
-> index eaf08f9e7d87..bdaf227f05dc 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_display.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
-> @@ -10,6 +10,7 @@
->  #include <linux/component.h>
->  #include <linux/of_irq.h>
->  #include <linux/delay.h>
-> +#include <drm/drm_panel.h>
-> 
->  #include "msm_drv.h"
->  #include "msm_kms.h"
-> @@ -230,12 +231,14 @@ static int dp_display_bind(struct device *dev,
-> struct device *master,
->  	priv = drm->dev_private;
->  	priv->dp = &(dp->dp_display);
-> 
-> -	rc = dp->parser->parse(dp->parser);
-> +	rc = dp->parser->parse(dp->parser, dp->dp_display.connector_type);
->  	if (rc) {
->  		DRM_ERROR("device tree parsing failed\n");
->  		goto end;
->  	}
-> 
-> +	dp->dp_display.panel_bridge = dp->parser->panel_bridge;
-> +
->  	dp->aux->drm_dev = drm;
->  	rc = dp_aux_register(dp->aux);
->  	if (rc) {
-> @@ -822,7 +825,7 @@ static int dp_display_set_mode(struct msm_dp 
-> *dp_display,
->  	return 0;
->  }
-> 
-> -static int dp_display_prepare(struct msm_dp *dp)
-> +static int dp_display_prepare(struct msm_dp *dp_display)
->  {
->  	return 0;
->  }
-> @@ -896,7 +899,7 @@ static int dp_display_disable(struct
-> dp_display_private *dp, u32 data)
->  	return 0;
->  }
-> 
-> -static int dp_display_unprepare(struct msm_dp *dp)
-> +static int dp_display_unprepare(struct msm_dp *dp_display)
->  {
->  	return 0;
->  }
-> diff --git a/drivers/gpu/drm/msm/dp/dp_display.h
-> b/drivers/gpu/drm/msm/dp/dp_display.h
-> index 02999408c052..24aefca66029 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_display.h
-> +++ b/drivers/gpu/drm/msm/dp/dp_display.h
-> @@ -15,6 +15,7 @@ struct msm_dp {
->  	struct device *codec_dev;
->  	struct drm_connector *connector;
->  	struct drm_encoder *encoder;
-> +	struct drm_bridge *panel_bridge;
->  	bool is_connected;
->  	bool audio_enabled;
->  	bool power_on;
-> diff --git a/drivers/gpu/drm/msm/dp/dp_drm.c 
-> b/drivers/gpu/drm/msm/dp/dp_drm.c
-> index f33e31523f56..76856c4ee1d6 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_drm.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_drm.c
-> @@ -5,6 +5,7 @@
-> 
->  #include <drm/drm_atomic_helper.h>
->  #include <drm/drm_atomic.h>
-> +#include <drm/drm_bridge.h>
->  #include <drm/drm_crtc.h>
-> 
->  #include "msm_drv.h"
-> @@ -160,5 +161,15 @@ struct drm_connector
-> *dp_drm_connector_init(struct msm_dp *dp_display)
-> 
->  	drm_connector_attach_encoder(connector, dp_display->encoder);
-> 
-> +	if (dp_display->panel_bridge) {
-> +		ret = drm_bridge_attach(dp_display->encoder,
-> +					dp_display->panel_bridge, NULL,
-> +					DRM_BRIDGE_ATTACH_NO_CONNECTOR);
-> +		if (ret < 0) {
-> +			DRM_ERROR("failed to attach panel bridge: %d\n", ret);
-> +			return ERR_PTR(ret);
-> +		}
-> +	}
-> +
->  	return connector;
->  }
-> diff --git a/drivers/gpu/drm/msm/dp/dp_parser.c
-> b/drivers/gpu/drm/msm/dp/dp_parser.c
-> index 4d6e047f803d..eb6bbfbea484 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_parser.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_parser.c
-> @@ -6,6 +6,7 @@
->  #include <linux/of_gpio.h>
->  #include <linux/phy/phy.h>
-> 
-> +#include <drm/drm_of.h>
->  #include <drm/drm_print.h>
-> 
->  #include "dp_parser.h"
-> @@ -263,7 +264,28 @@ static int dp_parser_clock(struct dp_parser 
-> *parser)
->  	return 0;
->  }
-> 
-> -static int dp_parser_parse(struct dp_parser *parser)
-> +static int dp_parser_find_panel(struct dp_parser *parser)
-> +{
-> +	struct device *dev = &parser->pdev->dev;
-> +	struct drm_panel *panel;
-> +	int rc;
-> +
-> +	rc = drm_of_find_panel_or_bridge(dev->of_node, 1, 0, &panel, NULL);
-> +	if (rc) {
-> +		DRM_ERROR("failed to acquire DRM panel: %d\n", rc);
-> +		return rc;
-> +	}
-> +
-> +	parser->panel_bridge = devm_drm_panel_bridge_add(dev, panel);
-> +	if (IS_ERR(parser->panel_bridge)) {
-> +		DRM_ERROR("failed to create panel bridge\n");
-> +		return PTR_ERR(parser->panel_bridge);
-> +	}
-
-When we add a bridge using devm_drm_panel_bridge_add(), it will register 
-with default bridge functions which is fine
-because we need the panel power to be controlled here.
-
-
-140 static const struct drm_bridge_funcs panel_bridge_bridge_funcs = {
-141 	.attach = panel_bridge_attach,
-142 	.detach = panel_bridge_detach,
-143 	.pre_enable = panel_bridge_pre_enable,
-144 	.enable = panel_bridge_enable,
-145 	.disable = panel_bridge_disable,
-146 	.post_disable = panel_bridge_post_disable,
-147 	.get_modes = panel_bridge_get_modes,
-
-But what about the EDID related things, the DP/eDP driver already reads 
-the EDID and gets the modes so we need to skip
-that in this case as otherwise it will end up calling the 
-panel_get_modes in the eDP panel which will be redundant.
-
-Let me know if I am missing something in this proposal.
-
-> +
-> +	return 0;
-> +}
-> +
-> +static int dp_parser_parse(struct dp_parser *parser, int 
-> connector_type)
->  {
->  	int rc = 0;
-> 
-> @@ -284,6 +306,12 @@ static int dp_parser_parse(struct dp_parser 
-> *parser)
->  	if (rc)
->  		return rc;
-> 
-> +	if (connector_type == DRM_MODE_CONNECTOR_eDP) {
-> +		rc = dp_parser_find_panel(parser);
-> +		if (rc)
-> +			return rc;
-> +	}
-> +
->  	/* Map the corresponding regulator information according to
->  	 * version. Currently, since we only have one supported platform,
->  	 * mapping the regulator directly.
-> diff --git a/drivers/gpu/drm/msm/dp/dp_parser.h
-> b/drivers/gpu/drm/msm/dp/dp_parser.h
-> index dac10923abde..3172da089421 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_parser.h
-> +++ b/drivers/gpu/drm/msm/dp/dp_parser.h
-> @@ -123,8 +123,9 @@ struct dp_parser {
->  	struct dp_display_data disp_data;
->  	const struct dp_regulator_cfg *regulator_cfg;
->  	u32 max_dp_lanes;
-> +	struct drm_bridge *panel_bridge;
-> 
-> -	int (*parse)(struct dp_parser *parser);
-> +	int (*parse)(struct dp_parser *parser, int connector_type);
->  };
-> 
+> diff --git a/include/linux/memblock.h b/include/linux/memblock.h
+> index 34de69b3b8ba..4ee8dd2d63a7 100644
+> --- a/include/linux/memblock.h
+> +++ b/include/linux/memblock.h
+> @@ -28,7 +28,11 @@ extern unsigned long long max_possible_pfn;
 >  /**
+>   * enum memblock_flags - definition of memory region attributes
+>   * @MEMBLOCK_NONE: no special request
+> - * @MEMBLOCK_HOTPLUG: hotpluggable region
+> + * @MEMBLOCK_HOTPLUG: memory region indicated in the firmware-provided memory
+> + * map during early boot as hot(un)pluggable system RAM (e.g., memory range
+> + * that might get hotunplugged later). With "movable_node" set on the kernel
+> + * commandline, try keeping this memory region hotunpluggable. Does not apply
+> + * to memblocks added ("hotplugged") after early boot.
+>   * @MEMBLOCK_MIRROR: mirrored region
+>   * @MEMBLOCK_NOMAP: don't add to kernel direct mapping and treat as
+>   * reserved in the memory map; refer to memblock_mark_nomap() description
+> -- 
+> 2.31.1
+> 
+
+-- 
+Sincerely yours,
+Mike.
