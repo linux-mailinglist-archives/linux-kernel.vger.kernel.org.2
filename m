@@ -2,139 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61CF54243F4
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 19:21:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04F754243F2
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 19:21:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238664AbhJFRXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 13:23:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50224 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229564AbhJFRXh (ORCPT
+        id S239376AbhJFRXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 13:23:08 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:50378
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239382AbhJFRXG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 13:23:37 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83242C061746
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 10:21:44 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id f4so7493521edr.8
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 10:21:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Zf0GDu47Yzju5hihM5KzzImrVAe/BDCIuU/sDOojTik=;
-        b=lx/Kw0cFW+j/UR9z5BxYuuPMKm4IGT3+2GSY5P8Ycar4BSc99Vmgh+tritVrAbqHZV
-         2ysVdsgmAcBwIA3G9az19hp0GSADLiRm8SsMXJ+nQopmhByRPs8W+H0MrXJMeNbNLtyB
-         QeWpO6idxuEq+EPtbss9LT4QrhV6RIadomM1VnE7MVl1gaodiNL1U2pRqJGQABJN4I1s
-         QJgAY7CHVfi67tIX1YC+JbAC+KebrCo4tcP8H4PHrlJJ7E0qUbTS1hjWdQ7fEqv0UdOP
-         kd68BLAz4ibkDCHbdPlbVAiYnMSEm2+ayHGktlKBuXFjKaUOeCEKXAGb3jWSPJpeD/m4
-         OwWg==
+        Wed, 6 Oct 2021 13:23:06 -0400
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com [209.85.167.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id D9E103F32D
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 17:21:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1633540872;
+        bh=0cZECXo5Oq8InSEcFNJKeXKiRtAxuD956eiEhsyqxn4=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=AX9u71FHGawoS6+mJqpcRQbFNKaDePnSLr0KzGkUVe3iIkjvrWPiJvrHBDcEH/MBB
+         2owUXAT+pYWN290gxk4cwRTmNNQrLTKn/lZ1bgzghHy00mVKa2hAVQoNvBhLXXY8q5
+         SRUYKCiHMvgqXAHZCWCLjCoHkxxg3X6SEF034UHk84tMF3YE8HwmqQvh11VVVnnrZA
+         6IaqSgBT7i8cF6FQuCqfwWHEccovKivBWAG15YTDw2qQviX+NoROno5kvFfBPip0Gv
+         yuWFffSv3hRR+8RKpdkpHx1/tHL7XxPu6cLZANS+lpHa11XQuIcL/oEymoiXItQytS
+         unoKNor2PXLWQ==
+Received: by mail-lf1-f69.google.com with SMTP id c42-20020a05651223aa00b003fd328cfeccso2543169lfv.4
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 10:21:12 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Zf0GDu47Yzju5hihM5KzzImrVAe/BDCIuU/sDOojTik=;
-        b=zFfmSKFmagWIBNMfsTPouq9+h+qYvh46Gkxe69ryLlOwZoQA4+UDoEU5pg1k5q33MS
-         A8uSBQ0A2LKdzE8kYcf4zm73S8XFj5Yu91eoN1kWjTGnPMmGRXhEecFDwqYjalOQxhd/
-         DyUpX2lxt5ppuW9HCo4DVtY/Mla0Mnoj7M84acjvKD7t90wlcappXafEvzjwNYQ5ap9U
-         cbfrpZWydqwU6vU2MBM1erqR830o8VHRISsGYjSfIcs2KhLYhb71UMBpH2MUzqRaw8nv
-         nh+8jf1JEZXIahHUWWeHyD5faKpwxjFzY1Fq+W0yds51+R3A0Xwszy45BJe7cXqsRJp5
-         Conw==
-X-Gm-Message-State: AOAM531TBNIrejgVISKR0eOe6coXetx7ENR44OKvR713GyuSfVqVJA0C
-        ZxU36LZDb7Tt+23/FPmU4j68755ziCMxqFT4fWI=
-X-Google-Smtp-Source: ABdhPJwSCgZPxAWtHp+De7FxfRYpZ0D/pJg2sBTp8/KWM0NcXeFmgFcjBYvMULeP8eBDQwNkaFZ1cezotHEaO5aqsv8=
-X-Received: by 2002:a05:6402:358a:: with SMTP id y10mr34846711edc.238.1633540902830;
- Wed, 06 Oct 2021 10:21:42 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=0cZECXo5Oq8InSEcFNJKeXKiRtAxuD956eiEhsyqxn4=;
+        b=AlyA9VTNy0+UiOaECS+nQrXVWUBdfH3qExAFCW+frLq9PYgZKEOwm5K7Bdg3oLHGTr
+         DEFgpNghL6qqOZOYvePWEEURf03izdboA/LVudu8SUtI83MiUJcoTBFNWjoh64c7VssI
+         S4oc2AulDadLvL81A+Ceh3hnEuaRN2IKOZXh3qAAYyIYFTszfmaKQUWRcJOJ/ELrYFD8
+         qtloPT0Ce/sKpung631uGjMPqCUOJtl476Rac0qGBiXfYpG8U2AGUH83bxBQKGCX2ScG
+         YAibdj7up+SVN5COdXrs2CXNkLVrcIxlq0IUVxNwE2O1+nGTZlAf123g1CtfEDWzuQaD
+         x3rg==
+X-Gm-Message-State: AOAM531r0v3cYw3nYrGWSz+CasndeDYvsfqU6oze16koR6970T5nBAOz
+        68W0sJUZHQYCXhH/oevP5wrhbZ4Fgq9iY9CT/v6Rl30knVGD9q7mX869uuOBmAfHahOZk8Telrk
+        ynm44JzjIfqtc2U/nMLy7jC14AscxOp115vNG6/nUDg==
+X-Received: by 2002:a2e:160a:: with SMTP id w10mr29552889ljd.50.1633540872136;
+        Wed, 06 Oct 2021 10:21:12 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx7gOFBqomi1IBdeCW+tCVrsZh82TOgzFybJHNk6+qbcfd0gOuOv7SH3dwoY9oJfUibCBvADg==
+X-Received: by 2002:a2e:160a:: with SMTP id w10mr29552863ljd.50.1633540871949;
+        Wed, 06 Oct 2021 10:21:11 -0700 (PDT)
+Received: from [192.168.0.20] (78-11-189-27.static.ip.netia.com.pl. [78.11.189.27])
+        by smtp.gmail.com with ESMTPSA id d13sm2319339lfi.48.2021.10.06.10.21.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Oct 2021 10:21:11 -0700 (PDT)
+Subject: Re: [PATCH v4 2/7] dt-bindings: memory: lpddr2: Convert to schema
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+References: <20211005230009.3635-1-digetx@gmail.com>
+ <20211005230009.3635-3-digetx@gmail.com>
+ <6b8f6ef7-cfc5-3a8b-d44d-f4080a85ecf3@canonical.com>
+ <7047ad7b-52d6-0c91-b7d2-b115ea69506f@gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <6610ce30-405c-0a91-eb36-37ca3d0cf730@canonical.com>
+Date:   Wed, 6 Oct 2021 19:21:10 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20211006150451.16561-1-andriy.shevchenko@linux.intel.com>
- <20211006150451.16561-3-andriy.shevchenko@linux.intel.com>
- <2d190513-7ac4-731c-7c9a-1f60a98f6345@linux.intel.com> <YV3NZnb6mg43nUC1@smile.fi.intel.com>
- <015e084e-70ed-7b5c-b103-8426ef0842d4@linux.intel.com> <999a1046-864e-2b47-6f44-6e8e42528b18@redhat.com>
-In-Reply-To: <999a1046-864e-2b47-6f44-6e8e42528b18@redhat.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 6 Oct 2021 20:21:06 +0300
-Message-ID: <CAHp75VfYZgXb-h-smW5hMGSkw5RBmv6mTYnoszhY+0Zqqk6z-Q@mail.gmail.com>
-Subject: Re: [PATCH v1 3/4] ASoC: Intel: bytcr_rt5651: use devm_clk_get_optional()
- for mclk
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <7047ad7b-52d6-0c91-b7d2-b115ea69506f@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 6, 2021 at 8:12 PM Hans de Goede <hdegoede@redhat.com> wrote:
-> On 10/6/21 6:37 PM, Pierre-Louis Bossart wrote:
-> > On 10/6/21 11:23 AM, Andy Shevchenko wrote:
-> >> On Wed, Oct 06, 2021 at 10:51:52AM -0500, Pierre-Louis Bossart wrote:
-> >>> On 10/6/21 10:04 AM, Andy Shevchenko wrote:
+On 06/10/2021 17:41, Dmitry Osipenko wrote:
+> 06.10.2021 13:57, Krzysztof Kozlowski пишет:
+>>> +  density:
+>>> +    description: |
+>>> +      Density in megabits of SDRAM chip. Obtained from device datasheet.
+>> You need here a type/ref, so uint32.
+>>
+> 
+> The type is uint32 by default. I can add it, but it's not really necessary.
 
-...
+Hmmm, maybe I missed some background here. Who sets uint32 as default?
+The schema does not define "density" so this is more like a vendor-type
+property which required therefore a type.
 
-> >>> I don't get why you removed the test on the BYT_RT5651_MCLK_EN quirk,
-> >>> see below it was designed as a fall-back mode. We don't want to return
-> >>> an error when we know the clock is not present/desired.
-> >>
-> >> Why should we do a unneeded test? When we switch to the optional, there
-> >> will be no error from these CCF APIs. Besides that it drops indentation
-> >> level and makes code neat.
-> >
-> > By looking at this code only one cannot really visualize that it's a
-> > no-op. I personally prefer to see explicit intent rather than have to
-> > dig hundreds of lines below what this clock is optional.
-> >
-> > I am also not even sure that in real products this clock is actually
-> > optional, the default is to make use of it:
-> >
-> > #define BYT_RT5651_DEFAULT_QUIRKS     (BYT_RT5651_MCLK_EN | \
-> >
-> > and the only platform without this clock is "Minnowboard Max B3" -
-> > probably not used by anyone. I fried mine a long time ago.
-> >
-> > We'd need to Hans to comment on this since he's really the only one
-> > maintaining this code.
->
-> So as Mark wrote in his later reply:
->
-> "AIUI with the clock API the idiomatic thing is that any optionality is
-> handled at the point where the clock is acquired - if the clock is
-> optional you end up with NULL which in the clock API is a dummy clock
-> and ignored.  The rest of the code then doesn't need to worry about any
-> of this stuff and the handling can only be in one place."
->
-> Combined with there pretty much always actually being an mclk I believe
-> that this patch from Andy results in a nice cleanup so I'm in favor with
-> this. And the other cleanups also look sensible to me
+Also Rob's pointed this to my patch here around "op_mode":
+https://lore.kernel.org/linux-samsung-soc/cdcd4eda-a7a9-2aa2-1316-e7184ff30bf3@canonical.com/T/#m17adea693a9cbcca75b0ba6f9d878f5fd1bf5d14
 
-Thanks!
-
-> I would like to run a small smoke-test with both the series to make
-> sure nothing regresses (should be fine but better safe then sorry).
-
-Thanks ahead!
-
-> Andy I believe that there is going to be a v2 to address a couple
-> of nitpicks, right ?
-
-Right.
-
-> Note for testing I would prefer a full v2 series, even if some
-> patches don't change. And I assume the same applies to Mark for
-> applying this.
->
-> Sending partial series with only changed patches on the v2
-> send turns things into a puzzle, which is not ideal IMHO.
-
-I'll do it tomorrow.
-
-
--- 
-With Best Regards,
-Andy Shevchenko
+Best regards,
+Krzysztof
