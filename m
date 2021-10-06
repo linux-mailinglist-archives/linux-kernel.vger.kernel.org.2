@@ -2,142 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A66C42400A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 16:25:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2497042400B
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 16:26:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238972AbhJFO1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 10:27:48 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:31052 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231356AbhJFO1r (ORCPT
+        id S238990AbhJFO2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 10:28:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50581 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238734AbhJFO17 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 10:27:47 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 196DSp9d001008;
-        Wed, 6 Oct 2021 10:25:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=rzPMALKGA6XMuv435p9x/PS4RHZse9EyIaUy6qjVuL0=;
- b=NkfdQ8sQZSmHF5RPIQ9VvK0KzNLhHdfbXxWCrbVPoPzqs4vp0/SEFdK6CuU1x+TnMojB
- Mlq+hGZH6pCferJ+3S4aewQ73XJnwwLOr5BvMobiXcCHeKa8n9hZgk5Y7CLsMXymJivx
- 5FDHi5vRGwaz/zPxBNX9s8J7MTJKfrfEJQQEfxHCwkWWgbP98OFTppFiY7p4Oeb+5vLy
- zli5w0qgpHc6bKJ9FznTcUBnUBROp3SaGkWJhojdL+CJhePJ5mnDGqrWVQw358UOkV9f
- ngXbtarz8Ryo7orsKtTDyNYHKXv8IsaF3IV3MN+mnPAUs/B4FYOSE+O3etA/6NAyre7l hA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bhcqk9g4t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 06 Oct 2021 10:25:46 -0400
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 196DTA6Z002572;
-        Wed, 6 Oct 2021 10:25:45 -0400
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bhcqk9g3f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 06 Oct 2021 10:25:45 -0400
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 196ECDng030410;
-        Wed, 6 Oct 2021 14:25:42 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma05fra.de.ibm.com with ESMTP id 3bef2a3r8u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 06 Oct 2021 14:25:42 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 196EKJnC55312836
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 6 Oct 2021 14:20:19 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3512311C05B;
-        Wed,  6 Oct 2021 14:25:38 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9A4D711C052;
-        Wed,  6 Oct 2021 14:25:37 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed,  6 Oct 2021 14:25:37 +0000 (GMT)
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Xie Yongji <xieyongji@bytedance.com>,
-        virtualization@lists.linux-foundation.org,
+        Wed, 6 Oct 2021 10:27:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633530366;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xudSKXu0tUIHo/Kh4GTH3SABFsAoVJ2WLnJX5dK8z9c=;
+        b=aHfcCt6lbL+hueLNN1eLHsHwcUW1GdxBw23ffUxJHMgo69eyfScDn552gowRV9cEoPrzav
+        sgQw/Yu4qF1PlHfsbkBUXZ1avTZmaRq9cvaqN2CFjjNZXfyumqce9QuC8HfQaux8yyJZCH
+        wXy0zE0yCDC7PaBgUpB8UYteBM3+Hfo=
+Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com
+ [209.85.167.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-556-UGsdWgKZOhu8clvCjDnk1g-1; Wed, 06 Oct 2021 10:26:04 -0400
+X-MC-Unique: UGsdWgKZOhu8clvCjDnk1g-1
+Received: by mail-oi1-f199.google.com with SMTP id n136-20020acad68e000000b00275ee0e97b5so1666906oig.16
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 07:26:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xudSKXu0tUIHo/Kh4GTH3SABFsAoVJ2WLnJX5dK8z9c=;
+        b=x8QfAZ6/sKqlsTLiSwYWOnbTfLKZHAZFrATf27pjjw5widuOhzm+zT5WPrvckxE+Qq
+         Hq9CyUnHiAV28BlVa0b3J98fFY/NsLaJMH2t7FtEd8+q5wW+9p4G0VCut1B2WlQGV3qO
+         FtG1BkRmvjIt8DHbR8AFhl/5VANieLpCe5hXTxaSyaWjZg37L1xjuGytsjf7QNuW6oOV
+         bfoAsCEOlhHZIW9t+quPxL0TZFUPmtTSliXq1aHm6Nu6ODBjY/xQG8hsnW2xhCW8WIJw
+         bzvtcPNY4mE9bMj3lLfn/vK0ZC6KRtTV5wY8Lna9SJgzlOOQGBkIYTnXZAKdc5KUVqNW
+         9Z3w==
+X-Gm-Message-State: AOAM530HUcsS20OdASz040AYsSuzodDG+6l/296v7hiW5fPu92U4ZaNu
+        mWY2cQFwLntZcdf4an6TLPbalLOGp7XXHLot9CxlF0zY9HuF0HJRyvo/2jchNx6S5KSiefutP8J
+        OT8c0kAApNVyiF8029JZUN/m2
+X-Received: by 2002:a05:6808:616:: with SMTP id y22mr5763892oih.159.1633530363287;
+        Wed, 06 Oct 2021 07:26:03 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzvdmedb044vxICUu4U+RdWcjiZJ9tVmMOkEL8mItjVOG7Lbo2mUzL/zd0mXXm69RAAUh0nrg==
+X-Received: by 2002:a05:6808:616:: with SMTP id y22mr5763860oih.159.1633530363069;
+        Wed, 06 Oct 2021 07:26:03 -0700 (PDT)
+Received: from treble ([2600:1700:6e32:6c00::49])
+        by smtp.gmail.com with ESMTPSA id c17sm4246027oiw.10.2021.10.06.07.26.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Oct 2021 07:26:02 -0700 (PDT)
+Date:   Wed, 6 Oct 2021 07:25:59 -0700
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
+        VMware Inc <pv-drivers@vmware.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
         linux-kernel@vger.kernel.org
-Cc:     Halil Pasic <pasic@linux.ibm.com>, markver@us.ibm.com,
-        Cornelia Huck <cohuck@redhat.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-s390@vger.kernel.org, stefanha@redhat.com,
-        Raphael Norwitz <raphael.norwitz@nutanix.com>,
-        qemu-devel@nongnu.org
-Subject: [PATCH 1/1] virtio: write back F_VERSION_1 before validate
-Date:   Wed,  6 Oct 2021 16:25:33 +0200
-Message-Id: <20211006142533.2735019-1-pasic@linux.ibm.com>
-X-Mailer: git-send-email 2.25.1
+Subject: Re: [PATCH v8 03/11] x86/cpufeatures: Add TDX Guest CPU feature
+Message-ID: <20211006142559.4s7exdrzhgpk6awl@treble>
+References: <20211005025205.1784480-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20211005025205.1784480-4-sathyanarayanan.kuppuswamy@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 6SJN1e6Wk8CcV1EJ_v0Cs0lygJFuRqfD
-X-Proofpoint-GUID: 6Ww4Q-dWxjfZ_JKOOMojtbiksYxrUCgh
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-10-06_03,2021-10-06_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
- malwarescore=0 bulkscore=0 adultscore=0 clxscore=1015 priorityscore=1501
- suspectscore=0 phishscore=0 lowpriorityscore=0 spamscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109230001
- definitions=main-2110060089
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211005025205.1784480-4-sathyanarayanan.kuppuswamy@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The virtio specification virtio-v1.1-cs01 states: Transitional devices
-MUST detect Legacy drivers by detecting that VIRTIO_F_VERSION_1 has not
-been acknowledged by the driver.  This is exactly what QEMU as of 6.1
-has done relying solely on VIRTIO_F_VERSION_1 for detecting that.
+On Mon, Oct 04, 2021 at 07:51:57PM -0700, Kuppuswamy Sathyanarayanan wrote:
+> +/*
+> + * Allocate it in the data region to avoid zeroing it during
+> + * BSS initialization. It is mainly used in cc_platform_has()
+> + * call during early boot call.
+> + */
+> +u64 __section(".data") is_tdx_guest = 0;
 
-However, the specification also says: driver MAY read (but MUST NOT
-write) the device-specific configuration fields to check that it can
-support the device before setting FEATURES_OK.
+Actually this should be __ro_after_init, since it never changes after
+it's initialized.  As a bonus you won't have to worry about it getting
+placed in BSS and the comment and initializer can go away.
 
-In that case, any transitional device relying solely on
-VIRTIO_F_VERSION_1 for detecting legacy drivers will return data in
-legacy format.  In particular, this implies that it is in big endian
-format for big endian guests. This naturally confuses the driver which
-expects little endian in the modern mode.
+> +
+> +static void __init is_tdx_guest_init(void)
+> +{
+> +	u32 eax, sig[3];
+> +
+> +	if (cpuid_eax(0) < TDX_CPUID_LEAF_ID) {
+> +		is_tdx_guest = 0;
+> +		return;
+> +	}
+> +
+> +	cpuid_count(TDX_CPUID_LEAF_ID, 0, &eax, &sig[0], &sig[2], &sig[1]);
+> +
+> +	is_tdx_guest = !memcmp("IntelTDX    ", sig, 12);
+> +}
+> +
+> +void __init tdx_early_init(void)
+> +{
+> +	is_tdx_guest_init();
+> +
+> +	if (!is_tdx_guest)
+> +		return;
+> +
+> +	setup_force_cpu_cap(X86_FEATURE_TDX_GUEST);
 
-It is probably a good idea to amend the spec to clarify that
-VIRTIO_F_VERSION_1 can only be relied on after the feature negotiation
-is complete. However, we already have regression so let's try to address
-it.
+setup_force_cpu_cap() sets a bit in 'cpu_caps_set' which is in BSS,
+which gets cleared later right?  So this presumably doesn't fully work
+as expected.  Maybe it can be set in init_intel(), based on
+'is_tdx_guest'.
 
-Signed-off-by: Halil Pasic <pasic@linux.ibm.com>
-Fixes: 82e89ea077b9 ("virtio-blk: Add validation for block size in config space")
-Fixes: fe36cbe0671e ("virtio_net: clear MTU when out of range")
-Reported-by: markver@us.ibm.com
----
- drivers/virtio/virtio.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/drivers/virtio/virtio.c b/drivers/virtio/virtio.c
-index 0a5b54034d4b..494cfecd3376 100644
---- a/drivers/virtio/virtio.c
-+++ b/drivers/virtio/virtio.c
-@@ -239,6 +239,16 @@ static int virtio_dev_probe(struct device *_d)
- 		driver_features_legacy = driver_features;
- 	}
- 
-+	/*
-+	 * Some devices detect legacy solely via F_VERSION_1. Write
-+	 * F_VERSION_1 to force LE for these when needed.
-+	 */
-+	if (drv->validate && !virtio_legacy_is_little_endian()
-+			  && BIT_ULL(VIRTIO_F_VERSION_1) & device_features) {
-+		dev->features = BIT_ULL(VIRTIO_F_VERSION_1);
-+		dev->config->finalize_features(dev);
-+	}
-+
- 	if (device_features & (1ULL << VIRTIO_F_VERSION_1))
- 		dev->features = driver_features & device_features;
- 	else
-
-base-commit: 60a9483534ed0d99090a2ee1d4bb0b8179195f51
 -- 
-2.25.1
+Josh
 
