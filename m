@@ -2,287 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A55A3423DE0
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 14:39:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 168E7423DD9
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 14:39:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238476AbhJFMlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 08:41:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40100 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238416AbhJFMlL (ORCPT
+        id S238283AbhJFMkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 08:40:53 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:35462
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232156AbhJFMkv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 08:41:11 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 841CFC061749
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 05:39:19 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id r19so9580816lfe.10
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 05:39:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=pt+Sx1i9oC8cMVf+wV0+G1/1GyaW/f/U+87KiyoFd/E=;
-        b=xMf9icJn0dugjBCs5EETJwxewMPK+UjZJs0KYkQ+tEswLY8Y3dBB9eTNHx1P1I74NS
-         uUI5ilQPq4HQIhfoBn10OmK0TYfUpJUGARspsbdoXLABNOzo+QHCEBYNQqtp8KkfHt5y
-         5rgwO4l1nEO/qkIK43xyczyY9zOTefr2lTBwMo3yoVkLR70uqjlAQwkhytRA6fQvBCmo
-         38mmmmGjJXtf94GAftHcVeOr9+ASGdyzPc89mvgsEeg3ssJr7d0NZzeAChud6hgWLQ0x
-         CaiyTsOATrGgHO8lc2Hzh8roRCTRT7QTYzscdKXQfmhYcgY68+9elxMF8yXF5L53e23A
-         iVFA==
+        Wed, 6 Oct 2021 08:40:51 -0400
+Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com [209.85.167.72])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 41F223F077
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 12:38:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1633523938;
+        bh=9mJv7vydoc4KxolrYZqQszFixt0Rzsc2yW8Qm+0Oasg=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=DDx0kfFBw5+UKhGwr3dRbHf7usgPGYWZwmZja0yJy6MfLXqRgLp46UT9/6XAy8/Ob
+         39Z5rRU7N5z9hp0yebe985HsgjwBc1CfdinGMIlIFycO7468ZGhHS10tpH3TEA8PEa
+         4GPg7cUKYgQ62nC7kVn1Bm7UOc6i7wBix0xJULMNVhZIsNNcoKX+iFWtbhHSexsoTK
+         deuMPz0lzyO1DsMbr072TzfydlArQIFqCco87V10G4yrUXy5DlPwj2RP0ZIsltSyDl
+         /lx8m2fqvZzldqNp46R60posO3lqH/L6x6WAhahsAk1Bz7GuyZhZ3lH4R99beaA4hA
+         SFnPqzZaWkbaw==
+Received: by mail-lf1-f72.google.com with SMTP id bp11-20020a056512158b00b003fc7d722819so1889154lfb.7
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 05:38:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=pt+Sx1i9oC8cMVf+wV0+G1/1GyaW/f/U+87KiyoFd/E=;
-        b=Et7gzodCGhag0TB85YGbfO3Q47C+bjEFWWlEIHrPLfNkEq6OwvoKGI6rz1xXSlsr5g
-         BB0RNMIXHA36FrWClFvTRLXFBKVbTV1f5uV86hgDRwjUDC78kK3srFMdl+s8wQmitbaS
-         e7aK7dXeoLzf9yUSNer4p5rGCky9HjxjX8EZQ/v4pDTihT54ZEEEZ4/ASVtZ3JpQm4IL
-         VwLt0BCw/S6Kep0Kq5UTBEmjZcxYP4GKecEUYLzqBcrlfWHiGSGX1PFl1N0t/fjSP24d
-         C6YjqxJ6iEb2DIjowkvWSWpGquswhU+frohG5R5unccbz3mDtWdn7FUKsUWXglQG4/zI
-         XHSg==
-X-Gm-Message-State: AOAM530Sv6lI+Lv30Jw40n1pPhLpTJx0J2Sns1PngoH4ROBksRpbr0+e
-        +P25zW9qc3/msKj9M6fHDNDCHu2pLWX5tKSn0wRElQ==
-X-Google-Smtp-Source: ABdhPJwaJVEKqlVek7TGUDap3J+eg+aVlfc7HMdVbc1X8zMSF/wwjX+qoHICL3q8G6NLzKZ0rQnEZO321GxsAccQSGs=
-X-Received: by 2002:a05:651c:20b:: with SMTP id y11mr29225280ljn.463.1633523952478;
- Wed, 06 Oct 2021 05:39:12 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210926224058.1252-1-digetx@gmail.com> <20210926224058.1252-7-digetx@gmail.com>
- <CAPDyKFq+LS4Jr1GyC-a-tGWPzGH0JxfJ9wKY=uQEBGYm952azw@mail.gmail.com>
- <24101cd6-d3f5-1e74-db39-145ecd30418b@gmail.com> <CAPDyKFreK7976PJL-1zySoza_yXM7rMQ64aODWUZ+U3L-uCa0w@mail.gmail.com>
- <4bdba8a2-4b9b-ed7d-e6ca-9218d8200a85@gmail.com>
-In-Reply-To: <4bdba8a2-4b9b-ed7d-e6ca-9218d8200a85@gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 6 Oct 2021 14:38:35 +0200
-Message-ID: <CAPDyKFq_-HGPRNiNDmnEbuah0mUYoRUWVs1SvbQ6VNMMwEcXjA@mail.gmail.com>
-Subject: Re: [PATCH v13 06/35] clk: tegra: Support runtime PM and power domain
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=9mJv7vydoc4KxolrYZqQszFixt0Rzsc2yW8Qm+0Oasg=;
+        b=uaaU6MDqnL3yINHrCiL4Iu3OSaE0LrCMG48wXLXfGDOLxZtz6X8VtbMzKiHlUhRXDQ
+         OoD7urp2DZF4afz8fQYks74yYWwbVbFULRRapNMIYSOxIdBrybFJ474d+bQUuovdfBo2
+         XR8MHFzkDh5B4dH72WOO0VXHaXylVvWjWeBYsokesfnH8uzrjlN2i4ld9US94w6RRZHD
+         oo9Y1Htv5zsG/O3FOv4rOX9XXlvtF5X3UAvI2EVQcbmnm/DEwkz595EiJ0Azs5QEajR5
+         +/Q86AH4dY9F8a5fAd+cb93Wb7O7eSbVW/75RGntJE7h6R1kJo4NlBl3aqWYCRZ3/d8J
+         NtmQ==
+X-Gm-Message-State: AOAM532S1bc5moEHUixf7IBN4Ln+i9hbciL/BfOTfJZXuBhwoCn/1jXX
+        bSplGcolYke7Tn+sPP7fraSdMtXmZSD1XbgqxPLDOwPCv+x9JXyMhQAvsQdK3ZBKJd8IVGlxhuz
+        QLIvZiNtEJbZlE15Q0ia7H3c5mjimSB4tyCWBHjgvxQ==
+X-Received: by 2002:a05:6512:3a88:: with SMTP id q8mr9272035lfu.425.1633523937619;
+        Wed, 06 Oct 2021 05:38:57 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJykyA+GW2Du8nJg20OBGB5WUBySz7bq6hoifotyrhP3nCgvQX2XPulj9GID977EqoW8vHGO8A==
+X-Received: by 2002:a05:6512:3a88:: with SMTP id q8mr9272011lfu.425.1633523937405;
+        Wed, 06 Oct 2021 05:38:57 -0700 (PDT)
+Received: from [192.168.0.20] (78-11-189-27.static.ip.netia.com.pl. [78.11.189.27])
+        by smtp.gmail.com with ESMTPSA id c5sm2256595ljd.94.2021.10.06.05.38.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Oct 2021 05:38:57 -0700 (PDT)
+Subject: Re: [PATCH 1/6] clk: samsung: Enable bus clock on init
+To:     Sam Protsenko <semen.protsenko@linaro.org>
+Cc:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        =?UTF-8?Q?Pawe=c5=82_Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
         Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Peter Chen <peter.chen@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Nishanth Menon <nm@ti.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
         Michael Turquette <mturquette@baylibre.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        linux-staging@lists.linux.dev, linux-pwm@vger.kernel.org,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        DTML <devicetree@vger.kernel.org>,
+        Ryu Euiyoul <ryu.real@samsung.com>,
+        Tom Gall <tom.gall@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Amit Pundir <amit.pundir@linaro.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
         linux-clk <linux-clk@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Richard Weinberger <richard@nod.at>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        David Heidelberg <david@ixit.cz>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>
+References: <20210914155607.14122-1-semen.protsenko@linaro.org>
+ <20210914155607.14122-2-semen.protsenko@linaro.org>
+ <6ef3e9a3-77e7-48b7-cbcd-c13db50d0cd9@canonical.com>
+ <CAPLW+4kexaByx0nfy3q5g9XmrYdLav7E25h8qiO4Z_zmUVbRYQ@mail.gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <16ee07a1-afa9-b258-8836-e96de84551db@canonical.com>
+Date:   Wed, 6 Oct 2021 14:38:56 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <CAPLW+4kexaByx0nfy3q5g9XmrYdLav7E25h8qiO4Z_zmUVbRYQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 6 Oct 2021 at 00:19, Dmitry Osipenko <digetx@gmail.com> wrote:
->
-> 05.10.2021 16:10, Ulf Hansson =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> > On Sat, 2 Oct 2021 at 22:44, Dmitry Osipenko <digetx@gmail.com> wrote:
-> >>
-> >> 01.10.2021 15:32, Ulf Hansson =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> >>>> +static __maybe_unused int tegra_clock_pm_suspend(struct device *dev=
-)
-> >>>> +{
-> >>>> +       struct tegra_clk_device *clk_dev =3D dev_get_drvdata(dev);
-> >>>> +
-> >>>> +       /*
-> >>>> +        * Power management of the clock is entangled with the Tegra=
- PMC
-> >>>> +        * GENPD because PMC driver enables/disables clocks for togg=
-ling
-> >>>> +        * of the PD's on/off state.
-> >>>> +        *
-> >>>> +        * The PMC GENPD is resumed in NOIRQ phase, before RPM of th=
-e clocks
-> >>>> +        * becomes available, hence PMC can't use clocks at the earl=
-y resume
-> >>>> +        * phase if RPM is involved. For example when 3d clock is en=
-abled,
-> >>>> +        * it may enable the parent PLL clock that needs to be RPM-r=
-esumed.
-> >>>> +        *
-> >>>> +        * Secondly, the PLL clocks may be enabled by the low level =
-suspend
-> >>>> +        * code, so we need to assume that PLL is in enabled state d=
-uring
-> >>>> +        * suspend.
-> >>>> +        *
-> >>>> +        * We will keep PLLs and system clock resumed during suspend=
- time.
-> >>>> +        * All PLLs on all SoCs are low power and system clock is al=
-ways-on,
-> >>>> +        * so practically not much is changed here.
-> >>>> +        */
-> >>>> +
-> >>>> +       return clk_prepare(clk_dev->hw->clk);
-> >>> I am trying to understand, more exactly, what you intend to achieve
-> >>> with the clk_prepare() here. It looks a bit weird, to me. Can you try
-> >>> to elaborate a bit more on the use case?
-> >>
-> >> The Tegra GENPD driver enable/disable clocks when domain is turned on.
-> >
-> > Okay. I noticed that in tegra_genpd_power_on(). And the same clocks
-> > are enabled/disabled also in tegra_genpd_power_off(), when powering
-> > off the PM domain.
-> >
-> > So I guess the problem kind of exists for tegra_genpd_power_off() too?
->
-> Both OFF/ON are affected by the same problem. If domain was already
-> turned OFF before genpd_suspend_noirq(), then the OFF problem isn't visib=
-le.
->
-> I reproduced the OFF problem by removing the clk prepare/unprepare from
-> the suspend/resume of the clk driver and making some extra changes to
-> clock tree topology and etc to trigger the problem on Nexus 7.
->
-> tegra-pmc 7000e400.pmc: failed to turn off PM domain heg: -13
->
-> I happens from genpd_suspend_noirq() -> tegra_genpd_power_off() -> clk
-> -> GENPD -> I2C -> runtime-pm.
->
-> -13 is EACCES, it comes from the runtime PM of I2C device. RPM is
-> prohibited/disabled during late (NOIRQ) suspend by the drivers core.
+On 06/10/2021 12:46, Sam Protsenko wrote:
+> On Wed, 15 Sept 2021 at 11:21, Krzysztof Kozlowski
+> <krzysztof.kozlowski@canonical.com> wrote:
+>>
+>> On 14/09/2021 17:56, Sam Protsenko wrote:
+>>> By default if bus clock has no users its "enable count" value is 0. It
+>>> might be actually running if it's already enabled in bootloader, but
+>>> then in some cases it can be disabled by mistake. For example, such case
+>>> was observed when dw_mci_probe() enabled bus clock, then failed to do
+>>> something and disabled that bus clock on error path. After that even
+>>> attempt to read the 'clk_summary' file in DebugFS freezed forever, as
+>>> CMU bus clock ended up being disabled and it wasn't possible to access
+>>> CMU registers anymore.
+>>>
+>>> To avoid such cases, CMU driver must increment the ref count for that
+>>> bus clock by running clk_prepare_enable(). There is already existing
+>>> '.clk_name' field in struct samsung_cmu_info, exactly for that reason.
+>>> It was added in commit 523d3de41f02 ("clk: samsung: exynos5433: Add
+>>> support for runtime PM"). But the clock is actually enabled only in
+>>> Exynos5433 clock driver. Let's mimic what is done there in generic
+>>> samsung_cmu_register_one() function, so other drivers can benefit from
+>>> that `.clk_name' field. As was described above, it might be helpful not
+>>> only for PM reasons, but also to prevent possible erroneous clock gating
+>>> on error paths.
+>>>
+>>> Another way to workaround that issue would be to use CLOCK_IS_CRITICAL
+>>> flag for corresponding gate clocks. But that might be not very good
+>>> design decision, as we might still want to disable that bus clock, e.g.
+>>> on PM suspend.
+>>>
+>>> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+>>> ---
+>>>  drivers/clk/samsung/clk.c | 13 +++++++++++++
+>>>  1 file changed, 13 insertions(+)
+>>>
+>>> diff --git a/drivers/clk/samsung/clk.c b/drivers/clk/samsung/clk.c
+>>> index 1949ae7851b2..da65149fa502 100644
+>>> --- a/drivers/clk/samsung/clk.c
+>>> +++ b/drivers/clk/samsung/clk.c
+>>> @@ -357,6 +357,19 @@ struct samsung_clk_provider * __init samsung_cmu_register_one(
+>>>
+>>>       ctx = samsung_clk_init(np, reg_base, cmu->nr_clk_ids);
+>>>
+>>> +     /* Keep bus clock running, so it's possible to access CMU registers */
+>>> +     if (cmu->clk_name) {
+>>> +             struct clk *bus_clk;
+>>> +
+>>> +             bus_clk = __clk_lookup(cmu->clk_name);
+>>> +             if (bus_clk) {
+>>> +                     clk_prepare_enable(bus_clk);
+>>> +             } else {
+>>> +                     pr_err("%s: could not find bus clock %s\n", __func__,
+>>> +                            cmu->clk_name);
+>>> +             }
+>>> +     }
+>>> +
+>>
+>> Solving this problem in generic way makes sense but your solution is
+>> insufficient. You skipped suspend/resume paths and in such case you
+>> should remove the Exynos5433-specific code.
+>>
+> 
+> Keeping core bus clocks always running seems like a separate
+> independent feature to me (not related to suspend/resume). It's
+> mentioned in commit 523d3de41f02 ("clk: samsung: exynos5433: Add
+> support for runtime PM") this way:
+> 
+>     "Also for each CMU there is one special parent clock, which has to
+> be enabled all the time when any access to CMU registers is being
+> done."
+> 
+> Why do you think suspend/resume paths have to be implemented along
+> with it? Btw, I didn't add PM ops in clk-exynos850, as PM is not
+> implemented on my board yet and I can't test it.
 
-Thanks for the clarification!
+You can skip the runtime PM, so keep your patch almost like it is now
+(in respect to Sylwester's comment about __clk_lookup). However now the
+Exynos5433 will enable the clk_name twice: here and in
+exynos5433_cmu_probe().
 
->
-> >> This can't be done during early system resume, when domains are gettin=
-g
-> >> turned on by the drivers core, because when clock is enabled, it's
-> >> getting prepared (RPM-resumed) and this preparation fails because
-> >> performance state of the clock goes up and it doesn't work during the
-> >> early resume time since I2C, which applies the state to hardware, is
-> >> suspended and can't work at that early time.
-> >
-> > This sounds complicated and I still don't quite follow all of it, sorry=
-.
-> >
-> > So, tegra_genpd_power_on() gets called from genpd_resume_noirq(), when
-> > the first device of the attached devices to genpd gets resumed. And
-> > vice versa for tegra_genpd_power_off() and genpd_suspend_noirq().
-> >
-> > Are you saying that trying to enable/disable clocks from
-> > tegra_genpd_power_on|off() in these paths doesn't work, because it
-> > would also require the performance state to be changed, which would
-> > fail because the I2C bus/driver is suspended?
->
-> Yes, but it's actually not I2C bus/driver that is suspended, it's
-> runtime PM that is unavailable during NOIRQ. The I2C driver itself is
-> suspended after domains are turned OFF and resumed before they are
-> enabled. It's just runtime PM API that is unavailable. I'm wondering if
-> this could be changed.
+If you keep this approach, you need to remove duplicated part in
+exynos5433_cmu_probe()...
 
-In principle what you ask for, is if we can avoid calling
-__pm_runtime_disable() in __device_suspend_late() (and vice versa in
-device_resume_early()).
+> 
+> If you are suggesting moving all stuff from exynos5433_cmu_probe()
+> into samsung_cmu_register_one(), it would take passing platform_device
+> there, and implementing all PM related operations. I guess it's not a
+> super easy task, as it would require converting clk-exynos7 to
+> platform_driver for instance, and re-testing everything on exynos5433
+> and exynos7 boards (which I don't have).
+> 
+> What do you say if I pull that code to clk-exynos850.c instead for v2?
+> Refactoring (merging stuff from exynos5433_cmu_probe() into
+> samsung_cmu_register_one() ) can be done later, when I add PM ops into
+> clk-exynos850.
+> 
+>> Best regards,
+>> Krzysztof
 
-I think the short answer is no, at least from a generic point of view.
-Maybe we can figure out a way to allow this on a per device basis, as
-an opt-in solution. I am not sure what Rafael would think about this,
-let's see.
 
-Another option to address the problem is already available to use for
-these kinds of cases. This would be to add also a pair of
-->suspend|resume() callbacks to I2C driver. Along the lines of the
-below.
-
-diff --git a/drivers/i2c/busses/i2c-tegra.c b/drivers/i2c/busses/i2c-tegra.=
-c
-index c883044715f3..589bf872ab25 100644
---- a/drivers/i2c/busses/i2c-tegra.c
-+++ b/drivers/i2c/busses/i2c-tegra.c
-@@ -1918,6 +1918,7 @@ static int __maybe_unused
-tegra_i2c_resume(struct device *dev)
- }
-
- static const struct dev_pm_ops tegra_i2c_pm =3D {
-+       SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_put_noidle, pm_runtime_get_sync)
-        SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(tegra_i2c_suspend, tegra_i2c_resume)
-        SET_RUNTIME_PM_OPS(tegra_i2c_runtime_suspend, tegra_i2c_runtime_res=
-ume,
-                           NULL)
-
-In this way, the device would already be runtime resumed, if there is
-call to pm_runtime_get_sync() from the clock framework due to the
-clk_prepare|unprepare() being called. If that also turns out to happen
-*after* runtime PM has been disabled for the device, the call to
-pm_runtime_get_sync() would still succeed (returning 1, see
-rpm_resume()), rather than a negative error code.
-
-Yes, we may end up runtime resuming the device during system suspend,
-even if it turns out not to be needed. Although, that doesn't seem to
-be the case for the Tegra I2C driver, right?
-
->
-> I'm also wondering if we could add some 'was_enabled' flag to GENPDs,
-> setting it by genpd_suspend_noirq() for the enabled domains, and then
-> powering-on GENPDs from genpd_resume_noirq() only if they were in the
-> enabled state during genpd_suspend_noirq() time. It actually puzzled me
-> for a quite long time why GENPD core enables domains unconditionally
-> during early resume. This should solve a part of the problem and it
-> makes suspend/resume a bit safer because there is a smaller chance to
-> crash hardware during suspend, at least it's easier to debug.
-
-Just because the PM domain was already off at genpd_suspend_noirq(),
-doesn't mean that it can stay powered off at genpd_resume_noirq(). At
-least as is today.
-
-The main reason why genpd_resume_noirq() powers on the PM domain, is
-because it's not possible for the consumer drivers to rely on runtime
-PM to do it (because runtime PM has been disabled by the PM core).
-
->
-> >> Secondly, Tegra has arch-specific low level assembly which touches
-> >> clocks during last phase of system suspend and in the beginning of
-> >> resume. Hence, clocks should stay prepared during suspend just because
-> >> technically clock should be prepared before it can be enabled.
-> >
-> > So the low level code is gating and ungating the clock behind the back
-> > of the clock driver then? Why is that done like that, more exactly?
->
-> I revisited that code again, and it shouldn't touch the clocks.
-> I changed that code to not toggle the clocks [1] sometime ago, but
-> forgot about it.
->
-> [1] https://git.kernel.org/linus/680ae4452
->
-> >>> Is this rather about making sure that the clock's corresponding PM
-> >>> domain stays powered on during system suspend? In that case, I think
-> >>> there may be an alternative option....
-> >>>
-> >>
-> >> This is not about domain staying powered on, this is about keeping the
-> >> performance state of the domain high during suspend.
-> >
-> > Right, so the PM domain managed in tegra_genpd_power_on|off() can
-> > still be powered on/off, as long as the clock remains ungated?
->
-> Not ungated, but prepared.
-
-Okay, thanks for clarifying!
-
-In summary, it sounds like you should be able to fix this problem in
-the I2C driver as I suggested above. If that works, that seems much
-better.
-
-Moreover, it would leave the clocks gated/unprepared when the system
-is fully suspended, which I guess is better from an energy point of
-view?
-
-Kind regards
-Uffe
+Best regards,
+Krzysztof
