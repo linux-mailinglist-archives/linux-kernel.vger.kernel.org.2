@@ -2,151 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C00804248B2
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 23:16:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF7E24248B7
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 23:17:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239667AbhJFVSN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 17:18:13 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:51702 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230161AbhJFVSK (ORCPT
+        id S239666AbhJFVSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 17:18:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48316 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230060AbhJFVSG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 17:18:10 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id B761E1FEFF;
-        Wed,  6 Oct 2021 21:16:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1633554976; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=A5n7l6aClaDhnZd/TVwd1w5RuwnsRNMzKDPibEDS/6M=;
-        b=hMflkvTcTYsQs1jGLh6aN3/4X5VMsW5QJA1+Xib8QYHPYvGsLew6dv/1GDqoq6ukJZ2p+b
-        GtbW8g6pLI45khIv1j7uhwDd4L1svW4YIgVB1MlTJjcqEEQdEci6Z4Phw/WRriHiPlxbxq
-        KwJo9AX88ZSur4ZwzxPoRmNqllTUgjM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1633554976;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=A5n7l6aClaDhnZd/TVwd1w5RuwnsRNMzKDPibEDS/6M=;
-        b=zn/vItLqHD0lJu/zctTfyhQiZtUP6LYD0YZHWo9t7iG93rTEbSPuJ3w22jGyynXO5n7Q+U
-        +2G1MrcN4VrVfzDQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DDFAD13E7C;
-        Wed,  6 Oct 2021 21:16:14 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 0SvNJh4SXmFjMgAAMHmgww
-        (envelope-from <neilb@suse.de>); Wed, 06 Oct 2021 21:16:14 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        Wed, 6 Oct 2021 17:18:06 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FD76C061746;
+        Wed,  6 Oct 2021 14:16:14 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id y12so1197014eda.4;
+        Wed, 06 Oct 2021 14:16:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=zMN0PJSw/kmUZUYUDBwwSaq1S7W29aD0DpcprY8DFv4=;
+        b=hE2qO9icgWR8ZPz/2jEIQl00Qag1SjF69Ny2CrM4gRr8etxmUy44XIx1agYFaTBYWU
+         fpSn0Nf7qfJh6EdvtqjHtlLF+cm0qJkijWh+y9CNRQG1461benzB/nJxxJzkj5sonXA6
+         ZrlrZmIt8xvpwN+POKgybkmAbvjLBWPc8Lnqbo9lEBrKyYdf0tiJwP94hLNwmakC7Yul
+         Pu368inQjZ+zbSWOJWEEkVgfDbB84nJ1N/3hSWqxKdxvor0jKJyfwOqbOsxgeHg0gt4b
+         p5KCici5eWg0s2XEYHTAZQnCOmVWsuVOl69Tm3b6T5r3Bd3YpsoOW2SqMiZkcFkuc7rW
+         BnkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zMN0PJSw/kmUZUYUDBwwSaq1S7W29aD0DpcprY8DFv4=;
+        b=sjenEmuqHanWu0m2YNw7DjoJwoNa0m0Rnn2djEjzJuL2yy5XscZcn0U+iQj+iCshro
+         PKpG02O90u97fWniIKbCZmWVQhlghk/onuUOOPjRl3O9xFg6VETG+puRZbX5zyKeKeN6
+         jgHVTr0L8HbuWouh5evXHZJAm+ygqzFck2mW8cj+ea6D5vvK3M8A00/iPbJju/E1MVNF
+         /ozh3XC2+NWWfZv8QKLkunmQdz7uB78MLCwDuTuWubes/uvPuVDCRNz+Pkre1Mkkl0Ex
+         yj/dEWyE7RelNAbWeo6VXVzF85RocOqtXQKsYx8KIUrAWvPzqqF2yHyv+Nc8Gs/O2jIr
+         9PnA==
+X-Gm-Message-State: AOAM5305B/BGtAp+5MPA5D7w8F5ABDRbQ/Hwd8DlLr9JNuAMvNyPdhyK
+        TcfXIMv/7sLY44V5Mo7tDnfbRuyABD7b23tH7Xxyhw==
+X-Google-Smtp-Source: ABdhPJxTruFef8YM7ESfPUDvfsceyasKtSMB9M1AZI1jPWzsoHrUSN7CCnGvWmlaBxXCf1pO94pirw==
+X-Received: by 2002:a17:906:3d22:: with SMTP id l2mr650852ejf.187.1633554972793;
+        Wed, 06 Oct 2021 14:16:12 -0700 (PDT)
+Received: from ?IPv6:2a04:241e:501:3870:473a:8ebc:828b:d6c6? ([2a04:241e:501:3870:473a:8ebc:828b:d6c6])
+        by smtp.gmail.com with ESMTPSA id fx4sm9375832ejb.113.2021.10.06.14.16.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Oct 2021 14:16:12 -0700 (PDT)
+Subject: Re: [PATCH 05/11] selftests: net/fcnal: kill_procs via spin instead
+ of sleep
+To:     David Ahern <dsahern@gmail.com>, Jakub Kicinski <kuba@kernel.org>,
+        Shuah Khan <shuah@kernel.org>, David Ahern <dsahern@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Ido Schimmel <idosch@nvidia.com>,
+        Seth David Schoen <schoen@loyalty.org>,
+        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1633520807.git.cdleonard@gmail.com>
+ <ff71285715d47b8c9b6bedb3b50700a26bc81f41.1633520807.git.cdleonard@gmail.com>
+ <b1a213d5-470d-637d-4e78-1b7653d87041@gmail.com>
+From:   Leonard Crestez <cdleonard@gmail.com>
+Message-ID: <7ac2b77d-4633-bd3e-c24f-ec87d34b4516@gmail.com>
+Date:   Thu, 7 Oct 2021 00:16:11 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-From:   "NeilBrown" <neilb@suse.de>
-To:     "Wei Yang" <richard.weiyang@gmail.com>
-Cc:     kuba@kernel.org, gregkh@linuxfoundation.org, mojha@codeaurora.org,
-        jkosina@suse.cz, linux-kernel@vger.kernel.org,
-        "Wei Yang" <richard.weiyang@gmail.com>
-Subject: Re: [PATCH] hashtable: remove a redundant check in hash_for_each_xxx()
-In-reply-to: <20211006152100.17795-1-richard.weiyang@gmail.com>
-References: <20211006152100.17795-1-richard.weiyang@gmail.com>
-Date:   Thu, 07 Oct 2021 08:16:11 +1100
-Message-id: <163355497171.31063.8329134032738647570@noble.neil.brown.name>
+In-Reply-To: <b1a213d5-470d-637d-4e78-1b7653d87041@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 07 Oct 2021, Wei Yang wrote:
-> The three hash_for_each_xxx() helper iterate the hash table with help
-> of hlist_for_each_entry_xxx(), which breaks the loop only when obj is
-> NULL.
+
+
+On 06.10.2021 17:45, David Ahern wrote:
+> On 10/6/21 5:47 AM, Leonard Crestez wrote:
+>> Sleeping for one second after a kill is not necessary and adds up quite
+>> quickly. Replace with a fast loop spinning until pidof returns nothing.
+>>
+>> Signed-off-by: Leonard Crestez <cdleonard@gmail.com>
+>> ---
+>>   tools/testing/selftests/net/fcnal-test.sh | 11 +++++++++--
+>>   1 file changed, 9 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/tools/testing/selftests/net/fcnal-test.sh b/tools/testing/selftests/net/fcnal-test.sh
+>> index 0bd60cd3bc06..b7fda51deb3f 100755
+>> --- a/tools/testing/selftests/net/fcnal-test.sh
+>> +++ b/tools/testing/selftests/net/fcnal-test.sh
+>> @@ -176,12 +176,19 @@ show_hint()
+>>   	fi
+>>   }
+>>   
+>>   kill_procs()
+>>   {
+>> -	killall nettest ping ping6 >/dev/null 2>&1
+>> -	sleep 1
+>> +	local pids
+>> +	while true; do
+>> +		pids=$(pidof nettest ping ping6)
+>> +		if [[ -z $pids ]]; then
+>> +			break
+>> +		fi
+>> +		kill $pids
+>> +		sleep 0.01
+>> +	done
+>>   }
+>>   
+>>   do_run_cmd()
+>>   {
+>>   	local cmd="$*"
+>>
 > 
-> This means the check during each iteration is redundant. This patch
-> removes it.
-> 
-> Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
-> ---
->  include/linux/hashtable.h | 9 +++------
->  1 file changed, 3 insertions(+), 6 deletions(-)
-> 
-> diff --git a/include/linux/hashtable.h b/include/linux/hashtable.h
-> index f6c666730b8c..a15719ed303f 100644
-> --- a/include/linux/hashtable.h
-> +++ b/include/linux/hashtable.h
-> @@ -124,8 +124,7 @@ static inline void hash_del_rcu(struct hlist_node *node)
->   * @member: the name of the hlist_node within the struct
->   */
->  #define hash_for_each(name, bkt, obj, member)				\
-> -	for ((bkt) = 0, obj = NULL; obj == NULL && (bkt) < HASH_SIZE(name);\
-> -			(bkt)++)\
-> +	for ((bkt) = 0, obj = NULL; (bkt) < HASH_SIZE(name); (bkt)++)	\
->  		hlist_for_each_entry(obj, &name[bkt], member)
+> ideally the script keeps track of processes it launches and only kills
+> those. The original killall was just a stop gap until the process
+> tracking was added.
 
-I think you are missing an important property of this code.
-What we have here is a new loop command (hash_for_each()) that is
-constructed from 2 nested loops.  This sort of construct is in general
-difficult to use because in C it is common to use "break" to exit a loop
-early.  'break' cannot exit two levels of loop though.  So if you aren't
-careful, doing something like
+That's harder to do. This is much faster and not in any way worse than 
+killall + sleep.
 
-  hash_for_each() {
-     do something
-     if (some test)
-        break;
-  }
+Some sort of a wrapper would have to added for each process running the 
+background, for each run_ping_bg.
 
-might not do what you expect.  The 'break' will exit the inner loop, but
-not the outer loop.  That could easily lead to buggy code.
+If nettest forks by itself then $! won't work, maybe some sort of 
+--pid-file switch would be required?
 
-But this macro *is* careful.  If the loop body *does* use break, then
-the inner loop will abort but 'obj' will still be non-NULL.  The test
-for NULL in the outer loop causes the outer loop to abort too - as the
-programmer probably expected.
-
-So by removing the 'obj == NULL' test, you would cause any usage which
-breaks out of the loop to now be incorrect.
-
-I recommend that instead of this patch, you provide a patch which
-improves the documentation to make this clear. e.g.
-
-  Note: it is safe to 'break' out of this loop even though it is a two
-  nested loops.  The 'obj == NULL' test ensures that when the inner loop
-  is broken, the outer loop will break too.
-
-Thanks,
-NeilBrown
-
-
->  
->  /**
-> @@ -136,8 +135,7 @@ static inline void hash_del_rcu(struct hlist_node *node)
->   * @member: the name of the hlist_node within the struct
->   */
->  #define hash_for_each_rcu(name, bkt, obj, member)			\
-> -	for ((bkt) = 0, obj = NULL; obj == NULL && (bkt) < HASH_SIZE(name);\
-> -			(bkt)++)\
-> +	for ((bkt) = 0, obj = NULL; (bkt) < HASH_SIZE(name); (bkt)++)	\
->  		hlist_for_each_entry_rcu(obj, &name[bkt], member)
->  
->  /**
-> @@ -150,8 +148,7 @@ static inline void hash_del_rcu(struct hlist_node *node)
->   * @member: the name of the hlist_node within the struct
->   */
->  #define hash_for_each_safe(name, bkt, tmp, obj, member)			\
-> -	for ((bkt) = 0, obj = NULL; obj == NULL && (bkt) < HASH_SIZE(name);\
-> -			(bkt)++)\
-> +	for ((bkt) = 0, obj = NULL; (bkt) < HASH_SIZE(name); (bkt)++)	\
->  		hlist_for_each_entry_safe(obj, tmp, &name[bkt], member)
->  
->  /**
-> -- 
-> 2.23.0
-> 
-> 
+--
+Regards,
+Leonard
