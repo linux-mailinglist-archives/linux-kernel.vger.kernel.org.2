@@ -2,230 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20BC4423A92
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 11:31:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 449BF423A94
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 11:32:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237896AbhJFJdO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 05:33:14 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:60402 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230143AbhJFJdN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 05:33:13 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id B55E3224C0;
-        Wed,  6 Oct 2021 09:31:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1633512680; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=F2c6GFcbFRrTM/fRz3jOdvzgBLFsLLOg1NUfdovPQQY=;
-        b=GOR9p+nk2Ct/dX53lBTiSQe/2JSOo6VkZ4Qp21TuF30hqcU872n+vFNnLh20zRsjRyk4hb
-        aa1ZTeiyjAjBxb5fPHB46bUARf/30SBd0FgnUYiLP708MNrSRdbD7pH/AkwvBp9afylWZH
-        jbGKFO5mUVZSK6WkSJaDe30g4YfiNSs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1633512680;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=F2c6GFcbFRrTM/fRz3jOdvzgBLFsLLOg1NUfdovPQQY=;
-        b=vqYoYiwK/JSjYBXWnJnMfbTglv8qhwQvRraszT89BYn9AicNrLbB2QeW/0KQ8kiEzEtfBA
-        4bDZZUSfRp10VhCw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A4AC813B73;
-        Wed,  6 Oct 2021 09:31:20 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id xj0qKOhsXWFzUQAAMHmgww
-        (envelope-from <bp@suse.de>); Wed, 06 Oct 2021 09:31:20 +0000
-Date:   Wed, 6 Oct 2021 11:31:00 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Subject: Re: linux-next: build failure after merge of the tip tree
-Message-ID: <YV1s1GJ+e/qASPy7@zn.tnic>
-References: <20211006135826.3e1783f1@canb.auug.org.au>
+        id S237904AbhJFJdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 05:33:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37710 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230131AbhJFJdu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 05:33:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 84D0E61027;
+        Wed,  6 Oct 2021 09:31:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633512718;
+        bh=wkPh8VPQX3uKN6sbRN2T/KwlSV3P42KzsuLogBDgxuA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=asQ2kD/QiLooDpu9ujQKmLTzuM9TLPt/Ezy9YJyR3azj7ll/+cSnBSGzOwQu/+l93
+         f282E2jr7DFxOEMsM+DV1Plpaer9+kSv8Yil4Nm7xi6EQ8Jey3nymjm6/h9Ee/GZjE
+         6S0sSZXIsLGyQsBBTEDJxz95nMQ52JVtPSZAMzl4llWy0iJbwwTVI5u8FoDzv9XPZC
+         TvFsGyF974obK7IF0eId0Zd5v4tx8A/BfFQkFHCYVhZ+5cdkoynN2wzJOQk6u/SSG0
+         a8idtF2Bp8owaWznJxxLXo8TAvNmP9Ccl/wKVB051hcnxGcdamK+EoK9JsOzWPMjRH
+         JQIZnG8gO90+w==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Patrisious Haddad <phaddad@nvidia.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Maor Gottlieb <maorg@nvidia.com>,
+        Moni Shoua <monis@mellanox.com>,
+        Yishai Hadas <yishaih@mellanox.com>
+Subject: [PATCH rdma-rc] RDMA/mlx5: Set user priority for DCT
+Date:   Wed,  6 Oct 2021 12:31:53 +0300
+Message-Id: <5fd2d94a13f5742d8803c218927322257d53205c.1633512672.git.leonro@nvidia.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211006135826.3e1783f1@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+ acme.
+From: Patrisious Haddad <phaddad@nvidia.com>
 
-On Wed, Oct 06, 2021 at 01:58:26PM +1100, Stephen Rothwell wrote:
-> After merging the tip tree, today's linux-next build (native perf)
-> failed like this:
->
-> In file included from util/intel-pt-decoder/../../../arch/x86/lib/insn.c:16,
->                  from util/intel-pt-decoder/intel-pt-insn-decoder.c:15:
-> util/intel-pt-decoder/../../../arch/x86/lib/insn.c: In function '__insn_get_emulate_prefix':
-> tools/include/../include/asm-generic/unaligned.h:10:15: error: packed attribute is unnecessary [-Werror=packed]
->    10 |  const struct { type x; } __packed *__pptr = (typeof(__pptr))(ptr); \
+Currently, the driver doesn't set the PCP-based priority for DCT,
+hence DCT response packets are transmitted without user priority.
 
-Thanks for the report - luckily, the patch is the topmost one on the
-branch so I can simply edit it.
+Fix it by setting user provided priority in the eth_prio field
+in the DCT context, which in turn sets the value in the transmitted packet.
 
-Here's the new version, you can simply apply the last hunk on your tree
-only to verify that it fixes it but it should as the hw arch should not
-matter - it explodes because perf tool builds with -Werror and I can
-trigger it too.
-
-I'll redo tip/master once you confirm.
-
-Thx.
-
+Fixes: 776a3906b692 ("IB/mlx5: Add support for DC target QP")
+Signed-off-by: Patrisious Haddad <phaddad@nvidia.com>
+Reviewed-by: Maor Gottlieb <maorg@nvidia.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
-From: Borislav Petkov <bp@suse.de>
-Date: Wed, 29 Sep 2021 16:37:53 +0200
-Subject: [PATCH] x86/insn: Use get_unaligned() instead of memcpy()
+ drivers/infiniband/hw/mlx5/qp.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Use get_unaligned() instead of memcpy() to access potentially unaligned
-memory, which, when accessed through a pointer, leads to undefined
-behavior. get_unaligned() describes much better what is happening there
-anyway even if memcpy() does the job.
-
-In addition, since perf tool builds with -Werror, it would fire with:
-
-  util/intel-pt-decoder/../../../arch/x86/lib/insn.c: In function '__insn_get_emulate_prefix':
-  tools/include/../include/asm-generic/unaligned.h:10:15: error: packed attribute is unnecessary [-Werror=packed]
-     10 |  const struct { type x; } __packed *__pptr = (typeof(__pptr))(ptr); \
-
-because -Werror=packed would complain if the packed attribute would have
-no effect on the layout of the structure.
-
-In this case, that is intentional so disable the warning only for that
-compilation unit.
-
-That part is Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-
-No functional changes.
-
-Fixes: 5ba1071f7554 ("x86/insn, tools/x86: Fix undefined behavior due to potential unaligned accesses")
-Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
-Link: https://lkml.kernel.org/r/YVSsIkj9Z29TyUjE@zn.tnic
----
- arch/x86/lib/insn.c                    |  5 +++--
- tools/arch/x86/lib/insn.c              |  5 +++--
- tools/include/asm-generic/unaligned.h  | 23 +++++++++++++++++++++++
- tools/perf/util/intel-pt-decoder/Build |  2 ++
- 4 files changed, 31 insertions(+), 4 deletions(-)
- create mode 100644 tools/include/asm-generic/unaligned.h
-
-diff --git a/arch/x86/lib/insn.c b/arch/x86/lib/insn.c
-index c565def611e2..55e371cc69fd 100644
---- a/arch/x86/lib/insn.c
-+++ b/arch/x86/lib/insn.c
-@@ -13,6 +13,7 @@
- #endif
- #include <asm/inat.h> /*__ignore_sync_check__ */
- #include <asm/insn.h> /* __ignore_sync_check__ */
-+#include <asm/unaligned.h> /* __ignore_sync_check__ */
+diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
+index b2fca110346c..e5abbcfc1d57 100644
+--- a/drivers/infiniband/hw/mlx5/qp.c
++++ b/drivers/infiniband/hw/mlx5/qp.c
+@@ -4458,6 +4458,8 @@ static int mlx5_ib_modify_dct(struct ib_qp *ibqp, struct ib_qp_attr *attr,
+ 		MLX5_SET(dctc, dctc, mtu, attr->path_mtu);
+ 		MLX5_SET(dctc, dctc, my_addr_index, attr->ah_attr.grh.sgid_index);
+ 		MLX5_SET(dctc, dctc, hop_limit, attr->ah_attr.grh.hop_limit);
++		if (attr->ah_attr.type == RDMA_AH_ATTR_TYPE_ROCE)
++			MLX5_SET(dctc, dctc, eth_prio, attr->ah_attr.sl & 0x7);
  
- #include <linux/errno.h>
- #include <linux/kconfig.h>
-@@ -37,10 +38,10 @@
- 	((insn)->next_byte + sizeof(t) + n <= (insn)->end_kaddr)
- 
- #define __get_next(t, insn)	\
--	({ t r; memcpy(&r, insn->next_byte, sizeof(t)); insn->next_byte += sizeof(t); leXX_to_cpu(t, r); })
-+	({ t r = get_unaligned((t *)(insn)->next_byte); (insn)->next_byte += sizeof(t); leXX_to_cpu(t, r); })
- 
- #define __peek_nbyte_next(t, insn, n)	\
--	({ t r; memcpy(&r, (insn)->next_byte + n, sizeof(t)); leXX_to_cpu(t, r); })
-+	({ t r = get_unaligned((t *)(insn)->next_byte + n); leXX_to_cpu(t, r); })
- 
- #define get_next(t, insn)	\
- 	({ if (unlikely(!validate_next(t, insn, 0))) goto err_out; __get_next(t, insn); })
-diff --git a/tools/arch/x86/lib/insn.c b/tools/arch/x86/lib/insn.c
-index 797699462cd8..8fd63a067308 100644
---- a/tools/arch/x86/lib/insn.c
-+++ b/tools/arch/x86/lib/insn.c
-@@ -13,6 +13,7 @@
- #endif
- #include "../include/asm/inat.h" /* __ignore_sync_check__ */
- #include "../include/asm/insn.h" /* __ignore_sync_check__ */
-+#include "../include/asm-generic/unaligned.h" /* __ignore_sync_check__ */
- 
- #include <linux/errno.h>
- #include <linux/kconfig.h>
-@@ -37,10 +38,10 @@
- 	((insn)->next_byte + sizeof(t) + n <= (insn)->end_kaddr)
- 
- #define __get_next(t, insn)	\
--	({ t r; memcpy(&r, insn->next_byte, sizeof(t)); insn->next_byte += sizeof(t); leXX_to_cpu(t, r); })
-+	({ t r = get_unaligned((t *)(insn)->next_byte); (insn)->next_byte += sizeof(t); leXX_to_cpu(t, r); })
- 
- #define __peek_nbyte_next(t, insn, n)	\
--	({ t r; memcpy(&r, (insn)->next_byte + n, sizeof(t)); leXX_to_cpu(t, r); })
-+	({ t r = get_unaligned((t *)(insn)->next_byte + n); leXX_to_cpu(t, r); })
- 
- #define get_next(t, insn)	\
- 	({ if (unlikely(!validate_next(t, insn, 0))) goto err_out; __get_next(t, insn); })
-diff --git a/tools/include/asm-generic/unaligned.h b/tools/include/asm-generic/unaligned.h
-new file mode 100644
-index 000000000000..47387c607035
---- /dev/null
-+++ b/tools/include/asm-generic/unaligned.h
-@@ -0,0 +1,23 @@
-+/* SPDX-License-Identifier: GPL-2.0-or-later */
-+/*
-+ * Copied from the kernel sources to tools/perf/:
-+ */
-+
-+#ifndef __TOOLS_LINUX_ASM_GENERIC_UNALIGNED_H
-+#define __TOOLS_LINUX_ASM_GENERIC_UNALIGNED_H
-+
-+#define __get_unaligned_t(type, ptr) ({						\
-+	const struct { type x; } __packed *__pptr = (typeof(__pptr))(ptr);	\
-+	__pptr->x;								\
-+})
-+
-+#define __put_unaligned_t(type, val, ptr) do {					\
-+	struct { type x; } __packed *__pptr = (typeof(__pptr))(ptr);		\
-+	__pptr->x = (val);							\
-+} while (0)
-+
-+#define get_unaligned(ptr)	__get_unaligned_t(typeof(*(ptr)), (ptr))
-+#define put_unaligned(val, ptr) __put_unaligned_t(typeof(*(ptr)), (val), (ptr))
-+
-+#endif /* __TOOLS_LINUX_ASM_GENERIC_UNALIGNED_H */
-+
-diff --git a/tools/perf/util/intel-pt-decoder/Build b/tools/perf/util/intel-pt-decoder/Build
-index bc629359826f..b41c2e9c6f88 100644
---- a/tools/perf/util/intel-pt-decoder/Build
-+++ b/tools/perf/util/intel-pt-decoder/Build
-@@ -18,3 +18,5 @@ CFLAGS_intel-pt-insn-decoder.o += -I$(OUTPUT)util/intel-pt-decoder
- ifeq ($(CC_NO_CLANG), 1)
-   CFLAGS_intel-pt-insn-decoder.o += -Wno-override-init
- endif
-+
-+CFLAGS_intel-pt-insn-decoder.o += -Wno-packed
+ 		err = mlx5_core_create_dct(dev, &qp->dct.mdct, qp->dct.in,
+ 					   MLX5_ST_SZ_BYTES(create_dct_in), out,
 -- 
-2.29.2
+2.31.1
 
-
--- 
-Regards/Gruss,
-    Boris.
-
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
