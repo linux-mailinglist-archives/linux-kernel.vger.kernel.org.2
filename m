@@ -2,333 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 767E3424802
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 22:35:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6596B424817
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 22:39:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239522AbhJFUh2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 16:37:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38764 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239406AbhJFUhU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 16:37:20 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DF50C061753
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 13:35:28 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id m22so12532222wrb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 13:35:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=GiH9t/SFxpMKdiK3x2qqgNXItsmPKdOUVlby149dByw=;
-        b=nKEvrp0kktrH6/XwbpJKbVSbg8DHempBZASxDmSicSQdh2IQq9nqGJ6ob4N0+dXNm5
-         WhwC3zmd7mqRQTybQrpQflXdfihbz9KhIEayI+e3UTjqZpPwDC6eJEuht6dEfcjzGcf8
-         oX7z5aNBJDq6exzMy4iJjsYBrIBKE7H4WiF5FKbhRmtCNnbLkcnBAGjwzKrE+fC6r6t6
-         0IQD7p3UCLJAyLlCzi4Bx8yz1shuPlvFFwDJErq5RN7V2zp9MYWJpLy/qymDis+/dc7M
-         lAXJyao9L+QDWzCVwqxxkl9lAhXlEfqAXOGQiFf12Wba78sYnD3upuStwe+8p4SVZB+T
-         hgcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=GiH9t/SFxpMKdiK3x2qqgNXItsmPKdOUVlby149dByw=;
-        b=d/qMfVZ0dzJLn+l52o0YGl9QHgPxhQeFHXWSlthZoYdPymqq2IP80xgcPWPHGvic5M
-         YQYY4DaqNgfFZVDOBC5aendT3lcVPu67VT/ncrPIShe9gVi0e7qNx0sGaQaVZ6sUbKSo
-         ZrdWsRBAOzAzPD684IWoRgQyP2OVNsYuDDutbeutCFAbGK59EfbJ4rtx3BS3UY0VgHlC
-         +mE6bDxKzBrCsNXsnXru4gQG7StDC0WtaTq3WeMONJcOd+dT2IwQLm4LrqvJ/wKkIiq6
-         KeiKKR1IdPeRHP7QT9YYiXtzuzY87SbevmSV1TDPglXZDvQEWLNS4V37d/fzPnbyqoKR
-         SlGQ==
-X-Gm-Message-State: AOAM5320QfclUDxMPnZ0sPh9+iLhY24zhaMcdfil5v76sKvxNTO8qT/d
-        1TdrwLf7EJIK3bxKMiZEBWk=
-X-Google-Smtp-Source: ABdhPJwULI7w1OOPgzb9eSa7Vh/MP2aQO3ejzGsYTX6a98Rlh068Z8t1YZ9/RhbTvGRXFkAL7ihNtQ==
-X-Received: by 2002:adf:8b84:: with SMTP id o4mr312408wra.108.1633552526734;
-        Wed, 06 Oct 2021 13:35:26 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:8108:96c0:3b88::5d0b])
-        by smtp.gmail.com with ESMTPSA id z16sm6442982wmk.6.2021.10.06.13.35.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Oct 2021 13:35:26 -0700 (PDT)
-From:   Michael Straube <straube.linux@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH 2/2] staging: r8188eu: remove GetHwRegHandler from hal_ops
-Date:   Wed,  6 Oct 2021 22:35:10 +0200
-Message-Id: <20211006203510.9083-2-straube.linux@gmail.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211006203510.9083-1-straube.linux@gmail.com>
-References: <20211006203510.9083-1-straube.linux@gmail.com>
-MIME-Version: 1.0
+        id S239550AbhJFUlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 16:41:01 -0400
+Received: from mail-mw2nam08hn2204.outbound.protection.outlook.com ([52.100.162.204]:64352
+        "EHLO NAM04-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S239360AbhJFUk7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 16:40:59 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FoSuOFzvsA0lazbfjKK0qwKQgqy3QaYqxBe/Z6eDaXfsdbrmtb6C0BNFYd8KYJSLvpstrNM5gexhQfC3ltz7Ea1l5kloWuUyJeHnbyi5R3OHlxeKqx2kRhwsT5QQRl/8iacpwsQSqGwJTUj0b0FEqNHcV6A++k9RjlYCyCZi5D9t9/v5naLJ4bt4An+THygJF6XexfvzUl93YNdUZcE6QMp/pqqDIMb9uPtPA4EVFvxOb3OjyFGemX0Vc6S+Gin/iBaHVw8JnO9LP0jlzCNUNMNS2/5vYnM5yJwYH6Qx+urAvhnR0LMNHO1hMknE6F8c3Q/p7YOwOeNFDLudkw1Ssg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ilJfiH5DjmWj6SLLgPXgRMbdbC+7Us5FRZhN+RnM+Bw=;
+ b=H3dYQcrd4NnuPOzvMb3mIHF1hU7tjc6T2UXtVQ5scgK0RzrIrs72uWK6DqRwJpU/b5BxtmLFF6Wv/XH33afwoIyOY9gCEGV5z/2m6SBRcSNuglu/Aga6126cuIhloDrRY0VDj1hbtyTSht/r7I3qvh34HfxgnLBFhuXNL/TPInORQ9Xe2VlhTrhmM94R+0FXXNxdHPGXvlAoGnINoK2Xxau6cHaOxQb8otyg8wddGAyoM8dyVLJFEneV1m91qFvkE5qgc1X//ZNrzSSw//hLkYBC15o7jeUELnVYlXgSEuAu+NABevHC8se2Pu5jUVNZ3wBJsYHpnLME9l85rdUFiQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ilJfiH5DjmWj6SLLgPXgRMbdbC+7Us5FRZhN+RnM+Bw=;
+ b=SWtdQAN54BSq+b0vsFbHdiphqqYv6O3Mcy9dMoejzC6DSluxVvg5P65p1Se5iFqCxPtMeJwtb5HoncQY2pazPsGLkgROncYJpy8kGRKxvOxmhS/KWxyg4wWfOLq+PFmKQ4MAHZuCz3jh0BKEVgxOs2ExCq+/549qlp89j6HQcmc=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from CH2PR12MB4133.namprd12.prod.outlook.com (2603:10b6:610:7a::13)
+ by CH2PR12MB4264.namprd12.prod.outlook.com (2603:10b6:610:a4::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.16; Wed, 6 Oct
+ 2021 20:39:03 +0000
+Received: from CH2PR12MB4133.namprd12.prod.outlook.com
+ ([fe80::59b0:c983:56:ec27]) by CH2PR12MB4133.namprd12.prod.outlook.com
+ ([fe80::59b0:c983:56:ec27%5]) with mapi id 15.20.4587.019; Wed, 6 Oct 2021
+ 20:39:03 +0000
+From:   Michael Roth <michael.roth@amd.com>
+To:     linux-kselftest@vger.kernel.org
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
+        Nathan Tempelman <natet@google.com>,
+        Marc Orr <marcorr@google.com>,
+        Steve Rutherford <srutherford@google.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Mingwei Zhang <mizhang@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Varad Gautam <varad.gautam@suse.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Ricardo Koller <ricarkol@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>
+Subject: [RFC 04/16] KVM: selftests: set CPUID before setting sregs in vcpu creation
+Date:   Wed,  6 Oct 2021 15:36:17 -0500
+Message-Id: <20211006203617.13045-1-michael.roth@amd.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20211005234459.430873-1-michael.roth@amd.com>
+References: <20211005234459.430873-1-michael.roth@amd.com>
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SN4PR0501CA0120.namprd05.prod.outlook.com
+ (2603:10b6:803:42::37) To CH2PR12MB4133.namprd12.prod.outlook.com
+ (2603:10b6:610:7a::13)
+MIME-Version: 1.0
+Received: from localhost (165.204.77.1) by SN4PR0501CA0120.namprd05.prod.outlook.com (2603:10b6:803:42::37) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.4 via Frontend Transport; Wed, 6 Oct 2021 20:39:03 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 964be0a0-07e6-4faf-12e6-08d989095579
+X-MS-TrafficTypeDiagnostic: CH2PR12MB4264:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <CH2PR12MB42643B227181BBEA21741C0D95B09@CH2PR12MB4264.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?n6k1ZRsn74a91aQkReZnYlVVvbQMcu9CR4AqAGaRovxoER0CvsaSbJj3Kd7g?=
+ =?us-ascii?Q?Y9PDT8MedfmMi9sRLVeP6Imyg6A7nQz1lFm4ifyZgEgFSTW/1H3eJoZ9YS05?=
+ =?us-ascii?Q?3sDiC2yvdDW4VaYnj8wlBQNhhXdi9qg6pwA9UVc5x9sTJKLdQpEuk0BRsvIH?=
+ =?us-ascii?Q?ORpfHib2667CXu1QKdNx0o+AqBPnOx5F5Y//4FPhaKgqCYp+FV+umUjcnOC2?=
+ =?us-ascii?Q?uB//mSo6x6I/Z41r3n2wshrRLlYDbSCGDxyMt2Pnkc+kiZAbSEsuWzTSy7k5?=
+ =?us-ascii?Q?brQXtrSGuN24qsZd8f2tVBOb4k1Ta1mEx266FiIDGnhNo/L1vUrdPHfrhFlz?=
+ =?us-ascii?Q?fELAjJ79607uXTPczfCTbsqdwqnUtV9TSXor3LZpn0+zRILTtfFyzcWdcqKc?=
+ =?us-ascii?Q?10ieJcz0XBFPu7sRM0Y6fDsJKN0nyyvaANQNJrZREr1aKTNbq5V/56Jke7KM?=
+ =?us-ascii?Q?5//omlWP/2XjYT0f+Lmuyco82rrrmERGQILbxXbr+Js0h+chN208Xta82k1L?=
+ =?us-ascii?Q?PeWNr0/Cx9wTVCv9c4J3ZB1pY1ndaEfSzVeOgQM+vCPxuxyiJpi3/dYOcxzC?=
+ =?us-ascii?Q?vJrhc+9F40GPNVmXTT+yxg282ryq/7wKoX9tPKW1NMPzVB8v+OieExeDGsJy?=
+ =?us-ascii?Q?mfMkSr76rdAiMk8SrDlIBYxL4vFRTY9GdPxC79X24p39ZYA7ZgB1VQZWR6pJ?=
+ =?us-ascii?Q?tXvSqklthpjGlHwRFBbN5C8gU7ED77tqgzdf/d1m8s6h9OyqfYotXbumA8xZ?=
+ =?us-ascii?Q?xX76USifApcs7tyMVOwInhIKdV76l2VdS1TQiTEkDDmG2nkgqblwfxRbhG9T?=
+ =?us-ascii?Q?NTArp1HNd6ByOjNepLMT3XJ6m7NINYcdMJES+mT1psIoWjRaGfEGZ1wKDq1j?=
+ =?us-ascii?Q?G+f7tMsCp/fvmaNmE9Bz9iC9QqJ+WBgI9xxWYiLlHNM/aMNPt8PT1DKi8X1n?=
+ =?us-ascii?Q?pfWzBMSsLxXuUzShluy8lHDquLNy5wM0EJpQsZgMTA6HMB3a1VLSZPrC5Mwe?=
+ =?us-ascii?Q?GFHyGjtb8iNrvgblfDvyk41AvWP+uSvA8Nx+QCcB6RrOqJY=3D?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:5;SRV:;IPV:NLI;SFV:SPM;H:CH2PR12MB4133.namprd12.prod.outlook.com;PTR:;CAT:OSPM;SFS:(4636009)(366004)(86362001)(7416002)(36756003)(6916009)(1076003)(316002)(66946007)(66556008)(26005)(8676002)(956004)(44832011)(186003)(66476007)(4326008)(6496006)(52116002)(508600001)(83380400001)(2906002)(6486002)(38100700002)(8936002)(2616005)(38350700002)(6666004)(54906003)(5660300002)(23200700001);DIR:OUT;SFP:1501;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?qcTYwxXjP6Tf3p8E0riJIMrMo/6pQeSv4rEvLjQKFzfRT9T6tWFPD2fI/l3X?=
+ =?us-ascii?Q?F6xL/FcQ9rRm+ILrQa1EWnMr5R3oZrJDtjg/OgKh3B3s9Y8GzjUM0xL/+3Xf?=
+ =?us-ascii?Q?CI/Rc+U5dEB5Zb8qi1GyJ9OCcUR3hNpwYCK97RxxmnuXZz/KF2181860YMwD?=
+ =?us-ascii?Q?1/t0IMKq7ti75R+4s8U4t332HCEmrzfQhQMc+pN8J+HqNUDXsA06R8d/T0iQ?=
+ =?us-ascii?Q?CcpDGNb3SLiuYrzNH3O1a/bkxN8YJTLTF0pbvxMhKrBelrdnhBaO+rvYftK2?=
+ =?us-ascii?Q?qZhFoOCBIpHc6HyZTut/LWLoLFwsi4hL7qKTJey7yUIzSxfSpgGxdQTjfdgm?=
+ =?us-ascii?Q?176nh+w1bhx0T7q0P7lj6u8iGePWteHgYaB3664foPBkCA1zhj8ObWfWSUGz?=
+ =?us-ascii?Q?csa77pEO5ZUWSiYazu4kYNNCpHGuURH+litBEMgMrTiDaoxqId6VVCe2sFRn?=
+ =?us-ascii?Q?lor+pCap1gXctOAiL+evYyH1h4MduwoZ7OH3C9L/50z67U6y0juhXMLsP++i?=
+ =?us-ascii?Q?egGQQiFRcJzVp94BzBLVrKUzhp/sPP3l4mHUiBwyQcJJYv9fMtfnPfKALMWB?=
+ =?us-ascii?Q?nn/z6RYxrY+lfYEAyUzxt2mqhv+lFguJhbMXquxBHJ5cNVD5Q3LviXsKmCTw?=
+ =?us-ascii?Q?LyT5PwG854us67tDiabLfSXA5Vo6nDMyvUfgshNuf9uP+ZVOMMq8R1Fuwn6t?=
+ =?us-ascii?Q?kqe/DVl7EPcLPaa6IyO8PfH2RDRSNFljFBEjnlSHDS9+w+T2ewPOW9ZtriNd?=
+ =?us-ascii?Q?RuzP0pGenEDAuXXwA3zln/aFIDYaDughK0O8jzdeARajfwYgZjWxrvHXuuYs?=
+ =?us-ascii?Q?3NVOpcKGBcCx8wTb56KRK18QVhwBNneqSsVS/b8Ran6791YumsuidThhV+UP?=
+ =?us-ascii?Q?3DsChemLP0zH3Qq/TMbhABiYG3Gua0jCtv3veb9cRDy6QCa5pS0oiAHM69iq?=
+ =?us-ascii?Q?nMpfLCqRD/mM9LiqtAtmbAx07IjQ6GOmIHj/dbV0vL1/ZO0m+Z0UJstYkxgY?=
+ =?us-ascii?Q?xIA58nrtwqb4SsvjhWPNK/NKjjdnp9wiMMZWTe9cGxynmwdsfSOvwKCPRcjb?=
+ =?us-ascii?Q?sAASW/yFGVFIvx+ykXzELrpMmclQvOVaj3CQjb9STWci+4duJtjg6Rd0sfmZ?=
+ =?us-ascii?Q?sm+35tSvvwQRD+dXGx2PuiTNcjm7A7rZLmWyyYNXgKBqH/4lKiwNdo1CB2UH?=
+ =?us-ascii?Q?AX8NrIHhX/74g05ywinE/PFaNhcglBN1eZpELbNki9chE/hDbRFCfnpBomwD?=
+ =?us-ascii?Q?jyhKOw2Dipe+hO5Up1mL8ITv+mhcg2Csf6f+wx+nVqjx/p+UQbCIZpmsRgr8?=
+ =?us-ascii?Q?fYVrXIlv6q0QFOpuOT7i14c1?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 964be0a0-07e6-4faf-12e6-08d989095579
+X-MS-Exchange-CrossTenant-AuthSource: CH2PR12MB4133.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Oct 2021 20:39:03.3236
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: aRdJ9xVTwW/AURyOvAcN8ygfBBaalgVQAft2rLyVjJMmVc9hcRcbNq9sYjA+23DMdbnd5lveq/R6EhCRrvTuMw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4264
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove GetHwRegHandler from struct hal_ops and remove the wrapper
-rtw_hal_get_hwreg(). Call GetHwReg8188EU() directly instead.
+Recent kernels have checks to ensure the GPA values in special-purpose
+registers like CR3 are within the maximum physical address range and
+don't overlap with anything in the upper/reserved range. In the case of
+SEV kselftest guests booting directly into 64-bit mode, CR3 needs to be
+initialized to the GPA of the page table root, with the encryption bit
+set. The kernel accounts for this encryption bit by removing it from
+reserved bit range when the guest advertises the bit position via
+KVM_SET_CPUID*, but kselftests currently call KVM_SET_SREGS as part of
+vm_vcpu_add_default(), *prior* to vCPU creation, so there's no
+opportunity to call KVM_SET_CPUID* in advance. As a result,
+KVM_SET_SREGS will return an error in these cases.
 
-Signed-off-by: Michael Straube <straube.linux@gmail.com>
+Address this by moving vcpu_set_cpuid() (which calls KVM_SET_CPUID*)
+ahead of vcpu_setup() (which calls KVM_SET_SREGS).
+
+While there, address a typo in the assertion that triggers when
+KVM_SET_SREGS fails.
+
+Suggested-by: Sean Christopherson <seanjc@google.com>
+Signed-off-by: Michael Roth <michael.roth@amd.com>
 ---
- drivers/staging/r8188eu/core/rtw_ap.c           | 2 +-
- drivers/staging/r8188eu/core/rtw_cmd.c          | 4 ++--
- drivers/staging/r8188eu/core/rtw_ioctl_set.c    | 2 +-
- drivers/staging/r8188eu/core/rtw_mlme.c         | 2 +-
- drivers/staging/r8188eu/core/rtw_mlme_ext.c     | 4 ++--
- drivers/staging/r8188eu/core/rtw_pwrctrl.c      | 2 +-
- drivers/staging/r8188eu/core/rtw_wlan_util.c    | 2 +-
- drivers/staging/r8188eu/hal/hal_intf.c          | 6 ------
- drivers/staging/r8188eu/hal/rtl8188e_cmd.c      | 2 +-
- drivers/staging/r8188eu/hal/rtl8188e_dm.c       | 2 +-
- drivers/staging/r8188eu/hal/rtl8188e_hal_init.c | 4 ++--
- drivers/staging/r8188eu/hal/usb_halinit.c       | 4 +---
- drivers/staging/r8188eu/include/hal_intf.h      | 5 +----
- drivers/staging/r8188eu/os_dep/ioctl_linux.c    | 4 ++--
- 14 files changed, 17 insertions(+), 28 deletions(-)
+ tools/testing/selftests/kvm/lib/kvm_util.c         | 2 +-
+ tools/testing/selftests/kvm/lib/x86_64/processor.c | 4 +---
+ 2 files changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/staging/r8188eu/core/rtw_ap.c b/drivers/staging/r8188eu/core/rtw_ap.c
-index 94e02aad96b7..eea1307768a0 100644
---- a/drivers/staging/r8188eu/core/rtw_ap.c
-+++ b/drivers/staging/r8188eu/core/rtw_ap.c
-@@ -342,7 +342,7 @@ void add_RATid(struct adapter *padapter, struct sta_info *psta, u8 rssi_level)
- 	}
- 	/* n mode ra_bitmap */
- 	if (psta_ht->ht_option) {
--		rtw_hal_get_hwreg(padapter, HW_VAR_RF_TYPE, (u8 *)(&rf_type));
-+		GetHwReg8188EU(padapter, HW_VAR_RF_TYPE, (u8 *)(&rf_type));
- 		if (rf_type == RF_2T2R)
- 			limit = 16;/*  2R */
- 		else
-diff --git a/drivers/staging/r8188eu/core/rtw_cmd.c b/drivers/staging/r8188eu/core/rtw_cmd.c
-index 66349fed31cf..e17332677daa 100644
---- a/drivers/staging/r8188eu/core/rtw_cmd.c
-+++ b/drivers/staging/r8188eu/core/rtw_cmd.c
-@@ -1234,7 +1234,7 @@ static void rtw_chk_hi_queue_hdl(struct adapter *padapter)
- 		/* while ((rtw_read32(padapter, 0x414)&0x00ffff00)!= 0) */
- 		/* while ((rtw_read32(padapter, 0x414)&0x0000ff00)!= 0) */
- 
--		rtw_hal_get_hwreg(padapter, HW_VAR_CHK_HI_QUEUE_EMPTY, &val);
-+		GetHwReg8188EU(padapter, HW_VAR_CHK_HI_QUEUE_EMPTY, &val);
- 
- 		while (!val) {
- 			msleep(100);
-@@ -1244,7 +1244,7 @@ static void rtw_chk_hi_queue_hdl(struct adapter *padapter)
- 			if (cnt > 10)
- 				break;
- 
--			rtw_hal_get_hwreg(padapter, HW_VAR_CHK_HI_QUEUE_EMPTY, &val);
-+			GetHwReg8188EU(padapter, HW_VAR_CHK_HI_QUEUE_EMPTY, &val);
- 		}
- 
- 		if (cnt <= 10) {
-diff --git a/drivers/staging/r8188eu/core/rtw_ioctl_set.c b/drivers/staging/r8188eu/core/rtw_ioctl_set.c
-index 21ba2873919d..2b54cdfa9d6e 100644
---- a/drivers/staging/r8188eu/core/rtw_ioctl_set.c
-+++ b/drivers/staging/r8188eu/core/rtw_ioctl_set.c
-@@ -483,7 +483,7 @@ u16 rtw_get_cur_max_rate(struct adapter *adapter)
- 			short_GI_20 = (le16_to_cpu(pmlmeinfo->HT_caps.u.HT_cap_element.HT_caps_info) & IEEE80211_HT_CAP_SGI_20) ? 1 : 0;
- 			short_GI_40 = (le16_to_cpu(pmlmeinfo->HT_caps.u.HT_cap_element.HT_caps_info) & IEEE80211_HT_CAP_SGI_40) ? 1 : 0;
- 
--			rtw_hal_get_hwreg(adapter, HW_VAR_RF_TYPE, (u8 *)(&rf_type));
-+			GetHwReg8188EU(adapter, HW_VAR_RF_TYPE, (u8 *)(&rf_type));
- 			max_rate = rtw_mcs_rate(
- 				rf_type,
- 				bw_40MHz & (pregistrypriv->cbw40_enable),
-diff --git a/drivers/staging/r8188eu/core/rtw_mlme.c b/drivers/staging/r8188eu/core/rtw_mlme.c
-index 408c9f8c6f6d..8d14aff32f61 100644
---- a/drivers/staging/r8188eu/core/rtw_mlme.c
-+++ b/drivers/staging/r8188eu/core/rtw_mlme.c
-@@ -2001,7 +2001,7 @@ void rtw_update_ht_cap(struct adapter *padapter, u8 *pie, uint ie_len)
- 		int i;
- 		u8	rf_type;
- 
--		padapter->HalFunc.GetHwRegHandler(padapter, HW_VAR_RF_TYPE, (u8 *)(&rf_type));
-+		GetHwReg8188EU(padapter, HW_VAR_RF_TYPE, (u8 *)(&rf_type));
- 
- 		/* update the MCS rates */
- 		for (i = 0; i < 16; i++) {
-diff --git a/drivers/staging/r8188eu/core/rtw_mlme_ext.c b/drivers/staging/r8188eu/core/rtw_mlme_ext.c
-index 3aa5d9a0d361..995a0248c26f 100644
---- a/drivers/staging/r8188eu/core/rtw_mlme_ext.c
-+++ b/drivers/staging/r8188eu/core/rtw_mlme_ext.c
-@@ -5188,7 +5188,7 @@ void issue_assocreq(struct adapter *padapter)
- 			/* todo: disable SM power save mode */
- 			pmlmeinfo->HT_caps.u.HT_cap_element.HT_caps_info |= cpu_to_le16(0x000c);
- 
--			rtw_hal_get_hwreg(padapter, HW_VAR_RF_TYPE, (u8 *)(&rf_type));
-+			GetHwReg8188EU(padapter, HW_VAR_RF_TYPE, (u8 *)(&rf_type));
- 			switch (rf_type) {
- 			case RF_1T1R:
- 				if (pregpriv->rx_stbc)
-@@ -6037,7 +6037,7 @@ unsigned int send_beacon(struct adapter *padapter)
- 		issue++;
- 		do {
- 			yield();
--			rtw_hal_get_hwreg(padapter, HW_VAR_BCN_VALID, (u8 *)(&bxmitok));
-+			GetHwReg8188EU(padapter, HW_VAR_BCN_VALID, (u8 *)(&bxmitok));
- 			poll++;
- 		} while ((poll % 10) != 0 && !bxmitok && !padapter->bSurpriseRemoved && !padapter->bDriverStopped);
- 	} while (!bxmitok && issue < 100 && !padapter->bSurpriseRemoved && !padapter->bDriverStopped);
-diff --git a/drivers/staging/r8188eu/core/rtw_pwrctrl.c b/drivers/staging/r8188eu/core/rtw_pwrctrl.c
-index 20654f2df07a..19cac5814ea4 100644
---- a/drivers/staging/r8188eu/core/rtw_pwrctrl.c
-+++ b/drivers/staging/r8188eu/core/rtw_pwrctrl.c
-@@ -246,7 +246,7 @@ s32 LPS_RF_ON_check(struct adapter *padapter, u32 delay_ms)
- 
- 	start_time = jiffies;
- 	while (1) {
--		rtw_hal_get_hwreg(padapter, HW_VAR_FWLPS_RF_ON, &bAwake);
-+		GetHwReg8188EU(padapter, HW_VAR_FWLPS_RF_ON, &bAwake);
- 		if (bAwake)
- 			break;
- 
-diff --git a/drivers/staging/r8188eu/core/rtw_wlan_util.c b/drivers/staging/r8188eu/core/rtw_wlan_util.c
-index 323f0ee1f8e6..6d4e21a16783 100644
---- a/drivers/staging/r8188eu/core/rtw_wlan_util.c
-+++ b/drivers/staging/r8188eu/core/rtw_wlan_util.c
-@@ -730,7 +730,7 @@ void HT_caps_handler(struct adapter *padapter, struct ndis_802_11_var_ie *pIE)
- 		}
- 	}
- 
--	rtw_hal_get_hwreg(padapter, HW_VAR_RF_TYPE, (u8 *)(&rf_type));
-+	GetHwReg8188EU(padapter, HW_VAR_RF_TYPE, (u8 *)(&rf_type));
- 
- 	/* update the MCS rates */
- 	for (i = 0; i < 16; i++) {
-diff --git a/drivers/staging/r8188eu/hal/hal_intf.c b/drivers/staging/r8188eu/hal/hal_intf.c
-index 8caf67b594a7..6f39fc04df9b 100644
---- a/drivers/staging/r8188eu/hal/hal_intf.c
-+++ b/drivers/staging/r8188eu/hal/hal_intf.c
-@@ -41,12 +41,6 @@ uint rtw_hal_deinit(struct adapter *adapt)
- 	return status;
- }
- 
--void rtw_hal_get_hwreg(struct adapter *adapt, u8 variable, u8 *val)
--{
--	if (adapt->HalFunc.GetHwRegHandler)
--		adapt->HalFunc.GetHwRegHandler(adapt, variable, val);
--}
--
- void rtw_hal_update_ra_mask(struct adapter *adapt, u32 mac_id, u8 rssi_level)
+diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
+index ef88fdc7e46b..646cffd86d09 100644
+--- a/tools/testing/selftests/kvm/lib/kvm_util.c
++++ b/tools/testing/selftests/kvm/lib/kvm_util.c
+@@ -1906,7 +1906,7 @@ void vcpu_sregs_get(struct kvm_vm *vm, uint32_t vcpuid, struct kvm_sregs *sregs)
+ void vcpu_sregs_set(struct kvm_vm *vm, uint32_t vcpuid, struct kvm_sregs *sregs)
  {
- 	struct mlme_priv *pmlmepriv = &adapt->mlmepriv;
-diff --git a/drivers/staging/r8188eu/hal/rtl8188e_cmd.c b/drivers/staging/r8188eu/hal/rtl8188e_cmd.c
-index 4dc3fae1a0cd..c5f9353fe3e6 100644
---- a/drivers/staging/r8188eu/hal/rtl8188e_cmd.c
-+++ b/drivers/staging/r8188eu/hal/rtl8188e_cmd.c
-@@ -604,7 +604,7 @@ void rtl8188e_set_FwJoinBssReport_cmd(struct adapter *adapt, u8 mstatus)
- 				yield();
- 				/* mdelay(10); */
- 				/*  check rsvd page download OK. */
--				rtw_hal_get_hwreg(adapt, HW_VAR_BCN_VALID, (u8 *)(&bcn_valid));
-+				GetHwReg8188EU(adapt, HW_VAR_BCN_VALID, (u8 *)(&bcn_valid));
- 				poll++;
- 			} while (!bcn_valid && (poll % 10) != 0 && !adapt->bSurpriseRemoved && !adapt->bDriverStopped);
- 		} while (!bcn_valid && DLBcnCount <= 100 && !adapt->bSurpriseRemoved && !adapt->bDriverStopped);
-diff --git a/drivers/staging/r8188eu/hal/rtl8188e_dm.c b/drivers/staging/r8188eu/hal/rtl8188e_dm.c
-index 21494adf2a19..26765144c5ae 100644
---- a/drivers/staging/r8188eu/hal/rtl8188e_dm.c
-+++ b/drivers/staging/r8188eu/hal/rtl8188e_dm.c
-@@ -142,7 +142,7 @@ void rtl8188e_HalDmWatchDog(struct adapter *Adapter)
- 		return;
- 
- 	fw_cur_in_ps = Adapter->pwrctrlpriv.bFwCurrentInPSMode;
--	rtw_hal_get_hwreg(Adapter, HW_VAR_FWLPS_RF_ON, (u8 *)(&fw_ps_awake));
-+	GetHwReg8188EU(Adapter, HW_VAR_FWLPS_RF_ON, (u8 *)(&fw_ps_awake));
- 
- 	/*  Fw is under p2p powersaving mode, driver should stop dynamic mechanism. */
- 	/*  modifed by thomas. 2011.06.11. */
-diff --git a/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c b/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c
-index 83744f6896d7..dd8d6b4a9d48 100644
---- a/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c
-+++ b/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c
-@@ -1102,7 +1102,7 @@ static u16 hal_EfuseGetCurrentSize_8188e(struct adapter *pAdapter, bool bPseudoT
- 	if (bPseudoTest)
- 		efuse_addr = (u16)(fakeEfuseUsedBytes);
- 	else
--		rtw_hal_get_hwreg(pAdapter, HW_VAR_EFUSE_BYTES, (u8 *)&efuse_addr);
-+		GetHwReg8188EU(pAdapter, HW_VAR_EFUSE_BYTES, (u8 *)&efuse_addr);
- 
- 	while (bContinual &&
- 	       efuse_OneByteRead(pAdapter, efuse_addr, &efuse_data, bPseudoTest) &&
-@@ -1490,7 +1490,7 @@ static bool hal_EfusePartialWriteCheck(struct adapter *pAdapter, u8 efuseType, u
- 		if (bPseudoTest) {
- 			startAddr = (u16)(fakeEfuseUsedBytes % EFUSE_REAL_CONTENT_LEN);
- 		} else {
--			rtw_hal_get_hwreg(pAdapter, HW_VAR_EFUSE_BYTES, (u8 *)&startAddr);
-+			GetHwReg8188EU(pAdapter, HW_VAR_EFUSE_BYTES, (u8 *)&startAddr);
- 			startAddr %= EFUSE_REAL_CONTENT_LEN;
- 		}
- 	} else {
-diff --git a/drivers/staging/r8188eu/hal/usb_halinit.c b/drivers/staging/r8188eu/hal/usb_halinit.c
-index dced9b74b9a4..f6b90de1d063 100644
---- a/drivers/staging/r8188eu/hal/usb_halinit.c
-+++ b/drivers/staging/r8188eu/hal/usb_halinit.c
-@@ -1798,7 +1798,7 @@ void SetHwReg8188EU(struct adapter *Adapter, u8 variable, u8 *val)
- 
+ 	int ret = _vcpu_sregs_set(vm, vcpuid, sregs);
+-	TEST_ASSERT(ret == 0, "KVM_RUN IOCTL failed, "
++	TEST_ASSERT(ret == 0, "KVM_SET_SREGS IOCTL failed, "
+ 		"rc: %i errno: %i", ret, errno);
  }
  
--static void GetHwReg8188EU(struct adapter *Adapter, u8 variable, u8 *val)
-+void GetHwReg8188EU(struct adapter *Adapter, u8 variable, u8 *val)
- {
- 	struct hal_data_8188e	*haldata = GET_HAL_DATA(Adapter);
- 	struct odm_dm_struct *podmpriv = &haldata->odmpriv;
-@@ -2142,6 +2142,4 @@ void rtl8188eu_set_hal_ops(struct adapter *adapt)
+diff --git a/tools/testing/selftests/kvm/lib/x86_64/processor.c b/tools/testing/selftests/kvm/lib/x86_64/processor.c
+index 0bbd88fe1127..1ab4c20f5d12 100644
+--- a/tools/testing/selftests/kvm/lib/x86_64/processor.c
++++ b/tools/testing/selftests/kvm/lib/x86_64/processor.c
+@@ -660,6 +660,7 @@ void vm_vcpu_add_default(struct kvm_vm *vm, uint32_t vcpuid, void *guest_code)
  
- 	halfunc->hal_init = &rtl8188eu_hal_init;
- 	halfunc->hal_deinit = &rtl8188eu_hal_deinit;
+ 	/* Create VCPU */
+ 	vm_vcpu_add(vm, vcpuid);
++	vcpu_set_cpuid(vm, vcpuid, kvm_get_supported_cpuid());
+ 	vcpu_setup(vm, vcpuid);
+ 
+ 	/* Setup guest general purpose registers */
+@@ -672,9 +673,6 @@ void vm_vcpu_add_default(struct kvm_vm *vm, uint32_t vcpuid, void *guest_code)
+ 	/* Setup the MP state */
+ 	mp_state.mp_state = 0;
+ 	vcpu_set_mp_state(vm, vcpuid, &mp_state);
 -
--	halfunc->GetHwRegHandler = &GetHwReg8188EU;
+-	/* Setup supported CPUIDs */
+-	vcpu_set_cpuid(vm, vcpuid, kvm_get_supported_cpuid());
  }
-diff --git a/drivers/staging/r8188eu/include/hal_intf.h b/drivers/staging/r8188eu/include/hal_intf.h
-index 4447b81a6af8..7d892bf496cc 100644
---- a/drivers/staging/r8188eu/include/hal_intf.h
-+++ b/drivers/staging/r8188eu/include/hal_intf.h
-@@ -124,9 +124,6 @@ typedef s32 (*c2h_id_filter)(u8 id);
- struct hal_ops {
- 	u32	(*hal_init)(struct adapter *padapter);
- 	u32	(*hal_deinit)(struct adapter *padapter);
--
--	void	(*GetHwRegHandler)(struct adapter *padapter, u8	variable,
--				   u8 *val);
- };
  
- #define RF_CHANGE_BY_INIT	0
-@@ -172,11 +169,11 @@ u8 GetHalDefVar8188EUsb(struct adapter *Adapter, enum hal_def_variable eVariable
- unsigned int rtl8188eu_inirp_init(struct adapter *Adapter);
- 
- void SetHwReg8188EU(struct adapter *Adapter, u8 variable, u8 *val);
-+void GetHwReg8188EU(struct adapter *Adapter, u8 variable, u8 *val);
- 
- uint rtw_hal_init(struct adapter *padapter);
- uint rtw_hal_deinit(struct adapter *padapter);
- void rtw_hal_stop(struct adapter *padapter);
--void rtw_hal_get_hwreg(struct adapter *padapter, u8 variable, u8 *val);
- 
- void rtw_hal_update_ra_mask(struct adapter *padapter, u32 mac_id, u8 level);
- void	rtw_hal_clone_data(struct adapter *dst_adapt,
-diff --git a/drivers/staging/r8188eu/os_dep/ioctl_linux.c b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-index f5377b92412a..0201f6fbeb25 100644
---- a/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-+++ b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-@@ -3619,7 +3619,7 @@ static void rf_reg_dump(struct adapter *padapter)
- 	int i, j = 1, path;
- 	u32 value;
- 	u8 rf_type, path_nums = 0;
--	rtw_hal_get_hwreg(padapter, HW_VAR_RF_TYPE, (u8 *)(&rf_type));
-+	GetHwReg8188EU(padapter, HW_VAR_RF_TYPE, (u8 *)(&rf_type));
- 
- 	pr_info("\n ======= RF REG =======\n");
- 	if ((RF_1T2R == rf_type) || (RF_1T1R == rf_type))
-@@ -3926,7 +3926,7 @@ static int rtw_dbg_port(struct net_device *dev,
- 		case 0x06:
- 			{
- 				u32	ODMFlag;
--				rtw_hal_get_hwreg(padapter, HW_VAR_DM_FLAG, (u8 *)(&ODMFlag));
-+				GetHwReg8188EU(padapter, HW_VAR_DM_FLAG, (u8 *)(&ODMFlag));
- 				DBG_88E("(B)DMFlag = 0x%x, arg = 0x%x\n", ODMFlag, arg);
- 				ODMFlag = (u32)(0x0f & arg);
- 				DBG_88E("(A)DMFlag = 0x%x\n", ODMFlag);
+ /*
 -- 
-2.33.0
+2.25.1
 
