@@ -2,96 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AC87424A41
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 00:53:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A21FC424A45
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 01:00:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239663AbhJFWzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 18:55:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42444 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230047AbhJFWzi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 18:55:38 -0400
-Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73C32C061746
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 15:53:45 -0700 (PDT)
-Received: by mail-qv1-xf33.google.com with SMTP id j12so2969637qvk.12
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 15:53:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=S1ArjmdVM5/CQn0/TN/e+j2KUxSm5jTQpFZ+7YalclQ=;
-        b=MplgysbrNxONTnuN7aE/ULFC4Q5y3j4L/xuqPqmiAun7tdaYaO/mIw3SpcBRAsiebM
-         KkqWWWKUgBfrDuMMvovqc/3srxu2ubfYGY/Lr40SzCAb5WL1HV7gkGwJbrwhCg5/0xou
-         oPELpMLHDHSCmHighWguqu2pSPRJ8X+Mpb5EdiuT3EkRp6MSVxnd70M/9lXB6anEMYeH
-         +k/XQfVEMS7y+Awhv1WTc+42ULgRanAzkt/7lbj/QpvAwHsyg892rQhZQOWtJfe5L0vN
-         Zwz/Bx/nJG2u0mUOACh4Jml8qVmL6wbtjxd4VQhxz0p3SbBhFC0Jskuc9QLHyOYwH/x5
-         CMdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=S1ArjmdVM5/CQn0/TN/e+j2KUxSm5jTQpFZ+7YalclQ=;
-        b=VzsKtmsFNLY9o/Mx8YWGl51Cpcjr2MnmtQbStQ4AaS+snBtTOmoW1uOIHECAkykoxK
-         lqT6lDs5Q4sEiZIs5LqHTyKwdOQ1tro7hPcnrv+I1ELa6ceImsnFpKLsKAxe/LeQ0EJw
-         +jAqYdFbYbgD/5uV+GmwPDGyQNFfMR3vWLKGjczM3+RZLmUk8JB1HyiYFKVKR/RWDQ1v
-         F7nC8p10wv6QxvkSrQ+Yu8Fw7IE2dUVYz2SHo1SaY9grGxanBzUdECp8ldPixvF5pBEv
-         P1UjFdjKi7AEncACaJLpO9rD7NLYVqFgy0jZKcI/j3rZp28vHVe2BuPdzRAGxL0aAy4T
-         lQ4g==
-X-Gm-Message-State: AOAM530Srj9+37chetZWrLDsrZsWhyHFYIaX+oIhqa1GQJUGEjsB+W09
-        sDzR0GO+v9NxW+77GF6gsjDZKaaxcA==
-X-Google-Smtp-Source: ABdhPJzhX4DDbZM2IVXfT34uF6z1jB2xRk40uoQmwb+7nZ0nhv/cY5T9h0Ge/IhQdtEYMGMU+ICqIQ==
-X-Received: by 2002:a0c:e1c1:: with SMTP id v1mr755124qvl.26.1633560824221;
-        Wed, 06 Oct 2021 15:53:44 -0700 (PDT)
-Received: from moria.home.lan (c-73-219-103-14.hsd1.vt.comcast.net. [73.219.103.14])
-        by smtp.gmail.com with ESMTPSA id t24sm4567359qkj.38.2021.10.06.15.53.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Oct 2021 15:53:43 -0700 (PDT)
-Date:   Wed, 6 Oct 2021 18:53:41 -0400
-From:   Kent Overstreet <kent.overstreet@gmail.com>
-To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Cc:     hannes@cmpxchg.org, willy@infradead.org, rientjes@google.com
-Subject: Compaction & folios
-Message-ID: <YV4o9SxfYuLm1i4d@moria.home.lan>
+        id S232157AbhJFXC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 19:02:28 -0400
+Received: from mga11.intel.com ([192.55.52.93]:6249 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229582AbhJFXCZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 19:02:25 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10129"; a="223515489"
+X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; 
+   d="scan'208";a="223515489"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2021 16:00:14 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; 
+   d="scan'208";a="624046966"
+Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.171])
+  by fmsmga001.fm.intel.com with SMTP; 06 Oct 2021 16:00:10 -0700
+Received: by stinkbox (sSMTP sendmail emulation); Thu, 07 Oct 2021 02:00:09 +0300
+Date:   Thu, 7 Oct 2021 02:00:09 +0300
+From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        "Siqueira, Rodrigo" <Rodrigo.Siqueira@amd.com>,
+        "Zuo, Jerry" <Jerry.Zuo@amd.com>, alexander.deucher@amd.com,
+        "Wentland, Harry" <Harry.Wentland@amd.com>,
+        Kuogee Hsieh <khsieh@codeaurora.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] drm/edid: In connector_bad_edid() cap num_of_ext by
+ num_blocks read
+Message-ID: <YV4qeRtJoJW+W2at@intel.com>
+References: <20211005192905.v2.1.Ib059f9c23c2611cb5a9d760e7d0a700c1295928d@changeid>
+ <CAD=FV=XP6TFVn=uxRYr0fXzK9s-uh=a06kZBA5Y6Sj99OCeCXQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAD=FV=XP6TFVn=uxRYr0fXzK9s-uh=a06kZBA5Y6Sj99OCeCXQ@mail.gmail.com>
+X-Patchwork-Hint: comment
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-So I have some observations on memory compaction & hugepages.
+On Wed, Oct 06, 2021 at 03:45:07PM -0700, Doug Anderson wrote:
+> Hi,
+> 
+> On Tue, Oct 5, 2021 at 7:29 PM Douglas Anderson <dianders@chromium.org> wrote:
+> >
+> > In commit e11f5bd8228f ("drm: Add support for DP 1.4 Compliance edid
+> > corruption test") the function connector_bad_edid() started assuming
+> > that the memory for the EDID passed to it was big enough to hold
+> > `edid[0x7e] + 1` blocks of data (1 extra for the base block). It
+> > completely ignored the fact that the function was passed `num_blocks`
+> > which indicated how much memory had been allocated for the EDID.
+> >
+> > Let's fix this by adding a bounds check.
+> >
+> > This is important for handling the case where there's an error in the
+> > first block of the EDID. In that case we will call
+> > connector_bad_edid() without having re-allocated memory based on
+> > `edid[0x7e]`.
+> >
+> > Fixes: e11f5bd8228f ("drm: Add support for DP 1.4 Compliance edid corruption test")
+> > Reported-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
+> > Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> > Reviewed-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
+> > ---
+> > This problem report came up in the context of a patch I sent out [1]
+> > and this is my attempt at a fix. The problem predates my patch,
+> > though. I don't personally know anything about DP compliance testing
+> > and what should be happening here, nor do I apparently have any
+> > hardware that actually reports a bad EDID. Thus this is just compile
+> > tested. I'm hoping that someone here can test this and make sure it
+> > seems OK to them.
+> >
+> > Changes in v2:
+> > - Added a comment/changed math to help make it easier to grok.
+> >
+> >  drivers/gpu/drm/drm_edid.c | 15 ++++++++++++---
+> >  1 file changed, 12 insertions(+), 3 deletions(-)
+> 
+> Pushed this to drm-misc-fixes since the commit it fixes is fairly old.
+> 
+> fdc21c35aaa1 drm/edid: In connector_bad_edid() cap num_of_ext by num_blocks read
 
-Right now, the working assumption in MM is that compaction is hard and
-expensive, and right now it is - because most allocations are order 0, with a
-small subset being hugepage order allocations. This means any time we need a
-hugepage, compaction has to move a bunch of order 0 pages around, and memory
-reclaim is no help here - when we reclaim memory, it's coming back as fragmented
-order 0 pages.
+BTW seems kasan caught this for us [1]. I didn't notice we had a bug
+open about it until now. Just Chris Wilson mentioned it to me in passing
+quite a while ago, and I totally forgot about it until I saw your other
+patch poking around the same code.
 
-But what if compaction wasn't such a difficult, expensive operation?
+[1] https://gitlab.freedesktop.org/drm/intel/-/issues/4106
 
-With folios, and then folios for anonymous pages, we won't see nearly so many
-order 0 allocations anymore - we'll see a spread of allocation sizes based on a
-mixture of application usage patterns - something much closer to a poisson
-distribution, vs. our current very bimodal distribution. And since we won't be
-fragmenting all our allocations up front, memory reclaim will be freeing
-allocations in this same distribution.
-
-Which means that any time an order n allocation fails, it's likely that we'll
-still have order n-1 pages free - and of those free order n-1 pages, one will
-likely have a buddy that's moveable and hasn't been fragmented - meaning the
-common case is that compaction will have to move _one_ (higher order) page -
-we'll almost never be having to move a bunch of 4k pages.
-
-Another way of thinking of this is that memory reclaim will be doing most of the
-work that compaction has to do now to allocate a high order page. Compaction
-will go from an expensive, somewhat unreliable operation to one that mostly just
-works - it's going to be _much_ less of a pain point.
-
-It may turn out that allocating hugepages still doesn't work as reliably as we'd
-like - but folios are still a big help even when we can't allocate a 2MB page,
-because we'll be able to fall back to an order 6 or 7 or 8 allocation, which is
-something we can't do now. And, since multiple CPU vendors now support
-coalescing contiguous PTE entries in the TLB, this will still get us most of the
-performance benefits of using hugepages.
+-- 
+Ville Syrjälä
+Intel
