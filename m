@@ -2,69 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE7A442377F
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 07:29:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87872423781
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 07:30:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231409AbhJFFbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 01:31:03 -0400
-Received: from muru.com ([72.249.23.125]:41228 "EHLO muru.com"
+        id S233148AbhJFFcN convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 6 Oct 2021 01:32:13 -0400
+Received: from ni.piap.pl ([195.187.100.5]:43094 "EHLO ni.piap.pl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229579AbhJFFbC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 01:31:02 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id 7B37080E1;
-        Wed,  6 Oct 2021 05:29:40 +0000 (UTC)
-Date:   Wed, 6 Oct 2021 08:29:08 +0300
-From:   Tony Lindgren <tony@atomide.com>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, kernel-team@android.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-oxnas@groups.io, linux-renesas-soc@vger.kernel.org,
-        linux-omap@vger.kernel.org, linux-riscv@lists.infradead.org
-Subject: Re: [PATCH v4 0/2] Fix simple-bus issues with fw_devlink
-Message-ID: <YV00JD31EPD6WqlB@atomide.com>
-References: <20210929000735.585237-1-saravanak@google.com>
+        id S229579AbhJFFcM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 01:32:12 -0400
+From:   Krzysztof =?utf-8?Q?Ha=C5=82asa?= <khalasa@piap.pl>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tim Harvey <tharvey@gateworks.com>
+Subject: [PATCH v2 REPOST] TDA1997x: replace video detection routine
+Date:   Wed, 06 Oct 2021 07:30:19 +0200
+Message-ID: <m35yuaoh3o.fsf@t19.piap.pl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210929000735.585237-1-saravanak@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Saravana Kannan <saravanak@google.com> [210929 03:08]:
-> Ulf reported an issue[1] with fw_devlink. This series tries to fix that
-> issue.
-> 
-> I replicated a similar set up on my end and I confirmed:
-> - A simple-bus only device is probed.
-> - Another device listing simple-bus as a 2nd compatible string isn't
->   probed.
-> 
-> v1->v2:
-> - Switched to probing the simple-bus device instead of marking it as
->   NEVER_PROBES.
-> 
-> v2->v3:
-> - Moved all the code into the simple-pm-bus driver
-> - Addressed Ulf's comment about the remove() code missing a check.
-> 
-> v3->v4:
-> - Added support for driver_override to accommodate the case where new
->   transparent bus compatible strings are added to DT, but the kernel hasn't
->   been updated yet.
-> - Added/updated comments to give more details.
-> - Adding Ulf's Tested-by that he have for v3 (v4 didn't change by much).
+The TDA1997x (HDMI receiver) driver currently uses a specific video
+format detection scheme. The frame (or field in interlaced mode), line
+and HSync pulse durations are compared to those of known, standard video
+modes. If a match is found, the mode is assumed to be detected,
+otherwise -ERANGE is returned (then possibly ignored). This means that:
+- another mode with similar timings will be detected incorrectly
+  (e.g. 2x faster clock and lines twice as long)
+- non-standard modes will not work.
 
-Works for me:
+This patch replaces this scheme with a direct read of geometry
+registers. This way all modes recognized by the chip are supported.
 
-Tested-by: Tony Lindgren <tony@atomide.com>
+In interlaced modes, the code assumes the V sync signal has the same
+duration for both fields. While this may be not necessarily true,
+I can't see any way to get the "other" V sync width. This is most
+probably harmless.
+
+All tests have been performed on Gateworks' Ventana GW54xx board, with
+a TDA19971 chip.
+
+Signed-off-by: Krzysztof Hałasa <khalasa@piap.pl>
+Tested-By: Tim Harvey <tharvey@gateworks.com>
+
+---
+This version extracts H and V sync polarities of the incoming signal and
+matches the parameters against the standard video modes.
+
+1/1000 pixel clock tolerance had to be increased to 1/500 because the
+1/1.001 (NTSC-like) pixclk and frame rate reduction already caused
+1/1000 deviation, and there was no room for further difference.
+
+diff --git a/drivers/media/i2c/tda1997x.c b/drivers/media/i2c/tda1997x.c
+index e155d45ce658..d62873cb9d45 100644
+--- a/drivers/media/i2c/tda1997x.c
++++ b/drivers/media/i2c/tda1997x.c
+@@ -1092,67 +1092,82 @@ tda1997x_detect_std(struct tda1997x_state *state,
+ 		    struct v4l2_dv_timings *timings)
+ {
+ 	struct v4l2_subdev *sd = &state->sd;
+-	u32 vper;
+-	u16 hper;
+-	u16 hsper;
+-	int i;
+ 
+ 	/*
+ 	 * Read the FMT registers
+-	 *   REG_V_PER: Period of a frame (or two fields) in MCLK(27MHz) cycles
+-	 *   REG_H_PER: Period of a line in MCLK(27MHz) cycles
+-	 *   REG_HS_WIDTH: Period of horiz sync pulse in MCLK(27MHz) cycles
++	 *   REG_V_PER: Period of a frame (or field) in MCLK (27MHz) cycles
++	 *   REG_H_PER: Period of a line in MCLK (27MHz) cycles
++	 *   REG_HS_WIDTH: Period of horiz sync pulse in MCLK (27MHz) cycles
+ 	 */
+-	vper = io_read24(sd, REG_V_PER) & MASK_VPER;
+-	hper = io_read16(sd, REG_H_PER) & MASK_HPER;
+-	hsper = io_read16(sd, REG_HS_WIDTH) & MASK_HSWIDTH;
+-	v4l2_dbg(1, debug, sd, "Signal Timings: %u/%u/%u\n", vper, hper, hsper);
++	u32 vper, vsync_pos;
++	u16 hper, hsync_pos, hsper, interlaced;
++	u16 htot, hact, hfront, hsync, hback;
++	u16 vtot, vact, vfront1, vfront2, vsync, vback1, vback2;
+ 
+ 	if (!state->input_detect[0] && !state->input_detect[1])
+ 		return -ENOLINK;
+ 
+-	for (i = 0; v4l2_dv_timings_presets[i].bt.width; i++) {
+-		const struct v4l2_bt_timings *bt;
+-		u32 lines, width, _hper, _hsper;
+-		u32 vmin, vmax, hmin, hmax, hsmin, hsmax;
+-		bool vmatch, hmatch, hsmatch;
+-
+-		bt = &v4l2_dv_timings_presets[i].bt;
+-		width = V4L2_DV_BT_FRAME_WIDTH(bt);
+-		lines = V4L2_DV_BT_FRAME_HEIGHT(bt);
+-		_hper = (u32)bt->pixelclock / width;
+-		if (bt->interlaced)
+-			lines /= 2;
+-		/* vper +/- 0.7% */
+-		vmin = ((27000000 / 1000) * 993) / _hper * lines;
+-		vmax = ((27000000 / 1000) * 1007) / _hper * lines;
+-		/* hper +/- 1.0% */
+-		hmin = ((27000000 / 100) * 99) / _hper;
+-		hmax = ((27000000 / 100) * 101) / _hper;
+-		/* hsper +/- 2 (take care to avoid 32bit overflow) */
+-		_hsper = 27000 * bt->hsync / ((u32)bt->pixelclock/1000);
+-		hsmin = _hsper - 2;
+-		hsmax = _hsper + 2;
+-
+-		/* vmatch matches the framerate */
+-		vmatch = ((vper <= vmax) && (vper >= vmin)) ? 1 : 0;
+-		/* hmatch matches the width */
+-		hmatch = ((hper <= hmax) && (hper >= hmin)) ? 1 : 0;
+-		/* hsmatch matches the hswidth */
+-		hsmatch = ((hsper <= hsmax) && (hsper >= hsmin)) ? 1 : 0;
+-		if (hmatch && vmatch && hsmatch) {
+-			v4l2_print_dv_timings(sd->name, "Detected format: ",
+-					      &v4l2_dv_timings_presets[i],
+-					      false);
+-			if (timings)
+-				*timings = v4l2_dv_timings_presets[i];
+-			return 0;
+-		}
+-	}
++	vper = io_read24(sd, REG_V_PER);
++	hper = io_read16(sd, REG_H_PER);
++	hsper = io_read16(sd, REG_HS_WIDTH);
++	vsync_pos = vper & MASK_VPER_SYNC_POS;
++	hsync_pos = hper & MASK_HPER_SYNC_POS;
++	interlaced = hsper & MASK_HSWIDTH_INTERLACED;
++	vper &= MASK_VPER;
++	hper &= MASK_HPER;
++	hsper &= MASK_HSWIDTH;
++	v4l2_dbg(1, debug, sd, "Signal Timings: %u/%u/%u\n", vper, hper, hsper);
+ 
+-	v4l_err(state->client, "no resolution match for timings: %d/%d/%d\n",
+-		vper, hper, hsper);
+-	return -ERANGE;
++	htot = io_read16(sd, REG_FMT_H_TOT);
++	hact = io_read16(sd, REG_FMT_H_ACT);
++	hfront = io_read16(sd, REG_FMT_H_FRONT);
++	hsync = io_read16(sd, REG_FMT_H_SYNC);
++	hback = io_read16(sd, REG_FMT_H_BACK);
++
++	vtot = io_read16(sd, REG_FMT_V_TOT);
++	vact = io_read16(sd, REG_FMT_V_ACT);
++	vfront1 = io_read(sd, REG_FMT_V_FRONT_F1);
++	vfront2 = io_read(sd, REG_FMT_V_FRONT_F2);
++	vsync = io_read(sd, REG_FMT_V_SYNC);
++	vback1 = io_read(sd, REG_FMT_V_BACK_F1);
++	vback2 = io_read(sd, REG_FMT_V_BACK_F2);
++
++	v4l2_dbg(1, debug, sd, "Geometry: H %u %u %u %u %u Sync%c  V %u %u %u %u %u %u %u Sync%c\n",
++		 htot, hact, hfront, hsync, hback, hsync_pos ? '+' : '-',
++		 vtot, vact, vfront1, vfront2, vsync, vback1, vback2, vsync_pos ? '+' : '-');
++
++	if (!timings)
++		return 0;
++
++	timings->type = V4L2_DV_BT_656_1120;
++	timings->bt.width = hact;
++	timings->bt.hfrontporch = hfront;
++	timings->bt.hsync = hsync;
++	timings->bt.hbackporch = hback;
++	timings->bt.height = vact;
++	timings->bt.vfrontporch = vfront1;
++	timings->bt.vsync = vsync;
++	timings->bt.vbackporch = vback1;
++	timings->bt.interlaced = interlaced ? V4L2_DV_INTERLACED : V4L2_DV_PROGRESSIVE;
++	timings->bt.polarities = vsync_pos ? V4L2_DV_VSYNC_POS_POL : 0;
++	timings->bt.polarities |= hsync_pos ? V4L2_DV_HSYNC_POS_POL : 0;
++
++	timings->bt.pixelclock = (u64)htot * vtot * 27000000;
++	if (interlaced) {
++		timings->bt.il_vfrontporch = vfront2;
++		timings->bt.il_vsync = timings->bt.vsync;
++		timings->bt.il_vbackporch = vback2;
++		do_div(timings->bt.pixelclock, vper * 2 /* full frame */);
++	} else {
++		timings->bt.il_vfrontporch = 0;
++		timings->bt.il_vsync = 0;
++		timings->bt.il_vbackporch = 0;
++		do_div(timings->bt.pixelclock, vper);
++	}
++	v4l2_find_dv_timings_cap(timings, &tda1997x_dv_timings_cap,
++				 (u32)timings->bt.pixelclock / 500, NULL, NULL);
++	v4l2_print_dv_timings(sd->name, "Detected format: ", timings, false);
++	return 0;
+ }
+ 
+ /* some sort of errata workaround for chip revision 0 (N1) */
+diff --git a/drivers/media/i2c/tda1997x_regs.h b/drivers/media/i2c/tda1997x_regs.h
+index d9b3daada07d..115371ba33f0 100644
+--- a/drivers/media/i2c/tda1997x_regs.h
++++ b/drivers/media/i2c/tda1997x_regs.h
+@@ -117,9 +117,12 @@
+ #define REG_CURPAGE_00H		0xFF
+ 
+ #define MASK_VPER		0x3fffff
++#define MASK_VPER_SYNC_POS	0x800000
+ #define MASK_VHREF		0x3fff
+ #define MASK_HPER		0x0fff
++#define MASK_HPER_SYNC_POS	0x8000
+ #define MASK_HSWIDTH		0x03ff
++#define MASK_HSWIDTH_INTERLACED	0x8000
+ 
+ /* HPD Detection */
+ #define DETECT_UTIL		BIT(7)	/* utility of HDMI level */
+
+-- 
+Krzysztof "Chris" Hałasa
+
+Sieć Badawcza Łukasiewicz
+Przemysłowy Instytut Automatyki i Pomiarów PIAP
+Al. Jerozolimskie 202, 02-486 Warszawa
