@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80DE14246D2
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 21:38:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FD014246D4
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 21:38:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239522AbhJFTke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 15:40:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53836 "EHLO
+        id S239537AbhJFTkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 15:40:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239435AbhJFTk0 (ORCPT
+        with ESMTP id S239441AbhJFTk0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 6 Oct 2021 15:40:26 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62A59C061765
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 12:38:30 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id g2so3285534pfc.6
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 12:38:30 -0700 (PDT)
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77D58C061767
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 12:38:31 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id s16so3334683pfk.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 12:38:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=fRSGJsbcrSuo8/hCk8AH4Rju+QnPEjHdwHGnjiYpj+0=;
-        b=aN+zbJy7ziqmUBmCYP38UAKUihmed+FYp84G9KznDRdiWV1uTzOqYVISExYpWNudP9
-         8Dc9Afor0eTRnSRj4DZvI35qEHwhtOqSMN1x3vINUIIW87cVGkpDaNrVIHbrScKtagE5
-         k7RFVoTVJwC7AnEUzRZokTQlMf88bLKgetc4E=
+        bh=QdKC3RDnWMeVhqBKuTAcfq/eZBHYEe2Kb+X7ix5SdpY=;
+        b=bYXZrb2Mw0ygA/9KQUszZR0D4+fBHb1MS2IAeBPCv5THUvbkeF9CzMvcUArorOxTAK
+         B1HrTvXihaUQeWiLQvL+0lEMneUWKCwMfy/POUvBJf8ELzE+zKDqutR6eEmcX2r97Guc
+         Uv7Q5lG6rFPLy8WnQ5GTASLWbtTQ5A00scm0M=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=fRSGJsbcrSuo8/hCk8AH4Rju+QnPEjHdwHGnjiYpj+0=;
-        b=BKBUdTQK4qax8XB6OBMR7R9QZxUfaC3liFusqxufQCf4cKs+2HBzTuKkvz+FQs7AVl
-         LD/F8sNaNCjcm2ANm9ukSdH9bMnaMQckm5tJgI/md2DLzrYBAo6uaaI4usaDmbs4LG2a
-         v0OqCjJIPdyFB/xsR9LyGbxj4kDKTex+7rigm4IG+gycFAj2IOCyACmA58LPVg+ifyJa
-         /HYc5kmgoRsr7+lJpAoo7t8w271e222/Suiz4DAqXB7LwSpW+b8Yomre++Myb6YBIYq8
-         8224TFKJueYhFFa24AZImoJayIM6y7cwbrqWUGNSguPjkDc4N6gVoPVmlsEiz8snOXpF
-         ci9w==
-X-Gm-Message-State: AOAM532kizNJDE1YHl7rklBRaMBFgKeqm2Gtp3U7DRWWeBM3U1htJhmI
-        YkwpziULlEym8ldfJ6wO7FWVzg==
-X-Google-Smtp-Source: ABdhPJw2THsDae51farFvaMjtz9MkGLifCVXXxt8tCOU+bKfcMJ5VbxsHYXLHY80SLIp4mB4UkAkVQ==
-X-Received: by 2002:a65:620d:: with SMTP id d13mr483109pgv.36.1633549109943;
-        Wed, 06 Oct 2021 12:38:29 -0700 (PDT)
+        bh=QdKC3RDnWMeVhqBKuTAcfq/eZBHYEe2Kb+X7ix5SdpY=;
+        b=Vj48YTJX2Mk3dIoL2c/B5mZPy9BuQhznZkXEcHKHKCXldiP6ZN+oz+fqG9zlEb40l1
+         QaAtXexHcLNBohu3ekwEYZ7JBsJb0ukNVLatToKqIIvx/j/FHIMWmqTwxkTXxjq77pdD
+         8Evvox8QVaxj0E/mfC5KJbraBDzVbXrPBUPE0tsxBxyZQTrvPMK0fiOogcRP6dr9K95y
+         HavxLvRx60CGwxBZiyhy+6vamtLZGEZFTrJtQuCB7ySOXSZxVBqYIoANgEC5Ny89GDtg
+         Lwuyb+FNIaoVGh5bD6t0/KJkZGDipAKahas4bUZoGJ+PGXw0jNn1hgmNrdnp7n6HrXuH
+         tROQ==
+X-Gm-Message-State: AOAM530insuFUQWerw3FnNV649zwa6p26ryfnu7fxXXEw/9sD/GZP0YH
+        CjUhW7U1vNDzDjiWDBw8wA39ATObYpzgrQ==
+X-Google-Smtp-Source: ABdhPJyQxcu7a9c6zJ5OPG0sbw5QtjSSLjEp7prUkIluddBHbCR+Nhq+ATnHLHRc/o8nEL0u0iy0bg==
+X-Received: by 2002:a63:2022:: with SMTP id g34mr433631pgg.173.1633549111054;
+        Wed, 06 Oct 2021 12:38:31 -0700 (PDT)
 Received: from smtp.gmail.com ([2620:15c:202:201:d412:c5eb:4aca:4738])
-        by smtp.gmail.com with ESMTPSA id o14sm22011296pfh.84.2021.10.06.12.38.28
+        by smtp.gmail.com with ESMTPSA id o14sm22011296pfh.84.2021.10.06.12.38.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Oct 2021 12:38:29 -0700 (PDT)
+        Wed, 06 Oct 2021 12:38:30 -0700 (PDT)
 From:   Stephen Boyd <swboyd@chromium.org>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
         dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        James Qian Wang <james.qian.wang@arm.com>,
         Daniel Vetter <daniel.vetter@ffwll.ch>,
         "Rafael J. Wysocki" <rafael@kernel.org>,
         Rob Clark <robdclark@gmail.com>,
         Russell King <rmk+kernel@arm.linux.org.uk>,
         Saravana Kannan <saravanak@google.com>
-Subject: [PATCH v2 06/34] drm/of: Add a drm_of_aggregate_probe() API
-Date:   Wed,  6 Oct 2021 12:37:51 -0700
-Message-Id: <20211006193819.2654854-7-swboyd@chromium.org>
+Subject: [PATCH v2 07/34] drm/komeda: Migrate to aggregate driver
+Date:   Wed,  6 Oct 2021 12:37:52 -0700
+Message-Id: <20211006193819.2654854-8-swboyd@chromium.org>
 X-Mailer: git-send-email 2.33.0.800.g4c38ced690-goog
 In-Reply-To: <20211006193819.2654854-1-swboyd@chromium.org>
 References: <20211006193819.2654854-1-swboyd@chromium.org>
@@ -67,11 +67,11 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Similar to drm_of_component_probe() but using the new API that registers
-a driver instead of an ops struct. This allows us to migrate the users
-of drm_of_component_probe() to the new way of doing things.
+Use an aggregate driver instead of component ops so that we can get
+proper driver probe ordering of the aggregate device with respect to all
+the component devices that make up the aggregate device.
 
-Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: James Qian Wang (Arm Technology China) <james.qian.wang@arm.com>
 Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
 Cc: "Rafael J. Wysocki" <rafael@kernel.org>
 Cc: Rob Clark <robdclark@gmail.com>
@@ -79,174 +79,67 @@ Cc: Russell King <rmk+kernel@arm.linux.org.uk>
 Cc: Saravana Kannan <saravanak@google.com>
 Signed-off-by: Stephen Boyd <swboyd@chromium.org>
 ---
- drivers/gpu/drm/drm_of.c | 85 +++++++++++++++++++++++++++++++---------
- include/drm/drm_of.h     | 11 ++++++
- 2 files changed, 77 insertions(+), 19 deletions(-)
+ .../gpu/drm/arm/display/komeda/komeda_drv.c   | 20 ++++++++++++-------
+ 1 file changed, 13 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/gpu/drm/drm_of.c b/drivers/gpu/drm/drm_of.c
-index 997b8827fed2..58db65ad2770 100644
---- a/drivers/gpu/drm/drm_of.c
-+++ b/drivers/gpu/drm/drm_of.c
-@@ -99,30 +99,18 @@ void drm_of_component_match_add(struct device *master,
+diff --git a/drivers/gpu/drm/arm/display/komeda/komeda_drv.c b/drivers/gpu/drm/arm/display/komeda/komeda_drv.c
+index e7933930a657..0463386a6ed2 100644
+--- a/drivers/gpu/drm/arm/display/komeda/komeda_drv.c
++++ b/drivers/gpu/drm/arm/display/komeda/komeda_drv.c
+@@ -25,8 +25,9 @@ struct komeda_dev *dev_to_mdev(struct device *dev)
+ 	return mdrv ? mdrv->mdev : NULL;
  }
- EXPORT_SYMBOL_GPL(drm_of_component_match_add);
  
--/**
-- * drm_of_component_probe - Generic probe function for a component based master
-- * @dev: master device containing the OF node
-- * @compare_of: compare function used for matching components
-- * @m_ops: component master ops to be used
-- *
-- * Parse the platform device OF node and bind all the components associated
-- * with the master. Interface ports are added before the encoders in order to
-- * satisfy their .bind requirements
-- * See Documentation/devicetree/bindings/graph.txt for the bindings.
-- *
-- * Returns zero if successful, or one of the standard error codes if it fails.
-- */
--int drm_of_component_probe(struct device *dev,
-+static int _drm_of_component_probe(struct device *dev,
- 			   int (*compare_of)(struct device *, void *),
--			   const struct component_master_ops *m_ops)
-+			   struct component_match **matchptr)
+-static void komeda_unbind(struct device *dev)
++static void komeda_unbind(struct aggregate_device *adev)
  {
- 	struct device_node *ep, *port, *remote;
--	struct component_match *match = NULL;
- 	int i;
++	struct device *dev = adev->parent;
+ 	struct komeda_drv *mdrv = dev_get_drvdata(dev);
  
- 	if (!dev->of_node)
- 		return -EINVAL;
- 
-+	*matchptr = NULL;
-+
- 	/*
- 	 * Bind the crtc's ports first, so that drm_of_find_possible_crtcs()
- 	 * called from encoder's .bind callbacks works as expected
-@@ -133,7 +121,7 @@ int drm_of_component_probe(struct device *dev,
- 			break;
- 
- 		if (of_device_is_available(port->parent))
--			drm_of_component_match_add(dev, &match, compare_of,
-+			drm_of_component_match_add(dev, matchptr, compare_of,
- 						   port);
- 
- 		of_node_put(port);
-@@ -144,7 +132,7 @@ int drm_of_component_probe(struct device *dev,
- 		return -ENODEV;
- 	}
- 
--	if (!match) {
-+	if (!*matchptr) {
- 		dev_err(dev, "no available port\n");
- 		return -ENODEV;
- 	}
-@@ -174,17 +162,76 @@ int drm_of_component_probe(struct device *dev,
- 				continue;
- 			}
- 
--			drm_of_component_match_add(dev, &match, compare_of,
-+			drm_of_component_match_add(dev, matchptr, compare_of,
- 						   remote);
- 			of_node_put(remote);
- 		}
- 		of_node_put(port);
- 	}
- 
-+	return 0;
-+}
-+
-+/**
-+ * drm_of_component_probe - Generic probe function for a component based master
-+ * @dev: master device containing the OF node
-+ * @compare_of: compare function used for matching components
-+ * @m_ops: component master ops to be used
-+ *
-+ * Parse the platform device OF node and bind all the components associated
-+ * with the master. Interface ports are added before the encoders in order to
-+ * satisfy their .bind requirements
-+ * See Documentation/devicetree/bindings/graph.txt for the bindings.
-+ *
-+ * Deprecated: Use drm_of_aggregate_probe() instead.
-+ *
-+ * Returns zero if successful, or one of the standard error codes if it fails.
-+ */
-+static int drm_of_component_probe(struct device *dev,
-+			   int (*compare_of)(struct device *, void *),
-+			   const struct component_master_ops *m_ops)
-+{
-+
-+	struct component_match *match;
-+	int ret;
-+
-+	ret = _drm_of_component_probe(dev, compare_of, &match);
-+	if (ret)
-+		return ret;
-+
- 	return component_master_add_with_match(dev, m_ops, match);
- }
- EXPORT_SYMBOL(drm_of_component_probe);
- 
-+
-+/**
-+ * drm_of_aggregate_probe - Generic probe function for a component based aggregate host
-+ * @dev: device containing the OF node
-+ * @compare_of: compare function used for matching components
-+ * @adrv: aggregate driver to be used
-+ *
-+ * Parse the platform device OF node and bind all the components associated
-+ * with the aggregate device. Interface ports are added before the encoders in
-+ * order to satisfy their .bind_component requirements
-+ * See Documentation/devicetree/bindings/graph.txt for the bindings.
-+ *
-+ * Returns zero if successful, or one of the standard error codes if it fails.
-+ */
-+static int drm_of_aggregate_probe(struct device *dev,
-+			   int (*compare_of)(struct device *, void *),
-+			   struct aggregate_driver *adrv)
-+{
-+	struct component_match *match;
-+	int ret;
-+
-+	ret = _drm_of_component_probe(dev, compare_of, &match);
-+	if (ret)
-+		return ret;
-+
-+	return component_aggregate_register(dev, adrv, match);
-+}
-+EXPORT_SYMBOL(drm_of_aggregate_probe);
-+
- /*
-  * drm_of_encoder_active_endpoint - return the active encoder endpoint
-  * @node: device tree node containing encoder input ports
-diff --git a/include/drm/drm_of.h b/include/drm/drm_of.h
-index b9b093add92e..c3ec9b14df48 100644
---- a/include/drm/drm_of.h
-+++ b/include/drm/drm_of.h
-@@ -40,6 +40,9 @@ void drm_of_component_match_add(struct device *master,
- int drm_of_component_probe(struct device *dev,
- 			   int (*compare_of)(struct device *, void *),
- 			   const struct component_master_ops *m_ops);
-+int drm_of_aggregate_probe(struct device *dev,
-+			   int (*compare_of)(struct device *, void *),
-+			   struct aggregate_driver *adrv);
- int drm_of_encoder_active_endpoint(struct device_node *node,
- 				   struct drm_encoder *encoder,
- 				   struct of_endpoint *endpoint);
-@@ -78,6 +81,14 @@ drm_of_component_probe(struct device *dev,
- 	return -EINVAL;
+ 	if (!mdrv)
+@@ -45,8 +46,9 @@ static void komeda_unbind(struct device *dev)
+ 	devm_kfree(dev, mdrv);
  }
  
-+static inline int
-+drm_of_aggregate_probe(struct device *dev,
-+		       int (*compare_of)(struct device *, void *),
-+		       struct aggregate_driver *adrv)
-+{
-+	return -EINVAL;
-+}
-+
- static inline int drm_of_encoder_active_endpoint(struct device_node *node,
- 						 struct drm_encoder *encoder,
- 						 struct of_endpoint *endpoint)
+-static int komeda_bind(struct device *dev)
++static int komeda_bind(struct aggregate_device *adev)
+ {
++	struct device *dev = adev->parent;
+ 	struct komeda_drv *mdrv;
+ 	int err;
+ 
+@@ -87,9 +89,13 @@ static int komeda_bind(struct device *dev)
+ 	return err;
+ }
+ 
+-static const struct component_master_ops komeda_master_ops = {
+-	.bind	= komeda_bind,
+-	.unbind	= komeda_unbind,
++static struct aggregate_driver komeda_aggregate_driver = {
++	.probe	= komeda_bind,
++	.remove	= komeda_unbind,
++	.driver = {
++		.name  = "komeda_drm",
++		.owner = THIS_MODULE,
++	},
+ };
+ 
+ static int compare_of(struct device *dev, void *data)
+@@ -129,12 +135,12 @@ static int komeda_platform_probe(struct platform_device *pdev)
+ 		komeda_add_slave(dev, &match, child, KOMEDA_OF_PORT_OUTPUT, 1);
+ 	}
+ 
+-	return component_master_add_with_match(dev, &komeda_master_ops, match);
++	return component_aggregate_register(dev, &komeda_aggregate_driver, match);
+ }
+ 
+ static int komeda_platform_remove(struct platform_device *pdev)
+ {
+-	component_master_del(&pdev->dev, &komeda_master_ops);
++	component_aggregate_unregister(&pdev->dev, &komeda_aggregate_driver);
+ 	return 0;
+ }
+ 
 -- 
 https://chromeos.dev
 
