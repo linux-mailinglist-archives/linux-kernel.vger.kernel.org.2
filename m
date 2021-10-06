@@ -2,226 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D084423A85
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 11:27:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 180EF423A89
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 11:27:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237833AbhJFJ3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 05:29:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51772 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229824AbhJFJ3e (ORCPT
+        id S237855AbhJFJ3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 05:29:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44406 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237860AbhJFJ3n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 05:29:34 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9355FC061749;
-        Wed,  6 Oct 2021 02:27:42 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id n11so864105plf.4;
-        Wed, 06 Oct 2021 02:27:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=5BPnrtcUd4exawwgaLK46Mso62ztjXNOBQ35saRpWTg=;
-        b=qiIy5PsZX2xEncp7CHtfkOUmqFez0d6kOHjPyawoYNcACrpBCkpFRIZ6UGookevBWQ
-         75VKsKUvZTqBqkH8Xj3pdmT90EHCPWLoIVGINDLblhzujtp6i88iWwoNpK5yfjo9ZM9T
-         N60IZr19SG7YdUsdutP2IGY9setorJfoCD7/xA3UC3ABDqCG9XECmBghK0TAviP4OiGe
-         +6SZb2HZsXZDDr7VvY3htZPwcQ6nQRt0hZ6BFxEIvtQfVUX6mD/Ry+uMmWfT9uXEuVsc
-         5ykZZcD1TR1z1sl0dsypQkrOri0aabSWH9raM9ECLcE6IOVBVxDXQo2y/Sqa5JctZucD
-         n4Jg==
+        Wed, 6 Oct 2021 05:29:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633512471;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7ngYQ8UnRk1ZQG1QBxVMt0vUipJ0oB+rpBaTB/8WXgg=;
+        b=AzZSTP2BTPLej+IZv+m/sekAu9zo1/Aiv5sQ/Yh8qZThGfgJX3yvJfVrA/bFW8tRj/klug
+        qvwwtdsL+F+w4S5sUdWLib/dyajtt5aX/bMnTe+fF0TIewT1JbPF5oLgHg4zGpnYQhN7cO
+        Inqnhq5CoNwtHuku/z3RUD40sPNCMN4=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-167-kmEDA5OnNSGEhC24a1uUYw-1; Wed, 06 Oct 2021 05:27:50 -0400
+X-MC-Unique: kmEDA5OnNSGEhC24a1uUYw-1
+Received: by mail-wr1-f72.google.com with SMTP id r25-20020adfab59000000b001609ddd5579so1510390wrc.21
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 02:27:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=5BPnrtcUd4exawwgaLK46Mso62ztjXNOBQ35saRpWTg=;
-        b=SwGGcoHiVzQOQdnIiAR9cdZvlYmc+RzktLrve1KawLzs3AeQthDjznJhnGkL/KnpYX
-         q2BRlH47JlIFNt2w2iq4uTOjUo1tmGRI9b6TFUE8KV8qANkfT01V0cBrEwvT34DjlQMB
-         +WtVZNOUkBgISTP5kd5WmyqpmbcXbxLxMBanKifbkzviW0ayIStDWe0JSWzvczKtGtjW
-         NziH5Y1svnON59jgXZMiEu0VPX/bETnampXkQuahGRt0S2yweAJN929phjPz9Uo/GwUq
-         cDEp2uWfFFkcT/W+PazjhZ6doay+Su1V9iU5Vd1v6Jx3GEFYXoMTgY0UjUlxof+4MZK7
-         zmfQ==
-X-Gm-Message-State: AOAM533XRxxAubxOj0W3C4YULINL3zkLGhFcY7TLB3QKSdTTBtuiIrTe
-        FQGvA9V2feFMADMtFJPDz0UyzzQs05YaQq/ViEu+7lVBxS4jdIY=
-X-Google-Smtp-Source: ABdhPJxgNzmQg5dT365VyGrQ7QZB80Ms7uh85q8J3xX/38ZlHBmjBGld7w7Uly4VtXmOocGa3sw8DpSk3MEbb6gHvHU=
-X-Received: by 2002:a17:90a:b794:: with SMTP id m20mr9962152pjr.178.1633512461971;
- Wed, 06 Oct 2021 02:27:41 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=7ngYQ8UnRk1ZQG1QBxVMt0vUipJ0oB+rpBaTB/8WXgg=;
+        b=CkZSOj/IxotHvFnn5PAba84JEVxzweaXGC6QOA8pTXoBqzYKuMR2y8LIl2DF1yCDrS
+         DyqHAMXbOneIw1XuI82yiJaCf+VoqTZuNmMBZcSGps3VkHqqh/5VSQdtqayssvb25VKS
+         mrIwIjckXROr+oekpZqtfeS0RgVU2hQVXBO56nQnu3EqXwE1bCy5PeHaVkBpyktD6YuL
+         3mNqf4ts8f+/E9JPMKva6WDJmkOuRo1YYvvObYbdwfPeBZbBql1/Ay/OR4mn7JfOnxHv
+         C6Mc65JB1f1mGwtoWJ1N+OHvhl1xuDK0qfvhzraHf04pb5Oc5nQE/ozbRywrJlYFTVto
+         kgIQ==
+X-Gm-Message-State: AOAM533umCdQF3xpt18N42GDPgSncQ54ulmdWnxVsaOKieY+EIbyNpm0
+        Iu6bBz5kZgttu2/6ODvALuUbJEXXkmTN3+3bymkI/RWFDAjUPFFJBBaAYxkzhAnJDeoCWYj6tiW
+        7sKlSIKJMEvqgAkZ41bVOmOfo
+X-Received: by 2002:a05:600c:2504:: with SMTP id d4mr8654601wma.53.1633512468946;
+        Wed, 06 Oct 2021 02:27:48 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzGUhy0gAKWUOqrJ1UNTMcU+0gj6b2WgmTy8wezEYe1OO1y1Ud7N7Qy2A2zoM8LgbCxYHGIwg==
+X-Received: by 2002:a05:600c:2504:: with SMTP id d4mr8654537wma.53.1633512468677;
+        Wed, 06 Oct 2021 02:27:48 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c6529.dip0.t-ipconnect.de. [91.12.101.41])
+        by smtp.gmail.com with ESMTPSA id o26sm4707828wmc.17.2021.10.06.02.27.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Oct 2021 02:27:48 -0700 (PDT)
+Subject: Re: [PATCH v10 3/3] mm: add anonymous vma name refcounting
+To:     Michal Hocko <mhocko@suse.com>, John Hubbard <jhubbard@nvidia.com>
+Cc:     Suren Baghdasaryan <surenb@google.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Colin Cross <ccross@google.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        vincenzo.frascino@arm.com,
+        =?UTF-8?B?Q2hpbndlbiBDaGFuZyAo5by16Yym5paHKQ==?= 
+        <chinwen.chang@mediatek.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Jann Horn <jannh@google.com>, apopple@nvidia.com,
+        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
+        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
+        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
+        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
+        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
+        chris.hyser@oracle.com, Peter Collingbourne <pcc@google.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Jens Axboe <axboe@kernel.dk>, legion@kernel.org,
+        Rolf Eike Beer <eb@emlix.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Thomas Cedeno <thomascedeno@google.com>, sashal@kernel.org,
+        cxfcosmos@gmail.com, Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-mm <linux-mm@kvack.org>,
+        kernel-team <kernel-team@android.com>
+References: <20211001205657.815551-1-surenb@google.com>
+ <20211001205657.815551-3-surenb@google.com>
+ <20211005184211.GA19804@duo.ucw.cz>
+ <CAJuCfpE5JEThTMhwKPUREfSE1GYcTx4YSLoVhAH97fJH_qR0Zg@mail.gmail.com>
+ <20211005200411.GB19804@duo.ucw.cz>
+ <CAJuCfpFZkz2c0ZWeqzOAx8KFqk1ge3K-SiCMeu3dmi6B7bK-9w@mail.gmail.com>
+ <efdffa68-d790-72e4-e6a3-80f2e194d811@nvidia.com>
+ <YV1eCu0eZ+gQADNx@dhcp22.suse.cz>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <6b15c682-72eb-724d-bc43-36ae6b79b91a@redhat.com>
+Date:   Wed, 6 Oct 2021 11:27:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-From:   Hao Sun <sunhao.th@gmail.com>
-Date:   Wed, 6 Oct 2021 17:27:31 +0800
-Message-ID: <CACkBjsb2j-6C7gPJVE_XZ_Fcc41H1VMoeDJiCHd-xCgcdKWD0A@mail.gmail.com>
-Subject: possible deadlock in sch_direct_xmit
-To:     Jamal Hadi Salim <jhs@mojatatu.com>, xiyou.wangcong@gmail.com,
-        =?UTF-8?B?SmnFmcOtIFDDrXJrbw==?= <jiri@resnulli.us>,
-        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YV1eCu0eZ+gQADNx@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 06.10.21 10:27, Michal Hocko wrote:
+> On Tue 05-10-21 23:57:36, John Hubbard wrote:
+> [...]
+>> 1) Yes, just leave the strings in the kernel, that's simple and
+>> it works, and the alternatives don't really help your case nearly
+>> enough.
+> 
+> I do not have a strong opinion. Strings are easier to use but they
+> are more involved and the necessity of kref approach just underlines
+> that. There are going to be new allocations and that always can lead
+> to surprising side effects.  These are small (80B at maximum) so the
+> overall footpring shouldn't all that large by default but it can grow
+> quite large with a very high max_map_count. There are workloads which
+> really require the default to be set high (e.g. heavy mremap users). So
+> if anything all those should be __GFP_ACCOUNT and memcg accounted.
+> 
+> I do agree that numbers are just much more simpler from accounting,
+> performance and implementation POV.
 
-When using Healer to fuzz the latest Linux kernel, the following crash
-was triggered.
++1
 
-HEAD commit: 42d43c92fc57  Merge branch 'for-linus'
-git tree: upstream
-console output:
-https://drive.google.com/file/d/16oeU35nvvz-aFIrGtltd6N0HHf6e6LXl/view?usp=sharing
-kernel config: https://drive.google.com/file/d/15vWoQRbJuuMu4ovWhUm1h4SrHyNwK8im/view?usp=sharing
+I can understand that having a string can be quite beneficial e.g., when 
+dumping mmaps. If only user space knows the id <-> string mapping, that 
+can be quite tricky.
 
-Sorry, I don't have a reproducer for this crash, hope the symbolized
-report can help.
-If you fix this issue, please add the following tag to the commit:
-Reported-by: Hao Sun <sunhao.th@gmail.com>
+However, I also do wonder if there would be a way to standardize/reserve 
+ids, such that a given id always corresponds to a specific user. If we 
+use an uint64_t for an id, there would be plenty room to reserve ids ...
 
-============================================
-WARNING: possible recursive locking detected
-5.15.0-rc3+ #1 Not tainted
---------------------------------------------
-syz-executor/9686 is trying to acquire lock:
-ffff888013986498 (_xmit_ETHER#2){+.-.}-{2:2}, at: spin_lock
-./include/linux/spinlock.h:363 [inline]
-ffff888013986498 (_xmit_ETHER#2){+.-.}-{2:2}, at: __netif_tx_lock
-./include/linux/netdevice.h:4405 [inline]
-ffff888013986498 (_xmit_ETHER#2){+.-.}-{2:2}, at:
-sch_direct_xmit+0x30f/0xc60 net/sched/sch_generic.c:340
+I'd really prefer if we can avoid using strings and instead using ids.
 
-but task is already holding lock:
-ffff888013984898 (_xmit_ETHER#2){+.-.}-{2:2}, at: spin_lock
-./include/linux/spinlock.h:363 [inline]
-ffff888013984898 (_xmit_ETHER#2){+.-.}-{2:2}, at: __netif_tx_lock
-./include/linux/netdevice.h:4405 [inline]
-ffff888013984898 (_xmit_ETHER#2){+.-.}-{2:2}, at:
-sch_direct_xmit+0x30f/0xc60 net/sched/sch_generic.c:340
+-- 
+Thanks,
 
-other info that might help us debug this:
- Possible unsafe locking scenario:
+David / dhildenb
 
-       CPU0
-       ----
-  lock(_xmit_ETHER#2);
-  lock(_xmit_ETHER#2);
-
- *** DEADLOCK ***
-
- May be due to missing lock nesting notation
-
-7 locks held by syz-executor/9686:
- #0: ffffffff8b97e980 (rcu_read_lock_bh){....}-{1:2}, at:
-lwtunnel_xmit_redirect ./include/net/lwtunnel.h:95 [inline]
- #0: ffffffff8b97e980 (rcu_read_lock_bh){....}-{1:2}, at:
-ip_finish_output2+0x295/0x21e0 net/ipv4/ip_output.c:207
- #1: ffffffff8b97e980 (rcu_read_lock_bh){....}-{1:2}, at:
-__dev_queue_xmit+0x1fc/0x3940 net/core/dev.c:4136
- #2: ffff888021cd5258 (dev->qdisc_tx_busylock ?:
-&qdisc_tx_busylock){+...}-{2:2}, at: spin_trylock
-./include/linux/spinlock.h:373 [inline]
- #2: ffff888021cd5258 (dev->qdisc_tx_busylock ?:
-&qdisc_tx_busylock){+...}-{2:2}, at: qdisc_run_begin
-./include/net/sch_generic.h:173 [inline]
- #2: ffff888021cd5258 (dev->qdisc_tx_busylock ?:
-&qdisc_tx_busylock){+...}-{2:2}, at: __dev_xmit_skb
-net/core/dev.c:3790 [inline]
- #2: ffff888021cd5258 (dev->qdisc_tx_busylock ?:
-&qdisc_tx_busylock){+...}-{2:2}, at: __dev_queue_xmit+0x18bb/0x3940
-net/core/dev.c:4170
- #3: ffff888013984898 (_xmit_ETHER#2){+.-.}-{2:2}, at: spin_lock
-./include/linux/spinlock.h:363 [inline]
- #3: ffff888013984898 (_xmit_ETHER#2){+.-.}-{2:2}, at: __netif_tx_lock
-./include/linux/netdevice.h:4405 [inline]
- #3: ffff888013984898 (_xmit_ETHER#2){+.-.}-{2:2}, at:
-sch_direct_xmit+0x30f/0xc60 net/sched/sch_generic.c:340
- #4: ffffffff8b97e980 (rcu_read_lock_bh){....}-{1:2}, at:
-lwtunnel_xmit_redirect ./include/net/lwtunnel.h:95 [inline]
- #4: ffffffff8b97e980 (rcu_read_lock_bh){....}-{1:2}, at:
-ip_finish_output2+0x295/0x21e0 net/ipv4/ip_output.c:207
- #5: ffffffff8b97e980 (rcu_read_lock_bh){....}-{1:2}, at:
-__dev_queue_xmit+0x1fc/0x3940 net/core/dev.c:4136
- #6: ffff88810be44258 (dev->qdisc_tx_busylock ?:
-&qdisc_tx_busylock){+...}-{2:2}, at: spin_trylock
-./include/linux/spinlock.h:373 [inline]
- #6: ffff88810be44258 (dev->qdisc_tx_busylock ?:
-&qdisc_tx_busylock){+...}-{2:2}, at: qdisc_run_begin
-./include/net/sch_generic.h:173 [inline]
- #6: ffff88810be44258 (dev->qdisc_tx_busylock ?:
-&qdisc_tx_busylock){+...}-{2:2}, at: __dev_xmit_skb
-net/core/dev.c:3790 [inline]
- #6: ffff88810be44258 (dev->qdisc_tx_busylock ?:
-&qdisc_tx_busylock){+...}-{2:2}, at: __dev_queue_xmit+0x18bb/0x3940
-net/core/dev.c:4170
-
-stack backtrace:
-CPU: 0 PID: 9686 Comm: syz-executor Not tainted 5.15.0-rc3+ #1
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-1.13.0-1ubuntu1.1 04/01/2014
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
- print_deadlock_bug kernel/locking/lockdep.c:2944 [inline]
- check_deadlock kernel/locking/lockdep.c:2987 [inline]
- validate_chain kernel/locking/lockdep.c:3776 [inline]
- __lock_acquire.cold+0x168/0x3c3 kernel/locking/lockdep.c:5015
- lock_acquire kernel/locking/lockdep.c:5625 [inline]
- lock_acquire+0x1ab/0x520 kernel/locking/lockdep.c:5590
- __raw_spin_lock ./include/linux/spinlock_api_smp.h:142 [inline]
- _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:154
- spin_lock ./include/linux/spinlock.h:363 [inline]
- __netif_tx_lock ./include/linux/netdevice.h:4405 [inline]
- sch_direct_xmit+0x30f/0xc60 net/sched/sch_generic.c:340
- __dev_xmit_skb net/core/dev.c:3803 [inline]
- __dev_queue_xmit+0x1b05/0x3940 net/core/dev.c:4170
- neigh_resolve_output net/core/neighbour.c:1492 [inline]
- neigh_resolve_output+0x52a/0x850 net/core/neighbour.c:1472
- neigh_output ./include/net/neighbour.h:510 [inline]
- ip_finish_output2+0x873/0x21e0 net/ipv4/ip_output.c:221
- __ip_finish_output net/ipv4/ip_output.c:299 [inline]
- __ip_finish_output+0x856/0x1450 net/ipv4/ip_output.c:281
- ip_finish_output+0x32/0x200 net/ipv4/ip_output.c:309
- NF_HOOK_COND ./include/linux/netfilter.h:296 [inline]
- ip_mc_output+0x268/0xec0 net/ipv4/ip_output.c:408
- dst_output ./include/net/dst.h:450 [inline]
- ip_local_out+0xaf/0x1a0 net/ipv4/ip_output.c:126
- iptunnel_xmit+0x69d/0xa90 net/ipv4/ip_tunnel_core.c:82
- ip_tunnel_xmit+0xf79/0x2af0 net/ipv4/ip_tunnel.c:810
- erspan_xmit+0x513/0x2ad0 net/ipv4/ip_gre.c:712
- __netdev_start_xmit ./include/linux/netdevice.h:4988 [inline]
- netdev_start_xmit ./include/linux/netdevice.h:5002 [inline]
- xmit_one net/core/dev.c:3576 [inline]
- dev_hard_start_xmit+0x1ff/0x950 net/core/dev.c:3592
- sch_direct_xmit+0x19f/0xc60 net/sched/sch_generic.c:342
- __dev_xmit_skb net/core/dev.c:3803 [inline]
- __dev_queue_xmit+0x1b05/0x3940 net/core/dev.c:4170
- neigh_resolve_output net/core/neighbour.c:1492 [inline]
- neigh_resolve_output+0x52a/0x850 net/core/neighbour.c:1472
- neigh_output ./include/net/neighbour.h:510 [inline]
- ip_finish_output2+0x873/0x21e0 net/ipv4/ip_output.c:221
- __ip_finish_output net/ipv4/ip_output.c:299 [inline]
- __ip_finish_output+0x856/0x1450 net/ipv4/ip_output.c:281
- ip_finish_output+0x32/0x200 net/ipv4/ip_output.c:309
- NF_HOOK_COND ./include/linux/netfilter.h:296 [inline]
- ip_mc_output+0x268/0xec0 net/ipv4/ip_output.c:408
- dst_output ./include/net/dst.h:450 [inline]
- ip_local_out+0xaf/0x1a0 net/ipv4/ip_output.c:126
- ip_send_skb+0x3e/0xe0 net/ipv4/ip_output.c:1555
- udp_send_skb.isra.0+0x6d2/0x11c0 net/ipv4/udp.c:966
- udp_sendmsg+0x1d86/0x2820 net/ipv4/udp.c:1253
- inet_sendmsg+0x99/0xe0 net/ipv4/af_inet.c:821
- sock_sendmsg_nosec net/socket.c:704 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:724
- ____sys_sendmsg+0x331/0x810 net/socket.c:2409
- ___sys_sendmsg+0x100/0x170 net/socket.c:2463
- __sys_sendmmsg+0x195/0x470 net/socket.c:2549
- __do_sys_sendmmsg net/socket.c:2578 [inline]
- __se_sys_sendmmsg net/socket.c:2575 [inline]
- __x64_sys_sendmmsg+0x99/0x100 net/socket.c:2575
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7f9c5d76cc4d
-Code: 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 f3 0f 1e fa 48 89 f8 48
-89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
-01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f9c5acd4c58 EFLAGS: 00000246 ORIG_RAX: 0000000000000133
-RAX: ffffffffffffffda RBX: 00007f9c5d8930a0 RCX: 00007f9c5d76cc4d
-RDX: 000000000800001d RSI: 0000000020000100 RDI: 0000000000000003
-RBP: 00007f9c5d7e5d80 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007f9c5d8930a0
-R13: 00007ffff72e0cbf R14: 00007ffff72e0e60 R15: 00007f9c5acd4dc0
