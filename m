@@ -2,195 +2,275 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF766423972
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 10:12:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEC2C423976
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 10:12:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237740AbhJFIOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 04:14:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34392 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237551AbhJFIOA (ORCPT
+        id S237781AbhJFIOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 04:14:16 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:34768 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237772AbhJFIOO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 04:14:00 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70E5DC061749;
-        Wed,  6 Oct 2021 01:12:08 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id na16-20020a17090b4c1000b0019f5bb661f9so1737242pjb.0;
-        Wed, 06 Oct 2021 01:12:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=P2QMvNboRciBmJaz6KQZe0gQg4iVEULw1TeHChRcqGw=;
-        b=J+rDbILUAWBpmBqPSH0ZCbK3K0rv9FpJO/muJRj6m2VsBUQDc5CuAPRChPPIq3DU28
-         DdT8Blacig4zXSno7XcvnPvj+yL2q53y6Da2BHmAJUE3rU4bdrHqlQY2/ff7FLdDZ61N
-         VyLkUIQjna4AoN3Bhv23Wp/gN1MemhrwwaWq2c3tR9RWKaItXmvhrU9rwXzJxqvBAR2b
-         tH00W1CA2mfUzAu0rCtvtlA+qyFMSj9vt6AF7OcqvaFIaV+AqRAluHSf912ZztSAzCHc
-         LFfdV9fcBe7+JlTYmXXQQ6Q8N5KCGd4Vc4sYfRhHwgdfuvLEnGiL03W+7+4MUOchFPX0
-         MGEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=P2QMvNboRciBmJaz6KQZe0gQg4iVEULw1TeHChRcqGw=;
-        b=4YH+hlFW0jb0bZOQg0VEMDsxVggY6XBUxPpRLaABIXDNRkXVbkjcGPDh7LvlPux19i
-         7aBn8DuU4IZ+gE9+X+n1wjFlRfZe+cjib6AXj/wQvTXkE+dtoGFMsXQig3jpeU+PQudA
-         PhmljQtA2qm69TnjXEiL9uZ4KSIj2nCLb/NM2j6tFCPi5/7SAYNrjPZNL1s/Y8bzuBV4
-         jFDZd3NQMv8bw0De3ihOmOqUR0BIwWlwij9SbDoHj1RSuUvQdHqKxDu7Ksv89VJR9xIW
-         jg+8JN38czPOK3pmZ2E9FnY3K3vSgkUnuW25mZSPbc+l1bwqtLu8OjsPxiImgf0TvsXK
-         kMOg==
-X-Gm-Message-State: AOAM5317Jlawk9Ds/nXAJDEASoYXAKjWMb0jQEsQYr5Ej6LBUDKXbJNP
-        FdXFlg+3Ey9jd3EL5sAtKJi5B3Tx4Z6yyABytA==
-X-Google-Smtp-Source: ABdhPJyindIUZz8sf3gTfb99rEeQYAdBz2eb/Qm1uiEZBwXNEY/3z0WCwqW1NrliBz4d53IYOhAswTqvTcAOQallxyw=
-X-Received: by 2002:a17:902:7b84:b0:13b:90a7:e270 with SMTP id
- w4-20020a1709027b8400b0013b90a7e270mr9734786pll.21.1633507927871; Wed, 06 Oct
- 2021 01:12:07 -0700 (PDT)
+        Wed, 6 Oct 2021 04:14:14 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 5EE1420322;
+        Wed,  6 Oct 2021 08:12:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1633507941; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2Ex/uCnma/tiMObj88oRVc2SIybziL1O5YZ+npjAnOY=;
+        b=LSORa5Nt3IiYoNElzpeQULqRJqORVrYH23kM4QiB0dRBSeuvavO6viXo15de3SZ3pIKbCQ
+        Q9TrAYhL+mu0KdbiETbJXx3aD3ulVkGziO0NGJ9hWp4S9CR1yoem+Qy795fhyTDx0dhdzz
+        +F//VyxwAqx7kp5b+OSsEC+0bc95aJ4=
+Received: from suse.cz (unknown [10.100.216.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 0985DA3B95;
+        Wed,  6 Oct 2021 08:12:21 +0000 (UTC)
+Date:   Wed, 6 Oct 2021 10:12:17 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     gor@linux.ibm.com, jpoimboe@redhat.com, jikos@kernel.org,
+        mbenes@suse.cz, mingo@kernel.org, linux-kernel@vger.kernel.org,
+        joe.lawrence@redhat.com, fweisbec@gmail.com, tglx@linutronix.de,
+        hca@linux.ibm.com, svens@linux.ibm.com, sumanthk@linux.ibm.com,
+        live-patching@vger.kernel.org, paulmck@kernel.org,
+        rostedt@goodmis.org, x86@kernel.org
+Subject: Re: [RFC][PATCH v2 09/11] context_tracking,livepatch: Dont disturb
+ NOHZ_FULL
+Message-ID: <YV1aYaHEynjSAUuI@alley>
+References: <20210929151723.162004989@infradead.org>
+ <20210929152429.067060646@infradead.org>
 MIME-Version: 1.0
-From:   Hao Sun <sunhao.th@gmail.com>
-Date:   Wed, 6 Oct 2021 16:11:56 +0800
-Message-ID: <CACkBjsbDy4gq1NP1vtorCiYXd+4YhhWvMcqQik7KSb9sp-qqww@mail.gmail.com>
-Subject: BUG: unable to handle kernel NULL pointer dereference in reset_interrupt
-To:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org
-Cc:     efremov@linux.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210929152429.067060646@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed 2021-09-29 17:17:32, Peter Zijlstra wrote:
+> Using the new context_tracking infrastructure, avoid disturbing
+> userspace tasks when context tracking is enabled.
+> 
+> When context_tracking_set_cpu_work() returns true, we have the
+> guarantee that klp_update_patch_state() is called from noinstr code
+> before it runs normal kernel code. This covers
+> syscall/exceptions/interrupts and NMI entry.
 
-When using Healer to fuzz the latest Linux kernel, the following crash
-was triggered.
+This patch touches the most tricky (lockless) parts of the livepatch code.
+I always have to refresh my head about all the dependencies.
 
-HEAD commit: 0513e464f900 Merge tag 'perf-tools-fixes-for-v5.15-2021-09-27'
-git tree: upstream
-console output:
-https://drive.google.com/file/d/1Vg4qLPbcjILoerGfzKXlEpdmagBonsn1/view?usp=sharing
-kernel config: https://drive.google.com/file/d/1Jqhc4DpCVE8X7d-XBdQnrMoQzifTG5ho/view?usp=sharing
+Sigh, I guess that the livepatch code looks over complicated to you.
 
-Sorry, I don't have a reproducer for this crash, hope the symbolized
-report can help.
-If you fix this issue, please add the following tag to the commit:
-Reported-by: Hao Sun <sunhao.th@gmail.com>
+The main problem is that we want to migrate tasks only when they
+are not inside any livepatched function. It allows to do semantic
+changes which is needed by some sort of critical security fixes.
 
-84 90 4295172491
-last result at 4295172491
-last redo_fd_request at 4295166102
-40 00 00 e2 1e e5 02                             @......
-status=80
-fdc_busy=1
-floppy_work.func=floppy_work_workfn
-timer_function=ffffffff82653f90 expires=294
-cont=ffffffff84a34480
-current_req=0000000000000000
-command_status=-1
 
-floppy0: Unable to send byte 1e to FDC. Fdc=0 Status=d0
+> --- a/kernel/context_tracking.c
+> +++ b/kernel/context_tracking.c
+> @@ -55,15 +56,13 @@ static noinstr void ct_exit_user_work(struct
+>  {
+>  	unsigned int work = arch_atomic_read(&ct->work);
+>  
+> -#if 0
+> -	if (work & CT_WORK_n) {
+> +	if (work & CT_WORK_KLP) {
+>  		/* NMI happens here and must still do/finish CT_WORK_n */
+> -		do_work_n();
+> +		__klp_update_patch_state(current);
+>  
+>  		smp_mb__before_atomic();
+> -		arch_atomic_andnot(CT_WORK_n, &ct->work);
+> +		arch_atomic_andnot(CT_WORK_KLP, &ct->work);
+>  	}
+> -#endif
+>  
+>  	smp_mb__before_atomic();
+>  	arch_atomic_andnot(CT_SEQ_WORK, &ct->seq);
+> --- a/kernel/livepatch/transition.c
+> +++ b/kernel/livepatch/transition.c
+> @@ -153,6 +154,11 @@ void klp_cancel_transition(void)
+>  	klp_complete_transition();
+>  }
+>  
+> +noinstr void __klp_update_patch_state(struct task_struct *task)
+> +{
+> +	task->patch_state = READ_ONCE(klp_target_state);
+> +}
+> +
+>  /*
+>   * Switch the patched state of the task to the set of functions in the target
+>   * patch state.
+> @@ -180,8 +186,10 @@ void klp_update_patch_state(struct task_
+>  	 *    of func->transition, if klp_ftrace_handler() is called later on
+>  	 *    the same CPU.  See __klp_disable_patch().
+>  	 */
+> -	if (test_and_clear_tsk_thread_flag(task, TIF_PATCH_PENDING))
+> +	if (test_tsk_thread_flag(task, TIF_PATCH_PENDING)) {
 
-floppy driver state
--------------------
-now=4295172495 last interrupt=4295172491 diff=4 last called
-handler=main_command_interrupt
-timeout_message=floppy start
-last output bytes:
- f 80 4295166093
- 0 90 4295166093
- 1 90 4295166093
- 8 80 4295166093
- 4 80 4295166099
- 0 90 4295166099
- f 80 4295166099
- 0 90 4295166099
- 0 90 4295166099
- 8 80 4295166099
-31 80 4295172491
-e4 90 4295172491
-e2 90 4295172491
-1e 90 4295172491
-e5 90 4295172491
-af 90 4295172491
-2e 90 4295172491
-25 90 4295172491
-84 90 4295172491
-6b 80 4295172495
-last result at 4295172491
-last redo_fd_request at 4295166102
-40 00 00 e2 1e e5 02                             @......
-status=d0
-fdc_busy=1
-floppy_work.func=floppy_work_workfn
-timer_function=ffffffff82653f90 expires=288
-cont=ffffffff84a34480
-current_req=0000000000000000
-command_status=-1
+This would require smp_rmb() here. It will make sure that we will
+read the right @klp_target_state when TIF_PATCH_PENDING is set.
 
-BUG: kernel NULL pointer dereference, address: 0000000000000008
-#PF: supervisor read access in kernel mode
-#PF: error_code(0x0000) - not-present page
-PGD 0 P4D 0
-Oops: 0000 [#1] PREEMPT SMP
-CPU: 2 PID: 7832 Comm: kworker/u8:3 Not tainted 5.15.0-rc3+ #21
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-Workqueue: floppy floppy_work_workfn
-RIP: 0010:reset_interrupt+0x60/0xf0 drivers/block/floppy.c:1792
-Code: 1d 35 c6 30 06 48 83 fb 01 0f 87 8c 00 00 00 48 8d 04 9b f6 04
-c5 f8 04 96 88 04 75 42 e8 b8 52 d2 fe 48 8b 05 89 c6 30 06 5b <48> 8b
-40 08 ff e0 e8 a5 52 d2 fe 48 8b 0d be 72 1b 03 48 c7 c2 16
-RSP: 0018:ffffc90005097e48 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 0000000000000002 RCX: 0000000000000000
-RDX: ffff888104398000 RSI: ffffffff82653ea8 RDI: 0000000000000000
-RBP: ffffc90005097ec8 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffc90005097d18 R11: 0000000000000001 R12: ffff888016f6bd80
-R13: ffff888008c5cc00 R14: ffff888009860c00 R15: ffffffff85c70b00
-FS:  0000000000000000(0000) GS:ffff88807dd00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000000008 CR3: 000000001912b000 CR4: 0000000000750ee0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-PKRU: 55555554
-Call Trace:
- process_one_work+0x359/0x850 kernel/workqueue.c:2297
- worker_thread+0x41/0x4d0 kernel/workqueue.c:2444
- kthread+0x178/0x1b0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-Modules linked in:
-Dumping ftrace buffer:
-   (ftrace buffer empty)
-CR2: 0000000000000008
----[ end trace c4cbac3b36a74da5 ]---
-RIP: 0010:reset_interrupt+0x60/0xf0 drivers/block/floppy.c:1792
-Code: 1d 35 c6 30 06 48 83 fb 01 0f 87 8c 00 00 00 48 8d 04 9b f6 04
-c5 f8 04 96 88 04 75 42 e8 b8 52 d2 fe 48 8b 05 89 c6 30 06 5b <48> 8b
-40 08 ff e0 e8 a5 52 d2 fe 48 8b 0d be 72 1b 03 48 c7 c2 16
-RSP: 0018:ffffc90005097e48 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 0000000000000002 RCX: 0000000000000000
-RDX: ffff888104398000 RSI: ffffffff82653ea8 RDI: 0000000000000000
-RBP: ffffc90005097ec8 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffc90005097d18 R11: 0000000000000001 R12: ffff888016f6bd80
-R13: ffff888008c5cc00 R14: ffff888009860c00 R15: ffffffff85c70b00
-FS:  0000000000000000(0000) GS:ffff88807dd00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000000008 CR3: 000000001912b000 CR4: 0000000000750ee0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-PKRU: 55555554
-----------------
-Code disassembly (best guess):
-   0: 1d 35 c6 30 06        sbb    $0x630c635,%eax
-   5: 48 83 fb 01          cmp    $0x1,%rbx
-   9: 0f 87 8c 00 00 00    ja     0x9b
-   f: 48 8d 04 9b          lea    (%rbx,%rbx,4),%rax
-  13: f6 04 c5 f8 04 96 88 testb  $0x4,-0x7769fb08(,%rax,8)
-  1a: 04
-  1b: 75 42                jne    0x5f
-  1d: e8 b8 52 d2 fe        callq  0xfed252da
-  22: 48 8b 05 89 c6 30 06 mov    0x630c689(%rip),%rax        # 0x630c6b2
-  29: 5b                    pop    %rbx
-* 2a: 48 8b 40 08          mov    0x8(%rax),%rax <-- trapping instruction
-  2e: ff e0                jmpq   *%rax
-  30: e8 a5 52 d2 fe        callq  0xfed252da
-  35: 48 8b 0d be 72 1b 03 mov    0x31b72be(%rip),%rcx        # 0x31b72fa
-  3c: 48                    rex.W
-  3d: c7                    .byte 0xc7
-  3e: c2                    .byte 0xc2
-  3f: 16                    (bad)
+, where @klp_target_state is set in klp_init_transition()
+  and TIF_PATCH_PENDING is set in klp_start_transition()
+
+There are actually two related smp_wmp() barriers between these two
+assignments in:
+
+	1st in klp_init_transition()
+	2nd in __klp_enable_patch()
+
+One would be enough for klp_update_patch_state(). But we need
+both for klp_ftrace_handler(), see the smp_rmb() there.
+In particular, they synchronize:
+
+   + ops->func_stack vs.
+   + func->transition vs.
+   + current->patch_state
+
+
+>  		task->patch_state = READ_ONCE(klp_target_state);
+
+Note that smp_wmb() is not needed here because
+klp_complete_transition() calls klp_synchronize_transition()
+aka synchronize_rcu() before clearing klp_target_state.
+This is why the original code worked.
+
+
+> +		clear_tsk_thread_flag(task, TIF_PATCH_PENDING);
+> +	}
+>  
+>  	preempt_enable_notrace();
+>  }
+> @@ -270,15 +278,30 @@ static int klp_check_and_switch_task(str
+>  {
+>  	int ret;
+>  
+> -	if (task_curr(task))
+> +	if (task_curr(task)) {
+> +		/*
+> +		 * This only succeeds when the task is in NOHZ_FULL user
+> +		 * mode, the true return value guarantees any kernel entry
+> +		 * will call klp_update_patch_state().
+> +		 *
+> +		 * XXX: ideally we'd simply return 0 here and leave
+> +		 * TIF_PATCH_PENDING alone, to be fixed up by
+> +		 * klp_update_patch_state(), except livepatching goes wobbly
+> +		 * with 'pending' TIF bits on.
+> +		 */
+> +		if (context_tracking_set_cpu_work(task_cpu(task), CT_WORK_KLP))
+> +			goto clear;
+
+If I get it correctly, this will clear TIF_PATCH_PENDING immediately
+but task->patch_state = READ_ONCE(klp_target_state) will be
+done later by ct_exit_user_work().
+
+This is a bit problematic:
+
+  1. The global @klp_target_state is set to KLP_UNDEFINED when all
+     processes have TIF_PATCH_PENDING is cleared. This is actually
+     still fine because func->transition is cleared as well.
+     As a result, current->patch_state is ignored in klp_ftrace_handler.
+
+  2. The real problem happens when another livepatch is enabled.
+     The global @klp_target_state is set to new value and
+     func->transition is set again. In this case, the delayed
+     ct_exit_user_work() might assign wrong value that might
+     really be used by klp_ftrace_handler().
+
+
+IMHO, the original solution from v1 was better. We only needed to
+be careful when updating task->patch_state and clearing
+TIF_PATCH_PENDING to avoid the race.
+
+The following might work:
+
+static int klp_check_and_switch_task(struct task_struct *task, void *arg)
+{
+	int ret;
+
+	/*
+	 * Stack is reliable only when the task is not running on any CPU,
+	 * except for the task running this code.
+	 */
+	if (task_curr(task) && task != current) {
+		/*
+		 * This only succeeds when the task is in NOHZ_FULL user
+		 * mode. Such a task might be migrated immediately. We
+		 * only need to be careful to set task->patch_state before
+		 * clearing TIF_PATCH_PENDING so that the task migrates
+		 * itself when entring kernel in the meatime.
+		 */
+		if (is_ct_user(task)) {
+			klp_update_patch_state(task);
+			return 0;
+		}
+
+		return -EBUSY;
+	}
+
+	ret = klp_check_stack(task, arg);
+	if (ret)
+		return ret;
+
+	/*
+	 * The task neither is running on any CPU and nor it can get
+	 * running. As a result, the ordering is not important and
+	 * barrier is not needed.
+	 */
+	task->patch_state = klp_target_state;
+	clear_tsk_thread_flag(task, TIF_PATCH_PENDING);
+
+	return 0;
+}
+
+, where is_ct_user(task) would return true when task is running in
+CONTEXT_USER. If I get the context_tracking API correctly then
+it might be implemeted the following way:
+
+
+#ifdef CONFIG_CONTEXT_TRACKING
+
+/*
+ * XXX: The value is reliable depending the context where this is called.
+ * At least migrating between CPUs should get prevented.
+ */
+static __always_inline bool is_ct_user(struct task_struct *task)
+{
+	int seq;
+
+	if (!context_tracking_enabled())
+		return false;
+
+	seq = __context_tracking_cpu_seq(task_cpu(task));
+	return __context_tracking_seq_in_user(seq);
+}
+
+#else
+
+static __always_inline bool is_ct_user(struct task_struct *task)
+{
+	return false;
+}
+
+#endif /* CONFIG_CONTEXT_TRACKING */
+
+Best Regards,
+Petr
+
+>  		return -EBUSY;
+> +	}
+>  
+>  	ret = klp_check_stack(task, arg);
+>  	if (ret)
+>  		return ret;
+>  
+> -	clear_tsk_thread_flag(task, TIF_PATCH_PENDING);
+>  	task->patch_state = klp_target_state;
+> +clear:
+> +	clear_tsk_thread_flag(task, TIF_PATCH_PENDING);
+>  	return 0;
+>  }
