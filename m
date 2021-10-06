@@ -2,162 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70BD5424435
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 19:29:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E39A42444C
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 19:32:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229835AbhJFRbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 13:31:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52224 "EHLO
+        id S239017AbhJFRd6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 13:33:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231624AbhJFRbp (ORCPT
+        with ESMTP id S238900AbhJFRdz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 13:31:45 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68F9FC061753
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 10:29:53 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id c26-20020a056830349a00b0054d96d25c1eso4015748otu.9
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 10:29:53 -0700 (PDT)
+        Wed, 6 Oct 2021 13:33:55 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71FEEC061746;
+        Wed,  6 Oct 2021 10:32:02 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id r19so12598113lfe.10;
+        Wed, 06 Oct 2021 10:32:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=sriAlmS/O1ECrsUc2OnPgpiaqh82uZoYCygtIK25Qms=;
-        b=U5/BlyXEMbL16pTIuvauG2ZaIDGc6fUX3EV72SGDx4T74Tpwj7UsA4oMhgwrGuZ0rW
-         fcA3XyEz97l1ejfg/T3jSNAKYJfOn3lgIulJaltlOzES327tc9JDntqc1WoDwL3IQY+I
-         ZX1T766ELr1cACdNGgEYpKpbd4Pd2IiW5/0EdQea1shQixU0ojEhOwdPfmKvKPa1Wm42
-         llCsdKQGeEgbfvYOVDfukom68SPhSvDcSK3fFkcrVK4pywZp8HYdJ6x7hp4mpZORmK+y
-         iCrBFqSBLAhcSpdFT2gVkB1duSzYAnhDyvHMt7Bb5Cf8jI+opOh59nm4Zr8BHDD6Hd56
-         tclA==
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=1oYMIeAPIuGPofDkQXVon34gDJqb7YVjS8YeAEPeedc=;
+        b=RHrFrt2ov7ysLJagtN6KsIU/IxT+03d3CFT7x7i2erjE98/iM3qJegkGComskgarm6
+         8LqfjiB2TTm5ObGN3m19q5HEM7u7P7o9QvsmZmTtJoEkCCsRmxaZwmfi2+ONEXk5t+ev
+         D1L1SDIeiqCRLe+gGsW+qqkdULkxOlrptQ6H0u9f5t9Uaj3EU4DV0Z58sNh6Jp92yeD/
+         QcoXxtOmJ+u/XH+f5vX6NHzCB6OiHfDJSTh0AM79WN3EdrpxfQoH60QZ7O/kC7HdAICV
+         PoKdE/CZytq45f+kK6GkRFbJYf2oDom/haohhCDbPPQvNh3l33UAGYRn7cczOh18dFNF
+         sIFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=sriAlmS/O1ECrsUc2OnPgpiaqh82uZoYCygtIK25Qms=;
-        b=3gfxldqt7KYYH8Kz1A1C4egfn20ho0j2UYV23awArQ4B+Ox+Rz8RJISjHq3hTg8+/e
-         liwH5ofNlFVvt6SgwwOtZTmAHNe0Byf731qAuReg6749FRiCLt5x0mZWSdJ5hAOgYFXh
-         PjO+sBdMeZJNLwErUvM8OauPsuAV/NlYsmO06QDCzijSTzBoWeK4y5jAUpcvSezLX9on
-         VskGn3Ks7XB4c4iXs0wHoOf3/s5meUUfAvqc/9TFMTUQvU4Jubuk5CyqBG4RhLR+qhQC
-         TfjTcTg/aOe+QBDrIKN5HW2D+sGfAsoIMnNxDRpFqbMpWHiMyr3gqD2QBLOXfvN2KVdE
-         KTAQ==
-X-Gm-Message-State: AOAM532dIt+vz05WZRG4X/0WBFpcZ8Y4SVA6yfMGd30ZaBqTehr/2Itq
-        C7HGqOPXTtg04SlOH8XTLTDYjQ==
-X-Google-Smtp-Source: ABdhPJyS/b8mbpHQI/Rhb/Fwvm6HfYEn/3btWLeRutifqSrkBNiIKsEaa4tSBor2yY437OBnLj1jhg==
-X-Received: by 2002:a9d:1716:: with SMTP id i22mr20008206ota.20.1633541392652;
-        Wed, 06 Oct 2021 10:29:52 -0700 (PDT)
-Received: from ripper ([2600:1700:a0:3dc8:205:1bff:fec0:b9b3])
-        by smtp.gmail.com with ESMTPSA id z24sm4027968oic.26.2021.10.06.10.29.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Oct 2021 10:29:52 -0700 (PDT)
-Date:   Wed, 6 Oct 2021 10:31:33 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     khsieh@codeaurora.org
-Cc:     Stephen Boyd <swboyd@chromium.org>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Sankeerth Billakanti <sbillaka@codeaurora.org>
-Subject: Re: [PATCH] drm/msm/dp: Shorten SETUP timeout
-Message-ID: <YV3dddt/GOidTmlN@ripper>
-References: <20211005023750.2037631-1-bjorn.andersson@linaro.org>
- <CAE-0n52wN1s=Ph4r4iLposxNPfa562Bv1mM81j1KvNmWOQS1-Q@mail.gmail.com>
- <YVzGVmJXEDH0HfIL@ripper>
- <CAE-0n53FC7JCCJoye_uKeqaLKrZeHXLtvObxWFedaUzjirmBaA@mail.gmail.com>
- <a4a4980e586a70e3b7de989bc61a3e33@codeaurora.org>
- <YV0FlTyMEzlyNsN9@ripper>
- <3dbe0fe48da88af9dee396a85b940e76@codeaurora.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=1oYMIeAPIuGPofDkQXVon34gDJqb7YVjS8YeAEPeedc=;
+        b=CN+gcDatAQKsvSf3CU3SNp4LbLAz+uBAdFlNn5daKt9QaRJylvSBOXr+jEHhJtnEH2
+         Zb0f4VzZx/3s3IksBdzNnvTJquQ3PvzoEoClIJOmzrqSoxrd7LhJpeANKqFcVB9E6OjW
+         JSMexrrsfOQ3syW+CzCJhdH+VreM8GXpp3SxDYL6yLA0Dn18oKmpn2+gW4YOmUuk5+hE
+         iQfchuor8dRzCQV5knhwfGu5BxD4UuQaVFSpy4Ehu5co4bco5pO0JJLwCR3Dsdxgc0Yg
+         u9y1oUmzoRJN3oYddxCl9DYe8FwltdqGC9wXQxK9PFd0O6zBPOLRhcsi+7ZATibx5/49
+         F/ZA==
+X-Gm-Message-State: AOAM5309IIFXglaOecboB79evK5/0kzwnCLigX7zR41EQVue4QYRlszP
+        93y/ZUzeZGiQsOOEQHBsaM5/gFUipP8=
+X-Google-Smtp-Source: ABdhPJzyhcPqmWia5WRnezZ0cVTpyQAoVrnQAXLDeaetA+wa6lbqBjJ6PkEjFXoGUQq9Fp3hpgZ6qw==
+X-Received: by 2002:a2e:761a:: with SMTP id r26mr2120295ljc.166.1633541520689;
+        Wed, 06 Oct 2021 10:32:00 -0700 (PDT)
+Received: from [192.168.2.145] (79-139-163-57.dynamic.spd-mgts.ru. [79.139.163.57])
+        by smtp.googlemail.com with ESMTPSA id j6sm183067lfm.9.2021.10.06.10.32.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Oct 2021 10:32:00 -0700 (PDT)
+Subject: Re: [PATCH v4 2/7] dt-bindings: memory: lpddr2: Convert to schema
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+References: <20211005230009.3635-1-digetx@gmail.com>
+ <20211005230009.3635-3-digetx@gmail.com>
+ <6b8f6ef7-cfc5-3a8b-d44d-f4080a85ecf3@canonical.com>
+ <7047ad7b-52d6-0c91-b7d2-b115ea69506f@gmail.com>
+ <481f4d90-638f-b64f-83a2-b882d9bf194a@gmail.com>
+ <5b24cc4c-3091-a044-612e-43024bc512a5@canonical.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <0edef6e7-ea59-9919-d03a-0a5cd2a83a21@gmail.com>
+Date:   Wed, 6 Oct 2021 20:31:59 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3dbe0fe48da88af9dee396a85b940e76@codeaurora.org>
+In-Reply-To: <5b24cc4c-3091-a044-612e-43024bc512a5@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 06 Oct 08:37 PDT 2021, khsieh@codeaurora.org wrote:
-
-> On 2021-10-05 19:10, Bjorn Andersson wrote:
-> > On Tue 05 Oct 16:04 PDT 2021, khsieh@codeaurora.org wrote:
-> > 
-> > > On 2021-10-05 15:36, Stephen Boyd wrote:
-> > > > Quoting Bjorn Andersson (2021-10-05 14:40:38)
-> > > > > On Tue 05 Oct 11:45 PDT 2021, Stephen Boyd wrote:
-> > > > >
-> > > > > > Quoting Bjorn Andersson (2021-10-04 19:37:50)
-> > > > > > > Found in the middle of a patch from Sankeerth was the reduction of the
-> > > > > > > INIT_SETUP timeout from 10s to 100ms. Upon INIT_SETUP timeout the host
-> > > > > > > is initalized and HPD interrupt start to be serviced, so in the case of
-> > > > > > > eDP this reduction improves the user experience dramatically - i.e.
-> > > > > > > removes 9.9s of bland screen time at boot.
-> > > > > > >
-> > > > > > > Suggested-by: Sankeerth Billakanti <sbillaka@codeaurora.org>
-> > > > > > > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > > > > > > ---
-> > > > > >
-> > > > > > Any Fixes tag? BTW, the delay design is pretty convoluted. I had to go
-> > > > > > re-read the code a couple times to understand that it's waiting 100ms
-> > > > > > times the 'delay' number. Whaaaaat?
-> > > > > >
-> > > > >
-> > > > > I assume you're happy with the current 10s delay on the current
-> > > > > devices, so I don't think we should push for this to be backported.
-> > > > > I have no need for it to be backported on my side at least.
-> > > > >
-> > > >
-> > > > Sure. Fixes tag != backported to stable trees but it is close.
-> > > >
-> > > > > > Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-> > > > >
-> > >   dp_add_event(dp, EV_HPD_INIT_SETUP, 0, 1); <== to 100ms
-> > > 
-> > > This patch will prevent usb3 from working due to dp driver
-> > > initialize phy
-> > > earlier than usb3 which cause timeout error at power up usb3 phy
-> > > when both
-> > > edp and dp are enabled.
-> > 
-> > Can you please help me understand what you mean here, I use this on my
-> > sc8180x with both eDP and USB-C/DP right now. What is it that doesn't
-> > work? Or am I just lucky in some race condition?
-> > 
-> > Thanks,
-> > Bjorn
-> > 
-> The problem is seen at sc7280.
-> Apple dongle have both  hdmi and usb port.
-> plug Apple dongle into type-c, then plug DP into apple's hdmi port and usb
-> mouse into apple's usb port.
-> If edp enabled at this time, then usb mouse will not work due to timeout at
-> phy power up.
+06.10.2021 20:23, Krzysztof Kozlowski пишет:
+> On 06/10/2021 17:44, Dmitry Osipenko wrote:
+>> 06.10.2021 18:41, Dmitry Osipenko пишет:
+>>> 06.10.2021 13:57, Krzysztof Kozlowski пишет:
+>>>>> +  density:
+>>>>> +    description: |
+>>>>> +      Density in megabits of SDRAM chip. Obtained from device datasheet.
+>>>> You need here a type/ref, so uint32.
+>>>>
+>>>
+>>> The type is uint32 by default. I can add it, but it's not really necessary.
+>>>
+>>
+>> You may grep bindings for 'enum: [' to see that nobody is specifying the
+>> type.
+>>
 > 
+> Just because everyone makes a mistake, is not a proof it should be done
+> like that. Please see example schema and vendor,int-property.
+> 
+> AFAIR, only properties defined by schema (directly or by unit suffix,
+> e.g. microvolt) do not need types.
 
-Okay, so you're saying that if the DP driver invokes phy_power_on()
-before the USB driver does, USB initialization fails (or at least USB
-doesn't work)?
+I'm not DT expert, but dt_binding_check says that binding is valid, even
+with W=1. Meanwhile negative values are wrong. All integers are u32 by
+default for DTB.
 
-Sounds like something we need to work out in the QMP phy driver. Do you
-have any more details about what's going wrong.
-
-
-Also, I've seen various references to said "Apple dongle", do you have a
-link to the exact one you're testing with so I can pick one up for
-testing purposes as well?
-
-Regards,
-Bjorn
-
-> > > I had prepared a patch (drm/msm/dp: do not initialize combo phy
-> > > until plugin
-> > > interrupt) to fix this problem.
-> > > Unfortunately, my patch is depend on Bjorn's patch (PATCH v3 3/5]
-> > > drm/msm/dp: Support up to 3 DP controllers).
-> > > I will submit my patch for review once Bjorn's patches merged in.
-> > > Therefore I would think this patch should go after both Bjorn's
-> > > patches and
-> > > my patch.
-> > > 
-> > > 
-> > > 
+Alright, I'll just add the type since it won't hurt anyways.
