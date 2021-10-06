@@ -2,153 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC6D242387C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 09:04:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A158E423881
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 09:05:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237369AbhJFHGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 03:06:33 -0400
-Received: from mail-dm6nam12on2115.outbound.protection.outlook.com ([40.107.243.115]:34433
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230227AbhJFHGb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 03:06:31 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=b0VXOXEX5nm1c4KF93eJNpD0B4HqW0a0qgc0OnBhDGr6y2E3nWjvRg0+kPTQt1Pv+e0KFKWIubVKyrV7VriWrli7Ph06ST2zHQ2wIduzc8IQawyi5ZOWQOM+Smzy0kgOLnTf88L/hYf9mkFSdAgFSr5dH+6TTIVdygYbvxy4jrJ6zYnImhg0RbytaxrkKVXGuBKpCiLhxv+zNNEK6uguKrHTrEGY490cpROYNm4Q/XksC9vG5D9IdzV8UFY9fg+zzOHtqUrWxs+73WsEj15+H1p9sjlpCwfp2oTP15e/jaqJZ628SLnXqst2qMKvcjyYP9svQqY+uZHHKVp+dyqCFw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=wNgkG0Owpmzxi+ZwZD16lLHp+miIjC0VpSKHOiw4HmM=;
- b=PJwhmf3i8pBCKyRwGX0PCybz1LBjn9QQ7lc8Dc6E1nm+K6AAwu8EMBbsit6oxZ3u3kDqkohNMd0HX/Z6M+4n9NcuavRLBA+/0I4C3OBxzf37KG0Ms8LpcH7qBpvWlWO2j4Y1zdeIZQ78ICeELMrsP75RDMGP+ZBPpc0kERH9rtpqLf7f7ly0ehz4keSoWcR2bY7SFU/kEVX8s1KSET1mmGsx7WlX7M0UQ59gZFeYLUX7870xL3Pw5U/l/2ms0JFub+IzU9bRM7xSp5bahRetJQmvsjm9hi/EFJzOeXMjrB5oNbFkDoMEbeYwpTtLvT5dC691PyPHPH52Ge6v0VLeyw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wNgkG0Owpmzxi+ZwZD16lLHp+miIjC0VpSKHOiw4HmM=;
- b=DdWUBk+3hXs2x1k1k9FVf4YvANT2ngfIfCmaWrnuW7UQ48TyjQA17CxV584BRd8KnaO/o3ZOXTDYNzxzWahydclK3s1WdqnHeOcRWoXLe1yRxdp3UZvc9J28VWgwz8KDBQex2yWZn+FIQJstpM2ibPCfVqFJwuUuw3DfxcSsa+U=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-Received: from BL0PR2101MB1092.namprd21.prod.outlook.com
- (2603:10b6:207:37::26) by BL0PR2101MB1747.namprd21.prod.outlook.com
- (2603:10b6:207:35::23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.2; Wed, 6 Oct
- 2021 07:04:36 +0000
-Received: from BL0PR2101MB1092.namprd21.prod.outlook.com
- ([fe80::a5a1:1ba3:ae97:a567]) by BL0PR2101MB1092.namprd21.prod.outlook.com
- ([fe80::a5a1:1ba3:ae97:a567%7]) with mapi id 15.20.4608.003; Wed, 6 Oct 2021
- 07:04:36 +0000
-From:   Dexuan Cui <decui@microsoft.com>
-To:     kys@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org,
-        jejb@linux.ibm.com, martin.petersen@oracle.com,
-        haiyangz@microsoft.com, ming.lei@redhat.com, bvanassche@acm.org,
-        john.garry@huawei.com, linux-scsi@vger.kernel.org,
-        linux-hyperv@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Dexuan Cui <decui@microsoft.com>,
-        stable@vger.kernel.org
-Subject: [PATCH] scsi: storvsc: Cap scsi_driver.can_queue to fix a hang issue during boot
-Date:   Wed,  6 Oct 2021 00:03:45 -0700
-Message-Id: <20211006070345.51713-1-decui@microsoft.com>
-X-Mailer: git-send-email 2.17.1
-Reply-To: decui@microsoft.com
-Content-Type: text/plain
-X-ClientProxiedBy: MW4P223CA0012.NAMP223.PROD.OUTLOOK.COM
- (2603:10b6:303:80::17) To BL0PR2101MB1092.namprd21.prod.outlook.com
- (2603:10b6:207:37::26)
+        id S237378AbhJFHHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 03:07:33 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:34814
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229861AbhJFHHc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 03:07:32 -0400
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com [209.85.167.71])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 384703FFDD
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 07:05:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1633503940;
+        bh=nAaopoD7THJlOCA5cGnPBgaBffQraHOd+wkpq9Lg/oo=;
+        h=To:Cc:References:From:Subject:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=lE2IzW6Iq7psO+FwFOug6v7GLD4DmMxtU3TMcX+zDnXQCV+oUslzTPYUvd5Upj+/N
+         135Sl2nfqhE1F89FNEA1qzDL64qP3HvNDJtvy+Q/JvKUnUJ2SBUQv754yEYEmGvtTL
+         mr3/bEMzPCNDIuA4hBh1Ie2uEu3H8049JPV1V8PC9Fo0LHUZrNsi6WgWIURZRhfxQQ
+         /T5nN8rJJGyfoUffGguEa/vphijPjHCI5a+c/MHA0h4jvlQeHlSzBLBEdZFedRclIA
+         lXTaiYv2OP1DZje+9KbR/nW17dhyzazKWYawpIi1MSrCRVs6EjnLvieCa5BkeQKIXD
+         YOZjrL7O4BK6A==
+Received: by mail-lf1-f71.google.com with SMTP id g9-20020a0565123b8900b003f33a027130so1197444lfv.18
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 00:05:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=nAaopoD7THJlOCA5cGnPBgaBffQraHOd+wkpq9Lg/oo=;
+        b=1CXUJIcAw1ykpyGzYsiTUoW3lRFNq+7zWCf4GcMm7a934PE4RhTje00tD+A+m+gDgQ
+         wYVjJcavaxz/Gb4yR834cGjbKQc4W1Tpkck29h/Ayuh0IUaCPiRnyTT8oO8K+yeg6rv5
+         bmxAPXmRLj0JeeC2djNSeI29uPtSE8E/pFoE0JdtFymAPk8yXt/ZQDM1AU2CT84152if
+         gqdOrCojBga9UGIURyIt1ZoTRRNzz9rp/0Cm+zOShAd2KHBMf/+1hO1wKMifCU4AR9vs
+         pj6tySnmXV2pwkPy+8DUpCSgmIvWKuCiVJgzotpT4TVciL4jv7DHPu3in3PLm2YZ6ADF
+         tZGQ==
+X-Gm-Message-State: AOAM532VwWamtsEuxHipB4mRbJrk8srSzEbiJCG61vEtDSRxDZMWHg8m
+        BJTQ3Y/SX/ioDJw3S9mGa3tuKWwhkkOpDw6Ftidd+ieCo38hul/lzCsY/rkd8cRyYCHwf9FrbOI
+        G3zRfKB/SbzFOHAWd4YpyNRVvOPB6VoY1sRr3ejlNgg==
+X-Received: by 2002:a05:651c:3c2:: with SMTP id f2mr27464300ljp.282.1633503939468;
+        Wed, 06 Oct 2021 00:05:39 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzqjP/ZlfCNmIjtfZP8v/DwYAmTZBGOomHxxpnyH8hP9lZlzbI9SDqyzFFWwnJY47k/i6lNzA==
+X-Received: by 2002:a05:651c:3c2:: with SMTP id f2mr27464269ljp.282.1633503939160;
+        Wed, 06 Oct 2021 00:05:39 -0700 (PDT)
+Received: from [192.168.0.20] (78-11-189-27.static.ip.netia.com.pl. [78.11.189.27])
+        by smtp.gmail.com with ESMTPSA id y3sm2177779lfh.132.2021.10.06.00.05.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Oct 2021 00:05:38 -0700 (PDT)
+To:     Hector Martin <marcan@marcan.st>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     Marc Zyngier <maz@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-serial@vger.kernel.org
+References: <20211005155923.173399-1-marcan@marcan.st>
+ <20211005155923.173399-3-marcan@marcan.st>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Subject: Re: [PATCH 2/7] dt-bindings: power: Add apple,pmgr-pwrstate binding
+Message-ID: <b5b3fcb4-077b-d33d-03cc-ac0611cb56a1@canonical.com>
+Date:   Wed, 6 Oct 2021 09:05:37 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from decui-u1804.corp.microsoft.com (2001:4898:80e8:b:822b:5dff:feb8:fa01) by MW4P223CA0012.NAMP223.PROD.OUTLOOK.COM (2603:10b6:303:80::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.17 via Frontend Transport; Wed, 6 Oct 2021 07:04:34 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d21c8a49-26fe-4e43-5c84-08d988978e29
-X-MS-TrafficTypeDiagnostic: BL0PR2101MB1747:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL0PR2101MB174733EC14FD4E1B11552096BFB09@BL0PR2101MB1747.namprd21.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1060;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: sMsVgZyouo/Yt/Fru9+rLOizx3WBB52BJguwfz7+2VhYSvNDxIsymiFwyHLOPh2z8d69ga34xDVrUHWDWXhxqsdToDNrpol7jEA150ORNiBZZudfC46pfmTs5AhNs0prrYfNSoob6DzEWbqrr0/lx7b3nBqzJ4pJCLg7Vs4LqjFUGMzXH3vzU0EQNLWb6a/447GKRrQB912JDF4sRSZYYfJoPW3OHXX+REi5m0EQblZVHu+yjUdzV9vpJB6+GCJ9vNFehoQgzDHMewFVgFmDn9R+InwBVZ2gw85phGiipzCK0MSK0WXt47IvmZneHcpJrzYXX+YZ4zPsEavXcRHHB9z+HahXOQYVh0VARfb3Ko2wAfBPAb/xs7uDKRCadRzWcu9Xg6IcYtyfxwDSLj94Nc/5o3kEtv9pMPLgsdcP2K/WmvJ7n/1EfBqWtJhGjTM2FjDpP1InXHxHbHBBPRkfZ49EOpUsIlhm2777R5q6P8+hrIq3qFq9EasRWY3t0ArjDBhaByML6tgT2IcaykqE7RF7w+Dn++VN21BDwIgvn5NuXSGqknxCOeRPxA9ojWuZOP46yXo7HuVUNvyHlr1C7fRUpZyGrvgGQk94B7MxVsv6q6LLnQ1OyE/ULjIJ8GeTIPtNKeNXq5sjfHf3qfyYBok9A6tYE4FhfouGaSkHzRgGmumtdqyqqVS096Fbw3pI
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR2101MB1092.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(5660300002)(8676002)(66556008)(10290500003)(66476007)(66946007)(3450700001)(2616005)(4326008)(316002)(1076003)(38100700002)(7416002)(6666004)(186003)(36756003)(2906002)(8936002)(508600001)(82960400001)(6486002)(52116002)(86362001)(921005)(7696005)(83380400001)(82950400001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?iglu+84bRQT6U/V6LrxkVwhOCKthgFsWyIj59e1/zek7GjDHcXTVyUZ6MuBM?=
- =?us-ascii?Q?5N0pqyfO4Sm5ZKAaHngpu5FWScfWG9qpqaJbJSZzMfGG05pcDcND+rQTaJtY?=
- =?us-ascii?Q?hSP4Y5Nvw3p5t6XfcwjeSF/H0YOP+CTEIRCFMTDVdgvBiqZ3/S9cA5TluRIS?=
- =?us-ascii?Q?KftS2Oaq3tdmjfx19eUoEU/+DtLyIQ1OQPV6uH3Qgaei/QosMnq2iidrSKTl?=
- =?us-ascii?Q?f1dK30RZTysaSCoM8lWFg5k5pys4dQvOrjD0QxhavpCR/jTRdues5kt7GgnJ?=
- =?us-ascii?Q?pofjcryCSyfQIW3FBTnZLGW4rP6J6gqz9f3K022dbfPwTGtbMesA77pxPct9?=
- =?us-ascii?Q?XdpE50+BfFDz5RCD9VsEPphIqd9fNwtpwbyALkXYBUX3L3vVNlDCPDyP9CIZ?=
- =?us-ascii?Q?1YOGyI3VX5y1tx2PoXZZBTfwHjDQBZz73GMNPIDPo7O+9zLaAiazFOEoCbpj?=
- =?us-ascii?Q?ll6QTcNmm7SGvhduUcQx0PokrqvXi/bp/fSYa8b7NA2OCedodcWC+zhFPUav?=
- =?us-ascii?Q?BKV5r+wlAdFWr8GbRZAoC70pbgiSpErjCYnHu6zRu6l/RPVWU7VbeJaMLyrF?=
- =?us-ascii?Q?yy0z5xptjyZN6ImlcrhsCCvcEJpcRZxhgDUBw6NOPWR1jrMVDOXMoXjufwfe?=
- =?us-ascii?Q?/eItT93cbXKnRuhluI2oW6v4qBp5vWrJgk/9S0uR8pTuYEYlKnnrjHFv6xhK?=
- =?us-ascii?Q?eVJcid70F2N+iEZ8VPh5I8iJWhXLoWTEqNYGpDGXuz+4iNqH4qAY1kVXzb7x?=
- =?us-ascii?Q?obEhz2FmFOok08JDvOWTZJmTJ0TohLhGSuDRxJadnrwpWQL6EkmHvVhgAOep?=
- =?us-ascii?Q?fR4JgGPyoQzo2b86ovIIee0cN0kt+ULIK2/2kNVhDc2GpP2SPkMoX76hyvhc?=
- =?us-ascii?Q?cxk+0Hht6bBd7XIj4BpAV7tjSUeztgHfO6LY9dS0td0l/biUpYV74Y0vo3+a?=
- =?us-ascii?Q?EJyqEtsKCRiBKK5dLdDFy+aPmIPQDQgZxPtXudDyy6H+8sXjvvr+jps050Ts?=
- =?us-ascii?Q?n4sHAJ4SS0xa2Vn465wnA+AtcKtiW4uMim+Yl/XH7BuUMw15wnsRa6XhEYBo?=
- =?us-ascii?Q?mKKUD+3q9B/oAY5KOKvx47SkvdO3XVinwTxfoSdHeWC6kdXIi/1XuXQUJ4LM?=
- =?us-ascii?Q?wdL1lD5kwMI9Eh7+VWLstSmqRgUh/NRLhNcwOE0ZZHfLTj8Z4O9QmIhhr2A6?=
- =?us-ascii?Q?v6NAH3gASzUDWeJnma5lGfepVQybkFLJFhmQX0s27fbq2hkGdoVQ4aBTQjhu?=
- =?us-ascii?Q?WMb8AHhMU6HFYQtNPYf8hDhXWGImmdx2mQkkOUDvE/cIZmobw05kXeZlp5CV?=
- =?us-ascii?Q?HPQ66dm/CoB0EZpCoofL/23VUbBJNSsjHtessIPpH1/dhp7f+H+X+rn4W6+g?=
- =?us-ascii?Q?xtxYgg3k25pkeGz6Sx2ihr6iF3eP?=
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d21c8a49-26fe-4e43-5c84-08d988978e29
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR2101MB1092.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Oct 2021 07:04:36.2366
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: kpBuQAXiBUvIyPk+V7cRPqGiY8sy/5OGRngOvDuXTB3mG3O6yVcYd+mj1RtxmQla2b4x2Tl9v+B7wQGj6sHFeQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR2101MB1747
+In-Reply-To: <20211005155923.173399-3-marcan@marcan.st>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After commit ea2f0f77538c, a 416-CPU VM running on Hyper-V hangs during
-boot because scsi_add_host_with_dma() sets shost->cmd_per_lun to a
-negative number:
-	'max_outstanding_req_per_channel' is 352,
-	'max_sub_channels' is (416 - 1) / 4 = 103, so in storvsc_probe(),
-scsi_driver.can_queue = 352 * (103 + 1) * (100 - 10) / 100 = 32947, which
-is bigger than SHRT_MAX (i.e. 32767).
+On 05/10/2021 17:59, Hector Martin wrote:
+> This syscon child node represents a single SoC device controlled by the
+> PMGR block. This layout allows us to declare all device power state
+> controls (power/clock gating and reset) in the device tree, including
+> dependencies, instead of hardcoding it into the driver. The register
+> layout is uniform.
+> 
+> Each pmgr-pwrstate node provides genpd and reset features, to be
+> consumed by downstream device nodes.
+> 
+> Future SoCs are expected to use backwards compatible registers, and the
+> "apple,pmgr-pwrstate" represents any such interfaces (possibly with
+> additional features gated by the more specific compatible), allowing
+> them to be bound without driver updates. If a backwards incompatible
+> change is introduced in future SoCs, it will require a new compatible,
+> such as "apple,pmgr-pwrstate-v2".
+> 
+> Signed-off-by: Hector Martin <marcan@marcan.st>
+> ---
+>  .../bindings/power/apple,pmgr-pwrstate.yaml   | 117 ++++++++++++++++++
+>  MAINTAINERS                                   |   1 +
+>  2 files changed, 118 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/power/apple,pmgr-pwrstate.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/power/apple,pmgr-pwrstate.yaml b/Documentation/devicetree/bindings/power/apple,pmgr-pwrstate.yaml
+> new file mode 100644
+> index 000000000000..a14bf5f30ff0
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/power/apple,pmgr-pwrstate.yaml
+> @@ -0,0 +1,117 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/power/apple,pmgr-pwrstate.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Apple SoC PMGR Power States
+> +
+> +maintainers:
+> +  - Hector Martin <marcan@marcan.st>
+> +
+> +allOf:
+> +  - $ref: "power-domain.yaml#"
+> +
+> +description: |
+> +  Apple SoCs include a PMGR block responsible for power management,
+> +  which can control various clocks, resets, power states, and
+> +  performance features. This binding describes the device power
+> +  state registers, which control power states and resets.
+> +
+> +  Each instance of a power controller within the PMGR syscon node
+> +  represents a generic power domain provider, as documented in
+> +  Documentation/devicetree/bindings/power/power-domain.yaml.
+> +  The provider controls a single SoC block. The power hierarchy is
+> +  represented via power-domains relationships between these nodes.
+> +
+> +  See Documentation/devicetree/bindings/arm/apple/apple,pmgr.yaml
+> +  for the top-level PMGR node documentation.
+> +
+> +  IP cores belonging to a power domain should contain a
+> +  "power-domains" property that is a phandle for the
+> +  power domain node representing the domain.
 
-Fix the hang issue by capping scsi_driver.can_queue.
+Skip this last paragraph - it is obvious in usage of power domains.
+Specific bindings should not duplicate generic knowledge.
 
-Add the below Fixed tag though ea2f0f77538c itself is good.
+> +
+> +properties:
+> +  $nodename:
+> +    pattern: "^power-controller@[0-9a-f]+$"
 
-Fixes: ea2f0f77538c ("scsi: core: Cap scsi_host cmd_per_lun at can_queue")
-Cc: stable@vger.kernel.org
-Signed-off-by: Dexuan Cui <decui@microsoft.com>
----
- drivers/scsi/storvsc_drv.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+Usually we call nodes as power-domain.
 
-diff --git a/drivers/scsi/storvsc_drv.c b/drivers/scsi/storvsc_drv.c
-index ebbbc1299c62..ba374908aec2 100644
---- a/drivers/scsi/storvsc_drv.c
-+++ b/drivers/scsi/storvsc_drv.c
-@@ -1976,6 +1976,16 @@ static int storvsc_probe(struct hv_device *device,
- 				(max_sub_channels + 1) *
- 				(100 - ring_avail_percent_lowater) / 100;
- 
-+	/*
-+	 * v5.14 (see commit ea2f0f77538c) implicitly requires that
-+	 * scsi_driver.can_queue should not exceed SHRT_MAX, otherwise
-+	 * scsi_add_host_with_dma() sets shost->cmd_per_lun to a negative
-+	 * number (note: the type of the "cmd_per_lun" field is "short"), and
-+	 * the system may hang during early boot.
-+	 */
-+	if (scsi_driver.can_queue > SHRT_MAX)
-+		scsi_driver.can_queue = SHRT_MAX;
-+
- 	host = scsi_host_alloc(&scsi_driver,
- 			       sizeof(struct hv_host_device));
- 	if (!host)
--- 
-2.17.1
+> +
+> +  compatible:
+> +    items:
+> +      - enum:
+> +          - apple,t8103-pmgr-pwrstate
+> +      - const: apple,pmgr-pwrstate
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  "#power-domain-cells":
+> +    const: 0
+> +
+> +  "#reset-cells":
+> +    const: 0
+> +
+> +  power-domains:
+> +    description:
+> +      Reference to parent power domains. A domain may have multiple parents,
+> +      and all will be powered up when it is powered.
 
+How many items?
+
+> +
+> +  apple,domain-name:
+
+Use existing binding "label".
+
+> +    description: |
+> +      Specifies the name of the SoC device being controlled. This is used to
+> +      name the power/reset domains.
+> +    $ref: /schemas/types.yaml#/definitions/string
+> +
+> +  apple,always-on:
+> +    description: |
+> +      Forces this power domain to always be powered up.
+> +    type: boolean
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - "#power-domain-cells"
+> +  - "#reset-cells"
+> +  - "apple,domain-name"
+> +
+> +additionalProperties: false
+
+Your parent schema should include this one for evaluating children.
+
+
+
+Best regards,
+Krzysztof
