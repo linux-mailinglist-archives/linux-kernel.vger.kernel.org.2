@@ -2,130 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4871042360D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 04:43:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01AB642360B
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 04:43:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237311AbhJFCpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 22:45:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45550 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237305AbhJFCox (ORCPT
+        id S237303AbhJFCpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 22:45:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22916 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237292AbhJFCov (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 22:44:53 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6114CC06174E
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 19:43:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=wfRY/DTg/1qyRDE0hYSC9qe7NqzDHkoVCIOwsWS/Yf0=; b=Fc8ixoAHCtnfJz5qwi2JxHg4sp
-        dl6R6HdVFEpK/fb3ZiHPCMIQB6zZGCxcqDL7X4ms0pcriSLKVmX/4X6Vvi+kNpOnD8VMtjJER3Ine
-        MNQ7uHzHzlxLVuF/U4DZzvI7aDupBk1LKnaTe2z8tLtqdr3U2ctGqu5QTA7Q/aIFo51zkz+viiZ8D
-        tHtvAOUMLUSjSmhzjEdYFk8AMmLoVW5zH/1pYt7mnxfqFAvK3Bz9nqTTv4O2twoB9xRoN0r1Eoxh6
-        L6tLvhBoXTqrKZNoIKms83SK7AAQ4inrwW5saK0feI9CY/Y1TZbc8pzJquyU04GRJzCmuoPjccW3c
-        0YQZd8cQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mXwsW-000U2G-Pv; Wed, 06 Oct 2021 02:42:23 +0000
-Date:   Wed, 6 Oct 2021 03:41:56 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Rongwei Wang <rongwei.wang@linux.alibaba.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        akpm@linux-foundation.org, song@kernel.org,
-        william.kucharski@oracle.com, hughd@google.com
-Subject: Re: [PATCH v3 v3 2/2] mm, thp: bail out early in collapse_file for
- writeback page
-Message-ID: <YV0M9NHi6I4ULFe6@casper.infradead.org>
-References: <20210906121200.57905-1-rongwei.wang@linux.alibaba.com>
- <20211006021837.59721-1-rongwei.wang@linux.alibaba.com>
- <20211006021837.59721-3-rongwei.wang@linux.alibaba.com>
+        Tue, 5 Oct 2021 22:44:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633488179;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WUAUXyTr5vnf62A2xBA5BH7uNkswc0Qgd6ouuCQsbIM=;
+        b=aioGdBe3lhLsiumZYDbDS10umZgIqR4bspaj2U1iobSbw6HliZRIJW0Sl1g/Q88Ksl32NY
+        hF1Jdhp3kdql3QZKZbtxxHqsA6wQIPgrE1CYtI9vTV8eR9rTXdCVOapM0rUrHGBydGZaY6
+        SYVwiqUA1InloZlQwCSbM94F7hVApuc=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-285-Mdcz_JoRM4eLJ360aOnQ4w-1; Tue, 05 Oct 2021 22:42:58 -0400
+X-MC-Unique: Mdcz_JoRM4eLJ360aOnQ4w-1
+Received: by mail-qv1-f69.google.com with SMTP id fv11-20020a056214240b00b00382e9471ed6so1565798qvb.4
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 19:42:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=WUAUXyTr5vnf62A2xBA5BH7uNkswc0Qgd6ouuCQsbIM=;
+        b=hxojNCPzLS7Zsex+PiowEARuQqcCsG9MPs2/mETzMnyRHC4gqS7GffpwZDjLJ2jVDf
+         YCRAhygm1yGNps3U06zGs4IzVrj61V6lEDD30dAVIFfz6S4+vOw6Ep09QZ76BcUSsuYw
+         Lzj2p5K3ur0w+17+YxvP6Fr8Em8YOr2+L4+IvOoTO+7GEYrlDtaLemHwwylVfLnPkk1B
+         J+X/4UVs5mxD0vHhWD1decwa8f53wlXoAzFU+6jCPdIRW8sjxS90MmfzgjOSkyAKC2HV
+         zrw2x8Z27FCJID+DXC2ZXzS9VfC5x506f2AjAFwLwxOvRV0xubLiLwRoXGnzXYa03gB9
+         Tifw==
+X-Gm-Message-State: AOAM530XUKh7D4DU42eFCK4dpc7IRdrE+H/QtKoDgI6RyniFBzFmMcUh
+        0I00x5l4cmZqqZtCByNZZpaz5C2TKKC+YMT6yDQM8fVHvZBbQg4dsPiM9f5/Bu/vQ/AMKw/eMoF
+        ogj0ikYjxCtk1AFgmejtRHzfH
+X-Received: by 2002:ac8:7d12:: with SMTP id g18mr24249002qtb.82.1633488178216;
+        Tue, 05 Oct 2021 19:42:58 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzlNFrMpQVPhAy+nSKZsOCb/8cFE1cda7K2580Uqvaqrdc1IH5K+P2YEgxwEyd0o99Qs3g8TQ==
+X-Received: by 2002:ac8:7d12:: with SMTP id g18mr24248978qtb.82.1633488177947;
+        Tue, 05 Oct 2021 19:42:57 -0700 (PDT)
+Received: from treble ([2600:1700:6e32:6c00::15])
+        by smtp.gmail.com with ESMTPSA id o23sm11997921qtl.74.2021.10.05.19.42.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Oct 2021 19:42:57 -0700 (PDT)
+Date:   Tue, 5 Oct 2021 19:42:54 -0700
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     X86 ML <x86@kernel.org>, Kees Cook <keescook@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        linux-hardening@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>, llvm@lists.linux.dev
+Subject: Re: [PATCH v4 00/15] x86: Add support for Clang CFI
+Message-ID: <20211006024254.l3mrl2zrdvzpskmd@treble>
+References: <20210930180531.1190642-1-samitolvanen@google.com>
+ <20211005203655.cvjfxmjvgx2knkuk@treble>
+ <CABCJKucbbFKHRnisu_yLiHkTfcm9Z+haP0CBNg-pLeO6iFxivg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20211006021837.59721-3-rongwei.wang@linux.alibaba.com>
+In-Reply-To: <CABCJKucbbFKHRnisu_yLiHkTfcm9Z+haP0CBNg-pLeO6iFxivg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 06, 2021 at 10:18:37AM +0800, Rongwei Wang wrote:
-> Currently collapse_file does not explicitly check PG_writeback, instead,
-> page_has_private and try_to_release_page are used to filter writeback
-> pages. This does not work for xfs with blocksize equal to or larger
-> than pagesize, because in such case xfs has no page->private.
+On Tue, Oct 05, 2021 at 02:52:46PM -0700, Sami Tolvanen wrote:
+> On Tue, Oct 5, 2021 at 1:37 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+> >
+> > On Thu, Sep 30, 2021 at 11:05:16AM -0700, Sami Tolvanen wrote:
+> > > This series adds support for Clang's Control-Flow Integrity (CFI)
+> > > checking to x86_64. With CFI, the compiler injects a runtime
+> > > check before each indirect function call to ensure the target is
+> > > a valid function with the correct static type. This restricts
+> > > possible call targets and makes it more difficult for an attacker
+> > > to exploit bugs that allow the modification of stored function
+> > > pointers. For more details, see:
+> > >
+> > >   https://clang.llvm.org/docs/ControlFlowIntegrity.html
+> > >
+> > > Note that v4 is based on tip/master. The first two patches contain
+> > > objtool support for CFI, the remaining patches change function
+> > > declarations to use opaque types, fix type mismatch issues that
+> > > confuse the compiler, and disable CFI where it can't be used.
+> > >
+> > > You can also pull this series from
+> > >
+> > >   https://github.com/samitolvanen/linux.git x86-cfi-v4
+> >
+> > Does this work for indirect calls made from alternatives?
 > 
-> This makes collapse_file bail out early for writeback page. Otherwise,
-> xfs end_page_writeback will panic as follows.
-
-Could you cut the timestamps out?  They don't add any value.
-
-> [ 6411.448211] page:fffffe00201bcc80 refcount:0 mapcount:0 mapping:ffff0003f88c86a8 index:0x0 pfn:0x84ef32
-> [ 6411.448304] aops:xfs_address_space_operations [xfs] ino:30000b7 dentry name:"libtest.so"
-> [ 6411.448312] flags: 0x57fffe0000008027(locked|referenced|uptodate|active|writeback)
-> [ 6411.448317] raw: 57fffe0000008027 ffff80001b48bc28 ffff80001b48bc28 ffff0003f88c86a8
-> [ 6411.448321] raw: 0000000000000000 0000000000000000 00000000ffffffff ffff0000c3e9a000
-> [ 6411.448324] page dumped because: VM_BUG_ON_PAGE(((unsigned int) page_ref_count(page) + 127u <= 127u))
-> [ 6411.448327] page->mem_cgroup:ffff0000c3e9a000
-> [ 6411.448340] ------------[ cut here ]------------
-> [ 6411.448343] kernel BUG at include/linux/mm.h:1212!
-> [ 6411.449288] Internal error: Oops - BUG: 0 [#1] SMP
-> [ 6411.449786] Modules linked in:
-> [ 6411.449790] BUG: Bad page state in process khugepaged  pfn:84ef32
-> [ 6411.450143]  xfs(E)
-> [ 6411.450459] page:fffffe00201bcc80 refcount:0 mapcount:0 mapping:0 index:0x0 pfn:0x84ef32
-> [ 6411.451361]  libcrc32c(E) rfkill(E) aes_ce_blk(E) crypto_simd(E) ...
-> [ 6411.451387] CPU: 25 PID: 0 Comm: swapper/25 Kdump: loaded Tainted: ...
-> [ 6411.451389] pstate: 60400005 (nZCv daif +PAN -UAO -TCO BTYPE=--)
-> [ 6411.451393] pc : end_page_writeback+0x1c0/0x214
-> [ 6411.451394] lr : end_page_writeback+0x1c0/0x214
-> [ 6411.451395] sp : ffff800011ce3cc0
-> [ 6411.451396] x29: ffff800011ce3cc0 x28: 0000000000000000
-> [ 6411.451398] x27: ffff000c04608040 x26: 0000000000000000
-> [ 6411.451399] x25: ffff000c04608040 x24: 0000000000001000
-> [ 6411.451401] x23: ffff0003f88c8530 x22: 0000000000001000
-> [ 6411.451403] x21: ffff0003f88c8530 x20: 0000000000000000
-> [ 6411.451404] x19: fffffe00201bcc80 x18: 0000000000000030
-> [ 6411.451406] x17: 0000000000000000 x16: 0000000000000000
-> [ 6411.451407] x15: ffff000c018f9760 x14: ffffffffffffffff
-> [ 6411.451409] x13: ffff8000119d72b0 x12: ffff8000119d6ee3
-> [ 6411.451410] x11: ffff8000117b69b8 x10: 00000000ffff8000
-> [ 6411.451412] x9 : ffff800010617534 x8 : 0000000000000000
-> [ 6411.451413] x7 : ffff8000114f69b8 x6 : 000000000000000f
-> [ 6411.451415] x5 : 0000000000000000 x4 : 0000000000000000
-> [ 6411.451416] x3 : 0000000000000400 x2 : 0000000000000000
-> [ 6411.451418] x1 : 0000000000000000 x0 : 0000000000000000
-> [ 6411.451420] Call trace:
-> [ 6411.451421]  end_page_writeback+0x1c0/0x214
-> [ 6411.451424]  iomap_finish_page_writeback+0x13c/0x204
-> [ 6411.451425]  iomap_finish_ioend+0xe8/0x19c
-> [ 6411.451426]  iomap_writepage_end_bio+0x38/0x50
-> [ 6411.451427]  bio_endio+0x168/0x1ec
-> [ 6411.451430]  blk_update_request+0x278/0x3f0
-> [ 6411.451432]  blk_mq_end_request+0x34/0x15c
-> [ 6411.451435]  virtblk_request_done+0x38/0x74 [virtio_blk]
-> [ 6411.451437]  blk_done_softirq+0xc4/0x110
-> [ 6411.451439]  __do_softirq+0x128/0x38c
-> [ 6411.451441]  __irq_exit_rcu+0x118/0x150
-> [ 6411.451442]  irq_exit+0x1c/0x30
-> [ 6411.451445]  __handle_domain_irq+0x8c/0xf0
-> [ 6411.451446]  gic_handle_irq+0x84/0x108
-> [ 6411.451447]  el1_irq+0xcc/0x180
-> [ 6411.451448]  arch_cpu_idle+0x18/0x40
-> [ 6411.451450]  default_idle_call+0x4c/0x1a0
-> [ 6411.451453]  cpuidle_idle_call+0x168/0x1e0
-> [ 6411.451454]  do_idle+0xb4/0x104
-> [ 6411.451455]  cpu_startup_entry+0x30/0x9c
-> [ 6411.451458]  secondary_start_kernel+0x104/0x180
-> [ 6411.451460] Code: d4210000 b0006161 910c8021 94013f4d (d4210000)
-> [ 6411.451462] ---[ end trace 4a88c6a074082f8c ]---
-> [ 6411.451464] Kernel panic - not syncing: Oops - BUG: Fatal exception in interrupt
+> It works in the sense that indirect calls made from alternatives won't
+> trip CFI. The compiler doesn't instrument inline assembly.
 > 
-> Fixes: eb6ecbed0aa2 ("mm, thp: relax the VM_DENYWRITE constraint on file-backed THPs")
-> Suggested-by: Yang Shi <shy828301@gmail.com>
-> Signed-off-by: Xu Yu <xuyu@linux.alibaba.com>
-> Signed-off-by: Rongwei Wang <rongwei.wang@linux.alibaba.com>
+> > I'm also wondering whether this works on CONFIG_RETPOLINE systems which
+> > disable retpolines at runtime, combined with Peter's patch to use
+> > objtool to replace retpoline thunk calls with indirect branches:
+> >
+> >   9bc0bb50727c ("objtool/x86: Rewrite retpoline thunk calls")
+> >
+> > Since presumably objtool runs after the CFI stuff is inserted.
+> 
+> The indirect call checking is before the retpoline thunk call, so
+> replacing the call with an indirect call isn't a problem.
 
-Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Ah right.  I managed to forget how this worked and was thinking this
+intercepted the indirect call rather than the function pointer.
 
-Although I think the Fixes: line is wrong.  This bug goes all the
-way back to 99cb0dbd47a1.
+-- 
+Josh
 
