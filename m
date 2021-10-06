@@ -2,57 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9865B4246CF
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 21:38:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80DE14246D2
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 21:38:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239491AbhJFTkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 15:40:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53834 "EHLO
+        id S239522AbhJFTke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 15:40:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239431AbhJFTk0 (ORCPT
+        with ESMTP id S239435AbhJFTk0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 6 Oct 2021 15:40:26 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35D3DC061764
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 12:38:29 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id u7so3247131pfg.13
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 12:38:29 -0700 (PDT)
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62A59C061765
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 12:38:30 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id g2so3285534pfc.6
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 12:38:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=WSt66/qxaj+Yl6pIb1r8ArjDZRzSqERxTSL7e01cwWQ=;
-        b=BmiI3LSyKjcVMkJ2gZd3LhPTHWfcmkydptEVQ9oiWWAFWzIe1MohWjx9bbawlzcH7q
-         qetmyBf+RlGrk5ISWZRggAq3lthN3K/k4DISR3I5gMMLDXMXT8AzbWlWkmrgXro8h50I
-         0A+4VMPnY2FjF4u4slYiTPHpdBdGgrCNY66dA=
+        bh=fRSGJsbcrSuo8/hCk8AH4Rju+QnPEjHdwHGnjiYpj+0=;
+        b=aN+zbJy7ziqmUBmCYP38UAKUihmed+FYp84G9KznDRdiWV1uTzOqYVISExYpWNudP9
+         8Dc9Afor0eTRnSRj4DZvI35qEHwhtOqSMN1x3vINUIIW87cVGkpDaNrVIHbrScKtagE5
+         k7RFVoTVJwC7AnEUzRZokTQlMf88bLKgetc4E=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=WSt66/qxaj+Yl6pIb1r8ArjDZRzSqERxTSL7e01cwWQ=;
-        b=xbXkIzugwc64uOaaQ5t0EJkzD7zepVV8o7hJsN+N3wCxG+yJ1T2aQZqmgQerZ7DLgz
-         lLFfHg+BWpf8XcXpvX+EwWVKDYSI0f14trLn1H72pD1ePuCkZbDSVkH9E50sW7BH0DYc
-         K/FPkXroajy02qsSg7pl94QBqttORsW42BC6DbZVagwfqd2BpmKF6Zkbi0WLuk7uAwri
-         Awiz/FMhtL3K4aDFUgdwXt6CEPPduWDIAR5z1vaHyIKb78DhzAwZDdS+SiJJ6u8g6IMW
-         lZ4GlsuBwJPrhgobbeO2NCZK5IFFEq3wy1jR8jleWc4tF9tB6Rt8vikFL8VCyqF1K7OT
-         g50Q==
-X-Gm-Message-State: AOAM530RFtjabJjggKrwnR64VbtV66jzc8VgLcgA96MLB9IHMcYv/cUi
-        UMGSB22xp0+GuMEA28grIQ/guA==
-X-Google-Smtp-Source: ABdhPJxNGoDafhlEh+0TsExPrHB7fqmUepOv8+MJYv9j+yZKMoyNAQ1lN9Vxlb31AxOrCCSdOAdpeg==
-X-Received: by 2002:a63:5717:: with SMTP id l23mr443433pgb.87.1633549108801;
-        Wed, 06 Oct 2021 12:38:28 -0700 (PDT)
+        bh=fRSGJsbcrSuo8/hCk8AH4Rju+QnPEjHdwHGnjiYpj+0=;
+        b=BKBUdTQK4qax8XB6OBMR7R9QZxUfaC3liFusqxufQCf4cKs+2HBzTuKkvz+FQs7AVl
+         LD/F8sNaNCjcm2ANm9ukSdH9bMnaMQckm5tJgI/md2DLzrYBAo6uaaI4usaDmbs4LG2a
+         v0OqCjJIPdyFB/xsR9LyGbxj4kDKTex+7rigm4IG+gycFAj2IOCyACmA58LPVg+ifyJa
+         /HYc5kmgoRsr7+lJpAoo7t8w271e222/Suiz4DAqXB7LwSpW+b8Yomre++Myb6YBIYq8
+         8224TFKJueYhFFa24AZImoJayIM6y7cwbrqWUGNSguPjkDc4N6gVoPVmlsEiz8snOXpF
+         ci9w==
+X-Gm-Message-State: AOAM532kizNJDE1YHl7rklBRaMBFgKeqm2Gtp3U7DRWWeBM3U1htJhmI
+        YkwpziULlEym8ldfJ6wO7FWVzg==
+X-Google-Smtp-Source: ABdhPJw2THsDae51farFvaMjtz9MkGLifCVXXxt8tCOU+bKfcMJ5VbxsHYXLHY80SLIp4mB4UkAkVQ==
+X-Received: by 2002:a65:620d:: with SMTP id d13mr483109pgv.36.1633549109943;
+        Wed, 06 Oct 2021 12:38:29 -0700 (PDT)
 Received: from smtp.gmail.com ([2620:15c:202:201:d412:c5eb:4aca:4738])
         by smtp.gmail.com with ESMTPSA id o14sm22011296pfh.84.2021.10.06.12.38.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Oct 2021 12:38:28 -0700 (PDT)
+        Wed, 06 Oct 2021 12:38:29 -0700 (PDT)
 From:   Stephen Boyd <swboyd@chromium.org>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
         dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        Daniel Vetter <daniel@ffwll.ch>
-Subject: [PATCH v2 05/34] component: Add {bind,unbind}_component() ops that take aggregate device
-Date:   Wed,  6 Oct 2021 12:37:50 -0700
-Message-Id: <20211006193819.2654854-6-swboyd@chromium.org>
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Russell King <rmk+kernel@arm.linux.org.uk>,
+        Saravana Kannan <saravanak@google.com>
+Subject: [PATCH v2 06/34] drm/of: Add a drm_of_aggregate_probe() API
+Date:   Wed,  6 Oct 2021 12:37:51 -0700
+Message-Id: <20211006193819.2654854-7-swboyd@chromium.org>
 X-Mailer: git-send-email 2.33.0.800.g4c38ced690-goog
 In-Reply-To: <20211006193819.2654854-1-swboyd@chromium.org>
 References: <20211006193819.2654854-1-swboyd@chromium.org>
@@ -62,105 +67,186 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We'd like to get more device model features in the component framework
-so let's pass the struct aggregate_device pointer instead of the parent
-device pointer to the component binding functions. This will allow
-drivers to inspect and control things related to the aggregate device in
-case they need it, and they'll always be able to get back to the device
-they were using before by using the 'parent' member of the aggregate
-device struct.
+Similar to drm_of_component_probe() but using the new API that registers
+a driver instead of an ops struct. This allows us to migrate the users
+of drm_of_component_probe() to the new way of doing things.
 
-Suggested-by: Daniel Vetter <daniel@ffwll.ch>
+Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: Rob Clark <robdclark@gmail.com>
+Cc: Russell King <rmk+kernel@arm.linux.org.uk>
+Cc: Saravana Kannan <saravanak@google.com>
 Signed-off-by: Stephen Boyd <swboyd@chromium.org>
 ---
- drivers/base/component.c  | 14 +++++++++++---
- include/linux/component.h | 22 ++++++++++++++++++++++
- 2 files changed, 33 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/drm_of.c | 85 +++++++++++++++++++++++++++++++---------
+ include/drm/drm_of.h     | 11 ++++++
+ 2 files changed, 77 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/base/component.c b/drivers/base/component.c
-index f49b48695c8f..a6dd33d0ddeb 100644
---- a/drivers/base/component.c
-+++ b/drivers/base/component.c
-@@ -707,8 +707,13 @@ static void component_unbind(struct component *component,
+diff --git a/drivers/gpu/drm/drm_of.c b/drivers/gpu/drm/drm_of.c
+index 997b8827fed2..58db65ad2770 100644
+--- a/drivers/gpu/drm/drm_of.c
++++ b/drivers/gpu/drm/drm_of.c
+@@ -99,30 +99,18 @@ void drm_of_component_match_add(struct device *master,
+ }
+ EXPORT_SYMBOL_GPL(drm_of_component_match_add);
+ 
+-/**
+- * drm_of_component_probe - Generic probe function for a component based master
+- * @dev: master device containing the OF node
+- * @compare_of: compare function used for matching components
+- * @m_ops: component master ops to be used
+- *
+- * Parse the platform device OF node and bind all the components associated
+- * with the master. Interface ports are added before the encoders in order to
+- * satisfy their .bind requirements
+- * See Documentation/devicetree/bindings/graph.txt for the bindings.
+- *
+- * Returns zero if successful, or one of the standard error codes if it fails.
+- */
+-int drm_of_component_probe(struct device *dev,
++static int _drm_of_component_probe(struct device *dev,
+ 			   int (*compare_of)(struct device *, void *),
+-			   const struct component_master_ops *m_ops)
++			   struct component_match **matchptr)
  {
- 	WARN_ON(!component->bound);
+ 	struct device_node *ep, *port, *remote;
+-	struct component_match *match = NULL;
+ 	int i;
  
--	if (component->ops && component->ops->unbind)
--		component->ops->unbind(component->dev, adev->parent, data);
-+	if (component->ops) {
-+		if (component->ops->unbind)
-+			component->ops->unbind(component->dev, adev->parent, data);
-+		else if (component->ops->unbind_component)
-+			component->ops->unbind_component(component->dev, adev, data);
-+	}
+ 	if (!dev->of_node)
+ 		return -EINVAL;
+ 
++	*matchptr = NULL;
 +
- 	component->bound = false;
+ 	/*
+ 	 * Bind the crtc's ports first, so that drm_of_find_possible_crtcs()
+ 	 * called from encoder's .bind callbacks works as expected
+@@ -133,7 +121,7 @@ int drm_of_component_probe(struct device *dev,
+ 			break;
  
- 	/* Release all resources claimed in the binding of this component */
-@@ -773,7 +778,10 @@ static int component_bind(struct component *component, struct aggregate_device *
- 	dev_dbg(adev->parent, "binding %s (ops %ps)\n",
- 		dev_name(component->dev), component->ops);
+ 		if (of_device_is_available(port->parent))
+-			drm_of_component_match_add(dev, &match, compare_of,
++			drm_of_component_match_add(dev, matchptr, compare_of,
+ 						   port);
  
--	ret = component->ops->bind(component->dev, adev->parent, data);
-+	if (component->ops->bind_component)
-+		ret = component->ops->bind_component(component->dev, adev, data);
-+	else
-+		ret = component->ops->bind(component->dev, adev->parent, data);
- 	if (!ret) {
- 		component->bound = true;
+ 		of_node_put(port);
+@@ -144,7 +132,7 @@ int drm_of_component_probe(struct device *dev,
+ 		return -ENODEV;
+ 	}
  
-diff --git a/include/linux/component.h b/include/linux/component.h
-index e99cf8e910f0..d8dcbf9733da 100644
---- a/include/linux/component.h
-+++ b/include/linux/component.h
-@@ -6,6 +6,7 @@
- #include <linux/device.h>
+-	if (!match) {
++	if (!*matchptr) {
+ 		dev_err(dev, "no available port\n");
+ 		return -ENODEV;
+ 	}
+@@ -174,17 +162,76 @@ int drm_of_component_probe(struct device *dev,
+ 				continue;
+ 			}
  
- struct component_match;
-+struct aggregate_device;
+-			drm_of_component_match_add(dev, &match, compare_of,
++			drm_of_component_match_add(dev, matchptr, compare_of,
+ 						   remote);
+ 			of_node_put(remote);
+ 		}
+ 		of_node_put(port);
+ 	}
  
- /**
-  * struct component_ops - callbacks for component drivers
-@@ -19,18 +20,39 @@ struct component_ops {
- 	 *
- 	 * Called through component_bind_all() when the aggregate driver is
- 	 * ready to bind the overall driver.
-+	 *
-+	 * Deprecated: Use bind_component() instead.
- 	 */
- 	int (*bind)(struct device *comp, struct device *master,
- 		    void *master_data);
-+	/**
-+	 * @bind_component:
-+	 *
-+	 * Called through component_bind_all() when the aggregate driver is
-+	 * ready to bind the overall driver.
-+	 */
-+	int (*bind_component)(struct device *comp, struct aggregate_device *adev,
-+			      void *aggregate_data);
- 	/**
- 	 * @unbind:
- 	 *
- 	 * Called through component_unbind_all() when the aggregate driver is
- 	 * ready to bind the overall driver, or when component_bind_all() fails
- 	 * part-ways through and needs to unbind some already bound components.
-+	 *
-+	 * Deprecated: Use unbind_component() instead.
- 	 */
- 	void (*unbind)(struct device *comp, struct device *master,
- 		       void *master_data);
-+	/**
-+	 * @unbind_component:
-+	 *
-+	 * Called through component_unbind_all() when the aggregate driver is
-+	 * ready to unbind the overall driver, or when component_bind_all() fails
-+	 * part-ways through and needs to unbind some already bound components.
-+	 */
-+	int (*unbind_component)(struct device *comp, struct aggregate_device *adev,
-+				void *aggregate_data);
- };
++	return 0;
++}
++
++/**
++ * drm_of_component_probe - Generic probe function for a component based master
++ * @dev: master device containing the OF node
++ * @compare_of: compare function used for matching components
++ * @m_ops: component master ops to be used
++ *
++ * Parse the platform device OF node and bind all the components associated
++ * with the master. Interface ports are added before the encoders in order to
++ * satisfy their .bind requirements
++ * See Documentation/devicetree/bindings/graph.txt for the bindings.
++ *
++ * Deprecated: Use drm_of_aggregate_probe() instead.
++ *
++ * Returns zero if successful, or one of the standard error codes if it fails.
++ */
++static int drm_of_component_probe(struct device *dev,
++			   int (*compare_of)(struct device *, void *),
++			   const struct component_master_ops *m_ops)
++{
++
++	struct component_match *match;
++	int ret;
++
++	ret = _drm_of_component_probe(dev, compare_of, &match);
++	if (ret)
++		return ret;
++
+ 	return component_master_add_with_match(dev, m_ops, match);
+ }
+ EXPORT_SYMBOL(drm_of_component_probe);
  
- int component_add(struct device *, const struct component_ops *);
++
++/**
++ * drm_of_aggregate_probe - Generic probe function for a component based aggregate host
++ * @dev: device containing the OF node
++ * @compare_of: compare function used for matching components
++ * @adrv: aggregate driver to be used
++ *
++ * Parse the platform device OF node and bind all the components associated
++ * with the aggregate device. Interface ports are added before the encoders in
++ * order to satisfy their .bind_component requirements
++ * See Documentation/devicetree/bindings/graph.txt for the bindings.
++ *
++ * Returns zero if successful, or one of the standard error codes if it fails.
++ */
++static int drm_of_aggregate_probe(struct device *dev,
++			   int (*compare_of)(struct device *, void *),
++			   struct aggregate_driver *adrv)
++{
++	struct component_match *match;
++	int ret;
++
++	ret = _drm_of_component_probe(dev, compare_of, &match);
++	if (ret)
++		return ret;
++
++	return component_aggregate_register(dev, adrv, match);
++}
++EXPORT_SYMBOL(drm_of_aggregate_probe);
++
+ /*
+  * drm_of_encoder_active_endpoint - return the active encoder endpoint
+  * @node: device tree node containing encoder input ports
+diff --git a/include/drm/drm_of.h b/include/drm/drm_of.h
+index b9b093add92e..c3ec9b14df48 100644
+--- a/include/drm/drm_of.h
++++ b/include/drm/drm_of.h
+@@ -40,6 +40,9 @@ void drm_of_component_match_add(struct device *master,
+ int drm_of_component_probe(struct device *dev,
+ 			   int (*compare_of)(struct device *, void *),
+ 			   const struct component_master_ops *m_ops);
++int drm_of_aggregate_probe(struct device *dev,
++			   int (*compare_of)(struct device *, void *),
++			   struct aggregate_driver *adrv);
+ int drm_of_encoder_active_endpoint(struct device_node *node,
+ 				   struct drm_encoder *encoder,
+ 				   struct of_endpoint *endpoint);
+@@ -78,6 +81,14 @@ drm_of_component_probe(struct device *dev,
+ 	return -EINVAL;
+ }
+ 
++static inline int
++drm_of_aggregate_probe(struct device *dev,
++		       int (*compare_of)(struct device *, void *),
++		       struct aggregate_driver *adrv)
++{
++	return -EINVAL;
++}
++
+ static inline int drm_of_encoder_active_endpoint(struct device_node *node,
+ 						 struct drm_encoder *encoder,
+ 						 struct of_endpoint *endpoint)
 -- 
 https://chromeos.dev
 
