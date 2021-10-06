@@ -2,99 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2B8E4249E7
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 00:37:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 270F44249BA
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 00:36:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239937AbhJFWj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 18:39:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38324 "EHLO
+        id S235375AbhJFWiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 18:38:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239947AbhJFWio (ORCPT
+        with ESMTP id S239593AbhJFWiR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 18:38:44 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95604C06176C;
-        Wed,  6 Oct 2021 15:36:43 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id l7so15717740edq.3;
-        Wed, 06 Oct 2021 15:36:43 -0700 (PDT)
+        Wed, 6 Oct 2021 18:38:17 -0400
+Received: from mail-vs1-xe36.google.com (mail-vs1-xe36.google.com [IPv6:2607:f8b0:4864:20::e36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CFB9C061760
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 15:36:24 -0700 (PDT)
+Received: by mail-vs1-xe36.google.com with SMTP id p18so4577111vsu.7
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 15:36:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=aJj/1qPNuaVQFK3OzLpENkQJhnzkYtyy78uh6Vh8QNI=;
-        b=L0TlaMBtITBxzhR1lZHviuIP/bQA5HOgoY9MF28mg2zKUsEhBR0OBg4qyBDW6UYQFK
-         h3WVON6cCNud1Cat7h9vWBUhP2OwOOTj6xm9TWzuu9tZod7rsVDqmrRY0RPRnVU333mk
-         oldpmbXnjLKEsaIdHF1YcdCctASMZd3pvTXT37JGjY5+rdi0NnHi+rJ9f+AeI1gw3JFa
-         qiIcUMnMv+xTOZQ4DNtcjCAi+W8jOcJbWj6sai7XgeGvNd6zCqvmd7/lRSd7ZrzlwqYZ
-         M3Lk762vdJfnD2xMzfpvljpuguIGED4unT/+FAEVPfZ7YAof8/HNMgpWgLp5APmJgovQ
-         Uqtg==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pjWer8xPM+oHm3N7ZbhTbt1Y4siZYnnVEDWcGpFVN9M=;
+        b=XqQVjMiRfbzrBy3CS/MLC2JRPkZiOixEAI9VomrlZ9DIBcnbWSV5iy8YLBOrNeCoiR
+         CkI6ykTaDXhBgFSnaRwExP27ZmFdJDQ95z6Epdz8M8H1iKjrEjIRjKK351G6rx1iMEyb
+         ERR034mVT6+qzITx5BvKeOVJ+L+/2tzZmEK9Mt1ZVKh6E0gShzlj/2Do8ajsZ/yFfq31
+         k0usUKs4Ni9y0vCvJDvKrRxVduY/k07W9q68SiBgl7Au1oGaG979jmdlQV2azazzO86+
+         eppJudnJPrDAsFhf6Iw89SLb3/feD6Zb7U2jlliQXFVl2pQw5V1lr89/vgoXPJTnF+ZQ
+         ANbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=aJj/1qPNuaVQFK3OzLpENkQJhnzkYtyy78uh6Vh8QNI=;
-        b=bplOCCeguD+DvJlfIzKzSUhOSiAxcE/+wdEdAznjmAKoqiVp9pl799bgNHMGGk3Z2u
-         fc/rEqu2IItiOd4lTdeewcHkEAj9A9MOZ0qRtAjTEOBQMleH6WrvH3qRWVeCQjT2JLhu
-         O3AlojWeaf/mb4HOhZHncwvwgiwZCLPJV+91kr3e+7gm+G1Vf9o7jJf2EWPwPMHtlYZM
-         NEGsEO2clCEOPkGRXL/rZgPHxJIBj4qsy30laT5reTVlv0tmmoOt0WobjDEVycZs5wTH
-         hElK8E+c4MUUCT56oZGPYfAERSMTwkZ4uAObN8s4LyBND6BP7cTltGWNgBKx9hMothIu
-         khHg==
-X-Gm-Message-State: AOAM532hApELI7cfOVwMASapc74Pi67ieowbfp82rkb4KMEH72PytiAR
-        qWU+jGIshegQMN9buAxStYA=
-X-Google-Smtp-Source: ABdhPJxkBNOH1aDqAS8750346rUpHDVKyJa1T5CfAuP5cz9uFbjkqTzrTsIXoRI8jkACY8ggS6wWdA==
-X-Received: by 2002:a17:906:7d42:: with SMTP id l2mr1130949ejp.467.1633559802038;
-        Wed, 06 Oct 2021 15:36:42 -0700 (PDT)
-Received: from Ansuel-xps.localdomain (93-42-71-246.ip85.fastwebnet.it. [93.42.71.246])
-        by smtp.googlemail.com with ESMTPSA id z8sm9462678ejd.94.2021.10.06.15.36.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Oct 2021 15:36:41 -0700 (PDT)
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Ansuel Smith <ansuelsmth@gmail.com>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [net-next PATCH 13/13] Documentation: devicetree: net: dsa: qca8k: document open drain binding
-Date:   Thu,  7 Oct 2021 00:36:03 +0200
-Message-Id: <20211006223603.18858-14-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20211006223603.18858-1-ansuelsmth@gmail.com>
-References: <20211006223603.18858-1-ansuelsmth@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pjWer8xPM+oHm3N7ZbhTbt1Y4siZYnnVEDWcGpFVN9M=;
+        b=5VnjaMkDu3doZm1eaAWrWuRR3xdf9NQnnbyPYwOUG2OSb+H1UpYemu7iZFNJ6NMm/M
+         496KEEiSI+v6LBL3dy5udlWhQ9JpZoQE/YHNBt0QRAwMGcMlqInmTjMAWq5dkrZCcP/9
+         D+hcdr4njhZ9622Zc0uNmmYjAwdyDzvt5GfF0JKud2AWfM4FpjArP4371oUhclXrTZvd
+         KadBRGVvdhTzxWan2BslKo4RiIfT57NNEGL2JoKh0wSqJRPACxTiDlzHwLhm/nYNkPwa
+         U1R9uXcSiC4rwJ9uoI/nwOYYu+tye5FmMqWTnZiHUzqAGiYQ/DgShYkPnOH5MwYpDu9v
+         x8PQ==
+X-Gm-Message-State: AOAM531dK3BnhfJryc6F5bibMrdSMZ5Z1t3GiesL1VyyH36smkxqX0pj
+        5Oc/b5ygzgaMuiEuhlcaePZk6C6Ck1Hd+a/19/9WNA==
+X-Google-Smtp-Source: ABdhPJweVIcyDIWMmg2YzkI5CdOhKpkRsFFoHr/WFSKYB2uv7HfOoVt1UaCjxBMRwUh7D90s2pmBkox45adiR7nURo8=
+X-Received: by 2002:a67:d583:: with SMTP id m3mr910405vsj.41.1633559782905;
+ Wed, 06 Oct 2021 15:36:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211006195029.532034-1-ramjiyani@google.com> <YV4SELcjE7EfBiLI@gmail.com>
+In-Reply-To: <YV4SELcjE7EfBiLI@gmail.com>
+From:   Ramji Jiyani <ramjiyani@google.com>
+Date:   Wed, 6 Oct 2021 15:36:11 -0700
+Message-ID: <CAKUd0B8r=7EKOuyy=FACg438f2vQRdJMyzfJzcQOUd+4My4oYg@mail.gmail.com>
+Subject: Re: [PATCH v2] aio: Add support for the POLLFREE
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     arnd@arndb.de, viro@zeniv.linux.org.uk, bcrl@kvack.org, hch@lst.de,
+        kernel-team@android.com, linux-aio@kvack.org,
+        linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        oleg@redhat.com, Jeff Moyer <jmoyer@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document new binding qca,power_on_sel used to enable Power-on-strapping
-select reg and qca,led_open_drain to set led to open drain mode.
+On Wed, Oct 6, 2021 at 2:16 PM Eric Biggers <ebiggers@kernel.org> wrote:
+>
+> On Wed, Oct 06, 2021 at 07:50:29PM +0000, Ramji Jiyani wrote:
+> > Commit f5cb779ba163 ("ANDROID: binder: remove waitqueue when thread
+> > exits.") fixed the use-after-free in eventpoll but aio still has the
+> > same issue because it doesn't honor the POLLFREE flag.
+> >
+> > Add support for the POLLFREE flag to force complete iocb inline in
+> > aio_poll_wake(). A thread may use it to signal it's exit and/or request
+> > to cleanup while pending poll request. In this case, aio_poll_wake()
+> > needs to make sure it doesn't keep any reference to the queue entry
+> > before returning from wake to avoid possible use after free via
+> > poll_cancel() path.
+> >
+> > The POLLFREE flag is no more exclusive to the epoll and is being
+> > shared with the aio. Remove comment from poll.h to avoid confusion.
+> >
+> > This fixes a use after free issue between binder thread and aio
+> > interactions in certain sequence of events [1].
+> >
+> > [1] https://lore.kernel.org/all/CAKUd0B_TCXRY4h1hTztfwWbNSFQqsudDLn2S_28csgWZmZAG3Q@mail.gmail.com/
+> >
+> > Signed-off-by: Ramji Jiyani <ramjiyani@google.com>
+> > Reviewed-by: Jeff Moyer <jmoyer@redhat.com>
+>
+> Can you add Fixes and Cc stable tags to ensure that this fix gets backported?
+> Please refer to Documentation/process/submitting-patches.rst.
+>
+> - Eric
 
-Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
----
- Documentation/devicetree/bindings/net/dsa/qca8k.txt | 4 ++++
- 1 file changed, 4 insertions(+)
+Thanks Eric. I'll send v3 with these changes soon.
 
-diff --git a/Documentation/devicetree/bindings/net/dsa/qca8k.txt b/Documentation/devicetree/bindings/net/dsa/qca8k.txt
-index 550f4313c6e0..4f6ef9f9e024 100644
---- a/Documentation/devicetree/bindings/net/dsa/qca8k.txt
-+++ b/Documentation/devicetree/bindings/net/dsa/qca8k.txt
-@@ -13,6 +13,10 @@ Required properties:
- Optional properties:
- 
- - reset-gpios: GPIO to be used to reset the whole device
-+- qca,package48: Set to 48-pin mode required in some QCA8327 switches.
-+- qca,power-on-sel: Enable Power-on-strapping select required in some QCA8327
-+  switches.
-+- qca,led-open-drain: Set leds to open-drain mode.
- - qca,mac6-exchange: Internally swap MAC0 and MAC6.
- - qca,sgmii-rxclk-falling-edge: Set the receive clock phase to falling edge.
- - qca,sgmii-txclk-falling-edge: Set the transmit clock phase to falling edge.
--- 
-2.32.0
-
+~ Ramji
