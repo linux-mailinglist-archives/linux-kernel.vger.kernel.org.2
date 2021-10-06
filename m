@@ -2,121 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D3194235AC
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 04:06:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0171D4235B4
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 04:07:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237183AbhJFCIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 22:08:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37552 "EHLO
+        id S237211AbhJFCJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 22:09:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231872AbhJFCIk (ORCPT
+        with ESMTP id S237202AbhJFCJb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 22:08:40 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBB71C06174E
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 19:06:48 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id j11-20020a9d190b000000b00546fac94456so1254851ota.6
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 19:06:48 -0700 (PDT)
+        Tue, 5 Oct 2021 22:09:31 -0400
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54F04C061753;
+        Tue,  5 Oct 2021 19:07:40 -0700 (PDT)
+Received: by mail-qk1-x734.google.com with SMTP id g21so932248qki.11;
+        Tue, 05 Oct 2021 19:07:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=ygdBg5v9z3rYt7f+SorUymeJHWYZ7XFFOY+CoI2r094=;
-        b=X09yiDZu+NmXs/J7sxBhVVL9C5JgVknbW03r3SYOiMMOqPjouDXMSUdikcP9e4uwLN
-         r/9VcdLxpenpEUV92v77aXVheImMPidhD2ENfRRTGcOmaB6LnOnzHlpQDTgsrZqkO3Xo
-         9RJ/l3qdPDeXRUmQU0cXbSvWS6c9k0/jG+W30=
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=1KHdowUwAPHkcsSFMeTkk2K8mdh38Vk2CyxBkaIJorc=;
+        b=L8YihqYmPy4BvFxToVpOLSSFAP8vsUnYOS7aFQ0rT92GfMzaOJmCw2VTAYorRcso8y
+         WTBF7AIG+2FCVJGw2wKVjuPiYZhFx4Qw3WVfhrjz+8mdLzSRakSOxxCObgluoQaXZtnn
+         74WLDYgiDht+0ZPaoxWWlKLTpdA3JY62KeTyg1JOHNZKQ7rUcBt4E3T87bap9XFSn9c7
+         4JgoGwtBdRnlVhj5ABe8ZcBAbpJUlBvM36Nw0PuaG7Ftigh5sQthOHqSH2NFprV9NYqf
+         lb8AR+R+7AfNOxa+FIafHvkGoVLNJM00ksitWouvyNm5Ls8zX/vTeGGw6r6mJt8X2VZw
+         orLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=ygdBg5v9z3rYt7f+SorUymeJHWYZ7XFFOY+CoI2r094=;
-        b=W7CqWKIWvjvmTDauidk9JWfXOkFT5YgDWaM10ZpCr+pF23Mq9k+UVT3Q09Y78TuTgF
-         1x82wimHoqTzCJQGJ1IoKX6mxza3zQRdt2R6SS3rT4OKl5W4R9ZoDl+yogJEKZkDmquB
-         r3R6oBJXA+895DziPmW8UpSOobFAjpbg9slIJlfWpvAqz5i1t8eSj1xDFm4xJk/mGWiP
-         qo1scWyrk1adywXH5z/Ua+7bGERyHrx46jrW5JvcXwr4GHQkBqxmbMgPGnJhoANewoKh
-         bT9+sE1Hip5+uBAZgT1wbazl9xQVbZzNytNPUJeXnPCAHnTGoE7I+S1KKjs1MyKXBAU4
-         3qsw==
-X-Gm-Message-State: AOAM531Zz3/nO+gZ6wDNhAckdXE8x/S2/omwEqVs5O7w635DWHQbny+i
-        a6XsXcBkpSl7Fnd02P1aPI3vJTgJE34iW8MAMSx2Ag==
-X-Google-Smtp-Source: ABdhPJyfhXFHaIkT2rOzAObeZHtTUmgesKHEKfTgHB7ru8P3HDY5a3hsvNI5fYpbpt4+TCl8psKbUVF3dsxhMWFFFOQ=
-X-Received: by 2002:a9d:1f4:: with SMTP id e107mr17054559ote.77.1633486008240;
- Tue, 05 Oct 2021 19:06:48 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Tue, 5 Oct 2021 19:06:47 -0700
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=1KHdowUwAPHkcsSFMeTkk2K8mdh38Vk2CyxBkaIJorc=;
+        b=hBA/0YEs48xBPFCyCgASsyDTSPSrrcn7+5Hc1Mp59j3biWbmFve5Pliarv94m+/Ifh
+         +eYZuQ/SsaVdMDtT9ryNeWkEBqbvFmWb8Ttgy1ngY97VS04A8wKf3gelWmeW++paFrkA
+         dxV20XGsIQSiQ4icHDKphRQWR2vq5Xxgk5f1xqf8hhnPoCUins7UlrH5JSrSslZGalle
+         +HA2LaAQqRiVrXR+nIpv7Z+vLnTNNwqsn8cdWKryxWrKx6EJp1fT3MUQPmulD54bChKU
+         /XECYBP3xpAhpizxAN/yUSDgzznE8iapXOPNzh8RjuT42b/Sh3w6u4BryTscx2cCFu2F
+         Tkgg==
+X-Gm-Message-State: AOAM531fslOC/aLlSysdUm8AcI6QaK5z6Ca1Cbf79EN0AoT7QHuUalWg
+        KskpVspmVpxCeDtC/r/qBdE=
+X-Google-Smtp-Source: ABdhPJwnC4ol34I01EFnyvRqTYCjtBOKq9mS9+5fIYuqW3Dhiz4i6cWKdyo2dW1o4KhdRYMMdF8PkA==
+X-Received: by 2002:a37:6553:: with SMTP id z80mr17594261qkb.42.1633486059467;
+        Tue, 05 Oct 2021 19:07:39 -0700 (PDT)
+Received: from ?IPV6:2600:1700:dfe0:49f0:c86a:e663:3309:49d7? ([2600:1700:dfe0:49f0:c86a:e663:3309:49d7])
+        by smtp.gmail.com with ESMTPSA id o202sm10554288qke.51.2021.10.05.19.07.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Oct 2021 19:07:39 -0700 (PDT)
+Message-ID: <6be712f8-c794-aa55-8679-5ddb5a16bcef@gmail.com>
+Date:   Tue, 5 Oct 2021 19:07:36 -0700
 MIME-Version: 1.0
-In-Reply-To: <YVz/NOL3AFn2zBA0@ripper>
-References: <20211005231323.2663520-1-bjorn.andersson@linaro.org>
- <20211005231323.2663520-6-bjorn.andersson@linaro.org> <CAE-0n52gOCC8bUfMFnNHRKFoq2=q4Ho8a-UYH5JKgumguhUD2A@mail.gmail.com>
- <YVz/NOL3AFn2zBA0@ripper>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Tue, 5 Oct 2021 19:06:47 -0700
-Message-ID: <CAE-0n513cs282Dh_YFMHK2uKCVFSWxtNyfRaFwWGyUvpfShixw@mail.gmail.com>
-Subject: Re: [PATCH v4 5/7] drm/msm/dp: Support up to 3 DP controllers
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Abhinav Kumar <abhinavk@codeaurora.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Kalyan Thota <kalyan_t@codeaurora.org>,
-        Kuogee Hsieh <khsieh@codeaurora.org>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.2
+Subject: Re: [PATCH v3 2/4] PCI: brcmstb: Add ACPI config space quirk
+Content-Language: en-US
+To:     Jeremy Linton <jeremy.linton@arm.com>,
+        =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org,
+        lorenzo.pieralisi@arm.com, nsaenz@kernel.org, bhelgaas@google.com,
+        rjw@rjwysocki.net, lenb@kernel.org, robh@kernel.org, kw@linux.com,
+        f.fainelli@gmail.com, bcm-kernel-feedback-list@broadcom.com,
+        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rpi-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20211005153209.GA1083986@bhelgaas>
+ <d4b34193-31e5-2f95-6365-b58239c0dabb@arm.com>
+ <20211005194301.enb5jddzdgczcolx@pali>
+ <694bb355-3b5e-9801-3772-ff784b49a603@arm.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <694bb355-3b5e-9801-3772-ff784b49a603@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Bjorn Andersson (2021-10-05 18:43:16)
-> On Tue 05 Oct 17:43 PDT 2021, Stephen Boyd wrote:
->
-> > Quoting Bjorn Andersson (2021-10-05 16:13:21)
-> > > diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
-> > > index bdaf227f05dc..674cddfee5b0 100644
-> > > --- a/drivers/gpu/drm/msm/dp/dp_display.c
-> > > +++ b/drivers/gpu/drm/msm/dp/dp_display.c
-> > > @@ -1233,7 +1239,7 @@ static int dp_display_probe(struct platform_device *pdev)
-> > >         if (!dp)
-> > >                 return -ENOMEM;
-> > >
-> > > -       desc = dp_display_get_desc(pdev);
-> > > +       desc = dp_display_get_desc(pdev, &dp->id);
-> >
-> > I'm sad that dp->id has to match the number in the SoC specific
-> > dpu_intf_cfg array in drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
-> > still. Is there any way we can avoid that? Also, notice how those arrays
-> > already have INTF_DP macros, which makes me think that it may be better
-> > to connect this to those arrays instead of making an msm_dp_desc
-> > structure and then make sure the 'type' member matches a connector
-> > type number. Otherwise this code is super fragile.
-> >
->
-> I'm afraid I don't understand what you're proposing. Or which part you
-> consider fragile, the indices of the INTF_DP instances aren't going to
-> move around...
->
-> I have N instances of the DP driver that I need to match to N entries
-> from the platform specific intf array, I need some stable reference
-> between them. When I started this journey I figured I could rely on the
-> of_graph between the DPU and the interface controllers, but the values
-> used there today are just bogus, so that was a no go.
->
-> We can use whatever, as long as _dpu_kms_initialize_displayport() can
-> come up with an identifier to put in h_tile_instance[0] so that
-> dpu_encoder_setup_display() can find the relevant INTF.
->
 
-To make it more concrete we can look at sc7180
 
-static const struct dpu_intf_cfg sc7180_intf[] = {
-        INTF_BLK("intf_0", INTF_0, 0x6A000, INTF_DP, 0, 24,
-INTF_SC7180_MASK, MDP_SSPP_TOP0_INTR, 24, 25),
-                                                     ^
-                                                     |
+On 10/5/2021 3:25 PM, Jeremy Linton wrote:
+> Hi,
+> 
+> On 10/5/21 2:43 PM, Pali Rohár wrote:
+>> Hello!
+>>
+>> On Tuesday 05 October 2021 10:57:18 Jeremy Linton wrote:
+>>> Hi,
+>>>
+>>> On 10/5/21 10:32 AM, Bjorn Helgaas wrote:
+>>>> On Thu, Aug 26, 2021 at 02:15:55AM -0500, Jeremy Linton wrote:
+>>>>> Additionally, some basic bus/device filtering exist to avoid sending
+>>>>> config transactions to invalid devices on the RP's primary or
+>>>>> secondary bus. A basic link check is also made to assure that
+>>>>> something is operational on the secondary side before probing the
+>>>>> remainder of the config space. If either of these constraints are
+>>>>> violated and a config operation is lost in the ether because an EP
+>>>>> doesn't respond an unrecoverable SERROR is raised.
+>>>>
+>>>> It's not "lost"; I assume the root port raises an error because it
+>>>> can't send a transaction over a link that is down.
+>>>
+>>> The problem is AFAIK because the root port doesn't do that.
+>>
+>> Interesting! Does it mean that PCIe Root Complex / Host Bridge (which I
+>> guess contains also logic for Root Port) does not signal transaction
+>> failure for config requests? Or it is just your opinion? Because I'm
+>> dealing with similar issues and I'm trying to find a way how to detect
+>> if some PCIe IP signal transaction error via AXI SLVERR response OR it
+>> just does not send any response back. So if you know some way how to
+>> check which one it is, I would like to know it too.
+> 
+> This is my _opinion_ based on what I've heard of some other IP 
+> integration issues, and what i've seen poking at this one from the 
+> perspective of a SW guy rather than a HW guy. So, basically worthless. 
+> But, you should consider that most of these cores/interconnects aren't 
+> aware of PCIe completion semantics so its the root ports responsibility 
+> to say, gracefully translate a non-posted write that doesn't have a 
+> completion for the interconnects its attached to, rather than tripping 
+> something generic like a SLVERR.
+> 
+> Anyway, for this I would poke around the pile of exception registers, 
+> with your specific processors manual handy because a lot of them are 
+> implementation defined.
 
-intf0 is irrelevant. Also the address is irrelevant. But here we have a
-zero, the number after INTF_DP, and that is very relevant. That number
-needs to match the dp->id. Somewhere we have a match between
-controller_id and dp->id in the code.
+I should be able to get you an answer in the new few days whether 
+configuration space requests also generate an error towards the ARM CPU, 
+since memory space requests most definitively do.
+-- 
+Florian
