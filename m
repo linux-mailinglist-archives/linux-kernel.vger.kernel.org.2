@@ -2,90 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58408423538
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 02:41:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ADA842353B
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 02:41:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237053AbhJFAnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 20:43:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46852 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236953AbhJFAnG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 20:43:06 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55B56C061753
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 17:41:15 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id 187so886072pfc.10
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 17:41:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/Twg3K4gp+yGHpRxWybK7U//bFNhuubvyWg25c1dXUA=;
-        b=LtSHvLTg5hUhnlUSroodmREz1Y3HjVdqPk4Gb70XZsg9cRgV0BiVFpKJVxPQWGZicK
-         +GRQioBNmN5oLYSFPySIP2G5riMlYbyv6g5lG5iL5XpX04iVEItn2zOhwNICiUUW0GgV
-         U1wsWBWW4JNMSkMKPM1sbK+AHaM6KDDrUq98BuGYwgbF7OYP2TJZvzvLvs4UCIu9EmoX
-         aK8hKBze0scL52eJ63yBe+YktNLC3dRNtPjq9RenSrKrP/GlthiZdNtKw8xJSXZfho1F
-         cei8+285B5Bqh7nIaJu9CfFsWmb/N6LWyRQB9sduQwweLTdPg84LGEI4igBkOtSZy06j
-         qgFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/Twg3K4gp+yGHpRxWybK7U//bFNhuubvyWg25c1dXUA=;
-        b=xNmNqq8LsFktYSFRHNDqtA5uCLcjjlHSngk9R8IBeECgslyq7q8P+d6oNZCQqOTvRQ
-         8fOv9SysSPp8gvhPool89K11KVC6YmOQfFNonXuWLJoqDqk+W0kqQ1gxw6PoNhcOzYsN
-         A/MMlV37iZcNu3WAnj3qR662d1TzYNmXNg4UvrgNIC41bh1YahaJ/c4WYKZ7lAEgGNGZ
-         9i672udm6+LyjOjXuRhcqzWNRU1PRDmg5alZFNA8e/UzDdfnETnkeygdbhbAsMI746Nr
-         2JH4LzXIzMjhdBucdlPOePQUE+PPhBtRmiPie5uhiXcXvMTeXjC6pNHWCQegNgVUIOcC
-         ldWw==
-X-Gm-Message-State: AOAM532fWAsagQ+R5qzMrpYWa41rbG3z2S3VswF+hcojnVVB/mIo9Egw
-        JYI+b/7GpJG0ajR/9Csld5Nzow==
-X-Google-Smtp-Source: ABdhPJw+wQW5MK+6oVivNcDSO/mJgzoT4+thkQFYhWLzXbm1PJO9hCHq9u3cAAseI4Oi5526qLOwkg==
-X-Received: by 2002:a65:62d1:: with SMTP id m17mr18013771pgv.370.1633480874547;
-        Tue, 05 Oct 2021 17:41:14 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id o16sm18276979pgv.29.2021.10.05.17.41.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Oct 2021 17:41:13 -0700 (PDT)
-Date:   Wed, 6 Oct 2021 00:41:10 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     David Stevens <stevensd@chromium.org>
-Cc:     Colin King <colin.king@canonical.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
-        kvm@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH][next] KVM: x86: Fix allocation sizeof argument
-Message-ID: <YVzwpjSmGuVczgEG@google.com>
-References: <20211001110106.15056-1-colin.king@canonical.com>
- <YVxyNgyyxA7EnvJb@google.com>
- <CAD=HUj7t0qRbpzXDs4EZDeLUK=cTTCAxSbh8V0FUCMzpq7rNFg@mail.gmail.com>
+        id S236953AbhJFAnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 20:43:24 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:51138 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234027AbhJFAnX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 20:43:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=fWCUHyISCTCbKil27s1A/LIjDfVPLiq7C06yAw+SbzM=; b=AEZk+ri5lO1h5vrLb7HEoHJLjI
+        RIlm+msrgZT1uAXsJ8I6LoUvaKsMC2D6CzB6OB0xRXRCnFYn32RMgS/waKBdvH+XdWgo+is90ryMJ
+        WaTPJU2Gjmgml+bEhOkMPxEjjYhtNJpAaqKh5rbuodKyd1KXVm+tVKfu0jOpamzTUFDc=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mXuzj-009lfN-NO; Wed, 06 Oct 2021 02:41:15 +0200
+Date:   Wed, 6 Oct 2021 02:41:15 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Rajat Jain <rajatxjain@gmail.com>
+Cc:     Alan Stern <stern@rowland.harvard.edu>,
+        Dmitry Torokhov <dtor@google.com>,
+        Rajat Jain <rajatja@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Mathias Nyman <mathias.nyman@linux.intel.com>,
+        Chris Chiu <chris.chiu@canonical.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        levinale@google.com, bleung@google.com, jsbarnes@google.com,
+        pmalani@google.com
+Subject: Re: [PATCH 2/2] usb: hub: Mark devices downstream a removable hub,
+ as removable
+Message-ID: <YVzwq0bFKvKyO1TN@lunn.ch>
+References: <20210929224823.556943-1-rajatja@google.com>
+ <20210929224823.556943-2-rajatja@google.com>
+ <YVVLxi/on9x6nfCZ@kroah.com>
+ <CACK8Z6EamamgYExt629gyNrYKpvnu2Gh0eGOOvOa5LH-jnOmaQ@mail.gmail.com>
+ <20211005145655.GJ621017@rowland.harvard.edu>
+ <CAE_wzQ-XG3YBtKTmbn1LSGETCUg5AYjTmcnwOnc1h57OaL9+Cw@mail.gmail.com>
+ <20211005195929.GA634685@rowland.harvard.edu>
+ <CAA93t1qzJuN8M2zbs+Kt9JXWP1H2kjKSxBp8-TXEfaMeZ1iggQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAD=HUj7t0qRbpzXDs4EZDeLUK=cTTCAxSbh8V0FUCMzpq7rNFg@mail.gmail.com>
+In-Reply-To: <CAA93t1qzJuN8M2zbs+Kt9JXWP1H2kjKSxBp8-TXEfaMeZ1iggQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 06, 2021, David Stevens wrote:
-> On Wed, Oct 6, 2021 at 12:41 AM Sean Christopherson <seanjc@google.com> wrote:
-> > Hrm, this fails to free the gfn_track allocations for previous memslots.  The
-> > on-demand rmaps code has the exact same bug (it frees rmaps for previous lpages
-> > in the _current_ slot, but does not free previous slots).
-> >
-> > And having two separate flows (and flags) for rmaps vs. gfn_track is pointless,
-> > and means we have to maintain two near-identical copies of non-obvious code.
-> 
-> I agree that's better than my patch. I can put together a new patch
-> once it's decided whether or not my patch should be dropped.
+> AFAIK, the primary reason / use of this attribute was to distinguish
+> devices that can be removed by the user, and really all such devices
+> (at least the ones that matter to user) today sit either on PCI or USB
+> bus.
 
-All yours, unless Paolo wants to fight you for it :-)  I'm totally ok doing
-cleanup/fixes on top.
+Hard disk on SATA? You can hot plug them.
+
+SFP modules on i2c?
+
+I'm sure there are others, which are not PCI or USB.
+
+     Andrew
