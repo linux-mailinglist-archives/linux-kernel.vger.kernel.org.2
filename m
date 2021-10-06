@@ -2,53 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B5A94238DF
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 09:29:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19B524238E1
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 09:29:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237448AbhJFHbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 03:31:16 -0400
-Received: from muru.com ([72.249.23.125]:41330 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230013AbhJFHbM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 03:31:12 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id BFB6880E7;
-        Wed,  6 Oct 2021 07:29:50 +0000 (UTC)
-Date:   Wed, 6 Oct 2021 10:29:18 +0300
-From:   Tony Lindgren <tony@atomide.com>
-To:     Drew Fustini <drew@pdp7.com>
-Cc:     =?utf-8?Q?Beno=C3=AEt?= Cousson <bcousson@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-omap@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ARM: dts: am335x-pocketbeagle: switch to pinconf-single
-Message-ID: <YV1QTrMHRX1VGgaP@atomide.com>
-References: <20210825202516.1384510-1-drew@pdp7.com>
+        id S237458AbhJFHbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 03:31:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52718 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230013AbhJFHbp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 03:31:45 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74FF4C06174E
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 00:29:53 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id g8so6219521edt.7
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 00:29:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=z844VJHlxmzvOdY4OzjauvhY0H4JFbINr/ZD7bsQcsk=;
+        b=vN1K8uIBti7VTjj7axQNZBJHsGBZExPEJVHpOmXtVDlN3P4jZK0Gsthi48g9SFs7LU
+         RPEWTaJAO/aMhW2yRwTwybT673w0KTLA1X8GQdsBJPDNQP7FWlk3m4f9D1PWjN8nJWnw
+         M889WovAgR4/WZOQMQMu6v4BXRIxnPhH82JPD/l3Glr/h0c5ayWzfV/bEskengfpXwDu
+         NmHM3IQxrJYR0WLflZZQLI+AzHyoA8+TURDPJHxO6P40Hbe/DIOjPYXiZZLc2WUJmhm7
+         OzH4Iqh8GjGMlSoAO4RJX7S67lSZmENF6MC8B/+AhWTXyrTpv/MoeQP5qOWGNxNSHGGw
+         h9yQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=z844VJHlxmzvOdY4OzjauvhY0H4JFbINr/ZD7bsQcsk=;
+        b=jLxOH3zxebRnT82W6OM+/pDQhfnsaDpDcd8WV2zjXaxdAcro0TiallVNsNZv6zCU3m
+         K4v1UGnm0qvatToYAnn6RcIHCdKpKL+6B9zGGnuwWYC8RptgNpYR+1AgelPH3Y6qB723
+         LX845zcggrdgcF70DFPPJXGYD5Cf29p7XJiv/TpLz+b5u/aAGJeJK5sKxh/SAHcUnRCK
+         Sch84bKyGOCPGshH+TNK5aLVWHHggAbgV2aZBZ4qBJW0tnkLiX5POvxyGcD3DJjrId69
+         TrvHNQXgyZZKgk+KWUdtEW+rNfPa0Bf+bZIK/0KaKeg6dDqMA9HlJ80pTZ7wt+NeqoAm
+         TqRQ==
+X-Gm-Message-State: AOAM53004FslZxTUeNN4PPFA2GPqwLeVps0zzdI48yz+gEg0QFNqjIZy
+        CRsTHcI8GFrQUnsS2+MmbhPm9IzWugM0iXAqyoUFXA==
+X-Google-Smtp-Source: ABdhPJwFaYFjTUiAM0bIVE8z8rHBC8xMOT3uRVWuAmOUVUJFCSkxzbtWbx3It1lwvTMlmeU9R4xmLYq3jrG1efTs0Hw=
+X-Received: by 2002:a17:906:4f96:: with SMTP id o22mr30180033eju.169.1633505391881;
+ Wed, 06 Oct 2021 00:29:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210825202516.1384510-1-drew@pdp7.com>
+References: <20211005083258.454981062@linuxfoundation.org>
+In-Reply-To: <20211005083258.454981062@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 6 Oct 2021 12:59:40 +0530
+Message-ID: <CA+G9fYv33Bh4q9O8wvSV33+NT=ZNBqqarjMmjRDGxbz4tZc+GA@mail.gmail.com>
+Subject: Re: [PATCH 4.14 00/75] 4.14.249-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Drew Fustini <drew@pdp7.com> [210826 01:20]:
-> Switch the compatible for the am33xx_pinmux pin controller node from
-> pinctrl-single to pinconf-single. The only change between these two
-> compatibles is that PCS_HAS_PINCONF will be true. This then allows
-> pinconf properties to be utilized.
-> 
-> The purpose of this change is to allow the PocketBeagle to use:
-> 
->   pinctrl-single,bias-pullup
->   pinctrl-single,bias-pulldown
-> 
-> This dts already defines these properites for gpio pins in the default
-> pinctrl state but it has no effect unless PCS_HAS_PINCONF is set.
-> 
-> The bias properties can then be modified on the corresponding gpio lines
-> through the gpiod uapi. The mapping between the pins and gpio lines is
-> defined by gpio-ranges under the gpio controller nodes in am33xx-l4.dtsi
+On Tue, 5 Oct 2021 at 14:08, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.14.249 release.
+> There are 75 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Thu, 07 Oct 2021 08:32:44 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.14.249-rc2.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.14.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Thanks applying into omap-for-v5.16/dt.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Tony
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+## Build
+* kernel: 4.14.249-rc2
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-4.14.y
+* git commit: b56df9ef1a53d484fa3653206dd4ae0e5c45c6ff
+* git describe: v4.14.248-76-gb56df9ef1a53
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.14.y/build/v4.14=
+.248-76-gb56df9ef1a53
+
+## No regressions (compared to v4.14.248-76-g7f6d4fdae68d)
+
+## No fixes (compared to v4.14.248-76-g7f6d4fdae68d)
+
+
+## Test result summary
+total: 74585, pass: 59188, fail: 675, skip: 12625, xfail: 2097
+
+## Build Summary
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 1 total, 1 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* kselftest-android
+* kselftest-arm64
+* kselftest-arm64/arm64.btitest.bti_c_func
+* kselftest-arm64/arm64.btitest.bti_j_func
+* kselftest-arm64/arm64.btitest.bti_jc_func
+* kselftest-arm64/arm64.btitest.bti_none_func
+* kselftest-arm64/arm64.btitest.nohint_func
+* kselftest-arm64/arm64.btitest.paciasp_func
+* kselftest-arm64/arm64.nobtitest.bti_c_func
+* kselftest-arm64/arm64.nobtitest.bti_j_func
+* kselftest-arm64/arm64.nobtitest.bti_jc_func
+* kselftest-arm64/arm64.nobtitest.bti_none_func
+* kselftest-arm64/arm64.nobtitest.nohint_func
+* kselftest-arm64/arm64.nobtitest.paciasp_func
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
