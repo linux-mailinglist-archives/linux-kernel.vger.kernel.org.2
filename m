@@ -2,69 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 401E442468F
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 21:14:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E350424691
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 21:14:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239194AbhJFTQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 15:16:14 -0400
-Received: from mail-ot1-f50.google.com ([209.85.210.50]:38803 "EHLO
-        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229564AbhJFTQN (ORCPT
+        id S239248AbhJFTQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 15:16:36 -0400
+Received: from mail-oo1-f53.google.com ([209.85.161.53]:44892 "EHLO
+        mail-oo1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229564AbhJFTQf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 15:16:13 -0400
-Received: by mail-ot1-f50.google.com with SMTP id c6-20020a9d2786000000b005471981d559so4423155otb.5;
-        Wed, 06 Oct 2021 12:14:21 -0700 (PDT)
+        Wed, 6 Oct 2021 15:16:35 -0400
+Received: by mail-oo1-f53.google.com with SMTP id e16-20020a4ad250000000b002b5e1f1bc78so1156053oos.11;
+        Wed, 06 Oct 2021 12:14:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=uKvpGuwsKeTIxTNYlo+8dztssa33mpEFTpr2uQKniTU=;
-        b=Hbkveepx0cdSs3X8zIPxIUfkyUMy7pYGwjFK2wfR/AEswmXIAG0Bu6R6wt/KxGu0dc
-         ncbDDSoEZvOO5tAmWGuMevBpVjwmWtaA979KG0n2G2mBBSJp4+j14mPlK5+LZCf1SfZa
-         R1rxvmIhv31+iOsxXQ575tsdXdlLnRtHL+atCw6oG88HM8gRDQlpH5Jj5kXvC/yAgG6p
-         PguTxdlfDPlkkZRToHTJlHzxh/6Cio7RENsc6wtceKf3VT2I9a2hfAVCyzmw6IDwpBQB
-         cDYgDpOlnI7GRKUxN2Eo1GLDJ/sO/Vpiw8C+SnU9d8RoxlWR0Fr/4FBKtXUYGFsevTWL
-         yd3Q==
-X-Gm-Message-State: AOAM532VNg7z6ieFJ+owP94Lq8D0hG07Wn67/QaT4H/fcAoCU5r21mXQ
-        AbZQva+UC+tQnx8rHaQD0N6eb+2F6A==
-X-Google-Smtp-Source: ABdhPJwzlwIDmTJpik07Uag6ZIs+cG+/4eBcgGtQ9XCAC/73CH6JKVNckBVD5iVhT9BTnO3jqlUs4Q==
-X-Received: by 2002:a9d:6c91:: with SMTP id c17mr3988otr.114.1633547660627;
-        Wed, 06 Oct 2021 12:14:20 -0700 (PDT)
+        bh=F2u+l/lmYmOhB5qG5+bzuACvdjgmAdllAL4afyPVf8I=;
+        b=H/8M+xtGLAMoA1hJD/tcKHuQqN3VtwrXtrDiK09757ynvABp+3mdEnAEGm2vlwbjAs
+         w9bWnhlEQLPKR+3qzk7Ih8/wZzSfBKlnvKd34O8NPcvSHqIPDSJGhUY5hsQXNE0kPgnv
+         k8EJd+CS3tAfp0J8qEilhtKWstrXrWVNd6edolCCsFJejg5nvGcVgfTZFfC/dhQIr4D7
+         2WtiP3rJ8aCeBCD+HgBYS1IT627xyB7gVQQME6WVOqAzJaXbA67bpebdrQDEssb7aYWw
+         pzoZk+yhTtv5pf5ubMYOKmB+LCoQFHv9oPmjr1vSaS/wJJkbVEA9BejlsJI2t2kGu5qu
+         AHHQ==
+X-Gm-Message-State: AOAM532F1kaqqg6UINSfXiD5p2GrYrYxeO5u3JC/ADCbdSRmVD2SGCXK
+        RvJdjugMi6F/9NU7j9gu5Q==
+X-Google-Smtp-Source: ABdhPJyGrxWCOpNPPLGYwRvElOIPV41kNWMelDN9N+FeSrmez82iHIoUOO7fZBPy3ySVbVV/8PSdWA==
+X-Received: by 2002:a4a:d088:: with SMTP id i8mr64515oor.17.1633547682230;
+        Wed, 06 Oct 2021 12:14:42 -0700 (PDT)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id ay42sm4335696oib.22.2021.10.06.12.14.19
+        by smtp.gmail.com with ESMTPSA id o42sm2875975ooi.9.2021.10.06.12.14.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Oct 2021 12:14:20 -0700 (PDT)
-Received: (nullmailer pid 2248765 invoked by uid 1000);
-        Wed, 06 Oct 2021 19:14:19 -0000
-Date:   Wed, 6 Oct 2021 14:14:19 -0500
+        Wed, 06 Oct 2021 12:14:41 -0700 (PDT)
+Received: (nullmailer pid 2249766 invoked by uid 1000);
+        Wed, 06 Oct 2021 19:14:40 -0000
+Date:   Wed, 6 Oct 2021 14:14:40 -0500
 From:   Rob Herring <robh@kernel.org>
-To:     Andreas Kemnade <andreas@kemnade.info>
-Cc:     Tomi Valkeinen <tomi.valkeinen@ti.com>, devicetree@vger.kernel.org,
-        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, vigneshr@ti.com, robh+dt@kernel.org,
-        linux-serial@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: serial: 8250_omap: allow serdev subnodes
-Message-ID: <YV31i4pONQCYKGAK@robh.at.kernel.org>
-References: <20211001211731.2923066-1-andreas@kemnade.info>
+To:     Zev Weiss <zev@bewilderbeest.net>
+Cc:     devicetree@vger.kernel.org, Frank Rowand <frowand.list@gmail.com>,
+        Grant Likely <grant.likely@secretlab.ca>,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] of: remove duplicate declarations of __of_*_sysfs()
+ functions
+Message-ID: <YV31oO+MV6z2qoDO@robh.at.kernel.org>
+References: <20211006061943.8472-1-zev@bewilderbeest.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211001211731.2923066-1-andreas@kemnade.info>
+In-Reply-To: <20211006061943.8472-1-zev@bewilderbeest.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 01 Oct 2021 23:17:31 +0200, Andreas Kemnade wrote:
-> additionalProperties: false
-> ignores the pattern matching for serdev objects in serial.yaml, causing
-> error messages when serdev subnodes like bluetooth or gnss devices are
-> defined. Using unevaluatedProperties instead is the correct way
-> if arbitrary children nodes can appear.
+On Tue, 05 Oct 2021 23:19:42 -0700, Zev Weiss wrote:
+> When CONFIG_OF_KOBJ was introduced in commit b56b5528f5b3 ("of: make
+> kobject and bin_attribute support configurable") and #ifdef-ed
+> versions of these declarations got added, the originals didn't get
+> removed.
 > 
-> Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
+> Fixes: b56b5528f5b3 ("of: make kobject and bin_attribute support configurable")
+> Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
 > ---
->  Documentation/devicetree/bindings/serial/8250_omap.yaml | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/of/of_private.h | 8 --------
+>  1 file changed, 8 deletions(-)
 > 
 
-Acked-by: Rob Herring <robh@kernel.org>
+Applied, thanks!
