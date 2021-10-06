@@ -2,203 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F3EE4240D0
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 17:07:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EF244240DC
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 17:08:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239175AbhJFPIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 11:08:47 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:12989 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239000AbhJFPIo (ORCPT
+        id S239173AbhJFPJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 11:09:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26944 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238440AbhJFPJy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 11:08:44 -0400
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 196EVu1L031318;
-        Wed, 6 Oct 2021 11:06:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=CSCaFGQKbQ0BBGBXLMCDk9QntjBm1YCC9kIlGGumUoU=;
- b=jSQ/RLK41e7lN4wkvxGzhA0D8bjmtzLJIV2BiML9agqVmieoZpg1NI+AWltLcxuYL4Ht
- iDoThUAyZGQHnHux+Swpc/ysXD5GqUyKddy9QtiR8RWCTZausQQFTef22mnjtH7xeEF1
- bv3HdtEPoBKE6IAEXPOqe0vwZCIA9oyeX4ILquXLFKeJaEAZXk/8AxMkIu0A7x2W7yPa
- fjcDC6fG2gW2KtQRd/kFLNLtzl4vjzfCgfV97S09nXfW9wL85z2O2E0wcd5ITnV/LY1H
- KZKJsqZvoFajN5cSJAvZE6hb7zwjLkfoYDYw8CDaNBlPWYiO3r+MepzYfIYVNA7F1A/y BQ== 
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bh1wvrwj3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 06 Oct 2021 11:06:26 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 196EvJQQ020118;
-        Wed, 6 Oct 2021 15:06:24 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma03ams.nl.ibm.com with ESMTP id 3bef2aevw0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 06 Oct 2021 15:06:23 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 196F6I4n37880194
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 6 Oct 2021 15:06:18 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 62578A4064;
-        Wed,  6 Oct 2021 15:06:18 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EA66EA4067;
-        Wed,  6 Oct 2021 15:06:15 +0000 (GMT)
-Received: from thinkpad (unknown [9.171.8.189])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Wed,  6 Oct 2021 15:06:15 +0000 (GMT)
-Date:   Wed, 6 Oct 2021 17:06:13 +0200
-From:   Gerald Schaefer <gerald.schaefer@linux.ibm.com>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Hamza Mahfooz <someguy@effective-light.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Karsten Graul <kgraul@linux.ibm.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        linux-rdma@vger.kernel.org
-Subject: Re: DPAA2 triggers, [PATCH] dma debug: report -EEXIST errors in
- add_dma_entry
-Message-ID: <20211006170613.455e66c2@thinkpad>
-In-Reply-To: <4a96b583-1119-8b26-cc85-f77a6b4550a2@arm.com>
-References: <20210518125443.34148-1-someguy@effective-light.com>
-        <fd67fbac-64bf-f0ea-01e1-5938ccfab9d0@arm.com>
-        <20210914154504.z6vqxuh3byqwgfzx@skbuf>
-        <185e7ee4-3749-4ccb-6d2e-da6bc8f30c04@linux.ibm.com>
-        <20211001145256.0323957a@thinkpad>
-        <20211006151043.61fe9613@thinkpad>
-        <4a96b583-1119-8b26-cc85-f77a6b4550a2@arm.com>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
-Content-Type: text/plain; charset=US-ASCII
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: Ot8L6gpKg8xoQxW_Z7rlAehLfzi_-EZ3
-X-Proofpoint-GUID: Ot8L6gpKg8xoQxW_Z7rlAehLfzi_-EZ3
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Wed, 6 Oct 2021 11:09:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633532880;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=iml3pNlbn9tn2FywzhER1zlHgKoPS0AbJRacW4jzMgU=;
+        b=BYnKwWw+ErSe7dbeP1y/OpWJRWVNHdJzKmxHo9oS/tHdHJ5TJPME+eq2Zl+RXybmUd54Fm
+        Dx0BeW/GnpcaEGszxibF4/SVodgSTzupsL2fh+YzW+0YDJeJCANYgwvCZHYvrujN1JsVZ5
+        cKpAwWFh9lmg227NLt6WsRu7rgCwwf8=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-331-XoskuDgsPJSbdDFoyO8Fmg-1; Wed, 06 Oct 2021 11:07:59 -0400
+X-MC-Unique: XoskuDgsPJSbdDFoyO8Fmg-1
+Received: by mail-wr1-f72.google.com with SMTP id r16-20020adfb1d0000000b00160bf8972ceso2300274wra.13
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 08:07:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:to:cc:references:from:organization:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=iml3pNlbn9tn2FywzhER1zlHgKoPS0AbJRacW4jzMgU=;
+        b=DeJSFBXlLBWoY1JeTaj5nRG/FGY3bgdIMx9ScbOAjUR4T1sx5y+wYJyW5Ll2LVCrLl
+         yhR5LCbKKIv9kEkf5QLzRbGr98FeqUlLDubqLXL8VigWjdV8GseVNvFF76q34GqK51ND
+         af7er/dXhYHrC0+hVbJqmhpw8ifFyjmFy9Th5sn1iRLn6n/Ht3QJFfidsCd8I+zm4BXa
+         3u6Q5VyFY1VE8tyB+BFEngcqcEXANaR3wwT3xId2zwGg5tluFyBKpSf+HafYFzEAvlMx
+         3Jza8Wti9ie6N3ok2RrGfBETNUrE7vk+e1YYpIU7OMTpz0rVbv60W363ama1bEVGAr4H
+         EQNw==
+X-Gm-Message-State: AOAM531ZzAxibaHjSGrk8Tm3e1HqW3jxZbZ+oN7eUqOB5AR5XjIk/MO2
+        DP8+g74WbIiCIq8mVdQ+ebfs3N5Uchet/xddhyrkTvNXHjekNPcMiEOrKgbCsUCxDS3A3zcrAv/
+        VlMYVtMNNZgOSPFrfhXl3OWgB
+X-Received: by 2002:a05:600c:4fc6:: with SMTP id o6mr10488632wmq.147.1633532878744;
+        Wed, 06 Oct 2021 08:07:58 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzIy7edjiF6tYBwyhRpW4cHms5SJrrTE90lW3+gTLtxOFwCuTMHSR1zVPnDBv3OjX9leQiDZw==
+X-Received: by 2002:a05:600c:4fc6:: with SMTP id o6mr10488572wmq.147.1633532878499;
+        Wed, 06 Oct 2021 08:07:58 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c6529.dip0.t-ipconnect.de. [91.12.101.41])
+        by smtp.gmail.com with ESMTPSA id w11sm2259159wmc.44.2021.10.06.08.07.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Oct 2021 08:07:58 -0700 (PDT)
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     Michal Hocko <mhocko@suse.com>, John Hubbard <jhubbard@nvidia.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Colin Cross <ccross@google.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        vincenzo.frascino@arm.com,
+        =?UTF-8?B?Q2hpbndlbiBDaGFuZyAo5by16Yym5paHKQ==?= 
+        <chinwen.chang@mediatek.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Jann Horn <jannh@google.com>, apopple@nvidia.com,
+        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
+        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
+        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
+        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
+        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
+        chris.hyser@oracle.com, Peter Collingbourne <pcc@google.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Jens Axboe <axboe@kernel.dk>, legion@kernel.org,
+        Rolf Eike Beer <eb@emlix.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Thomas Cedeno <thomascedeno@google.com>, sashal@kernel.org,
+        cxfcosmos@gmail.com, Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-mm <linux-mm@kvack.org>,
+        kernel-team <kernel-team@android.com>
+References: <20211001205657.815551-1-surenb@google.com>
+ <20211001205657.815551-3-surenb@google.com>
+ <20211005184211.GA19804@duo.ucw.cz>
+ <CAJuCfpE5JEThTMhwKPUREfSE1GYcTx4YSLoVhAH97fJH_qR0Zg@mail.gmail.com>
+ <20211005200411.GB19804@duo.ucw.cz>
+ <CAJuCfpFZkz2c0ZWeqzOAx8KFqk1ge3K-SiCMeu3dmi6B7bK-9w@mail.gmail.com>
+ <efdffa68-d790-72e4-e6a3-80f2e194d811@nvidia.com>
+ <YV1eCu0eZ+gQADNx@dhcp22.suse.cz>
+ <6b15c682-72eb-724d-bc43-36ae6b79b91a@redhat.com>
+ <CAJuCfpEPBM6ehQXgzp=g4SqtY6iaC8wuZ-CRE81oR1VOq7m4CA@mail.gmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH v10 3/3] mm: add anonymous vma name refcounting
+Message-ID: <192438ab-a095-d441-6843-432fbbb8e38a@redhat.com>
+Date:   Wed, 6 Oct 2021 17:07:55 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-10-06_04,2021-10-06_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 spamscore=0
- malwarescore=0 phishscore=0 adultscore=0 clxscore=1011 priorityscore=1501
- lowpriorityscore=0 mlxlogscore=999 bulkscore=0 suspectscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110060095
+In-Reply-To: <CAJuCfpEPBM6ehQXgzp=g4SqtY6iaC8wuZ-CRE81oR1VOq7m4CA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 6 Oct 2021 15:23:36 +0100
-Robin Murphy <robin.murphy@arm.com> wrote:
-
-> On 2021-10-06 14:10, Gerald Schaefer wrote:
-> > On Fri, 1 Oct 2021 14:52:56 +0200
-> > Gerald Schaefer <gerald.schaefer@linux.ibm.com> wrote:
-> > 
-> >> On Thu, 30 Sep 2021 15:37:33 +0200
-> >> Karsten Graul <kgraul@linux.ibm.com> wrote:
-> >>
-> >>> On 14/09/2021 17:45, Ioana Ciornei wrote:
-> >>>> On Wed, Sep 08, 2021 at 10:33:26PM -0500, Jeremy Linton wrote:
-> >>>>> +DPAA2, netdev maintainers
-> >>>>> Hi,
-> >>>>>
-> >>>>> On 5/18/21 7:54 AM, Hamza Mahfooz wrote:
-> >>>>>> Since, overlapping mappings are not supported by the DMA API we should
-> >>>>>> report an error if active_cacheline_insert returns -EEXIST.
-> >>>>>
-> >>>>> It seems this patch found a victim. I was trying to run iperf3 on a
-> >>>>> honeycomb (5.14.0, fedora 35) and the console is blasting this error message
-> >>>>> at 100% cpu. So, I changed it to a WARN_ONCE() to get the call trace, which
-> >>>>> is attached below.
-> >>>>>
-> >>>>
-> >>>> These frags are allocated by the stack, transformed into a scatterlist
-> >>>> by skb_to_sgvec and then DMA mapped with dma_map_sg. It was not the
-> >>>> dpaa2-eth's decision to use two fragments from the same page (that will
-> >>>> also end un in the same cacheline) in two different in-flight skbs.
-> >>>>
-> >>>> Is this behavior normal?
-> >>>>
-> >>>
-> >>> We see the same problem here and it started with 5.15-rc2 in our nightly CI runs.
-> >>> The CI has panic_on_warn enabled so we see the panic every day now.
-> >>
-> >> Adding a WARN for a case that be detected false-positive seems not
-> >> acceptable, exactly for this reason (kernel panic on unaffected
-> >> systems).
-> >>
-> >> So I guess it boils down to the question if the behavior that Ioana
-> >> described is legit behavior, on a system that is dma coherent. We
-> >> are apparently hitting the same scenario, although it could not yet be
-> >> reproduced with debug printks for some reason.
-> >>
-> >> If the answer is yes, than please remove at lease the WARN, so that
-> >> it will not make systems crash that behave valid, and have
-> >> panic_on_warn set. Even a normal printk feels wrong to me in that
-> >> case, it really sounds rather like you want to fix / better refine
-> >> the overlap check, if you want to report anything here.
-> > 
-> > Dan, Christoph, any opinion?
-> > 
-> > So far it all looks a lot like a false positive, so could you please
-> > see that those patches get reverted? I do wonder a bit why this is
-> > not an issue for others, we surely cannot be the only ones running
-> > CI with panic_on_warn.
+On 06.10.21 17:01, Suren Baghdasaryan wrote:
+> On Wed, Oct 6, 2021 at 2:27 AM David Hildenbrand <david@redhat.com> wrote:
+>>
+>> On 06.10.21 10:27, Michal Hocko wrote:
+>>> On Tue 05-10-21 23:57:36, John Hubbard wrote:
+>>> [...]
+>>>> 1) Yes, just leave the strings in the kernel, that's simple and
+>>>> it works, and the alternatives don't really help your case nearly
+>>>> enough.
+>>>
+>>> I do not have a strong opinion. Strings are easier to use but they
+>>> are more involved and the necessity of kref approach just underlines
+>>> that. There are going to be new allocations and that always can lead
+>>> to surprising side effects.  These are small (80B at maximum) so the
+>>> overall footpring shouldn't all that large by default but it can grow
+>>> quite large with a very high max_map_count. There are workloads which
+>>> really require the default to be set high (e.g. heavy mremap users). So
+>>> if anything all those should be __GFP_ACCOUNT and memcg accounted.
+>>>
+>>> I do agree that numbers are just much more simpler from accounting,
+>>> performance and implementation POV.
+>>
+>> +1
+>>
+>> I can understand that having a string can be quite beneficial e.g., when
+>> dumping mmaps. If only user space knows the id <-> string mapping, that
+>> can be quite tricky.
+>>
+>> However, I also do wonder if there would be a way to standardize/reserve
+>> ids, such that a given id always corresponds to a specific user. If we
+>> use an uint64_t for an id, there would be plenty room to reserve ids ...
+>>
+>> I'd really prefer if we can avoid using strings and instead using ids.
 > 
-> What convinces you it's a false-positive? I'm hardly familiar with most 
-> of that callstack, but it appears to be related to mlx5, and I know that 
-> exists on expansion cards which could be plugged into a system with 
-> non-coherent PCIe where partial cacheline overlap *would* be a real 
-> issue. Of course it's dubious that there are many real use-cases for 
-> plugging a NIC with a 4-figure price tag into a little i.MX8 or 
-> whatever, but the point is that it *should* still work correctly.
+> I wish it was that simple and for some names like [anon:.bss] or
+> [anon:dalvik-zygote space] reserving a unique id would work, however
+> some names like [anon:dalvik-/system/framework/boot-core-icu4j.art]
+> are generated dynamically at runtime and include package name.
 
-I would assume that a *proper* warning would check if we see the
-"non-coherent" case, e.g. by using dev_is_dma_coherent() and only
-report with potentially fatal WARN on systems where it is appropriate.
+Valuable information
 
-However, I am certainly even less familiar with all that, and might
-just have gotten the wrong impression here.
+> Packages are constantly evolving, new ones are developed, names can
+> change, etc. So assigning a unique id for these names is not really
+> feasible.
 
-Also not sure about mlx5 relation here, it does not really show
-in the call trace, only in the err_printk() output, probably
-from dev_driver_string(dev) or dev_name(dev). But I do not see
-where mlx5 code would be involved here.
+So, you'd actually want to generate/reserve an id for a given string at 
+runtime, assign that id to the VMA, and have a way to match id <-> 
+string somehow?
 
-[...]
-> According to the streaming DMA API documentation, it is *not* valid:
-> 
-> ".. warning::
-> 
->    Memory coherency operates at a granularity called the cache
->    line width.  In order for memory mapped by this API to operate
->    correctly, the mapped region must begin exactly on a cache line
->    boundary and end exactly on one (to prevent two separately mapped
->    regions from sharing a single cache line).  Since the cache line size
->    may not be known at compile time, the API will not enforce this
->    requirement.  Therefore, it is recommended that driver writers who
->    don't take special care to determine the cache line size at run time
->    only map virtual regions that begin and end on page boundaries (which
->    are guaranteed also to be cache line boundaries)."
+That reservation service could be inside the kernel or even (better?) in 
+user space. The service could for example de-duplicates strings.
 
-Thanks, but I cannot really make a lot of sense out if this. Which
-driver exactly would be the one that needs to take care of the
-cache line alignment for sg elements? If this WARN is really reporting
-a bug, could you please help pointing to where it would need to be
-addressed?
+My question would be, if we really have to expose these strings to the 
+kernel, or if an id is sufficient. Sure, it would move complexity to 
+user space, but keeping complexity out of the kernel is usually a good idea.
 
-And does this really say that it is illegal to have multiple sg elements
-within the same cache line, regardless of cache coherence?
+-- 
+Thanks,
 
-Adding linux-rdma@vger.kernel.org, sorry for the noise, but maybe somebody
-on that list can make more sense of this.
+David / dhildenb
 
-For reference, the link to the start of this thread:
-https://lkml.kernel.org/r/fd67fbac-64bf-f0ea-01e1-5938ccfab9d0@arm.com
