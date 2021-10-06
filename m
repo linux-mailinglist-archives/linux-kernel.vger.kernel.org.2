@@ -2,142 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3B4A423658
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 05:37:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E07CA423659
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 05:42:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237313AbhJFDjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 23:39:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33336 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230363AbhJFDjj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 23:39:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 69DE761029;
-        Wed,  6 Oct 2021 03:37:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633491468;
-        bh=fTJvpgjSLz51U88Tq9z0xogY4BNYHCRrb0Lb3KcXGeQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Lj7jul45VtWr3mfTLqNNKm6rz/FWRAEo3Fx3+eR95ugvY+PF1yz7omX9BXFYa8WTI
-         cefQaXWSolBdM29Gnr5ezpPI+8goqVhlBLlfqHD2p1dvZulb8TB7/4JUzaNt8w+Mnn
-         D21AF5dQwRQ2WbaZNvfmqlv/hYrl108YbAihlbDMMlg7x+07N7EtWETUrUYBdkDvp4
-         KzEZ9ybmdssNehD229Ey/H3+CS3S2QaXzpGscDjp0IXj1LXDdSIw7NyrIQWMgEyZpm
-         1GJGMisx5HHmhLz79VxP5uc/S0EDhrFz29oRiUvzUY5Q5Jtyu5qrLLtMIf8yHMIlru
-         BsErxxOD+UHtg==
-Date:   Wed, 6 Oct 2021 06:37:44 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Ido Schimmel <idosch@nvidia.com>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Pirko <jiri@nvidia.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        mlxsw@nvidia.com, Moshe Shemesh <moshe@nvidia.com>,
-        netdev@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Shay Drory <shayd@nvidia.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>
-Subject: Re: [PATCH net-next v2 3/5] devlink: Allow set specific ops
- callbacks dynamically
-Message-ID: <YV0aCADY4WkLySv4@unreal>
-References: <cover.1633284302.git.leonro@nvidia.com>
- <92971648bcad41d095d12f5296246fc44ab8f5c7.1633284302.git.leonro@nvidia.com>
- <20211004164413.60e9ce80@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <YVv/nUe63nO8o8wz@unreal>
- <20211005113213.0ee61358@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <YVykXLY7mX4K1ScW@unreal>
- <20211005173940.35bc7bfa@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        id S230473AbhJFDoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 23:44:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38269 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230306AbhJFDoR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 23:44:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633491746;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=cq9QM7oxz7zu5iEfX1jX73fU6cps/HcqH2m3KFDbUC8=;
+        b=d/9I5JW/veR8en2Df4HC+ojaomvcdDiytircOwOEO9glW3KzFxO5yVRwFuplv3opq0dAEZ
+        4Ahf/ii0BaL5EjECRl+FlZ2tLaJXalQUCm1orAUTP8HS4UBUegIXMQkpC2LJOLQsTpzC+u
+        K0sk/45LkkbBZwzt4Rf2kW+3Hdt+uBQ=
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
+ [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-247-wsk3K_6MMGWIJNLskLh7AQ-1; Tue, 05 Oct 2021 23:42:23 -0400
+X-MC-Unique: wsk3K_6MMGWIJNLskLh7AQ-1
+Received: by mail-qt1-f199.google.com with SMTP id z10-20020ac83e0a000000b002a732692afaso1281978qtf.2
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 20:42:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=cq9QM7oxz7zu5iEfX1jX73fU6cps/HcqH2m3KFDbUC8=;
+        b=HBhOkpbazlAc1JUwMewwSDb6z/EQcBAzVsTtz0nVHDxA85ZYWeQ3LiKxtowi8PIqkx
+         k6ZNrkaqGbhgl26FxWiHipIL9LsDxDrjHKhXvvU1DSJ8NGZ5cyTr+2q2npzqKoWrty7k
+         /0hF5O0vVl0AN1HKdBfCn6P1F5l315+NJHZ9V/gXyKZ6056zCL6Vb/IC6bcUjasK2+nh
+         kFnZPogLMlso66oztETs0M01dDsxohY2XFnFcuF42oGKVWECSySj90DrBgovdhhsvxIG
+         wPNzQLi7HzQ8PKdUvt9+xHx4r+8h4gxkf+KTOE4q46L1RypmtBpgtuPgwTXKSueOXUVz
+         nbFg==
+X-Gm-Message-State: AOAM533yNRFlL92seAbg8Avz+QsaazfOp/pJrXUXVsEGHUVFj1crtLhp
+        M+1LCiIOrFTXtyuzTZjdFoGQgm7Brwu2n/0P0fcJN08goyfWm1ayRhxbn6aDly8oIQ9yGIZ0eTM
+        v0uMs+Z2aJVS1HyfgO1cyRTuP
+X-Received: by 2002:a05:622a:1993:: with SMTP id u19mr24285728qtc.168.1633491743037;
+        Tue, 05 Oct 2021 20:42:23 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyX4vTl6+93PbbJhyDWOCHG7YWi9pEui6z+8do8CfNVqy7n9v6qVW/taAGIZGgnc8JKGbEiEQ==
+X-Received: by 2002:a05:622a:1993:: with SMTP id u19mr24285713qtc.168.1633491742832;
+        Tue, 05 Oct 2021 20:42:22 -0700 (PDT)
+Received: from treble ([2600:1700:6e32:6c00::15])
+        by smtp.gmail.com with ESMTPSA id c139sm10834026qkg.2.2021.10.05.20.42.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Oct 2021 20:42:22 -0700 (PDT)
+Date:   Tue, 5 Oct 2021 20:42:18 -0700
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
+        VMware Inc <pv-drivers@vmware.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 03/11] x86/cpufeatures: Add TDX Guest CPU feature
+Message-ID: <20211006034218.ynamwigsvpgad7sr@treble>
+References: <20211005025205.1784480-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20211005025205.1784480-4-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20211005210423.yfftpxxmj3cjprtv@treble>
+ <15a07997-2659-6be1-b8a3-da57e72562b5@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20211005173940.35bc7bfa@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <15a07997-2659-6be1-b8a3-da57e72562b5@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05, 2021 at 05:39:40PM -0700, Jakub Kicinski wrote:
-> On Tue, 5 Oct 2021 22:15:40 +0300 Leon Romanovsky wrote:
-> > On Tue, Oct 05, 2021 at 11:32:13AM -0700, Jakub Kicinski wrote:
-> > > On Tue, 5 Oct 2021 10:32:45 +0300 Leon Romanovsky wrote:  
-> > > > It is impossible, devlink_register() is part of .probe() flow and if it
-> > > > wasn't called -> probe didn't success -> net_device doesn't exist.  
-> > > 
-> > > Are you talking about reality or the bright future brought by auxbus?  
-> > 
-> > I looked on all the drivers which called to devlink_alloc() which is
-> > starting point before devlink_register(). All of them used it in the
-> > probe. My annotation patch checks that too.
-> > 
-> > https://lore.kernel.org/linux-rdma/f65772d429d2c259bbc18cf5b1bbe61e39eb7081.1633284302.git.leonro@nvidia.com/T/#u
-> > 
-> > So IMHO, it is reality.
+On Tue, Oct 05, 2021 at 02:41:35PM -0700, Kuppuswamy, Sathyanarayanan wrote:
 > 
-> You say that yet below you admit flashing is broken :/
-
-I said more than once, lifetime of devlink is broken. It is placed in
-wrong layer, pretend to implement some of driver core functionality
-without proper protections and have wrong locks.
-
-At least, I didn't break flash update, there is no change in logic of
-flash after any of my changes. Exactly like before, user was able to trigger
-flash update through this devlink_compat_flash_update() call without any
-protection.
-
-Let's chose random kernel version (v5.11)
-https://elixir.bootlin.com/linux/v5.11/source/net/core/devlink.c#L10245
-as you can see, it doesn't hold ANY driver core locks, so it can be
-called in any time during driver .probe() or .remove(). Drivers that
-have implemented ops.flash_update() have no idea about that.
-
 > 
-> > > > We are not having net_device without "connected" device beneath, aren't we?
-> > > > 
-> > > > At least drivers that I checked are not prepared at all to handle call
-> > > > to devlink->ops.flash_update() if they didn't probe successfully.  
-> > > 
-> > > Last time I checked you moved the devlink_register() at the end of
-> > > probe which for all no-auxbus drivers means after register_netdev().  
+> On 10/5/21 2:04 PM, Josh Poimboeuf wrote:
+> > On Mon, Oct 04, 2021 at 07:51:57PM -0700, Kuppuswamy Sathyanarayanan wrote:
+> > > @@ -495,6 +496,13 @@ asmlinkage __visible void __init x86_64_start_kernel(char * real_mode_data)
+> > >   	copy_bootdata(__va(real_mode_data));
+> > > +	/*
+> > > +	 * tdx_early_init() has dependency on command line parameters.
+> > > +	 * So the order of calling it should be after copy_bootdata()
+> > > +	 * (in which command line parameter is initialized).
+> > > +	 */
+> > > +	tdx_early_init();
 > > 
-> > I need to add a check of if(devlink_register) inside devlink_compat_flash_update().
+> > Which cmdline parameters are those?
 > 
-> ... and the workarounds start to pile up.
+> We have few debug command line options like tdx_forced (force TDX
+> initialization) and tdx_disable_filter (Disables TDX device filter
+> support). Support for these options have not been posted out (waiting
+> to merge the initial support patches first). Since we need to access
+> command line options, we want to follow the above calling order.
 
-It is not a workaround, but attempt to fix this mess.
+But until if/when those cmdline options are added, the comment is plain
+wrong.  At the very least, it should state the present state of things,
+i.e. that a future dependency on cmdline parameters is expected.
 
-I separated devlink netlink callers from the kernel flow and just need
-to continue to fix these external to devlink callers.
-
+> > > +/*
+> > > + * Allocate it in the data region to avoid zeroing it during
+> > > + * BSS initialization. It is mainly used in cc_platform_has()
+> > > + * call during early boot call.
+> > > + */
+> > > +u64 __section(".data") is_tdx_guest = 0;
+> > 
+> > Or you could just give it a -1 value here to avoid the section
+> > annotation.  Not sure why it needs 64 bits, any reason it can't just be
+> > bool?
 > 
-> > > I don't like it. If you're feeling strongly please gather support of
-> > > other developers. Right now it's my preference against yours. I don't
-> > > even see you making arguments that your approach is better, just that
-> > > mine is not perfect and requires some similar changes.  
+> It can be bool. I can fix this in next version.
+
+Ok.  maybe something like
+
+  bool is_tdx_guest = true;
+
+along with the comment clarifying why the nonzero initializer is needed.
+
+> > > +static void __init is_tdx_guest_init(void)
+> > > +{
+> > > +	u32 eax, sig[3];
+> > > +
+> > > +	if (cpuid_eax(0) < TDX_CPUID_LEAF_ID) {
+> > > +		is_tdx_guest = 0;
+> > > +		return;
+> > > +	}
+> > > +
+> > > +	cpuid_count(TDX_CPUID_LEAF_ID, 0, &eax, &sig[0], &sig[2], &sig[1]);
+> > > +
+> > > +	is_tdx_guest = !memcmp("IntelTDX    ", sig, 12);
+> > > +}
+> > > +
+> > > +void __init tdx_early_init(void)
+> > > +{
+> > > +	is_tdx_guest_init();
+> > > +
+> > > +	if (!is_tdx_guest)
+> > > +		return;
+> > > +
+> > > +	setup_force_cpu_cap(X86_FEATURE_TDX_GUEST);
+> > > +
+> > > +	pr_info("Guest initialized\n");
+> > > +}
 > > 
-> > I have an idea of how to keep static ops and allow devlink_set_ops()
-> > like functionality.
-> > 
-> > What about if I group ops by some sort of commonalities?
-> > 
-> > In my case, it will be devlink_reload_ops, which will include reload
-> > relevant callbacks and provide devlink_set_reload_ops() wrapper to set
-> > them?
-> > 
-> > It will ensure that all pointers are const without need to have feature
-> > bits.
+> > What's the point of having both 'is_tdx_guest' and
+> > X86_FEATURE_TDX_GUEST?  Are they not redundant?
 > 
-> I don't understand why you keep pushing the op reassignment.
+> is_tdx_guest was mainly introduced to support cc_platform_has()
+> API in early boot calls (similar to sme_me_mask in AMD code).
+> Regarding FEATURE flag it will be useful for userspace tools to
+> check the TDX feature support.
 
-It is not reassignment, but ability to assign proper callbacks from the
-beginning.
+FEATURE flags can also be checked in the kernel, with boot_cpu_has().
+Or am I missing something?
 
-The idea is to make sure that lifetime of devlink is managed by proper
-ops callbacks, based on them we can control everything inside devlink
-by ensuring right locks, order e.t.c.
+-- 
+Josh
 
-I want to get rid from random *_enabled flags that always forgotten and
-adds complexity that don't give any advantage only issues.
-
-I'm also changing devlink to allow parallel execution and for that I
-need to have reliable devlink instance with minimal number of locks.
-
-Thanks
