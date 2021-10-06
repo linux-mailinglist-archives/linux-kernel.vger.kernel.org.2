@@ -2,73 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99F72423D1A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 13:44:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2FE1423D29
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 13:47:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238286AbhJFLqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 07:46:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55896 "EHLO
+        id S238338AbhJFLtp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 07:49:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238117AbhJFLqf (ORCPT
+        with ESMTP id S238117AbhJFLto (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 07:46:35 -0400
-Received: from mail-vs1-xe2b.google.com (mail-vs1-xe2b.google.com [IPv6:2607:f8b0:4864:20::e2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF212C061749;
-        Wed,  6 Oct 2021 04:44:43 -0700 (PDT)
-Received: by mail-vs1-xe2b.google.com with SMTP id 66so2527363vsd.11;
-        Wed, 06 Oct 2021 04:44:43 -0700 (PDT)
+        Wed, 6 Oct 2021 07:49:44 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F43CC061749;
+        Wed,  6 Oct 2021 04:47:52 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id dj4so8832650edb.5;
+        Wed, 06 Oct 2021 04:47:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3juZIQZX9GCwI+vuBcZtPyTvOv/zI5cPebq0aQINMck=;
-        b=iR19eqT+qQlN2QaO7EN/0Ycr41m4CosSkJJyr5eW4oPSmnsetGPIYf7I/EtAHpiz/i
-         OBHfEqf0vMCsLRVeS2viJAn8O7/NLQIyUTiXVNwVa+Na5i39bQYeZcE8rTzk4BJpmA0F
-         0pT3NxDLVKD/BLnjlyAZ7TjwdWlDrLbQ4pSMH3JonuFIzxJJDQiJqgdhNZ8b507NaU8h
-         wPbiuUNr1zLqcG+iICWuN7F0nKpEiRUfY/8mtF/1USFbykfo2yxg52nEDs8fZSRCI/Lw
-         W+Jm66zWJqd4jPkcMI8eq32eAMvUxXs/W1s61Cu1cfLM0qTQihlXllp2IxREBu8n76gx
-         4qAg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EqSDl/mylFRuVIkcVfrD5wA64zlCr4ZZ5hRZ/Oux4fA=;
+        b=IaqpZTdP79fj7hfFbwaekuNwmeyWRLdv+5VjfKPsre7hO+LLLYPsKw4xHkQPzjclp6
+         04D8rDRw3JTak0DDydnBRbeiCiRt7qW5i1vON3wV9uL556K5eVsZGV107mv9rcLSw6qn
+         YNKQAfborweo/JEedm3pQ2pqSasw/ibOThNSdc3XfbFLH4XuyJdIYb72e3W6AFlQP+w9
+         mxCE6wbYay9aZ7MpkfAlPNcYw+nYsmE54sdpia5yd1bR7wTKUB490g/yxfwJobKNDS/m
+         8JntMyTdsggXExfo65XwL1Cphc9gcn8IiJWCRbF2MLXAONVnLTBfwNiDhH1TNUGCe4Vx
+         vCCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3juZIQZX9GCwI+vuBcZtPyTvOv/zI5cPebq0aQINMck=;
-        b=WABRC9sZhE2Xkc/frZUOcMFABPCSV4d8V9Ra5CriAWc4SbiYCcBw52LIGcxG/setHg
-         ayBi/J9BToJd0NQTUuyLuLiuxNC1OawUjH6H44xAyPlj5S8X+z41FzlF4YYLZJYIJBtK
-         y2xv/HW15KJ18ovSUScjgJ7jTEp9XnwPYnYpm8A4cK/axERL0G9E+eTk7F2ZIXShoUpB
-         zQ0S5SkmxJO2gLNmkGkiSqJIBkBfoeGH5Lpfj2TdRDoAoIEqwD+vvvsIx6bNuieOiWkF
-         EKOnzecuJ3Q17zqwVpfl/x5Ol6urld3c5SXb7xSkrv6n2LbrawznA397ruBbVR7W3cH5
-         wrAA==
-X-Gm-Message-State: AOAM5314mfCCmB+TTIumGMrrFevnl3UmauBfzvcliXkO8hWKAFLVB52k
-        05eHbrM5LPwm6siuqoGEgRfFjEvoCWWoEohB8g==
-X-Google-Smtp-Source: ABdhPJw7QKNr67fS3gDhO+zKe/hJi1YFElz1zNvFHtceZtniL65xH7Elblb7qv59vtKafH50+xiGf03ZvH4G2TYVtAY=
-X-Received: by 2002:a67:f317:: with SMTP id p23mr24113816vsf.0.1633520683136;
- Wed, 06 Oct 2021 04:44:43 -0700 (PDT)
-MIME-Version: 1.0
-References: <CALjTZvbzYfBuLB+H=fj2J+9=DxjQ2Uqcy0if_PvmJ-nU-qEgkg@mail.gmail.com>
-In-Reply-To: <CALjTZvbzYfBuLB+H=fj2J+9=DxjQ2Uqcy0if_PvmJ-nU-qEgkg@mail.gmail.com>
-From:   Rui Salvaterra <rsalvaterra@gmail.com>
-Date:   Wed, 6 Oct 2021 12:44:32 +0100
-Message-ID: <CALjTZvbQr+rDUCct1fH-xgLP1jKvDRW6cMxCk6UVZ6h4dTsH6w@mail.gmail.com>
-Subject: Re: [REGRESSION][BISECTED] 5.15-rc1: Broken AHCI on NVIDIA ION (MCP79)
-To:     tglx@linutronix.de
-Cc:     maz@kernel.org, linux-pci@vger.kernel.org,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EqSDl/mylFRuVIkcVfrD5wA64zlCr4ZZ5hRZ/Oux4fA=;
+        b=tFsk6uLUng0Y0zypFFr1Nuzo1vwIOtW0YnVUIMWrkri5Kvn7I7kfgNjCtzAU9Qc539
+         IV9crMm+RYC6sc8AEvkZwu6/It0EM/I6GTjyUJ5N89dEHn8JsgNSO/kmm8C2axNFR+pM
+         HbQkDwHfyFMfLHmVuxvSBdQN6WtoTPUwatoDociV6hAtyNUehSP4sHF7v09nijJmE0PE
+         wRyrez+xMr1UDacVbYSFeY9mn/Np8EBZigBFzCRrMzUkXT6PXh+23XmgBK0/KGNKgvBT
+         lvdYXxbHKIgdJpU36+yKZektdTsihuEMbndrqpleqYsXfBDIYm5uydrSq1iThEjdYFIU
+         BUQA==
+X-Gm-Message-State: AOAM5326wx/B3YgfJ+OI+lUwcM6h49AnMElOym6ryUymHV+cdIYdBhi8
+        dEDiJl8j+CnHQasgeXW9Ko0LRmOk45fVx0szrx8=
+X-Google-Smtp-Source: ABdhPJwvRb3CrrV1nKJtM0pjbTIOvb5BgON9vKzQ8Fgu24g24KFsXiYiy8FmDAbLMoWdILHxcfPXiA==
+X-Received: by 2002:a17:906:585a:: with SMTP id h26mr31179471ejs.31.1633520871024;
+        Wed, 06 Oct 2021 04:47:51 -0700 (PDT)
+Received: from localhost.localdomain ([95.76.3.69])
+        by smtp.gmail.com with ESMTPSA id y40sm1402187ede.31.2021.10.06.04.47.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Oct 2021 04:47:50 -0700 (PDT)
+From:   Leonard Crestez <cdleonard@gmail.com>
+To:     Jakub Kicinski <kuba@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        David Ahern <dsahern@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Ido Schimmel <idosch@nvidia.com>,
+        Seth David Schoen <schoen@loyalty.org>,
+        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Subject: [PATCH 00/11] selftests: Improve nettest and net/fcnal-test.sh
+Date:   Wed,  6 Oct 2021 14:47:16 +0300
+Message-Id: <cover.1633520807.git.cdleonard@gmail.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, again,
+This is a series of improvements to nettest and fcnal-test.sh from
+tools/testing/selftests/net which make tests run faster. For me this
+reduces the runtime from ~40minutes to ~5minutes and makes the tcp
+tests very fast.
 
-On Wed, 6 Oct 2021 at 09:50, Rui Salvaterra <rsalvaterra@gmail.com> wrote:
->
-> "PCI/MSI: Use new mask/unmask functions" broke boot for my ION/Atom
-> 330 system
+Some of the early commits are outright bugfixes.
 
-Just for the record (and probably stating the obvious), reverting the
-aforementioned commit fixes this system. Running Linux 5.15-rc4, at
-the moment.
+The tests DO NOT pass perfectly for me on latest net-next/master but I
+verified that the failures also happen without my changes. Here is the
+list of failures:
 
-Thanks,
-Rui
+TEST: ping local, VRF bind - VRF IP                                           [FAIL]
+TEST: Raw socket bind to local address - VRF IP                               [FAIL]
+TEST: ping out, VRF bind - ns-B IPv6 LLA                                      [FAIL]
+TEST: ping out, VRF bind - multicast IP                                       [FAIL]
+TEST: TCP socket bind to out of scope local address - ns-A loopback IPv6      [FAIL]
+TEST: TCP socket bind to VRF address with device bind - VRF IPv6              [FAIL]
+
+Three of those were not tested by default before my changes, only with
+explicit -t 'bind bind6'
+
+This is related to my work on TCP-AO but there are no patch
+dependencies
+Link: https://lore.kernel.org/netdev/cover.1632240523.git.cdleonard@gmail.com/
+
+Leonard Crestez (11):
+  selftests: net/fcnal: Fix {ipv4,ipv6}_bind not run by default
+  selftests: net/fcnal: Mark unknown -t or TESTS value as error
+  selftests: net/fcnal: Non-zero exit on failures
+  selftests: net/fcnal: Use accept_dad=0 to avoid setup sleep
+  selftests: net/fcnal: kill_procs via spin instead of sleep
+  selftests: net/fcnal: Do not capture do_run_cmd in verbose mode
+  selftests: nettest: Implement -k to fork after bind or listen
+  selftests: net/fcnal: Replace sleep after server start with -k
+  selftests: nettest: Convert timeout to miliseconds
+  selftests: nettest: Add NETTEST_CLIENT,SERVER}_TIMEOUT envvars
+  selftests: net/fcnal: Reduce client timeout
+
+ tools/testing/selftests/net/fcnal-test.sh | 710 ++++++++--------------
+ tools/testing/selftests/net/nettest.c     | 134 +++-
+ 2 files changed, 378 insertions(+), 466 deletions(-)
+
+
+base-commit: 0693b27644f04852e46f7f034e3143992b658869
+-- 
+2.25.1
+
