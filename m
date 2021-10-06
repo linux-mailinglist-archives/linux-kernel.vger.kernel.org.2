@@ -2,159 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B82D9423BA4
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 12:42:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BCF2423BAB
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 12:46:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238124AbhJFKoG convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 6 Oct 2021 06:44:06 -0400
-Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:21048 "EHLO
-        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229824AbhJFKoF (ORCPT
+        id S238104AbhJFKsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 06:48:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41752 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237931AbhJFKsX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 06:44:05 -0400
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-303-i2d87W4iMU-K3Gz0empo0Q-1; Wed, 06 Oct 2021 06:42:11 -0400
-X-MC-Unique: i2d87W4iMU-K3Gz0empo0Q-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 737C5835DE5;
-        Wed,  6 Oct 2021 10:42:09 +0000 (UTC)
-Received: from bahia.huguette (unknown [10.39.192.159])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5E46560854;
-        Wed,  6 Oct 2021 10:42:06 +0000 (UTC)
-Date:   Wed, 6 Oct 2021 12:42:04 +0200
-From:   Greg Kurz <groug@kaod.org>
-To:     Laurent Vivier <lvivier@redhat.com>
-Cc:     kvm-ppc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linux-kernel@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>
-Subject: Re: [PATCH] KVM: PPC: Defer vtime accounting 'til after IRQ
- handling
-Message-ID: <20211006124204.4741bb5c@bahia.huguette>
-In-Reply-To: <20211006073745.82109-1-lvivier@redhat.com>
-References: <20211006073745.82109-1-lvivier@redhat.com>
+        Wed, 6 Oct 2021 06:48:23 -0400
+Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59C95C061755
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 03:46:31 -0700 (PDT)
+Received: by mail-ua1-x92c.google.com with SMTP id e7so1425424ual.11
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 03:46:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WAZ6VYVxXpp+/4weV4Gw1QKhKbSTkxuMKBLfGMMXi34=;
+        b=RW9U4DrKauxl7RiYBSIz5WrXXIfcuHG+K0ocrRpKxF4zt5xL9u4Fg9K6qYhR9lBPUl
+         y93WKKhFCAtxSPKBKYCjA4QJ+8FwXc/5sku7+kPilJLHB2VdACALVbJaOlRA89g7O7DU
+         Ik1VVeEJ4TJgHGexGQuKQSL+001+Wq5E7FzeRwC0K5S7UU8WQoM187ddsNnLUvQ1xA0R
+         C684SbtTBtrE4+uvIvzyL09hXp/luX8lpE8xIKgenBW874pWNGtFq5b9x5LhNP000LvE
+         yHp1CV3ozWmUotvTQbqGaUmaacMrD4brCiA2pHu/4d0FkCUHrgYmDY29/2zgPC2K3l2j
+         nbeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WAZ6VYVxXpp+/4weV4Gw1QKhKbSTkxuMKBLfGMMXi34=;
+        b=K6C42V4Dh5/OsU+EV4N3ma7raIfqCF8kJvOdTvd8iDFAQECGHdk6K5F8VdJLz3zaXG
+         NzYPgEdXJX5jpC5PM8w4JlUII7ZzlQVHb7FuxGa9eZPpViUrYTQ6ipm6FOLfQ7+/P8sc
+         Qv4jgarUG3zAz0j47v0GXx5S3qIMjnzSZZKQbVdniqlqqqEZsD1FheWY9onRm179dmH9
+         ksuYuIl9jkVqUn9WgEoLYSD/FRMF2FLW3dKa+VfNxKkD2b9quKfOVoPZusoTrCE9oCkY
+         TPU3iaTOKYj4vfE9AVcRsAOT0+KWniyB/kHfCBZdEBxYDFSthFWlyAL7Xipof9oS/LoF
+         ZK7Q==
+X-Gm-Message-State: AOAM533HhNgfTid/zxWTe4Q3Kesn9HquEt5xGgUkImjLXwmnDj20DXKs
+        qEDNCa25AYMCpCK5fEnvmZGBCsLbNI0/Nyp0QW744Q==
+X-Google-Smtp-Source: ABdhPJzperz80UwQyac4C188t+tTN5/53/Vnxod/Zh2JotmRFJ6a4lcnzID/HuIDr8OIw9iJs9s2pzC6TK1K9n06Z9E=
+X-Received: by 2002:ab0:3303:: with SMTP id r3mr17099371uao.17.1633517190130;
+ Wed, 06 Oct 2021 03:46:30 -0700 (PDT)
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: kaod.org
-Content-Type: text/plain; charset=WINDOWS-1252
-Content-Transfer-Encoding: 8BIT
+References: <20210914155607.14122-1-semen.protsenko@linaro.org>
+ <20210914155607.14122-2-semen.protsenko@linaro.org> <6ef3e9a3-77e7-48b7-cbcd-c13db50d0cd9@canonical.com>
+In-Reply-To: <6ef3e9a3-77e7-48b7-cbcd-c13db50d0cd9@canonical.com>
+From:   Sam Protsenko <semen.protsenko@linaro.org>
+Date:   Wed, 6 Oct 2021 13:46:18 +0300
+Message-ID: <CAPLW+4kexaByx0nfy3q5g9XmrYdLav7E25h8qiO4Z_zmUVbRYQ@mail.gmail.com>
+Subject: Re: [PATCH 1/6] clk: samsung: Enable bus clock on init
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        =?UTF-8?Q?Pawe=C5=82_Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Ryu Euiyoul <ryu.real@samsung.com>,
+        Tom Gall <tom.gall@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Amit Pundir <amit.pundir@linaro.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed,  6 Oct 2021 09:37:45 +0200
-Laurent Vivier <lvivier@redhat.com> wrote:
+On Wed, 15 Sept 2021 at 11:21, Krzysztof Kozlowski
+<krzysztof.kozlowski@canonical.com> wrote:
+>
+> On 14/09/2021 17:56, Sam Protsenko wrote:
+> > By default if bus clock has no users its "enable count" value is 0. It
+> > might be actually running if it's already enabled in bootloader, but
+> > then in some cases it can be disabled by mistake. For example, such case
+> > was observed when dw_mci_probe() enabled bus clock, then failed to do
+> > something and disabled that bus clock on error path. After that even
+> > attempt to read the 'clk_summary' file in DebugFS freezed forever, as
+> > CMU bus clock ended up being disabled and it wasn't possible to access
+> > CMU registers anymore.
+> >
+> > To avoid such cases, CMU driver must increment the ref count for that
+> > bus clock by running clk_prepare_enable(). There is already existing
+> > '.clk_name' field in struct samsung_cmu_info, exactly for that reason.
+> > It was added in commit 523d3de41f02 ("clk: samsung: exynos5433: Add
+> > support for runtime PM"). But the clock is actually enabled only in
+> > Exynos5433 clock driver. Let's mimic what is done there in generic
+> > samsung_cmu_register_one() function, so other drivers can benefit from
+> > that `.clk_name' field. As was described above, it might be helpful not
+> > only for PM reasons, but also to prevent possible erroneous clock gating
+> > on error paths.
+> >
+> > Another way to workaround that issue would be to use CLOCK_IS_CRITICAL
+> > flag for corresponding gate clocks. But that might be not very good
+> > design decision, as we might still want to disable that bus clock, e.g.
+> > on PM suspend.
+> >
+> > Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+> > ---
+> >  drivers/clk/samsung/clk.c | 13 +++++++++++++
+> >  1 file changed, 13 insertions(+)
+> >
+> > diff --git a/drivers/clk/samsung/clk.c b/drivers/clk/samsung/clk.c
+> > index 1949ae7851b2..da65149fa502 100644
+> > --- a/drivers/clk/samsung/clk.c
+> > +++ b/drivers/clk/samsung/clk.c
+> > @@ -357,6 +357,19 @@ struct samsung_clk_provider * __init samsung_cmu_register_one(
+> >
+> >       ctx = samsung_clk_init(np, reg_base, cmu->nr_clk_ids);
+> >
+> > +     /* Keep bus clock running, so it's possible to access CMU registers */
+> > +     if (cmu->clk_name) {
+> > +             struct clk *bus_clk;
+> > +
+> > +             bus_clk = __clk_lookup(cmu->clk_name);
+> > +             if (bus_clk) {
+> > +                     clk_prepare_enable(bus_clk);
+> > +             } else {
+> > +                     pr_err("%s: could not find bus clock %s\n", __func__,
+> > +                            cmu->clk_name);
+> > +             }
+> > +     }
+> > +
+>
+> Solving this problem in generic way makes sense but your solution is
+> insufficient. You skipped suspend/resume paths and in such case you
+> should remove the Exynos5433-specific code.
+>
 
-> Commit 61bd0f66ff92 has moved guest_enter() out of the interrupt
-> protected area to be able to have updated tick counters, but
-> commit 112665286d08 moved back to this area to avoid wrong
-> context warning (or worse).
-> 
-> None of them are correct, to fix the problem port to POWER
-> the x86 fix 160457140187 ("KVM: x86: Defer vtime accounting 'til
-> after IRQ handling"):
-> 
-> "Defer the call to account guest time until after servicing any IRQ(s)
->  that happened in the guest or immediately after VM-Exit.  Tick-based
->  accounting of vCPU time relies on PF_VCPU being set when the tick IRQ
->  handler runs, and IRQs are blocked throughout the main sequence of
->  vcpu_enter_guest(), including the call into vendor code to actually
->  enter and exit the guest."
-> 
-> Link: https://bugzilla.redhat.com/show_bug.cgi?id=2009312
-> Fixes: 61bd0f66ff92 ("KVM: PPC: Book3S HV: Fix guest time accounting with VIRT_CPU_ACCOUNTING_GEN")
+Keeping core bus clocks always running seems like a separate
+independent feature to me (not related to suspend/resume). It's
+mentioned in commit 523d3de41f02 ("clk: samsung: exynos5433: Add
+support for runtime PM") this way:
 
-This patch was merged in linux 4.16 and thus is on the 4.16.y
-stable branch and it was backported to stable 4.14.y. It would
-make sense to Cc: stable # v4.14 also, but...
+    "Also for each CMU there is one special parent clock, which has to
+be enabled all the time when any access to CMU registers is being
+done."
 
-> Fixes: 112665286d08 ("KVM: PPC: Book3S HV: Context tracking exit guest context before enabling irqs")
+Why do you think suspend/resume paths have to be implemented along
+with it? Btw, I didn't add PM ops in clk-exynos850, as PM is not
+implemented on my board yet and I can't test it.
 
-... this one, which was merged in linux 5.12, was never backported
-anywhere because it wasn't considered as a fix, as commented here:
+If you are suggesting moving all stuff from exynos5433_cmu_probe()
+into samsung_cmu_register_one(), it would take passing platform_device
+there, and implementing all PM related operations. I guess it's not a
+super easy task, as it would require converting clk-exynos7 to
+platform_driver for instance, and re-testing everything on exynos5433
+and exynos7 boards (which I don't have).
 
-https://lore.kernel.org/linuxppc-dev/1610793296.fjhomer31g.astroid@bobo.none/
+What do you say if I pull that code to clk-exynos850.c instead for v2?
+Refactoring (merging stuff from exynos5433_cmu_probe() into
+samsung_cmu_register_one() ) can be done later, when I add PM ops into
+clk-exynos850.
 
-AFAICT commit 61bd0f66ff92 was never mentioned anywhere in a bug. The
-first Fixes: tag thus looks a bit misleading. I'd personally drop it
-and Cc: stable # v5.12.
-
-> Cc: npiggin@gmail.com
-> 
-> Signed-off-by: Laurent Vivier <lvivier@redhat.com>
-> ---
->  arch/powerpc/kvm/book3s_hv.c | 10 ++++++----
->  1 file changed, 6 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/powerpc/kvm/book3s_hv.c b/arch/powerpc/kvm/book3s_hv.c
-> index 2acb1c96cfaf..43e1ce853785 100644
-> --- a/arch/powerpc/kvm/book3s_hv.c
-> +++ b/arch/powerpc/kvm/book3s_hv.c
-> @@ -3695,6 +3695,8 @@ static noinline void kvmppc_run_core(struct kvmppc_vcore *vc)
->  
->  	srcu_read_unlock(&vc->kvm->srcu, srcu_idx);
->  
-> +	context_tracking_guest_exit();
-> +
->  	set_irq_happened(trap);
->  
->  	spin_lock(&vc->lock);
-> @@ -3726,9 +3728,8 @@ static noinline void kvmppc_run_core(struct kvmppc_vcore *vc)
->  
->  	kvmppc_set_host_core(pcpu);
->  
-> -	guest_exit_irqoff();
-> -
-
-
-Change looks ok but it might be a bit confusing for the
-occasional reader that guest_enter_irqoff() isn't matched
-by a guest_exit_irqoff().
-
->  	local_irq_enable();
-> +	vtime_account_guest_exit();
->  
-
-Maybe add a comment like in x86 ?
-
->  	/* Let secondaries go back to the offline loop */
->  	for (i = 0; i < controlled_threads; ++i) {
-> @@ -4506,13 +4507,14 @@ int kvmhv_run_single_vcpu(struct kvm_vcpu *vcpu, u64 time_limit,
->  
->  	srcu_read_unlock(&kvm->srcu, srcu_idx);
->  
-> +	context_tracking_guest_exit();
-> +
->  	set_irq_happened(trap);
->  
->  	kvmppc_set_host_core(pcpu);
->  
-> -	guest_exit_irqoff();
-> -
->  	local_irq_enable();
-> +	vtime_account_guest_exit();
->  
->  	cpumask_clear_cpu(pcpu, &kvm->arch.cpu_in_guest);
->  
-
-Same remarks. FWIW a followup was immediately added to x86 to
-encapsulate the enter/exit logic in common helpers :
-
-ommit bc908e091b3264672889162733020048901021fb
-Author: Sean Christopherson <seanjc@google.com>
-Date:   Tue May 4 17:27:35 2021 -0700
-
-    KVM: x86: Consolidate guest enter/exit logic to common helpers
-
-This makes the code nicer. Maybe do something similar for POWER ?
-
-Cheers,
-
---
-Greg
-
+> Best regards,
+> Krzysztof
