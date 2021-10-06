@@ -2,189 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD566423D52
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 13:49:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF3F7423D54
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 13:50:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238760AbhJFLvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 07:51:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47676 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238577AbhJFLvD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 07:51:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 81C0661077;
-        Wed,  6 Oct 2021 11:49:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633520951;
-        bh=JfIdY6/V+d3Y36/FGCu5ngWkU42RfdFTU88pnWu1/og=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PuW7r1SJd3a+rDGJYcxrljpFcqxDoen1Q682VLWt64SsnKrz67McXNFtjMSjdUK9n
-         914JDWec9xcxJvwKOfgWniiLaO8ybc/amE8MMOfKl867tRgPzs6PuF/3rHeIoqMiiA
-         G4/pju7423JqIraqsnhLXOMNZaSdBABz+cVZbY8M4n7e48hp+ZJgNmewueE9dPNapb
-         bB7+BGZSW9BqhiXZDzwh2ycdoa01R2KAFh1T3l0uT6McphXcl5Rpvz+CaJWcP71vzI
-         BHs/78NCJsaBBlh+eKXkQk4pJSDMmxROf4R8RWf9kNA5Zr+1oPtL/V4v3xgmFmuI4i
-         c2VxuGTfrlRaQ==
-Date:   Wed, 6 Oct 2021 14:49:07 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Aharon Landau <aharonl@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Gal Pressman <galpress@amazon.com>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Maor Gottlieb <maorg@nvidia.com>,
-        Mark Zhang <markzhang@nvidia.com>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Mustafa Ismail <mustafa.ismail@intel.com>,
-        netdev@vger.kernel.org, Potnuri Bharat Teja <bharat@chelsio.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: Re: [PATCH rdma-next v3 05/13] RDMA/counter: Add an is_disabled
- field in struct rdma_hw_stats
-Message-ID: <YV2NMzu0izn2vWrJ@unreal>
-References: <cover.1633513239.git.leonro@nvidia.com>
- <09596ef74f4c213cb236e057e20e98264b67f16e.1633513239.git.leonro@nvidia.com>
+        id S238283AbhJFLwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 07:52:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57298 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238124AbhJFLwe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 07:52:34 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43724C061749;
+        Wed,  6 Oct 2021 04:50:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=uOB6uaGNFZT76GA5ScYxNmwIB9Oa1nEIp3TlgjOvyrg=; b=QoUas8fFCbSgdE+QVVYKaiUfYF
+        C0lHBbxvQA7WMFELJMzmxsXqCMvFxQgdNXUts49FQ1kwWnm7I73Vfx8/on5oNFByzgYR2PVO2UxJU
+        Ph98FQRUX8ERud4rWhPN+bzf5VsJj1OFNpLe1jtUQeYW3oiTGIv4Kk4J8TsjPOQ4FP1J8wkmv4Dbr
+        3B2ALj3uAcs1WZZ+Bc+H+fk7u3tsA6h6IvV3aEXeU1IW8G0v0DEdl0B6oFIW/6ARkyzDBtS0VrMP1
+        B4ZGZWVzovVeKS4PQXtyhZ2GTC6YYJ2O5tEdVDBW754AsDsBxPm1K4AkU1AfQGZSVnlJPX10RawKZ
+        5QwmQUHA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mY5RH-008Gls-Vc; Wed, 06 Oct 2021 11:50:24 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 0AD5998623A; Wed,  6 Oct 2021 13:50:23 +0200 (CEST)
+Date:   Wed, 6 Oct 2021 13:50:22 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     =?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@collabora.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Darren Hart <dvhart@infradead.org>,
+        linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        kernel@collabora.com, krisman@collabora.com,
+        linux-api@vger.kernel.org, libc-alpha@sourceware.org,
+        mtk.manpages@gmail.com, Davidlohr Bueso <dave@stgolabs.net>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v2 16/22] futex: Implement sys_futex_waitv()
+Message-ID: <20211006115022.GH174703@worktop.programming.kicks-ass.net>
+References: <20210923171111.300673-1-andrealmeid@collabora.com>
+ <20210923171111.300673-17-andrealmeid@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <09596ef74f4c213cb236e057e20e98264b67f16e.1633513239.git.leonro@nvidia.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210923171111.300673-17-andrealmeid@collabora.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 06, 2021 at 12:52:08PM +0300, Leon Romanovsky wrote:
-> From: Aharon Landau <aharonl@nvidia.com>
-> 
-> Add a bitmap in rdma_hw_stat structure, with each bit indicates whether
-> the corresponding counter is currently disabled or not. By default
-> hwcounters are enabled.
-> 
-> Signed-off-by: Aharon Landau <aharonl@nvidia.com>
-> Reviewed-by: Mark Zhang <markzhang@nvidia.com>
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> ---
->  drivers/infiniband/core/nldev.c | 11 ++++++++++-
->  drivers/infiniband/core/verbs.c | 10 ++++++++++
->  include/rdma/ib_verbs.h         |  3 +++
->  3 files changed, 23 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/infiniband/core/nldev.c b/drivers/infiniband/core/nldev.c
-> index 3f6b98a87566..67519730b1ac 100644
-> --- a/drivers/infiniband/core/nldev.c
-> +++ b/drivers/infiniband/core/nldev.c
-> @@ -968,15 +968,21 @@ static int fill_stat_counter_hwcounters(struct sk_buff *msg,
->  	if (!table_attr)
->  		return -EMSGSIZE;
->  
-> -	for (i = 0; i < st->num_counters; i++)
-> +	mutex_lock(&st->lock);
-> +	for (i = 0; i < st->num_counters; i++) {
-> +		if (test_bit(i, st->is_disabled))
-> +			continue;
->  		if (rdma_nl_stat_hwcounter_entry(msg, st->descs[i].name,
->  						 st->value[i]))
->  			goto err;
-> +	}
-> +	mutex_unlock(&st->lock);
->  
->  	nla_nest_end(msg, table_attr);
->  	return 0;
->  
->  err:
-> +	mutex_unlock(&st->lock);
->  	nla_nest_cancel(msg, table_attr);
->  	return -EMSGSIZE;
->  }
-> @@ -2104,6 +2110,9 @@ static int stat_get_doit_default_counter(struct sk_buff *skb,
->  		goto err_stats;
->  	}
->  	for (i = 0; i < num_cnts; i++) {
-> +		if (test_bit(i, stats->is_disabled))
-> +			continue;
-> +
->  		v = stats->value[i] +
->  			rdma_counter_get_hwstat_value(device, port, i);
->  		if (rdma_nl_stat_hwcounter_entry(msg,
-> diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
-> index c3319a7584a2..d957b23a0e23 100644
-> --- a/drivers/infiniband/core/verbs.c
-> +++ b/drivers/infiniband/core/verbs.c
-> @@ -2994,11 +2994,20 @@ struct rdma_hw_stats *rdma_alloc_hw_stats_struct(
->  	if (!stats)
->  		return NULL;
->  
-> +	stats->is_disabled = kcalloc(BITS_TO_LONGS(num_counters),
-> +				     sizeof(*stats->is_disabled), GFP_KERNEL);
-> +	if (!stats->is_disabled)
-> +		goto err;
-> +
->  	stats->descs = descs;
->  	stats->num_counters = num_counters;
->  	stats->lifespan = msecs_to_jiffies(lifespan);
->  
->  	return stats;
-> +
-> +err:
-> +	kfree(stats);
-> +	return NULL;
->  }
->  EXPORT_SYMBOL(rdma_alloc_hw_stats_struct);
->  
-> @@ -3008,6 +3017,7 @@ EXPORT_SYMBOL(rdma_alloc_hw_stats_struct);
->   */
->  void rdma_free_hw_stats_struct(struct rdma_hw_stats *stats)
->  {
-> +	kfree(stats->is_disabled);
->  	kfree(stats);
+On Thu, Sep 23, 2021 at 02:11:05PM -0300, André Almeida wrote:
+> Returns the array index of one of the awakened futexes. There’s no given
+> information of how many were awakened, or any particular attribute of it
+> (if it’s the first awakened, if it is of the smaller index...).
 
-Jason,
+As per some native speakers on IRC, awaken isn't the right word. I've
+changed it like the below.
 
-This hunk needs to be the following for the representors case. Can you
-please fix it locally?
 
-diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
-index d957b23a0e23..e9e042b31386 100644
---- a/drivers/infiniband/core/verbs.c
-+++ b/drivers/infiniband/core/verbs.c
-@@ -3017,6 +3017,9 @@ EXPORT_SYMBOL(rdma_alloc_hw_stats_struct);
+--- a/kernel/futex/syscalls.c
++++ b/kernel/futex/syscalls.c
+@@ -252,9 +252,9 @@ static int futex_parse_waitv(struct fute
+  * needed. Flags for private futexes, sizes, etc. should be used on the
+  * individual flags of each waiter.
+  *
+- * Returns the array index of one of the awaken futexes. There's no given
+- * information of how many were awakened, or any particular attribute of it (if
+- * it's the first awakened, if it is of the smaller index...).
++ * Returns the array index of one of the woken futexes. There's no given
++ * information of how many were woken, or any particular attribute of it (if
++ * it's the first woken, if it is of the smaller index...).
   */
- void rdma_free_hw_stats_struct(struct rdma_hw_stats *stats)
+ 
+ SYSCALL_DEFINE5(futex_waitv, struct futex_waitv __user *, waiters,
+--- a/kernel/futex/waitwake.c
++++ b/kernel/futex/waitwake.c
+@@ -384,7 +384,7 @@ static int unqueue_multiple(struct futex
+  * futex_wait_multiple_setup - Prepare to wait and enqueue multiple futexes
+  * @vs:		The futex list to wait on
+  * @count:	The size of the list
+- * @awaken:	Index of the last awoken futex, if any. Used to notify the
++ * @woken:	Index of the last woken futex, if any. Used to notify the
+  *		caller that it can return this index to userspace (return parameter)
+  *
+  * Prepare multiple futexes in a single step and enqueue them. This may fail if
+@@ -392,11 +392,11 @@ static int unqueue_multiple(struct futex
+  * task is ready to interruptible sleep.
+  *
+  * Return:
+- *  -  1 - One of the futexes was awaken by another thread
++ *  -  1 - One of the futexes was woken by another thread
+  *  -  0 - Success
+  *  - <0 - -EFAULT, -EWOULDBLOCK or -EINVAL
+  */
+-static int futex_wait_multiple_setup(struct futex_vector *vs, int count, int *awaken)
++static int futex_wait_multiple_setup(struct futex_vector *vs, int count, int *woken)
  {
-+       if (!stats)
-+               return;
-+
-        kfree(stats->is_disabled);
-        kfree(stats);
- }
-
-Thanks
-
->  }
->  EXPORT_SYMBOL(rdma_free_hw_stats_struct);
-> diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-> index 938c0c0a1c19..ae467365706b 100644
-> --- a/include/rdma/ib_verbs.h
-> +++ b/include/rdma/ib_verbs.h
-> @@ -565,6 +565,8 @@ struct rdma_stat_desc {
->   *   their own value during their allocation routine.
->   * @descs - Array of pointers to static descriptors used for the counters
->   *   in directory.
-> + * @is_disabled - A bitmap to indicate each counter is currently disabled
-> + *   or not.
->   * @num_counters - How many hardware counters there are.  If name is
->   *   shorter than this number, a kernel oops will result.  Driver authors
->   *   are encouraged to leave BUILD_BUG_ON(ARRAY_SIZE(@name) < num_counters)
-> @@ -577,6 +579,7 @@ struct rdma_hw_stats {
->  	unsigned long	timestamp;
->  	unsigned long	lifespan;
->  	const struct rdma_stat_desc *descs;
-> +	unsigned long	*is_disabled;
->  	int		num_counters;
->  	u64		value[];
->  };
-> -- 
-> 2.31.1
-> 
+ 	struct futex_hash_bucket *hb;
+ 	bool retry = false;
+@@ -405,10 +405,10 @@ static int futex_wait_multiple_setup(str
+ 
+ 	/*
+ 	 * Enqueuing multiple futexes is tricky, because we need to enqueue
+-	 * each futex in the list before dealing with the next one to avoid
++	 * each futex on the list before dealing with the next one to avoid
+ 	 * deadlocking on the hash bucket. But, before enqueuing, we need to
+ 	 * make sure that current->state is TASK_INTERRUPTIBLE, so we don't
+-	 * absorb any awake events, which cannot be done before the
++	 * loose any wake events, which cannot be done before the
+ 	 * get_futex_key of the next key, because it calls get_user_pages,
+ 	 * which can sleep. Thus, we fetch the list of futexes keys in two
+ 	 * steps, by first pinning all the memory keys in the futex key, and
+@@ -455,11 +455,11 @@ static int futex_wait_multiple_setup(str
+ 
+ 		/*
+ 		 * Even if something went wrong, if we find out that a futex
+-		 * was awaken, we don't return error and return this index to
++		 * was woken, we don't return error and return this index to
+ 		 * userspace
+ 		 */
+-		*awaken = unqueue_multiple(vs, i);
+-		if (*awaken >= 0)
++		*woken = unqueue_multiple(vs, i);
++		if (*woken >= 0)
+ 			return 1;
+ 
+ 		if (ret) {
+@@ -491,7 +491,7 @@ static int futex_wait_multiple_setup(str
+  * @to:    Timeout
+  *
+  * Sleep if and only if the timeout hasn't expired and no futex on the list has
+- * been awaken.
++ * been woken.
+  */
+ static void futex_sleep_multiple(struct futex_vector *vs, unsigned int count,
+ 				 struct hrtimer_sleeper *to)
+@@ -533,7 +533,7 @@ int futex_wait_multiple(struct futex_vec
+ 		ret = futex_wait_multiple_setup(vs, count, &hint);
+ 		if (ret) {
+ 			if (ret > 0) {
+-				/* A futex was awaken during setup */
++				/* A futex was woken during setup */
+ 				ret = hint;
+ 			}
+ 			return ret;
