@@ -2,66 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 909FA4241C8
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 17:48:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0101F4241CC
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 17:48:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239311AbhJFPuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 11:50:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56248 "EHLO
+        id S239380AbhJFPuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 11:50:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239289AbhJFPuA (ORCPT
+        with ESMTP id S239335AbhJFPuS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 11:50:00 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67C15C061760
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 08:48:08 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id v25so10165094wra.2
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 08:48:08 -0700 (PDT)
+        Wed, 6 Oct 2021 11:50:18 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14B21C061767
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 08:48:26 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id k7so10088007wrd.13
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 08:48:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=ftzLlllyl3Cvz8eT97rYOmOeAlPMvdEchXU1Vd2paWY=;
-        b=byPVGGqRgqqp85lR/VHN9Ch5DwTZrcMBEwFulyG9DcFSpyxyzsAq6wF3gzIE9Gd4Gd
-         T5c65XjQ2GakMwx7LHc45OZwNjNh76st7dQtU7CvmI4Sm5jgh5Wk41bnz6uZT8nNwXlC
-         Ut70qfQciu0pLkxGP0nQysceHNOJw1hwnVcEYjA8NRb8pQpR/YPGJSOwyaUO+eBgonHS
-         TgPp523oNd05FJqnD18ya3Cij2amD/Fs8uCGPNUbNt6DRpy6UtGvvHb7ruZW6rgav1wi
-         shci0qfB5/whKqCdns36qGedg0k63pdUaoA6NxJ2mwRWny2SKKx57+ewSt6mLmj95s9C
-         Wq0w==
+        bh=1i5uYXrPwvlq2iDKx2OUISeGIECPHitsBDyfw/S8/JI=;
+        b=SSGob+l6swbzfHrN8j3ZipLM0OprZMaCt+pA8lyXMOCJK+cs7A711Jm98xKFjCiuAX
+         SXVykAFpstlQbBsikx0Pm8An/5FbbfZsZ8hKivmKNDaiLaXOr24j9ee2eePKjfvon4xh
+         1Fs0PzS7zwuxbnjtuwOHrWtXDgOm/H2A0SF7lcMbqGv71TG64qeeehuP8UOztwKSRkg3
+         NYpKHQeIRERQCkgVJntV8FNNwsxF0PMbClAia0ziWggo/ZKNve2P2k5e7R3X+FGIAo5o
+         YujwNFyihakQ+mNog8eHdg6G0M7MpuloWVrvSFZaD02ri/8EMXsN3d+hNEKr3UA6NcUh
+         N6jQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=ftzLlllyl3Cvz8eT97rYOmOeAlPMvdEchXU1Vd2paWY=;
-        b=mn+4WxoNgRldJo+w4ds8SUaPJpXmzKnCLfoJqawldj7R1LfLeZ7yVe9ivwzwcjqqE6
-         bgqhSLwkSJRXguMPNC6+10Ww7kPLRqPbS6ScwQMpox9DNIUWSOr6rCxZyxfpeamtS2jT
-         sJXzlK5lT45kpgTssiM2HSEk5Qkbdf3Vs4ug7+2s+MsUaj28pcRm8RHARCUU0tc6kmU2
-         T6Nm7kKRBAJAH6ggJWxuWzcQliO6qd1jED/sQqjTLYVjYZu0RoUFXfg5PgvlSf9CavWE
-         ArjYVvju/LI8dljYYYSp6Oc96K3NGIatrEDgvpnLu99/UWr0o99nsNDw9XRngPb3QPlT
-         Arkg==
-X-Gm-Message-State: AOAM530BmqyhvRwt/XLOmoAfCK9bS3gBAAkNGq3FABIs40EHRVHFT1O8
-        1hjUD0zkLOYMlW+BSyJJzRI=
-X-Google-Smtp-Source: ABdhPJyOxX6ztHk2yLqq0WoHeXNaz8oY/d1LpuSobYK+pQWvLzSdAGpkghkqVmIvsycV7w+A7gHG2w==
-X-Received: by 2002:a05:600c:1548:: with SMTP id f8mr10776791wmg.70.1633535286975;
-        Wed, 06 Oct 2021 08:48:06 -0700 (PDT)
+        bh=1i5uYXrPwvlq2iDKx2OUISeGIECPHitsBDyfw/S8/JI=;
+        b=tTVf3IYPOr0XB0g0Sobz43Z4Jp/f+ciARJsk0D8YMe8Gfq9WIPANdPgnGatPQiyNyp
+         /6bbcwJUmnH6K7zE6fkJMxY5gCLEU02tWCe6VP+BwAJ1aOk6lGmAgUiBhzLES5ow31EM
+         r6bVGkn0Hnfiv+saVNf4cA5EFogSWqTwp0DTyvkfdWsRq4nAQZpt5yJ38UeP7lPaTvtH
+         aFc9tSgjJDF/phxtG4Bx3OJinnNUfyUOxeiAgwAzzEGy7nqLbdCHPU2CdjbWh8hlWOWv
+         0BTVwOEzbm+ekdVsutHjlWcf3aC/9z83ko4Ku+X1n5x/yp+qOtS/9mQXPt6SMrSGZfmq
+         sZhg==
+X-Gm-Message-State: AOAM531C0uhPmxNvesdicLsUBej4IVUOMVaBv2aifHerznmvXeX/yvjD
+        vWmkFWaNKNBBTfQCiNBIYHc=
+X-Google-Smtp-Source: ABdhPJzyEuJb+m+INaE94TsIhCobkhPWKiWVjpeOAHtYUYltv6xObWwcCfXKd6UsI1Lypqg83tGL2Q==
+X-Received: by 2002:a5d:464e:: with SMTP id j14mr27009423wrs.204.1633535304640;
+        Wed, 06 Oct 2021 08:48:24 -0700 (PDT)
 Received: from localhost.localdomain ([197.49.35.129])
-        by smtp.gmail.com with ESMTPSA id j6sm7769854wrh.76.2021.10.06.08.48.05
+        by smtp.gmail.com with ESMTPSA id m6sm11127386wru.53.2021.10.06.08.48.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Oct 2021 08:48:06 -0700 (PDT)
+        Wed, 06 Oct 2021 08:48:24 -0700 (PDT)
 From:   Sohaib Mohamed <sohaib.amhmd@gmail.com>
 To:     sohaib.amhmd@gmail.com
-Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daejun Park <daejun7.park@samsung.com>,
-        Bean Huo <beanhuo@micron.com>, Can Guo <cang@codeaurora.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] Documentation: Fix typo in sysfs-driver-ufs
-Date:   Wed,  6 Oct 2021 17:48:03 +0200
-Message-Id: <20211006154804.135184-1-sohaib.amhmd@gmail.com>
+        Jonathan Corbet <corbet@lwn.net>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Zhang Rui <rui.zhang@intel.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH] Documentation: Fix typo in sysfs-firmware-acpi
+Date:   Wed,  6 Oct 2021 17:48:21 +0200
+Message-Id: <20211006154822.135292-1-sohaib.amhmd@gmail.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -69,26 +66,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove repeated word: "the The amount"
+Remove repeated word: "send send a Notify"
 
 Signed-off-by: Sohaib Mohamed <sohaib.amhmd@gmail.com>
 ---
- Documentation/ABI/testing/sysfs-driver-ufs | 2 +-
+ Documentation/ABI/testing/sysfs-firmware-acpi | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/ABI/testing/sysfs-driver-ufs b/Documentation/ABI/testing/sysfs-driver-ufs
-index 863cc4897277..57aec11a573f 100644
---- a/Documentation/ABI/testing/sysfs-driver-ufs
-+++ b/Documentation/ABI/testing/sysfs-driver-ufs
-@@ -983,7 +983,7 @@ Description:	This file shows the amount of data that the host plans to
- What:		/sys/class/scsi_device/*/device/dyn_cap_needed
- Date:		February 2018
- Contact:	Stanislav Nijnikov <stanislav.nijnikov@wdc.com>
--Description:	This file shows the The amount of physical memory needed
-+Description:	This file shows the amount of physical memory needed
- 		to be removed from the physical memory resources pool of
- 		the particular logical unit. The full information about
- 		the attribute could be found at UFS specifications 2.1.
+diff --git a/Documentation/ABI/testing/sysfs-firmware-acpi b/Documentation/ABI/testing/sysfs-firmware-acpi
+index 819939d858c9..39173375c53a 100644
+--- a/Documentation/ABI/testing/sysfs-firmware-acpi
++++ b/Documentation/ABI/testing/sysfs-firmware-acpi
+@@ -112,7 +112,7 @@ Description:
+ 		OS context.  GPE 0x12, for example, would vector
+ 		to a level or edge handler called _L12 or _E12.
+ 		The handler may do its business and return.
+-		Or the handler may send send a Notify event
++		Or the handler may send a Notify event
+ 		to a Linux device driver registered on an ACPI device,
+ 		such as a battery, or a processor.
+
 --
 2.25.1
 
