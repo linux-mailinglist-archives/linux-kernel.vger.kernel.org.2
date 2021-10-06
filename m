@@ -2,142 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55D484239E9
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 10:45:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8E214239EE
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 10:46:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237817AbhJFIqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 04:46:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237543AbhJFIqw (ORCPT
+        id S237771AbhJFIsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 04:48:05 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:64500 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237543AbhJFIsD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 04:46:52 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2522CC061749
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 01:45:01 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id rm6-20020a17090b3ec600b0019ece2bdd20so1759049pjb.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 01:45:01 -0700 (PDT)
+        Wed, 6 Oct 2021 04:48:03 -0400
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1968iu0j024853;
+        Wed, 6 Oct 2021 08:45:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type :
+ content-transfer-encoding : in-reply-to : mime-version; s=corp-2021-07-09;
+ bh=KSU3QXU3JS4a1VazPCcwoX/7Y4WV2ZhmjseTaxafd2Q=;
+ b=tM2TlTxoPoZXJB+d3tm+mGoKI+qX8i1ZQsy5G+Vtkx8dbqxUSH/Tezj/ik7wsYsR36QC
+ GhonNpl9xOIQVCXQcqkVXVJVl/YBqXf5fb6Xp5cRnxKbLnUlYCh61lrM4lzGib1nVG1q
+ v2AQY3OfH1I/aikBHUn8olGVdS5Qc+7DJm2RZNswGEsulneUUzVaxlIlkthblm26dkQP
+ wRM3wjaOXdSVWR41iz8GAzu0m2KSj4jE10VMlbrEK+17BLZXZyMyBGlCa0DhxWbVjDZ7
+ blEf7sxMmE6D0vXQMNx9YJc0/HAgicd2pBxuGe3hWi+rHzS2gGItNqA9yyYUP7cNjhVJ 7A== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3bh10ga94a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 06 Oct 2021 08:45:48 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1968aNmc192872;
+        Wed, 6 Oct 2021 08:45:47 GMT
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2172.outbound.protection.outlook.com [104.47.59.172])
+        by aserp3020.oracle.com with ESMTP id 3bev8y12cf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 06 Oct 2021 08:45:47 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eZP7vydQ1EzH1Tu6ZAqYVPwwXCQc94KTBaU50A4rrEPl8dt6hIMHnLQQtCHL+vS8dq7tNeRYcKJRyG8VWqeOIVSfhU1ARItNuEVAU1iNc3UTo1r17FqBHRP1pHOqJFr2ugBWF+WK3OhJVNdRIbwU0tPRHkpHG/pi5XyTVMZrhvdxAvf+FphXOB1uBTqI8sAUB/8e0caPqBlUEEaa3Sp6MsmkVir5jykSc8uDvjTEZa+pE8TrgzxkFQ2EBH1hAU0fEZ6iNhyh8odx4IaGGNrboZaBp2jzq4WdfizBhJ7tL4k1KWfQJIqox5Z+BlB+rf7kuJR3JpOUPTv1E+OXDxHM9g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=KSU3QXU3JS4a1VazPCcwoX/7Y4WV2ZhmjseTaxafd2Q=;
+ b=Yv3p5OOzKU69u80VhSxz456poi61uxVAXnc+xczLFC9OyKuZ/nbNbOT0jPbVgGNqvSJ+CecQr8BgDIvpEhiYOOSvDMznMrStkPBw59CupLsoF2n+yvH9juxnISjoF7djBfarRScBdUyROZQOzxI9EuhW+XWeh37D9LQQLHTK/CdQrZecuFzyCpoNCWsQ6rsf18c7oOpSuC6sOxOZad0tRYqjK3hZk7KTq+FMNV7hZ1EJ7dp/2hje8xrq9qN0byzJlVDwHhMNKjq7F+qyhmufS5KGY1ijpkbpdw8k5JdE6PNLPk7onVbtcHGgZ9JDbt9Ym1qKoq8/FC9zp4niMa/heg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=CsCbYjz8dFz00N87257DDnN4ifuXdxMfNWH4KsglU/8=;
-        b=du3XiuPXZsJp3KNSSLGlhwG2xCw1DtESyh3x3vyqD4E7NLXDeuj8fRaNex4c2GEqpQ
-         WnlFnjcNxbDBT7yj+F88RnSfyqQ04AYuOig/1kVotz97lv/9y4t6zI7Fb6+eIvhPmHr8
-         7J9HNBC2Ddci9lxwAtUq505xNbhP6nMDFNGV6rDPMebVdEHPnfAYuL8NWuSmEplK9lzS
-         6mYN4q5GOlr9VMekfpk7f3wka+8KKNf2EglxrD6AOMZovsEwrzvBd0QwXYPRGvRP0qY9
-         9j2Svl7PyfcLeXhpiaT2EwEeVQea/UnJ3PgRmwRMYRaRXvLSARqjar6pSmTHWa38pWBx
-         qnug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=CsCbYjz8dFz00N87257DDnN4ifuXdxMfNWH4KsglU/8=;
-        b=pNHkBU9X5HwWWOGLgdh9QyA9UsCe0nBtyXbMzoJBXQE7nW9yT+LULM/KbTWbygg74u
-         c2wQeEFJLIX3ARGyTTcWexQMRaUfNrisfx7bG7eWfObFrk2AlIhk36e50aZo/REeDtlq
-         oezfXsqvlR4ghfEt25Fh1YqfIXBojhTZ3/P2u/zd+CsZF2xWVrXRfMTasBKnqEbGWG35
-         nRxnZEfYrMnLuiPpnR8UoBPC+hvEmJ1RuDvIkHhPXOKzDNr6LLjpZbjosrn9tMswVtkj
-         Ipf5w69LgpPwsOmsfJmDD9HkuCYQxxl5I5TDSXABexDpYx1C1jHW6gwYrqGV8RBKTHwT
-         YiIw==
-X-Gm-Message-State: AOAM533mlx/qn3sT3pBPBS+IVhpfe1w/aeJD+9fnCT1uQMLjLt9fFqBR
-        Ypa+Zg5iZN/03XZb/NVNZK4Y7hrWEzjx0UJ3jAw7uYep63Ef8uE=
-X-Google-Smtp-Source: ABdhPJzMmEs1ZhGyHEZwEduVCp/vaUPJr7zme16UC0oAK7UArY3e1SHJ+JoKRVO8RiWgaNHvTI9P8l7Biaqo9uo6VGE=
-X-Received: by 2002:a17:903:2341:b0:13e:ae30:412 with SMTP id
- c1-20020a170903234100b0013eae300412mr9876635plh.15.1633509900415; Wed, 06 Oct
- 2021 01:45:00 -0700 (PDT)
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KSU3QXU3JS4a1VazPCcwoX/7Y4WV2ZhmjseTaxafd2Q=;
+ b=ragJaJ5y+N61PdYX6C4PoIR6Zro0zDQN/23TiygHDVLqiOtKPBcU1mQbTVze4ussz6VPsyywcmacC89+XIUlzlTeb1whHglQKzDRYWGKrDc+2T4/J4nysyr4FL6Oq+QB2fVPkv6lvxyKZcTNiNmrz7SHpSSqpCS7dWXT8uG57zo=
+Authentication-Results: piap.pl; dkim=none (message not signed)
+ header.d=none;piap.pl; dmarc=none action=none header.from=oracle.com;
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ (2603:10b6:301:2d::28) by MWHPR10MB1822.namprd10.prod.outlook.com
+ (2603:10b6:300:10b::18) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.19; Wed, 6 Oct
+ 2021 08:45:45 +0000
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::d409:11b5:5eb2:6be9]) by MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::d409:11b5:5eb2:6be9%5]) with mapi id 15.20.4566.022; Wed, 6 Oct 2021
+ 08:45:45 +0000
+Date:   Wed, 6 Oct 2021 11:45:26 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Krzysztof =?utf-8?Q?Ha=C5=82asa?= <khalasa@piap.pl>
+Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
+        Steve Longerbeam <slongerbeam@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] i.MX6: Support 16-bit BT.1120 video input
+Message-ID: <20211006084526.GA2048@kadam>
+References: <m3o882n0ir.fsf@t19.piap.pl>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <m3o882n0ir.fsf@t19.piap.pl>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: JNAP275CA0064.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4f::20)
+ To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
 MIME-Version: 1.0
-From:   Hao Sun <sunhao.th@gmail.com>
-Date:   Wed, 6 Oct 2021 16:44:49 +0800
-Message-ID: <CACkBjsYganRrN=WjgcotH1RdZ99_6mPuy=GhsFrq2CUNOUrpbA@mail.gmail.com>
-Subject: kernel BUG in jfs_evict_inode
-To:     jfs-discussion@lists.sourceforge.net, shaggy@kernel.org
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Received: from kadam (62.8.83.99) by JNAP275CA0064.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4f::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.17 via Frontend Transport; Wed, 6 Oct 2021 08:45:38 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 2bbbf64a-4fa7-4ba8-30c7-08d988a5afb5
+X-MS-TrafficTypeDiagnostic: MWHPR10MB1822:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MWHPR10MB182286E6C4CA64B040661EC58EB09@MWHPR10MB1822.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2803;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: hCMyHkZ5yMrS159YOVp3EOeDu39jQcqZt9M+7LM2H6SFlxmFqht+wOMXQxMr7GJbb8yH5NANGHf5scyyp4ygtHYMEHhq/6W0cp/IU1GZn7CZn7xpOCS/ttaCzUPLV7+gpUDDt3xNeAnHjigkM5srralZ07Xoq5+s/jPJCX9wKsTSqlekiATUKWaA+79GCpW2bb63C0pq5j0HjjmLxHeQIO+A9/9ZQMXTMwS8Q5NjIyoOj2m4I8vjjULtLyq1Q38E7yhfS/jFxjYOW8dcApuXuieRSAyM3kPHmEL630Q0GfFWsIhtXfkdbVcZPQHMHccuLfi5eUyVaaBDKugaahoUYTrkIjBMROwOVv5pOKXtrqxgOrTynUw+mSCxdSu9HPpuhYGmxnnww7qDZdivsHe6PoruWAMOqjDGeSFDQrXRT1CV1M+PvAvytjwoXPqjpujK9StG3HZyzlsb08wHXf4QlDQLp2QWenpe2+MCrQBsp3Lj5qjSPdGS9ENCi20eO5EUr3/g8Vr42Jzg2dFFEdXzTP7i9R3snVlL2GQgSR+mkx+KN6Kz97ZZtLhDL8iCTjAUxtmAuk20zYVgky32fDah9+vEK5a3LF6ZvIpMQmfVwEPUEXnn8oV7zwmyFJlRceoLBGThOqOmerqS5eosiuGDcpGpZ5mWORRpTw41K4zlm7r6gk5XgIU8RCKCY524hkHyG/cog0Si5s/pvY11Oivb3w==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(44832011)(2906002)(4326008)(66946007)(33716001)(8676002)(316002)(6666004)(7416002)(9576002)(8936002)(54906003)(66556008)(66476007)(33656002)(1076003)(6496006)(26005)(86362001)(52116002)(6916009)(38350700002)(956004)(38100700002)(186003)(5660300002)(9686003)(55016002)(508600001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?czJSTU5RRHNnYU9RYVpicnh5OVRzNWJTSEU3Wmw4S3RoSzdJS2J3RWNleGJt?=
+ =?utf-8?B?NlA4RncwejlXck9pSU9PVFQvOFg4a1Q3WkZqNUtZbjMrbklRa3JRV0FVNTY2?=
+ =?utf-8?B?dEM4WTJ6Rk5PZGNxamdkVlRxMkZ0d3dJQmtRTlBDakwrZzdQNnl5UnpnWlUz?=
+ =?utf-8?B?a25WQnpyRFYxclhQV2xOc1lBTHIrVnZ2eUdyRHRaVy9Ud0V3ZWlUbWFsN01y?=
+ =?utf-8?B?Wk9pRzVrdlBPMkZjQTVCUkhqVFBuVHJGMkEwaXd0c0dzZk9wM1lPVEZkWGFP?=
+ =?utf-8?B?ZU1SSGFaVUNoRWpmb25TRElzQ1RmOG9JOERGMlBKb0dabi9QTDFVTjltRVdU?=
+ =?utf-8?B?WG5KOUltZjZ6NUdPRk5RL0YrSmtHK3ZOajJENnN3NVE1RC9CMDJwNHduSjVZ?=
+ =?utf-8?B?V2VSc3pZZmxjcDZrbjlheko2a3pBcGxPeStKT2tOTm9UNTVvNzZEb1ZqaTRq?=
+ =?utf-8?B?aGxBTDdwS3YyeHdMWkdQR3pNazlNTGl1KzdobkxSSk8zVzd5eGR1b0pHK0E1?=
+ =?utf-8?B?dGhGL1J4bndyR0NDNng5YVpUL1V2QlBXNzVLMXpEeThsa0xhWlRQWm1tVWFs?=
+ =?utf-8?B?VDh0dXFEV0hETzlqNXZzK1dOUkREbTFHN1FJcVN0bnFkSU1HZXpIN2dLWGpi?=
+ =?utf-8?B?cDZ5QU5GSHl1NU1VeU5KTU5PNTR5Ukp3OE5KVWpuTFd4WFVjZ0ZxbFZwRHBV?=
+ =?utf-8?B?aHNaMlVRb1NWdDVNaHFLQ2duMDFwYmFSN3AxV3FZOTd4ZEtTaTFnM1p6aC9I?=
+ =?utf-8?B?Q2lVN1hFbVNmYm5od0c3T2FkdW1PRWJMdXdWaDhhaDM4SnV3ZHVwamt5bjFq?=
+ =?utf-8?B?bGFzS2FYd3M3alV2V3FzVjJmYmgyUEdPNXVBUnRQNHRlYzUxUVgrTGtteUI2?=
+ =?utf-8?B?aEwyRW93R1R5YVhlOE40WlZUN1RkeklONzZlMU9HbXNPSUNNTE5CZ0hrWmVD?=
+ =?utf-8?B?dTk2V1VzNGFQczhESjY2SkhZTXVJY2E5MDFuR2dsamI4TFFmT1UxM0MxVmJG?=
+ =?utf-8?B?YlpzbFpudGJ1cWR3NlZnbUZLTmRMYU9QdVptS2NOYlhDWFV6WFh3UWJkSjRB?=
+ =?utf-8?B?ZWJSVk9nQ01haXczM3BSSDlkSkJyY3g2aU5HcWhYU0krak9NNWFneDVPMGQ4?=
+ =?utf-8?B?UG1UZ1VtRVY4ODZBM3c5aEsxL0xoOE16UlNNZ1ROcU1peEV4ZVVkRG9MSXd5?=
+ =?utf-8?B?ZWlxNXA3M21WV2dEb0pNSGZObjhtMGhOcVpRa2lOa2Y0Rkl2SW1hVjlXSVg1?=
+ =?utf-8?B?QkFQZTlVMmxEMllBUjdkRTczc2pOWnZ2VFdwM0didEhOWW5LZGNUOXQ5REUr?=
+ =?utf-8?B?anlxTnVtcGtCeVJpdlNNY3ErWGNNR09QM0syT1NnNXZab1dWcFJtWk0wa096?=
+ =?utf-8?B?RWZxUjNEcC9lMHB6WWNFQ2xoV0o4dnZiQmFyQ0t5emdDSnZJSlNhbDdRWEVQ?=
+ =?utf-8?B?OW8zbnpyZWZDclpRVm9mbWRSUDJWRmhNRUtDM3kvMVpiL0VmbnVkbFBzdUZh?=
+ =?utf-8?B?aG5VVlFFbTdjVTUzM0dOSWlsYmUrRFk0UTF5U3pWMzI1QWpqTStvVWNhYzVk?=
+ =?utf-8?B?THp4Y1JFSmFXZU02clF0QVZCMnhacnlScjVlZDMxdm00VDRzZFk2TVRJekpV?=
+ =?utf-8?B?RFhpcmN3SHFwTTltVGZCbzdPQ2lLREJiMHVCV0xqSGFjMnJVc1FwaWh5ODcx?=
+ =?utf-8?B?NDhrcGtPTEpoaVdDWElxcE5GUHdscVFqWG1HYzVxREcxUDAyQjdWSWFsZFRT?=
+ =?utf-8?Q?RBCyk6zqBnRy8dyvB8v1na5M92AcAHrmg9O6eJp?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2bbbf64a-4fa7-4ba8-30c7-08d988a5afb5
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Oct 2021 08:45:45.0223
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Ae13M7Dl4EHSJxJ5AglSU+fSThNX1B6bk/FxQZdV3ZjynO2ZmigBdpQHE9vuLcuhY1K2yPbgyfbMrIweXqtGw6Gbo8x09fptNjzqXoCk/qY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR10MB1822
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10128 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0 phishscore=0
+ spamscore=0 mlxscore=0 mlxlogscore=999 suspectscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109230001
+ definitions=main-2110060054
+X-Proofpoint-GUID: b1KgVySnPSHN7-Eg6tr3TMgod37l1Fmt
+X-Proofpoint-ORIG-GUID: b1KgVySnPSHN7-Eg6tr3TMgod37l1Fmt
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, Oct 06, 2021 at 08:13:48AM +0200, Krzysztof Hałasa wrote:
+> @@ -373,11 +387,18 @@ static int fill_csi_bus_cfg(struct ipu_csi_bus_config *csicfg,
+>  		break;
+>  	case V4L2_MBUS_BT656:
+>  		csicfg->ext_vsync = 0;
+> +		/* UYVY10_1X20 etc. should be supported as well */
+> +		is_bt1120 = mbus_fmt->code == MEDIA_BUS_FMT_UYVY8_1X16 ||
+> +			mbus_fmt->code == MEDIA_BUS_FMT_YUYV8_1X16;
 
-When using Healer to fuzz the latest Linux kernel, the following crash
-was triggered.
+Could you align better for readability, otherwise it's harder to spot
+the two characters which are swapped between those to macros.  (Also
+it's basically normal for both sides of a || to be aligned...)
 
-HEAD commit: 0513e464f900 Merge tag 'perf-tools-fixes-for-v5.15-2021-09-27'
-git tree: upstream
-console output:
-https://drive.google.com/file/d/1NSVdsjViaEUbSeaWVC-UYThJlWp0lvVW/view?usp=sharing
-kernel config: https://drive.google.com/file/d/1Jqhc4DpCVE8X7d-XBdQnrMoQzifTG5ho/view?usp=sharing
-C reproducer: https://drive.google.com/file/d/184Rm6ijCSvoPQ5yHX7LOzbjXVtx7lyvN/view?usp=sharing
-Syzlang reproducer:
-https://drive.google.com/file/d/12c_LoGNiQQOutVwi3b2XL83fDTG_BpdB/view?usp=sharing
+		is_bt1120 = (mbus_fmt->code == MEDIA_BUS_FMT_UYVY8_1X16 ||
+			     mbus_fmt->code == MEDIA_BUS_FMT_YUYV8_1X16);
 
-If you fix this issue, please add the following tag to the commit:
-Reported-by: Hao Sun <sunhao.th@gmail.com>
+>  		if (V4L2_FIELD_HAS_BOTH(mbus_fmt->field) ||
+>  		    mbus_fmt->field == V4L2_FIELD_ALTERNATE)
+> -			csicfg->clk_mode = IPU_CSI_CLK_MODE_CCIR656_INTERLACED;
+> +			csicfg->clk_mode = is_bt1120 ?
+> +				IPU_CSI_CLK_MODE_CCIR1120_INTERLACED_SDR :
+> +				IPU_CSI_CLK_MODE_CCIR656_INTERLACED;
+>  		else
+> -			csicfg->clk_mode = IPU_CSI_CLK_MODE_CCIR656_PROGRESSIVE;
+> +			csicfg->clk_mode = is_bt1120 ?
+> +				IPU_CSI_CLK_MODE_CCIR1120_PROGRESSIVE_SDR :
+> +				IPU_CSI_CLK_MODE_CCIR656_PROGRESSIVE;
+>  		break;
+>  	case V4L2_MBUS_CSI2_DPHY:
+>  		/*
 
-------------[ cut here ]------------
-kernel BUG at fs/jfs/inode.c:168!
-invalid opcode: 0000 [#1] PREEMPT SMP
-CPU: 0 PID: 2759 Comm: syz-executor Not tainted 5.15.0-rc3+ #21
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-RIP: 0010:jfs_evict_inode+0x157/0x1a0 fs/jfs/inode.c:168
-Code: 83 78 28 00 74 0d e8 48 b5 7f ff 48 89 df e8 c0 de 00 00 e8 3b
-b5 7f ff 48 89 df e8 33 25 b1 ff e9 fb fe ff ff e8 29 b5 7f ff <0f> 0b
-e8 22 b5 7f ff 48 89 df e8 1a 34 00 00 eb b4 e8 13 b5 7f ff
-RSP: 0018:ffffc90000867d68 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffff888018cb41a8 RCX: 0000000000000000
-RDX: ffff8880167ec500 RSI: ffffffff81b7dc37 RDI: ffff888018cb41a8
-RBP: ffffffff81b7dae0 R08: 0000000000000001 R09: 0000000000000001
-R10: ffffc90000867ce8 R11: 0000000000000001 R12: ffffffff84964600
-R13: ffffffff853a64cd R14: ffff88801a91d980 R15: ffff88801a91d000
-FS:  00000000025cb940(0000) GS:ffff88807dc00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ffc3c3d0da4 CR3: 0000000016458000 CR4: 0000000000750ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-PKRU: 55555554
-Call Trace:
- evict+0xfd/0x1e0 fs/inode.c:588
- dispose_list+0x61/0x90 fs/inode.c:621
- evict_inodes+0x194/0x1f0 fs/inode.c:671
- generic_shutdown_super+0x45/0x170 fs/super.c:454
- kill_block_super+0x2c/0x60 fs/super.c:1395
- deactivate_locked_super+0x43/0x80 fs/super.c:335
- deactivate_super+0x53/0x80 fs/super.c:366
- cleanup_mnt+0x138/0x1b0 fs/namespace.c:1137
- task_work_run+0x86/0xd0 kernel/task_work.c:164
- tracehook_notify_resume include/linux/tracehook.h:189 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:175 [inline]
- exit_to_user_mode_prepare+0x271/0x280 kernel/entry/common.c:207
- __syscall_exit_to_user_mode_work kernel/entry/common.c:289 [inline]
- syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:300
- do_syscall_64+0x40/0xb0 arch/x86/entry/common.c:86
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x46c777
-Code: ff d0 48 89 c7 b8 3c 00 00 00 0f 05 48 c7 c1 bc ff ff ff f7 d8
-64 89 01 48 83 c8 ff c3 66 0f 1f 44 00 00 b8 a6 00 00 00 0f 05 <48> 3d
-01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffc3c3d14d8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 000000000046c777
-RDX: 0000000000404e22 RSI: 0000000000000002 RDI: 00007ffc3c3d15a0
-RBP: 00007ffc3c3d15a0 R08: 00000000025d5033 R09: 000000000000000b
-R10: 00000000fffffffb R11: 0000000000000246 R12: 00000000004e38c6
-R13: 00007ffc3c3d2650 R14: 00007ffc3c3d264c R15: 0000000000000010
-Modules linked in:
-Dumping ftrace buffer:
-   (ftrace buffer empty)
----[ end trace a937ecc93c68ee05 ]---
-RIP: 0010:jfs_evict_inode+0x157/0x1a0 fs/jfs/inode.c:168
-Code: 83 78 28 00 74 0d e8 48 b5 7f ff 48 89 df e8 c0 de 00 00 e8 3b
-b5 7f ff 48 89 df e8 33 25 b1 ff e9 fb fe ff ff e8 29 b5 7f ff <0f> 0b
-e8 22 b5 7f ff 48 89 df e8 1a 34 00 00 eb b4 e8 13 b5 7f ff
-RSP: 0018:ffffc90000867d68 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffff888018cb41a8 RCX: 0000000000000000
-RDX: ffff8880167ec500 RSI: ffffffff81b7dc37 RDI: ffff888018cb41a8
-RBP: ffffffff81b7dae0 R08: 0000000000000001 R09: 0000000000000001
-R10: ffffc90000867ce8 R11: 0000000000000001 R12: ffffffff84964600
-R13: ffffffff853a64cd R14: ffff88801a91d980 R15: ffff88801a91d000
-FS:  00000000025cb940(0000) GS:ffff88807dc00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ffc3c3d0da4 CR3: 0000000016458000 CR4: 0000000000750ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-PKRU: 55555554
+regards,
+dan carpenter
