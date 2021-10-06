@@ -2,94 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 113BA42354F
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 02:59:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFA13423552
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 03:02:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237117AbhJFBB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 21:01:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50936 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236953AbhJFBB1 (ORCPT
+        id S237125AbhJFBES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 21:04:18 -0400
+Received: from smtprelay0252.hostedemail.com ([216.40.44.252]:34484 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230218AbhJFBER (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 21:01:27 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC515C06174E
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 17:59:35 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 059BE581;
-        Wed,  6 Oct 2021 02:59:32 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1633481973;
-        bh=l+rjQCwGSyO9yFVWNn3k5VoiRZiXyt/OvwCdmBBkbIk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=paeRZwqyBlSZYkzgJ9sRpDHvCCejFY33YXZ973CdSOdB9Lcdu7JHDfVOiLXezm/ZM
-         Q073WIMbnCkoVtsQwmhgPz1FFbvhnpGUDbyxMjpBmetbphhwlwcAp0U3ou3pK5RSQz
-         TJfxjOypdDXomdcFr/KAa28rCEIzOxlsDUhvpNss=
-Date:   Wed, 6 Oct 2021 03:59:25 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Rob Clark <robdclark@gmail.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 3/3] drm/bridge: ti-sn65dsi86: Add NO_CONNECTOR support
-Message-ID: <YVz07YIXzFMwl8iR@pendragon.ideasonboard.com>
-References: <20210920225801.227211-1-robdclark@gmail.com>
- <20210920225801.227211-4-robdclark@gmail.com>
- <YUvN3j0v+8NMjNte@pendragon.ideasonboard.com>
- <CAF6AEGviyfX6+c-CB5gMXqRQfHhvb5L8t++-VkZpvS3r9qDNoA@mail.gmail.com>
- <YU03M+CXJ+ALi8De@pendragon.ideasonboard.com>
- <CAD=FV=UU1_ZR0K9XEgkTM2M55FgmqoH=ciU5a_oCC+W2NPdZ-A@mail.gmail.com>
+        Tue, 5 Oct 2021 21:04:17 -0400
+Received: from omf20.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 5DF31180DF721;
+        Wed,  6 Oct 2021 01:02:25 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf20.hostedemail.com (Postfix) with ESMTPA id 52D9018A608;
+        Wed,  6 Oct 2021 01:02:24 +0000 (UTC)
+Message-ID: <35a358c67c6220825b37e64c6aa2978741565bdd.camel@perches.com>
+Subject: Re: [PATCH v2] staging: r8188eu: Fix misspelling in comment
+From:   Joe Perches <joe@perches.com>
+To:     "Siou-Jhih, Guo" <hallblazzar@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Date:   Tue, 05 Oct 2021 18:02:22 -0700
+In-Reply-To: <f1569e97-8996-e538-182c-cc5f6510dc35@gmail.com>
+References: <7bc392d5-11e4-7ad0-dab6-295ccadf63b9@gmail.com>
+         <YVwpEa5T4HnOX5/g@kroah.com>
+         <f1569e97-8996-e538-182c-cc5f6510dc35@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAD=FV=UU1_ZR0K9XEgkTM2M55FgmqoH=ciU5a_oCC+W2NPdZ-A@mail.gmail.com>
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: 52D9018A608
+X-Spam-Status: No, score=0.03
+X-Stat-Signature: did5ktcsude1wpognowhts9fsc58zaz8
+X-Rspamd-Server: rspamout02
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX19i4mQEPjDli2/8f8gwqFKRCAmqH/tGfDI=
+X-HE-Tag: 1633482144-645194
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Doug,
+On Tue, 2021-10-05 at 22:16 +0100, Siou-Jhih, Guo wrote:
+> If anything should I additionally aware, I'd like to fix them.
 
-On Fri, Oct 01, 2021 at 11:02:54AM -0700, Doug Anderson wrote:
-> On Thu, Sep 23, 2021 at 7:26 PM Laurent Pinchart wrote:
-> >
-> > > > >  err_conn_init:
-> > > > >       drm_dp_aux_unregister(&pdata->aux);
-> > > > >       return ret;
-> > > > > @@ -792,9 +790,30 @@ static void ti_sn_bridge_set_dsi_rate(struct ti_sn65dsi86 *pdata)
-> > > > >       regmap_write(pdata->regmap, SN_DSIA_CLK_FREQ_REG, val);
-> > > > >  }
-> > > > >
-> > > > > +/*
-> > > > > + * Find the connector and fish out the bpc from display_info.  It would
-> > > > > + * be nice if we could get this instead from drm_bridge_state, but that
-> > > > > + * doesn't yet appear to be the case.
-> > > >
-> > > > You already have a bus format in the bridge state, from which you can
-> > > > derive the bpp. Could you give it a try ?
-> > >
-> > > Possibly the bridge should be converted to ->atomic_enable(), etc..
-> > > I'll leave that for another time
-> >
-> > It should be fairly straightforward, and would avoid the hack below.
-> 
-> Given this point of controversy, my inclination is to wait and not
-> apply this patch now. I don't think there's anything urgent here,
-> right? Worst case eventually Laurent might pick it up in his patch
-> series? At least we know it will work with the MSM driver once patch
-> #1 lands. :-)
+Maybe fix these too?
 
-I've recorded the task for my upcoming work on the ti-sn65dsi86 driver.
+$ git grep -w -i -P -n 'issuign|fittign|settign|enablign|followign|chargign|beign|startign|accordign|runnign'
+arch/arm/mach-s3c/sleep-s3c64xx.S:33:    * requires to get the kernel runnign again. This code expects to be
+drivers/crypto/ccree/cc_driver.c:278:   /* AXI interrupt config are obsoleted startign at cc7x3 */
+drivers/hid/hid-thrustmaster.c:80: * beign conducted yet. The position and meaning of fields are a
+drivers/net/ethernet/chelsio/cxgb4/t4fw_api.h:809: * our own HELLO may get lost if it happens right as the MASTER is issuign a
+drivers/net/ethernet/qlogic/qede/qede_filter.c:2029:    /* Translate the flow specification into something fittign our DB */
+drivers/net/wireless/realtek/rtlwifi/rtl8821ae/dm.c:1158: * Overview:   88E change all channel tx power accordign to flag.
+drivers/net/wireless/realtek/rtlwifi/rtl8821ae/dm.c:1837: * Overview:   88E change all channel tx power accordign to flag.
+drivers/power/supply/ab8500_charger.c:1325: * ab8500_charger_led_en() - turn on/off chargign led
+drivers/power/supply/ab8500_charger.c:1327: * @on:              flag to turn on/off the chargign led
+drivers/spi/spi-tegra20-slink.c:543:            /* HW need small delay after settign Packed mode */
+drivers/staging/media/atomisp/pci/runtime/bufq/src/bufq.c:412:   * by some test apps. Enablign logging here floods the log
+drivers/staging/media/atomisp/pci/runtime/bufq/src/bufq.c:434:   * by some test apps. Enablign logging here floods the log
+drivers/staging/r8188eu/core/rtw_ap.c:747:Set to 0 (HT pure) under the followign conditions
+drivers/staging/r8188eu/hal/HalPhyRf_8188e.c:72: * Overview:    88E change all channel tx power accordign to flag.
+drivers/thermal/tegra/soctherm.c:844:    * programmed on a different one. This beign a LEVEL interrupt won't
+drivers/usb/gadget/function/f_hid.c:312:         * Remove this from list to protect it from beign free()
+net/mac80211/mesh_plink.c:1077:                  * B's peer link establishment or B beign
 
--- 
-Regards,
 
-Laurent Pinchart
