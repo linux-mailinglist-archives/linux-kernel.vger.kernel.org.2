@@ -2,116 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 349AC42419A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 17:44:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D17B42419D
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 17:45:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238019AbhJFPqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 11:46:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55384 "EHLO
+        id S239175AbhJFPqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 11:46:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230101AbhJFPqn (ORCPT
+        with ESMTP id S230101AbhJFPqs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 11:46:43 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D47EEC061746
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 08:44:50 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id b20so12563637lfv.3
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 08:44:50 -0700 (PDT)
+        Wed, 6 Oct 2021 11:46:48 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58510C061746;
+        Wed,  6 Oct 2021 08:44:56 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id x27so12231048lfa.9;
+        Wed, 06 Oct 2021 08:44:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fLrVITo26Q9Q7weH2zRlnHSrkqoVRNsgF3IljUMw/5c=;
-        b=Vg8DOLDKNftBf2yy9dK6Xu1rxd/66jDMb60w1wudX13vfZa0M/6yuZ2L3Ygm2csCZ3
-         jLcbL9E56EllkroBLM9jukgbbcSyD1QMRyBjepsQeTuJLlPrYsriP7jtOFmPy0sZmnJS
-         7eWPrpin7ou2GbkMqFD0a4eoIoqGEczu4GoHJMi69TvCg9o3UqvP9klBSN/f7/JFChpI
-         n3TyNm3ZH5czD+YCJExOTWay2kXUR2LaX6C4IijpAUGGMd4OJpGUFSAM/CA8LvYuL6kp
-         /2X1gfVLCMCX6sI6icXWPlpWYyO737tRElmxRwaVexZ9D8+1CvERswsdnwx4UsrB6XK6
-         j4Vw==
+        d=gmail.com; s=20210112;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=99MWTeT38qwRLIuXKDVRIiA39mldC4P4+Z58f4c6Oxo=;
+        b=JstCZ/Blylc8fozBwwuE60wyxINFp25Rons9sFMwCxhvd2M/WtUs60sR6oesEhgERy
+         rAVEy2uXawhbFCMrSKMhYXiayGzOYeftEkmik/gkBgl+efKuhiEoIyVTZ7zuFF783ml+
+         sP+haaqtLVmwCKhgF5trgxyk6WQRZPC9jnG3bVkXkOtHTuHPDtv+5O0yozNGsY4S3xZL
+         aF3BjeHI5PdxV6qJEM5NH0wbJ8tXXT1xnr3QrwLipOFsz3DASY6/MxED3gI8+cFl/bV9
+         3pXOtjaQScfKQMiEVo8TjK9q6kUddT2X21XpG2f9Rrc6tNj6nQEcV5ifdisj0XWnMTbP
+         TX8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fLrVITo26Q9Q7weH2zRlnHSrkqoVRNsgF3IljUMw/5c=;
-        b=4qVrJURyR38u3NefAKERkLSR8ypTqsDHj14+qnMYHGq8kgfA9zupGNosu85zJs3Olb
-         59mvAVrh3fFbWumOWr/C1FuWUhAjjM8/PGB1kl9BwHfoyU6ZordioDn+KkboKUxA1kTY
-         HwZkcMJF68bDP5qgfdUDeVTNtSnxb9gBhkoxIafXl6qxcFVMSKTsXElTyMqBvfwE9MeC
-         g7eR0CDzXyadRGMraVKTpN79KwoQ13yOWDGAqO+Vf1sv8TxeEswh/snWbirCWs/shPk3
-         5nms40BQwm3JGfmQ7XTOpJNm9mVKFf8zakYK5y4/OpUMybJ8D4mYGxMXzK0tYiNitPzc
-         TAOg==
-X-Gm-Message-State: AOAM531FoAfYg0dLsElJ3y/UUAiDwdC1Rdcarnuy7AFPHmHLQ1S3iFoT
-        nz0Bqoc2FjNyS2kW9DvHIcosiJf6KzJiO0W1tgtSYQ==
-X-Google-Smtp-Source: ABdhPJzIWAUgQf7sZffi7dUYnaY6L0kMYXgI0e/0GVYqQBe6gtEhMBe5NQ6q+RSowbWaMfSxH4GzmhM9Xk70+dvXHcg=
-X-Received: by 2002:a05:651c:4c9:: with SMTP id e9mr29848643lji.229.1633535089235;
- Wed, 06 Oct 2021 08:44:49 -0700 (PDT)
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=99MWTeT38qwRLIuXKDVRIiA39mldC4P4+Z58f4c6Oxo=;
+        b=3/dYE1N5CM6ISYMeyLbB7bNAiZJr335uzUdAvSvPQRKbrFZYmjPTvFY6B07o4Zdy4a
+         eUElWkFh6HNhLVXw033xUBWyQTqyQKePVKzuQKBZNcZdLqGsCyLSO2n/BW96NSJOvKaE
+         7LuIEcD+pRkMLgs7RBAwdBlg61pOP+1E/HAXc7yjezYAOCyRIQnEauDXRhMnX83qPMh7
+         1EurIJlN3YxNmuDI9A/3xLYtRnFQcB0jCq/nWx7j17iGh/vih432e2Gjk+K0cvLKdiD1
+         hsXSYgBNCo0yAa5NfvD9cJFwQ2JtDukCQFNa6PrRfk330erxF0mRNvSlKzuWCUA+sx2X
+         +9/A==
+X-Gm-Message-State: AOAM531kiQbPdX07NjTHd8GY3bZMK6n1tsHxoycFMzKZoH8py9o0UQLJ
+        xlHda1XyZ5r02k5LcMsAdFC5Gly/zLE=
+X-Google-Smtp-Source: ABdhPJw7a9UDTlS1otJ7Lud3ywJJxvOGNL9g0UDd+8bMT+kLuXJgksg1Y9VKBa9IZt2VtDIhI02bNA==
+X-Received: by 2002:a2e:8915:: with SMTP id d21mr30149653lji.45.1633535094414;
+        Wed, 06 Oct 2021 08:44:54 -0700 (PDT)
+Received: from [192.168.2.145] (79-139-163-57.dynamic.spd-mgts.ru. [79.139.163.57])
+        by smtp.googlemail.com with ESMTPSA id t81sm1114224lff.228.2021.10.06.08.44.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Oct 2021 08:44:54 -0700 (PDT)
+Subject: Re: [PATCH v4 2/7] dt-bindings: memory: lpddr2: Convert to schema
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+References: <20211005230009.3635-1-digetx@gmail.com>
+ <20211005230009.3635-3-digetx@gmail.com>
+ <6b8f6ef7-cfc5-3a8b-d44d-f4080a85ecf3@canonical.com>
+ <7047ad7b-52d6-0c91-b7d2-b115ea69506f@gmail.com>
+Message-ID: <481f4d90-638f-b64f-83a2-b882d9bf194a@gmail.com>
+Date:   Wed, 6 Oct 2021 18:44:53 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20211004151646.73599-1-krzysztof.kozlowski@canonical.com>
-In-Reply-To: <20211004151646.73599-1-krzysztof.kozlowski@canonical.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 6 Oct 2021 17:44:12 +0200
-Message-ID: <CAPDyKFoACP79Zt4DuJJEyRPRb0yXhcNmfDJwVk-yBZt61Z88MA@mail.gmail.com>
-Subject: Re: [PATCH next] dt-bindings: mmc: arasan,sdci: bring back
- requirement of clock-output-names
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <7047ad7b-52d6-0c91-b7d2-b115ea69506f@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 4 Oct 2021 at 17:17, Krzysztof Kozlowski
-<krzysztof.kozlowski@canonical.com> wrote:
->
-> The schema defines dependency only of clock-output-names on #clock-cells.
-> The dependency in opposite direction - requirement of clock-output-names
-> if #clock-cells is defined - should be explicitly included in the
-> bindings.
->
-> Reported-by: Rob Herring <robh@kernel.org>
-> Fixes: 22ea8ab0dcc4 ("dt-bindings: mmc: arasan,sdci: drop unneeded clock-cells dependency")
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
->
+06.10.2021 18:41, Dmitry Osipenko пишет:
+> 06.10.2021 13:57, Krzysztof Kozlowski пишет:
+>>> +  density:
+>>> +    description: |
+>>> +      Density in megabits of SDRAM chip. Obtained from device datasheet.
+>> You need here a type/ref, so uint32.
+>>
+> 
+> The type is uint32 by default. I can add it, but it's not really necessary.
+> 
 
-Applied for next, thanks!
-
-I took the liberty to squash this into the previous commit, and move
-the reported-by tag into a reviewed-by tag from Rob.
-
-Feel free to yell at me if there is something you don't like with the
-squashed commit.
-
-Kind regards
-Uffe
-
-
-> ---
->
-> Fixes tag from the linux-next
->
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> ---
->  Documentation/devicetree/bindings/mmc/arasan,sdhci.yaml | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/Documentation/devicetree/bindings/mmc/arasan,sdhci.yaml b/Documentation/devicetree/bindings/mmc/arasan,sdhci.yaml
-> index dd70431df0b7..de6f076e0ece 100644
-> --- a/Documentation/devicetree/bindings/mmc/arasan,sdhci.yaml
-> +++ b/Documentation/devicetree/bindings/mmc/arasan,sdhci.yaml
-> @@ -158,6 +158,9 @@ properties:
->      description:
->        The MIO bank number in which the command and data lines are configured.
->
-> +dependencies:
-> +  '#clock-cells': [ clock-output-names ]
-> +
->  required:
->    - compatible
->    - reg
-> --
-> 2.30.2
->
+You may grep bindings for 'enum: [' to see that nobody is specifying the
+type.
