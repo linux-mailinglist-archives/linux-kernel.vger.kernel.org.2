@@ -2,193 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B595F4247E3
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 22:22:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54AAC4247E6
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 22:26:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239476AbhJFUYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 16:24:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35692 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239419AbhJFUYA (ORCPT
+        id S230300AbhJFU2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 16:28:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55010 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229677AbhJFU22 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 16:24:00 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46B11C061746
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 13:22:07 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id x7so13701440edd.6
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 13:22:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=eDub8eH+T0FGGXCo6yfeGfJ6YqWnTRGI/yA4UgLkRz8=;
-        b=kzpaV5LuhHsG8wpdKws61cbnBXVnLeSVOdVO+kinpV9VcvNbKc1kr224zlvq9LVQj+
-         Sx6cBexDIALtWv+0V2OAFlQCA+Mn9T0lOWa75wNlioAtOn7t3tsBKseu9nTnM2up1OmR
-         qhXpgwFTCtYaEqXEGlMT4UOYnwOb4MGXcGniqrWo+5E8I0MNShqTovYZYTsuba14eT1/
-         N+4EbUjRY1Z3r17bRRBgOvF15jqWG1a2yQfsnIxfBmedfdBKBh+qCU8uJkc1tra/lwqX
-         NzS+wiOcu0awQdrHJbdc2JAuKJqmiJjoW9QNdafUX1JNVh6oTJl0EQ/+KBEaTcTX3LlG
-         aOPA==
+        Wed, 6 Oct 2021 16:28:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633551996;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=I2Q0+mRozN3eSjmjWTl3h/HNMMBHtGxlh1OcwvpPGqk=;
+        b=O470+ailem44UM2zTLxzCSWMTOYgxfQekIlsejM+cuISrcIu6NcNop8A6jrx1Devft2/Op
+        syLM0HN6YoN63MYpmyB9IvreYy0YS+fCjjltX5bxbQl5zAbXpiiOOF02YxIiBkilg0GuEL
+        /XQpRiEkJFCpgxK1jiujwbhBR3rCsR8=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-384-CZCJvbZDMa6AaoFkfq_6cA-1; Wed, 06 Oct 2021 16:26:35 -0400
+X-MC-Unique: CZCJvbZDMa6AaoFkfq_6cA-1
+Received: by mail-qk1-f198.google.com with SMTP id s20-20020a05620a0bd400b0045e893f2ed8so3104961qki.11
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 13:26:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=eDub8eH+T0FGGXCo6yfeGfJ6YqWnTRGI/yA4UgLkRz8=;
-        b=5mtbe2qr/f0J9NpYIwA09SHJYVvjmIuSc9Plh9ij3lpoxduNZBHExKYvLqYfSM371Z
-         /5bdbfk52XbQHmfMpcLvwXZWrp0ZaKFq5QNuzRjyOX2e6iqbPeo76+vgxcoKczO22gCm
-         ltdku32+sPLaDT3bBc4nvKN2etZdIWTzM2KQox6COg93AtzWin3ZFN0mAEdukDDgoGil
-         MAdHJX6oJr2kX4uCiZenkWZJSg0qhoTbq8GTcB1myK+MstOa+ZkrRCYEA3CfxC0k0twf
-         gek3dmlubVL55JdjGIjTYiIl4HaWTypkHCsbEqLIGaYCD0JoJC2fOok0qldIRsm+n7Ij
-         n7gw==
-X-Gm-Message-State: AOAM532o/B2a6D7hmgxJ8FEsrqWXNn3ecMOfF/m6LPB4DPb/hVUUWllZ
-        FpxpZS1vRKEd+SNieuqcK0JmUkDOxIVXxqTu3wI=
-X-Google-Smtp-Source: ABdhPJxgPXZl9MwohSbQf1ii3BbLP5RORN2+VhjeZXA3IwsjTiPAzL7sGdva5j0+lrnyga/D7BnEgxYJx6AefoCmDVk=
-X-Received: by 2002:a17:906:713:: with SMTP id y19mr374790ejb.506.1633551725020;
- Wed, 06 Oct 2021 13:22:05 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=I2Q0+mRozN3eSjmjWTl3h/HNMMBHtGxlh1OcwvpPGqk=;
+        b=8N7q8cTXMXhVrYkeGFxNb54XQN38oinHQamm94cfwetbtEo060QbsVaakBzQIr93ED
+         jU8RZ85RMEoAlBB+VhZiaii1a6QkpDTxzMX/JPteAb6hTnUL6hm2TFpPfoIBgDMPjpBd
+         FkfgSIQGMrwWOFKcKxXJ1mp2uNyP7zT0GRqcIT6g/eLTHUM4FY5YPVLuJ7n8ruwUl0ib
+         IiJHsCyENL1hVyi5QHhXrUiz7fYpL8SDZ4zxxhnaTjps8iFm8luVmy6osOfJe00j8UdM
+         BfvhggYGVOa6TQx6VUTu9cPOXcl6BDT+5eHy+1Xyf0GLceQuD/n/I+RU0a9XOag6fr6I
+         6eGA==
+X-Gm-Message-State: AOAM530m6bhJuKAmEojABZ/jCJNXeP9GKFJX3I7QXp3NriQKrbCWiR+U
+        l/RXVGfa3Uyx6vRHppJQ/FdplyxFo+3d0jXgRas0YY2i9fQZbIYsGYjmaWeJL4yvwZ7lRuRQNQz
+        ALcy6UfQZ1bFvpbf62zhIIJwn
+X-Received: by 2002:ae9:d8c6:: with SMTP id u189mr142255qkf.391.1633551994557;
+        Wed, 06 Oct 2021 13:26:34 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx7Hd9PIbk5V+6tMold3q0nCpYJGa7xW0DMKLEN1CCrSmKKIxlFGCFnruR2Z+DvGHPzLsptEg==
+X-Received: by 2002:ae9:d8c6:: with SMTP id u189mr142236qkf.391.1633551994323;
+        Wed, 06 Oct 2021 13:26:34 -0700 (PDT)
+Received: from treble ([2600:1700:6e32:6c00::49])
+        by smtp.gmail.com with ESMTPSA id m6sm13489403qti.38.2021.10.06.13.26.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Oct 2021 13:26:33 -0700 (PDT)
+Date:   Wed, 6 Oct 2021 13:26:30 -0700
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
+        VMware Inc <pv-drivers@vmware.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 11/11] x86/tdx: Handle CPUID via #VE
+Message-ID: <20211006202630.chblrhdqepsbtdaa@treble>
+References: <20211005025205.1784480-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20211005025205.1784480-12-sathyanarayanan.kuppuswamy@linux.intel.com>
 MIME-Version: 1.0
-References: <20211004143650.699120-1-tvrtko.ursulin@linux.intel.com>
- <20211004143650.699120-2-tvrtko.ursulin@linux.intel.com> <562d45e1-4a27-3252-f615-3ab1ef531f2b@huawei.com>
- <CAGsJ_4w5Y4=v93YmTrXJ6hDgjKshxiAZ-ox-Nz_7uRwe4ECtdw@mail.gmail.com> <8381e87d-ef7f-4759-569b-f6dabeb02939@linux.intel.com>
-In-Reply-To: <8381e87d-ef7f-4759-569b-f6dabeb02939@linux.intel.com>
-From:   Barry Song <21cnbao@gmail.com>
-Date:   Thu, 7 Oct 2021 09:21:53 +1300
-Message-ID: <CAGsJ_4wF1SmDL6eoEXRB-NwGLALkwhj9wLC5JKaQJpaQx1=5ZA@mail.gmail.com>
-Subject: Re: [RFC 1/8] sched: Add nice value change notifier
-To:     Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
-Cc:     "Wanghui (John)" <john.wanghui@huawei.com>,
-        Intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211005025205.1784480-12-sathyanarayanan.kuppuswamy@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 7, 2021 at 2:44 AM Tvrtko Ursulin
-<tvrtko.ursulin@linux.intel.com> wrote:
->
->
-> Hi,
->
-> On 06/10/2021 08:58, Barry Song wrote:
-> > On Wed, Oct 6, 2021 at 5:15 PM Wanghui (John) <john.wanghui@huawei.com>=
- wrote:
-> >>
-> >> HI Tvrtko
-> >>
-> >> On 2021/10/4 22:36, Tvrtko Ursulin wrote:
-> >>>    void set_user_nice(struct task_struct *p, long nice)
-> >>>    {
-> >>>        bool queued, running;
-> >>> -     int old_prio;
-> >>> +     int old_prio, ret;
-> >>>        struct rq_flags rf;
-> >>>        struct rq *rq;
-> >>>
-> >>> @@ -6915,6 +6947,9 @@ void set_user_nice(struct task_struct *p, long =
-nice)
-> >>>
-> >>>    out_unlock:
-> >>>        task_rq_unlock(rq, p, &rf);
-> >>> +
-> >>> +     ret =3D atomic_notifier_call_chain(&user_nice_notifier_list, ni=
-ce, p);
-> >>> +     WARN_ON_ONCE(ret !=3D NOTIFY_DONE);
-> >>>    }
-> >> How about adding a new "io_nice" to task_struct=EF=BC=8Cand move the c=
-all chain to
-> >> sched_setattr/getattr, there are two benefits:
-> >
-> > We already have an ionice for block io scheduler. hardly can this new i=
-o_nice
-> > be generic to all I/O. it seems the patchset is trying to link
-> > process' nice with
-> > GPU's scheduler, to some extent, it makes more senses than having a
-> > common ionice because we have a lot of IO devices in the systems, we do=
-n't
-> > know which I/O the ionice of task_struct should be applied to.
-> >
-> > Maybe we could have an ionice dedicated for GPU just like ionice for CF=
-Q
-> > of bio/request scheduler.
->
-> Thought crossed my mind but I couldn't see the practicality of a 3rd
-> nice concept. I mean even to start with I struggle a bit with the
-> usefulness of existing ionice vs nice. Like coming up with practical
-> examples of usecases where it makes sense to decouple the two priorities.
->
->  From a different angle I did think inheriting CPU nice makes sense for
-> GPU workloads. This is because today, and more so in the future,
-> computations on a same data set do flow from one to the other.
->
-> Like maybe a simple example of batch image processing where CPU decodes,
-> GPU does a transform and then CPU encodes. Or a different mix, doesn't
-> really matter, since the main point it is one computing pipeline from
-> users point of view.
->
+On Mon, Oct 04, 2021 at 07:52:05PM -0700, Kuppuswamy Sathyanarayanan wrote:
+> +static u64 tdx_handle_cpuid(struct pt_regs *regs)
+> +{
+> +	struct tdx_hypercall_output out = {0};
+> +	u64 ret;
+> +
+> +	/*
+> +	 * Emulate CPUID instruction via hypercall. More info about
+> +	 * ABI can be found in TDX Guest-Host-Communication Interface
+> +	 * (GHCI), section titled "VP.VMCALL<Instruction.CPUID>".
+> +	 */
+> +	ret = _tdx_hypercall(EXIT_REASON_CPUID, regs->ax, regs->cx, 0, 0, &out);
+> +
+> +	/*
+> +	 * As per TDX GHCI CPUID ABI, r12-r15 registers contains contents of
+> +	 * EAX, EBX, ECX, EDX registers after CPUID instruction execution.
+> +	 * So copy the register contents back to pt_regs.
+> +	 */
+> +	regs->ax = out.r12;
+> +	regs->bx = out.r13;
+> +	regs->cx = out.r14;
+> +	regs->dx = out.r15;
 
-I am on it. but I am also seeing two problems here:
-1. nice is not global in linux. For example, if you have two cgroups, cgrou=
-p A
-has more quota then cgroup B. Tasks in B won't win even if it has a lower n=
-ice.
-cgroups will run proportional-weight time-based division of CPU.
+Does it still make sense to save the regs if _tdx_hypercall() returns an
+error?
 
-2. Historically, we had dynamic nice which was adjusted based on the averag=
-e
-sleep/running time; right now, we don't have dynamic nice, but virtual time
-still make tasks which sleep more preempt other tasks with the same nice
-or even lower nice.
-virtual time +=3D physical time/weight by nice
-so, static nice number doesn't always make sense to decide preemption.
+> +
+> +	return ret;
 
-So it seems your patch only works under some simple situation for example
-no cgroups, tasks have similar sleep/running time.
+Also I'm wondering about error handling for all these _tdx_hypercall()
+wrapper functions which are called by the #VE handler.
 
-> In this example perhaps everything could be handled in userspace so
-> that's another argument to be had. Userspace could query the current
-> scheduling attributes before submitting work to the processing pipeline
-> and adjust using respective uapi.
->
-> Downside would be inability to react to changes after the work is
-> already running which may not be too serious limitation outside the
-> world of multi-minute compute workloads. And latter are probably special
-> case enough that would be configured explicitly.
->
-> >>
-> >> 1. Decoupled with fair scheduelr. In our use case, high priority tasks=
- often
-> >>      use rt scheduler.
-> >
-> > Is it possible to tell GPU RT as we are telling them CFS nice?
->
-> Yes of course. We could create a common notification "data packet" which
-> would be sent from both entry points and provide more data than just the
-> nice value. Consumers (of the notifier chain) could then decide for
-> themselves what they want to do with the data.
+First, there are some inconsistencies in whether and how they return the
+r10 error.
 
-RT should have the same problem with CFS once we have cgroups.
+- _tdx_halt() warns and doesn't return anything.
 
->
-> Regards,
->
-> Tvrtko
->
-> >
-> >> 2. The range of value don't need to be bound to -20~19 or 0~139
-> >>
-> >
-> > could build a mapping between the priorities of process and GPU. It see=
-ms
-> > not a big deal.
-> >
-> > Thanks
-> > barry
-> >
+- tdx_read_msr_safe() and tdx_write_msr_safe() convert all errors to -EIO.
 
-Thanks
-barry
+- tdx_handle_cpuid() returns the raw vmcall error.
+
+Second, as far as I can tell, the #VE handler doesn't check the actual
+return code value, other than checking for non-zero.  Should it at least
+be printed in a warning?
+
+-- 
+Josh
+
