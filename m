@@ -2,150 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDF01424775
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 21:49:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F74B424778
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 21:49:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233528AbhJFTvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 15:51:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60603 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229810AbhJFTvL (ORCPT
+        id S239358AbhJFTva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 15:51:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56524 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229810AbhJFTv3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 15:51:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633549758;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UEWV04P6aOqAyOh95Ju38pNlOcSyEyaLX9ZsILND1Lk=;
-        b=Rw072eIkrVR2FhSIeJdjd+IADKUJl8uQmcplNcGaGXxHgO6IKTSk4AaYyzRDUiIIZwxS4e
-        8XFl+B48lNSXwn+nkQl6/KCRDF99lkSSWM5lbC15uMTd2ndZQK9Vh7TSy69U7L70/eEQq6
-        k0SFZDDfvrJfQbqxsDKNb2WwJLnptHo=
-Received: from mail-oo1-f72.google.com (mail-oo1-f72.google.com
- [209.85.161.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-498-Mo4TzK5WPKSa6bw14yK7dQ-1; Wed, 06 Oct 2021 15:49:16 -0400
-X-MC-Unique: Mo4TzK5WPKSa6bw14yK7dQ-1
-Received: by mail-oo1-f72.google.com with SMTP id o8-20020a4aabc8000000b002b601d1fb33so2293766oon.23
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 12:49:15 -0700 (PDT)
+        Wed, 6 Oct 2021 15:51:29 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C89F2C061746
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 12:49:36 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id 66so3407815pgc.9
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 12:49:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QP/Vq0xLWohywO1NlG/qjZOSaNtEdv1kkotE+eKre9s=;
+        b=SRg+Mq0eFgXHKB4RaB9+ddGyuXYrnzik6i7ncCKK+9NsyjmCQ0IturH7Ka17BYOxjf
+         yCFNJMIpxeSjSE4A1tbvnoidCUPhnAF2SMWyZQNKO/CoMYihsc/rim3ORf2Gq4u0y6EU
+         Re7ibLbbvMVrPfElJzt+iSc7TfkyQlt2qFp9oincEz6XsnctOUkGsfXVaBPZ0tpcJdij
+         wjeCRrgbgGC1sG162b7b1nWOUq2IcWnpfrQQyj8bYRp/yzYLybxZAWpEAPdRC0dvsVCx
+         1n3U8vWbn9RP0YwBCKC3ZnlHiClAm2gayUxrWYrEDhf3zHml1XIYwYfG4IBEeJg+IYcS
+         zwxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UEWV04P6aOqAyOh95Ju38pNlOcSyEyaLX9ZsILND1Lk=;
-        b=qSxEECbKsrqxCo0XwOHTIHDdqPFIBr401TcEfSMW72dKKOSRe7QH1sBR1y6B6Kg8MU
-         30NveZG50/wfle7s8j+C0iB6AomXk1DofgoLOgPCJGNmThIDBSp52zaJD9G4K4NJT5fF
-         /20OytvXS12AN5suCXEyDkD8TcmgVdnVXyjivC90f4qhWCIC21nli9w6ZsBpXn0jzVKL
-         k22NnOKTkqQLdNp6Mm2GdaaT7XZRoOUgm4tjeQXyptSA0HeTo9oDKT3HbwQHUBH1G78h
-         LcjOWvujDMLDKW5+AHKNw6HviCVqKTDhsJVvmirh9pXXGNZLbNSaJS82iTxydweTcMPO
-         u38w==
-X-Gm-Message-State: AOAM5319ZuCFsx5dVlWPMXQOfT0Z8I+VxKhROIGgwpu87eKPQIdb2jgx
-        kaRW7kJlp86MFWH6oYFwPz9AfO3tZ4ryrhJWckqwR36WRGHdvci6wDX9PJZNiq5zKoKwlRnM/gb
-        wq181gb9DMb/NRAHqLAaXWgk3
-X-Received: by 2002:a05:6808:f88:: with SMTP id o8mr8997305oiw.49.1633549754771;
-        Wed, 06 Oct 2021 12:49:14 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyfNz5WBJcjrJfm7QTgK5rBymR0hCYFTsvPv/cfMETDGcNXtb+LsvQ+VMscL1xPNpPGQH1wKg==
-X-Received: by 2002:a05:6808:f88:: with SMTP id o8mr8997284oiw.49.1633549754533;
-        Wed, 06 Oct 2021 12:49:14 -0700 (PDT)
-Received: from treble ([2600:1700:6e32:6c00::49])
-        by smtp.gmail.com with ESMTPSA id bd24sm4478512oib.52.2021.10.06.12.49.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Oct 2021 12:49:14 -0700 (PDT)
-Date:   Wed, 6 Oct 2021 12:49:10 -0700
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
-        VMware Inc <pv-drivers@vmware.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 09/11] x86/tdx: Add MSR support for TDX guest
-Message-ID: <20211006194910.cdbqzn5enpueg7iw@treble>
-References: <20211005025205.1784480-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211005025205.1784480-10-sathyanarayanan.kuppuswamy@linux.intel.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QP/Vq0xLWohywO1NlG/qjZOSaNtEdv1kkotE+eKre9s=;
+        b=AYhljeVPIidYkLqcgIwTma6Z9lCjcLtpl6j2VehAsAhaAWUzyDF9BxD9gKPrUdRIVX
+         4AkSy8oTdIG+JQE6EJ+7c+rRemWnw2oiioChLAC6G/2semvn+8xegqoSmnC6gOaX69iH
+         y8TAJkwRVHangRe1HRHiDlClolSz9yCHEAvD/stXz628OpfMTlyxuPPB4K2hGUitho8B
+         236td1iEZTGYqB25mOrHyAOQ8RbuJqjgyonQpYmoAL9qr82ybJyTFx7Z+izFwl3zoFZk
+         1T2Q1ALtTHOhhUWtadOfCeTlrL6qaDnZ4LNR72Fpn3cFRSvVNhaza4QvJP/WuQrxxCbC
+         f3jw==
+X-Gm-Message-State: AOAM531wqHz+qfR9xkH2+nSFcJA4cPCnJr94t7NRFf81CujvzJy7RRyr
+        rizfVXRTQ5+NNsQMpZ4sqqvEz8mf0xmu+YYQ9TYHwhX22Eo=
+X-Google-Smtp-Source: ABdhPJwj4OTPkL0sFf14cRnzzkj+5MSrZkvkai6bUUkG2fxfbNbyGqhLKNBsGc5HpwCCWdVxifbkfQJOBYM/E46F5RA=
+X-Received: by 2002:a63:131c:: with SMTP id i28mr478827pgl.396.1633549776062;
+ Wed, 06 Oct 2021 12:49:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211005025205.1784480-10-sathyanarayanan.kuppuswamy@linux.intel.com>
+References: <20210811011056.770351-1-almasrymina@google.com>
+ <9f76b103-ba81-d4e3-1071-89009fb585a5@oracle.com> <CAHS8izOkTPYUn5aLYtma=YTAm6yYYraL7AqXjjC4hiqLXXSB-g@mail.gmail.com>
+ <09af2c88-35ce-41ff-c172-64766b156d80@suse.cz>
+In-Reply-To: <09af2c88-35ce-41ff-c172-64766b156d80@suse.cz>
+From:   Mina Almasry <almasrymina@google.com>
+Date:   Wed, 6 Oct 2021 12:49:24 -0700
+Message-ID: <CAHS8izMeOQ-sh+U1UG0LpJMp6vQWU0vROPQg89BRQYJqCYvYAA@mail.gmail.com>
+Subject: Re: [PATCH v2] mm, hugepages: add mremap() support for hugepage
+ backed vma
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Ken Chen <kenchen@google.com>,
+        Chris Kennelly <ckennelly@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 04, 2021 at 07:52:03PM -0700, Kuppuswamy Sathyanarayanan wrote:
-> diff --git a/arch/x86/kernel/tdx.c b/arch/x86/kernel/tdx.c
-> index 3d0416515506..062ac4720434 100644
-> --- a/arch/x86/kernel/tdx.c
-> +++ b/arch/x86/kernel/tdx.c
-> @@ -110,6 +110,41 @@ static __cpuidle void tdx_safe_halt(void)
->  	_tdx_halt(irq_disabled, do_sti);
->  }
->  
-> +static u64 tdx_read_msr_safe(unsigned int msr, int *err)
+My sincere apologies for the late follow up here. I've been out for
+sometime and needed some time to catch up.
 
-Here the kernel convention would probably be to return the error and
-make 'val' an argument:
+On Tue, Aug 24, 2021 at 8:33 AM Vlastimil Babka <vbabka@suse.cz> wrote:
+>
+> On 8/19/21 01:35, Mina Almasry wrote:
+> > On Fri, Aug 13, 2021 at 4:40 PM Mike Kravetz <mike.kravetz@oracle.com> wrote:
+> >>
+> >> Adding Michal, Vlastimil and Kirill as adding this type of support
+> >> was discussed in this thread:
+> >> https://lore.kernel.org/linux-mm/3ba05809-63a2-2969-e54f-fd0202fe336b@gmx.de/
+> >>
+> >
+> > Ack. I haven't gone through that thread but if there are any concerns
+> > with what I whipped up here, do let me know.
+>
+> Looks like there were mostly concerns with vma's growing and you're not handling
+> that, so that's fine?
+>
 
-static int tdx_read_msr_safe(unsigned int msr, u64 *val)
+Yes, it seems that's fine.
 
+> >> On 8/10/21 6:10 PM, Mina Almasry wrote:
+> >> > Support mremap() for hugepage backed vma segment by simply repositioning
+> >> > page table entries. The page table entries are repositioned to the new
+> >> > virtual address on mremap().
+> >> >
+> >> > Hugetlb mremap() support is of course generic; my motivating use case
+> >> > is a library (hugepage_text), which reloads the ELF text of executables
+> >> > in hugepages. This significantly increases the execution performance of
+> >> > said executables.
+>
+> I think this scenario has been motivation for FS support of THP, but AFAIK we're
+> not there yet. Also IIRC Google had some library that did what you describe, but
+> using THP's instead of hugetlbfs - might be simpler as there are no reservations
+> involved.
+>
+> But nothing against improving mremap() support wrt hugetlbfs.
+>
+> > I'll yield to whatever you decide here because I reckon you have much
+> > more experience and better judgement here. But my thoughts:
+> >
+> > 'Sane' usage of mremap() is something like:
+> > 1. mmap() a hugetlbfs vma.
+> > 2. Pass the vma received from step (1) to mremap() to remap it to a
+> > different location.
+> >
+> > I don't know if there is another usage pattern I need to worry about
+> > but given the above, old_addr and old_len will be hugepage aligned
+> > already since they are values returned by the previous mmap() call
+> > which aligns them, no? So, I think aligning old_addr and old_len to
+> > the hugepage boundary is fine.
+> >
+> > With this support we don't allow mremap() expansion. In my use case
+> > old_len==new_len acutally. I think it's fine to also align new_len to
+> > the hugepage boundary
+> >
+> > I already have this code that errors out if the lengths are not aligned:
+> >
+> > if (old_len & ~huge_page_mask(h) || new_len & ~huge_page_mask(h))
+> >     goto out;
+> >
+> > I think aligning new_addr breaks my use case though. In my use case
+> > new_addr is the start of the text segment in the ELF executable, and I
+> > don't think that's guaranteed to be anything but page aligned.
+>
+> Hm, I have a vague (possibly wrong) recollection that Andrea mentioned he always
+> planned text to be in THPs so he made sure ELF text sections are aligned as
+> such. I guess there's a way to declare alignment in ELF and it depends on
+> whether your distro's linker is set up to ask for hugepage-sized one?
+>
 
-> +{
-> +	struct tdx_hypercall_output out = {0};
-> +	u64 ret;
-> +
-> +	/*
-> +	 * Emulate the MSR read via hypercall. More info about ABI
-> +	 * can be found in TDX Guest-Host-Communication Interface
-> +	 * (GHCI), sec titled "TDG.VP.VMCALL<Instruction.RDMSR>".
-> +	 */
-> +	ret = _tdx_hypercall(EXIT_REASON_MSR_READ, msr, 0, 0, 0, &out);
-> +
-> +	*err = ret ? -EIO : 0;
-> +
-> +	return out.r11;
-> +}
-> +
-> +static int tdx_write_msr_safe(unsigned int msr, unsigned int low,
-> +			      unsigned int high)
-> +{
-> +	u64 ret;
-> +
-> +	WARN_ON_ONCE(tdx_is_context_switched_msr(msr));
+Sincere apologies to Vlastimil and Mike for my misinformation here as
+well. You are completely correct in that my v3 patch return EINVAL if
+the new_addr was not already hugepage aligned. It turns out
+unbeknownst to me our userspace code was already handling that and
+making sure only to remap to an address that was already hugepage
+aligned. So, for my use case, either erroring out if new_addr is not
+hugepage aligned or aligning new_addr works fine for me. Mike has
+indicated he prefers the kernel aligning new_addr for consistency with
+how mmap() works, so I've uploaded v4 with that change. I've also
+updated the tests to test that case.
 
-This fails to build, tdx_is_context_switched_msr() is missing.
-
-> @@ -136,19 +171,33 @@ unsigned long tdx_get_ve_info(struct ve_info *ve)
->  int tdx_handle_virtualization_exception(struct pt_regs *regs,
->  					struct ve_info *ve)
->  {
-> +	unsigned long val;
-> +	int ret = 0;
-> +
->  	switch (ve->exit_reason) {
->  	case EXIT_REASON_HLT:
->  		tdx_halt();
->  		break;
-> +	case EXIT_REASON_MSR_READ:
-> +		val = tdx_read_msr_safe(regs->cx, (unsigned int *)&ret);
-
-Why the 'unsigned int *' cast?
-
-Also, 'val' should have the same type as the one returned by
-tdx_read_msr_safe().  (Though it technically doesn't matter here.)
-
--- 
-Josh
-
+As far as I can tell that was the only pending issue with the previous
+reviews. Please take another look. Thanks!
