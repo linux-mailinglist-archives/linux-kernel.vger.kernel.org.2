@@ -2,77 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF89A423B79
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 12:28:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AE27423B7F
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 12:28:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238067AbhJFK3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 06:29:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44830 "EHLO mail.kernel.org"
+        id S238106AbhJFKa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 06:30:29 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:11083 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229824AbhJFK3w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 06:29:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4BC9460EE3;
-        Wed,  6 Oct 2021 10:27:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633516080;
-        bh=qawfkhB10636aULlGfj0MJFZ7xewkyIgRTPQnKzfUaU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=c8K6PDCqANe+rueqei9GcS9pAK9lK5SqlSZpr5IJa7df1RRtDC9GUgpLV9JqstGaE
-         hOv+YE7ztB4xynGp54GmibeyEtcSlXJfe4VW0yp12fPXQ04tLrtQxULbFnvNiXlCni
-         84dp1B/2OV8sIhw8dRANOxT7aXp0XunpLk1M89S9apWB1GCZOJRB4hK3yV1x8qcyYd
-         W5/1iroJG9AFHGejcamURo79ZlpVlnxYQp+Bdajqv6ShK7Cw+6sBDwfKVxAbqSpisX
-         4zlrSuzVOAj1FKRQcTu1L/PAr3vp+AJHPiWGHRkExormYlgLg/57ZhNZB+m2XgH4h4
-         n0mL1Vdp4VOdA==
-Date:   Wed, 6 Oct 2021 15:57:56 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     abhinavk@codeaurora.org
-Cc:     Rob Clark <robdclark@gmail.com>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
-        David Airlie <airlied@linux.ie>, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
+        id S229824AbhJFKa1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 06:30:27 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1633516115; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=5gHobSVO2kPLJnKWdgczaJYxS33RSCMny/Mt0NGh7Zw=; b=kx8cKFT3cmEJc51aXPiHebA/T17FqugmG4KT5XLqSchAkBHIM1QCNpTjGYR+8uivirNPjXJ0
+ V5nyVapBIVWCG9rtdkVBTO9GUfXWq/BvzXCkiFnbCw8vFKxPYBTo8HsgPC3Lv+oOmGOajjbm
+ 7rgYbWoHH5oKeJgj/G4aJOFWHYo=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 615d7a5330ce13d2b4e8e828 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 06 Oct 2021 10:28:35
+ GMT
+Sender: mkshah=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 3CE51C4360C; Wed,  6 Oct 2021 10:28:35 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-4.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+        version=3.4.0
+Received: from [192.168.29.129] (unknown [49.36.85.177])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: mkshah)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 43FD9C43460;
+        Wed,  6 Oct 2021 10:28:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 43FD9C43460
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Subject: Re: [PATCH 2/2] PM: sleep: Fix runtime PM based cpuidle support
+To:     Ulf Hansson <ulf.hansson@linaro.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        linux-pm@vger.kernel.org
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Len Brown <len.brown@intel.com>,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
-        dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        freedreno@lists.freedesktop.org,
-        Sumit Semwal <sumit.semwal@linaro.org>
-Subject: Re: [Freedreno] [PATCH 04/11] drm/msm/disp/dpu1: Add DSC support in
- RM
-Message-ID: <YV16LKpdRiYN955Y@matsya>
-References: <20210715065203.709914-1-vkoul@kernel.org>
- <20210715065203.709914-5-vkoul@kernel.org>
- <7d656b2265ade461cae993c691d31ab8@codeaurora.org>
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Srinivas Rao L <lsrao@codeaurora.org>
+References: <20210929144451.113334-1-ulf.hansson@linaro.org>
+ <20210929144451.113334-3-ulf.hansson@linaro.org>
+From:   Maulik Shah <mkshah@codeaurora.org>
+Message-ID: <fb86953a-8db0-e805-74fd-d904cb961807@codeaurora.org>
+Date:   Wed, 6 Oct 2021 15:58:27 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7d656b2265ade461cae993c691d31ab8@codeaurora.org>
+In-Reply-To: <20210929144451.113334-3-ulf.hansson@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02-08-21, 16:24, abhinavk@codeaurora.org wrote:
-> On 2021-07-14 23:51, Vinod Koul wrote:
+Hi,
 
-> > @@ -476,6 +498,9 @@ static int _dpu_rm_reserve_intf(
-> >  	}
-> > 
-> >  	global_state->intf_to_enc_id[idx] = enc_id;
-> > +
-> > +	global_state->dsc_to_enc_id[0] = enc_id;
-> > +	global_state->dsc_to_enc_id[1] = enc_id;
-> >  	return 0;
-> >  }
-> agree with dmitry again here, why are DSCs being reserved in the
-> _dpu_rm_reserve_intf function?
-> First, for clarity, they should be in a function of their own.
-> Allocating the DSCs has to also account for the PP availability of that DSC
-> and other factors need to
-> be considered as well.
-> I suggest checking _sde_rm_reserve_dsc() from downstream to improve the DSC
-> reservation logic.
+Thanks for the patch. Looks good to me.
 
-Yes I have moved to a new helper _dpu_rm_reserve_dsc(). PP availability
-is already checked so no need to do that here as well
+Reviewed-by: Maulik Shah <mkshah@codeaurora.org>
+
+Thanks,
+Maulik
+
+On 9/29/2021 8:14 PM, Ulf Hansson wrote:
+> In the cpuidle-psci case, runtime PM in combination with the generic PM
+> domain (genpd), may be used when entering/exiting an idlestate. More
+> precisely, genpd relies on runtime PM to be enabled for the attached device
+> (in this case it belongs to a CPU), to properly manage the reference
+> counting of its PM domain.
+> 
+> This works fine most of the time, but during system suspend in the
+> dpm_suspend_late() phase, the PM core disables runtime PM for all devices.
+> Beyond this point and until runtime PM becomes re-enabled in the
+> dpm_resume_early() phase, calls to pm_runtime_get|put*() will fail.
+> 
+> To make sure the reference counting in genpd becomes correct, we need to
+> prevent cpuidle-psci from using runtime PM when it has been disabled for
+> the device. Therefore, let's move the call to cpuidle_pause() from
+> dpm_suspend_noirq() to dpm_suspend_late() - and cpuidle_resume() from
+> dpm_resume_noirq() into dpm_resume_early().
+> 
+> Diagnosed-by: Maulik Shah <mkshah@codeaurora.org>
+> Suggested-by: Maulik Shah <mkshah@codeaurora.org>
+> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+> ---
+>   drivers/base/power/main.c | 6 ++----
+>   1 file changed, 2 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/base/power/main.c b/drivers/base/power/main.c
+> index cbea78e79f3d..1c753b651272 100644
+> --- a/drivers/base/power/main.c
+> +++ b/drivers/base/power/main.c
+> @@ -747,8 +747,6 @@ void dpm_resume_noirq(pm_message_t state)
+>   
+>   	resume_device_irqs();
+>   	device_wakeup_disarm_wake_irqs();
+> -
+> -	cpuidle_resume();
+>   }
+>   
+>   /**
+> @@ -870,6 +868,7 @@ void dpm_resume_early(pm_message_t state)
+>   	}
+>   	mutex_unlock(&dpm_list_mtx);
+>   	async_synchronize_full();
+> +	cpuidle_resume();
+>   	dpm_show_time(starttime, state, 0, "early");
+>   	trace_suspend_resume(TPS("dpm_resume_early"), state.event, false);
+>   }
+> @@ -1336,8 +1335,6 @@ int dpm_suspend_noirq(pm_message_t state)
+>   {
+>   	int ret;
+>   
+> -	cpuidle_pause();
+> -
+>   	device_wakeup_arm_wake_irqs();
+>   	suspend_device_irqs();
+>   
+> @@ -1467,6 +1464,7 @@ int dpm_suspend_late(pm_message_t state)
+>   	int error = 0;
+>   
+>   	trace_suspend_resume(TPS("dpm_suspend_late"), state.event, true);
+> +	cpuidle_pause();
+>   	mutex_lock(&dpm_list_mtx);
+>   	pm_transition = state;
+>   	async_error = 0;
+> 
 
 -- 
-~Vinod
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member of Code Aurora Forum, hosted by The Linux Foundation
