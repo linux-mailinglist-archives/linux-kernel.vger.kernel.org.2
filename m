@@ -2,236 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79B0F423852
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 08:48:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6363942385A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 08:51:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237292AbhJFGtv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 02:49:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43164 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232979AbhJFGtt (ORCPT
+        id S237307AbhJFGxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 02:53:25 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:48238 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229956AbhJFGxX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 02:49:49 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89266C06174E
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 23:47:57 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id g8so5817300edt.7
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 23:47:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=/RY0JnlX5/n503ZfUQl/lXYTDbDxPGWgSX/+M+PX6zg=;
-        b=ND/qn5EN6ZOX+kj9T4HjQnPgvD5vp2Tzd88EL4LNGrE3epRb/wAvkVPYGm2vagumIh
-         5y8C1J22S1jwKEhs2zhtCelhllowp+WwxxNgeVEMKR8iVS33bYsRXgkDxwBoGcmNnFjT
-         nb69wIInWgZDzDW3Qq6h93cEbPP2GMc7wZ7pKuwECq1pvrPI9ej8wsv9AQAbpy7P0ato
-         rFd+3YfC7de2ad4KJXDV/B4E/wyaaSs9pvz2bhMG3pjZf//CxeYn8IYgilEDPzM5UEu4
-         AzXYNn9EE+ylf3qRAO+YfUh8vhNXN7NGi3asoV6HFQbVrtq5Gc9z12tSRv2Ivk4eY94O
-         +v7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=/RY0JnlX5/n503ZfUQl/lXYTDbDxPGWgSX/+M+PX6zg=;
-        b=COk7PX2/rwsfR/uF3n2WECK8ZoxoPmEjMpyvEnznCx05bhg/+dULbqLMOpVTt1OgSC
-         zRlXR2IMlYs+a7gxVY/g9gT+e0zEAtc6bQfNYbo/PpQhCNDUwFhrVAS4qpXRfMcg0+9U
-         NXt/H6PTPXWRbaIa1JVPt+Iflk++4nboOilPpo8Gmmv0X2lcuE/VP5jQNEcZxTobyoe7
-         LnGzy8EUcL47i98bMrplfs3GD9H0HFWwCRZE4pdjV6FNBVJOSNA/0t4vndltZAqNa0Rd
-         aMAuS5rMLFFZHhHYJ88wfNlAmiIbJnaUcP5eHm3qdWTeRnaeuvkwh7g+jIXbRQOpZrsO
-         B57w==
-X-Gm-Message-State: AOAM5314RFUHoUGsRnPJ2cAo6J+Nv0LTjTF9kUeTDsJxtl9Pbl3z2hve
-        lleRxKDxMjqRbH2NEQxV6Wy2aCc0wlio/KUcXF/Lag==
-X-Google-Smtp-Source: ABdhPJyLOOUJk/+zZ4hD4di+KTSZCiPPUtohb5zRN8TuFo8uu1LUCBYECUD6PevDWEBXIUyFDFLkaBqBGVz1BoUPrfo=
-X-Received: by 2002:a50:e184:: with SMTP id k4mr32628757edl.217.1633502875888;
- Tue, 05 Oct 2021 23:47:55 -0700 (PDT)
+        Wed, 6 Oct 2021 02:53:23 -0400
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1961ksGV015791;
+        Wed, 6 Oct 2021 08:51:15 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=rO925toKGJpSuU4pLXeMxuqM2/M7LYZ/XbcUM5PgYCA=;
+ b=5NjtWws5VCmwoC2Bp39pmuU0vGYVTPiuuIiyTS6mmxvU6/2DFmyHspwAq0aoAQVtCZAr
+ nZlTEHJ7yRPVldLaU2Z3Ac4zuDb6nPoMuCEFeZOEJjsQaQgXtZkxgqUThTiN9YiDD8cx
+ cHrRP+tJUz8+Vf0OUH7smvteCpkegWVZ9+qwHT+vCjqJR7Y+tulY/rVLjkoCAfLQjrms
+ TKkMZd1kQtIhnv3xtQIThE5MxT660cebxtS28rnFzh+/qscThp7l3m402qyEV8erHPLp
+ wzA3uFWcB4+SAkaOD9M26p4Fxfs2Oe+Da3qb8F6smJKxYki1B6X1+FH5lHM/k4QDEc+F Ng== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3bh2eh9e5g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 06 Oct 2021 08:51:15 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 2CD1A100034;
+        Wed,  6 Oct 2021 08:51:14 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 2289F214D39;
+        Wed,  6 Oct 2021 08:51:14 +0200 (CEST)
+Received: from lmecxl0995.lme.st.com (10.75.127.50) by SFHDAG2NODE2.st.com
+ (10.75.127.5) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 6 Oct
+ 2021 08:51:12 +0200
+Subject: Re: [PATCH v2 2/3] dt-bindings: phy: phy-stm32-usbphyc: add optional
+ phy tuning properties
+To:     Rob Herring <robh@kernel.org>
+CC:     <linux-stm32@st-md-mailman.stormreply.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-phy@lists.infradead.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        <linux-kernel@vger.kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        <devicetree@vger.kernel.org>
+References: <20211005152453.89330-1-amelie.delaunay@foss.st.com>
+ <20211005152453.89330-3-amelie.delaunay@foss.st.com>
+ <1633473959.465401.106809.nullmailer@robh.at.kernel.org>
+From:   Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+Message-ID: <491ab475-e7dc-eb71-85aa-6d82543b74db@foss.st.com>
+Date:   Wed, 6 Oct 2021 08:51:11 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20211005083301.812942169@linuxfoundation.org>
-In-Reply-To: <20211005083301.812942169@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 6 Oct 2021 12:17:44 +0530
-Message-ID: <CA+G9fYsjbuOwiSF7q=dm2EMP6JrURJ1-4+YB4-g6otoWBoPceg@mail.gmail.com>
-Subject: Re: [PATCH 5.10 00/92] 5.10.71-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1633473959.465401.106809.nullmailer@robh.at.kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.50]
+X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG2NODE2.st.com
+ (10.75.127.5)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-10-05_06,2021-10-04_01,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 5 Oct 2021 at 14:08, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.10.71 release.
-> There are 92 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Thu, 07 Oct 2021 08:32:44 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.10.71-rc2.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.10.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+Hi Rob,
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+On 10/6/21 12:45 AM, Rob Herring wrote:
+> On Tue, 05 Oct 2021 17:24:52 +0200, Amelie Delaunay wrote:
+>> This patch adds the description of new optional phy tuning properties
+>> for usbphyc phy sub nodes.
+>>
+>> Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+>> ---
+>> Changes in v2:
+>> - st,phy-tuning property removed
+>> - tuning properties are now put directly in each child node
+>> - tuning properties are no more free form text and their name reworked
+>> ---
+>>   .../bindings/phy/phy-stm32-usbphyc.yaml       | 126 ++++++++++++++++++
+>>   1 file changed, 126 insertions(+)
+>>
+> 
+> Running 'make dtbs_check' with the schema in this patch gives the
+> following warnings. Consider if they are expected or the schema is
+> incorrect. These may not be new warnings.
+> 
+> Note that it is not yet a requirement to have 0 warnings for dtbs_check.
+> This will change in the future.
+> 
+> Full log is available here: https://patchwork.ozlabs.org/patch/1536730
+> 
+> 
+> usbphyc@5a006000: usb-phy@0: 'phy-supply' is a required property
+> 	arch/arm/boot/dts/stm32mp157a-icore-stm32mp1-ctouch2.dt.yaml
+> 	arch/arm/boot/dts/stm32mp157a-icore-stm32mp1-edimm2.2.dt.yaml
+> 	arch/arm/boot/dts/stm32mp157a-microgea-stm32mp1-microdev2.0.dt.yaml
+> 	arch/arm/boot/dts/stm32mp157a-microgea-stm32mp1-microdev2.0-of7.dt.yaml
+> 	arch/arm/boot/dts/stm32mp157c-lxa-mc1.dt.yaml
+> 	arch/arm/boot/dts/stm32mp157c-odyssey.dt.yaml
+> 
+> usbphyc@5a006000: usb-phy@1: 'phy-supply' is a required property
+> 	arch/arm/boot/dts/stm32mp157a-icore-stm32mp1-ctouch2.dt.yaml
+> 	arch/arm/boot/dts/stm32mp157a-icore-stm32mp1-edimm2.2.dt.yaml
+> 	arch/arm/boot/dts/stm32mp157a-microgea-stm32mp1-microdev2.0.dt.yaml
+> 	arch/arm/boot/dts/stm32mp157a-microgea-stm32mp1-microdev2.0-of7.dt.yaml
+> 	arch/arm/boot/dts/stm32mp157c-lxa-mc1.dt.yaml
+> 	arch/arm/boot/dts/stm32mp157c-odyssey.dt.yaml
+> 
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+These warnings are due to the fact that usbphyc parent node is disabled 
+in parent device tree (stm32mp151.dtsi) but not the "usb-phy" child 
+nodes. These warnings are not introduced by this current patch "optional 
+phy tuning properties" but anyway. The device trees mentioned don't 
+enable usbphyc, so they don't have to set phy-supply in usbphyc child nodes.
 
-## Build
-* kernel: 5.10.71-rc2
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-5.10.y
-* git commit: 76aee5dfd7ee7d3a9f3ba6c98ad0e8526191cd87
-* git describe: v5.10.70-93-g76aee5dfd7ee
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/build/v5.10=
-.70-93-g76aee5dfd7ee
+$ git diff arch/arm/boot/dts/stm32mp151.dtsi
+diff --git a/arch/arm/boot/dts/stm32mp151.dtsi 
+b/arch/arm/boot/dts/stm32mp151.dtsi
+index bd289bf5d269..abef8b6be40a 100644
+--- a/arch/arm/boot/dts/stm32mp151.dtsi
++++ b/arch/arm/boot/dts/stm32mp151.dtsi
+@@ -1507,11 +1507,13 @@ usbphyc: usbphyc@5a006000 {
+                         usbphyc_port0: usb-phy@0 {
+                                 #phy-cells = <0>;
+                                 reg = <0>;
++                               status = "disabled";
+                         };
 
-## No regressions (compared to v5.10.70-94-g02a774174b52)
+                         usbphyc_port1: usb-phy@1 {
+                                 #phy-cells = <1>;
+                                 reg = <1>;
++                               status = "disabled";
+                         };
+                 };
 
-## No fixes (compared to v5.10.70-94-g02a774174b52)
+Disable child nodes while parent node is already disabled fixes the 
+warning. But it means to add status = "okay"; in child nodes everywhere 
+usbphyc is enabled.
+Is it normal dtbs_check checks in child nodes when parent node is disabled?
 
-## Test result summary
-total: 84250, pass: 70535, fail: 516, skip: 12276, xfail: 923
-
-## Build Summary
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 1 total, 1 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* kselftest-android
-* kselftest-arm64
-* kselftest-arm64/arm64.btitest.bti_c_func
-* kselftest-arm64/arm64.btitest.bti_j_func
-* kselftest-arm64/arm64.btitest.bti_jc_func
-* kselftest-arm64/arm64.btitest.bti_none_func
-* kselftest-arm64/arm64.btitest.nohint_func
-* kselftest-arm64/arm64.btitest.paciasp_func
-* kselftest-arm64/arm64.nobtitest.bti_c_func
-* kselftest-arm64/arm64.nobtitest.bti_j_func
-* kselftest-arm64/arm64.nobtitest.bti_jc_func
-* kselftest-arm64/arm64.nobtitest.bti_none_func
-* kselftest-arm64/arm64.nobtitest.nohint_func
-* kselftest-arm64/arm64.nobtitest.paciasp_func
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libgpiod
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
+Regards,
+Amelie
