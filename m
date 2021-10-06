@@ -2,237 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E1C4424583
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 20:00:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86CF2424585
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 20:02:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238724AbhJFSCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 14:02:49 -0400
-Received: from mail-ot1-f52.google.com ([209.85.210.52]:39746 "EHLO
-        mail-ot1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231175AbhJFSCs (ORCPT
+        id S238955AbhJFSEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 14:04:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60020 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229664AbhJFSD7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 14:02:48 -0400
-Received: by mail-ot1-f52.google.com with SMTP id j11-20020a9d190b000000b00546fac94456so4153002ota.6;
-        Wed, 06 Oct 2021 11:00:55 -0700 (PDT)
+        Wed, 6 Oct 2021 14:03:59 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60B37C061746
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 11:02:07 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id cs11-20020a17090af50b00b0019fe3df3dddso4114776pjb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 11:02:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EG8j31Vcr06OO0AkEnbVwb8A1TK2ZuJTLW5vJccv8+U=;
+        b=kyQfZHTuGRS3x7+q3DhtYRabFYQAZrB1mJCuvDtH0mtIVLxEp9hNPNBVAAN+IX2wqk
+         NT3vGYdNyZVngtG5ikkNHpFN609iBkyuh+oeZfjl7lW5OiiZzRUzXS0+Zrbn5Cj8aAzA
+         hoewaqxmzmvm1GgQcd5QguIU3FyNTea9K8U2M=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EE0FJa1Rw2KQ5S6rS9XSqP8497Oo681sIsTxRPsfdFg=;
-        b=pgFG0LDbE8xQ2WAqvbzVJhE3wGPCa0RZuXFYzzvQVNXUlcYWi284kfgEM1Qt/BbrTJ
-         RNKSbLMGRdmsYByBLh35MzA2fJJxvfsY7czgotIt+dcb/CBKBzgQFKgzs+I761wMmzpd
-         ndbFtRp83WXUJQE/auSaBG3xCUblb+nmzyJ6i7wMw2ub/Vfp9l+bHNXI69jDFdJvCEUF
-         AjyuhZW9g71VboPZYvP+bQ/2sZflB6+/r8fPtWIjhmTaT9t/oWomLlPYoyIjL9Jq3Vat
-         R8PfGO6AGISA7W1sKNQu6eA033bV2zWN9vbg/6rIbgflSaG+EJEdNoAnXQ+YZjtz9EOu
-         /DHw==
-X-Gm-Message-State: AOAM5319UD0gd7q331u9Hu1YdcGDtk01d9HdOyI1kkEqHEXfykeN21s7
-        0ApcX6/5cyMNmURvHQn+QHPZ1icbYlL3oM6qoDo=
-X-Google-Smtp-Source: ABdhPJwUirZ5+QXJUYOAB8e53AcHe23MOWIxLc0pxWDcCR8prMx0xSN9oYz8EzFDSM1sw6M7UOsELTJ5iWiOnfN7LdQ=
-X-Received: by 2002:a05:6830:165a:: with SMTP id h26mr60013otr.301.1633543255488;
- Wed, 06 Oct 2021 11:00:55 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EG8j31Vcr06OO0AkEnbVwb8A1TK2ZuJTLW5vJccv8+U=;
+        b=XkPvs8YGrNPmnA6G9C9/GI8O2I2ei6Pu3BXHsFdTE6XgAhUVXb0JP3/N1WEowl+F8h
+         CsFAnMM+ZsTfnLv4VpC6gqcuI9DvyCTcuv1coryrk+KcclhzyR6VoBxMq0+Eazbl/P6p
+         GlHNQtlHKpbH9xFS0EU75pFZ0DFKD6QEgo7fIYwlNfT5/UeQrfSwRH76Q29R0Wezfx/v
+         JoRuAksG1OLDXNFD1+y/A9DFU+BY6kfOYaerOgtfxsFiVZUBnzhAG4p3/Kcye6G6jaVF
+         37N2uwBDn3XuMLe2IVeP0quBQb6ep6skzjTHjaMNW67YHkcR3jCYP+DykcwqHnhegwaz
+         E2wQ==
+X-Gm-Message-State: AOAM532wHgPcogcxFHj/shn2X3hhAXTSBerOLBNf3O/+Dz2WxIhXv2zh
+        TZtRcX03Q04KEUK5c8H6wJ8g5w==
+X-Google-Smtp-Source: ABdhPJwqIGhj94Z4ChDqPf3S3GPhPLzwMf56i1qKB0Ek4TOHgDRWvJKzVHuMHSC0/GVQpPuDvZVk/A==
+X-Received: by 2002:a17:902:aa88:b0:13a:95d:d059 with SMTP id d8-20020a170902aa8800b0013a095dd059mr12467927plr.65.1633543326814;
+        Wed, 06 Oct 2021 11:02:06 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id u12sm20908080pgi.21.2021.10.06.11.02.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Oct 2021 11:02:06 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Eric Biederman <ebiederm@xmission.com>,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: [PATCH] MAINTAINERS: Add "exec & binfmt" section with myself and Eric
+Date:   Wed,  6 Oct 2021 11:02:00 -0700
+Message-Id: <20211006180200.1178142-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20210917072732.611140-1-abailon@baylibre.com> <bd347d14-0b42-f9ed-bf15-080c929e1cb7@linaro.org>
- <7cddcdb7-4efd-bfdb-3d86-f5862ea0b7fe@baylibre.com> <8a9e5f13-6253-2d0d-35a8-789090af4521@linaro.org>
- <c395abad-598b-c06a-9252-c8e62c977188@baylibre.com> <794e62ea-d867-3827-de5f-24ddc86c3524@linaro.org>
- <4446577e-c7fa-daeb-e0fe-8a530633ef5d@baylibre.com> <d24ce6ec-eced-4e16-eb59-7c87f596ccca@linaro.org>
- <CAJZ5v0iJCS+nRcnHXiprtJsBf6Q4=k4TFcUV2ma_GiK=MttFug@mail.gmail.com> <03aeb132-bc0c-93f7-c7db-8575a665d2a7@linaro.org>
-In-Reply-To: <03aeb132-bc0c-93f7-c7db-8575a665d2a7@linaro.org>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 6 Oct 2021 20:00:44 +0200
-Message-ID: <CAJZ5v0gVgw4qT9jmfr8U+t0j3JdmAAuVFf785NHozQxuKr56MA@mail.gmail.com>
-Subject: Re: [PATCH v2 0/2] Add a generic virtual thermal sensor
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Alexandre Bailon <abailon@baylibre.com>,
-        "Zhang, Rui" <rui.zhang@intel.com>,
-        Amit Kucheria <amitk@kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ben.tseng@mediatek.com, Kevin Hilman <khilman@baylibre.com>,
-        Matthias Kaehlcke <mka@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1037; h=from:subject; bh=jlsQHm8XF6DHzxt252D/9lsthhPYy3DOfgA1oJ7BBOw=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhXeSXH/CxB/y5SqE2evX8LGc7ACYrGw3tQMmBRWjg AVLxizCJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYV3klwAKCRCJcvTf3G3AJp2bD/ wNmn1qQtT+QZu4DMDVwK2/i1mB14z/WYMDA28LxFDVQOYP8gs5jv+jjVfPP0foOfM4ftnrIDsdaozc sq22UDQfs68bVgMl5lv6R9u28m0YR34PiaBosKsBfwN8c4pQ7Vcl+4n52RO0xG62hgHdz/M2q8oi/L xHjB+IBXiaCPyG7ViEPF12AEOIGsbGJxpEtych+5bpp6aiQ0PHxQhCO6XA5N1nRs8GuAOWM8OfRsmo Ha7MfK/2cgUtN3rxtZPitucPLKP2+TwBIbTMnfJ8RIUrcKNy/xUU6XH21Ib9LXIr9eXMRcQQexrV92 cfR3+tUvz90Vs7Za7KKLS1TYT5hFGsOVDyTdOIPZjHGJGwkPWFJEvHh+IN+q43tRb7jTQ3DeQKQki+ QzYWfWQKch2vZx8Ym6LcTryFJsiSt+OHNq5UhLedweZ+zy/cJ6K2KOHrQRZCufqw4VJKqHhDlNtpXA QOVzsQJlZQuicB0FxzRDf7CcbpN+Cgdib0k0VQ99jId9vjvjZocVhcSwUoyHfltJ3MMYInKI4XuD/U QkajEB6ZV5TtfS3oUQBeyS5gCadoBq+Twfz0FvUHTHO5dQXED4J7RIjHDqrt+TukT2/3tU/yfFJvmN ltwqWWAyPL6e6uM927ZV/rDxVdM1dlsdAfD3aoT8csskbbMcwPqsnMNqF8hQ==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 6, 2021 at 6:06 PM Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
->
-> On 05/10/2021 18:45, Rafael J. Wysocki wrote:
-> > On Mon, Oct 4, 2021 at 3:42 PM Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
-> >>
-> >> On 04/10/2021 12:24, Alexandre Bailon wrote:
-> >>>
-> >>> On 9/22/21 10:10 AM, Daniel Lezcano wrote:
-> >>>> On 20/09/2021 15:12, Alexandre Bailon wrote:
-> >>>>> On 9/17/21 4:03 PM, Daniel Lezcano wrote:
-> >>>>>> On 17/09/2021 15:33, Alexandre Bailon wrote:
-> >>>>>>> Hi Daniel,
-> >>>>>>>
-> >>>>>>> On 9/17/21 2:41 PM, Daniel Lezcano wrote:
-> >>>>>>>> On 17/09/2021 09:27, Alexandre Bailon wrote:
-> >>>>>>>>> This series add a virtual thermal sensor.
-> >>>>>>>>> It could be used to get a temperature using some thermal sensors.
-> >>>>>>>>> Currently, the supported operations are max, min and avg.
-> >>>>>>>>> The virtual sensor could be easily extended to support others
-> >>>>>>>>> operations.
-> >>>>>>>>>
-> >>>>>>>>> Note:
-> >>>>>>>>> Currently, thermal drivers must explicitly register their sensors to
-> >>>>>>>>> make them
-> >>>>>>>>> available to the virtual sensor.
-> >>>>>>>>> This doesn't seem a good solution to me and I think it would be
-> >>>>>>>>> preferable to
-> >>>>>>>>> update the framework to register the list of each available sensors.
-> >>>>>>>> Why must the drivers do that ?
-> >>>>>>> Because there are no central place where thermal sensor are
-> >>>>>>> registered.
-> >>>>>>> The only other way I found was to update thermal_of.c,
-> >>>>>>> to register the thermal sensors and make them available later to the
-> >>>>>>> virtual thermal sensor.
-> >>>>>>>
-> >>>>>>> To work, the virtual thermal need to get the sensor_data the ops from
-> >>>>>>> the thermal sensor.
-> >>>>>>> And as far I know, this is only registered in thermal_of.c, in the
-> >>>>>>> thermal zone data
-> >>>>>>> but I can't access it directly from the virtual thermal sensor.
-> >>>>>>>
-> >>>>>>> How would you do it ?
-> >>>>>> Via the phandles when registering the virtual sensor ?
-> >>>>> As far I know, we can't get the ops or the sensor_data from the phandle
-> >>>>> of a thermal sensor.
-> >>>>> The closest solution I found so far would be to aggregate the thermal
-> >>>>> zones instead of thermal sensors.
-> >>>>> thermal_zone_device has the data needed and a thermal zone could be find
-> >>>>> easily using its name.
-> >>>> Yeah, the concept of the thermal zone and the sensor are very close.
-> >>>>
-> >>>> There is the function in thermal_core.h:
-> >>>>
-> >>>>   -> for_each_thermal_zone()
-> >>>>
-> >>>> You should be able for each 'slave' sensor, do a lookup to find the
-> >>>> corresponding thermal_zone_device_ops.
-> >>>>
-> >>>>> But, using a thermal_zone_device, I don't see how to handle module
-> >>>>> unloading.
-> >>>> I think try_module_get() / module_put() are adequate for this situation
-> >>>> as it is done on an external module and we can not rely on the exported
-> >>>> symbols.
-> >>> I don't see how it would be possible to use these functions.
-> >>> The thermal zone doesn't have the data required to use it.
-> >>
-> >> Actually I was able to crash the kernel by doing:
-> >>
-> >> console 1:
-> >>
-> >> while $(true); do insmod <module> && rmmod <module>; done
-> >>
-> >> console 2:
-> >>
-> >> while $(true); cat /sys/class/thermal/thermal_zone0/temp; done
-> >>
-> >> So there is something wrong already in the thermal framework.
-> >
-> > Hmmm.
-> >
-> >> IMO, the first thing would be to fix this critical issue by getting the
-> >> sensor module refcount when the thermal zone is enabled and dropping it
-> >> when it is disabled.
-> >>
-> >> With that fixed, perhaps it will possible to get the device associated
-> >> with the sensor and then try_module_get(dev->driver->owner)
-> >>
-> >>> Maybe a more easier way is to use the thermal_zone_device mutex.
-> >>> If I get a lock before to use the thermal_zone_device ops, I have the
-> >>> guaranty that module won't be unloaded.
-> >
-> > That would be my approach too.
->
-> The mutex is private to the thermal core. The virtual sensor should not
-> touch it :/
->
-> Perhaps, it can work with a private spin_lock with a try_spinlock() ?
+I'd like more continuity of review for the exec and binfmt (and ELF)
+stuff. Eric and I have been the most active lately, so list us as
+reviewers.
 
-IIUC this is a case when module A refers to some memory in module B
-and if the latter goes away, an access to that memory from the former
-is a use-after-free, so it is not sufficient to use a local spinlock.
+Cc: Eric Biederman <ebiederm@xmission.com>
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ MAINTAINERS | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-This can be avoided by having a lock and a flag such that the flag is
-set under the lock by module B when making the memory in question
-available and cleared under the lock when freeing that memory.  Then,
-module A needs to check the flag under the lock on every access to
-that memory.  Also, the lock and the flag must be accessible all the
-time to both modules (ie. must not go away along with any of them if
-they don't depend on each other).
+diff --git a/MAINTAINERS b/MAINTAINERS
+index abdcbcfef73d..385b12e37c43 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -7020,6 +7020,20 @@ F:	include/trace/events/mdio.h
+ F:	include/uapi/linux/mdio.h
+ F:	include/uapi/linux/mii.h
+ 
++EXEC & BINFMT API
++R:	Eric Biederman <ebiederm@xmission.com>
++R:	Kees Cook <keescook@chromium.org>
++F:	arch/alpha/kernel/binfmt_loader.c
++F:	arch/x86/ia32/ia32_aout.c
++F:	fs/*binfmt_*.c
++F:	fs/exec.c
++F:	include/linux/binfmts.h
++F:	include/linux/elf.h
++F:	include/uapi/linux/binfmts.h
++F:	tools/testing/selftests/exec/
++N:	asm/elf.h
++N:	binfmt
++
+ EXFAT FILE SYSTEM
+ M:	Namjae Jeon <linkinjeon@kernel.org>
+ M:	Sungjong Seo <sj1557.seo@samsung.com>
+-- 
+2.30.2
 
-> >>> When a "thermal of sensor" is unloaded, it calls
-> >>> thermal_zone_of_sensor_unregister which takes a lock before
-> >>> update ops.
-> >>
-> >> I'm not sure to understand. The goal is to have the refcount on the
-> >> modules to be incremented when the virtual sensor is using them.
-> >
-> > IMO the goal is to prevent the code from crashing when modules get
-> > unloaded.  I'm not really sure if refcounts alone are sufficient for
-> > that.
->
-> The problem is in the loop:
->
-> +static int virtual_thermal_sensor_get_temp(void *data, int *temperature)
-> +{
-> +       struct virtual_thermal_sensor *sensor = data;
-> +       int max_temp = INT_MIN;
-> +       int temp;
-> +       int i;
-> +
-> +       for (i = 0; i < sensor->count; i++) {
-> +               struct thermal_sensor_data *hw_sensor;
-> +
-> +               hw_sensor = &sensor->sensors[i];
-> +               if (!hw_sensor->ops)
-> +                       return -ENODEV;
-> +
-> +               hw_sensor->ops->get_temp(hw_sensor->sensor_data, &temp);
-> +               max_temp = sensor->aggr_temp(max_temp, temp);
-> +       }
-> +
-> +       *temperature = max_temp;
-> +
-> +       return 0;
-> +}
->
-> If one of the sensor is unloaded when get_temp is called,
-> hw_sensor->ops->get_temp will crash.
-
-Right.
-
-Dereferencing hw_sensor itself is not safe in this loop if the module
-holding the memory pointed to by it may go away.
-
-However, presumably, the hw_sensor object needs to be registered with
-the core in order to be used here and unregistered when it goes away,
-so it looks like this loop could use a wrapper like
-thermal_get_sensor_temp(hw_sensor, &temp) which would return a
-negative error code if the sensor in question went away.
-
-Of course, that would require the core to check the list of available
-sensors every time, but that may be implemented efficiently with the
-help of an xarray, for example.
-
-> So the proposal is virtual_sensor_add_sensor() does try_get_module()
-> and virtual_sensor_remove_sensor() does put_module().
->
-> The ref on the 'slave' modules will be release only if the virtual
-> sensor is unregistered.
->
-> So until, the virtual sensor is unregistered, the 'slaves' modules can
-> not be unloaded.
->
-> That is what we find with eg. the wifi modules.
-
-Yes, but that's a bit cumbersome from the sysadmin perspective IMO,
-especially when one wants to unload one of the modules and doesn't
-know exactly what other modules hold references to it.
-
-IIUC ref_module() might be nicer, but it is still more convenient if
-the modules can just go away independently.
