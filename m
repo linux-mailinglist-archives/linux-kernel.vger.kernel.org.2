@@ -2,105 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5123E424570
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 19:56:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA91142457B
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 19:58:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237826AbhJFR63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 13:58:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58742 "EHLO
+        id S239080AbhJFSAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 14:00:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229496AbhJFR61 (ORCPT
+        with ESMTP id S238900AbhJFSAS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 13:58:27 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E57FAC061746;
-        Wed,  6 Oct 2021 10:56:34 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id v18so13002409edc.11;
-        Wed, 06 Oct 2021 10:56:34 -0700 (PDT)
+        Wed, 6 Oct 2021 14:00:18 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B184C061746
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 10:58:25 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id g10so12590769edj.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 10:58:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Rbo4sz5z/Bg+L8m1ke86c0jRFq2OLQpo8IrWWnxklGU=;
-        b=HO6IWcH/IfJo+CoGp1Una4s+S2+rLH2FmUn+lN6vUniP/xGDotpdNz40IcjXtwzU9d
-         rf5y8tM/EXpmjmrJ4UDoJcra8mw1WzR8y1pG6RNyQYQhAnvaYUbbb5tvx5QquVNpCUNk
-         1xessOwH6vlLWgOOdhLVjWU7XkFhxpCh8O8vE/rUOSqYA8Fx+P1Y/ZKanAhl1UxOnqF3
-         RGUrLdX1aguBrTEKV4Kqn3Nv2UMWFO/IeXCOcQazm4vzJZqHAAEWd/UFFWIQ2XTfjlsW
-         jFmh0eo8WSycRPxIp+q2xzvCaGSo7MCrjL1u4+qKr8+5V8rrH+uW/VvvTTPIuRgfuHmn
-         l+6g==
+        bh=TDI52nHDnY3e5RS/+G6Fr1mYHqPbZc0znit1nNpWvHw=;
+        b=mjJfAEBb3dub9dxOGjoq//4tjQuyNsRiJ0soLFa7uVprcMzHr7WPusR8nPYv4b0G/S
+         Nglfgfy61FfiDkTSpAZw6k8XBrCJAYanReo5vVwpiSU4Gp/Su6ttyRgpoM3ixEWf0KH7
+         Zh1gilmBmi2Vy7m6NY1q4lqF8mEU+mDQxdvlHV8UGRLeWhfvbApZxwX/4dr8J+6oInea
+         PH606dIE/+8yPL6EFP6LbLFDpASm38OJhcn53wD6reCTyXgfKogWh2o1jPKp5KV0undX
+         zH0H27W7zAeYwXZZA2bv/zxp7RLfbPn0phFtjLeIuJO6ru9sEks6Q9qyy/SETRIIPfPI
+         YXVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Rbo4sz5z/Bg+L8m1ke86c0jRFq2OLQpo8IrWWnxklGU=;
-        b=GJc7f0FRY3aLFHqfzAfNVKJoynbqUEQ5uhmpf2FA8SMg//De46hyqwToz1Ozj9FyuQ
-         JiZwxXNGZkemu3+yAaOp1HFnxN7w/nTsvPT/BJf8Y1Qzl7QO4VrtjRFfs6HRFPWpMD76
-         IHBlI8eZfJf3KQVVjP9SaxeAZagzfSTAQPZBLJqhnhFiSC8sU5RRDoObrRwBBdlEv6ln
-         P4Esfrjx8WUGMgNGnBRC81evW77bDSsqnDC3EVDUSndHGPhn4nDHANVsyhUhklxDx6Hg
-         9DDRDi9T5LR3z5A6n7HCWXpStIFt+OmyxmVJDwnOM4SYM3NNJmFzEamIBOQ+Piy3UrZD
-         Bh5A==
-X-Gm-Message-State: AOAM531a3j05XDirgprHKH6Zw8+DvLXa1Wy4vYZRXe4fPX3C9QsJpc9h
-        xFlnoUoHJ+/v4cLtPOhRj4X31j2IBQRRww/j04U=
-X-Google-Smtp-Source: ABdhPJzp0acRHHskEYsBvbxPz9IoLtl30CeTbkk3WoqTzpqdTyb5xu3ViyhTgx0EeKUAAg9pOYn/1eHUtm3RRBz/Rx4=
-X-Received: by 2002:a50:e044:: with SMTP id g4mr35693289edl.46.1633542993549;
- Wed, 06 Oct 2021 10:56:33 -0700 (PDT)
+        bh=TDI52nHDnY3e5RS/+G6Fr1mYHqPbZc0znit1nNpWvHw=;
+        b=NSUqhWcDqsEpG/wWeD2JJ8yxliP35TfQ5rOrJn0m9imriMSm3eDswRQA8zwlpyFSCa
+         kHjlPMkvHL952NEG7TTB+StfUlbiVpTl6aP2+z4v6IOCsb2trQrMq9MQyVIiGePhOnPs
+         Uilf7Zdl5Y+wHUf6CWKW5JgFYSwEu0rWZMoVjmKx1S08NwdgsHEDqJ8h+UPBkGqhNQAJ
+         aYRaoXboCjixuSu/NT9Onnldmp4Ax6QuUDHOO6dzSEjsOW2Qf0XZ0Dcc3wD6H9cR1JS0
+         s4t9D+/X0BuLocUYtT8h51sZjUK5MbUiJmbimApviTjNeLUy7VaaLE6Fg0EXoAurDuOY
+         Y23g==
+X-Gm-Message-State: AOAM530GIMJubp2mB349NDDUh2QlHdkp+pusHEXOYrDSFEfM8IVMcF0X
+        AiUeYveiEQQp0RSf0JQrXM7UXqefb3IwhS+K63o=
+X-Google-Smtp-Source: ABdhPJxdaGkvWty6OMaxnZMJJuUXS3QSP5YDT2B22jdwuDCzVSheXSlzRUBJkKakCZs42bRRvC9Wt17qr4pJ/1HU0aY=
+X-Received: by 2002:a17:906:3f83:: with SMTP id b3mr35036446ejj.233.1633543101931;
+ Wed, 06 Oct 2021 10:58:21 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210930215311.240774-1-shy828301@gmail.com> <20210930215311.240774-2-shy828301@gmail.com>
- <CAHbLzkpyxnvm3w0M_CEU7cYRCYr0coNCoiY1DvtnBzqb1R1nsw@mail.gmail.com> <20211006040015.GA1626563@u2004>
-In-Reply-To: <20211006040015.GA1626563@u2004>
+References: <20210906121200.57905-1-rongwei.wang@linux.alibaba.com>
+ <20211006021837.59721-1-rongwei.wang@linux.alibaba.com> <20211006021837.59721-3-rongwei.wang@linux.alibaba.com>
+In-Reply-To: <20211006021837.59721-3-rongwei.wang@linux.alibaba.com>
 From:   Yang Shi <shy828301@gmail.com>
-Date:   Wed, 6 Oct 2021 10:56:20 -0700
-Message-ID: <CAHbLzkrEt3Ukr8YsJzx7AUdx7od2mqTKcG-D2sJAjo1RVs5e=w@mail.gmail.com>
-Subject: Re: [v3 PATCH 1/5] mm: hwpoison: remove the unnecessary THP check
-To:     Naoya Horiguchi <naoya.horiguchi@linux.dev>
-Cc:     =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
-        <naoya.horiguchi@nec.com>, Hugh Dickins <hughd@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Peter Xu <peterx@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
+Date:   Wed, 6 Oct 2021 10:58:10 -0700
+Message-ID: <CAHbLzkr3tQ1=Gy1O43uVCMpzyHyVtS=V_ykxjVeOkzFp-ZaQAg@mail.gmail.com>
+Subject: Re: [PATCH v3 v3 2/2] mm, thp: bail out early in collapse_file for
+ writeback page
+To:     Rongwei Wang <rongwei.wang@linux.alibaba.com>
+Cc:     Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        Matthew Wilcox <willy@infradead.org>,
+        Song Liu <song@kernel.org>,
+        William Kucharski <william.kucharski@oracle.com>,
+        Hugh Dickins <hughd@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 5, 2021 at 9:00 PM Naoya Horiguchi
-<naoya.horiguchi@linux.dev> wrote:
+On Tue, Oct 5, 2021 at 7:18 PM Rongwei Wang
+<rongwei.wang@linux.alibaba.com> wrote:
 >
-> > Any comment on this patch and patch #3? I'd prefer to fix more
-> > comments for a new version.
+> Currently collapse_file does not explicitly check PG_writeback, instead,
+> page_has_private and try_to_release_page are used to filter writeback
+> pages. This does not work for xfs with blocksize equal to or larger
+> than pagesize, because in such case xfs has no page->private.
 >
-> No. Both 1/5 and 3/5 look fine to me. So ...
+> This makes collapse_file bail out early for writeback page. Otherwise,
+> xfs end_page_writeback will panic as follows.
 >
-> > On Thu, Sep 30, 2021 at 2:53 PM Yang Shi <shy828301@gmail.com> wrote:
-> > >
-> > > When handling THP hwpoison checked if the THP is in allocation or free
-> > > stage since hwpoison may mistreat it as hugetlb page.  After
-> > > commit 415c64c1453a ("mm/memory-failure: split thp earlier in memory error
-> > > handling") the problem has been fixed, so this check is no longer
-> > > needed.  Remove it.  The side effect of the removal is hwpoison may
-> > > report unsplit THP instead of unknown error for shmem THP.  It seems not
-> > > like a big deal.
-> > >
-> > > The following patch depends on this, which fixes shmem THP with
-> > > hwpoisoned subpage(s) are mapped PMD wrongly.  So this patch needs to be
-> > > backported to -stable as well.
-> > >
-> > > Cc: <stable@vger.kernel.org>
-> > > Suggested-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
-> > > Signed-off-by: Yang Shi <shy828301@gmail.com>
+> [ 6411.448211] page:fffffe00201bcc80 refcount:0 mapcount:0 mapping:ffff0003f88c86a8 index:0x0 pfn:0x84ef32
+> [ 6411.448304] aops:xfs_address_space_operations [xfs] ino:30000b7 dentry name:"libtest.so"
+> [ 6411.448312] flags: 0x57fffe0000008027(locked|referenced|uptodate|active|writeback)
+> [ 6411.448317] raw: 57fffe0000008027 ffff80001b48bc28 ffff80001b48bc28 ffff0003f88c86a8
+> [ 6411.448321] raw: 0000000000000000 0000000000000000 00000000ffffffff ffff0000c3e9a000
+> [ 6411.448324] page dumped because: VM_BUG_ON_PAGE(((unsigned int) page_ref_count(page) + 127u <= 127u))
+> [ 6411.448327] page->mem_cgroup:ffff0000c3e9a000
+> [ 6411.448340] ------------[ cut here ]------------
+> [ 6411.448343] kernel BUG at include/linux/mm.h:1212!
+> [ 6411.449288] Internal error: Oops - BUG: 0 [#1] SMP
+> [ 6411.449786] Modules linked in:
+> [ 6411.449790] BUG: Bad page state in process khugepaged  pfn:84ef32
+> [ 6411.450143]  xfs(E)
+> [ 6411.450459] page:fffffe00201bcc80 refcount:0 mapcount:0 mapping:0 index:0x0 pfn:0x84ef32
+> [ 6411.451361]  libcrc32c(E) rfkill(E) aes_ce_blk(E) crypto_simd(E) ...
+> [ 6411.451387] CPU: 25 PID: 0 Comm: swapper/25 Kdump: loaded Tainted: ...
+> [ 6411.451389] pstate: 60400005 (nZCv daif +PAN -UAO -TCO BTYPE=--)
+> [ 6411.451393] pc : end_page_writeback+0x1c0/0x214
+> [ 6411.451394] lr : end_page_writeback+0x1c0/0x214
+> [ 6411.451395] sp : ffff800011ce3cc0
+> [ 6411.451396] x29: ffff800011ce3cc0 x28: 0000000000000000
+> [ 6411.451398] x27: ffff000c04608040 x26: 0000000000000000
+> [ 6411.451399] x25: ffff000c04608040 x24: 0000000000001000
+> [ 6411.451401] x23: ffff0003f88c8530 x22: 0000000000001000
+> [ 6411.451403] x21: ffff0003f88c8530 x20: 0000000000000000
+> [ 6411.451404] x19: fffffe00201bcc80 x18: 0000000000000030
+> [ 6411.451406] x17: 0000000000000000 x16: 0000000000000000
+> [ 6411.451407] x15: ffff000c018f9760 x14: ffffffffffffffff
+> [ 6411.451409] x13: ffff8000119d72b0 x12: ffff8000119d6ee3
+> [ 6411.451410] x11: ffff8000117b69b8 x10: 00000000ffff8000
+> [ 6411.451412] x9 : ffff800010617534 x8 : 0000000000000000
+> [ 6411.451413] x7 : ffff8000114f69b8 x6 : 000000000000000f
+> [ 6411.451415] x5 : 0000000000000000 x4 : 0000000000000000
+> [ 6411.451416] x3 : 0000000000000400 x2 : 0000000000000000
+> [ 6411.451418] x1 : 0000000000000000 x0 : 0000000000000000
+> [ 6411.451420] Call trace:
+> [ 6411.451421]  end_page_writeback+0x1c0/0x214
+> [ 6411.451424]  iomap_finish_page_writeback+0x13c/0x204
+> [ 6411.451425]  iomap_finish_ioend+0xe8/0x19c
+> [ 6411.451426]  iomap_writepage_end_bio+0x38/0x50
+> [ 6411.451427]  bio_endio+0x168/0x1ec
+> [ 6411.451430]  blk_update_request+0x278/0x3f0
+> [ 6411.451432]  blk_mq_end_request+0x34/0x15c
+> [ 6411.451435]  virtblk_request_done+0x38/0x74 [virtio_blk]
+> [ 6411.451437]  blk_done_softirq+0xc4/0x110
+> [ 6411.451439]  __do_softirq+0x128/0x38c
+> [ 6411.451441]  __irq_exit_rcu+0x118/0x150
+> [ 6411.451442]  irq_exit+0x1c/0x30
+> [ 6411.451445]  __handle_domain_irq+0x8c/0xf0
+> [ 6411.451446]  gic_handle_irq+0x84/0x108
+> [ 6411.451447]  el1_irq+0xcc/0x180
+> [ 6411.451448]  arch_cpu_idle+0x18/0x40
+> [ 6411.451450]  default_idle_call+0x4c/0x1a0
+> [ 6411.451453]  cpuidle_idle_call+0x168/0x1e0
+> [ 6411.451454]  do_idle+0xb4/0x104
+> [ 6411.451455]  cpu_startup_entry+0x30/0x9c
+> [ 6411.451458]  secondary_start_kernel+0x104/0x180
+> [ 6411.451460] Code: d4210000 b0006161 910c8021 94013f4d (d4210000)
+> [ 6411.451462] ---[ end trace 4a88c6a074082f8c ]---
+> [ 6411.451464] Kernel panic - not syncing: Oops - BUG: Fatal exception in interrupt
 >
-> Acked-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
->
-> Patch 3/5 already has my Signed-off-by, so I think it can be considered
-> as acked by me.
+> Fixes: eb6ecbed0aa2 ("mm, thp: relax the VM_DENYWRITE constraint on file-backed THPs")
+> Suggested-by: Yang Shi <shy828301@gmail.com>
+> Signed-off-by: Xu Yu <xuyu@linux.alibaba.com>
+> Signed-off-by: Rongwei Wang <rongwei.wang@linux.alibaba.com>
 
-Aha, thanks. I will add your ack to patch 3/5 too.
+Reviewed-by: Yang Shi <shy828301@gmail.com>
 
+> ---
+>  mm/khugepaged.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
 >
-> Thanks,
-> Naoya Horiguchi
+> diff --git a/mm/khugepaged.c b/mm/khugepaged.c
+> index 045cc579f724..48de4e1b0783 100644
+> --- a/mm/khugepaged.c
+> +++ b/mm/khugepaged.c
+> @@ -1763,6 +1763,10 @@ static void collapse_file(struct mm_struct *mm,
+>                                 filemap_flush(mapping);
+>                                 result = SCAN_FAIL;
+>                                 goto xa_unlocked;
+> +                       } else if (PageWriteback(page)) {
+> +                               xas_unlock_irq(&xas);
+> +                               result = SCAN_FAIL;
+> +                               goto xa_unlocked;
+>                         } else if (trylock_page(page)) {
+>                                 get_page(page);
+>                                 xas_unlock_irq(&xas);
+> @@ -1798,7 +1802,8 @@ static void collapse_file(struct mm_struct *mm,
+>                         goto out_unlock;
+>                 }
+>
+> -               if (!is_shmem && PageDirty(page)) {
+> +               if (!is_shmem && (PageDirty(page) ||
+> +                                 PageWriteback(page))) {
+>                         /*
+>                          * khugepaged only works on read-only fd, so this
+>                          * page is dirty because it hasn't been flushed
+> --
+> 2.27.0
+>
+>
