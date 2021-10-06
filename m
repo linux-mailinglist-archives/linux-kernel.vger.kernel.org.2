@@ -2,64 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63608423FFA
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 16:22:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FF76423FFD
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 16:23:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238904AbhJFOYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 10:24:22 -0400
-Received: from mail-4325.protonmail.ch ([185.70.43.25]:60945 "EHLO
-        mail-4325.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231356AbhJFOYS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 10:24:18 -0400
-Date:   Wed, 06 Oct 2021 14:22:22 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1633530145;
-        bh=0UicmB9OvRpogv82YJVzbcOGO7vYJYt9JENdlpvpBv0=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=d5wmDgxQvWwdFem6G0hFMmmfsf6Zqju0InSZzNiWl6PHcGyg2M0k6D5WGAl9WMn9K
-         c9C2KGYH+pxt0c0UpSYB540ue3JD7ycxKmVnCoP7SBj4FFpDTD8mkzXZoBW0CjoJUB
-         ZpYT+wmfsCaCfvJyupsRu0pb31rKI37FJbM7qGIE=
-To:     Borislav Petkov <bp@alien8.de>
-From:   Ser Olmy <ser.olmy@protonmail.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        x86-ml <x86@kernel.org>
-Reply-To: Ser Olmy <ser.olmy@protonmail.com>
-Subject: Re: [x86] Kernel v5.14 series panic on Celeron Mendocino CPU
-Message-ID: <f0EaZtO29WDhyAmh9vNfb-GcAbQsiJ1Nc5Fh7THzZdKVi2BGt4jl3MQPhAQEhsFFdj6a_OzdY9upf9_FIjvQwpayJoKgs4gcLe92S_1Jq8s=@protonmail.com>
-In-Reply-To: <YV2l+1oIGd2p/Gt5@zn.tnic>
-References: <CPeoI7yf4421QpWLM-CbgeDR17BBmhlLoixeYI3mu2WbDkgrZItfgImOO6BZez7CXQXXO9liq-rmZzgRVB95TP5MN0xUA8-d7-fSQZdyIZE=@protonmail.com> <YVtA67jImg3KlBTw@zn.tnic> <lxqAtqDf_kLUxIlvmYPvuKB36LOK-z_cVbS9OOl0MbjZKZEaCaEFmHCbSy5sWBer6f9V_WAPLxUuSNrDBvyzEeQOJXepkVUztPXAOhPZniQ=@protonmail.com> <YVwjY9TX6XMxkM2f@zn.tnic> <YqPgABmVMzvEllmeYzm8tkSaqtC-Q8nzeNjgNBXVPnQtPCHAeFg7IdwpzBECDcFGjrCBkFVegcYvqh_KoGnyOsbK4oC91VHw5G-qUlwlCvM=@protonmail.com> <YV2l+1oIGd2p/Gt5@zn.tnic>
+        id S238898AbhJFOZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 10:25:05 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:35860 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238824AbhJFOZD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 10:25:03 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1633530191; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=X0COzrQc3xjjosoSLg5B2F2EBgTmZzVnMuKqyII9OjA=; b=q1D8Vxas9WzOGW6xaL+vPPg3RDIb0xoTXcyk37gcf2b9keRUs/E8RFw5Gx90mssv7P8L2UDM
+ mkh8v8T603ZhCuG4c26OzwggMLQCNMUcigVG2MyCFqqJlHje8Tbnmu3VQr9BKasHLjj8CQq9
+ LOM5CpS/FxHZab4UlaaPWCC2dWU=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 615db135ff0285fb0acd2b3a (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 06 Oct 2021 14:22:45
+ GMT
+Sender: faiyazm=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 9C461C4360C; Wed,  6 Oct 2021 14:22:44 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-4.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.0.109] (unknown [49.204.182.88])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: faiyazm)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8F50FC43460;
+        Wed,  6 Oct 2021 14:22:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 8F50FC43460
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Subject: Re: [PATCH v1] mm: page_alloc: Add debug log in free_reserved_area
+ for static memory
+To:     David Hildenbrand <david@redhat.com>, akpm@linux-foundation.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc:     guptap@codeaurora.org
+References: <1632819849-511-1-git-send-email-faiyazm@codeaurora.org>
+ <248ec931-7c16-3e2d-cc8f-8ce0dd4e923b@redhat.com>
+ <0149edd5-fe7f-2786-413c-6de2eab3e30c@codeaurora.org>
+ <ab7a9fb0-a3e7-0cb8-6dbd-40a68e6fd299@redhat.com>
+ <1f6708d2-1ca8-6d1f-d9f0-855f2df755ed@codeaurora.org>
+ <d5a2e107-70e2-30b5-6723-9eea6650517a@redhat.com>
+ <88df48af-901b-5765-d92c-6d14c2b1f73e@codeaurora.org>
+ <aee9523c-4930-7980-e498-00f671b7d336@redhat.com>
+From:   Faiyaz Mohammed <faiyazm@codeaurora.org>
+Message-ID: <26c34788-fc53-251d-f7cc-044009a48f13@codeaurora.org>
+Date:   Wed, 6 Oct 2021 19:52:38 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
+In-Reply-To: <aee9523c-4930-7980-e498-00f671b7d336@redhat.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday, October 6th, 2021 at 3:34 PM, Borislav Petkov <bp@alien8.de> =
-wrote:
->
-> On Wed, Oct 06, 2021 at 12:42:47AM +0000, Ser Olmy wrote:
->
-> > [ 21.670972] fpu->state.fxsave.mxcsr: 0xb7be13b4, mxcsr_feature_mask: 0=
-xffbf
-> >
-> > [ 21.754383] WARNING: CPU: 0 PID: 1 at arch/x86/kernel/fpu/signal.c:384=
- __fpu_restore_sig+0x51f/0x540
->
-> As tglx expected.
->
-> I guess this fixes your issue (replace with previous diff pls):
->
 
-I can confirm that with the patch installed, the system does indeed boot no=
-rmally with nothing out of the ordinary in the dmesg log. Thanks.
 
-Best Regards,
+On 10/6/2021 5:48 PM, David Hildenbrand wrote:
+> On 06.10.21 14:13, Faiyaz Mohammed wrote:
+>> Hi,
+>>
+>> Sorry for delayed response.
+>>
+>> On 9/29/2021 10:33 PM, David Hildenbrand wrote:
+>>> On 29.09.21 10:58, Faiyaz Mohammed wrote:
+>>>>
+>>>>
+>>>> On 9/28/2021 4:46 PM, David Hildenbrand wrote:
+>>>>> On 28.09.21 12:53, Faiyaz Mohammed wrote:
+>>>>>>
+>>>>>>
+>>>>>> On 9/28/2021 4:09 PM, David Hildenbrand wrote:
+>>>>>>> On 28.09.21 11:04, Faiyaz Mohammed wrote:
+>>>>>>>> For INITRD and initmem memory is reserved through
+>>>>>>>> "memblock_reserve"
+>>>>>>>> during boot up but it is free via "free_reserved_area" instead
+>>>>>>>> of "memblock_free".
+>>>>>>>> For example:
+>>>>>>>> [    0.294848] Freeing initrd memory: 12K.
+>>>>>>>> [    0.696688] Freeing unused kernel memory: 4096K.
+>>>>>>>>
+>>>>>>>> To get the start and end address of the above freed memory and to
+>>>>>>>> account
+>>>>>>>> proper memblock added memblock_dbg log in "free_reserved_area".
+>>>>>>>> After adding log:
+>>>>>>>> [    0.294837] memblock_free: [0x00000083600000-0x00000083603000]
+>>>>>>>> free_initrd_mem+0x20/0x28
+>>>>>>>> [    0.294848] Freeing initrd memory: 12K.
+>>>>>>>> [    0.695246] memblock_free: [0x00000081600000-0x00000081a00000]
+>>>>>>>> free_initmem+0x70/0xc8
+>>>>>>>> [    0.696688] Freeing unused kernel memory: 4096K.
+>>>>>>>>
+>>>>>>>> Signed-off-by: Faiyaz Mohammed <faiyazm@codeaurora.org>
+>>>>>>>> ---
+>>>>>>>>      mm/page_alloc.c | 5 +++++
+>>>>>>>>      1 file changed, 5 insertions(+)
+>>>>>>>>
+>>>>>>>> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+>>>>>>>> index b37435c..f85c3b2 100644
+>>>>>>>> --- a/mm/page_alloc.c
+>>>>>>>> +++ b/mm/page_alloc.c
+>>>>>>>> @@ -8129,6 +8129,11 @@ unsigned long free_reserved_area(void
+>>>>>>>> *start,
+>>>>>>>> void *end, int poison, const char
+>>>>>>>>              pr_info("Freeing %s memory: %ldK\n",
+>>>>>>>>                  s, pages << (PAGE_SHIFT - 10));
+>>>>>>>>      +#ifdef CONFIG_HAVE_MEMBLOCK
+>>>>>>>> +        memblock_dbg("memblock_free: [%#016llx-%#016llx] %pS\n",
+>>>>>>>> +            __pa(start), __pa(end), (void *)_RET_IP_);
+>>>>>>>> +#endif
+>>>>>>>
+>>>>>>> IMHO, the "memblock_free" part is misleading. Something was
+>>>>>>> allocated
+>>>>>>> early via memblock, then we transitioned to the buddy, now we're
+>>>>>>> freeing
+>>>>>>> that early allocation via the buddy.
+>>>>>>> Yes, we're freeing the early allocation via buddy, but for proper
+>>>>>> memblock accounting we need this debug print.
+>>>>>>
+>>>>>
+>>>>> What do you mean with "accounting" ? These are debug statements.
+>>>>>
+>>>>>
+>>>> Yes, these are debug statements, which help to know the a-b address
+>>>> belongs to x callsite. This info is required when memblock=debug is
+>>>> passed through command line and CONFIG_HAVE_MEMBLOCK is enabled.
+>>>
+>>> The issue I'm having is talking in the name of memblock "memblock_dbg,
+>>> memblock_free", when memblock might no longer be around. We have other
+>>> places where we free early memblock allocations back to the buddy.
+>> I didn't find place where we free early memblock allocation back to the
+>> buddy.
+> 
+> One example I know is
+> 
+> section_deactivate()->free_map_bootmem()->vmemmap_free()-> ...
+> free_pagetable()->free_reserved_page().
+> 
+> when we free the vmemmap allocated via memblock back to the buddy.
+> 
+>>
+>> Why "memblock_dbg" print with "memblock_free" string?.
+>> - After buddy took over, buddy will free memblock reserved memory
+>> through free_reserved_area and it will print the freed memory size, but
+>> the freed memory through buddy still be part of
+>> memblock.reserved.regions.
+>> - To know the address ranges, added the "memblock_dbg" print along with
+>> "membloc_free" string.
+>> - If it is misleading or confusing, we can remove the "memblock_free"
+>> string from the "memblock_dgb" print and we can just print the address
+>> range when "memlock=debug" pass through command line.
+> 
+> That would be better, but do we really have to depend on
+> "memlock=debug"?
+Yes, because we need that print when memblock=debug is pass through
+command line, like other memblock debug messages.
 
-Olmy
+
+Thanks and regards,
+Mohammed Faiyaz
