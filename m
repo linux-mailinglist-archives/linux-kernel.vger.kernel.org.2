@@ -2,95 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE58F4239D3
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 10:34:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C9B44239D4
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 10:34:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237748AbhJFIgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 04:36:05 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:56800 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237543AbhJFIgE (ORCPT
+        id S237758AbhJFIgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 04:36:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39714 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237593AbhJFIgQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 04:36:04 -0400
-Date:   Wed, 06 Oct 2021 08:34:10 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1633509251;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=oVi+lpnpsrEDEqMdnl3rHrC/2waG/Ksk5IfPk2Ukxys=;
-        b=mvj1eL+0cuyOS6ZJQvTeXPeGWqRu8FD/K/IWMvysEk3OVgpW7VN/xJB95GAuN6KfvyXsHm
-        POdRgpVz0UAITIoVuRLx3qujWCRJoysnhk2GZqxBOEn3yKo1RGsu6XCoNM8HfImL5y54nW
-        8Tvc0HWiqAIGLbxY5IIY2WabYotqxhYOMx9/hfyq6/OWSxtSYUMkAQi6izY3HH8GloVgOO
-        Lyss77To9/TGB8y7sseiwNOELgbx+IrYyQz03Fj05Btj/XkhRidAbVUvYxtlj1VnlxR3Rl
-        YlyUYHDrtC8P3WTdwjbTk4f0bdTuXJR2WzUE4zanNOzqYKLlEGO5+TL6xm1Qcw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1633509251;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=oVi+lpnpsrEDEqMdnl3rHrC/2waG/Ksk5IfPk2Ukxys=;
-        b=m4nguNnDpepW0JvZ9z6IlZG03hZZIKqOkgQSvDpVH+kM6Dr7srLWkcJQsDZ5/PKgDS6bOl
-        zqdq/oWB5ismdCCw==
-From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched: Fix DEBUG && !SCHEDSTATS warn
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
+        Wed, 6 Oct 2021 04:36:16 -0400
+Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13572C061749
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 01:34:25 -0700 (PDT)
+Received: from martin by viti.kaiser.cx with local (Exim 4.89)
+        (envelope-from <martin@viti.kaiser.cx>)
+        id 1mY2NX-0006Oj-AJ; Wed, 06 Oct 2021 10:34:19 +0200
+Date:   Wed, 6 Oct 2021 10:34:19 +0200
+From:   Martin Kaiser <lists@kaiser.cx>
+To:     Michael Straube <straube.linux@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 9/9] staging: r8188eu: support interface is always usb
+Message-ID: <20211006083419.ei265w5cqpctg2yf@viti.kaiser.cx>
+References: <20211005200821.19783-1-martin@kaiser.cx>
+ <20211005200821.19783-9-martin@kaiser.cx>
+ <dd53513b-00c1-e915-712b-08b7cb7b5b34@gmail.com>
 MIME-Version: 1.0
-Message-ID: <163350925087.25758.549028012827953790.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <dd53513b-00c1-e915-712b-08b7cb7b5b34@gmail.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
+Sender: Martin Kaiser <martin@viti.kaiser.cx>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the sched/core branch of tip:
+Thus wrote Michael Straube (straube.linux@gmail.com):
 
-Commit-ID:     769fdf83df57b373660343ef4270b3ada91ef434
-Gitweb:        https://git.kernel.org/tip/769fdf83df57b373660343ef4270b3ada91ef434
-Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Wed, 06 Oct 2021 10:12:05 +02:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Wed, 06 Oct 2021 10:30:57 +02:00
+> On 10/5/21 22:08, Martin Kaiser wrote:
+> > We set ODM_CMNINFO_INTERFACE to ODM_ITRF_USB as this driver supports
+> > only usb. Therefore, dm_odm->SupportInterface is always ODM_ITRF_USB.
 
-sched: Fix DEBUG && !SCHEDSTATS warn
+> > Simplify some if conditions accordingly. Remove/replace two empty
+> > functions.
 
-When !SCHEDSTATS schedstat_enabled() is an unconditional 0 and the
-whole block doesn't exist, however GCC figures the scoped variable
-'stats' is unused and complains about it.
+> > Signed-off-by: Martin Kaiser <martin@kaiser.cx>
+> > ---
+> >   drivers/staging/r8188eu/hal/odm_HWConfig.c | 58 +++++++---------------
+> >   1 file changed, 19 insertions(+), 39 deletions(-)
 
-Upgrade the warning from -Wunused-variable to -Wunused-but-set-variable
-by writing it in two statements. This fixes the build because the new
-warning is in W=1.
 
-Given that whole if(0) {} thing, I don't feel motivated to change
-things overly much and quite strongly feel this is the compiler being
-daft.
+> <...>
 
-Fixes: cb3e971c435d ("sched: Make struct sched_statistics independent of fair sched class")
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- kernel/sched/debug.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+> >   static s32 odm_SignalScaleMapping(struct odm_dm_struct *dm_odm, s32 CurrSig)
+> >   {
+> > -	if ((dm_odm->SupportPlatform == ODM_MP) &&
+> > -	    (dm_odm->SupportInterface != ODM_ITRF_PCIE) && /* USB & SDIO */
+> > -	    (dm_odm->PatchID == 10))
+> > -		return odm_sig_patch_netcore(dm_odm, CurrSig);
+> > -	else if ((dm_odm->SupportPlatform == ODM_MP) &&
+> > -		 (dm_odm->SupportInterface == ODM_ITRF_PCIE) &&
+> > -		 (dm_odm->PatchID == 19))
+> > -		return odm_sig_patch_lenove(dm_odm, CurrSig);
+> > +	if ((dm_odm->SupportPlatform == ODM_MP) && (dm_odm->PatchID == 10))
+> > +		return 0;
+> >   	else
+> >   		return odm_SignalScaleMapping_92CSeries(dm_odm, CurrSig);
+> >   }
 
-diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
-index 26fac5e..7dcbaa3 100644
---- a/kernel/sched/debug.c
-+++ b/kernel/sched/debug.c
-@@ -463,7 +463,8 @@ static void print_cfs_group_stats(struct seq_file *m, int cpu, struct task_group
- 	PN(se->sum_exec_runtime);
- 
- 	if (schedstat_enabled()) {
--               struct sched_statistics *stats =  __schedstats_from_se(se);
-+		struct sched_statistics *stats;
-+		stats = __schedstats_from_se(se);
- 
- 		PN_SCHEDSTAT(wait_start);
- 		PN_SCHEDSTAT(sleep_start);
+
+> dm_odm->SupportPlatform is always ODM_CE, so this could be just:
+
+> 	return odm_SignalScaleMapping_92CSeries(dm_odm, CurrSig);
+
+> And then it's just an unnecessary wrapper. ;)
+
+I see. I'll send more patches to clean up this area as time permits.
+
+Thanks,
+Martin
