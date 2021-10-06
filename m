@@ -2,191 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 209A64242E3
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 18:39:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E36A44242F7
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 18:43:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239396AbhJFQlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 12:41:46 -0400
-Received: from foss.arm.com ([217.140.110.172]:49574 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231779AbhJFQlp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 12:41:45 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6A4646D;
-        Wed,  6 Oct 2021 09:39:52 -0700 (PDT)
-Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.197.40])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 83C5A3F70D;
-        Wed,  6 Oct 2021 09:39:51 -0700 (PDT)
-Date:   Wed, 6 Oct 2021 17:39:49 +0100
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mel Gorman <mgorman@techsingularity.net>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH rfc 0/6] Scheduler BPF
-Message-ID: <20211006163949.zwze5du6szdabxos@e107158-lin.cambridge.arm.com>
-References: <20210915213550.3696532-1-guro@fb.com>
- <20210916162451.709260-1-guro@fb.com>
+        id S235368AbhJFQpb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 12:45:31 -0400
+Received: from mail-oi1-f175.google.com ([209.85.167.175]:42793 "EHLO
+        mail-oi1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231484AbhJFQp2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 12:45:28 -0400
+Received: by mail-oi1-f175.google.com with SMTP id x187so2464276oix.9;
+        Wed, 06 Oct 2021 09:43:35 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jBzMvIMgnR7M/3yhI7B+vslrQk5E3C0Pdi0d+USOXmM=;
+        b=lKAeLC9r17NMcHj0W2tJAF27RAB1XfMR5afeQawc9v55LcLokP8Q3ou8GzO7qSBm0y
+         cM4kwUZOwBsCnieLBo0vkzBSQYa2saturs8bXxE2benYdciWglT7e2IG0nwB2PHUyVU/
+         YnIIpJYDQbFIDOQivrp+skZmgZnpVY4CTW8pvYKNLy25LuKJHidKSgNEPx7goAn4OGLo
+         1tq48eaytUxxezZd2xCzMahOly8TEYixkecUZAORcIrv1PGVX1osBBA5psSxReGyFJt2
+         YqLI+8nc4zfyDYt1XEykLqsFIYICT6Szq9iph7gpp/3z1dEP48qEp0ZsCrrEvDLFGaiD
+         H78w==
+X-Gm-Message-State: AOAM532najdQMh0/57fxxP1ii9hOgyyftOHITSqh8tILxG1UFe+ejvJ/
+        FDu4pNeAg80YxkqOX+vjTg==
+X-Google-Smtp-Source: ABdhPJx7CXhXT5M1W0CAhtBp2h8eMcQ5I0cRndKVwy8olo5SejcUQh3JemHdw8Jrz5VsbxC5vFcqCA==
+X-Received: by 2002:a05:6808:2221:: with SMTP id bd33mr8117373oib.64.1633538615382;
+        Wed, 06 Oct 2021 09:43:35 -0700 (PDT)
+Received: from xps15.herring.priv (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.googlemail.com with ESMTPSA id s29sm4236628otg.60.2021.10.06.09.43.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Oct 2021 09:43:34 -0700 (PDT)
+From:   Rob Herring <robh@kernel.org>
+To:     Russell King <linux@armlinux.org.uk>,
+        James Morse <james.morse@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Stafford Horne <shorne@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>, x86@kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-csky@vger.kernel.org, openrisc@lists.librecores.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-sh@vger.kernel.org, devicetree@vger.kernel.org
+Subject: [PATCH 00/12] DT: CPU h/w id parsing clean-ups and cacheinfo id support
+Date:   Wed,  6 Oct 2021 11:43:20 -0500
+Message-Id: <20211006164332.1981454-1-robh@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210916162451.709260-1-guro@fb.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Roman
+The first 10 patches add a new function, of_get_cpu_hwid(), which parses
+CPU DT node 'reg' property, and then use it to replace all the open
+coded versions of parsing CPU node 'reg' properties.
 
-On 09/16/21 09:24, Roman Gushchin wrote:
-> There is a long history of distro people, system administrators, and
-> application owners tuning the CFS settings in /proc/sys, which are now
-> in debugfs. Looking at what these settings actually did, it ended up
-> boiling down to changing the likelihood of task preemption, or
-> disabling it by setting the wakeup_granularity_ns to more than half of
-> the latency_ns. The other settings didn't really do much for
-> performance.
-> 
-> In other words, some our workloads benefit by having long running tasks
-> preempted by tasks handling short running requests, and some workloads
-> that run only short term requests which benefit from never being preempted.
+The last 2 patches add support for populating the cacheinfo 'id' on DT
+platforms. The minimum associated CPU hwid is used for the id. The id is
+optional, but necessary for resctrl which is being adapted for Arm MPAM.
 
-We had discussion about introducing latency-nice hint; but that discussion
-didn't end up producing any new API. Your use case seem similar to Android's;
-we want some tasks to run ASAP. There's an out of tree patch that puts these
-tasks on an idle CPU (keep in mind energy aware scheduling in the context here)
-which seem okay for its purpose. Having a more generic solution in mainline
-would be nice.
+Tested on arm64. Compile tested on arm, x86 and powerpc.
 
-https://lwn.net/Articles/820659/
+Rob
 
-> 
-> This leads to a few observations and ideas:
-> - Different workloads want different policies. Being able to configure
->   the policy per workload could be useful.
-> - A workload that benefits from not being preempted itself could still
->   benefit from preempting (low priority) background system tasks.
+Rob Herring (12):
+  of: Add of_get_cpu_hwid() to read hardware ID from CPU nodes
+  ARM: Use of_get_cpu_hwid()
+  ARM: broadcom: Use of_get_cpu_hwid()
+  arm64: Use of_get_cpu_hwid()
+  csky: Use of_get_cpu_hwid()
+  openrisc: Use of_get_cpu_hwid()
+  powerpc: Use of_get_cpu_hwid()
+  riscv: Use of_get_cpu_hwid()
+  sh: Use of_get_cpu_hwid()
+  x86: dt: Use of_get_cpu_hwid()
+  cacheinfo: Allow for >32-bit cache 'id'
+  cacheinfo: Set cache 'id' based on DT data
 
-You can put these tasks as SCHED_IDLE. There's a potential danger of starving
-these tasks; but assuming they're background and there's idle time in the
-system that should be fine.
+ arch/arm/kernel/devtree.c       | 22 ++-------------------
+ arch/arm/mach-bcm/bcm63xx_pmb.c |  6 +++---
+ arch/arm64/kernel/smp.c         | 31 ++----------------------------
+ arch/csky/kernel/smp.c          |  6 ++----
+ arch/openrisc/kernel/smp.c      |  6 +-----
+ arch/powerpc/kernel/smp.c       |  7 +------
+ arch/riscv/kernel/cpu.c         |  3 ++-
+ arch/sh/boards/of-generic.c     |  5 ++---
+ arch/x86/kernel/devicetree.c    |  5 ++---
+ drivers/base/cacheinfo.c        | 34 ++++++++++++++++++++++++++++++++-
+ drivers/of/base.c               | 22 +++++++++++++++++++++
+ include/linux/cacheinfo.h       |  2 +-
+ include/linux/of.h              |  1 +
+ 13 files changed, 74 insertions(+), 76 deletions(-)
 
-https://lwn.net/Articles/805317/
+-- 
+2.30.2
 
-That of course assuming you can classify these background tasks..
-
-If you can do the classification, you can also use cpu.shares to reduce how
-much cpu time they get. Or CFS bandwidth controller
-
-https://lwn.net/Articles/844976/
-
-I like Androd's model of classifying tasks. I think we need this classification
-done by other non-android systems too.
-
-> - It would be useful to quickly (and safely) experiment with different
->   policies in production, without having to shut down applications or reboot
->   systems, to determine what the policies for different workloads should be.
-
-Userspace should have the knobs that allows them to tune that without reboot.
-If you're doing kernel development; then it's part of the job spec I'd say :-)
-
-I think one can still go with the workflow you suggest for development without
-the hooks. You'd need to un-inline the function you're interested in; then you
-can use kprobes to hook into it and force an early return. That should produce
-the same effect, no?
-
-> - Only a few workloads are large and sensitive enough to merit their own
->   policy tweaks. CFS by itself should be good enough for everything else,
->   and we probably do not want policy tweaks to be a replacement for anything
->   CFS does.
-> 
-> This leads to BPF hooks, which have been successfully used in various
-> kernel subsystems to provide a way for external code to (safely)
-> change a few kernel decisions. BPF tooling makes this pretty easy to do,
-> and the people deploying BPF scripts are already quite used to updating them
-> for new kernel versions.
-
-I am (very) wary of these hooks. Scheduler (in mobile at least) is an area that
-gets heavily modified by vendors and OEMs. We try very hard to understand the
-problems they face and get the right set of solutions in mainline. Which would
-ultimately help towards the goal of having a single Generic kernel Image [1]
-that gives you what you'd expect out of the platform without any need for
-additional cherries on top.
-
-So my worry is that this will open the gate for these hooks to get more than
-just micro-optimization done in a platform specific way. And that it will
-discourage having the right discussion to fix real problems in the scheduler
-because the easy path is to do whatever you want in userspace. I am not sure we
-can control how these hooks are used.
-
-The question is: why can't we fix any issues in the scheduler/make it better
-and must have these hooks instead?
-
-[1] https://arstechnica.com/gadgets/2021/09/android-to-take-an-upstream-first-development-model-for-the-linux-kernel/
-
-Thanks
-
---
-Qais Yousef
-
-> 
-> This patchset aims to start a discussion about potential applications of BPF
-> to the scheduler. It also aims to land some very basic BPF infrastructure
-> necessary to add new BPF hooks to the scheduler, a minimal set of useful
-> helpers, corresponding libbpf changes, etc.
-> 
-> Our very first experiments with using BPF in CFS look very promising. We're
-> at a very early stage, however already have seen a nice latency and ~1% RPS
-> wins for our (Facebook's) main web workload.
-> 
-> As I know, Google is working on a more radical approach [2]: they aim to move
-> the scheduling code into userspace. It seems that their core motivation is
-> somewhat similar: to make the scheduler changes easier to develop, validate
-> and deploy. Even though their approach is different, they also use BPF for
-> speeding up some hot paths. I think the suggested infrastructure can serve
-> their purpose too.
-> 
-> An example of an userspace part, which loads some simple hooks is available
-> here [3]. It's very simple, provided only to simplify playing with the provided
-> kernel patches.
-> 
-> 
-> [1] c722f35b513f ("sched/fair: Bring back select_idle_smt(), but differently")
-> [2] Google's ghOSt: https://linuxplumbersconf.org/event/11/contributions/954/
-> [3] https://github.com/rgushchin/atc
-> 
-> 
-> Roman Gushchin (6):
->   bpf: sched: basic infrastructure for scheduler bpf
->   bpf: sched: add convenient helpers to identify sched entities
->   bpf: sched: introduce bpf_sched_enable()
->   sched: cfs: add bpf hooks to control wakeup and tick preemption
->   libbpf: add support for scheduler bpf programs
->   bpftool: recognize scheduler programs
-> 
->  include/linux/bpf_sched.h       |  53 ++++++++++++
->  include/linux/bpf_types.h       |   3 +
->  include/linux/sched_hook_defs.h |   4 +
->  include/uapi/linux/bpf.h        |  25 ++++++
->  kernel/bpf/btf.c                |   1 +
->  kernel/bpf/syscall.c            |  21 ++++-
->  kernel/bpf/trampoline.c         |   1 +
->  kernel/bpf/verifier.c           |   9 ++-
->  kernel/sched/Makefile           |   1 +
->  kernel/sched/bpf_sched.c        | 138 ++++++++++++++++++++++++++++++++
->  kernel/sched/fair.c             |  27 +++++++
->  scripts/bpf_doc.py              |   2 +
->  tools/bpf/bpftool/common.c      |   1 +
->  tools/bpf/bpftool/prog.c        |   1 +
->  tools/include/uapi/linux/bpf.h  |  25 ++++++
->  tools/lib/bpf/libbpf.c          |  27 ++++++-
->  tools/lib/bpf/libbpf.h          |   4 +
->  tools/lib/bpf/libbpf.map        |   3 +
->  18 files changed, 341 insertions(+), 5 deletions(-)
->  create mode 100644 include/linux/bpf_sched.h
->  create mode 100644 include/linux/sched_hook_defs.h
->  create mode 100644 kernel/sched/bpf_sched.c
-> 
-> -- 
-> 2.31.1
-> 
