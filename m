@@ -2,105 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A479A423FCC
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 16:06:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BB1E423FCF
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 16:08:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238815AbhJFOIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 10:08:42 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3938 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230131AbhJFOIk (ORCPT
+        id S238715AbhJFOKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 10:10:13 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:51664 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230131AbhJFOKM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 10:08:40 -0400
-Received: from fraeml744-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HPbl84kNTz67vYw;
-        Wed,  6 Oct 2021 22:03:16 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml744-chm.china.huawei.com (10.206.15.225) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Wed, 6 Oct 2021 16:06:46 +0200
-Received: from localhost (10.52.120.239) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Wed, 6 Oct 2021
- 15:06:46 +0100
-Date:   Wed, 6 Oct 2021 15:06:28 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Qi Liu <liuqi115@huawei.com>
-CC:     <will@kernel.org>, <mark.rutland@arm.com>, <bhelgaas@google.com>,
-        <linux-pci@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
-        <zhangshaokun@hisilicon.com>
-Subject: Re: [PATCH v10 2/2] drivers/perf: hisi: Add driver for HiSilicon
- PCIe PMU
-Message-ID: <20211006150628.00007cbf@Huawei.com>
-In-Reply-To: <20210915074524.18040-3-liuqi115@huawei.com>
-References: <20210915074524.18040-1-liuqi115@huawei.com>
-        <20210915074524.18040-3-liuqi115@huawei.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
+        Wed, 6 Oct 2021 10:10:12 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 196DX84K031779;
+        Wed, 6 Oct 2021 10:07:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=2/CwbrDYEROWm2F23M/a6pNb6yR5dyy0cPVcUz17CEw=;
+ b=BH0nUUhA/gI1aX10c/jBcUXVSTW/dC2yBdKF4IpvYn+O0+6YMACLjf/+rcXdfper3Ige
+ /JKsHPTBpHrnEYf3Bv/V4dBDYgmWCZooLSMJhPtGygh9gAJl3sTTa4PmN8qlF42SmtqS
+ lhkJoop2lPkrU9ajIfIJeWrTFCPn5cpRq9WcnMtZHf5q0WlN06hudnRQCi08+0cCgNa0
+ kOHQEIzXLna46Ec1zfizP/DooXg1ybH/pNef0mtBX3M8zMI36j2kVO9VlRj/kehdo3kw
+ kqMXqigBpbRSA9cBpHWMm9YKaG410s80RfMO8tr+WA8H0obAtScHYZcJP7eObWTOE4WE 1A== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3bhcscgwpy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 06 Oct 2021 10:07:32 -0400
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 196DcCqr019251;
+        Wed, 6 Oct 2021 10:07:32 -0400
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3bhcscgwp5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 06 Oct 2021 10:07:31 -0400
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 196E7PBd030189;
+        Wed, 6 Oct 2021 14:07:30 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma01fra.de.ibm.com with ESMTP id 3bef2a3gnt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 06 Oct 2021 14:07:30 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 196E7Nrg44040580
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 6 Oct 2021 14:07:23 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EE826A4071;
+        Wed,  6 Oct 2021 14:07:22 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5B98DA4064;
+        Wed,  6 Oct 2021 14:07:14 +0000 (GMT)
+Received: from li-e8dccbcc-2adc-11b2-a85c-bc1f33b9b810.ibm.com.com (unknown [9.43.124.20])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed,  6 Oct 2021 14:07:14 +0000 (GMT)
+From:   Kajol Jain <kjain@linux.ibm.com>
+To:     mpe@ellerman.id.au, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, peterz@infradead.org,
+        mingo@redhat.com, acme@kernel.org, jolsa@kernel.org,
+        namhyung@kernel.org, ak@linux.intel.com
+Cc:     linux-perf-users@vger.kernel.org, maddy@linux.ibm.com,
+        atrajeev@linux.vnet.ibm.com, rnsastry@linux.ibm.com,
+        yao.jin@linux.intel.com, ast@kernel.org, daniel@iogearbox.net,
+        songliubraving@fb.com, kan.liang@linux.intel.com,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        paulus@samba.org, kjain@linux.ibm.com
+Subject: [PATCH v3 0/4] Add mem_hops field in perf_mem_data_src structure
+Date:   Wed,  6 Oct 2021 19:36:50 +0530
+Message-Id: <20211006140654.298352-1-kjain@linux.ibm.com>
+X-Mailer: git-send-email 2.27.0
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: zEICujVBASsRaBRDmaZOFLcwjaibtFJk
+X-Proofpoint-GUID: gJ9cnBL_oY3bFs55H4fWf606s5flQpHX
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.120.239]
-X-ClientProxiedBy: lhreml722-chm.china.huawei.com (10.201.108.73) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-10-06_03,2021-10-06_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 spamscore=0
+ clxscore=1015 phishscore=0 mlxlogscore=999 priorityscore=1501
+ lowpriorityscore=0 adultscore=0 bulkscore=0 malwarescore=0 impostorscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110060089
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 15 Sep 2021 15:45:24 +0800
-Qi Liu <liuqi115@huawei.com> wrote:
+Patch set adds a new field called 'mem_hops' in the perf_mem_data_src structure
+which can be used to represent intra-node/package or inter-node/off-package
+details. This field is of size 3 bits where PERF_MEM_HOPS_{NA, 0..6} value
+can be used to present different hop levels data.
 
-> PCIe PMU Root Complex Integrated End Point(RCiEP) device is supported
-> to sample bandwidth, latency, buffer occupation etc.
-> 
-> Each PMU RCiEP device monitors multiple Root Ports, and each RCiEP is
-> registered as a PMU in /sys/bus/event_source/devices, so users can
-> select target PMU, and use filter to do further sets.
-> 
-> Filtering options contains:
-> event     - select the event.
-> port      - select target Root Ports. Information of Root Ports are
->             shown under sysfs.
-> bdf       - select requester_id of target EP device.
-> trig_len  - set trigger condition for starting event statistics.
-> trig_mode - set trigger mode. 0 means starting to statistic when bigger
->             than trigger condition, and 1 means smaller.
-> thr_len   - set threshold for statistics.
-> thr_mode  - set threshold mode. 0 means count when bigger than threshold,
->             and 1 means smaller.
-> 
-> Reviewed-by: John Garry <john.garry@huawei.com>
-> Signed-off-by: Qi Liu <liuqi115@huawei.com>
-> ---
-Hi Qi,
+Patch 1 of the patch-set adds a comment about current state of
+PERF_MEM_LVL_* namespace and remove an extra line present in
+perf_mem__lvl_scnprintf function.
 
-One trivial thing I just noticed below that can be easily fixed up by a follow up
-patch if that makes sense.
+Patch 2 & 3 adds tool and kernel side changes to add mem_hops field.
 
-Thanks,
+Patch 4 of the patch-set fix the data source encodings to represent
+L2.1/L3.1 cache access data for powerpc platform.
 
-Jonathan
+Changelog:
+v2 -> v3
+- Since added field HOPS related to NUMA, update the data presented
+  by HOPS_0 to denotes accesses from 'remote core, same node' as
+  suggested by Peter Zijlstra.
 
-> +/*
-> + * Events with the "dl" suffix in their names count performance in DL layer,
-> + * otherswise, events count performance in TL layer.
+- Link to the patchset v2: https://lkml.org/lkml/2021/10/5/271
 
-This comment looks to be out of date..
+v1 -> v2:
+- Rather then adding new macros for L2.1/L3.1 (same chip, different
+  core) entries as part of field lvlnum, we are introducing new field
+  called 'mem_hops' which can be used to get hops
+  level data(intra-chip/package or inter-chip/off-package details).
+  As suggested by Peter Zijlstra.
 
-> + */
-> +static struct attribute *hisi_pcie_pmu_events_attr[] = {
-> +	HISI_PCIE_PMU_EVENT_ATTR(rx_mwr_latency, 0x0010),
-> +	HISI_PCIE_PMU_EVENT_ATTR(rx_mwr_cnt, 0x10010),
-> +	HISI_PCIE_PMU_EVENT_ATTR(rx_mrd_latency, 0x0210),
-> +	HISI_PCIE_PMU_EVENT_ATTR(rx_mrd_cnt, 0x10210),
-> +	HISI_PCIE_PMU_EVENT_ATTR(tx_mrd_latency, 0x0011),
-> +	HISI_PCIE_PMU_EVENT_ATTR(tx_mrd_cnt, 0x10011),
-> +	HISI_PCIE_PMU_EVENT_ATTR(rx_mrd_flux, 0x1005),
-> +	HISI_PCIE_PMU_EVENT_ATTR(rx_mrd_time, 0x11005),
-> +	HISI_PCIE_PMU_EVENT_ATTR(tx_mrd_flux, 0x2004),
-> +	HISI_PCIE_PMU_EVENT_ATTR(tx_mrd_time, 0x12004),
-> +	NULL
-> +};
+- Using OnChip to denote data accesses from 'another core of same chip'
+  is not too clear. Update it to 'remote core, same chip' as pointed by
+  Michael Ellerman.
+
+- Update the fix patch of correcting data source encodings to use new
+  added field 'mem_hops'
+
+- Link to the patchset v1: https://lkml.org/lkml/2021/9/4/37
+
+Kajol Jain (4):
+  perf: Add comment about current state of PERF_MEM_LVL_* namespace and
+    remove an extra line
+  perf: Add mem_hops field in perf_mem_data_src structure
+  tools/perf: Add mem_hops field in perf_mem_data_src structure
+  powerpc/perf: Fix data source encodings for L2.1 and L3.1 accesses
+
+ arch/powerpc/perf/isa207-common.c     | 26 +++++++++++++++++++++-----
+ arch/powerpc/perf/isa207-common.h     |  2 ++
+ include/uapi/linux/perf_event.h       | 19 ++++++++++++++++---
+ tools/include/uapi/linux/perf_event.h | 19 ++++++++++++++++---
+ tools/perf/util/mem-events.c          | 20 ++++++++++++++++++--
+ 5 files changed, 73 insertions(+), 13 deletions(-)
+
+-- 
+2.26.2
+
