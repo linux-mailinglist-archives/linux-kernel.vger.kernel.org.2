@@ -2,189 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C85F423B31
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 12:02:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A519423B2E
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 12:02:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237993AbhJFKET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 06:04:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59982 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230143AbhJFKEQ (ORCPT
+        id S237915AbhJFKEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 06:04:15 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:57210 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230143AbhJFKEN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 06:04:16 -0400
-Received: from mail-ua1-x929.google.com (mail-ua1-x929.google.com [IPv6:2607:f8b0:4864:20::929])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58A5BC061749;
-        Wed,  6 Oct 2021 03:02:24 -0700 (PDT)
-Received: by mail-ua1-x929.google.com with SMTP id g13so724887uaj.3;
-        Wed, 06 Oct 2021 03:02:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Uau9/pR+8X0YYImoS0Wg4cgXBZAlRqGIWfRwQoTAlIs=;
-        b=FqojcO+6S1vzBTjYbWbeynWCuPHepeTAT1FG+f7XggYRcYHFl2NcgAaFsGUz/WQF/J
-         osO5xGm/MsCLkelJrr/BzPvAv8HIa84pyjyLbs0KX3evk7wEGs80Qhe3mYmEiIgcN5uG
-         TaThcXRoYFOIrfAFeFAgD12BzFzzmH/YHX8Zzmwd4remXoiWpHXVDeVD920edl5SR896
-         rWR/pWGkDTTjHxc9pjNmdFsNB4Ikvq75kYEliY3zH58Wau8goW+mNCBtJwWynW42Jk2/
-         hJeKDbd0ttf7WP1sTQqhwM5oZf7bBp7ZtULYYJQtBbSP+Ki7cmrSVGEdLKts7ivbVwXe
-         uMzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Uau9/pR+8X0YYImoS0Wg4cgXBZAlRqGIWfRwQoTAlIs=;
-        b=Lw99BchxYEKvh301aUMWA2BnimWl26+QJ4L1HyUF3mHPXhQfif3ArsXOF88oZ+ZkeZ
-         rQkBE/AqBwv/xteZtZJD1HkzQGNAueIYquGiiuzmT+BIdlUxOo9lWM6+9YD8owNDE4VC
-         97U/gbHiZgm7jaV1hyWJrxuwholvgSZKqrpJjLS4UcUjRphlMZVh2OO6pmVF3SYU72vn
-         mQxLZD9OKoqrWKshPlGXn2wBHSqSIxVROFftzC94+A+0ueXshd0Yv7HgLkSxkXob2w0M
-         LFGSoGedfqE9QqchQENNNRx3up9ros4l8yMC5UKBoPrembOWnPbSyQFNOfbSECUSql0h
-         2IsQ==
-X-Gm-Message-State: AOAM530LJZQ15TpuJnk0p34RUDXEOqLH36H1Q5MpQR7fJcVyuiCsr8xR
-        DzM0irBKpXnBIkJsbvvoC780h9eGVN0Jrq8G9z4=
-X-Google-Smtp-Source: ABdhPJzfTPCIqF75XYHBa+La5Pd+QBvj9phqUfquQvBKUdk8ClsF1hEHLmwPcrVcniX/f0yPaOZWmW7JcncYMW+6iPI=
-X-Received: by 2002:ab0:5548:: with SMTP id u8mr16315316uaa.0.1633514543473;
- Wed, 06 Oct 2021 03:02:23 -0700 (PDT)
+        Wed, 6 Oct 2021 06:04:13 -0400
+Date:   Wed, 06 Oct 2021 10:02:19 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1633514541;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=UI/Mzq+FwvZPWInV3jzYfY50nLqU5dLTfnuRsinHP9Q=;
+        b=oPhrfpkCgnylLF7xVcRX89tHojqQX5eMU4d0jNjr5IaM4NeHdO/krXGY/m53VIG2vdu3ai
+        AGqd8XwUigPnmIyh6nUXOFRzVSsSR78P3j2Jug36/578KXd3P3y99kJ2dysIzF5FxYyFTg
+        97nrdAZRmV6qab1uZ9ZRFYy71znP5Ath+PuAmH2UErtNtQC0ANDyQFmcQIPRF5VB1EMjgf
+        EKKF0/oV8RKl7RegXHSrd3X2rd7qQcrg2vSNzuDek3y5Q7Zl/mofGI8yskZkv/wcn8fbsl
+        B86Lq3Nn2yfZAurqOmMWarsMd1BKLu4LmT7HlBJ21Wj4Ljhqb3COyFhGjY/ovQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1633514541;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=UI/Mzq+FwvZPWInV3jzYfY50nLqU5dLTfnuRsinHP9Q=;
+        b=TfQ37z1SVlYETyTvPmvagmgVBVVhzTuZd9Zw1ddRhUGPc4r0y1QVphpOnK+Z93N5ybSf/c
+        lYSr9wWf/X96/dCA==
+From:   "tip-bot2 for Borislav Petkov" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/misc] x86/insn: Use get_unaligned() instead of memcpy()
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Borislav Petkov <bp@suse.de>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <YVSsIkj9Z29TyUjE@zn.tnic>
+References: <YVSsIkj9Z29TyUjE@zn.tnic>
 MIME-Version: 1.0
-References: <20211006061204.2854-1-sergio.paracuellos@gmail.com>
- <20211006061204.2854-4-sergio.paracuellos@gmail.com> <20211006082903.GZ2048@kadam>
-In-Reply-To: <20211006082903.GZ2048@kadam>
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Date:   Wed, 6 Oct 2021 12:02:12 +0200
-Message-ID: <CAMhs-H_qb=goRmfhO1P+mt_NKhJFuJgH6a483-6Wk8M9MA1cJQ@mail.gmail.com>
-Subject: Re: [PATCH 3/4] clk: ralink: make system controller node a reset provider
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Stephen Boyd <sboyd@kernel.org>,
-        "open list:COMMON CLK FRAMEWORK" <linux-clk@vger.kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        linux-staging@lists.linux.dev, NeilBrown <neil@brown.name>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        John Crispin <john@phrozen.org>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <163351453975.25758.13801400058796282579.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dan,
+The following commit has been merged into the x86/misc branch of tip:
 
-Thanks for the review. Comments below.
+Commit-ID:     f96b4675839b66168f5a07bf964dde6c2f1c4885
+Gitweb:        https://git.kernel.org/tip/f96b4675839b66168f5a07bf964dde6c2f1c4885
+Author:        Borislav Petkov <bp@suse.de>
+AuthorDate:    Wed, 29 Sep 2021 16:37:53 +02:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Wed, 06 Oct 2021 11:56:37 +02:00
 
-On Wed, Oct 6, 2021 at 10:29 AM Dan Carpenter <dan.carpenter@oracle.com> wrote:
->
-> On Wed, Oct 06, 2021 at 08:12:03AM +0200, Sergio Paracuellos wrote:
-> > @@ -398,6 +401,76 @@ static void __init mt7621_clk_init(struct device_node *node)
-> >  }
-> >  CLK_OF_DECLARE_DRIVER(mt7621_clk, "mediatek,mt7621-sysc", mt7621_clk_init);
-> >
-> > +struct mt7621_rst {
-> > +     struct reset_controller_dev rcdev;
-> > +     struct regmap *sysc;
-> > +};
-> > +
-> > +static inline struct mt7621_rst *to_mt7621_rst(struct reset_controller_dev *dev)
->
-> No need to mark this as inline.  The compiler should do it automatically
-> or it will ignore the inline.
+x86/insn: Use get_unaligned() instead of memcpy()
 
-Ok, I have other functions to_* with the same inline syntax, that's
-why I have added also here. I think I will maintain it to be coherent
-and can be removed afterwards with another patch not belonging to this
-series.
+Use get_unaligned() instead of memcpy() to access potentially unaligned
+memory, which, when accessed through a pointer, leads to undefined
+behavior. get_unaligned() describes much better what is happening there
+anyway even if memcpy() does the job.
 
->
-> > +{
-> > +     return container_of(dev, struct mt7621_rst, rcdev);
-> > +}
-> > +
-> > +static int mt7621_assert_device(struct reset_controller_dev *rcdev,
-> > +                             unsigned long id)
-> > +{
-> > +     struct mt7621_rst *data = to_mt7621_rst(rcdev);
-> > +     struct regmap *sysc = data->sysc;
-> > +
-> > +     if (id == MT7621_RST_SYS)
-> > +             return -1;
->
-> Please, return proper error codes.
+In addition, since perf tool builds with -Werror, it would fire with:
 
-Current code at 'reset.c' of the arch was returning -1 in this case. I
-guess it is better to change it to -EINVAL.
+  util/intel-pt-decoder/../../../arch/x86/lib/insn.c: In function '__insn_get_emulate_prefix':
+  tools/include/../include/asm-generic/unaligned.h:10:15: error: packed attribute is unnecessary [-Werror=packed]
+     10 |  const struct { type x; } __packed *__pptr = (typeof(__pptr))(ptr); \
 
->
-> > +
-> > +     return regmap_update_bits(sysc, SYSC_REG_RESET_CTRL, BIT(id), BIT(id));
-> > +}
-> > +
-> > +static int mt7621_deassert_device(struct reset_controller_dev *rcdev,
-> > +                               unsigned long id)
-> > +{
-> > +     struct mt7621_rst *data = to_mt7621_rst(rcdev);
-> > +     struct regmap *sysc = data->sysc;
-> > +
-> > +     if (id == MT7621_RST_SYS)
-> > +             return -1;
->
-> Here too.
+because -Werror=packed would complain if the packed attribute would have
+no effect on the layout of the structure.
 
-Will change to -EINVAL.
+In this case, that is intentional so disable the warning only for that
+compilation unit.
 
->
-> > +
-> > +     return regmap_update_bits(sysc, SYSC_REG_RESET_CTRL, BIT(id), 0);
-> > +}
-> > +
-> > +static int mt7621_reset_device(struct reset_controller_dev *rcdev,
-> > +                            unsigned long id)
-> > +{
-> > +     int ret;
-> > +
-> > +     ret = mt7621_assert_device(rcdev, id);
-> > +     if (ret < 0)
-> > +             return ret;
-> > +
-> > +     return mt7621_deassert_device(rcdev, id);
-> > +}
-> > +
-> > +static const struct reset_control_ops reset_ops = {
-> > +     .reset = mt7621_reset_device,
-> > +     .assert = mt7621_assert_device,
-> > +     .deassert = mt7621_deassert_device
-> > +};
-> > +
-> > +static int mt7621_reset_init(struct device *dev, struct regmap *sysc)
-> > +{
-> > +     struct mt7621_rst *rst_data;
-> > +
-> > +     rst_data = kzalloc(sizeof(*rst_data), GFP_KERNEL);
->
->
-> Can we use devm_ to allocate this or do we need to clean up if
-> devm_reset_controller_register() fails?  Also a free in the release
-> function I suppose.  (Please, use devm_).
+That part is Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
 
-True, yes we can use devm_ for this. Will change it, thanks.
+No functional changes.
 
->
->
-> > +     if (!rst_data)
-> > +             return -ENOMEM;
-> > +
-> > +     rst_data->sysc = sysc;
-> > +     rst_data->rcdev.ops = &reset_ops;
-> > +     rst_data->rcdev.owner = THIS_MODULE;
-> > +     rst_data->rcdev.nr_resets = 32;
-> > +     rst_data->rcdev.of_reset_n_cells = 1;
-> > +     rst_data->rcdev.of_node = dev_of_node(dev);
-> > +
-> > +     return devm_reset_controller_register(dev, &rst_data->rcdev);
-> > +}
->
->
-> regards,
-> dan carpenter
->
-I will properly take into account your comments and send v2.
+Fixes: 5ba1071f7554 ("x86/insn, tools/x86: Fix undefined behavior due to potential unaligned accesses")
+Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+Tested-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Link: https://lkml.kernel.org/r/YVSsIkj9Z29TyUjE@zn.tnic
+---
+ arch/x86/lib/insn.c                    |  5 +++--
+ tools/arch/x86/lib/insn.c              |  5 +++--
+ tools/include/asm-generic/unaligned.h  | 23 +++++++++++++++++++++++
+ tools/perf/util/intel-pt-decoder/Build |  2 ++
+ 4 files changed, 31 insertions(+), 4 deletions(-)
+ create mode 100644 tools/include/asm-generic/unaligned.h
 
-Thanks,
-     Sergio Paracuellos
+diff --git a/arch/x86/lib/insn.c b/arch/x86/lib/insn.c
+index c565def..55e371c 100644
+--- a/arch/x86/lib/insn.c
++++ b/arch/x86/lib/insn.c
+@@ -13,6 +13,7 @@
+ #endif
+ #include <asm/inat.h> /*__ignore_sync_check__ */
+ #include <asm/insn.h> /* __ignore_sync_check__ */
++#include <asm/unaligned.h> /* __ignore_sync_check__ */
+ 
+ #include <linux/errno.h>
+ #include <linux/kconfig.h>
+@@ -37,10 +38,10 @@
+ 	((insn)->next_byte + sizeof(t) + n <= (insn)->end_kaddr)
+ 
+ #define __get_next(t, insn)	\
+-	({ t r; memcpy(&r, insn->next_byte, sizeof(t)); insn->next_byte += sizeof(t); leXX_to_cpu(t, r); })
++	({ t r = get_unaligned((t *)(insn)->next_byte); (insn)->next_byte += sizeof(t); leXX_to_cpu(t, r); })
+ 
+ #define __peek_nbyte_next(t, insn, n)	\
+-	({ t r; memcpy(&r, (insn)->next_byte + n, sizeof(t)); leXX_to_cpu(t, r); })
++	({ t r = get_unaligned((t *)(insn)->next_byte + n); leXX_to_cpu(t, r); })
+ 
+ #define get_next(t, insn)	\
+ 	({ if (unlikely(!validate_next(t, insn, 0))) goto err_out; __get_next(t, insn); })
+diff --git a/tools/arch/x86/lib/insn.c b/tools/arch/x86/lib/insn.c
+index 7976994..8fd63a0 100644
+--- a/tools/arch/x86/lib/insn.c
++++ b/tools/arch/x86/lib/insn.c
+@@ -13,6 +13,7 @@
+ #endif
+ #include "../include/asm/inat.h" /* __ignore_sync_check__ */
+ #include "../include/asm/insn.h" /* __ignore_sync_check__ */
++#include "../include/asm-generic/unaligned.h" /* __ignore_sync_check__ */
+ 
+ #include <linux/errno.h>
+ #include <linux/kconfig.h>
+@@ -37,10 +38,10 @@
+ 	((insn)->next_byte + sizeof(t) + n <= (insn)->end_kaddr)
+ 
+ #define __get_next(t, insn)	\
+-	({ t r; memcpy(&r, insn->next_byte, sizeof(t)); insn->next_byte += sizeof(t); leXX_to_cpu(t, r); })
++	({ t r = get_unaligned((t *)(insn)->next_byte); (insn)->next_byte += sizeof(t); leXX_to_cpu(t, r); })
+ 
+ #define __peek_nbyte_next(t, insn, n)	\
+-	({ t r; memcpy(&r, (insn)->next_byte + n, sizeof(t)); leXX_to_cpu(t, r); })
++	({ t r = get_unaligned((t *)(insn)->next_byte + n); leXX_to_cpu(t, r); })
+ 
+ #define get_next(t, insn)	\
+ 	({ if (unlikely(!validate_next(t, insn, 0))) goto err_out; __get_next(t, insn); })
+diff --git a/tools/include/asm-generic/unaligned.h b/tools/include/asm-generic/unaligned.h
+new file mode 100644
+index 0000000..47387c6
+--- /dev/null
++++ b/tools/include/asm-generic/unaligned.h
+@@ -0,0 +1,23 @@
++/* SPDX-License-Identifier: GPL-2.0-or-later */
++/*
++ * Copied from the kernel sources to tools/perf/:
++ */
++
++#ifndef __TOOLS_LINUX_ASM_GENERIC_UNALIGNED_H
++#define __TOOLS_LINUX_ASM_GENERIC_UNALIGNED_H
++
++#define __get_unaligned_t(type, ptr) ({						\
++	const struct { type x; } __packed *__pptr = (typeof(__pptr))(ptr);	\
++	__pptr->x;								\
++})
++
++#define __put_unaligned_t(type, val, ptr) do {					\
++	struct { type x; } __packed *__pptr = (typeof(__pptr))(ptr);		\
++	__pptr->x = (val);							\
++} while (0)
++
++#define get_unaligned(ptr)	__get_unaligned_t(typeof(*(ptr)), (ptr))
++#define put_unaligned(val, ptr) __put_unaligned_t(typeof(*(ptr)), (val), (ptr))
++
++#endif /* __TOOLS_LINUX_ASM_GENERIC_UNALIGNED_H */
++
+diff --git a/tools/perf/util/intel-pt-decoder/Build b/tools/perf/util/intel-pt-decoder/Build
+index bc62935..b41c2e9 100644
+--- a/tools/perf/util/intel-pt-decoder/Build
++++ b/tools/perf/util/intel-pt-decoder/Build
+@@ -18,3 +18,5 @@ CFLAGS_intel-pt-insn-decoder.o += -I$(OUTPUT)util/intel-pt-decoder
+ ifeq ($(CC_NO_CLANG), 1)
+   CFLAGS_intel-pt-insn-decoder.o += -Wno-override-init
+ endif
++
++CFLAGS_intel-pt-insn-decoder.o += -Wno-packed
