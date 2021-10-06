@@ -2,64 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A23C7423FE7
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 16:16:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64708423FEC
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 16:19:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238644AbhJFOSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 10:18:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34238 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231766AbhJFOSt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 10:18:49 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 09F526105A;
-        Wed,  6 Oct 2021 14:16:55 +0000 (UTC)
-Date:   Wed, 6 Oct 2021 10:16:54 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Sami Tolvanen <samitolvanen@google.com>, x86@kernel.org,
-        Kees Cook <keescook@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev
-Subject: Re: [PATCH v4 06/15] ftrace: Use an opaque type for functions not
- callable from C
-Message-ID: <20211006101654.6a5be402@gandalf.local.home>
-In-Reply-To: <20211006135417.tvdns3ykpgupi47q@treble>
-References: <20210930180531.1190642-1-samitolvanen@google.com>
-        <20210930180531.1190642-7-samitolvanen@google.com>
-        <20211006032945.axlqh3vehgar6adr@treble>
-        <20211006090249.248c65b0@gandalf.local.home>
-        <20211006135417.tvdns3ykpgupi47q@treble>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S238724AbhJFOVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 10:21:39 -0400
+Received: from unicom146.biz-email.net ([210.51.26.146]:61279 "EHLO
+        unicom146.biz-email.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230131AbhJFOVf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 10:21:35 -0400
+Received: from ([60.208.111.195])
+        by unicom146.biz-email.net ((LNX1044)) with ASMTP (SSL) id AQA00129;
+        Wed, 06 Oct 2021 22:19:29 +0800
+Received: from 10.0.2.15 (172.16.100.3) by jtjnmail201602.home.langchao.com
+ (10.100.2.2) with Microsoft SMTP Server id 15.1.2308.14; Wed, 6 Oct 2021
+ 22:19:30 +0800
+From:   Kai Song <songkai01@inspur.com>
+To:     <thor.thayer@linux.intel.com>, <lee.jones@linaro.org>
+CC:     <zou_wei@huawei.com>, <linux-kernel@vger.kernel.org>,
+        Kai Song <songkai01@inspur.com>
+Subject: [PATCH] mfd: altera-sysmgr: Fix a mistake caused by resource_size function
+Date:   Wed, 6 Oct 2021 22:19:26 +0800
+Message-ID: <20211006141926.6120-1-songkai01@inspur.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [172.16.100.3]
+tUid:   20211006221929aad1ada3d20b01638545f7e6920542f1
+X-Abuse-Reports-To: service@corp-email.com
+Abuse-Reports-To: service@corp-email.com
+X-Complaints-To: service@corp-email.com
+X-Report-Abuse-To: service@corp-email.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 6 Oct 2021 06:54:17 -0700
-Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+Fixes: d12edf9661a4 ("mfd: altera-sysmgr: Use resource_size function on resource object")
 
-> But this macro is used in other places as well:
-> 
->   https://lkml.kernel.org/r/20210930180531.1190642-10-samitolvanen@google.com
-> 
-> And many of them aren't internal to a function like the above symbols,
-> they're actual functions that are called in other ways.
-> 
-> DECLARE_UNCALLED_FROM_C() ?
+The resource_size defines that:
+	res->end - res->start + 1;
+The origin original code is:
+	sysmgr_config.max_register = res->end - res->start - 3;
 
-  DECLARE_NOT_CALLED_FROM_C() ;-)
+So, the correct fix is that:
+	sysmgr_config.max_register = resource_size(res) - 4;
 
-Straight and to the point!
+Signed-off-by: Kai Song <songkai01@inspur.com>
+---
+ drivers/mfd/altera-sysmgr.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-"uncalled" is a strange word.
+diff --git a/drivers/mfd/altera-sysmgr.c b/drivers/mfd/altera-sysmgr.c
+index 20cb294c7512..5d3715a28b28 100644
+--- a/drivers/mfd/altera-sysmgr.c
++++ b/drivers/mfd/altera-sysmgr.c
+@@ -153,7 +153,7 @@ static int sysmgr_probe(struct platform_device *pdev)
+ 		if (!base)
+ 			return -ENOMEM;
+ 
+-		sysmgr_config.max_register = resource_size(res) - 3;
++		sysmgr_config.max_register = resource_size(res) - 4;
+ 		regmap = devm_regmap_init_mmio(dev, base, &sysmgr_config);
+ 	}
+ 
+-- 
+2.27.0
 
--- Steve
