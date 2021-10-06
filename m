@@ -2,172 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D689442467E
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 21:09:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EC78424683
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 21:09:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239271AbhJFTLD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 15:11:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47258 "EHLO
+        id S239340AbhJFTLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 15:11:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231807AbhJFTLC (ORCPT
+        with ESMTP id S239314AbhJFTLg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 15:11:02 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B89BDC061746;
-        Wed,  6 Oct 2021 12:09:09 -0700 (PDT)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1633547347;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Fz5ph9zRK6litvw0SKDVU/0ZKzmd9blsLfQbDEUhygs=;
-        b=n8pZUvjNI9FOHoBwXKQ+DmbKtHl133nsV1RzGJS7qRCL1XFMfYgp5kplRfRCowGXo9tRvX
-        tK+5ohqLXguuKm6uuAkYk5ex3b5uaD4ej8WivTnvV9GfTkjy53YlpmseNYMcy8+mY7XhSh
-        e/qOUIBfRPUXKc9u41TN5AF9/rtT1mYCOCizg9oMPuqzYDDRXXIcYTX4LeBsiiErw1hw0M
-        Hd+BktvlmYQbcY/lgybGq+Yj9IJyOAoiRUMekn98ZCHynELpziSz7mPy0+X1e8iRaxi9bv
-        ygmJTHM0uWsWDFZkGU0tdmzQUFiFXNwvZyCNSuY1ev6CTBGBR3yPsbLCJ72crw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1633547347;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Fz5ph9zRK6litvw0SKDVU/0ZKzmd9blsLfQbDEUhygs=;
-        b=akeZGlZ6rN+kmwPyKueUPX3xNTfv51IbD6oTLZ/6RsJI10ZKWDcAOOOBkq12A61jMDqBqB
-        T2Hy4G+DC1234wDA==
-To:     Johan Hovold <johan@kernel.org>, Tejun Heo <tj@kernel.org>
-Cc:     Lai Jiangshan <jiangshanlai@gmail.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Fabio Estevam <festevam@denx.de>, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v2] workqueue: fix state-dump console deadlock
-In-Reply-To: <20211006115852.16986-1-johan@kernel.org>
-References: <20211006115852.16986-1-johan@kernel.org>
-Date:   Wed, 06 Oct 2021 21:15:06 +0206
-Message-ID: <87ee8yug19.fsf@jogness.linutronix.de>
+        Wed, 6 Oct 2021 15:11:36 -0400
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88314C061746;
+        Wed,  6 Oct 2021 12:09:43 -0700 (PDT)
+Received: by mail-qt1-x82f.google.com with SMTP id r1so3714988qta.12;
+        Wed, 06 Oct 2021 12:09:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VL8huvHNt0AW4VbvHoyUVP6MU5/wX3Bj6/diTCZsDhw=;
+        b=nEfMYzi66QIGok2oQdVZQIYT1PqFopAy8Md5kYeZVvtvZCrh0S/5Tb9Na/zmFrVA8L
+         0fM47209loAcRogudkTHSmAtX7ogUbikzNDP2dCvvFEyh4NmWJX/Wmuij/pT1Hh6Blet
+         2iB45DdHw3DfnROu9GEetkcQpZSo/I3P3pbkJRd6q7vgvLOH8CfV7oKLIcLDGSU0LSUS
+         kx7fKtdXj6OF0FHw3FAARnC6ueNLZErsQ24y+RY2c9rmAe3eUvt1UiOt/azZ1ZjWqara
+         dnkNkE9ymjW9dC6u78KAJ5zy4UkX4Gf+p13asciqvMqtbK1BM4q460rO/WqAQY73sS70
+         7CHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VL8huvHNt0AW4VbvHoyUVP6MU5/wX3Bj6/diTCZsDhw=;
+        b=ynOaEen/mOv65VbopjYg7i9T+Wq3qdOqNVJi799T8bR/X8TEl2o/WtR9kZ1zM9VzzT
+         zp+JSzehtBnp6TVTvk5EQKUdsASViCLZHWrBL2anc37zQjdk2jvydCBOzpEf9NeJppKB
+         g+orJb2NlJxcGyB7iVLUvrsUThjfj10O2vMLQyJpg1m0rGiXrvOyqztxr5aCcRQHY0Jh
+         ioch5stSpBfx3SkE2i5k7OovpjW7FQXGcRVeRI/mxB29etrDO3w3Z3KEHlOg5wf+wOQ+
+         daj+vbgLCFwtemG0NAHR6x7p1g633DnJRCq53rISQCCM0DfQ2I3tTJe6vwqK1frAbb8r
+         CzIg==
+X-Gm-Message-State: AOAM531AcXDYa1vRSL50Ehbbs1jTfZIMQ0X121LPxJf0mYEtQSJ3qfVY
+        hK6Jelgoqod9aEF57nDs0Lflt8U2+i1XQU0EPhs=
+X-Google-Smtp-Source: ABdhPJyuoHhYVDdnFB0RJ7H6Qb8GSeTcN1K+azR1B1QNT9f5CUZ/P8aZh1M6ZZpIf09WbGXeunb+0JQDx5QqMJvzaPk=
+X-Received: by 2002:ac8:4313:: with SMTP id z19mr536654qtm.356.1633547382635;
+ Wed, 06 Oct 2021 12:09:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210902214708.1776690-1-robimarko@gmail.com> <YUf3aKn78+41Cb/G@builder.lan>
+ <CAOX2RU5b46H7nqm6G4mHLSqEhGiWktwWjUKF5w10Ut+AdKea-A@mail.gmail.com>
+ <632a7d28c23a8497d35ea009bfe89883@codeaurora.org> <CAOX2RU5+jeXiqz8oss8Sd-BWa059uAv5xu=7nx_YF4RYpG2S6w@mail.gmail.com>
+ <YUurqDL/S15RziCQ@builder.lan> <20211006182419.GC33862@thinkpad>
+ <CAOX2RU43D72yx1Kyb0jRMMOLgBd1OMscWLH-dEdp0P=L-5quHQ@mail.gmail.com> <20211006184404.GD33862@thinkpad>
+In-Reply-To: <20211006184404.GD33862@thinkpad>
+From:   Robert Marko <robimarko@gmail.com>
+Date:   Wed, 6 Oct 2021 21:09:31 +0200
+Message-ID: <CAOX2RU44mp2MfbEsjziV_X7SdO1wf+ptPbF-51Tc8FPzQcozJw@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: qcom: ipq8074: add SMEM support
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Kathiravan T <kathirav@codeaurora.org>, agross@kernel.org,
+        robh+dt@kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-10-06, Johan Hovold <johan@kernel.org> wrote:
-> Console drivers often queue work while holding locks also taken in their
-> console write paths, something which can lead to deadlocks on SMP when
-> dumping workqueue state (e.g. sysrq-t or on suspend failures).
+On Wed, 6 Oct 2021 at 20:44, Manivannan Sadhasivam
+<manivannan.sadhasivam@linaro.org> wrote:
 >
-> For serial console drivers this could look like:
+> On Wed, Oct 06, 2021 at 08:26:10PM +0200, Robert Marko wrote:
+> > On Wed, 6 Oct 2021 at 20:24, Manivannan Sadhasivam
+> > <manivannan.sadhasivam@linaro.org> wrote:
+> > >
 >
-> 	CPU0				CPU1
-> 	----				----
+> [...]
 >
-> 	show_workqueue_state();
-> 	  lock(&pool->lock);		<IRQ>
-> 	  				  lock(&port->lock);
-> 					  schedule_work();
-> 					    lock(&pool->lock);
-> 	  printk();
-> 	    lock(console_owner);
-> 	    lock(&port->lock);
+> > > Sorry, missed this earlier. I did face the probe deferral issue before and
+> > > submitted a small series for fixing that:
+> > >
+> > > https://lore.kernel.org/linux-mtd/20210302132757.225395-1-manivannan.sadhasivam@linaro.org/
+> > >
+> > > These 2 patches are in mainline now. Robert, can you make sure that you have
+> > > these 2 patches in your tree?
+> >
+> > Hi Mani,
+> > Yes, I have those patches as I am running this on top of 5.15-rc4 currently.
+> >
 >
-> where workqueues are, for example, used to push data to the line
-> discipline, process break signals and handle modem-status changes. Line
-> disciplines and serdev drivers can also queue work on write-wakeup
-> notifications, etc.
+> Hmm. So if both SMEM and NAND drivers are added to the probe deferral list then
+> the issue is likely not related to probe ordering.
 >
-> Reworking every console driver to avoid queuing work while holding locks
-> also taken in their write paths would complicate drivers and is neither
-> desirable or feasible.
->
-> Instead use the deferred-printk mechanism to avoid printing while
-> holding pool locks when dumping workqueue state.
+> Can you nail down the point where the board starts rebooting?
 
-When I introduced the printk_deferred_enter/exit functions, I kind of
-expected patches like this to start showing up. The functions make it
-really convenient to establish general sections of console print
-deferring.
+Unfortunately not, I can see that it resets after the NAND driver
+requesting probe deferral but I cannot pinpoint the exact thing that
+resets it
+as there is no stack trace.
 
-When we move to kthread-printers, all printk calls will be deferred
-automatically. However, that is only during normal operation. The
-various printk_deferred sites may still be significant and will continue
-to have special meaning during startup and shutdown states, when the
-kthreads will not be active and direct printing will exist as it is now.
-
-FWIW, I am OK with this patch. It will be re-evaluated once we have
-kthread-printers, but I suspect even then it will remain.
-
-> Note that there are a few WARN_ON() assertions in the workqueue code
-> which could potentially also trigger a deadlock. Hopefully the ongoing
-> printk rework will provide a general solution for this eventually.
+Regards,
+Robert
 >
-> This was originally reported after a lockdep splat when executing
-> sysrq-t with the imx serial driver.
+> Thanks,
+> Mani
 >
-> Fixes: 3494fc30846d ("workqueue: dump workqueues on sysrq-t")
-> Cc: stable@vger.kernel.org	# 4.0
-> Reported-by: Fabio Estevam <festevam@denx.de>
-> Tested-by: Fabio Estevam <festevam@denx.de>
-> Signed-off-by: Johan Hovold <johan@kernel.org>
-
-Reviewed-by: John Ogness <john.ogness@linutronix.de>
-
-> ---
->
-> Changes in v2
->  - defer printing also of worker pool state (Peter Mladek)
->  - add Fabio's tested-by tag
->
->
->  kernel/workqueue.c | 18 ++++++++++++++++--
->  1 file changed, 16 insertions(+), 2 deletions(-)
->
-> diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-> index 33a6b4a2443d..1b3eb1e9531f 100644
-> --- a/kernel/workqueue.c
-> +++ b/kernel/workqueue.c
-> @@ -4830,8 +4830,16 @@ void show_workqueue_state(void)
->  
->  		for_each_pwq(pwq, wq) {
->  			raw_spin_lock_irqsave(&pwq->pool->lock, flags);
-> -			if (pwq->nr_active || !list_empty(&pwq->inactive_works))
-> +			if (pwq->nr_active || !list_empty(&pwq->inactive_works)) {
-> +				/*
-> +				 * Defer printing to avoid deadlocks in console
-> +				 * drivers that queue work while holding locks
-> +				 * also taken in their write paths.
-> +				 */
-> +				printk_deferred_enter();
->  				show_pwq(pwq);
-> +				printk_deferred_exit();
-> +			}
->  			raw_spin_unlock_irqrestore(&pwq->pool->lock, flags);
->  			/*
->  			 * We could be printing a lot from atomic context, e.g.
-> @@ -4849,7 +4857,12 @@ void show_workqueue_state(void)
->  		raw_spin_lock_irqsave(&pool->lock, flags);
->  		if (pool->nr_workers == pool->nr_idle)
->  			goto next_pool;
-> -
-> +		/*
-> +		 * Defer printing to avoid deadlocks in console drivers that
-> +		 * queue work while holding locks also taken in their write
-> +		 * paths.
-> +		 */
-> +		printk_deferred_enter();
->  		pr_info("pool %d:", pool->id);
->  		pr_cont_pool_info(pool);
->  		pr_cont(" hung=%us workers=%d",
-> @@ -4864,6 +4877,7 @@ void show_workqueue_state(void)
->  			first = false;
->  		}
->  		pr_cont("\n");
-> +		printk_deferred_exit();
->  	next_pool:
->  		raw_spin_unlock_irqrestore(&pool->lock, flags);
->  		/*
-> -- 
-> 2.32.0
+> > Regards,
+> > Robert
+> > >
+> > > Thanks,
+> > > Mani
+> > >
+> > > > Thanks,
+> > > > Bjorn
