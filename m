@@ -2,100 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04F754243F2
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 19:21:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C857C4243F8
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 19:22:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239376AbhJFRXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 13:23:08 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:50378
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239382AbhJFRXG (ORCPT
+        id S238644AbhJFRYM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 13:24:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50374 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231678AbhJFRYK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 13:23:06 -0400
-Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com [209.85.167.69])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id D9E103F32D
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 17:21:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1633540872;
-        bh=0cZECXo5Oq8InSEcFNJKeXKiRtAxuD956eiEhsyqxn4=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=AX9u71FHGawoS6+mJqpcRQbFNKaDePnSLr0KzGkUVe3iIkjvrWPiJvrHBDcEH/MBB
-         2owUXAT+pYWN290gxk4cwRTmNNQrLTKn/lZ1bgzghHy00mVKa2hAVQoNvBhLXXY8q5
-         SRUYKCiHMvgqXAHZCWCLjCoHkxxg3X6SEF034UHk84tMF3YE8HwmqQvh11VVVnnrZA
-         6IaqSgBT7i8cF6FQuCqfwWHEccovKivBWAG15YTDw2qQviX+NoROno5kvFfBPip0Gv
-         yuWFffSv3hRR+8RKpdkpHx1/tHL7XxPu6cLZANS+lpHa11XQuIcL/oEymoiXItQytS
-         unoKNor2PXLWQ==
-Received: by mail-lf1-f69.google.com with SMTP id c42-20020a05651223aa00b003fd328cfeccso2543169lfv.4
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 10:21:12 -0700 (PDT)
+        Wed, 6 Oct 2021 13:24:10 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACD77C061753
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 10:22:18 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id oa12-20020a17090b1bcc00b0019f715462a8so2893415pjb.3
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 10:22:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LuFD3DjuAsecBQETsr19lKvC+u97mJmjB+UnZRmfCzg=;
+        b=pC7j8eITFbGqLmwjrio4yjY/CCYQVie5jvH66MeBxVkW5gfU4x8W5aVLT2GxxNugxp
+         Sq+rlPEX3g9WStsf5PLNDgOYnlZEwL8txN9bP8JZ1+xxu0t3Rbae2AmME/JcqZA3dCi1
+         UHDMxl50lugiTXCpQ93Tyt6RbWM1XLoAjeWMvXSyme7Ed3o3LTgiGLovPsGKxiOAmZHf
+         vUz29Wsvt9V62o7Dmh9LOMtvhAldAqwLg/sepf/306CXsybmwbJ7AutVydDymJZgrnOe
+         t+Vp19ucgC3i8KumMcJ+kNUXC7XyW85G5bfqRldk6cV6dx/TvyESqPybsZOww09R2kCo
+         ezcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=0cZECXo5Oq8InSEcFNJKeXKiRtAxuD956eiEhsyqxn4=;
-        b=AlyA9VTNy0+UiOaECS+nQrXVWUBdfH3qExAFCW+frLq9PYgZKEOwm5K7Bdg3oLHGTr
-         DEFgpNghL6qqOZOYvePWEEURf03izdboA/LVudu8SUtI83MiUJcoTBFNWjoh64c7VssI
-         S4oc2AulDadLvL81A+Ceh3hnEuaRN2IKOZXh3qAAYyIYFTszfmaKQUWRcJOJ/ELrYFD8
-         qtloPT0Ce/sKpung631uGjMPqCUOJtl476Rac0qGBiXfYpG8U2AGUH83bxBQKGCX2ScG
-         YAibdj7up+SVN5COdXrs2CXNkLVrcIxlq0IUVxNwE2O1+nGTZlAf123g1CtfEDWzuQaD
-         x3rg==
-X-Gm-Message-State: AOAM531r0v3cYw3nYrGWSz+CasndeDYvsfqU6oze16koR6970T5nBAOz
-        68W0sJUZHQYCXhH/oevP5wrhbZ4Fgq9iY9CT/v6Rl30knVGD9q7mX869uuOBmAfHahOZk8Telrk
-        ynm44JzjIfqtc2U/nMLy7jC14AscxOp115vNG6/nUDg==
-X-Received: by 2002:a2e:160a:: with SMTP id w10mr29552889ljd.50.1633540872136;
-        Wed, 06 Oct 2021 10:21:12 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx7gOFBqomi1IBdeCW+tCVrsZh82TOgzFybJHNk6+qbcfd0gOuOv7SH3dwoY9oJfUibCBvADg==
-X-Received: by 2002:a2e:160a:: with SMTP id w10mr29552863ljd.50.1633540871949;
-        Wed, 06 Oct 2021 10:21:11 -0700 (PDT)
-Received: from [192.168.0.20] (78-11-189-27.static.ip.netia.com.pl. [78.11.189.27])
-        by smtp.gmail.com with ESMTPSA id d13sm2319339lfi.48.2021.10.06.10.21.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Oct 2021 10:21:11 -0700 (PDT)
-Subject: Re: [PATCH v4 2/7] dt-bindings: memory: lpddr2: Convert to schema
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-References: <20211005230009.3635-1-digetx@gmail.com>
- <20211005230009.3635-3-digetx@gmail.com>
- <6b8f6ef7-cfc5-3a8b-d44d-f4080a85ecf3@canonical.com>
- <7047ad7b-52d6-0c91-b7d2-b115ea69506f@gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <6610ce30-405c-0a91-eb36-37ca3d0cf730@canonical.com>
-Date:   Wed, 6 Oct 2021 19:21:10 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LuFD3DjuAsecBQETsr19lKvC+u97mJmjB+UnZRmfCzg=;
+        b=jt6DTwBYim9wZVBgLXoYIQpV4e4Anu5CcdG3LCW5FY2EKXszra+5M713GaVU7Eqne5
+         ABF04ZLF4WT4amcteE76PPOAh7NfVmRQhoeSTm9ZCdM3WhtBtkLmb7NLW3zyBwzp9oQ1
+         MI/eMLtnHydegNYTPCopxqnTa09NMsAp4yaX90pLmDEElFA3K/0hgOo03ZWKi2xNBCa1
+         sf3g9Ue8AtFfUM5YpLwQ+4iMSBeKJQ/J2z2+W+5Jxndswr3z7kQW36NDuFPLJtOm3+Om
+         jhhFgQ9U2lP5FfKoGklImyGAkiIMvdCFuHCAasEiksvK26uRrBe0/kHs/Wz1OArI/a7O
+         CXaw==
+X-Gm-Message-State: AOAM531RmsaZVq3wF876dkGOVn+3GlB9oyBxwiUy+wikMEhp3e+BtAsp
+        2iN/ZJx1sDldpWmxLpH0ei7knoTaeZdqNPYddLEXGdZ6NU1QvQ==
+X-Google-Smtp-Source: ABdhPJxrCy4jllWoM0mTHfBjDMShNYpfxu2qKtoN3zGIl418b5CzQx26hThBRjmoM4nTC66Beuw9UnPEPB629gWMf2g=
+X-Received: by 2002:a17:90b:3552:: with SMTP id lt18mr12079130pjb.63.1633540937948;
+ Wed, 06 Oct 2021 10:22:17 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <7047ad7b-52d6-0c91-b7d2-b115ea69506f@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210930222048.1692635-1-dlatypov@google.com> <20210930222048.1692635-5-dlatypov@google.com>
+In-Reply-To: <20210930222048.1692635-5-dlatypov@google.com>
+From:   Brendan Higgins <brendanhiggins@google.com>
+Date:   Wed, 6 Oct 2021 10:22:07 -0700
+Message-ID: <CAFd5g455K5XLR2m0zHtfUQwVP+iNBumE0zp5T7-H1ncB+_BVmw@mail.gmail.com>
+Subject: Re: [PATCH v4 4/4] kunit: tool: support running each suite/test separately
+To:     Daniel Latypov <dlatypov@google.com>
+Cc:     davidgow@google.com, linux-kernel@vger.kernel.org,
+        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
+        skhan@linuxfoundation.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/10/2021 17:41, Dmitry Osipenko wrote:
-> 06.10.2021 13:57, Krzysztof Kozlowski пишет:
->>> +  density:
->>> +    description: |
->>> +      Density in megabits of SDRAM chip. Obtained from device datasheet.
->> You need here a type/ref, so uint32.
->>
-> 
-> The type is uint32 by default. I can add it, but it's not really necessary.
+On Thu, Sep 30, 2021 at 3:21 PM Daniel Latypov <dlatypov@google.com> wrote:
+>
+> The new --run_isolated flag makes the tool boot the kernel once per
+> suite or test, preventing leftover state from one suite to impact the
+> other. This can be useful as a starting point to debugging test
+> hermeticity issues.
+>
+> Note: it takes a lot longer, so people should not use it normally.
+>
+> Consider the following very simplified example:
+>
+>   bool disable_something_for_test = false;
+>   void function_being_tested() {
+>     ...
+>     if (disable_something_for_test) return;
+>     ...
+>   }
+>
+>   static void test_before(struct kunit *test)
+>   {
+>     disable_something_for_test = true;
+>     function_being_tested();
+>     /* oops, we forgot to reset it back to false */
+>   }
+>
+>   static void test_after(struct kunit *test)
+>   {
+>     /* oops, now "fixing" test_before can cause test_after to fail! */
+>     function_being_tested();
+>   }
+>
+> Presented like this, the issues are obvious, but it gets a lot more
+> complicated to track down as the amount of test setup and helper
+> functions increases.
+>
+> Another use case is memory corruption. It might not be surfaced as a
+> failure/crash in the test case or suite that caused it. I've noticed in
+> kunit's own unit tests, the 3rd suite after might be the one to finally
+> crash after an out-of-bounds write, for example.
+>
+> Example usage:
+>
+> Per suite:
+> $ ./tools/testing/kunit/kunit.py run --kunitconfig=lib/kunit --run_isolated=suite
+> ...
+> Starting KUnit Kernel (1/7)...
+> ============================================================
+> ======== [PASSED] kunit_executor_test ========
+> ....
+> Testing complete. 5 tests run. 0 failed. 0 crashed. 0 skipped.
+> Starting KUnit Kernel (2/7)...
+> ============================================================
+> ======== [PASSED] kunit-try-catch-test ========
+> ...
+>
+> Per test:
+> $ ./tools/testing/kunit/kunit.py run --kunitconfig=lib/kunit --run_isolated=test
+> Starting KUnit Kernel (1/23)...
+> ============================================================
+> ======== [PASSED] kunit_executor_test ========
+> [PASSED] parse_filter_test
+> ============================================================
+> Testing complete. 1 tests run. 0 failed. 0 crashed. 0 skipped.
+> Starting KUnit Kernel (2/23)...
+> ============================================================
+> ======== [PASSED] kunit_executor_test ========
+> [PASSED] filter_subsuite_test
+> ...
+>
+> It works with filters as well:
+> $ ./tools/testing/kunit/kunit.py run --kunitconfig=lib/kunit --run_isolated=suite example
+> ...
+> Starting KUnit Kernel (1/1)...
+> ============================================================
+> ======== [PASSED] example ========
+> ...
+>
+> It also handles test filters, '*.*skip*' runs these 3 tests:
+>   kunit_status.kunit_status_mark_skipped_test
+>   example.example_skip_test
+>   example.example_mark_skipped_test
+>
+> Signed-off-by: Daniel Latypov <dlatypov@google.com>
+> Reviewed-by: David Gow <davidgow@google.com>
 
-Hmmm, maybe I missed some background here. Who sets uint32 as default?
-The schema does not define "density" so this is more like a vendor-type
-property which required therefore a type.
-
-Also Rob's pointed this to my patch here around "op_mode":
-https://lore.kernel.org/linux-samsung-soc/cdcd4eda-a7a9-2aa2-1316-e7184ff30bf3@canonical.com/T/#m17adea693a9cbcca75b0ba6f9d878f5fd1bf5d14
-
-Best regards,
-Krzysztof
+Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
