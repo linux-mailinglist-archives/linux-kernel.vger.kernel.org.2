@@ -2,143 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A09D5423CA5
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 13:23:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 899BE423CAD
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 13:23:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238440AbhJFLZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 07:25:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30013 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238289AbhJFLZA (ORCPT
+        id S238498AbhJFLZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 07:25:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238408AbhJFLZD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 07:25:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633519388;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IHNPWvH8IdSItCatEhURToP4NiNrO6JvBUwAheoZRXE=;
-        b=E8BBYGua+gyOVT1LY8055TTH6alTmP156uTNKrravlCsaZKCuZMJyHhL234f98IMDMqOop
-        EselYh2P7G9eL17qzUMNzUbE7KuxtDLEiQjQuCibiqn6r/7piJmYAmFaZzE+J6qCJhxjBN
-        xCVPwVKuoxTK0B4qZo96mx1mbu5fURo=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-530-9tAYCeTfNKmmWhNykaDJqQ-1; Wed, 06 Oct 2021 07:23:07 -0400
-X-MC-Unique: 9tAYCeTfNKmmWhNykaDJqQ-1
-Received: by mail-ed1-f71.google.com with SMTP id p20-20020a50cd94000000b003db23619472so2296996edi.19
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 04:23:07 -0700 (PDT)
+        Wed, 6 Oct 2021 07:25:03 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 407B4C061755;
+        Wed,  6 Oct 2021 04:23:11 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id r7so7711745wrc.10;
+        Wed, 06 Oct 2021 04:23:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=nNzJU9Y0TN+qNE5qJcuFSRHdr3qJUmf5dCSvTeevenI=;
+        b=DvkR5dgnWDdBS+0qZqDLqptsMrO48mZFBOoVfrhVp1wxj0c0lqbipUlch7OZ2zz6Ju
+         FJ808jczCkC64MPyLQ3ZaKyj+N60OlK4MlMcS+EKYeBqdXvtsec4ES4LUhDg+Cb9igbp
+         P2qfaBhC4M3KEmlyTrfH6d7CZObxFLz7co3AJM8bwypCl6XkaeiexgM2xkaNWqQ6Zqok
+         56RiOXUbl/GGEhcaCu/ffI6h9/qneYg71jDglCCaVPNfTXtWBPutm9YYGaEGR7Vs+Id1
+         54sA9MQelc5oQvRlUJ3chptIlSUGFO4LaM/DhnzsUQLB29hbkyQoQahqA3qBJruBF7O7
+         JtGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=IHNPWvH8IdSItCatEhURToP4NiNrO6JvBUwAheoZRXE=;
-        b=ULPnY/Gy32GpXr7iO5uYSHBepJuCBvLT2EJ17dhR5kO0jtstjlgafY/BS1g0dYQ4WL
-         gpClyQdd73BY/5CppBpg2Ve1Tqxfz4ocrGkgmK+go1q5Bb6um+yk9uTb/FM85uqg46rn
-         2gXHbBxrUdw/YQJJF185Vae55VxhrzZYPFsIh7o8w0Cl+3dkP3ILsL3/SV7aT72+J4St
-         gv+V6oKzNKWYkBxX4GjdXt60hA+L2sASc3m1kmsb++cv/MHE17/w+bIoljpbEU05nfQ+
-         Nk0T7CnTcmNQHos4KVxSrj1apvaVVyeB7mCEgePtd+rXzL1hfLRiCf+zRQZd3iqY8ZJg
-         yGuw==
-X-Gm-Message-State: AOAM533DieIiVaDEs7GqQjBY/04b0Eoh/N83xXeT7jSzRZIZQhbA4LDk
-        A18dA53CUZvz3Y99kHN6x6GLnMK8cdjtspcK3pGiyX6/03YlI7TKVERfMdL2qPr9UWNjnqac6CQ
-        cj6Z6LGbGvsSZOC/MkNDh/Wab
-X-Received: by 2002:a17:906:280f:: with SMTP id r15mr30187273ejc.559.1633519386421;
-        Wed, 06 Oct 2021 04:23:06 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw1R5OiDfTUFCbiGI85SCjOZAdyXVSTkog8lUinznoJ4IdzInmYSLsZl+IRVq4M3m708noiMw==
-X-Received: by 2002:a17:906:280f:: with SMTP id r15mr30187247ejc.559.1633519386187;
-        Wed, 06 Oct 2021 04:23:06 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
-        by smtp.gmail.com with ESMTPSA id r22sm4669140ejd.109.2021.10.06.04.23.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Oct 2021 04:23:05 -0700 (PDT)
-Message-ID: <9664819e-a767-3a92-5e5d-6a0418984cd4@redhat.com>
-Date:   Wed, 6 Oct 2021 13:23:04 +0200
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=nNzJU9Y0TN+qNE5qJcuFSRHdr3qJUmf5dCSvTeevenI=;
+        b=6mJMlM7amgCLkdyWaqibr2soI1dFaHkXtX1d57Ahg5YawItzfK+83E0SiSKIn3Lk+r
+         820abfz+LkQrnXKFrmvMEl01+vxv5zw2uxZIujEqBkVUuYNIaJ5GdbASOjaDn6zFzJHa
+         eqZShLEgHhK39okNxASKkcEZ0opx7nXfH82ORBAcFYyZQpRugMWTwRxRnk2VLjefXxIL
+         dSbr7fvcRreIwZ+gOcrW63+jjON6LgbzBgE3QRMYywbJVLNxHOeFDFwBeePzuf9aV90z
+         PVamCHnXbwdYrwGZ8Ld/nBzOQ3tmBo8eXzKllQdSlMoMmbIYA/zCnBKJ63RZD6++eQQf
+         npRA==
+X-Gm-Message-State: AOAM530kdEBIK9Tb8VQlENUUKLiQ632/yVhVAvWCbeF8Rne4mvDg5NSC
+        ZpjNOPyiubC4eLhk4sFrOLU=
+X-Google-Smtp-Source: ABdhPJxnXLZqC6UG7sG5RazrmyOBoNZVOuzAPL7APxcEs7FsSvkkn735SXc27MC7cXQ47Hksg6RmUg==
+X-Received: by 2002:adf:e74b:: with SMTP id c11mr26414202wrn.362.1633519389838;
+        Wed, 06 Oct 2021 04:23:09 -0700 (PDT)
+Received: from localhost.localdomain (252.red-83-54-181.dynamicip.rima-tde.net. [83.54.181.252])
+        by smtp.gmail.com with ESMTPSA id e14sm10801985wrw.33.2021.10.06.04.23.08
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 06 Oct 2021 04:23:09 -0700 (PDT)
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+To:     sboyd@kernel.org
+Cc:     linux-clk@vger.kernel.org, gregkh@linuxfoundation.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org,
+        linux-staging@lists.linux.dev, neil@brown.name,
+        linux-kernel@vger.kernel.org, john@phrozen.org
+Subject: [PATCH v2 2/4] dt-bindings: clock: mediatek,mt7621-sysc: add '#reset-cells' property
+Date:   Wed,  6 Oct 2021 13:23:04 +0200
+Message-Id: <20211006112306.4691-3-sergio.paracuellos@gmail.com>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20211006112306.4691-1-sergio.paracuellos@gmail.com>
+References: <20211006112306.4691-1-sergio.paracuellos@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH MANUALSEL 5.10 3/7] KVM: do not shrink halt_poll_ns below
- grow_start
-Content-Language: en-US
-To:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>, kvm@vger.kernel.org
-References: <20211006111234.264020-1-sashal@kernel.org>
- <20211006111234.264020-3-sashal@kernel.org>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <20211006111234.264020-3-sashal@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/10/21 13:12, Sasha Levin wrote:
-> From: Sergey Senozhatsky <senozhatsky@chromium.org>
-> 
-> [ Upstream commit ae232ea460888dc5a8b37e840c553b02521fbf18 ]
-> 
-> grow_halt_poll_ns() ignores values between 0 and
-> halt_poll_ns_grow_start (10000 by default). However,
-> when we shrink halt_poll_ns we may fall way below
-> halt_poll_ns_grow_start and endup with halt_poll_ns
-> values that don't make a lot of sense: like 1 or 9,
-> or 19.
-> 
-> VCPU1 trace (halt_poll_ns_shrink equals 2):
-> 
-> VCPU1 grow 10000
-> VCPU1 shrink 5000
-> VCPU1 shrink 2500
-> VCPU1 shrink 1250
-> VCPU1 shrink 625
-> VCPU1 shrink 312
-> VCPU1 shrink 156
-> VCPU1 shrink 78
-> VCPU1 shrink 39
-> VCPU1 shrink 19
-> VCPU1 shrink 9
-> VCPU1 shrink 4
-> 
-> Mirror what grow_halt_poll_ns() does and set halt_poll_ns
-> to 0 as soon as new shrink-ed halt_poll_ns value falls
-> below halt_poll_ns_grow_start.
-> 
-> Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> Message-Id: <20210902031100.252080-1-senozhatsky@chromium.org>
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
->   virt/kvm/kvm_main.c | 6 +++++-
->   1 file changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> index 0e4310c415a8..57c0c3b18bde 100644
-> --- a/virt/kvm/kvm_main.c
-> +++ b/virt/kvm/kvm_main.c
-> @@ -2756,15 +2756,19 @@ static void grow_halt_poll_ns(struct kvm_vcpu *vcpu)
->   
->   static void shrink_halt_poll_ns(struct kvm_vcpu *vcpu)
->   {
-> -	unsigned int old, val, shrink;
-> +	unsigned int old, val, shrink, grow_start;
->   
->   	old = val = vcpu->halt_poll_ns;
->   	shrink = READ_ONCE(halt_poll_ns_shrink);
-> +	grow_start = READ_ONCE(halt_poll_ns_grow_start);
->   	if (shrink == 0)
->   		val = 0;
->   	else
->   		val /= shrink;
->   
-> +	if (val < grow_start)
-> +		val = 0;
-> +
->   	vcpu->halt_poll_ns = val;
->   	trace_kvm_halt_poll_ns_shrink(vcpu->vcpu_id, val, old);
->   }
-> 
+Make system controller a reset provider for all the peripherals in the
+MT7621 SoC adding '#reset-cells' property.
 
-Acked-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+---
+ .../bindings/clock/mediatek,mt7621-sysc.yaml         | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/clock/mediatek,mt7621-sysc.yaml b/Documentation/devicetree/bindings/clock/mediatek,mt7621-sysc.yaml
+index 915f84efd763..0c0b0ae5e2ac 100644
+--- a/Documentation/devicetree/bindings/clock/mediatek,mt7621-sysc.yaml
++++ b/Documentation/devicetree/bindings/clock/mediatek,mt7621-sysc.yaml
+@@ -22,6 +22,11 @@ description: |
+ 
+   The clocks are provided inside a system controller node.
+ 
++  This node is also a reset provider for all the peripherals.
++
++  Reset related bits are defined in:
++  [2]: <include/dt-bindings/reset/mt7621-reset.h>.
++
+ properties:
+   compatible:
+     items:
+@@ -37,6 +42,12 @@ properties:
+       clocks.
+     const: 1
+ 
++  "#reset-cells":
++    description:
++      The first cell indicates the reset bit within the register, see
++      [2] for available resets.
++    const: 1
++
+   ralink,memctl:
+     $ref: /schemas/types.yaml#/definitions/phandle
+     description:
+@@ -61,6 +72,7 @@ examples:
+       compatible = "mediatek,mt7621-sysc", "syscon";
+       reg = <0x0 0x100>;
+       #clock-cells = <1>;
++      #reset-cells = <1>;
+       ralink,memctl = <&memc>;
+       clock-output-names = "xtal", "cpu", "bus",
+                            "50m", "125m", "150m",
+-- 
+2.33.0
 
