@@ -2,116 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96D8F4245B6
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 20:08:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50326424595
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 20:05:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238975AbhJFSKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 14:10:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33508 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229633AbhJFSKs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 14:10:48 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2E81C061746;
-        Wed,  6 Oct 2021 11:08:56 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id 187so3051816pfc.10;
-        Wed, 06 Oct 2021 11:08:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QyNm5BpemRIxv+xxQfUsI80iHfW6yb7mlL0VKHbA908=;
-        b=FIya0BGV3biCJzthjELufMVsOjYj8X/rXMcp2M4OopNxQD4LGD1wnbMjcW4vLsIdBR
-         OUcFRwouOpTqKhilmOA52foFwjk5mkq2qZR2BnVzZ0Ql3fF4WlknfVEMGPSoJrpHp4nB
-         DLY6wn5kTWMYmGRQ1JuaibprJk0NgJAU0ILjPjOQShZMH90dA0t3Akt1rhawI2Bgp8kr
-         m2giBc1pNfOW4ZmTvoDyIiq9UlahSYjPdgjq8yhRsbYFBiCMY5M6Cuu/ppvafZ9A1GiX
-         T5vKFKel9EHJkRAW6ZR3KhI42aWR1v3GaBbDtc1R9St1lqtmfSxUGxpGxj65C9KDUyIZ
-         OD7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QyNm5BpemRIxv+xxQfUsI80iHfW6yb7mlL0VKHbA908=;
-        b=3s9pC7ImhejAwpe/HuRwON6RWVv9vG6cF/jeNhP0EUo090eCDm4dsKapMH1kZYY0Wv
-         qSYR85Ha5GijXvd2nishorEYAdu1TGsPwwOYcomX8srSW0F5QrhQBywt9Rdx5g9FIES/
-         ZJDuHUVSAvt7/hsPLZ2s+njVV36PIBRd1eWvoVOwNLb32RaWi8CE8oYbHRId2XNoR3Ix
-         djQW+aCQyO/LbDsnKqayGknz5+QhTHZky/VYnP9HiVZYWMKes1piYSKUQwwpzvLdEcGI
-         dGDGGtQj5RYavgHu6sk0HdT0dsPzj5CzZcrKImmYYyQo8TbMrD+r006B0w9PY52TZ8hk
-         olRQ==
-X-Gm-Message-State: AOAM532n5l2w5DCaRqIkqXigvO9fQy8WCyRvQbKrqN5CICleoiP4vtze
-        NJ43oFOhy5KFR+6ogYnCV1jRNM3y0hM=
-X-Google-Smtp-Source: ABdhPJzvoep8PUXmXq/4RuDCelfPInblwyCmINJgvgP0AK6pz2J+Bjt50qF7H0JujKZj4dY2PBlppQ==
-X-Received: by 2002:a65:6554:: with SMTP id a20mr106370pgw.107.1633543735899;
-        Wed, 06 Oct 2021 11:08:55 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:18f1:d20e:edb5:c807])
-        by smtp.gmail.com with ESMTPSA id h9sm6248534pjg.9.2021.10.06.11.08.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Oct 2021 11:08:54 -0700 (PDT)
-Date:   Wed, 6 Oct 2021 11:08:52 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     John Keeping <john@metanate.com>
-Cc:     linux-input@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Input: st1232 - increase "wait ready" timeout
-Message-ID: <YV3mNMnWmUsasZ2h@google.com>
-References: <20210929152609.2421483-1-john@metanate.com>
+        id S237826AbhJFSG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 14:06:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41628 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232019AbhJFSGz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 14:06:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 60CA661037;
+        Wed,  6 Oct 2021 18:05:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633543503;
+        bh=mphWiOSjWVve4063iT9iLB+Ae/xfjYf+gdyYkUHB2/Y=;
+        h=Date:From:To:Cc:Subject:From;
+        b=e9HZWeueYaTquf0esaeqBWa+qbUPx9RRyl1y3/SlMhT0F4LiGEEpruzhqsIcVOExJ
+         Il5t2TN7bFbTG3YnDOEQA9+MCerGxYNZ0uZvYHehxgKy5syHlbYsfqhdaL67Nn0F9k
+         8SLgZoM2/uewdLe3CLgkzhuN8aL16jj2x9Y/SjeugZQxhxTDGER6SSRg3q8nM41Bfn
+         7BnIz/5DAGCpJo/QvWxZ5cmQ/mfAGvlBSNZOAfxHBvqPZOJz0lbxl6VkWlqC99gz6e
+         UillWofcVuceyoH5OSO4cqbX4S+8sG6w3uX1L207aLtgyvwVF4fLR6uQaBUL+v6KHq
+         082UUeqLM0iXA==
+Date:   Wed, 6 Oct 2021 13:09:08 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH][next] ice: use devm_kcalloc() instead of devm_kzalloc()
+Message-ID: <20211006180908.GA913430@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210929152609.2421483-1-john@metanate.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 04:26:08PM +0100, John Keeping wrote:
-> I have a ST1633 touch controller which fails to probe due to a timeout
-> waiting for the controller to become ready.  Increasing the minimum
-> delay to 100ms ensures that the probe sequence completes successfully.
-> 
-> The ST1633 datasheet says nothing about the maximum delay here and the
-> ST1232 I2C protocol document says "wait until" with no notion of a
-> timeout.
-> 
-> Since this only runs once during probe, being generous with the timout
-> seems reasonable and most likely the device will become ready
-> eventually.
+Use 2-factor multiplication argument form devm_kcalloc() instead
+of devm_kzalloc().
 
-I'll apply this, but I wonder if it would not make sense to mark the
-driver as preferring asynchronous probing, so we do not delay
-initializing other devices while we are waiting for the touch controller
-to reset? Could you send me a patch for that?
+Link: https://github.com/KSPP/linux/issues/162
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/net/ethernet/intel/ice/ice_ethtool_fdir.c | 4 ++--
+ drivers/net/ethernet/intel/ice/ice_txrx.c         | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-> 
-> (It may be worth noting that I saw this issue with a PREEMPT_RT patched
-> kernel which probably has tighter wakeups from usleep_range() than other
-> preemption models.)
-> 
-> Fixes: f605be6a57b4 ("Input: st1232 - wait until device is ready before reading resolution")
-> Signed-off-by: John Keeping <john@metanate.com>
-> ---
->  drivers/input/touchscreen/st1232.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/input/touchscreen/st1232.c b/drivers/input/touchscreen/st1232.c
-> index 6abae665ca71..9d1dea6996a2 100644
-> --- a/drivers/input/touchscreen/st1232.c
-> +++ b/drivers/input/touchscreen/st1232.c
-> @@ -92,7 +92,7 @@ static int st1232_ts_wait_ready(struct st1232_ts_data *ts)
->  	unsigned int retries;
->  	int error;
->  
-> -	for (retries = 10; retries; retries--) {
-> +	for (retries = 100; retries; retries--) {
->  		error = st1232_ts_read_data(ts, REG_STATUS, 1);
->  		if (!error) {
->  			switch (ts->read_buf[0]) {
-> -- 
-> 2.33.0
-> 
-
-Thanks.
-
+diff --git a/drivers/net/ethernet/intel/ice/ice_ethtool_fdir.c b/drivers/net/ethernet/intel/ice/ice_ethtool_fdir.c
+index 16de603b280c..38960bcc384c 100644
+--- a/drivers/net/ethernet/intel/ice/ice_ethtool_fdir.c
++++ b/drivers/net/ethernet/intel/ice/ice_ethtool_fdir.c
+@@ -706,7 +706,7 @@ ice_create_init_fdir_rule(struct ice_pf *pf, enum ice_fltr_ptype flow)
+ 	if (!seg)
+ 		return -ENOMEM;
+ 
+-	tun_seg = devm_kzalloc(dev, sizeof(*seg) * ICE_FD_HW_SEG_MAX,
++	tun_seg = devm_kcalloc(dev, sizeof(*seg), ICE_FD_HW_SEG_MAX,
+ 			       GFP_KERNEL);
+ 	if (!tun_seg) {
+ 		devm_kfree(dev, seg);
+@@ -1068,7 +1068,7 @@ ice_cfg_fdir_xtrct_seq(struct ice_pf *pf, struct ethtool_rx_flow_spec *fsp,
+ 	if (!seg)
+ 		return -ENOMEM;
+ 
+-	tun_seg = devm_kzalloc(dev, sizeof(*seg) * ICE_FD_HW_SEG_MAX,
++	tun_seg = devm_kcalloc(dev, sizeof(*seg), ICE_FD_HW_SEG_MAX,
+ 			       GFP_KERNEL);
+ 	if (!tun_seg) {
+ 		devm_kfree(dev, seg);
+diff --git a/drivers/net/ethernet/intel/ice/ice_txrx.c b/drivers/net/ethernet/intel/ice/ice_txrx.c
+index 13b2bdc25b0d..fd10f8548feb 100644
+--- a/drivers/net/ethernet/intel/ice/ice_txrx.c
++++ b/drivers/net/ethernet/intel/ice/ice_txrx.c
+@@ -340,7 +340,7 @@ int ice_setup_tx_ring(struct ice_ring *tx_ring)
+ 	/* warn if we are about to overwrite the pointer */
+ 	WARN_ON(tx_ring->tx_buf);
+ 	tx_ring->tx_buf =
+-		devm_kzalloc(dev, sizeof(*tx_ring->tx_buf) * tx_ring->count,
++		devm_kcalloc(dev, sizeof(*tx_ring->tx_buf), tx_ring->count,
+ 			     GFP_KERNEL);
+ 	if (!tx_ring->tx_buf)
+ 		return -ENOMEM;
+@@ -464,7 +464,7 @@ int ice_setup_rx_ring(struct ice_ring *rx_ring)
+ 	/* warn if we are about to overwrite the pointer */
+ 	WARN_ON(rx_ring->rx_buf);
+ 	rx_ring->rx_buf =
+-		devm_kzalloc(dev, sizeof(*rx_ring->rx_buf) * rx_ring->count,
++		devm_kcalloc(dev, sizeof(*rx_ring->rx_buf), rx_ring->count,
+ 			     GFP_KERNEL);
+ 	if (!rx_ring->rx_buf)
+ 		return -ENOMEM;
 -- 
-Dmitry
+2.27.0
+
