@@ -2,132 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE571424A6D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 01:15:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37BDF424A70
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 01:18:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232234AbhJFXQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 19:16:55 -0400
-Received: from mail108.syd.optusnet.com.au ([211.29.132.59]:59676 "EHLO
-        mail108.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230213AbhJFXQx (ORCPT
+        id S231264AbhJFXUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 19:20:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229809AbhJFXUC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 19:16:53 -0400
-Received: from dread.disaster.area (pa49-195-238-16.pa.nsw.optusnet.com.au [49.195.238.16])
-        by mail108.syd.optusnet.com.au (Postfix) with ESMTPS id 3BA985E92DF;
-        Thu,  7 Oct 2021 10:14:54 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1mYG7g-003Hvo-Gu; Thu, 07 Oct 2021 10:14:52 +1100
-Date:   Thu, 7 Oct 2021 10:14:52 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Michal Hocko <mhocko@suse.com>, NeilBrown <neilb@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mel Gorman <mgorman@suse.de>, Jonathan Corbet <corbet@lwn.net>,
-        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH 2/6] MM: improve documentation for __GFP_NOFAIL
-Message-ID: <20211006231452.GF54211@dread.disaster.area>
-References: <163184698512.29351.4735492251524335974.stgit@noble.brown>
- <163184741778.29351.16920832234899124642.stgit@noble.brown>
- <b680fb87-439b-0ba4-cf9f-33d729f27941@suse.cz>
- <YVwyhDnE/HEnoLAi@dhcp22.suse.cz>
- <eba04a07-99da-771a-ab6b-36de41f9f120@suse.cz>
+        Wed, 6 Oct 2021 19:20:02 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2133C061746
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 16:18:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ffTwrIBmUt2AAjjYbplxTVj+0VLY0JCFISjMFxJRyH0=; b=RFQyO1qb+x4mkvFGwNUrZcbmv/
+        Ktr0rrrxz8WWL4HorWEaEEa/WvIQniKzRKicdNakJ0WtiOtqr3jZP1pyo0hQ2Kc6qqh2xws0wdgWC
+        KyNHzKWo/w8Plj16yf8DaATQ0+/h8mYRdpVSIWX7k2UJ7Vms6HF/7BWkuvEeBKaoR2AoWnjeXcnpO
+        Ih2Yt9U3IrZql6ruxxoDdf5ck/A8OEThOHgsXdFJv6aJJRtNAhNo3LwVpmHPX4YZix6m3TDUHxA6r
+        jv0cIxqEX+TrJaxPQgxv6lG0ncNw+0y8PUZXWcFPaDyCdsTZd90z5NWz7vtbVAMh1u4rxF5XIFBLN
+        R5KZFyBw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mYGAI-001Mhk-Gx; Wed, 06 Oct 2021 23:17:39 +0000
+Date:   Thu, 7 Oct 2021 00:17:34 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Kent Overstreet <kent.overstreet@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        hannes@cmpxchg.org, rientjes@google.com
+Subject: Re: Compaction & folios
+Message-ID: <YV4ujjM33QdLC8Xk@casper.infradead.org>
+References: <YV4o9SxfYuLm1i4d@moria.home.lan>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <eba04a07-99da-771a-ab6b-36de41f9f120@suse.cz>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.4 cv=VuxAv86n c=1 sm=1 tr=0 ts=615e2df0
-        a=DzKKRZjfViQTE5W6EVc0VA==:117 a=DzKKRZjfViQTE5W6EVc0VA==:17
-        a=kj9zAlcOel0A:10 a=8gfv0ekSlNoA:10 a=VwQbUJbxAAAA:8 a=7-415B0cAAAA:8
-        a=y7N-FL6dZ1VV32BAIJQA:9 a=CjuIK1q_8ugA:10 a=AjGcO6oz07-iQ99wixmX:22
-        a=biEYGPWJfzWAr4FL6Ov7:22
+In-Reply-To: <YV4o9SxfYuLm1i4d@moria.home.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05, 2021 at 02:27:45PM +0200, Vlastimil Babka wrote:
-> On 10/5/21 13:09, Michal Hocko wrote:
-> > On Tue 05-10-21 11:20:51, Vlastimil Babka wrote:
-> > [...]
-> >> > --- a/include/linux/gfp.h
-> >> > +++ b/include/linux/gfp.h
-> >> > @@ -209,7 +209,11 @@ struct vm_area_struct;
-> >> >   * used only when there is no reasonable failure policy) but it is
-> >> >   * definitely preferable to use the flag rather than opencode endless
-> >> >   * loop around allocator.
-> >> > - * Using this flag for costly allocations is _highly_ discouraged.
-> >> > + * Use of this flag may lead to deadlocks if locks are held which would
-> >> > + * be needed for memory reclaim, write-back, or the timely exit of a
-> >> > + * process killed by the OOM-killer.  Dropping any locks not absolutely
-> >> > + * needed is advisable before requesting a %__GFP_NOFAIL allocate.
-> >> > + * Using this flag for costly allocations (order>1) is _highly_ discouraged.
-> >> 
-> >> We define costly as 3, not 1. But sure it's best to avoid even order>0 for
-> >> __GFP_NOFAIL. Advising order>1 seems arbitrary though?
-> > 
-> > This is not completely arbitrary. We have a warning for any higher order
-> > allocation.
-> > rmqueue:
-> > 	WARN_ON_ONCE((gfp_flags & __GFP_NOFAIL) && (order > 1));
-> 
-> Oh, I missed that.
-> 
-> > I do agree that "Using this flag for higher order allocations is
-> > _highly_ discouraged.
-> 
-> Well, with the warning in place this is effectively forbidden, not just
-> discouraged.
+On Wed, Oct 06, 2021 at 06:53:41PM -0400, Kent Overstreet wrote:
+> It may turn out that allocating hugepages still doesn't work as reliably as we'd
+> like - but folios are still a big help even when we can't allocate a 2MB page,
+> because we'll be able to fall back to an order 6 or 7 or 8 allocation, which is
+> something we can't do now. And, since multiple CPU vendors now support
+> coalescing contiguous PTE entries in the TLB, this will still get us most of the
+> performance benefits of using hugepages.
 
-Yup, especially as it doesn't obey __GFP_NOWARN.
+I'd like to add two things:
 
-See commit de2860f46362 ("mm: Add kvrealloc()") as a direct result
-of unwittingly tripping over this warning when adding __GFP_NOFAIL
-annotations to replace open coded high-order kmalloc loops that have
-been in place for a couple of decades without issues.
+1. A lot of people talk about the performance improvements from using
+2MB pages, and there are the obvious hardware ones -- one fewer level
+to dereference in the page table walk when there's a TLB miss; using a
+single TLB entry to cache an entire 2MB page.
 
-Personally I think that the way __GFP_NOFAIL is first of all
-recommended over open coded loops and then only later found to be
-effectively forbidden and needing to be replaced with open coded
-loops to be a complete mess.
+But there are the software ones, which I believe Google have measured
+(perhaps it was the ChromeOS team?)  Allocating order-2/3/4 pages reduces
+the length of the LRU list by a factor of 4/8/16.  That means we get 4-16x
+memory reclaimed per unit of time, which reduces the LRU lock contention.
+Not to mention the advantage of being able to use a pagevec to describe
+960KB of memory rather than 60KB.
 
-Not to mention on the impossibility of using __GFP_NOFAIL with
-kvmalloc() calls. Just what do we expect kmalloc_node(__GFP_NORETRY
-| __GFP_NOFAIL) to do, exactly?
-
-So, effectively, we have to open-code around kvmalloc() in
-situations where failure is not an option. Even if we pass
-__GFP_NOFAIL to __vmalloc(), it isn't guaranteed to succeed because
-of the "we won't honor gfp flags passed to __vmalloc" semantics it
-has.
-
-Even the API constaints of kvmalloc() w.r.t. only doing the vmalloc
-fallback if the gfp context is GFP_KERNEL - we already do GFP_NOFS
-kvmalloc via memalloc_nofs_save/restore(), so this behavioural
-restriction w.r.t. gfp flags just makes no sense at all.
-
-That leads to us having to go back to writing extremely custom open
-coded loops to avoid awful high-order kmalloc direct reclaim
-behaviour and still fall back to vmalloc and to still handle NOFAIL
-semantics we need:
-
-https://lore.kernel.org/linux-xfs/20210902095927.911100-8-david@fromorbit.com/
-
-So, really, the problems are much deeper here than just badly
-documented, catch-22 rules for __GFP_NOFAIL - we can't even use
-__GFP_NOFAIL consistently across the allocation APIs because it
-changes allocation behaviours in unusable, self-defeating ways....
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+2. We can only measure what CPUs do today.  If our behaviour changes,
+CPU vendors will adapt.  I talked to someone who dabbles in hardware
+design who said that it really isn't that hard to design a TLB that
+can support mapping 64KB entries at arbitrary 4KB offsets.  There's no
+particular incentive for CPU manufacturers to do that today, but if we
+start allocating 64KB pages to cache files, that will change.
