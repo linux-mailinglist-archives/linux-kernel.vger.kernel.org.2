@@ -2,74 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F559423791
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 07:45:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2386423793
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 07:47:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234092AbhJFFre convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 6 Oct 2021 01:47:34 -0400
-Received: from ni.piap.pl ([195.187.100.5]:44002 "EHLO ni.piap.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229579AbhJFFrc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 01:47:32 -0400
-From:   =?utf-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] Add ADV7610 support for adv7604 driver - DT docs.
-Date:   Wed, 06 Oct 2021 07:45:38 +0200
-Message-ID: <m31r4yoge5.fsf@t19.piap.pl>
+        id S231336AbhJFFsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 01:48:51 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:43519 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229797AbhJFFsu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 01:48:50 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HPNkP4mVVz4xb7;
+        Wed,  6 Oct 2021 16:46:53 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1633499217;
+        bh=b7MTg7ZVl26ADUOl1u03/HcFOduj3s4d9zCKkCxyQXg=;
+        h=Date:From:To:Cc:Subject:From;
+        b=KonA22HM1O/f3gna93O4yr6eX6nqv8hJylacW5fpS3PzXjfJc7x+x/YEr+ReKiGoA
+         dxef7Ha0aWvapsaR/fWVSr0l2KBFXMYryqicZQsTCnjIsYySDOhNYLFoS7n0Fy+B2M
+         1VBhmfirFiIyPkN6HExAXa7n/w7yZG4w2IbIGhbXzTOnWtIOiatGvvVoVz0RGLfD6w
+         OSNyQzre8ztkGAoJpvuS7IlbG1jmJNO4IfCFuaocWZ4y3+aRc9+1SChdGLOpZDQ5k1
+         rWz752BE8PTJKzoLLc1/J3Vd++TFJyvlSEksApAWcQbkcOaMVTlETVVd7hK/nAU+5/
+         VhZFtwdsKVoYg==
+Date:   Wed, 6 Oct 2021 16:46:52 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Adam Bratschi-Kaye <ark.email@gmail.com>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Ayaan Zaidi <zaidi.ayaan@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Boris-Chengbiao Zhou <bobo1239@web.de>,
+        Douglas Su <d0u9.su@outlook.com>, Finn Behrens <me@kloenk.de>,
+        Fox Chen <foxhlchen@gmail.com>, Gary Guo <gary@garyguo.net>,
+        Geoffrey Thomas <geofft@ldpreload.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Sumera Priyadarsini <sylphrenadin@gmail.com>,
+        Sven Van Asbroeck <thesven73@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@google.com>,
+        Yuki Okushi <jtitor@2k36.org>
+Subject: linux-next: manual merge of the rust tree with the kbuild tree
+Message-ID: <20211006164652.28b82d57@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: multipart/signed; boundary="Sig_/J1zoyKkcUK6Ohh+IrncZNnJ";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ADV7610 is another HDMI receiver chip, very similar to
-the ADV7611. Tested on TinyRex BaseBoard Lite.
+--Sig_/J1zoyKkcUK6Ohh+IrncZNnJ
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Krzysztof Hałasa <khalasa@piap.pl>
+Hi all,
 
-diff --git a/Documentation/devicetree/bindings/media/i2c/adv7604.yaml b/Documentation/devicetree/bindings/media/i2c/adv7604.yaml
-index de15cebe2955..c19d8391e2d5 100644
---- a/Documentation/devicetree/bindings/media/i2c/adv7604.yaml
-+++ b/Documentation/devicetree/bindings/media/i2c/adv7604.yaml
-@@ -4,23 +4,24 @@
- $id: http://devicetree.org/schemas/media/i2c/adv7604.yaml#
- $schema: http://devicetree.org/meta-schemas/core.yaml#
- 
--title: Analog Devices ADV7604/11/12 video decoder with HDMI receiver
-+title: Analog Devices ADV7604/10/11/12 video decoder with HDMI receiver
- 
- maintainers:
-   - Hans Verkuil <hverkuil-cisco@xs4all.nl>
- 
- description:
--  The ADV7604 and ADV7611/12 are multiformat video decoders with an integrated
--  HDMI receiver. The ADV7604 has four multiplexed HDMI inputs and one analog
--  input, and the ADV7611 has one HDMI input and no analog input. The 7612 is
--  similar to the 7611 but has 2 HDMI inputs.
-+  The ADV7604 and ADV7610/11/12 are multiformat video decoders with
-+  an integrated HDMI receiver. The ADV7604 has four multiplexed HDMI inputs
-+  and one analog input, and the ADV7610/11 have one HDMI input and no analog
-+  input. The ADV7612 is similar to the ADV7610/11 but has 2 HDMI inputs.
- 
--  These device tree bindings support the ADV7611/12 only at the moment.
-+  These device tree bindings support the ADV7610/11/12 only at the moment.
- 
- properties:
-   compatible:
-     items:
-       - enum:
-+          - adi,adv7610
-           - adi,adv7611
-           - adi,adv7612
- 
+Today's linux-next merge of the rust tree got a conflict in:
 
--- 
-Krzysztof "Chris" Hałasa
+  scripts/kconfig/confdata.c
 
-Sieć Badawcza Łukasiewicz
-Przemysłowy Instytut Automatyki i Pomiarów PIAP
-Al. Jerozolimskie 202, 02-486 Warszawa
+between several commits, including
+
+  2836b7a7bd05 ("[for -next only] kconfig: generate include/generated/rustc=
+_cfg")
+
+from the kbuild tree and commit:
+
+  dc08d49444e9 ("Kbuild: add Rust support")
+
+from the rust tree.
+
+I fixed it up (as per Masahiro Yamada's suggestion, I used the version
+from the kbuild tree) and can carry the fix as necessary. This is now
+fixed as far as linux-next is concerned, but any non trivial conflicts
+should be mentioned to your upstream maintainer when your tree is
+submitted for merging.  You may also want to consider cooperating with
+the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/J1zoyKkcUK6Ohh+IrncZNnJ
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFdOEwACgkQAVBC80lX
+0GzJmggAoaYZs2dTQJuhAju6k7BhtVxBI+0E/+1Vo43Rzn/38ptZ+MqtM0X0t71S
+pB6gaGaeQh5FNo2x8Wee8TOLLw6E2fWcLkYyeF39azPekmyHmK+WotvotUSJ04X3
+sLH/3Y0KBM7r/b5BhalyPipw96jqiywoTnyBRv6x37D6OTCBLaW1bZhVOIVU+v02
+FpL6l9sVr+ukmJP37e8HpBSzdt3KrZJVZpSDMuC4ndICDNf9Hzvu0z4yGhCclOLK
+0AwUER0Gu+A7icL6uEApgb1hKqgHla6wDJeVjVgak8QGfW2mbnV+ADJ9VK3RB2D6
+f1fwInYdFjeZmTc3frKGn4OBDyNRJQ==
+=q619
+-----END PGP SIGNATURE-----
+
+--Sig_/J1zoyKkcUK6Ohh+IrncZNnJ--
