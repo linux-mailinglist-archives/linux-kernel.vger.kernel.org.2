@@ -2,93 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2428424A40
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 00:52:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AC87424A41
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 00:53:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239593AbhJFWyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 18:54:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42086 "EHLO
+        id S239663AbhJFWzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 18:55:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230047AbhJFWyD (ORCPT
+        with ESMTP id S230047AbhJFWzi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 18:54:03 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98202C061746
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 15:52:10 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id np13so3329405pjb.4
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 15:52:10 -0700 (PDT)
+        Wed, 6 Oct 2021 18:55:38 -0400
+Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73C32C061746
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 15:53:45 -0700 (PDT)
+Received: by mail-qv1-xf33.google.com with SMTP id j12so2969637qvk.12
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 15:53:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=X9+rzqyyLmnUi5V9eAJJM1v9frRed3OJmyIch0eqPL0=;
-        b=e3SL+nSUGhThIontz9MC6LQV9uc/k7lXXP1LdB+BIT8SvnItXfWFOQeT3NFyWAxOdd
-         nZG55+J2daSpVBGKHM+0QEPoZU0jFE/HVZ2iBINV5sBPQ3UXQI++SzdHxu/W0Fc0dAk3
-         QMi7Tv+4CW2+oXAuTb2v7Su40+X/8ng9F+pQIT4yWnR7E5Gyrf/WACGsyLjOsABowEJS
-         +oVFzzeUhYm7A55yr9zJPwJnFT+MX7cpdG91bsTxFAusxsPsl+6aqqGOBUoMzERmtlod
-         sO16/sQDZ2lPzWkWWMQ1mEwK4P0kX5e8r6BmM8YKNXyk5UM+0I1PjpGcomMG8CMSiN/H
-         Z08w==
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=S1ArjmdVM5/CQn0/TN/e+j2KUxSm5jTQpFZ+7YalclQ=;
+        b=MplgysbrNxONTnuN7aE/ULFC4Q5y3j4L/xuqPqmiAun7tdaYaO/mIw3SpcBRAsiebM
+         KkqWWWKUgBfrDuMMvovqc/3srxu2ubfYGY/Lr40SzCAb5WL1HV7gkGwJbrwhCg5/0xou
+         oPELpMLHDHSCmHighWguqu2pSPRJ8X+Mpb5EdiuT3EkRp6MSVxnd70M/9lXB6anEMYeH
+         +k/XQfVEMS7y+Awhv1WTc+42ULgRanAzkt/7lbj/QpvAwHsyg892rQhZQOWtJfe5L0vN
+         Zwz/Bx/nJG2u0mUOACh4Jml8qVmL6wbtjxd4VQhxz0p3SbBhFC0Jskuc9QLHyOYwH/x5
+         CMdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=X9+rzqyyLmnUi5V9eAJJM1v9frRed3OJmyIch0eqPL0=;
-        b=v7en9ztmOg/gXIxp9cYj5/YJgQHQHnFjDnLDw42uLJs+IWLqsjOXD/weP3qrhYiMru
-         gI/OZWK7O4PYx8eS0PX8dQDBf5J0M9D/PRgBKRsSIH9Inx4QduKyp+uyxl3PHazeO7zs
-         cxbX8kgJUwZPsfMggBvec2ZTxEMZZX4Wu32rvZVJCL2kK+8czaaZ1yB9oku0ahEXWN5/
-         FFSP65mkbmvDTTS99O1lWK5Pj9mEucOf6tr8UQ0qsc4RZ7wUwAuXSBlSa16w+825gq8e
-         eDnc8PEAPSzwEoZFtZe+NHyLFvkWFUF33Wn2kZATgm8zXLEv3biefL3wPDr5q6yJ9iaJ
-         7VHQ==
-X-Gm-Message-State: AOAM530uxQ0WPZFhrMOkhlubzeD6lBE2q3gRPA5gZHboWbqI7jynfBi4
-        I+T2Uz+1+zIw6nXjn9bGV+CQ6Q==
-X-Google-Smtp-Source: ABdhPJxbjLJju96OyFLkHu4aAAUct/Jk4TlYl9RxbnDwdQRzR7Zy/MRUeBfIjj1chkE51TkITn8NMw==
-X-Received: by 2002:a17:90a:bb82:: with SMTP id v2mr305066pjr.57.1633560729928;
-        Wed, 06 Oct 2021 15:52:09 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id y8sm22118302pfe.217.2021.10.06.15.52.09
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=S1ArjmdVM5/CQn0/TN/e+j2KUxSm5jTQpFZ+7YalclQ=;
+        b=VzsKtmsFNLY9o/Mx8YWGl51Cpcjr2MnmtQbStQ4AaS+snBtTOmoW1uOIHECAkykoxK
+         lqT6lDs5Q4sEiZIs5LqHTyKwdOQ1tro7hPcnrv+I1ELa6ceImsnFpKLsKAxe/LeQ0EJw
+         +jAqYdFbYbgD/5uV+GmwPDGyQNFfMR3vWLKGjczM3+RZLmUk8JB1HyiYFKVKR/RWDQ1v
+         F7nC8p10wv6QxvkSrQ+Yu8Fw7IE2dUVYz2SHo1SaY9grGxanBzUdECp8ldPixvF5pBEv
+         P1UjFdjKi7AEncACaJLpO9rD7NLYVqFgy0jZKcI/j3rZp28vHVe2BuPdzRAGxL0aAy4T
+         lQ4g==
+X-Gm-Message-State: AOAM530Srj9+37chetZWrLDsrZsWhyHFYIaX+oIhqa1GQJUGEjsB+W09
+        sDzR0GO+v9NxW+77GF6gsjDZKaaxcA==
+X-Google-Smtp-Source: ABdhPJzhX4DDbZM2IVXfT34uF6z1jB2xRk40uoQmwb+7nZ0nhv/cY5T9h0Ge/IhQdtEYMGMU+ICqIQ==
+X-Received: by 2002:a0c:e1c1:: with SMTP id v1mr755124qvl.26.1633560824221;
+        Wed, 06 Oct 2021 15:53:44 -0700 (PDT)
+Received: from moria.home.lan (c-73-219-103-14.hsd1.vt.comcast.net. [73.219.103.14])
+        by smtp.gmail.com with ESMTPSA id t24sm4567359qkj.38.2021.10.06.15.53.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Oct 2021 15:52:09 -0700 (PDT)
-Date:   Wed, 6 Oct 2021 22:52:05 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     syzbot <syzbot+7590ddacf9f333c18f6c@syzkaller.appspotmail.com>
-Cc:     axboe@kernel.dk, bp@alien8.de, hpa@zytor.com, jack@suse.cz,
-        jmattson@google.com, joro@8bytes.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mingo@redhat.com,
-        paolo.valente@linaro.org, pbonzini@redhat.com, reijiw@google.com,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
-        vkuznets@redhat.com, wanpengli@tencent.com, x86@kernel.org
-Subject: Re: [syzbot] general protection fault in rcu_segcblist_enqueue
-Message-ID: <YV4olbHUKr7edo9L@google.com>
-References: <00000000000084943605c64a9cbd@google.com>
- <0000000000002f208405cdb6f447@google.com>
+        Wed, 06 Oct 2021 15:53:43 -0700 (PDT)
+Date:   Wed, 6 Oct 2021 18:53:41 -0400
+From:   Kent Overstreet <kent.overstreet@gmail.com>
+To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Cc:     hannes@cmpxchg.org, willy@infradead.org, rientjes@google.com
+Subject: Compaction & folios
+Message-ID: <YV4o9SxfYuLm1i4d@moria.home.lan>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0000000000002f208405cdb6f447@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 06, 2021, syzbot wrote:
-> syzbot suspects this issue was fixed by commit:
-> 
-> commit 067a456d091d05fdae32cae350410d905968b645
-> Author: Sean Christopherson <seanjc@google.com>
-> Date:   Tue Jul 13 16:32:43 2021 +0000
-> 
->     KVM: SVM: Require exact CPUID.0x1 match when stuffing EDX at INIT
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15d871b7300000
-> start commit:   0319b848b155 binfmt: a.out: Fix bogus semicolon
-> git tree:       upstream
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=faed7df0f442c217
-> dashboard link: https://syzkaller.appspot.com/bug?extid=7590ddacf9f333c18f6c
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1308d0ed300000
-> 
-> If the result looks correct, please mark the issue as fixed by replying with:
-> 
-> #syz fix: KVM: SVM: Require exact CPUID.0x1 match when stuffing EDX at INIT
+So I have some observations on memory compaction & hugepages.
 
-LOL, close?  At least syzbot found a KVM commit.
+Right now, the working assumption in MM is that compaction is hard and
+expensive, and right now it is - because most allocations are order 0, with a
+small subset being hugepage order allocations. This means any time we need a
+hugepage, compaction has to move a bunch of order 0 pages around, and memory
+reclaim is no help here - when we reclaim memory, it's coming back as fragmented
+order 0 pages.
 
-#syz fix: KVM: x86: Handle SRCU initialization failure during page track init
+But what if compaction wasn't such a difficult, expensive operation?
+
+With folios, and then folios for anonymous pages, we won't see nearly so many
+order 0 allocations anymore - we'll see a spread of allocation sizes based on a
+mixture of application usage patterns - something much closer to a poisson
+distribution, vs. our current very bimodal distribution. And since we won't be
+fragmenting all our allocations up front, memory reclaim will be freeing
+allocations in this same distribution.
+
+Which means that any time an order n allocation fails, it's likely that we'll
+still have order n-1 pages free - and of those free order n-1 pages, one will
+likely have a buddy that's moveable and hasn't been fragmented - meaning the
+common case is that compaction will have to move _one_ (higher order) page -
+we'll almost never be having to move a bunch of 4k pages.
+
+Another way of thinking of this is that memory reclaim will be doing most of the
+work that compaction has to do now to allocate a high order page. Compaction
+will go from an expensive, somewhat unreliable operation to one that mostly just
+works - it's going to be _much_ less of a pain point.
+
+It may turn out that allocating hugepages still doesn't work as reliably as we'd
+like - but folios are still a big help even when we can't allocate a 2MB page,
+because we'll be able to fall back to an order 6 or 7 or 8 allocation, which is
+something we can't do now. And, since multiple CPU vendors now support
+coalescing contiguous PTE entries in the TLB, this will still get us most of the
+performance benefits of using hugepages.
