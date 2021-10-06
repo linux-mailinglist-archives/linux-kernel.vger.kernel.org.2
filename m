@@ -2,129 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5508D42412E
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 17:20:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C69342412C
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 17:20:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239239AbhJFPWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 11:22:32 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:37701 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239051AbhJFPWb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 11:22:31 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1633533638; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=vTominGrDerw5CGaGhPCV6xyYr12cyAJAlCnNz1Tn0w=; b=pjAsHPT2SoHQFDbD20t5K+ah1KHtuav1S5Fp1+UiQFWtUf0ZbehR8TuDlI48NnAv3PZM+kr/
- SZDLnJi6tWfptlNoB9winEZItjkwvjsML7mRRv7/9NQlqdtS8cGI32bjJCGwZoiWjQ67RtPU
- uSwWySP/FQT0ADY1otlKt7gqqgA=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 615dbeb403355859c8b81ac5 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 06 Oct 2021 15:20:20
- GMT
-Sender: mkshah=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 33B00C43460; Wed,  6 Oct 2021 15:20:20 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-4.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [192.168.29.129] (unknown [49.36.85.177])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: mkshah)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B0F89C4338F;
-        Wed,  6 Oct 2021 15:20:13 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org B0F89C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Subject: Re: [PATCH v10 5/5] arm64: dts: qcom: sc7280: Enable SoC sleep stats
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     swboyd@chromium.org, mka@chromium.org, evgreen@chromium.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        agross@kernel.org, dianders@chromium.org, linux@roeck-us.net,
-        rnayak@codeaurora.org, lsrao@codeaurora.org,
-        devicetree@vger.kernel.org
-References: <1633425065-7927-1-git-send-email-mkshah@codeaurora.org>
- <1633425065-7927-6-git-send-email-mkshah@codeaurora.org>
- <YVx4o8mfmFjKW5ng@ripper>
-From:   Maulik Shah <mkshah@codeaurora.org>
-Message-ID: <e1d88886-23ea-77b3-c827-0f83d2df576f@codeaurora.org>
-Date:   Wed, 6 Oct 2021 20:50:10 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S239228AbhJFPW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 11:22:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49904 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238923AbhJFPWY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 11:22:24 -0400
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72689C061753
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 08:20:32 -0700 (PDT)
+Received: by mail-yb1-xb34.google.com with SMTP id u32so6197682ybd.9
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 08:20:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ToWLSh1nym/rn5R/pSIAH+olMraiA1xkOFeogqJaaLs=;
+        b=f9kn9JCx2oUBAwY8E2iW/mbf7AvxnjIXVRaac9UV50eeIWLqUTCWu0BV3L74owunwZ
+         T8+Ksi5PO1UrZo7J2XqHRGiNW3/QgmcjUvcNnegrQMOjspJwLlWRfGdXHYBbE3rWHFYT
+         S5HR7U+eS+bLsWztsK+kURy3vTEiXFEwh+pGSta6oNHQNPLwhb44AARlY/BokOnZ8PT3
+         fRkA+WKzmNJyGLRRzch90e6kNwJ0x5Tb1XAfePiZXDH+a5NenIaapda/NDaFLES+s62d
+         5T0tvNJCfu0HEP2gi7mvJw5gLrUCYZCyQ+xFv77F6JuWgCYj94+gOqouoXSP/PgcHZFX
+         3xtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ToWLSh1nym/rn5R/pSIAH+olMraiA1xkOFeogqJaaLs=;
+        b=MkvfTe/VHA20WyqQOdqPxrWdPKiGPRDhdV5avvoCQqbuxbmNpecK2IXuc1k785k2iN
+         1cslXBly531yvrz3z5CTUga0QvXic3a9O5f1Rs4sCZs7MMpWg3kDdG2kjbGXTx24ttx8
+         w43WJ1KH6C1c5DBnctcWwWB6vFzpIPmb3hTW69+4Jsbs3ffmf4JiHmYdN3lq8ga6IB28
+         2rkpjSSLB9aK8RIRXYbx7xGS/m475Kwnv23XNm1TaLl38tjNQYJXKRFdnzv6AKlcoJ4y
+         MSHuS9w8v3iFPquZWcSp/L1RMJG/t04urGfESJ8mBWE/KPXDQMYjtQGkleJQWwkecA9P
+         90KA==
+X-Gm-Message-State: AOAM532bd09W8pvOKcTd02VX8k0+bvbswj5I0ypE04WUR2TIv0LNfNtZ
+        hBIrOR0ix7QLmpV2Hn8WWcBJauXLo2akZyZbe3nQEQ==
+X-Google-Smtp-Source: ABdhPJznFIkWV5cysIjYInnizr+OQ6ABZBYR0C1kpMgLSGjmxpkDb2Dph4kHq6ZH+DZeHiU/+bV2NT5qG2v6pWR5drM=
+X-Received: by 2002:a25:3:: with SMTP id 3mr29846057yba.418.1633533631382;
+ Wed, 06 Oct 2021 08:20:31 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YVx4o8mfmFjKW5ng@ripper>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <20211001205657.815551-1-surenb@google.com> <20211001205657.815551-3-surenb@google.com>
+ <20211005184211.GA19804@duo.ucw.cz> <CAJuCfpE5JEThTMhwKPUREfSE1GYcTx4YSLoVhAH97fJH_qR0Zg@mail.gmail.com>
+ <20211005200411.GB19804@duo.ucw.cz> <CAJuCfpFZkz2c0ZWeqzOAx8KFqk1ge3K-SiCMeu3dmi6B7bK-9w@mail.gmail.com>
+ <efdffa68-d790-72e4-e6a3-80f2e194d811@nvidia.com> <YV1eCu0eZ+gQADNx@dhcp22.suse.cz>
+ <6b15c682-72eb-724d-bc43-36ae6b79b91a@redhat.com> <CAJuCfpEPBM6ehQXgzp=g4SqtY6iaC8wuZ-CRE81oR1VOq7m4CA@mail.gmail.com>
+ <192438ab-a095-d441-6843-432fbbb8e38a@redhat.com>
+In-Reply-To: <192438ab-a095-d441-6843-432fbbb8e38a@redhat.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Wed, 6 Oct 2021 08:20:20 -0700
+Message-ID: <CAJuCfpH4KT=fOAWsYhaAb_LLg-VwPvL4Bmv32NYuUtZ3Ceo+PA@mail.gmail.com>
+Subject: Re: [PATCH v10 3/3] mm: add anonymous vma name refcounting
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Michal Hocko <mhocko@suse.com>, John Hubbard <jhubbard@nvidia.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Colin Cross <ccross@google.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        vincenzo.frascino@arm.com,
+        =?UTF-8?B?Q2hpbndlbiBDaGFuZyAo5by16Yym5paHKQ==?= 
+        <chinwen.chang@mediatek.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Jann Horn <jannh@google.com>, apopple@nvidia.com,
+        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
+        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
+        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
+        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
+        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
+        chris.hyser@oracle.com, Peter Collingbourne <pcc@google.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Jens Axboe <axboe@kernel.dk>, legion@kernel.org,
+        Rolf Eike Beer <eb@emlix.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Thomas Cedeno <thomascedeno@google.com>, sashal@kernel.org,
+        cxfcosmos@gmail.com, Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-mm <linux-mm@kvack.org>,
+        kernel-team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, Oct 6, 2021 at 8:08 AM David Hildenbrand <david@redhat.com> wrote:
+>
+> On 06.10.21 17:01, Suren Baghdasaryan wrote:
+> > On Wed, Oct 6, 2021 at 2:27 AM David Hildenbrand <david@redhat.com> wrote:
+> >>
+> >> On 06.10.21 10:27, Michal Hocko wrote:
+> >>> On Tue 05-10-21 23:57:36, John Hubbard wrote:
+> >>> [...]
+> >>>> 1) Yes, just leave the strings in the kernel, that's simple and
+> >>>> it works, and the alternatives don't really help your case nearly
+> >>>> enough.
+> >>>
+> >>> I do not have a strong opinion. Strings are easier to use but they
+> >>> are more involved and the necessity of kref approach just underlines
+> >>> that. There are going to be new allocations and that always can lead
+> >>> to surprising side effects.  These are small (80B at maximum) so the
+> >>> overall footpring shouldn't all that large by default but it can grow
+> >>> quite large with a very high max_map_count. There are workloads which
+> >>> really require the default to be set high (e.g. heavy mremap users). So
+> >>> if anything all those should be __GFP_ACCOUNT and memcg accounted.
+> >>>
+> >>> I do agree that numbers are just much more simpler from accounting,
+> >>> performance and implementation POV.
+> >>
+> >> +1
+> >>
+> >> I can understand that having a string can be quite beneficial e.g., when
+> >> dumping mmaps. If only user space knows the id <-> string mapping, that
+> >> can be quite tricky.
+> >>
+> >> However, I also do wonder if there would be a way to standardize/reserve
+> >> ids, such that a given id always corresponds to a specific user. If we
+> >> use an uint64_t for an id, there would be plenty room to reserve ids ...
+> >>
+> >> I'd really prefer if we can avoid using strings and instead using ids.
+> >
+> > I wish it was that simple and for some names like [anon:.bss] or
+> > [anon:dalvik-zygote space] reserving a unique id would work, however
+> > some names like [anon:dalvik-/system/framework/boot-core-icu4j.art]
+> > are generated dynamically at runtime and include package name.
+>
+> Valuable information
 
-On 10/5/2021 9:39 PM, Bjorn Andersson wrote:
-> On Tue 05 Oct 02:11 PDT 2021, Maulik Shah wrote:
-> 
->> Add device node for SoC sleep stats driver which provides various
->> low power mode stats.
->>
->> Also update the reg size of aoss_qmp device to 0x400.
->>
->> Cc: devicetree@vger.kernel.org
->> Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
-> 
-> Can you please follow up with patches for the other upstream platforms
-> as well.
-> 
+Yeah, I should have described it clearer the first time around.
+
+>
+> > Packages are constantly evolving, new ones are developed, names can
+> > change, etc. So assigning a unique id for these names is not really
+> > feasible.
+>
+> So, you'd actually want to generate/reserve an id for a given string at
+> runtime, assign that id to the VMA, and have a way to match id <->
+> string somehow?
+
+If we go with ids then yes, that is what we would have to do.
+
+> That reservation service could be inside the kernel or even (better?) in
+> user space. The service could for example de-duplicates strings.
+
+Yes but it would require an IPC call to that service potentially on
+every mmap() when we want to name a mapped vma. This would be
+prohibitive. Even on consumption side, instead of just dumping
+/proc/$pid/maps we would have to parse the file and convert all
+[anon:id] into [anon:name] with each conversion requiring an IPC call
+(assuming no id->name pair caching on the client side).
+
+> My question would be, if we really have to expose these strings to the
+> kernel, or if an id is sufficient. Sure, it would move complexity to
+> user space, but keeping complexity out of the kernel is usually a good idea.
+
+My worry here is not the additional complexity on the userspace side
+but the performance hit we would have to endure due to these
+conversions.
+
+> --
 > Thanks,
-> Bjorn
-> 
-
-Sure, included most of other upstream platforms in v11.
-
-Thanks,
-Maulik
-
->> ---
->>   arch/arm64/boot/dts/qcom/sc7280.dtsi | 7 ++++++-
->>   1 file changed, 6 insertions(+), 1 deletion(-)
->>
->> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> index 39635da..f8622ae 100644
->> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> @@ -2637,7 +2637,7 @@
->>   
->>   		aoss_qmp: power-controller@c300000 {
->>   			compatible = "qcom,sc7280-aoss-qmp";
->> -			reg = <0 0x0c300000 0 0x100000>;
->> +			reg = <0 0x0c300000 0 0x400>;
->>   			interrupts-extended = <&ipcc IPCC_CLIENT_AOP
->>   						     IPCC_MPROC_SIGNAL_GLINK_QMP
->>   						     IRQ_TYPE_EDGE_RISING>;
->> @@ -2647,6 +2647,11 @@
->>   			#clock-cells = <0>;
->>   		};
->>   
->> +		memory@c3f0000 {
->> +			compatible = "qcom,rpmh-sleep-stats";
->> +			reg = <0 0x0c3f0000 0 0x400>;
->> +		};
->> +
->>   		spmi_bus: spmi@c440000 {
->>   			compatible = "qcom,spmi-pmic-arb";
->>   			reg = <0 0x0c440000 0 0x1100>,
->> -- 
->> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
->> of Code Aurora Forum, hosted by The Linux Foundation
->>
-
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member of Code Aurora Forum, hosted by The Linux Foundation
+>
+> David / dhildenb
+>
