@@ -2,202 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BF4D42350D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 02:35:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09C13423511
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 02:35:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237019AbhJFAhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 20:37:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36284 "EHLO mail.kernel.org"
+        id S237069AbhJFAhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 20:37:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36466 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230218AbhJFAhY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 20:37:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A47B46120C;
-        Wed,  6 Oct 2021 00:35:30 +0000 (UTC)
+        id S230218AbhJFAhk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 20:37:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A81BE61207;
+        Wed,  6 Oct 2021 00:35:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633480532;
-        bh=X+zuIEzgi4BJRPliLjv9iRYOHwZRPc7zUl+fNXFGj9o=;
+        s=k20201202; t=1633480549;
+        bh=PrZNgMx7YzMXM2DrDDSBr5tyPQGCj7j0uu7IMYK3EC8=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JHEmt663Hm1u48LCqrFlkrtGcV9ux30e+mppC54cYcoazB1AyaoZk3aLY7CaL1qJ8
-         EuyS9FHdM0DRu1QnziIUuHkxiPI8kmwHlYj6d4UUamsulACykZLlSkA4giBe7+kRhV
-         z/hyErDGbTP9PgMmjmTUOjJ6f76gaSQDj6/WBbdB5dutm8Vp0moPIgcjOUJ8uDBv9r
-         9BVujwaUsW4eZcL/ukhEkPNjd0R8BebmXvX1ED3CoHUGVLid4LEveLLoY2+/HwZ/wR
-         MWlzTf6vmlDmJo12AIv8AS9YGYnxlU3dlcY6MMPsV9D+w4zKmHQ/IQAeab0PwF0JxA
-         l96fZm3yoDZiQ==
-Date:   Tue, 5 Oct 2021 17:35:28 -0700
+        b=FNg8p9vnOBdjONhlzgt21BQUsX5Ls3sKljcMLq3eH1OjZpIpbSYJ8eytov9AhoTgW
+         OsfAD7LOtVg3wT7pKVkoKZFDwqVrkrTFh+BXNcRzu6TeIWAGTfPw2kIhSwGupk86t5
+         pw0Qv5KndBfaYbgXxU+dDD491qenPRMsqeEsoJAq1iJE/nyxHt09Ihlw+nhA1JSV7l
+         uUOmVK7RLAKhx8oXbApZ7JlCLqeO8M7TNGD8bXn7OpMHSBJYggXqTc8LwRhw9WNbVb
+         SpxWHF25iaRwmiLVWVIw7T/KDSVLBMC1ZfqSc2PZj4gKL38PpjF5pb9TWss+1M3urJ
+         cOk1IPcGWC+Kw==
+Date:   Tue, 5 Oct 2021 17:35:46 -0700
 From:   Mike Rapoport <rppt@kernel.org>
 To:     David Hildenbrand <david@redhat.com>
 Cc:     linux-kernel@vger.kernel.org,
         Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
         Michal Hocko <mhocko@suse.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Jianyong Wu <Jianyong.Wu@arm.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Vineet Gupta <vgupta@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-snps-arc@lists.infradead.org, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-mm@kvack.org,
-        kexec@lists.infradead.org
-Subject: Re: [PATCH v2 4/5] memblock: add MEMBLOCK_DRIVER_MANAGED to mimic
- IORESOURCE_SYSRAM_DRIVER_MANAGED
-Message-ID: <YVzvUCOXlHNAjgQk@kernel.org>
-References: <20211004093605.5830-1-david@redhat.com>
- <20211004093605.5830-5-david@redhat.com>
+        Oscar Salvador <osalvador@suse.de>, linux-doc@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH v1 3/3] memory-hotplug.rst: document the "auto-movable"
+ online policy
+Message-ID: <YVzvYmf4xWC1DORO@kernel.org>
+References: <20210930144117.23641-1-david@redhat.com>
+ <20210930144117.23641-4-david@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211004093605.5830-5-david@redhat.com>
+In-Reply-To: <20210930144117.23641-4-david@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 04, 2021 at 11:36:04AM +0200, David Hildenbrand wrote:
-> Let's add a flag that corresponds to IORESOURCE_SYSRAM_DRIVER_MANAGED,
-> indicating that we're dealing with a memory region that is never
-> indicated in the firmware-provided memory map, but always detected and
-> added by a driver.
+On Thu, Sep 30, 2021 at 04:41:17PM +0200, David Hildenbrand wrote:
+> In commit e83a437faa62 ("mm/memory_hotplug: introduce "auto-movable" online
+> policy") we introduced a new memory online policy to automatically
+> select a zone for memory blocks to be onlined. We added a way to
+> set the active online policy and tunables for the auto-movable online
+> policy. In follow-up commits we tweaked the "auto-movable" policy to also
+> consider memory device details when selecting zones for memory blocks to
+> be onlined.
 > 
-> Similar to MEMBLOCK_HOTPLUG, most infrastructure has to treat such memory
-> regions like ordinary MEMBLOCK_NONE memory regions -- for example, when
-> selecting memory regions to add to the vmcore for dumping in the
-> crashkernel via for_each_mem_range().
-> 
-> However, especially kexec_file is not supposed to select such memblocks via
-> for_each_free_mem_range() / for_each_free_mem_range_reverse() to place
-> kexec images, similar to how we handle IORESOURCE_SYSRAM_DRIVER_MANAGED
-> without CONFIG_ARCH_KEEP_MEMBLOCK.
-> 
-> We'll make sure that memory hotplug code sets the flag where applicable
-> (IORESOURCE_SYSRAM_DRIVER_MANAGED) next. This prepares architectures
-> that need CONFIG_ARCH_KEEP_MEMBLOCK, such as arm64, for virtio-mem
-> support.
-> 
-> Note that kexec *must not* indicate this memory to the second kernel
-> and *must not* place kexec-images on this memory. Let's add a comment to
-> kexec_walk_memblock(), documenting how we handle MEMBLOCK_DRIVER_MANAGED
-> now just like using IORESOURCE_SYSRAM_DRIVER_MANAGED in
-> locate_mem_hole_callback() for kexec_walk_resources().
-> 
-> Also note that MEMBLOCK_HOTPLUG cannot be reused due to different
-> semantics:
-> 	MEMBLOCK_HOTPLUG: memory is indicated as "System RAM" in the
-> 	firmware-provided memory map and added to the system early during
-> 	boot; kexec *has to* indicate this memory to the second kernel and
-> 	can place kexec-images on this memory. After memory hotunplug,
-> 	kexec has to be re-armed. We mostly ignore this flag when
-> 	"movable_node" is not set on the kernel command line, because
-> 	then we're told to not care about hotunpluggability of such
-> 	memory regions.
-> 
-> 	MEMBLOCK_DRIVER_MANAGED: memory is not indicated as "System RAM" in
-> 	the firmware-provided memory map; this memory is always detected
-> 	and added to the system by a driver; memory might not actually be
-> 	physically hotunpluggable. kexec *must not* indicate this memory to
-> 	the second kernel and *must not* place kexec-images on this memory.
+> Let's document the new toggles and how the two online policies we have
+> work.
 > 
 > Signed-off-by: David Hildenbrand <david@redhat.com>
-
-Reviewed-by: Mike Rapoport <rppt@linux.ibm.com>
-
 > ---
->  include/linux/memblock.h | 16 ++++++++++++++--
->  kernel/kexec_file.c      |  5 +++++
->  mm/memblock.c            |  4 ++++
->  3 files changed, 23 insertions(+), 2 deletions(-)
+>  .../admin-guide/mm/memory-hotplug.rst         | 128 +++++++++++++++---
+>  1 file changed, 108 insertions(+), 20 deletions(-)
 > 
-> diff --git a/include/linux/memblock.h b/include/linux/memblock.h
-> index 2bc726e43a1b..b3b29ccf91f3 100644
-> --- a/include/linux/memblock.h
-> +++ b/include/linux/memblock.h
-> @@ -37,12 +37,17 @@ extern unsigned long long max_possible_pfn;
->   * @MEMBLOCK_NOMAP: don't add to kernel direct mapping and treat as
->   * reserved in the memory map; refer to memblock_mark_nomap() description
->   * for further details
-> + * @MEMBLOCK_DRIVER_MANAGED: memory region that is always detected and added
-> + * via a driver, and never indicated in the firmware-provided memory map as
-> + * system RAM. This corresponds to IORESOURCE_SYSRAM_DRIVER_MANAGED in the
-> + * kernel resource tree.
->   */
->  enum memblock_flags {
->  	MEMBLOCK_NONE		= 0x0,	/* No special request */
->  	MEMBLOCK_HOTPLUG	= 0x1,	/* hotpluggable region */
->  	MEMBLOCK_MIRROR		= 0x2,	/* mirrored region */
->  	MEMBLOCK_NOMAP		= 0x4,	/* don't add to kernel direct mapping */
-> +	MEMBLOCK_DRIVER_MANAGED = 0x8,	/* always detected via a driver */
->  };
+> diff --git a/Documentation/admin-guide/mm/memory-hotplug.rst b/Documentation/admin-guide/mm/memory-hotplug.rst
+> index ee00b70dedde..c20a2c0031cf 100644
+> --- a/Documentation/admin-guide/mm/memory-hotplug.rst
+> +++ b/Documentation/admin-guide/mm/memory-hotplug.rst
+> @@ -165,9 +165,8 @@ Or alternatively::
 >  
->  /**
-> @@ -213,7 +218,8 @@ static inline void __next_physmem_range(u64 *idx, struct memblock_type *type,
->   */
->  #define for_each_mem_range(i, p_start, p_end) \
->  	__for_each_mem_range(i, &memblock.memory, NULL, NUMA_NO_NODE,	\
-> -			     MEMBLOCK_HOTPLUG, p_start, p_end, NULL)
-> +			     MEMBLOCK_HOTPLUG | MEMBLOCK_DRIVER_MANAGED, \
-> +			     p_start, p_end, NULL)
+>  	% echo 1 > /sys/devices/system/memory/memoryXXX/online
 >  
->  /**
->   * for_each_mem_range_rev - reverse iterate through memblock areas from
-> @@ -224,7 +230,8 @@ static inline void __next_physmem_range(u64 *idx, struct memblock_type *type,
->   */
->  #define for_each_mem_range_rev(i, p_start, p_end)			\
->  	__for_each_mem_range_rev(i, &memblock.memory, NULL, NUMA_NO_NODE, \
-> -				 MEMBLOCK_HOTPLUG, p_start, p_end, NULL)
-> +				 MEMBLOCK_HOTPLUG | MEMBLOCK_DRIVER_MANAGED,\
-> +				 p_start, p_end, NULL)
+> -The kernel will select the target zone automatically, usually defaulting to
+> -``ZONE_NORMAL`` unless ``movable_node`` has been specified on the kernel
+> -command line or if the memory block would intersect the ZONE_MOVABLE already.
+> +The kernel will select the target zone automatically, depending on the
+> +configured ``online_policy``.
 >  
->  /**
->   * for_each_reserved_mem_range - iterate over all reserved memblock areas
-> @@ -254,6 +261,11 @@ static inline bool memblock_is_nomap(struct memblock_region *m)
->  	return m->flags & MEMBLOCK_NOMAP;
->  }
+>  One can explicitly request to associate an offline memory block with
+>  ZONE_MOVABLE by::
+> @@ -198,6 +197,9 @@ Auto-onlining can be enabled by writing ``online``, ``online_kernel`` or
 >  
-> +static inline bool memblock_is_driver_managed(struct memblock_region *m)
-> +{
-> +	return m->flags & MEMBLOCK_DRIVER_MANAGED;
-> +}
+>  	% echo online > /sys/devices/system/memory/auto_online_blocks
+>  
+> +Similarly to manual onlining, with ``online`` the kernel will select the
+> +target zone automatically, depending on the configured ``online_policy``.
 > +
->  int memblock_search_pfn_nid(unsigned long pfn, unsigned long *start_pfn,
->  			    unsigned long  *end_pfn);
->  void __next_mem_pfn_range(int *idx, int nid, unsigned long *out_start_pfn,
-> diff --git a/kernel/kexec_file.c b/kernel/kexec_file.c
-> index 33400ff051a8..8347fc158d2b 100644
-> --- a/kernel/kexec_file.c
-> +++ b/kernel/kexec_file.c
-> @@ -556,6 +556,11 @@ static int kexec_walk_memblock(struct kexec_buf *kbuf,
->  	if (kbuf->image->type == KEXEC_TYPE_CRASH)
->  		return func(&crashk_res, kbuf);
+>  Modifying the auto-online behavior will only affect all subsequently added
+>  memory blocks only.
 >  
-> +	/*
-> +	 * Using MEMBLOCK_NONE will properly skip MEMBLOCK_DRIVER_MANAGED. See
-> +	 * IORESOURCE_SYSRAM_DRIVER_MANAGED handling in
-> +	 * locate_mem_hole_callback().
-> +	 */
->  	if (kbuf->top_down) {
->  		for_each_free_mem_range_reverse(i, NUMA_NO_NODE, MEMBLOCK_NONE,
->  						&mstart, &mend, NULL) {
-> diff --git a/mm/memblock.c b/mm/memblock.c
-> index 47a56b223141..540a35317fb0 100644
-> --- a/mm/memblock.c
-> +++ b/mm/memblock.c
-> @@ -979,6 +979,10 @@ static bool should_skip_region(struct memblock_type *type,
->  	if (!(flags & MEMBLOCK_NOMAP) && memblock_is_nomap(m))
->  		return true;
+> @@ -393,9 +395,11 @@ command line parameters are relevant:
+>  ======================== =======================================================
+>  ``memhp_default_state``	 configure auto-onlining by essentially setting
+>                           ``/sys/devices/system/memory/auto_online_blocks``.
+> -``movable_node``	 configure automatic zone selection in the kernel. When
+> -			 set, the kernel will default to ZONE_MOVABLE, unless
+> -			 other zones can be kept contiguous.
+> +``movable_node``	 configure automatic zone selection in the kernel when
+> +			 using the ``contig-zones`` online policy. When
+> +			 set, the kernel will default to ZONE_MOVABLE when
+> +			 onlining a memory block, unless other zones can be kept
+> +			 contiguous.
+
+The movable_node main purpose is to allow unplugging an entire node. Zone
+selection is a consequence of this. You may want to cite the description of
+movable_node in kernel-paramenters.txt here.
+
+And, pardon my ignorance, how movable_node will play with auto-movable
+policy?
+
+>  ======================== =======================================================
 >  
-> +	/* skip driver-managed memory unless we were asked for it explicitly */
-> +	if (!(flags & MEMBLOCK_DRIVER_MANAGED) && memblock_is_driver_managed(m))
-> +		return true;
+>  Module Parameters
+> @@ -414,20 +418,104 @@ and they can be observed (and some even modified at runtime) via::
+>  
+>  The following module parameters are currently defined:
+>  
+> -======================== =======================================================
+> -``memmap_on_memory``	 read-write: Allocate memory for the memmap from the
+> -			 added memory block itself. Even if enabled, actual
+> -			 support depends on various other system properties and
+> -			 should only be regarded as a hint whether the behavior
+> -			 would be desired.
+> -
+> -			 While allocating the memmap from the memory block
+> -			 itself makes memory hotplug less likely to fail and
+> -			 keeps the memmap on the same NUMA node in any case, it
+> -			 can fragment physical memory in a way that huge pages
+> -			 in bigger granularity cannot be formed on hotplugged
+> -			 memory.
+> -======================== =======================================================
+> +================================ ===============================================
+> +``memmap_on_memory``		 read-write: Allocate memory for the memmap from
+> +				 the added memory block itself. Even if enabled,
+> +				 actual support depends on various other system
+> +				 properties and should only be regarded as a
+> +				 hint whether the behavior would be desired.
 > +
->  	return false;
->  }
+> +				 While allocating the memmap from the memory
+> +				 block itself makes memory hotplug less likely
+> +				 to fail and keeps the memmap on the same NUMA
+> +				 node in any case, it can fragment physical
+> +				 memory in a way that huge pages in bigger
+> +				 granularity cannot be formed on hotplugged
+> +				 memory.
+> +``online_policy``		 read-write: Set the basic policy used for
+> +				 automatic zone selection when onlining memory
+> +				 blocks without specifying a target zone.
+> +				 ``contig-zones`` has been the kernel default
+> +				 before this parameter was added. After an
+> +				 online policy was configured and memory was
+> +				 online, the policy should not be changed
+> +				 anymore.
+> +
+> +				 When set to ``contig-zones``, the kernel will
+> +				 try keeping zones contiguous. If a memory block
+> +				 intersects multiple zones or no zone, the
+> +				 behavior depends on the ``movable_node`` kernel
+> +				 command line parameter: default to ZONE_MOVABLE
+> +				 if set, default to the applicable kernel zone
+> +				 (usually ZONE_NORMAL) if not set.
+> +
+> +				 When set to ``auto-movable``, the kernel will
+> +				 try onlining memory blocks to ZONE_MOVABLE if
+> +				 possible according to the configuration and
+> +				 memory device details. With this policy, one
+> +				 can avoid zone imbalances when eventually
+> +				 hotplugging a lot of memory later and still
+> +				 wanting to be able to hotunplug as much as
+> +				 possible reliably, very desirable in
+> +				 virtualized environments. As one example, a
+> +				 hotplugged DIMM will be onlined either
+> +				 completely to ZONE_MOVABLE or completely to
+> +				 ZONE_NORMAL, not a mixture.
+> +				 As another example, as many memory blocks
+> +				 belonging to a virtio-mem device will be
+> +				 onlined to ZONE_MOVABLE as possible,
+> +				 special-casing units of memory blocks that can
+> +				 only get hotunplugged together. *This policy
+> +				 does not protect from setups that are
+> +				 problematic with ZONE_MOVABLE and does not
+> +				 change the zone of memory blocks dynamically
+> +				 after they were onlined.*
+> +``auto_movable_ratio``		 read-write: Set the maximum MOVABLE:KERNEL
+> +				 memory ratio in % for the ``auto-movable``
+> +				 online policy. Whether the ratio applies only
+> +				 for the system across all NUMA nodes or also
+> +				 per NUMA nodes depends on the
+> +				 ``auto_movable_numa_aware`` configuration.
+> +
+> +				 All accounting is based on present memory pages
+> +				 in the zones combined with accounting per
+> +				 memory device. Memory dedicated to the CMA
+> +				 allocator is accounted as MOVABLE, although
+> +				 residing on one of the kernel zones. The
+> +				 possible ratio depends on the actual workload.
+> +				 The kernel default is "301" %, for example,
+> +				 allowing for hotplugging 24 GiB to a 8 GiB VM
+> +				 and automatically onlining all hotplugged
+> +				 memory to ZONE_MOVABLE in many setups. The
+> +				 additional 1% deals with some pages being not
+> +				 present, for example, because of some firmware
+> +				 allocations.
+> +
+> +				 Note that ZONE_NORMAL memory provided by one
+> +				 memory device does not allow for more
+> +				 ZONE_MOVABLE memory for a different memory
+> +				 device. As one example, onlining memory of a
+> +				 hotplugged DIMM to ZONE_NORMAL will not allow
+> +				 for another hotplugged DIMM to get onlined to
+> +				 ZONE_MOVABLE automatically. In contrast, memory
+> +				 hotplugged by a virtio-mem device that got
+> +				 onlined to ZONE_NORMAL will allow for more
+> +				 ZONE_MOVABLE memory within *the same*
+> +				 virtio-mem device.
+> +``auto_movable_numa_aware``	 read-write: Configure whether the
+> +				 ``auto_movable_ratio`` in the ``auto-movable``
+> +				 online policy also applies per NUMA
+> +				 node in addition to the whole system across all
+> +				 NUMA nodes. The kernel default is "Y".
+> +
+> +				 Disabling NUMA awareness can be helpful when
+> +				 dealing with NUMA nodes that should be
+> +				 completely hotunpluggable, onlining the memory
+> +				 completely to ZONE_MOVABLE automatically if
+> +				 possible.
+> +
+> +				 Parameter availability depends on CONFIG_NUMA.
+> +================================ ===============================================
 >  
+>  ZONE_MOVABLE
+>  ============
 > -- 
 > 2.31.1
 > 
