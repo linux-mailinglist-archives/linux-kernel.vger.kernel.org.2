@@ -2,91 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EEA4423C6A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 13:14:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EFFA423C7B
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 13:18:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238621AbhJFLPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 07:15:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38864 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238615AbhJFLPM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 07:15:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E4A1C610E5;
-        Wed,  6 Oct 2021 11:13:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633518795;
-        bh=14utBTnVu/9mbipzCGXIpaBWLjpPIZQ3PDlawEedbKE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=QSoQ9fLhg950+B9msiI9z4H5fiOLuwuNmNXf8R50EfhaG/9lJSAZM3AtKMyfnfSJd
-         xdSivww/9slwG5BDW0pDCHAnShxEGRQHgmnedArpReTLecno4r7cn8Ettodord8yCI
-         cRmn65ZczaPcwqffE2anhBMIY1KPu7H8XuuPPMtXqYji3nzlk6pAaF8b6MqUfhSYD2
-         rKHoH6Rj6+AeTd/usIfSqbhrY6woCXaYZIGsxSngI3VGeEiLhZOJsOiwwlJBOQKQ51
-         UxZiZ/8okZsKLZ5/9QncyCCkO4mYyb+l9tUsQpe12eN96cbHh1j3tAVGldPWJLPsDM
-         LM/NpPear661w==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>, alsa-devel@alsa-project.org,
-        Takashi Iwai <tiwai@suse.com>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH MANUALSEL 4.4] ALSA: pcsp: Make hrtimer forwarding more robust
-Date:   Wed,  6 Oct 2021 07:13:12 -0400
-Message-Id: <20211006111313.264538-1-sashal@kernel.org>
-X-Mailer: git-send-email 2.33.0
+        id S238188AbhJFLUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 07:20:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49298 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237936AbhJFLUR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 07:20:17 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FBB4C06174E
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 04:18:25 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id p13so8737815edw.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 04:18:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Y4CqMqzlZnf2+LZUU+1J6mUHWy8xNvqh2LGAK4xG+9k=;
+        b=ZH0r4YYjyaCPo7Xb2eVmvl36E5/IU5I3eQ63rKV6KEL2M78uP5FF0M0EoNMLmhg3eF
+         6AAeyBGhUc/Zd2M1ZijEhSSn1BRS8BkD3uZ0qgeT3SyjjReSa1Gq9eZk65FW2dRAukfn
+         MZv7IdYFZG5kwvLd5Qti1q12ODTGgcBY6qMiJMe3ViU/RRf6x+yYOI0vhQEz/hlFeud/
+         eskiMaUpyXkBq9CXal/VttBbUbsdEZ70U4vFfSIRETWKJ6Gs8FjBxBcM3OMh9Dc5xs57
+         xF+IgJJkNYPkRo5SGLytsiMYZgcrqaJ8BWIHk9YQi6pzD4YDxotyb1IusBySrlKxFXi1
+         /2nA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Y4CqMqzlZnf2+LZUU+1J6mUHWy8xNvqh2LGAK4xG+9k=;
+        b=R17FMKE5JhEo/+bivGBowsVrCyYmfOvSc3VBnCgByUMq/wvkNKBMbbydJ616NQ1uYr
+         DKMWM4sxL+zNKB+4uhMxprATo7xyFa6IWGV1Q8QaZ0d6/0hhOAVB7S0kssp1QNpHOfNZ
+         GDX73916ymZjaigVcp/tTfCF4jtU/4ZlFirf8USNOqyg7kZrjxVfsbbvXsKV94Av7b9N
+         RpYq4N9rnNPuAu5eomuNac8RxZIku6QILcKXIHV0ba/aoRbN3FibLsiFYkBTkLByycAH
+         xef71+Fyu/q2o9nd1u4inxHD90a6dtvetCqIpl/cUH0ZCR9d40zXJ81r1dfcKB7IE9D4
+         sCyw==
+X-Gm-Message-State: AOAM5322cP7y8ZCvsCFfRpKPem2aVHG+YO7kkTVLXGkGtSuf34kuJAKn
+        zZUsPEUW3Z3QsL347qqI6ONeiD8IJDpSnaUMvvaRbg==
+X-Google-Smtp-Source: ABdhPJw9mtBWuqIeN/734cyiWsFm4aBzVZnSmEvpOeR6nHONxxM0GSxiA2UUHTvRNaYyeOscG5/ciTS6S5PZX+HeRuQ=
+X-Received: by 2002:a17:907:3353:: with SMTP id yr19mr31648744ejb.508.1633519103841;
+ Wed, 06 Oct 2021 04:18:23 -0700 (PDT)
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+References: <20211005122449.16296-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20211005122449.16296-1-andriy.shevchenko@linux.intel.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Wed, 6 Oct 2021 13:18:12 +0200
+Message-ID: <CAMRc=MfxE_rnOLj_1EfUO3ezbxvrvrTzukXKim=zPOs2=wx2Ww@mail.gmail.com>
+Subject: Re: [PATCH v3 1/1] gpio: mockup: Convert to use software nodes
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bamvor Jian Zhang <bamv2005@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Kent Gibson <warthog618@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+On Tue, Oct 5, 2021 at 2:24 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> The gpio-mockup driver creates the properties that are shared between
+> platform and GPIO devices. Because of that, the properties may not
+> be removed at the proper point of time without provoking a use-after-free
+> as shown in the following backtrace:
+>
+>   refcount_t: underflow; use-after-free.
+>   WARNING: CPU: 0 PID: 103 at lib/refcount.c:28 refcount_warn_saturate+0xd1/0x120
+>   ...
+>   Call Trace:
+>   kobject_put+0xdc/0xf0
+>   software_node_notify_remove+0xa8/0xc0
+>   device_del+0x15a/0x3e0
+>
+> That's why the driver has to manage the lifetime of the software nodes
+> by itself.
+>
+> The problem originates from the old device_add_properties() API, but
+> has been only revealed after the commit bd1e336aa853 ("driver core: platform:
+> Remove platform_device_add_properties()"). Hence, it's used as a landmark
+> for backporting.
+>
+> Fixes: bd1e336aa853 ("driver core: platform: Remove platform_device_add_properties()")
+> Reported-and-tested-by: Kent Gibson <warthog618@gmail.com>
 
-[ Upstream commit f2ff7147c6834f244b8ce636b12e71a3bd044629 ]
+I prefer to have the Reported-by and Tested-by tags separately even
+for the same person. I fixed that in my tree.
 
-The hrtimer callback pcsp_do_timer() prepares rearming of the timer with
-hrtimer_forward(). hrtimer_forward() is intended to provide a mechanism to
-forward the expiry time of the hrtimer by a multiple of the period argument
-so that the expiry time greater than the time provided in the 'now'
-argument.
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+> v3: fixed tag, more grammar fixes
+>  drivers/gpio/gpio-mockup.c | 22 +++++++++++++++++++---
+>  1 file changed, 19 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/gpio/gpio-mockup.c b/drivers/gpio/gpio-mockup.c
+> index 0a9d746a0fe0..8b147b565e92 100644
+> --- a/drivers/gpio/gpio-mockup.c
+> +++ b/drivers/gpio/gpio-mockup.c
+> @@ -478,8 +478,18 @@ static void gpio_mockup_unregister_pdevs(void)
+>  {
+>         int i;
+>
+> -       for (i = 0; i < GPIO_MOCKUP_MAX_GC; i++)
+> -               platform_device_unregister(gpio_mockup_pdevs[i]);
+> +       for (i = 0; i < GPIO_MOCKUP_MAX_GC; i++) {
+> +               struct platform_device *pdev;
+> +               struct fwnode_handle *fwnode;
+> +
+> +               pdev = gpio_mockup_pdevs[i];
+> +               if (!pdev)
+> +                       continue;
+> +
+> +               fwnode = dev_fwnode(&pdev->dev);
+> +               platform_device_unregister(pdev);
+> +               fwnode_remove_software_node(fwnode);
+> +       }
+>  }
+>
+>  static __init char **gpio_mockup_make_line_names(const char *label,
+> @@ -508,6 +518,7 @@ static int __init gpio_mockup_register_chip(int idx)
+>         struct property_entry properties[GPIO_MOCKUP_MAX_PROP];
+>         struct platform_device_info pdevinfo;
+>         struct platform_device *pdev;
+> +       struct fwnode_handle *fwnode;
+>         char **line_names = NULL;
+>         char chip_label[32];
+>         int prop = 0, base;
+> @@ -536,13 +547,18 @@ static int __init gpio_mockup_register_chip(int idx)
+>                                         "gpio-line-names", line_names, ngpio);
+>         }
+>
+> +       fwnode = fwnode_create_software_node(properties, NULL);
+> +       if (IS_ERR(fwnode))
+> +               return PTR_ERR(fwnode);
+> +
+>         pdevinfo.name = "gpio-mockup";
+>         pdevinfo.id = idx;
+> -       pdevinfo.properties = properties;
+> +       pdevinfo.fwnode = fwnode;
+>
+>         pdev = platform_device_register_full(&pdevinfo);
+>         kfree_strarray(line_names, ngpio);
+>         if (IS_ERR(pdev)) {
+> +               fwnode_remove_software_node(fwnode);
+>                 pr_err("error registering device");
+>                 return PTR_ERR(pdev);
+>         }
+> --
+> 2.33.0
+>
 
-pcsp_do_timer() invokes hrtimer_forward() with the current timer expiry
-time as 'now' argument. That's providing a periodic timer expiry, but is
-not really robust when the timer callback is delayed so that the resulting
-new expiry time is already in the past which causes the callback to be
-invoked immediately again. If the timer is delayed then the back to back
-invocation is not really making it better than skipping the missed
-periods. Sound is distorted in any case.
+Applied for fixes, thanks!
 
-Use hrtimer_forward_now() which ensures that the next expiry is in the
-future. This prevents hogging the CPU in the timer expiry code and allows
-later on to remove hrtimer_forward() from the public interfaces.
-
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.com>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Link: https://lore.kernel.org/r/20210923153339.623208460@linutronix.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- sound/drivers/pcsp/pcsp_lib.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/drivers/pcsp/pcsp_lib.c b/sound/drivers/pcsp/pcsp_lib.c
-index 3689f5f6be64..3766624c018f 100644
---- a/sound/drivers/pcsp/pcsp_lib.c
-+++ b/sound/drivers/pcsp/pcsp_lib.c
-@@ -144,7 +144,7 @@ enum hrtimer_restart pcsp_do_timer(struct hrtimer *handle)
- 	if (pointer_update)
- 		pcsp_pointer_update(chip);
- 
--	hrtimer_forward(handle, hrtimer_get_expires(handle), ns_to_ktime(ns));
-+	hrtimer_forward_now(handle, ns_to_ktime(ns));
- 
- 	return HRTIMER_RESTART;
- }
--- 
-2.33.0
-
+Bart
