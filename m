@@ -2,132 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF7E24248B7
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 23:17:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E78604248BB
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 23:18:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239666AbhJFVSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 17:18:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48316 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230060AbhJFVSG (ORCPT
+        id S239597AbhJFVU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 17:20:29 -0400
+Received: from mail-oo1-f51.google.com ([209.85.161.51]:37635 "EHLO
+        mail-oo1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230053AbhJFVU2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 17:18:06 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FD76C061746;
-        Wed,  6 Oct 2021 14:16:14 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id y12so1197014eda.4;
-        Wed, 06 Oct 2021 14:16:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=zMN0PJSw/kmUZUYUDBwwSaq1S7W29aD0DpcprY8DFv4=;
-        b=hE2qO9icgWR8ZPz/2jEIQl00Qag1SjF69Ny2CrM4gRr8etxmUy44XIx1agYFaTBYWU
-         fpSn0Nf7qfJh6EdvtqjHtlLF+cm0qJkijWh+y9CNRQG1461benzB/nJxxJzkj5sonXA6
-         ZrlrZmIt8xvpwN+POKgybkmAbvjLBWPc8Lnqbo9lEBrKyYdf0tiJwP94hLNwmakC7Yul
-         Pu368inQjZ+zbSWOJWEEkVgfDbB84nJ1N/3hSWqxKdxvor0jKJyfwOqbOsxgeHg0gt4b
-         p5KCici5eWg0s2XEYHTAZQnCOmVWsuVOl69Tm3b6T5r3Bd3YpsoOW2SqMiZkcFkuc7rW
-         BnkQ==
+        Wed, 6 Oct 2021 17:20:28 -0400
+Received: by mail-oo1-f51.google.com with SMTP id h11-20020a4aa74b000000b002a933d156cbso1273920oom.4;
+        Wed, 06 Oct 2021 14:18:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=zMN0PJSw/kmUZUYUDBwwSaq1S7W29aD0DpcprY8DFv4=;
-        b=sjenEmuqHanWu0m2YNw7DjoJwoNa0m0Rnn2djEjzJuL2yy5XscZcn0U+iQj+iCshro
-         PKpG02O90u97fWniIKbCZmWVQhlghk/onuUOOPjRl3O9xFg6VETG+puRZbX5zyKeKeN6
-         jgHVTr0L8HbuWouh5evXHZJAm+ygqzFck2mW8cj+ea6D5vvK3M8A00/iPbJju/E1MVNF
-         /ozh3XC2+NWWfZv8QKLkunmQdz7uB78MLCwDuTuWubes/uvPuVDCRNz+Pkre1Mkkl0Ex
-         yj/dEWyE7RelNAbWeo6VXVzF85RocOqtXQKsYx8KIUrAWvPzqqF2yHyv+Nc8Gs/O2jIr
-         9PnA==
-X-Gm-Message-State: AOAM5305B/BGtAp+5MPA5D7w8F5ABDRbQ/Hwd8DlLr9JNuAMvNyPdhyK
-        TcfXIMv/7sLY44V5Mo7tDnfbRuyABD7b23tH7Xxyhw==
-X-Google-Smtp-Source: ABdhPJxTruFef8YM7ESfPUDvfsceyasKtSMB9M1AZI1jPWzsoHrUSN7CCnGvWmlaBxXCf1pO94pirw==
-X-Received: by 2002:a17:906:3d22:: with SMTP id l2mr650852ejf.187.1633554972793;
-        Wed, 06 Oct 2021 14:16:12 -0700 (PDT)
-Received: from ?IPv6:2a04:241e:501:3870:473a:8ebc:828b:d6c6? ([2a04:241e:501:3870:473a:8ebc:828b:d6c6])
-        by smtp.gmail.com with ESMTPSA id fx4sm9375832ejb.113.2021.10.06.14.16.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Oct 2021 14:16:12 -0700 (PDT)
-Subject: Re: [PATCH 05/11] selftests: net/fcnal: kill_procs via spin instead
- of sleep
-To:     David Ahern <dsahern@gmail.com>, Jakub Kicinski <kuba@kernel.org>,
-        Shuah Khan <shuah@kernel.org>, David Ahern <dsahern@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Ido Schimmel <idosch@nvidia.com>,
-        Seth David Schoen <schoen@loyalty.org>,
-        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1633520807.git.cdleonard@gmail.com>
- <ff71285715d47b8c9b6bedb3b50700a26bc81f41.1633520807.git.cdleonard@gmail.com>
- <b1a213d5-470d-637d-4e78-1b7653d87041@gmail.com>
-From:   Leonard Crestez <cdleonard@gmail.com>
-Message-ID: <7ac2b77d-4633-bd3e-c24f-ec87d34b4516@gmail.com>
-Date:   Thu, 7 Oct 2021 00:16:11 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nztvh6IbkiikPBshf+nxM9zD+bQnj+yJie9stb0db+U=;
+        b=xoCJ7pdowsm+sxL+Ezh2oiHV3nRFwqNGdI7VEOHyUXC+LUwrsvlVZU+atP1wCH4h/U
+         x1JfuOPpe7LAo6jm1VrjiOs6fI1b1eiPYQhJyCYKbR0WPWNKH4+AWJC1RJOnO5S4JspT
+         fcZZlB3hv+4DWUJISNa3W1TrqInGaGEdHEOm1hdWVyzzgCZ9C6SQ69wBeNVBEIeYqUnF
+         eJXXd46aQEstNXZWKB77t8a3EKYAt/ie/e4G2ktRAX2D9K1v7Bz2nz2cOhgAaU1t+d10
+         ZubXsElfYFRwZTCk935C9Hur1oFwDGVGpUalGY2frZ7qRTb6XcPj3zzbSja+4pot2ywG
+         Hysw==
+X-Gm-Message-State: AOAM531io177c3PUCud9QFsF2yuT+NnHICdWTH5+n1zUZiC2dENLQauE
+        4Os4T+PlP4K4fBcTNG1J6w==
+X-Google-Smtp-Source: ABdhPJygDBfzJdSEGwLTIJVzJx9WbinbeLrrLPsydYtDBcJz9RWZDmNtNSRDmxN7ctBdNKliuNjsiA==
+X-Received: by 2002:a4a:dc1a:: with SMTP id p26mr518103oov.6.1633555115683;
+        Wed, 06 Oct 2021 14:18:35 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id u9sm4538894oiu.19.2021.10.06.14.18.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Oct 2021 14:18:35 -0700 (PDT)
+Received: (nullmailer pid 2893756 invoked by uid 1000);
+        Wed, 06 Oct 2021 21:18:33 -0000
+Date:   Wed, 6 Oct 2021 16:18:33 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Chris Lew <clew@codeaurora.org>, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        Deepak Kumar Singh <deesin@codeaurora.org>
+Subject: Re: [PATCH v2 1/4] dt-bindings: sram: Document qcom,rpm-msg-ram
+Message-ID: <YV4SqRsCvsTDPF4/@robh.at.kernel.org>
+References: <20210930182111.57353-1-bjorn.andersson@linaro.org>
+ <20210930182111.57353-2-bjorn.andersson@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <b1a213d5-470d-637d-4e78-1b7653d87041@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210930182111.57353-2-bjorn.andersson@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 06.10.2021 17:45, David Ahern wrote:
-> On 10/6/21 5:47 AM, Leonard Crestez wrote:
->> Sleeping for one second after a kill is not necessary and adds up quite
->> quickly. Replace with a fast loop spinning until pidof returns nothing.
->>
->> Signed-off-by: Leonard Crestez <cdleonard@gmail.com>
->> ---
->>   tools/testing/selftests/net/fcnal-test.sh | 11 +++++++++--
->>   1 file changed, 9 insertions(+), 2 deletions(-)
->>
->> diff --git a/tools/testing/selftests/net/fcnal-test.sh b/tools/testing/selftests/net/fcnal-test.sh
->> index 0bd60cd3bc06..b7fda51deb3f 100755
->> --- a/tools/testing/selftests/net/fcnal-test.sh
->> +++ b/tools/testing/selftests/net/fcnal-test.sh
->> @@ -176,12 +176,19 @@ show_hint()
->>   	fi
->>   }
->>   
->>   kill_procs()
->>   {
->> -	killall nettest ping ping6 >/dev/null 2>&1
->> -	sleep 1
->> +	local pids
->> +	while true; do
->> +		pids=$(pidof nettest ping ping6)
->> +		if [[ -z $pids ]]; then
->> +			break
->> +		fi
->> +		kill $pids
->> +		sleep 0.01
->> +	done
->>   }
->>   
->>   do_run_cmd()
->>   {
->>   	local cmd="$*"
->>
+On Thu, 30 Sep 2021 11:21:08 -0700, Bjorn Andersson wrote:
+> The Qualcomm SMEM binding always depended on a reference to a SRAM node
+> of compatible "qcom,rpm-msg-ram", document this as part of the SRAM
+> binding.
 > 
-> ideally the script keeps track of processes it launches and only kills
-> those. The original killall was just a stop gap until the process
-> tracking was added.
+> The SRAM is consumed as a whole and not split up using subnodes, so
+> properties related to this are not required.
+> 
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> ---
+> 
+> Changes since v1:
+> - New patch, to resolve issue with the existing qcom,smem example
+> 
+>  Documentation/devicetree/bindings/sram/sram.yaml | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
 
-That's harder to do. This is much faster and not in any way worse than 
-killall + sleep.
-
-Some sort of a wrapper would have to added for each process running the 
-background, for each run_ping_bg.
-
-If nettest forks by itself then $! won't work, maybe some sort of 
---pid-file switch would be required?
-
---
-Regards,
-Leonard
+Acked-by: Rob Herring <robh@kernel.org>
