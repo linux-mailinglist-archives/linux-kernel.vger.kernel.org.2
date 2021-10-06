@@ -2,221 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09F33424137
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 17:22:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67158424148
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 17:26:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239255AbhJFPX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 11:23:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50296 "EHLO
+        id S239149AbhJFP2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 11:28:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231874AbhJFPX5 (ORCPT
+        with ESMTP id S231671AbhJFP2D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 11:23:57 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0D3CC061746;
-        Wed,  6 Oct 2021 08:22:04 -0700 (PDT)
+        Wed, 6 Oct 2021 11:28:03 -0400
+Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B90F2C061746;
+        Wed,  6 Oct 2021 08:26:10 -0700 (PDT)
 Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: kholk11)
-        with ESMTPSA id 16E841F44BDC
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-To:     robh+dt@kernel.org
-Cc:     airlied@linux.ie, daniel@ffwll.ch, m.purski@samsung.com,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Subject: [PATCH] dt-bindings: display/bridge: sil,sii9234: Convert to YAML binding
-Date:   Wed,  6 Oct 2021 17:21:58 +0200
-Message-Id: <20211006152158.601856-1-angelogioacchino.delregno@collabora.com>
-X-Mailer: git-send-email 2.33.0
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: marcan@marcan.st)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id 33AE13FA5E;
+        Wed,  6 Oct 2021 15:26:04 +0000 (UTC)
+Subject: Re: [PATCH 1/7] dt-bindings: arm: apple: Add apple,pmgr binding
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     Marc Zyngier <maz@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-serial@vger.kernel.org
+References: <20211005155923.173399-1-marcan@marcan.st>
+ <20211005155923.173399-2-marcan@marcan.st>
+ <18818eff-87d7-6a53-a4fd-7f3cbf625a0e@canonical.com>
+From:   Hector Martin <marcan@marcan.st>
+Message-ID: <57991dac-196e-a76d-831a-d4ac166bfe29@marcan.st>
+Date:   Thu, 7 Oct 2021 00:26:02 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <18818eff-87d7-6a53-a4fd-7f3cbf625a0e@canonical.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: es-ES
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the Silicon Image SiI9234 HDMI/MHL bridge documentation to YAML.
+On 06/10/2021 15.56, Krzysztof Kozlowski wrote:
+>> diff --git a/Documentation/devicetree/bindings/arm/apple/apple,pmgr.yaml b/Documentation/devicetree/bindings/arm/apple/apple,pmgr.yaml
+>> new file mode 100644
+>> index 000000000000..0304164e4140
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/arm/apple/apple,pmgr.yaml
+>> @@ -0,0 +1,74 @@
+>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/arm/apple/apple,pmgr.yaml#
+> 
+> Please don't store all Apple-related bindings in bindings/arm/apple, but
+> instead group per device type like in most of other bindings. In this
+> case - this looks like something close to power domain controller, so it
+> should be in bindings/power/
 
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
----
- .../bindings/display/bridge/sii9234.txt       |  49 --------
- .../bindings/display/bridge/sil,sii9234.yaml  | 110 ++++++++++++++++++
- 2 files changed, 110 insertions(+), 49 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/display/bridge/sii9234.txt
- create mode 100644 Documentation/devicetree/bindings/display/bridge/sil,sii9234.yaml
+This is a controller that, right now, is only used to instantiate device 
+power management controls, but the controller itself is just a generic 
+syscon device. Depending on the register range, it could conceivably 
+encompass other register types (e.g. clock selects) within it, though 
+I'm not sure I want to do that right now. Apple calls several of these 
+different register sets as a whole a "PMGR". So I'm not sure if it 
+really qualifies as "just" a power domain controller. If we want to 
+restrict this to the power state portion of PMGR, then it might make 
+sense to call it something more specific...
 
-diff --git a/Documentation/devicetree/bindings/display/bridge/sii9234.txt b/Documentation/devicetree/bindings/display/bridge/sii9234.txt
-deleted file mode 100644
-index a55bf77bd960..000000000000
---- a/Documentation/devicetree/bindings/display/bridge/sii9234.txt
-+++ /dev/null
-@@ -1,49 +0,0 @@
--Silicon Image SiI9234 HDMI/MHL bridge bindings
--
--Required properties:
--	- compatible : "sil,sii9234".
--	- reg : I2C address for TPI interface, use 0x39
--	- avcc33-supply : MHL/USB Switch Supply Voltage (3.3V)
--	- iovcc18-supply : I/O Supply Voltage (1.8V)
--	- avcc12-supply : TMDS Analog Supply Voltage (1.2V)
--	- cvcc12-supply : Digital Core Supply Voltage (1.2V)
--	- interrupts: interrupt specifier of INT pin
--	- reset-gpios: gpio specifier of RESET pin (active low)
--	- video interfaces: Device node can contain two video interface port
--			    nodes for HDMI encoder and connector according to [1].
--			    - port@0 - MHL to HDMI
--			    - port@1 - MHL to connector
--
--[1]: Documentation/devicetree/bindings/media/video-interfaces.txt
--
--
--Example:
--	sii9234@39 {
--		compatible = "sil,sii9234";
--		reg = <0x39>;
--		avcc33-supply = <&vcc33mhl>;
--		iovcc18-supply = <&vcc18mhl>;
--		avcc12-supply = <&vsil12>;
--		cvcc12-supply = <&vsil12>;
--		reset-gpios = <&gpf3 4 GPIO_ACTIVE_LOW>;
--		interrupt-parent = <&gpf3>;
--		interrupts = <5 IRQ_TYPE_LEVEL_HIGH>;
--
--		ports {
--			#address-cells = <1>;
--			#size-cells = <0>;
--
--			port@0 {
--				reg = <0>;
--				mhl_to_hdmi: endpoint {
--					remote-endpoint = <&hdmi_to_mhl>;
--				};
--			};
--			port@1 {
--				reg = <1>;
--				mhl_to_connector: endpoint {
--					remote-endpoint = <&connector_to_mhl>;
--				};
--			};
--		};
--	};
-diff --git a/Documentation/devicetree/bindings/display/bridge/sil,sii9234.yaml b/Documentation/devicetree/bindings/display/bridge/sil,sii9234.yaml
-new file mode 100644
-index 000000000000..f88ddfe4818b
---- /dev/null
-+++ b/Documentation/devicetree/bindings/display/bridge/sil,sii9234.yaml
-@@ -0,0 +1,110 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/display/bridge/sil,sii9234.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Silicon Image SiI9234 HDMI/MHL bridge
-+
-+maintainers:
-+  - Maciej Purski <m.purski@samsung.com>
-+
-+properties:
-+  compatible:
-+    const: sil,sii9234
-+
-+  reg:
-+    description: I2C address for TPI interface
-+    maxItems: 1
-+
-+  avcc12-supply:
-+    description: TMDS Analog Supply Voltage, 1.2V
-+
-+  avcc33-supply:
-+    description: MHL/USB Switch Supply Voltage, 3.3V
-+
-+  cvcc12-supply:
-+    description: Digital Core Supply Voltage, 1.2V
-+
-+  iovcc18-supply:
-+    description: I/O voltage supply, 1.8V
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  reset-gpios:
-+    description: GPIO connected to the reset pin.
-+    maxItems: 1
-+
-+  ports:
-+    $ref: /schemas/graph.yaml#/properties/ports
-+
-+    properties:
-+      port@0:
-+        $ref: /schemas/graph.yaml#/properties/port
-+        description:
-+          Video port for HDMI (encoder) input
-+
-+      port@1:
-+        $ref: /schemas/graph.yaml#/properties/port
-+        description:
-+          MHL to connector port
-+
-+    required:
-+      - port@0
-+
-+required:
-+  - compatible
-+  - reg
-+  - avcc12-supply
-+  - avcc33-supply
-+  - cvcc12-supply
-+  - iovcc18-supply
-+  - interrupts
-+  - reset-gpios
-+  - ports
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/gpio/gpio.h>
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+
-+    i2c1 {
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+
-+      bridge@39 {
-+        compatible = "sil,sii9234";
-+        reg = <0x39>;
-+        avcc12-supply = <&vsil12>;
-+        avcc33-supply = <&vcc33mhl>;
-+        cvcc12-supply = <&vsil12>;
-+        iovcc18-supply = <&vcc18mhl>;
-+        interrupt-parent = <&gpf3>;
-+        interrupts = <5 IRQ_TYPE_LEVEL_HIGH>;
-+        reset-gpios = <&gpf3 4 GPIO_ACTIVE_LOW>;
-+
-+        ports {
-+          #address-cells = <1>;
-+          #size-cells = <0>;
-+
-+          port@0 {
-+            reg = <0>;
-+            mhl_to_hdmi: endpoint {
-+              remote-endpoint = <&hdmi_to_mhl>;
-+            };
-+          };
-+
-+          port@1 {
-+            reg = <1>;
-+            mhl_to_connector: endpoint {
-+              remote-endpoint = <&connector_to_mhl>;
-+            };
-+          };
-+        };
-+      };
-+    };
-+
-+...
+See arm/rockchip/pmu.yaml for the setup this is modeled after.
+
+> No power-domain-cells? Why? What exactly this device is going to do?
+> Maybe I'll check the driver first.... :)
+
+It's a syscon, it does nothing on its own. All the work is done by the 
+child nodes and the driver that binds to those.
+
+>> +additionalProperties: true
+> 
+> additionalProperties: false
+
+Fixed for v2.
+
 -- 
-2.33.0
-
+Hector Martin (marcan@marcan.st)
+Public Key: https://mrcn.st/pub
