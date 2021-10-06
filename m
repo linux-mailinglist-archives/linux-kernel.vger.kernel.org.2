@@ -2,101 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90AD3423DC2
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 14:30:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E357E423DC7
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 14:32:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238404AbhJFMcd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 08:32:33 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:58698 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238501AbhJFMcc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 08:32:32 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 1A15C1FEB3;
-        Wed,  6 Oct 2021 12:30:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1633523439; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RX8HrjnICTxsGaZOGs20/A+T7SfihBzq47R0bPRXiMM=;
-        b=o6/xjvZga9T0r38IEykYvxwSzgVAcoiq4caEjLs6IEAI4sGPyFdqgUZBETqWWwJ/NsXLEJ
-        n76aFF5k50fhrxRWhb8LjSmTZu/c1vh6m66W2dmwqeVFlw5sEXoVORwIwq0YjjeMeqADv7
-        sfKWZ2xgn7yFGwy4SW3Nf/YjndT5QG0=
-Received: from suse.cz (unknown [10.100.216.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id BE17EA3B97;
-        Wed,  6 Oct 2021 12:30:38 +0000 (UTC)
-Date:   Wed, 6 Oct 2021 14:30:35 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     gor@linux.ibm.com, jpoimboe@redhat.com, jikos@kernel.org,
-        mbenes@suse.cz, mingo@kernel.org, linux-kernel@vger.kernel.org,
-        joe.lawrence@redhat.com, fweisbec@gmail.com, tglx@linutronix.de,
-        hca@linux.ibm.com, svens@linux.ibm.com, sumanthk@linux.ibm.com,
-        live-patching@vger.kernel.org, paulmck@kernel.org,
-        rostedt@goodmis.org, x86@kernel.org
-Subject: Re: [RFC][PATCH v2 10/11] livepatch: Remove
- klp_synchronize_transition()
-Message-ID: <YV2W60GY66Qh5Au+@alley>
-References: <20210929151723.162004989@infradead.org>
- <20210929152429.125997206@infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210929152429.125997206@infradead.org>
+        id S238105AbhJFMeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 08:34:08 -0400
+Received: from mx1.tq-group.com ([93.104.207.81]:45500 "EHLO mx1.tq-group.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231378AbhJFMeH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 08:34:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1633523535; x=1665059535;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=l3bL8c8hCiOc7cnMVCVwNyzwWPa4uWGkw14PSqu6laY=;
+  b=X3azz54nPustRQMkzhX9hDXC6vw4g2QAkv/+W+IhAT0rcz8r7WopcGai
+   rJO8ujHKPq1j1PyIQlK7zz5EcPJ/ftO+bG0DVF58hAkwRpfvBUv78eDSs
+   SGusIRGVDioDyrMNAsYSbufzrNeufNodDxbd7ll8K9BYpWjvOIMN2nVhS
+   weTXNfkCrT8nxkp7zkkoy6OEjpeKkFWeasWra4/YJfR2i8VP34JYpq0MO
+   NqJVx/8uQCmfgE1ztFSffalR+qVZOoNlWbyfsx3nwzjRTxiyfRYXSQKnT
+   OhbVEIARmacw14oDc8JEszFBDeOEeMqWaINZWDp/8MCEG43fPJ/4jacTS
+   w==;
+X-IronPort-AV: E=Sophos;i="5.85,350,1624312800"; 
+   d="scan'208";a="19896386"
+Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
+  by mx1-pgp.tq-group.com with ESMTP; 06 Oct 2021 14:32:13 +0200
+Received: from mx1.tq-group.com ([192.168.6.7])
+  by tq-pgp-pr1.tq-net.de (PGP Universal service);
+  Wed, 06 Oct 2021 14:32:13 +0200
+X-PGP-Universal: processed;
+        by tq-pgp-pr1.tq-net.de on Wed, 06 Oct 2021 14:32:13 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1633523533; x=1665059533;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=l3bL8c8hCiOc7cnMVCVwNyzwWPa4uWGkw14PSqu6laY=;
+  b=dIu9+vIWAM8Ygrh8tgApeOl+F/DD9WUrHLQ2eounypWQkWG+2hUh0L0E
+   MbtHuvVCqtHyQT3V6NV00uKeMuNA1EQ6tbM5ncxS+vbkgOWGglzZJKpMy
+   kuJTKHkJiPseV43gEFpNIWuZ63k0yxTgm15FWufJBqSHbNwJ4ht1vAZ+o
+   kbzkJd+kSGm6p1wKkw/AB964b1PD0fVAQbxPgiciFBOVyFG8Pbwn2BdOW
+   XioEJ/NJkwzOkC5BmweW+pZDJY7Z7H6hQNO9Fru2CwxVEhlgbH+SUmIaB
+   ++KofxhS1FJHolF6drzLsYEmibGVeNz9SANeHnjBl+J07vufXT2FUjY6L
+   w==;
+X-IronPort-AV: E=Sophos;i="5.85,350,1624312800"; 
+   d="scan'208";a="19896385"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 06 Oct 2021 14:32:13 +0200
+Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.121.48.12])
+        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id A7E61280065;
+        Wed,  6 Oct 2021 14:32:13 +0200 (CEST)
+Message-ID: <3258026683c916a3a42e98ba76628228cddacb23.camel@ew.tq-group.com>
+Subject: Re: (EXT) Re: [PATCH 1/2] mtd: spi-nor: micron-st: sync flags of
+ mt25ql02g and mt25qu02g with other mt25q
+From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+To:     Michael Walle <michael@walle.cc>
+Cc:     Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Pratyush Yadav <p.yadav@ti.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Date:   Wed, 06 Oct 2021 14:32:11 +0200
+In-Reply-To: <f3dbab898e9f1946129e5733095bdf3c@walle.cc>
+References: <c7b6c666aef9a8a2195acabe9954a417f04b6582.1627039534.git.matthias.schiffer@ew.tq-group.com>
+         <f3dbab898e9f1946129e5733095bdf3c@walle.cc>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 2021-09-29 17:17:33, Peter Zijlstra wrote:
-> The whole premise is broken, any trace usage outside of RCU is a BUG
-> and should be fixed. Notable all code prior (and a fair bit after)
-> ct_user_exit() is noinstr and explicitly doesn't allow any tracing.
+On Tue, 2021-07-27 at 09:09 +0200, Michael Walle wrote:
+> Am 2021-07-23 13:27, schrieb Matthias Schiffer:
+> > All mt25q variants have the same features.
+> > 
+> > Unlike the smaller variants, no n25q with 2G exists, so we don't need 
+> > to
+> > match on the extended ID to distinguish n25q and mt25q series for these
+> > models.
+> 
+> But why shouldn't we? What if there will be another flash with
+> the same first three id bytes?
 
-I see. Is the situation the same with idle threads? I see that some
-functions, called inside rcu_idle_enter()/exit() are still visible
-for ftrace. For example, arch_cpu_idle() or tick_check_broadcast_expired().
+How do you suggest we proceed here? At the moment there are entries
+matching on 0x20b[ab]22 (ignoring the extended ID) with the name
+mt25q[lu]02g.
 
-That said, I am not sure if anyone would ever want to livepatch
-this code. And there is still a workaround by livepatching
-the callers.
+Should I change these entries to match on on the extended ID
+0x20b[ab]22 / 0x104400 instead when I add the bits for the features
+specific to the variant, removing support for other 0x20b[ab]22
+variants that may or may not actually exist? Keeping both entries (with
+and without extended ID match) would preserve compatiblity with such
+variants, but this approach seems problematic to me as well, as I can't
+even give a name to the more generic entries (and there is no natural
+extension of the n25q naming scheme to a 2G variant).
 
-Also it should be easy to catch eventual problems if we check
-rcu_is_watching() in klp_ftrace_handler(). Most affected
-scheduler and idle code paths will likely be called
-even during the simple boot test.
+
+> 
+> > Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+> > ---
+> >  drivers/mtd/spi-nor/micron-st.c | 6 +++---
+> >  1 file changed, 3 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/drivers/mtd/spi-nor/micron-st.c 
+> > b/drivers/mtd/spi-nor/micron-st.c
+> > index c224e59820a1..d5baa8762c8d 100644
+> > --- a/drivers/mtd/spi-nor/micron-st.c
+> > +++ b/drivers/mtd/spi-nor/micron-st.c
+> > @@ -181,11 +181,11 @@ static const struct flash_info st_parts[] = {
+> >  			      SECT_4K | USE_FSR | SPI_NOR_QUAD_READ |
+> >  			      NO_CHIP_ERASE) },
+> >  	{ "mt25ql02g",   INFO(0x20ba22, 0, 64 * 1024, 4096,
+> > -			      SECT_4K | USE_FSR | SPI_NOR_QUAD_READ |
+> > -			      NO_CHIP_ERASE) },
+> 
+> This bothers me. I'm not sure how this will work. I see that
+> chip erase is command 0xc7, but both the new and the old flash
+> just supports 0xc3 (DIE ERASE). Did you test these changes?
+
+I finally got my hands on hardware with this flash again (well, a
+mt25qu01g, I don't think we have the 2G variants anywhere) and I can
+confirm that the chip erase does not work with my patch. I will send an
+updated version that keeps NO_CHIP_ERASE.
 
 
-> Use regular RCU, which has the benefit of actually respecting
-> NOHZ_FULL.
+> 
+> > +			      SECT_4K | USE_FSR | SPI_NOR_DUAL_READ |
+> > +			      SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
+> >  	{ "mt25qu02g",   INFO(0x20bb22, 0, 64 * 1024, 4096,
+> >  			      SECT_4K | USE_FSR | SPI_NOR_DUAL_READ |
+> > -			      SPI_NOR_QUAD_READ | NO_CHIP_ERASE) },
+> > +			      SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
+> > 
+> >  	{ "m25p05",  INFO(0x202010,  0,  32 * 1024,   2, 0) },
+> >  	{ "m25p10",  INFO(0x202011,  0,  32 * 1024,   4, 0) },
+> 
+> -michael
 
-Good to know.
-
-After all, the patch looks good to me. I would just add something like:
-
---- a/kernel/livepatch/patch.c
-+++ b/kernel/livepatch/patch.c
-@@ -69,6 +69,12 @@ static void notrace klp_ftrace_handler(unsigned long ip,
- 	if (WARN_ON_ONCE(!func))
- 		goto unlock;
- 
-+	if (!rcu_is_watching()) {
-+		printk_deferred_once(KERN_WARNING
-+				     "warning: called \"%s\" without RCU watching. The function is not guarded by the consistency model. Also beware when removing the livepatch module.\n",
-+				     func->old_name);
-+	}
-+
- 	/*
- 	 * In the enable path, enforce the order of the ops->func_stack and
- 	 * func->transition reads.  The corresponding write barrier is in
-
-But we could do this in a separate patch later.
-
-Feel free to use:
-
-Reviewed-by: Petr Mladek <pmladek@suse.com>
-
-Best Regards,
-Petr
