@@ -2,154 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A779F423BC4
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 12:50:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2E15423BC6
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 12:52:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238119AbhJFKwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 06:52:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42788 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238157AbhJFKwk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 06:52:40 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E05F3C061755;
-        Wed,  6 Oct 2021 03:50:47 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id v18so8128785edc.11;
-        Wed, 06 Oct 2021 03:50:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/RnP//V6796HoXyW5g91DrP6v6JppXFbXNsT/OGvyG8=;
-        b=qImZXBHHeRk0lUf6RDWqAGl5sjDtD9AeVQdko0eV+76rBlnqrSrvFl4eTYXPcOYLXb
-         4HeNnlBR17kx8AMvZqVkR8LHooVlXcAQnT5ZEnUIyWaYpXOr4FxYwjRo8rgc+8DPwoCu
-         CIqeNQEu6KJjCkuM20ygR8puiEeAVh0XiDzvGlK/ejb/7Uqz7RcTCcqofdrUFRR3/Mmc
-         gvnMNkNTQf+iHGrNEF049FSpa9YXPUAs9F/hro+AzyS5AxtLPL6W2xg/qagAVqj9hfvo
-         /5bKSDDqxluO5XrOOa+UyRSAAG6U6PTdSGd0NS/4rWq19n7Yr8UNwJt82JeRCGUvOf78
-         rVNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/RnP//V6796HoXyW5g91DrP6v6JppXFbXNsT/OGvyG8=;
-        b=sLIxSkKuy7VholT9XSOqgxKr59Cvooe+MCUPtDc5RSuOHeRofXmEOoCHhk89Lnbdf2
-         l2fDiRYSAMvANE3Ldsl1AIgKWBohj8CYAF/Z3bZ8bPzRVeJIBVGyFor1ct2/H5q+lb00
-         7uhCeznQQlKoZlBlE1iLvC5OzvZNWfK4BtOm+pjZ81t5kpxee6oCrc5E2C9CRXIb7deD
-         XBN7bgX1/7E2gRp6hKFtFzIiWHLRxKUCKXewxLLa8iMaWfrqYSHdLPqVPzK4khW66jww
-         7jMI9xzGbNugF2SZ/4Vb5v9r4Frxt7b+wqfCxKL1v40U9piZJaRHqbdiNUT2icbZqB1v
-         ObSw==
-X-Gm-Message-State: AOAM533Z3zdQQ9eamLlDt0fkkoT3Mc79Z/Lt+7V1gKaBB+QCVTdiAjTB
-        MdRGH66yuGfDYrQkXjsCWE28bxneF+V/rL+CbNY=
-X-Google-Smtp-Source: ABdhPJw75xV19FmERlZGZH9B0wc18Fupm3yUyEd9K8GKVfiJR8Cw7kDe/8ziN/hJHKheeXgJWUlFrfxi1VS71DUg3H4=
-X-Received: by 2002:aa7:dd16:: with SMTP id i22mr33372235edv.167.1633517446492;
- Wed, 06 Oct 2021 03:50:46 -0700 (PDT)
+        id S238157AbhJFKyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 06:54:33 -0400
+Received: from phobos.denx.de ([85.214.62.61]:33464 "EHLO phobos.denx.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229824AbhJFKyT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 06:54:19 -0400
+Received: from mail.denx.de (unknown [IPv6:2a01:238:438b:c500:173d:9f52:ddab:ee01])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: festevam@denx.de)
+        by phobos.denx.de (Postfix) with ESMTPSA id A699D801B2;
+        Wed,  6 Oct 2021 12:52:25 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+        s=phobos-20191101; t=1633517545;
+        bh=HMb4bIeDgFpYBqwvWEUi3CqKEZsaRf7KKO09N6gANrY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=HdikxxREPz8VNRR+istSllerrjDAe+djniO/Zjn/Xpm/QSsGE64zawHYqnmhs2V02
+         VdyDlIzQr9I1OnvKYhSGKMpLKTN2B5sXiMzokuLH/XXAhfMSKH1196j5CmBZSCHhUb
+         dtEuxwbcNHnON56M77ItoKzkoAhgPDM3D6OQQXiEPd9DQ6qVEgGtKYa+nMCB7lriH5
+         HLcjHCP7tFPb+NGZTPqZGd2DvxtdxXTyBjIjj/npz/7SaIxQthUy6qm/m4Bi9ZVpDS
+         YE547/djrWyNw5476mi3VQD15w+6waFRQsf61YUMt3LUyaFcS72ANufuvgB1z8j9+a
+         Y9Tog5enmelEA==
 MIME-Version: 1.0
-References: <20210924085104.44806-1-21cnbao@gmail.com> <20210924085104.44806-2-21cnbao@gmail.com>
- <87o883l9c8.mognet@arm.com> <CAGsJ_4zCYjha8E6km9fDO8gFR-_vO1Nr0=a7V-b9yLRZGGAC9g@mail.gmail.com>
-In-Reply-To: <CAGsJ_4zCYjha8E6km9fDO8gFR-_vO1Nr0=a7V-b9yLRZGGAC9g@mail.gmail.com>
-From:   Barry Song <21cnbao@gmail.com>
-Date:   Wed, 6 Oct 2021 23:50:35 +1300
-Message-ID: <CAGsJ_4ycKDfFY+LoaUBJ5huH8+kUsGGsC1po4DDQQPU5-ikf8A@mail.gmail.com>
-Subject: Re: [PATCH RESEND 1/3] topology: Represent clusters of CPUs within a die
-To:     Valentin Schneider <valentin.schneider@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Ben Segall <bsegall@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Guodong Xu <guodong.xu@linaro.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        "Cc: Len Brown" <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        LAK <linux-arm-kernel@lists.infradead.org>,
-        Linuxarm <linuxarm@huawei.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mel Gorman <mgorman@suse.de>, msys.mizuma@gmail.com,
-        "Zengtao (B)" <prime.zeng@hisilicon.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 06 Oct 2021 07:52:25 -0300
+From:   Fabio Estevam <festevam@denx.de>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     gregkh@linuxfoundation.org, michael@walle.cc,
+        linux-serial@vger.kernel.org, marex@denx.de,
+        u.kleine-koenig@pengutronix.de, Tejun Heo <tj@kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Will Deacon <will@kernel.org>, x86 <x86@kernel.org>,
-        yangyicong <yangyicong@huawei.com>,
-        Tian Tao <tiantao6@hisilicon.com>
-Content-Type: text/plain; charset="UTF-8"
+        John Ogness <john.ogness@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3]  serial: imx: Suppress false positive sysrq lockdep
+ warning
+In-Reply-To: <YV1Z8JslFiBSFGJF@hovoldconsulting.com>
+References: <20211001101815.729648-1-festevam@denx.de>
+ <YVcTluYb6XOiOXZn@hovoldconsulting.com>
+ <0bbe2832eb2dc3a7c32f3d484ab42208@denx.de>
+ <YV1Z8JslFiBSFGJF@hovoldconsulting.com>
+Message-ID: <c774fe18362b4cc19111078f2cd9ae82@denx.de>
+X-Sender: festevam@denx.de
+User-Agent: Roundcube Webmail/1.3.6
+X-Virus-Scanned: clamav-milter 0.103.2 at phobos.denx.de
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 6, 2021 at 9:43 AM Barry Song <21cnbao@gmail.com> wrote:
->
-> On Wed, Oct 6, 2021 at 5:34 AM Valentin Schneider
-> <valentin.schneider@arm.com> wrote:
-> >
-> > On 24/09/21 20:51, Barry Song wrote:
-> > >  void update_siblings_masks(unsigned int cpuid)
-> > >  {
-> > >       struct cpu_topology *cpu_topo, *cpuid_topo = &cpu_topology[cpuid];
-> > > @@ -617,6 +622,11 @@ void update_siblings_masks(unsigned int cpuid)
-> > >               if (cpuid_topo->package_id != cpu_topo->package_id)
-> > >                       continue;
-> > >
-> > > +             if (cpuid_topo->cluster_id == cpu_topo->cluster_id) {
-> > > +                     cpumask_set_cpu(cpu, &cpuid_topo->cluster_sibling);
-> > > +                     cpumask_set_cpu(cpuid, &cpu_topo->cluster_sibling);
-> > > +             }
-> > > +
-> >
-> > Hm so without cluster information (e.g. DT system), we have
-> > ->cluster_id=-1, we'll essentially copy the package mask into the cluster
-> > mask.
-> >
-> > The exposed cluster mask is still <= package mask which is sensible. Are we
-> > fine with that, or do we need/want the mask to be empty in the -1 case? I'm
-> > guessing userspace tools should check for either id!=-1 or if the exclusive
-> > disjucntion of cluster vs package masks is non-empty.
->
-> Hi Valentin,
-> Yep, this is a very good question. I'd like change the code to:
-> diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
-> index 7cb31d959f33..fc0836f460fb 100644
-> --- a/drivers/base/arch_topology.c
-> +++ b/drivers/base/arch_topology.c
-> @@ -622,7 +622,8 @@ void update_siblings_masks(unsigned int cpuid)
->                 if (cpuid_topo->package_id != cpu_topo->package_id)
->                         continue;
->
-> -               if (cpuid_topo->cluster_id == cpu_topo->cluster_id) {
-> +               if (cpuid_topo->cluster_id == cpu_topo->cluster_id &&
-> +                   cpuid_topo->cluster_id != -1) {
->                         cpumask_set_cpu(cpu, &cpuid_topo->cluster_sibling);
->                         cpumask_set_cpu(cpuid, &cpu_topo->cluster_sibling);
->                 }
->
+Hi Johan,
 
-Hi Peter,
-Would you like to change this line in your tree? Or do you want me to send
-a new patchset with this small change?
+On 06/10/2021 05:10, Johan Hovold wrote:
 
-> This should be consistent with Tim's patch3/3 for x86 in case
-> id is BAD_APICID:
-> static bool match_l2c(struct cpuinfo_x86 *c, struct cpuinfo_x86 *o)
-> {
->         ...
->         /* Do not match if we do not have a valid APICID for cpu: */
->         if (per_cpu(cpu_l2c_id, cpu1) == BAD_APICID)
->                 return false;
->         ...
-> }
+> Ok, thanks for testing. The above is what I meant and it does fix the
+> false-positive lockdep splat which motivated
+> uart_unlock_and_check_sysrq() to be added in the first place.
+> 
+> Looking closer at the splat you reported (which you've edited quite
+> heavily), it becomes apparent that you are now hitting a different
+> locking issue. And it's not a false positive this time.
+> 
+> There a problem with the workqueue debugging code, which unless fixed 
+> at
+> the source, would prevent any console driver from queueing work while
+> holding a lock also taken in their write paths. And
+> tty_flip_buffer_push() is just one example of many.
+> 
+> I can easily reproduce the splat with another serial driver, and I've
+> also been able to trigger the actual deadlock.
+> 
+> I've prepared a patch that takes care of the workqueue state dumping,
+> which I'll send as a reply to this mail. Would you mind giving it a 
+> spin
+> with the imx driver as well?
 
-Thanks
-Barry
+Yes, after applying only your patch I no longer get the lockdep
+splat. I have replied with my Tested-by, thanks.
