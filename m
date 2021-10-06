@@ -2,71 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33E744239CF
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 10:32:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE58F4239D3
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 10:34:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237766AbhJFIeM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 04:34:12 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:51250
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237551AbhJFIeL (ORCPT
+        id S237748AbhJFIgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 04:36:05 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:56800 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237543AbhJFIgE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 04:34:11 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 2ACBA3F045;
-        Wed,  6 Oct 2021 08:32:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1633509138;
-        bh=i7pqd94h/7qZqSjsnCqUp64WqQ62M3udKtVgH1QlXY0=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=fIGo8D9Wb4Jk7Owrre+K9F6b7d8Zg67da3as0qK6DmFvoeQTgboIWbLvh3a+Owdrq
-         XQ0L2XFdeNcV7jJRshKfACKxnoEV5hlB2PlqTxJcPkOZfsvivT5QV/Bt7szVwaSeb+
-         /6g8cbSOfjLNQCDmRZP7gnjSULaF/SX5Dg+cNcSsX2W+2CYH8HVlWwzFAE3XLhyFsT
-         MGA6siYJP6QJNG+PTD2hNOdfn1kbkx2CfEKaE1xVAcID0EY5jbEuVyTAAzqnwNekSc
-         FbB0qWUYlsdTgzxG/TcVJWfnGHZcQZeazFoJfv4/viEcfeBBBXaaFxQV3N8x4Zz9Fz
-         7bsmBI6NgyIhA==
-From:   Colin King <colin.king@canonical.com>
-To:     Kalle Valo <kvalo@codeaurora.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, ath11k@lists.infradead.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] ath11k: Fix spelling mistake "incompaitiblity" -> "incompatibility"
-Date:   Wed,  6 Oct 2021 09:32:17 +0100
-Message-Id: <20211006083217.349596-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.32.0
+        Wed, 6 Oct 2021 04:36:04 -0400
+Date:   Wed, 06 Oct 2021 08:34:10 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1633509251;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=oVi+lpnpsrEDEqMdnl3rHrC/2waG/Ksk5IfPk2Ukxys=;
+        b=mvj1eL+0cuyOS6ZJQvTeXPeGWqRu8FD/K/IWMvysEk3OVgpW7VN/xJB95GAuN6KfvyXsHm
+        POdRgpVz0UAITIoVuRLx3qujWCRJoysnhk2GZqxBOEn3yKo1RGsu6XCoNM8HfImL5y54nW
+        8Tvc0HWiqAIGLbxY5IIY2WabYotqxhYOMx9/hfyq6/OWSxtSYUMkAQi6izY3HH8GloVgOO
+        Lyss77To9/TGB8y7sseiwNOELgbx+IrYyQz03Fj05Btj/XkhRidAbVUvYxtlj1VnlxR3Rl
+        YlyUYHDrtC8P3WTdwjbTk4f0bdTuXJR2WzUE4zanNOzqYKLlEGO5+TL6xm1Qcw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1633509251;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=oVi+lpnpsrEDEqMdnl3rHrC/2waG/Ksk5IfPk2Ukxys=;
+        b=m4nguNnDpepW0JvZ9z6IlZG03hZZIKqOkgQSvDpVH+kM6Dr7srLWkcJQsDZ5/PKgDS6bOl
+        zqdq/oWB5ismdCCw==
+From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: sched/core] sched: Fix DEBUG && !SCHEDSTATS warn
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
 MIME-Version: 1.0
+Message-ID: <163350925087.25758.549028012827953790.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+The following commit has been merged into the sched/core branch of tip:
 
-There is a spelling mistake in an ath11k_warn message. Fix it.
+Commit-ID:     769fdf83df57b373660343ef4270b3ada91ef434
+Gitweb:        https://git.kernel.org/tip/769fdf83df57b373660343ef4270b3ada91ef434
+Author:        Peter Zijlstra <peterz@infradead.org>
+AuthorDate:    Wed, 06 Oct 2021 10:12:05 +02:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Wed, 06 Oct 2021 10:30:57 +02:00
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+sched: Fix DEBUG && !SCHEDSTATS warn
+
+When !SCHEDSTATS schedstat_enabled() is an unconditional 0 and the
+whole block doesn't exist, however GCC figures the scoped variable
+'stats' is unused and complains about it.
+
+Upgrade the warning from -Wunused-variable to -Wunused-but-set-variable
+by writing it in two statements. This fixes the build because the new
+warning is in W=1.
+
+Given that whole if(0) {} thing, I don't feel motivated to change
+things overly much and quite strongly feel this is the compiler being
+daft.
+
+Fixes: cb3e971c435d ("sched: Make struct sched_statistics independent of fair sched class")
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- drivers/net/wireless/ath/ath11k/mac.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/sched/debug.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath11k/mac.c b/drivers/net/wireless/ath/ath11k/mac.c
-index 31f0cfba5bf5..89ab2fa7557c 100644
---- a/drivers/net/wireless/ath/ath11k/mac.c
-+++ b/drivers/net/wireless/ath/ath11k/mac.c
-@@ -7081,7 +7081,7 @@ ath11k_mac_op_set_bitrate_mask(struct ieee80211_hw *hw,
+diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
+index 26fac5e..7dcbaa3 100644
+--- a/kernel/sched/debug.c
++++ b/kernel/sched/debug.c
+@@ -463,7 +463,8 @@ static void print_cfs_group_stats(struct seq_file *m, int cpu, struct task_group
+ 	PN(se->sum_exec_runtime);
  
- 		if (!ath11k_mac_validate_vht_he_fixed_rate_settings(ar, band, mask))
- 			ath11k_warn(ar->ab,
--				    "could not update fixed rate settings to all peers due to mcs/nss incompaitiblity\n");
-+				    "could not update fixed rate settings to all peers due to mcs/nss incompatibility\n");
- 		nss = min_t(u32, ar->num_tx_chains,
- 			    max(max(ath11k_mac_max_ht_nss(ht_mcs_mask),
- 				    ath11k_mac_max_vht_nss(vht_mcs_mask)),
--- 
-2.32.0
-
+ 	if (schedstat_enabled()) {
+-               struct sched_statistics *stats =  __schedstats_from_se(se);
++		struct sched_statistics *stats;
++		stats = __schedstats_from_se(se);
+ 
+ 		PN_SCHEDSTAT(wait_start);
+ 		PN_SCHEDSTAT(sleep_start);
