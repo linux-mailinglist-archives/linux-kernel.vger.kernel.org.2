@@ -2,105 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54353423FC9
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 16:06:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DF9A423FCA
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 16:06:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238705AbhJFOIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 10:08:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60534 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230131AbhJFOIR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 10:08:17 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 031E9C061749;
-        Wed,  6 Oct 2021 07:06:24 -0700 (PDT)
-Date:   Wed, 06 Oct 2021 14:06:21 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1633529182;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lpvHo2Y2KsjutoZlX42eUKKgHxQ5So7ziBtaVQFP3p8=;
-        b=kKoKE/ARicY89ER3vM3DK7z9yF78JUgxTbODSQBfOzdqXGNAAW/rsaqEjEkfXNUzRIKybP
-        mRQRODgcuXKBttfjmc8/m8fj6yphPlCj1jl7nRq3Ii13+XaLyqwq0WS4g2M/FPBYhBpp6R
-        00QPQbXQkgcRakTMayg0bjenV5vttzY6U+SGy494nNj3ECe0cgnYAWY8jzJqXv/5QeHYb1
-        N29Fm9M6exPXTZ99xvLBXmOcWxsSBYcfivcplF3Ix9FfptlHicv0/h1+pju9YMEWULXpeH
-        G68rquZAPLhblXb+mILmKX8FrYu2X3mrCNP6sUaMY5pzJRmxq/fVh+V+YDjUpA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1633529182;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lpvHo2Y2KsjutoZlX42eUKKgHxQ5So7ziBtaVQFP3p8=;
-        b=ctEHCAMnuCjtj5qQ+QbTfXFWK11aliIe+kXgWYehCe26qEc68dImfcknFe8+Ddng8g7fHk
-        GolibzuXsAivhJCQ==
-From:   "tip-bot2 for Lukas Bulwahn" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/cleanups] x86/Kconfig: Remove references to obsolete
- Kconfig symbols
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Borislav Petkov <bp@suse.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210803113531.30720-5-lukas.bulwahn@gmail.com>
-References: <20210803113531.30720-5-lukas.bulwahn@gmail.com>
+        id S238794AbhJFOIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 10:08:24 -0400
+Received: from foss.arm.com ([217.140.110.172]:54164 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238733AbhJFOIU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 10:08:20 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 219F06D;
+        Wed,  6 Oct 2021 07:06:28 -0700 (PDT)
+Received: from [10.57.23.208] (unknown [10.57.23.208])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7F5A03F66F;
+        Wed,  6 Oct 2021 07:06:26 -0700 (PDT)
+Subject: Re: [RFC] perf arm-spe: Track task context switch for cpu-mode events
+To:     German Gomez <german.gomez@arm.com>, Leo Yan <leo.yan@linaro.org>
+Cc:     Namhyung Kim <namhyung@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+References: <20210916001748.1525291-1-namhyung@kernel.org>
+ <20210916135418.GA383600@leoy-ThinkPad-X240s>
+ <CAM9d7chQjzEm7=UpjtTBbsob7kT+=9v16P30hWxnna7mbHu=2g@mail.gmail.com>
+ <20210923142305.GA603008@leoy-ThinkPad-X240s>
+ <363c4107-fc6f-51d0-94d8-a3f579c8f5a2@arm.com>
+ <20211004062638.GB174271@leoy-ThinkPad-X240s>
+ <f877cfa6-9b25-6445-3806-ca44a4042eaf@arm.com>
+From:   James Clark <james.clark@arm.com>
+Message-ID: <4ec2508a-d87a-ad91-87ec-dadef71bbc78@arm.com>
+Date:   Wed, 6 Oct 2021 15:06:25 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Message-ID: <163352918158.25758.16985793386110673881.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <f877cfa6-9b25-6445-3806-ca44a4042eaf@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/cleanups branch of tip:
 
-Commit-ID:     3fd3590b53d1462ab534523e8d9ebdebd9b55f79
-Gitweb:        https://git.kernel.org/tip/3fd3590b53d1462ab534523e8d9ebdebd9b55f79
-Author:        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-AuthorDate:    Tue, 03 Aug 2021 13:35:26 +02:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Tue, 05 Oct 2021 21:36:58 +02:00
 
-x86/Kconfig: Remove references to obsolete Kconfig symbols
+On 05/10/2021 11:06, German Gomez wrote:
+> Hi Leo,
+> 
+> On 04/10/2021 07:26, Leo Yan wrote:
+>> Hi James,
+>>
+>> On Thu, Sep 30, 2021 at 04:08:52PM +0100, James Clark wrote:
+>>> On 23/09/2021 15:23, Leo Yan wrote:
+>>>> On Thu, Sep 16, 2021 at 02:01:21PM -0700, Namhyung Kim wrote:
+>> [...]
+>> I'd like to use the comparison method for the test:
+>> We should enable PID tracing and capture in the perf.data, when decode
+>> the trace data, we can based on context packet and based on the switch
+>> events to generate out two results, so we can check how the difference
+>> between these results.
+> 
+> Yesterday we did some testing and found that there seems to be an exact
+> match between using context packets and switch events. However this only
+> applies when tracing in userspace (by adding the 'u' suffix to the perf
+> event). Otherwise we still see as much as 2% of events having the wrong
+> PID around the time of the switch.
+> 
+> In order to measure this I applied Namhyung's patch and James's patch
+> from [1]. 
 
-Remove two symbols referenced in Kconfig which have been removed
-previously by:
+I thought that this had been applied already so I need to follow this up.
 
-  ef3c67b6454b ("mfd: intel_msic: Remove driver for deprecated platform")
-  1b79fc4f2bfd ("x86/apb_timer: Remove driver for deprecated platform")
+James
 
-Detected by scripts/checkkconfigsymbols.py.
-
-  [ bp: Merge into a single patch. ]
-
-Suggested-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20210803113531.30720-5-lukas.bulwahn@gmail.com
----
- arch/x86/Kconfig | 2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 4e001bb..b79e88e 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -605,9 +605,7 @@ config X86_INTEL_MID
- 	depends on X86_IO_APIC
- 	select I2C
- 	select DW_APB_TIMER
--	select APB_TIMER
- 	select INTEL_SCU_PCI
--	select MFD_INTEL_MSIC
- 	help
- 	  Select to build a kernel capable of supporting Intel MID (Mobile
- 	  Internet Device) platform systems which do not have the PCI legacy
+[...]
+> 
+> [1] https://www.spinics.net/lists/linux-perf-users/msg12543.html
+> 
