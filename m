@@ -2,87 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B12B342488A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 23:10:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D793C424890
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 23:11:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239571AbhJFVMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 17:12:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58794 "EHLO mail.kernel.org"
+        id S239610AbhJFVNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 17:13:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59252 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239454AbhJFVML (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 17:12:11 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 07E8F61177;
-        Wed,  6 Oct 2021 21:10:17 +0000 (UTC)
-Date:   Wed, 6 Oct 2021 17:10:16 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Sami Tolvanen <samitolvanen@google.com>, X86 ML <x86@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        linux-hardening@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>, llvm@lists.linux.dev
-Subject: Re: [PATCH v4 06/15] ftrace: Use an opaque type for functions not
- callable from C
-Message-ID: <20211006171016.07d90b59@gandalf.local.home>
-In-Reply-To: <20211006204335.xtymxt6wk4akx6fc@treble>
-References: <20210930180531.1190642-1-samitolvanen@google.com>
-        <20210930180531.1190642-7-samitolvanen@google.com>
-        <20211006032945.axlqh3vehgar6adr@treble>
-        <20211006090249.248c65b0@gandalf.local.home>
-        <CABCJKueL4Ebaan=JBUyO3oewq7RTHHXWUQpixgf2AfC_r5T3uA@mail.gmail.com>
-        <20211006125809.5389b2a3@gandalf.local.home>
-        <CABCJKudTuheEd5jyhXmfJHup7iYzOz3_OcO92hFnpRK1MapJSg@mail.gmail.com>
-        <20211006204335.xtymxt6wk4akx6fc@treble>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S239589AbhJFVNX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 17:13:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C4ACF611CA;
+        Wed,  6 Oct 2021 21:11:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633554690;
+        bh=LNqbS/LMwUeuhG2zkUpaTJ+yjUbdFlkv6r1NbAyBvEc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=YA++Nn5DpRsJi+OnbxNBvrKTC0QUnxtkG5HvT15TNnluNwqOWca6cjEBPol7eX+Oc
+         gX4GS/tDGlyxOhqmR6munc5e39ebDn4xizkooCyR5IZblmn19m1n1Hx/dqcJcgT/Cn
+         e5TmZF+hE85IXK9/NUWGoGXDidmnb8/ou3wjU7dfNyTGAl1+VzrXzBaDlsO5QD22PZ
+         55AA3Gbx8a/ahzfbbUYCjW43mrvy7uzB6vSXWRkwIJ+Rsq1d29pFCJghA6bqwTQCG+
+         fpMEqaBP2q2P9IAH8ljNjb22rLb7v+4a+3RYp3G0DqbuFBMh00MyavtESllwwxmuPS
+         ly0UOPPYKD6KQ==
+Received: by mail-ed1-f42.google.com with SMTP id p13so15257047edw.0;
+        Wed, 06 Oct 2021 14:11:30 -0700 (PDT)
+X-Gm-Message-State: AOAM530w5P+KpJpCX5ejr1a4Q74JSg79PK64+3lcgQpJ2ei2Ytw21Jpm
+        FyOjwGlIKIwv5CV2cX75HJPWljetpIofayoeqA==
+X-Google-Smtp-Source: ABdhPJzKiId+LYfDotK6HTjCThex+azZFfK2kUjEIgU9HIOsNulHfvi5yvu457cW9uYkiTtQpx2oaFO6JaLRVhFLVcs=
+X-Received: by 2002:a17:906:7217:: with SMTP id m23mr644987ejk.466.1633554689344;
+ Wed, 06 Oct 2021 14:11:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210930095838.28145-1-pali@kernel.org> <20210930095838.28145-5-pali@kernel.org>
+In-Reply-To: <20210930095838.28145-5-pali@kernel.org>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Wed, 6 Oct 2021 16:11:18 -0500
+X-Gmail-Original-Message-ID: <CAL_Jsq+b5T+q2HbnvWNwg4FZEPnwJgyK2-QF1wCs-=VTvC67Ww@mail.gmail.com>
+Message-ID: <CAL_Jsq+b5T+q2HbnvWNwg4FZEPnwJgyK2-QF1wCs-=VTvC67Ww@mail.gmail.com>
+Subject: Re: [PATCH v7 4/6] dt-bindings: mvebu-uart: update information about
+ UART clock
+To:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Vladimir Vid <vladimir.vid@sartura.hr>,
+        =?UTF-8?B?TWFyZWsgQmVow7pu?= <kabel@kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 6 Oct 2021 13:43:35 -0700
-Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+On Thu, Sep 30, 2021 at 4:59 AM Pali Roh=C3=A1r <pali@kernel.org> wrote:
+>
+> Device "marvell,armada-3700-uart" should use
+> "marvell,armada-3700-uart-clock" compatible clock.
+>
+> Signed-off-by: Pali Roh=C3=A1r <pali@kernel.org>
+> ---
+>  Documentation/devicetree/bindings/serial/mvebu-uart.txt | 9 ++++++---
+>  1 file changed, 6 insertions(+), 3 deletions(-)
 
-> On Wed, Oct 06, 2021 at 10:45:41AM -0700, Sami Tolvanen wrote:
-> > On Wed, Oct 6, 2021 at 9:58 AM Steven Rostedt <rostedt@goodmis.org> wrote:  
-> > >
-> > > On Wed, 6 Oct 2021 09:31:04 -0700
-> > > Sami Tolvanen <samitolvanen@google.com> wrote:
-> > >  
-> > > > > > On Thu, Sep 30, 2021 at 11:05:22AM -0700, Sami Tolvanen wrote:  
-> > > > > > > With CONFIG_CFI_CLANG, the compiler changes function references to point
-> > > > > > > to the CFI jump table. As ftrace_call, ftrace_regs_call, and mcount_call
-> > > > > > > are not called from C, use DECLARE_ASM_FUNC_SYMBOL to declare them.  
-> > > > >
-> > > > > "not called from C" is a bit confusing.  
-> > > >
-> > > > Any thoughts on how to make this less confusing?  
-> > >
-> > >  "Not called by C code, but injected by the compiler."
-> > >
-> > > ?  
-> > 
-> > Sure, sounds good to me. I'll update this in v5.  
-> 
-> "injected by the compiler" sounds even more confusing.  It almost sounds
-> like those functions are generated by GCC, which they are most
-> definitely not.
-> 
-
-Heh, I was thinking of the locations that are injected (mcount / fentry) as
-these are just replacements for them. Those injections are added by GCC.
-
-So, continuing the bikeshedding, what about "not called by C code, but are
-trampolines injected as calls replacing the nops at the start of
-functions added by the compiler." ?
-
--- Steve
-
-
+Reviewed-by: Rob Herring <robh@kernel.org>
