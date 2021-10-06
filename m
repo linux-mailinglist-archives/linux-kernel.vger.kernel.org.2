@@ -2,96 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9E4E424289
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 18:23:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48DAD424296
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 18:26:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239280AbhJFQZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 12:25:30 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3941 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230101AbhJFQZV (ORCPT
+        id S239363AbhJFQ20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 12:28:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37162 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230014AbhJFQ2Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 12:25:21 -0400
-Received: from fraeml707-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HPfnD5DnCz67Xd6;
-        Thu,  7 Oct 2021 00:20:16 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml707-chm.china.huawei.com (10.206.15.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Wed, 6 Oct 2021 18:23:27 +0200
-Received: from [10.47.95.252] (10.47.95.252) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2308.8; Wed, 6 Oct 2021
- 17:23:26 +0100
-Subject: Re: [PATCH 1/4] perf vendor events: Syntax corrections in Neoverse N1
- json
-To:     James Clark <james.clark@arm.com>,
-        Andrew Kilroy <andrew.kilroy@arm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
-        "acme@kernel.org" <acme@kernel.org>
-CC:     Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        "Namhyung Kim" <namhyung@kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Andi Kleen <ak@linux.intel.com>
-References: <20211004160008.21645-1-andrew.kilroy@arm.com>
- <b7a4a1b3-3d22-7a52-75b1-66c04b57a50c@huawei.com>
- <0743bf83-2e5d-8830-61bc-ed0731db108d@arm.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <83767166-e379-a352-d920-ad8b6e923800@huawei.com>
-Date:   Wed, 6 Oct 2021 17:26:02 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        Wed, 6 Oct 2021 12:28:24 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FAD9C061746
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 09:26:31 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <l.stach@pengutronix.de>)
+        id 1mY9kQ-0006Op-55; Wed, 06 Oct 2021 18:26:26 +0200
+Message-ID: <45dc35aa5e7901051cd86f3461aab01d8604c746.camel@pengutronix.de>
+Subject: Re: [PATCH v2] arm64: dts: imx8mm-venice-gw7901.dts: disable
+ pgc_gpumix
+From:   Lucas Stach <l.stach@pengutronix.de>
+To:     Tim Harvey <tharvey@gateworks.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Date:   Wed, 06 Oct 2021 18:26:24 +0200
+In-Reply-To: <20211006153836.13760-1-tharvey@gateworks.com>
+References: <20211006153836.13760-1-tharvey@gateworks.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.4 (3.40.4-1.fc34) 
 MIME-Version: 1.0
-In-Reply-To: <0743bf83-2e5d-8830-61bc-ed0731db108d@arm.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.47.95.252]
-X-ClientProxiedBy: lhreml709-chm.china.huawei.com (10.201.108.58) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: l.stach@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/10/2021 09:43, James Clark wrote:
+Am Mittwoch, dem 06.10.2021 um 08:38 -0700 schrieb Tim Harvey:
+> Since commit b21269b12e48 ("arm64: dts: imx8mm: add GPC node") the
+> GW7901 will hang during kernel init because it does not power the unused
+> GPU voltage rails on the IMX8MM. Disable pgc_gpumix to work around this.
+> 
+> We also disable the GPU devices that depend on the gpumix power domain
+> and pgc_gpu to avoid them staying in a probe deferred state forever.
+> 
+> Additionally as the MIPI voltage rail is also not connected on this
+> board we disable pgc_mipi and disp_blk_ctrl.
+> 
+> Signed-off-by: Tim Harvey <tharvey@gateworks.com>
 
-+ Andi
+Reviewed-by: Lucas Stach <l.stach@pengutronix.de>
 
+> ---
+> v2:
+>  - also disable pgc_gpu to keep gpu from getting in probe deferred state
+>  - also disable pgc_mipi and disp_blk_ctrl as the MIPI power rails are
+>    not connected
+> ---
+>  .../dts/freescale/imx8mm-venice-gw7901.dts    | 24 +++++++++++++++++++
+>  1 file changed, 24 insertions(+)
 > 
-> 
-> On 05/10/2021 11:10, John Garry wrote:
->> On 04/10/2021 17:00, Andrew Kilroy wrote:
->>> There are some syntactical mistakes in the json files for the Cortex A76
->>> N1 (Neoverse N1).  This was obstructing parsing from an external tool.
->>
->> If the trailing comma is not allowed by standard, then maybe we should fix our parsing tool to not allow it also. However maybe there is a good reason why we allow it..
-> 
-> It would be nice to do, because I have also made similar fixes before. We looked at the STRICT option
-> in the parser (https://github.com/zserge/jsmn), but even then it seems to allow trailing commas.
-> 
-> Trailing commas are not allowed in the json standard, but there is a split between parsers
-> where some allow it and others don't. Specifically the Python parser doesn't allow it, and Python
-> can easily be involved in some workflow that parses these files.
-> 
-> The only way forwards I can think of is either getting a change accepted upstream to the parser
-> and then updating it in perf, switching to a different parser, or doing some hack to add an extra
-> step in perf to look for commas. None of which sound ideal.
-> 
+> diff --git a/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7901.dts b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7901.dts
+> index bafd5c8ea4e2..21c546c4628d 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7901.dts
+> +++ b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7901.dts
+> @@ -255,6 +255,10 @@
+>  	};
+>  };
+>  
+> +&disp_blk_ctrl {
+> +	status = "disabled";
+> +};
+> +
+>  &ecspi1 {
+>  	pinctrl-names = "default";
+>  	pinctrl-0 = <&pinctrl_spi1>;
+> @@ -282,6 +286,14 @@
+>  	};
+>  };
+>  
+> +&gpu_2d {
+> +	status = "disabled";
+> +};
+> +
+> +&gpu_3d {
+> +	status = "disabled";
+> +};
+> +
+>  &i2c1 {
+>  	clock-frequency = <100000>;
+>  	pinctrl-names = "default";
+> @@ -632,6 +644,18 @@
+>  	status = "okay";
+>  };
+>  
+> +&pgc_gpu {
+> +	status = "disabled";
+> +};
+> +
+> +&pgc_gpumix {
+> +	status = "disabled";
+> +};
+> +
+> +&pgc_mipi {
+> +	status = "disabled";
+> +};
+> +
+>  &uart1 {
+>  	pinctrl-names = "default";
+>  	pinctrl-0 = <&pinctrl_uart1>, <&pinctrl_uart1_gpio>;
 
-Looking at the license in jsmn.c, we seem to be ok to modify it (to 
-error on non-standard trailing ',') - that parser has already apparently 
-been modified in mainline.
 
-If we do that then I hope that there are not to many violations in out 
-JSONs, including downstream.
-
-Thanks,
-John
