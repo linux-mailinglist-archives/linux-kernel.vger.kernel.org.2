@@ -2,156 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B0CA4234D9
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 02:15:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 653754234DC
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 02:16:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237048AbhJFAR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 20:17:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41016 "EHLO
+        id S237051AbhJFAS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 20:18:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233994AbhJFARY (ORCPT
+        with ESMTP id S234027AbhJFASY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 20:17:24 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 577C5C061749
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 17:15:33 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id u20-20020a9d7214000000b0054e170300adso964047otj.13
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 17:15:33 -0700 (PDT)
+        Tue, 5 Oct 2021 20:18:24 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6911C06174E
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 17:16:33 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id b22so579055pls.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 17:16:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=9tzMxEXeRZ9vZ6WKGHD8GdqG31K/v2rLyNRBux+Swf4=;
-        b=OQygNhVVehGtg+wS+bXFa/5K4w+jHJ8XiWZZc9xqBeysMV0N1n9NlIwDng1+Cojt5u
-         TRNVm2MYGpXYZIg/Z4wzA5EMFkwgvIy1kC8LA8oorAxOy3dN7WqdJT8YHWrb0mhSPmlt
-         pOVWRrrO4p9IeMsttWIJAuM9EAtEVukvZfZP8=
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FsmOcyeSF5LDALD7AdWRbXWLdG0zO7+WUiqdNCezuHc=;
+        b=jjILV6lHdBkHdfDeE167mW3yw3DgacBfFLFIqrdpFEphqu7gr5eQbTyq/bFiEJrvwm
+         lF6b3/99Sh7dF2t6FHkXdOqBT6c1WnDGCi0QOyRRQ38+jehDZkGLVPBNK1YlElQZgeHh
+         crpWe5OgLIsypO1pyfBfnOxUQb/A1EmwqHy8BSbjzn3kHDLeQBmkIyNLDM43cnpupUxT
+         FqQhIa8/Op3x50d1/JkbcSxGyANvfzP/9LXbG0QEqvi4vThdq42sK+CSFR8DmK+0CRF6
+         ILIWrZdc9/ZRd3FTHiFkAODhhk9XxdLMtAr4TUe1RcgWTsmflT3rWt0dl+E4WXpAp78Z
+         xm1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=9tzMxEXeRZ9vZ6WKGHD8GdqG31K/v2rLyNRBux+Swf4=;
-        b=IpcT9s83xTonpwkUG5wXUnKlCz3ohZxthj/7i3XNPDAw1JGPJSLOKAEMw66Q94RIB0
-         bV0efPiSK82cHKU9S5rGyDgYv+qQpf3Zi3l9HvN8sZ8pecDaVY3Q+8g5IiQs2j0SDX+H
-         UNK299pr9dQAfwt9T4JsV89dtKndJoY5T2dqQ1YZN3O7wYDnY3T205upemc5ZtxCGEe8
-         qp90kZy8liBtayBeQRnsW9FsdXQ9hQXkFpTdd/KzNrHknXuD/EOO/rnmncntB50Ntn7/
-         dYTfpiz3bXNTUfkTcFR6QpadgiVvJXtzEdsMhCR7wvVcu7Uiq56SdVAusXKDj2rv6WRX
-         yCMQ==
-X-Gm-Message-State: AOAM532V0ZNpY16bSw3eUzvWNPl7qih1EjKW53PauxvgPK/iyy4awa9h
-        KGUivn0hEmvca8WyW6M4yFdOtmQMpSTmD18M9KBIMw==
-X-Google-Smtp-Source: ABdhPJzSi7rJ/j68GKHBK0r+knYE/P5yBIQ/VbjAnJL7ff/zbZl98PnkJ9ta6ivRwIe2lxeGGKRz/NNCimqJP8IUsLk=
-X-Received: by 2002:a9d:1f4:: with SMTP id e107mr16675560ote.77.1633479332704;
- Tue, 05 Oct 2021 17:15:32 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Tue, 5 Oct 2021 17:15:32 -0700
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FsmOcyeSF5LDALD7AdWRbXWLdG0zO7+WUiqdNCezuHc=;
+        b=AGCrQHVVvi3u2D2wiOvhT7tecUGn5ZmzwY7aHzorg4KXR3AsWaBz7oUKdIIiEgj00z
+         Y3ghbploMuE/KDCkIR7a+m8sc3fSEu9xBBgJg5HgPKJtaxdCdve7JsHXheiS3UINfP17
+         nm2DrPZNRY1LxO/O6+UGBLyXFxzpmrkqlnKdqeUJRQ2WxBMtAzlEc+0l6x0wJZuhVbrD
+         CMEhKCnhMLkz/3cUJkQJRiFDyMdOzu2a+1UtTGgrvINMmZarb0C8BAr6/mXENR272H1K
+         NbfE5+i2j6/ntMxUyMEGK51q2HKmAg9crAGqnlScQIMjEd8Tybyq7WCMf8DhYta3E0I1
+         nH5A==
+X-Gm-Message-State: AOAM530aJfwpYdslL08fapzF10WnvenFVH1gwye+iD3pN4SGxPXVYEaM
+        3LAyTdgMcNx3KGsux0yY29nbsac7p0L0EHHXV4B2vg==
+X-Google-Smtp-Source: ABdhPJxm2mrIkvX1H5FZqrRIvq/NW592WPZPWtxWAKdaIixsmln+D5I2mF9rQg+zHJZWe9VAKADevheENmdKLBXcV88=
+X-Received: by 2002:a17:90a:2902:: with SMTP id g2mr7212693pjd.161.1633479392911;
+ Tue, 05 Oct 2021 17:16:32 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20211005231323.2663520-4-bjorn.andersson@linaro.org>
-References: <20211005231323.2663520-1-bjorn.andersson@linaro.org> <20211005231323.2663520-4-bjorn.andersson@linaro.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Tue, 5 Oct 2021 17:15:32 -0700
-Message-ID: <CAE-0n53cQwmz2j1TDkfmt7+JLFD3QBkY8_Tb1HPALqsWJFWmUA@mail.gmail.com>
-Subject: Re: [PATCH v4 3/7] drm/msm/dp: Allow specifying connector_type per controller
-To:     Abhinav Kumar <abhinavk@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Kalyan Thota <kalyan_t@codeaurora.org>,
-        Kuogee Hsieh <khsieh@codeaurora.org>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>
-Cc:     Rob Herring <robh+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
+References: <20210928161957.24628-1-andriy.tryshnivskyy@opensynergy.com>
+ <20210930174043.0845f6ed@jic23-huawei> <CA+=V6c34+VtYbUDG=NuY6YeyML23Tth2+fTjhvXpwMvrtkM5_Q@mail.gmail.com>
+ <650ec3b8-c970-604c-9be6-577c46d3e762@opensynergy.com>
+In-Reply-To: <650ec3b8-c970-604c-9be6-577c46d3e762@opensynergy.com>
+From:   Jyoti Bhayana <jbhayana@google.com>
+Date:   Tue, 5 Oct 2021 17:16:21 -0700
+Message-ID: <CA+=V6c10xE-1uUzGWusBiGVMV2Fwy93dGGHA9FH0PC4tYggVUQ@mail.gmail.com>
+Subject: Re: [PATCH v3 0/1] iio/scmi: Add reading "raw" attribute.
+To:     Vasyl Vavrychuk <vasyl.vavrychuk@opensynergy.com>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
+        Andriy Tryshnivskyy <andriy.tryshnivskyy@opensynergy.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Bjorn Andersson (2021-10-05 16:13:19)
-> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
-> index 5d3ee5ef07c2..eaf08f9e7d87 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_display.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
-> @@ -115,8 +115,25 @@ struct dp_display_private {
->         struct dp_audio *audio;
->  };
+Hi Vasyl,
+
+Regarding below question, yes reading raw attribute should be blocked
+if buffer is enabled for that sensor.
+
+> 1. Should we block reading raw attribute and IIO buffer enabled, for for
+> SCMI sensor it can coexist?
+
+
+PLease see  https://elixir.bootlin.com/linux/latest/source/drivers/iio/imu/inv_mpu6050/inv_mpu_core.c#L667
+as well. It has
+
+case IIO_CHAN_INFO_RAW:
+ret = iio_device_claim_direct_mode(indio_dev);
+if (ret)
+return ret;
+mutex_lock(&st->lock);
+ret = inv_mpu6050_read_channel_data(indio_dev, chan, val);
+mutex_unlock(&st->lock);
+iio_device_release_direct_mode(indio_dev);
+return ret;
+
+Regarding the question below, the answer is yes.
+
+> 2. Should we wrap reading raw attribute implementation in iio_dev->mlock
+> mutex?
+
+
+Thanks, Jyoti
+
+
+
+
+
+On Tue, Oct 5, 2021 at 5:52 AM Vasyl Vavrychuk
+<vasyl.vavrychuk@opensynergy.com> wrote:
 >
-> +struct msm_dp_desc {
-> +       phys_addr_t io_start;
-> +       int connector_type;
-> +};
-> +
-> +struct msm_dp_config {
-> +       struct msm_dp_desc *descs;
-
-const?
-
-> +       size_t num_descs;
-> +};
-> +
-> +static const struct msm_dp_config sc7180_dp_cfg = {
-> +       .descs = (struct msm_dp_desc[]) {
-
-const?
-
-> +               { .io_start = 0x0ae90000, .connector_type = DRM_MODE_CONNECTOR_DisplayPort },
-> +       },
-> +       .num_descs = 1,
-> +};
-> +
->  static const struct of_device_id dp_dt_match[] = {
-> -       {.compatible = "qcom,sc7180-dp"},
-> +       { .compatible = "qcom,sc7180-dp", .data = &sc7180_dp_cfg },
->         {}
->  };
+> Hi, Jyoti,
 >
-> @@ -1180,10 +1197,29 @@ int dp_display_request_irq(struct msm_dp *dp_display)
->         return 0;
->  }
+> > In the code below, why is the logic of enabling and disabling the
+> > sensor in this function?  Generally the function to read the sensor
+> > value is just used for the code to read the sensor values ? and not
+> > enable/disable the sensor
 >
-> +static struct msm_dp_desc *dp_display_get_desc(struct platform_device *pdev)
-
-const msm_dp_desc?
-
-> +{
-> +       const struct msm_dp_config *cfg = of_device_get_match_data(&pdev->dev);
-> +       struct resource *res;
-> +       int i;
-> +
-> +       res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +       if (!res)
-> +               return NULL;
-> +
-> +       for (i = 0; i < cfg->num_descs; i++)
-> +               if (cfg->descs[i].io_start == res->start)
-> +                       return &cfg->descs[i];
-> +
-> +       dev_err(&pdev->dev, "unknown displayport instance\n");
-> +       return NULL;
-> +}
-> +
->  static int dp_display_probe(struct platform_device *pdev)
->  {
->         int rc = 0;
->         struct dp_display_private *dp;
-> +       struct msm_dp_desc *desc;
-
-const?
-
+> But to read sensor value we have to enable it first. Other way to enable
+> sensor we found is, for example:
 >
->         if (!pdev || !pdev->dev.of_node) {
->                 DRM_ERROR("pdev not found\n");
-> @@ -1194,8 +1230,13 @@ static int dp_display_probe(struct platform_device *pdev)
->         if (!dp)
->                 return -ENOMEM;
+>    echo 1 > /sys/bus/iio/devices/.../scan_elements/in_anglvel_x_en
 >
-> +       desc = dp_display_get_desc(pdev);
-> +       if (!desc)
-> +               return -EINVAL;
-> +
->         dp->pdev = pdev;
->         dp->name = "drm_dp";
-> +       dp->dp_display.connector_type = desc->connector_type;
+> But, this command is related to IIO buffers use.
 >
->         rc = dp_init_sub_modules(dp);
->         if (rc) {
+> Other sensors drivers enable/disable sensor in read raw too, for
+> example, drivers/iio/accel/kxcjk-1013.c has:
+>
+>    case IIO_CHAN_INFO_RAW:
+>            mutex_lock(&data->mutex);
+>            if (iio_buffer_enabled(indio_dev))
+>                    ret = -EBUSY;
+>            else {
+>                    ret = kxcjk1013_set_power_state(data, true);
+>                    ... reading ...
+>                    ret = kxcjk1013_set_power_state(data, false);
+>            }
+>            mutex_unlock(&data->mutex);
+>
+> But, after looking on this code I have some questions:
+>
+> 1. Should we block reading raw attribute and IIO buffer enabled, for for
+> SCMI sensor it can coexist?
+> 2. Should we wrap reading raw attribute implementation in iio_dev->mlock
+> mutex?
+>
+> >>     case IIO_CHAN_INFO_RAW:
+> >> +               sensor_config = FIELD_PREP(SCMI_SENS_CFG_SENSOR_ENABLED_MASK,
+> >> +                                          SCMI_SENS_CFG_SENSOR_ENABLE);
+> >> +               err = sensor->sensor_ops->config_set(
+> >> +                       sensor->ph, sensor->sensor_info->id, sensor_config);
+> >> +               if (err) {
+> >> +                       dev_err(&iio_dev->dev,
+> >> +                               "Error in enabling sensor %s err %d",
+> >> +                               sensor->sensor_info->name, err);
+> >> +                       return err;
+> >> +               }
+> >> +
+> >> +               err = sensor->sensor_ops->reading_get_timestamped(
+> >> +                       sensor->ph, sensor->sensor_info->id,
+> >> +                       sensor->sensor_info->num_axis, readings);
+> >> +               if (err) {
+> >> +                       dev_err(&iio_dev->dev,
+> >> +                               "Error in reading raw attribute for sensor %s err %d",
+> >> +                               sensor->sensor_info->name, err);
+> >> +                       return err;
+> >> +               }
+> >> +
+> >> +               sensor_config = FIELD_PREP(SCMI_SENS_CFG_SENSOR_ENABLED_MASK,
+> >> +                                          SCMI_SENS_CFG_SENSOR_DISABLE);
+> >> +               err = sensor->sensor_ops->config_set(
+> >> +                       sensor->ph, sensor->sensor_info->id, sensor_config);
+> >> +               if (err) {
+> >> +                       dev_err(&iio_dev->dev,
+> >> +                               "Error in enabling sensor %s err %d",
+> >> +                               sensor->sensor_info->name, err);
+> >> +                       return err;
+> >> +               }
+> >> +               /* Check if raw value fits 32 bits */
+> >> +               if (readings[ch->scan_index].value < INT_MIN ||
+> >> +                   readings[ch->scan_index].value > INT_MAX)
+> >> +                       return -ERANGE;
+> >> +               /* Use 32-bit value, since practically there is no need in 64 bits */
+> >> +               *val = (int)readings[ch->scan_index].value;
+> >>
+> >> +               return IIO_VAL_INT;
