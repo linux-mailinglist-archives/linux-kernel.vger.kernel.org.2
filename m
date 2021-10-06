@@ -2,117 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0530A424952
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 23:58:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B80D424960
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 00:01:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239788AbhJFWAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 18:00:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58120 "EHLO
+        id S239761AbhJFWDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 18:03:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230213AbhJFWAm (ORCPT
+        with ESMTP id S230213AbhJFWDd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 18:00:42 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05171C061746
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 14:58:50 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id u18so15961278lfd.12
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 14:58:49 -0700 (PDT)
+        Wed, 6 Oct 2021 18:03:33 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A796CC061746;
+        Wed,  6 Oct 2021 15:01:40 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id y23so16553085lfb.0;
+        Wed, 06 Oct 2021 15:01:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gDe/CCgzbVL8cdlihpSKcZ9kkAIpNWk3w42F2ZBCbZg=;
-        b=DpDarEaj1O5yO8x4BdIM2Z/QGnUEayQsIHKYbYRjnyzgH1esE022dwFqrhXwc6O5fb
-         JOSG4NCOh4lBDQG6UOc7cvFWeA+sj0AzYTEr5cClzf3a4p3Y8LB8oqaZqBjiauJr5xg1
-         8ESjgwjYcEbeS9PfhXdSQvk9oMdgLTik5/iZ4V2CY+r2yFgBbUSdTXI9yjXFPtgJEb7V
-         HiCutC1fb4tudyIy8/s+qObuEJFapRCQJNeYJyQ1ywTjoFE7Q9b+HFci138yJTYwwokH
-         z2w9tMdPXLiJSuSsAdZT7xIXmA9tEjdSrm4bRyzkEn2vaaR7N8RIYBh5M4vHHJi/EQaS
-         cLMg==
+        d=gmail.com; s=20210112;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=5TkNSTf/crsCY8tpMwpTN8iKpqaO2VZ0TUZ85nuR8Fk=;
+        b=ld5Z6/7VEZW1BNCnvycjhHvK6IpV0YjfrLQjNBsO96QPqcR78gynbACaP4b3v+AV2G
+         ZoLwNcAHlL2lP1hD9XCyVo+HgjPKPyrFXBaaLRdePQndwZ2K8agaqTWuCCYNZ53P/CNY
+         ndTDCsBZctybMCs+VHRuCY14W46EZ5RAMeLixCUb6TGaPc9fma/U/9YYLssXSscrYxM9
+         FyyRAIS/qrTJPcPMOSxO40MUN/i0dnOaagBNSyj96E2Vo5dzjlz91/J5jaxfdcEJx+Mt
+         foowTm+Ou9IP4TQJDKqV/EFyi29YReHhq/PHOGOcTavuUkNccklIFzUOTrq/MYShVPId
+         bghQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gDe/CCgzbVL8cdlihpSKcZ9kkAIpNWk3w42F2ZBCbZg=;
-        b=ZoKn7vnT0S3Bj5vmALEKgN3x2GWqzoYXoQVckf+61fulooYQuU6dBD+Cs1UClg+uES
-         ZmrutkCuyty8ETVrgQXNW5yy0IutX7vihBGZLPLWyYWiDROgIk1hK3NkMrj36H+utJ4a
-         ULmT1krbqQmVMwbjxOf8mXS5/PMB/JUkYkJ3rDrQdkutZIeF8C55Qmdbv7RBHTNXY7DX
-         ei9vWV4fwlpR1hiyXCOdrkDd7YQA5CoGXBsZhPdPo75v9tZ5+6YNZUKOTQt2PwPGFwdF
-         xyCW6nfDtKDLrX/jQstwKFn6poS7H9qt8QcFeP2FpWJcb9+E6pmmMEZVk8a0faGWl6I+
-         H+ig==
-X-Gm-Message-State: AOAM532DWUjgu7Evjg6PN+lCTtt20mng714IaZMYWrfJfdxs6NshdCxi
-        oJ9FRrzmZIsg6NAHHYnpv5TB7/bb18dIb8w8b7NSeA==
-X-Google-Smtp-Source: ABdhPJw6/4P9YojbZ4+TF/BbAh9j+NIH0UVeOWkFJsuSEGRFBhFgpeb3nv6DA7bKovrjbGLFVHAi7Nh6gnC/VpLE9m8=
-X-Received: by 2002:a05:651c:b20:: with SMTP id b32mr578167ljr.62.1633557528140;
- Wed, 06 Oct 2021 14:58:48 -0700 (PDT)
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=5TkNSTf/crsCY8tpMwpTN8iKpqaO2VZ0TUZ85nuR8Fk=;
+        b=MznFHq33AdcFZZ0muAFKTgY/0YlSAWmn9Avv/w7ryDr4nL54dL0sCXdX0pAybv80EI
+         WFzeF1UAawn+viGvPXqBxsXXI4h0yd3rlDeeRcrz3CV3TEPK+C4Tmc9fDgGgtocGQesn
+         TWE9p80EdIdpMKZXKyUglTyYXsobIY/gPGl8wwOiaJQUqExyZ22tlhRFJvLw4l9UYTrR
+         r+GMatDu8nMl/vBp6vpCcXW9vZViHrSr4xtqLYDOMcCf0dT0MIX1zwuQYZV51b7R/VZk
+         SV2WDdSPLfI4cC2AlFidqsD5NRoUS95bc8D84owlP0beSSD8rktuItfA3+yLwm7AIf4X
+         dHGg==
+X-Gm-Message-State: AOAM531hPie1N67Mps08uDJYdp8dGlLbpEHGpMn/k+O8Hm3V0NB6QEHQ
+        Ox7DpRUOtTSj41cMWquxQpk=
+X-Google-Smtp-Source: ABdhPJxJIJFwKX68ZSmnYzC0Awokki/S6kJnq8tWjdId3tkzC1pWGuNVGI8Q0oyk0uiEmZtVw1aP/w==
+X-Received: by 2002:ac2:44a2:: with SMTP id c2mr507644lfm.452.1633557698995;
+        Wed, 06 Oct 2021 15:01:38 -0700 (PDT)
+Received: from [192.168.2.145] (79-139-163-57.dynamic.spd-mgts.ru. [79.139.163.57])
+        by smtp.googlemail.com with ESMTPSA id s17sm1505472lfe.10.2021.10.06.15.01.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Oct 2021 15:01:38 -0700 (PDT)
+Subject: Re: [PATCH v13 06/35] clk: tegra: Support runtime PM and power domain
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        Peter Chen <peter.chen@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Nishanth Menon <nm@ti.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        linux-staging@lists.linux.dev, linux-pwm@vger.kernel.org,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Richard Weinberger <richard@nod.at>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        David Heidelberg <david@ixit.cz>
+References: <20210926224058.1252-1-digetx@gmail.com>
+ <20210926224058.1252-7-digetx@gmail.com>
+ <CAPDyKFq+LS4Jr1GyC-a-tGWPzGH0JxfJ9wKY=uQEBGYm952azw@mail.gmail.com>
+ <24101cd6-d3f5-1e74-db39-145ecd30418b@gmail.com>
+ <CAPDyKFreK7976PJL-1zySoza_yXM7rMQ64aODWUZ+U3L-uCa0w@mail.gmail.com>
+ <4bdba8a2-4b9b-ed7d-e6ca-9218d8200a85@gmail.com>
+ <74a47158-e2e4-5fd0-3f37-0b50d4ead4d9@gmail.com>
+ <CAPDyKFr2-f1wM+6jF9vWJ-Nq80Zg1Z3qFP6saULOrBi1270HGw@mail.gmail.com>
+ <b06bf794-b8b3-417b-58ef-4d815ca86c95@gmail.com>
+Message-ID: <4c7b1a4c-c136-3650-8f77-9f98caa506f7@gmail.com>
+Date:   Thu, 7 Oct 2021 01:01:37 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20211006082209.417-1-lukas.bulwahn@gmail.com>
-In-Reply-To: <20211006082209.417-1-lukas.bulwahn@gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 6 Oct 2021 14:58:36 -0700
-Message-ID: <CAKwvOd=X-ZFPraS2EL24ps1aKdT3bWhtASA0vUjXdzo655XGiQ@mail.gmail.com>
-Subject: Re: [PATCH] elfcore: correct reference to CONFIG_UML
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
-        Nathan Chancellor <nathan@kernel.org>, llvm@lists.linux.dev,
-        kernel-janitors@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <b06bf794-b8b3-417b-58ef-4d815ca86c95@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+ Catalin who just sent a very similar patch after Lukas:
-https://lore.kernel.org/lkml/20211006181119.2851441-1-catalin.marinas@arm.com/
-EOM
+07.10.2021 00:14, Dmitry Osipenko пишет:
+> 06.10.2021 15:43, Ulf Hansson пишет:
+>> On Wed, 6 Oct 2021 at 00:43, Dmitry Osipenko <digetx@gmail.com> wrote:
+>>>
+>>> 06.10.2021 01:19, Dmitry Osipenko пишет:
+>>> ...
+>>>> I reproduced the OFF problem by removing the clk prepare/unprepare from
+>>>> the suspend/resume of the clk driver and making some extra changes to
+>>>> clock tree topology and etc to trigger the problem on Nexus 7.
+>>>>
+>>>> tegra-pmc 7000e400.pmc: failed to turn off PM domain heg: -13
+>>>>
+>>>> It happens from genpd_suspend_noirq() -> tegra_genpd_power_off() -> clk
+>>>> -> GENPD -> I2C -> runtime-pm.
+>>>>
+>>>> -13 is EACCES, it comes from the runtime PM of I2C device. RPM is
+>>>> prohibited/disabled during late (NOIRQ) suspend by the drivers core.
+>>>
+>>> My bad, I double-checked and it's not I2C RPM that is failing now, but
+>>> the clock's RPM [1], which is also unavailable during NOIRQ.
+>>
+>> Yes, that sounds reasonable.
+>>
+>> You would then need a similar patch for the tegra clock driver as I
+>> suggested for tegra I2C driver. That should solve the problem, I
+>> think.
+>>
+>>>
+>>> [1]
+>>> https://elixir.free-electrons.com/linux/v5.15-rc4/source/drivers/clk/clk.c#L116
+>>>
+>>> Previously it was I2C RPM that was failing in a similar way, but code
+>>> changed a tad since that time.
+>>
+>> Alright. In any case, as long as the devices gets suspended in the
+>> correct order, I think it should be fine to cook a patch along the
+>> lines of what I suggest for the I2C driver as well.
+>>
+>> It should work, I think. Although, maybe you want to avoid runtime
+>> resuming the I2C device, unless it's the device belonging to the PMIC
+>> interface, if there is a way to distinguish that for the driver.
+> 
+> Ulf, thank you very much for the suggestions! I was thinking about this
+> all once again and concluded that the simplest variant will be to just
+> remove the suspend ops from the clk driver since neither of PLLs require
+> high voltage. We now have voltage bumped to a nominal level during
+> suspend by Tegra's regulator-coupler driver and it's much higher than
+> voltage needed by PLLs. So the problem I was trying to work around
+> doesn't really exist anymore.
 
-On Wed, Oct 6, 2021 at 1:22 AM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
->
-> Commit 6e7b64b9dd6d ("elfcore: fix building with clang") introduces
-> special handling for two architectures, ia64 and User Mode Linux.
-> However, the wrong name, i.e., CONFIG_UM, for the intended Kconfig symbol
-> for User-Mode Linux was used.
->
-> Although the directory for User Mode Linux is ./arch/um; the Kconfig
-> symbol for this architecture is called CONFIG_UML.
->
-> Luckily, ./scripts/checkkconfigsymbols.py warns on non-existing configs:
->
-> UM
-> Referencing files: include/linux/elfcore.h
-> Similar symbols: UML, NUMA
->
-> Correct the name of the config to the intended one.
->
-> Fixes: 6e7b64b9dd6d ("elfcore: fix building with clang")
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> ---
-> applies cleanly on next-20211005
->
-> Arnd, please ack.
-> Andrew, please pick this fix.
->
->  include/linux/elfcore.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/include/linux/elfcore.h b/include/linux/elfcore.h
-> index 2aaa15779d50..127716b58235 100644
-> --- a/include/linux/elfcore.h
-> +++ b/include/linux/elfcore.h
-> @@ -109,7 +109,7 @@ static inline int elf_core_copy_task_fpregs(struct task_struct *t, struct pt_reg
->  #endif
->  }
->
-> -#if defined(CONFIG_UM) || defined(CONFIG_IA64)
-> +#if defined(CONFIG_UML) || defined(CONFIG_IA64)
->  /*
->   * These functions parameterize elf_core_dump in fs/binfmt_elf.c to write out
->   * extra segments containing the gate DSO contents.  Dumping its
-> --
-> 2.26.2
->
-
-
--- 
-Thanks,
-~Nick Desaulniers
+I hurried a bit with the conclusion, keep forgetting that I need to
+change the clock tree in order to test it all properly :/ It's not fixed
+yet.
