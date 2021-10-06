@@ -2,95 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61522423F9A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 15:50:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3BB7423F9D
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 15:52:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238049AbhJFNwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 09:52:11 -0400
-Received: from foss.arm.com ([217.140.110.172]:51672 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231600AbhJFNwH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 09:52:07 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4FE691FB;
-        Wed,  6 Oct 2021 06:50:14 -0700 (PDT)
-Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 39F0B3F66F;
-        Wed,  6 Oct 2021 06:50:10 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Barry Song <21cnbao@gmail.com>
-Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Ben Segall <bsegall@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Guodong Xu <guodong.xu@linaro.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        "Cc\: Len Brown" <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        LAK <linux-arm-kernel@lists.infradead.org>,
-        Linuxarm <linuxarm@huawei.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mel Gorman <mgorman@suse.de>, msys.mizuma@gmail.com,
-        "Zengtao \(B\)" <prime.zeng@hisilicon.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Will Deacon <will@kernel.org>, x86 <x86@kernel.org>,
-        yangyicong <yangyicong@huawei.com>,
-        Tian Tao <tiantao6@hisilicon.com>
-Subject: Re: [PATCH RESEND 1/3] topology: Represent clusters of CPUs within a die
-In-Reply-To: <CAGsJ_4zCYjha8E6km9fDO8gFR-_vO1Nr0=a7V-b9yLRZGGAC9g@mail.gmail.com>
-References: <20210924085104.44806-1-21cnbao@gmail.com> <20210924085104.44806-2-21cnbao@gmail.com> <87o883l9c8.mognet@arm.com> <CAGsJ_4zCYjha8E6km9fDO8gFR-_vO1Nr0=a7V-b9yLRZGGAC9g@mail.gmail.com>
-Date:   Wed, 06 Oct 2021 14:49:49 +0100
-Message-ID: <87lf36l0ua.mognet@arm.com>
+        id S238019AbhJFNxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 09:53:51 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:46406 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230023AbhJFNxr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 09:53:47 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: kholk11)
+        with ESMTPSA id 35C281F41C16
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+To:     robh+dt@kernel.org
+Cc:     tomi.valkeinen@ti.com, daniel@ffwll.ch, airlied@linux.ie,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Subject: [PATCH] dt-bindings: display/bridge: tc358764: Convert to YAML binding
+Date:   Wed,  6 Oct 2021 15:51:50 +0200
+Message-Id: <20211006135150.504897-1-angelogioacchino.delregno@collabora.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/10/21 09:43, Barry Song wrote:
->
-> Hi Valentin,
-> Yep, this is a very good question. I'd like change the code to:
-> diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
-> index 7cb31d959f33..fc0836f460fb 100644
-> --- a/drivers/base/arch_topology.c
-> +++ b/drivers/base/arch_topology.c
-> @@ -622,7 +622,8 @@ void update_siblings_masks(unsigned int cpuid)
->                 if (cpuid_topo->package_id != cpu_topo->package_id)
->                         continue;
->
-> -               if (cpuid_topo->cluster_id == cpu_topo->cluster_id) {
-> +               if (cpuid_topo->cluster_id == cpu_topo->cluster_id &&
-> +                   cpuid_topo->cluster_id != -1) {
->                         cpumask_set_cpu(cpu, &cpuid_topo->cluster_sibling);
->                         cpumask_set_cpu(cpuid, &cpu_topo->cluster_sibling);
->                 }
->
-> This should be consistent with Tim's patch3/3 for x86 in case
-> id is BAD_APICID:
-> static bool match_l2c(struct cpuinfo_x86 *c, struct cpuinfo_x86 *o)
-> {
->         ...
->         /* Do not match if we do not have a valid APICID for cpu: */
->         if (per_cpu(cpu_l2c_id, cpu1) == BAD_APICID)
->                 return false;
->         ...
-> }
->
+Convert the Toshiba TC358764 txt documentation to YAML.
 
-LGTM.
+Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+---
+ .../display/bridge/toshiba,tc358764.txt       | 35 -------
+ .../display/bridge/toshiba,tc358764.yaml      | 94 +++++++++++++++++++
+ 2 files changed, 94 insertions(+), 35 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/display/bridge/toshiba,tc358764.txt
+ create mode 100644 Documentation/devicetree/bindings/display/bridge/toshiba,tc358764.yaml
+
+diff --git a/Documentation/devicetree/bindings/display/bridge/toshiba,tc358764.txt b/Documentation/devicetree/bindings/display/bridge/toshiba,tc358764.txt
+deleted file mode 100644
+index 8f9abf28a8fa..000000000000
+--- a/Documentation/devicetree/bindings/display/bridge/toshiba,tc358764.txt
++++ /dev/null
+@@ -1,35 +0,0 @@
+-TC358764 MIPI-DSI to LVDS panel bridge
+-
+-Required properties:
+-  - compatible: "toshiba,tc358764"
+-  - reg: the virtual channel number of a DSI peripheral
+-  - vddc-supply: core voltage supply, 1.2V
+-  - vddio-supply: I/O voltage supply, 1.8V or 3.3V
+-  - vddlvds-supply: LVDS1/2 voltage supply, 3.3V
+-  - reset-gpios: a GPIO spec for the reset pin
+-
+-The device node can contain following 'port' child nodes,
+-according to the OF graph bindings defined in [1]:
+-  0: DSI Input, not required, if the bridge is DSI controlled
+-  1: LVDS Output, mandatory
+-
+-[1]: Documentation/devicetree/bindings/media/video-interfaces.txt
+-
+-Example:
+-
+-	bridge@0 {
+-		reg = <0>;
+-		compatible = "toshiba,tc358764";
+-		vddc-supply = <&vcc_1v2_reg>;
+-		vddio-supply = <&vcc_1v8_reg>;
+-		vddlvds-supply = <&vcc_3v3_reg>;
+-		reset-gpios = <&gpd1 6 GPIO_ACTIVE_LOW>;
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+-		port@1 {
+-			reg = <1>;
+-			lvds_ep: endpoint {
+-				remote-endpoint = <&panel_ep>;
+-			};
+-		};
+-	};
+diff --git a/Documentation/devicetree/bindings/display/bridge/toshiba,tc358764.yaml b/Documentation/devicetree/bindings/display/bridge/toshiba,tc358764.yaml
+new file mode 100644
+index 000000000000..267a870b6b0b
+--- /dev/null
++++ b/Documentation/devicetree/bindings/display/bridge/toshiba,tc358764.yaml
+@@ -0,0 +1,94 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/display/bridge/toshiba,tc358764.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Toshiba TC358764 MIPI-DSI to LVDS bridge
++
++maintainers:
++  - Andrzej Hajda <a.hajda@samsung.com>
++
++description: |
++  The TC358764 is bridge device which converts MIPI DSI or MIPI DPI to DP/eDP.
++
++properties:
++  compatible:
++    enum:
++      - toshiba,tc358764
++
++  reg:
++    description: Virtual channel number of a DSI peripheral
++    maxItems: 1
++
++  reset-gpios:
++    description: GPIO connected to the reset pin.
++    maxItems: 1
++
++  vddc-supply:
++    description: Core voltage supply, 1.2V
++
++  vddio-supply:
++    description: I/O voltage supply, 1.8V or 3.3V
++
++  vddlvds-supply:
++    description: LVDS1/2 voltage supply, 3.3V
++
++  ports:
++    $ref: /schemas/graph.yaml#/properties/ports
++
++    properties:
++      port@0:
++        $ref: /schemas/graph.yaml#/properties/port
++        description:
++          Video port for MIPI DSI input, if the bridge DSI controlled
++
++      port@1:
++        $ref: /schemas/graph.yaml#/properties/port
++        description:
++          Video port for LVDS output (panel or connector).
++
++    required:
++      - port@1
++
++required:
++  - compatible
++  - reg
++  - vddc-supply
++  - vddio-supply
++  - vddlvds-supply
++  - ports
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++
++    i2c1 {
++      #address-cells = <1>;
++      #size-cells = <0>;
++
++      bridge@0 {
++        compatible = "toshiba,tc358764";
++        reg = <0>;
++        vddc-supply = <&vcc_1v2_reg>;
++        vddio-supply = <&vcc_1v8_reg>;
++        vddlvds-supply = <&vcc_3v3_reg>;
++        reset-gpios = <&gpd1 6 GPIO_ACTIVE_LOW>;
++
++        ports {
++          #address-cells = <1>;
++          #size-cells = <0>;
++
++          port@1 {
++            reg = <1>;
++            lvds_ep: endpoint {
++              remote-endpoint = <&panel_ep>;
++            };
++          };
++        };
++      };
++    };
++
++...
+-- 
+2.33.0
+
