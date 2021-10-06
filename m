@@ -2,68 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FD2C4237FA
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 08:28:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCAEE4237FC
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 08:30:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237256AbhJFGaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 02:30:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53968 "EHLO mail.kernel.org"
+        id S233148AbhJFGcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 02:32:24 -0400
+Received: from mga07.intel.com ([134.134.136.100]:36775 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232979AbhJFGaV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 02:30:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6971861186;
-        Wed,  6 Oct 2021 06:28:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633501709;
-        bh=5Ofyu8hfWQU4ytV6M6hVrHVYrZALkAzZzA9juN6Lct4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RkRktobNnsLwPDF10nX4/f1LenTx7IrHu5yBWUHPP4MllLZe00ww7JU2P6v5ra8C7
-         GSCmd1RwItatjzX5GtRnrh5ukNpFrjbRU0GHSyo98TkWYf+EIqYpP3naz8YK2N4vHk
-         oDOiA8j1qfiIc0nvymFs5GD8WxJtMTctm2Sz92Jg=
-Date:   Wed, 6 Oct 2021 08:28:27 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
-        syzbot <syzbot+7af597ce2b38596c16ea@syzkaller.appspotmail.com>
-Cc:     hminas@synopsys.com, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] usb-testing build error (2)
-Message-ID: <YV1CCyGShh623mOA@kroah.com>
-References: <000000000000b01f1505cda8e03c@google.com>
+        id S229956AbhJFGcV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 02:32:21 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10128"; a="289429915"
+X-IronPort-AV: E=Sophos;i="5.85,350,1624345200"; 
+   d="scan'208";a="289429915"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2021 23:30:29 -0700
+X-IronPort-AV: E=Sophos;i="5.85,350,1624345200"; 
+   d="scan'208";a="484034646"
+Received: from pwali-mobl1.amr.corp.intel.com (HELO ldmartin-desk2) ([10.213.170.68])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2021 23:30:29 -0700
+Date:   Tue, 5 Oct 2021 23:30:29 -0700
+From:   Lucas De Marchi <lucas.demarchi@intel.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH] lib/string_helpers: add linux/string.h for strlen()
+Message-ID: <20211006063029.owhu5hjtaivib5d5@ldmartin-desk2>
+X-Patchwork-Hint: comment
+References: <20211005212634.3223113-1-lucas.demarchi@intel.com>
+ <CAHp75VfT+dSNYSntj9O5a9NVGnbf_raxWLiS7ciDMe-kRL-+=A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Disposition: inline
-In-Reply-To: <000000000000b01f1505cda8e03c@google.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHp75VfT+dSNYSntj9O5a9NVGnbf_raxWLiS7ciDMe-kRL-+=A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05, 2021 at 11:01:31PM -0700, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    dea971290a03 usb: core: config: Change sizeof(struct ...) ..
-> git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
-> console output: https://syzkaller.appspot.com/x/log.txt?x=150e8a3f300000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=cd8a1eadba1e4ce4
-> dashboard link: https://syzkaller.appspot.com/bug?extid=7af597ce2b38596c16ea
-> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+7af597ce2b38596c16ea@syzkaller.appspotmail.com
-> 
-> drivers/usb/dwc2/params.c:252:8: error: 'struct dwc2_hsotg' has no member named 'dw_otg_caps'
-> drivers/usb/dwc2/params.c:253:8: error: 'struct dwc2_hsotg' has no member named 'dw_otg_caps'
-> drivers/usb/dwc2/params.c:259:8: error: 'struct dwc2_hsotg' has no member named 'dw_otg_caps'
-> drivers/usb/dwc2/params.c:260:8: error: 'struct dwc2_hsotg' has no member named 'dw_otg_caps'
-> drivers/usb/dwc2/params.c:264:8: error: 'struct dwc2_hsotg' has no member named 'dw_otg_caps'
-> drivers/usb/dwc2/params.c:265:8: error: 'struct dwc2_hsotg' has no member named 'dw_otg_caps'
-> drivers/usb/dwc2/params.c:270:7: error: 'struct dwc2_hsotg' has no member named 'dw_otg_caps'
-> drivers/usb/dwc2/params.c:479:53: error: 'struct dwc2_hsotg' has no member named 'dw_otg_caps'
-> drivers/usb/dwc2/params.c:500:9: error: 'struct dwc2_hsotg' has no member named 'dw_otg_caps'
-> drivers/usb/dwc2/params.c:509:8: error: 'struct dwc2_hsotg' has no member named 'dw_otg_caps'
-> drivers/usb/dwc2/params.c:510:8: error: 'struct dwc2_hsotg' has no member named 'dw_otg_caps'
+On Wed, Oct 06, 2021 at 08:57:27AM +0300, Andy Shevchenko wrote:
+>On Wednesday, October 6, 2021, Lucas De Marchi <lucas.demarchi@intel.com>
+>wrote:
+>
+>> linux/string_helpers.h uses strlen(), so include the correpondent
+>> header. Otherwise we get a compilation error if it's not also included
+>> by whoever included the helper.
+>>
+>> Signed-off-by: Lucas De Marchi <lucas.demarchi@intel.com>
+>> ---
+>>  include/linux/string_helpers.h | 1 +
+>>  1 file changed, 1 insertion(+)
+>>
+>> diff --git a/include/linux/string_helpers.h b/include/linux/string_
+>> helpers.h
+>> index 68189c4a2eb1..4ba39e1403b2 100644
+>> --- a/include/linux/string_helpers.h
+>> +++ b/include/linux/string_helpers.h
+>> @@ -4,6 +4,7 @@
+>>
+>>  #include <linux/bits.h>
+>>  #include <linux/ctype.h>
+>> +#include <linux/string.h>
+>>  #include <linux/types.h>
+>
+>
+>I’m afraid this potentially can add into header dependencies hell. What
+>about moving the user to the C file?
 
-Thanks, I'll go drop the offending patches from my tree.
+I can do that, but I don't see the problem here... afaics it has been like this
+for 7 years, since commit c8250381c827 ("lib / string_helpers: introduce string_escape_mem()"),
+and the only way it was never borken is because
+linux/string.h is already being indirectly included from other headers.
+So just adding it here is harmless.
 
-greg k-h
+I reproduced this while following the normal header order in i915 and
+adding linux/string_helpers.h like this:
+
+
+diff --git a/drivers/gpu/drm/i915/display/intel_display_debugfs.c b/drivers/gpu/drm/i915/display/intel_display_debugfs.c
+index 309d74fd86ce..1dfc01617258 100644
+--- a/drivers/gpu/drm/i915/display/intel_display_debugfs.c
++++ b/drivers/gpu/drm/i915/display/intel_display_debugfs.c
+@@ -3,6 +3,8 @@
+   * Copyright © 2020 Intel Corporation
+   */
+  
++#include <linux/string_helpers.h>
++
+  #include <drm/drm_debugfs.h>
+  #include <drm/drm_fourcc.h>
+  
+
+Note that this became the first header included, producing the following
+error:
+
+  make -j$(nproc) drivers/gpu/drm/i915/display/intel_display_debugfs.o
+   DESCEND objtool
+   CALL    scripts/atomic/check-atomics.sh
+   CALL    scripts/checksyscalls.sh
+   CC [M]  drivers/gpu/drm/i915/display/intel_display_debugfs.o
+In file included from drivers/gpu/drm/i915/display/intel_display_debugfs.c:6:
+./include/linux/string_helpers.h: In function ‘string_escape_str’:
+./include/linux/string_helpers.h:75:32: error: implicit declaration of function ‘strlen’ [-Werror=implicit-function-declaration]
+    75 |  return string_escape_mem(src, strlen(src), dst, sz, flags, only);
+       |                                ^~~~~~
+./include/linux/string_helpers.h:75:32: error: incompatible implicit declaration of built-in function ‘strlen’ [-Werror]
+./include/linux/string_helpers.h:7:1: note: include ‘<string.h>’ or provide a declaration of ‘strlen’
+     6 | #include <linux/ctype.h>
+   +++ |+#include <string.h>
+     7 | #include <linux/types.h>
+cc1: all warnings being treated as errors
+
+
+Anyway, if it's preferable to move these functions out of line, I can do
+so.
+
+thanks
+Lucas De Marchi
+
+>
+>
+>>
+>>  struct file;
+>> --
+>> 2.33.0
+>>
+>>
+>
+>-- 
+>With Best Regards,
+>Andy Shevchenko
