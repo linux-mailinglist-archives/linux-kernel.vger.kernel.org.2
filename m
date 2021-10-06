@@ -2,98 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67158424148
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 17:26:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8C5D42414B
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 17:26:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239149AbhJFP2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 11:28:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51208 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231671AbhJFP2D (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 11:28:03 -0400
-Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B90F2C061746;
-        Wed,  6 Oct 2021 08:26:10 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        id S239200AbhJFP2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 11:28:32 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:55542 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231671AbhJFP2b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 11:28:31 -0400
+Received: from zn.tnic (p200300ec2f0d3600bdb6aa8687ce684e.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:3600:bdb6:aa86:87ce:684e])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: marcan@marcan.st)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id 33AE13FA5E;
-        Wed,  6 Oct 2021 15:26:04 +0000 (UTC)
-Subject: Re: [PATCH 1/7] dt-bindings: arm: apple: Add apple,pmgr binding
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     Marc Zyngier <maz@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-serial@vger.kernel.org
-References: <20211005155923.173399-1-marcan@marcan.st>
- <20211005155923.173399-2-marcan@marcan.st>
- <18818eff-87d7-6a53-a4fd-7f3cbf625a0e@canonical.com>
-From:   Hector Martin <marcan@marcan.st>
-Message-ID: <57991dac-196e-a76d-831a-d4ac166bfe29@marcan.st>
-Date:   Thu, 7 Oct 2021 00:26:02 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 769691EC0409;
+        Wed,  6 Oct 2021 17:26:37 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1633533997;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=aNd7PoUhak/3a48Mf+gIve1v0CrGJRlpCPmC8oGfq5o=;
+        b=UjEVimTo/HVnt6sg3Pq2epKgy04bCmL8r+mloo7FtgZcph1HrHVP8FyYySdc6qgQCiT4n6
+        Mp2lFnB4DcsffwPXRpZrMGHrCup3QHU3Q3wg9i5pariyRsUZ5Y8NuZRRN+rkrulByv2GhP
+        b5QKBtNLVwW4MzuKzlvEb8ykP9W73ko=
+Date:   Wed, 6 Oct 2021 17:26:33 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
+        VMware Inc <pv-drivers@vmware.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 03/11] x86/cpufeatures: Add TDX Guest CPU feature
+Message-ID: <YV3AKekdJU0vsbaN@zn.tnic>
+References: <20211005025205.1784480-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20211005025205.1784480-4-sathyanarayanan.kuppuswamy@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <18818eff-87d7-6a53-a4fd-7f3cbf625a0e@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: es-ES
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211005025205.1784480-4-sathyanarayanan.kuppuswamy@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/10/2021 15.56, Krzysztof Kozlowski wrote:
->> diff --git a/Documentation/devicetree/bindings/arm/apple/apple,pmgr.yaml b/Documentation/devicetree/bindings/arm/apple/apple,pmgr.yaml
->> new file mode 100644
->> index 000000000000..0304164e4140
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/arm/apple/apple,pmgr.yaml
->> @@ -0,0 +1,74 @@
->> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/arm/apple/apple,pmgr.yaml#
-> 
-> Please don't store all Apple-related bindings in bindings/arm/apple, but
-> instead group per device type like in most of other bindings. In this
-> case - this looks like something close to power domain controller, so it
-> should be in bindings/power/
+On Mon, Oct 04, 2021 at 07:51:57PM -0700, Kuppuswamy Sathyanarayanan wrote:
+> diff --git a/arch/x86/kernel/tdx.c b/arch/x86/kernel/tdx.c
+> new file mode 100644
+> index 000000000000..ad3ff5925153
+> --- /dev/null
+> +++ b/arch/x86/kernel/tdx.c
+> @@ -0,0 +1,40 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (C) 2020 Intel Corporation */
+> +
+> +#undef pr_fmt
+> +#define pr_fmt(fmt)     "tdx: " fmt
+> +
+> +#include <asm/tdx.h>
+> +
+> +/*
+> + * Allocate it in the data region to avoid zeroing it during
+> + * BSS initialization. It is mainly used in cc_platform_has()
+> + * call during early boot call.
+> + */
+> +u64 __section(".data") is_tdx_guest = 0;
+> +
+> +static void __init is_tdx_guest_init(void)
+> +{
+> +	u32 eax, sig[3];
+> +
+> +	if (cpuid_eax(0) < TDX_CPUID_LEAF_ID) {
+> +		is_tdx_guest = 0;
+> +		return;
+> +	}
+> +
+> +	cpuid_count(TDX_CPUID_LEAF_ID, 0, &eax, &sig[0], &sig[2], &sig[1]);
+> +
+> +	is_tdx_guest = !memcmp("IntelTDX    ", sig, 12);
+> +}
+> +
+> +void __init tdx_early_init(void)
+> +{
+> +	is_tdx_guest_init();
+> +
+> +	if (!is_tdx_guest)
+> +		return;
+> +
+> +	setup_force_cpu_cap(X86_FEATURE_TDX_GUEST);
+> +
+> +	pr_info("Guest initialized\n");
+> +}
+> -- 
 
-This is a controller that, right now, is only used to instantiate device 
-power management controls, but the controller itself is just a generic 
-syscon device. Depending on the register range, it could conceivably 
-encompass other register types (e.g. clock selects) within it, though 
-I'm not sure I want to do that right now. Apple calls several of these 
-different register sets as a whole a "PMGR". So I'm not sure if it 
-really qualifies as "just" a power domain controller. If we want to 
-restrict this to the power state portion of PMGR, then it might make 
-sense to call it something more specific...
+What I meant was this (untested of course).
 
-See arm/rockchip/pmu.yaml for the setup this is modeled after.
+is_tdx_guest() is the accessor external code queries and you cache the
+detected value in tdx_guest so that the one after the first one is
+cheap.
 
-> No power-domain-cells? Why? What exactly this device is going to do?
-> Maybe I'll check the driver first.... :)
+/*
+ * Allocate it in the data region to avoid zeroing it during
+ * BSS initialization. It is mainly used in cc_platform_has()
+ * call during early boot call.
+ *
+ * States whether the kernel is running as a TDX guest.
+ */
+static int tdx_guest __ro_after_init = -1;
 
-It's a syscon, it does nothing on its own. All the work is done by the 
-child nodes and the driver that binds to those.
+bool is_tdx_guest(void)
+{
+	u32 eax, sig[3];
 
->> +additionalProperties: true
-> 
-> additionalProperties: false
+	if (tdx_guest >= 0)
+		return tdx_guest;
 
-Fixed for v2.
+	if (cpuid_eax(0) < TDX_CPUID_LEAF_ID) {
+		tdx_guest = 0;
+		return false;
+	}
+
+	cpuid_count(TDX_CPUID_LEAF_ID, 0, &eax, &sig[0], &sig[2], &sig[1]);
+
+	tdx_guest = !memcmp("IntelTDX    ", sig, 12);
+
+	return tdx_guest;
+}
+
+void __init tdx_early_init(void)
+{
+	if (!is_tdx_guest())
+		return;
+
+	setup_force_cpu_cap(X86_FEATURE_TDX_GUEST);
+
+	pr_info("Guest initialized\n");
+}
 
 -- 
-Hector Martin (marcan@marcan.st)
-Public Key: https://mrcn.st/pub
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
