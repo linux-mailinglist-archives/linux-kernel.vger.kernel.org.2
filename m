@@ -2,210 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41ECF42466F
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 21:06:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AE81424673
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 21:08:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239080AbhJFTH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 15:07:59 -0400
-Received: from mga03.intel.com ([134.134.136.65]:23180 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229564AbhJFTH6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 15:07:58 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10129"; a="226031857"
-X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; 
-   d="scan'208";a="226031857"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2021 12:06:06 -0700
-X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; 
-   d="scan'208";a="488625273"
-Received: from ccronin-mobl.ger.corp.intel.com (HELO [10.213.247.242]) ([10.213.247.242])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2021 12:06:04 -0700
-Subject: Re: [RFC 6/8] drm/i915: Make some recently added vfuncs use full
- scheduling attribute
-To:     Matthew Brost <matthew.brost@intel.com>
-Cc:     Intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org,
-        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
-        Daniele Ceraolo Spurio <daniele.ceraolospurio@intel.com>
-References: <20211004143650.699120-1-tvrtko.ursulin@linux.intel.com>
- <20211004143650.699120-7-tvrtko.ursulin@linux.intel.com>
- <20211006171228.GA7906@jons-linux-dev-box>
-From:   Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
-Organization: Intel Corporation UK Plc
-Message-ID: <e5eb54fb-84c3-c95f-ad95-18bddd53fe62@linux.intel.com>
-Date:   Wed, 6 Oct 2021 20:06:02 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S239144AbhJFTKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 15:10:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21717 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229564AbhJFTKG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 15:10:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633547294;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=D1dm0Jsv2mUc+jhdc8qHClKIoNz3UWNx693+PgEldu0=;
+        b=HRgjqzsSDo8mRKvkmzMwu8G4wQSFJXZ18uXKMGA7AlTyZdNWDcQSlA8zGoqkmbrMvadU3h
+        w3mmcMZ19dWdDzfRvcT3qrLCPCTfd3xrLpux1f0WEThm8jA17jaR2mWsmGsV/fuHT97CIN
+        pK1pgzjpO94Y09eXn4R7h8aDBln6XJA=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-283-5VaeTSWQNAC-5QKmmKY1cg-1; Wed, 06 Oct 2021 15:08:12 -0400
+X-MC-Unique: 5VaeTSWQNAC-5QKmmKY1cg-1
+Received: by mail-wr1-f72.google.com with SMTP id d13-20020adf9b8d000000b00160a94c235aso2825377wrc.2
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 12:08:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=D1dm0Jsv2mUc+jhdc8qHClKIoNz3UWNx693+PgEldu0=;
+        b=dkPQFzU2YyLIj7Hjv9asF7LX8EFst9uqRlHM5uAxrEvBQ5yyVwC2RtyUupUXK4ZEIA
+         fuSwL/pazEXoc/0Oc2wKIz6g321aoEO4Pb7wg8bOl+reyEF1iHp3VUMvNXXt7+dL4B4D
+         Q2gwncDhrckp1Nqasir/4n4Gevlr5T7NnvVrd5XI/vDfEJGL8kACdfHTwtY4c82wMGr2
+         bw5ENYZIF4gjS7RRtV0o/LZgqc651PByw6fihl87LD/Zkz6THgoS0oJg0JCRzxt1/DZn
+         2inrXD4ewfQqEb8mKx/yZE1ixseyDgMz4yrj6Kjbf9r9TIl/tYi0Z7vIoOy59b5GcM2c
+         1UdQ==
+X-Gm-Message-State: AOAM530bevfXN2hSQwdfDqUfc4SUrWgsrix45p/2E6iLkObl1AZaoYZb
+        l3nSKcsYAzzrnaigTeDdfYJ6UgWF6MgdTiGo+sdAKoUOIMR+hUQhB8mvxoc+cs9KVEiIXYpW42x
+        SdOorLUCvuaowQWzbG/WDuCQ=
+X-Received: by 2002:a7b:c7ca:: with SMTP id z10mr26830wmk.143.1633547291477;
+        Wed, 06 Oct 2021 12:08:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzW3Vplh1TB3mapUwuNjmaCci2ywucaNaPkBXKlNFfA0xxJLgQjy0Of/3AUsfgwnuRUSg9LQQ==
+X-Received: by 2002:a7b:c7ca:: with SMTP id z10mr26813wmk.143.1633547291261;
+        Wed, 06 Oct 2021 12:08:11 -0700 (PDT)
+Received: from localhost (cpc111743-lutn13-2-0-cust979.9-3.cable.virginm.net. [82.17.115.212])
+        by smtp.gmail.com with ESMTPSA id s186sm7171134wme.14.2021.10.06.12.08.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Oct 2021 12:08:10 -0700 (PDT)
+Date:   Wed, 6 Oct 2021 20:08:10 +0100
+From:   Aaron Tomlin <atomlin@redhat.com>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>
+Subject: Re: [PATCH v2] mm/memcg: Remove obsolete memcg_free_kmem()
+Message-ID: <20211006190810.ume55n4lugekcm63@ava.usersys.com>
+X-PGP-Key: http://pgp.mit.edu/pks/lookup?search=atomlin%40redhat.com
+X-PGP-Fingerprint: 7906 84EB FA8A 9638 8D1E  6E9B E2DE 9658 19CC 77D6
+References: <20211005202450.11775-1-longman@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20211006171228.GA7906@jons-linux-dev-box>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211005202450.11775-1-longman@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 06/10/2021 18:12, Matthew Brost wrote:
-> On Mon, Oct 04, 2021 at 03:36:48PM +0100, Tvrtko Ursulin wrote:
->> From: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
->>
->> Code added in 71ed60112d5d ("drm/i915: Add kick_backend function to
->> i915_sched_engine") and ee242ca704d3 ("drm/i915/guc: Implement GuC
->> priority management") introduced some scheduling related vfuncs which
->> take integer request priority as argument.
->>
->> Make them instead take struct i915_sched_attr, which is the type
->> encapsulating this information, so it probably aligns with the design
->> better. It definitely enables extending the set of scheduling attributes.
->>
+On Tue 2021-10-05 16:24 -0400, Waiman Long wrote:
+> Since commit d648bcc7fe65 ("mm: kmem: make memcg_kmem_enabled()
+> irreversible"), the only thing memcg_free_kmem() does is to call
+> memcg_offline_kmem() when the memcg is still online which can happen when
+> online_css() fails due to -ENOMEM. However, the name memcg_free_kmem()
+> is confusing and it is more clear and straight forward to call
+> memcg_offline_kmem() directly from mem_cgroup_css_free().
 > 
-> Understand the motivation here but the i915_scheduler is going to
-> disapear when we move to the DRM scheduler or at least its functionality
-> of priority inheritance will be pushed into the DRM scheduler. I'd be
-> very careful making any changes here as the priority in the DRM
-> scheduler is defined as single enum:
-> 
-> /* These are often used as an (initial) index
->   * to an array, and as such should start at 0.
->   */
-> enum drm_sched_priority {
->          DRM_SCHED_PRIORITY_MIN,
->          DRM_SCHED_PRIORITY_NORMAL,
->          DRM_SCHED_PRIORITY_HIGH,
->          DRM_SCHED_PRIORITY_KERNEL,
-> 
->          DRM_SCHED_PRIORITY_COUNT,
->          DRM_SCHED_PRIORITY_UNSET = -2
-> };
-> 
-> Adding a field to the i915_sched_attr is fairly easy as we already have
-> a structure but changing the DRM scheduler might be a tougher sell.
-> Anyway you can make this work without adding the 'nice' field to
-> i915_sched_attr? Might be worth exploring so when we move to the DRM
-> scheduler this feature drops in a little cleaner.
+> Suggested-by: Roman Gushchin <guro@fb.com>
+> Signed-off-by: Waiman Long <longman@redhat.com>
 
-/me rubs a crystal ball.. no idea how that would look. :)
+Reviewed-by: Aaron Tomlin <atomlin@redhat.com>
 
-Idea with separate nice in sched attr is that only default priority 
-contexts are affected by nice. Thinking being, if i915 aware userspace 
-has explicitly requested a different priority, then let it keep that. In 
-other words, only if it did not bother and left it at default/normal, 
-then we inherit from process nice.
+-- 
+Aaron Tomlin
 
-I suppose to keep this idea in some future drm scheduler world it would 
-require some work. But in general the concept is of course open to 
-discussion.
-
-Implementation wise, not having prio and nice separate opens some other 
-problems in how this interacts with GEM context priority, but there are 
-probably solutions to those problems as well.
-
-I suppose I could define a "nice range" in the existing priorities and 
-nice adjustments would only apply if within that range. That would allow 
-max and min user priority to still be undisturbed as requested via the 
-i915 uapi.
-
-(min) -1023 ----- (nice 20) ----- 0 ------ (nice -19) ------ +1023 (max)
-
-And I say if some userspace set a priority in the -20 to 19 range then 
-it is allowed to adjust it via process nice. That would keep it a single 
-int priority as today.
-
-Regards,
-
-Tvrtko
-
-> 
-> Matt
-> 
->> Signed-off-by: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
->> Cc: Matthew Brost <matthew.brost@intel.com>
->> Cc: Daniele Ceraolo Spurio <daniele.ceraolospurio@intel.com>
->> ---
->>   drivers/gpu/drm/i915/gt/intel_execlists_submission.c | 4 +++-
->>   drivers/gpu/drm/i915/gt/uc/intel_guc_submission.c    | 3 ++-
->>   drivers/gpu/drm/i915/i915_scheduler.c                | 4 ++--
->>   drivers/gpu/drm/i915/i915_scheduler_types.h          | 4 ++--
->>   4 files changed, 9 insertions(+), 6 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/i915/gt/intel_execlists_submission.c b/drivers/gpu/drm/i915/gt/intel_execlists_submission.c
->> index 7147fe80919e..e91d803a6453 100644
->> --- a/drivers/gpu/drm/i915/gt/intel_execlists_submission.c
->> +++ b/drivers/gpu/drm/i915/gt/intel_execlists_submission.c
->> @@ -3216,11 +3216,13 @@ static bool can_preempt(struct intel_engine_cs *engine)
->>   	return engine->class != RENDER_CLASS;
->>   }
->>   
->> -static void kick_execlists(const struct i915_request *rq, int prio)
->> +static void kick_execlists(const struct i915_request *rq,
->> +			   const struct i915_sched_attr *attr)
->>   {
->>   	struct intel_engine_cs *engine = rq->engine;
->>   	struct i915_sched_engine *sched_engine = engine->sched_engine;
->>   	const struct i915_request *inflight;
->> +	const int prio = attr->priority;
->>   
->>   	/*
->>   	 * We only need to kick the tasklet once for the high priority
->> diff --git a/drivers/gpu/drm/i915/gt/uc/intel_guc_submission.c b/drivers/gpu/drm/i915/gt/uc/intel_guc_submission.c
->> index ba0de35f6323..b5883a4365ca 100644
->> --- a/drivers/gpu/drm/i915/gt/uc/intel_guc_submission.c
->> +++ b/drivers/gpu/drm/i915/gt/uc/intel_guc_submission.c
->> @@ -2414,9 +2414,10 @@ static void guc_init_breadcrumbs(struct intel_engine_cs *engine)
->>   }
->>   
->>   static void guc_bump_inflight_request_prio(struct i915_request *rq,
->> -					   int prio)
->> +					   const struct i915_sched_attr *attr)
->>   {
->>   	struct intel_context *ce = rq->context;
->> +	const int prio = attr->priority;
->>   	u8 new_guc_prio = map_i915_prio_to_guc_prio(prio);
->>   
->>   	/* Short circuit function */
->> diff --git a/drivers/gpu/drm/i915/i915_scheduler.c b/drivers/gpu/drm/i915/i915_scheduler.c
->> index 762127dd56c5..534bab99fcdc 100644
->> --- a/drivers/gpu/drm/i915/i915_scheduler.c
->> +++ b/drivers/gpu/drm/i915/i915_scheduler.c
->> @@ -255,7 +255,7 @@ static void __i915_schedule(struct i915_sched_node *node,
->>   
->>   		/* Must be called before changing the nodes priority */
->>   		if (sched_engine->bump_inflight_request_prio)
->> -			sched_engine->bump_inflight_request_prio(from, prio);
->> +			sched_engine->bump_inflight_request_prio(from, attr);
->>   
->>   		WRITE_ONCE(node->attr.priority, prio);
->>   
->> @@ -280,7 +280,7 @@ static void __i915_schedule(struct i915_sched_node *node,
->>   
->>   		/* Defer (tasklet) submission until after all of our updates. */
->>   		if (sched_engine->kick_backend)
->> -			sched_engine->kick_backend(node_to_request(node), prio);
->> +			sched_engine->kick_backend(node_to_request(node), attr);
->>   	}
->>   
->>   	spin_unlock(&sched_engine->lock);
->> diff --git a/drivers/gpu/drm/i915/i915_scheduler_types.h b/drivers/gpu/drm/i915/i915_scheduler_types.h
->> index b0a1b58c7893..24b9ac1c2ce2 100644
->> --- a/drivers/gpu/drm/i915/i915_scheduler_types.h
->> +++ b/drivers/gpu/drm/i915/i915_scheduler_types.h
->> @@ -177,13 +177,13 @@ struct i915_sched_engine {
->>   	 * @kick_backend: kick backend after a request's priority has changed
->>   	 */
->>   	void	(*kick_backend)(const struct i915_request *rq,
->> -				int prio);
->> +				const struct i915_sched_attr *attr);
->>   
->>   	/**
->>   	 * @bump_inflight_request_prio: update priority of an inflight request
->>   	 */
->>   	void	(*bump_inflight_request_prio)(struct i915_request *rq,
->> -					      int prio);
->> +					      const struct i915_sched_attr *attr);
->>   
->>   	/**
->>   	 * @retire_inflight_request_prio: indicate request is retired to
->> -- 
->> 2.30.2
->>
