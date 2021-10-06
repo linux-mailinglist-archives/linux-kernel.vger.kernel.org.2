@@ -2,2615 +2,634 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51FCE423F28
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 15:28:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 213E3423F39
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 15:30:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238664AbhJFNai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 09:30:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47900 "EHLO mail.kernel.org"
+        id S238733AbhJFNcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 09:32:16 -0400
+Received: from mga01.intel.com ([192.55.52.88]:57913 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231403AbhJFNah (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 09:30:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 435F360E9C;
-        Wed,  6 Oct 2021 13:28:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633526925;
-        bh=hstO/NZoXOT8GdJ0uy6rQ/P8BktxKI0O8Vo/q90XhKY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yu3H9NnW+w+1eOKFcspexiLyfiGVRSkEPO9tETzswIITEkk1AQF/dO6hZMXPm2Gom
-         7j4I8JPSBWs/0qLw1ugVPKm/ZI4kqnWAqdOBtZ111a+2KCHcXpXvPZadySLJK7DBAq
-         qAo4GplzTArUrsB1jUmQok3c0XpbvEt0AsDHuJT0=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, stable@vger.kernel.org
-Cc:     lwn@lwn.net, jslaby@suse.cz,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: Linux 4.14.249
-Date:   Wed,  6 Oct 2021 15:28:34 +0200
-Message-Id: <163352691317934@kroah.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <163352691317581@kroah.com>
-References: <163352691317581@kroah.com>
+        id S238119AbhJFNcP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 09:32:15 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10128"; a="249265054"
+X-IronPort-AV: E=Sophos;i="5.85,350,1624345200"; 
+   d="gz'50?scan'50,208,50";a="249265054"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2021 06:30:12 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,350,1624345200"; 
+   d="gz'50?scan'50,208,50";a="589766609"
+Received: from lkp-server01.sh.intel.com (HELO 72c3bd3cf19c) ([10.239.97.150])
+  by orsmga004.jf.intel.com with ESMTP; 06 Oct 2021 06:30:09 -0700
+Received: from kbuild by 72c3bd3cf19c with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mY6zo-0006i7-HQ; Wed, 06 Oct 2021 13:30:08 +0000
+Date:   Wed, 6 Oct 2021 21:29:22 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Vinod Koul <vkoul@kernel.org>
+Cc:     kbuild-all@lists.01.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: Re: [PATCH] async_tx: correct reference to
+ ASYNC_TX_ENABLE_CHANNEL_SWITCH
+Message-ID: <202110062107.kdXnMNTL-lkp@intel.com>
+References: <20211006093416.4750-1-lukas.bulwahn@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/mixed; boundary="TB36FDmn/VVEgNH/"
+Content-Disposition: inline
+In-Reply-To: <20211006093416.4750-1-lukas.bulwahn@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-diff --git a/Makefile b/Makefile
-index 7999f2fbd0f8..f7559e82d514 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1,7 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0
- VERSION = 4
- PATCHLEVEL = 14
--SUBLEVEL = 248
-+SUBLEVEL = 249
- EXTRAVERSION =
- NAME = Petit Gorille
- 
-diff --git a/arch/alpha/include/asm/io.h b/arch/alpha/include/asm/io.h
-index 9995bed6e92e..204c4fb69ee1 100644
---- a/arch/alpha/include/asm/io.h
-+++ b/arch/alpha/include/asm/io.h
-@@ -61,7 +61,7 @@ extern inline void set_hae(unsigned long new_hae)
-  * Change virtual addresses to physical addresses and vv.
-  */
- #ifdef USE_48_BIT_KSEG
--static inline unsigned long virt_to_phys(void *address)
-+static inline unsigned long virt_to_phys(volatile void *address)
- {
- 	return (unsigned long)address - IDENT_ADDR;
- }
-@@ -71,7 +71,7 @@ static inline void * phys_to_virt(unsigned long address)
- 	return (void *) (address + IDENT_ADDR);
- }
- #else
--static inline unsigned long virt_to_phys(void *address)
-+static inline unsigned long virt_to_phys(volatile void *address)
- {
-         unsigned long phys = (unsigned long)address;
- 
-@@ -112,7 +112,7 @@ static inline dma_addr_t __deprecated isa_page_to_bus(struct page *page)
- extern unsigned long __direct_map_base;
- extern unsigned long __direct_map_size;
- 
--static inline unsigned long __deprecated virt_to_bus(void *address)
-+static inline unsigned long __deprecated virt_to_bus(volatile void *address)
- {
- 	unsigned long phys = virt_to_phys(address);
- 	unsigned long bus = phys + __direct_map_base;
-diff --git a/arch/arm/include/asm/ftrace.h b/arch/arm/include/asm/ftrace.h
-index 9e842ff41768..faeb6b1c0089 100644
---- a/arch/arm/include/asm/ftrace.h
-+++ b/arch/arm/include/asm/ftrace.h
-@@ -19,6 +19,9 @@ struct dyn_arch_ftrace {
- #ifdef CONFIG_OLD_MCOUNT
- 	bool	old_mcount;
- #endif
-+#ifdef CONFIG_ARM_MODULE_PLTS
-+	struct module *mod;
-+#endif
- };
- 
- static inline unsigned long ftrace_call_adjust(unsigned long addr)
-diff --git a/arch/arm/include/asm/insn.h b/arch/arm/include/asm/insn.h
-index f20e08ac85ae..5475cbf9fb6b 100644
---- a/arch/arm/include/asm/insn.h
-+++ b/arch/arm/include/asm/insn.h
-@@ -13,18 +13,18 @@ arm_gen_nop(void)
- }
- 
- unsigned long
--__arm_gen_branch(unsigned long pc, unsigned long addr, bool link);
-+__arm_gen_branch(unsigned long pc, unsigned long addr, bool link, bool warn);
- 
- static inline unsigned long
- arm_gen_branch(unsigned long pc, unsigned long addr)
- {
--	return __arm_gen_branch(pc, addr, false);
-+	return __arm_gen_branch(pc, addr, false, true);
- }
- 
- static inline unsigned long
--arm_gen_branch_link(unsigned long pc, unsigned long addr)
-+arm_gen_branch_link(unsigned long pc, unsigned long addr, bool warn)
- {
--	return __arm_gen_branch(pc, addr, true);
-+	return __arm_gen_branch(pc, addr, true, warn);
- }
- 
- #endif
-diff --git a/arch/arm/include/asm/module.h b/arch/arm/include/asm/module.h
-index 89ad0596033a..e3d7a51bcf9c 100644
---- a/arch/arm/include/asm/module.h
-+++ b/arch/arm/include/asm/module.h
-@@ -19,8 +19,18 @@ enum {
- };
- #endif
- 
-+#define PLT_ENT_STRIDE		L1_CACHE_BYTES
-+#define PLT_ENT_COUNT		(PLT_ENT_STRIDE / sizeof(u32))
-+#define PLT_ENT_SIZE		(sizeof(struct plt_entries) / PLT_ENT_COUNT)
-+
-+struct plt_entries {
-+	u32	ldr[PLT_ENT_COUNT];
-+	u32	lit[PLT_ENT_COUNT];
-+};
-+
- struct mod_plt_sec {
- 	struct elf32_shdr	*plt;
-+	struct plt_entries	*plt_ent;
- 	int			plt_count;
- };
- 
-diff --git a/arch/arm/kernel/ftrace.c b/arch/arm/kernel/ftrace.c
-index 5617932a83df..1a5edcfb0306 100644
---- a/arch/arm/kernel/ftrace.c
-+++ b/arch/arm/kernel/ftrace.c
-@@ -96,9 +96,10 @@ int ftrace_arch_code_modify_post_process(void)
- 	return 0;
- }
- 
--static unsigned long ftrace_call_replace(unsigned long pc, unsigned long addr)
-+static unsigned long ftrace_call_replace(unsigned long pc, unsigned long addr,
-+					 bool warn)
- {
--	return arm_gen_branch_link(pc, addr);
-+	return arm_gen_branch_link(pc, addr, warn);
- }
- 
- static int ftrace_modify_code(unsigned long pc, unsigned long old,
-@@ -137,14 +138,14 @@ int ftrace_update_ftrace_func(ftrace_func_t func)
- 	int ret;
- 
- 	pc = (unsigned long)&ftrace_call;
--	new = ftrace_call_replace(pc, (unsigned long)func);
-+	new = ftrace_call_replace(pc, (unsigned long)func, true);
- 
- 	ret = ftrace_modify_code(pc, 0, new, false);
- 
- #ifdef CONFIG_DYNAMIC_FTRACE_WITH_REGS
- 	if (!ret) {
- 		pc = (unsigned long)&ftrace_regs_call;
--		new = ftrace_call_replace(pc, (unsigned long)func);
-+		new = ftrace_call_replace(pc, (unsigned long)func, true);
- 
- 		ret = ftrace_modify_code(pc, 0, new, false);
- 	}
-@@ -153,7 +154,7 @@ int ftrace_update_ftrace_func(ftrace_func_t func)
- #ifdef CONFIG_OLD_MCOUNT
- 	if (!ret) {
- 		pc = (unsigned long)&ftrace_call_old;
--		new = ftrace_call_replace(pc, (unsigned long)func);
-+		new = ftrace_call_replace(pc, (unsigned long)func, true);
- 
- 		ret = ftrace_modify_code(pc, 0, new, false);
- 	}
-@@ -166,10 +167,22 @@ int ftrace_make_call(struct dyn_ftrace *rec, unsigned long addr)
- {
- 	unsigned long new, old;
- 	unsigned long ip = rec->ip;
-+	unsigned long aaddr = adjust_address(rec, addr);
-+	struct module *mod = NULL;
-+
-+#ifdef CONFIG_ARM_MODULE_PLTS
-+	mod = rec->arch.mod;
-+#endif
- 
- 	old = ftrace_nop_replace(rec);
- 
--	new = ftrace_call_replace(ip, adjust_address(rec, addr));
-+	new = ftrace_call_replace(ip, aaddr, !mod);
-+#ifdef CONFIG_ARM_MODULE_PLTS
-+	if (!new && mod) {
-+		aaddr = get_module_plt(mod, ip, aaddr);
-+		new = ftrace_call_replace(ip, aaddr, true);
-+	}
-+#endif
- 
- 	return ftrace_modify_code(rec->ip, old, new, true);
- }
-@@ -182,9 +195,9 @@ int ftrace_modify_call(struct dyn_ftrace *rec, unsigned long old_addr,
- 	unsigned long new, old;
- 	unsigned long ip = rec->ip;
- 
--	old = ftrace_call_replace(ip, adjust_address(rec, old_addr));
-+	old = ftrace_call_replace(ip, adjust_address(rec, old_addr), true);
- 
--	new = ftrace_call_replace(ip, adjust_address(rec, addr));
-+	new = ftrace_call_replace(ip, adjust_address(rec, addr), true);
- 
- 	return ftrace_modify_code(rec->ip, old, new, true);
- }
-@@ -194,12 +207,29 @@ int ftrace_modify_call(struct dyn_ftrace *rec, unsigned long old_addr,
- int ftrace_make_nop(struct module *mod,
- 		    struct dyn_ftrace *rec, unsigned long addr)
- {
-+	unsigned long aaddr = adjust_address(rec, addr);
- 	unsigned long ip = rec->ip;
- 	unsigned long old;
- 	unsigned long new;
- 	int ret;
- 
--	old = ftrace_call_replace(ip, adjust_address(rec, addr));
-+#ifdef CONFIG_ARM_MODULE_PLTS
-+	/* mod is only supplied during module loading */
-+	if (!mod)
-+		mod = rec->arch.mod;
-+	else
-+		rec->arch.mod = mod;
-+#endif
-+
-+	old = ftrace_call_replace(ip, aaddr,
-+				  !IS_ENABLED(CONFIG_ARM_MODULE_PLTS) || !mod);
-+#ifdef CONFIG_ARM_MODULE_PLTS
-+	if (!old && mod) {
-+		aaddr = get_module_plt(mod, ip, aaddr);
-+		old = ftrace_call_replace(ip, aaddr, true);
-+	}
-+#endif
-+
- 	new = ftrace_nop_replace(rec);
- 	ret = ftrace_modify_code(ip, old, new, true);
- 
-@@ -207,7 +237,7 @@ int ftrace_make_nop(struct module *mod,
- 	if (ret == -EINVAL && addr == MCOUNT_ADDR) {
- 		rec->arch.old_mcount = true;
- 
--		old = ftrace_call_replace(ip, adjust_address(rec, addr));
-+		old = ftrace_call_replace(ip, adjust_address(rec, addr), true);
- 		new = ftrace_nop_replace(rec);
- 		ret = ftrace_modify_code(ip, old, new, true);
- 	}
-diff --git a/arch/arm/kernel/insn.c b/arch/arm/kernel/insn.c
-index 2e844b70386b..db0acbb7d7a0 100644
---- a/arch/arm/kernel/insn.c
-+++ b/arch/arm/kernel/insn.c
-@@ -3,8 +3,9 @@
- #include <linux/kernel.h>
- #include <asm/opcodes.h>
- 
--static unsigned long
--__arm_gen_branch_thumb2(unsigned long pc, unsigned long addr, bool link)
-+static unsigned long __arm_gen_branch_thumb2(unsigned long pc,
-+					     unsigned long addr, bool link,
-+					     bool warn)
- {
- 	unsigned long s, j1, j2, i1, i2, imm10, imm11;
- 	unsigned long first, second;
-@@ -12,7 +13,7 @@ __arm_gen_branch_thumb2(unsigned long pc, unsigned long addr, bool link)
- 
- 	offset = (long)addr - (long)(pc + 4);
- 	if (offset < -16777216 || offset > 16777214) {
--		WARN_ON_ONCE(1);
-+		WARN_ON_ONCE(warn);
- 		return 0;
- 	}
- 
-@@ -33,8 +34,8 @@ __arm_gen_branch_thumb2(unsigned long pc, unsigned long addr, bool link)
- 	return __opcode_thumb32_compose(first, second);
- }
- 
--static unsigned long
--__arm_gen_branch_arm(unsigned long pc, unsigned long addr, bool link)
-+static unsigned long __arm_gen_branch_arm(unsigned long pc, unsigned long addr,
-+					  bool link, bool warn)
- {
- 	unsigned long opcode = 0xea000000;
- 	long offset;
-@@ -44,7 +45,7 @@ __arm_gen_branch_arm(unsigned long pc, unsigned long addr, bool link)
- 
- 	offset = (long)addr - (long)(pc + 8);
- 	if (unlikely(offset < -33554432 || offset > 33554428)) {
--		WARN_ON_ONCE(1);
-+		WARN_ON_ONCE(warn);
- 		return 0;
- 	}
- 
-@@ -54,10 +55,10 @@ __arm_gen_branch_arm(unsigned long pc, unsigned long addr, bool link)
- }
- 
- unsigned long
--__arm_gen_branch(unsigned long pc, unsigned long addr, bool link)
-+__arm_gen_branch(unsigned long pc, unsigned long addr, bool link, bool warn)
- {
- 	if (IS_ENABLED(CONFIG_THUMB2_KERNEL))
--		return __arm_gen_branch_thumb2(pc, addr, link);
-+		return __arm_gen_branch_thumb2(pc, addr, link, warn);
- 	else
--		return __arm_gen_branch_arm(pc, addr, link);
-+		return __arm_gen_branch_arm(pc, addr, link, warn);
- }
-diff --git a/arch/arm/kernel/module-plts.c b/arch/arm/kernel/module-plts.c
-index 3d0c2e4dda1d..ed0e09cc735f 100644
---- a/arch/arm/kernel/module-plts.c
-+++ b/arch/arm/kernel/module-plts.c
-@@ -7,6 +7,7 @@
-  */
- 
- #include <linux/elf.h>
-+#include <linux/ftrace.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/sort.h>
-@@ -14,10 +15,6 @@
- #include <asm/cache.h>
- #include <asm/opcodes.h>
- 
--#define PLT_ENT_STRIDE		L1_CACHE_BYTES
--#define PLT_ENT_COUNT		(PLT_ENT_STRIDE / sizeof(u32))
--#define PLT_ENT_SIZE		(sizeof(struct plt_entries) / PLT_ENT_COUNT)
--
- #ifdef CONFIG_THUMB2_KERNEL
- #define PLT_ENT_LDR		__opcode_to_mem_thumb32(0xf8dff000 | \
- 							(PLT_ENT_STRIDE - 4))
-@@ -26,9 +23,11 @@
- 						    (PLT_ENT_STRIDE - 8))
- #endif
- 
--struct plt_entries {
--	u32	ldr[PLT_ENT_COUNT];
--	u32	lit[PLT_ENT_COUNT];
-+static const u32 fixed_plts[] = {
-+#ifdef CONFIG_DYNAMIC_FTRACE
-+	FTRACE_ADDR,
-+	MCOUNT_ADDR,
-+#endif
- };
- 
- static bool in_init(const struct module *mod, unsigned long loc)
-@@ -36,14 +35,40 @@ static bool in_init(const struct module *mod, unsigned long loc)
- 	return loc - (u32)mod->init_layout.base < mod->init_layout.size;
- }
- 
-+static void prealloc_fixed(struct mod_plt_sec *pltsec, struct plt_entries *plt)
-+{
-+	int i;
-+
-+	if (!ARRAY_SIZE(fixed_plts) || pltsec->plt_count)
-+		return;
-+	pltsec->plt_count = ARRAY_SIZE(fixed_plts);
-+
-+	for (i = 0; i < ARRAY_SIZE(plt->ldr); ++i)
-+		plt->ldr[i] = PLT_ENT_LDR;
-+
-+	BUILD_BUG_ON(sizeof(fixed_plts) > sizeof(plt->lit));
-+	memcpy(plt->lit, fixed_plts, sizeof(fixed_plts));
-+}
-+
- u32 get_module_plt(struct module *mod, unsigned long loc, Elf32_Addr val)
- {
- 	struct mod_plt_sec *pltsec = !in_init(mod, loc) ? &mod->arch.core :
- 							  &mod->arch.init;
-+	struct plt_entries *plt;
-+	int idx;
-+
-+	/* cache the address, ELF header is available only during module load */
-+	if (!pltsec->plt_ent)
-+		pltsec->plt_ent = (struct plt_entries *)pltsec->plt->sh_addr;
-+	plt = pltsec->plt_ent;
- 
--	struct plt_entries *plt = (struct plt_entries *)pltsec->plt->sh_addr;
--	int idx = 0;
-+	prealloc_fixed(pltsec, plt);
-+
-+	for (idx = 0; idx < ARRAY_SIZE(fixed_plts); ++idx)
-+		if (plt->lit[idx] == val)
-+			return (u32)&plt->ldr[idx];
- 
-+	idx = 0;
- 	/*
- 	 * Look for an existing entry pointing to 'val'. Given that the
- 	 * relocations are sorted, this will be the last entry we allocated.
-@@ -191,8 +216,8 @@ static unsigned int count_plts(const Elf32_Sym *syms, Elf32_Addr base,
- int module_frob_arch_sections(Elf_Ehdr *ehdr, Elf_Shdr *sechdrs,
- 			      char *secstrings, struct module *mod)
- {
--	unsigned long core_plts = 0;
--	unsigned long init_plts = 0;
-+	unsigned long core_plts = ARRAY_SIZE(fixed_plts);
-+	unsigned long init_plts = ARRAY_SIZE(fixed_plts);
- 	Elf32_Shdr *s, *sechdrs_end = sechdrs + ehdr->e_shnum;
- 	Elf32_Sym *syms = NULL;
- 
-@@ -247,6 +272,7 @@ int module_frob_arch_sections(Elf_Ehdr *ehdr, Elf_Shdr *sechdrs,
- 	mod->arch.core.plt->sh_size = round_up(core_plts * PLT_ENT_SIZE,
- 					       sizeof(struct plt_entries));
- 	mod->arch.core.plt_count = 0;
-+	mod->arch.core.plt_ent = NULL;
- 
- 	mod->arch.init.plt->sh_type = SHT_NOBITS;
- 	mod->arch.init.plt->sh_flags = SHF_EXECINSTR | SHF_ALLOC;
-@@ -254,6 +280,7 @@ int module_frob_arch_sections(Elf_Ehdr *ehdr, Elf_Shdr *sechdrs,
- 	mod->arch.init.plt->sh_size = round_up(init_plts * PLT_ENT_SIZE,
- 					       sizeof(struct plt_entries));
- 	mod->arch.init.plt_count = 0;
-+	mod->arch.init.plt_ent = NULL;
- 
- 	pr_debug("%s: plt=%x, init.plt=%x\n", __func__,
- 		 mod->arch.core.plt->sh_size, mod->arch.init.plt->sh_size);
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index e296ae3e20f4..e76f74874a42 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -450,7 +450,7 @@ config ARM64_ERRATUM_1024718
- 	help
- 	  This option adds work around for Arm Cortex-A55 Erratum 1024718.
- 
--	  Affected Cortex-A55 cores (r0p0, r0p1, r1p0) could cause incorrect
-+	  Affected Cortex-A55 cores (all revisions) could cause incorrect
- 	  update of the hardware dirty bit when the DBM/AP bits are updated
- 	  without a break-before-make. The work around is to disable the usage
- 	  of hardware DBM locally on the affected cores. CPUs not affected by
-diff --git a/arch/arm64/boot/dts/marvell/armada-37xx.dtsi b/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
-index b554cdaf5e53..257bfa811fe8 100644
---- a/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
-+++ b/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
-@@ -347,8 +347,15 @@
- 			#interrupt-cells = <1>;
- 			msi-parent = <&pcie0>;
- 			msi-controller;
--			ranges = <0x82000000 0 0xe8000000   0 0xe8000000 0 0x1000000 /* Port 0 MEM */
--				  0x81000000 0 0xe9000000   0 0xe9000000 0 0x10000>; /* Port 0 IO*/
-+			/*
-+			 * The 128 MiB address range [0xe8000000-0xf0000000] is
-+			 * dedicated for PCIe and can be assigned to 8 windows
-+			 * with size a power of two. Use one 64 KiB window for
-+			 * IO at the end and the remaining seven windows
-+			 * (totaling 127 MiB) for MEM.
-+			 */
-+			ranges = <0x82000000 0 0xe8000000   0 0xe8000000   0 0x07f00000   /* Port 0 MEM */
-+				  0x81000000 0 0xefff0000   0 0xefff0000   0 0x00010000>; /* Port 0 IO */
- 			interrupt-map-mask = <0 0 0 7>;
- 			interrupt-map = <0 0 0 1 &pcie_intc 0>,
- 					<0 0 0 2 &pcie_intc 1>,
-diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
-index 2ff327651ebe..dac14125f8a2 100644
---- a/arch/arm64/kernel/process.c
-+++ b/arch/arm64/kernel/process.c
-@@ -61,7 +61,7 @@
- 
- #ifdef CONFIG_CC_STACKPROTECTOR
- #include <linux/stackprotector.h>
--unsigned long __stack_chk_guard __read_mostly;
-+unsigned long __stack_chk_guard __ro_after_init;
- EXPORT_SYMBOL(__stack_chk_guard);
- #endif
- 
-diff --git a/arch/arm64/mm/proc.S b/arch/arm64/mm/proc.S
-index ecbc060807d2..a9ff7fb41832 100644
---- a/arch/arm64/mm/proc.S
-+++ b/arch/arm64/mm/proc.S
-@@ -455,8 +455,8 @@ ENTRY(__cpu_setup)
- 	cmp	x9, #2
- 	b.lt	1f
- #ifdef CONFIG_ARM64_ERRATUM_1024718
--	/* Disable hardware DBM on Cortex-A55 r0p0, r0p1 & r1p0 */
--	cpu_midr_match MIDR_CORTEX_A55, MIDR_CPU_VAR_REV(0, 0), MIDR_CPU_VAR_REV(1, 0), x1, x2, x3, x4
-+	/* Disable hardware DBM on Cortex-A55 all versions */
-+	cpu_midr_match MIDR_CORTEX_A55, MIDR_CPU_VAR_REV(0, 0), MIDR_CPU_VAR_REV(0xf, 0xf), x1, x2, x3, x4
- 	cbnz	x1, 1f
- #endif
- 	orr	x10, x10, #TCR_HD		// hardware Dirty flag update
-diff --git a/arch/m68k/include/asm/raw_io.h b/arch/m68k/include/asm/raw_io.h
-index 05e940c29b54..cbfff90c2a69 100644
---- a/arch/m68k/include/asm/raw_io.h
-+++ b/arch/m68k/include/asm/raw_io.h
-@@ -31,21 +31,21 @@ extern void __iounmap(void *addr, unsigned long size);
-  * two accesses to memory, which may be undesirable for some devices.
-  */
- #define in_8(addr) \
--    ({ u8 __v = (*(__force volatile u8 *) (addr)); __v; })
-+    ({ u8 __v = (*(__force volatile u8 *) (unsigned long)(addr)); __v; })
- #define in_be16(addr) \
--    ({ u16 __v = (*(__force volatile u16 *) (addr)); __v; })
-+    ({ u16 __v = (*(__force volatile u16 *) (unsigned long)(addr)); __v; })
- #define in_be32(addr) \
--    ({ u32 __v = (*(__force volatile u32 *) (addr)); __v; })
-+    ({ u32 __v = (*(__force volatile u32 *) (unsigned long)(addr)); __v; })
- #define in_le16(addr) \
--    ({ u16 __v = le16_to_cpu(*(__force volatile __le16 *) (addr)); __v; })
-+    ({ u16 __v = le16_to_cpu(*(__force volatile __le16 *) (unsigned long)(addr)); __v; })
- #define in_le32(addr) \
--    ({ u32 __v = le32_to_cpu(*(__force volatile __le32 *) (addr)); __v; })
-+    ({ u32 __v = le32_to_cpu(*(__force volatile __le32 *) (unsigned long)(addr)); __v; })
- 
--#define out_8(addr,b) (void)((*(__force volatile u8 *) (addr)) = (b))
--#define out_be16(addr,w) (void)((*(__force volatile u16 *) (addr)) = (w))
--#define out_be32(addr,l) (void)((*(__force volatile u32 *) (addr)) = (l))
--#define out_le16(addr,w) (void)((*(__force volatile __le16 *) (addr)) = cpu_to_le16(w))
--#define out_le32(addr,l) (void)((*(__force volatile __le32 *) (addr)) = cpu_to_le32(l))
-+#define out_8(addr,b) (void)((*(__force volatile u8 *) (unsigned long)(addr)) = (b))
-+#define out_be16(addr,w) (void)((*(__force volatile u16 *) (unsigned long)(addr)) = (w))
-+#define out_be32(addr,l) (void)((*(__force volatile u32 *) (unsigned long)(addr)) = (l))
-+#define out_le16(addr,w) (void)((*(__force volatile __le16 *) (unsigned long)(addr)) = cpu_to_le16(w))
-+#define out_le32(addr,l) (void)((*(__force volatile __le32 *) (unsigned long)(addr)) = cpu_to_le32(l))
- 
- #define raw_inb in_8
- #define raw_inw in_be16
-diff --git a/arch/parisc/include/asm/page.h b/arch/parisc/include/asm/page.h
-index af00fe9bf846..c631a8fd856a 100644
---- a/arch/parisc/include/asm/page.h
-+++ b/arch/parisc/include/asm/page.h
-@@ -179,7 +179,7 @@ extern int npmem_ranges;
- #include <asm-generic/getorder.h>
- #include <asm/pdc.h>
- 
--#define PAGE0   ((struct zeropage *)__PAGE_OFFSET)
-+#define PAGE0   ((struct zeropage *)absolute_pointer(__PAGE_OFFSET))
- 
- /* DEFINITION OF THE ZERO-PAGE (PAG0) */
- /* based on work by Jason Eckhardt (jason@equator.com) */
-diff --git a/arch/sparc/kernel/mdesc.c b/arch/sparc/kernel/mdesc.c
-index 8f24f3d60b8c..bfc30439a41d 100644
---- a/arch/sparc/kernel/mdesc.c
-+++ b/arch/sparc/kernel/mdesc.c
-@@ -38,6 +38,7 @@ struct mdesc_hdr {
- 	u32	node_sz; /* node block size */
- 	u32	name_sz; /* name block size */
- 	u32	data_sz; /* data block size */
-+	char	data[];
- } __attribute__((aligned(16)));
- 
- struct mdesc_elem {
-@@ -611,7 +612,7 @@ EXPORT_SYMBOL(mdesc_get_node_info);
- 
- static struct mdesc_elem *node_block(struct mdesc_hdr *mdesc)
- {
--	return (struct mdesc_elem *) (mdesc + 1);
-+	return (struct mdesc_elem *) mdesc->data;
- }
- 
- static void *name_block(struct mdesc_hdr *mdesc)
-diff --git a/arch/x86/xen/enlighten_pv.c b/arch/x86/xen/enlighten_pv.c
-index 3e6a08068b25..88d084a57b14 100644
---- a/arch/x86/xen/enlighten_pv.c
-+++ b/arch/x86/xen/enlighten_pv.c
-@@ -721,8 +721,8 @@ static void xen_write_idt_entry(gate_desc *dt, int entrynum, const gate_desc *g)
- 	preempt_enable();
- }
- 
--static void xen_convert_trap_info(const struct desc_ptr *desc,
--				  struct trap_info *traps)
-+static unsigned xen_convert_trap_info(const struct desc_ptr *desc,
-+				      struct trap_info *traps, bool full)
- {
- 	unsigned in, out, count;
- 
-@@ -732,17 +732,18 @@ static void xen_convert_trap_info(const struct desc_ptr *desc,
- 	for (in = out = 0; in < count; in++) {
- 		gate_desc *entry = (gate_desc *)(desc->address) + in;
- 
--		if (cvt_gate_to_trap(in, entry, &traps[out]))
-+		if (cvt_gate_to_trap(in, entry, &traps[out]) || full)
- 			out++;
- 	}
--	traps[out].address = 0;
-+
-+	return out;
- }
- 
- void xen_copy_trap_info(struct trap_info *traps)
- {
- 	const struct desc_ptr *desc = this_cpu_ptr(&idt_desc);
- 
--	xen_convert_trap_info(desc, traps);
-+	xen_convert_trap_info(desc, traps, true);
- }
- 
- /* Load a new IDT into Xen.  In principle this can be per-CPU, so we
-@@ -752,6 +753,7 @@ static void xen_load_idt(const struct desc_ptr *desc)
- {
- 	static DEFINE_SPINLOCK(lock);
- 	static struct trap_info traps[257];
-+	unsigned out;
- 
- 	trace_xen_cpu_load_idt(desc);
- 
-@@ -759,7 +761,8 @@ static void xen_load_idt(const struct desc_ptr *desc)
- 
- 	memcpy(this_cpu_ptr(&idt_desc), desc, sizeof(idt_desc));
- 
--	xen_convert_trap_info(desc, traps);
-+	out = xen_convert_trap_info(desc, traps, false);
-+	memset(&traps[out], 0, sizeof(traps[0]));
- 
- 	xen_mc_flush();
- 	if (HYPERVISOR_set_trap_table(traps))
-diff --git a/drivers/cpufreq/cpufreq_governor_attr_set.c b/drivers/cpufreq/cpufreq_governor_attr_set.c
-index 52841f807a7e..45fdf30cade3 100644
---- a/drivers/cpufreq/cpufreq_governor_attr_set.c
-+++ b/drivers/cpufreq/cpufreq_governor_attr_set.c
-@@ -77,8 +77,8 @@ unsigned int gov_attr_set_put(struct gov_attr_set *attr_set, struct list_head *l
- 	if (count)
- 		return count;
- 
--	kobject_put(&attr_set->kobj);
- 	mutex_destroy(&attr_set->update_lock);
-+	kobject_put(&attr_set->kobj);
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(gov_attr_set_put);
-diff --git a/drivers/crypto/ccp/ccp-ops.c b/drivers/crypto/ccp/ccp-ops.c
-index 20ca9c9e109e..453d27d2a4ff 100644
---- a/drivers/crypto/ccp/ccp-ops.c
-+++ b/drivers/crypto/ccp/ccp-ops.c
-@@ -783,7 +783,7 @@ ccp_run_aes_gcm_cmd(struct ccp_cmd_queue *cmd_q, struct ccp_cmd *cmd)
- 				    in_place ? DMA_BIDIRECTIONAL
- 					     : DMA_TO_DEVICE);
- 		if (ret)
--			goto e_ctx;
-+			goto e_aad;
- 
- 		if (in_place) {
- 			dst = src;
-@@ -868,7 +868,7 @@ ccp_run_aes_gcm_cmd(struct ccp_cmd_queue *cmd_q, struct ccp_cmd *cmd)
- 	op.u.aes.size = 0;
- 	ret = cmd_q->ccp->vdata->perform->aes(&op);
- 	if (ret)
--		goto e_dst;
-+		goto e_final_wa;
- 
- 	if (aes->action == CCP_AES_ACTION_ENCRYPT) {
- 		/* Put the ciphered tag after the ciphertext. */
-@@ -878,17 +878,19 @@ ccp_run_aes_gcm_cmd(struct ccp_cmd_queue *cmd_q, struct ccp_cmd *cmd)
- 		ret = ccp_init_dm_workarea(&tag, cmd_q, authsize,
- 					   DMA_BIDIRECTIONAL);
- 		if (ret)
--			goto e_tag;
-+			goto e_final_wa;
- 		ret = ccp_set_dm_area(&tag, 0, p_tag, 0, authsize);
--		if (ret)
--			goto e_tag;
-+		if (ret) {
-+			ccp_dm_free(&tag);
-+			goto e_final_wa;
-+		}
- 
- 		ret = crypto_memneq(tag.address, final_wa.address,
- 				    authsize) ? -EBADMSG : 0;
- 		ccp_dm_free(&tag);
- 	}
- 
--e_tag:
-+e_final_wa:
- 	ccp_dm_free(&final_wa);
- 
- e_dst:
-diff --git a/drivers/edac/synopsys_edac.c b/drivers/edac/synopsys_edac.c
-index 0c9c59e2b5a3..ba9de54a701e 100644
---- a/drivers/edac/synopsys_edac.c
-+++ b/drivers/edac/synopsys_edac.c
-@@ -371,7 +371,7 @@ static int synps_edac_init_csrows(struct mem_ctl_info *mci)
- 
- 		for (j = 0; j < csi->nr_channels; j++) {
- 			dimm            = csi->channels[j]->dimm;
--			dimm->edac_mode = EDAC_FLAG_SECDED;
-+			dimm->edac_mode = EDAC_SECDED;
- 			dimm->mtype     = synps_edac_get_mtype(priv->baseaddr);
- 			dimm->nr_pages  = (size >> PAGE_SHIFT) / csi->nr_channels;
- 			dimm->grain     = SYNPS_EDAC_ERR_GRAIN;
-diff --git a/drivers/hid/hid-betopff.c b/drivers/hid/hid-betopff.c
-index 69cfc8dc6af1..9b60efe6ec44 100644
---- a/drivers/hid/hid-betopff.c
-+++ b/drivers/hid/hid-betopff.c
-@@ -59,15 +59,22 @@ static int betopff_init(struct hid_device *hid)
- {
- 	struct betopff_device *betopff;
- 	struct hid_report *report;
--	struct hid_input *hidinput =
--			list_first_entry(&hid->inputs, struct hid_input, list);
-+	struct hid_input *hidinput;
- 	struct list_head *report_list =
- 			&hid->report_enum[HID_OUTPUT_REPORT].report_list;
--	struct input_dev *dev = hidinput->input;
-+	struct input_dev *dev;
- 	int field_count = 0;
- 	int error;
- 	int i, j;
- 
-+	if (list_empty(&hid->inputs)) {
-+		hid_err(hid, "no inputs found\n");
-+		return -ENODEV;
-+	}
-+
-+	hidinput = list_first_entry(&hid->inputs, struct hid_input, list);
-+	dev = hidinput->input;
-+
- 	if (list_empty(report_list)) {
- 		hid_err(hid, "no output reports found\n");
- 		return -ENODEV;
-diff --git a/drivers/hid/usbhid/hid-core.c b/drivers/hid/usbhid/hid-core.c
-index 46b8f4c353de..404e367fb8ab 100644
---- a/drivers/hid/usbhid/hid-core.c
-+++ b/drivers/hid/usbhid/hid-core.c
-@@ -501,7 +501,7 @@ static void hid_ctrl(struct urb *urb)
- 
- 	if (unplug) {
- 		usbhid->ctrltail = usbhid->ctrlhead;
--	} else {
-+	} else if (usbhid->ctrlhead != usbhid->ctrltail) {
- 		usbhid->ctrltail = (usbhid->ctrltail + 1) & (HID_CONTROL_FIFO_SIZE - 1);
- 
- 		if (usbhid->ctrlhead != usbhid->ctrltail &&
-@@ -1214,9 +1214,20 @@ static void usbhid_stop(struct hid_device *hid)
- 	mutex_lock(&usbhid->mutex);
- 
- 	clear_bit(HID_STARTED, &usbhid->iofl);
-+
- 	spin_lock_irq(&usbhid->lock);	/* Sync with error and led handlers */
- 	set_bit(HID_DISCONNECTED, &usbhid->iofl);
-+	while (usbhid->ctrltail != usbhid->ctrlhead) {
-+		if (usbhid->ctrl[usbhid->ctrltail].dir == USB_DIR_OUT) {
-+			kfree(usbhid->ctrl[usbhid->ctrltail].raw_report);
-+			usbhid->ctrl[usbhid->ctrltail].raw_report = NULL;
-+		}
-+
-+		usbhid->ctrltail = (usbhid->ctrltail + 1) &
-+			(HID_CONTROL_FIFO_SIZE - 1);
-+	}
- 	spin_unlock_irq(&usbhid->lock);
-+
- 	usb_kill_urb(usbhid->urbin);
- 	usb_kill_urb(usbhid->urbout);
- 	usb_kill_urb(usbhid->urbctrl);
-diff --git a/drivers/hwmon/tmp421.c b/drivers/hwmon/tmp421.c
-index ceb3db6f3fdd..c45968454110 100644
---- a/drivers/hwmon/tmp421.c
-+++ b/drivers/hwmon/tmp421.c
-@@ -109,23 +109,17 @@ struct tmp421_data {
- 	s16 temp[4];
- };
- 
--static int temp_from_s16(s16 reg)
-+static int temp_from_raw(u16 reg, bool extended)
- {
- 	/* Mask out status bits */
- 	int temp = reg & ~0xf;
- 
--	return (temp * 1000 + 128) / 256;
--}
--
--static int temp_from_u16(u16 reg)
--{
--	/* Mask out status bits */
--	int temp = reg & ~0xf;
--
--	/* Add offset for extended temperature range. */
--	temp -= 64 * 256;
-+	if (extended)
-+		temp = temp - 64 * 256;
-+	else
-+		temp = (s16)temp;
- 
--	return (temp * 1000 + 128) / 256;
-+	return DIV_ROUND_CLOSEST(temp * 1000, 256);
- }
- 
- static struct tmp421_data *tmp421_update_device(struct device *dev)
-@@ -162,10 +156,8 @@ static int tmp421_read(struct device *dev, enum hwmon_sensor_types type,
- 
- 	switch (attr) {
- 	case hwmon_temp_input:
--		if (tmp421->config & TMP421_CONFIG_RANGE)
--			*val = temp_from_u16(tmp421->temp[channel]);
--		else
--			*val = temp_from_s16(tmp421->temp[channel]);
-+		*val = temp_from_raw(tmp421->temp[channel],
-+				     tmp421->config & TMP421_CONFIG_RANGE);
- 		return 0;
- 	case hwmon_temp_fault:
- 		/*
-diff --git a/drivers/ipack/devices/ipoctal.c b/drivers/ipack/devices/ipoctal.c
-index 75dd15d66df6..f558aeb8f888 100644
---- a/drivers/ipack/devices/ipoctal.c
-+++ b/drivers/ipack/devices/ipoctal.c
-@@ -38,6 +38,7 @@ struct ipoctal_channel {
- 	unsigned int			pointer_read;
- 	unsigned int			pointer_write;
- 	struct tty_port			tty_port;
-+	bool				tty_registered;
- 	union scc2698_channel __iomem	*regs;
- 	union scc2698_block __iomem	*block_regs;
- 	unsigned int			board_id;
-@@ -86,22 +87,34 @@ static int ipoctal_port_activate(struct tty_port *port, struct tty_struct *tty)
- 	return 0;
- }
- 
--static int ipoctal_open(struct tty_struct *tty, struct file *file)
-+static int ipoctal_install(struct tty_driver *driver, struct tty_struct *tty)
- {
- 	struct ipoctal_channel *channel = dev_get_drvdata(tty->dev);
- 	struct ipoctal *ipoctal = chan_to_ipoctal(channel, tty->index);
--	int err;
--
--	tty->driver_data = channel;
-+	int res;
- 
- 	if (!ipack_get_carrier(ipoctal->dev))
- 		return -EBUSY;
- 
--	err = tty_port_open(&channel->tty_port, tty, file);
--	if (err)
--		ipack_put_carrier(ipoctal->dev);
-+	res = tty_standard_install(driver, tty);
-+	if (res)
-+		goto err_put_carrier;
-+
-+	tty->driver_data = channel;
-+
-+	return 0;
-+
-+err_put_carrier:
-+	ipack_put_carrier(ipoctal->dev);
-+
-+	return res;
-+}
-+
-+static int ipoctal_open(struct tty_struct *tty, struct file *file)
-+{
-+	struct ipoctal_channel *channel = tty->driver_data;
- 
--	return err;
-+	return tty_port_open(&channel->tty_port, tty, file);
- }
- 
- static void ipoctal_reset_stats(struct ipoctal_stats *stats)
-@@ -269,7 +282,6 @@ static int ipoctal_inst_slot(struct ipoctal *ipoctal, unsigned int bus_nr,
- 	int res;
- 	int i;
- 	struct tty_driver *tty;
--	char name[20];
- 	struct ipoctal_channel *channel;
- 	struct ipack_region *region;
- 	void __iomem *addr;
-@@ -360,8 +372,11 @@ static int ipoctal_inst_slot(struct ipoctal *ipoctal, unsigned int bus_nr,
- 	/* Fill struct tty_driver with ipoctal data */
- 	tty->owner = THIS_MODULE;
- 	tty->driver_name = KBUILD_MODNAME;
--	sprintf(name, KBUILD_MODNAME ".%d.%d.", bus_nr, slot);
--	tty->name = name;
-+	tty->name = kasprintf(GFP_KERNEL, KBUILD_MODNAME ".%d.%d.", bus_nr, slot);
-+	if (!tty->name) {
-+		res = -ENOMEM;
-+		goto err_put_driver;
-+	}
- 	tty->major = 0;
- 
- 	tty->minor_start = 0;
-@@ -377,8 +392,7 @@ static int ipoctal_inst_slot(struct ipoctal *ipoctal, unsigned int bus_nr,
- 	res = tty_register_driver(tty);
- 	if (res) {
- 		dev_err(&ipoctal->dev->dev, "Can't register tty driver.\n");
--		put_tty_driver(tty);
--		return res;
-+		goto err_free_name;
- 	}
- 
- 	/* Save struct tty_driver for use it when uninstalling the device */
-@@ -389,7 +403,9 @@ static int ipoctal_inst_slot(struct ipoctal *ipoctal, unsigned int bus_nr,
- 
- 		channel = &ipoctal->channel[i];
- 		tty_port_init(&channel->tty_port);
--		tty_port_alloc_xmit_buf(&channel->tty_port);
-+		res = tty_port_alloc_xmit_buf(&channel->tty_port);
-+		if (res)
-+			continue;
- 		channel->tty_port.ops = &ipoctal_tty_port_ops;
- 
- 		ipoctal_reset_stats(&channel->stats);
-@@ -397,13 +413,15 @@ static int ipoctal_inst_slot(struct ipoctal *ipoctal, unsigned int bus_nr,
- 		spin_lock_init(&channel->lock);
- 		channel->pointer_read = 0;
- 		channel->pointer_write = 0;
--		tty_dev = tty_port_register_device(&channel->tty_port, tty, i, NULL);
-+		tty_dev = tty_port_register_device_attr(&channel->tty_port, tty,
-+							i, NULL, channel, NULL);
- 		if (IS_ERR(tty_dev)) {
- 			dev_err(&ipoctal->dev->dev, "Failed to register tty device.\n");
-+			tty_port_free_xmit_buf(&channel->tty_port);
- 			tty_port_destroy(&channel->tty_port);
- 			continue;
- 		}
--		dev_set_drvdata(tty_dev, channel);
-+		channel->tty_registered = true;
- 	}
- 
- 	/*
-@@ -415,6 +433,13 @@ static int ipoctal_inst_slot(struct ipoctal *ipoctal, unsigned int bus_nr,
- 				       ipoctal_irq_handler, ipoctal);
- 
- 	return 0;
-+
-+err_free_name:
-+	kfree(tty->name);
-+err_put_driver:
-+	put_tty_driver(tty);
-+
-+	return res;
- }
- 
- static inline int ipoctal_copy_write_buffer(struct ipoctal_channel *channel,
-@@ -655,6 +680,7 @@ static void ipoctal_cleanup(struct tty_struct *tty)
- 
- static const struct tty_operations ipoctal_fops = {
- 	.ioctl =		NULL,
-+	.install =		ipoctal_install,
- 	.open =			ipoctal_open,
- 	.close =		ipoctal_close,
- 	.write =		ipoctal_write_tty,
-@@ -697,12 +723,17 @@ static void __ipoctal_remove(struct ipoctal *ipoctal)
- 
- 	for (i = 0; i < NR_CHANNELS; i++) {
- 		struct ipoctal_channel *channel = &ipoctal->channel[i];
-+
-+		if (!channel->tty_registered)
-+			continue;
-+
- 		tty_unregister_device(ipoctal->tty_drv, i);
- 		tty_port_free_xmit_buf(&channel->tty_port);
- 		tty_port_destroy(&channel->tty_port);
- 	}
- 
- 	tty_unregister_driver(ipoctal->tty_drv);
-+	kfree(ipoctal->tty_drv->name);
- 	put_tty_driver(ipoctal->tty_drv);
- 	kfree(ipoctal);
- }
-diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
-index 1d2267c6d31a..85b4610e6dc4 100644
---- a/drivers/irqchip/irq-gic-v3-its.c
-+++ b/drivers/irqchip/irq-gic-v3-its.c
-@@ -2730,7 +2730,7 @@ static int its_vpe_irq_domain_alloc(struct irq_domain *domain, unsigned int virq
- 
- 	if (err) {
- 		if (i > 0)
--			its_vpe_irq_domain_free(domain, virq, i - 1);
-+			its_vpe_irq_domain_free(domain, virq, i);
- 
- 		its_lpi_free_chunks(bitmap, base, nr_ids);
- 		its_free_prop_table(vprop_page);
-diff --git a/drivers/mcb/mcb-core.c b/drivers/mcb/mcb-core.c
-index bb5c5692dedc..118d27ee31c2 100644
---- a/drivers/mcb/mcb-core.c
-+++ b/drivers/mcb/mcb-core.c
-@@ -280,8 +280,8 @@ struct mcb_bus *mcb_alloc_bus(struct device *carrier)
- 
- 	bus_nr = ida_simple_get(&mcb_ida, 0, 0, GFP_KERNEL);
- 	if (bus_nr < 0) {
--		rc = bus_nr;
--		goto err_free;
-+		kfree(bus);
-+		return ERR_PTR(bus_nr);
- 	}
- 
- 	bus->bus_nr = bus_nr;
-@@ -296,12 +296,12 @@ struct mcb_bus *mcb_alloc_bus(struct device *carrier)
- 	dev_set_name(&bus->dev, "mcb:%d", bus_nr);
- 	rc = device_add(&bus->dev);
- 	if (rc)
--		goto err_free;
-+		goto err_put;
- 
- 	return bus;
--err_free:
--	put_device(carrier);
--	kfree(bus);
-+
-+err_put:
-+	put_device(&bus->dev);
- 	return ERR_PTR(rc);
- }
- EXPORT_SYMBOL_GPL(mcb_alloc_bus);
-diff --git a/drivers/md/md.c b/drivers/md/md.c
-index 0af9aa187ce5..5e8706a66c31 100644
---- a/drivers/md/md.c
-+++ b/drivers/md/md.c
-@@ -5375,10 +5375,6 @@ static int md_alloc(dev_t dev, char *name)
- 	 */
- 	disk->flags |= GENHD_FL_EXT_DEVT;
- 	mddev->gendisk = disk;
--	/* As soon as we call add_disk(), another thread could get
--	 * through to md_open, so make sure it doesn't get too far
--	 */
--	mutex_lock(&mddev->open_mutex);
- 	add_disk(disk);
- 
- 	error = kobject_init_and_add(&mddev->kobj, &md_ktype,
-@@ -5394,7 +5390,6 @@ static int md_alloc(dev_t dev, char *name)
- 	if (mddev->kobj.sd &&
- 	    sysfs_create_group(&mddev->kobj, &md_bitmap_group))
- 		pr_debug("pointless warning\n");
--	mutex_unlock(&mddev->open_mutex);
-  abort:
- 	mutex_unlock(&disks_mutex);
- 	if (!error && mddev->kobj.sd) {
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-index c4b0c35a270c..17592aeb2618 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-@@ -278,7 +278,7 @@ static bool bnxt_txr_netif_try_stop_queue(struct bnxt *bp,
- 	 * netif_tx_queue_stopped().
- 	 */
- 	smp_mb();
--	if (bnxt_tx_avail(bp, txr) > bp->tx_wake_thresh) {
-+	if (bnxt_tx_avail(bp, txr) >= bp->tx_wake_thresh) {
- 		netif_tx_wake_queue(txq);
- 		return false;
- 	}
-@@ -609,7 +609,7 @@ static void bnxt_tx_int(struct bnxt *bp, struct bnxt_napi *bnapi, int nr_pkts)
- 	smp_mb();
- 
- 	if (unlikely(netif_tx_queue_stopped(txq)) &&
--	    bnxt_tx_avail(bp, txr) > bp->tx_wake_thresh &&
-+	    bnxt_tx_avail(bp, txr) >= bp->tx_wake_thresh &&
- 	    READ_ONCE(txr->dev_state) != BNXT_DEV_STATE_CLOSING)
- 		netif_tx_wake_queue(txq);
- }
-@@ -1888,7 +1888,7 @@ static int bnxt_poll_work(struct bnxt *bp, struct bnxt_napi *bnapi, int budget)
- 		if (TX_CMP_TYPE(txcmp) == CMP_TYPE_TX_L2_CMP) {
- 			tx_pkts++;
- 			/* return full budget so NAPI will complete. */
--			if (unlikely(tx_pkts > bp->tx_wake_thresh)) {
-+			if (unlikely(tx_pkts >= bp->tx_wake_thresh)) {
- 				rx_pkts = budget;
- 				raw_cons = NEXT_RAW_CMP(raw_cons);
- 				break;
-@@ -2662,7 +2662,7 @@ static int bnxt_init_tx_rings(struct bnxt *bp)
- 	u16 i;
- 
- 	bp->tx_wake_thresh = max_t(int, bp->tx_ring_size / 2,
--				   MAX_SKB_FRAGS + 1);
-+				   BNXT_MIN_TX_DESC_CNT);
- 
- 	for (i = 0; i < bp->tx_nr_rings; i++) {
- 		struct bnxt_tx_ring_info *txr = &bp->tx_ring[i];
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.h b/drivers/net/ethernet/broadcom/bnxt/bnxt.h
-index 5aaf7f5a23dc..ad0a69a81f10 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt.h
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.h
-@@ -477,6 +477,11 @@ struct rx_tpa_end_cmp_ext {
- #define BNXT_MAX_RX_JUM_DESC_CNT	(RX_DESC_CNT * MAX_RX_AGG_PAGES - 1)
- #define BNXT_MAX_TX_DESC_CNT		(TX_DESC_CNT * MAX_TX_PAGES - 1)
- 
-+/* Minimum TX BDs for a TX packet with MAX_SKB_FRAGS + 1.  We need one extra
-+ * BD because the first TX BD is always a long BD.
-+ */
-+#define BNXT_MIN_TX_DESC_CNT		(MAX_SKB_FRAGS + 2)
-+
- #define RX_RING(x)	(((x) & ~(RX_DESC_CNT - 1)) >> (BNXT_PAGE_SHIFT - 4))
- #define RX_IDX(x)	((x) & (RX_DESC_CNT - 1))
- 
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c b/drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c
-index e8544e8637db..e3123cb0fb70 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c
-@@ -348,7 +348,7 @@ static int bnxt_set_ringparam(struct net_device *dev,
- 
- 	if ((ering->rx_pending > BNXT_MAX_RX_DESC_CNT) ||
- 	    (ering->tx_pending > BNXT_MAX_TX_DESC_CNT) ||
--	    (ering->tx_pending <= MAX_SKB_FRAGS))
-+	    (ering->tx_pending < BNXT_MIN_TX_DESC_CNT))
- 		return -EINVAL;
- 
- 	if (netif_running(dev))
-diff --git a/drivers/net/ethernet/cadence/macb_pci.c b/drivers/net/ethernet/cadence/macb_pci.c
-index 248a8fc45069..f06fddf9919b 100644
---- a/drivers/net/ethernet/cadence/macb_pci.c
-+++ b/drivers/net/ethernet/cadence/macb_pci.c
-@@ -123,9 +123,9 @@ static void macb_remove(struct pci_dev *pdev)
- 	struct platform_device *plat_dev = pci_get_drvdata(pdev);
- 	struct macb_platform_data *plat_data = dev_get_platdata(&plat_dev->dev);
- 
--	platform_device_unregister(plat_dev);
- 	clk_unregister(plat_data->pclk);
- 	clk_unregister(plat_data->hclk);
-+	platform_device_unregister(plat_dev);
- }
- 
- static const struct pci_device_id dev_id_table[] = {
-diff --git a/drivers/net/ethernet/i825xx/82596.c b/drivers/net/ethernet/i825xx/82596.c
-index d719668a6684..8efcec305fc5 100644
---- a/drivers/net/ethernet/i825xx/82596.c
-+++ b/drivers/net/ethernet/i825xx/82596.c
-@@ -1155,7 +1155,7 @@ struct net_device * __init i82596_probe(int unit)
- 			err = -ENODEV;
- 			goto out;
- 		}
--		memcpy(eth_addr, (void *) 0xfffc1f2c, ETH_ALEN);	/* YUCK! Get addr from NOVRAM */
-+		memcpy(eth_addr, absolute_pointer(0xfffc1f2c), ETH_ALEN); /* YUCK! Get addr from NOVRAM */
- 		dev->base_addr = MVME_I596_BASE;
- 		dev->irq = (unsigned) MVME16x_IRQ_I596;
- 		goto found;
-diff --git a/drivers/net/ethernet/intel/e100.c b/drivers/net/ethernet/intel/e100.c
-index a73102357bbd..20961985ed12 100644
---- a/drivers/net/ethernet/intel/e100.c
-+++ b/drivers/net/ethernet/intel/e100.c
-@@ -2459,11 +2459,15 @@ static void e100_get_drvinfo(struct net_device *netdev,
- 		sizeof(info->bus_info));
- }
- 
--#define E100_PHY_REGS 0x1C
-+#define E100_PHY_REGS 0x1D
- static int e100_get_regs_len(struct net_device *netdev)
- {
- 	struct nic *nic = netdev_priv(netdev);
--	return 1 + E100_PHY_REGS + sizeof(nic->mem->dump_buf);
-+
-+	/* We know the number of registers, and the size of the dump buffer.
-+	 * Calculate the total size in bytes.
-+	 */
-+	return (1 + E100_PHY_REGS) * sizeof(u32) + sizeof(nic->mem->dump_buf);
- }
- 
- static void e100_get_regs(struct net_device *netdev,
-@@ -2477,14 +2481,18 @@ static void e100_get_regs(struct net_device *netdev,
- 	buff[0] = ioread8(&nic->csr->scb.cmd_hi) << 24 |
- 		ioread8(&nic->csr->scb.cmd_lo) << 16 |
- 		ioread16(&nic->csr->scb.status);
--	for (i = E100_PHY_REGS; i >= 0; i--)
--		buff[1 + E100_PHY_REGS - i] =
--			mdio_read(netdev, nic->mii.phy_id, i);
-+	for (i = 0; i < E100_PHY_REGS; i++)
-+		/* Note that we read the registers in reverse order. This
-+		 * ordering is the ABI apparently used by ethtool and other
-+		 * applications.
-+		 */
-+		buff[1 + i] = mdio_read(netdev, nic->mii.phy_id,
-+					E100_PHY_REGS - 1 - i);
- 	memset(nic->mem->dump_buf, 0, sizeof(nic->mem->dump_buf));
- 	e100_exec_cb(nic, NULL, e100_dump);
- 	msleep(10);
--	memcpy(&buff[2 + E100_PHY_REGS], nic->mem->dump_buf,
--		sizeof(nic->mem->dump_buf));
-+	memcpy(&buff[1 + E100_PHY_REGS], nic->mem->dump_buf,
-+	       sizeof(nic->mem->dump_buf));
- }
- 
- static void e100_get_wol(struct net_device *netdev, struct ethtool_wolinfo *wol)
-diff --git a/drivers/net/ethernet/mellanox/mlx4/en_netdev.c b/drivers/net/ethernet/mellanox/mlx4/en_netdev.c
-index b27dbc34df02..5f8709aa0f4e 100644
---- a/drivers/net/ethernet/mellanox/mlx4/en_netdev.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/en_netdev.c
-@@ -363,6 +363,9 @@ mlx4_en_filter_rfs(struct net_device *net_dev, const struct sk_buff *skb,
- 	int nhoff = skb_network_offset(skb);
- 	int ret = 0;
- 
-+	if (skb->encapsulation)
-+		return -EPROTONOSUPPORT;
-+
- 	if (skb->protocol != htons(ETH_P_IP))
- 		return -EPROTONOSUPPORT;
- 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index a7b30f060536..2be2b3055904 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -232,7 +232,7 @@ static void stmmac_clk_csr_set(struct stmmac_priv *priv)
- 			priv->clk_csr = STMMAC_CSR_100_150M;
- 		else if ((clk_rate >= CSR_F_150M) && (clk_rate < CSR_F_250M))
- 			priv->clk_csr = STMMAC_CSR_150_250M;
--		else if ((clk_rate >= CSR_F_250M) && (clk_rate < CSR_F_300M))
-+		else if ((clk_rate >= CSR_F_250M) && (clk_rate <= CSR_F_300M))
- 			priv->clk_csr = STMMAC_CSR_250_300M;
- 	}
- 
-diff --git a/drivers/net/hamradio/6pack.c b/drivers/net/hamradio/6pack.c
-index 231eaef29266..7e430300818e 100644
---- a/drivers/net/hamradio/6pack.c
-+++ b/drivers/net/hamradio/6pack.c
-@@ -68,9 +68,9 @@
- #define SIXP_DAMA_OFF		0
- 
- /* default level 2 parameters */
--#define SIXP_TXDELAY			(HZ/4)	/* in 1 s */
-+#define SIXP_TXDELAY			25	/* 250 ms */
- #define SIXP_PERSIST			50	/* in 256ths */
--#define SIXP_SLOTTIME			(HZ/10)	/* in 1 s */
-+#define SIXP_SLOTTIME			10	/* 100 ms */
- #define SIXP_INIT_RESYNC_TIMEOUT	(3*HZ/2) /* in 1 s */
- #define SIXP_RESYNC_TIMEOUT		5*HZ	/* in 1 s */
- 
-diff --git a/drivers/net/usb/hso.c b/drivers/net/usb/hso.c
-index 3c3c6a8c37ee..e8574c6fd91e 100644
---- a/drivers/net/usb/hso.c
-+++ b/drivers/net/usb/hso.c
-@@ -2510,7 +2510,7 @@ static struct hso_device *hso_create_net_device(struct usb_interface *interface,
- 			   hso_net_init);
- 	if (!net) {
- 		dev_err(&interface->dev, "Unable to create ethernet device\n");
--		goto exit;
-+		goto err_hso_dev;
- 	}
- 
- 	hso_net = netdev_priv(net);
-@@ -2523,13 +2523,13 @@ static struct hso_device *hso_create_net_device(struct usb_interface *interface,
- 				      USB_DIR_IN);
- 	if (!hso_net->in_endp) {
- 		dev_err(&interface->dev, "Can't find BULK IN endpoint\n");
--		goto exit;
-+		goto err_net;
- 	}
- 	hso_net->out_endp = hso_get_ep(interface, USB_ENDPOINT_XFER_BULK,
- 				       USB_DIR_OUT);
- 	if (!hso_net->out_endp) {
- 		dev_err(&interface->dev, "Can't find BULK OUT endpoint\n");
--		goto exit;
-+		goto err_net;
- 	}
- 	SET_NETDEV_DEV(net, &interface->dev);
- 	SET_NETDEV_DEVTYPE(net, &hso_type);
-@@ -2538,18 +2538,18 @@ static struct hso_device *hso_create_net_device(struct usb_interface *interface,
- 	for (i = 0; i < MUX_BULK_RX_BUF_COUNT; i++) {
- 		hso_net->mux_bulk_rx_urb_pool[i] = usb_alloc_urb(0, GFP_KERNEL);
- 		if (!hso_net->mux_bulk_rx_urb_pool[i])
--			goto exit;
-+			goto err_mux_bulk_rx;
- 		hso_net->mux_bulk_rx_buf_pool[i] = kzalloc(MUX_BULK_RX_BUF_SIZE,
- 							   GFP_KERNEL);
- 		if (!hso_net->mux_bulk_rx_buf_pool[i])
--			goto exit;
-+			goto err_mux_bulk_rx;
- 	}
- 	hso_net->mux_bulk_tx_urb = usb_alloc_urb(0, GFP_KERNEL);
- 	if (!hso_net->mux_bulk_tx_urb)
--		goto exit;
-+		goto err_mux_bulk_rx;
- 	hso_net->mux_bulk_tx_buf = kzalloc(MUX_BULK_TX_BUF_SIZE, GFP_KERNEL);
- 	if (!hso_net->mux_bulk_tx_buf)
--		goto exit;
-+		goto err_free_tx_urb;
- 
- 	add_net_device(hso_dev);
- 
-@@ -2557,7 +2557,7 @@ static struct hso_device *hso_create_net_device(struct usb_interface *interface,
- 	result = register_netdev(net);
- 	if (result) {
- 		dev_err(&interface->dev, "Failed to register device\n");
--		goto exit;
-+		goto err_free_tx_buf;
- 	}
- 
- 	hso_log_port(hso_dev);
-@@ -2565,8 +2565,21 @@ static struct hso_device *hso_create_net_device(struct usb_interface *interface,
- 	hso_create_rfkill(hso_dev, interface);
- 
- 	return hso_dev;
--exit:
--	hso_free_net_device(hso_dev);
-+
-+err_free_tx_buf:
-+	remove_net_device(hso_dev);
-+	kfree(hso_net->mux_bulk_tx_buf);
-+err_free_tx_urb:
-+	usb_free_urb(hso_net->mux_bulk_tx_urb);
-+err_mux_bulk_rx:
-+	for (i = 0; i < MUX_BULK_RX_BUF_COUNT; i++) {
-+		usb_free_urb(hso_net->mux_bulk_rx_urb_pool[i]);
-+		kfree(hso_net->mux_bulk_rx_buf_pool[i]);
-+	}
-+err_net:
-+	free_netdev(net);
-+err_hso_dev:
-+	kfree(hso_dev);
- 	return NULL;
- }
- 
-@@ -2713,14 +2726,14 @@ struct hso_device *hso_create_mux_serial_device(struct usb_interface *interface,
- 
- 	serial = kzalloc(sizeof(*serial), GFP_KERNEL);
- 	if (!serial)
--		goto exit;
-+		goto err_free_dev;
- 
- 	hso_dev->port_data.dev_serial = serial;
- 	serial->parent = hso_dev;
- 
- 	if (hso_serial_common_create
- 	    (serial, 1, CTRL_URB_RX_SIZE, CTRL_URB_TX_SIZE))
--		goto exit;
-+		goto err_free_serial;
- 
- 	serial->tx_data_length--;
- 	serial->write_data = hso_mux_serial_write_data;
-@@ -2736,11 +2749,9 @@ struct hso_device *hso_create_mux_serial_device(struct usb_interface *interface,
- 	/* done, return it */
- 	return hso_dev;
- 
--exit:
--	if (serial) {
--		tty_unregister_device(tty_drv, serial->minor);
--		kfree(serial);
--	}
-+err_free_serial:
-+	kfree(serial);
-+err_free_dev:
- 	kfree(hso_dev);
- 	return NULL;
- 
-diff --git a/drivers/pci/host/pci-aardvark.c b/drivers/pci/host/pci-aardvark.c
-index f84166f99517..4214f66d405b 100644
---- a/drivers/pci/host/pci-aardvark.c
-+++ b/drivers/pci/host/pci-aardvark.c
-@@ -55,7 +55,8 @@
- #define   PIO_COMPLETION_STATUS_UR		1
- #define   PIO_COMPLETION_STATUS_CRS		2
- #define   PIO_COMPLETION_STATUS_CA		4
--#define   PIO_NON_POSTED_REQ			BIT(0)
-+#define   PIO_NON_POSTED_REQ			BIT(10)
-+#define   PIO_ERR_STATUS			BIT(11)
- #define PIO_ADDR_LS				(PIO_BASE_ADDR + 0x8)
- #define PIO_ADDR_MS				(PIO_BASE_ADDR + 0xc)
- #define PIO_WR_DATA				(PIO_BASE_ADDR + 0x10)
-@@ -374,7 +375,7 @@ static void advk_pcie_setup_hw(struct advk_pcie *pcie)
- 	advk_writel(pcie, reg, PCIE_CORE_CMD_STATUS_REG);
- }
- 
--static void advk_pcie_check_pio_status(struct advk_pcie *pcie)
-+static int advk_pcie_check_pio_status(struct advk_pcie *pcie, u32 *val)
- {
- 	struct device *dev = &pcie->pdev->dev;
- 	u32 reg;
-@@ -385,14 +386,49 @@ static void advk_pcie_check_pio_status(struct advk_pcie *pcie)
- 	status = (reg & PIO_COMPLETION_STATUS_MASK) >>
- 		PIO_COMPLETION_STATUS_SHIFT;
- 
--	if (!status)
--		return;
--
-+	/*
-+	 * According to HW spec, the PIO status check sequence as below:
-+	 * 1) even if COMPLETION_STATUS(bit9:7) indicates successful,
-+	 *    it still needs to check Error Status(bit11), only when this bit
-+	 *    indicates no error happen, the operation is successful.
-+	 * 2) value Unsupported Request(1) of COMPLETION_STATUS(bit9:7) only
-+	 *    means a PIO write error, and for PIO read it is successful with
-+	 *    a read value of 0xFFFFFFFF.
-+	 * 3) value Completion Retry Status(CRS) of COMPLETION_STATUS(bit9:7)
-+	 *    only means a PIO write error, and for PIO read it is successful
-+	 *    with a read value of 0xFFFF0001.
-+	 * 4) value Completer Abort (CA) of COMPLETION_STATUS(bit9:7) means
-+	 *    error for both PIO read and PIO write operation.
-+	 * 5) other errors are indicated as 'unknown'.
-+	 */
- 	switch (status) {
-+	case PIO_COMPLETION_STATUS_OK:
-+		if (reg & PIO_ERR_STATUS) {
-+			strcomp_status = "COMP_ERR";
-+			break;
-+		}
-+		/* Get the read result */
-+		if (val)
-+			*val = advk_readl(pcie, PIO_RD_DATA);
-+		/* No error */
-+		strcomp_status = NULL;
-+		break;
- 	case PIO_COMPLETION_STATUS_UR:
- 		strcomp_status = "UR";
- 		break;
- 	case PIO_COMPLETION_STATUS_CRS:
-+		/* PCIe r4.0, sec 2.3.2, says:
-+		 * If CRS Software Visibility is not enabled, the Root Complex
-+		 * must re-issue the Configuration Request as a new Request.
-+		 * A Root Complex implementation may choose to limit the number
-+		 * of Configuration Request/CRS Completion Status loops before
-+		 * determining that something is wrong with the target of the
-+		 * Request and taking appropriate action, e.g., complete the
-+		 * Request to the host as a failed transaction.
-+		 *
-+		 * To simplify implementation do not re-issue the Configuration
-+		 * Request and complete the Request as a failed transaction.
-+		 */
- 		strcomp_status = "CRS";
- 		break;
- 	case PIO_COMPLETION_STATUS_CA:
-@@ -403,6 +439,9 @@ static void advk_pcie_check_pio_status(struct advk_pcie *pcie)
- 		break;
- 	}
- 
-+	if (!strcomp_status)
-+		return 0;
-+
- 	if (reg & PIO_NON_POSTED_REQ)
- 		str_posted = "Non-posted";
- 	else
-@@ -410,6 +449,8 @@ static void advk_pcie_check_pio_status(struct advk_pcie *pcie)
- 
- 	dev_err(dev, "%s PIO Response Status: %s, %#x @ %#x\n",
- 		str_posted, strcomp_status, reg, advk_readl(pcie, PIO_ADDR_LS));
-+
-+	return -EFAULT;
- }
- 
- static int advk_pcie_wait_pio(struct advk_pcie *pcie)
-@@ -502,10 +543,13 @@ static int advk_pcie_rd_conf(struct pci_bus *bus, u32 devfn,
- 	if (ret < 0)
- 		return PCIBIOS_SET_FAILED;
- 
--	advk_pcie_check_pio_status(pcie);
-+	/* Check PIO status and get the read result */
-+	ret = advk_pcie_check_pio_status(pcie, val);
-+	if (ret < 0) {
-+		*val = 0xffffffff;
-+		return PCIBIOS_SET_FAILED;
-+	}
- 
--	/* Get the read result */
--	*val = advk_readl(pcie, PIO_RD_DATA);
- 	if (size == 1)
- 		*val = (*val >> (8 * (where & 3))) & 0xff;
- 	else if (size == 2)
-@@ -565,7 +609,9 @@ static int advk_pcie_wr_conf(struct pci_bus *bus, u32 devfn,
- 	if (ret < 0)
- 		return PCIBIOS_SET_FAILED;
- 
--	advk_pcie_check_pio_status(pcie);
-+	ret = advk_pcie_check_pio_status(pcie, NULL);
-+	if (ret < 0)
-+		return PCIBIOS_SET_FAILED;
- 
- 	return PCIBIOS_SUCCESSFUL;
- }
-diff --git a/drivers/scsi/csiostor/csio_init.c b/drivers/scsi/csiostor/csio_init.c
-index 03c7b1603dbc..c64db2047efc 100644
---- a/drivers/scsi/csiostor/csio_init.c
-+++ b/drivers/scsi/csiostor/csio_init.c
-@@ -1260,3 +1260,4 @@ MODULE_DEVICE_TABLE(pci, csio_pci_tbl);
- MODULE_VERSION(CSIO_DRV_VERSION);
- MODULE_FIRMWARE(FW_FNAME_T5);
- MODULE_FIRMWARE(FW_FNAME_T6);
-+MODULE_SOFTDEP("pre: cxgb4");
-diff --git a/drivers/scsi/scsi_transport_iscsi.c b/drivers/scsi/scsi_transport_iscsi.c
-index 064c941e5483..d276d84c0f7a 100644
---- a/drivers/scsi/scsi_transport_iscsi.c
-+++ b/drivers/scsi/scsi_transport_iscsi.c
-@@ -429,9 +429,7 @@ static umode_t iscsi_iface_attr_is_visible(struct kobject *kobj,
- 	struct iscsi_transport *t = iface->transport;
- 	int param = -1;
- 
--	if (attr == &dev_attr_iface_enabled.attr)
--		param = ISCSI_NET_PARAM_IFACE_ENABLE;
--	else if (attr == &dev_attr_iface_def_taskmgmt_tmo.attr)
-+	if (attr == &dev_attr_iface_def_taskmgmt_tmo.attr)
- 		param = ISCSI_IFACE_PARAM_DEF_TASKMGMT_TMO;
- 	else if (attr == &dev_attr_iface_header_digest.attr)
- 		param = ISCSI_IFACE_PARAM_HDRDGST_EN;
-@@ -471,7 +469,9 @@ static umode_t iscsi_iface_attr_is_visible(struct kobject *kobj,
- 	if (param != -1)
- 		return t->attr_is_visible(ISCSI_IFACE_PARAM, param);
- 
--	if (attr == &dev_attr_iface_vlan_id.attr)
-+	if (attr == &dev_attr_iface_enabled.attr)
-+		param = ISCSI_NET_PARAM_IFACE_ENABLE;
-+	else if (attr == &dev_attr_iface_vlan_id.attr)
- 		param = ISCSI_NET_PARAM_VLAN_ID;
- 	else if (attr == &dev_attr_iface_vlan_priority.attr)
- 		param = ISCSI_NET_PARAM_VLAN_PRIORITY;
-diff --git a/drivers/spi/spi-tegra20-slink.c b/drivers/spi/spi-tegra20-slink.c
-index c39bfcbda5f2..1548f7b738c1 100644
---- a/drivers/spi/spi-tegra20-slink.c
-+++ b/drivers/spi/spi-tegra20-slink.c
-@@ -1210,7 +1210,7 @@ static int tegra_slink_resume(struct device *dev)
- }
- #endif
- 
--static int tegra_slink_runtime_suspend(struct device *dev)
-+static int __maybe_unused tegra_slink_runtime_suspend(struct device *dev)
- {
- 	struct spi_master *master = dev_get_drvdata(dev);
- 	struct tegra_slink_data *tspi = spi_master_get_devdata(master);
-@@ -1222,7 +1222,7 @@ static int tegra_slink_runtime_suspend(struct device *dev)
- 	return 0;
- }
- 
--static int tegra_slink_runtime_resume(struct device *dev)
-+static int __maybe_unused tegra_slink_runtime_resume(struct device *dev)
- {
- 	struct spi_master *master = dev_get_drvdata(dev);
- 	struct tegra_slink_data *tspi = spi_master_get_devdata(master);
-diff --git a/drivers/staging/greybus/uart.c b/drivers/staging/greybus/uart.c
-index b0b7d4a1cee4..770fc7185ed5 100644
---- a/drivers/staging/greybus/uart.c
-+++ b/drivers/staging/greybus/uart.c
-@@ -800,6 +800,17 @@ static void gb_tty_port_shutdown(struct tty_port *port)
- 	gbphy_runtime_put_autosuspend(gb_tty->gbphy_dev);
- }
- 
-+static void gb_tty_port_destruct(struct tty_port *port)
-+{
-+	struct gb_tty *gb_tty = container_of(port, struct gb_tty, port);
-+
-+	if (gb_tty->minor != GB_NUM_MINORS)
-+		release_minor(gb_tty);
-+	kfifo_free(&gb_tty->write_fifo);
-+	kfree(gb_tty->buffer);
-+	kfree(gb_tty);
-+}
-+
- static const struct tty_operations gb_ops = {
- 	.install =		gb_tty_install,
- 	.open =			gb_tty_open,
-@@ -823,6 +834,7 @@ static const struct tty_port_operations gb_port_ops = {
- 	.dtr_rts =		gb_tty_dtr_rts,
- 	.activate =		gb_tty_port_activate,
- 	.shutdown =		gb_tty_port_shutdown,
-+	.destruct =		gb_tty_port_destruct,
- };
- 
- static int gb_uart_probe(struct gbphy_device *gbphy_dev,
-@@ -835,17 +847,11 @@ static int gb_uart_probe(struct gbphy_device *gbphy_dev,
- 	int retval;
- 	int minor;
- 
--	gb_tty = kzalloc(sizeof(*gb_tty), GFP_KERNEL);
--	if (!gb_tty)
--		return -ENOMEM;
--
- 	connection = gb_connection_create(gbphy_dev->bundle,
- 					  le16_to_cpu(gbphy_dev->cport_desc->id),
- 					  gb_uart_request_handler);
--	if (IS_ERR(connection)) {
--		retval = PTR_ERR(connection);
--		goto exit_tty_free;
--	}
-+	if (IS_ERR(connection))
-+		return PTR_ERR(connection);
- 
- 	max_payload = gb_operation_get_payload_size_max(connection);
- 	if (max_payload < sizeof(struct gb_uart_send_data_request)) {
-@@ -853,13 +859,23 @@ static int gb_uart_probe(struct gbphy_device *gbphy_dev,
- 		goto exit_connection_destroy;
- 	}
- 
-+	gb_tty = kzalloc(sizeof(*gb_tty), GFP_KERNEL);
-+	if (!gb_tty) {
-+		retval = -ENOMEM;
-+		goto exit_connection_destroy;
-+	}
-+
-+	tty_port_init(&gb_tty->port);
-+	gb_tty->port.ops = &gb_port_ops;
-+	gb_tty->minor = GB_NUM_MINORS;
-+
- 	gb_tty->buffer_payload_max = max_payload -
- 			sizeof(struct gb_uart_send_data_request);
- 
- 	gb_tty->buffer = kzalloc(gb_tty->buffer_payload_max, GFP_KERNEL);
- 	if (!gb_tty->buffer) {
- 		retval = -ENOMEM;
--		goto exit_connection_destroy;
-+		goto exit_put_port;
- 	}
- 
- 	INIT_WORK(&gb_tty->tx_work, gb_uart_tx_write_work);
-@@ -867,7 +883,7 @@ static int gb_uart_probe(struct gbphy_device *gbphy_dev,
- 	retval = kfifo_alloc(&gb_tty->write_fifo, GB_UART_WRITE_FIFO_SIZE,
- 			     GFP_KERNEL);
- 	if (retval)
--		goto exit_buf_free;
-+		goto exit_put_port;
- 
- 	gb_tty->credits = GB_UART_FIRMWARE_CREDITS;
- 	init_completion(&gb_tty->credits_complete);
-@@ -881,7 +897,7 @@ static int gb_uart_probe(struct gbphy_device *gbphy_dev,
- 		} else {
- 			retval = minor;
- 		}
--		goto exit_kfifo_free;
-+		goto exit_put_port;
- 	}
- 
- 	gb_tty->minor = minor;
-@@ -890,9 +906,6 @@ static int gb_uart_probe(struct gbphy_device *gbphy_dev,
- 	init_waitqueue_head(&gb_tty->wioctl);
- 	mutex_init(&gb_tty->mutex);
- 
--	tty_port_init(&gb_tty->port);
--	gb_tty->port.ops = &gb_port_ops;
--
- 	gb_tty->connection = connection;
- 	gb_tty->gbphy_dev = gbphy_dev;
- 	gb_connection_set_data(connection, gb_tty);
-@@ -900,7 +913,7 @@ static int gb_uart_probe(struct gbphy_device *gbphy_dev,
- 
- 	retval = gb_connection_enable_tx(connection);
- 	if (retval)
--		goto exit_release_minor;
-+		goto exit_put_port;
- 
- 	send_control(gb_tty, gb_tty->ctrlout);
- 
-@@ -927,16 +940,10 @@ static int gb_uart_probe(struct gbphy_device *gbphy_dev,
- 
- exit_connection_disable:
- 	gb_connection_disable(connection);
--exit_release_minor:
--	release_minor(gb_tty);
--exit_kfifo_free:
--	kfifo_free(&gb_tty->write_fifo);
--exit_buf_free:
--	kfree(gb_tty->buffer);
-+exit_put_port:
-+	tty_port_put(&gb_tty->port);
- exit_connection_destroy:
- 	gb_connection_destroy(connection);
--exit_tty_free:
--	kfree(gb_tty);
- 
- 	return retval;
- }
-@@ -967,15 +974,10 @@ static void gb_uart_remove(struct gbphy_device *gbphy_dev)
- 	gb_connection_disable_rx(connection);
- 	tty_unregister_device(gb_tty_driver, gb_tty->minor);
- 
--	/* FIXME - free transmit / receive buffers */
--
- 	gb_connection_disable(connection);
--	tty_port_destroy(&gb_tty->port);
- 	gb_connection_destroy(connection);
--	release_minor(gb_tty);
--	kfifo_free(&gb_tty->write_fifo);
--	kfree(gb_tty->buffer);
--	kfree(gb_tty);
-+
-+	tty_port_put(&gb_tty->port);
- }
- 
- static int gb_tty_init(void)
-diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
-index 2db83b555e59..94820f25a15f 100644
---- a/drivers/thermal/thermal_core.c
-+++ b/drivers/thermal/thermal_core.c
-@@ -231,15 +231,14 @@ int thermal_build_list_of_policies(char *buf)
- {
- 	struct thermal_governor *pos;
- 	ssize_t count = 0;
--	ssize_t size = PAGE_SIZE;
- 
- 	mutex_lock(&thermal_governor_lock);
- 
- 	list_for_each_entry(pos, &thermal_governor_list, governor_list) {
--		size = PAGE_SIZE - count;
--		count += scnprintf(buf + count, size, "%s ", pos->name);
-+		count += scnprintf(buf + count, PAGE_SIZE - count, "%s ",
-+				   pos->name);
- 	}
--	count += scnprintf(buf + count, size, "\n");
-+	count += scnprintf(buf + count, PAGE_SIZE - count, "\n");
- 
- 	mutex_unlock(&thermal_governor_lock);
- 
-diff --git a/drivers/tty/serial/mvebu-uart.c b/drivers/tty/serial/mvebu-uart.c
-index a10e4aa9e18e..ffd454e4bacf 100644
---- a/drivers/tty/serial/mvebu-uart.c
-+++ b/drivers/tty/serial/mvebu-uart.c
-@@ -108,7 +108,7 @@ static unsigned int mvebu_uart_tx_empty(struct uart_port *port)
- 	st = readl(port->membase + UART_STAT);
- 	spin_unlock_irqrestore(&port->lock, flags);
- 
--	return (st & STAT_TX_FIFO_EMP) ? TIOCSER_TEMT : 0;
-+	return (st & STAT_TX_EMP) ? TIOCSER_TEMT : 0;
- }
- 
- static unsigned int mvebu_uart_get_mctrl(struct uart_port *port)
-diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
-index d497208b43f4..f4ac5ec5dc02 100644
---- a/drivers/tty/vt/vt.c
-+++ b/drivers/tty/vt/vt.c
-@@ -883,8 +883,25 @@ static int vc_do_resize(struct tty_struct *tty, struct vc_data *vc,
- 	new_row_size = new_cols << 1;
- 	new_screen_size = new_row_size * new_rows;
- 
--	if (new_cols == vc->vc_cols && new_rows == vc->vc_rows)
--		return 0;
-+	if (new_cols == vc->vc_cols && new_rows == vc->vc_rows) {
-+		/*
-+		 * This function is being called here to cover the case
-+		 * where the userspace calls the FBIOPUT_VSCREENINFO twice,
-+		 * passing the same fb_var_screeninfo containing the fields
-+		 * yres/xres equal to a number non-multiple of vc_font.height
-+		 * and yres_virtual/xres_virtual equal to number lesser than the
-+		 * vc_font.height and yres/xres.
-+		 * In the second call, the struct fb_var_screeninfo isn't
-+		 * being modified by the underlying driver because of the
-+		 * if above, and this causes the fbcon_display->vrows to become
-+		 * negative and it eventually leads to out-of-bound
-+		 * access by the imageblit function.
-+		 * To give the correct values to the struct and to not have
-+		 * to deal with possible errors from the code below, we call
-+		 * the resize_screen here as well.
-+		 */
-+		return resize_screen(vc, new_cols, new_rows, user);
-+	}
- 
- 	if (new_screen_size > KMALLOC_MAX_SIZE || !new_screen_size)
- 		return -EINVAL;
-diff --git a/drivers/usb/gadget/udc/r8a66597-udc.c b/drivers/usb/gadget/udc/r8a66597-udc.c
-index cf92f6aca433..1b21661cf504 100644
---- a/drivers/usb/gadget/udc/r8a66597-udc.c
-+++ b/drivers/usb/gadget/udc/r8a66597-udc.c
-@@ -1253,7 +1253,7 @@ static void set_feature(struct r8a66597 *r8a66597, struct usb_ctrlrequest *ctrl)
- 			do {
- 				tmp = r8a66597_read(r8a66597, INTSTS0) & CTSQ;
- 				udelay(1);
--			} while (tmp != CS_IDST || timeout-- > 0);
-+			} while (tmp != CS_IDST && timeout-- > 0);
- 
- 			if (tmp == CS_IDST)
- 				r8a66597_bset(r8a66597,
-diff --git a/drivers/usb/musb/tusb6010.c b/drivers/usb/musb/tusb6010.c
-index 4eb640c54f2c..7d7cb1c5ec80 100644
---- a/drivers/usb/musb/tusb6010.c
-+++ b/drivers/usb/musb/tusb6010.c
-@@ -193,6 +193,7 @@ tusb_fifo_write_unaligned(void __iomem *fifo, const u8 *buf, u16 len)
- 	}
- 	if (len > 0) {
- 		/* Write the rest 1 - 3 bytes to FIFO */
-+		val = 0;
- 		memcpy(&val, buf, len);
- 		musb_writel(fifo, 0, val);
- 	}
-diff --git a/drivers/usb/serial/cp210x.c b/drivers/usb/serial/cp210x.c
-index dd34ea3ef14e..6f00b11969c8 100644
---- a/drivers/usb/serial/cp210x.c
-+++ b/drivers/usb/serial/cp210x.c
-@@ -237,6 +237,7 @@ static const struct usb_device_id id_table[] = {
- 	{ USB_DEVICE(0x1FB9, 0x0602) }, /* Lake Shore Model 648 Magnet Power Supply */
- 	{ USB_DEVICE(0x1FB9, 0x0700) }, /* Lake Shore Model 737 VSM Controller */
- 	{ USB_DEVICE(0x1FB9, 0x0701) }, /* Lake Shore Model 776 Hall Matrix */
-+	{ USB_DEVICE(0x2184, 0x0030) }, /* GW Instek GDM-834x Digital Multimeter */
- 	{ USB_DEVICE(0x2626, 0xEA60) }, /* Aruba Networks 7xxx USB Serial Console */
- 	{ USB_DEVICE(0x3195, 0xF190) }, /* Link Instruments MSO-19 */
- 	{ USB_DEVICE(0x3195, 0xF280) }, /* Link Instruments MSO-28 */
-diff --git a/drivers/usb/serial/mos7840.c b/drivers/usb/serial/mos7840.c
-index d30d7f585815..4480ef3d6fd2 100644
---- a/drivers/usb/serial/mos7840.c
-+++ b/drivers/usb/serial/mos7840.c
-@@ -126,7 +126,6 @@
- #define BANDB_DEVICE_ID_USOPTL4_2P       0xBC02
- #define BANDB_DEVICE_ID_USOPTL4_4        0xAC44
- #define BANDB_DEVICE_ID_USOPTL4_4P       0xBC03
--#define BANDB_DEVICE_ID_USOPTL2_4        0xAC24
- 
- /* This driver also supports
-  * ATEN UC2324 device using Moschip MCS7840
-@@ -207,7 +206,6 @@ static const struct usb_device_id id_table[] = {
- 	{USB_DEVICE(USB_VENDOR_ID_BANDB, BANDB_DEVICE_ID_USOPTL4_2P)},
- 	{USB_DEVICE(USB_VENDOR_ID_BANDB, BANDB_DEVICE_ID_USOPTL4_4)},
- 	{USB_DEVICE(USB_VENDOR_ID_BANDB, BANDB_DEVICE_ID_USOPTL4_4P)},
--	{USB_DEVICE(USB_VENDOR_ID_BANDB, BANDB_DEVICE_ID_USOPTL2_4)},
- 	{USB_DEVICE(USB_VENDOR_ID_ATENINTL, ATENINTL_DEVICE_ID_UC2324)},
- 	{USB_DEVICE(USB_VENDOR_ID_ATENINTL, ATENINTL_DEVICE_ID_UC2322)},
- 	{USB_DEVICE(USB_VENDOR_ID_MOXA, MOXA_DEVICE_ID_2210)},
-diff --git a/drivers/usb/serial/option.c b/drivers/usb/serial/option.c
-index 655221780951..dabf7f2d8eb1 100644
---- a/drivers/usb/serial/option.c
-+++ b/drivers/usb/serial/option.c
-@@ -1208,6 +1208,14 @@ static const struct usb_device_id option_ids[] = {
- 	  .driver_info = NCTRL(0) | RSVD(1) },
- 	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x1056, 0xff),	/* Telit FD980 */
- 	  .driver_info = NCTRL(2) | RSVD(3) },
-+	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x1060, 0xff),	/* Telit LN920 (rmnet) */
-+	  .driver_info = NCTRL(0) | RSVD(1) | RSVD(2) },
-+	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x1061, 0xff),	/* Telit LN920 (MBIM) */
-+	  .driver_info = NCTRL(0) | RSVD(1) },
-+	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x1062, 0xff),	/* Telit LN920 (RNDIS) */
-+	  .driver_info = NCTRL(2) | RSVD(3) },
-+	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x1063, 0xff),	/* Telit LN920 (ECM) */
-+	  .driver_info = NCTRL(0) | RSVD(1) },
- 	{ USB_DEVICE(TELIT_VENDOR_ID, TELIT_PRODUCT_ME910),
- 	  .driver_info = NCTRL(0) | RSVD(1) | RSVD(3) },
- 	{ USB_DEVICE(TELIT_VENDOR_ID, TELIT_PRODUCT_ME910_DUAL_MODEM),
-@@ -1653,7 +1661,6 @@ static const struct usb_device_id option_ids[] = {
- 	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x0060, 0xff, 0xff, 0xff) },
- 	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x0070, 0xff, 0xff, 0xff) },
- 	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x0073, 0xff, 0xff, 0xff) },
--	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x0094, 0xff, 0xff, 0xff) },
- 	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x0130, 0xff, 0xff, 0xff),
- 	  .driver_info = RSVD(1) },
- 	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x0133, 0xff, 0xff, 0xff),
-@@ -2070,6 +2077,8 @@ static const struct usb_device_id option_ids[] = {
- 	  .driver_info = RSVD(0) | RSVD(1) | RSVD(6) },
- 	{ USB_DEVICE(0x0489, 0xe0b5),						/* Foxconn T77W968 ESIM */
- 	  .driver_info = RSVD(0) | RSVD(1) | RSVD(6) },
-+	{ USB_DEVICE_INTERFACE_CLASS(0x0489, 0xe0db, 0xff),			/* Foxconn T99W265 MBIM */
-+	  .driver_info = RSVD(3) },
- 	{ USB_DEVICE(0x1508, 0x1001),						/* Fibocom NL668 (IOT version) */
- 	  .driver_info = RSVD(4) | RSVD(5) | RSVD(6) },
- 	{ USB_DEVICE(0x2cb7, 0x0104),						/* Fibocom NL678 series */
-diff --git a/drivers/usb/storage/unusual_devs.h b/drivers/usb/storage/unusual_devs.h
-index a34818357caa..683830dd383f 100644
---- a/drivers/usb/storage/unusual_devs.h
-+++ b/drivers/usb/storage/unusual_devs.h
-@@ -435,9 +435,16 @@ UNUSUAL_DEV(  0x04cb, 0x0100, 0x0000, 0x2210,
- 		USB_SC_UFI, USB_PR_DEVICE, NULL, US_FL_FIX_INQUIRY | US_FL_SINGLE_LUN),
- 
- /*
-- * Reported by Ondrej Zary <linux@rainbow-software.org>
-+ * Reported by Ondrej Zary <linux@zary.sk>
-  * The device reports one sector more and breaks when that sector is accessed
-+ * Firmwares older than 2.6c (the latest one and the only that claims Linux
-+ * support) have also broken tag handling
-  */
-+UNUSUAL_DEV(  0x04ce, 0x0002, 0x0000, 0x026b,
-+		"ScanLogic",
-+		"SL11R-IDE",
-+		USB_SC_DEVICE, USB_PR_DEVICE, NULL,
-+		US_FL_FIX_CAPACITY | US_FL_BULK_IGNORE_TAG),
- UNUSUAL_DEV(  0x04ce, 0x0002, 0x026c, 0x026c,
- 		"ScanLogic",
- 		"SL11R-IDE",
-diff --git a/drivers/usb/storage/unusual_uas.h b/drivers/usb/storage/unusual_uas.h
-index 6f57fb0614fe..1effff26a2a6 100644
---- a/drivers/usb/storage/unusual_uas.h
-+++ b/drivers/usb/storage/unusual_uas.h
-@@ -63,7 +63,7 @@ UNUSUAL_DEV(0x059f, 0x1061, 0x0000, 0x9999,
- 		"LaCie",
- 		"Rugged USB3-FW",
- 		USB_SC_DEVICE, USB_PR_DEVICE, NULL,
--		US_FL_IGNORE_UAS),
-+		US_FL_NO_REPORT_OPCODES | US_FL_NO_SAME),
- 
- /*
-  * Apricorn USB3 dongle sometimes returns "USBSUSBSUSBS" in response to SCSI
-diff --git a/drivers/xen/balloon.c b/drivers/xen/balloon.c
-index a8e0836dffd4..a697c64a6506 100644
---- a/drivers/xen/balloon.c
-+++ b/drivers/xen/balloon.c
-@@ -43,6 +43,8 @@
- #include <linux/sched.h>
- #include <linux/cred.h>
- #include <linux/errno.h>
-+#include <linux/freezer.h>
-+#include <linux/kthread.h>
- #include <linux/mm.h>
- #include <linux/bootmem.h>
- #include <linux/pagemap.h>
-@@ -119,7 +121,7 @@ static struct ctl_table xen_root[] = {
- #define EXTENT_ORDER (fls(XEN_PFN_PER_PAGE) - 1)
- 
- /*
-- * balloon_process() state:
-+ * balloon_thread() state:
-  *
-  * BP_DONE: done or nothing to do,
-  * BP_WAIT: wait to be rescheduled,
-@@ -134,6 +136,8 @@ enum bp_state {
- 	BP_ECANCELED
- };
- 
-+/* Main waiting point for xen-balloon thread. */
-+static DECLARE_WAIT_QUEUE_HEAD(balloon_thread_wq);
- 
- static DEFINE_MUTEX(balloon_mutex);
- 
-@@ -148,10 +152,6 @@ static xen_pfn_t frame_list[PAGE_SIZE / sizeof(xen_pfn_t)];
- static LIST_HEAD(ballooned_pages);
- static DECLARE_WAIT_QUEUE_HEAD(balloon_wq);
- 
--/* Main work function, always executed in process context. */
--static void balloon_process(struct work_struct *work);
--static DECLARE_DELAYED_WORK(balloon_worker, balloon_process);
--
- /* When ballooning out (allocating memory to return to Xen) we don't really
-    want the kernel to try too hard since that can trigger the oom killer. */
- #define GFP_BALLOON \
-@@ -389,7 +389,7 @@ static void xen_online_page(struct page *page)
- static int xen_memory_notifier(struct notifier_block *nb, unsigned long val, void *v)
- {
- 	if (val == MEM_ONLINE)
--		schedule_delayed_work(&balloon_worker, 0);
-+		wake_up(&balloon_thread_wq);
- 
- 	return NOTIFY_OK;
- }
-@@ -571,18 +571,43 @@ static enum bp_state decrease_reservation(unsigned long nr_pages, gfp_t gfp)
- }
- 
- /*
-- * As this is a work item it is guaranteed to run as a single instance only.
-+ * Stop waiting if either state is not BP_EAGAIN and ballooning action is
-+ * needed, or if the credit has changed while state is BP_EAGAIN.
-+ */
-+static bool balloon_thread_cond(enum bp_state state, long credit)
-+{
-+	if (state != BP_EAGAIN)
-+		credit = 0;
-+
-+	return current_credit() != credit || kthread_should_stop();
-+}
-+
-+/*
-+ * As this is a kthread it is guaranteed to run as a single instance only.
-  * We may of course race updates of the target counts (which are protected
-  * by the balloon lock), or with changes to the Xen hard limit, but we will
-  * recover from these in time.
-  */
--static void balloon_process(struct work_struct *work)
-+static int balloon_thread(void *unused)
- {
- 	enum bp_state state = BP_DONE;
- 	long credit;
-+	unsigned long timeout;
-+
-+	set_freezable();
-+	for (;;) {
-+		if (state == BP_EAGAIN)
-+			timeout = balloon_stats.schedule_delay * HZ;
-+		else
-+			timeout = 3600 * HZ;
-+		credit = current_credit();
- 
-+		wait_event_freezable_timeout(balloon_thread_wq,
-+			balloon_thread_cond(state, credit), timeout);
-+
-+		if (kthread_should_stop())
-+			return 0;
- 
--	do {
- 		mutex_lock(&balloon_mutex);
- 
- 		credit = current_credit();
-@@ -609,12 +634,7 @@ static void balloon_process(struct work_struct *work)
- 		mutex_unlock(&balloon_mutex);
- 
- 		cond_resched();
--
--	} while (credit && state == BP_DONE);
--
--	/* Schedule more work if there is some still to be done. */
--	if (state == BP_EAGAIN)
--		schedule_delayed_work(&balloon_worker, balloon_stats.schedule_delay * HZ);
-+	}
- }
- 
- /* Resets the Xen limit, sets new target, and kicks off processing. */
-@@ -622,7 +642,7 @@ void balloon_set_new_target(unsigned long target)
- {
- 	/* No need for lock. Not read-modify-write updates. */
- 	balloon_stats.target_pages = target;
--	schedule_delayed_work(&balloon_worker, 0);
-+	wake_up(&balloon_thread_wq);
- }
- EXPORT_SYMBOL_GPL(balloon_set_new_target);
- 
-@@ -727,7 +747,7 @@ void free_xenballooned_pages(int nr_pages, struct page **pages)
- 
- 	/* The balloon may be too large now. Shrink it if needed. */
- 	if (current_credit())
--		schedule_delayed_work(&balloon_worker, 0);
-+		wake_up(&balloon_thread_wq);
- 
- 	mutex_unlock(&balloon_mutex);
- }
-@@ -761,6 +781,8 @@ static void __init balloon_add_region(unsigned long start_pfn,
- 
- static int __init balloon_init(void)
- {
-+	struct task_struct *task;
-+
- 	if (!xen_domain())
- 		return -ENODEV;
- 
-@@ -804,6 +826,12 @@ static int __init balloon_init(void)
- 	}
- #endif
- 
-+	task = kthread_run(balloon_thread, NULL, "xen-balloon");
-+	if (IS_ERR(task)) {
-+		pr_err("xen-balloon thread could not be started, ballooning will not work!\n");
-+		return PTR_ERR(task);
-+	}
-+
- 	/* Init the xen-balloon driver. */
- 	xen_balloon_init();
- 
-diff --git a/fs/cifs/connect.c b/fs/cifs/connect.c
-index 73be08ea135f..bc49cd04b725 100644
---- a/fs/cifs/connect.c
-+++ b/fs/cifs/connect.c
-@@ -3079,9 +3079,10 @@ cifs_match_super(struct super_block *sb, void *data)
- 	spin_lock(&cifs_tcp_ses_lock);
- 	cifs_sb = CIFS_SB(sb);
- 	tlink = cifs_get_tlink(cifs_sb_master_tlink(cifs_sb));
--	if (IS_ERR(tlink)) {
-+	if (tlink == NULL) {
-+		/* can not match superblock if tlink were ever null */
- 		spin_unlock(&cifs_tcp_ses_lock);
--		return rc;
-+		return 0;
- 	}
- 	tcon = tlink_tcon(tlink);
- 	ses = tcon->ses;
-diff --git a/fs/ext4/dir.c b/fs/ext4/dir.c
-index 90beca85c416..103bb9f1dc86 100644
---- a/fs/ext4/dir.c
-+++ b/fs/ext4/dir.c
-@@ -532,7 +532,7 @@ static int ext4_dx_readdir(struct file *file, struct dir_context *ctx)
- 	struct dir_private_info *info = file->private_data;
- 	struct inode *inode = file_inode(file);
- 	struct fname *fname;
--	int	ret;
-+	int ret = 0;
- 
- 	if (!info) {
- 		info = ext4_htree_create_dir_info(file, ctx->pos);
-@@ -580,7 +580,7 @@ static int ext4_dx_readdir(struct file *file, struct dir_context *ctx)
- 						   info->curr_minor_hash,
- 						   &info->next_hash);
- 			if (ret < 0)
--				return ret;
-+				goto finished;
- 			if (ret == 0) {
- 				ctx->pos = ext4_get_htree_eof(file);
- 				break;
-@@ -611,7 +611,7 @@ static int ext4_dx_readdir(struct file *file, struct dir_context *ctx)
- 	}
- finished:
- 	info->last_pos = ctx->pos;
--	return 0;
-+	return ret < 0 ? ret : 0;
- }
- 
- static int ext4_dir_open(struct inode * inode, struct file * filp)
-diff --git a/fs/ocfs2/dlmglue.c b/fs/ocfs2/dlmglue.c
-index e961015fb484..3aff7dd3fd1a 100644
---- a/fs/ocfs2/dlmglue.c
-+++ b/fs/ocfs2/dlmglue.c
-@@ -3705,7 +3705,7 @@ static int ocfs2_data_convert_worker(struct ocfs2_lock_res *lockres,
- 		oi = OCFS2_I(inode);
- 		oi->ip_dir_lock_gen++;
- 		mlog(0, "generation: %u\n", oi->ip_dir_lock_gen);
--		goto out;
-+		goto out_forget;
- 	}
- 
- 	if (!S_ISREG(inode->i_mode))
-@@ -3736,6 +3736,7 @@ static int ocfs2_data_convert_worker(struct ocfs2_lock_res *lockres,
- 		filemap_fdatawait(mapping);
- 	}
- 
-+out_forget:
- 	forget_all_cached_acls(inode);
- 
- out:
-diff --git a/fs/qnx4/dir.c b/fs/qnx4/dir.c
-index a6ee23aadd28..66645a5a35f3 100644
---- a/fs/qnx4/dir.c
-+++ b/fs/qnx4/dir.c
-@@ -15,13 +15,48 @@
- #include <linux/buffer_head.h>
- #include "qnx4.h"
- 
-+/*
-+ * A qnx4 directory entry is an inode entry or link info
-+ * depending on the status field in the last byte. The
-+ * first byte is where the name start either way, and a
-+ * zero means it's empty.
-+ *
-+ * Also, due to a bug in gcc, we don't want to use the
-+ * real (differently sized) name arrays in the inode and
-+ * link entries, but always the 'de_name[]' one in the
-+ * fake struct entry.
-+ *
-+ * See
-+ *
-+ *   https://gcc.gnu.org/bugzilla/show_bug.cgi?id=99578#c6
-+ *
-+ * for details, but basically gcc will take the size of the
-+ * 'name' array from one of the used union entries randomly.
-+ *
-+ * This use of 'de_name[]' (48 bytes) avoids the false positive
-+ * warnings that would happen if gcc decides to use 'inode.di_name'
-+ * (16 bytes) even when the pointer and size were to come from
-+ * 'link.dl_name' (48 bytes).
-+ *
-+ * In all cases the actual name pointer itself is the same, it's
-+ * only the gcc internal 'what is the size of this field' logic
-+ * that can get confused.
-+ */
-+union qnx4_directory_entry {
-+	struct {
-+		const char de_name[48];
-+		u8 de_pad[15];
-+		u8 de_status;
-+	};
-+	struct qnx4_inode_entry inode;
-+	struct qnx4_link_info link;
-+};
-+
- static int qnx4_readdir(struct file *file, struct dir_context *ctx)
- {
- 	struct inode *inode = file_inode(file);
- 	unsigned int offset;
- 	struct buffer_head *bh;
--	struct qnx4_inode_entry *de;
--	struct qnx4_link_info *le;
- 	unsigned long blknum;
- 	int ix, ino;
- 	int size;
-@@ -38,27 +73,27 @@ static int qnx4_readdir(struct file *file, struct dir_context *ctx)
- 		}
- 		ix = (ctx->pos >> QNX4_DIR_ENTRY_SIZE_BITS) % QNX4_INODES_PER_BLOCK;
- 		for (; ix < QNX4_INODES_PER_BLOCK; ix++, ctx->pos += QNX4_DIR_ENTRY_SIZE) {
-+			union qnx4_directory_entry *de;
-+
- 			offset = ix * QNX4_DIR_ENTRY_SIZE;
--			de = (struct qnx4_inode_entry *) (bh->b_data + offset);
--			if (!de->di_fname[0])
-+			de = (union qnx4_directory_entry *) (bh->b_data + offset);
-+
-+			if (!de->de_name[0])
- 				continue;
--			if (!(de->di_status & (QNX4_FILE_USED|QNX4_FILE_LINK)))
-+			if (!(de->de_status & (QNX4_FILE_USED|QNX4_FILE_LINK)))
- 				continue;
--			if (!(de->di_status & QNX4_FILE_LINK))
--				size = QNX4_SHORT_NAME_MAX;
--			else
--				size = QNX4_NAME_MAX;
--			size = strnlen(de->di_fname, size);
--			QNX4DEBUG((KERN_INFO "qnx4_readdir:%.*s\n", size, de->di_fname));
--			if (!(de->di_status & QNX4_FILE_LINK))
-+			if (!(de->de_status & QNX4_FILE_LINK)) {
-+				size = sizeof(de->inode.di_fname);
- 				ino = blknum * QNX4_INODES_PER_BLOCK + ix - 1;
--			else {
--				le  = (struct qnx4_link_info*)de;
--				ino = ( le32_to_cpu(le->dl_inode_blk) - 1 ) *
-+			} else {
-+				size = sizeof(de->link.dl_fname);
-+				ino = ( le32_to_cpu(de->link.dl_inode_blk) - 1 ) *
- 					QNX4_INODES_PER_BLOCK +
--					le->dl_inode_ndx;
-+					de->link.dl_inode_ndx;
- 			}
--			if (!dir_emit(ctx, de->di_fname, size, ino, DT_UNKNOWN)) {
-+			size = strnlen(de->de_name, size);
-+			QNX4DEBUG((KERN_INFO "qnx4_readdir:%.*s\n", size, name));
-+			if (!dir_emit(ctx, de->de_name, size, ino, DT_UNKNOWN)) {
- 				brelse(bh);
- 				return 0;
- 			}
-diff --git a/include/linux/compiler.h b/include/linux/compiler.h
-index 3b6e6522e0ec..d29b68379223 100644
---- a/include/linux/compiler.h
-+++ b/include/linux/compiler.h
-@@ -152,6 +152,8 @@ void ftrace_likely_update(struct ftrace_likely_data *f, int val,
-     (typeof(ptr)) (__ptr + (off)); })
- #endif
- 
-+#define absolute_pointer(val)	RELOC_HIDE((void *)(val), 0)
-+
- #ifndef OPTIMIZER_HIDE_VAR
- #define OPTIMIZER_HIDE_VAR(var) barrier()
- #endif
-diff --git a/include/linux/cred.h b/include/linux/cred.h
-index 2a0d4674294e..493516e97e45 100644
---- a/include/linux/cred.h
-+++ b/include/linux/cred.h
-@@ -235,7 +235,7 @@ static inline struct cred *get_new_cred(struct cred *cred)
-  * @cred: The credentials to reference
-  *
-  * Get a reference on the specified set of credentials.  The caller must
-- * release the reference.
-+ * release the reference.  If %NULL is passed, it is returned with no action.
-  *
-  * This is used to deal with a committed set of credentials.  Although the
-  * pointer is const, this will temporarily discard the const and increment the
-@@ -246,6 +246,8 @@ static inline struct cred *get_new_cred(struct cred *cred)
- static inline const struct cred *get_cred(const struct cred *cred)
- {
- 	struct cred *nonconst_cred = (struct cred *) cred;
-+	if (!cred)
-+		return cred;
- 	validate_creds(cred);
- 	nonconst_cred->non_rcu = 0;
- 	return get_new_cred(nonconst_cred);
-@@ -256,7 +258,7 @@ static inline const struct cred *get_cred(const struct cred *cred)
-  * @cred: The credentials to release
-  *
-  * Release a reference to a set of credentials, deleting them when the last ref
-- * is released.
-+ * is released.  If %NULL is passed, nothing is done.
-  *
-  * This takes a const pointer to a set of credentials because the credentials
-  * on task_struct are attached by const pointers to prevent accidental
-@@ -266,9 +268,11 @@ static inline void put_cred(const struct cred *_cred)
- {
- 	struct cred *cred = (struct cred *) _cred;
- 
--	validate_creds(cred);
--	if (atomic_dec_and_test(&(cred)->usage))
--		__put_cred(cred);
-+	if (cred) {
-+		validate_creds(cred);
-+		if (atomic_dec_and_test(&(cred)->usage))
-+			__put_cred(cred);
-+	}
- }
- 
- /**
-diff --git a/include/net/sock.h b/include/net/sock.h
-index 70fe85bee4e5..029df5cdeaf1 100644
---- a/include/net/sock.h
-+++ b/include/net/sock.h
-@@ -454,8 +454,10 @@ struct sock {
- 	u32			sk_ack_backlog;
- 	u32			sk_max_ack_backlog;
- 	kuid_t			sk_uid;
-+	spinlock_t		sk_peer_lock;
- 	struct pid		*sk_peer_pid;
- 	const struct cred	*sk_peer_cred;
-+
- 	long			sk_rcvtimeo;
- 	ktime_t			sk_stamp;
- #if BITS_PER_LONG==32
-diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
-index f8c45d30ec6d..90a998638bdd 100644
---- a/kernel/sched/cpufreq_schedutil.c
-+++ b/kernel/sched/cpufreq_schedutil.c
-@@ -441,9 +441,17 @@ static struct attribute *sugov_attributes[] = {
- 	NULL
- };
- 
-+static void sugov_tunables_free(struct kobject *kobj)
-+{
-+	struct gov_attr_set *attr_set = container_of(kobj, struct gov_attr_set, kobj);
-+
-+	kfree(to_sugov_tunables(attr_set));
-+}
-+
- static struct kobj_type sugov_tunables_ktype = {
- 	.default_attrs = sugov_attributes,
- 	.sysfs_ops = &governor_sysfs_ops,
-+	.release = &sugov_tunables_free,
- };
- 
- /********************** cpufreq governor interface *********************/
-@@ -534,12 +542,10 @@ static struct sugov_tunables *sugov_tunables_alloc(struct sugov_policy *sg_polic
- 	return tunables;
- }
- 
--static void sugov_tunables_free(struct sugov_tunables *tunables)
-+static void sugov_clear_global_tunables(void)
- {
- 	if (!have_governor_per_policy())
- 		global_tunables = NULL;
--
--	kfree(tunables);
- }
- 
- static int sugov_init(struct cpufreq_policy *policy)
-@@ -602,7 +608,7 @@ static int sugov_init(struct cpufreq_policy *policy)
- fail:
- 	kobject_put(&tunables->attr_set.kobj);
- 	policy->governor_data = NULL;
--	sugov_tunables_free(tunables);
-+	sugov_clear_global_tunables();
- 
- stop_kthread:
- 	sugov_kthread_stop(sg_policy);
-@@ -629,7 +635,7 @@ static void sugov_exit(struct cpufreq_policy *policy)
- 	count = gov_attr_set_put(&tunables->attr_set, &sg_policy->tunables_hook);
- 	policy->governor_data = NULL;
- 	if (!count)
--		sugov_tunables_free(tunables);
-+		sugov_clear_global_tunables();
- 
- 	mutex_unlock(&global_tunables_lock);
- 
-diff --git a/kernel/trace/blktrace.c b/kernel/trace/blktrace.c
-index b06011b22185..0b22bf622397 100644
---- a/kernel/trace/blktrace.c
-+++ b/kernel/trace/blktrace.c
-@@ -1679,6 +1679,14 @@ static int blk_trace_remove_queue(struct request_queue *q)
- 	if (bt == NULL)
- 		return -EINVAL;
- 
-+	if (bt->trace_state == Blktrace_running) {
-+		bt->trace_state = Blktrace_stopped;
-+		spin_lock_irq(&running_trace_lock);
-+		list_del_init(&bt->running_list);
-+		spin_unlock_irq(&running_trace_lock);
-+		relay_flush(bt->rchan);
-+	}
-+
- 	put_probe_ref();
- 	synchronize_rcu();
- 	blk_trace_free(bt);
-diff --git a/net/core/sock.c b/net/core/sock.c
-index 699bd3052c61..427024597204 100644
---- a/net/core/sock.c
-+++ b/net/core/sock.c
-@@ -1069,6 +1069,16 @@ int sock_setsockopt(struct socket *sock, int level, int optname,
- }
- EXPORT_SYMBOL(sock_setsockopt);
- 
-+static const struct cred *sk_get_peer_cred(struct sock *sk)
-+{
-+	const struct cred *cred;
-+
-+	spin_lock(&sk->sk_peer_lock);
-+	cred = get_cred(sk->sk_peer_cred);
-+	spin_unlock(&sk->sk_peer_lock);
-+
-+	return cred;
-+}
- 
- static void cred_to_ucred(struct pid *pid, const struct cred *cred,
- 			  struct ucred *ucred)
-@@ -1242,7 +1252,11 @@ int sock_getsockopt(struct socket *sock, int level, int optname,
- 		struct ucred peercred;
- 		if (len > sizeof(peercred))
- 			len = sizeof(peercred);
-+
-+		spin_lock(&sk->sk_peer_lock);
- 		cred_to_ucred(sk->sk_peer_pid, sk->sk_peer_cred, &peercred);
-+		spin_unlock(&sk->sk_peer_lock);
-+
- 		if (copy_to_user(optval, &peercred, len))
- 			return -EFAULT;
- 		goto lenout;
-@@ -1250,20 +1264,23 @@ int sock_getsockopt(struct socket *sock, int level, int optname,
- 
- 	case SO_PEERGROUPS:
- 	{
-+		const struct cred *cred;
- 		int ret, n;
- 
--		if (!sk->sk_peer_cred)
-+		cred = sk_get_peer_cred(sk);
-+		if (!cred)
- 			return -ENODATA;
- 
--		n = sk->sk_peer_cred->group_info->ngroups;
-+		n = cred->group_info->ngroups;
- 		if (len < n * sizeof(gid_t)) {
- 			len = n * sizeof(gid_t);
-+			put_cred(cred);
- 			return put_user(len, optlen) ? -EFAULT : -ERANGE;
- 		}
- 		len = n * sizeof(gid_t);
- 
--		ret = groups_to_user((gid_t __user *)optval,
--				     sk->sk_peer_cred->group_info);
-+		ret = groups_to_user((gid_t __user *)optval, cred->group_info);
-+		put_cred(cred);
- 		if (ret)
- 			return ret;
- 		goto lenout;
-@@ -1574,9 +1591,10 @@ static void __sk_destruct(struct rcu_head *head)
- 		sk->sk_frag.page = NULL;
- 	}
- 
--	if (sk->sk_peer_cred)
--		put_cred(sk->sk_peer_cred);
-+	/* We do not need to acquire sk->sk_peer_lock, we are the last user. */
-+	put_cred(sk->sk_peer_cred);
- 	put_pid(sk->sk_peer_pid);
-+
- 	if (likely(sk->sk_net_refcnt))
- 		put_net(sock_net(sk));
- 	sk_prot_free(sk->sk_prot_creator, sk);
-@@ -2753,6 +2771,8 @@ void sock_init_data(struct socket *sock, struct sock *sk)
- 
- 	sk->sk_peer_pid 	=	NULL;
- 	sk->sk_peer_cred	=	NULL;
-+	spin_lock_init(&sk->sk_peer_lock);
-+
- 	sk->sk_write_pending	=	0;
- 	sk->sk_rcvlowat		=	1;
- 	sk->sk_rcvtimeo		=	MAX_SCHEDULE_TIMEOUT;
-diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
-index cf5c4d2f68c1..4faeb698c33c 100644
---- a/net/ipv4/udp.c
-+++ b/net/ipv4/udp.c
-@@ -882,7 +882,7 @@ int udp_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
- 	__be16 dport;
- 	u8  tos;
- 	int err, is_udplite = IS_UDPLITE(sk);
--	int corkreq = up->corkflag || msg->msg_flags&MSG_MORE;
-+	int corkreq = READ_ONCE(up->corkflag) || msg->msg_flags&MSG_MORE;
- 	int (*getfrag)(void *, char *, int, int, int, struct sk_buff *);
- 	struct sk_buff *skb;
- 	struct ip_options_data opt_copy;
-@@ -1165,7 +1165,7 @@ int udp_sendpage(struct sock *sk, struct page *page, int offset,
- 	}
- 
- 	up->len += size;
--	if (!(up->corkflag || (flags&MSG_MORE)))
-+	if (!(READ_ONCE(up->corkflag) || (flags&MSG_MORE)))
- 		ret = udp_push_pending_frames(sk);
- 	if (!ret)
- 		ret = size;
-@@ -2373,9 +2373,9 @@ int udp_lib_setsockopt(struct sock *sk, int level, int optname,
- 	switch (optname) {
- 	case UDP_CORK:
- 		if (val != 0) {
--			up->corkflag = 1;
-+			WRITE_ONCE(up->corkflag, 1);
- 		} else {
--			up->corkflag = 0;
-+			WRITE_ONCE(up->corkflag, 0);
- 			lock_sock(sk);
- 			push_pending_frames(sk);
- 			release_sock(sk);
-@@ -2482,7 +2482,7 @@ int udp_lib_getsockopt(struct sock *sk, int level, int optname,
- 
- 	switch (optname) {
- 	case UDP_CORK:
--		val = up->corkflag;
-+		val = READ_ONCE(up->corkflag);
- 		break;
- 
- 	case UDP_ENCAP:
-diff --git a/net/ipv6/udp.c b/net/ipv6/udp.c
-index d9d25b9c07ae..3411b36b8a50 100644
---- a/net/ipv6/udp.c
-+++ b/net/ipv6/udp.c
-@@ -1135,7 +1135,7 @@ int udpv6_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
- 	struct ipcm6_cookie ipc6;
- 	int addr_len = msg->msg_namelen;
- 	int ulen = len;
--	int corkreq = up->corkflag || msg->msg_flags&MSG_MORE;
-+	int corkreq = READ_ONCE(up->corkflag) || msg->msg_flags&MSG_MORE;
- 	int err;
- 	int connected = 0;
- 	int is_udplite = IS_UDPLITE(sk);
-diff --git a/net/mac80211/tx.c b/net/mac80211/tx.c
-index e7b63ba8c184..7e62a55a03de 100644
---- a/net/mac80211/tx.c
-+++ b/net/mac80211/tx.c
-@@ -2068,7 +2068,11 @@ static bool ieee80211_parse_tx_radiotap(struct ieee80211_local *local,
- 			}
- 
- 			vht_mcs = iterator.this_arg[4] >> 4;
-+			if (vht_mcs > 11)
-+				vht_mcs = 0;
- 			vht_nss = iterator.this_arg[4] & 0xF;
-+			if (!vht_nss || vht_nss > 8)
-+				vht_nss = 1;
- 			break;
- 
- 		/*
-@@ -3202,6 +3206,14 @@ static bool ieee80211_amsdu_aggregate(struct ieee80211_sub_if_data *sdata,
- 	if (!ieee80211_amsdu_prepare_head(sdata, fast_tx, head))
- 		goto out;
- 
-+	/* If n == 2, the "while (*frag_tail)" loop above didn't execute
-+	 * and  frag_tail should be &skb_shinfo(head)->frag_list.
-+	 * However, ieee80211_amsdu_prepare_head() can reallocate it.
-+	 * Reload frag_tail to have it pointing to the correct place.
-+	 */
-+	if (n == 2)
-+		frag_tail = &skb_shinfo(head)->frag_list;
-+
- 	/*
- 	 * Pad out the previous subframe to a multiple of 4 by adding the
- 	 * padding to the next one, that's being added. Note that head->len
-diff --git a/net/mac80211/wpa.c b/net/mac80211/wpa.c
-index 09b4f913e20b..c90278e40656 100644
---- a/net/mac80211/wpa.c
-+++ b/net/mac80211/wpa.c
-@@ -514,6 +514,9 @@ ieee80211_crypto_ccmp_decrypt(struct ieee80211_rx_data *rx,
- 			return RX_DROP_UNUSABLE;
- 	}
- 
-+	/* reload hdr - skb might have been reallocated */
-+	hdr = (void *)rx->skb->data;
-+
- 	data_len = skb->len - hdrlen - IEEE80211_CCMP_HDR_LEN - mic_len;
- 	if (!rx->sta || data_len < 0)
- 		return RX_DROP_UNUSABLE;
-@@ -744,6 +747,9 @@ ieee80211_crypto_gcmp_decrypt(struct ieee80211_rx_data *rx)
- 			return RX_DROP_UNUSABLE;
- 	}
- 
-+	/* reload hdr - skb might have been reallocated */
-+	hdr = (void *)rx->skb->data;
-+
- 	data_len = skb->len - hdrlen - IEEE80211_GCMP_HDR_LEN - mic_len;
- 	if (!rx->sta || data_len < 0)
- 		return RX_DROP_UNUSABLE;
-diff --git a/net/netfilter/ipset/ip_set_hash_gen.h b/net/netfilter/ipset/ip_set_hash_gen.h
-index cd91c30f3e18..098764060a34 100644
---- a/net/netfilter/ipset/ip_set_hash_gen.h
-+++ b/net/netfilter/ipset/ip_set_hash_gen.h
-@@ -104,11 +104,11 @@ htable_size(u8 hbits)
- {
- 	size_t hsize;
- 
--	/* We must fit both into u32 in jhash and size_t */
-+	/* We must fit both into u32 in jhash and INT_MAX in kvmalloc_node() */
- 	if (hbits > 31)
- 		return 0;
- 	hsize = jhash_size(hbits);
--	if ((((size_t)-1) - sizeof(struct htable)) / sizeof(struct hbucket *)
-+	if ((INT_MAX - sizeof(struct htable)) / sizeof(struct hbucket *)
- 	    < hsize)
- 		return 0;
- 
-diff --git a/net/netfilter/ipvs/ip_vs_conn.c b/net/netfilter/ipvs/ip_vs_conn.c
-index 3d2ac71a83ec..620c865c230b 100644
---- a/net/netfilter/ipvs/ip_vs_conn.c
-+++ b/net/netfilter/ipvs/ip_vs_conn.c
-@@ -1406,6 +1406,10 @@ int __init ip_vs_conn_init(void)
- 	int idx;
- 
- 	/* Compute size and mask */
-+	if (ip_vs_conn_tab_bits < 8 || ip_vs_conn_tab_bits > 20) {
-+		pr_info("conn_tab_bits not in [8, 20]. Using default value\n");
-+		ip_vs_conn_tab_bits = CONFIG_IP_VS_TAB_BITS;
-+	}
- 	ip_vs_conn_tab_size = 1 << ip_vs_conn_tab_bits;
- 	ip_vs_conn_tab_mask = ip_vs_conn_tab_size - 1;
- 
-diff --git a/net/sctp/input.c b/net/sctp/input.c
-index 89a24de23086..b20a1fbea8bf 100644
---- a/net/sctp/input.c
-+++ b/net/sctp/input.c
-@@ -679,7 +679,7 @@ static int sctp_rcv_ootb(struct sk_buff *skb)
- 		ch = skb_header_pointer(skb, offset, sizeof(*ch), &_ch);
- 
- 		/* Break out if chunk length is less then minimal. */
--		if (ntohs(ch->length) < sizeof(_ch))
-+		if (!ch || ntohs(ch->length) < sizeof(_ch))
- 			break;
- 
- 		ch_end = offset + SCTP_PAD4(ntohs(ch->length));
-diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
-index f30509ff302e..0e494902fada 100644
---- a/net/unix/af_unix.c
-+++ b/net/unix/af_unix.c
-@@ -595,20 +595,42 @@ static void unix_release_sock(struct sock *sk, int embrion)
- 
- static void init_peercred(struct sock *sk)
- {
--	put_pid(sk->sk_peer_pid);
--	if (sk->sk_peer_cred)
--		put_cred(sk->sk_peer_cred);
-+	const struct cred *old_cred;
-+	struct pid *old_pid;
-+
-+	spin_lock(&sk->sk_peer_lock);
-+	old_pid = sk->sk_peer_pid;
-+	old_cred = sk->sk_peer_cred;
- 	sk->sk_peer_pid  = get_pid(task_tgid(current));
- 	sk->sk_peer_cred = get_current_cred();
-+	spin_unlock(&sk->sk_peer_lock);
-+
-+	put_pid(old_pid);
-+	put_cred(old_cred);
- }
- 
- static void copy_peercred(struct sock *sk, struct sock *peersk)
- {
--	put_pid(sk->sk_peer_pid);
--	if (sk->sk_peer_cred)
--		put_cred(sk->sk_peer_cred);
-+	const struct cred *old_cred;
-+	struct pid *old_pid;
-+
-+	if (sk < peersk) {
-+		spin_lock(&sk->sk_peer_lock);
-+		spin_lock_nested(&peersk->sk_peer_lock, SINGLE_DEPTH_NESTING);
-+	} else {
-+		spin_lock(&peersk->sk_peer_lock);
-+		spin_lock_nested(&sk->sk_peer_lock, SINGLE_DEPTH_NESTING);
-+	}
-+	old_pid = sk->sk_peer_pid;
-+	old_cred = sk->sk_peer_cred;
- 	sk->sk_peer_pid  = get_pid(peersk->sk_peer_pid);
- 	sk->sk_peer_cred = get_cred(peersk->sk_peer_cred);
-+
-+	spin_unlock(&sk->sk_peer_lock);
-+	spin_unlock(&peersk->sk_peer_lock);
-+
-+	put_pid(old_pid);
-+	put_cred(old_cred);
- }
- 
- static int unix_listen(struct socket *sock, int backlog)
+
+--TB36FDmn/VVEgNH/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+Hi Lukas,
+
+I love your patch! Perhaps something to improve:
+
+[auto build test WARNING on linus/master]
+[also build test WARNING on v5.15-rc3 next-20210922]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch]
+
+url:    https://github.com/0day-ci/linux/commits/Lukas-Bulwahn/async_tx-correct-reference-to-ASYNC_TX_ENABLE_CHANNEL_SWITCH/20211006-173543
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 02d5e016800d082058b3d3b7c3ede136cdc6ddcb
+config: riscv-buildonly-randconfig-r002-20211004 (attached as .config)
+compiler: riscv64-linux-gcc (GCC) 11.2.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/0day-ci/linux/commit/feea9903edb75548c8beb73119676b95ca4f08ef
+        git remote add linux-review https://github.com/0day-ci/linux
+        git fetch --no-tags linux-review Lukas-Bulwahn/async_tx-correct-reference-to-ASYNC_TX_ENABLE_CHANNEL_SWITCH/20211006-173543
+        git checkout feea9903edb75548c8beb73119676b95ca4f08ef
+        # save the attached .config to linux build tree
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross ARCH=riscv 
+
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+
+All warnings (new ones prefixed by >>):
+
+>> crypto/async_tx/async_tx.c:43:1: warning: no previous prototype for '__async_tx_find_channel' [-Wmissing-prototypes]
+      43 | __async_tx_find_channel(struct async_submit_ctl *submit,
+         | ^~~~~~~~~~~~~~~~~~~~~~~
+
+
+vim +/__async_tx_find_channel +43 crypto/async_tx/async_tx.c
+
+af1f951eb6ef27 Dan Williams 2009-08-29  35  
+9bc89cd82d6f88 Dan Williams 2007-01-02  36  /**
+47437b2c9a6431 Dan Williams 2008-02-02  37   * __async_tx_find_channel - find a channel to carry out the operation or let
+9bc89cd82d6f88 Dan Williams 2007-01-02  38   *	the transaction execute synchronously
+a08abd8ca890a3 Dan Williams 2009-06-03  39   * @submit: transaction dependency and submission modifiers
+9bc89cd82d6f88 Dan Williams 2007-01-02  40   * @tx_type: transaction type
+9bc89cd82d6f88 Dan Williams 2007-01-02  41   */
+9bc89cd82d6f88 Dan Williams 2007-01-02  42  struct dma_chan *
+a08abd8ca890a3 Dan Williams 2009-06-03 @43  __async_tx_find_channel(struct async_submit_ctl *submit,
+9bc89cd82d6f88 Dan Williams 2007-01-02  44  			enum dma_transaction_type tx_type)
+9bc89cd82d6f88 Dan Williams 2007-01-02  45  {
+a08abd8ca890a3 Dan Williams 2009-06-03  46  	struct dma_async_tx_descriptor *depend_tx = submit->depend_tx;
+a08abd8ca890a3 Dan Williams 2009-06-03  47  
+9bc89cd82d6f88 Dan Williams 2007-01-02  48  	/* see if we can keep the chain on one channel */
+9bc89cd82d6f88 Dan Williams 2007-01-02  49  	if (depend_tx &&
+9bc89cd82d6f88 Dan Williams 2007-01-02  50  	    dma_has_cap(tx_type, depend_tx->chan->device->cap_mask))
+9bc89cd82d6f88 Dan Williams 2007-01-02  51  		return depend_tx->chan;
+729b5d1b8ec72c Dan Williams 2009-03-25  52  	return async_dma_find_channel(tx_type);
+9bc89cd82d6f88 Dan Williams 2007-01-02  53  }
+47437b2c9a6431 Dan Williams 2008-02-02  54  EXPORT_SYMBOL_GPL(__async_tx_find_channel);
+9bc89cd82d6f88 Dan Williams 2007-01-02  55  #endif
+9bc89cd82d6f88 Dan Williams 2007-01-02  56  
+19242d7233df7d Dan Williams 2008-04-17  57  
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
+--TB36FDmn/VVEgNH/
+Content-Type: application/gzip
+Content-Disposition: attachment; filename=".config.gz"
+Content-Transfer-Encoding: base64
+
+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
+nXN8/D8LCUTD4a4BAA==
+
+--TB36FDmn/VVEgNH/--
