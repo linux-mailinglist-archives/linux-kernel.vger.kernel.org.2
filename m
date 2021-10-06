@@ -2,162 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6712423C9E
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 13:23:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1646A423CAC
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 13:23:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238381AbhJFLYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 07:24:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58821 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238330AbhJFLYw (ORCPT
+        id S238485AbhJFLZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 07:25:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50524 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238386AbhJFLZB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 07:24:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633519380;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=C/Zgi1wsYZ/utXyyQF+xCXuqHO4iLDqak0bKLEB9Lv4=;
-        b=XKm49InDVWfSHNa2QwE08s+LPSzZUaL9UVD6tOXS4LEzRRq9CsCvij+UjnHuzWtLvyr1U5
-        QXFBU0Iidb7jkGj/BPUkHBLSmLSAlwbrTH1AVGr5XFM7IekWtg0CxOxos0sn2F5LWTacWL
-        pSCcSGLqKrLT+yh9wChGLPM+9n/3//c=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-223-KUnnCY9SMmO_Xoc2rbVtmw-1; Wed, 06 Oct 2021 07:22:59 -0400
-X-MC-Unique: KUnnCY9SMmO_Xoc2rbVtmw-1
-Received: by mail-ed1-f71.google.com with SMTP id r11-20020aa7cfcb000000b003d4fbd652b9so290620edy.14
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 04:22:59 -0700 (PDT)
+        Wed, 6 Oct 2021 07:25:01 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 555D7C06174E;
+        Wed,  6 Oct 2021 04:23:09 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id u18so7790073wrg.5;
+        Wed, 06 Oct 2021 04:23:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=47s/bZHvgq69ktivg5JJy6fUXMerQl2jUwwg3kpWhpE=;
+        b=g1QA2+UjfP3hztVr1sVD8MWAB6aunYsFT2KalsjBUEvAk3VvWMKn0W9UZ8byMcobWs
+         ao8H4xXe914XRE4bMNt7FAsQXCl8p5gO/uQ9SRBQOC7l92/aQjSrf/BQhlOI19dqUM3j
+         oZwk22G51nlNTL59CVUt1xx/B/x/wFoToPdAxOsNL/BjCUHw69Dw7fn8Ez9uotXGJS4Y
+         XPqVsYnyzzNBsicY0FLxjVEZsMhjuuLR2NtwX3mcxa9Pp2lBZrJW7E5L10aZxVbu2UW4
+         4olTHkGlmzesj+dVnQdLEC5gB4XjV1dwFpjL6FP6ZKIpbcT5lSKSWxR3lj23sgGrxIsO
+         PuZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=C/Zgi1wsYZ/utXyyQF+xCXuqHO4iLDqak0bKLEB9Lv4=;
-        b=vwvGSTncUZTTU935fNtKQrpyH6ijbSRSS9/mHEY7I4eLL/4/U3CNUhbolmJH6uKjn4
-         WK04xdAQL/Ijo7e3v6mLZW+NoQL+ri1EtFMSLwSAAtsc0FHtEPsHnoJWXU8WVx+XjjjU
-         hpXY2I4f/RA+g98kH9WlieNANC+h0351lJSNy28vmIp7Uwt42DoxhOEclA6py40wJmZ2
-         J8mWKam9TKl6tx8V/5pSIWb9cqKGjcZWghhqyzd0qo9JZm0bhdYCzPyGEZZnKuPffGzl
-         xg1y8b122R2iw+5X2V/78X88MmLV6wxEh9T6y3ugXN1QormydE/h1VVp0DXhtDvXEn3n
-         93ug==
-X-Gm-Message-State: AOAM532cyQalNnYKr6cjhL9qjDUOsrdfk48xqLQpOhoNseAut9zR7A11
-        mEP6KbHqwkMvsbrig4wnBFnphFSWo/vjiBiQe9h1QsAuI6bjQOf7BHKzD/tLN7lSB9sWGis84Dl
-        4hUb4Txe+Jr0Q85csokyH1wNl
-X-Received: by 2002:a05:6402:1011:: with SMTP id c17mr33666221edu.144.1633519378097;
-        Wed, 06 Oct 2021 04:22:58 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwqN+hYPbfU4H4kC/Pj0UZUnKoayGEPwFgezwkfiCLimJ/jquxZ6sU+8+Thig10TBLynhNc+A==
-X-Received: by 2002:a05:6402:1011:: with SMTP id c17mr33666198edu.144.1633519377902;
-        Wed, 06 Oct 2021 04:22:57 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
-        by smtp.gmail.com with ESMTPSA id d6sm5211684ejd.116.2021.10.06.04.22.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Oct 2021 04:22:56 -0700 (PDT)
-Message-ID: <3ca1cf75-63d9-942f-e9f0-66ac96357737@redhat.com>
-Date:   Wed, 6 Oct 2021 13:22:55 +0200
+        bh=47s/bZHvgq69ktivg5JJy6fUXMerQl2jUwwg3kpWhpE=;
+        b=VK5iHFkhZDnXIaBRBAFzFVja2WT3JM8LogTyUa3RRbh88LvE+wwuWOwcQQ0/HJXv5L
+         qwfWOiyGQvF5Xd5kyt8EuxXeJecxXtbxi0oOiuJNtciL7kY/QgP4W1uRiFRYLt7zME6U
+         Z9OJmyFhL88pNJ0lZeLAvIPQpobp2ZoshqLHIQJD7W6nidFgdIU3+bfV0Z0SWMfoYVp3
+         ZXgcZhodrkD52AizExOztx7xSmfWcBRswpGbST6rmTsff7mba52/AJd6kStPzwIe2sDu
+         N1VRf8gACZHS/UCAgbXszzpcJqaKwbNkiYyqpWCHE8QkFARMAftPmEWNuY8gruBUQkzf
+         5M4Q==
+X-Gm-Message-State: AOAM531Xs7wNvmQVE/jlTScpYw+RgDXUnVR9AO/zEfg3kSl4z8CU15JA
+        TU+CFJaO9767xN9GGWk83TmQFZcPfq0=
+X-Google-Smtp-Source: ABdhPJxO8m46fxb9zABvCoD+pMl/Q0dgsharY/sFYhpKLR4z8Rul9+G4k+vwxTx1LRFFmTI+0V9YeA==
+X-Received: by 2002:a1c:f310:: with SMTP id q16mr9556452wmq.145.1633519387985;
+        Wed, 06 Oct 2021 04:23:07 -0700 (PDT)
+Received: from localhost.localdomain (252.red-83-54-181.dynamicip.rima-tde.net. [83.54.181.252])
+        by smtp.gmail.com with ESMTPSA id e14sm10801985wrw.33.2021.10.06.04.23.07
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 06 Oct 2021 04:23:07 -0700 (PDT)
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+To:     sboyd@kernel.org
+Cc:     linux-clk@vger.kernel.org, gregkh@linuxfoundation.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org,
+        linux-staging@lists.linux.dev, neil@brown.name,
+        linux-kernel@vger.kernel.org, john@phrozen.org
+Subject: [PATCH v2 0/4] clk: ralink: make system controller a reset provider
+Date:   Wed,  6 Oct 2021 13:23:02 +0200
+Message-Id: <20211006112306.4691-1-sergio.paracuellos@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH MANUALSEL 5.10 2/7] KVM: x86: Handle SRCU initialization
- failure during page track init
-Content-Language: en-US
-To:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Cc:     Haimin Zhang <tcs_kernel@tencent.com>,
-        TCS Robot <tcs_robot@tencent.com>, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, kvm@vger.kernel.org
-References: <20211006111234.264020-1-sashal@kernel.org>
- <20211006111234.264020-2-sashal@kernel.org>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <20211006111234.264020-2-sashal@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/10/21 13:12, Sasha Levin wrote:
-> From: Haimin Zhang <tcs_kernel@tencent.com>
-> 
-> [ Upstream commit eb7511bf9182292ef1df1082d23039e856d1ddfb ]
-> 
-> Check the return of init_srcu_struct(), which can fail due to OOM, when
-> initializing the page track mechanism.  Lack of checking leads to a NULL
-> pointer deref found by a modified syzkaller.
-> 
-> Reported-by: TCS Robot <tcs_robot@tencent.com>
-> Signed-off-by: Haimin Zhang <tcs_kernel@tencent.com>
-> Message-Id: <1630636626-12262-1-git-send-email-tcs_kernel@tencent.com>
-> [Move the call towards the beginning of kvm_arch_init_vm. - Paolo]
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
->   arch/x86/include/asm/kvm_page_track.h | 2 +-
->   arch/x86/kvm/mmu/page_track.c         | 4 ++--
->   arch/x86/kvm/x86.c                    | 7 ++++++-
->   3 files changed, 9 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/kvm_page_track.h b/arch/x86/include/asm/kvm_page_track.h
-> index 87bd6025d91d..6a5f3acf2b33 100644
-> --- a/arch/x86/include/asm/kvm_page_track.h
-> +++ b/arch/x86/include/asm/kvm_page_track.h
-> @@ -46,7 +46,7 @@ struct kvm_page_track_notifier_node {
->   			    struct kvm_page_track_notifier_node *node);
->   };
->   
-> -void kvm_page_track_init(struct kvm *kvm);
-> +int kvm_page_track_init(struct kvm *kvm);
->   void kvm_page_track_cleanup(struct kvm *kvm);
->   
->   void kvm_page_track_free_memslot(struct kvm_memory_slot *slot);
-> diff --git a/arch/x86/kvm/mmu/page_track.c b/arch/x86/kvm/mmu/page_track.c
-> index 8443a675715b..81cf4babbd0b 100644
-> --- a/arch/x86/kvm/mmu/page_track.c
-> +++ b/arch/x86/kvm/mmu/page_track.c
-> @@ -163,13 +163,13 @@ void kvm_page_track_cleanup(struct kvm *kvm)
->   	cleanup_srcu_struct(&head->track_srcu);
->   }
->   
-> -void kvm_page_track_init(struct kvm *kvm)
-> +int kvm_page_track_init(struct kvm *kvm)
->   {
->   	struct kvm_page_track_notifier_head *head;
->   
->   	head = &kvm->arch.track_notifier_head;
-> -	init_srcu_struct(&head->track_srcu);
->   	INIT_HLIST_HEAD(&head->track_notifier_list);
-> +	return init_srcu_struct(&head->track_srcu);
->   }
->   
->   /*
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 75c59ad27e9f..d65da3b5837b 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -10392,9 +10392,15 @@ void kvm_arch_free_vm(struct kvm *kvm)
->   
->   int kvm_arch_init_vm(struct kvm *kvm, unsigned long type)
->   {
-> +	int ret;
-> +
->   	if (type)
->   		return -EINVAL;
->   
-> +	ret = kvm_page_track_init(kvm);
-> +	if (ret)
-> +		return ret;
-> +
->   	INIT_HLIST_HEAD(&kvm->arch.mask_notifier_list);
->   	INIT_LIST_HEAD(&kvm->arch.active_mmu_pages);
->   	INIT_LIST_HEAD(&kvm->arch.zapped_obsolete_pages);
-> @@ -10421,7 +10427,6 @@ int kvm_arch_init_vm(struct kvm *kvm, unsigned long type)
->   	INIT_DELAYED_WORK(&kvm->arch.kvmclock_sync_work, kvmclock_sync_fn);
->   
->   	kvm_hv_init_vm(kvm);
-> -	kvm_page_track_init(kvm);
->   	kvm_mmu_init_vm(kvm);
->   
->   	return kvm_x86_ops.vm_init(kvm);
-> 
+Hi all,
 
-Acked-by: Paolo Bonzini <pbonzini@redhat.com>
+This patch series add minimal change to provide mt7621 resets properly
+defining them in the 'mediatek,mt7621-sysc' node which is the system
+controller of the SoC and is already providing clocks to the rest of
+the world.
+
+There is shared architecture code for all ralink platforms in 'reset.c'
+file located in 'arch/mips/ralink' but the correct thing to do to align
+hardware with software seems to define and add related reset code to the 
+already mainlined clock driver.
+
+After this changes, we can get rid of the useless reset controller node
+in the device tree and use system controller node instead where the property
+'#reset-cells' has been added. Binding documentation for this nodeq has
+been updated with the new property accordly.
+
+This series also provide a bindings include header where all related
+reset bits for the MT7621 SoC are defined.
+
+Also, please take a look to this review [0] to understand better motivation
+for this series.
+
+Thanks in advance for your feedback.
+
+Changes in v2:
+ - Address review comments of Dan Carpenter [1]:
+    + Avoid 'inline' in function definition.
+    + Return proper error codes (-EINVAL) instead of '-1'. 
+    + Make use of 'devm_kzalloc' instead of 'kzalloc'.
+
+Best regards,
+    Sergio Paracuellos
+
+[0]: https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20210926145931.14603-3-sergio.paracuellos@gmail.com/ 
+[1]: https://lkml.org/lkml/2021/10/6/204
+
+Sergio Paracuellos (4):
+  dt-bindings: reset: add dt binding header for Mediatek MT7621 resets
+  dt-bindings: clock: mediatek,mt7621-sysc: add '#reset-cells' property
+  clk: ralink: make system controller node a reset provider
+  staging: mt7621-dts: align resets with binding documentation
+
+ .../bindings/clock/mediatek,mt7621-sysc.yaml  | 12 +++
+ drivers/clk/ralink/clk-mt7621.c               | 79 +++++++++++++++++++
+ drivers/staging/mt7621-dts/mt7621.dtsi        | 27 +++----
+ include/dt-bindings/reset/mt7621-reset.h      | 37 +++++++++
+ 4 files changed, 140 insertions(+), 15 deletions(-)
+ create mode 100644 include/dt-bindings/reset/mt7621-reset.h
+
+-- 
+2.33.0
 
