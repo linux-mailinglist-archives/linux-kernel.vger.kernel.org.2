@@ -2,139 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46F304235D7
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 04:31:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5769F4235D9
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 04:33:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237218AbhJFCdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 22:33:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42916 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229908AbhJFCdC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 22:33:02 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF1BAC061749
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 19:31:10 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id l6so670510plh.9
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 19:31:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6daisZMMl5LDcuFIJtmvVlRgTb+iyI4U81mxJ9yyQBE=;
-        b=GG4UepWZWDqDE51hudG+9ut2mK/3wjl/Gr389Ylmj3ScbOI6MMFOcHB87xOFcH4dje
-         MMlYcviHJGq0IxXr+UaJQCgQ2DQISA7pTt1Mj2gWG1xQeNcxaDUJ16ZflpCOnVmPwj8x
-         AbUWcHMp0vo5+ocyATEFtIYMYNe1X4wjD1TDU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6daisZMMl5LDcuFIJtmvVlRgTb+iyI4U81mxJ9yyQBE=;
-        b=kCfVedSaRKvIrz7+22+8wsfZHS8Twyh1b1MWdyb0cDNTxIUvhXprG/+cGqjeszUgvT
-         JUgsGr9ETa+uY9gFlRMvUNqYRCTiBq2RTkq0JjuODLlxz1TybRQXBMvcmVPtBKpMerHu
-         8bVY3pnMHaGbxvmGIx/rOc+DLD5WsTT7b0npRmEb22xu98pYCz8zGWx+8sAEkl8qNeTw
-         pH7ZFODtdb4Hz0u6v00Ix17szGvotp2DTS9THgwAaYxUAT7jGbLRuRO3+/a4NkscyPYk
-         JLo9BM+3ownEnRtFiwYttOEZlxZG29OLotOwdXm8NyWItJChmOC9sg9gp8rGh3QrEVzw
-         wAvw==
-X-Gm-Message-State: AOAM533S32kh2FIxnVJcvvLwVrV+6WDAMF/uugEJ3PJe1hk5edqxCprX
-        4aBlvoNgRe0CrgdCvQpPXLw0ug==
-X-Google-Smtp-Source: ABdhPJwr4N0demd2IQcSUg5POBP0HTUmNYaj1NnwWHF71aR8I+K9UlSdlfed6CbkEMfCi0XVHFlUlw==
-X-Received: by 2002:a17:902:ed4d:b0:13e:daf1:6a37 with SMTP id y13-20020a170902ed4d00b0013edaf16a37mr8533810plb.18.1633487470417;
-        Tue, 05 Oct 2021 19:31:10 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id s19sm1936208pfh.18.2021.10.05.19.31.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Oct 2021 19:31:10 -0700 (PDT)
-Date:   Tue, 5 Oct 2021 19:31:09 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Alexey Dobriyan <adobriyan@gmail.com>
-Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ELF: fix overflow in total mapping size calculation
-Message-ID: <202110051929.37279B6B4A@keescook>
-References: <YVmd7D0M6G/DcP4O@localhost.localdomain>
+        id S237163AbhJFCfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 22:35:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42520 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229908AbhJFCfE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 22:35:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F2B461152;
+        Wed,  6 Oct 2021 02:33:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633487592;
+        bh=xMrW1ly2Sm6Ajt6rB4kO3MZtmUnPmt5PMPQsyET6Jqc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=pbuoI3kQpqT8tE4qDlLATOC2ne232fDjBSE1iRkh4A8HBKUTt7IxZ+5QJt+F1720P
+         FNiVlv0AKEHsbyV8t8rHuzGTt7W/RqlPCNrONoQFmrCf9E+DmV0Gbhy3HwSnNsiqYr
+         +0CYuyRGSbqMjRc8+vtrxzCHu+oyYUOvQl9pZ2VujmAzIgm+vifCKLnCsk+uxeXdZn
+         U9l/PvhFe07b2YoxoyyBJgrFSYjwXX5NATyejYFGP7GEO/P6j4/jsgs/gmJ6KqConZ
+         J1S7LVRW45zVD+x2WMhdUZ5hRIL/KuDP0GBP4j0tZX0hddajcNAmBpK6s57cxHmoju
+         JauIvqCgJBTlA==
+Date:   Tue, 5 Oct 2021 21:33:10 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Kelvin.Cao@microchip.com
+Cc:     kurt.schwemmer@microsemi.com, bhelgaas@google.com,
+        linux-pci@vger.kernel.org, kelvincao@outlook.com,
+        logang@deltatee.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/5] PCI/switchtec: Error out MRPC execution when no GAS
+ access
+Message-ID: <20211006023310.GA1137022@bhelgaas>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YVmd7D0M6G/DcP4O@localhost.localdomain>
+In-Reply-To: <e7654b51f2a28e033200c6de9c0a2d9c53c646d3.camel@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 03, 2021 at 03:11:24PM +0300, Alexey Dobriyan wrote:
-> Kernel assumes that ELF program headers are ordered by mapping address,
-> but doesn't enforce it. It is possible to make mapping size extremely huge
-> by simply shuffling first and last PT_LOAD segments.
+On Wed, Oct 06, 2021 at 12:37:02AM +0000, Kelvin.Cao@microchip.com wrote:
+> On Tue, 2021-10-05 at 15:11 -0500, Bjorn Helgaas wrote:
+> > On Mon, Oct 04, 2021 at 08:51:06PM +0000, Kelvin.Cao@microchip.com
+> > wrote:
+> > > On Sat, 2021-10-02 at 10:11 -0500, Bjorn Helgaas wrote:
+
+> > > > I *thought* the problem was that the PCIe Memory Read failed
+> > > > and the Root Complex fabricated ~0 data to complete the CPU
+> > > > read.  But now I'm not sure, because it sounds like it might
+> > > > be that the PCIe transaction succeeds, but it reads data that
+> > > > hasn't been updated by the firmware, i.e., it reads 'in
+> > > > progress' because firmware hasn't updated it to 'done'.
+> > > 
+> > > The original message was sort of misleading. After a firmware
+> > > reset, CPU getting ~0 for the PCIe Memory Read doesn't explain
+> > > the hang.  In a MRPC execution (DMA MRPC mode), the MRPC status
+> > > which is located in the host memory, gets initialized by the CPU
+> > > and updated/finalized by the firmware. In the situation of a
+> > > firmware reset, any MRPC initiated afterwards will not get the
+> > > status updated by the firmware per the reason you pointed out
+> > > above (or similar, to my understanding, firmware can no longer
+> > > DMA data to host memory in such cases), therefore the MRPC
+> > > execution will never end.
+> > 
+> > I'm glad this makes sense to you, because it still doesn't to me.
+> > 
+> > check_access() does an MMIO read to something in BAR0.  If that
+> > read returns ~0, it means either the PCIe Memory Read was
+> > successful and the Switchtec device supplied ~0 data (maybe
+> > because firmware has not initialized that part of the BAR) or the
+> > PCIe Memory Read failed and the root complex fabricated the ~0
+> > data.
+> > 
+> > I'd like to know which one is happening so we can clarify the
+> > commit log text about "MRPC command executions hang indefinitely"
+> > and "host wil fail all GAS reads."  It's not clear whether these
+> > are PCIe protocol issues or driver/firmware interaction issues.
 > 
-> As long as PT_LOAD segments do not overlap, it is silly to require
-> sorting by v_addr anyway because mmap() doesn't care.
-> 
-> Don't assume PT_LOAD segments are sorted and calculate min and max
-> addresses correctly.
+> I think it's the latter case, the ~0 data was fabricated by the root
+> complex, as the MMIO read in check_access() always returns ~0 until
+> a reboot or a rescan happens. 
 
-Nice! Yes, this all make sense.
-
-> 
-> Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
-> ---
-> 
->  fs/binfmt_elf.c |   23 +++++++++++------------
->  1 file changed, 11 insertions(+), 12 deletions(-)
-> 
-> --- a/fs/binfmt_elf.c
-> +++ b/fs/binfmt_elf.c
-> @@ -93,7 +93,7 @@ static int elf_core_dump(struct coredump_params *cprm);
->  #define ELF_CORE_EFLAGS	0
->  #endif
->  
-> -#define ELF_PAGESTART(_v) ((_v) & ~(unsigned long)(ELF_MIN_ALIGN-1))
-> +#define ELF_PAGESTART(_v) ((_v) & ~(int)(ELF_MIN_ALIGN-1))
-
-Errr, this I don't like. I assume this is because of the min() use
-below?
-
->  #define ELF_PAGEOFFSET(_v) ((_v) & (ELF_MIN_ALIGN-1))
->  #define ELF_PAGEALIGN(_v) (((_v) + ELF_MIN_ALIGN - 1) & ~(ELF_MIN_ALIGN - 1))
->  
-> @@ -399,22 +399,21 @@ static unsigned long elf_map(struct file *filep, unsigned long addr,
->  	return(map_addr);
->  }
->  
-> -static unsigned long total_mapping_size(const struct elf_phdr *cmds, int nr)
-> +static unsigned long total_mapping_size(const struct elf_phdr *phdr, int nr)
->  {
-> -	int i, first_idx = -1, last_idx = -1;
-> +	elf_addr_t min_addr = -1;
-> +	elf_addr_t max_addr = 0;
-> +	bool pt_load = false;
-> +	int i;
->  
->  	for (i = 0; i < nr; i++) {
-> -		if (cmds[i].p_type == PT_LOAD) {
-> -			last_idx = i;
-> -			if (first_idx == -1)
-> -				first_idx = i;
-> +		if (phdr[i].p_type == PT_LOAD) {
-> +			min_addr = min(min_addr, ELF_PAGESTART(phdr[i].p_vaddr));
-> +			max_addr = max(max_addr, phdr[i].p_vaddr + phdr[i].p_memsz);
-
-How about:
-		min_addr = min_t(elf_addr_t, min_addr, ELF_PAGESTART(phdr[i].p_vaddr));
-		max_addr = max_t(elf_addr_t, max_addr, phdr[i].p_vaddr + phdr[i].p_memsz);
-
-> +			pt_load = true;
->  		}
->  	}
-> -	if (first_idx == -1)
-> -		return 0;
-> -
-> -	return cmds[last_idx].p_vaddr + cmds[last_idx].p_memsz -
-> -				ELF_PAGESTART(cmds[first_idx].p_vaddr);
-> +	return pt_load ? (max_addr - min_addr) : 0;
->  }
->  
->  static int elf_read(struct file *file, void *buf, size_t len, loff_t pos)
-
--Kees
-
--- 
-Kees Cook
+If the root complex fabricates ~0, that means a PCIe transaction
+failed, i.e., the device didn't respond.  Rescan only does config
+reads and writes.  Why should that cause the PCIe transactions to
+magically start working?
