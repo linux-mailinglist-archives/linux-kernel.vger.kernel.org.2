@@ -2,142 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D5EE423D15
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 13:43:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A532423D09
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 13:42:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238341AbhJFLpb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 07:45:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55654 "EHLO
+        id S238289AbhJFLnz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 07:43:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238117AbhJFLpa (ORCPT
+        with ESMTP id S238117AbhJFLny (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 07:45:30 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14D02C061749;
-        Wed,  6 Oct 2021 04:43:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=3+cjgHpVIJ1Jp74Tyj6Y7cKbt0XA1yGO6iHMekMDTPE=; b=s3gWLLKhPKzGlgIHtncCoEZ93G
-        vK6y5ZLQguOAO/cV2YIBNxPJAGxqEKGl2OnKhOhCpDmjhsvZ4+kL0BpGUyo+HfS/82wbCs4gb9Lsk
-        MXo8qXvvy4jWa0cPxlKo+t/kr/s0UDZuCeTHCbMRmB+4ax/x9joroXNQIhxQhCFDfBYrxCNiE/Oxw
-        EJ3hXqyptQBlrO49pUUgDGB3f39VNcUBH89QERB1KbLJppW32ckmRx/X+tt3bErVoIg7V4Dtrp+nQ
-        qV/f1LxZdMDiiUEArwWm5Hy/wCP+S4QESGTskFKUrK86h3uh7v6VMA1MridpO0ar/fTgfD8M6y/nA
-        rWoUZK7A==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mY5Is-000pri-FE; Wed, 06 Oct 2021 11:41:53 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 37F5E98623A; Wed,  6 Oct 2021 13:41:39 +0200 (CEST)
-Date:   Wed, 6 Oct 2021 13:41:39 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     gor@linux.ibm.com, jpoimboe@redhat.com, jikos@kernel.org,
-        mbenes@suse.cz, mingo@kernel.org, linux-kernel@vger.kernel.org,
-        joe.lawrence@redhat.com, fweisbec@gmail.com, tglx@linutronix.de,
-        hca@linux.ibm.com, svens@linux.ibm.com, sumanthk@linux.ibm.com,
-        live-patching@vger.kernel.org, paulmck@kernel.org,
-        rostedt@goodmis.org, x86@kernel.org
-Subject: Re: [RFC][PATCH v2 09/11] context_tracking,livepatch: Dont disturb
- NOHZ_FULL
-Message-ID: <20211006114139.GG174703@worktop.programming.kicks-ass.net>
-References: <20210929151723.162004989@infradead.org>
- <20210929152429.067060646@infradead.org>
- <YV1aYaHEynjSAUuI@alley>
- <YV1mmv5QbB/vf3/O@hirez.programming.kicks-ass.net>
- <YV16jKrB5Azu/nD+@alley>
+        Wed, 6 Oct 2021 07:43:54 -0400
+Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35CAFC06174E
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 04:42:02 -0700 (PDT)
+Received: by mail-qv1-xf35.google.com with SMTP id cv2so1660986qvb.5
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 04:42:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=J86TuZ4G3iVJIsVauEFT8+kXi2wVJzDmB5U5QLNUL0A=;
+        b=Z2LVqyyTR45/BiT7lotfv4icWapfnHzCPjTRcgJQpKIVj/rwOUNNyu9s7+CGdCb+Zh
+         stkyoee3j+VGDefRiIKonL4IF0WrXwdtFGdfpywbnPMLe5XVo8XJkvzCuUxWhi8BulVe
+         3Vrs1gZLwL1aWSCNajrPQvO0C61uxfbCBkltZ+jjix8z8o/JOCrSBK/k4vYA7CoKFcAM
+         VGT7cgf5BQRj7tzxXG/QEw+RUVhsiWVUev8OCQtf3nnf5OFv00lw4gaD82q02zouSzOw
+         etKDfAKfs1Pm+1fVLJU4CtAhGUa0RoAc0j5+bJ2nbWHl5drrHXA7SXduXqKr5dVL6NhB
+         Votw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=J86TuZ4G3iVJIsVauEFT8+kXi2wVJzDmB5U5QLNUL0A=;
+        b=WkEj8cQLt3IPDhkeTOkkjKs7v3dxJv3D+p9fw6QU2xp67YeMAQQ5eGs0ggpnh4sAFi
+         4PVco3mK/J3m2T6Q7IqSUWruVuPnJCPKbMdJ4RqWJWd6cYWpLNQbu/dBzmmJ0V4CL3Pg
+         5poyhB6Z+PfnYbsyQbM4lPryhbttgry4oTjM+pGNj4Pbq1BM20uxwfWU1XAKWAJ4Kwwz
+         HpeR+vcbonzwlGveis9X06IcUgVgbcHhpgHKOuBY7cf5PuGC7dGu8864xjuyp6+FclVL
+         Utwke1iUpyYx/z7IfUjiwUNfomC1LIN1HOVzmwBup52z2S0aSouzQLMqveJ96L1S7OlY
+         jC8w==
+X-Gm-Message-State: AOAM531talAqw9pxy9NjhQwW+D6rgTH9QgxpdmlfkrVlUXsEUTu6UaVu
+        GauGnhBFMgX0UEphTMjafHlC9g==
+X-Google-Smtp-Source: ABdhPJwPNIvPjpNbUbkDe5ZUZ+/p3TvX/Wg2CR+OPAHD6AhPhgJBOj8tPSL6nGvFuzVzLqIcI/bD1Q==
+X-Received: by 2002:a0c:c1c9:: with SMTP id v9mr32898787qvh.31.1633520521408;
+        Wed, 06 Oct 2021 04:42:01 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
+        by smtp.gmail.com with ESMTPSA id p19sm225759qtk.20.2021.10.06.04.42.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Oct 2021 04:42:00 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1mY5J9-00BRWH-W4; Wed, 06 Oct 2021 08:42:00 -0300
+Date:   Wed, 6 Oct 2021 08:41:59 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        syzbot <syzbot+dc3dfba010d7671e05f5@syzkaller.appspotmail.com>,
+        dledford@redhat.com, leon@kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        Aleksandr Nogikh <nogikh@google.com>
+Subject: Re: [syzbot] KASAN: use-after-free Read in addr_handler (4)
+Message-ID: <20211006114159.GC2688930@ziepe.ca>
+References: <000000000000ffdae005cc08037e@google.com>
+ <20210915193601.GI3544071@ziepe.ca>
+ <CACT4Y+bxDuLggCzkLAchrGkKQxC2v4bhc01ciBg+oc17q2=HHw@mail.gmail.com>
+ <20210916130459.GJ3544071@ziepe.ca>
+ <CACT4Y+aUFbj3_+iBpeP2qrQ=RbGrssr0-6EZv1nx73at7fdbfA@mail.gmail.com>
+ <20210916162850.GQ3544071@ziepe.ca>
+ <20211005032901.1876-1-hdanton@sina.com>
+ <20211006031800.2066-1-hdanton@sina.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YV16jKrB5Azu/nD+@alley>
+In-Reply-To: <20211006031800.2066-1-hdanton@sina.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 06, 2021 at 12:29:32PM +0200, Petr Mladek wrote:
-> On Wed 2021-10-06 11:04:26, Peter Zijlstra wrote:
+On Wed, Oct 06, 2021 at 11:18:00AM +0800, Hillf Danton wrote:
+> +++ b/drivers/infiniband/core/addr.c
+> @@ -795,6 +795,11 @@ void rdma_addr_cancel(struct rdma_dev_ad
+>  	 * guarentees no work is running and none will be started.
+>  	 */
+>  	cancel_delayed_work_sync(&found->work);
+> +	/*
+> +	 * flush is needed if work is queued again while it is running, as
+> +	 * cancel waits nothing.
+> +	 */
+> +	flush_work(&found->work);
 
-> > So it needs to be something like:
-> > 
-> > 
-> > 	CPU0				CPU1
-> > 
-> > 					<user>
-> > 
-> > 	if (context_tracking_set_cpu_work(task_cpu(), CT_WORK_KLP))
-> > 
-> > 					<kernel-entry>
-> > 	  klp_update_patch_state	  klp_update_patch_state()
-> > 
-> > 
-> > So that CPU0 and CPU1 race to complete klp_update_patch_state() *before*
-> > any regular (!noinstr) code gets run.
-> 
-> Grr, you are right. I thought that we migrated the task when entering
-> kernel even before. But it seems that we do it only when leaving
-> the kernel in exit_to_user_mode_loop().
+The _sync() above does the same, cancel doesn't return while the work
+is running
 
-Yep... :-)
-
-> > Which then means it needs to look something like:
-> > 
-> > noinstr void klp_update_patch_state(struct task_struct *task)
-> > {
-> > 	struct thread_info *ti = task_thread_info(task);
-> > 
-> > 	preempt_disable_notrace();
-> > 	if (arch_test_bit(TIF_PATCH_PENDING, (unsigned long *)&ti->flags)) {
-> > 		/*
-> > 		 * Order loads of TIF_PATCH_PENDING vs klp_target_state.
-> > 		 * See klp_init_transition().
-> > 		 */
-> > 		smp_rmb();
-> > 		task->patch_state = __READ_ONCE(klp_target_state);
-> > 		/*
-> > 		 * Concurrent against self; must observe updated
-> > 		 * task->patch_state if !TIF_PATCH_PENDING.
-> > 		 */
-> > 		smp_mb__before_atomic();
-> 
-> IMHO, smp_wmb() should be enough. We are here only when this
-> CPU set task->patch_state right above. So that CPU running
-> this code should see the correct task->patch_state.
-
-Yes, I think smp_wmb() and smp_mb__before_atomic() are NOPS for all the
-same architectures, so that might indeed be a better choice.
-
-> The read barrier is needed only when @task is entering kernel and
-> does not see TIF_PATCH_PENDING. It is handled by smp_rmb() in
-> the "else" branch below.
-> 
-> It is possible that both CPUs see TIF_PATCH_PENDING and both
-> set task->patch_state. But it should not cause any harm
-> because they set the same value. Unless something really
-> crazy happens with the internal CPU busses and caches.
-
-Right, not our problem :-) Lots would be broken beyond repair in that
-case.
-
-> > 		arch_clear_bit(TIF_PATCH_PENDING, (unsigned long *)&ti->flags);
-> > 	} else {
-> > 		/*
-> > 		 * Concurrent against self, see smp_mb__before_atomic()
-> > 		 * above.
-> > 		 */
-> > 		smp_rmb();
-> 
-> Yeah, this is the counter part against the above smp_wmb().
-> 
-> > 	}
-> > 	preempt_enable_notrace();
-> > }
-> 
-> Now, I am scared to increase my paranoia level and search for even more
-> possible races. I feel overwhelmed at the moment ;-)
-
-:-)
-
-Anyway, I still need to figure out how to extract this context tracking
-stuff from RCU and not make a giant mess of things, so until that
-time....
+Jason
