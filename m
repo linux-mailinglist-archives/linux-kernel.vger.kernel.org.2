@@ -2,183 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EF244240DC
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 17:08:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B21374240E9
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 17:10:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239173AbhJFPJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 11:09:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26944 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238440AbhJFPJy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 11:09:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633532880;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=iml3pNlbn9tn2FywzhER1zlHgKoPS0AbJRacW4jzMgU=;
-        b=BYnKwWw+ErSe7dbeP1y/OpWJRWVNHdJzKmxHo9oS/tHdHJ5TJPME+eq2Zl+RXybmUd54Fm
-        Dx0BeW/GnpcaEGszxibF4/SVodgSTzupsL2fh+YzW+0YDJeJCANYgwvCZHYvrujN1JsVZ5
-        cKpAwWFh9lmg227NLt6WsRu7rgCwwf8=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-331-XoskuDgsPJSbdDFoyO8Fmg-1; Wed, 06 Oct 2021 11:07:59 -0400
-X-MC-Unique: XoskuDgsPJSbdDFoyO8Fmg-1
-Received: by mail-wr1-f72.google.com with SMTP id r16-20020adfb1d0000000b00160bf8972ceso2300274wra.13
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 08:07:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:to:cc:references:from:organization:subject
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=iml3pNlbn9tn2FywzhER1zlHgKoPS0AbJRacW4jzMgU=;
-        b=DeJSFBXlLBWoY1JeTaj5nRG/FGY3bgdIMx9ScbOAjUR4T1sx5y+wYJyW5Ll2LVCrLl
-         yhR5LCbKKIv9kEkf5QLzRbGr98FeqUlLDubqLXL8VigWjdV8GseVNvFF76q34GqK51ND
-         af7er/dXhYHrC0+hVbJqmhpw8ifFyjmFy9Th5sn1iRLn6n/Ht3QJFfidsCd8I+zm4BXa
-         3u6Q5VyFY1VE8tyB+BFEngcqcEXANaR3wwT3xId2zwGg5tluFyBKpSf+HafYFzEAvlMx
-         3Jza8Wti9ie6N3ok2RrGfBETNUrE7vk+e1YYpIU7OMTpz0rVbv60W363ama1bEVGAr4H
-         EQNw==
-X-Gm-Message-State: AOAM531ZzAxibaHjSGrk8Tm3e1HqW3jxZbZ+oN7eUqOB5AR5XjIk/MO2
-        DP8+g74WbIiCIq8mVdQ+ebfs3N5Uchet/xddhyrkTvNXHjekNPcMiEOrKgbCsUCxDS3A3zcrAv/
-        VlMYVtMNNZgOSPFrfhXl3OWgB
-X-Received: by 2002:a05:600c:4fc6:: with SMTP id o6mr10488632wmq.147.1633532878744;
-        Wed, 06 Oct 2021 08:07:58 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzIy7edjiF6tYBwyhRpW4cHms5SJrrTE90lW3+gTLtxOFwCuTMHSR1zVPnDBv3OjX9leQiDZw==
-X-Received: by 2002:a05:600c:4fc6:: with SMTP id o6mr10488572wmq.147.1633532878499;
-        Wed, 06 Oct 2021 08:07:58 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c6529.dip0.t-ipconnect.de. [91.12.101.41])
-        by smtp.gmail.com with ESMTPSA id w11sm2259159wmc.44.2021.10.06.08.07.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Oct 2021 08:07:58 -0700 (PDT)
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     Michal Hocko <mhocko@suse.com>, John Hubbard <jhubbard@nvidia.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Colin Cross <ccross@google.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        vincenzo.frascino@arm.com,
-        =?UTF-8?B?Q2hpbndlbiBDaGFuZyAo5by16Yym5paHKQ==?= 
-        <chinwen.chang@mediatek.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Jann Horn <jannh@google.com>, apopple@nvidia.com,
-        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
-        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
-        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
-        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
-        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
-        chris.hyser@oracle.com, Peter Collingbourne <pcc@google.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Jens Axboe <axboe@kernel.dk>, legion@kernel.org,
-        Rolf Eike Beer <eb@emlix.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Thomas Cedeno <thomascedeno@google.com>, sashal@kernel.org,
-        cxfcosmos@gmail.com, Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-mm <linux-mm@kvack.org>,
-        kernel-team <kernel-team@android.com>
-References: <20211001205657.815551-1-surenb@google.com>
- <20211001205657.815551-3-surenb@google.com>
- <20211005184211.GA19804@duo.ucw.cz>
- <CAJuCfpE5JEThTMhwKPUREfSE1GYcTx4YSLoVhAH97fJH_qR0Zg@mail.gmail.com>
- <20211005200411.GB19804@duo.ucw.cz>
- <CAJuCfpFZkz2c0ZWeqzOAx8KFqk1ge3K-SiCMeu3dmi6B7bK-9w@mail.gmail.com>
- <efdffa68-d790-72e4-e6a3-80f2e194d811@nvidia.com>
- <YV1eCu0eZ+gQADNx@dhcp22.suse.cz>
- <6b15c682-72eb-724d-bc43-36ae6b79b91a@redhat.com>
- <CAJuCfpEPBM6ehQXgzp=g4SqtY6iaC8wuZ-CRE81oR1VOq7m4CA@mail.gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH v10 3/3] mm: add anonymous vma name refcounting
-Message-ID: <192438ab-a095-d441-6843-432fbbb8e38a@redhat.com>
-Date:   Wed, 6 Oct 2021 17:07:55 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <CAJuCfpEPBM6ehQXgzp=g4SqtY6iaC8wuZ-CRE81oR1VOq7m4CA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S239125AbhJFPLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 11:11:52 -0400
+Received: from mail-bn8nam11on2138.outbound.protection.outlook.com ([40.107.236.138]:1056
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S238124AbhJFPLv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 11:11:51 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MIAUtOkO0OLidHMz3QWX1qV1LYW8Pqvfkn0mPD3rZG4TMBZGtEa85hxwAku2uzja0v3E3Q63A/e010GlmVTX2YJWIoEjyv1wfalM328C29XzXjBAh4c+8rSz+8sSAUKyIcgwmh9mZdf7HrqqmZZtarXg/qdmWuwxl1SXrA1pj3lY7S9w5iZd1vUQQrYHwsfNZS4BUOO2JXHCLsY/kb97qfJmWaTtegqJ/7s5fEoRI/pZjRkRGVyM7+yGResaVTtWt0KhE/u0G0vfpsr3757Pwf388PRfi8Fehinc/RTFkl16TH34RhOSsK6UZ+c9w23HqTDd1UZbMKity2KBgedPmQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=uA8VwG4UiebifVSDT9Hfh9Dv8kA1R5eQngtJflyhO2o=;
+ b=c6+9QeHp/jApvmMOrqk55OUoQIfopPaPMNwvJ0J2ZKgRU/SSktQjXF5d8uhpHEm5BaH2BLw0r47RtHzCFSFe8AaDid6Cr5rgL+A2LGXbxMNfGwP7Vc2LSV3IB6L2+ElZ+vwzhXRjOQFzKameKDoYqSlL2HwBq9tiabuAqy81COYNF/Ks7F0IkZF4ThaG5iHazaPvfTiFdLjHgCF4XpyRxf2a6tOswD8eGR24jJDt4Ih2GzqzCu71+0Hn6UMm2VL5QHlPjDo+Lj6L+WrHb9Xw6H26LTX/tMA4lLe2IlAtrqSZqYgr3k5gxaDwsFZbmBcwJqDujZ/pr6GZ/qIKTQJt6w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=uA8VwG4UiebifVSDT9Hfh9Dv8kA1R5eQngtJflyhO2o=;
+ b=I1rCNmr91fCYN7jFaz6GDV6g6qErHf2fDnmg73fTgqs5HF3IW48qfPVIETDawRa+S3MfikpcSW82oOHeBFGlsNJGxln48iHRVdYoWQ3ix+OyPvzLltweWh7WzbEXgsdxR9hzmJLmhKBMlA4e54uqdhbWTuwECcuEyigqRrVxYvE=
+Received: from MWHPR21MB1593.namprd21.prod.outlook.com (2603:10b6:301:7c::11)
+ by MWHPR21MB0479.namprd21.prod.outlook.com (2603:10b6:300:ec::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.3; Wed, 6 Oct
+ 2021 15:09:54 +0000
+Received: from MWHPR21MB1593.namprd21.prod.outlook.com
+ ([fe80::6129:c6f7:3f56:c899]) by MWHPR21MB1593.namprd21.prod.outlook.com
+ ([fe80::6129:c6f7:3f56:c899%4]) with mapi id 15.20.4587.017; Wed, 6 Oct 2021
+ 15:09:54 +0000
+From:   Michael Kelley <mikelley@microsoft.com>
+To:     "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>
+CC:     KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Dexuan Cui <decui@microsoft.com>
+Subject: RE: [PATCH v2] scsi: storvsc: Fix validation for unsolicited incoming
+ packets
+Thread-Topic: [PATCH v2] scsi: storvsc: Fix validation for unsolicited
+ incoming packets
+Thread-Index: AQHXurT5XluLbidvpUmp7+iI0FyWYqvGEj0Q
+Date:   Wed, 6 Oct 2021 15:09:54 +0000
+Message-ID: <MWHPR21MB1593050119EACC0E49748209D7B09@MWHPR21MB1593.namprd21.prod.outlook.com>
+References: <20211006132026.4089-1-parri.andrea@gmail.com>
+In-Reply-To: <20211006132026.4089-1-parri.andrea@gmail.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=36d16c26-41c7-452d-8173-316745f91995;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-10-06T15:07:06Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: f054ccad-7894-4d70-d046-08d988db5a90
+x-ms-traffictypediagnostic: MWHPR21MB0479:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MWHPR21MB0479056F85EBE8BA00AB40AFD7B09@MWHPR21MB0479.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4502;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: XHQQh7Gx25z119x/LSycof48MiiCARG4qcqOufiKteEzlFIt932bD61R8czZy6z9jtYC1mnZq14WDun+srSmyPVP+bfHEWbDUvIIO+fXnrlaAK4yeZ0P9ncq2Ivy9ZZmjwhMqCuwQcydveVnXH6LUEeYAFvHEKvBnF1eq8xclBypj+NjO2DAH/EPrg9gM32sooYiTr3FDvz8lq8uZ1XpJaZugQSmv1GkOXJmhhCcuSWdHM7oI1LpafipG03QDwCO5srsSucsZlwh7l/KPeklRIQCgmIAop2yN3f6rTPrSF5jYLMfQVvx6Ug/uxVNwwqoV47ybO5MV58TYvDE8ZDJC3TdUf0PKSserXFIUncNfxhNBLL3wBJS9IedDZRllNkKVjaUVcndUCg4jCsdN5B1pfry25ES58NY2Ad0vQ7LrFD+AHfFjaiYqtjHgP2tyZEVadq8VHl90o+58dVsUzaq26Ens8cGlFcx4AXqyfNLr7uEDnghaDZGFkMfpXzhmX99Tu5tVfcgHpbaqCeUmrrplbzskBMxblepWf8vEgWjxHXESp+RPWLNx16wLZBwqpO6mzslXiVlVNYvl6m3oZeFD00aw0ZlZZHCd7Lu88m5+aRB4ZAsOXIDP2Ef86eEda6TDba6a4Pkg/FQfaTXtU9zGZ1C1XK3NvkatAyEcJMQVu7gdJOuuRk8/dASzGho0SgajwSz/Nw0j4dGdLmR7OYrPMZ/SfillHHG/v/wQbmJTeNTAernPkklN8G7IInpqh7+o5TwegrixaijERHYtyPfIbQdvTj80koxm1M6MZFt2Gl/+fsbsleCeun9e3QAwJJC
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR21MB1593.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(122000001)(10290500003)(38100700002)(76116006)(66556008)(66446008)(66946007)(508600001)(26005)(6506007)(52536014)(66476007)(8676002)(8936002)(64756008)(7696005)(966005)(82960400001)(82950400001)(316002)(38070700005)(110136005)(83380400001)(2906002)(186003)(54906003)(86362001)(71200400001)(8990500004)(4326008)(55016002)(9686003)(5660300002)(33656002)(107886003)(21314003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?DJoJtzcRdQNUgyZyvgUwVzxvDQmyvGJes92PYPpBc7CusYY/gyWHFJqUYTe9?=
+ =?us-ascii?Q?2TB4G8PymM9tneKHzQr+3HZVfxXPVbN2h6LaFurs2ZX3iVhIDIWzCrRpfMk4?=
+ =?us-ascii?Q?SNWUVNHHf0/7/0uK7/PvZoFTXoAcV5TYWlHofvk7blWe4jbioyyZeIBjV5zU?=
+ =?us-ascii?Q?Laf6Hupc7bUpTyVTSXpyIyE3GYfxq3T22RRG+C7+AIutOd7v9rWuRvIPKaGM?=
+ =?us-ascii?Q?yEyipvEhBNORVsJL03qCINT3mXJ5cyZB+FtEft/cQ5YktPqHO+5oTS1dihmg?=
+ =?us-ascii?Q?hAj9gAgEgokg/lWDfZmCSd/AS8goEkU2ELbf8Yu99BbTkXCp3wjRZok4yqyk?=
+ =?us-ascii?Q?8/7q9hYXfWSls6LlRBM6Vzci5j94K4VP8gQG97ZGfRycXGZ6uCx3yN5zuBkG?=
+ =?us-ascii?Q?LDsi6UiMSJsHvQN13+B85qNPxpvKqk4UUHukU5yBbFILhr1lt1OOwGD2rKLy?=
+ =?us-ascii?Q?v9zN2QGA8nu3cZ1iEi9RNx8Ssge8V+QBivvn3yXhSprcjj8cDgKdZtm/IGAM?=
+ =?us-ascii?Q?Qo4Zm3O8YZM0arRPajWp6YOX5x0zFWxtW+7iKx56uXNNShFe8UM4ycCsbMbz?=
+ =?us-ascii?Q?1FYSdSyPLbNAtTTKF0k7kVWcpY2FXUn97ahCrT0RsXJ1NPv9/lvPONgCQ7sX?=
+ =?us-ascii?Q?ithr3+gRySkQcLZ5V8ja0uVtL7XF2B48Wt8LViDNHHll+CdbbUtP8Q7V3m3X?=
+ =?us-ascii?Q?4duGR/W2MEW+f4Z4975LjfYuNPHNSWsNdCZO4EhkzgmmYO4tyBqnc75igohS?=
+ =?us-ascii?Q?9gt3PfRyZUXos7g1dqzceYNQQYVm4zr51BiplwAnBZO/tX8uL0HfYU45TOHx?=
+ =?us-ascii?Q?Ogk94NxyJOvOdjT+vv71I/sKas14NMeYw+jWGGhZFfEE8kDnumpyN1nCWtxj?=
+ =?us-ascii?Q?QIcuFswYABMYgc8JEwe81Ryd08jKVi1nnJflBSgPvLqqfvBC/3Bwk1DrYHwy?=
+ =?us-ascii?Q?kzTsx6EP8pF0uVMjhR3yEHWozi6/EE0VujH4RpXo442msvmTFtuEi+fu5esp?=
+ =?us-ascii?Q?TVRjmK0CdQO5obm0PkKtZpVvWzgxJtho5Yeq1PQIjnCSrZr1kysDj7Cf23vs?=
+ =?us-ascii?Q?VLny5xiRLNuv9JZYMx+i8PlVzQxlI0Vxocwt1PUddWt5pfLzaU9ZW2qdsdzy?=
+ =?us-ascii?Q?0yksTq30CvB+WC2ldmcKGxZrHr8keII3QMPt2FqIKP1ZfEWlCOHV8rJ8b2vD?=
+ =?us-ascii?Q?DefwSgcNoLQRehQ3NUC3waHX6lFx4BOLLKlr1xv0D0abCqHL1Q9d9d5NDD2A?=
+ =?us-ascii?Q?IiSmtSXfFGpMayjL+sc966dVCnvz3A8Vmj0z91Mu1LY1rjfiYeHpSuglS6gP?=
+ =?us-ascii?Q?G+0T42mLqwpDGU7Rx8AwyBt1?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR21MB1593.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f054ccad-7894-4d70-d046-08d988db5a90
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Oct 2021 15:09:54.6752
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: W+b+NuA9Kxx4KRMoeVeywi1abnCB1GgLTjENKiqv5FyRSSu3UNP7w4ZW8uI1T/4BnyYSeh6bxdR+D3Piw0d04hVt/iNs24IN9VEDQTnSYx8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR21MB0479
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06.10.21 17:01, Suren Baghdasaryan wrote:
-> On Wed, Oct 6, 2021 at 2:27 AM David Hildenbrand <david@redhat.com> wrote:
->>
->> On 06.10.21 10:27, Michal Hocko wrote:
->>> On Tue 05-10-21 23:57:36, John Hubbard wrote:
->>> [...]
->>>> 1) Yes, just leave the strings in the kernel, that's simple and
->>>> it works, and the alternatives don't really help your case nearly
->>>> enough.
->>>
->>> I do not have a strong opinion. Strings are easier to use but they
->>> are more involved and the necessity of kref approach just underlines
->>> that. There are going to be new allocations and that always can lead
->>> to surprising side effects.  These are small (80B at maximum) so the
->>> overall footpring shouldn't all that large by default but it can grow
->>> quite large with a very high max_map_count. There are workloads which
->>> really require the default to be set high (e.g. heavy mremap users). So
->>> if anything all those should be __GFP_ACCOUNT and memcg accounted.
->>>
->>> I do agree that numbers are just much more simpler from accounting,
->>> performance and implementation POV.
->>
->> +1
->>
->> I can understand that having a string can be quite beneficial e.g., when
->> dumping mmaps. If only user space knows the id <-> string mapping, that
->> can be quite tricky.
->>
->> However, I also do wonder if there would be a way to standardize/reserve
->> ids, such that a given id always corresponds to a specific user. If we
->> use an uint64_t for an id, there would be plenty room to reserve ids ...
->>
->> I'd really prefer if we can avoid using strings and instead using ids.
-> 
-> I wish it was that simple and for some names like [anon:.bss] or
-> [anon:dalvik-zygote space] reserving a unique id would work, however
-> some names like [anon:dalvik-/system/framework/boot-core-icu4j.art]
-> are generated dynamically at runtime and include package name.
+From: Andrea Parri (Microsoft) <parri.andrea@gmail.com> Sent: Wednesday, Oc=
+tober 6, 2021 6:20 AM
+>=20
+> The validation on the length of incoming packets performed in
+> storvsc_on_channel_callback() does not apply to unsolicited
+> packets with ID of 0 sent by Hyper-V.  Adjust the validation
+> for such unsolicited packets.
+>=20
+> Fixes: 91b1b640b834b2 ("scsi: storvsc: Validate length of incoming packet=
+ in storvsc_on_channel_callback()")
+> Reported-by: Dexuan Cui <decui@microsoft.com>
+> Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
+> ---
+> Changes since v1[1]:
+>   - Use sizeof(enum vstor_packet_operation) instead of 48 (Michael Kelley=
+)
+>   - Filter out FCHBA_DATA packets (Michael Kelley)
+>=20
+> Changes since RFC[2]:
+>   - Merge length checks (Haiyang Zhang)
+>=20
+> [1] https://lore.kernel.org/all/20211005114103.3411-1-parri.andrea@gmail.=
+com/T/#u=20
+> [2] https://lore.kernel.org/all/20210928163732.5908-1-parri.andrea@gmail.=
+com/T/#u=20
+>=20
+>  drivers/scsi/storvsc_drv.c | 34 +++++++++++++++++++++++++---------
+>  1 file changed, 25 insertions(+), 9 deletions(-)
+>=20
+> diff --git a/drivers/scsi/storvsc_drv.c b/drivers/scsi/storvsc_drv.c
+> index ebbbc1299c625..4869ebad7ec97 100644
+> --- a/drivers/scsi/storvsc_drv.c
+> +++ b/drivers/scsi/storvsc_drv.c
+> @@ -1285,11 +1285,15 @@ static void storvsc_on_channel_callback(void *con=
+text)
+>  	foreach_vmbus_pkt(desc, channel) {
+>  		struct vstor_packet *packet =3D hv_pkt_data(desc);
+>  		struct storvsc_cmd_request *request =3D NULL;
+> +		u32 pktlen =3D hv_pkt_datalen(desc);
+>  		u64 rqst_id =3D desc->trans_id;
+> +		u32 minlen =3D rqst_id ? sizeof(struct vstor_packet) -
+> +			stor_device->vmscsi_size_delta : sizeof(enum vstor_packet_operation);
+>=20
+> -		if (hv_pkt_datalen(desc) < sizeof(struct vstor_packet) -
+> -				stor_device->vmscsi_size_delta) {
+> -			dev_err(&device->device, "Invalid packet len\n");
+> +		if (pktlen < minlen) {
+> +			dev_err(&device->device,
+> +				"Invalid pkt: id=3D%llu, len=3D%u, minlen=3D%u\n",
+> +				rqst_id, pktlen, minlen);
+>  			continue;
+>  		}
+>=20
+> @@ -1302,13 +1306,25 @@ static void storvsc_on_channel_callback(void *con=
+text)
+>  			if (rqst_id =3D=3D 0) {
+>  				/*
+>  				 * storvsc_on_receive() looks at the vstor_packet in the message
+> -				 * from the ring buffer.  If the operation in the vstor_packet is
+> -				 * COMPLETE_IO, then we call storvsc_on_io_completion(), and
+> -				 * dereference the guest memory address.  Make sure we don't call
+> -				 * storvsc_on_io_completion() with a guest memory address that is
+> -				 * zero if Hyper-V were to construct and send such a bogus packet.
+> +				 * from the ring buffer.
+> +				 *
+> +				 * - If the operation in the vstor_packet is COMPLETE_IO, then
+> +				 *   we call storvsc_on_io_completion(), and dereference the
+> +				 *   guest memory address.  Make sure we don't call
+> +				 *   storvsc_on_io_completion() with a guest memory address
+> +				 *   that is zero if Hyper-V were to construct and send such
+> +				 *   a bogus packet.
+> +				 *
+> +				 * - If the operation in the vstor_packet is FCHBA_DATA, then
+> +				 *   we call cache_wwn(), and access the data payload area of
+> +				 *   the packet (wwn_packet); however, there is no guarantee
+> +				 *   that the packet is big enough to contain such area.
+> +				 *   Future-proof the code by rejecting such a bogus packet.
 
-Valuable information
+The comments look good to me.
 
-> Packages are constantly evolving, new ones are developed, names can
-> change, etc. So assigning a unique id for these names is not really
-> feasible.
+> +				 *
+> +				 * XXX.  Filter out all "invalid" operations.
 
-So, you'd actually want to generate/reserve an id for a given string at 
-runtime, assign that id to the VMA, and have a way to match id <-> 
-string somehow?
+Is this a leftover comment line that should be deleted?  I'm not sure about=
+ the "XXX".
 
-That reservation service could be inside the kernel or even (better?) in 
-user space. The service could for example de-duplicates strings.
+>  				 */
+> -				if (packet->operation =3D=3D VSTOR_OPERATION_COMPLETE_IO) {
+> +				if (packet->operation =3D=3D VSTOR_OPERATION_COMPLETE_IO ||
+> +				    packet->operation =3D=3D VSTOR_OPERATION_FCHBA_DATA) {
+>  					dev_err(&device->device, "Invalid packet with ID of 0\n");
+>  					continue;
+>  				}
+> --
+> 2.25.1
 
-My question would be, if we really have to expose these strings to the 
-kernel, or if an id is sufficient. Sure, it would move complexity to 
-user space, but keeping complexity out of the kernel is usually a good idea.
+Other than the seemingly spurious comment line,
 
--- 
-Thanks,
-
-David / dhildenb
+Reviewed-by: Michael Kelley <mikelley@microsoft.com>
 
