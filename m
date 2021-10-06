@@ -2,97 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0A0C423AD2
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 11:48:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 017FF423AD4
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 11:48:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237989AbhJFJt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 05:49:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56564 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229824AbhJFJtt (ORCPT
+        id S237978AbhJFJuQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 05:50:16 -0400
+Received: from esa4.hc1455-7.c3s2.iphmx.com ([68.232.139.117]:13507 "EHLO
+        esa4.hc1455-7.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229824AbhJFJuP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 05:49:49 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 753D6C061749;
-        Wed,  6 Oct 2021 02:47:57 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id o20so6970697wro.3;
-        Wed, 06 Oct 2021 02:47:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=pqMoBj46ibDME4JpAKT4v/7ZLq+IPkc3GBPuKjiEO+g=;
-        b=MoPyrYyDq1IL2QE+P0JTn7g4yjulP+vRLgRnyI49/oTkSmPpLv4itdxjHXg3D3sC3d
-         AKOZihAfhSJMgoPk8i5JIjIsL/OOxzZiTC5Li9d5t0sqk4N9uRVsP07Z+M3hI7w9MHZc
-         iMhq5J56ndxJr5LGTFGnCRKuqe7Mx+5aHyGTYVWtnhDuJLPa7YLbCA1O+851ZRW8YTUp
-         h6+OcFrw+TcXo61I4SIvtUxEv6EmXJKBWda3tJbvVL6/KX2jW4+fJ7w9CEM4UxuqoOlI
-         SVuGqG3VkINJE9tVW1Wc5ptG6h5QYRnWHUFhX60u4QCQY+bgKvZtkHSHBHskGRHVZ358
-         mVwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=pqMoBj46ibDME4JpAKT4v/7ZLq+IPkc3GBPuKjiEO+g=;
-        b=q6m8aY596sDwfSokFQPcm7iRl+uKTCwLhZgwmqpckxNx2KpuUiDMsdls58j1Pl48LJ
-         5wbJYxLaP/br3JIO3cDqU9VDNsENJh5IrmlrL69gk1H7t0NtdG/+m9iOZek3GnE/zMFo
-         AWTOeB450TLVTE1aEaioIG8W23H1QwSL0xNoK9NpzVUOtXpRjNXSySyWOKlqgIRYX+J9
-         1nOh8VJZguDzU2dXTHLrz2i2uY6BykFsZa0kiU9Wk0DPE9H5ik4hhflzT5UDDXq8Imxs
-         J30otYF/YZqj/BiCb/BA1yLfO7j0cVBvVPEo7ramJ9wFgORRo3DdW/gQ6K19LZ64NAHC
-         VS5g==
-X-Gm-Message-State: AOAM530HIsZr1m+nNrR45FHpbdxa9o+h20CmgMkqUao+frYLAPJTMj/l
-        rfTXRQt7u7C+NWTh+yqSsLs=
-X-Google-Smtp-Source: ABdhPJzhhqqCkWv84l/l1/22Ky18FwLjOez3v9T1rtL9tLl8CFQQsNLB10pHHG7gRcK3sQuZ+2Tw4A==
-X-Received: by 2002:adf:9bce:: with SMTP id e14mr20564864wrc.353.1633513676010;
-        Wed, 06 Oct 2021 02:47:56 -0700 (PDT)
-Received: from debian ([167.98.27.226])
-        by smtp.gmail.com with ESMTPSA id o1sm5972472wmq.26.2021.10.06.02.47.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Oct 2021 02:47:55 -0700 (PDT)
-Date:   Wed, 6 Oct 2021 10:47:53 +0100
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.4 00/53] 5.4.151-rc2 review
-Message-ID: <YV1wyZ2a6c03BLtX@debian>
-References: <20211005083256.183739807@linuxfoundation.org>
+        Wed, 6 Oct 2021 05:50:15 -0400
+IronPort-SDR: KmPYAY76sY8Yhi5LjWBXgpEGI81u+ilqDL0yqHY+LRlMXPT4ZusBSCS1/ExtTU23KUsdIUxtkg
+ tAGfRCjTutq0OlNVHvBNuFrJt/0/KeWx6eH/GEH4zGsfkhI+Sj5InV9KRkD6gBqROgJ6MuJaCS
+ Ku/36HEfGS0WT6Z0OR3+LGOWNXbpgFyEDaOCSr0EtM2Kb6rrYZNIJKs6Yz+fUel4OHYUIbZu8O
+ GtpWjXLigd27ZaohDe8j3PlXHbUwhOSOFs7VFjHUO9gXxYBQzgEAQW2nPNXlE1r3G5rvcMm+cZ
+ wmHP05xL5+KFH6cL/PdCMqFm
+X-IronPort-AV: E=McAfee;i="6200,9189,10128"; a="47791247"
+X-IronPort-AV: E=Sophos;i="5.85,350,1624287600"; 
+   d="scan'208";a="47791247"
+Received: from unknown (HELO yto-r3.gw.nic.fujitsu.com) ([218.44.52.219])
+  by esa4.hc1455-7.c3s2.iphmx.com with ESMTP; 06 Oct 2021 18:48:22 +0900
+Received: from yto-m3.gw.nic.fujitsu.com (yto-nat-yto-m3.gw.nic.fujitsu.com [192.168.83.66])
+        by yto-r3.gw.nic.fujitsu.com (Postfix) with ESMTP id 6132D6DAA9;
+        Wed,  6 Oct 2021 18:48:20 +0900 (JST)
+Received: from yto-om3.fujitsu.com (yto-om3.o.css.fujitsu.com [10.128.89.164])
+        by yto-m3.gw.nic.fujitsu.com (Postfix) with ESMTP id B19A810965;
+        Wed,  6 Oct 2021 18:48:19 +0900 (JST)
+Received: from pumpkin.openstacklocal (pumpkin.fct.css.fujitsu.com [10.130.70.189])
+        by yto-om3.fujitsu.com (Postfix) with ESMTP id AA0A2400C07C6;
+        Wed,  6 Oct 2021 18:48:19 +0900 (JST)
+From:   Shunsuke Nakamura <nakamura.shun@fujitsu.com>
+To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, namhyung@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+Subject: [PATCH v2] libperf tests: Fix test_stat_cpu
+Date:   Wed,  6 Oct 2021 18:48:17 +0900
+Message-Id: <20211006094817.477494-1-nakamura.shun@fujitsu.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211005083256.183739807@linuxfoundation.org>
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+`cpu` of perf_evsel__read() must be specified the cpu index.
+perf_cpu_map__for_each_cpu is for iterating the cpu number (not index)
+and is not appropriate.
+So, if there is an offline CPU, the cpu number specified in the argument
+may point out of range because the cpu number and the cpu index are
+different.
 
-On Tue, Oct 05, 2021 at 10:38:25AM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.151 release.
-> There are 53 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Thu, 07 Oct 2021 08:32:44 +0000.
-> Anything received after that time might be too late.
+Fix test_stat_cpu.
 
-Build test:
-mips (gcc version 11.2.1 20210911): 65 configs -> no failure
-arm (gcc version 11.2.1 20210911): 107 configs -> no new failure
-arm64 (gcc version 11.2.1 20210911): 2 configs -> no failure
-x86_64 (gcc version 10.2.1 20210110): 4 configs -> no failure
+Committer testing:
 
-Boot test:
-x86_64: Booted on my test laptop. No regression.
-x86_64: Booted on qemu. No regression. [1]
-
-[1]. https://openqa.qa.codethink.co.uk/tests/229
+  # make tests -C tools/lib/perf/
+  make: Entering directory '/home/nakamura/kernel_src/linux-5.15-rc4_fix/tools/lib/perf'
+  running static:
+  - running tests/test-cpumap.c...OK
+  - running tests/test-threadmap.c...OK
+  - running tests/test-evlist.c...OK
+  - running tests/test-evsel.c...OK
+  running dynamic:
+  - running tests/test-cpumap.c...OK
+  - running tests/test-threadmap.c...OK
+  - running tests/test-evlist.c...OK
+  - running tests/test-evsel.c...OK
+  make: Leaving directory '/home/nakamura/kernel_src/linux-5.15-rc4_fix/tools/lib/perf'
 
 
-Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
+Signed-off-by: Shunsuke Nakamura <nakamura.shun@fujitsu.com>
+---
+Previous version at:
+https://lore.kernel.org/lkml/20211006080456.474273-1-nakamura.shun@fujitsu.com/
 
---
-Regards
-Sudip
+Changes in v2:
+ - Remove "2/2" from Patch Subject
+
+ tools/lib/perf/tests/test-evlist.c | 6 +++---
+ tools/lib/perf/tests/test-evsel.c  | 6 +++---
+ 2 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/tools/lib/perf/tests/test-evlist.c b/tools/lib/perf/tests/test-evlist.c
+index c67c83399170..47badd7eabf2 100644
+--- a/tools/lib/perf/tests/test-evlist.c
++++ b/tools/lib/perf/tests/test-evlist.c
+@@ -40,7 +40,7 @@ static int test_stat_cpu(void)
+ 		.type	= PERF_TYPE_SOFTWARE,
+ 		.config	= PERF_COUNT_SW_TASK_CLOCK,
+ 	};
+-	int err, cpu, tmp;
++	int err, idx;
+ 
+ 	cpus = perf_cpu_map__new(NULL);
+ 	__T("failed to create cpus", cpus);
+@@ -70,10 +70,10 @@ static int test_stat_cpu(void)
+ 	perf_evlist__for_each_evsel(evlist, evsel) {
+ 		cpus = perf_evsel__cpus(evsel);
+ 
+-		perf_cpu_map__for_each_cpu(cpu, tmp, cpus) {
++		for (idx = 0, idx < perf_cpu_map__nr(cpus); idx++) {
+ 			struct perf_counts_values counts = { .val = 0 };
+ 
+-			perf_evsel__read(evsel, cpu, 0, &counts);
++			perf_evsel__read(evsel, idx, 0, &counts);
+ 			__T("failed to read value for evsel", counts.val != 0);
+ 		}
+ 	}
+diff --git a/tools/lib/perf/tests/test-evsel.c b/tools/lib/perf/tests/test-evsel.c
+index 9abd4c0bf6db..33ae9334861a 100644
+--- a/tools/lib/perf/tests/test-evsel.c
++++ b/tools/lib/perf/tests/test-evsel.c
+@@ -22,7 +22,7 @@ static int test_stat_cpu(void)
+ 		.type	= PERF_TYPE_SOFTWARE,
+ 		.config	= PERF_COUNT_SW_CPU_CLOCK,
+ 	};
+-	int err, cpu, tmp;
++	int err, idx;
+ 
+ 	cpus = perf_cpu_map__new(NULL);
+ 	__T("failed to create cpus", cpus);
+@@ -33,10 +33,10 @@ static int test_stat_cpu(void)
+ 	err = perf_evsel__open(evsel, cpus, NULL);
+ 	__T("failed to open evsel", err == 0);
+ 
+-	perf_cpu_map__for_each_cpu(cpu, tmp, cpus) {
++	for (idx = 0; idx < perf_cpu_map__nr(cpus); idx++) {
+ 		struct perf_counts_values counts = { .val = 0 };
+ 
+-		perf_evsel__read(evsel, cpu, 0, &counts);
++		perf_evsel__read(evsel, idx, 0, &counts);
+ 		__T("failed to read value for evsel", counts.val != 0);
+ 	}
+ 
+-- 
+2.25.1
 
