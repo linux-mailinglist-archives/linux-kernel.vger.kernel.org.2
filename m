@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FD014246D4
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 21:38:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC2884246DE
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 21:38:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239537AbhJFTkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 15:40:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53840 "EHLO
+        id S239562AbhJFTkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 15:40:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239441AbhJFTk0 (ORCPT
+        with ESMTP id S239456AbhJFTk1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 15:40:26 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77D58C061767
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 12:38:31 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id s16so3334683pfk.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 12:38:31 -0700 (PDT)
+        Wed, 6 Oct 2021 15:40:27 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98D8DC06176C
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 12:38:32 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id v11so3388305pgb.8
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 12:38:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=QdKC3RDnWMeVhqBKuTAcfq/eZBHYEe2Kb+X7ix5SdpY=;
-        b=bYXZrb2Mw0ygA/9KQUszZR0D4+fBHb1MS2IAeBPCv5THUvbkeF9CzMvcUArorOxTAK
-         B1HrTvXihaUQeWiLQvL+0lEMneUWKCwMfy/POUvBJf8ELzE+zKDqutR6eEmcX2r97Guc
-         Uv7Q5lG6rFPLy8WnQ5GTASLWbtTQ5A00scm0M=
+        bh=wZ50+nY6iKl4XzIgEo27g77S25bE2oAR00ZvAHfRl/s=;
+        b=VAuNWWpXvcDIC0EtmclApgGs3mUgw132HiRjwqx6qFpK7airfdQxAgppizP53solsC
+         sbfIgh3sZ8h1i4NGIbFxB7GpyHzj25lS+98cfdXkHV4mEv1BdzftynD+NrGP0EHv1v4W
+         MvKJy3mJ1XO818T/sKGM0Xd/N6A9Jk7VquK7Y=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=QdKC3RDnWMeVhqBKuTAcfq/eZBHYEe2Kb+X7ix5SdpY=;
-        b=Vj48YTJX2Mk3dIoL2c/B5mZPy9BuQhznZkXEcHKHKCXldiP6ZN+oz+fqG9zlEb40l1
-         QaAtXexHcLNBohu3ekwEYZ7JBsJb0ukNVLatToKqIIvx/j/FHIMWmqTwxkTXxjq77pdD
-         8Evvox8QVaxj0E/mfC5KJbraBDzVbXrPBUPE0tsxBxyZQTrvPMK0fiOogcRP6dr9K95y
-         HavxLvRx60CGwxBZiyhy+6vamtLZGEZFTrJtQuCB7ySOXSZxVBqYIoANgEC5Ny89GDtg
-         Lwuyb+FNIaoVGh5bD6t0/KJkZGDipAKahas4bUZoGJ+PGXw0jNn1hgmNrdnp7n6HrXuH
-         tROQ==
-X-Gm-Message-State: AOAM530insuFUQWerw3FnNV649zwa6p26ryfnu7fxXXEw/9sD/GZP0YH
-        CjUhW7U1vNDzDjiWDBw8wA39ATObYpzgrQ==
-X-Google-Smtp-Source: ABdhPJyQxcu7a9c6zJ5OPG0sbw5QtjSSLjEp7prUkIluddBHbCR+Nhq+ATnHLHRc/o8nEL0u0iy0bg==
-X-Received: by 2002:a63:2022:: with SMTP id g34mr433631pgg.173.1633549111054;
-        Wed, 06 Oct 2021 12:38:31 -0700 (PDT)
+        bh=wZ50+nY6iKl4XzIgEo27g77S25bE2oAR00ZvAHfRl/s=;
+        b=d2OwRWeIXYMtDiTJ3eZ0oZw5LulGpmUWPKLzDhTcNd7SiAjvP5nkODrsp4prQQaXPC
+         0lcq++xyidSAZKi4mk+e1EzYd05qPhu6WwKzEOV4nd4dIzeeVBhEkVpeTU3rdryvPQDq
+         zs+x72eAtsscJKhuwvhSdyUjEayHSrYuuXPRc0Q3405aw9aKlSvuxOkYSGB3Iih0toJJ
+         dMjkmzTqJ3XXCuiMDttKXGPrGcCKNHsDVo8PoOgC78u7e8qZOwTZxq6Yp+wIx1dX02Yo
+         bUHYNb8mR7GroFHrUuLcEUxcxim5IXJA0dKwL6v5LyWBI2QPAa4bmU1lR6AbNZiIY/ff
+         uueg==
+X-Gm-Message-State: AOAM533n3Q9GFzP4fwi9l4Uiw5HtDvJppeO4MtQlVsxDJbIiAIggekVY
+        TdcEZJWQ7DXM1anD9/NScn7RkQ==
+X-Google-Smtp-Source: ABdhPJxlVpTQwUTtDgr6C3JCHEPtvD3GPaVWT3EFo7FG/d0w7JfLy1mAQ6Kb40DgOcgVvm3myI73kQ==
+X-Received: by 2002:a63:c10b:: with SMTP id w11mr468986pgf.228.1633549112200;
+        Wed, 06 Oct 2021 12:38:32 -0700 (PDT)
 Received: from smtp.gmail.com ([2620:15c:202:201:d412:c5eb:4aca:4738])
-        by smtp.gmail.com with ESMTPSA id o14sm22011296pfh.84.2021.10.06.12.38.30
+        by smtp.gmail.com with ESMTPSA id o14sm22011296pfh.84.2021.10.06.12.38.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Oct 2021 12:38:30 -0700 (PDT)
+        Wed, 06 Oct 2021 12:38:31 -0700 (PDT)
 From:   Stephen Boyd <swboyd@chromium.org>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
         dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        James Qian Wang <james.qian.wang@arm.com>,
+        Liviu Dudau <liviu.dudau@arm.com>,
         Daniel Vetter <daniel.vetter@ffwll.ch>,
         "Rafael J. Wysocki" <rafael@kernel.org>,
         Rob Clark <robdclark@gmail.com>,
         Russell King <rmk+kernel@arm.linux.org.uk>,
         Saravana Kannan <saravanak@google.com>
-Subject: [PATCH v2 07/34] drm/komeda: Migrate to aggregate driver
-Date:   Wed,  6 Oct 2021 12:37:52 -0700
-Message-Id: <20211006193819.2654854-8-swboyd@chromium.org>
+Subject: [PATCH v2 08/34] drm/arm/hdlcd: Migrate to aggregate driver
+Date:   Wed,  6 Oct 2021 12:37:53 -0700
+Message-Id: <20211006193819.2654854-9-swboyd@chromium.org>
 X-Mailer: git-send-email 2.33.0.800.g4c38ced690-goog
 In-Reply-To: <20211006193819.2654854-1-swboyd@chromium.org>
 References: <20211006193819.2654854-1-swboyd@chromium.org>
@@ -71,7 +71,7 @@ Use an aggregate driver instead of component ops so that we can get
 proper driver probe ordering of the aggregate device with respect to all
 the component devices that make up the aggregate device.
 
-Cc: James Qian Wang (Arm Technology China) <james.qian.wang@arm.com>
+Cc: Liviu Dudau <liviu.dudau@arm.com>
 Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
 Cc: "Rafael J. Wysocki" <rafael@kernel.org>
 Cc: Rob Clark <robdclark@gmail.com>
@@ -79,64 +79,65 @@ Cc: Russell King <rmk+kernel@arm.linux.org.uk>
 Cc: Saravana Kannan <saravanak@google.com>
 Signed-off-by: Stephen Boyd <swboyd@chromium.org>
 ---
- .../gpu/drm/arm/display/komeda/komeda_drv.c   | 20 ++++++++++++-------
- 1 file changed, 13 insertions(+), 7 deletions(-)
+ drivers/gpu/drm/arm/hdlcd_drv.c | 21 +++++++++++++--------
+ 1 file changed, 13 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/gpu/drm/arm/display/komeda/komeda_drv.c b/drivers/gpu/drm/arm/display/komeda/komeda_drv.c
-index e7933930a657..0463386a6ed2 100644
---- a/drivers/gpu/drm/arm/display/komeda/komeda_drv.c
-+++ b/drivers/gpu/drm/arm/display/komeda/komeda_drv.c
-@@ -25,8 +25,9 @@ struct komeda_dev *dev_to_mdev(struct device *dev)
- 	return mdrv ? mdrv->mdev : NULL;
- }
+diff --git a/drivers/gpu/drm/arm/hdlcd_drv.c b/drivers/gpu/drm/arm/hdlcd_drv.c
+index 479c2422a2e0..8f3e5924042a 100644
+--- a/drivers/gpu/drm/arm/hdlcd_drv.c
++++ b/drivers/gpu/drm/arm/hdlcd_drv.c
+@@ -270,8 +270,9 @@ static const struct drm_driver hdlcd_driver = {
+ 	.minor = 0,
+ };
  
--static void komeda_unbind(struct device *dev)
-+static void komeda_unbind(struct aggregate_device *adev)
+-static int hdlcd_drm_bind(struct device *dev)
++static int hdlcd_drm_bind(struct aggregate_device *adev)
  {
 +	struct device *dev = adev->parent;
- 	struct komeda_drv *mdrv = dev_get_drvdata(dev);
- 
- 	if (!mdrv)
-@@ -45,8 +46,9 @@ static void komeda_unbind(struct device *dev)
- 	devm_kfree(dev, mdrv);
+ 	struct drm_device *drm;
+ 	struct hdlcd_drm_private *hdlcd;
+ 	int ret;
+@@ -344,8 +345,9 @@ static int hdlcd_drm_bind(struct device *dev)
+ 	return ret;
  }
  
--static int komeda_bind(struct device *dev)
-+static int komeda_bind(struct aggregate_device *adev)
+-static void hdlcd_drm_unbind(struct device *dev)
++static void hdlcd_drm_unbind(struct aggregate_device *adev)
  {
 +	struct device *dev = adev->parent;
- 	struct komeda_drv *mdrv;
- 	int err;
+ 	struct drm_device *drm = dev_get_drvdata(dev);
+ 	struct hdlcd_drm_private *hdlcd = drm->dev_private;
  
-@@ -87,9 +89,13 @@ static int komeda_bind(struct device *dev)
- 	return err;
+@@ -367,9 +369,13 @@ static void hdlcd_drm_unbind(struct device *dev)
+ 	drm_dev_put(drm);
  }
  
--static const struct component_master_ops komeda_master_ops = {
--	.bind	= komeda_bind,
--	.unbind	= komeda_unbind,
-+static struct aggregate_driver komeda_aggregate_driver = {
-+	.probe	= komeda_bind,
-+	.remove	= komeda_unbind,
-+	.driver = {
-+		.name  = "komeda_drm",
-+		.owner = THIS_MODULE,
+-static const struct component_master_ops hdlcd_master_ops = {
+-	.bind		= hdlcd_drm_bind,
+-	.unbind		= hdlcd_drm_unbind,
++static struct aggregate_driver hdlcd_aggregate_driver = {
++	.probe		= hdlcd_drm_bind,
++	.remove		= hdlcd_drm_unbind,
++	.driver		= {
++		.name 	= "hdlcd_drm",
++		.owner	= THIS_MODULE,
 +	},
  };
  
- static int compare_of(struct device *dev, void *data)
-@@ -129,12 +135,12 @@ static int komeda_platform_probe(struct platform_device *pdev)
- 		komeda_add_slave(dev, &match, child, KOMEDA_OF_PORT_OUTPUT, 1);
- 	}
+ static int compare_dev(struct device *dev, void *data)
+@@ -390,13 +396,12 @@ static int hdlcd_probe(struct platform_device *pdev)
+ 	drm_of_component_match_add(&pdev->dev, &match, compare_dev, port);
+ 	of_node_put(port);
  
--	return component_master_add_with_match(dev, &komeda_master_ops, match);
-+	return component_aggregate_register(dev, &komeda_aggregate_driver, match);
+-	return component_master_add_with_match(&pdev->dev, &hdlcd_master_ops,
+-					       match);
++	return component_aggregate_register(&pdev->dev, &hdlcd_aggregate_driver, match);
  }
  
- static int komeda_platform_remove(struct platform_device *pdev)
+ static int hdlcd_remove(struct platform_device *pdev)
  {
--	component_master_del(&pdev->dev, &komeda_master_ops);
-+	component_aggregate_unregister(&pdev->dev, &komeda_aggregate_driver);
+-	component_master_del(&pdev->dev, &hdlcd_master_ops);
++	component_aggregate_unregister(&pdev->dev, &hdlcd_aggregate_driver);
  	return 0;
  }
  
