@@ -2,137 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B33C42432F
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 18:44:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98FBC424334
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 18:44:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239558AbhJFQqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 12:46:02 -0400
-Received: from mail-ot1-f47.google.com ([209.85.210.47]:37639 "EHLO
-        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239473AbhJFQpv (ORCPT
+        id S232027AbhJFQqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 12:46:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41568 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232098AbhJFQqo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 12:45:51 -0400
-Received: by mail-ot1-f47.google.com with SMTP id r43-20020a05683044ab00b0054716b40005so3860784otv.4;
-        Wed, 06 Oct 2021 09:43:59 -0700 (PDT)
+        Wed, 6 Oct 2021 12:46:44 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3951C061746
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 09:44:51 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id f4so7083587edr.8
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 09:44:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FFQMXs1FWPKk+z75/Ibi8RBzSAlftzRuPEJSYjyeDu4=;
+        b=FDOKYzBHp2YLiUnq0WZzabgTe9i5xIyf6ubwzBz+kgq6TEeU/qqgr7WWwWkUWQ3X81
+         evQweXnGrt7ioSV+PwoHEZSn1abm7RRYY6w/vTOIbpXtYQljeG3A9IQ7dAhWF4eIjoi8
+         q4wL8D8uxzXG6yttYcpJRL4/N3DLaPrSjqHrNZi76LEYbwNt59gYKJtfJvtDKLgmT0eC
+         HDrPuCW29bg6bz9ZjZje5rBor7i3iuvfMcHMaNWzBOCaDEPKqa2xLzlfokayRt+/e8Oy
+         c7pPNY8MKrMZKNwHGYpog3vygs3H1YV2J8+INV4sksZVVM4Uw2CVf1CO4Su5Abv+P3BL
+         dGuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ODdwkiH4tXq9GvyXH7/gt65PfkKCS+62hrrbhfBOAKY=;
-        b=KjVsZlxx2i4DNdKl4plQ7nquC69f93FQm8Z8JNSY/+Jeif9it35gDBSFUpOamO4Kfy
-         Sh8VqPOHRHNQjJvpdQvavgc/MpFrpG85PnWD1GsLbIsR3kt+WWRaYC9ND0k8j/yME2Kt
-         350QGD0gNz0yQBrWlgVUeliy0h3SSIU0wI1KXj03GXf5XiOB1Hcs9oDz/jGtz6jW7KAk
-         tT046I82ScmDM7729vVDQq3orDhfgKsWAQJC4XWtxeyjX2boA65FGbEREl5Auc/id+2Z
-         s8GYN+MupuutmZHYVWDtRIoQZwB7e2qBlkYxLsBiYywHgrtI1iR+kmE33FFMauKtrvCD
-         3jPw==
-X-Gm-Message-State: AOAM530mQ60mKh0xHJFsGFNudKEAeyKedbJL21F82tHwLS+xnuz58fGb
-        wauKdYjBaXpvaBGbYiXjWw==
-X-Google-Smtp-Source: ABdhPJyKbg8/vmyrEytsmwBD61hnJT/KfL8RD1L+0+jj33vwvFOqRG7dPOrAYWXK5lnk+W9TvgzSoQ==
-X-Received: by 2002:a05:6830:1ad3:: with SMTP id r19mr19253078otc.98.1633538638626;
-        Wed, 06 Oct 2021 09:43:58 -0700 (PDT)
-Received: from xps15.herring.priv (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.googlemail.com with ESMTPSA id s29sm4236628otg.60.2021.10.06.09.43.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Oct 2021 09:43:57 -0700 (PDT)
-From:   Rob Herring <robh@kernel.org>
-To:     Russell King <linux@armlinux.org.uk>,
-        James Morse <james.morse@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Stafford Horne <shorne@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, x86@kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-csky@vger.kernel.org, openrisc@lists.librecores.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-sh@vger.kernel.org, devicetree@vger.kernel.org
-Subject: [PATCH 12/12] cacheinfo: Set cache 'id' based on DT data
-Date:   Wed,  6 Oct 2021 11:43:32 -0500
-Message-Id: <20211006164332.1981454-13-robh@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211006164332.1981454-1-robh@kernel.org>
-References: <20211006164332.1981454-1-robh@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FFQMXs1FWPKk+z75/Ibi8RBzSAlftzRuPEJSYjyeDu4=;
+        b=t2tejIFwZmJWjWJ5Tdozo9TtNEeg7CR//ywkKENdtFnAuAyPEfydicMPPORN5LUI1Z
+         t3p5L2JoXdVkHwy7fkQIyviBSZD7zG137faLHmb3rfeP3e5DLoJT8sxyPGiKqjXL3lGU
+         4mxmMlNwzd8hGfxsIfZ2wqQWdj0mFxPORufKw/iTJPnQEJgjuWe5dhjI6tF74kz9Tg/h
+         N6Sut+Koa3h6Qc2OzftkrVusGpJh+O/UFre9X5ZhyrPfHjDCyJgX8996lkBfM3L0qXqf
+         8C0EH9dAeHuJkoUxyNQczW4jBWSVXW49GKPEEsHgwMF4fhxAo+8Iy1HWhEo38l0U47zQ
+         bRQg==
+X-Gm-Message-State: AOAM531siUfnY2JRuzOa2sVxXZ2kfmPP8uDg16Kp0C1Bgr1dol6x8FFO
+        iXC20g8x7rSuCbXhCZJIdNaYrOyeTCXkFBvsU2BpO3Pl1UUnVw==
+X-Google-Smtp-Source: ABdhPJwD4HF5So+87RVcKvG1inKX9QQaCQjFQsCnXZmNoednB3t49TlMcWePXYfJvAkmQSFWY0ZPHz2JwQG3BQiPOfo=
+X-Received: by 2002:a05:6402:143b:: with SMTP id c27mr36480125edx.224.1633538690336;
+ Wed, 06 Oct 2021 09:44:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211006161805.938950-1-brent.lu@intel.com> <20211006161805.938950-2-brent.lu@intel.com>
+In-Reply-To: <20211006161805.938950-2-brent.lu@intel.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 6 Oct 2021 19:44:13 +0300
+Message-ID: <CAHp75Vf5xtqpJV6LZZDLwz0LRQVShyPrfsj9kSDrgh_0k_qMcA@mail.gmail.com>
+Subject: Re: [PATCH 1/3] ASoC: soc-acpi: add alternative id field for machine
+ driver matching
+To:     Brent Lu <brent.lu@intel.com>
+Cc:     ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Yong Zhi <yong.zhi@intel.com>,
+        Vamshi Krishna Gopal <vamshi.krishna.gopal@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Rander Wang <rander.wang@intel.com>,
+        Bard Liao <bard.liao@intel.com>,
+        Malik_Hsu <malik_hsu@wistron.corp-partner.google.com>,
+        Libin Yang <libin.yang@intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Paul Olaru <paul.olaru@oss.nxp.com>,
+        Curtis Malainey <cujomalainey@chromium.org>,
+        Mac Chiang <mac.chiang@intel.com>,
+        Gongjun Song <gongjun.song@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the minimum CPU h/w id of the CPUs associated with the cache for the
-cache 'id'. This will provide a stable id value for a given system. As
-we need to check all possible CPUs, we can't use the shared_cpu_map
-which is just online CPUs. As there's not a cache to CPUs mapping in DT,
-we have to walk all CPU nodes and then walk cache levels.
+On Wed, Oct 6, 2021 at 7:21 PM Brent Lu <brent.lu@intel.com> wrote:
+>
+> Current design to support second headphone driver in the same machine
+> driver is to duplicate the entries in snd_soc_acpi_mach array and
+> board configs in machine driver. We can avoid this by adding an id_alt
+> field in snd_soc_acpi_mach structure to specify alternative ACPI HIDs
+> for machine driver enumeration and leave the codec type detection to
+> machine driver if necessary.
 
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-Signed-off-by: Rob Herring <robh@kernel.org>
----
- drivers/base/cacheinfo.c | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+...
 
-diff --git a/drivers/base/cacheinfo.c b/drivers/base/cacheinfo.c
-index 66d10bdb863b..44547fd96f72 100644
---- a/drivers/base/cacheinfo.c
-+++ b/drivers/base/cacheinfo.c
-@@ -136,6 +136,31 @@ static bool cache_node_is_unified(struct cacheinfo *this_leaf,
- 	return of_property_read_bool(np, "cache-unified");
- }
- 
-+static void cache_of_set_id(struct cacheinfo *this_leaf, struct device_node *np)
-+{
-+	struct device_node *cpu;
-+	unsigned long min_id = ~0UL;
-+
-+	for_each_of_cpu_node(cpu) {
-+		struct device_node *cache_node = cpu;
-+		u64 id = of_get_cpu_hwid(cache_node, 0);
-+
-+		while ((cache_node = of_find_next_cache_node(cache_node))) {
-+			if ((cache_node == np) && (id < min_id)) {
-+				min_id = id;
-+				of_node_put(cache_node);
-+				break;
-+			}
-+			of_node_put(cache_node);
-+		}
-+	}
-+
-+	if (min_id != ~0UL) {
-+		this_leaf->id = min_id;
-+		this_leaf->attributes |= CACHE_ID;
-+	}
-+}
-+
- static void cache_of_set_props(struct cacheinfo *this_leaf,
- 			       struct device_node *np)
- {
-@@ -151,6 +176,7 @@ static void cache_of_set_props(struct cacheinfo *this_leaf,
- 	cache_get_line_size(this_leaf, np);
- 	cache_nr_sets(this_leaf, np);
- 	cache_associativity(this_leaf);
-+	cache_of_set_id(this_leaf, np);
- }
- 
- static int cache_setup_of_node(unsigned int cpu)
+> +static bool snd_soc_acpi_id_present(struct snd_soc_acpi_mach *machine)
+> +{
+> +       struct snd_soc_acpi_codecs *id_alt = machine->id_alt;
+> +       int i;
+> +
+> +       if (acpi_dev_present(machine->id, NULL, -1))
+> +               return true;
+> +
+> +       if (id_alt == NULL)
+> +               return false;
+> +
+> +       for (i = 0; i < id_alt->num_codecs; i++) {
+> +               if (acpi_dev_present(id_alt->codecs[i], NULL, -1))
+> +                       return true;
+> +       }
+> +
+> +       return false;
+> +}
+
+Wondering if you may modify data structure in a way that makes it
+possible to use for_each_acpi_dev_match().
+
+...
+
+> +               if (snd_soc_acpi_id_present(mach) != false) {
+
+' != fase' is redundant.
+
+
+
 -- 
-2.30.2
-
+With Best Regards,
+Andy Shevchenko
