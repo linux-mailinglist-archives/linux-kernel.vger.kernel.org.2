@@ -2,116 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3CDC424056
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 16:45:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FD1442405B
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 16:47:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239021AbhJFOq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 10:46:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41286 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231600AbhJFOq4 (ORCPT
+        id S239019AbhJFOtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 10:49:01 -0400
+Received: from relaydlg-01.paragon-software.com ([81.5.88.159]:54628 "EHLO
+        relaydlg-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238440AbhJFOtA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 10:46:56 -0400
-Received: from mail-oo1-xc31.google.com (mail-oo1-xc31.google.com [IPv6:2607:f8b0:4864:20::c31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A59CC061749;
-        Wed,  6 Oct 2021 07:45:04 -0700 (PDT)
-Received: by mail-oo1-xc31.google.com with SMTP id e16-20020a4ad250000000b002b5e1f1bc78so897386oos.11;
-        Wed, 06 Oct 2021 07:45:04 -0700 (PDT)
+        Wed, 6 Oct 2021 10:49:00 -0400
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+        by relaydlg-01.paragon-software.com (Postfix) with ESMTPS id 242DD820BB;
+        Wed,  6 Oct 2021 17:47:04 +0300 (MSK)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=JBtRY365OM1Ze3t730v+NQ8ra3UU6eUF9sKHTNUsFWA=;
-        b=divqiK2PDpi+uR9iGKV787gf0Ytr1H4MZVihs16FhO1uTZig6SXCuE3YF0GKAp9xUH
-         74o9AI04hjXjyyAY7wFpqHY69bkARFQ2Izp4VhzlS2ttUDbFkuAuRtaQPa6avGEzKulj
-         V6kK4+s02wEeYAJpbZwpR1xp2zZNUtYG8qQTa9Xn/yfgobMSSWnPpS5DNiqdFIpEC6GF
-         5D7Y3WA5O+xthteDMs7pGVEkOo4XSriY4pjQ1ciwTjX/paRNNJZnyqYLBmO5SpYKgwKP
-         1nLFjFm36fI48Vdkw0ACZI8plSwnJyabbHT8TkvzMMqF/KuK2TZYBaXWDvXYJsJkhX1L
-         jD5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=JBtRY365OM1Ze3t730v+NQ8ra3UU6eUF9sKHTNUsFWA=;
-        b=MjgfH0OFY0rtZ1uLuCjjOJhvhljdaiW49pTjXYiic/tobLeCLTuw3W549//PO9o0lG
-         i3sql5WCgh66AJgP51nM2aHr74UmWiY1BZK5gAZ7ic8FKYIPXlfKsYQbFHTXMFTh2ByI
-         sSpqJA4qgoJu176qccUl0TbfoSHxB/C/eli1ATo7vJ7sySy/P5umkmpQtU1F2jpMx2IS
-         NIzhjrqLj2gSTfox6BIRXcNFJ6W7Fpq8gpox2qe6etBU+lPBY1x/EoBbBT8OonZsjdDg
-         6idTcw7R8Gx+oI5POVUZ3EB15zihe/g/dlU5uVCAHQ4eUqBY5wPzG3SKLLE6l1ClKiv5
-         O57w==
-X-Gm-Message-State: AOAM530K9F+vaU21lF6uAQI+VZixaj9ciozWVAxMsCpVHwUC77qX1HV8
-        9qCL5RUqzFipKzP6/jy+AJkNV5VnAavLog==
-X-Google-Smtp-Source: ABdhPJynOGdvV0XmUejc28RvscsjL00B9Bm/oIeBIwzBPTBIlUHkFU0bdHHlCXniu7QMjfOwh5xnWg==
-X-Received: by 2002:a4a:bd8a:: with SMTP id k10mr18075050oop.41.1633531502868;
-        Wed, 06 Oct 2021 07:45:02 -0700 (PDT)
-Received: from Davids-MacBook-Pro.local ([8.48.134.30])
-        by smtp.googlemail.com with ESMTPSA id e2sm4010099ooh.40.2021.10.06.07.45.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Oct 2021 07:45:02 -0700 (PDT)
-Subject: Re: [PATCH 05/11] selftests: net/fcnal: kill_procs via spin instead
- of sleep
-To:     Leonard Crestez <cdleonard@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Shuah Khan <shuah@kernel.org>, David Ahern <dsahern@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Ido Schimmel <idosch@nvidia.com>,
-        Seth David Schoen <schoen@loyalty.org>,
-        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1633520807.git.cdleonard@gmail.com>
- <ff71285715d47b8c9b6bedb3b50700a26bc81f41.1633520807.git.cdleonard@gmail.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <b1a213d5-470d-637d-4e78-1b7653d87041@gmail.com>
-Date:   Wed, 6 Oct 2021 08:45:01 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        d=paragon-software.com; s=mail; t=1633531624;
+        bh=Pw9hI4lsPJ1rdGR/XG9311bw97T6BOdPPTpkqyVhOSs=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=arN2NQvC6BVoGD2VXZ09ZJCmiVU3RJC6569dmIW/eJ6+Vg7ykjquaRb9MA+AlYxxS
+         OQmJSRGMBYOTZbTn2t4385frrCDKK+j5h1dR0bAbMLm4sTNX5P5+RmnuYaLkI2IKWG
+         YLt2wsyQoh+spqf5QjLObtILAiKyliyM7gR2eCOo=
+Received: from [192.168.211.53] (192.168.211.53) by
+ vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 6 Oct 2021 17:47:03 +0300
+Message-ID: <bcbb8ddc-3ddf-4a91-6e92-d5cee2722bad@paragon-software.com>
+Date:   Wed, 6 Oct 2021 17:47:03 +0300
 MIME-Version: 1.0
-In-Reply-To: <ff71285715d47b8c9b6bedb3b50700a26bc81f41.1633520807.git.cdleonard@gmail.com>
-Content-Type: text/plain; charset=utf-8
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.2
+Subject: Re: [PATCH] fs/ntfs3: Check for NULL if ATTR_EA_INFO is incorrect
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+To:     Mohammad Rasim <mohammad.rasim96@gmail.com>,
+        Kari Argillander <kari.argillander@gmail.com>
+CC:     <ntfs3@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>
+References: <227c13e3-5a22-0cba-41eb-fcaf41940711@paragon-software.com>
+ <20211003175036.ly4m3lw2bjoippsh@kari-VirtualBox>
+ <c892016c-3e50-739b-38d2-010f02d52019@gmail.com>
+From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+In-Reply-To: <c892016c-3e50-739b-38d2-010f02d52019@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [192.168.211.53]
+X-ClientProxiedBy: vdlg-exch-02.paragon-software.com (172.30.1.105) To
+ vdlg-exch-02.paragon-software.com (172.30.1.105)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/6/21 5:47 AM, Leonard Crestez wrote:
-> Sleeping for one second after a kill is not necessary and adds up quite
-> quickly. Replace with a fast loop spinning until pidof returns nothing.
+
+
+On 04.10.2021 23:39, Mohammad Rasim wrote:
 > 
-> Signed-off-by: Leonard Crestez <cdleonard@gmail.com>
-> ---
->  tools/testing/selftests/net/fcnal-test.sh | 11 +++++++++--
->  1 file changed, 9 insertions(+), 2 deletions(-)
+> On 10/3/21 20:50, Kari Argillander wrote:
+>> On Wed, Sep 29, 2021 at 07:35:43PM +0300, Konstantin Komarov wrote:
+>>> This can be reason for reported panic.
+>>> Fixes: 4342306f0f0d ("fs/ntfs3: Add file operations and implementation")
+>> I see that you have include this to devel branch but you did not send V2
+>> [1]. I also included Mohammad Rasim to this thread. Maybe they can test
+>> this patch. Rasim can you test [2] if your problem will be fixed with
+>> this tree. Or just test this patch if you prefer that way.
+>>
+>> [1]: github.com/Paragon-Software-Group/linux-ntfs3/commit/35afb70dcfe4eb445060dd955e5b67d962869ce5
+>> [2]: github.com/Paragon-Software-Group/linux-ntfs3/tree/devel
 > 
-> diff --git a/tools/testing/selftests/net/fcnal-test.sh b/tools/testing/selftests/net/fcnal-test.sh
-> index 0bd60cd3bc06..b7fda51deb3f 100755
-> --- a/tools/testing/selftests/net/fcnal-test.sh
-> +++ b/tools/testing/selftests/net/fcnal-test.sh
-> @@ -176,12 +176,19 @@ show_hint()
->  	fi
->  }
->  
->  kill_procs()
->  {
-> -	killall nettest ping ping6 >/dev/null 2>&1
-> -	sleep 1
-> +	local pids
-> +	while true; do
-> +		pids=$(pidof nettest ping ping6)
-> +		if [[ -z $pids ]]; then
-> +			break
-> +		fi
-> +		kill $pids
-> +		sleep 0.01
-> +	done
->  }
->  
->  do_run_cmd()
->  {
->  	local cmd="$*"
+> Yeah unfortunately the problem still exist, moving the buildroot git tree from my nvme ext4 partition to my wd ntfs partition still causes the panic.
+> 
+> Note that i used the master branch if that matters but it contains the same commit
+> 
+> 
+> Regards
 > 
 
-ideally the script keeps track of processes it launches and only kills
-those. The original killall was just a stop gap until the process
-tracking was added.
+Is panic the same as old one?
+
+BUG: kernel NULL pointer dereference, address: 000000000000000e
+RIP: 0010:ni_write_inode+0xe6b/0xed0 [ntfs3]
+etc.
+
+>>> Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+>>> ---
+>>>   fs/ntfs3/frecord.c | 4 +++-
+>>>   1 file changed, 3 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/fs/ntfs3/frecord.c b/fs/ntfs3/frecord.c
+>>> index 9a53f809576d..007602badd90 100644
+>>> --- a/fs/ntfs3/frecord.c
+>>> +++ b/fs/ntfs3/frecord.c
+>>> @@ -3080,7 +3080,9 @@ static bool ni_update_parent(struct ntfs_inode *ni, struct NTFS_DUP_INFO *dup,
+>>>                          const struct EA_INFO *info;
+>>>                            info = resident_data_ex(attr, sizeof(struct EA_INFO));
+>>> -                       dup->ea_size = info->size_pack;
+>>> +                       /* If ATTR_EA_INFO exists 'info' can't be NULL. */
+>>> +                       if (info)
+>>> +                               dup->ea_size = info->size_pack;
+>>>                  }
+>>>          }
+>>>   -- 
+>>> 2.33.0
+>>>
