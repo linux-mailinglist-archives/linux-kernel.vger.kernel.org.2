@@ -2,98 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B10B424277
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 18:20:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E75642427C
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 18:20:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239345AbhJFQWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 12:22:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43196 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230021AbhJFQV6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 12:21:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A7DA610EA;
-        Wed,  6 Oct 2021 16:20:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633537206;
-        bh=pGzTV3esiIv298q9BXKhGUzD+f9XRjx1SUiQN9dwFBY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aFzjtpdXCVTqawava5IljBa+/tcy/RpCd62RroTXoFADFrgIN7a7nbqhZR3FNa+5u
-         n6vpDB4cL8O0y8JrseDB0TyqzlXdR+W1B7Ofy3p9ULIh4hajefc6MQFJbx6A9fOlKE
-         TQXcV2juY27R2xwpm0OHNrAh/RN6Y76ND4wztZIPFRjNY/noEbWVI/l7pcTK4mAYo2
-         ZZeqnuk6nWtAJi1bNQxBAxpwNXfMMsYqe0qkO9ps/VXfUM3LFHYHqJ9Fs94tShKJd9
-         YArdRonQoxF6gYglcqx/Qj21TcntUkX8vqLTq7BJtHWvP0qWJqp3Pb6bZcUnaIngwf
-         OuOpforfcU63w==
-Date:   Wed, 6 Oct 2021 17:20:04 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Joe Perches <joe@perches.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: Re: [PATCH v1 2/4] ASoC: Intel: bytcr_rt5640: Use temporary variable
- for struct device
-Message-ID: <YV3MtOrpziyKqkxA@sirena.org.uk>
-References: <20211006150442.16503-1-andriy.shevchenko@linux.intel.com>
- <20211006150442.16503-2-andriy.shevchenko@linux.intel.com>
- <4b81a10dca78e286a9f806464b97111b5a15a91e.camel@perches.com>
- <YV3ER4uIL4aRWBjz@smile.fi.intel.com>
- <YV3FaZ+afuZZSIth@sirena.org.uk>
- <YV3JWzNgGInZ1Bt5@smile.fi.intel.com>
+        id S239382AbhJFQWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 12:22:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239381AbhJFQWk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 12:22:40 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EC30C061746
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 09:20:48 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0d3600bdb6aa8687ce684e.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:3600:bdb6:aa86:87ce:684e])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8AB881EC03FE;
+        Wed,  6 Oct 2021 18:20:46 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1633537246;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=1xddPaZ1UE7THsd1YqIakKfcdzE8fDpzy5AsfG2miN4=;
+        b=QLWmuk0sdHDEvg0dsydydUF1AtPZ3u7XXbFpiRqFIAnspA+EdtJ5Ld/Bb2jN1MwG8rkBkD
+        HhDaO3QAc6X/p4ioCRW98ueERjbzmZs8l+TVt0ijXuVj3a5cQ7yqEis3nbKxsXGSKQMXhW
+        VEqxddiZc8nTYsEcVlwQIzcwLzzSqm0=
+Date:   Wed, 6 Oct 2021 18:20:41 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
+        VMware Inc <pv-drivers@vmware.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 03/11] x86/cpufeatures: Add TDX Guest CPU feature
+Message-ID: <YV3M2cqqMTkC/rUK@zn.tnic>
+References: <20211005025205.1784480-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20211005025205.1784480-4-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <YV3AKekdJU0vsbaN@zn.tnic>
+ <328cc0e7-89e7-a1b2-f798-fe758c2c1f4e@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="pvNYqT1s2XmLNWBp"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YV3JWzNgGInZ1Bt5@smile.fi.intel.com>
-X-Cookie: A is for Apple.
+In-Reply-To: <328cc0e7-89e7-a1b2-f798-fe758c2c1f4e@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Oct 06, 2021 at 08:43:48AM -0700, Kuppuswamy, Sathyanarayanan wrote:
+> Yes. But, Joerg Roedel in his review recommended using variable
+> similar to sme_me_mask to avoid function call in Intel platform in
+> cc_platform_has().
 
---pvNYqT1s2XmLNWBp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+That would normally make sense if this were a fast path. But I don't see
+that being one. Besides, the subsequent runs will be the function call +
+a couple of instructions:
 
-On Wed, Oct 06, 2021 at 07:05:47PM +0300, Andy Shevchenko wrote:
-> On Wed, Oct 06, 2021 at 04:48:57PM +0100, Mark Brown wrote:
-> > On Wed, Oct 06, 2021 at 06:44:07PM +0300, Andy Shevchenko wrote:
-> > > On Wed, Oct 06, 2021 at 08:21:01AM -0700, Joe Perches wrote:
+# arch/x86/kernel/tdx.c:22: 	if (tdx_guest >= 0)
+	movl	tdx_guest(%rip), %eax	# tdx_guest,
+	testl	%eax, %eax	#
+	jns	.L11	#,
 
-> > > > Some will complain about a lack of commit message.
+...
 
-> > > Yeah, sorry for that, it wasn't deliberate. I forgot to run `git msg-filter`
-> > > on these three patches to add it.
+.L11:
+# arch/x86/kernel/tdx.c:23: 		return tdx_guest;
+	setne	%al	#, <retval>
+# arch/x86/kernel/tdx.c:35: }
+	ret
 
-> > > Mark, do you want me resend entire bunch(es) or just starting from these
-> > > patches? Or...?
+which is not the end of the world.
 
-> > If you're adding a commit message with automation it's probably not
-> > adding any value.
+And it if it is really used in a fast path, then we can do a static
+branch etc.
 
-> What do you mean? I add it exceptionally for the same (by nature) patches.
-> What do you expect to be altered in these three, if the idea behind the change
-> is very well the same?
+Thx.
 
-I really don't care if there's a separate changelog for trivial patches
-like this, it adds nothing of value.
+-- 
+Regards/Gruss,
+    Boris.
 
---pvNYqT1s2XmLNWBp
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFdzLMACgkQJNaLcl1U
-h9AeiAf/WqCqXROZjxlY7thdJTvoxPef03P18FKvWx2PcZs8ydd2++38FMk9Kt1E
-8SY7llTHx97Sy/7MohSU/I5RyxMb/16nBfc6G75elHUzZPpYMscrgNHvDsruNM50
-dDl5jgXeah4PA/zkdYnyKdB5PsgDHfUH6fqlen5DdvZkBD8bgcsDmGNm5Au30XPL
-fytYGo8lKxq6mbHouLyqw+Cp01n75TVaz/V1v5tCSpYrLX2j5fEIMd58rPy52/hV
-mGrt+61/oqOJ6y0vwCH9aw1TRuHUgOX6iUfBV4d5AHpwpqqiNfA79+leR5VjUn0j
-7Ax5qxo33fPbRqZQCvBqQDgktUY2Gg==
-=I4Dh
------END PGP SIGNATURE-----
-
---pvNYqT1s2XmLNWBp--
+https://people.kernel.org/tglx/notes-about-netiquette
