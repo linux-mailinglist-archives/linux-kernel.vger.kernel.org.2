@@ -2,238 +2,288 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09C13423511
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 02:35:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F69B423514
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 02:35:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237069AbhJFAhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S237096AbhJFAho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 20:37:44 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:45268 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234027AbhJFAhm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 5 Oct 2021 20:37:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36466 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230218AbhJFAhk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 20:37:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A81BE61207;
-        Wed,  6 Oct 2021 00:35:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633480549;
-        bh=PrZNgMx7YzMXM2DrDDSBr5tyPQGCj7j0uu7IMYK3EC8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FNg8p9vnOBdjONhlzgt21BQUsX5Ls3sKljcMLq3eH1OjZpIpbSYJ8eytov9AhoTgW
-         OsfAD7LOtVg3wT7pKVkoKZFDwqVrkrTFh+BXNcRzu6TeIWAGTfPw2kIhSwGupk86t5
-         pw0Qv5KndBfaYbgXxU+dDD491qenPRMsqeEsoJAq1iJE/nyxHt09Ihlw+nhA1JSV7l
-         uUOmVK7RLAKhx8oXbApZ7JlCLqeO8M7TNGD8bXn7OpMHSBJYggXqTc8LwRhw9WNbVb
-         SpxWHF25iaRwmiLVWVIw7T/KDSVLBMC1ZfqSc2PZj4gKL38PpjF5pb9TWss+1M3urJ
-         cOk1IPcGWC+Kw==
-Date:   Tue, 5 Oct 2021 17:35:46 -0700
-From:   Mike Rapoport <rppt@kernel.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Michal Hocko <mhocko@suse.com>,
-        Oscar Salvador <osalvador@suse.de>, linux-doc@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH v1 3/3] memory-hotplug.rst: document the "auto-movable"
- online policy
-Message-ID: <YVzvYmf4xWC1DORO@kernel.org>
-References: <20210930144117.23641-1-david@redhat.com>
- <20210930144117.23641-4-david@redhat.com>
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1633480551; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=LQboSA03/AonDIOzGhDOGEo+U3kzH/52zxf3cHKNCmY=;
+ b=bJ8PPt8QwS7eqEmt29OmJ6xxqkjdvDqOG7i4yemwque73YlmktMNq/TKDDspuewrfQjZti7Y
+ 8xm1KVce1+EJ+8L6uC3zLISQbq0wlrDLizNFves9Kb1cYQ12oB/fS9JJwtxRUONY7AppxrXX
+ 0oqZ2M+RJ106mJrSlSDm56k4hnk=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 615cef65ff0285fb0a5f130d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 06 Oct 2021 00:35:49
+ GMT
+Sender: abhinavk=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id BF511C43618; Wed,  6 Oct 2021 00:35:48 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: abhinavk)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id BF9E5C43460;
+        Wed,  6 Oct 2021 00:35:46 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210930144117.23641-4-david@redhat.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 05 Oct 2021 17:35:46 -0700
+From:   abhinavk@codeaurora.org
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Kalyan Thota <kalyan_t@codeaurora.org>,
+        Kuogee Hsieh <khsieh@codeaurora.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [Freedreno] [PATCH v4 4/7] drm/msm/dp: Allow attaching a
+ drm_panel
+In-Reply-To: <20211005231323.2663520-5-bjorn.andersson@linaro.org>
+References: <20211005231323.2663520-1-bjorn.andersson@linaro.org>
+ <20211005231323.2663520-5-bjorn.andersson@linaro.org>
+Message-ID: <28fbd8f5b2d6bae7bedfc7e81e3fddd9@codeaurora.org>
+X-Sender: abhinavk@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 04:41:17PM +0200, David Hildenbrand wrote:
-> In commit e83a437faa62 ("mm/memory_hotplug: introduce "auto-movable" online
-> policy") we introduced a new memory online policy to automatically
-> select a zone for memory blocks to be onlined. We added a way to
-> set the active online policy and tunables for the auto-movable online
-> policy. In follow-up commits we tweaked the "auto-movable" policy to also
-> consider memory device details when selecting zones for memory blocks to
-> be onlined.
+Hi Bjorn
+
+On 2021-10-05 16:13, Bjorn Andersson wrote:
+> eDP panels might need some power sequencing and backlight management,
+> so make it possible to associate a drm_panel with an eDP instance and
+> prepare and enable the panel accordingly.
 > 
-> Let's document the new toggles and how the two online policies we have
-> work.
+> Now that we know which hardware instance is DP and which is eDP,
+> parser->parse() is passed the connector_type and the parser is limited
+> to only search for a panel in the eDP case.
 > 
-> Signed-off-by: David Hildenbrand <david@redhat.com>
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 > ---
->  .../admin-guide/mm/memory-hotplug.rst         | 128 +++++++++++++++---
->  1 file changed, 108 insertions(+), 20 deletions(-)
 > 
-> diff --git a/Documentation/admin-guide/mm/memory-hotplug.rst b/Documentation/admin-guide/mm/memory-hotplug.rst
-> index ee00b70dedde..c20a2c0031cf 100644
-> --- a/Documentation/admin-guide/mm/memory-hotplug.rst
-> +++ b/Documentation/admin-guide/mm/memory-hotplug.rst
-> @@ -165,9 +165,8 @@ Or alternatively::
->  
->  	% echo 1 > /sys/devices/system/memory/memoryXXX/online
->  
-> -The kernel will select the target zone automatically, usually defaulting to
-> -``ZONE_NORMAL`` unless ``movable_node`` has been specified on the kernel
-> -command line or if the memory block would intersect the ZONE_MOVABLE already.
-> +The kernel will select the target zone automatically, depending on the
-> +configured ``online_policy``.
->  
->  One can explicitly request to associate an offline memory block with
->  ZONE_MOVABLE by::
-> @@ -198,6 +197,9 @@ Auto-onlining can be enabled by writing ``online``, ``online_kernel`` or
->  
->  	% echo online > /sys/devices/system/memory/auto_online_blocks
->  
-> +Similarly to manual onlining, with ``online`` the kernel will select the
-> +target zone automatically, depending on the configured ``online_policy``.
-> +
->  Modifying the auto-online behavior will only affect all subsequently added
->  memory blocks only.
->  
-> @@ -393,9 +395,11 @@ command line parameters are relevant:
->  ======================== =======================================================
->  ``memhp_default_state``	 configure auto-onlining by essentially setting
->                           ``/sys/devices/system/memory/auto_online_blocks``.
-> -``movable_node``	 configure automatic zone selection in the kernel. When
-> -			 set, the kernel will default to ZONE_MOVABLE, unless
-> -			 other zones can be kept contiguous.
-> +``movable_node``	 configure automatic zone selection in the kernel when
-> +			 using the ``contig-zones`` online policy. When
-> +			 set, the kernel will default to ZONE_MOVABLE when
-> +			 onlining a memory block, unless other zones can be kept
-> +			 contiguous.
-
-The movable_node main purpose is to allow unplugging an entire node. Zone
-selection is a consequence of this. You may want to cite the description of
-movable_node in kernel-paramenters.txt here.
-
-And, pardon my ignorance, how movable_node will play with auto-movable
-policy?
-
->  ======================== =======================================================
->  
->  Module Parameters
-> @@ -414,20 +418,104 @@ and they can be observed (and some even modified at runtime) via::
->  
->  The following module parameters are currently defined:
->  
-> -======================== =======================================================
-> -``memmap_on_memory``	 read-write: Allocate memory for the memmap from the
-> -			 added memory block itself. Even if enabled, actual
-> -			 support depends on various other system properties and
-> -			 should only be regarded as a hint whether the behavior
-> -			 would be desired.
-> -
-> -			 While allocating the memmap from the memory block
-> -			 itself makes memory hotplug less likely to fail and
-> -			 keeps the memmap on the same NUMA node in any case, it
-> -			 can fragment physical memory in a way that huge pages
-> -			 in bigger granularity cannot be formed on hotplugged
-> -			 memory.
-> -======================== =======================================================
-> +================================ ===============================================
-> +``memmap_on_memory``		 read-write: Allocate memory for the memmap from
-> +				 the added memory block itself. Even if enabled,
-> +				 actual support depends on various other system
-> +				 properties and should only be regarded as a
-> +				 hint whether the behavior would be desired.
-> +
-> +				 While allocating the memmap from the memory
-> +				 block itself makes memory hotplug less likely
-> +				 to fail and keeps the memmap on the same NUMA
-> +				 node in any case, it can fragment physical
-> +				 memory in a way that huge pages in bigger
-> +				 granularity cannot be formed on hotplugged
-> +				 memory.
-> +``online_policy``		 read-write: Set the basic policy used for
-> +				 automatic zone selection when onlining memory
-> +				 blocks without specifying a target zone.
-> +				 ``contig-zones`` has been the kernel default
-> +				 before this parameter was added. After an
-> +				 online policy was configured and memory was
-> +				 online, the policy should not be changed
-> +				 anymore.
-> +
-> +				 When set to ``contig-zones``, the kernel will
-> +				 try keeping zones contiguous. If a memory block
-> +				 intersects multiple zones or no zone, the
-> +				 behavior depends on the ``movable_node`` kernel
-> +				 command line parameter: default to ZONE_MOVABLE
-> +				 if set, default to the applicable kernel zone
-> +				 (usually ZONE_NORMAL) if not set.
-> +
-> +				 When set to ``auto-movable``, the kernel will
-> +				 try onlining memory blocks to ZONE_MOVABLE if
-> +				 possible according to the configuration and
-> +				 memory device details. With this policy, one
-> +				 can avoid zone imbalances when eventually
-> +				 hotplugging a lot of memory later and still
-> +				 wanting to be able to hotunplug as much as
-> +				 possible reliably, very desirable in
-> +				 virtualized environments. As one example, a
-> +				 hotplugged DIMM will be onlined either
-> +				 completely to ZONE_MOVABLE or completely to
-> +				 ZONE_NORMAL, not a mixture.
-> +				 As another example, as many memory blocks
-> +				 belonging to a virtio-mem device will be
-> +				 onlined to ZONE_MOVABLE as possible,
-> +				 special-casing units of memory blocks that can
-> +				 only get hotunplugged together. *This policy
-> +				 does not protect from setups that are
-> +				 problematic with ZONE_MOVABLE and does not
-> +				 change the zone of memory blocks dynamically
-> +				 after they were onlined.*
-> +``auto_movable_ratio``		 read-write: Set the maximum MOVABLE:KERNEL
-> +				 memory ratio in % for the ``auto-movable``
-> +				 online policy. Whether the ratio applies only
-> +				 for the system across all NUMA nodes or also
-> +				 per NUMA nodes depends on the
-> +				 ``auto_movable_numa_aware`` configuration.
-> +
-> +				 All accounting is based on present memory pages
-> +				 in the zones combined with accounting per
-> +				 memory device. Memory dedicated to the CMA
-> +				 allocator is accounted as MOVABLE, although
-> +				 residing on one of the kernel zones. The
-> +				 possible ratio depends on the actual workload.
-> +				 The kernel default is "301" %, for example,
-> +				 allowing for hotplugging 24 GiB to a 8 GiB VM
-> +				 and automatically onlining all hotplugged
-> +				 memory to ZONE_MOVABLE in many setups. The
-> +				 additional 1% deals with some pages being not
-> +				 present, for example, because of some firmware
-> +				 allocations.
-> +
-> +				 Note that ZONE_NORMAL memory provided by one
-> +				 memory device does not allow for more
-> +				 ZONE_MOVABLE memory for a different memory
-> +				 device. As one example, onlining memory of a
-> +				 hotplugged DIMM to ZONE_NORMAL will not allow
-> +				 for another hotplugged DIMM to get onlined to
-> +				 ZONE_MOVABLE automatically. In contrast, memory
-> +				 hotplugged by a virtio-mem device that got
-> +				 onlined to ZONE_NORMAL will allow for more
-> +				 ZONE_MOVABLE memory within *the same*
-> +				 virtio-mem device.
-> +``auto_movable_numa_aware``	 read-write: Configure whether the
-> +				 ``auto_movable_ratio`` in the ``auto-movable``
-> +				 online policy also applies per NUMA
-> +				 node in addition to the whole system across all
-> +				 NUMA nodes. The kernel default is "Y".
-> +
-> +				 Disabling NUMA awareness can be helpful when
-> +				 dealing with NUMA nodes that should be
-> +				 completely hotunpluggable, onlining the memory
-> +				 completely to ZONE_MOVABLE automatically if
-> +				 possible.
-> +
-> +				 Parameter availability depends on CONFIG_NUMA.
-> +================================ ===============================================
->  
->  ZONE_MOVABLE
->  ============
-> -- 
-> 2.31.1
+> Changes since v3:
+> - Previously posted separately, now added to series
+> - Make the search for a panel conditional on it being an eDP connector
+> - Move the search to of_graph port 1 (was 2 to distinguish from DP
+> link to USB-C connector)
 > 
+>  drivers/gpu/drm/msm/dp/dp_display.c |  9 ++++++---
+>  drivers/gpu/drm/msm/dp/dp_display.h |  1 +
+>  drivers/gpu/drm/msm/dp/dp_drm.c     | 11 +++++++++++
+>  drivers/gpu/drm/msm/dp/dp_parser.c  | 30 ++++++++++++++++++++++++++++-
+>  drivers/gpu/drm/msm/dp/dp_parser.h  |  3 ++-
+>  5 files changed, 49 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c
+> b/drivers/gpu/drm/msm/dp/dp_display.c
+> index eaf08f9e7d87..bdaf227f05dc 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_display.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
+> @@ -10,6 +10,7 @@
+>  #include <linux/component.h>
+>  #include <linux/of_irq.h>
+>  #include <linux/delay.h>
+> +#include <drm/drm_panel.h>
+> 
+>  #include "msm_drv.h"
+>  #include "msm_kms.h"
+> @@ -230,12 +231,14 @@ static int dp_display_bind(struct device *dev,
+> struct device *master,
+>  	priv = drm->dev_private;
+>  	priv->dp = &(dp->dp_display);
+> 
+> -	rc = dp->parser->parse(dp->parser);
+> +	rc = dp->parser->parse(dp->parser, dp->dp_display.connector_type);
+>  	if (rc) {
+>  		DRM_ERROR("device tree parsing failed\n");
+>  		goto end;
+>  	}
+> 
+> +	dp->dp_display.panel_bridge = dp->parser->panel_bridge;
+> +
+>  	dp->aux->drm_dev = drm;
+>  	rc = dp_aux_register(dp->aux);
+>  	if (rc) {
+> @@ -822,7 +825,7 @@ static int dp_display_set_mode(struct msm_dp 
+> *dp_display,
+>  	return 0;
+>  }
+> 
+> -static int dp_display_prepare(struct msm_dp *dp)
+> +static int dp_display_prepare(struct msm_dp *dp_display)
+>  {
+>  	return 0;
+>  }
+> @@ -896,7 +899,7 @@ static int dp_display_disable(struct
+> dp_display_private *dp, u32 data)
+>  	return 0;
+>  }
+> 
+> -static int dp_display_unprepare(struct msm_dp *dp)
+> +static int dp_display_unprepare(struct msm_dp *dp_display)
+>  {
+>  	return 0;
+>  }
+> diff --git a/drivers/gpu/drm/msm/dp/dp_display.h
+> b/drivers/gpu/drm/msm/dp/dp_display.h
+> index 02999408c052..24aefca66029 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_display.h
+> +++ b/drivers/gpu/drm/msm/dp/dp_display.h
+> @@ -15,6 +15,7 @@ struct msm_dp {
+>  	struct device *codec_dev;
+>  	struct drm_connector *connector;
+>  	struct drm_encoder *encoder;
+> +	struct drm_bridge *panel_bridge;
+>  	bool is_connected;
+>  	bool audio_enabled;
+>  	bool power_on;
+> diff --git a/drivers/gpu/drm/msm/dp/dp_drm.c 
+> b/drivers/gpu/drm/msm/dp/dp_drm.c
+> index f33e31523f56..76856c4ee1d6 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_drm.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_drm.c
+> @@ -5,6 +5,7 @@
+> 
+>  #include <drm/drm_atomic_helper.h>
+>  #include <drm/drm_atomic.h>
+> +#include <drm/drm_bridge.h>
+>  #include <drm/drm_crtc.h>
+> 
+>  #include "msm_drv.h"
+> @@ -160,5 +161,15 @@ struct drm_connector
+> *dp_drm_connector_init(struct msm_dp *dp_display)
+> 
+>  	drm_connector_attach_encoder(connector, dp_display->encoder);
+> 
+> +	if (dp_display->panel_bridge) {
+> +		ret = drm_bridge_attach(dp_display->encoder,
+> +					dp_display->panel_bridge, NULL,
+> +					DRM_BRIDGE_ATTACH_NO_CONNECTOR);
+> +		if (ret < 0) {
+> +			DRM_ERROR("failed to attach panel bridge: %d\n", ret);
+> +			return ERR_PTR(ret);
+> +		}
+> +	}
+> +
+>  	return connector;
+>  }
+> diff --git a/drivers/gpu/drm/msm/dp/dp_parser.c
+> b/drivers/gpu/drm/msm/dp/dp_parser.c
+> index 4d6e047f803d..eb6bbfbea484 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_parser.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_parser.c
+> @@ -6,6 +6,7 @@
+>  #include <linux/of_gpio.h>
+>  #include <linux/phy/phy.h>
+> 
+> +#include <drm/drm_of.h>
+>  #include <drm/drm_print.h>
+> 
+>  #include "dp_parser.h"
+> @@ -263,7 +264,28 @@ static int dp_parser_clock(struct dp_parser 
+> *parser)
+>  	return 0;
+>  }
+> 
+> -static int dp_parser_parse(struct dp_parser *parser)
+> +static int dp_parser_find_panel(struct dp_parser *parser)
+> +{
+> +	struct device *dev = &parser->pdev->dev;
+> +	struct drm_panel *panel;
+> +	int rc;
+> +
+> +	rc = drm_of_find_panel_or_bridge(dev->of_node, 1, 0, &panel, NULL);
+> +	if (rc) {
+> +		DRM_ERROR("failed to acquire DRM panel: %d\n", rc);
+> +		return rc;
+> +	}
+> +
+> +	parser->panel_bridge = devm_drm_panel_bridge_add(dev, panel);
+> +	if (IS_ERR(parser->panel_bridge)) {
+> +		DRM_ERROR("failed to create panel bridge\n");
+> +		return PTR_ERR(parser->panel_bridge);
+> +	}
 
--- 
-Sincerely yours,
-Mike.
+When we add a bridge using devm_drm_panel_bridge_add(), it will register 
+with default bridge functions which is fine
+because we need the panel power to be controlled here.
+
+
+140 static const struct drm_bridge_funcs panel_bridge_bridge_funcs = {
+141 	.attach = panel_bridge_attach,
+142 	.detach = panel_bridge_detach,
+143 	.pre_enable = panel_bridge_pre_enable,
+144 	.enable = panel_bridge_enable,
+145 	.disable = panel_bridge_disable,
+146 	.post_disable = panel_bridge_post_disable,
+147 	.get_modes = panel_bridge_get_modes,
+
+But what about the EDID related things, the DP/eDP driver already reads 
+the EDID and gets the modes so we need to skip
+that in this case as otherwise it will end up calling the 
+panel_get_modes in the eDP panel which will be redundant.
+
+Let me know if I am missing something in this proposal.
+
+> +
+> +	return 0;
+> +}
+> +
+> +static int dp_parser_parse(struct dp_parser *parser, int 
+> connector_type)
+>  {
+>  	int rc = 0;
+> 
+> @@ -284,6 +306,12 @@ static int dp_parser_parse(struct dp_parser 
+> *parser)
+>  	if (rc)
+>  		return rc;
+> 
+> +	if (connector_type == DRM_MODE_CONNECTOR_eDP) {
+> +		rc = dp_parser_find_panel(parser);
+> +		if (rc)
+> +			return rc;
+> +	}
+> +
+>  	/* Map the corresponding regulator information according to
+>  	 * version. Currently, since we only have one supported platform,
+>  	 * mapping the regulator directly.
+> diff --git a/drivers/gpu/drm/msm/dp/dp_parser.h
+> b/drivers/gpu/drm/msm/dp/dp_parser.h
+> index dac10923abde..3172da089421 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_parser.h
+> +++ b/drivers/gpu/drm/msm/dp/dp_parser.h
+> @@ -123,8 +123,9 @@ struct dp_parser {
+>  	struct dp_display_data disp_data;
+>  	const struct dp_regulator_cfg *regulator_cfg;
+>  	u32 max_dp_lanes;
+> +	struct drm_bridge *panel_bridge;
+> 
+> -	int (*parse)(struct dp_parser *parser);
+> +	int (*parse)(struct dp_parser *parser, int connector_type);
+>  };
+> 
+>  /**
