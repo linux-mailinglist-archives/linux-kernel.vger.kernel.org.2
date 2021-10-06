@@ -2,63 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4B274241B4
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 17:46:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C4274241B7
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 17:46:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239090AbhJFPsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 11:48:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55796 "EHLO
+        id S239064AbhJFPsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 11:48:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231851AbhJFPsQ (ORCPT
+        with ESMTP id S231851AbhJFPsp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 11:48:16 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90140C061746
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 08:46:23 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id v17so10160639wrv.9
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 08:46:23 -0700 (PDT)
+        Wed, 6 Oct 2021 11:48:45 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56504C061746
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 08:46:53 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id r10so10169292wra.12
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 08:46:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=hGegrEJzYp+DaIApOozyrKxduLq4/GVLP985+gb2bIw=;
-        b=pO2Q8nafmltLEmupWA5c6YTYg0akQgeHVmeuLBonH8fqyNrXiNZL/yKxq6lUH8nfBL
-         De8QBrVBVAwqDO+RmntuQR6GR8fyOMx730Oc7UbbTAX/9JlMYYKOs7MVvgwtC7+LlYLG
-         uapj8dgGrstBb8k4ACHXy3CIuHUscSoSnx+tZGIx7+xwzgY7gpHTs7nkmQNSbwe0+g58
-         RTpJw5xUf8Fn94j8NDcY4eu+aloHM4nR7b8kYpW0whjRYAcF7oEAlf6FkOb8WyQGJwWS
-         BpzwSNRrB8LbG0+bCEpRrFcnNaCKJEasnuTZig71WDmwRWEBW1wngIJuuGuaoz01iPVk
-         ABYQ==
+        bh=/Mt4hVpDDLiJFsnMiqpoJ5N43/Wwws8Ndb8qPcKFmxw=;
+        b=f0AVYTcoxBUvDB+PZ28jxbJWZJAypXAwPJqhaXZfm/Uime5f/Yhmgfbr2vxhsWmhYl
+         LiUOvxCM3o2JmesOltJ9yeJdvVQCbfYIViMDm06IxV5ywXDD2YRQ5pJfj4pvTaRYFBgz
+         j81BNp6w8n7dISmaxYFQ8VxezlnL3h/c0MLv4TeRb9NHiB1eh0TabmPYrwpNdPbYJkTQ
+         udhRaUwC2CqjtX6v2wRsHuHBc2fuGGLC5SOIrjoPO/C+btc99Z5vTF6sk7BDlui3TztC
+         Mwj1oWYXon3bqMeHS9d0GQxqWACJWc96A4OSookRus8HzLS4zXG5+LlYf4f/AM8LqlEo
+         uE/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=hGegrEJzYp+DaIApOozyrKxduLq4/GVLP985+gb2bIw=;
-        b=l+bX/uaeLpRgPEZ4v0KUSl0ZNM5p3vl3NEreFi7kv7kWjQurDH3YlFNsqWnsr2+0oF
-         9HFqI4Ssnb7KhRP2o9ovLqS1P5quWfVe/BrxWHVZ909jr2q/r+5RYQ8M7PNb+7xtwRAM
-         dIr8WmJWZcTSWOg0VNG85cPxFcKOSx2nOWdSepI2VNpdXxlVcKmupzWTNnRKBAfp//zs
-         p0Ll4Jb9VyA/Mo3GgJZo6pBGOIrjPx7ZZXckitiI4PDjzcxBMK+KjLCLGXtjJoYX4VSj
-         KrYZOVwc6CEt5kJe+3SIUI1ofLmzQ8ZuhW3gs/PERK2IbK8qjT7z/M2C1sG9ocdSUj+t
-         Vqqw==
-X-Gm-Message-State: AOAM532M5EeQ6dk07Vi5kZSb/G9ckyXcF0qeqKBq1QzkQsncuayVgihm
-        GDfiNME4y0t0WKf1V1etMvw=
-X-Google-Smtp-Source: ABdhPJxKaAVl6GMqZ4mjSZTwXLq+KlYi6YHvI3uWIrqnLkGeo17HjfQFxg/qs7w1DvQdSSjHgFId+A==
-X-Received: by 2002:a05:600c:3ba5:: with SMTP id n37mr10454818wms.46.1633535182109;
-        Wed, 06 Oct 2021 08:46:22 -0700 (PDT)
+        bh=/Mt4hVpDDLiJFsnMiqpoJ5N43/Wwws8Ndb8qPcKFmxw=;
+        b=OAmkJRaTRFtA7e2OWKWlrtbOvsrR1dEmzF5Rntk32WwVo+cKGOVPEn7JFIB8F5uXFT
+         0ObGLfx/U2Kd+8nUT4I5ycqvfguUxGWP0LoQdRiV7/tJ0FBLxK1TgmhFvn9mfYDMwb12
+         ZoVtmX26bvvGjquPB5JFyQA+NnedmPeLWzfH0bxyTp6c9sw5b/qmEbGF2VWcDSC48vNR
+         6Q+zzwGSwqQeIhWuUM+8QMeG87OmOm5b+58AQ7dQy8k34dcq00Q0Nzuwsrnnpz6f7xNb
+         1x/nHxGVkOoFkNRZSzPRiZa0tShIENsYGeX8DSWUMIgRM6ScBjUdWmoqHhRAVT7p9yRj
+         /Fow==
+X-Gm-Message-State: AOAM532fJe2giIIrTtHqssW1o5uGb6YmlvYjvgj9VO9FiGZZmxn2M9WB
+        3kXl689AmhUHPUREDQFi0n6DPHI4JOBSVQ==
+X-Google-Smtp-Source: ABdhPJyI30sTsalaSH1M4b+oD0ejZDsI5TTr4n3hmyd9xdp8QX634Rs1+6R3TcQ4AD2CpwDf//gwQw==
+X-Received: by 2002:a5d:6d8a:: with SMTP id l10mr29904565wrs.121.1633535211935;
+        Wed, 06 Oct 2021 08:46:51 -0700 (PDT)
 Received: from localhost.localdomain ([197.49.35.129])
-        by smtp.gmail.com with ESMTPSA id o15sm5498825wmc.21.2021.10.06.08.46.20
+        by smtp.gmail.com with ESMTPSA id r205sm2007276wma.3.2021.10.06.08.46.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Oct 2021 08:46:21 -0700 (PDT)
+        Wed, 06 Oct 2021 08:46:51 -0700 (PDT)
 From:   Sohaib Mohamed <sohaib.amhmd@gmail.com>
 To:     sohaib.amhmd@gmail.com
-Cc:     Gioh Kim <gi-oh.kim@ionos.com>,
-        Jack Wang <jinpu.wang@cloud.ionos.com>,
-        Jens Axboe <axboe@kernel.dk>, Jonathan Corbet <corbet@lwn.net>,
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-kernel@vger.kernel.org
-Subject: [PATCH] Documentation: Fix typo in rtrs/rnbd
-Date:   Wed,  6 Oct 2021 17:46:17 +0200
-Message-Id: <20211006154619.134812-1-sohaib.amhmd@gmail.com>
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] Documentation: Fix typo in stable/sysfs-module
+Date:   Wed,  6 Oct 2021 17:46:48 +0200
+Message-Id: <20211006154649.134924-1-sohaib.amhmd@gmail.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -66,55 +63,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove repeated words:
-- "as as the"
-- "the the name"
+Remove repeated word: "the the source"
 
 Signed-off-by: Sohaib Mohamed <sohaib.amhmd@gmail.com>
 ---
- Documentation/ABI/testing/sysfs-class-rnbd-client | 2 +-
- Documentation/ABI/testing/sysfs-class-rtrs-client | 2 +-
- Documentation/ABI/testing/sysfs-class-rtrs-server | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ Documentation/ABI/stable/sysfs-module | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/ABI/testing/sysfs-class-rnbd-client b/Documentation/ABI/testing/sysfs-class-rnbd-client
-index 0b5997ab3365..e6cdc851952c 100644
---- a/Documentation/ABI/testing/sysfs-class-rnbd-client
-+++ b/Documentation/ABI/testing/sysfs-class-rnbd-client
-@@ -128,6 +128,6 @@ Description:	For each device mapped on the client a new symbolic link is created
- 		The <device_id> of each device is created as follows:
+diff --git a/Documentation/ABI/stable/sysfs-module b/Documentation/ABI/stable/sysfs-module
+index 560b4a3278df..41b1f16e8795 100644
+--- a/Documentation/ABI/stable/sysfs-module
++++ b/Documentation/ABI/stable/sysfs-module
+@@ -38,7 +38,7 @@ What:		/sys/module/<MODULENAME>/srcversion
+ Date:		Jun 2005
+ Description:
+ 		If the module source has MODULE_VERSION, this file will contain
+-		the checksum of the the source code.
++		the checksum of the source code.
 
- 		- If the 'device_path' provided during mapping contains slashes ("/"),
--		  they are replaced by exclamation mark ("!") and used as as the
-+		  they are replaced by exclamation mark ("!") and used as the
- 		  <device_id>. Otherwise, the <device_id> will be the same as the
- 		  "device_path" provided.
-diff --git a/Documentation/ABI/testing/sysfs-class-rtrs-client b/Documentation/ABI/testing/sysfs-class-rtrs-client
-index 49a4157c7bf1..fecc59d1b96f 100644
---- a/Documentation/ABI/testing/sysfs-class-rtrs-client
-+++ b/Documentation/ABI/testing/sysfs-class-rtrs-client
-@@ -78,7 +78,7 @@ What:		/sys/class/rtrs-client/<session-name>/paths/<src@dst>/hca_name
- Date:		Feb 2020
- KernelVersion:	5.7
- Contact:	Jack Wang <jinpu.wang@cloud.ionos.com> Danil Kipnis <danil.kipnis@cloud.ionos.com>
--Description:	RO, Contains the the name of HCA the connection established on.
-+Description:	RO, Contains the name of HCA the connection established on.
-
- What:		/sys/class/rtrs-client/<session-name>/paths/<src@dst>/hca_port
- Date:		Feb 2020
-diff --git a/Documentation/ABI/testing/sysfs-class-rtrs-server b/Documentation/ABI/testing/sysfs-class-rtrs-server
-index 3b6d5b067df0..b08601d80409 100644
---- a/Documentation/ABI/testing/sysfs-class-rtrs-server
-+++ b/Documentation/ABI/testing/sysfs-class-rtrs-server
-@@ -24,7 +24,7 @@ What:		/sys/class/rtrs-server/<session-name>/paths/<src@dst>/hca_name
- Date:		Feb 2020
- KernelVersion:	5.7
- Contact:	Jack Wang <jinpu.wang@cloud.ionos.com> Danil Kipnis <danil.kipnis@cloud.ionos.com>
--Description:	RO, Contains the the name of HCA the connection established on.
-+Description:	RO, Contains the name of HCA the connection established on.
-
- What:		/sys/class/rtrs-server/<session-name>/paths/<src@dst>/hca_port
- Date:		Feb 2020
+ What:		/sys/module/<MODULENAME>/version
+ Date:		Jun 2005
 --
 2.25.1
 
