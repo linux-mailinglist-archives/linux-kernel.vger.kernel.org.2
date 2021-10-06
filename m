@@ -2,113 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EC78424683
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 21:09:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21B1B424688
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 21:09:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239340AbhJFTLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 15:11:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47408 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239314AbhJFTLg (ORCPT
+        id S239359AbhJFTLr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 15:11:47 -0400
+Received: from mail-ot1-f50.google.com ([209.85.210.50]:38738 "EHLO
+        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239343AbhJFTLp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 15:11:36 -0400
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88314C061746;
-        Wed,  6 Oct 2021 12:09:43 -0700 (PDT)
-Received: by mail-qt1-x82f.google.com with SMTP id r1so3714988qta.12;
-        Wed, 06 Oct 2021 12:09:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VL8huvHNt0AW4VbvHoyUVP6MU5/wX3Bj6/diTCZsDhw=;
-        b=nEfMYzi66QIGok2oQdVZQIYT1PqFopAy8Md5kYeZVvtvZCrh0S/5Tb9Na/zmFrVA8L
-         0fM47209loAcRogudkTHSmAtX7ogUbikzNDP2dCvvFEyh4NmWJX/Wmuij/pT1Hh6Blet
-         2iB45DdHw3DfnROu9GEetkcQpZSo/I3P3pbkJRd6q7vgvLOH8CfV7oKLIcLDGSU0LSUS
-         kx7fKtdXj6OF0FHw3FAARnC6ueNLZErsQ24y+RY2c9rmAe3eUvt1UiOt/azZ1ZjWqara
-         dnkNkE9ymjW9dC6u78KAJ5zy4UkX4Gf+p13asciqvMqtbK1BM4q460rO/WqAQY73sS70
-         7CHw==
+        Wed, 6 Oct 2021 15:11:45 -0400
+Received: by mail-ot1-f50.google.com with SMTP id c6-20020a9d2786000000b005471981d559so4406860otb.5;
+        Wed, 06 Oct 2021 12:09:53 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VL8huvHNt0AW4VbvHoyUVP6MU5/wX3Bj6/diTCZsDhw=;
-        b=ynOaEen/mOv65VbopjYg7i9T+Wq3qdOqNVJi799T8bR/X8TEl2o/WtR9kZ1zM9VzzT
-         zp+JSzehtBnp6TVTvk5EQKUdsASViCLZHWrBL2anc37zQjdk2jvydCBOzpEf9NeJppKB
-         g+orJb2NlJxcGyB7iVLUvrsUThjfj10O2vMLQyJpg1m0rGiXrvOyqztxr5aCcRQHY0Jh
-         ioch5stSpBfx3SkE2i5k7OovpjW7FQXGcRVeRI/mxB29etrDO3w3Z3KEHlOg5wf+wOQ+
-         daj+vbgLCFwtemG0NAHR6x7p1g633DnJRCq53rISQCCM0DfQ2I3tTJe6vwqK1frAbb8r
-         CzIg==
-X-Gm-Message-State: AOAM531AcXDYa1vRSL50Ehbbs1jTfZIMQ0X121LPxJf0mYEtQSJ3qfVY
-        hK6Jelgoqod9aEF57nDs0Lflt8U2+i1XQU0EPhs=
-X-Google-Smtp-Source: ABdhPJyuoHhYVDdnFB0RJ7H6Qb8GSeTcN1K+azR1B1QNT9f5CUZ/P8aZh1M6ZZpIf09WbGXeunb+0JQDx5QqMJvzaPk=
-X-Received: by 2002:ac8:4313:: with SMTP id z19mr536654qtm.356.1633547382635;
- Wed, 06 Oct 2021 12:09:42 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XXPzrlRNSvZUe4SiE0xybZeK1VafzSZG6M/PPM6Jsqc=;
+        b=0xr3aEcPAY0zJIjgCVOwSo8gUl1uZwEqsCarWnj22R2NOeNwm8nLzst+EhTcUTcy8d
+         m8ZFjzy7q4Yij0TbtFU4YIRmUtd4mxiVZKQDBT3ty2wYAvK7RU+3rndj3vmEfEvEyCZI
+         07EO3e5GFQM0nJL+iBTAslYetEKgkYAwjIdVe0hBmfAgBqjaA1KMA5CtrGnVf7zx34Sr
+         JfYkQhKWDc17coFuTe8OK3PwCJgVuPdZ8ywZS/Vj9yxMAOdWjEC3SIuh725i6us6ePeG
+         6f2ne/iaereFqkAU152EFONmVxdis/mx1v3OzaQB2tngH9EhrDAPWXQajrYwCLCLARqD
+         SMQw==
+X-Gm-Message-State: AOAM531u8OtrGYnPgfdelvgJSLE/ks+prdLQiFPjTkUrvTd1+6WAgSXR
+        9khRYmF8breI4ks4OE1YQA==
+X-Google-Smtp-Source: ABdhPJx15PPZ/Sp4jiguY2xyGQXBzop3CVtvzjN4FK7KhMUcxyeAfU1Rz92H7nLnJ0892+RoMu9+Fw==
+X-Received: by 2002:a05:6830:1513:: with SMTP id k19mr389585otp.41.1633547392838;
+        Wed, 06 Oct 2021 12:09:52 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id a9sm4279056otk.3.2021.10.06.12.09.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Oct 2021 12:09:52 -0700 (PDT)
+Received: (nullmailer pid 2227188 invoked by uid 1000);
+        Wed, 06 Oct 2021 19:09:51 -0000
+Date:   Wed, 6 Oct 2021 14:09:51 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tomasz Figa <tomasz.figa@gmail.com>
+Subject: Re: [PATCH v3 06/10] regulator: dt-bindings: samsung,s5m8767:
+ convert to dtschema
+Message-ID: <YV30fzEB/NlNhA+C@robh.at.kernel.org>
+References: <20211006132324.76008-1-krzysztof.kozlowski@canonical.com>
+ <20211006132324.76008-7-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
-References: <20210902214708.1776690-1-robimarko@gmail.com> <YUf3aKn78+41Cb/G@builder.lan>
- <CAOX2RU5b46H7nqm6G4mHLSqEhGiWktwWjUKF5w10Ut+AdKea-A@mail.gmail.com>
- <632a7d28c23a8497d35ea009bfe89883@codeaurora.org> <CAOX2RU5+jeXiqz8oss8Sd-BWa059uAv5xu=7nx_YF4RYpG2S6w@mail.gmail.com>
- <YUurqDL/S15RziCQ@builder.lan> <20211006182419.GC33862@thinkpad>
- <CAOX2RU43D72yx1Kyb0jRMMOLgBd1OMscWLH-dEdp0P=L-5quHQ@mail.gmail.com> <20211006184404.GD33862@thinkpad>
-In-Reply-To: <20211006184404.GD33862@thinkpad>
-From:   Robert Marko <robimarko@gmail.com>
-Date:   Wed, 6 Oct 2021 21:09:31 +0200
-Message-ID: <CAOX2RU44mp2MfbEsjziV_X7SdO1wf+ptPbF-51Tc8FPzQcozJw@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: qcom: ipq8074: add SMEM support
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Kathiravan T <kathirav@codeaurora.org>, agross@kernel.org,
-        robh+dt@kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211006132324.76008-7-krzysztof.kozlowski@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 6 Oct 2021 at 20:44, Manivannan Sadhasivam
-<manivannan.sadhasivam@linaro.org> wrote:
->
-> On Wed, Oct 06, 2021 at 08:26:10PM +0200, Robert Marko wrote:
-> > On Wed, 6 Oct 2021 at 20:24, Manivannan Sadhasivam
-> > <manivannan.sadhasivam@linaro.org> wrote:
-> > >
->
-> [...]
->
-> > > Sorry, missed this earlier. I did face the probe deferral issue before and
-> > > submitted a small series for fixing that:
-> > >
-> > > https://lore.kernel.org/linux-mtd/20210302132757.225395-1-manivannan.sadhasivam@linaro.org/
-> > >
-> > > These 2 patches are in mainline now. Robert, can you make sure that you have
-> > > these 2 patches in your tree?
-> >
-> > Hi Mani,
-> > Yes, I have those patches as I am running this on top of 5.15-rc4 currently.
-> >
->
-> Hmm. So if both SMEM and NAND drivers are added to the probe deferral list then
-> the issue is likely not related to probe ordering.
->
-> Can you nail down the point where the board starts rebooting?
+On Wed, 06 Oct 2021 15:23:20 +0200, Krzysztof Kozlowski wrote:
+> Convert the regulators of Samsung S5M8767 PMIC to DT schema format.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> ---
+>  .../bindings/regulator/samsung,s5m8767.txt    | 140 ------------------
+>  .../bindings/regulator/samsung,s5m8767.yaml   |  74 +++++++++
+>  MAINTAINERS                                   |   2 +-
+>  3 files changed, 75 insertions(+), 141 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/regulator/samsung,s5m8767.txt
+>  create mode 100644 Documentation/devicetree/bindings/regulator/samsung,s5m8767.yaml
+> 
 
-Unfortunately not, I can see that it resets after the NAND driver
-requesting probe deferral but I cannot pinpoint the exact thing that
-resets it
-as there is no stack trace.
-
-Regards,
-Robert
->
-> Thanks,
-> Mani
->
-> > Regards,
-> > Robert
-> > >
-> > > Thanks,
-> > > Mani
-> > >
-> > > > Thanks,
-> > > > Bjorn
+Reviewed-by: Rob Herring <robh@kernel.org>
