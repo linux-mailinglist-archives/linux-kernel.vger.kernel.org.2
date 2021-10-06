@@ -2,85 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 302C9424292
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 18:25:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9E4E424289
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 18:23:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232165AbhJFQ1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 12:27:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44424 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230014AbhJFQ1i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 12:27:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E2D61610E5;
-        Wed,  6 Oct 2021 16:25:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633537546;
-        bh=yMaIO/vd9u6EImrWxqcYNEJlDSKGJFG3owN7iCX+71A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jFazALmVxw2rZ1+El/acDelSWVyVEpwrxEZeSIgfwQKuM7JseeOjQNchG09/jBLeI
-         z7mTJ74NRPa+btJsFJgjsqow1fkKJuo4AjqMDm24FN5GFAbkuvHhBu9Went3/sDt9p
-         MFUYP+WdInjYC51xT4BXNLmahT3yPpBcpZ9g/L0GB0TQfpSCqRsjDTRqABB7eRr3iO
-         7tBYXX/M68BXbwB4bm9X/lVkvF/5yHyJUjYvuaXbRaLA5vXQi4EmqqwdP5RcU4YjpS
-         KFUrboC5dYv7Xk5LeoFLeSS9wViYI4P4Bo59j/oFy0FUCZ1XyHhpA0BVPX1g6dWZN5
-         tm6b4I4kQtLMQ==
-Date:   Wed, 6 Oct 2021 17:25:44 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: Re: [PATCH v1 1/4] ASoC: Intel: bytcht_es8316: Get platform data via
- dev_get_platdata()
-Message-ID: <YV3OCDEgsy1NywTT@sirena.org.uk>
-References: <20211006150428.16434-1-andriy.shevchenko@linux.intel.com>
- <c8b85524-6b9f-8fd3-3978-1d26b92660fd@linux.intel.com>
+        id S239280AbhJFQZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 12:25:30 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3941 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230101AbhJFQZV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 12:25:21 -0400
+Received: from fraeml707-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HPfnD5DnCz67Xd6;
+        Thu,  7 Oct 2021 00:20:16 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml707-chm.china.huawei.com (10.206.15.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Wed, 6 Oct 2021 18:23:27 +0200
+Received: from [10.47.95.252] (10.47.95.252) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2308.8; Wed, 6 Oct 2021
+ 17:23:26 +0100
+Subject: Re: [PATCH 1/4] perf vendor events: Syntax corrections in Neoverse N1
+ json
+To:     James Clark <james.clark@arm.com>,
+        Andrew Kilroy <andrew.kilroy@arm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
+        "acme@kernel.org" <acme@kernel.org>
+CC:     Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        "Namhyung Kim" <namhyung@kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Andi Kleen <ak@linux.intel.com>
+References: <20211004160008.21645-1-andrew.kilroy@arm.com>
+ <b7a4a1b3-3d22-7a52-75b1-66c04b57a50c@huawei.com>
+ <0743bf83-2e5d-8830-61bc-ed0731db108d@arm.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <83767166-e379-a352-d920-ad8b6e923800@huawei.com>
+Date:   Wed, 6 Oct 2021 17:26:02 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="cLozU3SCA/iEvNWJ"
-Content-Disposition: inline
-In-Reply-To: <c8b85524-6b9f-8fd3-3978-1d26b92660fd@linux.intel.com>
-X-Cookie: A is for Apple.
+In-Reply-To: <0743bf83-2e5d-8830-61bc-ed0731db108d@arm.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.47.95.252]
+X-ClientProxiedBy: lhreml709-chm.china.huawei.com (10.201.108.58) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 06/10/2021 09:43, James Clark wrote:
 
---cLozU3SCA/iEvNWJ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
++ Andi
 
-On Wed, Oct 06, 2021 at 10:52:54AM -0500, Pierre-Louis Bossart wrote:
-> On 10/6/21 10:04 AM, Andy Shevchenko wrote:
-> > Access to platform data via dev_get_platdata() getter to make code cleaner.
+> 
+> 
+> On 05/10/2021 11:10, John Garry wrote:
+>> On 04/10/2021 17:00, Andrew Kilroy wrote:
+>>> There are some syntactical mistakes in the json files for the Cortex A76
+>>> N1 (Neoverse N1).  This was obstructing parsing from an external tool.
+>>
+>> If the trailing comma is not allowed by standard, then maybe we should fix our parsing tool to not allow it also. However maybe there is a good reason why we allow it..
+> 
+> It would be nice to do, because I have also made similar fixes before. We looked at the STRICT option
+> in the parser (https://github.com/zserge/jsmn), but even then it seems to allow trailing commas.
+> 
+> Trailing commas are not allowed in the json standard, but there is a split between parsers
+> where some allow it and others don't. Specifically the Python parser doesn't allow it, and Python
+> can easily be involved in some workflow that parses these files.
+> 
+> The only way forwards I can think of is either getting a change accepted upstream to the parser
+> and then updating it in perf, switching to a different parser, or doing some hack to add an extra
+> step in perf to look for commas. None of which sound ideal.
+> 
 
-> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Looking at the license in jsmn.c, we seem to be ok to modify it (to 
+error on non-standard trailing ',') - that parser has already apparently 
+been modified in mainline.
 
-> For the series
+If we do that then I hope that there are not to many violations in out 
+JSONs, including downstream.
 
-> Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.com>
-
-> FWIW Marc likes a cover letter that's kept in the merge logs.
-
-And for Mark it's more about the fact that it means that b4 can figure
-out that any tags like Acked-by apply to all the patches in the series
-instead of needing manual editing to add the tags.
-
---cLozU3SCA/iEvNWJ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFdzgcACgkQJNaLcl1U
-h9CUXgf+JIYwxgw/R8tGnzq26yu7CEbph09Q5/lfkYm0whq7yFISmL5sD3CPsCJE
-1mQTpd36K2XUMv6bTN6AKyY8JCn/TilBde9vp1oCfX3Rb+be734HtY8m3EeLpAx3
-+/epxCXM08ac2gf5dHbtzj6gjNL+uwtwTCCNOAwjwT+n2A2tlXl2Y0bNKfTYpPlD
-tCcHbEkGhK84zSwymSOaSre3GC4QcGquf6Wl+aibNvOwqt2SONH+M9kXsObdesVo
-swIHZsbywgaahkWXhrGUVRcE/uHUDUmZctSnQ/IlMXP21waUFLfA6ZkUdr1vX3rH
-9iJbD+psO7AaVe4U+bmUzQCgbS+qtQ==
-=4kTl
------END PGP SIGNATURE-----
-
---cLozU3SCA/iEvNWJ--
+Thanks,
+John
