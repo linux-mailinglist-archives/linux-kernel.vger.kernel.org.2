@@ -2,163 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1820B42422B
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 18:07:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 785E3424231
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 18:08:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239291AbhJFQJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 12:09:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60752 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239269AbhJFQJA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 12:09:00 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE813C061746;
-        Wed,  6 Oct 2021 09:07:07 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id l16-20020a9d6a90000000b0053b71f7dc83so3685598otq.7;
-        Wed, 06 Oct 2021 09:07:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=5bOT1aMy04r9ERfNKx8ioqcPS9knlTxsfxOa2J+Yb5Y=;
-        b=IZZq/SzRMxkg4IlYjcUKWCkoBGep2hVCqrniFpaVfOpoaAKwv7Mc/SoWmMkU/zzbPK
-         J5v+68T2M4tq7iJAhZPL7sYpYThtIpC4SQvssa3MBr9dC8jq7ZwrJvsDpUIX6uLGYgI7
-         F5/6+cba5dPK11kWB+qzzIZxAr/yfaB3MDTB0lS8Qqyf/SKn8OYx0TWfw1uYE0naSryg
-         7TufkAUJTiAeDgcuyOETkjJwreDZH8R8xMEBAbElhRaDbLHzuZAetTTmg/7Tq5oIHyMN
-         G4IKoMEwkX40unRqnsD1QVpPy3jyxlHxwjaYQMy+/9aNyCwI9w/nQf5r3M/ExTh8khky
-         ezww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=5bOT1aMy04r9ERfNKx8ioqcPS9knlTxsfxOa2J+Yb5Y=;
-        b=kByBObYNTT1suAq6A9NPDSEwZ/QJIPweLro7bdXDHksY/5z/2v42mfzm9tCQlqKbOT
-         Xmy1p0Cnrzp4/BBg8XzDyAy6CPGKELP4pcjdSpjAjmaZWUA/DWhDd0jpmome8zxA8mHG
-         pbkjL3lhtOEdvc6EFywlZ4Dvg3F1ZtKpRBtA7lUw5nWt7IxRS1/gKADL4kIUCYsbbiKa
-         cVAiqOzTqjthR716wcH01+uRQoJy6mSDmUdpD2t0lGXvfDSKV8ZyGxU1IaU7ZjSvcLnB
-         DXG0lQWB01CP8MC/vDz+efelrpw8UAPfV3CoRt0QoLGX1mkYMjty9Y66YN0Dr1rQi++a
-         BOSw==
-X-Gm-Message-State: AOAM530SkMt+aVjJQlZhgop9I/w14hhd4gh4El16zXFsu0+a01yNdHBY
-        3D6TuaU/CXrFu+U5eb6tYz0=
-X-Google-Smtp-Source: ABdhPJx6BuafJd7pONLsK6EnzcFoLFKomSIGF6cS093tfZS+Nn2KQf+ojMJIBGC9t32Iut0EDOkNyQ==
-X-Received: by 2002:a05:6830:30a5:: with SMTP id g5mr4658532ots.132.1633536427260;
-        Wed, 06 Oct 2021 09:07:07 -0700 (PDT)
-Received: from [172.31.250.1] ([47.184.51.90])
-        by smtp.gmail.com with ESMTPSA id 12sm4165212otg.69.2021.10.06.09.07.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Oct 2021 09:07:06 -0700 (PDT)
-Message-ID: <749c46a3-5d02-08ef-2a45-e785d65999c7@gmail.com>
-Date:   Wed, 6 Oct 2021 11:07:06 -0500
+        id S239310AbhJFQKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 12:10:06 -0400
+Received: from marcansoft.com ([212.63.210.85]:37368 "EHLO mail.marcansoft.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231768AbhJFQKE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 12:10:04 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: marcan@marcan.st)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id 942A441EA7;
+        Wed,  6 Oct 2021 16:08:05 +0000 (UTC)
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     Marc Zyngier <maz@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-serial@vger.kernel.org
+References: <20211005155923.173399-1-marcan@marcan.st>
+ <20211005155923.173399-4-marcan@marcan.st>
+ <bee16b95-964c-f515-a196-cd267391d4eb@canonical.com>
+From:   Hector Martin <marcan@marcan.st>
+Subject: Re: [PATCH 3/7] soc: apple: Add driver for Apple PMGR power state
+ controls
+Message-ID: <48d3996e-9f96-2e68-56f2-d445475cf131@marcan.st>
+Date:   Thu, 7 Oct 2021 01:08:03 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [RESEND PATCH v5 2/2] leds: trigger: Add block device LED trigger
-Content-Language: en-US
-To:     =?UTF-8?Q?Marek_Beh=c3=ban?= <kabel@kernel.org>
-Cc:     pavel@ucw.cz, linux-leds@vger.kernel.org,
-        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
-        hch@infradead.org
-References: <20211004155546.1120869-1-arequipeno@gmail.com>
- <20211004155546.1120869-3-arequipeno@gmail.com>
- <20211005232738.371df6b8@thinkpad>
-From:   Ian Pilcher <arequipeno@gmail.com>
-In-Reply-To: <20211005232738.371df6b8@thinkpad>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+In-Reply-To: <bee16b95-964c-f515-a196-cd267391d4eb@canonical.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: es-ES
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Marek -
-
-Thanks for taking the time to review this.
-
-On 10/5/21 16:27, Marek Behún wrote:
-> first, as I replied in one of the previous versions: it is not customary
-> to use the const keyword in Linux the way you do use it, i.e.
->    int f(const int var)
-> Your argument was that this makes the code more safe when changes are
-> made in the future. Maybe this is true (although in my opinion it is
-> not), but since this isn't done anywhere in kernel AFAIK, please drop it
-> in this proposal.
-
-I can do this.
-
-> Second, I really would like to solve the problem looking up the block
-> device, given name. Since block API does not provide such function, I
-> think we should try to add it. It does not make sense to not be able to
-> set, for example "sda1" to trigger a LED, when /sys/class/block/sda1
-> exists, but someone deleted the /dev/sda1 device file.
-
-I agree with you (and Greg) that this would be preferable, and if
-someone were to implement such an API I would happily use it.
-
-However, having looked at fs/block_dev.c and fs/inode.c, I can say with
-confidence that I don't have the knowledge of how the inode cache works
-that would be needed to implement such an API properly .  More
-importantly, I have the definite impression that the block subsystem
-maintainers would not be receptive to the idea.
-
-> Anyway, see other comments below:
-
-A few explanatory responses below.  Any points that aren't mentioned
-below are changes that I will go ahead and make.
-
->> +/* Delayed work to periodically check for activity & blink LEDs */
->> +static DECLARE_DELAYED_WORK(led_bdev_work, led_bdev_process);
->>
->> +/* How often to run the delayed work - in jiffies */
->> +static unsigned int led_bdev_interval;
+On 06/10/2021 16.28, Krzysztof Kozlowski wrote:
+>> +static int apple_pmgr_ps_set(struct generic_pm_domain *genpd, u32 pstate)
+>> +{
+>> +	int ret;
+>> +	struct apple_pmgr_ps *ps = genpd_to_apple_pmgr_ps(genpd);
+>> +	u32 reg;
+>> +
+>> +	regmap_read(ps->regmap, ps->offset, &reg);
 > 
-> This is wrong. The interval can't be same for all triggers, this does
-> not make sense. I want to be able to set different intervals for
-> different LEDs, as in netdev trigger. Sure maybe not many people will
-> use it, but the possibility should be there.
+> MMIO accesses should not fail, but regmap API could fail if for example
+> clk_enable() fails. In such case you will write below value based on
+> random stack init. Please check the return value here.
 
-I think that it's different, rather than wrong, but I believe that I
-can change the interval to a per-LED setting, rather than global.
+Ack, will fix for v2 (as well as the related ones below).
 
-> The work will then also be per LED and your structures should become
-> more simple. You won't need to have NxM mapping between LEDs and block
-> devices.
-
-I have feeling that per-LED work items are likely to cause contention
-for the mutex, since they will probably all have the same (default)
-interval and they will usually be set up at about the same time (i.e.
-at system boot).  Instead, I would propose to have a single work item
-that is simply scheduled for the next time work is "needed" and then
-checks all LEDs that are due at that time.
-
-I also don't see that this would eliminate the many-to-many mapping.  It
-seems like a useful feature.  For example, one could have a bunch of
-device-specific read activity LEDs and a shared write (or discard) LED.
-
->> +	led->index = led_bdev_next_index++;
+>> +static int apple_pmgr_reset_deassert(struct reset_controller_dev *rcdev, unsigned long id)
+>> +{
+>> +	struct apple_pmgr_ps *ps = rcdev_to_apple_pmgr_ps(rcdev);
+>> +
+>> +	mutex_lock(&ps->genpd.mlock);
 > 
-> This variable led_bdev_next_index never gets subtracted from, it only
-> increases. So if I enable and disable blkdev trigger ULONG_MAX times,
-> I won't be able to enable it anymore since you return -EOVERFLOW ?
-> This doesn't make any sense.
+> This looks wrong: it can be a spin-lock, not mutex, so you should use
+> genpd_lock.
 
-Each trig_bdev and trig_led needs a unique index so that it can be added
-to one or more xarrays.  The increment-only pattern (capped at
-ULONG_MAX - 1) is an easy way to generate unique indices.
+genpd_lock() is not part of the public API, which is why I did it like 
+this. This gets decided by whether the GENPD_FLAG_IRQ_SAFE flag is set, 
+so it should be a mutex in this case, as that is not set.
 
-And yes, this does mean that you can only associate an LED or a block
-device with the trigger about 4 billion times on a 32-bit platform.  I
-really can't think of a scenario in which that limitation would be an
-issue.
+> However now I wonder if there could be a case when a reset-controller
+> consumer calls it from it's GENPD_NOTIFY_ON notifier? In such case you
+> would have this lock taken.
 
- >> +	bdev = blkdev_get_by_path(path, mode, THIS_MODULE);
- >
-> And this is what we should discuss with blk API people. I would really
-> like to find the block device by name as seen in /sys/class/block.
+Hm, yeah, I wonder if we'll hit that use case. Probably not, though. I 
+mostly expect our drivers to only reset devices on initial probe or in 
+some kind of panic recovery scenario, not while doing PM stuff.
 
-Right ... but how?
+>> +static const struct of_device_id apple_pmgr_ps_of_match[] = {
+>> +	{ .compatible = "apple,t8103-pmgr-pwrstate" },
+>> +	{ .compatible = "apple,pmgr-pwrstate" },
+> 
+> You call the device/driver "pwrstate", which it seems is "power state".
+> These are not power states. These are power controllers or power
+> domains. Power state is rather a state of power domain - e.g. on or
+> gated. How about renaming it to power domain or pd?
+
+It's a bit confusing. Apple calls these registers "ps" registers, which 
+presumably stands for "power state". They can both clockgate and 
+powergate devices (where supported), as well as enable auto-PM and also 
+handle reset. So they're a bit more complex and higher level than a 
+simple power domain, which is why I called the driver "pwrstate", since 
+it controls the power state of a specific SoC domain or block. In fact, 
+the device PM is controlled via a 4-bit power state index, though right 
+now only 0, 4, 15 are used (power gated, clock gated, active). Many 
+devices will not support individual power gating and would just 
+clockgate at 0, and right now the driver never uses 4, but might in the 
+future. If that needs to be exposed to consumers, then it'd have to be 
+via genpd idle states.
 
 -- 
-========================================================================
-                  In Soviet Russia, Google searches you!
-========================================================================
+Hector Martin (marcan@marcan.st)
+Public Key: https://mrcn.st/pub
