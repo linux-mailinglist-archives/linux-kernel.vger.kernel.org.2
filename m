@@ -2,184 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C69342412C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 17:20:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC939424135
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 17:21:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239228AbhJFPW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 11:22:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49904 "EHLO
+        id S239248AbhJFPXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 11:23:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238923AbhJFPWY (ORCPT
+        with ESMTP id S239167AbhJFPXm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 11:22:24 -0400
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72689C061753
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 08:20:32 -0700 (PDT)
-Received: by mail-yb1-xb34.google.com with SMTP id u32so6197682ybd.9
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 08:20:32 -0700 (PDT)
+        Wed, 6 Oct 2021 11:23:42 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B6E1C061746
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 08:21:50 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id f4so6094487edr.8
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 08:21:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ToWLSh1nym/rn5R/pSIAH+olMraiA1xkOFeogqJaaLs=;
-        b=f9kn9JCx2oUBAwY8E2iW/mbf7AvxnjIXVRaac9UV50eeIWLqUTCWu0BV3L74owunwZ
-         T8+Ksi5PO1UrZo7J2XqHRGiNW3/QgmcjUvcNnegrQMOjspJwLlWRfGdXHYBbE3rWHFYT
-         S5HR7U+eS+bLsWztsK+kURy3vTEiXFEwh+pGSta6oNHQNPLwhb44AARlY/BokOnZ8PT3
-         fRkA+WKzmNJyGLRRzch90e6kNwJ0x5Tb1XAfePiZXDH+a5NenIaapda/NDaFLES+s62d
-         5T0tvNJCfu0HEP2gi7mvJw5gLrUCYZCyQ+xFv77F6JuWgCYj94+gOqouoXSP/PgcHZFX
-         3xtQ==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id;
+        bh=P0tGE7p+AV7X8vAEgZS8QLZhRwDjoxzZkIbnWYUcb+8=;
+        b=Q1VNpyrz7YgVOjlS1ERSx+BHl1g1JH8SHRb1cbUFTQQMgiP6Vb25CDn1MzdqvF2ujs
+         a1nYtU1RPBrj0Sj2osWRA0aZ26H2kUsixiSmdfGIDJvR2RBzanHUhT/+pWUmWRa5lCJ+
+         SLkccr41YtByBWtd762q6lywmOxom/ajQb/jGFsZuG361IlUm7yWBqXkO3pzzubI/Stl
+         GJQ2gUT+34NatL8sP3gJ4Xe/FIfN7WdpbHacP1AGb+Z2HsInbN7qszjceePCWlbAUKmH
+         0GRYjWEgTbKUTgycdkwKVQWMToPnvEoCJnHPonDSj2y2S0guJY7FmlCvO8XLCZpO0GBH
+         vWCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ToWLSh1nym/rn5R/pSIAH+olMraiA1xkOFeogqJaaLs=;
-        b=MkvfTe/VHA20WyqQOdqPxrWdPKiGPRDhdV5avvoCQqbuxbmNpecK2IXuc1k785k2iN
-         1cslXBly531yvrz3z5CTUga0QvXic3a9O5f1Rs4sCZs7MMpWg3kDdG2kjbGXTx24ttx8
-         w43WJ1KH6C1c5DBnctcWwWB6vFzpIPmb3hTW69+4Jsbs3ffmf4JiHmYdN3lq8ga6IB28
-         2rkpjSSLB9aK8RIRXYbx7xGS/m475Kwnv23XNm1TaLl38tjNQYJXKRFdnzv6AKlcoJ4y
-         MSHuS9w8v3iFPquZWcSp/L1RMJG/t04urGfESJ8mBWE/KPXDQMYjtQGkleJQWwkecA9P
-         90KA==
-X-Gm-Message-State: AOAM532bd09W8pvOKcTd02VX8k0+bvbswj5I0ypE04WUR2TIv0LNfNtZ
-        hBIrOR0ix7QLmpV2Hn8WWcBJauXLo2akZyZbe3nQEQ==
-X-Google-Smtp-Source: ABdhPJznFIkWV5cysIjYInnizr+OQ6ABZBYR0C1kpMgLSGjmxpkDb2Dph4kHq6ZH+DZeHiU/+bV2NT5qG2v6pWR5drM=
-X-Received: by 2002:a25:3:: with SMTP id 3mr29846057yba.418.1633533631382;
- Wed, 06 Oct 2021 08:20:31 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211001205657.815551-1-surenb@google.com> <20211001205657.815551-3-surenb@google.com>
- <20211005184211.GA19804@duo.ucw.cz> <CAJuCfpE5JEThTMhwKPUREfSE1GYcTx4YSLoVhAH97fJH_qR0Zg@mail.gmail.com>
- <20211005200411.GB19804@duo.ucw.cz> <CAJuCfpFZkz2c0ZWeqzOAx8KFqk1ge3K-SiCMeu3dmi6B7bK-9w@mail.gmail.com>
- <efdffa68-d790-72e4-e6a3-80f2e194d811@nvidia.com> <YV1eCu0eZ+gQADNx@dhcp22.suse.cz>
- <6b15c682-72eb-724d-bc43-36ae6b79b91a@redhat.com> <CAJuCfpEPBM6ehQXgzp=g4SqtY6iaC8wuZ-CRE81oR1VOq7m4CA@mail.gmail.com>
- <192438ab-a095-d441-6843-432fbbb8e38a@redhat.com>
-In-Reply-To: <192438ab-a095-d441-6843-432fbbb8e38a@redhat.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Wed, 6 Oct 2021 08:20:20 -0700
-Message-ID: <CAJuCfpH4KT=fOAWsYhaAb_LLg-VwPvL4Bmv32NYuUtZ3Ceo+PA@mail.gmail.com>
-Subject: Re: [PATCH v10 3/3] mm: add anonymous vma name refcounting
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Michal Hocko <mhocko@suse.com>, John Hubbard <jhubbard@nvidia.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Colin Cross <ccross@google.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        vincenzo.frascino@arm.com,
-        =?UTF-8?B?Q2hpbndlbiBDaGFuZyAo5by16Yym5paHKQ==?= 
-        <chinwen.chang@mediatek.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Jann Horn <jannh@google.com>, apopple@nvidia.com,
-        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
-        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
-        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
-        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
-        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
-        chris.hyser@oracle.com, Peter Collingbourne <pcc@google.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Jens Axboe <axboe@kernel.dk>, legion@kernel.org,
-        Rolf Eike Beer <eb@emlix.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Thomas Cedeno <thomascedeno@google.com>, sashal@kernel.org,
-        cxfcosmos@gmail.com, Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-mm <linux-mm@kvack.org>,
-        kernel-team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=P0tGE7p+AV7X8vAEgZS8QLZhRwDjoxzZkIbnWYUcb+8=;
+        b=JTTen2W3ruwWpg32e6vWm8BshE4HqzrsbBh9BoVgloJIngcSP20JzINCecvj2ym605
+         3c6ezNIjnBBDF99YdtuzP9dlhlaRP5ewTMJrgnYjwWrKTNt6ZX1AKGM3BziOpE0rFmCT
+         4IYc02y5lY4LKpfUgSQ3kBw/Zwvxr3eZD644r0Q+FLLwODDJZcMn79y0PbpWgXb/lgy1
+         WGYRJdnkVQ5Mf/P+/Jy+wrI4kuM8TQc2lsza7M/H3xgkCx89wPHlU6nQg9NxAesJ4Spp
+         aR2A0DTlVn/CYkub2UiXh8kYcvdmjpqOD8lXaFUesIZ1OKfjcJY1AM//Ji4d8RjnfMnM
+         Q6wg==
+X-Gm-Message-State: AOAM532XdaY9c9U1fU423Z1THnWoAzFVB0qeiN7VoyeKObwi9B2Rz494
+        art3CSbVR2chnMAwjE+b/HE=
+X-Google-Smtp-Source: ABdhPJxC+b3Q3j5vWHfm+9wcv+OaxmWfI2GGp20dqgF4eLY47sPJmgOLaJoMA6fjK1bs/gJcLPp1og==
+X-Received: by 2002:a17:906:1146:: with SMTP id i6mr33232322eja.12.1633533685876;
+        Wed, 06 Oct 2021 08:21:25 -0700 (PDT)
+Received: from localhost ([185.92.221.13])
+        by smtp.gmail.com with ESMTPSA id z4sm1500764ejw.46.2021.10.06.08.21.25
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 06 Oct 2021 08:21:25 -0700 (PDT)
+From:   Wei Yang <richard.weiyang@gmail.com>
+To:     kuba@kernel.org, gregkh@linuxfoundation.org, neilb@suse.com,
+        mojha@codeaurora.org, jkosina@suse.cz
+Cc:     linux-kernel@vger.kernel.org, Wei Yang <richard.weiyang@gmail.com>
+Subject: [PATCH] hashtable: remove a redundant check in hash_for_each_xxx()
+Date:   Wed,  6 Oct 2021 15:21:00 +0000
+Message-Id: <20211006152100.17795-1-richard.weiyang@gmail.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 6, 2021 at 8:08 AM David Hildenbrand <david@redhat.com> wrote:
->
-> On 06.10.21 17:01, Suren Baghdasaryan wrote:
-> > On Wed, Oct 6, 2021 at 2:27 AM David Hildenbrand <david@redhat.com> wrote:
-> >>
-> >> On 06.10.21 10:27, Michal Hocko wrote:
-> >>> On Tue 05-10-21 23:57:36, John Hubbard wrote:
-> >>> [...]
-> >>>> 1) Yes, just leave the strings in the kernel, that's simple and
-> >>>> it works, and the alternatives don't really help your case nearly
-> >>>> enough.
-> >>>
-> >>> I do not have a strong opinion. Strings are easier to use but they
-> >>> are more involved and the necessity of kref approach just underlines
-> >>> that. There are going to be new allocations and that always can lead
-> >>> to surprising side effects.  These are small (80B at maximum) so the
-> >>> overall footpring shouldn't all that large by default but it can grow
-> >>> quite large with a very high max_map_count. There are workloads which
-> >>> really require the default to be set high (e.g. heavy mremap users). So
-> >>> if anything all those should be __GFP_ACCOUNT and memcg accounted.
-> >>>
-> >>> I do agree that numbers are just much more simpler from accounting,
-> >>> performance and implementation POV.
-> >>
-> >> +1
-> >>
-> >> I can understand that having a string can be quite beneficial e.g., when
-> >> dumping mmaps. If only user space knows the id <-> string mapping, that
-> >> can be quite tricky.
-> >>
-> >> However, I also do wonder if there would be a way to standardize/reserve
-> >> ids, such that a given id always corresponds to a specific user. If we
-> >> use an uint64_t for an id, there would be plenty room to reserve ids ...
-> >>
-> >> I'd really prefer if we can avoid using strings and instead using ids.
-> >
-> > I wish it was that simple and for some names like [anon:.bss] or
-> > [anon:dalvik-zygote space] reserving a unique id would work, however
-> > some names like [anon:dalvik-/system/framework/boot-core-icu4j.art]
-> > are generated dynamically at runtime and include package name.
->
-> Valuable information
+The three hash_for_each_xxx() helper iterate the hash table with help
+of hlist_for_each_entry_xxx(), which breaks the loop only when obj is
+NULL.
 
-Yeah, I should have described it clearer the first time around.
+This means the check during each iteration is redundant. This patch
+removes it.
 
->
-> > Packages are constantly evolving, new ones are developed, names can
-> > change, etc. So assigning a unique id for these names is not really
-> > feasible.
->
-> So, you'd actually want to generate/reserve an id for a given string at
-> runtime, assign that id to the VMA, and have a way to match id <->
-> string somehow?
+Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
+---
+ include/linux/hashtable.h | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-If we go with ids then yes, that is what we would have to do.
+diff --git a/include/linux/hashtable.h b/include/linux/hashtable.h
+index f6c666730b8c..a15719ed303f 100644
+--- a/include/linux/hashtable.h
++++ b/include/linux/hashtable.h
+@@ -124,8 +124,7 @@ static inline void hash_del_rcu(struct hlist_node *node)
+  * @member: the name of the hlist_node within the struct
+  */
+ #define hash_for_each(name, bkt, obj, member)				\
+-	for ((bkt) = 0, obj = NULL; obj == NULL && (bkt) < HASH_SIZE(name);\
+-			(bkt)++)\
++	for ((bkt) = 0, obj = NULL; (bkt) < HASH_SIZE(name); (bkt)++)	\
+ 		hlist_for_each_entry(obj, &name[bkt], member)
+ 
+ /**
+@@ -136,8 +135,7 @@ static inline void hash_del_rcu(struct hlist_node *node)
+  * @member: the name of the hlist_node within the struct
+  */
+ #define hash_for_each_rcu(name, bkt, obj, member)			\
+-	for ((bkt) = 0, obj = NULL; obj == NULL && (bkt) < HASH_SIZE(name);\
+-			(bkt)++)\
++	for ((bkt) = 0, obj = NULL; (bkt) < HASH_SIZE(name); (bkt)++)	\
+ 		hlist_for_each_entry_rcu(obj, &name[bkt], member)
+ 
+ /**
+@@ -150,8 +148,7 @@ static inline void hash_del_rcu(struct hlist_node *node)
+  * @member: the name of the hlist_node within the struct
+  */
+ #define hash_for_each_safe(name, bkt, tmp, obj, member)			\
+-	for ((bkt) = 0, obj = NULL; obj == NULL && (bkt) < HASH_SIZE(name);\
+-			(bkt)++)\
++	for ((bkt) = 0, obj = NULL; (bkt) < HASH_SIZE(name); (bkt)++)	\
+ 		hlist_for_each_entry_safe(obj, tmp, &name[bkt], member)
+ 
+ /**
+-- 
+2.23.0
 
-> That reservation service could be inside the kernel or even (better?) in
-> user space. The service could for example de-duplicates strings.
-
-Yes but it would require an IPC call to that service potentially on
-every mmap() when we want to name a mapped vma. This would be
-prohibitive. Even on consumption side, instead of just dumping
-/proc/$pid/maps we would have to parse the file and convert all
-[anon:id] into [anon:name] with each conversion requiring an IPC call
-(assuming no id->name pair caching on the client side).
-
-> My question would be, if we really have to expose these strings to the
-> kernel, or if an id is sufficient. Sure, it would move complexity to
-> user space, but keeping complexity out of the kernel is usually a good idea.
-
-My worry here is not the additional complexity on the userspace side
-but the performance hit we would have to endure due to these
-conversions.
-
-> --
-> Thanks,
->
-> David / dhildenb
->
