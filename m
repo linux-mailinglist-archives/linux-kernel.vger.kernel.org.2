@@ -2,57 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8F5B423EB9
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 15:24:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2402C423EBB
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 15:24:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238928AbhJFN0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 09:26:08 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:51718
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238867AbhJFNZz (ORCPT
+        id S238888AbhJFN0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 09:26:12 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:37904
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238878AbhJFNZ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 09:25:55 -0400
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com [209.85.167.70])
+        Wed, 6 Oct 2021 09:25:56 -0400
+Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com [209.85.167.72])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id C9DC03FFE7
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 13:24:02 +0000 (UTC)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 505A33FFF2
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 13:24:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1633526642;
-        bh=V+hluEgRJjqVht5qKdWyp1/U0W3007gMbYlNxX8GigA=;
-        h=From:To:Subject:Date:Message-Id:MIME-Version;
-        b=tV7LeQw1epr2cKuuZKepMdW89BkIEgbz4Yr6gRwlG1B31Obys26296wj0ZmvL9dkT
-         w6Shbv0hjvQcJIU727Nq91j2dego4NB0P0D88oN/YMS7XQwq04UE9hr/TLvBiJH//8
-         nMChtse/MQaie6fTaJVdOi4Gc1KJf1XsRrdAAvHnWbVBbEUBctEt9Of9Wi3CdBIYEZ
-         G706wgAMa0pY0X2IbHpxfbXL6WV58uv3tloASwoqpiO02IKatBbTgv3AMWdmCQc411
-         RZZMPaOU89BGdZ0rAAkSeEwCvLB0Lr8OQllhfl4IZjgb6v6JHzK40Gc3O3iHv3wDXN
-         GeFnDnt8MMXYA==
-Received: by mail-lf1-f70.google.com with SMTP id g9-20020a0565123b8900b003f33a027130so1961523lfv.18
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 06:24:02 -0700 (PDT)
+        s=20210705; t=1633526643;
+        bh=dPbx/8KTnDIjXlUljsgyPIndd3ltzWoSPxnPkixkLcA=;
+        h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+         MIME-Version;
+        b=QIatLsPC7h/AWzFw/EP/7i7G0rVKJ/IQPshAmIlPx3pJDkT3HU3j9oZ1bVf8TgnDE
+         +13oCBlwhZFbt8ZgIOP6jem1iXkRfTUVIaOb5lQL5eCOVNr68njyOHswUwP53T75Ry
+         /OFSdfedZKfnR5OKJpkBKBN1RXNHlLGHMbzvMN5+HZOy/ld4dVaecBMSbJO1yaqyFE
+         uLvbult3DCh7u8U0F5NbITqZ9GL8Mpv2zD+Df5LxuNwj10x5KPt19AOCQb9pXf6DT/
+         ZVE3eMiCNp1OpIGD2crqabjrmKFofGsrRHIhyGwNhjyYsH0IXhcxOHG2CawatmBB2h
+         9z1Pg4poGtXwg==
+Received: by mail-lf1-f72.google.com with SMTP id a28-20020a056512021c00b003f5883dcd4bso2004137lfo.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 06:24:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=V+hluEgRJjqVht5qKdWyp1/U0W3007gMbYlNxX8GigA=;
-        b=bUhqLMEXaayxU5Zf9rDff4N9tXMRAEvw0o8jEp/uXbG6d9WUVJtrvfXYfpHgVQMCLr
-         UoUL1p+oEjgwRFQHsh6OSQ57rY5pUTBSAeTqg+Zv/xqOeqxIJsW1bmoJME+bmrjFbNqS
-         zrolVoFrwZbZS8jd80qWPQ6AZOqKaGUYe8pwjAGp/dcvVivHTAAdCeizLPu+ohyJhqgX
-         +lZ6y56T7OdTyujXEy2UYTDLU/QSzK3hZ6tSgpAgP/UX9qnLqhT4p7DQDYPZ2mDIix2g
-         bjSCYXMj+LkfVw+gpUTiXTKGEm2Vymo/Bhh/il72BEzgF2YMXGHhcvpnV4434S7cxoGL
-         0P8w==
-X-Gm-Message-State: AOAM5304fU4kMvzH8urewrxO2MN47YMKJuZn36IM8DgEnAsy+l7mCg7j
-        VO83efJsIzKJ0+22vsElhvTlbbDbzs9gHILuZri7SK5ygNa5SxcMul9hfjaqr5W4o+Llvtqc3F3
-        XgJshgI0XoP0DlWkgfvwOC8qIWaDFSiSGQzj88uvEUg==
-X-Received: by 2002:a05:651c:44f:: with SMTP id g15mr30072048ljg.396.1633526641811;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=dPbx/8KTnDIjXlUljsgyPIndd3ltzWoSPxnPkixkLcA=;
+        b=2xh3CsW8Jjp9ZM61higUbswzP1e/G2w4MwqlX5cqaz7KKsKWIucxdGsKNCepth/fMG
+         ZCVqfvwuKyva+n//WRuzS5NbEJPJlsx1fS/MJka0Dy98vhswCZx9Sad7V+CUL+iGXXJR
+         h6r9K8t6N4/zio6EA2YlxtrFNvIa4fwK9W6WxHy0wze4SQMnG2c2v0+XW06a1MOFSR4T
+         Nf7Fe5lDfFFQVRYFbVzm3+5BkkNMrEuIB+VirfzIKDp2ErCmramW0iwxlF2IfvBXW5aZ
+         l9wR8QT+VPDJRGKY0V2dtTpc2KP/0zufR/1+AxLTt8PRleQJqoQVp7+kX3DPRGiiwtTM
+         voZQ==
+X-Gm-Message-State: AOAM530CnozyKMzwEByZROs42tsThQdTYeQLKzvpI67iooEEzPb/n8I+
+        oIMIjcnzfmO19bRBDNS3bP0nbrat6Q7g70MxDShcJmSndSyST9j9Pq+fJlU4AyIqLnjjOwVbIoh
+        2c+rWkQlFw4M9g1rXKsfRm1mgaWw9PNgDHniPOoY1jg==
+X-Received: by 2002:a05:6512:2625:: with SMTP id bt37mr9836404lfb.138.1633526641889;
         Wed, 06 Oct 2021 06:24:01 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxIYlWNEbj8/47t8HcXnaczo+J+CX9tbfMdsDZMuuvo+eey1DO0juu9idFhEgf4/NpOvbliSw==
-X-Received: by 2002:a05:651c:44f:: with SMTP id g15mr30071906ljg.396.1633526640134;
-        Wed, 06 Oct 2021 06:24:00 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzkUZUJ4M1hszT+YuyspWj5jh2xn4+DUJA8NLpdPhMeyMYZzcDu2Upn1TN6D4bQjaFwmIIqZQ==
+X-Received: by 2002:a05:6512:2625:: with SMTP id bt37mr9836348lfb.138.1633526641272;
+        Wed, 06 Oct 2021 06:24:01 -0700 (PDT)
 Received: from localhost.localdomain (78-11-189-27.static.ip.netia.com.pl. [78.11.189.27])
-        by smtp.gmail.com with ESMTPSA id y12sm2002819lfg.115.2021.10.06.06.23.59
+        by smtp.gmail.com with ESMTPSA id y12sm2002819lfg.115.2021.10.06.06.24.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Oct 2021 06:23:59 -0700 (PDT)
+        Wed, 06 Oct 2021 06:24:00 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 To:     Michael Turquette <mturquette@baylibre.com>,
         Stephen Boyd <sboyd@kernel.org>,
@@ -67,131 +68,124 @@ To:     Michael Turquette <mturquette@baylibre.com>,
         Mark Brown <broonie@kernel.org>, linux-clk@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-samsung-soc@vger.kernel.org
-Subject: [PATCH v3 00/10] regulator/mfd/clock: dt-bindings: Samsung S2M and S5M to dtschema
-Date:   Wed,  6 Oct 2021 15:23:14 +0200
-Message-Id: <20211006132324.76008-1-krzysztof.kozlowski@canonical.com>
+Cc:     stable@vger.kernel.org, Rob Herring <robh@kernel.org>
+Subject: [PATCH v3 01/10] regulator: s5m8767: do not use reset value as DVS voltage if GPIO DVS is disabled
+Date:   Wed,  6 Oct 2021 15:23:15 +0200
+Message-Id: <20211006132324.76008-2-krzysztof.kozlowski@canonical.com>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20211006132324.76008-1-krzysztof.kozlowski@canonical.com>
+References: <20211006132324.76008-1-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi All,
+The driver and its bindings, before commit 04f9f068a619 ("regulator:
+s5m8767: Modify parsing method of the voltage table of buck2/3/4") were
+requiring to provide at least one safe/default voltage for DVS registers
+if DVS GPIO is not being enabled.
 
-Changes since v2
-================
-1. Add Rob's tags.
-2. Remove "regulator-name" from properties (all regulator dtschema).
-3. Move "unevaluatedProperties" higher to make code easier to read (all regulator dtschema).
-4. Add ref-type to op-mode property (patch 6: s5m8767 regulators).
+IOW, if s5m8767,pmic-buck2-uses-gpio-dvs is missing, the
+s5m8767,pmic-buck2-dvs-voltage should still be present and contain one
+voltage.
 
-Changes since v1
-================
-1. Drop DTS patches - applied.
-2. Fully remove bindings/regulator/samsung,s5m8767.txt .
-3. Minor subject reformatting and few typos in text.
+This requirement was coming from driver behavior matching this condition
+(none of DVS GPIO is enabled): it was always initializing the DVS
+selector pins to 0 and keeping the DVS enable setting at reset value
+(enabled).  Therefore if none of DVS GPIO is enabled in devicetree,
+driver was configuring the first DVS voltage for buck[234].
 
+Mentioned commit 04f9f068a619 ("regulator: s5m8767: Modify parsing
+method of the voltage table of buck2/3/4") broke it because DVS voltage
+won't be parsed from devicetree if DVS GPIO is not enabled.  After the
+change, driver will configure bucks to use the register reset value as
+voltage which might have unpleasant effects.
 
-Intro
-=====
-This patchset converts all devicetree bindings of Samsung S2M and S5M
-PMIC devices from txt to dtschema.
+Fix this by relaxing the bindings constrain: if DVS GPIO is not enabled
+in devicetree (therefore DVS voltage is also not parsed), explicitly
+disable it.
 
-It includes also two fixes because later conversion depends on it
-(contextually).
+Cc: <stable@vger.kernel.org>
+Fixes: 04f9f068a619 ("regulator: s5m8767: Modify parsing method of the voltage table of buck2/3/4")
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Acked-by: Rob Herring <robh@kernel.org>
+---
+ .../bindings/regulator/samsung,s5m8767.txt    | 21 +++++++------------
+ drivers/regulator/s5m8767.c                   | 21 ++++++++-----------
+ 2 files changed, 17 insertions(+), 25 deletions(-)
 
-
-Merging/dependencies
-====================
-1. Regulator related binding changes depend on first two commits (the
-   fixes), because of context.
-2. The mfd bindings depend on clock and regulator bindings.
-
-The fixes and bindings changes (patches 1-10) should go via the same
-tree.  For example regulator or mfd tree.
-
-Another alternative is that regulator patches (1-2, 4-6) go via Mark who
-later gives MFD a stable branch/tag to pull. Then the clock and MFD
-bindings would go on top via MFD tree. Or any other setup you would like
-to have. :)
-
-
-Overview of devices
-===================
-Essentially all Samsung S2M and S5M PMICs are very similar devices. They
-provide the same functionality: regulators, RTC, 2 or 3 clocks and main
-power management (e.g. power cut to SoC).
-
-The differences are mostly in registers layout and number of regulators.
-
-The drivers are built around one common part, mfd/sec-core.c, and share
-some drivers between devices:
-1. MFD sec-core for all devices,
-1. one clock driver for most of devices,
-2. one RTC driver for all devices,
-3. three regulator drivers.
-
-The regulator drivers were implementing slightly different features,
-therefore one regulator binding for all devices does not make much
-sense.  However the clock device binding can be shared.
-
-The final dtschema bindings try to implement this - share only the clock
-bindings.
-
-Best regards,
-Krzysztof
-
-Krzysztof Kozlowski (10):
-  regulator: s5m8767: do not use reset value as DVS voltage if GPIO DVS
-    is disabled
-  regulator: dt-bindings: samsung,s5m8767: correct
-    s5m8767,pmic-buck-default-dvs-idx property
-  dt-bindings: clock: samsung,s2mps11: convert to dtschema
-  regulator: dt-bindings: samsung,s2m: convert to dtschema
-  regulator: dt-bindings: samsung,s2mpa01: convert to dtschema
-  regulator: dt-bindings: samsung,s5m8767: convert to dtschema
-  dt-bindings: mfd: samsung,s2mps11: convert to dtschema
-  dt-bindings: mfd: samsung,s2mpa01: convert to dtschema
-  dt-bindings: mfd: samsung,s5m8767: convert to dtschema
-  dt-bindings: mfd: samsung,s5m8767: document buck and LDO supplies
-
- .../bindings/clock/samsung,s2mps11.txt        |  49 ---
- .../bindings/clock/samsung,s2mps11.yaml       |  45 +++
- .../bindings/mfd/samsung,s2mpa01.yaml         |  91 ++++++
- .../bindings/mfd/samsung,s2mps11.yaml         | 267 +++++++++++++++
- .../bindings/mfd/samsung,s5m8767.yaml         | 307 ++++++++++++++++++
- .../bindings/mfd/samsung,sec-core.txt         |  86 -----
- .../bindings/regulator/samsung,s2mpa01.txt    |  79 -----
- .../bindings/regulator/samsung,s2mpa01.yaml   |  62 ++++
- .../bindings/regulator/samsung,s2mps11.txt    | 102 ------
- .../bindings/regulator/samsung,s2mps11.yaml   |  44 +++
- .../bindings/regulator/samsung,s2mps13.yaml   |  44 +++
- .../bindings/regulator/samsung,s2mps14.yaml   |  44 +++
- .../bindings/regulator/samsung,s2mps15.yaml   |  44 +++
- .../bindings/regulator/samsung,s2mpu02.yaml   |  44 +++
- .../bindings/regulator/samsung,s5m8767.txt    | 145 ---------
- .../bindings/regulator/samsung,s5m8767.yaml   |  74 +++++
- MAINTAINERS                                   |   9 +-
- drivers/regulator/s5m8767.c                   |  21 +-
- 18 files changed, 1080 insertions(+), 477 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/clock/samsung,s2mps11.txt
- create mode 100644 Documentation/devicetree/bindings/clock/samsung,s2mps11.yaml
- create mode 100644 Documentation/devicetree/bindings/mfd/samsung,s2mpa01.yaml
- create mode 100644 Documentation/devicetree/bindings/mfd/samsung,s2mps11.yaml
- create mode 100644 Documentation/devicetree/bindings/mfd/samsung,s5m8767.yaml
- delete mode 100644 Documentation/devicetree/bindings/mfd/samsung,sec-core.txt
- delete mode 100644 Documentation/devicetree/bindings/regulator/samsung,s2mpa01.txt
- create mode 100644 Documentation/devicetree/bindings/regulator/samsung,s2mpa01.yaml
- delete mode 100644 Documentation/devicetree/bindings/regulator/samsung,s2mps11.txt
- create mode 100644 Documentation/devicetree/bindings/regulator/samsung,s2mps11.yaml
- create mode 100644 Documentation/devicetree/bindings/regulator/samsung,s2mps13.yaml
- create mode 100644 Documentation/devicetree/bindings/regulator/samsung,s2mps14.yaml
- create mode 100644 Documentation/devicetree/bindings/regulator/samsung,s2mps15.yaml
- create mode 100644 Documentation/devicetree/bindings/regulator/samsung,s2mpu02.yaml
- delete mode 100644 Documentation/devicetree/bindings/regulator/samsung,s5m8767.txt
- create mode 100644 Documentation/devicetree/bindings/regulator/samsung,s5m8767.yaml
-
+diff --git a/Documentation/devicetree/bindings/regulator/samsung,s5m8767.txt b/Documentation/devicetree/bindings/regulator/samsung,s5m8767.txt
+index 093edda0c8df..d9cff1614f7a 100644
+--- a/Documentation/devicetree/bindings/regulator/samsung,s5m8767.txt
++++ b/Documentation/devicetree/bindings/regulator/samsung,s5m8767.txt
+@@ -13,6 +13,14 @@ common regulator binding documented in:
+ 
+ 
+ Required properties of the main device node (the parent!):
++ - s5m8767,pmic-buck-ds-gpios: GPIO specifiers for three host gpio's used
++   for selecting GPIO DVS lines. It is one-to-one mapped to dvs gpio lines.
++
++ [1] If either of the 's5m8767,pmic-buck[2/3/4]-uses-gpio-dvs' optional
++     property is specified, then all the eight voltage values for the
++     's5m8767,pmic-buck[2/3/4]-dvs-voltage' should be specified.
++
++Optional properties of the main device node (the parent!):
+  - s5m8767,pmic-buck2-dvs-voltage: A set of 8 voltage values in micro-volt (uV)
+    units for buck2 when changing voltage using gpio dvs. Refer to [1] below
+    for additional information.
+@@ -25,19 +33,6 @@ Required properties of the main device node (the parent!):
+    units for buck4 when changing voltage using gpio dvs. Refer to [1] below
+    for additional information.
+ 
+- - s5m8767,pmic-buck-ds-gpios: GPIO specifiers for three host gpio's used
+-   for selecting GPIO DVS lines. It is one-to-one mapped to dvs gpio lines.
+-
+- [1] If none of the 's5m8767,pmic-buck[2/3/4]-uses-gpio-dvs' optional
+-     property is specified, the 's5m8767,pmic-buck[2/3/4]-dvs-voltage'
+-     property should specify atleast one voltage level (which would be a
+-     safe operating voltage).
+-
+-     If either of the 's5m8767,pmic-buck[2/3/4]-uses-gpio-dvs' optional
+-     property is specified, then all the eight voltage values for the
+-     's5m8767,pmic-buck[2/3/4]-dvs-voltage' should be specified.
+-
+-Optional properties of the main device node (the parent!):
+  - s5m8767,pmic-buck2-uses-gpio-dvs: 'buck2' can be controlled by gpio dvs.
+  - s5m8767,pmic-buck3-uses-gpio-dvs: 'buck3' can be controlled by gpio dvs.
+  - s5m8767,pmic-buck4-uses-gpio-dvs: 'buck4' can be controlled by gpio dvs.
+diff --git a/drivers/regulator/s5m8767.c b/drivers/regulator/s5m8767.c
+index 7c111bbdc2af..35269f998210 100644
+--- a/drivers/regulator/s5m8767.c
++++ b/drivers/regulator/s5m8767.c
+@@ -850,18 +850,15 @@ static int s5m8767_pmic_probe(struct platform_device *pdev)
+ 	/* DS4 GPIO */
+ 	gpio_direction_output(pdata->buck_ds[2], 0x0);
+ 
+-	if (pdata->buck2_gpiodvs || pdata->buck3_gpiodvs ||
+-	   pdata->buck4_gpiodvs) {
+-		regmap_update_bits(s5m8767->iodev->regmap_pmic,
+-				S5M8767_REG_BUCK2CTRL, 1 << 1,
+-				(pdata->buck2_gpiodvs) ? (1 << 1) : (0 << 1));
+-		regmap_update_bits(s5m8767->iodev->regmap_pmic,
+-				S5M8767_REG_BUCK3CTRL, 1 << 1,
+-				(pdata->buck3_gpiodvs) ? (1 << 1) : (0 << 1));
+-		regmap_update_bits(s5m8767->iodev->regmap_pmic,
+-				S5M8767_REG_BUCK4CTRL, 1 << 1,
+-				(pdata->buck4_gpiodvs) ? (1 << 1) : (0 << 1));
+-	}
++	regmap_update_bits(s5m8767->iodev->regmap_pmic,
++			   S5M8767_REG_BUCK2CTRL, 1 << 1,
++			   (pdata->buck2_gpiodvs) ? (1 << 1) : (0 << 1));
++	regmap_update_bits(s5m8767->iodev->regmap_pmic,
++			   S5M8767_REG_BUCK3CTRL, 1 << 1,
++			   (pdata->buck3_gpiodvs) ? (1 << 1) : (0 << 1));
++	regmap_update_bits(s5m8767->iodev->regmap_pmic,
++			   S5M8767_REG_BUCK4CTRL, 1 << 1,
++			   (pdata->buck4_gpiodvs) ? (1 << 1) : (0 << 1));
+ 
+ 	/* Initialize GPIO DVS registers */
+ 	for (i = 0; i < 8; i++) {
 -- 
 2.30.2
 
