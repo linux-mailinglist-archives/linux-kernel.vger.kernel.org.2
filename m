@@ -2,102 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BBAD4239C5
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 10:30:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C6B24239CB
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 10:31:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237676AbhJFIcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 04:32:24 -0400
-Received: from foss.arm.com ([217.140.110.172]:59594 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237411AbhJFIcX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 04:32:23 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7DFA86D;
-        Wed,  6 Oct 2021 01:30:31 -0700 (PDT)
-Received: from [10.57.43.98] (unknown [10.57.43.98])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 052F43F766;
-        Wed,  6 Oct 2021 01:30:28 -0700 (PDT)
-Subject: Re: [PATCH 4/4] perf vendor events: Add the Neoverse V1 to arm64
- mapfile
-From:   Andrew Kilroy <andrew.kilroy@arm.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        John Garry <john.garry@huawei.com>
-Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-References: <20211004160008.21645-1-andrew.kilroy@arm.com>
- <20211004160008.21645-4-andrew.kilroy@arm.com>
- <424d066b-30d5-4512-bd8c-15b700af2864@huawei.com>
- <YVySPe1LRz4bGZFy@kernel.org> <2db0d2b9-a234-2117-a6f3-67428bc3a820@arm.com>
-Message-ID: <d51c82c9-a01e-187c-87ca-bce957618e75@arm.com>
-Date:   Wed, 6 Oct 2021 09:29:32 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S237703AbhJFIdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 04:33:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237551AbhJFIdo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 04:33:44 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CA5AC06174E
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 01:31:52 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id p11so6753186edy.10
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 01:31:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=n57iUb7x8GJCYLGUqi/XvYYRYqpyg5wwYFmMWJ6epWg=;
+        b=R1Rf8VT01nPXcJdhLBPc8gmj/DfqsdG2efdBoic6wm9pDtYyMx0kqy9a1DrhCFq9Td
+         U4nveIzg2R6WPhv5nn68xfE2DnmCm11xkVywBTnSFcM871qgvXlOlIJdPu5A5KhNSt4m
+         wfYXwEAjOlDIAoCYvMN832o1uG2rrh4anWuyPaGsQuMq+I6XgfmG93L+qb4ZAIHGB0UM
+         gUOXtl8NPM7hBCO+878A4Y4mlTtgRspB+xyrSFY73BRX8QB/HsjNIqJ+4ZarsleykRDf
+         sBpujQAF6BMfaSmbf/61NwfDshM/EyD4XwqoJFdCHnfkMXc3HCl/BKRfN27JwlDq5MKR
+         Vt6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=n57iUb7x8GJCYLGUqi/XvYYRYqpyg5wwYFmMWJ6epWg=;
+        b=73vKdIzpTAWquc9iZKAZLf33Mag1dGNRFAiZ/Baeuj5c2Kiq0Q45TNJR1XiGuveG/J
+         7U+qyjM8gzxo/LLjU5UpHsC/P/Y3AAbMY7DaRiQE8DK39dNdeoRHhMfrmb2z0gD7akYV
+         8DPxl3kjjc8sycKpzKUqBOMrbjawtO0aXu9yYkHNX81+re14quRjbBun1qNbNzhdbUz+
+         OKSNT8u2789BSXP8kb2FOzHjdgtITQVmWo8df017Ys4o+0tvyMrakRSGTiDIIwnYW65G
+         u8kcGdNMGaqjrR+ygRCd+1vLfJIPvekFpqiYoGDoW2IwXom0s9rcbs8g1p9xXS2JTjLt
+         hGgw==
+X-Gm-Message-State: AOAM531rbByeBTD/ybUvQUkW2DN6B5+9jc7yKAs+fK2TX0+y7UO7AAlU
+        cX8ehzqbcVZZ6ydF0Gwb74nkCZadTfoUPsdRoQ0dlA==
+X-Google-Smtp-Source: ABdhPJztgFOWnbssTMnGjXB7Pd1z7UZy0t+OTTGq2zcAVII5LCgLBQfBExSTdJZs4wJLyljYxen5Z/ysC/JsrlFd9Zo=
+X-Received: by 2002:a05:6402:5146:: with SMTP id n6mr32095802edd.357.1633509110551;
+ Wed, 06 Oct 2021 01:31:50 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <2db0d2b9-a234-2117-a6f3-67428bc3a820@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20211005083255.847113698@linuxfoundation.org>
+In-Reply-To: <20211005083255.847113698@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 6 Oct 2021 14:01:39 +0530
+Message-ID: <CA+G9fYv6_jc_tB8pnHRXv7hr_d94+JQdFYXDDnrn+8e953QjqQ@mail.gmail.com>
+Subject: Re: [PATCH 4.9 00/57] 4.9.285-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 5 Oct 2021 at 14:08, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.9.285 release.
+> There are 57 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Thu, 07 Oct 2021 08:32:44 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.9.285-rc2.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.9.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-On 06/10/2021 09:20, Andrew Kilroy wrote:
-> Hi Arnaldo + John,
-> 
-> On 05/10/2021 18:58, Arnaldo Carvalho de Melo wrote:
->> Em Tue, Oct 05, 2021 at 10:33:49AM +0100, John Garry escreveu:
->>> On 04/10/2021 17:00, Andrew Kilroy wrote:
->>>> This is so that performance counters for the Neoverse V1 appear
->>>> categorised upon running 'perf list' on the CPU.
->>>>
->>>
->>> this really belongs with the previous patch
->>
->> Waiting for a resolution on this one.
->>
->> - Arnaldo
->>> Thanks,
->>> John
->>>
-> 
-> Sent a v2 of these patches
-> 
-> Andrew
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-I forgot to add, thanks for the review!
+## Build
+* kernel: 4.9.285-rc2
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-4.9.y
+* git commit: e7efcc55cce6ba10027969d4bbf10a0920381417
+* git describe: v4.9.284-58-ge7efcc55cce6
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.9.y/build/v4.9.2=
+84-58-ge7efcc55cce6
 
-Andrew
+## No regressions (compared to v4.9.284-58-g12f4032656ef)
 
+## No fixes (compared to v4.9.284-58-g12f4032656ef)
 
-> 
-> 
-> 
->>>> Signed-off-by: Andrew Kilroy <andrew.kilroy@arm.com>
->>>> ---
->>>>    tools/perf/pmu-events/arch/arm64/mapfile.csv | 1 +
->>>>    1 file changed, 1 insertion(+)
->>>>
->>>> diff --git a/tools/perf/pmu-events/arch/arm64/mapfile.csv 
->>>> b/tools/perf/pmu-events/arch/arm64/mapfile.csv
->>>> index c43591d831b8..31d8b57ca9bb 100644
->>>> --- a/tools/perf/pmu-events/arch/arm64/mapfile.csv
->>>> +++ b/tools/perf/pmu-events/arch/arm64/mapfile.csv
->>>> @@ -18,6 +18,7 @@
->>>>    0x00000000410fd080,v1,arm/cortex-a57-a72,core
->>>>    0x00000000410fd0b0,v1,arm/cortex-a76-n1,core
->>>>    0x00000000410fd0c0,v1,arm/cortex-a76-n1,core
->>>> +0x00000000410fd400,v1,arm/neoverse-v1,core
->>>>    0x00000000420f5160,v1,cavium/thunderx2,core
->>>>    0x00000000430f0af0,v1,cavium/thunderx2,core
->>>>    0x00000000460f0010,v1,fujitsu/a64fx,core
->>>>
->>
+## Test result summary
+total: 72967, pass: 57396, fail: 583, skip: 12923, xfail: 2065
+
+## Build Summary
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 1 total, 1 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* kselftest-android
+* kselftest-arm64
+* kselftest-arm64/arm64.btitest.bti_c_func
+* kselftest-arm64/arm64.btitest.bti_j_func
+* kselftest-arm64/arm64.btitest.bti_jc_func
+* kselftest-arm64/arm64.btitest.bti_none_func
+* kselftest-arm64/arm64.btitest.nohint_func
+* kselftest-arm64/arm64.btitest.paciasp_func
+* kselftest-arm64/arm64.nobtitest.bti_c_func
+* kselftest-arm64/arm64.nobtitest.bti_j_func
+* kselftest-arm64/arm64.nobtitest.bti_jc_func
+* kselftest-arm64/arm64.nobtitest.bti_none_func
+* kselftest-arm64/arm64.nobtitest.nohint_func
+* kselftest-arm64/arm64.nobtitest.paciasp_func
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
