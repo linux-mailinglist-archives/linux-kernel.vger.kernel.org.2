@@ -2,102 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFBA542496A
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 00:03:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CB5B424973
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 00:03:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239794AbhJFWFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 18:05:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59140 "EHLO
+        id S239812AbhJFWFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 18:05:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239771AbhJFWFO (ORCPT
+        with ESMTP id S239771AbhJFWFU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 18:05:14 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5BFEC061760
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 15:03:21 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id 75so3726728pga.3
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 15:03:21 -0700 (PDT)
+        Wed, 6 Oct 2021 18:05:20 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA82EC061746;
+        Wed,  6 Oct 2021 15:03:27 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id z11so8174725lfj.4;
+        Wed, 06 Oct 2021 15:03:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=S8r+rc6bFIU7cXArQnf6Qtpwv2FoCGPsccPj2q+K1zk=;
-        b=BlcpB5NSeXXefPepERXjr0jUHlucP3qusHB3fY//2ntWT4PaA2nle9ET0X3AI1HmEH
-         feGtjzF6zI0ZgP3SazGlzI7XQsy/joCst2lDK+wX83vnR+9++PDS05+ZQtLJy+cp0Zww
-         49ZwkdVQHaEFSC8vTVzcnAqC2r7EwFKG1KnMo=
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ocF1Zd1GgargbSRFkTmMQuOw5z6Jk+7ep3c3eIOkpY0=;
+        b=ifXynuue/W+cts8xYAzQAjPsqjJAD3xm4bF5WPNBP3JdeZZeTkuHZ6o05Wga1mAEPW
+         uZBGIlccZgW7Zx08VO5j7forCX1vkPQvvoGq55QfThNxZroKaf7wt+EiygR38dICdv6x
+         rroUayAcRJedS+qeeYmhsWhHm9O8SGdiRISMqWg3sIqmtQtasrIDTGpy16tLvBqOnPdS
+         7VFt0DzOxk9oISnLMP0hp7pLoAYRpd/mP7Y5dJB/Ou/2xDx40RzvKuKuN/+zcyw8MIYR
+         7Kez1XrR98p/rr4uEPM0EsltzlzBLHnnhIfQ1lPQ+eKwuV1vbQZ+k+eIoHRBG6pJrLDt
+         WmfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=S8r+rc6bFIU7cXArQnf6Qtpwv2FoCGPsccPj2q+K1zk=;
-        b=a2UCS/NlcwrFDE7NyYj1eXd7OjuL/WRlp7fGLS58fE+sq1lBreiyMjw+D2MvPFinL7
-         s2bDscbvrHMt4SP+mQtHs6C0k+DbtKe0bXAiP7tuYv9gW+CLRmfcwDVqgU6CR15X9fyu
-         S4MH8xtRusKkpwJJMWAJFk5ov19fNkegky3sIyol9pvn9QFNlHZYpj808vGxTXjSiOy4
-         RWXomP3d9XYnC01yQIT20SLZvDr6hU5M0P14fWp/dZjXMhxvfmwh8jC+lxM0zz/WUCei
-         s1IbL8VBePHCDzAr7vf5Jv8H4hHwMYdoLZN4qJXJgDtftK8JpZlAaWFmuuwvqYT8MVex
-         J/5A==
-X-Gm-Message-State: AOAM533Iqfgp+yK06dJNwCmL3a95sAU781RwMUyPmN+z5D3BrpqnXTIG
-        MxFzyMdfkS+KDIAjtjkElb4Aaw==
-X-Google-Smtp-Source: ABdhPJzouFSoNpCm18n4Iwn3EUMcJjerfXPUN9YpUneFa6F70rdyCB8CBylaxKHlD/YEVHoOYPZFMQ==
-X-Received: by 2002:a63:e651:: with SMTP id p17mr420929pgj.66.1633557801181;
-        Wed, 06 Oct 2021 15:03:21 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id k17sm2947437pff.214.2021.10.06.15.03.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Oct 2021 15:03:20 -0700 (PDT)
-Date:   Wed, 6 Oct 2021 15:03:19 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
-Cc:     bauen1 <j2468h@googlemail.com>, akpm@linux-foundation.org,
-        arnd@arndb.de, casey@schaufler-ca.com,
-        christian.brauner@ubuntu.com, christian@python.org, corbet@lwn.net,
-        cyphar@cyphar.com, deven.desai@linux.microsoft.com,
-        dvyukov@google.com, ebiggers@kernel.org, ericchiang@google.com,
-        fweimer@redhat.com, geert@linux-m68k.org, jack@suse.cz,
-        jannh@google.com, jmorris@namei.org,
-        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, luto@kernel.org,
-        madvenka@linux.microsoft.com, mjg59@google.com,
-        mszeredi@redhat.com, mtk.manpages@gmail.com,
-        nramas@linux.microsoft.com, philippe.trebuchet@ssi.gouv.fr,
-        scottsh@microsoft.com, sean.j.christopherson@intel.com,
-        sgrubb@redhat.com, shuah@kernel.org, steve.dower@python.org,
-        thibaut.sautereau@clip-os.org, vincent.strubel@ssi.gouv.fr,
-        viro@zeniv.linux.org.uk, willy@infradead.org, zohar@linux.ibm.com
-Subject: Re: [PATCH v12 0/3] Add trusted_for(2) (was O_MAYEXEC)
-Message-ID: <202110061500.B8F821C@keescook>
-References: <20201203173118.379271-1-mic@digikod.net>
- <d3b0da18-d0f6-3f72-d3ab-6cf19acae6eb@gmail.com>
- <2a4cf50c-7e79-75d1-7907-8218e669f7fa@digikod.net>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ocF1Zd1GgargbSRFkTmMQuOw5z6Jk+7ep3c3eIOkpY0=;
+        b=3OS6Ml7bUodi3ie/nSzjXu7ntRkokboKF3LBhqUsHtqWwZQFDeb2BLVqINzfZ7irLv
+         lPjPmOJHzoqckvl40Y9Urac8A7E9r2RbG+ODvBxkrOdWhL9n1KmjicYhSSPLo3SVCxBy
+         Dfw/aNE+oIlZZBzL4qN4iGC52WaSh0tvl644aeTPbIS5Onm2NorszA2wF6+jY8oqLUNq
+         fHVLkZ7Kb6b6cb5bap0d1tBZeUtjQu8go4db/eXS8gpBQZ8w3EJ2tEmflOnnNQcn6vvz
+         d5T551oZNitPtC1Yai+DDROyz4lPgJaMoQAQWINgCwaIULuPidhgRhlWiFGahh6Lzjes
+         UnuQ==
+X-Gm-Message-State: AOAM530YlOmSWDZdvnoyr3cSpETHU8m8B8HJ73bAHT8zT7OvQ7sMUDaV
+        /0Sw7e2oophGwK5aQhe0OOLAlLfuIOA=
+X-Google-Smtp-Source: ABdhPJzzU4Kir/q2zSrh7VeOqOd6EwnvXqJt373WnDkIWpzjoqXokHPpHUyjZ+sXTNvD05zQT1QiYQ==
+X-Received: by 2002:a05:651c:169c:: with SMTP id bd28mr586938ljb.476.1633557806201;
+        Wed, 06 Oct 2021 15:03:26 -0700 (PDT)
+Received: from [192.168.2.145] (79-139-163-57.dynamic.spd-mgts.ru. [79.139.163.57])
+        by smtp.googlemail.com with ESMTPSA id d7sm2600461lfa.80.2021.10.06.15.03.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Oct 2021 15:03:25 -0700 (PDT)
+Subject: Re: [PATCH v13 06/35] clk: tegra: Support runtime PM and power domain
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        Peter Chen <peter.chen@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Nishanth Menon <nm@ti.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        linux-staging@lists.linux.dev, linux-pwm@vger.kernel.org,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Richard Weinberger <richard@nod.at>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        David Heidelberg <david@ixit.cz>
+References: <20210926224058.1252-1-digetx@gmail.com>
+ <20210926224058.1252-7-digetx@gmail.com>
+ <CAPDyKFq+LS4Jr1GyC-a-tGWPzGH0JxfJ9wKY=uQEBGYm952azw@mail.gmail.com>
+ <24101cd6-d3f5-1e74-db39-145ecd30418b@gmail.com>
+ <CAPDyKFreK7976PJL-1zySoza_yXM7rMQ64aODWUZ+U3L-uCa0w@mail.gmail.com>
+ <4bdba8a2-4b9b-ed7d-e6ca-9218d8200a85@gmail.com>
+ <CAPDyKFq_-HGPRNiNDmnEbuah0mUYoRUWVs1SvbQ6VNMMwEcXjA@mail.gmail.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <5dfe7463-7a92-59c5-3ba6-57d31fc5833c@gmail.com>
+Date:   Thu, 7 Oct 2021 01:03:24 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+In-Reply-To: <CAPDyKFq_-HGPRNiNDmnEbuah0mUYoRUWVs1SvbQ6VNMMwEcXjA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <2a4cf50c-7e79-75d1-7907-8218e669f7fa@digikod.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 09, 2021 at 07:15:42PM +0200, Micka�l Sala�n wrote:
-> There was no new reviews, probably because the FS maintainers were busy,
-> and I was focused on Landlock (which is now in -next), but I plan to
-> send a new patch series for trusted_for(2) soon.
+06.10.2021 15:38, Ulf Hansson пишет:
+>>> Right, so the PM domain managed in tegra_genpd_power_on|off() can
+>>> still be powered on/off, as long as the clock remains ungated?
+>> Not ungated, but prepared.
+> Okay, thanks for clarifying!
+> 
+> In summary, it sounds like you should be able to fix this problem in
+> the I2C driver as I suggested above. If that works, that seems much
+> better.
 
-Hi!
+I'll try this variant, thank you.
 
-Did this ever happen? It looks like it's in good shape, and I think it's
-a nice building block for userspace to have. Are you able to rebase and
-re-send this?
+> Moreover, it would leave the clocks gated/unprepared when the system
+> is fully suspended, which I guess is better from an energy point of
+> view?
 
-I've tended to aim these things at akpm if Al gets busy. (And since
-you've had past review from Al, that should be hopefully sufficient.)
+The clocks are kept gated, it wasn't a problem. The problem was that
+clocks were needed to be enabled temporarily. In order to enable a
+clock, it needs to be prepared first. When clock is prepared, it resumes
+clock's device RPM.
 
-Thanks for chasing this!
-
--Kees
-
--- 
-Kees Cook
+Keeping clocks prepared shouldn't make a noticeable difference from the
+energy POV since clocks are gated. It's only voltage that is kept high,
+but we need to keep it high during suspend anyways in order to resume
+successfully. The hardware is mostly gated during suspend, depending on
+suspend mode, so the power consumption difference is negligible. At
+least I haven't seen any problems, battery doesn't drain during suspend.
