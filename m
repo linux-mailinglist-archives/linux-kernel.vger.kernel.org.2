@@ -2,73 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 765AF423F79
+	by mail.lfdr.de (Postfix) with ESMTP id 7E691423F7A
 	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 15:36:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238715AbhJFNiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 09:38:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:43471 "EHLO
+        id S238847AbhJFNi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 09:38:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42104 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238952AbhJFNiT (ORCPT
+        by vger.kernel.org with ESMTP id S239005AbhJFNiV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 09:38:19 -0400
+        Wed, 6 Oct 2021 09:38:21 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633527386;
+        s=mimecast20190719; t=1633527389;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=5Y7uP8QRGocqx1FZVyYu93M+isTRRJCiJChkQsmHD78=;
-        b=M7sEu0POQRrvt7zrygMEXvp42H/0eLlAmxDfQx683nhnumTuzWdcuoPgD11wllrFWBUtXv
-        rwJYUWGcIipBSUe0NLhkK+BXVil7AtufNy3cQglRemt+8H4UZ93GkmaWF9gt5vDiR/opa5
-        JnMN4tovdsGPPVWMAyp5qfFR7h885SU=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-5-GJ8z24eVOWO9-460hm3O6Q-1; Wed, 06 Oct 2021 09:36:25 -0400
-X-MC-Unique: GJ8z24eVOWO9-460hm3O6Q-1
-Received: by mail-ed1-f72.google.com with SMTP id w6-20020a50d786000000b003dabc563406so2631166edi.17
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 06:36:25 -0700 (PDT)
+        bh=mdCtjmJ1UXZrI9DLoQzPgnLklkeoiryi6u7rrgv0/LQ=;
+        b=TkVUvQF0J1sX4zB+K+Klpvzd86F6Khm6U4cK7duRMygRG6T7wYuvX6OIlwH4PqmORp6k1A
+        JjVDweLEqSOn5tRWpq6NnWfrHYAhocQzgZ+CnNuFJuVpsSY7KMmKhBLqsPk7EMVWcc+9CQ
+        uCnnCCw2OVs4d1ckHz5LJoQJ2Z0aNpg=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-262-NpGXfRC3PuGU8ReZ2Wf-zw-1; Wed, 06 Oct 2021 09:36:28 -0400
+X-MC-Unique: NpGXfRC3PuGU8ReZ2Wf-zw-1
+Received: by mail-ed1-f70.google.com with SMTP id d11-20020a50cd4b000000b003da63711a8aso2623905edj.20
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 06:36:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
          :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=5Y7uP8QRGocqx1FZVyYu93M+isTRRJCiJChkQsmHD78=;
-        b=tV+l/6nrUNP+AGm+tDRIBp+RKtHT7stcWvEbMJJrfiQVwwuw1qWpIZkFB19t9bgdiM
-         Mgj58DS31EGpHLkAkO97nK5FBE6frKoIsLOdQBvIUWc9Ajrei0dRWo7caJBr4Spurv9U
-         3EUldt8w5D+LDl+rw5E3pJWeYPgcEKeOJi29YMfIsZMB/e2UNpTGkQjQEZqjsZeYxzHh
-         OrbdT0D7Gmgvq4AQlzuEoezx3+fkdyZg7xPjFgK33Lipq6aO0fK5JPj7bg6emaZXibT6
-         0QeyZkXW/Mz1/TvvnubkzGrRsVfDwOTVxx2XjMjgQlX0E21qHsomPceSg4PYT34mcbZ1
-         Q4OA==
-X-Gm-Message-State: AOAM533KQs6FpewdZaQymwL5inpKZemxHn8tDwnCWglZiGNLtlCVnCIH
-        50mSWxcu1VXssRsJNz+CIhil5w4GoOuWoUEAfXM4ifnJAHM9ts++rzjrP1/kSosDP+7oQSTzYTj
-        0W9EJAXU3uUxnlgyGObB2n5e9
-X-Received: by 2002:a50:be87:: with SMTP id b7mr35515636edk.382.1633527382864;
-        Wed, 06 Oct 2021 06:36:22 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwobZOH4vhU8yiSwk506kzAz0km9ltn77l54Biy7c8hKVY5ZQU5W14yw6v6WXzxLgrbZkv4QA==
-X-Received: by 2002:a50:be87:: with SMTP id b7mr35515607edk.382.1633527382653;
-        Wed, 06 Oct 2021 06:36:22 -0700 (PDT)
+        bh=mdCtjmJ1UXZrI9DLoQzPgnLklkeoiryi6u7rrgv0/LQ=;
+        b=dZvhTvUupgQLQTAgf7IdZL2Rp5ph76XUThLiwjHO2adwuE7eyTlt8gNtF9FnSW2ANu
+         OUo2vBMDDbDDrg7H3yFS3An2TjdrOH25cCjTGxJ6zWRvFjWQFsjFW+mUq5VC5rkqqBky
+         MgP8qLt9XSEVv9a8u1HOVQ8B9k0Zftv3laZxVJp4J4JsUL8nlIKwmk1U0i5ZQsszc5+h
+         0sT1TVkUqUOEBnM5Ve4RpOXu2dM/bW4JlPauFNxP0GWUtJxs3KObidwT1qGM0w4OV4ZG
+         oMwxBMDIwBwb60QPWvjlGgNrllpiDVLYcW4YYwR+JRJgHTuEac7NQ3gRTbwAAJRBx6e0
+         aqvg==
+X-Gm-Message-State: AOAM532CnP/VRkLbnqtMwERbw6Mjk7nOEOTBUBvhKaTaBqKdnPz9LLpL
+        yjVA1VAlRN+N5h1xm20VnzkHCE8XVQWbY0U0kv21Vd/fbQ89m6S7PzoB5Pv0vG5Cz+oj25umTq6
+        0lbCGR+b4FhGtbULj7ugCFALt
+X-Received: by 2002:a05:6402:19b5:: with SMTP id o21mr34283820edz.214.1633527386841;
+        Wed, 06 Oct 2021 06:36:26 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwDV8zgstcj54ZGrgP0aY+OjAgvKhSz+WwnxgH7Gza00q6jnFcohQUibpIG3XAbbBVd0XZV+w==
+X-Received: by 2002:a05:6402:19b5:: with SMTP id o21mr34283798edz.214.1633527386673;
+        Wed, 06 Oct 2021 06:36:26 -0700 (PDT)
 Received: from ?IPV6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
-        by smtp.gmail.com with ESMTPSA id x16sm4468819ejj.8.2021.10.06.06.36.20
+        by smtp.gmail.com with ESMTPSA id eg31sm770602edb.38.2021.10.06.06.36.25
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Oct 2021 06:36:21 -0700 (PDT)
-Message-ID: <fcaf3441-766a-c774-1a1d-d94882719403@redhat.com>
-Date:   Wed, 6 Oct 2021 15:36:20 +0200
+        Wed, 06 Oct 2021 06:36:26 -0700 (PDT)
+Message-ID: <e561a2a4-96f1-a56c-21f0-06e4e21c4765@redhat.com>
+Date:   Wed, 6 Oct 2021 15:36:24 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.1.0
-Subject: Re: [PATCH MANUALSEL 5.14 2/9] KVM: x86: Handle SRCU initialization
- failure during page track init
+Subject: Re: [PATCH MANUALSEL 5.14 3/9] KVM: do not shrink halt_poll_ns below
+ grow_start
 Content-Language: en-US
 To:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
         stable@vger.kernel.org
-Cc:     Haimin Zhang <tcs_kernel@tencent.com>,
-        TCS Robot <tcs_robot@tencent.com>, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, kvm@vger.kernel.org
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>, kvm@vger.kernel.org
 References: <20211006133021.271905-1-sashal@kernel.org>
- <20211006133021.271905-2-sashal@kernel.org>
+ <20211006133021.271905-3-sashal@kernel.org>
 From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <20211006133021.271905-2-sashal@kernel.org>
+In-Reply-To: <20211006133021.271905-3-sashal@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
@@ -76,87 +74,70 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 06/10/21 15:30, Sasha Levin wrote:
-> From: Haimin Zhang <tcs_kernel@tencent.com>
+> From: Sergey Senozhatsky <senozhatsky@chromium.org>
 > 
-> [ Upstream commit eb7511bf9182292ef1df1082d23039e856d1ddfb ]
+> [ Upstream commit ae232ea460888dc5a8b37e840c553b02521fbf18 ]
 > 
-> Check the return of init_srcu_struct(), which can fail due to OOM, when
-> initializing the page track mechanism.  Lack of checking leads to a NULL
-> pointer deref found by a modified syzkaller.
+> grow_halt_poll_ns() ignores values between 0 and
+> halt_poll_ns_grow_start (10000 by default). However,
+> when we shrink halt_poll_ns we may fall way below
+> halt_poll_ns_grow_start and endup with halt_poll_ns
+> values that don't make a lot of sense: like 1 or 9,
+> or 19.
 > 
-> Reported-by: TCS Robot <tcs_robot@tencent.com>
-> Signed-off-by: Haimin Zhang <tcs_kernel@tencent.com>
-> Message-Id: <1630636626-12262-1-git-send-email-tcs_kernel@tencent.com>
-> [Move the call towards the beginning of kvm_arch_init_vm. - Paolo]
+> VCPU1 trace (halt_poll_ns_shrink equals 2):
+> 
+> VCPU1 grow 10000
+> VCPU1 shrink 5000
+> VCPU1 shrink 2500
+> VCPU1 shrink 1250
+> VCPU1 shrink 625
+> VCPU1 shrink 312
+> VCPU1 shrink 156
+> VCPU1 shrink 78
+> VCPU1 shrink 39
+> VCPU1 shrink 19
+> VCPU1 shrink 9
+> VCPU1 shrink 4
+> 
+> Mirror what grow_halt_poll_ns() does and set halt_poll_ns
+> to 0 as soon as new shrink-ed halt_poll_ns value falls
+> below halt_poll_ns_grow_start.
+> 
+> Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> Message-Id: <20210902031100.252080-1-senozhatsky@chromium.org>
 > Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 > Signed-off-by: Sasha Levin <sashal@kernel.org>
 > ---
->   arch/x86/include/asm/kvm_page_track.h | 2 +-
->   arch/x86/kvm/mmu/page_track.c         | 4 ++--
->   arch/x86/kvm/x86.c                    | 7 ++++++-
->   3 files changed, 9 insertions(+), 4 deletions(-)
+>   virt/kvm/kvm_main.c | 6 +++++-
+>   1 file changed, 5 insertions(+), 1 deletion(-)
 > 
-> diff --git a/arch/x86/include/asm/kvm_page_track.h b/arch/x86/include/asm/kvm_page_track.h
-> index 87bd6025d91d..6a5f3acf2b33 100644
-> --- a/arch/x86/include/asm/kvm_page_track.h
-> +++ b/arch/x86/include/asm/kvm_page_track.h
-> @@ -46,7 +46,7 @@ struct kvm_page_track_notifier_node {
->   			    struct kvm_page_track_notifier_node *node);
->   };
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index b50dbe269f4b..1a11dcb670a3 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -3053,15 +3053,19 @@ static void grow_halt_poll_ns(struct kvm_vcpu *vcpu)
 >   
-> -void kvm_page_track_init(struct kvm *kvm);
-> +int kvm_page_track_init(struct kvm *kvm);
->   void kvm_page_track_cleanup(struct kvm *kvm);
->   
->   void kvm_page_track_free_memslot(struct kvm_memory_slot *slot);
-> diff --git a/arch/x86/kvm/mmu/page_track.c b/arch/x86/kvm/mmu/page_track.c
-> index 91a9f7e0fd91..68e67228101d 100644
-> --- a/arch/x86/kvm/mmu/page_track.c
-> +++ b/arch/x86/kvm/mmu/page_track.c
-> @@ -163,13 +163,13 @@ void kvm_page_track_cleanup(struct kvm *kvm)
->   	cleanup_srcu_struct(&head->track_srcu);
->   }
->   
-> -void kvm_page_track_init(struct kvm *kvm)
-> +int kvm_page_track_init(struct kvm *kvm)
+>   static void shrink_halt_poll_ns(struct kvm_vcpu *vcpu)
 >   {
->   	struct kvm_page_track_notifier_head *head;
+> -	unsigned int old, val, shrink;
+> +	unsigned int old, val, shrink, grow_start;
 >   
->   	head = &kvm->arch.track_notifier_head;
-> -	init_srcu_struct(&head->track_srcu);
->   	INIT_HLIST_HEAD(&head->track_notifier_list);
-> +	return init_srcu_struct(&head->track_srcu);
+>   	old = val = vcpu->halt_poll_ns;
+>   	shrink = READ_ONCE(halt_poll_ns_shrink);
+> +	grow_start = READ_ONCE(halt_poll_ns_grow_start);
+>   	if (shrink == 0)
+>   		val = 0;
+>   	else
+>   		val /= shrink;
+>   
+> +	if (val < grow_start)
+> +		val = 0;
+> +
+>   	vcpu->halt_poll_ns = val;
+>   	trace_kvm_halt_poll_ns_shrink(vcpu->vcpu_id, val, old);
 >   }
->   
->   /*
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 7ec7c2dce506..b3f855d48f72 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -11090,9 +11090,15 @@ void kvm_arch_free_vm(struct kvm *kvm)
->   
->   int kvm_arch_init_vm(struct kvm *kvm, unsigned long type)
->   {
-> +	int ret;
-> +
->   	if (type)
->   		return -EINVAL;
->   
-> +	ret = kvm_page_track_init(kvm);
-> +	if (ret)
-> +		return ret;
-> +
->   	INIT_HLIST_HEAD(&kvm->arch.mask_notifier_list);
->   	INIT_LIST_HEAD(&kvm->arch.active_mmu_pages);
->   	INIT_LIST_HEAD(&kvm->arch.zapped_obsolete_pages);
-> @@ -11125,7 +11131,6 @@ int kvm_arch_init_vm(struct kvm *kvm, unsigned long type)
->   
->   	kvm_apicv_init(kvm);
->   	kvm_hv_init_vm(kvm);
-> -	kvm_page_track_init(kvm);
->   	kvm_mmu_init_vm(kvm);
->   
->   	return static_call(kvm_x86_vm_init)(kvm);
 > 
 
 Acked-by: Paolo Bonzini <pbonzini@redhat.com>
