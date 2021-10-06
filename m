@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1913423E12
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 14:48:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 377E8423E13
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 14:48:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238701AbhJFMu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 08:50:29 -0400
+        id S238734AbhJFMud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 08:50:33 -0400
 Received: from pegase2.c-s.fr ([93.17.235.10]:36081 "EHLO pegase2.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238630AbhJFMu1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 08:50:27 -0400
+        id S238660AbhJFMu2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 08:50:28 -0400
 Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4HPZ4V1V4Dz9sWh;
-        Wed,  6 Oct 2021 14:48:10 +0200 (CEST)
+        by localhost (Postfix) with ESMTP id 4HPZ4W0Yldz9sWj;
+        Wed,  6 Oct 2021 14:48:11 +0200 (CEST)
 X-Virus-Scanned: amavisd-new at c-s.fr
 Received: from pegase2.c-s.fr ([172.26.127.65])
         by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id DlPEBgey1DwE; Wed,  6 Oct 2021 14:48:10 +0200 (CEST)
+        with ESMTP id FRriH6_pj7yq; Wed,  6 Oct 2021 14:48:11 +0200 (CEST)
 Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4HPZ4M4CCqz9sW6;
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4HPZ4M4lhdz9sW8;
         Wed,  6 Oct 2021 14:48:03 +0200 (CEST)
 Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 8303C8B783;
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 8CF438B763;
         Wed,  6 Oct 2021 14:48:03 +0200 (CEST)
 X-Virus-Scanned: amavisd-new at c-s.fr
 Received: from messagerie.si.c-s.fr ([127.0.0.1])
         by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 2hL6w5Ce018q; Wed,  6 Oct 2021 14:48:03 +0200 (CEST)
+        with ESMTP id NqwpLZ4pwWS4; Wed,  6 Oct 2021 14:48:03 +0200 (CEST)
 Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.204.229])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 9FFFF8B78B;
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 92B598B781;
         Wed,  6 Oct 2021 14:48:02 +0200 (CEST)
 Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
-        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1) with ESMTPS id 196Clppi579416
+        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1) with ESMTPS id 196Clppa579416
         (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
         Wed, 6 Oct 2021 14:47:52 +0200
 Received: (from chleroy@localhost)
-        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1/Submit) id 196Chs1T579294;
+        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1/Submit) id 196ChsVL579295;
         Wed, 6 Oct 2021 14:43:54 +0200
 X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
 From:   Christophe Leroy <christophe.leroy@csgroup.eu>
@@ -45,9 +45,9 @@ To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
         Michael Ellerman <mpe@ellerman.id.au>
 Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
         linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH v1 14/15] powerpc/kuap: Wire-up KUAP on book3e/64
-Date:   Wed,  6 Oct 2021 14:43:47 +0200
-Message-Id: <d8d87ef874fa9810c38c105c6662fef334d9ae73.1633523837.git.christophe.leroy@csgroup.eu>
+Subject: [PATCH v1 15/15] powerpc: Remove CONFIG_PPC_HAVE_KUAP
+Date:   Wed,  6 Oct 2021 14:43:48 +0200
+Message-Id: <01fb2b352f82248c7828e1170c912af48204d85a.1633523837.git.christophe.leroy@csgroup.eu>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1633523837.git.christophe.leroy@csgroup.eu>
 References: <cover.1633523837.git.christophe.leroy@csgroup.eu>
@@ -57,119 +57,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds KUAP support to book3e/64.
-This is done by reading the content of SPRN_MAS1 and checking
-the TID at the time user pgtable is loaded.
+All platforms now have KUAP so remove CONFIG_PPC_HAVE_KUAP
 
 Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- arch/powerpc/mm/nohash/tlb_low_64e.S   | 40 ++++++++++++++++++++++----
- arch/powerpc/platforms/Kconfig.cputype |  1 +
- 2 files changed, 35 insertions(+), 6 deletions(-)
+ arch/powerpc/mm/nohash/kup.c           |  1 -
+ arch/powerpc/platforms/Kconfig.cputype | 11 -----------
+ 2 files changed, 12 deletions(-)
 
-diff --git a/arch/powerpc/mm/nohash/tlb_low_64e.S b/arch/powerpc/mm/nohash/tlb_low_64e.S
-index bf24451f3e71..b43524ca2b95 100644
---- a/arch/powerpc/mm/nohash/tlb_low_64e.S
-+++ b/arch/powerpc/mm/nohash/tlb_low_64e.S
-@@ -128,6 +128,13 @@ END_BTB_FLUSH_SECTION
+diff --git a/arch/powerpc/mm/nohash/kup.c b/arch/powerpc/mm/nohash/kup.c
+index bbacbd780806..eaea52231dd6 100644
+--- a/arch/powerpc/mm/nohash/kup.c
++++ b/arch/powerpc/mm/nohash/kup.c
+@@ -10,7 +10,6 @@
+ #include <linux/smp.h>
  
- 	bne	tlb_miss_kernel_bolted
+ #include <asm/kup.h>
+-#include <asm/mmu.h>
+ #include <asm/smp.h>
  
-+tlb_miss_user_bolted:
-+#ifdef CONFIG_PPC_KUAP
-+	mfspr	r10,SPRN_MAS1
-+	rlwinm.	r10,r10,0,0x3fff0000
-+	beq-	tlb_miss_fault_bolted /* KUAP fault */
-+#endif
-+
- tlb_miss_common_bolted:
- /*
-  * This is the guts of the TLB miss handler for bolted-linear.
-@@ -246,7 +253,7 @@ itlb_miss_fault_bolted:
- 
- 	cmpldi	cr0,r15,0			/* Check for user region */
- 	oris	r11,r11,_PAGE_ACCESSED@h
--	beq	tlb_miss_common_bolted
-+	beq	tlb_miss_user_bolted
- 	b	itlb_miss_kernel_bolted
- 
- #ifdef CONFIG_PPC_FSL_BOOK3E
-@@ -676,6 +683,11 @@ finish_normal_tlb_miss:
- 	/* Check if required permissions are met */
- 	andc.	r15,r11,r14
- 	bne-	normal_tlb_miss_access_fault
-+#ifdef CONFIG_PPC_KUAP
-+	mfspr	r11,SPRN_MAS1
-+	rlwinm.	r10,r11,0,0x3fff0000
-+	beq-	normal_tlb_miss_access_fault /* KUAP fault */
-+#endif
- 
- 	/* Now we build the MAS:
- 	 *
-@@ -689,15 +701,17 @@ finish_normal_tlb_miss:
- 	 *
- 	 * TODO: mix up code below for better scheduling
- 	 */
--	clrrdi	r11,r16,12		/* Clear low crap in EA */
--	rlwimi	r11,r14,32-19,27,31	/* Insert WIMGE */
--	mtspr	SPRN_MAS2,r11
-+	clrrdi	r10,r16,12		/* Clear low crap in EA */
-+	rlwimi	r10,r14,32-19,27,31	/* Insert WIMGE */
-+	mtspr	SPRN_MAS2,r10
- 
- 	/* Check page size, if not standard, update MAS1 */
--	rldicl	r11,r14,64-8,64-8
--	cmpldi	cr0,r11,BOOK3E_PAGESZ_4K
-+	rldicl	r10,r14,64-8,64-8
-+	cmpldi	cr0,r10,BOOK3E_PAGESZ_4K
- 	beq-	1f
-+#ifndef CONFIG_PPC_KUAP
- 	mfspr	r11,SPRN_MAS1
-+#endif
- 	rlwimi	r11,r14,31,21,24
- 	rlwinm	r11,r11,0,21,19
- 	mtspr	SPRN_MAS1,r11
-@@ -786,7 +800,16 @@ virt_page_table_tlb_miss:
- 	mfspr	r10,SPRN_MAS1
- 	rlwinm	r10,r10,0,16,1			/* Clear TID */
- 	mtspr	SPRN_MAS1,r10
-+#ifdef CONFIG_PPC_KUAP
-+	b	2f
-+1:
-+	mfspr	r10,SPRN_MAS1
-+	rlwinm.	r10,r10,0,0x3fff0000
-+	beq-	virt_page_table_tlb_miss_fault /* KUAP fault */
-+2:
-+#else
- 1:
-+#endif
- BEGIN_MMU_FTR_SECTION
- 	/* Search if we already have a TLB entry for that virtual address, and
- 	 * if we do, bail out.
-@@ -1027,6 +1050,11 @@ virt_page_table_tlb_miss_whacko_fault:
-  * avoid too much complication, it will save/restore things for us
-  */
- htw_tlb_miss:
-+#ifdef CONFIG_PPC_KUAP
-+	mfspr	r10,SPRN_MAS1
-+	rlwinm.	r10,r10,0,0x3fff0000
-+	beq-	htw_tlb_miss_fault /* KUAP fault */
-+#endif
- 	/* Search if we already have a TLB entry for that virtual address, and
- 	 * if we do, bail out.
- 	 *
+ #ifdef CONFIG_PPC_KUAP
 diff --git a/arch/powerpc/platforms/Kconfig.cputype b/arch/powerpc/platforms/Kconfig.cputype
-index 8152eeba8572..bd10e176355b 100644
+index bd10e176355b..f169902415ed 100644
 --- a/arch/powerpc/platforms/Kconfig.cputype
 +++ b/arch/powerpc/platforms/Kconfig.cputype
-@@ -118,6 +118,7 @@ config PPC_BOOK3E_64
- 	select PPC_SMP_MUXED_IPI
- 	select PPC_DOORBELL
- 	select ZONE_DMA
-+	select PPC_HAVE_KUAP
+@@ -31,20 +31,17 @@ config PPC_BOOK3S_32
+ 	imply PPC_FPU
+ 	select PPC_HAVE_PMU_SUPPORT
+ 	select PPC_HAVE_KUEP
+-	select PPC_HAVE_KUAP
+ 	select HAVE_ARCH_VMAP_STACK
+ 
+ config PPC_85xx
+ 	bool "Freescale 85xx"
+ 	select E500
+-	select PPC_HAVE_KUAP
+ 
+ config PPC_8xx
+ 	bool "Freescale 8xx"
+ 	select ARCH_SUPPORTS_HUGETLBFS
+ 	select FSL_SOC
+ 	select PPC_HAVE_KUEP
+-	select PPC_HAVE_KUAP
+ 	select HAVE_ARCH_VMAP_STACK
+ 	select HUGETLBFS
+ 
+@@ -54,7 +51,6 @@ config 40x
+ 	select PPC_UDBG_16550
+ 	select 4xx_SOC
+ 	select HAVE_PCI
+-	select PPC_HAVE_KUAP
+ 
+ config 44x
+ 	bool "AMCC 44x, 46x or 47x"
+@@ -64,7 +60,6 @@ config 44x
+ 	select HAVE_PCI
+ 	select PHYS_64BIT
+ 	select PPC_HAVE_KUEP
+-	select PPC_HAVE_KUAP
  
  endchoice
  
+@@ -110,7 +105,6 @@ config PPC_BOOK3S_64
+ 	select IRQ_WORK
+ 	select PPC_MM_SLICES
+ 	select PPC_HAVE_KUEP
+-	select PPC_HAVE_KUAP
+ 
+ config PPC_BOOK3E_64
+ 	bool "Embedded processors"
+@@ -118,7 +112,6 @@ config PPC_BOOK3E_64
+ 	select PPC_SMP_MUXED_IPI
+ 	select PPC_DOORBELL
+ 	select ZONE_DMA
+-	select PPC_HAVE_KUAP
+ 
+ endchoice
+ 
+@@ -408,12 +401,8 @@ config PPC_KUEP
+ 
+ 	  If you're unsure, say Y.
+ 
+-config PPC_HAVE_KUAP
+-	bool
+-
+ config PPC_KUAP
+ 	bool "Kernel Userspace Access Protection"
+-	depends on PPC_HAVE_KUAP
+ 	default y
+ 	help
+ 	  Enable support for Kernel Userspace Access Protection (KUAP)
 -- 
 2.31.1
 
