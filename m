@@ -2,129 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95534423786
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 07:36:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0509142378A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 07:43:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231985AbhJFFi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 01:38:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39796 "EHLO mail.kernel.org"
+        id S230388AbhJFFpc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 01:45:32 -0400
+Received: from muru.com ([72.249.23.125]:41266 "EHLO muru.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229579AbhJFFiZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 01:38:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EDC7961278;
-        Wed,  6 Oct 2021 05:36:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633498594;
-        bh=sMJKXKcZBwMZFPoqxcBjET+uKPX3j11+XEXlIQwwWo4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=N4QKI5G3pndI10cH6UeCwPz9T23LrBsohRzcdsWJuJWNLzWDqo8Pj1AY/OrMtt/9n
-         GLihDsl3IJZzZC+6WfVCYUjxnqclbs/fbozGX1+wdL0b1hnDElRnthh6Znh9e5RWWt
-         F0Ez9LiJ4xOkSNE/yEVRXjg6DLJEe8dREnl3pPAb6E47xjCHdePzXcyTCc7DQ+A5bf
-         s2rGVmXEwa2LqN5MopRPayACAZ9XfstM4+Tqhez49Uj6JX82haU9zCxNZ7PA/tqMQW
-         xNo1kR6PNJIGofDX1GO/KYQtN9DRDciKI4FwcpjQLnFthY/18cgyr5ve/Nk0/qDNqc
-         TgNHzsChG7+0A==
-Date:   Wed, 6 Oct 2021 11:06:29 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     abhinavk@codeaurora.org
-Cc:     Rob Clark <robdclark@gmail.com>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
-        David Airlie <airlied@linux.ie>, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        freedreno@lists.freedesktop.org,
-        Sumit Semwal <sumit.semwal@linaro.org>
-Subject: Re: [Freedreno] [PATCH 02/11] drm/msm/disp/dpu1: Add support for DSC
-Message-ID: <YV013cGaq/QmBAup@matsya>
-References: <20210715065203.709914-1-vkoul@kernel.org>
- <20210715065203.709914-3-vkoul@kernel.org>
- <e476e7b2e50ee3cb5f5c4e6c5d7e5ff0@codeaurora.org>
+        id S229579AbhJFFpb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 01:45:31 -0400
+Received: from hillo.muru.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTP id DE6C780E1;
+        Wed,  6 Oct 2021 05:44:07 +0000 (UTC)
+From:   Tony Lindgren <tony@atomide.com>
+To:     linux-omap@vger.kernel.org
+Cc:     Dave Gerlach <d-gerlach@ti.com>, Faiz Abbas <faiz_abbas@ti.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Keerthy <j-keerthy@ti.com>, Kevin Hilman <khilman@baylibre.com>,
+        Nishanth Menon <nm@ti.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH] bus: ti-sysc: Fix variable set but not used warning for reinit_modules
+Date:   Wed,  6 Oct 2021 08:43:35 +0300
+Message-Id: <20211006054335.41997-1-tony@atomide.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e476e7b2e50ee3cb5f5c4e6c5d7e5ff0@codeaurora.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02-08-21, 16:03, abhinavk@codeaurora.org wrote:
-> On 2021-07-14 23:51, Vinod Koul wrote:
-> > Display Stream Compression (DSC) is one of the hw blocks in dpu, so add
-> > support by adding hw blocks for DSC
-> > 
-> > Signed-off-by: Vinod Koul <vkoul@kernel.org>
-> > ---
-> > Changes since RFC:
-> >  - Drop unused enums
-> > 
-> >  drivers/gpu/drm/msm/Makefile                  |   1 +
-> >  .../gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h    |  13 ++
-> >  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_dsc.c    | 221 ++++++++++++++++++
-> >  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_dsc.h    |  77 ++++++
-> >  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h   |  13 ++
-> >  5 files changed, 325 insertions(+)
-> >  create mode 100644 drivers/gpu/drm/msm/disp/dpu1/dpu_hw_dsc.c
-> >  create mode 100644 drivers/gpu/drm/msm/disp/dpu1/dpu_hw_dsc.h
-> > 
-> > diff --git a/drivers/gpu/drm/msm/Makefile b/drivers/gpu/drm/msm/Makefile
-> > index 610d630326bb..fd8fc57f1f58 100644
-> > --- a/drivers/gpu/drm/msm/Makefile
-> > +++ b/drivers/gpu/drm/msm/Makefile
-> > @@ -61,6 +61,7 @@ msm-y := \
-> >  	disp/dpu1/dpu_hw_blk.o \
-> >  	disp/dpu1/dpu_hw_catalog.o \
-> >  	disp/dpu1/dpu_hw_ctl.o \
-> > +	disp/dpu1/dpu_hw_dsc.o \
-> >  	disp/dpu1/dpu_hw_interrupts.o \
-> >  	disp/dpu1/dpu_hw_intf.o \
-> >  	disp/dpu1/dpu_hw_lm.o \
-> > diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h
-> > b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h
-> > index 4dfd8a20ad5c..b8b4dc36880c 100644
-> > --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h
-> > +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h
-> > @@ -547,6 +547,16 @@ struct dpu_merge_3d_cfg  {
-> >  	const struct dpu_merge_3d_sub_blks *sblk;
-> >  };
-> > 
-> > +/**
-> > + * struct dpu_dsc_cfg - information of DSC blocks
-> > + * @id                 enum identifying this block
-> > + * @base               register offset of this block
-> > + * @features           bit mask identifying sub-blocks/features
-> > + */
-> > +struct dpu_dsc_cfg {
-> > +	DPU_HW_BLK_INFO;
-> > +};
-> > +
-> >  /**
-> >   * struct dpu_intf_cfg - information of timing engine blocks
-> >   * @id                 enum identifying this block
-> > @@ -748,6 +758,9 @@ struct dpu_mdss_cfg {
-> >  	u32 merge_3d_count;
-> >  	const struct dpu_merge_3d_cfg *merge_3d;
-> > 
-> > +	u32 dsc_count;
-> > +	struct dpu_dsc_cfg *dsc;
-> > +
-> >  	u32 intf_count;
-> >  	const struct dpu_intf_cfg *intf;
-> > 
-> > diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_dsc.c
-> > b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_dsc.c
-> > new file mode 100644
-> > index 000000000000..e27e67bd42e8
-> > --- /dev/null
-> > +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_dsc.c
-> > @@ -0,0 +1,221 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +/*
-> > + * Copyright (c) 2020, Linaro Limited
-> Copyright year needs an update : 2020-2021?
+Fix drivers/bus/ti-sysc.c:2494:13: error: variable 'error' set but not
+used introduced by commit 9d881361206e ("bus: ti-sysc: Add quirk handling
+for reinit on context lost").
 
-Thanks for spotting, fixed up
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+---
+ drivers/bus/ti-sysc.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
+diff --git a/drivers/bus/ti-sysc.c b/drivers/bus/ti-sysc.c
+--- a/drivers/bus/ti-sysc.c
++++ b/drivers/bus/ti-sysc.c
+@@ -2523,12 +2523,11 @@ static void sysc_reinit_modules(struct sysc_soc_info *soc)
+ 	struct sysc_module *module;
+ 	struct list_head *pos;
+ 	struct sysc *ddata;
+-	int error = 0;
+ 
+ 	list_for_each(pos, &sysc_soc->restored_modules) {
+ 		module = list_entry(pos, struct sysc_module, node);
+ 		ddata = module->ddata;
+-		error = sysc_reinit_module(ddata, ddata->enabled);
++		sysc_reinit_module(ddata, ddata->enabled);
+ 	}
+ }
+ 
 -- 
-~Vinod
+2.33.0
