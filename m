@@ -2,131 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A5B54239E6
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 10:44:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55D484239E9
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 10:45:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237740AbhJFIq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 04:46:27 -0400
-Received: from mail-mw2nam12on2068.outbound.protection.outlook.com ([40.107.244.68]:42465
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S237543AbhJFIq0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 04:46:26 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ocVYZfCQFKI144xjnvXKDfTeobZkBsatUOX/7lgXt5qXhoSQd9iOXpPFYrXN6G3TbVmdEiamsiC2VmUESLTI0oqwDyt1PwXln9VCPtj1Efr7YQhxcm+S8fUTxL/xWa4VFF2GdC7z/uYjabD+qkx7pV3NaQbrDhK0Xr2Ycx6Uy0YOfSo+hCY4EfZ6cke/m6gwwp/U1cdyOIH5YL5q8QSwZoSIaRCY6CeWoMqm8aiOTehLzxoPy50FUvoUOYBn/iG5tjxnZayjVXLk1NnS1gmtm3URkRSkz/T0oSzkOkqkC5hYr7qnIJtS6fwh8E6Z0SvWjnquMhNmk+QUgWLTfxcC5A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=TgBrL3Sd+g61jz54ta9Fx3c71Wy+InYC8iUwows3FyY=;
- b=lNoFRw0x6fbX+Wiv+Jr4a2jAVxE1KeHUl+h/C14QujrynxiM2wg1MiUJMp5vLPl/ofaZmSVdU3FM1I83F4DnQYCzck7god42M87boyXNQC2PvsdrwdVuYgaiA8n0xUnFKr1mjJ7/no84YSxNo/DzBNZsPDP69BFDKj9wAT3hOPsy2JE/mcagb1DN2H1DjAWHuE2OG5PiNXDhhnEfpqDgaL7B2wt98tZc5t8lJatoLArPbMiV4yErs/juxoxuHlJdlj48qbJeNy66aSjj6ZQE5iLyXzhYDzt0WSrXokEkVOWYv8XAAYf184nLrDx/IdQ7lKO1ALGd9Hbe4c1ntCin5Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.62.198) smtp.rcpttodomain=linuxfoundation.org
- smtp.mailfrom=xilinx.com; dmarc=pass (p=none sp=none pct=100) action=none
- header.from=xilinx.com; dkim=none (message not signed); arc=none
+        id S237817AbhJFIqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 04:46:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42132 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237543AbhJFIqw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 04:46:52 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2522CC061749
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 01:45:01 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id rm6-20020a17090b3ec600b0019ece2bdd20so1759049pjb.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 01:45:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TgBrL3Sd+g61jz54ta9Fx3c71Wy+InYC8iUwows3FyY=;
- b=DRBRbF3A1/eHKmmbnQNfvXusZRGx1kn3Tq/kvacXmgVRnC96PzLkbZSxZx5IugK8WibPmct0MDHiMOMqLYXap5Edj1NRCuJwNRhTB/ukIi/N5alM3wfzjA3dNgygQZIF43fDrLVYfnRDnRZBy3DUmhGZyksgwVLL4RdcGVJOO8c=
-Received: from CH2PR12CA0019.namprd12.prod.outlook.com (2603:10b6:610:57::29)
- by PH0PR02MB7784.namprd02.prod.outlook.com (2603:10b6:510:58::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.14; Wed, 6 Oct
- 2021 08:44:32 +0000
-Received: from DM3NAM02FT031.eop-nam02.prod.protection.outlook.com
- (2603:10b6:610:57:cafe::db) by CH2PR12CA0019.outlook.office365.com
- (2603:10b6:610:57::29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.18 via Frontend
- Transport; Wed, 6 Oct 2021 08:44:31 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
- smtp.mailfrom=xilinx.com; linuxfoundation.org; dkim=none (message not signed)
- header.d=none;linuxfoundation.org; dmarc=pass action=none
- header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com;
-Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
- DM3NAM02FT031.mail.protection.outlook.com (10.13.4.184) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4566.14 via Frontend Transport; Wed, 6 Oct 2021 08:44:31 +0000
-Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Wed, 6 Oct 2021 01:44:27 -0700
-Received: from smtp.xilinx.com (172.19.127.96) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Wed, 6 Oct 2021 01:44:27 -0700
-Envelope-to: gregkh@linuxfoundation.org,
- arnd@arndb.de,
- linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Received: from [172.19.2.243] (port=37526 helo=xsjwillw50.xilinx.com)
-        by smtp.xilinx.com with esmtp (Exim 4.90)
-        (envelope-from <rajan.vaja@xilinx.com>)
-        id 1mY2XG-0002N2-Nx; Wed, 06 Oct 2021 01:44:27 -0700
-From:   Rajan Vaja <rajan.vaja@xilinx.com>
-To:     <michal.simek@xilinx.com>, <gregkh@linuxfoundation.org>,
-        <arnd@arndb.de>, <manish.narani@xilinx.com>,
-        <nava.manne@xilinx.com>, <lakshmi.sai.krishna.potthuri@xilinx.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Rajan Vaja <rajan.vaja@xilinx.com>
-Subject: [PATCH] firmware: xilinx: check return value of zynqmp_pm_get_api_version()
-Date:   Wed, 6 Oct 2021 01:43:55 -0700
-Message-ID: <1633509835-31949-1-git-send-email-rajan.vaja@xilinx.com>
-X-Mailer: git-send-email 2.7.4
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=CsCbYjz8dFz00N87257DDnN4ifuXdxMfNWH4KsglU/8=;
+        b=du3XiuPXZsJp3KNSSLGlhwG2xCw1DtESyh3x3vyqD4E7NLXDeuj8fRaNex4c2GEqpQ
+         WnlFnjcNxbDBT7yj+F88RnSfyqQ04AYuOig/1kVotz97lv/9y4t6zI7Fb6+eIvhPmHr8
+         7J9HNBC2Ddci9lxwAtUq505xNbhP6nMDFNGV6rDPMebVdEHPnfAYuL8NWuSmEplK9lzS
+         6mYN4q5GOlr9VMekfpk7f3wka+8KKNf2EglxrD6AOMZovsEwrzvBd0QwXYPRGvRP0qY9
+         9j2Svl7PyfcLeXhpiaT2EwEeVQea/UnJ3PgRmwRMYRaRXvLSARqjar6pSmTHWa38pWBx
+         qnug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=CsCbYjz8dFz00N87257DDnN4ifuXdxMfNWH4KsglU/8=;
+        b=pNHkBU9X5HwWWOGLgdh9QyA9UsCe0nBtyXbMzoJBXQE7nW9yT+LULM/KbTWbygg74u
+         c2wQeEFJLIX3ARGyTTcWexQMRaUfNrisfx7bG7eWfObFrk2AlIhk36e50aZo/REeDtlq
+         oezfXsqvlR4ghfEt25Fh1YqfIXBojhTZ3/P2u/zd+CsZF2xWVrXRfMTasBKnqEbGWG35
+         nRxnZEfYrMnLuiPpnR8UoBPC+hvEmJ1RuDvIkHhPXOKzDNr6LLjpZbjosrn9tMswVtkj
+         Ipf5w69LgpPwsOmsfJmDD9HkuCYQxxl5I5TDSXABexDpYx1C1jHW6gwYrqGV8RBKTHwT
+         YiIw==
+X-Gm-Message-State: AOAM533mlx/qn3sT3pBPBS+IVhpfe1w/aeJD+9fnCT1uQMLjLt9fFqBR
+        Ypa+Zg5iZN/03XZb/NVNZK4Y7hrWEzjx0UJ3jAw7uYep63Ef8uE=
+X-Google-Smtp-Source: ABdhPJzMmEs1ZhGyHEZwEduVCp/vaUPJr7zme16UC0oAK7UArY3e1SHJ+JoKRVO8RiWgaNHvTI9P8l7Biaqo9uo6VGE=
+X-Received: by 2002:a17:903:2341:b0:13e:ae30:412 with SMTP id
+ c1-20020a170903234100b0013eae300412mr9876635plh.15.1633509900415; Wed, 06 Oct
+ 2021 01:45:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d76d88c4-669f-4b5e-9adc-08d988a58403
-X-MS-TrafficTypeDiagnostic: PH0PR02MB7784:
-X-Microsoft-Antispam-PRVS: <PH0PR02MB778433E074415F5D838056C0B7B09@PH0PR02MB7784.namprd02.prod.outlook.com>
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:1824;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: duWL6eEbuddnGR4oPlXHyehiEVZWp52VOYcYj1RWB1+iojhyjlfg9Gk88yr3LYnNv9NdC6Dbyv3E0ZgDuPWu/oIXy4cs/3eiGaaphG8/mFRM8Mlg6d9kZVnaWCZBwKDq9N245nI+f8UZUw33TeJSkQdbub1EMbcXqfSiaZLH/FD/kiL5fwB3k3gI3hqdYv6j7gP5gzUZREpQn+Um9/OKAt+bvkkwmbAvcIbHqLpsvbJDfkHQ4361sBrPNcoiDcBF5eKPq4DzII1jzUe+Vt2mnVlfqsfEam8UHG97OzDSjNSptThRpZicNQyCI85yNN7km75yqq0uAhQH+tgRkvNjiWU36T+6eRe6Guu+tpXtQx20NeDfV5xxKhsYywoTUNBvOBiFK16hkxSRwnYWyR5lHTB/EV+bASLe1W4rrX/d3JZHlM+MiVvuDsykkC7xjyHcwZLy7GsZOiKgxOWSUnupbV0kUbHWIZEgBcMpxLKF+SZGOS6gLQHXwxbOfI/cJ7V93ds0TSVGvhj3BhDIF0l90won3/B2D4Q5qs9A9GsQpYwMkzNS1XezxbRioEOqWAzCj407SGKFIVNUoh1IRcnNCJYcrMr/RRh1QcT+365kITe35tAK4URMmnJnjPHeCe6SxOM8YMrNpXk4DmEYNXeWbebwNFJwEBZo69mI9lLwIZbfd0uPp3wjEJYawyYa9isVV+aofTdCY/hO7h2iySKFpAXLMs8ki3mfhuRykIlPX6Q=
-X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(36840700001)(46966006)(54906003)(7636003)(356005)(110136005)(82310400003)(9786002)(6636002)(36906005)(36860700001)(316002)(36756003)(44832011)(4326008)(508600001)(2616005)(426003)(336012)(186003)(2906002)(26005)(6666004)(8936002)(83380400001)(70206006)(47076005)(70586007)(8676002)(5660300002)(4744005)(7696005)(107886003)(102446001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Oct 2021 08:44:31.4536
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: d76d88c4-669f-4b5e-9adc-08d988a58403
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM3NAM02FT031.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR02MB7784
+From:   Hao Sun <sunhao.th@gmail.com>
+Date:   Wed, 6 Oct 2021 16:44:49 +0800
+Message-ID: <CACkBjsYganRrN=WjgcotH1RdZ99_6mPuy=GhsFrq2CUNOUrpbA@mail.gmail.com>
+Subject: kernel BUG in jfs_evict_inode
+To:     jfs-discussion@lists.sourceforge.net, shaggy@kernel.org
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently return value of zynqmp_pm_get_api_version() is ignored.
-Because of that, API version is checked in case of error also.
-So add check for return value of zynqmp_pm_get_api_version().
+Hello,
 
-Signed-off-by: Rajan Vaja <rajan.vaja@xilinx.com>
----
- drivers/firmware/xilinx/zynqmp.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+When using Healer to fuzz the latest Linux kernel, the following crash
+was triggered.
 
-diff --git a/drivers/firmware/xilinx/zynqmp.c b/drivers/firmware/xilinx/zynqmp.c
-index a3cadba..070197e 100644
---- a/drivers/firmware/xilinx/zynqmp.c
-+++ b/drivers/firmware/xilinx/zynqmp.c
-@@ -1371,7 +1371,10 @@ static int zynqmp_firmware_probe(struct platform_device *pdev)
- 		return ret;
- 
- 	/* Check PM API version number */
--	zynqmp_pm_get_api_version(&pm_api_version);
-+	ret = zynqmp_pm_get_api_version(&pm_api_version);
-+	if (ret)
-+		return ret;
-+
- 	if (pm_api_version < ZYNQMP_PM_VERSION) {
- 		panic("%s Platform Management API version error. Expected: v%d.%d - Found: v%d.%d\n",
- 		      __func__,
--- 
-2.7.4
+HEAD commit: 0513e464f900 Merge tag 'perf-tools-fixes-for-v5.15-2021-09-27'
+git tree: upstream
+console output:
+https://drive.google.com/file/d/1NSVdsjViaEUbSeaWVC-UYThJlWp0lvVW/view?usp=sharing
+kernel config: https://drive.google.com/file/d/1Jqhc4DpCVE8X7d-XBdQnrMoQzifTG5ho/view?usp=sharing
+C reproducer: https://drive.google.com/file/d/184Rm6ijCSvoPQ5yHX7LOzbjXVtx7lyvN/view?usp=sharing
+Syzlang reproducer:
+https://drive.google.com/file/d/12c_LoGNiQQOutVwi3b2XL83fDTG_BpdB/view?usp=sharing
 
+If you fix this issue, please add the following tag to the commit:
+Reported-by: Hao Sun <sunhao.th@gmail.com>
+
+------------[ cut here ]------------
+kernel BUG at fs/jfs/inode.c:168!
+invalid opcode: 0000 [#1] PREEMPT SMP
+CPU: 0 PID: 2759 Comm: syz-executor Not tainted 5.15.0-rc3+ #21
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+RIP: 0010:jfs_evict_inode+0x157/0x1a0 fs/jfs/inode.c:168
+Code: 83 78 28 00 74 0d e8 48 b5 7f ff 48 89 df e8 c0 de 00 00 e8 3b
+b5 7f ff 48 89 df e8 33 25 b1 ff e9 fb fe ff ff e8 29 b5 7f ff <0f> 0b
+e8 22 b5 7f ff 48 89 df e8 1a 34 00 00 eb b4 e8 13 b5 7f ff
+RSP: 0018:ffffc90000867d68 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff888018cb41a8 RCX: 0000000000000000
+RDX: ffff8880167ec500 RSI: ffffffff81b7dc37 RDI: ffff888018cb41a8
+RBP: ffffffff81b7dae0 R08: 0000000000000001 R09: 0000000000000001
+R10: ffffc90000867ce8 R11: 0000000000000001 R12: ffffffff84964600
+R13: ffffffff853a64cd R14: ffff88801a91d980 R15: ffff88801a91d000
+FS:  00000000025cb940(0000) GS:ffff88807dc00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffc3c3d0da4 CR3: 0000000016458000 CR4: 0000000000750ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+PKRU: 55555554
+Call Trace:
+ evict+0xfd/0x1e0 fs/inode.c:588
+ dispose_list+0x61/0x90 fs/inode.c:621
+ evict_inodes+0x194/0x1f0 fs/inode.c:671
+ generic_shutdown_super+0x45/0x170 fs/super.c:454
+ kill_block_super+0x2c/0x60 fs/super.c:1395
+ deactivate_locked_super+0x43/0x80 fs/super.c:335
+ deactivate_super+0x53/0x80 fs/super.c:366
+ cleanup_mnt+0x138/0x1b0 fs/namespace.c:1137
+ task_work_run+0x86/0xd0 kernel/task_work.c:164
+ tracehook_notify_resume include/linux/tracehook.h:189 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:175 [inline]
+ exit_to_user_mode_prepare+0x271/0x280 kernel/entry/common.c:207
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:289 [inline]
+ syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:300
+ do_syscall_64+0x40/0xb0 arch/x86/entry/common.c:86
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x46c777
+Code: ff d0 48 89 c7 b8 3c 00 00 00 0f 05 48 c7 c1 bc ff ff ff f7 d8
+64 89 01 48 83 c8 ff c3 66 0f 1f 44 00 00 b8 a6 00 00 00 0f 05 <48> 3d
+01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffc3c3d14d8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 000000000046c777
+RDX: 0000000000404e22 RSI: 0000000000000002 RDI: 00007ffc3c3d15a0
+RBP: 00007ffc3c3d15a0 R08: 00000000025d5033 R09: 000000000000000b
+R10: 00000000fffffffb R11: 0000000000000246 R12: 00000000004e38c6
+R13: 00007ffc3c3d2650 R14: 00007ffc3c3d264c R15: 0000000000000010
+Modules linked in:
+Dumping ftrace buffer:
+   (ftrace buffer empty)
+---[ end trace a937ecc93c68ee05 ]---
+RIP: 0010:jfs_evict_inode+0x157/0x1a0 fs/jfs/inode.c:168
+Code: 83 78 28 00 74 0d e8 48 b5 7f ff 48 89 df e8 c0 de 00 00 e8 3b
+b5 7f ff 48 89 df e8 33 25 b1 ff e9 fb fe ff ff e8 29 b5 7f ff <0f> 0b
+e8 22 b5 7f ff 48 89 df e8 1a 34 00 00 eb b4 e8 13 b5 7f ff
+RSP: 0018:ffffc90000867d68 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff888018cb41a8 RCX: 0000000000000000
+RDX: ffff8880167ec500 RSI: ffffffff81b7dc37 RDI: ffff888018cb41a8
+RBP: ffffffff81b7dae0 R08: 0000000000000001 R09: 0000000000000001
+R10: ffffc90000867ce8 R11: 0000000000000001 R12: ffffffff84964600
+R13: ffffffff853a64cd R14: ffff88801a91d980 R15: ffff88801a91d000
+FS:  00000000025cb940(0000) GS:ffff88807dc00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffc3c3d0da4 CR3: 0000000016458000 CR4: 0000000000750ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+PKRU: 55555554
