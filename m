@@ -2,148 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AE27423B7F
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 12:28:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DC9B423B82
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 12:29:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238106AbhJFKa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 06:30:29 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:11083 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229824AbhJFKa1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 06:30:27 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1633516115; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=5gHobSVO2kPLJnKWdgczaJYxS33RSCMny/Mt0NGh7Zw=; b=kx8cKFT3cmEJc51aXPiHebA/T17FqugmG4KT5XLqSchAkBHIM1QCNpTjGYR+8uivirNPjXJ0
- V5nyVapBIVWCG9rtdkVBTO9GUfXWq/BvzXCkiFnbCw8vFKxPYBTo8HsgPC3Lv+oOmGOajjbm
- 7rgYbWoHH5oKeJgj/G4aJOFWHYo=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 615d7a5330ce13d2b4e8e828 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 06 Oct 2021 10:28:35
- GMT
-Sender: mkshah=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 3CE51C4360C; Wed,  6 Oct 2021 10:28:35 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-4.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-        version=3.4.0
-Received: from [192.168.29.129] (unknown [49.36.85.177])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S238111AbhJFKb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 06:31:27 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:43732 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229824AbhJFKbZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 06:31:25 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id D701A21D68;
+        Wed,  6 Oct 2021 10:29:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1633516172; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9KBKsL8zLff22l5Rpnoc/zRyiW+wR+4SxGgHqzHBEhg=;
+        b=GU62xEwRr8e8KO+PTkPP8uWUS056DOO+XUlCKswkvfK43EwJFhRnurtBdXg1/sH3AcnUZG
+        r/M/JSzMpYl3SA1D+i4qMvBbJnJnJthq4WuWmT6bZpprL3c0zbkNREU5yyimbtcXBi90j0
+        HBhnY1z8zVOcLiWe8rpR4oYnRpzX8vc=
+Received: from suse.cz (unknown [10.100.216.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: mkshah)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 43FD9C43460;
-        Wed,  6 Oct 2021 10:28:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 43FD9C43460
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Subject: Re: [PATCH 2/2] PM: sleep: Fix runtime PM based cpuidle support
-To:     Ulf Hansson <ulf.hansson@linaro.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        linux-pm@vger.kernel.org
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Len Brown <len.brown@intel.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Srinivas Rao L <lsrao@codeaurora.org>
-References: <20210929144451.113334-1-ulf.hansson@linaro.org>
- <20210929144451.113334-3-ulf.hansson@linaro.org>
-From:   Maulik Shah <mkshah@codeaurora.org>
-Message-ID: <fb86953a-8db0-e805-74fd-d904cb961807@codeaurora.org>
-Date:   Wed, 6 Oct 2021 15:58:27 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        by relay2.suse.de (Postfix) with ESMTPS id 7AA69A3B83;
+        Wed,  6 Oct 2021 10:29:32 +0000 (UTC)
+Date:   Wed, 6 Oct 2021 12:29:32 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     gor@linux.ibm.com, jpoimboe@redhat.com, jikos@kernel.org,
+        mbenes@suse.cz, mingo@kernel.org, linux-kernel@vger.kernel.org,
+        joe.lawrence@redhat.com, fweisbec@gmail.com, tglx@linutronix.de,
+        hca@linux.ibm.com, svens@linux.ibm.com, sumanthk@linux.ibm.com,
+        live-patching@vger.kernel.org, paulmck@kernel.org,
+        rostedt@goodmis.org, x86@kernel.org
+Subject: Re: [RFC][PATCH v2 09/11] context_tracking,livepatch: Dont disturb
+ NOHZ_FULL
+Message-ID: <YV16jKrB5Azu/nD+@alley>
+References: <20210929151723.162004989@infradead.org>
+ <20210929152429.067060646@infradead.org>
+ <YV1aYaHEynjSAUuI@alley>
+ <YV1mmv5QbB/vf3/O@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <20210929144451.113334-3-ulf.hansson@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YV1mmv5QbB/vf3/O@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-Thanks for the patch. Looks good to me.
-
-Reviewed-by: Maulik Shah <mkshah@codeaurora.org>
-
-Thanks,
-Maulik
-
-On 9/29/2021 8:14 PM, Ulf Hansson wrote:
-> In the cpuidle-psci case, runtime PM in combination with the generic PM
-> domain (genpd), may be used when entering/exiting an idlestate. More
-> precisely, genpd relies on runtime PM to be enabled for the attached device
-> (in this case it belongs to a CPU), to properly manage the reference
-> counting of its PM domain.
+On Wed 2021-10-06 11:04:26, Peter Zijlstra wrote:
+> On Wed, Oct 06, 2021 at 10:12:17AM +0200, Petr Mladek wrote:
+> > IMHO, the original solution from v1 was better. We only needed to
 > 
-> This works fine most of the time, but during system suspend in the
-> dpm_suspend_late() phase, the PM core disables runtime PM for all devices.
-> Beyond this point and until runtime PM becomes re-enabled in the
-> dpm_resume_early() phase, calls to pm_runtime_get|put*() will fail.
+> It was also terribly broken in other 'fun' ways. See below.
 > 
-> To make sure the reference counting in genpd becomes correct, we need to
-> prevent cpuidle-psci from using runtime PM when it has been disabled for
-> the device. Therefore, let's move the call to cpuidle_pause() from
-> dpm_suspend_noirq() to dpm_suspend_late() - and cpuidle_resume() from
-> dpm_resume_noirq() into dpm_resume_early().
+> > be careful when updating task->patch_state and clearing
+> > TIF_PATCH_PENDING to avoid the race.
+> > 
+> > The following might work:
+> > 
+> > static int klp_check_and_switch_task(struct task_struct *task, void *arg)
+> > {
+> > 	int ret;
+> > 
+> > 	/*
+> > 	 * Stack is reliable only when the task is not running on any CPU,
+> > 	 * except for the task running this code.
+> > 	 */
+> > 	if (task_curr(task) && task != current) {
+> > 		/*
+> > 		 * This only succeeds when the task is in NOHZ_FULL user
+> > 		 * mode. Such a task might be migrated immediately. We
+> > 		 * only need to be careful to set task->patch_state before
+> > 		 * clearing TIF_PATCH_PENDING so that the task migrates
+> > 		 * itself when entring kernel in the meatime.
+> > 		 */
+> > 		if (is_ct_user(task)) {
+> > 			klp_update_patch_state(task);
+> > 			return 0;
+> > 		}
+> > 
+> > 		return -EBUSY;
+> > 	}
+> > 
+> > 	ret = klp_check_stack(task, arg);
+> > 	if (ret)
+> > 		return ret;
+> > 
+> > 	/*
+> > 	 * The task neither is running on any CPU and nor it can get
+> > 	 * running. As a result, the ordering is not important and
+> > 	 * barrier is not needed.
+> > 	 */
+> > 	task->patch_state = klp_target_state;
+> > 	clear_tsk_thread_flag(task, TIF_PATCH_PENDING);
+> > 
+> > 	return 0;
+> > }
+> > 
+> > , where is_ct_user(task) would return true when task is running in
+> > CONTEXT_USER. If I get the context_tracking API correctly then
+> > it might be implemeted the following way:
 > 
-> Diagnosed-by: Maulik Shah <mkshah@codeaurora.org>
-> Suggested-by: Maulik Shah <mkshah@codeaurora.org>
-> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-> ---
->   drivers/base/power/main.c | 6 ++----
->   1 file changed, 2 insertions(+), 4 deletions(-)
+> That's not sufficient, you need to tag the remote task with a ct_work
+> item to also runs klp_update_patch_state(), otherwise the remote CPU can
+> enter kernel space between checking is_ct_user() and doing
+> klp_update_patch_state():
 > 
-> diff --git a/drivers/base/power/main.c b/drivers/base/power/main.c
-> index cbea78e79f3d..1c753b651272 100644
-> --- a/drivers/base/power/main.c
-> +++ b/drivers/base/power/main.c
-> @@ -747,8 +747,6 @@ void dpm_resume_noirq(pm_message_t state)
->   
->   	resume_device_irqs();
->   	device_wakeup_disarm_wake_irqs();
-> -
-> -	cpuidle_resume();
->   }
->   
->   /**
-> @@ -870,6 +868,7 @@ void dpm_resume_early(pm_message_t state)
->   	}
->   	mutex_unlock(&dpm_list_mtx);
->   	async_synchronize_full();
-> +	cpuidle_resume();
->   	dpm_show_time(starttime, state, 0, "early");
->   	trace_suspend_resume(TPS("dpm_resume_early"), state.event, false);
->   }
-> @@ -1336,8 +1335,6 @@ int dpm_suspend_noirq(pm_message_t state)
->   {
->   	int ret;
->   
-> -	cpuidle_pause();
-> -
->   	device_wakeup_arm_wake_irqs();
->   	suspend_device_irqs();
->   
-> @@ -1467,6 +1464,7 @@ int dpm_suspend_late(pm_message_t state)
->   	int error = 0;
->   
->   	trace_suspend_resume(TPS("dpm_suspend_late"), state.event, true);
-> +	cpuidle_pause();
->   	mutex_lock(&dpm_list_mtx);
->   	pm_transition = state;
->   	async_error = 0;
+> 	CPU0				CPU1
 > 
+> 					<user>
+> 
+> 	if (is_ct_user()) // true
+> 					<kernel-entry>
+> 					  // run some kernel code
+> 	  klp_update_patch_state()
+> 	  *WHOOPSIE*
+> 
+> 
+> So it needs to be something like:
+> 
+> 
+> 	CPU0				CPU1
+> 
+> 					<user>
+> 
+> 	if (context_tracking_set_cpu_work(task_cpu(), CT_WORK_KLP))
+> 
+> 					<kernel-entry>
+> 	  klp_update_patch_state	  klp_update_patch_state()
+> 
+> 
+> So that CPU0 and CPU1 race to complete klp_update_patch_state() *before*
+> any regular (!noinstr) code gets run.
 
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member of Code Aurora Forum, hosted by The Linux Foundation
+Grr, you are right. I thought that we migrated the task when entering
+kernel even before. But it seems that we do it only when leaving
+the kernel in exit_to_user_mode_loop().
+
+
+> Which then means it needs to look something like:
+> 
+> noinstr void klp_update_patch_state(struct task_struct *task)
+> {
+> 	struct thread_info *ti = task_thread_info(task);
+> 
+> 	preempt_disable_notrace();
+> 	if (arch_test_bit(TIF_PATCH_PENDING, (unsigned long *)&ti->flags)) {
+> 		/*
+> 		 * Order loads of TIF_PATCH_PENDING vs klp_target_state.
+> 		 * See klp_init_transition().
+> 		 */
+> 		smp_rmb();
+> 		task->patch_state = __READ_ONCE(klp_target_state);
+> 		/*
+> 		 * Concurrent against self; must observe updated
+> 		 * task->patch_state if !TIF_PATCH_PENDING.
+> 		 */
+> 		smp_mb__before_atomic();
+
+IMHO, smp_wmb() should be enough. We are here only when this
+CPU set task->patch_state right above. So that CPU running
+this code should see the correct task->patch_state.
+
+The read barrier is needed only when @task is entering kernel and
+does not see TIF_PATCH_PENDING. It is handled by smp_rmb() in
+the "else" branch below.
+
+It is possible that both CPUs see TIF_PATCH_PENDING and both
+set task->patch_state. But it should not cause any harm
+because they set the same value. Unless something really
+crazy happens with the internal CPU busses and caches.
+
+
+> 		arch_clear_bit(TIF_PATCH_PENDING, (unsigned long *)&ti->flags);
+> 	} else {
+> 		/*
+> 		 * Concurrent against self, see smp_mb__before_atomic()
+> 		 * above.
+> 		 */
+> 		smp_rmb();
+
+Yeah, this is the counter part against the above smp_wmb().
+
+> 	}
+> 	preempt_enable_notrace();
+> }
+
+Now, I am scared to increase my paranoia level and search for even more
+possible races. I feel overwhelmed at the moment ;-)
+
+Best Regards,
+Petr
