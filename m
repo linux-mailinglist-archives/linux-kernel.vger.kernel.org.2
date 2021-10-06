@@ -2,84 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B607A42395F
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 10:04:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53D36423973
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 10:12:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237670AbhJFIF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 04:05:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60762 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237592AbhJFIFy (ORCPT
+        id S237754AbhJFIOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 04:14:07 -0400
+Received: from esa4.hc1455-7.c3s2.iphmx.com ([68.232.139.117]:59400 "EHLO
+        esa4.hc1455-7.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237592AbhJFIOF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 04:05:54 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C71DC06174E
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 01:04:03 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id u18so6112544wrg.5
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 01:04:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=dmA4Xp7oPSdSmCvBhmTJxkxsHtdy8x3JCS16XeREP9s=;
-        b=F+/HWXciTwySDZoazcuVpR4x/G/GfTe2XEaCNfKVOnU2jkBr/uD/XbDSepip2s+VTK
-         6Sba5F/TMfJbi8R3gvzYRy9ZDUIBjnXU8qUHr1pJ5Wh3EvELqm6emY505dNl33c+NQwC
-         2r2DbNWRpm4QiQr6Ha5+6XYgNulS8WZZ1odf+w2/HC+v4U1onjgiokaIV+/ZEhOmYe2A
-         fFPkBd+cOPeevGlbVMjfDVBcU9V2ywKYlt8BB80tw0G6xWCYMmG9kHG/rw177zQBJ8DK
-         SCWcZB/RSSXgMlw73LjOF4GKvhOPRMxahIXjNgHyd7p7tRNE87m0oj/uAKea+Qjy21DC
-         +bKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=dmA4Xp7oPSdSmCvBhmTJxkxsHtdy8x3JCS16XeREP9s=;
-        b=cMNCLwxK335oxVN0jef+fDjsmI3RmTtJ1NORHUbX+99NqCvxWTPmY53bMJTBiZGXO4
-         flrmjhXVU4rchkkec6XeQ6z/Dg0JPdCx2sWhx85W7XzG3Sc4jyjQFls5WV6SsupuUIeL
-         sePhM3qJzh72N0lDJ8aL3ItkOuDXclETBBz5x69AWCoT079BedO+udJ2lDRP6bhqL51d
-         dHJ+MU1FpZLV3QVzp8eVYF0p7USWv4SWbEYbJ+asYI5z5v4AVCVUbmnAZjSLnYQUKmFV
-         QwrWpGdZTd4t2rS90IaVx4N6lV3euFyqb1Cn5qJzpVsb2tyn3Xlwy20pQipuFkyPVcBR
-         HMeQ==
-X-Gm-Message-State: AOAM530Vzl4mqHnDGw5BUgLmTcglbn3osL3LDL/b4hA1LbsTGBHefaZU
-        2XKmQzH8e4ozUO2olzh7rdSWUw==
-X-Google-Smtp-Source: ABdhPJy4WZ9JASjwJohddraHAfJUrHNLYIjhPoJv/Otb7vX9zH87A7uqwNGZKR5zF2YcZNhxUFGiHg==
-X-Received: by 2002:a7b:c005:: with SMTP id c5mr8382075wmb.30.1633507441619;
-        Wed, 06 Oct 2021 01:04:01 -0700 (PDT)
-Received: from google.com ([95.148.6.175])
-        by smtp.gmail.com with ESMTPSA id i6sm9831173wrv.61.2021.10.06.01.04.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Oct 2021 01:04:01 -0700 (PDT)
-Date:   Wed, 6 Oct 2021 09:03:59 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mfd: exynos-lpass: Describe driver in KConfig
-Message-ID: <YV1Yb3W61SOqp2To@google.com>
-References: <20210924133332.112092-1-krzysztof.kozlowski@canonical.com>
+        Wed, 6 Oct 2021 04:14:05 -0400
+X-Greylist: delayed 430 seconds by postgrey-1.27 at vger.kernel.org; Wed, 06 Oct 2021 04:14:05 EDT
+IronPort-SDR: GctfC0js80qXecAroZPLdfV2ZfAEdEeoeCOhaHN+W8iuU+4ENIa7k8pQt+y2zH19IYxhzjCaVq
+ ndB8UjmiRHj9e70Vg6AeLol1sPByyKv5XgahEFJbM0LurvD8CZkrqOGJQ+g7cIl1oDU4W69aly
+ DwiWIBDxHPPTba4i8Rsjpf7cLSRh4ilytWDdeUacJhWCD4zSpXCNqTWya07ux4RLHyQKRZgjpo
+ IXTzzvw5x1cYqVaqqPsvoJ+09Q5XCdUiGEx7PbwzbAYr43ua5yH6IaDTkbCNfnNiUtTtoczrxX
+ KHmdVu3JNzg7PjCJrUStpLaQ
+X-IronPort-AV: E=McAfee;i="6200,9189,10128"; a="47771964"
+X-IronPort-AV: E=Sophos;i="5.85,350,1624287600"; 
+   d="scan'208";a="47771964"
+Received: from unknown (HELO oym-r4.gw.nic.fujitsu.com) ([210.162.30.92])
+  by esa4.hc1455-7.c3s2.iphmx.com with ESMTP; 06 Oct 2021 17:05:01 +0900
+Received: from oym-m3.gw.nic.fujitsu.com (oym-nat-oym-m3.gw.nic.fujitsu.com [192.168.87.60])
+        by oym-r4.gw.nic.fujitsu.com (Postfix) with ESMTP id 87AAEE6C25;
+        Wed,  6 Oct 2021 17:05:01 +0900 (JST)
+Received: from oym-om4.fujitsu.com (oym-om4.o.css.fujitsu.com [10.85.58.164])
+        by oym-m3.gw.nic.fujitsu.com (Postfix) with ESMTP id BBF10DA9F7;
+        Wed,  6 Oct 2021 17:05:00 +0900 (JST)
+Received: from pumpkin.openstacklocal (pumpkin.fct.css.fujitsu.com [10.130.70.189])
+        by oym-om4.fujitsu.com (Postfix) with ESMTP id 8474E4008971B;
+        Wed,  6 Oct 2021 17:05:00 +0900 (JST)
+From:   Shunsuke Nakamura <nakamura.shun@fujitsu.com>
+To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, namhyung@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+Subject: [PATCH 2/2] libperf tests: Fix test_stat_cpu
+Date:   Wed,  6 Oct 2021 17:04:56 +0900
+Message-Id: <20211006080456.474273-1-nakamura.shun@fujitsu.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210924133332.112092-1-krzysztof.kozlowski@canonical.com>
+X-TM-AS-GCONF: 00
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 24 Sep 2021, Krzysztof Kozlowski wrote:
+`cpu` of perf_evsel__read() must be specified the cpu index.
+perf_cpu_map__for_each_cpu is for iterating the cpu number (not index)
+and is not appropriate.
+So, if there is an offline CPU, the cpu number specified in the argument
+may point out of range because the cpu number and the cpu index are
+different.
 
-> Describe better which driver applies to which SoC, to make configuring
-> kernel for Samsung SoC easier.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> ---
->  drivers/mfd/Kconfig | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+Fix test_stat_cpu.
 
-Applied, thanks.
+Committer testing:
 
+  # make tests -C tools/lib/perf/
+  make: Entering directory '/home/nakamura/kernel_src/linux-5.15-rc4_fix/tools/lib/perf'
+  running static:
+  - running tests/test-cpumap.c...OK
+  - running tests/test-threadmap.c...OK
+  - running tests/test-evlist.c...OK
+  - running tests/test-evsel.c...OK
+  running dynamic:
+  - running tests/test-cpumap.c...OK
+  - running tests/test-threadmap.c...OK
+  - running tests/test-evlist.c...OK
+  - running tests/test-evsel.c...OK
+  make: Leaving directory '/home/nakamura/kernel_src/linux-5.15-rc4_fix/tools/lib/perf'
+
+Signed-off-by: Shunsuke Nakamura <nakamura.shun@fujitsu.com>
+---
+ tools/lib/perf/tests/test-evlist.c | 6 +++---
+ tools/lib/perf/tests/test-evsel.c  | 6 +++---
+ 2 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/tools/lib/perf/tests/test-evlist.c b/tools/lib/perf/tests/test-evlist.c
+index c67c83399170..47badd7eabf2 100644
+--- a/tools/lib/perf/tests/test-evlist.c
++++ b/tools/lib/perf/tests/test-evlist.c
+@@ -40,7 +40,7 @@ static int test_stat_cpu(void)
+ 		.type	= PERF_TYPE_SOFTWARE,
+ 		.config	= PERF_COUNT_SW_TASK_CLOCK,
+ 	};
+-	int err, cpu, tmp;
++	int err, idx;
+ 
+ 	cpus = perf_cpu_map__new(NULL);
+ 	__T("failed to create cpus", cpus);
+@@ -70,10 +70,10 @@ static int test_stat_cpu(void)
+ 	perf_evlist__for_each_evsel(evlist, evsel) {
+ 		cpus = perf_evsel__cpus(evsel);
+ 
+-		perf_cpu_map__for_each_cpu(cpu, tmp, cpus) {
++		for (idx = 0, idx < perf_cpu_map__nr(cpus); idx++) {
+ 			struct perf_counts_values counts = { .val = 0 };
+ 
+-			perf_evsel__read(evsel, cpu, 0, &counts);
++			perf_evsel__read(evsel, idx, 0, &counts);
+ 			__T("failed to read value for evsel", counts.val != 0);
+ 		}
+ 	}
+diff --git a/tools/lib/perf/tests/test-evsel.c b/tools/lib/perf/tests/test-evsel.c
+index 9abd4c0bf6db..33ae9334861a 100644
+--- a/tools/lib/perf/tests/test-evsel.c
++++ b/tools/lib/perf/tests/test-evsel.c
+@@ -22,7 +22,7 @@ static int test_stat_cpu(void)
+ 		.type	= PERF_TYPE_SOFTWARE,
+ 		.config	= PERF_COUNT_SW_CPU_CLOCK,
+ 	};
+-	int err, cpu, tmp;
++	int err, idx;
+ 
+ 	cpus = perf_cpu_map__new(NULL);
+ 	__T("failed to create cpus", cpus);
+@@ -33,10 +33,10 @@ static int test_stat_cpu(void)
+ 	err = perf_evsel__open(evsel, cpus, NULL);
+ 	__T("failed to open evsel", err == 0);
+ 
+-	perf_cpu_map__for_each_cpu(cpu, tmp, cpus) {
++	for (idx = 0; idx < perf_cpu_map__nr(cpus); idx++) {
+ 		struct perf_counts_values counts = { .val = 0 };
+ 
+-		perf_evsel__read(evsel, cpu, 0, &counts);
++		perf_evsel__read(evsel, idx, 0, &counts);
+ 		__T("failed to read value for evsel", counts.val != 0);
+ 	}
+ 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.25.1
+
