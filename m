@@ -2,135 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A84B42478E
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 21:54:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8844424793
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 21:55:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239331AbhJFT4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 15:56:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:53540 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229761AbhJFT4T (ORCPT
+        id S239370AbhJFT5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 15:57:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57898 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229761AbhJFT5U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 15:56:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633550066;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xnVRUaB8vdHCAs3GIdbbJkvM/qgvDDY4/1PeZEPVaUU=;
-        b=BouuQH6VLug1AM2c+D4y+FAfR5JRzRhBJuwEVWuSIUMVb3msYyp1BM9FPWoqBQaK6aJT68
-        JooQQ1w8Yfr//lKEL6mHm8ROCM0VhqdeC6WQXr7jx9XRDT1Uj6mqnEx0s3EeVn5/rExIQZ
-        ol+DjXbhnOGEAJuLQn9dYBeguGGQ2qU=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-64-u87vCr2vMdedrsQp8rBXNQ-1; Wed, 06 Oct 2021 15:54:19 -0400
-X-MC-Unique: u87vCr2vMdedrsQp8rBXNQ-1
-Received: by mail-qk1-f199.google.com with SMTP id m6-20020a05620a24c600b004338e8a5a3cso3049770qkn.10
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 12:54:19 -0700 (PDT)
+        Wed, 6 Oct 2021 15:57:20 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9836C061746
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 12:55:26 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id i24so14318425lfj.13
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 12:55:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=O34eH0EHa4dBMbkzaLgHHRId8l/MAEnDKw9FowvQGtw=;
+        b=edyHFq+vsfJFiZd8DhlRrAHySi3AsFfIcOaBRsKAK4GAw+GqH/Tkncskp+ehkhkvMJ
+         Rh2FRF9TCAYHNO5g5j8g+lb0xmVeKVhFZ6ypCqlHS/CxvSsbDGbiIdCrJ50GYAkgoDXB
+         9Sb4DaPWafxMxih6hnxJnEqkQX8cOODs1n7pML6RNkqDaOBKUqN94bTbsnZO0ZrfyTxW
+         KCcWG4t1IUhi6fL2HVsgpiA8yXyKm+j13sKaJOdS8iGg9UAZdGzrE87+cCGOZt/dupST
+         xw5XIxspcb5yhHEaZRQmQCmulymMeghKLzA/lGlYMS9Fz+fSqOmBElUx5g8238R1pbbB
+         Evyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xnVRUaB8vdHCAs3GIdbbJkvM/qgvDDY4/1PeZEPVaUU=;
-        b=wloaGeRHR2n8S0uoQdk6a0C+gj62sjuLxW8FPfrfX72I1Oxqbfz5BMTAa0NiBLTq1E
-         4DFEo0lFM2kLu1ITnVvIDruaY9K2abpKuEB/eDxyv2lO1PNc4Ux8mGExO3BmR+J0wHWM
-         /+ytVtzcz9lyKX+q6PEXnbbnU0abb/NN1k8/7VxFMOXgWpAO4lRTsMqHaNX8IljhC8Ug
-         VrKv6LuL9EM9lg/HW9URAHlMdX70UYGMMkw4RZlFfddZ5yTLz2uBfknRUnBn6tBmP3uN
-         HbGDzF4LjLOZRSWuVhy0dbv5bswSzreGRgr/q2FQedfL+LiiAftoDFxFBeUcvzUmAwML
-         wKqg==
-X-Gm-Message-State: AOAM531HjDQr0thr4e0vLIm8etwVQPbka0+rYaFTCWqOuSkof7qad76v
-        A2HuP3KUiqvSCZTMTUGsvLh2psAORxTxNi2p1cg3yA74Rv98U10rVMmOv5TT0VZTwEvZX9cNX+Q
-        9mB2AJ0owmvmdOj8Am3MCWs2/
-X-Received: by 2002:ac8:7e87:: with SMTP id w7mr136149qtj.166.1633550058702;
-        Wed, 06 Oct 2021 12:54:18 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzxud61YtiV9SX04xSMvTTTcQStB2UjjRUVAnxjj7QxgycMhC+ivJ4xXmzGMmXrNEC//a6L0A==
-X-Received: by 2002:ac8:7e87:: with SMTP id w7mr136117qtj.166.1633550058362;
-        Wed, 06 Oct 2021 12:54:18 -0700 (PDT)
-Received: from t490s ([2607:fea8:56a2:9100::bed8])
-        by smtp.gmail.com with ESMTPSA id b13sm3355666qkh.134.2021.10.06.12.54.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Oct 2021 12:54:17 -0700 (PDT)
-Date:   Wed, 6 Oct 2021 15:54:16 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Yang Shi <shy828301@gmail.com>
-Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
-        HORIGUCHI =?utf-8?B?TkFPWUEo5aCA5Y+jIOebtOS5nyk=?= 
-        <naoya.horiguchi@nec.com>, Hugh Dickins <hughd@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [v3 PATCH 2/5] mm: filemap: check if THP has hwpoisoned subpage
- for PMD page fault
-Message-ID: <YV3+6K3uupLit3aH@t490s>
-References: <20210930215311.240774-1-shy828301@gmail.com>
- <20210930215311.240774-3-shy828301@gmail.com>
- <20211004140637.qejvenbkmrulqdno@box.shutemov.name>
- <CAHbLzkp5d_j97MizSFCgfnHQj_tUQuHJqxWtrvRo_0kZMKCgtA@mail.gmail.com>
- <20211004194130.6hdzanjl2e2np4we@box.shutemov.name>
- <CAHbLzkqcrGCksMXbW5p75ZK2ODv4bLcdQWs7Jz0NG4-=5N20zw@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=O34eH0EHa4dBMbkzaLgHHRId8l/MAEnDKw9FowvQGtw=;
+        b=18aTtK/4/cVNcl+EpOyyeIAHx8snIkL1kn0imrcdg1M9SovMeKJBllL9x7/EidTuEo
+         hiYvCw5Sl7AbTNBL/SbOM1Pdky6dc76zy+x/cF8EzdWLvyFvEFs5kHWEvtWmg2Wu8B1q
+         V5RmhVduUyNyshWP4lLc7eKpoL3xUJuXb3veKibnHKLFXENfBub5tXwRkS1UFknGl+UT
+         7rvvKirwbtAPdt6ohNGPo1L0qkgI6chzSDpLPfndR3yanYJCIaoQ1CIJlT4IqvidR2iG
+         BxVFtYQJfc9c+9FA8nPRCQ3p/e1i7dBXHSMlIKh5T/nrQtfTMWdT5uTgaw0ZMjsAMj1M
+         QvTg==
+X-Gm-Message-State: AOAM531TUvAC5LI7MuUTLTii4FDRy8JHH+lnJHUDYUx6RvxoC9ZLbQrT
+        tPYsva6CGbxBrV6nfWezooUph/DUm+NACg/cRTZltg==
+X-Google-Smtp-Source: ABdhPJxvYTzX1/2a+GZtvlTtfbjZ2f1aHuPdE1JLzkl2Tf4YIk/gPLeLtgxyWjoSngDOiqBUv32ywAZBk6mznY+UUkI=
+X-Received: by 2002:a05:6512:2290:: with SMTP id f16mr11688585lfu.668.1633550125028;
+ Wed, 06 Oct 2021 12:55:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAHbLzkqcrGCksMXbW5p75ZK2ODv4bLcdQWs7Jz0NG4-=5N20zw@mail.gmail.com>
+References: <20211006194610.953319-1-tkjos@google.com> <20211006194610.953319-4-tkjos@google.com>
+In-Reply-To: <20211006194610.953319-4-tkjos@google.com>
+From:   Todd Kjos <tkjos@google.com>
+Date:   Wed, 6 Oct 2021 12:55:13 -0700
+Message-ID: <CAHRSSExN4g0qubjjLhdGx5DA7njT5ZwPkAzCY1OEdR1dbscLVA@mail.gmail.com>
+Subject: Re: [PATCH v3 3/3] binder: use euid from cred instead of using task
+To:     gregkh@linuxfoundation.org, arve@android.com, tkjos@android.com,
+        maco@android.com, christian@brauner.io, jmorris@namei.org,
+        serge@hallyn.com, paul@paul-moore.com,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        keescook@chromium.org, jannh@google.com, jeffv@google.com,
+        zohar@linux.ibm.com, linux-security-module@vger.kernel.org,
+        selinux@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+Cc:     joel@joelfernandes.org, kernel-team@android.com,
+        stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 04, 2021 at 01:13:07PM -0700, Yang Shi wrote:
-> On Mon, Oct 4, 2021 at 12:41 PM Kirill A. Shutemov <kirill@shutemov.name> wrote:
-> >
-> > On Mon, Oct 04, 2021 at 11:17:29AM -0700, Yang Shi wrote:
-> > > On Mon, Oct 4, 2021 at 7:06 AM Kirill A. Shutemov <kirill@shutemov.name> wrote:
-> > > >
-> > > > On Thu, Sep 30, 2021 at 02:53:08PM -0700, Yang Shi wrote:
-> > > > > diff --git a/mm/filemap.c b/mm/filemap.c
-> > > > > index dae481293b5d..2acc2b977f66 100644
-> > > > > --- a/mm/filemap.c
-> > > > > +++ b/mm/filemap.c
-> > > > > @@ -3195,12 +3195,12 @@ static bool filemap_map_pmd(struct vm_fault *vmf, struct page *page)
-> > > > >       }
-> > > > >
-> > > > >       if (pmd_none(*vmf->pmd) && PageTransHuge(page)) {
-> > > > > -         vm_fault_t ret = do_set_pmd(vmf, page);
-> > > > > -         if (!ret) {
-> > > > > -                 /* The page is mapped successfully, reference consumed. */
-> > > > > -                 unlock_page(page);
-> > > > > -                 return true;
-> > > > > -         }
-> > > > > +             vm_fault_t ret = do_set_pmd(vmf, page);
-> > > > > +             if (!ret) {
-> > > > > +                     /* The page is mapped successfully, reference consumed. */
-> > > > > +                     unlock_page(page);
-> > > > > +                     return true;
-> > > > > +             }
-> > > > >       }
-> > > > >
-> > > > >       if (pmd_none(*vmf->pmd)) {
-> > > >
-> > > > Hm. Is it unrelated whitespace fix?
-> > >
-> > > It is a coding style clean up. I thought it may be overkilling to have
-> > > a separate patch. Do you prefer separate one?
-> >
-> > Maybe. I tried to find what changed here. It's confusing.
-> 
-> Yeah, maybe. Anyway I will separate the real big fix and the cleanup
-> into two patches. This may be helpful for backporting too.
+On Wed, Oct 6, 2021 at 12:46 PM Todd Kjos <tkjos@google.com> wrote:
+>
+> Set a transaction's sender_euid from the the 'struct cred'
+> saved at binder_open() instead of looking up the euid
+> from the binder proc's 'struct task'. This ensures
+> the euid is associated with the security context that
+> of the task that opened binder.
+>
+> Fixes: 457b9a6f09f0 ("Staging: android: add binder driver")
+> Signed-off-by: Todd Kjos <tkjos@google.com>
+> Stephen Smalley <stephen.smalley.work@gmail.com>
 
-Or maybe we just don't touch it until there's need for a functional change?  I
-feel it a pity to lose the git blame info for reindent-only patches, but no
-strong opinion, because I know many people don't think the same and I'm fine
-with either ways.
+This should have been "Suggested-by: Stephen Smalley
+<stephen.smalley.work@gmail.com>"
 
-Another side note: perhaps a comment above pageflags enum on PG_has_hwpoisoned
-would be nice?  I saw that we've got a bunch of those already.
-
-Thanks,
-
--- 
-Peter Xu
-
+> Cc: stable@vger.kernel.org # 4.4+
+> ---
+> v3: added this patch to series
+>
+>  drivers/android/binder.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/android/binder.c b/drivers/android/binder.c
+> index 989afd0804ca..26382e982c5e 100644
+> --- a/drivers/android/binder.c
+> +++ b/drivers/android/binder.c
+> @@ -2711,7 +2711,7 @@ static void binder_transaction(struct binder_proc *proc,
+>                 t->from = thread;
+>         else
+>                 t->from = NULL;
+> -       t->sender_euid = task_euid(proc->tsk);
+> +       t->sender_euid = proc->cred->euid;
+>         t->to_proc = target_proc;
+>         t->to_thread = target_thread;
+>         t->code = tr->code;
+> --
+> 2.33.0.800.g4c38ced690-goog
+>
