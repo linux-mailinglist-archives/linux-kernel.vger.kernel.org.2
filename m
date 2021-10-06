@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C6AF423500
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 02:29:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFB50423505
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 02:31:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237060AbhJFAbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 20:31:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44238 "EHLO
+        id S237024AbhJFAdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 20:33:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237019AbhJFAbh (ORCPT
+        with ESMTP id S233994AbhJFAdm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 20:31:37 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F2F9C06174E
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 17:29:46 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id g62-20020a9d2dc4000000b0054752cfbc59so1141637otb.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 17:29:46 -0700 (PDT)
+        Tue, 5 Oct 2021 20:33:42 -0400
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05B86C06174E
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 17:31:51 -0700 (PDT)
+Received: by mail-oi1-x230.google.com with SMTP id w190so1663879oif.5
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 17:31:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=mime-version:in-reply-to:references:from:user-agent:date:message-id
          :subject:to:cc;
-        bh=rJXZL/E2rjizDw2g+xUTHgR6xfpHLrz6baH//WpupIA=;
-        b=eILFxHdQkwHM2kDcZ7UcWGBVC7H2Pu2GtoXIw+Mf1tmpqUPjk0FxN9egL2wcdGHjmQ
-         +TKV21OleaafcJGX/LlBIYkxSSU6MkgB7ayxOOdJpYOdNbeXmMUXrv6DIdkyfT7ip8yV
-         xevbRV4FwvKdg7BuJcnjAihYLxXU3fqbBhPIo=
+        bh=m+MQKr5bcojm+sq7twaLg9pOUyJH5Cs+bOJrOsgta0s=;
+        b=GS/JhV0jd+qpvRnhjBqMFbLHcJyA18vDoEZRkcsyl70o2Zw9rFeYG2+GLxajHYUhQ/
+         9mlZAfVZPGpCekxLKcIrOYPDk6TZJ9bRQRpE+bDcTzj2V5QnhwTSC+QryLhGHxlbHKJW
+         pYDjcJibQ+zO4NJCsKj6a/Do0AGe+60gkzyXQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:in-reply-to:references:from
          :user-agent:date:message-id:subject:to:cc;
-        bh=rJXZL/E2rjizDw2g+xUTHgR6xfpHLrz6baH//WpupIA=;
-        b=F3W7MczbhksqidwHJEyq4Z/tky0/CkdFVOWBnjmu21g5MnOF6cDGbd6ISVMO5XAj+i
-         05SQcq7Az4lUlg1G/O1sW2mR1ZD1Y/MJyqdPeA8ZQNe412CiP+/AzwQ8JWFDbNlK89pL
-         bBbyk66mULZL8hRGK7421Aq7sXDe3HfYAfaOB+x4ELPCRaRJfKe7AKWRA2MoPe1DMuia
-         L0nX0Z2sJcr5AUBpvoTJgQKaZKrs4dGIwvNJ/cWJBZoqMhPkbxhs34yd1fScW8BYd2ku
-         U8O7v2PvWiwwb50TjdzOEl35Cqbz4tutv52L18j+wjQcr6UE2tYH8bMDDanqDTBCq7Sh
-         LFfQ==
-X-Gm-Message-State: AOAM530zAJZiElUJXlEXPhI1qeNd60R0trrMrUTw01FrJNi4sRxM4QCX
-        m9k5FQsm6QyL68j+Qee8b3Y2kb+5Tx9Feos08do1UqtsrcQ=
-X-Google-Smtp-Source: ABdhPJxzCxjnxno+e1ko51qFrcaIW6A2GioGxAa2xz6r8QTE5XFA3HZvXeCGDv6WRirQFECvcUk6zhmJwJvvexsKQPo=
-X-Received: by 2002:a9d:1f4:: with SMTP id e107mr16724345ote.77.1633480185918;
- Tue, 05 Oct 2021 17:29:45 -0700 (PDT)
+        bh=m+MQKr5bcojm+sq7twaLg9pOUyJH5Cs+bOJrOsgta0s=;
+        b=1uRS9wQpPmNHYIXk7OWh9SGRjDpt6YYTbcfGIrW5Y2nzbdpIggOl6bCH5jm308kKjY
+         3MYwQ2Ig6m5C0EOhGK9zCc/DZpEW238b/6dSOXxPXL/sS26uSwYITG7ogfc3lkTFwqDw
+         dWIuQyO/qziOzSBP4qtz1fY3OJAiJj7WEPR0BIT8/U9j7WA6wIfsUptnEfqnFZx4ocet
+         DqY3L3IhN/cAS/foVImOwhxQ/W1LujPbj5vPy3cjFprQfZy+WUfyN+Epg1BpaNgRJRG/
+         RkUOEwMLAscYMccfD/rdA6zj6jaR083VuoobRgp9XYVqpj/L/mTsbeOaHgcCMYvgjPE1
+         Nelw==
+X-Gm-Message-State: AOAM532M5HtX3hAgr40Feklw8VsC/9YlIahvu/c8VRX6iqal+3Y8ZFzZ
+        txVae4U+/POfK9gqMS7psGVlDrSjrrWzcxVYQPKTwA==
+X-Google-Smtp-Source: ABdhPJzMWWttSwSsQa0qR8s31oOrQHsLnN0nu6wJj4lnGpC7laluIjYD8fdeIhSf0clYnnBS2KZ1NOlkP+u5kDOTJRg=
+X-Received: by 2002:aca:42d7:: with SMTP id p206mr5002008oia.32.1633480310393;
+ Tue, 05 Oct 2021 17:31:50 -0700 (PDT)
 Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Tue, 5 Oct 2021 17:29:45 -0700
+ HTTPREST; Tue, 5 Oct 2021 17:31:50 -0700
 MIME-Version: 1.0
 In-Reply-To: <20211005231323.2663520-4-bjorn.andersson@linaro.org>
 References: <20211005231323.2663520-1-bjorn.andersson@linaro.org> <20211005231323.2663520-4-bjorn.andersson@linaro.org>
 From:   Stephen Boyd <swboyd@chromium.org>
 User-Agent: alot/0.9.1
-Date:   Tue, 5 Oct 2021 17:29:45 -0700
-Message-ID: <CAE-0n53bGyVSBC9zsFu9Uacp+t=56vrttq+fWj155zA_LXJbuw@mail.gmail.com>
+Date:   Tue, 5 Oct 2021 17:31:49 -0700
+Message-ID: <CAE-0n53wHmorZ4HdhJmXTf+Z0j++LFut_aTryuCAa8ONW3iuLA@mail.gmail.com>
 Subject: Re: [PATCH v4 3/7] drm/msm/dp: Allow specifying connector_type per controller
 To:     Abhinav Kumar <abhinavk@codeaurora.org>,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
@@ -68,34 +68,19 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Quoting Bjorn Andersson (2021-10-05 16:13:19)
-> As the following patches introduced support for multiple DP blocks in a
-> platform and some of those block might be eDP it becomes useful to be
-> able to specify the connector type per block.
+> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+> index 5d3ee5ef07c2..eaf08f9e7d87 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_display.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
+> @@ -115,8 +115,25 @@ struct dp_display_private {
+>         struct dp_audio *audio;
+>  };
 >
-> Although there's only a single block at this point, the array of descs
-> and the search in dp_display_get_desc() are introduced here to simplify
-> the next patch, that does introduce support for multiple DP blocks.
->
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
->
-> Changes since v3:
-> - New patch
-> - Extended msm_dp_config with connector_type, wrapped in inner struct
-> - Refactored out of the next patch
-> - Pass the connector_type to drm_connector_init(), from yet another patch
-> - Dropped double newline and unnecessary {}
+> +struct msm_dp_desc {
+> +       phys_addr_t io_start;
+> +       int connector_type;
 
-BTW, I see that we check for the connector type in debugfs.
+unsigned?
 
-$ git grep DRM_MODE_CONNECTOR_DisplayPort -- drivers/gpu/drm/msm/dp/
-drivers/gpu/drm/msm/dp/dp_debug.c:
-DRM_MODE_CONNECTOR_DisplayPort)
-drivers/gpu/drm/msm/dp/dp_debug.c:
-DRM_MODE_CONNECTOR_DisplayPort)
-drivers/gpu/drm/msm/dp/dp_debug.c:
-DRM_MODE_CONNECTOR_DisplayPort)
-drivers/gpu/drm/msm/dp/dp_debug.c:
-DRM_MODE_CONNECTOR_DisplayPort)
-
-So do those need to be updated to handle either connector type?
+> +};
+> +
