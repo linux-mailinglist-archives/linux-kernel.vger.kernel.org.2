@@ -2,179 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 184B3423E73
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 15:12:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07527423E6E
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 15:11:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238614AbhJFNOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 09:14:19 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:57036 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230008AbhJFNOR (ORCPT
+        id S238460AbhJFNN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 09:13:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47570 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230008AbhJFNN1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 09:14:17 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 196CmhMx021012;
-        Wed, 6 Oct 2021 09:10:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=s9K5Ipde3dftytgvZMayo8mNzgFKiuukbRQGJiKnxTM=;
- b=Udac3sgtIPThpqyE22P9xEAYP7BzyVVo1V0malK02beMpqEzpNO7eUefjSO9O4IiB5Qd
- Igeo8dcI+VKV+/oGQ73NKm5Hzq6Q+zHPH3Y+bBSixCSdEnTFyX0+vgdGOiut0w+/43H3
- A/8f4qxWDnwBC33n6t3xmf9cOxJAU48cSXahr9+huTaKT6Xr8ONRSU3srwMlyJMZEQGJ
- 6zyy8tW91mjmsURp2m0z9pxWCWnMRsDLLNRcElwu1ELZWpxaTpGDwMqgJDE33+Zoj0Rm
- joxk17eK17FArTzz8Ma1X5o2Mk1tUbl8nco9TDKXSnM6ZinFi77Fd6Zm6v6BECEA02Xp nQ== 
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bh11u6a9b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 06 Oct 2021 09:10:53 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 196D2ef1008269;
-        Wed, 6 Oct 2021 13:10:51 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma06ams.nl.ibm.com with ESMTP id 3beepjwpse-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 06 Oct 2021 13:10:50 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 196DAk6t62652756
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 6 Oct 2021 13:10:46 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7CD9311C066;
-        Wed,  6 Oct 2021 13:10:46 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7B77F11C05E;
-        Wed,  6 Oct 2021 13:10:45 +0000 (GMT)
-Received: from thinkpad (unknown [9.171.8.189])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Wed,  6 Oct 2021 13:10:45 +0000 (GMT)
-Date:   Wed, 6 Oct 2021 15:10:43 +0200
-From:   Gerald Schaefer <gerald.schaefer@linux.ibm.com>
-To:     Hamza Mahfooz <someguy@effective-light.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Dan Williams <dan.j.williams@intel.com>
-Cc:     Karsten Graul <kgraul@linux.ibm.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>
-Subject: Re: DPAA2 triggers, [PATCH] dma debug: report -EEXIST errors in
- add_dma_entry
-Message-ID: <20211006151043.61fe9613@thinkpad>
-In-Reply-To: <20211001145256.0323957a@thinkpad>
-References: <20210518125443.34148-1-someguy@effective-light.com>
-        <fd67fbac-64bf-f0ea-01e1-5938ccfab9d0@arm.com>
-        <20210914154504.z6vqxuh3byqwgfzx@skbuf>
-        <185e7ee4-3749-4ccb-6d2e-da6bc8f30c04@linux.ibm.com>
-        <20211001145256.0323957a@thinkpad>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        Wed, 6 Oct 2021 09:13:27 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0047C061749
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 06:11:34 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id x27so10315030lfu.5
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 06:11:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mI7xxwj+mBUooKpJkWS2Vk+yUURNXRcCn/QPZmJzSqg=;
+        b=uCtda1JSEXExVjMHnUmKdQ3BIdH/nb6dx+16B2rJDTOTZ5L+dl9pwjI6McHaDVs76T
+         r1HkEACDjrLpNOmu14fvl+hUkN9q6wOBhJ0BTAAtXuMJaz/TFQtFcFzd5E4+z8175ja+
+         Nt2gYmOP5PvihienZx6bgrpNTgupaskzZLSWzuEVkCpLsCdQXg9vGZww5gS8J4xinCB5
+         WO1IY02bURGqitQC6AYQn0pzgdJF5PA4fsyaKm8yQBtmbAWTiNWWUIvHkmYHmZWqUGuk
+         cWPvvWxhbtG6QAvG70+OmH/hNgGUTGMFhs+zIRWrkkywsfGMqoL1520a7BNo0Jkq55Fe
+         0Wpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mI7xxwj+mBUooKpJkWS2Vk+yUURNXRcCn/QPZmJzSqg=;
+        b=pADOqYqiLdFcYQdBoUJgve5k+ZHIFCyaJjlhxKCwjYRt8c2eI3Pe5WXxVGVoH+G7ow
+         q6Sf8n382n7PeBWhawzEitAKHw7538qsMPpXg/wfDKmjB/+95vTWq9/0OFCJS60m8ikv
+         sl8mgN218p7FEF1ABB4+SMCO7+Mqq26T72EztU5SdaZ4jwEItfsodvM9p6Tr0uqOZyJy
+         deV77mdwi6AIPdJb64jjclWDHrEEUBlVGeeDi2/zSRTqh0+uI3Jo2ulmJxi2NIhF7HDZ
+         aklZYBK9nY+Mma6W3GXr+2bmr97PxfDBOftfydKOfGNiQETy6fSDmP6okV+mythvtBxP
+         1CNQ==
+X-Gm-Message-State: AOAM530NK6FV+DtNBO0CR893db2FURcKK/RsYHvWLqJYannzpizbXD2M
+        yOTkGKRCNm/c0rt8pFRTgMdwMksgkHGvmrcim8BiOA==
+X-Google-Smtp-Source: ABdhPJzLsdUjkwax4R9lmdaqTnoEmLJtzqFAoWzDO17wLjWLkX2JgyidZHNPcZ9xW1+o+067OuauRSi68xT/6d2Ci0I=
+X-Received: by 2002:a19:5f4b:: with SMTP id a11mr9618060lfj.373.1633525892201;
+ Wed, 06 Oct 2021 06:11:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: dsDMR_TMvH-Qy8XSrAP_p36Qp2E3zSZi
-X-Proofpoint-GUID: dsDMR_TMvH-Qy8XSrAP_p36Qp2E3zSZi
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-10-06_02,2021-10-06_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- phishscore=0 priorityscore=1501 spamscore=0 malwarescore=0 bulkscore=0
- clxscore=1015 mlxscore=0 impostorscore=0 mlxlogscore=999 suspectscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110060082
+References: <20210929144451.113334-1-ulf.hansson@linaro.org>
+ <20210929144451.113334-2-ulf.hansson@linaro.org> <07e6821c-c221-e90d-c977-4d6b55c1ab8d@codeaurora.org>
+In-Reply-To: <07e6821c-c221-e90d-c977-4d6b55c1ab8d@codeaurora.org>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Wed, 6 Oct 2021 15:10:55 +0200
+Message-ID: <CAPDyKFpJqnoG5HGwGoMvBBXBCBt=eTqMcdX_A29eY05LLgLi3w@mail.gmail.com>
+Subject: Re: [PATCH 1/2] cpuidle: Avoid calls to cpuidle_resume|pause() for s2idle
+To:     Maulik Shah <mkshah@codeaurora.org>
+Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Len Brown <len.brown@intel.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Srinivas Rao L <lsrao@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 1 Oct 2021 14:52:56 +0200
-Gerald Schaefer <gerald.schaefer@linux.ibm.com> wrote:
+On Wed, 6 Oct 2021 at 12:22, Maulik Shah <mkshah@codeaurora.org> wrote:
+>
+> Hi,
+>
+> On 9/29/2021 8:14 PM, Ulf Hansson wrote:
+> > In s2idle_enter(), cpuidle_resume|pause() are invoked to re-allow calls to
+> > the cpuidle callbacks during s2idle operations. This is needed because
+> > cpuidle is paused in-between in dpm_suspend_noirq() and dpm_resume_noirq().
+> >
+> > However, calling cpuidle_resume|pause() from s2idle_enter() looks a bit
+> > superfluous, as it also causes all CPUs to be waken up when the first CPU
+> > wakes up from s2idle.
+>
+> Thanks for the patch. This can be good optimization to avoid waking up
+> all CPUs always.
+>
+> >
+> > Therefore, let's drop the calls to cpuidle_resume|pause() from
+> > s2idle_enter(). To make this work, let's also adopt the path in the
+> > cpuidle_idle_call() to allow cpuidle callbacks to be invoked for s2idle,
+> > even if cpuidle has been paused.
+> >
+> > Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+> > ---
+> >   drivers/cpuidle/cpuidle.c |  7 ++++++-
+> >   include/linux/cpuidle.h   |  2 ++
+> >   kernel/power/suspend.c    |  2 --
+> >   kernel/sched/idle.c       | 40 ++++++++++++++++++++++-----------------
+> >   4 files changed, 31 insertions(+), 20 deletions(-)
+> >
+> > diff --git a/drivers/cpuidle/cpuidle.c b/drivers/cpuidle/cpuidle.c
+> > index ef2ea1b12cd8..c76747e497e7 100644
+> > --- a/drivers/cpuidle/cpuidle.c
+> > +++ b/drivers/cpuidle/cpuidle.c
+> > @@ -49,7 +49,12 @@ void disable_cpuidle(void)
+> >   bool cpuidle_not_available(struct cpuidle_driver *drv,
+> >                          struct cpuidle_device *dev)
+> >   {
+> > -     return off || !initialized || !drv || !dev || !dev->enabled;
+> > +     return off || !drv || !dev || !dev->enabled;
+> > +}
+> > +
+> > +bool cpuidle_paused(void)
+> > +{
+> > +     return !initialized;
+> >   }
+> >
+> >   /**
+> > diff --git a/include/linux/cpuidle.h b/include/linux/cpuidle.h
+> > index fce476275e16..51698b385ab5 100644
+> > --- a/include/linux/cpuidle.h
+> > +++ b/include/linux/cpuidle.h
+> > @@ -165,6 +165,7 @@ extern void cpuidle_pause_and_lock(void);
+> >   extern void cpuidle_resume_and_unlock(void);
+> >   extern void cpuidle_pause(void);
+> >   extern void cpuidle_resume(void);
+> > +extern bool cpuidle_paused(void);
+> >   extern int cpuidle_enable_device(struct cpuidle_device *dev);
+> >   extern void cpuidle_disable_device(struct cpuidle_device *dev);
+> >   extern int cpuidle_play_dead(void);
+> > @@ -204,6 +205,7 @@ static inline void cpuidle_pause_and_lock(void) { }
+> >   static inline void cpuidle_resume_and_unlock(void) { }
+> >   static inline void cpuidle_pause(void) { }
+> >   static inline void cpuidle_resume(void) { }
+> > +static inline bool cpuidle_paused(void) {return true; }
+> >   static inline int cpuidle_enable_device(struct cpuidle_device *dev)
+> >   {return -ENODEV; }
+> >   static inline void cpuidle_disable_device(struct cpuidle_device *dev) { }
+> > diff --git a/kernel/power/suspend.c b/kernel/power/suspend.c
+> > index eb75f394a059..388a5de4836e 100644
+> > --- a/kernel/power/suspend.c
+> > +++ b/kernel/power/suspend.c
+> > @@ -97,7 +97,6 @@ static void s2idle_enter(void)
+> >       raw_spin_unlock_irq(&s2idle_lock);
+> >
+> >       cpus_read_lock();
+> > -     cpuidle_resume();
+> >
+> >       /* Push all the CPUs into the idle loop. */
+> >       wake_up_all_idle_cpus();
+>
+> wake_up_all_idle_cpus() will still cause all CPUs to be woken up when
+> first cpu wakes up.
+>
+> say for example,
+> 1. device goes to s2idle suspend.
+> 2. one CPU wakes up to handle irq (irq is not a wake irq but left
+> enabled at GIC because of IRQF_NOSUSPEND flag) so such irq will not
+> break suspend.
+> 3. The cpu handles the irq.
+> 4. same cpu don't break s2idle_loop() and goes to s2idle_enter() where
+> it wakes up all existing idle cpus due to wake_up_all_idle_cpus()
+> 5. all of CPUs again enter s2idle.
+>
+> to avoid waking up all CPUs in above case, something like below snip may
+> help (i have not tested yet),
+>
+> when CPUs are in s2idle_loop(),
+>
+> 1. set the s2idle state to enter.
+> 2. wake up all cpus from shallow state, so that they can re-enter
+> deepest state.
+> 3. Forever loop until a break with some wake irq.
+> 4. clear the s2idle state.
+> 5. wake up all cpus from deepest state so that they can now stay in
+> shallow state/running state.
+>
+> void s2idle_loop(void)
+> {
+>
+> +       s2idle_state = S2IDLE_STATE_ENTER;
+> +       /* Push all the CPUs to enter deepest available state */
+> +       wake_up_all_idle_cpus();
+>          for (;;) {
+>                  if (s2idle_ops && s2idle_ops->wake) {
+>                          if (s2idle_ops->wake())
+>                                 ..
+>                  s2idle_enter();
+>          }
+> +       s2idle_state = S2IDLE_STATE_NONE;
+> +       /* Push all the CPUs to enter default_idle() from this point */
+> +       wake_up_all_idle_cpus();
+> }
 
-> On Thu, 30 Sep 2021 15:37:33 +0200
-> Karsten Graul <kgraul@linux.ibm.com> wrote:
-> 
-> > On 14/09/2021 17:45, Ioana Ciornei wrote:
-> > > On Wed, Sep 08, 2021 at 10:33:26PM -0500, Jeremy Linton wrote:
-> > >> +DPAA2, netdev maintainers
-> > >> Hi,
-> > >>
-> > >> On 5/18/21 7:54 AM, Hamza Mahfooz wrote:
-> > >>> Since, overlapping mappings are not supported by the DMA API we should
-> > >>> report an error if active_cacheline_insert returns -EEXIST.
-> > >>
-> > >> It seems this patch found a victim. I was trying to run iperf3 on a
-> > >> honeycomb (5.14.0, fedora 35) and the console is blasting this error message
-> > >> at 100% cpu. So, I changed it to a WARN_ONCE() to get the call trace, which
-> > >> is attached below.
-> > >>
-> > > 
-> > > These frags are allocated by the stack, transformed into a scatterlist
-> > > by skb_to_sgvec and then DMA mapped with dma_map_sg. It was not the
-> > > dpaa2-eth's decision to use two fragments from the same page (that will
-> > > also end un in the same cacheline) in two different in-flight skbs.
-> > > 
-> > > Is this behavior normal?
-> > > 
-> > 
-> > We see the same problem here and it started with 5.15-rc2 in our nightly CI runs.
-> > The CI has panic_on_warn enabled so we see the panic every day now.
-> 
-> Adding a WARN for a case that be detected false-positive seems not
-> acceptable, exactly for this reason (kernel panic on unaffected
-> systems).
-> 
-> So I guess it boils down to the question if the behavior that Ioana
-> described is legit behavior, on a system that is dma coherent. We
-> are apparently hitting the same scenario, although it could not yet be
-> reproduced with debug printks for some reason.
-> 
-> If the answer is yes, than please remove at lease the WARN, so that
-> it will not make systems crash that behave valid, and have
-> panic_on_warn set. Even a normal printk feels wrong to me in that
-> case, it really sounds rather like you want to fix / better refine
-> the overlap check, if you want to report anything here.
+Overall, I follow your reasoning above and I think it makes sense to
+me, but maybe Rafael has some concerns about it.
 
-Dan, Christoph, any opinion?
+Even if the above code needs some polishing, the logic seems
+reasonable to me. I suggest you post a patch, based on top of my small
+series, so we can discuss your suggested improvements separately. Or
+just tell me, if you would like me to do it.
 
-So far it all looks a lot like a false positive, so could you please
-see that those patches get reverted? I do wonder a bit why this is
-not an issue for others, we surely cannot be the only ones running
-CI with panic_on_warn.
+>
+> Thanks,
+> Maulik
 
-We would need to disable DEBUG_DMA if this WARN stays in, which
-would be a shame. Of course, in theory, this might also indicate
-some real bug, but there really is no sign of that so far.
+Thanks for reviewing!
 
-Having multiple sg elements in the same page (or cacheline) is
-valid, correct? And this is also not a decision of the driver
-IIUC, so if it was bug, it should be addressed in common code,
-correct?
+[...]
 
-> 
-> BTW, there is already a WARN in the add_dma_entry() path, related
-> to cachlline overlap and -EEXIST:
-> 
-> add_dma_entry() -> active_cacheline_insert() -> -EEXIST ->
-> active_cacheline_inc_overlap()
-> 
-> That will only trigger when "overlap > ACTIVE_CACHELINE_MAX_OVERLAP".
-> Not familiar with that code, but it seems that there are now two
-> warnings for more or less the same, and the new warning is much more
-> prone to false-positives.
-> 
-> How do these 2 warnings relate, are they both really necessary?
-> I think the new warning was only introduced because of some old
-> TODO comment in add_dma_entry(), see commit 2b4bbc6231d78
-> ("dma-debug: report -EEXIST errors in add_dma_entry").
-> 
-> That comment was initially added by Dan long time ago, and he
-> added several fix-ups for overlap detection after that, including
-> the "overlap > ACTIVE_CACHELINE_MAX_OVERLAP" stuff in
-> active_cacheline_inc_overlap(). So could it be that the TODO
-> comment was simply not valid any more, and better be removed
-> instead of adding new / double warnings, that also generate
-> false-positives and kernel crashes?
-
+Kind regards
+Uffe
