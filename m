@@ -2,81 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B108423F63
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 15:35:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38C11423F66
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 15:35:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231624AbhJFNgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 09:36:50 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:37270 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230023AbhJFNgt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 09:36:49 -0400
-Received: from zn.tnic (p200300ec2f0d3600bd612f435519a27c.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:3600:bd61:2f43:5519:a27c])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 36CBA1EC04BF;
-        Wed,  6 Oct 2021 15:34:56 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1633527296;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=azbJy9XarL2vqTlJbOYf3rqnWVLZMYcDF2N2Nz/wT1A=;
-        b=jvv22IMUrbuzK7hdlQtUCdvrC4ha3TfGEN64HfVrnA8YSMpyp0uK/XonWPBhURQBOkgU4x
-        vtxsc+cISc6g569ZfdwcjNooPuSIFn3g4QOQ8r+MfnTJrVFv85+7ZY6yTFFkUsaGffIhLI
-        0TVClnjIyBZYiV28exS4KRny38ciXWY=
-Date:   Wed, 6 Oct 2021 15:34:51 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Ser Olmy <ser.olmy@protonmail.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        x86-ml <x86@kernel.org>
-Subject: Re: [x86] Kernel v5.14 series panic on Celeron Mendocino CPU
-Message-ID: <YV2l+1oIGd2p/Gt5@zn.tnic>
-References: <CPeoI7yf4421QpWLM-CbgeDR17BBmhlLoixeYI3mu2WbDkgrZItfgImOO6BZez7CXQXXO9liq-rmZzgRVB95TP5MN0xUA8-d7-fSQZdyIZE=@protonmail.com>
- <YVtA67jImg3KlBTw@zn.tnic>
- <lxqAtqDf_kLUxIlvmYPvuKB36LOK-z_cVbS9OOl0MbjZKZEaCaEFmHCbSy5sWBer6f9V_WAPLxUuSNrDBvyzEeQOJXepkVUztPXAOhPZniQ=@protonmail.com>
- <YVwjY9TX6XMxkM2f@zn.tnic>
- <YqPgABmVMzvEllmeYzm8tkSaqtC-Q8nzeNjgNBXVPnQtPCHAeFg7IdwpzBECDcFGjrCBkFVegcYvqh_KoGnyOsbK4oC91VHw5G-qUlwlCvM=@protonmail.com>
+        id S238447AbhJFNgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 09:36:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53176 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231652AbhJFNgx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 09:36:53 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3BE3C061749
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 06:35:01 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id r18so9939637edv.12
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 06:35:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
+        b=j1tS4tfwswvJl3BqQQ/NgIROag+113gYNCztgVwbM8PzF8wLYq+xmZy3u0u8RU8axy
+         jeTBOIYkH/bk51pJlTZGQ6Dm0MH71+g/SAkkx4ng9b2xftuqlpInQFRzGsL2/6UGjKWw
+         Wt6VPVr+zZ0MBAdmwdjdQV5DvO7FhiWfy+a/eLExav16JYob3YJ/3xP8Dpq26azv8/K7
+         wCqLNyr/MTZsCDab2IkHZeO6zEpz8D2tqptHTzXsFmU75dn2piX3ufsb/q3rGE6YsDgL
+         /8glzyasNGxai50th9oLF+sTiDobfM5ZHYmPdkukHQWEiUnsr6XrBxhOoPTLtHjqtwmj
+         dCGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
+        b=oeXu6Eb7gGYho0iHoZdimOyHbXUaio158CQZfj3lqviOkkdCIi2U1dyfni4q7sTPMp
+         Jl4PWyP6lEdldCI+KMqMG3PLrk0zayGxBhmntOj58NlYJ+FsZaly3kLnHmug6RJ0DC4G
+         YjXHTy1j8NLh1rswj8LsNEHP9s6XQLY8seo+X9ds/6AQnHgVs5eDIdyMiYXVbcf1+4ki
+         hJXX/TMLXLf6ghvc35mHA3GciE/RTyzXJrDyxHW+eyqJv/VblSnvkFFOQPDqpCE5vOUm
+         ZyfS7JUeoIFBK1mOSHeVvBhO28mRg1WRSpG6iAnklJmk9HkEYD8/FLfKaX3lxnkWe8IM
+         Ov7Q==
+X-Gm-Message-State: AOAM533a8C00pctxKfEe6WZ26rZ6Xs4pJwKcscxj5QkxKJBu/Z0DreTc
+        ENB/w3h8pYCfyop+br3rUGXkpuNo1V9NzKYPIRo=
+X-Google-Smtp-Source: ABdhPJwB7MxImAj4xmVxqmVHqmumB/CW0yzgILkN4NWFqPHtxcu1vHlJJ4SSi2lY+HvcnNHnUXrXS52U8QE4KjqHnTU=
+X-Received: by 2002:a17:906:4f82:: with SMTP id o2mr32487762eju.10.1633527300155;
+ Wed, 06 Oct 2021 06:35:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YqPgABmVMzvEllmeYzm8tkSaqtC-Q8nzeNjgNBXVPnQtPCHAeFg7IdwpzBECDcFGjrCBkFVegcYvqh_KoGnyOsbK4oC91VHw5G-qUlwlCvM=@protonmail.com>
+Received: by 2002:a54:328d:0:0:0:0:0 with HTTP; Wed, 6 Oct 2021 06:34:59 -0700 (PDT)
+Reply-To: muna322255gh@gmail.com
+From:   Mala koffi <anthonykokon1977@gmail.com>
+Date:   Wed, 6 Oct 2021 06:34:59 -0700
+Message-ID: <CALgjj-tFcy3ei=FcD0HDSjRJSbbdU1c-usfR91bqx+Ln9+uiLA@mail.gmail.com>
+Subject: Re: Hello i sent you a message containing the details of the
+ transaction Did you see it?
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 06, 2021 at 12:42:47AM +0000, Ser Olmy wrote:
-> Sure:
 
-Thx.
-
-> [   21.670972] fpu->state.fxsave.mxcsr: 0xb7be13b4, mxcsr_feature_mask: 0xffbf
-> [   21.754383] WARNING: CPU: 0 PID: 1 at arch/x86/kernel/fpu/signal.c:384 __fpu_restore_sig+0x51f/0x540
-
-As tglx expected.
-
-I guess this fixes your issue (replace with previous diff pls):
-
----
-diff --git a/arch/x86/kernel/fpu/signal.c b/arch/x86/kernel/fpu/signal.c
-index 445c57c9c539..684be34d4609 100644
---- a/arch/x86/kernel/fpu/signal.c
-+++ b/arch/x86/kernel/fpu/signal.c
-@@ -379,9 +379,8 @@ static int __fpu_restore_sig(void __user *buf, void __user *buf_fx,
- 				     sizeof(fpu->state.fxsave)))
- 			return -EFAULT;
- 
--		/* Reject invalid MXCSR values. */
--		if (fpu->state.fxsave.mxcsr & ~mxcsr_feature_mask)
--			return -EINVAL;
-+		/* Mask out reserved MXCSR bits. */
-+		fpu->state.fxsave.mxcsr &= mxcsr_feature_mask;
- 
- 		/* Enforce XFEATURE_MASK_FPSSE when XSAVE is enabled */
- 		if (use_xsave())
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
