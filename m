@@ -2,93 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAB2E423F4C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 15:30:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3954423F58
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 15:31:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239094AbhJFNcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 09:32:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49154 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238847AbhJFNc2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 09:32:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 91DD460E9C;
-        Wed,  6 Oct 2021 13:30:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633527036;
-        bh=3bZ0l2e9fq6OQbxRWcrK/pEDNJzTx0y2BSzq7eI+KEQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nNld3sJIUXGyRvGzUAx41o8O6FBZyvnwk3d+TTaRE4pPNKjlilRevs2TXWtPRFPT2
-         +98Ixwh+hzuSNNNAFSLolrcKZBJsD0m/QXe7bIL1OQWyKvgHp1TCnJU9vLL25H6EFj
-         5o8HOas3ahEfeYMS85qoUqH+M4wNI49TDMFSDDwY9N2jjUkmiUsFkQH9+Ad/4Y4D0A
-         RseYFIrsPqAyENcz2auM1oxfqo2PbXeX2OpOdBoFNs5jRYXSZQ1+P+Bnx4EfJr2Kic
-         JA7lnJMROVRBjou/hoSlnyN1IFyKYeqT30oGFjxe3fTrl4mOQxSDIgEXMaKfyfunL5
-         NUtVvC0n7J+Vg==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>, alsa-devel@alsa-project.org,
-        Takashi Iwai <tiwai@suse.com>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH MANUALSEL 5.14 9/9] ALSA: pcsp: Make hrtimer forwarding more robust
-Date:   Wed,  6 Oct 2021 09:30:21 -0400
-Message-Id: <20211006133021.271905-9-sashal@kernel.org>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211006133021.271905-1-sashal@kernel.org>
-References: <20211006133021.271905-1-sashal@kernel.org>
+        id S238905AbhJFNdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 09:33:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52198 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239006AbhJFNdH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 09:33:07 -0400
+Received: from mail-ua1-x933.google.com (mail-ua1-x933.google.com [IPv6:2607:f8b0:4864:20::933])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C22B9C061753
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 06:31:14 -0700 (PDT)
+Received: by mail-ua1-x933.google.com with SMTP id 64so1754464uab.12
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 06:31:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IVKf8Genafin95Q2Di2z6fbGCVMHXhleTRmZr5HVl28=;
+        b=H0kQmGBsGcwDkt5hQt5X8QgbEs7mcB/HT7Ds17Xv8F/K0xyixce4X/dm0T7SHIfdYM
+         3mAvpLtrnNhP6GivySCKypOSdGeDl1PTc4EHBTjlrYP8lOWZ8k+OjDncfwM+D1hePrXD
+         //GrbK03hPtCTL7AHUdNhPOb73MAlJoUHAlxkPrdeGM9wz0wWcvJg0j/x4bxBbZt30IN
+         WTsPSCsPARs9DTDmjObNjJuMvitiUsnUGR6YvAhcje2/eQS9+imw7UefTHBRxgdAKdQ9
+         4Np9SxfjyrZk7AIH6Er7+LNn6wawojcklD4JogoG3HraPQeoSg399LoNWAp3vsk/XrUp
+         ciUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IVKf8Genafin95Q2Di2z6fbGCVMHXhleTRmZr5HVl28=;
+        b=q28zy065nWrqCI/vqwoyGCR0Er+HIiXEq4kGYcYTHMz+pgG/UE1TNm3pqw9XbWb/Rb
+         vlbwv9uEXUPGRmD3D+hGJ7eGc/8MDaWCJIlGH7CtNsZH+0lJGc6nVpP5PNCQtRIzO8Ey
+         3ZDN3M+tXatSOJRhHbFwUeHIoX+eMHYMr0vg6s4I5EZ13WTCM9Oi9PJPOIttxd7WHdc0
+         9vVIFcW1JQ6EFUOEQXzCYRyELz4zgvb3ItWmW6uXv166Vz8FrjYKvIl5SbNkeuqUP4MM
+         m3yJQ5oM4WU22jV6eOGGGgLrduUVkBwSpvOt+jYjckVFiL5/B1k4JZtDvJ9mKlQQvHIp
+         Zz1A==
+X-Gm-Message-State: AOAM532pjjKIouM8PqLYRKM7O8M7ju/GxBl/DbjbL356VuHOmaej3COc
+        x83EreNooMFGL9OV6QjL3iBcmWIZSKZpj+GlZ9goqQ==
+X-Google-Smtp-Source: ABdhPJzZOAo9G31czsBxb4fU+8I6tAGDuMwhRn5OzKvHiUr5u8U+cXOG8wNIya5MSF1bKpSXTROUHhpYctvd/VR1i/k=
+X-Received: by 2002:ab0:3b12:: with SMTP id n18mr5625901uaw.9.1633527073899;
+ Wed, 06 Oct 2021 06:31:13 -0700 (PDT)
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+References: <20210914155607.14122-1-semen.protsenko@linaro.org>
+ <20210914155607.14122-5-semen.protsenko@linaro.org> <96e5587e-aca7-248e-6448-8edfc70784b7@gmail.com>
+ <CAPLW+4mEeh8Fo8kGHx+rB7nX7bDfaQRPGDotgPLTp4pm4rC0Cg@mail.gmail.com> <77d976c3-a0b4-294f-d49a-8fd46b112a28@canonical.com>
+In-Reply-To: <77d976c3-a0b4-294f-d49a-8fd46b112a28@canonical.com>
+From:   Sam Protsenko <semen.protsenko@linaro.org>
+Date:   Wed, 6 Oct 2021 16:31:02 +0300
+Message-ID: <CAPLW+4m0yyk+E5GqYxfzXHxq1vKBoX3Mfc+6F6J_UXAfZ5s2Bg@mail.gmail.com>
+Subject: Re: [PATCH 4/6] dt-bindings: clock: Add bindings definitions for
+ Exynos850 CMU
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Chanwoo Choi <cwchoi00@gmail.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        =?UTF-8?Q?Pawe=C5=82_Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Ryu Euiyoul <ryu.real@samsung.com>,
+        Tom Gall <tom.gall@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Amit Pundir <amit.pundir@linaro.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+On Wed, 6 Oct 2021 at 13:49, Krzysztof Kozlowski
+<krzysztof.kozlowski@canonical.com> wrote:
+>
+> On 05/10/2021 12:28, Sam Protsenko wrote:
+> > On Wed, 15 Sept 2021 at 19:37, Chanwoo Choi <cwchoi00@gmail.com> wrote:
+> >>
+> >> Hi,
+> >>
+> >> You don't add clock ids for the all defined clocks in clk-exynos850.c.
+> >> I recommend that add all clock ids for the defined clocks if possible.
+> >>
+> >> If you want to change the parent clock of mux or change the clock rate
+> >> of div rate for some clocks, you have to touch the files as following:
+> >> - include/dt-bindings/clock/exynos850.h
+> >> - drivers/clk/samsung/clk-exynos850.c
+> >> - exynos850 dt files
+> >>
+> >> If you define the clock ids for all clocks added to this patchset,
+> >> you can change the parent or rate by just editing the dt files.
+> >>
+> >
+> > Hi Chanwoo,
+> >
+> > I see your point. But I have intentionally omitted some clock ids,
+> > which can't be / shouldn't be used by consumers in device tree.
+> > Actually I took that idea from clk-exynos7.c.
+> >
+> > Krzysztof, Sylwester: can you please advice if all clock ids should be
+> > defined, or only those that are going to be used in dts clk consumers?
+> > I don't mind reworking the patch, just want to be sure which design
+> > approach we want to follow.
+> >
+>
+> I would advise to define all clock IDs, unless the clock really, really
+> should not be used. Why do you think several clocks should not be used?
+> Have in mind it is not only about consumers but also clock reparenting
+> and assigning rates.
+>
 
-[ Upstream commit f2ff7147c6834f244b8ce636b12e71a3bd044629 ]
+Thanks! Will be done in v2.
 
-The hrtimer callback pcsp_do_timer() prepares rearming of the timer with
-hrtimer_forward(). hrtimer_forward() is intended to provide a mechanism to
-forward the expiry time of the hrtimer by a multiple of the period argument
-so that the expiry time greater than the time provided in the 'now'
-argument.
-
-pcsp_do_timer() invokes hrtimer_forward() with the current timer expiry
-time as 'now' argument. That's providing a periodic timer expiry, but is
-not really robust when the timer callback is delayed so that the resulting
-new expiry time is already in the past which causes the callback to be
-invoked immediately again. If the timer is delayed then the back to back
-invocation is not really making it better than skipping the missed
-periods. Sound is distorted in any case.
-
-Use hrtimer_forward_now() which ensures that the next expiry is in the
-future. This prevents hogging the CPU in the timer expiry code and allows
-later on to remove hrtimer_forward() from the public interfaces.
-
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.com>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Link: https://lore.kernel.org/r/20210923153339.623208460@linutronix.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- sound/drivers/pcsp/pcsp_lib.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/drivers/pcsp/pcsp_lib.c b/sound/drivers/pcsp/pcsp_lib.c
-index ed40d0f7432c..773db4bf0876 100644
---- a/sound/drivers/pcsp/pcsp_lib.c
-+++ b/sound/drivers/pcsp/pcsp_lib.c
-@@ -143,7 +143,7 @@ enum hrtimer_restart pcsp_do_timer(struct hrtimer *handle)
- 	if (pointer_update)
- 		pcsp_pointer_update(chip);
- 
--	hrtimer_forward(handle, hrtimer_get_expires(handle), ns_to_ktime(ns));
-+	hrtimer_forward_now(handle, ns_to_ktime(ns));
- 
- 	return HRTIMER_RESTART;
- }
--- 
-2.33.0
-
+>
+> Best regards,
+> Krzysztof
