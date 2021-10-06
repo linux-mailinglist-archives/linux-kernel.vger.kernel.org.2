@@ -2,89 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D0CE42467B
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 21:08:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D689442467E
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 21:09:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239285AbhJFTKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 15:10:14 -0400
-Received: from mail-oi1-f176.google.com ([209.85.167.176]:43653 "EHLO
-        mail-oi1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239194AbhJFTKM (ORCPT
+        id S239271AbhJFTLD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 15:11:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47258 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231807AbhJFTLC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 15:10:12 -0400
-Received: by mail-oi1-f176.google.com with SMTP id o4so5424125oia.10;
-        Wed, 06 Oct 2021 12:08:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=0xIolMsWNMus3qJwhgGl45wy3tQx3DQv3XGTqM+vTLk=;
-        b=F29pBaEp/sNsmqZ7hwL1hPK73Xe2kCSUlxcfjoM8UArsY3bohdmbw/dfSYPUGQgjST
-         UQLYLQ4X2L6RikpIGeJ7H4QzmVUE30jtxZTjeXtfdqeQpPY1GQ+4KW1HZ3buHH+Gz6cL
-         dyiYXPnhTz+qnT8V77kzQ7pnfKcJnQc4lORX0GYC76P26fJWaSQI+M++ue2aWJ7vNc9F
-         wNw66E/IBNP1+AlZbrO5cCMCOBqnW/JQxr1Z/XcWP/KOBI4IBPMSrzgUD1F0Ga2Yz3Tk
-         f8LTjnnkTf8GkyP4O1AwBbiis7H7cPCvWAM84OnW9gmUzeNOWCF3tjYTetBPrPT8F+tF
-         mitw==
-X-Gm-Message-State: AOAM530OQO6q8Z4J3b0lYZ3sudrejsehe1Qpy/PGVH2mXCki2swV3exF
-        01ojBv4B+IaOp+DsuUOYwA==
-X-Google-Smtp-Source: ABdhPJy1kBzMU6zdZ+h8Ykw9XssXwJUCydJJOI1gleXOB7lXtcoPgfmyimwEKXHkOXkmkG62VJQYow==
-X-Received: by 2002:a05:6808:1a04:: with SMTP id bk4mr31213oib.85.1633547299133;
-        Wed, 06 Oct 2021 12:08:19 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id e28sm909490oth.40.2021.10.06.12.08.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Oct 2021 12:08:18 -0700 (PDT)
-Received: (nullmailer pid 2218066 invoked by uid 1000);
-        Wed, 06 Oct 2021 19:08:13 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <1633518606-8298-3-git-send-email-hayashi.kunihiko@socionext.com>
-References: <1633518606-8298-1-git-send-email-hayashi.kunihiko@socionext.com> <1633518606-8298-3-git-send-email-hayashi.kunihiko@socionext.com>
-Subject: Re: [PATCH v2 2/3] dt-bindings: pinctrl: uniphier: Add NX1 pinctrl binding
-Date:   Wed, 06 Oct 2021 14:08:13 -0500
-Message-Id: <1633547293.534465.2218065.nullmailer@robh.at.kernel.org>
+        Wed, 6 Oct 2021 15:11:02 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B89BDC061746;
+        Wed,  6 Oct 2021 12:09:09 -0700 (PDT)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1633547347;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Fz5ph9zRK6litvw0SKDVU/0ZKzmd9blsLfQbDEUhygs=;
+        b=n8pZUvjNI9FOHoBwXKQ+DmbKtHl133nsV1RzGJS7qRCL1XFMfYgp5kplRfRCowGXo9tRvX
+        tK+5ohqLXguuKm6uuAkYk5ex3b5uaD4ej8WivTnvV9GfTkjy53YlpmseNYMcy8+mY7XhSh
+        e/qOUIBfRPUXKc9u41TN5AF9/rtT1mYCOCizg9oMPuqzYDDRXXIcYTX4LeBsiiErw1hw0M
+        Hd+BktvlmYQbcY/lgybGq+Yj9IJyOAoiRUMekn98ZCHynELpziSz7mPy0+X1e8iRaxi9bv
+        ygmJTHM0uWsWDFZkGU0tdmzQUFiFXNwvZyCNSuY1ev6CTBGBR3yPsbLCJ72crw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1633547347;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Fz5ph9zRK6litvw0SKDVU/0ZKzmd9blsLfQbDEUhygs=;
+        b=akeZGlZ6rN+kmwPyKueUPX3xNTfv51IbD6oTLZ/6RsJI10ZKWDcAOOOBkq12A61jMDqBqB
+        T2Hy4G+DC1234wDA==
+To:     Johan Hovold <johan@kernel.org>, Tejun Heo <tj@kernel.org>
+Cc:     Lai Jiangshan <jiangshanlai@gmail.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Fabio Estevam <festevam@denx.de>, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH v2] workqueue: fix state-dump console deadlock
+In-Reply-To: <20211006115852.16986-1-johan@kernel.org>
+References: <20211006115852.16986-1-johan@kernel.org>
+Date:   Wed, 06 Oct 2021 21:15:06 +0206
+Message-ID: <87ee8yug19.fsf@jogness.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 06 Oct 2021 20:10:05 +0900, Kunihiko Hayashi wrote:
-> Update pinctrl binding document for UniPhier NX1 SoC.
-> 
-> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
-> Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+On 2021-10-06, Johan Hovold <johan@kernel.org> wrote:
+> Console drivers often queue work while holding locks also taken in their
+> console write paths, something which can lead to deadlocks on SMP when
+> dumping workqueue state (e.g. sysrq-t or on suspend failures).
+>
+> For serial console drivers this could look like:
+>
+> 	CPU0				CPU1
+> 	----				----
+>
+> 	show_workqueue_state();
+> 	  lock(&pool->lock);		<IRQ>
+> 	  				  lock(&port->lock);
+> 					  schedule_work();
+> 					    lock(&pool->lock);
+> 	  printk();
+> 	    lock(console_owner);
+> 	    lock(&port->lock);
+>
+> where workqueues are, for example, used to push data to the line
+> discipline, process break signals and handle modem-status changes. Line
+> disciplines and serdev drivers can also queue work on write-wakeup
+> notifications, etc.
+>
+> Reworking every console driver to avoid queuing work while holding locks
+> also taken in their write paths would complicate drivers and is neither
+> desirable or feasible.
+>
+> Instead use the deferred-printk mechanism to avoid printing while
+> holding pool locks when dumping workqueue state.
+
+When I introduced the printk_deferred_enter/exit functions, I kind of
+expected patches like this to start showing up. The functions make it
+really convenient to establish general sections of console print
+deferring.
+
+When we move to kthread-printers, all printk calls will be deferred
+automatically. However, that is only during normal operation. The
+various printk_deferred sites may still be significant and will continue
+to have special meaning during startup and shutdown states, when the
+kthreads will not be active and direct printing will exist as it is now.
+
+FWIW, I am OK with this patch. It will be re-evaluated once we have
+kthread-printers, but I suspect even then it will remain.
+
+> Note that there are a few WARN_ON() assertions in the workqueue code
+> which could potentially also trigger a deadlock. Hopefully the ongoing
+> printk rework will provide a general solution for this eventually.
+>
+> This was originally reported after a lockdep splat when executing
+> sysrq-t with the imx serial driver.
+>
+> Fixes: 3494fc30846d ("workqueue: dump workqueues on sysrq-t")
+> Cc: stable@vger.kernel.org	# 4.0
+> Reported-by: Fabio Estevam <festevam@denx.de>
+> Tested-by: Fabio Estevam <festevam@denx.de>
+> Signed-off-by: Johan Hovold <johan@kernel.org>
+
+Reviewed-by: John Ogness <john.ogness@linutronix.de>
+
 > ---
->  .../devicetree/bindings/pinctrl/socionext,uniphier-pinctrl.yaml          | 1 +
->  1 file changed, 1 insertion(+)
-> 
-
-Running 'make dtbs_check' with the schema in this patch gives the
-following warnings. Consider if they are expected or the schema is
-incorrect. These may not be new warnings.
-
-Note that it is not yet a requirement to have 0 warnings for dtbs_check.
-This will change in the future.
-
-Full log is available here: https://patchwork.ozlabs.org/patch/1537066
-
-
-pinctrl: 'ain1', 'ain2', 'ainiec1', 'aout', 'aout1', 'aout2', 'aout3', 'aoutiec1', 'aoutiec2', 'emmc', 'ether-mii', 'ether-rgmii', 'ether-rmii', 'ether1-rgmii', 'ether1-rmii', 'i2c0', 'i2c1', 'i2c2', 'i2c3', 'i2c4', 'i2c5', 'i2c6', 'nand', 'nand2cs', 'pcie', 'sd', 'sd-uhs', 'sd1', 'spi0', 'spi1', 'spi2', 'spi3', 'system-bus', 'uart0', 'uart1', 'uart2', 'uart3', 'usb0', 'usb1', 'usb2', 'usb3' do not match any of the regexes: 'pinctrl-[0-9]+'
-	arch/arm64/boot/dts/socionext/uniphier-ld11-global.dt.yaml
-	arch/arm64/boot/dts/socionext/uniphier-ld11-ref.dt.yaml
-	arch/arm64/boot/dts/socionext/uniphier-ld20-akebi96.dt.yaml
-	arch/arm64/boot/dts/socionext/uniphier-ld20-global.dt.yaml
-	arch/arm64/boot/dts/socionext/uniphier-ld20-ref.dt.yaml
-	arch/arm64/boot/dts/socionext/uniphier-pxs3-ref.dt.yaml
-	arch/arm/boot/dts/uniphier-ld4-ref.dt.yaml
-	arch/arm/boot/dts/uniphier-ld6b-ref.dt.yaml
-	arch/arm/boot/dts/uniphier-pro4-ace.dt.yaml
-	arch/arm/boot/dts/uniphier-pro4-ref.dt.yaml
-	arch/arm/boot/dts/uniphier-pro4-sanji.dt.yaml
-	arch/arm/boot/dts/uniphier-pxs2-gentil.dt.yaml
-	arch/arm/boot/dts/uniphier-pxs2-vodka.dt.yaml
-	arch/arm/boot/dts/uniphier-sld8-ref.dt.yaml
-
+>
+> Changes in v2
+>  - defer printing also of worker pool state (Peter Mladek)
+>  - add Fabio's tested-by tag
+>
+>
+>  kernel/workqueue.c | 18 ++++++++++++++++--
+>  1 file changed, 16 insertions(+), 2 deletions(-)
+>
+> diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+> index 33a6b4a2443d..1b3eb1e9531f 100644
+> --- a/kernel/workqueue.c
+> +++ b/kernel/workqueue.c
+> @@ -4830,8 +4830,16 @@ void show_workqueue_state(void)
+>  
+>  		for_each_pwq(pwq, wq) {
+>  			raw_spin_lock_irqsave(&pwq->pool->lock, flags);
+> -			if (pwq->nr_active || !list_empty(&pwq->inactive_works))
+> +			if (pwq->nr_active || !list_empty(&pwq->inactive_works)) {
+> +				/*
+> +				 * Defer printing to avoid deadlocks in console
+> +				 * drivers that queue work while holding locks
+> +				 * also taken in their write paths.
+> +				 */
+> +				printk_deferred_enter();
+>  				show_pwq(pwq);
+> +				printk_deferred_exit();
+> +			}
+>  			raw_spin_unlock_irqrestore(&pwq->pool->lock, flags);
+>  			/*
+>  			 * We could be printing a lot from atomic context, e.g.
+> @@ -4849,7 +4857,12 @@ void show_workqueue_state(void)
+>  		raw_spin_lock_irqsave(&pool->lock, flags);
+>  		if (pool->nr_workers == pool->nr_idle)
+>  			goto next_pool;
+> -
+> +		/*
+> +		 * Defer printing to avoid deadlocks in console drivers that
+> +		 * queue work while holding locks also taken in their write
+> +		 * paths.
+> +		 */
+> +		printk_deferred_enter();
+>  		pr_info("pool %d:", pool->id);
+>  		pr_cont_pool_info(pool);
+>  		pr_cont(" hung=%us workers=%d",
+> @@ -4864,6 +4877,7 @@ void show_workqueue_state(void)
+>  			first = false;
+>  		}
+>  		pr_cont("\n");
+> +		printk_deferred_exit();
+>  	next_pool:
+>  		raw_spin_unlock_irqrestore(&pool->lock, flags);
+>  		/*
+> -- 
+> 2.32.0
