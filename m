@@ -2,104 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3C78424097
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 16:59:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E17AF4240A0
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 16:59:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239093AbhJFPA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 11:00:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44660 "EHLO
+        id S239094AbhJFPBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 11:01:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238226AbhJFPAz (ORCPT
+        with ESMTP id S231879AbhJFPBf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 11:00:55 -0400
-Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75B9AC061746;
-        Wed,  6 Oct 2021 07:59:03 -0700 (PDT)
-Received: by mail-il1-x135.google.com with SMTP id l13so3182538ilo.3;
-        Wed, 06 Oct 2021 07:59:03 -0700 (PDT)
+        Wed, 6 Oct 2021 11:01:35 -0400
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91DFDC061753
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 07:59:43 -0700 (PDT)
+Received: by mail-ot1-x329.google.com with SMTP id 97-20020a9d006a000000b00545420bff9eso3410508ota.8
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 07:59:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=y4NHrs6aiIo9S6C3VYytFyJQ06OGzDVc4A1DLXf52DQ=;
-        b=agyU9edfIBs1azn06hdEatGC9aSL5Y9XzOvT/AZ+xIGfuQAIREDhQjPup5AINBD2Ru
-         ngvNm++eTACkBebmwrItxwN2zuErWuQAVnGbyfs/iX/LQcUbLmUTR3YCtrNuOzSVK1BG
-         NtW1nAoCVQUHMCGJIW7wkt5gevXW7hWRG6sLwVUPTdHYxpcgxesvNGjMAbp3jsPr/5gR
-         WmhnZrvoIV2zbZbggKlo8xTSKAuXA9FSStAJY/EitkeRtXLR/+E75mM6cLfx3lTEcML5
-         K2ER9MNsobtwdgVPmISmhcLdyZq2xuJgmCF9Kvyl6rE5d4k0ZGakDZDspYcUZ/VnpXYZ
-         qtEw==
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=uq8tJCkKOiXoyBiS8gGIh+j+7+mkLzrEHB0wcJe3xaY=;
+        b=hPs7qLuCh3VYSL7SVc92ZPLD73dKfrGvZ5lh1VFKBVIpjyH8ROPGwRndidqXjfsv6S
+         q/oqQI9oDxelPXWTvPSkB8q3vAvbaPvdEi1Re87OKEiS4mruptJG9ADolTHBLJXmH7qL
+         3QGe6ED3/u2rMUjBYV+crC9t9iCmoIw6pZC/ZhbZyQmxxaJ78xlrEQHDC+lvDvfasm3r
+         eH3wE+7pintqFzQpzuGcxw7+YHFO//TrVWbCnBd3erJiIChRr6SEGVBqMtTxNVPCK3lt
+         /EBfy0n71ytU+CiLS2pr0sngaJEf/eTIJm2ujZ71euT4LwLHT/Bed4FlmzcXzJcCZRGd
+         Y+wA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=y4NHrs6aiIo9S6C3VYytFyJQ06OGzDVc4A1DLXf52DQ=;
-        b=SG04qoMOmSMfmjrhsVlKIfqiBT7aasCJIX6Uz96QbZq6kmvyZK3uEDLL80+CasUrQN
-         7Gi1KhcNTn/ctJnVjg3idB1u3BtIGnpXlXzmrN4REk1mejHZu/RYWshMnBeU/y6J3rkB
-         78pqjdlogqlanxJxphloYs2QoWyELLzKDPJK5tYiUcLGiqQ7C21m8l37Jd/AfKdp5O97
-         dt5qVy9MK/jj2IYKruldJZwT3qc5J7+tebL6KiB9QyDEZY5Zk7qv1v+lLIINtRzVt5Em
-         ZYSXmUHDV9JkfXGlSeHrpyGbMzm3DkVIPr6naPhPZNDH0RoChFrY29Z4vqye2GUseeZ8
-         wd+Q==
-X-Gm-Message-State: AOAM531bkb2sAhfR+y85XuKjsoh4K04uEJ/2moIDLkk0AqyQttU/Dizo
-        ERiD31O0RRqhamQCVs3zK74r1LNvg7MY+A==
-X-Google-Smtp-Source: ABdhPJzSUawLqoZ0VEQhl9mAjLFzz5hIq7NeFM8nVHRKGEWkE1iARW9g3boDDjq51AJs/a9bmObo3w==
-X-Received: by 2002:a05:6e02:1a6d:: with SMTP id w13mr7485179ilv.304.1633532342877;
-        Wed, 06 Oct 2021 07:59:02 -0700 (PDT)
-Received: from Davids-MacBook-Pro.local ([8.48.134.30])
-        by smtp.googlemail.com with ESMTPSA id q13sm1184612iop.43.2021.10.06.07.59.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Oct 2021 07:59:02 -0700 (PDT)
-Subject: Re: [PATCH 10/11] selftests: nettest: Add
- NETTEST_CLIENT,SERVER}_TIMEOUT envvars
-To:     Leonard Crestez <cdleonard@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Shuah Khan <shuah@kernel.org>, David Ahern <dsahern@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Ido Schimmel <idosch@nvidia.com>,
-        Seth David Schoen <schoen@loyalty.org>,
-        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1633520807.git.cdleonard@gmail.com>
- <ffb237e32f2d725eb782f541681b05a0319b591b.1633520807.git.cdleonard@gmail.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <f3c0cccd-e543-f2ad-fc45-8784f4c3f5db@gmail.com>
-Date:   Wed, 6 Oct 2021 08:59:01 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=uq8tJCkKOiXoyBiS8gGIh+j+7+mkLzrEHB0wcJe3xaY=;
+        b=Wsd3VnOR7zMjMP4iavtTBgeYGgPapss0DhqxYRK26zC9l8kylefWY1utW+5SBz3DH5
+         +gc0Jw3aX7OYCsbaMeYduI+LctETDunFIvEuUu14aAaSDCYGPKts6gUv5Cpw7qsGo9hr
+         8WGhNjM6dEh3wHdbi/bvNkUGpObUxFLoN4x7KSsjl8AGCylUGFIPtq1hI8y0a923PXtD
+         RCyyM5qybmsa/xpdEq7c8jRyaBXMvrw4sSNIFkxuecPkOLioOm4JdwR0bdxjyqIbRpR+
+         WJFVfJKdmNrgLzUMSqCn75GJ55rr9BwFvoEobwvWn+ii4co6a5mYXg00zdcxkpYEWs9l
+         aNww==
+X-Gm-Message-State: AOAM532MWghrtU7aBjuxoIqmTmdyeljx0aV+KtSG500Ffoi2UXMq4Fqh
+        OS9nnm3+hOjSVe131cCZLKuVgWnswqKlSlNm8sQ=
+X-Google-Smtp-Source: ABdhPJxiu0W1ntgiKOGU5Es66uUSCaHr9okgT861Thz4c5/Z/HaPopi0RZ55A+rFpLUxDSVf8aCuN37FV4UjYxSwI3E=
+X-Received: by 2002:a9d:4f1a:: with SMTP id d26mr18737829otl.65.1633532382898;
+ Wed, 06 Oct 2021 07:59:42 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <ffb237e32f2d725eb782f541681b05a0319b591b.1633520807.git.cdleonard@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: by 2002:a4a:a709:0:0:0:0:0 with HTTP; Wed, 6 Oct 2021 07:59:42 -0700 (PDT)
+Reply-To: miss.yasmineibrahimm101@gmail.com
+From:   Yasmine Ibrahim <bemadulionso@gmail.com>
+Date:   Wed, 6 Oct 2021 07:59:42 -0700
+Message-ID: <CALQgpCFhUnO3YN5csVysk7G0=KeTfM2UG2VsSXMjf37-8guCZw@mail.gmail.com>
+Subject: Hello
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/6/21 5:47 AM, Leonard Crestez wrote:
-> Move the single "prog_timeout_ms" into sock_args and split into client
-> and server timeouts.
-> 
-> Add NETTEST_CLIENT_TIMEOUT and NETTEST_SERVER_TIMEOUT which can set a
-> default value different than the default of 5 seconds.
-> 
-> This allows exporting NETTEST_CLIENT_TIMEOUT=0.1 and running all of
-> fcnal-test.sh quickly.
+-- 
+Hello Dear
 
-The command takes command line arguments; no need to make 2 special
-environment variables.
+greetings from Burkina Faso, I am Miss Yasmine Ibrahim Coulibaly 24
+years old female from the Republic of Ivory Coast, West Africa, am the
+Daughter of Late Chief Sgt.  Warlord Ibrahim Coulibaly (a.k.a General
+IB). My late father was a well known Ivory Coast militia leader. He
+died on Thursday 28 April 2011 following a fight with the Republican
+Forces of Ivory Coast (FRCI). I am constrained to contact you because
+of the maltreatment which I am receiving from my step mother, you can
+read more about my late Father death through the below links:
 
-> 
-> A reduced server timeout is less useful, most tests would work fine with
-> an infinite timeout because nettest is launched in the background and
-> killed explicitly.
+https://www.theguardian.com/world/2011/apr/28/ivory-coast-renegade-warlord-ibrahim-coulibaly.
 
-The server timeout was only for cleanup (the tests have a very long
-history); given the kill on processes launched the server could just
-wait forever.
+I am seeking a long term relationship and investment assistance. My
+father of blessed memory deposited the sum of US$ 14.5 Million in one
+bank in Burkina Faso with my name as the next of kin. So If you are
+interested please contact me in my private email address
+(yasmineibrahimm@outlook.com) for more details.
 
-> 
-> Signed-off-by: Leonard Crestez <cdleonard@gmail.com>
-> ---
->  tools/testing/selftests/net/nettest.c | 66 ++++++++++++++++++++++-----
->  1 file changed, 54 insertions(+), 12 deletions(-)
-> 
+Thanking you a lot in anticipation of your quick response. I will give
+you details in my next mail after receiving your acceptance mail to
+help me,
+
+Yours sincerely
+Miss Yasmine Ibrahim.
