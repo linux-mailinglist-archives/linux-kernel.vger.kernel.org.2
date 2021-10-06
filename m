@@ -2,134 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D80AB424ACE
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 01:57:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7257C424AD1
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 02:00:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239913AbhJFX7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 19:59:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56788 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232006AbhJFX7o (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 19:59:44 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B06FDC061746;
-        Wed,  6 Oct 2021 16:57:51 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id d8so16041968edx.9;
-        Wed, 06 Oct 2021 16:57:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=H3kwNDEY68OIwU8Je8RDowqnTfHPIHgvZzXHiiUTic4=;
-        b=d/kT/ON2cmX4+vA2KqMxHsfjLTtYnJwPqvnfOukGEPxSSZ/GvLYKK8ZqBbxX6/uNRN
-         gX4mSv7tqBcRrv4xthfBorbjKb1F7KThxFM55jvVHjfCIzhbkTY73sAjSXhWNB/qUgxP
-         drtgusD6XAFCdTj0bBWvcER1gw0Q4r+8UBz23u0kYEZtZPSpTGET8E5O1llXAKk5DBxh
-         MT+1EECqLY+IbKScKWrL+bF3HqmiXcamInnjYdDpu7GR0Y4Q5feYToEN5fHIFyG6Hlej
-         MIYR9IMn1pjUbR5iUMnHeZZAjFGTc0wuVsVmRVhhIfyJbyIe0QRmx1+n6pc/XsJvmj9+
-         aCHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=H3kwNDEY68OIwU8Je8RDowqnTfHPIHgvZzXHiiUTic4=;
-        b=4f+rCY/hzfKKplHBmSZb5cTEd7aQeOvG4XhuKH70Gpa0nRrTCYAf8BsGFVl2sFBDgo
-         B4bT43DJYIswdCowkPqsNtQNDvqYiE/TmpSfspOVT04f3Dvfq9I+rVQWuHQTmPLVBsvK
-         rkmNrBnWnwQ4CTZNixt2l+EC0Q/UvKCWNuQG7IDrVnzH+DO+JIi7Q+UuLZY1Q+DNTMvh
-         S52XMfYoNyMOKaSZYIRO6friooJ6tK0vz1IIcE1QqxFnFzP4EAhwoDKdabXKhyS5q4lb
-         mM/1aj5G6ixazLgoMK8zW2QF6Kx6RaEkE09Ycr11wkJPYrEkavan845s9be2qPQXcso+
-         nvAg==
-X-Gm-Message-State: AOAM530yuFhn2X24sVC8bRz5O71azaqdJwDh/AXtsjAgyxpe4b4nvrE+
-        FpmDGb2jYoHV4BdwnKWSAkmIC1mqREq1QZ6VOgw=
-X-Google-Smtp-Source: ABdhPJwVIbepnjWWz19zXaJafbtP/dZf6+Rn+UlMzvQw55V7S7jLI+XUI3omHo4rLNzH0BN5KP/IIYvljuQdhR1vZjI=
-X-Received: by 2002:a17:906:c7d0:: with SMTP id dc16mr1495026ejb.555.1633564670339;
- Wed, 06 Oct 2021 16:57:50 -0700 (PDT)
+        id S239931AbhJGABx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 20:01:53 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:53202 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239804AbhJGABw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 20:01:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=Ihk2ty3BanjwiwUbGEJINfKjquqiWkL8fBMQf4vtyXM=; b=bRTUki9mrg+t4kUYQjhAP2shY6
+        hemhyZBekcomrzjiztSwzsCt/hnDrFe7vRnU9vd7fnKitRHh0AOHTu5FTU0tw8NjN23ezILQJOFNH
+        cilO2AubEpaS5LjwmlzUdNT5Pz0VaKknG5/1SJKWsjwcZP5ROfAlafZ7ODUXbr0Yhuhs=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mYGpH-009t9G-NK; Thu, 07 Oct 2021 01:59:55 +0200
+Date:   Thu, 7 Oct 2021 01:59:55 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [net-next PATCH 02/13] drivers: net: phy: at803x: add DAC
+ amplitude fix for 8327 phy
+Message-ID: <YV44ex0Vh6qtHbOs@lunn.ch>
+References: <20211006223603.18858-1-ansuelsmth@gmail.com>
+ <20211006223603.18858-3-ansuelsmth@gmail.com>
 MIME-Version: 1.0
-References: <20210930215311.240774-1-shy828301@gmail.com> <20210930215311.240774-3-shy828301@gmail.com>
- <YV4Dz3y4NXhtqd6V@t490s>
-In-Reply-To: <YV4Dz3y4NXhtqd6V@t490s>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Wed, 6 Oct 2021 16:57:38 -0700
-Message-ID: <CAHbLzkp8oO9qvDN66_ALOqNrUDrzHH7RZc3G5GQ1pxz8qXJjqw@mail.gmail.com>
-Subject: Re: [v3 PATCH 2/5] mm: filemap: check if THP has hwpoisoned subpage
- for PMD page fault
-To:     Peter Xu <peterx@redhat.com>
-Cc:     =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
-        <naoya.horiguchi@nec.com>, Hugh Dickins <hughd@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211006223603.18858-3-ansuelsmth@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 6, 2021 at 1:15 PM Peter Xu <peterx@redhat.com> wrote:
->
-> On Thu, Sep 30, 2021 at 02:53:08PM -0700, Yang Shi wrote:
-> > @@ -1148,8 +1148,12 @@ static int __get_hwpoison_page(struct page *page)
-> >               return -EBUSY;
-> >
-> >       if (get_page_unless_zero(head)) {
-> > -             if (head == compound_head(page))
-> > +             if (head == compound_head(page)) {
-> > +                     if (PageTransHuge(head))
-> > +                             SetPageHasHWPoisoned(head);
-> > +
-> >                       return 1;
-> > +             }
-> >
-> >               pr_info("Memory failure: %#lx cannot catch tail\n",
-> >                       page_to_pfn(page));
->
-> Sorry for the late comments.
->
-> I'm wondering whether it's ideal to set this bit here, as get_hwpoison_page()
-> sounds like a pure helper to get a refcount out of a sane hwpoisoned page.  I'm
-> afraid there can be side effect that we set this without being noticed, so I'm
-> also wondering we should keep it in memory_failure().
->
-> Quotting comments for get_hwpoison_page():
->
->  * get_hwpoison_page() takes a page refcount of an error page to handle memory
->  * error on it, after checking that the error page is in a well-defined state
->  * (defined as a page-type we can successfully handle the memor error on it,
->  * such as LRU page and hugetlb page).
->
-> For example, I see that both unpoison_memory() and soft_offline_page() will
-> call it too, does it mean that we'll also set the bits e.g. even when we want
-> to inject an unpoison event too?
+On Thu, Oct 07, 2021 at 12:35:52AM +0200, Ansuel Smith wrote:
+> QCA8327 internal phy require DAC amplitude adjustement set to +6% with
+> 100m speed. Also add additional define to report a change of the same
+> reg in QCA8337. (different scope it does set 1000m voltage)
+> Add link_change_notify function to set the proper amplitude adjustement
+> on PHY_RUNNING state and disable on any other state.
+> 
+> Fixes: c6bcec0d6928 ("net: phy: at803x: add support for qca 8327 A variant internal phy")
+> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
 
-unpoison_memory() should be not a problem since it will just bail out
-once THP is met as the comment says:
+Since this is a fix, you might want to send it on its own, based on
+net.
 
-/*
-* unpoison_memory() can encounter thp only when the thp is being
-* worked by memory_failure() and the page lock is not held yet.
-* In such case, we yield to memory_failure() and make unpoison fail.
-*/
+> +	/* QCA8327 require DAC amplitude adjustment for 100m set to +6%.
+> +	 * Disable on init and enable only with 100m speed following
+> +	 * qca original source code.
+> +	 */
+> +	if (phydev->drv->phy_id == QCA8327_A_PHY_ID ||
+> +	    phydev->drv->phy_id == QCA8327_B_PHY_ID)
+> +		at803x_debug_reg_mask(phydev, AT803X_DEBUG_REG_0,
+> +				      QCA8327_DEBUG_MANU_CTRL_EN, 0);
+> +
+>  	return 0;
+>  }
+>  
+> +static void qca83xx_link_change_notify(struct phy_device *phydev)
+> +{
+> +	/* QCA8337 doesn't require DAC Amplitude adjustement */
+> +	if (phydev->drv->phy_id == QCA8337_PHY_ID)
+> +		return;
+> +
+> +	/* Set DAC Amplitude adjustment to +6% for 100m on link running */
+> +	if (phydev->state == PHY_RUNNING) {
+> +		if (phydev->speed == SPEED_100)
+> +			at803x_debug_reg_mask(phydev, AT803X_DEBUG_REG_0,
+> +					      QCA8327_DEBUG_MANU_CTRL_EN,
+> +					      QCA8327_DEBUG_MANU_CTRL_EN);
+> +	} else {
+> +		/* Reset DAC Amplitude adjustment */
+> +		at803x_debug_reg_mask(phydev, AT803X_DEBUG_REG_0,
+> +				      QCA8327_DEBUG_MANU_CTRL_EN, 0);
 
+Here you don't make it conditional on QCA8327_A_PHY_ID and
+QCA8327_B_PHY_ID, where as above you do?
 
-And I think we should set the flag for soft offline too, right? The
-soft offline does set the hwpoison flag for the corrupted sub page and
-doesn't split file THP, so it should be captured by page fault as
-well. And yes for poison injection.
-
-But your comment reminds me that get_hwpoison_page() is just called
-when !MF_COUNT_INCREASED, so it means MADV_HWPOISON still could
-escape. This needs to be covered too.
-
-BTW, I did the test with MADV_HWPOISON, but I didn't test this change
-(moving flag set after get_page_unless_zero()) since I thought it was
-just a trivial change and did overlook this case.
-
->
-> Thanks,
->
-> --
-> Peter Xu
->
+	  Andrew
