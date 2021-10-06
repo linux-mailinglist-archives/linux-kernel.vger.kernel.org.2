@@ -2,75 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9BCB4237F4
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 08:27:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E681E4237F7
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 08:28:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235862AbhJFG3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 02:29:35 -0400
-Received: from mx3.molgen.mpg.de ([141.14.17.11]:37181 "EHLO mx1.molgen.mpg.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229797AbhJFG3e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 02:29:34 -0400
-Received: from [192.168.0.2] (ip5f5ae933.dynamic.kabel-deutschland.de [95.90.233.51])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id D2B2B61E64784;
-        Wed,  6 Oct 2021 08:27:39 +0200 (CEST)
-Subject: Re: `AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT=y` causes AMDGPU to fail on
- Ryzen: amdgpu: SME is not compatible with RAVEN
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx@lists.freedesktop.org
-References: <8bbacd0e-4580-3194-19d2-a0ecad7df09c@molgen.mpg.de>
- <YVxjgFScCZNwliMi@zn.tnic>
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-Message-ID: <946736c0-d3bc-ed87-70bc-93c0c3cb998a@molgen.mpg.de>
-Date:   Wed, 6 Oct 2021 08:27:39 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S236878AbhJFG3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 02:29:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53850 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229797AbhJFG3x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 02:29:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6DDA760EC0;
+        Wed,  6 Oct 2021 06:28:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1633501681;
+        bh=spg2FfB33eWRaZlMimWllWmYIhAbe/hDa0jC2sb1vWI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Nu0KSdos8srKS5PIPAOZZNp8J/2y5CPh/+dnqB2466tL4XJzMDHY0vH2W7eGUsOYc
+         CwnIoKUKrM8wQ76l6MJw2Q38dpQZHYi605sGDZ27T+ryGez1rmoQ5JHaX7o8kI0A+i
+         sD8TBOVJACa3H17k+oxP6iQHDCcOoJIHajMgs3ro=
+Date:   Wed, 6 Oct 2021 08:27:59 +0200
+From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+To:     Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>
+Cc:     Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "alexandre.torgue@foss.st.com" <alexandre.torgue@foss.st.com>,
+        "balbi@kernel.org" <balbi@kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "amelie.delaunay@foss.st.com" <amelie.delaunay@foss.st.com>
+Subject: Re: [PATCH 1/3] usb: dwc2: add otg_rev and otg_caps information for
+ gadget driver
+Message-ID: <YV1B7/yP2L+0L1sQ@kroah.com>
+References: <1631692473-8732-1-git-send-email-fabrice.gasnier@foss.st.com>
+ <1631692473-8732-2-git-send-email-fabrice.gasnier@foss.st.com>
+ <a183ddf9-c578-0b45-1aa2-4fcd1fbf17eb@synopsys.com>
 MIME-Version: 1.0
-In-Reply-To: <YVxjgFScCZNwliMi@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a183ddf9-c578-0b45-1aa2-4fcd1fbf17eb@synopsys.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Borislav,
-
-
-Thank you for your reply.
-
-Am 05.10.21 um 16:38 schrieb Borislav Petkov:
-> On Tue, Oct 05, 2021 at 04:29:41PM +0200, Paul Menzel wrote:
->> Selecting the symbol `AMD_MEM_ENCRYPT` – as
->> done in Debian 5.13.9-1~exp1 [1] – also selects
->> `AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT`, as it defaults to yes,
+On Fri, Oct 01, 2021 at 11:10:19AM +0000, Minas Harutyunyan wrote:
+> On 9/15/2021 11:54 AM, Fabrice Gasnier wrote:
+> > Currently the dwc2 doesn't fill in the 'otg_caps' of usb_gadget structure.
+> > When registering a gadget device (e.g. via configfs), the
+> > usb_otg_descriptor_init() checks the 'otg_caps' and 'otg_rev'. It defaults
+> > to HNP and SRP bmAttributes if unspecified. There may be a mismatch with
+> > what's being set in dwc2 params structure. This result in the descriptors
+> > to be miss-configured in this case.
+> > 
+> > So add an option to setup 'otg_caps' and 'otg_rev' in the params. It's
+> > then provided to the gadget struct. These parameters can then be tuned
+> > for each platform. In case it's not set, it will default to current
+> > behavior.
+> > Also add option to setup these from the device tree by calling
+> > of_usb_update_otg_caps(). This provides support for standard properties
+> > such as "otg-rev", "hnp-disable" and "srp-disable" (see usb-drd.yaml).
+> > 
+> > Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+> Acked-by: Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>
 > 
-> I'm assuming that "selecting" is done automatically: alldefconfig,
-> olddefconfig?
-> 
-> Because CONFIG_AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT only depends on
-> CONFIG_AMD_MEM_ENCRYPT and former can be disabled in oldconfig or
-> menuconfig etc.
 
-Sorry for being unclear. Distributions want to enable support for that 
-feature, but as long as it breaks systems, it should be opt-in via the 
-Linux kernel command line, and not opt-out. Also the Kconfig help texts 
-do not mention anything about these problems, and the AMDGPU log message 
-is of level info and not error. It’d be even better, if the message 
-would contain the information, how to disable SME (`mem_encrypt=off`).
+Looks like this commit breaks the build on some configurations:
+	https://lore.kernel.org/r/000000000000b01f1505cda8e03c@google.com
 
+So I'll go drop this and the 2/3 patch from my tree.  Please fix up and
+resend.
 
-Kind regards,
+thanks,
 
-Paul
+greg k-h
