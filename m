@@ -2,88 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20674424899
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 23:13:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80B4742489C
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 23:14:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239578AbhJFVPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 17:15:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47708 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239506AbhJFVPn (ORCPT
+        id S239597AbhJFVPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 17:15:50 -0400
+Received: from mail-ot1-f51.google.com ([209.85.210.51]:41563 "EHLO
+        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239591AbhJFVPt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 17:15:43 -0400
-Received: from mail-oo1-xc30.google.com (mail-oo1-xc30.google.com [IPv6:2607:f8b0:4864:20::c30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49AFCC061746
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 14:13:51 -0700 (PDT)
-Received: by mail-oo1-xc30.google.com with SMTP id l8-20020a4ae2c8000000b002b5ec765d9fso1242646oot.13
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 14:13:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxtx.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=aTiLHQvN2/RB825CLKLyg0WrQPgmCRAg70VnJF4FMIU=;
-        b=fn20euU7mPei/hbt5L1WCCoWECAFFWSfshU4dUA1uZBnlG7mZPn300AVWL65Z95fOL
-         pUYvNN/Dft/fHTwJVC/+J08NPI/u1K1W1wIaP5IbAfs/UW3vyheEK6gH4hw0JGZWWaqo
-         4neCcRyvUBRKwkQwnuI5sRxbt7aRvCE1r8lYk=
+        Wed, 6 Oct 2021 17:15:49 -0400
+Received: by mail-ot1-f51.google.com with SMTP id v2-20020a05683018c200b0054e3acddd91so331628ote.8;
+        Wed, 06 Oct 2021 14:13:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=aTiLHQvN2/RB825CLKLyg0WrQPgmCRAg70VnJF4FMIU=;
-        b=C+VA88454pwyMw25Qbx/jeaBzXAhyg2wJ7UkrLMhYYIxvC5+23dRayNRsEbd9eTqMG
-         bBFYavCsSZ9JnPaEUDQStqT6IOXVQFQQEoJsFkZoZJ/NBPVpe1tb10BLmg8kA1mnWb6b
-         HjOs9DRzjzxMDrQDebpr1picG2ynaHIizVhtCRNbk6VngvXKB4O1p5zJm0gMPaM+vsuu
-         nrBKi6Wl1zmqdFbFGONkRRfj6vRNbHigqJaEhtZtVsd0fr+Ay6gnPlnWD6MNW/7wNBSJ
-         DEC+sPLml6n0kqgRueq4hBb573nl5zXv6WKHGCQnXpruFNgmpzecyu00QTBkv+hrLwOh
-         GDmQ==
-X-Gm-Message-State: AOAM532pFvk9S659/lK5eFIcP+fcKQ0Km1VosqUqjKhHHPjJGoviC098
-        niEHPA6kPfse/i2b4Yy1DGRh9B0v8QCyfcar
-X-Google-Smtp-Source: ABdhPJyp+2MuF24Dkonz2SJbog0oRgLhzkfHKwgC9he1Q9Y46/tmMWv7z966Mf7FHiAZp+LzGTYPoA==
-X-Received: by 2002:a4a:9510:: with SMTP id m16mr501367ooi.14.1633554829373;
-        Wed, 06 Oct 2021 14:13:49 -0700 (PDT)
-Received: from fedora64.linuxtx.org (104-189-158-32.lightspeed.rcsntx.sbcglobal.net. [104.189.158.32])
-        by smtp.gmail.com with ESMTPSA id bn38sm1648951oib.21.2021.10.06.14.13.48
+        bh=hhEh5kd4e+SG2xwNY07ROc2/rt5AxCtyHRuXkRz4T3k=;
+        b=ED8BIYVYEqC5aj5MPdxwTjRswWLPYF/qBQ+1SJwW/q0+T82vwMuzr7vntrGAKEueDu
+         5YQAaaedioLHMlh9un1hwwxfedC4bFIK1vz61szXnq/qVNAvFd4KRIxD9GJvJ9ifus5M
+         z1+lnnzuDZdt8mo8EQs1reJaEGCC2YNdsAwnhHHgVM5KIPq8G1JMS8OAiHaGDcUoG2/J
+         piV+CWI24a5pQDkeccPhMWciqDlWUfONmTNGOcQByUu8vrJcnkeBi9LRk1uLHmy+Lu1b
+         yf9bz2npIU1dZRSP4AbzaD1FI9zvh5o6Z/0mbEmYse+YgrPV5DIlO0DQObmjdwRGsL7P
+         lHKg==
+X-Gm-Message-State: AOAM531IIjKfTw636KKgEdTcoiMKGNpWKySz4VIxukXMIUIDhvspz9uv
+        mA6huFZI9RXSaAhS6xwTFA==
+X-Google-Smtp-Source: ABdhPJzCaOetxDXjKEw1eehKByezoxHask+w4Lv2EHhMvurr3FrCIGFjv9FkOtkcIDUctkQBkf71mA==
+X-Received: by 2002:a05:6830:922:: with SMTP id v34mr439300ott.240.1633554836780;
+        Wed, 06 Oct 2021 14:13:56 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id z24sm4135433oic.26.2021.10.06.14.13.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Oct 2021 14:13:49 -0700 (PDT)
-Date:   Wed, 6 Oct 2021 16:13:47 -0500
-From:   Justin Forbes <jmforbes@linuxtx.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.14 000/172] 5.14.10-rc3 review
-Message-ID: <YV4Ri6k4S9VlaS04@fedora64.linuxtx.org>
-References: <20211006073100.650368172@linuxfoundation.org>
+        Wed, 06 Oct 2021 14:13:56 -0700 (PDT)
+Received: (nullmailer pid 2886228 invoked by uid 1000);
+        Wed, 06 Oct 2021 21:13:54 -0000
+Date:   Wed, 6 Oct 2021 16:13:54 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Johan Jonker <jbx6244@gmail.com>
+Cc:     daniel.lezcano@linaro.org, devicetree@vger.kernel.org,
+        p.zabel@pengutronix.de, amitk@kernel.org, robh+dt@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        rui.zhang@intel.com, heiko@sntech.de, linux-pm@vger.kernel.org,
+        linux-rockchip@lists.infradead.org
+Subject: Re: [PATCH v2 1/4] dt-bindings: thermal: allow more resets for tsadc
+ node in rockchip-thermal.yaml
+Message-ID: <YV4RkjIEMUKlWK4z@robh.at.kernel.org>
+References: <20210930110517.14323-1-jbx6244@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211006073100.650368172@linuxfoundation.org>
+In-Reply-To: <20210930110517.14323-1-jbx6244@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 06, 2021 at 10:19:58AM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.14.10 release.
-> There are 172 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Thu, 30 Sep 2021 13:05:14 +0200, Johan Jonker wrote:
+> The tsadc node in rk356x.dtsi has more resets defined then currently
+> allowed by rockchip-thermal.yaml, so fix that in the documentation.
+> The driver now uses the devm_reset_control_array_get() function,
+> so reset-names is no longer required, but keep it for legacy reasons.
 > 
-> Responses should be made by Fri, 08 Oct 2021 07:30:34 +0000.
-> Anything received after that time might be too late.
+> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+> ---
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.10-rc3.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+> Changed V2:
+>   Remove deprecated
+> ---
+>  .../devicetree/bindings/thermal/rockchip-thermal.yaml      | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
 > 
 
-Tested rc3 against the Fedora build system (aarch64, armv7, ppc64le,
-s390x, x86_64), and boot tested x86_64. No regressions noted.
-
-Tested-by: Justin M. Forbes <jforbes@fedoraproject.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
