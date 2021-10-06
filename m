@@ -2,154 +2,497 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CA8E4238D5
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 09:27:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB72E4238DC
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 09:28:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237411AbhJFH2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 03:28:55 -0400
-Received: from mail-me3aus01on2078.outbound.protection.outlook.com ([40.107.108.78]:10829
-        "EHLO AUS01-ME3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230013AbhJFH2y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 03:28:54 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=k4ohHVO+lRxIYqRABAlL2t5RZxQIvjkn1gIHtAaJdpD3NImnpwBBTQ4DMutY9FDPN0EMTgzLuT/7jtB8TXip9F01Mn4RE2MPljzBsqAPMntfRysf1BYC08qODn0LB7Jxb8SYBDA+edsHVvIyjKSwobiz0nTAoKe6u3zQMtvEDbIN9kWlnYyaw+xlNwluox63BsuoN0txuQy0GY1NopzZgVdCi+D/Eio/wP6bZ1RMLWFq3hwDXMYQq8PibpP0oinj6vfj+5CebMETW2XlHah4DDhrJJKpN+mdPLYj6F4xReNlXtaxf9KRZpCvPciiL8a+TgGtG4mimLfF/LN575AP1A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=FfJfQVyLQ/gO900+AYuBbrXO9uKCDVrLmlmd3hh+9+o=;
- b=VrRifXBchfMhmLZC4v3oTnw0/oO51VbXdjkAEHAK+1ZNY3mJT4QuzHfY9OfPXK7K4KL52493PMgAnXBIJL5vo2nAyZrvyT2s+A2pFOCKl8a9yp999KP4a2yOB4fSBESTzJWnMRX+KL5ZlmmKJEuJC1OGw6BwjlTV7gOVjd3jG/zq78eOF7gCkW8VFb1fqFhKFqWXHDz0AtJLRkC0cF+bnRGWPPfYPPRBOVO6e/C7166XZmunup7zi9ghnuI+WM5L4BSiTQnTMlUy7Yra2RQEBj52FvrBYYO+N+ikDmGHf4mwSX19GjN4Xp3cE6DlIsTOadWilaH3e7NwTWITH3pf1g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=pauljones.id.au; dmarc=pass action=none
- header.from=pauljones.id.au; dkim=pass header.d=pauljones.id.au; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oakvillepondscapes.onmicrosoft.com;
- s=selector2-oakvillepondscapes-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FfJfQVyLQ/gO900+AYuBbrXO9uKCDVrLmlmd3hh+9+o=;
- b=sKRKB1JUznzNmDfWYokQh9zNlYxXqjq5qV5s59DxGUcQTMSCuV7fqNL/XD5LFsFlMPhHZry8Kwq2gV606nQGBN7s8ZvX/qJkfUFsYaDvglq2J0xU1sTxI1p40gzmPx11hQROnAkfYUDD/FHoDNosMGjpysipb5bRGAYdcoha9b4=
-Received: from SYXPR01MB1918.ausprd01.prod.outlook.com (2603:10c6:0:2b::11) by
- SY3PR01MB0796.ausprd01.prod.outlook.com (2603:10c6:0:2::17) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4566.19; Wed, 6 Oct 2021 07:26:57 +0000
-Received: from SYXPR01MB1918.ausprd01.prod.outlook.com
- ([fe80::416f:f98f:2ea:ecb3]) by SYXPR01MB1918.ausprd01.prod.outlook.com
- ([fe80::416f:f98f:2ea:ecb3%5]) with mapi id 15.20.4566.022; Wed, 6 Oct 2021
- 07:26:57 +0000
-From:   Paul Jones <paul@pauljones.id.au>
-To:     Nick Terrell <nickrterrell@gmail.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-CC:     "linux-next@vger.kernel.org" <linux-next@vger.kernel.org>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "squashfs-devel@lists.sourceforge.net" 
-        <squashfs-devel@lists.sourceforge.net>,
-        "linux-f2fs-devel@lists.sourceforge.net" 
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        Nick Terrell <terrelln@fb.com>, Chris Mason <clm@fb.com>,
-        Petr Malat <oss@malat.biz>, Yann Collet <cyan@fb.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>,
-        David Sterba <dsterba@suse.cz>,
-        Oleksandr Natalenko <oleksandr@natalenko.name>,
-        Felix Handte <felixh@fb.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Tom Seewald <tseewald@gmail.com>
-Subject: RE: [GIT PULL][v12] zstd changes for linux-next
-Thread-Topic: [GIT PULL][v12] zstd changes for linux-next
-Thread-Index: AQHXuYpmfu/kJxtVvkmL5OaOetZ/r6vFk7PA
-Date:   Wed, 6 Oct 2021 07:26:56 +0000
-Message-ID: <SYXPR01MB19183D4BD6A62319A082E0BF9EB09@SYXPR01MB1918.ausprd01.prod.outlook.com>
-References: <20211005014118.3164585-1-nickrterrell@gmail.com>
-In-Reply-To: <20211005014118.3164585-1-nickrterrell@gmail.com>
-Accept-Language: en-AU, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=pauljones.id.au;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 81abcf04-42ae-427d-a088-08d9889aadbb
-x-ms-traffictypediagnostic: SY3PR01MB0796:
-x-microsoft-antispam-prvs: <SY3PR01MB0796AD93DF2F3709FDAADC9A9EB09@SY3PR01MB0796.ausprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: PynqXQNgrfDZgn9+do3o7XylqFAbDuInFjwNtkXmfJDDlnWBno2dvzLIZTJdrZCjh2PE9w2F/HCIqOBtzzChnfoPZSOEU7ALN21FbcHageeKv61SmJ2xhTjOaT+dN9k2WlBvuRXEAq2ApIFKT7bqszmuczGtrN5cFmf8ZNQVAzUd9ox0j3J2p4c6XMwMVWoYf8gzuLND517IPkScDHc8u9jugVWugzw5uCOsMfQwEv0aftqHtrM5rA9MYpYiGgypu2pwi8RVdLjbFF5C0K2bS+SE4Fg2+yYKo1o1Wcep71kDTUSdJgak2uAGcwHdhJlmePP1Ntw6tcCa4AJcqIy5TTLIsCEh23lACVcIw/n+8hDdNNaHa7G/OujDcWJVA4v/UTnUyLna1kR6wrPPWLiDazROsLMjabJgHJ+r/FTOMw0KSNC9k26M9bfPlqseMIJbmkWWuvQXr6bFaLWDBKc2arwSUZkLUw2fM+Fq1vmYt4+z8E4rSIaF66V/3LUU+aAASxdAwinBTAO4u+ehMxYWfjDmuLp43pcebJJ6Rs2set6DfCCaF0vbHWnBGCz5X23VJFu/aZgx5xH6lZUQcFZs6ERAo0AMc52DZMD/Wxm7dAcYvQoVi+ZLm76Ve6kpbuyyIuCXhQq90lOg11t3jKtjQj4YjgbFb/jO/9ucryExQ4UY+4ipaHZ+aDZJhjmY6J3pHxe7GEvoL7aSSx65XUYtog==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SYXPR01MB1918.ausprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(39830400003)(346002)(376002)(366004)(396003)(136003)(122000001)(55016002)(8676002)(76116006)(38070700005)(71200400001)(26005)(66476007)(66446008)(9686003)(66556008)(64756008)(83380400001)(66946007)(508600001)(6506007)(316002)(7696005)(8936002)(2906002)(4326008)(38100700002)(7416002)(54906003)(52536014)(86362001)(5660300002)(110136005)(4744005)(33656002)(186003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-2?Q?JUTuL7pbfqk79u0A/WBjNf4q1b8kLR3xf4vCVwlsP+FCpCR0GpMLs4GDq5?=
- =?iso-8859-2?Q?2kZmqeUtBt9h8xQqxyocCUuKIigM+BBekk1Ch7tfLf5Smi+5p7aq7Qd9zg?=
- =?iso-8859-2?Q?4WwmZcF/PZ8gUGmLtWefWWKv5u1nohLpy+RyGRc9LPnevjJXXG0HIFn+b6?=
- =?iso-8859-2?Q?s+izV3UyPHoCvF8ghaLbP2Wivn/VU+Wrnv08tk+OW4rj6zd/MXtmLpD6h4?=
- =?iso-8859-2?Q?mND6TX09FXSvKZQcQVNuoiGJILhkn5DhrmVBT8RXZMN7Qjsaf7Me0+GeDL?=
- =?iso-8859-2?Q?dfd7pXM2jwE5anm5FYx/4NK3bopJuFiJ/opQovfAk8KNrKHNAFzLGArb8g?=
- =?iso-8859-2?Q?D+VZL6miH+4QfNFcLWqtuqyX32C92axLo4lyaURXkZbgIcBXNp54MLBWcT?=
- =?iso-8859-2?Q?Q5aCm9uD7QpnZCOw19nRogzM0LLfeq0bNxkvDWXs0dKTEeHgij/6gsMU7o?=
- =?iso-8859-2?Q?k7mMbeeM/i7VBhLPlCYE55p39yCUIDH6BW5e2GE+RTGBbvuOPOXzTkEr7J?=
- =?iso-8859-2?Q?Gi18xbmQUNzYC0ORRKFP2slTzXkKN5nmY+pIPLLw2ywrEf3ddVUd8SE8wV?=
- =?iso-8859-2?Q?EZyLHjLrYVmSYa5Y7oyz9zkFJGmVEWCj+xzS6mCQVCtu35kOjEiYNvuYTC?=
- =?iso-8859-2?Q?us9gDbrxfh8USx8W7j2UYbYWPpQEbvJl7ZvbmQDiJlFUvTwJqNw3CM7DRq?=
- =?iso-8859-2?Q?QHoU1mzfX9xNQCiIJ9j+BB4vvuFCbbzrZrgd9A/ld7Dk8cbSby+d1CrAFE?=
- =?iso-8859-2?Q?9YJsC+172NpspcZqwZ8DaJnmBVcyHCEUboib6s9sQGvl48j4zj27isNL9o?=
- =?iso-8859-2?Q?75NxHZCkTbr+hkd9TPMDJU7NqHMkMxtPePYxm6Vziw55cL0n1EBDv0/BQ8?=
- =?iso-8859-2?Q?ivbqD4p2Q0y4Gqiky7DVzpvI1HodmdFhKm0egBpjCImUhPnDeFktJMD1yQ?=
- =?iso-8859-2?Q?XlKqENmmR4N7nhPbFgdnMUHKoUqP3sjpFISTpkjlPJPufsWMwE1bzQhlHx?=
- =?iso-8859-2?Q?FqCBq2/5ip/+DNF0F4eZ0NOc1JyRV/iX4FygtV14tEDFOkG7N1386jtaeI?=
- =?iso-8859-2?Q?iU1iX3m33rWJcvCfh13fOB2UUAKH6E5xjvcuLLXhe/gvQQCaLgqxnAOO6U?=
- =?iso-8859-2?Q?F8mlmmlA/PuIYyeRo0m+Dwbb7VHH6WRSqnuZJwfGjH45/jTTEBgkoSLv66?=
- =?iso-8859-2?Q?k4wVUjqZ9OgQUHpOC/oUZRRVFn1aZzASykmlEwf4emXI4JwQJxmGgW7wJA?=
- =?iso-8859-2?Q?LO7CeKwiQmFVne9fsJyszKdmpNgoQ53Zpt+XlqNAIadiEyeFkLJCn+zffe?=
- =?iso-8859-2?Q?XRgcNvi+dVlV5zsQA4RakGsZp7471dXI3zWPHotlN3/qxhWXQKrX0ffWvO?=
- =?iso-8859-2?Q?+s2i/7COyb?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+        id S237433AbhJFHaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 03:30:00 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:35462
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230013AbhJFH36 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 03:29:58 -0400
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com [209.85.167.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id CBFEA3FFE0
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 07:28:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1633505285;
+        bh=VWtr+qJrwlMHknueyuRRcERaLM8hU3I6LcyF8dpt6aw=;
+        h=To:Cc:References:From:Subject:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=ptVtX4V306wokdkQXLNz2Mzk9Tq39AMf4X5CJSlZ22BATqBuaIponRO+jlHNzL7cP
+         e2BLXpxHid81nS0lOOQiGX5N0tE/aYOXtCeZNBiBdDWk3HrkrdO6qjpreGISsuYZcp
+         DuUJjgA28wDw7XSdha5t+Oy0Q0z+t6oL18xEBh37UHpdjO1MWl13pEdtf3i9pe544U
+         qMooCeSd6a5FbI0nhHy8hEdZVuaZMgNUoOet9FV/ioAr710yqp52MPV/IdyZAKxfY2
+         oUYfFMs/NQFkT/cSNJxECTayvujEvzPAv/5SXl1QF07qudSlNP778CuTyhon5IVmfM
+         1XqWiyNeyb2vg==
+Received: by mail-lf1-f70.google.com with SMTP id r14-20020ac25c0e000000b003fc149ed50eso1261860lfp.11
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 00:28:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=VWtr+qJrwlMHknueyuRRcERaLM8hU3I6LcyF8dpt6aw=;
+        b=VA6sJN9kqXJUj27VRT7TT0EQZZ+uDUGdEwEZuRE14wIJICc+06zeNdNNtzvNTSTmUo
+         k+fvK4YMoIZhzo0fEjGH4MA2i1JOXCbhSHCCT+5G3N+oKVQKWAM9n4KnhcLt4RUg6QoV
+         7V5OBVlWq5E980p2Hm+njLlgq+9wVie0QX+/FHoELgLdF/n3pjr8GDl1kecwFGeymEFT
+         eHM+JrAi2t/iIVdP+nR4M7u+qOLH7Zu3PmdZTI6Kx4kzI5fUzcLtm4X8Sjb99ekEMJ+N
+         vlISZk5LjQxveI2TaNKw6mbd/4Uf8LLev+lp//b1YE7E8BTM+6MGFS5ka1kevJMSd7ET
+         44cw==
+X-Gm-Message-State: AOAM530HIPs7fdYMcjn8a+e3zsspqatu9szFEnL6teJNP3m67BKtMLPA
+        p4Dqpoi+wLCh/N6eUZpon9upI4i841BKkqZ/uN0CimfGvZ5g69/zJvKdbKVF8T6F9xRys0qa66i
+        6ctqftXEy2HTOBBk5RuVkASu+B2ZD3X6MRx/osWCZWQ==
+X-Received: by 2002:ac2:5f92:: with SMTP id r18mr7892548lfe.445.1633505285107;
+        Wed, 06 Oct 2021 00:28:05 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxe/KJXnRUep0I8u9k0neV72dGFZ0ogxPxKg4nXPg6SAKIHTD864ghyBvf54qLgjceznCn/1A==
+X-Received: by 2002:ac2:5f92:: with SMTP id r18mr7892525lfe.445.1633505284837;
+        Wed, 06 Oct 2021 00:28:04 -0700 (PDT)
+Received: from [192.168.0.20] (78-11-189-27.static.ip.netia.com.pl. [78.11.189.27])
+        by smtp.gmail.com with ESMTPSA id j27sm593280lfp.261.2021.10.06.00.28.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Oct 2021 00:28:04 -0700 (PDT)
+To:     Hector Martin <marcan@marcan.st>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     Marc Zyngier <maz@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-serial@vger.kernel.org
+References: <20211005155923.173399-1-marcan@marcan.st>
+ <20211005155923.173399-4-marcan@marcan.st>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Subject: Re: [PATCH 3/7] soc: apple: Add driver for Apple PMGR power state
+ controls
+Message-ID: <bee16b95-964c-f515-a196-cd267391d4eb@canonical.com>
+Date:   Wed, 6 Oct 2021 09:28:03 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-X-OriginatorOrg: pauljones.id.au
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SYXPR01MB1918.ausprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 81abcf04-42ae-427d-a088-08d9889aadbb
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Oct 2021 07:26:56.9352
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8f216723-e13f-4cce-b84c-58d8f16a0082
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: DTkf3vKWTITtAecFjSipr+/UbtUMvi55o+jPQ6qlqpSJYrXAHDLKknX3dj7q4b5HD1N7ShcEUhqzz2HJc5ehOQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SY3PR01MB0796
+In-Reply-To: <20211005155923.173399-4-marcan@marcan.st>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> -----Original Message-----
-> From: Nick Terrell <nickrterrell@gmail.com>
-> Sent: Tuesday, 5 October 2021 12:41 PM
->=20
-> From: Nick Terrell <terrelln@fb.com>
->=20
-> The following changes since commit
-> a25006a77348ba06c7bc96520d331cd9dd370715:
->=20
->   Add linux-next specific files for 20211001 (2021-10-01 17:07:37 +1000)
->=20
-> are available in the Git repository at:
->=20
->   git@github.com:terrelln/linux.git tags/v12-zstd-1.4.10
->=20
-> for you to fetch changes up to 5210ca33b09bed5e09f72e9b46a3220f64597f8c:
->=20
->   MAINTAINERS: Add maintainer entry for zstd (2021-10-04 18:14:42 -0700)
->=20
-> I would like to merge this pull request into linux-next to bake, and then
-> submit the PR to Linux in the 5.16 merge window. If you have been a part =
-of
-> the discussion, are a maintainer of a caller of zstd, tested this code, o=
-r
-> otherwise been involved, thank you! And could you please respond below
-> with an appropiate tag, so I can collect support for the PR
+On 05/10/2021 17:59, Hector Martin wrote:
+> Implements genpd and reset providers for downstream devices. Each
+> instance of the driver binds to a single register and represents a
+> single SoC power domain.
+> 
+> The driver does not currently implement all features (auto-pm,
+> clockgate-only state), but we declare the respective registers for
+> documentation purposes. These features will be added as they become
+> useful for downstream devices.
+> 
+> This also creates the apple/soc tree and Kconfig submenu.
+> 
+> Signed-off-by: Hector Martin <marcan@marcan.st>
+> ---
+>  MAINTAINERS                             |   1 +
+>  drivers/soc/Kconfig                     |   1 +
+>  drivers/soc/Makefile                    |   1 +
+>  drivers/soc/apple/Kconfig               |  21 ++
+>  drivers/soc/apple/Makefile              |   2 +
+>  drivers/soc/apple/apple-pmgr-pwrstate.c | 281 ++++++++++++++++++++++++
+>  6 files changed, 307 insertions(+)
+>  create mode 100644 drivers/soc/apple/Kconfig
+>  create mode 100644 drivers/soc/apple/Makefile
+>  create mode 100644 drivers/soc/apple/apple-pmgr-pwrstate.c
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 5fe53d9a2956..def5e05da2bc 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -1725,6 +1725,7 @@ F:	Documentation/devicetree/bindings/pinctrl/apple,pinctrl.yaml
+>  F:	Documentation/devicetree/bindings/power/apple*
+>  F:	arch/arm64/boot/dts/apple/
+>  F:	drivers/irqchip/irq-apple-aic.c
+> +F:	drivers/soc/apple/*
+>  F:	include/dt-bindings/interrupt-controller/apple-aic.h
+>  F:	include/dt-bindings/pinctrl/apple.h
+>  
+> diff --git a/drivers/soc/Kconfig b/drivers/soc/Kconfig
+> index e8a30c4c5aec..a8562678c437 100644
+> --- a/drivers/soc/Kconfig
+> +++ b/drivers/soc/Kconfig
+> @@ -3,6 +3,7 @@ menu "SOC (System On Chip) specific Drivers"
+>  
+>  source "drivers/soc/actions/Kconfig"
+>  source "drivers/soc/amlogic/Kconfig"
+> +source "drivers/soc/apple/Kconfig"
+>  source "drivers/soc/aspeed/Kconfig"
+>  source "drivers/soc/atmel/Kconfig"
+>  source "drivers/soc/bcm/Kconfig"
+> diff --git a/drivers/soc/Makefile b/drivers/soc/Makefile
+> index a05e9fbcd3e0..adb30c2d4fea 100644
+> --- a/drivers/soc/Makefile
+> +++ b/drivers/soc/Makefile
+> @@ -4,6 +4,7 @@
+>  #
+>  
+>  obj-$(CONFIG_ARCH_ACTIONS)	+= actions/
+> +obj-$(CONFIG_ARCH_APPLE)	+= apple/
+>  obj-y				+= aspeed/
+>  obj-$(CONFIG_ARCH_AT91)		+= atmel/
+>  obj-y				+= bcm/
+> diff --git a/drivers/soc/apple/Kconfig b/drivers/soc/apple/Kconfig
+> new file mode 100644
+> index 000000000000..271092b6aee7
+> --- /dev/null
+> +++ b/drivers/soc/apple/Kconfig
+> @@ -0,0 +1,21 @@
+> +# SPDX-License-Identifier: GPL-2.0-only
+> +
+> +if ARCH_APPLE || COMPILE_TEST
+> +
+> +menu "Apple SoC drivers"
+> +
+> +config APPLE_PMGR_PWRSTATE
+> +	tristate "Apple SoC PMGR power state control"
+> +	select REGMAP
+> +	select MFD_SYSCON
+> +	select PM_GENERIC_DOMAINS
+> +	select RESET_CONTROLLER
+> +	default ARCH_APPLE
+> +	help
+> +	  The PMGR block in Apple SoCs provides high-level power state
+> +	  controls for SoC devices. This driver manages them through the
+> +	  generic power domain framework, and also provides reset support.
+> +
+> +endmenu
+> +
+> +endif
+> diff --git a/drivers/soc/apple/Makefile b/drivers/soc/apple/Makefile
+> new file mode 100644
+> index 000000000000..c114e84667e4
+> --- /dev/null
+> +++ b/drivers/soc/apple/Makefile
+> @@ -0,0 +1,2 @@
+> +# SPDX-License-Identifier: GPL-2.0-only
+> +obj-$(CONFIG_APPLE_PMGR_PWRSTATE)	+= apple-pmgr-pwrstate.o
+> diff --git a/drivers/soc/apple/apple-pmgr-pwrstate.c b/drivers/soc/apple/apple-pmgr-pwrstate.c
+> new file mode 100644
+> index 000000000000..a0338dbb29b8
+> --- /dev/null
+> +++ b/drivers/soc/apple/apple-pmgr-pwrstate.c
+> @@ -0,0 +1,281 @@
+> +// SPDX-License-Identifier: GPL-2.0-only OR MIT
+> +/*
+> + * Apple SoC PMGR device power state driver
+> + *
+> + * Copyright The Asahi Linux Contributors
+> + */
+> +
+> +#include <linux/bitops.h>
+> +#include <linux/bitfield.h>
+> +#include <linux/err.h>
+> +#include <linux/of.h>
+> +#include <linux/of_address.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/pm_domain.h>
+> +#include <linux/regmap.h>
+> +#include <linux/mfd/syscon.h>
+> +#include <linux/reset-controller.h>
+> +#include <linux/module.h>
+> +
+> +#define APPLE_PMGR_RESET        BIT(31)
+> +#define APPLE_PMGR_AUTO_ENABLE  BIT(28)
+> +#define APPLE_PMGR_PS_AUTO      GENMASK(27, 24)
+> +#define APPLE_PMGR_PARENT_OFF   BIT(11)
+> +#define APPLE_PMGR_DEV_DISABLE  BIT(10)
+> +#define APPLE_PMGR_WAS_CLKGATED BIT(9)
+> +#define APPLE_PMGR_WAS_PWRGATED BIT(8)
+> +#define APPLE_PMGR_PS_ACTUAL    GENMASK(7, 4)
+> +#define APPLE_PMGR_PS_TARGET    GENMASK(3, 0)
+> +
+> +#define APPLE_PMGR_PS_ACTIVE    0xf
+> +#define APPLE_PMGR_PS_CLKGATE   0x4
+> +#define APPLE_PMGR_PS_PWRGATE   0x0
+> +
+> +#define APPLE_PMGR_PS_SET_TIMEOUT 100
+> +#define APPLE_PMGR_RESET_TIME 1
+> +
+> +struct apple_pmgr_ps {
+> +	struct device *dev;
+> +	struct generic_pm_domain genpd;
+> +	struct reset_controller_dev rcdev;
+> +	struct regmap *regmap;
+> +	u32 offset;
+> +};
+> +
+> +#define genpd_to_apple_pmgr_ps(_genpd) container_of(_genpd, struct apple_pmgr_ps, genpd)
+> +#define rcdev_to_apple_pmgr_ps(_rcdev) container_of(_rcdev, struct apple_pmgr_ps, rcdev)
+> +
+> +static int apple_pmgr_ps_set(struct generic_pm_domain *genpd, u32 pstate)
+> +{
+> +	int ret;
+> +	struct apple_pmgr_ps *ps = genpd_to_apple_pmgr_ps(genpd);
+> +	u32 reg;
+> +
+> +	regmap_read(ps->regmap, ps->offset, &reg);
 
-Tested By: Paul Jones <paul@pauljones.id.au>
+MMIO accesses should not fail, but regmap API could fail if for example
+clk_enable() fails. In such case you will write below value based on
+random stack init. Please check the return value here.
+
+> +
+> +	/* Resets are synchronous, and only work if the device is powered and clocked. */
+> +	if (reg & APPLE_PMGR_RESET && pstate != APPLE_PMGR_PS_ACTIVE)
+> +		dev_err(ps->dev, "PS 0x%x: powering off with RESET active\n", ps->offset);
+> +
+> +	reg &= ~(APPLE_PMGR_AUTO_ENABLE | APPLE_PMGR_WAS_CLKGATED | APPLE_PMGR_WAS_PWRGATED |
+> +		 APPLE_PMGR_PS_TARGET);
+> +	reg |= FIELD_PREP(APPLE_PMGR_PS_TARGET, pstate);
+> +
+> +	dev_dbg(ps->dev, "PS 0x%x: pwrstate = 0x%x: 0x%x\n", ps->offset, pstate, reg);
+> +
+> +	regmap_write(ps->regmap, ps->offset, reg);
+> +
+> +	ret = regmap_read_poll_timeout_atomic(
+> +		ps->regmap, ps->offset, reg,
+> +		(FIELD_GET(APPLE_PMGR_PS_ACTUAL, reg) == pstate), 1,
+> +		APPLE_PMGR_PS_SET_TIMEOUT);
+> +	if (ret < 0)
+> +		dev_err(ps->dev, "PS 0x%x: Failed to reach power state 0x%x (now: 0x%x)\n",
+> +			ps->offset, pstate, reg);
+> +	return ret;
+> +}
+> +
+> +static bool apple_pmgr_ps_is_active(struct apple_pmgr_ps *ps)
+> +{
+> +	u32 reg;
+> +
+> +	regmap_read(ps->regmap, ps->offset, &reg);
+
+Check the return value or initialize reg to 0.
+
+> +	return FIELD_GET(APPLE_PMGR_PS_ACTUAL, reg) == APPLE_PMGR_PS_ACTIVE;
+> +}
+> +
+> +static int apple_pmgr_ps_power_on(struct generic_pm_domain *genpd)
+> +{
+> +	return apple_pmgr_ps_set(genpd, APPLE_PMGR_PS_ACTIVE);
+> +}
+> +
+> +static int apple_pmgr_ps_power_off(struct generic_pm_domain *genpd)
+> +{
+> +	return apple_pmgr_ps_set(genpd, APPLE_PMGR_PS_PWRGATE);
+> +}
+> +
+> +static int apple_pmgr_reset_assert(struct reset_controller_dev *rcdev, unsigned long id)
+> +{
+> +	struct apple_pmgr_ps *ps = rcdev_to_apple_pmgr_ps(rcdev);
+> +
+> +	mutex_lock(&ps->genpd.mlock);
+> +
+> +	if (ps->genpd.status == GENPD_STATE_OFF)
+> +		dev_err(ps->dev, "PS 0x%x: asserting RESET while powered down\n", ps->offset);
+> +
+> +	dev_dbg(ps->dev, "PS 0x%x: assert reset\n", ps->offset);
+> +	/* Quiesce device before asserting reset */
+> +	regmap_set_bits(ps->regmap, ps->offset, APPLE_PMGR_DEV_DISABLE);
+> +	regmap_set_bits(ps->regmap, ps->offset, APPLE_PMGR_RESET);
+> +
+> +	mutex_unlock(&ps->genpd.mlock);
+> +
+> +	return 0;
+> +}
+> +
+> +static int apple_pmgr_reset_deassert(struct reset_controller_dev *rcdev, unsigned long id)
+> +{
+> +	struct apple_pmgr_ps *ps = rcdev_to_apple_pmgr_ps(rcdev);
+> +
+> +	mutex_lock(&ps->genpd.mlock);
+
+This looks wrong: it can be a spin-lock, not mutex, so you should use
+genpd_lock.
+
+However now I wonder if there could be a case when a reset-controller
+consumer calls it from it's GENPD_NOTIFY_ON notifier? In such case you
+would have this lock taken.
+
+> +
+> +	dev_dbg(ps->dev, "PS 0x%x: deassert reset\n", ps->offset);
+> +	regmap_clear_bits(ps->regmap, ps->offset, APPLE_PMGR_RESET);
+> +	regmap_clear_bits(ps->regmap, ps->offset, APPLE_PMGR_DEV_DISABLE);
+> +
+> +	if (ps->genpd.status == GENPD_STATE_OFF)
+> +		dev_err(ps->dev, "PS 0x%x: RESET was deasserted while powered down\n", ps->offset);
+> +
+> +	mutex_unlock(&ps->genpd.mlock);
+> +
+> +	return 0;
+> +}
+> +
+> +static int apple_pmgr_reset_reset(struct reset_controller_dev *rcdev, unsigned long id)
+> +{
+> +	int ret;
+> +
+> +	ret = apple_pmgr_reset_assert(rcdev, id);
+> +	if (ret)
+> +		return ret;
+> +
+> +	usleep_range(APPLE_PMGR_RESET_TIME, 2 * APPLE_PMGR_RESET_TIME);
+> +
+> +	return apple_pmgr_reset_deassert(rcdev, id);
+> +}
+> +
+> +static int apple_pmgr_reset_status(struct reset_controller_dev *rcdev, unsigned long id)
+> +{
+> +	struct apple_pmgr_ps *ps = rcdev_to_apple_pmgr_ps(rcdev);
+> +	u32 reg;
+> +
+> +	regmap_read(ps->regmap, ps->offset, &reg);
+> +
+> +	return !!(reg & APPLE_PMGR_RESET);
+> +}
+> +
+> +const struct reset_control_ops apple_pmgr_reset_ops = {
+> +	.assert		= apple_pmgr_reset_assert,
+> +	.deassert	= apple_pmgr_reset_deassert,
+> +	.reset		= apple_pmgr_reset_reset,
+> +	.status		= apple_pmgr_reset_status,
+> +};
+> +
+> +static int apple_pmgr_reset_xlate(struct reset_controller_dev *rcdev,
+> +				  const struct of_phandle_args *reset_spec)
+> +{
+> +	return 0;
+> +}
+> +
+> +static int apple_pmgr_ps_probe(struct platform_device *pdev)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	struct device_node *node = dev->of_node;
+> +	struct apple_pmgr_ps *ps;
+> +	struct regmap *regmap;
+> +	struct of_phandle_iterator it;
+> +	int ret;
+> +	const char *name;
+> +
+> +	regmap = syscon_node_to_regmap(node->parent);
+> +	if (IS_ERR(regmap))
+> +		return PTR_ERR(regmap);
+> +
+> +	ps = devm_kzalloc(dev, sizeof(*ps), GFP_KERNEL);
+> +	if (!ps)
+> +		return -ENOMEM;
+> +
+> +	ps->dev = dev;
+> +	ps->regmap = regmap;
+> +
+> +	ret = of_property_read_string(node, "apple,domain-name", &name);
+> +	if (ret < 0) {
+> +		dev_err(dev, "missing apple,domain-name property\n");
+> +		return ret;
+> +	}
+> +
+> +	ret = of_property_read_u32(node, "reg", &ps->offset);
+> +	if (ret < 0) {
+> +		dev_err(dev, "missing reg property\n");
+> +		return ret;
+> +	}
+> +
+> +	if (of_property_read_bool(node, "apple,always-on"))
+> +		ps->genpd.flags |= GENPD_FLAG_ALWAYS_ON;
+> +
+> +	ps->genpd.name = name;
+> +	ps->genpd.power_on = apple_pmgr_ps_power_on;
+> +	ps->genpd.power_off = apple_pmgr_ps_power_off;
+> +
+> +	ret = pm_genpd_init(&ps->genpd, NULL, !apple_pmgr_ps_is_active(ps));
+> +	if (ret < 0) {
+> +		dev_err(dev, "pm_genpd_init failed\n");
+> +		return ret;
+> +	}
+> +
+> +	ret = of_genpd_add_provider_simple(node, &ps->genpd);
+> +	if (ret < 0) {
+> +		dev_err(dev, "of_genpd_add_provider_simple failed\n");
+> +		return ret;
+> +	}
+> +
+> +	of_for_each_phandle(&it, ret, node, "power-domains", "#power-domain-cells", -1) {
+> +		struct of_phandle_args parent, child;
+> +
+> +		parent.np = it.node;
+> +		parent.args_count = of_phandle_iterator_args(&it, parent.args, MAX_PHANDLE_ARGS);
+> +		child.np = node;
+> +		child.args_count = 0;
+> +		ret = of_genpd_add_subdomain(&parent, &child);
+> +
+> +		if (ret == -EPROBE_DEFER) {
+> +			of_node_put(parent.np);
+> +			goto err_remove;
+> +		} else if (ret < 0) {
+> +			dev_err(dev, "failed to add to parent domain: %d (%s -> %s)\n",
+> +				ret, it.node->name, node->name);
+> +			of_node_put(parent.np);
+> +			goto err_remove;
+> +		}
+> +	}
+> +
+> +	pm_genpd_remove_device(dev);
+> +
+> +	ps->rcdev.owner = THIS_MODULE;
+> +	ps->rcdev.nr_resets = 1;
+> +	ps->rcdev.ops = &apple_pmgr_reset_ops;
+> +	ps->rcdev.of_node = dev->of_node;
+> +	ps->rcdev.of_reset_n_cells = 0;
+> +	ps->rcdev.of_xlate = apple_pmgr_reset_xlate;
+> +
+> +	ret = devm_reset_controller_register(dev, &ps->rcdev);
+> +	if (ret < 0)
+> +		goto err_remove;
+> +
+> +	return 0;
+> +err_remove:
+> +	of_genpd_del_provider(node);
+> +	pm_genpd_remove(&ps->genpd);
+> +	return ret;
+> +}
+> +
+> +static const struct of_device_id apple_pmgr_ps_of_match[] = {
+> +	{ .compatible = "apple,t8103-pmgr-pwrstate" },
+> +	{ .compatible = "apple,pmgr-pwrstate" },
+
+You call the device/driver "pwrstate", which it seems is "power state".
+These are not power states. These are power controllers or power
+domains. Power state is rather a state of power domain - e.g. on or
+gated. How about renaming it to power domain or pd?
+
+> +	{}
+> +};
+> +
+> +MODULE_DEVICE_TABLE(of, apple_pmgr_ps_of_match);
+> +
+> +static struct platform_driver apple_pmgr_ps_driver = {
+> +	.probe = apple_pmgr_ps_probe,
+> +	.driver = {
+> +		.name = "apple-pmgr-pwrstate",
+> +		.of_match_table = apple_pmgr_ps_of_match,
+> +	},
+> +};
+> +
+> +MODULE_AUTHOR("Hector Martin <marcan@marcan.st>");
+> +MODULE_DESCRIPTION("PMGR power state driver for Apple SoCs");
+> +MODULE_LICENSE("GPL v2");
+> +
+> +module_platform_driver(apple_pmgr_ps_driver);
+> 
+
+
+Best regards,
+Krzysztof
