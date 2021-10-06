@@ -2,142 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01C60424349
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 18:47:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 723E842434F
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 18:48:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232126AbhJFQtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 12:49:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42184 "EHLO
+        id S239233AbhJFQuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 12:50:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239233AbhJFQtR (ORCPT
+        with ESMTP id S231528AbhJFQuN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 12:49:17 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8267C061746
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 09:47:24 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id dj4so12232241edb.5
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 09:47:24 -0700 (PDT)
+        Wed, 6 Oct 2021 12:50:13 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1D45C061746
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 09:48:20 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id u18so12754386lfd.12
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 09:48:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cokz5/aCsU+6IISL087/xdQjeJJNdXltlIJFHh9WDIY=;
-        b=p3qZXdpk4WQccufsvK4m6KyFOU8memXMUyYFo+6dgqN/7w5vd1mJOPqpQd5hVoAmJW
-         mo3UEMujCeB28FTLtFjvOsRV3CwDnd84QaN9X+KYYIYzJC7HZHmwcdhrs0XVFyZ4I889
-         RjDpF+2JfBMiVQcRDfhBkL9b8ephHuCo5Pt2BuCpF0qqNhEXJkn1tjE+wnyRuhAcFAAc
-         cb8UinmC2gFZyS5PxVQnHqeK96xv00CP8qjrqswmeTd8Sxr/Qsszw1irQnGHhqXwCOOg
-         uVvDcatwfhkeolZvGnzylYwqvBiU5iEIYMtxg+es717pKCmcniqQfzSLxAokJ+Sa+iDz
-         gx8A==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=T5u+J7YA0xyzY2Zlfv0fcrmW+q1VsOAFPY6Ha0RmHOE=;
+        b=u8L4jIMS/HGyekro207nIeVOIKfA1ny77lQmEPpWOo9LwShdKuQnJ81hp2wC8LOKuK
+         LGtOhHR55N9EGyTsaboWrjeJVsyJytWoTlEYvyMuq+BBvoZkDw9gLMQIgYiFa+MsLU0S
+         klwADza94UIFHPRMb60HUvztbhdNUd6NEGdx9qSNom5hhQXa9u7Xeb2KtxZF17AQviNS
+         mSNzKkbK/AzkYKiaHscsG0VER7YuQWRKFxY0rGgLdcJV8SKbr1v9GlGpLeBPEYmxo1d7
+         BtsG1ICumXRpZqFmXFFGfPPdOVTcopTn9Vbf3Oc3raTj3/1uAqwGChVYvdnjoIz8Fe46
+         B00A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cokz5/aCsU+6IISL087/xdQjeJJNdXltlIJFHh9WDIY=;
-        b=1AmK2/QvOhHNZJLNQt2BPZ0+4h/cE/Zsn3W46o7/ythJpPe4ticTTSRP8nc2MxZjj2
-         YYTrXuqw0W6wIoZGooC0GeE2DZoRSF7KOzIctE2SOoYDJus9sQ8Xw6+4qiKU44AzoGpb
-         7smPrxVAbIt8cDOMWcRuI1rRfKYfOU8OYsehTL0gd6sk75F6Ouvn/UFmvRUhWQC71t6f
-         N0yycTc0pWZ600krTGMgGRUY0bcQCcu0DG/1YOy+I9nPREW/l5/gE/8BxAU3xLkIawuN
-         HK3Y1dYLqojf3WIlbwopr1Ta32unqJw/lkmOpu8W/McqWEHlwcRXL5cI+s9diYfRasdc
-         02hg==
-X-Gm-Message-State: AOAM532+W0pLpbEZUrWmkxPqEHj/yvUOYybFcvGEi9elRMolVSxc1cq8
-        HMxzm6zoFoIuZDkz3AjvH4EiLj+jijOfotRi4Kgn2X3bYgQ=
-X-Google-Smtp-Source: ABdhPJw29j4D9bZHuEI9lrPKZesgz4NvAhcdBJSs1TuAV5KtEWAPPnDmALdoHcnOBJ5iVVZTlIoFdWNWh6/0/YAL2lo=
-X-Received: by 2002:a17:906:2887:: with SMTP id o7mr32800370ejd.425.1633538843226;
- Wed, 06 Oct 2021 09:47:23 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=T5u+J7YA0xyzY2Zlfv0fcrmW+q1VsOAFPY6Ha0RmHOE=;
+        b=ypM9/MCvLGyuffKI0wHizp5bXijgHaTgUPaiogyPrWMey7zu46xZPBjP/obMSw0sdn
+         11Y0ZL9uqp9FEa1BrEkFFfZKXdqv/BGXzQspuS6gJwz9fwY5REZjRIEjePQ3uhxHcEge
+         peoPhMSLi8TAt0I/SgpQoCe2M+uSiC0rTt+Xnr4ECX5BWN3GCGbz3+ZQS73mtb7/EdQ5
+         t8ocycKcXTackhxWuJuok7w+CYDhXwbdxeTX6NZbvvCwuk63kAjF5XVrLgI4N2+Hnudl
+         40IH8HGjn0qPX/Ewposg93KGcctRIHKhVbBqqG3BFB5Zgeq2NiqfU93jgAmlbyHMw+XX
+         G4Pg==
+X-Gm-Message-State: AOAM531N/kaz0NiQqnMbmjaOOJvHKBNoY8VRu5FEaniXBr33muZpXBoE
+        IhLMmZsV7YWvkMGOqZAcXDnJAeHGvDNifw==
+X-Google-Smtp-Source: ABdhPJwykGa9j4WMyyGvBIei36WIcpCoX1P2RK6lI1Ho4lBv9Yss8vTWSq77ZmlujYErN9ZemHKcyg==
+X-Received: by 2002:a2e:9012:: with SMTP id h18mr29776988ljg.336.1633538899360;
+        Wed, 06 Oct 2021 09:48:19 -0700 (PDT)
+Received: from [192.168.1.211] ([37.153.55.125])
+        by smtp.gmail.com with ESMTPSA id w13sm2313400lft.94.2021.10.06.09.48.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Oct 2021 09:48:18 -0700 (PDT)
+Subject: Re: [PATCH v1 2/2] arm64: dts: qcom: sc7280: update bluetooth node in
+ SC7280 IDP2 board
+To:     Balakrishna Godavarthi <bgodavar@codeaurora.org>,
+        marcel@holtmann.org, bjorn.andersson@linaro.org,
+        johan.hedberg@gmail.com
+Cc:     mka@chromium.org, linux-kernel@vger.kernel.org,
+        linux-bluetooth@vger.kernel.org, hemantg@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, rjliao@codeaurora.org,
+        pharish@codeaurora.org, abhishekpandit@chromium.org
+References: <1633523403-32264-1-git-send-email-bgodavar@codeaurora.org>
+ <1633523403-32264-2-git-send-email-bgodavar@codeaurora.org>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Message-ID: <fee220ea-4d20-79a2-fe3a-4df09535eca1@linaro.org>
+Date:   Wed, 6 Oct 2021 19:48:16 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <20211006161805.938950-1-brent.lu@intel.com> <20211006161805.938950-4-brent.lu@intel.com>
-In-Reply-To: <20211006161805.938950-4-brent.lu@intel.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 6 Oct 2021 19:46:47 +0300
-Message-ID: <CAHp75Vd7A4yjA+BN_4PwCNNSyy=JbGTDh7U6FdacRYLYPJaYCQ@mail.gmail.com>
-Subject: Re: [PATCH 3/3] ASoC: Intel: sof_rt5682: use id_alt to enumerate rt5682s
-To:     Brent Lu <brent.lu@intel.com>
-Cc:     ALSA Development Mailing List <alsa-devel@alsa-project.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        Yong Zhi <yong.zhi@intel.com>,
-        Vamshi Krishna Gopal <vamshi.krishna.gopal@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Rander Wang <rander.wang@intel.com>,
-        Bard Liao <bard.liao@intel.com>,
-        Malik_Hsu <malik_hsu@wistron.corp-partner.google.com>,
-        Libin Yang <libin.yang@intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Paul Olaru <paul.olaru@oss.nxp.com>,
-        Curtis Malainey <cujomalainey@chromium.org>,
-        Mac Chiang <mac.chiang@intel.com>,
-        Gongjun Song <gongjun.song@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1633523403-32264-2-git-send-email-bgodavar@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 6, 2021 at 7:23 PM Brent Lu <brent.lu@intel.com> wrote:
->
-> Use the id_alt field to enumerate rt5682s headphone codec and remove
-> redundant entries in tables.
+On 06/10/2021 15:30, Balakrishna Godavarthi wrote:
+> This patch updates bluetooth node in SC7280 IDP2 board.
+> 
+> Signed-off-by: Balakrishna Godavarthi <bgodavar@codeaurora.org>
+> ---
+>   arch/arm64/boot/dts/qcom/sc7280-idp2.dts | 6 ++++++
+>   1 file changed, 6 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp2.dts b/arch/arm64/boot/dts/qcom/sc7280-idp2.dts
+> index 1fc2add..5c8d54b 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7280-idp2.dts
+> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp2.dts
+> @@ -15,9 +15,15 @@
+>   
+>   	aliases {
+>   		serial0 = &uart5;
+> +		bluetooth0 = &bluetooth;
+> +		hsuart0 = &uart7;
 
-...
+hsuartX does not follow existing aliases definition, so it was frowned 
+upon by Rob Herring in the past.
 
-> +static struct snd_soc_acpi_codecs adl_rt5682s_hp = {
-> +       .num_codecs = 1,
-> +       .codecs = {"RTL5682"}
-
-Keeping commas in non-terminator entries is always good to avoid churn
-in the future.
-
+>   	};
+>   
+>   	chosen {
+>   		stdout-path = "serial0:115200n8";
+>   	};
+>   };
+> +
+> +&bluetooth: wcn6750-bt {
+> +	vddio-supply = <&vreg_l18b_1p8>;
 > +};
+> 
 
-...
-
-> +static struct snd_soc_acpi_codecs rt5682s_hp = {
-> +       .num_codecs = 1,
-> +       .codecs = {"RTL5682"}
-
-Ditto.
-
-> +};
-
-...
-
-> +static struct snd_soc_acpi_codecs rt5682s_hp = {
-> +       .num_codecs = 1,
-> +       .codecs = {"RTL5682"}
-
-Ditto.
-
-> +};
-
-...
-
-> +static struct snd_soc_acpi_codecs rt5682s_hp = {
-> +       .num_codecs = 1,
-> +       .codecs = {"RTL5682"}
-
-Ditto.
-
-> +};
-
-...
-
-> +static struct snd_soc_acpi_codecs rt5682s_hp = {
-> +       .num_codecs = 1,
-> +       .codecs = {"RTL5682"}
-
-Ditto.
-
-> +};
-
-...and so on.
 
 -- 
-With Best Regards,
-Andy Shevchenko
+With best wishes
+Dmitry
