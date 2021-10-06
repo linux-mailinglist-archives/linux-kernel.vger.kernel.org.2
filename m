@@ -2,164 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BCF2423BAB
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 12:46:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 925A0423BBD
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 12:49:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238104AbhJFKsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 06:48:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41752 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237931AbhJFKsX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 06:48:23 -0400
-Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59C95C061755
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 03:46:31 -0700 (PDT)
-Received: by mail-ua1-x92c.google.com with SMTP id e7so1425424ual.11
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 03:46:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WAZ6VYVxXpp+/4weV4Gw1QKhKbSTkxuMKBLfGMMXi34=;
-        b=RW9U4DrKauxl7RiYBSIz5WrXXIfcuHG+K0ocrRpKxF4zt5xL9u4Fg9K6qYhR9lBPUl
-         y93WKKhFCAtxSPKBKYCjA4QJ+8FwXc/5sku7+kPilJLHB2VdACALVbJaOlRA89g7O7DU
-         Ik1VVeEJ4TJgHGexGQuKQSL+001+Wq5E7FzeRwC0K5S7UU8WQoM187ddsNnLUvQ1xA0R
-         C684SbtTBtrE4+uvIvzyL09hXp/luX8lpE8xIKgenBW874pWNGtFq5b9x5LhNP000LvE
-         yHp1CV3ozWmUotvTQbqGaUmaacMrD4brCiA2pHu/4d0FkCUHrgYmDY29/2zgPC2K3l2j
-         nbeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WAZ6VYVxXpp+/4weV4Gw1QKhKbSTkxuMKBLfGMMXi34=;
-        b=K6C42V4Dh5/OsU+EV4N3ma7raIfqCF8kJvOdTvd8iDFAQECGHdk6K5F8VdJLz3zaXG
-         NzYPgEdXJX5jpC5PM8w4JlUII7ZzlQVHb7FuxGa9eZPpViUrYTQ6ipm6FOLfQ7+/P8sc
-         Qv4jgarUG3zAz0j47v0GXx5S3qIMjnzSZZKQbVdniqlqqqEZsD1FheWY9onRm179dmH9
-         ksuYuIl9jkVqUn9WgEoLYSD/FRMF2FLW3dKa+VfNxKkD2b9quKfOVoPZusoTrCE9oCkY
-         TPU3iaTOKYj4vfE9AVcRsAOT0+KWniyB/kHfCBZdEBxYDFSthFWlyAL7Xipof9oS/LoF
-         ZK7Q==
-X-Gm-Message-State: AOAM533HhNgfTid/zxWTe4Q3Kesn9HquEt5xGgUkImjLXwmnDj20DXKs
-        qEDNCa25AYMCpCK5fEnvmZGBCsLbNI0/Nyp0QW744Q==
-X-Google-Smtp-Source: ABdhPJzperz80UwQyac4C188t+tTN5/53/Vnxod/Zh2JotmRFJ6a4lcnzID/HuIDr8OIw9iJs9s2pzC6TK1K9n06Z9E=
-X-Received: by 2002:ab0:3303:: with SMTP id r3mr17099371uao.17.1633517190130;
- Wed, 06 Oct 2021 03:46:30 -0700 (PDT)
+        id S238183AbhJFKv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 06:51:26 -0400
+Received: from foss.arm.com ([217.140.110.172]:51864 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238171AbhJFKvV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 06:51:21 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EF2D51FB;
+        Wed,  6 Oct 2021 03:49:27 -0700 (PDT)
+Received: from [10.57.22.120] (unknown [10.57.22.120])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D3DCB3F70D;
+        Wed,  6 Oct 2021 03:49:26 -0700 (PDT)
+Subject: Re: [PATCH] arm64: dts: rockchip: nanopi4: decrease Bluetooth UART
+ baud rate
+To:     Chen-Yu Tsai <wens@kernel.org>, Heiko Stuebner <heiko@sntech.de>
+Cc:     Chen-Yu Tsai <wens@csie.org>, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210920175647.13008-1-wens@kernel.org>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <64f06ddb-cde6-d71a-7920-41c485a1d3fb@arm.com>
+Date:   Wed, 6 Oct 2021 11:49:20 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <20210914155607.14122-1-semen.protsenko@linaro.org>
- <20210914155607.14122-2-semen.protsenko@linaro.org> <6ef3e9a3-77e7-48b7-cbcd-c13db50d0cd9@canonical.com>
-In-Reply-To: <6ef3e9a3-77e7-48b7-cbcd-c13db50d0cd9@canonical.com>
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-Date:   Wed, 6 Oct 2021 13:46:18 +0300
-Message-ID: <CAPLW+4kexaByx0nfy3q5g9XmrYdLav7E25h8qiO4Z_zmUVbRYQ@mail.gmail.com>
-Subject: Re: [PATCH 1/6] clk: samsung: Enable bus clock on init
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        =?UTF-8?Q?Pawe=C5=82_Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Ryu Euiyoul <ryu.real@samsung.com>,
-        Tom Gall <tom.gall@linaro.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Amit Pundir <amit.pundir@linaro.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210920175647.13008-1-wens@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 15 Sept 2021 at 11:21, Krzysztof Kozlowski
-<krzysztof.kozlowski@canonical.com> wrote:
->
-> On 14/09/2021 17:56, Sam Protsenko wrote:
-> > By default if bus clock has no users its "enable count" value is 0. It
-> > might be actually running if it's already enabled in bootloader, but
-> > then in some cases it can be disabled by mistake. For example, such case
-> > was observed when dw_mci_probe() enabled bus clock, then failed to do
-> > something and disabled that bus clock on error path. After that even
-> > attempt to read the 'clk_summary' file in DebugFS freezed forever, as
-> > CMU bus clock ended up being disabled and it wasn't possible to access
-> > CMU registers anymore.
-> >
-> > To avoid such cases, CMU driver must increment the ref count for that
-> > bus clock by running clk_prepare_enable(). There is already existing
-> > '.clk_name' field in struct samsung_cmu_info, exactly for that reason.
-> > It was added in commit 523d3de41f02 ("clk: samsung: exynos5433: Add
-> > support for runtime PM"). But the clock is actually enabled only in
-> > Exynos5433 clock driver. Let's mimic what is done there in generic
-> > samsung_cmu_register_one() function, so other drivers can benefit from
-> > that `.clk_name' field. As was described above, it might be helpful not
-> > only for PM reasons, but also to prevent possible erroneous clock gating
-> > on error paths.
-> >
-> > Another way to workaround that issue would be to use CLOCK_IS_CRITICAL
-> > flag for corresponding gate clocks. But that might be not very good
-> > design decision, as we might still want to disable that bus clock, e.g.
-> > on PM suspend.
-> >
-> > Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
-> > ---
-> >  drivers/clk/samsung/clk.c | 13 +++++++++++++
-> >  1 file changed, 13 insertions(+)
-> >
-> > diff --git a/drivers/clk/samsung/clk.c b/drivers/clk/samsung/clk.c
-> > index 1949ae7851b2..da65149fa502 100644
-> > --- a/drivers/clk/samsung/clk.c
-> > +++ b/drivers/clk/samsung/clk.c
-> > @@ -357,6 +357,19 @@ struct samsung_clk_provider * __init samsung_cmu_register_one(
-> >
-> >       ctx = samsung_clk_init(np, reg_base, cmu->nr_clk_ids);
-> >
-> > +     /* Keep bus clock running, so it's possible to access CMU registers */
-> > +     if (cmu->clk_name) {
-> > +             struct clk *bus_clk;
-> > +
-> > +             bus_clk = __clk_lookup(cmu->clk_name);
-> > +             if (bus_clk) {
-> > +                     clk_prepare_enable(bus_clk);
-> > +             } else {
-> > +                     pr_err("%s: could not find bus clock %s\n", __func__,
-> > +                            cmu->clk_name);
-> > +             }
-> > +     }
-> > +
->
-> Solving this problem in generic way makes sense but your solution is
-> insufficient. You skipped suspend/resume paths and in such case you
-> should remove the Exynos5433-specific code.
->
+On 2021-09-20 18:56, Chen-Yu Tsai wrote:
+> From: Chen-Yu Tsai <wens@csie.org>
+> 
+> The RK3399 does not seem to be able to properly generate the required
+> 64 MHz clock for the UART to operate at 4MBd.
+> 
+> Drop the baud rate down to 3MBd, which can be used as the clock
+> controller is able to produce a 48 MHz clock.
 
-Keeping core bus clocks always running seems like a separate
-independent feature to me (not related to suspend/resume). It's
-mentioned in commit 523d3de41f02 ("clk: samsung: exynos5433: Add
-support for runtime PM") this way:
+Hmm, I've been running mine this way (with DMA) for ages now :/
 
-    "Also for each CMU there is one special parent clock, which has to
-be enabled all the time when any access to CMU registers is being
-done."
+Looking at clk_summary, clk_uart0_src ends up at 800MHz off CPLL (same 
+as several other significant clocks), with clk_uart0 at an exact 64MHz 
+as a division of that. I stuck a scope on the UART pins of the module 
+and all the edges look nicely lined up to 250ns intervals.
 
-Why do you think suspend/resume paths have to be implemented along
-with it? Btw, I didn't add PM ops in clk-exynos850, as PM is not
-implemented on my board yet and I can't test it.
+This is with a 5.11.4 kernel, though - I wonder if the recent fractional 
+divider changes in the clock driver have changed anything?
 
-If you are suggesting moving all stuff from exynos5433_cmu_probe()
-into samsung_cmu_register_one(), it would take passing platform_device
-there, and implementing all PM related operations. I guess it's not a
-super easy task, as it would require converting clk-exynos7 to
-platform_driver for instance, and re-testing everything on exynos5433
-and exynos7 boards (which I don't have).
+Robin.
 
-What do you say if I pull that code to clk-exynos850.c instead for v2?
-Refactoring (merging stuff from exynos5433_cmu_probe() into
-samsung_cmu_register_one() ) can be done later, when I add PM ops into
-clk-exynos850.
-
-> Best regards,
-> Krzysztof
+> Fixes: 3e2f0bb72be3 ("arm64: dts: rockchip: Add nanopi4 bluetooth")
+> Signed-off-by: Chen-Yu Tsai <wens@csie.org>
+> ---
+>   arch/arm64/boot/dts/rockchip/rk3399-nanopi4.dtsi | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/boot/dts/rockchip/rk3399-nanopi4.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-nanopi4.dtsi
+> index 8c0ff6c96e03..45ff053b119d 100644
+> --- a/arch/arm64/boot/dts/rockchip/rk3399-nanopi4.dtsi
+> +++ b/arch/arm64/boot/dts/rockchip/rk3399-nanopi4.dtsi
+> @@ -699,7 +699,7 @@ bluetooth {
+>   		device-wakeup-gpios = <&gpio2 RK_PD2 GPIO_ACTIVE_HIGH>;
+>   		host-wakeup-gpios = <&gpio0 RK_PA4 GPIO_ACTIVE_HIGH>;
+>   		shutdown-gpios = <&gpio0 RK_PB1 GPIO_ACTIVE_HIGH>;
+> -		max-speed = <4000000>;
+> +		max-speed = <3000000>;
+>   		pinctrl-names = "default";
+>   		pinctrl-0 = <&bt_reg_on_h &bt_host_wake_l &bt_wake_l>;
+>   		vbat-supply = <&vcc3v3_sys>;
+> 
