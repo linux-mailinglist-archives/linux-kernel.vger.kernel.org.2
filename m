@@ -2,184 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61EF04240B5
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 17:02:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D2FE4240BC
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 17:04:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239181AbhJFPEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 11:04:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239171AbhJFPEn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 11:04:43 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C12DC061746
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 08:02:51 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id i24so11013203lfj.13
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 08:02:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=R4UxXX9KG4xRnVHb1QP83F57gPSySRp26PaptBp9W+E=;
-        b=c2A8rXvYzl1XNvZe6X4yZXQ3DLXLxHVa95fIeuj9rBZ45m5+8eQqA0RVm1pT9i5zOe
-         IP0uAHiT77O47MvBhw0735+i5MKafDMF8rm3XY3+GiY3sm1DHFCDtLS1irEQ7rjem6PH
-         z6EPzmh3XFxdiXENPbjV4F/Nf8XkcT+AS3X7bYULQ8nuQH/96YZs/87VtOMKIKoncsmB
-         wA9+TSN42zh2xgxKchxfLbMFWohuQcgnEa0N5aqbEa5qFEoqSh5C/B6sWPtyoLrUx+Wb
-         saDrRNUR/xjybJOgghpZJTkrVZHaWjg59TzFmav3zbSgFAtoov70UgIuygPiykA8TN7O
-         vaig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=R4UxXX9KG4xRnVHb1QP83F57gPSySRp26PaptBp9W+E=;
-        b=1JVfMJuvQj75s1XpN+eH1/ntHWvwsA1NHF7tVceyQPOVHqrlVAd+A3huyC1slJ0KXR
-         i0l8ODudYh9F4V3ChT+CyM9cYMzFTuLlHS6f2Rk8crsILAJ/mXbl/1ibPMcgf1LGOdP/
-         Jvobpi+5DtC8pj2H4WRJEj+fIhQ8+OxeQ/IYFkWX0CmvSLqP1RGIw8i+AyZ7oU2qo9hU
-         dPO4e1VDX5Pi7MRiYJw3RGB/H/doN/6cMLUT2cYdr/qVJoEmAQ4wPIEnD8MtCpUKCzGv
-         pnbJvcWZ7/UnWCNNVzPv2GKR4i61+zwgufPzPUhpsA/Ns4g43vIcv3VSVNV/raQ4q50G
-         FGoA==
-X-Gm-Message-State: AOAM532ytMKbbmG14Auf0+0VJed0VbOwKwMtPyzq09op+/R/Z9SSMTca
-        ytvJtJCgbAqbpwckRF7PU38VAPkXndKDIn2i4Wy/xA==
-X-Google-Smtp-Source: ABdhPJwzkIcdOlAvbcG0LoR5b5rYqJwoDDhoAr9cF2QmPGsGTRkgcfVrKXVLKuhHnG+954Nczl0s2lh35/naoTki6mY=
-X-Received: by 2002:a2e:85c2:: with SMTP id h2mr30410582ljj.367.1633532563483;
- Wed, 06 Oct 2021 08:02:43 -0700 (PDT)
+        id S239092AbhJFPGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 11:06:24 -0400
+Received: from mga02.intel.com ([134.134.136.20]:36781 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238932AbhJFPGX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 11:06:23 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10129"; a="213137557"
+X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; 
+   d="scan'208";a="213137557"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2021 08:04:30 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; 
+   d="scan'208";a="484153934"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga007.fm.intel.com with ESMTP; 06 Oct 2021 08:04:25 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id D5F47159; Wed,  6 Oct 2021 18:04:31 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 1/4] ASoC: Intel: bytcht_es8316: Get platform data via dev_get_platdata()
+Date:   Wed,  6 Oct 2021 18:04:25 +0300
+Message-Id: <20211006150428.16434-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-References: <20210920161136.2398632-1-Jerome.Pouiller@silabs.com>
- <20210930170646.cffsuytdpa72izbh@pali> <CAPDyKFoaw8rdPRdjgAJz3-T2_fS1iA9jtonbwZAYE0npUNfOQQ@mail.gmail.com>
- <149139701.nbvtKH4F0p@pc-42>
-In-Reply-To: <149139701.nbvtKH4F0p@pc-42>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 6 Oct 2021 17:02:07 +0200
-Message-ID: <CAPDyKFr62Kykg3=9WiXAV8UToqjw8gj4t6bbM7pGQ+iGGQRLmg@mail.gmail.com>
-Subject: Re: [PATCH v7 08/24] wfx: add bus_sdio.c
-To:     =?UTF-8?B?SsOpcsO0bWUgUG91aWxsZXI=?= <jerome.pouiller@silabs.com>
-Cc:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        driverdevel <devel@driverdev.osuosl.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        DTML <devicetree@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 5 Oct 2021 at 10:14, J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@sil=
-abs.com> wrote:
->
-> On Friday 1 October 2021 17:23:16 CEST Ulf Hansson wrote:
-> > On Thu, 30 Sept 2021 at 19:06, Pali Roh=C3=A1r <pali@kernel.org> wrote:
-> > > On Thursday 30 September 2021 18:51:09 J=C3=A9r=C3=B4me Pouiller wrot=
-e:
-> > > > On Thursday 30 September 2021 12:07:55 CEST Ulf Hansson wrote:
-> > > > > On Mon, 20 Sept 2021 at 18:12, Jerome Pouiller
-> > > > > <Jerome.Pouiller@silabs.com> wrote:
-> > > > > >
-> > > > > > From: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
-> > > > > >
-> > > > > > Signed-off-by: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silab=
-s.com>
-> > > > > > ---
-> > > > > >  drivers/net/wireless/silabs/wfx/bus_sdio.c | 261 +++++++++++++=
-++++++++
-> > > > > >  1 file changed, 261 insertions(+)
-> > > > > >  create mode 100644 drivers/net/wireless/silabs/wfx/bus_sdio.c
-> > > > > >
-> > > > > > diff --git a/drivers/net/wireless/silabs/wfx/bus_sdio.c b/drive=
-rs/net/wireless/silabs/wfx/bus_sdio.c
-> > > > >
-> > > > > [...]
-> > > > >
-> > > > > > +
-> > > > > > +static int wfx_sdio_probe(struct sdio_func *func,
-> > > > > > +                         const struct sdio_device_id *id)
-> > > > > > +{
-> > > > > > +       struct device_node *np =3D func->dev.of_node;
-> > > > > > +       struct wfx_sdio_priv *bus;
-> > > > > > +       int ret;
-> > > > > > +
-> > > > > > +       if (func->num !=3D 1) {
-> > > > > > +               dev_err(&func->dev, "SDIO function number is %d=
- while it should always be 1 (unsupported chip?)\n",
-> > > > > > +                       func->num);
-> > > > > > +               return -ENODEV;
-> > > > > > +       }
-> > > > > > +
-> > > > > > +       bus =3D devm_kzalloc(&func->dev, sizeof(*bus), GFP_KERN=
-EL);
-> > > > > > +       if (!bus)
-> > > > > > +               return -ENOMEM;
-> > > > > > +
-> > > > > > +       if (!np || !of_match_node(wfx_sdio_of_match, np)) {
-> > > > > > +               dev_warn(&func->dev, "no compatible device foun=
-d in DT\n");
-> > > > > > +               return -ENODEV;
-> > > > > > +       }
-> > > > > > +
-> > > > > > +       bus->func =3D func;
-> > > > > > +       bus->of_irq =3D irq_of_parse_and_map(np, 0);
-> > > > > > +       sdio_set_drvdata(func, bus);
-> > > > > > +       func->card->quirks |=3D MMC_QUIRK_LENIENT_FN0 |
-> > > > > > +                             MMC_QUIRK_BLKSZ_FOR_BYTE_MODE |
-> > > > > > +                             MMC_QUIRK_BROKEN_BYTE_MODE_512;
-> > > > >
-> > > > > I would rather see that you add an SDIO_FIXUP for the SDIO card, =
-to
-> > > > > the sdio_fixup_methods[], in drivers/mmc/core/quirks.h, instead o=
-f
-> > > > > this.
-> > > >
-> > > > In the current patch, these quirks are applied only if the device a=
-ppears
-> > > > in the device tree (see the condition above). If I implement them i=
-n
-> > > > drivers/mmc/core/quirks.h they will be applied as soon as the devic=
-e is
-> > > > detected. Is it what we want?
-> > > >
-> > > > Note: we already have had a discussion about the strange VID/PID de=
-clared
-> > > > by this device:
-> > > >   https://www.spinics.net/lists/netdev/msg692577.html
-> > >
-> > > Yes, vendor id 0x0000 is invalid per SDIO spec. So based on this vend=
-or
-> > > id, it is not possible to write any quirk in mmc/sdio generic code.
-> > >
-> > > Ulf, but maybe it could be possible to write quirk based on OF
-> > > compatible string?
-> >
-> > Yes, that would be better in my opinion.
-> >
-> > We already have DT bindings to describe embedded SDIO cards (a subnode
-> > to the mmc controller node), so we should be able to extend that I
-> > think.
->
-> So, this feature does not yet exist? Do you consider it is a blocker for
-> the current patch?
+Access to platform data via dev_get_platdata() getter to make code cleaner.
 
-Yes, sorry. I think we should avoid unnecessary hacks in SDIO func
-drivers, especially those that deserve to be fixed in the mmc core.
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ sound/soc/intel/boards/bytcht_es8316.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-Moreover, we already support the similar thing for eMMC cards, plus
-that most parts are already done for SDIO too.
+diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
+index 1bb9b8e7bcc7..4360519fbb0c 100644
+--- a/sound/soc/intel/boards/bytcht_es8316.c
++++ b/sound/soc/intel/boards/bytcht_es8316.c
+@@ -456,12 +456,12 @@ static const struct dmi_system_id byt_cht_es8316_quirk_table[] = {
+ 
+ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
+ {
++	struct device *dev = &pdev->dev;
+ 	static const char * const mic_name[] = { "in1", "in2" };
++	struct snd_soc_acpi_mach *mach = dev_get_platdata(dev);
+ 	struct property_entry props[MAX_NO_PROPS] = {};
+ 	struct byt_cht_es8316_private *priv;
+ 	const struct dmi_system_id *dmi_id;
+-	struct device *dev = &pdev->dev;
+-	struct snd_soc_acpi_mach *mach;
+ 	struct fwnode_handle *fwnode;
+ 	const char *platform_name;
+ 	struct acpi_device *adev;
+@@ -476,7 +476,6 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
+ 	if (!priv)
+ 		return -ENOMEM;
+ 
+-	mach = dev->platform_data;
+ 	/* fix index of codec dai */
+ 	for (i = 0; i < ARRAY_SIZE(byt_cht_es8316_dais); i++) {
+ 		if (!strcmp(byt_cht_es8316_dais[i].codecs->name,
+-- 
+2.33.0
 
->
-> To be honest, I don't really want to take over this change in mmc/core.
-
-I understand. Allow me a couple of days, then I can post a patch to
-help you out.
-
->
-> --
-> J=C3=A9r=C3=B4me Pouiller
-
-Kind regards
-Uffe
