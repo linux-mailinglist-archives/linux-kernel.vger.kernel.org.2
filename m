@@ -2,176 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1FC6423B12
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 11:53:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA0F2423B1A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 11:54:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238075AbhJFJz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 05:55:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51518 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238121AbhJFJy6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 05:54:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4148A61181;
-        Wed,  6 Oct 2021 09:53:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633513986;
-        bh=6F7GFEy0xXKQgdgMkP05/2wa3qiX1GT6Znn9SHF1fP0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TrjZuYqEA59k2gSQ7gsehVbY1rwBkEdO6h3Tcr6FRDsw7NvWwJjcCSeHNQTYftJ6O
-         jDvbPyomPHJkfU6ENOuQ5Mr/03Pfe9hu7ZzGfT+3rNyBrYFSthV2CCMA+AdEvUcKxg
-         uqlYDnuaxCC9HrR3KkKKLfUqZYy0qL80KNjtPOVnXzHFw3PekNoeFEdaeNTvM3RKMw
-         tToybfv4zpMWcfNv7RLoglZowYyet7HsETUI9MRsmALhDQz348/kCSJhdAH3gB6Cv3
-         4hV3IdYdD4/wiWULtSTtXeMRXpfzhFgPPCiIVPhRwpZrPObJz1E1xB1bBwkTL7oSBk
-         tBA0qHrsspsBg==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Aharon Landau <aharonl@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Gal Pressman <galpress@amazon.com>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Maor Gottlieb <maorg@nvidia.com>,
-        Mark Zhang <markzhang@nvidia.com>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Mustafa Ismail <mustafa.ismail@intel.com>,
-        Neta Ostrovsky <netao@nvidia.com>, netdev@vger.kernel.org,
-        Potnuri Bharat Teja <bharat@chelsio.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: [PATCH rdma-next v3 13/13] RDMA/mlx5: Add optional counter support in get_hw_stats callback
-Date:   Wed,  6 Oct 2021 12:52:16 +0300
-Message-Id: <a3fa4d8fab6c8433ac78143b525624ca3c84c6ef.1633513239.git.leonro@nvidia.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1633513239.git.leonro@nvidia.com>
-References: <cover.1633513239.git.leonro@nvidia.com>
+        id S238057AbhJFJ4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 05:56:13 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:41654 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229824AbhJFJ4C (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 05:56:02 -0400
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1968Zurl023597;
+        Wed, 6 Oct 2021 11:53:57 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=selector1;
+ bh=iBK4jt+j/TuaNdy+BtubPQOGdvAAr+skdXQvKDtN8d4=;
+ b=OVS9amKfW5iF06CYWl4M0AJla3mr76y6Opsvuizx+rhWsdJe2z6hQGiH0id/Q8fTtJnG
+ nB3eIF+Nsc7yAKsJxawwJpR6OfHpeeAjLO02KyoJssoNs5TTgTISi7xRN5xvgNJDD/S4
+ B4rIX/vU8Qb7494IW9R9k6k+fiyn49V1lavZUR8OW4kxDv8gft6sJ5lpztnkHlhROoGw
+ 7tV1UyYenUyFCLuII4bEFsEMsP6IFch6X5OpyXZam9qTFdT/Fy1JgTjweunFPeWBAeOx
+ utaBq4G3lTPQPZtL4njJ4VyvYGBfbDbQ/u2Fi3KQsMT4xo5fikjQZrsAqHaNqsvgKjh+ wg== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3bh8e8ghe6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 06 Oct 2021 11:53:57 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 6B520100034;
+        Wed,  6 Oct 2021 11:53:56 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 6346F21BF6D;
+        Wed,  6 Oct 2021 11:53:56 +0200 (CEST)
+Received: from localhost (10.75.127.50) by SFHDAG2NODE2.st.com (10.75.127.5)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 6 Oct 2021 11:53:55
+ +0200
+From:   Amelie Delaunay <amelie.delaunay@foss.st.com>
+To:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Amelie Delaunay <amelie.delaunay@foss.st.com>
+Subject: [PATCH 1/1] ARM: dts: stm32: use usbphyc ck_usbo_48m as USBH OHCI clock on stm32mp151
+Date:   Wed, 6 Oct 2021 11:53:55 +0200
+Message-ID: <20211006095355.59078-1-amelie.delaunay@foss.st.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.50]
+X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE2.st.com
+ (10.75.127.5)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-10-06_02,2021-10-04_01,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aharon Landau <aharonl@nvidia.com>
+Referring to the note under USBH reset and clocks chapter of RM0436,
+"In order to access USBH_OHCI registers it is necessary to activate the USB
+clocks by enabling the PLL controlled by USBPHYC" (ck_usbo_48m).
 
-When get_hw_stats is called, query and return the optional counter
-statistic as well.
+The point is, when USBPHYC PLL is not enabled, OHCI register access
+freezes the resume from STANDBY. It is the case when dual USBH is enabled,
+instead of OTG + single USBH.
+When OTG is probed, as ck_usbo_48m is USBO clock parent, then USBPHYC PLL
+is enabled and OHCI register access is OK.
 
-Signed-off-by: Aharon Landau <aharonl@nvidia.com>
-Reviewed-by: Mark Zhang <markzhang@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+This patch adds ck_usbo_48m (provided by USBPHYC PLL) as clock of USBH
+OHCI, thus USBPHYC PLL will be enabled and OHCI register access will be OK.
+
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
 ---
- drivers/infiniband/hw/mlx5/counters.c | 88 ++++++++++++++++++++++++++-
- 1 file changed, 85 insertions(+), 3 deletions(-)
+ arch/arm/boot/dts/stm32mp151.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/hw/mlx5/counters.c b/drivers/infiniband/hw/mlx5/counters.c
-index 6ee340c63b20..6f1c4b57110e 100644
---- a/drivers/infiniband/hw/mlx5/counters.c
-+++ b/drivers/infiniband/hw/mlx5/counters.c
-@@ -270,9 +270,9 @@ static int mlx5_ib_query_ext_ppcnt_counters(struct mlx5_ib_dev *dev,
- 	return ret;
- }
- 
--static int mlx5_ib_get_hw_stats(struct ib_device *ibdev,
--				struct rdma_hw_stats *stats,
--				u32 port_num, int index)
-+static int do_get_hw_stats(struct ib_device *ibdev,
-+			   struct rdma_hw_stats *stats,
-+			   u32 port_num, int index)
- {
- 	struct mlx5_ib_dev *dev = to_mdev(ibdev);
- 	const struct mlx5_ib_counters *cnts = get_counters(dev, port_num - 1);
-@@ -324,6 +324,88 @@ static int mlx5_ib_get_hw_stats(struct ib_device *ibdev,
- 	return num_counters;
- }
- 
-+static int do_get_op_stat(struct ib_device *ibdev,
-+			  struct rdma_hw_stats *stats,
-+			  u32 port_num, int index)
-+{
-+	struct mlx5_ib_dev *dev = to_mdev(ibdev);
-+	const struct mlx5_ib_counters *cnts;
-+	const struct mlx5_ib_op_fc *opfcs;
-+	u64 packets = 0, bytes;
-+	u32 type;
-+	int ret;
-+
-+	cnts = get_counters(dev, port_num - 1);
-+	opfcs = cnts->opfcs;
-+	type = *(u32 *)cnts->descs[index].priv;
-+	if (type >= MLX5_IB_OPCOUNTER_MAX)
-+		return -EINVAL;
-+
-+	if (!opfcs[type].fc)
-+		goto out;
-+
-+	ret = mlx5_fc_query(dev->mdev, opfcs[type].fc,
-+			    &packets, &bytes);
-+	if (ret)
-+		return ret;
-+
-+out:
-+	stats->value[index] = packets;
-+	return index;
-+}
-+
-+static int do_get_op_stats(struct ib_device *ibdev,
-+			   struct rdma_hw_stats *stats,
-+			   u32 port_num)
-+{
-+	struct mlx5_ib_dev *dev = to_mdev(ibdev);
-+	const struct mlx5_ib_counters *cnts;
-+	int index, ret, num_hw_counters;
-+
-+	cnts = get_counters(dev, port_num - 1);
-+	num_hw_counters = cnts->num_q_counters + cnts->num_cong_counters +
-+			  cnts->num_ext_ppcnt_counters;
-+	for (index = num_hw_counters;
-+	     index < (num_hw_counters + cnts->num_op_counters); index++) {
-+		ret = do_get_op_stat(ibdev, stats, port_num, index);
-+		if (ret != index)
-+			return ret;
-+	}
-+
-+	return cnts->num_op_counters;
-+}
-+
-+static int mlx5_ib_get_hw_stats(struct ib_device *ibdev,
-+				struct rdma_hw_stats *stats,
-+				u32 port_num, int index)
-+{
-+	int num_counters, num_hw_counters, num_op_counters;
-+	struct mlx5_ib_dev *dev = to_mdev(ibdev);
-+	const struct mlx5_ib_counters *cnts;
-+
-+	cnts = get_counters(dev, port_num - 1);
-+	num_hw_counters = cnts->num_q_counters + cnts->num_cong_counters +
-+		cnts->num_ext_ppcnt_counters;
-+	num_counters = num_hw_counters + cnts->num_op_counters;
-+
-+	if (index < 0 || index > num_counters)
-+		return -EINVAL;
-+	else if (index > 0 && index < num_hw_counters)
-+		return do_get_hw_stats(ibdev, stats, port_num, index);
-+	else if (index >= num_hw_counters && index < num_counters)
-+		return do_get_op_stat(ibdev, stats, port_num, index);
-+
-+	num_hw_counters = do_get_hw_stats(ibdev, stats, port_num, index);
-+	if (num_hw_counters < 0)
-+		return num_hw_counters;
-+
-+	num_op_counters = do_get_op_stats(ibdev, stats, port_num);
-+	if (num_op_counters < 0)
-+		return num_op_counters;
-+
-+	return num_hw_counters + num_op_counters;
-+}
-+
- static struct rdma_hw_stats *
- mlx5_ib_counter_alloc_stats(struct rdma_counter *counter)
- {
+diff --git a/arch/arm/boot/dts/stm32mp151.dtsi b/arch/arm/boot/dts/stm32mp151.dtsi
+index bd289bf5d269..fe194c787e6c 100644
+--- a/arch/arm/boot/dts/stm32mp151.dtsi
++++ b/arch/arm/boot/dts/stm32mp151.dtsi
+@@ -1452,7 +1452,7 @@ stmmac_axi_config_0: stmmac-axi-config {
+ 		usbh_ohci: usb@5800c000 {
+ 			compatible = "generic-ohci";
+ 			reg = <0x5800c000 0x1000>;
+-			clocks = <&rcc USBH>;
++			clocks = <&rcc USBH>, <&usbphyc>;
+ 			resets = <&rcc USBH_R>;
+ 			interrupts = <GIC_SPI 74 IRQ_TYPE_LEVEL_HIGH>;
+ 			status = "disabled";
 -- 
-2.31.1
+2.25.1
 
