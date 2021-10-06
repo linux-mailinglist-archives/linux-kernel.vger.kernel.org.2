@@ -2,86 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 702AA424676
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 21:08:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D0CE42467B
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 21:08:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239223AbhJFTKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 15:10:10 -0400
-Received: from mail-ot1-f44.google.com ([209.85.210.44]:36643 "EHLO
-        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239153AbhJFTKI (ORCPT
+        id S239285AbhJFTKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 15:10:14 -0400
+Received: from mail-oi1-f176.google.com ([209.85.167.176]:43653 "EHLO
+        mail-oi1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239194AbhJFTKM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 15:10:08 -0400
-Received: by mail-ot1-f44.google.com with SMTP id 5-20020a9d0685000000b0054706d7b8e5so4425003otx.3;
-        Wed, 06 Oct 2021 12:08:15 -0700 (PDT)
+        Wed, 6 Oct 2021 15:10:12 -0400
+Received: by mail-oi1-f176.google.com with SMTP id o4so5424125oia.10;
+        Wed, 06 Oct 2021 12:08:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=3flmeFTtK50jBy1sd7u96vAnvkYzGiMbNOeFLQczGgE=;
-        b=7MYZKLh0meW6LCI51yo1vGtCJAc5z9wRwqU4xuf6O7S29R/dRzJ1Qp8XJaqJP6bwnV
-         DvlGC3PSjII7JE/DthqY8iMcMqhg/CAFg/T+aX+t14/k1VcdPZT63aOHve5/FVYBFNSW
-         N45A/dYE/E8cNADINzlnG8PX0oMRjFHjFoU2ICc68AiWlBArQDEwQqRRpkkmdThl63qe
-         zcqMtHPq63H7/yWB2IWNM6sFeR3hC5PGAuGIwGJH69/XpzH3DB0kD3uDYBg/mk7fHcuD
-         Jw1eOHgWgWReEGNGS/30vM8Nx85b0F6wvelbNyvczvaEPoLZJO501vNn9lr6Bassr5Q4
-         gzgA==
-X-Gm-Message-State: AOAM531m4rVGTgIe9WQDye5eHUtM8bpSv/6pgrW331vIKX9tJqHZj0dk
-        3sPAO2S5op/BNCOIyO62RA==
-X-Google-Smtp-Source: ABdhPJzSOlmbu7vtSuxS0zm9FxYUsJ0u5rcivP5wp1X1pGDsd4V2fzO+v0Ui0n45a6zuFUUYv9hwhw==
-X-Received: by 2002:a05:6830:79c:: with SMTP id w28mr371114ots.332.1633547295394;
-        Wed, 06 Oct 2021 12:08:15 -0700 (PDT)
+        bh=0xIolMsWNMus3qJwhgGl45wy3tQx3DQv3XGTqM+vTLk=;
+        b=F29pBaEp/sNsmqZ7hwL1hPK73Xe2kCSUlxcfjoM8UArsY3bohdmbw/dfSYPUGQgjST
+         UQLYLQ4X2L6RikpIGeJ7H4QzmVUE30jtxZTjeXtfdqeQpPY1GQ+4KW1HZ3buHH+Gz6cL
+         dyiYXPnhTz+qnT8V77kzQ7pnfKcJnQc4lORX0GYC76P26fJWaSQI+M++ue2aWJ7vNc9F
+         wNw66E/IBNP1+AlZbrO5cCMCOBqnW/JQxr1Z/XcWP/KOBI4IBPMSrzgUD1F0Ga2Yz3Tk
+         f8LTjnnkTf8GkyP4O1AwBbiis7H7cPCvWAM84OnW9gmUzeNOWCF3tjYTetBPrPT8F+tF
+         mitw==
+X-Gm-Message-State: AOAM530OQO6q8Z4J3b0lYZ3sudrejsehe1Qpy/PGVH2mXCki2swV3exF
+        01ojBv4B+IaOp+DsuUOYwA==
+X-Google-Smtp-Source: ABdhPJy1kBzMU6zdZ+h8Ykw9XssXwJUCydJJOI1gleXOB7lXtcoPgfmyimwEKXHkOXkmkG62VJQYow==
+X-Received: by 2002:a05:6808:1a04:: with SMTP id bk4mr31213oib.85.1633547299133;
+        Wed, 06 Oct 2021 12:08:19 -0700 (PDT)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id i24sm4165829oie.42.2021.10.06.12.08.13
+        by smtp.gmail.com with ESMTPSA id e28sm909490oth.40.2021.10.06.12.08.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Oct 2021 12:08:14 -0700 (PDT)
-Received: (nullmailer pid 2218061 invoked by uid 1000);
+        Wed, 06 Oct 2021 12:08:18 -0700 (PDT)
+Received: (nullmailer pid 2218066 invoked by uid 1000);
         Wed, 06 Oct 2021 19:08:13 -0000
 From:   Rob Herring <robh@kernel.org>
 To:     Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, linux-clk@vger.kernel.org,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-kernel@vger.kernel.org,
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
         Masami Hiramatsu <mhiramat@kernel.org>,
-        devicetree@vger.kernel.org, Stephen Boyd <sboyd@kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-In-Reply-To: <1633518555-8195-5-git-send-email-hayashi.kunihiko@socionext.com>
-References: <1633518555-8195-1-git-send-email-hayashi.kunihiko@socionext.com> <1633518555-8195-5-git-send-email-hayashi.kunihiko@socionext.com>
-Subject: Re: [PATCH v2 4/5] dt-bindings: clock: uniphier: Add clock binding for SoC-glue
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <1633518606-8298-3-git-send-email-hayashi.kunihiko@socionext.com>
+References: <1633518606-8298-1-git-send-email-hayashi.kunihiko@socionext.com> <1633518606-8298-3-git-send-email-hayashi.kunihiko@socionext.com>
+Subject: Re: [PATCH v2 2/3] dt-bindings: pinctrl: uniphier: Add NX1 pinctrl binding
 Date:   Wed, 06 Oct 2021 14:08:13 -0500
-Message-Id: <1633547293.518535.2218060.nullmailer@robh.at.kernel.org>
+Message-Id: <1633547293.534465.2218065.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 06 Oct 2021 20:09:14 +0900, Kunihiko Hayashi wrote:
-> Update binding document for clocks implemented in SoC-glue.
+On Wed, 06 Oct 2021 20:10:05 +0900, Kunihiko Hayashi wrote:
+> Update pinctrl binding document for UniPhier NX1 SoC.
 > 
+> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 > Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
 > ---
->  .../bindings/clock/socionext,uniphier-clock.yaml         | 16 ++++++++++++++++
->  1 file changed, 16 insertions(+)
+>  .../devicetree/bindings/pinctrl/socionext,uniphier-pinctrl.yaml          | 1 +
+>  1 file changed, 1 insertion(+)
 > 
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+Running 'make dtbs_check' with the schema in this patch gives the
+following warnings. Consider if they are expected or the schema is
+incorrect. These may not be new warnings.
 
-yamllint warnings/errors:
+Note that it is not yet a requirement to have 0 warnings for dtbs_check.
+This will change in the future.
 
-dtschema/dtc warnings/errors:
-Documentation/devicetree/bindings/clock/socionext,uniphier-clock.example.dt.yaml:0:0: /example-3/soc-glue@5f800000: failed to match any schema with compatible: ['socionext,uniphier-sysctrl', 'simple-mfd', 'syscon']
+Full log is available here: https://patchwork.ozlabs.org/patch/1537066
 
-doc reference errors (make refcheckdocs):
 
-See https://patchwork.ozlabs.org/patch/1537058
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
+pinctrl: 'ain1', 'ain2', 'ainiec1', 'aout', 'aout1', 'aout2', 'aout3', 'aoutiec1', 'aoutiec2', 'emmc', 'ether-mii', 'ether-rgmii', 'ether-rmii', 'ether1-rgmii', 'ether1-rmii', 'i2c0', 'i2c1', 'i2c2', 'i2c3', 'i2c4', 'i2c5', 'i2c6', 'nand', 'nand2cs', 'pcie', 'sd', 'sd-uhs', 'sd1', 'spi0', 'spi1', 'spi2', 'spi3', 'system-bus', 'uart0', 'uart1', 'uart2', 'uart3', 'usb0', 'usb1', 'usb2', 'usb3' do not match any of the regexes: 'pinctrl-[0-9]+'
+	arch/arm64/boot/dts/socionext/uniphier-ld11-global.dt.yaml
+	arch/arm64/boot/dts/socionext/uniphier-ld11-ref.dt.yaml
+	arch/arm64/boot/dts/socionext/uniphier-ld20-akebi96.dt.yaml
+	arch/arm64/boot/dts/socionext/uniphier-ld20-global.dt.yaml
+	arch/arm64/boot/dts/socionext/uniphier-ld20-ref.dt.yaml
+	arch/arm64/boot/dts/socionext/uniphier-pxs3-ref.dt.yaml
+	arch/arm/boot/dts/uniphier-ld4-ref.dt.yaml
+	arch/arm/boot/dts/uniphier-ld6b-ref.dt.yaml
+	arch/arm/boot/dts/uniphier-pro4-ace.dt.yaml
+	arch/arm/boot/dts/uniphier-pro4-ref.dt.yaml
+	arch/arm/boot/dts/uniphier-pro4-sanji.dt.yaml
+	arch/arm/boot/dts/uniphier-pxs2-gentil.dt.yaml
+	arch/arm/boot/dts/uniphier-pxs2-vodka.dt.yaml
+	arch/arm/boot/dts/uniphier-sld8-ref.dt.yaml
 
