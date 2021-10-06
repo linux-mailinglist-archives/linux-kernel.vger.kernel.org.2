@@ -2,125 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CD934235D0
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 04:27:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDE934235D3
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 04:29:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237218AbhJFC3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 22:29:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42164 "EHLO
+        id S237183AbhJFCbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 22:31:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237168AbhJFC3m (ORCPT
+        with ESMTP id S229908AbhJFCbU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 22:29:42 -0400
-Received: from mail-vs1-xe2c.google.com (mail-vs1-xe2c.google.com [IPv6:2607:f8b0:4864:20::e2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E38F2C06174E
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 19:27:50 -0700 (PDT)
-Received: by mail-vs1-xe2c.google.com with SMTP id v4so1274266vsg.12
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 19:27:50 -0700 (PDT)
+        Tue, 5 Oct 2021 22:31:20 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FA0FC061749
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 19:29:29 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id 66so1084680pgc.9
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 19:29:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4OYSce36HFIDKSweIZsHOeEUQcMTMlRZW+u2FdUpafE=;
-        b=gHppIZL0NNL41Ah+TizK4cJGOSQt6n8ckgXCCWKJaVG6WuNu6D39wA8hcCUdEJ2ZBF
-         qP4uE8XmPBjyiFvPVso2jkrCUkzwGiwtyJdgYFh1W5jA3tUXXB194CJSf1C7SEgMRs4W
-         P6IDsUGsVQQvAQ7Amh1603Oup30JJYY0v3AZShcjcLS2cXmQ+BJ6vQoFS+wc7BMdd6bh
-         3EMeA44QQpjNXBGt2u4IpozI3Xy6CHpvFOfLvcPRLEmIVi6pIMRUrkMqgtyU0i2mHuuj
-         Q0k1kaP8hRW26c/ju0oSzrupcbkC9MJyflrfUTGXotsjd/k5vs3AS5biUUCmwpkqPkfE
-         RsZw==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Sz7y3ippQxa0H/IuFAdDEK40pN2B6QfqrRhf4vYPERM=;
+        b=KBrSWdbI3+9YUBiU1Raqd+E73k5fETH6Wx8MhhYZlxXEarCjM3eOnFSkqoNTh3+iPr
+         vTmlT9oGQNCFKIwrHDD/qAfjiYDZnMIVUgVS8X43EmPExAvS9/qtJPAwTC+wuJdYJSAd
+         v8J2PfuDNk47zupaLUfcVAbaJWg+4esUpQFMM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4OYSce36HFIDKSweIZsHOeEUQcMTMlRZW+u2FdUpafE=;
-        b=y/9kCOPtKzJC06hKJ2wFy7gClqU2JptiJACQ31GeXghg8+++twbuffKa8PH5Rwl83p
-         M2v/ay64h3bW7pC6Aoix0mLQ69j9e98q+ZC0W1qp4lGcmn1X5AK4XGlWX+nVPMd1EZsY
-         NQgnxMfULUNViXTIt3Yefl8uhYFJD35KJziNLBXiPAFo5sd4oiM635NlKdvEX32Usfty
-         NqOBKQo6fUI+UDwTtf49TZCHINu/6yeC9tTSSLQXMOxtYVLjvBLJQyCiuCqN4/po+kIm
-         1ejvzwi+8lYytsGyndPXuKAOXJWSFwp1mQ3yDCPfRd1Ov/A8EcbzjIbrLQAnoab6FM/V
-         aYbA==
-X-Gm-Message-State: AOAM531y3Bn4CbX++hXzxMr7R1G9bAbwq1axpEnQZ/iaXwzvOigBZ7Km
-        U9C2t7OXWByLz3BeQhH8MoQwI1zPH38Ah/hi2gUxRw==
-X-Google-Smtp-Source: ABdhPJyTH29CQo/Jwiml4RScXu5onK6nUS1xqUF5+/gSLGjq9q1MVF4srzfle3qW/NbIcsfW6Jj+di+yUzIVAAeTe7Y=
-X-Received: by 2002:a67:fd67:: with SMTP id h7mr382372vsa.52.1633487269836;
- Tue, 05 Oct 2021 19:27:49 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Sz7y3ippQxa0H/IuFAdDEK40pN2B6QfqrRhf4vYPERM=;
+        b=QHVEnZkbNGclNQtp18a9PupuV6Uf2C2FEJpxAvSxbBwyKblcuo2i/N40M28UXjMn93
+         ibzg1hNuvf9K1LX4TMPUSAJRaVF52uoPU6gSO+xRnMf3Uzg9xwwUiJf/wUDH3ECzeQg5
+         GpS20ZREZycKiRF6a5pSsndP1/V0SMVHBSbqccWcdBnMlVdwoeR2TjJ9GqmaKr3k7nQ3
+         VDeQ/a72hEH7zgRh9dDEAbhYUnvXFQrcw5+oDWzRZ0wpTtjwWVahJUXwcPbgX6bKeQma
+         ZDwPGOig+PHbUvR35m/JBah4Ho6l4ZlXbT7Ap70NezKWxGZM/GJGeusAnQ6pmRxVvsFI
+         hfCQ==
+X-Gm-Message-State: AOAM532YuQk5Y3Tt+JQ7bKuCVelAhHP9eMSCxZbSi+K5JXLYzocvvUfg
+        sAIKNmXq1bvXI7AmktBI4teOLsEV8VpVtw==
+X-Google-Smtp-Source: ABdhPJz6xXzmXTGDKz/phC2NPCwms3/AsNl+Pj68f7tGHPEunhH0H+DHQZgn79rCUGho/WJx2PkiiA==
+X-Received: by 2002:aa7:9d0b:0:b0:44c:62a6:8679 with SMTP id k11-20020aa79d0b000000b0044c62a68679mr13809829pfp.0.1633487369108;
+        Tue, 05 Oct 2021 19:29:29 -0700 (PDT)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:201:68e6:d130:478e:edbd])
+        by smtp.gmail.com with ESMTPSA id z4sm19497744pfz.99.2021.10.05.19.29.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Oct 2021 19:29:28 -0700 (PDT)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     dri-devel@lists.freedesktop.org
+Cc:     Rodrigo.Siqueira@amd.com, Jerry.Zuo@amd.com,
+        alexander.deucher@amd.com, Harry.Wentland@amd.com,
+        khsieh@codeaurora.org, ville.syrjala@linux.intel.com,
+        Douglas Anderson <dianders@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] drm/edid: In connector_bad_edid() cap num_of_ext by num_blocks read
+Date:   Tue,  5 Oct 2021 19:29:08 -0700
+Message-Id: <20211005192905.v2.1.Ib059f9c23c2611cb5a9d760e7d0a700c1295928d@changeid>
+X-Mailer: git-send-email 2.33.0.800.g4c38ced690-goog
 MIME-Version: 1.0
-References: <20211001175521.3853257-1-tkjos@google.com> <c6a650e4-15e4-2943-f759-0e9577784c7a@schaufler-ca.com>
- <CAG48ez2tejBUXJGf0R9qpEiauL9-ABgkds6mZTQD7sZKLMdAAQ@mail.gmail.com>
- <CAG48ez1SRau1Tnge5HVqxCFsNCizmnQLErqnC=eSeERv8jg-zQ@mail.gmail.com>
- <f59c6e9f-2892-32da-62f8-8bbeec18ee4c@schaufler-ca.com> <CAG48ez0yF0u=QBLVL2XrGB8r8ouQj-_aS9SScu4O4f+LhZxCDw@mail.gmail.com>
- <e0c1fab9-cb97-d5af-1f4b-f15b6b2097fd@schaufler-ca.com> <CAG48ez3qc+2sc6xTJQVqLTRcjCiw_Adx13KT3OvPMCjBLjZvgA@mail.gmail.com>
- <6bd2de29-b46a-1d24-4c73-9e4e0f3f6eea@schaufler-ca.com> <CAG48ez0RM6NGZLdEjaqU9KmaOgeFR6cSeNo50XG9oaFxC_ayYw@mail.gmail.com>
- <CAEjxPJ4X4N_zgH4oRbdkZi21mvS--ExDb_1gad09buMHshB_hQ@mail.gmail.com> <7ec1090d-5bd7-bd05-4f38-07b1cc993721@schaufler-ca.com>
-In-Reply-To: <7ec1090d-5bd7-bd05-4f38-07b1cc993721@schaufler-ca.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Wed, 6 Oct 2021 04:27:22 +0200
-Message-ID: <CAG48ez3ZxzO3fa0T3pE0a4wQYQDvBNY=i+Nj4MtZq-QHtJdFdA@mail.gmail.com>
-Subject: Re: [PATCH v2] binder: use cred instead of task for selinux checks
-To:     Casey Schaufler <casey@schaufler-ca.com>
-Cc:     Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Todd Kjos <tkjos@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        arve@android.com, tkjos@android.com, maco@android.com,
-        christian@brauner.io, James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Paul Moore <paul@paul-moore.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Kees Cook <keescook@chromium.org>,
-        Jeffrey Vander Stoep <jeffv@google.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        SElinux list <selinux@vger.kernel.org>,
-        devel@driverdev.osuosl.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 5, 2021 at 6:59 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
-> On 10/5/2021 8:21 AM, Stephen Smalley wrote:
-> > On Mon, Oct 4, 2021 at 8:27 PM Jann Horn <jannh@google.com> wrote:
-> >> On Tue, Oct 5, 2021 at 1:38 AM Casey Schaufler <casey@schaufler-ca.com> wrote:
-> >>> On 10/4/2021 3:28 PM, Jann Horn wrote:
-> >>>> You can't really attribute binder transactions to specific tasks that
-> >>>> are actually involved in the specific transaction, neither on the
-> >>>> sending side nor on the receiving side, because binder is built around
-> >>>> passing data through memory mappings. Memory mappings can be accessed
-> >>>> by multiple tasks, and even a task that does not currently have it
-> >>>> mapped could e.g. map it at a later time. And on top of that you have
-> >>>> the problem that the receiving task might also go through privileged
-> >>>> execve() transitions.
-> >>> OK. I'm curious now as to why the task_struct was being passed to the
-> >>> hook in the first place.
-> >> Probably because that's what most other LSM hooks looked like and the
-> >> authors/reviewers of the patch didn't realize that this model doesn't
-> >> really work for binder? FWIW, these hooks were added in commit
-> >> 79af73079d75 ("Add security hooks to binder and implement the hooks
-> >> for SELinux."). The commit message also just talks about "processes".
-> > Note that in the same code path (binder_transaction), sender_euid is
-> > set from proc->tsk and security_ctx is based on proc->tsk. If we are
-> > changing the hooks to operate on the opener cred, then presumably we
-> > should be doing that for sender_euid and replace the
-> > security_task_getsecid_obj() call with security_cred_getsecid()?
-> >
-> > NB Mandatory Access Control doesn't allow uncontrolled delegation,
-> > hence typically checks against the subject credential either at
-> > delegation/transfer or use or both. That's true in other places too,
-> > e.g. file_permission, socket_sendmsg.
->
-> Terrific. Now I'm even less convinced that either the proposed change
-> or the existing code make sense. It's also disturbing that the change
-> log claims that the reason for the change is fix a race condition when
-> in fact it changes the data being sent to the hook completely.
+In commit e11f5bd8228f ("drm: Add support for DP 1.4 Compliance edid
+corruption test") the function connector_bad_edid() started assuming
+that the memory for the EDID passed to it was big enough to hold
+`edid[0x7e] + 1` blocks of data (1 extra for the base block). It
+completely ignored the fact that the function was passed `num_blocks`
+which indicated how much memory had been allocated for the EDID.
 
-The race it's referring to is the one between
-security_binder_transaction() (which checks for permission to send a
-transaction and checks for delegation) and
-security_task_getsecid_obj() (which tells the recipient what the
-sender's security context is). (It's a good thing Paul noticed that
-the v1 patch didn't actually change the security_task_getsecid_obj()
-call... somehow I missed that.)
+Let's fix this by adding a bounds check.
+
+This is important for handling the case where there's an error in the
+first block of the EDID. In that case we will call
+connector_bad_edid() without having re-allocated memory based on
+`edid[0x7e]`.
+
+Fixes: e11f5bd8228f ("drm: Add support for DP 1.4 Compliance edid corruption test")
+Reported-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Reviewed-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
+---
+This problem report came up in the context of a patch I sent out [1]
+and this is my attempt at a fix. The problem predates my patch,
+though. I don't personally know anything about DP compliance testing
+and what should be happening here, nor do I apparently have any
+hardware that actually reports a bad EDID. Thus this is just compile
+tested. I'm hoping that someone here can test this and make sure it
+seems OK to them.
+
+Changes in v2:
+- Added a comment/changed math to help make it easier to grok.
+
+ drivers/gpu/drm/drm_edid.c | 15 ++++++++++++---
+ 1 file changed, 12 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
+index 9c9463ec5465..0383d97c306f 100644
+--- a/drivers/gpu/drm/drm_edid.c
++++ b/drivers/gpu/drm/drm_edid.c
+@@ -1840,11 +1840,20 @@ static void connector_bad_edid(struct drm_connector *connector,
+ 			       u8 *edid, int num_blocks)
+ {
+ 	int i;
+-	u8 num_of_ext = edid[0x7e];
++	u8 last_block;
++
++	/*
++	 * 0x7e in the EDID is the number of extension blocks. The EDID
++	 * is 1 (base block) + num_ext_blocks big. That means we can think
++	 * of 0x7e in the EDID of the _index_ of the last block in the
++	 * combined chunk of memory.
++	 */
++	last_block = edid[0x7e];
+ 
+ 	/* Calculate real checksum for the last edid extension block data */
+-	connector->real_edid_checksum =
+-		drm_edid_block_checksum(edid + num_of_ext * EDID_LENGTH);
++	if (last_block < num_blocks)
++		connector->real_edid_checksum =
++			drm_edid_block_checksum(edid + last_block * EDID_LENGTH);
+ 
+ 	if (connector->bad_edid_counter++ && !drm_debug_enabled(DRM_UT_KMS))
+ 		return;
+-- 
+2.33.0.800.g4c38ced690-goog
+
