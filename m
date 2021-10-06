@@ -2,133 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53E524239DB
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 10:39:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C37E4239E0
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 10:41:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237637AbhJFIlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 04:41:44 -0400
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:38407 "EHLO
-        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231415AbhJFIlm (ORCPT
+        id S237751AbhJFInL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 04:43:11 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:41130 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231415AbhJFInK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 04:41:42 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=rongwei.wang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0Uqjldqo_1633509587;
-Received: from 192.168.31.179(mailfrom:rongwei.wang@linux.alibaba.com fp:SMTPD_---0Uqjldqo_1633509587)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 06 Oct 2021 16:39:48 +0800
-Message-ID: <ad61320f-7903-997f-b468-8d260ea0ad66@linux.alibaba.com>
-Date:   Wed, 6 Oct 2021 16:39:47 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:93.0)
- Gecko/20100101 Thunderbird/93.0
-Subject: Re: [PATCH v3 v3 2/2] mm, thp: bail out early in collapse_file for
- writeback page
-Content-Language: en-US
-To:     Matthew Wilcox <willy@infradead.org>
+        Wed, 6 Oct 2021 04:43:10 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id B52791FE98;
+        Wed,  6 Oct 2021 08:41:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1633509677; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8iu+sHBr3seFeFij8nLPdAVGaZLAx3fbH3tVLrNu7NQ=;
+        b=TJDgMTMj6Wtd3SCKBoX+ex/PL+tUJK47pZ+vtJ45PEhdEPq4oHvYSXrv6Z2GHTPDjiNho9
+        XnydJBvT8I4QsICqybfqcBnUg0d6KvBTFrDskXKeoAWT2T1xCGeDl63MX87QFgS1M79vBg
+        REEWPGN6X9bYTFCohe5y3xFf/h9js6Y=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1633509677;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8iu+sHBr3seFeFij8nLPdAVGaZLAx3fbH3tVLrNu7NQ=;
+        b=Zo7W2GBFP3SlKdEXqVO73V0CuoBRtXKMOGesej1y2h+HXcLlnPPOBsfbbQYraAs1WyyhGm
+        qISsCRRiKXZV/lAg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1AD8213E19;
+        Wed,  6 Oct 2021 08:41:17 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id ep0IAy1hXWEaNAAAMHmgww
+        (envelope-from <osalvador@suse.de>); Wed, 06 Oct 2021 08:41:17 +0000
+Date:   Wed, 6 Oct 2021 10:41:15 +0200
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
 Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        akpm@linux-foundation.org, song@kernel.org,
-        william.kucharski@oracle.com, hughd@google.com
-References: <20210906121200.57905-1-rongwei.wang@linux.alibaba.com>
- <20211006021837.59721-1-rongwei.wang@linux.alibaba.com>
- <20211006021837.59721-3-rongwei.wang@linux.alibaba.com>
- <YV0M9NHi6I4ULFe6@casper.infradead.org>
-From:   Rongwei Wang <rongwei.wang@linux.alibaba.com>
-In-Reply-To: <YV0M9NHi6I4ULFe6@casper.infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+        David Hildenbrand <david@redhat.com>,
+        Michal Hocko <mhocko@suse.com>, Zi Yan <ziy@nvidia.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Naoya Horiguchi <naoya.horiguchi@linux.dev>,
+        David Rientjes <rientjes@google.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v3 5/5] hugetlb: add hugetlb demote page support
+Message-ID: <20211006084112.GA12288@linux>
+References: <20211001175210.45968-1-mike.kravetz@oracle.com>
+ <20211001175210.45968-6-mike.kravetz@oracle.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211001175210.45968-6-mike.kravetz@oracle.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Oct 01, 2021 at 10:52:10AM -0700, Mike Kravetz wrote:
+> Demote page functionality will split a huge page into a number of huge
+> pages of a smaller size.  For example, on x86 a 1GB huge page can be
+> demoted into 512 2M huge pages.  Demotion is done 'in place' by simply
+> splitting the huge page.
+> 
+> Added '*_for_demote' wrappers for remove_hugetlb_page,
+> destroy_compound_gigantic_page and prep_compound_gigantic_page for use
+> by demote code.
+> 
+> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+> ---
+>  mm/hugetlb.c | 82 +++++++++++++++++++++++++++++++++++++++++++++++-----
+>  1 file changed, 74 insertions(+), 8 deletions(-)
+> 
+...  
+> +static int demote_free_huge_page(struct hstate *h, struct page *page)
+> +{
+> +	int i, nid = page_to_nid(page);
+> +	struct hstate *target_hstate;
+> +	int rc = 0;
+> +
+> +	target_hstate = size_to_hstate(PAGE_SIZE << h->demote_order);
+> +
+> +	remove_hugetlb_page_for_demote(h, page, false);
+> +	spin_unlock_irq(&hugetlb_lock);
+> +
+> +	rc = alloc_huge_page_vmemmap(h, page);
+> +	if (rc) {
+> +		/* Allocation of vmemmmap failed, we can not demote page */
+> +		spin_lock_irq(&hugetlb_lock);
+> +		set_page_refcounted(page);
+> +		add_hugetlb_page(h, page, false);
+> +		return rc;
+> +	}
+
+Question: You keep the original error code returned from alloc_huge_page_vmemmap()
+here, but then you lose it on demote_pool_huge_page() when doing the
+!demote_free_huge_page. Would not make more sense to keep it all the way down to 
+demote_store() in case you want to return the actual error code?
+
+> +
+> +	/*
+> +	 * Use destroy_compound_gigantic_page_for_demote for all huge page
+> +	 * sizes as it will not ref count pages.
+> +	 */
+> +	destroy_compound_gigantic_page_for_demote(page, huge_page_order(h));
+
+It seems that for now we only allow gigantic pages to be demoted, but
+destroy_compound_gigantic_page_for_demote feels kind of wrong, even
+if it is only a wrapper that ends up calling _*gigantic_ functions.
+
+We want a routine that destroy a hugetlb to be demoted into smaller hugetlb
+pages, so the name gigantic makes little sense to appear in my opinion.
+
+>  static int demote_pool_huge_page(struct hstate *h, nodemask_t *nodes_allowed)
+>  	__must_hold(&hugetlb_lock)
+>  {
+> +	int nr_nodes, node;
+> +	struct page *page;
+>  	int rc = 0;
+>  
+>  	lockdep_assert_held(&hugetlb_lock);
+> @@ -3313,9 +3377,15 @@ static int demote_pool_huge_page(struct hstate *h, nodemask_t *nodes_allowed)
+>  	if (!h->demote_order)
+>  		return rc;
+>  
+> -	/*
+> -	 * TODO - demote fucntionality will be added in subsequent patch
+> -	 */
+> +	for_each_node_mask_to_free(h, nr_nodes, node, nodes_allowed) {
+> +		if (!list_empty(&h->hugepage_freelists[node])) {
+> +			page = list_entry(h->hugepage_freelists[node].next,
+> +					struct page, lru);
+> +			rc = !demote_free_huge_page(h, page);
+
+I kinda dislike this as I pointed out.
 
 
-On 10/6/21 10:41 AM, Matthew Wilcox wrote:
-> On Wed, Oct 06, 2021 at 10:18:37AM +0800, Rongwei Wang wrote:
->> Currently collapse_file does not explicitly check PG_writeback, instead,
->> page_has_private and try_to_release_page are used to filter writeback
->> pages. This does not work for xfs with blocksize equal to or larger
->> than pagesize, because in such case xfs has no page->private.
->>
->> This makes collapse_file bail out early for writeback page. Otherwise,
->> xfs end_page_writeback will panic as follows.
-> 
-> Could you cut the timestamps out?  They don't add any value.
-OK, no problem!
-> 
->> [ 6411.448211] page:fffffe00201bcc80 refcount:0 mapcount:0 mapping:ffff0003f88c86a8 index:0x0 pfn:0x84ef32
->> [ 6411.448304] aops:xfs_address_space_operations [xfs] ino:30000b7 dentry name:"libtest.so"
->> [ 6411.448312] flags: 0x57fffe0000008027(locked|referenced|uptodate|active|writeback)
->> [ 6411.448317] raw: 57fffe0000008027 ffff80001b48bc28 ffff80001b48bc28 ffff0003f88c86a8
->> [ 6411.448321] raw: 0000000000000000 0000000000000000 00000000ffffffff ffff0000c3e9a000
->> [ 6411.448324] page dumped because: VM_BUG_ON_PAGE(((unsigned int) page_ref_count(page) + 127u <= 127u))
->> [ 6411.448327] page->mem_cgroup:ffff0000c3e9a000
->> [ 6411.448340] ------------[ cut here ]------------
->> [ 6411.448343] kernel BUG at include/linux/mm.h:1212!
->> [ 6411.449288] Internal error: Oops - BUG: 0 [#1] SMP
->> [ 6411.449786] Modules linked in:
->> [ 6411.449790] BUG: Bad page state in process khugepaged  pfn:84ef32
->> [ 6411.450143]  xfs(E)
->> [ 6411.450459] page:fffffe00201bcc80 refcount:0 mapcount:0 mapping:0 index:0x0 pfn:0x84ef32
->> [ 6411.451361]  libcrc32c(E) rfkill(E) aes_ce_blk(E) crypto_simd(E) ...
->> [ 6411.451387] CPU: 25 PID: 0 Comm: swapper/25 Kdump: loaded Tainted: ...
->> [ 6411.451389] pstate: 60400005 (nZCv daif +PAN -UAO -TCO BTYPE=--)
->> [ 6411.451393] pc : end_page_writeback+0x1c0/0x214
->> [ 6411.451394] lr : end_page_writeback+0x1c0/0x214
->> [ 6411.451395] sp : ffff800011ce3cc0
->> [ 6411.451396] x29: ffff800011ce3cc0 x28: 0000000000000000
->> [ 6411.451398] x27: ffff000c04608040 x26: 0000000000000000
->> [ 6411.451399] x25: ffff000c04608040 x24: 0000000000001000
->> [ 6411.451401] x23: ffff0003f88c8530 x22: 0000000000001000
->> [ 6411.451403] x21: ffff0003f88c8530 x20: 0000000000000000
->> [ 6411.451404] x19: fffffe00201bcc80 x18: 0000000000000030
->> [ 6411.451406] x17: 0000000000000000 x16: 0000000000000000
->> [ 6411.451407] x15: ffff000c018f9760 x14: ffffffffffffffff
->> [ 6411.451409] x13: ffff8000119d72b0 x12: ffff8000119d6ee3
->> [ 6411.451410] x11: ffff8000117b69b8 x10: 00000000ffff8000
->> [ 6411.451412] x9 : ffff800010617534 x8 : 0000000000000000
->> [ 6411.451413] x7 : ffff8000114f69b8 x6 : 000000000000000f
->> [ 6411.451415] x5 : 0000000000000000 x4 : 0000000000000000
->> [ 6411.451416] x3 : 0000000000000400 x2 : 0000000000000000
->> [ 6411.451418] x1 : 0000000000000000 x0 : 0000000000000000
->> [ 6411.451420] Call trace:
->> [ 6411.451421]  end_page_writeback+0x1c0/0x214
->> [ 6411.451424]  iomap_finish_page_writeback+0x13c/0x204
->> [ 6411.451425]  iomap_finish_ioend+0xe8/0x19c
->> [ 6411.451426]  iomap_writepage_end_bio+0x38/0x50
->> [ 6411.451427]  bio_endio+0x168/0x1ec
->> [ 6411.451430]  blk_update_request+0x278/0x3f0
->> [ 6411.451432]  blk_mq_end_request+0x34/0x15c
->> [ 6411.451435]  virtblk_request_done+0x38/0x74 [virtio_blk]
->> [ 6411.451437]  blk_done_softirq+0xc4/0x110
->> [ 6411.451439]  __do_softirq+0x128/0x38c
->> [ 6411.451441]  __irq_exit_rcu+0x118/0x150
->> [ 6411.451442]  irq_exit+0x1c/0x30
->> [ 6411.451445]  __handle_domain_irq+0x8c/0xf0
->> [ 6411.451446]  gic_handle_irq+0x84/0x108
->> [ 6411.451447]  el1_irq+0xcc/0x180
->> [ 6411.451448]  arch_cpu_idle+0x18/0x40
->> [ 6411.451450]  default_idle_call+0x4c/0x1a0
->> [ 6411.451453]  cpuidle_idle_call+0x168/0x1e0
->> [ 6411.451454]  do_idle+0xb4/0x104
->> [ 6411.451455]  cpu_startup_entry+0x30/0x9c
->> [ 6411.451458]  secondary_start_kernel+0x104/0x180
->> [ 6411.451460] Code: d4210000 b0006161 910c8021 94013f4d (d4210000)
->> [ 6411.451462] ---[ end trace 4a88c6a074082f8c ]---
->> [ 6411.451464] Kernel panic - not syncing: Oops - BUG: Fatal exception in interrupt
->>
->> Fixes: eb6ecbed0aa2 ("mm, thp: relax the VM_DENYWRITE constraint on file-backed THPs")
->> Suggested-by: Yang Shi <shy828301@gmail.com>
->> Signed-off-by: Xu Yu <xuyu@linux.alibaba.com>
->> Signed-off-by: Rongwei Wang <rongwei.wang@linux.alibaba.com>
-> 
-> Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> 
-> Although I think the Fixes: line is wrong.  This bug goes all the
-> way back to 99cb0dbd47a1.
-In fact, I understand it this way: the 99cb0dbd47a1 only introduce 
-file-backed THP for VMA with MAP_DENYWRITE, denying write directly not 
-to truncate pagecache when it is opened. And eb6ecbed0aa2 will to 
-truncate pagecache when DSO is opened by a writer, then will trigger ...
-
-It seems 'Fixes: eb6ecbed0aa2' is more reasonable.
-> 
+-- 
+Oscar Salvador
+SUSE Labs
