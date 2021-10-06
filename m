@@ -2,162 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B18E4237B7
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 07:54:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E8854237A1
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 07:54:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236115AbhJFF4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 01:56:42 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:52722 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237272AbhJFF4i (ORCPT
+        id S230183AbhJFF4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 01:56:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26452 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229621AbhJFFz7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 01:56:38 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1965sUXL062189;
-        Wed, 6 Oct 2021 00:54:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1633499670;
-        bh=gwmy1g7upSs451Tvms0rbChOLQpMToAcL1SFZbrXNh0=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=TPvRWn9AAZzX0E24lgutCJzhqx+e/m22i3WGtmMNlYIr2LWa4ldzP9DT6KoXO8sXf
-         rQE7fz8VUu1p233+U2+u0yGN/3Z5BqL+9vepfLkOnOIayMH3EEvDooOBlWmgNHZnqr
-         4yhujglk/teavosepUTnglwDJWa420oSU43ARVcQ=
-Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1965sUD7118903
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 6 Oct 2021 00:54:30 -0500
-Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Wed, 6
- Oct 2021 00:54:30 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Wed, 6 Oct 2021 00:54:30 -0500
-Received: from gsaswath-HP-ProBook-640-G5.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1965rjkI070213;
-        Wed, 6 Oct 2021 00:54:25 -0500
-From:   Aswath Govindraju <a-govindraju@ti.com>
-CC:     Marc Kleine-Budde <mkl@pengutronix.de>,
-        Aswath Govindraju <a-govindraju@ti.com>,
-        Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>
-Subject: [PATCH v4 6/6] arm64: dts: ti: k3-am642-evm/sk: Add support for main domain mcan nodes in EVM and disable them on SK
-Date:   Wed, 6 Oct 2021 11:23:43 +0530
-Message-ID: <20211006055344.22662-7-a-govindraju@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211006055344.22662-1-a-govindraju@ti.com>
-References: <20211006055344.22662-1-a-govindraju@ti.com>
+        Wed, 6 Oct 2021 01:55:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633499647;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=o4AZ2v0d2upoVgn5yMh1nIi8K7ql02Ob+W4jg2mRZPo=;
+        b=Q7G5LN3X4R4b83DsKo/cShZWcStW6Ph+ptEupbfiumV+wQzqGDq8cCoTBHxdTMO6pHSWhS
+        R+928jPR/sHfshcQh04oeeb0pZYPgzELTAS/y1haWbJuojRGGeWk3Rr89I+XWXdcbZMZmm
+        DJXNrq44A7T2Yvx/+RxYN/OaxodCJ1c=
+Received: from mail-oo1-f72.google.com (mail-oo1-f72.google.com
+ [209.85.161.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-273-ev8l8bhXOTSbLw1-MIL4Xg-1; Wed, 06 Oct 2021 01:54:04 -0400
+X-MC-Unique: ev8l8bhXOTSbLw1-MIL4Xg-1
+Received: by mail-oo1-f72.google.com with SMTP id i1-20020a4a9001000000b002a9c41e0eabso1139513oog.3
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 22:54:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=o4AZ2v0d2upoVgn5yMh1nIi8K7ql02Ob+W4jg2mRZPo=;
+        b=z/Ngv3eZue3yytekEZWNWMhOXSU+hhMEKaQFDTz3vtPuz7hP9hALkdMt+MZakOWXWn
+         Jt5em7pZceOYk7vjQZIhRXt0qnF+/RgTfTRM+zPZO55EyhGDp2vBwoEJfo+7ddng1eyL
+         j6SnKw1gDeeeSpt8QZ6jBBPKRgCZHXpmletfZUyjytJrIxVuVzMci2j72hYfLUctIt6k
+         KFjb59kRc+bOrIcnshLKmt4Uu5VNEQ75/UZhWvwX/oVIr8JflrzCKozUilhVA32iYZQq
+         Up8ALP4H2Ge4zKpVqUK43EsF76zieq6sQymmlznygRIbDONC/0ao54ErwmSeTGRYV1UG
+         UagA==
+X-Gm-Message-State: AOAM532+jMYy/vxYr8Za4G/8AL/aDH12nU5zqS/CyUz3IVSzAR/5pDGV
+        pihbs/ss3e8gNAXT/m+t++KDrNdQbVsCwWZXaQlD+qM19LU98x04q+N8q1WgayVAupP6kGBQFeX
+        ki3oiVoLiopBTzWkTT2aQA9Ng
+X-Received: by 2002:a54:4807:: with SMTP id j7mr5725603oij.140.1633499643370;
+        Tue, 05 Oct 2021 22:54:03 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxjZoedDN6ykejdw4SAEmSPfsfZzklHzH6dAAnT/J+m5t+Q7kx7Mo2PyaT4sYzfuJ0esedWSg==
+X-Received: by 2002:a54:4807:: with SMTP id j7mr5725589oij.140.1633499643163;
+        Tue, 05 Oct 2021 22:54:03 -0700 (PDT)
+Received: from treble ([2600:1700:6e32:6c00::15])
+        by smtp.gmail.com with ESMTPSA id i15sm432037otu.67.2021.10.05.22.54.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Oct 2021 22:54:02 -0700 (PDT)
+Date:   Tue, 5 Oct 2021 22:53:59 -0700
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
+        VMware Inc <pv-drivers@vmware.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 05/11] x86/tdx: Add __tdx_module_call() and
+ __tdx_hypercall() helper functions
+Message-ID: <20211006055359.svcqk36btq7zg3td@treble>
+References: <20211005025205.1784480-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20211005025205.1784480-6-sathyanarayanan.kuppuswamy@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211005025205.1784480-6-sathyanarayanan.kuppuswamy@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-AM642 EVM has two CAN connecters brought out from the two MCAN instances in
-the main domain through transceivers. Add device tree nodes for
-transceivers and set the required properties in the mcan device tree nodes,
-in EVM device tree file.
+On Mon, Oct 04, 2021 at 07:51:59PM -0700, Kuppuswamy Sathyanarayanan wrote:
+> Guests communicate with VMMs with hypercalls. Historically, these
+> are implemented using instructions that are known to cause VMEXITs
+> like VMCALL, VMLAUNCH, etc. However, with TDX, VMEXITs no longer
+> expose guest state to the host.  This prevents the old hypercall
+> mechanisms from working. So to communicate with VMM, TDX
+> specification defines a new instruction called TDCALL.
+> 
+> In a TDX based VM, since VMM is an untrusted entity, a intermediary
+> layer (TDX module) exists between host and guest to facilitate
+> secure communication. TDX guests communicate with the TDX module
+> using TDCALL instruction. 
 
-On AM642 SK there are no connectors brought out for CAN. Therefore, disable
-the mcan device tree nodes in the SK device tree file.
+Most of the information in the second paragraph was already provided in
+the first paragraph.
 
-Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
----
- arch/arm64/boot/dts/ti/k3-am642-evm.dts | 40 +++++++++++++++++++++++++
- arch/arm64/boot/dts/ti/k3-am642-sk.dts  |  8 +++++
- 2 files changed, 48 insertions(+)
+> +#ifdef CONFIG_FRAME_POINTER
+> +/* Frame offset + 8 (for arg1) */
+> +#define ARG7_SP_OFFSET		(FRAME_OFFSET + 0x08)
+> +#else
+> +#define ARG7_SP_OFFSET		(0x08)
+> +#endif
 
-diff --git a/arch/arm64/boot/dts/ti/k3-am642-evm.dts b/arch/arm64/boot/dts/ti/k3-am642-evm.dts
-index 6726c4c7c28c..e94ae178b1ae 100644
---- a/arch/arm64/boot/dts/ti/k3-am642-evm.dts
-+++ b/arch/arm64/boot/dts/ti/k3-am642-evm.dts
-@@ -184,6 +184,20 @@
- 			};
- 		};
- 	};
-+
-+	transceiver1: can-phy0 {
-+		compatible = "ti,tcan1042";
-+		#phy-cells = <0>;
-+		max-bitrate = <5000000>;
-+		standby-gpios = <&exp1 8 GPIO_ACTIVE_HIGH>;
-+	};
-+
-+	transceiver2: can-phy1 {
-+		compatible = "ti,tcan1042";
-+		#phy-cells = <0>;
-+		max-bitrate = <5000000>;
-+		standby-gpios = <&exp1 9 GPIO_ACTIVE_HIGH>;
-+	};
- };
- 
- &main_pmx0 {
-@@ -294,6 +308,20 @@
- 			AM64X_IOPAD(0x0270, PIN_INPUT, 0) /* (D18) ECAP0_IN_APWM_OUT */
- 		>;
- 	};
-+
-+	main_mcan0_pins_default: main-mcan0-pins-default {
-+		pinctrl-single,pins = <
-+			AM64X_IOPAD(0x0254, PIN_INPUT, 0) /* (B17) MCAN0_RX */
-+			AM64X_IOPAD(0x0250, PIN_OUTPUT, 0) /* (A17) MCAN0_TX */
-+		>;
-+	};
-+
-+	main_mcan1_pins_default: main-mcan1-pins-default {
-+		pinctrl-single,pins = <
-+			AM64X_IOPAD(0x025c, PIN_INPUT, 0) /* (D17) MCAN1_RX */
-+			AM64X_IOPAD(0x0258, PIN_OUTPUT, 0) /* (C17) MCAN1_TX */
-+		>;
-+	};
- };
- 
- &main_uart0 {
-@@ -638,3 +666,15 @@
- &icssg1_mdio {
- 	status = "disabled";
- };
-+
-+&main_mcan0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&main_mcan0_pins_default>;
-+	phys = <&transceiver1>;
-+};
-+
-+&main_mcan1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&main_mcan1_pins_default>;
-+	phys = <&transceiver2>;
-+};
-diff --git a/arch/arm64/boot/dts/ti/k3-am642-sk.dts b/arch/arm64/boot/dts/ti/k3-am642-sk.dts
-index 6b04745147be..a9785bec12df 100644
---- a/arch/arm64/boot/dts/ti/k3-am642-sk.dts
-+++ b/arch/arm64/boot/dts/ti/k3-am642-sk.dts
-@@ -525,3 +525,11 @@
- &icssg1_mdio {
- 	status = "disabled";
- };
-+
-+&main_mcan0 {
-+	status = "disabled";
-+};
-+
-+&main_mcan1 {
-+	status = "disabled";
-+};
+No need for the #ifdef here, FRAME_OFFSET is already zero for
+!FRAME_POINTER.  So it can just be unconditional:
+
+#define ARG7_SP_OFFSET		(FRAME_OFFSET + 0x08)
+
+> + * __tdx_hypercall()  - Helper function used by TDX guests to request
+> + * services from the VMM. All requests are made via the TDX module
+> + * using TDCALL instruction.
+> + *
+> + * This function serves as a wrapper to move user call arguments to the
+> + * correct registers as specified by TDCALL ABI and share it with VMM
+> + * via the TDX module. After TDCALL operation, output from the VMM is
+> + * saved to the memory specified in the "out" (struct tdx_hypercall_output)
+> + * pointer. 
+> + *
+> + *-------------------------------------------------------------------------
+> + * TD VMCALL ABI:
+> + *-------------------------------------------------------------------------
+> + *
+> + * Input Registers:
+> + *
+> + * RAX                 - TDCALL instruction leaf number (0 - TDG.VP.VMCALL)
+> + * RCX                 - BITMAP which controls which part of TD Guest GPR
+> + *                       is passed as-is to VMM and back.
+> + * R10                 - Set 0 to indicate TDCALL follows standard TDX ABI
+> + *                       specification. Non zero value indicates vendor
+> + *                       specific ABI.
+> + * R11                 - VMCALL sub function number
+> + * RBX, RBP, RDI, RSI  - Used to pass VMCALL sub function specific arguments.
+> + * R8-R9, R12–R15      - Same as above.
+> + *
+> + * Output Registers:
+> + *
+> + * RAX                 - TDCALL instruction status (Not related to hypercall
+> + *                        output).
+> + * R10                 - Hypercall output error code.
+> + * R11-R15             - Hypercall sub function specific output values.
+> + *
+> + *-------------------------------------------------------------------------
+> + *
+> + * __tdx_hypercall() function ABI:
+> + *
+> + * @type  (RDI)        - TD VMCALL type, moved to R10
+> + * @fn    (RSI)        - TD VMCALL sub function, moved to R11
+> + * @r12   (RDX)        - Input parameter 1, moved to R12
+> + * @r13   (RCX)        - Input parameter 2, moved to R13
+> + * @r14   (R8)         - Input parameter 3, moved to R14
+> + * @r15   (R9)         - Input parameter 4, moved to R15
+> + *
+> + * @out   (stack)      - struct tdx_hypercall_output pointer (cannot be NULL)
+> + *
+> + * On successful completion, return TDCALL status or -EINVAL for invalid
+> + * inputs.
+> + */
+
+The documentation and comments for all the asm code are excellent!  If
+only all kernel asm code were this readable!
+
+I'm especially thankful that it's not all crammed into inline asm :-)
+
+> +SYM_FUNC_START(__tdx_hypercall)
+> +	FRAME_BEGIN
+> +
+> +	/* Move argument 7 from caller stack to RAX */
+> +	movq ARG7_SP_OFFSET(%rsp), %rax
+> +
+> +	/* Check if caller provided an output struct */
+> +	test %rax, %rax
+> +	/* If out pointer is NULL, return -EINVAL */
+> +	jz 1f
+> +
+> +	/* Save callee-saved GPRs as mandated by the x86_64 ABI */
+> +	push %r15
+> +	push %r14
+> +	push %r13
+> +	push %r12
+> +
+> +	/*
+> +	 * Save R9 and output pointer (rax) in stack, it will be used
+> +	 * again when storing the output registers after TDCALL
+> +	 * operation.
+> +	 */
+> +	push %r9
+> +	push %rax
+
+r9 is callee-clobbered, so we shouldn't need to push it here or pop it
+("Restore state of R9 register" below) before returning.
+
+> +/*
+> + * Wrapper for standard use of __tdx_hypercall with BUG_ON() check
+> + * for TDCALL error.
+> + */
+> +static inline u64 _tdx_hypercall(u64 fn, u64 r12, u64 r13, u64 r14,
+> +				 u64 r15, struct tdx_hypercall_output *out)
+
+Instead of calling the args r12-r15, I'm thinking it would be clearer to
+call them arg1-arg4.  It's not the C code's job to worry about the
+argument-to-register ABI mappings.
+
+Same comment for the function declaration in the header file.
+
 -- 
-2.17.1
+Josh
 
