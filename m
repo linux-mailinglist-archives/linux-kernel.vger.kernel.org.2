@@ -2,106 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A3F6424407
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 19:24:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B08EF42440D
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 19:24:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239208AbhJFRZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 13:25:53 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:50518
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231942AbhJFRZw (ORCPT
+        id S238934AbhJFR0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 13:26:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51022 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230108AbhJFR0r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 13:25:52 -0400
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com [209.85.167.72])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 360A73F499
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 17:23:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1633541039;
-        bh=ICT93CHM4YPSa4dfM/nU1XdIOc5abKxFtl1Tbs0hlVE=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=C9W6d+M9xIkRGivvW+VO9kzbdy28DyKEoLlqjXUXbWgkJM9WdIFC17OBOPFX2RbTS
-         X5UxM1zl7g94z31LCrBbb78qBQRopZaB5KyYAkLT4Ky5OjNfsmnStY0+UJYqlvSNpV
-         uwDcgR0cDGu/waRs8brKiiGqgcqbdjOz2j9OqbAW/zHpJcfo5nmLswOQ7iFF0qUC31
-         Ux4wg1vwYpalB+mV7a388H0hdGCR6jLwWY8Xf5ItKjyXHX+nmts6dBe0WghRKEo0m9
-         N8nrxbVzc+z6WCcDfOCyw48hRkSLu2pSBjqKBaTg94adiq7kYBIBENdHBSspzCHIrb
-         tyoAD1yBPhRjA==
-Received: by mail-lf1-f72.google.com with SMTP id n22-20020a0565120ad600b003fcc09af59fso2501798lfu.21
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 10:23:59 -0700 (PDT)
+        Wed, 6 Oct 2021 13:26:47 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F9D4C061746;
+        Wed,  6 Oct 2021 10:24:54 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id dj4so12638157edb.5;
+        Wed, 06 Oct 2021 10:24:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1a2sqB7fy/MZa9Oh3cs9Js33qEalPD/IW1ZR53EtNgc=;
+        b=UmLS9faDG2LuS/90/05YiAlTWiQgBvllD16X1z+yI/0ItgDiSH6ohtziR5+NtdflAa
+         NnrMZ6ertDLPGSkEUYhJNf11640hQUF7CCqiYM0ck5FkLjYvPZyGSETqtEBuKXHJscnD
+         bjTthbaGQ3Nkc1cmsRi08v4/70VW2AYMk/7HoGUvgziH4IPrDPHhhXlKT35HIE/QHVxW
+         AaFTalYYQPg/8J0s3qMbinJlnSxVUzUFR2ANXDMQuN93Pub6cMTg8+deKlK4YJSf5Cf0
+         t0eR5/Y7ZjN5mOv6aPJlVxc4Y+LNJ4JUDSeD1CUFuBXUu1JPtiOUki31xrtNfFNO+7QW
+         V2dA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ICT93CHM4YPSa4dfM/nU1XdIOc5abKxFtl1Tbs0hlVE=;
-        b=oh2fVA8Rk14qdp0KbM0J6XJ+ds9QRoCp0C7o4HJQeTpLiwLII6ooe/5T/HiUkxlXL9
-         +D4mwFvlTTBNNjlZQJg/SAYCPbgOv7SyZsZ60jZCGcxYITmK5TNrIpEW6vxHMQtr0z/L
-         KAwojy67CqSb+VbDxenmJZcMO0iDf4QXTA0RwgCmvBV/xKvg9txU47imf5pe5zPYdtNO
-         CuKXoSVP5USMFx0PGc9h/in5eEuvTJA+6CFlsyEufkhliyNotNfnOrHsm0M5nk94Fdrs
-         r+9qIYf2LoWdJRLQ0RdMxxsCM6ysenXeQsF3Ah9svO2CKdDSamMme1oDeQHqjdIFlws9
-         kmng==
-X-Gm-Message-State: AOAM530+bzziv2GTnFWCESusmXqEGPva1m+srDMHpgfz8dFHacPOtrBo
-        PB3q8G9E035qP/9qPzfXsrZbl4AQ6r2eqmp6mNkK+8Na/qU+8evk6p5703vFXenP9jaHSikZjmw
-        MNMc4BTrPj9IAz61BUloPJsESYTzOC4QLxkOvOkS2yA==
-X-Received: by 2002:ac2:5c1e:: with SMTP id r30mr3613809lfp.306.1633541038723;
-        Wed, 06 Oct 2021 10:23:58 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw9tnjMN8NMgO63kiGucWDBQWrLlf8ucveUKEd5MASJoJz9ZDt7SSD9R4YseNHT7AoxbOYK3Q==
-X-Received: by 2002:ac2:5c1e:: with SMTP id r30mr3613785lfp.306.1633541038525;
-        Wed, 06 Oct 2021 10:23:58 -0700 (PDT)
-Received: from [192.168.0.20] (78-11-189-27.static.ip.netia.com.pl. [78.11.189.27])
-        by smtp.gmail.com with ESMTPSA id e28sm2500262ljo.63.2021.10.06.10.23.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Oct 2021 10:23:58 -0700 (PDT)
-Subject: Re: [PATCH v4 2/7] dt-bindings: memory: lpddr2: Convert to schema
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-References: <20211005230009.3635-1-digetx@gmail.com>
- <20211005230009.3635-3-digetx@gmail.com>
- <6b8f6ef7-cfc5-3a8b-d44d-f4080a85ecf3@canonical.com>
- <7047ad7b-52d6-0c91-b7d2-b115ea69506f@gmail.com>
- <481f4d90-638f-b64f-83a2-b882d9bf194a@gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <5b24cc4c-3091-a044-612e-43024bc512a5@canonical.com>
-Date:   Wed, 6 Oct 2021 19:23:56 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1a2sqB7fy/MZa9Oh3cs9Js33qEalPD/IW1ZR53EtNgc=;
+        b=TaGBflnWE5KlnhZa7t3X7BrMPQqJDbqjDmuibNXqSvhFT5mERJAXnnjNtYLcUO8Jib
+         HMp/yQjFRyqm7vhdOQMXRfczZG/soR+Yz/qw8H4sy4zmx++1pg0Sh/Psyyb4y+iTIA+I
+         1BbD+qVp6/opAIXBErtgXXuQYXKUtX5Vf8Ix/nLCi6pR5ANKtryCg9Y35x5bOCCMO8WI
+         HkARUsifh21UNiRRutKbMK6e6kHxEVhMzCnChteXK/q/+9E3t0/uUvcmAb9Puahw0zCS
+         /XGyS0QA7Lm18Q7kupz82Q3+DM+YVmh3XpYUrqv8uVuKqN0cRCBuyIOP9SxYEmTmFoRg
+         snHA==
+X-Gm-Message-State: AOAM530s8P4QkfTLEu2hiToINZ2UWJQhr9+phAb67KBhZiRXaKL109BK
+        wvOKFh+bZWSqlT4hQj2fDzZuwcWZaM6SE9EzsiA=
+X-Google-Smtp-Source: ABdhPJwUb2vYx05WwrjqgNzXkmewLBINspUcYRgsZkqUhfuO3DQGXUzGcV4a2YpS9z/Mf+vMCKVzcf474+esKpig7WU=
+X-Received: by 2002:a17:906:5a47:: with SMTP id my7mr32908297ejc.128.1633541093181;
+ Wed, 06 Oct 2021 10:24:53 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <481f4d90-638f-b64f-83a2-b882d9bf194a@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20211006171517.47393-1-andriy.shevchenko@linux.intel.com> <YV3a69VgQT4dOKTH@kroah.com>
+In-Reply-To: <YV3a69VgQT4dOKTH@kroah.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 6 Oct 2021 20:24:16 +0300
+Message-ID: <CAHp75Vff0Vw4R3Ba3H-ME0p-=cy1TkF8LUq_ABQe84ZTdpDEhQ@mail.gmail.com>
+Subject: Re: [PATCH v1 1/3] driver core: Provide device_match_acpi_handle() helper
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Saravana Kannan <saravanak@google.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Wolfram Sang <wsa@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/10/2021 17:44, Dmitry Osipenko wrote:
-> 06.10.2021 18:41, Dmitry Osipenko пишет:
->> 06.10.2021 13:57, Krzysztof Kozlowski пишет:
->>>> +  density:
->>>> +    description: |
->>>> +      Density in megabits of SDRAM chip. Obtained from device datasheet.
->>> You need here a type/ref, so uint32.
->>>
->>
->> The type is uint32 by default. I can add it, but it's not really necessary.
->>
-> 
-> You may grep bindings for 'enum: [' to see that nobody is specifying the
-> type.
-> 
+On Wed, Oct 6, 2021 at 8:21 PM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+> On Wed, Oct 06, 2021 at 08:15:15PM +0300, Andy Shevchenko wrote:
+> > We have couple of users of this helper, make it available for them.
+> >
+> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > ---
+> >  drivers/base/core.c        | 6 ++++++
+> >  include/linux/device/bus.h | 1 +
+> >  2 files changed, 7 insertions(+)
+> >
+> > diff --git a/drivers/base/core.c b/drivers/base/core.c
+> > index c4a2c97a21a2..18f1f6499246 100644
+> > --- a/drivers/base/core.c
+> > +++ b/drivers/base/core.c
+> > @@ -4840,6 +4840,12 @@ int device_match_acpi_dev(struct device *dev, const void *adev)
+> >  }
+> >  EXPORT_SYMBOL(device_match_acpi_dev);
+> >
+> > +int device_match_acpi_handle(struct device *dev, const void *handle)
+> > +{
+> > +     return ACPI_HANDLE(dev) == handle;
+> > +}
+> > +EXPORT_SYMBOL(device_match_acpi_dev);
+>
+> Did you build this?
 
-Just because everyone makes a mistake, is not a proof it should be done
-like that. Please see example schema and vendor,int-property.
+Yes, and it failed.
 
-AFAIR, only properties defined by schema (directly or by unit suffix,
-e.g. microvolt) do not need types.
+Sorry for the noise that I mistakenly sent the non-working version.
+In fact, I typed 'a' literally thinking the word 'abort' for
+git-send-email, what an irony!
 
-Best regards,
-Krzysztof
+-- 
+With Best Regards,
+Andy Shevchenko
