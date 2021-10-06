@@ -2,81 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6717E4247B4
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 22:06:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B21A4247A1
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 22:02:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239437AbhJFUIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 16:08:46 -0400
-Received: from mailgate.kemenperin.go.id ([202.47.80.81]:57790 "EHLO
-        mailgate.kemenperin.go.id" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239248AbhJFUIp (ORCPT
+        id S239279AbhJFUEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 16:04:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59502 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230007AbhJFUEb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 16:08:45 -0400
-X-Greylist: delayed 1194 seconds by postgrey-1.27 at vger.kernel.org; Wed, 06 Oct 2021 16:08:44 EDT
-Received: from localhost (localhost [127.0.0.1])
-        by mailgate.kemenperin.go.id (Postfix) with ESMTP id 6FC6837EA3E3;
-        Thu,  7 Oct 2021 02:28:03 +0700 (WIB)
-Received: from mailgate.kemenperin.go.id ([127.0.0.1])
-        by localhost (mailgate.kemenperin.go.id [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id 06Y148tJj3Uq; Thu,  7 Oct 2021 02:28:02 +0700 (WIB)
-Received: from localhost (localhost [127.0.0.1])
-        by mailgate.kemenperin.go.id (Postfix) with ESMTP id 6E4C337EA3DD;
-        Thu,  7 Oct 2021 02:28:00 +0700 (WIB)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mailgate.kemenperin.go.id 6E4C337EA3DD
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kemenperin.go.id;
-        s=3298A942-BBC6-11E3-B333-483736368EC2; t=1633548480;
-        bh=+fqslacBrFYD+yZfN/r7KCWl0ti69BjYsXmt7u/JTl4=;
-        h=Date:From:Message-ID:MIME-Version;
-        b=VN9z+U3lWOgJCjGxv92Yv9LZEW4rsagUD2Qcdp+/lrs4d6z4SUeX97zmM46dov6R2
-         Sqmp1MDVpZ35jcZAgSBaWV6gN/nyLnKOQ0wILOofxYBOKrcXnqRiEN2+If5HhJb5PW
-         NsmKx7CPAI7fQtF+UIr1du5DSWo31iba1iqgWvcQ=
-X-Virus-Scanned: amavisd-new at kemenperin.go.id
-Received: from mailgate.kemenperin.go.id ([127.0.0.1])
-        by localhost (mailgate.kemenperin.go.id [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id pTttxliC5725; Thu,  7 Oct 2021 02:28:00 +0700 (WIB)
-Received: from mailgate.kemenperin.go.id (mailgate.kemenperin.go.id [10.1.0.89])
-        by mailgate.kemenperin.go.id (Postfix) with ESMTP id 3046C37EA3DA;
-        Thu,  7 Oct 2021 02:27:58 +0700 (WIB)
-Date:   Thu, 7 Oct 2021 02:27:58 +0700 (WIB)
-From:   KLINELTD <fajarprasetyo@kemenperin.go.id>
-Reply-To: "kreditline_ltd@hotmail.com" <kreditline_ltd@hotmail.com>
-Message-ID: <1949583318.233070.1633548478162.JavaMail.zimbra@kemenperin.go.id>
-Subject: Hi
+        Wed, 6 Oct 2021 16:04:31 -0400
+Received: from mail-vs1-xe30.google.com (mail-vs1-xe30.google.com [IPv6:2607:f8b0:4864:20::e30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ED03C061760
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 13:02:38 -0700 (PDT)
+Received: by mail-vs1-xe30.google.com with SMTP id 188so4361405vsv.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 13:02:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FnczB4qtoym6/uCjIoCpBahkSSySqs0UV+3zlX8l/eU=;
+        b=luzAbdgOSHLbUnVI7+LDtEwAOcBzWaPm/YemTUoropMXQELkkRtug3wUOd8ISioW5y
+         R6PLuwR0g8vqXMFB1jTT3B4O1TvkZtsv2RhsLK8zus2wSLCdTUUJn1Sk9d5FL7TmISbI
+         noq+Alw3COJg0SlDatN1KJbFAKN6h96r+mVbhbs1ZhnAKkaL1xXVEiB/z2CXjJgXT3Or
+         W3LUrGd809izM0ubfAoHLp27pLiyVg6lM3BCR2slvu51OlufNNMwd7ocGwJjaKO0dLdA
+         7KtXQ8L8zGsrF7FoLRDW1HJLLZO6rIRNK0UUObibxfRXvuXFH2VCwLfPyMdEwcQOT7qn
+         eGzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FnczB4qtoym6/uCjIoCpBahkSSySqs0UV+3zlX8l/eU=;
+        b=YxPkoLYvGqkDjYielAo3E1CAynDpwJwefD1LXaoyvozitRDyaQGwTv34HwLCh9q3el
+         cVrmzVnwQayA1wsFsj99EA3ebOPT9x8awcZiB3JkqKhwvplBDSAajZvb3oVs+0hQQ5yD
+         rzRh71jGYuxrrPqJp2sSiJzCgeIxQT8kNygLeC5CWyTcEpUHqYwK6F4ekG4QHvMKXDrR
+         Xpk1TXdzgbNB2n74YqqzfYfMgdv0Wik60FCluf3LHUncmPv7SY+ufpXr3aHA0OCN8iPR
+         Je1b0WkHYirKMYsLr7K2BQ3dyao3Xd0jLyf0UfBhBwZxcKtl0i13ocGBIFRTGM0RAeAn
+         JDHg==
+X-Gm-Message-State: AOAM532miwrhAtFRknfKfeMbO7ktItlhENg9XRnYFLk7dRdh3vuwgdnV
+        XzoNtR1q6fgwxk54+UzS9reeGc61eoen4biCkzZEXw==
+X-Google-Smtp-Source: ABdhPJyELTZu4mT/PVMaTLHDN0ZAPUEE6TvSoJzj8LOR79nAd4NsF/4drXozDiH8Ionz68cLVZi8M2xd1UvxfYkU0ms=
+X-Received: by 2002:a67:ed5a:: with SMTP id m26mr26731553vsp.35.1633550557421;
+ Wed, 06 Oct 2021 13:02:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Originating-IP: [10.1.0.89]
-Thread-Index: FWTi3JaMAJWOhJxg/+uki1W7DBB1aQ==
-Thread-Topic: Hi
-To:     unlisted-recipients:; (no To-header on input)
+References: <20211006132324.76008-1-krzysztof.kozlowski@canonical.com> <20211006132324.76008-11-krzysztof.kozlowski@canonical.com>
+In-Reply-To: <20211006132324.76008-11-krzysztof.kozlowski@canonical.com>
+From:   Sam Protsenko <semen.protsenko@linaro.org>
+Date:   Wed, 6 Oct 2021 23:02:25 +0300
+Message-ID: <CAPLW+4migQ+3NBsHgMd04N-Fc71CTzxoUMS3HN2S8377qFDa6g@mail.gmail.com>
+Subject: Re: [PATCH v3 10/10] dt-bindings: mfd: samsung,s5m8767: document buck
+ and LDO supplies
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+        Rob Herring <robh@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+On Wed, 6 Oct 2021 at 16:24, Krzysztof Kozlowski
+<krzysztof.kozlowski@canonical.com> wrote:
+>
+> Document the properties with regulator supplies for bucks and LDOs.  At
+> least one board uses it (Exynos5250 Arndale).
+>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> Reviewed-by: Rob Herring <robh@kernel.org>
+> ---
+>  .../bindings/mfd/samsung,s5m8767.yaml         | 38 +++++++++++++++++++
+>  1 file changed, 38 insertions(+)
+>
+> diff --git a/Documentation/devicetree/bindings/mfd/samsung,s5m8767.yaml b/Documentation/devicetree/bindings/mfd/samsung,s5m8767.yaml
+> index b2529a48c890..12dea5aac8b6 100644
+> --- a/Documentation/devicetree/bindings/mfd/samsung,s5m8767.yaml
+> +++ b/Documentation/devicetree/bindings/mfd/samsung,s5m8767.yaml
+> @@ -96,6 +96,44 @@ properties:
+>      description: |
+>        GPIO specifiers for three host gpio's used for dvs.
+>
+> +  vinb1-supply:
+> +    description: Power supply for buck1
+> +  vinb2-supply:
+> +    description: Power supply for buck1
 
-Wir vergeben Kredite an Privatpersonen und Unternehmen mit einem Zinssatz v=
-on 3% pro Jahr.
-Wir sind daran interessiert, Gro=C3=9Fprojekte zu finanzieren und Kredite z=
-u vergeben. Die R=C3=BCckzahlungsfrist betr=C3=A4gt 1-30 Jahre und mit kost=
-enlosen 6 Monaten Kulanz.
+Nitpick: all those vinb* are for buck1, or that's a typo (here and below)?
 
-Wir bieten: -
-* Projektfinanzierung
-* Business-Darlehen
-* Privat Darlehen
-
-Bitte kontaktieren Sie uns unter den untenstehenden Kontaktdaten, damit wir=
- Sie =C3=BCber die Konditionen des Darlehens informieren k=C3=B6nnen.
-
-          Erforderlicher Kreditbetrag:
-          R=C3=BCckzahlungsfrist:
-          Handy Nummer:
-
-Die Bearbeitung und Finanzierung eines Kredits dauert ca. 3 Werktage ab dem=
- Datum des Versands des Kreditantrags. Antworten Sie f=C3=BCr weitere Infor=
-mationen.
-
-Gr=C3=BC=C3=9Fe
-Online-Werbeagentur.
-E-Mail: kreditline_ltd@hotmail.com
+> +  vinb3-supply:
+> +    description: Power supply for buck1
+> +  vinb4-supply:
+> +    description: Power supply for buck1
+> +  vinb5-supply:
+> +    description: Power supply for buck1
+> +  vinb6-supply:
+> +    description: Power supply for buck1
+> +  vinb7-supply:
+> +    description: Power supply for buck1
+> +  vinb8-supply:
+> +    description: Power supply for buck1
+> +  vinb9-supply:
+> +    description: Power supply for buck1
+> +
+> +  vinl1-supply:
+> +    description: Power supply for LDO3, LDO10, LDO26, LDO27
+> +  vinl2-supply:
+> +    description: Power supply for LDO13, LDO16, LDO25, LDO28
+> +  vinl3-supply:
+> +    description: Power supply for LDO11, LDO14
+> +  vinl4-supply:
+> +    description: Power supply for LDO4, LDO9
+> +  vinl5-supply:
+> +    description: Power supply for LDO12, LDO17, LDO19, LDO23
+> +  vinl6-supply:
+> +    description: Power supply for LDO18, LDO20, LDO21, LDO24
+> +  vinl7-supply:
+> +    description: Power supply for LDO5, LDO22
+> +  vinl8-supply:
+> +    description: Power supply for LDO1, LDO6, LDO7, LDO8, LDO15
+> +  vinl9-supply:
+> +    description: Power supply for LDO2
+> +
+>    wakeup-source: true
+>
+>  required:
+> --
+> 2.30.2
+>
