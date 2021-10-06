@@ -2,202 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B33E0424188
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 17:43:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87FC642418A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 17:43:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238947AbhJFPpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 11:45:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34484 "EHLO mail.kernel.org"
+        id S239080AbhJFPpo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 11:45:44 -0400
+Received: from mga17.intel.com ([192.55.52.151]:23453 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230014AbhJFPpU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 11:45:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 01968610A3;
-        Wed,  6 Oct 2021 15:43:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633535008;
-        bh=zWnL9twWsIqYKy9gtnL/WvZ4r8lMHO0PHEaiqZncMDM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SRg7qaDA9OZhAqaEFcU7OKFV7YjB8VALAnMgLnZs5r2Ko8Fsb2xzGqDlnHZ4jhBhQ
-         n3LSfGnH+TQI33HEFt/uaR7cFOrnrKvbe2pNDEA6vJHcyJP0w+oi/Elm52Mpbeq1Vw
-         W9LD1XVJDmUeXLhT9ZrT2Y85AEhhYc3eZiLAfbR0UrRwWZdeIww5qqiDLHM4dvkvOs
-         A7Jf3NxFSHJQmkw3YLrztkOba+U2wFoGwEFqkYi7vjw0kTU5sak8dLf4j917rVFZ2B
-         Ixd+2IAxlWTgqX7S1dHk+nCcX7xrKHATrvWcyhA8vjJ+aKjv4GeUFHsX+xvenWImrl
-         KCxcP48o9HrNQ==
-Date:   Wed, 6 Oct 2021 08:43:27 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Hao Sun <sunhao.th@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-xfs@vger.kernel.org
-Subject: Re: BUG: unable to handle kernel NULL pointer dereference in
- xlog_cil_commit
-Message-ID: <20211006154327.GH24307@magnolia>
-References: <CACkBjsbaCmZK2wUExMqu_KKBr2jnEi-T6iEr=vzw4YS5g5DOOQ@mail.gmail.com>
+        id S230014AbhJFPpn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 11:45:43 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10129"; a="206833843"
+X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; 
+   d="scan'208";a="206833843"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2021 08:43:50 -0700
+X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; 
+   d="scan'208";a="589806021"
+Received: from ptcotton-mobl1.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.212.211.164])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2021 08:43:50 -0700
+Subject: Re: [PATCH v8 03/11] x86/cpufeatures: Add TDX Guest CPU feature
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
+        VMware Inc <pv-drivers@vmware.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        linux-kernel@vger.kernel.org
+References: <20211005025205.1784480-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20211005025205.1784480-4-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <YV3AKekdJU0vsbaN@zn.tnic>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <328cc0e7-89e7-a1b2-f798-fe758c2c1f4e@linux.intel.com>
+Date:   Wed, 6 Oct 2021 08:43:48 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACkBjsbaCmZK2wUExMqu_KKBr2jnEi-T6iEr=vzw4YS5g5DOOQ@mail.gmail.com>
+In-Reply-To: <YV3AKekdJU0vsbaN@zn.tnic>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 06, 2021 at 04:14:43PM +0800, Hao Sun wrote:
-> Hello,
-> 
-> When using Healer to fuzz the latest Linux kernel, the following crash
-> was triggered.
-> 
-> HEAD commit: 0513e464f900 Merge tag 'perf-tools-fixes-for-v5.15-2021-09-27'
-> git tree: upstream
-> console output:
-> https://drive.google.com/file/d/1vm5fDM220kkghoiGa3Aw_Prl4O_pqAXF/view?usp=sharing
-> kernel config: https://drive.google.com/file/d/1Jqhc4DpCVE8X7d-XBdQnrMoQzifTG5ho/view?usp=sharing
-> 
-> Sorry, I don't have a reproducer for this crash, hope the symbolized
-> report can help.
-> If you fix this issue, please add the following tag to the commit:
-> Reported-by: Hao Sun <sunhao.th@gmail.com>
 
-So figure out how to fix the problem and send a patch.  You don't get to
-hand out fixit tasks like you're some kind of manager for people you
-don't employ.
 
---D
+On 10/6/21 8:26 AM, Borislav Petkov wrote:
+> On Mon, Oct 04, 2021 at 07:51:57PM -0700, Kuppuswamy Sathyanarayanan wrote:
+>> diff --git a/arch/x86/kernel/tdx.c b/arch/x86/kernel/tdx.c
+>> new file mode 100644
+>> index 000000000000..ad3ff5925153
+>> --- /dev/null
+>> +++ b/arch/x86/kernel/tdx.c
+>> @@ -0,0 +1,40 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/* Copyright (C) 2020 Intel Corporation */
+>> +
+>> +#undef pr_fmt
+>> +#define pr_fmt(fmt)     "tdx: " fmt
+>> +
+>> +#include <asm/tdx.h>
+>> +
+>> +/*
+>> + * Allocate it in the data region to avoid zeroing it during
+>> + * BSS initialization. It is mainly used in cc_platform_has()
+>> + * call during early boot call.
+>> + */
+>> +u64 __section(".data") is_tdx_guest = 0;
+>> +
+>> +static void __init is_tdx_guest_init(void)
+>> +{
+>> +	u32 eax, sig[3];
+>> +
+>> +	if (cpuid_eax(0) < TDX_CPUID_LEAF_ID) {
+>> +		is_tdx_guest = 0;
+>> +		return;
+>> +	}
+>> +
+>> +	cpuid_count(TDX_CPUID_LEAF_ID, 0, &eax, &sig[0], &sig[2], &sig[1]);
+>> +
+>> +	is_tdx_guest = !memcmp("IntelTDX    ", sig, 12);
+>> +}
+>> +
+>> +void __init tdx_early_init(void)
+>> +{
+>> +	is_tdx_guest_init();
+>> +
+>> +	if (!is_tdx_guest)
+>> +		return;
+>> +
+>> +	setup_force_cpu_cap(X86_FEATURE_TDX_GUEST);
+>> +
+>> +	pr_info("Guest initialized\n");
+>> +}
+>> -- 
+> 
+> What I meant was this (untested of course).
+> 
+> is_tdx_guest() is the accessor external code queries and you cache the
+> detected value in tdx_guest so that the one after the first one is
+> cheap.
+
+Yes. But, Joerg Roedel in his review recommended using variable
+similar to sme_me_mask to avoid function call in Intel platform in
+cc_platform_has().
+
+"
+This causes a function call on every Intel machine this code runs. is
+there an easier to check whether TDX is enabled, like the sme_me_mask
+check on AMD?
+"
+
+That's why I have introduced is_tdx_guest global variable in this
+version.
+
 
 > 
-> FAULT_INJECTION: forcing a failure.
-> name failslab, interval 1, probability 0, space 0, times 0
-> CPU: 1 PID: 28965 Comm: syz-executor Not tainted 5.15.0-rc3+ #21
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-> rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-> Call Trace:
->  __dump_stack lib/dump_stack.c:88 [inline]
->  dump_stack_lvl+0x8d/0xcf lib/dump_stack.c:106
->  fail_dump lib/fault-inject.c:52 [inline]
->  should_fail+0x13c/0x160 lib/fault-inject.c:146
->  should_failslab+0x5/0x10 mm/slab_common.c:1328
->  slab_pre_alloc_hook.constprop.99+0x4e/0xc0 mm/slab.h:494
->  slab_alloc_node mm/slub.c:3120 [inline]
->  __kmalloc_node+0x6b/0x240 mm/slub.c:4435
->  kmalloc_node include/linux/slab.h:614 [inline]
->  kvmalloc_node+0x33/0xe0 mm/util.c:587
->  kvmalloc include/linux/mm.h:805 [inline]
->  xlog_cil_alloc_shadow_bufs fs/xfs/xfs_log_cil.c:224 [inline]
->  xlog_cil_commit+0x181/0xe20 fs/xfs/xfs_log_cil.c:1280
->  __xfs_trans_commit+0x239/0x5a0 fs/xfs/xfs_trans.c:881
->  xfs_create+0x80b/0x900 fs/xfs/xfs_inode.c:1091
->  xfs_generic_create+0x16c/0x470 fs/xfs/xfs_iops.c:197
->  lookup_open+0x660/0x780 fs/namei.c:3282
->  open_last_lookups fs/namei.c:3352 [inline]
->  path_openat+0x465/0xe20 fs/namei.c:3557
->  do_filp_open+0xe3/0x170 fs/namei.c:3588
->  do_sys_openat2+0x357/0x4a0 fs/open.c:1200
->  do_sys_open+0x87/0xd0 fs/open.c:1216
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x34/0xb0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> RIP: 0033:0x46ae99
-> Code: f7 d8 64 89 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 48 89 f8 48
-> 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
-> 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007f847c2eec48 EFLAGS: 00000246 ORIG_RAX: 0000000000000055
-> RAX: ffffffffffffffda RBX: 000000000078c158 RCX: 000000000046ae99
-> RDX: 0000000000000000 RSI: 0000000000000021 RDI: 00000000200b5040
-> RBP: 00007f847c2eec80 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: 000000000000000c
-> R13: 0000000000000000 R14: 000000000078c158 R15: 00007ffd4ca99420
-> BUG: kernel NULL pointer dereference, address: 0000000000000000
-> #PF: supervisor write access in kernel mode
-> #PF: error_code(0x0002) - not-present page
-> PGD 10a56e067 P4D 10a56e067 PUD 10e1e3067 PMD 0
-> Oops: 0002 [#1] PREEMPT SMP
-> CPU: 0 PID: 28965 Comm: syz-executor Not tainted 5.15.0-rc3+ #21
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-> rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-> RIP: 0010:memset_erms+0x9/0x10 arch/x86/lib/memset_64.S:64
-> Code: c1 e9 03 40 0f b6 f6 48 b8 01 01 01 01 01 01 01 01 48 0f af c6
-> f3 48 ab 89 d1 f3 aa 4c 89 c8 c3 90 49 89 f9 40 88 f0 48 89 d1 <f3> aa
-> 4c 89 c8 c3 90 49 89 fa 40 0f b6 ce 48 b8 01 01 01 01 01 01
-> RSP: 0018:ffffc9000efab998 EFLAGS: 00010202
-> RAX: 0000000000000000 RBX: ffff88810fa73198 RCX: 0000000000000058
-> RDX: 0000000000000058 RSI: 0000000000000000 RDI: 0000000000000000
-> RBP: ffff888110c00108 R08: 0000000000000cc0 R09: 0000000000000000
-> R10: ffffffff81499943 R11: 0000000000000005 R12: 0000000000000210
-> R13: 0000000000000000 R14: 0000000000000268 R15: 0000000000000000
-> FS:  00007f847c2ef700(0000) GS:ffff88807dc00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000000000000000 CR3: 000000010c42b000 CR4: 0000000000750ef0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000600
-> PKRU: 55555554
-> Call Trace:
->  memset include/linux/fortify-string.h:175 [inline]
->  xlog_cil_alloc_shadow_bufs fs/xfs/xfs_log_cil.c:225 [inline]
->  xlog_cil_commit+0x1a1/0xe20 fs/xfs/xfs_log_cil.c:1280
->  __xfs_trans_commit+0x239/0x5a0 fs/xfs/xfs_trans.c:881
->  xfs_create+0x80b/0x900 fs/xfs/xfs_inode.c:1091
->  xfs_generic_create+0x16c/0x470 fs/xfs/xfs_iops.c:197
->  lookup_open+0x660/0x780 fs/namei.c:3282
->  open_last_lookups fs/namei.c:3352 [inline]
->  path_openat+0x465/0xe20 fs/namei.c:3557
->  do_filp_open+0xe3/0x170 fs/namei.c:3588
->  do_sys_openat2+0x357/0x4a0 fs/open.c:1200
->  do_sys_open+0x87/0xd0 fs/open.c:1216
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x34/0xb0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> RIP: 0033:0x46ae99
-> Code: f7 d8 64 89 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 48 89 f8 48
-> 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
-> 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007f847c2eec48 EFLAGS: 00000246 ORIG_RAX: 0000000000000055
-> RAX: ffffffffffffffda RBX: 000000000078c158 RCX: 000000000046ae99
-> RDX: 0000000000000000 RSI: 0000000000000021 RDI: 00000000200b5040
-> RBP: 00007f847c2eec80 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: 000000000000000c
-> R13: 0000000000000000 R14: 000000000078c158 R15: 00007ffd4ca99420
-> Modules linked in:
-> Dumping ftrace buffer:
->    (ftrace buffer empty)
-> CR2: 0000000000000000
-> ---[ end trace 1d10d5c699ef1895 ]---
-> RIP: 0010:memset_erms+0x9/0x10 arch/x86/lib/memset_64.S:64
-> Code: c1 e9 03 40 0f b6 f6 48 b8 01 01 01 01 01 01 01 01 48 0f af c6
-> f3 48 ab 89 d1 f3 aa 4c 89 c8 c3 90 49 89 f9 40 88 f0 48 89 d1 <f3> aa
-> 4c 89 c8 c3 90 49 89 fa 40 0f b6 ce 48 b8 01 01 01 01 01 01
-> RSP: 0018:ffffc9000efab998 EFLAGS: 00010202
-> RAX: 0000000000000000 RBX: ffff88810fa73198 RCX: 0000000000000058
-> RDX: 0000000000000058 RSI: 0000000000000000 RDI: 0000000000000000
-> RBP: ffff888110c00108 R08: 0000000000000cc0 R09: 0000000000000000
-> R10: ffffffff81499943 R11: 0000000000000005 R12: 0000000000000210
-> R13: 0000000000000000 R14: 0000000000000268 R15: 0000000000000000
-> FS:  00007f847c2ef700(0000) GS:ffff88807dc00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000000000000000 CR3: 000000010c42b000 CR4: 0000000000750ef0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000600
-> PKRU: 55555554
-> ----------------
-> Code disassembly (best guess):
->    0: c1 e9 03              shr    $0x3,%ecx
->    3: 40 0f b6 f6          movzbl %sil,%esi
->    7: 48 b8 01 01 01 01 01 movabs $0x101010101010101,%rax
->    e: 01 01 01
->   11: 48 0f af c6          imul   %rsi,%rax
->   15: f3 48 ab              rep stos %rax,%es:(%rdi)
->   18: 89 d1                mov    %edx,%ecx
->   1a: f3 aa                rep stos %al,%es:(%rdi)
->   1c: 4c 89 c8              mov    %r9,%rax
->   1f: c3                    retq
->   20: 90                    nop
->   21: 49 89 f9              mov    %rdi,%r9
->   24: 40 88 f0              mov    %sil,%al
->   27: 48 89 d1              mov    %rdx,%rcx
-> * 2a: f3 aa                rep stos %al,%es:(%rdi) <-- trapping instruction
->   2c: 4c 89 c8              mov    %r9,%rax
->   2f: c3                    retq
->   30: 90                    nop
->   31: 49 89 fa              mov    %rdi,%r10
->   34: 40 0f b6 ce          movzbl %sil,%ecx
->   38: 48                    rex.W
->   39: b8 01 01 01 01        mov    $0x1010101,%eax
->   3e: 01 01                add    %eax,(%rcx)
+> /*
+>   * Allocate it in the data region to avoid zeroing it during
+>   * BSS initialization. It is mainly used in cc_platform_has()
+>   * call during early boot call.
+>   *
+>   * States whether the kernel is running as a TDX guest.
+>   */
+> static int tdx_guest __ro_after_init = -1;
+> 
+> bool is_tdx_guest(void)
+> {
+> 	u32 eax, sig[3];
+> 
+> 	if (tdx_guest >= 0)
+> 		return tdx_guest;
+> 
+> 	if (cpuid_eax(0) < TDX_CPUID_LEAF_ID) {
+> 		tdx_guest = 0;
+> 		return false;
+> 	}
+> 
+> 	cpuid_count(TDX_CPUID_LEAF_ID, 0, &eax, &sig[0], &sig[2], &sig[1]);
+> 
+> 	tdx_guest = !memcmp("IntelTDX    ", sig, 12);
+> 
+> 	return tdx_guest;
+> }
+> 
+> void __init tdx_early_init(void)
+> {
+> 	if (!is_tdx_guest())
+> 		return;
+> 
+> 	setup_force_cpu_cap(X86_FEATURE_TDX_GUEST);
+> 
+> 	pr_info("Guest initialized\n");
+> }
+> 
+
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
