@@ -2,110 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FC1442463A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 20:44:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 764C5424643
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 20:48:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239170AbhJFSqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 14:46:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41730 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232060AbhJFSqD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 14:46:03 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8EA4C061760
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 11:44:10 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id 66so3263776pgc.9
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 11:44:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=BRycDukXp/mwG19rK+ZZveffPObZScVLwnEXUPao+Qo=;
-        b=dGB+k3+qNGd/+wJJNrFG9vCJplDjNmludJHXOhGA5rXke971izpN7UhxeJcT7MNDPU
-         AurJjZzVIWgAnLKC90k7BjSi3YpMjvNigLRvvhQKqNUaqW1VamZ5EXwSRHbGXOf+W6Sl
-         7IgiMMLRziARhtyyA04yPxDlEfYp9b7VVlC8xItUwdkHt28eRNLm0cSzhn8ErxRsZzN9
-         Vzr60PxAm7X84mDEgluZbigKV4U1V5zB6W8UcVbJ15tsptEN/EEgUJFkjJmGC+eDIrhT
-         3s81ngvG2Z6YEmtsllnNN9jazLwe+9HKLKs/aYEZc10CuW/FmiADaE2phMwt3Mi0h8yP
-         69eg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BRycDukXp/mwG19rK+ZZveffPObZScVLwnEXUPao+Qo=;
-        b=z77VevjgCj2q5KMAaFrOhxvWHXjNoOUfZbEw+1Yh+6jRwyN1kYEqtJsZ5AUUVE+ue8
-         SALaVmx2anq8d7vXCouM5LOoQtwrNAQjVidP56nX+BrTbHnQbtTO7szf9vBJLvSKapS+
-         LPKnDx0mR/ZocMcKBiEsuNbJL6pbsJqtOPuGxc7LAZdiTFOsvDzwMhY80IrgJ70AXaTV
-         qqy1hbtOXxLZmnUXJtfZnQDUDtP7MYWgcc9KfkkfSpA/ziYnN4PsCqrlt6AUulWasdZF
-         cBQXx/E5GNw8Rnqo0PRkagLnCZZhXasySxI7R4g+zbkIYBUTrzUm4PsSM/d8Kd8vwwYC
-         EEMA==
-X-Gm-Message-State: AOAM5314E+k7QWOyBYxRXO2QJu9UJ1O1Yz9ysqeeHP19gTxv/ZYymf8I
-        4iJVnCYPHn4iVVJhrgl3h7p3
-X-Google-Smtp-Source: ABdhPJyhBGw4InI09Ed/EIPnI9X+8ylbqAVBx0qlJ5UmeYYxO0j8y0mJwfvwwTP9TeW0ZeaCxJn6mw==
-X-Received: by 2002:a62:5101:0:b0:44c:5cc3:e088 with SMTP id f1-20020a625101000000b0044c5cc3e088mr19739203pfb.72.1633545850115;
-        Wed, 06 Oct 2021 11:44:10 -0700 (PDT)
-Received: from thinkpad ([117.202.189.72])
-        by smtp.gmail.com with ESMTPSA id 11sm20828595pfl.41.2021.10.06.11.44.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Oct 2021 11:44:09 -0700 (PDT)
-Date:   Thu, 7 Oct 2021 00:14:04 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Robert Marko <robimarko@gmail.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Kathiravan T <kathirav@codeaurora.org>, agross@kernel.org,
-        robh+dt@kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] arm64: dts: qcom: ipq8074: add SMEM support
-Message-ID: <20211006184404.GD33862@thinkpad>
-References: <20210902214708.1776690-1-robimarko@gmail.com>
- <YUf3aKn78+41Cb/G@builder.lan>
- <CAOX2RU5b46H7nqm6G4mHLSqEhGiWktwWjUKF5w10Ut+AdKea-A@mail.gmail.com>
- <632a7d28c23a8497d35ea009bfe89883@codeaurora.org>
- <CAOX2RU5+jeXiqz8oss8Sd-BWa059uAv5xu=7nx_YF4RYpG2S6w@mail.gmail.com>
- <YUurqDL/S15RziCQ@builder.lan>
- <20211006182419.GC33862@thinkpad>
- <CAOX2RU43D72yx1Kyb0jRMMOLgBd1OMscWLH-dEdp0P=L-5quHQ@mail.gmail.com>
+        id S238119AbhJFStt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 14:49:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52078 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229564AbhJFSts (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 14:49:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A03B061151;
+        Wed,  6 Oct 2021 18:47:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633546075;
+        bh=HrcL0ayDMOGay/UhADOzS58AHR+GsrQecIN7HiwSvuM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=lGyN9UqI/uVwEdNf9IrccA50HTO/SX495o/8pmJ9Dik/1vQVNHT72fnYNGtmt1m56
+         aR6Dz2yOJz6gzzkLWPLvtLRiEm2JVNEoJ3k3EK6MXPJMdIdkhHed3uHBzfCgwaRpPp
+         59GpfoT0FL6H4Xknq+LeormFEtwXqxnuhvYcns2z/QtmulHwKCD/WoIVkkgT/x9r+O
+         hnkASyIxZ4n1jywojTVmggmbuqeK5lhW5jW3dxzDnOzhf6pzT/7VgNoH6CC2LZN3sm
+         QJHQCgdgRmHcvoqbMNUqsCPR6La/z0bqGsR5S90yHWWSczSc8/yaVB45vNQNOP50cO
+         JHJHzLULM+l5g==
+Date:   Wed, 6 Oct 2021 13:47:54 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Zhangfei Gao <zhangfei.gao@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+Subject: Re: [PATCH v3 1/3] PCI: Convert to
+ device_create_managed_software_node()
+Message-ID: <20211006184754.GA1171384@bhelgaas>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAOX2RU43D72yx1Kyb0jRMMOLgBd1OMscWLH-dEdp0P=L-5quHQ@mail.gmail.com>
+In-Reply-To: <20211006112643.77684-2-heikki.krogerus@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 06, 2021 at 08:26:10PM +0200, Robert Marko wrote:
-> On Wed, 6 Oct 2021 at 20:24, Manivannan Sadhasivam
-> <manivannan.sadhasivam@linaro.org> wrote:
-> >
-
-[...]
-
-> > Sorry, missed this earlier. I did face the probe deferral issue before and
-> > submitted a small series for fixing that:
-> >
-> > https://lore.kernel.org/linux-mtd/20210302132757.225395-1-manivannan.sadhasivam@linaro.org/
-> >
-> > These 2 patches are in mainline now. Robert, can you make sure that you have
-> > these 2 patches in your tree?
+On Wed, Oct 06, 2021 at 02:26:41PM +0300, Heikki Krogerus wrote:
+> In quirk_huawei_pcie_sva(), use device_create_managed_software_node()
+> instead of device_add_properties() to set the "dma-can-stall"
+> property.
 > 
-> Hi Mani,
-> Yes, I have those patches as I am running this on top of 5.15-rc4 currently.
+> This is the last user of device_add_properties() that relied on
+> device_del() to take care of also calling device_remove_properties().
+> After this change we can finally get rid of that
+> device_remove_properties() call in device_del().
 > 
+> After that device_remove_properties() call has been removed from
+> device_del(), the software nodes that hold the additional device
+> properties become reusable and shareable as there is no longer a
+> default assumption that those nodes are lifetime bound the first
+> device they are associated with.
 
-Hmm. So if both SMEM and NAND drivers are added to the probe deferral list then
-the issue is likely not related to probe ordering.
+This does not help me determine whether this patch is safe.
+device_create_managed_software_node() sets swnode->managed = true,
+but device_add_properties() did not.  I still don't know what the
+effect of that is.
 
-Can you nail down the point where the board starts rebooting?
-
-Thanks,
-Mani
-
-> Regards,
-> Robert
-> >
-> > Thanks,
-> > Mani
-> >
-> > > Thanks,
-> > > Bjorn
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Acked-by: Zhangfei Gao <zhangfei.gao@linaro.org>
+> Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> ---
+>  drivers/pci/quirks.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+> index b6b4c803bdc94..fe5eedba47908 100644
+> --- a/drivers/pci/quirks.c
+> +++ b/drivers/pci/quirks.c
+> @@ -1850,7 +1850,7 @@ static void quirk_huawei_pcie_sva(struct pci_dev *pdev)
+>  	 * can set it directly.
+>  	 */
+>  	if (!pdev->dev.of_node &&
+> -	    device_add_properties(&pdev->dev, properties))
+> +	    device_create_managed_software_node(&pdev->dev, properties, NULL))
+>  		pci_warn(pdev, "could not add stall property");
+>  }
+>  DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_HUAWEI, 0xa250, quirk_huawei_pcie_sva);
+> -- 
+> 2.33.0
+> 
