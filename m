@@ -2,66 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAA1142406A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 16:48:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BC5642406D
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 16:49:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239156AbhJFOus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 10:50:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45684 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239140AbhJFOur (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 10:50:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8403760F4C;
-        Wed,  6 Oct 2021 14:48:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633531735;
-        bh=NzdvoVd7vwsMXLmG484eEW7YZuuVevuhIB8FQKYnEC8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HKDmPSZ3x9VHDxbUuJoJut1zfY7qi8iUqRFlOb2vxcwgdjCuGK+rE6UbW0sJw3B3y
-         h2pvw05Pq781w1rbsiJMtkWvLJad3eub/2pjzFH4dmdrI4/GphYb05tVL0EoCQ/Ad/
-         x1unN83tc6CkHZDOwS5Y+P9529mGYUaClp1I9JTwdMSeLdqmi1623s3Iasx8VUeu6b
-         6hSCBSceQrCNooCVM3YU46SCEgxBuho0M/OCJbNzvDGp2g4WJAw9Mw9MkGsAq1vMRt
-         5VZaZmF/FIkqwAzclFwt6aBIsfXBSfz2CVwwru9dsmC5z0FKpe+WoEvNWK0xpN/b/S
-         txRQMm7X+1HDQ==
-Date:   Wed, 6 Oct 2021 17:48:51 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Ido Schimmel <idosch@nvidia.com>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Pirko <jiri@nvidia.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        mlxsw@nvidia.com, Moshe Shemesh <moshe@nvidia.com>,
-        netdev@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Shay Drory <shayd@nvidia.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>
-Subject: Re: [PATCH net-next v2 3/5] devlink: Allow set specific ops
- callbacks dynamically
-Message-ID: <YV23U2gyRfgrT8EU@unreal>
-References: <cover.1633284302.git.leonro@nvidia.com>
- <92971648bcad41d095d12f5296246fc44ab8f5c7.1633284302.git.leonro@nvidia.com>
- <20211004164413.60e9ce80@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <YVv/nUe63nO8o8wz@unreal>
- <20211005113213.0ee61358@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <YVykXLY7mX4K1ScW@unreal>
- <20211005173940.35bc7bfa@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <YV0aCADY4WkLySv4@unreal>
- <20211006063558.6f4ee82d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        id S239158AbhJFOv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 10:51:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231776AbhJFOvY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 10:51:24 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EDB8C061753;
+        Wed,  6 Oct 2021 07:49:32 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: kholk11)
+        with ESMTPSA id 7DDE81F44C3D
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+To:     robh+dt@kernel.org
+Cc:     airlied@linux.ie, daniel@ffwll.ch, a.hajda@samsung.com,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Subject: [PATCH] dt-bindings: display/bridge: sil,sii8620: Convert to YAML binding
+Date:   Wed,  6 Oct 2021 16:49:14 +0200
+Message-Id: <20211006144914.568787-1-angelogioacchino.delregno@collabora.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211006063558.6f4ee82d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 06, 2021 at 06:35:58AM -0700, Jakub Kicinski wrote:
-> On Wed, 6 Oct 2021 06:37:44 +0300 Leon Romanovsky wrote:
+Convert the Silicon Image SiI8620 MIPI-DSI to LVDS bridge documentation
+to YAML.
 
-<...>
+Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+---
+ .../bindings/display/bridge/sil,sii8620.yaml  | 96 +++++++++++++++++++
+ .../bindings/display/bridge/sil-sii8620.txt   | 33 -------
+ 2 files changed, 96 insertions(+), 33 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/display/bridge/sil,sii8620.yaml
+ delete mode 100644 Documentation/devicetree/bindings/display/bridge/sil-sii8620.txt
 
-> I don't think this discussion is going anywhere, count me out.
+diff --git a/Documentation/devicetree/bindings/display/bridge/sil,sii8620.yaml b/Documentation/devicetree/bindings/display/bridge/sil,sii8620.yaml
+new file mode 100644
+index 000000000000..4e32409eff17
+--- /dev/null
++++ b/Documentation/devicetree/bindings/display/bridge/sil,sii8620.yaml
+@@ -0,0 +1,96 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/display/bridge/sil,sii8620.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Silicon Image SiI8620 MIPI-DSI to LVDS bridge
++
++maintainers:
++  - Andrzej Hajda <a.hajda@samsung.com>
++
++description: |
++  The SiI8620 is bridge device which converts MIPI DSI or MIPI DPI to DP/eDP.
++
++properties:
++  compatible:
++    const: sil,sii8620
++
++  reg:
++    description: I2C address of the bridge
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++
++  clock-names:
++    const: xtal
++
++  cvcc10-supply:
++    description: Digital Core Supply Voltage, 1.0V
++
++  iovcc18-supply:
++    description: I/O voltage supply, 1.8V
++
++  interrupts:
++    maxItems: 1
++
++  reset-gpios:
++    description: GPIO connected to the reset pin.
++    maxItems: 1
++
++  ports:
++    $ref: /schemas/graph.yaml#/properties/ports
++
++    properties:
++      port@0:
++        $ref: /schemas/graph.yaml#/properties/port
++        description:
++          Video port for HDMI input
++
++    required:
++      - port@0
++
++required:
++  - compatible
++  - reg
++  - cvcc10-supply
++  - iovcc18-supply
++  - interrupts
++  - ports
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++    #include <dt-bindings/interrupt-controller/irq.h>
++
++    i2c1 {
++      #address-cells = <1>;
++      #size-cells = <0>;
++
++      bridge@39 {
++        compatible = "sil,sii8620";
++        reg = <0x39>;
++        cvcc10-supply = <&ldo36_reg>;
++        iovcc18-supply = <&ldo34_reg>;
++        interrupt-parent = <&gpf0>;
++        interrupts = <2 IRQ_TYPE_LEVEL_HIGH>;
++        reset-gpios = <&gpv7 0 GPIO_ACTIVE_HIGH>;
++
++        ports {
++          #address-cells = <1>;
++          #size-cells = <0>;
++
++          port@0 {
++            reg = <0>;
++            mhl_to_hdmi: endpoint {
++              remote-endpoint = <&hdmi_to_mhl>;
++            };
++          };
++        };
++      };
++    };
++
++...
+diff --git a/Documentation/devicetree/bindings/display/bridge/sil-sii8620.txt b/Documentation/devicetree/bindings/display/bridge/sil-sii8620.txt
+deleted file mode 100644
+index b05052f7d62f..000000000000
+--- a/Documentation/devicetree/bindings/display/bridge/sil-sii8620.txt
++++ /dev/null
+@@ -1,33 +0,0 @@
+-Silicon Image SiI8620 HDMI/MHL bridge bindings
+-
+-Required properties:
+-	- compatible: "sil,sii8620"
+-	- reg: i2c address of the bridge
+-	- cvcc10-supply: Digital Core Supply Voltage (1.0V)
+-	- iovcc18-supply: I/O Supply Voltage (1.8V)
+-	- interrupts: interrupt specifier of INT pin
+-	- reset-gpios: gpio specifier of RESET pin
+-	- clocks, clock-names: specification and name of "xtal" clock
+-	- video interfaces: Device node can contain video interface port
+-			    node for HDMI encoder according to [1].
+-
+-[1]: Documentation/devicetree/bindings/media/video-interfaces.txt
+-
+-Example:
+-	sii8620@39 {
+-		reg = <0x39>;
+-		compatible = "sil,sii8620";
+-		cvcc10-supply = <&ldo36_reg>;
+-		iovcc18-supply = <&ldo34_reg>;
+-		interrupt-parent = <&gpf0>;
+-		interrupts = <2 0>;
+-		reset-gpio = <&gpv7 0 0>;
+-		clocks = <&pmu_system_controller 0>;
+-		clock-names = "xtal";
+-
+-		port {
+-			mhl_to_hdmi: endpoint {
+-				remote-endpoint = <&hdmi_to_mhl>;
+-			};
+-		};
+-	};
+-- 
+2.33.0
 
-At least here, we agree on something.
