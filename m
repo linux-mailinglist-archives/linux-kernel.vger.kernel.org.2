@@ -2,97 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA0F2423B1A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 11:54:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4102423B1C
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 11:55:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238057AbhJFJ4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 05:56:13 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:41654 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229824AbhJFJ4C (ORCPT
+        id S237976AbhJFJ47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 05:56:59 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:60071 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238020AbhJFJ4l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 05:56:02 -0400
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1968Zurl023597;
-        Wed, 6 Oct 2021 11:53:57 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=selector1;
- bh=iBK4jt+j/TuaNdy+BtubPQOGdvAAr+skdXQvKDtN8d4=;
- b=OVS9amKfW5iF06CYWl4M0AJla3mr76y6Opsvuizx+rhWsdJe2z6hQGiH0id/Q8fTtJnG
- nB3eIF+Nsc7yAKsJxawwJpR6OfHpeeAjLO02KyoJssoNs5TTgTISi7xRN5xvgNJDD/S4
- B4rIX/vU8Qb7494IW9R9k6k+fiyn49V1lavZUR8OW4kxDv8gft6sJ5lpztnkHlhROoGw
- 7tV1UyYenUyFCLuII4bEFsEMsP6IFch6X5OpyXZam9qTFdT/Fy1JgTjweunFPeWBAeOx
- utaBq4G3lTPQPZtL4njJ4VyvYGBfbDbQ/u2Fi3KQsMT4xo5fikjQZrsAqHaNqsvgKjh+ wg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 3bh8e8ghe6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 06 Oct 2021 11:53:57 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 6B520100034;
-        Wed,  6 Oct 2021 11:53:56 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 6346F21BF6D;
-        Wed,  6 Oct 2021 11:53:56 +0200 (CEST)
-Received: from localhost (10.75.127.50) by SFHDAG2NODE2.st.com (10.75.127.5)
- with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 6 Oct 2021 11:53:55
- +0200
-From:   Amelie Delaunay <amelie.delaunay@foss.st.com>
-To:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Amelie Delaunay <amelie.delaunay@foss.st.com>
-Subject: [PATCH 1/1] ARM: dts: stm32: use usbphyc ck_usbo_48m as USBH OHCI clock on stm32mp151
-Date:   Wed, 6 Oct 2021 11:53:55 +0200
-Message-ID: <20211006095355.59078-1-amelie.delaunay@foss.st.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 6 Oct 2021 05:56:41 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HPVDP6WYzz4xbC;
+        Wed,  6 Oct 2021 20:54:45 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1633514087;
+        bh=B3Pf85bSPRGhEPXqUInjc3AxG2GKRX0U9FpffRCpdxQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=PaBtL6RNjNxObkhXMTPfCon/2NwYfjbu7O0Tgoa3kJmmsAizEaldOlOuF8LKFqzlo
+         COYVzQCvoFXpNjdFWKtOwAW7mSvZj1QDs74GegaNl/bRZ36mPwlR+qm3SMt2b6snij
+         lPkv+MTz8Ycr5JutJKdhryeDgH4CNO4RMY78J68CE5ojMRiQI4bKJZhUeqMTXU2J5Y
+         NRd0pwblZ+Ih7FJZe7VWKqxA4vg929n/ZmwKJoEebfHCSTCpUtEGIZIFYtD+UL8CF+
+         1x8AtcqukV1VFvq/kQSaxYROT1flZWmimX3VxVd7CWbF8xklRzCLFiVVQl38zi2JiO
+         hcLZ3nhFFDBnA==
+Date:   Wed, 6 Oct 2021 20:54:44 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Borislav Petkov <bp@suse.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Subject: Re: linux-next: build failure after merge of the tip tree
+Message-ID: <20211006205444.52e088a9@canb.auug.org.au>
+In-Reply-To: <YV1s1GJ+e/qASPy7@zn.tnic>
+References: <20211006135826.3e1783f1@canb.auug.org.au>
+        <YV1s1GJ+e/qASPy7@zn.tnic>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.50]
-X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE2.st.com
- (10.75.127.5)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-10-06_02,2021-10-04_01,2020-04-07_01
+Content-Type: multipart/signed; boundary="Sig_/.q35oSktLfCfGBpC6q+.OCi";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Referring to the note under USBH reset and clocks chapter of RM0436,
-"In order to access USBH_OHCI registers it is necessary to activate the USB
-clocks by enabling the PLL controlled by USBPHYC" (ck_usbo_48m).
+--Sig_/.q35oSktLfCfGBpC6q+.OCi
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-The point is, when USBPHYC PLL is not enabled, OHCI register access
-freezes the resume from STANDBY. It is the case when dual USBH is enabled,
-instead of OTG + single USBH.
-When OTG is probed, as ck_usbo_48m is USBO clock parent, then USBPHYC PLL
-is enabled and OHCI register access is OK.
+Hi Borislav,
 
-This patch adds ck_usbo_48m (provided by USBPHYC PLL) as clock of USBH
-OHCI, thus USBPHYC PLL will be enabled and OHCI register access will be OK.
+On Wed, 6 Oct 2021 11:31:00 +0200 Borislav Petkov <bp@suse.de> wrote:
+>
+> + acme.
+>=20
+> On Wed, Oct 06, 2021 at 01:58:26PM +1100, Stephen Rothwell wrote:
+> > After merging the tip tree, today's linux-next build (native perf)
+> > failed like this:
+> >
+> > In file included from util/intel-pt-decoder/../../../arch/x86/lib/insn.=
+c:16,
+> >                  from util/intel-pt-decoder/intel-pt-insn-decoder.c:15:
+> > util/intel-pt-decoder/../../../arch/x86/lib/insn.c: In function '__insn=
+_get_emulate_prefix':
+> > tools/include/../include/asm-generic/unaligned.h:10:15: error: packed a=
+ttribute is unnecessary [-Werror=3Dpacked]
+> >    10 |  const struct { type x; } __packed *__pptr =3D (typeof(__pptr))=
+(ptr); \ =20
+>=20
+> Thanks for the report - luckily, the patch is the topmost one on the
+> branch so I can simply edit it.
+>=20
+> Here's the new version, you can simply apply the last hunk on your tree
+> only to verify that it fixes it but it should as the hw arch should not
+> matter - it explodes because perf tool builds with -Werror and I can
+> trigger it too.
+>=20
+> I'll redo tip/master once you confirm.
 
-Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
----
- arch/arm/boot/dts/stm32mp151.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Works for me, thanks.
 
-diff --git a/arch/arm/boot/dts/stm32mp151.dtsi b/arch/arm/boot/dts/stm32mp151.dtsi
-index bd289bf5d269..fe194c787e6c 100644
---- a/arch/arm/boot/dts/stm32mp151.dtsi
-+++ b/arch/arm/boot/dts/stm32mp151.dtsi
-@@ -1452,7 +1452,7 @@ stmmac_axi_config_0: stmmac-axi-config {
- 		usbh_ohci: usb@5800c000 {
- 			compatible = "generic-ohci";
- 			reg = <0x5800c000 0x1000>;
--			clocks = <&rcc USBH>;
-+			clocks = <&rcc USBH>, <&usbphyc>;
- 			resets = <&rcc USBH_R>;
- 			interrupts = <GIC_SPI 74 IRQ_TYPE_LEVEL_HIGH>;
- 			status = "disabled";
--- 
-2.25.1
+Tested-by: Stephen Rothwell <sfr@canb.auug.org.au> # ppc64le compile
 
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/.q35oSktLfCfGBpC6q+.OCi
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFdcmQACgkQAVBC80lX
+0GwImQf/Yea0ty2AtTxhGOHCW9BBPANH8RvLKItpMqe2rG2ZJzj6tLgvCe1sGFoN
+0paOPy7R9NT94aPAwILPvZKYYjqWk5Y+v5SPePGjmfN6eGPYD231iW0tjjnDJrFB
+IfyAr5AYwxQxVubKcNGtjB7Hssk9NV7XS1yl+sXQ5pfgaAkPhS0+G23rr+rDFOdH
+hN5d0179Tq+gm8fGASk81P6jrOYasdO5xBHoZjRO564UjF/2o4jGQcz+1/0YgCYx
+55R1Hjxrq8fUhbjwyAVU6+R886Myh9dzczoJ7fkdsr9DFpMssYKLMeR16Ir4ljCe
+P6V2CdM2DCr2FqXy0QTsLqP0AqAXMQ==
+=4JdA
+-----END PGP SIGNATURE-----
+
+--Sig_/.q35oSktLfCfGBpC6q+.OCi--
