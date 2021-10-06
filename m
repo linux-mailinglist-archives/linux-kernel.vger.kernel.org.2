@@ -2,87 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A213B423656
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 05:37:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3B4A423658
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 05:37:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237284AbhJFDjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 23:39:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43040 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230261AbhJFDjg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 23:39:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633491464;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hQgwvO1joc+8xZdxI7msExSbMFXW62NaKXjYt60o60Y=;
-        b=FTYnuXKJCSD0NQcQApjO4E+y0vIqVU1AnLS1vassOR1nLDhwJJSQxy2gau0eAg1GOi1x1I
-        ZNoyg01nctCyPxgTlEnKFq6J+54ny8FTCW9uuQtSRurFzF4ZufNBI5RvR4nUR0LEr4f3Xf
-        +i4xLgcWxrhg4agSHxs0JwyUSwV9a4U=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-279-NbYIwMAaNouqp3aGAcFCOw-1; Tue, 05 Oct 2021 23:37:41 -0400
-X-MC-Unique: NbYIwMAaNouqp3aGAcFCOw-1
-Received: by mail-qv1-f72.google.com with SMTP id gg11-20020a056214252b00b00382e4692e72so1607632qvb.13
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 20:37:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hQgwvO1joc+8xZdxI7msExSbMFXW62NaKXjYt60o60Y=;
-        b=5J6cUVG5T14CJ+8s8cgf81iFJRjM6HR9LTMdD0NT/RcLocGb4OAxHZ7DfhgLLVC0jx
-         l5NsqNsSBzvl876ANLndW99oyOhRagqy2F84mugvNQnbt1Iyzf4jGDuzzS+6tZEmp+3Y
-         bB1+zCEmIwSNmroocWkt3zLn4Si2kLi3dvfK+FzDDJXOGX3Ca2MHDvAAQH/PpgWHdgEe
-         hTWyZ77W2sjTLMSWT55gzowQQ/lat+i00mgxmh7DaKHdS3BRdTjK4mV8rc89hOXeTqFJ
-         XcgBjjBhEFkujsdHYHQRmS0Ds3bzvm2QANBT+jeoJ21AYiv79x5X3s3eoemv2WzcNFSD
-         zc5w==
-X-Gm-Message-State: AOAM5316TCip1/RWcR6A/RPkD+Tq1YXWvbgqPamZStew6z02J8l1jyS9
-        VnAqm6uTh6Eq/q/MlXQ0L8DnHuTCVE8yqZu711iR1sd1ppT+dhzJjfpZJmLMsPid3YkFgSOtbi5
-        Oo4Q9tyEqIX2MLRgMhVFaXmqL
-X-Received: by 2002:a05:622a:1cd:: with SMTP id t13mr24476055qtw.283.1633491461277;
-        Tue, 05 Oct 2021 20:37:41 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx1rqsQDW73oW5IpwjjqQp7qLI0RWKug5ueJvzxcJCbW+Uc/eOz0fUprINDj9JdXsUQ3ob9QQ==
-X-Received: by 2002:a05:622a:1cd:: with SMTP id t13mr24476045qtw.283.1633491461113;
-        Tue, 05 Oct 2021 20:37:41 -0700 (PDT)
-Received: from treble ([2600:1700:6e32:6c00::15])
-        by smtp.gmail.com with ESMTPSA id d18sm1733576qkk.3.2021.10.05.20.37.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Oct 2021 20:37:40 -0700 (PDT)
-Date:   Tue, 5 Oct 2021 20:37:37 -0700
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     x86@kernel.org, Kees Cook <keescook@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev
-Subject: Re: [PATCH v4 02/15] objtool: Add ASM_STACK_FRAME_NON_STANDARD
-Message-ID: <20211006033737.7duncwbqmporicer@treble>
-References: <20210930180531.1190642-1-samitolvanen@google.com>
- <20210930180531.1190642-3-samitolvanen@google.com>
+        id S237313AbhJFDjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 23:39:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33336 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230363AbhJFDjj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Oct 2021 23:39:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 69DE761029;
+        Wed,  6 Oct 2021 03:37:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633491468;
+        bh=fTJvpgjSLz51U88Tq9z0xogY4BNYHCRrb0Lb3KcXGeQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Lj7jul45VtWr3mfTLqNNKm6rz/FWRAEo3Fx3+eR95ugvY+PF1yz7omX9BXFYa8WTI
+         cefQaXWSolBdM29Gnr5ezpPI+8goqVhlBLlfqHD2p1dvZulb8TB7/4JUzaNt8w+Mnn
+         D21AF5dQwRQ2WbaZNvfmqlv/hYrl108YbAihlbDMMlg7x+07N7EtWETUrUYBdkDvp4
+         KzEZ9ybmdssNehD229Ey/H3+CS3S2QaXzpGscDjp0IXj1LXDdSIw7NyrIQWMgEyZpm
+         1GJGMisx5HHmhLz79VxP5uc/S0EDhrFz29oRiUvzUY5Q5Jtyu5qrLLtMIf8yHMIlru
+         BsErxxOD+UHtg==
+Date:   Wed, 6 Oct 2021 06:37:44 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Ido Schimmel <idosch@nvidia.com>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Pirko <jiri@nvidia.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        mlxsw@nvidia.com, Moshe Shemesh <moshe@nvidia.com>,
+        netdev@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Shay Drory <shayd@nvidia.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>
+Subject: Re: [PATCH net-next v2 3/5] devlink: Allow set specific ops
+ callbacks dynamically
+Message-ID: <YV0aCADY4WkLySv4@unreal>
+References: <cover.1633284302.git.leonro@nvidia.com>
+ <92971648bcad41d095d12f5296246fc44ab8f5c7.1633284302.git.leonro@nvidia.com>
+ <20211004164413.60e9ce80@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <YVv/nUe63nO8o8wz@unreal>
+ <20211005113213.0ee61358@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <YVykXLY7mX4K1ScW@unreal>
+ <20211005173940.35bc7bfa@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210930180531.1190642-3-samitolvanen@google.com>
+In-Reply-To: <20211005173940.35bc7bfa@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 11:05:18AM -0700, Sami Tolvanen wrote:
-> To use the STACK_FRAME_NON_STANDARD macro for a static symbol
-> defined in inline assembly, we need a C declaration that implies
-> global visibility. This type mismatch confuses the compiler with
-> CONFIG_CFI_CLANG. This change adds an inline assembly version of
-> the macro to avoid the issue.
+On Tue, Oct 05, 2021 at 05:39:40PM -0700, Jakub Kicinski wrote:
+> On Tue, 5 Oct 2021 22:15:40 +0300 Leon Romanovsky wrote:
+> > On Tue, Oct 05, 2021 at 11:32:13AM -0700, Jakub Kicinski wrote:
+> > > On Tue, 5 Oct 2021 10:32:45 +0300 Leon Romanovsky wrote:  
+> > > > It is impossible, devlink_register() is part of .probe() flow and if it
+> > > > wasn't called -> probe didn't success -> net_device doesn't exist.  
+> > > 
+> > > Are you talking about reality or the bright future brought by auxbus?  
+> > 
+> > I looked on all the drivers which called to devlink_alloc() which is
+> > starting point before devlink_register(). All of them used it in the
+> > probe. My annotation patch checks that too.
+> > 
+> > https://lore.kernel.org/linux-rdma/f65772d429d2c259bbc18cf5b1bbe61e39eb7081.1633284302.git.leonro@nvidia.com/T/#u
+> > 
+> > So IMHO, it is reality.
 > 
-> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+> You say that yet below you admit flashing is broken :/
 
-Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
+I said more than once, lifetime of devlink is broken. It is placed in
+wrong layer, pretend to implement some of driver core functionality
+without proper protections and have wrong locks.
 
--- 
-Josh
+At least, I didn't break flash update, there is no change in logic of
+flash after any of my changes. Exactly like before, user was able to trigger
+flash update through this devlink_compat_flash_update() call without any
+protection.
 
+Let's chose random kernel version (v5.11)
+https://elixir.bootlin.com/linux/v5.11/source/net/core/devlink.c#L10245
+as you can see, it doesn't hold ANY driver core locks, so it can be
+called in any time during driver .probe() or .remove(). Drivers that
+have implemented ops.flash_update() have no idea about that.
+
+> 
+> > > > We are not having net_device without "connected" device beneath, aren't we?
+> > > > 
+> > > > At least drivers that I checked are not prepared at all to handle call
+> > > > to devlink->ops.flash_update() if they didn't probe successfully.  
+> > > 
+> > > Last time I checked you moved the devlink_register() at the end of
+> > > probe which for all no-auxbus drivers means after register_netdev().  
+> > 
+> > I need to add a check of if(devlink_register) inside devlink_compat_flash_update().
+> 
+> ... and the workarounds start to pile up.
+
+It is not a workaround, but attempt to fix this mess.
+
+I separated devlink netlink callers from the kernel flow and just need
+to continue to fix these external to devlink callers.
+
+> 
+> > > I don't like it. If you're feeling strongly please gather support of
+> > > other developers. Right now it's my preference against yours. I don't
+> > > even see you making arguments that your approach is better, just that
+> > > mine is not perfect and requires some similar changes.  
+> > 
+> > I have an idea of how to keep static ops and allow devlink_set_ops()
+> > like functionality.
+> > 
+> > What about if I group ops by some sort of commonalities?
+> > 
+> > In my case, it will be devlink_reload_ops, which will include reload
+> > relevant callbacks and provide devlink_set_reload_ops() wrapper to set
+> > them?
+> > 
+> > It will ensure that all pointers are const without need to have feature
+> > bits.
+> 
+> I don't understand why you keep pushing the op reassignment.
+
+It is not reassignment, but ability to assign proper callbacks from the
+beginning.
+
+The idea is to make sure that lifetime of devlink is managed by proper
+ops callbacks, based on them we can control everything inside devlink
+by ensuring right locks, order e.t.c.
+
+I want to get rid from random *_enabled flags that always forgotten and
+adds complexity that don't give any advantage only issues.
+
+I'm also changing devlink to allow parallel execution and for that I
+need to have reliable devlink instance with minimal number of locks.
+
+Thanks
