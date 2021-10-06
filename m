@@ -2,124 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C88D4248D4
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 23:24:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A72A4248DC
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 23:25:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239679AbhJFVZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 17:25:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23498 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239587AbhJFVZz (ORCPT
+        id S239700AbhJFV1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 17:27:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50374 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239683AbhJFV1B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 17:25:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633555441;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=nMhlWQDUo0vwZMwpBx3DUiplgyhVN+4E+Q4rD6EPGbY=;
-        b=VSg4t7B225Ja+plPoSeEbJxLEItP48830enkv3n+Rrbo2hHdAMAKlpTb/7TK6QH/UZBM16
-        qem1FPhjJ5/3gH16Jg7q2L9xj11tOHSq3yg4rTpzxKk5+iGmyMPEi37yJY4dIz+OVqFr1F
-        azl0yaEb2SnvVvWK7CdL0PqBcTGFdQU=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-551-GP2gr17lNnqQvHP0zUkhYQ-1; Wed, 06 Oct 2021 17:24:00 -0400
-X-MC-Unique: GP2gr17lNnqQvHP0zUkhYQ-1
-Received: by mail-qk1-f198.google.com with SMTP id x25-20020a05620a01f900b0045e1c4567ddso3204318qkn.15
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 14:24:00 -0700 (PDT)
+        Wed, 6 Oct 2021 17:27:01 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67CB2C061746;
+        Wed,  6 Oct 2021 14:25:08 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id y23so16238275lfb.0;
+        Wed, 06 Oct 2021 14:25:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Z+D15vASJYR0SWQDyQP1KR8IKSZuDFJmcBUbxtdKwZQ=;
+        b=AZF3RQplv1wwucr3sX1VkhwqLxjb5jhLmlPTf6BcmzWR9S/ab1/50oKhYytjUxuxjF
+         OHbHbObgbt4KErSP1sBFtIGwDtqomaoinmksPntQwQo7yPKa9M8wW3aTrRkR1ENr9YXH
+         An3NYJ3BFO03YmpjlOAhqA15ukSOSB0TmSxxvb7VM8/kfAy6BCpaA8CZeYQjS7j0xRGz
+         CIwjLR5d3klZfaAeb5Knr5b9YHfwyA4YgK3OqOvAXLc4tncC4f/hvr9mbFYGzpAun4QX
+         mHvtjJ798n0SKwZ8bTfGtw8Fxr4u/DkYaIvvzaIRXqZRO/CW8DDEWuYH/pEiTmGzLMvD
+         XQ1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nMhlWQDUo0vwZMwpBx3DUiplgyhVN+4E+Q4rD6EPGbY=;
-        b=KBaQH0xJg/IWVkgF0zRMe5MdYDhQUnEvhbRmqd4AcgAhAkOAz4syhNkAy5axg1f81G
-         u76c6DLKUyV/j5E2Is0pJ6t/N3/NnprrFnufKyB1XCMW6637vnKs6BnWwjIjUQiM7SdB
-         tMceNPcSn1i7XPmsccV8tr6I9ZCjrr3D9+R9G4NAcAXy3nEnr59clPW16Iwp7svlhtvH
-         yVpSlHj4PFpAWfaQ7ux0Ll8VETOn1wWIos1ywFr7T41Co9pwnjApxz74RD2h28f85pgQ
-         K1Vj3JaXL98MjxqZjFVBMb6j5zKK5P6mdcZPDqGj7diH+6k/1bWWub84SAM330tkEevz
-         3GWQ==
-X-Gm-Message-State: AOAM532X1/R+L+ACRUIICFd9NWGzOULir1cr0nqvFyAj1kOYqFAIZQOg
-        dCK6Ekt531Qy8rUKTYVaMX+HqXV/TjseD8Hz+NR2fI2G2QZBpDf/aW+x7iU7wfvGNntfDLMFh7H
-        Ev6IiOz7GGLKW+7Fn1FfmoD3l
-X-Received: by 2002:ac8:3b5a:: with SMTP id r26mr559471qtf.171.1633555439682;
-        Wed, 06 Oct 2021 14:23:59 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwR4ZiTzRKhdg2yBOE47khg3o2YOwYDTXGAsQFQpTdvjyZx4Ml+W7b4bwjUo8Xxd2UMo1aJUQ==
-X-Received: by 2002:ac8:3b5a:: with SMTP id r26mr559454qtf.171.1633555439465;
-        Wed, 06 Oct 2021 14:23:59 -0700 (PDT)
-Received: from treble ([2600:1700:6e32:6c00::49])
-        by smtp.gmail.com with ESMTPSA id c1sm12366518qka.128.2021.10.06.14.23.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Oct 2021 14:23:59 -0700 (PDT)
-Date:   Wed, 6 Oct 2021 14:23:55 -0700
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Sami Tolvanen <samitolvanen@google.com>, X86 ML <x86@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        linux-hardening@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>, llvm@lists.linux.dev
-Subject: Re: [PATCH v4 06/15] ftrace: Use an opaque type for functions not
- callable from C
-Message-ID: <20211006212355.mfuyci3pnsdlbp3w@treble>
-References: <20210930180531.1190642-1-samitolvanen@google.com>
- <20210930180531.1190642-7-samitolvanen@google.com>
- <20211006032945.axlqh3vehgar6adr@treble>
- <20211006090249.248c65b0@gandalf.local.home>
- <CABCJKueL4Ebaan=JBUyO3oewq7RTHHXWUQpixgf2AfC_r5T3uA@mail.gmail.com>
- <20211006125809.5389b2a3@gandalf.local.home>
- <CABCJKudTuheEd5jyhXmfJHup7iYzOz3_OcO92hFnpRK1MapJSg@mail.gmail.com>
- <20211006204335.xtymxt6wk4akx6fc@treble>
- <20211006171016.07d90b59@gandalf.local.home>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Z+D15vASJYR0SWQDyQP1KR8IKSZuDFJmcBUbxtdKwZQ=;
+        b=eoI47RpotMB6l/W+VEtTxFLDzwNq8P/uyNHr42K7EWPwthQ2NpE0TiyKjLOuD2tdOL
+         J2q1uepIWAJGbJe6HYN9M8eFZjX1C/tKa2nVdpHTM8DgMebknWB6buakbT3m+qyVuPxv
+         eswrlSGQFl27hbpj71JjlaU77vRfc3Wr/VMIXaYYVqnJF5rZfQ6S3E38nLC1rnu5GEtn
+         NQ37OIpuHAwUdGJex7B3oR0AvJ2Elk0I7C7i69DpBcvS2PQ8helKynEzHerebW/TsBV+
+         Lerp4yqk9J8bMzVytJfch/QBmFtIDnhD2UcYZmpGSDuyMhQQ4FZEh8Ar+S24j4D8y2Bj
+         m3oA==
+X-Gm-Message-State: AOAM533Zj3tjYEXdAlcccH2fYDykd/DdgveE8NZI0qF4nJX+rGypXegK
+        oOqBuTe8od0SDBdiW6fMAIs=
+X-Google-Smtp-Source: ABdhPJw744uZG1epOJTVnrPpE+ugh/u7w22Q41348b4PDrlNyl5oKr3YpciuIkhK7LF587NSrNYsPA==
+X-Received: by 2002:a2e:1404:: with SMTP id u4mr387417ljd.269.1633555506822;
+        Wed, 06 Oct 2021 14:25:06 -0700 (PDT)
+Received: from [192.168.2.145] (79-139-163-57.dynamic.spd-mgts.ru. [79.139.163.57])
+        by smtp.googlemail.com with ESMTPSA id s30sm2577705lfb.90.2021.10.06.14.25.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Oct 2021 14:25:06 -0700 (PDT)
+Subject: Re: [PATCH v13 06/35] clk: tegra: Support runtime PM and power domain
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        Peter Chen <peter.chen@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Nishanth Menon <nm@ti.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        linux-staging@lists.linux.dev, linux-pwm@vger.kernel.org,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Richard Weinberger <richard@nod.at>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        David Heidelberg <david@ixit.cz>
+References: <20210926224058.1252-1-digetx@gmail.com>
+ <20210926224058.1252-7-digetx@gmail.com>
+ <CAPDyKFq+LS4Jr1GyC-a-tGWPzGH0JxfJ9wKY=uQEBGYm952azw@mail.gmail.com>
+ <24101cd6-d3f5-1e74-db39-145ecd30418b@gmail.com>
+ <CAPDyKFreK7976PJL-1zySoza_yXM7rMQ64aODWUZ+U3L-uCa0w@mail.gmail.com>
+ <4bdba8a2-4b9b-ed7d-e6ca-9218d8200a85@gmail.com>
+ <CAPDyKFq_-HGPRNiNDmnEbuah0mUYoRUWVs1SvbQ6VNMMwEcXjA@mail.gmail.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <35714b9d-d855-1ad3-241b-f97859f8c97b@gmail.com>
+Date:   Thu, 7 Oct 2021 00:25:05 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <CAPDyKFq_-HGPRNiNDmnEbuah0mUYoRUWVs1SvbQ6VNMMwEcXjA@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211006171016.07d90b59@gandalf.local.home>
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 06, 2021 at 05:10:16PM -0400, Steven Rostedt wrote:
-> On Wed, 6 Oct 2021 13:43:35 -0700
-> Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+06.10.2021 15:38, Ulf Hansson пишет:
+>> I'm also wondering if we could add some 'was_enabled' flag to GENPDs,
+>> setting it by genpd_suspend_noirq() for the enabled domains, and then
+>> powering-on GENPDs from genpd_resume_noirq() only if they were in the
+>> enabled state during genpd_suspend_noirq() time. It actually puzzled me
+>> for a quite long time why GENPD core enables domains unconditionally
+>> during early resume. This should solve a part of the problem and it
+>> makes suspend/resume a bit safer because there is a smaller chance to
+>> crash hardware during suspend, at least it's easier to debug.
+> Just because the PM domain was already off at genpd_suspend_noirq(),
+> doesn't mean that it can stay powered off at genpd_resume_noirq(). At
+> least as is today.
 > 
-> > On Wed, Oct 06, 2021 at 10:45:41AM -0700, Sami Tolvanen wrote:
-> > > On Wed, Oct 6, 2021 at 9:58 AM Steven Rostedt <rostedt@goodmis.org> wrote:  
-> > > >
-> > > > On Wed, 6 Oct 2021 09:31:04 -0700
-> > > > Sami Tolvanen <samitolvanen@google.com> wrote:
-> > > >  
-> > > > > > > On Thu, Sep 30, 2021 at 11:05:22AM -0700, Sami Tolvanen wrote:  
-> > > > > > > > With CONFIG_CFI_CLANG, the compiler changes function references to point
-> > > > > > > > to the CFI jump table. As ftrace_call, ftrace_regs_call, and mcount_call
-> > > > > > > > are not called from C, use DECLARE_ASM_FUNC_SYMBOL to declare them.  
-> > > > > >
-> > > > > > "not called from C" is a bit confusing.  
-> > > > >
-> > > > > Any thoughts on how to make this less confusing?  
-> > > >
-> > > >  "Not called by C code, but injected by the compiler."
-> > > >
-> > > > ?  
-> > > 
-> > > Sure, sounds good to me. I'll update this in v5.  
-> > 
-> > "injected by the compiler" sounds even more confusing.  It almost sounds
-> > like those functions are generated by GCC, which they are most
-> > definitely not.
-> > 
-> 
-> Heh, I was thinking of the locations that are injected (mcount / fentry) as
-> these are just replacements for them. Those injections are added by GCC.
->
-> So, continuing the bikeshedding, what about "not called by C code, but are
-> trampolines injected as calls replacing the nops at the start of
-> functions added by the compiler." ?
+> The main reason why genpd_resume_noirq() powers on the PM domain, is
+> because it's not possible for the consumer drivers to rely on runtime
+> PM to do it (because runtime PM has been disabled by the PM core).
 
-I'm not quite sure what that means, but I'll allow it ;-)
-
--- 
-Josh
-
+At least Tegra doesn't need to have domains force-resumed. This should
+be a platform-specific behaviour. We may add a new flag for that, I
+suppose. I'll try to keep this in mind for a future improvement. Thank
+you for the clarification.
