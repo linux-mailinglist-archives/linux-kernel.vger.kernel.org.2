@@ -2,69 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E350424691
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 21:14:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 692C6424693
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 21:14:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239248AbhJFTQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 15:16:36 -0400
-Received: from mail-oo1-f53.google.com ([209.85.161.53]:44892 "EHLO
-        mail-oo1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229564AbhJFTQf (ORCPT
+        id S239332AbhJFTQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 15:16:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48580 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239279AbhJFTQo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 15:16:35 -0400
-Received: by mail-oo1-f53.google.com with SMTP id e16-20020a4ad250000000b002b5e1f1bc78so1156053oos.11;
-        Wed, 06 Oct 2021 12:14:42 -0700 (PDT)
+        Wed, 6 Oct 2021 15:16:44 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D207C061753;
+        Wed,  6 Oct 2021 12:14:51 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id k7so11763512wrd.13;
+        Wed, 06 Oct 2021 12:14:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=to:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=xg6x/7D3h5mhfbuUrsFbOT2lnBjaEjgZ8M7w30SjBlM=;
+        b=MUuzTOasB9L+Vjg0DSdRATwsVH8PMBxFBtSB14mkc9yAnMM6J6/KBY9YHfI1c2Bxfh
+         QS2W9M/896NWUgAhzWgrZ9oNlVdkv/hMGKQz4M4Rz7orTDlfswI4oTH0/80DbhK59usG
+         r26g9EwjAIBSYAn/pv0/6xMMl9UtuR+Sqg2J0F8GgVHw3h1+9SkgVxkaRC9Gi4o8ySev
+         d+kXGTULBVnJ8NbxwSv+IEODvVL3LtqrlYISqcP/cxVj7qum7i+5rNI8FBzOrdCEeeJT
+         pidEhBpfjU0HZHawcxiGcUKqlRnmOr4hx0UOkW4RtUB4Xfbaau65AiUI1gWAfzam/lKb
+         MQFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=F2u+l/lmYmOhB5qG5+bzuACvdjgmAdllAL4afyPVf8I=;
-        b=H/8M+xtGLAMoA1hJD/tcKHuQqN3VtwrXtrDiK09757ynvABp+3mdEnAEGm2vlwbjAs
-         w9bWnhlEQLPKR+3qzk7Ih8/wZzSfBKlnvKd34O8NPcvSHqIPDSJGhUY5hsQXNE0kPgnv
-         k8EJd+CS3tAfp0J8qEilhtKWstrXrWVNd6edolCCsFJejg5nvGcVgfTZFfC/dhQIr4D7
-         2WtiP3rJ8aCeBCD+HgBYS1IT627xyB7gVQQME6WVOqAzJaXbA67bpebdrQDEssb7aYWw
-         pzoZk+yhTtv5pf5ubMYOKmB+LCoQFHv9oPmjr1vSaS/wJJkbVEA9BejlsJI2t2kGu5qu
-         AHHQ==
-X-Gm-Message-State: AOAM532F1kaqqg6UINSfXiD5p2GrYrYxeO5u3JC/ADCbdSRmVD2SGCXK
-        RvJdjugMi6F/9NU7j9gu5Q==
-X-Google-Smtp-Source: ABdhPJyGrxWCOpNPPLGYwRvElOIPV41kNWMelDN9N+FeSrmez82iHIoUOO7fZBPy3ySVbVV/8PSdWA==
-X-Received: by 2002:a4a:d088:: with SMTP id i8mr64515oor.17.1633547682230;
-        Wed, 06 Oct 2021 12:14:42 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id o42sm2875975ooi.9.2021.10.06.12.14.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Oct 2021 12:14:41 -0700 (PDT)
-Received: (nullmailer pid 2249766 invoked by uid 1000);
-        Wed, 06 Oct 2021 19:14:40 -0000
-Date:   Wed, 6 Oct 2021 14:14:40 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Zev Weiss <zev@bewilderbeest.net>
-Cc:     devicetree@vger.kernel.org, Frank Rowand <frowand.list@gmail.com>,
-        Grant Likely <grant.likely@secretlab.ca>,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] of: remove duplicate declarations of __of_*_sysfs()
- functions
-Message-ID: <YV31oO+MV6z2qoDO@robh.at.kernel.org>
-References: <20211006061943.8472-1-zev@bewilderbeest.net>
+        h=x-gm-message-state:to:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=xg6x/7D3h5mhfbuUrsFbOT2lnBjaEjgZ8M7w30SjBlM=;
+        b=XFBVHtR88Xq5lPQVnYQSeuc/dGhJh9x+iGd8ZQK0/KUS/dbLeuufuSk9fFYditTJL9
+         0aa3zUhtDPBQlQJ83uFc8cFgIcZJnQTczZSYAjsSjalw4kgKxGzW4xPwquHmOAgzYcVX
+         f0cXqCWNaGDlgVFR4EPN4iHO3vKDIfS9u+1D+IiEURL3WWULHRJTsbQlffF2x4Y88XCo
+         zFIWH+3jeT06RklCTR92QO+DN33lu4ySUCo64M66zbirgiVf2kM6UmNxfFp0xSfVerya
+         ItXDr6SEIvMGUUIo77wMWzuOFTmg5IJrQ0MzoFhp62OlV4SGI6lvqmMcFOjxlBcXEUPD
+         TmaQ==
+X-Gm-Message-State: AOAM533EVe9SCWS3knLaolb7TKumi0D4jyT7G4RAo7YycWGKV8Uwyi6g
+        c4Ptatjwr3qX3CDr9MY36xD0TE340H8=
+X-Google-Smtp-Source: ABdhPJxNtynREXIROgl8PJqiUiDjSr7dkvbBsqQdgBENI2XdmNkf5gwlvh+FcmRELeC+mxoCwlFCyQ==
+X-Received: by 2002:a5d:6390:: with SMTP id p16mr24041349wru.54.1633547689955;
+        Wed, 06 Oct 2021 12:14:49 -0700 (PDT)
+Received: from [10.8.0.18] ([195.53.121.100])
+        by smtp.gmail.com with ESMTPSA id z79sm6264965wmc.17.2021.10.06.12.14.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Oct 2021 12:14:49 -0700 (PDT)
+To:     linux-man <linux-man@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Libc-alpha <libc-alpha@sourceware.org>
+From:   "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
+Subject: outb(2) Text regarding optimizations
+Message-ID: <3db43b50-a0a5-ed0e-4def-e44f845f8e89@gmail.com>
+Date:   Wed, 6 Oct 2021 21:14:48 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211006061943.8472-1-zev@bewilderbeest.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 05 Oct 2021 23:19:42 -0700, Zev Weiss wrote:
-> When CONFIG_OF_KOBJ was introduced in commit b56b5528f5b3 ("of: make
-> kobject and bin_attribute support configurable") and #ifdef-ed
-> versions of these declarations got added, the originals didn't get
-> removed.
-> 
-> Fixes: b56b5528f5b3 ("of: make kobject and bin_attribute support configurable")
-> Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
-> ---
->  drivers/of/of_private.h | 8 --------
->  1 file changed, 8 deletions(-)
-> 
+Hi,
 
-Applied, thanks!
+outb(2) says that users of these functions should optimize to avoid 
+having unresolved references at link time.
+
+The text is:
+
+[
+        They  are  primarily  designed for internal kernel use, but
+        can be used from user space.
+
+        You must compile with -O or -O2 or similar.  The  functions
+        are  defined  as inline macros, and will not be substituted
+        in without optimization enabled, causing unresolved  refer‐
+        ences at link time.
+]
+
+First of all, "inline macros" already is a misnomer.  They are 'static 
+inline' functions.  But 'static inline' functions _never_ cause 
+unresolved references, because they are 'static', so the function code 
+is added to each translation unit as an anonymous function (which is a 
+big problem of static inline: it may bloat code by repeating code in 
+translation units, C99 inline being preferable).
+
+So is this an incorrect advice (maybe because of a veeery old 
+implementation)?  (I couldn't find any relevant implementation changes 
+in the glibc git history.)
+
+If there is any reason I'm missing (I don't understand the assembly 
+calls that these functions call, so maybe) that would cause these 
+functions to actually require optimization, I'd say it's a bug, and a 
+better solution would be to add the attribute 
+__attribute__((__always_inline__)) to the functions, so that they will 
+_always_ be inlined, no matter what optimization level the user chooses. 
+  Right?
+
+Thanks,
+
+Alex
+
+
+-- 
+Alejandro Colomar
+Linux man-pages comaintainer; https://www.kernel.org/doc/man-pages/
+http://www.alejandro-colomar.es/
