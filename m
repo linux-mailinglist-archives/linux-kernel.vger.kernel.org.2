@@ -2,101 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05CA942379E
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 07:49:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CED614237A0
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 07:52:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235604AbhJFFvm convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 6 Oct 2021 01:51:42 -0400
-Received: from ni.piap.pl ([195.187.100.5]:44250 "EHLO ni.piap.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235061AbhJFFvl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 01:51:41 -0400
-From:   =?utf-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] Add ADV7610 support for adv7604 driver.
-Date:   Wed, 06 Oct 2021 07:49:48 +0200
-Message-ID: <m3wnmqn1mr.fsf@t19.piap.pl>
+        id S231576AbhJFFx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 01:53:59 -0400
+Received: from mail-wr1-f51.google.com ([209.85.221.51]:36609 "EHLO
+        mail-wr1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229621AbhJFFx6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 01:53:58 -0400
+Received: by mail-wr1-f51.google.com with SMTP id o20so5100446wro.3;
+        Tue, 05 Oct 2021 22:52:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=BkOpEzM1CX+eRiBhQMKA99SLtxDmiqOiqqpzJVLe8ik=;
+        b=omRLnSBp7xq31CyrmycqdE/zMG0v6W3Vu8Q+qyqiKKZ6rMa7Z+mU+dNn96KYPHtyF2
+         M4sRrXeA0hvZ8xu4jUmEKTLQ/84dKxUp78MZ9x9CQq6/Vq2jKhMSAhYxIxd3HXz0F0Ur
+         eaZ7YoNSWeoIqwLKkMTS38ywT9AHssqpGaLkAJdYZzlsBOaFbK8WrAc98rK1t79eBHFu
+         I8vEFAJ8MoOraKl0MgedW6jis45zEm1bgGtgsJfKAZg5ri8HYWvfX9TN2x7IMdsjhJzf
+         Xu8yktfnJrzBj0pWIxWY6MOLBqY8nKLzhBy6dPGfbkSut1VhVE44BMMohUmmwImRHJHy
+         kmeg==
+X-Gm-Message-State: AOAM531xIiZHOz70OxnqbadWbs4nbClz3MZ7f/cvVHwm6C7R6zFpJf+Q
+        gLkCOSDjVveAIlLd9BK+KbNUVXs3ags=
+X-Google-Smtp-Source: ABdhPJwURq7nUgvaQAZ72eDz1WSMDCa3nyptszxwsCT9XQcKAm8DtZPP9lTqrwK2ImtE5pKYnXVz2g==
+X-Received: by 2002:a5d:453b:: with SMTP id j27mr26785597wra.324.1633499525656;
+        Tue, 05 Oct 2021 22:52:05 -0700 (PDT)
+Received: from [192.168.1.49] (185-219-167-24-static.vivo.cz. [185.219.167.24])
+        by smtp.gmail.com with ESMTPSA id i3sm4011149wrn.34.2021.10.05.22.52.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Oct 2021 22:52:05 -0700 (PDT)
+Message-ID: <e614e753-5eec-225e-7437-f2ad650585ba@kernel.org>
+Date:   Wed, 6 Oct 2021 07:52:03 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
+Subject: Re: [PATCH] tty: n_gsm: clean up indenting in gsm_queue()
+Content-Language: en-US
+To:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Zhenguo Zhao <Zhenguo.Zhao1@unisoc.com>
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+References: <20211004104343.GF25015@kili>
+From:   Jiri Slaby <jirislaby@kernel.org>
+In-Reply-To: <20211004104343.GF25015@kili>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ADV7610 is another HDMI receiver chip, very similar to
-the ADV7611.
+On 04. 10. 21, 12:43, Dan Carpenter wrote:
+> These two lines need to be indented one more tab.
 
-Also: print chip names in upper case.
-Fix an error message claiming that no ADV761x has been found,
-while in reality a chip different than requested (though still
-supported) may have been found.
-Tested on TinyRex BaseBoard Lite.
+Right, the indentation is incorrect (and not the closing brace).
 
-Signed-off-by: Krzysztof Hałasa <khalasa@piap.pl>
+Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
 
-diff --git a/drivers/media/i2c/adv7604.c b/drivers/media/i2c/adv7604.c
-index 122e1fdccd96..4d7a19e6b8f1 100644
---- a/drivers/media/i2c/adv7604.c
-+++ b/drivers/media/i2c/adv7604.c
-@@ -41,7 +41,7 @@ static int debug;
- module_param(debug, int, 0644);
- MODULE_PARM_DESC(debug, "debug level (0-2)");
- 
--MODULE_DESCRIPTION("Analog Devices ADV7604 video decoder driver");
-+MODULE_DESCRIPTION("Analog Devices ADV7604/10/11/12 video decoder driver");
- MODULE_AUTHOR("Hans Verkuil <hans.verkuil@cisco.com>");
- MODULE_AUTHOR("Mats Randgaard <mats.randgaard@cisco.com>");
- MODULE_LICENSE("GPL");
-@@ -77,7 +77,7 @@ MODULE_LICENSE("GPL");
- 
- enum adv76xx_type {
- 	ADV7604,
--	ADV7611,
-+	ADV7611, // including ADV7610
- 	ADV7612,
- };
- 
-@@ -3176,6 +3176,7 @@ static const struct adv76xx_chip_info adv76xx_chip_info[] = {
- 
- static const struct i2c_device_id adv76xx_i2c_id[] = {
- 	{ "adv7604", (kernel_ulong_t)&adv76xx_chip_info[ADV7604] },
-+	{ "adv7610", (kernel_ulong_t)&adv76xx_chip_info[ADV7611] },
- 	{ "adv7611", (kernel_ulong_t)&adv76xx_chip_info[ADV7611] },
- 	{ "adv7612", (kernel_ulong_t)&adv76xx_chip_info[ADV7612] },
- 	{ }
-@@ -3183,6 +3184,7 @@ static const struct i2c_device_id adv76xx_i2c_id[] = {
- MODULE_DEVICE_TABLE(i2c, adv76xx_i2c_id);
- 
- static const struct of_device_id adv76xx_of_id[] __maybe_unused = {
-+	{ .compatible = "adi,adv7610", .data = &adv76xx_chip_info[ADV7611] },
- 	{ .compatible = "adi,adv7611", .data = &adv76xx_chip_info[ADV7611] },
- 	{ .compatible = "adi,adv7612", .data = &adv76xx_chip_info[ADV7612] },
- 	{ }
-@@ -3500,7 +3502,7 @@ static int adv76xx_probe(struct i2c_client *client,
- 			return -ENODEV;
- 		}
- 		if (val != 0x68) {
--			v4l2_err(sd, "not an adv7604 on address 0x%x\n",
-+			v4l2_err(sd, "not an ADV7604 on address 0x%x\n",
- 					client->addr << 1);
- 			return -ENODEV;
- 		}
-@@ -3525,7 +3527,8 @@ static int adv76xx_probe(struct i2c_client *client,
- 		val |= val2;
- 		if ((state->info->type == ADV7611 && val != 0x2051) ||
- 			(state->info->type == ADV7612 && val != 0x2041)) {
--			v4l2_err(sd, "not an adv761x on address 0x%x\n",
-+			v4l2_err(sd, "not an %s on address 0x%x\n",
-+				 state->info->type == ADV7611 ? "ADV7610/11" : "ADV7612",
- 					client->addr << 1);
- 			return -ENODEV;
- 		}
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> ---
+>   drivers/tty/n_gsm.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/tty/n_gsm.c b/drivers/tty/n_gsm.c
+> index 157b51ce9cc0..3bbfcccd79d3 100644
+> --- a/drivers/tty/n_gsm.c
+> +++ b/drivers/tty/n_gsm.c
+> @@ -1854,8 +1854,8 @@ static void gsm_queue(struct gsm_mux *gsm)
+>   				if (address_tmp == address) {
+>   					for (k = j; k < addr_cnt; k++)
+>   						addr_open[k] = addr_open[k+1];
+> -				addr_cnt--;
+> -				break;
+> +					addr_cnt--;
+> +					break;
+>   				}
+>   			}
+>   		}
+> 
+
 
 -- 
-Krzysztof "Chris" Hałasa
-
-Sieć Badawcza Łukasiewicz
-Przemysłowy Instytut Automatyki i Pomiarów PIAP
-Al. Jerozolimskie 202, 02-486 Warszawa
+js
+suse labs
