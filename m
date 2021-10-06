@@ -2,65 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 873F3423D8B
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 14:17:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF5DE423D94
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 14:18:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238334AbhJFMTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 08:19:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52442 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238149AbhJFMTH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 08:19:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 344BE610A8;
-        Wed,  6 Oct 2021 12:17:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633522635;
-        bh=zhaIhy9xAWppuinFCPt2q5Eyec8s/90iX3C8CxUoCi0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Kqsm0tT+vh54LOLFeFBLCGiZTLW3VaaxH3BJ/OSZDFDTJHKcuF0TIPtW3PAOvZ01D
-         iLXn2WFhDlOHOaZk5U5DaUbzU36SMCSbEoxD12iGYIHQMd0Q5TKFy5ob17fpn1GsKI
-         6zIT3M1K36HBSsLTgjd+DfRLW2AVUrHht0/Bp3+bKoFuWGfex3LlNCzr7peuQIh8sC
-         rM6ujiKjMgfamivufFatRovu0V5fnmgUnKppCpYGVVkOKPP0BsjafR3Ev0uAomvG1u
-         gfBiLj266duQ+D5l3PZyhAFHhbBjaaD40n7SPZxXEn6O8qACk3wX5Zkx2fH2vnyeEQ
-         BPfankRyC1+rQ==
-Received: by mail-oi1-f171.google.com with SMTP id s24so3716522oij.8;
-        Wed, 06 Oct 2021 05:17:15 -0700 (PDT)
-X-Gm-Message-State: AOAM531TKPSwnlbfh0uTko5Y3rdkdMSA9KltOEWIYEFy8VQDjpirNpAh
-        se3nLpiivccs41P1a3WIZBKeeYiGZGawlBZSfew=
-X-Google-Smtp-Source: ABdhPJwhXFikBhe7REfEQjccZwTIt+uypowQ8cYyzj97z3cDfXW6byjpMWFIcNtY5olDQNsfrZ5uo7JsT652siLJRe4=
-X-Received: by 2002:aca:3081:: with SMTP id w123mr7103442oiw.114.1633522634545;
- Wed, 06 Oct 2021 05:17:14 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211006080520.1a7e34fc@canb.auug.org.au>
-In-Reply-To: <20211006080520.1a7e34fc@canb.auug.org.au>
-From:   Shawn Guo <shawnguo@kernel.org>
-Date:   Wed, 6 Oct 2021 20:17:03 +0800
-X-Gmail-Original-Message-ID: <CAJBJ56JkgjuqRe6hfnkeMemLLpRcjHh4eTzt3irC1QQ0L1Xfzw@mail.gmail.com>
-Message-ID: <CAJBJ56JkgjuqRe6hfnkeMemLLpRcjHh4eTzt3irC1QQ0L1Xfzw@mail.gmail.com>
-Subject: Re: linux-next: Signed-off-by missing for commit in the imx-mxs tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
+        id S238465AbhJFMUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 08:20:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35300 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238149AbhJFMUW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 08:20:22 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37A03C061749;
+        Wed,  6 Oct 2021 05:18:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=tuw64zH7FkvujlGPRt68jSX0rh3P5aIG7S452X6pvEs=; b=NUhlc4e3Ik4eh3/FI5sD9cWF57
+        hO0GMwe+ms4IofLbPAjMYIkq2HdbHZDK1b9wEqENhT16eCAHhpq1ymT1ZU6w3D0gFtnvnzSZV947F
+        OD8d9NZPdhY9P8OAkjcgM78Owmys9wr+oJEfsaQrYG6ZtsJxDU1piwZ+avAzkgMYf5Au9fbPvk8zv
+        iplHrgSSKofRKiO7LjuiyavTFkSVxvpgVoEs+9RR6R7Uzezf+BGRU2kvPyFPoDK9recZ8Vt+8nlQ0
+        hYs6P5Qqy6j/odYyL68/6laFK1bM9+Jg5BXtvmAo/q4cl81P6R0LDXyY4I0dOUiVHBkVr9TBOXgAL
+        xk8CNmZw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mY5rY-000rQ4-PP; Wed, 06 Oct 2021 12:17:40 +0000
+Date:   Wed, 6 Oct 2021 13:17:32 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Hao Sun <sunhao.th@gmail.com>
 Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
+        Christoph Hellwig <hch@lst.de>,
+        Kees Cook <keescook@chromium.org>
+Subject: Re: WARNING in __kernel_read
+Message-ID: <YV2T3HVHHmQPHVYG@casper.infradead.org>
+References: <CACkBjsbPsmUiC7NFgOZcVcwPA7RLpiCFkgEA=LsnvcFsWFG34Q@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACkBjsbPsmUiC7NFgOZcVcwPA7RLpiCFkgEA=LsnvcFsWFG34Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 6, 2021 at 5:05 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->
-> Hi all,
->
-> Commits
->
->   7c4a8b989a99 ("soc: imx: imx8m-blk-ctrl: add DISP blk-ctrl")
->   5b340e7813d4 ("soc: imx: add i.MX8M blk-ctrl driver")
->   592d47ea2f24 ("soc: imx: gpcv2: support system suspend/resume")
->   be4756d4bb83 ("soc: imx: gpcv2: keep i.MX8M* bus clocks enabled")
->   d0118b6be392 ("soc: imx: gpcv2: add domain option to keep domain clocks enabled")
->   68c3c82c034f ("soc: imx: gpcv2: add lockdep annotation")
->
-> are missing a Signed-off-by from their committer.
+On Wed, Oct 06, 2021 at 05:33:47PM +0800, Hao Sun wrote:
+> C reproducer: https://drive.google.com/file/d/1RzAsyIZzw5X_m340nY9fu4KWjGdG98pv/view?usp=sharing
 
-Fixed.  Thanks for reporting, Stephen!
+It's easier than this reproducer makes it look.
 
-Shawn
+	res = syscall(__NR_openat, -1, 0x20000080ul, 0x4c003ul, 0x10ul);
+	syscall(__NR_finit_module, r[0], 0ul, 3ul);
+
+should be enough.  Basically, userspace opens an fd without FMODE_READ
+and passes it to finit_module().
+
+> ------------[ cut here ]------------
+> WARNING: CPU: 1 PID: 28082 at fs/read_write.c:429
+> __kernel_read+0x3bb/0x410 fs/read_write.c:429
+> Modules linked in:
+> CPU: 1 PID: 28082 Comm: syz-executor Not tainted 5.15.0-rc3+ #21
+> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+> rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+> RIP: 0010:__kernel_read+0x3bb/0x410 fs/read_write.c:429
+> Call Trace:
+>  kernel_read+0x47/0x60 fs/read_write.c:461
+>  kernel_read_file+0x20a/0x370 fs/kernel_read_file.c:93
+>  kernel_read_file_from_fd+0x55/0x90 fs/kernel_read_file.c:184
+>  __do_sys_finit_module+0x89/0x110 kernel/module.c:4180
+
+finit_module() is not the only caller of kernel_read_file_from_fd()
+which passes it a fd that userspace passed in, for example
+kexec_file_load() doesn't validate the fd either.  We could validate
+the fd in individual syscalls, in kernel_read_file_from_fd()
+or just do what vfs_read() does and return -EBADF without warning.
+
+So, one of these two patches.  Christoph, Al, what's your preference?
+
+diff --git a/fs/kernel_read_file.c b/fs/kernel_read_file.c
+index 87aac4c72c37..1f28b693d1db 100644
+--- a/fs/kernel_read_file.c
++++ b/fs/kernel_read_file.c
+@@ -178,7 +178,7 @@ int kernel_read_file_from_fd(int fd, loff_t offset, void **buf,
+        struct fd f = fdget(fd);
+        int ret = -EBADF;
+
+-       if (!f.file)
++       if (!f.file || !(file->f_mode & FMODE_READ))
+                goto out;
+
+        ret = kernel_read_file(f.file, offset, buf, buf_size, file_size, id);
+
+diff --git a/fs/read_write.c b/fs/read_write.c
+index af057c57bdc6..bab43b8532d1 100644
+--- a/fs/read_write.c
++++ b/fs/read_write.c
+@@ -426,8 +426,8 @@ ssize_t __kernel_read(struct file *file, void *buf, size_t count, loff_t *pos)
+        struct iov_iter iter;
+        ssize_t ret;
+
+-       if (WARN_ON_ONCE(!(file->f_mode & FMODE_READ)))
+-               return -EINVAL;
++       if (!(file->f_mode & FMODE_READ))
++               return -EBADF;
+        if (!(file->f_mode & FMODE_CAN_READ))
+                return -EINVAL;
+        /*
+
