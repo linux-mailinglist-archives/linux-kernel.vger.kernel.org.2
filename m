@@ -2,109 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0A5642450D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 19:42:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC2CD424513
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 19:44:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232027AbhJFRob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 13:44:31 -0400
-Received: from out3-smtp.messagingengine.com ([66.111.4.27]:38909 "EHLO
-        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239592AbhJFRne (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 13:43:34 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 509905C02D5;
-        Wed,  6 Oct 2021 13:41:40 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Wed, 06 Oct 2021 13:41:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=benboeckel.net;
-         h=date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=B6xWX/HPA7qmLqQfhnZa5DC/rvu
-        bRmsOYtvzs98jPQ4=; b=L0BKwOc/tpyqm1qr1+H6St1SdWnZVB9IP4g8q6Y84qO
-        EQ55ZIEwqLVUIrAcJLKJ4vMc0vBdOOEGn4JQ9u5VfdGTmeJu/w8vEiN5Q9nDk/8i
-        QETqoX/p/PNRXL0Mi+k/HsukVYLXDkqKb7ZDZjM7eF9lX1b3vhnsUyXH+cUSq/MA
-        eo32YpUw+bZ0egj0rH722YYfnKDl1rM8PlGAIbXLj/kL5jOIovTgb9H62yP78MhW
-        KjNtYQF11Xj6jVkq5ve6MwNfK17ERPqQ/wcnpTpTtUswwzUsKl9wytTj9hzpH/FF
-        0kbJe5/eQC2Lpu14uY4NqBlgXZ13YlTspGxUHA+H5qw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=B6xWX/
-        HPA7qmLqQfhnZa5DC/rvubRmsOYtvzs98jPQ4=; b=c6M64nB5Kiuc794NiPxomo
-        Qs47be7wmUBoF++Q7EOpUUBQ0oHlzD0VqEbSVQkA+UUTKQM83gLfR9h85o433Dmm
-        wP2Zeqh/JCdznsx6nNkMVPgzSsvqtvAmvVNGdWiheDWI4tUBSfajJAVz6XgIV7+M
-        IWsjQfbGYM+Yls7RHpdZZxBSBxVDcLP4Rjm3ZlezAS0tXitDVgfw+aUFH1lHTOnc
-        KG5WtPqASuq9kpvOecXa04JASMfwu1GnEqQw+72Wcg+dhIp4ij8NWjXb2prWO2c4
-        A9GoTM4QpGDgPJkjVmAEKtNFvdg3osyc4LiQLVC3JsK3oBzbfpwKcja+R7FbWgCw
-        ==
-X-ME-Sender: <xms:099dYR0dbVQErfaJpiZeX-kudrqG5K1fJ9kdRxuEJfUdNTI3sET_Rw>
-    <xme:099dYYGPTz-k-zwkrKfGYHHWqaTwAiwv_tN85iayAXML-WODqNZHgvWDKM2V_0Rpb
-    g9wi5x4GQp-LvffnBg>
-X-ME-Received: <xmr:099dYR5YGpBImKoVjF1liux9ufiFVG9iZwwTPbnH1ao10837eSRlkdMIxYY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudeliedguddufecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvuffkfhggtggujggfsehttdertddtreejnecuhfhrohhmpeeuvghn
-    uceuohgvtghkvghluceomhgvsegsvghnsghovggtkhgvlhdrnhgvtheqnecuggftrfgrth
-    htvghrnhepvefftdettefgtddtkeeufeegtddttdeuueegkeegteffueetffejudeihefh
-    kedtnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
-    gvsegsvghnsghovggtkhgvlhdrnhgvth
-X-ME-Proxy: <xmx:099dYe3k7YqA-AdY0mCY16Nyr3hRqHDFVERUCH2m2C6BwRuWDGArhw>
-    <xmx:099dYUErt6_yARxolgdvDYuAc1_wyZYLCHPww1N9GSNCtdfP6NQg7g>
-    <xmx:099dYf9srCDJwzrNUYjRo37uODpHzDDIcJtBmPWqrkQwpxv46Ju7oA>
-    <xmx:1N9dYf37LwuyEZNqc1ut80QDNQig96xBiG0ewGdayfQI4p6nOI8oQg>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 6 Oct 2021 13:41:39 -0400 (EDT)
-Date:   Wed, 6 Oct 2021 13:41:38 -0400
-From:   Ben Boeckel <me@benboeckel.net>
-To:     Colin King <colin.king@canonical.com>
-Cc:     David Howells <dhowells@redhat.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>, keyrings@vger.kernel.org,
-        linux-crypto@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCH] crypto : asymmetric_keys: Fix function description to
- match prototype
-Message-ID: <YV3f0gTu/epdCX/E@erythro.dev.benboeckel.internal>
-References: <20211006172350.1025091-1-colin.king@canonical.com>
+        id S238874AbhJFRqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 13:46:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36388 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238534AbhJFRqW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 13:46:22 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B2689610E6;
+        Wed,  6 Oct 2021 17:44:29 +0000 (UTC)
+Date:   Wed, 6 Oct 2021 13:44:28 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Beau Belgrave <beaub@linux.microsoft.com>
+Cc:     mhiramat@kernel.org, linux-trace-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] user_events: Enable user processes to create and write
+ to trace events
+Message-ID: <20211006134428.1132ebe0@gandalf.local.home>
+In-Reply-To: <20211006172723.GA2812@kbox>
+References: <20211005224428.2551-1-beaub@linux.microsoft.com>
+        <20211006125441.24982dd3@gandalf.local.home>
+        <20211006172723.GA2812@kbox>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211006172350.1025091-1-colin.king@canonical.com>
-User-Agent: Mutt/2.0.7 (2021-05-04)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 06, 2021 at 18:23:50 +0100, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
+On Wed, 6 Oct 2021 10:27:23 -0700
+Beau Belgrave <beaub@linux.microsoft.com> wrote:
+
+> On Wed, Oct 06, 2021 at 12:54:41PM -0400, Steven Rostedt wrote:
+> > > Psuedo code example of typical usage:
+> > > page_fd = open("user_events_mmap", O_RDWR);
+> > > page_data = mmap(NULL, PAGE_SIZE, PROT_READ, MAP_SHARED, page_fd, 0);
+> > > 
+> > > data_fd = open("user_events_data", O_RDWR);
+> > > data_id = ioctl(data_fd, DIAG_IOCSREG, "test");
+> > > 
+> > > if (page_data[data_id]) write(data_fd, &payload, sizeof(payload));  
+> > 
+> > What is the type of "page_data". I'd like to test it before accepting it.
+> > 
+> > From playing around, I see that page_data is of type char *.  
+> Yes, it is char *. I'll make this clear in the next patch version
+> description.
+
+Thanks.
+
 > 
-> The function arguments in the description does not match the prototype.
-> Fix this by renaming trust_keys to trusted_keys.
+> > > +/* Bits 0-6 are for known probe types, Bit 7 is for unknown probes */
+> > > +#define EVENT_BIT_FTRACE 0
+> > > +#define EVENT_BIT_PERF 1
+> > > +#define EVENT_BIT_OTHER 7
+> > > +
+> > > +#define EVENT_STATUS_FTRACE (1 << EVENT_BIT_FTRACE)
+> > > +#define EVENT_STATUS_PERF (1 << EVENT_BIT_PERF)
+> > > +#define EVENT_STATUS_OTHER (1 << EVENT_BIT_OTHER)  
+> ...
+> > > +#define DIAG_IOC_MAGIC '*'
+> > > +#define DIAG_IOCSREG _IOW(DIAG_IOC_MAGIC, 0, char*)
+> > > +#define DIAG_IOCSDEL _IOW(DIAG_IOC_MAGIC, 1, char*)
+> > > +#define DIAG_IOCQLOCOFFSET _IO(DIAG_IOC_MAGIC, 2)  
+> > 
+> > These obviously will need to go into a user abi header file.
+> >   
+> Yes, I'm glad you mentioned it. I wasn't entirely sure where it should
+> live. Is there precedent on where to put these so they span both kernel
+> and user for discovery / distribution?
+
+There is a include/uapi directory in the Linux source code. I've never
+added to it (that I remember, but maybe I have? Wouldn't surprise me if I
+did and forgot about it :-p Sucks getting old).
+
+
 > 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  crypto/asymmetric_keys/verify_pefile.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > +
+> > > +static char *register_page_data;
+> > > +
+> > > +static DEFINE_HASHTABLE(register_table, 4);
+> > > +static DECLARE_BITMAP(page_bitmap, MAX_EVENTS);
+> > > +
+> > > +struct user_event {
+> > > +	struct tracepoint tracepoint;
+> > > +	struct trace_event_call call;
+> > > +	struct trace_event_class class;
+> > > +	struct dyn_event devent;
+> > > +	struct hlist_node node;
+> > > +	atomic_t refs;
+> > > +	int index;
+> > > +	char *args;
+> > > +};
+> > > +
+> > > +#ifdef CONFIG_PERF_EVENTS
+> > > +struct user_bpf_context {
+> > > +	int udatalen;
+> > > +	const char __user *udata;
+> > > +};
+> > > +#endif
+> > > +
+> > > +typedef void (*user_event_func_t) (struct user_event *user,
+> > > +				   const char __user *udata,
+> > > +				   size_t udatalen, void *tpdata);
+> > > +
+> > > +static int register_user_event(char *name, char *args,
+> > > +			       struct user_event **newuser);
+> > > +  
+> > 
+> > [..]
+> >   
+> Is the ask here to get user_bpf_context definition also into a user ABI
+> header? (I took it as that).
+
+Not sure I understand the question.
+
 > 
-> diff --git a/crypto/asymmetric_keys/verify_pefile.c b/crypto/asymmetric_keys/verify_pefile.c
-> index 7553ab18db89..148cad70fe79 100644
-> --- a/crypto/asymmetric_keys/verify_pefile.c
-> +++ b/crypto/asymmetric_keys/verify_pefile.c
-> @@ -387,7 +387,7 @@ static int pefile_digest_pe(const void *pebuf, unsigned int pelen,
->   * verify_pefile_signature - Verify the signature on a PE binary image
->   * @pebuf: Buffer containing the PE binary image
->   * @pelen: Length of the binary image
-> - * @trust_keys: Signing certificate(s) to use as starting points
-> + * @trusted_keys: Signing certificate(s) to use as starting points
->   * @usage: The use to which the key is being put.
->   *
->   * Validate that the certificate chain inside the PKCS#7 message inside the PE
+> > > +static int __init trace_events_user_init(void)
+> > > +{
+> > > +	int ret;
+> > > +
+> > > +	/* Zero all bits beside 0 (which is reserved for failures) */
+> > > +	bitmap_zero(page_bitmap, MAX_EVENTS);
+> > > +	set_bit(0, page_bitmap);
+> > > +
+> > > +	register_page_data = kmalloc(MAX_EVENTS, GFP_KERNEL);  
+> > 
+> > You want "kzalloc" here. Because when I read the map without adding
+> > anything, I get:
+> > 
+> >    printf("%lx\n", *(unsigned long *)page_data);
+> > 
+> > Produces:
+> > 
+> >    ffffffff9065004e
+> > 
+> > But if I convert it to kzalloc() it gives me:
+> > 
+> >    0
+> > 
+> > Thus, you are exposing stale memory. If you want to expose this to
+> > non-admin users, this is a major security leak.
+> > 
+> > -- Steve
+> >   
+> Oops, sorry about that!
 
-FYI, this was submitted earlier this week with Message-Id:
+No problem. Just pointing it out.
 
-    20211004001731.26240-1-rdunlap@infradead.org
+I expect that this is going to take a few back and forth to get right. But
+I do like the way it is heading.
 
-which also fixes the `Return:` notation for the return value docs.
+-- Steve
 
---Ben
