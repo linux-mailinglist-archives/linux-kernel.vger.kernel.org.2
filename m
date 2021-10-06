@@ -2,112 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F020F4248EA
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 23:27:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AA1842492A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 23:46:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239715AbhJFV2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 17:28:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50832 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232152AbhJFV2x (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 17:28:53 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1972C061746;
-        Wed,  6 Oct 2021 14:27:00 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id r18so14970299edv.12;
-        Wed, 06 Oct 2021 14:27:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=TEIVevLr+KkOe+yPKE3J8X4wJFJQbdygarJo9OKidbQ=;
-        b=p0GJzPzOWa+cfAfY7747JRX8oWbNXWM97C+z3apyCRClrxPBjlhMCbhDwrP1n5mIBV
-         RgI9GJMetZmD5wfDzGyGcIQ4EGyVVWS0StFQRyS/V0XPGF5xxBxlfbkKcRTeVla+EY3C
-         sSWC++lI0pD0Z+2zRCLmlsVf+tDEfw7NBO9DFupQAZe2XPKEg22DASeETxnztVfVYe4p
-         5rnWbtkj/LTjQ8EaBANyPrukGnYuemEPj5T3nnk8jJCkuH2OqbMWTLwYAl7ZfYhQBAgO
-         21waD25l8+vmUCrtobkSWroSM2MkCUTjDEtSVI66OO5KNMh/RX4SFGDl0a1qnUoOSt+Z
-         QrNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=TEIVevLr+KkOe+yPKE3J8X4wJFJQbdygarJo9OKidbQ=;
-        b=ZaBL33TLosI14z+pOCna39qRVpA6llOL3BIFAU0HducJNYYYMjwd/cKaIM/d2BGWWF
-         FzFmrbk5ZOHU/hH0ZCkUdfPvH2USRl74vThiGU0yt2E2LX5DC40iqBNGcjH5BHgSrXd/
-         dwa5Gygyt3OS4wgsgKBnG04JKeLXDQk+nTgfzbI0U9PCLif9b5n3o1yed0xQ2bdv/bIM
-         48fMF8VrsyGgV3+Www+BvbzsWulSXdUaQscFo2606+odX/G7c2ho2vRRFD5YvIjrHzdA
-         OCGfkkESW0YpegVRqs1u4Db4eC+uIsbxujtOd7KbZBMf+vR7KjODchAuazOGy5VUDgaM
-         4myA==
-X-Gm-Message-State: AOAM5322PQvE9EnYS3EBJVAta+Kb6MpAT4ZXsAdc1KaQRCMJ2aoxuaaL
-        2SE25lSURcjb+QP31+QWINVmnafYO66NwEBFiuhqBA==
-X-Google-Smtp-Source: ABdhPJyCU+oSJN5PiFKY5i0hkVZ1JGnxR2EGlN1fAjiHYGe2Leq7H1zEuBIFtcu4sJpy8XtCJSp02g==
-X-Received: by 2002:a05:6402:3509:: with SMTP id b9mr780972edd.187.1633555619218;
-        Wed, 06 Oct 2021 14:26:59 -0700 (PDT)
-Received: from ?IPv6:2a04:241e:501:3870:473a:8ebc:828b:d6c6? ([2a04:241e:501:3870:473a:8ebc:828b:d6c6])
-        by smtp.gmail.com with ESMTPSA id x16sm5204655eds.92.2021.10.06.14.26.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Oct 2021 14:26:58 -0700 (PDT)
-Subject: Re: [PATCH 11/11] selftests: net/fcnal: Reduce client timeout
-To:     David Ahern <dsahern@gmail.com>, Jakub Kicinski <kuba@kernel.org>,
-        Shuah Khan <shuah@kernel.org>, David Ahern <dsahern@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Ido Schimmel <idosch@nvidia.com>,
-        Seth David Schoen <schoen@loyalty.org>,
-        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1633520807.git.cdleonard@gmail.com>
- <516043441bd13bc1e6ba7f507a04362e04c06da5.1633520807.git.cdleonard@gmail.com>
- <3ed2262e-fce2-c587-5112-e4583cd042ed@gmail.com>
-From:   Leonard Crestez <cdleonard@gmail.com>
-Message-ID: <c48ea9e2-acdc-eb11-a4b0-35474003fcf3@gmail.com>
-Date:   Thu, 7 Oct 2021 00:26:57 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <3ed2262e-fce2-c587-5112-e4583cd042ed@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S239722AbhJFVru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 17:47:50 -0400
+Received: from gate.crashing.org ([63.228.1.57]:45236 "EHLO gate.crashing.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229576AbhJFVrs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 17:47:48 -0400
+Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
+        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 196LRU0O007032;
+        Wed, 6 Oct 2021 16:27:30 -0500
+Received: (from segher@localhost)
+        by gate.crashing.org (8.14.1/8.14.1/Submit) id 196LRS4V007029;
+        Wed, 6 Oct 2021 16:27:28 -0500
+X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
+Date:   Wed, 6 Oct 2021 16:27:28 -0500
+From:   Segher Boessenkool <segher@kernel.crashing.org>
+To:     Stafford Horne <shorne@gmail.com>
+Cc:     Rob Herring <robh@kernel.org>, Rich Felker <dalias@libc.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-kernel@vger.kernel.org, Guo Ren <guoren@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-riscv@lists.infradead.org,
+        Will Deacon <will@kernel.org>, Jonas Bonn <jonas@southpole.se>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Yoshinori Sato <ysato@users.osdn.me>, linux-sh@vger.kernel.org,
+        x86@kernel.org, Russell King <linux@armlinux.org.uk>,
+        linux-csky@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        devicetree@vger.kernel.org, Albert Ou <aou@eecs.berkeley.edu>,
+        Ray Jui <rjui@broadcom.com>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        openrisc@lists.librecores.org, Borislav Petkov <bp@alien8.de>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-arm-kernel@lists.infradead.org,
+        Scott Branden <sbranden@broadcom.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        James Morse <james.morse@arm.com>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH 06/12] openrisc: Use of_get_cpu_hwid()
+Message-ID: <20211006212728.GM10333@gate.crashing.org>
+References: <20211006164332.1981454-1-robh@kernel.org> <20211006164332.1981454-7-robh@kernel.org> <YV4KkAC2p9D4yCnH@antec>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YV4KkAC2p9D4yCnH@antec>
+User-Agent: Mutt/1.4.2.3i
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 06.10.2021 18:01, David Ahern wrote:
-> On 10/6/21 5:47 AM, Leonard Crestez wrote:
->> Reduce default client timeout from 5 seconds to 500 miliseconds.
->> Can be overridden from environment by exporting NETTEST_CLIENT_TIMEOUT=5
->>
->> Some tests need ICMP timeouts so pass an explicit -t5 for those.
->>
->> Signed-off-by: Leonard Crestez <cdleonard@gmail.com>
->> ---
->>   tools/testing/selftests/net/fcnal-test.sh | 17 +++++++++++------
->>   1 file changed, 11 insertions(+), 6 deletions(-)
->>
+On Thu, Oct 07, 2021 at 05:44:00AM +0900, Stafford Horne wrote:
+> You have defined of_get_cpu_hwid to return u64, will this create compiler
+> warnings when since we are storing a u64 into a u32?
 > 
-> The problem with blindly reducing the timeouts is running the script on
-> a loaded server. Some tests are expected to timeout while for tests a
-> timeout is a failure.
+> It seems only if we make with W=3.
 
-Keeping the default value "5" would be fine as long as it is possible to 
-override externally and get fast results on a mostly-idle machine.
+Yes.  This is done by -Wconversion, "Warn for implicit conversions that
+may alter a value."
 
-Placing a default value in the environment which is overriden by certain 
-tests achieves that.
+> I thought we usually warned on this.
 
-In theory it would also be possible for fcnal-test.sh to parse as 
-"--timeout" option and pass it into every single test but that solution 
-would cause much more code churn.
+This warning is not in -Wall or -Wextra either, it suffers too much from
+false positives.  It is very natural to just ignore the high bits of
+modulo types (which is what "unsigned" types *are*).  Or the bits that
+"fall off" on a conversion.  The C standard makes this required
+behaviour, it is useful, and it is the only convenient way of getting
+this!
 
-Having default values in environment variables that can still be 
-overridden by command-line arguments is a common pattern in many tools. 
-It also avoids having to pass-through every flag through every 
-intermediate wrapper.
 
---
-Regards,
-Leonard
+Segher
