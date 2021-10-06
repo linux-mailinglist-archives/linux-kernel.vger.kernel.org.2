@@ -2,135 +2,372 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6282642426E
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 18:18:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86AE542427B
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 18:20:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239343AbhJFQUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 12:20:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35188 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238705AbhJFQUJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 12:20:09 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFC6EC061746;
-        Wed,  6 Oct 2021 09:18:16 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id b8so11958102edk.2;
-        Wed, 06 Oct 2021 09:18:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=FlCsRca+BE+fo/TXe7iThdnn4Vy0oj5uuZWCksIsUDY=;
-        b=cN2rZfRe5mFyvRzOBEYdD2FtkAQ8Rx4kP0d2F4gnxtGvVH5eqfBQNLAzFu2CLNxbn6
-         xNV7JsLh9+t+BRHFlL/qun48O6uLtf6Tf63QtivV6L7aJ4IB4dpI6/JO3zbseW6ARC/V
-         VWVXW3wOI6A8zlCWFUD8yt6y41Pzj4VbjhlT3IzBPUZPFRtmm0kcD49AWLMfOs1nTqlK
-         tokm3Ytqw7UEqig269Q35runipFOtv4kkrU8vN06SekA4uhGikYpkJPyormKlAbzsAvw
-         hNDDnqGmZuTK2GWhlUNyjc7cWUYR5oW/6ViqvXRbnGTEWCrhZGOPDn2kaZocGec5cWnX
-         fnkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FlCsRca+BE+fo/TXe7iThdnn4Vy0oj5uuZWCksIsUDY=;
-        b=m5q/O1IQbuq5SSIjC4NJ/rQIn0hwvIH+gtUUbZaXLL8ipVmX5Xfg/h/RIO0uGcYbdm
-         t7wVq4ACDKwsveo3altPbynFkDPwdTej801m60suuVikeNh/W3tFN+/pxcqQ7saV0na1
-         lWcKKR3WkZTgVTuJDNNiv0KEyPPZDEcSb+f8a7IlOmKq3pq5SNd616L18Mlqhcdel0D8
-         OJ6BPm4mgxwPJ0LoBKwsT23dwt7af4+MDL7OoDmiu10JLzA3uK4k1VMhLpWBRF1nQT/I
-         DI11/PjD5hK/6dDa62XC+AC0Q14Z2wGLfU9Bie0x6gLAvXoKGm+drmnjyJjOFRda4j0w
-         f7Fw==
-X-Gm-Message-State: AOAM530YUNS5ARftrPqGGy/O9f8xq4jQ9vd6M96FLl8UwWJs9lUgUv6u
-        Mg/wK6keDoiFpuceKWEqF4U=
-X-Google-Smtp-Source: ABdhPJxHJCkSTYXBx+7T/DhBKndQxFfmFS/uzibJEGv5l0/d2Mc12bvDpHw0camNClA7LraWmFchOA==
-X-Received: by 2002:a17:906:1289:: with SMTP id k9mr33893360ejb.2.1633537093310;
-        Wed, 06 Oct 2021 09:18:13 -0700 (PDT)
-Received: from anparri (host-79-49-65-228.retail.telecomitalia.it. [79.49.65.228])
-        by smtp.gmail.com with ESMTPSA id t4sm10190873edc.2.2021.10.06.09.18.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Oct 2021 09:18:13 -0700 (PDT)
-Date:   Wed, 6 Oct 2021 18:18:05 +0200
-From:   Andrea Parri <parri.andrea@gmail.com>
-To:     Michael Kelley <mikelley@microsoft.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Dexuan Cui <decui@microsoft.com>
-Subject: Re: [PATCH v2] scsi: storvsc: Fix validation for unsolicited
- incoming packets
-Message-ID: <20211006161805.GA24396@anparri>
-References: <20211006132026.4089-1-parri.andrea@gmail.com>
- <MWHPR21MB1593050119EACC0E49748209D7B09@MWHPR21MB1593.namprd21.prod.outlook.com>
+        id S239376AbhJFQWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 12:22:34 -0400
+Received: from mga09.intel.com ([134.134.136.24]:50900 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232257AbhJFQWd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 12:22:33 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10129"; a="225926668"
+X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; 
+   d="scan'208";a="225926668"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2021 09:20:21 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; 
+   d="scan'208";a="657046708"
+Received: from brentlu-brix.itwn.intel.com ([10.5.253.56])
+  by orsmga005.jf.intel.com with ESMTP; 06 Oct 2021 09:20:17 -0700
+From:   Brent Lu <brent.lu@intel.com>
+To:     alsa-devel@alsa-project.org
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Brent Lu <brent.lu@intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Yong Zhi <yong.zhi@intel.com>,
+        Vamshi Krishna Gopal <vamshi.krishna.gopal@intel.com>,
+        linux-kernel@vger.kernel.org, Rander Wang <rander.wang@intel.com>,
+        Bard Liao <bard.liao@intel.com>,
+        Malik_Hsu <malik_hsu@wistron.corp-partner.google.com>,
+        Libin Yang <libin.yang@intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Paul Olaru <paul.olaru@oss.nxp.com>,
+        Curtis Malainey <cujomalainey@chromium.org>,
+        Mac Chiang <mac.chiang@intel.com>,
+        Gongjun Song <gongjun.song@intel.com>
+Subject: [PATCH 3/3] ASoC: Intel: sof_rt5682: use id_alt to enumerate rt5682s
+Date:   Thu,  7 Oct 2021 00:18:05 +0800
+Message-Id: <20211006161805.938950-4-brent.lu@intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20211006161805.938950-1-brent.lu@intel.com>
+References: <20211006161805.938950-1-brent.lu@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <MWHPR21MB1593050119EACC0E49748209D7B09@MWHPR21MB1593.namprd21.prod.outlook.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > @@ -1302,13 +1306,25 @@ static void storvsc_on_channel_callback(void *context)
-> >  			if (rqst_id == 0) {
-> >  				/*
-> >  				 * storvsc_on_receive() looks at the vstor_packet in the message
-> > -				 * from the ring buffer.  If the operation in the vstor_packet is
-> > -				 * COMPLETE_IO, then we call storvsc_on_io_completion(), and
-> > -				 * dereference the guest memory address.  Make sure we don't call
-> > -				 * storvsc_on_io_completion() with a guest memory address that is
-> > -				 * zero if Hyper-V were to construct and send such a bogus packet.
-> > +				 * from the ring buffer.
-> > +				 *
-> > +				 * - If the operation in the vstor_packet is COMPLETE_IO, then
-> > +				 *   we call storvsc_on_io_completion(), and dereference the
-> > +				 *   guest memory address.  Make sure we don't call
-> > +				 *   storvsc_on_io_completion() with a guest memory address
-> > +				 *   that is zero if Hyper-V were to construct and send such
-> > +				 *   a bogus packet.
-> > +				 *
-> > +				 * - If the operation in the vstor_packet is FCHBA_DATA, then
-> > +				 *   we call cache_wwn(), and access the data payload area of
-> > +				 *   the packet (wwn_packet); however, there is no guarantee
-> > +				 *   that the packet is big enough to contain such area.
-> > +				 *   Future-proof the code by rejecting such a bogus packet.
-> 
-> The comments look good to me.
-> 
-> > +				 *
-> > +				 * XXX.  Filter out all "invalid" operations.
-> 
-> Is this a leftover comment line that should be deleted?  I'm not sure about the "XXX".
+Use the id_alt field to enumerate rt5682s headphone codec and remove
+redundant entries in tables.
 
-That was/is intended as a "TODO".  What I think we are missing here is a
-specification/authority stating "allowed vstor_operation for unsolicited
-messages are: ENUMERATE_BUS, REMOVE_DEVICE, etc.".  If we wanted to make
-this code even more "future-proof"/"robust", we would reject all packets
-whose "operation" doesn't match that list (independently from the actual
-form/implementation of storvsc_on_receive()...).  We are not quite there
-tough AFAICT.
+Signed-off-by: Brent Lu <brent.lu@intel.com>
+---
+ sound/soc/intel/boards/sof_rt5682.c           | 30 -----------------
+ .../intel/common/soc-acpi-intel-adl-match.c   |  8 +++++
+ .../intel/common/soc-acpi-intel-byt-match.c   |  6 ++++
+ .../intel/common/soc-acpi-intel-cht-match.c   |  6 ++++
+ .../intel/common/soc-acpi-intel-cml-match.c   |  8 +++++
+ .../intel/common/soc-acpi-intel-icl-match.c   |  6 ++++
+ .../intel/common/soc-acpi-intel-jsl-match.c   | 32 +++++--------------
+ .../intel/common/soc-acpi-intel-tgl-match.c   |  8 +++++
+ 8 files changed, 50 insertions(+), 54 deletions(-)
 
+diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
+index 9f1e5ef11b13..9819345cd84c 100644
+--- a/sound/soc/intel/boards/sof_rt5682.c
++++ b/sound/soc/intel/boards/sof_rt5682.c
+@@ -1050,36 +1050,6 @@ static const struct platform_device_id board_ids[] = {
+ 					SOF_RT5682_SSP_AMP(2) |
+ 					SOF_RT5682_NUM_HDMIDEV(4)),
+ 	},
+-	{
+-		.name = "jsl_rt5682s_rt1015",
+-		.driver_data = (kernel_ulong_t)(SOF_RT5682_MCLK_EN |
+-					SOF_RT5682_MCLK_24MHZ |
+-					SOF_RT5682_SSP_CODEC(0) |
+-					SOF_RT5682S_HEADPHONE_CODEC_PRESENT |
+-					SOF_SPEAKER_AMP_PRESENT |
+-					SOF_RT1015_SPEAKER_AMP_PRESENT |
+-					SOF_RT5682_SSP_AMP(1)),
+-	},
+-	{
+-		.name = "jsl_rt5682s_rt1015p",
+-		.driver_data = (kernel_ulong_t)(SOF_RT5682_MCLK_EN |
+-					SOF_RT5682_MCLK_24MHZ |
+-					SOF_RT5682_SSP_CODEC(0) |
+-					SOF_RT5682S_HEADPHONE_CODEC_PRESENT |
+-					SOF_SPEAKER_AMP_PRESENT |
+-					SOF_RT1015P_SPEAKER_AMP_PRESENT |
+-					SOF_RT5682_SSP_AMP(1)),
+-	},
+-	{
+-		.name = "jsl_rt5682s_mx98360",
+-		.driver_data = (kernel_ulong_t)(SOF_RT5682_MCLK_EN |
+-					SOF_RT5682_MCLK_24MHZ |
+-					SOF_RT5682_SSP_CODEC(0) |
+-					SOF_RT5682S_HEADPHONE_CODEC_PRESENT |
+-					SOF_SPEAKER_AMP_PRESENT |
+-					SOF_MAX98360A_SPEAKER_AMP_PRESENT |
+-					SOF_RT5682_SSP_AMP(1)),
+-	},
+ 	{
+ 		.name = "adl_mx98360_rt5682",
+ 		.driver_data = (kernel_ulong_t)(SOF_RT5682_MCLK_EN |
+diff --git a/sound/soc/intel/common/soc-acpi-intel-adl-match.c b/sound/soc/intel/common/soc-acpi-intel-adl-match.c
+index f5b21a95d222..9478e35bed38 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-adl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-adl-match.c
+@@ -285,9 +285,15 @@ static const struct snd_soc_acpi_codecs adl_max98360a_amp = {
+ 	.codecs = {"MX98360A"}
+ };
+ 
++static struct snd_soc_acpi_codecs adl_rt5682s_hp = {
++	.num_codecs = 1,
++	.codecs = {"RTL5682"}
++};
++
+ struct snd_soc_acpi_mach snd_soc_acpi_intel_adl_machines[] = {
+ 	{
+ 		.id = "10EC5682",
++		.id_alt = &adl_rt5682s_hp,
+ 		.drv_name = "adl_mx98373_rt5682",
+ 		.machine_quirk = snd_soc_acpi_codec_list,
+ 		.quirk_data = &adl_max98373_amp,
+@@ -296,6 +302,7 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_adl_machines[] = {
+ 	},
+ 	{
+ 		.id = "10EC5682",
++		.id_alt = &adl_rt5682s_hp,
+ 		.drv_name = "adl_mx98357_rt5682",
+ 		.machine_quirk = snd_soc_acpi_codec_list,
+ 		.quirk_data = &adl_max98357a_amp,
+@@ -304,6 +311,7 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_adl_machines[] = {
+ 	},
+ 	{
+ 		.id = "10EC5682",
++		.id_alt = &adl_rt5682s_hp,
+ 		.drv_name = "adl_mx98360_rt5682",
+ 		.machine_quirk = snd_soc_acpi_codec_list,
+ 		.quirk_data = &adl_max98360a_amp,
+diff --git a/sound/soc/intel/common/soc-acpi-intel-byt-match.c b/sound/soc/intel/common/soc-acpi-intel-byt-match.c
+index 510a5f38b7f1..8c66223d7401 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-byt-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-byt-match.c
+@@ -120,6 +120,11 @@ static struct snd_soc_acpi_mach *byt_quirk(void *arg)
+ 	}
+ }
+ 
++static struct snd_soc_acpi_codecs rt5682s_hp = {
++	.num_codecs = 1,
++	.codecs = {"RTL5682"}
++};
++
+ struct snd_soc_acpi_mach  snd_soc_acpi_intel_baytrail_machines[] = {
+ 	{
+ 		.id = "10EC5640",
+@@ -196,6 +201,7 @@ struct snd_soc_acpi_mach  snd_soc_acpi_intel_baytrail_machines[] = {
+ 	},
+ 	{
+ 		.id = "10EC5682",
++		.id_alt = &rt5682s_hp,
+ 		.drv_name = "sof_rt5682",
+ 		.sof_fw_filename = "sof-byt.ri",
+ 		.sof_tplg_filename = "sof-byt-rt5682.tplg",
+diff --git a/sound/soc/intel/common/soc-acpi-intel-cht-match.c b/sound/soc/intel/common/soc-acpi-intel-cht-match.c
+index 227424236fd5..6e52110897e9 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-cht-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-cht-match.c
+@@ -51,6 +51,11 @@ static struct snd_soc_acpi_mach *cht_quirk(void *arg)
+ 		return mach;
+ }
+ 
++static struct snd_soc_acpi_codecs rt5682s_hp = {
++	.num_codecs = 1,
++	.codecs = {"RTL5682"}
++};
++
+ /* Cherryview-based platforms: CherryTrail and Braswell */
+ struct snd_soc_acpi_mach  snd_soc_acpi_intel_cherrytrail_machines[] = {
+ 	{
+@@ -153,6 +158,7 @@ struct snd_soc_acpi_mach  snd_soc_acpi_intel_cherrytrail_machines[] = {
+ 	},
+ 	{
+ 		.id = "10EC5682",
++		.id_alt = &rt5682s_hp,
+ 		.drv_name = "sof_rt5682",
+ 		.sof_fw_filename = "sof-cht.ri",
+ 		.sof_tplg_filename = "sof-cht-rt5682.tplg",
+diff --git a/sound/soc/intel/common/soc-acpi-intel-cml-match.c b/sound/soc/intel/common/soc-acpi-intel-cml-match.c
+index b591c6fd13fd..ac93d77f47ff 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-cml-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-cml-match.c
+@@ -29,6 +29,11 @@ static struct snd_soc_acpi_codecs max98390_spk_codecs = {
+ 	.codecs = {"MX98390"}
+ };
+ 
++static struct snd_soc_acpi_codecs rt5682s_hp = {
++	.num_codecs = 1,
++	.codecs = {"RTL5682"}
++};
++
+ /*
+  * The order of the three entries with .id = "10EC5682" matters
+  * here, because DSDT tables expose an ACPI HID for the MAX98357A
+@@ -45,6 +50,7 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_cml_machines[] = {
+ 	},
+ 	{
+ 		.id = "10EC5682",
++		.id_alt = &rt5682s_hp,
+ 		.drv_name = "cml_rt1015_rt5682",
+ 		.machine_quirk = snd_soc_acpi_codec_list,
+ 		.quirk_data = &rt1015_spk_codecs,
+@@ -53,6 +59,7 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_cml_machines[] = {
+ 	},
+ 	{
+ 		.id = "10EC5682",
++		.id_alt = &rt5682s_hp,
+ 		.drv_name = "sof_rt5682",
+ 		.machine_quirk = snd_soc_acpi_codec_list,
+ 		.quirk_data = &max98357a_spk_codecs,
+@@ -61,6 +68,7 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_cml_machines[] = {
+ 	},
+ 	{
+ 		.id = "10EC5682",
++		.id_alt = &rt5682s_hp,
+ 		.drv_name = "sof_rt5682",
+ 		.sof_fw_filename = "sof-cml.ri",
+ 		.sof_tplg_filename = "sof-cml-rt5682.tplg",
+diff --git a/sound/soc/intel/common/soc-acpi-intel-icl-match.c b/sound/soc/intel/common/soc-acpi-intel-icl-match.c
+index 768ed538c4ea..14430b969e6c 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-icl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-icl-match.c
+@@ -14,6 +14,11 @@ static struct skl_machine_pdata icl_pdata = {
+ 	.use_tplg_pcm = true,
+ };
+ 
++static struct snd_soc_acpi_codecs rt5682s_hp = {
++	.num_codecs = 1,
++	.codecs = {"RTL5682"}
++};
++
+ struct snd_soc_acpi_mach snd_soc_acpi_intel_icl_machines[] = {
+ 	{
+ 		.id = "INT34C2",
+@@ -25,6 +30,7 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_icl_machines[] = {
+ 	},
+ 	{
+ 		.id = "10EC5682",
++		.id_alt = &rt5682s_hp,
+ 		.drv_name = "sof_rt5682",
+ 		.sof_fw_filename = "sof-icl.ri",
+ 		.sof_tplg_filename = "sof-icl-rt5682.tplg",
+diff --git a/sound/soc/intel/common/soc-acpi-intel-jsl-match.c b/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
+index 20fd9dcc74af..4ffd91fd6862 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
+@@ -29,6 +29,11 @@ static struct snd_soc_acpi_codecs mx98360a_spk = {
+ 	.codecs = {"MX98360A"}
+ };
+ 
++static struct snd_soc_acpi_codecs rt5682s_hp = {
++	.num_codecs = 1,
++	.codecs = {"RTL5682"}
++};
++
+ /*
+  * When adding new entry to the snd_soc_acpi_intel_jsl_machines array,
+  * use .quirk_data member to distinguish different machine driver,
+@@ -51,6 +56,7 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_jsl_machines[] = {
+ 	},
+ 	{
+ 		.id = "10EC5682",
++		.id_alt = &rt5682s_hp,
+ 		.drv_name = "jsl_rt5682_rt1015",
+ 		.sof_fw_filename = "sof-jsl.ri",
+ 		.machine_quirk = snd_soc_acpi_codec_list,
+@@ -59,6 +65,7 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_jsl_machines[] = {
+ 	},
+ 	{
+ 		.id = "10EC5682",
++		.id_alt = &rt5682s_hp,
+ 		.drv_name = "jsl_rt5682_rt1015p",
+ 		.sof_fw_filename = "sof-jsl.ri",
+ 		.machine_quirk = snd_soc_acpi_codec_list,
+@@ -67,6 +74,7 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_jsl_machines[] = {
+ 	},
+ 	{
+ 		.id = "10EC5682",
++		.id_alt = &rt5682s_hp,
+ 		.drv_name = "jsl_rt5682_mx98360",
+ 		.sof_fw_filename = "sof-jsl.ri",
+ 		.machine_quirk = snd_soc_acpi_codec_list,
+@@ -81,30 +89,6 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_jsl_machines[] = {
+ 		.quirk_data = &mx98360a_spk,
+ 		.sof_tplg_filename = "sof-jsl-cs42l42-mx98360a.tplg",
+ 	},
+-	{
+-		.id = "RTL5682",
+-		.drv_name = "jsl_rt5682s_rt1015",
+-		.sof_fw_filename = "sof-jsl.ri",
+-		.machine_quirk = snd_soc_acpi_codec_list,
+-		.quirk_data = &rt1015_spk,
+-		.sof_tplg_filename = "sof-jsl-rt5682-rt1015.tplg",
+-	},
+-	{
+-		.id = "RTL5682",
+-		.drv_name = "jsl_rt5682s_rt1015p",
+-		.sof_fw_filename = "sof-jsl.ri",
+-		.machine_quirk = snd_soc_acpi_codec_list,
+-		.quirk_data = &rt1015p_spk,
+-		.sof_tplg_filename = "sof-jsl-rt5682-rt1015.tplg",
+-	},
+-	{
+-		.id = "RTL5682",
+-		.drv_name = "jsl_rt5682s_mx98360",
+-		.sof_fw_filename = "sof-jsl.ri",
+-		.machine_quirk = snd_soc_acpi_codec_list,
+-		.quirk_data = &mx98360a_spk,
+-		.sof_tplg_filename = "sof-jsl-rt5682-mx98360a.tplg",
+-	},
+ 	{},
+ };
+ EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_jsl_machines);
+diff --git a/sound/soc/intel/common/soc-acpi-intel-tgl-match.c b/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
+index 9d89f01d6b84..e65bd6db2850 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
+@@ -358,9 +358,15 @@ static const struct snd_soc_acpi_codecs tgl_rt1011_amp = {
+ 	.codecs = {"10EC1011"}
+ };
+ 
++static struct snd_soc_acpi_codecs tgl_rt5682s_hp = {
++	.num_codecs = 1,
++	.codecs = {"RTL5682"}
++};
++
+ struct snd_soc_acpi_mach snd_soc_acpi_intel_tgl_machines[] = {
+ 	{
+ 		.id = "10EC5682",
++		.id_alt = &tgl_rt5682s_hp,
+ 		.drv_name = "tgl_mx98357_rt5682",
+ 		.machine_quirk = snd_soc_acpi_codec_list,
+ 		.quirk_data = &tgl_codecs,
+@@ -369,6 +375,7 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_tgl_machines[] = {
+ 	},
+ 	{
+ 		.id = "10EC5682",
++		.id_alt = &tgl_rt5682s_hp,
+ 		.drv_name = "tgl_mx98373_rt5682",
+ 		.machine_quirk = snd_soc_acpi_codec_list,
+ 		.quirk_data = &tgl_max98373_amp,
+@@ -377,6 +384,7 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_tgl_machines[] = {
+ 	},
+ 	{
+ 		.id = "10EC5682",
++		.id_alt = &tgl_rt5682s_hp,
+ 		.drv_name = "tgl_rt1011_rt5682",
+ 		.machine_quirk = snd_soc_acpi_codec_list,
+ 		.quirk_data = &tgl_rt1011_amp,
+-- 
+2.25.1
 
-> >  				 */
-> > -				if (packet->operation == VSTOR_OPERATION_COMPLETE_IO) {
-> > +				if (packet->operation == VSTOR_OPERATION_COMPLETE_IO ||
-> > +				    packet->operation == VSTOR_OPERATION_FCHBA_DATA) {
-> >  					dev_err(&device->device, "Invalid packet with ID of 0\n");
-> >  					continue;
-> >  				}
-> > --
-> > 2.25.1
-> 
-> Other than the seemingly spurious comment line,
-> 
-> Reviewed-by: Michael Kelley <mikelley@microsoft.com>
-
-I wanted to make sure that we're on the same page: I could either expand
-or just remove that comment line; no strong opinion.  Please let me know
-what is your/reviewers' preference.
-
-Thanks,
-  Andrea
