@@ -2,129 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1C3C424606
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 20:25:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BF3242460B
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 20:26:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239129AbhJFS1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 14:27:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37404 "EHLO
+        id S238900AbhJFS2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 14:28:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231804AbhJFS1I (ORCPT
+        with ESMTP id S229564AbhJFS2P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 14:27:08 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E531FC061746;
-        Wed,  6 Oct 2021 11:25:14 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id y26so14327738lfa.11;
-        Wed, 06 Oct 2021 11:25:14 -0700 (PDT)
+        Wed, 6 Oct 2021 14:28:15 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3676C061746;
+        Wed,  6 Oct 2021 11:26:22 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id x12so3476962qkf.9;
+        Wed, 06 Oct 2021 11:26:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Nilvj0BCNWHsyq1W7awlCSFRX2jOx57s9HjwLir53WA=;
-        b=aT8IlMoIH8cgyNkOORPkoY7N2odN1B9ip5felUqWhaWSrDewU2VSCzPp5/yxcFtdyi
-         VRjd6IKbxjRx7NaNEYZW3OyTfTk2OZdXpO1oTQkJEqKpueu6pvInIFS5SbB3ZHPKuGP6
-         PhCNKDO0XQDrbszz7iI/OYDfKXllQevjoIVk+W1F5Z+H/WTk3rwk3KzPmENNXZX4wMTi
-         vHMnYcNKEVT7HOG1ueFU2ogb788ZcjjlDfvkdciJtISxTyFHg/D4Xc6YoH4CB+WZ/Bwo
-         sP2RXfDebRjRRAqMWstuXcS31bx+BUnkyz6rnAK3LeXwxe44YajGQNNpcJCbLx+eeV77
-         Xf4w==
+         :cc;
+        bh=MW5tHpMjCfEp2ujWAs5HwJDY4QO3gYqom+zIppRuqpk=;
+        b=Qc6hmZMtR7hj7SMkVwT3Qp9i91IzcDo8nkb8LT1TUO9Z9h35Xn25e+VUXjOrRAr62H
+         ebRrgIXcE+yfW6HdsGVBDF+DkmtYWJTtWzq6I0v3GQ7honc7LA9gZzUZnYftECbtmTsh
+         aIp7UrBYbBM2++qmIu78d8pph3C5QX7mac5/Q4RkLWsMTzwVANyFhVEJcF84tcDHOtBu
+         livJ7yU3agWK2L/cSli2EIfxpGV/XrLq7nVv/wLPfyqNGKxRep2+g3MZbKWbzDmrd5Hr
+         3rUAohixBxdzX7WCbbyVpjfYNNPKFKnKfF08EjeJIdkHQBV8QR2OUf8PAqolkwPwJBYV
+         LWzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Nilvj0BCNWHsyq1W7awlCSFRX2jOx57s9HjwLir53WA=;
-        b=UXrsWJr8iCTcRaqdCb6szVHOGcLDW0j0rvA1b4FQPOo2Fk7dTLksqw+gf6vGomNDfs
-         itXMlVuyYEz3lc/bp84CBGPxCvKUnYd7X9o8z5ktgEIyV9Gtl2QmxC2A8X8VEpQRiVk5
-         ncLUemJj+uXjzEqi5GsD1EXLSiUvwlXZ6LPat/mI81nWHkLqD1SqAdYBofU1tSPiDf2o
-         m52dYw2VIiLjp1R6qzZ+zXac/sgYHUVP2qucSSc6zILkxXuRE7e9uheE5uFltUs6iFhf
-         7uau7j7OyRs+ogzervejBOH35grbHfJv+JLcHdW+ZHgU+98+FuD+woSHBE1ILVUEKA33
-         y+Uw==
-X-Gm-Message-State: AOAM533iLa0B+oL5mRxRIr77ja71B+7084drncIoUgld4+43OIh2nHlC
-        X9ysacHEss1Hr6yFNowwrj6m4pSaExay8/V1VaQ=
-X-Google-Smtp-Source: ABdhPJxp9XhtFnKoflB76MTWzHr6/mQhe0VNIY3phx28RDnkMpdeIipOPEKfQgAmIMfAAVSM9xYcOp2aHV+dug8jOAI=
-X-Received: by 2002:a05:6512:13a0:: with SMTP id p32mr11523368lfa.492.1633544713324;
- Wed, 06 Oct 2021 11:25:13 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=MW5tHpMjCfEp2ujWAs5HwJDY4QO3gYqom+zIppRuqpk=;
+        b=fPvCcJ8hL1wq3F5ZgivMqyHQSUWgfukNJaB3fr7dz1Q68c0zlM6fYLnfRcZ6+TL/Tx
+         eWZauykmkftYjjWAKwBwEwbvu5Fipoxj01Ktbp5+AMLrNMmt0C4Py7R0i5gvm+zpfdht
+         G9EsA3FOd1WfN7FeS42f6A09BBDAYnbholHPlC74bT4qsiI5BdHNuv0ohQ4bqgrnpO+P
+         CkXbvaKHH8UiLcIdGBPIMXL0oE/SY8zJgtRYL05MG6oy3DH1yoNuYUEH8NmPxtuTfo38
+         QeD2LnythzTvNOKJcqwPWzO91kG3y2EKHVJX3bUNlHiFI6IxpJFg6yZBUPsR83vajH0k
+         E0cQ==
+X-Gm-Message-State: AOAM531aYQwq0C2A3W91nh7qfbjOBs179hovlTNmyXl7xNCH/nFESTZH
+        gf9nbUoFXqMkcOeEKNtghD2WAza4aOV9i9qzLL8=
+X-Google-Smtp-Source: ABdhPJzLcLJsxRSBGw+zSWXGMASZJrbr2DfMYmSywwZ8SZRVzhbbVnYAZtC3YPyNrHooddEvk2Gk1UeKldkZnL/sTQ8=
+X-Received: by 2002:a37:af02:: with SMTP id y2mr209498qke.33.1633544781895;
+ Wed, 06 Oct 2021 11:26:21 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210813145302.3933-1-kevin3.tang@gmail.com> <20210813145302.3933-7-kevin3.tang@gmail.com>
- <20210917154047.leojvqjqjj2sg34l@gilmour> <CAFPSGXZbqh0f6kEoQaq_Nt677ksVS6QPdAa5==KVVAszSAuasw@mail.gmail.com>
- <YVCgznmOA97v30wG@ravnborg.org>
-In-Reply-To: <YVCgznmOA97v30wG@ravnborg.org>
-From:   Kevin Tang <kevin3.tang@gmail.com>
-Date:   Thu, 7 Oct 2021 02:25:02 +0800
-Message-ID: <CAFPSGXbap3QsaofzRnJ79eOro3Z5DNN0Kj_v3ZaTn8pdSf=m8g@mail.gmail.com>
-Subject: Re: [PATCH v6 6/6] drm/sprd: add Unisoc's drm mipi dsi&dphy driver
-To:     Sam Ravnborg <sam@ravnborg.org>
-Cc:     Maxime Ripard <maxime@cerno.tech>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>, pony1.wu@gmail.com,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        ML dri-devel <dri-devel@lists.freedesktop.org>,
-        devicetree@vger.kernel.org
+References: <20210902214708.1776690-1-robimarko@gmail.com> <YUf3aKn78+41Cb/G@builder.lan>
+ <CAOX2RU5b46H7nqm6G4mHLSqEhGiWktwWjUKF5w10Ut+AdKea-A@mail.gmail.com>
+ <632a7d28c23a8497d35ea009bfe89883@codeaurora.org> <CAOX2RU5+jeXiqz8oss8Sd-BWa059uAv5xu=7nx_YF4RYpG2S6w@mail.gmail.com>
+ <YUurqDL/S15RziCQ@builder.lan> <20211006182419.GC33862@thinkpad>
+In-Reply-To: <20211006182419.GC33862@thinkpad>
+From:   Robert Marko <robimarko@gmail.com>
+Date:   Wed, 6 Oct 2021 20:26:10 +0200
+Message-ID: <CAOX2RU43D72yx1Kyb0jRMMOLgBd1OMscWLH-dEdp0P=L-5quHQ@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: qcom: ipq8074: add SMEM support
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Kathiravan T <kathirav@codeaurora.org>, agross@kernel.org,
+        robh+dt@kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sam,
-Thanks for your response.
+On Wed, 6 Oct 2021 at 20:24, Manivannan Sadhasivam
+<manivannan.sadhasivam@linaro.org> wrote:
+>
+> On Wed, Sep 22, 2021 at 05:18:16PM -0500, Bjorn Andersson wrote:
+> > On Wed 22 Sep 15:23 CDT 2021, Robert Marko wrote:
+> >
+> > > On Tue, 21 Sept 2021 at 08:24, Kathiravan T <kathirav@codeaurora.org> wrote:
+> > > >
+> > > > On 2021-09-20 14:55, Robert Marko wrote:
+> > > > > On Mon, 20 Sept 2021 at 04:52, Bjorn Andersson
+> > > > > <bjorn.andersson@linaro.org> wrote:
+> > > > >>
+> > > > >> On Thu 02 Sep 16:47 CDT 2021, Robert Marko wrote:
+> > > > >>
+> > > > >> > IPQ8074 uses SMEM like other modern QCA SoC-s, so since its already
+> > > > >> > supported by the kernel add the required DT nodes.
+> > > > >> >
+> > > > >> > Signed-off-by: Robert Marko <robimarko@gmail.com>
+> > > > >>
+> > > > >> Thanks for your patch Robert.
+> > > > >>
+> > > > >> > ---
+> > > > >> >  arch/arm64/boot/dts/qcom/ipq8074.dtsi | 28 +++++++++++++++++++++++++++
+> > > > >> >  1 file changed, 28 insertions(+)
+> > > > >> >
+> > > > >> > diff --git a/arch/arm64/boot/dts/qcom/ipq8074.dtsi b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
+> > > > >> > index a620ac0d0b19..83e9243046aa 100644
+> > > > >> > --- a/arch/arm64/boot/dts/qcom/ipq8074.dtsi
+> > > > >> > +++ b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
+> > > > >> > @@ -82,6 +82,29 @@ scm {
+> > > > >> >               };
+> > > > >> >       };
+> > > > >> >
+> > > > >> > +     reserved-memory {
+> > > > >> > +             #address-cells = <2>;
+> > > > >> > +             #size-cells = <2>;
+> > > > >> > +             ranges;
+> > > > >> > +
+> > > > >> > +             smem_region: memory@4ab00000 {
+> > > > >> > +                     no-map;
+> > > > >> > +                     reg = <0x0 0x4ab00000 0x0 0x00100000>;
+> > > > >> > +             };
+> > > > >> > +     };
+> > > > >> > +
+> > > > >> > +     tcsr_mutex: hwlock {
+> > > > >> > +             compatible = "qcom,tcsr-mutex";
+> > > > >> > +             syscon = <&tcsr_mutex_regs 0 0x80>;
+> > > > >>
+> > > > >> Since it's not okay to have a lone "syscon" and I didn't think it was
+> > > > >> worth coming up with a binding for the TCSR mutex "syscon" I rewrote
+> > > > >> the
+> > > > >> binding a while back. As such qcom,tcsr-mutex should now live in /soc
+> > > > >> directly.
+> > > > >>
+> > > > >> So can you please respin accordingly?
+> > > > >
+> > > > > Sure, can you just confirm that the:
+> > > > > reg = <0x01905000 0x8000>;
+> > > > >
+> > > > > Is the whole TCSR range as I don't have docs?
+> > > >
+> > > > Robert,
+> > > >
+> > > > TCSR_MUTEX block starts from 0x01905000 and has size 0x20000 (128KB)
+> > >
+> > > Thanks, Kathiravan,
+> > > TSCR mutex with MMIO reg under it works, but there is some weird probe
+> > > ordering issue.
+> > >
+> > > For whatever reason, SMEM will get probed only after MTD does and this
+> > > will cause issues
+> > > if SMEM parser is used as it will return -EPROBE_DEFER but the MTD
+> > > core does not really
+> > > handle it correctly and causes the device to reboot after failed parsing.
+> > >
+> > > Now, I have no idea why does this variant which uses MMIO regmap probe
+> > > so much later?
+> > >
+> >
+> > Mani, do you have any input related to the probe deferral of the SMEM
+> > partition parser, because SMEM not yet probed?
+> >
+>
+> Sorry, missed this earlier. I did face the probe deferral issue before and
+> submitted a small series for fixing that:
+>
+> https://lore.kernel.org/linux-mtd/20210302132757.225395-1-manivannan.sadhasivam@linaro.org/
+>
+> These 2 patches are in mainline now. Robert, can you make sure that you have
+> these 2 patches in your tree?
 
-Sam Ravnborg <sam@ravnborg.org> =E4=BA=8E2021=E5=B9=B49=E6=9C=8827=E6=97=A5=
-=E5=91=A8=E4=B8=80 =E4=B8=8A=E5=8D=8812:33=E5=86=99=E9=81=93=EF=BC=9A
+Hi Mani,
+Yes, I have those patches as I am running this on top of 5.15-rc4 currently.
+
+Regards,
+Robert
 >
-> Hi Kevin,
+> Thanks,
+> Mani
 >
-> > > > +     reg->_0b.bits.out_sel =3D pll->out_sel;
-> > > > +     reg->_0b.bits.kint_l =3D pll->kint & 0xf;
-> > > > +     reg->_0e.bits.pll_pu_byp =3D 0;
-> > > > +     reg->_0e.bits.pll_pu =3D 0;
-> > > > +     reg->_0e.bits.stopstate_sel =3D 1;
-> > > > +     reg->_0f.bits.det_delay =3D pll->det_delay;
-> > > > +
-> > > > +     val =3D (u8 *)&reg;
-> > > > +
-> > > > +     for (i =3D 0; i < sizeof(reg_addr); ++i) {
-> > > > +             regmap_write(regmap, reg_addr[i], val[i]);
-> > > > +             DRM_DEBUG("%02x: %02x\n", reg_addr[i], val[i]);
-> > > > +     }
-> > > > +}
-> > >
-> > > It would be great to also convert this part to a pattern without
-> > > structures.
-> > I will try it, but our pll registers, all not have official name from
-> > aisc design owner.
-> > If need to convert it, our pll regiters macro define, it can only be
-> > named as reg_01, reg_02...
-> IT is better to use the stupid names provided by you asic design owner,
-> than just numbers. Add a comment explaining this is due to the asic
-> design owner the names are stupid and not your fault.
-The chip manual released to us by the asic designer is like this for
-many years ago.
-As for the specific reason, unable to find out now, i will try use
-"stupid names" rather than numbers.
->
-> > > > +
-> > > > +     if (dsi->panel) {
-> > > > +             drm_panel_prepare(dsi->panel);
-> > > > +             drm_panel_enable(dsi->panel);
-> > > > +     }
-> > >
-> > > Please use the new devm_drm_of_get_bridge helper here, and use the
-> > > bridge API instead.
-> > We use drm_panel_init and drm_panel_add API to add panel, so here is a
-> > panel device, not a bridge.
->
-> The new way to do this is to always wrap the panel in a bridge. We will
-> start to slowly migrate away from direct use of the panel API, and let
-> display drivers always wrap the panles in a bridge.
-> So please do as Maxime suggests.
-I only found a demo about the use of devm_drm_of_get_bridge in the vc4
-dsi driver, i
-will try to follow it.
->
->         Sam
+> > Thanks,
+> > Bjorn
