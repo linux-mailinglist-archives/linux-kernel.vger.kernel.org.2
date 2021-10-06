@@ -2,112 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72CBF42480E
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 22:38:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D194424859
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 22:55:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239516AbhJFUkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 16:40:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39478 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239490AbhJFUkX (ORCPT
+        id S234016AbhJFU53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 16:57:29 -0400
+Received: from mailrelay3-3.pub.mailoutpod1-cph3.one.com ([46.30.212.12]:51487
+        "EHLO mailrelay3-3.pub.mailoutpod1-cph3.one.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230043AbhJFU52 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 16:40:23 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52E9BC061762
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 13:38:30 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id j5so15517106lfg.8
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 13:38:30 -0700 (PDT)
+        Wed, 6 Oct 2021 16:57:28 -0400
+X-Greylist: delayed 963 seconds by postgrey-1.27 at vger.kernel.org; Wed, 06 Oct 2021 16:57:28 EDT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Sch4r++lRpWjMNWm6J3bRObYHgBNc9lQrCbgQx2Tuoo=;
-        b=a4pZ+3Br7NaYQ2Kzf0S9JsFgIpq4GtOWcP82qqLDPevvFWGxm/mxbnaYhDvd0NjDzX
-         ByDUN83WSmy4t7uZxInG6536asXx/W9SjkQt5krKh7okGsyVux0QZoI8LaU9tQq8LPaj
-         ZqUEde7CRF+GnW8R8o5wp+0gkC+ZwoxlHuPEoYHOPaUN6vXiA6cQmpWgsAsIlLQ4JGzq
-         yFffrdE1JxW7PNPvPLd5UBxf2aYT/M43/9HFg9f236FAPnyEh9AZF/PBmEKUUV2XMoUR
-         me52kJBEfFV/8PhDgWlR+aZwczihZijcNWYIkBnKH8NufaVp6pDbdQz/I++4VCTzM07s
-         uyMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Sch4r++lRpWjMNWm6J3bRObYHgBNc9lQrCbgQx2Tuoo=;
-        b=s9Nnh5BKMnSH9Qt1PM0jnaH9f5+LrH1ExZGP/VN5XXNIoUm/h3OGkf8r/mmEsZg0UR
-         tyuhhca/8vGXMgBtQ7FoB02FIjsDtNV2jP6zcYC9B9e67+puXrV6ZNnhKSSf4enwdw3P
-         7Z15pZZR8nCNYttL4cA5h6QthSvWJG43wOVBRZeRw626P7vajEPH1x7nwBYa//Ge9K2n
-         U225AhEg8vqDQty9dXlyGMAmjEC+tqafrrgsCPK6ELiGcAS9mmFP6DhVSNasXFo7LWWs
-         DyZyEjS96kNKBcYtlVXhk47omURPwjVkEfOTdXqwpQShwSDj4kVD4oe4yZHJkJWUUhpn
-         umEg==
-X-Gm-Message-State: AOAM533Inofv1a9yo37TfY8QVOH7+nTFvdbcBiG2/LX2OYsP/UvKM2b3
-        qaKClUJct0+AWtzNoC1z/sjH488KWFq3ZyK/2mjFTg==
-X-Google-Smtp-Source: ABdhPJxedfCoEzB5tZdpBasgE/9MbGIE0zJY6OR1GtP4jFj59lIv6nV246bFd8nVlFKClxucfJ/Bsa7/IVMSMHTLXW0=
-X-Received: by 2002:a05:6512:239f:: with SMTP id c31mr176934lfv.19.1633552708433;
- Wed, 06 Oct 2021 13:38:28 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211006194610.953319-1-tkjos@google.com> <20211006194610.953319-4-tkjos@google.com>
- <CAHRSSExN4g0qubjjLhdGx5DA7njT5ZwPkAzCY1OEdR1dbscLVA@mail.gmail.com>
-In-Reply-To: <CAHRSSExN4g0qubjjLhdGx5DA7njT5ZwPkAzCY1OEdR1dbscLVA@mail.gmail.com>
-From:   Todd Kjos <tkjos@google.com>
-Date:   Wed, 6 Oct 2021 13:38:15 -0700
-Message-ID: <CAHRSSEyHWvcLhjera_Gx_rJk+xOA8mTRpodEpHuHhYuLqrNEdQ@mail.gmail.com>
-Subject: Re: [PATCH v3 3/3] binder: use euid from cred instead of using task
-To:     gregkh@linuxfoundation.org, arve@android.com, tkjos@android.com,
-        maco@android.com, christian@brauner.io, jmorris@namei.org,
-        serge@hallyn.com, paul@paul-moore.com,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        keescook@chromium.org, jannh@google.com, jeffv@google.com,
-        zohar@linux.ibm.com, linux-security-module@vger.kernel.org,
-        selinux@vger.kernel.org, devel@driverdev.osuosl.org,
+        d=mida.se; s=20191106;
+        h=content-transfer-encoding:content-type:mime-version:date:message-id:cc:to:
+         subject:from:from;
+        bh=rjy7QMx+HG4fzwEuu/i7VAyuESPI+MiqfkC+7VugfOc=;
+        b=HVebTVJ6FuNdZvEenHlyDKonCoYrZ55xjmjSq0cIwypTfnFD0X8sOB7BJSd2BcA7pRuwqBnJf8nIx
+         4ShgKTJ0qrpthhH9XJM+d2KoyDgeD6hx+Hskox1O4KYh7imolNH7K3yoyyt1X+dsMYyfBi4+DgdLd3
+         aWfVyzi8xSHzNeLA+55uTzZ0JuLKrasfaoaAyoadDR7MQvQYh8W+Q4xXo8IScDLl2znT+XAh7e6ZGo
+         xXIvw2mKehd24iGSxnI+8nsniEk9fmOQz/kb2mdTbsqwOldWHuL6W/jBzXb7ToGh9UnN0CLOtbziO6
+         MnEN2Hu9TggKxcp6NDegO+IhWSFSQ/Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mida.se; s=rsa1;
+        h=content-transfer-encoding:content-type:mime-version:date:message-id:cc:to:
+         subject:from:from;
+        bh=rjy7QMx+HG4fzwEuu/i7VAyuESPI+MiqfkC+7VugfOc=;
+        b=f47ZhspZravyLhK6W3sbPMqzLDAoziAXs74IoRNBj1h9Wk/Ouqy+3wYoL2JvS1ldGy3TZ7qxIyew6
+         Wd9FwPsaJFttM940wN8+dAqt1Nfeu92KWOiXqARfw6cGVzDGLOwQhhowyVhbtIpG4Q1nChD8yZfdU0
+         LnpEic0UfpHKRIARcTHMPHOWvqwh74Bmc84BBHrKtWyVFJYYK1b1UdT3zh4Mp+Ak/b0BAJIVCLbGz3
+         JJYafYRX5XgixG30Fy5lq1iyDddp5b3XImwoTUw777Y52RLEIDjU3k54j3VoMROZKCONfBLDBtPEgc
+         zGOV2Asw+KbdZXvW2WbMnbCfqG1ng7Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
+        d=mida.se; s=ed1;
+        h=content-transfer-encoding:content-type:mime-version:date:message-id:cc:to:
+         subject:from:from;
+        bh=rjy7QMx+HG4fzwEuu/i7VAyuESPI+MiqfkC+7VugfOc=;
+        b=jwsHlhoXnhQ6d876Rc8LqyV9J8JTO5SyPbiUgZokoSfcBHp9pTZWVDi8PWrH2dw9Ldr/h7TtY4a0s
+         vI9wh4tAw==
+X-HalOne-Cookie: b74c31112d7684c3e3bff4b64e722478836f3d7b
+X-HalOne-ID: 815d8d1c-26e5-11ec-87a1-d0431ea8bb03
+Received: from [192.168.1.108] (2.67.139.77.mobile.tre.se [2.67.139.77])
+        by mailrelay3.pub.mailoutpod1-cph3.one.com (Halon) with ESMTPSA
+        id 815d8d1c-26e5-11ec-87a1-d0431ea8bb03;
+        Wed, 06 Oct 2021 20:39:30 +0000 (UTC)
+From:   rkardell <rkardell@mida.se>
+Subject: [PATCH] media: dvb: Solve problem with Terratec cinergyT2 when
+ removed and reconnected, or after sleep.
+To:     linux-media@vger.kernel.org
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
         linux-kernel@vger.kernel.org
-Cc:     joel@joelfernandes.org, kernel-team@android.com,
-        stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <ad0a926e-8c5f-eed7-5c3a-96453915ea09@mida.se>
+Date:   Wed, 6 Oct 2021 22:39:29 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: sv-FI
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 6, 2021 at 12:55 PM Todd Kjos <tkjos@google.com> wrote:
->
-> On Wed, Oct 6, 2021 at 12:46 PM Todd Kjos <tkjos@google.com> wrote:
-> >
-> > Set a transaction's sender_euid from the the 'struct cred'
+Module used count is incremented 1 time but decremented 2 times by 
+dvb_frontend.
+This patch inhibit module used count to go to -1.
 
-Sigh...and I forgot to run checkpatch before submitting which would
-have caught this "the the"
 
-> > saved at binder_open() instead of looking up the euid
-> > from the binder proc's 'struct task'. This ensures
-> > the euid is associated with the security context that
-> > of the task that opened binder.
-> >
-> > Fixes: 457b9a6f09f0 ("Staging: android: add binder driver")
-> > Signed-off-by: Todd Kjos <tkjos@google.com>
-> > Stephen Smalley <stephen.smalley.work@gmail.com>
->
-> This should have been "Suggested-by: Stephen Smalley
-> <stephen.smalley.work@gmail.com>"
->
-> > Cc: stable@vger.kernel.org # 4.4+
-> > ---
-> > v3: added this patch to series
-> >
-> >  drivers/android/binder.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/android/binder.c b/drivers/android/binder.c
-> > index 989afd0804ca..26382e982c5e 100644
-> > --- a/drivers/android/binder.c
-> > +++ b/drivers/android/binder.c
-> > @@ -2711,7 +2711,7 @@ static void binder_transaction(struct binder_proc *proc,
-> >                 t->from = thread;
-> >         else
-> >                 t->from = NULL;
-> > -       t->sender_euid = task_euid(proc->tsk);
-> > +       t->sender_euid = proc->cred->euid;
-> >         t->to_proc = target_proc;
-> >         t->to_thread = target_thread;
-> >         t->code = tr->code;
-> > --
-> > 2.33.0.800.g4c38ced690-goog
-> >
+Signed-off-by: rkl099 <rkardell@mida.se>
+---
+  drivers/media/usb/dvb-usb/cinergyT2-core.c | 1 +
+  1 file changed, 1 insertion(+)
+
+diff --git a/drivers/media/usb/dvb-usb/cinergyT2-core.c 
+b/drivers/media/usb/dvb-usb/cinergyT2-core.c
+index 23f1093d2..56f58b3f9 100644
+--- a/drivers/media/usb/dvb-usb/cinergyT2-core.c
++++ b/drivers/media/usb/dvb-usb/cinergyT2-core.c
+@@ -69,6 +69,7 @@ static int cinergyt2_frontend_attach(struct 
+dvb_usb_adapter *adap)
+      struct cinergyt2_state *st = d->priv;
+      int ret;
+
++    try_module_get(THIS_MODULE);
+      adap->fe_adap[0].fe = cinergyt2_fe_attach(adap->dev);
+
+      mutex_lock(&d->data_mutex);
+-- 
+2.30.2
+
+
