@@ -2,152 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A19BC423D7B
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 14:12:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B33E423D7D
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 14:13:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238283AbhJFMN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 08:13:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51274 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238117AbhJFMN5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 08:13:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CA3D861076;
-        Wed,  6 Oct 2021 12:12:02 +0000 (UTC)
-Date:   Wed, 6 Oct 2021 14:12:00 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Mike Christie <michael.christie@oracle.com>
-Cc:     geert@linux-m68k.org, vverma@digitalocean.com, hdanton@sina.com,
-        hch@infradead.org, stefanha@redhat.com, jasowang@redhat.com,
-        mst@redhat.com, sgarzare@redhat.com,
-        virtualization@lists.linux-foundation.org, axboe@kernel.dk,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V3 5/9] fork: add helper to clone a process
-Message-ID: <20211006121200.udx2skkwllmjor4v@wittgenstein>
-References: <20211004192128.381453-1-michael.christie@oracle.com>
- <20211004192128.381453-6-michael.christie@oracle.com>
- <20211005125018.5nzmhwdxivyye5on@wittgenstein>
- <00d724df-5781-035f-54ad-e0432ec92646@oracle.com>
+        id S238366AbhJFMPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 08:15:08 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:28448 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238105AbhJFMPH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 08:15:07 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1633522395; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=It/MRNqAXGNPyFh/a1DDiLRtR989/cjNw7hpzBembtQ=; b=VOCGO+FyylnuZe2HSgllvosLO8G+cS8rcmACsm3+lVsM56t9DohsTxsXVBXZl7URccrbFEWG
+ vYUjeoPxCTxVZJOj/ysqmsW9EFWc2EyL0YxVRLS5M+KbJ+avsFP6jf3+sF5i77ulybj9mZzl
+ CgwPob7K6BvyXeq5/ZD7+lRDG/o=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 615d92da30ce13d2b444b434 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 06 Oct 2021 12:13:14
+ GMT
+Sender: faiyazm=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 225C3C4360D; Wed,  6 Oct 2021 12:13:14 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-4.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+        version=3.4.0
+Received: from [192.168.0.109] (unknown [49.204.182.88])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: faiyazm)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4C39DC4338F;
+        Wed,  6 Oct 2021 12:13:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 4C39DC4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Subject: Re: [PATCH v1] mm: page_alloc: Add debug log in free_reserved_area
+ for static memory
+To:     David Hildenbrand <david@redhat.com>, akpm@linux-foundation.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc:     guptap@codeaurora.org
+References: <1632819849-511-1-git-send-email-faiyazm@codeaurora.org>
+ <248ec931-7c16-3e2d-cc8f-8ce0dd4e923b@redhat.com>
+ <0149edd5-fe7f-2786-413c-6de2eab3e30c@codeaurora.org>
+ <ab7a9fb0-a3e7-0cb8-6dbd-40a68e6fd299@redhat.com>
+ <1f6708d2-1ca8-6d1f-d9f0-855f2df755ed@codeaurora.org>
+ <d5a2e107-70e2-30b5-6723-9eea6650517a@redhat.com>
+From:   Faiyaz Mohammed <faiyazm@codeaurora.org>
+Message-ID: <88df48af-901b-5765-d92c-6d14c2b1f73e@codeaurora.org>
+Date:   Wed, 6 Oct 2021 17:43:08 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
+In-Reply-To: <d5a2e107-70e2-30b5-6723-9eea6650517a@redhat.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <00d724df-5781-035f-54ad-e0432ec92646@oracle.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05, 2021 at 12:10:55PM -0500, Mike Christie wrote:
-> On 10/5/21 7:50 AM, Christian Brauner wrote:
-> > On Mon, Oct 04, 2021 at 02:21:24PM -0500, Mike Christie wrote:
-> >> The vhost layer has similar requirements as io_uring where its worker
-> >> threads need to access the userspace thread's memory, want to inherit the
-> >> parents's cgroups and namespaces, and be checked against the parent's
-> >> RLIMITs. Right now, the vhost layer uses the kthread API which has
-> >> kthread_use_mm for mem access, and those threads can use
-> >> cgroup_attach_task_all for v1 cgroups, but there are no helpers for the
-> >> other items.
-> >>
-> >> This adds a helper to clone a process so we can inherit everything we
-> >> want in one call. It's a more generic version of create_io_thread which
-> >> will be used by the vhost layer and io_uring in later patches in this set.
-> >>
-> >> Signed-off-by: Mike Christie <michael.christie@oracle.com>
-> >> Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
-> >> ---
-> >>  include/linux/sched/task.h |  6 ++++-
-> >>  kernel/fork.c              | 48 ++++++++++++++++++++++++++++++++++++++
-> >>  2 files changed, 53 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/include/linux/sched/task.h b/include/linux/sched/task.h
-> >> index e165cc67fd3c..ba0499b6627c 100644
-> >> --- a/include/linux/sched/task.h
-> >> +++ b/include/linux/sched/task.h
-> >> @@ -87,7 +87,11 @@ extern void exit_files(struct task_struct *);
-> >>  extern void exit_itimers(struct signal_struct *);
-> >>  
-> >>  extern pid_t kernel_clone(struct kernel_clone_args *kargs);
-> >> -struct task_struct *create_io_thread(int (*fn)(void *), void *arg, int node);
-> >> +struct task_struct *create_io_thread(int (*fn)(void *i), void *arg, int node);
-> >> +struct task_struct *kernel_worker(int (*fn)(void *), void *arg, int node,
-> >> +				  unsigned long clone_flags, u32 worker_flags);
-> >> +__printf(2, 3)
-> >> +void kernel_worker_start(struct task_struct *tsk, const char namefmt[], ...);
-> >>  struct task_struct *fork_idle(int);
-> >>  struct mm_struct *copy_init_mm(void);
-> >>  extern pid_t kernel_thread(int (*fn)(void *), void *arg, unsigned long flags);
-> >> diff --git a/kernel/fork.c b/kernel/fork.c
-> >> index 98264cf1d6a6..3f3fcabffa5f 100644
-> >> --- a/kernel/fork.c
-> >> +++ b/kernel/fork.c
-> >> @@ -2540,6 +2540,54 @@ struct task_struct *create_io_thread(int (*fn)(void *), void *arg, int node)
-> >>  	return copy_process(NULL, 0, node, &args);
-> >>  }
-> >>  
-> >> +/**
-> >> + * kernel_worker - create a copy of a process to be used by the kernel
-> >> + * @fn: thread stack
-> >> + * @arg: data to be passed to fn
-> >> + * @node: numa node to allocate task from
-> >> + * @clone_flags: CLONE flags
-> >> + * @worker_flags: KERN_WORKER flags
-> >> + *
-> >> + * This returns a created task, or an error pointer. The returned task is
-> >> + * inactive, and the caller must fire it up through kernel_worker_start(). If
-> >> + * this is an PF_IO_WORKER all singals but KILL and STOP are blocked.
-> >> + */
-> >> +struct task_struct *kernel_worker(int (*fn)(void *), void *arg, int node,
-> >> +				  unsigned long clone_flags, u32 worker_flags)
-> >> +{
-> >> +	struct kernel_clone_args args = {
-> >> +		.flags		= ((lower_32_bits(clone_flags) | CLONE_VM |
-> >> +				   CLONE_UNTRACED) & ~CSIGNAL),
-> >> +		.exit_signal	= (lower_32_bits(clone_flags) & CSIGNAL),
-> >> +		.stack		= (unsigned long)fn,
-> >> +		.stack_size	= (unsigned long)arg,
-> >> +		.worker_flags	= KERN_WORKER_USER | worker_flags,
-> >> +	};
-> >> +
-> >> +	return copy_process(NULL, 0, node, &args);
-> >> +}
-> >> +EXPORT_SYMBOL_GPL(kernel_worker);
-> >> +
-> >> +/**
-> >> + * kernel_worker_start - Start a task created with kernel_worker
-> >> + * @tsk: task to wake up
-> >> + * @namefmt: printf-style format string for the thread name
-> >> + * @arg: arguments for @namefmt
-> >> + */
-> >> +void kernel_worker_start(struct task_struct *tsk, const char namefmt[], ...)
-> >> +{
-> >> +	char name[TASK_COMM_LEN];
-> >> +	va_list args;
-> > 
-> > You could think about reporting an error from this function if
-> > KERN_WORK_USER isn't set or only call the below when KERN_WORK_USER is
-> > set. Both options are fine.
-> > 
-> 
-> I'm not sure how to handle this comment, because I might have misread
-> an older comment or made it up in my head.
-> 
-> KERN_WORK_USER is only set on the kernel_clone_args, so at this point we
-> don't have that struct available anymore.
+Hi,
 
-Ah, right.
+Sorry for delayed response.
 
+On 9/29/2021 10:33 PM, David Hildenbrand wrote:
+> On 29.09.21 10:58, Faiyaz Mohammed wrote:
+>>
+>>
+>> On 9/28/2021 4:46 PM, David Hildenbrand wrote:
+>>> On 28.09.21 12:53, Faiyaz Mohammed wrote:
+>>>>
+>>>>
+>>>> On 9/28/2021 4:09 PM, David Hildenbrand wrote:
+>>>>> On 28.09.21 11:04, Faiyaz Mohammed wrote:
+>>>>>> For INITRD and initmem memory is reserved through "memblock_reserve"
+>>>>>> during boot up but it is free via "free_reserved_area" instead
+>>>>>> of "memblock_free".
+>>>>>> For example:
+>>>>>> [    0.294848] Freeing initrd memory: 12K.
+>>>>>> [    0.696688] Freeing unused kernel memory: 4096K.
+>>>>>>
+>>>>>> To get the start and end address of the above freed memory and to
+>>>>>> account
+>>>>>> proper memblock added memblock_dbg log in "free_reserved_area".
+>>>>>> After adding log:
+>>>>>> [    0.294837] memblock_free: [0x00000083600000-0x00000083603000]
+>>>>>> free_initrd_mem+0x20/0x28
+>>>>>> [    0.294848] Freeing initrd memory: 12K.
+>>>>>> [    0.695246] memblock_free: [0x00000081600000-0x00000081a00000]
+>>>>>> free_initmem+0x70/0xc8
+>>>>>> [    0.696688] Freeing unused kernel memory: 4096K.
+>>>>>>
+>>>>>> Signed-off-by: Faiyaz Mohammed <faiyazm@codeaurora.org>
+>>>>>> ---
+>>>>>>     mm/page_alloc.c | 5 +++++
+>>>>>>     1 file changed, 5 insertions(+)
+>>>>>>
+>>>>>> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+>>>>>> index b37435c..f85c3b2 100644
+>>>>>> --- a/mm/page_alloc.c
+>>>>>> +++ b/mm/page_alloc.c
+>>>>>> @@ -8129,6 +8129,11 @@ unsigned long free_reserved_area(void *start,
+>>>>>> void *end, int poison, const char
+>>>>>>             pr_info("Freeing %s memory: %ldK\n",
+>>>>>>                 s, pages << (PAGE_SHIFT - 10));
+>>>>>>     +#ifdef CONFIG_HAVE_MEMBLOCK
+>>>>>> +        memblock_dbg("memblock_free: [%#016llx-%#016llx] %pS\n",
+>>>>>> +            __pa(start), __pa(end), (void *)_RET_IP_);
+>>>>>> +#endif
+>>>>>
+>>>>> IMHO, the "memblock_free" part is misleading. Something was allocated
+>>>>> early via memblock, then we transitioned to the buddy, now we're
+>>>>> freeing
+>>>>> that early allocation via the buddy.
+>>>>> Yes, we're freeing the early allocation via buddy, but for proper
+>>>> memblock accounting we need this debug print.
+>>>>
+>>>
+>>> What do you mean with "accounting" ? These are debug statements.
+>>>
+>>>
+>> Yes, these are debug statements, which help to know the a-b address
+>> belongs to x callsite. This info is required when memblock=debug is
+>> passed through command line and CONFIG_HAVE_MEMBLOCK is enabled.
 > 
-> I didn't add a new PF_KTHREAD_WORK_USER flag to sched.h, because I thought
-> I had got a review comment to not add another PF flag for this. However, I
-> can't seem to find that comment now so I'm not sure if maybe I misread a
-> comment or made it up.
-> 
-> If it's ok I could add a PF_KTHREAD_WORK_USER, then do a:
-> 
-> WARN_ON(!(tsk->flags & PF_KTHREAD_WORK_USER)
-> 
-> so future developers get loud feedback they are doing the
-> wrong thing right away.
+> The issue I'm having is talking in the name of memblock "memblock_dbg,
+> memblock_free", when memblock might no longer be around. We have other
+> places where we free early memblock allocations back to the buddy.
+I didn't find place where we free early memblock allocation back to the
+buddy.
 
-I think a PF_USER_WORKER might just do fine as it fits with the naming
-of PF_IO_WORKER.
+Why "memblock_dbg" print with "memblock_free" string?.
+- After buddy took over, buddy will free memblock reserved memory
+through free_reserved_area and it will print the freed memory size, but
+the freed memory through buddy still be part of memblock.reserved.regions.
+- To know the address ranges, added the "memblock_dbg" print along with
+"membloc_free" string.
+- If it is misleading or confusing, we can remove the "memblock_free"
+string from the "memblock_dgb" print and we can just print the address
+range when "memlock=debug" pass through command line.
 
-Christian
+Thanks and regards,
+Mohammed Faiyaz
