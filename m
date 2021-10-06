@@ -2,134 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 899FC423A80
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 11:25:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35526423A82
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 11:26:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237856AbhJFJ06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 05:26:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51172 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237851AbhJFJ04 (ORCPT
+        id S230143AbhJFJ1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 05:27:52 -0400
+Received: from esa11.fujitsucc.c3s2.iphmx.com ([216.71.156.121]:15160 "EHLO
+        esa11.fujitsucc.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237909AbhJFJ1t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 05:26:56 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36DA1C061749;
-        Wed,  6 Oct 2021 02:25:05 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id 133so1979066pgb.1;
-        Wed, 06 Oct 2021 02:25:05 -0700 (PDT)
+        Wed, 6 Oct 2021 05:27:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
+  t=1633512357; x=1665048357;
+  h=from:to:cc:subject:date:message-id:
+   content-transfer-encoding:mime-version;
+  bh=3nFQQvDkXDtbjVYzzVtjZ8Zjf/bU9PBQYyf8Um1THE8=;
+  b=rxM/6YtulZd1+JIrsPwZ+4SWlHecGHsb3/5yQGPA6oV4cXEu3jXPNQh/
+   k8BlgdFHaBog9ne4EAcEHZDVlRwtDQ1UaV2lSuK78kAvyj6frz8C8q97b
+   SlsdrJbb40Qkbda479jOljBlxvrkaMHn1nwT2ng3VXcICvz8S6GbmKYnT
+   czFcXb9Hh0YW83EQAF09XhXhvuoIEA/ou3zPMrvKsvUVB/rVvwCDsQWcn
+   kqu7CES6cx3xCDlvHy0LYe/pVj9OOCCnowo2Y+D5ipbfTRyIqYiy6gMH+
+   akHDIL+cwuCc7Fmj5w0etbahABHSOX6MUej+mZ2niZzZ7vpniimJlTATd
+   g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10128"; a="40905003"
+X-IronPort-AV: E=Sophos;i="5.85,350,1624287600"; 
+   d="scan'208";a="40905003"
+Received: from mail-os2jpn01lp2058.outbound.protection.outlook.com (HELO JPN01-OS2-obe.outbound.protection.outlook.com) ([104.47.92.58])
+  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2021 18:25:54 +0900
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mD7o2sSpT3gXNuA7BMcrThTeveFgipOXXzpGPjb6SKLBMBGVMAY66UFGD9UvSdQ/cXgXr6x3NpUMjY3ae+61uUKk/SNO5qwZQCwWy/GovSNDbq8sQP5UMlChMl2C5FOFyCU0e+WeDHtNGYyHR0Ehi3rQo91wZsajGRT9ySPwv7mZcogc/A81QQ3XDUC5HTvM4LGS2aI42/Gx61pCerqDtZo3Z6wC3HR+hHknqtqRinHxbx37vysMtMQPJ05N/ZAfQXkRjlSi0YP02pb+mAG/ouXUlyY3HKXEocSkakhwIdpCsAouNN4deIr8SqEOn7q677cItSx9DR7TqsPYhWX5Bg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=3nFQQvDkXDtbjVYzzVtjZ8Zjf/bU9PBQYyf8Um1THE8=;
+ b=jcno1X6vPFGZzLNgn3nxp567nXoYgZdgb5lVeqwCaK/PZOjbwc2EvG+1MKbrdFmv7BX0C8USiW4xmFedmSFgECCZJ5VPYV9JTA5H8298d3MslnBmHlQMFW2qFHAbnbSsLTcxV3AmSy2EPvgQ6qUIaEZFM1BwZtbKIfXRQhYFj8Kp6F+CGYjNtoVGNmG1PaC6HtiJrGNuZ/x7Fe8oCs2qbNZWlbks8exmJ5UEkp97RhxwELQuibAULt2vjVsPCyZD0HL+lTsLPrhzFfLjjh0efZdI+YdqdDG1cV0dwLE7FpZMkW7ouXKNpmdREZRWqiWmgR4OiRApqhriYodDtD8nAg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
+ dkim=pass header.d=fujitsu.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=YoKNEf2WSYB/PwAMSXP3Pm+YEc1WB69hZKGup8EMISM=;
-        b=PdugfPRBmSgMLJz8TSMOmqaPuf0HSj2jFh24P+eXMctQ6KVC9AKc6JjRNci5ing4kp
-         l47z0IiVYX/HP1tJRvWVXpfBUekNdCGbBKy3gx1GAd2ihOXbw3iCUtYpk0QRALk+aVBZ
-         4syQ6n4sDriORW/ViLi++ivIbItNmNL8zP1LMrDFlnuo8jLiXDPCTtNpffLqrvFw55o1
-         /Lfgf0brYcB3znqt1Nc+3NiNzfGkKD8uv9tdnwV8m4XL78H8kUKTODl4eDUv/mA7e+Qg
-         EfsMDjfoCJvsluZzbiVPgfO89egX2AP3mbYZ3W13d6YAgfIr7IvijDi4P0WmW7rHUhuw
-         0yTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=YoKNEf2WSYB/PwAMSXP3Pm+YEc1WB69hZKGup8EMISM=;
-        b=c5WEKnxPEWeT2M7ItPvYd+6AwhplEwI9iFUlqNe/ZRzXqVpd4pXRucPeGTTGZHGphr
-         D1/o5cojQQP/n+6wFyc+CTI/7vb2iigZJlHjv8XV4aAJxcT+f6XwnDoOq1GYSviW/gpR
-         c/hX6ZnwqkVIzJU+D30K5e2ja+zXOEa/7JQm0WZKfPyes3M+wFoSq/fEAh3U9kMT346s
-         yr3zwL5naySA6ob826298Ka5zjER6kY7KDTa3HgTWSiMb/cd1gi/E83bW58IU8qmQIU3
-         sqoiAmE3dikmZzT6yFJSUjr+yZ5e7yI0V6bwEVImeLQwiqlDKgmXGS7bZ5YRzizomNpk
-         +LbA==
-X-Gm-Message-State: AOAM532jWbKdSBfxGWXDgx9uasMfwKlOJomho0ckhWXgAw8wQJsm/GIy
-        oVuIJBBXDGNKm0gURXy6mgHayYXCUxxuzxXGAEYi5PD0ILL7ys4=
-X-Google-Smtp-Source: ABdhPJyCLQAb2aAMg7RpDcBBkAmHwbKxxU4/PLFxw+OhVQ9LWQoIpn86p+YJ9IanwZgaMo+CN7L0bGx+4ZYscUc998c=
-X-Received: by 2002:a63:594a:: with SMTP id j10mr19701173pgm.205.1633512304644;
- Wed, 06 Oct 2021 02:25:04 -0700 (PDT)
+ d=fujitsu.onmicrosoft.com; s=selector2-fujitsu-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3nFQQvDkXDtbjVYzzVtjZ8Zjf/bU9PBQYyf8Um1THE8=;
+ b=rOZO1vss+YLvOhmCJKKJgRQLU72T1g275LrOtbVGynOIfgiX3T+gl/HphUbK3H15ucNqN936WCtslcpd7NSxp4CrbeVjZkH1NlvAaWQ9HZLAZ8ysOmiNdqtRoIkcZbxvRqmEh88lXFwFToJ8xtDmP+F4NH6R8fhAtYn84O4lz4U=
+Received: from OSBPR01MB4600.jpnprd01.prod.outlook.com (2603:1096:604:7e::12)
+ by OSAPR01MB4881.jpnprd01.prod.outlook.com (2603:1096:604:65::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.18; Wed, 6 Oct
+ 2021 09:25:51 +0000
+Received: from OSBPR01MB4600.jpnprd01.prod.outlook.com
+ ([fe80::c4a1:9dfb:41c:bb5f]) by OSBPR01MB4600.jpnprd01.prod.outlook.com
+ ([fe80::c4a1:9dfb:41c:bb5f%6]) with mapi id 15.20.4587.018; Wed, 6 Oct 2021
+ 09:25:51 +0000
+From:   "nakamura.shun@fujitsu.com" <nakamura.shun@fujitsu.com>
+To:     "acme@kernel.org" <acme@kernel.org>,
+        "alexander.shishkin@linux.intel.com" 
+        <alexander.shishkin@linux.intel.com>,
+        "jolsa@redhat.com" <jolsa@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "namhyung@kernel.org" <namhyung@kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>
+CC:     "nakamura.shun@fujitsu.com" <nakamura.shun@fujitsu.com>
+Subject: Re: [PATCH 2/2] libperf tests: Fix test_stat_cpu
+Thread-Topic: [PATCH 2/2] libperf tests: Fix test_stat_cpu
+Thread-Index: AQHXupPzxhzfYqxV2EycaFLWTPhlfA==
+Date:   Wed, 6 Oct 2021 09:25:51 +0000
+Message-ID: <OSBPR01MB46004A88D36E4312AFFA5464F7B09@OSBPR01MB4600.jpnprd01.prod.outlook.com>
+Accept-Language: ja-JP, en-US
+Content-Language: ja-JP
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_a7295cc1-d279-42ac-ab4d-3b0f4fece050_Enabled=True;MSIP_Label_a7295cc1-d279-42ac-ab4d-3b0f4fece050_SiteId=a19f121d-81e1-4858-a9d8-736e267fd4c7;MSIP_Label_a7295cc1-d279-42ac-ab4d-3b0f4fece050_SetDate=2021-10-06T09:25:51.343Z;MSIP_Label_a7295cc1-d279-42ac-ab4d-3b0f4fece050_Name=FUJITSU-RESTRICTED;MSIP_Label_a7295cc1-d279-42ac-ab4d-3b0f4fece050_ContentBits=0;MSIP_Label_a7295cc1-d279-42ac-ab4d-3b0f4fece050_Method=Standard;
+suggested_attachment_session_id: 7b5bed33-efdd-486d-b48f-355015d22d8a
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=fujitsu.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 232835f9-a2ff-4d09-281e-08d988ab4a3b
+x-ms-traffictypediagnostic: OSAPR01MB4881:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <OSAPR01MB4881A4ABC0857ABF79FE33B5F7B09@OSAPR01MB4881.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4303;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: nkT0qPxSNrW+9ORa2mP/UIp+rBmfsg6Y0V9QKmf6G35eaGlYSJhvV2myldSNdkfMrfZzjwA8vmUZal7hvLZuAP9nowZjVQxSO+8Q7BqppZZPZ8XHtEna/OIYlhurD5CWgzRSC+CllfwluokdXBYG7em3+yef81/AVszLidOgTn1E68TJixwyOJvIHKRBLnCALwv8c25nQr8Fn4/eBQEZNl1tLvkHmnJNe0xwDD5VAwNOyBJiJRr6x9vVnNusdyoraJJykhqsFZFbuyF23ySwLAQVFRHwbUOygYtvMxHLXwRq5P3lHqrNfSmnZxk4TtcHTc0koB+asowV668n5RUuJ+p/un1lupYzEoo3rGBNBgG7GjYah8okMG/zXAZQWdXZOnXsja7nJ3PAAuGoFK/XrR6SEXloysJb3bNXC7EonGkPmS/X72nfJ3HiE9Gv9cPbZ2T3LwEVMr4gnaW/2fNq2O8UJ9eTo/w22AzoUy8yQHEqapxZvuGLMveBrt2TTb0eafbZEp8AQeNYcaGoOW3l62ZIJV9XMNMSswcTmF/8Jt0PrXJ6FCdg6WI0KFI4U7j73N18RAOupuCQo23G+Qbh0doF2RST/Jbm0jnvCq7lIoHylcjKf++NhM4EQ+b/rczT03qUF7TRdKSCnu1j9OUDGa1GUAArM0C0stIkPpWMFj5hoIIV9z/aat6BDw1TzNCG84iEmoJO3KTJTYzOFU3kPg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OSBPR01MB4600.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(8936002)(6506007)(110136005)(55016002)(2906002)(83380400001)(5660300002)(4326008)(52536014)(66556008)(558084003)(66446008)(66476007)(9686003)(64756008)(26005)(107886003)(7696005)(186003)(508600001)(85182001)(38070700005)(76116006)(38100700002)(66946007)(8676002)(71200400001)(316002)(86362001)(33656002)(122000001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-2022-jp?B?TVhxcnpFMTdFWjNiM0g2Yk9jS2FnZ3JZdFVZL0VhZ0daUGdPNjFOcnRj?=
+ =?iso-2022-jp?B?WEtTVDFzSEplVU8yM00yanBHWFZWVkR4enJGaEJyb1pyOFo1eEJZWENX?=
+ =?iso-2022-jp?B?bFFOWVNNN2o3emVvakUxT3JMQkM2WjFaSXUyLzB0d2d6NHhmSGVIMjJs?=
+ =?iso-2022-jp?B?RFFMYmFNSGVZeFVSeHMzVlUySHlFbkFjc2FlNGZtWGJGR2tycW1zL3V6?=
+ =?iso-2022-jp?B?a3UxQW5NTHJ0UW5IU2NUQU16SnJ3eVNLL0laWCtpdmN5QlBSdEhMaEd0?=
+ =?iso-2022-jp?B?NTloODBTa2xubndJeGlhbk1tRmR6UVJYc3dwYjJwVHlZQVc4d3l6OGtS?=
+ =?iso-2022-jp?B?bC9RM29tRWk3OU1ZWll2YWZBZndSekw1RGFnS0dWTnhYbVo2SzhoaFg2?=
+ =?iso-2022-jp?B?eWZzU1R0VVpQMUwvN3ZQUHQza2VzWlRBTnhxOE0wd1VJRXR4c2pYOS84?=
+ =?iso-2022-jp?B?cUc5dms4V0pqV3JMQVgraWxDRjU4WTNONXdjcEVmV2VBY1U5R1diZ3Z3?=
+ =?iso-2022-jp?B?dTBROWNjOFhoS2xJbkJUaURuMlpXU1QxU2dQQ1V6U0RBSlUvaENnYy9q?=
+ =?iso-2022-jp?B?eFY0SG02MTBIdDkySmFUMS9acTZ6K1J2NHdoUHNJU2lSUUtLejFvNGR2?=
+ =?iso-2022-jp?B?WHh5elYxS25FdUpPOXJlUVM4eDloaUlZa0ppMFZBaGtneUxhaVM4S1FR?=
+ =?iso-2022-jp?B?NE5MT3RsS3AvZE5UdG9EL0txMWRpc3JEeHBZVnBrRUxpNHJQU0dvclBL?=
+ =?iso-2022-jp?B?ZEVFdThCYVZmYXcwL3NFVzdJcEJMOE9ocnJ0QjBTWXRlMktsWFBibmlE?=
+ =?iso-2022-jp?B?WXVSVHRFV0c3bFFEcHBGUkZGNDFKQXRVS0lNeTVxUzdKamV3dTNEQW05?=
+ =?iso-2022-jp?B?RlVrWklsWkxiUlBieUd0S1dDRWN5Ulp4NmJBYmNvdzhZak1xOVZxb2tV?=
+ =?iso-2022-jp?B?TEZzNnNWUzN2MXpJamUwa0ZmNGNtNnN5TzRoamNzQW9vbmYya1JNUkZZ?=
+ =?iso-2022-jp?B?TWZxcG9MOHlUanNORWc3cFozTW9ncGRhcXVicXdEV1k2SGxLK3kwdDhW?=
+ =?iso-2022-jp?B?TWhJZzFQNjFDdUdlN1RBMEFjd2JBZm5sSktzY1I2eEhUUnFLSmhiVEFY?=
+ =?iso-2022-jp?B?clRoTnVkT3pDL0dhSEZJd2NFeU5yU2V4aGVmaW5BV3VNV1FJYTBIVnhx?=
+ =?iso-2022-jp?B?MGNQWCtMNStzMUswRUpBZmRpcWxuSmtCNVZUcVd3Z0dkdjBEcmlZZTlU?=
+ =?iso-2022-jp?B?dWdRcmpPM2VleXFRTGl4OFI4RFJBamRQZDBtZXdnRWZUT2RJTVZLRmlZ?=
+ =?iso-2022-jp?B?cmhudTZMK1Y2dlZUTlVlSzZmSkgzVU9hOG1HWTIxbS82YVRUVWRDTUlM?=
+ =?iso-2022-jp?B?eWhKQ3dpd3daOENTcVlIVlZyL2xJNUlCcGEwUm0vRXdkZGtabTRLalJa?=
+ =?iso-2022-jp?B?MG5FK3l2RSs1dDh3L29XbVVSU0hFNWRlMWlmUHB6NWlaeURkNmtvbURX?=
+ =?iso-2022-jp?B?WW1Oa0tVeDV6L3lxejIwVC9uOUpleWptOEJtZzIyMEh6UVIvRzFhS0JK?=
+ =?iso-2022-jp?B?RzQ4ODZPc3U5djZDODFDOWI3ZUVKOUo2VUgyajZ6RStQZlpxeC93Vm5x?=
+ =?iso-2022-jp?B?dmlBeFdZU2N1Y3plQ1NuekRNZjNxRjlNVWlLK3ZPVlR4amptVFNiNElC?=
+ =?iso-2022-jp?B?TXcvMUlqU0NXQktETGdQT3kzR08vQ0c4QnVGcHlXcktnelJwMlR6M3dK?=
+ =?iso-2022-jp?B?ZVI5T2ZwU1JsYkFMb3JLYkNJc2hTcE9mV3dITTVnaHhDUUhibFRkdWtl?=
+ =?iso-2022-jp?B?K0Q0bUFqdTh4aDQwVmUwMDZiWnlyZDhrVTlrbjI4NWpYK0FFcG9DRlM2?=
+ =?iso-2022-jp?B?Q1Q1VVZoci9rYWVzenBPNjVXdEE0PQ==?=
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-From:   Hao Sun <sunhao.th@gmail.com>
-Date:   Wed, 6 Oct 2021 17:24:53 +0800
-Message-ID: <CACkBjsaAFR4Jx3+pxM5zM09jFL1Th2pi-XNfn4CoSrjePmxSKQ@mail.gmail.com>
-Subject: KASAN: vmalloc-out-of-bounds Write in imageblit
-To:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: fujitsu.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: OSBPR01MB4600.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 232835f9-a2ff-4d09-281e-08d988ab4a3b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Oct 2021 09:25:51.4432
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: /bOs7P+8IfKOGIdzhcM52hUbK/Jz6IqZrsDdsEDAJxqEBvBwvJDULP9uWV20KRssqz3QHZxYAjVdelyDwpi69uqGpOgkxy1T7fEuRVOhp7Q=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSAPR01MB4881
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-When using Healer to fuzz the latest Linux kernel, the following crash
-was triggered.
-
-HEAD commit: 42d43c92fc57  Merge branch 'for-linus'
-git tree: upstream
-console output:
-https://drive.google.com/file/d/1fV8jSOKPspCPI-4i7Ee_FJIPIvz24MYu/view?usp=sharing
-kernel config: https://drive.google.com/file/d/15vWoQRbJuuMu4ovWhUm1h4SrHyNwK8im/view?usp=sharing
-
-Sorry, I don't have a reproducer for this crash, hope the symbolized
-report can help.
-If you fix this issue, please add the following tag to the commit:
-Reported-by: Hao Sun <sunhao.th@gmail.com>
-
-==================================================================
-BUG: KASAN: vmalloc-out-of-bounds in fast_imageblit
-drivers/video/fbdev/core/sysimgblt.c:229 [inline]
-BUG: KASAN: vmalloc-out-of-bounds in sys_imageblit+0x1372/0x13f0
-drivers/video/fbdev/core/sysimgblt.c:275
-Write of size 4 at addr ffffc90005741000 by task syz-executor/15849
-
-CPU: 0 PID: 15849 Comm: syz-executor Not tainted 5.15.0-rc3+ #1
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-1.13.0-1ubuntu1.1 04/01/2014
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
- print_address_description.constprop.0.cold+0xf/0x334 mm/kasan/report.c:256
- __kasan_report mm/kasan/report.c:442 [inline]
- kasan_report.cold+0x83/0xdf mm/kasan/report.c:459
- fast_imageblit drivers/video/fbdev/core/sysimgblt.c:229 [inline]
- sys_imageblit+0x1372/0x13f0 drivers/video/fbdev/core/sysimgblt.c:275
- drm_fb_helper_sys_imageblit+0x1c/0x180 drivers/gpu/drm/drm_fb_helper.c:794
- drm_fbdev_fb_imageblit+0x179/0x260 drivers/gpu/drm/drm_fb_helper.c:2276
- bit_putcs_unaligned drivers/video/fbdev/core/bitblit.c:139 [inline]
- bit_putcs+0x8ed/0xd80 drivers/video/fbdev/core/bitblit.c:188
- fbcon_putcs+0x362/0x450 drivers/video/fbdev/core/fbcon.c:1296
- do_update_region+0x399/0x630 drivers/tty/vt/vt.c:676
- invert_screen+0x2a7/0x610 drivers/tty/vt/vt.c:800
- highlight drivers/tty/vt/selection.c:57 [inline]
- clear_selection drivers/tty/vt/selection.c:84 [inline]
- clear_selection+0x55/0x70 drivers/tty/vt/selection.c:80
- vc_do_resize+0xda8/0x10a0 drivers/tty/vt/vt.c:1257
- fbcon_do_set_font+0x47e/0x780 drivers/video/fbdev/core/fbcon.c:2397
- fbcon_set_font+0x81e/0xa10 drivers/video/fbdev/core/fbcon.c:2483
- con_font_set drivers/tty/vt/vt.c:4666 [inline]
- con_font_op+0x73a/0xca0 drivers/tty/vt/vt.c:4710
- vt_k_ioctl drivers/tty/vt/vt_ioctl.c:474 [inline]
- vt_ioctl+0x1de9/0x2af0 drivers/tty/vt/vt_ioctl.c:752
- tty_ioctl+0xc80/0x1450 drivers/tty/tty_io.c:2805
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:874 [inline]
- __se_sys_ioctl fs/ioctl.c:860 [inline]
- __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:860
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7fbb0c85cc4d
-Code: 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 f3 0f 1e fa 48 89 f8 48
-89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
-01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fbb09dc4c58 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007fbb0c9830a0 RCX: 00007fbb0c85cc4d
-RDX: 0000000020000080 RSI: 0000000000004b72 RDI: 0000000000000006
-RBP: 00007fbb0c8d5d80 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007fbb0c9830a0
-R13: 00007ffdbece6b9f R14: 00007ffdbece6d40 R15: 00007fbb09dc4dc0
-
-
-Memory state around the buggy address:
- ffffc90005740f00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
- ffffc90005740f80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->ffffc90005741000: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
-                   ^
- ffffc90005741080: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
- ffffc90005741100: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
-==================================================================
+I sent a patch with "2/2" in the subject by mistake.=0A=
+I will send the v2 patch immediately.=
