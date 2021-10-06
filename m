@@ -2,86 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EA944242C1
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 18:34:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52C6C4242C3
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 18:34:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232257AbhJFQgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 12:36:15 -0400
-Received: from mga02.intel.com ([134.134.136.20]:46337 "EHLO mga02.intel.com"
+        id S233080AbhJFQgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 12:36:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46448 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229719AbhJFQgN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 12:36:13 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10129"; a="213161376"
-X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; 
-   d="scan'208";a="213161376"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2021 09:34:21 -0700
-X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; 
-   d="scan'208";a="439957347"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2021 09:34:18 -0700
-Received: from andy by smile with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mY9ry-009FyW-JQ;
-        Wed, 06 Oct 2021 19:34:14 +0300
-Date:   Wed, 6 Oct 2021 19:34:14 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Joe Perches <joe@perches.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: Re: [PATCH v1 2/4] ASoC: Intel: bytcr_rt5640: Use temporary variable
- for struct device
-Message-ID: <YV3QBsj2gLzmePWE@smile.fi.intel.com>
-References: <20211006150442.16503-1-andriy.shevchenko@linux.intel.com>
- <20211006150442.16503-2-andriy.shevchenko@linux.intel.com>
- <4b81a10dca78e286a9f806464b97111b5a15a91e.camel@perches.com>
- <YV3ER4uIL4aRWBjz@smile.fi.intel.com>
- <YV3FaZ+afuZZSIth@sirena.org.uk>
- <YV3JWzNgGInZ1Bt5@smile.fi.intel.com>
- <YV3MtOrpziyKqkxA@sirena.org.uk>
+        id S229719AbhJFQgP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 12:36:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 622A9610E5;
+        Wed,  6 Oct 2021 16:34:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633538063;
+        bh=ctlyh/MM/ZO1vAziMpXnSjbXLCBHhorGWU3Y4W6Lq/Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RkNXjzbdX5MCmCfXVkHWaWb2gGEEnzx2z8pkKs/2PZ4y3s2bPvSbF2h8KpdKmLJ4W
+         UUNUavhpVkKqZT7phW5nnNaBJ/vCNyikpZ9oY1Aiuooj/j23c4JLXYP5MtmiUTpY+i
+         jFHtPAJmCZUsJoT4wdzEIaRrXpmKG+4Sp1U8AWT8W8FdiRMPZo9SE2JVqMgFVmX7De
+         AfwzYccfPCXKRQUprMR1UZYU1qJzR4PlF/HKHzD5IFD8hmArQdGd7tefjG9WoC+RJt
+         Zqx+CUv9YYa8Hhy9FjPpwEZ2uOXrivJ7VzlyV17aEWTir3IxFq8GTkJ9Z6y+QdyAAf
+         C1jMib4pXElyw==
+Date:   Wed, 6 Oct 2021 09:34:23 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Stephen <stephenackerman16@gmail.com>, kvm@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: kvm crash in 5.14.1?
+Message-ID: <20211006163423.GB24266@magnolia>
+References: <2b5ca6d3-fa7b-5e2f-c353-f07dcff993c1@gmail.com>
+ <16c7a433-6e58-4213-bc00-5f6196fe22f5@gmail.com>
+ <YVSEZTCbFZ+HD/f0@google.com>
+ <20210930175957.GA10573@magnolia>
+ <20211004165432.GA24266@magnolia>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <YV3MtOrpziyKqkxA@sirena.org.uk>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211004165432.GA24266@magnolia>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 06, 2021 at 05:20:04PM +0100, Mark Brown wrote:
-> On Wed, Oct 06, 2021 at 07:05:47PM +0300, Andy Shevchenko wrote:
-> > On Wed, Oct 06, 2021 at 04:48:57PM +0100, Mark Brown wrote:
-> > > On Wed, Oct 06, 2021 at 06:44:07PM +0300, Andy Shevchenko wrote:
-> > > > On Wed, Oct 06, 2021 at 08:21:01AM -0700, Joe Perches wrote:
+On Mon, Oct 04, 2021 at 09:54:32AM -0700, Darrick J. Wong wrote:
+> On Thu, Sep 30, 2021 at 10:59:57AM -0700, Darrick J. Wong wrote:
+> > On Wed, Sep 29, 2021 at 03:21:09PM +0000, Sean Christopherson wrote:
+> > > On Tue, Sep 28, 2021, Stephen wrote:
+> > > > Hello,
+> > > > 
+> > > > I got this crash again on 5.14.7 in the early morning of the 27th.
+> > > > Things hung up shortly after I'd gone to bed. Uptime was 1 day 9 hours 9
+> > > > minutes.
+> > > 
+> > > ...
+> > > 
+> > > > BUG: kernel NULL pointer dereference, address: 0000000000000068
+> > > > #PF: supervisor read access in kernel mode
+> > > > #PF: error_code(0x0000) - not-present page
+> > > > PGD 0 P4D 0
+> > > > Oops: 0000 [#1] SMP NOPTI
+> > > > CPU: 21 PID: 8494 Comm: CPU 7/KVM Tainted: G            E     5.14.7 #32
+> > > > Hardware name: Gigabyte Technology Co., Ltd. X570 AORUS ELITE WIFI/X570
+> > > > AORUS ELITE WIFI, BIOS F35 07/08/2021
+> > > > RIP: 0010:internal_get_user_pages_fast+0x738/0xda0
+> > > > Code: 84 24 a0 00 00 00 65 48 2b 04 25 28 00 00 00 0f 85 54 06 00 00 48
+> > > > 81 c4 a8 00 00 00 44 89 e0 5b 5d 41 5c 41 5d 41 5e 41 5f c3 <48> 81 78
+> > > > 68 a0 a3 >
+> > > 
+> > > I haven't reproduced the crash, but the code signature (CMP against an absolute
+> > > address) is quite distinct, and is consistent across all three crashes.  I'm pretty
+> > > sure the issue is that page_is_secretmem() doesn't check for a null page->mapping,
+> > > e.g. if the page is truncated, which IIUC can happen in parallel since gup() doesn't
+> > > hold the lock.
+> > > 
+> > > I think this should fix the problems?
+> > > 
+> > > diff --git a/include/linux/secretmem.h b/include/linux/secretmem.h
+> > > index 21c3771e6a56..988528b5da43 100644
+> > > --- a/include/linux/secretmem.h
+> > > +++ b/include/linux/secretmem.h
+> > > @@ -23,7 +23,7 @@ static inline bool page_is_secretmem(struct page *page)
+> > >         mapping = (struct address_space *)
+> > >                 ((unsigned long)page->mapping & ~PAGE_MAPPING_FLAGS);
+> > > 
+> > > -       if (mapping != page->mapping)
+> > > +       if (!mapping || mapping != page->mapping)
+> > 
+> > I'll roll this out on my vm host and try to re-run the mass fuzztest
+> > overnight, though IT claims they're going to kill power to the whole
+> > datacenter until Monday(!)...
 > 
-> > > > > Some will complain about a lack of commit message.
+> ...which they did, 30 minutes after I sent this email. :(
 > 
-> > > > Yeah, sorry for that, it wasn't deliberate. I forgot to run `git msg-filter`
-> > > > on these three patches to add it.
-> 
-> > > > Mark, do you want me resend entire bunch(es) or just starting from these
-> > > > patches? Or...?
-> 
-> > > If you're adding a commit message with automation it's probably not
-> > > adding any value.
-> 
-> > What do you mean? I add it exceptionally for the same (by nature) patches.
-> > What do you expect to be altered in these three, if the idea behind the change
-> > is very well the same?
-> 
-> I really don't care if there's a separate changelog for trivial patches
-> like this, it adds nothing of value.
+> I'll hopefully be able to report back to the list in a day or two.
 
-I see. In any case I'll add something meaningful here.
+Looks like everything went smoothly with the mass fuzz fstesting.
+I'll let you know if I see any further failures, but for now:
 
--- 
-With Best Regards,
-Andy Shevchenko
+Tested-by: Darrick J. Wong <djwong@kernel.org>
 
+--D
 
+> --D
+> 
+> > 
+> > --D
+> > 
+> > >                 return false;
+> > > 
+> > >         return mapping->a_ops == &secretmem_aops;
