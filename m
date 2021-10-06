@@ -2,135 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29FAD423863
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 08:54:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 051EC42386C
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 08:57:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237292AbhJFG4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 02:56:47 -0400
-Received: from smtpcmd0756.aruba.it ([62.149.156.56]:56546 "EHLO
-        smtpcmd0756.aruba.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230227AbhJFG4p (ORCPT
+        id S237360AbhJFG65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 02:58:57 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:49144
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237256AbhJFG64 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 02:56:45 -0400
-Received: from [192.168.1.56] ([79.0.204.227])
-        by Aruba Outgoing Smtp  with ESMTPSA
-        id Y0pHmV8ROVf6SY0pHmLmLl; Wed, 06 Oct 2021 08:54:52 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
-        t=1633503292; bh=gNgKYvDSqWx2oWfY2ZYJeW7mWL6U1Oe4x0IGgv1Na+I=;
-        h=Subject:To:From:Date:MIME-Version:Content-Type;
-        b=d2fhUdYB/iVzd7K4sPvrfFp7xIL1KJthDv3HeKa7GCLj6PcJOhu1WEixuStq+At37
-         cF0W+TJ8GuaWaf6QW/AS9EXMBT1noM5EsqZt8tmUEzeKc7qFBGrbmrGE3VJ+KUUzO3
-         2Rm6/4QGftrYMM1Y/wH70BZMIPEOfirnMU90rtctA215oJHD3iN8icUblXRiazp6L+
-         VvPdmPrVVHCJ22A+H0KX6RULqOphLH6DXl3Fa1VTGomtVogYijZX6Uih97gmixDJgM
-         NgxzBdfYxKWzVwWFM8sgVWkHLj7KXUFC+E/H1DpmZOtMRH2GBf4oKtokkaeEI9bvDo
-         M9J49zxVyWX4A==
-Subject: Re: [PATCH v2 1/1] pps: generators: pps_gen_parport: Switch to use
- module_parport_driver()
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Alexander Gordeev <lasaine@lvk.cs.msu.su>
-References: <20211001150316.12545-1-andriy.shevchenko@linux.intel.com>
-From:   Rodolfo Giometti <giometti@enneenne.com>
-Message-ID: <bd72ecdb-7d7c-726d-85a4-84ea1088eb70@enneenne.com>
-Date:   Wed, 6 Oct 2021 08:54:50 +0200
+        Wed, 6 Oct 2021 02:58:56 -0400
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com [209.85.167.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id F11D33FFEA
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 06:57:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1633503422;
+        bh=oBd5s4+6tEQT7bthyqlL4VvsdjmF+NhdczufCXOLTMo=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=pqe/RffEYeekMLQiMSMuP49z97xEm0tFOJPR9w1hprzCLcSFtJvmvYZBM3blRfhWC
+         9h1kUTfvxN+n1hq59AJiTyC8wyflvwO8bZ24z8y/Mr8vzuL+5l4SWgJGr03wUpmOLZ
+         z+Yj8IP4FR1OSU57q7YlZFN6H3TqswM3uMgo3ijg6tnRBJjxE+l3C8Cr0cvwC1eply
+         tM1AVVYQy7zDjXn6MA0k019AI6sfqaLp/CD8NFyhA1WjPqXUrHHp9Gf5MJ4d/8U15Q
+         Fjf+an158teNHNPKry4YA1HBRMZh2gE2LbymDquWDoAqAp3ClPGjScTOO1bGRZrW7w
+         rKF9eQkaWa78g==
+Received: by mail-lf1-f69.google.com with SMTP id j16-20020a056512399000b003fd4bec03beso1183041lfu.17
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 23:57:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=oBd5s4+6tEQT7bthyqlL4VvsdjmF+NhdczufCXOLTMo=;
+        b=OztpiCZwZruQjbSUF6ZvVb50xMKwkc4gn3ARqE2vb2ch6nXSEUc8Lf04Sp3ZantPvm
+         BhKnsEjXF5k7M6cp6LiEAAozHdfbGAuXi03dMjpwLJ9lY6139v9I1Hqi1iow6JSu3ptB
+         dNutKxSaYyS8U05BqwT5vE02k0YbZK1byfx7ibC5EBBuw7O08oshK8Uc1xbf9i25dSyZ
+         svvmzpAaYfeZ/SHtZSFhyrtyjlcW+FCp5JlVVasfyNyjl3tpcG+z0Tw8bgESF0yorGXz
+         gk/ngzTS4wq1EaGa+lgflBSW5AnQVPNfwYrNeqOIVvpRxXeLVOOaSczPKRlwrL+67+Is
+         1L7w==
+X-Gm-Message-State: AOAM531lTYUoCi1E9d+fNpXqZrL2DB2r2431zGaSpjCXdnftfApf3SSI
+        sFYZPXo82PivGzVVabOhxLxQ/9gpFdZGZGrZt8eUQynItvYAaxCm/F2yTV0+eZPEPpLmYamSKSl
+        mlJv2VOMR43vRDlI0f8Efw+DJjMq/bD8doFhm0s+YGQ==
+X-Received: by 2002:a19:c218:: with SMTP id l24mr8078215lfc.588.1633503421707;
+        Tue, 05 Oct 2021 23:57:01 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx0wVhgkx+rcS8gRjiHqaAE+DTq9q3wo4KrmTTq5XXnN9gwMBdMs1x5aVB70fvBmq+M87pWPg==
+X-Received: by 2002:a19:c218:: with SMTP id l24mr8078186lfc.588.1633503421491;
+        Tue, 05 Oct 2021 23:57:01 -0700 (PDT)
+Received: from [192.168.0.20] (78-11-189-27.static.ip.netia.com.pl. [78.11.189.27])
+        by smtp.gmail.com with ESMTPSA id d7sm2391106lfa.80.2021.10.05.23.57.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Oct 2021 23:57:00 -0700 (PDT)
+Subject: Re: [PATCH 1/7] dt-bindings: arm: apple: Add apple,pmgr binding
+To:     Hector Martin <marcan@marcan.st>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     Marc Zyngier <maz@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-serial@vger.kernel.org
+References: <20211005155923.173399-1-marcan@marcan.st>
+ <20211005155923.173399-2-marcan@marcan.st>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <18818eff-87d7-6a53-a4fd-7f3cbf625a0e@canonical.com>
+Date:   Wed, 6 Oct 2021 08:56:59 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20211001150316.12545-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20211005155923.173399-2-marcan@marcan.st>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4wfBop8+TNved2rhuKK4j1V+nFnvIsOVH3H3UlbNnvH6qdCEZTWpU+yH0KeeC8qZ1Regtm2qdIih3WjwwKonZP6Os7KFYwMf/DjidRXgQO6uF2+MKv2u+G
- 4hQ8a108lrW79En2mmCu+zGrXYPI+mg2mgwTrMqxIvyB4zoLOLTPvo7GgfyN6SmoF0I5ir2K9RvpNzIZ9ArtIwghXWsJCe5wLn2KtgavJLTuaU8ibn9J6IE3
- 6k67Jyr0TU6Yrrd1rx2WgI4kLUGhFN/RBKMPZHtJniA=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/10/21 17:03, Andy Shevchenko wrote:
-> Switch to use module_parport_driver() to reduce boilerplate code.
+On 05/10/2021 17:59, Hector Martin wrote:
+> The PMGR block in Apple Silicon SoCs is responsible for SoC power
+> management. There are two PMGRs in T8103, with different register
+> layouts but compatible registers. In order to support this as well
+> as future SoC generations with backwards-compatible registers, we
+> declare these blocks as syscons and bind to individual registers
+> in child nodes. Each register controls one SoC device.
 > 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-
-Acked-by: Rodolfo Giometti <giometti@enneenne.com>
-
+> The respective apple compatibles are defined in case device-specific
+> quirks are necessary in the future, but currently these nodes are
+> expected to be bound by the generic syscon driver.
+> 
+> Signed-off-by: Hector Martin <marcan@marcan.st>
 > ---
-> v2: remove useless message (Greg), Cc to the original (hopefully) author
->  drivers/pps/generators/pps_gen_parport.c | 42 ++++--------------------
->  1 file changed, 7 insertions(+), 35 deletions(-)
+>  .../bindings/arm/apple/apple,pmgr.yaml        | 74 +++++++++++++++++++
+>  MAINTAINERS                                   |  1 +
+>  2 files changed, 75 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/arm/apple/apple,pmgr.yaml
 > 
-> diff --git a/drivers/pps/generators/pps_gen_parport.c b/drivers/pps/generators/pps_gen_parport.c
-> index 6a1af7664f3b..fba6c490977c 100644
-> --- a/drivers/pps/generators/pps_gen_parport.c
-> +++ b/drivers/pps/generators/pps_gen_parport.c
-> @@ -20,8 +20,6 @@
->  #include <linux/hrtimer.h>
->  #include <linux/parport.h>
->  
-> -#define DRVDESC "parallel port PPS signal generator"
-> -
->  #define SIGNAL		0
->  #define NO_SIGNAL	PARPORT_CONTROL_STROBE
->  
-> @@ -180,6 +178,11 @@ static void parport_attach(struct parport *port)
->  {
->  	struct pardev_cb pps_cb;
->  
-> +	if (send_delay > SEND_DELAY_MAX) {
-> +		pr_err("delay value should be not greater then %d\n", SEND_DELAY_MAX);
-> +		return -EINVAL;
-> +	}
+> diff --git a/Documentation/devicetree/bindings/arm/apple/apple,pmgr.yaml b/Documentation/devicetree/bindings/arm/apple/apple,pmgr.yaml
+> new file mode 100644
+> index 000000000000..0304164e4140
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/arm/apple/apple,pmgr.yaml
+> @@ -0,0 +1,74 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/arm/apple/apple,pmgr.yaml#
+
+Please don't store all Apple-related bindings in bindings/arm/apple, but
+instead group per device type like in most of other bindings. In this
+case - this looks like something close to power domain controller, so it
+should be in bindings/power/
+
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
->  	if (attached) {
->  		/* we already have a port */
->  		return;
-> @@ -231,39 +234,8 @@ static struct parport_driver pps_gen_parport_driver = {
->  	.detach = parport_detach,
->  	.devmodel = true,
->  };
-> -
-> -/* module staff */
-> -
-> -static int __init pps_gen_parport_init(void)
-> -{
-> -	int ret;
-> -
-> -	pr_info(DRVDESC "\n");
-> -
-> -	if (send_delay > SEND_DELAY_MAX) {
-> -		pr_err("delay value should be not greater"
-> -				" then %d\n", SEND_DELAY_MAX);
-> -		return -EINVAL;
-> -	}
-> -
-> -	ret = parport_register_driver(&pps_gen_parport_driver);
-> -	if (ret) {
-> -		pr_err("unable to register with parport\n");
-> -		return ret;
-> -	}
-> -
-> -	return  0;
-> -}
-> -
-> -static void __exit pps_gen_parport_exit(void)
-> -{
-> -	parport_unregister_driver(&pps_gen_parport_driver);
-> -	pr_info("hrtimer avg error is %ldns\n", hrtimer_error);
-> -}
-> -
-> -module_init(pps_gen_parport_init);
-> -module_exit(pps_gen_parport_exit);
-> +module_parport_driver(pps_gen_parport_driver);
->  
->  MODULE_AUTHOR("Alexander Gordeev <lasaine@lvk.cs.msu.su>");
-> -MODULE_DESCRIPTION(DRVDESC);
-> +MODULE_DESCRIPTION("parallel port PPS signal generator");
->  MODULE_LICENSE("GPL");
+> +title: Apple SoC Power Manager (PMGR)
+> +
+> +maintainers:
+> +  - Hector Martin <marcan@marcan.st>
+> +
+> +description: |
+> +  Apple SoCs include a PMGR block responsible for power management,
+> +  which can control various clocks, resets, power states, and
+> +  performance features. This node represents the PMGR as a syscon,
+> +  with sub-nodes representing individual features.
+> +
+> +  Apple SoCs may have a secondary "mini-PMGR"; it is represented
+> +  separately in the device tree, but works the same way.
+> +
+> +select:
+> +  properties:
+> +    compatible:
+> +      contains:
+> +        enum:
+> +          - apple,t8103-pmgr
+> +          - apple,t8103-minipmgr
+> +          - apple,pmgr
+> +
+> +  required:
+> +    - compatible
+> +
+> +properties:
+> +  $nodename:
+> +    pattern: "^power-management@[0-9a-f]+$"
+> +
+> +  compatible:
+> +    items:
+> +      - enum:
+> +          - apple,t8103-pmgr
+> +          - apple,t8103-minipmgr
+> +      - const: apple,pmgr
+> +      - const: syscon
+> +      - const: simple-mfd
+
+No power-domain-cells? Why? What exactly this device is going to do?
+Maybe I'll check the driver first.... :)
+
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +additionalProperties: true
+
+additionalProperties: false
+
+> +
+> +examples:
+> +  - |
+> +    soc {
+> +        #address-cells = <2>;
+> +        #size-cells = <2>;
+> +
+> +        power-management@23b700000 {
+> +            compatible = "apple,t8103-pmgr", "apple,pmgr", "syscon", "simple-mfd";
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +            reg = <0x2 0x3b700000 0x0 0x14000>;
+> +        };
+> +
+> +        power-management@23b700000 {
+> +            compatible = "apple,t8103-minipmgr", "apple,pmgr", "syscon", "simple-mfd";
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +            reg = <0x2 0x3d280000 0x0 0xc000>;
+> +        };
+> +    };
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index abdcbcfef73d..d25598842d15 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -1719,6 +1719,7 @@ B:	https://github.com/AsahiLinux/linux/issues
+>  C:	irc://irc.oftc.net/asahi-dev
+>  T:	git https://github.com/AsahiLinux/linux.git
+>  F:	Documentation/devicetree/bindings/arm/apple.yaml
+> +F:	Documentation/devicetree/bindings/arm/apple/*
+>  F:	Documentation/devicetree/bindings/interrupt-controller/apple,aic.yaml
+>  F:	Documentation/devicetree/bindings/pinctrl/apple,pinctrl.yaml
+>  F:	arch/arm64/boot/dts/apple/
 > 
 
 
--- 
-GNU/Linux Solutions                  e-mail: giometti@enneenne.com
-Linux Device Driver                          giometti@linux.it
-Embedded Systems                     phone:  +39 349 2432127
-UNIX programming                     skype:  rodolfo.giometti
+Best regards,
+Krzysztof
