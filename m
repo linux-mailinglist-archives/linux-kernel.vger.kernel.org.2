@@ -2,120 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8752442485F
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 22:57:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECB3D424864
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 22:58:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239547AbhJFU7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 16:59:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43976 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229657AbhJFU7W (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 16:59:22 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48988C061753
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 13:57:30 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id pi19-20020a17090b1e5300b0019fdd3557d3so3382425pjb.5
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 13:57:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5cro8T8lb7lgZU9x32Bgh7IJds0gE/AUhAt67PgW2U0=;
-        b=OOHTmEackZPTn1u41cjp30lBmsToU4UvfFE27FwJx1mIsPIFtXSaNs/NkCJOIN04GI
-         8sl4d4Tq/n7hlYcZdrB7WFquBncfavHAq1pSbLLsXg3UU0k3Kjtj/Oi9T5Qf9i4vVriN
-         yK/Jv2X0RQVD04UEquS0VFM1rD1mSkqUXhZnBxjOr24L+bO/6RnCTeJ4zIt5n0KRivcz
-         RPbnagp4JBo3ILllGdp3JUCwnq2z1u2OaWKr9AFZFTOJQc1KpWdlQCKuhw+BHqOmDWeX
-         EBdz2kkp9uYW92IR0EmvGvvwQqFMlEquUZEJzpRRMZXEvxJgNtrLoA/iDlUpEXhxqzrD
-         VWzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5cro8T8lb7lgZU9x32Bgh7IJds0gE/AUhAt67PgW2U0=;
-        b=igMvpeqi9gUvjyY3bPsVtNInKR7nWKCxPF8G7Gu2+ldGSxWAJ4/tOxUDN1NWUABLyB
-         UcBj8jxX/6t41zgx3HEm3o+1S8VUz3nZzqNSMKp5/rx/qjn6ZrM80IAP+WHjAZGWbYXC
-         OOnZehCmjV1KA5aQOiI718KCCgBu7k3GHhX3EGxNn6uvg+BLWAhTNiE9w+Xgna66chVg
-         jEEcQnQruTprn9PsYv9HT/a+utW2vlij9CqDZlL1cGhTv2Pc20N/iiRnH0ntglEegKpI
-         PSJaXVbdSR62z44TqGeNT3o2HTjPFYdmC0iR5moC66SWIfaLKs3042VJ1ceyKCwvRrhE
-         ZW+g==
-X-Gm-Message-State: AOAM532p6I2yyBrl9yx6KPiBXilZxtDyc5zm78l+NMObHqbl1XpYV5/B
-        5b+ljyDa4FY/93RmCbnBIRGvGwa2uze/TVqWijKwGg==
-X-Google-Smtp-Source: ABdhPJwsS9psEbLuG48IwDIvCu/mtGIOS+73Q2CuJ6vYwseJ9mbPy3DemzdOJBYVA27mNqNvTk6fWYhygPEg0X3+jYQ=
-X-Received: by 2002:a17:90b:3552:: with SMTP id lt18mr974214pjb.63.1633553849440;
- Wed, 06 Oct 2021 13:57:29 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211006071112.2206942-1-davidgow@google.com> <CAGS_qxodEp+HwWJCEaz39T-QEOxhev5a0KjLx+nUfbuM-ZLOcg@mail.gmail.com>
-In-Reply-To: <CAGS_qxodEp+HwWJCEaz39T-QEOxhev5a0KjLx+nUfbuM-ZLOcg@mail.gmail.com>
-From:   Brendan Higgins <brendanhiggins@google.com>
-Date:   Wed, 6 Oct 2021 13:57:18 -0700
-Message-ID: <CAFd5g44k2UB3T7Ow=isSAMVjgT6vWo_iwtGQ_-RZG_UB9QCg-Q@mail.gmail.com>
-Subject: Re: [PATCH] kunit: Report test parameter results as (K)TAP subtests
-To:     Daniel Latypov <dlatypov@google.com>
-Cc:     David Gow <davidgow@google.com>, Rae Moar <rmr167@gmail.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+        id S239530AbhJFVAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 17:00:21 -0400
+Received: from mga14.intel.com ([192.55.52.115]:54692 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229657AbhJFVAU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 17:00:20 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10129"; a="226412795"
+X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; 
+   d="scan'208";a="226412795"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2021 13:58:23 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; 
+   d="scan'208";a="713074765"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga006.fm.intel.com with ESMTP; 06 Oct 2021 13:58:22 -0700
+Received: from debox1-desk1.jf.intel.com (debox1-desk1.jf.intel.com [10.54.75.53])
+        by linux.intel.com (Postfix) with ESMTP id B6EEC5807FC;
+        Wed,  6 Oct 2021 13:58:22 -0700 (PDT)
+Message-ID: <668f263e1d2606ad7485c40ce41933300ec4b8a3.camel@linux.intel.com>
+Subject: Re: [PATCH 2/5] platform/x86/intel: Move intel_pmt from MFD to
+ Auxiliary Bus
+From:   "David E. Box" <david.e.box@linux.intel.com>
+Reply-To: david.e.box@linux.intel.com
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     lee.jones@linaro.org, hdegoede@redhat.com, mgross@linux.intel.com,
+        bhelgaas@google.com, gregkh@linuxfoundation.org,
+        andriy.shevchenko@linux.intel.com, srinivas.pandruvada@intel.com,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, linux-pci@vger.kernel.org
+Date:   Wed, 06 Oct 2021 13:58:22 -0700
+In-Reply-To: <YV1lTMwBSVlvadiG@unreal>
+References: <20211001012815.1999501-1-david.e.box@linux.intel.com>
+         <20211001012815.1999501-3-david.e.box@linux.intel.com>
+         <YV1lTMwBSVlvadiG@unreal>
+Organization: David E. Box
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 6, 2021 at 1:32 PM Daniel Latypov <dlatypov@google.com> wrote:
->
-> On Wed, Oct 6, 2021 at 12:11 AM David Gow <davidgow@google.com> wrote:
-> >
-> > Currently, the results for individial parameters in a parameterised test
-> > are simply output as (K)TAP diagnostic lines. However, the plan was
-> > always[1] to make these (K)TAP subtests when kunit_tool supported them.
-> >
-> > With [2], these are now supported. (v5 will print out an error about the
-> > missing plan line, but this can safely be ignored, and will hopefully be
-> > changed). As a result, individual test parameter results are parsed,
->
-> Hmm, I'd rather not condition users to ignore warnings.
-> It's possible we can get this all fixed up in time for 5.16, but we
-> have quite a bit we're trying to get in already, so I'm not sure.
-
-I agree with Daniel. I think we should just get that fixed first. I
-will poke Shuah to start applying patches for 5.16 to give us a place
-to work.
-
-> > displayed in the formatted results, and counted for test statistics.
-> >
-> > [1]: https://lore.kernel.org/linux-kselftest/CABVgOSnJAgWvTTABaF082LuYjAoAWzrBsyu9sT7x4GGMVsOD6Q@mail.gmail.com/
-> > [2]: https://lore.kernel.org/linux-kselftest/20211006001447.20919-1-dlatypov@google.com/
-> >
-> > Signed-off-by: David Gow <davidgow@google.com>
+On Wed, 2021-10-06 at 11:58 +0300, Leon Romanovsky wrote:
+> On Thu, Sep 30, 2021 at 06:28:12PM -0700, David E. Box wrote:
+> > Intel Platform Monitoring Technology (PMT) support is indicated by presence
+> > of an Intel defined PCIe DVSEC structure with a PMT ID. However DVSEC
+> > structures may also be used by Intel to indicate support for other
+> > capabilities unrelated to PMT.  The Out Of Band Management Services Module
+> > (OOBMSM) is an example of a device that can have both PMT and non-PMT
+> > capabilities. In order to support these capabilities it is necessary to
+> > modify the intel_pmt driver to handle the creation of platform devices more
+> > generically. To that end the following changes are made.
+> > 
+> > Convert the driver and child drivers from MFD to the Auxiliary Bus. This
+> > architecture is more suitable anyway since the driver partitions a
+> > multifunctional PCIe device. This also moves the driver out of the MFD
+> > subsystem and into platform/x86/intel.
+> > 
+> > Before, devices were named by their capability (e.g. pmt_telemetry).
+> > Instead, generically name them by their capability ID (e.g.
+> > intel_extended_cap.2). This allows the IDs to be created automatically,
+> > minimizing the code needed to support future capabilities. However, to
+> > ensure that unsupported devices aren't created, use an allow list to
+> > specify supported capabilities. Along these lines, rename the driver from
+> > intel_pmt to intel_extended_caps to better reflect the purpose.
+> > 
+> > Signed-off-by: David E. Box <david.e.box@linux.intel.com>
 > > ---
-> >  lib/kunit/test.c | 7 ++++---
-> >  1 file changed, 4 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/lib/kunit/test.c b/lib/kunit/test.c
-> > index f246b847024e..02a9fdadcae2 100644
-> > --- a/lib/kunit/test.c
-> > +++ b/lib/kunit/test.c
-> > @@ -508,6 +508,8 @@ int kunit_run_tests(struct kunit_suite *suite)
-> >                         /* Get initial param. */
-> >                         param_desc[0] = '\0';
-> >                         test.param_value = test_case->generate_params(NULL, param_desc);
-> > +                       kunit_log(KERN_INFO, &test, KUNIT_SUBTEST_INDENT KUNIT_SUBTEST_INDENT
-> > +                                 "# Subtest: %s", test_case->name);
-> >                 }
-> >
-> >                 do {
-> > @@ -520,9 +522,8 @@ int kunit_run_tests(struct kunit_suite *suite)
-> >                                 }
-> >
-> >                                 kunit_log(KERN_INFO, &test,
-> > -                                         KUNIT_SUBTEST_INDENT
-> > -                                         "# %s: %s %d - %s",
-> > -                                         test_case->name,
-> > +                                         KUNIT_SUBTEST_INDENT KUNIT_SUBTEST_INDENT
-> > +                                         "%s %d - %s",
-> >                                           kunit_status_to_ok_not_ok(test.status),
-> >                                           test.param_index + 1, param_desc);
-> >
-> > --
-> > 2.33.0.800.g4c38ced690-goog
-> >
+> > 
+> > V1:     New patch. However incorporates some elements of [1] which was
+> >         dropped. Namely enumerating features generically and creating an
+> >         allow list. Also cleans up probe by moving some code to functions
+> >         and using a bool instead of an int to track whether a device was
+> >         added.
+> > 
+> > [1] https://lore.kernel.org/all/20210922213007.2738388-3-david.e.box@linux.intel.com/
+> 
+> <...>
+> 
+> > +static int extended_caps_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+> > +{
+> > +       struct extended_caps_platform_info *info;
+> > +       bool have_devices = false;
+> > +       unsigned long quirks = 0;
+> > +       int ret;
+> > +
+> > +       ret = pcim_enable_device(pdev);
+> > +       if (ret)
+> > +               return ret;
+> > +
+> > +       info = (struct extended_caps_platform_info *)id->driver_data;
+> 
+> pci_get_drvdata() in all places and no need to cast void *.
+
+This is coming from the id not the pdev. The data here is type kernel_ulong_t.
+
+> 
+> > +       if (info)
+> > +               quirks = info->quirks;
+> > +
+> > +       have_devices |= extended_caps_walk_dvsec(pdev, quirks);
+> > +
+> > +       if (info && (info->quirks & EXT_CAPS_QUIRK_NO_DVSEC))
+> > +               have_devices |= extended_caps_walk_header(pdev, quirks, info->capabilities);
+> > +
+> > +       if (!have_devices)
+> > +               return -ENODEV;
+> > +
+> > +       return 0;
+> > +}
+> 
+> <...>
+> 
+> > -static struct platform_driver pmt_telem_driver = {
+> > -       .driver = {
+> > -               .name   = TELEM_DEV_NAME,
+> > -       },
+> > -       .remove = pmt_telem_remove,
+> > -       .probe  = pmt_telem_probe,
+> > +static const struct auxiliary_device_id pmt_telem_aux_id_table[] = {
+> > +       { .name = "intel_extended_caps.2", },
+> 
+> Why "2" in the name?
+
+This is being changed to a string for the next version after similar comment. Thanks.
+
+David
+
+> 
+> Thanks
+> 
+> > +       {},
+> > +};
+> > +MODULE_DEVICE_TABLE(auxiliary, pmt_telem_aux_id_table);
+> > +
+> > +static struct auxiliary_driver pmt_telem_aux_driver = {
+> > +       .id_table       = pmt_telem_aux_id_table,
+> > +       .remove         = pmt_telem_remove,
+> > +       .probe          = pmt_telem_probe,
+> >  };
+> >  
+
+
