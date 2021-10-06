@@ -2,77 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D1E04242DD
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 18:39:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82EBC4242B4
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 18:31:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234302AbhJFQku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 12:40:50 -0400
-Received: from box.trvn.ru ([194.87.146.52]:36313 "EHLO box.trvn.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231259AbhJFQkt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 12:40:49 -0400
-X-Greylist: delayed 457 seconds by postgrey-1.27 at vger.kernel.org; Wed, 06 Oct 2021 12:40:48 EDT
-Received: from authenticated-user (box.trvn.ru [194.87.146.52])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by box.trvn.ru (Postfix) with ESMTPSA id 8F488428D6;
-        Wed,  6 Oct 2021 21:31:17 +0500 (+05)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=trvn.ru; s=mail;
-        t=1633537877; bh=RKX+UxOJaofOnl3psZgoVRHnWMDW48UJ8sAbexJ0pD4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qX0JPIMOsJgD/Dv2gqdB1D9egd7Qoip59izkv7zt2lM8Ha/ZMHDWLH0IayCGOwkSp
-         v+aB7YnbqkK+k2Q2RqNYhigJZt6UVvlQJUaNG2mam5ezI2DpRiLhXXrCTMs/XQ/tHl
-         gJkAH6Pbe7lxNxDER6bdFcMN77vv06nciqyuHPCs01cukFuvNMrOxGRhAyYcP9P080
-         3ebGG4jkz0z99k/aKmLlm0n8N+Wa9aJ8y+GhmBz9wOb/FpwG8oh92faFJ3JqqgncUe
-         kihNnpJfpSqs3fubDziuzuBV1nUOt4xUv3DGwx2QwuQag2daw8/MOj0u2gNhQ8gsR8
-         vU/uHwMbESonA==
-From:   Nikita Travkin <nikita@trvn.ru>
-To:     jic23@kernel.org
-Cc:     lars@metafoo.de, robh+dt@kernel.org, stephan@gerhold.net,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Nikita Travkin <nikita@trvn.ru>
-Subject: [PATCH 4/4] iio: light: ltr501: Add of_device_id table
-Date:   Wed,  6 Oct 2021 21:30:58 +0500
-Message-Id: <20211006163058.145842-4-nikita@trvn.ru>
-In-Reply-To: <20211006163058.145842-1-nikita@trvn.ru>
-References: <20211006163058.145842-1-nikita@trvn.ru>
+        id S239385AbhJFQdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 12:33:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38270 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231267AbhJFQdI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 12:33:08 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A863FC061746
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 09:31:16 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id g6so6807311ybb.3
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 09:31:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=E1N3Etrc+IvlHyTpW7XkflFyYfrFk6rq2AqHGQBELZI=;
+        b=do0VsLfLI2lEtXGQ1eVW8WxUCz+l5Lk4ygQl5n1FOf2jF3PCNgZ1wMObNtiIbTcf+e
+         B40CeDdtVeIMVjl5dzsNcPlaZ6m8HdwJNLaxvu6gQobCuQXyqqQ+Kk5M3vK321l/ESD1
+         KIaCA/RM8+7OKe5KEHOXwRIoWauGyx25EptJHukJY5bPGQbVjCCkM6WNZ4M6YAIut9Z6
+         jPiwx0xBNmxc4GmTvsqedBpLvzX1bYX4USqwZhelY13DEIRDd8pbNfnQYAH3T2oHjQSK
+         ocZ26P/QWYFDW5HzWK9VG1wwJ9ZymgHn+DPb973yudIMMSdYI5fUK50mwFWdPk9zAuu+
+         VDvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=E1N3Etrc+IvlHyTpW7XkflFyYfrFk6rq2AqHGQBELZI=;
+        b=ImMfzyK5c23uWLT6+KffyOKmEbJlE+HhUfLRfDHQz2dEcx+ieNJxAM7lubUyFijTKz
+         7+Hh/aJhJtRiCKigXN+6wGU6loMhj69HUiz9ep5z6HmJ5wBgfwMFSi7xDoK6JhewU9n/
+         NZ3QqT1JVSX3fawNMhYkIRSG97NrqXnUEJSPrwrgOpymjPEo2I7pOGq6n6am/zBM6+sS
+         hE/JPM5tTgqpdOk7/wcKjgbsN70ZOQ7BlcacLhUYa5BtC3o8syxRjYsPcTy3Yn7Xnkko
+         Yuwfv7x4OIyW+wQ6wk8e2FBkAkPWJw/85bXD0reLh7gPNdlHX5bgsyACd8CJugy2tNsL
+         UfYA==
+X-Gm-Message-State: AOAM530yJQcm8kx6SDaRGNhwh5F2Aep7uq7pmgkDgjvSzXHlwwo43bcN
+        yaWIPhfeNhd0wCni+WCjtqWQ94Q4ZzuzZwMvK5RhiQ==
+X-Google-Smtp-Source: ABdhPJy8ZvP2+QO+CLs1N3WqFjTvJStSsRb5E6N64u3z88hwpMV+U4CySxFZZ2HW0mgzuvjTeBsNSu/GKHKGulEh6FM=
+X-Received: by 2002:a25:aaec:: with SMTP id t99mr30955841ybi.456.1633537875696;
+ Wed, 06 Oct 2021 09:31:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210930180531.1190642-1-samitolvanen@google.com>
+ <20210930180531.1190642-7-samitolvanen@google.com> <20211006032945.axlqh3vehgar6adr@treble>
+ <20211006090249.248c65b0@gandalf.local.home>
+In-Reply-To: <20211006090249.248c65b0@gandalf.local.home>
+From:   Sami Tolvanen <samitolvanen@google.com>
+Date:   Wed, 6 Oct 2021 09:31:04 -0700
+Message-ID: <CABCJKueL4Ebaan=JBUyO3oewq7RTHHXWUQpixgf2AfC_r5T3uA@mail.gmail.com>
+Subject: Re: [PATCH v4 06/15] ftrace: Use an opaque type for functions not
+ callable from C
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>, X86 ML <x86@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        linux-hardening@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>, llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add of_device_id table so the driver can be used on DT platforms without
-relying on i2c_device_id fallback. (So DT schema validation is possible)
+On Wed, Oct 6, 2021 at 6:02 AM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> On Tue, 5 Oct 2021 20:29:45 -0700
+> Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+>
+> Thanks for Cc'ing me, as I should have been Cc'd on the original patch.
 
-Signed-off-by: Nikita Travkin <nikita@trvn.ru>
----
- drivers/iio/light/ltr501.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+Sorry about that. I'll make sure you're cc'd on the next version.
 
-diff --git a/drivers/iio/light/ltr501.c b/drivers/iio/light/ltr501.c
-index 57851c8ef1c6..7e51aaac0bf8 100644
---- a/drivers/iio/light/ltr501.c
-+++ b/drivers/iio/light/ltr501.c
-@@ -1609,9 +1609,18 @@ static const struct i2c_device_id ltr501_id[] = {
- };
- MODULE_DEVICE_TABLE(i2c, ltr501_id);
- 
-+static const struct of_device_id ltr501_of_match[] = {
-+	{ .compatible = "liteon,ltr501", },
-+	{ .compatible = "liteon,ltr559", },
-+	{ .compatible = "liteon,ltr301", },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, ltr501_of_match);
-+
- static struct i2c_driver ltr501_driver = {
- 	.driver = {
- 		.name   = LTR501_DRV_NAME,
-+		.of_match_table = ltr501_of_match,
- 		.pm	= &ltr501_pm_ops,
- 		.acpi_match_table = ACPI_PTR(ltr_acpi_match),
- 	},
--- 
-2.30.2
+> > On Thu, Sep 30, 2021 at 11:05:22AM -0700, Sami Tolvanen wrote:
+> > > With CONFIG_CFI_CLANG, the compiler changes function references to point
+> > > to the CFI jump table. As ftrace_call, ftrace_regs_call, and mcount_call
+> > > are not called from C, use DECLARE_ASM_FUNC_SYMBOL to declare them.
+>
+> "not called from C" is a bit confusing.
 
+Any thoughts on how to make this less confusing?
+
+Sami
