@@ -2,94 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7AB3424378
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 18:55:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4FE7424364
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 18:52:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239426AbhJFQ5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 12:57:42 -0400
-Received: from mga05.intel.com ([192.55.52.43]:14267 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229564AbhJFQ5l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 12:57:41 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10129"; a="312252520"
-X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; 
-   d="scan'208";a="312252520"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2021 09:52:27 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; 
-   d="scan'208";a="713011705"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga006.fm.intel.com with ESMTP; 06 Oct 2021 09:52:23 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 6E15D299; Wed,  6 Oct 2021 19:52:30 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v2 4/4] ASoC: Intel: bytcht_es8316: Utilize dev_err_probe() to avoid log saturation
-Date:   Wed,  6 Oct 2021 19:52:28 +0300
-Message-Id: <20211006165228.1692-5-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211006165228.1692-1-andriy.shevchenko@linux.intel.com>
-References: <20211006165228.1692-1-andriy.shevchenko@linux.intel.com>
-MIME-Version: 1.0
+        id S232315AbhJFQyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 12:54:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43416 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229835AbhJFQyn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 12:54:43 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F795C061755
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 09:52:51 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id n2so2027152plk.12
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 09:52:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tE2mxdh37dnyxx/6GEpmhKLL+VCgiyppriZBIEN9Yek=;
+        b=ZgSYszkACVNYbPHRv6dT0Y71PsmUfzugPsUa5R+6KzBhBz4OXDPWevSFbzHG7TTBrx
+         O8hidqI1gV5G8yuWIAwdZe1qu2PgHRfI/GiPxgzXg6Z4gfjM/WGjc3jAwGCC6kA44aQK
+         dkLxOk42bZuJmnjwg84M/m6XZb+JBjBg/27Yd9aN8+PRmGfu0Fh+ahVMfZ4kEefzNU6J
+         d/1PWGJRMFij2Mj/Rrz1oOf85Ryu0YoxOtWsbCpCDjOAjre797K799fPHa0WKplUU4VQ
+         /r0VoP+HkKKJ705siLyeDGON4T9AB90BkuvBG/A6zp/SyPab3luVPsTV1kIEfQh7ptsm
+         WY9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=tE2mxdh37dnyxx/6GEpmhKLL+VCgiyppriZBIEN9Yek=;
+        b=aYYN+3YN5N8PhT5oc0HMPXO2+k1G4VD/NK619N4H11XRPmqXvaeTpotIfHGD2Sn5rz
+         2CSSuxjjfqKb7XJ0WBeY66M7NNyJLpFuiyQquMmfYWCn0xMlS5VY0jN/2WVRhLoPkmq0
+         4oLrLLZqlqHXmDKaVRm1ZvJf2ELSfrJFw+LCRB847IOLD9jnsDPWfrTvceo1WzC0JNWI
+         iXQMTxgwpj+wZVBF2fIW1ZTpg7gVSeIznuMOHYUTRAI3FwAkzyxFprm+yr11mImSFN6+
+         t5v/mCHPd740Ezv1ozV5ogN3TcGYjzDKdCLzo682A7VSCJKhJ0oR2rRBQPPh3Dr+QIdP
+         nvNA==
+X-Gm-Message-State: AOAM530/FeLbph3qDerDrVAvLlPLX0fcMX1Oz7x9mozeqqjlaPgbCf+v
+        WsSCpG0XUffGMaRiE6uOU5x7dHyimqxv8g==
+X-Google-Smtp-Source: ABdhPJwTBcQVmbKGkS9vwq4EiC9JTSG8DwDNpJPlsNCPI/DX2wwEwAFi6KDnd7CVB87LQIBKqStMNw==
+X-Received: by 2002:a17:902:ea93:b0:13e:c727:3026 with SMTP id x19-20020a170902ea9300b0013ec7273026mr12001089plb.53.1633539170709;
+        Wed, 06 Oct 2021 09:52:50 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id r130sm14086047pfc.89.2021.10.06.09.52.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Oct 2021 09:52:50 -0700 (PDT)
+Date:   Wed, 06 Oct 2021 09:52:50 -0700 (PDT)
+X-Google-Original-Date: Wed, 06 Oct 2021 09:52:48 PDT (-0700)
+Subject:     Re: [PATCH] asm-generic: correct reference to GENERIC_LIB_DEVMEM_IS_ALLOWED
+In-Reply-To: <CAK8P3a12-atmqjtjqi-RhFXH2Kwa-hxYcxy3Ftz2YjY5yyPHqg@mail.gmail.com>
+CC:     lukas.bulwahn@gmail.com, Arnd Bergmann <arnd@arndb.de>,
+        mcgrof@kernel.org, linux-arch@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+From:   Palmer Dabbelt <palmerdabbelt@google.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+Message-ID: <mhng-f5938c9b-7fc1-4b0c-9449-7dd1431f5446@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-dev_err_probe() avoids printing into log when the deferred probe is invoked.
-This is possible when clock provider is pending to appear.
+On Wed, 06 Oct 2021 08:17:38 PDT (-0700), Arnd Bergmann wrote:
+> On Wed, Oct 6, 2021 at 5:00 PM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
+>>
+>> Commit 527701eda5f1 ("lib: Add a generic version of devmem_is_allowed()")
+>> introduces the config symbol GENERIC_LIB_DEVMEM_IS_ALLOWED, but then
+>> falsely refers to CONFIG_GENERIC_DEVMEM_IS_ALLOWED (note the missing LIB
+>> in the reference) in ./include/asm-generic/io.h.
+>>
+>> Luckily, ./scripts/checkkconfigsymbols.py warns on non-existing configs:
+>>
+>> GENERIC_DEVMEM_IS_ALLOWED
+>> Referencing files: include/asm-generic/io.h
+>>
+>> Correct the name of the config to the intended one.
+>>
+>> Fixes: 527701eda5f1 ("lib: Add a generic version of devmem_is_allowed()")
+>> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+>
+> Acked-by: Arnd Bergmann <arnd@arndb.de>
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Pierre-Louis Bossart <pierre-louis.bossart@linux.com>
----
- sound/soc/intel/boards/bytcht_es8316.c | 18 +++++-------------
- 1 file changed, 5 insertions(+), 13 deletions(-)
+Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
+Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
 
-diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
-index d8dcf63825a6..9d86fea51a7d 100644
---- a/sound/soc/intel/boards/bytcht_es8316.c
-+++ b/sound/soc/intel/boards/bytcht_es8316.c
-@@ -532,11 +532,8 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
- 
- 	/* get the clock */
- 	priv->mclk = devm_clk_get(dev, "pmc_plt_clk_3");
--	if (IS_ERR(priv->mclk)) {
--		ret = PTR_ERR(priv->mclk);
--		dev_err(dev, "clk_get pmc_plt_clk_3 failed: %d\n", ret);
--		return ret;
--	}
-+	if (IS_ERR(priv->mclk))
-+		return dev_err_probe(dev, PTR_ERR(priv->mclk), "clk_get pmc_plt_clk_3 failed\n");
- 
- 	/* get speaker enable GPIO */
- 	codec_dev = acpi_get_first_physical_node(adev);
-@@ -570,14 +567,9 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
- 				   /* see comment in byt_cht_es8316_resume() */
- 				   GPIOD_OUT_LOW | GPIOD_FLAGS_BIT_NONEXCLUSIVE);
- 	if (IS_ERR(priv->speaker_en_gpio)) {
--		ret = PTR_ERR(priv->speaker_en_gpio);
--		switch (ret) {
--		default:
--			dev_err(dev, "get speaker GPIO failed: %d\n", ret);
--			fallthrough;
--		case -EPROBE_DEFER:
--			goto err_put_codec;
--		}
-+		ret = dev_err_probe(dev, PTR_ERR(priv->speaker_en_gpio),
-+				    "get speaker GPIO failed\n");
-+		goto err_put_codec;
- 	}
- 
- 	snprintf(components_string, sizeof(components_string),
--- 
-2.33.0
-
+Thanks.  I'm going to assume this is going in through some other tree, 
+but IIUC I sent the buggy patch up so LMK if you're expecting it to go 
+through mine.
