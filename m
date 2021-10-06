@@ -2,145 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F15464241DC
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 17:52:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24B714241DF
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 17:53:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239113AbhJFPyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 11:54:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57252 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231768AbhJFPyI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 11:54:08 -0400
-Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAD28C061746;
-        Wed,  6 Oct 2021 08:52:15 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        id S232137AbhJFPzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 11:55:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37654 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230014AbhJFPzL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 11:55:11 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: marcan@marcan.st)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id 75FCF3FA5E;
-        Wed,  6 Oct 2021 15:52:09 +0000 (UTC)
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Marc Zyngier <maz@kernel.org>, Arnd Bergmann <arnd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        devicetree@vger.kernel.org,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>
-References: <20211005155923.173399-1-marcan@marcan.st>
- <20211005155923.173399-3-marcan@marcan.st>
- <CAL_JsqJenHAOw4gApzGpuj-8nZjkYhmBg0qBj-DV+CEJ7zXuVw@mail.gmail.com>
-From:   Hector Martin <marcan@marcan.st>
-Subject: Re: [PATCH 2/7] dt-bindings: power: Add apple,pmgr-pwrstate binding
-Message-ID: <f95f6d61-8809-e668-0458-453a8dfbe641@marcan.st>
-Date:   Thu, 7 Oct 2021 00:52:07 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        by mail.kernel.org (Postfix) with ESMTPSA id 4B3BA60F11;
+        Wed,  6 Oct 2021 15:53:19 +0000 (UTC)
+Date:   Wed, 6 Oct 2021 11:53:17 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Tom Zanussi <zanussi@kernel.org>
+Subject: [PATCH] tracing/synthetic_events: Fix use when created by
+ dynamic_events file
+Message-ID: <20211006115317.2cfcc742@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <CAL_JsqJenHAOw4gApzGpuj-8nZjkYhmBg0qBj-DV+CEJ7zXuVw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: es-ES
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/10/2021 09.58, Rob Herring wrote:
-> On Tue, Oct 5, 2021 at 10:59 AM Hector Martin <marcan@marcan.st> wrote:
->> Future SoCs are expected to use backwards compatible registers, and the
->> "apple,pmgr-pwrstate" represents any such interfaces (possibly with
->> additional features gated by the more specific compatible), allowing
->> them to be bound without driver updates. If a backwards incompatible
->> change is introduced in future SoCs, it will require a new compatible,
->> such as "apple,pmgr-pwrstate-v2".
-> 
-> Is that because past SoCs used the same registers? I don't see how
-> else you have any insight to what future SoCs will do.
-> 
-> Normally we don't do 1 node per register type bindings, so I'm a bit
-> leery about doing 1 node per domain.
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Yes, we can trace a pretty clear lineage from past SoCs. Plus Apple 
-folks themselves have confirmed that this is an explicit policy:
+The dynamic_events file can create kprobe, uprobe, event probes as well as
+synthetic events. New dynamic events will also be created by this file.
+Each of these kinds of events register a "create" function, that gets
+called, and if the prefix does not match the type of event, the create
+function is to return -ECANCELED to tell the dynamic event code that the
+command does not belong to it, and other events should be tried.
 
-https://twitter.com/stuntpants/status/1442276493669724160
+The synthetic event does some format checking before it determines that it
+is the event that should be created, and if that format check does not
+match, it will return an error, telling the dynamic event code that it was
+the expected event to be created and that the input had an error. This
+returns an error code back to the user. But unfortunately, because it does
+the check before it determines that it is indeed the proper event to parse
+the input, it may fail the call even though the input is a proper syntax
+for another event type.
 
-Already within this SoC we have two PMGR instances with different 
-register sets (one covers all devices that stay on during system sleep), 
-although I am only instantiating one in our devicetree at the moment. 
-And of course there is the A14, which is the same generation as the M1 
-and has exactly the same register format, but a different set of domains.
+Have it confirm that the input is for the synthetic event before it
+returns an error due to parsing failure.
 
-Having sub-nodes describing individual power domains has some prior art 
-(e.g. power/rockchip,power-controller.yaml). In that case the nodes are 
-all managed by the parent node, and use the hierarchical format, but the 
-hierarchical format cannot handle multi-parent nodes (which we do have, 
-or at least Apple describes them that way). Since we really have no 
-"top-level" implementation specifics to worry about, I think it makes 
-sense to just bind to single nodes at this point, which makes the driver 
-very simple since it doesn't have to perform any bookkeeping for 
-multiple domains.
+Fixes: c9e759b1e8456 ("tracing: Rework synthetic event command parsing")
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+---
+ kernel/trace/trace_events_synth.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-I realize this is all kind of "not the way things are usually done", but 
-I don't want to pass up on the opportunity to have one driver last us 
-multiple SoCs if we have the chance, and it's looking like it should :-)
-
-Note that as new features are implemented (e.g. auto-PM, which I will 
-add to this driver later), that also naturally lends itself to 
-forwards-compat, as SoCs without those features at all simply wouldn't 
-request them in the DT. In this case an "apple,auto-pm" flag would 
-enable that for domains where we want it, and those that don't support 
-it (or a hypothetical past SoC without the feature at all) would simply 
-not use it.
-
->> +properties:
->> +  $nodename:
->> +    pattern: "^power-controller@[0-9a-f]+$"
-> 
-> Drop this and define this node in the syscon schema with a $ref to this schema.
-
-Ack, makes sense.
-
->> +  apple,domain-name:
->> +    description: |
->> +      Specifies the name of the SoC device being controlled. This is used to
->> +      name the power/reset domains.
->> +    $ref: /schemas/types.yaml#/definitions/string
-> 
-> No other power domain binding needs this, why do you?
-
-Because they all hardcode the domain names in the drivers for every SoC :-)
-
-Without a name of some sort in the devicetree, all our genpds would have 
-to use numeric register offsets or the like, which seems quite ugly.
-
-> I prefer 1 complete example in the MFD schema rather than piecemeal examples.
-
-Sure. Would we leave this schema without examples then?
-
-> As the child nodes are memory mapped devices, size should be 1. Then
-> address translation works (though Linux doesn't care (currently)).
-
-This requires all the reg properties to also declare the reg size, right?
-
-One thing I wonder is whether it would make sense to allow 
-#power-domain-cells = <1> and then be able to declare consecutive ranges 
-of related power registers in one node. This would be useful for e.g. 
-the 9 UARTs, the 4 SPI controllers, the 6 MCAs, the 5 I2C controllers, 
-the 5 PWM controllers, etc (which all have uniform parents and features 
-and are consecutive, so could be described together). I'm not sure if 
-it's worth it, thoughts?
-
+diff --git a/kernel/trace/trace_events_synth.c b/kernel/trace/trace_events_synth.c
+index d54094b7a9d7..feb87e5817e9 100644
+--- a/kernel/trace/trace_events_synth.c
++++ b/kernel/trace/trace_events_synth.c
+@@ -2045,11 +2045,17 @@ static int create_synth_event(const char *raw_command)
+ {
+ 	char *fields, *p;
+ 	const char *name;
+-	int len, ret = 0;
++	int len, ret;
+ 
+ 	raw_command = skip_spaces(raw_command);
+ 	if (raw_command[0] == '\0')
+-		return ret;
++		return -ECANCELED;
++
++	name = raw_command;
++
++	if (name[0] != 's' || name[1] != ':')
++		return -ECANCELED;
++	name += 2;
+ 
+ 	last_cmd_set(raw_command);
+ 
+@@ -2061,12 +2067,6 @@ static int create_synth_event(const char *raw_command)
+ 
+ 	fields = skip_spaces(p);
+ 
+-	name = raw_command;
+-
+-	if (name[0] != 's' || name[1] != ':')
+-		return -ECANCELED;
+-	name += 2;
+-
+ 	/* This interface accepts group name prefix */
+ 	if (strchr(name, '/')) {
+ 		len = str_has_prefix(name, SYNTH_SYSTEM "/");
 -- 
-Hector Martin (marcan@marcan.st)
-Public Key: https://mrcn.st/pub
+2.31.1
+
