@@ -2,179 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA91142457B
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 19:58:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDC21424578
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 19:58:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239080AbhJFSAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 14:00:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59160 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238900AbhJFSAS (ORCPT
+        id S236050AbhJFSAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 14:00:17 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:51146 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229496AbhJFSAQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 14:00:18 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B184C061746
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 10:58:25 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id g10so12590769edj.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 10:58:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TDI52nHDnY3e5RS/+G6Fr1mYHqPbZc0znit1nNpWvHw=;
-        b=mjJfAEBb3dub9dxOGjoq//4tjQuyNsRiJ0soLFa7uVprcMzHr7WPusR8nPYv4b0G/S
-         Nglfgfy61FfiDkTSpAZw6k8XBrCJAYanReo5vVwpiSU4Gp/Su6ttyRgpoM3ixEWf0KH7
-         Zh1gilmBmi2Vy7m6NY1q4lqF8mEU+mDQxdvlHV8UGRLeWhfvbApZxwX/4dr8J+6oInea
-         PH606dIE/+8yPL6EFP6LbLFDpASm38OJhcn53wD6reCTyXgfKogWh2o1jPKp5KV0undX
-         zH0H27W7zAeYwXZZA2bv/zxp7RLfbPn0phFtjLeIuJO6ru9sEks6Q9qyy/SETRIIPfPI
-         YXVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TDI52nHDnY3e5RS/+G6Fr1mYHqPbZc0znit1nNpWvHw=;
-        b=NSUqhWcDqsEpG/wWeD2JJ8yxliP35TfQ5rOrJn0m9imriMSm3eDswRQA8zwlpyFSCa
-         kHjlPMkvHL952NEG7TTB+StfUlbiVpTl6aP2+z4v6IOCsb2trQrMq9MQyVIiGePhOnPs
-         Uilf7Zdl5Y+wHUf6CWKW5JgFYSwEu0rWZMoVjmKx1S08NwdgsHEDqJ8h+UPBkGqhNQAJ
-         aYRaoXboCjixuSu/NT9Onnldmp4Ax6QuUDHOO6dzSEjsOW2Qf0XZ0Dcc3wD6H9cR1JS0
-         s4t9D+/X0BuLocUYtT8h51sZjUK5MbUiJmbimApviTjNeLUy7VaaLE6Fg0EXoAurDuOY
-         Y23g==
-X-Gm-Message-State: AOAM530GIMJubp2mB349NDDUh2QlHdkp+pusHEXOYrDSFEfM8IVMcF0X
-        AiUeYveiEQQp0RSf0JQrXM7UXqefb3IwhS+K63o=
-X-Google-Smtp-Source: ABdhPJxdaGkvWty6OMaxnZMJJuUXS3QSP5YDT2B22jdwuDCzVSheXSlzRUBJkKakCZs42bRRvC9Wt17qr4pJ/1HU0aY=
-X-Received: by 2002:a17:906:3f83:: with SMTP id b3mr35036446ejj.233.1633543101931;
- Wed, 06 Oct 2021 10:58:21 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210906121200.57905-1-rongwei.wang@linux.alibaba.com>
- <20211006021837.59721-1-rongwei.wang@linux.alibaba.com> <20211006021837.59721-3-rongwei.wang@linux.alibaba.com>
-In-Reply-To: <20211006021837.59721-3-rongwei.wang@linux.alibaba.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Wed, 6 Oct 2021 10:58:10 -0700
-Message-ID: <CAHbLzkr3tQ1=Gy1O43uVCMpzyHyVtS=V_ykxjVeOkzFp-ZaQAg@mail.gmail.com>
-Subject: Re: [PATCH v3 v3 2/2] mm, thp: bail out early in collapse_file for
- writeback page
-To:     Rongwei Wang <rongwei.wang@linux.alibaba.com>
-Cc:     Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Wed, 6 Oct 2021 14:00:16 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 213951C0B87; Wed,  6 Oct 2021 19:58:22 +0200 (CEST)
+Date:   Wed, 6 Oct 2021 19:58:21 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Michal Hocko <mhocko@suse.com>,
+        John Hubbard <jhubbard@nvidia.com>,
         Andrew Morton <akpm@linux-foundation.org>,
+        Colin Cross <ccross@google.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Kees Cook <keescook@chromium.org>,
         Matthew Wilcox <willy@infradead.org>,
-        Song Liu <song@kernel.org>,
-        William Kucharski <william.kucharski@oracle.com>,
-        Hugh Dickins <hughd@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        vincenzo.frascino@arm.com,
+        Chinwen Chang =?utf-8?B?KOW8temMpuaWhyk=?= 
+        <chinwen.chang@mediatek.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Jann Horn <jannh@google.com>, apopple@nvidia.com,
+        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
+        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
+        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
+        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
+        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
+        chris.hyser@oracle.com, Peter Collingbourne <pcc@google.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Jens Axboe <axboe@kernel.dk>, legion@kernel.org,
+        Rolf Eike Beer <eb@emlix.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Thomas Cedeno <thomascedeno@google.com>, sashal@kernel.org,
+        cxfcosmos@gmail.com, Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-mm <linux-mm@kvack.org>,
+        kernel-team <kernel-team@android.com>
+Subject: Re: [PATCH v10 3/3] mm: add anonymous vma name refcounting
+Message-ID: <20211006175821.GA1941@duo.ucw.cz>
+References: <20211001205657.815551-1-surenb@google.com>
+ <20211001205657.815551-3-surenb@google.com>
+ <20211005184211.GA19804@duo.ucw.cz>
+ <CAJuCfpE5JEThTMhwKPUREfSE1GYcTx4YSLoVhAH97fJH_qR0Zg@mail.gmail.com>
+ <20211005200411.GB19804@duo.ucw.cz>
+ <CAJuCfpFZkz2c0ZWeqzOAx8KFqk1ge3K-SiCMeu3dmi6B7bK-9w@mail.gmail.com>
+ <efdffa68-d790-72e4-e6a3-80f2e194d811@nvidia.com>
+ <YV1eCu0eZ+gQADNx@dhcp22.suse.cz>
+ <6b15c682-72eb-724d-bc43-36ae6b79b91a@redhat.com>
+ <CAJuCfpEPBM6ehQXgzp=g4SqtY6iaC8wuZ-CRE81oR1VOq7m4CA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="45Z9DzgjV8m4Oswq"
+Content-Disposition: inline
+In-Reply-To: <CAJuCfpEPBM6ehQXgzp=g4SqtY6iaC8wuZ-CRE81oR1VOq7m4CA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 5, 2021 at 7:18 PM Rongwei Wang
-<rongwei.wang@linux.alibaba.com> wrote:
->
-> Currently collapse_file does not explicitly check PG_writeback, instead,
-> page_has_private and try_to_release_page are used to filter writeback
-> pages. This does not work for xfs with blocksize equal to or larger
-> than pagesize, because in such case xfs has no page->private.
->
-> This makes collapse_file bail out early for writeback page. Otherwise,
-> xfs end_page_writeback will panic as follows.
->
-> [ 6411.448211] page:fffffe00201bcc80 refcount:0 mapcount:0 mapping:ffff0003f88c86a8 index:0x0 pfn:0x84ef32
-> [ 6411.448304] aops:xfs_address_space_operations [xfs] ino:30000b7 dentry name:"libtest.so"
-> [ 6411.448312] flags: 0x57fffe0000008027(locked|referenced|uptodate|active|writeback)
-> [ 6411.448317] raw: 57fffe0000008027 ffff80001b48bc28 ffff80001b48bc28 ffff0003f88c86a8
-> [ 6411.448321] raw: 0000000000000000 0000000000000000 00000000ffffffff ffff0000c3e9a000
-> [ 6411.448324] page dumped because: VM_BUG_ON_PAGE(((unsigned int) page_ref_count(page) + 127u <= 127u))
-> [ 6411.448327] page->mem_cgroup:ffff0000c3e9a000
-> [ 6411.448340] ------------[ cut here ]------------
-> [ 6411.448343] kernel BUG at include/linux/mm.h:1212!
-> [ 6411.449288] Internal error: Oops - BUG: 0 [#1] SMP
-> [ 6411.449786] Modules linked in:
-> [ 6411.449790] BUG: Bad page state in process khugepaged  pfn:84ef32
-> [ 6411.450143]  xfs(E)
-> [ 6411.450459] page:fffffe00201bcc80 refcount:0 mapcount:0 mapping:0 index:0x0 pfn:0x84ef32
-> [ 6411.451361]  libcrc32c(E) rfkill(E) aes_ce_blk(E) crypto_simd(E) ...
-> [ 6411.451387] CPU: 25 PID: 0 Comm: swapper/25 Kdump: loaded Tainted: ...
-> [ 6411.451389] pstate: 60400005 (nZCv daif +PAN -UAO -TCO BTYPE=--)
-> [ 6411.451393] pc : end_page_writeback+0x1c0/0x214
-> [ 6411.451394] lr : end_page_writeback+0x1c0/0x214
-> [ 6411.451395] sp : ffff800011ce3cc0
-> [ 6411.451396] x29: ffff800011ce3cc0 x28: 0000000000000000
-> [ 6411.451398] x27: ffff000c04608040 x26: 0000000000000000
-> [ 6411.451399] x25: ffff000c04608040 x24: 0000000000001000
-> [ 6411.451401] x23: ffff0003f88c8530 x22: 0000000000001000
-> [ 6411.451403] x21: ffff0003f88c8530 x20: 0000000000000000
-> [ 6411.451404] x19: fffffe00201bcc80 x18: 0000000000000030
-> [ 6411.451406] x17: 0000000000000000 x16: 0000000000000000
-> [ 6411.451407] x15: ffff000c018f9760 x14: ffffffffffffffff
-> [ 6411.451409] x13: ffff8000119d72b0 x12: ffff8000119d6ee3
-> [ 6411.451410] x11: ffff8000117b69b8 x10: 00000000ffff8000
-> [ 6411.451412] x9 : ffff800010617534 x8 : 0000000000000000
-> [ 6411.451413] x7 : ffff8000114f69b8 x6 : 000000000000000f
-> [ 6411.451415] x5 : 0000000000000000 x4 : 0000000000000000
-> [ 6411.451416] x3 : 0000000000000400 x2 : 0000000000000000
-> [ 6411.451418] x1 : 0000000000000000 x0 : 0000000000000000
-> [ 6411.451420] Call trace:
-> [ 6411.451421]  end_page_writeback+0x1c0/0x214
-> [ 6411.451424]  iomap_finish_page_writeback+0x13c/0x204
-> [ 6411.451425]  iomap_finish_ioend+0xe8/0x19c
-> [ 6411.451426]  iomap_writepage_end_bio+0x38/0x50
-> [ 6411.451427]  bio_endio+0x168/0x1ec
-> [ 6411.451430]  blk_update_request+0x278/0x3f0
-> [ 6411.451432]  blk_mq_end_request+0x34/0x15c
-> [ 6411.451435]  virtblk_request_done+0x38/0x74 [virtio_blk]
-> [ 6411.451437]  blk_done_softirq+0xc4/0x110
-> [ 6411.451439]  __do_softirq+0x128/0x38c
-> [ 6411.451441]  __irq_exit_rcu+0x118/0x150
-> [ 6411.451442]  irq_exit+0x1c/0x30
-> [ 6411.451445]  __handle_domain_irq+0x8c/0xf0
-> [ 6411.451446]  gic_handle_irq+0x84/0x108
-> [ 6411.451447]  el1_irq+0xcc/0x180
-> [ 6411.451448]  arch_cpu_idle+0x18/0x40
-> [ 6411.451450]  default_idle_call+0x4c/0x1a0
-> [ 6411.451453]  cpuidle_idle_call+0x168/0x1e0
-> [ 6411.451454]  do_idle+0xb4/0x104
-> [ 6411.451455]  cpu_startup_entry+0x30/0x9c
-> [ 6411.451458]  secondary_start_kernel+0x104/0x180
-> [ 6411.451460] Code: d4210000 b0006161 910c8021 94013f4d (d4210000)
-> [ 6411.451462] ---[ end trace 4a88c6a074082f8c ]---
-> [ 6411.451464] Kernel panic - not syncing: Oops - BUG: Fatal exception in interrupt
->
-> Fixes: eb6ecbed0aa2 ("mm, thp: relax the VM_DENYWRITE constraint on file-backed THPs")
-> Suggested-by: Yang Shi <shy828301@gmail.com>
-> Signed-off-by: Xu Yu <xuyu@linux.alibaba.com>
-> Signed-off-by: Rongwei Wang <rongwei.wang@linux.alibaba.com>
 
-Reviewed-by: Yang Shi <shy828301@gmail.com>
+--45Z9DzgjV8m4Oswq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> ---
->  mm/khugepaged.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
->
-> diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-> index 045cc579f724..48de4e1b0783 100644
-> --- a/mm/khugepaged.c
-> +++ b/mm/khugepaged.c
-> @@ -1763,6 +1763,10 @@ static void collapse_file(struct mm_struct *mm,
->                                 filemap_flush(mapping);
->                                 result = SCAN_FAIL;
->                                 goto xa_unlocked;
-> +                       } else if (PageWriteback(page)) {
-> +                               xas_unlock_irq(&xas);
-> +                               result = SCAN_FAIL;
-> +                               goto xa_unlocked;
->                         } else if (trylock_page(page)) {
->                                 get_page(page);
->                                 xas_unlock_irq(&xas);
-> @@ -1798,7 +1802,8 @@ static void collapse_file(struct mm_struct *mm,
->                         goto out_unlock;
->                 }
->
-> -               if (!is_shmem && PageDirty(page)) {
-> +               if (!is_shmem && (PageDirty(page) ||
-> +                                 PageWriteback(page))) {
->                         /*
->                          * khugepaged only works on read-only fd, so this
->                          * page is dirty because it hasn't been flushed
-> --
-> 2.27.0
->
->
+Hi!
+
+> > I can understand that having a string can be quite beneficial e.g., when
+> > dumping mmaps. If only user space knows the id <-> string mapping, that
+> > can be quite tricky.
+> >
+> > However, I also do wonder if there would be a way to standardize/reserve
+> > ids, such that a given id always corresponds to a specific user. If we
+> > use an uint64_t for an id, there would be plenty room to reserve ids ...
+> >
+> > I'd really prefer if we can avoid using strings and instead using ids.
+>=20
+> I wish it was that simple and for some names like [anon:.bss] or
+> [anon:dalvik-zygote space] reserving a unique id would work, however
+> some names like [anon:dalvik-/system/framework/boot-core-icu4j.art]
+> are generated dynamically at runtime and include package name.
+
+I'd be careful; if you allow special characters like that, you will
+confuse some kind of parser.
+
+> Packages are constantly evolving, new ones are developed, names can
+> change, etc. So assigning a unique id for these names is not really
+> feasible.
+> That leaves us with the central facility option, which as I described
+> in my previous email would be prohibitive from performance POV (IPC
+> every time we have a new name or want to convert id to name).
+
+That "central facility" option can be as simple as "mkdir
+/somewhere/sanitized_id", using inode numbers for example. You don't
+really need IPC.
+
+Plus, I don't really believe the IPC cost would be prohibitive.
+
+Or you could simply hash the string and use the hash as id...
+
+Best regards,
+								Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--45Z9DzgjV8m4Oswq
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYV3jvQAKCRAw5/Bqldv6
+8lyUAKCwEv6bdJTV+wggIi1c2UYNr58JwwCfey84lnBPdV/qEtwDzRe+bL2Ytrw=
+=5AmT
+-----END PGP SIGNATURE-----
+
+--45Z9DzgjV8m4Oswq--
