@@ -2,111 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27FD8423988
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 10:14:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E158423993
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 10:17:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237696AbhJFIQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 04:16:33 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3936 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237638AbhJFIQ3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 04:16:29 -0400
-Received: from fraeml738-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HPRx70hmjz67WRt;
-        Wed,  6 Oct 2021 16:11:23 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml738-chm.china.huawei.com (10.206.15.219) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Wed, 6 Oct 2021 10:14:33 +0200
-Received: from [10.47.95.252] (10.47.95.252) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2308.8; Wed, 6 Oct 2021
- 09:14:32 +0100
-Subject: Re: [PATCH] scsi: storvsc: Cap scsi_driver.can_queue to fix a hang
- issue during boot
-To:     <decui@microsoft.com>, <kys@microsoft.com>,
-        <sthemmin@microsoft.com>, <wei.liu@kernel.org>,
-        <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
-        <haiyangz@microsoft.com>, <ming.lei@redhat.com>,
-        <bvanassche@acm.org>, <linux-scsi@vger.kernel.org>,
-        <linux-hyperv@vger.kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>
-References: <20211006070345.51713-1-decui@microsoft.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <e36619df-652d-3550-cb4d-9b65b2f5faee@huawei.com>
-Date:   Wed, 6 Oct 2021 09:17:09 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        id S237746AbhJFITr convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 6 Oct 2021 04:19:47 -0400
+Received: from ni.piap.pl ([195.187.100.5]:41504 "EHLO ni.piap.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237674AbhJFITp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 04:19:45 -0400
+From:   =?utf-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>
+To:     Lucas Stach <l.stach@pengutronix.de>
+Cc:     Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        linux-arm-kernel@lists.infradead.org,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] CONFIG_SOC_IMX6Q = i.MX6 Quad/DualLite/Solo
+References: <m3sfxen0yw.fsf@t19.piap.pl>
+        <8d54835921f1648a4d50d8d4e160b5a12582590f.camel@pengutronix.de>
+Date:   Wed, 06 Oct 2021 10:17:52 +0200
+In-Reply-To: <8d54835921f1648a4d50d8d4e160b5a12582590f.camel@pengutronix.de>
+        (Lucas Stach's message of "Wed, 06 Oct 2021 09:36:05 +0200")
+Message-ID: <m3ee8ymurz.fsf@t19.piap.pl>
 MIME-Version: 1.0
-In-Reply-To: <20211006070345.51713-1-decui@microsoft.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.95.252]
-X-ClientProxiedBy: lhreml709-chm.china.huawei.com (10.201.108.58) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/10/2021 08:03, Dexuan Cui wrote:
-> After commit ea2f0f77538c, a 416-CPU VM running on Hyper-V hangs during
-> boot because scsi_add_host_with_dma() sets shost->cmd_per_lun to a
-> negative number:
-> 	'max_outstanding_req_per_channel' is 352,
-> 	'max_sub_channels' is (416 - 1) / 4 = 103, so in storvsc_probe(),
-> scsi_driver.can_queue = 352 * (103 + 1) * (100 - 10) / 100 = 32947, which
-> is bigger than SHRT_MAX (i.e. 32767).
+Lucas Stach <l.stach@pengutronix.de> writes:
 
-Out of curiosity, are these values realistic? You're capping can_queue 
-just because of a data size issue, so, if these values are realistic, 
-seems a weak reason.
+>> Print i.MX6 "Solo" name in addition to the "Quad" and "DualLite"
+>> for SOC_IMX6Q.
+>> 
+> I don't think that's helpful, you would need to at least also print
+> "Dual" to make it correct. The Solo is just a fused down version of the
+> DualLite, just as the Dual is a fused down version of the Quad.
+>
+> Quad/DualLite refers to the two different die versions of the chip.
 
-> 
-> Fix the hang issue by capping scsi_driver.can_queue.
-> 
-> Add the below Fixed tag though ea2f0f77538c itself is good.
-> 
-> Fixes: ea2f0f77538c ("scsi: core: Cap scsi_host cmd_per_lun at can_queue")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Dexuan Cui <decui@microsoft.com>
-> ---
->   drivers/scsi/storvsc_drv.c | 10 ++++++++++
->   1 file changed, 10 insertions(+)
-> 
-> diff --git a/drivers/scsi/storvsc_drv.c b/drivers/scsi/storvsc_drv.c
-> index ebbbc1299c62..ba374908aec2 100644
-> --- a/drivers/scsi/storvsc_drv.c
-> +++ b/drivers/scsi/storvsc_drv.c
-> @@ -1976,6 +1976,16 @@ static int storvsc_probe(struct hv_device *device,
->   				(max_sub_channels + 1) *
->   				(100 - ring_avail_percent_lowater) / 100;
->   
-> +	/*
-> +	 * v5.14 (see commit ea2f0f77538c) implicitly requires that
-> +	 * scsi_driver.can_queue should not exceed SHRT_MAX, otherwise
-> +	 * scsi_add_host_with_dma() sets shost->cmd_per_lun to a negative
-> +	 * number (note: the type of the "cmd_per_lun" field is "short"), and
-> +	 * the system may hang during early boot.
-> +	 */
+Perhaps we need to print Dual as well.
 
-The different data sizes for cmd_per_lun and can_queue are problematic here.
+ATM "cat /proc/cpuinfo" (and everything using it) prints "Freescale
+i.MX6 Quad/DualLite (Device Tree)" on Solo and this is, at best,
+misleading: making people wonder what CPU do they really have.
+-- 
+Krzysztof "Chris" Hałasa
 
-I'd be more inclined to set cmd_per_lun to the same data size as 
-can_queue. We did discuss this when ea2f0f77538c was upstreamed 
-(actually it was the other way around - setting can_queue to 16b).
-
-Thanks,
-John
-
-
-> +	if (scsi_driver.can_queue > SHRT_MAX)
-> +		scsi_driver.can_queue = SHRT_MAX;
-> +
->   	host = scsi_host_alloc(&scsi_driver,
->   			       sizeof(struct hv_host_device));
->   	if (!host)
-> 
-
+Sieć Badawcza Łukasiewicz
+Przemysłowy Instytut Automatyki i Pomiarów PIAP
+Al. Jerozolimskie 202, 02-486 Warszawa
