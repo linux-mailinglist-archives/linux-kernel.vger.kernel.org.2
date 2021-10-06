@@ -2,139 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32E0C423E3C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 14:54:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9D47423E47
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 14:55:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238337AbhJFM4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 08:56:10 -0400
-Received: from conssluserg-06.nifty.com ([210.131.2.91]:65227 "EHLO
-        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231259AbhJFM4J (ORCPT
+        id S238520AbhJFM5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 08:57:43 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:49980
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230008AbhJFM5m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 08:56:09 -0400
-Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53]) (authenticated)
-        by conssluserg-06.nifty.com with ESMTP id 196CrtAO003873;
-        Wed, 6 Oct 2021 21:53:56 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 196CrtAO003873
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1633524836;
-        bh=2urYqRpQOPLkXeqFaqK5WGjp3qwohqBRnzDNoFyjX5E=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=AkytsekUP+8dLZwCyk5z0xPlkYm/8Mp0dfCnumdu2uc/fgnYuV5MSYN6RosJo3hRB
-         wugNicRKwHBj3Gh1+jMX079WrZOi+davLkaACgA2Ravi8eriW8Gyy5XUF9gZtWet1f
-         PNwVFcEj8utSj6ZFJO1sDbtHIidOU09WO6JjStCJ/B/BpX5B7etevd1hDnniJK7hyo
-         olNWIo47pC1BzTWcQOxKb4xRnZhuIGlLj2G8kdUs2Y/U1CHXiryEljufWt3JDE87Lp
-         EU8SLUy7fDqQYtvjCixvBQbXTn2v9NL8LRngVGknFOkbrAAT/jdeYswWk0mVURTkFZ
-         eQIkX//kJRsDA==
-X-Nifty-SrcIP: [209.85.216.53]
-Received: by mail-pj1-f53.google.com with SMTP id na16-20020a17090b4c1000b0019f5bb661f9so2261176pjb.0;
-        Wed, 06 Oct 2021 05:53:56 -0700 (PDT)
-X-Gm-Message-State: AOAM531TaeeSCRqPpGaRbCiq/nho/eCcbSJOCCkrR+5Q7EE2ismK9qSY
-        z6lDT6QlZUXhFKA3dY01+uhvJV6KgDAzApKws5w=
-X-Google-Smtp-Source: ABdhPJwtZ1OJRVKlgVuSgn4O8szQOkDxdm0+QT605WYDW9qZNXDVj5R8bLV+NjFqsV6Wjz7uCmiLbK7ponM2TPTHoFY=
-X-Received: by 2002:a17:90a:9306:: with SMTP id p6mr10777738pjo.119.1633524835305;
- Wed, 06 Oct 2021 05:53:55 -0700 (PDT)
+        Wed, 6 Oct 2021 08:57:42 -0400
+Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com [209.85.167.72])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id CB91A3F32F
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 12:55:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1633524949;
+        bh=iFs/8t2p0utw/cP9IG0B+N9Nu0IFpPSN+vPgOU+4tTQ=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=mXQtXqmQc/MhgGm99CWV+UJjMAyP1Pz9lEoLBdKN1p4AbJHEphMqCX3+M8qWu7VGV
+         tJBpGGqhnbQ3bPyweIOGLd11P82EXIezopKgkjVMr1HUhpE3CJuNKUHFILqa/2kvxP
+         DHtt9QcvNqo3mp+sWpijkaX1LBU8562ak6HJRnnGcVW8JO/ajRAsEjJtuSV7HcoVjq
+         KauTnu4ei4WXBcuSqfzdiSTfmWgFg7pA0JNk6r9O+rZBwWcRd99yiii4P2dwUG6brQ
+         ZPoZMvc7r+Hsm5KeK4QbIJaqeB2+DTafjYwcGQ7QZzAeCpV+UWmFxjq3O4dIBKmtA3
+         nhjbA7duM/zkg==
+Received: by mail-lf1-f72.google.com with SMTP id g9-20020a0565123b8900b003f33a027130so1888675lfv.18
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 05:55:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=iFs/8t2p0utw/cP9IG0B+N9Nu0IFpPSN+vPgOU+4tTQ=;
+        b=0je1JSP9/p5AV3y2DKvq83o25lCzY7P4305QgrWIetR6H1N/9DWv4s4sNyIZ3UQM84
+         QW2XAWxpDpxBABQGJuu2xBAuW/lz8pU9/+sZ03Kie5e61rOYTcu+JSFtXC60Ktb0JCZ/
+         360Zxr/4tAsUzyrt7B1sd4A41U+hN5s7tYGe5BzrF1OyhCd1cP6GgA3XleLLoJSApMKB
+         kpw34VdEc8Q/uD/ZgfcmTsdM9XWOcz79fEVAXp9INyLCtFoZCGdJ574dVw5gam0LmSmZ
+         6aCOPx+YIEEtbE5+suElmqg3GaQUWjnm5dqcHdbKibGnvQKB4q95ujIMIQqUVjQ/MmTt
+         sfpw==
+X-Gm-Message-State: AOAM533/G7KDkQmBW/CeONpkgWAFxc7a16EK+vzEX3pIuKdOBE4XGffU
+        AObsOt9lPIyWwr7Tjxkn1N7CfgE9uMVXn/hmxI9CQO6odZFc1u1zjMMT3nl4A+Jto0YLys+bZ0t
+        hQVJVe5LyvEYCd5cBvL0OBwjEQWt9DPTsJpll1wNRRg==
+X-Received: by 2002:a19:7606:: with SMTP id c6mr8052817lff.658.1633524949326;
+        Wed, 06 Oct 2021 05:55:49 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx63BAEC5N5BPTXxbHx164yFb6F9c4H1IYobwbh/wc690q8zkKLdnBdIXP3X6tArYGLz+pQ4Q==
+X-Received: by 2002:a19:7606:: with SMTP id c6mr8052807lff.658.1633524949164;
+        Wed, 06 Oct 2021 05:55:49 -0700 (PDT)
+Received: from [192.168.0.20] (78-11-189-27.static.ip.netia.com.pl. [78.11.189.27])
+        by smtp.gmail.com with ESMTPSA id i15sm1147603lfc.11.2021.10.06.05.55.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Oct 2021 05:55:48 -0700 (PDT)
+Subject: Re: [PATCH v2 00/10] regulator/mfd/clock: dt-bindings: Samsung S2M
+ and S5M to dtschema
+To:     Lee Jones <lee.jones@linaro.org>, Mark Brown <broonie@kernel.org>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Liam Girdwood <lgirdwood@gmail.com>, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org
+References: <20211001094106.52412-1-krzysztof.kozlowski@canonical.com>
+ <YVxBuEvHVdyDvaGD@sirena.org.uk> <YVxP0+kVxI0xQmQQ@google.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <41226a6d-999d-b1bb-d6a2-294a9e34d271@canonical.com>
+Date:   Wed, 6 Oct 2021 14:55:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20210923215418.3936726-1-keescook@chromium.org>
- <YU1WYLN4eptJhuIX@deb-nschier.ads.avm.de> <202110052144.25B30F2D4F@keescook>
-In-Reply-To: <202110052144.25B30F2D4F@keescook>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 6 Oct 2021 21:53:18 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASWgdULqBJMQMkoy=mXtAj_xxcYXXXi0wYojMkWW4ktGA@mail.gmail.com>
-Message-ID: <CAK7LNASWgdULqBJMQMkoy=mXtAj_xxcYXXXi0wYojMkWW4ktGA@mail.gmail.com>
-Subject: Re: [PATCH] sparc: Add missing "FORCE" target when using if_changed
-To:     Kees Cook <keescook@chromium.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Nicolas Schier <n.schier@avm.de>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YVxP0+kVxI0xQmQQ@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 6, 2021 at 1:45 PM Kees Cook <keescook@chromium.org> wrote:
->
-> On Fri, Sep 24, 2021 at 06:38:56AM +0200, Nicolas Schier wrote:
-> > On Thu, Sep 23, 2021 at 02:54:18PM -0700, Kees Cook wrote:
-> > > Fix observed warning:
-> > >
-> > >     /builds/linux/arch/sparc/boot/Makefile:35: FORCE prerequisite is missing
-> > >
-> > > Fixes: e1f86d7b4b2a5213 ("kbuild: warn if FORCE is missing for if_changed(_dep,_rule) and filechk")
-> > > Cc: "David S. Miller" <davem@davemloft.net>
-> > > Cc: Masahiro Yamada <masahiroy@kernel.org>
-> > > Cc: sparclinux@vger.kernel.org
-> > > Signed-off-by: Kees Cook <keescook@chromium.org>
-> >
-> > Acked-by: Nicolas Schier <n.schier@avm.de>
->
-> Thanks!
->
-> Masahiro, are you able to add this to your kbuild tree?
+On 05/10/2021 15:14, Lee Jones wrote:
+> On Tue, 05 Oct 2021, Mark Brown wrote:
+> 
+>> On Fri, Oct 01, 2021 at 11:40:56AM +0200, Krzysztof Kozlowski wrote:
+>>
+>>> Merging/dependencies
+>>> ====================
+>>> 1. Regulator related binding changes depend on first two commits (the
+>>>    fixes), because of context.
+>>> 2. The mfd bindings depend on clock and regulator bindings.
+>>>
+>>> The fixes and bindings changes (patches 1-10) should go via the same
+>>> tree.  For example regulator or mfd tree.  I propose the regulator tree,
+>>> since it will have also one driver change (the fix, first commit).
+>>
+>> Lee, Stephen, Michael does Krzysztof's plan make sense to you?
+> 
+> I tend to take cross subsystem patches.  MFD is usually in the centre
+> of these scenarios and I have tooling to easily set-up immutable
+> branches/pull-requests.
+> 
+> Always happy to discuss if others have different/better ideas though.
+> 
 
-Sure, applied to linux-kbuild. Thanks.
+Another alternative is that regulator patches (1-2, 4-6) go via Mark who
+later gives you a stable branch/tag to pull. Then the clock and MFD
+bindings would go on top via MFD tree.
 
+There is a comment from Rob which I will fix in v3.
 
-> -Kees
->
-> >
-> > > ---
-> > > I'm not sure if this should go via sparc or via kbuild. :)
-> > > ---
-> > >  arch/sparc/boot/Makefile | 8 ++++----
-> > >  1 file changed, 4 insertions(+), 4 deletions(-)
-> > >
-> > > diff --git a/arch/sparc/boot/Makefile b/arch/sparc/boot/Makefile
-> > > index 849236d4eca4..45e5c76d449e 100644
-> > > --- a/arch/sparc/boot/Makefile
-> > > +++ b/arch/sparc/boot/Makefile
-> > > @@ -22,7 +22,7 @@ ifeq ($(CONFIG_SPARC64),y)
-> > >
-> > >  # Actual linking
-> > >
-> > > -$(obj)/zImage: $(obj)/image
-> > > +$(obj)/zImage: $(obj)/image FORCE
-> > >     $(call if_changed,gzip)
-> > >     @echo '  kernel: $@ is ready'
-> > >
-> > > @@ -31,7 +31,7 @@ $(obj)/vmlinux.aout: vmlinux FORCE
-> > >     @echo '  kernel: $@ is ready'
-> > >  else
-> > >
-> > > -$(obj)/zImage: $(obj)/image
-> > > +$(obj)/zImage: $(obj)/image FORCE
-> > >     $(call if_changed,strip)
-> > >     @echo '  kernel: $@ is ready'
-> > >
-> > > @@ -44,7 +44,7 @@ OBJCOPYFLAGS_image.bin := -S -O binary -R .note -R .comment
-> > >  $(obj)/image.bin: $(obj)/image FORCE
-> > >     $(call if_changed,objcopy)
-> > >
-> > > -$(obj)/image.gz: $(obj)/image.bin
-> > > +$(obj)/image.gz: $(obj)/image.bin FORCE
-> > >     $(call if_changed,gzip)
-> > >
-> > >  UIMAGE_LOADADDR = $(CONFIG_UBOOT_LOAD_ADDR)
-> > > @@ -56,7 +56,7 @@ quiet_cmd_uimage.o = UIMAGE.O $@
-> > >                       -r -b binary $@ -o $@.o
-> > >
-> > >  targets += uImage
-> > > -$(obj)/uImage: $(obj)/image.gz
-> > > +$(obj)/uImage: $(obj)/image.gz FORCE
-> > >     $(call if_changed,uimage)
-> > >     $(call if_changed,uimage.o)
-> > >     @echo '  Image $@ is ready'
-> > > --
-> > > 2.30.2
-> > >
->
-> --
-> Kees Cook
-
-
-
--- 
-Best Regards
-Masahiro Yamada
+Best regards,
+Krzysztof
