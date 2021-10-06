@@ -2,88 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 853B442452D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 19:49:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D08742452C
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 19:49:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239113AbhJFRv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 13:51:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57032 "EHLO
+        id S238898AbhJFRv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 13:51:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239174AbhJFRvR (ORCPT
+        with ESMTP id S239163AbhJFRvR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 6 Oct 2021 13:51:17 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52381C061760
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 10:49:15 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id np13so2783595pjb.4
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 10:49:15 -0700 (PDT)
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C797BC061764
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 10:49:18 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id n2so2131129plk.12
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 10:49:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4HcW2GcpsNNL2RNx+V2pvD6LIqeWbRwK56YKpdUfUhs=;
-        b=gswwGM44VO0kIjdkDXWhjtflwIMLmTLf6OqX8tmV1DAnYMWArNF8/BNv8L4wyA8pV5
-         Sf9oOXYIAsCAHTh4bg1GMiXy+pSuiym0F3AgopjW4dURiusNl3UuLvF/QfVdijJaoth2
-         7VQSHpYX6ZZsslgKJiihIA9z11E/YUCxDvwdyWYMSmbtrBXdIbiOOgSm1qHv5McHR6qg
-         f6JKhkw9FHdWCz76a45863+kV7LsC5b4OCtdc72b6riu1GMEhY748UJ0VNzySybGkgXy
-         u+zh5cckCJaDR/vNHxP2XoA9uR4Yz0aAbrhlRmzfBAdM9Q3K1rp+zrMdaJG7PVLcUZuP
-         0a8A==
+        d=mforney-org.20210112.gappssmtp.com; s=20210112;
+        h=date:to:cc:subject:from:references:in-reply-to:message-id
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=XOrLreEsAuVDxgUxU0x2eSWaOLostnJXpsKIuIcC4bY=;
+        b=O64bnKH6KoKyvWVSyqsE/LKur6GdHTj0Y+7e5nyW8QRvasi2/E6oSdzxy+t0qnj4Xp
+         COFS13bw8Nc/5nXiOjUWGNciFr7Q24v659AECXVa89pDdoG9I8sczFxW9ExlVQFTBEkh
+         8BTS2GwYBT99RYUJSupN7so85Jx0cN11OqU1+Onri0yO/GrB8HFzSzDOa2szyKasKyl4
+         HPKDu2XGcsUOMdBC9zGj1AhuHThAOyduETNOD93ZscYsX9MuzfhQ9VQNVxRCgEH/5IwE
+         DIvJV2AXKyRhrRj3W6kw/1LE2dzsvDONt+mkKGh9NLuHB/cQeRodbeEv9LkTFzT1NRMq
+         c/Wg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4HcW2GcpsNNL2RNx+V2pvD6LIqeWbRwK56YKpdUfUhs=;
-        b=ySIXfrAEJpdjFSvjmHUpHkjJyS2IRDGNoyqA6gY8lF6wgUFJAK16IwWEgb+RxQEFM6
-         XSpKe5NA3B5jeS7MZwb1Lfr5AyCavRY+VClQ/kY5aPeNw6tN4pmFCnZCKHDUHWRTEkfh
-         YvPaa0SPWy2SgVPcaB6pCBa0N7sonOFO8Qe918rVQ1IMF7nqCnQYxYSHYD/6yUAWhwyT
-         m5M1qlXsX5+3itm3aTn/W8YjW08q5pxc4fZ2lzOsBe4s4ZHyAdaOTDFmPNE6efhdAtnf
-         43TIpuehEPgXdgQGln/xUSdiWxc+RIqAIfS41PGK1rtdCnxDHNZ0yHAyTqLuIKsAMJYC
-         GPJw==
-X-Gm-Message-State: AOAM532t1JM3D4xX6GrPacxMq27Nf6dyZl8On7jrRbqdGf67b0n6J0Eo
-        EltZTcX9dsOErdDZLUQC8hexZjE6H7o=
-X-Google-Smtp-Source: ABdhPJyQFhGksSNRCJjvOaq5f9X7UwV1Difk/RELkxVheHp1T5Zr/27kUa/bMc3TtYDkwqO5/6EIOw==
-X-Received: by 2002:a17:90b:3901:: with SMTP id ob1mr1636pjb.24.1633542554531;
-        Wed, 06 Oct 2021 10:49:14 -0700 (PDT)
-Received: from daehojeong-desktop.mtv.corp.google.com ([2620:15c:211:201:4a09:1ff8:fcd9:33e6])
-        by smtp.gmail.com with ESMTPSA id s2sm20981068pfe.215.2021.10.06.10.49.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Oct 2021 10:49:13 -0700 (PDT)
-From:   Daeho Jeong <daeho43@gmail.com>
-To:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
-Cc:     Daeho Jeong <daehojeong@google.com>
-Subject: [PATCH] f2fs: include non-compressed blocks in compr_written_block
-Date:   Wed,  6 Oct 2021 10:49:10 -0700
-Message-Id: <20211006174910.2964885-1-daeho43@gmail.com>
-X-Mailer: git-send-email 2.33.0.882.g93a45727a2-goog
+        h=x-gm-message-state:date:to:cc:subject:from:references:in-reply-to
+         :message-id:user-agent:mime-version:content-transfer-encoding;
+        bh=XOrLreEsAuVDxgUxU0x2eSWaOLostnJXpsKIuIcC4bY=;
+        b=k7g760b6qft5jj68SEtT4ZcwD8g2iGjX95X1zeHtcsJqRQDPnf+0kwhrikDfJDedAO
+         u60pDEc4bxqmYijtu2iazhE+UkIuEFr6WEpuHjl8j0iCJ/rZZ3gJS2dQEnnib3tCmYmz
+         k6f3ilmIGN6Ic4l0s4lngeDK42O/oJ3jMCuIeJIB9T3CxKHdQ2X0sTRRA/q99qhqrqTI
+         pNsUJJyfUnEhOhr56bI1jCXCBDvz4+YGAYp+MWcPXmZ3Osh/D6uazjiKSLyjEvg3b1tk
+         4jLPKtGMwB+8T4WqT/kQm418JQEbnXQA5L3GlGiDraa1W2/1sT79bOt9xKl/cYMKwKux
+         ZJAA==
+X-Gm-Message-State: AOAM532rRInjyII1u2/lW24B1DGsmxmeWD+VNMzvhP6DHcqkoPtl5Wcm
+        Oyd7jkJFvBs6N2vjHYn02oIkPqmLMzteLdlS6tpz+Q==
+X-Google-Smtp-Source: ABdhPJz5bzd0Ll3u46SkBJss+W4S4Nr59Wl1BFpeQCxvVpqg12wwq7XaF2OPnMoJnGmqYHr4xnQO4Q==
+X-Received: by 2002:a17:90a:ac0d:: with SMTP id o13mr86949pjq.74.1633542558298;
+        Wed, 06 Oct 2021 10:49:18 -0700 (PDT)
+Received: from localhost ([98.45.152.168])
+        by smtp.gmail.com with ESMTPSA id z10sm20718583pfn.70.2021.10.06.10.49.17
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 06 Oct 2021 10:49:18 -0700 (PDT)
+Date:   Wed, 06 Oct 2021 10:49:17 -0700
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
+        Baolin Wang <baolin.wang@linaro.org>, y2038@lists.linaro.org,
+        linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+        Baolin Wang <baolin.wang7@gmail.com>
+Subject: Re: [alsa-devel] [PATCH v7 8/9] ALSA: add new 32-bit layout for
+ snd_pcm_mmap_status/control
+From:   Michael Forney <mforney@mforney.org>
+References: <20191211212025.1981822-1-arnd@arndb.de>
+ <20191211212025.1981822-9-arnd@arndb.de>
+In-Reply-To: <20191211212025.1981822-9-arnd@arndb.de>
+Message-Id: <29QBMJU8DE71E.2YZSH8IHT5HMH@mforney.org>
+User-Agent: mblaze/1.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daeho Jeong <daehojeong@google.com>
+Arnd Bergmann <arnd@arndb.de> wrote:
+> +#if defined(__BYTE_ORDER) ? __BYTE_ORDER =3D=3D __BIG_ENDIAN : defined(_=
+_BIG_ENDIAN)
+> +typedef char __pad_before_uframe[sizeof(__u64) - sizeof(snd_pcm_uframes_=
+t)];
+> +typedef char __pad_after_uframe[0];
+> +#endif
+> +
+> +#if defined(__BYTE_ORDER) ? __BYTE_ORDER =3D=3D __LITTLE_ENDIAN : define=
+d(__LITTLE_ENDIAN)
+> +typedef char __pad_before_uframe[0];
+> +typedef char __pad_after_uframe[sizeof(__u64) - sizeof(snd_pcm_uframes_t=
+)];
+> +#endif
+> +
+> +struct __snd_pcm_mmap_status64 {
+> +	__s32 state;			/* RO: state - SNDRV_PCM_STATE_XXXX */
+> +	__u32 pad1;			/* Needed for 64 bit alignment */
+> +	__pad_before_uframe __pad1;
+> +	snd_pcm_uframes_t hw_ptr;	/* RO: hw ptr (0...boundary-1) */
+> +	__pad_after_uframe __pad2;
+> +	struct __snd_timespec64 tstamp;	/* Timestamp */
+> +	__s32 suspended_state;		/* RO: suspended stream state */
+> +	__u32 pad3;			/* Needed for 64 bit alignment */
+> +	struct __snd_timespec64 audio_tstamp; /* sample counter or wall clock *=
+/
+> +};
+> +
+> +struct __snd_pcm_mmap_control64 {
+> +	__pad_before_uframe __pad1;
+> +	snd_pcm_uframes_t appl_ptr;	 /* RW: appl ptr (0...boundary-1) */
+> +	__pad_before_uframe __pad2;
 
-Need to include non-compressed blocks in compr_written_block to
-estimate average compression ratio more accurately.
+I was looking through this header and happened to notice that this
+padding is wrong. I believe it should be __pad_after_uframe here.
 
-Signed-off-by: Daeho Jeong <daehojeong@google.com>
----
- fs/f2fs/compress.c | 1 +
- 1 file changed, 1 insertion(+)
+I'm not sure of the implications of this typo, but I suspect it
+breaks something on 32-bit systems with 64-bit time (regardless of
+the endianness, since it changes the offset of avail_min).
 
-diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-index c1bf9ad4c220..9b663eaf4805 100644
---- a/fs/f2fs/compress.c
-+++ b/fs/f2fs/compress.c
-@@ -1530,6 +1530,7 @@ int f2fs_write_multi_pages(struct compress_ctx *cc,
- 	if (cluster_may_compress(cc)) {
- 		err = f2fs_compress_pages(cc);
- 		if (err == -EAGAIN) {
-+			add_compr_block_stat(cc->inode, cc->cluster_size);
- 			goto write;
- 		} else if (err) {
- 			f2fs_put_rpages_wbc(cc, wbc, true, 1);
--- 
-2.33.0.882.g93a45727a2-goog
-
+> +
+> +	__pad_before_uframe __pad3;
+> +	snd_pcm_uframes_t  avail_min;	 /* RW: min available frames for wakeup *=
+/
+> +	__pad_after_uframe __pad4;
+> +};
