@@ -2,125 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98A4D423E2C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 14:51:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29DB3423E30
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 14:51:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238606AbhJFMwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 08:52:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42930 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229894AbhJFMwu (ORCPT
+        id S238621AbhJFMw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 08:52:58 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:49740
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238610AbhJFMwz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 08:52:50 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16F2CC061749;
-        Wed,  6 Oct 2021 05:50:58 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id g10so9474325edj.1;
-        Wed, 06 Oct 2021 05:50:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uaFSCyl+cHyEFqgi5ztcaVOF8EhPPHbZgq4bF8aBswg=;
-        b=bzONF+1YD81iaCnIOSzpQY0hK2j7gPZMhYOJhNjrk2p609w6cy+cM7FD7ao4xj+a7Q
-         4riVIoxEMGuqPPrVAFAPsM7xH3B+icu0XqF0qFg3lkvk2bWUEA25mDQajCqd/iXCb/md
-         EzcTEifWyi8EIHUlTfEkfHBW3Bvizaq6ro7oFBpYyn884WZAaL8a1CC+H6MKLSUapmnf
-         wDtM19JPiSpKdYal+Z8RjwGxW4gJyejk7cOvfqzFp1eKsWmRO7iEiMwkpD/AAvhmJScC
-         0mCbTSFhJlHCRjLQfRpk5ffiBgGrMAc/voAdLI346txwf7e0LqE6OFlXCgaMyvqTMkeP
-         n4uA==
+        Wed, 6 Oct 2021 08:52:55 -0400
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com [209.85.167.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id D10F63FFE8
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 12:51:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1633524661;
+        bh=PKetBUdtpr3Hr2NvlRZBfrIHbbw2Nu4lIQoW/4WvUOo=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=qIkX5gx6oDxcWl2rcnIUJuSMelK04mYJNfaUqN3Qkbz4TmG0JwWo4DcceB+kqj3u6
+         b+nVoBsiufKSkFoqS7pmGMhXILYLVlfao4jwzTX8uOfy3Q7G5x0Spygj53afDNcbP1
+         75CIyexU42MG1TSF3L+qQTRXQb2bGtTBu9gwA5nlDbFEj9d39hhfSzAJk+lryAW+oW
+         k4D0zSj7NfZTx1AQZngeqtHwpcnSMoUsF31wN9U+UPHGw0KnKv2SExfbxBlwPBjrfU
+         RqKSNclztvxhiimv5g6eA7W+mEs4B3nikuTIShyK2XcdUqG8HUrJrWAOXuLvPNJhjF
+         ksxdyZKTyoEPQ==
+Received: by mail-lf1-f69.google.com with SMTP id v2-20020ac25582000000b003fd1c161a31so1873242lfg.15
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 05:51:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uaFSCyl+cHyEFqgi5ztcaVOF8EhPPHbZgq4bF8aBswg=;
-        b=oON5phrEq11dBRBAMx6rPkVnS6jZWuF+AVEo0FWovVRhntyShppDPHAnqW8UsYNtPj
-         6OoXYo1CaeevOfRvbIj7Fyt8GuuDY8h7dg+8I7mnd7ww63/bWEwVgcqveJCto42xkjeh
-         Bs5TAE/6UdqnWbbzC6DLyXdfGsIJmtmklpGztwMhHrZPYV0h7IKdPI8cJU32QNNb9fEG
-         2UM5yKaAEutascjsc6hDCjJ7mWjTfDxgA1jtyMM9ZgO7I7LRBY7Gob6jBAaUfG11Y0mj
-         hRS0e3OAjBVVLF5m6sH2U+IdGCo88N++d1JgKK31CWrwnSBoP1WBNK/6vOQiZYDJvrmN
-         wEPg==
-X-Gm-Message-State: AOAM533b32RWEPxp0BMPRi91cj544VI0vNvGoM2aOM+pKdIH+KSfxILm
-        2sC5ng4BPZ30jIAeRtUsJCbZkztkVRB5lySoA5c=
-X-Google-Smtp-Source: ABdhPJw7mYXaosdY4w4BYUYEQNYUorH4f4nslmkZWqAykgwoqynTpdymnPFlEwVmRyPZjbgQKS4Ne2yyd9SAyjslPlE=
-X-Received: by 2002:a50:cf4d:: with SMTP id d13mr34207091edk.50.1633524655637;
- Wed, 06 Oct 2021 05:50:55 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=PKetBUdtpr3Hr2NvlRZBfrIHbbw2Nu4lIQoW/4WvUOo=;
+        b=u1xbOedIgK8fqlthHkN6BsIvn0UIuYdqErzkfzRlCqWRMnMvlDblDy9IRTZhIPwX/E
+         kywQV4t6NURkeTGozyOtVA3Cv+7wzy/q6L9lU7gDNddrfqPYOMnXBRp0csOlEH8UAtkX
+         9ESmZGOJbX8tdJbW3OjVGFoQc/LYW/WTKsgPNsLgOtFq9pTlm3KZBVAbWy6V7+qqDDLH
+         V/5DLMxnw1CjfBfrMhKpDikBWUtsBaFHTSAOJcy4Xx42cePYIij4qjAEvXnHFfIXZBIc
+         DElVg5iQN81f61xzaaGuiRFVkkXgmRUUUf9+x7RXuYtbVes5Lqqc+PGa2xzv+IvWq5pJ
+         N1eA==
+X-Gm-Message-State: AOAM531q9pasGkgMtxphZ7r32/l9rgNFcUTR+XgqBMV+i2/MlgGeg+11
+        acOYSqppktWcl0fbmeD1t5G8oayU1PJOhPyiVFP3woSJtnPxFPxMsiUuGXh/BaqAys6p/19XKWE
+        zUDRehP4eHfOGivFCx57fcgUhoPv5KEBA6OhCiCPCPA==
+X-Received: by 2002:ac2:50d3:: with SMTP id h19mr9138096lfm.63.1633524661202;
+        Wed, 06 Oct 2021 05:51:01 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyYQXpRfbdij+G/IdEjueEdrmnNAVv9YGwPu64Trw30ig3vpNtjLztb74XfXOnojeuZlsz62w==
+X-Received: by 2002:ac2:50d3:: with SMTP id h19mr9138078lfm.63.1633524661042;
+        Wed, 06 Oct 2021 05:51:01 -0700 (PDT)
+Received: from [192.168.0.20] (78-11-189-27.static.ip.netia.com.pl. [78.11.189.27])
+        by smtp.gmail.com with ESMTPSA id q1sm2261481lfg.18.2021.10.06.05.50.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Oct 2021 05:51:00 -0700 (PDT)
+Subject: Re: [PATCH 6/6] clk: samsung: Introduce Exynos850 clock driver
+To:     Sam Protsenko <semen.protsenko@linaro.org>
+Cc:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        =?UTF-8?Q?Pawe=c5=82_Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Ryu Euiyoul <ryu.real@samsung.com>,
+        Tom Gall <tom.gall@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Amit Pundir <amit.pundir@linaro.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>
+References: <20210914155607.14122-1-semen.protsenko@linaro.org>
+ <20210914155607.14122-7-semen.protsenko@linaro.org>
+ <3da75dbe-2f98-39db-c455-46adead7097b@canonical.com>
+ <CAPLW+4k+1x+qwJJWth7=KwsF_Q2+n5LDA8Q+63M-bxXDO=4bZg@mail.gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <826fa28d-05a9-4a1c-a69b-70fc50e26e24@canonical.com>
+Date:   Wed, 6 Oct 2021 14:50:59 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20210924085104.44806-1-21cnbao@gmail.com> <20210924085104.44806-2-21cnbao@gmail.com>
- <87o883l9c8.mognet@arm.com> <CAGsJ_4zCYjha8E6km9fDO8gFR-_vO1Nr0=a7V-b9yLRZGGAC9g@mail.gmail.com>
- <CAGsJ_4ycKDfFY+LoaUBJ5huH8+kUsGGsC1po4DDQQPU5-ikf8A@mail.gmail.com> <20211006121858.GI174703@worktop.programming.kicks-ass.net>
-In-Reply-To: <20211006121858.GI174703@worktop.programming.kicks-ass.net>
-From:   Barry Song <21cnbao@gmail.com>
-Date:   Thu, 7 Oct 2021 01:50:43 +1300
-Message-ID: <CAGsJ_4zdr-Y5=TckNELoxgHDzNKhJuRsF5YAfEep24Ga7Y5ENg@mail.gmail.com>
-Subject: Re: [PATCH RESEND 1/3] topology: Represent clusters of CPUs within a die
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Valentin Schneider <valentin.schneider@arm.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Ben Segall <bsegall@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Guodong Xu <guodong.xu@linaro.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        "Cc: Len Brown" <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        LAK <linux-arm-kernel@lists.infradead.org>,
-        Linuxarm <linuxarm@huawei.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mel Gorman <mgorman@suse.de>, msys.mizuma@gmail.com,
-        "Zengtao (B)" <prime.zeng@hisilicon.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Will Deacon <will@kernel.org>, x86 <x86@kernel.org>,
-        yangyicong <yangyicong@huawei.com>,
-        Tian Tao <tiantao6@hisilicon.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAPLW+4k+1x+qwJJWth7=KwsF_Q2+n5LDA8Q+63M-bxXDO=4bZg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 7, 2021 at 1:20 AM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Wed, Oct 06, 2021 at 11:50:35PM +1300, Barry Song wrote:
->
-> > > diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
-> > > index 7cb31d959f33..fc0836f460fb 100644
-> > > --- a/drivers/base/arch_topology.c
-> > > +++ b/drivers/base/arch_topology.c
-> > > @@ -622,7 +622,8 @@ void update_siblings_masks(unsigned int cpuid)
-> > >                 if (cpuid_topo->package_id != cpu_topo->package_id)
-> > >                         continue;
-> > >
-> > > -               if (cpuid_topo->cluster_id == cpu_topo->cluster_id) {
-> > > +               if (cpuid_topo->cluster_id == cpu_topo->cluster_id &&
-> > > +                   cpuid_topo->cluster_id != -1) {
-> > >                         cpumask_set_cpu(cpu, &cpuid_topo->cluster_sibling);
-> > >                         cpumask_set_cpu(cpuid, &cpu_topo->cluster_sibling);
-> > >                 }
-> > >
-> >
-> > Hi Peter,
-> > Would you like to change this line in your tree?
->
-> Can you please double check:
->
->   https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git/log/?h=sched/next
+On 05/10/2021 13:29, Sam Protsenko wrote:
+> On Wed, 15 Sept 2021 at 11:59, Krzysztof Kozlowski
+> <krzysztof.kozlowski@canonical.com> wrote:
+>>
+> 
+>>> +             val = ioread32(reg);
+>>> +             val |= GATE_MANUAL;
+>>> +             val &= ~GATE_ENABLE_HWACG;
+>>> +             iowrite32(val, reg);
+>>
+>> All other drivers use readl/writel, so how about keeping it consistent?
+>>
+> 
+> Ok. Though io* variants looks better to me (API names consistent with
+> ioremap/iounmap) :)
 
-yes. It is correct for patch 1/3, thanks!
+The io* variants are for PCI I/O and I/O port. Since we know this is
+MMIO, all drivers use regular readX/writeX, so let's keep it the same.
 
-BTW, patch2/3  is missing some benchmark data and tested-by/SOB tags, i guess
-it is because you are still editing?
-
-barry
+Best regards,
+Krzysztof
