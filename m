@@ -2,288 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB87F4245D9
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 20:16:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 583084245DF
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 20:18:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235329AbhJFSSo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 14:18:44 -0400
-Received: from mga14.intel.com ([192.55.52.115]:42515 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229633AbhJFSSn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 14:18:43 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10129"; a="226382702"
-X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; 
-   d="scan'208";a="226382702"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2021 11:16:50 -0700
-X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; 
-   d="scan'208";a="484214643"
-Received: from sschwenc-mobl1.amr.corp.intel.com (HELO [10.209.2.213]) ([10.209.2.213])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2021 11:16:50 -0700
-Subject: Re: linux-next: Tree for Oct 5 (warnings: a. trace; b. mm/migrate)
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>
-References: <20211005190628.1f26b13d@canb.auug.org.au>
- <c1d9e328-ad7c-920b-6c24-9e1598a6421c@infradead.org>
- <2216e7c0-093b-3d90-ae1c-91902147fe05@intel.com>
- <20211006105621.7219404f@gandalf.local.home>
- <a053e10c-64ae-4868-b34c-d588bb3dca18@infradead.org>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
- oAiUXvGAOxPDsB/P6UEOISPpLl5IuYsSwAeZGkdQ5g6m1xq7AlDJQZddhr/1DC/nMVa/2BoY
- 2UnKuZuSBu7lgOE193+7Uks3416N2hTkyKUSNkduyoZ9F5twiBhxPJwPtn/wnch6n5RsoXsb
- ygOEDxLEsSk/7eyFycjE+btUtAWZtx+HseyaGfqkZK0Z9bT1lsaHecmB203xShwCPT49Blxz
- VOab8668QpaEOdLGhtvrVYVK7x4skyT3nGWcgDCl5/Vp3TWA4K+IofwvXzX2ON/Mj7aQwf5W
- iC+3nWC7q0uxKwwsddJ0Nu+dpA/UORQWa1NiAftEoSpk5+nUUi0WE+5DRm0H+TXKBWMGNCFn
- c6+EKg5zQaa8KqymHcOrSXNPmzJuXvDQ8uj2J8XuzCZfK4uy1+YdIr0yyEMI7mdh4KX50LO1
- pmowEqDh7dLShTOif/7UtQYrzYq9cPnjU2ZW4qd5Qz2joSGTG9eCXLz5PRe5SqHxv6ljk8mb
- ApNuY7bOXO/A7T2j5RwXIlcmssqIjBcxsRRoIbpCwWWGjkYjzYCjgsNFL6rt4OL11OUF37wL
- QcTl7fbCGv53KfKPdYD5hcbguLKi/aCccJK18ZwNjFhqr4MliQARAQABzShEYXZpZCBDaHJp
- c3RvcGhlciBIYW5zZW4gPGRhdmVAc3I3MS5uZXQ+wsF7BBMBAgAlAhsDBgsJCAcDAgYVCAIJ
- CgsEFgIDAQIeAQIXgAUCTo3k0QIZAQAKCRBoNZUwcMmSsMO2D/421Xg8pimb9mPzM5N7khT0
- 2MCnaGssU1T59YPE25kYdx2HntwdO0JA27Wn9xx5zYijOe6B21ufrvsyv42auCO85+oFJWfE
- K2R/IpLle09GDx5tcEmMAHX6KSxpHmGuJmUPibHVbfep2aCh9lKaDqQR07gXXWK5/yU1Dx0r
- VVFRaHTasp9fZ9AmY4K9/BSA3VkQ8v3OrxNty3OdsrmTTzO91YszpdbjjEFZK53zXy6tUD2d
- e1i0kBBS6NLAAsqEtneplz88T/v7MpLmpY30N9gQU3QyRC50jJ7LU9RazMjUQY1WohVsR56d
- ORqFxS8ChhyJs7BI34vQusYHDTp6PnZHUppb9WIzjeWlC7Jc8lSBDlEWodmqQQgp5+6AfhTD
- kDv1a+W5+ncq+Uo63WHRiCPuyt4di4/0zo28RVcjtzlGBZtmz2EIC3vUfmoZbO/Gn6EKbYAn
- rzz3iU/JWV8DwQ+sZSGu0HmvYMt6t5SmqWQo/hyHtA7uF5Wxtu1lCgolSQw4t49ZuOyOnQi5
- f8R3nE7lpVCSF1TT+h8kMvFPv3VG7KunyjHr3sEptYxQs4VRxqeirSuyBv1TyxT+LdTm6j4a
- mulOWf+YtFRAgIYyyN5YOepDEBv4LUM8Tz98lZiNMlFyRMNrsLV6Pv6SxhrMxbT6TNVS5D+6
- UorTLotDZKp5+M7BTQRUY85qARAAsgMW71BIXRgxjYNCYQ3Xs8k3TfAvQRbHccky50h99TUY
- sqdULbsb3KhmY29raw1bgmyM0a4DGS1YKN7qazCDsdQlxIJp9t2YYdBKXVRzPCCsfWe1dK/q
- 66UVhRPP8EGZ4CmFYuPTxqGY+dGRInxCeap/xzbKdvmPm01Iw3YFjAE4PQ4hTMr/H76KoDbD
- cq62U50oKC83ca/PRRh2QqEqACvIH4BR7jueAZSPEDnzwxvVgzyeuhwqHY05QRK/wsKuhq7s
- UuYtmN92Fasbxbw2tbVLZfoidklikvZAmotg0dwcFTjSRGEg0Gr3p/xBzJWNavFZZ95Rj7Et
- db0lCt0HDSY5q4GMR+SrFbH+jzUY/ZqfGdZCBqo0cdPPp58krVgtIGR+ja2Mkva6ah94/oQN
- lnCOw3udS+Eb/aRcM6detZr7XOngvxsWolBrhwTQFT9D2NH6ryAuvKd6yyAFt3/e7r+HHtkU
- kOy27D7IpjngqP+b4EumELI/NxPgIqT69PQmo9IZaI/oRaKorYnDaZrMXViqDrFdD37XELwQ
- gmLoSm2VfbOYY7fap/AhPOgOYOSqg3/Nxcapv71yoBzRRxOc4FxmZ65mn+q3rEM27yRztBW9
- AnCKIc66T2i92HqXCw6AgoBJRjBkI3QnEkPgohQkZdAb8o9WGVKpfmZKbYBo4pEAEQEAAcLB
- XwQYAQIACQUCVGPOagIbDAAKCRBoNZUwcMmSsJeCEACCh7P/aaOLKWQxcnw47p4phIVR6pVL
- e4IEdR7Jf7ZL00s3vKSNT+nRqdl1ugJx9Ymsp8kXKMk9GSfmZpuMQB9c6io1qZc6nW/3TtvK
- pNGz7KPPtaDzvKA4S5tfrWPnDr7n15AU5vsIZvgMjU42gkbemkjJwP0B1RkifIK60yQqAAlT
- YZ14P0dIPdIPIlfEPiAWcg5BtLQU4Wg3cNQdpWrCJ1E3m/RIlXy/2Y3YOVVohfSy+4kvvYU3
- lXUdPb04UPw4VWwjcVZPg7cgR7Izion61bGHqVqURgSALt2yvHl7cr68NYoFkzbNsGsye9ft
- M9ozM23JSgMkRylPSXTeh5JIK9pz2+etco3AfLCKtaRVysjvpysukmWMTrx8QnI5Nn5MOlJj
- 1Ov4/50JY9pXzgIDVSrgy6LYSMc4vKZ3QfCY7ipLRORyalFDF3j5AGCMRENJjHPD6O7bl3Xo
- 4DzMID+8eucbXxKiNEbs21IqBZbbKdY1GkcEGTE7AnkA3Y6YB7I/j9mQ3hCgm5muJuhM/2Fr
- OPsw5tV/LmQ5GXH0JQ/TZXWygyRFyyI2FqNTx4WHqUn3yFj8rwTAU1tluRUYyeLy0ayUlKBH
- ybj0N71vWO936MqP6haFERzuPAIpxj2ezwu0xb1GjTk4ynna6h5GjnKgdfOWoRtoWndMZxbA
- z5cecg==
-Message-ID: <4f6df3bd-28e1-b6e6-7c87-af7fdf2ec22f@intel.com>
-Date:   Wed, 6 Oct 2021 11:16:47 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S232698AbhJFSUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 14:20:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35706 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229633AbhJFSUN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 14:20:13 -0400
+Received: from metanate.com (unknown [IPv6:2001:8b0:1628:5005::111])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFCE8C061746;
+        Wed,  6 Oct 2021 11:18:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=metanate.com; s=stronger; h=Content-Transfer-Encoding:Content-Type:
+        References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID
+        :Content-Description; bh=urshKh+SwpZcgjJQKF+ekx0TFaMUV+98Ijr/33Ev1eM=; b=0D5f
+        xtfdBqCkDe6ygsBJLmkcLH3eaizC0+v3QhR8wg6/Uj8qL1e0drc8gHFhTXIrId+XIOKrT3BYiS8/8
+        NeLIdfIsqkX/29dMhPitJsLOppRAMTX65hsArZT8Yk/Fi2SlltuwleovBj93eKsjkoEyr+r44+Gq0
+        1KjU9xMpSMcHIU+AiZDjRlUC2WIg04q42Q7tfZzXKP1cfeFMFrFSKwrJgEezq8vMife9SUGT3bPu6
+        B4WcIIg5uCVV3lVJbS47rTWkosfqPNbFkprrIVEEiADyM9a8sTLHGfED6f3JpGE9LrhKeDgKcb0Kc
+        o4YGAUqPqfVN3+W/vydh7Bs8F2KQLg==;
+Received: from [81.174.171.191] (helo=donbot)
+        by email.metanate.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <john@metanate.com>)
+        id 1mYBUc-0004oQ-GP; Wed, 06 Oct 2021 19:18:14 +0100
+Date:   Wed, 6 Oct 2021 19:18:13 +0100
+From:   John Keeping <john@metanate.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     linux-rt-users@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
+        Len Brown <len.brown@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH RT] PM: runtime: avoid retry loops on RT
+Message-ID: <20211006191813.0e097b9f.john@metanate.com>
+In-Reply-To: <CAJZ5v0iFKYvM+rn68VaAbM4=ZLAQBR_UPzvAuKqVLQuP=ZJPew@mail.gmail.com>
+References: <20211005155427.1591196-1-john@metanate.com>
+        <CAJZ5v0gPwUQzGBa2VDeC3xAF9zJVm486BC0eue10-urJ8Xz+iw@mail.gmail.com>
+        <20211005181706.66102578.john@metanate.com>
+        <CAJZ5v0iFKYvM+rn68VaAbM4=ZLAQBR_UPzvAuKqVLQuP=ZJPew@mail.gmail.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <a053e10c-64ae-4868-b34c-d588bb3dca18@infradead.org>
-Content-Type: multipart/mixed;
- boundary="------------0CEE4FD79D59425ECF720C35"
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Authenticated: YES
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------0CEE4FD79D59425ECF720C35
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+On Wed, 6 Oct 2021 19:05:50 +0200
+"Rafael J. Wysocki" <rafael@kernel.org> wrote:
 
-On 10/6/21 9:39 AM, Randy Dunlap wrote:
->>>> ../mm/migrate.c:3216:22: error: 'migrate_on_reclaim_callback' defined
->>>> but not used [-Werror=unused-function]
->>>>   static int __meminit migrate_on_reclaim_callback(struct
->>>> notifier_block
->>>> *self,
->>>>                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~
->>>> ../mm/migrate.c:3197:13: error: 'set_migration_target_nodes' defined
->>>> but
->>>> not used [-Werror=unused-function]
->>>>   static void set_migration_target_nodes(void)
->>>>               ^~~~~~~~~~~~~~~~~~~~~~~~~~
->>>>
->>>>
->>>> (example usage to get the randconfig files:
->>>> KCONFIG_SEED=0xBFBEA13C make [ARCH=x86_64] randconfig
->>>> )
+> On Tue, Oct 5, 2021 at 7:17 PM John Keeping <john@metanate.com> wrote:
+> >
+> > On Tue, 5 Oct 2021 18:38:27 +0200
+> > "Rafael J. Wysocki" <rafael@kernel.org> wrote:
+> >  
+> > > On Tue, Oct 5, 2021 at 6:14 PM John Keeping <john@metanate.com> wrote:  
+> > > >
+> > > > With PREEMPT_RT spin_unlock() is identical to spin_unlock_irq() so there
+> > > > is no reason to have a special case using the former.  Furthermore,
+> > > > spin_unlock() enables preemption meaning that a task in RESUMING or
+> > > > SUSPENDING state may be preempted by a higher priority task running
+> > > > pm_runtime_get_sync() leading to a livelock.
+> > > >
+> > > > Use the non-irq_safe path for all waiting so that the waiting task will
+> > > > block.
+> > > >
+> > > > Note that this changes only the waiting behaviour of irq_safe, other
+> > > > uses are left unchanged so that the parent device always remains active
+> > > > in the same way as !RT.
+> > > >
+> > > > Signed-off-by: John Keeping <john@metanate.com>  
+> > >
+> > > So basically, the idea is that the irq_safe flag should have no effect
+> > > when CONFIG_PREEMPT_RT is set, right?
+> > >
+> > > Wouldn't it be cleaner to make it not present at all in that case?  
+> >
+> > Yes, just replacing pm_runtime_irq_safe() with an empty function would
+> > also fix it, but I'm not sure if that will have unexpected effects from
+> > the parent device suspending/resuming, especially in terms of latency
+> > for handling interrupts.  
+> 
+> Well, the code as is doesn't work with CONFIG_PREEMPT_RT set anyway in general.
+> 
+> Also this is not just pm_runtime_irq_safe(), but every access to this
+> flag (and there's more  of them than just the ones changed below).
+> 
+> What about putting the flag under #ifdef CONFIG_PREEMPT_RT and
+> providing read/write accessor helpers for it that will be empty in
+> RT-enabled kernels?
 
-Randy, thanks for the .config!  That did the trick.
+That's the other approach I considered, but there are really two things
+that irq_safe means here:
 
-Andrew, attached is a replacement patch for
+1) Call the suspend/resume hooks with interrupts disabled
 
-	mm-migrate-add-cpu-hotplug-to-demotion-ifdef.patch
+2) Keep the parent device running and make other changes that allow (1)
+   on non-RT systems (for example in amba_pm_runtime_suspend() leave the
+   clock prepared when irq_safe is set, but unprepare it otherwise)
 
-I could do an incremental as well if that would be easier.  But, the fix
-here required a bit of a change of tactics from the original and
-necessitated a rewrite of the changelog.
+In the approach of leaving the flag unset on PREEMPT_RT we solve the
+primary problem which is that (1) is irrelevant on RT, but that would
+also affect (2) and I'm not sure whether that's desirable or not.
 
---------------0CEE4FD79D59425ECF720C35
-Content-Type: text/x-patch; charset=UTF-8;
- name="mm-migrate-separate-CPU-and-memory-hotplug-notifiers.patch"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
- filename*0="mm-migrate-separate-CPU-and-memory-hotplug-notifiers.patch"
+It's quite possible the answer is that the other changes don't matter
+and we should take the simpler approach of just removing irq_safe under
+CONFIG_PREEMPT_RT.  I'm becoming convinced that this is the right
+answer, but I'm not confident that I fully understand the wider
+ramifications.
 
-Subject: [PATCH] mm/migrate: separate CPU and memory hotplug notifiers
-Date: Wed, 6 Oct 2021 11:08:46 -0700
-Message-ID: <20211006180846.3321352-1-dave.hansen@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210924161255.E5FE8F7E@davehans-spike.ostc.intel.com>
-References: <20210924161255.E5FE8F7E@davehans-spike.ostc.intel.com>
+> > > > ---
+> > > >  drivers/base/power/runtime.c | 9 +++++----
+> > > >  1 file changed, 5 insertions(+), 4 deletions(-)
+> > > >
+> > > > diff --git a/drivers/base/power/runtime.c b/drivers/base/power/runtime.c
+> > > > index 96972d5f6ef3..5e0d349fab4e 100644
+> > > > --- a/drivers/base/power/runtime.c
+> > > > +++ b/drivers/base/power/runtime.c
+> > > > @@ -347,8 +347,9 @@ static int __rpm_callback(int (*cb)(struct device *), struct device *dev)
+> > > >  {
+> > > >         int retval = 0, idx;
+> > > >         bool use_links = dev->power.links_count > 0;
+> > > > +       bool irq_safe = dev->power.irq_safe && !IS_ENABLED(CONFIG_PREEMPT_RT);
+> > > >
+> > > > -       if (dev->power.irq_safe) {
+> > > > +       if (irq_safe) {
+> > > >                 spin_unlock(&dev->power.lock);
+> > > >         } else {
+> > > >                 spin_unlock_irq(&dev->power.lock);
+> > > > @@ -376,7 +377,7 @@ static int __rpm_callback(int (*cb)(struct device *), struct device *dev)
+> > > >         if (cb)
+> > > >                 retval = cb(dev);
+> > > >
+> > > > -       if (dev->power.irq_safe) {
+> > > > +       if (irq_safe) {
+> > > >                 spin_lock(&dev->power.lock);
+> > > >         } else {
+> > > >                 /*
+> > > > @@ -596,7 +597,7 @@ static int rpm_suspend(struct device *dev, int rpmflags)
+> > > >                         goto out;
+> > > >                 }
+> > > >
+> > > > -               if (dev->power.irq_safe) {
+> > > > +               if (dev->power.irq_safe && !IS_ENABLED(CONFIG_PREEMPT_RT)) {
+> > > >                         spin_unlock(&dev->power.lock);
+> > > >
+> > > >                         cpu_relax();
+> > > > @@ -777,7 +778,7 @@ static int rpm_resume(struct device *dev, int rpmflags)
+> > > >                         goto out;
+> > > >                 }
+> > > >
+> > > > -               if (dev->power.irq_safe) {
+> > > > +               if (dev->power.irq_safe && !IS_ENABLED(CONFIG_PREEMPT_RT)) {
+> > > >                         spin_unlock(&dev->power.lock);
+> > > >
+> > > >                         cpu_relax();
+> > > > --
+> > > > 2.33.0
+> > > >  
+> >  
 
-From: Dave Hansen <dave.hansen@linux.intel.com>
-
-Once upon a time, the node demotion updates were driven solely by memory
-hotplug events.  But now, there are handlers for both CPU and memory
-hotplug.
-
-However, the #ifdef around the code checks only memory hotplug.  A system=
-
-that has HOTPLUG_CPU=3Dy but MEMORY_HOTPLUG=3Dn would miss CPU hotplug ev=
-ents.
-
-Update the #ifdef around the common code.  Add memory and CPU-specific
-option are off.  Move some CPU-hotplug-specific functions to reside under=
-
-their specific #ifdef.
-
-Link: https://lkml.kernel.org/r/20210924161255.E5FE8F7E@davehans-spike.os=
-tc.intel.com
-Fixes: 884a6e5d1f93 ("mm/migrate: update node demotion order on hotplug e=
-vents")
-Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: "Huang, Ying" <ying.huang@intel.com>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: Wei Xu <weixugc@google.com>
-Cc: Oscar Salvador <osalvador@suse.de>
-Cc: David Rientjes <rientjes@google.com>
-Cc: Dan Williams <dan.j.williams@intel.com>
-Cc: David Hildenbrand <david@redhat.com>
-Cc: Greg Thelen <gthelen@google.com>
-Cc: Yang Shi <yang.shi@linux.alibaba.com>
-Cc: Randy Dunlap <rdunlap@infradead.org>
----
- mm/migrate.c | 78 +++++++++++++++++++++++++++++-----------------------
- 1 file changed, 44 insertions(+), 34 deletions(-)
-
-diff --git a/mm/migrate.c b/mm/migrate.c
-index a6311e46f605..5282157575ba 100644
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -3066,7 +3066,7 @@ void migrate_vma_finalize(struct migrate_vma *migra=
-te)
- EXPORT_SYMBOL(migrate_vma_finalize);
- #endif /* CONFIG_DEVICE_PRIVATE */
-=20
--#if defined(CONFIG_MEMORY_HOTPLUG)
-+#if defined(CONFIG_MEMORY_HOTPLUG) || defined(CONFIG_HOTPLUG_CPU)
- /* Disable reclaim-based migration. */
- static void __disable_all_migrate_targets(void)
- {
-@@ -3198,35 +3198,7 @@ static void __set_migration_target_nodes(void)
- 		goto again;
- }
-=20
--/*
-- * For callers that do not hold get_online_mems() already.
-- */
--static void set_migration_target_nodes(void)
--{
--	get_online_mems();
--	__set_migration_target_nodes();
--	put_online_mems();
--}
--
--/*
-- * React to hotplug events that might affect the migration targets
-- * like events that online or offline NUMA nodes.
-- *
-- * The ordering is also currently dependent on which nodes have
-- * CPUs.  That means we need CPU on/offline notification too.
-- */
--static int migration_online_cpu(unsigned int cpu)
--{
--	set_migration_target_nodes();
--	return 0;
--}
--
--static int migration_offline_cpu(unsigned int cpu)
--{
--	set_migration_target_nodes();
--	return 0;
--}
--
-+#if defined(CONFIG_MEMORY_HOTPLUG)
- /*
-  * This leaves migrate-on-reclaim transiently disabled between
-  * the MEM_GOING_OFFLINE and MEM_OFFLINE events.  This runs
-@@ -3284,7 +3256,45 @@ static int __meminit migrate_on_reclaim_callback(s=
-truct notifier_block *self,
- 	return notifier_from_errno(0);
- }
-=20
--static int __init migrate_on_reclaim_init(void)
-+static int __init migrate_on_reclaim_init_memhp(void)
-+{
-+	hotplug_memory_notifier(migrate_on_reclaim_callback, 100);
-+	return 0;
-+}
-+late_initcall(migrate_on_reclaim_init_memhp);
-+#endif /* CONFIG_MEMORY_HOTPLUG */
-+
-+#ifdef CONFIG_HOTPLUG_CPU
-+/*
-+ * For callers that do not hold get_online_mems() already.
-+ */
-+static void set_migration_target_nodes(void)
-+{
-+	get_online_mems();
-+	__set_migration_target_nodes();
-+	put_online_mems();
-+}
-+
-+/*
-+ * React to hotplug events that might affect the migration targets
-+ * like events that online or offline NUMA nodes.
-+ *
-+ * The ordering is also currently dependent on which nodes have
-+ * CPUs.  That means we need CPU on/offline notification too.
-+ */
-+static int migration_online_cpu(unsigned int cpu)
-+{
-+	set_migration_target_nodes();
-+	return 0;
-+}
-+
-+static int migration_offline_cpu(unsigned int cpu)
-+{
-+	set_migration_target_nodes();
-+	return 0;
-+}
-+
-+static int __init migrate_on_reclaim_init_cpuhp(void)
- {
- 	int ret;
-=20
-@@ -3299,8 +3309,8 @@ static int __init migrate_on_reclaim_init(void)
- 	 */
- 	WARN_ON(ret < 0);
-=20
--	hotplug_memory_notifier(migrate_on_reclaim_callback, 100);
- 	return 0;
- }
--late_initcall(migrate_on_reclaim_init);
--#endif /* CONFIG_MEMORY_HOTPLUG */
-+late_initcall(migrate_on_reclaim_init_cpuhp);
-+#endif /* CONFIG_HOTPLUG_CPU */
-+#endif /* CONFIG_MEMORY_HOTPLUG || CONFIG_HOTPLUG_CPU */
---=20
-2.25.1
-
-
---------------0CEE4FD79D59425ECF720C35--
