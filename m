@@ -2,76 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E79B6424937
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 23:51:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCB12424945
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 23:56:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239743AbhJFVxW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 17:53:22 -0400
-Received: from vmicros1.altlinux.org ([194.107.17.57]:60822 "EHLO
-        vmicros1.altlinux.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233813AbhJFVxT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 17:53:19 -0400
-Received: from mua.local.altlinux.org (mua.local.altlinux.org [192.168.1.14])
-        by vmicros1.altlinux.org (Postfix) with ESMTP id 0B75172C8C6;
-        Thu,  7 Oct 2021 00:51:25 +0300 (MSK)
-Received: by mua.local.altlinux.org (Postfix, from userid 508)
-        id E5E1B7CF7F2; Thu,  7 Oct 2021 00:51:24 +0300 (MSK)
-Date:   Thu, 7 Oct 2021 00:51:24 +0300
-From:   "Dmitry V. Levin" <ldv@altlinux.org>
-To:     Chris Packham <Chris.Packham@alliedtelesis.co.nz>,
-        Eugene Syromyatnikov <evgsyr@gmail.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        netdev <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: strace build error static assertion failed: "XFRM_MSG_MAPPING !=
- 0x26"
-Message-ID: <20211006215124.GB11000@altlinux.org>
-References: <1eb25b8f-09c0-8f5e-3227-f0f318785995@alliedtelesis.co.nz>
- <20211006214816.GA11000@altlinux.org>
+        id S239752AbhJFV6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 17:58:36 -0400
+Received: from mga12.intel.com ([192.55.52.136]:58570 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230213AbhJFV6f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 17:58:35 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10129"; a="206228684"
+X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; 
+   d="scan'208";a="206228684"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2021 14:56:42 -0700
+X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; 
+   d="scan'208";a="624033044"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2021 14:56:40 -0700
+Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
+        by paasikivi.fi.intel.com (Postfix) with SMTP id A0E4020375;
+        Thu,  7 Oct 2021 00:56:37 +0300 (EEST)
+Date:   Thu, 7 Oct 2021 00:56:37 +0300
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Ricardo Ribalda <ribalda@chromium.org>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Yong Zhi <yong.zhi@intel.com>,
+        Bingbu Cao <bingbu.cao@intel.com>, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Chiranjeevi Rapolu <chiranjeevi.rapolu@intel.com>
+Subject: Re: [PATCH v3 1/8] media: ipu3-cio2 Check num_planes and sizes in
+ queue_setup
+Message-ID: <YV4blXBkmYhCXxKG@paasikivi.fi.intel.com>
+References: <20211001112522.2839602-1-ribalda@chromium.org>
+ <20211001112522.2839602-2-ribalda@chromium.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=koi8-r
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211006214816.GA11000@altlinux.org>
+In-Reply-To: <20211001112522.2839602-2-ribalda@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 07, 2021 at 12:48:16AM +0300, Dmitry V. Levin wrote:
-> On Wed, Oct 06, 2021 at 09:43:11PM +0000, Chris Packham wrote:
-> > Hi,
-> > 
-> > When compiling strace-5.14 (although it looks like the same problem 
-> > would exist with bleeding edge strace) with headers from the tip of 
-> > Linus's tree (5.15.0-rc4) I get the following error
-> > 
-> > strace: In file included from static_assert.h:11,
-> > strace:ššššššššššššššššš from print_fields.h:12,
-> > strace:ššššššššššššššššš from defs.h:1901,
-> > strace:ššššššššššššššššš from netlink.c:10:
-> > strace: xlat/nl_xfrm_types.h:162:1: error: static assertion failed: 
-> > "XFRM_MSG_MAPPING != 0x26"
-> > strace:š static_assert((XFRM_MSG_MAPPING) == (0x26), "XFRM_MSG_MAPPING 
-> > != 0x26");
-> > strace:š ^~~~~~~~~~~~~
-> > 
-> > It looks like commit 2d151d39073a ("xfrm: Add possibility to set the 
-> > default to block if we have no policy") added some XFRM messages and the 
-> > numbers shifted. Is this considered an ABI breakage?
-> > 
-> > I'm not sure if this is a strace problem or a linux problem so I'm 
-> > reporting it in both places.
-> 
-> Yes, this is already covered by 
-> https://lore.kernel.org/lkml/20210912122234.GA22469@asgard.redhat.com/T/#u
-> 
-> Thanks,
+Hi Ricardo,
 
-I wonder, why the fix hasn't been merged yet, though.
+On Fri, Oct 01, 2021 at 11:25:15AM +0000, Ricardo Ribalda wrote:
+> If num_planes is different than zero num_planes and sizes must be
+> checked to support the format.
+> 
+> Fix the following v4l2-compliance error:
+> 
+> Buffer ioctls (Input 0):
+>     fail: v4l2-test-buffers.cpp(717): q.create_bufs(node, 1, &fmt) != EINVAL
+>   test VIDIOC_REQBUFS/CREATE_BUFS/QUERYBUF: FAIL
+> 
+> Reviewed-by: Bingbu Cao <bingbu.cao@intel.com>
+> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 
+I attempted to apply the set to my tree but it doesn't seem to.
+
+Do you happen to have extra patches in your tree?
+
+I just pushed mine to the master branch here:
+
+	https://git.linuxtv.org/sailus/media_tree.git/
 
 -- 
-ldv
+Sakari Ailus
