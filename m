@@ -2,102 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 575B3424373
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 18:55:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 184AB42437E
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 18:56:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239403AbhJFQ5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 12:57:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43988 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231484AbhJFQ5J (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 12:57:09 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21AD9C061746
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 09:55:17 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id y1so2036075plk.10
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 09:55:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EU/1nSdcmq9wxGvA5GjD0Uso7E7y+C1WRcEA7I5q/r4=;
-        b=eNyLPDeZ5JIwxplTq2YpnqmBRnPkTyDm/CiCAZZIjMvjlRaHHiZkdM9zWKJn6R90UG
-         Xz2B4VSptag9Dvk36DwNWbBj6aBUYg3Ypt+J64VBkJN0dKJt97XOH/iu1GIpcbIy1095
-         t12dvcXyi37tnTUK6y+5WzOkMsTw2Nnckufgh7OXTmaVH+UqCZBdjbSon1yTNTEyGOuh
-         e8zcY8O7wx7o3D+WINfqULkiKDyllpMm0qJlC0cMKaqCCRoxw2ZIGn7MSPATibpv3T73
-         xgYLxcdnBhajldYoJPRqEHbLD24wTiN2T1ZBlZh+QcNzeKPuxH2cKm5n8Y2iFekOV+/D
-         UwPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EU/1nSdcmq9wxGvA5GjD0Uso7E7y+C1WRcEA7I5q/r4=;
-        b=VFZ9AREvSxYuBhvdYBu0H2ei6Yx9wzacKDIW25BUZFfsqdxR21V09gCKpy69oQvCt/
-         aSWTwRSCAnKP+sortVtvUyH2A3NBtvqclyQ9xD9X8GJqDzl5EaGYMT5yHj5Ig5VS6KwC
-         2fORSsZvhzY+JhdA2ZphUxWt8S2LiNtPfpXsLKK2ABh4TE9+rvYWFRyo3yOaf/M5V/D8
-         d5yx2BolsKInvTDb2LGW3dyLNemWWTyi7xON1qSMJY0dgLF89hKZmotJuedv3ejIzqxO
-         7sRMQpAF8czAVXd9f8Xrz4LC0Sxtzpb+uhHXnmPEH2MSh/6vofYL3i6DwrWn6gEBEzV/
-         KFxQ==
-X-Gm-Message-State: AOAM533g0eVNy/7oaTfa//c9QiAP+UElgOfsr0sXIn/TlkzMo+fsOH24
-        WrbIuntA9VGWLD5bDYe0uFwm+vRiwiliVpvn7LfacuY0JGPS/A==
-X-Google-Smtp-Source: ABdhPJwmXV8J2FW3/DTnnJvaCZrFumM5at5TF4jvaHiQVpy8zO4E21sXch+DB+P2SPwIlu8bOPoxaBj26blSG5gM6N4=
-X-Received: by 2002:a17:90b:3552:: with SMTP id lt18mr11923608pjb.63.1633539316349;
- Wed, 06 Oct 2021 09:55:16 -0700 (PDT)
+        id S239336AbhJFQ60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 12:58:26 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:48537 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229564AbhJFQ6X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 12:58:23 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1633539391; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Message-ID: Date: Subject: In-Reply-To: References: Cc:
+ To: From: Sender; bh=lQZLnUbAnV1z1oOtEcGvv/ll8WYBTl5+AI3Ku0BvaiY=; b=AIkZa0gll0dq+AzHbba+2duLtyyxy3yq82C6dgkj75jjlQbjMu7A910L+koZTlqKLQnA/aRP
+ WKC+EWfgT/97ivZLV1VkBXmph7LdI1NvO23X4giItpdGbs+AiCA6T0h1YsuHaPNqE7wN0R6Q
+ TYOQ9ey3zDd33nkUn4ckZhkjUFY=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 615dd538ff0285fb0a9e0c01 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 06 Oct 2021 16:56:24
+ GMT
+Sender: pillair=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id CA6E7C4314D; Wed,  6 Oct 2021 16:56:24 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from PILLAIR1 (unknown [103.155.223.104])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: pillair)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6679DC43460;
+        Wed,  6 Oct 2021 16:56:18 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 6679DC43460
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   <pillair@codeaurora.org>
+To:     "'Stephen Boyd'" <swboyd@chromium.org>,
+        "'Rob Herring'" <robh@kernel.org>
+Cc:     <mathieu.poirier@linaro.org>, <p.zabel@pengutronix.de>,
+        <devicetree@vger.kernel.org>, <bjorn.andersson@linaro.org>,
+        <linux-kernel@vger.kernel.org>, <robh+dt@kernel.org>,
+        <sibis@codeaurora.org>, <kuabhs@chromium.org>, <agross@kernel.org>,
+        <ohad@wizery.com>, <linux-arm-msm@vger.kernel.org>,
+        <mpubbise@codeaurora.org>
+References: <1633330133-29617-1-git-send-email-pillair@codeaurora.org> <1633330133-29617-3-git-send-email-pillair@codeaurora.org> <1633350086.759437.1051509.nullmailer@robh.at.kernel.org> <006801d7ba70$54daae00$fe900a00$@codeaurora.org> <CAE-0n51rsfFX_-Vxn2tumWiw9K-Tf244rhTedc76UKx5ADzKyg@mail.gmail.com>
+In-Reply-To: <CAE-0n51rsfFX_-Vxn2tumWiw9K-Tf244rhTedc76UKx5ADzKyg@mail.gmail.com>
+Subject: RE: [PATCH v6 2/3] dt-bindings: remoteproc: qcom: Add SC7280 WPSS support
+Date:   Wed, 6 Oct 2021 22:26:15 +0530
+Message-ID: <006a01d7bad3$1758f290$460ad7b0$@codeaurora.org>
 MIME-Version: 1.0
-References: <20210930222048.1692635-1-dlatypov@google.com> <20210930222048.1692635-2-dlatypov@google.com>
-In-Reply-To: <20210930222048.1692635-2-dlatypov@google.com>
-From:   Brendan Higgins <brendanhiggins@google.com>
-Date:   Wed, 6 Oct 2021 09:55:05 -0700
-Message-ID: <CAFd5g45jD+M=xmx7eoVX2sQMNfrOCFGB_H8PU+VZo=eO8q6Bzg@mail.gmail.com>
-Subject: Re: [PATCH v4 1/4] kunit: add 'kunit.action' param to allow listing
- out tests
-To:     Daniel Latypov <dlatypov@google.com>
-Cc:     davidgow@google.com, linux-kernel@vger.kernel.org,
-        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
-        skhan@linuxfoundation.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+thread-index: AQKwJKLJ4tjmgoIJWycFdR/OOcUEpAEIhLzCAlTlvmMBQz416ALxzEPWqdjIsSA=
+Content-Language: en-us
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 3:20 PM Daniel Latypov <dlatypov@google.com> wrote:
->
-> Context:
-> It's difficult to map a given .kunitconfig => set of enabled tests.
-> Letting kunit.py figure that out would be useful.
->
-> This patch:
-> * is intended to be an implementation detail used only by kunit.py
-> * adds a kunit.action module param with one valid non-null value, "list"
-> * for the "list" action, it simply prints out "<suite>.<test>"
-> * leaves the kunit.py changes to make use of this for another patch.
->
-> Note: kunit.filter_glob is respected for this and all future actions.
->
-> Hack: we print a TAP header (but no test plan) to allow kunit.py to
-> use the same code to pick up KUnit output that it does for normal tests.
-> Since this is intended to be an implementation detail, it seems fine for
-> now. Maybe in the future we output each test as SKIPPED or the like.
->
-> Go with a more generic "action" param, since it seems like we might
-> eventually have more modes besides just running or listing tests, e.g.
-> * perhaps a benchmark mode that reruns test cases and reports timing
-> * perhaps a deflake mode that reruns test cases that failed
-> * perhaps a mode where we randomize test order to try and catch
->   hermeticity bugs like "test a only passes if run after test b"
->
-> Tested:
-> $ ./tools/testing/kunit/kunit.py run --kernel_arg=kunit.action=list --raw_output=kunit
-> ...
-> TAP version 14
-> 1..1
-> example.example_simple_test
-> example.example_skip_test
-> example.example_mark_skipped_test
-> reboot: System halted
->
-> Signed-off-by: Daniel Latypov <dlatypov@google.com>
-> Reviewed-by: David Gow <davidgow@google.com>
 
-Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+
+> -----Original Message-----
+> From: Stephen Boyd <swboyd@chromium.org>
+> Sent: Wednesday, October 6, 2021 12:40 PM
+> To: Rob Herring <robh@kernel.org>; pillair@codeaurora.org
+> Cc: mathieu.poirier@linaro.org; p.zabel@pengutronix.de;
+> devicetree@vger.kernel.org; bjorn.andersson@linaro.org; linux-
+> kernel@vger.kernel.org; robh+dt@kernel.org; sibis@codeaurora.org;
+> kuabhs@chromium.org; agross@kernel.org; ohad@wizery.com; linux-arm-
+> msm@vger.kernel.org; mpubbise@codeaurora.org
+> Subject: RE: [PATCH v6 2/3] dt-bindings: remoteproc: qcom: Add SC7280
+> WPSS support
+> 
+> Quoting pillair@codeaurora.org (2021-10-05 22:09:18)
+> >
+> > >
+> > > If you already ran 'make dt_binding_check' and didn't see the above
+> > error(s),
+> > > then make sure 'yamllint' is installed and dt-schema is up to
+> > > date:
+> > >
+> > > pip3 install dtschema --upgrade
+> > >
+> > > Please check and re-submit.
+> >
+> >
+> > I have updated the dtschema (2021.7) and still not seeing these
+> > errors. I will fix the errors mentioned in this log though.
+> > Is there any other flag/setting, which is to be enabled ?
+> >
+> 
+> I have dtschema-2021.10 installed.
+
+Thanks Stephen. Yes, my dtschema, for some reason, was not getting updated.
+After upgrading it to 2021.10, I was able to see the same errors.
+I will send out the next patchset with these errors fixed.
+
+Thanks,
+Rakesh Pillai.
+
