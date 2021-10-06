@@ -2,110 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12664424217
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 18:01:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91FE4424205
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 18:00:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239338AbhJFQD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 12:03:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39430 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239332AbhJFQD0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 12:03:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E502610CC
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 16:01:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633536094;
-        bh=ZlaiC0n6P5r9j8bdKPC7sgApMtJMYoiumv6YMDwMIYE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=cRq8b+GkF+Z16Yxq4pCkXjHpb0Lt1XIkRzLrmviXQKI457GNdGL32P6BZBGwT2wFx
-         V+Cp3cOEpmbSOOZ7v+bOmFVH2e7O3pVLtvdL7fvlcyGwmzxwJsq9wyZ/WwxcLD5ysa
-         BTfXJrs8lGHwVmbMrmugHv4jrgQb56nTCz58JACf5xYejs7dwfz3JQxcoinR80V1by
-         I1b9uSO4ZqnF/ErYvzn2Q5VImQWROOBe4CD+/iN1IEYzJRxxi6RVqFkxIJGQVMrflM
-         sGaZZNfdi5RifYwlmvvtF4rINu2UMNGMjs1NsIlklSZCGIUBVg+Me/WsHpXjxUFyLA
-         2EJs8sai5pFBw==
-Received: by mail-ot1-f52.google.com with SMTP id j11-20020a9d190b000000b00546fac94456so3669943ota.6
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 09:01:34 -0700 (PDT)
-X-Gm-Message-State: AOAM532Sf3jKVygQ0gtcIcKpNBZtJF+G1LDo8qCu/F8ESxzoEcR7N6ut
-        cg1VTjxvanPmHbPKDx2mlv3Tu03BAb+tMbrlYSI=
-X-Google-Smtp-Source: ABdhPJyZQ57EKW43tv7SPSNvfHisRpT/RfL8WcMrAs9oQM6KMMZU8HVVF10G0DOUcga9tCV5zpzCtvKLo6ZGqAckfAU=
-X-Received: by 2002:a05:6830:3189:: with SMTP id p9mr19970544ots.147.1633536093391;
- Wed, 06 Oct 2021 09:01:33 -0700 (PDT)
+        id S239282AbhJFQCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 12:02:30 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3939 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230021AbhJFQC3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 12:02:29 -0400
+Received: from fraeml736-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HPfHK39S1z67NPW;
+        Wed,  6 Oct 2021 23:57:49 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml736-chm.china.huawei.com (10.206.15.217) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Wed, 6 Oct 2021 18:00:34 +0200
+Received: from [10.47.95.252] (10.47.95.252) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2308.8; Wed, 6 Oct 2021
+ 17:00:33 +0100
+Subject: Re: [PATCH] scsi: storvsc: Cap scsi_driver.can_queue to fix a hang
+ issue during boot
+To:     Michael Kelley <mikelley@microsoft.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        "ming.lei@redhat.com" <ming.lei@redhat.com>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+References: <20211006070345.51713-1-decui@microsoft.com>
+ <e36619df-652d-3550-cb4d-9b65b2f5faee@huawei.com>
+ <MWHPR21MB159368D7BAAD90E19F31D1C6D7B09@MWHPR21MB1593.namprd21.prod.outlook.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <d9416464-cf0f-2275-2d16-94e81d5b4362@huawei.com>
+Date:   Wed, 6 Oct 2021 17:03:09 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-References: <20210928154143.2106903-1-arnd@kernel.org> <20210928154143.2106903-7-arnd@kernel.org>
-In-Reply-To: <20210928154143.2106903-7-arnd@kernel.org>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Wed, 6 Oct 2021 18:01:22 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXF-iJj2cg=M8BD96OE8ozA_vB8yEN+f8HvRHY=VYb0pwg@mail.gmail.com>
-Message-ID: <CAMj1kXF-iJj2cg=M8BD96OE8ozA_vB8yEN+f8HvRHY=VYb0pwg@mail.gmail.com>
-Subject: Re: [PATCH 06/14] ARM: disallow CONFIG_THUMB with ARMv4
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <MWHPR21MB159368D7BAAD90E19F31D1C6D7B09@MWHPR21MB1593.namprd21.prod.outlook.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.95.252]
+X-ClientProxiedBy: lhreml709-chm.china.huawei.com (10.201.108.58) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 28 Sept 2021 at 17:42, Arnd Bergmann <arnd@kernel.org> wrote:
->
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> We can currently build a multi-cpu enabled kernel that allows both ARMv4
-> and ARMv5 CPUs, and also supports THUMB mode in user space.
->
-> However, returning to user space in this configuration with the usr_ret
-> macro requires the use of the 'bx' instruction, which is refused by
-> the assembler:
->
-> arch/arm/kernel/entry-armv.S: Assembler messages:
-> arch/arm/kernel/entry-armv.S:937: Error: selected processor does not support `bx lr' in ARM mode
-> arch/arm/kernel/entry-armv.S:960: Error: selected processor does not support `bx lr' in ARM mode
-> arch/arm/kernel/entry-armv.S:1003: Error: selected processor does not support `bx lr' in ARM mode
-> <instantiation>:2:2: note: instruction requires: armv4t
->  bx lr
->
-> While it would be possible to handle this correctly in principle, doing so
-> seems to not be worth it, if we can simply avoid the problem by enforcing
-> that a kernel supporting both ARMv4 and a later CPU architecture cannot
-> run THUMB binaries.
->
+On 06/10/2021 16:01, Michael Kelley wrote:
+> From: John Garry <john.garry@huawei.com> Sent: Wednesday, October 6, 2021 1:17 AM
+>>
+>> On 06/10/2021 08:03, Dexuan Cui wrote:
+>>> After commit ea2f0f77538c, a 416-CPU VM running on Hyper-V hangs during
+>>> boot because scsi_add_host_with_dma() sets shost->cmd_per_lun to a
+>>> negative number:
+>>> 	'max_outstanding_req_per_channel' is 352,
+>>> 	'max_sub_channels' is (416 - 1) / 4 = 103, so in storvsc_probe(),
+>>> scsi_driver.can_queue = 352 * (103 + 1) * (100 - 10) / 100 = 32947, which
+>>> is bigger than SHRT_MAX (i.e. 32767).
+>>
+>> Out of curiosity, are these values realistic? You're capping can_queue
+>> just because of a data size issue, so, if these values are realistic,
+>> seems a weak reason.
+>>
+> 
+> The calculated value of can_queue is not realistic.  The blk-mq layer
+> caps the number of tags at 10240, 
 
-I had a quick look, and it seems that the only way to handle this
-correctly is to emit the BX instructions, and use code patching to
-change them into 'mov pc, <reg>' if the runtime detected CPU is not
-Thumb capable. The usual approach (emitting 'tst <reg>, #1; moveq pc,
-<reg>; bx lr') is not feasible here, since we run out of space in the
-kuser helper slots.
+nit: 1024, I think
 
-Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
+> so the excessively large value
+> calculated here didn't definitively break anything, though it can be
+> poor from a performance tuning standpoint. The algorithm used here
+> is fairly broken, particularly in VMs with large CPU counts.  I have an
+> effort underway to fix it, but its part of a bigger set of changes to also
+> do a better job on the perf tuning aspects.
+> 
+>>>
+>>> Fix the hang issue by capping scsi_driver.can_queue.
+>>>
+>>> Add the below Fixed tag though ea2f0f77538c itself is good.
+>>>
+>>> Fixes: ea2f0f77538c ("scsi: core: Cap scsi_host cmd_per_lun at can_queue")
+>>> Cc: stable@vger.kernel.org
+>>> Signed-off-by: Dexuan Cui <decui@microsoft.com>
+>>> ---
+>>>    drivers/scsi/storvsc_drv.c | 10 ++++++++++
+>>>    1 file changed, 10 insertions(+)
+>>>
+>>> diff --git a/drivers/scsi/storvsc_drv.c b/drivers/scsi/storvsc_drv.c
+>>> index ebbbc1299c62..ba374908aec2 100644
+>>> --- a/drivers/scsi/storvsc_drv.c
+>>> +++ b/drivers/scsi/storvsc_drv.c
+>>> @@ -1976,6 +1976,16 @@ static int storvsc_probe(struct hv_device *device,
+>>>    				(max_sub_channels + 1) *
+>>>    				(100 - ring_avail_percent_lowater) / 100;
+>>>
+>>> +	/*
+>>> +	 * v5.14 (see commit ea2f0f77538c) implicitly requires that
+>>> +	 * scsi_driver.can_queue should not exceed SHRT_MAX, otherwise
+>>> +	 * scsi_add_host_with_dma() sets shost->cmd_per_lun to a negative
+>>> +	 * number (note: the type of the "cmd_per_lun" field is "short"), and
+>>> +	 * the system may hang during early boot.
+>>> +	 */
+>>
+>> The different data sizes for cmd_per_lun and can_queue are problematic here.
+>>
+>> I'd be more inclined to set cmd_per_lun to the same data size as
+>> can_queue. We did discuss this when ea2f0f77538c was upstreamed
+>> (actually it was the other way around - setting can_queue to 16b).
+> 
+> I can see that making can_queue be 16 bits would make sense.
+> And it also seems that both cmd_per_lun and can_queue should be
+> unsigned, though I don't the implications of making such a change.
+> 
+> But in today's world where cmd_per_lun is "short" and can_queue
+> is "int",  ea2f0f77538c seems incorrect to me.  The comparison should
+> be done as "int", not "short", in order to prevent the truncation
+> problem with can_queue that Dexuan's patch is trying to address.
 
-> This turned up while build-testing with clang; for some reason,
-> gcc never triggered the problem.
->
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  arch/arm/mm/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/arm/mm/Kconfig b/arch/arm/mm/Kconfig
-> index 82aa990c4180..58afba346729 100644
-> --- a/arch/arm/mm/Kconfig
-> +++ b/arch/arm/mm/Kconfig
-> @@ -675,7 +675,7 @@ config ARM_PV_FIXUP
->
->  config ARM_THUMB
->         bool "Support Thumb user binaries" if !CPU_THUMBONLY && EXPERT
-> -       depends on CPU_THUMB_CAPABLE
-> +       depends on CPU_THUMB_CAPABLE && !CPU_32v4
->         default y
->         help
->           Say Y if you want to include kernel support for running user space
-> --
-> 2.29.2
->
+Yeah, right. I think can_queue values > short_max was considered outside 
+the realms of what is realistic then, hence my sloppy programming.
+
+> The result will always fit in back into the "short" cmd_per_lun since
+> it is calculating a "min" function.
+> 
+>>
+>> Thanks,
+>> John
+>>
+>>
+>>> +	if (scsi_driver.can_queue > SHRT_MAX)
+>>> +		scsi_driver.can_queue = SHRT_MAX;
+>>> +
+> 
+> This fix works, but is a more of a temporary hack until I can finish
+> a larger overhaul of the algorithm. 
+
+
+> But for now, I think the better
+> fix is for ea2f0f77538c to do the comparison as "int" instead of "short".
+> 
+
+That seems better to me. But Let's wait for other possible opinion.
+
+Thanks,
+John
