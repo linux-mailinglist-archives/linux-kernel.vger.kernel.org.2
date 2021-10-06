@@ -2,111 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 695BA424481
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 19:39:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF392424486
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 19:39:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239006AbhJFRlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 13:41:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54402 "EHLO
+        id S231771AbhJFRle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 13:41:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229564AbhJFRkz (ORCPT
+        with ESMTP id S237771AbhJFRl3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 13:40:55 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95180C061746;
-        Wed,  6 Oct 2021 10:39:02 -0700 (PDT)
-Date:   Wed, 06 Oct 2021 17:39:00 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1633541941;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tmbCGwSIF0sTKEPRrtpjeLrvJBcFlKHJARen+0CdZNM=;
-        b=j9gzTikZwZftLr1Ex0jtZ6tkN5DMbJ09AclpuXtg9Mm36acfCWMCMKRlda2QQOMJ1llXvf
-        CPHIBBRih04AI/dbl4kEUoD1F44ALZkxhu1TeHDIkthBvRzTMtdcIh1g4Kew57U59dLEit
-        1HLI7Y/+Uc04GHtqt3AeSlQAOlaPGZn6ge+d+XXTFyvvfok3F5vw1h5MyrMmxLIRmntJfB
-        pnFimzcuJMMzrOefPnFzUBjcLzy7ILdApKhLMHN4O5QMIg4ed4bLBvMCVWJuFQb1RnJEHe
-        5bfmAcUNcPivXs9lveV3HfKvYaQAom8JUYQG1k2LVIWa4aMGOzC+9cw9J4e4zw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1633541941;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tmbCGwSIF0sTKEPRrtpjeLrvJBcFlKHJARen+0CdZNM=;
-        b=KQAPkq9MvqXPzwR4l46hAockooMvKaJPJWMgmDtxaQqgs49w9X756CPI9xnAIiwBkYiBBP
-        Os8uK2/sJ8NYDsAw==
-From:   "tip-bot2 for James Morse" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/resctrl: Fix kfree() of the wrong type in
- domain_add_cpu()
-Cc:     James Morse <james.morse@arm.com>, Borislav Petkov <bp@suse.de>,
-        Reinette Chatre <reinette.chatre@intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210917165924.28254-1-james.morse@arm.com>
-References: <20210917165924.28254-1-james.morse@arm.com>
+        Wed, 6 Oct 2021 13:41:29 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4413CC061760
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 10:39:37 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id nn3-20020a17090b38c300b001a03bb6c4ebso486529pjb.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 10:39:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=0wxSw7qisVOunDrqS7f7e7Lry8Q/2GqOFqAP3EHViQE=;
+        b=COvDgniH8rLSITY0sop34UzfIg0DlqGltWATNZ0SwKM8ra7XKVYwhSswDmjxFfnWoB
+         jkXyQ5g81nWBtjk9JV9iBqWz6bjMkkUx6Btx/pafmHt7Yp0WycPstzVublfXjLC38/A/
+         rVbo6bpML3Fd6rqS7mWwENRjEw5Mz+bU6Y8+g=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0wxSw7qisVOunDrqS7f7e7Lry8Q/2GqOFqAP3EHViQE=;
+        b=lQFcp8F5RLMdf0HPS6jyyIKhwJ0ct64R+uJVC9QaXWqZXXwH5ktKooWX21MGJiqcwK
+         SgMk8BNtXL3r9pWPKPv4SnjBt+a4YRp7LMWMoBBVNJUpIov8lTHkueEnM+3ncdPmL9xr
+         NS9xUxCrxl5IWgDCLEqQaVcZasy/hmaD4sqefn5+YxBGqw0hGzht2l6at5o2YcwRERbj
+         ButNMMNf3jQZfypqLtZSvt2LidCl5FR6fUiTAYkcxTssdpizRHeugh77ZKRceKUJLYx8
+         /PC2PNdbQYQ/nPIBzYCLcn4i9UCr778FQIzpuX0jmS/Pc6d0es6q3WvHXqZDNmH1lk3x
+         XKbg==
+X-Gm-Message-State: AOAM530SOp+CQ44TzrtcUq2KgZ4//n6vlOLsOgEh2K/7BQsIPbhiV6d3
+        UNNXP7TNTcsne+ANqkqO13k2tg==
+X-Google-Smtp-Source: ABdhPJwcHEgZhjlJeUc2eGnkpbuDa8JMMBuwvTTpop0E/nxpp6bhbr/QT6/qllxHfPV3wROn0Dgjbw==
+X-Received: by 2002:a17:90b:390d:: with SMTP id ob13mr38595pjb.50.1633541976756;
+        Wed, 06 Oct 2021 10:39:36 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:a463:ae21:d1fc:ddfd])
+        by smtp.gmail.com with UTF8SMTPSA id 11sm20751156pfl.41.2021.10.06.10.39.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Oct 2021 10:39:36 -0700 (PDT)
+Date:   Wed, 6 Oct 2021 10:39:34 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Balakrishna Godavarthi <bgodavar@codeaurora.org>
+Cc:     marcel@holtmann.org, bjorn.andersson@linaro.org,
+        johan.hedberg@gmail.com, linux-kernel@vger.kernel.org,
+        linux-bluetooth@vger.kernel.org, hemantg@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, rjliao@codeaurora.org,
+        pharish@codeaurora.org, abhishekpandit@chromium.org
+Subject: Re: [PATCH v1 2/2] arm64: dts: qcom: sc7280: update bluetooth node
+ in SC7280 IDP2 board
+Message-ID: <YV3fVjd5ngQhuA4K@google.com>
+References: <1633523403-32264-1-git-send-email-bgodavar@codeaurora.org>
+ <1633523403-32264-2-git-send-email-bgodavar@codeaurora.org>
 MIME-Version: 1.0
-Message-ID: <163354194034.25758.2403233705072752680.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1633523403-32264-2-git-send-email-bgodavar@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
+On Wed, Oct 06, 2021 at 06:00:03PM +0530, Balakrishna Godavarthi wrote:
+> Subject: arm64: dts: qcom: sc7280: update bluetooth node in SC7280 IDP2 board
 
-Commit-ID:     d4ebfca26dfab2803c31d68a30225be31b2f9ecf
-Gitweb:        https://git.kernel.org/tip/d4ebfca26dfab2803c31d68a30225be31b2f9ecf
-Author:        James Morse <james.morse@arm.com>
-AuthorDate:    Fri, 17 Sep 2021 16:59:24 
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Wed, 06 Oct 2021 18:45:27 +02:00
+Not super helpful, what does 'update' mean?
 
-x86/resctrl: Fix kfree() of the wrong type in domain_add_cpu()
+It might be easier to have a single patch for both IDP boards, since
+the Bluetooth node is added in the common sc7280-idp.dtsi board,
+rather than explaining what this patch does :)
 
-Commit in Fixes separated the architecture specific and filesystem parts
-of the resctrl domain structures.
+> This patch updates bluetooth node in SC7280 IDP2 board.
+> 
+> Signed-off-by: Balakrishna Godavarthi <bgodavar@codeaurora.org>
+> ---
+>  arch/arm64/boot/dts/qcom/sc7280-idp2.dts | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp2.dts b/arch/arm64/boot/dts/qcom/sc7280-idp2.dts
+> index 1fc2add..5c8d54b 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7280-idp2.dts
+> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp2.dts
+> @@ -15,9 +15,15 @@
+>  
+>  	aliases {
+>  		serial0 = &uart5;
+> +		bluetooth0 = &bluetooth;
+> +		hsuart0 = &uart7;
+>  	};
 
-This left the error paths in domain_add_cpu() kfree()ing the memory with
-the wrong type.
+Sort aliases alphabetically
 
-This will cause a problem if someone adds a new member to struct
-rdt_hw_domain meaning d_resctrl is no longer the first member.
+>  
+>  	chosen {
+>  		stdout-path = "serial0:115200n8";
+>  	};
+>  };
+> +
+> +&bluetooth: wcn6750-bt {
 
-Fixes: 792e0f6f789b ("x86/resctrl: Split struct rdt_domain")
-Signed-off-by: James Morse <james.morse@arm.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Acked-by: Reinette Chatre <reinette.chatre@intel.com>
-Link: https://lkml.kernel.org/r/20210917165924.28254-1-james.morse@arm.com
----
- arch/x86/kernel/cpu/resctrl/core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+&bluetooth {
 
-diff --git a/arch/x86/kernel/cpu/resctrl/core.c b/arch/x86/kernel/cpu/resctrl/core.c
-index b5de5a6..bb1c3f5 100644
---- a/arch/x86/kernel/cpu/resctrl/core.c
-+++ b/arch/x86/kernel/cpu/resctrl/core.c
-@@ -527,14 +527,14 @@ static void domain_add_cpu(int cpu, struct rdt_resource *r)
- 	rdt_domain_reconfigure_cdp(r);
- 
- 	if (r->alloc_capable && domain_setup_ctrlval(r, d)) {
--		kfree(d);
-+		kfree(hw_dom);
- 		return;
- 	}
- 
- 	if (r->mon_capable && domain_setup_mon_state(r, d)) {
- 		kfree(hw_dom->ctrl_val);
- 		kfree(hw_dom->mbps_val);
--		kfree(d);
-+		kfree(hw_dom);
- 		return;
- 	}
- 
+> +	vddio-supply = <&vreg_l18b_1p8>;
+
+nit: if it's not really common across IDP boards or a default, you could
+leave it unconfigured in sc7280-idp.dtsi, and set in both board files.
+Just an idea, with only two boards it doesn't really matter too much.
