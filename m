@@ -2,161 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DB15423CBF
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 13:24:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1D66423CC1
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 13:24:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238515AbhJFLZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 07:25:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24091 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238661AbhJFLZm (ORCPT
+        id S230461AbhJFL02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 07:26:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50944 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238546AbhJFL0Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 07:25:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633519430;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TFumdVHHGIZhUDKrWCxbg5hP7FLGEfxmOeJpVvQ4nrc=;
-        b=ADr4sJpFc2FnKkrLd6SOf7vKJAbPUreaThfn6yg9FooL/w1rAndAxCDdh8J9rIRbmUQqq/
-        ctHeEF49fdcXwJMrD/C4d/CE8zCzR4iM9ZKwDaex/lON7kvAILmVpfyCsqliTY54LTvqAH
-        ZuYW9z3mxMG1edFRcD6YG3luqJpyEw8=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-155-KNP8Tu_lM6udsyMzfDNFXg-1; Wed, 06 Oct 2021 07:23:49 -0400
-X-MC-Unique: KNP8Tu_lM6udsyMzfDNFXg-1
-Received: by mail-ed1-f69.google.com with SMTP id c8-20020a50d648000000b003daa53c7518so2272109edj.21
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 04:23:48 -0700 (PDT)
+        Wed, 6 Oct 2021 07:26:25 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0804C061749;
+        Wed,  6 Oct 2021 04:24:32 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id k7so7669722wrd.13;
+        Wed, 06 Oct 2021 04:24:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jOKM+pEePhem4widkHVhzfPY+xV2PoH5qxuaHku2BGg=;
+        b=gcS6KE9H8iBXBNNn+W/+P/9Vkay/h54bHyT9/m0XJ8/YGQoMQgi3PY8mlQgU/5QBb6
+         g2xwtiqpEf03XUaIyTuH22SBXKk6+aASROY5Y+irGMsSj6jChgzhHujzJ2l3Hrlw4gCQ
+         Itk9mV0jSInr69rZ7gyntFzkUNaGoxatKs1p/IYlk8rl5yGRkEGcsIMzogLWqeeTAyFI
+         QQg2j149oQisxJ8jd4iocC5cLCJGSX2RaEWyCWTcj6lKIEfySoUB7ZN0vZZrmW4+J4At
+         cb2iXGPqOKtqVTBDsqz8kzCUG/teZCHFl0UMCgqBxh8OLFiIDguJVwWnr1UrWaSRv8rJ
+         4rHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=TFumdVHHGIZhUDKrWCxbg5hP7FLGEfxmOeJpVvQ4nrc=;
-        b=EmKwn+cBDrFuZ0Y/WNNLgSd7WcN3m1LNk1g7UnA2eu6kiBZQNvVm+8YuqA7yJ0XEEg
-         rYtuHI2tIorh6SbbKg/nXdqVB523ldeNkkOvxxyI8VGi75T5EKGRWjrYGooq7GmC8XgH
-         oCrrD+KedxLtLQE7TXlvmsrvR3eg275qjbgiycH+LXLVWK8RXm73TDxCPIGqtAEIWwzs
-         ceZi1HH7JihYTRIW2HYl20PXxfYtNF/24xGa9a+bah1I3OVfK+8qG5Ny/P78Qem7UjbA
-         bZEahvx91UII2fKWoJMWBwItr+1A40eesl1f22rSmc5GvUD69jNRyeUTc9w6O76i8MQX
-         Tk2g==
-X-Gm-Message-State: AOAM533QwaBWJgLLk4chKwnyQHJOIqWpIRvlBt39LcLAeekFK1eELhFf
-        jwPRVGEDVYwe5ddLvcmzZZs2zQI2jA918pSJimo+DmmVv42WHYPjFMRt/iVZYlu+ZWR2D/MlcZU
-        ErgJlTHf7odvQz9FxFeEi/e/t
-X-Received: by 2002:a17:906:2f16:: with SMTP id v22mr1103856eji.126.1633519427838;
-        Wed, 06 Oct 2021 04:23:47 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwvI08FXytDHe1dzhPmA0wcl13J8YiR11SNMjS3aRzu44O8riA033gJLtAOcqAvt0XWmp1yKA==
-X-Received: by 2002:a17:906:2f16:: with SMTP id v22mr1103841eji.126.1633519427622;
-        Wed, 06 Oct 2021 04:23:47 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
-        by smtp.gmail.com with ESMTPSA id y4sm8770176ejr.101.2021.10.06.04.23.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Oct 2021 04:23:47 -0700 (PDT)
-Message-ID: <0fd9f7e5-697f-6ad0-b1e3-40bd48a8efae@redhat.com>
-Date:   Wed, 6 Oct 2021 13:23:46 +0200
+        bh=jOKM+pEePhem4widkHVhzfPY+xV2PoH5qxuaHku2BGg=;
+        b=1ZVLchvSEU+jKVh9N/aOl/C5m2jWFJa+6oyHEteB+eyqlr8ut/yzxYXsse/tVN+dlc
+         pARmDPeNgPQCtj1DRGDBUJcxrDEzftbawJhw9y0u75HqSOUnkt9wjmPrrTWWG/6pa8x3
+         q0ExJLRFFdjm3ovq6x1BDmgh6pec/jhLREpmkcFQlYIxRL9bAul9bHlPmin6VkV1N4Pi
+         kRjYMG6JrXBWbA1UZy3VoL2/Tfosf9+Ycaboo5U0Q1scHT3AoPXZTSbPDsFQnuLeENHh
+         Ox4G2YFsqakDB8SUm870+M0ybxEBJGiAKHM7TrvyyKyA6/feSccccdFZILn8nQR0VBR1
+         8SSw==
+X-Gm-Message-State: AOAM533ApO7Trw5yW0BnR5R3hhNpV3SJoSeVqi+2eTw3pNTsprdVCFTf
+        RbVBL2Re3OE4LEJ5N1RnkNbAosui07azVQ==
+X-Google-Smtp-Source: ABdhPJxnDvewR58RdmbSh1drMP+qybZoRLHyfs27dsa8+MSEAaZhBo+g9fWUqyviTFE/a6Rf7NfrLg==
+X-Received: by 2002:adf:d1eb:: with SMTP id g11mr2711180wrd.16.1633519471482;
+        Wed, 06 Oct 2021 04:24:31 -0700 (PDT)
+Received: from localhost.localdomain ([197.49.35.129])
+        by smtp.gmail.com with ESMTPSA id y1sm10030433wrh.89.2021.10.06.04.24.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Oct 2021 04:24:31 -0700 (PDT)
+From:   Sohaib Mohamed <sohaib.amhmd@gmail.com>
+Cc:     Robert Moore <robert.moore@intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
+        devel@acpica.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ACPICA: drop unneeded initialization value
+Date:   Wed,  6 Oct 2021 13:24:29 +0200
+Message-Id: <20211006112429.54809-1-sohaib.amhmd@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH MANUALSEL 4.19 1/2] KVM: x86: Handle SRCU initialization
- failure during page track init
-Content-Language: en-US
-To:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Cc:     Haimin Zhang <tcs_kernel@tencent.com>,
-        TCS Robot <tcs_robot@tencent.com>, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, kvm@vger.kernel.org
-References: <20211006111259.264427-1-sashal@kernel.org>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <20211006111259.264427-1-sashal@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/10/21 13:12, Sasha Levin wrote:
-> From: Haimin Zhang <tcs_kernel@tencent.com>
-> 
-> [ Upstream commit eb7511bf9182292ef1df1082d23039e856d1ddfb ]
-> 
-> Check the return of init_srcu_struct(), which can fail due to OOM, when
-> initializing the page track mechanism.  Lack of checking leads to a NULL
-> pointer deref found by a modified syzkaller.
-> 
-> Reported-by: TCS Robot <tcs_robot@tencent.com>
-> Signed-off-by: Haimin Zhang <tcs_kernel@tencent.com>
-> Message-Id: <1630636626-12262-1-git-send-email-tcs_kernel@tencent.com>
-> [Move the call towards the beginning of kvm_arch_init_vm. - Paolo]
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
->   arch/x86/include/asm/kvm_page_track.h | 2 +-
->   arch/x86/kvm/page_track.c             | 4 ++--
->   arch/x86/kvm/x86.c                    | 7 ++++++-
->   3 files changed, 9 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/kvm_page_track.h b/arch/x86/include/asm/kvm_page_track.h
-> index 172f9749dbb2..5986bd4aacd6 100644
-> --- a/arch/x86/include/asm/kvm_page_track.h
-> +++ b/arch/x86/include/asm/kvm_page_track.h
-> @@ -46,7 +46,7 @@ struct kvm_page_track_notifier_node {
->   			    struct kvm_page_track_notifier_node *node);
->   };
->   
-> -void kvm_page_track_init(struct kvm *kvm);
-> +int kvm_page_track_init(struct kvm *kvm);
->   void kvm_page_track_cleanup(struct kvm *kvm);
->   
->   void kvm_page_track_free_memslot(struct kvm_memory_slot *free,
-> diff --git a/arch/x86/kvm/page_track.c b/arch/x86/kvm/page_track.c
-> index 3052a59a3065..1f6b0d9b0c85 100644
-> --- a/arch/x86/kvm/page_track.c
-> +++ b/arch/x86/kvm/page_track.c
-> @@ -169,13 +169,13 @@ void kvm_page_track_cleanup(struct kvm *kvm)
->   	cleanup_srcu_struct(&head->track_srcu);
->   }
->   
-> -void kvm_page_track_init(struct kvm *kvm)
-> +int kvm_page_track_init(struct kvm *kvm)
->   {
->   	struct kvm_page_track_notifier_head *head;
->   
->   	head = &kvm->arch.track_notifier_head;
-> -	init_srcu_struct(&head->track_srcu);
->   	INIT_HLIST_HEAD(&head->track_notifier_list);
-> +	return init_srcu_struct(&head->track_srcu);
->   }
->   
->   /*
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 417abc9ba1ad..70cb18f89029 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -9039,9 +9039,15 @@ void kvm_arch_sched_in(struct kvm_vcpu *vcpu, int cpu)
->   
->   int kvm_arch_init_vm(struct kvm *kvm, unsigned long type)
->   {
-> +	int ret;
-> +
->   	if (type)
->   		return -EINVAL;
->   
-> +	ret = kvm_page_track_init(kvm);
-> +	if (ret)
-> +		return ret;
-> +
->   	INIT_HLIST_HEAD(&kvm->arch.mask_notifier_list);
->   	INIT_LIST_HEAD(&kvm->arch.active_mmu_pages);
->   	INIT_LIST_HEAD(&kvm->arch.zapped_obsolete_pages);
-> @@ -9068,7 +9074,6 @@ int kvm_arch_init_vm(struct kvm *kvm, unsigned long type)
->   	INIT_DELAYED_WORK(&kvm->arch.kvmclock_sync_work, kvmclock_sync_fn);
->   
->   	kvm_hv_init_vm(kvm);
-> -	kvm_page_track_init(kvm);
->   	kvm_mmu_init_vm(kvm);
->   
->   	if (kvm_x86_ops->vm_init)
-> 
+Do not initialise statics to NULL
 
-Acked-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Sohaib Mohamed <sohaib.amhmd@gmail.com>
+---
+ drivers/acpi/acpica/dbcmds.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/acpi/acpica/dbcmds.c b/drivers/acpi/acpica/dbcmds.c
+index 9eb68e0751c7..d0e3b874ca0e 100644
+--- a/drivers/acpi/acpica/dbcmds.c
++++ b/drivers/acpi/acpica/dbcmds.c
+@@ -35,7 +35,7 @@ acpi_db_device_resources(acpi_handle obj_handle,
+ 
+ static void acpi_db_do_one_sleep_state(u8 sleep_state);
+ 
+-static char *acpi_db_trace_method_name = NULL;
++static char *acpi_db_trace_method_name;
+ 
+ /*******************************************************************************
+  *
+-- 
+2.25.1
 
