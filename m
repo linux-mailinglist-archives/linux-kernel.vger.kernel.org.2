@@ -2,211 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07527423E6E
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 15:11:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0D9A423E76
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 15:13:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238460AbhJFNN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 09:13:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47570 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230008AbhJFNN1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 09:13:27 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0047C061749
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 06:11:34 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id x27so10315030lfu.5
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 06:11:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mI7xxwj+mBUooKpJkWS2Vk+yUURNXRcCn/QPZmJzSqg=;
-        b=uCtda1JSEXExVjMHnUmKdQ3BIdH/nb6dx+16B2rJDTOTZ5L+dl9pwjI6McHaDVs76T
-         r1HkEACDjrLpNOmu14fvl+hUkN9q6wOBhJ0BTAAtXuMJaz/TFQtFcFzd5E4+z8175ja+
-         Nt2gYmOP5PvihienZx6bgrpNTgupaskzZLSWzuEVkCpLsCdQXg9vGZww5gS8J4xinCB5
-         WO1IY02bURGqitQC6AYQn0pzgdJF5PA4fsyaKm8yQBtmbAWTiNWWUIvHkmYHmZWqUGuk
-         cWPvvWxhbtG6QAvG70+OmH/hNgGUTGMFhs+zIRWrkkywsfGMqoL1520a7BNo0Jkq55Fe
-         0Wpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mI7xxwj+mBUooKpJkWS2Vk+yUURNXRcCn/QPZmJzSqg=;
-        b=pADOqYqiLdFcYQdBoUJgve5k+ZHIFCyaJjlhxKCwjYRt8c2eI3Pe5WXxVGVoH+G7ow
-         q6Sf8n382n7PeBWhawzEitAKHw7538qsMPpXg/wfDKmjB/+95vTWq9/0OFCJS60m8ikv
-         sl8mgN218p7FEF1ABB4+SMCO7+Mqq26T72EztU5SdaZ4jwEItfsodvM9p6Tr0uqOZyJy
-         deV77mdwi6AIPdJb64jjclWDHrEEUBlVGeeDi2/zSRTqh0+uI3Jo2ulmJxi2NIhF7HDZ
-         aklZYBK9nY+Mma6W3GXr+2bmr97PxfDBOftfydKOfGNiQETy6fSDmP6okV+mythvtBxP
-         1CNQ==
-X-Gm-Message-State: AOAM530NK6FV+DtNBO0CR893db2FURcKK/RsYHvWLqJYannzpizbXD2M
-        yOTkGKRCNm/c0rt8pFRTgMdwMksgkHGvmrcim8BiOA==
-X-Google-Smtp-Source: ABdhPJzLsdUjkwax4R9lmdaqTnoEmLJtzqFAoWzDO17wLjWLkX2JgyidZHNPcZ9xW1+o+067OuauRSi68xT/6d2Ci0I=
-X-Received: by 2002:a19:5f4b:: with SMTP id a11mr9618060lfj.373.1633525892201;
- Wed, 06 Oct 2021 06:11:32 -0700 (PDT)
+        id S238660AbhJFNPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 09:15:01 -0400
+Received: from mail-eopbgr130040.outbound.protection.outlook.com ([40.107.13.40]:41123
+        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230008AbhJFNO6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 09:14:58 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LIPdYYTBcyEEcNzdeKkhwfnhY0uLJfj2NdzsU9EPi1pCWbcwLpE/96PQ3udU6kPXETVIZCfZKHKXDPV5Hh1vcIJDgW0TAOFhE/RPfnNHIu6RpGJgF2TLuR4+2TkikBrHeQepp1iTjCYfdSxJ3vi1Zoeds5cxU5sgCr0n7PH7f/UbR+4xC/X397rrP7xPq7DYjHFFA9R/tX0Uczvjv4Hq8g0u5IYeUYDECLbohZpq+MJqM2QkSNliWyD/XOFU1s5gZOGq7eFlA5CsfCSB5j+LC6EdFSkL8agXsrRt8n1H3DekfX88sBZglu6XAguShcIBW2wbzENHLRffyfpWjGljDw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=gDVSox7N3n3b6tpOItR0x+glSGISZkJnArq6ChihzLY=;
+ b=P0qrBuqJxQGa0HsF3KxJatT4suiicaQ64FcxrE6UNa2stPk6GzaEzS4XW4a1soLE1n5/AAUb+dp/MkF9pmUc+ZTjapgQnYtV4GjxyC5FAH3jx05ygdIvnmwQbaitYazqKhCbhYT8Knvz/4n75eDUgSy8gZNEpreWbPkh6G/pfVx9GlM1xYJPOKFaFQqFdf32vLLSasdUo0o35vqb+ve5Es61h8ibCpfDbdAVbspop4+K8vKGYxBDhLcF7cfJRZl9lWw2+DWENoyr5Qx2SjgbTG01pEvXqM6xttlAAvTtNrJ++pVgH1o2hXQkNHYxUbVik1JO76xgdZf4rkHtCj5sqg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gDVSox7N3n3b6tpOItR0x+glSGISZkJnArq6ChihzLY=;
+ b=D+yjtsSuSImDFEPYmPi7wwEy2rA4yzGX3HSMXYd/zYw1I4wi+VsTjihAyS1JqiIlCAFcWAjUUeVIdgD3y6ScTg1lj67TsqAroFrRnPdSpE0T2utv54U6y01x1JC6YbHxJJIyzXxa/jCmgxssZ9095rrBQ7JOw3KzQUIhNiDo/6w=
+Received: from VI1PR04MB5136.eurprd04.prod.outlook.com (2603:10a6:803:55::19)
+ by VE1PR04MB7216.eurprd04.prod.outlook.com (2603:10a6:800:1b0::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.18; Wed, 6 Oct
+ 2021 13:13:03 +0000
+Received: from VI1PR04MB5136.eurprd04.prod.outlook.com
+ ([fe80::e157:3280:7bc3:18c4]) by VI1PR04MB5136.eurprd04.prod.outlook.com
+ ([fe80::e157:3280:7bc3:18c4%5]) with mapi id 15.20.4566.022; Wed, 6 Oct 2021
+ 13:13:03 +0000
+From:   Vladimir Oltean <vladimir.oltean@nxp.com>
+To:     Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
+CC:     "davem@davemloft.net" <davem@davemloft.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "allan.nielsen@microchip.com" <allan.nielsen@microchip.com>,
+        "joergen.andreasen@microchip.com" <joergen.andreasen@microchip.com>,
+        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
+        "vinicius.gomes@intel.com" <vinicius.gomes@intel.com>,
+        "michael.chan@broadcom.com" <michael.chan@broadcom.com>,
+        "vishal@chelsio.com" <vishal@chelsio.com>,
+        "saeedm@mellanox.com" <saeedm@mellanox.com>,
+        "jiri@mellanox.com" <jiri@mellanox.com>,
+        "idosch@mellanox.com" <idosch@mellanox.com>,
+        "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
+        "kuba@kernel.org" <kuba@kernel.org>, Po Liu <po.liu@nxp.com>,
+        Leo Li <leoyang.li@nxp.com>,
+        "f.fainelli@gmail.com" <f.fainelli@gmail.com>,
+        "andrew@lunn.ch" <andrew@lunn.ch>,
+        "vivien.didelot@gmail.com" <vivien.didelot@gmail.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+        "horatiu.vultur@microchip.com" <horatiu.vultur@microchip.com>
+Subject: Re: [PATCH v6 net-next 5/8] net: dsa: felix: support psfp filter on
+ vsc9959
+Thread-Topic: [PATCH v6 net-next 5/8] net: dsa: felix: support psfp filter on
+ vsc9959
+Thread-Index: AQHXtc/T8KvbJpSRhEGt0VSW27tAp6vF/CeA
+Date:   Wed, 6 Oct 2021 13:13:02 +0000
+Message-ID: <20211006131301.tx42h4kcoacat2jm@skbuf>
+References: <20210930075948.36981-1-xiaoliang.yang_1@nxp.com>
+ <20210930075948.36981-6-xiaoliang.yang_1@nxp.com>
+In-Reply-To: <20210930075948.36981-6-xiaoliang.yang_1@nxp.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: nxp.com; dkim=none (message not signed)
+ header.d=none;nxp.com; dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 6b1edc8c-af71-42b2-5da1-08d988cb073a
+x-ms-traffictypediagnostic: VE1PR04MB7216:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <VE1PR04MB7216512C4C28A2500201B00EE0B09@VE1PR04MB7216.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ShZdbItvDTCLp8BWvzjAHjZRPwV1ULiIuCVB1Kmz+tfJ257YcjOE1NfG9PgQwb/pT/33NHqOpVnyvdcElms15baAnJ6v3TD83SlK8y228WzNB6VHhoo5Majh9d+nAwJvXS6O78iOuliI+DG+dMxIDu4VVeVB36zJAYeUXi+3Sv4xefLcllXL+NjUGHu1LEGe5RsLPCbaEYcajv1Ai5f2cww8+D/M56ps1eFpq3v6rPKUtV2VfVb143f7j9f/3HoTqeKYFW/zzV5Geo/1Ch4FkBLKY0m13aZCjZMRt+MsfreCNNE7iAORMbOOtbwhl2RtAkhkv6/rfwB8YqwLYEKjMTAuSPTZY6jm9+pR3z8vThjS+ShVPQo1y5zNhjYmv9SObhuD80NxPJT61pESr1hLju0hxoZQi5MJhUQ1KEmvTYEjVeNkhkHa1Zq6PykNt2X38yE+R8CKhgdJ1x4mxVQ+yAfVpYXiX+7sBSToEa1w7pq+JWoCpYtPddoYYmyHJnXkuXn/LlBLxZ1EqBQpJlqITFItAo8hXxGCpEaEIAn5IW3w8vj3LGTEdqr5Jvkv4F4RTE1jvcwdFo0D8IuCy4OG5YafMOSL7juQFFgfsCwV3oazpcWnuofxpl5XRMcZVl9mxl4KURm13kean0wEpZxTM1E2+a0gzgC5acmIe5Ui+DlP/++pj/j29yDLbgRio+JiF/eQ2o9WFYs04ph48PYbmQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5136.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(4636009)(366004)(6512007)(9686003)(66556008)(64756008)(71200400001)(6506007)(76116006)(91956017)(66446008)(66946007)(66476007)(26005)(38070700005)(5660300002)(6486002)(186003)(54906003)(1076003)(6636002)(316002)(86362001)(6862004)(508600001)(122000001)(33716001)(38100700002)(4326008)(7416002)(44832011)(8676002)(83380400001)(2906002)(8936002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?0HEM0B6VMzGA33eqPLwzLlaiFgfdwUq9p/MEd/aHUQgwfX4zl+Wfu13Dpm7L?=
+ =?us-ascii?Q?uDZGQDDehwsHOFcar1tFRlFdhoI5bTzOoBDYk8hgEjSYyU+QgPAoUl081KQ6?=
+ =?us-ascii?Q?+bCbjY/3AdQVjSi1q+lh6IGLzExYDb9ocqafOGQK/K2wwB7tEgSP7zDzYnnW?=
+ =?us-ascii?Q?KsDuPwy+crInmjR/eRpysHzx3VCiOldFHN0IYQOiTUcqA9xizwZbQWzj2eUE?=
+ =?us-ascii?Q?l5ghoKangE/kQP1zcyZ+JRv2QAi7ldk/IYH2oNmEPugaTH1LZHaTpNs4v25S?=
+ =?us-ascii?Q?ljTTRtmJwH5wIjHZlnQd8DiaeQcG32W7GuqccxcWlaDBIONmUlg8GR/stpMq?=
+ =?us-ascii?Q?QVcdYUKevvkK4/Q2BWtGn4AfI/ggAf6nzCWJjI/9+AVU5pUPeNcuSAbAp9U0?=
+ =?us-ascii?Q?phKkoVOTV0Wl8/PjYEO9hrPhsDTq7be3/61age21iYJtku6NKyLQGOA8F3P7?=
+ =?us-ascii?Q?vtuFZVIMD9QiaUymZF4uc2yJJPD/jyiG5SqXxzFs1/vteN2IP9eD3uAXqFOq?=
+ =?us-ascii?Q?LjIengpjLBe8kxKZI+KeIlLZCMxEk96LD6FbxTXeVUXlBZ3w18O23bOCiUpw?=
+ =?us-ascii?Q?lJPDLn8zDPheXGYN8i1HRxpx87jQMTE2ImyW4GLpZ2sF59ApADVJBHI2fl9S?=
+ =?us-ascii?Q?0nM/vT8gBLN8ZpY2nRfS14JRmUgC7u4sY2j+4/L0r2LB5v3Ci6tZPWCs0xrG?=
+ =?us-ascii?Q?oqopgGcKR4ozPSre7oJOebDIVRJdZB4BTNlHJczaeX3jsou38WdFqX7V0WTv?=
+ =?us-ascii?Q?VBXNBlvfJij5p9IVLuTDuTnFnu+agC2rZRg2kz0j7ttdrpLnXh9s7bN54KqJ?=
+ =?us-ascii?Q?TwCdbvqL3ggF1iXhBlm2lmh3y1rbremJ1/tvPPIBc55uKax0Y1Fh0Ll/1PlV?=
+ =?us-ascii?Q?ZVczCaI+rX3IWF2xiCU544/1R+mXRyLg31i5rp7l4MGhYC36F25ZRwuXaPOR?=
+ =?us-ascii?Q?jKs6K9HzSDy10n/e1R2Bkc+RkX6yF2xicAyXCq4n3vns84tDF5xc3Wo590ZU?=
+ =?us-ascii?Q?YxZDMgN82PaaC8ZZst+8F1n7DzgujVglrbn7QOpBSLv3lM7n8TtNT8l1UJF/?=
+ =?us-ascii?Q?XigQpmTKI2wAxSzTxFiYKjqHFf5eHkcvGyH7JaLDXA+QBxPl0TH8KFRqOQ+7?=
+ =?us-ascii?Q?ZnMwgQjuH69dQraUcMBl3nBhpJa+NirtDqChPizQZ0Y/CRSI3ovsa0JrbYUS?=
+ =?us-ascii?Q?CzU6FalxaItje0a47VUXffP3uBVqsbxa9iR7O4o5nLIMAyUVy6aPGrjxW32Q?=
+ =?us-ascii?Q?DUhwrdkxoUddR3DH0ZRgod4ilPj73yNEkVl2t6EbSO1neUOzrdDpPKcVWpvP?=
+ =?us-ascii?Q?0vHs08b8yB8PdKCl4XiglBKw?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <082EAC2275402049AE2D9404905410BD@eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20210929144451.113334-1-ulf.hansson@linaro.org>
- <20210929144451.113334-2-ulf.hansson@linaro.org> <07e6821c-c221-e90d-c977-4d6b55c1ab8d@codeaurora.org>
-In-Reply-To: <07e6821c-c221-e90d-c977-4d6b55c1ab8d@codeaurora.org>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 6 Oct 2021 15:10:55 +0200
-Message-ID: <CAPDyKFpJqnoG5HGwGoMvBBXBCBt=eTqMcdX_A29eY05LLgLi3w@mail.gmail.com>
-Subject: Re: [PATCH 1/2] cpuidle: Avoid calls to cpuidle_resume|pause() for s2idle
-To:     Maulik Shah <mkshah@codeaurora.org>
-Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Len Brown <len.brown@intel.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Srinivas Rao L <lsrao@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5136.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6b1edc8c-af71-42b2-5da1-08d988cb073a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Oct 2021 13:13:02.8391
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: iXJ2IduJhsJke+qL04VqVlTgBQpIdyotv1KqTdMk6HG8gwh/ik844kDpuJ0z8ftui2YWbERjczCcxZkDxvFVFQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB7216
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 6 Oct 2021 at 12:22, Maulik Shah <mkshah@codeaurora.org> wrote:
->
-> Hi,
->
-> On 9/29/2021 8:14 PM, Ulf Hansson wrote:
-> > In s2idle_enter(), cpuidle_resume|pause() are invoked to re-allow calls to
-> > the cpuidle callbacks during s2idle operations. This is needed because
-> > cpuidle is paused in-between in dpm_suspend_noirq() and dpm_resume_noirq().
-> >
-> > However, calling cpuidle_resume|pause() from s2idle_enter() looks a bit
-> > superfluous, as it also causes all CPUs to be waken up when the first CPU
-> > wakes up from s2idle.
->
-> Thanks for the patch. This can be good optimization to avoid waking up
-> all CPUs always.
->
-> >
-> > Therefore, let's drop the calls to cpuidle_resume|pause() from
-> > s2idle_enter(). To make this work, let's also adopt the path in the
-> > cpuidle_idle_call() to allow cpuidle callbacks to be invoked for s2idle,
-> > even if cpuidle has been paused.
-> >
-> > Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-> > ---
-> >   drivers/cpuidle/cpuidle.c |  7 ++++++-
-> >   include/linux/cpuidle.h   |  2 ++
-> >   kernel/power/suspend.c    |  2 --
-> >   kernel/sched/idle.c       | 40 ++++++++++++++++++++++-----------------
-> >   4 files changed, 31 insertions(+), 20 deletions(-)
-> >
-> > diff --git a/drivers/cpuidle/cpuidle.c b/drivers/cpuidle/cpuidle.c
-> > index ef2ea1b12cd8..c76747e497e7 100644
-> > --- a/drivers/cpuidle/cpuidle.c
-> > +++ b/drivers/cpuidle/cpuidle.c
-> > @@ -49,7 +49,12 @@ void disable_cpuidle(void)
-> >   bool cpuidle_not_available(struct cpuidle_driver *drv,
-> >                          struct cpuidle_device *dev)
-> >   {
-> > -     return off || !initialized || !drv || !dev || !dev->enabled;
-> > +     return off || !drv || !dev || !dev->enabled;
-> > +}
-> > +
-> > +bool cpuidle_paused(void)
-> > +{
-> > +     return !initialized;
-> >   }
-> >
-> >   /**
-> > diff --git a/include/linux/cpuidle.h b/include/linux/cpuidle.h
-> > index fce476275e16..51698b385ab5 100644
-> > --- a/include/linux/cpuidle.h
-> > +++ b/include/linux/cpuidle.h
-> > @@ -165,6 +165,7 @@ extern void cpuidle_pause_and_lock(void);
-> >   extern void cpuidle_resume_and_unlock(void);
-> >   extern void cpuidle_pause(void);
-> >   extern void cpuidle_resume(void);
-> > +extern bool cpuidle_paused(void);
-> >   extern int cpuidle_enable_device(struct cpuidle_device *dev);
-> >   extern void cpuidle_disable_device(struct cpuidle_device *dev);
-> >   extern int cpuidle_play_dead(void);
-> > @@ -204,6 +205,7 @@ static inline void cpuidle_pause_and_lock(void) { }
-> >   static inline void cpuidle_resume_and_unlock(void) { }
-> >   static inline void cpuidle_pause(void) { }
-> >   static inline void cpuidle_resume(void) { }
-> > +static inline bool cpuidle_paused(void) {return true; }
-> >   static inline int cpuidle_enable_device(struct cpuidle_device *dev)
-> >   {return -ENODEV; }
-> >   static inline void cpuidle_disable_device(struct cpuidle_device *dev) { }
-> > diff --git a/kernel/power/suspend.c b/kernel/power/suspend.c
-> > index eb75f394a059..388a5de4836e 100644
-> > --- a/kernel/power/suspend.c
-> > +++ b/kernel/power/suspend.c
-> > @@ -97,7 +97,6 @@ static void s2idle_enter(void)
-> >       raw_spin_unlock_irq(&s2idle_lock);
-> >
-> >       cpus_read_lock();
-> > -     cpuidle_resume();
-> >
-> >       /* Push all the CPUs into the idle loop. */
-> >       wake_up_all_idle_cpus();
->
-> wake_up_all_idle_cpus() will still cause all CPUs to be woken up when
-> first cpu wakes up.
->
-> say for example,
-> 1. device goes to s2idle suspend.
-> 2. one CPU wakes up to handle irq (irq is not a wake irq but left
-> enabled at GIC because of IRQF_NOSUSPEND flag) so such irq will not
-> break suspend.
-> 3. The cpu handles the irq.
-> 4. same cpu don't break s2idle_loop() and goes to s2idle_enter() where
-> it wakes up all existing idle cpus due to wake_up_all_idle_cpus()
-> 5. all of CPUs again enter s2idle.
->
-> to avoid waking up all CPUs in above case, something like below snip may
-> help (i have not tested yet),
->
-> when CPUs are in s2idle_loop(),
->
-> 1. set the s2idle state to enter.
-> 2. wake up all cpus from shallow state, so that they can re-enter
-> deepest state.
-> 3. Forever loop until a break with some wake irq.
-> 4. clear the s2idle state.
-> 5. wake up all cpus from deepest state so that they can now stay in
-> shallow state/running state.
->
-> void s2idle_loop(void)
-> {
->
-> +       s2idle_state = S2IDLE_STATE_ENTER;
-> +       /* Push all the CPUs to enter deepest available state */
-> +       wake_up_all_idle_cpus();
->          for (;;) {
->                  if (s2idle_ops && s2idle_ops->wake) {
->                          if (s2idle_ops->wake())
->                                 ..
->                  s2idle_enter();
->          }
-> +       s2idle_state = S2IDLE_STATE_NONE;
-> +       /* Push all the CPUs to enter default_idle() from this point */
-> +       wake_up_all_idle_cpus();
-> }
+On Thu, Sep 30, 2021 at 03:59:45PM +0800, Xiaoliang Yang wrote:
+> +static int vsc9959_psfp_filter_add(struct ocelot *ocelot,
+> +				   struct flow_cls_offload *f)
+> +{
 
-Overall, I follow your reasoning above and I think it makes sense to
-me, but maybe Rafael has some concerns about it.
+Neither the vsc9959_psfp_filter_add nor vsc9959_psfp_filter_del
+implementations take an "int port" as argument. Therefore, when the SFID
+is programmed in the MAC table, it matches on any ingress port that is
+in the same bridging domain as the port pointed towards by the MAC table
+(and the MAC table selects the _destination_ port).
 
-Even if the above code needs some polishing, the logic seems
-reasonable to me. I suggest you post a patch, based on top of my small
-series, so we can discuss your suggested improvements separately. Or
-just tell me, if you would like me to do it.
+Otherwise said, in this setup:
 
->
-> Thanks,
-> Maulik
+                     br0
+                   /  |  \
+                  /   |   \
+                 /    |    \
+              swp0   swp1   swp2
 
-Thanks for reviewing!
+bridge vlan add dev swp0 vid 100
+bridge vlan add dev swp1 vid 100
+bridge vlan add dev swp2 vid 100
+bridge fdb add dev swp2 00:01:02:03:04:05 vlan 100 static master
+tc filter add dev swp0 ingress chain 0 pref 49152 flower \
+	skip_sw action goto chain 30000
+tc filter add dev swp0 ingress chain 30000 pref 1 \
+	protocol 802.1Q flower skip_sw \
+	dst_mac 00:01:02:03:04:05 vlan_id 100 \
+	action gate base-time 0.000000000 \
+	sched-entry OPEN  5000000 -1 -1 \
+	sched-entry CLOSE 5000000 -1 -1
 
-[...]
+The "filter" above will match not only on swp0, but also on packets
+ingressed from swp1.
 
-Kind regards
-Uffe
+The hardware provides IGR_SRCPORT_MATCH_ENA and IGR_PORT_MASK bits in
+the Stream Filter RAM (ANA:ANA_TABLES:SFID_MASK). Maybe you could
+program a SFID to match only on the ports on which the user intended?
+
+> +	struct netlink_ext_ack *extack =3D f->common.extack;
+> +	struct felix_stream_filter sfi =3D {0};
+> +	const struct flow_action_entry *a;
+> +	struct felix_stream *stream_entry;
+> +	struct felix_stream stream =3D {0};
+> +	struct ocelot_psfp_list *psfp;
+> +	int ret, i;
+> +
+> +	psfp =3D &ocelot->psfp;
+> +
+> +	ret =3D vsc9959_stream_identify(f, &stream);
+> +	if (ret) {
+> +		NL_SET_ERR_MSG_MOD(extack, "Only can match on VID, PCP, and dest MAC")=
+;
+> +		return ret;
+> +	}
+> +
+> +	flow_action_for_each(i, a, &f->rule->action) {
+> +		switch (a->id) {
+> +		case FLOW_ACTION_GATE:
+> +		case FLOW_ACTION_POLICE:
+> +		default:
+> +			return -EOPNOTSUPP;
+> +		}
+> +	}
+> +
+> +	/* Check if stream is set. */
+> +	stream_entry =3D vsc9959_stream_table_lookup(&psfp->stream_list, &strea=
+m);
+> +	if (stream_entry) {
+> +		NL_SET_ERR_MSG_MOD(extack, "This stream is already added");
+> +		return -EEXIST;
+> +	}
+> +
+> +	sfi.prio_valid =3D (stream.prio < 0 ? 0 : 1);
+> +	sfi.prio =3D (sfi.prio_valid ? stream.prio : 0);
+> +	sfi.enable =3D 1;
+> +
+> +	ret =3D vsc9959_psfp_sfi_table_add(ocelot, &sfi);
+> +	if (ret)
+> +		return ret;
+> +
+> +	stream.sfid =3D sfi.index;
+> +	stream.sfid_valid =3D 1;
+> +	ret =3D vsc9959_stream_table_add(ocelot, &psfp->stream_list,
+> +				       &stream, extack);
+> +	if (ret)
+> +		vsc9959_psfp_sfi_table_del(ocelot, stream.sfid);
+> +
+> +	return ret;
+> +}=
