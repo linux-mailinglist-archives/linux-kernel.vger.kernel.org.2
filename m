@@ -2,144 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D04744243CF
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 19:15:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D5F54243EC
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 19:21:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239358AbhJFRRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 13:17:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48802 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239279AbhJFRRd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 13:17:33 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF651C061746
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 10:15:40 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id m14so2929643pfc.9
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 10:15:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=zBXu2PPudHr4jGx/bUfAke+K270eym5QryyQHVT40do=;
-        b=B9RyGZNBvCE3FUDzTd8Uh2TgtofVdgKkU63KSe6cdjb5Q039fjbgjGbbA34g5gGYOk
-         FX1qAhDSZH9F4FYTvAWiOdvjgKGvmrVEaQBaRqRKFnOeIrrPYfH5rhPR000MbxDYcNTO
-         pE2zSI6ZH1HoGL4Rp1ffyW3EGn1mi+ofRaCDxOHmF0Ua3C1Xx0bIAkvgaFiMaTAFl32y
-         RnCwsg0qWfl8HZLU9+CUnj8TNc6wCtbNIL8JtWESD/Lb81gAk97Cu+ZYgngyQsfSoKuJ
-         4jrgfkyfqJdohRu+dmfEU6x/s7eu0Hq8ztBL1TN7OCPVcCLZqVGFtYk0JZQKnnBdffh/
-         k38Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zBXu2PPudHr4jGx/bUfAke+K270eym5QryyQHVT40do=;
-        b=450HJ24mSsmrZXZsHsYPYQFIRQWAvxq2ysfj9HniymtrbWqPzwXZFDmdoGBtzIoq/d
-         1gkBZdrp7SDttOr/HWVqyw0qN83snWQWCCHt+SkgALDMNyyG7Wq4G7fFbEQ0GtwmdzIi
-         YZ+lDV2MUYFgNcVKH3CJ1/DOunW0kSppN/ZqUR3n2Nlz5R960DosS7APzHY4tOZ1fN2n
-         KYFnoFHEJUgRudOWGgaedtEmlRXRh+24ebEagHDjzNT9NquQ/RwcX+WFWxvdLjMEt6d9
-         aM/A1GiR/Vd4y6I+mHxuLtOxRTF5LU56LnSny4xvMPmtOhvCsD+6kQVG2KFZApzemPXo
-         DS1w==
-X-Gm-Message-State: AOAM533p90ZMQ/EgiRerFFuxmwFFVJS+pyuMpIFIwuIsRSDZ2SZmazjE
-        vvxuc27oPeoLTqvbhJIkgCbA9A==
-X-Google-Smtp-Source: ABdhPJwWcl8/bVafg9x6S6RAD8X+P5BOk98PsQyQ4b2chMdjIC2Q2I8t4ZVe0u/liE8SdpE7Hy3JzQ==
-X-Received: by 2002:aa7:9287:0:b0:44c:767e:4e71 with SMTP id j7-20020aa79287000000b0044c767e4e71mr12317426pfa.76.1633540540347;
-        Wed, 06 Oct 2021 10:15:40 -0700 (PDT)
-Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id b14sm9339589pfo.127.2021.10.06.10.15.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Oct 2021 10:15:38 -0700 (PDT)
-Date:   Wed, 6 Oct 2021 11:15:36 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        maz@kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com,
-        james.morse@arm.com, anshuman.khandual@arm.com, leo.yan@linaro.org,
-        mike.leach@linaro.org, will@kernel.org, lcherian@marvell.com,
-        coresight@lists.linaro.org
-Subject: Re: [PATCH v2 12/17] coresight: trbe: Add a helper to fetch cpudata
- from perf handle
-Message-ID: <20211006171536.GA3373323@p14s>
-References: <20210921134121.2423546-1-suzuki.poulose@arm.com>
- <20210921134121.2423546-13-suzuki.poulose@arm.com>
- <20211004174239.GB3263478@p14s>
- <0ff450f4-ab3e-b409-5278-35cdfb883284@arm.com>
+        id S239299AbhJFRWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 13:22:55 -0400
+Received: from mga07.intel.com ([134.134.136.100]:3615 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238946AbhJFRWx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 13:22:53 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10129"; a="289556044"
+X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; 
+   d="scan'208";a="289556044"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2021 10:21:01 -0700
+X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; 
+   d="scan'208";a="439197459"
+Received: from jons-linux-dev-box.fm.intel.com (HELO jons-linux-dev-box) ([10.1.27.20])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2021 10:21:01 -0700
+Date:   Wed, 6 Oct 2021 10:16:13 -0700
+From:   Matthew Brost <matthew.brost@intel.com>
+To:     Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
+Cc:     Intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org,
+        Tvrtko Ursulin <tvrtko.ursulin@intel.com>
+Subject: Re: [Intel-gfx] [RFC 7/8] drm/i915: Inherit process nice for context
+ scheduling priority
+Message-ID: <20211006171612.GA8084@jons-linux-dev-box>
+References: <20211004143650.699120-1-tvrtko.ursulin@linux.intel.com>
+ <20211004143650.699120-8-tvrtko.ursulin@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0ff450f4-ab3e-b409-5278-35cdfb883284@arm.com>
+In-Reply-To: <20211004143650.699120-8-tvrtko.ursulin@linux.intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05, 2021 at 11:35:13PM +0100, Suzuki K Poulose wrote:
-> Hi Mathieu
+On Mon, Oct 04, 2021 at 03:36:49PM +0100, Tvrtko Ursulin wrote:
+> From: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
 > 
-> On 04/10/2021 18:42, Mathieu Poirier wrote:
-> > On Tue, Sep 21, 2021 at 02:41:16PM +0100, Suzuki K Poulose wrote:
-> > > Add a helper to get the CPU specific data for TRBE instance, from
-> > > a given perf handle. This also adds extra checks to make sure that
-> > > the event associated with the handle is "bound" to the CPU and is
-> > > active on the TRBE.
-> > > 
-> > > Cc: Anshuman Khandual <anshuman.khandual@arm.com>
-> > > Cc: Mike Leach <mike.leach@linaro.org>
-> > > Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> > > Cc: Leo Yan <leo.yan@linaro.org>
-> > > Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> > > ---
-> > >   drivers/hwtracing/coresight/coresight-trbe.c | 12 ++++++++++--
-> > >   1 file changed, 10 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
-> > > index 983dd5039e52..797d978f9fa7 100644
-> > > --- a/drivers/hwtracing/coresight/coresight-trbe.c
-> > > +++ b/drivers/hwtracing/coresight/coresight-trbe.c
-> > > @@ -268,6 +268,15 @@ static unsigned long trbe_snapshot_offset(struct perf_output_handle *handle)
-> > >   	return buf->nr_pages * PAGE_SIZE;
-> > >   }
-> > > +static inline struct trbe_cpudata *
-> > > +trbe_handle_to_cpudata(struct perf_output_handle *handle)
-> > > +{
-> > > +	struct trbe_buf *buf = etm_perf_sink_config(handle);
-> > > +
-> > > +	BUG_ON(!buf || !buf->cpudata);
-> > > +	return buf->cpudata;
-> > > +}
-> > > +
-> > >   /*
-> > >    * TRBE Limit Calculation
-> > >    *
-> > > @@ -533,8 +542,7 @@ static enum trbe_fault_action trbe_get_fault_act(struct perf_output_handle *hand
-> > >   {
-> > >   	int ec = get_trbe_ec(trbsr);
-> > >   	int bsc = get_trbe_bsc(trbsr);
-> > > -	struct trbe_buf *buf = etm_perf_sink_config(handle);
-> > > -	struct trbe_cpudata *cpudata = buf->cpudata;
-> > > +	struct trbe_cpudata *cpudata = trbe_handle_to_cpudata(handle);
-> > 
-> > There is two other places where this pattern is present:  is_perf_trbe() and
-> > __trbe_normal_offset().
+> Introduce the concept of context nice value which matches the process
+> nice.
 > 
-> I skipped them, as they have to get access to the "trbe_buf" anyways.
-> So the step by step, made sense. But I could replace them too to make it
-> transparent.
+> We do this by extending the struct i915_sched_attr and add a helper
+> (i915_sched_attr_priority) to be used to convert to effective priority
+> when used by backend code and for priority sorting.
 > 
-> What do you think ?
+> Context nice is then inherited from the process which creates the GEM
+> context and utilised secondary to context priority, only when the latter
+> has been left at the default setting, in order to avoid disturbing any
+> application made choices of low and high (batch processing and maybe
+> latency sensitive compositing). In those cases nice value adjusts the
+> effective priority in the narrow band of -19 to +20 around
+> I915_CONTEXT_DEFAULT_PRIORITY.
+> 
+> This means that in theory userspace using the context priority uapi
+> directly has a wider range of possible adjustments (thought to be
+> beneficial), but in practice that only applies to execlists platforms.
+> With GuC there are only three priority buckets (less than zero is low
+> priority, zero is normal and greater than zero is high) which therefore
+> interact as expected with the nice adjustment. It makes the question of
+> should the nice be a sub-range of GEM priorities, or stretched across the
+> whole, a moot one.
+> 
+> Signed-off-by: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
+> ---
+>  drivers/gpu/drm/i915/gem/i915_gem_context.c        |  1 +
+>  .../gpu/drm/i915/gt/intel_execlists_submission.c   |  4 ++--
+>  drivers/gpu/drm/i915/gt/uc/intel_guc_submission.c  |  2 +-
+>  drivers/gpu/drm/i915/i915_request.c                |  2 +-
+>  drivers/gpu/drm/i915/i915_request.h                |  5 +++++
+>  drivers/gpu/drm/i915/i915_scheduler.c              | 12 ++++++++----
+>  drivers/gpu/drm/i915/i915_scheduler.h              | 14 ++++++++++++++
+>  drivers/gpu/drm/i915/i915_scheduler_types.h        |  8 ++++++++
+>  8 files changed, 40 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/i915/gem/i915_gem_context.c b/drivers/gpu/drm/i915/gem/i915_gem_context.c
+> index 8d4d687ab1d0..fed0733cb652 100644
+> --- a/drivers/gpu/drm/i915/gem/i915_gem_context.c
+> +++ b/drivers/gpu/drm/i915/gem/i915_gem_context.c
+> @@ -257,6 +257,7 @@ proto_context_create(struct drm_i915_private *i915, unsigned int flags)
+>  	if (i915->params.enable_hangcheck)
+>  		pc->user_flags |= BIT(UCONTEXT_PERSISTENCE);
+>  	pc->sched.priority = I915_PRIORITY_NORMAL;
+> +	pc->sched.nice = task_nice(current);
+>  
+>  	if (flags & I915_CONTEXT_CREATE_FLAGS_SINGLE_TIMELINE) {
+>  		if (!HAS_EXECLISTS(i915)) {
+> diff --git a/drivers/gpu/drm/i915/gt/intel_execlists_submission.c b/drivers/gpu/drm/i915/gt/intel_execlists_submission.c
+> index e91d803a6453..1a02c65823a7 100644
+> --- a/drivers/gpu/drm/i915/gt/intel_execlists_submission.c
+> +++ b/drivers/gpu/drm/i915/gt/intel_execlists_submission.c
+> @@ -250,7 +250,7 @@ static struct i915_priolist *to_priolist(struct rb_node *rb)
+>  
+>  static int rq_prio(const struct i915_request *rq)
+>  {
+> -	return READ_ONCE(rq->sched.attr.priority);
+> +	return i915_request_priority(rq);
+>  }
+>  
+>  static int effective_prio(const struct i915_request *rq)
+> @@ -3221,8 +3221,8 @@ static void kick_execlists(const struct i915_request *rq,
+>  {
+>  	struct intel_engine_cs *engine = rq->engine;
+>  	struct i915_sched_engine *sched_engine = engine->sched_engine;
+> +	const int prio = i915_sched_attr_priority(attr);
+>  	const struct i915_request *inflight;
+> -	const int prio = attr->priority;
+>  
+>  	/*
+>  	 * We only need to kick the tasklet once for the high priority
+> diff --git a/drivers/gpu/drm/i915/gt/uc/intel_guc_submission.c b/drivers/gpu/drm/i915/gt/uc/intel_guc_submission.c
+> index b5883a4365ca..f258607685a2 100644
+> --- a/drivers/gpu/drm/i915/gt/uc/intel_guc_submission.c
+> +++ b/drivers/gpu/drm/i915/gt/uc/intel_guc_submission.c
+> @@ -2417,7 +2417,7 @@ static void guc_bump_inflight_request_prio(struct i915_request *rq,
+>  					   const struct i915_sched_attr *attr)
+>  {
+>  	struct intel_context *ce = rq->context;
+> -	const int prio = attr->priority;
+> +	const int prio = i915_sched_attr_priority(attr);
+>  	u8 new_guc_prio = map_i915_prio_to_guc_prio(prio);
+>  
+>  	/* Short circuit function */
+> diff --git a/drivers/gpu/drm/i915/i915_request.c b/drivers/gpu/drm/i915/i915_request.c
+> index 79da5eca60af..a8c6f3a64895 100644
+> --- a/drivers/gpu/drm/i915/i915_request.c
+> +++ b/drivers/gpu/drm/i915/i915_request.c
+> @@ -1930,7 +1930,7 @@ static int print_sched_attr(const struct i915_sched_attr *attr,
+>  		return x;
+>  
+>  	x += snprintf(buf + x, len - x,
+> -		      " prio=%d", attr->priority);
+> +		      " prio=%d nice=%d", attr->priority, attr->nice);
+>  
+>  	return x;
+>  }
+> diff --git a/drivers/gpu/drm/i915/i915_request.h b/drivers/gpu/drm/i915/i915_request.h
+> index 7bd9ed20623e..c2c4c344837e 100644
+> --- a/drivers/gpu/drm/i915/i915_request.h
+> +++ b/drivers/gpu/drm/i915/i915_request.h
+> @@ -399,6 +399,11 @@ long i915_request_wait(struct i915_request *rq,
+>  #define I915_WAIT_PRIORITY	BIT(1) /* small priority bump for the request */
+>  #define I915_WAIT_ALL		BIT(2) /* used by i915_gem_object_wait() */
+>  
+> +static inline int i915_request_priority(const struct i915_request *rq)
+> +{
+> +	return i915_sched_attr_priority(&rq->sched.attr);
+> +}
+> +
+>  void i915_request_show(struct drm_printer *m,
+>  		       const struct i915_request *rq,
+>  		       const char *prefix,
+> diff --git a/drivers/gpu/drm/i915/i915_scheduler.c b/drivers/gpu/drm/i915/i915_scheduler.c
+> index 534bab99fcdc..e75793e36454 100644
+> --- a/drivers/gpu/drm/i915/i915_scheduler.c
+> +++ b/drivers/gpu/drm/i915/i915_scheduler.c
+> @@ -155,7 +155,9 @@ lock_sched_engine(struct i915_sched_node *node,
+>  static void __i915_schedule(struct i915_sched_node *node,
+>  			    const struct i915_sched_attr *attr)
+>  {
+> -	const int prio = max(attr->priority, node->attr.priority);
+> +	const int prio =
+> +		max(i915_sched_attr_priority(attr),
+> +		    i915_sched_attr_priority(&node->attr));
+>  	struct i915_sched_engine *sched_engine;
+>  	struct i915_dependency *dep, *p;
+>  	struct i915_dependency stack;
+> @@ -209,7 +211,7 @@ static void __i915_schedule(struct i915_sched_node *node,
+>  			if (node_signaled(p->signaler))
+>  				continue;
+>  
+> -			if (prio > READ_ONCE(p->signaler->attr.priority))
+> +			if (prio > i915_sched_attr_priority(&p->signaler->attr))
+>  				list_move_tail(&p->dfs_link, &dfs);
+>  		}
+>  	}
+> @@ -247,7 +249,8 @@ static void __i915_schedule(struct i915_sched_node *node,
+>  		lockdep_assert_held(&sched_engine->lock);
+>  
+>  		/* Recheck after acquiring the engine->timeline.lock */
+> -		if (prio <= node->attr.priority || node_signaled(node))
+> +		if (prio <= i915_sched_attr_priority(&node->attr) ||
+> +		    node_signaled(node))
+>  			continue;
+>  
+>  		GEM_BUG_ON(node_to_request(node)->engine->sched_engine !=
+> @@ -257,7 +260,7 @@ static void __i915_schedule(struct i915_sched_node *node,
+>  		if (sched_engine->bump_inflight_request_prio)
+>  			sched_engine->bump_inflight_request_prio(from, attr);
+>  
+> -		WRITE_ONCE(node->attr.priority, prio);
+> +		WRITE_ONCE(node->attr, *attr);
+>  
+>  		/*
+>  		 * Once the request is ready, it will be placed into the
+> @@ -305,6 +308,7 @@ void i915_sched_node_init(struct i915_sched_node *node)
+>  void i915_sched_node_reinit(struct i915_sched_node *node)
+>  {
+>  	node->attr.priority = I915_PRIORITY_INVALID;
+> +	node->attr.nice = 0;
+>  	node->semaphores = 0;
+>  	node->flags = 0;
+>  
+> diff --git a/drivers/gpu/drm/i915/i915_scheduler.h b/drivers/gpu/drm/i915/i915_scheduler.h
+> index 0b9b86af6c7f..75ccc9f55d14 100644
+> --- a/drivers/gpu/drm/i915/i915_scheduler.h
+> +++ b/drivers/gpu/drm/i915/i915_scheduler.h
+> @@ -38,6 +38,20 @@ void i915_sched_node_fini(struct i915_sched_node *node);
+>  void i915_schedule(struct i915_request *request,
+>  		   const struct i915_sched_attr *attr);
+>  
+> +static inline int i915_sched_attr_priority(const struct i915_sched_attr *attr)
+> +{
+> +	int prio = attr->priority;
+> +
+> +	/*
+> +	 * Only allow I915_CONTEXT_DEFAULT_PRIORITY to be affected by the
+> +	 * nice setting.
+> +	 */
+> +	if (!prio)
+> +		prio = -attr->nice;
+> +
+> +	return prio;
+> +}
+> +
+>  struct list_head *
+>  i915_sched_lookup_priolist(struct i915_sched_engine *sched_engine, int prio);
+>  
+> diff --git a/drivers/gpu/drm/i915/i915_scheduler_types.h b/drivers/gpu/drm/i915/i915_scheduler_types.h
+> index 24b9ac1c2ce2..159237aa7609 100644
+> --- a/drivers/gpu/drm/i915/i915_scheduler_types.h
+> +++ b/drivers/gpu/drm/i915/i915_scheduler_types.h
+> @@ -29,6 +29,14 @@ struct i915_sched_attr {
+>  	 * The &drm_i915_private.kernel_context is assigned the lowest priority.
+>  	 */
+>  	int priority;
+> +
+> +	/**
+> +	 * @nice: context nice level
+> +	 *
+> +	 * Nice level follows the CPU scheduler nice value as set for the
+> +	 * process owning the GPU context.
+> +	 */
+> +	int nice;
 
-Humm...  I don't think there is a right way or a wrong way here.  If we move
-forward with this patchset we have two ways of getting to buf->cpudata.  One
-using trbe_handle_to_cpudata() and another one as laid out in is_perf_trbe() and
-__trbe_normal_offset(), each with an equal number of occurences (2 for each).
+Same comment as the previous patch, I'd avoid adding a field to this
+structure as I don't think this will play with the DRM scheduler very
+well. If anything I think we should drop i915_sched_attr completely and
+just store these values directly in the request and pass around the
+request rather than i915_sched_attr.
 
-I am usually not fond of small functions like trbe_handle_to_cpudata() and to me
-keeping the current heuristic in trbe_get_fault_act() would have been just fine.
-I agree with the argument that trbe_handle_to_cpudata() provides more checks but
-is it really worth it if they aren't done everywhere?
+Matt
 
-In short I would get rid of trbe_handle_to_cpudata() entirely and live without
-the extra checks... But I'm not strongly opinionated on this either.
-
-> 
-> Suzuki
-> 
+>  };
+>  
+>  /*
+> -- 
+> 2.30.2
 > 
