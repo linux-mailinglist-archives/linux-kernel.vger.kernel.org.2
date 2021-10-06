@@ -2,118 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F84C4249F7
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 00:42:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D283424A01
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 00:43:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230399AbhJFWoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 18:44:19 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:53107 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229677AbhJFWoS (ORCPT
+        id S239502AbhJFWpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 18:45:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39882 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234332AbhJFWpQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 18:44:18 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HPqG74FhVz4xb9;
-        Thu,  7 Oct 2021 09:42:23 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1633560144;
-        bh=PfR0+WKczbWaIWCGh1nrUnPBE68hFBD+6ZK4wjPsRQ4=;
-        h=Date:From:To:Cc:Subject:From;
-        b=UrKnq2iGkqBHv/MOEB1o+LH6hG+CrkpKDNpzCp3bb0EvAaedfKuV9wWNKq/JOaG0Z
-         NIViNKtuz1i9i96Nvyoi/YbW+G4UhZ7i8rB06AeLggTACCuC/aWTJFSNAoxp4Ng+DD
-         hoSpcetu/KprULVRqx7zH83fhgnWwZlfaZimJFtTR2wZ8GK2hmhOh8EmBN7gX+Hbod
-         McUnz+qSdVOzH+vQQzoT6MTvZn8uJeHYsIfXVdhFaV6A8ObdsD0Oporow+cTLeiGU4
-         a4JgOLOsQmmXldCKHcPR+Hnoq3XwYdB8TivvLkIWFwih+hMNLSuHj4qIPJ4dDmEJm+
-         n1MobOWBY4c1Q==
-Date:   Thu, 7 Oct 2021 09:42:21 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>
-Subject: linux-next: manual merge of the arm64 tree with the arm64-fixes
- tree
-Message-ID: <20211007094221.1c9ce01f@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/EZwCGdelmvwyCLPzN8NBw8T";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        Wed, 6 Oct 2021 18:45:16 -0400
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 935A9C061760
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 15:43:23 -0700 (PDT)
+Received: by mail-pg1-x54a.google.com with SMTP id w5-20020a654105000000b002692534afceso2331575pgp.8
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 15:43:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=z8o3vrToRPXWpRi6lUNzwoCXQctar2zORy+Anm1eJ7s=;
+        b=koUNHiD2fX5IdRRbeJRVnwxhK+fiF8SCJcIrdhTPcmwTE/+lX/sElhXCQtgWL+I4PW
+         Um3VSGs9mp8qE1/uddpgjmdEHAsxh8tuQDPxidy7bcvmiqZu9ga/Zkxk8yAmRKRSof0H
+         zAQ05iP0/y6Iz4Xo0OAvdDxHvzIBq3mWu9qclnffgIzxqfBsRg/sMOXEXN31rQobQsA6
+         EdslA1Z1aWFV+rN1suUq6p8xCzAEk8a73SITies9JZ64i/GzOWzJ5hnIrNGSA8HIcRKO
+         3SZAS8RxpqRhFSdmVgRMQv4LV3wpoPhkV/FQ+sKb8urrXB73DY5Hj0/B+3FuM6+TyrPF
+         46gg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=z8o3vrToRPXWpRi6lUNzwoCXQctar2zORy+Anm1eJ7s=;
+        b=taAReiA1o3bGB72ezn9vYNm0bf0Wv3PjyehPJ5TsP8Jy8ujQwANELEE99EB3EusNRZ
+         Wi2zCIZKcP/NJp4y4boQgvnY2+jd8caq86tkUrlNTyOjsHPGykucN76rnuQ1VHBdOlIc
+         2LhdwTIiN1puPABHRgAs0dk1PMo6H9nuJ3JJpDHUqcS1nYNERJQU/AV19l1BBCInR+Q8
+         QbUTFvplmC4PzHZuhtbPeui9326CDe/Mj+UTdsck3P9B2eFicJRz+UNXtUHHnf2rzQw/
+         EK8ZNuBT1ypFSIpzYWB+dL7BhZ4jpfRBw5JCvJCGa+sj/zJW0bHn569ANPXx2V7xxmsY
+         bXbg==
+X-Gm-Message-State: AOAM533SD9KRlZ4CcTPOe0ABHBMTx9H5ZzSqTNAYuDqyUzWFf49bhhN0
+        qBwZcWuiOXuXCeRkIHm/7EuE2viro5TisJ0=
+X-Google-Smtp-Source: ABdhPJwVGe+1bLx183esn1tSE35Cx+805z+jCcD8uYscQXuimnkjC9yrHjkUqUylSF401n9nQD39HTr/JGUaAqU=
+X-Received: from ramjiyani.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2edd])
+ (user=ramjiyani job=sendgmr) by 2002:a17:902:b18b:b0:13a:354a:3e9d with SMTP
+ id s11-20020a170902b18b00b0013a354a3e9dmr651747plr.36.1633560202905; Wed, 06
+ Oct 2021 15:43:22 -0700 (PDT)
+Date:   Wed,  6 Oct 2021 22:43:11 +0000
+Message-Id: <20211006224311.26662-1-ramjiyani@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.800.g4c38ced690-goog
+Subject: [PATCH v3] aio: Add support for the POLLFREE
+From:   Ramji Jiyani <ramjiyani@google.com>
+To:     arnd@arndb.de, viro@zeniv.linux.org.uk, bcrl@kvack.org
+Cc:     hch@lst.de, kernel-team@android.com, linux-aio@kvack.org,
+        linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, oleg@redhat.com, ebiggers@kernel.org,
+        Ramji Jiyani <ramjiyani@google.com>,
+        Jeff Moyer <jmoyer@redhat.com>, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/EZwCGdelmvwyCLPzN8NBw8T
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Commit f5cb779ba163 ("ANDROID: binder: remove waitqueue when thread
+exits.") fixed the use-after-free in eventpoll but aio still has the
+same issue because it doesn't honor the POLLFREE flag.
 
-Hi all,
+Add support for the POLLFREE flag to force complete iocb inline in
+aio_poll_wake(). A thread may use it to signal it's exit and/or request
+to cleanup while pending poll request. In this case, aio_poll_wake()
+needs to make sure it doesn't keep any reference to the queue entry
+before returning from wake to avoid possible use after free via
+poll_cancel() path.
 
-Today's linux-next merge of the arm64 tree got a conflict in:
+The POLLFREE flag is no more exclusive to the epoll and is being
+shared with the aio. Remove comment from poll.h to avoid confusion.
 
-  arch/arm64/mm/hugetlbpage.c
+This fixes a use after free issue between binder thread and aio
+interactions in certain sequence of events [1].
 
-between commit:
+[1] https://lore.kernel.org/all/CAKUd0B_TCXRY4h1hTztfwWbNSFQqsudDLn2S_28csgWZmZAG3Q@mail.gmail.com/
 
-  0350419b14b9 ("arm64/hugetlb: fix CMA gigantic page order for non-4K PAGE=
-_SIZE")
+Fixes: f5cb779ba163 ("ANDROID: binder: remove waitqueue when thread exits.")
+Signed-off-by: Ramji Jiyani <ramjiyani@google.com>
+Reviewed-by: Jeff Moyer <jmoyer@redhat.com>
+Cc: stable@vger.kernel.org # 4.19+
+---
+Changes since v1:
+- Removed parenthesis around POLLFREE macro definition as per review.
+- Updated description to refer UAF issue discussion this patch fixes.
+- Updated description to remove reference to parenthesis change.
+- Added Reviewed-by
 
-from the arm64-fixes tree and commit:
+Changes since v2:
+- Added Fixes tag.
+- Added stable tag for backporting on 4.19+ LTS releases
+---
+ fs/aio.c                        | 45 ++++++++++++++++++---------------
+ include/uapi/asm-generic/poll.h |  2 +-
+ 2 files changed, 26 insertions(+), 21 deletions(-)
 
-  f8b46c4b51ab ("arm64/mm: Add pud_sect_supported()")
+diff --git a/fs/aio.c b/fs/aio.c
+index 51b08ab01dff..5d539c05df42 100644
+--- a/fs/aio.c
++++ b/fs/aio.c
+@@ -1674,6 +1674,7 @@ static int aio_poll_wake(struct wait_queue_entry *wait, unsigned mode, int sync,
+ {
+ 	struct poll_iocb *req = container_of(wait, struct poll_iocb, wait);
+ 	struct aio_kiocb *iocb = container_of(req, struct aio_kiocb, poll);
++	struct kioctx *ctx = iocb->ki_ctx;
+ 	__poll_t mask = key_to_poll(key);
+ 	unsigned long flags;
+ 
+@@ -1683,29 +1684,33 @@ static int aio_poll_wake(struct wait_queue_entry *wait, unsigned mode, int sync,
+ 
+ 	list_del_init(&req->wait.entry);
+ 
+-	if (mask && spin_trylock_irqsave(&iocb->ki_ctx->ctx_lock, flags)) {
+-		struct kioctx *ctx = iocb->ki_ctx;
++	/*
++	 * Use irqsave/irqrestore because not all filesystems (e.g. fuse)
++	 * call this function with IRQs disabled and because IRQs have to
++	 * be disabled before ctx_lock is obtained.
++	 */
++	if (mask & POLLFREE) {
++		/* Force complete iocb inline to remove refs to deleted entry */
++		spin_lock_irqsave(&ctx->ctx_lock, flags);
++	} else if (!(mask && spin_trylock_irqsave(&ctx->ctx_lock, flags))) {
++		/* Can't complete iocb inline; schedule for later */
++		schedule_work(&req->work);
++		return 1;
++	}
+ 
+-		/*
+-		 * Try to complete the iocb inline if we can. Use
+-		 * irqsave/irqrestore because not all filesystems (e.g. fuse)
+-		 * call this function with IRQs disabled and because IRQs
+-		 * have to be disabled before ctx_lock is obtained.
+-		 */
+-		list_del(&iocb->ki_list);
+-		iocb->ki_res.res = mangle_poll(mask);
+-		req->done = true;
+-		if (iocb->ki_eventfd && eventfd_signal_allowed()) {
+-			iocb = NULL;
+-			INIT_WORK(&req->work, aio_poll_put_work);
+-			schedule_work(&req->work);
+-		}
+-		spin_unlock_irqrestore(&ctx->ctx_lock, flags);
+-		if (iocb)
+-			iocb_put(iocb);
+-	} else {
++	/* complete iocb inline */
++	list_del(&iocb->ki_list);
++	iocb->ki_res.res = mangle_poll(mask);
++	req->done = true;
++	if (iocb->ki_eventfd && eventfd_signal_allowed()) {
++		iocb = NULL;
++		INIT_WORK(&req->work, aio_poll_put_work);
+ 		schedule_work(&req->work);
+ 	}
++	spin_unlock_irqrestore(&ctx->ctx_lock, flags);
++	if (iocb)
++		iocb_put(iocb);
++
+ 	return 1;
+ }
+ 
+diff --git a/include/uapi/asm-generic/poll.h b/include/uapi/asm-generic/poll.h
+index 41b509f410bf..f9c520ce4bf4 100644
+--- a/include/uapi/asm-generic/poll.h
++++ b/include/uapi/asm-generic/poll.h
+@@ -29,7 +29,7 @@
+ #define POLLRDHUP       0x2000
+ #endif
+ 
+-#define POLLFREE	(__force __poll_t)0x4000	/* currently only for epoll */
++#define POLLFREE	(__force __poll_t)0x4000
+ 
+ #define POLL_BUSY_LOOP	(__force __poll_t)0x8000
+ 
+-- 
+2.33.0.800.g4c38ced690-goog
 
-from the arm64 tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc arch/arm64/mm/hugetlbpage.c
-index a8158c948966,029cf5e42c4c..000000000000
---- a/arch/arm64/mm/hugetlbpage.c
-+++ b/arch/arm64/mm/hugetlbpage.c
-@@@ -40,11 -40,10 +40,10 @@@ void __init arm64_hugetlb_cma_reserve(v
-  {
-  	int order;
- =20
-- #ifdef CONFIG_ARM64_4K_PAGES
-- 	order =3D PUD_SHIFT - PAGE_SHIFT;
-- #else
-- 	order =3D CONT_PMD_SHIFT - PAGE_SHIFT;
-- #endif
-+ 	if (pud_sect_supported())
-+ 		order =3D PUD_SHIFT - PAGE_SHIFT;
-+ 	else
- -		order =3D CONT_PMD_SHIFT + PMD_SHIFT - PAGE_SHIFT;
-++		order =3D CONT_PMD_SHIFT - PAGE_SHIFT;
-  	/*
-  	 * HugeTLB CMA reservation is required for gigantic
-  	 * huge pages which could not be allocated via the
-
---Sig_/EZwCGdelmvwyCLPzN8NBw8T
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFeJk0ACgkQAVBC80lX
-0Gx75gf/dgH3vv+K/9pRv+OrVcZWcXAj8xqUx2gI4M/wVn63tTPdRl6KQijFAO/r
-PVD7zr95tJCuhTUidP9Xh47LqUamkUnKPKPJ9PAOXt8ZwyU2NoZIzkyyJHOoOfHy
-Lbli7FA07Qwzqk6bt05Qjty05x9LQaA/fz/nNwL5SpTGr++t3FlGYNaAqmXtzzSw
-uhV+3TFDxOxJFWue0o6WFa8WLBYvaDDtADsk4A+MsaNjHlssmL15uK7qBFzEEFmh
-xbQbm5Yj1oiscfMNLD/8b30pkWDyG3fUIQktRURoSQg0HnZ6SffWBs7Pvre4LJfj
-EG29ICZJDCwJKth0XKspmQWJzxv1RQ==
-=0A0E
------END PGP SIGNATURE-----
-
---Sig_/EZwCGdelmvwyCLPzN8NBw8T--
