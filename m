@@ -2,143 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD81F423FA5
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 15:54:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 538E2423FA9
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 15:56:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238668AbhJFN4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 09:56:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59447 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238716AbhJFN4Q (ORCPT
+        id S238205AbhJFN6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 09:58:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58218 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238218AbhJFN6O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 09:56:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633528464;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=SUoxOb//3TH/xMoqrFKXCtQoVmxHUsUFva7/RQKSUug=;
-        b=B6Bsuxl3YXUMNb0sb0wyYaD2CfTsF/7Z/bxzvhHsO23ANp+Q6DbSRg0eEWjM4JH07HnPkw
-        jzE09IISn0TxSPnorCDiYSGyFg+5XLkO9y+mlWPjbI2Vo3541D/hd1nfYFkLPPR+imYM1D
-        fEwY+NeaXhGajsgZtfgx2bRVeb88PcQ=
-Received: from mail-oo1-f69.google.com (mail-oo1-f69.google.com
- [209.85.161.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-446-ZDufvsvqPs-X8sOA5bKdgQ-1; Wed, 06 Oct 2021 09:54:22 -0400
-X-MC-Unique: ZDufvsvqPs-X8sOA5bKdgQ-1
-Received: by mail-oo1-f69.google.com with SMTP id p82-20020a4a2f55000000b002b584670618so1786365oop.2
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 06:54:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=SUoxOb//3TH/xMoqrFKXCtQoVmxHUsUFva7/RQKSUug=;
-        b=nn1eKTe3BdXRtuP0ABe/XF2VJbgTVrfHNlZ9pgUmt56185vbBHxVGTJWxrm4Idb6K9
-         TCDPBTaTtlI/Qcr5obKuXpDQGZJuwNkyCZRRNcCn27ealdJ+9Ix1MgBwpOITz3Hxf23Z
-         /ikimVQS1zXaSDMAzhd9qmSNW0ORqeITITDI5qMgt73EkOZ8bweJCimyLcP3k/ht32k+
-         mi0A3JAvmBCrok3z8qG2rpHNBvVjF3lq8hlXrntxmgMYuUy5SROCZW/WY1ba/pjC+A1/
-         oMneqDv62uQlr0jgYsIRogoy7CgCzMuS7JJ2ylw1sgp9U7eYwpdCORcw+5gubHhKOCJF
-         OYyg==
-X-Gm-Message-State: AOAM530EaEMzYlkLB6cvpbmvPa2Ou2bxZ/v3xn1clq12h36D9MJ1hsZH
-        4hmdacK3HXfe+POSRpUiQBTX2b33Z3eIWgt7nhkW23CKycDULmESL1JydLg8viC4cpdcA1mPSu3
-        RIu+xH6rU+eDdFMe+gB4yqQhI
-X-Received: by 2002:a54:4f0e:: with SMTP id e14mr7500173oiy.73.1633528461112;
-        Wed, 06 Oct 2021 06:54:21 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyDO4di3VOt+xJP1xAbbGCbGjPY6Am+ulVkpZnWgsgHk16Sl/FM4xHh8vjh8enqfYZsYV6nfQ==
-X-Received: by 2002:a54:4f0e:: with SMTP id e14mr7500157oiy.73.1633528460868;
-        Wed, 06 Oct 2021 06:54:20 -0700 (PDT)
-Received: from treble ([2600:1700:6e32:6c00::49])
-        by smtp.gmail.com with ESMTPSA id l8sm3980645oii.57.2021.10.06.06.54.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Oct 2021 06:54:20 -0700 (PDT)
-Date:   Wed, 6 Oct 2021 06:54:17 -0700
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Sami Tolvanen <samitolvanen@google.com>, x86@kernel.org,
-        Kees Cook <keescook@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev
-Subject: Re: [PATCH v4 06/15] ftrace: Use an opaque type for functions not
- callable from C
-Message-ID: <20211006135417.tvdns3ykpgupi47q@treble>
-References: <20210930180531.1190642-1-samitolvanen@google.com>
- <20210930180531.1190642-7-samitolvanen@google.com>
- <20211006032945.axlqh3vehgar6adr@treble>
- <20211006090249.248c65b0@gandalf.local.home>
+        Wed, 6 Oct 2021 09:58:14 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FE8CC061749;
+        Wed,  6 Oct 2021 06:56:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=E5FS5KeYsBA2zglyqvar557fDUOETk9K+8At4cmpf7k=; b=VfvWhA8dhnyfU6ojtqgYy99v0v
+        kb9spvMYBeJiBeJo/qRdFTkCMLgM8qy5ridzVPhwl9OaF6nS5ygGJ6AknOupO7REEYzSKKcCRA9o2
+        H1iZhQYzHaVirMottGI3WPjiNNNSUZ0Y4ThmIgFD5ln0wUWBg4u4Jq2XabjqmkjQUXhCaRvl5sySu
+        yzdEErWXOEvCMSN3QlYVodwBnC9Oduldwq6WtBz707sgpXyxb6tRBOT6nUkZZdN+wQiv/d2q3yENY
+        D1W2BtBjlv+gmg1Nn3cHT3vejT8en8J33Q5qLPk+yi/MgB4/N8Fzzft4BCbndkC2Y+PA+/sAYxE3K
+        Wo3rvbqg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mY7Oh-008HuP-7x; Wed, 06 Oct 2021 13:55:51 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id CF66B98623A; Wed,  6 Oct 2021 15:55:50 +0200 (CEST)
+Date:   Wed, 6 Oct 2021 15:55:50 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Barry Song <21cnbao@gmail.com>
+Cc:     Valentin Schneider <valentin.schneider@arm.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Ben Segall <bsegall@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Guodong Xu <guodong.xu@linaro.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        "Cc: Len Brown" <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        LAK <linux-arm-kernel@lists.infradead.org>,
+        Linuxarm <linuxarm@huawei.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mel Gorman <mgorman@suse.de>, msys.mizuma@gmail.com,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Will Deacon <will@kernel.org>, x86 <x86@kernel.org>,
+        yangyicong <yangyicong@huawei.com>,
+        Tian Tao <tiantao6@hisilicon.com>
+Subject: Re: [PATCH RESEND 1/3] topology: Represent clusters of CPUs within a
+ die
+Message-ID: <20211006135550.GJ174703@worktop.programming.kicks-ass.net>
+References: <20210924085104.44806-1-21cnbao@gmail.com>
+ <20210924085104.44806-2-21cnbao@gmail.com>
+ <87o883l9c8.mognet@arm.com>
+ <CAGsJ_4zCYjha8E6km9fDO8gFR-_vO1Nr0=a7V-b9yLRZGGAC9g@mail.gmail.com>
+ <CAGsJ_4ycKDfFY+LoaUBJ5huH8+kUsGGsC1po4DDQQPU5-ikf8A@mail.gmail.com>
+ <20211006121858.GI174703@worktop.programming.kicks-ass.net>
+ <CAGsJ_4zdr-Y5=TckNELoxgHDzNKhJuRsF5YAfEep24Ga7Y5ENg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211006090249.248c65b0@gandalf.local.home>
+In-Reply-To: <CAGsJ_4zdr-Y5=TckNELoxgHDzNKhJuRsF5YAfEep24Ga7Y5ENg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 06, 2021 at 09:02:49AM -0400, Steven Rostedt wrote:
-> On Tue, 5 Oct 2021 20:29:45 -0700
-> Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+On Thu, Oct 07, 2021 at 01:50:43AM +1300, Barry Song wrote:
+> On Thu, Oct 7, 2021 at 1:20 AM Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > On Wed, Oct 06, 2021 at 11:50:35PM +1300, Barry Song wrote:
+> >
+> > > > diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
+> > > > index 7cb31d959f33..fc0836f460fb 100644
+> > > > --- a/drivers/base/arch_topology.c
+> > > > +++ b/drivers/base/arch_topology.c
+> > > > @@ -622,7 +622,8 @@ void update_siblings_masks(unsigned int cpuid)
+> > > >                 if (cpuid_topo->package_id != cpu_topo->package_id)
+> > > >                         continue;
+> > > >
+> > > > -               if (cpuid_topo->cluster_id == cpu_topo->cluster_id) {
+> > > > +               if (cpuid_topo->cluster_id == cpu_topo->cluster_id &&
+> > > > +                   cpuid_topo->cluster_id != -1) {
+> > > >                         cpumask_set_cpu(cpu, &cpuid_topo->cluster_sibling);
+> > > >                         cpumask_set_cpu(cpuid, &cpu_topo->cluster_sibling);
+> > > >                 }
+> > > >
+> > >
+> > > Hi Peter,
+> > > Would you like to change this line in your tree?
+> >
+> > Can you please double check:
+> >
+> >   https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git/log/?h=sched/next
 > 
-> Thanks for Cc'ing me, as I should have been Cc'd on the original patch.
+> yes. It is correct for patch 1/3, thanks!
 > 
-> > On Thu, Sep 30, 2021 at 11:05:22AM -0700, Sami Tolvanen wrote:
-> > > With CONFIG_CFI_CLANG, the compiler changes function references to point
-> > > to the CFI jump table. As ftrace_call, ftrace_regs_call, and mcount_call
-> > > are not called from C, use DECLARE_ASM_FUNC_SYMBOL to declare them.
-> 
-> "not called from C" is a bit confusing.
-> 
-> > > 
-> > > Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-> > > ---
-> > >  include/linux/ftrace.h | 7 ++++---
-> > >  1 file changed, 4 insertions(+), 3 deletions(-)
-> > > 
-> > > diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
-> > > index 832e65f06754..67de28464aeb 100644
-> > > --- a/include/linux/ftrace.h
-> > > +++ b/include/linux/ftrace.h
-> > > @@ -578,9 +578,10 @@ extern void ftrace_replace_code(int enable);
-> > >  extern int ftrace_update_ftrace_func(ftrace_func_t func);
-> > >  extern void ftrace_caller(void);
-> > >  extern void ftrace_regs_caller(void);
-> > > -extern void ftrace_call(void);
-> > > -extern void ftrace_regs_call(void);
-> > > -extern void mcount_call(void);
-> > > +
-> > > +DECLARE_ASM_FUNC_SYMBOL(ftrace_call);
-> > > +DECLARE_ASM_FUNC_SYMBOL(ftrace_regs_call);
-> > > +DECLARE_ASM_FUNC_SYMBOL(mcount_call);  
-> > 
-> > I'm thinking DECLARE_ASM_FUNC_SYMBOL needs a better name. It's not clear
-> > from reading it why some asm symbols need the macro and others don't.
-> > 
-> > I guess it means "an asm text symbol which isn't callable from C code
-> > (not including alternatives)"?
-> > 
-> > DECLARE_UNCALLED_SYMBOL() maybe?
-> > 
-> 
-> That's even worse ;-) Because "called" is an assembler command in x86, and
-> it is "called" from assembly (when you look at an objdump, it is most
-> definitely "called").
-> 
-> Perhaps DECLARE_ASM_INTERNAL_SYMBOL() ?
-> 
-> Or call it "DECLARE_ASM_MCOUNT_SYMBOL()" as "mcount" is the original name
-> of what a compiler does when passed the -pg option, and that's exactly what
-> those functions are.
+> BTW, patch2/3  is missing some benchmark data and tested-by/SOB tags, i guess
+> it is because you are still editing?
 
-But this macro is used in other places as well:
+Urgh, no, that's my script thinking one of the many
 
-  https://lkml.kernel.org/r/20210930180531.1190642-10-samitolvanen@google.com
+--------------
 
-And many of them aren't internal to a function like the above symbols,
-they're actual functions that are called in other ways.
-
-DECLARE_UNCALLED_FROM_C() ?
-
--- 
-Josh
-
+lines you got in there was a terminator. Fixed it, should be pushed out
+again in a few minutes.
