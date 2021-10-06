@@ -2,141 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AE72423628
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 05:06:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D258D42362A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 05:07:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237240AbhJFDIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 23:08:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50700 "EHLO
+        id S237257AbhJFDIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 23:08:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230306AbhJFDIN (ORCPT
+        with ESMTP id S230306AbhJFDIt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 23:08:13 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEA2AC061749
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 20:06:21 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id rm6-20020a17090b3ec600b0019ece2bdd20so1206647pjb.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 20:06:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=h/B2/4lvsg/CGVwkkVTPAzFHikkG/kMza4mFfWJz56M=;
-        b=RoIQ370OysL/Vat32I9DE1b65g2D9zD1Su7VuAiStesPYk8mNSoeyahvzP3MVGUf35
-         9s7no6dpO/dT6vVvpKpHp23xb2HwN3BPV7urynVsqosllSY4TX1f72huqIqUzBWz2fVr
-         g7bKg+U3G3fU6Z7TcAByj7Ma+/ydevcwWBjUU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=h/B2/4lvsg/CGVwkkVTPAzFHikkG/kMza4mFfWJz56M=;
-        b=ulYJw4JFad1GKP7kBDo4+ushhsIun7Ao1H3FoFknNi3RgXqkAe5x3UHoSO2XrHvdA4
-         xJYGANQSEwZbarPCchezQI1p6aH5SrdUleo9EKxuuozBHt5tpxf+WJegPwVC7DL7G7D4
-         Uvjg5DTXHGUYwXpyn17pR8dyYY2OGdL9Wv0P5U9G64RcGQIMNXroeVdwNKXGNk1txzBH
-         kUy/HvOe7dOswNRefP2/m/hKSORKi9cJLuea82Bzo2Bx9EnRF3L+28vZv4pvcSC3x+/b
-         fwWEgGzCtCyzfcWvCjdPf2gxhIT0epOA9EE8LhUBpzP5UXJXhWtWNZ85cx1YwKbHDYMB
-         pSdw==
-X-Gm-Message-State: AOAM532/a3GFzYnxM6mvyTfVr8+Pdqrq1QhsLGt0/LWN/EXwmHIw21mb
-        CGjfsbcgwywKvo+lUug8MHWCag==
-X-Google-Smtp-Source: ABdhPJxd3GTDs3AmQw6NUx7I6g3wW7HHJ1LFAkBIXJF6Fjyx/chs9vINb4JfHNqKo3KcWB3kTVCVCw==
-X-Received: by 2002:a17:90a:6405:: with SMTP id g5mr7951706pjj.71.1633489581366;
-        Tue, 05 Oct 2021 20:06:21 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id y8sm19333896pfe.217.2021.10.05.20.06.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Oct 2021 20:06:21 -0700 (PDT)
-Date:   Tue, 5 Oct 2021 20:06:20 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andy Whitcroft <apw@canonical.com>,
-        Dennis Zhou <dennis@kernel.org>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Joe Perches <joe@perches.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Tejun Heo <tj@kernel.org>,
-        Daniel Micay <danielmicay@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        clang-built-linux@googlegroups.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v3 4/8] slab: Add __alloc_size attributes for better
- bounds checking
-Message-ID: <202110052002.34E998B@keescook>
-References: <20210930222704.2631604-1-keescook@chromium.org>
- <20210930222704.2631604-5-keescook@chromium.org>
- <20211005184717.65c6d8eb39350395e387b71f@linux-foundation.org>
+        Tue, 5 Oct 2021 23:08:49 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33427C061749;
+        Tue,  5 Oct 2021 20:06:58 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HPK9r0WbYz4xbC;
+        Wed,  6 Oct 2021 14:06:56 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1633489616;
+        bh=FpJb17O/OK8AZco1UjAOqyAOGqm9kvGdwy8j1IJGb8w=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=mo2WjpEGpb7AdQE/7SuCHsCwnfve1S9T68OJq6v6Hvvupw4r1lfgQqqPt2jEFmjja
+         tnsrKnPNRde5++Rf49WSkyZm9JSXmO7/Ij/4nXp+5ojBcj1l+GQxdLxcJlbsY+TAZ9
+         VQKucOskwGASGsrEMEWP9FSpIFkf0bc0kfnkeO5z9eKiRAeMAGlWk6TuPbLH1XNdjk
+         I9lQ7R2VIEhbKE6xuAmIlUqUozDNGP0RCBTSmkBKxpeo+vLTXq+I5FRQP9EEc0OS6b
+         ixE7rJQlYmzLIAmG1Ws7N2vWVXYQTaLqAD9n6Sa615KKIQ+Yn0F3LDGMvZWOmx6H4L
+         Dd88IwQzolWng==
+Date:   Wed, 6 Oct 2021 14:06:55 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the tip tree
+Message-ID: <20211006140655.6381bc5d@canb.auug.org.au>
+In-Reply-To: <YUhuHcHeeNELK8cr@hirez.programming.kicks-ass.net>
+References: <20210920113330.29f12b99@canb.auug.org.au>
+        <YUhuHcHeeNELK8cr@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211005184717.65c6d8eb39350395e387b71f@linux-foundation.org>
+Content-Type: multipart/signed; boundary="Sig_/vX4IllVywMMtwm8gQ4235.v";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05, 2021 at 06:47:17PM -0700, Andrew Morton wrote:
-> On Thu, 30 Sep 2021 15:27:00 -0700 Kees Cook <keescook@chromium.org> wrote:
-> 
-> > As already done in GrapheneOS, add the __alloc_size attribute for regular
-> > kmalloc interfaces, to provide additional hinting for better bounds
-> > checking, assisting CONFIG_FORTIFY_SOURCE and other compiler
-> > optimizations.
-> 
-> x86_64 allmodconfig:
+--Sig_/vX4IllVywMMtwm8gQ4235.v
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-What compiler and version?
+Hi Peter,
 
-> 
-> In file included from ./arch/x86/include/asm/preempt.h:7,
->                  from ./include/linux/preempt.h:78,
->                  from ./include/linux/spinlock.h:55,
->                  from ./include/linux/mmzone.h:8,
->                  from ./include/linux/gfp.h:6,
->                  from ./include/linux/mm.h:10,
->                  from ./include/linux/mman.h:5,
->                  from lib/test_kasan_module.c:10:
-> In function 'check_copy_size',
->     inlined from 'copy_user_test' at ./include/linux/uaccess.h:191:6:
-> ./include/linux/thread_info.h:213:4: error: call to '__bad_copy_to' declared with attribute error: copy destination size is too small
->   213 |    __bad_copy_to();
->       |    ^~~~~~~~~~~~~~~
-> In function 'check_copy_size',
->     inlined from 'copy_user_test' at ./include/linux/uaccess.h:199:6:
-> ./include/linux/thread_info.h:211:4: error: call to '__bad_copy_from' declared with attribute error: copy source size is too small
->   211 |    __bad_copy_from();
->       |    ^~~~~~~~~~~~~~~~~
-> make[1]: *** [lib/test_kasan_module.o] Error 1
-> make: *** [lib] Error 2
+On Mon, 20 Sep 2021 13:18:53 +0200 Peter Zijlstra <peterz@infradead.org> wr=
+ote:
+>
+> On Mon, Sep 20, 2021 at 11:33:30AM +1000, Stephen Rothwell wrote:
+> >=20
+> > After merging the tip tree, today's linux-next build (powerpc_ppc64
+> > defconfig) produced this warning:
+> >=20
+> > kernel/sched/debug.c: In function 'print_cfs_group_stats':
+> > kernel/sched/debug.c:460:41: warning: unused variable 'stats' [-Wunused=
+-variable]
+> >   460 |                struct sched_statistics *stats =3D  __schedstats=
+_from_se(se);
+> >       |                                         ^~~~~
+>=20
+> So I've not seen that one *yet*, I've dont a bunch of SCHEDSTAT=3Dn
+> builds. I do think GCC is being quite stupid for giving it, seeing how
+> the whole thing is within if (0). The GCC people seem to disagree when I
+> brought it up.
+>=20
+> Anyway, what I did in other parts was the below; that seems to 'upgrade'
+> the warnings from -Wunused-variable to -Wunused-but-set-variable, and
+> that latter *is* in W=3D1, and I'm arguing it should be promoted to W=3D2=
+ or
+> thereabout.
+>=20
+> Given that whole if(0) {} thing, I don't feel motivated to change things
+> overly much and quite strongly feel this is the compiler being daft.
+>=20
+> ---
+>=20
+> diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
+> index 935dad7dffb7..ef71de01e4d7 100644
+> --- a/kernel/sched/debug.c
+> +++ b/kernel/sched/debug.c
+> @@ -457,7 +457,8 @@ static void print_cfs_group_stats(struct seq_file *m,=
+ int cpu, struct task_group
+>  	PN(se->sum_exec_runtime);
+> =20
+>  	if (schedstat_enabled()) {
+> -               struct sched_statistics *stats =3D  __schedstats_from_se(=
+se);
+> +		struct sched_statistics *stats;
+> +		stats =3D __schedstats_from_se(se);
+> =20
+>  		PN_SCHEDSTAT(wait_start);
+>  		PN_SCHEDSTAT(sleep_start);
 
-Hah, yes, it caught an intentionally bad copy. This may bypass the
-check, as I've had to do in LKDTM before. I will test...
+Any progress on this?  I am still getting the warning.
 
-diff --git a/lib/test_kasan_module.c b/lib/test_kasan_module.c
-index 7ebf433edef3..9fb2fb2937da 100644
---- a/lib/test_kasan_module.c
-+++ b/lib/test_kasan_module.c
-@@ -19,7 +19,12 @@ static noinline void __init copy_user_test(void)
- {
- 	char *kmem;
- 	char __user *usermem;
--	size_t size = 128 - KASAN_GRANULE_SIZE;
-+	/*
-+	 * This is marked volatile to avoid __alloc_size()
-+	 * noticing the intentionally out-of-bounds copys
-+	 * being done on the allocation.
-+	 */
-+	volatile size_t size = 128 - KASAN_GRANULE_SIZE;
- 	int __maybe_unused unused;
- 
- 	kmem = kmalloc(size, GFP_KERNEL);
+--=20
+Cheers,
+Stephen Rothwell
 
--- 
-Kees Cook
+--Sig_/vX4IllVywMMtwm8gQ4235.v
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFdEs8ACgkQAVBC80lX
+0GywCwf9FqdLggpxZhSH93X3gPvN72Es9QkzqDcYS6b3me34+2uwiayPgQi65O8c
+zSkeTRqBJSy7bcBnX+1zJCdQG5djwRrekXu0UkkZKe/0PrwTLxHmsQUWPWWPfFdJ
+DyiUEES9gBiQ449xovjPhvkhRTKG5pL2qdQ4i3vvl7sOIhoZIUIhHfNzQA2mCh1u
+sWFp4NgTgvuzhaICSYCTbZJl51FvL/NE0Eljb+vSq4Ov/4OBSfpcgtFQ1amv6Gsx
+eFHvH8WEHCCavi9AZmKQKVeDpDM4Aeb5dz59hHPuABQ/NtqfmyZYMKqS99ixARLw
+sHGIv4vqr2tvcf8v5ZVe63gxGwfBvg==
+=TUTX
+-----END PGP SIGNATURE-----
+
+--Sig_/vX4IllVywMMtwm8gQ4235.v--
