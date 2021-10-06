@@ -2,240 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FFCF423842
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 08:38:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E49C8423847
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 08:39:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237626AbhJFGjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 02:39:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40700 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237443AbhJFGjP (ORCPT
+        id S237256AbhJFGl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 02:41:27 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:63086 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230134AbhJFGl0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 02:39:15 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF081C06178C;
-        Tue,  5 Oct 2021 23:37:08 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id y5so1041612pll.3;
-        Tue, 05 Oct 2021 23:37:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=cUs+nJBemKyqHW1/+tBNnIBzfXId6r+3EciJyXUHzJs=;
-        b=deTC7Rn0DcsjYYoiRTspqzgwi6qRvMUyQ7vSXGCFfsa5xOad3Gdn8ljNTkYggYUB9M
-         Wh54qfIM5W1Y8TsctnlhmnbtFhrNYJ2+ZTro+t6KMkIvD8O85+Rdwpnvlo5kwHeXVcu5
-         NizfNtc56ygl73gOCxTLx9/P+KRIjVluMvecfcdL/zXZsCORSKluiRe8eSvs8tVVfdeW
-         g2T1xPemJDMJ3eUNAjHKR7YTRbm7UjH1UISQ5DcUn449tkIhamOtMwdvtYgyAxCVen12
-         VCt1M1thqP1DgyxyVwTvGfYaadDjgRppBbD2GrkbPMC6YYTAtAJhM10QLs2lO8ZY+/ap
-         7aGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=cUs+nJBemKyqHW1/+tBNnIBzfXId6r+3EciJyXUHzJs=;
-        b=3XBszEZpxjFKPcVQqISU+5BnvtNSYVCFZuL0SmzwazC2PMqdv1TXhXz1u3TZRY559p
-         O9KWg9of7M9MLKaG/NfXxt1edF8YZBov4E5oH6tNFiP8HraEjYpQzto31ftJR3YdXZZ9
-         2JyMagpSVhgNpeKiKfnp09R3ZM6eRwgD272p1kT5SAuG6p8c073SPE2g8OLYJ24rlrdS
-         dXIhilLFuOsmCxrY2K5FamWTLmoHvIAy9sn1XR5UTSlAqpzRNYkcu5AoPM9s1u0YOyra
-         zOdSbfPBCM/NjRjLzUwprdBDY4DN6WHbzJW1ew7FiEUcUj0ZscR16a2FS910n6sMKWls
-         lKEg==
-X-Gm-Message-State: AOAM531p8mKZU+h94gvlAtVOIojJFDWmnfB0QA/b125MwBCEnWZ70jRz
-        RI9NhHPM26f3mIRbVYbFSAE=
-X-Google-Smtp-Source: ABdhPJzeVApnzhQbAoaxrNRKX1UnEUGI+xcGgAtFDKobBiFveN6zuJKOkPB2FG743LxWJ1lp7WtAhQ==
-X-Received: by 2002:a17:902:6b01:b0:13e:50bb:790f with SMTP id o1-20020a1709026b0100b0013e50bb790fmr9298533plk.42.1633502228179;
-        Tue, 05 Oct 2021 23:37:08 -0700 (PDT)
-Received: from ubuntu-Virtual-Machine.corp.microsoft.com ([2001:4898:80e8:37:357b:c418:cfef:30b1])
-        by smtp.gmail.com with ESMTPSA id l185sm19886413pfd.29.2021.10.05.23.37.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Oct 2021 23:37:07 -0700 (PDT)
-From:   Tianyu Lan <ltykernel@gmail.com>
-To:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        davem@davemloft.net, kuba@kernel.org, gregkh@linuxfoundation.org,
-        arnd@arndb.de, jroedel@suse.de, brijesh.singh@amd.com,
-        Tianyu.Lan@microsoft.com, thomas.lendacky@amd.com,
-        pgonda@google.com, akpm@linux-foundation.org,
-        kirill.shutemov@linux.intel.com, rppt@kernel.org, tj@kernel.org,
-        aneesh.kumar@linux.ibm.com, saravanand@fb.com, hannes@cmpxchg.org,
-        rientjes@google.com, michael.h.kelley@microsoft.com
-Cc:     linux-arch@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        vkuznets@redhat.com, konrad.wilk@oracle.com, hch@lst.de,
-        robin.murphy@arm.com, joro@8bytes.org, parri.andrea@gmail.com,
-        dave.hansen@intel.com
-Subject: [PATCH V7 9/9] Drivers: hv : vmbus: Initialize VMbus ring buffer for Isolation VM
-Date:   Wed,  6 Oct 2021 02:36:49 -0400
-Message-Id: <20211006063651.1124737-10-ltykernel@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211006063651.1124737-1-ltykernel@gmail.com>
-References: <20211006063651.1124737-1-ltykernel@gmail.com>
+        Wed, 6 Oct 2021 02:41:26 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19666UST003158;
+        Wed, 6 Oct 2021 02:38:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=cL6HOH+4WU1Y3INGXhF2qJkOK58+XTyJ08dWyYHlbJA=;
+ b=hJ44ig6js3QfpWoegDcBKCAFojVOMzn3L8wDQG54J1BzRhvjDjbePs9UPJg0fhiJybx0
+ d5Lvoh3RaSvV9F96xzNc7x5g/dLvy5NMvsPplc9z9EjrvFLw4KNqLsiuijFOKghmRUEF
+ 9uATs+GwL87ZRAalh3I+I6PX/nsHuH2VCn+fi5oYmhsk4v/zGmpjoAvbwk3rEdEWt4dn
+ UGA1aMa/4cE4O3BpOqQmSX3LbigLAmBNbuBb6N+a26DtIwe2+31TWFUp0KsncRDGlPlX
+ W/31ATTqCCHrJfirIi7MZmKyfbVmiAV/hMqJNqa0RVQRu28HHDPJ8zxvocvLyg3ei4yF Eg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bh2nc4cr7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 06 Oct 2021 02:38:54 -0400
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1966YlFK010882;
+        Wed, 6 Oct 2021 02:38:54 -0400
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bh2nc4cqp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 06 Oct 2021 02:38:54 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1966WiWF017801;
+        Wed, 6 Oct 2021 06:38:52 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma02fra.de.ibm.com with ESMTP id 3bef29xt15-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 06 Oct 2021 06:38:52 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1966XRow38797756
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 6 Oct 2021 06:33:27 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C84945204E;
+        Wed,  6 Oct 2021 06:38:48 +0000 (GMT)
+Received: from li-e8dccbcc-2adc-11b2-a85c-bc1f33b9b810.ibm.com (unknown [9.43.16.33])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id D1C815206B;
+        Wed,  6 Oct 2021 06:38:41 +0000 (GMT)
+Subject: Re: [PATCH 2/4] perf: Add mem_hops field in perf_mem_data_src
+ structure
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     mpe@ellerman.id.au, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, mingo@redhat.com, acme@kernel.org,
+        jolsa@kernel.org, namhyung@kernel.org, ak@linux.intel.com,
+        linux-perf-users@vger.kernel.org, maddy@linux.ibm.com,
+        atrajeev@linux.vnet.ibm.com, rnsastry@linux.ibm.com,
+        yao.jin@linux.intel.com, ast@kernel.org, daniel@iogearbox.net,
+        songliubraving@fb.com, kan.liang@linux.intel.com,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        paulus@samba.org
+References: <20211005091837.250044-1-kjain@linux.ibm.com>
+ <20211005091837.250044-2-kjain@linux.ibm.com>
+ <20211005202015.GC174703@worktop.programming.kicks-ass.net>
+From:   kajoljain <kjain@linux.ibm.com>
+Message-ID: <be06c316-d257-4175-7b33-43220014d234@linux.ibm.com>
+Date:   Wed, 6 Oct 2021 12:08:40 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211005202015.GC174703@worktop.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: Qp_ZlBVIm8yGc52uAbjAt6CMtcMq5gLK
+X-Proofpoint-ORIG-GUID: C7MqGast4V9sEP159Y066WwXnsHTlz3P
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-10-05_06,2021-10-04_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ impostorscore=0 bulkscore=0 clxscore=1015 mlxscore=0 mlxlogscore=999
+ malwarescore=0 suspectscore=0 spamscore=0 phishscore=0 lowpriorityscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110060040
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tianyu Lan <Tianyu.Lan@microsoft.com>
 
-VMbus ring buffer are shared with host and it's need to
-be accessed via extra address space of Isolation VM with
-AMD SNP support. This patch is to map the ring buffer
-address in extra address space via vmap_pfn(). Hyperv set
-memory host visibility hvcall smears data in the ring buffer
-and so reset the ring buffer memory to zero after mapping.
 
-Signed-off-by: Tianyu Lan <Tianyu.Lan@microsoft.com>
----
-Change since v4:
-	* Use PFN_DOWN instead of HVPFN_DOWN in the hv_ringbuffer_init()
+On 10/6/21 1:50 AM, Peter Zijlstra wrote:
+> On Tue, Oct 05, 2021 at 02:48:35PM +0530, Kajol Jain wrote:
+>> Going forward, future generation systems can have more hierarchy
+>> within the chip/package level but currently we don't have any data source
+>> encoding field in perf, which can be used to represent this level of data.
+>>
+>> Add a new field called 'mem_hops' in the perf_mem_data_src structure
+>> which can be used to represent intra-chip/package or inter-chip/off-package
+>> details. This field is of size 3 bits where PERF_MEM_HOPS_{NA, 0..6} value
+>> can be used to present different hop levels data.
+>>
+>> Also add corresponding macros to define mem_hop field values
+>> and shift value.
+>>
+>> Currently we define macro for HOPS_0 which corresponds
+>> to data coming from another core but same chip.
+>>
+>> For ex: Encodings for mem_hops fields with L2 cache:
+>>
+>> L2			- local L2
+>> L2 | REMOTE | HOPS_0	- remote core, same chip L2
+> 
+> Can we do s/chip/node/ ? Hops are something NUMA related, while chips
+> come in a bag or something :-)
 
-Change since v3:
-	* Remove hv_ringbuffer_post_init(), merge map
-	operation for Isolation VM into hv_ringbuffer_init()
-	* Call hv_ringbuffer_init() after __vmbus_establish_gpadl().
----
- drivers/hv/Kconfig       |  1 +
- drivers/hv/channel.c     | 19 +++++++-------
- drivers/hv/ring_buffer.c | 55 ++++++++++++++++++++++++++++++----------
- 3 files changed, 53 insertions(+), 22 deletions(-)
+Hi Peter,
+  Sure, I will make this change in next version of this patch-set.
 
-diff --git a/drivers/hv/Kconfig b/drivers/hv/Kconfig
-index d1123ceb38f3..dd12af20e467 100644
---- a/drivers/hv/Kconfig
-+++ b/drivers/hv/Kconfig
-@@ -8,6 +8,7 @@ config HYPERV
- 		|| (ARM64 && !CPU_BIG_ENDIAN))
- 	select PARAVIRT
- 	select X86_HV_CALLBACK_VECTOR if X86
-+	select VMAP_PFN
- 	help
- 	  Select this option to run Linux as a Hyper-V client operating
- 	  system.
-diff --git a/drivers/hv/channel.c b/drivers/hv/channel.c
-index b37ff4a39224..dc5c35210c16 100644
---- a/drivers/hv/channel.c
-+++ b/drivers/hv/channel.c
-@@ -683,15 +683,6 @@ static int __vmbus_open(struct vmbus_channel *newchannel,
- 	if (!newchannel->max_pkt_size)
- 		newchannel->max_pkt_size = VMBUS_DEFAULT_MAX_PKT_SIZE;
- 
--	err = hv_ringbuffer_init(&newchannel->outbound, page, send_pages, 0);
--	if (err)
--		goto error_clean_ring;
--
--	err = hv_ringbuffer_init(&newchannel->inbound, &page[send_pages],
--				 recv_pages, newchannel->max_pkt_size);
--	if (err)
--		goto error_clean_ring;
--
- 	/* Establish the gpadl for the ring buffer */
- 	newchannel->ringbuffer_gpadlhandle.gpadl_handle = 0;
- 
-@@ -703,6 +694,16 @@ static int __vmbus_open(struct vmbus_channel *newchannel,
- 	if (err)
- 		goto error_clean_ring;
- 
-+	err = hv_ringbuffer_init(&newchannel->outbound,
-+				 page, send_pages, 0);
-+	if (err)
-+		goto error_free_gpadl;
-+
-+	err = hv_ringbuffer_init(&newchannel->inbound, &page[send_pages],
-+				 recv_pages, newchannel->max_pkt_size);
-+	if (err)
-+		goto error_free_gpadl;
-+
- 	/* Create and init the channel open message */
- 	open_info = kzalloc(sizeof(*open_info) +
- 			   sizeof(struct vmbus_channel_open_channel),
-diff --git a/drivers/hv/ring_buffer.c b/drivers/hv/ring_buffer.c
-index 314015d9e912..931802ae985c 100644
---- a/drivers/hv/ring_buffer.c
-+++ b/drivers/hv/ring_buffer.c
-@@ -17,6 +17,8 @@
- #include <linux/vmalloc.h>
- #include <linux/slab.h>
- #include <linux/prefetch.h>
-+#include <linux/io.h>
-+#include <asm/mshyperv.h>
- 
- #include "hyperv_vmbus.h"
- 
-@@ -183,8 +185,10 @@ void hv_ringbuffer_pre_init(struct vmbus_channel *channel)
- int hv_ringbuffer_init(struct hv_ring_buffer_info *ring_info,
- 		       struct page *pages, u32 page_cnt, u32 max_pkt_size)
- {
--	int i;
- 	struct page **pages_wraparound;
-+	unsigned long *pfns_wraparound;
-+	u64 pfn;
-+	int i;
- 
- 	BUILD_BUG_ON((sizeof(struct hv_ring_buffer) != PAGE_SIZE));
- 
-@@ -192,23 +196,48 @@ int hv_ringbuffer_init(struct hv_ring_buffer_info *ring_info,
- 	 * First page holds struct hv_ring_buffer, do wraparound mapping for
- 	 * the rest.
- 	 */
--	pages_wraparound = kcalloc(page_cnt * 2 - 1, sizeof(struct page *),
--				   GFP_KERNEL);
--	if (!pages_wraparound)
--		return -ENOMEM;
-+	if (hv_isolation_type_snp()) {
-+		pfn = page_to_pfn(pages) +
-+			PFN_DOWN(ms_hyperv.shared_gpa_boundary);
-+
-+		pfns_wraparound = kcalloc(page_cnt * 2 - 1,
-+			sizeof(unsigned long), GFP_KERNEL);
-+		if (!pfns_wraparound)
-+			return -ENOMEM;
-+
-+		pfns_wraparound[0] = pfn;
-+		for (i = 0; i < 2 * (page_cnt - 1); i++)
-+			pfns_wraparound[i + 1] = pfn + i % (page_cnt - 1) + 1;
- 
--	pages_wraparound[0] = pages;
--	for (i = 0; i < 2 * (page_cnt - 1); i++)
--		pages_wraparound[i + 1] = &pages[i % (page_cnt - 1) + 1];
-+		ring_info->ring_buffer = (struct hv_ring_buffer *)
-+			vmap_pfn(pfns_wraparound, page_cnt * 2 - 1,
-+				 PAGE_KERNEL);
-+		kfree(pfns_wraparound);
- 
--	ring_info->ring_buffer = (struct hv_ring_buffer *)
--		vmap(pages_wraparound, page_cnt * 2 - 1, VM_MAP, PAGE_KERNEL);
-+		if (!ring_info->ring_buffer)
-+			return -ENOMEM;
-+
-+		/* Zero ring buffer after setting memory host visibility. */
-+		memset(ring_info->ring_buffer, 0x00, PAGE_SIZE * page_cnt);
-+	} else {
-+		pages_wraparound = kcalloc(page_cnt * 2 - 1,
-+					   sizeof(struct page *),
-+					   GFP_KERNEL);
-+
-+		pages_wraparound[0] = pages;
-+		for (i = 0; i < 2 * (page_cnt - 1); i++)
-+			pages_wraparound[i + 1] =
-+				&pages[i % (page_cnt - 1) + 1];
- 
--	kfree(pages_wraparound);
-+		ring_info->ring_buffer = (struct hv_ring_buffer *)
-+			vmap(pages_wraparound, page_cnt * 2 - 1, VM_MAP,
-+				PAGE_KERNEL);
- 
-+		kfree(pages_wraparound);
-+		if (!ring_info->ring_buffer)
-+			return -ENOMEM;
-+	}
- 
--	if (!ring_info->ring_buffer)
--		return -ENOMEM;
- 
- 	ring_info->ring_buffer->read_index =
- 		ring_info->ring_buffer->write_index = 0;
--- 
-2.25.1
+Thanks,
+Kajol Jain
 
+> 
+>> +/* hop level */
+>> +#define PERF_MEM_HOPS_0		0x01 /* remote core, same chip */
+>> +/* 2-7 available */
+>> +#define PERF_MEM_HOPS_SHIFT	43
