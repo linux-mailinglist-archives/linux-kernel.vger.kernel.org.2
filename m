@@ -2,133 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCAEE4237FC
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 08:30:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74CD4423800
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 08:31:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233148AbhJFGcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 02:32:24 -0400
-Received: from mga07.intel.com ([134.134.136.100]:36775 "EHLO mga07.intel.com"
+        id S235862AbhJFGdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 02:33:12 -0400
+Received: from mout.perfora.net ([74.208.4.196]:38059 "EHLO mout.perfora.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229956AbhJFGcV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 02:32:21 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10128"; a="289429915"
-X-IronPort-AV: E=Sophos;i="5.85,350,1624345200"; 
-   d="scan'208";a="289429915"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2021 23:30:29 -0700
-X-IronPort-AV: E=Sophos;i="5.85,350,1624345200"; 
-   d="scan'208";a="484034646"
-Received: from pwali-mobl1.amr.corp.intel.com (HELO ldmartin-desk2) ([10.213.170.68])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2021 23:30:29 -0700
-Date:   Tue, 5 Oct 2021 23:30:29 -0700
-From:   Lucas De Marchi <lucas.demarchi@intel.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH] lib/string_helpers: add linux/string.h for strlen()
-Message-ID: <20211006063029.owhu5hjtaivib5d5@ldmartin-desk2>
-X-Patchwork-Hint: comment
-References: <20211005212634.3223113-1-lucas.demarchi@intel.com>
- <CAHp75VfT+dSNYSntj9O5a9NVGnbf_raxWLiS7ciDMe-kRL-+=A@mail.gmail.com>
+        id S229956AbhJFGdI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 02:33:08 -0400
+Received: from toolbox.soleil.gust ([63.147.84.106]) by mrelay.perfora.net
+ (mreueus002 [74.208.5.2]) with ESMTPSA (Nemesis) id 0Mdb8U-1m8fZp1vpc-00POao;
+ Wed, 06 Oct 2021 08:31:09 +0200
+From:   Marcel Ziswiler <marcel@ziswiler.com>
+To:     netdev@vger.kernel.org
+Cc:     Marcel Ziswiler <marcel@ziswiler.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        "David S. Miller" <davem@davemloft.net>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] dt-bindings: net: dsa: marvell: fix compatible in example
+Date:   Wed,  6 Oct 2021 08:31:04 +0200
+Message-Id: <20211006063104.351685-1-marcel@ziswiler.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHp75VfT+dSNYSntj9O5a9NVGnbf_raxWLiS7ciDMe-kRL-+=A@mail.gmail.com>
+X-Provags-ID: V03:K1:bwPCWM1KaDIOapc+svZsmpskDbmtCqqnbkTEsB8xCAKanMgObpa
+ f2AQ3NzvczTc8Icmnlj3KkxzCp54/qw4oFw9R+YxWrKxtqGHdw5sIqnknaPvRTeteXQklSN
+ +60cq3Ccw2BH9T1dNv4tdUIl4vS1aMhbyZQBLX6o1ViGV6sTlQimHP/4y0Yz9AJof823kYd
+ OjZe3cxo9tKdmEDAYKWJA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:2A6y0lpMwT4=:SU/m/q6gKPnnAZJhzhZwey
+ TByeEFbUNV+tJOvCuY6bxoIFEzEPyixwVMznLOItUngbKWD2LX/u36ErV2ORZADr2cSJhHZDz
+ O4Yjiq8jVkvILayvfn6qpdHQqEj2qQw0dkpSNBDidpMgaR6pyLHpEj02PAbIYTcLSgmp5l/lQ
+ 97mtSjR9/198dzuqsKH9u8fpgh19WEEXl20+O/ocmiZhbjMREKYwSidGhSzAC2ScXQCLuEXOb
+ VZSHMUX0szeNyrHxvpRsWPbW4Mwa9FR+p8ZSXKTPr6TbEEwxtD+QwVb88NfNCjfW+uvV5+C/n
+ rW64P0yvO0rxHZba9eN8YaA85fj0vZDWAvxz5IFAn1ywmQCVNUX4FoAjUyoGHneYO5I+jLgSs
+ /LHkIww0N0fv8TnA9Hn2ILzTH7lDUihGEdsMR+R+hXj22Vqnz1O43UPM6AkUxwjkqtt9WBOxH
+ DbJobBruY0LRzK1mRHsRE71KSxTzVlaJzQ5z+5dvOiuTR3n+3qo2i/eQLVh0z3sle5jqyjnvl
+ 4uGXQOxVEy29ZxcZHSisA2gmKldtWBqcpgnqx92Lnm9ojsntYE/Dh2ed2lr6LJ3o7qaSyvxpS
+ 1f1edntvkkvSc42hGLE2MYhifG5yykqk2RB7S7g+e/ozjhR2zKYPaRQF4MmzgTJQzuXJJxwHf
+ 5ovZ5KqGfP/AOs+3SG2QtwNhnIHtFa/GMb2auUBVRV5v6usIYOavKHy3qvnUVGCKca4nJViy2
+ aVjSwKAvjNGaY+UiEhBV8i79KTAzfApmmByPOw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 06, 2021 at 08:57:27AM +0300, Andy Shevchenko wrote:
->On Wednesday, October 6, 2021, Lucas De Marchi <lucas.demarchi@intel.com>
->wrote:
->
->> linux/string_helpers.h uses strlen(), so include the correpondent
->> header. Otherwise we get a compilation error if it's not also included
->> by whoever included the helper.
->>
->> Signed-off-by: Lucas De Marchi <lucas.demarchi@intel.com>
->> ---
->>  include/linux/string_helpers.h | 1 +
->>  1 file changed, 1 insertion(+)
->>
->> diff --git a/include/linux/string_helpers.h b/include/linux/string_
->> helpers.h
->> index 68189c4a2eb1..4ba39e1403b2 100644
->> --- a/include/linux/string_helpers.h
->> +++ b/include/linux/string_helpers.h
->> @@ -4,6 +4,7 @@
->>
->>  #include <linux/bits.h>
->>  #include <linux/ctype.h>
->> +#include <linux/string.h>
->>  #include <linux/types.h>
->
->
->I’m afraid this potentially can add into header dependencies hell. What
->about moving the user to the C file?
+While the MV88E6390 switch chip exists, one is supposed to use a
+compatible of "marvell,mv88e6190" for it. Fix this in the given example.
 
-I can do that, but I don't see the problem here... afaics it has been like this
-for 7 years, since commit c8250381c827 ("lib / string_helpers: introduce string_escape_mem()"),
-and the only way it was never borken is because
-linux/string.h is already being indirectly included from other headers.
-So just adding it here is harmless.
+Signed-off-by: Marcel Ziswiler <marcel@ziswiler.com>
+Fixes: a3c53be55c95 ("net: dsa: mv88e6xxx: Support multiple MDIO busses")
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
-I reproduced this while following the normal header order in i915 and
-adding linux/string_helpers.h like this:
+---
 
+Changes in v2:
+- Add fixes tag, Andrew's reviewed-by and separately send to netdev
+  mailing list.
 
-diff --git a/drivers/gpu/drm/i915/display/intel_display_debugfs.c b/drivers/gpu/drm/i915/display/intel_display_debugfs.c
-index 309d74fd86ce..1dfc01617258 100644
---- a/drivers/gpu/drm/i915/display/intel_display_debugfs.c
-+++ b/drivers/gpu/drm/i915/display/intel_display_debugfs.c
-@@ -3,6 +3,8 @@
-   * Copyright © 2020 Intel Corporation
-   */
-  
-+#include <linux/string_helpers.h>
-+
-  #include <drm/drm_debugfs.h>
-  #include <drm/drm_fourcc.h>
-  
+ Documentation/devicetree/bindings/net/dsa/marvell.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Note that this became the first header included, producing the following
-error:
+diff --git a/Documentation/devicetree/bindings/net/dsa/marvell.txt b/Documentation/devicetree/bindings/net/dsa/marvell.txt
+index 30c11fea491bd..2363b412410c3 100644
+--- a/Documentation/devicetree/bindings/net/dsa/marvell.txt
++++ b/Documentation/devicetree/bindings/net/dsa/marvell.txt
+@@ -83,7 +83,7 @@ Example:
+ 		#interrupt-cells = <2>;
+ 
+ 		switch0: switch@0 {
+-			compatible = "marvell,mv88e6390";
++			compatible = "marvell,mv88e6190";
+ 			reg = <0>;
+ 			reset-gpios = <&gpio5 1 GPIO_ACTIVE_LOW>;
+ 
+-- 
+2.26.2
 
-  make -j$(nproc) drivers/gpu/drm/i915/display/intel_display_debugfs.o
-   DESCEND objtool
-   CALL    scripts/atomic/check-atomics.sh
-   CALL    scripts/checksyscalls.sh
-   CC [M]  drivers/gpu/drm/i915/display/intel_display_debugfs.o
-In file included from drivers/gpu/drm/i915/display/intel_display_debugfs.c:6:
-./include/linux/string_helpers.h: In function ‘string_escape_str’:
-./include/linux/string_helpers.h:75:32: error: implicit declaration of function ‘strlen’ [-Werror=implicit-function-declaration]
-    75 |  return string_escape_mem(src, strlen(src), dst, sz, flags, only);
-       |                                ^~~~~~
-./include/linux/string_helpers.h:75:32: error: incompatible implicit declaration of built-in function ‘strlen’ [-Werror]
-./include/linux/string_helpers.h:7:1: note: include ‘<string.h>’ or provide a declaration of ‘strlen’
-     6 | #include <linux/ctype.h>
-   +++ |+#include <string.h>
-     7 | #include <linux/types.h>
-cc1: all warnings being treated as errors
-
-
-Anyway, if it's preferable to move these functions out of line, I can do
-so.
-
-thanks
-Lucas De Marchi
-
->
->
->>
->>  struct file;
->> --
->> 2.33.0
->>
->>
->
->-- 
->With Best Regards,
->Andy Shevchenko
