@@ -2,75 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1578E4241ED
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 17:56:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9ED24241EF
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 17:56:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239265AbhJFP5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 11:57:55 -0400
-Received: from mail-wr1-f49.google.com ([209.85.221.49]:38567 "EHLO
-        mail-wr1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239025AbhJFP5x (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 11:57:53 -0400
-Received: by mail-wr1-f49.google.com with SMTP id u18so10307449wrg.5;
-        Wed, 06 Oct 2021 08:56:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bpt8m9y+pHZcIYeK8rGYZ0fR9mcjj/LQBVzey4UcZjw=;
-        b=dwdlbfOTkzfnVGLxBtgQQ+kc3sfiT51/4FMwgeP1Ad3+p0lXIr9/eLsxxd9XZkkLaA
-         0JCBM5W7r6s0WB2Mp51My05kIWEkVDcn+pICjinTdPgPxBlFj7Dg9wty/XbNanCtufQI
-         rV3pSaFe9azwCFove4zC9KFkpntVrB4Rxv3+2AtBp4gGn/e7OSDHjPE30uj8tryjMbmE
-         cpT+F93jKo17H0qYjZVlMfjW9381q1Vs5P/nbFNV4EiPfxiCDnMF1qnh4njSTn8cXQck
-         PYBH/UqDtiOXokpyqfqLKeYtdBvz/rn610CsWco/baEz9ghJmuSznWHT2UUDxb4sVL2O
-         BQGw==
-X-Gm-Message-State: AOAM533RnzF59SpU6lhjJh37Ah1HBrRD6Nwt93HnoPifaGdr5bakcv8f
-        Eu7wPwH1nQ6hhxd9gX+MN/I=
-X-Google-Smtp-Source: ABdhPJxp8chtBaw8vO0GDD9hXcBlZ/77IqOcnluineWrUtD//uQr4xlyuhPfL5rCYIZXy8XjE1POig==
-X-Received: by 2002:a05:6000:168d:: with SMTP id y13mr29229149wrd.45.1633535760713;
-        Wed, 06 Oct 2021 08:56:00 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id z79sm5801028wmc.17.2021.10.06.08.55.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Oct 2021 08:56:00 -0700 (PDT)
-Date:   Wed, 6 Oct 2021 15:55:58 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Michael Kelley <mikelley@microsoft.com>
-Cc:     vkuznets <vkuznets@redhat.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        Wei Liu <wei.liu@kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Dexuan Cui <decui@microsoft.com>
-Subject: Re: [PATCH] x86/hyperv: Avoid erroneously sending IPI to 'self'
-Message-ID: <20211006155558.e4zie7kp3blcnpzh@liuwe-devbox-debian-v2>
-References: <20211006125016.941616-1-vkuznets@redhat.com>
- <MWHPR21MB1593E25D205903BC583C395AD7B09@MWHPR21MB1593.namprd21.prod.outlook.com>
+        id S239274AbhJFP6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 11:58:33 -0400
+Received: from foss.arm.com ([217.140.110.172]:42956 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235957AbhJFP6c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 11:58:32 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DE0086D;
+        Wed,  6 Oct 2021 08:56:39 -0700 (PDT)
+Received: from monolith.localdoman (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 666F63F70D;
+        Wed,  6 Oct 2021 08:56:37 -0700 (PDT)
+Date:   Wed, 6 Oct 2021 16:58:11 +0100
+From:   Alexandru Elisei <alexandru.elisei@arm.com>
+To:     davem@davemloft.net, michael.riesch@wolfvision.net,
+        peppe.cavallaro@st.com, alexandre.torgue@foss.st.com,
+        joabreu@synopsys.com, kuba@kernel.org, mcoquelin.stm32@gmail.com,
+        p.zabel@pengutronix.de, lgirdwood@gmail.com, broonie@kernel.org,
+        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Alexandru Elisei <alexandru.elisei@arm.com>
+Subject: [BUG RESEND] net: stmmac: dwmac-rk: Ethernet broken on rockpro64 by
+ commit 2d26f6e39afb ("net: stmmac: dwmac-rk: fix unbalanced
+ pm_runtime_enable warnings")
+Message-ID: <YV3Hk2R4uDKbTy43@monolith.localdoman>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <MWHPR21MB1593E25D205903BC583C395AD7B09@MWHPR21MB1593.namprd21.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 06, 2021 at 03:15:22PM +0000, Michael Kelley wrote:
-> From: Vitaly Kuznetsov <vkuznets@redhat.com> Sent: Wednesday, October 6, 2021 5:50 AM
-[...]
-> > --
-> > 2.31.1
-> 
-> Reviewed-by: Michael Kelley <mikelley@microsoft.com>
+Resending this because my previous email client inserted HTML into the email,
+which was then rejected by the linux-kernel@vger.kernel.org spam filter.
 
-LGTM.
+After commit 2d26f6e39afb ("net: stmmac: dwmac-rk: fix unbalanced
+pm_runtime_enable warnings"), the network card on my rockpro64-v2 was left
+unable to get a DHCP lease from the network. The offending commit was found by
+bisecting the kernel; I tried reverting the commit from v5.15-rc4 and the
+network card started working as expected.
 
-Applied to hyperv-fixes. Thanks.
+I can help with testing a fix or further diagnosing if needed.
 
-Wei.
+his is what I get with a kernel built from v5.15-rc4 (so with the commit *not*
+reverted). Full dmesg at [1].
 
-> 
+root@rockpro ~ # uname -a
+Linux rockpro 5.15.0-rc4 #83 SMP PREEMPT Wed Oct 6 16:06:31 BST 2021 aarch64 GNU/Linux
+root@rockpro ~ # ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+2: eth0: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN group default qlen 1000
+    link/ether ce:71:c1:ee:97:e8 brd ff:ff:ff:ff:ff:ff
+root@rockpro ~ # ip l set eth0 up
+[   33.398930] rk_gmac-dwmac fe300000.ethernet eth0: PHY [stmmac-0:00] driver [Generic PHY] (irq=POLL)
+[   33.404390] rk_gmac-dwmac fe300000.ethernet eth0: Register MEM_TYPE_PAGE_POOL RxQ-0
+[   33.405795] rk_gmac-dwmac fe300000.ethernet eth0: No Safety Features support found
+[   33.406479] rk_gmac-dwmac fe300000.ethernet eth0: PTP not supported by HW
+[   33.407528] rk_gmac-dwmac fe300000.ethernet eth0: configuring for phy/rgmii link mode
+root@rockpro ~ # [   37.503570] rk_gmac-dwmac fe300000.ethernet eth0: Link is Up - 1Gbps/Full - flow control rx/tx
+
+root@rockpro ~ # ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP group default qlen 1000
+    link/ether ce:71:c1:ee:97:e8 brd ff:ff:ff:ff:ff:ff
+root@rockpro ~ # dhclient --version
+isc-dhclient-4.4.2-P1
+root@rockpro ~ # dhclient -v eth0
+Internet Systems Consortium DHCP Client 4.4.2-P1
+Copyright 2004-2021 Internet Systems Consortium.
+All rights reserved.
+For info, please visit https://www.isc.org/software/dhcp/
+
+Listening on LPF/eth0/ce:71:c1:ee:97:e8
+Sending on   LPF/eth0/ce:71:c1:ee:97:e8
+Sending on   Socket/fallback
+DHCPREQUEST for 192.168.0.43 on eth0 to 255.255.255.255 port 67
+DHCPREQUEST for 192.168.0.43 on eth0 to 255.255.255.255 port 67
+DHCPDISCOVER on eth0 to 255.255.255.255 port 67 interval 8
+DHCPDISCOVER on eth0 to 255.255.255.255 port 67 interval 7
+DHCPDISCOVER on eth0 to 255.255.255.255 port 67 interval 20
+DHCPDISCOVER on eth0 to 255.255.255.255 port 67 interval 20
+DHCPDISCOVER on eth0 to 255.255.255.255 port 67 interval 6
+No DHCPOFFERS received.
+Trying recorded lease 192.168.0.43
+ping: socket: Address family not supported by protocol
+PING 192.168.0.1 (192.168.0.1) 56(84) bytes of data.
+
+--- 192.168.0.1 ping statistics ---
+1 packets transmitted, 0 received, +1 errors, 100% packet loss, time 0ms
+
+No working leases in persistent database - sleeping.
+
+With the commit reverted, the NIC is working again (dmesg at [2]).
+
+root@rockpro ~ # uname -a
+Linux rockpro 5.15.0-rc4-00001-g6ac1832b7cc5 #84 SMP PREEMPT Wed Oct 6 16:24:54 BST 2021 aarch64 GNU/Linux
+root@rockpro ~ # ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+2: eth0: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN group default qlen 1000
+    link/ether ce:71:c1:ee:97:e8 brd ff:ff:ff:ff:ff:ff
+root@rockpro ~ # ip l set eth0 up
+[   76.094639] rk_gmac-dwmac fe300000.ethernet eth0: PHY [stmmac-0:00] driver [Generic PHY] (irq=POLL)
+[   76.100233] rk_gmac-dwmac fe300000.ethernet eth0: Register MEM_TYPE_PAGE_POOL RxQ-0
+[   76.101646] rk_gmac-dwmac fe300000.ethernet eth0: No Safety Features support found
+[   76.102374] rk_gmac-dwmac fe300000.ethernet eth0: PTP not supported by HW
+[   76.103335] rk_gmac-dwmac fe300000.ethernet eth0: configuring for phy/rgmii link mode
+root@rockpro ~ # [   80.191353] rk_gmac-dwmac fe300000.ethernet eth0: Link is Up - 1Gbps/Full - flow control rx/tx
+
+root@rockpro ~ # ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP group default qlen 1000
+    link/ether ce:71:c1:ee:97:e8 brd ff:ff:ff:ff:ff:ff
+root@rockpro ~ # dhclient --version
+isc-dhclient-4.4.2-P1
+root@rockpro ~ # dhclient -v eth0
+Internet Systems Consortium DHCP Client 4.4.2-P1
+Copyright 2004-2021 Internet Systems Consortium.
+All rights reserved.
+For info, please visit https://www.isc.org/software/dhcp/
+
+Listening on LPF/eth0/ce:71:c1:ee:97:e8
+Sending on   LPF/eth0/ce:71:c1:ee:97:e8
+Sending on   Socket/fallback
+DHCPREQUEST for 192.168.0.43 on eth0 to 255.255.255.255 port 67
+DHCPACK of 192.168.0.43 from 192.168.0.1
+bound to 192.168.0.43 -- renewal in 36072 seconds.
+root@rockpro ~ # ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP group default qlen 1000
+    link/ether ce:71:c1:ee:97:e8 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.0.43/24 brd 192.168.0.255 scope global eth0
+       valid_lft forever preferred_lft forever
+root@rockpro ~ # ping google.com
+ping: socket: Address family not supported by protocol
+PING google.com (172.217.169.46) 56(84) bytes of data.
+64 bytes from lhr48s08-in-f14.1e100.net (172.217.169.46): icmp_seq=1 ttl=117 time=21.7 ms
+64 bytes from lhr48s08-in-f14.1e100.net (172.217.169.46): icmp_seq=2 ttl=117 time=19.1 ms
+
+--- google.com ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 1001ms
+rtt min/avg/max/mdev = 19.058/20.392/21.726/1.334 ms
+
+Pastebins will expire after 6 months.
+
+[1] https://pastebin.com/JrViZTPe
+[2] https://pastebin.com/EwEbWRfY
+
+Thanks,
+Alex
