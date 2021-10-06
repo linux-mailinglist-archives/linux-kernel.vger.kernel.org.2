@@ -2,374 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 187F94235CA
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 04:27:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F22E4235D6
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 04:31:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237173AbhJFC3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 22:29:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42134 "EHLO
+        id S237173AbhJFCdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 22:33:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230261AbhJFC3g (ORCPT
+        with ESMTP id S229908AbhJFCdA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 22:29:36 -0400
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F7B8C06174E
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 19:27:45 -0700 (PDT)
-Received: by mail-ot1-x332.google.com with SMTP id 77-20020a9d0ed3000000b00546e10e6699so1393611otj.2
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 19:27:45 -0700 (PDT)
+        Tue, 5 Oct 2021 22:33:00 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EA73C061749
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 19:31:09 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id m20so445915iol.4
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 19:31:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ctR1cokXAwmItjiMPfDRY881NbdQTs9Vf1LWVT6hHds=;
-        b=airbaT/+5STqFzWVU9qMFiytHYONXy4ji+WgSNwUSkY/mvWRsfBeoNjIyhiI46MXBE
-         OckyiNIaJO8Wc49P8E6N0kf1wzXra8U6QoJQUhek42tKs6HZdeircNeEohpyZbu92Pqr
-         EFomM3kCdRIz5dv1uAFhpHtqOebAB2P30zWs+w3A+XyP4oihfUO06Xan/3jLRNtYOO77
-         9cuZEfKRhL8vg38kC9/iw7tZAOSY9vmcVzLq7hkuUf9fLdoN9OXr+Ey/PnkIs+J4ZgQL
-         qRfzFB/ip7OOwEhkq616CO6hO208CGD+qgKWHNutGQ2Lbiv645qL1+B2vUQ9WKqxWXWh
-         H6pw==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=bq9ss4KGNTszJ/kr+WZe6xTy7aLeLEFMgM617QHj7Q4=;
+        b=TFOgfLbssDLWXqgCEl2UkHChoVh4e/FDI3d5hi7PU/H3mkdfRDa/XyUa+7NLlGcJ0G
+         lyR8MCEij49zKnhkJUKibBFMzapmSWysRvZkbBxy6teoJsMZHMFwD4G+uEHmHDAiQjlb
+         UcjqBpNKg/YWTO316tR0011lAmkVVcHcaU/mQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ctR1cokXAwmItjiMPfDRY881NbdQTs9Vf1LWVT6hHds=;
-        b=KjPvWvKsI8DteEfoC9nYfSw4/oUV3sB1drXr8Hsqk9EWjDN+RH3PfKw2Wum/4kOpiC
-         PSTTFT4HyPNZU7ZKLojCaOvV1i0dighmxtlRJIfzGiP6QoCYfKcHiMb8ZnfKpElCWLiQ
-         rI4VBeHi8p/OY/FAM/M0ZmVgjVOKWF0DU/irifkNl0ASpU0EuXCUqjaTSNMne40x9tu5
-         UgO8KgkmLbYj4ph+r/A+93KJoDefcVWWE/RpMTLWQ21XHM7BYBPvGuqN1sd2PnHQB8Ul
-         0pXT5yqTolwVz7c4fcP5S/G/gEBchgW61TO8fNcFj31KzW+3H27+0HhznYAN/xHvYogO
-         XfOQ==
-X-Gm-Message-State: AOAM533n8YMY484uQK4Twpgsb840Oj6M3Q7l1UVcrGiLL1oeZHvxcMT3
-        OoaL7pxkBu6o3u+e0lO3bk289w==
-X-Google-Smtp-Source: ABdhPJwmWDFSgL5ZJyC9eJC71MTzzmXZdmMYZ58H97Zj6PuIBt/AWQl53YgikIpdKcSJfrCaV2gSbQ==
-X-Received: by 2002:a05:6830:40b0:: with SMTP id x48mr17273031ott.246.1633487264086;
-        Tue, 05 Oct 2021 19:27:44 -0700 (PDT)
-Received: from ripper ([2600:1700:a0:3dc8:205:1bff:fec0:b9b3])
-        by smtp.gmail.com with ESMTPSA id g9sm467239otj.78.2021.10.05.19.27.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Oct 2021 19:27:43 -0700 (PDT)
-Date:   Tue, 5 Oct 2021 19:29:25 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Kuogee Hsieh <khsieh@codeaurora.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Vara Reddy <varar@codeaurora.org>,
-        freedreno <freedreno@lists.freedesktop.org>
-Subject: Re: [RFC] drm/msm/dp: Allow attaching a drm_panel
-Message-ID: <YV0KBWxVtKgOp2Cj@ripper>
-References: <20210726231351.655302-1-bjorn.andersson@linaro.org>
- <CAD=FV=UGtHXD==Yy8CVCOioYGb=2hqGQOoNWftD1Jj7OiEp51g@mail.gmail.com>
- <YVd3YdfgFVc0Br5T@ripper>
- <CAD=FV=U=xVLuKOYHbGPTkLjGa8_U+F1ZtEvJt4LGaRuR5SsKFw@mail.gmail.com>
- <YVumL1lHLqtb/HKS@ripper>
- <CAD=FV=W9uKq00wXn4H1ax0u2D=R8Wn3J-Je43uxcPyDtk7AK7Q@mail.gmail.com>
- <YVyMwsvLl6XalJxB@ripper>
- <CAD=FV=WY+g38p7--QKZCaQnSqx7VvdwC36jH-VKnrEWoxK=XHQ@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=bq9ss4KGNTszJ/kr+WZe6xTy7aLeLEFMgM617QHj7Q4=;
+        b=qwjm5bduFoyUDengwXHOB1DKVx8CgK73Wr/ry/MnbngPaX4LHVHxNMnOHcQQPkSVqq
+         9N3YlHkKkEnhrCSlafJQVGbYZMzKMOLF0UfuWxSXUujwNneqCycExU3vKrpzwoik/75e
+         Yif1ub/2DPdDFGN/hK3gZ0dx7i4JScQ1FEEikZlK6EBhymL0zqxVV8SNkhC74o6OT5qm
+         Gkip95WJcK67SEJJrnLr81cgZtjWretD7FQoO8jfJ1Ay5wshL778aSOYD5fZZDI9blD6
+         hnOTpNyVTqg6Ub4XfcEZq/jZOYcmIs21M1dDdjjlHXgdKGo59lnlVChbZYjyAuZixeyP
+         sYyA==
+X-Gm-Message-State: AOAM532dT7vX/JVCUJPBNV5ZMqtOVj4NPVSJ4Vs61G6RMtOFtQWPG7ZB
+        UhSZrr05F1PZd11Y5pEt+l9XjrA1kUv5aA==
+X-Google-Smtp-Source: ABdhPJyxxrSy3yzvNfd5aOuhPVtgObLSbbGF5eAPadhWHICTQGp8Q762HxZy9gyhAV4YY2vZIiN3xQ==
+X-Received: by 2002:a05:6638:3048:: with SMTP id u8mr5332178jak.103.1633487468287;
+        Tue, 05 Oct 2021 19:31:08 -0700 (PDT)
+Received: from mail-io1-f48.google.com (mail-io1-f48.google.com. [209.85.166.48])
+        by smtp.gmail.com with ESMTPSA id b83sm11525280iof.5.2021.10.05.19.31.07
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Oct 2021 19:31:07 -0700 (PDT)
+Received: by mail-io1-f48.google.com with SMTP id n71so1214924iod.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 19:31:07 -0700 (PDT)
+X-Received: by 2002:a05:6638:248a:: with SMTP id x10mr5311411jat.3.1633487466752;
+ Tue, 05 Oct 2021 19:31:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAD=FV=WY+g38p7--QKZCaQnSqx7VvdwC36jH-VKnrEWoxK=XHQ@mail.gmail.com>
+References: <20211005081022.1.Ib059f9c23c2611cb5a9d760e7d0a700c1295928d@changeid>
+ <YVxzX9h+jBqOj1/V@intel.com>
+In-Reply-To: <YVxzX9h+jBqOj1/V@intel.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Tue, 5 Oct 2021 19:30:55 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=XEVJ8trPx39-oepbW6gZJYCcE_W5F0rrC0gUsLTFUy9w@mail.gmail.com>
+Message-ID: <CAD=FV=XEVJ8trPx39-oepbW6gZJYCcE_W5F0rrC0gUsLTFUy9w@mail.gmail.com>
+Subject: Re: [PATCH] drm/edid: In connector_bad_edid() cap num_of_ext by
+ num_blocks read
+To:     =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        "Siqueira, Rodrigo" <Rodrigo.Siqueira@amd.com>,
+        "Wentland, Harry" <Harry.Wentland@amd.com>,
+        Kuogee Hsieh <khsieh@codeaurora.org>,
+        "Zuo, Jerry" <Jerry.Zuo@amd.com>, alexander.deucher@amd.com,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 05 Oct 16:09 PDT 2021, Doug Anderson wrote:
+Hi,
 
-> Hi,
-> 
-> On Tue, Oct 5, 2021 at 10:33 AM Bjorn Andersson
-> <bjorn.andersson@linaro.org> wrote:
+On Tue, Oct 5, 2021 at 8:46 AM Ville Syrj=C3=A4l=C3=A4
+<ville.syrjala@linux.intel.com> wrote:
+>
+> On Tue, Oct 05, 2021 at 08:10:28AM -0700, Douglas Anderson wrote:
+> > In commit e11f5bd8228f ("drm: Add support for DP 1.4 Compliance edid
+> > corruption test") the function connector_bad_edid() started assuming
+> > that the memory for the EDID passed to it was big enough to hold
+> > `edid[0x7e] + 1` blocks of data (1 extra for the base block). It
+> > completely ignored the fact that the function was passed `num_blocks`
+> > which indicated how much memory had been allocated for the EDID.
 > >
-> > On Tue 05 Oct 08:39 PDT 2021, Doug Anderson wrote:
+> > Let's fix this by adding a bounds check.
 > >
-> > > Hi,
-> > >
-> > > On Mon, Oct 4, 2021 at 6:09 PM Bjorn Andersson
-> > > <bjorn.andersson@linaro.org> wrote:
-> > > >
-> > > > On Mon 04 Oct 17:36 PDT 2021, Doug Anderson wrote:
-> > > >
-> > > > > Hi,
-> > > > >
-> > > > > On Fri, Oct 1, 2021 at 2:00 PM Bjorn Andersson
-> > > > > <bjorn.andersson@linaro.org> wrote:
-> > > > > >
-> > > > > > On Fri 27 Aug 13:52 PDT 2021, Doug Anderson wrote:
-> > > > > >
-> > > > > > > Hi,
-> > > > > > >
-> > > > > > > On Mon, Jul 26, 2021 at 4:15 PM Bjorn Andersson
-> > > > > > > <bjorn.andersson@linaro.org> wrote:
-> > > > > > > >
-> > > > > > > > +static int dp_parser_find_panel(struct dp_parser *parser)
-> > > > > > > > +{
-> > > > > > > > +       struct device_node *np = parser->pdev->dev.of_node;
-> > > > > > > > +       int rc;
-> > > > > > > > +
-> > > > > > > > +       rc = drm_of_find_panel_or_bridge(np, 2, 0, &parser->drm_panel, NULL);
-> > > > > > >
-> > > > > > > Why port 2? Shouldn't this just be port 1 always? The yaml says that
-> > > > > > > port 1 is "Output endpoint of the controller". We should just use port
-> > > > > > > 1 here, right?
-> > > > > > >
-> > > > > >
-> > > > > > Finally got back to this, changed it to 1 and figured out why I left it
-> > > > > > at 2.
-> > > > > >
-> > > > > > drm_of_find_panel_or_bridge() on a DP controller will find the of_graph
-> > > > > > reference to the USB-C controller, scan through the registered panels
-> > > > > > and conclude that the of_node of the USB-C controller isn't a registered
-> > > > > > panel and return -EPROBE_DEFER.
-> > > > >
-> > > > > I'm confused, but maybe it would help if I could see something
-> > > > > concrete. Is there a specific board this was happening on?
-> > > > >
-> > > >
-> > > > Right, let's make this more concrete with a snippet from the actual
-> > > > SC8180x DT.
-> > > >
-> > > > > Under the DP node in the device tree I expect:
-> > > > >
-> > > > > ports {
-> > > > >   port@1 {
-> > > > >     reg = <1>;
-> > > > >     edp_out: endpoint {
-> > > > >       remote-endpoint = <&edp_panel_in>;
-> > > > >     };
-> > > > >   };
-> > > > > };
-> > > > >
-> > > >
-> > > > /* We got a panel */
-> > > > panel {
-> > > >     ...
-> > > >     ports {
-> > > >         port {
-> > > >             auo_b133han05_in: endpoint {
-> > > >                 remote-endpoint = <&mdss_edp_out>;
-> > > >             };
-> > > >         };
-> > > >     };
-> > > > };
-> > > >
-> > > > /* And a 2-port USB-C controller */
-> > > > type-c-controller {
-> > > >     ...
-> > > >     connector@0 {
-> > > >         ports {
-> > > >             port@0 {
-> > > >                 reg = <0>;
-> > > >                 ucsi_port_0_dp: endpoint {
-> > > >                     remote-endpoint = <&dp0_mode>;
-> > > >                 };
-> > > >             };
-> > > >
-> > > >             port@1 {
-> > > >                 reg = <1>;
-> > > >                 ucsi_port_0_switch: endpoint {
-> > > >                     remote-endpoint = <&primary_qmp_phy>;
-> > > >                 };
-> > > >             };
-> > > >         };
-> > > >     };
-> > > >
-> > > >         connector@1 {
-> > > >         ports {
-> > > >             port@0 {
-> > > >                 reg = <0>;
-> > > >                 ucsi_port_1_dp: endpoint {
-> > > >                     remote-endpoint = <&dp1_mode>;
-> > > >                 };
-> > > >             };
-> > > >
-> > > >             port@1 {
-> > > >                 reg = <1>;
-> > > >                 ucsi_port_1_switch: endpoint {
-> > > >                     remote-endpoint = <&second_qmp_phy>;
-> > > >                 };
-> > > >             };
-> > > >         };
-> > > >         };
-> > > > };
-> > > >
-> > > > /* And then our 2 DP and single eDP controllers */
-> > > > &mdss_dp0 {
-> > > >     ports {
-> > > >         port@1 {
-> > > >             reg = <1>;
-> > > >             dp0_mode: endpoint {
-> > > >                 remote-endpoint = <&ucsi_port_0_dp>;
-> > > >             };
-> > > >         };
-> > > >     };
-> > > > };
-> > > >
-> > > > &mdss_dp1 {
-> > > >     ports {
-> > > >         port@1 {
-> > > >             reg = <1>;
-> > > >             dp1_mode: endpoint {
-> > > >                 remote-endpoint = <&ucsi_port_1_dp>;
-> > > >             };
-> > > >         };
-> > > >     };
-> > > > };
-> > > >
-> > > > &mdss_edp {
-> > > >     ports {
-> > > >         port@1 {
-> > > >             reg = <1>;
-> > > >             mdss_edp_out: endpoint {
-> > > >                 remote-endpoint = <&auo_b133han05_in>;
-> > > >             };
-> > > >         };
-> > > >     };
-> > > > };
-> > > >
-> > > > > If you have "port@1" pointing to a USB-C controller but this instance
-> > > > > of the DP controller is actually hooked up straight to a panel then
-> > > > > you should simply delete the "port@1" that points to the typeC and
-> > > > > replace it with one that points to a panel, right?
-> > > > >
-> > > >
-> > > > As you can see, port 1 on &mdss_dp0 and &mdss_dp1 points to the two UCSI
-> > > > connectors and the eDP points to the panel, exactly like we agreed.
-> > > >
-> > > > So now I call:
-> > > >     drm_of_find_panel_or_bridge(dev->of_node, 1, 0, &panel, NULL);
-> > > >
-> > > > which for the two DP nodes will pass respective UCSI connector to
-> > > > drm_find_panel() and get EPROBE_DEFER back - because they are not on
-> > > > panel_list.
-> > > >
-> > > > There's nothing indicating in the of_graph that the USB connectors
-> > > > aren't panels (or bridges), so I don't see a way to distinguish the two
-> > > > types remotes.
-> 
-> To summarize where I think our out-of-band discussion went, I think
-> you're OK w/ keeping this at "port@1" for both the DP and eDP case and
-> we'll figure out _some_ way to make it work.
-> 
-> 
-> > > As far as I can tell the way this would be solved would be to actually
-> > > pass &bridge in and then make sure that a bridge would be in place for
-> > > the DP connector. In the full DP case you'll get an -EPROBE_DEFER if
-> > > the connector hasn't been probed but once it's probed then it should
-> > > register as a bridge and thus give you the info you need (AKA that
-> > > this isn't a panel).
-> > >
-> > > I haven't done the digging to see how all this works, but according to
-> > > Laurent [1]: "Physical connectors are already handled as bridges, see
-> > > drivers/gpu/drm/bridge/display-connector.c"
-> > >
+> > This is important for handling the case where there's an error in the
+> > first block of the EDID. In that case we will call
+> > connector_bad_edid() without having re-allocated memory based on
+> > `edid[0x7e]`.
 > >
-> > All this seems to make sense for both eDP and "native" DP.
+> > Fixes: e11f5bd8228f ("drm: Add support for DP 1.4 Compliance edid corru=
+ption test")
+> > Reported-by: Ville Syrj=C3=A4l=C3=A4 <ville.syrjala@linux.intel.com>
+> > Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> > ---
+> > This problem report came up in the context of a patch I sent out [1]
+> > and this is my attempt at a fix. The problem predates my patch,
+> > though. I don't personally know anything about DP compliance testing
+> > and what should be happening here, nor do I apparently have any
+> > hardware that actually reports a bad EDID. Thus this is just compile
+> > tested. I'm hoping that someone here can test this and make sure it
+> > seems OK to them.
 > >
-> > > So basically I think this is solvable in code and there's no reason to
-> > > mess with the devicetree bindings to solve this problem. Does that
-> > > sound right?
-> > >
+> >  drivers/gpu/drm/drm_edid.c | 5 +++--
+> >  1 file changed, 3 insertions(+), 2 deletions(-)
 > >
-> > But I don't have a DisplayPort connector.
+> > diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
+> > index 9b19eee0e1b4..ccfa08631c57 100644
+> > --- a/drivers/gpu/drm/drm_edid.c
+> > +++ b/drivers/gpu/drm/drm_edid.c
+> > @@ -1843,8 +1843,9 @@ static void connector_bad_edid(struct drm_connect=
+or *connector,
+> >       u8 num_of_ext =3D edid[0x7e];
 > >
-> > I have a USB-C connector, that upon determining that it's time to play
-> > DisplayPort will use the typec_mux abstraction to tell someone on the
-> > other side of the of_graph about DisplayPort events (HPD).
-> >
-> > So where would I put this drm_bridge in the USB-C case?
-> >
-> > I don't see that it fits in the Type-C side of things and putting it on
-> > the DP side would leave us with exactly the problem we have here. So we
-> > would have to put a fake "DP connector" inbetween the DP node and the
-> > Type-C controller?
-> >
-> >
-> > For reference, this is how I thought one is supposed to tie the Type-C
-> > controller to the display driver:
-> > https://lore.kernel.org/all/20211005022451.2037405-1-bjorn.andersson@linaro.org/
-> 
-> OK, so I looked at that a bit. Fair warning that I've never looked at
-> the type C code before today so anything I say could be totally wrong!
-> :-)
-> 
-> ...but I _think_ you're abusing the "mux" API for this. I think a type
-> C port can have exactly 1 mux, right? Right now you are claiming to be
-> _the_ mux in the DP driver, but what about for other alt modes? If
-> those wanted to be notified about similar things it would be
-> impossible because you're already _the_ mux, right?
-> 
+> >       /* Calculate real checksum for the last edid extension block data=
+ */
+> > -     connector->real_edid_checksum =3D
+> > -             drm_edid_block_checksum(edid + num_of_ext * EDID_LENGTH);
+> > +     if (num_of_ext <=3D num_blocks - 1)
+>
+> Something about that doesn't really agree with my brain.
+> It's correct but when I read it I can't immediately see it.
+>
+> I guess what I'd like to see is something like:
+> last_block =3D edid[0x7e];
+> if (last_block < num_blocks)
+>         connector->real_edid_checksum =3D
+>                 drm_edid_block_checksum(edid + last_block * EDID_LENGTH);
+>
+> Techically exactly the same thing, but I don't have to read
+> the comparison twice to convince myself that it's correct.
+>
+> Anyways, this is
+> Reviewed-by: Ville Syrj=C3=A4l=C3=A4 <ville.syrjala@linux.intel.com>
+> either way.
 
-I actually don't think so, because I acquire the typec_mux handle by the
-means of:
+Yeah, my brain had to work way too hard when I read over my patch too.
+I've changed to your math _plus_ a big comment explaining it. I added
+your review tag. I'll give this another day or so and then land.
 
-mux_desc.svid = USB_TYPEC_DP_SID;
-mux_desc.mode = USB_TYPEC_DP_MODE;
-alt_port->mux = fwnode_typec_mux_get(fwnode, &mux_desc);
+https://lore.kernel.org/r/20211005192905.v2.1.Ib059f9c23c2611cb5a9d760e7d0a=
+700c1295928d@changeid
 
-And in the DisplayPort node I provide svid = /bits/ 16 <0xff01>;
-
-So I will be able to reference multiple different altmode
-implementors using this scheme.
-
-> I _think_ a mux is supposed to be something more like
-> `drivers/phy/rockchip/phy-rockchip-typec.c` (though that code predates
-> the type C framework we're looking at here). There the phy can do all
-> the work of remuxing things / flipping orientation / etc. I don't
-> think it's a requirement that every SoC be able to do this remuxing
-> itself but (if memory serves) rk3399 implemented it so we didn't have
-> to do it on the TCPC and could use a cheaper solution there.
-> 
-
-I'm afraid I don't see how this interacts with a display controller. It
-seems more like it's the phy side of things, what we have split between
-the Type-C controller and the QMP phy to set the pins in the right
-state.
-
-> In any case, my point is that I think there is supposed to be a
-> _single_ mux per port that handles reassigning pins and that's what
-> this API is for.
-> 
-
-If that's the case things such as typec_mux_match() is just completely
-backwards.
-
-> ...so I will still assert that the right thing to do is to have a
-> drm_bridge for the type c connector and _that's_ what should be
-> sending HPD.
-> 
-
-That still implies that all the current typec_mux code got it all wrong
-and should be thrown out. If you instead consider that you have a Type-C
-controller that upon switching DisplayPort on/off calls typec_mux_set()
-to inform the functions that things has changed then all the current
-code makes sense.
-
-It also maps nicely to how the TypeC controller would call
-typec_switch_set() to inform, in our case the QMP phy that the
-orientation has switched.
-
-
-It seems reasonable to have some common helper code that registers the
-typec_mux and turn its notifications into HPD notifications to the
-display code, but I still think that should live in the DRM framework,
-separate from the USB code.
-
-Regards,
-Bjorn
-
-> 
-> > I'm afraid I must be missing something in Laurent and yours proposal
-> > (although I think Laurent is talking about the native DP case?).
-> >
-> > Regards,
-> > Bjorn
-> >
-> > > [1] https://lore.kernel.org/r/YUvMv+Y8tFcWPEHd@pendragon.ideasonboard.com/
+-Doug
