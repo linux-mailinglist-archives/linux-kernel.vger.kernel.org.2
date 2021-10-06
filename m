@@ -2,108 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1776C424246
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 18:11:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7525E424257
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 18:14:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239353AbhJFQNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 12:13:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33482 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230021AbhJFQNC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 12:13:02 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98DDDC061746;
-        Wed,  6 Oct 2021 09:11:09 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id b20so12903278lfv.3;
-        Wed, 06 Oct 2021 09:11:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=8cGBldMfEJ95FNn3AxoEmcovSSwBsWicQa8v8Iv276M=;
-        b=GfjocarBxwSZ3iJFzeq0N/l84rLEVu3Da3tiuTniXrcGY6/DQnxtc1ZrlaUJoqdgyt
-         w4Gihg2LuuZno+cDrafgpzY+T1ogiPTXx7eKvdxD60gR8MFkPALjT1aMsMvZYLb+t5se
-         cpc75bMeqjuT4ygFJm/BJ/2ekLqTDnJ8lOHVf4MzhU3wdRmt/do22Ml9x6Jd2G07Dr6p
-         lm+zWRMsHDAiKuAFj9CLZVvdr+3NOEvFWgSBblTznM73Cds0CMRJmuylgVXf0Db/2aLl
-         AxZKBu/2oIDv2XL5W8kJHbpe3ebIFHV7wgxkJ3p667MbThj9Ihxh4EurmOSU3X4xfvtq
-         9cUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=8cGBldMfEJ95FNn3AxoEmcovSSwBsWicQa8v8Iv276M=;
-        b=TTsD8RA0a/2EtYU/cDH3BDZQcOznRJVUN9IXfUM8+TJLVbNhQCE/kflkxdxSpRsxLH
-         Kr1R67OTkYIu/PrLL6+R1DxJm6bmssTLL8nbgiXKnNV0J0EOSExfqhG9eQGAA3Em3tGU
-         Ir3SrFdDoJFKvMj2UUfkYSEG8OGJvwue9u4FPwZixghP5xMmkM0tdV8XCj0qCxrh6cyE
-         2UBdC+rXQNCxkLxbRfolSUiVzjuUjRPAFXz8MWwB13w0w3O5WjLwODd+4eAabvRimFR8
-         dkKa88lDc4/y/r60Lp0wr8x9ZdFsUuRm7na1TK6Fok4YX4nOVhlB0HalOfMfi5LyarK2
-         wcZg==
-X-Gm-Message-State: AOAM530hllwN9Y3uTJIYVg6a0JOfDVYBCN4EI1I2lgBJ40iCXEkktVx5
-        b8r0e4YEvifNSSzNsMEHPXrw5pCMgw0=
-X-Google-Smtp-Source: ABdhPJyB7rgAE715VRacHFOyD2Z+3eLyumI5OR0U+J4S4MkKbph5eG0X+XvRRGu2zPAqVW2/Nc9Uew==
-X-Received: by 2002:a2e:5705:: with SMTP id l5mr31104368ljb.456.1633536667884;
-        Wed, 06 Oct 2021 09:11:07 -0700 (PDT)
-Received: from [192.168.2.145] (79-139-163-57.dynamic.spd-mgts.ru. [79.139.163.57])
-        by smtp.googlemail.com with ESMTPSA id l24sm2334922lji.25.2021.10.06.09.11.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Oct 2021 09:11:07 -0700 (PDT)
-Subject: Re: [PATCH v4 3/7] dt-bindings: memory: lpddr2: Add revision-id
- properties
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-References: <20211005230009.3635-1-digetx@gmail.com>
- <20211005230009.3635-4-digetx@gmail.com>
- <545e4036-a9fe-a0f1-dd8c-f5948fee6c4e@canonical.com>
- <b24831e5-653c-e3e6-fd96-9746e8e96d8d@gmail.com>
-Message-ID: <16f2e720-03d3-1643-5577-4039091a1ffc@gmail.com>
-Date:   Wed, 6 Oct 2021 19:11:06 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S239335AbhJFQQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 12:16:28 -0400
+Received: from mga04.intel.com ([192.55.52.120]:65111 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231768AbhJFQQ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 12:16:27 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10129"; a="224805572"
+X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; 
+   d="scan'208";a="224805572"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2021 09:14:33 -0700
+X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; 
+   d="scan'208";a="439948775"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2021 09:14:29 -0700
+Received: from andy by smile with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mY9Yo-009Fg0-5T;
+        Wed, 06 Oct 2021 19:14:26 +0300
+Date:   Wed, 6 Oct 2021 19:14:26 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Lu Baolu <baolu.lu@linux.intel.com>
+Cc:     Joerg Roedel <jroedel@suse.de>, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org,
+        David Woodhouse <dwmw2@infradead.org>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>
+Subject: Re: [PATCH v1 1/2] iommu/vt-d: Move intel_iommu_ops to header file
+Message-ID: <YV3LYqmsijqVAa5Y@smile.fi.intel.com>
+References: <20210729163538.40101-1-andriy.shevchenko@linux.intel.com>
+ <3c7663db-5b1e-3e00-3ff1-381c7a107ac9@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <b24831e5-653c-e3e6-fd96-9746e8e96d8d@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3c7663db-5b1e-3e00-3ff1-381c7a107ac9@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-06.10.2021 18:47, Dmitry Osipenko пишет:
-> 06.10.2021 13:59, Krzysztof Kozlowski пишет:
->> On 06/10/2021 01:00, Dmitry Osipenko wrote:
->>> Add optional revision-id standard LPDDR2 properties which will help to
->>> identify memory chip.
->>>
->>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->>> ---
->>>  .../memory-controllers/ddr/jedec,lpddr2.yaml         | 12 ++++++++++++
->>>  1 file changed, 12 insertions(+)
->>>
->>> diff --git a/Documentation/devicetree/bindings/memory-controllers/ddr/jedec,lpddr2.yaml b/Documentation/devicetree/bindings/memory-controllers/ddr/jedec,lpddr2.yaml
->>> index d99ccad54938..01efb43c3425 100644
->>> --- a/Documentation/devicetree/bindings/memory-controllers/ddr/jedec,lpddr2.yaml
->>> +++ b/Documentation/devicetree/bindings/memory-controllers/ddr/jedec,lpddr2.yaml
->>> @@ -24,6 +24,16 @@ properties:
->>>            - enum:
->>>                - jedec,lpddr2-nvm
->>>  
->>> +  revision-id1:
->>> +    maximum: 255
->>> +    description: |
->>> +      Revision 1 value of SDRAM chip. Obtained from device datasheet.
->>> +
->>
->> Also type/ref for uint32 needed.
+On Fri, Jul 30, 2021 at 10:20:08AM +0800, Lu Baolu wrote:
+> Hi Andy,
 > 
-> Also unnecessary :) It's uint32 by default, inferred from the 'maximum'.
+> On 7/30/21 12:35 AM, Andy Shevchenko wrote:
+> > Compiler is not happy about hidden declaration of intel_iommu_ops.
+> > 
+> > .../drivers/iommu/intel/iommu.c:414:24: warning: symbol 'intel_iommu_ops' was not declared. Should it be static?
+> > 
+> > Move declaration to header file to make compiler happy.
 > 
+> Thanks for the cleanup. Sharing data structures between different files
+> doesn't seem to be a good design. How about adding a helper so that the
+> intel_iommu_ops could be a static one?
 
-Please grep for 'maximum: ' to see that other bindings don't specify the
-type.
+I don't see any change in the upstream. What's the plan?
+Can we take my patch as a quick fix?
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
