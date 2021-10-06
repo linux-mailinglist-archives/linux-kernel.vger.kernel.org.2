@@ -2,112 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF392424486
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 19:39:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0A5642450D
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 19:42:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231771AbhJFRle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 13:41:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54586 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237771AbhJFRl3 (ORCPT
+        id S232027AbhJFRob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 13:44:31 -0400
+Received: from out3-smtp.messagingengine.com ([66.111.4.27]:38909 "EHLO
+        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239592AbhJFRne (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 13:41:29 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4413CC061760
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 10:39:37 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id nn3-20020a17090b38c300b001a03bb6c4ebso486529pjb.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 10:39:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=0wxSw7qisVOunDrqS7f7e7Lry8Q/2GqOFqAP3EHViQE=;
-        b=COvDgniH8rLSITY0sop34UzfIg0DlqGltWATNZ0SwKM8ra7XKVYwhSswDmjxFfnWoB
-         jkXyQ5g81nWBtjk9JV9iBqWz6bjMkkUx6Btx/pafmHt7Yp0WycPstzVublfXjLC38/A/
-         rVbo6bpML3Fd6rqS7mWwENRjEw5Mz+bU6Y8+g=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0wxSw7qisVOunDrqS7f7e7Lry8Q/2GqOFqAP3EHViQE=;
-        b=lQFcp8F5RLMdf0HPS6jyyIKhwJ0ct64R+uJVC9QaXWqZXXwH5ktKooWX21MGJiqcwK
-         SgMk8BNtXL3r9pWPKPv4SnjBt+a4YRp7LMWMoBBVNJUpIov8lTHkueEnM+3ncdPmL9xr
-         NS9xUxCrxl5IWgDCLEqQaVcZasy/hmaD4sqefn5+YxBGqw0hGzht2l6at5o2YcwRERbj
-         ButNMMNf3jQZfypqLtZSvt2LidCl5FR6fUiTAYkcxTssdpizRHeugh77ZKRceKUJLYx8
-         /PC2PNdbQYQ/nPIBzYCLcn4i9UCr778FQIzpuX0jmS/Pc6d0es6q3WvHXqZDNmH1lk3x
-         XKbg==
-X-Gm-Message-State: AOAM530SOp+CQ44TzrtcUq2KgZ4//n6vlOLsOgEh2K/7BQsIPbhiV6d3
-        UNNXP7TNTcsne+ANqkqO13k2tg==
-X-Google-Smtp-Source: ABdhPJwcHEgZhjlJeUc2eGnkpbuDa8JMMBuwvTTpop0E/nxpp6bhbr/QT6/qllxHfPV3wROn0Dgjbw==
-X-Received: by 2002:a17:90b:390d:: with SMTP id ob13mr38595pjb.50.1633541976756;
-        Wed, 06 Oct 2021 10:39:36 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:a463:ae21:d1fc:ddfd])
-        by smtp.gmail.com with UTF8SMTPSA id 11sm20751156pfl.41.2021.10.06.10.39.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Oct 2021 10:39:36 -0700 (PDT)
-Date:   Wed, 6 Oct 2021 10:39:34 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Balakrishna Godavarthi <bgodavar@codeaurora.org>
-Cc:     marcel@holtmann.org, bjorn.andersson@linaro.org,
-        johan.hedberg@gmail.com, linux-kernel@vger.kernel.org,
-        linux-bluetooth@vger.kernel.org, hemantg@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, rjliao@codeaurora.org,
-        pharish@codeaurora.org, abhishekpandit@chromium.org
-Subject: Re: [PATCH v1 2/2] arm64: dts: qcom: sc7280: update bluetooth node
- in SC7280 IDP2 board
-Message-ID: <YV3fVjd5ngQhuA4K@google.com>
-References: <1633523403-32264-1-git-send-email-bgodavar@codeaurora.org>
- <1633523403-32264-2-git-send-email-bgodavar@codeaurora.org>
+        Wed, 6 Oct 2021 13:43:34 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id 509905C02D5;
+        Wed,  6 Oct 2021 13:41:40 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Wed, 06 Oct 2021 13:41:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=benboeckel.net;
+         h=date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=B6xWX/HPA7qmLqQfhnZa5DC/rvu
+        bRmsOYtvzs98jPQ4=; b=L0BKwOc/tpyqm1qr1+H6St1SdWnZVB9IP4g8q6Y84qO
+        EQ55ZIEwqLVUIrAcJLKJ4vMc0vBdOOEGn4JQ9u5VfdGTmeJu/w8vEiN5Q9nDk/8i
+        QETqoX/p/PNRXL0Mi+k/HsukVYLXDkqKb7ZDZjM7eF9lX1b3vhnsUyXH+cUSq/MA
+        eo32YpUw+bZ0egj0rH722YYfnKDl1rM8PlGAIbXLj/kL5jOIovTgb9H62yP78MhW
+        KjNtYQF11Xj6jVkq5ve6MwNfK17ERPqQ/wcnpTpTtUswwzUsKl9wytTj9hzpH/FF
+        0kbJe5/eQC2Lpu14uY4NqBlgXZ13YlTspGxUHA+H5qw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=B6xWX/
+        HPA7qmLqQfhnZa5DC/rvubRmsOYtvzs98jPQ4=; b=c6M64nB5Kiuc794NiPxomo
+        Qs47be7wmUBoF++Q7EOpUUBQ0oHlzD0VqEbSVQkA+UUTKQM83gLfR9h85o433Dmm
+        wP2Zeqh/JCdznsx6nNkMVPgzSsvqtvAmvVNGdWiheDWI4tUBSfajJAVz6XgIV7+M
+        IWsjQfbGYM+Yls7RHpdZZxBSBxVDcLP4Rjm3ZlezAS0tXitDVgfw+aUFH1lHTOnc
+        KG5WtPqASuq9kpvOecXa04JASMfwu1GnEqQw+72Wcg+dhIp4ij8NWjXb2prWO2c4
+        A9GoTM4QpGDgPJkjVmAEKtNFvdg3osyc4LiQLVC3JsK3oBzbfpwKcja+R7FbWgCw
+        ==
+X-ME-Sender: <xms:099dYR0dbVQErfaJpiZeX-kudrqG5K1fJ9kdRxuEJfUdNTI3sET_Rw>
+    <xme:099dYYGPTz-k-zwkrKfGYHHWqaTwAiwv_tN85iayAXML-WODqNZHgvWDKM2V_0Rpb
+    g9wi5x4GQp-LvffnBg>
+X-ME-Received: <xmr:099dYR5YGpBImKoVjF1liux9ufiFVG9iZwwTPbnH1ao10837eSRlkdMIxYY>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudeliedguddufecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggujggfsehttdertddtreejnecuhfhrohhmpeeuvghn
+    uceuohgvtghkvghluceomhgvsegsvghnsghovggtkhgvlhdrnhgvtheqnecuggftrfgrth
+    htvghrnhepvefftdettefgtddtkeeufeegtddttdeuueegkeegteffueetffejudeihefh
+    kedtnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
+    gvsegsvghnsghovggtkhgvlhdrnhgvth
+X-ME-Proxy: <xmx:099dYe3k7YqA-AdY0mCY16Nyr3hRqHDFVERUCH2m2C6BwRuWDGArhw>
+    <xmx:099dYUErt6_yARxolgdvDYuAc1_wyZYLCHPww1N9GSNCtdfP6NQg7g>
+    <xmx:099dYf9srCDJwzrNUYjRo37uODpHzDDIcJtBmPWqrkQwpxv46Ju7oA>
+    <xmx:1N9dYf37LwuyEZNqc1ut80QDNQig96xBiG0ewGdayfQI4p6nOI8oQg>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 6 Oct 2021 13:41:39 -0400 (EDT)
+Date:   Wed, 6 Oct 2021 13:41:38 -0400
+From:   Ben Boeckel <me@benboeckel.net>
+To:     Colin King <colin.king@canonical.com>
+Cc:     David Howells <dhowells@redhat.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>, keyrings@vger.kernel.org,
+        linux-crypto@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: [PATCH] crypto : asymmetric_keys: Fix function description to
+ match prototype
+Message-ID: <YV3f0gTu/epdCX/E@erythro.dev.benboeckel.internal>
+References: <20211006172350.1025091-1-colin.king@canonical.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1633523403-32264-2-git-send-email-bgodavar@codeaurora.org>
+In-Reply-To: <20211006172350.1025091-1-colin.king@canonical.com>
+User-Agent: Mutt/2.0.7 (2021-05-04)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 06, 2021 at 06:00:03PM +0530, Balakrishna Godavarthi wrote:
-> Subject: arm64: dts: qcom: sc7280: update bluetooth node in SC7280 IDP2 board
-
-Not super helpful, what does 'update' mean?
-
-It might be easier to have a single patch for both IDP boards, since
-the Bluetooth node is added in the common sc7280-idp.dtsi board,
-rather than explaining what this patch does :)
-
-> This patch updates bluetooth node in SC7280 IDP2 board.
+On Wed, Oct 06, 2021 at 18:23:50 +0100, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> Signed-off-by: Balakrishna Godavarthi <bgodavar@codeaurora.org>
+> The function arguments in the description does not match the prototype.
+> Fix this by renaming trust_keys to trusted_keys.
+> 
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 > ---
->  arch/arm64/boot/dts/qcom/sc7280-idp2.dts | 6 ++++++
->  1 file changed, 6 insertions(+)
+>  crypto/asymmetric_keys/verify_pefile.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp2.dts b/arch/arm64/boot/dts/qcom/sc7280-idp2.dts
-> index 1fc2add..5c8d54b 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7280-idp2.dts
-> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp2.dts
-> @@ -15,9 +15,15 @@
->  
->  	aliases {
->  		serial0 = &uart5;
-> +		bluetooth0 = &bluetooth;
-> +		hsuart0 = &uart7;
->  	};
+> diff --git a/crypto/asymmetric_keys/verify_pefile.c b/crypto/asymmetric_keys/verify_pefile.c
+> index 7553ab18db89..148cad70fe79 100644
+> --- a/crypto/asymmetric_keys/verify_pefile.c
+> +++ b/crypto/asymmetric_keys/verify_pefile.c
+> @@ -387,7 +387,7 @@ static int pefile_digest_pe(const void *pebuf, unsigned int pelen,
+>   * verify_pefile_signature - Verify the signature on a PE binary image
+>   * @pebuf: Buffer containing the PE binary image
+>   * @pelen: Length of the binary image
+> - * @trust_keys: Signing certificate(s) to use as starting points
+> + * @trusted_keys: Signing certificate(s) to use as starting points
+>   * @usage: The use to which the key is being put.
+>   *
+>   * Validate that the certificate chain inside the PKCS#7 message inside the PE
 
-Sort aliases alphabetically
+FYI, this was submitted earlier this week with Message-Id:
 
->  
->  	chosen {
->  		stdout-path = "serial0:115200n8";
->  	};
->  };
-> +
-> +&bluetooth: wcn6750-bt {
+    20211004001731.26240-1-rdunlap@infradead.org
 
-&bluetooth {
+which also fixes the `Return:` notation for the return value docs.
 
-> +	vddio-supply = <&vreg_l18b_1p8>;
-
-nit: if it's not really common across IDP boards or a default, you could
-leave it unconfigured in sc7280-idp.dtsi, and set in both board files.
-Just an idea, with only two boards it doesn't really matter too much.
+--Ben
