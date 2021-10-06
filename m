@@ -2,153 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 004114248E3
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 23:25:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F020F4248EA
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 23:27:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239717AbhJFV1G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 17:27:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50396 "EHLO
+        id S239715AbhJFV2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 17:28:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239706AbhJFV1F (ORCPT
+        with ESMTP id S232152AbhJFV2x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 17:27:05 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF809C061746;
-        Wed,  6 Oct 2021 14:25:12 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id 133so3665956pgb.1;
-        Wed, 06 Oct 2021 14:25:12 -0700 (PDT)
+        Wed, 6 Oct 2021 17:28:53 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1972C061746;
+        Wed,  6 Oct 2021 14:27:00 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id r18so14970299edv.12;
+        Wed, 06 Oct 2021 14:27:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=e64UMCL2WVnOr2UI7AUcgF8cpI0jeUTyJjvzOQZ8YrE=;
-        b=UBSXKYjm15FEKybh0KfefqRjd/fVs22AWYzwe2iCJvmOHscvoAutQW2HwE99YHZeWu
-         vEtNDuMS9d78IGfnBrQ47YiMpXMPPhe6dbQyF9hg/uSAQDApFpiVmZ7RCXYk//sWXr1Q
-         0LSfp/P7/3d3pFfamzEH93p+y9SKpm/qjQxtZn4fAQUwleau5VdUB+9jn7Ku+OYnfnmC
-         SnnK3Phc97T0RV6YdV7B/6OMV0qq1QjiJmwn6G9SBEM6VpE4qBOh3ESLF6KJAuPLSvNB
-         EipYZeSbBljiqKzHr1N+foOdNe3WDWrdfrXbmYefd7v8ToBI7aLskwiFwDPpPQdD6I/S
-         LWFA==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=TEIVevLr+KkOe+yPKE3J8X4wJFJQbdygarJo9OKidbQ=;
+        b=p0GJzPzOWa+cfAfY7747JRX8oWbNXWM97C+z3apyCRClrxPBjlhMCbhDwrP1n5mIBV
+         RgI9GJMetZmD5wfDzGyGcIQ4EGyVVWS0StFQRyS/V0XPGF5xxBxlfbkKcRTeVla+EY3C
+         sSWC++lI0pD0Z+2zRCLmlsVf+tDEfw7NBO9DFupQAZe2XPKEg22DASeETxnztVfVYe4p
+         5rnWbtkj/LTjQ8EaBANyPrukGnYuemEPj5T3nnk8jJCkuH2OqbMWTLwYAl7ZfYhQBAgO
+         21waD25l8+vmUCrtobkSWroSM2MkCUTjDEtSVI66OO5KNMh/RX4SFGDl0a1qnUoOSt+Z
+         QrNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=e64UMCL2WVnOr2UI7AUcgF8cpI0jeUTyJjvzOQZ8YrE=;
-        b=JWdC6OOii4vGrggI1sOIRq8lgFC1JohH33kQxyGAZ6apsqXQjeRJBYIfLm/G9yK/8x
-         wyn9/BItcZrP12BcwK/nNeMDNWKleaWuOg3ync1Npn+jRceN7IGEr6KAU5CW9N7Nyv/U
-         321AY90hWdGwCLKW16qbsBPuqcp7VrPaXZeFVjtV9753Oqg1gdsruRkNzXUoFZFhQWiB
-         2jghSJgFeZ21CKz0ygQ/7LUNKvpo4WIk0e1OzBrWhNMnsA1QV6geoB7nFLOLiTN7eiY6
-         i+utMKV2J9wo75kbiYAsOi+e3atp9JbiDZh8NgP/evvH5SjKe6kF4tLkxhArxxdi5iI1
-         WVcw==
-X-Gm-Message-State: AOAM531+sHpjE+qaWCTN4lMkAdeq9nzKXrimslHyejGfKdmAtKF1DIVw
-        p4wso4Wm31K1qhAAIdgoUr8=
-X-Google-Smtp-Source: ABdhPJyKapemGEMJ+oiRHHIk+xiUwqOqgxkK1126yB2yYflqm+sLMNs5knM5JE9Oh1WDASGMBmxR4Q==
-X-Received: by 2002:aa7:92d0:0:b0:44c:ab24:cce7 with SMTP id k16-20020aa792d0000000b0044cab24cce7mr370069pfa.6.1633555512314;
-        Wed, 06 Oct 2021 14:25:12 -0700 (PDT)
-Received: from localhost ([2409:10:24a0:4700:e8ad:216a:2a9d:6d0c])
-        by smtp.gmail.com with ESMTPSA id i9sm18264104pfd.32.2021.10.06.14.25.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Oct 2021 14:25:11 -0700 (PDT)
-Date:   Thu, 7 Oct 2021 06:25:09 +0900
-From:   Stafford Horne <shorne@gmail.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        James Morse <james.morse@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, X86 ML <x86@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-csky@vger.kernel.org,
-        Openrisc <openrisc@lists.librecores.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        SH-Linux <linux-sh@vger.kernel.org>, devicetree@vger.kernel.org
-Subject: Re: [PATCH 06/12] openrisc: Use of_get_cpu_hwid()
-Message-ID: <YV4UNQg3QROuTfQ/@antec>
-References: <20211006164332.1981454-1-robh@kernel.org>
- <20211006164332.1981454-7-robh@kernel.org>
- <YV4KkAC2p9D4yCnH@antec>
- <CAL_JsqLv+Ym=hxxz2vm0H3pbx1FRkBpHs3V=8DKjG43n+gS+RA@mail.gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=TEIVevLr+KkOe+yPKE3J8X4wJFJQbdygarJo9OKidbQ=;
+        b=ZaBL33TLosI14z+pOCna39qRVpA6llOL3BIFAU0HducJNYYYMjwd/cKaIM/d2BGWWF
+         FzFmrbk5ZOHU/hH0ZCkUdfPvH2USRl74vThiGU0yt2E2LX5DC40iqBNGcjH5BHgSrXd/
+         dwa5Gygyt3OS4wgsgKBnG04JKeLXDQk+nTgfzbI0U9PCLif9b5n3o1yed0xQ2bdv/bIM
+         48fMF8VrsyGgV3+Www+BvbzsWulSXdUaQscFo2606+odX/G7c2ho2vRRFD5YvIjrHzdA
+         OCGfkkESW0YpegVRqs1u4Db4eC+uIsbxujtOd7KbZBMf+vR7KjODchAuazOGy5VUDgaM
+         4myA==
+X-Gm-Message-State: AOAM5322PQvE9EnYS3EBJVAta+Kb6MpAT4ZXsAdc1KaQRCMJ2aoxuaaL
+        2SE25lSURcjb+QP31+QWINVmnafYO66NwEBFiuhqBA==
+X-Google-Smtp-Source: ABdhPJyCU+oSJN5PiFKY5i0hkVZ1JGnxR2EGlN1fAjiHYGe2Leq7H1zEuBIFtcu4sJpy8XtCJSp02g==
+X-Received: by 2002:a05:6402:3509:: with SMTP id b9mr780972edd.187.1633555619218;
+        Wed, 06 Oct 2021 14:26:59 -0700 (PDT)
+Received: from ?IPv6:2a04:241e:501:3870:473a:8ebc:828b:d6c6? ([2a04:241e:501:3870:473a:8ebc:828b:d6c6])
+        by smtp.gmail.com with ESMTPSA id x16sm5204655eds.92.2021.10.06.14.26.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Oct 2021 14:26:58 -0700 (PDT)
+Subject: Re: [PATCH 11/11] selftests: net/fcnal: Reduce client timeout
+To:     David Ahern <dsahern@gmail.com>, Jakub Kicinski <kuba@kernel.org>,
+        Shuah Khan <shuah@kernel.org>, David Ahern <dsahern@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Ido Schimmel <idosch@nvidia.com>,
+        Seth David Schoen <schoen@loyalty.org>,
+        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1633520807.git.cdleonard@gmail.com>
+ <516043441bd13bc1e6ba7f507a04362e04c06da5.1633520807.git.cdleonard@gmail.com>
+ <3ed2262e-fce2-c587-5112-e4583cd042ed@gmail.com>
+From:   Leonard Crestez <cdleonard@gmail.com>
+Message-ID: <c48ea9e2-acdc-eb11-a4b0-35474003fcf3@gmail.com>
+Date:   Thu, 7 Oct 2021 00:26:57 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAL_JsqLv+Ym=hxxz2vm0H3pbx1FRkBpHs3V=8DKjG43n+gS+RA@mail.gmail.com>
+In-Reply-To: <3ed2262e-fce2-c587-5112-e4583cd042ed@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 06, 2021 at 04:08:38PM -0500, Rob Herring wrote:
-> On Wed, Oct 6, 2021 at 3:44 PM Stafford Horne <shorne@gmail.com> wrote:
-> >
-> > On Wed, Oct 06, 2021 at 11:43:26AM -0500, Rob Herring wrote:
-> > > Replace open coded parsing of CPU nodes' 'reg' property with
-> > > of_get_cpu_hwid().
-> > >
-> > > Cc: Jonas Bonn <jonas@southpole.se>
-> > > Cc: Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>
-> > > Cc: Stafford Horne <shorne@gmail.com>
-> > > Cc: openrisc@lists.librecores.org
-> > > Signed-off-by: Rob Herring <robh@kernel.org>
-> > > ---
-> > >  arch/openrisc/kernel/smp.c | 6 +-----
-> > >  1 file changed, 1 insertion(+), 5 deletions(-)
-> > >
-> > > diff --git a/arch/openrisc/kernel/smp.c b/arch/openrisc/kernel/smp.c
-> > > index 415e209732a3..7d5a4f303a5a 100644
-> > > --- a/arch/openrisc/kernel/smp.c
-> > > +++ b/arch/openrisc/kernel/smp.c
-> > > @@ -65,11 +65,7 @@ void __init smp_init_cpus(void)
-> > >       u32 cpu_id;
-> > >
-> > >       for_each_of_cpu_node(cpu) {
-> > > -             if (of_property_read_u32(cpu, "reg", &cpu_id)) {
-> > > -                     pr_warn("%s missing reg property", cpu->full_name);
-> > > -                     continue;
-> > > -             }
-> > > -
-> > > +             cpu_id = of_get_cpu_hwid(cpu);
+
+
+On 06.10.2021 18:01, David Ahern wrote:
+> On 10/6/21 5:47 AM, Leonard Crestez wrote:
+>> Reduce default client timeout from 5 seconds to 500 miliseconds.
+>> Can be overridden from environment by exporting NETTEST_CLIENT_TIMEOUT=5
+>>
+>> Some tests need ICMP timeouts so pass an explicit -t5 for those.
+>>
+>> Signed-off-by: Leonard Crestez <cdleonard@gmail.com>
+>> ---
+>>   tools/testing/selftests/net/fcnal-test.sh | 17 +++++++++++------
+>>   1 file changed, 11 insertions(+), 6 deletions(-)
+>>
 > 
-> Oops, that should be: of_get_cpu_hwid(cpu, 0);
+> The problem with blindly reducing the timeouts is running the script on
+> a loaded server. Some tests are expected to timeout while for tests a
+> timeout is a failure.
 
-OK. I checked all other patches in the series, it seems OpenRISC was the only
-one missing that.  Sorry I missed it initially.
+Keeping the default value "5" would be fine as long as it is possible to 
+override externally and get fast results on a mostly-idle machine.
 
-> I thought I double checked all those...
-> 
-> > You have defined of_get_cpu_hwid to return u64, will this create compiler
-> > warnings when since we are storing a u64 into a u32?
-> 
-> I'm counting on the caller to know the max size for their platform.
+Placing a default value in the environment which is overriden by certain 
+tests achieves that.
 
-OK.
+In theory it would also be possible for fcnal-test.sh to parse as 
+"--timeout" option and pass it into every single test but that solution 
+would cause much more code churn.
 
-> >
-> > It seems only if we make with W=3.
-> >
-> > I thought we usually warned on this.  Oh well, for the openrisc bits.
-> 
-> That's only on ptr truncation I think.
+Having default values in environment variables that can still be 
+overridden by command-line arguments is a common pattern in many tools. 
+It also avoids having to pass-through every flag through every 
+intermediate wrapper.
 
-Right, that makes sense.
-
--Stafford
+--
+Regards,
+Leonard
