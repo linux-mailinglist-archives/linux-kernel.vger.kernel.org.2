@@ -2,124 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52D7A423E86
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 15:19:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 338F2423E8A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 15:20:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238607AbhJFNVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 09:21:06 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:36888 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231524AbhJFNVF (ORCPT
+        id S238474AbhJFNWD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 09:22:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49554 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231497AbhJFNV7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 09:21:05 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 196DJ8iR055040;
-        Wed, 6 Oct 2021 08:19:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1633526349;
-        bh=Nb8U4U2trMtARelPANdTerZUVjPr3+IxvmjVKxEf6QM=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=GkQAffm8zbALvXMB3C69UTdCQ4x2AlQtRmcVstYXcgVUKv4pKRck9b/Teg3EiBH22
-         HcZ4v32n2MZdMwvGBda3zIFlA24fIWn6xi672N/7H96CswPAcVD9ABT8RYl71YXqbx
-         7B1j/AC2lxV7iqpYdnzIHu/MwkfsNotUecGVVS4Y=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 196DJ8uG113063
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 6 Oct 2021 08:19:08 -0500
-Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Wed, 6
- Oct 2021 08:19:08 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Wed, 6 Oct 2021 08:19:08 -0500
-Received: from [10.250.233.140] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 196DJ4e9064609;
-        Wed, 6 Oct 2021 08:19:05 -0500
-Subject: Re: [PATCH 1/4] dt-bindings: thermal: k3-j72xx: Add VTM bindings
- documentation
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Tero Kristo <kristo@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Amit Kucheria <amitk@kernel.org>,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>
-References: <20211004112550.27546-1-j-keerthy@ti.com>
- <20211004112550.27546-2-j-keerthy@ti.com>
- <1633436798.497006.3226792.nullmailer@robh.at.kernel.org>
- <CAL_JsqKLuE+RhH+T4UKecMhRjbm69rwA1a2+FjrnMPKUf13J6A@mail.gmail.com>
- <edb3e75a-1092-7e90-40d0-225dd4d4764c@linaro.org>
-From:   "J, KEERTHY" <j-keerthy@ti.com>
-Message-ID: <03549a90-4bf7-70a8-39f9-b3dd15d5ca45@ti.com>
-Date:   Wed, 6 Oct 2021 18:49:04 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Wed, 6 Oct 2021 09:21:59 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8269C061749
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 06:20:06 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id r18so8800710wrg.6
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 06:20:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=p6gdpQMOmptKubvJ742KDDFUbo9hEV0sBfCaJk3WkUE=;
+        b=c6QDqpPiXtNIV7dzN5ll+FQ6KvfswcGWcaP2rST+y9EevgjCepx7n6lQ/Ywkm7gsK5
+         LHCTTJVgjJrhnLdE5oiKlNUPQ2Kg3yuhCZYBT7PREtbfd0xN0IeZtqeZ8osgZB0JSznl
+         12pmuBiPPD7N/XKULR6fiMUPS45M1jy/BcwO+eEAfWGYo/hUdXIbtUSsrr3orlw4p8vn
+         UhQoF+aaOVl4fqg5jkQcohYx50IblNjHP1ZqiFMh7vpFYoAWRMyyjDuOzjyu7h2qrEkw
+         TX1cslnGgnwvZU5pixPfmoiKDlUjTjehwomD/EOGuzvC+BnGjKNek/TeMsxj1n/BxC76
+         Bx9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=p6gdpQMOmptKubvJ742KDDFUbo9hEV0sBfCaJk3WkUE=;
+        b=cUU6K2vv2KDDKtgzZBqApTXMb/aq2L8OpSNAbv9+LXgzsxK17TfmqgQUBAQcPRu0gK
+         6tPq2iPLjMfP6QCIULRfDHJQZwNSvVtkuRUdXLxafYUZT4pUkcuY6dNcm+8WUInT+xVC
+         7NEy6NAs6zvV4nyK4OnviOTbI0nd5R50hn2mpjEDtVWqJ/2H526uGt0lVLxcGmjunlW5
+         dhwZTynVKMud7iiuBEC9BSIfUkAxoKZLLak9tcxNGinZOln+ficlhisiB3QErE6cLbUW
+         A7lgoGxbLriEBi263oaX+LsndqewcMhCgH7qbe6g8rawnKZnLucWvpWFv9f1N5o9pWrB
+         R25w==
+X-Gm-Message-State: AOAM531POI9V9hKD7RLsW4pgQSmNu+L9hGzf6+DWVo0uoGu8AwC5cYwV
+        5LIW4mFLsc6zXkPLGIaQxWlIPA==
+X-Google-Smtp-Source: ABdhPJzoqukl/i94XHKcFnleptcwa9ahZaEF/VFUkN64z5eHIVt0qazWn5ydLdseOD3cVrnXwiPuvQ==
+X-Received: by 2002:a5d:544c:: with SMTP id w12mr29472633wrv.398.1633526405385;
+        Wed, 06 Oct 2021 06:20:05 -0700 (PDT)
+Received: from google.com ([95.148.6.175])
+        by smtp.gmail.com with ESMTPSA id d16sm5029441wmb.2.2021.10.06.06.20.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Oct 2021 06:20:04 -0700 (PDT)
+Date:   Wed, 6 Oct 2021 14:20:03 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Liam Girdwood <lgirdwood@gmail.com>, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org
+Subject: Re: [PATCH v2 00/10] regulator/mfd/clock: dt-bindings: Samsung S2M
+ and S5M to dtschema
+Message-ID: <YV2ig7q0UWQQC5N2@google.com>
+References: <20211001094106.52412-1-krzysztof.kozlowski@canonical.com>
+ <YVxBuEvHVdyDvaGD@sirena.org.uk>
+ <YVxP0+kVxI0xQmQQ@google.com>
+ <41226a6d-999d-b1bb-d6a2-294a9e34d271@canonical.com>
 MIME-Version: 1.0
-In-Reply-To: <edb3e75a-1092-7e90-40d0-225dd4d4764c@linaro.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <41226a6d-999d-b1bb-d6a2-294a9e34d271@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 06 Oct 2021, Krzysztof Kozlowski wrote:
 
-
-On 10/6/2021 3:12 PM, Daniel Lezcano wrote:
+> On 05/10/2021 15:14, Lee Jones wrote:
+> > On Tue, 05 Oct 2021, Mark Brown wrote:
+> > 
+> >> On Fri, Oct 01, 2021 at 11:40:56AM +0200, Krzysztof Kozlowski wrote:
+> >>
+> >>> Merging/dependencies
+> >>> ====================
+> >>> 1. Regulator related binding changes depend on first two commits (the
+> >>>    fixes), because of context.
+> >>> 2. The mfd bindings depend on clock and regulator bindings.
+> >>>
+> >>> The fixes and bindings changes (patches 1-10) should go via the same
+> >>> tree.  For example regulator or mfd tree.  I propose the regulator tree,
+> >>> since it will have also one driver change (the fix, first commit).
+> >>
+> >> Lee, Stephen, Michael does Krzysztof's plan make sense to you?
+> > 
+> > I tend to take cross subsystem patches.  MFD is usually in the centre
+> > of these scenarios and I have tooling to easily set-up immutable
+> > branches/pull-requests.
+> > 
+> > Always happy to discuss if others have different/better ideas though.
+> > 
 > 
-> Keerthy,
-> 
-> did you receive this answer ?
+> Another alternative is that regulator patches (1-2, 4-6) go via Mark who
+> later gives you a stable branch/tag to pull. Then the clock and MFD
+> bindings would go on top via MFD tree.
 
-Daniel,
+It shouldn't matter where they are first applied.  Creating 2
+immutable branches when just 1 will do would be a pain.
 
-Thanks for sending this. I did not receive Rob's responses.
+> There is a comment from Rob which I will fix in v3.
 
-Rob,
+Sure.
 
-Apologies. I will get this rectified before i send the V2 with the 
-reported issue fixed. It seems issue with my particular e-mail account.
-
-Apologies for the inconvenience once again!
-
-Best Regards,
-Keerthy
-
-
-> 
-> 
-> On 05/10/2021 15:05, Rob Herring wrote:
->> On Tue, Oct 5, 2021 at 7:26 AM Rob Herring <robh@kernel.org> wrote:
->>>
->>> On Mon, 04 Oct 2021 16:55:47 +0530, Keerthy wrote:
->>>> Add VTM bindings documentation. In the Voltage Thermal
->>>> Management Module(VTM), K3 J72XX supplies a voltage
->>>> reference and a temperature sensor feature that are gathered in the band
->>>> gap voltage and temperature sensor (VBGAPTS) module. The band
->>>> gap provides current and voltage reference for its internal
->>>> circuits and other analog IP blocks. The analog-to-digital
->>>> converter (ADC) produces an output value that is proportional
->>>> to the silicon temperature.
->>>>
->>>> Signed-off-by: Keerthy <j-keerthy@ti.com>
->>>> ---
->>>>   .../bindings/thermal/ti,j72xx-thermal.yaml    | 58 +++++++++++++++++++
->>>>   1 file changed, 58 insertions(+)
->>>>   create mode 100644 Documentation/devicetree/bindings/thermal/ti,j72xx-thermal.yaml
->>>>
->>>
->>> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
->>> on your patch (DT_CHECKER_FLAGS is new in v5.13):
->>
->> Woot, TI has blacklisted me:
->>
->> The response from the remote server was:
->> 553 Sorry, your email address has been blacklisted. Please contact
->> Texas Instruments Inc to have yourself removed.
->>
-> 
-> 
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
