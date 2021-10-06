@@ -2,102 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E75642427C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 18:20:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADB33424287
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 18:23:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239382AbhJFQWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 12:22:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35810 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239381AbhJFQWk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 12:22:40 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EC30C061746
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 09:20:48 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0d3600bdb6aa8687ce684e.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:3600:bdb6:aa86:87ce:684e])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8AB881EC03FE;
-        Wed,  6 Oct 2021 18:20:46 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1633537246;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=1xddPaZ1UE7THsd1YqIakKfcdzE8fDpzy5AsfG2miN4=;
-        b=QLWmuk0sdHDEvg0dsydydUF1AtPZ3u7XXbFpiRqFIAnspA+EdtJ5Ld/Bb2jN1MwG8rkBkD
-        HhDaO3QAc6X/p4ioCRW98ueERjbzmZs8l+TVt0ijXuVj3a5cQ7yqEis3nbKxsXGSKQMXhW
-        VEqxddiZc8nTYsEcVlwQIzcwLzzSqm0=
-Date:   Wed, 6 Oct 2021 18:20:41 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
-        VMware Inc <pv-drivers@vmware.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 03/11] x86/cpufeatures: Add TDX Guest CPU feature
-Message-ID: <YV3M2cqqMTkC/rUK@zn.tnic>
-References: <20211005025205.1784480-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211005025205.1784480-4-sathyanarayanan.kuppuswamy@linux.intel.com>
- <YV3AKekdJU0vsbaN@zn.tnic>
- <328cc0e7-89e7-a1b2-f798-fe758c2c1f4e@linux.intel.com>
+        id S238947AbhJFQZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 12:25:01 -0400
+Received: from mga02.intel.com ([134.134.136.20]:44926 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230101AbhJFQZA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 12:25:00 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10129"; a="213157983"
+X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; 
+   d="scan'208";a="213157983"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2021 09:23:07 -0700
+X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; 
+   d="scan'208";a="439175129"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2021 09:23:05 -0700
+Received: from andy by smile with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mY9h8-009FoT-9J;
+        Wed, 06 Oct 2021 19:23:02 +0300
+Date:   Wed, 6 Oct 2021 19:23:02 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc:     Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Subject: Re: [PATCH v1 3/4] ASoC: Intel: bytcr_rt5651: use
+ devm_clk_get_optional() for mclk
+Message-ID: <YV3NZnb6mg43nUC1@smile.fi.intel.com>
+References: <20211006150451.16561-1-andriy.shevchenko@linux.intel.com>
+ <20211006150451.16561-3-andriy.shevchenko@linux.intel.com>
+ <2d190513-7ac4-731c-7c9a-1f60a98f6345@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <328cc0e7-89e7-a1b2-f798-fe758c2c1f4e@linux.intel.com>
+In-Reply-To: <2d190513-7ac4-731c-7c9a-1f60a98f6345@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 06, 2021 at 08:43:48AM -0700, Kuppuswamy, Sathyanarayanan wrote:
-> Yes. But, Joerg Roedel in his review recommended using variable
-> similar to sme_me_mask to avoid function call in Intel platform in
-> cc_platform_has().
-
-That would normally make sense if this were a fast path. But I don't see
-that being one. Besides, the subsequent runs will be the function call +
-a couple of instructions:
-
-# arch/x86/kernel/tdx.c:22: 	if (tdx_guest >= 0)
-	movl	tdx_guest(%rip), %eax	# tdx_guest,
-	testl	%eax, %eax	#
-	jns	.L11	#,
+On Wed, Oct 06, 2021 at 10:51:52AM -0500, Pierre-Louis Bossart wrote:
+> On 10/6/21 10:04 AM, Andy Shevchenko wrote:
+> > The devm_clk_get_optional() helper returns NULL when devm_clk_get()
+> > returns -ENOENT. This makes things slightly cleaner. The added benefit
+> > is mostly cosmetic.
 
 ...
 
-.L11:
-# arch/x86/kernel/tdx.c:23: 		return tdx_guest;
-	setne	%al	#, <retval>
-# arch/x86/kernel/tdx.c:35: }
-	ret
+> >  	if (SND_SOC_DAPM_EVENT_ON(event)) {
+> > -		if (byt_rt5651_quirk & BYT_RT5651_MCLK_EN) {
+> > -			ret = clk_prepare_enable(priv->mclk);
+> > -			if (ret < 0) {
+> > -				dev_err(card->dev,
+> > -					"could not configure MCLK state");
+> > -				return ret;
+> > -			}
+> > +		ret = clk_prepare_enable(priv->mclk);
+> > +		if (ret < 0) {
+> > +			dev_err(card->dev, "could not configure MCLK state");
+> > +			return ret;
+> >  		}
+> 
+> I don't get why you removed the test on the BYT_RT5651_MCLK_EN quirk,
+> see below it was designed as a fall-back mode. We don't want to return
+> an error when we know the clock is not present/desired.
 
-which is not the end of the world.
+Why should we do a unneeded test? When we switch to the optional, there
+will be no error from these CCF APIs. Besides that it drops indentation
+level and makes code neat.
 
-And it if it is really used in a fast path, then we can do a static
-branch etc.
+...
 
-Thx.
+> same here, why was the quirk removed?
+
+Same answer.
+
+...
+
+> that part in the probe looks fine, but the changes above are controversial.
+
+I didn't get. How controversial? Why? The whole point of _optional is to get
+rid of unneeded checks (since they are _anyway_ be called).
 
 -- 
-Regards/Gruss,
-    Boris.
+With Best Regards,
+Andy Shevchenko
 
-https://people.kernel.org/tglx/notes-about-netiquette
+
