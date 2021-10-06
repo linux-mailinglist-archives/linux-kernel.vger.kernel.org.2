@@ -2,66 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0343423DFD
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 14:45:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF70F423E03
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 14:46:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238543AbhJFMrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 08:47:21 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:49512
+        id S238534AbhJFMse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 08:48:34 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:49590
         "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238312AbhJFMrT (ORCPT
+        by vger.kernel.org with ESMTP id S229894AbhJFMsd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 08:47:19 -0400
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com [209.85.167.72])
+        Wed, 6 Oct 2021 08:48:33 -0400
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com [209.85.167.70])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 33CF33FFEC
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 12:45:27 +0000 (UTC)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 64BCC3FFE1
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 12:46:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1633524327;
-        bh=XsesgrQqzWwogTU+5boSP+pFMfuw8qiwr/ZK6i/vNzY=;
-        h=To:Cc:References:From:Subject:Message-ID:Date:MIME-Version:
+        s=20210705; t=1633524400;
+        bh=CFPfrwCOLmoOnhcB5cFkeSRW+ygeIs9z/XXXtSaFs3Q=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
          In-Reply-To:Content-Type;
-        b=wR2DyagOv7ScRsStuv1jMEbRUssTDHgntLH5IiO7YgIu8LQX7Zl3s9Pz9pzDCN/ol
-         uLdVd3OJ+KQ297BEY+AXQ0p8VEGgy1FleaHfanH3yxFRGbGF16YoLQ18qDgBf1SNE8
-         CFP63z9HrC8svEbgHADMfMK88RNzEbLypz1rwTlsZQ4Hc+UeAN1FQqwRhY0rTTnR0f
-         NY4goTfHdPER/h2819otzidS5SQh4iNpIyPUMbhyZkNWBtKcqNKvdHkwJrQWTi8gEU
-         nfumVfK4SRMkXheSo1lzoX0yCbIN6MBWhmSGzlVE4VcXOahROEbeaVUweN77dtWKmh
-         SWBcn0tPPtc7g==
-Received: by mail-lf1-f72.google.com with SMTP id x7-20020a056512130700b003fd1a7424a8so1895762lfu.5
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 05:45:27 -0700 (PDT)
+        b=u6ZbrHRZdBUbkO8f7SjbHORutJ3tOm+ChiBmhCRUGPq3PZf6FSqRxVxgxtV1Z8uJL
+         gHhWQ0fJ6Tp1r2LOez9U0G1pSqCVNw8jrkswAHMi8KfmUykOSGChFZO+yabMg5xOgX
+         hunSFdWZFgNc1t/f9HFJz2VD2kUNwmFULQUK9VWXjg4ikL7m7u3Wg/g/XU/vArJC0a
+         ytizQthEIdjCpqXUQ9fKJxhmJBF51EoZvtIyZ71WMuLEIIaGRt2ZOla6+5ZH9ivjVQ
+         BPxDwZCgV3I7h1DgyzVAnG8NNHLBLiaX/7pKl8KyPbZqWxZ6TrGaneWLiDU8YfSa1n
+         rVjs8J/04dsYg==
+Received: by mail-lf1-f70.google.com with SMTP id bi16-20020a0565120e9000b003fd56ef5a94so819125lfb.3
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 05:46:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=XsesgrQqzWwogTU+5boSP+pFMfuw8qiwr/ZK6i/vNzY=;
-        b=iiTRaSKqnj33C6iWpvO/K8UeyasVB2SRL2jWf1hMeNDnu3IilLxtrJwYgJ8mA5DcI+
-         3UDV3F2sxAbpXfDMJABwL+HGO46xFMPTH7gOl1uxarYJfSV0s7MCcqfp3yWPherBYb7I
-         ukPWI8Lbj/MDNwYA+cBVXC8vukQf0obJVfSqTrUXKvw4Q+n4jBNXwncCwihH0FBeTDT+
-         A0FV3zxMopMVSBYuEhlyakBrhMmv7t+7P0Spoi28qw1H34roksKIQJxykx+KqUx9GK5f
-         ExWTiYHceiqmmooaemfKs95y11PkNgIqbVoD+gv7Xld1xZ6SxhCCo6IxRpqyf+rKa4+Z
-         SXQA==
-X-Gm-Message-State: AOAM530QG3FbTf25GEq3EcgMjxuKhaprhQjzFi9TtlQWCiI8p/eCL27Q
-        t+80A84pupsNCP11x/AqeSuc3dPlN3UHDVgIVz/Jf3N4g3ZxFYjao68mQbMtyzmASX6/zTa+xMo
-        CynJcrryg8eOgiDhCNo/pXrkmEy5WbfTgh8M6R1iGeg==
-X-Received: by 2002:a19:c518:: with SMTP id w24mr9149103lfe.125.1633524325890;
-        Wed, 06 Oct 2021 05:45:25 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyhGwDOSL2mxsXWubM939Ug6u/kgMcn1i/hSf09VP/mwWAUSK8G8MbnL95dBRJZRC7RBA9iSQ==
-X-Received: by 2002:a19:c518:: with SMTP id w24mr9149071lfe.125.1633524325615;
-        Wed, 06 Oct 2021 05:45:25 -0700 (PDT)
+        bh=CFPfrwCOLmoOnhcB5cFkeSRW+ygeIs9z/XXXtSaFs3Q=;
+        b=drq07i6ow2zxTsPF2xELHNt0U5nuZwOqr0AhpcHBfoHt9PYd2ZBiXcllWji3Egc9gz
+         uUzwT8K71rKf0Yd0vL/fmlTnwzxYL4my6wQo+ykgsDDCDZa8WRi282pblwpa2sYt9TYE
+         5XC7/3WBrXUm8fwzhpmQlHwH7hlHhFOt/yLqqRT72juIHfyKFJ6mxdPu579hzXzVQU+n
+         87ZZWZBARqDBAS8ngFiW6AIRo2mWeccKSyjAy6C0abpraJxeoZJq5J2I4yVdTCZd6xwQ
+         +bgenXGkH85CgrExmIiOpl6sPIfb0ZmVeOoa4Wn+Y5jjx9/unOC+D/ltSZOdL6TVa4+M
+         /KDw==
+X-Gm-Message-State: AOAM5333sB4VUndZEAoN6LMBWNZAe1Y8fyEdiJBl5LI8n6snDqUn3wXQ
+        RwPVJDKz3Q8y1Vp0hAtRccQ4//I7wk/gj9D2kjWpZsUz09wb3m40cSzf2uLtuh2YUPFiwCQJTt9
+        LL6LnRTKXLhkgxDdGSR6imqOyK5XhldP52QMA9X8TfQ==
+X-Received: by 2002:a2e:7f06:: with SMTP id a6mr28466854ljd.437.1633524399774;
+        Wed, 06 Oct 2021 05:46:39 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx1ImH5ZppaJiULcnlj61kt2m4gbZQp0zsJOhQk+6s6980dk31R5+ELxZ7FMAOsluAeUMfLEg==
+X-Received: by 2002:a2e:7f06:: with SMTP id a6mr28466823ljd.437.1633524399584;
+        Wed, 06 Oct 2021 05:46:39 -0700 (PDT)
 Received: from [192.168.0.20] (78-11-189-27.static.ip.netia.com.pl. [78.11.189.27])
-        by smtp.gmail.com with ESMTPSA id c2sm1248767lfi.277.2021.10.06.05.45.24
+        by smtp.gmail.com with ESMTPSA id g18sm2184560ljj.105.2021.10.06.05.46.38
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Oct 2021 05:45:25 -0700 (PDT)
+        Wed, 06 Oct 2021 05:46:39 -0700 (PDT)
+Subject: Re: [PATCH 6/6] clk: samsung: Introduce Exynos850 clock driver
 To:     Sam Protsenko <semen.protsenko@linaro.org>,
         Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc:     =?UTF-8?Q?Pawe=c5=82_Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Ryu Euiyoul <ryu.real@samsung.com>,
-        Tom Gall <tom.gall@linaro.org>,
+Cc:     Ryu Euiyoul <ryu.real@samsung.com>, Tom Gall <tom.gall@linaro.org>,
         Sumit Semwal <sumit.semwal@linaro.org>,
         John Stultz <john.stultz@linaro.org>,
         Amit Pundir <amit.pundir@linaro.org>,
@@ -72,167 +69,53 @@ Cc:     =?UTF-8?Q?Pawe=c5=82_Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
         Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
         Michael Turquette <mturquette@baylibre.com>,
         Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
+        Rob Herring <robh+dt@kernel.org>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        =?UTF-8?Q?Pawe=c5=82_Chmiel?= <pawel.mikolaj.chmiel@gmail.com>
 References: <20210914155607.14122-1-semen.protsenko@linaro.org>
- <CGME20210914155621eucas1p18e0f1f50fe42af4f8048ed88507219ed@eucas1p1.samsung.com>
- <20210914155607.14122-2-semen.protsenko@linaro.org>
- <b44e1c4a-5abc-7a27-e9ae-d4645d04527a@samsung.com>
- <CAPLW+4=cL00WxQpobovE3Jo62RijOpqwYNAF8TJHXQTdGxNHHg@mail.gmail.com>
+ <CGME20210914155639eucas1p2b65f35fcbd2b3fde7d4e7541ac6d76d3@eucas1p2.samsung.com>
+ <20210914155607.14122-7-semen.protsenko@linaro.org>
+ <1d884e38-ac8c-6f0c-ad27-243c5c4b9b9b@samsung.com>
+ <CAPLW+4n0DX3gn=Ntat39EUO-L2t=SR_=Nr3LtznN4XsNrc=OWA@mail.gmail.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Subject: Re: [PATCH 1/6] clk: samsung: Enable bus clock on init
-Message-ID: <eb582eb0-f281-1795-9584-fccc60147261@canonical.com>
-Date:   Wed, 6 Oct 2021 14:45:24 +0200
+Message-ID: <98c7d970-d937-3441-20c1-7cec736a8a62@canonical.com>
+Date:   Wed, 6 Oct 2021 14:46:38 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <CAPLW+4=cL00WxQpobovE3Jo62RijOpqwYNAF8TJHXQTdGxNHHg@mail.gmail.com>
+In-Reply-To: <CAPLW+4n0DX3gn=Ntat39EUO-L2t=SR_=Nr3LtznN4XsNrc=OWA@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/10/2021 13:18, Sam Protsenko wrote:
-> On Wed, 15 Sept 2021 at 15:51, Sylwester Nawrocki
+On 05/10/2021 13:36, Sam Protsenko wrote:
+> On Wed, 15 Sept 2021 at 16:07, Sylwester Nawrocki
 > <s.nawrocki@samsung.com> wrote:
 >>
->> Hi,
->>
 >> On 14.09.2021 17:56, Sam Protsenko wrote:
->>> By default if bus clock has no users its "enable count" value is 0. It
->>> might be actually running if it's already enabled in bootloader, but
->>> then in some cases it can be disabled by mistake. For example, such case
->>> was observed when dw_mci_probe() enabled bus clock, then failed to do
->>> something and disabled that bus clock on error path. After that even
->>> attempt to read the 'clk_summary' file in DebugFS freezed forever, as
->>> CMU bus clock ended up being disabled and it wasn't possible to access
->>> CMU registers anymore.
->>>
->>> To avoid such cases, CMU driver must increment the ref count for that
->>> bus clock by running clk_prepare_enable(). There is already existing
->>> '.clk_name' field in struct samsung_cmu_info, exactly for that reason.
->>> It was added in commit 523d3de41f02 ("clk: samsung: exynos5433: Add
->>> support for runtime PM"). But the clock is actually enabled only in
->>> Exynos5433 clock driver. Let's mimic what is done there in generic
->>> samsung_cmu_register_one() function, so other drivers can benefit from
->>> that `.clk_name' field. As was described above, it might be helpful not
->>> only for PM reasons, but also to prevent possible erroneous clock gating
->>> on error paths.
->>>
->>> Another way to workaround that issue would be to use CLOCK_IS_CRITICAL
->>> flag for corresponding gate clocks. But that might be not very good
->>> design decision, as we might still want to disable that bus clock, e.g.
->>> on PM suspend.
->>>
->>> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
->>> ---
->>>  drivers/clk/samsung/clk.c | 13 +++++++++++++
->>>  1 file changed, 13 insertions(+)
->>>
->>> diff --git a/drivers/clk/samsung/clk.c b/drivers/clk/samsung/clk.c
->>> index 1949ae7851b2..da65149fa502 100644
->>> --- a/drivers/clk/samsung/clk.c
->>> +++ b/drivers/clk/samsung/clk.c
->>> @@ -357,6 +357,19 @@ struct samsung_clk_provider * __init samsung_cmu_register_one(
->>>
->>>       ctx = samsung_clk_init(np, reg_base, cmu->nr_clk_ids);
->>>
->>> +     /* Keep bus clock running, so it's possible to access CMU registers */
->>> +     if (cmu->clk_name) {
->>> +             struct clk *bus_clk;
+>>> +static void __init exynos850_cmu_top_init(struct device_node *np)
+>>> +{
+>>> +     exynos850_init_clocks(np, top_clk_regs, ARRAY_SIZE(top_clk_regs));
+>>> +     samsung_cmu_register_one(np, &top_cmu_info);
+>>> +}
 >>> +
->>> +             bus_clk = __clk_lookup(cmu->clk_name);
->>> +             if (bus_clk) {
->>> +                     clk_prepare_enable(bus_clk);
->>> +             } else {
->>> +                     pr_err("%s: could not find bus clock %s\n", __func__,
->>> +                            cmu->clk_name);
->>> +             }
->>> +     }
->>> +
->>>       if (cmu->pll_clks)
->>>               samsung_clk_register_pll(ctx, cmu->pll_clks, cmu->nr_pll_clks,
->>>                       reg_base);
+>>> +CLK_OF_DECLARE(exynos850_cmu_top, "samsung,exynos850-cmu-top",
+>>> +            exynos850_cmu_top_init);
 >>
->> I would suggest to implement runtime PM ops in your driver instead, even though
->> those would initially only contain single clk enable/disable. Things like
->> the clk_summary will work then thanks to runtime PM support in the clk core
->> (see clk_pm_runtime_* calls).
+>> Was there anything preventing you from making it a platform driver instead?
+>>
 > 
-> Can you please elaborate more? I don't see how adding PM ops would
-> solve the problem I'm trying to address, which is keeping core bus
-> clocks always running. For example, I'm looking at clk-exynos5433.c
-> implementation, which enables bus clock on resume path:
-> 
-> <<<<<<<<<<<<<<<< cut here >>>>>>>>>>>>>>>>
-> static int __maybe_unused exynos5433_cmu_resume(struct device *dev)
-> {
->     ...
->     clk_prepare_enable(data->clk);
->     ...
-> }
-> <<<<<<<<<<<<<<<< cut here >>>>>>>>>>>>>>>>
-> 
-> But that resume operation won't be called on driver init, because it
-> configures runtime PM like this:
+> Can you please elaborate on benefits of adding platform driver? I
+> don't implement PM ops for now, and I can see that clk-exynos7.c does
+> not add platform driver as well... clk-exynos5433.c seems to use
+> platform_driver for PM ops only.
 
-The device will get suspended (like you say) till the first usage, which
-will resume it and thus make the clock enabled.
-
-> 
-> <<<<<<<<<<<<<<<< cut here >>>>>>>>>>>>>>>>
-> static int __init exynos5433_cmu_probe(struct platform_device *pdev)
-> {
->     ...
->     /*
->      * Enable runtime PM here to allow the clock core using runtime PM
->      * for the registered clocks. Additionally, we increase the runtime
->      * PM usage count before registering the clocks, to prevent the
->      * clock core from runtime suspending the device.
->      */
->     pm_runtime_get_noresume(dev);
->     pm_runtime_set_active(dev);
->     pm_runtime_enable(dev);
->     ...
->     pm_runtime_put_sync(dev);
->     ...
-> }
-> <<<<<<<<<<<<<<<< cut here >>>>>>>>>>>>>>>>
-> 
-> When I tried to implement the same in my driver, only suspend function
-> is called during kernel startup.
-> 
-> Anyway, even clk-exynos5433.c driver (which also implements PM ops)
-> does the same for core bus clocks:
-> 
-> <<<<<<<<<<<<<<<< cut here >>>>>>>>>>>>>>>>
-> static int __init exynos5433_cmu_probe(struct platform_device *pdev)
-> {
->     ...
->     if (info->clk_name)
->         data->clk = clk_get(dev, info->clk_name);
->     clk_prepare_enable(data->clk);
->     ...
-> }
-> <<<<<<<<<<<<<<<< cut here >>>>>>>>>>>>>>>>
-> 
-> So it looks like separate feature to me. Not sure how that can be
-> implemented only by adding PM ops. Also, my board lacks PM support in
-> upstream kernel right now, so I probably won't be able to test PM ops
-> if I implement those, that's why I decided to skip it for now.
-
-In general you need runtime PM to make a proper clock driver. You can
-skip it, just like most of our early drivers skipped it, including
-Exynos7, but it's not good in the long run. You might later hit for
-example imprecise aborts when enumerating clocks (/sys/kernel/debug/clk)
-or power domains.
-
-To me it is fine with skipping runtime PM, but using platform driver now
-seems good choice. When writing the code, use rather Exynos5433 as an
-example, not Exynos7. The former was extensively developed and used for
-mainline. The latter was only part of rather early bringup of platform
-and lacks several features/drivers/DT.
+I said it in response to patch 1, so just for the record:
+Exynos7 is not the example you are looking for. :) Exynos5433 is.
 
 
 Best regards,
