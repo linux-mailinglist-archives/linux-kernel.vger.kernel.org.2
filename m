@@ -2,109 +2,278 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 255B2423B65
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 12:20:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D371423B67
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 12:22:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238087AbhJFKWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 06:22:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35986 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229824AbhJFKW2 (ORCPT
+        id S238030AbhJFKYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 06:24:11 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:62121 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230131AbhJFKYK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 06:22:28 -0400
-Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB8A5C061749;
-        Wed,  6 Oct 2021 03:20:36 -0700 (PDT)
-Received: by mail-vs1-xe2d.google.com with SMTP id p2so2295406vst.10;
-        Wed, 06 Oct 2021 03:20:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kVwkMAhpGeKWfHIGRVhGfdjQIS6M3v/qiruYCfRl4ZQ=;
-        b=Fn7gKu4+4IEORoUORMFCJHy9Qvbfh+YZ2AYlQLDQGopzmQWOKy98a2sKKgcbbvkBAd
-         4kplWr4d6szfH7kkRBYt9WcmP8RO50bFySfkLwpqKZl7TqiKMHjpQYHyww5VFdh92Mxy
-         LWBAkQW/1HmSPDBRtREMdrqkZVo/vItN5K05XP0mhu/+WIL22s85zIfpyJ0eFr6g0Igt
-         HTa9fql/ZGRwH/jy6yjHTf+LeZIQzJxz92JBSJeW3ifx8uHRGzfuGqZ7TYP3VHudD8Xm
-         Si30rQBw31Aixnyy3Uuj1Ay2bO7D0ARWEGEGnZSWoyedHPTmGCg3sGg0m+CTiVD/DeLF
-         3oGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kVwkMAhpGeKWfHIGRVhGfdjQIS6M3v/qiruYCfRl4ZQ=;
-        b=JmI3rEENfqqqBhXisBLOLtYwojnMlSbc5CZLUneQbZN+VXKTHXjIk7SLrBm3xL0dgy
-         cam/k6cpO3o53yEhPcj7Yr7rcImjUoX9XKouJVNzFo9S2LSyw2c3yW99osHDRMLOQRpz
-         xztWE5oRa60rGc4rzarW1zgzRIe8JnHQR74VplH/R+/1KejI9lVqjSx3YSYq6wEY7ihn
-         nXIMf0RRZp+GKrWcns6MvChD1gFxDLWP1q3oF0C2AZbxoNIZjdtpiNrK3dXA4TZNat6s
-         9WSicx2JVc35eyTw/jP63o5rsbvkr2wPtg4HWFb6lRbQpAS9Nq5hk4tFExMPp02yDxq2
-         4e/Q==
-X-Gm-Message-State: AOAM532uy5JvyeytngnvfriA1OAf8OkJOJ8Ite5VS5tavdOdLAO+JkOS
-        D15l/YydWQyWFg6Y8p6Z02TqOESHjyaZwZgXnY3Xvl2W
-X-Google-Smtp-Source: ABdhPJzXP25TjAIXrqLn5eklFu+AuOJ5B3LGYksvktvAiW7q5gA7oRDRXvy3vMHFNxiTYNTdefBo1VkNiyZomeUWXAU=
-X-Received: by 2002:a05:6102:3ec3:: with SMTP id n3mr233627vsv.48.1633515636080;
- Wed, 06 Oct 2021 03:20:36 -0700 (PDT)
+        Wed, 6 Oct 2021 06:24:10 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1633515738; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=MW3nFYrTI99YklII5kEMzaQv4cQ84XOAnQJk6NTuoNA=; b=e20D40wUa9RSrV4vs7FOQQdoJAV6eJVglAC6hZqpKxipl6xTadsOtgYeLG+qh7CpDW/D1p39
+ aYGdxWevnpMzKwE8LjZJPTHogjPoFI3sh0TUmVQJDUVUIkjmGCyKlfN82E94d2KEE8+7HcIL
+ 1qJV3A/+BLZpDFdnvNNi8qZojWw=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 615d78d87ae92c7fc98a2171 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 06 Oct 2021 10:22:16
+ GMT
+Sender: mkshah=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id ED2F8C43618; Wed,  6 Oct 2021 10:22:15 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-4.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.29.129] (unknown [49.36.85.177])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: mkshah)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E58F3C4338F;
+        Wed,  6 Oct 2021 10:22:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org E58F3C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Subject: Re: [PATCH 1/2] cpuidle: Avoid calls to cpuidle_resume|pause() for
+ s2idle
+To:     Ulf Hansson <ulf.hansson@linaro.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        linux-pm@vger.kernel.org
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Len Brown <len.brown@intel.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Srinivas Rao L <lsrao@codeaurora.org>
+References: <20210929144451.113334-1-ulf.hansson@linaro.org>
+ <20210929144451.113334-2-ulf.hansson@linaro.org>
+From:   Maulik Shah <mkshah@codeaurora.org>
+Message-ID: <07e6821c-c221-e90d-c977-4d6b55c1ab8d@codeaurora.org>
+Date:   Wed, 6 Oct 2021 15:52:08 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <20211006061204.2854-1-sergio.paracuellos@gmail.com>
- <20211006061204.2854-4-sergio.paracuellos@gmail.com> <20211006082903.GZ2048@kadam>
- <CAMhs-H_qb=goRmfhO1P+mt_NKhJFuJgH6a483-6Wk8M9MA1cJQ@mail.gmail.com> <20211006101458.GB2048@kadam>
-In-Reply-To: <20211006101458.GB2048@kadam>
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Date:   Wed, 6 Oct 2021 12:20:24 +0200
-Message-ID: <CAMhs-H-isGf2Wq9FsnFPtGNK6gwObz39BC1ak-4DBXJjYebcNg@mail.gmail.com>
-Subject: Re: [PATCH 3/4] clk: ralink: make system controller node a reset provider
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Stephen Boyd <sboyd@kernel.org>,
-        "open list:COMMON CLK FRAMEWORK" <linux-clk@vger.kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        linux-staging@lists.linux.dev, NeilBrown <neil@brown.name>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        John Crispin <john@phrozen.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210929144451.113334-2-ulf.hansson@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 6, 2021 at 12:15 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
->
-> On Wed, Oct 06, 2021 at 12:02:12PM +0200, Sergio Paracuellos wrote:
-> > Hi Dan,
-> >
-> > Thanks for the review. Comments below.
-> >
-> > On Wed, Oct 6, 2021 at 10:29 AM Dan Carpenter <dan.carpenter@oracle.com> wrote:
-> > >
-> > > On Wed, Oct 06, 2021 at 08:12:03AM +0200, Sergio Paracuellos wrote:
-> > > > @@ -398,6 +401,76 @@ static void __init mt7621_clk_init(struct device_node *node)
-> > > >  }
-> > > >  CLK_OF_DECLARE_DRIVER(mt7621_clk, "mediatek,mt7621-sysc", mt7621_clk_init);
-> > > >
-> > > > +struct mt7621_rst {
-> > > > +     struct reset_controller_dev rcdev;
-> > > > +     struct regmap *sysc;
-> > > > +};
-> > > > +
-> > > > +static inline struct mt7621_rst *to_mt7621_rst(struct reset_controller_dev *dev)
-> > >
-> > > No need to mark this as inline.  The compiler should do it automatically
-> > > or it will ignore the inline.
-> >
-> > Ok, I have other functions to_* with the same inline syntax, that's
-> > why I have added also here. I think I will maintain it to be coherent
-> > and can be removed afterwards with another patch not belonging to this
-> > series.
->
-> Consistency is never an important goal.  It's better to be different
-> than to be wrong.
+Hi,
 
-Pretty clear, thanks. Will change this also, then.
+On 9/29/2021 8:14 PM, Ulf Hansson wrote:
+> In s2idle_enter(), cpuidle_resume|pause() are invoked to re-allow calls to
+> the cpuidle callbacks during s2idle operations. This is needed because
+> cpuidle is paused in-between in dpm_suspend_noirq() and dpm_resume_noirq().
+> 
+> However, calling cpuidle_resume|pause() from s2idle_enter() looks a bit
+> superfluous, as it also causes all CPUs to be waken up when the first CPU
+> wakes up from s2idle.
 
->
-> regards,
-> dan carpenter
->
+Thanks for the patch. This can be good optimization to avoid waking up 
+all CPUs always.
 
-Best regards,
-    Sergio Paracuellos
+> 
+> Therefore, let's drop the calls to cpuidle_resume|pause() from
+> s2idle_enter(). To make this work, let's also adopt the path in the
+> cpuidle_idle_call() to allow cpuidle callbacks to be invoked for s2idle,
+> even if cpuidle has been paused.
+> 
+> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+> ---
+>   drivers/cpuidle/cpuidle.c |  7 ++++++-
+>   include/linux/cpuidle.h   |  2 ++
+>   kernel/power/suspend.c    |  2 --
+>   kernel/sched/idle.c       | 40 ++++++++++++++++++++++-----------------
+>   4 files changed, 31 insertions(+), 20 deletions(-)
+> 
+> diff --git a/drivers/cpuidle/cpuidle.c b/drivers/cpuidle/cpuidle.c
+> index ef2ea1b12cd8..c76747e497e7 100644
+> --- a/drivers/cpuidle/cpuidle.c
+> +++ b/drivers/cpuidle/cpuidle.c
+> @@ -49,7 +49,12 @@ void disable_cpuidle(void)
+>   bool cpuidle_not_available(struct cpuidle_driver *drv,
+>   			   struct cpuidle_device *dev)
+>   {
+> -	return off || !initialized || !drv || !dev || !dev->enabled;
+> +	return off || !drv || !dev || !dev->enabled;
+> +}
+> +
+> +bool cpuidle_paused(void)
+> +{
+> +	return !initialized;
+>   }
+>   
+>   /**
+> diff --git a/include/linux/cpuidle.h b/include/linux/cpuidle.h
+> index fce476275e16..51698b385ab5 100644
+> --- a/include/linux/cpuidle.h
+> +++ b/include/linux/cpuidle.h
+> @@ -165,6 +165,7 @@ extern void cpuidle_pause_and_lock(void);
+>   extern void cpuidle_resume_and_unlock(void);
+>   extern void cpuidle_pause(void);
+>   extern void cpuidle_resume(void);
+> +extern bool cpuidle_paused(void);
+>   extern int cpuidle_enable_device(struct cpuidle_device *dev);
+>   extern void cpuidle_disable_device(struct cpuidle_device *dev);
+>   extern int cpuidle_play_dead(void);
+> @@ -204,6 +205,7 @@ static inline void cpuidle_pause_and_lock(void) { }
+>   static inline void cpuidle_resume_and_unlock(void) { }
+>   static inline void cpuidle_pause(void) { }
+>   static inline void cpuidle_resume(void) { }
+> +static inline bool cpuidle_paused(void) {return true; }
+>   static inline int cpuidle_enable_device(struct cpuidle_device *dev)
+>   {return -ENODEV; }
+>   static inline void cpuidle_disable_device(struct cpuidle_device *dev) { }
+> diff --git a/kernel/power/suspend.c b/kernel/power/suspend.c
+> index eb75f394a059..388a5de4836e 100644
+> --- a/kernel/power/suspend.c
+> +++ b/kernel/power/suspend.c
+> @@ -97,7 +97,6 @@ static void s2idle_enter(void)
+>   	raw_spin_unlock_irq(&s2idle_lock);
+>   
+>   	cpus_read_lock();
+> -	cpuidle_resume();
+>   
+>   	/* Push all the CPUs into the idle loop. */
+>   	wake_up_all_idle_cpus();
+
+wake_up_all_idle_cpus() will still cause all CPUs to be woken up when 
+first cpu wakes up.
+
+say for example,
+1. device goes to s2idle suspend.
+2. one CPU wakes up to handle irq (irq is not a wake irq but left 
+enabled at GIC because of IRQF_NOSUSPEND flag) so such irq will not 
+break suspend.
+3. The cpu handles the irq.
+4. same cpu don't break s2idle_loop() and goes to s2idle_enter() where 
+it wakes up all existing idle cpus due to wake_up_all_idle_cpus()
+5. all of CPUs again enter s2idle.
+
+to avoid waking up all CPUs in above case, something like below snip may 
+help (i have not tested yet),
+
+when CPUs are in s2idle_loop(),
+
+1. set the s2idle state to enter.
+2. wake up all cpus from shallow state, so that they can re-enter 
+deepest state.
+3. Forever loop until a break with some wake irq.
+4. clear the s2idle state.
+5. wake up all cpus from deepest state so that they can now stay in 
+shallow state/running state.
+
+void s2idle_loop(void)
+{
+
++       s2idle_state = S2IDLE_STATE_ENTER;
++       /* Push all the CPUs to enter deepest available state */
++       wake_up_all_idle_cpus();
+         for (;;) {
+                 if (s2idle_ops && s2idle_ops->wake) {
+                         if (s2idle_ops->wake())
+				..
+                 s2idle_enter();
+         }
++       s2idle_state = S2IDLE_STATE_NONE;
++       /* Push all the CPUs to enter default_idle() from this point */
++       wake_up_all_idle_cpus();
+}
+
+Thanks,
+Maulik
+
+
+> @@ -105,7 +104,6 @@ static void s2idle_enter(void)
+>   	swait_event_exclusive(s2idle_wait_head,
+>   		    s2idle_state == S2IDLE_STATE_WAKE);
+>   
+> -	cpuidle_pause();
+>   	cpus_read_unlock();
+>   
+>   	raw_spin_lock_irq(&s2idle_lock);
+> diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
+> index d17b0a5ce6ac..3bc3a2c46731 100644
+> --- a/kernel/sched/idle.c
+> +++ b/kernel/sched/idle.c
+> @@ -158,6 +158,17 @@ static int call_cpuidle(struct cpuidle_driver *drv, struct cpuidle_device *dev,
+>   	return cpuidle_enter(drv, dev, next_state);
+>   }
+>   
+> +static void cpuidle_deepest_state(struct cpuidle_driver *drv,
+> +				  struct cpuidle_device *dev,
+> +				  u64 max_latency_ns)
+> +{
+> +	int next_state;
+> +
+> +	tick_nohz_idle_stop_tick();
+> +	next_state = cpuidle_find_deepest_state(drv, dev, max_latency_ns);
+> +	call_cpuidle(drv, dev, next_state);
+> +}
+> +
+>   /**
+>    * cpuidle_idle_call - the main idle function
+>    *
+> @@ -189,6 +200,7 @@ static void cpuidle_idle_call(void)
+>   	 */
+>   
+>   	if (cpuidle_not_available(drv, dev)) {
+> +default_idle:
+>   		tick_nohz_idle_stop_tick();
+>   
+>   		default_idle_call();
+> @@ -204,25 +216,19 @@ static void cpuidle_idle_call(void)
+>   	 * timekeeping to prevent timer interrupts from kicking us out of idle
+>   	 * until a proper wakeup interrupt happens.
+>   	 */
+> +	if (idle_should_enter_s2idle()) {
+> +		entered_state = call_cpuidle_s2idle(drv, dev);
+> +                if (entered_state <= 0)
+> +			cpuidle_deepest_state(drv, dev, U64_MAX);
+> +		goto exit_idle;
+> +	}
+>   
+> -	if (idle_should_enter_s2idle() || dev->forced_idle_latency_limit_ns) {
+> -		u64 max_latency_ns;
+> -
+> -		if (idle_should_enter_s2idle()) {
+> -
+> -			entered_state = call_cpuidle_s2idle(drv, dev);
+> -			if (entered_state > 0)
+> -				goto exit_idle;
+> -
+> -			max_latency_ns = U64_MAX;
+> -		} else {
+> -			max_latency_ns = dev->forced_idle_latency_limit_ns;
+> -		}
+> -
+> -		tick_nohz_idle_stop_tick();
+> +	if (cpuidle_paused())
+> +		goto default_idle;
+>   
+> -		next_state = cpuidle_find_deepest_state(drv, dev, max_latency_ns);
+> -		call_cpuidle(drv, dev, next_state);
+> +	if (dev->forced_idle_latency_limit_ns) {
+> +		cpuidle_deepest_state(drv, dev,
+> +				      dev->forced_idle_latency_limit_ns);
+>   	} else {
+>   		bool stop_tick = true;
+>   
+> 
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member of Code Aurora Forum, hosted by The Linux Foundation
