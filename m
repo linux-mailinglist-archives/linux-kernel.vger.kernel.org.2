@@ -2,174 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C127423943
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 09:57:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59E5D423945
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 09:58:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237420AbhJFH7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 03:59:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59260 "EHLO
+        id S237664AbhJFIAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 04:00:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237384AbhJFH7h (ORCPT
+        with ESMTP id S237384AbhJFIAU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 03:59:37 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05592C06174E;
-        Wed,  6 Oct 2021 00:57:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=QgYsG4DybyVUkLhBWL4qDYk9xpuJmOv7rcrX1JZVF7o=; b=ldKp5AGBJZYwRoRVyB2NzwUWXZ
-        pfVwmqBgteBAP0uDAZLCXeO5K8mbYu9VFopBE6oPegQNTPWn6WZ2jPxa9WyEcwSLKwD/XALVABkEZ
-        ZsxisDBa4sDVBFrvmYQs7kmOz8NYZAIlfPCeIqO7McukWoDTeqGFOOzAy0uQcWQJMJwShHI4f0d+H
-        0rsiUiM8okGgweK0k4dAJ3mVilpdq7mHoXiGKgzeIq0W6z15OMoxVK4UCr8TcO0XeuyA7j5uRni82
-        lTnODcuW0dK4tGRT6mnMYynaIOm8Qf5zUUwqRXG7krxOchEqh70W4wgK2Xa5+H9uzmuzDXtJF+ESv
-        /4oUs3eg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mY1o1-008ERF-Em; Wed, 06 Oct 2021 07:57:37 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 842E9300056;
-        Wed,  6 Oct 2021 09:57:36 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 67566200C9CA8; Wed,  6 Oct 2021 09:57:36 +0200 (CEST)
-Date:   Wed, 6 Oct 2021 09:57:36 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Daniel Axtens <dja@axtens.net>
-Cc:     kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        paulmck@kernel.org, rcu@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Mark Rutland <mark.rutland@arm.com>
-Subject: Re: instrument_atomic_read()/_write() in noinstr functions?
-Message-ID: <YV1W8FAV6h2t5gQo@hirez.programming.kicks-ass.net>
-References: <871r4z55fn.fsf@dja-thinkpad.axtens.net>
+        Wed, 6 Oct 2021 04:00:20 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 807E4C061749
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 00:58:28 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id v18so6396421edc.11
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 00:58:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=XQWQgm5VcZfwx8EzNe7mxtfcL9BKDaqUq1fkeXHfikM=;
+        b=go2U0cZ/aA/3NlaoPZZ6FEAxyPlr7Aag5bsPxBltHNCGKtsLteGuw3p0Zm0tpT6nDg
+         LVfkjy3shRzmwvTA1cpZYw6dwe2DiZOxoYOjxFL0ahoYDvRMk5bKKx00bQOq/4bk8+5z
+         OwVLwtxs/1Cwsb8tqqDuoq4cbU+tHuIDRhNwcXCYIKWvL/NhvK0JKeGIUs3bsFKq+vG3
+         DjOXpLRTOMv4lj57RyY/J2DwfZlONcbFfzb9dDYCWXZY1acpXIhuGBd4plNXejMKtpUf
+         Zh5hCdzayuLXMmXN5fvMdgRUn+wDH/U/qC0hj85S6xmLCVVnbZljjFGOH68U2iIdcAFS
+         jMQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=XQWQgm5VcZfwx8EzNe7mxtfcL9BKDaqUq1fkeXHfikM=;
+        b=Z4kOsBw1bmGfT8LFkWrpC1xt+3Htp3Bxdz0X4LFYoUkc/RzVqoc0JoKEkdSAekE/5H
+         H1if8EtUIiK8Pk0epWbPGnd1beqsiDAcMhUOsp6W/Sq4xTPvnYlrlEHlOjIS2FJk3TEs
+         s8GYUxXBfS7xLREpM0jyuMHuQjAtSkxaPVMd1586djWlb6L1+gz2gDPUsauRlYjKBhdw
+         FkbreyNsGFMFTz4QviCX9HQnwdTEO7j43uM61xzRAS52KLkvJ/K/0xul6Di36s6peGcW
+         /Gx8gAgYnFEnJLtRR6rzxIm7MXNiMhnMuoWmaKz2FoBQsUK2wJaCO44IkPjRghkbUqdl
+         tq1g==
+X-Gm-Message-State: AOAM533bAt7g4zMH38GKeKpACqcW3D0xLRMJOJq0ThuRFqRZwafeaPRG
+        tpU+4+9gauM814a0dvxECDgDxYNm7GzKP/PH1d8=
+X-Google-Smtp-Source: ABdhPJywczBI9jhEPZFGmv+cCh3Y4y0E1Q5f7f64/ji6b1R1/AHKHuAeI+tOuJbvNj3FJdtxuUAPLUMgj3BjWxJnVlE=
+X-Received: by 2002:a50:dacf:: with SMTP id s15mr32715768edj.385.1633507107111;
+ Wed, 06 Oct 2021 00:58:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <871r4z55fn.fsf@dja-thinkpad.axtens.net>
+References: <20211004143650.699120-1-tvrtko.ursulin@linux.intel.com>
+ <20211004143650.699120-2-tvrtko.ursulin@linux.intel.com> <562d45e1-4a27-3252-f615-3ab1ef531f2b@huawei.com>
+In-Reply-To: <562d45e1-4a27-3252-f615-3ab1ef531f2b@huawei.com>
+From:   Barry Song <21cnbao@gmail.com>
+Date:   Wed, 6 Oct 2021 20:58:15 +1300
+Message-ID: <CAGsJ_4w5Y4=v93YmTrXJ6hDgjKshxiAZ-ox-Nz_7uRwe4ECtdw@mail.gmail.com>
+Subject: Re: [RFC 1/8] sched: Add nice value change notifier
+To:     "Wanghui (John)" <john.wanghui@huawei.com>
+Cc:     Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        Intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 06, 2021 at 12:05:00PM +1100, Daniel Axtens wrote:
-> Hi,
-> 
-> commit b58e733fd774 ("rcu: Fixup noinstr warnings") adds some
-> instrument_atomic_read calls to rcu_nmi_enter - a function marked
-> noinstr. Similar calls are added to some other functions as well.
+On Wed, Oct 6, 2021 at 5:15 PM Wanghui (John) <john.wanghui@huawei.com> wro=
+te:
+>
+> HI Tvrtko
+>
+> On 2021/10/4 22:36, Tvrtko Ursulin wrote:
+> >   void set_user_nice(struct task_struct *p, long nice)
+> >   {
+> >       bool queued, running;
+> > -     int old_prio;
+> > +     int old_prio, ret;
+> >       struct rq_flags rf;
+> >       struct rq *rq;
+> >
+> > @@ -6915,6 +6947,9 @@ void set_user_nice(struct task_struct *p, long ni=
+ce)
+> >
+> >   out_unlock:
+> >       task_rq_unlock(rq, p, &rf);
+> > +
+> > +     ret =3D atomic_notifier_call_chain(&user_nice_notifier_list, nice=
+, p);
+> > +     WARN_ON_ONCE(ret !=3D NOTIFY_DONE);
+> >   }
+> How about adding a new "io_nice" to task_struct=EF=BC=8Cand move the call=
+ chain to
+> sched_setattr/getattr, there are two benefits:
 
-It moves the instrumentation, it was already there. Specifically:
+We already have an ionice for block io scheduler. hardly can this new io_ni=
+ce
+be generic to all I/O. it seems the patchset is trying to link
+process' nice with
+GPU's scheduler, to some extent, it makes more senses than having a
+common ionice because we have a lot of IO devices in the systems, we don't
+know which I/O the ionice of task_struct should be applied to.
 
--       seq = atomic_add_return(RCU_DYNTICK_CTRL_CTR, &rdp->dynticks);
-+       seq = arch_atomic_add_return(RCU_DYNTICK_CTRL_CTR, &rdp->dynticks);
+Maybe we could have an ionice dedicated for GPU just like ionice for CFQ
+of bio/request scheduler.
 
-removes the instrumentation from the critical place where RCU isn't yet
-watching, which is then added back here:
+>
+> 1. Decoupled with fair scheduelr. In our use case, high priority tasks of=
+ten
+>     use rt scheduler.
 
-+       // instrumentation for the noinstr rcu_dynticks_eqs_enter()
-+       instrument_atomic_write(&rdp->dynticks, sizeof(rdp->dynticks));
+Is it possible to tell GPU RT as we are telling them CFS nice?
 
-Once it's deemed safe to run instrumentation.
+> 2. The range of value don't need to be bound to -20~19 or 0~139
+>
 
-> This is causing me some grief on powerpc64 while trying to enable
-> KASAN. powerpc64 book3s takes some NMIs in real mode, and in real mode
-> we can't access where I'm proposing to put the KASAN shadow - we can
-> only access it with translations on. So I end up taking a fault in the
-> kasan_check_read path via rcu_nmi_enter.
+could build a mapping between the priorities of process and GPU. It seems
+not a big deal.
 
-Then your entry ordering is wrong :-( RCU should be the very last thing,
-once RCU is watching it should be safe to run instrumentation.
-
-> As far as I can tell `instrumentation_begin()` and
-> `instrumentation_end()` don't make it safe to call instrumentation, they
-> just tell the developer that instrumentation is safe. (And they are used
-> to check the balance of _begin()/_end() blocks.)
-
-That is correct. In that respect it is an unsafe (pun intended)
-annotation. The annotation can be used to annotate away actual
-violations (although the one at hand is not one such). There are some
-explicitly unsafe annotations like that though, typically WARNs in early
-init code where we really can't do much better than to ignore and hope
-the error gets out.
-
-> Is the underlying assumption that the KASAN shadow will always be safe
-> to access, even in functions marked noinstr? It seems to undercut what
-> an architecture can assume about a function marked noinstr...
-
-The assumption is that RCU is the very last thing in the entry code to
-be enabled, and the very first to be disabled. Therefore, the moment RCU
-is active we can allow instrumentation, and hence the
-instrumentation_begin() is correct there.
-
-The NMI dance on x86 is particularly nasty, but the first part
-(currently all in entry_64.S) ensures the kernel page-tables are active
-and that we have a kernel stack.
-
-Then we call into C, which is still gnarly and deals with
-self-recursion, but eventually calls irqentry_nmi_enter(). This then
-carefully frobs the preempt, lockdep and rcu states into the right place
-after which we have a fully 'normal' C context.
-
-> P.S. On a more generic note instrumentation_begin()/_end() is now
-> scattered across the kernel and it makes me a bit nervous. It's making a
-> statement about something that is in part a property of how the arch
-> implements instrumentation. Are arches expected to implement things in
-> such a way as to make these blocks accurate?
-
-Yes, there's only a limited ways in which all this can slot toghether
-due to all the nasty inter-dependencies. Thomas and me spend quite a bit
-of time trying to untangle the web such that we have a coherent
-entry/exit ordering that's actually workable.
-
-Pretty much everybody had this wrong and was/is broken in various
-non-fun ways.
-
-It's just that we didn't seem to have gotten around to writing
-much documentation for any of this :/
-
-> For example in
-> arch/powerpc/include/asm/interrupt.h::interrupt_nmi_enter_prepare we
-> currently sometimes call nmi_enter in real mode; should we instead only
-> call it when we have translations on?
-
-nmi_enter() is the 'old' interface that has known issues. That said, you
-seem to have a comment exactly there:
-
-	/*
-	 * Do not use nmi_enter() for pseries hash guest taking a real-mode
-	 * NMI because not everything it touches is within the RMA limit.
-	 */
-	if (!IS_ENABLED(CONFIG_PPC_BOOK3S_64) ||
-			!firmware_has_feature(FW_FEATURE_LPAR) ||
-			radix_enabled() || (mfmsr() & MSR_DR))
-		nmi_enter();
-
-
-To me it sounds like this real-mode is something that's not a normal C
-context and really should not ever run any instrumented code. As such I
-don't think it should be using RCU.
-
-
-Let me illustrate with the IRQ entry code, as that's easier:
-
-Your code currently seems to do things like:
-
-DEFINE_INTERRUPT_HANDLER_ASYNC()
-  interrupt_async_enter_prepare()
-    interrupt_enter_prepare()
-      trace_hardirqs_off()
-        lockdep_hardirqs_off()
-	tracer_hardirqs_off()  // relies on RCU
-	trace_irq_disable()    // relies on RCU
-    irq_enter()
-      rcu_irq_enter() // relies on lockdep, enables RCU
-      ...
-
-
-And there's a 'funnier' one involving trace_hardirqs_on(), there
-lockdep itself relies on RCU and RCU relies on lockdep. But I'm not
-quite sure how power does that.
-
+Thanks
+barry
