@@ -2,74 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A06AC4240C5
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 17:05:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D9974240C2
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 17:05:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239223AbhJFPHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 11:07:07 -0400
-Received: from mga02.intel.com ([134.134.136.20]:36859 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239213AbhJFPHF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 11:07:05 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10129"; a="213137664"
-X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; 
-   d="scan'208";a="213137664"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2021 08:04:49 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; 
-   d="scan'208";a="488520328"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga008.jf.intel.com with ESMTP; 06 Oct 2021 08:04:46 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 67B4B56; Wed,  6 Oct 2021 18:04:53 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 4/4] ASoC: Intel: bytcr_rt5651: Utilize dev_err_probe() to avoid log saturation
-Date:   Wed,  6 Oct 2021 18:04:51 +0300
-Message-Id: <20211006150451.16561-4-andriy.shevchenko@linux.intel.com>
+        id S239192AbhJFPG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 11:06:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239167AbhJFPG5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 11:06:57 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A716C061753;
+        Wed,  6 Oct 2021 08:05:05 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: kholk11)
+        with ESMTPSA id DDED91F44C85
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+To:     robh+dt@kernel.org
+Cc:     airlied@linux.ie, daniel@ffwll.ch, a.hajda@samsung.com,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Subject: [PATCH v2] dt-bindings: display/bridge: sil,sii8620: Convert to YAML binding
+Date:   Wed,  6 Oct 2021 17:04:59 +0200
+Message-Id: <20211006150459.584875-1-angelogioacchino.delregno@collabora.com>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211006150451.16561-1-andriy.shevchenko@linux.intel.com>
-References: <20211006150451.16561-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-dev_err_probe() avoids printing into log when the deferred probe is invoked.
-This is possible when clock provider is pending to appear.
+Convert the Silicon Image SiI8620 HDMI/MHL bridge documentation to YAML.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 ---
- sound/soc/intel/boards/bytcr_rt5651.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ .../bindings/display/bridge/sil,sii8620.yaml  | 93 +++++++++++++++++++
+ .../bindings/display/bridge/sil-sii8620.txt   | 33 -------
+ 2 files changed, 93 insertions(+), 33 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/display/bridge/sil,sii8620.yaml
+ delete mode 100644 Documentation/devicetree/bindings/display/bridge/sil-sii8620.txt
 
-diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
-index 28c561302e69..5e9c53dadbc7 100644
---- a/sound/soc/intel/boards/bytcr_rt5651.c
-+++ b/sound/soc/intel/boards/bytcr_rt5651.c
-@@ -1058,10 +1058,8 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
- 	if (byt_rt5651_quirk & BYT_RT5651_MCLK_EN) {
- 		priv->mclk = devm_clk_get_optional(dev, "pmc_plt_clk_3");
- 		if (IS_ERR(priv->mclk)) {
--			ret_val = PTR_ERR(priv->mclk);
--			dev_err(dev,
--				"Failed to get MCLK from pmc_plt_clk_3: %d\n",
--				ret_val);
-+			ret_val = dev_err_probe(dev, PTR_ERR(priv->mclk),
-+						"Failed to get MCLK from pmc_plt_clk_3\n");
- 			goto err;
- 		}
- 		/*
+diff --git a/Documentation/devicetree/bindings/display/bridge/sil,sii8620.yaml b/Documentation/devicetree/bindings/display/bridge/sil,sii8620.yaml
+new file mode 100644
+index 000000000000..5a38595b6687
+--- /dev/null
++++ b/Documentation/devicetree/bindings/display/bridge/sil,sii8620.yaml
+@@ -0,0 +1,93 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/display/bridge/sil,sii8620.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Silicon Image SiI8620 HDMI/MHL bridge
++
++maintainers:
++  - Andrzej Hajda <a.hajda@samsung.com>
++
++properties:
++  compatible:
++    const: sil,sii8620
++
++  reg:
++    description: I2C address of the bridge
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++
++  clock-names:
++    const: xtal
++
++  cvcc10-supply:
++    description: Digital Core Supply Voltage, 1.0V
++
++  iovcc18-supply:
++    description: I/O voltage supply, 1.8V
++
++  interrupts:
++    maxItems: 1
++
++  reset-gpios:
++    description: GPIO connected to the reset pin.
++    maxItems: 1
++
++  ports:
++    $ref: /schemas/graph.yaml#/properties/ports
++
++    properties:
++      port@0:
++        $ref: /schemas/graph.yaml#/properties/port
++        description:
++          Video port for HDMI input
++
++    required:
++      - port@0
++
++required:
++  - compatible
++  - reg
++  - cvcc10-supply
++  - iovcc18-supply
++  - interrupts
++  - ports
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++    #include <dt-bindings/interrupt-controller/irq.h>
++
++    i2c1 {
++      #address-cells = <1>;
++      #size-cells = <0>;
++
++      bridge@39 {
++        compatible = "sil,sii8620";
++        reg = <0x39>;
++        cvcc10-supply = <&ldo36_reg>;
++        iovcc18-supply = <&ldo34_reg>;
++        interrupt-parent = <&gpf0>;
++        interrupts = <2 IRQ_TYPE_LEVEL_HIGH>;
++        reset-gpios = <&gpv7 0 GPIO_ACTIVE_HIGH>;
++
++        ports {
++          #address-cells = <1>;
++          #size-cells = <0>;
++
++          port@0 {
++            reg = <0>;
++            mhl_to_hdmi: endpoint {
++              remote-endpoint = <&hdmi_to_mhl>;
++            };
++          };
++        };
++      };
++    };
++
++...
+diff --git a/Documentation/devicetree/bindings/display/bridge/sil-sii8620.txt b/Documentation/devicetree/bindings/display/bridge/sil-sii8620.txt
+deleted file mode 100644
+index b05052f7d62f..000000000000
+--- a/Documentation/devicetree/bindings/display/bridge/sil-sii8620.txt
++++ /dev/null
+@@ -1,33 +0,0 @@
+-Silicon Image SiI8620 HDMI/MHL bridge bindings
+-
+-Required properties:
+-	- compatible: "sil,sii8620"
+-	- reg: i2c address of the bridge
+-	- cvcc10-supply: Digital Core Supply Voltage (1.0V)
+-	- iovcc18-supply: I/O Supply Voltage (1.8V)
+-	- interrupts: interrupt specifier of INT pin
+-	- reset-gpios: gpio specifier of RESET pin
+-	- clocks, clock-names: specification and name of "xtal" clock
+-	- video interfaces: Device node can contain video interface port
+-			    node for HDMI encoder according to [1].
+-
+-[1]: Documentation/devicetree/bindings/media/video-interfaces.txt
+-
+-Example:
+-	sii8620@39 {
+-		reg = <0x39>;
+-		compatible = "sil,sii8620";
+-		cvcc10-supply = <&ldo36_reg>;
+-		iovcc18-supply = <&ldo34_reg>;
+-		interrupt-parent = <&gpf0>;
+-		interrupts = <2 0>;
+-		reset-gpio = <&gpv7 0 0>;
+-		clocks = <&pmu_system_controller 0>;
+-		clock-names = "xtal";
+-
+-		port {
+-			mhl_to_hdmi: endpoint {
+-				remote-endpoint = <&hdmi_to_mhl>;
+-			};
+-		};
+-	};
 -- 
 2.33.0
 
