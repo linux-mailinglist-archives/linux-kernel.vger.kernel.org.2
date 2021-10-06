@@ -2,192 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A2034243B7
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 19:11:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C247F4243BD
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 19:12:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239430AbhJFRNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 13:13:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44582 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229548AbhJFRNo (ORCPT
+        id S239431AbhJFROY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 13:14:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48020 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238458AbhJFROU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 13:13:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633540311;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=U4Q6R+OtmwUxo1RbNQzPAOFu+nCCtDAihVd8XB8cIPw=;
-        b=DAjCek9wxhR5POebrwsfKWDVftCAjRqYXkbzwew60Ms9P9YJ+IpmphcaKu0zk3h5w/JhNG
-        /66itdOn/EgaA2l+4x5E70myN+HRPE7sBGFdzlgQBeCcxXJcTUtVyoRF2zJ6X0cx8mV9pm
-        VQSqNXHY34hOUEyuRe7TItnE5v1G/y0=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-393-jwPZ59dKMuu9jnJcOb9_vw-1; Wed, 06 Oct 2021 13:11:50 -0400
-X-MC-Unique: jwPZ59dKMuu9jnJcOb9_vw-1
-Received: by mail-ed1-f69.google.com with SMTP id 1-20020a508741000000b003da559ba1eeso3264540edv.13
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 10:11:50 -0700 (PDT)
+        Wed, 6 Oct 2021 13:14:20 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C5EEC061753
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 10:12:27 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id k23-20020a17090a591700b001976d2db364so2881268pji.2
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 10:12:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Et4bMzX3Jqt/S4Y0/c6adC/zVRIkNrC0dGxlQEGLOzg=;
+        b=VyFsYxqljECJMwF3cN4AhKi76+PklmjY2B401r11r7FZJHV/SsU/oSYoL0mHyODSwb
+         mnAXtbzxQUzsfefZT5lgD2H+fLuAUf9NM/ev5ioBY71gUg6kQXvgfDM6TYs0FrUlHCau
+         j0Wm2u/CNbPjC9ayMRoQt1blN+ZvD5srTMjPQfYaPahTJctKAHg8X87nknKDl/wNkvBp
+         XSy7hygnjbimdrfGMl33jH9CO6ku3KxCCNOkHExmFVDjOmz1W/i/UUp6oHXJqyZG0azW
+         TIjblYzp/X0VlagrFajkQugIfmdPQoYptvmYeyc44czQi5ANv/5LuMrhPgp0yzeZDvHT
+         3jkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=U4Q6R+OtmwUxo1RbNQzPAOFu+nCCtDAihVd8XB8cIPw=;
-        b=BtT/Ud5awuhLqwGbcfQyPVXxSp4BI/Q19z7PlMl/OA/dDAxz/b2k/ym+yt1nWXfRqi
-         ZhU229zfL/o7Mp804k2Q7w8BZrwlKWT0afOoCPX46bvjNCUnB93vpF9eV40NmB1tFAlc
-         URZHOQ9XKF+CLPo5dMLtk74J2sOwlDloRHhoLQ0bu5dRrA/6A8ZiqGrFyFhzojgK86jv
-         LXOuF5hWfb+MGLcRLBJc2tvCAKwZMJkeBEJMfd9eYBnL3/OOu6+OSn5f/IhdUHWVw/Bd
-         IdNK8cFjqH62fM6ie4orJkk4t/nGYRutmYRI0cepZemAZXAZ5kmBdhuEh6Y0MM7fqi6A
-         WEvw==
-X-Gm-Message-State: AOAM53064E1vxNzmp7H7sPgD63rXdWQcTKH+XN3H6UhZrjgKcs31UZip
-        MxUNS0rpI5acEIeT/UtA2QcnPDxaOw9AE5AAI/UqNooPDxD//oFVMqBqk79/WrgzbRlf4nJ096v
-        HOiA0wzalL2BxVJiA5E0QGptb
-X-Received: by 2002:a17:906:1d41:: with SMTP id o1mr33643495ejh.232.1633540309425;
-        Wed, 06 Oct 2021 10:11:49 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwRdJA7qNS5aJ7ExgM7AdydSE/JTR1duLz95+tPKJYRetJ3b439DP9uqOgmOOCvdGuHiaimeQ==
-X-Received: by 2002:a17:906:1d41:: with SMTP id o1mr33643473ejh.232.1633540309221;
-        Wed, 06 Oct 2021 10:11:49 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id d30sm4822432edn.49.2021.10.06.10.11.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Oct 2021 10:11:48 -0700 (PDT)
-Subject: Re: [PATCH v1 3/4] ASoC: Intel: bytcr_rt5651: use
- devm_clk_get_optional() for mclk
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-References: <20211006150451.16561-1-andriy.shevchenko@linux.intel.com>
- <20211006150451.16561-3-andriy.shevchenko@linux.intel.com>
- <2d190513-7ac4-731c-7c9a-1f60a98f6345@linux.intel.com>
- <YV3NZnb6mg43nUC1@smile.fi.intel.com>
- <015e084e-70ed-7b5c-b103-8426ef0842d4@linux.intel.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <999a1046-864e-2b47-6f44-6e8e42528b18@redhat.com>
-Date:   Wed, 6 Oct 2021 19:11:47 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Et4bMzX3Jqt/S4Y0/c6adC/zVRIkNrC0dGxlQEGLOzg=;
+        b=3REWLc1WR/JsKLrA6PieOnKVj34IfSWPu3iX1zi+Gyy6/74srgf+5dnqEOWcYaR4OJ
+         qPV1e9pNxfGP/mT2Gj6RM2kDKyjRrtxZ9fvZZOfSMYGbU+QfBY7v3n4uXWERIBdjYFqS
+         z0bH4UHvsW8gWrG4nk6I7h00A7VY9x1sLqrF2ICjXrB+e3rJ7vf1dKQk5AWnMrjBpCLD
+         t++HoIQT5ivdMYDtqQyWhitrZHmcmuCYE2AVNLsjjewK50WpjjnyJKqS4NETqyWuIFFZ
+         LwQKommD2xYD3mOcTSBCh5q2eCBIczyQ9r/vIKI/+9kWgNObbpVqz+iPtO1+SbyiNpH6
+         sYKg==
+X-Gm-Message-State: AOAM532V89DLuNqqICq08LgPEjH9/pJw4zWkbxQ4WMw8qDPTA+1/OGKo
+        58N5Fm12vwB0zOmzcs/DarigStkJO//Y2zBs05QLnw==
+X-Google-Smtp-Source: ABdhPJyOFeE62kEGZ6fNOfO2fYEeaC7T0+12j8gx48G07IOk315/K809zRiio1ViO/PlDgGQ+cpTJqtJEyrnouZ57Ok=
+X-Received: by 2002:a17:90b:3552:: with SMTP id lt18mr12025415pjb.63.1633540346947;
+ Wed, 06 Oct 2021 10:12:26 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <015e084e-70ed-7b5c-b103-8426ef0842d4@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210930222048.1692635-1-dlatypov@google.com> <20210930222048.1692635-4-dlatypov@google.com>
+In-Reply-To: <20210930222048.1692635-4-dlatypov@google.com>
+From:   Brendan Higgins <brendanhiggins@google.com>
+Date:   Wed, 6 Oct 2021 10:12:16 -0700
+Message-ID: <CAFd5g44=LaO3xh+y2--gfP=rPA3A+ucsnJMykBvrx49ttzgWUQ@mail.gmail.com>
+Subject: Re: [PATCH v4 3/4] kunit: tool: actually track how long it took to
+ run tests
+To:     Daniel Latypov <dlatypov@google.com>
+Cc:     davidgow@google.com, linux-kernel@vger.kernel.org,
+        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
+        skhan@linuxfoundation.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, Sep 30, 2021 at 3:20 PM Daniel Latypov <dlatypov@google.com> wrote:
+>
+> This is a long standing bug in kunit tool.
+> Since these files were added, run_kernel() has always yielded lines.
+>
+> That means, the call to run_kernel() returns before the kernel finishes
+> executing tests, potentially before a single line of output is even
+> produced.
+>
+> So code like this
+>   time_start = time.time()
+>   result = linux.run_kernel(...)
+>   time_end = time.time()
+>
+> would only measure the time taken for python to give back the generator
+> object.
+>
+> From a caller's perspective, the only way to know the kernel has exited
+> is for us to consume all the output from the `result` generator object.
+> Alternatively, we could change run_kernel() to try and do its own book
+> keeping and return the total time, but that doesn't seem worth it.
+>
+> This change makes us record `time_end` after we're done parsing all the
+> output (which should mean we've consumed all of it, or errored out).
+> That means we're including in the parsing time as well, but that should
+> be quite small, and it's better than claiming it took 0s to run tests.
+>
+> Let's use this as an example:
+> $ ./tools/testing/kunit/kunit.py run --kunitconfig=lib/kunit example
+>
+> Before:
+> Elapsed time: 7.684s total, 0.001s configuring, 4.692s building, 0.000s running
+>
+> After:
+> Elapsed time: 6.283s total, 0.001s configuring, 3.202s building, 3.079s running
+>
+> Signed-off-by: Daniel Latypov <dlatypov@google.com>
+> Reviewed-by: David Gow <davidgow@google.com>
 
-On 10/6/21 6:37 PM, Pierre-Louis Bossart wrote:
-> 
-> 
-> On 10/6/21 11:23 AM, Andy Shevchenko wrote:
->> On Wed, Oct 06, 2021 at 10:51:52AM -0500, Pierre-Louis Bossart wrote:
->>> On 10/6/21 10:04 AM, Andy Shevchenko wrote:
->>>> The devm_clk_get_optional() helper returns NULL when devm_clk_get()
->>>> returns -ENOENT. This makes things slightly cleaner. The added benefit
->>>> is mostly cosmetic.
->>
->> ...
->>
->>>>  	if (SND_SOC_DAPM_EVENT_ON(event)) {
->>>> -		if (byt_rt5651_quirk & BYT_RT5651_MCLK_EN) {
->>>> -			ret = clk_prepare_enable(priv->mclk);
->>>> -			if (ret < 0) {
->>>> -				dev_err(card->dev,
->>>> -					"could not configure MCLK state");
->>>> -				return ret;
->>>> -			}
->>>> +		ret = clk_prepare_enable(priv->mclk);
->>>> +		if (ret < 0) {
->>>> +			dev_err(card->dev, "could not configure MCLK state");
->>>> +			return ret;
->>>>  		}
->>>
->>> I don't get why you removed the test on the BYT_RT5651_MCLK_EN quirk,
->>> see below it was designed as a fall-back mode. We don't want to return
->>> an error when we know the clock is not present/desired.
->>
->> Why should we do a unneeded test? When we switch to the optional, there
->> will be no error from these CCF APIs. Besides that it drops indentation
->> level and makes code neat.
-> 
-> By looking at this code only one cannot really visualize that it's a
-> no-op. I personally prefer to see explicit intent rather than have to
-> dig hundreds of lines below what this clock is optional.
-> 
-> I am also not even sure that in real products this clock is actually
-> optional, the default is to make use of it:
-> 
-> #define BYT_RT5651_DEFAULT_QUIRKS	(BYT_RT5651_MCLK_EN | \
-> 
-> and the only platform without this clock is "Minnowboard Max B3" -
-> probably not used by anyone. I fried mine a long time ago.
-> 
-> We'd need to Hans to comment on this since he's really the only one
-> maintaining this code.
-
-So as Mark wrote in his later reply:
-
-"AIUI with the clock API the idiomatic thing is that any optionality is
-handled at the point where the clock is acquired - if the clock is
-optional you end up with NULL which in the clock API is a dummy clock
-and ignored.  The rest of the code then doesn't need to worry about any
-of this stuff and the handling can only be in one place."
-
-Combined with there pretty much always actually being an mclk I believe
-that this patch from Andy results in a nice cleanup so I'm in favor with
-this. And the other cleanups also look sensible to me
-
-I would like to run a small smoke-test with both the series to make
-sure nothing regresses (should be fine but better safe then sorry).
-
-Andy I believe that there is going to be a v2 to address a couple
-of nitpicks, right ?
-
-Note for testing I would prefer a full v2 series, even if some
-patches don't change. And I assume the same applies to Mark for
-applying this.
-
-Sending partial series with only changed patches on the v2
-send turns things into a puzzle, which is not ideal IMHO.
-
-Regards,
-
-Hans
-
-
-
-
-
-> 
->> ...
->>
->>> same here, why was the quirk removed?
->>
->> Same answer.
->>
->> ...
->>
->>> that part in the probe looks fine, but the changes above are controversial.
->>
->> I didn't get. How controversial? Why? The whole point of _optional is to get
->> rid of unneeded checks (since they are _anyway_ be called).
-> 
-> It's inconsistent since you kept the following part but no longer use it:
-> 
-> +		/*
-> +		 * Fall back to bit clock usage when clock is not
-> +		 * available likely due to missing dependencies.
-> +		 */
-> +		if (!priv->mclk)
-> +			byt_rt5651_quirk &= ~BYT_RT5651_MCLK_EN;
-> 
-> 
-> 
-
+Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
