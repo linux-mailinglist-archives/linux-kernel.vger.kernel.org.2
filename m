@@ -2,278 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D371423B67
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 12:22:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6712423B70
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 12:24:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238030AbhJFKYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 06:24:11 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:62121 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230131AbhJFKYK (ORCPT
+        id S238076AbhJFK0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 06:26:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:40546 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230131AbhJFK0s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 06:24:10 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1633515738; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=MW3nFYrTI99YklII5kEMzaQv4cQ84XOAnQJk6NTuoNA=; b=e20D40wUa9RSrV4vs7FOQQdoJAV6eJVglAC6hZqpKxipl6xTadsOtgYeLG+qh7CpDW/D1p39
- aYGdxWevnpMzKwE8LjZJPTHogjPoFI3sh0TUmVQJDUVUIkjmGCyKlfN82E94d2KEE8+7HcIL
- 1qJV3A/+BLZpDFdnvNNi8qZojWw=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 615d78d87ae92c7fc98a2171 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 06 Oct 2021 10:22:16
- GMT
-Sender: mkshah=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id ED2F8C43618; Wed,  6 Oct 2021 10:22:15 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-4.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [192.168.29.129] (unknown [49.36.85.177])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: mkshah)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id E58F3C4338F;
-        Wed,  6 Oct 2021 10:22:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org E58F3C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Subject: Re: [PATCH 1/2] cpuidle: Avoid calls to cpuidle_resume|pause() for
- s2idle
-To:     Ulf Hansson <ulf.hansson@linaro.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        linux-pm@vger.kernel.org
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Len Brown <len.brown@intel.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Srinivas Rao L <lsrao@codeaurora.org>
-References: <20210929144451.113334-1-ulf.hansson@linaro.org>
- <20210929144451.113334-2-ulf.hansson@linaro.org>
-From:   Maulik Shah <mkshah@codeaurora.org>
-Message-ID: <07e6821c-c221-e90d-c977-4d6b55c1ab8d@codeaurora.org>
-Date:   Wed, 6 Oct 2021 15:52:08 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Wed, 6 Oct 2021 06:26:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633515895;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MmWiCgB8uSNl6DOPQQvudamwXwcTydeBRX/uLyQwgQA=;
+        b=Ps6uFmceHlYkWsq0hQtEbRVq6i+J46HWCTYaWHNhJ+iF3NyDOPJ7ehcwq/arrsgjhcMgM9
+        e16iV6dXwrs/dtDnreU+ODnXYiZRk64PJDQYYQ+/YQQlbsrtGVldmWzY1KAoj7KHu7erWK
+        17Und4MWUuM3bavHCvfTIe1VoYEcfxY=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-49-dsjYqgtmNr-bGpAXUmNKlg-1; Wed, 06 Oct 2021 06:24:54 -0400
+X-MC-Unique: dsjYqgtmNr-bGpAXUmNKlg-1
+Received: by mail-ed1-f69.google.com with SMTP id r21-20020a50c015000000b003db1c08edd3so2169570edb.15
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 03:24:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=MmWiCgB8uSNl6DOPQQvudamwXwcTydeBRX/uLyQwgQA=;
+        b=vFBvvQAdC16uPQMBeO1ScQ986AVj4w4nJViyOYdraAu2JNotcbDZW3fl5Y5vNnAf3S
+         HkeNn73/I7u63S0Biz7yqcurG7yh0rm6qc3WuhHV3d3ocxiLUC4nKWXGUoYwUH+7UzPt
+         PpEyIHHLDUNil18NpvztnTjOiV9zlvIgk0N8i4j7v6ajabGZCD0kYYcHpuDRJTns6Epv
+         hSr6DVLbk2It9eDl3de0IlMiU4pixtX+flsV+IcHkNa7MyldcD/Nm0zCn2tbOoLzX3PI
+         9BJ6JdNNjpCrn++s9lg/d+8/dUzSxA6xbVHgrm4qYnPb4FUBUEN49cJP1dM7IAqWNxyO
+         nTJg==
+X-Gm-Message-State: AOAM5312cyoulA7ZnK5he3/hbqwl2b+6cAGJUbDUq3rrGl7vHcSuueFi
+        61DDdQAst5vYBimb4vZ8Q587podCyVcTAsITtNfhgDeoz0PpYls0M75fzZpAA/o3L5qgsXJnS//
+        DKaQRCvhikW/b/uyFKCnJUyw6
+X-Received: by 2002:a17:906:7ac4:: with SMTP id k4mr32292466ejo.430.1633515893290;
+        Wed, 06 Oct 2021 03:24:53 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy0zZ6sW7WDT3oke9j4TDRc16AgVPN/PNWxEB0jdSUXa+T95wQObvHtsiMesHktZL1B3vMLxQ==
+X-Received: by 2002:a17:906:7ac4:: with SMTP id k4mr32292427ejo.430.1633515893066;
+        Wed, 06 Oct 2021 03:24:53 -0700 (PDT)
+Received: from gator.home (cst2-174-28.cust.vodafone.cz. [31.30.174.28])
+        by smtp.gmail.com with ESMTPSA id m13sm3872442eda.41.2021.10.06.03.24.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Oct 2021 03:24:52 -0700 (PDT)
+Date:   Wed, 6 Oct 2021 12:24:50 +0200
+From:   Andrew Jones <drjones@redhat.com>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org, will@kernel.org,
+        qperret@google.com, dbrazdil@google.com,
+        Steven Price <steven.price@arm.com>,
+        Fuad Tabba <tabba@google.com>,
+        Srivatsa Vaddagiri <vatsa@codeaurora.org>,
+        Shanker R Donthineni <sdonthineni@nvidia.com>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        kernel-team@android.com
+Subject: Re: [PATCH v2 01/16] KVM: arm64: Generalise VM features into a set
+ of flags
+Message-ID: <20211006102450.4fkn46yqfbbh7i6y@gator.home>
+References: <20211004174849.2831548-1-maz@kernel.org>
+ <20211004174849.2831548-2-maz@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210929144451.113334-2-ulf.hansson@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211004174849.2831548-2-maz@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 9/29/2021 8:14 PM, Ulf Hansson wrote:
-> In s2idle_enter(), cpuidle_resume|pause() are invoked to re-allow calls to
-> the cpuidle callbacks during s2idle operations. This is needed because
-> cpuidle is paused in-between in dpm_suspend_noirq() and dpm_resume_noirq().
+On Mon, Oct 04, 2021 at 06:48:34PM +0100, Marc Zyngier wrote:
+> We currently deal with a set of booleans for VM features,
+> while they could be better represented as set of flags
+> contained in an unsigned long, similarily to what we are
+> doing on the CPU side.
 > 
-> However, calling cpuidle_resume|pause() from s2idle_enter() looks a bit
-> superfluous, as it also causes all CPUs to be waken up when the first CPU
-> wakes up from s2idle.
-
-Thanks for the patch. This can be good optimization to avoid waking up 
-all CPUs always.
-
-> 
-> Therefore, let's drop the calls to cpuidle_resume|pause() from
-> s2idle_enter(). To make this work, let's also adopt the path in the
-> cpuidle_idle_call() to allow cpuidle callbacks to be invoked for s2idle,
-> even if cpuidle has been paused.
-> 
-> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
 > ---
->   drivers/cpuidle/cpuidle.c |  7 ++++++-
->   include/linux/cpuidle.h   |  2 ++
->   kernel/power/suspend.c    |  2 --
->   kernel/sched/idle.c       | 40 ++++++++++++++++++++++-----------------
->   4 files changed, 31 insertions(+), 20 deletions(-)
+>  arch/arm64/include/asm/kvm_host.h | 12 +++++++-----
+>  arch/arm64/kvm/arm.c              |  5 +++--
+>  arch/arm64/kvm/mmio.c             |  3 ++-
+>  3 files changed, 12 insertions(+), 8 deletions(-)
 > 
-> diff --git a/drivers/cpuidle/cpuidle.c b/drivers/cpuidle/cpuidle.c
-> index ef2ea1b12cd8..c76747e497e7 100644
-> --- a/drivers/cpuidle/cpuidle.c
-> +++ b/drivers/cpuidle/cpuidle.c
-> @@ -49,7 +49,12 @@ void disable_cpuidle(void)
->   bool cpuidle_not_available(struct cpuidle_driver *drv,
->   			   struct cpuidle_device *dev)
->   {
-> -	return off || !initialized || !drv || !dev || !dev->enabled;
-> +	return off || !drv || !dev || !dev->enabled;
-> +}
-> +
-> +bool cpuidle_paused(void)
-> +{
-> +	return !initialized;
->   }
->   
->   /**
-> diff --git a/include/linux/cpuidle.h b/include/linux/cpuidle.h
-> index fce476275e16..51698b385ab5 100644
-> --- a/include/linux/cpuidle.h
-> +++ b/include/linux/cpuidle.h
-> @@ -165,6 +165,7 @@ extern void cpuidle_pause_and_lock(void);
->   extern void cpuidle_resume_and_unlock(void);
->   extern void cpuidle_pause(void);
->   extern void cpuidle_resume(void);
-> +extern bool cpuidle_paused(void);
->   extern int cpuidle_enable_device(struct cpuidle_device *dev);
->   extern void cpuidle_disable_device(struct cpuidle_device *dev);
->   extern int cpuidle_play_dead(void);
-> @@ -204,6 +205,7 @@ static inline void cpuidle_pause_and_lock(void) { }
->   static inline void cpuidle_resume_and_unlock(void) { }
->   static inline void cpuidle_pause(void) { }
->   static inline void cpuidle_resume(void) { }
-> +static inline bool cpuidle_paused(void) {return true; }
->   static inline int cpuidle_enable_device(struct cpuidle_device *dev)
->   {return -ENODEV; }
->   static inline void cpuidle_disable_device(struct cpuidle_device *dev) { }
-> diff --git a/kernel/power/suspend.c b/kernel/power/suspend.c
-> index eb75f394a059..388a5de4836e 100644
-> --- a/kernel/power/suspend.c
-> +++ b/kernel/power/suspend.c
-> @@ -97,7 +97,6 @@ static void s2idle_enter(void)
->   	raw_spin_unlock_irq(&s2idle_lock);
->   
->   	cpus_read_lock();
-> -	cpuidle_resume();
->   
->   	/* Push all the CPUs into the idle loop. */
->   	wake_up_all_idle_cpus();
+> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+> index f8be56d5342b..f63ca8fb4e58 100644
+> --- a/arch/arm64/include/asm/kvm_host.h
+> +++ b/arch/arm64/include/asm/kvm_host.h
+> @@ -122,7 +122,10 @@ struct kvm_arch {
+>  	 * should) opt in to this feature if KVM_CAP_ARM_NISV_TO_USER is
+>  	 * supported.
+>  	 */
+> -	bool return_nisv_io_abort_to_user;
+> +#define KVM_ARCH_FLAG_RETURN_NISV_IO_ABORT_TO_USER	0
+> +	/* Memory Tagging Extension enabled for the guest */
+> +#define KVM_ARCH_FLAG_MTE_ENABLED			1
+> +	unsigned long flags;
+>  
+>  	/*
+>  	 * VM-wide PMU filter, implemented as a bitmap and big enough for
+> @@ -133,9 +136,6 @@ struct kvm_arch {
+>  
+>  	u8 pfr0_csv2;
+>  	u8 pfr0_csv3;
+> -
+> -	/* Memory Tagging Extension enabled for the guest */
+> -	bool mte_enabled;
+>  };
+>  
+>  struct kvm_vcpu_fault_info {
+> @@ -786,7 +786,9 @@ bool kvm_arm_vcpu_is_finalized(struct kvm_vcpu *vcpu);
+>  #define kvm_arm_vcpu_sve_finalized(vcpu) \
+>  	((vcpu)->arch.flags & KVM_ARM64_VCPU_SVE_FINALIZED)
+>  
+> -#define kvm_has_mte(kvm) (system_supports_mte() && (kvm)->arch.mte_enabled)
+> +#define kvm_has_mte(kvm)					\
+> +	(system_supports_mte() &&				\
+> +	 test_bit(KVM_ARCH_FLAG_MTE_ENABLED, &(kvm)->arch.flags))
+>  #define kvm_vcpu_has_pmu(vcpu)					\
+>  	(test_bit(KVM_ARM_VCPU_PMU_V3, (vcpu)->arch.features))
+>  
+> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+> index fe102cd2e518..ed9c89ec0b4f 100644
+> --- a/arch/arm64/kvm/arm.c
+> +++ b/arch/arm64/kvm/arm.c
+> @@ -89,7 +89,8 @@ int kvm_vm_ioctl_enable_cap(struct kvm *kvm,
+>  	switch (cap->cap) {
+>  	case KVM_CAP_ARM_NISV_TO_USER:
+>  		r = 0;
+> -		kvm->arch.return_nisv_io_abort_to_user = true;
+> +		set_bit(KVM_ARCH_FLAG_RETURN_NISV_IO_ABORT_TO_USER,
+> +			&kvm->arch.flags);
+>  		break;
+>  	case KVM_CAP_ARM_MTE:
+>  		mutex_lock(&kvm->lock);
+> @@ -97,7 +98,7 @@ int kvm_vm_ioctl_enable_cap(struct kvm *kvm,
+>  			r = -EINVAL;
+>  		} else {
+>  			r = 0;
+> -			kvm->arch.mte_enabled = true;
+> +			set_bit(KVM_ARCH_FLAG_MTE_ENABLED, &kvm->arch.flags);
+>  		}
+>  		mutex_unlock(&kvm->lock);
+>  		break;
+> diff --git a/arch/arm64/kvm/mmio.c b/arch/arm64/kvm/mmio.c
+> index 3e2d8ba11a02..3dd38a151d2a 100644
+> --- a/arch/arm64/kvm/mmio.c
+> +++ b/arch/arm64/kvm/mmio.c
+> @@ -135,7 +135,8 @@ int io_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa)
+>  	 * volunteered to do so, and bail out otherwise.
+>  	 */
+>  	if (!kvm_vcpu_dabt_isvalid(vcpu)) {
+> -		if (vcpu->kvm->arch.return_nisv_io_abort_to_user) {
+> +		if (test_bit(KVM_ARCH_FLAG_RETURN_NISV_IO_ABORT_TO_USER,
+> +			     &vcpu->kvm->arch.flags)) {
+>  			run->exit_reason = KVM_EXIT_ARM_NISV;
+>  			run->arm_nisv.esr_iss = kvm_vcpu_dabt_iss_nisv_sanitized(vcpu);
+>  			run->arm_nisv.fault_ipa = fault_ipa;
+> -- 
+> 2.30.2
+> 
 
-wake_up_all_idle_cpus() will still cause all CPUs to be woken up when 
-first cpu wakes up.
+Maybe a kvm_arm_has_feature(struct kvm *kvm) helper would be nice to avoid
+all the &vcpu->kvm->arch.flags types of references getting scattered
+around.
 
-say for example,
-1. device goes to s2idle suspend.
-2. one CPU wakes up to handle irq (irq is not a wake irq but left 
-enabled at GIC because of IRQF_NOSUSPEND flag) so such irq will not 
-break suspend.
-3. The cpu handles the irq.
-4. same cpu don't break s2idle_loop() and goes to s2idle_enter() where 
-it wakes up all existing idle cpus due to wake_up_all_idle_cpus()
-5. all of CPUs again enter s2idle.
-
-to avoid waking up all CPUs in above case, something like below snip may 
-help (i have not tested yet),
-
-when CPUs are in s2idle_loop(),
-
-1. set the s2idle state to enter.
-2. wake up all cpus from shallow state, so that they can re-enter 
-deepest state.
-3. Forever loop until a break with some wake irq.
-4. clear the s2idle state.
-5. wake up all cpus from deepest state so that they can now stay in 
-shallow state/running state.
-
-void s2idle_loop(void)
-{
-
-+       s2idle_state = S2IDLE_STATE_ENTER;
-+       /* Push all the CPUs to enter deepest available state */
-+       wake_up_all_idle_cpus();
-         for (;;) {
-                 if (s2idle_ops && s2idle_ops->wake) {
-                         if (s2idle_ops->wake())
-				..
-                 s2idle_enter();
-         }
-+       s2idle_state = S2IDLE_STATE_NONE;
-+       /* Push all the CPUs to enter default_idle() from this point */
-+       wake_up_all_idle_cpus();
-}
+Reviewed-by: Andrew Jones <drjones@redhat.com>
 
 Thanks,
-Maulik
+drew
 
-
-> @@ -105,7 +104,6 @@ static void s2idle_enter(void)
->   	swait_event_exclusive(s2idle_wait_head,
->   		    s2idle_state == S2IDLE_STATE_WAKE);
->   
-> -	cpuidle_pause();
->   	cpus_read_unlock();
->   
->   	raw_spin_lock_irq(&s2idle_lock);
-> diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
-> index d17b0a5ce6ac..3bc3a2c46731 100644
-> --- a/kernel/sched/idle.c
-> +++ b/kernel/sched/idle.c
-> @@ -158,6 +158,17 @@ static int call_cpuidle(struct cpuidle_driver *drv, struct cpuidle_device *dev,
->   	return cpuidle_enter(drv, dev, next_state);
->   }
->   
-> +static void cpuidle_deepest_state(struct cpuidle_driver *drv,
-> +				  struct cpuidle_device *dev,
-> +				  u64 max_latency_ns)
-> +{
-> +	int next_state;
-> +
-> +	tick_nohz_idle_stop_tick();
-> +	next_state = cpuidle_find_deepest_state(drv, dev, max_latency_ns);
-> +	call_cpuidle(drv, dev, next_state);
-> +}
-> +
->   /**
->    * cpuidle_idle_call - the main idle function
->    *
-> @@ -189,6 +200,7 @@ static void cpuidle_idle_call(void)
->   	 */
->   
->   	if (cpuidle_not_available(drv, dev)) {
-> +default_idle:
->   		tick_nohz_idle_stop_tick();
->   
->   		default_idle_call();
-> @@ -204,25 +216,19 @@ static void cpuidle_idle_call(void)
->   	 * timekeeping to prevent timer interrupts from kicking us out of idle
->   	 * until a proper wakeup interrupt happens.
->   	 */
-> +	if (idle_should_enter_s2idle()) {
-> +		entered_state = call_cpuidle_s2idle(drv, dev);
-> +                if (entered_state <= 0)
-> +			cpuidle_deepest_state(drv, dev, U64_MAX);
-> +		goto exit_idle;
-> +	}
->   
-> -	if (idle_should_enter_s2idle() || dev->forced_idle_latency_limit_ns) {
-> -		u64 max_latency_ns;
-> -
-> -		if (idle_should_enter_s2idle()) {
-> -
-> -			entered_state = call_cpuidle_s2idle(drv, dev);
-> -			if (entered_state > 0)
-> -				goto exit_idle;
-> -
-> -			max_latency_ns = U64_MAX;
-> -		} else {
-> -			max_latency_ns = dev->forced_idle_latency_limit_ns;
-> -		}
-> -
-> -		tick_nohz_idle_stop_tick();
-> +	if (cpuidle_paused())
-> +		goto default_idle;
->   
-> -		next_state = cpuidle_find_deepest_state(drv, dev, max_latency_ns);
-> -		call_cpuidle(drv, dev, next_state);
-> +	if (dev->forced_idle_latency_limit_ns) {
-> +		cpuidle_deepest_state(drv, dev,
-> +				      dev->forced_idle_latency_limit_ns);
->   	} else {
->   		bool stop_tick = true;
->   
-> 
-
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member of Code Aurora Forum, hosted by The Linux Foundation
