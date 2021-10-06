@@ -2,78 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56346424006
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 16:25:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A66C42400A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 16:25:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231766AbhJFO1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 10:27:10 -0400
-Received: from srv6.fidu.org ([159.69.62.71]:40766 "EHLO srv6.fidu.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231356AbhJFO1I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 10:27:08 -0400
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by srv6.fidu.org (Postfix) with ESMTP id 5D86FC800AA;
-        Wed,  6 Oct 2021 16:25:14 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at srv6.fidu.org
-Received: from srv6.fidu.org ([127.0.0.1])
-        by localhost (srv6.fidu.org [127.0.0.1]) (amavisd-new, port 10024)
-        with LMTP id cK3OxzFKXTNg; Wed,  6 Oct 2021 16:25:14 +0200 (CEST)
-Received: from [192.168.178.82] (host-212-18-30-247.customer.m-online.net [212.18.30.247])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: wse@tuxedocomputers.com)
-        by srv6.fidu.org (Postfix) with ESMTPSA id F0CF6C800A8;
-        Wed,  6 Oct 2021 16:25:13 +0200 (CEST)
-Subject: Re: [PATCH] ALSA: hda/realtek: Add quirk for TongFang PHxTxX1
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+        id S238972AbhJFO1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 10:27:48 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:31052 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231356AbhJFO1r (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 10:27:47 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 196DSp9d001008;
+        Wed, 6 Oct 2021 10:25:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=rzPMALKGA6XMuv435p9x/PS4RHZse9EyIaUy6qjVuL0=;
+ b=NkfdQ8sQZSmHF5RPIQ9VvK0KzNLhHdfbXxWCrbVPoPzqs4vp0/SEFdK6CuU1x+TnMojB
+ Mlq+hGZH6pCferJ+3S4aewQ73XJnwwLOr5BvMobiXcCHeKa8n9hZgk5Y7CLsMXymJivx
+ 5FDHi5vRGwaz/zPxBNX9s8J7MTJKfrfEJQQEfxHCwkWWgbP98OFTppFiY7p4Oeb+5vLy
+ zli5w0qgpHc6bKJ9FznTcUBnUBROp3SaGkWJhojdL+CJhePJ5mnDGqrWVQw358UOkV9f
+ ngXbtarz8Ryo7orsKtTDyNYHKXv8IsaF3IV3MN+mnPAUs/B4FYOSE+O3etA/6NAyre7l hA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bhcqk9g4t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 06 Oct 2021 10:25:46 -0400
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 196DTA6Z002572;
+        Wed, 6 Oct 2021 10:25:45 -0400
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bhcqk9g3f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 06 Oct 2021 10:25:45 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 196ECDng030410;
+        Wed, 6 Oct 2021 14:25:42 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma05fra.de.ibm.com with ESMTP id 3bef2a3r8u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 06 Oct 2021 14:25:42 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 196EKJnC55312836
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 6 Oct 2021 14:20:19 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3512311C05B;
+        Wed,  6 Oct 2021 14:25:38 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9A4D711C052;
+        Wed,  6 Oct 2021 14:25:37 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed,  6 Oct 2021 14:25:37 +0000 (GMT)
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Xie Yongji <xieyongji@bytedance.com>,
+        virtualization@lists.linux-foundation.org,
         linux-kernel@vger.kernel.org
-References: <20211006130415.538243-1-wse@tuxedocomputers.com>
- <s5hpmsib5wp.wl-tiwai@suse.de>
-From:   Werner Sembach <wse@tuxedocomputers.com>
-Message-ID: <ca37123b-5779-b546-089b-9af61f68a2b2@tuxedocomputers.com>
-Date:   Wed, 6 Oct 2021 16:25:13 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+Cc:     Halil Pasic <pasic@linux.ibm.com>, markver@us.ibm.com,
+        Cornelia Huck <cohuck@redhat.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org, stefanha@redhat.com,
+        Raphael Norwitz <raphael.norwitz@nutanix.com>,
+        qemu-devel@nongnu.org
+Subject: [PATCH 1/1] virtio: write back F_VERSION_1 before validate
+Date:   Wed,  6 Oct 2021 16:25:33 +0200
+Message-Id: <20211006142533.2735019-1-pasic@linux.ibm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <s5hpmsib5wp.wl-tiwai@suse.de>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: de-DE
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 6SJN1e6Wk8CcV1EJ_v0Cs0lygJFuRqfD
+X-Proofpoint-GUID: 6Ww4Q-dWxjfZ_JKOOMojtbiksYxrUCgh
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-10-06_03,2021-10-06_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
+ malwarescore=0 bulkscore=0 adultscore=0 clxscore=1015 priorityscore=1501
+ suspectscore=0 phishscore=0 lowpriorityscore=0 spamscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109230001
+ definitions=main-2110060089
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 06.10.21 um 16:10 schrieb Takashi Iwai:
+The virtio specification virtio-v1.1-cs01 states: Transitional devices
+MUST detect Legacy drivers by detecting that VIRTIO_F_VERSION_1 has not
+been acknowledged by the driver.  This is exactly what QEMU as of 6.1
+has done relying solely on VIRTIO_F_VERSION_1 for detecting that.
 
-> On Wed, 06 Oct 2021 15:04:15 +0200,
-> Werner Sembach wrote:
->> This applies a SND_PCI_QUIRK(...) to the TongFang PHxTxX1 barebone. This
->> fixes the issue of the internal Microphone not working after booting
->> another OS.
->>
->> When booting a certain another OS this barebone keeps some coeff settings
->> even after a cold shutdown. These coeffs prevent the microphone detection
->> from working in Linux, making the Laptop think that there is always an
->> external microphone plugged-in and therefore preventing the use of the
->> internal one.
->>
->> The relevant indexes and values where gathered by naively diff-ing and
->> reading a working and a non-working coeff dump.
->>
->> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
-> Thanks, applied.
->
->
-> Takashi
+However, the specification also says: driver MAY read (but MUST NOT
+write) the device-specific configuration fields to check that it can
+support the device before setting FEATURES_OK.
 
-Thanks for being quick as always ^^
+In that case, any transitional device relying solely on
+VIRTIO_F_VERSION_1 for detecting legacy drivers will return data in
+legacy format.  In particular, this implies that it is in big endian
+format for big endian guests. This naturally confuses the driver which
+expects little endian in the modern mode.
 
-I forgot to add cc: stable to the patch. Whats the best practie to do that after the patch has already been applied?
+It is probably a good idea to amend the spec to clarify that
+VIRTIO_F_VERSION_1 can only be relied on after the feature negotiation
+is complete. However, we already have regression so let's try to address
+it.
 
-Just send it again mit with cc: stable?
+Signed-off-by: Halil Pasic <pasic@linux.ibm.com>
+Fixes: 82e89ea077b9 ("virtio-blk: Add validation for block size in config space")
+Fixes: fe36cbe0671e ("virtio_net: clear MTU when out of range")
+Reported-by: markver@us.ibm.com
+---
+ drivers/virtio/virtio.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-Kind regards,
+diff --git a/drivers/virtio/virtio.c b/drivers/virtio/virtio.c
+index 0a5b54034d4b..494cfecd3376 100644
+--- a/drivers/virtio/virtio.c
++++ b/drivers/virtio/virtio.c
+@@ -239,6 +239,16 @@ static int virtio_dev_probe(struct device *_d)
+ 		driver_features_legacy = driver_features;
+ 	}
+ 
++	/*
++	 * Some devices detect legacy solely via F_VERSION_1. Write
++	 * F_VERSION_1 to force LE for these when needed.
++	 */
++	if (drv->validate && !virtio_legacy_is_little_endian()
++			  && BIT_ULL(VIRTIO_F_VERSION_1) & device_features) {
++		dev->features = BIT_ULL(VIRTIO_F_VERSION_1);
++		dev->config->finalize_features(dev);
++	}
++
+ 	if (device_features & (1ULL << VIRTIO_F_VERSION_1))
+ 		dev->features = driver_features & device_features;
+ 	else
 
-Werner Sembach
+base-commit: 60a9483534ed0d99090a2ee1d4bb0b8179195f51
+-- 
+2.25.1
 
