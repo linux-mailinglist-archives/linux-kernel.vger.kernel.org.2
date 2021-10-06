@@ -2,72 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00558423F7C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 15:36:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 765AF423F79
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 15:36:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238764AbhJFNia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 09:38:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45177 "EHLO
+        id S238715AbhJFNiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 09:38:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:43471 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238778AbhJFNiY (ORCPT
+        by vger.kernel.org with ESMTP id S238952AbhJFNiT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 09:38:24 -0400
+        Wed, 6 Oct 2021 09:38:19 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633527392;
+        s=mimecast20190719; t=1633527386;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=u/piGMVcmtfQU410RPWuDNLfDkB4Ox9Tyhdds4zXiGs=;
-        b=JePM933DtVmQyKcPASJArr7S/+gc9gAsmT6tjwlwrhw8CuoqCzFAVSaxxguaAjFcmDyIuf
-        FqKMnMbWNmvmxYK3BJurmBtDQqKrgbPx+KKTpegU559QWF57RI23X9WOaXQf913mi4boMC
-        7yo0YCzif5uPMiFYNvHG0Ywql7Ga/YY=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-463-ozb9Xa04NiKXHu6eWl36OA-1; Wed, 06 Oct 2021 09:36:20 -0400
-X-MC-Unique: ozb9Xa04NiKXHu6eWl36OA-1
-Received: by mail-ed1-f69.google.com with SMTP id 2-20020a508e02000000b003d871759f5dso2662373edw.10
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 06:36:20 -0700 (PDT)
+        bh=5Y7uP8QRGocqx1FZVyYu93M+isTRRJCiJChkQsmHD78=;
+        b=M7sEu0POQRrvt7zrygMEXvp42H/0eLlAmxDfQx683nhnumTuzWdcuoPgD11wllrFWBUtXv
+        rwJYUWGcIipBSUe0NLhkK+BXVil7AtufNy3cQglRemt+8H4UZ93GkmaWF9gt5vDiR/opa5
+        JnMN4tovdsGPPVWMAyp5qfFR7h885SU=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-5-GJ8z24eVOWO9-460hm3O6Q-1; Wed, 06 Oct 2021 09:36:25 -0400
+X-MC-Unique: GJ8z24eVOWO9-460hm3O6Q-1
+Received: by mail-ed1-f72.google.com with SMTP id w6-20020a50d786000000b003dabc563406so2631166edi.17
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 06:36:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
          :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=u/piGMVcmtfQU410RPWuDNLfDkB4Ox9Tyhdds4zXiGs=;
-        b=zVC+UpHny1ZHCdUGETXCcJMLGAUEN2R1pLux22HwjHgOxUUrRtEzvrklkBZw4ZBP9t
-         hpfdDa9JPvI5A7VD4gzga8V4LpVxGBz8S6vLvR32U8T+i0GmoR4n4b0iPrx8vTXajJAE
-         BJ1BcWUIuOZJd5lfM1SH9zYZ5BRAQ5wIbGVK1XTzjVs9BXkq266MBZQWORHgQSJZ5Zsc
-         bODIxTYBJHSqfqv3CMp5T6ItSFuEZtT//djQT91GJqTPodjZak5S649Ex3AbVdCLcl4u
-         D2kV0FGKCtRzC0RoSB/ooaFHmqIAEIhvdhiktluTH6KGf8v6AA5/yHraT9lTGM791pBU
-         iMAQ==
-X-Gm-Message-State: AOAM533aGW/ku+z5j4mk0LZYxHXoeA9hVVOY9DVrD9xDV1X1gobEaqTr
-        mLqXJyqHYT/PY4HKWRA2CLyYukNw9s7OPlcG+LsgcLjLUn34yN48VlnShW/K/jCCZK8qTstpLhx
-        5jl7zTA980Rkw+vHTPOs+rD4W
-X-Received: by 2002:aa7:d5cd:: with SMTP id d13mr30216044eds.232.1633527379435;
-        Wed, 06 Oct 2021 06:36:19 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwHZgwmbw5yaPBNCqM31MvnEW6sUbXSRH0z3uAhPPHeOJiVcbVeK/3vI44F2LwrPoIKi3mW8A==
-X-Received: by 2002:aa7:d5cd:: with SMTP id d13mr30216018eds.232.1633527379258;
-        Wed, 06 Oct 2021 06:36:19 -0700 (PDT)
+        bh=5Y7uP8QRGocqx1FZVyYu93M+isTRRJCiJChkQsmHD78=;
+        b=tV+l/6nrUNP+AGm+tDRIBp+RKtHT7stcWvEbMJJrfiQVwwuw1qWpIZkFB19t9bgdiM
+         Mgj58DS31EGpHLkAkO97nK5FBE6frKoIsLOdQBvIUWc9Ajrei0dRWo7caJBr4Spurv9U
+         3EUldt8w5D+LDl+rw5E3pJWeYPgcEKeOJi29YMfIsZMB/e2UNpTGkQjQEZqjsZeYxzHh
+         OrbdT0D7Gmgvq4AQlzuEoezx3+fkdyZg7xPjFgK33Lipq6aO0fK5JPj7bg6emaZXibT6
+         0QeyZkXW/Mz1/TvvnubkzGrRsVfDwOTVxx2XjMjgQlX0E21qHsomPceSg4PYT34mcbZ1
+         Q4OA==
+X-Gm-Message-State: AOAM533KQs6FpewdZaQymwL5inpKZemxHn8tDwnCWglZiGNLtlCVnCIH
+        50mSWxcu1VXssRsJNz+CIhil5w4GoOuWoUEAfXM4ifnJAHM9ts++rzjrP1/kSosDP+7oQSTzYTj
+        0W9EJAXU3uUxnlgyGObB2n5e9
+X-Received: by 2002:a50:be87:: with SMTP id b7mr35515636edk.382.1633527382864;
+        Wed, 06 Oct 2021 06:36:22 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwobZOH4vhU8yiSwk506kzAz0km9ltn77l54Biy7c8hKVY5ZQU5W14yw6v6WXzxLgrbZkv4QA==
+X-Received: by 2002:a50:be87:: with SMTP id b7mr35515607edk.382.1633527382653;
+        Wed, 06 Oct 2021 06:36:22 -0700 (PDT)
 Received: from ?IPV6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
-        by smtp.gmail.com with ESMTPSA id j3sm4693182ejy.65.2021.10.06.06.36.17
+        by smtp.gmail.com with ESMTPSA id x16sm4468819ejj.8.2021.10.06.06.36.20
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Oct 2021 06:36:18 -0700 (PDT)
-Message-ID: <61759137-0182-8eed-6413-80a8fc82c6e8@redhat.com>
-Date:   Wed, 6 Oct 2021 15:36:15 +0200
+        Wed, 06 Oct 2021 06:36:21 -0700 (PDT)
+Message-ID: <fcaf3441-766a-c774-1a1d-d94882719403@redhat.com>
+Date:   Wed, 6 Oct 2021 15:36:20 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.1.0
-Subject: Re: [PATCH MANUALSEL 5.14 1/9] selftests: KVM: Align SMCCC call with
- the spec in steal_time
+Subject: Re: [PATCH MANUALSEL 5.14 2/9] KVM: x86: Handle SRCU initialization
+ failure during page track init
 Content-Language: en-US
 To:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
         stable@vger.kernel.org
-Cc:     Oliver Upton <oupton@google.com>,
-        Andrew Jones <drjones@redhat.com>, shuah@kernel.org,
-        kvm@vger.kernel.org, linux-kselftest@vger.kernel.org
+Cc:     Haimin Zhang <tcs_kernel@tencent.com>,
+        TCS Robot <tcs_robot@tencent.com>, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, kvm@vger.kernel.org
 References: <20211006133021.271905-1-sashal@kernel.org>
+ <20211006133021.271905-2-sashal@kernel.org>
 From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <20211006133021.271905-1-sashal@kernel.org>
+In-Reply-To: <20211006133021.271905-2-sashal@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
@@ -75,47 +76,87 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 06/10/21 15:30, Sasha Levin wrote:
-> From: Oliver Upton <oupton@google.com>
+> From: Haimin Zhang <tcs_kernel@tencent.com>
 > 
-> [ Upstream commit 01f91acb55be7aac3950b89c458bcea9ef6e4f49 ]
+> [ Upstream commit eb7511bf9182292ef1df1082d23039e856d1ddfb ]
 > 
-> The SMC64 calling convention passes a function identifier in w0 and its
-> parameters in x1-x17. Given this, there are two deviations in the
-> SMC64 call performed by the steal_time test: the function identifier is
-> assigned to a 64 bit register and the parameter is only 32 bits wide.
+> Check the return of init_srcu_struct(), which can fail due to OOM, when
+> initializing the page track mechanism.  Lack of checking leads to a NULL
+> pointer deref found by a modified syzkaller.
 > 
-> Align the call with the SMCCC by using a 32 bit register to handle the
-> function identifier and increasing the parameter width to 64 bits.
-> 
-> Suggested-by: Andrew Jones <drjones@redhat.com>
-> Signed-off-by: Oliver Upton <oupton@google.com>
-> Reviewed-by: Andrew Jones <drjones@redhat.com>
-> Message-Id: <20210921171121.2148982-3-oupton@google.com>
+> Reported-by: TCS Robot <tcs_robot@tencent.com>
+> Signed-off-by: Haimin Zhang <tcs_kernel@tencent.com>
+> Message-Id: <1630636626-12262-1-git-send-email-tcs_kernel@tencent.com>
+> [Move the call towards the beginning of kvm_arch_init_vm. - Paolo]
 > Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 > Signed-off-by: Sasha Levin <sashal@kernel.org>
 > ---
->   tools/testing/selftests/kvm/steal_time.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
+>   arch/x86/include/asm/kvm_page_track.h | 2 +-
+>   arch/x86/kvm/mmu/page_track.c         | 4 ++--
+>   arch/x86/kvm/x86.c                    | 7 ++++++-
+>   3 files changed, 9 insertions(+), 4 deletions(-)
 > 
-> diff --git a/tools/testing/selftests/kvm/steal_time.c b/tools/testing/selftests/kvm/steal_time.c
-> index ecec30865a74..aafaa8e38b7c 100644
-> --- a/tools/testing/selftests/kvm/steal_time.c
-> +++ b/tools/testing/selftests/kvm/steal_time.c
-> @@ -118,12 +118,12 @@ struct st_time {
->   	uint64_t st_time;
+> diff --git a/arch/x86/include/asm/kvm_page_track.h b/arch/x86/include/asm/kvm_page_track.h
+> index 87bd6025d91d..6a5f3acf2b33 100644
+> --- a/arch/x86/include/asm/kvm_page_track.h
+> +++ b/arch/x86/include/asm/kvm_page_track.h
+> @@ -46,7 +46,7 @@ struct kvm_page_track_notifier_node {
+>   			    struct kvm_page_track_notifier_node *node);
 >   };
 >   
-> -static int64_t smccc(uint32_t func, uint32_t arg)
-> +static int64_t smccc(uint32_t func, uint64_t arg)
->   {
->   	unsigned long ret;
+> -void kvm_page_track_init(struct kvm *kvm);
+> +int kvm_page_track_init(struct kvm *kvm);
+>   void kvm_page_track_cleanup(struct kvm *kvm);
 >   
->   	asm volatile(
-> -		"mov	x0, %1\n"
-> +		"mov	w0, %w1\n"
->   		"mov	x1, %2\n"
->   		"hvc	#0\n"
->   		"mov	%0, x0\n"
+>   void kvm_page_track_free_memslot(struct kvm_memory_slot *slot);
+> diff --git a/arch/x86/kvm/mmu/page_track.c b/arch/x86/kvm/mmu/page_track.c
+> index 91a9f7e0fd91..68e67228101d 100644
+> --- a/arch/x86/kvm/mmu/page_track.c
+> +++ b/arch/x86/kvm/mmu/page_track.c
+> @@ -163,13 +163,13 @@ void kvm_page_track_cleanup(struct kvm *kvm)
+>   	cleanup_srcu_struct(&head->track_srcu);
+>   }
+>   
+> -void kvm_page_track_init(struct kvm *kvm)
+> +int kvm_page_track_init(struct kvm *kvm)
+>   {
+>   	struct kvm_page_track_notifier_head *head;
+>   
+>   	head = &kvm->arch.track_notifier_head;
+> -	init_srcu_struct(&head->track_srcu);
+>   	INIT_HLIST_HEAD(&head->track_notifier_list);
+> +	return init_srcu_struct(&head->track_srcu);
+>   }
+>   
+>   /*
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 7ec7c2dce506..b3f855d48f72 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -11090,9 +11090,15 @@ void kvm_arch_free_vm(struct kvm *kvm)
+>   
+>   int kvm_arch_init_vm(struct kvm *kvm, unsigned long type)
+>   {
+> +	int ret;
+> +
+>   	if (type)
+>   		return -EINVAL;
+>   
+> +	ret = kvm_page_track_init(kvm);
+> +	if (ret)
+> +		return ret;
+> +
+>   	INIT_HLIST_HEAD(&kvm->arch.mask_notifier_list);
+>   	INIT_LIST_HEAD(&kvm->arch.active_mmu_pages);
+>   	INIT_LIST_HEAD(&kvm->arch.zapped_obsolete_pages);
+> @@ -11125,7 +11131,6 @@ int kvm_arch_init_vm(struct kvm *kvm, unsigned long type)
+>   
+>   	kvm_apicv_init(kvm);
+>   	kvm_hv_init_vm(kvm);
+> -	kvm_page_track_init(kvm);
+>   	kvm_mmu_init_vm(kvm);
+>   
+>   	return static_call(kvm_x86_vm_init)(kvm);
 > 
 
 Acked-by: Paolo Bonzini <pbonzini@redhat.com>
