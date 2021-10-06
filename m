@@ -2,82 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CF85424108
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 17:13:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09390424109
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 17:13:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239148AbhJFPPM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 11:15:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53548 "EHLO mail.kernel.org"
+        id S239179AbhJFPPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 11:15:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53940 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239249AbhJFPO2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 11:14:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A132760F6D;
-        Wed,  6 Oct 2021 15:12:35 +0000 (UTC)
+        id S231883AbhJFPPb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 11:15:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 61DD460F41;
+        Wed,  6 Oct 2021 15:13:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633533155;
-        bh=n66tkchc4XioC797+ZaRTmljx8w2JSrZg0u+2YT9yP4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tj2i74+kSScWGUPwg9XGfcPcwA6u1sN0NaosnVHyjb801WCcn/99Xirx+Z/Tgcf4V
-         yvQ3eOyeUPaZxshaDJRMQCqEP/TOoyvsHlSqRypyg0YlqDi5YPny49/+sfb8CHLSDQ
-         ifXfnwQgz5vHZymPdlTty2JbOnP36utoKW+7pORuuQdm6awk7QazBP+6thcF47n1RS
-         Dhk/ytiL6Xw1SMyDWN14tBeqdpzysERZ9BlCTdCFUdlRKgq6XXey8gJ71OnTxPqe/+
-         ttABcuz21nRK+Y8MJKdyeUzahGdJrwXcdXQEooPPvHmcUZYkjnRAKvZcmYCyIrrJAy
-         /Jvqa4USrsDfQ==
-Date:   Wed, 6 Oct 2021 11:12:34 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     Georgi Djakov <djakov@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Shawn Guo <shawn.guo@linaro.org>,
-        Rob Herring <robh@kernel.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>, agross@kernel.org,
-        bjorn.andersson@linaro.org, robh+dt@kernel.org, kholk11@gmail.com,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 5.14 06/40] dt-bindings: interconnect: sdm660:
- Add missing a2noc qos clocks
-Message-ID: <YV284nZX4BoE+TYj@sashalap>
-References: <20211005135020.214291-1-sashal@kernel.org>
- <20211005135020.214291-6-sashal@kernel.org>
- <0a7af294-095e-cac4-e20a-296de7bd59cb@kernel.org>
+        s=k20201202; t=1633533219;
+        bh=EVmb4kirYxxRbhN6bHVfWsWVSxxibQUQbKgIpq0U4Lw=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=tLu9CimrveddQ6EYZLM8TvjgiGwPNRa3iBI4to+CyqdiiMopEwFVgsokgXcp7q4g6
+         wpW4xmB5/BqJSe/ZM81DDY4U9W2wsCgGbRBwBj8rhFfKFVJUK5fEACVwOXTyVuzQP5
+         5Ywh/ksp6sHT5oE7g75/rjZlhJERX+b215DYPjbcyqFMgrA+ZRU0oBaiN0a931/KF/
+         n/oXh2+XYyp1ztY1OYlI0W2+KOndny56k09uIqRdVPFDx7QcPJRvbM4Qm224P3zgIQ
+         LqCW86rcs614M1RAUy69icLG+d+KwG66Q38Fh1MH+Fp7o13McchLvC9SY3vAPwhFTM
+         8ZYX6tDBOCpUg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 31A935C0800; Wed,  6 Oct 2021 08:13:39 -0700 (PDT)
+Date:   Wed, 6 Oct 2021 08:13:39 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
+Subject: Re: [PATCH 00/11] rcu: Make rcu_core() safe in PREEMPT_RT with NOCB
+ + a few other fixes
+Message-ID: <20211006151339.GA422833@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210929221012.228270-1-frederic@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0a7af294-095e-cac4-e20a-296de7bd59cb@kernel.org>
+In-Reply-To: <20210929221012.228270-1-frederic@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05, 2021 at 10:11:31PM +0300, Georgi Djakov wrote:
->Hi Sasha,
->
->On 5.10.21 16:49, Sasha Levin wrote:
->>From: Shawn Guo <shawn.guo@linaro.org>
->>
->>[ Upstream commit cf49e366020396ad83845c1c3bdbaa3c1406f5ce ]
->>
->>It adds the missing a2noc clocks required for QoS registers programming
->>per downstream kernel[1].
->>
->>[1] https://source.codeaurora.org/quic/la/kernel/msm-4.4/tree/arch/arm/boot/dts/qcom/sdm660-bus.dtsi?h=LA.UM.8.2.r1-04800-sdm660.0#n43
->>
->>Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
->>Reviewed-by: Rob Herring <robh@kernel.org>
->>Acked-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
->>Link: https://lore.kernel.org/r/20210824043435.23190-2-shawn.guo@linaro.org
->>Signed-off-by: Georgi Djakov <djakov@kernel.org>
->>Signed-off-by: Sasha Levin <sashal@kernel.org>
->
->There is no benefit to backport these changes, as devices that
->needed them, would not boot on v5.14 anyways. So please drop these:
->
->[PATCH AUTOSEL 5.14 06/40] dt-bindings: interconnect: sdm660: Add 
->missing a2noc qos clocks
->[PATCH AUTOSEL 5.14 07/40] interconnect: qcom: sdm660: Add missing 
->a2noc qos clocks
+On Thu, Sep 30, 2021 at 12:10:01AM +0200, Frederic Weisbecker wrote:
+> PREEMPT_RT has made rcu_core() preemptible, making it unsafe against
+> concurrent NOCB (de-)offloading.
+> 
+> Thomas suggested to drop the local_lock() based solution and simply
+> check the offloaded state while context looks safe but that's not
+> enough. Here is a bit of rework.
+> 
+> git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks.git
+> 	rcu/rt
+> 
+> HEAD: aac1c58961446c731f2e989bd822ca1fd2659bad
 
-I'll drop it, thanks!
+Many of these look quite good, but any chance of getting an official
+Tested-by from someone in the -rt community?
 
--- 
-Thanks,
-Sasha
+							Thanx, Paul
+
+> Thanks,
+> 	Frederic
+> ---
+> 
+> Frederic Weisbecker (10):
+>       rcu/nocb: Make local rcu_nocb_lock_irqsave() safe against concurrent deoffloading
+>       rcu/nocb: Prepare state machine for a new step
+>       rcu/nocb: Invoke rcu_core() at the start of deoffloading
+>       rcu/nocb: Make rcu_core() callbacks acceleration (de-)offloading safe
+>       rcu/nocb: Check a stable offloaded state to manipulate qlen_last_fqs_check
+>       rcu/nocb: Use appropriate rcu_nocb_lock_irqsave()
+>       rcu/nocb: Limit number of softirq callbacks only on softirq
+>       rcu: Fix callbacks processing time limit retaining cond_resched()
+>       rcu: Apply callbacks processing time limit only on softirq
+>       rcu/nocb: Don't invoke local rcu core on callback overload from nocb kthread
+> 
+> Thomas Gleixner (1):
+>       rcu/nocb: Make rcu_core() callbacks acceleration preempt-safe
+> 
+> 
+>  include/linux/rcu_segcblist.h | 51 +++++++++++++++++++-------
+>  kernel/rcu/rcu_segcblist.c    | 10 ++---
+>  kernel/rcu/rcu_segcblist.h    |  7 ++--
+>  kernel/rcu/tree.c             | 85 ++++++++++++++++++++++++++++++-------------
+>  kernel/rcu/tree.h             | 16 +++++---
+>  kernel/rcu/tree_nocb.h        | 29 ++++++++++++---
+>  6 files changed, 136 insertions(+), 62 deletions(-)
