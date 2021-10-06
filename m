@@ -2,99 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C54542479B
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 21:58:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6717E4247B4
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 22:06:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231982AbhJFUA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 16:00:27 -0400
-Received: from mga17.intel.com ([192.55.52.151]:46092 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229761AbhJFUA0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 16:00:26 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10129"; a="206903327"
-X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; 
-   d="scan'208";a="206903327"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2021 12:58:24 -0700
-X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; 
-   d="scan'208";a="439247446"
-Received: from nbasa-mobl2.amr.corp.intel.com (HELO [10.213.170.135]) ([10.213.170.135])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2021 12:58:21 -0700
-Subject: Re: [PATCH 3/3] ASoC: Intel: sof_rt5682: use id_alt to enumerate
- rt5682s
-To:     Curtis Malainey <cujomalainey@google.com>
-Cc:     Brent Lu <brent.lu@intel.com>,
-        ALSA development <alsa-devel@alsa-project.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        Yong Zhi <yong.zhi@intel.com>,
-        Vamshi Krishna Gopal <vamshi.krishna.gopal@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Rander Wang <rander.wang@intel.com>,
-        Bard Liao <bard.liao@intel.com>,
-        Malik_Hsu <malik_hsu@wistron.corp-partner.google.com>,
-        Libin Yang <libin.yang@intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Paul Olaru <paul.olaru@oss.nxp.com>,
-        Curtis Malainey <cujomalainey@chromium.org>,
-        Mac Chiang <mac.chiang@intel.com>,
-        Gongjun Song <gongjun.song@intel.com>
-References: <20211006161805.938950-1-brent.lu@intel.com>
- <20211006161805.938950-4-brent.lu@intel.com>
- <CAOReqxjGX6fwqNjX0i31JiQJ+vRCMNTTFBhn7L=iPzYvVMk9mQ@mail.gmail.com>
- <0482534d-46c4-5cee-25bd-8739e80a00f0@linux.intel.com>
- <CAOReqxisH_9TuP_v77JzdQ+v+duPvvyHNHBxXzGJZ3dMoyMczQ@mail.gmail.com>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <dfd23e78-b7c8-fa77-035e-19c9af595719@linux.intel.com>
-Date:   Wed, 6 Oct 2021 14:58:19 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
+        id S239437AbhJFUIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 16:08:46 -0400
+Received: from mailgate.kemenperin.go.id ([202.47.80.81]:57790 "EHLO
+        mailgate.kemenperin.go.id" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239248AbhJFUIp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 16:08:45 -0400
+X-Greylist: delayed 1194 seconds by postgrey-1.27 at vger.kernel.org; Wed, 06 Oct 2021 16:08:44 EDT
+Received: from localhost (localhost [127.0.0.1])
+        by mailgate.kemenperin.go.id (Postfix) with ESMTP id 6FC6837EA3E3;
+        Thu,  7 Oct 2021 02:28:03 +0700 (WIB)
+Received: from mailgate.kemenperin.go.id ([127.0.0.1])
+        by localhost (mailgate.kemenperin.go.id [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id 06Y148tJj3Uq; Thu,  7 Oct 2021 02:28:02 +0700 (WIB)
+Received: from localhost (localhost [127.0.0.1])
+        by mailgate.kemenperin.go.id (Postfix) with ESMTP id 6E4C337EA3DD;
+        Thu,  7 Oct 2021 02:28:00 +0700 (WIB)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mailgate.kemenperin.go.id 6E4C337EA3DD
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kemenperin.go.id;
+        s=3298A942-BBC6-11E3-B333-483736368EC2; t=1633548480;
+        bh=+fqslacBrFYD+yZfN/r7KCWl0ti69BjYsXmt7u/JTl4=;
+        h=Date:From:Message-ID:MIME-Version;
+        b=VN9z+U3lWOgJCjGxv92Yv9LZEW4rsagUD2Qcdp+/lrs4d6z4SUeX97zmM46dov6R2
+         Sqmp1MDVpZ35jcZAgSBaWV6gN/nyLnKOQ0wILOofxYBOKrcXnqRiEN2+If5HhJb5PW
+         NsmKx7CPAI7fQtF+UIr1du5DSWo31iba1iqgWvcQ=
+X-Virus-Scanned: amavisd-new at kemenperin.go.id
+Received: from mailgate.kemenperin.go.id ([127.0.0.1])
+        by localhost (mailgate.kemenperin.go.id [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id pTttxliC5725; Thu,  7 Oct 2021 02:28:00 +0700 (WIB)
+Received: from mailgate.kemenperin.go.id (mailgate.kemenperin.go.id [10.1.0.89])
+        by mailgate.kemenperin.go.id (Postfix) with ESMTP id 3046C37EA3DA;
+        Thu,  7 Oct 2021 02:27:58 +0700 (WIB)
+Date:   Thu, 7 Oct 2021 02:27:58 +0700 (WIB)
+From:   KLINELTD <fajarprasetyo@kemenperin.go.id>
+Reply-To: "kreditline_ltd@hotmail.com" <kreditline_ltd@hotmail.com>
+Message-ID: <1949583318.233070.1633548478162.JavaMail.zimbra@kemenperin.go.id>
+Subject: Hi
 MIME-Version: 1.0
-In-Reply-To: <CAOReqxisH_9TuP_v77JzdQ+v+duPvvyHNHBxXzGJZ3dMoyMczQ@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [10.1.0.89]
+Thread-Index: FWTi3JaMAJWOhJxg/+uki1W7DBB1aQ==
+Thread-Topic: Hi
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi
 
-> I don't see an issue with still using a struct since we are using the
-> same list across multiple machines, but this makes me wonder if maybe
-> we should refactor this into another layer, having the ids at a top
-> structure and then the speaker matches a layer down. E.g.
-> 
->  struct snd_soc_acpi_mach snd_soc_acpi_intel_adl_machines[] = {
->         {
->                 .drv_name = "adl_mx98373_rt5682",
->                 .machine_quirk = snd_soc_acpi_codec_list,
->                 .quirk_data = &adl_max98373_amp,
->         },
->         {
->                 .drv_name = "adl_mx98357_rt5682",
->                 .machine_quirk = snd_soc_acpi_codec_list,
->                 .quirk_data = &adl_max98357a_amp,
->         },
->         {
->                 .drv_name = "adl_mx98360_rt5682",
->                 .machine_quirk = snd_soc_acpi_codec_list,
->                 .quirk_data = &adl_max98360a_amp,
->         }
-> }
-> 
-> struct machine_driver adl_rt5682_driver_match {
->   .id = { "10EC5682", "RTL5682" }
->   .instances = &adl_rt5682_machines
-> }
+Wir vergeben Kredite an Privatpersonen und Unternehmen mit einem Zinssatz v=
+on 3% pro Jahr.
+Wir sind daran interessiert, Gro=C3=9Fprojekte zu finanzieren und Kredite z=
+u vergeben. Die R=C3=BCckzahlungsfrist betr=C3=A4gt 1-30 Jahre und mit kost=
+enlosen 6 Monaten Kulanz.
 
-We probably need to experiment various options, on one hand the proposal
-removes duplication but in a lot of cases outside of Chromebooks/rt5640
-there is none, so that table rework adds an indirection with no real
-benefit.
+Wir bieten: -
+* Projektfinanzierung
+* Business-Darlehen
+* Privat Darlehen
+
+Bitte kontaktieren Sie uns unter den untenstehenden Kontaktdaten, damit wir=
+ Sie =C3=BCber die Konditionen des Darlehens informieren k=C3=B6nnen.
+
+          Erforderlicher Kreditbetrag:
+          R=C3=BCckzahlungsfrist:
+          Handy Nummer:
+
+Die Bearbeitung und Finanzierung eines Kredits dauert ca. 3 Werktage ab dem=
+ Datum des Versands des Kreditantrags. Antworten Sie f=C3=BCr weitere Infor=
+mationen.
+
+Gr=C3=BC=C3=9Fe
+Online-Werbeagentur.
+E-Mail: kreditline_ltd@hotmail.com
