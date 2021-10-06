@@ -2,178 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6712423B70
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 12:24:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CF04423B75
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 12:26:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238076AbhJFK0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 06:26:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:40546 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230131AbhJFK0s (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 06:26:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633515895;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MmWiCgB8uSNl6DOPQQvudamwXwcTydeBRX/uLyQwgQA=;
-        b=Ps6uFmceHlYkWsq0hQtEbRVq6i+J46HWCTYaWHNhJ+iF3NyDOPJ7ehcwq/arrsgjhcMgM9
-        e16iV6dXwrs/dtDnreU+ODnXYiZRk64PJDQYYQ+/YQQlbsrtGVldmWzY1KAoj7KHu7erWK
-        17Und4MWUuM3bavHCvfTIe1VoYEcfxY=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-49-dsjYqgtmNr-bGpAXUmNKlg-1; Wed, 06 Oct 2021 06:24:54 -0400
-X-MC-Unique: dsjYqgtmNr-bGpAXUmNKlg-1
-Received: by mail-ed1-f69.google.com with SMTP id r21-20020a50c015000000b003db1c08edd3so2169570edb.15
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 03:24:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=MmWiCgB8uSNl6DOPQQvudamwXwcTydeBRX/uLyQwgQA=;
-        b=vFBvvQAdC16uPQMBeO1ScQ986AVj4w4nJViyOYdraAu2JNotcbDZW3fl5Y5vNnAf3S
-         HkeNn73/I7u63S0Biz7yqcurG7yh0rm6qc3WuhHV3d3ocxiLUC4nKWXGUoYwUH+7UzPt
-         PpEyIHHLDUNil18NpvztnTjOiV9zlvIgk0N8i4j7v6ajabGZCD0kYYcHpuDRJTns6Epv
-         hSr6DVLbk2It9eDl3de0IlMiU4pixtX+flsV+IcHkNa7MyldcD/Nm0zCn2tbOoLzX3PI
-         9BJ6JdNNjpCrn++s9lg/d+8/dUzSxA6xbVHgrm4qYnPb4FUBUEN49cJP1dM7IAqWNxyO
-         nTJg==
-X-Gm-Message-State: AOAM5312cyoulA7ZnK5he3/hbqwl2b+6cAGJUbDUq3rrGl7vHcSuueFi
-        61DDdQAst5vYBimb4vZ8Q587podCyVcTAsITtNfhgDeoz0PpYls0M75fzZpAA/o3L5qgsXJnS//
-        DKaQRCvhikW/b/uyFKCnJUyw6
-X-Received: by 2002:a17:906:7ac4:: with SMTP id k4mr32292466ejo.430.1633515893290;
-        Wed, 06 Oct 2021 03:24:53 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy0zZ6sW7WDT3oke9j4TDRc16AgVPN/PNWxEB0jdSUXa+T95wQObvHtsiMesHktZL1B3vMLxQ==
-X-Received: by 2002:a17:906:7ac4:: with SMTP id k4mr32292427ejo.430.1633515893066;
-        Wed, 06 Oct 2021 03:24:53 -0700 (PDT)
-Received: from gator.home (cst2-174-28.cust.vodafone.cz. [31.30.174.28])
-        by smtp.gmail.com with ESMTPSA id m13sm3872442eda.41.2021.10.06.03.24.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Oct 2021 03:24:52 -0700 (PDT)
-Date:   Wed, 6 Oct 2021 12:24:50 +0200
-From:   Andrew Jones <drjones@redhat.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org, will@kernel.org,
-        qperret@google.com, dbrazdil@google.com,
-        Steven Price <steven.price@arm.com>,
-        Fuad Tabba <tabba@google.com>,
-        Srivatsa Vaddagiri <vatsa@codeaurora.org>,
-        Shanker R Donthineni <sdonthineni@nvidia.com>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        kernel-team@android.com
-Subject: Re: [PATCH v2 01/16] KVM: arm64: Generalise VM features into a set
- of flags
-Message-ID: <20211006102450.4fkn46yqfbbh7i6y@gator.home>
-References: <20211004174849.2831548-1-maz@kernel.org>
- <20211004174849.2831548-2-maz@kernel.org>
+        id S238091AbhJFK2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 06:28:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43624 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229824AbhJFK2e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 06:28:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4258260EE3;
+        Wed,  6 Oct 2021 10:26:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633516002;
+        bh=CBXQOuJ3lyLrw+FXgbcjsTqZ+jCdlPSPS40XXbYz3oY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YBgiRIaJhh+HctK74haEIEU34HFnWsiKETTgEDCXtvp3klygqMrWOAhjdcxdizE83
+         Eyy73E0+4h3E67iuwamf17YzDPh+eMRBqgztxrCimpOeIp7YrGs7UbUCtRhs9tr9f5
+         VXed6hc26HwMz8sNa6h5eAUQR3+/j/6RSDA5rlw3C8do4YdKIF4rCSl3LGuegnAmpC
+         NUlb+a1Bo8oSxJtJW5Eu0S9GABSzMdcXv2ZSYMSepOkCivm3medKHEHK6rBJCuzggm
+         YGmirJ+RnQXePKwLjy6VVip4skjNeCbz8nrRSQEqbWqpOEOixvhh0lW0ujuD3FcO13
+         o2qcM0yf3dW+A==
+Date:   Wed, 6 Oct 2021 15:56:37 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Rob Clark <robdclark@gmail.com>, linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org
+Subject: Re: [PATCH 04/11] drm/msm/disp/dpu1: Add DSC support in RM
+Message-ID: <YV153cn39rZeqcJT@matsya>
+References: <20210715065203.709914-1-vkoul@kernel.org>
+ <20210715065203.709914-5-vkoul@kernel.org>
+ <c8e9b236-4438-c2b3-a9a3-80f1c1c517a9@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211004174849.2831548-2-maz@kernel.org>
+In-Reply-To: <c8e9b236-4438-c2b3-a9a3-80f1c1c517a9@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 04, 2021 at 06:48:34PM +0100, Marc Zyngier wrote:
-> We currently deal with a set of booleans for VM features,
-> while they could be better represented as set of flags
-> contained in an unsigned long, similarily to what we are
-> doing on the CPU side.
+On 29-07-21, 23:23, Dmitry Baryshkov wrote:
+> On 15/07/2021 09:51, Vinod Koul wrote:
+
+> > diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c
+> > index fd2d104f0a91..4da6d72b7996 100644
+> > --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c
+> > +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c
+> > @@ -11,6 +11,7 @@
+> >   #include "dpu_hw_intf.h"
+> >   #include "dpu_hw_dspp.h"
+> >   #include "dpu_hw_merge3d.h"
+> > +#include "dpu_hw_dsc.h"
+> >   #include "dpu_encoder.h"
+> >   #include "dpu_trace.h"
+> > @@ -75,6 +76,14 @@ int dpu_rm_destroy(struct dpu_rm *rm)
+> >   			dpu_hw_intf_destroy(hw);
+> >   		}
+> >   	}
+> > +	for (i = 0; i < ARRAY_SIZE(rm->dsc_blks); i++) {
+> > +		struct dpu_hw_dsc *hw;
+> > +
+> > +		if (rm->intf_blks[i]) {
 > 
-> Signed-off-by: Marc Zyngier <maz@kernel.org>
-> ---
->  arch/arm64/include/asm/kvm_host.h | 12 +++++++-----
->  arch/arm64/kvm/arm.c              |  5 +++--
->  arch/arm64/kvm/mmio.c             |  3 ++-
->  3 files changed, 12 insertions(+), 8 deletions(-)
+> rm->dsc_blks[i]
+
+Thanks for spotting, fixed!
+
 > 
-> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
-> index f8be56d5342b..f63ca8fb4e58 100644
-> --- a/arch/arm64/include/asm/kvm_host.h
-> +++ b/arch/arm64/include/asm/kvm_host.h
-> @@ -122,7 +122,10 @@ struct kvm_arch {
->  	 * should) opt in to this feature if KVM_CAP_ARM_NISV_TO_USER is
->  	 * supported.
->  	 */
-> -	bool return_nisv_io_abort_to_user;
-> +#define KVM_ARCH_FLAG_RETURN_NISV_IO_ABORT_TO_USER	0
-> +	/* Memory Tagging Extension enabled for the guest */
-> +#define KVM_ARCH_FLAG_MTE_ENABLED			1
-> +	unsigned long flags;
->  
->  	/*
->  	 * VM-wide PMU filter, implemented as a bitmap and big enough for
-> @@ -133,9 +136,6 @@ struct kvm_arch {
->  
->  	u8 pfr0_csv2;
->  	u8 pfr0_csv3;
-> -
-> -	/* Memory Tagging Extension enabled for the guest */
-> -	bool mte_enabled;
->  };
->  
->  struct kvm_vcpu_fault_info {
-> @@ -786,7 +786,9 @@ bool kvm_arm_vcpu_is_finalized(struct kvm_vcpu *vcpu);
->  #define kvm_arm_vcpu_sve_finalized(vcpu) \
->  	((vcpu)->arch.flags & KVM_ARM64_VCPU_SVE_FINALIZED)
->  
-> -#define kvm_has_mte(kvm) (system_supports_mte() && (kvm)->arch.mte_enabled)
-> +#define kvm_has_mte(kvm)					\
-> +	(system_supports_mte() &&				\
-> +	 test_bit(KVM_ARCH_FLAG_MTE_ENABLED, &(kvm)->arch.flags))
->  #define kvm_vcpu_has_pmu(vcpu)					\
->  	(test_bit(KVM_ARM_VCPU_PMU_V3, (vcpu)->arch.features))
->  
-> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-> index fe102cd2e518..ed9c89ec0b4f 100644
-> --- a/arch/arm64/kvm/arm.c
-> +++ b/arch/arm64/kvm/arm.c
-> @@ -89,7 +89,8 @@ int kvm_vm_ioctl_enable_cap(struct kvm *kvm,
->  	switch (cap->cap) {
->  	case KVM_CAP_ARM_NISV_TO_USER:
->  		r = 0;
-> -		kvm->arch.return_nisv_io_abort_to_user = true;
-> +		set_bit(KVM_ARCH_FLAG_RETURN_NISV_IO_ABORT_TO_USER,
-> +			&kvm->arch.flags);
->  		break;
->  	case KVM_CAP_ARM_MTE:
->  		mutex_lock(&kvm->lock);
-> @@ -97,7 +98,7 @@ int kvm_vm_ioctl_enable_cap(struct kvm *kvm,
->  			r = -EINVAL;
->  		} else {
->  			r = 0;
-> -			kvm->arch.mte_enabled = true;
-> +			set_bit(KVM_ARCH_FLAG_MTE_ENABLED, &kvm->arch.flags);
->  		}
->  		mutex_unlock(&kvm->lock);
->  		break;
-> diff --git a/arch/arm64/kvm/mmio.c b/arch/arm64/kvm/mmio.c
-> index 3e2d8ba11a02..3dd38a151d2a 100644
-> --- a/arch/arm64/kvm/mmio.c
-> +++ b/arch/arm64/kvm/mmio.c
-> @@ -135,7 +135,8 @@ int io_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa)
->  	 * volunteered to do so, and bail out otherwise.
->  	 */
->  	if (!kvm_vcpu_dabt_isvalid(vcpu)) {
-> -		if (vcpu->kvm->arch.return_nisv_io_abort_to_user) {
-> +		if (test_bit(KVM_ARCH_FLAG_RETURN_NISV_IO_ABORT_TO_USER,
-> +			     &vcpu->kvm->arch.flags)) {
->  			run->exit_reason = KVM_EXIT_ARM_NISV;
->  			run->arm_nisv.esr_iss = kvm_vcpu_dabt_iss_nisv_sanitized(vcpu);
->  			run->arm_nisv.fault_ipa = fault_ipa;
-> -- 
-> 2.30.2
+> > +			hw = to_dpu_hw_dsc(rm->dsc_blks[i]);
+> > +			dpu_hw_dsc_destroy(hw);
+> > +		}
+> > +	}
+> >   	return 0;
+> >   }
+> > @@ -221,6 +230,19 @@ int dpu_rm_init(struct dpu_rm *rm,
+> >   		rm->dspp_blks[dspp->id - DSPP_0] = &hw->base;
+> >   	}
+> > +	for (i = 0; i < cat->dsc_count; i++) {
+> > +		struct dpu_hw_dsc *hw;
+> > +		const struct dpu_dsc_cfg *dsc = &cat->dsc[i];
+> > +
+> > +		hw = dpu_hw_dsc_init(dsc->id, mmio, cat);
+> > +		if (IS_ERR_OR_NULL(hw)) {
+> > +			rc = PTR_ERR(hw);
+> > +			DPU_ERROR("failed dsc object creation: err %d\n", rc);
+> > +			goto fail;
+> > +		}
+> > +		rm->dsc_blks[dsc->id - DSC_0] = &hw->base;
+> > +	}
+> > +
+> >   	return 0;
+> >   fail:
+> > @@ -476,6 +498,9 @@ static int _dpu_rm_reserve_intf(
+> >   	}
+> >   	global_state->intf_to_enc_id[idx] = enc_id;
+> > +
+> > +	global_state->dsc_to_enc_id[0] = enc_id;
+> > +	global_state->dsc_to_enc_id[1] = enc_id;
 > 
+> This is not correct. At least this should be guarded with an if, checking
+> that DSC is requested. Also we'd need to check that DSC 0 and 1 are not
+> allocated.
 
-Maybe a kvm_arm_has_feature(struct kvm *kvm) helper would be nice to avoid
-all the &vcpu->kvm->arch.flags types of references getting scattered
-around.
+Correct, so I have done few changes here and for DSC block reservation..
+- Calling dpu_rm_get_assigned_resources() for DSC only when DSC is
+  required from dpu encoder
+- moved the above code to dsc helper: _dpu_rm_reserve_dsc() as suggested
+  by Abhinav as well
+- Check if DSC is supported and then check if DSC 0|1 are not allocated
+  and then assign as above
 
-Reviewed-by: Andrew Jones <drjones@redhat.com>
-
-Thanks,
-drew
-
+-- 
+~Vinod
