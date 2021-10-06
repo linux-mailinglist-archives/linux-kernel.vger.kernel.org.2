@@ -2,166 +2,288 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 074EA4245D7
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 20:15:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB87F4245D9
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 20:16:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238617AbhJFSRo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 14:17:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35124 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231497AbhJFSRm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 14:17:42 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6D24C061746
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 11:15:49 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id m21so3183305pgu.13
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 11:15:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=cdG7EWDcW6BJEY9ksYClAuQgmEOu2o4ECgX6UcvZ2zk=;
-        b=S45eY5sxGxaARPnhN1Xz2UKmhtIJHIHbAsu54jKmCJUyrRpESJJhF2u9DPDFrHaq7F
-         drpJwj6nkczgIxFZvZvMvKG6avApQrrzeIFjJ6Hr7ukyPUtw+rPai7t1yFPZnlUSxnIa
-         Hd2WNBNnx7FPaP8+y1BkAWpOidWj/3kFOYnpA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=cdG7EWDcW6BJEY9ksYClAuQgmEOu2o4ECgX6UcvZ2zk=;
-        b=blPzSFIjZtUW4gx8P+32e0Ss+hrcK6mht+bEeouniz5pSYVlre4j8hI2cXhdskGgpp
-         FKo9UAuhba4M9iiCdFUA4VCGQ4Fd7szzlIu0ccjETgjbTXKNsJVPMi8vrBDchdUyCKUu
-         X1uNz5YKL17P3TIdtOduy1LbajeRHXGM8a/s7xVHklU7q+Kz9nE4tfpWPTEGBzKXB/Lu
-         MDMc4iIQuJ4rcClCdfftCWQSkuc0D2ZoT1XpC/oYtCZNVvALgdlXu9zSLnyqLRCgEmTE
-         kmUB8/N2zs7RLVmDCpdtmqA9lJwPk2gMpYyCzd+g18CAfdMAe4sVObOygt0rViIikLdK
-         4xKQ==
-X-Gm-Message-State: AOAM531EA0H7xY9dbJlAfa3+5ZxoP0+J2rBfNl/ExfvmQ9JcTCipcVif
-        /4sHPBs7R9UABMRpbfpTCx66OA==
-X-Google-Smtp-Source: ABdhPJzQbkrbJxVdVBZGk+s+GglEbnE7pwlp2xgbil4BB0fndLGticEbM4M+8d14ZxfuFwm4fldvJQ==
-X-Received: by 2002:a63:74b:: with SMTP id 72mr152871pgh.290.1633544149174;
-        Wed, 06 Oct 2021 11:15:49 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id b23sm21869363pfi.135.2021.10.06.11.15.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Oct 2021 11:15:48 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
-        Jann Horn <jannh@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: [PATCH v2] kasan: test: Bypass __alloc_size checks
-Date:   Wed,  6 Oct 2021 11:15:44 -0700
-Message-Id: <20211006181544.1670992-1-keescook@chromium.org>
-X-Mailer: git-send-email 2.30.2
+        id S235329AbhJFSSo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 14:18:44 -0400
+Received: from mga14.intel.com ([192.55.52.115]:42515 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229633AbhJFSSn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 14:18:43 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10129"; a="226382702"
+X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; 
+   d="scan'208";a="226382702"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2021 11:16:50 -0700
+X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; 
+   d="scan'208";a="484214643"
+Received: from sschwenc-mobl1.amr.corp.intel.com (HELO [10.209.2.213]) ([10.209.2.213])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2021 11:16:50 -0700
+Subject: Re: linux-next: Tree for Oct 5 (warnings: a. trace; b. mm/migrate)
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>
+References: <20211005190628.1f26b13d@canb.auug.org.au>
+ <c1d9e328-ad7c-920b-6c24-9e1598a6421c@infradead.org>
+ <2216e7c0-093b-3d90-ae1c-91902147fe05@intel.com>
+ <20211006105621.7219404f@gandalf.local.home>
+ <a053e10c-64ae-4868-b34c-d588bb3dca18@infradead.org>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <4f6df3bd-28e1-b6e6-7c87-af7fdf2ec22f@intel.com>
+Date:   Wed, 6 Oct 2021 11:16:47 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3355; h=from:subject; bh=B1T1hxgxVDfQrLSNj+ORHFTRqT7J4uui00+KgHGqQ7E=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhXefQSdeNtSXEzc4wkAzSvCwnIV5nf7JNgxhaY2in pL0uC/WJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYV3n0AAKCRCJcvTf3G3AJj0LD/ 9gOXto1WuRJBbDz2HibWKwg/R/X8gbdg5zE7FdTyyVbz0LNGbuTXVroklxd4SG9vle3bPb++KqJLiD rapIUX1iI3LpUGydJo5vtyr7/DMJU2IHottLCAUmDbBfQxlJfErfV9cooDSiBTryFX5wLA2DUKA2uf c632273fduEfmsZFj8u4CaKCrGzjQIEP6rFA9E2Nx5EF8wJTKDGZEfX53guKBXnpNQStXw6NriB6hw GRH0IDNDGIRquhyPsG2kbDkWz8eud3kdMfJxjMr8ih5zZkQOdkH2bG7WWZVjveU/Cp5iWLAiKDW/Bw lkmCDOwaXMM86h2AJiqlXjtwMqussFDImN+PQ3fFLHgQz8yGtehxjrmJlMsLmMhnEyMvkgclXYvphF gBm6pon54h4Dc3Fhs5gz4j9Gv8TCdw23d83ui6GMZhC10ezi9kV4um1llDWFbpkrD8G68qTCArSEYU IjwT+x4qy1H4lpmghfs71tyikKFEEDiI9+xJAgpMMuFC8oqsyFTwmGVWErrVR+CxsQh8WbtTU6tZY+ 0vV9fCiolMiZUKnnzHoQE+93YOq5kNQFrYbnzvFArd8VIpaKDXEdlkEZ6iayoj/dYuX55gkRJOfSuu PL36GdgeckkrVvNaUZbucMi4zHU67KK6zC/INs8uAVyMNDA+O+MBokbNmOtg==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <a053e10c-64ae-4868-b34c-d588bb3dca18@infradead.org>
+Content-Type: multipart/mixed;
+ boundary="------------0CEE4FD79D59425ECF720C35"
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Intentional overflows, as performed by the KASAN tests, are detected
-at compile time[1] (instead of only at run-time) with the addition of
-__alloc_size. Fix this by forcing the compiler into not being able to
-trust the size used following the kmalloc()s.
+This is a multi-part message in MIME format.
+--------------0CEE4FD79D59425ECF720C35
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 
-[1] https://lore.kernel.org/lkml/20211005184717.65c6d8eb39350395e387b71f@linux-foundation.org
+On 10/6/21 9:39 AM, Randy Dunlap wrote:
+>>>> ../mm/migrate.c:3216:22: error: 'migrate_on_reclaim_callback' defined
+>>>> but not used [-Werror=unused-function]
+>>>>   static int __meminit migrate_on_reclaim_callback(struct
+>>>> notifier_block
+>>>> *self,
+>>>>                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+>>>> ../mm/migrate.c:3197:13: error: 'set_migration_target_nodes' defined
+>>>> but
+>>>> not used [-Werror=unused-function]
+>>>>   static void set_migration_target_nodes(void)
+>>>>               ^~~~~~~~~~~~~~~~~~~~~~~~~~
+>>>>
+>>>>
+>>>> (example usage to get the randconfig files:
+>>>> KCONFIG_SEED=0xBFBEA13C make [ARCH=x86_64] randconfig
+>>>> )
 
-Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
-Cc: Alexander Potapenko <glider@google.com>
-Cc: Andrey Konovalov <andreyknvl@gmail.com>
-Cc: Dmitry Vyukov <dvyukov@google.com>
-Cc: kasan-dev@googlegroups.com
-Signed-off-by: Kees Cook <keescook@chromium.org>
+Randy, thanks for the .config!  That did the trick.
+
+Andrew, attached is a replacement patch for
+
+	mm-migrate-add-cpu-hotplug-to-demotion-ifdef.patch
+
+I could do an incremental as well if that would be easier.  But, the fix
+here required a bit of a change of tactics from the original and
+necessitated a rewrite of the changelog.
+
+--------------0CEE4FD79D59425ECF720C35
+Content-Type: text/x-patch; charset=UTF-8;
+ name="mm-migrate-separate-CPU-and-memory-hotplug-notifiers.patch"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+ filename*0="mm-migrate-separate-CPU-and-memory-hotplug-notifiers.patch"
+
+Subject: [PATCH] mm/migrate: separate CPU and memory hotplug notifiers
+Date: Wed, 6 Oct 2021 11:08:46 -0700
+Message-ID: <20211006180846.3321352-1-dave.hansen@intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210924161255.E5FE8F7E@davehans-spike.ostc.intel.com>
+References: <20210924161255.E5FE8F7E@davehans-spike.ostc.intel.com>
+
+From: Dave Hansen <dave.hansen@linux.intel.com>
+
+Once upon a time, the node demotion updates were driven solely by memory
+hotplug events.  But now, there are handlers for both CPU and memory
+hotplug.
+
+However, the #ifdef around the code checks only memory hotplug.  A system=
+
+that has HOTPLUG_CPU=3Dy but MEMORY_HOTPLUG=3Dn would miss CPU hotplug ev=
+ents.
+
+Update the #ifdef around the common code.  Add memory and CPU-specific
+option are off.  Move some CPU-hotplug-specific functions to reside under=
+
+their specific #ifdef.
+
+Link: https://lkml.kernel.org/r/20210924161255.E5FE8F7E@davehans-spike.os=
+tc.intel.com
+Fixes: 884a6e5d1f93 ("mm/migrate: update node demotion order on hotplug e=
+vents")
+Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: "Huang, Ying" <ying.huang@intel.com>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Wei Xu <weixugc@google.com>
+Cc: Oscar Salvador <osalvador@suse.de>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Greg Thelen <gthelen@google.com>
+Cc: Yang Shi <yang.shi@linux.alibaba.com>
+Cc: Randy Dunlap <rdunlap@infradead.org>
 ---
-v2: use OPTIMIZER_HIDE_VAR() (jann, mark)
-v1: https://lore.kernel.org/lkml/20211006035522.539346-1-keescook@chromium.org/
----
- lib/test_kasan.c        | 8 +++++++-
- lib/test_kasan_module.c | 2 ++
- 2 files changed, 9 insertions(+), 1 deletion(-)
+ mm/migrate.c | 78 +++++++++++++++++++++++++++++-----------------------
+ 1 file changed, 44 insertions(+), 34 deletions(-)
 
-diff --git a/lib/test_kasan.c b/lib/test_kasan.c
-index 8835e0784578..8a8a8133f4cd 100644
---- a/lib/test_kasan.c
-+++ b/lib/test_kasan.c
-@@ -440,6 +440,7 @@ static void kmalloc_oob_memset_2(struct kunit *test)
- 	ptr = kmalloc(size, GFP_KERNEL);
- 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
- 
-+	OPTIMIZER_HIDE_VAR(size);
- 	KUNIT_EXPECT_KASAN_FAIL(test, memset(ptr + size - 1, 0, 2));
- 	kfree(ptr);
- }
-@@ -452,6 +453,7 @@ static void kmalloc_oob_memset_4(struct kunit *test)
- 	ptr = kmalloc(size, GFP_KERNEL);
- 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
- 
-+	OPTIMIZER_HIDE_VAR(size);
- 	KUNIT_EXPECT_KASAN_FAIL(test, memset(ptr + size - 3, 0, 4));
- 	kfree(ptr);
- }
-@@ -464,6 +466,7 @@ static void kmalloc_oob_memset_8(struct kunit *test)
- 	ptr = kmalloc(size, GFP_KERNEL);
- 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
- 
-+	OPTIMIZER_HIDE_VAR(size);
- 	KUNIT_EXPECT_KASAN_FAIL(test, memset(ptr + size - 7, 0, 8));
- 	kfree(ptr);
- }
-@@ -476,6 +479,7 @@ static void kmalloc_oob_memset_16(struct kunit *test)
- 	ptr = kmalloc(size, GFP_KERNEL);
- 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
- 
-+	OPTIMIZER_HIDE_VAR(size);
- 	KUNIT_EXPECT_KASAN_FAIL(test, memset(ptr + size - 15, 0, 16));
- 	kfree(ptr);
- }
-@@ -488,6 +492,7 @@ static void kmalloc_oob_in_memset(struct kunit *test)
- 	ptr = kmalloc(size, GFP_KERNEL);
- 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
- 
-+	OPTIMIZER_HIDE_VAR(size);
- 	KUNIT_EXPECT_KASAN_FAIL(test,
- 				memset(ptr, 0, size + KASAN_GRANULE_SIZE));
- 	kfree(ptr);
-@@ -497,7 +502,7 @@ static void kmalloc_memmove_invalid_size(struct kunit *test)
+diff --git a/mm/migrate.c b/mm/migrate.c
+index a6311e46f605..5282157575ba 100644
+--- a/mm/migrate.c
++++ b/mm/migrate.c
+@@ -3066,7 +3066,7 @@ void migrate_vma_finalize(struct migrate_vma *migra=
+te)
+ EXPORT_SYMBOL(migrate_vma_finalize);
+ #endif /* CONFIG_DEVICE_PRIVATE */
+=20
+-#if defined(CONFIG_MEMORY_HOTPLUG)
++#if defined(CONFIG_MEMORY_HOTPLUG) || defined(CONFIG_HOTPLUG_CPU)
+ /* Disable reclaim-based migration. */
+ static void __disable_all_migrate_targets(void)
  {
- 	char *ptr;
- 	size_t size = 64;
--	volatile size_t invalid_size = -2;
-+	size_t invalid_size = -2;
- 
- 	/*
- 	 * Hardware tag-based mode doesn't check memmove for negative size.
-@@ -510,6 +515,7 @@ static void kmalloc_memmove_invalid_size(struct kunit *test)
- 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
- 
- 	memset((char *)ptr, 0, 64);
-+	OPTIMIZER_HIDE_VAR(invalid_size);
- 	KUNIT_EXPECT_KASAN_FAIL(test,
- 		memmove((char *)ptr, (char *)ptr + 4, invalid_size));
- 	kfree(ptr);
-diff --git a/lib/test_kasan_module.c b/lib/test_kasan_module.c
-index 7ebf433edef3..b112cbc835e9 100644
---- a/lib/test_kasan_module.c
-+++ b/lib/test_kasan_module.c
-@@ -35,6 +35,8 @@ static noinline void __init copy_user_test(void)
- 		return;
- 	}
- 
-+	OPTIMIZER_HIDE_VAR(size);
+@@ -3198,35 +3198,7 @@ static void __set_migration_target_nodes(void)
+ 		goto again;
+ }
+=20
+-/*
+- * For callers that do not hold get_online_mems() already.
+- */
+-static void set_migration_target_nodes(void)
+-{
+-	get_online_mems();
+-	__set_migration_target_nodes();
+-	put_online_mems();
+-}
+-
+-/*
+- * React to hotplug events that might affect the migration targets
+- * like events that online or offline NUMA nodes.
+- *
+- * The ordering is also currently dependent on which nodes have
+- * CPUs.  That means we need CPU on/offline notification too.
+- */
+-static int migration_online_cpu(unsigned int cpu)
+-{
+-	set_migration_target_nodes();
+-	return 0;
+-}
+-
+-static int migration_offline_cpu(unsigned int cpu)
+-{
+-	set_migration_target_nodes();
+-	return 0;
+-}
+-
++#if defined(CONFIG_MEMORY_HOTPLUG)
+ /*
+  * This leaves migrate-on-reclaim transiently disabled between
+  * the MEM_GOING_OFFLINE and MEM_OFFLINE events.  This runs
+@@ -3284,7 +3256,45 @@ static int __meminit migrate_on_reclaim_callback(s=
+truct notifier_block *self,
+ 	return notifier_from_errno(0);
+ }
+=20
+-static int __init migrate_on_reclaim_init(void)
++static int __init migrate_on_reclaim_init_memhp(void)
++{
++	hotplug_memory_notifier(migrate_on_reclaim_callback, 100);
++	return 0;
++}
++late_initcall(migrate_on_reclaim_init_memhp);
++#endif /* CONFIG_MEMORY_HOTPLUG */
 +
- 	pr_info("out-of-bounds in copy_from_user()\n");
- 	unused = copy_from_user(kmem, usermem, size + 1);
- 
--- 
-2.30.2
++#ifdef CONFIG_HOTPLUG_CPU
++/*
++ * For callers that do not hold get_online_mems() already.
++ */
++static void set_migration_target_nodes(void)
++{
++	get_online_mems();
++	__set_migration_target_nodes();
++	put_online_mems();
++}
++
++/*
++ * React to hotplug events that might affect the migration targets
++ * like events that online or offline NUMA nodes.
++ *
++ * The ordering is also currently dependent on which nodes have
++ * CPUs.  That means we need CPU on/offline notification too.
++ */
++static int migration_online_cpu(unsigned int cpu)
++{
++	set_migration_target_nodes();
++	return 0;
++}
++
++static int migration_offline_cpu(unsigned int cpu)
++{
++	set_migration_target_nodes();
++	return 0;
++}
++
++static int __init migrate_on_reclaim_init_cpuhp(void)
+ {
+ 	int ret;
+=20
+@@ -3299,8 +3309,8 @@ static int __init migrate_on_reclaim_init(void)
+ 	 */
+ 	WARN_ON(ret < 0);
+=20
+-	hotplug_memory_notifier(migrate_on_reclaim_callback, 100);
+ 	return 0;
+ }
+-late_initcall(migrate_on_reclaim_init);
+-#endif /* CONFIG_MEMORY_HOTPLUG */
++late_initcall(migrate_on_reclaim_init_cpuhp);
++#endif /* CONFIG_HOTPLUG_CPU */
++#endif /* CONFIG_MEMORY_HOTPLUG || CONFIG_HOTPLUG_CPU */
+--=20
+2.25.1
 
+
+--------------0CEE4FD79D59425ECF720C35--
