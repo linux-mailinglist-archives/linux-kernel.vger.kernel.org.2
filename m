@@ -2,135 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 449DC4238EB
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 09:32:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0EFB4238F5
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 09:33:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237420AbhJFHeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 03:34:16 -0400
-Received: from mail-il1-f200.google.com ([209.85.166.200]:55919 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237448AbhJFHeP (ORCPT
+        id S237608AbhJFHe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 03:34:59 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:1106 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237389AbhJFHez (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 03:34:15 -0400
-Received: by mail-il1-f200.google.com with SMTP id c11-20020a928e0b000000b0024eb114af51so1222636ild.22
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 00:32:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=v2XyC/ESmma/mYoF8fEwUIRl7OIJI4DzGLfKNGadpYs=;
-        b=IuqH5aITf4llV0f//8uaoE6UNSDF2ZQ27eQ6ZjoSn2I1DaZnYCnlw5TLz3jd9UL03V
-         9eTc1H90QPuG4AGq13/NNgUCMg1DueVct34OF4ZPHmRg8HpsPGOm1dkeEyoEM4oOG6fi
-         ugm+o+chUzyhh2/6Boyg1S9x00FjBqSNHWg39h9LXosCK8b9Y6QuBIT9gfC00ajg7EAf
-         EhzzjTkTdx05EYJZImZ9rG1hQTeSeyZX+0+wpCJNwUW05CUn8oeFD0ZvMEK8v2jsgUfX
-         OkiWML8dsKlvwiiT24xochUCmYLW88zX8p+MMYRilrVNoIBXz8cz5Il51eayZ4YSMl60
-         4CVw==
-X-Gm-Message-State: AOAM5310e0wXczf1191DNN1cVTFhAMkmtbLaIx+Od+7eXyusOrydOEYU
-        XcJ6C2YPEd0XkARY68xoubGH/bdFgEREl84ILxuAPeSlm3q8
-X-Google-Smtp-Source: ABdhPJwr14EPPPA4gMQx9OL5gR6Jl1TWMayLz64XQbdP4Zlt9E3r7Fy0pJl87puVxiUHWpNby+ZXgHjWNADgvQMy+ev4qM/t5YVC
+        Wed, 6 Oct 2021 03:34:55 -0400
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1967VAwr024850;
+        Wed, 6 Oct 2021 07:32:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : content-type : mime-version; s=corp-2021-07-09;
+ bh=uRpg6XKheJdtjiZVFrnRRweFXLq8RBMANvbyYjgbLxo=;
+ b=OnPpN6lEYaCrMZrIt4N7lqTMzecoDTcIeDUx/RwbRplQzo1iHIk3TImrdCiKEm+FZqC7
+ Po+yjg32pRB2Ml4G9gndB4iOoKiQ+iZcC/0cB1Sv5qaZ/87WoXJjR1sSsL/0kmUbuuto
+ pnqN+cYlN542Ht8It5YH1OvOZBzSPxF2cJ9pqUBm8FcvOKkADRV2YR8dGw5hSC8f52TB
+ XoxSy2f+5YveCVSJ0FL/s5k3qKfmlWzrX1OrgHOoyx3c9/sCe2ZA95LarFqQFnnbAWyK
+ qnKr8Pj5NxKZ9hLxT72lmyuAifA2/Z2tm74pjvogOzDtuE4BN7hT7gcjJUKRZRIGzWXk zw== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3bh10g9ut7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 06 Oct 2021 07:32:59 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1967Q1pn157666;
+        Wed, 6 Oct 2021 07:32:58 GMT
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2169.outbound.protection.outlook.com [104.47.59.169])
+        by aserp3030.oracle.com with ESMTP id 3bev7uen0v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 06 Oct 2021 07:32:58 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aBLO5Yc0PxJ04Cojqmvl+YJ6f5OwjAzWKg6thsjYRBZxfgM0ktpYYpEo1o/DD+Kib8gi//vRH/aFESWKRWuxZdjymgWO2JkEfvNOEQw+seTmHIRxqWIJEyJHzbrWVgfOanL8XZxDcOXsYcK6eAJjBt7XZw1+EQkuGzIyHq4Gor79BLp9ukx7M32L9Cr5GlC+HRlsCb71EOvacPZc2Jx44VyXpf2cO47q/Upd6AAkL9/AEg+glK/CXQEZJhSQuEGKj0JnmD79qwyQ6AMlkHIK7NwprbFO4InsoxmSutHR+IEdoUPq+mzrV8lyTwxllVh5LmiTrjKxgVlyTe7/wcuFMg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=uRpg6XKheJdtjiZVFrnRRweFXLq8RBMANvbyYjgbLxo=;
+ b=BpjPVjDTN7iAGvuNJ8PR+Ve+1R2wrmVt9e+QOLq74gHCk4qKa87f6NkKAsfMzD/BK5ZxqxwjW7cIIPJasKh7nPYH+fEnB9AYRzzYxZYaI6kgFsS1WTqDzRUPeuMDaaoitf+rGjvph1JagcWRB6Wt57G7K9/5ndvmsTL2Sews1xA7oLrdztx+VnVuqtl9MVaBBhhsbmAbUvSRAfgjUGkD77QJ4Fd+v5vvUXe7QiUqVk9AWjEur+EFkNkzD3MpE3EWXli3RjgNokF0N6GR9Y8PwffA3wsDrLKAR6e1VhJCt9XAvsQGyKnMSg7sutBC/B2DVWHX+vvJeBh8/wZDIULiVw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=uRpg6XKheJdtjiZVFrnRRweFXLq8RBMANvbyYjgbLxo=;
+ b=hPEc/gKcTai/d1gD2m0apuXie1oCO1HoH5MnMY3Lnlcj8oM5xQd4esfkOxLGSgAtf86h2CnaRKbAdm8Es5cgbeykJ0epiC08dRM2S6b/1BMzv7R184PQF1kqOB1zyz3uEGy3pu8DDk47AEYrQOJOXAEIBWXzlzrbnfmuXtgLZR8=
+Authentication-Results: linux.ibm.com; dkim=none (message not signed)
+ header.d=none;linux.ibm.com; dmarc=none action=none header.from=oracle.com;
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ (2603:10b6:301:2d::28) by CO1PR10MB4546.namprd10.prod.outlook.com
+ (2603:10b6:303:6e::12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.16; Wed, 6 Oct
+ 2021 07:32:56 +0000
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::d409:11b5:5eb2:6be9]) by MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::d409:11b5:5eb2:6be9%5]) with mapi id 15.20.4566.022; Wed, 6 Oct 2021
+ 07:32:56 +0000
+Date:   Wed, 6 Oct 2021 10:32:43 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Naresh Kumar Inna <naresh@chelsio.com>
+Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
+        James Bottomley <JBottomley@Parallels.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: [PATCH] scsi: csiostor: Uninitialized data in csio_ln_vnp_read_cbfn()
+Message-ID: <20211006073242.GA8404@kili>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-ClientProxiedBy: VI1P195CA0014.EURP195.PROD.OUTLOOK.COM
+ (2603:10a6:800:d0::24) To MWHPR1001MB2365.namprd10.prod.outlook.com
+ (2603:10b6:301:2d::28)
 MIME-Version: 1.0
-X-Received: by 2002:a5e:9314:: with SMTP id k20mr5179316iom.136.1633505543301;
- Wed, 06 Oct 2021 00:32:23 -0700 (PDT)
-Date:   Wed, 06 Oct 2021 00:32:23 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a5aee105cdaa2586@google.com>
-Subject: [syzbot] KASAN: use-after-free Read in icmpv6_sk_exit (2)
-From:   syzbot <syzbot+497d3e91eb557f7dc0aa@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, dsahern@kernel.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, yoshfuji@linux-ipv6.org
-Content-Type: text/plain; charset="UTF-8"
+Received: from kili (62.8.83.99) by VI1P195CA0014.EURP195.PROD.OUTLOOK.COM (2603:10a6:800:d0::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.15 via Frontend Transport; Wed, 6 Oct 2021 07:32:52 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 74e93a6d-3a86-42d7-63fa-08d9889b8377
+X-MS-TrafficTypeDiagnostic: CO1PR10MB4546:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <CO1PR10MB454662FBAB8311FDA8C7153B8EB09@CO1PR10MB4546.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2733;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: loT7GZZwvZ9MnpI+ocs8JW5834u2APLyzetk09vdZhsRnsEv6OYpPlJNXZljw3BRIvPsr4JAh6PlOna0+33N5qO8ZvYGMh+KSdDpwn2LQO3KTHvQourpXROHkckQHhyFLgwwNrDNx3pngIWKnOzKCW+cm1KAcGSCunME2oKdziZzDIYkEUP6DOEPcUR6SKJEnQQGh/oBXhLJPo681l4PX/hV9ZBWT4/C0qWYDRuDz4pfzCOaK8FP0CDNZ5n5syIip6zlJgF7ipJs76t3+3B7nOQimb3Wettzo5ygVLJFLJ2REDP/dgFzG8tVwPzAuN9sgoDTR34ISfo0xnPtjzaM9exVpuoB+gK1gOwwVM5RE7/GcrdJElITeiqRl80VHYcGygLHiADBAn5GPvBB1HFd1giCqbPS536kWPwR0JNVp+1+u12XI87MOjV8mFrgm15Z3kMLQFAfcu73au11IxhdwvGiTf432gSMERsjXLGEJGjPOgahAmRrIr/aoE2jfLmRNhNpyb8e/Sk5NKzFSS+2Qn0zrcOFB2W5r4fWnDba5MN2HbQVGIPgZfrZO3JAaBzzS3tPxjrPut2KGqtKFXtGu7Hkk025wzgLY4c3aSoItyrCNUqlIuSAl6qflJhkqkAk8wzRKASBninZQsInNGIBS2f2CKE4Y3D6Fxs/QEADZ1wHB7dxvkFXO3Y9zZOGmPx7/pp+tCrti/tVRQarKTtLNA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(83380400001)(86362001)(33716001)(1076003)(26005)(508600001)(6666004)(44832011)(956004)(4326008)(186003)(2906002)(38350700002)(52116002)(9686003)(6496006)(66946007)(66476007)(66556008)(8676002)(316002)(8936002)(38100700002)(110136005)(33656002)(55016002)(9576002)(54906003)(5660300002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?+huCKGb4Ssftq6/Q/MTSb8IoGtzc5PtVwrGfkkpZ08mm+uHigCbovNDM/1Xe?=
+ =?us-ascii?Q?iNG+J+faMhaBVapN4zAGZI2A003lLtfmzYTLW/KOXyL7dWEnKiJHQwtDI7bH?=
+ =?us-ascii?Q?3JaXmHU5o9WT8AuttYnY/eUUatOgWmAIJS6+bVMUHU6dnXws8OLl9EgJLAOb?=
+ =?us-ascii?Q?+HhSNoeoXRNAnVnbSrT0Pc71MxVHp6ED4KH7KdlpVQk/ORNvOMNEwRjUTg2E?=
+ =?us-ascii?Q?uBrLQ6zcOcFKhzZzkccY487MGjMDvPTW7xdgVndv1AlQ1wauds/PsIBYdBUg?=
+ =?us-ascii?Q?7Husc8jW7k/Z7H1XeYs3HZD+0AU+mrF5CII8eTe3Mb9q2bIgvKFRJMELvlSp?=
+ =?us-ascii?Q?4nrQumI45Weah6pYIqe8BA2+y2rmq+2R9CBDAXerp7eJ4N/GBDhK4Vcgjf4Z?=
+ =?us-ascii?Q?mFJ/sythyZ+pnyfO0kpLJhVJOprlhKugEBJ6EnDXGlZ1eyYvGZUHMvaJX+ft?=
+ =?us-ascii?Q?KN4iXCaB5gScl2qVtatehgt+z1tHfgex+I7+huAhfcC0iSVFuhrpQA8pwljn?=
+ =?us-ascii?Q?O+1YKBQgiL+4lnrWQFn89TWralzcJg/9RHv3gLXEDkm6HfOpPR0zeWziKwy7?=
+ =?us-ascii?Q?4K48P0X3oTbcp9TBhEyEqfmdP/umSqffn32ZQrYSlVW2qBfKtAw/8j9a8DE4?=
+ =?us-ascii?Q?8b0RZF/ARy/KN7WTCPnXI8M097ebdLTBUR6HDPhC7iayEV01xsjbaYanXFpV?=
+ =?us-ascii?Q?nD1smeckbMX214KmN6/+vPllyEyuo7Nsu0n7sjTQtc5o3C+dRMADcEAw5geH?=
+ =?us-ascii?Q?u2eLpM2ZaW0RksHoFLZugERl6ZiiC1mFhFMXq9xKVt4SFbCPr3RiUDojkDkE?=
+ =?us-ascii?Q?UoXNpbhKgIPdgV+1VWlNxCKCDGpEYsbdTkNpD74GziygpkUCPs7vKrHmC+1P?=
+ =?us-ascii?Q?xtIQzA1svMnX02R5mrkQ7vYj1JbqIX+Ydmndp0dRaqSnIqLOY4ZzPJHOIt+K?=
+ =?us-ascii?Q?v+XSdJPkXCQMyVh1gmhcPy/FeO9rZWU0LLN0OXQ49X6NZdCOTxAiBzSVXkJm?=
+ =?us-ascii?Q?l742vhQg5OaNT+A4eADeFhYf6GaYQUAWTBwpYky/XhQs3iB7UHC4FhYdYfcR?=
+ =?us-ascii?Q?U8OxS6aLNIo+2o6V5QnvdvtkKxl2NqSfPHQOGJsvdCokpoKEgHheYwJOvf8A?=
+ =?us-ascii?Q?C/uEfqJf7nXg7/Qwjn9brgBxAg4JAfufh27JqRy+uVxuc+rV28T+vw0kHCiW?=
+ =?us-ascii?Q?GKhLFskkO606yWv+BT2I/ARTVk0vMdcJRNaWK2lfBZlHxjxXX2o9HgyktX/T?=
+ =?us-ascii?Q?eXZefivBVfoqNfJmOTI/O0EAthhTfNaYEtqD97dyb+fLIpbt4XEhg/mdaO2N?=
+ =?us-ascii?Q?Jei8h6pSqovACqgys/CWA0do?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 74e93a6d-3a86-42d7-63fa-08d9889b8377
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Oct 2021 07:32:56.0031
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: uS9l95qnquLM424VNUxQuj0IYxkxhqdWhL/+z97XmGqFlWZ22xt7f0FM+YtTIbigd3axBoDMSlOvk3cFFLK/PsuX5Spp8h3oefgcrXQ+vJg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR10MB4546
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10128 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=999 adultscore=0
+ bulkscore=0 suspectscore=0 malwarescore=0 spamscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109230001
+ definitions=main-2110060046
+X-Proofpoint-GUID: Ya7FnCs9WeynzkpNcGeqlnc9tseybnDq
+X-Proofpoint-ORIG-GUID: Ya7FnCs9WeynzkpNcGeqlnc9tseybnDq
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+This variable is just a temporary variable, used to do an endian
+conversion.  The problem is that the last byte is not initialized.
+After the conversion is completely done, the last byte is discarded so
+it doesn't cause a problem.  But static checkers and the KMSan runtime
+checker can detect the uninitialized read and will complain about it.
 
-syzbot found the following issue on:
-
-HEAD commit:    84b3e42564ac Merge tag 'media/v5.15-3' of git://git.kernel..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=12bd85df300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=bb467ad25fcc6899
-dashboard link: https://syzkaller.appspot.com/bug?extid=497d3e91eb557f7dc0aa
-compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13753e7b300000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+497d3e91eb557f7dc0aa@syzkaller.appspotmail.com
-
-general protection fault, probably for non-canonical address 0xdffffc0000000090: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000480-0x0000000000000487]
-CPU: 0 PID: 8 Comm: kworker/u4:0 Not tainted 5.15.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: netns cleanup_net
-RIP: 0010:inet_ctl_sock_destroy include/net/inet_common.h:65 [inline]
-RIP: 0010:icmpv6_sk_exit+0x106/0x1f0 net/ipv6/icmp.c:1038
-Code: 42 80 3c 20 00 74 08 48 89 df e8 e5 7a f3 f8 48 8b 1b 48 85 db 74 2d e8 c8 0d a8 f8 48 81 c3 80 04 00 00 48 89 d8 48 c1 e8 03 <42> 80 3c 20 00 74 08 48 89 df e8 bb 7a f3 f8 48 8b 3b e8 f3 30 25
-RSP: 0018:ffffc90000cd7b40 EFLAGS: 00010206
-RAX: 0000000000000090 RBX: 0000000000000481 RCX: ffff888012375580
-RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000008
-RBP: ffffffff8c38a7d8 R08: ffffffff88da6485 R09: ffffffff843540e0
-R10: 0000000000000009 R11: ffff888012375580 R12: dffffc0000000000
-R13: 1ffffffff1bb7fbf R14: ffff88801fcf3fe0 R15: 0000000000000001
-FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00005606aea732f8 CR3: 000000005c17f000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- ops_exit_list net/core/net_namespace.c:168 [inline]
- cleanup_net+0x758/0xc50 net/core/net_namespace.c:591
- process_one_work+0x853/0x1140 kernel/workqueue.c:2297
- worker_thread+0xac1/0x1320 kernel/workqueue.c:2444
- kthread+0x453/0x480 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30
-Modules linked in:
----[ end trace e9d83564f5107008 ]---
-RIP: 0010:inet_ctl_sock_destroy include/net/inet_common.h:65 [inline]
-RIP: 0010:icmpv6_sk_exit+0x106/0x1f0 net/ipv6/icmp.c:1038
-Code: 42 80 3c 20 00 74 08 48 89 df e8 e5 7a f3 f8 48 8b 1b 48 85 db 74 2d e8 c8 0d a8 f8 48 81 c3 80 04 00 00 48 89 d8 48 c1 e8 03 <42> 80 3c 20 00 74 08 48 89 df e8 bb 7a f3 f8 48 8b 3b e8 f3 30 25
-RSP: 0018:ffffc90000cd7b40 EFLAGS: 00010206
-RAX: 0000000000000090 RBX: 0000000000000481 RCX: ffff888012375580
-RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000008
-RBP: ffffffff8c38a7d8 R08: ffffffff88da6485 R09: ffffffff843540e0
-R10: 0000000000000009 R11: ffff888012375580 R12: dffffc0000000000
-R13: 1ffffffff1bb7fbf R14: ffff88801fcf3fe0 R15: 0000000000000001
-FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f93fc5792d8 CR3: 000000005c17f000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess):
-   0:	42 80 3c 20 00       	cmpb   $0x0,(%rax,%r12,1)
-   5:	74 08                	je     0xf
-   7:	48 89 df             	mov    %rbx,%rdi
-   a:	e8 e5 7a f3 f8       	callq  0xf8f37af4
-   f:	48 8b 1b             	mov    (%rbx),%rbx
-  12:	48 85 db             	test   %rbx,%rbx
-  15:	74 2d                	je     0x44
-  17:	e8 c8 0d a8 f8       	callq  0xf8a80de4
-  1c:	48 81 c3 80 04 00 00 	add    $0x480,%rbx
-  23:	48 89 d8             	mov    %rbx,%rax
-  26:	48 c1 e8 03          	shr    $0x3,%rax
-* 2a:	42 80 3c 20 00       	cmpb   $0x0,(%rax,%r12,1) <-- trapping instruction
-  2f:	74 08                	je     0x39
-  31:	48 89 df             	mov    %rbx,%rdi
-  34:	e8 bb 7a f3 f8       	callq  0xf8f37af4
-  39:	48 8b 3b             	mov    (%rbx),%rdi
-  3c:	e8                   	.byte 0xe8
-  3d:	f3                   	repz
-  3e:	30                   	.byte 0x30
-  3f:	25                   	.byte 0x25
-
-
+Fixes: 5036f0a0ecd3 ("[SCSI] csiostor: Fix sparse warnings.")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ drivers/scsi/csiostor/csio_lnode.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+diff --git a/drivers/scsi/csiostor/csio_lnode.c b/drivers/scsi/csiostor/csio_lnode.c
+index dc98f51f466f..d5ac93897023 100644
+--- a/drivers/scsi/csiostor/csio_lnode.c
++++ b/drivers/scsi/csiostor/csio_lnode.c
+@@ -619,7 +619,7 @@ csio_ln_vnp_read_cbfn(struct csio_hw *hw, struct csio_mb *mbp)
+ 	struct fc_els_csp *csp;
+ 	struct fc_els_cssp *clsp;
+ 	enum fw_retval retval;
+-	__be32 nport_id;
++	__be32 nport_id = 0;
+ 
+ 	retval = FW_CMD_RETVAL_G(ntohl(rsp->alloc_to_len16));
+ 	if (retval != FW_SUCCESS) {
+-- 
+2.20.1
+
