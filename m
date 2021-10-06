@@ -2,140 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29D164236E6
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 06:12:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EDC9423719
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 06:26:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230473AbhJFEOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 00:14:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36952 "EHLO
+        id S229986AbhJFE2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 00:28:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230331AbhJFEON (ORCPT
+        with ESMTP id S229627AbhJFE2Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 00:14:13 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8EB9C06174E
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 21:12:21 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id 77-20020a9d0ed3000000b00546e10e6699so1620898otj.2
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 21:12:21 -0700 (PDT)
+        Wed, 6 Oct 2021 00:28:16 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90A63C06174E
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 21:26:24 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id u20-20020a9d7214000000b0054e170300adso1500228otj.13
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 21:26:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=JeqQPQlkPMyybH7Ylv9LL4C+2+30wYTv9mWLfCOyW68=;
-        b=XEjeIZfNuBmJTMi6wtAtetYggf2aHs3GPhHg1KwJz1egGXL5njhCRw3DDPgbsH7cJv
-         OUWOA1oOvi2LLIVGnWT3wGH+TmJA95TyM0M6gC2kao6MWJu+bZzC5cnO84s06z3CI1AA
-         XVvMCCFyDHcpCO8U8QelLmZi7fD9CRI8OYcPo6qSRxfBbT/AxB2YjYAxUJ6hV57S0w7A
-         tv9MugLiCri9LD2ijJPmIfSvtHSZYv6q8bsMiyIMxl6jokP6DoYrt1m4hdtVohghtVTl
-         EEr+bbftzq4eN6V4Bov3juUBbxPCEkxk4V/sQTSbb+6ENfzMeMK65PcTxz1DE8SImzIX
-         +iKw==
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=lpo3jySHVpuECP223gucHzK6qPCa78lLyTG8fTbUCo0=;
+        b=ThymPaq4pAQseP8pjGIzPhYU0jBZgINzCAXU+02yprRKuRVcVnntiVBge5fbOfF1RF
+         W8kxfZqaNE8gFDoJPaGn802Vgto0JPchR2hb+G8Q5ANj+OaO6mji9CvK6kyTxeimq/TW
+         b00JBCvRa9213DYDkviCzfF9Un4myvLxKzxB4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JeqQPQlkPMyybH7Ylv9LL4C+2+30wYTv9mWLfCOyW68=;
-        b=Ns5ZqCWpuslnsRLyC6H8df+5VHSY/Cl+TKDSkZDbFUZL+H0+ZinUVOnRWXGIyGsFy6
-         GoPdCgrdDQLwBbt5yNKgBZ8nMA4q3ExbfaOPpElSsiumqn+/YC5CC/wX5aXTIxo0Ln7x
-         imN1Usye6NU3BN5vvz+QxEx6ttof2p5IUSh6xRDDxuH0twYV2r5w/BoXwLokhHux4cYJ
-         blZsg9QxOhsQ18Xj+1JvtZwF4SdMZ5ry1pn/r6L3EMwutbP+1SixtwxApABePpn/ow2Z
-         5/9LlHvbec2JGgB7dIOfymT2wkqXfBvbF2lkWWj3vb344WWfNAdcw1qWEO6lUgIFWB69
-         3swA==
-X-Gm-Message-State: AOAM532MpmO1YUgbjqG4s939E/GuSgLnxNCif5ESEN7rrVsaOIcgYP/M
-        opLdy8sQCnWwm6K6qMrXM4SHNJ+Piw2sFg==
-X-Google-Smtp-Source: ABdhPJx/5egmLBcK43fNwucfO1oEx4RaFxVzQH0A8+50zHcH+LenRxckCdmVbnSpKpPJhWTVbKHZbA==
-X-Received: by 2002:a9d:12c8:: with SMTP id g66mr276609otg.7.1633493541062;
-        Tue, 05 Oct 2021 21:12:21 -0700 (PDT)
-Received: from yoga ([2600:1700:a0:3dc8:c84c:8eff:fe1e:256f])
-        by smtp.gmail.com with ESMTPSA id u12sm4009329otq.20.2021.10.05.21.12.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Oct 2021 21:12:20 -0700 (PDT)
-Date:   Tue, 5 Oct 2021 23:12:18 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Matthias Kaehlcke <mka@chromium.org>
-Cc:     Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Uwe Kleine-K?nig <u.kleine-koenig@pengutronix.de>,
-        Lee Jones <lee.jones@linaro.org>, linux-leds@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-pwm@vger.kernel.org,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Yassine Oudjana <y.oudjana@protonmail.com>,
-        Luca Weiss <luca@z3ntu.xyz>,
-        Subbaraman Narayanamurthy <subbaram@codeaurora.org>
-Subject: Re: [PATCH v9 1/2] dt-bindings: leds: Add Qualcomm Light Pulse
- Generator binding
-Message-ID: <YV0iIlTra++r9dL0@yoga>
-References: <20210623035039.772660-1-bjorn.andersson@linaro.org>
- <YToluIBXlNJEFhcb@google.com>
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=lpo3jySHVpuECP223gucHzK6qPCa78lLyTG8fTbUCo0=;
+        b=R7RUugScW5IZH3bd66+3/37jTar5otUYLILyGPRdqNMvSIOduEfnrY4RSzxxAzyJaO
+         pqq4Ib4rpLjDxoPqO6EIO7OfXCdiq276z6zwK4E9Lm63HCJCS3x8Xn+LJ1fYU4+Ehf/v
+         TXcndXmlHfP356h1THx48aNprZmvcYjjzwtGKItPjbzw1NYpRt+DxRJ1+8FBGHOEeeyn
+         Iq26OEpsGyaJRfkp4DrfNK+T5bnCsFabvKCJcaoR7sohCQ840cAV4aVEb21X1NEjObuK
+         bd/cN9yL9dUCb3N3HPxvB9tE5/FDEAA17pq3ObYx9OsJeSaCYaflmBtfnW8nrhN2EMUo
+         vWag==
+X-Gm-Message-State: AOAM5339Tq8WF90a5MoBp/73eubZMfZGddZoRp+UIBZDR2bza1SiBhqb
+        hdIrs0Zfwj8ftZwshGv1AalvDdoDoFFjRxzB/x9q8Q==
+X-Google-Smtp-Source: ABdhPJyqbzfyuJgjhBaq32N9NwF+pauRq+8vq/c8zppXAuy0EqIE7jhu1C7daYuBbpWdAykWQtLHt93NS0DMt6rPzcA=
+X-Received: by 2002:a9d:6a0f:: with SMTP id g15mr18218054otn.126.1633494383457;
+ Tue, 05 Oct 2021 21:26:23 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Tue, 5 Oct 2021 21:26:22 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YToluIBXlNJEFhcb@google.com>
+In-Reply-To: <YV0MAF/Y5BR1e6My@ripper>
+References: <20211005231323.2663520-1-bjorn.andersson@linaro.org>
+ <20211005231323.2663520-6-bjorn.andersson@linaro.org> <CAE-0n52gOCC8bUfMFnNHRKFoq2=q4Ho8a-UYH5JKgumguhUD2A@mail.gmail.com>
+ <YVz/NOL3AFn2zBA0@ripper> <CAE-0n513cs282Dh_YFMHK2uKCVFSWxtNyfRaFwWGyUvpfShixw@mail.gmail.com>
+ <YV0MAF/Y5BR1e6My@ripper>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Tue, 5 Oct 2021 21:26:22 -0700
+Message-ID: <CAE-0n53TwEyycpAaWVpRUKPpos4z-gqwrvyUdgobh1V88VUsXg@mail.gmail.com>
+Subject: Re: [PATCH v4 5/7] drm/msm/dp: Support up to 3 DP controllers
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Abhinav Kumar <abhinavk@codeaurora.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Kalyan Thota <kalyan_t@codeaurora.org>,
+        Kuogee Hsieh <khsieh@codeaurora.org>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 09 Sep 10:18 CDT 2021, Matthias Kaehlcke wrote:
+Quoting Bjorn Andersson (2021-10-05 19:37:52)
+> On Tue 05 Oct 19:06 PDT 2021, Stephen Boyd wrote:
+>
+> > Quoting Bjorn Andersson (2021-10-05 18:43:16)
+> > > On Tue 05 Oct 17:43 PDT 2021, Stephen Boyd wrote:
+> > >
+> > > > Quoting Bjorn Andersson (2021-10-05 16:13:21)
+> > > > > diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+> > > > > index bdaf227f05dc..674cddfee5b0 100644
+> > > > > --- a/drivers/gpu/drm/msm/dp/dp_display.c
+> > > > > +++ b/drivers/gpu/drm/msm/dp/dp_display.c
+> > > > > @@ -1233,7 +1239,7 @@ static int dp_display_probe(struct platform_device *pdev)
+> > > > >         if (!dp)
+> > > > >                 return -ENOMEM;
+> > > > >
+> > > > > -       desc = dp_display_get_desc(pdev);
+> > > > > +       desc = dp_display_get_desc(pdev, &dp->id);
+> > > >
+> > > > I'm sad that dp->id has to match the number in the SoC specific
+> > > > dpu_intf_cfg array in drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
+> > > > still. Is there any way we can avoid that? Also, notice how those arrays
+> > > > already have INTF_DP macros, which makes me think that it may be better
+> > > > to connect this to those arrays instead of making an msm_dp_desc
+> > > > structure and then make sure the 'type' member matches a connector
+> > > > type number. Otherwise this code is super fragile.
+> > > >
+> > >
+> > > I'm afraid I don't understand what you're proposing. Or which part you
+> > > consider fragile, the indices of the INTF_DP instances aren't going to
+> > > move around...
+> > >
+> > > I have N instances of the DP driver that I need to match to N entries
+> > > from the platform specific intf array, I need some stable reference
+> > > between them. When I started this journey I figured I could rely on the
+> > > of_graph between the DPU and the interface controllers, but the values
+> > > used there today are just bogus, so that was a no go.
+> > >
+> > > We can use whatever, as long as _dpu_kms_initialize_displayport() can
+> > > come up with an identifier to put in h_tile_instance[0] so that
+> > > dpu_encoder_setup_display() can find the relevant INTF.
+> > >
+> >
+> > To make it more concrete we can look at sc7180
+> >
+> > static const struct dpu_intf_cfg sc7180_intf[] = {
+> >         INTF_BLK("intf_0", INTF_0, 0x6A000, INTF_DP, 0, 24,
+> > INTF_SC7180_MASK, MDP_SSPP_TOP0_INTR, 24, 25),
+> >                                                      ^
+> >                                                      |
+> >
+> > intf0 is irrelevant. Also the address is irrelevant. But here we have a
+> > zero, the number after INTF_DP, and that is very relevant. That number
+> > needs to match the dp->id. Somewhere we have a match between
+> > controller_id and dp->id in the code.
+>
+> That number (the 0, not INTF_0) is what the code matches against dp->id
+> in _dpu_kms_initialize_displayport(), in order to figure out that this
+> is INTF_0 in dpu_encoder_setup_display().
+>
+> I.e. look at the sc8180x patch:
+>
+> INTF_BLK("intf_0", INTF_0, 0x6A000, INTF_DP, 0, 24, INTF_SC8180X_MASK, MDP_SSPP_TOP0_INTR, 24, 25),
+> INTF_BLK("intf_1", INTF_1, 0x6A800, INTF_DSI, 0, 24, INTF_SC8180X_MASK, MDP_SSPP_TOP0_INTR, 26, 27),
+> INTF_BLK("intf_2", INTF_2, 0x6B000, INTF_DSI, 1, 24, INTF_SC8180X_MASK, MDP_SSPP_TOP0_INTR, 28, 29),
+> /* INTF_3 is for MST, wired to INTF_DP 0 and 1, use dummy index until this is supported */
+> INTF_BLK("intf_3", INTF_3, 0x6B800, INTF_DP, 999, 24, INTF_SC8180X_MASK, MDP_SSPP_TOP0_INTR, 30, 31),
+> INTF_BLK("intf_4", INTF_4, 0x6C000, INTF_DP, 1, 24, INTF_SC8180X_MASK, MDP_SSPP_TOP0_INTR, 20, 21),
+> INTF_BLK("intf_5", INTF_5, 0x6C800, INTF_DP, 2, 24, INTF_SC8180X_MASK, MDP_SSPP_TOP0_INTR, 22, 23),
+>
+> Where the DP driver defines the 3 controllers with dp->id of 0, 1 and 2,
+> which the DPU code will match against to INTF_0, INTF_4 and INTF_5.
+>
 
-> On Tue, Jun 22, 2021 at 08:50:38PM -0700, Bjorn Andersson wrote:
-[..]
-> > +  - |
-> > +    #include <dt-bindings/leds/common.h>
-> > +
-> > +    lpg {
-> > +      compatible = "qcom,pmi8994-lpg";
-> > +
-> > +      #address-cells = <1>;
-> > +      #size-cells = <0>;
-> > +
-> > +      qcom,power-source = <1>;
-> > +
-> > +      multi-led {
-> > +        color = <LED_COLOR_ID_RGB>;
-> > +        function = LED_FUNCTION_STATUS;
-> > +
-> > +        #address-cells = <1>;
-> > +        #size-cells = <0>;
-> > +
-> > +        led@1 {
-> > +          reg = <1>;
-> > +          color = <LED_COLOR_ID_RED>;
-> > +        };
-> > +
-> > +        led@2 {
-> > +          reg = <2>;
-> > +          color = <LED_COLOR_ID_GREEN>;
-> > +        };
-> > +
-> > +        led@3 {
-> > +          reg = <3>;
-> > +          color = <LED_COLOR_ID_BLUE>;
-> > +        };
-> > +      };
-> > +    };
-> > +  - |
-> > +    lpg {
-> 
-> nit: should the node be named 'lpg-pwm'?
-> 
-> IIUC a PMIC .dtsi could have both a 'lpg' and a 'lpg-pwm' node, even though
-> only one of them can be enabled at any time.
-> 
+Yep. I'm saying that having to make that number in this intf array match
+the order of the register mapping descriptor array is fragile. Why can't
+we indicate the interface is DP or eDP with INTF_DP or INTF_EDP and then
+map from the descriptor array to this intf array somehow so that the
+order of the descriptor array doesn't matter? Then we don't have to put
+the connector type in the descriptor array, and we don't have to keep
+the order of the array a certain way to match this intf descriptor.
 
-No, there's only the one "LPG", with N channels. The lpg exposes a pwm
-chip and the child nodes may describe LEDs connected to the channels.
-So this example is the configuration where there's no LEDs attached.
+Maybe
 
-The compatible is "pwm", because the PM8916 lacks the pattern and RGB
-blocks that makes up the LPG - and is hence named "PWM" in the datasheet
-instead. So perhaps the example should be generically named "pwm"
-instead.
+	struct msm_dp_desc {
+		phys_addr_t io_start;
+		unsigned int id;
+	};
 
-In all other PMICs I know of the hardware block is named "lpg".
-
-Regards,
-Bjorn
-
-> > +      compatible = "qcom,pm8916-pwm";
-> > +      #pwm-cells = <2>;
-> > +    };
+and then have msm_dp_desc::id equal INTF_<N> and then look through the
+intf from DPU here in the DP driver to find the id and type of connector
+that should be used by default? Still sort of fragile because the only
+connection is an unsigned int which isn't great, but at least it's
+explicit instead of implicit based on the array order.
