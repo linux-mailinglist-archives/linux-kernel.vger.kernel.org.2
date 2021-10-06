@@ -2,79 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21B1B424688
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 21:09:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 401E442468F
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 21:14:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239359AbhJFTLr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 15:11:47 -0400
-Received: from mail-ot1-f50.google.com ([209.85.210.50]:38738 "EHLO
+        id S239194AbhJFTQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 15:16:14 -0400
+Received: from mail-ot1-f50.google.com ([209.85.210.50]:38803 "EHLO
         mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239343AbhJFTLp (ORCPT
+        with ESMTP id S229564AbhJFTQN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 15:11:45 -0400
-Received: by mail-ot1-f50.google.com with SMTP id c6-20020a9d2786000000b005471981d559so4406860otb.5;
-        Wed, 06 Oct 2021 12:09:53 -0700 (PDT)
+        Wed, 6 Oct 2021 15:16:13 -0400
+Received: by mail-ot1-f50.google.com with SMTP id c6-20020a9d2786000000b005471981d559so4423155otb.5;
+        Wed, 06 Oct 2021 12:14:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=XXPzrlRNSvZUe4SiE0xybZeK1VafzSZG6M/PPM6Jsqc=;
-        b=0xr3aEcPAY0zJIjgCVOwSo8gUl1uZwEqsCarWnj22R2NOeNwm8nLzst+EhTcUTcy8d
-         m8ZFjzy7q4Yij0TbtFU4YIRmUtd4mxiVZKQDBT3ty2wYAvK7RU+3rndj3vmEfEvEyCZI
-         07EO3e5GFQM0nJL+iBTAslYetEKgkYAwjIdVe0hBmfAgBqjaA1KMA5CtrGnVf7zx34Sr
-         JfYkQhKWDc17coFuTe8OK3PwCJgVuPdZ8ywZS/Vj9yxMAOdWjEC3SIuh725i6us6ePeG
-         6f2ne/iaereFqkAU152EFONmVxdis/mx1v3OzaQB2tngH9EhrDAPWXQajrYwCLCLARqD
-         SMQw==
-X-Gm-Message-State: AOAM531u8OtrGYnPgfdelvgJSLE/ks+prdLQiFPjTkUrvTd1+6WAgSXR
-        9khRYmF8breI4ks4OE1YQA==
-X-Google-Smtp-Source: ABdhPJx15PPZ/Sp4jiguY2xyGQXBzop3CVtvzjN4FK7KhMUcxyeAfU1Rz92H7nLnJ0892+RoMu9+Fw==
-X-Received: by 2002:a05:6830:1513:: with SMTP id k19mr389585otp.41.1633547392838;
-        Wed, 06 Oct 2021 12:09:52 -0700 (PDT)
+        bh=uKvpGuwsKeTIxTNYlo+8dztssa33mpEFTpr2uQKniTU=;
+        b=Hbkveepx0cdSs3X8zIPxIUfkyUMy7pYGwjFK2wfR/AEswmXIAG0Bu6R6wt/KxGu0dc
+         ncbDDSoEZvOO5tAmWGuMevBpVjwmWtaA979KG0n2G2mBBSJp4+j14mPlK5+LZCf1SfZa
+         R1rxvmIhv31+iOsxXQ575tsdXdlLnRtHL+atCw6oG88HM8gRDQlpH5Jj5kXvC/yAgG6p
+         PguTxdlfDPlkkZRToHTJlHzxh/6Cio7RENsc6wtceKf3VT2I9a2hfAVCyzmw6IDwpBQB
+         cDYgDpOlnI7GRKUxN2Eo1GLDJ/sO/Vpiw8C+SnU9d8RoxlWR0Fr/4FBKtXUYGFsevTWL
+         yd3Q==
+X-Gm-Message-State: AOAM532VNg7z6ieFJ+owP94Lq8D0hG07Wn67/QaT4H/fcAoCU5r21mXQ
+        AbZQva+UC+tQnx8rHaQD0N6eb+2F6A==
+X-Google-Smtp-Source: ABdhPJwzlwIDmTJpik07Uag6ZIs+cG+/4eBcgGtQ9XCAC/73CH6JKVNckBVD5iVhT9BTnO3jqlUs4Q==
+X-Received: by 2002:a9d:6c91:: with SMTP id c17mr3988otr.114.1633547660627;
+        Wed, 06 Oct 2021 12:14:20 -0700 (PDT)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id a9sm4279056otk.3.2021.10.06.12.09.51
+        by smtp.gmail.com with ESMTPSA id ay42sm4335696oib.22.2021.10.06.12.14.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Oct 2021 12:09:52 -0700 (PDT)
-Received: (nullmailer pid 2227188 invoked by uid 1000);
-        Wed, 06 Oct 2021 19:09:51 -0000
-Date:   Wed, 6 Oct 2021 14:09:51 -0500
+        Wed, 06 Oct 2021 12:14:20 -0700 (PDT)
+Received: (nullmailer pid 2248765 invoked by uid 1000);
+        Wed, 06 Oct 2021 19:14:19 -0000
+Date:   Wed, 6 Oct 2021 14:14:19 -0500
 From:   Rob Herring <robh@kernel.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tomasz Figa <tomasz.figa@gmail.com>
-Subject: Re: [PATCH v3 06/10] regulator: dt-bindings: samsung,s5m8767:
- convert to dtschema
-Message-ID: <YV30fzEB/NlNhA+C@robh.at.kernel.org>
-References: <20211006132324.76008-1-krzysztof.kozlowski@canonical.com>
- <20211006132324.76008-7-krzysztof.kozlowski@canonical.com>
+To:     Andreas Kemnade <andreas@kemnade.info>
+Cc:     Tomi Valkeinen <tomi.valkeinen@ti.com>, devicetree@vger.kernel.org,
+        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org, vigneshr@ti.com, robh+dt@kernel.org,
+        linux-serial@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: serial: 8250_omap: allow serdev subnodes
+Message-ID: <YV31i4pONQCYKGAK@robh.at.kernel.org>
+References: <20211001211731.2923066-1-andreas@kemnade.info>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211006132324.76008-7-krzysztof.kozlowski@canonical.com>
+In-Reply-To: <20211001211731.2923066-1-andreas@kemnade.info>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 06 Oct 2021 15:23:20 +0200, Krzysztof Kozlowski wrote:
-> Convert the regulators of Samsung S5M8767 PMIC to DT schema format.
+On Fri, 01 Oct 2021 23:17:31 +0200, Andreas Kemnade wrote:
+> additionalProperties: false
+> ignores the pattern matching for serdev objects in serial.yaml, causing
+> error messages when serdev subnodes like bluetooth or gnss devices are
+> defined. Using unevaluatedProperties instead is the correct way
+> if arbitrary children nodes can appear.
 > 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
 > ---
->  .../bindings/regulator/samsung,s5m8767.txt    | 140 ------------------
->  .../bindings/regulator/samsung,s5m8767.yaml   |  74 +++++++++
->  MAINTAINERS                                   |   2 +-
->  3 files changed, 75 insertions(+), 141 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/regulator/samsung,s5m8767.txt
->  create mode 100644 Documentation/devicetree/bindings/regulator/samsung,s5m8767.yaml
+>  Documentation/devicetree/bindings/serial/8250_omap.yaml | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Acked-by: Rob Herring <robh@kernel.org>
