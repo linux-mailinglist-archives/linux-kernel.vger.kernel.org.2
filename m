@@ -2,77 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD8C8423BCF
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 12:55:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0FDB423BD3
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 12:56:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238170AbhJFK52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 06:57:28 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:56812
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231240AbhJFK5X (ORCPT
+        id S238119AbhJFK6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 06:58:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43966 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237984AbhJFK5y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 06:57:23 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 16B823FFE5;
-        Wed,  6 Oct 2021 10:55:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1633517730;
-        bh=8iImzst3oOFXm9Ridza0PRSEBpaLF5YlJ5ZO5d+yCY0=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=eVGkOwC/tJzoy7QmH2ZnvQG/p4Wv1R6BDazR8DhPxXur8GhKxFh5IYb4bjUC6nTHE
-         l3PpoHoIgwufhajOGbxSBzmVT7YOGCCHV3LtqCfSkPqdZaa6JMjlWeptir81ksbg8q
-         7okq/Y0A3XbAUwgRIw3Le6GbuZmWfqSAtLQ1GKsvedYBqLMZS/MYLHcHoPrxyFc1eN
-         7s7SwDq19Z5rW5N78M5f24T2cxR5I31fsDPOubH/Q5L7i/kP5PoKgAnrkasTrVsX/j
-         AQvEjTtPTq5CZo40v/duepkPStREF9a87GcwwxGyu8U3wt5gXW4LxtSNMKOuYB2QmQ
-         MGleUrP35rXSg==
-From:   Colin King <colin.king@canonical.com>
-To:     Kalle Valo <kvalo@codeaurora.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Anilkumar Kolli <akolli@codeaurora.org>,
-        Jouni Malinen <jouni@codeaurora.org>,
-        ath11k@lists.infradead.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] ath11k: Remove redundant assignment to variable fw_size
-Date:   Wed,  6 Oct 2021 11:55:29 +0100
-Message-Id: <20211006105529.1011239-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.32.0
+        Wed, 6 Oct 2021 06:57:54 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7DBDC06174E
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 03:56:02 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id r19so8461161lfe.10
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 03:56:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=Awi+KbCc0oDeqT+mpposxWi8Eg2+mFfN+4AERgJNdt8=;
+        b=IanWxyKiBjY9bc3FdliCfKGhrvU1CPbKj+A+5kIcm6sNQwYQf5xK+UFPU5alczQKC+
+         jhOxwmvic/QfuNPYO5uoex+E2QEIuy30QGjzpHebs7PMozu7WcbRWRi9sz8qXeI3pB96
+         wJPJ9boTriEFg3Pu9QuGDt1RPQ3qZoF6L1fLymMmi6GXaR05wWjf2v2OzeYqd7i3Ymru
+         cPRi7RbfQC7lfVMmX5un/2Y/r3Z0HPfFT1F0+O+1B7suhMKKt+bCvMrmC/s5Ll00MCWK
+         hoChCZ1r7Fc6sS2k+lwos7HiG8mFwM2Kje4YhRZz5l1xJjDQ/cJJhb7QSR2Mpa5Paovr
+         p6JQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=Awi+KbCc0oDeqT+mpposxWi8Eg2+mFfN+4AERgJNdt8=;
+        b=dFLCOCz9OKYiYDieCnOI6cOW/MKAguA3htEziqkPBdUfea4MTbst2iQp0a7ph9Q3Yt
+         3vJTmbVaMOk+eoDv90amQ+YdEjYeaX/28L8tJaKtrhh+CuyycEfY2SJSZOeiRCbEotsW
+         LHdkuWIJpOF5JVVGIDC4jf7GwnSwOHQhQte/e+/CpeJaHZqX5pC7Q5Nd26MKfJkYa06b
+         JwNUhGYQyhkP25DtAXwDa4MhczKJKuTWtCiZwtk1v7S47tCf8tvKsCrqZ1O169yFeFJn
+         49OeDxmQJk88/Xzbfank+L5+d5W9cpr1ph0y4x8cahF5UAu4qUnn8sTtDqPudlFzPvPJ
+         nhRQ==
+X-Gm-Message-State: AOAM531mnW6huBHHCNx6LWbMHjgCnY+9sBo7GY6OQfA1xQw+aU85F4pZ
+        8jh1axlUS8yM7rTzKBzcSypcLtUkNRgo+7gOXm4=
+X-Google-Smtp-Source: ABdhPJyeb/SqpJGBTvE1xA5HSY5bVm3tzwFbwABBKSivjasi+rTXjK/MFAK/uVi0KZve/ZAlYJbyJT+2/MdDRbihDiA=
+X-Received: by 2002:a2e:2a02:: with SMTP id q2mr7629203ljq.156.1633517759985;
+ Wed, 06 Oct 2021 03:55:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a05:6512:1c3:0:0:0:0 with HTTP; Wed, 6 Oct 2021 03:55:59
+ -0700 (PDT)
+Reply-To: mrmichelduku@outlook.com
+From:   michel duku <micheldukuu@gmail.com>
+Date:   Wed, 6 Oct 2021 10:55:59 +0000
+Message-ID: <CAB6bEpKHL46LpkqHuYbKaJFOQ1cYihk1xtfHxD1J3U+d+rxyRA@mail.gmail.com>
+Subject: Please Respond Urgently
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+Greetings,
 
-Variable fw_size is being assigned a value that is never read and
-being re-assigned a new value in the next statement. The assignment
-is redundant and can be removed.
+I know that this mail will come to you as a surprise as we have never
+met before, but never mind i have decided to make this contact with
+you as I believe that you can be of great assistance to me. I need
+your assistance in transferring the sum of $11.3million to your
+private account Where this money can be shared between us.
 
-Addresses-Coverity: ("Unused value")
-Fixes: 336e7b53c82f ("ath11k: clean up BDF download functions")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/net/wireless/ath/ath11k/qmi.c | 1 -
- 1 file changed, 1 deletion(-)
+The money has been here in our Bank lying dormant for years now
+without anybody coming for the claim. I want to release the money to
+you as the relative to our deceased customer (the account owner) who
+died in a plane crash with his family since October 2005.
 
-diff --git a/drivers/net/wireless/ath/ath11k/qmi.c b/drivers/net/wireless/ath/ath11k/qmi.c
-index 8c615bc788ca..fa73118de6db 100644
---- a/drivers/net/wireless/ath/ath11k/qmi.c
-+++ b/drivers/net/wireless/ath/ath11k/qmi.c
-@@ -2135,7 +2135,6 @@ static int ath11k_qmi_load_bdf_qmi(struct ath11k_base *ab)
- 
- 	ath11k_dbg(ab, ATH11K_DBG_QMI, "qmi bdf_type %d\n", bdf_type);
- 
--	fw_size = bd.len;
- 	fw_size = min_t(u32, ab->hw_params.fw.board_size, bd.len);
- 
- 	ret = ath11k_qmi_load_file_target_mem(ab, bd.data, fw_size, bdf_type);
--- 
-2.32.0
+By indicating your interest I will send you the full details on how
+the business will be executed.
 
+Best Regards,
+Michel Duku.
