@@ -2,97 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADB33424287
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 18:23:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 319DC424282
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 18:21:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238947AbhJFQZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 12:25:01 -0400
-Received: from mga02.intel.com ([134.134.136.20]:44926 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230101AbhJFQZA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 12:25:00 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10129"; a="213157983"
-X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; 
-   d="scan'208";a="213157983"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2021 09:23:07 -0700
-X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; 
-   d="scan'208";a="439175129"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2021 09:23:05 -0700
-Received: from andy by smile with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mY9h8-009FoT-9J;
-        Wed, 06 Oct 2021 19:23:02 +0300
-Date:   Wed, 6 Oct 2021 19:23:02 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc:     Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: Re: [PATCH v1 3/4] ASoC: Intel: bytcr_rt5651: use
- devm_clk_get_optional() for mclk
-Message-ID: <YV3NZnb6mg43nUC1@smile.fi.intel.com>
-References: <20211006150451.16561-1-andriy.shevchenko@linux.intel.com>
- <20211006150451.16561-3-andriy.shevchenko@linux.intel.com>
- <2d190513-7ac4-731c-7c9a-1f60a98f6345@linux.intel.com>
+        id S239342AbhJFQXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 12:23:24 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3940 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230021AbhJFQXW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 12:23:22 -0400
+Received: from fraeml711-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HPfkv3Nt5z67LTc;
+        Thu,  7 Oct 2021 00:18:15 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml711-chm.china.huawei.com (10.206.15.60) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Wed, 6 Oct 2021 18:21:26 +0200
+Received: from [10.47.95.252] (10.47.95.252) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2308.8; Wed, 6 Oct 2021
+ 17:21:24 +0100
+Subject: Re: [PATCH] scsi: storvsc: Cap scsi_driver.can_queue to fix a hang
+ issue during boot
+To:     Michael Kelley <mikelley@microsoft.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        "ming.lei@redhat.com" <ming.lei@redhat.com>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+References: <20211006070345.51713-1-decui@microsoft.com>
+ <e36619df-652d-3550-cb4d-9b65b2f5faee@huawei.com>
+ <MWHPR21MB159368D7BAAD90E19F31D1C6D7B09@MWHPR21MB1593.namprd21.prod.outlook.com>
+ <d9416464-cf0f-2275-2d16-94e81d5b4362@huawei.com>
+ <MWHPR21MB15932B5C5B5C5EE5CBAFE00ED7B09@MWHPR21MB1593.namprd21.prod.outlook.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <fc4b3284-0218-8a03-a55c-94c10ac0b029@huawei.com>
+Date:   Wed, 6 Oct 2021 17:24:00 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2d190513-7ac4-731c-7c9a-1f60a98f6345@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <MWHPR21MB15932B5C5B5C5EE5CBAFE00ED7B09@MWHPR21MB1593.namprd21.prod.outlook.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.95.252]
+X-ClientProxiedBy: lhreml709-chm.china.huawei.com (10.201.108.58) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 06, 2021 at 10:51:52AM -0500, Pierre-Louis Bossart wrote:
-> On 10/6/21 10:04 AM, Andy Shevchenko wrote:
-> > The devm_clk_get_optional() helper returns NULL when devm_clk_get()
-> > returns -ENOENT. This makes things slightly cleaner. The added benefit
-> > is mostly cosmetic.
+On 06/10/2021 17:08, Michael Kelley wrote:
+>>> The calculated value of can_queue is not realistic.  The blk-mq layer
+>>> caps the number of tags at 10240,
+>> nit: 1024, I think
+> I was thinking about BLK_MQ_MAX_DEPTH (#define'd as 10240), which
+> is used to limit the tag set size in blk_mq_alloc_tag_set().   When running
+> on large VMs on Hyper-V, we can see the "blk-mq: reduced tag depth
+> to 10240" message.:-(
 
-...
+Ah, right. The other related capping is the sdev queue depth, which is 
+now capped at max(1024, can_queue), see scsi_device_max_queue_depth().
 
-> >  	if (SND_SOC_DAPM_EVENT_ON(event)) {
-> > -		if (byt_rt5651_quirk & BYT_RT5651_MCLK_EN) {
-> > -			ret = clk_prepare_enable(priv->mclk);
-> > -			if (ret < 0) {
-> > -				dev_err(card->dev,
-> > -					"could not configure MCLK state");
-> > -				return ret;
-> > -			}
-> > +		ret = clk_prepare_enable(priv->mclk);
-> > +		if (ret < 0) {
-> > +			dev_err(card->dev, "could not configure MCLK state");
-> > +			return ret;
-> >  		}
-> 
-> I don't get why you removed the test on the BYT_RT5651_MCLK_EN quirk,
-> see below it was designed as a fall-back mode. We don't want to return
-> an error when we know the clock is not present/desired.
-
-Why should we do a unneeded test? When we switch to the optional, there
-will be no error from these CCF APIs. Besides that it drops indentation
-level and makes code neat.
-
-...
-
-> same here, why was the quirk removed?
-
-Same answer.
-
-...
-
-> that part in the probe looks fine, but the changes above are controversial.
-
-I didn't get. How controversial? Why? The whole point of _optional is to get
-rid of unneeded checks (since they are _anyway_ be called).
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Thanks,
+John
