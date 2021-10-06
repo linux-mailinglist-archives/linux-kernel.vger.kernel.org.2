@@ -2,88 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1D66423CC1
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 13:24:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08203423CC9
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 13:25:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230461AbhJFL02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 07:26:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50944 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238546AbhJFL0Z (ORCPT
+        id S238359AbhJFL1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 07:27:16 -0400
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.50]:30681 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238225AbhJFL1O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 07:26:25 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0804C061749;
-        Wed,  6 Oct 2021 04:24:32 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id k7so7669722wrd.13;
-        Wed, 06 Oct 2021 04:24:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jOKM+pEePhem4widkHVhzfPY+xV2PoH5qxuaHku2BGg=;
-        b=gcS6KE9H8iBXBNNn+W/+P/9Vkay/h54bHyT9/m0XJ8/YGQoMQgi3PY8mlQgU/5QBb6
-         g2xwtiqpEf03XUaIyTuH22SBXKk6+aASROY5Y+irGMsSj6jChgzhHujzJ2l3Hrlw4gCQ
-         Itk9mV0jSInr69rZ7gyntFzkUNaGoxatKs1p/IYlk8rl5yGRkEGcsIMzogLWqeeTAyFI
-         QQg2j149oQisxJ8jd4iocC5cLCJGSX2RaEWyCWTcj6lKIEfySoUB7ZN0vZZrmW4+J4At
-         cb2iXGPqOKtqVTBDsqz8kzCUG/teZCHFl0UMCgqBxh8OLFiIDguJVwWnr1UrWaSRv8rJ
-         4rHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jOKM+pEePhem4widkHVhzfPY+xV2PoH5qxuaHku2BGg=;
-        b=1ZVLchvSEU+jKVh9N/aOl/C5m2jWFJa+6oyHEteB+eyqlr8ut/yzxYXsse/tVN+dlc
-         pARmDPeNgPQCtj1DRGDBUJcxrDEzftbawJhw9y0u75HqSOUnkt9wjmPrrTWWG/6pa8x3
-         q0ExJLRFFdjm3ovq6x1BDmgh6pec/jhLREpmkcFQlYIxRL9bAul9bHlPmin6VkV1N4Pi
-         kRjYMG6JrXBWbA1UZy3VoL2/Tfosf9+Ycaboo5U0Q1scHT3AoPXZTSbPDsFQnuLeENHh
-         Ox4G2YFsqakDB8SUm870+M0ybxEBJGiAKHM7TrvyyKyA6/feSccccdFZILn8nQR0VBR1
-         8SSw==
-X-Gm-Message-State: AOAM533ApO7Trw5yW0BnR5R3hhNpV3SJoSeVqi+2eTw3pNTsprdVCFTf
-        RbVBL2Re3OE4LEJ5N1RnkNbAosui07azVQ==
-X-Google-Smtp-Source: ABdhPJxnDvewR58RdmbSh1drMP+qybZoRLHyfs27dsa8+MSEAaZhBo+g9fWUqyviTFE/a6Rf7NfrLg==
-X-Received: by 2002:adf:d1eb:: with SMTP id g11mr2711180wrd.16.1633519471482;
-        Wed, 06 Oct 2021 04:24:31 -0700 (PDT)
-Received: from localhost.localdomain ([197.49.35.129])
-        by smtp.gmail.com with ESMTPSA id y1sm10030433wrh.89.2021.10.06.04.24.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Oct 2021 04:24:31 -0700 (PDT)
-From:   Sohaib Mohamed <sohaib.amhmd@gmail.com>
-Cc:     Robert Moore <robert.moore@intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
-        devel@acpica.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ACPICA: drop unneeded initialization value
-Date:   Wed,  6 Oct 2021 13:24:29 +0200
-Message-Id: <20211006112429.54809-1-sohaib.amhmd@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 6 Oct 2021 07:27:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1633519501;
+    s=strato-dkim-0002; d=goldelico.com;
+    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=XmOcGtT2R465zJ0p3YcHjU0RIWZ17S32hOWrnIUbcrI=;
+    b=Wyk3/KpwXB7JBpVWSuZngWq9N+/rbmh5zGCnBQkH6Ys9BTjqtK8jUmkWcLqdM+VWDF
+    3cL4VN9mQKJehOdxiWhCMPnR3YuVSh8t+f60LmfFJwQ8kt9WtTSNNpgMBaqW5H1JvIBy
+    A1dDbrbYJQlPCOrZyU937frb0G5LujqstD+Ymz7JwvniOLJBxHq6B+9dTaV0LpsiltZb
+    s4Rd2pqljo4iXCXeB/VdY3Dlaz3EKN3FwRTGAS7qaIfDOs+TnMQ7q70I8n8Dx6LO5RBc
+    SGAeW2b6jDfCOlI9Ibnfx/QQvFvBGHUdIbgS2le34uvL6MLKji9iWg1ZWAuDMAcSfRHj
+    QHRg==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9o1OAA2UMf2MwPVbjdbna"
+X-RZG-CLASS-ID: mo00
+Received: from iMac.fritz.box
+    by smtp.strato.de (RZmta 47.33.8 DYNA|AUTH)
+    with ESMTPSA id I01f74x96BP09II
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Wed, 6 Oct 2021 13:25:00 +0200 (CEST)
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+To:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Avri Altman <avri.altman@wdc.com>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bean Huo <beanhuo@micron.com>
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        letux-kernel@openphoenux.org, kernel@pyra-handheld.com,
+        "H. Nikolaus Schaller" <hns@goldelico.com>
+Subject: [RFC] mmc: core: transplant ti,wl1251 quirks from to be retired omap_hsmmc
+Date:   Wed,  6 Oct 2021 13:25:00 +0200
+Message-Id: <8ecc5c79c1dd0627d570ede31e18c860786cacca.1633519499.git.hns@goldelico.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Do not initialise statics to NULL
+The TiWi 5 WiFi module needs special setup of the sdio
+interface before it can be probed.
 
-Signed-off-by: Sohaib Mohamed <sohaib.amhmd@gmail.com>
+So far, this is done in omap_hsmmc_init_card() in omap_hsmmc.c
+which makes it useable only if connected to omap devices
+which use the omap_hsmmc. The OpenPandora is the most promient
+example.
+
+There are plans to switch to a newer sdhci-omap driver and
+retire omap_hsmmc. Hence this quirk must be reworked or moved
+somewhere else. Ideally to some location that is not dependent
+on the specific SoC mmc host driver.
+
+Analysis has shown that omap_hsmmc_init_card() is called
+through the host->ops->init_card hook which itself
+is called in three generic locations:
+
+mmc_init_card()
+mmc_sd_init_card()
+mmc_sdio_init_card()
+
+All these functions share a call to mmc_select_card() shortly
+after running the init hook and therefore I assume that
+a good place transplanting the special wl1251 handling is
+mmc_select_card() - unless we want to copy and maintain the
+code to three different places.
+
+After this quirk has been moved there, we can remove
+omap_hsmmc_init_card() in omap_hsmmc.c in a separate patch.
+Indeed the plan is to remove omap_hsmmc.c completely.
+
+A future development path to generalize could be to make
+the code not depend on compatible = "ti,wl1251" but check
+for optional device tree properties (non-std-sdio, bus width,
+vendor, device, blksize, max_dtr, ocr) which can be defined
+for any child device of the mmd/sd port needing such special
+setup.
+
+Related-to: commit f6498b922e57 ("mmc: host: omap_hsmmc: add code for special init of wl1251 to get rid of pandora_wl1251_init_card")
+Related-to: commit 2398c41d6432 ("omap: pdata-quirks: remove openpandora quirks for mmc3 and wl1251")
+Related-to: commit f9d50fef4b64 ("ARM: OMAP2+: omap3-pandora: add wifi support")
+Tested-by: H. Nikolaus Schaller <hns@goldelico.com> # on OpenPandora
+Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
 ---
- drivers/acpi/acpica/dbcmds.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mmc/core/mmc_ops.c | 30 ++++++++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
 
-diff --git a/drivers/acpi/acpica/dbcmds.c b/drivers/acpi/acpica/dbcmds.c
-index 9eb68e0751c7..d0e3b874ca0e 100644
---- a/drivers/acpi/acpica/dbcmds.c
-+++ b/drivers/acpi/acpica/dbcmds.c
-@@ -35,7 +35,7 @@ acpi_db_device_resources(acpi_handle obj_handle,
+diff --git a/drivers/mmc/core/mmc_ops.c b/drivers/mmc/core/mmc_ops.c
+index 0c54858e89c0..6f9b96be9fe6 100644
+--- a/drivers/mmc/core/mmc_ops.c
++++ b/drivers/mmc/core/mmc_ops.c
+@@ -7,6 +7,7 @@
  
- static void acpi_db_do_one_sleep_state(u8 sleep_state);
+ #include <linux/slab.h>
+ #include <linux/export.h>
++#include <linux/of.h>
+ #include <linux/types.h>
+ #include <linux/scatterlist.h>
  
--static char *acpi_db_trace_method_name = NULL;
-+static char *acpi_db_trace_method_name;
+@@ -107,6 +108,35 @@ static int _mmc_select_card(struct mmc_host *host, struct mmc_card *card)
  
- /*******************************************************************************
-  *
+ int mmc_select_card(struct mmc_card *card)
+ {
++	if (card->type == MMC_TYPE_SDIO || card->type == MMC_TYPE_SD_COMBO) {
++		struct device_node *np = card->host->parent->of_node;
++
++		/*
++		 * REVISIT: should be made more general
++		 * e.g. by expanding the DT bindings of child nodes to
++		 * optionally provide this information:
++		 * Documentation/devicetree/bindings/mmc/mmc-card.txt
++		 */
++
++		np = of_get_compatible_child(np, "ti,wl1251");
++		if (np) {
++			/*
++			 * We have TI wl1251 attached to this mmc. Pass this
++			 * information to the SDIO core because it can't be
++			 * probed by normal methods.
++			 */
++
++			dev_info(card->host->parent, "found wl1251\n");
++			card->quirks |= MMC_QUIRK_NONSTD_SDIO;
++			card->cccr.wide_bus = 1;
++			card->cis.vendor = 0x104c;
++			card->cis.device = 0x9066;
++			card->cis.blksize = 512;
++			card->cis.max_dtr = 24000000;
++			card->ocr = 0x80;
++			of_node_put(np);
++		}
++	}
+ 
+ 	return _mmc_select_card(card->host, card);
+ }
 -- 
-2.25.1
+2.33.0
 
