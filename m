@@ -2,84 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32B09423BCC
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 12:53:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD8C8423BCF
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 12:55:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238036AbhJFKzA convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 6 Oct 2021 06:55:00 -0400
-Received: from ni.piap.pl ([195.187.100.5]:39038 "EHLO ni.piap.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238154AbhJFKyw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 06:54:52 -0400
-From:   =?utf-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>
-To:     Philipp Zabel <p.zabel@pengutronix.de>
-Cc:     Steve Longerbeam <slongerbeam@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] i.MX6: Support 16-bit BT.1120 video input
-References: <m3o882n0ir.fsf@t19.piap.pl>
-        <568f79774cc148c58b9045da7b94b4e9e500810b.camel@pengutronix.de>
-Date:   Wed, 06 Oct 2021 12:52:57 +0200
-In-Reply-To: <568f79774cc148c58b9045da7b94b4e9e500810b.camel@pengutronix.de>
-        (Philipp Zabel's message of "Wed, 06 Oct 2021 11:36:47 +0200")
-Message-ID: <m37deqmnli.fsf@t19.piap.pl>
+        id S238170AbhJFK52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 06:57:28 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:56812
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231240AbhJFK5X (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 06:57:23 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 16B823FFE5;
+        Wed,  6 Oct 2021 10:55:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1633517730;
+        bh=8iImzst3oOFXm9Ridza0PRSEBpaLF5YlJ5ZO5d+yCY0=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=eVGkOwC/tJzoy7QmH2ZnvQG/p4Wv1R6BDazR8DhPxXur8GhKxFh5IYb4bjUC6nTHE
+         l3PpoHoIgwufhajOGbxSBzmVT7YOGCCHV3LtqCfSkPqdZaa6JMjlWeptir81ksbg8q
+         7okq/Y0A3XbAUwgRIw3Le6GbuZmWfqSAtLQ1GKsvedYBqLMZS/MYLHcHoPrxyFc1eN
+         7s7SwDq19Z5rW5N78M5f24T2cxR5I31fsDPOubH/Q5L7i/kP5PoKgAnrkasTrVsX/j
+         AQvEjTtPTq5CZo40v/duepkPStREF9a87GcwwxGyu8U3wt5gXW4LxtSNMKOuYB2QmQ
+         MGleUrP35rXSg==
+From:   Colin King <colin.king@canonical.com>
+To:     Kalle Valo <kvalo@codeaurora.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Anilkumar Kolli <akolli@codeaurora.org>,
+        Jouni Malinen <jouni@codeaurora.org>,
+        ath11k@lists.infradead.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] ath11k: Remove redundant assignment to variable fw_size
+Date:   Wed,  6 Oct 2021 11:55:29 +0100
+Message-Id: <20211006105529.1011239-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Philipp,
+From: Colin Ian King <colin.king@canonical.com>
 
-Philipp Zabel <p.zabel@pengutronix.de> writes:
+Variable fw_size is being assigned a value that is never read and
+being re-assigned a new value in the next statement. The assignment
+is redundant and can be removed.
 
->> + * - BT.656 and BT.1120 (8/10-bit YUV422) data can always be processed
->> + *   on-the-fly (converted to YUV420)
->
-> This comment seems misleading. The CSI converts to YUV 4:4:4 internally.
+Addresses-Coverity: ("Unused value")
+Fixes: 336e7b53c82f ("ath11k: clean up BDF download functions")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/net/wireless/ath/ath11k/qmi.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-Well... this is surprising. You mean "on the internal bus", don't you?
-
-Please correct me if the following is wrong:
-
-I always though that the "on-the-fly processing", in case of YUV422,
-means in practice I can get YUV420 out of the IPU, without a need to do
-e.g. NEON conversion. I know I can get the original YUV422 as well,
-using the "generic data" mode, but it's incompatible with the CODA H.264
-encoder.
-
-Ok, the DQRM (37.4.3.2.1) states that for parallel YUV the output from
-CSI is always YUV444.
-
-
-
-Then 37.4.3.9 says that the only YUV422 way is to use 16-bit "generic
-data". This doesn't seem to be very true, however I'm not exactly sure
-about the "on-the-fly" thing.
-The fact is the patch works.
-Also, the CSIx_SENS_DATA_FORMAT field in IPUx_CSIx_SENS_CONF register
-shows YUV422 YUYV and UYVY input data formats, clearly separate from
-"Bayer of Generic data".
-
-DQIEC, 4.12.10.1, isn't very clear either:
-8) YCbCr 20-bit (10-bit Y + 10-bit U/V) is supported with BT.1120 only
-7) YCbCr 16-bit is supported under the same conditions as 8)
-6) YCbCr 16-bit (= YUV422) is also supported as "generic-data"
-   (no on-the-fly processing). This seems to imply 8) and 7) are
-   supported WITH o-t-f-p (and obviously I have tested it, 16-bit only).
-
-I think I will just remove the comment :-)
+diff --git a/drivers/net/wireless/ath/ath11k/qmi.c b/drivers/net/wireless/ath/ath11k/qmi.c
+index 8c615bc788ca..fa73118de6db 100644
+--- a/drivers/net/wireless/ath/ath11k/qmi.c
++++ b/drivers/net/wireless/ath/ath11k/qmi.c
+@@ -2135,7 +2135,6 @@ static int ath11k_qmi_load_bdf_qmi(struct ath11k_base *ab)
+ 
+ 	ath11k_dbg(ab, ATH11K_DBG_QMI, "qmi bdf_type %d\n", bdf_type);
+ 
+-	fw_size = bd.len;
+ 	fw_size = min_t(u32, ab->hw_params.fw.board_size, bd.len);
+ 
+ 	ret = ath11k_qmi_load_file_target_mem(ab, bd.data, fw_size, bdf_type);
 -- 
-Krzysztof "Chris" Hałasa
+2.32.0
 
-Sieć Badawcza Łukasiewicz
-Przemysłowy Instytut Automatyki i Pomiarów PIAP
-Al. Jerozolimskie 202, 02-486 Warszawa
