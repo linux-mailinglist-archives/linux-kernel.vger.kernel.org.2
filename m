@@ -2,156 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 180EF423A89
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 11:27:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 945494239BF
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 10:29:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237855AbhJFJ3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 05:29:44 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44406 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237860AbhJFJ3n (ORCPT
+        id S237703AbhJFIbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 04:31:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38506 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237653AbhJFIbK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 05:29:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633512471;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7ngYQ8UnRk1ZQG1QBxVMt0vUipJ0oB+rpBaTB/8WXgg=;
-        b=AzZSTP2BTPLej+IZv+m/sekAu9zo1/Aiv5sQ/Yh8qZThGfgJX3yvJfVrA/bFW8tRj/klug
-        qvwwtdsL+F+w4S5sUdWLib/dyajtt5aX/bMnTe+fF0TIewT1JbPF5oLgHg4zGpnYQhN7cO
-        Inqnhq5CoNwtHuku/z3RUD40sPNCMN4=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-167-kmEDA5OnNSGEhC24a1uUYw-1; Wed, 06 Oct 2021 05:27:50 -0400
-X-MC-Unique: kmEDA5OnNSGEhC24a1uUYw-1
-Received: by mail-wr1-f72.google.com with SMTP id r25-20020adfab59000000b001609ddd5579so1510390wrc.21
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 02:27:49 -0700 (PDT)
+        Wed, 6 Oct 2021 04:31:10 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E61C4C061749
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 01:29:18 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id r19so6981431lfe.10
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 01:29:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=semihalf-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Cs32oKjPY880HhRcpboK0pON5dPQmpZCrv3AmYoudi4=;
+        b=Y7jduTBLBpq47YNLGK+8Fs1peBjDqtnqaIvJ71rnYHl2LKlBGz14YVXsbSX59h/7Y1
+         Mpy86aVzDlMC7vyhQDY0ggy1MsBXlPo/Ri//HkNUdIFfOGLV40yK1Trpb03j940CkDcv
+         aAi/bqPh8x4BcyfK9LhFAKp78v/GNsJe/AjNjzTLXl5ez3JblOovjZ2YaxpfDaASzd7K
+         kimrxEauFPfupzQ6Nknzw562FDT0tk6D8TVLUU5SA23Moj0PXlw0yo3uP2eWMEzUUkHm
+         GFjDlEiJHZj48oW2v7cLjvTKto/78fzY5Td0AE8ohTmVRtoxxTZux0z8S0solecVTL/f
+         UYZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=7ngYQ8UnRk1ZQG1QBxVMt0vUipJ0oB+rpBaTB/8WXgg=;
-        b=CkZSOj/IxotHvFnn5PAba84JEVxzweaXGC6QOA8pTXoBqzYKuMR2y8LIl2DF1yCDrS
-         DyqHAMXbOneIw1XuI82yiJaCf+VoqTZuNmMBZcSGps3VkHqqh/5VSQdtqayssvb25VKS
-         mrIwIjckXROr+oekpZqtfeS0RgVU2hQVXBO56nQnu3EqXwE1bCy5PeHaVkBpyktD6YuL
-         3mNqf4ts8f+/E9JPMKva6WDJmkOuRo1YYvvObYbdwfPeBZbBql1/Ay/OR4mn7JfOnxHv
-         C6Mc65JB1f1mGwtoWJ1N+OHvhl1xuDK0qfvhzraHf04pb5Oc5nQE/ozbRywrJlYFTVto
-         kgIQ==
-X-Gm-Message-State: AOAM533umCdQF3xpt18N42GDPgSncQ54ulmdWnxVsaOKieY+EIbyNpm0
-        Iu6bBz5kZgttu2/6ODvALuUbJEXXkmTN3+3bymkI/RWFDAjUPFFJBBaAYxkzhAnJDeoCWYj6tiW
-        7sKlSIKJMEvqgAkZ41bVOmOfo
-X-Received: by 2002:a05:600c:2504:: with SMTP id d4mr8654601wma.53.1633512468946;
-        Wed, 06 Oct 2021 02:27:48 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzGUhy0gAKWUOqrJ1UNTMcU+0gj6b2WgmTy8wezEYe1OO1y1Ud7N7Qy2A2zoM8LgbCxYHGIwg==
-X-Received: by 2002:a05:600c:2504:: with SMTP id d4mr8654537wma.53.1633512468677;
-        Wed, 06 Oct 2021 02:27:48 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c6529.dip0.t-ipconnect.de. [91.12.101.41])
-        by smtp.gmail.com with ESMTPSA id o26sm4707828wmc.17.2021.10.06.02.27.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Oct 2021 02:27:48 -0700 (PDT)
-Subject: Re: [PATCH v10 3/3] mm: add anonymous vma name refcounting
-To:     Michal Hocko <mhocko@suse.com>, John Hubbard <jhubbard@nvidia.com>
-Cc:     Suren Baghdasaryan <surenb@google.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Colin Cross <ccross@google.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        vincenzo.frascino@arm.com,
-        =?UTF-8?B?Q2hpbndlbiBDaGFuZyAo5by16Yym5paHKQ==?= 
-        <chinwen.chang@mediatek.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Jann Horn <jannh@google.com>, apopple@nvidia.com,
-        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
-        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
-        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
-        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
-        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
-        chris.hyser@oracle.com, Peter Collingbourne <pcc@google.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Jens Axboe <axboe@kernel.dk>, legion@kernel.org,
-        Rolf Eike Beer <eb@emlix.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Thomas Cedeno <thomascedeno@google.com>, sashal@kernel.org,
-        cxfcosmos@gmail.com, Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-mm <linux-mm@kvack.org>,
-        kernel-team <kernel-team@android.com>
-References: <20211001205657.815551-1-surenb@google.com>
- <20211001205657.815551-3-surenb@google.com>
- <20211005184211.GA19804@duo.ucw.cz>
- <CAJuCfpE5JEThTMhwKPUREfSE1GYcTx4YSLoVhAH97fJH_qR0Zg@mail.gmail.com>
- <20211005200411.GB19804@duo.ucw.cz>
- <CAJuCfpFZkz2c0ZWeqzOAx8KFqk1ge3K-SiCMeu3dmi6B7bK-9w@mail.gmail.com>
- <efdffa68-d790-72e4-e6a3-80f2e194d811@nvidia.com>
- <YV1eCu0eZ+gQADNx@dhcp22.suse.cz>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <6b15c682-72eb-724d-bc43-36ae6b79b91a@redhat.com>
-Date:   Wed, 6 Oct 2021 11:27:45 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Cs32oKjPY880HhRcpboK0pON5dPQmpZCrv3AmYoudi4=;
+        b=DUyQKF0MWlQRZxmaOZZ8Ockc0tK4GJs7U8G9BxmFugkgZZn299mpffpdvExCIAw2UG
+         deo1JwcKqESGP5MJ3Nft+5Jj7WpNildeBIxPZBGZLQvhngS499jCkT3qFYg1D1TO7gaP
+         KlpnkDs4fu/8ZWy4/Lzfg60Qo066ur1wklC75uBdKh+njvh3kk4cHBIJdn8vX9j1yyhz
+         0ve/2lXq/iNcdtn4rm3n9eaKZjxNxC0hHLBK9gux29IX/OLoLzhGlfRT5CO1+TFBgwlR
+         QG8jAwXwyVA/ATJB2i/u95yv7j2ORO9PD/jsZID6FIKV4QcFD/EpyKzWODKnltVLDKc0
+         r7KQ==
+X-Gm-Message-State: AOAM533Plq0FmU5mRM21p1O3ygIR8z9q12D89LIHcDVFg2Dza3Bi6HA/
+        l1y9f/F4U5wFdrrzUIJ2ykvcFkmniKgv1A3ISRrccw==
+X-Google-Smtp-Source: ABdhPJwgbKRqUWndz/R/ob0yYOvX+zmWUkoW3ELAssaKrTJCToZ4rmrps0L8dLDx2abTjB7pRmhWDo7HUxDlivZuBuU=
+X-Received: by 2002:a05:6512:21cb:: with SMTP id d11mr8276307lft.579.1633508954553;
+ Wed, 06 Oct 2021 01:29:14 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YV1eCu0eZ+gQADNx@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20211005143748.2471647-1-pan@semihalf.com> <20211005143748.2471647-3-pan@semihalf.com>
+ <CAK8P3a1kj1G3TkM7bK3ckXoG8_PTLURAcpDRmDxdnjutEPMsug@mail.gmail.com> <YVx9IMk7cJSCK79/@piout.net>
+In-Reply-To: <YVx9IMk7cJSCK79/@piout.net>
+From:   =?UTF-8?Q?Pawe=C5=82_Anikiel?= <pan@semihalf.com>
+Date:   Wed, 6 Oct 2021 11:29:03 +0200
+Message-ID: <CAF9_jYT7_9Oz-HFSy5z7uiieoHtujUD_En9MTi68PxGb7gxphw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/4] dt-bindings: add bus number property
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, jarkko.nikula@linux.intel.com,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Olof Johansson <olof@lixom.net>, SoC Team <soc@kernel.org>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Pratyush Yadav <p.yadav@ti.com>,
+        Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+        Linux I2C <linux-i2c@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Konrad Adamczyk <ka@semihalf.com>,
+        Tomasz Nowicki <tn@semihalf.com>,
+        Jacek Majkowski <jam@semihalf.com>,
+        Alexandru Stan <amstan@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06.10.21 10:27, Michal Hocko wrote:
-> On Tue 05-10-21 23:57:36, John Hubbard wrote:
-> [...]
->> 1) Yes, just leave the strings in the kernel, that's simple and
->> it works, and the alternatives don't really help your case nearly
->> enough.
-> 
-> I do not have a strong opinion. Strings are easier to use but they
-> are more involved and the necessity of kref approach just underlines
-> that. There are going to be new allocations and that always can lead
-> to surprising side effects.  These are small (80B at maximum) so the
-> overall footpring shouldn't all that large by default but it can grow
-> quite large with a very high max_map_count. There are workloads which
-> really require the default to be set high (e.g. heavy mremap users). So
-> if anything all those should be __GFP_ACCOUNT and memcg accounted.
-> 
-> I do agree that numbers are just much more simpler from accounting,
-> performance and implementation POV.
+On Tue, Oct 5, 2021 at 6:28 PM Alexandre Belloni
+<alexandre.belloni@bootlin.com> wrote:
+>
+> On 05/10/2021 18:22:12+0200, Arnd Bergmann wrote:
+> > On Tue, Oct 5, 2021 at 4:37 PM Pawe=C5=82 Anikiel <pan@semihalf.com> wr=
+ote:
+> > >
+> > > On SoCFPGA systems, it's desireable to have fixed numbering for
+> > > i2c busses, while being able to enable/disable them (e.g. have i2c1
+> > > be mapped to /dev/i2c-1, even though i2c0 is disabled). This can also
+> > > be achieved using devicetree aliases (see i2c_add_adapter). However,
+> > > having the driver be self-contained without relying on aliases is mor=
+e
+> > > robust.
+> > >
+> > > Signed-off-by: Pawe=C5=82 Anikiel <pan@semihalf.com>
+> >
+> > I don't see how adding a nonstandard property in one of the i2c bus
+> > drivers helps at all. How do you expect this to work when there are
+> > multiple i2c controllers in the system using different drivers? What
+> > should happen if both an alias and the busno property are set?
+> >
+>
+> What happens when two nodes have the same busno property because e.g.
+> one is in a dtsi and the other one is in a dts?
+>
 
-+1
+If busno is set, the alias is ignored (the code that checks aliases
+is never reached). If two nodes have the same busno property, we get
+a WARN in drivers/i2c/i2c-core-base.c:1637, and only on of them
+gets attached.
 
-I can understand that having a string can be quite beneficial e.g., when 
-dumping mmaps. If only user space knows the id <-> string mapping, that 
-can be quite tricky.
+What is a better way of doing this then? Is adding aliases to the
+devicetree like this okay?
 
-However, I also do wonder if there would be a way to standardize/reserve 
-ids, such that a given id always corresponds to a specific user. If we 
-use an uint64_t for an id, there would be plenty room to reserve ids ...
-
-I'd really prefer if we can avoid using strings and instead using ids.
-
--- 
-Thanks,
-
-David / dhildenb
-
+aliases {
+...
+i2c0 =3D &i2c0;
+i2c1 =3D &i2c1;
+};
