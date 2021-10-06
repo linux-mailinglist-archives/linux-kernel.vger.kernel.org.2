@@ -2,128 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C146A4248F5
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 23:32:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2AF44248FB
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 23:35:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239635AbhJFVeT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 17:34:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52104 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231186AbhJFVeS (ORCPT
+        id S230182AbhJFVg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 17:36:57 -0400
+Received: from mail-oi1-f177.google.com ([209.85.167.177]:37792 "EHLO
+        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229464AbhJFVg4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 17:34:18 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB623C061746;
-        Wed,  6 Oct 2021 14:32:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=6m+HOLtIGRYfM6J5PYZs3JgnY5b6/ZoAnBR86sWEAgo=; b=F1fxSx3EZhvdv+VChR3eF+tXny
-        lwpw5rR99hKW2Q/EWjJ2czVgQWT3k16IZzHvQYwY63Q+YQ23rVDG4B6WGklna1btXO/dNc0XmK43s
-        xvGlbnNE2xFRqklTxl4MjcgXTYhMm0DPIerZ89+x8+gPkKdqm4wyQ5HfR2kpjI91bajjpWX53FU7f
-        Kl8iy1/CjGg/ctF/hletub3XgRIy23JWxm5vulwNzUK/wJ/qrVfrtJXUVKlLweqIbw7ByPTPqlKIf
-        f/wNLiyDDTRvMbKG359Wd2wa196B32crSPrImazHMag8KMM9dFUJxpGyO1ydrvO2iBV1qI++pPjwc
-        Py3tLOqQ==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mYEWU-00FbpY-6B; Wed, 06 Oct 2021 21:32:22 +0000
-Subject: Re: linux-next: Tree for Oct 5 (warnings: a. trace; b. mm/migrate)
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>
-References: <20211005190628.1f26b13d@canb.auug.org.au>
- <c1d9e328-ad7c-920b-6c24-9e1598a6421c@infradead.org>
- <20211006172207.11982951@gandalf.local.home>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <6d8f22a1-5f54-aa2a-7628-1d98a7f0fb95@infradead.org>
-Date:   Wed, 6 Oct 2021 14:32:21 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Wed, 6 Oct 2021 17:36:56 -0400
+Received: by mail-oi1-f177.google.com with SMTP id w206so6037287oiw.4;
+        Wed, 06 Oct 2021 14:35:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=jlaMBb+PXzLm9v2gfdRM6nmNdN1Ikyp2veWkLLyMHFA=;
+        b=qdte5e0sfw+3ILNtzz7ziTz+N9IyeqDrfsPZnMp7cxcWvAik6oABZ6Sh6w7Fk4dbR+
+         2CILh+WxN4jo4dpqyzuAh1Ixb1l+dDNNYHmREfQCbk/NdAAopCOpSLTVw6Cl66D4vlDL
+         h2Py/o7fecCbkEqU3uukdYMpUqGe0MRynTKgnS7d8bAjEZeJ/TIn7SltDf5kbDzGnQaE
+         STEQPaeQ2FxR3ZMie9TmyQQNq6O5+EVW8WiBt4v+ZxdsMO++/6AcrG7nyPcCLLfnpH3Q
+         bEpYkTaRQUSkxIQIa+1a3b/mkxLgEFowk7W/iHu+suugmSlnQZvji2ZdRsTyObvI3DOa
+         Y59w==
+X-Gm-Message-State: AOAM530neW/TcJZePK4Odu19TcijltjrWngMzonTZ87+Ao1ZlKE8yoc4
+        69neMWc8emlNivYprZms/zvgLWvBUg==
+X-Google-Smtp-Source: ABdhPJyJ113+jKX1dZCRWhNWr4t5PaazrGDt9LDPqVMQsBlmlHlcpVTm5Uj/fVJwTSgh7C0bxVia9Q==
+X-Received: by 2002:aca:4b09:: with SMTP id y9mr3045460oia.80.1633556103835;
+        Wed, 06 Oct 2021 14:35:03 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id x34sm4377324ott.52.2021.10.06.14.35.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Oct 2021 14:35:03 -0700 (PDT)
+Received: (nullmailer pid 2921399 invoked by uid 1000);
+        Wed, 06 Oct 2021 21:35:02 -0000
+Date:   Wed, 6 Oct 2021 16:35:02 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Frank Rowand <frowand.list@gmail.com>
+Subject: [GIT PULL] Devicetree fixes for v5.15, take 3
+Message-ID: <YV4WhkB4PQVMCCvu@robh.at.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20211006172207.11982951@gandalf.local.home>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/6/21 2:22 PM, Steven Rostedt wrote:
-> On Tue, 5 Oct 2021 13:46:52 -0700
-> Randy Dunlap <rdunlap@infradead.org> wrote:
-> 
->> a. randconfig: KCONFIG_SEED=0xBFBEA13C
->> ../kernel/trace/trace.c:1712:13: error: 'trace_create_maxlat_file' defined but not used [-Werror=unused-function]
->>    static void trace_create_maxlat_file(struct trace_array *tr,
-> 
-> Does this fix it?
-> 
-> -- Steve
+Linus,
 
-Yes, thanks.
+Please pull a couple more DT fixes.
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+Rob
 
 
-> 
-> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-> index 7896d30d90f7..4520cbab0da5 100644
-> --- a/kernel/trace/trace.c
-> +++ b/kernel/trace/trace.c
-> @@ -1744,16 +1744,15 @@ void latency_fsnotify(struct trace_array *tr)
->   	irq_work_queue(&tr->fsnotify_irqwork);
->   }
->   
-> -/*
-> - * (defined(CONFIG_TRACER_MAX_TRACE) || defined(CONFIG_HWLAT_TRACER)) && \
-> - *  defined(CONFIG_FSNOTIFY)
-> - */
-> -#else
-> +/* CONFIG_FSNOTIFY else */
-> +#elif CREATE_MAX_TRACE_FILE
->   
->   #define trace_create_maxlat_file(tr, d_tracer)				\
->   	trace_create_file("tracing_max_latency", 0644, d_tracer,	\
->   			  &tr->max_latency, &tracing_max_lat_fops)
->   
-> +#else
-> +#define trace_create_maxlat_file(tr, d_tracer) do { } while (0)
->   #endif
->   
->   #ifdef CONFIG_TRACER_MAX_TRACE
-> @@ -9473,9 +9472,7 @@ init_tracer_tracefs(struct trace_array *tr, struct dentry *d_tracer)
->   
->   	create_trace_options_dir(tr);
->   
-> -#if defined(CONFIG_TRACER_MAX_TRACE) || defined(CONFIG_HWLAT_TRACER)
->   	trace_create_maxlat_file(tr, d_tracer);
-> -#endif
->   
->   	if (ftrace_create_function_files(tr, d_tracer))
->   		MEM_FAIL(1, "Could not allocate function filter files");
-> diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
-> index b7c0f8e160fb..680935949aef 100644
-> --- a/kernel/trace/trace.h
-> +++ b/kernel/trace/trace.h
-> @@ -679,8 +679,11 @@ void update_max_tr_single(struct trace_array *tr,
->   #endif /* CONFIG_TRACER_MAX_TRACE */
->   
->   #if (defined(CONFIG_TRACER_MAX_TRACE) || defined(CONFIG_HWLAT_TRACER) \
-> -	|| defined(CONFIG_OSNOISE_TRACER)) && defined(CONFIG_FSNOTIFY)
-> -#define LATENCY_FS_NOTIFY
-> +	|| defined(CONFIG_OSNOISE_TRACER))
-> +# define CREATE_MAX_TRACE_FILE
-> +# ifdef CONFIG_FSNOTIFY
-> +#  define LATENCY_FS_NOTIFY
-> +# endif
->   #endif
->   
->   #ifdef LATENCY_FS_NOTIFY
-> 
+The following changes since commit 55c21d57eafb7b379bb7b3e93baf9ca2695895b0:
 
+  dt-bindings: arm: Fix Toradex compatible typo (2021-09-17 16:02:41 -0500)
 
--- 
-~Randy
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git tags/devicetree-fixes-for-5.15-3
+
+for you to fetch changes up to b2d70c0dbf2731a37d1c7bcc86ab2387954d5f56:
+
+  dt-bindings: drm/bridge: ti-sn65dsi86: Fix reg value (2021-10-04 12:01:59 -0500)
+
+----------------------------------------------------------------
+Devicetree fixes for v5.15, take 3:
+
+- Add another allowed address for TI sn65dsi86
+
+- Drop more redundant minItems/maxItems
+
+- Fix more graph 'unevaluatedProperties' warnings in media bindings
+
+----------------------------------------------------------------
+Geert Uytterhoeven (1):
+      dt-bindings: drm/bridge: ti-sn65dsi86: Fix reg value
+
+Rob Herring (2):
+      dt-bindings: media: Fix more graph 'unevaluatedProperties' related warnings
+      dt-bindings: Drop more redundant 'maxItems/minItems'
+
+ Documentation/devicetree/bindings/display/bridge/ti,sn65dsi83.yaml | 2 --
+ Documentation/devicetree/bindings/display/bridge/ti,sn65dsi86.yaml | 2 +-
+ Documentation/devicetree/bindings/media/i2c/ovti,ov5647.yaml       | 2 +-
+ Documentation/devicetree/bindings/media/i2c/ovti,ov9282.yaml       | 2 +-
+ Documentation/devicetree/bindings/media/i2c/sony,imx335.yaml       | 2 +-
+ Documentation/devicetree/bindings/media/i2c/sony,imx412.yaml       | 2 +-
+ Documentation/devicetree/bindings/mmc/snps,dwcmshc-sdhci.yaml      | 4 +---
+ Documentation/devicetree/bindings/net/nxp,dwmac-imx.yaml           | 1 -
+ Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.yaml          | 1 -
+ 9 files changed, 6 insertions(+), 12 deletions(-)
