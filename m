@@ -2,58 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 074A2424156
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 17:27:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80B4F42415C
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 17:29:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239225AbhJFP3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 11:29:33 -0400
-Received: from marcansoft.com ([212.63.210.85]:55408 "EHLO mail.marcansoft.com"
+        id S239230AbhJFPbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 11:31:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59350 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231671AbhJFP3c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 11:29:32 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: marcan@marcan.st)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id C1DAB3FA5E;
-        Wed,  6 Oct 2021 15:27:33 +0000 (UTC)
-Subject: Re: [PATCH 2/7] dt-bindings: power: Add apple,pmgr-pwrstate binding
-To:     Mark Kettenis <mark.kettenis@xs4all.nl>
-Cc:     linux-arm-kernel@lists.infradead.org, maz@kernel.org,
-        robh+dt@kernel.org, arnd@kernel.org, linus.walleij@linaro.org,
-        alyssa@rosenzweig.io, krzk@kernel.org, gregkh@linuxfoundation.org,
-        p.zabel@pengutronix.de, rafael@kernel.org,
-        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-serial@vger.kernel.org
-References: <20211005155923.173399-1-marcan@marcan.st>
- <20211005155923.173399-3-marcan@marcan.st>
- <d3ca3bcc44156f32@bloch.sibelius.xs4all.nl>
-From:   Hector Martin <marcan@marcan.st>
-Message-ID: <bb403fbe-2ac2-f9d2-ac86-35e63b4210a8@marcan.st>
-Date:   Thu, 7 Oct 2021 00:27:31 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S238124AbhJFPbB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 11:31:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C9E8D60FDC;
+        Wed,  6 Oct 2021 15:29:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1633534149;
+        bh=QUoyOL6OKULLLn7PEX8SoWT6GhmIXGbAaIkLoV31JTE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=T6JOPNbpPN39ApHvyDoURRufEqEmkxBN1lZlgjradLHZKy1HHXowQ/s4WWyu6EbZ/
+         h4PjXnkejpZz5tzIwEXcosIp4KNadK50ltyM+w0VzFOBlYAg9sMHw8AXT984bmDKpW
+         z9JF6DiTploHyc467aKH+7QhuCibhvP+qnOPmCK0=
+Date:   Wed, 6 Oct 2021 17:29:02 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Wei Yang <richard.weiyang@gmail.com>
+Cc:     kuba@kernel.org, neilb@suse.com, mojha@codeaurora.org,
+        jkosina@suse.cz, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] hashtable: remove a redundant check in
+ hash_for_each_xxx()
+Message-ID: <YV3AvszXKVBA5BNz@kroah.com>
+References: <20211006152100.17795-1-richard.weiyang@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <d3ca3bcc44156f32@bloch.sibelius.xs4all.nl>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: es-ES
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211006152100.17795-1-richard.weiyang@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/10/2021 05.16, Mark Kettenis wrote:
-> Or we drop the apple,mpgr-pwrstate and go with only SoC-specific
-> compatibles from that point onwards.
+On Wed, Oct 06, 2021 at 03:21:00PM +0000, Wei Yang wrote:
+> The three hash_for_each_xxx() helper iterate the hash table with help
+> of hlist_for_each_entry_xxx(), which breaks the loop only when obj is
+> NULL.
+> 
+> This means the check during each iteration is redundant. This patch
+> removes it.
 
-I think if Apple has discrete compat breaks and several SoCs still share 
-compatibility, it'd make sense to encode those as pmgr-pwrstate-v2, v3, 
-etc. That way compatible SoCs can continue to benefit from 
-forwards-compatible kernels, and we only end up with a hard dep on a new 
-kernel for incompatible SoCs.
+Are you sure that the compiler didn't already remove it?  Is the code
+output the same or different with this change?
 
--- 
-Hector Martin (marcan@marcan.st)
-Public Key: https://mrcn.st/pub
+How did you test this?
+
+thanks,
+
+greg k-h
