@@ -2,176 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87FC642418A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 17:43:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A9CD42418F
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 17:44:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239080AbhJFPpo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 11:45:44 -0400
-Received: from mga17.intel.com ([192.55.52.151]:23453 "EHLO mga17.intel.com"
+        id S239149AbhJFPqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 11:46:07 -0400
+Received: from mga06.intel.com ([134.134.136.31]:34806 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230014AbhJFPpn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 11:45:43 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10129"; a="206833843"
+        id S230014AbhJFPqG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 11:46:06 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10129"; a="286904803"
 X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; 
-   d="scan'208";a="206833843"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2021 08:43:50 -0700
+   d="scan'208";a="286904803"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2021 08:44:14 -0700
 X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; 
-   d="scan'208";a="589806021"
-Received: from ptcotton-mobl1.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.212.211.164])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2021 08:43:50 -0700
-Subject: Re: [PATCH v8 03/11] x86/cpufeatures: Add TDX Guest CPU feature
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
-        VMware Inc <pv-drivers@vmware.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        linux-kernel@vger.kernel.org
-References: <20211005025205.1784480-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211005025205.1784480-4-sathyanarayanan.kuppuswamy@linux.intel.com>
- <YV3AKekdJU0vsbaN@zn.tnic>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <328cc0e7-89e7-a1b2-f798-fe758c2c1f4e@linux.intel.com>
-Date:   Wed, 6 Oct 2021 08:43:48 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
+   d="scan'208";a="458466106"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2021 08:44:11 -0700
+Received: from andy by smile with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mY95T-009F82-LL;
+        Wed, 06 Oct 2021 18:44:07 +0300
+Date:   Wed, 6 Oct 2021 18:44:07 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Joe Perches <joe@perches.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Subject: Re: [PATCH v1 2/4] ASoC: Intel: bytcr_rt5640: Use temporary variable
+ for struct device
+Message-ID: <YV3ER4uIL4aRWBjz@smile.fi.intel.com>
+References: <20211006150442.16503-1-andriy.shevchenko@linux.intel.com>
+ <20211006150442.16503-2-andriy.shevchenko@linux.intel.com>
+ <4b81a10dca78e286a9f806464b97111b5a15a91e.camel@perches.com>
 MIME-Version: 1.0
-In-Reply-To: <YV3AKekdJU0vsbaN@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4b81a10dca78e286a9f806464b97111b5a15a91e.camel@perches.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Oct 06, 2021 at 08:21:01AM -0700, Joe Perches wrote:
+> On Wed, 2021-10-06 at 18:04 +0300, Andy Shevchenko wrote:
+> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> 
+> trivia:
+> 
+> Some will complain about a lack of commit message.
 
+Yeah, sorry for that, it wasn't deliberate. I forgot to run `git msg-filter`
+on these three patches to add it.
 
-On 10/6/21 8:26 AM, Borislav Petkov wrote:
-> On Mon, Oct 04, 2021 at 07:51:57PM -0700, Kuppuswamy Sathyanarayanan wrote:
->> diff --git a/arch/x86/kernel/tdx.c b/arch/x86/kernel/tdx.c
->> new file mode 100644
->> index 000000000000..ad3ff5925153
->> --- /dev/null
->> +++ b/arch/x86/kernel/tdx.c
->> @@ -0,0 +1,40 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/* Copyright (C) 2020 Intel Corporation */
->> +
->> +#undef pr_fmt
->> +#define pr_fmt(fmt)     "tdx: " fmt
->> +
->> +#include <asm/tdx.h>
->> +
->> +/*
->> + * Allocate it in the data region to avoid zeroing it during
->> + * BSS initialization. It is mainly used in cc_platform_has()
->> + * call during early boot call.
->> + */
->> +u64 __section(".data") is_tdx_guest = 0;
->> +
->> +static void __init is_tdx_guest_init(void)
->> +{
->> +	u32 eax, sig[3];
->> +
->> +	if (cpuid_eax(0) < TDX_CPUID_LEAF_ID) {
->> +		is_tdx_guest = 0;
->> +		return;
->> +	}
->> +
->> +	cpuid_count(TDX_CPUID_LEAF_ID, 0, &eax, &sig[0], &sig[2], &sig[1]);
->> +
->> +	is_tdx_guest = !memcmp("IntelTDX    ", sig, 12);
->> +}
->> +
->> +void __init tdx_early_init(void)
->> +{
->> +	is_tdx_guest_init();
->> +
->> +	if (!is_tdx_guest)
->> +		return;
->> +
->> +	setup_force_cpu_cap(X86_FEATURE_TDX_GUEST);
->> +
->> +	pr_info("Guest initialized\n");
->> +}
->> -- 
-> 
-> What I meant was this (untested of course).
-> 
-> is_tdx_guest() is the accessor external code queries and you cache the
-> detected value in tdx_guest so that the one after the first one is
-> cheap.
-
-Yes. But, Joerg Roedel in his review recommended using variable
-similar to sme_me_mask to avoid function call in Intel platform in
-cc_platform_has().
-
-"
-This causes a function call on every Intel machine this code runs. is
-there an easier to check whether TDX is enabled, like the sme_me_mask
-check on AMD?
-"
-
-That's why I have introduced is_tdx_guest global variable in this
-version.
-
-
-> 
-> /*
->   * Allocate it in the data region to avoid zeroing it during
->   * BSS initialization. It is mainly used in cc_platform_has()
->   * call during early boot call.
->   *
->   * States whether the kernel is running as a TDX guest.
->   */
-> static int tdx_guest __ro_after_init = -1;
-> 
-> bool is_tdx_guest(void)
-> {
-> 	u32 eax, sig[3];
-> 
-> 	if (tdx_guest >= 0)
-> 		return tdx_guest;
-> 
-> 	if (cpuid_eax(0) < TDX_CPUID_LEAF_ID) {
-> 		tdx_guest = 0;
-> 		return false;
-> 	}
-> 
-> 	cpuid_count(TDX_CPUID_LEAF_ID, 0, &eax, &sig[0], &sig[2], &sig[1]);
-> 
-> 	tdx_guest = !memcmp("IntelTDX    ", sig, 12);
-> 
-> 	return tdx_guest;
-> }
-> 
-> void __init tdx_early_init(void)
-> {
-> 	if (!is_tdx_guest())
-> 		return;
-> 
-> 	setup_force_cpu_cap(X86_FEATURE_TDX_GUEST);
-> 
-> 	pr_info("Guest initialized\n");
-> }
-> 
+Mark, do you want me resend entire bunch(es) or just starting from these
+patches? Or...?
 
 -- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+With Best Regards,
+Andy Shevchenko
+
+
