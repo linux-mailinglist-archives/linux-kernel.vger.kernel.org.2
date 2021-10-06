@@ -2,185 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8E214239EE
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 10:46:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 842C54239F0
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 10:46:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237771AbhJFIsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 04:48:05 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:64500 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237543AbhJFIsD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 04:48:03 -0400
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1968iu0j024853;
-        Wed, 6 Oct 2021 08:45:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type :
- content-transfer-encoding : in-reply-to : mime-version; s=corp-2021-07-09;
- bh=KSU3QXU3JS4a1VazPCcwoX/7Y4WV2ZhmjseTaxafd2Q=;
- b=tM2TlTxoPoZXJB+d3tm+mGoKI+qX8i1ZQsy5G+Vtkx8dbqxUSH/Tezj/ik7wsYsR36QC
- GhonNpl9xOIQVCXQcqkVXVJVl/YBqXf5fb6Xp5cRnxKbLnUlYCh61lrM4lzGib1nVG1q
- v2AQY3OfH1I/aikBHUn8olGVdS5Qc+7DJm2RZNswGEsulneUUzVaxlIlkthblm26dkQP
- wRM3wjaOXdSVWR41iz8GAzu0m2KSj4jE10VMlbrEK+17BLZXZyMyBGlCa0DhxWbVjDZ7
- blEf7sxMmE6D0vXQMNx9YJc0/HAgicd2pBxuGe3hWi+rHzS2gGItNqA9yyYUP7cNjhVJ 7A== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3bh10ga94a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 06 Oct 2021 08:45:48 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1968aNmc192872;
-        Wed, 6 Oct 2021 08:45:47 GMT
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2172.outbound.protection.outlook.com [104.47.59.172])
-        by aserp3020.oracle.com with ESMTP id 3bev8y12cf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 06 Oct 2021 08:45:47 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eZP7vydQ1EzH1Tu6ZAqYVPwwXCQc94KTBaU50A4rrEPl8dt6hIMHnLQQtCHL+vS8dq7tNeRYcKJRyG8VWqeOIVSfhU1ARItNuEVAU1iNc3UTo1r17FqBHRP1pHOqJFr2ugBWF+WK3OhJVNdRIbwU0tPRHkpHG/pi5XyTVMZrhvdxAvf+FphXOB1uBTqI8sAUB/8e0caPqBlUEEaa3Sp6MsmkVir5jykSc8uDvjTEZa+pE8TrgzxkFQ2EBH1hAU0fEZ6iNhyh8odx4IaGGNrboZaBp2jzq4WdfizBhJ7tL4k1KWfQJIqox5Z+BlB+rf7kuJR3JpOUPTv1E+OXDxHM9g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=KSU3QXU3JS4a1VazPCcwoX/7Y4WV2ZhmjseTaxafd2Q=;
- b=Yv3p5OOzKU69u80VhSxz456poi61uxVAXnc+xczLFC9OyKuZ/nbNbOT0jPbVgGNqvSJ+CecQr8BgDIvpEhiYOOSvDMznMrStkPBw59CupLsoF2n+yvH9juxnISjoF7djBfarRScBdUyROZQOzxI9EuhW+XWeh37D9LQQLHTK/CdQrZecuFzyCpoNCWsQ6rsf18c7oOpSuC6sOxOZad0tRYqjK3hZk7KTq+FMNV7hZ1EJ7dp/2hje8xrq9qN0byzJlVDwHhMNKjq7F+qyhmufS5KGY1ijpkbpdw8k5JdE6PNLPk7onVbtcHGgZ9JDbt9Ym1qKoq8/FC9zp4niMa/heg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KSU3QXU3JS4a1VazPCcwoX/7Y4WV2ZhmjseTaxafd2Q=;
- b=ragJaJ5y+N61PdYX6C4PoIR6Zro0zDQN/23TiygHDVLqiOtKPBcU1mQbTVze4ussz6VPsyywcmacC89+XIUlzlTeb1whHglQKzDRYWGKrDc+2T4/J4nysyr4FL6Oq+QB2fVPkv6lvxyKZcTNiNmrz7SHpSSqpCS7dWXT8uG57zo=
-Authentication-Results: piap.pl; dkim=none (message not signed)
- header.d=none;piap.pl; dmarc=none action=none header.from=oracle.com;
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- (2603:10b6:301:2d::28) by MWHPR10MB1822.namprd10.prod.outlook.com
- (2603:10b6:300:10b::18) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.19; Wed, 6 Oct
- 2021 08:45:45 +0000
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::d409:11b5:5eb2:6be9]) by MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::d409:11b5:5eb2:6be9%5]) with mapi id 15.20.4566.022; Wed, 6 Oct 2021
- 08:45:45 +0000
-Date:   Wed, 6 Oct 2021 11:45:26 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Krzysztof =?utf-8?Q?Ha=C5=82asa?= <khalasa@piap.pl>
-Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
-        Steve Longerbeam <slongerbeam@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] i.MX6: Support 16-bit BT.1120 video input
-Message-ID: <20211006084526.GA2048@kadam>
-References: <m3o882n0ir.fsf@t19.piap.pl>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <m3o882n0ir.fsf@t19.piap.pl>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: JNAP275CA0064.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4f::20)
- To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
+        id S237801AbhJFIsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 04:48:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37014 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237420AbhJFIsm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 04:48:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3417360F5C;
+        Wed,  6 Oct 2021 08:46:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1633510010;
+        bh=KuIGFIKJzqltuGdBQ2mksNIwBlmqWmCyDyVMC4ARi3U=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Kpb0byJNLsWTz0HNNPU63rzitF3CgVSAs/zpb2mIQP561aKPZgd+Op2urrYBEy9k8
+         j9OdTVaBcVErV09KYvdjNwrti9L+QMDjvYf3T02JZ7Dadc6gQjG3kz+pbgcbpPc2X2
+         zc8Z3KgVk6nYeLdP8KXs7uZBVMoFuWl+mBJJFfuc=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org
+Cc:     lwn@lwn.net, jslaby@suse.cz,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Linux 4.4.286
+Date:   Wed,  6 Oct 2021 10:46:47 +0200
+Message-Id: <163351000713258@kroah.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Received: from kadam (62.8.83.99) by JNAP275CA0064.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4f::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.17 via Frontend Transport; Wed, 6 Oct 2021 08:45:38 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 2bbbf64a-4fa7-4ba8-30c7-08d988a5afb5
-X-MS-TrafficTypeDiagnostic: MWHPR10MB1822:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MWHPR10MB182286E6C4CA64B040661EC58EB09@MWHPR10MB1822.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2803;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: hCMyHkZ5yMrS159YOVp3EOeDu39jQcqZt9M+7LM2H6SFlxmFqht+wOMXQxMr7GJbb8yH5NANGHf5scyyp4ygtHYMEHhq/6W0cp/IU1GZn7CZn7xpOCS/ttaCzUPLV7+gpUDDt3xNeAnHjigkM5srralZ07Xoq5+s/jPJCX9wKsTSqlekiATUKWaA+79GCpW2bb63C0pq5j0HjjmLxHeQIO+A9/9ZQMXTMwS8Q5NjIyoOj2m4I8vjjULtLyq1Q38E7yhfS/jFxjYOW8dcApuXuieRSAyM3kPHmEL630Q0GfFWsIhtXfkdbVcZPQHMHccuLfi5eUyVaaBDKugaahoUYTrkIjBMROwOVv5pOKXtrqxgOrTynUw+mSCxdSu9HPpuhYGmxnnww7qDZdivsHe6PoruWAMOqjDGeSFDQrXRT1CV1M+PvAvytjwoXPqjpujK9StG3HZyzlsb08wHXf4QlDQLp2QWenpe2+MCrQBsp3Lj5qjSPdGS9ENCi20eO5EUr3/g8Vr42Jzg2dFFEdXzTP7i9R3snVlL2GQgSR+mkx+KN6Kz97ZZtLhDL8iCTjAUxtmAuk20zYVgky32fDah9+vEK5a3LF6ZvIpMQmfVwEPUEXnn8oV7zwmyFJlRceoLBGThOqOmerqS5eosiuGDcpGpZ5mWORRpTw41K4zlm7r6gk5XgIU8RCKCY524hkHyG/cog0Si5s/pvY11Oivb3w==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(44832011)(2906002)(4326008)(66946007)(33716001)(8676002)(316002)(6666004)(7416002)(9576002)(8936002)(54906003)(66556008)(66476007)(33656002)(1076003)(6496006)(26005)(86362001)(52116002)(6916009)(38350700002)(956004)(38100700002)(186003)(5660300002)(9686003)(55016002)(508600001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?czJSTU5RRHNnYU9RYVpicnh5OVRzNWJTSEU3Wmw4S3RoSzdJS2J3RWNleGJt?=
- =?utf-8?B?NlA4RncwejlXck9pSU9PVFQvOFg4a1Q3WkZqNUtZbjMrbklRa3JRV0FVNTY2?=
- =?utf-8?B?dEM4WTJ6Rk5PZGNxamdkVlRxMkZ0d3dJQmtRTlBDakwrZzdQNnl5UnpnWlUz?=
- =?utf-8?B?a25WQnpyRFYxclhQV2xOc1lBTHIrVnZ2eUdyRHRaVy9Ud0V3ZWlUbWFsN01y?=
- =?utf-8?B?Wk9pRzVrdlBPMkZjQTVCUkhqVFBuVHJGMkEwaXd0c0dzZk9wM1lPVEZkWGFP?=
- =?utf-8?B?ZU1SSGFaVUNoRWpmb25TRElzQ1RmOG9JOERGMlBKb0dabi9QTDFVTjltRVdU?=
- =?utf-8?B?WG5KOUltZjZ6NUdPRk5RL0YrSmtHK3ZOajJENnN3NVE1RC9CMDJwNHduSjVZ?=
- =?utf-8?B?V2VSc3pZZmxjcDZrbjlheko2a3pBcGxPeStKT2tOTm9UNTVvNzZEb1ZqaTRq?=
- =?utf-8?B?aGxBTDdwS3YyeHdMWkdQR3pNazlNTGl1KzdobkxSSk8zVzd5eGR1b0pHK0E1?=
- =?utf-8?B?dGhGL1J4bndyR0NDNng5YVpUL1V2QlBXNzVLMXpEeThsa0xhWlRQWm1tVWFs?=
- =?utf-8?B?VDh0dXFEV0hETzlqNXZzK1dOUkREbTFHN1FJcVN0bnFkSU1HZXpIN2dLWGpi?=
- =?utf-8?B?cDZ5QU5GSHl1NU1VeU5KTU5PNTR5Ukp3OE5KVWpuTFd4WFVjZ0ZxbFZwRHBV?=
- =?utf-8?B?aHNaMlVRb1NWdDVNaHFLQ2duMDFwYmFSN3AxV3FZOTd4ZEtTaTFnM1p6aC9I?=
- =?utf-8?B?Q2lVN1hFbVNmYm5od0c3T2FkdW1PRWJMdXdWaDhhaDM4SnV3ZHVwamt5bjFq?=
- =?utf-8?B?bGFzS2FYd3M3alV2V3FzVjJmYmgyUEdPNXVBUnRQNHRlYzUxUVgrTGtteUI2?=
- =?utf-8?B?aEwyRW93R1R5YVhlOE40WlZUN1RkeklONzZlMU9HbXNPSUNNTE5CZ0hrWmVD?=
- =?utf-8?B?dTk2V1VzNGFQczhESjY2SkhZTXVJY2E5MDFuR2dsamI4TFFmT1UxM0MxVmJG?=
- =?utf-8?B?YlpzbFpudGJ1cWR3NlZnbUZLTmRMYU9QdVptS2NOYlhDWFV6WFh3UWJkSjRB?=
- =?utf-8?B?ZWJSVk9nQ01haXczM3BSSDlkSkJyY3g2aU5HcWhYU0krak9NNWFneDVPMGQ4?=
- =?utf-8?B?UG1UZ1VtRVY4ODZBM3c5aEsxL0xoOE16UlNNZ1ROcU1peEV4ZVVkRG9MSXd5?=
- =?utf-8?B?ZWlxNXA3M21WV2dEb0pNSGZObjhtMGhOcVpRa2lOa2Y0Rkl2SW1hVjlXSVg1?=
- =?utf-8?B?QkFQZTlVMmxEMllBUjdkRTczc2pOWnZ2VFdwM0didEhOWW5LZGNUOXQ5REUr?=
- =?utf-8?B?anlxTnVtcGtCeVJpdlNNY3ErWGNNR09QM0syT1NnNXZab1dWcFJtWk0wa096?=
- =?utf-8?B?RWZxUjNEcC9lMHB6WWNFQ2xoV0o4dnZiQmFyQ0t5emdDSnZJSlNhbDdRWEVQ?=
- =?utf-8?B?OW8zbnpyZWZDclpRVm9mbWRSUDJWRmhNRUtDM3kvMVpiL0VmbnVkbFBzdUZh?=
- =?utf-8?B?aG5VVlFFbTdjVTUzM0dOSWlsYmUrRFk0UTF5U3pWMzI1QWpqTStvVWNhYzVk?=
- =?utf-8?B?THp4Y1JFSmFXZU02clF0QVZCMnhacnlScjVlZDMxdm00VDRzZFk2TVRJekpV?=
- =?utf-8?B?RFhpcmN3SHFwTTltVGZCbzdPQ2lLREJiMHVCV0xqSGFjMnJVc1FwaWh5ODcx?=
- =?utf-8?B?NDhrcGtPTEpoaVdDWElxcE5GUHdscVFqWG1HYzVxREcxUDAyQjdWSWFsZFRT?=
- =?utf-8?Q?RBCyk6zqBnRy8dyvB8v1na5M92AcAHrmg9O6eJp?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2bbbf64a-4fa7-4ba8-30c7-08d988a5afb5
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Oct 2021 08:45:45.0223
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Ae13M7Dl4EHSJxJ5AglSU+fSThNX1B6bk/FxQZdV3ZjynO2ZmigBdpQHE9vuLcuhY1K2yPbgyfbMrIweXqtGw6Gbo8x09fptNjzqXoCk/qY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR10MB1822
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10128 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0 phishscore=0
- spamscore=0 mlxscore=0 mlxlogscore=999 suspectscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109230001
- definitions=main-2110060054
-X-Proofpoint-GUID: b1KgVySnPSHN7-Eg6tr3TMgod37l1Fmt
-X-Proofpoint-ORIG-GUID: b1KgVySnPSHN7-Eg6tr3TMgod37l1Fmt
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 06, 2021 at 08:13:48AM +0200, Krzysztof Hałasa wrote:
-> @@ -373,11 +387,18 @@ static int fill_csi_bus_cfg(struct ipu_csi_bus_config *csicfg,
->  		break;
->  	case V4L2_MBUS_BT656:
->  		csicfg->ext_vsync = 0;
-> +		/* UYVY10_1X20 etc. should be supported as well */
-> +		is_bt1120 = mbus_fmt->code == MEDIA_BUS_FMT_UYVY8_1X16 ||
-> +			mbus_fmt->code == MEDIA_BUS_FMT_YUYV8_1X16;
+I'm announcing the release of the 4.4.286 kernel.
 
-Could you align better for readability, otherwise it's harder to spot
-the two characters which are swapped between those to macros.  (Also
-it's basically normal for both sides of a || to be aligned...)
+All users of the 4.4 kernel series must upgrade.
 
-		is_bt1120 = (mbus_fmt->code == MEDIA_BUS_FMT_UYVY8_1X16 ||
-			     mbus_fmt->code == MEDIA_BUS_FMT_YUYV8_1X16);
+The updated 4.4.y git tree can be found at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-4.4.y
+and can be browsed at the normal kernel.org git web browser:
+	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
 
->  		if (V4L2_FIELD_HAS_BOTH(mbus_fmt->field) ||
->  		    mbus_fmt->field == V4L2_FIELD_ALTERNATE)
-> -			csicfg->clk_mode = IPU_CSI_CLK_MODE_CCIR656_INTERLACED;
-> +			csicfg->clk_mode = is_bt1120 ?
-> +				IPU_CSI_CLK_MODE_CCIR1120_INTERLACED_SDR :
-> +				IPU_CSI_CLK_MODE_CCIR656_INTERLACED;
->  		else
-> -			csicfg->clk_mode = IPU_CSI_CLK_MODE_CCIR656_PROGRESSIVE;
-> +			csicfg->clk_mode = is_bt1120 ?
-> +				IPU_CSI_CLK_MODE_CCIR1120_PROGRESSIVE_SDR :
-> +				IPU_CSI_CLK_MODE_CCIR656_PROGRESSIVE;
->  		break;
->  	case V4L2_MBUS_CSI2_DPHY:
->  		/*
+thanks,
 
-regards,
-dan carpenter
+greg k-h
+
+------------
+
+ Makefile                                       |    2 
+ arch/alpha/include/asm/io.h                    |    6 +-
+ arch/arm64/Kconfig                             |    2 
+ arch/arm64/kernel/process.c                    |    2 
+ arch/arm64/mm/proc.S                           |    4 -
+ arch/m68k/include/asm/raw_io.h                 |   20 +++----
+ arch/parisc/include/asm/page.h                 |    2 
+ arch/sparc/kernel/mdesc.c                      |    3 -
+ arch/x86/xen/enlighten.c                       |   15 +++--
+ drivers/edac/synopsys_edac.c                   |    2 
+ drivers/hid/hid-betopff.c                      |   13 +++-
+ drivers/hid/usbhid/hid-core.c                  |   13 ++++
+ drivers/ipack/devices/ipoctal.c                |   63 +++++++++++++++++-----
+ drivers/net/ethernet/i825xx/82596.c            |    2 
+ drivers/net/ethernet/intel/e100.c              |   22 +++++--
+ drivers/net/ethernet/mellanox/mlx4/en_netdev.c |    3 +
+ drivers/net/hamradio/6pack.c                   |    4 -
+ drivers/net/usb/hso.c                          |   12 +---
+ drivers/scsi/scsi_transport_iscsi.c            |    8 +-
+ drivers/spi/spi-tegra20-slink.c                |    4 -
+ drivers/tty/vt/vt.c                            |   21 ++++++-
+ drivers/usb/gadget/udc/r8a66597-udc.c          |    2 
+ drivers/usb/musb/tusb6010.c                    |    1 
+ drivers/usb/serial/cp210x.c                    |    1 
+ drivers/usb/serial/mos7840.c                   |    2 
+ drivers/usb/serial/option.c                    |   11 +++
+ fs/cifs/connect.c                              |    5 +
+ fs/ext4/dir.c                                  |    6 +-
+ fs/qnx4/dir.c                                  |   69 ++++++++++++++++++-------
+ include/linux/compiler.h                       |    2 
+ include/linux/cred.h                           |   14 +++--
+ kernel/trace/blktrace.c                        |    8 ++
+ net/mac80211/wpa.c                             |    6 ++
+ net/netfilter/ipset/ip_set_hash_gen.h          |    4 -
+ net/netfilter/ipvs/ip_vs_conn.c                |    4 +
+ 35 files changed, 253 insertions(+), 105 deletions(-)
+
+Andrea Claudi (1):
+      ipvs: check that ip_vs_conn_tab_bits is between 8 and 20
+
+Anirudh Rayabharam (1):
+      HID: usbhid: free raw_report buffers in usbhid_stop
+
+Aya Levin (1):
+      net/mlx4_en: Don't allow aRFS for encapsulated packets
+
+Baokun Li (1):
+      scsi: iscsi: Adjust iface sysfs attr detection
+
+Carlo Lobrano (1):
+      USB: serial: option: add Telit LN920 compositions
+
+Dan Carpenter (2):
+      usb: gadget: r8a66597: fix a loop in set_feature()
+      usb: musb: tusb6010: uninitialized data in tusb_fifo_write_unaligned()
+
+Dan Li (1):
+      arm64: Mark __stack_chk_guard as __ro_after_init
+
+F.A.Sulaiman (1):
+      HID: betop: fix slab-out-of-bounds Write in betop_probe
+
+Greg Kroah-Hartman (1):
+      Linux 4.4.286
+
+Guenter Roeck (5):
+      m68k: Double cast io functions to unsigned long
+      compiler.h: Introduce absolute_pointer macro
+      net: i825xx: Use absolute_pointer for memcpy from fixed memory location
+      alpha: Declare virt_to_phys and virt_to_bus parameter as pointer to volatile
+      net: 6pack: Fix tx timeout and slot time
+
+Helge Deller (1):
+      parisc: Use absolute_pointer() to define PAGE0
+
+Igor Matheus Andrade Torrente (1):
+      tty: Fix out-of-bound vmalloc access in imageblit
+
+Jacob Keller (2):
+      e100: fix length calculation in e100_get_regs_len
+      e100: fix buffer overrun in e100_get_regs
+
+Jan Beulich (1):
+      xen/x86: fix PV trap handling on secondary processors
+
+Johan Hovold (6):
+      net: hso: fix muxed tty registration
+      ipack: ipoctal: fix stack information leak
+      ipack: ipoctal: fix tty registration race
+      ipack: ipoctal: fix tty-registration error handling
+      ipack: ipoctal: fix missing allocation-failure check
+      ipack: ipoctal: fix module reference leak
+
+Johannes Berg (1):
+      mac80211: fix use-after-free in CCMP/GCMP RX
+
+Jozsef Kadlecsik (1):
+      netfilter: ipset: Fix oversized kvmalloc() calls
+
+Krzysztof Kozlowski (2):
+      USB: serial: mos7840: remove duplicated 0xac24 device ID
+      USB: serial: option: remove duplicate USB device ID
+
+Linus Torvalds (4):
+      sparc: avoid stringop-overread errors
+      qnx4: avoid stringop-overread errors
+      spi: Fix tegra20 build with CONFIG_PM=n
+      qnx4: work around gcc false positive warning bug
+
+NeilBrown (1):
+      cred: allow get_cred() and put_cred() to be given NULL.
+
+Sai Krishna Potthuri (1):
+      EDAC/synopsys: Fix wrong value type assignment for edac_mode
+
+Slark Xiao (1):
+      USB: serial: option: add device id for Foxconn T99W265
+
+Steve French (1):
+      cifs: fix incorrect check for null pointer in header_assemble
+
+Suzuki K Poulose (1):
+      arm64: Extend workaround for erratum 1024718 to all versions of Cortex-A55
+
+Uwe Brandt (1):
+      USB: serial: cp210x: add ID for GW Instek GDM-834x Digital Multimeter
+
+Zhihao Cheng (1):
+      blktrace: Fix uaf in blk_trace access after removing by sysfs
+
+yangerkun (1):
+      ext4: fix potential infinite loop in ext4_dx_readdir()
+
