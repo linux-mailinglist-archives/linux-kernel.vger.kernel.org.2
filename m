@@ -2,113 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73D4A4239F9
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 10:47:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DADD4239FC
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 10:50:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237848AbhJFIt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 04:49:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42760 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237841AbhJFItZ (ORCPT
+        id S237820AbhJFIvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 04:51:49 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:52646
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237593AbhJFIvs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 04:49:25 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F3A8C061749;
-        Wed,  6 Oct 2021 01:47:32 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id i24so7105082lfj.13;
-        Wed, 06 Oct 2021 01:47:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=qt1MU2rBHUcCG/itiqLGGGuQT3zd/XSnIPDfOKn/Ios=;
-        b=kofkwor/Exw5fvZpgw8RKXo87GQ0UtBlNV5skI9mNMtOZVBYKg7R9sHNw1qy8RCy9K
-         YQHGCMGVX/3a8t0XVF1JQ7x6YugN3L9s2+PSQCGpox9gTc1sQNXCrLLLQVpiiXxCrXW0
-         KDPv+9k/5mwYlsYqFTLbKu7TzygRe273QRv8gexRDvoyHI1Z7VCybp2ucN6/XFeaQALJ
-         rkDUpc7VnBDkOWPplETX4Xt3OrqiQw+h558dDb4GXRlDd50fyU+1W+7bvezdsrG8ygmg
-         19mkkyGaD3IEtb5Oft/QGYZDBvq/T7+05fs64GSZrQu+yZ5XWMLYIWdF3T+o1gVzxikp
-         iJ2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=qt1MU2rBHUcCG/itiqLGGGuQT3zd/XSnIPDfOKn/Ios=;
-        b=3ezdQgneTJbB/8g+Fl8pTYoIwAxkrmSTaYYif89/XCJ4gTIuR1LTVEoiZ493GAuo4G
-         IegpoLyvWynUb8dDI7WSWls0tJHwKnb6sGvupKgCunN6wPFcLoP4FBXlDiGQm2UTwqSC
-         QznOw7JCrtP+jGKoAVqsu2Fl7/w6Cq87/1kHVU19DI5yXpBe9p5mrCNAx3v3BcAEDGWJ
-         l7kKYCuA6ejlMkIJdy952CvczSAEkZQEWo+xcNQ/laToPSnomNPN10gNcI5Xeg4SJONI
-         KJ0GAmXal7ujRX8CFYpec+bOABIBkMR94fyjMZQVSLPWD4L1BcHFs8B0VBmd4ILaUQTi
-         7CLg==
-X-Gm-Message-State: AOAM532lvCDwhziFI5ySF12yxo/d+y4Z3JEscRihnHbkWRvnNsqbfNtO
-        HA5MSgqu9rUxiKjj3C02+/qZNxISaaIkuGJvB08=
-X-Google-Smtp-Source: ABdhPJxaeki3renWBs16/PtlBC3PGa0bzgH87pk9l6BVmGBv7CtNn1ORXziCn/HrbNw8V2syQmhIs6DqrrcmCLa6b7E=
-X-Received: by 2002:a05:6512:12c9:: with SMTP id p9mr8839455lfg.345.1633510049583;
- Wed, 06 Oct 2021 01:47:29 -0700 (PDT)
+        Wed, 6 Oct 2021 04:51:48 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id D7F523F226;
+        Wed,  6 Oct 2021 08:49:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1633510195;
+        bh=h9EtN4sARs+pZ7j+bbOMdD16anrHHdUQKy002WSlXfY=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=sXs0o2dvxUe7dmE9q5ELqrVp2PkxLTtcBKflP3iuJN1qnOiw+OrEjXbxBa7tTlokv
+         E5iB5q6UfGHoH6fkO0qr+Wfqc2KQEJmNlCdRdVNfq8h7jKIXbHsP/V9Try154ZYa8F
+         +Phdx1hFLHiWGyLTUznHahYwJR0iR8P6VM9qh/IP/RgE9L4k3pVwZglL97jBhsHvbs
+         5aWE0nJVN56zJP+iU+7Xem97qjcCs4D7VPAphqvE9rQ5mWmoQqcF2NRy9RIxpZ+F7S
+         2oxhSGlStMmblVPwXy8y0YUbtOFYjG+4r4NCvWNJVoKPWq61BJxCGbyTI2+B55lYSU
+         qjMuxaHDYC0Wg==
+From:   Colin King <colin.king@canonical.com>
+To:     Ariel Elior <aelior@marvell.com>, GR-everest-linux-l2@marvell.com,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] qed: Fix spelling mistake "ctx_bsaed" -> "ctx_based"
+Date:   Wed,  6 Oct 2021 09:49:55 +0100
+Message-Id: <20211006084955.350530-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <1633396615-14043-1-git-send-email-u0084500@gmail.com>
- <YVw7vbpu4TS+7Su8@sirena.org.uk> <CADiBU39dvKS_a5FDgw9yMVFe8Uycn6bfjGwBWq+7MN_DdxkL1g@mail.gmail.com>
- <YVxFMaPhZdAFniMa@sirena.org.uk> <CADiBU3_TuHKiVG-r1TG-8WK_tW2GXi4VuqkidPwTyebOgE60OA@mail.gmail.com>
-In-Reply-To: <CADiBU3_TuHKiVG-r1TG-8WK_tW2GXi4VuqkidPwTyebOgE60OA@mail.gmail.com>
-From:   ChiYuan Huang <u0084500@gmail.com>
-Date:   Wed, 6 Oct 2021 16:47:18 +0800
-Message-ID: <CADiBU3-4F-FdJxaa4Qp4xmUD3vsA=6u5_ojwDSr8zrDuW8JbXg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] ASoC: dt-bindings: rt9120: Add initial bindings
-To:     Mark Brown <broonie@kernel.org>
-Cc:     oder_chiou@realtek.com, perex@perex.cz, tiwai@suse.com,
-        Rob Herring <robh+dt@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        alsa-devel@alsa-project.org, lkml <linux-kernel@vger.kernel.org>,
-        cy_huang <cy_huang@richtek.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, allen lin <allen_lin@richtek.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Mark:
-ChiYuan Huang <u0084500@gmail.com> =E6=96=BC 2021=E5=B9=B410=E6=9C=885=E6=
-=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=888:39=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> Mark Brown <broonie@kernel.org> =E6=96=BC 2021=E5=B9=B410=E6=9C=885=E6=97=
-=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=888:29=E5=AF=AB=E9=81=93=EF=BC=9A
-> >
-> > On Tue, Oct 05, 2021 at 08:25:43PM +0800, ChiYuan Huang wrote:
-> > > Mark Brown <broonie@kernel.org> =E6=96=BC 2021=E5=B9=B410=E6=9C=885=
-=E6=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=887:49=E5=AF=AB=E9=81=93=EF=BC=
-=9A
-> > > > On Tue, Oct 05, 2021 at 09:16:54AM +0800, cy_huang wrote:
-> >
-> > > > > +  richtek,use-dvdd-1p8v:
-> > > > > +    description: Indicate DVDD 1P8V is used, default for 3P3V or=
- 5V design
-> > > > > +    type: boolean
-> >
-> > > > I would expect this to be done through the regulator bindings, they
-> > > > would allow the driver to query the supply voltage.
-> >
-> > > It's more like as the I/O pad voltage.
-> > > Must be the same as I2C and I2S signal high level.
-> > > It depends on the application SOC design.
-> > > From my understanding, not all application SOC I/O voltage uses
-> > > regulator interface.
-> >
-> > It doesn't really matter what the SoC is doing here, you can always add
-> > regulator support to your device - you'd be requesting the supplies to
-> > your device, if the SoC doesn't request the supplies that go to it that
-> > doesn't really make a difference to what your driver does.
-> >
-> > Please don't take things off-list unless there is a really strong reaso=
-n
-> > to do so.  Sending things to the list ensures that everyone gets a
-> > chance to read and comment on things.
->
-After contacting our HW RD, to support DVDD 1.8V not just SW config,
-also HW connections.
-To get only DVDD supply voltage is not enough to meet the HW design.
-The property seems indeed and need to be used by user's HW connection.
+From: Colin Ian King <colin.king@canonical.com>
 
-Can this property to be kept?
-> Sorry, my fault.
-> I just noticed the mail not reply all. Loop all again.
+There is a spelling mistake in a DP_VERBOSE message. Fix it.
+
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/net/ethernet/qlogic/qed/qed_ll2.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_ll2.c b/drivers/net/ethernet/qlogic/qed/qed_ll2.c
+index 69ffa4eb842f..3fedcefc36d8 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_ll2.c
++++ b/drivers/net/ethernet/qlogic/qed/qed_ll2.c
+@@ -1654,7 +1654,7 @@ int qed_ll2_establish_connection(void *cxt, u8 connection_handle)
+ 
+ 	DP_VERBOSE(p_hwfn,
+ 		   QED_MSG_LL2,
+-		   "Establishing ll2 queue. PF %d ctx_bsaed=%d abs qid=%d stats_id=%d\n",
++		   "Establishing ll2 queue. PF %d ctx_based=%d abs qid=%d stats_id=%d\n",
+ 		   p_hwfn->rel_pf_id,
+ 		   p_ll2_conn->input.rx_conn_type, qid, stats_id);
+ 
+-- 
+2.32.0
+
