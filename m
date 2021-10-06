@@ -2,100 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E3F442409B
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 16:59:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3C78424097
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 16:59:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239146AbhJFPBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 11:01:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44696 "EHLO
+        id S239093AbhJFPA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 11:00:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238226AbhJFPBB (ORCPT
+        with ESMTP id S238226AbhJFPAz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 11:01:01 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F938C061746;
-        Wed,  6 Oct 2021 07:59:09 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id u18so9761172wrg.5;
-        Wed, 06 Oct 2021 07:59:09 -0700 (PDT)
+        Wed, 6 Oct 2021 11:00:55 -0400
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75B9AC061746;
+        Wed,  6 Oct 2021 07:59:03 -0700 (PDT)
+Received: by mail-il1-x135.google.com with SMTP id l13so3182538ilo.3;
+        Wed, 06 Oct 2021 07:59:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YV9ztV9xa2SuX3HIxstgvWzEEnBcrdgp13MusSmPbpA=;
-        b=ikzrDcGLA8Kd+BQ/z42ALgP7DgM7QpBp2X33jKpROLka6mn0oXSHZtKDBInUvuhYth
-         vIvddKlCD+9WhI0/9Hs/Bb//zPomw2hHTHjYWkYhnSdAQLF0r7NdRUnI6xzXliYvmKrx
-         eZORcANpDNELyeEYgEOPatkfCVtyp15mPfx+et20USafzaNrP0xTKJ9wl6q0JAAuS4NK
-         q/3NefaWmm8NlFEVkpC7RwzyZIUQYVclm1OrhFmDLVwc+JGGQJHxsNPQgklVuSpY6hIe
-         ToYlkiHvnJGnwfIGrUrF5N9wfONznGZfvQItOfc1ERdqnWH+KfWNGalolXQS/y5ZHJEq
-         XmvA==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=y4NHrs6aiIo9S6C3VYytFyJQ06OGzDVc4A1DLXf52DQ=;
+        b=agyU9edfIBs1azn06hdEatGC9aSL5Y9XzOvT/AZ+xIGfuQAIREDhQjPup5AINBD2Ru
+         ngvNm++eTACkBebmwrItxwN2zuErWuQAVnGbyfs/iX/LQcUbLmUTR3YCtrNuOzSVK1BG
+         NtW1nAoCVQUHMCGJIW7wkt5gevXW7hWRG6sLwVUPTdHYxpcgxesvNGjMAbp3jsPr/5gR
+         WmhnZrvoIV2zbZbggKlo8xTSKAuXA9FSStAJY/EitkeRtXLR/+E75mM6cLfx3lTEcML5
+         K2ER9MNsobtwdgVPmISmhcLdyZq2xuJgmCF9Kvyl6rE5d4k0ZGakDZDspYcUZ/VnpXYZ
+         qtEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=YV9ztV9xa2SuX3HIxstgvWzEEnBcrdgp13MusSmPbpA=;
-        b=65ul6DuZuYWK9RHBjjKyYc+KsY15YwJL14MDFOTlObpMqSv9D0uBaV8mBlzUUkqwEd
-         eFP7IReGrgaH5GEwrNYAfo+QJGtJlWmZub+BTwHOfD1amG803uttotsZInCIGW5uH0nb
-         HHge+nJFMWt6OxF7TFbePO6yARWtyfG4nFUna0PFHLF+dBJWknqOTadBUu3r+l+xKLg3
-         ojjjFcrADh7Gg0J2+JGU1o8X67j91Mmf5dWxLrFAuz3Ioexv5kfAMoPRkXieJ5QZilGG
-         5Ulelx64nLCR+47OprCmrciSfypQ7pvwGm3Da/a5ziteOuGqDR1ri0am0FmM1yDyh182
-         WMPQ==
-X-Gm-Message-State: AOAM532E7E1ywjUaOwAnxB5uGfo4+thmiImYgHeJJxovJt7MWqA5TbN3
-        pK2gGfYuGOM08amRCYC2Hc8=
-X-Google-Smtp-Source: ABdhPJzc7PF/Xen3kx4m+BH/K9IyR+PBDPrqUaxyO6vs8Z0w/F26OAw9+rYSrQIfTWym05fECsXIew==
-X-Received: by 2002:a7b:c441:: with SMTP id l1mr10172275wmi.69.1633532347600;
-        Wed, 06 Oct 2021 07:59:07 -0700 (PDT)
-Received: from DEL01237W.ebgroup.elektrobit.com (eth1-fw1-nbg6.eb.noris.de. [213.95.148.172])
-        by smtp.gmail.com with ESMTPSA id r205sm1886848wma.3.2021.10.06.07.59.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Oct 2021 07:59:07 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Arnd Bergmann <arnd@arndb.de>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        linux-arch@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] asm-generic: correct reference to GENERIC_LIB_DEVMEM_IS_ALLOWED
-Date:   Wed,  6 Oct 2021 16:58:59 +0200
-Message-Id: <20211006145859.9564-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        bh=y4NHrs6aiIo9S6C3VYytFyJQ06OGzDVc4A1DLXf52DQ=;
+        b=SG04qoMOmSMfmjrhsVlKIfqiBT7aasCJIX6Uz96QbZq6kmvyZK3uEDLL80+CasUrQN
+         7Gi1KhcNTn/ctJnVjg3idB1u3BtIGnpXlXzmrN4REk1mejHZu/RYWshMnBeU/y6J3rkB
+         78pqjdlogqlanxJxphloYs2QoWyELLzKDPJK5tYiUcLGiqQ7C21m8l37Jd/AfKdp5O97
+         dt5qVy9MK/jj2IYKruldJZwT3qc5J7+tebL6KiB9QyDEZY5Zk7qv1v+lLIINtRzVt5Em
+         ZYSXmUHDV9JkfXGlSeHrpyGbMzm3DkVIPr6naPhPZNDH0RoChFrY29Z4vqye2GUseeZ8
+         wd+Q==
+X-Gm-Message-State: AOAM531bkb2sAhfR+y85XuKjsoh4K04uEJ/2moIDLkk0AqyQttU/Dizo
+        ERiD31O0RRqhamQCVs3zK74r1LNvg7MY+A==
+X-Google-Smtp-Source: ABdhPJzSUawLqoZ0VEQhl9mAjLFzz5hIq7NeFM8nVHRKGEWkE1iARW9g3boDDjq51AJs/a9bmObo3w==
+X-Received: by 2002:a05:6e02:1a6d:: with SMTP id w13mr7485179ilv.304.1633532342877;
+        Wed, 06 Oct 2021 07:59:02 -0700 (PDT)
+Received: from Davids-MacBook-Pro.local ([8.48.134.30])
+        by smtp.googlemail.com with ESMTPSA id q13sm1184612iop.43.2021.10.06.07.59.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Oct 2021 07:59:02 -0700 (PDT)
+Subject: Re: [PATCH 10/11] selftests: nettest: Add
+ NETTEST_CLIENT,SERVER}_TIMEOUT envvars
+To:     Leonard Crestez <cdleonard@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Shuah Khan <shuah@kernel.org>, David Ahern <dsahern@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Ido Schimmel <idosch@nvidia.com>,
+        Seth David Schoen <schoen@loyalty.org>,
+        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1633520807.git.cdleonard@gmail.com>
+ <ffb237e32f2d725eb782f541681b05a0319b591b.1633520807.git.cdleonard@gmail.com>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <f3c0cccd-e543-f2ad-fc45-8784f4c3f5db@gmail.com>
+Date:   Wed, 6 Oct 2021 08:59:01 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <ffb237e32f2d725eb782f541681b05a0319b591b.1633520807.git.cdleonard@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 527701eda5f1 ("lib: Add a generic version of devmem_is_allowed()")
-introduces the config symbol GENERIC_LIB_DEVMEM_IS_ALLOWED, but then
-falsely refers to CONFIG_GENERIC_DEVMEM_IS_ALLOWED (note the missing LIB
-in the reference) in ./include/asm-generic/io.h.
+On 10/6/21 5:47 AM, Leonard Crestez wrote:
+> Move the single "prog_timeout_ms" into sock_args and split into client
+> and server timeouts.
+> 
+> Add NETTEST_CLIENT_TIMEOUT and NETTEST_SERVER_TIMEOUT which can set a
+> default value different than the default of 5 seconds.
+> 
+> This allows exporting NETTEST_CLIENT_TIMEOUT=0.1 and running all of
+> fcnal-test.sh quickly.
 
-Luckily, ./scripts/checkkconfigsymbols.py warns on non-existing configs:
+The command takes command line arguments; no need to make 2 special
+environment variables.
 
-GENERIC_DEVMEM_IS_ALLOWED
-Referencing files: include/asm-generic/io.h
+> 
+> A reduced server timeout is less useful, most tests would work fine with
+> an infinite timeout because nettest is launched in the background and
+> killed explicitly.
 
-Correct the name of the config to the intended one.
+The server timeout was only for cleanup (the tests have a very long
+history); given the kill on processes launched the server could just
+wait forever.
 
-Fixes: 527701eda5f1 ("lib: Add a generic version of devmem_is_allowed()")
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
- include/asm-generic/io.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/asm-generic/io.h b/include/asm-generic/io.h
-index cc7338f9e0d1..6364174504d7 100644
---- a/include/asm-generic/io.h
-+++ b/include/asm-generic/io.h
-@@ -1125,7 +1125,7 @@ static inline void memcpy_toio(volatile void __iomem *addr, const void *buffer,
- }
- #endif
- 
--#ifndef CONFIG_GENERIC_DEVMEM_IS_ALLOWED
-+#ifndef CONFIG_GENERIC_LIB_DEVMEM_IS_ALLOWED
- extern int devmem_is_allowed(unsigned long pfn);
- #endif
- 
--- 
-2.26.2
-
+> 
+> Signed-off-by: Leonard Crestez <cdleonard@gmail.com>
+> ---
+>  tools/testing/selftests/net/nettest.c | 66 ++++++++++++++++++++++-----
+>  1 file changed, 54 insertions(+), 12 deletions(-)
+> 
