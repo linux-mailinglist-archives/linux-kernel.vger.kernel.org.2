@@ -2,78 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E681E4237F7
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 08:28:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FD2C4237FA
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 08:28:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236878AbhJFG3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 02:29:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53850 "EHLO mail.kernel.org"
+        id S237256AbhJFGaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 02:30:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53968 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229797AbhJFG3x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 02:29:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6DDA760EC0;
-        Wed,  6 Oct 2021 06:28:01 +0000 (UTC)
+        id S232979AbhJFGaV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 02:30:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6971861186;
+        Wed,  6 Oct 2021 06:28:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633501681;
-        bh=spg2FfB33eWRaZlMimWllWmYIhAbe/hDa0jC2sb1vWI=;
+        s=korg; t=1633501709;
+        bh=5Ofyu8hfWQU4ytV6M6hVrHVYrZALkAzZzA9juN6Lct4=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Nu0KSdos8srKS5PIPAOZZNp8J/2y5CPh/+dnqB2466tL4XJzMDHY0vH2W7eGUsOYc
-         CwnIoKUKrM8wQ76l6MJw2Q38dpQZHYi605sGDZ27T+ryGez1rmoQ5JHaX7o8kI0A+i
-         sD8TBOVJACa3H17k+oxP6iQHDCcOoJIHajMgs3ro=
-Date:   Wed, 6 Oct 2021 08:27:59 +0200
-From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-To:     Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>
-Cc:     Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "alexandre.torgue@foss.st.com" <alexandre.torgue@foss.st.com>,
-        "balbi@kernel.org" <balbi@kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "amelie.delaunay@foss.st.com" <amelie.delaunay@foss.st.com>
-Subject: Re: [PATCH 1/3] usb: dwc2: add otg_rev and otg_caps information for
- gadget driver
-Message-ID: <YV1B7/yP2L+0L1sQ@kroah.com>
-References: <1631692473-8732-1-git-send-email-fabrice.gasnier@foss.st.com>
- <1631692473-8732-2-git-send-email-fabrice.gasnier@foss.st.com>
- <a183ddf9-c578-0b45-1aa2-4fcd1fbf17eb@synopsys.com>
+        b=RkRktobNnsLwPDF10nX4/f1LenTx7IrHu5yBWUHPP4MllLZe00ww7JU2P6v5ra8C7
+         GSCmd1RwItatjzX5GtRnrh5ukNpFrjbRU0GHSyo98TkWYf+EIqYpP3naz8YK2N4vHk
+         oDOiA8j1qfiIc0nvymFs5GD8WxJtMTctm2Sz92Jg=
+Date:   Wed, 6 Oct 2021 08:28:27 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
+        syzbot <syzbot+7af597ce2b38596c16ea@syzkaller.appspotmail.com>
+Cc:     hminas@synopsys.com, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] usb-testing build error (2)
+Message-ID: <YV1CCyGShh623mOA@kroah.com>
+References: <000000000000b01f1505cda8e03c@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a183ddf9-c578-0b45-1aa2-4fcd1fbf17eb@synopsys.com>
+In-Reply-To: <000000000000b01f1505cda8e03c@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 01, 2021 at 11:10:19AM +0000, Minas Harutyunyan wrote:
-> On 9/15/2021 11:54 AM, Fabrice Gasnier wrote:
-> > Currently the dwc2 doesn't fill in the 'otg_caps' of usb_gadget structure.
-> > When registering a gadget device (e.g. via configfs), the
-> > usb_otg_descriptor_init() checks the 'otg_caps' and 'otg_rev'. It defaults
-> > to HNP and SRP bmAttributes if unspecified. There may be a mismatch with
-> > what's being set in dwc2 params structure. This result in the descriptors
-> > to be miss-configured in this case.
-> > 
-> > So add an option to setup 'otg_caps' and 'otg_rev' in the params. It's
-> > then provided to the gadget struct. These parameters can then be tuned
-> > for each platform. In case it's not set, it will default to current
-> > behavior.
-> > Also add option to setup these from the device tree by calling
-> > of_usb_update_otg_caps(). This provides support for standard properties
-> > such as "otg-rev", "hnp-disable" and "srp-disable" (see usb-drd.yaml).
-> > 
-> > Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-> Acked-by: Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>
+On Tue, Oct 05, 2021 at 11:01:31PM -0700, syzbot wrote:
+> Hello,
 > 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    dea971290a03 usb: core: config: Change sizeof(struct ...) ..
+> git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
+> console output: https://syzkaller.appspot.com/x/log.txt?x=150e8a3f300000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=cd8a1eadba1e4ce4
+> dashboard link: https://syzkaller.appspot.com/bug?extid=7af597ce2b38596c16ea
+> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+7af597ce2b38596c16ea@syzkaller.appspotmail.com
+> 
+> drivers/usb/dwc2/params.c:252:8: error: 'struct dwc2_hsotg' has no member named 'dw_otg_caps'
+> drivers/usb/dwc2/params.c:253:8: error: 'struct dwc2_hsotg' has no member named 'dw_otg_caps'
+> drivers/usb/dwc2/params.c:259:8: error: 'struct dwc2_hsotg' has no member named 'dw_otg_caps'
+> drivers/usb/dwc2/params.c:260:8: error: 'struct dwc2_hsotg' has no member named 'dw_otg_caps'
+> drivers/usb/dwc2/params.c:264:8: error: 'struct dwc2_hsotg' has no member named 'dw_otg_caps'
+> drivers/usb/dwc2/params.c:265:8: error: 'struct dwc2_hsotg' has no member named 'dw_otg_caps'
+> drivers/usb/dwc2/params.c:270:7: error: 'struct dwc2_hsotg' has no member named 'dw_otg_caps'
+> drivers/usb/dwc2/params.c:479:53: error: 'struct dwc2_hsotg' has no member named 'dw_otg_caps'
+> drivers/usb/dwc2/params.c:500:9: error: 'struct dwc2_hsotg' has no member named 'dw_otg_caps'
+> drivers/usb/dwc2/params.c:509:8: error: 'struct dwc2_hsotg' has no member named 'dw_otg_caps'
+> drivers/usb/dwc2/params.c:510:8: error: 'struct dwc2_hsotg' has no member named 'dw_otg_caps'
 
-Looks like this commit breaks the build on some configurations:
-	https://lore.kernel.org/r/000000000000b01f1505cda8e03c@google.com
-
-So I'll go drop this and the 2/3 patch from my tree.  Please fix up and
-resend.
-
-thanks,
+Thanks, I'll go drop the offending patches from my tree.
 
 greg k-h
