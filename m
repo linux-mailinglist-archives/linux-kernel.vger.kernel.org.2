@@ -2,153 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F22E4235D6
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 04:31:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46F304235D7
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 04:31:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237173AbhJFCdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 22:33:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42906 "EHLO
+        id S237218AbhJFCdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 22:33:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229908AbhJFCdA (ORCPT
+        with ESMTP id S229908AbhJFCdC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 22:33:00 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EA73C061749
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 19:31:09 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id m20so445915iol.4
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 19:31:09 -0700 (PDT)
+        Tue, 5 Oct 2021 22:33:02 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF1BAC061749
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 19:31:10 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id l6so670510plh.9
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 19:31:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=bq9ss4KGNTszJ/kr+WZe6xTy7aLeLEFMgM617QHj7Q4=;
-        b=TFOgfLbssDLWXqgCEl2UkHChoVh4e/FDI3d5hi7PU/H3mkdfRDa/XyUa+7NLlGcJ0G
-         lyR8MCEij49zKnhkJUKibBFMzapmSWysRvZkbBxy6teoJsMZHMFwD4G+uEHmHDAiQjlb
-         UcjqBpNKg/YWTO316tR0011lAmkVVcHcaU/mQ=
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=6daisZMMl5LDcuFIJtmvVlRgTb+iyI4U81mxJ9yyQBE=;
+        b=GG4UepWZWDqDE51hudG+9ut2mK/3wjl/Gr389Ylmj3ScbOI6MMFOcHB87xOFcH4dje
+         MMlYcviHJGq0IxXr+UaJQCgQ2DQISA7pTt1Mj2gWG1xQeNcxaDUJ16ZflpCOnVmPwj8x
+         AbUWcHMp0vo5+ocyATEFtIYMYNe1X4wjD1TDU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=bq9ss4KGNTszJ/kr+WZe6xTy7aLeLEFMgM617QHj7Q4=;
-        b=qwjm5bduFoyUDengwXHOB1DKVx8CgK73Wr/ry/MnbngPaX4LHVHxNMnOHcQQPkSVqq
-         9N3YlHkKkEnhrCSlafJQVGbYZMzKMOLF0UfuWxSXUujwNneqCycExU3vKrpzwoik/75e
-         Yif1ub/2DPdDFGN/hK3gZ0dx7i4JScQ1FEEikZlK6EBhymL0zqxVV8SNkhC74o6OT5qm
-         Gkip95WJcK67SEJJrnLr81cgZtjWretD7FQoO8jfJ1Ay5wshL778aSOYD5fZZDI9blD6
-         hnOTpNyVTqg6Ub4XfcEZq/jZOYcmIs21M1dDdjjlHXgdKGo59lnlVChbZYjyAuZixeyP
-         sYyA==
-X-Gm-Message-State: AOAM532dT7vX/JVCUJPBNV5ZMqtOVj4NPVSJ4Vs61G6RMtOFtQWPG7ZB
-        UhSZrr05F1PZd11Y5pEt+l9XjrA1kUv5aA==
-X-Google-Smtp-Source: ABdhPJyxxrSy3yzvNfd5aOuhPVtgObLSbbGF5eAPadhWHICTQGp8Q762HxZy9gyhAV4YY2vZIiN3xQ==
-X-Received: by 2002:a05:6638:3048:: with SMTP id u8mr5332178jak.103.1633487468287;
-        Tue, 05 Oct 2021 19:31:08 -0700 (PDT)
-Received: from mail-io1-f48.google.com (mail-io1-f48.google.com. [209.85.166.48])
-        by smtp.gmail.com with ESMTPSA id b83sm11525280iof.5.2021.10.05.19.31.07
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Oct 2021 19:31:07 -0700 (PDT)
-Received: by mail-io1-f48.google.com with SMTP id n71so1214924iod.0
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 19:31:07 -0700 (PDT)
-X-Received: by 2002:a05:6638:248a:: with SMTP id x10mr5311411jat.3.1633487466752;
- Tue, 05 Oct 2021 19:31:06 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6daisZMMl5LDcuFIJtmvVlRgTb+iyI4U81mxJ9yyQBE=;
+        b=kCfVedSaRKvIrz7+22+8wsfZHS8Twyh1b1MWdyb0cDNTxIUvhXprG/+cGqjeszUgvT
+         JUgsGr9ETa+uY9gFlRMvUNqYRCTiBq2RTkq0JjuODLlxz1TybRQXBMvcmVPtBKpMerHu
+         8bVY3pnMHaGbxvmGIx/rOc+DLD5WsTT7b0npRmEb22xu98pYCz8zGWx+8sAEkl8qNeTw
+         pH7ZFODtdb4Hz0u6v00Ix17szGvotp2DTS9THgwAaYxUAT7jGbLRuRO3+/a4NkscyPYk
+         JLo9BM+3ownEnRtFiwYttOEZlxZG29OLotOwdXm8NyWItJChmOC9sg9gp8rGh3QrEVzw
+         wAvw==
+X-Gm-Message-State: AOAM533S32kh2FIxnVJcvvLwVrV+6WDAMF/uugEJ3PJe1hk5edqxCprX
+        4aBlvoNgRe0CrgdCvQpPXLw0ug==
+X-Google-Smtp-Source: ABdhPJwr4N0demd2IQcSUg5POBP0HTUmNYaj1NnwWHF71aR8I+K9UlSdlfed6CbkEMfCi0XVHFlUlw==
+X-Received: by 2002:a17:902:ed4d:b0:13e:daf1:6a37 with SMTP id y13-20020a170902ed4d00b0013edaf16a37mr8533810plb.18.1633487470417;
+        Tue, 05 Oct 2021 19:31:10 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id s19sm1936208pfh.18.2021.10.05.19.31.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Oct 2021 19:31:10 -0700 (PDT)
+Date:   Tue, 5 Oct 2021 19:31:09 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Alexey Dobriyan <adobriyan@gmail.com>
+Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ELF: fix overflow in total mapping size calculation
+Message-ID: <202110051929.37279B6B4A@keescook>
+References: <YVmd7D0M6G/DcP4O@localhost.localdomain>
 MIME-Version: 1.0
-References: <20211005081022.1.Ib059f9c23c2611cb5a9d760e7d0a700c1295928d@changeid>
- <YVxzX9h+jBqOj1/V@intel.com>
-In-Reply-To: <YVxzX9h+jBqOj1/V@intel.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Tue, 5 Oct 2021 19:30:55 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=XEVJ8trPx39-oepbW6gZJYCcE_W5F0rrC0gUsLTFUy9w@mail.gmail.com>
-Message-ID: <CAD=FV=XEVJ8trPx39-oepbW6gZJYCcE_W5F0rrC0gUsLTFUy9w@mail.gmail.com>
-Subject: Re: [PATCH] drm/edid: In connector_bad_edid() cap num_of_ext by
- num_blocks read
-To:     =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        "Siqueira, Rodrigo" <Rodrigo.Siqueira@amd.com>,
-        "Wentland, Harry" <Harry.Wentland@amd.com>,
-        Kuogee Hsieh <khsieh@codeaurora.org>,
-        "Zuo, Jerry" <Jerry.Zuo@amd.com>, alexander.deucher@amd.com,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YVmd7D0M6G/DcP4O@localhost.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Sun, Oct 03, 2021 at 03:11:24PM +0300, Alexey Dobriyan wrote:
+> Kernel assumes that ELF program headers are ordered by mapping address,
+> but doesn't enforce it. It is possible to make mapping size extremely huge
+> by simply shuffling first and last PT_LOAD segments.
+> 
+> As long as PT_LOAD segments do not overlap, it is silly to require
+> sorting by v_addr anyway because mmap() doesn't care.
+> 
+> Don't assume PT_LOAD segments are sorted and calculate min and max
+> addresses correctly.
 
-On Tue, Oct 5, 2021 at 8:46 AM Ville Syrj=C3=A4l=C3=A4
-<ville.syrjala@linux.intel.com> wrote:
->
-> On Tue, Oct 05, 2021 at 08:10:28AM -0700, Douglas Anderson wrote:
-> > In commit e11f5bd8228f ("drm: Add support for DP 1.4 Compliance edid
-> > corruption test") the function connector_bad_edid() started assuming
-> > that the memory for the EDID passed to it was big enough to hold
-> > `edid[0x7e] + 1` blocks of data (1 extra for the base block). It
-> > completely ignored the fact that the function was passed `num_blocks`
-> > which indicated how much memory had been allocated for the EDID.
-> >
-> > Let's fix this by adding a bounds check.
-> >
-> > This is important for handling the case where there's an error in the
-> > first block of the EDID. In that case we will call
-> > connector_bad_edid() without having re-allocated memory based on
-> > `edid[0x7e]`.
-> >
-> > Fixes: e11f5bd8228f ("drm: Add support for DP 1.4 Compliance edid corru=
-ption test")
-> > Reported-by: Ville Syrj=C3=A4l=C3=A4 <ville.syrjala@linux.intel.com>
-> > Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> > ---
-> > This problem report came up in the context of a patch I sent out [1]
-> > and this is my attempt at a fix. The problem predates my patch,
-> > though. I don't personally know anything about DP compliance testing
-> > and what should be happening here, nor do I apparently have any
-> > hardware that actually reports a bad EDID. Thus this is just compile
-> > tested. I'm hoping that someone here can test this and make sure it
-> > seems OK to them.
-> >
-> >  drivers/gpu/drm/drm_edid.c | 5 +++--
-> >  1 file changed, 3 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
-> > index 9b19eee0e1b4..ccfa08631c57 100644
-> > --- a/drivers/gpu/drm/drm_edid.c
-> > +++ b/drivers/gpu/drm/drm_edid.c
-> > @@ -1843,8 +1843,9 @@ static void connector_bad_edid(struct drm_connect=
-or *connector,
-> >       u8 num_of_ext =3D edid[0x7e];
-> >
-> >       /* Calculate real checksum for the last edid extension block data=
- */
-> > -     connector->real_edid_checksum =3D
-> > -             drm_edid_block_checksum(edid + num_of_ext * EDID_LENGTH);
-> > +     if (num_of_ext <=3D num_blocks - 1)
->
-> Something about that doesn't really agree with my brain.
-> It's correct but when I read it I can't immediately see it.
->
-> I guess what I'd like to see is something like:
-> last_block =3D edid[0x7e];
-> if (last_block < num_blocks)
->         connector->real_edid_checksum =3D
->                 drm_edid_block_checksum(edid + last_block * EDID_LENGTH);
->
-> Techically exactly the same thing, but I don't have to read
-> the comparison twice to convince myself that it's correct.
->
-> Anyways, this is
-> Reviewed-by: Ville Syrj=C3=A4l=C3=A4 <ville.syrjala@linux.intel.com>
-> either way.
+Nice! Yes, this all make sense.
 
-Yeah, my brain had to work way too hard when I read over my patch too.
-I've changed to your math _plus_ a big comment explaining it. I added
-your review tag. I'll give this another day or so and then land.
+> 
+> Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+> ---
+> 
+>  fs/binfmt_elf.c |   23 +++++++++++------------
+>  1 file changed, 11 insertions(+), 12 deletions(-)
+> 
+> --- a/fs/binfmt_elf.c
+> +++ b/fs/binfmt_elf.c
+> @@ -93,7 +93,7 @@ static int elf_core_dump(struct coredump_params *cprm);
+>  #define ELF_CORE_EFLAGS	0
+>  #endif
+>  
+> -#define ELF_PAGESTART(_v) ((_v) & ~(unsigned long)(ELF_MIN_ALIGN-1))
+> +#define ELF_PAGESTART(_v) ((_v) & ~(int)(ELF_MIN_ALIGN-1))
 
-https://lore.kernel.org/r/20211005192905.v2.1.Ib059f9c23c2611cb5a9d760e7d0a=
-700c1295928d@changeid
+Errr, this I don't like. I assume this is because of the min() use
+below?
 
--Doug
+>  #define ELF_PAGEOFFSET(_v) ((_v) & (ELF_MIN_ALIGN-1))
+>  #define ELF_PAGEALIGN(_v) (((_v) + ELF_MIN_ALIGN - 1) & ~(ELF_MIN_ALIGN - 1))
+>  
+> @@ -399,22 +399,21 @@ static unsigned long elf_map(struct file *filep, unsigned long addr,
+>  	return(map_addr);
+>  }
+>  
+> -static unsigned long total_mapping_size(const struct elf_phdr *cmds, int nr)
+> +static unsigned long total_mapping_size(const struct elf_phdr *phdr, int nr)
+>  {
+> -	int i, first_idx = -1, last_idx = -1;
+> +	elf_addr_t min_addr = -1;
+> +	elf_addr_t max_addr = 0;
+> +	bool pt_load = false;
+> +	int i;
+>  
+>  	for (i = 0; i < nr; i++) {
+> -		if (cmds[i].p_type == PT_LOAD) {
+> -			last_idx = i;
+> -			if (first_idx == -1)
+> -				first_idx = i;
+> +		if (phdr[i].p_type == PT_LOAD) {
+> +			min_addr = min(min_addr, ELF_PAGESTART(phdr[i].p_vaddr));
+> +			max_addr = max(max_addr, phdr[i].p_vaddr + phdr[i].p_memsz);
+
+How about:
+		min_addr = min_t(elf_addr_t, min_addr, ELF_PAGESTART(phdr[i].p_vaddr));
+		max_addr = max_t(elf_addr_t, max_addr, phdr[i].p_vaddr + phdr[i].p_memsz);
+
+> +			pt_load = true;
+>  		}
+>  	}
+> -	if (first_idx == -1)
+> -		return 0;
+> -
+> -	return cmds[last_idx].p_vaddr + cmds[last_idx].p_memsz -
+> -				ELF_PAGESTART(cmds[first_idx].p_vaddr);
+> +	return pt_load ? (max_addr - min_addr) : 0;
+>  }
+>  
+>  static int elf_read(struct file *file, void *buf, size_t len, loff_t pos)
+
+-Kees
+
+-- 
+Kees Cook
