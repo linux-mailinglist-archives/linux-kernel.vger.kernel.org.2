@@ -2,53 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B23F842475A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 21:45:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BE6F42475B
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 21:45:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239418AbhJFTrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 15:47:20 -0400
+        id S239394AbhJFTrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 15:47:21 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239446AbhJFTrP (ORCPT
+        with ESMTP id S239176AbhJFTrS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 15:47:15 -0400
+        Wed, 6 Oct 2021 15:47:18 -0400
 Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D772BC061764
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 12:45:21 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id i21-20020a253b15000000b005b9c0fbba45so4757655yba.20
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 12:45:21 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36778C061755
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 12:45:26 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id q17-20020a25b591000000b005a07d27bbdaso4816727ybj.3
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 12:45:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:cc;
-        bh=EtbfRHYFwUB0sWo/gJXi07tGzg8w2Hu/ebiJXPNLkKU=;
-        b=CvWAMXg72+ZnXxD5kRyKmE20h6GKEwxhiAiAW8xENGCCX1iKuzHIGth7lACoxA4r/Z
-         PFLSS3gawxRHELqhUpB7xrAcawEWLWFPUDBEgN3MAmZ3IhnZOrJqrCXCzb4Cu2coVMmp
-         wyJx7Gf6LlYkltsWo7ljyZH1FJ3wxTKzxbZyV7pHGiF2a4cJ3DN7Q3u3yrjmVjWB0b1M
-         l37n69eIctxPnemnHF+c40SjtlflW9YMfWhg88+oEgjgh1y7MRjJ6YMT1teLX6qLH6RZ
-         rAhyGed7DFNMVAFEyTFihNEOiyFXmYOFJ4Jrr+se7EIENqn6zPW7Csv90IRzxOG1BnjO
-         Owog==
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:cc;
+        bh=33T3kN8uQn16VjXFihSM9nFCVFBJPamljnDuGFM1188=;
+        b=C9/Kkv69wl8raB5EBUBCHfAtbA3dpzaPE12aiTtMbZchQK4J7ou96mNIwGeu50JvS0
+         mWDyvRH8D7yozdrWELAbHjsliEOD1z7Y78qET2gK1EiVHd1NkYHaYHo3aFfDAedgtHcP
+         LmRqFVVJQKmWTd8Ym7Z3v7Yx4kwWh+IwNcnZAO+F4qSyes7O7NZdpl0boVz39zSWQzi+
+         Re7S0OhURShyHEET93kbngqQsvk7tZY8MlMSRUCUeU0uepUCqKhyDzBWM8wsALDyy5MA
+         ikXnYj1Th14E23MLLdIgjERciR8FEELYNnotZMiGmLYotUFekdQS0TtVUMNgm1voolGU
+         aS+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:cc;
-        bh=EtbfRHYFwUB0sWo/gJXi07tGzg8w2Hu/ebiJXPNLkKU=;
-        b=MS1WdVkXqy0omE3wDtLCiAJj9lqAi5vcwzHqe+vLRcXD5BEwO+V/aSoWHmihejPUr/
-         B7Mdxcoqedv//IJ7saMPfF3cZzWhGbtSWdX0PJxMEN9Vh4R/mBogO/71wDFgRgb5QKjy
-         JXSr/VfrxVv/4lN+ZSYYtUyrwzPf2tTvnVIXKIw5fxSXKRaIwg0M07gxUWJmeecUNhg+
-         e1lRDOJ5TuYtO83hDhhDQIn0Vh50j/nu4NzBox/G40+SKOM6REno5cOH5bmrGsRXBSGa
-         GoH/C1j5dCMk+fVGtrnnfcY9LNZ/WztRQ/7US2hOqSpeZFSJUv3cJ56fLmDvSDNjH/lr
-         e58Q==
-X-Gm-Message-State: AOAM533zK6Sp0YVZy3OwXumcncA6Zx/h/FvYNwdHcC/K3zZuK78OXhfr
-        pzTvjLJ/1pDwP/upVbmeVqoPg0k/8cd96ZabVg==
-X-Google-Smtp-Source: ABdhPJx+kSoMWv00jI0nSlXXMrzLk+4S+A+gq5UAWw+9lUbpN0kC1gZyEqiKsDigPk2s+XR+5rrXpTSM0Mobwcz3Ow==
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:cc;
+        bh=33T3kN8uQn16VjXFihSM9nFCVFBJPamljnDuGFM1188=;
+        b=Npk37VZOHPNGLuq4XaeERmg4P1UgE5hR0wsPO2lZR5bKNi8934LMXEFpvI/HWhxBxo
+         KWa0K3mbn4tEohFFlHoTjoL2W7W6Cbg7gFN4HQLCElYgOHxDKomLcbfj515knCzAnV+P
+         L+S9r6fhCcY3emZeWllI1Lf/IjTMpajG89vhM/+ZYUPMiOa/8gvtu5ePjquVdZxJlOU0
+         63p44I/Lmpw2WZrdlAqO2oB4I3HHAChiw0/oMFglmq0k0y8HZg11GSLPpw3DgiRQ4uk9
+         Qc1woOjeyVq3Cbq0y7jV6MKYo+z7TicfBO3xTXUDyx8Plm3Qxy22798n7UUWDY6p9sBj
+         9vvg==
+X-Gm-Message-State: AOAM5316h+hwlOyWAywxeLXOZ+JdOfPGHOR+1rOP8nRXxNqC0HtxLazB
+        THcye1eWRhPUHqYC0R6JFLOzJCr72CSEfxyY2w==
+X-Google-Smtp-Source: ABdhPJxf1UlzLYHoQIJKia2VLSl+12IyFPv8t6mGna5TN89kTm4/HmmLxqDNiwGvrVWORw0Vew7eEPTRYieHrOninQ==
 X-Received: from almasrymina.svl.corp.google.com ([2620:15c:2cd:202:75ea:cd41:1f31:c196])
- (user=almasrymina job=sendgmr) by 2002:a25:244e:: with SMTP id
- k75mr12141ybk.346.1633549521112; Wed, 06 Oct 2021 12:45:21 -0700 (PDT)
-Date:   Wed,  6 Oct 2021 12:45:14 -0700
-Message-Id: <20211006194515.423539-1-almasrymina@google.com>
+ (user=almasrymina job=sendgmr) by 2002:a25:b4d:: with SMTP id
+ 74mr29783375ybl.443.1633549525403; Wed, 06 Oct 2021 12:45:25 -0700 (PDT)
+Date:   Wed,  6 Oct 2021 12:45:15 -0700
+In-Reply-To: <20211006194515.423539-1-almasrymina@google.com>
+Message-Id: <20211006194515.423539-2-almasrymina@google.com>
 Mime-Version: 1.0
+References: <20211006194515.423539-1-almasrymina@google.com>
 X-Mailer: git-send-email 2.33.0.882.g93a45727a2-goog
-Subject: [PATCH v4 1/2] mm, hugepages: add mremap() support for hugepage
- backed vma
+Subject: [PATCH v4 2/2] mm, hugepages: Add hugetlb vma mremap() test
 From:   Mina Almasry <almasrymina@google.com>
 Cc:     Mina Almasry <almasrymina@google.com>,
         Mike Kravetz <mike.kravetz@oracle.com>,
@@ -63,23 +65,6 @@ To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
-
-Support mremap() for hugepage backed vma segment by simply repositioning
-page table entries. The page table entries are repositioned to the new
-virtual address on mremap().
-
-Hugetlb mremap() support is of course generic; my motivating use case
-is a library (hugepage_text), which reloads the ELF text of executables
-in hugepages. This significantly increases the execution performance of
-said executables.
-
-Restricts the mremap operation on hugepages to up to the size of the
-original mapping as the underlying hugetlb reservation is not yet
-capable of handling remapping to a larger size.
-
-During the mremap() operation we detect pmd_share'd mappings and we
-unshare those during the mremap(). On access and fault the sharing is
-established again.
 
 Signed-off-by: Mina Almasry <almasrymina@google.com>
 
@@ -97,357 +82,211 @@ Cc: Kirill Shutemov <kirill@shutemov.name>
 ---
 
 Changes in v4:
-- Added addr, new_addr, old_len, and new_len hugepage alignment.
-
-Changes in v3:
-- Addressed review comments from Mike.
-- Separated tests into their own patch.
-
-Changes in v2:
-- Re-wrote comment around clear_vma_resv_huge_pages() to make it clear
-that the resv_map has been moved to the new VMA and why we need to clear it
-from the current VMA.
-- We detect huge_pmd_shared() pte's and unshare those rather than bug on
-hugetlb_vma_shareable().
-- This case now returns EFAULT:
-if (!vma || vma->vm_start > addr)
-	 goto out;
-- Added kselftests for mremap() support.
-
+- Added comments to make test output clearer.
+- Modified test case slightly to test hugepage alignment of new_addr.
 ---
- include/linux/hugetlb.h |  27 +++++++++
- mm/hugetlb.c            | 131 +++++++++++++++++++++++++++++++++++++---
- mm/mremap.c             |  32 +++++++++-
- 3 files changed, 179 insertions(+), 11 deletions(-)
+ tools/testing/selftests/vm/.gitignore        |   1 +
+ tools/testing/selftests/vm/Makefile          |   1 +
+ tools/testing/selftests/vm/hugepage-mremap.c | 168 +++++++++++++++++++
+ 3 files changed, 170 insertions(+)
+ create mode 100644 tools/testing/selftests/vm/hugepage-mremap.c
 
-diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-index ebaba02706c87..6b500d4fc643b 100644
---- a/include/linux/hugetlb.h
-+++ b/include/linux/hugetlb.h
-@@ -124,6 +124,7 @@ struct hugepage_subpool *hugepage_new_subpool(struct hstate *h, long max_hpages,
- void hugepage_put_subpool(struct hugepage_subpool *spool);
-
- void reset_vma_resv_huge_pages(struct vm_area_struct *vma);
-+void clear_vma_resv_huge_pages(struct vm_area_struct *vma);
- int hugetlb_sysctl_handler(struct ctl_table *, int, void *, size_t *, loff_t *);
- int hugetlb_overcommit_handler(struct ctl_table *, int, void *, size_t *,
- 		loff_t *);
-@@ -132,6 +133,10 @@ int hugetlb_treat_movable_handler(struct ctl_table *, int, void *, size_t *,
- int hugetlb_mempolicy_sysctl_handler(struct ctl_table *, int, void *, size_t *,
- 		loff_t *);
-
-+int move_hugetlb_page_tables(struct vm_area_struct *vma,
-+			     struct vm_area_struct *new_vma,
-+			     unsigned long old_addr, unsigned long new_addr,
-+			     unsigned long len);
- int copy_hugetlb_page_range(struct mm_struct *, struct mm_struct *, struct vm_area_struct *);
- long follow_hugetlb_page(struct mm_struct *, struct vm_area_struct *,
- 			 struct page **, struct vm_area_struct **,
-@@ -187,6 +192,7 @@ pte_t *huge_pte_offset(struct mm_struct *mm,
- 		       unsigned long addr, unsigned long sz);
- int huge_pmd_unshare(struct mm_struct *mm, struct vm_area_struct *vma,
- 				unsigned long *addr, pte_t *ptep);
-+int huge_pmd_shared(struct vm_area_struct *vma, pte_t *ptep);
- void adjust_range_if_pmd_sharing_possible(struct vm_area_struct *vma,
- 				unsigned long *start, unsigned long *end);
- struct page *follow_huge_addr(struct mm_struct *mm, unsigned long address,
-@@ -208,6 +214,7 @@ unsigned long hugetlb_change_protection(struct vm_area_struct *vma,
-
- bool is_hugetlb_entry_migration(pte_t pte);
- void hugetlb_unshare_all_pmds(struct vm_area_struct *vma);
-+bool hugetlb_vma_shareable(struct vm_area_struct *vma, unsigned long addr);
-
- #else /* !CONFIG_HUGETLB_PAGE */
-
-@@ -215,6 +222,10 @@ static inline void reset_vma_resv_huge_pages(struct vm_area_struct *vma)
- {
- }
-
-+static inline void clear_vma_resv_huge_pages(struct vm_area_struct *vma)
-+{
-+}
-+
- static inline unsigned long hugetlb_total_pages(void)
- {
- 	return 0;
-@@ -226,6 +237,11 @@ static inline struct address_space *hugetlb_page_mapping_lock_write(
- 	return NULL;
- }
-
-+static int huge_pmd_shared(struct vm_area_struct *vma, pte_t *ptep)
-+{
-+	return 0;
-+}
-+
- static inline int huge_pmd_unshare(struct mm_struct *mm,
- 					struct vm_area_struct *vma,
- 					unsigned long *addr, pte_t *ptep)
-@@ -262,6 +278,12 @@ static inline int copy_hugetlb_page_range(struct mm_struct *dst,
- 	return 0;
- }
-
-+#define move_hugetlb_page_tables(vma, new_vma, old_addr, new_addr, len)        \
-+	({                                                                     \
-+		BUG();                                                         \
-+		0;                                                             \
-+	})
-+
- static inline void hugetlb_report_meminfo(struct seq_file *m)
- {
- }
-@@ -392,6 +414,11 @@ static inline vm_fault_t hugetlb_fault(struct mm_struct *mm,
-
- static inline void hugetlb_unshare_all_pmds(struct vm_area_struct *vma) { }
-
-+bool hugetlb_vma_shareable(struct vm_area_struct *vma, unsigned long addr)
-+{
-+	return 0;
-+}
-+
- #endif /* !CONFIG_HUGETLB_PAGE */
- /*
-  * hugepages at page global directory. If arch support
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 6d2f4c25dd9fb..8200b4c8d09d8 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -1015,6 +1015,35 @@ void reset_vma_resv_huge_pages(struct vm_area_struct *vma)
- 		vma->vm_private_data = (void *)0;
- }
-
+diff --git a/tools/testing/selftests/vm/.gitignore b/tools/testing/selftests/vm/.gitignore
+index b02eac613fdda..2e7e86e852828 100644
+--- a/tools/testing/selftests/vm/.gitignore
++++ b/tools/testing/selftests/vm/.gitignore
+@@ -1,5 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ hugepage-mmap
++hugepage-mremap
+ hugepage-shm
+ khugepaged
+ map_hugetlb
+diff --git a/tools/testing/selftests/vm/Makefile b/tools/testing/selftests/vm/Makefile
+index d9605bd10f2de..1607322a112c9 100644
+--- a/tools/testing/selftests/vm/Makefile
++++ b/tools/testing/selftests/vm/Makefile
+@@ -29,6 +29,7 @@ TEST_GEN_FILES = compaction_test
+ TEST_GEN_FILES += gup_test
+ TEST_GEN_FILES += hmm-tests
+ TEST_GEN_FILES += hugepage-mmap
++TEST_GEN_FILES += hugepage-mremap
+ TEST_GEN_FILES += hugepage-shm
+ TEST_GEN_FILES += khugepaged
+ TEST_GEN_FILES += madv_populate
+diff --git a/tools/testing/selftests/vm/hugepage-mremap.c b/tools/testing/selftests/vm/hugepage-mremap.c
+new file mode 100644
+index 0000000000000..ba35b5b13c52c
+--- /dev/null
++++ b/tools/testing/selftests/vm/hugepage-mremap.c
+@@ -0,0 +1,168 @@
++// SPDX-License-Identifier: GPL-2.0
 +/*
-+ * Reset and decrement one ref on hugepage private reservation.
-+ * Called with mm->mmap_sem writer semaphore held.
-+ * This function should be only used by move_vma() and operate on
-+ * same sized vma. It should never come here with last ref on the
-+ * reservation.
++ * hugepage-mremap:
++ *
++ * Example of remapping huge page memory in a user application using the
++ * mremap system call.  Before running this application, make sure that the
++ * administrator has mounted the hugetlbfs filesystem (on some directory
++ * like /mnt) using the command mount -t hugetlbfs nodev /mnt. In this
++ * example, the app is requesting memory of size 10MB that is backed by
++ * huge pages.
++ *
 + */
-+void clear_vma_resv_huge_pages(struct vm_area_struct *vma)
++
++#define _GNU_SOURCE
++#include <stdlib.h>
++#include <stdio.h>
++#include <unistd.h>
++#include <sys/mman.h>
++#include <fcntl.h>
++#include <errno.h>
++#include <fcntl.h> /* Definition of O_* constants */
++#include <sys/syscall.h> /* Definition of SYS_* constants */
++#include <unistd.h>
++#include <linux/userfaultfd.h>
++#include <sys/ioctl.h>
++
++#define LENGTH (1UL * 1024 * 1024 * 1024)
++
++#define PROTECTION (PROT_READ | PROT_WRITE | PROT_EXEC)
++#define FLAGS (MAP_SHARED | MAP_ANONYMOUS)
++
++static void check_bytes(char *addr)
 +{
-+	/*
-+	 * Clear the old hugetlb private page reservation.
-+	 * It has already been transferred to new_vma.
-+	 *
-+	 * During a mremap() operation of a hugetlb vma we call move_vma()
-+	 * which copies *vma* into *new_vma* and unmaps *vma*. After the copy
-+	 * operation both *new_vma* and *vma* share a reference to the resv_map
-+	 * struct, and at that point *vma* is about to be unmapped. We don't
-+	 * want to return the reservation to the pool at unmap of *vma* because
-+	 * the reservation still lives on in new_vma, so simply decrement the
-+	 * ref here and remove the resv_map reference from this vma.
++	printf("First hex is %x\n", *((unsigned int *)addr));
++}
++
++static void write_bytes(char *addr)
++{
++	unsigned long i;
++
++	for (i = 0; i < LENGTH; i++)
++		*(addr + i) = (char)i;
++}
++
++static int read_bytes(char *addr)
++{
++	unsigned long i;
++
++	check_bytes(addr);
++	for (i = 0; i < LENGTH; i++)
++		if (*(addr + i) != (char)i) {
++			printf("Mismatch at %lu\n", i);
++			return 1;
++		}
++	return 0;
++}
++
++static void register_region_with_uffd(char *addr, size_t len)
++{
++	long uffd; /* userfaultfd file descriptor */
++	struct uffdio_api uffdio_api;
++	struct uffdio_register uffdio_register;
++
++	/* Create and enable userfaultfd object. */
++
++	uffd = syscall(__NR_userfaultfd, O_CLOEXEC | O_NONBLOCK);
++	if (uffd == -1) {
++		perror("userfaultfd");
++		exit(1);
++	}
++
++	uffdio_api.api = UFFD_API;
++	uffdio_api.features = 0;
++	if (ioctl(uffd, UFFDIO_API, &uffdio_api) == -1) {
++		perror("ioctl-UFFDIO_API");
++		exit(1);
++	}
++
++	/* Create a private anonymous mapping. The memory will be
++	 * demand-zero paged--that is, not yet allocated. When we
++	 * actually touch the memory, it will be allocated via
++	 * the userfaultfd.
 +	 */
-+	struct resv_map *reservations = vma_resv_map(vma);
 +
-+	if (reservations && is_vma_resv_set(vma, HPAGE_RESV_OWNER))
-+		kref_put(&reservations->refs, resv_map_release);
++	addr = mmap(NULL, len, PROT_READ | PROT_WRITE,
++		    MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
++	if (addr == MAP_FAILED) {
++		perror("mmap");
++		exit(1);
++	}
 +
-+	reset_vma_resv_huge_pages(vma);
-+}
++	printf("Address returned by mmap() = %p\n", addr);
 +
- /* Returns true if the VMA has associated reserve pages */
- static bool vma_has_reserves(struct vm_area_struct *vma, long chg)
- {
-@@ -4800,6 +4829,82 @@ int copy_hugetlb_page_range(struct mm_struct *dst, struct mm_struct *src,
- 	return ret;
- }
-
-+static void move_huge_pte(struct vm_area_struct *vma, unsigned long old_addr,
-+			  unsigned long new_addr, pte_t *src_pte)
-+{
-+	struct hstate *h = hstate_vma(vma);
-+	struct mm_struct *mm = vma->vm_mm;
-+	pte_t *dst_pte, pte;
-+	spinlock_t *src_ptl, *dst_ptl;
-+
-+	dst_pte = huge_pte_offset(mm, new_addr, huge_page_size(h));
-+	dst_ptl = huge_pte_lock(h, mm, dst_pte);
-+	src_ptl = huge_pte_lockptr(h, mm, src_pte);
-+
-+	/*
-+	 * We don't have to worry about the ordering of src and dst ptlocks
-+	 * because exclusive mmap_sem (or the i_mmap_lock) prevents deadlock.
++	/* Register the memory range of the mapping we just created for
++	 * handling by the userfaultfd object. In mode, we request to track
++	 * missing pages (i.e., pages that have not yet been faulted in).
 +	 */
-+	if (src_ptl != dst_ptl)
-+		spin_lock_nested(src_ptl, SINGLE_DEPTH_NESTING);
 +
-+	pte = huge_ptep_get_and_clear(mm, old_addr, src_pte);
-+	set_huge_pte_at(mm, new_addr, dst_pte, pte);
-+
-+	if (src_ptl != dst_ptl)
-+		spin_unlock(src_ptl);
-+	spin_unlock(dst_ptl);
++	uffdio_register.range.start = (unsigned long)addr;
++	uffdio_register.range.len = len;
++	uffdio_register.mode = UFFDIO_REGISTER_MODE_MISSING;
++	if (ioctl(uffd, UFFDIO_REGISTER, &uffdio_register) == -1) {
++		perror("ioctl-UFFDIO_REGISTER");
++		exit(1);
++	}
 +}
 +
-+int move_hugetlb_page_tables(struct vm_area_struct *vma,
-+			     struct vm_area_struct *new_vma,
-+			     unsigned long old_addr, unsigned long new_addr,
-+			     unsigned long len)
++int main(void)
 +{
-+	struct hstate *h = hstate_vma(vma);
-+	struct address_space *mapping = vma->vm_file->f_mapping;
-+	unsigned long sz = huge_page_size(h);
-+	struct mm_struct *mm = vma->vm_mm;
-+	unsigned long old_end = old_addr + len;
-+	unsigned long old_addr_copy;
-+	pte_t *src_pte, *dst_pte;
-+	struct mmu_notifier_range range;
++	int ret = 0;
 +
-+	mmu_notifier_range_init(&range, MMU_NOTIFY_CLEAR, 0, vma, mm, old_addr,
-+				old_end);
-+	adjust_range_if_pmd_sharing_possible(vma, &range.start, &range.end);
-+	mmu_notifier_invalidate_range_start(&range);
-+	/* Prevent race with file truncation */
-+	i_mmap_lock_write(mapping);
-+	for (; old_addr < old_end; old_addr += sz, new_addr += sz) {
-+		src_pte = huge_pte_offset(mm, old_addr, sz);
-+		if (!src_pte)
-+			continue;
-+		if (huge_pte_none(huge_ptep_get(src_pte)))
-+			continue;
++	int fd = open("/mnt/huge/test", O_CREAT | O_RDWR, 0755);
 +
-+		/* old_addr arg to huge_pmd_unshare() is a pointer and so the
-+		 * arg may be modified. Pass a copy instead to preserve the
-+		 * value in old_arg.
-+		 */
-+		old_addr_copy = old_addr;
-+
-+		if (huge_pmd_unshare(mm, vma, &old_addr_copy, src_pte))
-+			continue;
-+
-+		dst_pte = huge_pte_alloc(mm, new_vma, new_addr, sz);
-+		if (!dst_pte)
-+			break;
-+
-+		move_huge_pte(vma, old_addr, new_addr, src_pte);
++	if (fd < 0) {
++		perror("Open failed");
++		exit(1);
 +	}
-+	i_mmap_unlock_write(mapping);
-+	flush_tlb_range(vma, old_end - len, old_end);
-+	mmu_notifier_invalidate_range_end(&range);
 +
-+	return len + old_addr - old_end;
++	/* mmap to a PUD aligned address to hopefully trigger pmd sharing. */
++	unsigned long suggested_addr = 0x7eaa40000000;
++	void *haddr = mmap((void *)suggested_addr, LENGTH, PROTECTION,
++			   MAP_HUGETLB | MAP_SHARED | MAP_POPULATE, fd, 0);
++	printf("Map haddr: Returned address is %p\n", haddr);
++	if (haddr == MAP_FAILED) {
++		perror("mmap1");
++		exit(1);
++	}
++
++	/* mmap again to a dummy address to hopefully trigger pmd sharing. */
++	suggested_addr = 0x7daa40000000;
++	void *daddr = mmap((void *)suggested_addr, LENGTH, PROTECTION,
++			   MAP_HUGETLB | MAP_SHARED | MAP_POPULATE, fd, 0);
++	printf("Map daddr: Returned address is %p\n", daddr);
++	if (daddr == MAP_FAILED) {
++		perror("mmap3");
++		exit(1);
++	}
++
++	/* Note vaddr is not hugepage aligned. Mremap should hugepage align the
++	 * vaddr on remap.
++	 */
++	suggested_addr = 0x7faa4002000;
++	void *vaddr =
++		mmap((void *)suggested_addr, LENGTH, PROTECTION, FLAGS, -1, 0);
++	printf("Map vaddr: Returned address is %p\n", vaddr);
++	if (vaddr == MAP_FAILED) {
++		perror("mmap2");
++		exit(1);
++	}
++
++	register_region_with_uffd(haddr, LENGTH);
++
++	void *addr = mremap(haddr, LENGTH, LENGTH,
++			    MREMAP_MAYMOVE | MREMAP_FIXED, vaddr);
++	if (addr == MAP_FAILED) {
++		perror("mremap");
++		exit(1);
++	}
++
++	printf("Mremap: Returned address is %p\n", addr);
++	check_bytes(addr);
++	write_bytes(addr);
++	ret = read_bytes(addr);
++
++	munmap(addr, LENGTH);
++
++	return ret;
 +}
-+
- static void __unmap_hugepage_range(struct mmu_gather *tlb, struct vm_area_struct *vma,
- 				   unsigned long start, unsigned long end,
- 				   struct page *ref_page)
-@@ -6280,7 +6385,7 @@ static unsigned long page_table_shareable(struct vm_area_struct *svma,
- 	return saddr;
- }
-
--static bool vma_shareable(struct vm_area_struct *vma, unsigned long addr)
-+bool hugetlb_vma_shareable(struct vm_area_struct *vma, unsigned long addr)
- {
- 	unsigned long base = addr & PUD_MASK;
- 	unsigned long end = base + PUD_SIZE;
-@@ -6299,7 +6404,7 @@ bool want_pmd_share(struct vm_area_struct *vma, unsigned long addr)
- 	if (uffd_disable_huge_pmd_share(vma))
- 		return false;
- #endif
--	return vma_shareable(vma, addr);
-+	return hugetlb_vma_shareable(vma, addr);
- }
-
- /*
-@@ -6339,12 +6444,6 @@ void adjust_range_if_pmd_sharing_possible(struct vm_area_struct *vma,
-  * sharing is possible.  For hugetlbfs, this prevents removal of any page
-  * table entries associated with the address space.  This is important as we
-  * are setting up sharing based on existing page table entries (mappings).
-- *
-- * NOTE: This routine is only called from huge_pte_alloc.  Some callers of
-- * huge_pte_alloc know that sharing is not possible and do not take
-- * i_mmap_rwsem as a performance optimization.  This is handled by the
-- * if !vma_shareable check at the beginning of the routine. i_mmap_rwsem is
-- * only required for subsequent processing.
-  */
- pte_t *huge_pmd_share(struct mm_struct *mm, struct vm_area_struct *vma,
- 		      unsigned long addr, pud_t *pud)
-@@ -6422,7 +6521,23 @@ int huge_pmd_unshare(struct mm_struct *mm, struct vm_area_struct *vma,
- 	return 1;
- }
-
-+int huge_pmd_shared(struct vm_area_struct *vma, pte_t *ptep)
-+{
-+	i_mmap_assert_write_locked(vma->vm_file->f_mapping);
-+	BUG_ON(page_count(virt_to_page(ptep)) == 0);
-+	if (page_count(virt_to_page(ptep)) == 1)
-+		return 0;
-+
-+	return 1;
-+}
-+
- #else /* !CONFIG_ARCH_WANT_HUGE_PMD_SHARE */
-+static bool hugetlb_vma_shareable(struct vm_area_struct *vma,
-+				  unsigned long addr)
-+{
-+	return false;
-+}
-+
- pte_t *huge_pmd_share(struct mm_struct *mm, struct vm_area_struct *vma,
- 		      unsigned long addr, pud_t *pud)
- {
-diff --git a/mm/mremap.c b/mm/mremap.c
-index c0b6c41b7b78f..6a3f7d38b7539 100644
---- a/mm/mremap.c
-+++ b/mm/mremap.c
-@@ -489,6 +489,10 @@ unsigned long move_page_tables(struct vm_area_struct *vma,
- 	old_end = old_addr + len;
- 	flush_cache_range(vma, old_addr, old_end);
-
-+	if (is_vm_hugetlb_page(vma))
-+		return move_hugetlb_page_tables(vma, new_vma, old_addr,
-+						new_addr, len);
-+
- 	mmu_notifier_range_init(&range, MMU_NOTIFY_UNMAP, 0, vma, vma->vm_mm,
- 				old_addr, old_end);
- 	mmu_notifier_invalidate_range_start(&range);
-@@ -646,6 +650,10 @@ static unsigned long move_vma(struct vm_area_struct *vma,
- 		mremap_userfaultfd_prep(new_vma, uf);
- 	}
-
-+	if (is_vm_hugetlb_page(vma)) {
-+		clear_vma_resv_huge_pages(vma);
-+	}
-+
- 	/* Conceal VM_ACCOUNT so old reservation is not undone */
- 	if (vm_flags & VM_ACCOUNT && !(flags & MREMAP_DONTUNMAP)) {
- 		vma->vm_flags &= ~VM_ACCOUNT;
-@@ -739,9 +747,6 @@ static struct vm_area_struct *vma_to_resize(unsigned long addr,
- 			(vma->vm_flags & (VM_DONTEXPAND | VM_PFNMAP)))
- 		return ERR_PTR(-EINVAL);
-
--	if (is_vm_hugetlb_page(vma))
--		return ERR_PTR(-EINVAL);
--
- 	/* We can't remap across vm area boundaries */
- 	if (old_len > vma->vm_end - addr)
- 		return ERR_PTR(-EFAULT);
-@@ -937,6 +942,27 @@ SYSCALL_DEFINE5(mremap, unsigned long, addr, unsigned long, old_len,
-
- 	if (mmap_write_lock_killable(current->mm))
- 		return -EINTR;
-+	vma = find_vma(mm, addr);
-+	if (!vma || vma->vm_start > addr) {
-+		ret = EFAULT;
-+		goto out;
-+	}
-+
-+	if (is_vm_hugetlb_page(vma)) {
-+		struct hstate *h __maybe_unused = hstate_vma(vma);
-+
-+		old_len = ALIGN(old_len, huge_page_size(h));
-+		new_len = ALIGN(new_len, huge_page_size(h));
-+		addr = ALIGN(addr, huge_page_size(h));
-+		new_addr = ALIGN(new_addr, huge_page_size(h));
-+
-+		/*
-+		 * Don't allow remap expansion, because the underlying hugetlb
-+		 * reservation is not yet capable to handle split reservation.
-+		 */
-+		if (new_len > old_len)
-+			goto out;
-+	}
-
- 	if (flags & (MREMAP_FIXED | MREMAP_DONTUNMAP)) {
- 		ret = mremap_to(addr, old_len, new_addr, new_len,
 --
 2.33.0.882.g93a45727a2-goog
