@@ -2,68 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA885424020
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 16:30:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B652A424027
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 16:30:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239012AbhJFOcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 10:32:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38398 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238845AbhJFOcB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 10:32:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 0134761184;
-        Wed,  6 Oct 2021 14:30:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633530609;
-        bh=4jvK/nmspZrfJBq/pbN/ZJRLBgnxiuFMV/CHx8s2m7I=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=BRi44otg2mm+82G3xirgA1gfIzupGzmtmmU8nrCTJ9Pg7tlOlnb84HXPqQkyFeZbv
-         WVwMS/98Mrvah3f5WIzM73ga6CHak8mQMPSJerKTvnyp8nW/InT/HVWWc+3aIuhw0h
-         fJNrbMCa3Ip/qwVvNvMGwXOwNse2drdbKqO26tH3mGyDDnYX7Up5s1H4O+TQSkcYNM
-         4vvYe7JDN2Lzo77Ucq8yaGth/7ceEaJGY6lfksBjKkp94KkZZEHdQdi0wjgsdLqxXY
-         abtyWnqhSPLh2Uy3dcjvfyAewxF6YhJvV1QZOPYbH6PgRw2CrKj/qxYKbjUoO63CcF
-         ndkzvqVOUHqEQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id EF24160A44;
-        Wed,  6 Oct 2021 14:30:08 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S239043AbhJFOcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 10:32:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37962 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239027AbhJFOcj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 10:32:39 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B07DAC061749;
+        Wed,  6 Oct 2021 07:30:47 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0d3600bd612f435519a27c.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:3600:bd61:2f43:5519:a27c])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 372F81EC04D1;
+        Wed,  6 Oct 2021 16:30:46 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1633530646;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=QdZGYuaftd42DJ0MByjjUkZipesKts6SrAr4jrdiwrs=;
+        b=WifRgTqRqzFdq+cy7RfumA/wTAZ8QGin7R5dF4Ya2A4ZqgrxzQEK5bXemgbnpms/7YoU/g
+        Mv5mkrApW3/2G9OdPe3lR1HSUeNLHaDSvo2/Djo555iObx/plrSjqoNwv9jgUa3YDZila1
+        Gw755md8Fo2ksxa5Jy0xJg2x73Oo+OU=
+Date:   Wed, 6 Oct 2021 16:30:46 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Andrew Cooper <andrew.cooper3@citrix.com>
+Cc:     Jane Malalane <jane.malalane@citrix.com>,
+        LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Pu Wen <puwen@hygon.cn>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Yazen Ghannam <Yazen.Ghannam@amd.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Huang Rui <ray.huang@amd.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Kim Phillips <kim.phillips@amd.com>, stable@vger.kernel.org
+Subject: Re: [PATCH] x86/cpu: Fix migration safety with X86_BUG_NULL_SEL
+Message-ID: <YV2zFlaLvZzNPkjh@zn.tnic>
+References: <20211001133349.9825-1-jane.malalane@citrix.com>
+ <YVcZCgOVkCPz1kwO@zn.tnic>
+ <c2d96a84-64d2-b4b4-261d-e98612552ba0@citrix.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH][next] qed: Fix spelling mistake "ctx_bsaed" -> "ctx_based"
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163353060897.19239.16281796436705585007.git-patchwork-notify@kernel.org>
-Date:   Wed, 06 Oct 2021 14:30:08 +0000
-References: <20211006084955.350530-1-colin.king@canonical.com>
-In-Reply-To: <20211006084955.350530-1-colin.king@canonical.com>
-To:     Colin King <colin.king@canonical.com>
-Cc:     aelior@marvell.com, GR-everest-linux-l2@marvell.com,
-        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <c2d96a84-64d2-b4b4-261d-e98612552ba0@citrix.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This patch was applied to netdev/net-next.git (refs/heads/master):
-
-On Wed,  6 Oct 2021 09:49:55 +0100 you wrote:
-> From: Colin Ian King <colin.king@canonical.com>
+On Wed, Oct 06, 2021 at 03:15:51PM +0100, Andrew Cooper wrote:
+> The case which goes wrong is this:
 > 
-> There is a spelling mistake in a DP_VERBOSE message. Fix it.
+> 1. Zen1 (or earlier) and Zen2 (or later) in a migration pool
+> 2. Linux boots on Zen2, probes and finds the absence of X86_BUG_NULL_SEL
+> 3. Linux is then migrated to Zen1
 > 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  drivers/net/ethernet/qlogic/qed/qed_ll2.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Linux is now running on a X86_BUG_NULL_SEL-impacted CPU while believing
+> that the bug is fixed.
+> 
+> The only way to address the problem is to fully trust the "no longer
+> affected" CPUID bit when virtualised, because in the above case it would
+> be clear deliberately to indicate the fact "you might migrate to
+> somewhere which really is affected".
 
-Here is the summary with links:
-  - [next] qed: Fix spelling mistake "ctx_bsaed" -> "ctx_based"
-    https://git.kernel.org/netdev/net-next/c/9cbfc51af026
+Yap, makes sense.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Thanks for taking the time - that's what I was looking for.
 
+Please add to the commit message of the next version.
 
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
