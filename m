@@ -2,77 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6CEA423ABF
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 11:42:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB02C423ABE
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 11:42:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237973AbhJFJoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 05:44:13 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:55664 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237963AbhJFJoK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 05:44:10 -0400
-Received: from zn.tnic (p200300ec2f0d3600b8444335b766c15f.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:3600:b844:4335:b766:c15f])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E9C511EC0390;
-        Wed,  6 Oct 2021 11:42:16 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1633513337;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=JKschoGOfSrt9RWijP/dk9HNvjRwYLO9J34qvRJjSWk=;
-        b=bu4OkrIp7BBVQZFxdiS0wDK3iF/wGLEpGlbXaOG97x54XWGp6GJtB1lHIIbxcb7gFoGnu4
-        cPtnsJAAoXOoAtRbSbkbjEcTmyxQn20s/axIldCSBoIAk2GUzPTOLd4vvLenZ8mZsBnyXj
-        KKGfblj+Y8d1R8yja1WwyHF1eR1wHQg=
-Date:   Wed, 6 Oct 2021 11:42:08 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Alex Deucher <alexdeucher@gmail.com>
-Cc:     Paul Menzel <pmenzel@molgen.mpg.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, X86 ML <x86@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>
-Subject: Re: `AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT=y` causes AMDGPU to fail on
- Ryzen: amdgpu: SME is not compatible with RAVEN
-Message-ID: <YV1vcKpRvF9WTwAo@zn.tnic>
-References: <8bbacd0e-4580-3194-19d2-a0ecad7df09c@molgen.mpg.de>
- <CADnq5_ONNvuvTbiJDFfRwfnPUBeAqPmDJRmESDYG_7CymikJpQ@mail.gmail.com>
+        id S237957AbhJFJoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 05:44:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55210 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229824AbhJFJoG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 05:44:06 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0287C06174E
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 02:42:13 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id r10so6885042wra.12
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 02:42:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ZN2MGTKW8HS5ful8I8NJEsDZCFiU186A9rqdS7aIXn0=;
+        b=aX4LKQ2mCR9pIs+VsiyRlRqklx+TafioQgirniEBfBI/JSeubXTaWEh4DKZetKSphI
+         PRv4GV/N0oIuCsV06yFwB4BcQlv//CjyNMn2wqwEiyyFxQtyKN/GO6Ngv8zcxAQjwUxz
+         hyE4pg1lpwPaM+e8IbsMXcP/xow0jHffxg+NhPZI/oO4fY62UfM2m8Iog0Alb3wwGh1s
+         SJlSfSQQMysu72ZMxJCIuMsKsmwWY63sS4HH1/LlQ7bFC1QiOtT0lmuR4SUHBtRNkdLQ
+         EbTb1jB8Tn8QLuUmnQiWC9y9pTnCeD/rL0e7ml+lEbIsQEWuyL2QnzyLWk+swY8D9vOc
+         3moQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ZN2MGTKW8HS5ful8I8NJEsDZCFiU186A9rqdS7aIXn0=;
+        b=QzHVkYo9OgGYOHSwmzwCNMyDornz37HFRILNkEQdqYRp+qRC3Mh4lEUNe9zsxzATyl
+         +7lyt+Gf/6YeY0EOhP+3Mn6csAJoJfoAeBi3g6xmH1OHuBHr4/fhH/jagqX8dzPr2MpP
+         ef1RbEWEeg0QJlLAg7wUnY9OmMDGVH/YVSf9KGw8LeOartIMC0VcnmvxTSc3FczLn25L
+         GmFreycmauJSRTV9lElsfOJXd/3dEeXOZa6FOIjUkCg388PBcw90AsJJPYHXBCh4ScSd
+         WvZDZhddH/i1/F2deeOQNPIjBJTPOl6d8pssgLeg01g2p3jcpyIqic9jgGXAn0QY+zft
+         RpTA==
+X-Gm-Message-State: AOAM531hZoq991sOBo9wsBr0cXVyyxbfqUQzCKsXnJdHlJ9WNUuUs+Wc
+        PyTLSZgYk5DyIzqDBfSp9gkzIQ==
+X-Google-Smtp-Source: ABdhPJxXQJc1Bdq+Nu4tptxWSt8BkN3eyd1QmAMdLyZZu5Vl+ysI5y6ywWn3umjR7VmLyXBdmGXHvA==
+X-Received: by 2002:a05:600c:35d2:: with SMTP id r18mr8656025wmq.97.1633513332280;
+        Wed, 06 Oct 2021 02:42:12 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:278:1f59:2992:87fe? ([2a01:e34:ed2f:f020:278:1f59:2992:87fe])
+        by smtp.googlemail.com with ESMTPSA id r205sm967005wma.3.2021.10.06.02.42.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Oct 2021 02:42:11 -0700 (PDT)
+Subject: Re: [PATCH 1/4] dt-bindings: thermal: k3-j72xx: Add VTM bindings
+ documentation
+To:     Rob Herring <robh+dt@kernel.org>, Keerthy <j-keerthy@ti.com>
+Cc:     devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Tero Kristo <kristo@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Amit Kucheria <amitk@kernel.org>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>
+References: <20211004112550.27546-1-j-keerthy@ti.com>
+ <20211004112550.27546-2-j-keerthy@ti.com>
+ <1633436798.497006.3226792.nullmailer@robh.at.kernel.org>
+ <CAL_JsqKLuE+RhH+T4UKecMhRjbm69rwA1a2+FjrnMPKUf13J6A@mail.gmail.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <edb3e75a-1092-7e90-40d0-225dd4d4764c@linaro.org>
+Date:   Wed, 6 Oct 2021 11:42:10 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
+In-Reply-To: <CAL_JsqKLuE+RhH+T4UKecMhRjbm69rwA1a2+FjrnMPKUf13J6A@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CADnq5_ONNvuvTbiJDFfRwfnPUBeAqPmDJRmESDYG_7CymikJpQ@mail.gmail.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05, 2021 at 10:48:15AM -0400, Alex Deucher wrote:
-> It's not incompatible per se, but SEM requires the IOMMU be enabled
-> because the C bit used for encryption is beyond the dma_mask of most
-> devices.  If the C bit is not set, the en/decryption for DMA doesn't
-> occur.  So you need IOMMU to be enabled in remapping mode to use SME
-> with most devices.  Raven has further requirements in that it requires
-> IOMMUv2 functionality to support some features which currently uses a
-> direct mapping in the IOMMU and hence the C bit is not properly
-> handled.
 
-So lemme ask you this: do Raven-containing systems exist out there which
-don't have IOMMUv2 functionality and which can cause boot failures when
-SME is enabled in the kernel .config?
+Keerthy,
 
-IOW, can we handle this at boot time properly, i.e., disable SME if we
-detect Raven or IOMMUv2 support is missing?
+did you receive this answer ?
 
-If not, then we really will have to change the default.
 
-Thx.
+On 05/10/2021 15:05, Rob Herring wrote:
+> On Tue, Oct 5, 2021 at 7:26 AM Rob Herring <robh@kernel.org> wrote:
+>>
+>> On Mon, 04 Oct 2021 16:55:47 +0530, Keerthy wrote:
+>>> Add VTM bindings documentation. In the Voltage Thermal
+>>> Management Module(VTM), K3 J72XX supplies a voltage
+>>> reference and a temperature sensor feature that are gathered in the band
+>>> gap voltage and temperature sensor (VBGAPTS) module. The band
+>>> gap provides current and voltage reference for its internal
+>>> circuits and other analog IP blocks. The analog-to-digital
+>>> converter (ADC) produces an output value that is proportional
+>>> to the silicon temperature.
+>>>
+>>> Signed-off-by: Keerthy <j-keerthy@ti.com>
+>>> ---
+>>>  .../bindings/thermal/ti,j72xx-thermal.yaml    | 58 +++++++++++++++++++
+>>>  1 file changed, 58 insertions(+)
+>>>  create mode 100644 Documentation/devicetree/bindings/thermal/ti,j72xx-thermal.yaml
+>>>
+>>
+>> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+>> on your patch (DT_CHECKER_FLAGS is new in v5.13):
+> 
+> Woot, TI has blacklisted me:
+> 
+> The response from the remote server was:
+> 553 Sorry, your email address has been blacklisted. Please contact
+> Texas Instruments Inc to have yourself removed.
+> 
+
 
 -- 
-Regards/Gruss,
-    Boris.
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
-https://people.kernel.org/tglx/notes-about-netiquette
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
