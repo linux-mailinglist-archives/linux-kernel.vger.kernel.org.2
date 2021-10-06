@@ -2,134 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4FB4423FED
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 16:19:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 353F4423FF5
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 16:21:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238778AbhJFOVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 10:21:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34996 "EHLO mail.kernel.org"
+        id S238892AbhJFOW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 10:22:57 -0400
+Received: from foss.arm.com ([217.140.110.172]:56484 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231356AbhJFOVg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 10:21:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C40B60EFF;
-        Wed,  6 Oct 2021 14:19:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633529983;
-        bh=hcN96N38jd5OMtH94/dTJCYZqlodc1Iq8xYnE522YOI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=J5B2khO2tPlVRC1ROwcg+MaEtpl+YB5CMWd1GT78HSwWe6dky9/GObOoWLmrZ0EjH
-         QYXFo78X70FtMki3hhu+0LWn3jhPQuJ/2SyaiqYsMw/Sah+3ModOlFr7FpNV0pCDrz
-         Y12qCwO47i9+kjcY3m1ZdV9ejW9fcLwoonv8OltOdWZgTdwZSjxGcAACbklGon/E5j
-         EPmxyzxEZqoMuTuQG3Bjg2gkkzIIqSMwAWD2hZPv9qlg7q03booa3TEJpYaVpQ4nc0
-         qKfQFGLkA7sT5tdVMkNK0VauKMHTgd9fw0KEztGEydHlRupy/G2zYf6eTCVY52QQrZ
-         d3TOA4GRD8/Mg==
-Date:   Wed, 6 Oct 2021 09:19:42 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Kelvin.Cao@microchip.com
-Cc:     kurt.schwemmer@microsemi.com, bhelgaas@google.com,
-        linux-pci@vger.kernel.org, logang@deltatee.com,
-        linux-kernel@vger.kernel.org, kelvincao@outlook.com
-Subject: Re: [PATCH 1/5] PCI/switchtec: Error out MRPC execution when no GAS
- access
-Message-ID: <20211006141942.GA1152835@bhelgaas>
+        id S231438AbhJFOW4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 10:22:56 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 078996D;
+        Wed,  6 Oct 2021 07:21:04 -0700 (PDT)
+Received: from [10.57.43.152] (unknown [10.57.43.152])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E4CFC3F66F;
+        Wed,  6 Oct 2021 07:21:00 -0700 (PDT)
+Subject: Re: [PATCH v2 4/5] arm64: mte: Add asymmetric mode support
+To:     Andrey Konovalov <andreyknvl@gmail.com>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+References: <20211004202253.27857-1-vincenzo.frascino@arm.com>
+ <20211004202253.27857-5-vincenzo.frascino@arm.com>
+ <CA+fCnZeL48oLd8bbWgxomc6WnS4e53a7K6SwBpKBJND4f03f7A@mail.gmail.com>
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <2d03d87b-5ea8-8b2a-eae6-ae70c7e9d855@arm.com>
+Date:   Wed, 6 Oct 2021 16:21:17 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <14d694a3432de04ceb0dd8c4c5635194f44d269c.camel@microchip.com>
+In-Reply-To: <CA+fCnZeL48oLd8bbWgxomc6WnS4e53a7K6SwBpKBJND4f03f7A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 06, 2021 at 05:49:29AM +0000, Kelvin.Cao@microchip.com wrote:
-> On Tue, 2021-10-05 at 21:33 -0500, Bjorn Helgaas wrote:
-> > On Wed, Oct 06, 2021 at 12:37:02AM +0000, Kelvin.Cao@microchip.com
-> > wrote:
-> > > On Tue, 2021-10-05 at 15:11 -0500, Bjorn Helgaas wrote:
-> > > > On Mon, Oct 04, 2021 at 08:51:06PM +0000, 
-> > > > Kelvin.Cao@microchip.com
-> > > > wrote:
-> > > > > On Sat, 2021-10-02 at 10:11 -0500, Bjorn Helgaas wrote:
-> > > > > > I *thought* the problem was that the PCIe Memory Read
-> > > > > > failed and the Root Complex fabricated ~0 data to complete
-> > > > > > the CPU read.  But now I'm not sure, because it sounds
-> > > > > > like it might be that the PCIe transaction succeeds, but
-> > > > > > it reads data that hasn't been updated by the firmware,
-> > > > > > i.e., it reads 'in progress' because firmware hasn't
-> > > > > > updated it to 'done'.
-> > > > > 
-> > > > > The original message was sort of misleading. After a
-> > > > > firmware reset, CPU getting ~0 for the PCIe Memory Read
-> > > > > doesn't explain the hang.  In a MRPC execution (DMA MRPC
-> > > > > mode), the MRPC status which is located in the host memory,
-> > > > > gets initialized by the CPU and updated/finalized by the
-> > > > > firmware. In the situation of a firmware reset, any MRPC
-> > > > > initiated afterwards will not get the status updated by the
-> > > > > firmware per the reason you pointed out above (or similar,
-> > > > > to my understanding, firmware can no longer DMA data to host
-> > > > > memory in such cases), therefore the MRPC execution will
-> > > > > never end.
-> > > > 
-> > > > I'm glad this makes sense to you, because it still doesn't to
-> > > > me.
-> > > > 
-> > > > check_access() does an MMIO read to something in BAR0.  If
-> > > > that read returns ~0, it means either the PCIe Memory Read was
-> > > > successful and the Switchtec device supplied ~0 data (maybe
-> > > > because firmware has not initialized that part of the BAR) or
-> > > > the PCIe Memory Read failed and the root complex fabricated
-> > > > the ~0 data.
-> > > > 
-> > > > I'd like to know which one is happening so we can clarify the
-> > > > commit log text about "MRPC command executions hang
-> > > > indefinitely" and "host wil fail all GAS reads."  It's not
-> > > > clear whether these are PCIe protocol issues or
-> > > > driver/firmware interaction issues.
-> > > 
-> > > I think it's the latter case, the ~0 data was fabricated by the
-> > > root complex, as the MMIO read in check_access() always returns
-> > > ~0 until a reboot or a rescan happens.
-> > 
-> > If the root complex fabricates ~0, that means a PCIe transaction
-> > failed, i.e., the device didn't respond.  Rescan only does config
-> > reads and writes.  Why should that cause the PCIe transactions to
-> > magically start working?
+On 10/6/21 2:19 PM, Andrey Konovalov wrote:
+>> +               if (!system_uses_mte_async_mode())
+>> +                       static_branch_enable(&mte_async_mode);
+> Using this variable and function here still looks confusing. Maybe
+> naming the variable mte_async_or_asymm_mode? Or
+> mte_async_fault_possible similarly to KASAN?
 > 
-> I took a closer look. What I observed was like this. A firmware
-> reset cleared some CSR settings including the MSE and MBE bits and
-> the Base Address Registers. With a rescan (removing the switch to
-> which the management EP was binded from root port and rescan), the
-> management EP was re-enumerated and driver was re-probed, so that
-> the settings cleared by the firmware reset was properly setup again,
-> therefore PCIe transactions start working.
+> 
 
-I think what you just said is that 
+mte_async_or_asymm_mode works for me. I will modify the code in v3.
 
-  - the driver asked the firmware to reset the device
+Thanks.
 
-  - the firmware did reset the device, which cleared Memory Space
-    Enable
-
-  - nothing restored the device config after the reset, so Memory
-    Space Enable remains cleared
-
-  - the driver does MMIO reads to figure out when the reset has
-    completed
-
-  - the device doesn't respond to the PCIe Memory Reads because Memory
-    Space Enable is cleared
-
-  - the root complex sees a timeout or error completion and fabricates
-    ~0 data for the CPU read
-
-  - the driver sees ~0 data from the MMIO read and thinks the device
-    or firmware is hung
-
-If that's all true, I think the patch is sort of a band-aid that
-doesn't fix the problem at all but only makes the driver's response to
-it marginally better.  But the device is still unusable until a rescan
-or reboot.
-
-So I think we should drop this patch and do something to restore the
-device state after the reset.
-
-Bjorn
+-- 
+Regards,
+Vincenzo
