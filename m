@@ -2,92 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52505423CE8
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 13:37:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 514AF423CEB
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 13:38:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238213AbhJFLjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 07:39:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238091AbhJFLjn (ORCPT
+        id S238307AbhJFLju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 07:39:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27927 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238253AbhJFLjs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 07:39:43 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86443C061749;
-        Wed,  6 Oct 2021 04:37:51 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id e12so7898593wra.4;
-        Wed, 06 Oct 2021 04:37:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=DhCrSBwQcUGPmOoHV4cQHMNe4P44vuUP3RyY/XmjhVs=;
-        b=GsxCTD2zleFZfp6Je+QcFI56LHwOmRKojfSkhORIckOop2tuo6J++lylQByHfdUT7j
-         KRzeZD6M73B8Bl0DIX0Gb1T71wsKHFUez9CZCrUl7erwucoqPC7tB/b7QgY6mNz4NlTK
-         4jvBbgO1gK2gVw4b+inrVHBEBWtlo9MnIs7EmmMAIACrh7tpdB9bgIGlt77alXa8RYzd
-         WsmFPbJ07zZtKjaItSmSDyQWWgetkUbErTLege2Ct8XZzhm5EyUw2PVrCBknvEjoudCh
-         bjqjI4Cpvj6nwxpJyXdv57uSzSdSMAWyXp2e68tUnxHYaqPO8gFQdYZzYasAXcXZk846
-         aQsA==
+        Wed, 6 Oct 2021 07:39:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633520276;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tLSJ+0G6GaESS3A8wROTGiXCvt9MmKxGWQIQfuIzv50=;
+        b=PZou4TXLbMlhmkMfilag7ylf2LfKZGSdyyLP/c8Vu4YWo2uDFF2ZyUo1ukbm2A0g92uspw
+        2ySyjkKTNGyaLY8YcyiCZSSl0AuYVKBVotlQ2S+neFPddyEfaO+JJq6yYZKv7YuFe4NIX/
+        eSzUYZiW2/iu1Ge9uDFeILc99YYX7N4=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-331-fSOlh_eRNE6iSt3aynoMYw-1; Wed, 06 Oct 2021 07:37:55 -0400
+X-MC-Unique: fSOlh_eRNE6iSt3aynoMYw-1
+Received: by mail-ed1-f70.google.com with SMTP id c7-20020a05640227c700b003d27f41f1d4so2325101ede.16
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 04:37:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=DhCrSBwQcUGPmOoHV4cQHMNe4P44vuUP3RyY/XmjhVs=;
-        b=lmAPe7zlaAdUjKWR+tzFsKl5Sl9ejsNggvRtnAuXBHTzgwvXWCi7nmcMDVHy1NULyC
-         WWC1uw1V/OjXKBDoFQ0McckCPkNZtSIw/O6qQAtWL15D8vTNGaf/34P14VImdHE0o72f
-         KrOlaSYkykAxsmdgJswFSXqv13fwDYv4+QlYY/IFvkta5a+/IquKqcKKBVEVXGaEEqYM
-         ZLK4c43+sPovITF120e4NDJa/AeJYE4JFWigvnO4Ds5AcbRN9WG1AhCuJ7pz/tWi4Eyb
-         M3fQ/TaUUVzwVr/D2aIZlWuR9ERD8VO5qCMefn9jJ2K831laTcMTU21v9MVBJRjbnHOC
-         rciQ==
-X-Gm-Message-State: AOAM532rU4xEGQ4jGok3oa9wiuaTmt4RtCip9NNwaQAS3cSObYiG9kqA
-        v+FXiTowm0ms5PU4hmyUsEI=
-X-Google-Smtp-Source: ABdhPJyvE+PxDHuqpJW1+88/DOYgkCOORLNiPimKKHqW4mMqn4ql+qeDVDEPm3fx3Y4qpIVg7BUAFw==
-X-Received: by 2002:adf:bb81:: with SMTP id q1mr17252993wrg.119.1633520270108;
-        Wed, 06 Oct 2021 04:37:50 -0700 (PDT)
-Received: from localhost.localdomain ([197.49.35.129])
-        by smtp.gmail.com with ESMTPSA id b15sm24479679wru.9.2021.10.06.04.37.46
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=tLSJ+0G6GaESS3A8wROTGiXCvt9MmKxGWQIQfuIzv50=;
+        b=Pya3qrSOZRIhsZYpvvURLZBqn4Fxu3RPyOJGbTIB8FCRYGPisrZpJTA7eUo1JE2QsX
+         VWt1sDbbreRTvYWwkEKe9+u+OXi85W2VDQe+EWCY50dlHROucfJ1+noKaGZvpf2WiA6V
+         KqJZngC7HVUBYoIWh0hgUTR6q5rsfWp9yAr/kbcHix1Ag4NOxBuxKxgsI0pwqU1zuYg4
+         oPKY0w/D90i2RfpKay+LKFDe2Oq0W5ZLz8+nJQR5HQelo4mEqp8Z6zV/W0SNWsH7loSu
+         1cHT5YEigIfNymf34EwQDpJcZDXqxmyLOJzNSeokEOMDWzwv8303f6tRPjhE2+q27RXN
+         Acwg==
+X-Gm-Message-State: AOAM531/TiKbTOR5G4P4ACSjGqAgLWsS51ewVTnWv8U3mskMyE/EzGad
+        9JWBJ8OWfs4BxEiY7lYqCMTRU6RYqhuXLxJAcFcvh5+Xbfg+xzgX7qc8P3vA7Bv1gbn+jlt5P8n
+        dv7tOzaB5Bx0+mO5wi+D+9SPq
+X-Received: by 2002:a17:907:628d:: with SMTP id nd13mr32691163ejc.7.1633520274172;
+        Wed, 06 Oct 2021 04:37:54 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyEEcX7nQiCt05CZwz558uZNZfwfw1lYcM5ACjQLLwDhsTkZqZlZFhhEMl7qA8+8LcuiVSErA==
+X-Received: by 2002:a17:907:628d:: with SMTP id nd13mr32691131ejc.7.1633520273957;
+        Wed, 06 Oct 2021 04:37:53 -0700 (PDT)
+Received: from gator.home (cst2-174-28.cust.vodafone.cz. [31.30.174.28])
+        by smtp.gmail.com with ESMTPSA id dh16sm9840424edb.63.2021.10.06.04.37.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Oct 2021 04:37:47 -0700 (PDT)
-From:   Sohaib Mohamed <sohaib.amhmd@gmail.com>
-Cc:     Robert Moore <robert.moore@intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
-        devel@acpica.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ACPICA: drop unneeded initialization value
-Date:   Wed,  6 Oct 2021 13:37:45 +0200
-Message-Id: <20211006113745.60186-1-sohaib.amhmd@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 06 Oct 2021 04:37:53 -0700 (PDT)
+Date:   Wed, 6 Oct 2021 13:37:51 +0200
+From:   Andrew Jones <drjones@redhat.com>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org, will@kernel.org,
+        qperret@google.com, dbrazdil@google.com,
+        Steven Price <steven.price@arm.com>,
+        Fuad Tabba <tabba@google.com>,
+        Srivatsa Vaddagiri <vatsa@codeaurora.org>,
+        Shanker R Donthineni <sdonthineni@nvidia.com>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        kernel-team@android.com
+Subject: Re: [PATCH v2 04/16] KVM: arm64: Add MMIO checking infrastructure
+Message-ID: <20211006113751.damskwaz7akpk5fc@gator.home>
+References: <20211004174849.2831548-1-maz@kernel.org>
+ <20211004174849.2831548-5-maz@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211004174849.2831548-5-maz@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Do not initialise statics to 0
+On Mon, Oct 04, 2021 at 06:48:37PM +0100, Marc Zyngier wrote:
+> Introduce the infrastructure required to identify an IPA region
+> that is expected to be used as an MMIO window.
+> 
+> This include mapping, unmapping and checking the regions. Nothing
+> calls into it yet, so no expected functional change.
+> 
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
+> ---
+>  arch/arm64/include/asm/kvm_host.h |   2 +
+>  arch/arm64/include/asm/kvm_mmu.h  |   5 ++
+>  arch/arm64/kvm/mmu.c              | 109 ++++++++++++++++++++++++++++++
+>  3 files changed, 116 insertions(+)
+> 
+> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+> index f63ca8fb4e58..ba9781eb84d6 100644
+> --- a/arch/arm64/include/asm/kvm_host.h
+> +++ b/arch/arm64/include/asm/kvm_host.h
+> @@ -125,6 +125,8 @@ struct kvm_arch {
+>  #define KVM_ARCH_FLAG_RETURN_NISV_IO_ABORT_TO_USER	0
+>  	/* Memory Tagging Extension enabled for the guest */
+>  #define KVM_ARCH_FLAG_MTE_ENABLED			1
+> +	/* Gues has bought into the MMIO guard extension */
+> +#define KVM_ARCH_FLAG_MMIO_GUARD			2
+>  	unsigned long flags;
+>  
+>  	/*
+> diff --git a/arch/arm64/include/asm/kvm_mmu.h b/arch/arm64/include/asm/kvm_mmu.h
+> index 02d378887743..454a6265d45d 100644
+> --- a/arch/arm64/include/asm/kvm_mmu.h
+> +++ b/arch/arm64/include/asm/kvm_mmu.h
+> @@ -170,6 +170,11 @@ phys_addr_t kvm_mmu_get_httbr(void);
+>  phys_addr_t kvm_get_idmap_vector(void);
+>  int kvm_mmu_init(u32 *hyp_va_bits);
+>  
+> +/* MMIO guard */
+> +bool kvm_install_ioguard_page(struct kvm_vcpu *vcpu, gpa_t ipa);
+> +bool kvm_remove_ioguard_page(struct kvm_vcpu *vcpu, gpa_t ipa);
+> +bool kvm_check_ioguard_page(struct kvm_vcpu *vcpu, gpa_t ipa);
+> +
+>  static inline void *__kvm_vector_slot2addr(void *base,
+>  					   enum arm64_hyp_spectre_vector slot)
+>  {
+> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+> index 1a94a7ca48f2..2470a55ca675 100644
+> --- a/arch/arm64/kvm/mmu.c
+> +++ b/arch/arm64/kvm/mmu.c
+> @@ -1172,6 +1172,115 @@ static void handle_access_fault(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa)
+>  		kvm_set_pfn_accessed(pte_pfn(pte));
+>  }
+>  
+> +/* Replace this with something more structured once day */
 
-Signed-off-by: Sohaib Mohamed <sohaib.amhmd@gmail.com>
----
- drivers/acpi/acpica/dbhistry.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+one day
 
-diff --git a/drivers/acpi/acpica/dbhistry.c b/drivers/acpi/acpica/dbhistry.c
-index fd813c5d3952..60b77b11c0f2 100644
---- a/drivers/acpi/acpica/dbhistry.c
-+++ b/drivers/acpi/acpica/dbhistry.c
-@@ -24,9 +24,9 @@ typedef struct history_info {
- } HISTORY_INFO;
- 
- static HISTORY_INFO acpi_gbl_history_buffer[HISTORY_SIZE];
--static u16 acpi_gbl_lo_history = 0;
--static u16 acpi_gbl_num_history = 0;
--static u16 acpi_gbl_next_history_index = 0;
-+static u16 acpi_gbl_lo_history;
-+static u16 acpi_gbl_num_history;
-+static u16 acpi_gbl_next_history_index;
- 
- /*******************************************************************************
-  *
--- 
-2.25.1
+> +#define MMIO_NOTE	(('M' << 24 | 'M' << 16 | 'I' << 8 | 'O') << 1)
+
+Would it be better to have kvm_pgtable_stage2_annotate() shift its
+inputs (<< 1) instead of requiring all annotations to remember that
+requirement? Although the owner id is shifted 2 bits, but I'm not
+sure why.
+
+> +
+> +bool kvm_install_ioguard_page(struct kvm_vcpu *vcpu, gpa_t ipa)
+> +{
+> +	struct kvm_mmu_memory_cache *memcache;
+> +	struct kvm_memory_slot *memslot;
+> +	struct kvm *kvm = vcpu->kvm;
+> +	int ret, idx;
+> +
+> +	if (!test_bit(KVM_ARCH_FLAG_MMIO_GUARD, &kvm->arch.flags))
+> +		return false;
+> +
+> +	/* Must be page-aligned */
+> +	if (ipa & ~PAGE_MASK)
+> +		return false;
+> +
+> +	/*
+> +	 * The page cannot be in a memslot. At some point, this will
+> +	 * have to deal with device mappings though.
+> +	 */
+> +	idx = srcu_read_lock(&kvm->srcu);
+> +	mutex_lock(&kvm->slots_arch_lock);
+> +	memslot = gfn_to_memslot(kvm, ipa >> PAGE_SHIFT);
+> +	if (memslot) {
+> +		ret = -EINVAL;
+> +		goto out;
+> +	}
+> +
+> +	/* Guest has direct access to the GICv2 virtual CPU interface */
+> +	if (irqchip_in_kernel(kvm) &&
+> +	    kvm->arch.vgic.vgic_model == KVM_DEV_TYPE_ARM_VGIC_V2 &&
+> +	    ipa == kvm->arch.vgic.vgic_cpu_base) {
+> +		ret = 0;
+> +		goto out;
+> +	}
+> +
+> +	memcache = &vcpu->arch.mmu_page_cache;
+> +	if (kvm_mmu_topup_memory_cache(memcache,
+> +				       kvm_mmu_cache_min_pages(kvm))) {
+> +		ret = -ENOMEM;
+> +		goto out;
+> +	}
+> +
+> +	spin_lock(&kvm->mmu_lock);
+> +	ret = kvm_pgtable_stage2_annotate(vcpu->arch.hw_mmu->pgt,
+> +					  ipa, PAGE_SIZE, memcache,
+> +					  MMIO_NOTE);
+> +	spin_unlock(&kvm->mmu_lock);
+> +
+> +out:
+> +	mutex_unlock(&kvm->slots_arch_lock);
+> +	srcu_read_unlock(&kvm->srcu, idx);
+> +	return ret == 0;
+
+I guess the callers need this to return a boolean? Just seems odd that
+pains were taken above to set ret to EINVAL/ENOMEM just to translate
+that to true/false here though.
+
+> +}
+> +
+> +static bool __check_ioguard_page(struct kvm_vcpu *vcpu, gpa_t ipa)
+> +{
+> +	kvm_pte_t pte = 0;
+> +	u32 level = 0;
+> +	int ret;
+> +
+> +	lockdep_assert_held(&vcpu->kvm->mmu_lock);
+> +
+> +	ret = kvm_pgtable_get_leaf(vcpu->arch.hw_mmu->pgt, ipa, &pte, &level);
+> +	VM_BUG_ON(ret);
+> +	VM_BUG_ON(level >= KVM_PGTABLE_MAX_LEVELS);
+> +
+> +	/* Must be a PAGE_SIZE mapping with our annotation */
+> +	return (BIT(ARM64_HW_PGTABLE_LEVEL_SHIFT(level)) == PAGE_SIZE &&
+> +		pte == MMIO_NOTE);
+> +}
+> +
+> +bool kvm_remove_ioguard_page(struct kvm_vcpu *vcpu, gpa_t ipa)
+> +{
+> +	bool ret;
+> +
+> +	if (!test_bit(KVM_ARCH_FLAG_MMIO_GUARD, &vcpu->kvm->arch.flags))
+> +		return false;
+> +
+> +	/* Keep the PT locked across the two walks */
+> +	spin_lock(&vcpu->kvm->mmu_lock);
+> +
+> +	ret = __check_ioguard_page(vcpu, ipa);
+> +	if (ret)		/* Drop the annotation */
+> +		kvm_pgtable_stage2_unmap(vcpu->arch.hw_mmu->pgt,
+> +					 ALIGN_DOWN(ipa, PAGE_SIZE), PAGE_SIZE);
+
+How about
+
+ if (ret) {
+         /* Drop the annotation */
+         kvm_pgtable_stage2_unmap(vcpu->arch.hw_mmu->pgt,
+                                  ALIGN_DOWN(ipa, PAGE_SIZE), PAGE_SIZE);
+ }
+
+to be a bit easier to read.
+
+> +
+> +	spin_unlock(&vcpu->kvm->mmu_lock);
+> +	return ret;
+> +}
+> +
+> +bool kvm_check_ioguard_page(struct kvm_vcpu *vcpu, gpa_t ipa)
+> +{
+> +	bool ret;
+> +
+> +	if (!test_bit(KVM_ARCH_FLAG_MMIO_GUARD, &vcpu->kvm->arch.flags))
+> +		return true;
+> +
+> +	spin_lock(&vcpu->kvm->mmu_lock);
+> +	ret = __check_ioguard_page(vcpu, ipa & PAGE_MASK);
+> +	spin_unlock(&vcpu->kvm->mmu_lock);
+> +
+> +	if (!ret)
+> +		kvm_inject_dabt(vcpu, kvm_vcpu_get_hfar(vcpu));
+> +
+> +	return ret;
+> +}
+> +
+>  /**
+>   * kvm_handle_guest_abort - handles all 2nd stage aborts
+>   * @vcpu:	the VCPU pointer
+> -- 
+> 2.30.2
+>
+
+Besides the nits
+
+Reviewed-by: Andrew Jones <drjones@redhat.com>
+
+Thanks,
+drew 
 
