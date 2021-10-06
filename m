@@ -2,74 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80B4742489C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 23:14:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3594242488B
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 23:10:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239597AbhJFVPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 17:15:50 -0400
-Received: from mail-ot1-f51.google.com ([209.85.210.51]:41563 "EHLO
-        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239591AbhJFVPt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 17:15:49 -0400
-Received: by mail-ot1-f51.google.com with SMTP id v2-20020a05683018c200b0054e3acddd91so331628ote.8;
-        Wed, 06 Oct 2021 14:13:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hhEh5kd4e+SG2xwNY07ROc2/rt5AxCtyHRuXkRz4T3k=;
-        b=ED8BIYVYEqC5aj5MPdxwTjRswWLPYF/qBQ+1SJwW/q0+T82vwMuzr7vntrGAKEueDu
-         5YQAaaedioLHMlh9un1hwwxfedC4bFIK1vz61szXnq/qVNAvFd4KRIxD9GJvJ9ifus5M
-         z1+lnnzuDZdt8mo8EQs1reJaEGCC2YNdsAwnhHHgVM5KIPq8G1JMS8OAiHaGDcUoG2/J
-         piV+CWI24a5pQDkeccPhMWciqDlWUfONmTNGOcQByUu8vrJcnkeBi9LRk1uLHmy+Lu1b
-         yf9bz2npIU1dZRSP4AbzaD1FI9zvh5o6Z/0mbEmYse+YgrPV5DIlO0DQObmjdwRGsL7P
-         lHKg==
-X-Gm-Message-State: AOAM531IIjKfTw636KKgEdTcoiMKGNpWKySz4VIxukXMIUIDhvspz9uv
-        mA6huFZI9RXSaAhS6xwTFA==
-X-Google-Smtp-Source: ABdhPJzCaOetxDXjKEw1eehKByezoxHask+w4Lv2EHhMvurr3FrCIGFjv9FkOtkcIDUctkQBkf71mA==
-X-Received: by 2002:a05:6830:922:: with SMTP id v34mr439300ott.240.1633554836780;
-        Wed, 06 Oct 2021 14:13:56 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id z24sm4135433oic.26.2021.10.06.14.13.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Oct 2021 14:13:56 -0700 (PDT)
-Received: (nullmailer pid 2886228 invoked by uid 1000);
-        Wed, 06 Oct 2021 21:13:54 -0000
-Date:   Wed, 6 Oct 2021 16:13:54 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Johan Jonker <jbx6244@gmail.com>
-Cc:     daniel.lezcano@linaro.org, devicetree@vger.kernel.org,
-        p.zabel@pengutronix.de, amitk@kernel.org, robh+dt@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        rui.zhang@intel.com, heiko@sntech.de, linux-pm@vger.kernel.org,
-        linux-rockchip@lists.infradead.org
-Subject: Re: [PATCH v2 1/4] dt-bindings: thermal: allow more resets for tsadc
- node in rockchip-thermal.yaml
-Message-ID: <YV4RkjIEMUKlWK4z@robh.at.kernel.org>
-References: <20210930110517.14323-1-jbx6244@gmail.com>
+        id S239584AbhJFVMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 17:12:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58848 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239541AbhJFVMN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 17:12:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5EAD161186;
+        Wed,  6 Oct 2021 21:10:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633554620;
+        bh=AyfAidFc+fPiL3PyHanqQrP9fWf4NqcPnlfUg6FWUhs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=C6XPKGM1CtkABd/h4ITyoGAaxddPCnmf/0qbLgKXq0JQp5sGq//mqPgAJn4Q4TspW
+         o/4eIJGDL5L28wNHzd2I4sK1xITpK45UMn/zttKU73oE6CTJkQQINsZ3z730CnwNg0
+         Oxu5ZEMu8nfyeqoZN+keXuNDGFMWpIPxnwuXHaQZXjYIbsROdTbDdKk0jq9qd2mYZP
+         DNBse0yMaZxRw4+i324damckRxT6FLzQeayTN628HmErsVjQu6iVdx3HqMSXMtDz4L
+         gqwESumB1A1XHW8yvshpqd2fgrUrZpPMZyJcLxWJIpC512jOEUlfpVpGY5+bB+5nJ5
+         LP9Nijur0XiWw==
+Date:   Wed, 6 Oct 2021 16:14:26 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Daniel Bristot de Oliveira <bristot@kernel.org>,
+        linux-kernel@vger.kernel.org, Jann Horn <jannh@google.com>
+Subject: Re: [PATCH][next] ftrace: Fix -Wcast-function-type warnings on
+ powerpc64
+Message-ID: <20211006211426.GA916113@embeddedor>
+References: <20211005053922.GA702049@embeddedor>
+ <20211005111714.18ebea2b@gandalf.local.home>
+ <20211005161812.GA768055@embeddedor>
+ <20211005123522.244281e6@gandalf.local.home>
+ <20211005165027.GA797862@embeddedor>
+ <20211005150807.03da5e54@gandalf.local.home>
+ <20211005193557.GA881195@embeddedor>
+ <20211005200935.2429ec2c@rorschach.local.home>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210930110517.14323-1-jbx6244@gmail.com>
+In-Reply-To: <20211005200935.2429ec2c@rorschach.local.home>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 30 Sep 2021 13:05:14 +0200, Johan Jonker wrote:
-> The tsadc node in rk356x.dtsi has more resets defined then currently
-> allowed by rockchip-thermal.yaml, so fix that in the documentation.
-> The driver now uses the devm_reset_control_array_get() function,
-> so reset-names is no longer required, but keep it for legacy reasons.
+On Tue, Oct 05, 2021 at 08:09:35PM -0400, Steven Rostedt wrote:
+> On Tue, 5 Oct 2021 14:35:57 -0500
+> "Gustavo A. R. Silva" <gustavoars@kernel.org> wrote:
 > 
-> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
-> ---
+> > On Tue, Oct 05, 2021 at 03:08:07PM -0400, Steven Rostedt wrote:
+> > [..]
+> > > Or did you not remove your patch first?  
+> > 
+> > Yep; that was the problem. 
+> > 
+> > I now applied it to a clean tree and the warnings went away.
+> > 
+> > However, I'm a bit concerned about the following Jann's comments:
 > 
-> Changed V2:
->   Remove deprecated
-> ---
->  .../devicetree/bindings/thermal/rockchip-thermal.yaml      | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
+> I should have replied back then, but I'll do that now (and added Jann
+> to the CC) 
 > 
+> > 
+> > "the real issue here is that ftrace_func_t is defined as a fixed
+> > type, but actually has different types depending on the architecture?
+> > If so, it might be cleaner to define ftrace_func_t differently
+> > depending on architecture, or something like that?"[1]
+> 
+> It's not dependent on the architecture. It's dependent on what the
+> architecture has implemented. There's nothing limiting the arch to use
+> the normal method, except that nobody implemented the updates.
+> 
+> As I changed the core API, it affected the architectures, and since I
+> don't know how to update all the architectures that use that API, and
+> do not have the hardware to test it, I made it so architectures can
+> slowly be updated when their maintainers get time to. This was years
+> ago, and not much has been done.
+> 
+> > 
+> > "Would it not be possible to have two function types (#define'd as the
+> > same if ARCH_SUPPORTS_FTRACE_OPS), and then ensure that ftrace_func_t
+> > is only used as ftrace_asm_func_t if ARCH_SUPPORTS_FTRACE_OPS?"[2]
+> > 
+> > "Essentially my idea here is to take the high-level rule "you can only
+> > directly call ftrace_func_t-typed functions from assembly if
+> > ARCH_SUPPORTS_FTRACE_OPS", and encode it in the type system. And then
+> > the compiler won't complain as long as we make sure that we never cast
+> > between the two types under ARCH_SUPPORTS_FTRACE_OPS==0."[3]
+> > 
+> > So, is this linker approach really a good solution to this problem? :)
+> > 
+> > What's the main problem with what Jann suggests?
+> 
+> The main issue is I want no more #ifdef's in the main code. There's too
+> many already and it makes it difficult to maintain. I want to get rid
+> of them, not add more. So anything that adds more #ifdef's to the main
+> code, I will NACK.
+> 
+> Which I guess leaves us with either the linker trick, or having all
+> the archs get updated to support the latest ftrace features, and we can
+> remove the current #ifdefs.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+OK. Are you going to apply your patch any time soon? So, I can go and
+enable -Wcast-function-type in my -next tree. :)
+
+Thanks
+--
+Gustavo
