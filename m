@@ -2,711 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17BFE423BF5
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 13:07:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F32E1423BFE
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 13:08:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238197AbhJFLJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 07:09:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46508 "EHLO
+        id S238218AbhJFLKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 07:10:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237931AbhJFLJA (ORCPT
+        with ESMTP id S237952AbhJFLKU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 07:09:00 -0400
-Received: from mail-vs1-xe31.google.com (mail-vs1-xe31.google.com [IPv6:2607:f8b0:4864:20::e31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3DB3C061749;
-        Wed,  6 Oct 2021 04:07:07 -0700 (PDT)
-Received: by mail-vs1-xe31.google.com with SMTP id p18so2345063vsu.7;
-        Wed, 06 Oct 2021 04:07:07 -0700 (PDT)
+        Wed, 6 Oct 2021 07:10:20 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 094FCC061749
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 04:08:28 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id k7so7537401wrd.13
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 04:08:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lbji8tAPNKVbj+4YUvjOTVECNllLMJpJsoiDoHovQ04=;
-        b=XgynzjMA1HkCFpY56mFziNBru6k7iP3UXzQgt4g62e/b4AZf5ZoH3zcrkerVPA1Dv9
-         T6yWse7LrdKzcdXxJKgwxoI9qHd+x3yqat9rJ5b2PIkkpejtLavhXld5wFGCrvclHg2r
-         eNw9XjldfkemJ6b6msJPqlZ6lmZC7NfmpVS63P2K9xtFxJ+sSpaQh7vbkAILoJLTMYu9
-         g1TolzB0S9IfgEsoK+2vW+gzKEslmorWnqhfSjVlPyObk6V39OCLK+QWmq1jfxIql/j4
-         hkUq9aFdclyL1wayicvtj0xILwKyyML3v56md6r1bvEmgg7XpTZd7wMG//cdRrC/mDuU
-         qiPQ==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=NPYO1x8t8q66IiDTyVlrAaxm7/2JWwiYPINC/gUajk0=;
+        b=teGOKFdDhDsSTSXzlKK/3F6rCmpFIHzypmyst45m2zsOMJvdqVwxTBuWIpItl00H9B
+         YdNO9ZlryPCTJ+LAB4/bOYdPAzARCQmx5BEYYbk1xsVHSy84eL9lW6PoLTzJhC6G/ylZ
+         fStW2ibbzcM69WecqB69/rlps535APGOs+loGZeZoOvJ1qInElCX2tVpMZEOS2Fdn8X/
+         5nDlEtdHaC0HwT1hmF4sWLznBxPkafMSE96WIWxWkIKK08cvN15zfVxQkh9LyT/RF+Qr
+         8u0cJNnX8pVEoTfLTBHoCg6KNeXPh+9a/bCmB1Xs8mRH+xFPReNqrJcbEX6qFrrwksp5
+         39lw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lbji8tAPNKVbj+4YUvjOTVECNllLMJpJsoiDoHovQ04=;
-        b=kYH61c95vErvTdLLCiUC0vGj3ueII63VIvQ++tNWQQ51jEBSibp3Gq/9Ifi29x5BsQ
-         cySp+0EM6tiVs3lZP7k8LRg0aSJhW5ie8C7LWyKwMA2IpmhdSBTbna477hQCmyswd++P
-         5YQNg4UlLDLUOJWlt2kA1RSrwvK3WOBQNQNe9cKLk8eqVn4f/lojgYIQrLn8Rvet5JLo
-         kbM6v8R4mN1QkTyT2evnDabLTyAJxmakWmhgv2N+u+NqC20KX99FiudIp5lMpUqXRS64
-         UhGS66qL/Dq2G7/c82K1tLVv/qzD0VQ9/PiOrb9Im4L/yUcgc8Kff3mqN3XGm3D9/kSd
-         LzJw==
-X-Gm-Message-State: AOAM533JYTMZ85lKq5WzrQ/ICUN/Sh/sm8uGgdZMWCEacO/MhQiJrd2H
-        oj2x7ETRk9K5ru+hxnhBZAgH2pIgDMoSn4OSRMvEthM=
-X-Google-Smtp-Source: ABdhPJwkFvlnhlg3mLeEn8yKy0HH0z84qEGWOkEvNykYkn5q92a3kK4Uy2k5iib8yYrOZ+/bwiUBfs/WfDR3sLbsDt8=
-X-Received: by 2002:a67:ca1c:: with SMTP id z28mr22830644vsk.40.1633518426789;
- Wed, 06 Oct 2021 04:07:06 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=NPYO1x8t8q66IiDTyVlrAaxm7/2JWwiYPINC/gUajk0=;
+        b=clLHAi74ADakw5XqlqRKBThaKoMKeX0Vkhny3p00YvFGybe8+nHl18kTxLqqRZmnZQ
+         oGRVcrTpdNuauFXjKU2zQgYRirei3upRYjqXzD5eQBuQFfPjQEI87yE05Nvt4SHqEnLB
+         nXcAlwWpDOGGZIHaArrU+I3jcO2kiicvWMTxkomYA3k+V0n8WD/CyHT44hm/NHWx8gEY
+         URoSxEukuVQiMgtxYPO+mWCMNSwWsc7cKgmHX8vtRwCcNE0CO4cox3F2oPsBNLmkIgJP
+         gYsD7XgX+SXMMKn7K3xEEcTEBwLBV0AwFwMGeRzLFGVbCZXZWgXv2pn3RQKOByg1ZTYw
+         lc3w==
+X-Gm-Message-State: AOAM532pOi7aexSuYIAAj2p+XiQ054uiwv4N1fveToRRCVjRKdVZDr+J
+        z0lSKkoHKniLhN7xUqHbqXi2A7sOSuARzg==
+X-Google-Smtp-Source: ABdhPJzN31a8fb3hArFNzP0zK4gXJkh4yXbULm107s+BMWZSrv4Tlus6Q1F6cUhoA54qewVUya/IyA==
+X-Received: by 2002:a1c:4e0f:: with SMTP id g15mr9142233wmh.74.1633518496285;
+        Wed, 06 Oct 2021 04:08:16 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:278:1f59:2992:87fe? ([2a01:e34:ed2f:f020:278:1f59:2992:87fe])
+        by smtp.googlemail.com with ESMTPSA id r9sm20587793wru.2.2021.10.06.04.08.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Oct 2021 04:08:15 -0700 (PDT)
+Subject: Re: [PATCH v2] thermal: Fix a NULL pointer dereference
+To:     Subbaraman Narayanamurthy <quic_subbaram@quicinc.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Amit Kucheria <amitk@kernel.org>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        David Collins <quic_collinsd@quicinc.com>,
+        Manaf Meethalavalappu Pallikunhi <manafm@codeaurora.org>,
+        Ram Chandrasekar <rkumbako@codeaurora.org>,
+        stable@vger.kernel.org
+References: <1631041289-11804-1-git-send-email-quic_subbaram@quicinc.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <003252f2-510f-e9ea-0032-6034f26aad11@linaro.org>
+Date:   Wed, 6 Oct 2021 13:08:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <CALjTZvbzYfBuLB+H=fj2J+9=DxjQ2Uqcy0if_PvmJ-nU-qEgkg@mail.gmail.com>
- <87ee8yquyi.wl-maz@kernel.org>
-In-Reply-To: <87ee8yquyi.wl-maz@kernel.org>
-From:   Rui Salvaterra <rsalvaterra@gmail.com>
-Date:   Wed, 6 Oct 2021 12:06:55 +0100
-Message-ID: <CALjTZvakX8Hz+ow3UeAuQiicVXtbkXEDFnHU-+n8Ts6i1LRyHQ@mail.gmail.com>
-Subject: Re: [REGRESSION][BISECTED] 5.15-rc1: Broken AHCI on NVIDIA ION (MCP79)
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     tglx@linutronix.de, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1631041289-11804-1-git-send-email-quic_subbaram@quicinc.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Marc,
+On 07/09/2021 21:01, Subbaraman Narayanamurthy wrote:
+> of_parse_thermal_zones() parses the thermal-zones node and registers a
+> thermal_zone device for each subnode. However, if a thermal zone is
+> consuming a thermal sensor and that thermal sensor device hasn't probed
+> yet, an attempt to set trip_point_*_temp for that thermal zone device
+> can cause a NULL pointer dereference. Fix it.
+> 
+>  console:/sys/class/thermal/thermal_zone87 # echo 120000 > trip_point_0_temp
+>  ...
+>  Unable to handle kernel NULL pointer dereference at virtual address 0000000000000020
 
-On Wed, 6 Oct 2021 at 12:00, Marc Zyngier <maz@kernel.org> wrote:
->
-> Could you please give more context for this error? I assume that this
-> is some ATA device probing, but this is unclear at best. A full dmesg
-> definitely help.
+I'm still not convinced by the changes.
 
-I'd love to have it, but I don't have a serial console to get it from.
-I can take a photo, of course, but there's no stack dump.
+Could please tell the commit-id where this is happening and give the
+procedure to reproduce the bug ?
 
-> 'lspci -vvnn' would also be useful to understand what the device wants
-> in terms of PCI configuration.
 
-Sure thing, here it goes (complete dump):
+>  ...
+>  Call trace:
+>   of_thermal_set_trip_temp+0x40/0xc4
+>   trip_point_temp_store+0xc0/0x1dc
+>   dev_attr_store+0x38/0x88
+>   sysfs_kf_write+0x64/0xc0
+>   kernfs_fop_write_iter+0x108/0x1d0
+>   vfs_write+0x2f4/0x368
+>   ksys_write+0x7c/0xec
+>   __arm64_sys_write+0x20/0x30
+>   el0_svc_common.llvm.7279915941325364641+0xbc/0x1bc
+>   do_el0_svc+0x28/0xa0
+>   el0_svc+0x14/0x24
+>   el0_sync_handler+0x88/0xec
+>   el0_sync+0x1c0/0x200
+> 
+> While at it, fix the possible NULL pointer dereference in other
+> functions as well: of_thermal_get_temp(), of_thermal_set_emul_temp(),
+> of_thermal_get_trend().
+> 
+> Cc: stable@vger.kernel.org
+> Suggested-by: David Collins <quic_collinsd@quicinc.com>
+> Signed-off-by: Subbaraman Narayanamurthy <quic_subbaram@quicinc.com>
+> ---
+> Changes for v2:
+> - Added checks in of_thermal_get_temp(), of_thermal_set_emul_temp(), of_thermal_get_trend().
+> 
+>  drivers/thermal/thermal_of.c | 9 ++++++---
+>  1 file changed, 6 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/thermal/thermal_of.c b/drivers/thermal/thermal_of.c
+> index 6379f26..9233f7e 100644
+> --- a/drivers/thermal/thermal_of.c
+> +++ b/drivers/thermal/thermal_of.c
+> @@ -89,7 +89,7 @@ static int of_thermal_get_temp(struct thermal_zone_device *tz,
+>  {
+>  	struct __thermal_zone *data = tz->devdata;
+>  
+> -	if (!data->ops->get_temp)
+> +	if (!data->ops || !data->ops->get_temp)
+>  		return -EINVAL;
+>  
+>  	return data->ops->get_temp(data->sensor_data, temp);
+> @@ -186,6 +186,9 @@ static int of_thermal_set_emul_temp(struct thermal_zone_device *tz,
+>  {
+>  	struct __thermal_zone *data = tz->devdata;
+>  
+> +	if (!data->ops || !data->ops->set_emul_temp)
+> +		return -EINVAL;
+> +
+>  	return data->ops->set_emul_temp(data->sensor_data, temp);
+>  }
+>  
+> @@ -194,7 +197,7 @@ static int of_thermal_get_trend(struct thermal_zone_device *tz, int trip,
+>  {
+>  	struct __thermal_zone *data = tz->devdata;
+>  
+> -	if (!data->ops->get_trend)
+> +	if (!data->ops || !data->ops->get_trend)
+>  		return -EINVAL;
+>  
+>  	return data->ops->get_trend(data->sensor_data, trip, trend);
+> @@ -301,7 +304,7 @@ static int of_thermal_set_trip_temp(struct thermal_zone_device *tz, int trip,
+>  	if (trip >= data->ntrips || trip < 0)
+>  		return -EDOM;
+>  
+> -	if (data->ops->set_trip_temp) {
+> +	if (data->ops && data->ops->set_trip_temp) {
+>  		int ret;
+>  
+>  		ret = data->ops->set_trip_temp(data->sensor_data, trip, temp);
+> 
 
-00:00.0 Host bridge [0600]: NVIDIA Corporation MCP79 Host Bridge
-[10de:0a82] (rev b1)
-    Subsystem: NVIDIA Corporation MCP79 Host Bridge [10de:cb79]
-    Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B- DisINTx-
-    Status: Cap- 66MHz+ UDF- FastB2B+ ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR- INTx-
-    Latency: 0
 
-00:00.1 RAM memory [0500]: NVIDIA Corporation MCP79 Memory Controller
-[10de:0a88] (rev b1)
-    Subsystem: NVIDIA Corporation MCP79 Memory Controller [10de:cb79]
-    Control: I/O- Mem- BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B- DisINTx-
-    Status: Cap- 66MHz+ UDF- FastB2B+ ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR- INTx-
-    Latency: 0
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
-00:03.0 ISA bridge [0601]: NVIDIA Corporation MCP79 LPC Bridge
-[10de:0aad] (rev b2)
-    Subsystem: ZOTAC International (MCO) Ltd. MCP79 LPC Bridge [19da:a108]
-    Control: I/O+ Mem+ BusMaster+ SpecCycle+ MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B- DisINTx-
-    Status: Cap- 66MHz+ UDF- FastB2B+ ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR- INTx-
-    Latency: 0
-    Region 0: I/O ports at 4f00 [size=256]
-
-00:03.1 RAM memory [0500]: NVIDIA Corporation MCP79 Memory Controller
-[10de:0aa4] (rev b1)
-    Subsystem: ZOTAC International (MCO) Ltd. MCP79 Memory Controller
-[19da:a108]
-    Control: I/O- Mem- BusMaster- SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B- DisINTx+
-    Status: Cap- 66MHz+ UDF- FastB2B+ ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR- INTx-
-
-00:03.2 SMBus [0c05]: NVIDIA Corporation MCP79 SMBus [10de:0aa2] (rev b1)
-    Subsystem: ZOTAC International (MCO) Ltd. MCP79 SMBus [19da:a108]
-    Control: I/O+ Mem- BusMaster- SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B- DisINTx-
-    Status: Cap+ 66MHz+ UDF- FastB2B+ ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR- INTx-
-    Interrupt: pin A routed to IRQ 10
-    Region 0: I/O ports at 4900 [size=64]
-    Region 4: I/O ports at 4d00 [size=64]
-    Region 5: I/O ports at 4e00 [size=64]
-    Capabilities: [44] Power Management version 2
-        Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA
-PME(D0-,D1-,D2-,D3hot+,D3cold+)
-        Status: D0 NoSoftRst- PME-Enable- DSel=0 DScale=0 PME-
-
-00:03.3 RAM memory [0500]: NVIDIA Corporation MCP79 Memory Controller
-[10de:0a89] (rev b1)
-    Subsystem: NVIDIA Corporation MCP79 Memory Controller [10de:cb79]
-    Control: I/O- Mem- BusMaster- SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B- DisINTx-
-    Status: Cap- 66MHz+ UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR- INTx-
-
-00:03.5 Co-processor [0b40]: NVIDIA Corporation MCP79 Co-processor
-[10de:0aa3] (rev b1)
-    Subsystem: ZOTAC International (MCO) Ltd. MCP79 Co-processor [19da:a108]
-    Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B- DisINTx-
-    Status: Cap- 66MHz+ UDF- FastB2B+ ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR- INTx-
-    Latency: 0 (750ns min, 250ns max)
-    Interrupt: pin B routed to IRQ 11
-    Region 0: Memory at fae80000 (32-bit, non-prefetchable) [size=512K]
-
-00:04.0 USB controller [0c03]: NVIDIA Corporation MCP79 OHCI USB 1.1
-Controller [10de:0aa5] (rev b1) (prog-if 10 [OHCI])
-    Subsystem: ZOTAC International (MCO) Ltd. MCP79 OHCI USB 1.1
-Controller [19da:a108]
-    Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B- DisINTx-
-    Status: Cap+ 66MHz+ UDF- FastB2B+ ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR- INTx-
-    Latency: 0 (750ns min, 250ns max)
-    Interrupt: pin A routed to IRQ 23
-    Region 0: Memory at fae7f000 (32-bit, non-prefetchable) [size=4K]
-    Capabilities: [44] Power Management version 2
-        Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA
-PME(D0+,D1+,D2+,D3hot+,D3cold+)
-        Status: D0 NoSoftRst- PME-Enable- DSel=0 DScale=0 PME-
-    Kernel driver in use: ohci-pci
-
-00:04.1 USB controller [0c03]: NVIDIA Corporation MCP79 EHCI USB 2.0
-Controller [10de:0aa6] (rev b1) (prog-if 20 [EHCI])
-    Subsystem: ZOTAC International (MCO) Ltd. MCP79 EHCI USB 2.0
-Controller [19da:a108]
-    Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B- DisINTx-
-    Status: Cap+ 66MHz+ UDF- FastB2B+ ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR- INTx-
-    Latency: 0 (750ns min, 250ns max)
-    Interrupt: pin B routed to IRQ 22
-    Region 0: Memory at fae7ec00 (32-bit, non-prefetchable) [size=256]
-    Capabilities: [44] Debug port: BAR=1 offset=00a0
-    Capabilities: [80] Power Management version 2
-        Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA
-PME(D0+,D1+,D2+,D3hot+,D3cold+)
-        Status: D0 NoSoftRst- PME-Enable- DSel=0 DScale=0 PME-
-    Kernel driver in use: ehci-pci
-
-00:06.0 USB controller [0c03]: NVIDIA Corporation MCP79 OHCI USB 1.1
-Controller [10de:0aa7] (rev b1) (prog-if 10 [OHCI])
-    Subsystem: ZOTAC International (MCO) Ltd. MCP79 OHCI USB 1.1
-Controller [19da:a108]
-    Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B- DisINTx-
-    Status: Cap+ 66MHz+ UDF- FastB2B+ ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR- INTx-
-    Latency: 0 (750ns min, 250ns max)
-    Interrupt: pin A routed to IRQ 21
-    Region 0: Memory at fae7d000 (32-bit, non-prefetchable) [size=4K]
-    Capabilities: [44] Power Management version 2
-        Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA
-PME(D0+,D1+,D2+,D3hot+,D3cold+)
-        Status: D0 NoSoftRst- PME-Enable- DSel=0 DScale=0 PME-
-    Kernel driver in use: ohci-pci
-
-00:06.1 USB controller [0c03]: NVIDIA Corporation MCP79 EHCI USB 2.0
-Controller [10de:0aa9] (rev b1) (prog-if 20 [EHCI])
-    Subsystem: ZOTAC International (MCO) Ltd. MCP79 EHCI USB 2.0
-Controller [19da:a108]
-    Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B- DisINTx-
-    Status: Cap+ 66MHz+ UDF- FastB2B+ ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR- INTx-
-    Latency: 0 (750ns min, 250ns max)
-    Interrupt: pin B routed to IRQ 20
-    Region 0: Memory at fae7e800 (32-bit, non-prefetchable) [size=256]
-    Capabilities: [44] Debug port: BAR=1 offset=00a0
-    Capabilities: [80] Power Management version 2
-        Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA
-PME(D0+,D1+,D2+,D3hot+,D3cold+)
-        Status: D0 NoSoftRst- PME-Enable- DSel=0 DScale=0 PME-
-    Kernel driver in use: ehci-pci
-
-00:08.0 Audio device [0403]: NVIDIA Corporation MCP79 High Definition
-Audio [10de:0ac0] (rev b1)
-    Subsystem: PC Partner Limited / Sapphire Technology MCP79 High
-Definition Audio [174b:437b]
-    Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B- DisINTx-
-    Status: Cap+ 66MHz+ UDF- FastB2B+ ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR- INTx-
-    Latency: 0 (500ns min, 1250ns max)
-    Interrupt: pin A routed to IRQ 23
-    Region 0: Memory at fae78000 (32-bit, non-prefetchable) [size=16K]
-    Capabilities: [44] Power Management version 2
-        Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA
-PME(D0-,D1-,D2-,D3hot+,D3cold+)
-        Status: D0 NoSoftRst- PME-Enable- DSel=0 DScale=0 PME-
-    Kernel driver in use: snd_hda_intel
-
-00:09.0 PCI bridge [0604]: NVIDIA Corporation MCP79 PCI Bridge
-[10de:0aab] (rev b1) (prog-if 01 [Subtractive decode])
-    Control: I/O- Mem- BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B- DisINTx-
-    Status: Cap+ 66MHz+ UDF- FastB2B+ ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR- INTx-
-    Latency: 0
-    Bus: primary=00, secondary=01, subordinate=01, sec-latency=248
-    I/O behind bridge: [disabled]
-    Memory behind bridge: [disabled]
-    Prefetchable memory behind bridge: [disabled]
-    Secondary status: 66MHz- FastB2B+ ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort+ <SERR- <PERR-
-    BridgeCtl: Parity- SERR+ NoISA- VGA- VGA16- MAbort- >Reset- FastB2B-
-        PriDiscTmr- SecDiscTmr+ DiscTmrStat- DiscTmrSERREn-
-    Capabilities: [b8] Subsystem: ZOTAC International (MCO) Ltd. MCP79
-PCI Bridge [19da:a108]
-
-00:0a.0 Ethernet controller [0200]: NVIDIA Corporation MCP79 Ethernet
-[10de:0ab0] (rev b1)
-    Subsystem: ZOTAC International (MCO) Ltd. MCP79 Ethernet [19da:a108]
-    Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B- DisINTx-
-    Status: Cap+ 66MHz+ UDF- FastB2B+ ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR- INTx-
-    Latency: 0 (250ns min, 5000ns max)
-    Interrupt: pin A routed to IRQ 20
-    Region 0: Memory at fae7c000 (32-bit, non-prefetchable) [size=4K]
-    Region 1: I/O ports at d080 [size=8]
-    Region 2: Memory at fae7e400 (32-bit, non-prefetchable) [size=256]
-    Region 3: Memory at fae7e000 (32-bit, non-prefetchable) [size=16]
-    Capabilities: [44] Power Management version 2
-        Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA
-PME(D0+,D1+,D2+,D3hot+,D3cold+)
-        Status: D0 NoSoftRst- PME-Enable+ DSel=0 DScale=0 PME-
-    Kernel driver in use: forcedeth
-
-00:0b.0 SATA controller [0106]: NVIDIA Corporation MCP79 AHCI
-Controller [10de:0ab8] (rev b1) (prog-if 01 [AHCI 1.0])
-    Subsystem: ZOTAC International (MCO) Ltd. MCP79 AHCI Controller [19da:a108]
-    Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B- DisINTx+
-    Status: Cap+ 66MHz+ UDF- FastB2B+ ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR- INTx-
-    Latency: 0 (750ns min, 250ns max)
-    Interrupt: pin A routed to IRQ 30
-    Region 0: I/O ports at d000 [size=8]
-    Region 1: I/O ports at cc00 [size=4]
-    Region 2: I/O ports at c880 [size=8]
-    Region 3: I/O ports at c800 [size=4]
-    Region 4: I/O ports at c480 [size=16]
-    Region 5: Memory at fae76000 (32-bit, non-prefetchable) [size=8K]
-    Capabilities: [44] Power Management version 2
-        Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA
-PME(D0-,D1-,D2-,D3hot-,D3cold-)
-        Status: D0 NoSoftRst- PME-Enable- DSel=0 DScale=0 PME-
-    Capabilities: [8c] SATA HBA v1.0 InCfgSpace
-    Capabilities: [b0] MSI: Enable+ Count=1/8 Maskable- 64bit+
-        Address: 00000000fee02004  Data: 0026
-    Kernel driver in use: ahci
-
-00:0c.0 PCI bridge [0604]: NVIDIA Corporation MCP79 PCI Express Bridge
-[10de:0ac4] (rev b1) (prog-if 00 [Normal decode])
-    Control: I/O- Mem- BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B- DisINTx+
-    Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR- INTx-
-    Latency: 0, Cache Line Size: 64 bytes
-    Interrupt: pin A routed to IRQ 24
-    Bus: primary=00, secondary=02, subordinate=02, sec-latency=0
-    I/O behind bridge: [disabled]
-    Memory behind bridge: [disabled]
-    Prefetchable memory behind bridge: [disabled]
-    Secondary status: 66MHz- FastB2B- ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- <SERR- <PERR-
-    BridgeCtl: Parity- SERR+ NoISA- VGA- VGA16- MAbort- >Reset- FastB2B-
-        PriDiscTmr- SecDiscTmr- DiscTmrStat- DiscTmrSERREn-
-    Capabilities: [40] Subsystem: ZOTAC International (MCO) Ltd. MCP79
-PCI Express Bridge [19da:a108]
-    Capabilities: [48] Power Management version 3
-        Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA
-PME(D0+,D1+,D2+,D3hot+,D3cold+)
-        Status: D0 NoSoftRst- PME-Enable- DSel=0 DScale=0 PME-
-    Capabilities: [50] MSI: Enable+ Count=1/2 Maskable- 64bit+
-        Address: 00000000fee04004  Data: 0021
-    Capabilities: [80] Express (v2) Root Port (Slot+), MSI 00
-        DevCap:    MaxPayload 256 bytes, PhantFunc 0
-            ExtTag+ RBE+
-        DevCtl:    CorrErr- NonFatalErr- FatalErr- UnsupReq-
-            RlxdOrd+ ExtTag+ PhantFunc- AuxPwr- NoSnoop-
-            MaxPayload 128 bytes, MaxReadReq 512 bytes
-        DevSta:    CorrErr- NonFatalErr- FatalErr- UnsupReq- AuxPwr- TransPend-
-        LnkCap:    Port #0, Speed 2.5GT/s, Width x16, ASPM L0s L1,
-Exit Latency L0s <512ns, L1 <4us
-            ClockPM- Surprise- LLActRep+ BwNot+ ASPMOptComp-
-        LnkCtl:    ASPM Disabled; RCB 64 bytes, Disabled- CommClk+
-            ExtSynch- ClockPM- AutWidDis- BWInt- AutBWInt-
-        LnkSta:    Speed 2.5GT/s (ok), Width x16 (ok)
-            TrErr- Train- SlotClk+ DLActive- BWMgmt- ABWMgmt-
-        SltCap:    AttnBtn- PwrCtrl- MRL- AttnInd- PwrInd- HotPlug- Surprise-
-            Slot #0, PowerLimit 0.000W; Interlock- NoCompl-
-        SltCtl:    Enable: AttnBtn- PwrFlt- MRL- PresDet- CmdCplt-
-HPIrq+ LinkChg+
-            Control: AttnInd Off, PwrInd On, Power- Interlock-
-        SltSta:    Status: AttnBtn- PowerFlt- MRL- CmdCplt- PresDet- Interlock-
-            Changed: MRL- PresDet- LinkState-
-        RootCap: CRSVisible-
-        RootCtl: ErrCorrectable- ErrNon-Fatal- ErrFatal- PMEIntEna- CRSVisible-
-        RootSta: PME ReqID 0000, PMEStatus- PMEPending-
-        DevCap2: Completion Timeout: Range AB, TimeoutDis+ NROPrPrP- LTR-
-             10BitTagComp- 10BitTagReq- OBFF Not Supported, ExtFmt- EETLPPrefix-
-             EmergencyPowerReduction Not Supported, EmergencyPowerReductionInit-
-             FRS- LN System CLS Not Supported, TPHComp- ExtTPHComp- ARIFwd-
-             AtomicOpsCap: Routing- 32bit- 64bit- 128bitCAS-
-        DevCtl2: Completion Timeout: 65ms to 210ms, TimeoutDis- LTR-
-OBFF Disabled, ARIFwd-
-             AtomicOpsCtl: ReqEn- EgressBlck-
-        LnkCtl2: Target Link Speed: 2.5GT/s, EnterCompliance- SpeedDis-
-             Transmit Margin: Normal Operating Range,
-EnterModifiedCompliance- ComplianceSOS-
-             Compliance De-emphasis: -6dB
-        LnkSta2: Current De-emphasis Level: -3.5dB,
-EqualizationComplete- EqualizationPhase1-
-             EqualizationPhase2- EqualizationPhase3- LinkEqualizationRequest-
-             Retimer- 2Retimers- CrosslinkRes: unsupported
-    Kernel driver in use: pcieport
-
-00:10.0 PCI bridge [0604]: NVIDIA Corporation MCP79 PCI Express Bridge
-[10de:0aa0] (rev b1) (prog-if 00 [Normal decode])
-    Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B- DisINTx-
-    Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR- INTx-
-    Latency: 0, Cache Line Size: 64 bytes
-    Bus: primary=00, secondary=03, subordinate=03, sec-latency=0
-    I/O behind bridge: 0000e000-0000efff [size=4K]
-    Memory behind bridge: faf00000-fbffffff [size=17M]
-    Prefetchable memory behind bridge:
-00000000e0000000-00000000f9ffffff [size=416M]
-    Secondary status: 66MHz- FastB2B- ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort+ <SERR- <PERR-
-    BridgeCtl: Parity- SERR+ NoISA- VGA+ VGA16+ MAbort- >Reset- FastB2B-
-        PriDiscTmr- SecDiscTmr- DiscTmrStat- DiscTmrSERREn-
-    Capabilities: [40] Subsystem: ZOTAC International (MCO) Ltd. MCP79
-PCI Express Bridge [19da:a108]
-    Capabilities: [48] Power Management version 2
-        Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA
-PME(D0+,D1+,D2+,D3hot+,D3cold+)
-        Status: D0 NoSoftRst- PME-Enable- DSel=0 DScale=0 PME-
-    Capabilities: [50] MSI: Enable- Count=1/2 Maskable- 64bit+
-        Address: 0000000000000000  Data: 0000
-
-00:15.0 PCI bridge [0604]: NVIDIA Corporation MCP79 PCI Express Bridge
-[10de:0ac6] (rev b1) (prog-if 00 [Normal decode])
-    Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B- DisINTx+
-    Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR- INTx-
-    Latency: 0, Cache Line Size: 64 bytes
-    Interrupt: pin A routed to IRQ 25
-    Bus: primary=00, secondary=04, subordinate=04, sec-latency=0
-    I/O behind bridge: [disabled]
-    Memory behind bridge: feb00000-febfffff [size=1M]
-    Prefetchable memory behind bridge: [disabled]
-    Secondary status: 66MHz- FastB2B- ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort+ <SERR- <PERR-
-    BridgeCtl: Parity- SERR+ NoISA- VGA- VGA16- MAbort- >Reset- FastB2B-
-        PriDiscTmr- SecDiscTmr- DiscTmrStat- DiscTmrSERREn-
-    Capabilities: [40] Subsystem: ZOTAC International (MCO) Ltd. MCP79
-PCI Express Bridge [19da:a108]
-    Capabilities: [48] Power Management version 3
-        Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA
-PME(D0+,D1+,D2+,D3hot+,D3cold+)
-        Status: D0 NoSoftRst- PME-Enable- DSel=0 DScale=0 PME-
-    Capabilities: [50] MSI: Enable+ Count=1/2 Maskable- 64bit+
-        Address: 00000000fee08004  Data: 0021
-    Capabilities: [80] Express (v2) Root Port (Slot+), MSI 00
-        DevCap:    MaxPayload 256 bytes, PhantFunc 0
-            ExtTag+ RBE+
-        DevCtl:    CorrErr- NonFatalErr- FatalErr- UnsupReq-
-            RlxdOrd+ ExtTag+ PhantFunc- AuxPwr- NoSnoop-
-            MaxPayload 128 bytes, MaxReadReq 512 bytes
-        DevSta:    CorrErr- NonFatalErr- FatalErr- UnsupReq- AuxPwr- TransPend-
-        LnkCap:    Port #3, Speed 2.5GT/s, Width x1, ASPM L0s L1, Exit
-Latency L0s <512ns, L1 <4us
-            ClockPM- Surprise- LLActRep+ BwNot+ ASPMOptComp-
-        LnkCtl:    ASPM Disabled; RCB 64 bytes, Disabled- CommClk+
-            ExtSynch- ClockPM- AutWidDis- BWInt- AutBWInt-
-        LnkSta:    Speed 2.5GT/s (ok), Width x1 (ok)
-            TrErr- Train- SlotClk+ DLActive+ BWMgmt+ ABWMgmt-
-        SltCap:    AttnBtn- PwrCtrl- MRL- AttnInd- PwrInd- HotPlug- Surprise-
-            Slot #0, PowerLimit 0.000W; Interlock- NoCompl-
-        SltCtl:    Enable: AttnBtn- PwrFlt- MRL- PresDet- CmdCplt-
-HPIrq+ LinkChg+
-            Control: AttnInd Off, PwrInd On, Power- Interlock-
-        SltSta:    Status: AttnBtn- PowerFlt- MRL- CmdCplt- PresDet+ Interlock-
-            Changed: MRL- PresDet- LinkState+
-        RootCap: CRSVisible-
-        RootCtl: ErrCorrectable- ErrNon-Fatal- ErrFatal- PMEIntEna- CRSVisible-
-        RootSta: PME ReqID 0000, PMEStatus- PMEPending-
-        DevCap2: Completion Timeout: Range AB, TimeoutDis+ NROPrPrP- LTR-
-             10BitTagComp- 10BitTagReq- OBFF Not Supported, ExtFmt- EETLPPrefix-
-             EmergencyPowerReduction Not Supported, EmergencyPowerReductionInit-
-             FRS- LN System CLS Not Supported, TPHComp- ExtTPHComp- ARIFwd-
-             AtomicOpsCap: Routing- 32bit- 64bit- 128bitCAS-
-        DevCtl2: Completion Timeout: 65ms to 210ms, TimeoutDis- LTR-
-OBFF Disabled, ARIFwd-
-             AtomicOpsCtl: ReqEn- EgressBlck-
-        LnkCtl2: Target Link Speed: 2.5GT/s, EnterCompliance- SpeedDis-
-             Transmit Margin: Normal Operating Range,
-EnterModifiedCompliance- ComplianceSOS-
-             Compliance De-emphasis: -6dB
-        LnkSta2: Current De-emphasis Level: -3.5dB,
-EqualizationComplete- EqualizationPhase1-
-             EqualizationPhase2- EqualizationPhase3- LinkEqualizationRequest-
-             Retimer- 2Retimers- CrosslinkRes: unsupported
-    Kernel driver in use: pcieport
-
-00:16.0 PCI bridge [0604]: NVIDIA Corporation MCP79 PCI Express Bridge
-[10de:0ac7] (rev b1) (prog-if 00 [Normal decode])
-    Control: I/O- Mem- BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B- DisINTx+
-    Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR- INTx-
-    Latency: 0, Cache Line Size: 64 bytes
-    Interrupt: pin A routed to IRQ 26
-    Bus: primary=00, secondary=05, subordinate=05, sec-latency=0
-    I/O behind bridge: [disabled]
-    Memory behind bridge: [disabled]
-    Prefetchable memory behind bridge: [disabled]
-    Secondary status: 66MHz- FastB2B- ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- <SERR- <PERR-
-    BridgeCtl: Parity- SERR+ NoISA- VGA- VGA16- MAbort- >Reset- FastB2B-
-        PriDiscTmr- SecDiscTmr- DiscTmrStat- DiscTmrSERREn-
-    Capabilities: [40] Subsystem: ZOTAC International (MCO) Ltd. MCP79
-PCI Express Bridge [19da:a108]
-    Capabilities: [48] Power Management version 3
-        Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA
-PME(D0+,D1+,D2+,D3hot+,D3cold+)
-        Status: D0 NoSoftRst- PME-Enable- DSel=0 DScale=0 PME-
-    Capabilities: [50] MSI: Enable+ Count=1/2 Maskable- 64bit+
-        Address: 00000000fee01004  Data: 0021
-    Capabilities: [80] Express (v2) Root Port (Slot+), MSI 00
-        DevCap:    MaxPayload 256 bytes, PhantFunc 0
-            ExtTag+ RBE+
-        DevCtl:    CorrErr- NonFatalErr- FatalErr- UnsupReq-
-            RlxdOrd+ ExtTag+ PhantFunc- AuxPwr- NoSnoop-
-            MaxPayload 128 bytes, MaxReadReq 512 bytes
-        DevSta:    CorrErr- NonFatalErr- FatalErr- UnsupReq- AuxPwr- TransPend-
-        LnkCap:    Port #4, Speed 2.5GT/s, Width x1, ASPM L0s L1, Exit
-Latency L0s <512ns, L1 <4us
-            ClockPM- Surprise- LLActRep+ BwNot+ ASPMOptComp-
-        LnkCtl:    ASPM Disabled; RCB 64 bytes, Disabled- CommClk+
-            ExtSynch- ClockPM- AutWidDis- BWInt- AutBWInt-
-        LnkSta:    Speed 2.5GT/s (ok), Width x1 (ok)
-            TrErr- Train- SlotClk+ DLActive- BWMgmt- ABWMgmt-
-        SltCap:    AttnBtn- PwrCtrl- MRL- AttnInd- PwrInd- HotPlug- Surprise-
-            Slot #0, PowerLimit 0.000W; Interlock- NoCompl-
-        SltCtl:    Enable: AttnBtn- PwrFlt- MRL- PresDet- CmdCplt-
-HPIrq+ LinkChg+
-            Control: AttnInd Off, PwrInd On, Power- Interlock-
-        SltSta:    Status: AttnBtn- PowerFlt- MRL- CmdCplt- PresDet- Interlock-
-            Changed: MRL- PresDet- LinkState-
-        RootCap: CRSVisible-
-        RootCtl: ErrCorrectable- ErrNon-Fatal- ErrFatal- PMEIntEna- CRSVisible-
-        RootSta: PME ReqID 0000, PMEStatus- PMEPending-
-        DevCap2: Completion Timeout: Range AB, TimeoutDis+ NROPrPrP- LTR-
-             10BitTagComp- 10BitTagReq- OBFF Not Supported, ExtFmt- EETLPPrefix-
-             EmergencyPowerReduction Not Supported, EmergencyPowerReductionInit-
-             FRS- LN System CLS Not Supported, TPHComp- ExtTPHComp- ARIFwd-
-             AtomicOpsCap: Routing- 32bit- 64bit- 128bitCAS-
-        DevCtl2: Completion Timeout: 65ms to 210ms, TimeoutDis- LTR-
-OBFF Disabled, ARIFwd-
-             AtomicOpsCtl: ReqEn- EgressBlck-
-        LnkCtl2: Target Link Speed: 2.5GT/s, EnterCompliance- SpeedDis-
-             Transmit Margin: Normal Operating Range,
-EnterModifiedCompliance- ComplianceSOS-
-             Compliance De-emphasis: -6dB
-        LnkSta2: Current De-emphasis Level: -3.5dB,
-EqualizationComplete- EqualizationPhase1-
-             EqualizationPhase2- EqualizationPhase3- LinkEqualizationRequest-
-             Retimer- 2Retimers- CrosslinkRes: unsupported
-    Kernel driver in use: pcieport
-
-00:17.0 PCI bridge [0604]: NVIDIA Corporation MCP79 PCI Express Bridge
-[10de:0ac7] (rev b1) (prog-if 00 [Normal decode])
-    Control: I/O- Mem- BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B- DisINTx+
-    Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR- INTx-
-    Latency: 0, Cache Line Size: 64 bytes
-    Interrupt: pin A routed to IRQ 27
-    Bus: primary=00, secondary=06, subordinate=06, sec-latency=0
-    I/O behind bridge: [disabled]
-    Memory behind bridge: [disabled]
-    Prefetchable memory behind bridge: [disabled]
-    Secondary status: 66MHz- FastB2B- ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- <SERR- <PERR-
-    BridgeCtl: Parity- SERR+ NoISA- VGA- VGA16- MAbort- >Reset- FastB2B-
-        PriDiscTmr- SecDiscTmr- DiscTmrStat- DiscTmrSERREn-
-    Capabilities: [40] Subsystem: ZOTAC International (MCO) Ltd. MCP79
-PCI Express Bridge [19da:a108]
-    Capabilities: [48] Power Management version 3
-        Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA
-PME(D0+,D1+,D2+,D3hot+,D3cold+)
-        Status: D0 NoSoftRst- PME-Enable- DSel=0 DScale=0 PME-
-    Capabilities: [50] MSI: Enable+ Count=1/2 Maskable- 64bit+
-        Address: 00000000fee02004  Data: 0022
-    Capabilities: [80] Express (v2) Root Port (Slot+), MSI 00
-        DevCap:    MaxPayload 256 bytes, PhantFunc 0
-            ExtTag+ RBE+
-        DevCtl:    CorrErr- NonFatalErr- FatalErr- UnsupReq-
-            RlxdOrd+ ExtTag+ PhantFunc- AuxPwr- NoSnoop-
-            MaxPayload 128 bytes, MaxReadReq 512 bytes
-        DevSta:    CorrErr- NonFatalErr- FatalErr- UnsupReq- AuxPwr- TransPend-
-        LnkCap:    Port #5, Speed 2.5GT/s, Width x1, ASPM L0s L1, Exit
-Latency L0s <512ns, L1 <4us
-            ClockPM- Surprise- LLActRep+ BwNot+ ASPMOptComp-
-        LnkCtl:    ASPM Disabled; RCB 64 bytes, Disabled- CommClk+
-            ExtSynch- ClockPM- AutWidDis- BWInt- AutBWInt-
-        LnkSta:    Speed 2.5GT/s (ok), Width x1 (ok)
-            TrErr- Train- SlotClk+ DLActive- BWMgmt- ABWMgmt-
-        SltCap:    AttnBtn- PwrCtrl- MRL- AttnInd- PwrInd- HotPlug- Surprise-
-            Slot #0, PowerLimit 0.000W; Interlock- NoCompl-
-        SltCtl:    Enable: AttnBtn- PwrFlt- MRL- PresDet- CmdCplt-
-HPIrq+ LinkChg+
-            Control: AttnInd Off, PwrInd On, Power- Interlock-
-        SltSta:    Status: AttnBtn- PowerFlt- MRL- CmdCplt- PresDet- Interlock-
-            Changed: MRL- PresDet- LinkState-
-        RootCap: CRSVisible-
-        RootCtl: ErrCorrectable- ErrNon-Fatal- ErrFatal- PMEIntEna- CRSVisible-
-        RootSta: PME ReqID 0000, PMEStatus- PMEPending-
-        DevCap2: Completion Timeout: Range AB, TimeoutDis+ NROPrPrP- LTR-
-             10BitTagComp- 10BitTagReq- OBFF Not Supported, ExtFmt- EETLPPrefix-
-             EmergencyPowerReduction Not Supported, EmergencyPowerReductionInit-
-             FRS- LN System CLS Not Supported, TPHComp- ExtTPHComp- ARIFwd-
-             AtomicOpsCap: Routing- 32bit- 64bit- 128bitCAS-
-        DevCtl2: Completion Timeout: 65ms to 210ms, TimeoutDis- LTR-
-OBFF Disabled, ARIFwd-
-             AtomicOpsCtl: ReqEn- EgressBlck-
-        LnkCtl2: Target Link Speed: 2.5GT/s, EnterCompliance- SpeedDis-
-             Transmit Margin: Normal Operating Range,
-EnterModifiedCompliance- ComplianceSOS-
-             Compliance De-emphasis: -6dB
-        LnkSta2: Current De-emphasis Level: -3.5dB,
-EqualizationComplete- EqualizationPhase1-
-             EqualizationPhase2- EqualizationPhase3- LinkEqualizationRequest-
-             Retimer- 2Retimers- CrosslinkRes: unsupported
-    Kernel driver in use: pcieport
-
-00:18.0 PCI bridge [0604]: NVIDIA Corporation MCP79 PCI Express Bridge
-[10de:0ac7] (rev b1) (prog-if 00 [Normal decode])
-    Control: I/O- Mem- BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B- DisINTx+
-    Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR- INTx-
-    Latency: 0, Cache Line Size: 64 bytes
-    Interrupt: pin A routed to IRQ 28
-    Bus: primary=00, secondary=07, subordinate=07, sec-latency=0
-    I/O behind bridge: [disabled]
-    Memory behind bridge: [disabled]
-    Prefetchable memory behind bridge: [disabled]
-    Secondary status: 66MHz- FastB2B- ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- <SERR- <PERR-
-    BridgeCtl: Parity- SERR+ NoISA- VGA- VGA16- MAbort- >Reset- FastB2B-
-        PriDiscTmr- SecDiscTmr- DiscTmrStat- DiscTmrSERREn-
-    Capabilities: [40] Subsystem: ZOTAC International (MCO) Ltd. MCP79
-PCI Express Bridge [19da:a108]
-    Capabilities: [48] Power Management version 3
-        Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA
-PME(D0+,D1+,D2+,D3hot+,D3cold+)
-        Status: D0 NoSoftRst- PME-Enable- DSel=0 DScale=0 PME-
-    Capabilities: [50] MSI: Enable+ Count=1/2 Maskable- 64bit+
-        Address: 00000000fee04004  Data: 0022
-    Capabilities: [80] Express (v2) Root Port (Slot+), MSI 00
-        DevCap:    MaxPayload 256 bytes, PhantFunc 0
-            ExtTag+ RBE+
-        DevCtl:    CorrErr- NonFatalErr- FatalErr- UnsupReq-
-            RlxdOrd+ ExtTag+ PhantFunc- AuxPwr- NoSnoop-
-            MaxPayload 128 bytes, MaxReadReq 512 bytes
-        DevSta:    CorrErr- NonFatalErr- FatalErr- UnsupReq- AuxPwr- TransPend-
-        LnkCap:    Port #6, Speed 2.5GT/s, Width x1, ASPM L0s L1, Exit
-Latency L0s <512ns, L1 <4us
-            ClockPM- Surprise- LLActRep+ BwNot+ ASPMOptComp-
-        LnkCtl:    ASPM Disabled; RCB 64 bytes, Disabled- CommClk+
-            ExtSynch- ClockPM- AutWidDis- BWInt- AutBWInt-
-        LnkSta:    Speed 2.5GT/s (ok), Width x1 (ok)
-            TrErr- Train- SlotClk+ DLActive- BWMgmt- ABWMgmt-
-        SltCap:    AttnBtn- PwrCtrl- MRL- AttnInd- PwrInd- HotPlug- Surprise-
-            Slot #0, PowerLimit 0.000W; Interlock- NoCompl-
-        SltCtl:    Enable: AttnBtn- PwrFlt- MRL- PresDet- CmdCplt-
-HPIrq+ LinkChg+
-            Control: AttnInd Off, PwrInd On, Power- Interlock-
-        SltSta:    Status: AttnBtn- PowerFlt- MRL- CmdCplt- PresDet- Interlock-
-            Changed: MRL- PresDet- LinkState-
-        RootCap: CRSVisible-
-        RootCtl: ErrCorrectable- ErrNon-Fatal- ErrFatal- PMEIntEna- CRSVisible-
-        RootSta: PME ReqID 0000, PMEStatus- PMEPending-
-        DevCap2: Completion Timeout: Range AB, TimeoutDis+ NROPrPrP- LTR-
-             10BitTagComp- 10BitTagReq- OBFF Not Supported, ExtFmt- EETLPPrefix-
-             EmergencyPowerReduction Not Supported, EmergencyPowerReductionInit-
-             FRS- LN System CLS Not Supported, TPHComp- ExtTPHComp- ARIFwd-
-             AtomicOpsCap: Routing- 32bit- 64bit- 128bitCAS-
-        DevCtl2: Completion Timeout: 65ms to 210ms, TimeoutDis- LTR-
-OBFF Disabled, ARIFwd-
-             AtomicOpsCtl: ReqEn- EgressBlck-
-        LnkCtl2: Target Link Speed: 2.5GT/s, EnterCompliance- SpeedDis-
-             Transmit Margin: Normal Operating Range,
-EnterModifiedCompliance- ComplianceSOS-
-             Compliance De-emphasis: -6dB
-        LnkSta2: Current De-emphasis Level: -3.5dB,
-EqualizationComplete- EqualizationPhase1-
-             EqualizationPhase2- EqualizationPhase3- LinkEqualizationRequest-
-             Retimer- 2Retimers- CrosslinkRes: unsupported
-    Kernel driver in use: pcieport
-
-03:00.0 VGA compatible controller [0300]: NVIDIA Corporation C79 [ION]
-[10de:087d] (rev b1) (prog-if 00 [VGA controller])
-    Subsystem: ZOTAC International (MCO) Ltd. C79 [ION] [19da:a108]
-    Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR+ FastB2B- DisINTx+
-    Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR- INTx-
-    Latency: 0, Cache Line Size: 64 bytes
-    Interrupt: pin A routed to IRQ 29
-    Region 0: Memory at fb000000 (32-bit, non-prefetchable) [size=16M]
-    Region 1: Memory at e0000000 (64-bit, prefetchable) [size=256M]
-    Region 3: Memory at f8000000 (64-bit, prefetchable) [size=32M]
-    Region 5: I/O ports at ec00 [size=128]
-    Expansion ROM at 000c0000 [disabled] [size=128K]
-    Capabilities: [60] Power Management version 2
-        Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA
-PME(D0-,D1-,D2-,D3hot-,D3cold-)
-        Status: D0 NoSoftRst- PME-Enable- DSel=0 DScale=0 PME-
-    Capabilities: [68] MSI: Enable+ Count=1/1 Maskable- 64bit+
-        Address: 00000000fee04004  Data: 0023
-    Kernel driver in use: nouveau
-
-04:00.0 Network controller [0280]: Ralink corp. RT2790 Wireless
-802.11n 1T/2R PCIe [1814:0781]
-    Subsystem: Ralink corp. RT2790 Wireless 802.11n 1T/2R PCIe [1814:2790]
-    Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B- DisINTx-
-    Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR- INTx-
-    Latency: 0, Cache Line Size: 64 bytes
-    Interrupt: pin A routed to IRQ 19
-    Region 0: Memory at febf0000 (32-bit, non-prefetchable) [size=64K]
-    Capabilities: [40] Power Management version 3
-        Flags: PMEClk- DSI- D1- D2- AuxCurrent=375mA
-PME(D0+,D1-,D2-,D3hot+,D3cold-)
-        Status: D0 NoSoftRst- PME-Enable- DSel=0 DScale=0 PME-
-    Capabilities: [50] MSI: Enable- Count=1/32 Maskable- 64bit+
-        Address: 0000000000000000  Data: 0000
-    Capabilities: [70] Express (v1) Endpoint, MSI 00
-        DevCap:    MaxPayload 128 bytes, PhantFunc 0, Latency L0s
-<128ns, L1 <2us
-            ExtTag- AttnBtn- AttnInd- PwrInd- RBE+ FLReset-
-SlotPowerLimit 0.000W
-        DevCtl:    CorrErr- NonFatalErr- FatalErr- UnsupReq-
-            RlxdOrd+ ExtTag- PhantFunc- AuxPwr- NoSnoop-
-            MaxPayload 128 bytes, MaxReadReq 512 bytes
-        DevSta:    CorrErr+ NonFatalErr- FatalErr- UnsupReq+ AuxPwr- TransPend-
-        LnkCap:    Port #0, Speed 2.5GT/s, Width x1, ASPM L0s L1, Exit
-Latency L0s <512ns, L1 <64us
-            ClockPM+ Surprise- LLActRep- BwNot- ASPMOptComp-
-        LnkCtl:    ASPM Disabled; RCB 128 bytes, Disabled- CommClk+
-            ExtSynch- ClockPM- AutWidDis- BWInt- AutBWInt-
-        LnkSta:    Speed 2.5GT/s (ok), Width x1 (ok)
-            TrErr- Train- SlotClk+ DLActive- BWMgmt- ABWMgmt-
-    Kernel driver in use: rt2800pci
-
-Let me know if you need anything else.
-
-Thanks,
-Rui
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
