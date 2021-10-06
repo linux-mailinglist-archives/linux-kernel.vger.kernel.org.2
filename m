@@ -2,71 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28B1B423E19
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 14:49:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1957B423E1E
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 14:49:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238684AbhJFMu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 08:50:59 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:34280 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238784AbhJFMuw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 08:50:52 -0400
-Received: from [192.168.1.111] (91-158-153-130.elisa-laajakaista.fi [91.158.153.130])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id AA3B9581;
-        Wed,  6 Oct 2021 14:48:56 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1633524537;
-        bh=7By+evsO+V8pvOVSMoqS/pELwTwJg63ZEEVqwo6GCQY=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=i8m8iA7JLynPglqq11ooqSUemGKd3myJBU3tGvOuvrmHuuVM3Rkk0TNP5KPM/nD4R
-         Xh4IuttgosirCVxsFN4XTkBqwtMiEmfccRLicw6+qr7VsNQfU6On7g+NgcPnNQ7XSq
-         gexDRxLZorZFVXJbZwdWLqWrdHUT1c5ilPEXTivc=
-Subject: Re: [PATCH v5 0/8] drm/omap: Add virtual-planes support
-To:     Neil Armstrong <narmstrong@baylibre.com>
-Cc:     linux-omap@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, khilman@baylibre.com
-References: <20210923070701.145377-1-narmstrong@baylibre.com>
- <5e60b305-dda2-ab9a-0954-f2d2b441667e@baylibre.com>
-From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Message-ID: <de447fe0-69dd-9b1b-6ed9-d1b75a7665a3@ideasonboard.com>
-Date:   Wed, 6 Oct 2021 15:48:53 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S238754AbhJFMvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 08:51:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34558 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238730AbhJFMvE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 08:51:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 94EDE60F59;
+        Wed,  6 Oct 2021 12:49:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633524552;
+        bh=E5lZpXanoKV/1QIoaU3zZX3ltqIP1NnyAvFloPV4JbQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=TRcnFP8kaXhX9QIaNANQEvNfhUa58NLmSC5BQIlMfkuRQclBSZmyJF2TJPEIGg0/3
+         c8frrOjd2sMyi38it4tEN05c9g8nw1qXwTtp1OOtSzo7OjC9eHiH72Wxxx441tMhVY
+         WGjcZhg/nWMF4FK0391vGOyyy3zsC0u3lzF4FLAuXpId9d3VS7r+cGwgl2JLPt97cc
+         KRR6Xi7HCdHnyGkqZK5w/HcJkzXgEGJ2bs11gLQJiBJZMd23l62GXALb+BG1kP9a3s
+         TMXZHNIhINj7XIQ22XJrgl7Mox0LVKtO71w09gDD8a04Arlnz8D49zPCRj78xxCJpt
+         k5a88kJP87m+w==
+Date:   Wed, 6 Oct 2021 05:49:11 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Stephen Rothwell <sfr@rothwell.id.au>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the net-next tree
+Message-ID: <20211006054911.790cbf46@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20211006144322.640b966a@elm.ozlabs.ibm.com>
+References: <20211006122315.4e04fb87@canb.auug.org.au>
+        <20211005185217.7fb12960@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <20211006144322.640b966a@elm.ozlabs.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <5e60b305-dda2-ab9a-0954-f2d2b441667e@baylibre.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Neil,
-
-On 06/10/2021 11:17, Neil Armstrong wrote:
-> Hi,
+On Wed, 6 Oct 2021 14:43:22 +1100 Stephen Rothwell wrote:
+> On Tue, 5 Oct 2021 18:52:17 -0700 Jakub Kicinski <kuba@kernel.org> wrote:
+> >
+> > Applied, thanks. Is this the last one? ;)  
 > 
-> On 23/09/2021 09:06, Neil Armstrong wrote:
->> This patchset is the follow-up the v4 patchset from Benoit Parrot at [1].
->>
->> This patch series adds virtual-plane support to omapdrm driver to allow the use
->> of display wider than 2048 pixels.
->>
->> In order to do so we introduce the concept of hw_overlay which can then be
->> dynamically allocated to a plane. When the requested output width exceed what
->> be supported by one overlay a second is then allocated if possible to handle
->> display wider then 2048.
->>
->> This series replaces an earlier series which was DT based and using statically
->> allocated resources.
->>
->> This implementation is inspired from the work done in msm/disp/mdp5
->> driver.
+> No idea :-(
 > 
-> Gentle ping, who is supposed reviewing those patches ?
+> > I wonder what happened to the kbuild bot :S  
+> 
+> Does it do ppc builds?
 
-I think that would be me. I'll try to find time in the nearby future to 
-do the review.
-
-  Tomi
+I thought it did, I get a build status email periodically with a list
+of 135 builds. PPC is well represented there.
