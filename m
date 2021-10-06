@@ -2,227 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1E27423D77
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 14:09:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66FFF423D79
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 14:09:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238337AbhJFMKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 08:10:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33128 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238117AbhJFMKx (ORCPT
+        id S238406AbhJFMLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 08:11:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39625 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238117AbhJFMLA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 08:10:53 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23680C061749
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 05:09:01 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id s75so2290436pgs.5
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 05:09:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=axtens.net; s=google;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=V33FRyfxRCOnEo8u7n9r2mHqIS4K2al0g2rrhqi7dVU=;
-        b=N00Lzp22Mw4XPBmh6M29nCdZNN1qLdrAAgKPYPriiKMsoL4ZQCYm+RslD5mwEEebmT
-         9VN3Qcs3uH6kE2UJQYhUOgvgW36oh+fohkNlPFtpYbAkFXWrcrtANX5k7zf/FQebRAOl
-         KaYhvjkCCFvSDBxscD4eWciWgCYtDwuSI99M0=
+        Wed, 6 Oct 2021 08:11:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633522148;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jDEUDd9F1mbhCTF+9tuTd3gtq0vD73lOJfICp/hOhTQ=;
+        b=M3WEkrrJivVbGlYA5OBt8pGKOemIzN3unuJwQhVZ6SZV+VHUztdxxtOJ0wW7jAV0ywCNbv
+        9/jHii6WzSCE3PJBRs0MTeWMvYwhdsOg1NrZbcEv89V0KfnB9LneUsBtTPKnnWXDIaDCr1
+        fYV3qwZWiVoSYGqIEiqx/ScsITbs1Es=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-397-qVLdz260MMGWIsCqzdGuFA-1; Wed, 06 Oct 2021 08:09:07 -0400
+X-MC-Unique: qVLdz260MMGWIsCqzdGuFA-1
+Received: by mail-wr1-f70.google.com with SMTP id f11-20020adfc98b000000b0015fedc2a8d4so1871223wrh.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 05:09:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=V33FRyfxRCOnEo8u7n9r2mHqIS4K2al0g2rrhqi7dVU=;
-        b=d+FyYNSPke9DnBaOz5DI5p4/JxggkRGaHT8EHu6IBT6y9fZq05GD6y6hZ7P0kKaLJ/
-         kwAAW2QraW5vFWIPyZx2QNM8qZRg0k4VePmt9/G6mWLvvBBNvexHXEAV0jI8Qt7ylhAR
-         ZJwg2teX3iwuu/Kw1ttqulWXDJAQvVh7nSYDqi4KYixUHYNCkR6YKv5AfjpAqVHnwFFy
-         ROPOrd/NlIaPMTtFDgxKGVNZCRJPhCKR4D/7u26RT7FU5ty8IfY1B0gFudOwf+s15U1g
-         OsJsepW6m9zcsjrrNPK4fR0FO1hfkbINbUgsxmczPSjYDlb45xOQmbKCn2TP9iTPLYRy
-         UXoQ==
-X-Gm-Message-State: AOAM5313DrkpK/dBYhGGJTnzrl9BVfflEgUGBRrk5K94XSwpMu45+Ajd
-        h+If3LMpztLcBU1rt7f30d4dLA==
-X-Google-Smtp-Source: ABdhPJzU05PoGdOet1bod/veyfpv7UoID9KqyjBp8bmarTQ3veR1//nZ/7omuf+zOx9iD+fXSnKqMQ==
-X-Received: by 2002:a05:6a00:2311:b0:431:c19f:2a93 with SMTP id h17-20020a056a00231100b00431c19f2a93mr36461867pfh.11.1633522140499;
-        Wed, 06 Oct 2021 05:09:00 -0700 (PDT)
-Received: from localhost ([2001:4479:e300:600:322:fa78:c55e:6913])
-        by smtp.gmail.com with ESMTPSA id h6sm5249368pji.6.2021.10.06.05.08.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Oct 2021 05:09:00 -0700 (PDT)
-From:   Daniel Axtens <dja@axtens.net>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        paulmck@kernel.org, rcu@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Mark Rutland <mark.rutland@arm.com>
-Subject: Re: instrument_atomic_read()/_write() in noinstr functions?
-In-Reply-To: <YV1W8FAV6h2t5gQo@hirez.programming.kicks-ass.net>
-References: <871r4z55fn.fsf@dja-thinkpad.axtens.net>
- <YV1W8FAV6h2t5gQo@hirez.programming.kicks-ass.net>
-Date:   Wed, 06 Oct 2021 23:08:57 +1100
-Message-ID: <87k0iq4ap2.fsf@dja-thinkpad.axtens.net>
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=jDEUDd9F1mbhCTF+9tuTd3gtq0vD73lOJfICp/hOhTQ=;
+        b=B9Zcxoj5HVnwZYZ5PJtmaSuVU4fYIbKxoGHmlMj2ry5ZukuseT7fV2+G9oUHGXeTFk
+         fS20O8UNv0vLYlnArxTT8N8cyisQrEqPtVQW3qo/y9gGQa54nEm42RxHyzjP80d2XwoW
+         2E5DCUbQoOY53JBxpo3dd3llpNFXBrNqS/gr4opbb5HiRftlk+ip+AaXrYYIj+8+MVqa
+         cmgng9Rl2gIOppR28WM1Oq6pNgusenuRw6l3IDXou/Aic6BGBfbbCdtHiNEYZSHSw9QI
+         /Yh15NuBC4xxWj8Xf5Nu/59EuSdhOTw+zYoYtpMhpZ6lEt7avVFrmyIWcAGUzwLUOmsy
+         /IaA==
+X-Gm-Message-State: AOAM5303W9SmBeUTKmC3qBG0inofNRwhTp74unzqY70bfEJrJiMn2l2J
+        TCGZcJ8ezPqRXtRrCEAKg5cO1dpuw0DrmnT//PE+KfWTNlDDtjyGwpNh/n7q9zP/kBwDbGXBifg
+        xW8bES0Fj1tnK2bxSP6flowPQ1XvNYYJ/oNRUpzkVSF3P2Rx0Zippr5NbA2XQuRIL4FDK+xfY
+X-Received: by 2002:a1c:7910:: with SMTP id l16mr7955167wme.128.1633522146138;
+        Wed, 06 Oct 2021 05:09:06 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx4TYB1Jy2IgydUW9bzfNSEGzwXaUBnXnryugqaajvIbJbmW6pSZbAoUR1gTE+cTlIL/XV4wA==
+X-Received: by 2002:a1c:7910:: with SMTP id l16mr7955111wme.128.1633522145736;
+        Wed, 06 Oct 2021 05:09:05 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c6529.dip0.t-ipconnect.de. [91.12.101.41])
+        by smtp.gmail.com with ESMTPSA id r19sm4680282wmp.43.2021.10.06.05.09.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Oct 2021 05:09:05 -0700 (PDT)
+Subject: Re: [PATCH] memory: remove unused CONFIG_MEM_BLOCK_SIZE
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>, linux-mm@kvack.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20211006120354.7468-1-lukas.bulwahn@gmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <476ea5f7-53be-1a4e-c461-ff2e4a359bd0@redhat.com>
+Date:   Wed, 6 Oct 2021 14:09:04 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20211006120354.7468-1-lukas.bulwahn@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
+On 06.10.21 14:03, Lukas Bulwahn wrote:
+> Commit 3947be1969a9 ("[PATCH] memory hotplug: sysfs and add/remove
+> functions") defines CONFIG_MEM_BLOCK_SIZE, but this has never been
+> utilized anywhere.
+> 
+> It is a good practice to keep the CONFIG_* defines exclusively for the
+> Kbuild system. So, drop this unused definition.
+> 
+> This issue was noticed due to running ./scripts/checkkconfigsymbols.py.
+> 
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> ---
+>   include/linux/memory.h | 1 -
+>   1 file changed, 1 deletion(-)
+> 
+> diff --git a/include/linux/memory.h b/include/linux/memory.h
+> index c46ff374d48d..a216829df280 100644
+> --- a/include/linux/memory.h
+> +++ b/include/linux/memory.h
+> @@ -143,7 +143,6 @@ typedef int (*walk_memory_blocks_func_t)(struct memory_block *, void *);
+>   extern int walk_memory_blocks(unsigned long start, unsigned long size,
+>   			      void *arg, walk_memory_blocks_func_t func);
+>   extern int for_each_memory_block(void *arg, walk_memory_blocks_func_t func);
+> -#define CONFIG_MEM_BLOCK_SIZE	(PAGES_PER_SECTION<<PAGE_SHIFT)
+>   
+>   extern int memory_group_register_static(int nid, unsigned long max_pages);
+>   extern int memory_group_register_dynamic(int nid, unsigned long unit_pages);
+> 
 
-Thanks for your quick response, it is extremely helpful.
 
->> commit b58e733fd774 ("rcu: Fixup noinstr warnings") adds some
->> instrument_atomic_read calls to rcu_nmi_enter - a function marked
->> noinstr. Similar calls are added to some other functions as well.
->
-> It moves the instrumentation, it was already there. Specifically:
->
-> -       seq = atomic_add_return(RCU_DYNTICK_CTRL_CTR, &rdp->dynticks);
-> +       seq = arch_atomic_add_return(RCU_DYNTICK_CTRL_CTR, &rdp->dynticks);
->
-> removes the instrumentation from the critical place where RCU isn't yet
-> watching, which is then added back here:
->
-> +       // instrumentation for the noinstr rcu_dynticks_eqs_enter()
-> +       instrument_atomic_write(&rdp->dynticks, sizeof(rdp->dynticks));
->
-> Once it's deemed safe to run instrumentation.
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
-Ah, my bad.
+-- 
+Thanks,
 
->> This is causing me some grief on powerpc64 while trying to enable
->> KASAN. powerpc64 book3s takes some NMIs in real mode, and in real mode
->> we can't access where I'm proposing to put the KASAN shadow - we can
->> only access it with translations on. So I end up taking a fault in the
->> kasan_check_read path via rcu_nmi_enter.
->
-> Then your entry ordering is wrong :-( RCU should be the very last thing,
-> once RCU is watching it should be safe to run instrumentation.
->
->> As far as I can tell `instrumentation_begin()` and
->> `instrumentation_end()` don't make it safe to call instrumentation, they
->> just tell the developer that instrumentation is safe. (And they are used
->> to check the balance of _begin()/_end() blocks.)
->
-> That is correct. In that respect it is an unsafe (pun intended)
-> annotation. The annotation can be used to annotate away actual
-> violations (although the one at hand is not one such). There are some
-> explicitly unsafe annotations like that though, typically WARNs in early
-> init code where we really can't do much better than to ignore and hope
-> the error gets out.
->
->> Is the underlying assumption that the KASAN shadow will always be safe
->> to access, even in functions marked noinstr? It seems to undercut what
->> an architecture can assume about a function marked noinstr...
->
-> The assumption is that RCU is the very last thing in the entry code to
-> be enabled, and the very first to be disabled. Therefore, the moment RCU
-> is active we can allow instrumentation, and hence the
-> instrumentation_begin() is correct there.
->
-> The NMI dance on x86 is particularly nasty, but the first part
-> (currently all in entry_64.S) ensures the kernel page-tables are active
-> and that we have a kernel stack.
+David / dhildenb
 
-Yeah, this is where we come unstuck. We don't always activate kernel
-page tables/turn on data relocations/leave real mode/whatever. In some
-cases we run in real mode for (I believe) the entire NMI handler.
-
-> Then we call into C, which is still gnarly and deals with
-> self-recursion, but eventually calls irqentry_nmi_enter(). This then
-> carefully frobs the preempt, lockdep and rcu states into the right place
-> after which we have a fully 'normal' C context.
->
->> P.S. On a more generic note instrumentation_begin()/_end() is now
->> scattered across the kernel and it makes me a bit nervous. It's making a
->> statement about something that is in part a property of how the arch
->> implements instrumentation. Are arches expected to implement things in
->> such a way as to make these blocks accurate?
->
-> Yes, there's only a limited ways in which all this can slot toghether
-> due to all the nasty inter-dependencies. Thomas and me spend quite a bit
-> of time trying to untangle the web such that we have a coherent
-> entry/exit ordering that's actually workable.
->
-> Pretty much everybody had this wrong and was/is broken in various
-> non-fun ways.
-
-Fair enough. What exactly are the preconditions for instrumentation?  In
-other words, what must the arch ensure is true before we pass an
-instrumentation_begin()?
-
-I know from KASAN that we need to be able to access the shadow memory,
-which on most (all?) platforms means we need relocations/virtual
-addressing on. I don't know what else needs to be satisfied. (I'm
-guessing we want to be in a position where taking a fault won't bring
-down the system, for example.)
-
-> It's just that we didn't seem to have gotten around to writing
-> much documentation for any of this :/
-
-A problem which I too suffer from - I am in no position to throw stones here!
-
->> For example in
->> arch/powerpc/include/asm/interrupt.h::interrupt_nmi_enter_prepare we
->> currently sometimes call nmi_enter in real mode; should we instead only
->> call it when we have translations on?
->
-> nmi_enter() is the 'old' interface that has known issues. That said, you
-> seem to have a comment exactly there:
->
-> 	/*
-> 	 * Do not use nmi_enter() for pseries hash guest taking a real-mode
-> 	 * NMI because not everything it touches is within the RMA limit.
-> 	 */
-> 	if (!IS_ENABLED(CONFIG_PPC_BOOK3S_64) ||
-> 			!firmware_has_feature(FW_FEATURE_LPAR) ||
-> 			radix_enabled() || (mfmsr() & MSR_DR))
-> 		nmi_enter();
->
->
-> To me it sounds like this real-mode is something that's not a normal C
-> context and really should not ever run any instrumented code. As such I
-> don't think it should be using RCU.
-
-Yeah, so it looks to me that we should not be calling nmi_enter() when
-we don't have data relocations on (the mfmsr() & MSR_DR test) - we
-shouldn't special case pseries hash guests.
-
-I'll have to think through the implications of that, neither powerpc
-exceptions nor Linux's exception handing are really my areas of
-expertise!
-
-What's the new interface I'm supposed to be using? Things like
-irqentry_nmi_enter?
-
-> Let me illustrate with the IRQ entry code, as that's easier:
->
-> Your code currently seems to do things like:
->
-> DEFINE_INTERRUPT_HANDLER_ASYNC()
->   interrupt_async_enter_prepare()
->     interrupt_enter_prepare()
->       trace_hardirqs_off()
->         lockdep_hardirqs_off()
-> 	tracer_hardirqs_off()  // relies on RCU
-> 	trace_irq_disable()    // relies on RCU
->     irq_enter()
->       rcu_irq_enter() // relies on lockdep, enables RCU
->       ...
->
->
-> And there's a 'funnier' one involving trace_hardirqs_on(), there
-> lockdep itself relies on RCU and RCU relies on lockdep. But I'm not
-> quite sure how power does that.
-
-We take most exceptions (on 64-bit server platforms, at least, and as
-currently configured, etc etc) with relocations already on. But there
-are 5 interrupts defined in the ISA which we always take with
-relocations _off_.
-
-It sounds like we may have been a bit optimistic about how far into the
-generic kernel we could go in these cases. I guess the right thing to do
-is to handle them quickly, touching only arch-specific known-safe
-things, and then get out. But I will read the RCU docs to check what it
-expects of us and bikeshed things on the linuxppc-dev list.
-
-Thanks again, I really appreciate the quick, detailed and patient reply!
-
-Kind regards,
-Daniel
