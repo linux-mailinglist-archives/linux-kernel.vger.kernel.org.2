@@ -2,101 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A2BC4248D0
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 23:22:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 871D74248BD
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 23:19:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239657AbhJFVYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 17:24:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37014 "EHLO mail.kernel.org"
+        id S239628AbhJFVU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 17:20:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35626 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232152AbhJFVYC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 17:24:02 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D757861040;
-        Wed,  6 Oct 2021 21:22:08 +0000 (UTC)
-Date:   Wed, 6 Oct 2021 17:22:07 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: linux-next: Tree for Oct 5 (warnings: a. trace; b. mm/migrate)
-Message-ID: <20211006172207.11982951@gandalf.local.home>
-In-Reply-To: <c1d9e328-ad7c-920b-6c24-9e1598a6421c@infradead.org>
-References: <20211005190628.1f26b13d@canb.auug.org.au>
-        <c1d9e328-ad7c-920b-6c24-9e1598a6421c@infradead.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S239603AbhJFVUz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 17:20:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 585C4610A5;
+        Wed,  6 Oct 2021 21:19:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633555142;
+        bh=T70kfDppsNtkEYeSz1kZ0f6cqK4zriDrOQT4jGCJZFw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=j0NNVWEN8StOxrf9UqUHIK+D6Bzi0ZIysadETOS78yvqaArrHEdhfo5dmeSy1gn1a
+         iN2PRHDFOaG8UuycjZQCjXkE/2pfuekM++FE0YyOI3g5f5S1IFZyftkFsJywbC1fkO
+         iYgPEs4lNcY0nHeRKOO/mUD5SkBsTDK/vyWcWn0wYrfpczQo8I0ExW5QoMkhOpTvWj
+         7wwu4ENHjj4RjOMmpkaEjSgHCZPUpdjnebP14hQzkzMwzLJNHZcYazfJq6sXfJkTux
+         7TkdbKe6hf9JBMs6rhDYdbLoHa0+xxdlgaSJJxuCyvcbO/RUAgs57KnnQpboEDJXDF
+         /7dzZowZLcCQg==
+Date:   Wed, 6 Oct 2021 16:23:08 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Daniel Bristot de Oliveira <bristot@kernel.org>,
+        linux-kernel@vger.kernel.org, Jann Horn <jannh@google.com>
+Subject: Re: [PATCH][next] ftrace: Fix -Wcast-function-type warnings on
+ powerpc64
+Message-ID: <20211006212308.GA916330@embeddedor>
+References: <20211005053922.GA702049@embeddedor>
+ <20211005111714.18ebea2b@gandalf.local.home>
+ <20211005161812.GA768055@embeddedor>
+ <20211005123522.244281e6@gandalf.local.home>
+ <20211005165027.GA797862@embeddedor>
+ <20211005150807.03da5e54@gandalf.local.home>
+ <20211005193557.GA881195@embeddedor>
+ <20211005200935.2429ec2c@rorschach.local.home>
+ <20211006211426.GA916113@embeddedor>
+ <20211006171443.4faecbe9@gandalf.local.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211006171443.4faecbe9@gandalf.local.home>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 5 Oct 2021 13:46:52 -0700
-Randy Dunlap <rdunlap@infradead.org> wrote:
+On Wed, Oct 06, 2021 at 05:14:43PM -0400, Steven Rostedt wrote:
+> > OK. Are you going to apply your patch any time soon? So, I can go and
+> > enable -Wcast-function-type in my -next tree. :)
+> 
+> Sure. I only did not add it because of the issue Jann brought up. But if it
+> is needed, and I do not want more #ifdef all over the code, I'll add it,
+> and perhaps even mark it for stable.
 
-> a. randconfig: KCONFIG_SEED=0xBFBEA13C
-> ../kernel/trace/trace.c:1712:13: error: 'trace_create_maxlat_file' defined but not used [-Werror=unused-function]
->   static void trace_create_maxlat_file(struct trace_array *tr,
+Awesome. :)
 
-Does this fix it?
-
--- Steve
-
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index 7896d30d90f7..4520cbab0da5 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -1744,16 +1744,15 @@ void latency_fsnotify(struct trace_array *tr)
- 	irq_work_queue(&tr->fsnotify_irqwork);
- }
- 
--/*
-- * (defined(CONFIG_TRACER_MAX_TRACE) || defined(CONFIG_HWLAT_TRACER)) && \
-- *  defined(CONFIG_FSNOTIFY)
-- */
--#else
-+/* CONFIG_FSNOTIFY else */
-+#elif CREATE_MAX_TRACE_FILE
- 
- #define trace_create_maxlat_file(tr, d_tracer)				\
- 	trace_create_file("tracing_max_latency", 0644, d_tracer,	\
- 			  &tr->max_latency, &tracing_max_lat_fops)
- 
-+#else
-+#define trace_create_maxlat_file(tr, d_tracer) do { } while (0)
- #endif
- 
- #ifdef CONFIG_TRACER_MAX_TRACE
-@@ -9473,9 +9472,7 @@ init_tracer_tracefs(struct trace_array *tr, struct dentry *d_tracer)
- 
- 	create_trace_options_dir(tr);
- 
--#if defined(CONFIG_TRACER_MAX_TRACE) || defined(CONFIG_HWLAT_TRACER)
- 	trace_create_maxlat_file(tr, d_tracer);
--#endif
- 
- 	if (ftrace_create_function_files(tr, d_tracer))
- 		MEM_FAIL(1, "Could not allocate function filter files");
-diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
-index b7c0f8e160fb..680935949aef 100644
---- a/kernel/trace/trace.h
-+++ b/kernel/trace/trace.h
-@@ -679,8 +679,11 @@ void update_max_tr_single(struct trace_array *tr,
- #endif /* CONFIG_TRACER_MAX_TRACE */
- 
- #if (defined(CONFIG_TRACER_MAX_TRACE) || defined(CONFIG_HWLAT_TRACER) \
--	|| defined(CONFIG_OSNOISE_TRACER)) && defined(CONFIG_FSNOTIFY)
--#define LATENCY_FS_NOTIFY
-+	|| defined(CONFIG_OSNOISE_TRACER))
-+# define CREATE_MAX_TRACE_FILE
-+# ifdef CONFIG_FSNOTIFY
-+#  define LATENCY_FS_NOTIFY
-+# endif
- #endif
- 
- #ifdef LATENCY_FS_NOTIFY
+Thanks
+--
+Gustavo
