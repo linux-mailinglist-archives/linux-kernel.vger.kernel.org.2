@@ -2,170 +2,418 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9ED24241EF
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 17:56:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 708A74241FE
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 17:59:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239274AbhJFP6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 11:58:33 -0400
-Received: from foss.arm.com ([217.140.110.172]:42956 "EHLO foss.arm.com"
+        id S239279AbhJFQBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 12:01:42 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:22713 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235957AbhJFP6c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 11:58:32 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DE0086D;
-        Wed,  6 Oct 2021 08:56:39 -0700 (PDT)
-Received: from monolith.localdoman (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 666F63F70D;
-        Wed,  6 Oct 2021 08:56:37 -0700 (PDT)
-Date:   Wed, 6 Oct 2021 16:58:11 +0100
-From:   Alexandru Elisei <alexandru.elisei@arm.com>
-To:     davem@davemloft.net, michael.riesch@wolfvision.net,
-        peppe.cavallaro@st.com, alexandre.torgue@foss.st.com,
-        joabreu@synopsys.com, kuba@kernel.org, mcoquelin.stm32@gmail.com,
-        p.zabel@pengutronix.de, lgirdwood@gmail.com, broonie@kernel.org,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Alexandru Elisei <alexandru.elisei@arm.com>
-Subject: [BUG RESEND] net: stmmac: dwmac-rk: Ethernet broken on rockpro64 by
- commit 2d26f6e39afb ("net: stmmac: dwmac-rk: fix unbalanced
- pm_runtime_enable warnings")
-Message-ID: <YV3Hk2R4uDKbTy43@monolith.localdoman>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+        id S230101AbhJFQBl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 12:01:41 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1633535989; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=rAlDy/tgm9JVIvTKe6rje74SMjSz8pCctMzm0HGvymI=; b=RM1fcHFuQIwL98wvhw6YmXR4JdkNNwrGvQl8r5VIUwfoFLjXubcrxKd8i5gu3J1gVhKvT9Yq
+ QiHFVGJf1kZI/A2jcrUOvKk3wKrKR4D7BCUwJFvr/ttgxB4yRIHABNXAb3kmMtQul9o+SZYL
+ Ym3VVQO/qUJzuBNhbKf9QTpMw+o=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 615dc7e88ea00a941f3f8be5 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 06 Oct 2021 15:59:36
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 977D7C43619; Wed,  6 Oct 2021 15:59:36 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from khsieh-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id BD2EEC4338F;
+        Wed,  6 Oct 2021 15:59:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org BD2EEC4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Kuogee Hsieh <khsieh@codeaurora.org>
+To:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org,
+        vkoul@kernel.org, daniel@ffwll.ch, airlied@linux.ie,
+        agross@kernel.org, dmitry.baryshkov@linaro.org,
+        bjorn.andersson@linaro.org
+Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
+        khsieh@codeaurora.org, freedreno@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/msm/dp: do not initialize combo phy until plugin interrupt
+Date:   Wed,  6 Oct 2021 08:59:26 -0700
+Message-Id: <1633535966-21005-1-git-send-email-khsieh@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Resending this because my previous email client inserted HTML into the email,
-which was then rejected by the linux-kernel@vger.kernel.org spam filter.
+Combo phy support both USB3 and DP simultaneously. USB3 is the
+master of combo phy so that USB3 should initialize and power on
+its phy before DP initialize its phy. At current implementation,
+DP driver initialize its phy happen earlier than  USB3 initialize
+its phy which cause timeout error at procedure of power up USB3 phy
+which prevent USB3 from working. To avoid confliction of phy
+initialization between USB3 and DP, this patch have DP driver postpone
+phy initialization until plugin interrupt handler. DP driver only enable
+regulator, configure its HPD controller and enable interrupt so that it
+is able to receive HPD interrupts after completion of the initialization
+phase. DP driver will initialize and power up phy at plugin interrupt
+handler during normal operation so that both USB3 and DP are work
+simultaneously.
 
-After commit 2d26f6e39afb ("net: stmmac: dwmac-rk: fix unbalanced
-pm_runtime_enable warnings"), the network card on my rockpro64-v2 was left
-unable to get a DHCP lease from the network. The offending commit was found by
-bisecting the kernel; I tried reverting the commit from v5.15-rc4 and the
-network card started working as expected.
+Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+---
+ drivers/gpu/drm/msm/dp/dp_ctrl.c    | 68 ++++++++++++++++++++++---------------
+ drivers/gpu/drm/msm/dp/dp_ctrl.h    |  9 +++--
+ drivers/gpu/drm/msm/dp/dp_display.c | 51 +++++++++++++++++++++-------
+ 3 files changed, 84 insertions(+), 44 deletions(-)
 
-I can help with testing a fix or further diagnosing if needed.
+diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+index 5551a8d..4c5d507 100644
+--- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
++++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+@@ -1378,7 +1378,25 @@ static int dp_ctrl_enable_stream_clocks(struct dp_ctrl_private *ctrl)
+ 	return ret;
+ }
+ 
+-int dp_ctrl_host_init(struct dp_ctrl *dp_ctrl, bool flip, bool reset)
++void dp_ctrl_irq_enable(struct dp_ctrl *dp_ctrl, bool flip)
++{
++	struct dp_ctrl_private *ctrl;
++
++	if (!dp_ctrl) {
++		DRM_ERROR("Invalid input data\n");
++		return;
++	}
++
++	ctrl = container_of(dp_ctrl, struct dp_ctrl_private, dp_ctrl);
++
++	ctrl->dp_ctrl.orientation = flip;
++
++	dp_catalog_ctrl_reset(ctrl->catalog);
++
++	dp_catalog_ctrl_enable_irq(ctrl->catalog, true);
++}
++
++void dp_ctrl_phy_init(struct dp_ctrl *dp_ctrl)
+ {
+ 	struct dp_ctrl_private *ctrl;
+ 	struct dp_io *dp_io;
+@@ -1386,33 +1404,44 @@ int dp_ctrl_host_init(struct dp_ctrl *dp_ctrl, bool flip, bool reset)
+ 
+ 	if (!dp_ctrl) {
+ 		DRM_ERROR("Invalid input data\n");
+-		return -EINVAL;
++		return;
+ 	}
+ 
+ 	ctrl = container_of(dp_ctrl, struct dp_ctrl_private, dp_ctrl);
+ 	dp_io = &ctrl->parser->io;
+ 	phy = dp_io->phy;
+ 
+-	ctrl->dp_ctrl.orientation = flip;
+-
+-	if (reset)
+-		dp_catalog_ctrl_reset(ctrl->catalog);
+-
+ 	dp_catalog_ctrl_phy_reset(ctrl->catalog);
+ 	phy_init(phy);
+-	dp_catalog_ctrl_enable_irq(ctrl->catalog, true);
++}
+ 
+-	return 0;
++void dp_ctrl_phy_exit(struct dp_ctrl *dp_ctrl)
++{
++	struct dp_ctrl_private *ctrl;
++	struct dp_io *dp_io;
++	struct phy *phy;
++
++	if (!dp_ctrl) {
++		DRM_ERROR("Invalid input data\n");
++		return;
++	}
++
++	ctrl = container_of(dp_ctrl, struct dp_ctrl_private, dp_ctrl);
++	dp_io = &ctrl->parser->io;
++	phy = dp_io->phy;
++
++	dp_catalog_ctrl_phy_reset(ctrl->catalog);
++	phy_exit(phy);
+ }
+ 
+ /**
+- * dp_ctrl_host_deinit() - Uninitialize DP controller
++ * dp_ctrl_irq_phy_exit() - disable dp irq and exit phy
+  * @dp_ctrl: Display Port Driver data
+  *
+  * Perform required steps to uninitialize DP controller
+  * and its resources.
+  */
+-void dp_ctrl_host_deinit(struct dp_ctrl *dp_ctrl)
++void dp_ctrl_irq_phy_exit(struct dp_ctrl *dp_ctrl)
+ {
+ 	struct dp_ctrl_private *ctrl;
+ 	struct dp_io *dp_io;
+@@ -1866,23 +1895,6 @@ int dp_ctrl_off_link_stream(struct dp_ctrl *dp_ctrl)
+ 	return ret;
+ }
+ 
+-void dp_ctrl_off_phy(struct dp_ctrl *dp_ctrl)
+-{
+-	struct dp_ctrl_private *ctrl;
+-	struct dp_io *dp_io;
+-	struct phy *phy;
+-
+-	ctrl = container_of(dp_ctrl, struct dp_ctrl_private, dp_ctrl);
+-	dp_io = &ctrl->parser->io;
+-	phy = dp_io->phy;
+-
+-	dp_catalog_ctrl_reset(ctrl->catalog);
+-
+-	phy_exit(phy);
+-
+-	DRM_DEBUG_DP("DP off phy done\n");
+-}
+-
+ int dp_ctrl_off(struct dp_ctrl *dp_ctrl)
+ {
+ 	struct dp_ctrl_private *ctrl;
+diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.h b/drivers/gpu/drm/msm/dp/dp_ctrl.h
+index 2363a2d..c1e4b1b 100644
+--- a/drivers/gpu/drm/msm/dp/dp_ctrl.h
++++ b/drivers/gpu/drm/msm/dp/dp_ctrl.h
+@@ -19,12 +19,9 @@ struct dp_ctrl {
+ 	u32 pixel_rate;
+ };
+ 
+-int dp_ctrl_host_init(struct dp_ctrl *dp_ctrl, bool flip, bool reset);
+-void dp_ctrl_host_deinit(struct dp_ctrl *dp_ctrl);
+ int dp_ctrl_on_link(struct dp_ctrl *dp_ctrl);
+ int dp_ctrl_on_stream(struct dp_ctrl *dp_ctrl);
+ int dp_ctrl_off_link_stream(struct dp_ctrl *dp_ctrl);
+-void dp_ctrl_off_phy(struct dp_ctrl *dp_ctrl);
+ int dp_ctrl_off(struct dp_ctrl *dp_ctrl);
+ void dp_ctrl_push_idle(struct dp_ctrl *dp_ctrl);
+ void dp_ctrl_isr(struct dp_ctrl *dp_ctrl);
+@@ -34,4 +31,10 @@ struct dp_ctrl *dp_ctrl_get(struct device *dev, struct dp_link *link,
+ 			struct dp_power *power, struct dp_catalog *catalog,
+ 			struct dp_parser *parser);
+ 
++void dp_ctrl_irq_enable(struct dp_ctrl *dp_ctrl, bool flip);
++void dp_ctrl_irq_disable(struct dp_ctrl *dp_ctrl);
++void dp_ctrl_phy_init(struct dp_ctrl *dp_ctrl);
++void dp_ctrl_phy_exit(struct dp_ctrl *dp_ctrl);
++void dp_ctrl_irq_phy_exit(struct dp_ctrl *dp_ctrl);
++
+ #endif /* _DP_CTRL_H_ */
+diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+index cad25dd..44032ae 100644
+--- a/drivers/gpu/drm/msm/dp/dp_display.c
++++ b/drivers/gpu/drm/msm/dp/dp_display.c
+@@ -62,6 +62,11 @@ enum {
+ 	EV_DISCONNECT_PENDING_TIMEOUT,
+ };
+ 
++enum {
++	TYPE_eDP = 1,
++	TYPE_DP,
++};
++
+ #define EVENT_TIMEOUT	(HZ/10)	/* 100ms */
+ #define DP_EVENT_Q_MAX	8
+ 
+@@ -81,6 +86,7 @@ struct dp_display_private {
+ 	int irq;
+ 
+ 	int id;
++	int type;
+ 
+ 	/* state variables */
+ 	bool core_initialized;
+@@ -121,31 +127,37 @@ struct dp_display_private {
+ 
+ struct msm_dp_config { 
+ 	phys_addr_t io_start[3];
++	int type;
+ 	size_t num_dp;
+ };
+ 
+ static const struct msm_dp_config sc7180_dp_cfg = {
+ 	.io_start = { 0x0ae90000 },
++	.type = TYPE_DP,
+ 	.num_dp = 1,
+ };
+ 
+ static const struct msm_dp_config sc8180x_dp_cfg = {
+ 	.io_start = { 0xae90000, 0xae98000, 0 },
++	.type = TYPE_DP,
+ 	.num_dp = 3,
+ };
+ 
+ static const struct msm_dp_config sc8180x_edp_cfg = {
+ 	.io_start = { 0, 0, 0xae9a000 },
+ 	.num_dp = 3,
++	.type = TYPE_eDP,
+ };
+ 
+ static const struct msm_dp_config sc7280_edp_cfg = {
+ 	.io_start = { 0xaea0000, 0 },
++	.type = TYPE_eDP,
+ 	.num_dp = 2,
+ };
+ 
+ static const struct msm_dp_config sc7280_dp_cfg = { 
+ 	.io_start = { 0, 0xae90000 },
++	.type = TYPE_DP,
+ 	.num_dp = 2,
+ };
+ 
+@@ -392,7 +404,7 @@ static int dp_display_process_hpd_high(struct dp_display_private *dp)
+ 	return rc;
+ }
+ 
+-static void dp_display_host_init(struct dp_display_private *dp, int reset)
++static void dp_display_host_init(struct dp_display_private *dp)
+ {
+ 	bool flip = false;
+ 
+@@ -404,12 +416,21 @@ static void dp_display_host_init(struct dp_display_private *dp, int reset)
+ 	if (dp->usbpd->orientation == ORIENTATION_CC2)
+ 		flip = true;
+ 
+-	dp_power_init(dp->power, flip);
+-	dp_ctrl_host_init(dp->ctrl, flip, reset);
++	dp_power_init(dp->power, false);
++	dp_ctrl_irq_enable(dp->ctrl, flip);
++
++	if (dp->type == TYPE_eDP)
++		dp_ctrl_phy_init(dp->ctrl);
++
+ 	dp_aux_init(dp->aux);
+ 	dp->core_initialized = true;
+ }
+ 
++static void dp_display_host_phy_init(struct dp_display_private *dp)
++{
++	dp_ctrl_phy_init(dp->ctrl);
++}
++
+ static void dp_display_host_deinit(struct dp_display_private *dp)
+ {
+ 	if (!dp->core_initialized) {
+@@ -417,7 +438,7 @@ static void dp_display_host_deinit(struct dp_display_private *dp)
+ 		return;
+ 	}
+ 
+-	dp_ctrl_host_deinit(dp->ctrl);
++	dp_ctrl_irq_phy_exit(dp->ctrl);
+ 	dp_aux_deinit(dp->aux);
+ 	dp_power_deinit(dp->power);
+ 
+@@ -435,7 +456,7 @@ static int dp_display_usbpd_configure_cb(struct device *dev)
+ 		goto end;
+ 	}
+ 
+-	dp_display_host_init(dp, false);
++	dp_display_host_phy_init(dp);
+ 
+ 	rc = dp_display_process_hpd_high(dp);
+ end:
+@@ -646,9 +667,8 @@ static int dp_hpd_unplug_handle(struct dp_display_private *dp, u32 data)
+ 	if (state == ST_DISCONNECTED) {
+ 		/* triggered by irq_hdp with sink_count = 0 */
+ 		if (dp->link->sink_count == 0) {
+-			dp_ctrl_off_phy(dp->ctrl);
++			dp_ctrl_phy_exit(dp->ctrl);
+ 			hpd->hpd_high = 0;
+-			dp->core_initialized = false;
+ 		}
+ 		mutex_unlock(&dp->event_mutex);
+ 		return 0;
+@@ -1040,7 +1060,7 @@ int dp_display_get_test_bpp(struct msm_dp *dp)
+ static void dp_display_config_hpd(struct dp_display_private *dp)
+ {
+ 
+-	dp_display_host_init(dp, true);
++	dp_display_host_init(dp);
+ 	dp_catalog_ctrl_hpd_config(dp->catalog);
+ 
+ 	/* Enable interrupt first time
+@@ -1222,7 +1242,8 @@ int dp_display_request_irq(struct msm_dp *dp_display)
+ 	return 0;
+ }
+ 
+-static int dp_display_get_id(struct platform_device *pdev)
++static int dp_display_get_id(struct platform_device *pdev,
++				struct msm_dp_config *dp_cfg)
+ {
+ 	const struct msm_dp_config *cfg = of_device_get_match_data(&pdev->dev);
+ 	struct resource *res;
+@@ -1234,8 +1255,10 @@ static int dp_display_get_id(struct platform_device *pdev)
+ 		return -EINVAL;
+ 
+ 	for (i = 0; i < cfg->num_dp; i++) {
+-		if (cfg->io_start[i] == res->start)
++		if (cfg->io_start[i] == res->start) {
++			*dp_cfg = *cfg;
+ 			return i;
++		}
+ 	}
+ 
+ 	dev_err(&pdev->dev, "unknown displayport instance\n");
+@@ -1246,6 +1269,7 @@ static int dp_display_probe(struct platform_device *pdev)
+ {
+ 	int rc = 0;
+ 	struct dp_display_private *dp;
++	struct msm_dp_config dp_cfg;
+ 
+ 	if (!pdev || !pdev->dev.of_node) {
+ 		DRM_ERROR("pdev not found\n");
+@@ -1256,12 +1280,13 @@ static int dp_display_probe(struct platform_device *pdev)
+ 	if (!dp)
+ 		return -ENOMEM;
+ 
+-	dp->id = dp_display_get_id(pdev);
++	dp->id = dp_display_get_id(pdev, &dp_cfg);
+ 	if (dp->id < 0)
+ 		return -EINVAL;
+ 
+ 	dp->pdev = pdev;
+ 	dp->name = "drm_dp";
++	dp->type = dp_cfg.type;
+ 
+ 	rc = dp_init_sub_modules(dp);
+ 	if (rc) {
+@@ -1314,7 +1339,7 @@ static int dp_pm_resume(struct device *dev)
+ 	dp->hpd_state = ST_DISCONNECTED;
+ 
+ 	/* turn on dp ctrl/phy */
+-	dp_display_host_init(dp, true);
++	dp_display_host_init(dp);
+ 
+ 	dp_catalog_ctrl_hpd_config(dp->catalog);
+ 
+@@ -1531,7 +1556,7 @@ int msm_dp_display_enable(struct msm_drm_private *priv, struct drm_encoder *enco
+ 	state =  dp_display->hpd_state;
+ 
+ 	if (state == ST_DISPLAY_OFF)
+-		dp_display_host_init(dp_display, true);
++		dp_display_host_phy_init(dp_display);
+ 
+ 	dp_display_enable(dp_display, 0);
+ 
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
-his is what I get with a kernel built from v5.15-rc4 (so with the commit *not*
-reverted). Full dmesg at [1].
-
-root@rockpro ~ # uname -a
-Linux rockpro 5.15.0-rc4 #83 SMP PREEMPT Wed Oct 6 16:06:31 BST 2021 aarch64 GNU/Linux
-root@rockpro ~ # ip a
-1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
-    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
-    inet 127.0.0.1/8 scope host lo
-       valid_lft forever preferred_lft forever
-2: eth0: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN group default qlen 1000
-    link/ether ce:71:c1:ee:97:e8 brd ff:ff:ff:ff:ff:ff
-root@rockpro ~ # ip l set eth0 up
-[   33.398930] rk_gmac-dwmac fe300000.ethernet eth0: PHY [stmmac-0:00] driver [Generic PHY] (irq=POLL)
-[   33.404390] rk_gmac-dwmac fe300000.ethernet eth0: Register MEM_TYPE_PAGE_POOL RxQ-0
-[   33.405795] rk_gmac-dwmac fe300000.ethernet eth0: No Safety Features support found
-[   33.406479] rk_gmac-dwmac fe300000.ethernet eth0: PTP not supported by HW
-[   33.407528] rk_gmac-dwmac fe300000.ethernet eth0: configuring for phy/rgmii link mode
-root@rockpro ~ # [   37.503570] rk_gmac-dwmac fe300000.ethernet eth0: Link is Up - 1Gbps/Full - flow control rx/tx
-
-root@rockpro ~ # ip a
-1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
-    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
-    inet 127.0.0.1/8 scope host lo
-       valid_lft forever preferred_lft forever
-2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP group default qlen 1000
-    link/ether ce:71:c1:ee:97:e8 brd ff:ff:ff:ff:ff:ff
-root@rockpro ~ # dhclient --version
-isc-dhclient-4.4.2-P1
-root@rockpro ~ # dhclient -v eth0
-Internet Systems Consortium DHCP Client 4.4.2-P1
-Copyright 2004-2021 Internet Systems Consortium.
-All rights reserved.
-For info, please visit https://www.isc.org/software/dhcp/
-
-Listening on LPF/eth0/ce:71:c1:ee:97:e8
-Sending on   LPF/eth0/ce:71:c1:ee:97:e8
-Sending on   Socket/fallback
-DHCPREQUEST for 192.168.0.43 on eth0 to 255.255.255.255 port 67
-DHCPREQUEST for 192.168.0.43 on eth0 to 255.255.255.255 port 67
-DHCPDISCOVER on eth0 to 255.255.255.255 port 67 interval 8
-DHCPDISCOVER on eth0 to 255.255.255.255 port 67 interval 7
-DHCPDISCOVER on eth0 to 255.255.255.255 port 67 interval 20
-DHCPDISCOVER on eth0 to 255.255.255.255 port 67 interval 20
-DHCPDISCOVER on eth0 to 255.255.255.255 port 67 interval 6
-No DHCPOFFERS received.
-Trying recorded lease 192.168.0.43
-ping: socket: Address family not supported by protocol
-PING 192.168.0.1 (192.168.0.1) 56(84) bytes of data.
-
---- 192.168.0.1 ping statistics ---
-1 packets transmitted, 0 received, +1 errors, 100% packet loss, time 0ms
-
-No working leases in persistent database - sleeping.
-
-With the commit reverted, the NIC is working again (dmesg at [2]).
-
-root@rockpro ~ # uname -a
-Linux rockpro 5.15.0-rc4-00001-g6ac1832b7cc5 #84 SMP PREEMPT Wed Oct 6 16:24:54 BST 2021 aarch64 GNU/Linux
-root@rockpro ~ # ip a
-1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
-    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
-    inet 127.0.0.1/8 scope host lo
-       valid_lft forever preferred_lft forever
-2: eth0: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN group default qlen 1000
-    link/ether ce:71:c1:ee:97:e8 brd ff:ff:ff:ff:ff:ff
-root@rockpro ~ # ip l set eth0 up
-[   76.094639] rk_gmac-dwmac fe300000.ethernet eth0: PHY [stmmac-0:00] driver [Generic PHY] (irq=POLL)
-[   76.100233] rk_gmac-dwmac fe300000.ethernet eth0: Register MEM_TYPE_PAGE_POOL RxQ-0
-[   76.101646] rk_gmac-dwmac fe300000.ethernet eth0: No Safety Features support found
-[   76.102374] rk_gmac-dwmac fe300000.ethernet eth0: PTP not supported by HW
-[   76.103335] rk_gmac-dwmac fe300000.ethernet eth0: configuring for phy/rgmii link mode
-root@rockpro ~ # [   80.191353] rk_gmac-dwmac fe300000.ethernet eth0: Link is Up - 1Gbps/Full - flow control rx/tx
-
-root@rockpro ~ # ip a
-1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
-    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
-    inet 127.0.0.1/8 scope host lo
-       valid_lft forever preferred_lft forever
-2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP group default qlen 1000
-    link/ether ce:71:c1:ee:97:e8 brd ff:ff:ff:ff:ff:ff
-root@rockpro ~ # dhclient --version
-isc-dhclient-4.4.2-P1
-root@rockpro ~ # dhclient -v eth0
-Internet Systems Consortium DHCP Client 4.4.2-P1
-Copyright 2004-2021 Internet Systems Consortium.
-All rights reserved.
-For info, please visit https://www.isc.org/software/dhcp/
-
-Listening on LPF/eth0/ce:71:c1:ee:97:e8
-Sending on   LPF/eth0/ce:71:c1:ee:97:e8
-Sending on   Socket/fallback
-DHCPREQUEST for 192.168.0.43 on eth0 to 255.255.255.255 port 67
-DHCPACK of 192.168.0.43 from 192.168.0.1
-bound to 192.168.0.43 -- renewal in 36072 seconds.
-root@rockpro ~ # ip a
-1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
-    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
-    inet 127.0.0.1/8 scope host lo
-       valid_lft forever preferred_lft forever
-2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP group default qlen 1000
-    link/ether ce:71:c1:ee:97:e8 brd ff:ff:ff:ff:ff:ff
-    inet 192.168.0.43/24 brd 192.168.0.255 scope global eth0
-       valid_lft forever preferred_lft forever
-root@rockpro ~ # ping google.com
-ping: socket: Address family not supported by protocol
-PING google.com (172.217.169.46) 56(84) bytes of data.
-64 bytes from lhr48s08-in-f14.1e100.net (172.217.169.46): icmp_seq=1 ttl=117 time=21.7 ms
-64 bytes from lhr48s08-in-f14.1e100.net (172.217.169.46): icmp_seq=2 ttl=117 time=19.1 ms
-
---- google.com ping statistics ---
-2 packets transmitted, 2 received, 0% packet loss, time 1001ms
-rtt min/avg/max/mdev = 19.058/20.392/21.726/1.334 ms
-
-Pastebins will expire after 6 months.
-
-[1] https://pastebin.com/JrViZTPe
-[2] https://pastebin.com/EwEbWRfY
-
-Thanks,
-Alex
