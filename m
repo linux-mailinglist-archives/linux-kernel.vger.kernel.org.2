@@ -2,45 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F0D1424855
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 22:52:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6211342485A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 22:55:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239454AbhJFUyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 16:54:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42892 "EHLO
+        id S239500AbhJFU5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 16:57:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229657AbhJFUyi (ORCPT
+        with ESMTP id S230043AbhJFU5b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 16:54:38 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE7DCC061746;
-        Wed,  6 Oct 2021 13:52:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=uUaggMIrJXJwK050Pd3Se7IpSEl1Adm3p+WvBJ2vdko=; b=jgTWnVUluiFhTPDmK08GSEh2kG
-        XpbTv0VUuOw5KQi55TTUbo9Ax4g8VywNBW5WVzYdIDzLYwMjGLZtGThEjlbYdJuQ7AP0dSSWOWnDo
-        8DV+HSdFgSAoxkUmB1lguBYBME75FUpFvhqjUwYCjMOlBH/u1jouPM9HxS1UedhdLTwOdOnYgR51t
-        4mv0Z+mgjqz+hsMnqZX9H6bJpqOJHQOJAwe+K8MIDi3FkVX1Ga24geCz/lE+WsW2ThKjcL+a757es
-        hP12tzuX8ndeNRgeFqIh7mgPNmXF2TPimJhyAk+scFa6bgS/YqO0Gw0g+U91/G8qWW64ZgmlOPV+Z
-        5vkjUh0Q==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mYDu8-00FWKD-Mu; Wed, 06 Oct 2021 20:52:44 +0000
-Subject: Re: [PATCH v3] drivers/cdrom: improved ioctl for media change
- detection
-To:     Lukas Prediger <lumip@lumip.de>, phil@philpotter.co.uk
-Cc:     axboe@kernel.dk, hch@infradead.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <YT5BO7bUMMkwNCTh@equinox> <20210912191207.74449-1-lumip@lumip.de>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <42492b83-8741-786d-1b6e-cdd122576ae3@infradead.org>
-Date:   Wed, 6 Oct 2021 13:52:44 -0700
+        Wed, 6 Oct 2021 16:57:31 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC786C061746
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 13:55:38 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id n64so5932862oih.2
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 13:55:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=JvTa2lKBoI8pDHEiWBkxH9Br7TgFSzn7gNvMea8puyE=;
+        b=GHKG4f+JDyBw783UV6ULROcl/lb/K5rec7Me193E2Cz3VdjF9s4lYC1jmlGbFMV1Nt
+         Qq6Nn8d/3JKLDPjKiNUH/GLZLpRUhAXzPss6G1JN3VH7S7eweRd1sxuXWNxZD315d7EN
+         PFyIb5ARTlTUSievJPL7tj4LJ4ydtt1xbLyzs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=JvTa2lKBoI8pDHEiWBkxH9Br7TgFSzn7gNvMea8puyE=;
+        b=cz7nahp8Hx37qGfEW+0GzMQTInNmVWlmIIGR/c/EqtlPo31zNmfgagQs3BRSZN5Jya
+         ef4ZTgP6G3AoGaAUji15+S+M6/wD9OMteWX1olBxhX0QLeNlltuN/ayeKsieQj9aei5A
+         f5Bjtja7/ce+SbGR8WipJ55y0c4ukQXgW+MK8JtPtnyENZRdHOhNjmkB901HMusBcADQ
+         kRN1STst4brx/9+GDLt6PnYn5hxL3mPry95D6mMGuAVzPV9OnRb+qjFXmInXX+cmkWvW
+         1wyMn6R15SuHVSutsHo+XVaWmrvfTt6rI5snqVN/VxSVKHigvZuEEz7kaYFPWt/d5GHm
+         ZgaQ==
+X-Gm-Message-State: AOAM533ebvDN9Ns2NHUowzKhibpWqJsoHyjrn9ekzIKsYy2B6ivUHdjS
+        U3Grpk4+nRVfkUdA+4JIvneBVA==
+X-Google-Smtp-Source: ABdhPJzkTmkeqt1d1IgAw8uqylMn+U2CKvyQpd1md95wOPaS5qvtKnrya6+H/PaGK2fiqa20u55PRA==
+X-Received: by 2002:aca:dbc2:: with SMTP id s185mr305618oig.141.1633553738147;
+        Wed, 06 Oct 2021 13:55:38 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id l1sm3351258oop.28.2021.10.06.13.55.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Oct 2021 13:55:37 -0700 (PDT)
+Subject: Re: dm: change dm_get_target_type() to check for module load error
+To:     Mike Snitzer <snitzer@redhat.com>
+Cc:     agk@redhat.com, dm-devel@redhat.com, linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20211004200641.378496-1-skhan@linuxfoundation.org>
+ <YV4IecLg56NpzkYx@redhat.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <f1eebe07-492e-3152-8070-ea622d36bd33@linuxfoundation.org>
+Date:   Wed, 6 Oct 2021 14:55:36 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210912191207.74449-1-lumip@lumip.de>
+In-Reply-To: <YV4IecLg56NpzkYx@redhat.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -48,95 +66,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/12/21 12:12 PM, Lukas Prediger wrote:
-> diff --git a/Documentation/userspace-api/ioctl/cdrom.rst b/Documentation/userspace-api/ioctl/cdrom.rst
-> index 3b4c0506de46..bac5bbf93ca0 100644
-> --- a/Documentation/userspace-api/ioctl/cdrom.rst
-> +++ b/Documentation/userspace-api/ioctl/cdrom.rst
-> @@ -54,6 +54,9 @@ are as follows:
->   	CDROM_SELECT_SPEED	Set the CD-ROM speed
->   	CDROM_SELECT_DISC	Select disc (for juke-boxes)
->   	CDROM_MEDIA_CHANGED	Check is media changed
-> +	CDROM_TIMED_MEDIA_CHANGE	Check if media changed
-> +					since given time
-> +					(struct cdrom_timed_media_change_info)
->   	CDROM_DRIVE_STATUS	Get tray position, etc.
->   	CDROM_DISC_STATUS	Get disc type, etc.
->   	CDROM_CHANGER_NSLOTS	Get number of slots
+On 10/6/21 2:35 PM, Mike Snitzer wrote:
+> On Mon, Oct 04 2021 at  4:06P -0400,
+> Shuah Khan <skhan@linuxfoundation.org> wrote:
+> 
+>> dm_get_target_type() doesn't check error return from request_module().
+>> Change to check for error and return NULL instead of trying to get
+>> target type again which would fail.
+>>
+>> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+>> ---
+>>   drivers/md/dm-target.c | 11 ++++++++---
+>>   1 file changed, 8 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/md/dm-target.c b/drivers/md/dm-target.c
+>> index 64dd0b34fcf4..0789e9f91d3a 100644
+>> --- a/drivers/md/dm-target.c
+>> +++ b/drivers/md/dm-target.c
+>> @@ -41,17 +41,22 @@ static struct target_type *get_target_type(const char *name)
+>>   	return tt;
+>>   }
+>>   
+>> -static void load_module(const char *name)
+>> +static int load_module(const char *name)
+>>   {
+>> -	request_module("dm-%s", name);
+>> +	return request_module("dm-%s", name);
+>>   }
+>>   
+>>   struct target_type *dm_get_target_type(const char *name)
+>>   {
+>>   	struct target_type *tt = get_target_type(name);
+>> +	int ret;
+>>   
+>>   	if (!tt) {
+>> -		load_module(name);
+>> +		ret = load_module(name);
+>> +		if (ret < 0) {
+>> +			pr_err("Module %s load failed %d\n", name, ret);
+>> +			return NULL;
+>> +		}
+>>   		tt = get_target_type(name);
+>>   	}
+>>   
+>> -- 
+>> 2.30.2
+>>
+> 
+> While I appreciate your intent, the reality is that multiple targets
+> may be made available in a given module.  And so loading one dm module
+> may bring in access to N targets.  There isn't a rigid 1:1 mapping of
+> target modules to names.  And there may not even be a loadable module
+> that has the name dm-${name} -- but that doesn't mean the target_type
+> won;t have been loaded into DM for it to access.
+> 
 
-Hi Lukas, Phil,
+Thanks for the explanation.
 
-This doc change causes a documentation build warning:
+-- Shuah
 
-Documentation/userspace-api/ioctl/cdrom.rst:57: WARNING: Malformed table.
-Text in column margin in table line 42.
-
-The "=====" lines describe the table columns and they cannot be
-exceeded without a warning. The table needs to be reformatted.
-
-Lukas, will you handle that?
-thanks.
-
-
-======================  ===============================================
-CDROMPAUSE              Pause Audio Operation
-CDROMRESUME             Resume paused Audio Operation
-CDROMPLAYMSF            Play Audio MSF (struct cdrom_msf)
-CDROMPLAYTRKIND         Play Audio Track/index (struct cdrom_ti)
-CDROMREADTOCHDR         Read TOC header (struct cdrom_tochdr)
-CDROMREADTOCENTRY       Read TOC entry (struct cdrom_tocentry)
-CDROMSTOP               Stop the cdrom drive
-CDROMSTART              Start the cdrom drive
-CDROMEJECT              Ejects the cdrom media
-CDROMVOLCTRL            Control output volume (struct cdrom_volctrl)
-CDROMSUBCHNL            Read subchannel data (struct cdrom_subchnl)
-CDROMREADMODE2          Read CDROM mode 2 data (2336 Bytes)
-                         (struct cdrom_read)
-CDROMREADMODE1          Read CDROM mode 1 data (2048 Bytes)
-                         (struct cdrom_read)
-CDROMREADAUDIO          (struct cdrom_read_audio)
-CDROMEJECT_SW           enable(1)/disable(0) auto-ejecting
-CDROMMULTISESSION       Obtain the start-of-last-session
-                         address of multi session disks
-                         (struct cdrom_multisession)
-CDROM_GET_MCN           Obtain the "Universal Product Code"
-                         if available (struct cdrom_mcn)
-CDROM_GET_UPC           Deprecated, use CDROM_GET_MCN instead.
-CDROMRESET              hard-reset the drive
-CDROMVOLREAD            Get the drive's volume setting
-                         (struct cdrom_volctrl)
-CDROMREADRAW            read data in raw mode (2352 Bytes)
-                         (struct cdrom_read)
-CDROMREADCOOKED         read data in cooked mode
-CDROMSEEK               seek msf address
-CDROMPLAYBLK            scsi-cd only, (struct cdrom_blk)
-CDROMREADALL            read all 2646 bytes
-CDROMGETSPINDOWN        return 4-bit spindown value
-CDROMSETSPINDOWN        set 4-bit spindown value
-CDROMCLOSETRAY          pendant of CDROMEJECT
-CDROM_SET_OPTIONS       Set behavior options
-CDROM_CLEAR_OPTIONS     Clear behavior options
-CDROM_SELECT_SPEED      Set the CD-ROM speed
-CDROM_SELECT_DISC       Select disc (for juke-boxes)
-CDROM_MEDIA_CHANGED     Check is media changed
-CDROM_TIMED_MEDIA_CHANGE        Check if media changed
-                                 since given time
-                                 (struct cdrom_timed_media_change_info)
-CDROM_DRIVE_STATUS      Get tray position, etc.
-CDROM_DISC_STATUS       Get disc type, etc.
-CDROM_CHANGER_NSLOTS    Get number of slots
-CDROM_LOCKDOOR          lock or unlock door
-CDROM_DEBUG             Turn debug messages on/off
-CDROM_GET_CAPABILITY    get capabilities
-CDROMAUDIOBUFSIZ        set the audio buffer size
-DVD_READ_STRUCT         Read structure
-DVD_WRITE_STRUCT        Write structure
-DVD_AUTH                Authentication
-CDROM_SEND_PACKET       send a packet to the drive
-CDROM_NEXT_WRITABLE     get next writable block
-CDROM_LAST_WRITTEN      get last block written on disc
-======================  ===============================================
-
-
--- 
-~Randy
