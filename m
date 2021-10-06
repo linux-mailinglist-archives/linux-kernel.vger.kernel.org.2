@@ -2,98 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E24CD424A20
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 00:48:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EA16424A23
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 00:49:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239636AbhJFWue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 18:50:34 -0400
-Received: from woodpecker.gentoo.org ([140.211.166.183]:44872 "EHLO
-        smtp.gentoo.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230047AbhJFWub (ORCPT
+        id S239939AbhJFWvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 18:51:01 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:47631 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231559AbhJFWvA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 18:50:31 -0400
-Received: from grubbs.orbis-terrarum.net (localhost [127.0.0.1])
-        (using TLSv1.2 with cipher DHE-RSA-AES128-SHA (128/128 bits))
-        (No client certificate requested)
-        by smtp.gentoo.org (Postfix) with ESMTPS id 39A5C3433D6
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 22:48:36 +0000 (UTC)
-Received: (qmail 11571 invoked by uid 10000); 6 Oct 2021 22:48:35 -0000
-Date:   Wed, 6 Oct 2021 22:48:35 +0000
-From:   "Robin H. Johnson" <robbat2@gentoo.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     "Robin H. Johnson" <robbat2@gentoo.org>,
-        linux-kernel@vger.kernel.org, mingo@redhat.com,
-        rjohnson@digitalocean.com, Peter Zijlstra <peterz@infradead.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Frederic Weisbecker <fweisbec@gmail.com>
-Subject: Re: [PATCH 1/2] tracing: show size of requested buffer
-Message-ID: <robbat2-20211006T224617-864445788Z@orbis-terrarum.net>
-References: <20210831043723.13481-1-robbat2@gentoo.org>
- <20211006182652.6c11ce1b@gandalf.local.home>
+        Wed, 6 Oct 2021 18:51:00 -0400
+Received: by mail-il1-f198.google.com with SMTP id i2-20020a056e02152200b002587ac62443so2746980ilu.14
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 15:49:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=ALMwBzPbcoiTV5PvRTqV3OLyZh+7yR20m1kSW7tZ0Q8=;
+        b=Gqd/YSwMGoODuTxJVCYj0ND+DaWLzF1G8zYVfEKoKXXUT64ziExvxCk5zVQHlnyPq8
+         CE+OnPsWoBUW7jA5Nc8hB96HS+ixSPiSvlhhY4/x3PpBwopm/9EeIxBZNXqvS7a52nR3
+         XDw5U1kDm0zzhcmpt+/1RikdPYOce1q6xIT45twJiKP8RJSj/ZBKSQvf9C+2GiSoXE8I
+         PoB6oA5pUY5KVs0d6XDcvnHDHEWDKpQvQUbeLQwj9NB4WODHGnrF3OBA2H8XmLvGzb5y
+         Mbb4qSyBpoGrjtPIfoL37hn8rfU2StcRPgdLaZP5Fjr7UZ2QnHrLxP1WZyyQhh7Y80fN
+         noVQ==
+X-Gm-Message-State: AOAM530WSe4Bxv/MHelNIDJODBUj0ZZfqz2abbi36Udg4ZVt3QpiVfKW
+        cMs0RJKmEsZ/zGUbYBc9PVjr3DpheYzn7L8kTzdPznSnIBdh
+X-Google-Smtp-Source: ABdhPJwgwn/+rLH5RBRah4vMGortYwfLv2GVM+OBafmkhb+7f5XXAOfDEsT5zmnO/gT3pUMne6hbUFquDJ/YSRFvAwQE1LhtB5Xz
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="l77RIbjW34pLUj0y"
-Content-Disposition: inline
-In-Reply-To: <20211006182652.6c11ce1b@gandalf.local.home>
+X-Received: by 2002:a05:6638:d0e:: with SMTP id q14mr262061jaj.139.1633560548022;
+ Wed, 06 Oct 2021 15:49:08 -0700 (PDT)
+Date:   Wed, 06 Oct 2021 15:49:08 -0700
+In-Reply-To: <00000000000084943605c64a9cbd@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000002f208405cdb6f447@google.com>
+Subject: Re: [syzbot] general protection fault in rcu_segcblist_enqueue
+From:   syzbot <syzbot+7590ddacf9f333c18f6c@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, bp@alien8.de, hpa@zytor.com, jack@suse.cz,
+        jmattson@google.com, joro@8bytes.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mingo@redhat.com,
+        paolo.valente@linaro.org, pbonzini@redhat.com, reijiw@google.com,
+        seanjc@google.com, syzkaller-bugs@googlegroups.com,
+        tglx@linutronix.de, vkuznets@redhat.com, wanpengli@tencent.com,
+        x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+syzbot suspects this issue was fixed by commit:
 
---l77RIbjW34pLUj0y
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+commit 067a456d091d05fdae32cae350410d905968b645
+Author: Sean Christopherson <seanjc@google.com>
+Date:   Tue Jul 13 16:32:43 2021 +0000
 
-On Wed, Oct 06, 2021 at 06:26:52PM -0400, Steven Rostedt wrote:
-> On Mon, 30 Aug 2021 21:37:22 -0700
-> "Robin H. Johnson" <robbat2@gentoo.org> wrote:
->=20
-> Sorry for the late reply, I was on holiday when this was sent, and I'm ju=
-st
-> getting to looking at this email now (as my OoO email should have suggest=
-ed ;-)
->=20
-> Anyway, this needs to be reviewed by the Perf maintainers (Cc'd)
->=20
-> (Lore link for patch 2:=20
->   https://lore.kernel.org/all/20210831043723.13481-2-robbat2@gentoo.org/ )
+    KVM: SVM: Require exact CPUID.0x1 match when stuffing EDX at INIT
 
-You already CC'd them on Sept 7th, no response yet.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15d871b7300000
+start commit:   0319b848b155 binfmt: a.out: Fix bogus semicolon
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=faed7df0f442c217
+dashboard link: https://syzkaller.appspot.com/bug?extid=7590ddacf9f333c18f6c
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1308d0ed300000
 
-Does MAINTAINERS need an update for kernel/trace/trace_event_perf.c?
-It points to Ingo & yourself for that directory, and not to the Perf
-maintainers.
+If the result looks correct, please mark the issue as fixed by replying with:
 
---=20
-Robin Hugh Johnson
-Gentoo Linux: Dev, Infra Lead, Foundation Treasurer
-E-Mail   : robbat2@gentoo.org
-GnuPG FP : 11ACBA4F 4778E3F6 E4EDF38E B27B944E 34884E85
-GnuPG FP : 7D0B3CEB E9B85B1F 825BCECF EE05E6F6 A48F6136
+#syz fix: KVM: SVM: Require exact CPUID.0x1 match when stuffing EDX at INIT
 
---l77RIbjW34pLUj0y
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-Comment: Robbat2 @ Orbis-Terrarum Networks - The text below is a digital signature. If it doesn't make any sense to you, ignore it.
-
-iQKTBAABCgB9FiEEveu2pS8Vb98xaNkRGTlfI8WIJsQFAmFeJ8JfFIAAAAAALgAo
-aXNzdWVyLWZwckBub3RhdGlvbnMub3BlbnBncC5maWZ0aGhvcnNlbWFuLm5ldEJE
-RUJCNkE1MkYxNTZGREYzMTY4RDkxMTE5Mzk1RjIzQzU4ODI2QzQACgkQGTlfI8WI
-JsQjqxAAnToFaWPySjpH52cWIYMdysTsuq4l0ZRgXEHGzyPEwO4kcOFCVC/IFUNF
-VkTMXlmYTmHaEU4FfB36BgOfgQezF2WFpITomH8h7M6qVNoO3w/LF0b3/Og0Zbnh
-BaagI6In23XHBIxnnnbf9lW2o8iHrPh6w2U8rVfDiFV89eExPD/XU3OZXvDDJm2s
-G2KMXjOlEzN+6ypT0c4nCBz2FNb5f+/1EpxiMeJbQKxla0wqVCQzlIbVPhrXIyNT
-01JIyZGEsxgRIioBV3Y2WsUG84CGygt4jqbPp9qbvT16UniCoykLuqancX2PEgp8
-/SIwSc9b3LthNb0wcdzGn7xWnnduQZ6eYfYK/SJayHGBEUNLhh30GnU4F/WdeQ66
-DzaPCClYSDi5SQ90PaqQpvuz+VRIoCOKIcdBGUYKVv8ffNxeAgXIsBUwVM9a4v9F
-IhZ1DGWVUXXWO/MwP2QuTLPI2TuubS0DhDhsEFit5a35vX9x8Sai/nCl6iSLiKpU
-cyjtQM1qBZ+Bpln+DDI+xRZ/QfuPQlA5OAz05Fa5mUXr/Pu6GlUIajIUdIAj4+jy
-sAVNingHYZznoXqpg0zDRhNlGyJtWDxjJVqNsmSuREnZqFDzzxB78W9UQuzVz4xj
-JUk7qqjR7z4Q7O9b3gDjvKwSdTDS0LrVmxvAfZfCbfk7EXbiIbo=
-=d39r
------END PGP SIGNATURE-----
-
---l77RIbjW34pLUj0y--
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
