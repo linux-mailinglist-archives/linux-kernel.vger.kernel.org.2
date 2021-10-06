@@ -2,120 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7CA6423996
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 10:18:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94B9F42398A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 10:14:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237758AbhJFIUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 04:20:32 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:36234 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231145AbhJFIUb (ORCPT
+        id S237729AbhJFIQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 04:16:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35162 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237638AbhJFIQr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 04:20:31 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id B2E0C20335;
-        Wed,  6 Oct 2021 08:18:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1633508318;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cRAF9XQbKrlzJn8BZCX3Hi9xm9TVoz2BxZrKoRbPKAo=;
-        b=BO9gIx80fyRID1UM/udQW68aQSz6x9ndFZ3bZI7QcKODlD1Efu9lVVkv+FOi9o9rbVHQ2Q
-        7CF0SB2jAHX70Q02pbNKNzxYiBNn0StPUmR1Ux7Kgwc3Jd3cc3V8cC77EWFJF4KFN5AOs3
-        44vSwc+jOrBijc2FPA3xiskbdEyKc6s=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1633508318;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cRAF9XQbKrlzJn8BZCX3Hi9xm9TVoz2BxZrKoRbPKAo=;
-        b=p6k9Y6Ivyz1mhKX6cDAyohwVQTBRLcieE5RV7FCrYgMxJl/ges0xWL7ZLWAV/xe9EtmTp6
-        cOomHR8f9fNJmOBA==
-Received: from g78 (unknown [10.163.24.38])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id E61D5A3B83;
-        Wed,  6 Oct 2021 08:18:37 +0000 (UTC)
-References: <20211006074547.14724-1-rpalethorpe@suse.com>
- <CAK8P3a0COfvLvnL7WCZY6xp+y=gKhm_RakUJbR9DSbzjit3pGQ@mail.gmail.com>
-User-agent: mu4e 1.6.5; emacs 27.2
-From:   Richard Palethorpe <rpalethorpe@suse.de>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Arseny Krasnov <arseny.krasnov@kaspersky.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Deepa Dinamani <deepa.kernel@gmail.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, rpalethorpe@richiejp.com
-Subject: Re: [PATCH] vsock: Handle compat 32-bit timeout
-Date:   Wed, 06 Oct 2021 09:13:37 +0100
-Reply-To: rpalethorpe@suse.de
-In-reply-to: <CAK8P3a0COfvLvnL7WCZY6xp+y=gKhm_RakUJbR9DSbzjit3pGQ@mail.gmail.com>
-Message-ID: <87ee8ybm76.fsf@suse.de>
+        Wed, 6 Oct 2021 04:16:47 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85479C061749;
+        Wed,  6 Oct 2021 01:14:55 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id w11so1116750plz.13;
+        Wed, 06 Oct 2021 01:14:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=kTCopaw0niGkDwJHAXtSX6kmJqoy87Cd/ydnWD+b1ic=;
+        b=HVxpSOspjSEYeUd3a9pPoTButm/5rvoXXfaebkXnEN6NIqxt4fmxYdlqqbovx70X7a
+         2ZxvdCUFlgNjjg1jk6a1uY8LLzIVYTIzwvUb17Oga/3O/s6+eLe44gTb9RG2UVGqhQTF
+         1IbolilV3RenNRtnS58y+q/mM9MFurYlArAUSiMDuxBW1LjKZwngnwfjysbl+huqc1JI
+         Zaj3fJgiZf/5OOr1h1tyylgDsroDCJEQrKXdRf4dDa7Dm6U+jXyY5EaxgIvkFMrkwg0p
+         Auc5OGZmyAWQr6IQkXB3J9+HKi6Cibl9ZOzv0lB5kDTHqY9AbDO7hTXYWPIZpIdXxwrh
+         52mQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=kTCopaw0niGkDwJHAXtSX6kmJqoy87Cd/ydnWD+b1ic=;
+        b=DWYLGWRAq7yH3FMkSy1U2fzm3IKiZzk4Ku2lkQMFBstDrftt2+RZO6rcpw5gknWtcO
+         YTibEp9H+SYGA9aut6UP2GirsVMwVTWvbWK4hlzuTGW+24jw9oeLJOTFVbgAJfPsM7/8
+         DBOu/t43EgZc0i1qOJxzQSFOYidVtYvWMj6nfiMbI0lRW7S0VCPbAYUFOGnMsVV8LgLG
+         3X7SS4Ixub6DHnpxG4PDGCGeEdEqszZdCkJ8EmaIoJnzI+CZAiBOrBQ/nkHYhfywj+Z9
+         u8Yh2nbV7+XCK7bJecXtFebKa/WLRN38B9Mief+jhsMNnShQ7ysCdo1275z/4WXQL4Td
+         F0QA==
+X-Gm-Message-State: AOAM532nXYV2uEHx/tTN1U9fM98sKXOK/2OaAqmKV3gDfBuZcqYTx//u
+        1MA/HiEAGor/i3eccZ4fGIMGv2ztt4bYTYRfp1GU6mcZH0O5UNc=
+X-Google-Smtp-Source: ABdhPJx1Xe3rLlL+Z445sTW0DuryAtFaxL5lTDgssnP0DlkvsvZfuGoEXSONAcUU4Ax+dVB4VvkhOFTapmyZjbdC0Ag=
+X-Received: by 2002:a17:90a:b794:: with SMTP id m20mr9619503pjr.178.1633508094869;
+ Wed, 06 Oct 2021 01:14:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+From:   Hao Sun <sunhao.th@gmail.com>
+Date:   Wed, 6 Oct 2021 16:14:43 +0800
+Message-ID: <CACkBjsbaCmZK2wUExMqu_KKBr2jnEi-T6iEr=vzw4YS5g5DOOQ@mail.gmail.com>
+Subject: BUG: unable to handle kernel NULL pointer dereference in xlog_cil_commit
+To:     djwong@kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-xfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Arnd,
+Hello,
 
-Arnd Bergmann <arnd@arndb.de> writes:
+When using Healer to fuzz the latest Linux kernel, the following crash
+was triggered.
 
-> On Wed, Oct 6, 2021 at 9:48 AM Richard Palethorpe <rpalethorpe@suse.com> wrote:
->>
->> Allow 32-bit timevals to be used with a 64-bit kernel.
->>
->> This allows the LTP regression test vsock01 to run without
->> modification in 32-bit compat mode.
->>
->> Fixes: fe0c72f3db11 ("socket: move compat timeout handling into sock.c")
->> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
->>
->> ---
->>
->> This is one of those fixes where I am not sure if we should just
->> change the test instead. Because it's not clear if someone is likely
->> to use vsock's in 32-bit compat mode?
->
-> We try very hard to ensure that compat mode works for every interface,
-> so it should be fixed in the kernel. Running compat mode is common
-> on memory-restricted machines, e.g. on cloud platforms and on deeply
-> embedded systems.
+HEAD commit: 0513e464f900 Merge tag 'perf-tools-fixes-for-v5.15-2021-09-27'
+git tree: upstream
+console output:
+https://drive.google.com/file/d/1vm5fDM220kkghoiGa3Aw_Prl4O_pqAXF/view?usp=sharing
+kernel config: https://drive.google.com/file/d/1Jqhc4DpCVE8X7d-XBdQnrMoQzifTG5ho/view?usp=sharing
 
-Thanks!
+Sorry, I don't have a reproducer for this crash, hope the symbolized
+report can help.
+If you fix this issue, please add the following tag to the commit:
+Reported-by: Hao Sun <sunhao.th@gmail.com>
 
->
-> However, I think fixing the SO_VM_SOCKETS_CONNECT_TIMEOUT
-> to support 64-bit timeouts would actually be more important here. I think
-> what you need to do is to define the macro the same way
-> as the SO_TIMESTAMP one:
->
-> #define SO_RCVTIMEO (sizeof(time_t) == sizeof(__kernel_long_t) ? \
->              SO_RCVTIMEO_OLD : SO_RCVTIMEO_NEW)
-> #define SO_TIMESTAMP (sizeof(time_t) == sizeof(__kernel_long_t) ? \
->              SO_TIMESTAMP_OLD : SO_TIMESTAMP_NEW)
-> ...
->
-> to ensure that user space picks an interface that matches the
-> user space definition of 'struct timeval'.
->
-> Your change looks correct otherwise, but I think you should first
-> add the new interface for 64-bit timeouts, since that likely changes
-> the code in a way that makes your current patch no longer the
-> best way to write it.
->
->        Arnd
-
-Ah, yes, it will still be broken if libc is configured with 64bit
-timeval only.
-
--- 
-Thank you,
-Richard.
+FAULT_INJECTION: forcing a failure.
+name failslab, interval 1, probability 0, space 0, times 0
+CPU: 1 PID: 28965 Comm: syz-executor Not tainted 5.15.0-rc3+ #21
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x8d/0xcf lib/dump_stack.c:106
+ fail_dump lib/fault-inject.c:52 [inline]
+ should_fail+0x13c/0x160 lib/fault-inject.c:146
+ should_failslab+0x5/0x10 mm/slab_common.c:1328
+ slab_pre_alloc_hook.constprop.99+0x4e/0xc0 mm/slab.h:494
+ slab_alloc_node mm/slub.c:3120 [inline]
+ __kmalloc_node+0x6b/0x240 mm/slub.c:4435
+ kmalloc_node include/linux/slab.h:614 [inline]
+ kvmalloc_node+0x33/0xe0 mm/util.c:587
+ kvmalloc include/linux/mm.h:805 [inline]
+ xlog_cil_alloc_shadow_bufs fs/xfs/xfs_log_cil.c:224 [inline]
+ xlog_cil_commit+0x181/0xe20 fs/xfs/xfs_log_cil.c:1280
+ __xfs_trans_commit+0x239/0x5a0 fs/xfs/xfs_trans.c:881
+ xfs_create+0x80b/0x900 fs/xfs/xfs_inode.c:1091
+ xfs_generic_create+0x16c/0x470 fs/xfs/xfs_iops.c:197
+ lookup_open+0x660/0x780 fs/namei.c:3282
+ open_last_lookups fs/namei.c:3352 [inline]
+ path_openat+0x465/0xe20 fs/namei.c:3557
+ do_filp_open+0xe3/0x170 fs/namei.c:3588
+ do_sys_openat2+0x357/0x4a0 fs/open.c:1200
+ do_sys_open+0x87/0xd0 fs/open.c:1216
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x34/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x46ae99
+Code: f7 d8 64 89 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 48 89 f8 48
+89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
+01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f847c2eec48 EFLAGS: 00000246 ORIG_RAX: 0000000000000055
+RAX: ffffffffffffffda RBX: 000000000078c158 RCX: 000000000046ae99
+RDX: 0000000000000000 RSI: 0000000000000021 RDI: 00000000200b5040
+RBP: 00007f847c2eec80 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000000000c
+R13: 0000000000000000 R14: 000000000078c158 R15: 00007ffd4ca99420
+BUG: kernel NULL pointer dereference, address: 0000000000000000
+#PF: supervisor write access in kernel mode
+#PF: error_code(0x0002) - not-present page
+PGD 10a56e067 P4D 10a56e067 PUD 10e1e3067 PMD 0
+Oops: 0002 [#1] PREEMPT SMP
+CPU: 0 PID: 28965 Comm: syz-executor Not tainted 5.15.0-rc3+ #21
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+RIP: 0010:memset_erms+0x9/0x10 arch/x86/lib/memset_64.S:64
+Code: c1 e9 03 40 0f b6 f6 48 b8 01 01 01 01 01 01 01 01 48 0f af c6
+f3 48 ab 89 d1 f3 aa 4c 89 c8 c3 90 49 89 f9 40 88 f0 48 89 d1 <f3> aa
+4c 89 c8 c3 90 49 89 fa 40 0f b6 ce 48 b8 01 01 01 01 01 01
+RSP: 0018:ffffc9000efab998 EFLAGS: 00010202
+RAX: 0000000000000000 RBX: ffff88810fa73198 RCX: 0000000000000058
+RDX: 0000000000000058 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: ffff888110c00108 R08: 0000000000000cc0 R09: 0000000000000000
+R10: ffffffff81499943 R11: 0000000000000005 R12: 0000000000000210
+R13: 0000000000000000 R14: 0000000000000268 R15: 0000000000000000
+FS:  00007f847c2ef700(0000) GS:ffff88807dc00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 000000010c42b000 CR4: 0000000000750ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000600
+PKRU: 55555554
+Call Trace:
+ memset include/linux/fortify-string.h:175 [inline]
+ xlog_cil_alloc_shadow_bufs fs/xfs/xfs_log_cil.c:225 [inline]
+ xlog_cil_commit+0x1a1/0xe20 fs/xfs/xfs_log_cil.c:1280
+ __xfs_trans_commit+0x239/0x5a0 fs/xfs/xfs_trans.c:881
+ xfs_create+0x80b/0x900 fs/xfs/xfs_inode.c:1091
+ xfs_generic_create+0x16c/0x470 fs/xfs/xfs_iops.c:197
+ lookup_open+0x660/0x780 fs/namei.c:3282
+ open_last_lookups fs/namei.c:3352 [inline]
+ path_openat+0x465/0xe20 fs/namei.c:3557
+ do_filp_open+0xe3/0x170 fs/namei.c:3588
+ do_sys_openat2+0x357/0x4a0 fs/open.c:1200
+ do_sys_open+0x87/0xd0 fs/open.c:1216
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x34/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x46ae99
+Code: f7 d8 64 89 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 48 89 f8 48
+89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
+01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f847c2eec48 EFLAGS: 00000246 ORIG_RAX: 0000000000000055
+RAX: ffffffffffffffda RBX: 000000000078c158 RCX: 000000000046ae99
+RDX: 0000000000000000 RSI: 0000000000000021 RDI: 00000000200b5040
+RBP: 00007f847c2eec80 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000000000c
+R13: 0000000000000000 R14: 000000000078c158 R15: 00007ffd4ca99420
+Modules linked in:
+Dumping ftrace buffer:
+   (ftrace buffer empty)
+CR2: 0000000000000000
+---[ end trace 1d10d5c699ef1895 ]---
+RIP: 0010:memset_erms+0x9/0x10 arch/x86/lib/memset_64.S:64
+Code: c1 e9 03 40 0f b6 f6 48 b8 01 01 01 01 01 01 01 01 48 0f af c6
+f3 48 ab 89 d1 f3 aa 4c 89 c8 c3 90 49 89 f9 40 88 f0 48 89 d1 <f3> aa
+4c 89 c8 c3 90 49 89 fa 40 0f b6 ce 48 b8 01 01 01 01 01 01
+RSP: 0018:ffffc9000efab998 EFLAGS: 00010202
+RAX: 0000000000000000 RBX: ffff88810fa73198 RCX: 0000000000000058
+RDX: 0000000000000058 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: ffff888110c00108 R08: 0000000000000cc0 R09: 0000000000000000
+R10: ffffffff81499943 R11: 0000000000000005 R12: 0000000000000210
+R13: 0000000000000000 R14: 0000000000000268 R15: 0000000000000000
+FS:  00007f847c2ef700(0000) GS:ffff88807dc00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 000000010c42b000 CR4: 0000000000750ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000600
+PKRU: 55555554
+----------------
+Code disassembly (best guess):
+   0: c1 e9 03              shr    $0x3,%ecx
+   3: 40 0f b6 f6          movzbl %sil,%esi
+   7: 48 b8 01 01 01 01 01 movabs $0x101010101010101,%rax
+   e: 01 01 01
+  11: 48 0f af c6          imul   %rsi,%rax
+  15: f3 48 ab              rep stos %rax,%es:(%rdi)
+  18: 89 d1                mov    %edx,%ecx
+  1a: f3 aa                rep stos %al,%es:(%rdi)
+  1c: 4c 89 c8              mov    %r9,%rax
+  1f: c3                    retq
+  20: 90                    nop
+  21: 49 89 f9              mov    %rdi,%r9
+  24: 40 88 f0              mov    %sil,%al
+  27: 48 89 d1              mov    %rdx,%rcx
+* 2a: f3 aa                rep stos %al,%es:(%rdi) <-- trapping instruction
+  2c: 4c 89 c8              mov    %r9,%rax
+  2f: c3                    retq
+  30: 90                    nop
+  31: 49 89 fa              mov    %rdi,%r10
+  34: 40 0f b6 ce          movzbl %sil,%ecx
+  38: 48                    rex.W
+  39: b8 01 01 01 01        mov    $0x1010101,%eax
+  3e: 01 01                add    %eax,(%rcx)
