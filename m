@@ -2,169 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D34E0423E0C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 14:48:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A772423DF6
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 14:44:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238577AbhJFMuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 08:50:13 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:36081 "EHLO pegase2.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238586AbhJFMuC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 08:50:02 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4HPZ4P1hDvz9sVN;
-        Wed,  6 Oct 2021 14:48:05 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id B2v-_c4nEVnB; Wed,  6 Oct 2021 14:48:05 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4HPZ4M25FQz9sTH;
-        Wed,  6 Oct 2021 14:48:03 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 2FCC08B77D;
-        Wed,  6 Oct 2021 14:48:03 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id l9XLego_FhAh; Wed,  6 Oct 2021 14:48:03 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.204.229])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 8FCF58B780;
-        Wed,  6 Oct 2021 14:48:02 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
-        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1) with ESMTPS id 196Clppe579416
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Wed, 6 Oct 2021 14:47:52 +0200
-Received: (from chleroy@localhost)
-        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1/Submit) id 196ChsD8579287;
-        Wed, 6 Oct 2021 14:43:54 +0200
-X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH v1 07/15] powerpc/nohash: Move setup_kuap out of 8xx.c
-Date:   Wed,  6 Oct 2021 14:43:40 +0200
-Message-Id: <a54264dbf37d5ae21c49bc8ac514f67d11d255af.1633523837.git.christophe.leroy@csgroup.eu>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1633523837.git.christophe.leroy@csgroup.eu>
-References: <cover.1633523837.git.christophe.leroy@csgroup.eu>
+        id S238534AbhJFMqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 08:46:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41226 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238471AbhJFMqM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 08:46:12 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFCD8C061762
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 05:44:19 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id y15so9906812lfk.7
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 05:44:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ZKqaWxUs3sgD4tdQBsKfjQHFZ50A1AY57zWO3HzEaz0=;
+        b=p7O7r3g85OL9vVkRCa3Pfl3C5X1Jfj9eXjPMKWVLsEhkWogxYEcClklxYGVWQq8A2P
+         lEHLpYxRHgQW4uXVDoPHoUArsfuteRAt1b6CIA3FJ+EjNOe5zUT+AAgMFYGSzljSZ6TO
+         KoFs69gM6EHycwixuzD1lK9+dV8Me5UuqmZ9rtY57gAwYRrE057gkoCf0Uoi9LCBgyR9
+         7atsGho2QXhE+dDu8BmXr5Ur/SWTeiQD4sTYuNaaOKKOVXapsZOBOVO1z6VNsE4WUUbL
+         lGzoNXh0xJAquXu3k8a0vYJYpOb6yc9cyGw4+SDPKUnM/cHV804+EyEdWXyu6r4B41NO
+         0G0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ZKqaWxUs3sgD4tdQBsKfjQHFZ50A1AY57zWO3HzEaz0=;
+        b=P3FTcPpIGubyeMfBudn8kdWcvD+h8dMw4Ek7Q7FBXmHeqX1gnyc/zXSygy/2b5Ks8i
+         wW67fHaK2daCfEOM3KFOiJontlQ/iOEq2diU3kB7sZFs5IK9bajhKpYvrt/srbtoOIJr
+         u1sqaokQ+65EXMSsBmHYvfkJPKxZEmPuvkrCJaeUj/iciRbIEG2iP9Wb1RfIC2kqLrbF
+         nn7wjw9QeBDjTD/uCvXiKN1Qw7tbq5HUZw24EwW9SOwjXSe6RpRDYDWdbmAOWJW1KABF
+         EgWb8kVAaj5OclfvBJ/mRN4B6Hob+d4eQ7KZUMUKvOdm7/Y9vYwbUXHnrMNmdzsOM/3j
+         Vikw==
+X-Gm-Message-State: AOAM532XoRDhHsqC9kvLUU9ywHg+zTTuoW+70B4i5DFRs//Jv0UyGan+
+        OvT0hpz/00km9dwl+y17eC4SpUdS4ixEShyLE0pWcw==
+X-Google-Smtp-Source: ABdhPJyXxeHpfLtxmaaabzboN40a7mbS25hsa4pgTQ9RD1C7UcaYr5BpIOQmIiI1EQ4OQX0iO/sLUK+eeOQGXFL/ZtE=
+X-Received: by 2002:ac2:4157:: with SMTP id c23mr9458293lfi.184.1633524257867;
+ Wed, 06 Oct 2021 05:44:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210926224058.1252-1-digetx@gmail.com> <20210926224058.1252-7-digetx@gmail.com>
+ <CAPDyKFq+LS4Jr1GyC-a-tGWPzGH0JxfJ9wKY=uQEBGYm952azw@mail.gmail.com>
+ <24101cd6-d3f5-1e74-db39-145ecd30418b@gmail.com> <CAPDyKFreK7976PJL-1zySoza_yXM7rMQ64aODWUZ+U3L-uCa0w@mail.gmail.com>
+ <4bdba8a2-4b9b-ed7d-e6ca-9218d8200a85@gmail.com> <74a47158-e2e4-5fd0-3f37-0b50d4ead4d9@gmail.com>
+In-Reply-To: <74a47158-e2e4-5fd0-3f37-0b50d4ead4d9@gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Wed, 6 Oct 2021 14:43:41 +0200
+Message-ID: <CAPDyKFr2-f1wM+6jF9vWJ-Nq80Zg1Z3qFP6saULOrBi1270HGw@mail.gmail.com>
+Subject: Re: [PATCH v13 06/35] clk: tegra: Support runtime PM and power domain
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        Peter Chen <peter.chen@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Nishanth Menon <nm@ti.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        linux-staging@lists.linux.dev, linux-pwm@vger.kernel.org,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Richard Weinberger <richard@nod.at>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        David Heidelberg <david@ixit.cz>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to reuse it on booke/4xx, move KUAP
-setup routine out of 8xx.c
+On Wed, 6 Oct 2021 at 00:43, Dmitry Osipenko <digetx@gmail.com> wrote:
+>
+> 06.10.2021 01:19, Dmitry Osipenko =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> ...
+> > I reproduced the OFF problem by removing the clk prepare/unprepare from
+> > the suspend/resume of the clk driver and making some extra changes to
+> > clock tree topology and etc to trigger the problem on Nexus 7.
+> >
+> > tegra-pmc 7000e400.pmc: failed to turn off PM domain heg: -13
+> >
+> > It happens from genpd_suspend_noirq() -> tegra_genpd_power_off() -> clk
+> > -> GENPD -> I2C -> runtime-pm.
+> >
+> > -13 is EACCES, it comes from the runtime PM of I2C device. RPM is
+> > prohibited/disabled during late (NOIRQ) suspend by the drivers core.
+>
+> My bad, I double-checked and it's not I2C RPM that is failing now, but
+> the clock's RPM [1], which is also unavailable during NOIRQ.
 
-Make them usable on SMP by removing the __init tag
-as it is called for each CPU.
+Yes, that sounds reasonable.
 
-And use __prevent_user_access() instead of hard
-coding initial lock.
+You would then need a similar patch for the tegra clock driver as I
+suggested for tegra I2C driver. That should solve the problem, I
+think.
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/mm/nohash/8xx.c    | 21 ---------------------
- arch/powerpc/mm/nohash/Makefile |  2 +-
- arch/powerpc/mm/nohash/kup.c    | 32 ++++++++++++++++++++++++++++++++
- 3 files changed, 33 insertions(+), 22 deletions(-)
- create mode 100644 arch/powerpc/mm/nohash/kup.c
+>
+> [1]
+> https://elixir.free-electrons.com/linux/v5.15-rc4/source/drivers/clk/clk.=
+c#L116
+>
+> Previously it was I2C RPM that was failing in a similar way, but code
+> changed a tad since that time.
 
-diff --git a/arch/powerpc/mm/nohash/8xx.c b/arch/powerpc/mm/nohash/8xx.c
-index 0df9fe29dd56..e12e41eb91c6 100644
---- a/arch/powerpc/mm/nohash/8xx.c
-+++ b/arch/powerpc/mm/nohash/8xx.c
-@@ -8,11 +8,7 @@
-  */
- 
- #include <linux/memblock.h>
--#include <linux/mmu_context.h>
- #include <linux/hugetlb.h>
--#include <asm/fixmap.h>
--#include <asm/code-patching.h>
--#include <asm/inst.h>
- 
- #include <mm/mmu_decl.h>
- 
-@@ -224,23 +220,6 @@ void __init setup_kuep(bool disabled)
- }
- #endif
- 
--#ifdef CONFIG_PPC_KUAP
--struct static_key_false disable_kuap_key;
--EXPORT_SYMBOL(disable_kuap_key);
--
--void __init setup_kuap(bool disabled)
--{
--	if (disabled) {
--		static_branch_enable(&disable_kuap_key);
--		return;
--	}
--
--	pr_info("Activating Kernel Userspace Access Protection\n");
--
--	mtspr(SPRN_MD_AP, MD_APG_KUAP);
--}
--#endif
--
- int pud_clear_huge(pud_t *pud)
- {
- 	 return 0;
-diff --git a/arch/powerpc/mm/nohash/Makefile b/arch/powerpc/mm/nohash/Makefile
-index 0424f6ce5bd8..2ffca5f8a169 100644
---- a/arch/powerpc/mm/nohash/Makefile
-+++ b/arch/powerpc/mm/nohash/Makefile
-@@ -2,7 +2,7 @@
- 
- ccflags-$(CONFIG_PPC64)	:= $(NO_MINIMAL_TOC)
- 
--obj-y				+= mmu_context.o tlb.o tlb_low.o
-+obj-y				+= mmu_context.o tlb.o tlb_low.o kup.o
- obj-$(CONFIG_PPC_BOOK3E_64)  	+= tlb_low_64e.o book3e_pgtable.o
- obj-$(CONFIG_40x)		+= 40x.o
- obj-$(CONFIG_44x)		+= 44x.o
-diff --git a/arch/powerpc/mm/nohash/kup.c b/arch/powerpc/mm/nohash/kup.c
-new file mode 100644
-index 000000000000..bbacbd780806
---- /dev/null
-+++ b/arch/powerpc/mm/nohash/kup.c
-@@ -0,0 +1,32 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * This file contains the routines for initializing kernel userspace protection
-+ */
-+
-+#include <linux/export.h>
-+#include <linux/init.h>
-+#include <linux/jump_label.h>
-+#include <linux/printk.h>
-+#include <linux/smp.h>
-+
-+#include <asm/kup.h>
-+#include <asm/mmu.h>
-+#include <asm/smp.h>
-+
-+#ifdef CONFIG_PPC_KUAP
-+struct static_key_false disable_kuap_key;
-+EXPORT_SYMBOL(disable_kuap_key);
-+
-+void setup_kuap(bool disabled)
-+{
-+	if (disabled) {
-+		if (smp_processor_id() == boot_cpuid)
-+			static_branch_enable(&disable_kuap_key);
-+		return;
-+	}
-+
-+	pr_info("Activating Kernel Userspace Access Protection\n");
-+
-+	__prevent_user_access(KUAP_READ_WRITE);
-+}
-+#endif
--- 
-2.31.1
+Alright. In any case, as long as the devices gets suspended in the
+correct order, I think it should be fine to cook a patch along the
+lines of what I suggest for the I2C driver as well.
 
+It should work, I think. Although, maybe you want to avoid runtime
+resuming the I2C device, unless it's the device belonging to the PMIC
+interface, if there is a way to distinguish that for the driver.
+
+Kind regards
+Uffe
