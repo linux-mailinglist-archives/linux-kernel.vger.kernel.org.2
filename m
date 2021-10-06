@@ -2,91 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 266564235C7
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 04:23:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CD934235D0
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 04:27:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237183AbhJFCZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 22:25:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41276 "EHLO
+        id S237218AbhJFC3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 22:29:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229908AbhJFCZm (ORCPT
+        with ESMTP id S237168AbhJFC3m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 22:25:42 -0400
-Received: from mail-vs1-xe2a.google.com (mail-vs1-xe2a.google.com [IPv6:2607:f8b0:4864:20::e2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1906C061749;
-        Tue,  5 Oct 2021 19:23:50 -0700 (PDT)
-Received: by mail-vs1-xe2a.google.com with SMTP id g10so1297833vsb.8;
-        Tue, 05 Oct 2021 19:23:50 -0700 (PDT)
+        Tue, 5 Oct 2021 22:29:42 -0400
+Received: from mail-vs1-xe2c.google.com (mail-vs1-xe2c.google.com [IPv6:2607:f8b0:4864:20::e2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E38F2C06174E
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 19:27:50 -0700 (PDT)
+Received: by mail-vs1-xe2c.google.com with SMTP id v4so1274266vsg.12
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 19:27:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=WwmHQgUBgnVFhJP2TLRGoapFl3aOWOVk6xMbmdmYBZg=;
-        b=GOc7dwi8lOh1lC6U5VsgxVQcF6lKVrF5WsAzGmomX36eBy3tlkaRBdKq4x+l6MwlU5
-         J1Uob5g3VFdq+6OCqToVaprDxqCdabVj6JsoLv6fLedkdI/Ep+lgNeJVNwKD/lMuiH9z
-         rYSp688Q8QKNXJF1U0ab631Y7MXAqD8SkcIqseATHEIlQDuCWuIqvZcOBEKdC2MFivhd
-         OW7CIJMrVB0EHQncn+ZiFtHtUntykBIYatjFwxudD6oJCjVcVMNRtcfCjT4zyoh62X9x
-         If4NRyb9Kuf4nofVdpWr2wUWxyZ4HMevfHjPGE1+r3992VUSB4rRZfK2tzmTYHLwKnDb
-         vazg==
+         :cc;
+        bh=4OYSce36HFIDKSweIZsHOeEUQcMTMlRZW+u2FdUpafE=;
+        b=gHppIZL0NNL41Ah+TizK4cJGOSQt6n8ckgXCCWKJaVG6WuNu6D39wA8hcCUdEJ2ZBF
+         qP4uE8XmPBjyiFvPVso2jkrCUkzwGiwtyJdgYFh1W5jA3tUXXB194CJSf1C7SEgMRs4W
+         P6IDsUGsVQQvAQ7Amh1603Oup30JJYY0v3AZShcjcLS2cXmQ+BJ6vQoFS+wc7BMdd6bh
+         3EMeA44QQpjNXBGt2u4IpozI3Xy6CHpvFOfLvcPRLEmIVi6pIMRUrkMqgtyU0i2mHuuj
+         Q0k1kaP8hRW26c/ju0oSzrupcbkC9MJyflrfUTGXotsjd/k5vs3AS5biUUCmwpkqPkfE
+         RsZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=WwmHQgUBgnVFhJP2TLRGoapFl3aOWOVk6xMbmdmYBZg=;
-        b=TTb3Steq8Gaq5+GgwGOyOi1zPET+y2aX5CuXD3Xky/3r5pQdYGNA1mtGj5z9+YzZPP
-         w1WNium5HUu+qYITCGO7DZ0PNPaaITZx1OAl06BEw6Kh9RwNnd4bPVB89lItQmBFxpVe
-         UIacVG/TdILX3a1sUOhX7u7EzqbjFa4ipqHmabxFyUntUFifop7Rl2rjLm3eYchnACcf
-         j6lua+dnyZqLhXyd/C6Q+P7LlBfiAKWZNbmj39qOT0p8rhztPo9ZWUZ5wuwe/R3KImnh
-         E92oPBj9Nar/Ek5NDU8+pe1A66+O0Po8NZ0rpDuy7Ht2KYE1dxuKnzPVK2S9c5MZp3Yf
-         FPNw==
-X-Gm-Message-State: AOAM530yG3SgFGKUXyTaW5yD7GGfWHDWADUiFerL9/zt8fFSvtBaa0nC
-        bvRSrcrCCQt0b7qHeufHFxVva1YHTQ8HIQ3qR6U=
-X-Google-Smtp-Source: ABdhPJwcONDskG/EsRXuJWW7n2sfuq/f3H3TUfGpNb7vycf8BKF3z24Ow7AU8AqZm/bdzE/StOvMydXYy2kEZZFCVH8=
-X-Received: by 2002:a67:e0de:: with SMTP id m30mr6440548vsl.51.1633487029583;
- Tue, 05 Oct 2021 19:23:49 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=4OYSce36HFIDKSweIZsHOeEUQcMTMlRZW+u2FdUpafE=;
+        b=y/9kCOPtKzJC06hKJ2wFy7gClqU2JptiJACQ31GeXghg8+++twbuffKa8PH5Rwl83p
+         M2v/ay64h3bW7pC6Aoix0mLQ69j9e98q+ZC0W1qp4lGcmn1X5AK4XGlWX+nVPMd1EZsY
+         NQgnxMfULUNViXTIt3Yefl8uhYFJD35KJziNLBXiPAFo5sd4oiM635NlKdvEX32Usfty
+         NqOBKQo6fUI+UDwTtf49TZCHINu/6yeC9tTSSLQXMOxtYVLjvBLJQyCiuCqN4/po+kIm
+         1ejvzwi+8lYytsGyndPXuKAOXJWSFwp1mQ3yDCPfRd1Ov/A8EcbzjIbrLQAnoab6FM/V
+         aYbA==
+X-Gm-Message-State: AOAM531y3Bn4CbX++hXzxMr7R1G9bAbwq1axpEnQZ/iaXwzvOigBZ7Km
+        U9C2t7OXWByLz3BeQhH8MoQwI1zPH38Ah/hi2gUxRw==
+X-Google-Smtp-Source: ABdhPJyTH29CQo/Jwiml4RScXu5onK6nUS1xqUF5+/gSLGjq9q1MVF4srzfle3qW/NbIcsfW6Jj+di+yUzIVAAeTe7Y=
+X-Received: by 2002:a67:fd67:: with SMTP id h7mr382372vsa.52.1633487269836;
+ Tue, 05 Oct 2021 19:27:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <m3lf39nfsq.fsf@t19.piap.pl> <CAGETcx_N7XYkzFPSuQdvWKk1o+Pzzg4HnzChE_4c_Bg_oOK3eA@mail.gmail.com>
-In-Reply-To: <CAGETcx_N7XYkzFPSuQdvWKk1o+Pzzg4HnzChE_4c_Bg_oOK3eA@mail.gmail.com>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Tue, 5 Oct 2021 23:23:38 -0300
-Message-ID: <CAOMZO5DwcXUe5j97n4Q_RF9WRo2DYoToe7FLNbpDJhn_BxuH0w@mail.gmail.com>
-Subject: Re: v5.15-rcX regression: video devices on i.MX6 are not created
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     =?UTF-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
+References: <20211001175521.3853257-1-tkjos@google.com> <c6a650e4-15e4-2943-f759-0e9577784c7a@schaufler-ca.com>
+ <CAG48ez2tejBUXJGf0R9qpEiauL9-ABgkds6mZTQD7sZKLMdAAQ@mail.gmail.com>
+ <CAG48ez1SRau1Tnge5HVqxCFsNCizmnQLErqnC=eSeERv8jg-zQ@mail.gmail.com>
+ <f59c6e9f-2892-32da-62f8-8bbeec18ee4c@schaufler-ca.com> <CAG48ez0yF0u=QBLVL2XrGB8r8ouQj-_aS9SScu4O4f+LhZxCDw@mail.gmail.com>
+ <e0c1fab9-cb97-d5af-1f4b-f15b6b2097fd@schaufler-ca.com> <CAG48ez3qc+2sc6xTJQVqLTRcjCiw_Adx13KT3OvPMCjBLjZvgA@mail.gmail.com>
+ <6bd2de29-b46a-1d24-4c73-9e4e0f3f6eea@schaufler-ca.com> <CAG48ez0RM6NGZLdEjaqU9KmaOgeFR6cSeNo50XG9oaFxC_ayYw@mail.gmail.com>
+ <CAEjxPJ4X4N_zgH4oRbdkZi21mvS--ExDb_1gad09buMHshB_hQ@mail.gmail.com> <7ec1090d-5bd7-bd05-4f38-07b1cc993721@schaufler-ca.com>
+In-Reply-To: <7ec1090d-5bd7-bd05-4f38-07b1cc993721@schaufler-ca.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Wed, 6 Oct 2021 04:27:22 +0200
+Message-ID: <CAG48ez3ZxzO3fa0T3pE0a4wQYQDvBNY=i+Nj4MtZq-QHtJdFdA@mail.gmail.com>
+Subject: Re: [PATCH v2] binder: use cred instead of task for selinux checks
+To:     Casey Schaufler <casey@schaufler-ca.com>
+Cc:     Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Todd Kjos <tkjos@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        arve@android.com, tkjos@android.com, maco@android.com,
+        christian@brauner.io, James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Kees Cook <keescook@chromium.org>,
+        Jeffrey Vander Stoep <jeffv@google.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        SElinux list <selinux@vger.kernel.org>,
+        devel@driverdev.osuosl.org,
         linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-media <linux-media@vger.kernel.org>
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        stable@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
-
-On Tue, Oct 5, 2021 at 9:10 PM Saravana Kannan <saravanak@google.com> wrote=
-:
+On Tue, Oct 5, 2021 at 6:59 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
+> On 10/5/2021 8:21 AM, Stephen Smalley wrote:
+> > On Mon, Oct 4, 2021 at 8:27 PM Jann Horn <jannh@google.com> wrote:
+> >> On Tue, Oct 5, 2021 at 1:38 AM Casey Schaufler <casey@schaufler-ca.com> wrote:
+> >>> On 10/4/2021 3:28 PM, Jann Horn wrote:
+> >>>> You can't really attribute binder transactions to specific tasks that
+> >>>> are actually involved in the specific transaction, neither on the
+> >>>> sending side nor on the receiving side, because binder is built around
+> >>>> passing data through memory mappings. Memory mappings can be accessed
+> >>>> by multiple tasks, and even a task that does not currently have it
+> >>>> mapped could e.g. map it at a later time. And on top of that you have
+> >>>> the problem that the receiving task might also go through privileged
+> >>>> execve() transitions.
+> >>> OK. I'm curious now as to why the task_struct was being passed to the
+> >>> hook in the first place.
+> >> Probably because that's what most other LSM hooks looked like and the
+> >> authors/reviewers of the patch didn't realize that this model doesn't
+> >> really work for binder? FWIW, these hooks were added in commit
+> >> 79af73079d75 ("Add security hooks to binder and implement the hooks
+> >> for SELinux."). The commit message also just talks about "processes".
+> > Note that in the same code path (binder_transaction), sender_euid is
+> > set from proc->tsk and security_ctx is based on proc->tsk. If we are
+> > changing the hooks to operate on the opener cred, then presumably we
+> > should be doing that for sender_euid and replace the
+> > security_task_getsecid_obj() call with security_cred_getsecid()?
+> >
+> > NB Mandatory Access Control doesn't allow uncontrolled delegation,
+> > hence typically checks against the subject credential either at
+> > delegation/transfer or use or both. That's true in other places too,
+> > e.g. file_permission, socket_sendmsg.
 >
-> On Mon, Oct 4, 2021 at 5:19 AM Krzysztof Ha=C5=82asa <khalasa@piap.pl> wr=
-ote:
-> >
-> > Hi Saravana et al.,
-> >
-> > FYI the patch: 6b2117ad65f1bca9ece6d4b1ee784b42701a2d86
-> >
-> > of: property: fw_devlink: Add support for "resets" and "pwms"
-> >
-> > Allows better tracking of dependencies between devices.
-> >
-> >  drivers/of/property.c | 4 ++++
-> >
-> > breaks v4l2 video devices on an i.MX6 CPU. The /dev/video* nodes are no=
-t
-> > created, and the drivers (async subdevicess) are "waiting":
+> Terrific. Now I'm even less convinced that either the proposed change
+> or the existing code make sense. It's also disturbing that the change
+> log claims that the reason for the change is fix a race condition when
+> in fact it changes the data being sent to the hook completely.
 
-Phillip has sent a fix for this issue:
-http://lists.infradead.org/pipermail/linux-arm-kernel/2021-October/687868.h=
-tml
+The race it's referring to is the one between
+security_binder_transaction() (which checks for permission to send a
+transaction and checks for delegation) and
+security_task_getsecid_obj() (which tells the recipient what the
+sender's security context is). (It's a good thing Paul noticed that
+the v1 patch didn't actually change the security_task_getsecid_obj()
+call... somehow I missed that.)
