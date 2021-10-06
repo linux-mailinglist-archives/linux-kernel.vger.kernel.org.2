@@ -2,168 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 583084245DF
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 20:18:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 516624245E2
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 20:18:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232698AbhJFSUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 14:20:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35706 "EHLO
+        id S238725AbhJFSUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 14:20:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229633AbhJFSUN (ORCPT
+        with ESMTP id S231633AbhJFSUf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 14:20:13 -0400
-Received: from metanate.com (unknown [IPv6:2001:8b0:1628:5005::111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFCE8C061746;
-        Wed,  6 Oct 2021 11:18:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=metanate.com; s=stronger; h=Content-Transfer-Encoding:Content-Type:
-        References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID
-        :Content-Description; bh=urshKh+SwpZcgjJQKF+ekx0TFaMUV+98Ijr/33Ev1eM=; b=0D5f
-        xtfdBqCkDe6ygsBJLmkcLH3eaizC0+v3QhR8wg6/Uj8qL1e0drc8gHFhTXIrId+XIOKrT3BYiS8/8
-        NeLIdfIsqkX/29dMhPitJsLOppRAMTX65hsArZT8Yk/Fi2SlltuwleovBj93eKsjkoEyr+r44+Gq0
-        1KjU9xMpSMcHIU+AiZDjRlUC2WIg04q42Q7tfZzXKP1cfeFMFrFSKwrJgEezq8vMife9SUGT3bPu6
-        B4WcIIg5uCVV3lVJbS47rTWkosfqPNbFkprrIVEEiADyM9a8sTLHGfED6f3JpGE9LrhKeDgKcb0Kc
-        o4YGAUqPqfVN3+W/vydh7Bs8F2KQLg==;
-Received: from [81.174.171.191] (helo=donbot)
-        by email.metanate.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <john@metanate.com>)
-        id 1mYBUc-0004oQ-GP; Wed, 06 Oct 2021 19:18:14 +0100
-Date:   Wed, 6 Oct 2021 19:18:13 +0100
-From:   John Keeping <john@metanate.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     linux-rt-users@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
-        Len Brown <len.brown@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH RT] PM: runtime: avoid retry loops on RT
-Message-ID: <20211006191813.0e097b9f.john@metanate.com>
-In-Reply-To: <CAJZ5v0iFKYvM+rn68VaAbM4=ZLAQBR_UPzvAuKqVLQuP=ZJPew@mail.gmail.com>
-References: <20211005155427.1591196-1-john@metanate.com>
-        <CAJZ5v0gPwUQzGBa2VDeC3xAF9zJVm486BC0eue10-urJ8Xz+iw@mail.gmail.com>
-        <20211005181706.66102578.john@metanate.com>
-        <CAJZ5v0iFKYvM+rn68VaAbM4=ZLAQBR_UPzvAuKqVLQuP=ZJPew@mail.gmail.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        Wed, 6 Oct 2021 14:20:35 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80F89C061753
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 11:18:43 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id s64so7428939yba.11
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 11:18:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tS0Q/doPfkgcSn/P1ry79XfUH0i7iJLfycZHaCEByaw=;
+        b=TYlphAvwMJftzt6RU5u9b6mLtXkIqYWFA04tNKYd2B2kJaBNHrvFS+iWcxQyx65O49
+         VEw0jFjeBxrJigtMkEwMctb8oSbx+fuz5GPExgicIXWNFArloubetA2TV3UEBOxGB59S
+         4/eOuXBnAvuNH7y8YiILc6KY9YVEnat4qn2XUv33xrzz3GJLMCPCjq1bI/veMmjJStMA
+         mw1RSKpfndHUtx7NSTXL90xYj4QC8EJDHuoNRRjBjJoyYzyw7iirxJ6l/qIOOS8/aEEI
+         zLEZyLx56Nk0A1AScwAL4V61zvIuQvil+E41AYH4QmyoGC+u+esm8H+BU3U5aLJkJiKd
+         +gpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tS0Q/doPfkgcSn/P1ry79XfUH0i7iJLfycZHaCEByaw=;
+        b=C7vi3WDJd8WmGcavsYgTC3eCOEk7J7nnYHAAHTSBRm6T/uxIB2aMw8peJ4GNjy7TD5
+         8VzGpRzwAoyiaIu42wh+uYQqZJd6vBsBlfbQLH7kmlviLWXFfD35wCpxXdSfGG8F3igI
+         YtMh98NERpjZtbdKVsKDadSnyzoxK3luxmgMEZBfqY2zD5kdrdqwcPcgNibi/SD8BLlo
+         A/twKKP0xXNQKdnFaYEDQbxAyEHBC3fQjiSAiEzxs1qvRgVJRciU76Pt8p4fizGz4jjd
+         dp4APdt1rkuBjSxwa09okDOOLFMOsgA0UrQkc703zcV0MmPQV18Nw/opmsYw09bIGCa0
+         Hp2g==
+X-Gm-Message-State: AOAM530N3CSY7kY5Mokr7jqsVR2yrxUFQ+1tXTqlaHeoa8ThViWRGcuc
+        S+UqIyEhVtlYcGV8Otai/2yJiCRhAl6fKv3tufuMWA==
+X-Google-Smtp-Source: ABdhPJxugzCMn7sZu79C5fnZMRKkgBcjmMuKl0Fdq3TPkxzrJccYHRxTws0QUusFhxlrkQ2KrgfrvvthwxjhDBttraA=
+X-Received: by 2002:a25:552:: with SMTP id 79mr29984731ybf.202.1633544322361;
+ Wed, 06 Oct 2021 11:18:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Authenticated: YES
+References: <20211001205657.815551-1-surenb@google.com> <20211001205657.815551-3-surenb@google.com>
+ <20211005184211.GA19804@duo.ucw.cz> <CAJuCfpE5JEThTMhwKPUREfSE1GYcTx4YSLoVhAH97fJH_qR0Zg@mail.gmail.com>
+ <20211005200411.GB19804@duo.ucw.cz> <CAJuCfpFZkz2c0ZWeqzOAx8KFqk1ge3K-SiCMeu3dmi6B7bK-9w@mail.gmail.com>
+ <efdffa68-d790-72e4-e6a3-80f2e194d811@nvidia.com> <YV1eCu0eZ+gQADNx@dhcp22.suse.cz>
+ <6b15c682-72eb-724d-bc43-36ae6b79b91a@redhat.com> <CAJuCfpEPBM6ehQXgzp=g4SqtY6iaC8wuZ-CRE81oR1VOq7m4CA@mail.gmail.com>
+ <20211006175821.GA1941@duo.ucw.cz>
+In-Reply-To: <20211006175821.GA1941@duo.ucw.cz>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Wed, 6 Oct 2021 11:18:31 -0700
+Message-ID: <CAJuCfpGuuXOpdYbt3AsNn+WNbavwuEsDfRMYunh+gajp6hOMAg@mail.gmail.com>
+Subject: Re: [PATCH v10 3/3] mm: add anonymous vma name refcounting
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Michal Hocko <mhocko@suse.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Colin Cross <ccross@google.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        vincenzo.frascino@arm.com,
+        =?UTF-8?B?Q2hpbndlbiBDaGFuZyAo5by16Yym5paHKQ==?= 
+        <chinwen.chang@mediatek.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Jann Horn <jannh@google.com>, apopple@nvidia.com,
+        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
+        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
+        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
+        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
+        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
+        Chris Hyser <chris.hyser@oracle.com>,
+        Peter Collingbourne <pcc@google.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Jens Axboe <axboe@kernel.dk>, legion@kernel.org,
+        Rolf Eike Beer <eb@emlix.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Thomas Cedeno <thomascedeno@google.com>, sashal@kernel.org,
+        cxfcosmos@gmail.com, Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-mm <linux-mm@kvack.org>,
+        kernel-team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 6 Oct 2021 19:05:50 +0200
-"Rafael J. Wysocki" <rafael@kernel.org> wrote:
-
-> On Tue, Oct 5, 2021 at 7:17 PM John Keeping <john@metanate.com> wrote:
-> >
-> > On Tue, 5 Oct 2021 18:38:27 +0200
-> > "Rafael J. Wysocki" <rafael@kernel.org> wrote:
-> >  
-> > > On Tue, Oct 5, 2021 at 6:14 PM John Keeping <john@metanate.com> wrote:  
-> > > >
-> > > > With PREEMPT_RT spin_unlock() is identical to spin_unlock_irq() so there
-> > > > is no reason to have a special case using the former.  Furthermore,
-> > > > spin_unlock() enables preemption meaning that a task in RESUMING or
-> > > > SUSPENDING state may be preempted by a higher priority task running
-> > > > pm_runtime_get_sync() leading to a livelock.
-> > > >
-> > > > Use the non-irq_safe path for all waiting so that the waiting task will
-> > > > block.
-> > > >
-> > > > Note that this changes only the waiting behaviour of irq_safe, other
-> > > > uses are left unchanged so that the parent device always remains active
-> > > > in the same way as !RT.
-> > > >
-> > > > Signed-off-by: John Keeping <john@metanate.com>  
+On Wed, Oct 6, 2021 at 10:58 AM Pavel Machek <pavel@ucw.cz> wrote:
+>
+> Hi!
+>
+> > > I can understand that having a string can be quite beneficial e.g., when
+> > > dumping mmaps. If only user space knows the id <-> string mapping, that
+> > > can be quite tricky.
 > > >
-> > > So basically, the idea is that the irq_safe flag should have no effect
-> > > when CONFIG_PREEMPT_RT is set, right?
+> > > However, I also do wonder if there would be a way to standardize/reserve
+> > > ids, such that a given id always corresponds to a specific user. If we
+> > > use an uint64_t for an id, there would be plenty room to reserve ids ...
 > > >
-> > > Wouldn't it be cleaner to make it not present at all in that case?  
+> > > I'd really prefer if we can avoid using strings and instead using ids.
 > >
-> > Yes, just replacing pm_runtime_irq_safe() with an empty function would
-> > also fix it, but I'm not sure if that will have unexpected effects from
-> > the parent device suspending/resuming, especially in terms of latency
-> > for handling interrupts.  
-> 
-> Well, the code as is doesn't work with CONFIG_PREEMPT_RT set anyway in general.
-> 
-> Also this is not just pm_runtime_irq_safe(), but every access to this
-> flag (and there's more  of them than just the ones changed below).
-> 
-> What about putting the flag under #ifdef CONFIG_PREEMPT_RT and
-> providing read/write accessor helpers for it that will be empty in
-> RT-enabled kernels?
+> > I wish it was that simple and for some names like [anon:.bss] or
+> > [anon:dalvik-zygote space] reserving a unique id would work, however
+> > some names like [anon:dalvik-/system/framework/boot-core-icu4j.art]
+> > are generated dynamically at runtime and include package name.
+>
+> I'd be careful; if you allow special characters like that, you will
+> confuse some kind of parser.
 
-That's the other approach I considered, but there are really two things
-that irq_safe means here:
+That's why I think having a separate config option with default being
+disabled would be useful here. It can be enabled on the systems which
+handle [anon:...] correctly without affecting all other systems.
 
-1) Call the suspend/resume hooks with interrupts disabled
+>
+> > Packages are constantly evolving, new ones are developed, names can
+> > change, etc. So assigning a unique id for these names is not really
+> > feasible.
+> > That leaves us with the central facility option, which as I described
+> > in my previous email would be prohibitive from performance POV (IPC
+> > every time we have a new name or want to convert id to name).
+>
+> That "central facility" option can be as simple as "mkdir
+> /somewhere/sanitized_id", using inode numbers for example. You don't
+> really need IPC.
 
-2) Keep the parent device running and make other changes that allow (1)
-   on non-RT systems (for example in amba_pm_runtime_suspend() leave the
-   clock prepared when irq_safe is set, but unprepare it otherwise)
+Hmm, so the suggestion is to have some directory which contains files
+representing IDs, each containing the string name of the associated
+vma? Then let's say we are creating a new VMA and want to name it. We
+would have to scan that directory, check all files and see if any of
+them contain the name we want to reuse the same ID. This is while we
+are doing mmap() call, which is often a part of time sensitive
+operation (for example app is starting and allocating some memory to
+operate). App startup time is one of the main metrics our users care
+about and regressing that would not go well with our QA team.
 
-In the approach of leaving the flag unset on PREEMPT_RT we solve the
-primary problem which is that (1) is irrelevant on RT, but that would
-also affect (2) and I'm not sure whether that's desirable or not.
+>
+> Plus, I don't really believe the IPC cost would be prohibitive.
 
-It's quite possible the answer is that the other changes don't matter
-and we should take the simpler approach of just removing irq_safe under
-CONFIG_PREEMPT_RT.  I'm becoming convinced that this is the right
-answer, but I'm not confident that I fully understand the wider
-ramifications.
+This option was discussed by the Android performance team and rejected
+8 years ago. The problem is that these operations are often happening
+in performance-sensitive areas of the process lifecycle.
 
-> > > > ---
-> > > >  drivers/base/power/runtime.c | 9 +++++----
-> > > >  1 file changed, 5 insertions(+), 4 deletions(-)
-> > > >
-> > > > diff --git a/drivers/base/power/runtime.c b/drivers/base/power/runtime.c
-> > > > index 96972d5f6ef3..5e0d349fab4e 100644
-> > > > --- a/drivers/base/power/runtime.c
-> > > > +++ b/drivers/base/power/runtime.c
-> > > > @@ -347,8 +347,9 @@ static int __rpm_callback(int (*cb)(struct device *), struct device *dev)
-> > > >  {
-> > > >         int retval = 0, idx;
-> > > >         bool use_links = dev->power.links_count > 0;
-> > > > +       bool irq_safe = dev->power.irq_safe && !IS_ENABLED(CONFIG_PREEMPT_RT);
-> > > >
-> > > > -       if (dev->power.irq_safe) {
-> > > > +       if (irq_safe) {
-> > > >                 spin_unlock(&dev->power.lock);
-> > > >         } else {
-> > > >                 spin_unlock_irq(&dev->power.lock);
-> > > > @@ -376,7 +377,7 @@ static int __rpm_callback(int (*cb)(struct device *), struct device *dev)
-> > > >         if (cb)
-> > > >                 retval = cb(dev);
-> > > >
-> > > > -       if (dev->power.irq_safe) {
-> > > > +       if (irq_safe) {
-> > > >                 spin_lock(&dev->power.lock);
-> > > >         } else {
-> > > >                 /*
-> > > > @@ -596,7 +597,7 @@ static int rpm_suspend(struct device *dev, int rpmflags)
-> > > >                         goto out;
-> > > >                 }
-> > > >
-> > > > -               if (dev->power.irq_safe) {
-> > > > +               if (dev->power.irq_safe && !IS_ENABLED(CONFIG_PREEMPT_RT)) {
-> > > >                         spin_unlock(&dev->power.lock);
-> > > >
-> > > >                         cpu_relax();
-> > > > @@ -777,7 +778,7 @@ static int rpm_resume(struct device *dev, int rpmflags)
-> > > >                         goto out;
-> > > >                 }
-> > > >
-> > > > -               if (dev->power.irq_safe) {
-> > > > +               if (dev->power.irq_safe && !IS_ENABLED(CONFIG_PREEMPT_RT)) {
-> > > >                         spin_unlock(&dev->power.lock);
-> > > >
-> > > >                         cpu_relax();
-> > > > --
-> > > > 2.33.0
-> > > >  
-> >  
+>
+> Or you could simply hash the string and use the hash as id...
 
+I don't see how this would help. You still need to register your
+hash->name association somewhere for that hash to be converted back to
+the name. Did I misunderstand your suggestion?
+
+>
+> Best regards,
+>                                                                 Pavel
+> --
+> http://www.livejournal.com/~pavelmachek
