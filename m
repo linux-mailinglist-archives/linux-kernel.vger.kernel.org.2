@@ -2,208 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B90D423D8E
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 14:17:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAA19423E54
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 15:00:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238433AbhJFMTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 08:19:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52600 "EHLO mail.kernel.org"
+        id S238447AbhJFNCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 09:02:14 -0400
+Received: from mga18.intel.com ([134.134.136.126]:42207 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238149AbhJFMTd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 08:19:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 14D60610A2;
-        Wed,  6 Oct 2021 12:17:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633522661;
-        bh=2a1Cek7SL54JNW45UwH2juSN3LIOBHWjg6H61NYjwVc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=vAM7yHIB1fUrFXrS0ubihvD97GMbnHBCnAVPGXNul/uhGXP+bHetjxxPPlpfePGyZ
-         ulJXQaEO36pMVTYKOx349OdZ0shIsXvEyNoqiP5nRavOvXNBYQLoSrPUpQnAdoW3pO
-         FbjshnYvFjMyYAoDX6Xby9EP8xVr0sy6ayj56OvcLlbJpBqYglgijj0LLZEbMvBWQu
-         7cNXp3bDbUMyfPSIcWR5hUKz7o1VlgP+kLukiBvnQPRdvtKAD6iGL9gkfdFrUH7uWp
-         C093/dHAgBzEgAXIn+4hMRVw+ypQB9XrJNZh6IncYcjfz5MjZO/4vpmdoul8LQgrYw
-         X/hyIju3MVAjw==
-Date:   Wed, 6 Oct 2021 14:17:34 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Sohaib Mohamed <sohaib.amhmd@gmail.com>
-Cc:     Frederic Barrat <fbarrat@linux.ibm.com>,
-        Andrew Donnellan <ajd@linux.ibm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Fabrice Gasnier <fabrice.gasnier@st.com>,
-        Jens Axboe <axboe@kernel.dk>, Gioh Kim <gi-oh.kim@ionos.com>,
-        Jack Wang <jinpu.wang@cloud.ionos.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        Bean Huo <beanhuo@micron.com>, Can Guo <cang@codeaurora.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Zhang Rui <rui.zhang@intel.com>, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH] docs: typo fixes in Documentation/ABI/
-Message-ID: <20211006141734.3c54893d@sal.lan>
-In-Reply-To: <20211006121333.75799-1-sohaib.amhmd@gmail.com>
-References: <20211006121333.75799-1-sohaib.amhmd@gmail.com>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S230008AbhJFNCN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 09:02:13 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10128"; a="212925146"
+X-IronPort-AV: E=Sophos;i="5.85,350,1624345200"; 
+   d="scan'208";a="212925146"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2021 06:00:21 -0700
+X-IronPort-AV: E=Sophos;i="5.85,350,1624345200"; 
+   d="scan'208";a="439108427"
+Received: from nbasa-mobl2.amr.corp.intel.com (HELO [10.213.170.135]) ([10.213.170.135])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2021 06:00:20 -0700
+Subject: Re: [PATCH] ASoC: soc-acpi: add alternative id field for machine
+ driver matching
+To:     Brent Lu <brent.lu@intel.com>, alsa-devel@alsa-project.org
+Cc:     Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
+        Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>
+References: <20211006084351.438510-1-brent.lu@intel.com>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <da650858-6523-4813-6433-438e974d060a@linux.intel.com>
+Date:   Wed, 6 Oct 2021 07:17:46 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20211006084351.438510-1-brent.lu@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed,  6 Oct 2021 14:13:25 +0200
-Sohaib Mohamed <sohaib.amhmd@gmail.com> escreveu:
-
-> Signed-off-by: Sohaib Mohamed <sohaib.amhmd@gmail.com>
-
-Please add a description for the patch, explaining what typo issues you
-fixed. The patch itself looks sane to me.
 
 
+On 10/6/21 3:43 AM, Brent Lu wrote:
+> Current design to support second headphone driver in the same machine
+> driver is to duplicate the entries in snd_soc_acpi_mach array and
+> board configs in machine driver. We can avoid this by adding an id_alt
+> field in snd_soc_acpi_mach structure to specify alternative ACPI HIDs
+> for machine driver enumeration and leave the codec type detection to
+> machine driver if necessary.
+
+I am not following your suggestion. The machine drivers for I2S/TDM
+platforms are typically based on specific headphone codecs, and they we
+add possible swaps for amplifiers. The key to find a machine is
+typically the headphone HID. Exhibit A for this in your own contribution
+in the recent weeks with the sof_cs42l42.c machine driver.
+
+Are you suggesting we unify e.g. sof_rt5682.c and sof_cs42l42.c?
+
+The other problem is that today we have one main HID along with
+'quirk_data' for amplifiers. If we have alternate HIDs, what would be
+the rule for quirk_data? Can the quirks apply to all possible alternate
+HIDs? Only one of them?
+
+Without an example where this new alternate ID is used it's hard to see
+what the ask and directions might be.
+
+Care to elaborate?
+Thanks!
+
+> Signed-off-by: Brent Lu <brent.lu@intel.com>
 > ---
->  Documentation/ABI/stable/sysfs-module                     | 2 +-
->  Documentation/ABI/testing/sysfs-bus-rapidio               | 2 +-
->  Documentation/ABI/testing/sysfs-class-cxl                 | 4 ++--
->  Documentation/ABI/testing/sysfs-class-rnbd-client         | 2 +-
->  Documentation/ABI/testing/sysfs-class-rtrs-client         | 2 +-
->  Documentation/ABI/testing/sysfs-class-rtrs-server         | 2 +-
->  Documentation/ABI/testing/sysfs-devices-platform-ACPI-TAD | 2 +-
->  Documentation/ABI/testing/sysfs-devices-power             | 2 +-
->  Documentation/ABI/testing/sysfs-driver-ufs                | 2 +-
->  Documentation/ABI/testing/sysfs-firmware-acpi             | 2 +-
->  10 files changed, 11 insertions(+), 11 deletions(-)
+>  include/sound/soc-acpi.h |  2 ++
+>  sound/soc/soc-acpi.c     | 21 ++++++++++++++++++++-
+>  2 files changed, 22 insertions(+), 1 deletion(-)
 > 
-> diff --git a/Documentation/ABI/stable/sysfs-module b/Documentation/ABI/stable/sysfs-module
-> index 560b4a3278df..41b1f16e8795 100644
-> --- a/Documentation/ABI/stable/sysfs-module
-> +++ b/Documentation/ABI/stable/sysfs-module
-> @@ -38,7 +38,7 @@ What:		/sys/module/<MODULENAME>/srcversion
->  Date:		Jun 2005
->  Description:
->  		If the module source has MODULE_VERSION, this file will contain
-> -		the checksum of the the source code.
-> +		the checksum of the source code.
+> diff --git a/include/sound/soc-acpi.h b/include/sound/soc-acpi.h
+> index 2f3fa385c092..fcf6bae9f9d7 100644
+> --- a/include/sound/soc-acpi.h
+> +++ b/include/sound/soc-acpi.h
+> @@ -129,6 +129,7 @@ struct snd_soc_acpi_link_adr {
+>   * all firmware/topology related fields.
+>   *
+>   * @id: ACPI ID (usually the codec's) used to find a matching machine driver.
+> + * @id_alt: array of ACPI IDs used as an alternative of id field.
+>   * @link_mask: describes required board layout, e.g. for SoundWire.
+>   * @links: array of link _ADR descriptors, null terminated.
+>   * @drv_name: machine driver name
+> @@ -146,6 +147,7 @@ struct snd_soc_acpi_link_adr {
+>  /* Descriptor for SST ASoC machine driver */
+>  struct snd_soc_acpi_mach {
+>  	const u8 id[ACPI_ID_LEN];
+> +	struct snd_soc_acpi_codecs *id_alt;
+>  	const u32 link_mask;
+>  	const struct snd_soc_acpi_link_adr *links;
+>  	const char *drv_name;
+> diff --git a/sound/soc/soc-acpi.c b/sound/soc/soc-acpi.c
+> index 395229bf5c51..ab67d640c20f 100644
+> --- a/sound/soc/soc-acpi.c
+> +++ b/sound/soc/soc-acpi.c
+> @@ -8,6 +8,25 @@
+>  #include <linux/module.h>
+>  #include <sound/soc-acpi.h>
 >  
->  What:		/sys/module/<MODULENAME>/version
->  Date:		Jun 2005
-> diff --git a/Documentation/ABI/testing/sysfs-bus-rapidio b/Documentation/ABI/testing/sysfs-bus-rapidio
-> index f8b6728dac10..9e8fbff99b75 100644
-> --- a/Documentation/ABI/testing/sysfs-bus-rapidio
-> +++ b/Documentation/ABI/testing/sysfs-bus-rapidio
-> @@ -95,7 +95,7 @@ Contact:	Matt Porter <mporter@kernel.crashing.org>,
->  		Alexandre Bounine <alexandre.bounine@idt.com>
->  Description:
->  		(RO) returns name of previous device (switch) on the path to the
-> -		device that that owns this attribute
-> +		device that owns this attribute
+> +static bool snd_soc_acpi_id_present(struct snd_soc_acpi_mach *machine)
+> +{
+> +	struct snd_soc_acpi_codecs *id_alt = machine->id_alt;
+> +	int i;
+> +
+> +	if (acpi_dev_present(machine->id, NULL, -1))
+> +		return true;
+> +
+> +	if (id_alt == NULL)
+> +		return false;
+> +
+> +	for (i = 0; i < id_alt->num_codecs; i++) {
+> +		if (acpi_dev_present(id_alt->codecs[i], NULL, -1))
+> +			return true;
+> +	}
+> +
+> +	return false;
+> +}
+> +
+>  struct snd_soc_acpi_mach *
+>  snd_soc_acpi_find_machine(struct snd_soc_acpi_mach *machines)
+>  {
+> @@ -15,7 +34,7 @@ snd_soc_acpi_find_machine(struct snd_soc_acpi_mach *machines)
+>  	struct snd_soc_acpi_mach *mach_alt;
 >  
->  What:		/sys/bus/rapidio/devices/<nn>:<d>:<iiii>/modalias
->  Date:		Jul, 2013
-> diff --git a/Documentation/ABI/testing/sysfs-class-cxl b/Documentation/ABI/testing/sysfs-class-cxl
-> index 3c77677e0ca7..594fda254130 100644
-> --- a/Documentation/ABI/testing/sysfs-class-cxl
-> +++ b/Documentation/ABI/testing/sysfs-class-cxl
-> @@ -103,8 +103,8 @@ What:           /sys/class/cxl/<afu>/api_version_compatible
->  Date:           September 2014
->  Contact:        linuxppc-dev@lists.ozlabs.org
->  Description:    read only
-> -                Decimal value of the the lowest version of the userspace API
-> -                this this kernel supports.
-> +                Decimal value of the lowest version of the userspace API
-> +                this kernel supports.
->  Users:		https://github.com/ibm-capi/libcxl
->  
->  
-> diff --git a/Documentation/ABI/testing/sysfs-class-rnbd-client b/Documentation/ABI/testing/sysfs-class-rnbd-client
-> index 0b5997ab3365..e6cdc851952c 100644
-> --- a/Documentation/ABI/testing/sysfs-class-rnbd-client
-> +++ b/Documentation/ABI/testing/sysfs-class-rnbd-client
-> @@ -128,6 +128,6 @@ Description:	For each device mapped on the client a new symbolic link is created
->  		The <device_id> of each device is created as follows:
->  
->  		- If the 'device_path' provided during mapping contains slashes ("/"),
-> -		  they are replaced by exclamation mark ("!") and used as as the
-> +		  they are replaced by exclamation mark ("!") and used as the
->  		  <device_id>. Otherwise, the <device_id> will be the same as the
->  		  "device_path" provided.
-> diff --git a/Documentation/ABI/testing/sysfs-class-rtrs-client b/Documentation/ABI/testing/sysfs-class-rtrs-client
-> index 49a4157c7bf1..fecc59d1b96f 100644
-> --- a/Documentation/ABI/testing/sysfs-class-rtrs-client
-> +++ b/Documentation/ABI/testing/sysfs-class-rtrs-client
-> @@ -78,7 +78,7 @@ What:		/sys/class/rtrs-client/<session-name>/paths/<src@dst>/hca_name
->  Date:		Feb 2020
->  KernelVersion:	5.7
->  Contact:	Jack Wang <jinpu.wang@cloud.ionos.com> Danil Kipnis <danil.kipnis@cloud.ionos.com>
-> -Description:	RO, Contains the the name of HCA the connection established on.
-> +Description:	RO, Contains the name of HCA the connection established on.
->  
->  What:		/sys/class/rtrs-client/<session-name>/paths/<src@dst>/hca_port
->  Date:		Feb 2020
-> diff --git a/Documentation/ABI/testing/sysfs-class-rtrs-server b/Documentation/ABI/testing/sysfs-class-rtrs-server
-> index 3b6d5b067df0..b08601d80409 100644
-> --- a/Documentation/ABI/testing/sysfs-class-rtrs-server
-> +++ b/Documentation/ABI/testing/sysfs-class-rtrs-server
-> @@ -24,7 +24,7 @@ What:		/sys/class/rtrs-server/<session-name>/paths/<src@dst>/hca_name
->  Date:		Feb 2020
->  KernelVersion:	5.7
->  Contact:	Jack Wang <jinpu.wang@cloud.ionos.com> Danil Kipnis <danil.kipnis@cloud.ionos.com>
-> -Description:	RO, Contains the the name of HCA the connection established on.
-> +Description:	RO, Contains the name of HCA the connection established on.
->  
->  What:		/sys/class/rtrs-server/<session-name>/paths/<src@dst>/hca_port
->  Date:		Feb 2020
-> diff --git a/Documentation/ABI/testing/sysfs-devices-platform-ACPI-TAD b/Documentation/ABI/testing/sysfs-devices-platform-ACPI-TAD
-> index f7b360a61b21..bc44bc903bc8 100644
-> --- a/Documentation/ABI/testing/sysfs-devices-platform-ACPI-TAD
-> +++ b/Documentation/ABI/testing/sysfs-devices-platform-ACPI-TAD
-> @@ -74,7 +74,7 @@ Description:
->  
->  		Reads also cause the AC alarm timer status to be reset.
->  
-> -		Another way to reset the the status of the AC alarm timer is to
-> +		Another way to reset the status of the AC alarm timer is to
->  		write (the number) 0 to this file.
->  
->  		If the status return value indicates that the timer has expired,
-> diff --git a/Documentation/ABI/testing/sysfs-devices-power b/Documentation/ABI/testing/sysfs-devices-power
-> index 1b2a2d41ff80..54195530e97a 100644
-> --- a/Documentation/ABI/testing/sysfs-devices-power
-> +++ b/Documentation/ABI/testing/sysfs-devices-power
-> @@ -303,5 +303,5 @@ Date:		Apr 2010
->  Contact:	Dominik Brodowski <linux@dominikbrodowski.net>
->  Description:
->  		Reports the runtime PM children usage count of a device, or
-> -		0 if the the children will be ignored.
-> +		0 if the children will be ignored.
->  
-> diff --git a/Documentation/ABI/testing/sysfs-driver-ufs b/Documentation/ABI/testing/sysfs-driver-ufs
-> index 863cc4897277..57aec11a573f 100644
-> --- a/Documentation/ABI/testing/sysfs-driver-ufs
-> +++ b/Documentation/ABI/testing/sysfs-driver-ufs
-> @@ -983,7 +983,7 @@ Description:	This file shows the amount of data that the host plans to
->  What:		/sys/class/scsi_device/*/device/dyn_cap_needed
->  Date:		February 2018
->  Contact:	Stanislav Nijnikov <stanislav.nijnikov@wdc.com>
-> -Description:	This file shows the The amount of physical memory needed
-> +Description:	This file shows The amount of physical memory needed
->  		to be removed from the physical memory resources pool of
->  		the particular logical unit. The full information about
->  		the attribute could be found at UFS specifications 2.1.
-> diff --git a/Documentation/ABI/testing/sysfs-firmware-acpi b/Documentation/ABI/testing/sysfs-firmware-acpi
-> index 819939d858c9..39173375c53a 100644
-> --- a/Documentation/ABI/testing/sysfs-firmware-acpi
-> +++ b/Documentation/ABI/testing/sysfs-firmware-acpi
-> @@ -112,7 +112,7 @@ Description:
->  		OS context.  GPE 0x12, for example, would vector
->  		to a level or edge handler called _L12 or _E12.
->  		The handler may do its business and return.
-> -		Or the handler may send send a Notify event
-> +		Or the handler may send a Notify event
->  		to a Linux device driver registered on an ACPI device,
->  		such as a battery, or a processor.
->  
+>  	for (mach = machines; mach->id[0]; mach++) {
+> -		if (acpi_dev_present(mach->id, NULL, -1)) {
+> +		if (snd_soc_acpi_id_present(mach) != false) {
+>  			if (mach->machine_quirk) {
+>  				mach_alt = mach->machine_quirk(mach);
+>  				if (!mach_alt)
+> 
