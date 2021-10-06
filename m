@@ -2,88 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2E15423BC6
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 12:52:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60E92423BCA
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 12:52:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238157AbhJFKyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 06:54:33 -0400
-Received: from phobos.denx.de ([85.214.62.61]:33464 "EHLO phobos.denx.de"
+        id S238159AbhJFKyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 06:54:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58368 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229824AbhJFKyT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 06:54:19 -0400
-Received: from mail.denx.de (unknown [IPv6:2a01:238:438b:c500:173d:9f52:ddab:ee01])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: festevam@denx.de)
-        by phobos.denx.de (Postfix) with ESMTPSA id A699D801B2;
-        Wed,  6 Oct 2021 12:52:25 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-        s=phobos-20191101; t=1633517545;
-        bh=HMb4bIeDgFpYBqwvWEUi3CqKEZsaRf7KKO09N6gANrY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=HdikxxREPz8VNRR+istSllerrjDAe+djniO/Zjn/Xpm/QSsGE64zawHYqnmhs2V02
-         VdyDlIzQr9I1OnvKYhSGKMpLKTN2B5sXiMzokuLH/XXAhfMSKH1196j5CmBZSCHhUb
-         dtEuxwbcNHnON56M77ItoKzkoAhgPDM3D6OQQXiEPd9DQ6qVEgGtKYa+nMCB7lriH5
-         HLcjHCP7tFPb+NGZTPqZGd2DvxtdxXTyBjIjj/npz/7SaIxQthUy6qm/m4Bi9ZVpDS
-         YE547/djrWyNw5476mi3VQD15w+6waFRQsf61YUMt3LUyaFcS72ANufuvgB1z8j9+a
-         Y9Tog5enmelEA==
+        id S229824AbhJFKyf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 06:54:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 50DF6610C7;
+        Wed,  6 Oct 2021 10:52:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633517563;
+        bh=V9qmdHUZA/980yayysl1P0r8HfySgR/QYHEMF/9Epok=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QuvRMNmIvEVDpKW6QLLfnJF3PSyj247P9OYMcxvJ7o24xfkR0FTG/m+/Z156P5S/A
+         WBySWuKlyvcC8dapMxwOVLK8budbIjtoeTlGrKbf8zqntQ4EDqkbV/HvNAHZYVskrP
+         RDczcxvE664yS2qx0IY2dAODGWEtZciySaEmpwCZ9tjjLW87ghsqWqVqE2hoZImqkk
+         24T+4CisJX2mYKzoGDd128Yhh939ZqlUnC1g34hHA9VyYOoyWlXDqwplp5j9/7+Y/B
+         754KPlCOgZ/pKMWKIWWnFq3Zw2q01m59+LSI2I7aT5yJyLKGqoV/jwYN2/76tbruHl
+         ioFRi+1FALu/A==
+Date:   Wed, 6 Oct 2021 16:22:39 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     abhinavk@codeaurora.org
+Cc:     Rob Clark <robdclark@gmail.com>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
+        David Airlie <airlied@linux.ie>, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        freedreno@lists.freedesktop.org,
+        Sumit Semwal <sumit.semwal@linaro.org>
+Subject: Re: [Freedreno] [PATCH 05/11] drm/msm/disp/dpu1: Add DSC for SDM845
+ to hw_catalog
+Message-ID: <YV1/94iEYzFc5C7t@matsya>
+References: <20210715065203.709914-1-vkoul@kernel.org>
+ <20210715065203.709914-6-vkoul@kernel.org>
+ <fa65a19fb47f4066158a1aa2d7ab4626@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 06 Oct 2021 07:52:25 -0300
-From:   Fabio Estevam <festevam@denx.de>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     gregkh@linuxfoundation.org, michael@walle.cc,
-        linux-serial@vger.kernel.org, marex@denx.de,
-        u.kleine-koenig@pengutronix.de, Tejun Heo <tj@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3]  serial: imx: Suppress false positive sysrq lockdep
- warning
-In-Reply-To: <YV1Z8JslFiBSFGJF@hovoldconsulting.com>
-References: <20211001101815.729648-1-festevam@denx.de>
- <YVcTluYb6XOiOXZn@hovoldconsulting.com>
- <0bbe2832eb2dc3a7c32f3d484ab42208@denx.de>
- <YV1Z8JslFiBSFGJF@hovoldconsulting.com>
-Message-ID: <c774fe18362b4cc19111078f2cd9ae82@denx.de>
-X-Sender: festevam@denx.de
-User-Agent: Roundcube Webmail/1.3.6
-X-Virus-Scanned: clamav-milter 0.103.2 at phobos.denx.de
-X-Virus-Status: Clean
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fa65a19fb47f4066158a1aa2d7ab4626@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Johan,
+On 02-08-21, 16:29, abhinavk@codeaurora.org wrote:
+> On 2021-07-14 23:51, Vinod Koul wrote:
+> > This add SDM845 DSC blocks into hw_catalog
+> /add --> adds
+> > 
+> > Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> > ---
+> > Changes since RFC:
+> >  - use BIT values from MASK
+> > 
+> >  .../gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c    | 22 +++++++++++++++++++
+> >  1 file changed, 22 insertions(+)
+> > 
+> > diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
+> > b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
+> > index b569030a0847..b45a08303c99 100644
+> > --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
+> > +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
+> > @@ -40,6 +40,8 @@
+> > 
+> >  #define PINGPONG_SDM845_MASK BIT(DPU_PINGPONG_DITHER)
+> > 
+> > +#define DSC_SDM845_MASK BIT(1)
+> agree with dmitry again :
+> https://patchwork.freedesktop.org/patch/444072/?series=90413&rev=2
+> this is unused. you can use .features = 0
 
-On 06/10/2021 05:10, Johan Hovold wrote:
+Yes I have updated that
 
-> Ok, thanks for testing. The above is what I meant and it does fix the
-> false-positive lockdep splat which motivated
-> uart_unlock_and_check_sysrq() to be added in the first place.
-> 
-> Looking closer at the splat you reported (which you've edited quite
-> heavily), it becomes apparent that you are now hitting a different
-> locking issue. And it's not a false positive this time.
-> 
-> There a problem with the workqueue debugging code, which unless fixed 
-> at
-> the source, would prevent any console driver from queueing work while
-> holding a lock also taken in their write paths. And
-> tty_flip_buffer_push() is just one example of many.
-> 
-> I can easily reproduce the splat with another serial driver, and I've
-> also been able to trigger the actual deadlock.
-> 
-> I've prepared a patch that takes care of the workqueue state dumping,
-> which I'll send as a reply to this mail. Would you mind giving it a 
-> spin
-> with the imx driver as well?
-
-Yes, after applying only your patch I no longer get the lockdep
-splat. I have replied with my Tested-by, thanks.
+-- 
+~Vinod
