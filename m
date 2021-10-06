@@ -2,256 +2,530 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BD254238F1
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 09:33:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA9CA4238FB
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 09:33:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237563AbhJFHey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 03:34:54 -0400
-Received: from mail-dm6nam10on2054.outbound.protection.outlook.com ([40.107.93.54]:26081
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S237448AbhJFHew (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 03:34:52 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mRxRZ0dwyrh8/ZegOB9z3iZ23BsmB921g5fcF6N3Fc/GjyiWGyTyEpgD48GTy8+uJLlbegBvueXLe8ApqfHQmZrUGsDywJF0I3gUZTWtDnjTKh025QIIp9sSp2wN3MKMMZxsUylD0EIpLiHPUwIBR7hPZiCLeOCthWD/XiV1KYBwdZYTC6CUGmuNQ64LKbx9iDMzrwUp5U1C2XRG7xGoiWxsDVhp6O5v4GSrKC7zRuPKDNGaKlCQOdgQSi3W3vT2ST8c+svxW03KmoSKtUWYqDg0BJX7x4CsWOtrJi34umAQkjrOJ6rN9Yoi7Bs7uIPYSA6m70L26T5OwxWg7e4XEQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=CI3EkQPeflAF0v+8HIzRDHbCAyDTsxANKsxloD1B9tk=;
- b=MUoNhc9GVu35JPYUyZcfKv1+Fb/w86m7RuPr/iYQPSANmS4GUFsgLIpNQsra8AKSDoEsNjXMWO3Oteo1yws0LTvhAqGQbMFVeKBYMoWP9a+DJnL9atk1wbA3Ra0H9n/uxSvbwjfMkyTXnWcKGUMjBnrBA+OXcSGMJNq33GZGFOvSgfpfsCvFcUXnkhEr8Di4slonNyHk6Em2oLBhWObJVarQUI+8iZsqG0qqhdtCSKdEmyziTzKWWEs+nxHwS1qE2QlwlEu8B5lYfpmIBMi4H42m9HWjjzXexwRNi1fstgaeKRXEnG2Dw0emfOj+0DrkgP0heEMl2Rw7pgDv8jfrKg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=silabs.com; dmarc=pass action=none header.from=silabs.com;
- dkim=pass header.d=silabs.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=silabs.onmicrosoft.com; s=selector2-silabs-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CI3EkQPeflAF0v+8HIzRDHbCAyDTsxANKsxloD1B9tk=;
- b=C0F96TsLnUUK1mI0MVa/dwWnGA3oyyffJy0CZ8ZG/+dd6RuaeNiI+NwURlDptkKZWSYOBd0PHVVz7g9craUJarx4J4j4qmRUq5bwyCpj7o9bCxYou6J2x5DDxRH/8n7NxiAYBK+OJJDYmxhJePhbbAFJZzyfjvPenOEwzQL7AVw=
-Authentication-Results: codeaurora.org; dkim=none (message not signed)
- header.d=none;codeaurora.org; dmarc=none action=none header.from=silabs.com;
-Received: from PH0PR11MB5657.namprd11.prod.outlook.com (2603:10b6:510:ee::19)
- by PH0PR11MB5580.namprd11.prod.outlook.com (2603:10b6:510:e5::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.15; Wed, 6 Oct
- 2021 07:32:58 +0000
-Received: from PH0PR11MB5657.namprd11.prod.outlook.com
- ([fe80::31cb:3b13:b0e8:d8f4]) by PH0PR11MB5657.namprd11.prod.outlook.com
- ([fe80::31cb:3b13:b0e8:d8f4%9]) with mapi id 15.20.4566.023; Wed, 6 Oct 2021
- 07:32:58 +0000
-From:   =?ISO-8859-1?Q?J=E9r=F4me?= Pouiller <jerome.pouiller@silabs.com>
-To:     Kalle Valo <kvalo@codeaurora.org>
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        linux-mmc@vger.kernel.org,
-        Pali =?ISO-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: Re: [PATCH v7 05/24] wfx: add main.c/main.h
-Date:   Wed, 06 Oct 2021 09:32:49 +0200
-Message-ID: <3570035.Z1gqkuQO5x@pc-42>
-Organization: Silicon Labs
-In-Reply-To: <87k0ixj5vn.fsf@codeaurora.org>
-References: <20210920161136.2398632-1-Jerome.Pouiller@silabs.com> <2723787.uDASXpoAWK@pc-42> <87k0ixj5vn.fsf@codeaurora.org>
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
-X-ClientProxiedBy: PR3P189CA0031.EURP189.PROD.OUTLOOK.COM
- (2603:10a6:102:53::6) To PH0PR11MB5657.namprd11.prod.outlook.com
- (2603:10b6:510:ee::19)
+        id S237615AbhJFHfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 03:35:20 -0400
+Received: from vulcan.natalenko.name ([104.207.131.136]:58656 "EHLO
+        vulcan.natalenko.name" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237389AbhJFHfS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 03:35:18 -0400
+Received: from spock.localnet (unknown [151.237.229.131])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by vulcan.natalenko.name (Postfix) with ESMTPSA id 3E483C23CB3;
+        Wed,  6 Oct 2021 09:33:23 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
+        s=dkim-20170712; t=1633505603;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kCaMpgYXPXXydkTsRi5p9icWnhbXT3w/9Sbrl4jpjvg=;
+        b=CN1ew3MpM4LFHohH0158mpk/oc96vr+yAtIU58GIq21z8ryESCabmEs1ZkMBsW5zggkD8h
+        InR8+ArzrqpVza6j8h6GzBW8zr2AKWxbzEqFwd4dxI7jR7NU+7M8p/uDA00iV6JS2ByWPL
+        HeL5zBg5jkn2G37aN/JPGzNgcUnShfY=
+From:   Oleksandr Natalenko <oleksandr@natalenko.name>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Nick Terrell <nickrterrell@gmail.com>
+Cc:     linux-next@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, squashfs-devel@lists.sourceforge.net,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, Kernel Team <Kernel-team@fb.com>,
+        Nick Terrell <nickrterrell@gmail.com>,
+        Nick Terrell <terrelln@fb.com>, Chris Mason <clm@fb.com>,
+        Petr Malat <oss@malat.biz>, Yann Collet <cyan@fb.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        David Sterba <dsterba@suse.cz>, Felix Handte <felixh@fb.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Paul Jones <paul@pauljones.id.au>,
+        Tom Seewald <tseewald@gmail.com>
+Subject: Re: [GIT PULL][v12] zstd changes for linux-next
+Date:   Wed, 06 Oct 2021 09:33:21 +0200
+Message-ID: <1711282.gcEllRqJC2@natalenko.name>
+In-Reply-To: <20211005014118.3164585-1-nickrterrell@gmail.com>
+References: <20211005014118.3164585-1-nickrterrell@gmail.com>
 MIME-Version: 1.0
-Received: from pc-42.localnet (37.71.187.125) by PR3P189CA0031.EURP189.PROD.OUTLOOK.COM (2603:10a6:102:53::6) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.14 via Frontend Transport; Wed, 6 Oct 2021 07:32:55 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 540fd5ac-e407-442f-5ad9-08d9889b84cf
-X-MS-TrafficTypeDiagnostic: PH0PR11MB5580:
-X-Microsoft-Antispam-PRVS: <PH0PR11MB5580E54D8F7D0FBC6D46CBE493B09@PH0PR11MB5580.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: XHaxFnxC0VYcyNfilhw8osTedQp2tTjPObPrXg2P9kE2TJQdxX/oYaWQzfN7nceJJc/Dqv5HBEx6V0qSDFZNOitPp3Hpo4Gd2WvrWoFfuw8SPCX2y3i76BkvVedNLiEBqG7ez46R7P6HxSvxGxIIh0TEg51XwKERKVU75+nDxGh1gsEmWzz4QrDJQyx1eRMcWJdB6lYiCR+2SyUkSj3a1bzq4JIRin7BTr02Ec5kc0eT+TjcAYnszPyLzaWTA82oQ68QFCl9wYXJ0c950KLLGib2WHl6kWoL/b4GYX00dx4wUvnHfiwy7zK6QZoOo9tWgk8n4GaaZ/7emmSkJlumltEPG52TO2iVWmcoUtGOjXl3wllrpEpF7t+ypZw2pAWfQcYIfU3cWAosRd8EhFMWX24jhSwSE3MyV1tHtPjyqNJ85yk7XhuvaTDEMr6C83jX8GhSbNhy+oUQEWA65EbPAixZAvzIDpVSGPErHBXEY4b4Q7zyLOzvQVXL6aKU2krP27QW3zuJ7Z4eMqdsoog+5vLxu+MRQLOJDfSdiZ1dvReqk65YWNVGw1axP88pLQ75TG5DiK8WPnZEOOFqitXAt6kw+NwU7MyTojNAPcQSxnzf4lrXCqz6FfD8imnGuhifiC9kxUE4lqi9zXkRkEPncMWP4uWPSlEq7JT+EpNOsqb0XZho/EQ8Ak70/VTTsVsrnhe18c9Xoyffsxs27CTMItuA9ejXFW/93Evo0RsF/tM=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5657.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(6486002)(186003)(36916002)(38100700002)(2906002)(7416002)(316002)(26005)(38350700002)(956004)(66556008)(66476007)(54906003)(8676002)(66946007)(52116002)(33716001)(6512007)(6666004)(6916009)(6506007)(9686003)(86362001)(4326008)(508600001)(83380400001)(66574015)(5660300002)(8936002)(39026012);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?y+vgkbNMKFALkqOn2Kv0C1i5dDSlO1i1bCkblVuPTivTzygrvT0FGjbF5/?=
- =?iso-8859-1?Q?lyVn0fGBro2YE9ew4RmFobo0UQib21w8xlXf7EoqaCbsyK5KDlVaN2Bb1l?=
- =?iso-8859-1?Q?qNjPtOk2i921Q+oEU8aiSi7bFL55CgtynTeApsAPzcT0PewkNom5FmZDnV?=
- =?iso-8859-1?Q?oYfny4ltA2jdsnYAS8hYNT1L39bgSOwwevGUwvp/rJhQBimgoz51i8dJOj?=
- =?iso-8859-1?Q?EBJM2WdymCD1gtsPjHO1BrIeNAaW2J1KHWqUqW+oMGv0fSTJF0Vsvh90CT?=
- =?iso-8859-1?Q?/OeprBi5LLaHG9qL3b3px/HXmlMW9C1CGCHioi9m4sSSPm3QBjjEcrOnzs?=
- =?iso-8859-1?Q?udtBg2C62J6d8wwUuLmhRmr5yK5bvrgffnk8ht/ISTPQMI8UxK9RPv2Ut+?=
- =?iso-8859-1?Q?LJbMUKss973/sv3J2kpJPp8hZ/wNrHAlpU+3QOlzsbYTqcKsmUZOu9A7m4?=
- =?iso-8859-1?Q?qWV+JwoicQZ0zk4cEHpkwRKU7dZ8zJ3DVdDgB1CVFcpNYPQDdax5JqH/Lx?=
- =?iso-8859-1?Q?wi1mnOCuQXCpmEejOuRFA5rBN+quE85uX62143HatJ2EG7TmVteQTjmvvq?=
- =?iso-8859-1?Q?c7tAhcwfxi0/5y3sa108V85oWHVUq1SIXq/6PQBNljx8LMoKRlcNxqSAfP?=
- =?iso-8859-1?Q?DSe8bvvuZdHzcvjeta/iBFDLvQptTVh1bi+dgANeK8RrOgn8kOojPJ7suk?=
- =?iso-8859-1?Q?HEYXPvOZnM3svurYJuMRSGhpGMyAJzS6BKia5dA1fK6HDumX4pgqxz3EDe?=
- =?iso-8859-1?Q?PsvoLhGQ6FrUqVt24iyzHNjRwEcOAUElyYUT+MG2x0TGT54zHmgzb+uln8?=
- =?iso-8859-1?Q?tSW4sZEHMFQSJB9tTRlvHniAeFzXnlnyVjNVk8RA8g+gi7cCMHAo6ZWdTP?=
- =?iso-8859-1?Q?ftdKiebePikn46LX9oZQ4IoWqk/sMoZjgXNUxWaAlgcxQqvxyUgZusl1XI?=
- =?iso-8859-1?Q?f1bbNKrZzANXa5UGqnzJN8L6TrqxruqYkyVfEqBq75xntqPhUMVmd6jyLi?=
- =?iso-8859-1?Q?93MRJLwIXddgKUZx/YLl55IJuXggCgY814/NLHiyKMVmGqkMj3avpaFtKu?=
- =?iso-8859-1?Q?G2kYLJQXSCBWncTXPzSz26Nc0rxTH+1G3XNxlfHsrtYdM5hRWRoKTyRHjX?=
- =?iso-8859-1?Q?mk6ONnfUS9EBbVo/u7iMSpbltu5aCjABgQud6hngEV6uEm2skXSvFO52eG?=
- =?iso-8859-1?Q?LFHMupZiyP4WpArg7cOEdXhtz8KBnjLyCRi+O3wB+BMCIT4NttMDT+7sNd?=
- =?iso-8859-1?Q?28eL+xvjehWOgMGGF0Kn+oLJaa9rdZT2Xtots44/71FXdDrTpp9EipZrqD?=
- =?iso-8859-1?Q?yYK/WN1IlmzJ1nxnmsHrI2rvIXkFxcTG2lHbJBvInQuDaIfkivCsrBlgUs?=
- =?iso-8859-1?Q?ypP/TrecU2?=
-X-OriginatorOrg: silabs.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 540fd5ac-e407-442f-5ad9-08d9889b84cf
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5657.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Oct 2021 07:32:58.2152
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 54dbd822-5231-4b20-944d-6f4abcd541fb
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: KqGG3eY+QNHkMoy98/bny2IcXRYo+hrGCjBemu88iqEY/I3RnJLbGQ4pBPuzcD+05wK9ZV16oHFpWeUqBfAYwQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB5580
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kalle,
+Hello.
 
-On Friday 1 October 2021 14:18:04 CEST Kalle Valo wrote:
-> J=E9r=F4me Pouiller <jerome.pouiller@silabs.com> writes:
+On =C3=BAter=C3=BD 5. =C5=99=C3=ADjna 2021 3:41:18 CEST Nick Terrell wrote:
+> From: Nick Terrell <terrelln@fb.com>
 >=20
-> > On Friday 1 October 2021 11:22:08 CEST Kalle Valo wrote:
-> >> Jerome Pouiller <Jerome.Pouiller@silabs.com> writes:
-> >>=20
-> >> > From: J=E9r=F4me Pouiller <jerome.pouiller@silabs.com>
-> >> >
-> >> > Signed-off-by: J=E9r=F4me Pouiller <jerome.pouiller@silabs.com>
-> >>=20
-> >> [...]
-> >>=20
-> >> > +/* The device needs data about the antenna configuration. This info=
-rmation in
-> >> > + * provided by PDS (Platform Data Set, this is the wording used in =
-WF200
-> >> > + * documentation) files. For hardware integrators, the full process=
- to create
-> >> > + * PDS files is described here:
-> >> > + *   https:github.com/SiliconLabs/wfx-firmware/blob/master/PDS/READ=
-ME.md
-> >> > + *
-> >> > + * So this function aims to send PDS to the device. However, the PD=
-S file is
-> >> > + * often bigger than Rx buffers of the chip, so it has to be sent i=
-n multiple
-> >> > + * parts.
-> >> > + *
-> >> > + * In add, the PDS data cannot be split anywhere. The PDS files con=
-tains tree
-> >> > + * structures. Braces are used to enter/leave a level of the tree (=
-in a JSON
-> >> > + * fashion). PDS files can only been split between root nodes.
-> >> > + */
-> >> > +int wfx_send_pds(struct wfx_dev *wdev, u8 *buf, size_t len)
-> >> > +{
-> >> > +     int ret;
-> >> > +     int start, brace_level, i;
-> >> > +
-> >> > +     start =3D 0;
-> >> > +     brace_level =3D 0;
-> >> > +     if (buf[0] !=3D '{') {
-> >> > + dev_err(wdev->dev, "valid PDS start with '{'. Did you forget to
-> >> > compress it?\n");
-> >> > +             return -EINVAL;
-> >> > +     }
-> >> > +     for (i =3D 1; i < len - 1; i++) {
-> >> > +             if (buf[i] =3D=3D '{')
-> >> > +                     brace_level++;
-> >> > +             if (buf[i] =3D=3D '}')
-> >> > +                     brace_level--;
-> >> > +             if (buf[i] =3D=3D '}' && !brace_level) {
-> >> > +                     i++;
-> >> > +                     if (i - start + 1 > WFX_PDS_MAX_SIZE)
-> >> > +                             return -EFBIG;
-> >> > +                     buf[start] =3D '{';
-> >> > +                     buf[i] =3D 0;
-> >> > +                     dev_dbg(wdev->dev, "send PDS '%s}'\n", buf + s=
-tart);
-> >> > +                     buf[i] =3D '}';
-> >> > +                     ret =3D hif_configuration(wdev, buf + start,
-> >> > +                                             i - start + 1);
-> >> > +                     if (ret > 0) {
-> >> > + dev_err(wdev->dev, "PDS bytes %d to %d: invalid data (unsupported
-> >> > options?)\n",
-> >> > +                                     start, i);
-> >> > +                             return -EINVAL;
-> >> > +                     }
-> >> > +                     if (ret =3D=3D -ETIMEDOUT) {
-> >> > + dev_err(wdev->dev, "PDS bytes %d to %d: chip didn't reply (corrupt=
+> The following changes since commit a25006a77348ba06c7bc96520d331cd9dd3707=
+15:
+>=20
+>   Add linux-next specific files for 20211001 (2021-10-01 17:07:37 +1000)
+>=20
+> are available in the Git repository at:
+>=20
+>   git@github.com:terrelln/linux.git tags/v12-zstd-1.4.10
+>=20
+> for you to fetch changes up to 5210ca33b09bed5e09f72e9b46a3220f64597f8c:
+>=20
+>   MAINTAINERS: Add maintainer entry for zstd (2021-10-04 18:14:42 -0700)
+>=20
+> I would like to merge this pull request into linux-next to bake, and then
+> submit the PR to Linux in the 5.16 merge window. If you have been a part =
+of
+> the discussion, are a maintainer of a caller of zstd, tested this code, or
+> otherwise been involved, thank you! And could you please respond below wi=
+th
+> an appropiate tag, so I can collect support for the PR
+>=20
+> Best,
+> Nick Terrell
+
+On both 5.14 and 5.15:
+
+Tested-by: Oleksandr Natalenko <oleksandr@natalenko.name>
+
+>=20
+> ----------------------------------------------------------------
+> Update to zstd-1.4.10
+>=20
+> - The first commit adds a new kernel-style wrapper around zstd. This wrap=
+per
+> API is functionally equivalent to the subset of the current zstd API that
+> is currently used. The wrapper API changes to be kernel style so that the
+> symbols don't collide with zstd's symbols. The update to zstd-1.4.10
+> maintains the same API and preserves the semantics, so that none of the
+> callers need to be updated. All callers are updated in the commit, because
+> there are zero functional changes.
+> - The second commit adds an indirection for `lib/decompress_unzstd.c` so =
+it
+>   doesn't depend on the layout of `lib/zstd/` to include every source fil=
+e.
+>   This allows the next patch to be automatically generated.
+> - The third commit is automatically generated, and imports the zstd-1.4.10
+> source code. This commit is completely generated by automation.
+> - The fourth commit adds me (terrelln@fb.com) as the maintainer of
+> `lib/zstd`.
+>=20
+> The discussion around this patchset has been pretty long, so I've include=
+d a
+> FAQ-style summary of the history of the patchset, and why we are taking
+> this approach.
+>=20
+> Why do we need to update?
+> -------------------------
+>=20
+> The zstd version in the kernel is based off of zstd-1.3.1, which is was
+> released August 20, 2017. Since then zstd has seen many bug fixes and
+> performance improvements. And, importantly, upstream zstd is continuously
+> fuzzed by OSS-Fuzz, and bug fixes aren't backported to older versions. So
+> the only way to sanely get these fixes is to keep up to date with upstream
+> zstd. There are no known security issues that affect the kernel, but we
+> need to be able to update in case there are. And while there are no known
+> security issues, there are relevant bug fixes. For example the problem wi=
+th
+> large kernel decompression has been fixed upstream for over 2 years
+> https://lkml.org/lkml/2020/9/29/27.
+>=20
+> Additionally the performance improvements for kernel use cases are
+> significant. Measured for x86_64 on my Intel i9-9900k @ 3.6 GHz:
+>=20
+> - BtrFS zstd compression at levels 1 and 3 is 5% faster
+> - BtrFS zstd decompression+read is 15% faster
+> - SquashFS zstd decompression+read is 15% faster
+> - F2FS zstd compression+write at level 3 is 8% faster
+> - F2FS zstd decompression+read is 20% faster
+> - ZRAM decompression+read is 30% faster
+> - Kernel zstd decompression is 35% faster
+> - Initramfs zstd decompression+build is 5% faster
+>=20
+> On top of this, there are significant performance improvements coming down
+> the line in the next zstd release, and the new automated update patch
+> generation will allow us to pull them easily.
+>=20
+> How is the update patch generated?
+> ----------------------------------
+>=20
+> The first two patches are preparation for updating the zstd version. Then
+> the 3rd patch in the series imports upstream zstd into the kernel. This
+> patch is automatically generated from upstream. A script makes the
+> necessary changes and imports it into the kernel. The changes are:
+>=20
+> - Replace all libc dependencies with kernel replacements and rewrite
+> includes. - Remove unncessary portability macros like: #if
+> defined(_MSC_VER). - Use the kernel xxhash instead of bundling it.
+>=20
+> This automation gets tested every commit by upstream's continuous
+> integration. When we cut a new zstd release, we will submit a patch to the
+> kernel to update the zstd version in the kernel.
+>=20
+> The automated process makes it easy to keep the kernel version of zstd up=
+ to
+> date. The current zstd in the kernel shares the guts of the code, but has=
+ a
+> lot of API and minor changes to work in the kernel. This is because at the
+> time upstream zstd was not ready to be used in the kernel envrionment
+> as-is. But, since then upstream zstd has evolved to support being used in
+> the kernel as-is.
+>=20
+> Why are we updating in one big patch?
+> -------------------------------------
+>=20
+> The 3rd patch in the series is very large. This is because it is
+> restructuring the code, so it both deletes the existing zstd, and re-adds
+> the new structure. Future updates will be directly proportional to the
+> changes in upstream zstd since the last import. They will admittidly be
+> large, as zstd is an actively developed project, and has hundreds of
+> commits between every release. However, there is no other great
+> alternative.
+>=20
+> One option ruled out is to replay every upstream zstd commit. This is not
+> feasible for several reasons:
+> - There are over 3500 upstream commits since the zstd version in the kern=
+el.
+> - The automation to automatically generate the kernel update was only add=
 ed
-> >> > file?)\n",
-> >> > +                                     start, i);
-> >> > +                             return ret;
-> >> > +                     }
-> >> > +                     if (ret) {
-> >> > + dev_err(wdev->dev, "PDS bytes %d to %d: chip returned an unknown
-> >> > error\n",
-> >> > +                                     start, i);
-> >> > +                             return -EIO;
-> >> > +                     }
-> >> > +                     buf[i] =3D ',';
-> >> > +                     start =3D i;
-> >> > +             }
-> >> > +     }
-> >> > +     return 0;
-> >> > +}
-> >>=20
-> >> I'm not really fond of having this kind of ASCII based parser in the
-> >> kernel. Do you have an example compressed file somewhere?
-> >
-> > An example of uncompressed configuration file can be found here[1]. Onc=
-e
-> > compressed with [2], you get:
-> >
-> >     {a:{a:4,b:1},b:{a:{a:4,b:0,c:0,d:0,e:A},b:{a:4,b:0,c:0,d:0,e:B},c:{=
-a:4,b:0,c:0,d:0,e:C},d:{a:4,b:0,c:0,d:0,e:D},e:{a:4,b:0,c:0,d:0,e:E},f:{a:4=
-,b:0,c:0,d:0,e:F},g:{a:4,b:0,c:0,d:0,e:G},h:{a:4,b:0,c:0,d:0,e:H},i:{a:4,b:=
-0,c:0,d:0,e:I},j:{a:4,b:0,c:0,d:0,e:J},k:{a:4,b:0,c:0,d:0,e:K},l:{a:4,b:0,c=
-:0,d:1,e:L},m:{a:4,b:0,c:0,d:1,e:M}},c:{a:{a:4},b:{a:6},c:{a:6,c:0},d:{a:6}=
-,e:{a:6},f:{a:6}},e:{b:0,c:1},h:{e:0,a:50,b:0,d:0,c:[{a:1,b:[0,0,0,0,0,0]},=
-{a:2,b:[0,0,0,0,0,0]},{a:[3,9],b:[0,0,0,0,0,0]},{a:A,b:[0,0,0,0,0,0]},{a:B,=
-b:[0,0,0,0,0,0]},{a:[C,D],b:[0,0,0,0,0,0]},{a:E,b:[0,0,0,0,0,0]}]},j:{a:0,b=
-:0}}
+> recently, so older commits cannot easily be imported.
+> - Not every upstream zstd commit builds.
+> - Only zstd releases are "supported", and individual commits may have bugs
+> that were fixed before a release.
 >=20
-> So what's the grand idea with this braces format? I'm not getting it.
+> Another option to reduce the patch size would be to first reorganize to t=
+he
+> new file structure, and then apply the patch. However, the current kernel
+> zstd is formatted with clang-format to be more "kernel-like". But, the new
+> method imports zstd as-is, without additional formatting, to allow for
+> closer correlation with upstream, and easier debugging. So the patch
+> wouldn't be any smaller.
+>=20
+> It also doesn't make sense to import upstream zstd commit by commit going
+> forward. Upstream zstd doesn't support production use cases running of the
+> development branch. We have a lot of post-commit fuzzing that catches many
+> bugs, so indiviudal commits may be buggy, but fixed before a release. So
+> going forward, I intend to import every (important) zstd release into the
+> Kernel.
+>=20
+> So, while it isn't ideal, updating in one big patch is the only patch I s=
+ee
+> forward.
+>=20
+> Who is responsible for this code?
+> ---------------------------------
+>=20
+> I am. This patchset adds me as the maintainer for zstd. Previously, there
+> was no tree for zstd patches. Because of that, there were several patches
+> that either got ignored, or took a long time to merge, since it wasn't
+> clear which tree should pick them up. I'm officially stepping up as
+> maintainer, and setting up my tree as the path through which zstd patches
+> get merged. I'll make sure that patches to the kernel zstd get ported
+> upstream, so they aren't erased when the next version update happens.
+>=20
+> How is this code tested?
+> ------------------------
+>=20
+> I tested every caller of zstd on x86_64 (BtrFS, ZRAM, SquashFS, F2FS,
+> Kernel, InitRAMFS). I also tested Kernel & InitRAMFS on i386 and aarch64.=
+ I
+> checked both performance and correctness.
+>=20
+> Also, thanks to many people in the community who have tested these patches
+> locally. If you have tested the patches, please reply with a Tested-By so=
+ I
+> can collect them for the PR I will send to Linus.
+>=20
+> Lastly, this code will bake in linux-next before being merged into v5.16.
+>=20
+> Why update to zstd-1.4.10 when zstd-1.5.0 has been released?
+> ------------------------------------------------------------
+>=20
+> This patchset has been outstanding since 2020, and zstd-1.4.10 was the
+> latest release when it was created. Since the update patch is automatical=
+ly
+> generated from upstream, I could generate it from zstd-1.5.0. However,
+> there were some large stack usage regressions in zstd-1.5.0, and are only
+> fixed in the latest development branch. And the latest development branch
+> contains some new code that needs to bake in the fuzzer before I would fe=
+el
+> comfortable releasing to the kernel.
+>=20
+> Once this patchset has been merged, and we've released zstd-1.5.1, we can
+> update the kernel to zstd-1.5.1, and exercise the update process.
+>=20
+> You may notice that zstd-1.4.10 doesn't exist upstream. This release is an
+> artifical release based off of zstd-1.4.9, with some fixes for the kernel
+> backported from the development branch. I will tag the zstd-1.4.10 release
+> after this patchset is merged, so the Linux Kernel is running a known
+> version of zstd that can be debugged upstream.
+>=20
+> Why was a wrapper API added?
+> ----------------------------
+>=20
+> The first versions of this patchset migrated the kernel to the upstream z=
+std
+> API. It first added a shim API that supported the new upstream API with t=
+he
+> old code, then updated callers to use the new shim API, then transitioned
+> to the new code and deleted the shim API. However, Cristoph Hellwig
+> suggested that we transition to a kernel style API, and hide zstd's
+> upstream API behind that. This is because zstd's upstream API is supports
+> many other use cases, and does not follow the kernel style guide, while t=
+he
+> kernel API is focused on the kernel's use cases, and follows the kernel
+> style guide.
+>=20
+> Changelog
+> ---------
+>=20
+> v1 -> v2:
+> * Successfully tested F2FS with help from Chao Yu to fix my test.
+> * (1/9) Fix ZSTD_initCStream() wrapper to handle pledged_src_size=3D0 mea=
+ns
+> unknown. This fixes F2FS with the zstd-1.4.6 compatibility wrapper, expos=
+ed
+> by the test.
+>=20
+> v2 -> v3:
+> * (3/9) Silence warnings by Kernel Test Robot:
+>   https://github.com/facebook/zstd/pull/2324
+>   Stack size warnings remain, but these aren't new, and the functions it
+> warns on are either unused or not in the maximum stack path. This patchset
+> reduces zstd compression stack usage by 1 KB overall. I've gotten the low
+> hanging fruit, and more stack reduction would require significant changes
+> that have the potential to introduce new bugs. However, I do hope to
+> continue to reduce zstd stack usage in future versions.
+>=20
+> v3 -> v4:
+> * (3/9) Fix errors and warnings reported by Kernel Test Robot:
+>   https://github.com/facebook/zstd/pull/2326
+>   - Replace mem.h with a custom kernel implementation that matches the
+> current lib/zstd/mem.h in the kernel. This avoids calls to
+> __builtin_bswap*() which don't work on certain architectures, as exposed =
+by
+> the Kernel Test Robot. - Remove ASAN/MSAN (un)poisoning code which doesn't
+> work in the kernel, as exposed by the Kernel Test Robot.
+>   - I've fixed all of the valid cppcheck warnings reported, but there were
+> many false positives, where cppcheck was incorrectly analyzing the
+> situation, which I did not fix. I don't believe it is reasonable to expect
+> that upstream zstd silences all the static analyzer false positives.
+> Upstream zstd uses clang scan-build for its static analysis. We find that
+> supporting multiple static analysis tools multiplies the burden of
+> silencing false positives, without providing enough marginal value over
+> running a single static analysis tool.
+>=20
+> v4 -> v5:
+> * Rebase onto v5.10-rc2
+> * (6/9) Merge with other F2FS changes (no functional change in patch).
+>=20
+> v5 -> v6:
+> * Rebase onto v5.10-rc6.
+> * Switch to using a kernel style wrapper API as suggested by Cristoph.
+>=20
+> v6 -> v7:
+> * Expose the upstream library header as `include/linux/zstd_lib.h`.
+>   Instead of creating new structs mirroring the upstream zstd structs
+>   use upstream's structs directly with a typedef to get a kernel style na=
+me.
+> This removes the memcpy cruft.
+> * (1/3) Undo ZSTD_WINDOWLOG_MAX and handle_zstd_error changes.
+> * (3/3) Expose zstd_errors.h as `include/linux/zstd_errors.h` because it
+>   is needed by the kernel wrapper API.
+>=20
+> v7 -> v8:
+> * (1/3) Fix typo in EXPORT_SYMBOL().
+> * (1/3) Fix typo in zstd.h comments.
+> * (3/3) Update to latest zstd release: 1.4.6 -> 1.4.10
+>         This includes ~1KB of stack space reductions.
+>=20
+> v8 -> v9:
+> * (1/3) Rebase onto v5.12-rc5
+> * (1/3) Add zstd_min_clevel() & zstd_max_clevel() and use in f2fs.
+>         Thanks to Oleksandr Natalenko for spotting it!
+> * (1/3) Move lib/decompress_unzstd.c usage of ZSTD_getErrorCode()
+>         to zstd_get_error_code().
+> * (1/3) Update modified zstd headers to yearless copyright.
+> * (2/3) Add copyright/license header to decompress_sources.h for
+> consistency. * (3/3) Update to yearless copyright for all zstd files.
+> Thanks to Mike Dolan for spotting it!
+>=20
+> v9 -> v10:
+> * Add a 4th patch in the series which adds an entry for zstd to MAINTAINE=
+RS.
+>=20
+> v10 -> v11:
+> * Rebase cleanly onto v5.12-rc8
+> * (3/4) Replace invalid kernel style comments in zstd with regular commen=
+ts.
+> Thanks to Randy Dunlap for the suggestion.
+>=20
+> v11 -> v12:
+> * Re-write the cover letter & send as a PR only.
+> * Rebase cleanly onto 5.15-rc4.
+> * (3/4) Clean up licensing to reflect that we're GPL-2.0+ OR BSD-3-Clause.
+> * (3/4) Reduce compression stack usage by 80 bytes.
+> * (3/4) Make upstream zstd `-Wfall-through` compliant and use the
+> FALLTHROUGH macro in the Linux Kernel.
+>=20
+> Signed-off-by: Nick Terrell <terrelln@fb.com>
+>=20
+> ----------------------------------------------------------------
+> Nick Terrell (4):
+>       lib: zstd: Add kernel-specific API
+>       lib: zstd: Add decompress_sources.h for decompress_unzstd
+>       lib: zstd: Upgrade to latest upstream zstd version 1.4.10
+>       MAINTAINERS: Add maintainer entry for zstd
+>=20
+>  MAINTAINERS                                    |   12 +
+>  crypto/zstd.c                                  |   28 +-
+>  fs/btrfs/zstd.c                                |   68 +-
+>  fs/f2fs/compress.c                             |   56 +-
+>  fs/f2fs/super.c                                |    2 +-
+>  fs/pstore/platform.c                           |    2 +-
+>  fs/squashfs/zstd_wrapper.c                     |   16 +-
+>  include/linux/zstd.h                           | 1252 ++----
+>  include/linux/zstd_errors.h                    |   77 +
+>  include/linux/zstd_lib.h                       | 2432 +++++++++++
+>  lib/decompress_unzstd.c                        |   48 +-
+>  lib/zstd/Makefile                              |   46 +-
+>  lib/zstd/bitstream.h                           |  380 --
+>  lib/zstd/common/bitstream.h                    |  437 ++
+>  lib/zstd/common/compiler.h                     |  170 +
+>  lib/zstd/common/cpu.h                          |  194 +
+>  lib/zstd/common/debug.c                        |   24 +
+>  lib/zstd/common/debug.h                        |  101 +
+>  lib/zstd/common/entropy_common.c               |  357 ++
+>  lib/zstd/common/error_private.c                |   56 +
+>  lib/zstd/common/error_private.h                |   66 +
+>  lib/zstd/common/fse.h                          |  710 ++++
+>  lib/zstd/common/fse_decompress.c               |  390 ++
+>  lib/zstd/common/huf.h                          |  356 ++
+>  lib/zstd/common/mem.h                          |  259 ++
+>  lib/zstd/common/zstd_common.c                  |   83 +
+>  lib/zstd/common/zstd_deps.h                    |  125 +
+>  lib/zstd/common/zstd_internal.h                |  450 +++
+>  lib/zstd/compress.c                            | 3485 ----------------
+>  lib/zstd/compress/fse_compress.c               |  625 +++
+>  lib/zstd/compress/hist.c                       |  165 +
+>  lib/zstd/compress/hist.h                       |   75 +
+>  lib/zstd/compress/huf_compress.c               |  905 +++++
+>  lib/zstd/compress/zstd_compress.c              | 5109
+> ++++++++++++++++++++++++ lib/zstd/compress/zstd_compress_internal.h     |
+> 1188 ++++++
+>  lib/zstd/compress/zstd_compress_literals.c     |  158 +
+>  lib/zstd/compress/zstd_compress_literals.h     |   29 +
+>  lib/zstd/compress/zstd_compress_sequences.c    |  439 ++
+>  lib/zstd/compress/zstd_compress_sequences.h    |   54 +
+>  lib/zstd/compress/zstd_compress_superblock.c   |  850 ++++
+>  lib/zstd/compress/zstd_compress_superblock.h   |   32 +
+>  lib/zstd/compress/zstd_cwksp.h                 |  482 +++
+>  lib/zstd/compress/zstd_double_fast.c           |  519 +++
+>  lib/zstd/compress/zstd_double_fast.h           |   32 +
+>  lib/zstd/compress/zstd_fast.c                  |  496 +++
+>  lib/zstd/compress/zstd_fast.h                  |   31 +
+>  lib/zstd/compress/zstd_lazy.c                  | 1412 +++++++
+>  lib/zstd/compress/zstd_lazy.h                  |   81 +
+>  lib/zstd/compress/zstd_ldm.c                   |  686 ++++
+>  lib/zstd/compress/zstd_ldm.h                   |  110 +
+>  lib/zstd/compress/zstd_ldm_geartab.h           |  103 +
+>  lib/zstd/compress/zstd_opt.c                   | 1345 +++++++
+>  lib/zstd/compress/zstd_opt.h                   |   50 +
+>  lib/zstd/decompress.c                          | 2531 ------------
+>  lib/zstd/decompress/huf_decompress.c           | 1206 ++++++
+>  lib/zstd/decompress/zstd_ddict.c               |  241 ++
+>  lib/zstd/decompress/zstd_ddict.h               |   44 +
+>  lib/zstd/decompress/zstd_decompress.c          | 2082 ++++++++++
+>  lib/zstd/decompress/zstd_decompress_block.c    | 1540 +++++++
+>  lib/zstd/decompress/zstd_decompress_block.h    |   62 +
+>  lib/zstd/decompress/zstd_decompress_internal.h |  202 +
+>  lib/zstd/decompress_sources.h                  |   28 +
+>  lib/zstd/entropy_common.c                      |  243 --
+>  lib/zstd/error_private.h                       |   53 -
+>  lib/zstd/fse.h                                 |  575 ---
+>  lib/zstd/fse_compress.c                        |  795 ----
+>  lib/zstd/fse_decompress.c                      |  325 --
+>  lib/zstd/huf.h                                 |  212 -
+>  lib/zstd/huf_compress.c                        |  773 ----
+>  lib/zstd/huf_decompress.c                      |  960 -----
+>  lib/zstd/mem.h                                 |  151 -
+>  lib/zstd/zstd_common.c                         |   75 -
+>  lib/zstd/zstd_compress_module.c                |  160 +
+>  lib/zstd/zstd_decompress_module.c              |  105 +
+>  lib/zstd/zstd_internal.h                       |  273 --
+>  lib/zstd/zstd_opt.h                            | 1014 -----
+>  76 files changed, 27367 insertions(+), 12941 deletions(-)
+>  create mode 100644 include/linux/zstd_errors.h
+>  create mode 100644 include/linux/zstd_lib.h
+>  delete mode 100644 lib/zstd/bitstream.h
+>  create mode 100644 lib/zstd/common/bitstream.h
+>  create mode 100644 lib/zstd/common/compiler.h
+>  create mode 100644 lib/zstd/common/cpu.h
+>  create mode 100644 lib/zstd/common/debug.c
+>  create mode 100644 lib/zstd/common/debug.h
+>  create mode 100644 lib/zstd/common/entropy_common.c
+>  create mode 100644 lib/zstd/common/error_private.c
+>  create mode 100644 lib/zstd/common/error_private.h
+>  create mode 100644 lib/zstd/common/fse.h
+>  create mode 100644 lib/zstd/common/fse_decompress.c
+>  create mode 100644 lib/zstd/common/huf.h
+>  create mode 100644 lib/zstd/common/mem.h
+>  create mode 100644 lib/zstd/common/zstd_common.c
+>  create mode 100644 lib/zstd/common/zstd_deps.h
+>  create mode 100644 lib/zstd/common/zstd_internal.h
+>  delete mode 100644 lib/zstd/compress.c
+>  create mode 100644 lib/zstd/compress/fse_compress.c
+>  create mode 100644 lib/zstd/compress/hist.c
+>  create mode 100644 lib/zstd/compress/hist.h
+>  create mode 100644 lib/zstd/compress/huf_compress.c
+>  create mode 100644 lib/zstd/compress/zstd_compress.c
+>  create mode 100644 lib/zstd/compress/zstd_compress_internal.h
+>  create mode 100644 lib/zstd/compress/zstd_compress_literals.c
+>  create mode 100644 lib/zstd/compress/zstd_compress_literals.h
+>  create mode 100644 lib/zstd/compress/zstd_compress_sequences.c
+>  create mode 100644 lib/zstd/compress/zstd_compress_sequences.h
+>  create mode 100644 lib/zstd/compress/zstd_compress_superblock.c
+>  create mode 100644 lib/zstd/compress/zstd_compress_superblock.h
+>  create mode 100644 lib/zstd/compress/zstd_cwksp.h
+>  create mode 100644 lib/zstd/compress/zstd_double_fast.c
+>  create mode 100644 lib/zstd/compress/zstd_double_fast.h
+>  create mode 100644 lib/zstd/compress/zstd_fast.c
+>  create mode 100644 lib/zstd/compress/zstd_fast.h
+>  create mode 100644 lib/zstd/compress/zstd_lazy.c
+>  create mode 100644 lib/zstd/compress/zstd_lazy.h
+>  create mode 100644 lib/zstd/compress/zstd_ldm.c
+>  create mode 100644 lib/zstd/compress/zstd_ldm.h
+>  create mode 100644 lib/zstd/compress/zstd_ldm_geartab.h
+>  create mode 100644 lib/zstd/compress/zstd_opt.c
+>  create mode 100644 lib/zstd/compress/zstd_opt.h
+>  delete mode 100644 lib/zstd/decompress.c
+>  create mode 100644 lib/zstd/decompress/huf_decompress.c
+>  create mode 100644 lib/zstd/decompress/zstd_ddict.c
+>  create mode 100644 lib/zstd/decompress/zstd_ddict.h
+>  create mode 100644 lib/zstd/decompress/zstd_decompress.c
+>  create mode 100644 lib/zstd/decompress/zstd_decompress_block.c
+>  create mode 100644 lib/zstd/decompress/zstd_decompress_block.h
+>  create mode 100644 lib/zstd/decompress/zstd_decompress_internal.h
+>  create mode 100644 lib/zstd/decompress_sources.h
+>  delete mode 100644 lib/zstd/entropy_common.c
+>  delete mode 100644 lib/zstd/error_private.h
+>  delete mode 100644 lib/zstd/fse.h
+>  delete mode 100644 lib/zstd/fse_compress.c
+>  delete mode 100644 lib/zstd/fse_decompress.c
+>  delete mode 100644 lib/zstd/huf.h
+>  delete mode 100644 lib/zstd/huf_compress.c
+>  delete mode 100644 lib/zstd/huf_decompress.c
+>  delete mode 100644 lib/zstd/mem.h
+>  delete mode 100644 lib/zstd/zstd_common.c
+>  create mode 100644 lib/zstd/zstd_compress_module.c
+>  create mode 100644 lib/zstd/zstd_decompress_module.c
+>  delete mode 100644 lib/zstd/zstd_internal.h
+>  delete mode 100644 lib/zstd/zstd_opt.h
 
-  - It allows to describe a tree structure
-  - It is ascii (easy to dump, easy to copy-paste)
-  - It is small (as I explain below, size matters)
-  - Since it is similar to JSON, the structure is obvious to many people
 
-Anyway, I am not the author of that and I have to deal with it.
-
-> Usually the drivers just consider this kind of firmware configuration
-> data as a binary blob and dump it to the firmware, without knowing what
-> the data contains. Can't you do the same?
-
-[I didn't had received this mail :( ]
-
-The idea was also to send it as a binary blob. However, the firmware use
-a limited buffer (1500 bytes) to parse it. In most of case the PDS exceeds
-this size. So, we have to split the PDS before to send it.
-
-Unfortunately, we can't split it anywhere. The PDS is a tree structure and
-the firmware expects to receive a well formatted tree.
-
-So, the easiest way to send it to the firmware is to split the tree
-between each root nodes and send each subtree separately (see also the
-comment above wfx_send_pds()).
-
-Anyway, someone has to cook this configuration before to send it to the
-firmware. This could be done by a script outside of the kernel. Then we
-could change the input format to simplify a bit the processing in the
-kernel. However, the driver has already some users and I worry that
-changing the input format would lead to a mess.
-
-
---=20
-J=E9r=F4me Pouiller
+=2D-=20
+Oleksandr Natalenko (post-factum)
 
 
