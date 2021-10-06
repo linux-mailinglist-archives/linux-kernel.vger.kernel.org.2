@@ -2,81 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 323E242426B
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 18:18:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52900424275
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 18:20:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239305AbhJFQT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 12:19:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239097AbhJFQT5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 12:19:57 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C06A4C061753
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 09:18:04 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id s4so6633733ybs.8
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 09:18:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9Az3RnbDsbDEe5BQeBA4RkbM3K2KO2nnyOEu1gJMKy8=;
-        b=h12w95BSDwtU2m8MnPhdNVT8cMBy/deUTCoZeqUhZdgQsLqDe+FrqOR/aQ8faIbNW1
-         FWnQwsHuYKFCfwI9UkUgP6+dqR6jOFk8mjFYz7rqMNNPxZakginPk/sVEj9/lOhdHXjd
-         uNLwkmbsQU6ilj1th4AJMkStoYSLcynW80ZlGkZHfcVImauavrpLSslFBFGgn/vRbNep
-         WlUEkUbDN/LBIBJDnmT0dKOwi+M56mp3i70eCmdt30vQ5fPdTnlyIb1YFg6I1ZDHY3kk
-         4rPGi2Jjv5OaJj6z0C18lVCqNYpni4hdsrJwQ00lFbDrU9njbAQm1R2UcmbVV31oQRGU
-         NTDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9Az3RnbDsbDEe5BQeBA4RkbM3K2KO2nnyOEu1gJMKy8=;
-        b=f35XwjAYgiuI1G21TJIU5oP4PspDaQFAfsVoGde9tBuDAVWRVddOEqMVBE6h5kRutC
-         N5yJ1HPSDyAcM6zhu2MRnHuiXPKQf0JZ+3GsKqNvpuR8LPMojdCdtus0LJR0aadH91SK
-         qwqpaOQh1XePxtM+XcAxfsCzIqCf2cJuLML8fD3AuzL5L6XjNkrkcxCbGXFUfgN0n242
-         k1y6uHiLjqcQgtP8ODZGfXrUhssvxG3iEf000s2rmbo88jenNIlcRhzQdDA7y+SNpfEi
-         TuBERfJ/OoV0gsE4jwGRuozCoSVlUXOZDuFUkMMgraNeFvlgwgJuA9cApyKhcFHT/c1A
-         3t1A==
-X-Gm-Message-State: AOAM532OV+MC1sk9smlUqLJTIFw+NtDRzhAw6oMcMqykRD7bzP+Huhz4
-        HQNQ/TR2OrCakNKXiE/fXqNb7yHHzIVGnwTJS3Ux8A==
-X-Google-Smtp-Source: ABdhPJxT/XIupfjSJyXj/eYUPTKnfTRQjMGA4Hv97bbuvkz3AF2BKXvxYWlKmo9d5Jzx+hJU9aedr3RiS7pgaW3BV3o=
-X-Received: by 2002:a5b:286:: with SMTP id x6mr29888199ybl.59.1633537083704;
- Wed, 06 Oct 2021 09:18:03 -0700 (PDT)
+        id S238694AbhJFQV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 12:21:58 -0400
+Received: from mga09.intel.com ([134.134.136.24]:50845 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230021AbhJFQV4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 12:21:56 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10129"; a="225926605"
+X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; 
+   d="scan'208";a="225926605"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2021 09:20:04 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; 
+   d="scan'208";a="657046588"
+Received: from brentlu-brix.itwn.intel.com ([10.5.253.56])
+  by orsmga005.jf.intel.com with ESMTP; 06 Oct 2021 09:20:00 -0700
+From:   Brent Lu <brent.lu@intel.com>
+To:     alsa-devel@alsa-project.org
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Brent Lu <brent.lu@intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Yong Zhi <yong.zhi@intel.com>,
+        Vamshi Krishna Gopal <vamshi.krishna.gopal@intel.com>,
+        linux-kernel@vger.kernel.org, Rander Wang <rander.wang@intel.com>,
+        Bard Liao <bard.liao@intel.com>,
+        Malik_Hsu <malik_hsu@wistron.corp-partner.google.com>,
+        Libin Yang <libin.yang@intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Paul Olaru <paul.olaru@oss.nxp.com>,
+        Curtis Malainey <cujomalainey@chromium.org>,
+        Mac Chiang <mac.chiang@intel.com>,
+        Gongjun Song <gongjun.song@intel.com>
+Subject: [PATCH 0/3] Multiple headphone codec driver support
+Date:   Thu,  7 Oct 2021 00:18:02 +0800
+Message-Id: <20211006161805.938950-1-brent.lu@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210930180531.1190642-1-samitolvanen@google.com>
- <20210930180531.1190642-12-samitolvanen@google.com> <20211006033145.vcj3ohkekv5rexpo@treble>
-In-Reply-To: <20211006033145.vcj3ohkekv5rexpo@treble>
-From:   Sami Tolvanen <samitolvanen@google.com>
-Date:   Wed, 6 Oct 2021 09:17:52 -0700
-Message-ID: <CABCJKufSkOKm6MXzH3gJP17wte=5QfW0qoXH=Py6e6cAH5YkjQ@mail.gmail.com>
-Subject: Re: [PATCH v4 11/15] x86, relocs: Ignore __typeid__ relocations
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     X86 ML <x86@kernel.org>, Kees Cook <keescook@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        linux-hardening@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>, llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 5, 2021 at 8:31 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
->
-> On Thu, Sep 30, 2021 at 11:05:27AM -0700, Sami Tolvanen wrote:
-> > From: Kees Cook <keescook@chromium.org>
-> >
-> > The __typeid__* symbols aren't actually relocations, so they can be
-> > ignored during relocation generation.
->
-> Then what are they?  It would be good to add that information here.
+Support multiple headphone drivers in same machine driver. In this
+case, both rt5682 and rt5682s are supported and enumerated by different
+ACPI HID "10EC5682" and "RTL5682".
 
-These relocations are for compiler-generated constants that it uses
-for indirect call type checking. I think we can clarify this in the
-next version.
+Brent Lu (3):
+  ASoC: soc-acpi: add alternative id field for machine driver matching
+  ASoC: Intel: sof_rt5682: detect codec variant in probe function
+  ASoC: Intel: sof_rt5682: use id_alt to enumerate rt5682s
 
-Sami
+ include/sound/soc-acpi.h                      |  2 ++
+ sound/soc/intel/boards/sof_rt5682.c           | 34 +++----------------
+ .../intel/common/soc-acpi-intel-adl-match.c   |  8 +++++
+ .../intel/common/soc-acpi-intel-byt-match.c   |  6 ++++
+ .../intel/common/soc-acpi-intel-cht-match.c   |  6 ++++
+ .../intel/common/soc-acpi-intel-cml-match.c   |  8 +++++
+ .../intel/common/soc-acpi-intel-icl-match.c   |  6 ++++
+ .../intel/common/soc-acpi-intel-jsl-match.c   | 32 +++++------------
+ .../intel/common/soc-acpi-intel-tgl-match.c   |  8 +++++
+ sound/soc/soc-acpi.c                          | 21 +++++++++++-
+ 10 files changed, 76 insertions(+), 55 deletions(-)
+
+-- 
+2.25.1
+
