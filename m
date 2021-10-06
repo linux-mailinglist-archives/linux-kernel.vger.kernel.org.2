@@ -2,218 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DAE84243A8
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 19:04:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 752F24243AE
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 19:06:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231942AbhJFRGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 13:06:03 -0400
-Received: from out03.mta.xmission.com ([166.70.13.233]:53144 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229548AbhJFRGA (ORCPT
+        id S239424AbhJFRH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 13:07:57 -0400
+Received: from mail-ot1-f50.google.com ([209.85.210.50]:38449 "EHLO
+        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231317AbhJFRHz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 13:06:00 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52]:36740)
-        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mYAKs-002YNJ-SG; Wed, 06 Oct 2021 11:04:06 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:55904 helo=email.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mYAKr-003tPS-Jp; Wed, 06 Oct 2021 11:04:06 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Kees Cook <keescook@chromium.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>, linux-api@vger.kernel.org
-References: <87v92qx2c6.fsf@disp2133> <87y27mvnke.fsf@disp2133>
-        <202109241154.A915C488E2@keescook>
-Date:   Wed, 06 Oct 2021 12:03:59 -0500
-In-Reply-To: <202109241154.A915C488E2@keescook> (Kees Cook's message of "Fri,
-        24 Sep 2021 11:56:00 -0700")
-Message-ID: <87r1cynkzk.fsf@disp2133>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Wed, 6 Oct 2021 13:07:55 -0400
+Received: by mail-ot1-f50.google.com with SMTP id c6-20020a9d2786000000b005471981d559so3944898otb.5;
+        Wed, 06 Oct 2021 10:06:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EM+Wl6eBiWECCDpdSNRpq7eFaWzLzTZMv3EuyjrwM+g=;
+        b=2Aw8sUif8kDem1mJCFn+ivumjLxib/Ua8nn6a/VRPBPZWDNfvE5I0FL3n3DGedbyA4
+         2LI2p470J8uPx9o6nQtE6RZgJ2hDBIv7oNbxCNV3vqfkG0qjLlyclFeVPq/NlrFOHf62
+         FzFvMglSsWq5YH6G3CIHPyp1sTXFrJCFo9UugbDBVTyeUEPl/n0kQ5iYooy/N+k/Igug
+         zplOisyIZj/XoNv+S0+hwv1d06MJqxSHecKOwprffiSbhjtXSZi3WT5Aibj+oseBDAl/
+         Bxr7YFUk0l5sJvjzGaraYf8SANbvHaGiKw2YGnHwzHwNTJJlLFZOVG8xIAVTcpkKzOV6
+         tOYg==
+X-Gm-Message-State: AOAM531c69X3hdbBUsBbaMVlcvf/BDxvTpng3xVzcilFy6ZCOxJuI8wu
+        Z3UOnPJYj0ngeEQXGErVKVGHmVP2JVywAYXVzB4=
+X-Google-Smtp-Source: ABdhPJxjMutc/WGD+pWtxNie5AqpQJdVYp3RNBUzjyrSca96SvtQWegTxgpJYi1qgbKMe8J/ttTNP+2+XIqPesGiSlA=
+X-Received: by 2002:a05:6830:2784:: with SMTP id x4mr20428139otu.86.1633539962654;
+ Wed, 06 Oct 2021 10:06:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-=-="
-X-XM-SPF: eid=1mYAKr-003tPS-Jp;;;mid=<87r1cynkzk.fsf@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1/73Tt77EGtRCccwo1zaoQiPNBwHgvdS4Y=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
-X-Spam-Level: **
-X-Spam-Status: No, score=2.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMNoVowels,XMSubLong
-        autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  1.5 XMNoVowels Alpha-numberic number with no vowels
-        *  0.7 XMSubLong Long Subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: **;Kees Cook <keescook@chromium.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 619 ms - load_scoreonly_sql: 0.06 (0.0%),
-        signal_user_changed: 11 (1.7%), b_tie_ro: 9 (1.5%), parse: 1.93 (0.3%),
-         extract_message_metadata: 20 (3.2%), get_uri_detail_list: 3.1 (0.5%),
-        tests_pri_-1000: 28 (4.5%), tests_pri_-950: 1.49 (0.2%),
-        tests_pri_-900: 1.13 (0.2%), tests_pri_-90: 159 (25.7%), check_bayes:
-        156 (25.2%), b_tokenize: 10 (1.7%), b_tok_get_all: 12 (1.9%),
-        b_comp_prob: 6 (1.0%), b_tok_touch_all: 121 (19.6%), b_finish: 1.13
-        (0.2%), tests_pri_0: 378 (61.1%), check_dkim_signature: 0.88 (0.1%),
-        check_dkim_adsp: 2.8 (0.4%), poll_dns_idle: 0.69 (0.1%), tests_pri_10:
-        2.2 (0.4%), tests_pri_500: 12 (2.0%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH 6/6] coredump: Limit coredumps to a single thread group
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+References: <20211005155427.1591196-1-john@metanate.com> <CAJZ5v0gPwUQzGBa2VDeC3xAF9zJVm486BC0eue10-urJ8Xz+iw@mail.gmail.com>
+ <20211005181706.66102578.john@metanate.com>
+In-Reply-To: <20211005181706.66102578.john@metanate.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 6 Oct 2021 19:05:50 +0200
+Message-ID: <CAJZ5v0iFKYvM+rn68VaAbM4=ZLAQBR_UPzvAuKqVLQuP=ZJPew@mail.gmail.com>
+Subject: Re: [RFC PATCH RT] PM: runtime: avoid retry loops on RT
+To:     John Keeping <john@metanate.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-rt-users@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
+        Len Brown <len.brown@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-
-Kees Cook <keescook@chromium.org> writes:
-
-> On Thu, Sep 23, 2021 at 07:12:33PM -0500, Eric W. Biederman wrote:
->> 
->> Today when a signal is delivered with a handler of SIG_DFL whose
->> default behavior is to generate a core dump not only that process but
->> every process that shares the mm is killed.
->> 
->> In the case of vfork this looks like a real world problem.  Consider
->> the following well defined sequence.
->> 
->> 	if (vfork() == 0) {
->> 		execve(...);
->> 		_exit(EXIT_FAILURE);
->> 	}
->> 
->> If a signal that generates a core dump is received after vfork but
->> before the execve changes the mm the process that called vfork will
->> also be killed (as the mm is shared).
->> 
->> Similarly if the execve fails after the point of no return the kernel
->> delivers SIGSEGV which will kill both the exec'ing process and because
->> the mm is shared the process that called vfork as well.
->> 
->> As far as I can tell this behavior is a violation of people's
->> reasonable expectations, POSIX, and is unnecessarily fragile when the
->> system is low on memory.
->> 
->> Solve this by making a userspace visible change to only kill a single
->> process/thread group.  This is possible because Jann Horn recently
->> modified[1] the coredump code so that the mm can safely be modified
->> while the coredump is happening.  With LinuxThreads long gone I don't
->> expect anyone to have a notice this behavior change in practice.
->> 
->> To accomplish this move the core_state pointer from mm_struct to
->> signal_struct, which allows different thread groups to coredump
->> simultatenously.
->> 
->> In zap_threads remove the work to kill anything except for the current
->> thread group.
->> 
->> [1] a07279c9a8cd ("binfmt_elf, binfmt_elf_fdpic: use a VMA list snapshot")
->> Fixes: d89f3847def4 ("[PATCH] thread-aware coredumps, 2.5.43-C3")
->> History-tree: git://git.kernel.org/pub/scm/linux/kernel/git/tglx/history.git
->> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+On Tue, Oct 5, 2021 at 7:17 PM John Keeping <john@metanate.com> wrote:
 >
-> This looks correct to me, but depends on the 5/6 not introducing any
-> races. So, to that end:
+> On Tue, 5 Oct 2021 18:38:27 +0200
+> "Rafael J. Wysocki" <rafael@kernel.org> wrote:
 >
-> Reviewed-by: Kees Cook <keescook@chromium.org>
+> > On Tue, Oct 5, 2021 at 6:14 PM John Keeping <john@metanate.com> wrote:
+> > >
+> > > With PREEMPT_RT spin_unlock() is identical to spin_unlock_irq() so there
+> > > is no reason to have a special case using the former.  Furthermore,
+> > > spin_unlock() enables preemption meaning that a task in RESUMING or
+> > > SUSPENDING state may be preempted by a higher priority task running
+> > > pm_runtime_get_sync() leading to a livelock.
+> > >
+> > > Use the non-irq_safe path for all waiting so that the waiting task will
+> > > block.
+> > >
+> > > Note that this changes only the waiting behaviour of irq_safe, other
+> > > uses are left unchanged so that the parent device always remains active
+> > > in the same way as !RT.
+> > >
+> > > Signed-off-by: John Keeping <john@metanate.com>
+> >
+> > So basically, the idea is that the irq_safe flag should have no effect
+> > when CONFIG_PREEMPT_RT is set, right?
+> >
+> > Wouldn't it be cleaner to make it not present at all in that case?
 >
-> If you have some local tools you've been using for testing this series,
-> can you toss them into tools/testing/selftests/ptrace/ ? I can help
-> clean them up if want.
+> Yes, just replacing pm_runtime_irq_safe() with an empty function would
+> also fix it, but I'm not sure if that will have unexpected effects from
+> the parent device suspending/resuming, especially in terms of latency
+> for handling interrupts.
 
-I just have a program that goes multi-thread and calls abort, and a
-slight variant of it that calls vfork before calling abort.
+Well, the code as is doesn't work with CONFIG_PREEMPT_RT set anyway in general.
 
-It is enough to exercise the code and verify I didn't make any typos.
+Also this is not just pm_runtime_irq_safe(), but every access to this
+flag (and there's more  of them than just the ones changed below).
 
-I have attached the code below.  If you can help make it into a proper
-test that would be great.  I have just been manually running gdb
-and the like to verify the kernel works as expected.
+What about putting the flag under #ifdef CONFIG_PREEMPT_RT and
+providing read/write accessor helpers for it that will be empty in
+RT-enabled kernels?
 
-Eric
-
-
---=-=-=
-Content-Type: text/x-csrc
-Content-Disposition: inline; filename=threaded-coredump.c
-
-#include <stdio.h>
-#include <pthread.h>
-#include <sys/ptrace.h>
-#include <sys/types.h>
-#include <signal.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <errno.h>
-
-struct params {
-	int argc;
-	char **argv;
-	char **envp;
-	pthread_t parent;
-	pthread_t sibling[30];
-};
-
-static void *dump_thread(void *arg)
-{
-	struct params *params = arg;
-	void *retval;
-	int i;
-
-	pthread_join(params->parent, &retval);
-	fprintf(stdout, "Waiting for 5s\n");
-	sleep(5);
-	fprintf(stdout, "Dumping\n");
-	abort();
-	fprintf(stdout, "Abort Failed: %d %s\n", errno, strerror(errno));
-	for (i = 0; i <= 29; i++) {
-		pthread_join(params->sibling[i], &retval);
-	}
-	fprintf(stdout, "All Done!\n");
-	_exit(EXIT_FAILURE);
-	return NULL;
-}
-
-static void *idle_thread(void *arg)
-{
-	unsigned long i = (unsigned long)arg;
-	sleep(10);
-	fprintf(stdout, "Done %lu\n", i);
-	fflush(stdout);
-	return NULL;
-}
-
-int main(int argc, char **argv, char **envp)
-{
-	struct params *params;
-	pthread_t pt;
-	unsigned long i;
-
-	params = malloc(sizeof(struct params));
-	params->argc = argc - 1;
-	params->argv = argv = argv + 1;
-	params->envp = envp;
-	params->parent = pthread_self();
-
-	pthread_create(&pt, NULL, dump_thread, params);
-	for (i = 0; i <= 29; i++)
-		pthread_create(&params->sibling[i], NULL, idle_thread, (void *)i);
-	pthread_exit(NULL);
-
-	return 0;
-}
-
---=-=-=--
+> > > ---
+> > >  drivers/base/power/runtime.c | 9 +++++----
+> > >  1 file changed, 5 insertions(+), 4 deletions(-)
+> > >
+> > > diff --git a/drivers/base/power/runtime.c b/drivers/base/power/runtime.c
+> > > index 96972d5f6ef3..5e0d349fab4e 100644
+> > > --- a/drivers/base/power/runtime.c
+> > > +++ b/drivers/base/power/runtime.c
+> > > @@ -347,8 +347,9 @@ static int __rpm_callback(int (*cb)(struct device *), struct device *dev)
+> > >  {
+> > >         int retval = 0, idx;
+> > >         bool use_links = dev->power.links_count > 0;
+> > > +       bool irq_safe = dev->power.irq_safe && !IS_ENABLED(CONFIG_PREEMPT_RT);
+> > >
+> > > -       if (dev->power.irq_safe) {
+> > > +       if (irq_safe) {
+> > >                 spin_unlock(&dev->power.lock);
+> > >         } else {
+> > >                 spin_unlock_irq(&dev->power.lock);
+> > > @@ -376,7 +377,7 @@ static int __rpm_callback(int (*cb)(struct device *), struct device *dev)
+> > >         if (cb)
+> > >                 retval = cb(dev);
+> > >
+> > > -       if (dev->power.irq_safe) {
+> > > +       if (irq_safe) {
+> > >                 spin_lock(&dev->power.lock);
+> > >         } else {
+> > >                 /*
+> > > @@ -596,7 +597,7 @@ static int rpm_suspend(struct device *dev, int rpmflags)
+> > >                         goto out;
+> > >                 }
+> > >
+> > > -               if (dev->power.irq_safe) {
+> > > +               if (dev->power.irq_safe && !IS_ENABLED(CONFIG_PREEMPT_RT)) {
+> > >                         spin_unlock(&dev->power.lock);
+> > >
+> > >                         cpu_relax();
+> > > @@ -777,7 +778,7 @@ static int rpm_resume(struct device *dev, int rpmflags)
+> > >                         goto out;
+> > >                 }
+> > >
+> > > -               if (dev->power.irq_safe) {
+> > > +               if (dev->power.irq_safe && !IS_ENABLED(CONFIG_PREEMPT_RT)) {
+> > >                         spin_unlock(&dev->power.lock);
+> > >
+> > >                         cpu_relax();
+> > > --
+> > > 2.33.0
+> > >
+>
