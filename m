@@ -2,153 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B33E423D7D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 14:13:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D943F423D7E
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 14:13:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238366AbhJFMPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 08:15:08 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:28448 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238105AbhJFMPH (ORCPT
+        id S238398AbhJFMPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 08:15:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34184 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238105AbhJFMPb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 08:15:07 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1633522395; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=It/MRNqAXGNPyFh/a1DDiLRtR989/cjNw7hpzBembtQ=; b=VOCGO+FyylnuZe2HSgllvosLO8G+cS8rcmACsm3+lVsM56t9DohsTxsXVBXZl7URccrbFEWG
- vYUjeoPxCTxVZJOj/ysqmsW9EFWc2EyL0YxVRLS5M+KbJ+avsFP6jf3+sF5i77ulybj9mZzl
- CgwPob7K6BvyXeq5/ZD7+lRDG/o=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 615d92da30ce13d2b444b434 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 06 Oct 2021 12:13:14
- GMT
-Sender: faiyazm=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 225C3C4360D; Wed,  6 Oct 2021 12:13:14 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-4.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-        version=3.4.0
-Received: from [192.168.0.109] (unknown [49.204.182.88])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: faiyazm)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4C39DC4338F;
-        Wed,  6 Oct 2021 12:13:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 4C39DC4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Subject: Re: [PATCH v1] mm: page_alloc: Add debug log in free_reserved_area
- for static memory
-To:     David Hildenbrand <david@redhat.com>, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Cc:     guptap@codeaurora.org
-References: <1632819849-511-1-git-send-email-faiyazm@codeaurora.org>
- <248ec931-7c16-3e2d-cc8f-8ce0dd4e923b@redhat.com>
- <0149edd5-fe7f-2786-413c-6de2eab3e30c@codeaurora.org>
- <ab7a9fb0-a3e7-0cb8-6dbd-40a68e6fd299@redhat.com>
- <1f6708d2-1ca8-6d1f-d9f0-855f2df755ed@codeaurora.org>
- <d5a2e107-70e2-30b5-6723-9eea6650517a@redhat.com>
-From:   Faiyaz Mohammed <faiyazm@codeaurora.org>
-Message-ID: <88df48af-901b-5765-d92c-6d14c2b1f73e@codeaurora.org>
-Date:   Wed, 6 Oct 2021 17:43:08 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Wed, 6 Oct 2021 08:15:31 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16ADBC061749
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 05:13:39 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id v25so8176848wra.2
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 05:13:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AWb6QO2dk53VJpatF/6HpWWfRgGh/rHvbHxrfaDOD6Y=;
+        b=jBenZXUZ8Eqy0u+yOnO/zxN2XluxouS2yWWfwuIgBIFxWDNCKT3EMfe3vg1yVpkIwS
+         ou1btCttCrZB8c6q291HAqtAnEUt7CP5iZ3u4jsQDkbZud4ESCV9tFka95trjhmXR8yP
+         b6h4TEoFVtrVCUr9XaYaoUAWtcewXu6gS5lZXtp69zTgSRQyigQqcDJWOVgaVbee9YCm
+         0pRa2TCpKYh7F6Y3U9JxO+Yhk0RupeVzHCWWGlxmNvS94EQVb/tTIlTmoloGm4qClNP+
+         Y0BjBgFo8lEvXE5xKadInSyZ7rc3QRKxK0qKRfxX8sOLC5adFduIYTEa4/NnmQncPS8x
+         8NVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AWb6QO2dk53VJpatF/6HpWWfRgGh/rHvbHxrfaDOD6Y=;
+        b=PvBgRk9p+0ccE1w96aB/PrrCqvK/T2Wb2Ic6DT4dQtObhomUNzMbGKjedh9r6anM4P
+         mJ4rMXgXq0osfijZt5uTxtN7Mgpdj4OfvtEZEvEkk+NyZuh2kCZSf5CFoT/1hCgdYDys
+         azRuWAicN6F2XavCB3QCugtnrSqyj0QQ+d7NC0PBi5dPcPhdAy/51Pvdjfy+/0PrOr/+
+         iwIDLfR3YtCKu8UleyHXMNleAhVqMlhp4LTV0tiu560KCGulVHok/pweCLUfn2nUZaFK
+         y/9/XVJbBMJ0A7+IQ+/mba6TUFa8U5ftZqczlPlKhj9GRDvDjzsEVSr2l3hbLB703gLq
+         qk9g==
+X-Gm-Message-State: AOAM5323UU6pI6w6Am1xpNRETHqtnycM+aSN/pHuYPe8s1nal2OtUMf7
+        BPMlYvXRxmeNCXxOo4uQzLM=
+X-Google-Smtp-Source: ABdhPJzM0Ws1dunA2tWgej9k+D+yRPqCThuklsEawvkn9fLvPfJ5WzNgYvDbYRwAWfbkOhasxmDBaA==
+X-Received: by 2002:adf:9cd2:: with SMTP id h18mr6752731wre.258.1633522417574;
+        Wed, 06 Oct 2021 05:13:37 -0700 (PDT)
+Received: from localhost.localdomain ([197.49.35.129])
+        by smtp.gmail.com with ESMTPSA id o13sm1411306wmh.30.2021.10.06.05.13.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Oct 2021 05:13:36 -0700 (PDT)
+From:   Sohaib Mohamed <sohaib.amhmd@gmail.com>
+To:     sohaib.amhmd@gmail.com
+Cc:     Frederic Barrat <fbarrat@linux.ibm.com>,
+        Andrew Donnellan <ajd@linux.ibm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Fabrice Gasnier <fabrice.gasnier@st.com>,
+        Jens Axboe <axboe@kernel.dk>, Gioh Kim <gi-oh.kim@ionos.com>,
+        Jack Wang <jinpu.wang@cloud.ionos.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        Bean Huo <beanhuo@micron.com>, Can Guo <cang@codeaurora.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Zhang Rui <rui.zhang@intel.com>, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH] docs: typo fixes in Documentation/ABI/
+Date:   Wed,  6 Oct 2021 14:13:25 +0200
+Message-Id: <20211006121333.75799-1-sohaib.amhmd@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <d5a2e107-70e2-30b5-6723-9eea6650517a@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Signed-off-by: Sohaib Mohamed <sohaib.amhmd@gmail.com>
+---
+ Documentation/ABI/stable/sysfs-module                     | 2 +-
+ Documentation/ABI/testing/sysfs-bus-rapidio               | 2 +-
+ Documentation/ABI/testing/sysfs-class-cxl                 | 4 ++--
+ Documentation/ABI/testing/sysfs-class-rnbd-client         | 2 +-
+ Documentation/ABI/testing/sysfs-class-rtrs-client         | 2 +-
+ Documentation/ABI/testing/sysfs-class-rtrs-server         | 2 +-
+ Documentation/ABI/testing/sysfs-devices-platform-ACPI-TAD | 2 +-
+ Documentation/ABI/testing/sysfs-devices-power             | 2 +-
+ Documentation/ABI/testing/sysfs-driver-ufs                | 2 +-
+ Documentation/ABI/testing/sysfs-firmware-acpi             | 2 +-
+ 10 files changed, 11 insertions(+), 11 deletions(-)
 
-Sorry for delayed response.
+diff --git a/Documentation/ABI/stable/sysfs-module b/Documentation/ABI/stable/sysfs-module
+index 560b4a3278df..41b1f16e8795 100644
+--- a/Documentation/ABI/stable/sysfs-module
++++ b/Documentation/ABI/stable/sysfs-module
+@@ -38,7 +38,7 @@ What:		/sys/module/<MODULENAME>/srcversion
+ Date:		Jun 2005
+ Description:
+ 		If the module source has MODULE_VERSION, this file will contain
+-		the checksum of the the source code.
++		the checksum of the source code.
+ 
+ What:		/sys/module/<MODULENAME>/version
+ Date:		Jun 2005
+diff --git a/Documentation/ABI/testing/sysfs-bus-rapidio b/Documentation/ABI/testing/sysfs-bus-rapidio
+index f8b6728dac10..9e8fbff99b75 100644
+--- a/Documentation/ABI/testing/sysfs-bus-rapidio
++++ b/Documentation/ABI/testing/sysfs-bus-rapidio
+@@ -95,7 +95,7 @@ Contact:	Matt Porter <mporter@kernel.crashing.org>,
+ 		Alexandre Bounine <alexandre.bounine@idt.com>
+ Description:
+ 		(RO) returns name of previous device (switch) on the path to the
+-		device that that owns this attribute
++		device that owns this attribute
+ 
+ What:		/sys/bus/rapidio/devices/<nn>:<d>:<iiii>/modalias
+ Date:		Jul, 2013
+diff --git a/Documentation/ABI/testing/sysfs-class-cxl b/Documentation/ABI/testing/sysfs-class-cxl
+index 3c77677e0ca7..594fda254130 100644
+--- a/Documentation/ABI/testing/sysfs-class-cxl
++++ b/Documentation/ABI/testing/sysfs-class-cxl
+@@ -103,8 +103,8 @@ What:           /sys/class/cxl/<afu>/api_version_compatible
+ Date:           September 2014
+ Contact:        linuxppc-dev@lists.ozlabs.org
+ Description:    read only
+-                Decimal value of the the lowest version of the userspace API
+-                this this kernel supports.
++                Decimal value of the lowest version of the userspace API
++                this kernel supports.
+ Users:		https://github.com/ibm-capi/libcxl
+ 
+ 
+diff --git a/Documentation/ABI/testing/sysfs-class-rnbd-client b/Documentation/ABI/testing/sysfs-class-rnbd-client
+index 0b5997ab3365..e6cdc851952c 100644
+--- a/Documentation/ABI/testing/sysfs-class-rnbd-client
++++ b/Documentation/ABI/testing/sysfs-class-rnbd-client
+@@ -128,6 +128,6 @@ Description:	For each device mapped on the client a new symbolic link is created
+ 		The <device_id> of each device is created as follows:
+ 
+ 		- If the 'device_path' provided during mapping contains slashes ("/"),
+-		  they are replaced by exclamation mark ("!") and used as as the
++		  they are replaced by exclamation mark ("!") and used as the
+ 		  <device_id>. Otherwise, the <device_id> will be the same as the
+ 		  "device_path" provided.
+diff --git a/Documentation/ABI/testing/sysfs-class-rtrs-client b/Documentation/ABI/testing/sysfs-class-rtrs-client
+index 49a4157c7bf1..fecc59d1b96f 100644
+--- a/Documentation/ABI/testing/sysfs-class-rtrs-client
++++ b/Documentation/ABI/testing/sysfs-class-rtrs-client
+@@ -78,7 +78,7 @@ What:		/sys/class/rtrs-client/<session-name>/paths/<src@dst>/hca_name
+ Date:		Feb 2020
+ KernelVersion:	5.7
+ Contact:	Jack Wang <jinpu.wang@cloud.ionos.com> Danil Kipnis <danil.kipnis@cloud.ionos.com>
+-Description:	RO, Contains the the name of HCA the connection established on.
++Description:	RO, Contains the name of HCA the connection established on.
+ 
+ What:		/sys/class/rtrs-client/<session-name>/paths/<src@dst>/hca_port
+ Date:		Feb 2020
+diff --git a/Documentation/ABI/testing/sysfs-class-rtrs-server b/Documentation/ABI/testing/sysfs-class-rtrs-server
+index 3b6d5b067df0..b08601d80409 100644
+--- a/Documentation/ABI/testing/sysfs-class-rtrs-server
++++ b/Documentation/ABI/testing/sysfs-class-rtrs-server
+@@ -24,7 +24,7 @@ What:		/sys/class/rtrs-server/<session-name>/paths/<src@dst>/hca_name
+ Date:		Feb 2020
+ KernelVersion:	5.7
+ Contact:	Jack Wang <jinpu.wang@cloud.ionos.com> Danil Kipnis <danil.kipnis@cloud.ionos.com>
+-Description:	RO, Contains the the name of HCA the connection established on.
++Description:	RO, Contains the name of HCA the connection established on.
+ 
+ What:		/sys/class/rtrs-server/<session-name>/paths/<src@dst>/hca_port
+ Date:		Feb 2020
+diff --git a/Documentation/ABI/testing/sysfs-devices-platform-ACPI-TAD b/Documentation/ABI/testing/sysfs-devices-platform-ACPI-TAD
+index f7b360a61b21..bc44bc903bc8 100644
+--- a/Documentation/ABI/testing/sysfs-devices-platform-ACPI-TAD
++++ b/Documentation/ABI/testing/sysfs-devices-platform-ACPI-TAD
+@@ -74,7 +74,7 @@ Description:
+ 
+ 		Reads also cause the AC alarm timer status to be reset.
+ 
+-		Another way to reset the the status of the AC alarm timer is to
++		Another way to reset the status of the AC alarm timer is to
+ 		write (the number) 0 to this file.
+ 
+ 		If the status return value indicates that the timer has expired,
+diff --git a/Documentation/ABI/testing/sysfs-devices-power b/Documentation/ABI/testing/sysfs-devices-power
+index 1b2a2d41ff80..54195530e97a 100644
+--- a/Documentation/ABI/testing/sysfs-devices-power
++++ b/Documentation/ABI/testing/sysfs-devices-power
+@@ -303,5 +303,5 @@ Date:		Apr 2010
+ Contact:	Dominik Brodowski <linux@dominikbrodowski.net>
+ Description:
+ 		Reports the runtime PM children usage count of a device, or
+-		0 if the the children will be ignored.
++		0 if the children will be ignored.
+ 
+diff --git a/Documentation/ABI/testing/sysfs-driver-ufs b/Documentation/ABI/testing/sysfs-driver-ufs
+index 863cc4897277..57aec11a573f 100644
+--- a/Documentation/ABI/testing/sysfs-driver-ufs
++++ b/Documentation/ABI/testing/sysfs-driver-ufs
+@@ -983,7 +983,7 @@ Description:	This file shows the amount of data that the host plans to
+ What:		/sys/class/scsi_device/*/device/dyn_cap_needed
+ Date:		February 2018
+ Contact:	Stanislav Nijnikov <stanislav.nijnikov@wdc.com>
+-Description:	This file shows the The amount of physical memory needed
++Description:	This file shows The amount of physical memory needed
+ 		to be removed from the physical memory resources pool of
+ 		the particular logical unit. The full information about
+ 		the attribute could be found at UFS specifications 2.1.
+diff --git a/Documentation/ABI/testing/sysfs-firmware-acpi b/Documentation/ABI/testing/sysfs-firmware-acpi
+index 819939d858c9..39173375c53a 100644
+--- a/Documentation/ABI/testing/sysfs-firmware-acpi
++++ b/Documentation/ABI/testing/sysfs-firmware-acpi
+@@ -112,7 +112,7 @@ Description:
+ 		OS context.  GPE 0x12, for example, would vector
+ 		to a level or edge handler called _L12 or _E12.
+ 		The handler may do its business and return.
+-		Or the handler may send send a Notify event
++		Or the handler may send a Notify event
+ 		to a Linux device driver registered on an ACPI device,
+ 		such as a battery, or a processor.
+ 
+-- 
+2.25.1
 
-On 9/29/2021 10:33 PM, David Hildenbrand wrote:
-> On 29.09.21 10:58, Faiyaz Mohammed wrote:
->>
->>
->> On 9/28/2021 4:46 PM, David Hildenbrand wrote:
->>> On 28.09.21 12:53, Faiyaz Mohammed wrote:
->>>>
->>>>
->>>> On 9/28/2021 4:09 PM, David Hildenbrand wrote:
->>>>> On 28.09.21 11:04, Faiyaz Mohammed wrote:
->>>>>> For INITRD and initmem memory is reserved through "memblock_reserve"
->>>>>> during boot up but it is free via "free_reserved_area" instead
->>>>>> of "memblock_free".
->>>>>> For example:
->>>>>> [    0.294848] Freeing initrd memory: 12K.
->>>>>> [    0.696688] Freeing unused kernel memory: 4096K.
->>>>>>
->>>>>> To get the start and end address of the above freed memory and to
->>>>>> account
->>>>>> proper memblock added memblock_dbg log in "free_reserved_area".
->>>>>> After adding log:
->>>>>> [    0.294837] memblock_free: [0x00000083600000-0x00000083603000]
->>>>>> free_initrd_mem+0x20/0x28
->>>>>> [    0.294848] Freeing initrd memory: 12K.
->>>>>> [    0.695246] memblock_free: [0x00000081600000-0x00000081a00000]
->>>>>> free_initmem+0x70/0xc8
->>>>>> [    0.696688] Freeing unused kernel memory: 4096K.
->>>>>>
->>>>>> Signed-off-by: Faiyaz Mohammed <faiyazm@codeaurora.org>
->>>>>> ---
->>>>>>     mm/page_alloc.c | 5 +++++
->>>>>>     1 file changed, 5 insertions(+)
->>>>>>
->>>>>> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
->>>>>> index b37435c..f85c3b2 100644
->>>>>> --- a/mm/page_alloc.c
->>>>>> +++ b/mm/page_alloc.c
->>>>>> @@ -8129,6 +8129,11 @@ unsigned long free_reserved_area(void *start,
->>>>>> void *end, int poison, const char
->>>>>>             pr_info("Freeing %s memory: %ldK\n",
->>>>>>                 s, pages << (PAGE_SHIFT - 10));
->>>>>>     +#ifdef CONFIG_HAVE_MEMBLOCK
->>>>>> +        memblock_dbg("memblock_free: [%#016llx-%#016llx] %pS\n",
->>>>>> +            __pa(start), __pa(end), (void *)_RET_IP_);
->>>>>> +#endif
->>>>>
->>>>> IMHO, the "memblock_free" part is misleading. Something was allocated
->>>>> early via memblock, then we transitioned to the buddy, now we're
->>>>> freeing
->>>>> that early allocation via the buddy.
->>>>> Yes, we're freeing the early allocation via buddy, but for proper
->>>> memblock accounting we need this debug print.
->>>>
->>>
->>> What do you mean with "accounting" ? These are debug statements.
->>>
->>>
->> Yes, these are debug statements, which help to know the a-b address
->> belongs to x callsite. This info is required when memblock=debug is
->> passed through command line and CONFIG_HAVE_MEMBLOCK is enabled.
-> 
-> The issue I'm having is talking in the name of memblock "memblock_dbg,
-> memblock_free", when memblock might no longer be around. We have other
-> places where we free early memblock allocations back to the buddy.
-I didn't find place where we free early memblock allocation back to the
-buddy.
-
-Why "memblock_dbg" print with "memblock_free" string?.
-- After buddy took over, buddy will free memblock reserved memory
-through free_reserved_area and it will print the freed memory size, but
-the freed memory through buddy still be part of memblock.reserved.regions.
-- To know the address ranges, added the "memblock_dbg" print along with
-"membloc_free" string.
-- If it is misleading or confusing, we can remove the "memblock_free"
-string from the "memblock_dgb" print and we can just print the address
-range when "memlock=debug" pass through command line.
-
-Thanks and regards,
-Mohammed Faiyaz
