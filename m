@@ -2,167 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E2C8423AA4
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 11:36:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49C04423AA8
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 11:36:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237843AbhJFJiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 05:38:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53814 "EHLO
+        id S237926AbhJFJib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 05:38:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229824AbhJFJiT (ORCPT
+        with ESMTP id S237908AbhJFJi0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 05:38:19 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3528AC061749
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 02:36:28 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id p1so1849029pfh.8
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 02:36:28 -0700 (PDT)
+        Wed, 6 Oct 2021 05:38:26 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69E18C061753
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 02:36:34 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id p11so7410183edy.10
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 02:36:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Q5RcU7Cd+l7p3SwyuGfDKoPMym4fFieCnhHpZSVSB3U=;
-        b=LhOlkanF51f84DPt+fWaOrOWxWdtGnSN+MuVy6NjxfnqlD4yUUPtMfqqJcM6jgXVH3
-         T8XvWb6OzK4dXltUd67UOpiUfl9tJ7OLindQ0H3fsso6Y6bO6DliafOccqgORiqxfVcP
-         guOx/eZM2rJFciW/2gWBIQB/ju8B1OWKKFwwbXphXXMRHn/dJiv0g7ssh8CCLwTCTWpx
-         gEXc1Yj+Gne3WVpttMcv2XaGHIOELvCikJHAuKa4DJPH7pXN4Q5MFwVLEP6abhtbbl29
-         SH/TkOw9au/fci7YWhgV8KucTxJuQNMBzPOLYJFyrrQZwAU3wHwuuQMPv9T8mftenLmr
-         7lZg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=rcNh0r9T7kBrXbUl4kwoWlPX/sZ4eZ8cwO79sUZA8X4=;
+        b=EVESwHctwsBLZQxT4NZ4k2CF1+9YMTfY6riM/UzylXVP6Q1hamfHIJPpHCfoo2gVv4
+         oeNbRUs6acnCuFAz+HJ5wbyzwtKa6mDR/lZe2zsyfxUuSkbAZFqN65HyhbGdQXYrB8ui
+         IV+qmQ6iJIBQ1SrrcZa4S5fU6NDbF20FSXbpbHKn8fBSa3ANYs39Q3C/A19zt/tqjH1A
+         cvLYdgVip6zJ+NED+VAsKou7JM33+gXIZRVAGpABpvKiJXy2J0UXB/SqHOcJolE8O2fC
+         xa6UqdAInGJoR2Ur4VKXoQyELZdjsyd13VnOp4jnZMkOs+T1g1wxXzctTKfS7cihbHZO
+         uGGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Q5RcU7Cd+l7p3SwyuGfDKoPMym4fFieCnhHpZSVSB3U=;
-        b=hIp41D6KRmhazwXtLQBzL8MVzoCchsJIEz1K11NXOXLnEbmKGfIxwd6RFnzYqonN57
-         +hqlchpIS3F1YSIh0TWjET1Nfjgd/4OVywB2ZDgdqHpljUtYgFN98B2vBZL+KRAwdIFy
-         liEkUXf2UZjqgzM8lXbqhHvTOR+5tOqgMHQbPGKHm2oYqZXFS9FUGHxZt14bEpx22FfS
-         ku5rv1NZOxjSXS8eujd8mPhCpZ6HpiW+HPDejZClZ/aRLR+GV8oDIVADMyUpg48AMt28
-         FlcCwyfb1nVcmMvv03va3JNbTKwZj5q4xFRpzfbQNwU1YXSI+F3FrLzvMaWOnAykPhBi
-         0aTg==
-X-Gm-Message-State: AOAM530ZkFk0nMreNjkIsZN1+Q9Y4pJnbx2KR6CietZOXxZ5S3dZYfJ6
-        pmWRaR433iLpeDKPqVWWvY+D0g==
-X-Google-Smtp-Source: ABdhPJyLCrcof0wyFFQcn47INgjPd+eW3OMXI0q07teu7d0jEXelUV9wQn+BkQA/+lg9LohHY6664A==
-X-Received: by 2002:a63:4a18:: with SMTP id x24mr19656400pga.209.1633512987501;
-        Wed, 06 Oct 2021 02:36:27 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([204.124.181.210])
-        by smtp.gmail.com with ESMTPSA id u2sm4659583pji.30.2021.10.06.02.36.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Oct 2021 02:36:26 -0700 (PDT)
-Date:   Wed, 6 Oct 2021 17:36:20 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     German Gomez <german.gomez@arm.com>
-Cc:     James Clark <james.clark@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: [RFC] perf arm-spe: Track task context switch for cpu-mode events
-Message-ID: <20211006093620.GA14400@leoy-ThinkPad-X240s>
-References: <20210916001748.1525291-1-namhyung@kernel.org>
- <20210916135418.GA383600@leoy-ThinkPad-X240s>
- <CAM9d7chQjzEm7=UpjtTBbsob7kT+=9v16P30hWxnna7mbHu=2g@mail.gmail.com>
- <20210923142305.GA603008@leoy-ThinkPad-X240s>
- <363c4107-fc6f-51d0-94d8-a3f579c8f5a2@arm.com>
- <20211004062638.GB174271@leoy-ThinkPad-X240s>
- <f877cfa6-9b25-6445-3806-ca44a4042eaf@arm.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=rcNh0r9T7kBrXbUl4kwoWlPX/sZ4eZ8cwO79sUZA8X4=;
+        b=Xd2J6DBuliE1GYeHR8uL1XPQja/ejCsT7dFYl9U2rAyXMX8phDOAlngrbVqvN5CExA
+         JCTBHhnz9XA/RVtyyfKNe03TaB2yJiH67EHMAYo0GcS3mpeJAOzjxPGPq5AiSBmaCSlb
+         erQckNq+Lu0gR9YFsC/FgUVSVkS7kKjko+pB2rG2deTmjdlruebxqB4DMLvbNsGeoPBV
+         V0OHIyj+mRVEyKpzveNv5N3UT/RGL/Ay2D0nX54K8rSbzOdk2F9og4yi2k8zXsuDuOrZ
+         pnHcnw7UwUV+a+8+6IkAqepCWDH1dT2YtDb9eBbL7hFcqNlZXv7/vVeyMUugR9cgljun
+         Orfw==
+X-Gm-Message-State: AOAM531R0/IMYLh6S5x+AJMCpd9ldCZ3XJnasW6OE5Ukhd+yjZVjPBf6
+        wPeY8j3pUVOU0PW4oiKlFcbntpwBUftGDC8REiiQuw==
+X-Google-Smtp-Source: ABdhPJwV8nChSokFlOIMg6kZ0ARPzKO+d6ycSmuNYFHme9oxJewenlyUkr5aRjxeroI30BwiUe3To/lOHrglB81lMiQ=
+X-Received: by 2002:a05:6402:5146:: with SMTP id n6mr32426966edd.357.1633512992885;
+ Wed, 06 Oct 2021 02:36:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <f877cfa6-9b25-6445-3806-ca44a4042eaf@arm.com>
+References: <20211005083253.853051879@linuxfoundation.org>
+In-Reply-To: <20211005083253.853051879@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 6 Oct 2021 15:06:21 +0530
+Message-ID: <CA+G9fYubvAp1PpuMqabSvXnQjnKyhwTD5u82HfGPy0uYTmLLBA@mail.gmail.com>
+Subject: Re: [PATCH 4.4 00/41] 4.4.286-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi German,
+On Tue, 5 Oct 2021 at 14:08, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.4.286 release.
+> There are 41 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Thu, 07 Oct 2021 08:32:44 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.4.286-rc2.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-On Tue, Oct 05, 2021 at 11:06:12AM +0100, German Gomez wrote:
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-[...]
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-> Yesterday we did some testing and found that there seems to be an exact
-> match between using context packets and switch events. However this only
-> applies when tracing in userspace (by adding the 'u' suffix to the perf
-> event). Otherwise we still see as much as 2% of events having the wrong
-> PID around the time of the switch.
+## Build
+* kernel: 4.4.286-rc2
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-4.4.y
+* git commit: 72b93c7258429eb65b95794f69218e8d8e0caeaa
+* git describe: v4.4.285-42-g72b93c725842
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.4.y/build/v4.4.2=
+85-42-g72b93c725842
 
-This result sounds reasonable for me, if we only trace the userspace,
-the result should have no any difference between using context packets
-and switch events.
+## No regressions (compared to v4.4.285-38-gf70f9a082d64)
 
-It's a bit high deviation with switch events (1.30% as shown in below
-result) after enable kernel tracing.
+## No fixes (compared to v4.4.285-38-gf70f9a082d64)
 
-> In order to measure this I applied Namhyung's patch and James's patch
-> from [1]. Then added a printf line to the function arm_spe_prep_sample
-> where I have access to both PID values, as a quick way to compare them
-> later in a perf-report run. This is the diff of the printf patch:
-> 
-> diff --git a/tools/perf/util/arm-spe.c b/tools/perf/util/arm-spe.c
-> index 41385ab96fbc..591985c66ac4 100644
-> --- a/tools/perf/util/arm-spe.c
-> +++ b/tools/perf/util/arm-spe.c
-> @@ -247,6 +247,8 @@ static void arm_spe_prep_sample(struct arm_spe *spe,
->     event->sample.header.type = PERF_RECORD_SAMPLE;
->     event->sample.header.misc = sample->cpumode;
->     event->sample.header.size = sizeof(struct perf_event_header);
-> +
-> +       printf(">>>>>> %d / %lu\n", speq->tid, record->context_id & 0x7fff);
->  }
-> 
-> The differences obtained as error % were obtained by running the
-> following perf-record commands for different configurations:
-> 
-> $ sudo ./perf record -e arm_spe/ts_enable=1,load_filter=1,store_filter=1/u -a -- sleep 60
-> $ sudo ./perf report --stdio \
->     | grep ">>>>>>" \
->     | awk '{total++; if($2!=$4) miss++} END {print "Error: " (100*miss/total) "% out of " total " samples"}'
-> 
-> Error: 0% out of 11839328 samples
-> 
-> $ sudo ./perf record -e arm_spe/ts_enable=1,load_filter=1,store_filter=1/ -a -- sleep 10
-> $ sudo ./perf report --stdio \
->     | grep ">>>>>>" \
->     | awk '{total++; if($2!=$4) miss++} END {print "Error: " (100*miss/total) "% out of " total " samples"}'
-> 
-> Error: 1.30624% out of 3418731 samples
+## Test result summary
+total: 43887, pass: 34824, fail: 167, skip: 7877, xfail: 1019
 
-Thanks for sharing this!
+## Build Summary
+* i386: 1 total, 1 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
 
-> I think the fallback to using switch when we can't use the CONTEXTIDR
-> register is a viable option for userspace events, but maybe not so much
-> for non-userspace.
+## Test suites summary
+* fwts
+* kselftest-android
+* kselftest-bpf
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-membarrier
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* ssuite
+* v4l2-compliance
 
-Agreed.
-
-If so, it's good to check the variable
-'evsel->core.attr.exclude_kernel' when decode Arm SPE trace data, and
-only use context switch event when 'exclude_kernel' is set.
-
-Here should note one thing is the perf tool needs to have knowledge to
-decide if the bit 3 'CX' (macro 'SYS_PMSCR_EL1_CX_SHIFT' in kernel) has
-been set in register PMSCR or not.  AFAIK, Arm SPE driver doesn't
-expose any interface (or config) to userspace for the context tracing,
-so one method is to add an extra config in Arm SPE driver for this
-bit, e.g. 'ATTR_CFG_FLD_cx_enable_CFG' can be added in Arm SPE driver.
-
-Alternatively, rather than adding new config, I am just wandering we
-simply use two flags in perf's decoding: 'use_switch_event_for_pid' and
-'use_ctx_packet_for_pid', the first variable will be set if detects
-the tracing is userspace only, the second varaible will be set when
-detects the hardware tracing containing context packet.  So if the
-variable 'use_ctx_packet_for_pid' has been set, then the decoder will
-always use context packet for sample's PID, otherwise, it falls back
-to check 'use_switch_event_for_pid' and set sample PID based on switch
-events.
-
-If have any other idea, please feel free bring up.
-
-Thanks,
-Leo
+--
+Linaro LKFT
+https://lkft.linaro.org
