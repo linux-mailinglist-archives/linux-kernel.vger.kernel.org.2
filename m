@@ -2,61 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A4E94245C1
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 20:11:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6BA74245C5
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 20:12:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232027AbhJFSNV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 14:13:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43136 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232060AbhJFSNP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 14:13:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 459716103B;
-        Wed,  6 Oct 2021 18:11:22 +0000 (UTC)
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     linux-kernel@vger.kernel.org,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Barret Rhoden <brho@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH] elfcore: um: Fix CONFIG_UM typo in linux/elfcore.h
-Date:   Wed,  6 Oct 2021 19:11:19 +0100
-Message-Id: <20211006181119.2851441-1-catalin.marinas@arm.com>
-X-Mailer: git-send-email 2.30.2
+        id S238130AbhJFSN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 14:13:59 -0400
+Received: from esa1.mentor.iphmx.com ([68.232.129.153]:45087 "EHLO
+        esa1.mentor.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232060AbhJFSN5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 14:13:57 -0400
+IronPort-SDR: OSp/viys+sJE0Omf6cdzmsxDTqOET/ylT8lgLh20G9u+TePfsymFCD5W9qYy3Z7jGM9n954GpR
+ M2OnkUDiJbHnT7aMroXIUn5dnJz8vdNLhAuEmQlK+UWGz+Kcrml5c71cQwJF9znBABY3GLOqSW
+ ugIDD/FGrHMI/Jim7pX0nZcW7KEPjVOVz7mY/kDoLwzU5uzl9tYfBpxDSH7yp+oO046s4/7AqP
+ rxVgBk2sAlefTfx9WX1WfH9G43Rmk9vIR42mjyXF0ysdPWYofVqBqQs5RDPeHev5tJyR/Lxdx4
+ 7rz/6vKnZE4DPQ4cVQHKRgMO
+X-IronPort-AV: E=Sophos;i="5.85,352,1624348800"; 
+   d="scan'208";a="69304206"
+Received: from orw-gwy-01-in.mentorg.com ([192.94.38.165])
+  by esa1.mentor.iphmx.com with ESMTP; 06 Oct 2021 10:12:05 -0800
+IronPort-SDR: bOJ0//032ffDQdJa+MvKKqEi4kO/mOVjGeIG8kgg3dKoynHfGsQwH2rZLhm/44GcUfifRT+uPm
+ B8H7ZDQebSKY48fad37Xc+m4B9bhpuu0s8/as9mfXymqQKv8haGx6QIOi21v98H/4q+sFOViN6
+ 95TRxcUZZ082FqJB0MSuQvRa1JdOkifE+KVnwUqNj38HbqA3YkX4N3X8JWvc+qJc4Ugd7ANAOD
+ qKfubhIKXkMJUAdEeUfhE1bFeHTbxhRaHCqDIVjSo6o7JkhnlpWdUnXLPJEvXWzmckvlnxe77e
+ 0OY=
+From:   Andrew Gabbasov <andrew_gabbasov@mentor.com>
+To:     'Geert Uytterhoeven' <geert@linux-m68k.org>
+CC:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux I2C <linux-i2c@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        "Surachari, Bhuvanesh" <Bhuvanesh_Surachari@mentor.com>
+References: <20210922160649.28449-1-andrew_gabbasov@mentor.com> <CAMuHMdVVDpBAQR+H1TAnpf65aVbAL0Mm0km7Z9L7+1JuF6n1gQ@mail.gmail.com>
+In-Reply-To: <CAMuHMdVVDpBAQR+H1TAnpf65aVbAL0Mm0km7Z9L7+1JuF6n1gQ@mail.gmail.com>
+Subject: RE: [PATCH] i2c: rcar: add SMBus block read support
+Date:   Wed, 6 Oct 2021 21:11:51 +0300
+Organization: Mentor Graphics Corporation
+Message-ID: <000001d7badd$a8512d30$f8f38790$@mentor.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQHXue1eCQdNXjaiK021FrevUeTu7qvGRbCQ
+Content-Language: en-us
+X-Originating-IP: [137.202.0.90]
+X-ClientProxiedBy: svr-ies-mbx-09.mgc.mentorg.com (139.181.222.9) To
+ svr-ies-mbx-02.mgc.mentorg.com (139.181.222.2)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is no CONFIG_UM, only UML. In addition, the arch/x86/um/elfcore.c
-file is only compiled if CONFIG_X86_32. Fix the #if conditions in the
-linux/elfcore.h header accordingly.
+Hi Geert,
 
-Fixes: 6e7b64b9dd6d ("elfcore: fix building with clang")
-Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Arnd Bergmann <arnd@arndb.de>
----
+Thank you for your review!
 
-I'm doing some arm64 changes to allow MTE tags to be dumped in the core
-file and I came across this. In a subsequent patch I'll change the #if
-check with a dedicated Kconfig option but I thought I'd send the fix
-first in case anyone deems it important to backport.
+> -----Original Message-----
+> From: Geert Uytterhoeven <geert@linux-m68k.org>
+> Sent: Tuesday, October 05, 2021 4:32 PM
+> To: Gabbasov, Andrew <Andrew_Gabbasov@mentor.com>
+> Cc: Linux-Renesas <linux-renesas-soc@vger.kernel.org>; Linux I2C <linux-i2c@vger.kernel.org>; Linux Kernel
+> Mailing List <linux-kernel@vger.kernel.org>; Wolfram Sang <wsa+renesas@sang-engineering.com>; Surachari,
+> Bhuvanesh <Bhuvanesh_Surachari@mentor.com>
+> Subject: Re: [PATCH] i2c: rcar: add SMBus block read support
+> 
+> Hi Andrew,
+> 
+> On Wed, Sep 22, 2021 at 6:14 PM Andrew Gabbasov
+> <andrew_gabbasov@mentor.com> wrote:
+> > The smbus block read is not currently supported for rcar i2c devices.
+> > This patchset adds the support to rcar i2c bus so that blocks of data
+> > can be read using SMbus block reads.(using i2c_smbus_read_block_data()
+> > function from the i2c-core-smbus.c).
+> >
+> > Inspired by commit 8e8782c71595 ("i2c: imx: add SMBus block read support")
+> >
+> > This patch (adapted) was tested with v4.14, but due to lack of real
+> > hardware with SMBus block read operations support, using "simulation",
+> > that is manual analysis of data, read from plain I2C devices with
+> > SMBus block read request.
+> >
+> > Signed-off-by: Bhuvanesh Surachari <bhuvanesh_surachari@mentor.com>
+> > Signed-off-by: Andrew Gabbasov <andrew_gabbasov@mentor.com>
+> 
+> Thanks for your patch!
+> 
+> > --- a/drivers/i2c/busses/i2c-rcar.c
+> > +++ b/drivers/i2c/busses/i2c-rcar.c
+> > @@ -429,9 +431,16 @@ static bool rcar_i2c_dma(struct rcar_i2c_priv *priv)
+> >                 /*
+> >                  * The last two bytes needs to be fetched using PIO in
+> >                  * order for the STOP phase to work.
+> > +                *
+> > +                * For SMBus block read the first byte was received using PIO.
+> 
+> So it might be easier to read, and more maintainable, to keep the
+> old assignments:
+> 
+>     buf = priv->msg->buf;
+>     len = priv->msg->len - 2;
+> 
+> and adjust them for SMBus afterwards:
+> 
+>     if (block_data) {
+>             /* For SMBus block read the first byte was received using PIO */
+>             buf++;
+>             len--;
+>     }
+> 
+> ?
+> 
+> >                  */
+> > -               buf = priv->msg->buf;
+> > -               len = priv->msg->len - 2;
+> > +               if (block_data) {
+> > +                       buf = priv->msg->buf + 1;
+> > +                       len = priv->msg->len - 3;
+> > +               } else {
+> > +                       buf = priv->msg->buf;
+> > +                       len = priv->msg->len - 2;
+> > +               }
+> >         } else {
+> >                 /*
+> >                  * First byte in message was sent using PIO.
+> 
+> And below we have another case handling buf and len :-(
+> 
+> So perhaps:
+> 
+>     buf = priv->msg->buf;
+>     len = priv->msg->len;
+> 
+>     if (read) {
+>             /*
+>              * The last two bytes needs to be fetched using PIO in
+>              * order for the STOP phase to work.
+>              */
+>             len -= 2;
+>     }
+>     if (!read || block_data) {
+>             /* First byte in message was sent using PIO *
+>             buf++;
+>             len--;
+>     }
 
- include/linux/elfcore.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Probably I was trying to minimize the changes ;-)
 
-diff --git a/include/linux/elfcore.h b/include/linux/elfcore.h
-index 2aaa15779d50..957ebec35aad 100644
---- a/include/linux/elfcore.h
-+++ b/include/linux/elfcore.h
-@@ -109,7 +109,7 @@ static inline int elf_core_copy_task_fpregs(struct task_struct *t, struct pt_reg
- #endif
- }
- 
--#if defined(CONFIG_UM) || defined(CONFIG_IA64)
-+#if (defined(CONFIG_UML) && defined(CONFIG_X86_32)) || defined(CONFIG_IA64)
- /*
-  * These functions parameterize elf_core_dump in fs/binfmt_elf.c to write out
-  * extra segments containing the gate DSO contents.  Dumping its
+However, I agree with you that the whole code fragment can be simplified
+and your variant indeed looks more clean and understandable.
+Thank you for your suggestion, I'll submit version 2 of the patch
+with this fragment changed.
+
+Thanks!
+
+Best regards,
+Andrew
+
