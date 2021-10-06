@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CCAE4240F3
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 17:11:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E88AE4240C3
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 17:05:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239153AbhJFPNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 11:13:24 -0400
-Received: from mga11.intel.com ([192.55.52.93]:30673 "EHLO mga11.intel.com"
+        id S239208AbhJFPHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 11:07:03 -0400
+Received: from mga02.intel.com ([134.134.136.20]:36845 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239124AbhJFPNU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 11:13:20 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10129"; a="223411116"
+        id S239167AbhJFPHB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 11:07:01 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10129"; a="213137633"
 X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; 
-   d="scan'208";a="223411116"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2021 08:04:42 -0700
+   d="scan'208";a="213137633"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2021 08:04:42 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; 
-   d="scan'208";a="484153985"
+   d="scan'208";a="478146134"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga007.fm.intel.com with ESMTP; 06 Oct 2021 08:04:39 -0700
+  by orsmga007.jf.intel.com with ESMTP; 06 Oct 2021 08:04:39 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id B3751170; Wed,  6 Oct 2021 18:04:45 +0300 (EEST)
+        id C3FC31C8; Wed,  6 Oct 2021 18:04:45 +0300 (EEST)
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To:     Mark Brown <broonie@kernel.org>,
         Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
@@ -34,9 +34,9 @@ Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
         Jaroslav Kysela <perex@perex.cz>,
         Takashi Iwai <tiwai@suse.com>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 2/4] ASoC: Intel: bytcr_rt5640: Use temporary variable for struct device
-Date:   Wed,  6 Oct 2021 18:04:40 +0300
-Message-Id: <20211006150442.16503-2-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 3/4] ASoC: Intel: bytcr_rt5640: use devm_clk_get_optional() for mclk
+Date:   Wed,  6 Oct 2021 18:04:41 +0300
+Message-Id: <20211006150442.16503-3-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211006150442.16503-1-andriy.shevchenko@linux.intel.com>
 References: <20211006150442.16503-1-andriy.shevchenko@linux.intel.com>
@@ -46,126 +46,131 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The devm_clk_get_optional() helper returns NULL when devm_clk_get()
+returns -ENOENT. This makes things slightly cleaner. The added benefit
+is mostly cosmetic.
+
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- sound/soc/intel/boards/bytcr_rt5640.c | 32 +++++++++++++--------------
- 1 file changed, 15 insertions(+), 17 deletions(-)
+ sound/soc/intel/boards/bytcr_rt5640.c | 75 ++++++++++++---------------
+ 1 file changed, 32 insertions(+), 43 deletions(-)
 
 diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 43997048a825..0f609a0b3527 100644
+index 0f609a0b3527..2e7d45f0f05d 100644
 --- a/sound/soc/intel/boards/bytcr_rt5640.c
 +++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -1511,12 +1511,12 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
- 	int aif;
+@@ -269,13 +269,10 @@ static int platform_clock_control(struct snd_soc_dapm_widget *w,
+ 		return -EIO;
  
- 	is_bytcr = false;
--	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
-+	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
- 	if (!priv)
- 		return -ENOMEM;
- 
- 	/* register the soc card */
--	byt_rt5640_card.dev = &pdev->dev;
-+	byt_rt5640_card.dev = dev;
- 	snd_soc_card_set_drvdata(&byt_rt5640_card, priv);
- 
- 	/* fix index of codec dai */
-@@ -1536,7 +1536,7 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
- 		put_device(&adev->dev);
- 		byt_rt5640_dais[dai_index].codecs->name = byt_rt5640_codec_name;
+ 	if (SND_SOC_DAPM_EVENT_ON(event)) {
+-		if (byt_rt5640_quirk & BYT_RT5640_MCLK_EN) {
+-			ret = clk_prepare_enable(priv->mclk);
+-			if (ret < 0) {
+-				dev_err(card->dev,
+-					"could not configure MCLK state\n");
+-				return ret;
+-			}
++		ret = clk_prepare_enable(priv->mclk);
++		if (ret < 0) {
++			dev_err(card->dev, "could not configure MCLK state\n");
++			return ret;
+ 		}
+ 		ret = byt_rt5640_prepare_and_enable_pll1(codec_dai, 48000);
  	} else {
--		dev_err(&pdev->dev, "Error cannot find '%s' dev\n", mach->id);
-+		dev_err(dev, "Error cannot find '%s' dev\n", mach->id);
- 		return -ENXIO;
+@@ -287,10 +284,8 @@ static int platform_clock_control(struct snd_soc_dapm_widget *w,
+ 		ret = snd_soc_dai_set_sysclk(codec_dai, RT5640_SCLK_S_RCCLK,
+ 					     48000 * 512,
+ 					     SND_SOC_CLOCK_IN);
+-		if (!ret) {
+-			if (byt_rt5640_quirk & BYT_RT5640_MCLK_EN)
+-				clk_disable_unprepare(priv->mclk);
+-		}
++		if (!ret)
++			clk_disable_unprepare(priv->mclk);
  	}
  
-@@ -1579,13 +1579,13 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
- 							       &pkg_ctx);
- 		if (pkg_found) {
- 			if (chan_package.aif_value == 1) {
--				dev_info(&pdev->dev, "BIOS Routing: AIF1 connected\n");
-+				dev_info(dev, "BIOS Routing: AIF1 connected\n");
- 				byt_rt5640_quirk |= BYT_RT5640_SSP0_AIF1;
- 			} else  if (chan_package.aif_value == 2) {
--				dev_info(&pdev->dev, "BIOS Routing: AIF2 connected\n");
-+				dev_info(dev, "BIOS Routing: AIF2 connected\n");
- 				byt_rt5640_quirk |= BYT_RT5640_SSP0_AIF2;
- 			} else {
--				dev_info(&pdev->dev, "BIOS Routing isn't valid, ignored\n");
-+				dev_info(dev, "BIOS Routing isn't valid, ignored\n");
- 				pkg_found = false;
- 			}
- 		}
-@@ -1609,7 +1609,7 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
- 	if (dmi_id)
- 		byt_rt5640_quirk = (unsigned long)dmi_id->driver_data;
- 	if (quirk_override != -1) {
--		dev_info(&pdev->dev, "Overriding quirk 0x%lx => 0x%x\n",
-+		dev_info(dev, "Overriding quirk 0x%lx => 0x%x\n",
- 			 byt_rt5640_quirk, quirk_override);
- 		byt_rt5640_quirk = quirk_override;
+ 	if (ret < 0) {
+@@ -1217,30 +1212,25 @@ static int byt_rt5640_init(struct snd_soc_pcm_runtime *runtime)
+ 			return ret;
  	}
-@@ -1623,12 +1623,12 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
- 		acpi_dev_add_driver_gpios(ACPI_COMPANION(priv->codec_dev),
- 					  byt_rt5640_hp_elitepad_1000g2_gpios);
  
--		priv->hsmic_detect = devm_fwnode_gpiod_get(&pdev->dev, codec_dev->fwnode,
-+		priv->hsmic_detect = devm_fwnode_gpiod_get(dev, codec_dev->fwnode,
- 							   "headset-mic-detect", GPIOD_IN,
- 							   "headset-mic-detect");
- 		if (IS_ERR(priv->hsmic_detect)) {
- 			ret_val = PTR_ERR(priv->hsmic_detect);
--			dev_err_probe(&pdev->dev, ret_val, "getting hsmic-detect GPIO\n");
-+			dev_err_probe(dev, ret_val, "getting hsmic-detect GPIO\n");
- 			goto err_device;
- 		}
+-	if (byt_rt5640_quirk & BYT_RT5640_MCLK_EN) {
+-		/*
+-		 * The firmware might enable the clock at
+-		 * boot (this information may or may not
+-		 * be reflected in the enable clock register).
+-		 * To change the rate we must disable the clock
+-		 * first to cover these cases. Due to common
+-		 * clock framework restrictions that do not allow
+-		 * to disable a clock that has not been enabled,
+-		 * we need to enable the clock first.
+-		 */
+-		ret = clk_prepare_enable(priv->mclk);
+-		if (!ret)
+-			clk_disable_unprepare(priv->mclk);
+-
+-		if (byt_rt5640_quirk & BYT_RT5640_MCLK_25MHZ)
+-			ret = clk_set_rate(priv->mclk, 25000000);
+-		else
+-			ret = clk_set_rate(priv->mclk, 19200000);
++	/*
++	 * The firmware might enable the clock at boot (this information
++	 * may or may not be reflected in the enable clock register).
++	 * To change the rate we must disable the clock first to cover
++	 * these cases. Due to common clock framework restrictions that
++	 * do not allow to disable a clock that has not been enabled,
++	 * we need to enable the clock first.
++	 */
++	ret = clk_prepare_enable(priv->mclk);
++	if (!ret)
++		clk_disable_unprepare(priv->mclk);
+ 
+-		if (ret) {
+-			dev_err(card->dev, "unable to set MCLK rate\n");
+-			return ret;
+-		}
++	if (byt_rt5640_quirk & BYT_RT5640_MCLK_25MHZ)
++		ret = clk_set_rate(priv->mclk, 25000000);
++	else
++		ret = clk_set_rate(priv->mclk, 19200000);
++	if (ret) {
++		dev_err(card->dev, "unable to set MCLK rate\n");
++		return ret;
  	}
-@@ -1638,7 +1638,7 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
- 	if (ret_val)
- 		goto err_remove_gpios;
  
--	log_quirks(&pdev->dev);
-+	log_quirks(dev);
- 
- 	if ((byt_rt5640_quirk & BYT_RT5640_SSP2_AIF2) ||
- 	    (byt_rt5640_quirk & BYT_RT5640_SSP0_AIF2)) {
-@@ -1653,11 +1653,11 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
+ 	if (BYT_RT5640_JDSRC(byt_rt5640_quirk)) {
+@@ -1653,7 +1643,7 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
  		byt_rt5640_dais[dai_index].cpus->dai_name = "ssp0-port";
  
  	if (byt_rt5640_quirk & BYT_RT5640_MCLK_EN) {
--		priv->mclk = devm_clk_get(&pdev->dev, "pmc_plt_clk_3");
-+		priv->mclk = devm_clk_get(dev, "pmc_plt_clk_3");
+-		priv->mclk = devm_clk_get(dev, "pmc_plt_clk_3");
++		priv->mclk = devm_clk_get_optional(dev, "pmc_plt_clk_3");
  		if (IS_ERR(priv->mclk)) {
  			ret_val = PTR_ERR(priv->mclk);
  
--			dev_err(&pdev->dev,
-+			dev_err(dev,
+@@ -1661,15 +1651,14 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
  				"Failed to get MCLK from pmc_plt_clk_3: %d\n",
  				ret_val);
  
-@@ -1713,7 +1713,7 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
- 	if (ret_val)
- 		goto err;
- 
--	sof_parent = snd_soc_acpi_sof_parent(&pdev->dev);
-+	sof_parent = snd_soc_acpi_sof_parent(dev);
- 
- 	/* set card and driver name */
- 	if (sof_parent) {
-@@ -1728,11 +1728,9 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
- 	if (sof_parent)
- 		dev->driver->pm = &snd_soc_pm_ops;
- 
--	ret_val = devm_snd_soc_register_card(&pdev->dev, &byt_rt5640_card);
--
-+	ret_val = devm_snd_soc_register_card(dev, &byt_rt5640_card);
- 	if (ret_val) {
--		dev_err(&pdev->dev, "devm_snd_soc_register_card failed %d\n",
--			ret_val);
-+		dev_err(dev, "devm_snd_soc_register_card failed %d\n", ret_val);
- 		goto err;
+-			/*
+-			 * Fall back to bit clock usage for -ENOENT (clock not
+-			 * available likely due to missing dependencies), bail
+-			 * for all other errors, including -EPROBE_DEFER
+-			 */
+-			if (ret_val != -ENOENT)
+-				goto err;
+-			byt_rt5640_quirk &= ~BYT_RT5640_MCLK_EN;
++			goto err;
+ 		}
++		/*
++		 * Fall back to bit clock usage when clock is not
++		 * available likely due to missing dependencies.
++		 */
++		if (!priv->mclk)
++			byt_rt5640_quirk &= ~BYT_RT5640_MCLK_EN;
  	}
- 	platform_set_drvdata(pdev, &byt_rt5640_card);
+ 
+ 	if (byt_rt5640_quirk & BYT_RT5640_NO_SPEAKERS) {
 -- 
 2.33.0
 
