@@ -2,84 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACC8B423E07
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 14:47:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAFD2423E09
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 14:47:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238530AbhJFMt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 08:49:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33684 "EHLO mail.kernel.org"
+        id S238564AbhJFMtg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 08:49:36 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:57486 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229894AbhJFMt2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 08:49:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BF58660F59;
-        Wed,  6 Oct 2021 12:47:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633524456;
-        bh=tTQVklaQ/ldVLqaoEK1050e3eup4oM5ED69uVhqEmSo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Kl7HkcYSlA5eh1NwBNeZasuALZA6nFX5EtgDlzo5SclCOpq0vmtzwzBYscFYfkHBD
-         1UxWTCmLKoO1hrWIy05JfryPwMBkltkYgu/kCXSP705D+h8CgetgOmyfKQiZAKfBDs
-         +osIlln5+g87KtAF8PpBBstrU20CWwzZ6U1cEomEj0I7Jz5P0OvoONsTHcPbadcPof
-         qa8ia7v1UYz7rJVZ/jMGvbPCkv32B7fLDl1I7rjVeT4U1POqWUen5UEgbKKFUCEJ2E
-         B5HxRQxyLXdvr6yPrC/oPtHb3QKTH+tER39egWbeojdfWs9FaeM2Rduy0n/d/c+2Sq
-         Q5WJm/ErR7ATw==
-Date:   Wed, 6 Oct 2021 18:17:32 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     abhinavk@codeaurora.org
-Cc:     Rob Clark <robdclark@gmail.com>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
-        David Airlie <airlied@linux.ie>, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        freedreno@lists.freedesktop.org,
-        Sumit Semwal <sumit.semwal@linaro.org>
-Subject: Re: [Freedreno] [PATCH 08/11] drm/msm/disp/dpu1: Add support for DSC
- in encoder
-Message-ID: <YV2a5MzDUWMTotpP@matsya>
-References: <20210715065203.709914-1-vkoul@kernel.org>
- <20210715065203.709914-9-vkoul@kernel.org>
- <70d5abae07b4dbf63d8dbf47ba31262d@codeaurora.org>
+        id S238545AbhJFMtf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 08:49:35 -0400
+Received: from zn.tnic (p200300ec2f0d360075f221dbc8708d3a.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:3600:75f2:21db:c870:8d3a])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 695041EC03AD;
+        Wed,  6 Oct 2021 14:47:42 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1633524462;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=OIi5fQlCiQUmAZsMGAxtcqUTEjX4uAH3bLsnXW/m3AE=;
+        b=BL02zMUMndK1m1ADZIZ26PUo6GYsrPkSbrNA7xo5I6gGUl/I0fOJzdYaUcD6md5yQLXuYf
+        FnVttnzGb+VEX9lImIoiaKZXqNZYgquYVy1jxRyn52QnkkvYh0rw57y9i36hy0VHzYNplo
+        PDBnzP/uRu/o/3GHgVXw+GY1aePpm8g=
+Date:   Wed, 6 Oct 2021 14:47:42 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
+        VMware Inc <pv-drivers@vmware.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 03/11] x86/cpufeatures: Add TDX Guest CPU feature
+Message-ID: <YV2a7h5AKCcTQLsT@zn.tnic>
+References: <20211005025205.1784480-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20211005025205.1784480-4-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20211005210423.yfftpxxmj3cjprtv@treble>
+ <15a07997-2659-6be1-b8a3-da57e72562b5@linux.intel.com>
+ <20211006034218.ynamwigsvpgad7sr@treble>
+ <f15d1b41-e4fb-0203-88f7-dbac3f4e5307@linux.intel.com>
+ <20211006050309.ldn5myznmpurnomm@treble>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <70d5abae07b4dbf63d8dbf47ba31262d@codeaurora.org>
+In-Reply-To: <20211006050309.ldn5myznmpurnomm@treble>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02-08-21, 17:57, abhinavk@codeaurora.org wrote:
-> On 2021-07-14 23:52, Vinod Koul wrote:
-> > When DSC is enabled in DT, we need to configure the encoder for DSC
-> > configuration, calculate DSC parameters for the given timing.
-> > 
-> > This patch adds that support by adding dpu_encoder_prep_dsc() which is
-> > invoked when DSC is enabled in DT
-> correct me if wrong but this commit text is not valid anymore in my opinion.
-> are there any params you are getting from DT now? I thought its all coming
-> from the panel
-> driver directly.
+On Tue, Oct 05, 2021 at 10:03:09PM -0700, Josh Poimboeuf wrote:
+> I'm not suggesting getting rid of the feature flag.  I'm suggesting
+> getting rid of the global variable.  Is there a reason you can't check
+> the feature flag instead of checking the global variable?
 
-Yes thanks for spotting this, updated!
-
-> > 
-> > Signed-off-by: Vinod Koul <vkoul@kernel.org>
-> agree with dmitry's comment's
-> https://patchwork.freedesktop.org/patch/444078/?series=90413&rev=2
-> 
-> instead of dsc being part of priv->dsc it should be per encoder.
-> 
-> On top of his comment, I also think that like on the newer chipsets, moving
-> the dsc related
-> encoder configuration to a dpu_encoder_dce.c will help for future expansion
-> of other topologies
-> and also for other compression algorithms.
-
-As replied to Dimitry, the DP and other topology support needs to be
-comprehended so this should be done when we know how DP, other
-compression algorithms and other topologies would be modeled here :)
+The reason is that cc_platform_has() is used too early, even before
+get_cpu_cap(). So you need to have TDX guest detected even before
+feature flags.
 
 -- 
-~Vinod
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
