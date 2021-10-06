@@ -2,102 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C247F4243BD
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 19:12:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9AA44243F3
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 19:21:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239431AbhJFROY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 13:14:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48020 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238458AbhJFROU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 13:14:20 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C5EEC061753
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 10:12:27 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id k23-20020a17090a591700b001976d2db364so2881268pji.2
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 10:12:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Et4bMzX3Jqt/S4Y0/c6adC/zVRIkNrC0dGxlQEGLOzg=;
-        b=VyFsYxqljECJMwF3cN4AhKi76+PklmjY2B401r11r7FZJHV/SsU/oSYoL0mHyODSwb
-         mnAXtbzxQUzsfefZT5lgD2H+fLuAUf9NM/ev5ioBY71gUg6kQXvgfDM6TYs0FrUlHCau
-         j0Wm2u/CNbPjC9ayMRoQt1blN+ZvD5srTMjPQfYaPahTJctKAHg8X87nknKDl/wNkvBp
-         XSy7hygnjbimdrfGMl33jH9CO6ku3KxCCNOkHExmFVDjOmz1W/i/UUp6oHXJqyZG0azW
-         TIjblYzp/X0VlagrFajkQugIfmdPQoYptvmYeyc44czQi5ANv/5LuMrhPgp0yzeZDvHT
-         3jkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Et4bMzX3Jqt/S4Y0/c6adC/zVRIkNrC0dGxlQEGLOzg=;
-        b=3REWLc1WR/JsKLrA6PieOnKVj34IfSWPu3iX1zi+Gyy6/74srgf+5dnqEOWcYaR4OJ
-         qPV1e9pNxfGP/mT2Gj6RM2kDKyjRrtxZ9fvZZOfSMYGbU+QfBY7v3n4uXWERIBdjYFqS
-         z0bH4UHvsW8gWrG4nk6I7h00A7VY9x1sLqrF2ICjXrB+e3rJ7vf1dKQk5AWnMrjBpCLD
-         t++HoIQT5ivdMYDtqQyWhitrZHmcmuCYE2AVNLsjjewK50WpjjnyJKqS4NETqyWuIFFZ
-         LwQKommD2xYD3mOcTSBCh5q2eCBIczyQ9r/vIKI/+9kWgNObbpVqz+iPtO1+SbyiNpH6
-         sYKg==
-X-Gm-Message-State: AOAM532V89DLuNqqICq08LgPEjH9/pJw4zWkbxQ4WMw8qDPTA+1/OGKo
-        58N5Fm12vwB0zOmzcs/DarigStkJO//Y2zBs05QLnw==
-X-Google-Smtp-Source: ABdhPJyOFeE62kEGZ6fNOfO2fYEeaC7T0+12j8gx48G07IOk315/K809zRiio1ViO/PlDgGQ+cpTJqtJEyrnouZ57Ok=
-X-Received: by 2002:a17:90b:3552:: with SMTP id lt18mr12025415pjb.63.1633540346947;
- Wed, 06 Oct 2021 10:12:26 -0700 (PDT)
+        id S238424AbhJFRXZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 13:23:25 -0400
+Received: from mga01.intel.com ([192.55.52.88]:20573 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231624AbhJFRXY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 13:23:24 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10129"; a="249336865"
+X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; 
+   d="scan'208";a="249336865"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2021 10:17:17 -0700
+X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; 
+   d="scan'208";a="439196358"
+Received: from jons-linux-dev-box.fm.intel.com (HELO jons-linux-dev-box) ([10.1.27.20])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2021 10:17:16 -0700
+Date:   Wed, 6 Oct 2021 10:12:29 -0700
+From:   Matthew Brost <matthew.brost@intel.com>
+To:     Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
+Cc:     Intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org,
+        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
+        Daniele Ceraolo Spurio <daniele.ceraolospurio@intel.com>
+Subject: Re: [RFC 6/8] drm/i915: Make some recently added vfuncs use full
+ scheduling attribute
+Message-ID: <20211006171228.GA7906@jons-linux-dev-box>
+References: <20211004143650.699120-1-tvrtko.ursulin@linux.intel.com>
+ <20211004143650.699120-7-tvrtko.ursulin@linux.intel.com>
 MIME-Version: 1.0
-References: <20210930222048.1692635-1-dlatypov@google.com> <20210930222048.1692635-4-dlatypov@google.com>
-In-Reply-To: <20210930222048.1692635-4-dlatypov@google.com>
-From:   Brendan Higgins <brendanhiggins@google.com>
-Date:   Wed, 6 Oct 2021 10:12:16 -0700
-Message-ID: <CAFd5g44=LaO3xh+y2--gfP=rPA3A+ucsnJMykBvrx49ttzgWUQ@mail.gmail.com>
-Subject: Re: [PATCH v4 3/4] kunit: tool: actually track how long it took to
- run tests
-To:     Daniel Latypov <dlatypov@google.com>
-Cc:     davidgow@google.com, linux-kernel@vger.kernel.org,
-        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
-        skhan@linuxfoundation.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211004143650.699120-7-tvrtko.ursulin@linux.intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 3:20 PM Daniel Latypov <dlatypov@google.com> wrote:
->
-> This is a long standing bug in kunit tool.
-> Since these files were added, run_kernel() has always yielded lines.
->
-> That means, the call to run_kernel() returns before the kernel finishes
-> executing tests, potentially before a single line of output is even
-> produced.
->
-> So code like this
->   time_start = time.time()
->   result = linux.run_kernel(...)
->   time_end = time.time()
->
-> would only measure the time taken for python to give back the generator
-> object.
->
-> From a caller's perspective, the only way to know the kernel has exited
-> is for us to consume all the output from the `result` generator object.
-> Alternatively, we could change run_kernel() to try and do its own book
-> keeping and return the total time, but that doesn't seem worth it.
->
-> This change makes us record `time_end` after we're done parsing all the
-> output (which should mean we've consumed all of it, or errored out).
-> That means we're including in the parsing time as well, but that should
-> be quite small, and it's better than claiming it took 0s to run tests.
->
-> Let's use this as an example:
-> $ ./tools/testing/kunit/kunit.py run --kunitconfig=lib/kunit example
->
-> Before:
-> Elapsed time: 7.684s total, 0.001s configuring, 4.692s building, 0.000s running
->
-> After:
-> Elapsed time: 6.283s total, 0.001s configuring, 3.202s building, 3.079s running
->
-> Signed-off-by: Daniel Latypov <dlatypov@google.com>
-> Reviewed-by: David Gow <davidgow@google.com>
+On Mon, Oct 04, 2021 at 03:36:48PM +0100, Tvrtko Ursulin wrote:
+> From: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
+> 
+> Code added in 71ed60112d5d ("drm/i915: Add kick_backend function to
+> i915_sched_engine") and ee242ca704d3 ("drm/i915/guc: Implement GuC
+> priority management") introduced some scheduling related vfuncs which
+> take integer request priority as argument.
+> 
+> Make them instead take struct i915_sched_attr, which is the type
+> encapsulating this information, so it probably aligns with the design
+> better. It definitely enables extending the set of scheduling attributes.
+> 
 
-Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+Understand the motivation here but the i915_scheduler is going to
+disapear when we move to the DRM scheduler or at least its functionality
+of priority inheritance will be pushed into the DRM scheduler. I'd be
+very careful making any changes here as the priority in the DRM
+scheduler is defined as single enum:
+
+/* These are often used as an (initial) index
+ * to an array, and as such should start at 0.
+ */
+enum drm_sched_priority {
+        DRM_SCHED_PRIORITY_MIN,
+        DRM_SCHED_PRIORITY_NORMAL,
+        DRM_SCHED_PRIORITY_HIGH,
+        DRM_SCHED_PRIORITY_KERNEL,
+
+        DRM_SCHED_PRIORITY_COUNT,
+        DRM_SCHED_PRIORITY_UNSET = -2
+};
+
+Adding a field to the i915_sched_attr is fairly easy as we already have
+a structure but changing the DRM scheduler might be a tougher sell.
+Anyway you can make this work without adding the 'nice' field to
+i915_sched_attr? Might be worth exploring so when we move to the DRM
+scheduler this feature drops in a little cleaner.
+
+Matt
+
+> Signed-off-by: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
+> Cc: Matthew Brost <matthew.brost@intel.com>
+> Cc: Daniele Ceraolo Spurio <daniele.ceraolospurio@intel.com>
+> ---
+>  drivers/gpu/drm/i915/gt/intel_execlists_submission.c | 4 +++-
+>  drivers/gpu/drm/i915/gt/uc/intel_guc_submission.c    | 3 ++-
+>  drivers/gpu/drm/i915/i915_scheduler.c                | 4 ++--
+>  drivers/gpu/drm/i915/i915_scheduler_types.h          | 4 ++--
+>  4 files changed, 9 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/i915/gt/intel_execlists_submission.c b/drivers/gpu/drm/i915/gt/intel_execlists_submission.c
+> index 7147fe80919e..e91d803a6453 100644
+> --- a/drivers/gpu/drm/i915/gt/intel_execlists_submission.c
+> +++ b/drivers/gpu/drm/i915/gt/intel_execlists_submission.c
+> @@ -3216,11 +3216,13 @@ static bool can_preempt(struct intel_engine_cs *engine)
+>  	return engine->class != RENDER_CLASS;
+>  }
+>  
+> -static void kick_execlists(const struct i915_request *rq, int prio)
+> +static void kick_execlists(const struct i915_request *rq,
+> +			   const struct i915_sched_attr *attr)
+>  {
+>  	struct intel_engine_cs *engine = rq->engine;
+>  	struct i915_sched_engine *sched_engine = engine->sched_engine;
+>  	const struct i915_request *inflight;
+> +	const int prio = attr->priority;
+>  
+>  	/*
+>  	 * We only need to kick the tasklet once for the high priority
+> diff --git a/drivers/gpu/drm/i915/gt/uc/intel_guc_submission.c b/drivers/gpu/drm/i915/gt/uc/intel_guc_submission.c
+> index ba0de35f6323..b5883a4365ca 100644
+> --- a/drivers/gpu/drm/i915/gt/uc/intel_guc_submission.c
+> +++ b/drivers/gpu/drm/i915/gt/uc/intel_guc_submission.c
+> @@ -2414,9 +2414,10 @@ static void guc_init_breadcrumbs(struct intel_engine_cs *engine)
+>  }
+>  
+>  static void guc_bump_inflight_request_prio(struct i915_request *rq,
+> -					   int prio)
+> +					   const struct i915_sched_attr *attr)
+>  {
+>  	struct intel_context *ce = rq->context;
+> +	const int prio = attr->priority;
+>  	u8 new_guc_prio = map_i915_prio_to_guc_prio(prio);
+>  
+>  	/* Short circuit function */
+> diff --git a/drivers/gpu/drm/i915/i915_scheduler.c b/drivers/gpu/drm/i915/i915_scheduler.c
+> index 762127dd56c5..534bab99fcdc 100644
+> --- a/drivers/gpu/drm/i915/i915_scheduler.c
+> +++ b/drivers/gpu/drm/i915/i915_scheduler.c
+> @@ -255,7 +255,7 @@ static void __i915_schedule(struct i915_sched_node *node,
+>  
+>  		/* Must be called before changing the nodes priority */
+>  		if (sched_engine->bump_inflight_request_prio)
+> -			sched_engine->bump_inflight_request_prio(from, prio);
+> +			sched_engine->bump_inflight_request_prio(from, attr);
+>  
+>  		WRITE_ONCE(node->attr.priority, prio);
+>  
+> @@ -280,7 +280,7 @@ static void __i915_schedule(struct i915_sched_node *node,
+>  
+>  		/* Defer (tasklet) submission until after all of our updates. */
+>  		if (sched_engine->kick_backend)
+> -			sched_engine->kick_backend(node_to_request(node), prio);
+> +			sched_engine->kick_backend(node_to_request(node), attr);
+>  	}
+>  
+>  	spin_unlock(&sched_engine->lock);
+> diff --git a/drivers/gpu/drm/i915/i915_scheduler_types.h b/drivers/gpu/drm/i915/i915_scheduler_types.h
+> index b0a1b58c7893..24b9ac1c2ce2 100644
+> --- a/drivers/gpu/drm/i915/i915_scheduler_types.h
+> +++ b/drivers/gpu/drm/i915/i915_scheduler_types.h
+> @@ -177,13 +177,13 @@ struct i915_sched_engine {
+>  	 * @kick_backend: kick backend after a request's priority has changed
+>  	 */
+>  	void	(*kick_backend)(const struct i915_request *rq,
+> -				int prio);
+> +				const struct i915_sched_attr *attr);
+>  
+>  	/**
+>  	 * @bump_inflight_request_prio: update priority of an inflight request
+>  	 */
+>  	void	(*bump_inflight_request_prio)(struct i915_request *rq,
+> -					      int prio);
+> +					      const struct i915_sched_attr *attr);
+>  
+>  	/**
+>  	 * @retire_inflight_request_prio: indicate request is retired to
+> -- 
+> 2.30.2
+> 
