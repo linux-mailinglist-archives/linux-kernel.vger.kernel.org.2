@@ -2,130 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 162E64235B6
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 04:08:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60FC54235C0
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Oct 2021 04:18:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237221AbhJFCKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Oct 2021 22:10:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38020 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237158AbhJFCKk (ORCPT
+        id S237168AbhJFCUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Oct 2021 22:20:32 -0400
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:53083 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229908AbhJFCUb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Oct 2021 22:10:40 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ED4AC061749
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Oct 2021 19:08:49 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id z11so1943887oih.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Oct 2021 19:08:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=lYqbd1yY6Vt/MStunvcBDmbeftnynuSmElbE65yJeuI=;
-        b=GC6d96YWZxDnlnByKPE8fzKDBgpe+/UipmMF6p4IzkEANqw1A+OhrXdDLSPEZdgDy4
-         am8AsWG52xoFc6BD1SSQypkjO8/pMZdsimyMa0CTKwTOCVB+58kihH0X4CilBV7FzGrF
-         WX+AM7FGM1t8QjqF2kVBwQD9XAkawVs5tMe1myGfh2X0jlwxR1lHFmp9rcMmyVJus8aw
-         UeUQPVSmfb/2fCUwCtXoCf9AWZy/mAxrPsHgnJXkKS4gxCFRGBQ470PbFnKB6H9COVJd
-         wbYZ9vaA9bqwPHC45Dj+ztPNh5EvwRv0UkZjFKEBmxNs6zXDyVgpTk2NuMug5pg2dXW6
-         SpEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lYqbd1yY6Vt/MStunvcBDmbeftnynuSmElbE65yJeuI=;
-        b=pHD8AFy0cSdr6PfJVDYpxlEh6vhcnfUP/3PmFFVxQv9jAg6LQOGKXj2hXewtEf7r0e
-         d9We3BStV/eb8JV8Q4ZYgOnqpliunR+E0YeSbSMHTMJTXt8KqHW/PT5xecMYy9R4i9+S
-         HHcJHZrCBUXUiCcSXEfEhx1LvxBEZyrmCWubnrdxMY9oAusrM2ZeCTJQkJUCV2+v0ytj
-         +taYxxvQhPChpD7leJCTXhVRaBTeBSyr7YWxAJfpdaCLxcvJImC1iVurtoyohnLKy8Hb
-         TwkNd5dJL3wahpfXFa8lwboqhDnQ0LjpEMrtTA3S3KQz5WY5q2q2y8jphV8DVqB6Na6m
-         bUIA==
-X-Gm-Message-State: AOAM533osmVLfa/H31NKtd34caZZhE+teuqUGz3JmdYw9WcIInIOvsm0
-        3l3391DAEEM/O1qsYAVcmOO2Kg==
-X-Google-Smtp-Source: ABdhPJwOAzvNXUWrQOMZZ6Pn52U6g6WPpbGpk9AzF5O1hc8wZyZsEDHPz1VOQo1RF640zOdBhAsitA==
-X-Received: by 2002:a05:6808:a99:: with SMTP id q25mr5117219oij.162.1633486128519;
-        Tue, 05 Oct 2021 19:08:48 -0700 (PDT)
-Received: from ripper ([2600:1700:a0:3dc8:205:1bff:fec0:b9b3])
-        by smtp.gmail.com with ESMTPSA id l23sm3535076otk.21.2021.10.05.19.08.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Oct 2021 19:08:48 -0700 (PDT)
-Date:   Tue, 5 Oct 2021 19:10:29 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     khsieh@codeaurora.org
-Cc:     Stephen Boyd <swboyd@chromium.org>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Sankeerth Billakanti <sbillaka@codeaurora.org>
-Subject: Re: [PATCH] drm/msm/dp: Shorten SETUP timeout
-Message-ID: <YV0FlTyMEzlyNsN9@ripper>
-References: <20211005023750.2037631-1-bjorn.andersson@linaro.org>
- <CAE-0n52wN1s=Ph4r4iLposxNPfa562Bv1mM81j1KvNmWOQS1-Q@mail.gmail.com>
- <YVzGVmJXEDH0HfIL@ripper>
- <CAE-0n53FC7JCCJoye_uKeqaLKrZeHXLtvObxWFedaUzjirmBaA@mail.gmail.com>
- <a4a4980e586a70e3b7de989bc61a3e33@codeaurora.org>
+        Tue, 5 Oct 2021 22:20:31 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R901e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=rongwei.wang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0Uqi9lTZ_1633486717;
+Received: from localhost.localdomain(mailfrom:rongwei.wang@linux.alibaba.com fp:SMTPD_---0Uqi9lTZ_1633486717)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 06 Oct 2021 10:18:38 +0800
+From:   Rongwei Wang <rongwei.wang@linux.alibaba.com>
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc:     akpm@linux-foundation.org, willy@infradead.org, song@kernel.org,
+        william.kucharski@oracle.com, hughd@google.com
+Subject: [PATCH v3 v3 0/2] mm, thp: fix file-backed THP race in collapse_file and truncate pagecache
+Date:   Wed,  6 Oct 2021 10:18:35 +0800
+Message-Id: <20211006021837.59721-1-rongwei.wang@linux.alibaba.com>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20210906121200.57905-1-rongwei.wang@linux.alibaba.com>
+References: <20210906121200.57905-1-rongwei.wang@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a4a4980e586a70e3b7de989bc61a3e33@codeaurora.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 05 Oct 16:04 PDT 2021, khsieh@codeaurora.org wrote:
+Hi,
+We found two bugs related to file-backed THP in our cases, recently.
+The two bugs rough description as following:
 
-> On 2021-10-05 15:36, Stephen Boyd wrote:
-> > Quoting Bjorn Andersson (2021-10-05 14:40:38)
-> > > On Tue 05 Oct 11:45 PDT 2021, Stephen Boyd wrote:
-> > > 
-> > > > Quoting Bjorn Andersson (2021-10-04 19:37:50)
-> > > > > Found in the middle of a patch from Sankeerth was the reduction of the
-> > > > > INIT_SETUP timeout from 10s to 100ms. Upon INIT_SETUP timeout the host
-> > > > > is initalized and HPD interrupt start to be serviced, so in the case of
-> > > > > eDP this reduction improves the user experience dramatically - i.e.
-> > > > > removes 9.9s of bland screen time at boot.
-> > > > >
-> > > > > Suggested-by: Sankeerth Billakanti <sbillaka@codeaurora.org>
-> > > > > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > > > > ---
-> > > >
-> > > > Any Fixes tag? BTW, the delay design is pretty convoluted. I had to go
-> > > > re-read the code a couple times to understand that it's waiting 100ms
-> > > > times the 'delay' number. Whaaaaat?
-> > > >
-> > > 
-> > > I assume you're happy with the current 10s delay on the current
-> > > devices, so I don't think we should push for this to be backported.
-> > > I have no need for it to be backported on my side at least.
-> > > 
-> > 
-> > Sure. Fixes tag != backported to stable trees but it is close.
-> > 
-> > > > Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-> > > 
->   dp_add_event(dp, EV_HPD_INIT_SETUP, 0, 1); <== to 100ms
-> 
-> This patch will prevent usb3 from working due to dp driver initialize phy
-> earlier than usb3 which cause timeout error at power up usb3 phy when both
-> edp and dp are enabled.
+1. in truncate_inode_pages_range, subpage(s) of file-backed THP can be
+revealed by find_get_entry.
 
-Can you please help me understand what you mean here, I use this on my
-sc8180x with both eDP and USB-C/DP right now. What is it that doesn't
-work? Or am I just lucky in some race condition?
+2. 'collapse_file' miss the pages which in writeback but no private.
+This situation will be triggered in XFS when block size is set to
+PAGESIZE.
 
-Thanks,
-Bjorn
+These two patches mainly fix the above mentioned bugs, and have been
+tested in latest branch.
 
-> I had prepared a patch (drm/msm/dp: do not initialize combo phy until plugin
-> interrupt) to fix this problem.
-> Unfortunately, my patch is depend on Bjorn's patch (PATCH v3 3/5]
-> drm/msm/dp: Support up to 3 DP controllers).
-> I will submit my patch for review once Bjorn's patches merged in.
-> Therefore I would think this patch should go after both Bjorn's patches and
-> my patch.
-> 
-> 
-> 
+Changelog:
+
+v2 -> v3:
+- Patch "mm, thp: lock filemap when truncating page cache"
+add filemap_invalidate_{un}lock before and after calling truncate_pagecache (Suggested by Song Liu and Matthew).
+
+v1 -> v2:
+- Patch "mm, thp: check page mapping when truncating page cache"
+move the check of page mapping to behind lock_page.
+- Patch "mm, thp: bail out early in collapse_file for writeback page"
+check the writeback flag before taking page lock (Suggested by Yang Shi).
+
+v1 link:
+https://patchwork.kernel.org/project/linux-mm/cover/20210906121200.57905-1-rongwei.wang@linux.alibaba.com/
+v2 link:
+https://patchwork.kernel.org/project/linux-mm/patch/20210922070645.47345-2-rongwei.wang@linux.alibaba.com/
+
+Rongwei Wang (2):
+  mm, thp: lock filemap when truncating page cache
+  mm, thp: bail out early in collapse_file for writeback page
+
+ fs/open.c       | 5 ++++-
+ mm/khugepaged.c | 7 ++++++-
+ 2 files changed, 10 insertions(+), 2 deletions(-)
+
+-- 
+2.27.0
+
