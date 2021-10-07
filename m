@@ -2,130 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D79F425356
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 14:44:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95C0642535B
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 14:45:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241448AbhJGMqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 08:46:20 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:50192 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233114AbhJGMqR (ORCPT
+        id S241487AbhJGMr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 08:47:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59672 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241444AbhJGMrZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 08:46:17 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 53714200BB;
-        Thu,  7 Oct 2021 12:44:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1633610663; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=G65GojcZQ8Ipbwxht4B8fwZJf/a+OJgyLRYSeBMjKGk=;
-        b=WF7e0T6qini8XSUp/XDK+xmFwahbmxm2TlJezEMyND1qsOLEE7tkNALM1mOIvinlchGqnD
-        GJT6N38EB7jzNvvdqpYh1bccvOAy2+yxkv9T1pZZy+VHCschqQyiGNd/rVIk13MIVBcwOs
-        Atxbs0ZUPIxqx2On9jEzlMXLEkEv51o=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1633610663;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=G65GojcZQ8Ipbwxht4B8fwZJf/a+OJgyLRYSeBMjKGk=;
-        b=kmBYD7ABH9r8nc7rnc/FlWkfRhvJgSDENh9ne5WgJdQIraadRn9KMWuw2KFJC7hTbb4vpH
-        s6Gl5/EbT5H1EGBg==
-Received: from quack2.suse.cz (unknown [10.100.224.230])
-        by relay2.suse.de (Postfix) with ESMTP id 437A0A3B83;
-        Thu,  7 Oct 2021 12:44:23 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id E96B31F2C96; Thu,  7 Oct 2021 14:44:22 +0200 (CEST)
-Date:   Thu, 7 Oct 2021 14:44:22 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Ye Bin <yebin10@huawei.com>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jack@suse.cz
-Subject: Re: [PATCH -next v2 4/6] ext4: avoid to re-read mmp check data get
- from page cache
-Message-ID: <20211007124422.GI12712@quack2.suse.cz>
-References: <20210911090059.1876456-1-yebin10@huawei.com>
- <20210911090059.1876456-5-yebin10@huawei.com>
+        Thu, 7 Oct 2021 08:47:25 -0400
+Received: from mail-vs1-xe2a.google.com (mail-vs1-xe2a.google.com [IPv6:2607:f8b0:4864:20::e2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16E6BC061760
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 05:45:32 -0700 (PDT)
+Received: by mail-vs1-xe2a.google.com with SMTP id x192so4365149vsx.5
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 05:45:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=wVGqCEv5OuW11NNJUvfsDwkjHfJJuYc/XpuXB4FLhAc=;
+        b=Rf8GuXJ7M1dKiqO3dvNXK4IDlZxdzcsLOAiqs622DUFDvs2+FoX0siDG7l7JBWAEFS
+         FYI/dFhiPr85/tr4UDhHFOmRdda7+AWL8LphfB1ZP5vUku44Hzy4boBbG3zsz2TDPmuy
+         5DL5cGMcOj/x7Vi4CsKCiyPW3sESFeeqwkNGI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=wVGqCEv5OuW11NNJUvfsDwkjHfJJuYc/XpuXB4FLhAc=;
+        b=03dfDsB/M0gVrJZyfBz+pNTJVuDja0qPCO144oPdkoblurwUY7rlboEK9U6iX8CvJJ
+         1gPB6c4j9ZM9Rt7OiQmZzboPHGVbqXKPC2twQtJaPAhczK45DNCZcUhd/umUaQQUDHoQ
+         Oeqd9DGYuE+uIEOcY5xJwB0iX1W2/2dQ+LA112stg1dTsMz1ZzS411CDy5C/pewETtto
+         eGu1irlZDHHpVasdu5eV0INR+Hu4jCTcz72Jqmdx35uK47mZlcP9q8oKGfKyoxJltLaQ
+         tu6u4ueioaiDHI+L1sWGxwi02gp5HA0pTbORSqqHJE3qkZHfxst011/cjEZZtYMSTBGl
+         Nj3w==
+X-Gm-Message-State: AOAM532lQZOJaT8KCgcdBo5IlWdG8ySwb5A0F4F7Wi0bByM5R/Dllh9/
+        H7wvap/AZ/NYonZXlkGdGnupFgEVHzorXFoaF9leJA==
+X-Google-Smtp-Source: ABdhPJxxG+rpdbv8RJtQlpU0+LgZvCFIrN4KUwyYnxMZ5ZFAX5aUfgqwvRb/nmLCXUMWgnXFGfN2xtfZ/QtvjTVnx50=
+X-Received: by 2002:a67:ec94:: with SMTP id h20mr3614063vsp.59.1633610731189;
+ Thu, 07 Oct 2021 05:45:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210911090059.1876456-5-yebin10@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210923130814.140814-1-cgxu519@mykernel.net> <20210923130814.140814-7-cgxu519@mykernel.net>
+ <CAJfpeguqj2vst4Zj5EovSktJkXiDSCSWY=X12X0Yrz4M8gPRmQ@mail.gmail.com> <17c5aba1fef.c5c03d5825886.6577730832510234905@mykernel.net>
+In-Reply-To: <17c5aba1fef.c5c03d5825886.6577730832510234905@mykernel.net>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Thu, 7 Oct 2021 14:45:20 +0200
+Message-ID: <CAJfpegtr1NkOiY9YWd1meU1yiD-LFX-aB55UVJs94FrX0VNEJQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v5 06/10] ovl: implement overlayfs' ->write_inode operation
+To:     Chengguang Xu <cgxu519@mykernel.net>
+Cc:     Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        overlayfs <linux-unionfs@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat 11-09-21 17:00:57, Ye Bin wrote:
-> As call read_mmp_block pass bh_check which value is NULL, then call
-> sb_getblk to get buffer_head. But mmp_block's buffer_head is already exist
->  which also is uptodate. Lead to compare the same data.
-> 
-> Signed-off-by: Ye Bin <yebin10@huawei.com>
+On Thu, 7 Oct 2021 at 14:28, Chengguang Xu <cgxu519@mykernel.net> wrote:
+>
+>  ---- =E5=9C=A8 =E6=98=9F=E6=9C=9F=E5=9B=9B, 2021-10-07 17:23:06 Miklos S=
+zeredi <miklos@szeredi.hu> =E6=92=B0=E5=86=99 ----
+>  > On Thu, 23 Sept 2021 at 15:08, Chengguang Xu <cgxu519@mykernel.net> wr=
+ote:
+>  > >
+>  > > Implement overlayfs' ->write_inode to sync dirty data
+>  > > and redirty overlayfs' inode if necessary.
+>  > >
+>  > > Signed-off-by: Chengguang Xu <cgxu519@mykernel.net>
+>  > > ---
+>  > >  fs/overlayfs/super.c | 30 ++++++++++++++++++++++++++++++
+>  > >  1 file changed, 30 insertions(+)
+>  > >
+>  > > diff --git a/fs/overlayfs/super.c b/fs/overlayfs/super.c
+>  > > index 2ab77adf7256..cddae3ca2fa5 100644
+>  > > --- a/fs/overlayfs/super.c
+>  > > +++ b/fs/overlayfs/super.c
+>  > > @@ -412,12 +412,42 @@ static void ovl_evict_inode(struct inode *inod=
+e)
+>  > >         clear_inode(inode);
+>  > >  }
+>  > >
+>  > > +static int ovl_write_inode(struct inode *inode,
+>  > > +                          struct writeback_control *wbc)
+>  > > +{
+>  > > +       struct ovl_fs *ofs =3D inode->i_sb->s_fs_info;
+>  > > +       struct inode *upper =3D ovl_inode_upper(inode);
+>  > > +       unsigned long iflag =3D 0;
+>  > > +       int ret =3D 0;
+>  > > +
+>  > > +       if (!upper)
+>  > > +               return 0;
+>  > > +
+>  > > +       if (!ovl_should_sync(ofs))
+>  > > +               return 0;
+>  > > +
+>  > > +       if (upper->i_sb->s_op->write_inode)
+>  > > +               ret =3D upper->i_sb->s_op->write_inode(inode, wbc);
+>  >
+>  > Where is page writeback on upper inode triggered?
+>  >
+>
+> Should pass upper inode instead of overlay inode here.
 
-This looks good, except that read_mmp_block() also releases bh it is passed
-in case of error. So it can free buffer head which is still referenced from
-EXT4_SB(sb)->s_mmp_bh and cause use-after-free issues.
+That's true and it does seem to indicate lack of thorough testing.
 
-I guess I would just get rid of sb_getblk() in read_mmp_block() and always
-expect valid bh passed. The only place that passes NULL bh after this
-patch is one case in ext4_multi_mount_protect() and that can call
-sb_getblk() on its own. That way we can also simplify read_mmp_block()
-prototype to:
+However that wasn't what I was asking about.  AFAICS ->write_inode()
+won't start write back for dirty pages.   Maybe I'm missing something,
+but there it looks as if nothing will actually trigger writeback for
+dirty pages in upper inode.
 
-static int read_mmp_block(struct super_block *sb, struct buffer_head *bh);
-
-								Honza
-
-> ---
->  fs/ext4/mmp.c | 17 ++++++-----------
->  1 file changed, 6 insertions(+), 11 deletions(-)
-> 
-> diff --git a/fs/ext4/mmp.c b/fs/ext4/mmp.c
-> index 4433fe7e9e86..007bde3c12b8 100644
-> --- a/fs/ext4/mmp.c
-> +++ b/fs/ext4/mmp.c
-> @@ -213,10 +213,7 @@ static int kmmpd(void *data)
->  		 * we need to check if the MMP block is as we write it.
->  		 */
->  		if (jiffies - last_check_time > mmp_check_interval * HZ) {
-> -			struct buffer_head *bh_check = NULL;
-> -			struct mmp_struct *mmp_check;
-> -
-> -			retval = read_mmp_block(sb, &bh_check, mmp_block);
-> +			retval = read_mmp_block(sb, &bh, mmp_block);
->  			if (retval) {
->  				ext4_error_err(sb, -retval,
->  					       "error reading MMP data: %d",
-> @@ -224,20 +221,18 @@ static int kmmpd(void *data)
->  				goto wait_to_exit;
->  			}
->  
-> -			mmp_check = (struct mmp_struct *)(bh_check->b_data);
-> -			if (seq != mmp_check->mmp_seq ||
-> -			    memcmp(nodename, mmp_check->mmp_nodename,
-> -				   sizeof(mmp->mmp_nodename))) {
-> -				dump_mmp_msg(sb, mmp_check,
-> +			mmp = (struct mmp_struct *)(bh->b_data);
-> +			if (seq != le32_to_cpu(mmp->mmp_seq) ||
-> +			    memcmp(nodename, mmp->mmp_nodename,
-> +				    sizeof(nodename))) {
-> +				dump_mmp_msg(sb, mmp,
->  					     "Error while updating MMP info. "
->  					     "The filesystem seems to have been"
->  					     " multiply mounted.");
->  				ext4_error_err(sb, EBUSY, "abort");
-> -				put_bh(bh_check);
->  				retval = -EBUSY;
->  				goto wait_to_exit;
->  			}
-> -			put_bh(bh_check);
->  			last_check_time = jiffies;
->  		}
->  
-> -- 
-> 2.31.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Thanks,
+Miklos
