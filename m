@@ -2,96 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4427F424AEF
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 02:10:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26429424AEE
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 02:10:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240091AbhJGAMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 20:12:33 -0400
-Received: from thorn.bewilderbeest.net ([71.19.156.171]:46001 "EHLO
-        thorn.bewilderbeest.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240013AbhJGAMO (ORCPT
+        id S240062AbhJGAM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 20:12:28 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:54686 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240020AbhJGAMN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 20:12:14 -0400
-Received: from hatter.bewilderbeest.net (71-212-29-146.tukw.qwest.net [71.212.29.146])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: zev)
-        by thorn.bewilderbeest.net (Postfix) with ESMTPSA id 8A47BC9D;
-        Wed,  6 Oct 2021 17:10:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
-        s=thorn; t=1633565413;
-        bh=XbnBokbU4ntbWci1KrAbGbAkUYozeIlG0GRIL9z3qXo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EitWl8QleIUt2OPZiPMJHveL8FiAN7YvAna53lj/V5pHG85jwRgWKeB0Wul/1oG+R
-         UK2CqTSLh+QHrGhAwU8tWk6lV+2b9ykqCNlrtjz/Q2VlW7CkoV2BXGK1Yns/FebXek
-         MK4ZnWkn9bRJ0AIs3j9nJ8x5SEtyaU6WmkO0dO+U=
-From:   Zev Weiss <zev@bewilderbeest.net>
-To:     openbmc@lists.ozlabs.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jeremy Kerr <jk@codeconstruct.com.au>,
-        Joel Stanley <joel@jms.id.au>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        Zev Weiss <zev@bewilderbeest.net>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 9/9] ARM: dts: aspeed: Add e3c246d4i BIOS flash device
-Date:   Wed,  6 Oct 2021 17:09:54 -0700
-Message-Id: <20211007000954.30621-10-zev@bewilderbeest.net>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211007000954.30621-1-zev@bewilderbeest.net>
-References: <20211007000954.30621-1-zev@bewilderbeest.net>
+        Wed, 6 Oct 2021 20:12:13 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id C57DF9DC;
+        Thu,  7 Oct 2021 02:10:14 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1633565415;
+        bh=larLyxcmn+saBabnWqrpHg3AhMf8NdDp0lI84lrL9DQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HxZZ5yYNOrCBDDjM02nPlHH+l+DodzLgVDAlus18uketUhMQdQJeTNaoyWqiTj3om
+         fQtp47GSSMTi11/KuNZ541TorgWraU4Vwhj90Ofnj16uNSWld1hFPcdlD8XrysXao5
+         rp81lulGGrDuJCfscVUD9xFNh1k2fr1lTUhPanMA=
+Date:   Thu, 7 Oct 2021 03:10:06 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Pratyush Yadav <p.yadav@ti.com>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Nikhil Devshatwar <nikhil.nd@ti.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-phy@lists.infradead.org
+Subject: Re: [PATCH v5 2/6] phy: cdns-dphy: Add Rx support
+Message-ID: <YV463gUvYauhDP/l@pendragon.ideasonboard.com>
+References: <20210902185543.18875-1-p.yadav@ti.com>
+ <20210902185543.18875-3-p.yadav@ti.com>
+ <YUMa/ocoQ9l3JDe6@aptenodytes>
+ <20210917172809.rjtf7ww7vjcfvey5@ti.com>
+ <YVapVLnGfSBZCDTY@matsya>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YVapVLnGfSBZCDTY@matsya>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This uses a dynamic DT node because the BIOS SPI flash requires
-significant coordination with the host system (power state tracking,
-GPIOs, IPMI messages) before the BMC can touch it, and needs to be
-relinquished back to the host when the BMC is done accessing it.
+Hi Vinod,
 
-Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
----
- .../boot/dts/aspeed-bmc-asrock-e3c246d4i.dts  | 23 +++++++++++++++++++
- 1 file changed, 23 insertions(+)
+On Fri, Oct 01, 2021 at 11:53:16AM +0530, Vinod Koul wrote:
+> On 17-09-21, 22:58, Pratyush Yadav wrote:
+> > On 16/09/21 12:22PM, Paul Kocialkowski wrote:
+> > > On Fri 03 Sep 21, 00:25, Pratyush Yadav wrote:
+> > > > The Cadence DPHY can be used to receive image data over the CSI-2
+> > > > protocol. Add support for Rx mode. The programming sequence differs from
+> > > > the Tx mode so it is added as a separate set of hooks to isolate the two
+> > > > paths. The mode in which the DPHY has to be used is selected based on
+> > > > the compatible.
+> > > 
+> > > I just realized that I didn't follow-up on a previous revision on the debate
+> > > about using the phy sub-mode to distinguish between rx/tx.
+> > > 
+> > > I see that you've been using a dedicated compatible, but I'm not sure this is a
+> > > good fit either. My understanding is that the compatible should describe a group
+> > > of register-compatible revisions of a hardware component, not how the hardware
+> > > is used specifically. I guess the distinction between rx/tx falls under
+> > > the latter rather than the former.
+> > 
+> > I am not sure if that is the case. For example, we use "ti,am654-ospi" 
+> > for Cadence Quadspi controller. The default compatible, "cdns,qspi-nor", 
+> > only supports Quad SPI (4 lines). The "ti,am654-ospi" compatible also 
+> > supports Octal SPI (8 lines).
+> 
+> Those are hardware defaults right?
+> 
+> > In addition, I feel like the Rx DPHY is almost a different type of 
+> > device from a Tx DPHY. The programming sequence is completely different, 
+> 
+> Is that due to direction or something else..?
+> 
+> > the clocks required are different, etc. So I think using a different 
+> > compatible for Rx mode makes sense.
+> 
+> Is the underlaying IP not capable of both TX and RX and in the specific
+> situations you are using it as TX and RX.
+> 
+> I am okay that default being TX but you can use Paul's approach of
+> direction with this to make it better proposal
 
-diff --git a/arch/arm/boot/dts/aspeed-bmc-asrock-e3c246d4i.dts b/arch/arm/boot/dts/aspeed-bmc-asrock-e3c246d4i.dts
-index 9b4cf5ebe6d5..428198703824 100644
---- a/arch/arm/boot/dts/aspeed-bmc-asrock-e3c246d4i.dts
-+++ b/arch/arm/boot/dts/aspeed-bmc-asrock-e3c246d4i.dts
-@@ -68,6 +68,29 @@ flash@0 {
- 	};
- };
- 
-+&spi1 {
-+	/*
-+	 * The BIOS SPI flash is shared with the host via an external mux, and
-+	 * is not accessible by the BMC by default (hence reserved/dynamic
-+	 * here rather than okay).  This would ideally be done on the flash@0
-+	 * node instead of the spi1 controller, but the driver infrastructure
-+	 * to support dynamic devices at that level of the device tree isn't
-+	 * currently in place, and it's the only flash chip on this
-+	 * controller, so we can get away with the coarser granularity here
-+	 * until support for making individual flash chips dynamic is
-+	 * available.
-+	 */
-+	status = "reserved";
-+	dynamic;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_spi1_default>;
-+	flash@0 {
-+		status = "okay";
-+		label = "bios";
-+		m25p,fast-read;
-+	};
-+};
-+
- &uart5 {
- 	status = "okay";
- };
+
+Given that the RX and TX implementations are very different (it's not a
+matter of selecting a mode at runtime), I'm actually tempted to
+recommend having two drivers, one for the RX PHY and one for the TX PHY.
+This can only be done with two different compatible strings, which I
+think would be a better approach.
+
+It's unfortunate that the original compatible string didn't contain
+"tx". We could rename it and keep the old one in the driver for backward
+compatibility, making things cleaner going forward.
+
 -- 
-2.33.0
+Regards,
 
+Laurent Pinchart
