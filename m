@@ -2,451 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09D334258F4
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 19:09:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB3A8425904
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 19:13:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243156AbhJGRK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 13:10:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45920 "EHLO mail.kernel.org"
+        id S243184AbhJGRPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 13:15:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47398 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241593AbhJGRKy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 13:10:54 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B9FDB61058;
-        Thu,  7 Oct 2021 17:08:58 +0000 (UTC)
-Date:   Thu, 7 Oct 2021 18:13:02 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     "Chindris, Mihail" <Mihail.Chindris@analog.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
-        "lars@metafoo.de" <lars@metafoo.de>,
-        "Hennerich, Michael" <Michael.Hennerich@analog.com>,
-        "Sa, Nuno" <Nuno.Sa@analog.com>,
-        "Bogdan, Dragos" <Dragos.Bogdan@analog.com>,
-        Alexandru Ardelean <ardeleanalex@gmail.com>,
-        Alexandru Ardelean <aardelean@deviqon.com>
-Subject: Re: [PATCH v6 1/6] iio: Add output buffer support
-Message-ID: <20211007181302.3be7d4dd@jic23-huawei>
-In-Reply-To: <SJ0PR03MB579191849B3BD15610A721AE99B19@SJ0PR03MB5791.namprd03.prod.outlook.com>
-References: <20211007080035.2531-1-mihail.chindris@analog.com>
-        <20211007080035.2531-2-mihail.chindris@analog.com>
-        <20211007170533.5e314199@jic23-huawei>
-        <SJ0PR03MB579191849B3BD15610A721AE99B19@SJ0PR03MB5791.namprd03.prod.outlook.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S243197AbhJGRPQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 13:15:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D2C8D61245;
+        Thu,  7 Oct 2021 17:13:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633626802;
+        bh=qgaRkKylb5I7rL0mEhfxEXR9XIrcqAJxFLzv8e5JG88=;
+        h=References:In-Reply-To:Reply-To:From:Date:Subject:To:Cc:From;
+        b=lPcFKMPJUrxSO2zGApX5vGLRmoUwVi1rdOpOD3HfzJbMF+yI9oi2WdKUxwAAvxkju
+         mBDvBA417YhzIJK49U8r65LworeDV+XmeyC3s8I2x0Hbw20xkpzj+yDB2LIMYoOyI+
+         HC0//WOEPilcK42nhhU7OgFBHFHmugMvBWRDpqquR4CIAF7sSQDcOZvCQB/pFKPEUQ
+         dq9bATZJMgXocUJVJkst7F1y2DwsFfQqmwZN1/ixej4FLkorfteMHcc0WQ8NlEs7sq
+         jI23jNUOwTKzWAVE7x7PlEUCYw9x3Lj4Hrn8cpDOM7dbBF5TKbdVW4bK+4zY7GXmh7
+         7q0wwUN5CR8cg==
+Received: by mail-vs1-f48.google.com with SMTP id o124so7559770vsc.6;
+        Thu, 07 Oct 2021 10:13:22 -0700 (PDT)
+X-Gm-Message-State: AOAM533CbuWftBxnJG6O9ueAe27qyoOI7BjntgrTa7rBiCSlWcB9e7wf
+        cKSGK0BvojXf+QAByemInp0jlmg04g8kkxSrMi8=
+X-Google-Smtp-Source: ABdhPJz4d+CxciE86cm0an+klVYy8vZNXeGzVO8rMl/54qPRzymGwVMpiZwmLxviwztCIOJoXCPLvCq5C4v+XIgxJVY=
+X-Received: by 2002:a67:c284:: with SMTP id k4mr5637887vsj.24.1633626802047;
+ Thu, 07 Oct 2021 10:13:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210920175647.13008-1-wens@kernel.org> <64f06ddb-cde6-d71a-7920-41c485a1d3fb@arm.com>
+In-Reply-To: <64f06ddb-cde6-d71a-7920-41c485a1d3fb@arm.com>
+Reply-To: wens@kernel.org
+From:   Chen-Yu Tsai <wens@kernel.org>
+Date:   Fri, 8 Oct 2021 01:13:10 +0800
+X-Gmail-Original-Message-ID: <CAGb2v67dixQ7BH+YoBVWEJFup9FdgvrDaCZACEYidPuD4pB7YQ@mail.gmail.com>
+Message-ID: <CAGb2v67dixQ7BH+YoBVWEJFup9FdgvrDaCZACEYidPuD4pB7YQ@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: rockchip: nanopi4: decrease Bluetooth UART
+ baud rate
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Heiko Stuebner <heiko@sntech.de>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 7 Oct 2021 16:24:52 +0000
-"Chindris, Mihail" <Mihail.Chindris@analog.com> wrote:
+On Wed, Oct 6, 2021 at 6:49 PM Robin Murphy <robin.murphy@arm.com> wrote:
+>
+> On 2021-09-20 18:56, Chen-Yu Tsai wrote:
+> > From: Chen-Yu Tsai <wens@csie.org>
+> >
+> > The RK3399 does not seem to be able to properly generate the required
+> > 64 MHz clock for the UART to operate at 4MBd.
+> >
+> > Drop the baud rate down to 3MBd, which can be used as the clock
+> > controller is able to produce a 48 MHz clock.
+>
+> Hmm, I've been running mine this way (with DMA) for ages now :/
 
-> > -----Original Message-----
-> > From: Jonathan Cameron <jic23@kernel.org>
-> > Sent: Thursday, 7 October 2021 19:06
-> > To: Chindris, Mihail <Mihail.Chindris@analog.com>
-> > Cc: linux-kernel@vger.kernel.org; linux-iio@vger.kernel.org;
-> > lars@metafoo.de; Hennerich, Michael <Michael.Hennerich@analog.com>;
-> > Sa, Nuno <Nuno.Sa@analog.com>; Bogdan, Dragos
-> > <Dragos.Bogdan@analog.com>; alexandru.ardelean@analog.com
-> > Subject: Re: [PATCH v6 1/6] iio: Add output buffer support
-> > 
-> > On Thu, 7 Oct 2021 08:00:30 +0000
-> > Mihail Chindris <mihail.chindris@analog.com> wrote:
-> >   
-> > > Currently IIO only supports buffer mode for capture devices like ADCs.
-> > > Add support for buffered mode for output devices like DACs.
-> > >
-> > > The output buffer implementation is analogous to the input buffer
-> > > implementation. Instead of using read() to get data from the buffer
-> > > write() is used to copy data into the buffer.
-> > >
-> > > poll() with POLLOUT will wakeup if there is space available.
-> > >
-> > > Drivers can remove data from a buffer using iio_pop_from_buffer(), the
-> > > function can e.g. called from a trigger handler to write the data to
-> > > hardware.
-> > >
-> > > A buffer can only be either a output buffer or an input, but not both.
-> > > So, for a device that has an ADC and DAC path, this will mean 2 IIO
-> > > buffers (one for each direction).
-> > >
-> > > The direction of the buffer is decided by the new direction field of
-> > > the iio_buffer struct and should be set after allocating and before
-> > > registering it.
-> > >
-> > > Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-> > > Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-> > > Signed-off-by: Mihail Chindris <mihail.chindris@analog.com>  
-> > 
-> > Hi Mihail,
-> > 
-> > I'm fine with this series now, but one question for this patch on whether we
-> > can clarify the author chain.
-> > 
-> > The above might mean one of two things.
-> > 1) Lars wrote the code and Alex and yourself just 'handled' the patch on its
-> >    way to posting.  If that were the case it should have a From: for Lars
-> > 2) All 3 were involved in changes to this patch.  In that case we should have
-> > Co-developed-by: lines for lars and Alex as described:
-> > https://urldefense.com/v3/__https://elixir.bootlin.com/linux/latest/source/
-> > Documentation/process/submitting-
-> > patches.rst*L475__;Iw!!A3Ni8CS0y2Y!t1IaOEZX3w2pZXl-
-> > RyAlXgPPvxFtCON74ppfGuMgV_pKZcNjsLs-dKSk_mA34IsmlOU$
-> > 
-> > This patch has a history well predating the Co-developed-tag but I'm happy
-> > to add that if you can confirm that matches with the intent.
-> > 
-> > Good to leave on the list for a few days anyway in case anyone else wants to
-> > take a quick look.
-> > 
-> > I'm looking forwards to merging this and thinking back to when Lars originally
-> > discussed this feature with me rather a lot of years back!
-> > 
-> > Jonathan
-> > 
-> >   
-> 
-> Hi Jonathan,
-> 
-> What I have done with the patch was to take the V3 that Alex has left and implement the feedback. So I think this is considered as 'handled' from my side.
-> What happened before V3 I think is better if Alex spokes for himself because I don't really know :)
+I guess you have extra patches on top for DMA? I sent another patch
+to hook up DMA.
 
-Alex / Lars, what would you consider a fair way to represent this?
+> Looking at clk_summary, clk_uart0_src ends up at 800MHz off CPLL (same
+> as several other significant clocks), with clk_uart0 at an exact 64MHz
+> as a division of that. I stuck a scope on the UART pins of the module
+> and all the edges look nicely lined up to 250ns intervals.
 
-(added some working addresses for Alex...)
+Could you provide a partial dump of /sys/kernel/debug/clk/clk_summary ?
+Just the bits related to uart0 should be enough.
+
+Mine is also running from CPLL, but ends up at 1843200 Hz, which seems
+like the clock rate used for 115200 baud:
+
+ xin24m                              24       24        0    24000000
+        0     0  50000         Y
+    pll_cpll                          1        1        0   800000000
+        0     0  50000         Y
+       cpll                           7       15        0   800000000
+        0     0  50000         Y
+          clk_uart0_src               1        1        0   800000000
+        0     0  50000         Y
+             clk_uart0_div            1        1        0   800000000
+        0     0  50000         Y
+                clk_uart0_frac        1        1        0     1843200
+        0     0  50000         Y
+                   clk_uart0          1        1        0     1843200
+        0     0  50000         Y
+
+I also observe a couple error messages:
+
+Bluetooth: hci0: BCM: failed to write clock (-56)
+Bluetooth: hci0: Failed to set baudrate
+Bluetooth: hci0: BCM: chip id 130
+Bluetooth: hci0: BCM: features 0x0f
+Bluetooth: hci0: BCM4345C5
+Bluetooth: hci0: BCM4345C5 (003.006.006) build 0000
+Bluetooth: hci0: BCM4345C5 'brcm/BCM4345C5.hcd' Patch
+Bluetooth: hci0: BCM: failed to write clock (-56)
+Bluetooth: hci0: BCM4345C5 Ampak_CL1.5 UART 37.4 MHz BT 5.0 [Version:
+Version: 0033.0080]
+Bluetooth: hci0: BCM4345C5 (003.006.006) build 0080
+
+So I think my UART is actually still running at its initial speed.
+
+Another thing is that the Rockchip datasheet says something about the
+denominator has to be 20 times larger than the nominator for a stable clock.
+
+> This is with a 5.11.4 kernel, though - I wonder if the recent fractional
+> divider changes in the clock driver have changed anything?
+
+I tried reverting the three patches but that didn't make a difference.
+
+Regards
+ChenYu
 
 
-> 
-> Mihail
-> 
-> >   
-> > > ---
-> > >  drivers/iio/iio_core.h            |   4 +
-> > >  drivers/iio/industrialio-buffer.c | 127  
-> > +++++++++++++++++++++++++++++-  
-> > >  drivers/iio/industrialio-core.c   |   1 +
-> > >  include/linux/iio/buffer.h        |   7 ++
-> > >  include/linux/iio/buffer_impl.h   |  11 +++
-> > >  5 files changed, 148 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/drivers/iio/iio_core.h b/drivers/iio/iio_core.h index
-> > > 8f4a9b264962..61e318431de9 100644
-> > > --- a/drivers/iio/iio_core.h
-> > > +++ b/drivers/iio/iio_core.h
-> > > @@ -68,12 +68,15 @@ __poll_t iio_buffer_poll_wrapper(struct file *filp,
-> > >  				 struct poll_table_struct *wait);  ssize_t
-> > > iio_buffer_read_wrapper(struct file *filp, char __user *buf,
-> > >  				size_t n, loff_t *f_ps);
-> > > +ssize_t iio_buffer_write_wrapper(struct file *filp, const char __user *buf,
-> > > +				 size_t n, loff_t *f_ps);
-> > >
-> > >  int iio_buffers_alloc_sysfs_and_mask(struct iio_dev *indio_dev);
-> > > void iio_buffers_free_sysfs_and_mask(struct iio_dev *indio_dev);
-> > >
-> > >  #define iio_buffer_poll_addr (&iio_buffer_poll_wrapper)  #define
-> > > iio_buffer_read_outer_addr (&iio_buffer_read_wrapper)
-> > > +#define iio_buffer_write_outer_addr (&iio_buffer_write_wrapper)
-> > >
-> > >  void iio_disable_all_buffers(struct iio_dev *indio_dev);  void
-> > > iio_buffer_wakeup_poll(struct iio_dev *indio_dev); @@ -83,6 +86,7 @@
-> > > void iio_device_detach_buffers(struct iio_dev *indio_dev);
-> > >
-> > >  #define iio_buffer_poll_addr NULL
-> > >  #define iio_buffer_read_outer_addr NULL
-> > > +#define iio_buffer_write_outer_addr NULL
-> > >
-> > >  static inline int iio_buffers_alloc_sysfs_and_mask(struct iio_dev
-> > > *indio_dev)  { diff --git a/drivers/iio/industrialio-buffer.c
-> > > b/drivers/iio/industrialio-buffer.c
-> > > index a95cc2da56be..7286563e6234 100644
-> > > --- a/drivers/iio/industrialio-buffer.c
-> > > +++ b/drivers/iio/industrialio-buffer.c
-> > > @@ -120,6 +120,9 @@ static ssize_t iio_buffer_read(struct file *filp, char  
-> > __user *buf,  
-> > >  	if (!rb || !rb->access->read)
-> > >  		return -EINVAL;
-> > >
-> > > +	if (rb->direction != IIO_BUFFER_DIRECTION_IN)
-> > > +		return -EPERM;
-> > > +
-> > >  	datum_size = rb->bytes_per_datum;
-> > >
-> > >  	/*
-> > > @@ -161,6 +164,65 @@ static ssize_t iio_buffer_read(struct file *filp, char  
-> > __user *buf,  
-> > >  	return ret;
-> > >  }
-> > >
-> > > +static size_t iio_buffer_space_available(struct iio_buffer *buf) {
-> > > +	if (buf->access->space_available)
-> > > +		return buf->access->space_available(buf);
-> > > +
-> > > +	return SIZE_MAX;
-> > > +}
-> > > +
-> > > +static ssize_t iio_buffer_write(struct file *filp, const char __user *buf,
-> > > +				size_t n, loff_t *f_ps)
-> > > +{
-> > > +	struct iio_dev_buffer_pair *ib = filp->private_data;
-> > > +	struct iio_buffer *rb = ib->buffer;
-> > > +	struct iio_dev *indio_dev = ib->indio_dev;
-> > > +	DEFINE_WAIT_FUNC(wait, woken_wake_function);
-> > > +	int ret;
-> > > +	size_t written;
-> > > +
-> > > +	if (!indio_dev->info)
-> > > +		return -ENODEV;
-> > > +
-> > > +	if (!rb || !rb->access->write)
-> > > +		return -EINVAL;
-> > > +
-> > > +	if (rb->direction != IIO_BUFFER_DIRECTION_OUT)
-> > > +		return -EPERM;
-> > > +
-> > > +	written = 0;
-> > > +	add_wait_queue(&rb->pollq, &wait);
-> > > +	do {
-> > > +		if (indio_dev->info == NULL)
-> > > +			return -ENODEV;
-> > > +
-> > > +		if (!iio_buffer_space_available(rb)) {
-> > > +			if (signal_pending(current)) {
-> > > +				ret = -ERESTARTSYS;
-> > > +				break;
-> > > +			}
-> > > +
-> > > +			wait_woken(&wait, TASK_INTERRUPTIBLE,
-> > > +					MAX_SCHEDULE_TIMEOUT);
-> > > +			continue;
-> > > +		}
-> > > +
-> > > +		ret = rb->access->write(rb, n - written, buf + written);
-> > > +		if (ret == 0 && (filp->f_flags & O_NONBLOCK))
-> > > +			ret = -EAGAIN;
-> > > +
-> > > +		if (ret > 0) {
-> > > +			written += ret;
-> > > +			if (written != n && !(filp->f_flags & O_NONBLOCK))
-> > > +				continue;
-> > > +		}
-> > > +	} while (ret == 0);
-> > > +	remove_wait_queue(&rb->pollq, &wait);
-> > > +
-> > > +	return ret < 0 ? ret : n;
-> > > +}
-> > > +
-> > >  /**
-> > >   * iio_buffer_poll() - poll the buffer to find out if it has data
-> > >   * @filp:	File structure pointer for device access
-> > > @@ -181,8 +243,18 @@ static __poll_t iio_buffer_poll(struct file *filp,
-> > >  		return 0;
-> > >
-> > >  	poll_wait(filp, &rb->pollq, wait);
-> > > -	if (iio_buffer_ready(indio_dev, rb, rb->watermark, 0))
-> > > -		return EPOLLIN | EPOLLRDNORM;
-> > > +
-> > > +	switch (rb->direction) {
-> > > +	case IIO_BUFFER_DIRECTION_IN:
-> > > +		if (iio_buffer_ready(indio_dev, rb, rb->watermark, 0))
-> > > +			return EPOLLIN | EPOLLRDNORM;
-> > > +		break;
-> > > +	case IIO_BUFFER_DIRECTION_OUT:
-> > > +		if (iio_buffer_space_available(rb))
-> > > +			return EPOLLOUT | EPOLLWRNORM;
-> > > +		break;
-> > > +	}
-> > > +
-> > >  	return 0;
-> > >  }
-> > >
-> > > @@ -199,6 +271,19 @@ ssize_t iio_buffer_read_wrapper(struct file *filp,  
-> > char __user *buf,  
-> > >  	return iio_buffer_read(filp, buf, n, f_ps);  }
-> > >
-> > > +ssize_t iio_buffer_write_wrapper(struct file *filp, const char __user *buf,
-> > > +				 size_t n, loff_t *f_ps)
-> > > +{
-> > > +	struct iio_dev_buffer_pair *ib = filp->private_data;
-> > > +	struct iio_buffer *rb = ib->buffer;
-> > > +
-> > > +	/* check if buffer was opened through new API */
-> > > +	if (test_bit(IIO_BUSY_BIT_POS, &rb->flags))
-> > > +		return -EBUSY;
-> > > +
-> > > +	return iio_buffer_write(filp, buf, n, f_ps); }
-> > > +
-> > >  __poll_t iio_buffer_poll_wrapper(struct file *filp,
-> > >  				 struct poll_table_struct *wait)
-> > >  {
-> > > @@ -231,6 +316,15 @@ void iio_buffer_wakeup_poll(struct iio_dev  
-> > *indio_dev)  
-> > >  	}
-> > >  }
-> > >
-> > > +int iio_pop_from_buffer(struct iio_buffer *buffer, void *data) {
-> > > +	if (!buffer || !buffer->access || !buffer->access->remove_from)
-> > > +		return -EINVAL;
-> > > +
-> > > +	return buffer->access->remove_from(buffer, data); }
-> > > +EXPORT_SYMBOL_GPL(iio_pop_from_buffer);
-> > > +
-> > >  void iio_buffer_init(struct iio_buffer *buffer)  {
-> > >  	INIT_LIST_HEAD(&buffer->demux_list);
-> > > @@ -1156,6 +1250,10 @@ int iio_update_buffers(struct iio_dev  
-> > *indio_dev,  
-> > >  	if (insert_buffer == remove_buffer)
-> > >  		return 0;
-> > >
-> > > +	if (insert_buffer &&
-> > > +	    (insert_buffer->direction == IIO_BUFFER_DIRECTION_OUT))
-> > > +		return -EINVAL;
-> > > +
-> > >  	mutex_lock(&iio_dev_opaque->info_exist_lock);
-> > >  	mutex_lock(&indio_dev->mlock);
-> > >
-> > > @@ -1277,6 +1375,22 @@ static ssize_t  
-> > iio_dma_show_data_available(struct device *dev,  
-> > >  	return sysfs_emit(buf, "%zu\n", iio_buffer_data_available(buffer));
-> > >  }
-> > >
-> > > +static ssize_t direction_show(struct device *dev,
-> > > +			      struct device_attribute *attr,
-> > > +			      char *buf)
-> > > +{
-> > > +	struct iio_buffer *buffer = to_iio_dev_attr(attr)->buffer;
-> > > +
-> > > +	switch (buffer->direction) {
-> > > +	case IIO_BUFFER_DIRECTION_IN:
-> > > +		return sprintf(buf, "in\n");
-> > > +	case IIO_BUFFER_DIRECTION_OUT:
-> > > +		return sprintf(buf, "out\n");
-> > > +	default:
-> > > +		return -EINVAL;
-> > > +	}
-> > > +}
-> > > +
-> > >  static DEVICE_ATTR(length, S_IRUGO | S_IWUSR, iio_buffer_read_length,
-> > >  		   iio_buffer_write_length);
-> > >  static struct device_attribute dev_attr_length_ro = __ATTR(length, @@
-> > > -1289,12 +1403,20 @@ static struct device_attribute  
-> > dev_attr_watermark_ro = __ATTR(watermark,  
-> > >  	S_IRUGO, iio_buffer_show_watermark, NULL);  static
-> > > DEVICE_ATTR(data_available, S_IRUGO,
-> > >  		iio_dma_show_data_available, NULL);
-> > > +static DEVICE_ATTR_RO(direction);
-> > >
-> > > +/*
-> > > + * When adding new attributes here, put the at the end, at least
-> > > +until
-> > > + * the code that handles the length/length_ro &
-> > > +watermark/watermark_ro
-> > > + * assignments gets cleaned up. Otherwise these can create some weird
-> > > + * duplicate attributes errors under some setups.
-> > > + */
-> > >  static struct attribute *iio_buffer_attrs[] = {
-> > >  	&dev_attr_length.attr,
-> > >  	&dev_attr_enable.attr,
-> > >  	&dev_attr_watermark.attr,
-> > >  	&dev_attr_data_available.attr,
-> > > +	&dev_attr_direction.attr,
-> > >  };
-> > >
-> > >  #define to_dev_attr(_attr) container_of(_attr, struct
-> > > device_attribute, attr) @@ -1397,6 +1519,7 @@ static const struct  
-> > file_operations iio_buffer_chrdev_fileops = {  
-> > >  	.owner = THIS_MODULE,
-> > >  	.llseek = noop_llseek,
-> > >  	.read = iio_buffer_read,
-> > > +	.write = iio_buffer_write,
-> > >  	.poll = iio_buffer_poll,
-> > >  	.release = iio_buffer_chrdev_release,  }; diff --git
-> > > a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
-> > > index 2dbb37e09b8c..537a08549a69 100644
-> > > --- a/drivers/iio/industrialio-core.c
-> > > +++ b/drivers/iio/industrialio-core.c
-> > > @@ -1822,6 +1822,7 @@ static const struct file_operations  
-> > iio_buffer_fileops = {  
-> > >  	.owner = THIS_MODULE,
-> > >  	.llseek = noop_llseek,
-> > >  	.read = iio_buffer_read_outer_addr,
-> > > +	.write = iio_buffer_write_outer_addr,
-> > >  	.poll = iio_buffer_poll_addr,
-> > >  	.unlocked_ioctl = iio_ioctl,
-> > >  	.compat_ioctl = compat_ptr_ioctl,
-> > > diff --git a/include/linux/iio/buffer.h b/include/linux/iio/buffer.h
-> > > index b6928ac5c63d..fe2e680d9b5e 100644
-> > > --- a/include/linux/iio/buffer.h
-> > > +++ b/include/linux/iio/buffer.h
-> > > @@ -11,8 +11,15 @@
-> > >
-> > >  struct iio_buffer;
-> > >
-> > > +enum iio_buffer_direction {
-> > > +	IIO_BUFFER_DIRECTION_IN,
-> > > +	IIO_BUFFER_DIRECTION_OUT,
-> > > +};
-> > > +
-> > >  int iio_push_to_buffers(struct iio_dev *indio_dev, const void *data);
-> > >
-> > > +int iio_pop_from_buffer(struct iio_buffer *buffer, void *data);
-> > > +
-> > >  /**
-> > >   * iio_push_to_buffers_with_timestamp() - push data and timestamp to  
-> > buffers  
-> > >   * @indio_dev:		iio_dev structure for device.
-> > > diff --git a/include/linux/iio/buffer_impl.h
-> > > b/include/linux/iio/buffer_impl.h index 245b32918ae1..e2ca8ea23e19
-> > > 100644
-> > > --- a/include/linux/iio/buffer_impl.h
-> > > +++ b/include/linux/iio/buffer_impl.h
-> > > @@ -7,6 +7,7 @@
-> > >  #ifdef CONFIG_IIO_BUFFER
-> > >
-> > >  #include <uapi/linux/iio/buffer.h>
-> > > +#include <linux/iio/buffer.h>
-> > >
-> > >  struct iio_dev;
-> > >  struct iio_buffer;
-> > > @@ -23,6 +24,10 @@ struct iio_buffer;
-> > >   * @read:		try to get a specified number of bytes (must exist)
-> > >   * @data_available:	indicates how much data is available for reading from
-> > >   *			the buffer.
-> > > + * @remove_from:	remove scan from buffer. Drivers should calls this to
-> > > + *			remove a scan from a buffer.
-> > > + * @write:		try to write a number of bytes
-> > > + * @space_available:	returns the amount of bytes available in a  
-> > buffer  
-> > >   * @request_update:	if a parameter change has been marked,  
-> > update underlying  
-> > >   *			storage.
-> > >   * @set_bytes_per_datum:set number of bytes per datum @@ -49,6  
-> > +54,9  
-> > > @@ struct iio_buffer_access_funcs {
-> > >  	int (*store_to)(struct iio_buffer *buffer, const void *data);
-> > >  	int (*read)(struct iio_buffer *buffer, size_t n, char __user *buf);
-> > >  	size_t (*data_available)(struct iio_buffer *buffer);
-> > > +	int (*remove_from)(struct iio_buffer *buffer, void *data);
-> > > +	int (*write)(struct iio_buffer *buffer, size_t n, const char __user  
-> > *buf);  
-> > > +	size_t (*space_available)(struct iio_buffer *buffer);
-> > >
-> > >  	int (*request_update)(struct iio_buffer *buffer);
-> > >
-> > > @@ -80,6 +88,9 @@ struct iio_buffer {
-> > >  	/**  @bytes_per_datum: Size of individual datum including  
-> > timestamp. */  
-> > >  	size_t bytes_per_datum;
-> > >
-> > > +	/* @direction: Direction of the data stream (in/out). */
-> > > +	enum iio_buffer_direction direction;
-> > > +
-> > >  	/**
-> > >  	 * @access: Buffer access functions associated with the
-> > >  	 * implementation.  
-> 
-
+>
+> > Fixes: 3e2f0bb72be3 ("arm64: dts: rockchip: Add nanopi4 bluetooth")
+> > Signed-off-by: Chen-Yu Tsai <wens@csie.org>
+> > ---
+> >   arch/arm64/boot/dts/rockchip/rk3399-nanopi4.dtsi | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/arch/arm64/boot/dts/rockchip/rk3399-nanopi4.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-nanopi4.dtsi
+> > index 8c0ff6c96e03..45ff053b119d 100644
+> > --- a/arch/arm64/boot/dts/rockchip/rk3399-nanopi4.dtsi
+> > +++ b/arch/arm64/boot/dts/rockchip/rk3399-nanopi4.dtsi
+> > @@ -699,7 +699,7 @@ bluetooth {
+> >               device-wakeup-gpios = <&gpio2 RK_PD2 GPIO_ACTIVE_HIGH>;
+> >               host-wakeup-gpios = <&gpio0 RK_PA4 GPIO_ACTIVE_HIGH>;
+> >               shutdown-gpios = <&gpio0 RK_PB1 GPIO_ACTIVE_HIGH>;
+> > -             max-speed = <4000000>;
+> > +             max-speed = <3000000>;
+> >               pinctrl-names = "default";
+> >               pinctrl-0 = <&bt_reg_on_h &bt_host_wake_l &bt_wake_l>;
+> >               vbat-supply = <&vcc3v3_sys>;
+> >
