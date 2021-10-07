@@ -2,157 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC873425582
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 16:33:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D51F9425588
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 16:36:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242107AbhJGOfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 10:35:30 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:36778 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242098AbhJGOf2 (ORCPT
+        id S242090AbhJGOh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 10:37:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57516 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233341AbhJGOh5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 10:35:28 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 2A52F22415;
-        Thu,  7 Oct 2021 14:33:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1633617214; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0kPHCIwOi6yOaCscKFUvZxr3E139xXkUk3nwqYFUxz4=;
-        b=oKTEOQskEQU0aKd1HxqbqVqjt3iUS3Nt0AgXdS8uqgdHyXaGuufu39K5xwLiI8LNdcJ9tk
-        CVivdl4kq2hTgxNvydXSOuq52Udn8oCCUV0Eu/GSDwoGBL1BSXeBv4E9sFb36DTN8Cp23G
-        T1jbXNQmNVZS3rhYpZOve21YpD9ucog=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1633617214;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0kPHCIwOi6yOaCscKFUvZxr3E139xXkUk3nwqYFUxz4=;
-        b=QvzadQVxDJkNVrPvCNmNPMZ2FFnyLamTc7FUVMZMgbVYrDWXyFSH0uyCYiAqk4b7HcfO9r
-        NNldXwuAUnygTHBQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F08D613CE5;
-        Thu,  7 Oct 2021 14:33:33 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id AH60OT0FX2EmXAAAMHmgww
-        (envelope-from <tzimmermann@suse.de>); Thu, 07 Oct 2021 14:33:33 +0000
-Message-ID: <3353e013-6716-ea90-2eb1-8352279ed685@suse.de>
-Date:   Thu, 7 Oct 2021 16:33:33 +0200
+        Thu, 7 Oct 2021 10:37:57 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA1E7C061570
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 07:36:03 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id l6so4028765plh.9
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 07:36:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=suBssZKyz31dGqI31WByzZWo+jlX53iGQViQd5BSvdE=;
+        b=Me/3SquNkGtIBIhMVosaFd536Awx/KVcEayi1qXmBQXVhAVrNDHkYwMouy70OUw/DF
+         dnKa0LM3cxsWjnEqFd9mZKUmMRx55PBD7VvfKbwfHwJ3YiMoZWEAX66Bb+BIgJuh5iqr
+         vzGuFlpf+m1ZjcLySvpDqvfQ4BypcyZQZEvvucYtDYNOQ9o6IsY3xAEHtbBdOqzUwlcC
+         VGLnLwBI8idfZu2jllm8cde7hKT/+FPmMwC64IwDDOZge7jKztAMSwWRVj7EFN41Kq6P
+         RE4KXr/5O+lNu2Kxe/vWLxr8B/MW9wflP28xAeqIKXq4WnYuRjyof6JypMwWHfzRHAxa
+         fInQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=suBssZKyz31dGqI31WByzZWo+jlX53iGQViQd5BSvdE=;
+        b=ozib5txNy5cyru0OOUCGkXCqhqj6LQAqIY9t0LZ5T4/lHc6XISRd4ozrQIRMn9B6M5
+         C+ZaOWGm2kaDaYbLp8qNbD2q3Ly0XKkG3CSfhDuiZ7TezdP//PEpzpbIXWj4ckurKRae
+         d0pKJ/GBbZsvggojk10yWCoXa3f8A07Kk170SIrMegkr4VT1LpWbg2rRqd3dwX8PgfYA
+         2OQjOnPOSQ56/Phv1XnI4KX/IlC37KjddAeMT98u4TDtFQod8KzJ384QqkLaHksVg35b
+         +8Qrm6Hep5CJsbrg4oWmKNSEXIJmRWB9XS3u8QANSoSixpGXVJkiBOqS2SPqy5URUBXx
+         tEUQ==
+X-Gm-Message-State: AOAM530NSvcQ2JnpzQ/AYURXZ3CkWklfIrsVXwNGL6PUDTZ5UC3PzY6K
+        qjqMYwCoRQQoDvYrOzmfX7M3kZeE3ac=
+X-Google-Smtp-Source: ABdhPJy9I7Jq3+3O/uU1XZSjR/cqFbKwuG4iTI2kKaulySFAlOhQnT7aKvReS7dkO7B7hgI2ir19uQ==
+X-Received: by 2002:a17:90b:108d:: with SMTP id gj13mr5775436pjb.95.1633617363222;
+        Thu, 07 Oct 2021 07:36:03 -0700 (PDT)
+Received: from edumazet1.svl.corp.google.com ([2620:15c:2c4:201:d906:ac38:8e9d:2f82])
+        by smtp.gmail.com with ESMTPSA id n202sm7161743pfd.160.2021.10.07.07.36.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Oct 2021 07:36:02 -0700 (PDT)
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Borislav Petkov <bp@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: [PATCH v2] x86/apic: reduce cache line misses in __x2apic_send_IPI_mask()
+Date:   Thu,  7 Oct 2021 07:35:56 -0700
+Message-Id: <20211007143556.574911-1-eric.dumazet@gmail.com>
+X-Mailer: git-send-email 2.33.0.882.g93a45727a2-goog
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
-Subject: Re: [PATCH v2] drm/hyperv: Fix double mouse pointers
-Content-Language: en-US
-To:     Dexuan Cui <decui@microsoft.com>,
-        "drawat.floss@gmail.com" <drawat.floss@gmail.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        "airlied@linux.ie" <airlied@linux.ie>,
-        "daniel@ffwll.ch" <daniel@ffwll.ch>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
-Cc:     "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210916193644.45650-1-decui@microsoft.com>
- <BYAPR21MB1270B4AB0AFC1668C9D9009FBFB09@BYAPR21MB1270.namprd21.prod.outlook.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-In-Reply-To: <BYAPR21MB1270B4AB0AFC1668C9D9009FBFB09@BYAPR21MB1270.namprd21.prod.outlook.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------EGwy7DhMFr9056g8B08VlDj0"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------EGwy7DhMFr9056g8B08VlDj0
-Content-Type: multipart/mixed; boundary="------------A2jFUXct9OonL9tnO0ep48x8";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Dexuan Cui <decui@microsoft.com>,
- "drawat.floss@gmail.com" <drawat.floss@gmail.com>,
- Haiyang Zhang <haiyangz@microsoft.com>, "airlied@linux.ie"
- <airlied@linux.ie>, "daniel@ffwll.ch" <daniel@ffwll.ch>,
- "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
-Cc: "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Message-ID: <3353e013-6716-ea90-2eb1-8352279ed685@suse.de>
-Subject: Re: [PATCH v2] drm/hyperv: Fix double mouse pointers
-References: <20210916193644.45650-1-decui@microsoft.com>
- <BYAPR21MB1270B4AB0AFC1668C9D9009FBFB09@BYAPR21MB1270.namprd21.prod.outlook.com>
-In-Reply-To: <BYAPR21MB1270B4AB0AFC1668C9D9009FBFB09@BYAPR21MB1270.namprd21.prod.outlook.com>
+From: Eric Dumazet <edumazet@google.com>
 
---------------A2jFUXct9OonL9tnO0ep48x8
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+Using per-cpu storage for @x86_cpu_to_logical_apicid
+is not optimal.
 
-SGkNCg0KQW0gMDYuMTAuMjEgdW0gMjA6NDMgc2NocmllYiBEZXh1YW4gQ3VpOg0KPj4gRnJv
-bTogRGV4dWFuIEN1aSA8ZGVjdWlAbWljcm9zb2Z0LmNvbT4NCj4+IFNlbnQ6IFRodXJzZGF5
-LCBTZXB0ZW1iZXIgMTYsIDIwMjEgMTI6MzcgUE0NCj4+IFRvOiBkcmF3YXQuZmxvc3NAZ21h
-aWwuY29tOyBIYWl5YW5nIFpoYW5nIDxoYWl5YW5nekBtaWNyb3NvZnQuY29tPjsNCj4+IGFp
-cmxpZWRAbGludXguaWU7IGRhbmllbEBmZndsbC5jaDsgdHppbW1lcm1hbm5Ac3VzZS5kZTsN
-Cj4+IGRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmcNCj4+IENjOiBsaW51eC1oeXBl
-cnZAdmdlci5rZXJuZWwub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyBEZXh1
-YW4gQ3VpDQo+PiA8ZGVjdWlAbWljcm9zb2Z0LmNvbT4NCj4+IFN1YmplY3Q6IFtQQVRDSCB2
-Ml0gZHJtL2h5cGVydjogRml4IGRvdWJsZSBtb3VzZSBwb2ludGVycw0KPj4NCj4+IEh5cGVy
-LVYgc3VwcG9ydHMgYSBoYXJkd2FyZSBjdXJzb3IgZmVhdHVyZS4gSXQgaXMgbm90IHVzZWQg
-YnkgTGludXggVk0sDQo+PiBidXQgdGhlIEh5cGVyLVYgaG9zdCBzdGlsbCBkcmF3cyBhIHBv
-aW50IGFzIGFuIGV4dHJhIG1vdXNlIHBvaW50ZXIsDQo+PiB3aGljaCBpcyB1bndhbnRlZCwg
-ZXNwZWNpYWxseSB3aGVuIFhvcmcgaXMgcnVubmluZy4NCj4+DQo+PiBUaGUgaHlwZXJ2X2Zi
-IGRyaXZlciB1c2VzIHN5bnRodmlkX3NlbmRfcHRyKCkgdG8gaGlkZSB0aGUgdW53YW50ZWQg
-cG9pbnRlci4NCj4+IFdoZW4gdGhlIGh5cGVydl9kcm0gZHJpdmVyIHdhcyBkZXZlbG9wZWQs
-IHRoZSBmdW5jdGlvbiBzeW50aHZpZF9zZW5kX3B0cigpDQo+PiB3YXMgbm90IGNvcGllZCBm
-cm9tIHRoZSBoeXBlcnZfZmIgZHJpdmVyLiBGaXggdGhlIGlzc3VlIGJ5IGFkZGluZyB0aGUN
-Cj4+IGZ1bmN0aW9uIGludG8gaHlwZXJ2X2RybS4NCj4+DQo+PiBGaXhlczogNzZjNTZhNWFm
-ZmViICgiZHJtL2h5cGVydjogQWRkIERSTSBkcml2ZXIgZm9yIGh5cGVydiBzeW50aGV0aWMg
-dmlkZW8NCj4+IGRldmljZSIpDQo+PiBTaWduZWQtb2ZmLWJ5OiBEZXh1YW4gQ3VpIDxkZWN1
-aUBtaWNyb3NvZnQuY29tPg0KPj4gUmV2aWV3ZWQtYnk6IEhhaXlhbmcgWmhhbmcgPGhhaXlh
-bmd6QG1pY3Jvc29mdC5jb20+DQo+PiBSZXZpZXdlZC1ieTogRGVlcGFrIFJhd2F0IDxkcmF3
-YXQuZmxvc3NAZ21haWwuY29tPg0KPj4gLS0tDQo+Pg0KPj4gQ2hhbmdlcyBpbiB2MjoNCj4+
-IAlSZW5hbWVkIGh5cGVydl9zZW5kX3B0cigpIHRvIGh5cGVydl9oaWRlX2h3X3B0cigpLg0K
-Pj4gCUltcHJvdmVkIHRoZSBjb21tZW50cyBhbmQgdGhlIGdpdCBjb21taXQgbWVzc2FnZS4N
-Cj4+IAlBZGRlZCBSZXZpZXdlZC1ieSdzIGZyb20gSGFpeWFuZyBhbmQgRGVlcGFrLg0KPj4N
-Cj4+ICAgZHJpdmVycy9ncHUvZHJtL2h5cGVydi9oeXBlcnZfZHJtLmggICAgICAgICB8ICAx
-ICsNCj4+ICAgZHJpdmVycy9ncHUvZHJtL2h5cGVydi9oeXBlcnZfZHJtX21vZGVzZXQuYyB8
-ICAxICsNCj4+ICAgZHJpdmVycy9ncHUvZHJtL2h5cGVydi9oeXBlcnZfZHJtX3Byb3RvLmMg
-ICB8IDU0DQo+PiArKysrKysrKysrKysrKysrKysrKy0NCj4+ICAgMyBmaWxlcyBjaGFuZ2Vk
-LCA1NSBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pDQo+IA0KPiBIaSBEUk0gbWFpbnRh
-aW5lcnMsDQo+IENvdWxkIHlvdSBwbGVhc2UgdGFrZSBhIGxvb2sgYXQgdGhlIHBhdGNoPw0K
-DQpJIHB1c2hlZCB0aGUgcGF0Y2ggaW50byBkcm0tbWlzYy1maXhlcy4gSXQgc2hvdWxkIHJl
-YWNoIHVwc3RyZWFtIHNvb25lZC4NCg0KQmVzdCByZWdhcmRzDQpUaG9tYXMNCg0KPiANCj4g
-VGhhbmtzLA0KPiAtLSBEZXh1YW4NCj4gDQoNCi0tIA0KVGhvbWFzIFppbW1lcm1hbm4NCkdy
-YXBoaWNzIERyaXZlciBEZXZlbG9wZXINClNVU0UgU29mdHdhcmUgU29sdXRpb25zIEdlcm1h
-bnkgR21iSA0KTWF4ZmVsZHN0ci4gNSwgOTA0MDkgTsO8cm5iZXJnLCBHZXJtYW55DQooSFJC
-IDM2ODA5LCBBRyBOw7xybmJlcmcpDQpHZXNjaMOkZnRzZsO8aHJlcjogRmVsaXggSW1lbmTD
-tnJmZmVyDQo=
+Broadcast IPI will need at least one cache line
+per cpu to access this field.
 
---------------A2jFUXct9OonL9tnO0ep48x8--
+__x2apic_send_IPI_mask() is using standard bitmask operators.
 
---------------EGwy7DhMFr9056g8B08VlDj0
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
+By converting x86_cpu_to_logical_apicid to an array,
+we divide by 16x number of needed cache lines, because
+we find 16 values per cache line. CPU prefetcher can
+kick nicely.
 
------BEGIN PGP SIGNATURE-----
+Also move @cluster_masks to READ_MOSTLY section to avoid false sharing.
 
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmFfBT0FAwAAAAAACgkQlh/E3EQov+BU
-6RAAogq8ib94GKJSAb5fLjIAWDYEcz7t5jbbjVZcxQile7oAlI3/0/BBwkkN1qRD9ndt5+tIcIAF
-aouzdfU98LjJSpAT5E0KXQPRC7AdVAr37gPZPcEISrjzMFUCGAWKSjQbDCF4s+g8PmTdlaSITKl7
-oyNrRepbPtiXAAWOacpsfX2pHWQamGTpmxUckDVN03XU7y+xQZBt6atyH9VJtQJb5BxB4xLUKWKD
-xtyZN3rQSsl3H5AP2OEVePY/yqWToRy8MWDRqKd14jrfdm/wOJagZ+ewqoERo460z3LddzosbpRc
-SF1T7XBzP/XJc/reMN5t11GCYqEw7wFG016kjOthImQC6pbkDeb6oiiuU1wJ0F8dVi+vTeZi8CcA
-qdU+Zx8X4aDd9gsk5K9d1yIFs3usTKXpJZl3WQMJCRH7z62aXMrCI44uJUEoPSSEWW1kBAF4T+XK
-IjqBHM/xvHvzEszmL+yIOPc2kVmTmVwIPyEj00Ifa2ofTcWkOEw/fY2CiTFZnQr8YIphpEjtXkEG
-B7o9rmjNr6CcPjI5nFbWf6WEHMEXplrZrNoYH5GpOEocI1Nd6sLvp8f4zMjtgcSTEYEv+peLkXBh
-AJbPYXxGF1JBVO/w50at6+CVt10pHuEqetoDJFMtbBIR72wyLBbYnmJ+zv8vM5yRpxy8AhdtCTGI
-UxU=
-=vjnW
------END PGP SIGNATURE-----
+Tested on a dual socket host with 256 cpus,
+cost for a full broadcast is now 11 usec instead of 33 usec.
 
---------------EGwy7DhMFr9056g8B08VlDj0--
+v2: use a dynamically allocated array, as suggested by Peter.
+
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: Borislav Petkov <bp@suse.de>
+Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+---
+ arch/x86/kernel/apic/x2apic_cluster.c | 27 +++++++++++++++++++++------
+ 1 file changed, 21 insertions(+), 6 deletions(-)
+
+diff --git a/arch/x86/kernel/apic/x2apic_cluster.c b/arch/x86/kernel/apic/x2apic_cluster.c
+index f4da9bb69a8859ff10824315388aeb49c2ccfad9..e696e22d0531976f7cba72ed17443592eac72c13 100644
+--- a/arch/x86/kernel/apic/x2apic_cluster.c
++++ b/arch/x86/kernel/apic/x2apic_cluster.c
+@@ -15,9 +15,15 @@ struct cluster_mask {
+ 	struct cpumask	mask;
+ };
+ 
+-static DEFINE_PER_CPU(u32, x86_cpu_to_logical_apicid);
++/*
++ * __x2apic_send_IPI_mask() possibly needs to read
++ * x86_cpu_to_logical_apicid for all online cpus in a sequential way.
++ * Using per cpu variable would cost one cache line per cpu.
++ */
++static u32 *x86_cpu_to_logical_apicid __read_mostly;
++
+ static DEFINE_PER_CPU(cpumask_var_t, ipi_mask);
+-static DEFINE_PER_CPU(struct cluster_mask *, cluster_masks);
++static DEFINE_PER_CPU_READ_MOSTLY(struct cluster_mask *, cluster_masks);
+ static struct cluster_mask *cluster_hotplug_mask;
+ 
+ static int x2apic_acpi_madt_oem_check(char *oem_id, char *oem_table_id)
+@@ -27,7 +33,7 @@ static int x2apic_acpi_madt_oem_check(char *oem_id, char *oem_table_id)
+ 
+ static void x2apic_send_IPI(int cpu, int vector)
+ {
+-	u32 dest = per_cpu(x86_cpu_to_logical_apicid, cpu);
++	u32 dest = x86_cpu_to_logical_apicid[cpu];
+ 
+ 	/* x2apic MSRs are special and need a special fence: */
+ 	weak_wrmsr_fence();
+@@ -58,7 +64,7 @@ __x2apic_send_IPI_mask(const struct cpumask *mask, int vector, int apic_dest)
+ 
+ 		dest = 0;
+ 		for_each_cpu_and(clustercpu, tmpmsk, &cmsk->mask)
+-			dest |= per_cpu(x86_cpu_to_logical_apicid, clustercpu);
++			dest |= x86_cpu_to_logical_apicid[clustercpu];
+ 
+ 		if (!dest)
+ 			continue;
+@@ -94,7 +100,7 @@ static void x2apic_send_IPI_all(int vector)
+ 
+ static u32 x2apic_calc_apicid(unsigned int cpu)
+ {
+-	return per_cpu(x86_cpu_to_logical_apicid, cpu);
++	return x86_cpu_to_logical_apicid[cpu];
+ }
+ 
+ static void init_x2apic_ldr(void)
+@@ -103,7 +109,7 @@ static void init_x2apic_ldr(void)
+ 	u32 cluster, apicid = apic_read(APIC_LDR);
+ 	unsigned int cpu;
+ 
+-	this_cpu_write(x86_cpu_to_logical_apicid, apicid);
++	x86_cpu_to_logical_apicid[smp_processor_id()] = apicid;
+ 
+ 	if (cmsk)
+ 		goto update;
+@@ -166,12 +172,21 @@ static int x2apic_dead_cpu(unsigned int dead_cpu)
+ 
+ static int x2apic_cluster_probe(void)
+ {
++	u32 slots;
++
+ 	if (!x2apic_mode)
+ 		return 0;
+ 
++	slots = max_t(u32, L1_CACHE_BYTES/sizeof(u32), nr_cpu_ids);
++	x86_cpu_to_logical_apicid = kcalloc(slots, sizeof(u32), GFP_KERNEL);
++	if (!x86_cpu_to_logical_apicid)
++		return 0;
++
+ 	if (cpuhp_setup_state(CPUHP_X2APIC_PREPARE, "x86/x2apic:prepare",
+ 			      x2apic_prepare_cpu, x2apic_dead_cpu) < 0) {
+ 		pr_err("Failed to register X2APIC_PREPARE\n");
++		kfree(x86_cpu_to_logical_apicid);
++		x86_cpu_to_logical_apicid = NULL;
+ 		return 0;
+ 	}
+ 	init_x2apic_ldr();
+-- 
+2.33.0.882.g93a45727a2-goog
+
