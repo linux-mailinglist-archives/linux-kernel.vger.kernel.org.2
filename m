@@ -2,145 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E554C425ACE
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 20:32:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0D56425AC3
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 20:29:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243660AbhJGSeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 14:34:25 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.54]:14135 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233598AbhJGSeY (ORCPT
+        id S243675AbhJGSa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 14:30:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57294 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231340AbhJGSaz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 14:34:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1633631361;
-    s=strato-dkim-0002; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=y+ZVoE7qvcX3dWBAXSBwFesU2ut2MT+SqkKvb13XGbo=;
-    b=DwMUQt1GkP+JDXX3EyCgGOsJaQEWrgh9jv+3dgC31T6rLd2fH0zc19/ccPF+gvOjHn
-    bW7lNOE/WHfj5i+0Srlh8u1DA1Mv2+fkxgtZji15ck+TR0VV/pU38a6Fc4xIeyDvqkuf
-    5X830QxC2K9ijIhaPVh9DWMATknZqMqf0LMNIjFSVLAo2S6T0QLqcd1XZ5PCUNy7BABe
-    h4xLIe0mir3STtrRrIPxzwy/phAIb2nsijnL+ih6efj5BkjZWJK3HwLndFAt4qAXuptd
-    owZ/W1ACDc/2DX2PMe6GU9XfRo8wyrPxinCoZyxgP7LsYdix2L9vg3Wgo7zSynpZzvIa
-    0AlA==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u261EJF5OxJD4pSA8pmE1A=="
-X-RZG-CLASS-ID: mo00
-Received: from gerhold.net
-    by smtp.strato.de (RZmta 47.33.8 DYNA|AUTH)
-    with ESMTPSA id 301038x97ITLfFt
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Thu, 7 Oct 2021 20:29:21 +0200 (CEST)
-Date:   Thu, 7 Oct 2021 20:29:16 +0200
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     Maulik Shah <mkshah@codeaurora.org>
-Cc:     swboyd@chromium.org, mka@chromium.org, evgreen@chromium.org,
-        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, agross@kernel.org,
-        dianders@chromium.org, linux@roeck-us.net, rnayak@codeaurora.org,
-        lsrao@codeaurora.org,
-        Mahesh Sivasubramanian <msivasub@codeaurora.org>,
-        Lina Iyer <ilina@codeaurora.org>,
-        Yassine Oudjana <y.oudjana@protonmail.com>
-Subject: Re: [PATCH v11 2/5] soc: qcom: Add Sleep stats driver
-Message-ID: <YV88fNYF0i1Wkr73@gerhold.net>
-References: <1633600649-7164-1-git-send-email-mkshah@codeaurora.org>
- <1633600649-7164-3-git-send-email-mkshah@codeaurora.org>
+        Thu, 7 Oct 2021 14:30:55 -0400
+X-Greylist: delayed 323 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 07 Oct 2021 11:29:01 PDT
+Received: from smtp-190e.mail.infomaniak.ch (smtp-190e.mail.infomaniak.ch [IPv6:2001:1600:4:17::190e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D0EDC061570
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 11:29:01 -0700 (PDT)
+Received: from smtp-3-0000.mail.infomaniak.ch (unknown [10.4.36.107])
+        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4HQKbH6sXZzMq0pQ;
+        Thu,  7 Oct 2021 20:28:59 +0200 (CEST)
+Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
+        by smtp-3-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4HQKbF323jzlhNwp;
+        Thu,  7 Oct 2021 20:28:57 +0200 (CEST)
+Subject: Re: [PATCH v12 0/3] Add trusted_for(2) (was O_MAYEXEC)
+To:     Kees Cook <keescook@chromium.org>
+Cc:     bauen1 <j2468h@googlemail.com>, akpm@linux-foundation.org,
+        arnd@arndb.de, casey@schaufler-ca.com,
+        christian.brauner@ubuntu.com, christian@python.org, corbet@lwn.net,
+        cyphar@cyphar.com, deven.desai@linux.microsoft.com,
+        dvyukov@google.com, ebiggers@kernel.org, ericchiang@google.com,
+        fweimer@redhat.com, geert@linux-m68k.org, jack@suse.cz,
+        jannh@google.com, jmorris@namei.org,
+        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, luto@kernel.org,
+        madvenka@linux.microsoft.com, mjg59@google.com,
+        mszeredi@redhat.com, mtk.manpages@gmail.com,
+        nramas@linux.microsoft.com, philippe.trebuchet@ssi.gouv.fr,
+        scottsh@microsoft.com, sean.j.christopherson@intel.com,
+        sgrubb@redhat.com, shuah@kernel.org, steve.dower@python.org,
+        thibaut.sautereau@clip-os.org, vincent.strubel@ssi.gouv.fr,
+        viro@zeniv.linux.org.uk, willy@infradead.org, zohar@linux.ibm.com
+References: <20201203173118.379271-1-mic@digikod.net>
+ <d3b0da18-d0f6-3f72-d3ab-6cf19acae6eb@gmail.com>
+ <2a4cf50c-7e79-75d1-7907-8218e669f7fa@digikod.net>
+ <202110061500.B8F821C@keescook>
+From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+Message-ID: <4c4bbd74-0599-fed5-0340-eff197bafeb1@digikod.net>
+Date:   Thu, 7 Oct 2021 20:29:31 +0200
+User-Agent: 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1633600649-7164-3-git-send-email-mkshah@codeaurora.org>
+In-Reply-To: <202110061500.B8F821C@keescook>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Maulik,
 
-On Thu, Oct 07, 2021 at 03:27:26PM +0530, Maulik Shah wrote:
-> From: Mahesh Sivasubramanian <msivasub@codeaurora.org>
+On 07/10/2021 00:03, Kees Cook wrote:
+> On Fri, Apr 09, 2021 at 07:15:42PM +0200, Mickaël Salaün wrote:
+>> There was no new reviews, probably because the FS maintainers were busy,
+>> and I was focused on Landlock (which is now in -next), but I plan to
+>> send a new patch series for trusted_for(2) soon.
 > 
-> Let's add a driver to read the stats from remote processor and
-> export to debugfs.
+> Hi!
 > 
-> The driver creates "qcom_sleep_stats" directory in debugfs and
-> adds files for various low power mode available. Below is sample
-> output with command
+> Did this ever happen? It looks like it's in good shape, and I think it's
+> a nice building block for userspace to have. Are you able to rebase and
+> re-send this?
+
+I just sent it:
+https://lore.kernel.org/all/20211007182321.872075-1-mic@digikod.net/
+
+Some Signed-off-by would be appreciated. :)
+
 > 
-> cat /sys/kernel/debug/qcom_sleep_stats/ddr
-> count = 0
-> Last Entered At = 0
-> Last Exited At = 0
-> Accumulated Duration = 0
+> I've tended to aim these things at akpm if Al gets busy. (And since
+> you've had past review from Al, that should be hopefully sufficient.)
 > 
-> Signed-off-by: Mahesh Sivasubramanian <msivasub@codeaurora.org>
-> Signed-off-by: Lina Iyer <ilina@codeaurora.org>
-> [mkshah: add subsystem sleep stats, create one file for each stat]
-> Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
-> ---
->  drivers/soc/qcom/Kconfig            |  10 ++
->  drivers/soc/qcom/Makefile           |   1 +
->  drivers/soc/qcom/qcom_sleep_stats.c | 259 ++++++++++++++++++++++++++++++++++++
->  3 files changed, 270 insertions(+)
->  create mode 100644 drivers/soc/qcom/qcom_sleep_stats.c
+> Thanks for chasing this!
 > 
-> [...]
-> +
-> +static int qcom_subsystem_sleep_stats_show(struct seq_file *s, void *unused)
-> +{
-> +	struct subsystem_data *subsystem = s->private;
-> +	struct sleep_stats *stat;
-> +
-> +	/* Items are allocated lazily, so lookup pointer each time */
-> +	stat = qcom_smem_get(subsystem->pid, subsystem->smem_item, NULL);
-> +	if (IS_ERR(stat))
-> +		return -EIO;
-> +
-> [...]
-> +
-> +static void qcom_create_subsystem_stat_files(struct dentry *root)
-> +{
-> +	const struct sleep_stats *stat;
-> +	int i;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(subsystems); i++) {
-> +		stat = qcom_smem_get(subsystems[i].pid, subsystems[i].smem_item, NULL);
-> +		if (IS_ERR(stat))
-> +			continue;
-> +
-> +		debugfs_create_file(subsystems[i].name, 0400, root, (void *)&subsystems[i],
-> +				    &qcom_subsystem_sleep_stats_fops);
-
-This causes WARNINGs on MSM8996 and MSM8916:
-
-[    0.503054] ------------[ cut here ]------------
-[    0.503100] WARNING: CPU: 1 PID: 1 at drivers/soc/qcom/smem.c:587 qcom_smem_get+0x184/0x1b0
-[    0.503184] CPU: 1 PID: 1 Comm: swapper/0 Not tainted 5.15.0-rc4+ #378
-[    0.503218] Hardware name: Xiaomi Mi Note 2 (DT)
-[    0.503278] pc : qcom_smem_get+0x184/0x1b0
-[    0.503307] lr : qcom_sleep_stats_probe+0xfc/0x20
-[    0.503875] Call trace:
-[    0.503896]  qcom_smem_get+0x184/0x1b0
-[    0.503925]  qcom_sleep_stats_probe+0xfc/0x270
-
-AFAICT from downstream the smem subsystem information is only read in
-the rpmh_master_stat.c driver, should this be specific to RPMh?
-
-There is a rpm_master_stat.c too but that looks quite different,
-so I guess the approach is different with RPM?
-
-Two more (unrelated) issues here:
-
-  1. This will silently not register anything if SMEM probes after the
-     qcom-sleep-stats driver (qcom_smem_get() will return -EPROBE_DEFER)
-     and you will just skip registering the debugfs files.
-
-  2. In qcom_subsystem_sleep_stats_show() you say
-     /* Items are allocated lazily, so lookup pointer each time */
-
-     But, if the lookup fails here you don't register the debugfs file
-     at all. Does this work if the subsystem is started after this driver?
-
-Thanks,
-Stephan
+> -Kees
+> 
