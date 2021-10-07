@@ -2,98 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D96A4425124
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 12:34:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77775425129
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 12:35:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240955AbhJGKgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 06:36:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57588 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240923AbhJGKgC (ORCPT
+        id S240800AbhJGKhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 06:37:24 -0400
+Received: from vulcan.natalenko.name ([104.207.131.136]:40728 "EHLO
+        vulcan.natalenko.name" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240366AbhJGKhT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 06:36:02 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7139C061755;
-        Thu,  7 Oct 2021 03:34:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=ovm8uBPvpGB+KgDK6CrWGI+MhaFX7YlkEV+ZsLLZNKk=; b=i3yxWEhNJhTuwj5y5q6seSKdKc
-        bJHGzY5cOrfjD+wwo9Fu2myPpjJs7D+tPzHdubyGba3JUF4HTwy71YjpQjw6CToRo+1hTlSJrbsfR
-        CsNOtNEj6tAh2eSoInlJFr0/6rjIg4O/BYBDRU0xPw3q9EVDjIDDcRl7hGjvIAj462I/5Z2UL8Wyx
-        /u6y3CPGvE9VdIy5Rl1c5KGyjrDSTXzaPetYsDdIwQI+p16bmdk6XepPScj4KsVllAif1fOIYdTw8
-        vIpws/eUMSNoV/qGWao8gBtKRpVraaJ16Z7UPEjJ4FExJT/1v8HEb4iUykKTA3mrqlmbYkkoLkQCC
-        YqUpIPzw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:54994)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1mYQj0-0002L5-PN; Thu, 07 Oct 2021 11:34:06 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1mYQiz-0001ov-Vv; Thu, 07 Oct 2021 11:34:05 +0100
-Date:   Thu, 7 Oct 2021 11:34:05 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Sean Anderson <sean.anderson@seco.com>
-Cc:     netdev@vger.kernel.org, "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>
-Subject: Re: [RFC net-next PATCH 10/16] net: macb: Move PCS settings to PCS
- callbacks
-Message-ID: <YV7NHZRFZ9U3Xj8v@shell.armlinux.org.uk>
-References: <20211004191527.1610759-1-sean.anderson@seco.com>
- <20211004191527.1610759-11-sean.anderson@seco.com>
- <YVwjjghGcXaEYgY+@shell.armlinux.org.uk>
- <7c92218c-baec-a991-9d6b-af42dfabbad3@seco.com>
- <YVyfEOu+emsX/ERr@shell.armlinux.org.uk>
- <ddb81bf5-af74-1619-b083-0dba189a5061@seco.com>
- <YVzPgTAS0grKl6CN@shell.armlinux.org.uk>
+        Thu, 7 Oct 2021 06:37:19 -0400
+Received: from spock.localnet (unknown [151.237.229.131])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by vulcan.natalenko.name (Postfix) with ESMTPSA id BF956C28BEC;
+        Thu,  7 Oct 2021 12:35:20 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
+        s=dkim-20170712; t=1633602921;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8ZOoCbKAPjDNrQy/OXhFF0+1/alnvKQYS65joiIyPbc=;
+        b=FCBYYGdGG51IwgzWKihaUN4G1q0oqR5s5RiwQJjatiNBJ3YkJsQ9UdRP8jtypI6VFuHvrb
+        It8f1aLgt8yR6x+vY63Z7GvbaJswxtu57q5JAO+7CvchAn5671PEKu3PGm8FHnrLzaozkX
+        WxWMov3djeuai4zWx5iOPbY5qm0OV0E=
+From:   Oleksandr Natalenko <oleksandr@natalenko.name>
+To:     Denis Pauk <pauk.denis@gmail.com>
+Cc:     andy.shevchenko@gmail.com, pauk.denis@gmail.com,
+        matt-testalltheway <sefoci9222@rerunway.com>,
+        Kamil Dudka <kdudka@redhat.com>,
+        Robert Swiecki <robert@swiecki.net>,
+        Kamil Pietrzak <kpietrzak@disroot.org>, Igor <igor@svelig.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Eugene Shalygin <eugene.shalygin@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] hwmon: (nct6775) Add additional ASUS motherboards
+Date:   Thu, 07 Oct 2021 12:35:19 +0200
+Message-ID: <9337468.ToWr0jQUh6@natalenko.name>
+In-Reply-To: <20211006222502.645003-2-pauk.denis@gmail.com>
+References: <20211006222502.645003-1-pauk.denis@gmail.com> <20211006222502.645003-2-pauk.denis@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YVzPgTAS0grKl6CN@shell.armlinux.org.uk>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
+X-Spam: Yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05, 2021 at 11:19:45PM +0100, Russell King (Oracle) wrote:
-> On Tue, Oct 05, 2021 at 05:44:11PM -0400, Sean Anderson wrote:
-> > At the very least, it should be clearer what things are allowed to fail
-> > for what reasons. Several callbacks are void when things can fail under
-> > the hood (e.g. link_up or an_restart). And the API seems to have been
-> > primarily designed around PCSs which are tightly-coupled to their MACs.
+Hello.
 
-I think what I'd like to see is rather than a validate() callback for
-the PCS, a bitmap of phy_interface_t modes that the PCS supports,
-which is the direction I was wanting to take phylink and SFP support.
+On =C4=8Dtvrtek 7. =C5=99=C3=ADjna 2021 0:24:59 CEST Denis Pauk wrote:
+> Add support:
+> * PRIME B360-PLUS
+> * PRIME X570-PRO
+> * ROG CROSSHAIR VIII FORMULA
+> * ROG STRIX B550-I GAMING
+> * ROG STRIX X570-F GAMING
+> * ROG STRIX Z390-E GAMING
+> * TUF GAMING B550-PRO
+> * TUF GAMING Z490-PLUS
+> * TUF GAMING Z490-PLUS (WI-FI)
+>=20
+> BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=3D204807
+> Signed-off-by: Denis Pauk <pauk.denis@gmail.com>
+> Tested-by: matt-testalltheway <sefoci9222@rerunway.com>
+> Tested-by: Kamil Dudka <kdudka@redhat.com>
+> Tested-by: Robert Swiecki <robert@swiecki.net>
+> Tested-by: Kamil Pietrzak <kpietrzak@disroot.org>
+> Tested-by: Igor <igor@svelig.com>
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> ---
+> Changes in v2:
+>   - Without changes.
+> ---
+>  drivers/hwmon/nct6775.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+>=20
+> diff --git a/drivers/hwmon/nct6775.c b/drivers/hwmon/nct6775.c
+> index aa58ead0ad43..8eaf86ea2433 100644
+> --- a/drivers/hwmon/nct6775.c
+> +++ b/drivers/hwmon/nct6775.c
+> @@ -4986,20 +4986,29 @@ static int __init nct6775_find(int sioaddr, struct
+> nct6775_sio_data *sio_data) static struct platform_device *pdev[2];
+>=20
+>  static const char * const asus_wmi_boards[] =3D {
+> +	"PRIME B360-PLUS",
+>  	"PRIME B460-PLUS",
+> +	"PRIME X570-PRO",
+>  	"ROG CROSSHAIR VIII DARK HERO",
+> +	"ROG CROSSHAIR VIII FORMULA",
+>  	"ROG CROSSHAIR VIII HERO",
+>  	"ROG CROSSHAIR VIII IMPACT",
+>  	"ROG STRIX B550-E GAMING",
+>  	"ROG STRIX B550-F GAMING",
+>  	"ROG STRIX B550-F GAMING (WI-FI)",
+> +	"ROG STRIX B550-I GAMING",
+> +	"ROG STRIX X570-F GAMING",
+> +	"ROG STRIX Z390-E GAMING",
+>  	"ROG STRIX Z490-I GAMING",
+>  	"TUF GAMING B550M-PLUS",
+>  	"TUF GAMING B550M-PLUS (WI-FI)",
+>  	"TUF GAMING B550-PLUS",
+> +	"TUF GAMING B550-PRO",
+>  	"TUF GAMING X570-PLUS",
+>  	"TUF GAMING X570-PLUS (WI-FI)",
+>  	"TUF GAMING X570-PRO (WI-FI)",
+> +	"TUF GAMING Z490-PLUS",
+> +	"TUF GAMING Z490-PLUS (WI-FI)",
+>  };
+>=20
+>  static int __init sensors_nct6775_init(void)
 
-We can then use that information to inform the interface selection in
-phylink and avoid interface modes that the PCS doesn't support.
+Please also add ASUS Pro WS X570-ACE as shown here [1].
 
-However, things get tricky when we have several PCS that we can switch
-between, and the switching is done in mac_prepare(). The current PCS
-(if there is even a PCS attached) may not represent the abilities
-that are actually available.
+Thanks.
 
-It sounds easy - just throw in an extra validation step when calling
-phylink_validate(), but it isn't that simple. To avoid breaking
-existing setups, phylink would need to know of every PCS that _could_
-be attached, and the decisions that the MAC makes to select which PCS
-is going to be used for any configuration.
+[1] https://lore.kernel.org/lkml/20211003133344.9036-2-oleksandr@natalenko.=
+name/
 
-We could possibly introduce a .mac_select_pcs(interface) method
-which the MAC could return the PCS it wishes to use for the interface
-mode with the guarantee that the PCS it returns is suitable - and if
-it returns NULL that means the interface mode is unsupported. That,
-along with the bitmask would probably work.
+=2D-=20
+Oleksandr Natalenko (post-factum)
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+
