@@ -2,183 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8BFB42517C
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 12:50:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B573C425187
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 12:53:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240800AbhJGKwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 06:52:10 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:48373 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240896AbhJGKwC (ORCPT
+        id S241031AbhJGKyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 06:54:55 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:60050 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240896AbhJGKyw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 06:52:02 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1633603809; h=Content-Transfer-Encoding: Content-Type:
- MIME-Version: Message-ID: In-Reply-To: Date: References: Subject: Cc:
- To: From: Sender; bh=mRlN5Ip/ZB+VIMd86+Ux36qweq4CFDscRaEK9N9zKkQ=; b=vAUgGBNXr6vBkYL6EYLswOCInrjNdsRo9NMkmpgAi/r82Dweg86w7sUjyZUSzqsBwIYqwsEm
- 2iqrbUanEUJeOunVWdzoNHLQdenFw2lrmCoMfwnHWv5CO8WAnVRnOOBeZBfE2Tgv//CFf5bM
- lEa6SLDQqYsaQyZjo8guj1pOUsY=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 615ed0d3de4c4ed385977aad (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 07 Oct 2021 10:49:55
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 1EDE3C43616; Thu,  7 Oct 2021 10:49:54 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from tykki (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 24F38C4338F;
-        Thu,  7 Oct 2021 10:49:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 24F38C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     =?utf-8?B?SsOpcsO0bWU=?= Pouiller <jerome.pouiller@silabs.com>
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        linux-mmc@vger.kernel.org,
-        Pali =?utf-8?Q?Roh?= =?utf-8?Q?=C3=A1r?= <pali@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: Re: [PATCH v7 05/24] wfx: add main.c/main.h
-References: <20210920161136.2398632-1-Jerome.Pouiller@silabs.com>
-        <3570035.Z1gqkuQO5x@pc-42> <875yu9cjvk.fsf@codeaurora.org>
-        <2672405.M38RcEoSet@pc-42> <87zgrl86cx.fsf@codeaurora.org>
-Date:   Thu, 07 Oct 2021 13:49:47 +0300
-In-Reply-To: <87zgrl86cx.fsf@codeaurora.org> (Kalle Valo's message of "Thu, 07
-        Oct 2021 13:41:18 +0300")
-Message-ID: <87v92985ys.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        Thu, 7 Oct 2021 06:54:52 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 91D07200A1;
+        Thu,  7 Oct 2021 10:52:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1633603978; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=95Ei1GYUt3m+NNbZBRpOdlFr8IKmHkvEIqfWMGbGD3k=;
+        b=aKZuTA6OE6k8DIL6+Ctv7s26oLOW+4hk5kiVeN8x4DFtPPt+nPluDEYrt8dpBnwWlvMRuv
+        0A1FslcfNpPfYNRP/tnU0KQxWOt1LqLkOLozaf8FbHu4MaAfVKssAk8WTWE+jcz5Xm4hak
+        Im3vzkbV+kF6vk4iFXhsgNteZFdPAWg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1633603978;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=95Ei1GYUt3m+NNbZBRpOdlFr8IKmHkvEIqfWMGbGD3k=;
+        b=R/Bga+DzKrTGMSJ7EJfCXNR2z8djLrJQo0N27eq3ATqZ3haIzBoaK4NQVVyJLZUw5YTXo2
+        3II93E02dHBkJ4BQ==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id 7DDC9A3B84;
+        Thu,  7 Oct 2021 10:52:58 +0000 (UTC)
+Date:   Thu, 07 Oct 2021 12:52:58 +0200
+Message-ID: <s5hpmsh9kdx.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Michael Forney <mforney@mforney.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, alsa-devel@alsa-project.org,
+        Takashi Iwai <tiwai@suse.com>,
+        Baolin Wang <baolin.wang@linaro.org>, y2038@lists.linaro.org,
+        linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+        Baolin Wang <baolin.wang7@gmail.com>
+Subject: Re: [alsa-devel] [PATCH v7 8/9] ALSA: add new 32-bit layout for snd_pcm_mmap_status/control
+In-Reply-To: <29QBMJU8DE71E.2YZSH8IHT5HMH@mforney.org>
+References: <20191211212025.1981822-1-arnd@arndb.de>
+        <20191211212025.1981822-9-arnd@arndb.de>
+        <29QBMJU8DE71E.2YZSH8IHT5HMH@mforney.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kalle Valo <kvalo@codeaurora.org> writes:
+On Wed, 06 Oct 2021 19:49:17 +0200,
+Michael Forney wrote:
+> 
+> Arnd Bergmann <arnd@arndb.de> wrote:
+> > +#if defined(__BYTE_ORDER) ? __BYTE_ORDER == __BIG_ENDIAN : defined(__BIG_ENDIAN)
+> > +typedef char __pad_before_uframe[sizeof(__u64) - sizeof(snd_pcm_uframes_t)];
+> > +typedef char __pad_after_uframe[0];
+> > +#endif
+> > +
+> > +#if defined(__BYTE_ORDER) ? __BYTE_ORDER == __LITTLE_ENDIAN : defined(__LITTLE_ENDIAN)
+> > +typedef char __pad_before_uframe[0];
+> > +typedef char __pad_after_uframe[sizeof(__u64) - sizeof(snd_pcm_uframes_t)];
+> > +#endif
+> > +
+> > +struct __snd_pcm_mmap_status64 {
+> > +	__s32 state;			/* RO: state - SNDRV_PCM_STATE_XXXX */
+> > +	__u32 pad1;			/* Needed for 64 bit alignment */
+> > +	__pad_before_uframe __pad1;
+> > +	snd_pcm_uframes_t hw_ptr;	/* RO: hw ptr (0...boundary-1) */
+> > +	__pad_after_uframe __pad2;
+> > +	struct __snd_timespec64 tstamp;	/* Timestamp */
+> > +	__s32 suspended_state;		/* RO: suspended stream state */
+> > +	__u32 pad3;			/* Needed for 64 bit alignment */
+> > +	struct __snd_timespec64 audio_tstamp; /* sample counter or wall clock */
+> > +};
+> > +
+> > +struct __snd_pcm_mmap_control64 {
+> > +	__pad_before_uframe __pad1;
+> > +	snd_pcm_uframes_t appl_ptr;	 /* RW: appl ptr (0...boundary-1) */
+> > +	__pad_before_uframe __pad2;
+> 
+> I was looking through this header and happened to notice that this
+> padding is wrong. I believe it should be __pad_after_uframe here.
+> 
+> I'm not sure of the implications of this typo, but I suspect it
+> breaks something on 32-bit systems with 64-bit time (regardless of
+> the endianness, since it changes the offset of avail_min).
 
-> J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com> writes:
->
->>> >> >> I'm not really fond of having this kind of ASCII based parser in =
-the
->>> >> >> kernel. Do you have an example compressed file somewhere?
->>> >> >
->>> >> > An example of uncompressed configuration file can be found here[1]=
-. Once
->>> >> > compressed with [2], you get:
->>> >> >
->>> >> >     {a:{a:4,b:1},b:{a:{a:4,b:0,c:0,d:0,e:A},b:{a:4,b:0,c:0,d:0,e:B=
-},c:{a:4,b:0,c:0,d:0,e:C},d:{a:4,b:0,c:0,d:0,e:D},e:{a:4,b:0,c:0,d:0,e:E},f=
-:{a:4,b:0,c:0,d:0,e:F},g:{a:4,b:0,c:0,d:0,e:G},h:{a:4,b:0,c:0,d:0,e:H},i:{a=
-:4,b:0,c:0,d:0,e:I},j:{a:4,b:0,c:0,d:0,e:J},k:{a:4,b:0,c:0,d:0,e:K},l:{a:4,=
-b:0,c:0,d:1,e:L},m:{a:4,b:0,c:0,d:1,e:M}},c:{a:{a:4},b:{a:6},c:{a:6,c:0},d:=
-{a:6},e:{a:6},f:{a:6}},e:{b:0,c:1},h:{e:0,a:50,b:0,d:0,c:[{a:1,b:[0,0,0,0,0=
-,0]},{a:2,b:[0,0,0,0,0,0]},{a:[3,9],b:[0,0,0,0,0,0]},{a:A,b:[0,0,0,0,0,0]},=
-{a:B,b:[0,0,0,0,0,0]},{a:[C,D],b:[0,0,0,0,0,0]},{a:E,b:[0,0,0,0,0,0]}]},j:{=
-a:0,b:0}}
->>> >>
->>> >> So what's the grand idea with this braces format? I'm not getting it.
->>> >
->>> >   - It allows to describe a tree structure
->>> >   - It is ascii (easy to dump, easy to copy-paste)
->>> >   - It is small (as I explain below, size matters)
->>> >   - Since it is similar to JSON, the structure is obvious to many peo=
-ple
->>> >
->>> > Anyway, I am not the author of that and I have to deal with it.
->>>=20
->>> I'm a supported for JSON like formats, flexibility and all that. But
->>> they belong to user space, not kernel.
->>>=20
->>> >> Usually the drivers just consider this kind of firmware configuration
->>> >> data as a binary blob and dump it to the firmware, without knowing w=
-hat
->>> >> the data contains. Can't you do the same?
->>> >
->>> > [I didn't had received this mail :( ]
->>> >
->>> > The idea was also to send it as a binary blob. However, the firmware =
-use
->>> > a limited buffer (1500 bytes) to parse it. In most of case the PDS ex=
-ceeds
->>> > this size. So, we have to split the PDS before to send it.
->>> >
->>> > Unfortunately, we can't split it anywhere. The PDS is a tree structur=
-e and
->>> > the firmware expects to receive a well formatted tree.
->>> >
->>> > So, the easiest way to send it to the firmware is to split the tree
->>> > between each root nodes and send each subtree separately (see also the
->>> > comment above wfx_send_pds()).
->>> >
->>> > Anyway, someone has to cook this configuration before to send it to t=
-he
->>> > firmware. This could be done by a script outside of the kernel. Then =
-we
->>> > could change the input format to simplify a bit the processing in the
->>> > kernel.
->>>=20
->>> I think a binary file with TLV format would be much better, but I'm sure
->>> there also other good choises.
->>>=20
->>> > However, the driver has already some users and I worry that changing
->>> > the input format would lead to a mess.
->>>=20
->>> You can implement a script which converts the old format to the new
->>> format. And you can use different naming scheme in the new format so
->>> that we don't accidentally load the old format. And even better if you
->>> add a some kind of signature in the new format and give a proper error
->>> from the driver if it doesn't match.
->>
->> Ok. I am going to change the input format. I think the new function is
->> going to look like:
->>
->> int wfx_send_pds(struct wfx_dev *wdev, u8 *buf, size_t buf_len)
->> {
->> 	int ret;
->> 	int start =3D 0;
->>
->> 	if (buf[start] !=3D '{') {
->> 		dev_err(wdev->dev, "valid PDS start with '{'. Did you forget to compre=
-ss it?\n");
->> 		return -EINVAL;
->> 	}
->> 	while (start < buf_len) {
->> 		len =3D strnlen(buf + start, buf_len - start);
->> 		if (len > WFX_PDS_MAX_SIZE) {
->> 			dev_err(wdev->dev, "PDS chunk is too big (legacy format?)\n");
->> 			return -EINVAL;
->> 		}
->> 		dev_dbg(wdev->dev, "send PDS '%s'\n", buf + start);
->> 		ret =3D wfx_hif_configuration(wdev, buf + start, len);
->> 		/* FIXME: Add error handling here */
->> 		start +=3D len;
->> 	}
->> 	return 0;
->
-> Did you read at all what I wrote above? Please ditch the ASCII format
-> completely.
+Right, that's the expected breakage.  It seems that the 64bit time on
+32bit arch is still rare, so we haven't heard a regression by that, so
+far...
 
-Sorry, I read this too hastily. I just saw "buf[start] !=3D '{'" and
-assumed this is the same ASCII format, but not sure anymore. Can you
-explain what changes you made now?
+In anyway, care to send a formal fix patch?
 
---=20
-https://patchwork.kernel.org/project/linux-wireless/list/
+Thanks for catching this!
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
-hes
+
+Takashi
