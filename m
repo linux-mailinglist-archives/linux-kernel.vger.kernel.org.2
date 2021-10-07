@@ -2,176 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DF56424FE1
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 11:16:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0461424FE7
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 11:19:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240527AbhJGJR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 05:17:58 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:34626 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240504AbhJGJR4 (ORCPT
+        id S240532AbhJGJU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 05:20:58 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:7848 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232659AbhJGJU5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 05:17:56 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id C5D96203F6;
-        Thu,  7 Oct 2021 09:16:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1633598161; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CxQ0ZV9cOOlrG2jRElhDboOH1/ncgOGYv8QD9De0aOg=;
-        b=Lw7uvG7zBKms7sqR9dWZKsIPebzq3igxLuZw//KJ82jkCbX/WVCIt+ohnaMwcuCzgj/X1o
-        5LlB2SJRb5Ft6RYdOCD+LQrhcspETJZ1NLEHzDutE/2DBaNkPZs15JDb3Rep0F/TldZLNc
-        Z2meDzCll9YQpTWNJgF3nkYIoYernHw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1633598161;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CxQ0ZV9cOOlrG2jRElhDboOH1/ncgOGYv8QD9De0aOg=;
-        b=8xCq5EgoVY5xRbt7QHo29GOnRCfknfEkb/GRje1CC6D7omn0OivrSNXVnP7veEnFhiakWa
-        e7XgNEG+K5LURCDg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5941613A98;
-        Thu,  7 Oct 2021 09:16:00 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id dPciE9C6XmHkLgAAMHmgww
-        (envelope-from <osalvador@suse.de>); Thu, 07 Oct 2021 09:16:00 +0000
-Date:   Thu, 7 Oct 2021 11:15:58 +0200
-From:   Oscar Salvador <osalvador@suse.de>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>, Alex Shi <alexs@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Shuah Khan <shuah@kernel.org>, Michal Hocko <mhocko@suse.com>,
-        Mike Rapoport <rppt@kernel.org>, x86@kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
-        linux-doc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v1 6/6] x86: remove memory hotplug support on X86_32
-Message-ID: <YV66zoLEP3niIHEu@localhost.localdomain>
-References: <20210929143600.49379-1-david@redhat.com>
- <20210929143600.49379-7-david@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        Thu, 7 Oct 2021 05:20:57 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1977W7Xp009635;
+        Thu, 7 Oct 2021 05:18:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=pp1; bh=Wzrukczw15LK8HvZd99FOkvgp0owYAsdfSKcwdhl9QE=;
+ b=UskT+SZFdZHLvhu+UdQiQfMvH7TvrOwHspcSv9hxPiLJAAE1RXA1mgt7jfDJN5lCHIuo
+ XHNiQfGu8dkIMWYhNA/zRE+cqqIaHUF29uxMhKDwiSnnO+qqyV4hb2KNJsGzdpGWqYO9
+ n+vGlkXx4eXBvEbK1abF0zCfrCy02uicRFO/YLfbwEv+sWlOjPZgb5IMeiWvF36Ats9M
+ VvmuTr4SRQuSl3vwVCekzSlHtJhFZiO58ZYC1lIOSMRdhqnzsd4jlfp01yFsGzMZt+XB
+ BkxWIMYQmCy2LDisN9nHYdlZ1hZ5hJMeaEkrhmKry6IaZwsmhAZpwdMBy0oo8Cdaw/eT mA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bhh5qgfb9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 07 Oct 2021 05:18:23 -0400
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1977wOdT010665;
+        Thu, 7 Oct 2021 05:18:22 -0400
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bhh5qgfab-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 07 Oct 2021 05:18:22 -0400
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1979BtE2010609;
+        Thu, 7 Oct 2021 09:18:20 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma03fra.de.ibm.com with ESMTP id 3bef2a2y5j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 07 Oct 2021 09:18:19 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1979CtXd55378266
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 7 Oct 2021 09:12:55 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EF72042041;
+        Thu,  7 Oct 2021 09:18:15 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id ECD7F42049;
+        Thu,  7 Oct 2021 09:18:14 +0000 (GMT)
+Received: from localhost (unknown [9.171.37.112])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Thu,  7 Oct 2021 09:18:14 +0000 (GMT)
+Date:   Thu, 7 Oct 2021 11:18:13 +0200
+From:   Vasily Gorbik <gor@linux.ibm.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Miroslav Benes <mbenes@suse.cz>
+Cc:     jpoimboe@redhat.com, jikos@kernel.org, pmladek@suse.com,
+        mingo@kernel.org, linux-kernel@vger.kernel.org,
+        joe.lawrence@redhat.com, fweisbec@gmail.com, tglx@linutronix.de,
+        hca@linux.ibm.com, svens@linux.ibm.com, sumanthk@linux.ibm.com,
+        live-patching@vger.kernel.org, paulmck@kernel.org,
+        rostedt@goodmis.org, x86@kernel.org
+Subject: Re: [PATCH v2 05/11] sched,livepatch: Use wake_up_if_idle()
+Message-ID: <your-ad-here.call-01633598293-ext-3109@work.hours>
+References: <20210929151723.162004989@infradead.org>
+ <20210929152428.828064133@infradead.org>
+ <alpine.LSU.2.21.2110061115270.2311@pobox.suse.cz>
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210929143600.49379-7-david@redhat.com>
+In-Reply-To: <alpine.LSU.2.21.2110061115270.2311@pobox.suse.cz>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: H3nbL9NBVejCAmW2NK7LNKwaSQ_dFsh7
+X-Proofpoint-ORIG-GUID: NzHNG0KrNIKfvbs4_8kSr5N_ZUEnx6Wc
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-10-06_04,2021-10-07_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
+ clxscore=1011 malwarescore=0 spamscore=0 lowpriorityscore=0
+ impostorscore=0 bulkscore=0 phishscore=0 suspectscore=0 mlxlogscore=999
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110070063
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 04:36:00PM +0200, David Hildenbrand wrote:
-> CONFIG_MEMORY_HOTPLUG was marked BROKEN over one year and we just
-> restricted it to 64 bit. Let's remove the unused x86 32bit implementation
-> and simplify the Kconfig.
+On Wed, Oct 06, 2021 at 11:16:21AM +0200, Miroslav Benes wrote:
+> On Wed, 29 Sep 2021, Peter Zijlstra wrote:
 > 
-> Signed-off-by: David Hildenbrand <david@redhat.com>
+> > Make sure to prod idle CPUs so they call klp_update_patch_state().
+> > 
+> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> > ---
+> >  kernel/livepatch/transition.c |    5 ++++-
+> >  1 file changed, 4 insertions(+), 1 deletion(-)
+> > 
+> > --- a/kernel/livepatch/transition.c
+> > +++ b/kernel/livepatch/transition.c
+> > @@ -413,8 +413,11 @@ void klp_try_complete_transition(void)
+> >  	for_each_possible_cpu(cpu) {
+> >  		task = idle_task(cpu);
+> >  		if (cpu_online(cpu)) {
+> > -			if (!klp_try_switch_task(task))
+> > +			if (!klp_try_switch_task(task)) {
+> >  				complete = false;
+> > +				/* Make idle task go through the main loop. */
+> > +				wake_up_if_idle(cpu);
+> > +			}
+> 
+> Right, it should be enough.
+> 
+> Acked-by: Miroslav Benes <mbenes@suse.cz>
+> 
+> It would be nice to get Vasily's Tested-by tag on this one.
 
-Reviewed-by: Oscar Salvador <osalvador@suse.de>
+I gave patches a spin on s390 with livepatch kselftest as well as with
+https://github.com/lpechacek/qa_test_klp.git
 
-> ---
->  arch/x86/Kconfig      |  6 +++---
->  arch/x86/mm/init_32.c | 31 -------------------------------
->  2 files changed, 3 insertions(+), 34 deletions(-)
-> 
-> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> index ab83c22d274e..85f4762429f1 100644
-> --- a/arch/x86/Kconfig
-> +++ b/arch/x86/Kconfig
-> @@ -62,7 +62,7 @@ config X86
->  	select ARCH_32BIT_OFF_T			if X86_32
->  	select ARCH_CLOCKSOURCE_INIT
->  	select ARCH_ENABLE_HUGEPAGE_MIGRATION if X86_64 && HUGETLB_PAGE && MIGRATION
-> -	select ARCH_ENABLE_MEMORY_HOTPLUG if X86_64 || (X86_32 && HIGHMEM)
-> +	select ARCH_ENABLE_MEMORY_HOTPLUG if X86_64
->  	select ARCH_ENABLE_MEMORY_HOTREMOVE if MEMORY_HOTPLUG
->  	select ARCH_ENABLE_SPLIT_PMD_PTLOCK if (PGTABLE_LEVELS > 2) && (X86_64 || X86_PAE)
->  	select ARCH_ENABLE_THP_MIGRATION if X86_64 && TRANSPARENT_HUGEPAGE
-> @@ -1615,7 +1615,7 @@ config ARCH_SELECT_MEMORY_MODEL
->  
->  config ARCH_MEMORY_PROBE
->  	bool "Enable sysfs memory/probe interface"
-> -	depends on X86_64 && MEMORY_HOTPLUG
-> +	depends on MEMORY_HOTPLUG
->  	help
->  	  This option enables a sysfs memory/probe interface for testing.
->  	  See Documentation/admin-guide/mm/memory-hotplug.rst for more information.
-> @@ -2395,7 +2395,7 @@ endmenu
->  
->  config ARCH_HAS_ADD_PAGES
->  	def_bool y
-> -	depends on X86_64 && ARCH_ENABLE_MEMORY_HOTPLUG
-> +	depends on ARCH_ENABLE_MEMORY_HOTPLUG
->  
->  config ARCH_MHP_MEMMAP_ON_MEMORY_ENABLE
->  	def_bool y
-> diff --git a/arch/x86/mm/init_32.c b/arch/x86/mm/init_32.c
-> index bd90b8fe81e4..5cd7ea6d645c 100644
-> --- a/arch/x86/mm/init_32.c
-> +++ b/arch/x86/mm/init_32.c
-> @@ -779,37 +779,6 @@ void __init mem_init(void)
->  	test_wp_bit();
->  }
->  
-> -#ifdef CONFIG_MEMORY_HOTPLUG
-> -int arch_add_memory(int nid, u64 start, u64 size,
-> -		    struct mhp_params *params)
-> -{
-> -	unsigned long start_pfn = start >> PAGE_SHIFT;
-> -	unsigned long nr_pages = size >> PAGE_SHIFT;
-> -	int ret;
-> -
-> -	/*
-> -	 * The page tables were already mapped at boot so if the caller
-> -	 * requests a different mapping type then we must change all the
-> -	 * pages with __set_memory_prot().
-> -	 */
-> -	if (params->pgprot.pgprot != PAGE_KERNEL.pgprot) {
-> -		ret = __set_memory_prot(start, nr_pages, params->pgprot);
-> -		if (ret)
-> -			return ret;
-> -	}
-> -
-> -	return __add_pages(nid, start_pfn, nr_pages, params);
-> -}
-> -
-> -void arch_remove_memory(u64 start, u64 size, struct vmem_altmap *altmap)
-> -{
-> -	unsigned long start_pfn = start >> PAGE_SHIFT;
-> -	unsigned long nr_pages = size >> PAGE_SHIFT;
-> -
-> -	__remove_pages(start_pfn, nr_pages, altmap);
-> -}
-> -#endif
-> -
->  int kernel_set_to_readonly __read_mostly;
->  
->  static void mark_nxdata_nx(void)
-> -- 
-> 2.31.1
-> 
-> 
+BTW, commit 43c79fbad385 ("klp_tc_17: Avoid running the test on
+s390x") is no longer required, since s390 implements HAVE_KPROBES_ON_FTRACE
+since v5.6, so I just reverted test disablement.
 
--- 
-Oscar Salvador
-SUSE Labs
+Patches 1-6 work nicely, for them
+
+Acked-by: Vasily Gorbik <gor@linux.ibm.com>
+Tested-by: Vasily Gorbik <gor@linux.ibm.com> # on s390
+
+Thanks a lot!
+
+Starting with patch 8 is where I start seeing this with my config:
+
+Oct 07 10:46:00 kernel: Freeing unused kernel image (initmem) memory: 6524K
+Oct 07 10:46:00 kernel: INFO: task swapper/0:1 blocked for more than 122 seconds.
+Oct 07 10:46:00 kernel:       Not tainted 5.15.0-rc4-69810-ga714851e1aad-dirty #74
+Oct 07 10:46:00 kernel: "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+Oct 07 10:46:00 kernel: task:swapper/0       state:D stack:10648 pid:    1 ppid:     0 flags:0x00000000
+Oct 07 10:46:00 kernel: Call Trace:
+Oct 07 10:46:00 kernel:  [<0000000000e164b6>] __schedule+0x36e/0x8b0
+Oct 07 10:46:00 kernel:  [<0000000000e16a4e>] schedule+0x56/0x128
+Oct 07 10:46:00 kernel:  [<0000000000e1e426>] schedule_timeout+0x106/0x160
+Oct 07 10:46:00 kernel:  [<0000000000e18316>] wait_for_completion+0xc6/0x118
+Oct 07 10:46:00 kernel:  [<000000000020a15c>] rcu_barrier.part.0+0x17c/0x2c0
+Oct 07 10:46:00 kernel:  [<0000000000e0fcc0>] kernel_init+0x60/0x168
+Oct 07 10:46:00 kernel:  [<000000000010390c>] __ret_from_fork+0x3c/0x58
+Oct 07 10:46:00 kernel:  [<0000000000e2094a>] ret_from_fork+0xa/0x30
+Oct 07 10:46:00 kernel: 1 lock held by swapper/0/1:
+Oct 07 10:46:00 kernel:  #0: 0000000001469600 (rcu_state.barrier_mutex){+.+.}-{3:3}, at: rcu_barrier+0x42/0x80
+Oct 07 10:46:00 kernel:
+                        Showing all locks held in the system:
+Oct 07 10:46:00 kernel: 1 lock held by swapper/0/1:
+Oct 07 10:46:00 kernel:  #0: 0000000001469600 (rcu_state.barrier_mutex){+.+.}-{3:3}, at: rcu_barrier+0x42/0x80
+Oct 07 10:46:00 kernel: 2 locks held by kworker/u680:0/8:
+Oct 07 10:46:00 kernel:  #0: 000000008013cd48 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_one_work+0x222/0x738
+Oct 07 10:46:00 kernel:  #1: 0000038000043dc8 ((kfence_timer).work){+.+.}-{0:0}, at: process_one_work+0x222/0x738
+Oct 07 10:46:00 kernel: 1 lock held by khungtaskd/413:
+Oct 07 10:46:00 kernel:  #0: 000000000145c980 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire.constprop.0+0x0/0x50
+Oct 07 10:46:00 kernel:
+Oct 07 10:46:00 kernel: =============================================
+
+So, will keep an eye on the rest of these patches and re-test in future, thanks!
