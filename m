@@ -2,150 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B5EA425FF4
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 00:32:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 056DE425FFD
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 00:34:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241527AbhJGWef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 18:34:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56950 "EHLO
+        id S235233AbhJGWgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 18:36:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241362AbhJGWed (ORCPT
+        with ESMTP id S233090AbhJGWgt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 18:34:33 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48B13C061755
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 15:32:39 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id l13so7852080qtv.3
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 15:32:39 -0700 (PDT)
+        Thu, 7 Oct 2021 18:36:49 -0400
+Received: from mail-oo1-xc34.google.com (mail-oo1-xc34.google.com [IPv6:2607:f8b0:4864:20::c34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E48DFC061570
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 15:34:54 -0700 (PDT)
+Received: by mail-oo1-xc34.google.com with SMTP id h11-20020a4aa74b000000b002a933d156cbso2369641oom.4
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 15:34:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bPosGXG6aj5fiHXiB91n2H+d3yhrMgyk6caA7rCYuVE=;
-        b=TyzCOLeOsNH+ATbCv+mObEZBqB2Q+42LxF3uXOIU4JqOxFv0Suf1hxARW3mECKJGbk
-         6W72juLLE8mx0B8j0TBIaZ70diDCJy7C1/EwOenCENtB5NKYV4Zt3tTGu6I9cXLJd6yw
-         tgDL6K6e0bH6GRVNl69irNRt4P+TW75No5eE0=
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=xvLkmQK9Bybd4TfsJEOa13aU7h3LNEaMsTOh+C5eBTg=;
+        b=RrC+LQ4p5RknyhummIEgUPYOa5Fz91+AtAnA3rEUlbkmAuwRbsdE6lfznJHa0LlbJD
+         gHeKxZrbTLMQqWWXvsiNBMMeaRwgA2mRA/n0nVIfo+Vcylr2NHZLoSz93AavNudYmQay
+         JhoZXgGqu43xpmqTbQ4Z52i8Am0AOPbAQSlwg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bPosGXG6aj5fiHXiB91n2H+d3yhrMgyk6caA7rCYuVE=;
-        b=MdI7J4V4LX1JYChb/HWD4154lIQC8ktYAE0p2i/f80QU4aJ4vEpxAz7BTk2hra7HhC
-         LNu1mHY3F4HG5r7z0Q00ZIy9cr3nCduL58syz1Gt+l+YoBOeW1SGA9Lx0jVKYvL7Ja0T
-         kzyL6+SZh4bawiqbIWsn1T3lFZgCUkhLvUB/GYU04McCCcuWv51QZOpQXidp+whVEqUV
-         fsgAkB2FJtaHde5v6Y+OM89SM+4mB651nB/7enB5cDeAjlXpCccomVVX6XvntKctcpJ9
-         CJ+2V7F0L0ILh/yAlN/CfkGRrr7ilXE5bhxkS4O+Nmq3cktuTG2OAFvcKlcYXvwyqDzs
-         2DEw==
-X-Gm-Message-State: AOAM532HVRXgtYYNqH8TbMX9GPpmMqDvc6Q8GEK1RUvIPaCviF2ls/7b
-        uUBmk1Q+34oJyUl7BjvzNOEuCeqZQLvzp7pf/mUmHQ==
-X-Google-Smtp-Source: ABdhPJxtMWrNq05xIwSXYzJOaS9tLcGh48Df1ypUB9oB6RjXV44VM0Ys6C+Vs5hx7Kz9jJbv7p9rXESJopZRntEsEdI=
-X-Received: by 2002:ac8:4347:: with SMTP id a7mr8044529qtn.169.1633645958484;
- Thu, 07 Oct 2021 15:32:38 -0700 (PDT)
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=xvLkmQK9Bybd4TfsJEOa13aU7h3LNEaMsTOh+C5eBTg=;
+        b=BLJxYmAAvi2Nx9mX+ZO4SZ7mXkjgfr1FKpLmrKhv2pR1sBQYP/C6wzkOQYvAglTjPn
+         d/WhJi6MX6BLhNYggvCnKLyOwexgx94N1wc+yl8Bh/XRW/KC5afqvz5C0RoRuTGv8mDD
+         PjDLVrn3HlUckFv4Yl2gND03Fp9aJKzSQG7kh+8N+ReRwvPSVsXMyGY//mYFsDa781yj
+         Cu9YmEo9h6G1w43div5M+4kpHuQwEzfnX3kXBfIBkX7To1MHIgUqR5f6uUoT2XM7VGvF
+         QXlAaNfkFwa0dnTdt7NrGjgkbfMaBh+22XzrqOb4xefD233h616amZUYWL5RgigkeIvF
+         1b8w==
+X-Gm-Message-State: AOAM531MjHqyP4bOrZKGCx4QYisp6oT/+o8vc5/BOBRM8l8RyRUGy8Eh
+        Ui8wDtaKy9F9nvOL1BIuZLq+qgQgQmTDcpdh/LiMzQ==
+X-Google-Smtp-Source: ABdhPJxw5GB+L1Z2oveCShSFbqavZMVrh82r2Kmb+640p8VfkAcz3rr6nqKCzxe0QKBNen93cGn02/Y5v97GrzlGfSM=
+X-Received: by 2002:a4a:e2d3:: with SMTP id l19mr5401226oot.1.1633646094225;
+ Thu, 07 Oct 2021 15:34:54 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Thu, 7 Oct 2021 18:34:53 -0400
 MIME-Version: 1.0
-References: <20210902213500.3795948-1-pmalani@chromium.org>
- <20210902213500.3795948-3-pmalani@chromium.org> <YT9SYMAnOCTWGi5P@kuha.fi.intel.com>
- <DB9PR10MB4652B4A6A2A2157018307AE380D99@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
- <YUB16up3JDwi3HfI@kuha.fi.intel.com> <YULwz8NsoA3+vrhA@google.com>
- <YUMbGp0aemx1HCHv@kuha.fi.intel.com> <DB9PR10MB46525E6CA4C6BB101059D93C80DC9@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
- <YUm5sdbceMcDTvYj@kuha.fi.intel.com> <DB9PR10MB46524E3817FB4D836CDC13E180A49@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
-In-Reply-To: <DB9PR10MB46524E3817FB4D836CDC13E180A49@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
-From:   Prashant Malani <pmalani@chromium.org>
-Date:   Thu, 7 Oct 2021 15:32:27 -0700
-Message-ID: <CACeCKaem93dbJ11qOG=a+MkJhSrp0Nx-UAPG00Q-5WwMriJD0A@mail.gmail.com>
-Subject: Re: [RFC PATCH 2/3] power: supply: Add support for PDOs props
-To:     Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Benson Leung <bleung@google.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "bleung@chromium.org" <bleung@chromium.org>,
-        "badhri@google.com" <badhri@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>
+In-Reply-To: <0c72f3fd8c49cdada09bb6ee366b53a6@codeaurora.org>
+References: <20211005023750.2037631-1-bjorn.andersson@linaro.org>
+ <YVzGVmJXEDH0HfIL@ripper> <CAE-0n53FC7JCCJoye_uKeqaLKrZeHXLtvObxWFedaUzjirmBaA@mail.gmail.com>
+ <a4a4980e586a70e3b7de989bc61a3e33@codeaurora.org> <YV0FlTyMEzlyNsN9@ripper>
+ <3dbe0fe48da88af9dee396a85b940e76@codeaurora.org> <YV3dddt/GOidTmlN@ripper>
+ <9dc50145fb3e9b189fd38857b20f326a@codeaurora.org> <YV9TQEKPh4SXYFF/@ripper> <0c72f3fd8c49cdada09bb6ee366b53a6@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Thu, 7 Oct 2021 18:34:53 -0400
+Message-ID: <CAE-0n51bvKXmHj0X_cvR2fdk4-mh4SRsrEE33H0e1Q+p=7iPxA@mail.gmail.com>
+Subject: Re: [PATCH] drm/msm/dp: Shorten SETUP timeout
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>, khsieh@codeaurora.org
+Cc:     Abhinav Kumar <abhinavk@codeaurora.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Sankeerth Billakanti <sbillaka@codeaurora.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi folks,
-
-Thanks for the comments and discussion on this RFC series.
-
-On Fri, Sep 24, 2021 at 8:38 AM Adam Thomson
-<Adam.Thomson.Opensource@diasemi.com> wrote:
->
-> On 21 September 2021 11:54, Heikki Krogerus wrote:
->
-> > If we can leave the decision about the selection to TCPM, that would
-> > be great! I'm not against that at all. As I said, I have not though
-> > through the control aspect. Right now I'm mostly concerned about how
-> > we expose the information to the user. The only reason why I have
-> > considered the control part at all is because how ever we decide to
-> > expose the information to the user, it has to work with control as
-> > well.
->
-> Well part of the discussion has to be about the role that the user plays in
-> the control. What does and doesn't need to be controlled further up the stack,
-> and what will be taken care of by, for example, TCPM? Surely that dictates to
-> some degree what and how we expose all of this? Right now we have a simple means
-> to read and control voltages and currents through a PSY class, without the need
-> for the user to know any details of what a PDO/APDO is. Do we continue with
-> abstracting away to the user or instead let the user decipher this itself and
-> decide? Am just trying to understand the needs going forward.
->
-> > The final PSYs and the supply chains they create as well as the
-> > individual properties I'm more than happy to talk about, but having a
-> > separate object for the smallest thing that we can see (PDO) is the
-> > right thing to do here IMO. Trying to concatenate things into single
-> > objects especially in sysfs, despite how nice it always would seem,
-> > has taken me to the brink of disaster in the past far too many times.
+Quoting khsieh@codeaurora.org (2021-10-07 13:28:12)
+> On 2021-10-07 13:06, Bjorn Andersson wrote:
+> > On Thu 07 Oct 12:51 PDT 2021, khsieh@codeaurora.org wrote:
 > >
-> > In this case we don't need to take the risk of having to duplicated
-> > information or in worst case deprecate something that is also exposed
-> > to the sysfs in the future.
+> >> On 2021-10-06 10:31, Bjorn Andersson wrote:
+> >> > On Wed 06 Oct 08:37 PDT 2021, khsieh@codeaurora.org wrote:
+> >> >
+> >> > > On 2021-10-05 19:10, Bjorn Andersson wrote:
+> >> > > > On Tue 05 Oct 16:04 PDT 2021, khsieh@codeaurora.org wrote:
+> >> > > >
+> >> > > > > On 2021-10-05 15:36, Stephen Boyd wrote:
+> >> > > > > > Quoting Bjorn Andersson (2021-10-05 14:40:38)
+> >> > > > > > > On Tue 05 Oct 11:45 PDT 2021, Stephen Boyd wrote:
+> >> > > > > > >
+> >> > > > > > > > Quoting Bjorn Andersson (2021-10-04 19:37:50)
+> >> > > > > > > > > Found in the middle of a patch from Sankeerth was the reduction of the
+> >> > > > > > > > > INIT_SETUP timeout from 10s to 100ms. Upon INIT_SETUP timeout the host
+> >> > > > > > > > > is initalized and HPD interrupt start to be serviced, so in the case of
+> >> > > > > > > > > eDP this reduction improves the user experience dramatically - i.e.
+> >> > > > > > > > > removes 9.9s of bland screen time at boot.
+> >> > > > > > > > >
+> >> > > > > > > > > Suggested-by: Sankeerth Billakanti <sbillaka@codeaurora.org>
+> >> > > > > > > > > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> >> > > > > > > > > ---
+> >> > > > > > > >
+> >> > > > > > > > Any Fixes tag? BTW, the delay design is pretty convoluted. I had to go
+> >> > > > > > > > re-read the code a couple times to understand that it's waiting 100ms
+> >> > > > > > > > times the 'delay' number. Whaaaaat?
+> >> > > > > > > >
+> >> > > > > > >
+> >> > > > > > > I assume you're happy with the current 10s delay on the current
+> >> > > > > > > devices, so I don't think we should push for this to be backported.
+> >> > > > > > > I have no need for it to be backported on my side at least.
+> >> > > > > > >
+> >> > > > > >
+> >> > > > > > Sure. Fixes tag != backported to stable trees but it is close.
+> >> > > > > >
+> >> > > > > > > > Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+> >> > > > > > >
+> >> > > > >   dp_add_event(dp, EV_HPD_INIT_SETUP, 0, 1); <== to 100ms
+> >> > > > >
+> >> > > > > This patch will prevent usb3 from working due to dp driver
+> >> > > > > initialize phy
+> >> > > > > earlier than usb3 which cause timeout error at power up usb3 phy
+> >> > > > > when both
+> >> > > > > edp and dp are enabled.
+> >> > > >
+> >> > > > Can you please help me understand what you mean here, I use this on my
+> >> > > > sc8180x with both eDP and USB-C/DP right now. What is it that doesn't
+> >> > > > work? Or am I just lucky in some race condition?
+> >> > > >
+> >> > > > Thanks,
+> >> > > > Bjorn
+> >> > > >
+> >> > > The problem is seen at sc7280.
+> >> > > Apple dongle have both  hdmi and usb port.
+> >> > > plug Apple dongle into type-c, then plug DP into apple's hdmi port
+> >> > > and usb
+> >> > > mouse into apple's usb port.
+> >> > > If edp enabled at this time, then usb mouse will not work due to
+> >> > > timeout at
+> >> > > phy power up.
+> >> > >
+> >> >
+> >> > Okay, so you're saying that if the DP driver invokes phy_power_on()
+> >> > before the USB driver does, USB initialization fails (or at least USB
+> >> > doesn't work)?
+> >>
+> >> if dp driver call qcom_qmp_phy_init() before usb3 call
+> >> qcom_qmp_phy_init(),
+> >> usb3 driver will timeout at readl_poll_timeout(status, val, (val &
+> >> mask) ==
+> >> ready, 10, PHY_INIT_COMPLETE_TIMEOUT) of qcom_qmp_phy_power_on().
 > >
-> > So the question is not why should we registers every individual PDO
-> > separately. The question is, why shouldn't we do that? And saying that
-> > it's "heavyweight" I'm afraid is not good enough. :-)
+> > Thanks, I will try to reproduce this on my side. So the 10 seconds here
+> > is strictly to give good enough time for the dwc3 driver to probe...
+> >
+> > Any idea why you're saying that this is specific to sc7280, what
+> > changed
+> > from sc7180?
 >
-> That was my initial feeling on the suggestion based on the idea of a PSY per PDO
-> and I still don't feel that fits as your creating a whole class of resources
-> to expose something that's pretty small. To me the PSY represents the source as
-> whole, and the PDOs are simply options/configurations for that source. If we're
-> needing to expose PDOs then I don't disagree with separating them out
-> individually and I certainly wouldn't want that all concatenated as one
-> property. However I think something like dynamically generated properties
-> might be a nicer solution to expose each PDO, or even groups of properties if
-> you wanted to split PDOs even further into constituent parts to the user.
+> I did not have sc7180 with edp before so that i am not sure it will
+> happen on sc7180 or not.
+> The usb3 does not work when both edp and dp enabled I just seen at
+> sc7280.
+> Current at sc7280 EC is not boot up correctly when system power up.
+> I have to manual reboot EC from linux kernel shell before DP/usb3 can
+> work.
+> I am not sure this contribute to this problem or not.
+>
 
-To downscope this issue for the time being, one of our immediate goals
-is to expose the PDOs
-to userspace for metrics reporting and potentially for some power
-policy control through other
-channels (like Chrome OS Embedded Controller).
-
-Would it be acceptable to revise this series to drop the power supply
-support for now (since I don't yet
-see a consensus on how to implement it for the partner), and just add
-sysfs nodes for each PDO ?
-This would be akin to how it's being done for identity VDOs right now.
-
-So we would have :
-
-/sys/class/typec/<port>-partner/source_pdos/pdo{1-13}
-
-and
-
-/sys/class/typec/<port>-partner/sink_pdos/pdo{1-13}
-
-and similarly for the port device.
-
-If we want to add additional parsing of the  Fixed Supply PDO into
-individual properties for the partner/port,
-those can of course be added later.
-
-WDYT?
-
-Thanks,
+Can you make the usb driver into a module and only load that module
+later in boot after the DP driver calls qcom_qmp_phy_init()? That would
+be an easy way to move usb probe after DP probe and expose this problem.
