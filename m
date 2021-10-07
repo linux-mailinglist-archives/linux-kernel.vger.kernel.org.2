@@ -2,178 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D0C44254B4
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 15:50:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4CBF4254B2
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 15:50:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241801AbhJGNwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 09:52:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46684 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241717AbhJGNwH (ORCPT
+        id S241781AbhJGNwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 09:52:10 -0400
+Received: from mail-io1-f71.google.com ([209.85.166.71]:52789 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230195AbhJGNwB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 09:52:07 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53648C061570
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 06:50:12 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id y15so25323209lfk.7
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 06:50:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1PSfrIbkMTQ1HdGmDy7QPzG/bI9Btr9cDuF+9gXLPAE=;
-        b=WJcJtLiJreWLmywPc2jp3x7not6dDr0Zb7+jZbMu+bWuqy4CQD/T3UUOGUcCeCw9zi
-         NlLPt1pc4hPvAERDYQqi7OqvDA/x6ZTGOJiJx+mVIThSTo+uwEo2JsqS1H03ep7zsjSx
-         CNbSY6/nmMaYFqV6RvkZAARfhAlh1iDP9Xdk+zknkF7iX/tCLyHhbAQsHj9wD82Z3aqQ
-         3Z/3XOTm6a6KzJvyj27+bbB24s53yzF1w/EUnLQFLwGi9SeY8R2Ke7Fh9cW4RM5sC2yn
-         R2fufhRigyfO9BLiacU45nLiwd0pPeSXIVZHmNEZ1kyBUHxtwVfYjepQanegfMQ/4+36
-         2FEA==
+        Thu, 7 Oct 2021 09:52:01 -0400
+Received: by mail-io1-f71.google.com with SMTP id w9-20020a05660201c900b005d68070ebc1so4789100iot.19
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 06:50:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1PSfrIbkMTQ1HdGmDy7QPzG/bI9Btr9cDuF+9gXLPAE=;
-        b=uKCcRd4ePC8aWNgDqkiFmGoYecEHC/n76aO/UmokuoURrXm2Ufok72DlDDrAT8fIzg
-         ySCaCwWYd5x/+pljrXLNtnJmh0wAqLQV//xycO81WrMpGQBMRl7XXpCSYnngeghnGvfh
-         Vva9spIlAFcDRzxDrt9Bl03skL2dO43XoGsQbj7iTBxFq89B/Exg2ghFdD3On9qZKxcW
-         gSbiQqnMeRvs6r+1UNRnNvSL1S2meHRkG5MmaLONOJ72Gz4hxFGIbq/UMjWko1kaksru
-         MmDaKodL1aDE6qEd8uuf8RuRRbL1DHZ1n1nA2aA2fzh3varLc4wlig+M+ymRZtDqk8XB
-         K4Hw==
-X-Gm-Message-State: AOAM533xgALscY8hcT6+F43w7VnglFFsUunWwk+LpvsWy6RchIpbQmtl
-        mQzpViBH8RNMRsGpgLoMADcglqQtcIm+arxc
-X-Google-Smtp-Source: ABdhPJyhApVyHPK1Cwqr4udEJhbfha3UuzSWVDodocsqtXvf7OgkWfBfR885j3TLc7K5GzItI7BksQ==
-X-Received: by 2002:a05:651c:1025:: with SMTP id w5mr4038161ljm.282.1633614605590;
-        Thu, 07 Oct 2021 06:50:05 -0700 (PDT)
-Received: from localhost ([31.134.121.151])
-        by smtp.gmail.com with ESMTPSA id q14sm1111160lfe.118.2021.10.07.06.50.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Oct 2021 06:50:04 -0700 (PDT)
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Russell King <linux@armlinux.org.uk>
-Cc:     Chanwoo Choi <cw00.choi@samsung.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Mike Tipton <mdtipton@codeaurora.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Andy Shevchenko <andy@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] clk: Add clk_set_parent debugfs node
-Date:   Thu,  7 Oct 2021 16:50:03 +0300
-Message-Id: <20211007135003.2229-1-semen.protsenko@linaro.org>
-X-Mailer: git-send-email 2.30.2
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=k96NZorIcc3w71vpZVSD9lWX/QFgQw0ZG/aaQMm0TMQ=;
+        b=okiQh9Qgs/TIWhMPG8p0OVtfpDfFl8xP7ghR3q1JoXcxbsUBKFfQUoNSKJRj9IsLkE
+         YJo9Y9VW/do6wtPuyU5xtKCMfC2Y8MIrm0t+dbU792y8iPanbFHRh3jR+9ZlLp2ARn8d
+         Zxr6PfwtI0pCfH6Yc0zL93lr9tmUx386FgSz1oCNqFOBC/Tj+6+Wb4gyQBlJ9pRTKvLp
+         eRLq1uNiliPFJAp4R9ilybxQBtCRNuMeSnIBbAdevLTm1WydFw1kRLsQYlVqfv4w9sr4
+         IcFf3vluVTuIr2UxWxwgP1UhhFEQdP7oGc5KpxclEe1Bv+kNLzmYmkVfGTXuraF3Y0Bw
+         zJOQ==
+X-Gm-Message-State: AOAM533i0zUgqN85angcYbhexvsgPUIMTwkW5ILG47FLMmFzh8nmTgDR
+        5k9eSQeBg4IeoDFYN2Vsd0QXz753/dDQJkSB4du4ukdnZfDi
+X-Google-Smtp-Source: ABdhPJwSdYT/KZX9b7DMZi36pqexZv4ngmaTOo6qOr7oUOLCmvYCI9HUopoBHPIFOz40qntP3STam7TV+bl7r8Q8LTKxf2DB9sFu
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a5e:db44:: with SMTP id r4mr3234965iop.56.1633614607282;
+ Thu, 07 Oct 2021 06:50:07 -0700 (PDT)
+Date:   Thu, 07 Oct 2021 06:50:07 -0700
+In-Reply-To: <20211007084449.GA12712@quack2.suse.cz>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000005dfa4805cdc38a2d@google.com>
+Subject: Re: [syzbot] possible deadlock in dquot_commit
+From:   syzbot <syzbot+3b6f9218b1301ddda3e2@syzkaller.appspotmail.com>
+To:     dvyukov@google.com, jack@suse.cz, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, syzkaller@googlegroups.com,
+        tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Useful for testing mux clocks. One can write the index of the parent to
-set into clk_parent node, starting from 0. Example
+Hello,
 
-    # cd /sys/kernel/debug/clk/mout_peri_bus
-    # cat clk_possible_parrents
-      dout_shared0_div4 dout_shared1_div4
-    # cat clk_parent
-      dout_shared0_div4
-    # echo 1 > clk_parent
-    # cat clk_parent
-      dout_shared1_div4
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-One needs to define CLOCK_ALLOW_WRITE_DEBUGFS in drivers/clk/clk.c in
-order to use this feature.
+Reported-and-tested-by: syzbot+3b6f9218b1301ddda3e2@syzkaller.appspotmail.com
 
-Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
----
-Changes in v2:
-  - Merged write() function into existing 'clk_parent' file
-  - Removed 'if (val >= core->num_parents)' check
-  - Removed incorrect usage of IS_ERR_OR_NULL()
+Tested on:
 
- drivers/clk/clk.c | 56 +++++++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 54 insertions(+), 2 deletions(-)
+commit:         60a94835 Merge tag 'warning-fixes-20211005' of git://g..
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+kernel config:  https://syzkaller.appspot.com/x/.config?x=74f6ab826fb913cd
+dashboard link: https://syzkaller.appspot.com/bug?extid=3b6f9218b1301ddda3e2
+compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.2
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=162860d0b00000
 
-diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
-index 806c55f0991b..5776efab4739 100644
---- a/drivers/clk/clk.c
-+++ b/drivers/clk/clk.c
-@@ -3224,6 +3224,46 @@ static int current_parent_show(struct seq_file *s, void *data)
- }
- DEFINE_SHOW_ATTRIBUTE(current_parent);
- 
-+#ifdef CLOCK_ALLOW_WRITE_DEBUGFS
-+static ssize_t current_parent_write(struct file *file, const char __user *ubuf,
-+				    size_t count, loff_t *ppos)
-+{
-+	struct seq_file *s = file->private_data;
-+	struct clk_core *core = s->private;
-+	struct clk_core *parent;
-+	char buf[4] = { 0 };
-+	u8 idx;
-+	int err;
-+
-+	if (copy_from_user(&buf, ubuf, min_t(size_t, sizeof(buf) - 1, count)))
-+		return -EFAULT;
-+
-+	err = kstrtou8(buf, 0, &idx);
-+	if (err)
-+		return err;
-+
-+	parent = clk_core_get_parent_by_index(core, idx);
-+	if (!parent)
-+		return -ENOENT;
-+
-+	clk_prepare_lock();
-+	err = clk_core_set_parent_nolock(core, parent);
-+	clk_prepare_unlock();
-+	if (err)
-+		return err;
-+
-+	return count;
-+}
-+
-+static const struct file_operations current_parent_rw_fops = {
-+	.open		= current_parent_open,
-+	.write		= current_parent_write,
-+	.read		= seq_read,
-+	.llseek		= seq_lseek,
-+	.release	= single_release,
-+};
-+#endif
-+
- static int clk_duty_cycle_show(struct seq_file *s, void *data)
- {
- 	struct clk_core *core = s->private;
-@@ -3291,13 +3331,25 @@ static void clk_debug_create_one(struct clk_core *core, struct dentry *pdentry)
- 			    &clk_prepare_enable_fops);
- #endif
- 
--	if (core->num_parents > 0)
-+	if (core->num_parents > 0) {
-+#ifdef CLOCK_ALLOW_WRITE_DEBUGFS
-+		if (core->num_parents > 1) {
-+			debugfs_create_file("clk_parent", 0644, root, core,
-+					    &current_parent_rw_fops);
-+		} else {
-+			debugfs_create_file("clk_parent", 0444, root, core,
-+					    &current_parent_fops);
-+		}
-+#else
- 		debugfs_create_file("clk_parent", 0444, root, core,
- 				    &current_parent_fops);
-+#endif
-+	}
- 
--	if (core->num_parents > 1)
-+	if (core->num_parents > 1) {
- 		debugfs_create_file("clk_possible_parents", 0444, root, core,
- 				    &possible_parents_fops);
-+	}
- 
- 	if (core->ops->debug_init)
- 		core->ops->debug_init(core->hw, core->dentry);
--- 
-2.30.2
-
+Note: testing is done by a robot and is best-effort only.
