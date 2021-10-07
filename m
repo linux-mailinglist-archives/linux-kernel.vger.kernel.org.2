@@ -2,121 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9975C42596C
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 19:26:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 527B8425988
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 19:31:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242424AbhJGR2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 13:28:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53678 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242457AbhJGR2o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 13:28:44 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        id S242746AbhJGRdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 13:33:22 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:34748 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242884AbhJGRdI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 13:33:08 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id E1204200F9;
+        Thu,  7 Oct 2021 17:31:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1633627873; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/83RDrqHPpl87OGAurh8rfbtU/YEjkgyJAZ6Fte+y4Y=;
+        b=jiftm9rUlvRqDadj+/PG/GyTAHxCwqYmZQS//pQi+8kj7fDoqfsiM11hG0RoVgR0Su5Apc
+        OT329neI0OF04fxbNZlPIA5H1VbCG98tjWz9FTg6jr7BLrdU27CAUaJZS4cxJK46uq+7E6
+        Afam4a2bEi+IY8YdyR+kmBQG45W91F4=
+Received: from suse.cz (unknown [10.100.201.86])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EC8BF6056B;
-        Thu,  7 Oct 2021 17:26:48 +0000 (UTC)
-Date:   Thu, 7 Oct 2021 18:30:52 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Cai Huoqing <caihuoqing@baidu.com>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>, <linux-iio@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH v2 2/2] iio: st_lsm9ds0: Make use of the helper function
- dev_err_probe()
-Message-ID: <20211007183052.66be899b@jic23-huawei>
-In-Reply-To: <20210929180638.6ddb313b@jic23-huawei>
-References: <20210928014055.1431-1-caihuoqing@baidu.com>
-        <20210928014055.1431-2-caihuoqing@baidu.com>
-        <20210929180638.6ddb313b@jic23-huawei>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        by relay2.suse.de (Postfix) with ESMTPS id 2F184A3B85;
+        Thu,  7 Oct 2021 17:31:13 +0000 (UTC)
+Date:   Thu, 7 Oct 2021 19:31:12 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     Pavel Machek <pavel@ucw.cz>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        David Hildenbrand <david@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Colin Cross <ccross@google.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        vincenzo.frascino@arm.com,
+        Chinwen Chang =?utf-8?B?KOW8temMpuaWhyk=?= 
+        <chinwen.chang@mediatek.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Jann Horn <jannh@google.com>, apopple@nvidia.com,
+        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
+        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
+        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
+        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
+        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
+        Chris Hyser <chris.hyser@oracle.com>,
+        Peter Collingbourne <pcc@google.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Jens Axboe <axboe@kernel.dk>, legion@kernel.org,
+        Rolf Eike Beer <eb@emlix.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Thomas Cedeno <thomascedeno@google.com>, sashal@kernel.org,
+        cxfcosmos@gmail.com, LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-mm <linux-mm@kvack.org>,
+        kernel-team <kernel-team@android.com>
+Subject: Re: [PATCH v10 3/3] mm: add anonymous vma name refcounting
+Message-ID: <YV8u4B8Y9AP9xZIJ@dhcp22.suse.cz>
+References: <6b15c682-72eb-724d-bc43-36ae6b79b91a@redhat.com>
+ <CAJuCfpEPBM6ehQXgzp=g4SqtY6iaC8wuZ-CRE81oR1VOq7m4CA@mail.gmail.com>
+ <20211006175821.GA1941@duo.ucw.cz>
+ <CAJuCfpGuuXOpdYbt3AsNn+WNbavwuEsDfRMYunh+gajp6hOMAg@mail.gmail.com>
+ <YV6rksRHr2iSWR3S@dhcp22.suse.cz>
+ <92cbfe3b-f3d1-a8e1-7eb9-bab735e782f6@rasmusvillemoes.dk>
+ <20211007101527.GA26288@duo.ucw.cz>
+ <CAJuCfpGp0D9p3KhOWhcxMO1wEbo-J_b2Anc-oNwdycx4NTRqoA@mail.gmail.com>
+ <YV8jB+kwU95hLqTq@dhcp22.suse.cz>
+ <CAJuCfpG-Nza3YnpzvHaS_i1mHds3nJ+PV22xTAfgwvj+42WQNA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJuCfpG-Nza3YnpzvHaS_i1mHds3nJ+PV22xTAfgwvj+42WQNA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 29 Sep 2021 18:06:38 +0100
-Jonathan Cameron <jic23@kernel.org> wrote:
+On Thu 07-10-21 09:58:02, Suren Baghdasaryan wrote:
+> On Thu, Oct 7, 2021 at 9:40 AM Michal Hocko <mhocko@suse.com> wrote:
+> >
+> > On Thu 07-10-21 09:04:09, Suren Baghdasaryan wrote:
+> > > On Thu, Oct 7, 2021 at 3:15 AM Pavel Machek <pavel@ucw.cz> wrote:
+> > > >
+> > > > Hi!
+> > > >
+> > > > > >> Hmm, so the suggestion is to have some directory which contains files
+> > > > > >> representing IDs, each containing the string name of the associated
+> > > > > >> vma? Then let's say we are creating a new VMA and want to name it. We
+> > > > > >> would have to scan that directory, check all files and see if any of
+> > > > > >> them contain the name we want to reuse the same ID.
+> > > > > >
+> > > > > > I believe Pavel meant something as simple as
+> > > > > > $ YOUR_FILE=$YOUR_IDS_DIR/my_string_name
+> > > > > > $ touch $YOUR_FILE
+> > > > > > $ stat -c %i $YOUR_FILE
+> > >
+> > > Ah, ok, now I understand the proposal. Thanks for the clarification!
+> > > So, this would use filesystem as a directory for inode->name mappings.
+> > > One rough edge for me is that the consumer would still need to parse
+> > > /proc/$pid/maps and convert [anon:inode] into [anon:name] instead of
+> > > just dumping the content for the user. Would it be acceptable if we
+> > > require the ID provided by prctl() to always be a valid inode and
+> > > show_map_vma() would do the inode-to-filename conversion when
+> > > generating maps/smaps files? I know that inode->dentry is not
+> > > one-to-one mapping but we can simply output the first dentry name.
+> > > WDYT?
+> >
+> > No. You do not want to dictate any particular way of the mapping. The
+> > above is just one way to do that without developing any actual mapping
+> > yourself. You just use a filesystem for that. Kernel doesn't and
+> > shouldn't understand the meaning of those numbers. It has no business in
+> > that.
+> >
+> > In a way this would be pushing policy into the kernel.
+> 
+> I can see your point. Any other ideas on how to prevent tools from
+> doing this id-to-name conversion themselves?
 
-> On Tue, 28 Sep 2021 09:40:54 +0800
-> Cai Huoqing <caihuoqing@baidu.com> wrote:
-> 
-> > When possible use dev_err_probe help to properly deal with the
-> > PROBE_DEFER error, the benefit is that DEFER issue will be logged
-> > in the devices_deferred debugfs file.
-> > Using dev_err_probe() can reduce code size, and the error value
-> > gets printed.
-> > 
-> > Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>  
+I really fail to understand why you really want to prevent them from that.
+Really, the whole thing is just a cookie that kernel maintains for memory
+mappings so that two parties can understand what the meaning of that
+mapping is from a higher level. They both have to agree on the naming
+but the kernel shouldn't dictate any specific convention because the
+kernel _doesn't_ _care_. These things are not really anything actionable
+for the kernel. It is just a metadata.
 
-+CC Andy who wrote this particular driver.
-
-Change looks simple enough I'll apply it though and at least get 0-day building it.
-
-Applied to the togreg branch of iio.git and pushed out as testing for 0-day to
-work it's magic,
-
-Thanks,
-
-Jonathan
-
-
-> 
-> Hi Cai,
-> 
-> Picking a random patch to reply to...
-> 
-> Thanks for your hard work on these.  The ones I haven't replied to look
-> fine to me.   It might have been slightly better to slow down your initial
-> submission of these as then we could perhaps have avoided 2-3 versions
-> of every patch by identifying shared elements to improve in a smaller set.
-> Still that's the benefit of hindsight!
-> 
-> I'll not apply these quite yet so as to allow time for driver maintainers
-> and others to take a look.
-> 
-> If you could tidy up those few minor comments I have that would be great.
-> 
-> Thanks,
-> 
-> Jonathan
-> 
-> > ---
-> >  drivers/iio/imu/st_lsm9ds0/st_lsm9ds0_core.c | 12 ++++++------
-> >  1 file changed, 6 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/drivers/iio/imu/st_lsm9ds0/st_lsm9ds0_core.c b/drivers/iio/imu/st_lsm9ds0/st_lsm9ds0_core.c
-> > index b3a43a3b04ff..9fb06b7cde3c 100644
-> > --- a/drivers/iio/imu/st_lsm9ds0/st_lsm9ds0_core.c
-> > +++ b/drivers/iio/imu/st_lsm9ds0/st_lsm9ds0_core.c
-> > @@ -24,10 +24,10 @@ static int st_lsm9ds0_power_enable(struct device *dev, struct st_lsm9ds0 *lsm9ds
-> >  
-> >  	/* Regulators not mandatory, but if requested we should enable them. */
-> >  	lsm9ds0->vdd = devm_regulator_get(dev, "vdd");
-> > -	if (IS_ERR(lsm9ds0->vdd)) {
-> > -		dev_err(dev, "unable to get Vdd supply\n");
-> > -		return PTR_ERR(lsm9ds0->vdd);
-> > -	}
-> > +	if (IS_ERR(lsm9ds0->vdd))
-> > +		return dev_err_probe(dev, PTR_ERR(lsm9ds0->vdd),
-> > +				     "unable to get Vdd supply\n");
-> > +
-> >  	ret = regulator_enable(lsm9ds0->vdd);
-> >  	if (ret) {
-> >  		dev_warn(dev, "Failed to enable specified Vdd supply\n");
-> > @@ -36,9 +36,9 @@ static int st_lsm9ds0_power_enable(struct device *dev, struct st_lsm9ds0 *lsm9ds
-> >  
-> >  	lsm9ds0->vdd_io = devm_regulator_get(dev, "vddio");
-> >  	if (IS_ERR(lsm9ds0->vdd_io)) {
-> > -		dev_err(dev, "unable to get Vdd_IO supply\n");
-> >  		regulator_disable(lsm9ds0->vdd);
-> > -		return PTR_ERR(lsm9ds0->vdd_io);
-> > +		return dev_err_probe(dev, PTR_ERR(lsm9ds0->vdd_io),
-> > +				     "unable to get Vdd_IO supply\n");
-> >  	}
-> >  	ret = regulator_enable(lsm9ds0->vdd_io);
-> >  	if (ret) {  
-> 
-
+-- 
+Michal Hocko
+SUSE Labs
