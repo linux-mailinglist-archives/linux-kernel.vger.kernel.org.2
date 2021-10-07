@@ -2,98 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B16E8425000
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 11:23:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77BFD425006
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 11:25:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240612AbhJGJZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 05:25:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41154 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240518AbhJGJZM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 05:25:12 -0400
-Received: from mail-vs1-xe30.google.com (mail-vs1-xe30.google.com [IPv6:2607:f8b0:4864:20::e30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 836C9C061746
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 02:23:18 -0700 (PDT)
-Received: by mail-vs1-xe30.google.com with SMTP id x192so3799203vsx.5
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 02:23:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rUWh8/nzui59AslYBGE2UZsOtVDOFLafNPVpXzsA5k0=;
-        b=LdQoTfuILlI4bUYn34I0nglU9SK7YTIYJZ8ovMH6IzZzlwbsBelfcMO6mz/t0TnDgD
-         9NPHc4AyQZxZvAwaiUbbANwYwj3v8nKg6Vwt4cJ/16oOLdhsHBKolnYGkem7Lnhbop1S
-         u5EvLLkgZIayXwvPzfuUYzNF+SENB3fb1JF74=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rUWh8/nzui59AslYBGE2UZsOtVDOFLafNPVpXzsA5k0=;
-        b=s3O7w569PZECHTHk1VhnU//Hhtb2pSu3c8CZhvhCHf5C5siyD3q8A9hrfSB8cZ4pmN
-         v2lfCdvX08Vd021/lcKDU4KRa6p5m9F2LDNPtNmIAoOWFniYDBz0VPeU1KGACOTUVid+
-         4QG617njI5gam/aGF5iWwS+T9fk8lHCwKcJEBNGjYns15+ZVcenUzvVuCDk+Ng4mfgYe
-         SsLMp/zt05j4sNV7nkNyy26EU7zBPVFosGc+fBdaPdYy0lEHD/Me+xJsuhhI1Bc9HI46
-         wNGy3T2nj7M0s7teGrWG4PzkpyQEFzEHumxwj/r1ggaZwkQTdCjhixR8hGCz05wVRM1d
-         lQkA==
-X-Gm-Message-State: AOAM533Bv3JbEJiBc8JJgek4Nm9B3EkqkhFPh9bF+FrpuyuasdSzcLPp
-        cbCHaHCIa1A/7g9sLLbAdGUcvPCNloQOuc+l7jEb7g==
-X-Google-Smtp-Source: ABdhPJwKmuyoUN96r/uOpk7uvGkP1btKzYR/lUkNsBES9CO8VlwM7PF9JuCilztl58w8Qi5nUUZHjepATMqzufo12s0=
-X-Received: by 2002:a67:ec94:: with SMTP id h20mr2591162vsp.59.1633598597621;
- Thu, 07 Oct 2021 02:23:17 -0700 (PDT)
+        id S240619AbhJGJ1V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 05:27:21 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:24867 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240575AbhJGJ1R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 05:27:17 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1633598724; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=He1YImUAbrn+znVMaV7NxWs7EFm5JsbfYiiJO2b7bpY=;
+ b=XAW2IORiHWxvKHqgHs3lvLrz+msfkhI3kUVr+BMlpgfpuGwz7SvjRy0znUDGPw5F59LicS/i
+ CHElI1WGd0P3EbpBQ8t+TlEFtbRwVMccB9IjtaaQceVl4KXs1Yq5Zg3HNf7fm27EPpYnGByb
+ huPCuwCPCVOAQlS7rpLw0aIy0Ew=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 615ebcf7a45ca753077e8eca (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 07 Oct 2021 09:25:11
+ GMT
+Sender: schowdhu=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 58276C43617; Thu,  7 Oct 2021 09:25:10 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: schowdhu)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 53DB6C4338F;
+        Thu,  7 Oct 2021 09:25:09 +0000 (UTC)
 MIME-Version: 1.0
-References: <20210923130814.140814-1-cgxu519@mykernel.net> <20210923130814.140814-7-cgxu519@mykernel.net>
-In-Reply-To: <20210923130814.140814-7-cgxu519@mykernel.net>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Thu, 7 Oct 2021 11:23:06 +0200
-Message-ID: <CAJfpeguqj2vst4Zj5EovSktJkXiDSCSWY=X12X0Yrz4M8gPRmQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v5 06/10] ovl: implement overlayfs' ->write_inode operation
-To:     Chengguang Xu <cgxu519@mykernel.net>
-Cc:     Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
-        linux-fsdevel@vger.kernel.org,
-        overlayfs <linux-unionfs@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 07 Oct 2021 14:55:09 +0530
+From:   schowdhu@codeaurora.org
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Rob Herring <robh@kernel.org>, linux-arm-msm@vger.kernel.org,
+        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
+        Bryan O'Donoghue <pure.logic@nexus-software.ie>,
+        Greg KH <greg@kroah.com>, linux-kernel@vger.kernel.org,
+        ckadabi@codeaurora.org, tsoni@codeaurora.org,
+        bryanh@codeaurora.org, psodagud@codeaurora.org,
+        satyap@codeaurora.org, pheragu@codeaurora.org,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Subject: Re: [PATCH V0 1/7] dt-bindings: connector: Add property for eud type
+ c connector
+In-Reply-To: <YVx/U+w8zS6/P6oa@ripper>
+References: <cover.1633343547.git.schowdhu@codeaurora.org>
+ <246c9d24da27b6ce91d5f1e536fa96ac5656a0b2.1633343547.git.schowdhu@codeaurora.org>
+ <YVsttQySDnaXxOuI@robh.at.kernel.org>
+ <b3d10d7b874c11462604a5f78bc0e8cf@codeaurora.org> <YVx/U+w8zS6/P6oa@ripper>
+Message-ID: <ad4f944d1166882c80a91b3fbbd15fc5@codeaurora.org>
+X-Sender: schowdhu@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 23 Sept 2021 at 15:08, Chengguang Xu <cgxu519@mykernel.net> wrote:
->
-> Implement overlayfs' ->write_inode to sync dirty data
-> and redirty overlayfs' inode if necessary.
->
-> Signed-off-by: Chengguang Xu <cgxu519@mykernel.net>
-> ---
->  fs/overlayfs/super.c | 30 ++++++++++++++++++++++++++++++
->  1 file changed, 30 insertions(+)
->
-> diff --git a/fs/overlayfs/super.c b/fs/overlayfs/super.c
-> index 2ab77adf7256..cddae3ca2fa5 100644
-> --- a/fs/overlayfs/super.c
-> +++ b/fs/overlayfs/super.c
-> @@ -412,12 +412,42 @@ static void ovl_evict_inode(struct inode *inode)
->         clear_inode(inode);
->  }
->
-> +static int ovl_write_inode(struct inode *inode,
-> +                          struct writeback_control *wbc)
-> +{
-> +       struct ovl_fs *ofs = inode->i_sb->s_fs_info;
-> +       struct inode *upper = ovl_inode_upper(inode);
-> +       unsigned long iflag = 0;
-> +       int ret = 0;
-> +
-> +       if (!upper)
-> +               return 0;
-> +
-> +       if (!ovl_should_sync(ofs))
-> +               return 0;
-> +
-> +       if (upper->i_sb->s_op->write_inode)
-> +               ret = upper->i_sb->s_op->write_inode(inode, wbc);
+On 2021-10-05 22:07, Bjorn Andersson wrote:
+> On Tue 05 Oct 06:11 PDT 2021, schowdhu@codeaurora.org wrote:
+> 
+>> On 2021-10-04 22:07, Rob Herring wrote:
+>> > On Mon, Oct 04, 2021 at 04:46:19PM +0530, Souradeep Chowdhury wrote:
+>> > > Added the property for EUD(Embedded USB Debug) connector.Added
+>> > > the "reg" and "interrupts" property which is needed for EUD.
+>> >
+>> > You are going to need a better explanation of this h/w.
+>> 
+>> Ack. Will update this with the detailed hardware description
+>> in the next version.
+>> 
+>> >
+>> > >
+>> > > Signed-off-by: Souradeep Chowdhury <schowdhu@codeaurora.org>
+>> > > ---
+>> > >  .../devicetree/bindings/connector/usb-connector.yaml      | 15
+>> > > +++++++++++++++
+>> > >  1 file changed, 15 insertions(+)
+>> > >
+>> > > diff --git
+>> > > a/Documentation/devicetree/bindings/connector/usb-connector.yaml
+>> > > b/Documentation/devicetree/bindings/connector/usb-connector.yaml
+>> > > index 7eb8659..908129f 100644
+>> > > --- a/Documentation/devicetree/bindings/connector/usb-connector.yaml
+>> > > +++ b/Documentation/devicetree/bindings/connector/usb-connector.yaml
+>> > > @@ -30,6 +30,21 @@ properties:
+>> > >            - const: samsung,usb-connector-11pin
+>> > >            - const: usb-b-connector
+>> > >
+>> > > +      - items:
+>> > > +          - enum:
+>> > > +              - qcom,sc7280-usb-connector-eud
+>> > > +          - const: qcom,usb-connector-eud
+>> > > +          - const: usb-c-connector
+>> > > +
+>> > > +  reg:
+>> > > +    items:
+>> > > +      - description: EUD Base Register Region
+>> > > +      - description: EUD Mode Manager Region
+>> >
+>> > A connector node represents the physical connector on a board. That
+>> > can't really be an MMIO peripheral. Maybe you need a node for EUD and
+>> > then it should have a connector child node? Don't really know without
+>> > understanding this h/w.
+>> 
+>> As per the previous discussion on the EUD, it was agreed upon to map 
+>> EUD
+>> as a type C connector and use Role-Switch to change the USB role 
+>> instead
+>> of extcon interface that was being used previously. The link for the 
+>> same
+>> is as follows:-
+>> 
+>> https://lore.kernel.org/lkml/5db1a666-62ec-c850-6626-ad33d337b452@codeaurora.org/
+>> 
+> 
+> Not using extcon is the right thing, but perhaps we should make the EUD
+> a role_switch provider and client, so that we can describe how it sits
+> inbetween the connector and the controller.
+> 
+> That way it has the power to pass through or override requests from the
+> upstream role-switcher, based on the status of EUD.
+> 
+> 
+> That said, I'm still curious to what happens if I renegotiate the roles
+> dynamically in a Type-C environment, while enabling EUD. How would the
+> device on the other end of the cable know that it's supposed to be a
+> host? Or there's simply a reset of the link when this happens?
+> 
+> Thanks,
+> Bjorn
 
-Where is page writeback on upper inode triggered?
+Hi Bjorn,
+
+By making EUD Role-Switch provider and client do you mean that
+we should have a EUD node which will have a connector node as
+child and this connector node will have a port that points towards
+the drd role-switch?
+
+So that my device tree node will look like the following in that case
+
+eud@88e0000 {
+         compatible = "qcom,usb-connector-eud";
+         reg = <0 0x88e0000 0 0x2000>,
+               <0 0x88e2000 0 0x1000>;
+         interrupt-parent = <&pdc>;
+         interrupts = <11 IRQ_TYPE_LEVEL_HIGH>;
+         usb_con: connector {
+                 compatible = "usb-c-connector";
+                 label = "USB-C";
+                 port {
+                       eud_usb_output: endpoint {
+                       remote-endpoint = <&eud_usb3_input>;
+                  };
+         };
+
+};
+
+
+@usb2 {
+     dwc3 {
+        usb-role-switch;
+        port {
+              eud_usb3_input: endpoint {
+                    remote-endpoint = <&eud_usb_output>;
+              };
+      };
+};
+
+Also EUD functions only in device mode, so when the role-switch is done 
+by the controller
+to set the device mode, the PC on the other end becomes the host.
 
 Thanks,
-Miklos
+Souradeep
+
+> 
+>> >
+>> > > +
+>> > > +  interrupts:
+>> > > +    description:
+>> > > +      EUD interrupt
+>> > > +
+>> > >    label:
+>> > >      description: Symbolic name for the connector.
+>> > >
+>> > > --
+>> > > QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
+>> > > member
+>> > > of Code Aurora Forum, hosted by The Linux Foundation
+>> > >
+>> > >
