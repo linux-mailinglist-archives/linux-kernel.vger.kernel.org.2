@@ -2,90 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E58842594B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 19:22:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E816425938
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 19:19:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233662AbhJGRYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 13:24:18 -0400
-Received: from mga02.intel.com ([134.134.136.20]:38039 "EHLO mga02.intel.com"
+        id S243251AbhJGRVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 13:21:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50022 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232418AbhJGRYO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 13:24:14 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10130"; a="213455361"
-X-IronPort-AV: E=Sophos;i="5.85,355,1624345200"; 
-   d="scan'208";a="213455361"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 10:22:20 -0700
-X-IronPort-AV: E=Sophos;i="5.85,355,1624345200"; 
-   d="scan'208";a="624345044"
-Received: from kgahmed1-mobl1.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.209.67.99])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 10:22:18 -0700
-Subject: Re: [PATCH v8 06/11] x86/traps: Add #VE support for TDX guest
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
-        VMware Inc <pv-drivers@vmware.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        linux-kernel@vger.kernel.org
-References: <20211005025205.1784480-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211005025205.1784480-7-sathyanarayanan.kuppuswamy@linux.intel.com>
- <YV8pE+QYcS/fUe98@zn.tnic>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <9693938e-4171-90ec-1bbe-ee88e6452bd0@linux.intel.com>
-Date:   Thu, 7 Oct 2021 10:22:16 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
+        id S241682AbhJGRVH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 13:21:07 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 645CA61108;
+        Thu,  7 Oct 2021 17:19:10 +0000 (UTC)
+Date:   Thu, 7 Oct 2021 18:23:14 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Cai Huoqing <caihuoqing@baidu.com>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        "Vladimir Zapolskiy" <vz@mleia.com>,
+        Marcus Folkesson <marcus.folkesson@gmail.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>
+Subject: Re: [PATCH v2 8/8] iio: dac: ti-dac7311: Make use of the helper
+ function dev_err_probe()
+Message-ID: <20211007182314.6c53158e@jic23-huawei>
+In-Reply-To: <20210928013902.1341-8-caihuoqing@baidu.com>
+References: <20210928013902.1341-1-caihuoqing@baidu.com>
+        <20210928013902.1341-8-caihuoqing@baidu.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <YV8pE+QYcS/fUe98@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 28 Sep 2021 09:39:01 +0800
+Cai Huoqing <caihuoqing@baidu.com> wrote:
 
-
-On 10/7/21 10:06 AM, Borislav Petkov wrote:
-> Same question as before - why do you need to clear this @out thing above
-> when __tdx_module_call() will overwrite it?
-
-Now checking again, I think we don't to initialize the @out pointer. I will
-fix this in call cases.
-
-But for tdx_get_ve_info() case, we are updating the @ve pointer without
-checking the tdcall return value and __tdx_module_call() will update the
-@out only if tdcall is successful. Currently due to @out=0 initialization,
-this logic does not cause any issue. But to properly fix it, I need to
-check for tdcall return value before updating the @ve value.
-
+> When possible use dev_err_probe help to properly deal with the
+> PROBE_DEFER error, the benefit is that DEFER issue will be logged
+> in the devices_deferred debugfs file.
+> Using dev_err_probe() can reduce code size, and the error value
+> gets printed.
 > 
-> What you should do instead is check that @ve pointer which you get
-> passed in - it might be NULL.
+> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+Series applied to the togreg branch of iio.git and pushed out as testing for
+0-day to see if it can find any problems before I push this out in a place
+where it can make a mess of linux-next
 
-Current use case of tdx_get_ve_info() can never be NULL. But if you
-want to add this check for possible future issues, I can do it.
+Thanks,
 
-arch/x86/kernel/traps.c:1205:	ret = tdx_get_ve_info(&ve);
-arch/x86/kernel/tdx.c:945:	if (tdx_get_ve_info(&ve))
+Jonathan
 
+> ---
+>  drivers/iio/dac/ti-dac7311.c | 7 +++----
+>  1 file changed, 3 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/iio/dac/ti-dac7311.c b/drivers/iio/dac/ti-dac7311.c
+> index 9d0b253be841..09218c3029f0 100644
+> --- a/drivers/iio/dac/ti-dac7311.c
+> +++ b/drivers/iio/dac/ti-dac7311.c
+> @@ -266,10 +266,9 @@ static int ti_dac_probe(struct spi_device *spi)
+>  	ti_dac->resolution = spec->resolution;
+>  
+>  	ti_dac->vref = devm_regulator_get(dev, "vref");
+> -	if (IS_ERR(ti_dac->vref)) {
+> -		dev_err(dev, "error to get regulator\n");
+> -		return PTR_ERR(ti_dac->vref);
+> -	}
+> +	if (IS_ERR(ti_dac->vref))
+> +		return dev_err_probe(dev, PTR_ERR(ti_dac->vref),
+> +				     "error to get regulator\n");
+>  
+>  	ret = regulator_enable(ti_dac->vref);
+>  	if (ret < 0) {
 
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
