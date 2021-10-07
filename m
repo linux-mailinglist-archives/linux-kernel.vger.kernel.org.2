@@ -2,187 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8370425ABB
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 20:27:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8291A425ABC
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 20:27:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234200AbhJGS3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 14:29:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56878 "EHLO
+        id S243666AbhJGS3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 14:29:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229490AbhJGS3M (ORCPT
+        with ESMTP id S231340AbhJGS3i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 14:29:12 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDC2AC061570
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 11:27:17 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id r18so26563667edv.12
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 11:27:17 -0700 (PDT)
+        Thu, 7 Oct 2021 14:29:38 -0400
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82A36C061570;
+        Thu,  7 Oct 2021 11:27:44 -0700 (PDT)
+Received: by mail-il1-x136.google.com with SMTP id h10so378191ilq.3;
+        Thu, 07 Oct 2021 11:27:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=SmpE1IpRP4ds4WyBoMNj8Wpe0Ma3ytWERO5DPvhqcjQ=;
-        b=obYy1aObdIbeFFjGmxGVDMaEYF1QmTH2aVhoksWgbl+5t4gEF68C4NUYzjxAWd07cR
-         KyagZi2Je8KatJsIXEeQc5SS3CXC54to3zwmXdbaV9eQu0FBuQU9asNPmWgDLRpce17h
-         PSKod0kSSaMZisbaSBzSXhtSAnDa+xSf0d6F8SbmR4EqYNkcRGPo6HADBX+M0tyDXDox
-         OschQVVZLbxn0ev3BNeeQQKF9CefYcWBnArb+oipTYNqR2f4um0QHA99achuP+QFJjXb
-         yfVPkiPwB2GU3Yib8Gynjl7r20sB7IT6WptB0s6mbrytwAnR7ZmCQ1xIztij4RIov57F
-         LDNQ==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=hTmSLuC5KvcfBNoN/JulGigdZCXvDXx6oyLyWAeBh50=;
+        b=PKOIFLpOvb1GVCDeXgmng7e5pVjnw17YFBuTLRiMYolahDTeFWOYcDM4su7McU8uvG
+         Dxw0PAelKB2/Pr9eukgQ2CGo3HHToIeU14Pey6vJZ677pfI7b8Bw/Vbh+CJdNfy/1ln9
+         bfgDTICx0/O/tlLnTGAVHjzeZhyCBAih71w4xj6tqZXXxIiUyups9UNOBCkOkVb6c3yF
+         L2Axj647q5ht7FJZ8pZfFrneyiYKl27EAIF9/nwSi7Pm0cC68w1cx+g+IF7V05s1ZhAg
+         Z/ZQdpx2SIp81gQ4c0i6Dnx2P3fOkssIEeP9ZEyegYA9MJvrotfTuslf/QXlXbYrMcb2
+         vnHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=SmpE1IpRP4ds4WyBoMNj8Wpe0Ma3ytWERO5DPvhqcjQ=;
-        b=y0ABqBr1WNbNNLmRgrDoH5Mwq+3ZU7qiO6XnBvhNQtOpiwG1V+ghN21l3KVDuRn1/3
-         pAfof96nJfQtqOTq4Mmo8fwT8tNjZ7Jgf8yAwc2S22DnX9hDbFOPZVMAOxMNkyBv461n
-         MmgyRcJ0Vi7oMmKfEkytKQYMi+UyAlb61r6nd8mlZLC7+510NiwLaqy5GmIkyLTTSTs3
-         cm6yy/th4hioI+LipC93Wn4mePnJdCwBHRI9WwtaOW2cil+s1smewg50BeIWPCedgtRF
-         St8ytfYGc7WvLCSs3napFiXpv7e4T8iHBBSnJ1mw3zRwGQlnK33OyprjQrXisgrKg/7E
-         G1Mg==
-X-Gm-Message-State: AOAM531cxDcv9AzJrt+I5KpEjOIj82GSoA+Tlnlm45ByDGn3D3o5aw3y
-        Ukm4sANx9H9iKks37NRK4A==
-X-Google-Smtp-Source: ABdhPJyqit0HgsCSIiJttEfLdZrfNuiEiIVeitGdcKi1aSrLsM9PTl6lFudQjKee4Uh2xudOLUXiSA==
-X-Received: by 2002:a05:6402:510b:: with SMTP id m11mr8539431edd.82.1633631236576;
-        Thu, 07 Oct 2021 11:27:16 -0700 (PDT)
-Received: from localhost.localdomain ([46.53.254.50])
-        by smtp.gmail.com with ESMTPSA id v19sm69151ejx.26.2021.10.07.11.27.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Oct 2021 11:27:16 -0700 (PDT)
-Date:   Thu, 7 Oct 2021 21:27:14 +0300
-From:   Alexey Dobriyan <adobriyan@gmail.com>
-To:     akpm@linux-foundation.org
-Cc:     christian.brauner@ubuntu.com, ebiederm@xmission.com,
-        fweimer@redhat.com, keescook@chromium.org,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=hTmSLuC5KvcfBNoN/JulGigdZCXvDXx6oyLyWAeBh50=;
+        b=Sb4fvjH8AzA9jdVWCextRVBxctIXYsRnfw/VlcMD8qtfh2UcDs0AT8Zcotu74nOhkd
+         xda89nc+oRYE6SB6BFUXgi58KFxY15HWiWezPksDWfWnTrfny7TZDHs3d/zzlmgfQYNp
+         lOiEwMoj0UhNZ/egk4R7Ipxe/WtxgGQYOKm1d8H2NAuzaxUsOYpyh9TDzYicyOhb78wk
+         XfODUBNUKiQpBRrkpZgKqln4uMcZ6IUUDiF/oE/5MyqFz37cuVYQVwXjfdNI2L9wVfOf
+         zcRMT7joRujKiixtoEYCdQZA2wCXzW95nQHm4bpMk3JreShVQxdrFDz88VfEIVNJGXSt
+         zSkw==
+X-Gm-Message-State: AOAM533Wh6GkexBzj9Q0QA9pAGRoonkWcu6oyYVT7IS5aEK5m4z+jolj
+        Py9byMEaGJwJ0gvTsJhxSX4rlgGVP5qu/g==
+X-Google-Smtp-Source: ABdhPJzCgNX8oJGtwmBHcJPqdYu9zPp24PO171StgIofcJwCErVdCfcJ1RNMi+tEa0OAm0RnqYNriw==
+X-Received: by 2002:a05:6e02:16cc:: with SMTP id 12mr4428989ilx.296.1633631263772;
+        Thu, 07 Oct 2021 11:27:43 -0700 (PDT)
+Received: from Davids-MacBook-Pro.local ([8.48.134.30])
+        by smtp.googlemail.com with ESMTPSA id k4sm59522ilc.10.2021.10.07.11.27.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Oct 2021 11:27:43 -0700 (PDT)
+Subject: Re: [PATCH] tcp: md5: Fix overlap between vrf and non-vrf keys
+To:     Leonard Crestez <cdleonard@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
+        Yonghong Song <yhs@fb.com>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        Florian Westphal <fw@strlen.de>, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] proc: test that /proc/*/task doesn't contain "0"
-Message-ID: <YV88AnVzHxPafQ9o@localhost.localdomain>
-References: <20210929232038.o0_ct-q8J%akpm@linux-foundation.org>
+References: <3d8387d499f053dba5cd9184c0f7b8445c4470c6.1633542093.git.cdleonard@gmail.com>
+ <209548b5-27d2-2059-f2e9-2148f5a0291b@gmail.com>
+ <912670a5-8ef2-79cc-b74b-ee5c83534f2b@gmail.com>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <5c77ac1a-b6af-982f-d72f-e71098df3112@gmail.com>
+Date:   Thu, 7 Oct 2021 12:27:41 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
+In-Reply-To: <912670a5-8ef2-79cc-b74b-ee5c83534f2b@gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210929232038.o0_ct-q8J%akpm@linux-foundation.org>
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
----
+On 10/7/21 12:41 AM, Leonard Crestez wrote:
+> 
+> 
+> On 07.10.2021 04:14, David Ahern wrote:
+>> On 10/6/21 11:48 AM, Leonard Crestez wrote:
+>>> @@ -1103,11 +1116,11 @@ static struct tcp_md5sig_key
+>>> *tcp_md5_do_lookup_exact(const struct sock *sk,
+>>>   #endif
+>>>       hlist_for_each_entry_rcu(key, &md5sig->head, node,
+>>>                    lockdep_sock_is_held(sk)) {
+>>>           if (key->family != family)
+>>>               continue;
+>>> -        if (key->l3index && key->l3index != l3index)
+>>> +        if (key->l3index != l3index)
+>>
+>> That seems like the bug fix there. The L3 reference needs to match for
+>> new key and existing key. I think the same change is needed in
+>> __tcp_md5_do_lookup.
+> 
+> Current behavior is that keys added without tcpm_ifindex will match
+> connections both inside and outside VRFs. Changing this might break real
+> applications, is it really OK to claim that this behavior was a bug all
+> along?
 
- tools/testing/selftests/proc/.gitignore  |    1 
- tools/testing/selftests/proc/Makefile    |    2 
- tools/testing/selftests/proc/proc-tid0.c |   81 +++++++++++++++++++++++++++++++
- 3 files changed, 84 insertions(+)
+no.
 
---- a/tools/testing/selftests/proc/.gitignore
-+++ b/tools/testing/selftests/proc/.gitignore
-@@ -11,6 +11,7 @@
- /proc-self-syscall
- /proc-self-wchan
- /proc-subset-pid
-+/proc-tid0
- /proc-uptime-001
- /proc-uptime-002
- /read
---- a/tools/testing/selftests/proc/Makefile
-+++ b/tools/testing/selftests/proc/Makefile
-@@ -1,6 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0-only
- CFLAGS += -Wall -O2 -Wno-unused-function
- CFLAGS += -D_GNU_SOURCE
-+LDFLAGS += -pthread
- 
- TEST_GEN_PROGS :=
- TEST_GEN_PROGS += fd-001-lookup
-@@ -13,6 +14,7 @@ TEST_GEN_PROGS += proc-self-map-files-002
- TEST_GEN_PROGS += proc-self-syscall
- TEST_GEN_PROGS += proc-self-wchan
- TEST_GEN_PROGS += proc-subset-pid
-+TEST_GEN_PROGS += proc-tid0
- TEST_GEN_PROGS += proc-uptime-001
- TEST_GEN_PROGS += proc-uptime-002
- TEST_GEN_PROGS += read
-new file mode 100644
---- /dev/null
-+++ b/tools/testing/selftests/proc/proc-tid0.c
-@@ -0,0 +1,81 @@
-+/*
-+ * Copyright (c) 2021 Alexey Dobriyan <adobriyan@gmail.com>
-+ *
-+ * Permission to use, copy, modify, and distribute this software for any
-+ * purpose with or without fee is hereby granted, provided that the above
-+ * copyright notice and this permission notice appear in all copies.
-+ *
-+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
-+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
-+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
-+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
-+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
-+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-+ */
-+// Test that /proc/*/task never contains "0".
-+#include <sys/types.h>
-+#include <dirent.h>
-+#include <signal.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <unistd.h>
-+#include <pthread.h>
-+
-+static pid_t pid = -1;
-+
-+static void atexit_hook(void)
-+{
-+	if (pid > 0) {
-+		kill(pid, SIGKILL);
-+	}
-+}
-+
-+static void *f(void *_)
-+{
-+	return NULL;
-+}
-+
-+static void sigalrm(int _)
-+{
-+	exit(0);
-+}
-+
-+int main(void)
-+{
-+	pid = fork();
-+	if (pid == 0) {
-+		/* child */
-+		while (1) {
-+			pthread_t pth;
-+			pthread_create(&pth, NULL, f, NULL);
-+			pthread_join(pth, NULL);
-+		}
-+	} else if (pid > 0) {
-+		/* parent */
-+		atexit(atexit_hook);
-+
-+		char buf[64];
-+		snprintf(buf, sizeof(buf), "/proc/%u/task", pid);
-+
-+		signal(SIGALRM, sigalrm);
-+		alarm(1);
-+
-+		while (1) {
-+			DIR *d = opendir(buf);
-+			struct dirent *de;
-+			while ((de = readdir(d))) {
-+				if (strcmp(de->d_name, "0") == 0) {
-+					exit(1);
-+				}
-+			}
-+			closedir(d);
-+		}
-+
-+		return 0;
-+	} else {
-+		perror("fork");
-+		return 1;
-+	}
-+}
+It's been a few years. I need to refresh on the logic and that is not
+going to happen before this weekend.
+
