@@ -2,143 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB3A8425904
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 19:13:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50329425902
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 19:13:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243184AbhJGRPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 13:15:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47398 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243197AbhJGRPQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 13:15:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D2C8D61245;
-        Thu,  7 Oct 2021 17:13:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633626802;
-        bh=qgaRkKylb5I7rL0mEhfxEXR9XIrcqAJxFLzv8e5JG88=;
-        h=References:In-Reply-To:Reply-To:From:Date:Subject:To:Cc:From;
-        b=lPcFKMPJUrxSO2zGApX5vGLRmoUwVi1rdOpOD3HfzJbMF+yI9oi2WdKUxwAAvxkju
-         mBDvBA417YhzIJK49U8r65LworeDV+XmeyC3s8I2x0Hbw20xkpzj+yDB2LIMYoOyI+
-         HC0//WOEPilcK42nhhU7OgFBHFHmugMvBWRDpqquR4CIAF7sSQDcOZvCQB/pFKPEUQ
-         dq9bATZJMgXocUJVJkst7F1y2DwsFfQqmwZN1/ixej4FLkorfteMHcc0WQ8NlEs7sq
-         jI23jNUOwTKzWAVE7x7PlEUCYw9x3Lj4Hrn8cpDOM7dbBF5TKbdVW4bK+4zY7GXmh7
-         7q0wwUN5CR8cg==
-Received: by mail-vs1-f48.google.com with SMTP id o124so7559770vsc.6;
-        Thu, 07 Oct 2021 10:13:22 -0700 (PDT)
-X-Gm-Message-State: AOAM533CbuWftBxnJG6O9ueAe27qyoOI7BjntgrTa7rBiCSlWcB9e7wf
-        cKSGK0BvojXf+QAByemInp0jlmg04g8kkxSrMi8=
-X-Google-Smtp-Source: ABdhPJz4d+CxciE86cm0an+klVYy8vZNXeGzVO8rMl/54qPRzymGwVMpiZwmLxviwztCIOJoXCPLvCq5C4v+XIgxJVY=
-X-Received: by 2002:a67:c284:: with SMTP id k4mr5637887vsj.24.1633626802047;
- Thu, 07 Oct 2021 10:13:22 -0700 (PDT)
+        id S243183AbhJGRPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 13:15:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38968 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243173AbhJGRPJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 13:15:09 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6533BC061570
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 10:13:15 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id l7so25886596edq.3
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 10:13:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=V2dvXNugsoPW/z2kbg9B0jr7MY21MWdNmDDiosCNYNo=;
+        b=NRrjMl40Ai5Wwg6r2HfzNaX7KgC9suCtZTXy6M/Wo51m82Jd2SEJcBGUHrWDLwwD/k
+         DOr6dbyEz7eIU1z1djoGaDiRZKbd8buR4Ju9r19VjcX+uN548VOLmwFzQR4392usqwpg
+         zytpMv2YLaUtzOaixFOnuRvmisvWHj2sr4goOKJzlm5B+XFddwPmgwdBG1RtXqp3xycJ
+         0wddOD5iNkk0pHTcOjU76tc1TvpNoaQmCC53F9BB9u1zDGwYACO/PqQxLGg9dZP1QUvx
+         jEnZJojs0dK0DlZPIEoBLeTl1gEVY8M8HgJH5NeWVpUGU/WARR17Mrf2wjCSd18gKlWJ
+         rrRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=V2dvXNugsoPW/z2kbg9B0jr7MY21MWdNmDDiosCNYNo=;
+        b=q0HqX4oUD9Gnmweodd+aD6eEXJNdnE5VuKt9BF2t4rAr8hmcKbZ+/2nzNmF/kqnzHN
+         +gQE9Dj9nj89PIiXDcMoIBv4o3EsFPP6Gn5Rr0UgtCWOKd960DcySJxZFXKgcwiEf167
+         mJbYwl4LiBN1d1akoQEswPXW2UQzovCSIP8wqSYE5BPbmw9/8YsgtsN3ISgMmsP06bM0
+         A/4XLVReEBdT7bXDEZ1ZeW28oz/wvVT3ORm/LYiPajWRUPAA3VHvJVcUbu7/LMWLOKjI
+         27LavUjDtIKadSK0dDgKEN0TTHVvRGg2ERtxM+AtI/WORsU+2kMC+NKrKpvNWjPHLlDm
+         EGqg==
+X-Gm-Message-State: AOAM531NNDYP/1LxlROmCXq85kkfMPawL0mUu4h2cLm0SoRI40G72Ayc
+        wzOHiXT50g+L43uqU/V32H0mZgym0g==
+X-Google-Smtp-Source: ABdhPJzX7PqWR0ajzaWdC2wkEf6Z1UOwiddl46AwT86fnXJckjmXCIGKK3g+742gHxSIbSmK1llnZQ==
+X-Received: by 2002:a05:6402:5252:: with SMTP id t18mr7605932edd.129.1633626794018;
+        Thu, 07 Oct 2021 10:13:14 -0700 (PDT)
+Received: from localhost.localdomain ([46.53.254.50])
+        by smtp.gmail.com with ESMTPSA id c11sm21772edw.5.2021.10.07.10.13.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Oct 2021 10:13:13 -0700 (PDT)
+Date:   Thu, 7 Oct 2021 20:13:11 +0300
+From:   Alexey Dobriyan <adobriyan@gmail.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>
+Subject: Re: [PATCH] ELF: fix overflow in total mapping size calculation
+Message-ID: <YV8qp6J+HW0ciLVP@localhost.localdomain>
+References: <YVmd7D0M6G/DcP4O@localhost.localdomain>
+ <20211005172129.4092cc4148bbcac36a128b55@linux-foundation.org>
 MIME-Version: 1.0
-References: <20210920175647.13008-1-wens@kernel.org> <64f06ddb-cde6-d71a-7920-41c485a1d3fb@arm.com>
-In-Reply-To: <64f06ddb-cde6-d71a-7920-41c485a1d3fb@arm.com>
-Reply-To: wens@kernel.org
-From:   Chen-Yu Tsai <wens@kernel.org>
-Date:   Fri, 8 Oct 2021 01:13:10 +0800
-X-Gmail-Original-Message-ID: <CAGb2v67dixQ7BH+YoBVWEJFup9FdgvrDaCZACEYidPuD4pB7YQ@mail.gmail.com>
-Message-ID: <CAGb2v67dixQ7BH+YoBVWEJFup9FdgvrDaCZACEYidPuD4pB7YQ@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: rockchip: nanopi4: decrease Bluetooth UART
- baud rate
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Heiko Stuebner <heiko@sntech.de>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211005172129.4092cc4148bbcac36a128b55@linux-foundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 6, 2021 at 6:49 PM Robin Murphy <robin.murphy@arm.com> wrote:
->
-> On 2021-09-20 18:56, Chen-Yu Tsai wrote:
-> > From: Chen-Yu Tsai <wens@csie.org>
-> >
-> > The RK3399 does not seem to be able to properly generate the required
-> > 64 MHz clock for the UART to operate at 4MBd.
-> >
-> > Drop the baud rate down to 3MBd, which can be used as the clock
-> > controller is able to produce a 48 MHz clock.
->
-> Hmm, I've been running mine this way (with DMA) for ages now :/
+On Tue, Oct 05, 2021 at 05:21:29PM -0700, Andrew Morton wrote:
+> On Sun, 3 Oct 2021 15:11:24 +0300 Alexey Dobriyan <adobriyan@gmail.com> wrote:
+> 
+> > Kernel assumes that ELF program headers are ordered by mapping address,
+> > but doesn't enforce it. It is possible to make mapping size extremely huge
+> > by simply shuffling first and last PT_LOAD segments.
+> > 
+> > As long as PT_LOAD segments do not overlap, it is silly to require
+> > sorting by v_addr anyway because mmap() doesn't care.
+> > 
+> > Don't assume PT_LOAD segments are sorted and calculate min and max
+> > addresses correctly.
+> 
+> It sounds good, but why do I have the feeling this will explode in some
+> unexpected fashion?  Because it's elf, and that's what it does :(
 
-I guess you have extra patches on top for DMA? I sent another patch
-to hook up DMA.
+Good news, it is ELF, we'll hear about breakage immediately. :^)
 
-> Looking at clk_summary, clk_uart0_src ends up at 800MHz off CPLL (same
-> as several other significant clocks), with clk_uart0 at an exact 64MHz
-> as a division of that. I stuck a scope on the UART pins of the module
-> and all the edges look nicely lined up to 250ns intervals.
+Kernel "enforces" PT_LOAD ordering: if total mapping size overflows,
+then mmap will reject it. I hope every ELF binary maintains ordering.
 
-Could you provide a partial dump of /sys/kernel/debug/clk/clk_summary ?
-Just the bits related to uart0 should be enough.
-
-Mine is also running from CPLL, but ends up at 1843200 Hz, which seems
-like the clock rate used for 115200 baud:
-
- xin24m                              24       24        0    24000000
-        0     0  50000         Y
-    pll_cpll                          1        1        0   800000000
-        0     0  50000         Y
-       cpll                           7       15        0   800000000
-        0     0  50000         Y
-          clk_uart0_src               1        1        0   800000000
-        0     0  50000         Y
-             clk_uart0_div            1        1        0   800000000
-        0     0  50000         Y
-                clk_uart0_frac        1        1        0     1843200
-        0     0  50000         Y
-                   clk_uart0          1        1        0     1843200
-        0     0  50000         Y
-
-I also observe a couple error messages:
-
-Bluetooth: hci0: BCM: failed to write clock (-56)
-Bluetooth: hci0: Failed to set baudrate
-Bluetooth: hci0: BCM: chip id 130
-Bluetooth: hci0: BCM: features 0x0f
-Bluetooth: hci0: BCM4345C5
-Bluetooth: hci0: BCM4345C5 (003.006.006) build 0000
-Bluetooth: hci0: BCM4345C5 'brcm/BCM4345C5.hcd' Patch
-Bluetooth: hci0: BCM: failed to write clock (-56)
-Bluetooth: hci0: BCM4345C5 Ampak_CL1.5 UART 37.4 MHz BT 5.0 [Version:
-Version: 0033.0080]
-Bluetooth: hci0: BCM4345C5 (003.006.006) build 0080
-
-So I think my UART is actually still running at its initial speed.
-
-Another thing is that the Rockchip datasheet says something about the
-denominator has to be 20 times larger than the nominator for a stable clock.
-
-> This is with a 5.11.4 kernel, though - I wonder if the recent fractional
-> divider changes in the clock driver have changed anything?
-
-I tried reverting the three patches but that didn't make a difference.
-
-Regards
-ChenYu
-
-
->
-> > Fixes: 3e2f0bb72be3 ("arm64: dts: rockchip: Add nanopi4 bluetooth")
-> > Signed-off-by: Chen-Yu Tsai <wens@csie.org>
-> > ---
-> >   arch/arm64/boot/dts/rockchip/rk3399-nanopi4.dtsi | 2 +-
-> >   1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/arch/arm64/boot/dts/rockchip/rk3399-nanopi4.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-nanopi4.dtsi
-> > index 8c0ff6c96e03..45ff053b119d 100644
-> > --- a/arch/arm64/boot/dts/rockchip/rk3399-nanopi4.dtsi
-> > +++ b/arch/arm64/boot/dts/rockchip/rk3399-nanopi4.dtsi
-> > @@ -699,7 +699,7 @@ bluetooth {
-> >               device-wakeup-gpios = <&gpio2 RK_PD2 GPIO_ACTIVE_HIGH>;
-> >               host-wakeup-gpios = <&gpio0 RK_PA4 GPIO_ACTIVE_HIGH>;
-> >               shutdown-gpios = <&gpio0 RK_PB1 GPIO_ACTIVE_HIGH>;
-> > -             max-speed = <4000000>;
-> > +             max-speed = <3000000>;
-> >               pinctrl-names = "default";
-> >               pinctrl-0 = <&bt_reg_on_h &bt_host_wake_l &bt_wake_l>;
-> >               vbat-supply = <&vcc3v3_sys>;
-> >
+But! total_mapping_size() only looks at first and the last PT_LOAD
+segments which is obviously incorrect.
