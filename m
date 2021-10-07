@@ -2,269 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EE574251A2
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 13:02:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B14664251A8
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 13:04:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240546AbhJGLD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 07:03:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232573AbhJGLDx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 07:03:53 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DB6CC061746
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 04:01:59 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id t8so17932352wri.1
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 04:01:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=NJgOSqoCCgXqOknLz7AdQYpr89OwA0jzXUySVyR80Xs=;
-        b=M7iUMKBa9OdQuivKHhVb7u/+Q7iX2KCFCBHWKvWjQ40ubCMP3Fqw/TEwd+sRZ8pZw5
-         C44lLGOhyw6JXYdO0nULsRQFxS7qPtDTX1C8Q0G8Q9HcH5Kli5EMS1wScn0mA899ja5h
-         QewOHemIzJmWooZX9DaYRBVCNW5wxn0Ds1FM9CsvfyOPbyKF9xtjjN9QqqYketJ3WeHj
-         P7LAJuiw0Y72L7p3Gl0K+elu1PHzC11Dz45zjpkh9XO9k1i3Wzzg7JbayVbvMCbGDQiq
-         bnEoYoRy5+b30rOA+1/3aAjuYLH6mIy23leaFq2ckQCUoY+hc3Ke9GuU/Jfh14THLIk3
-         N0Sg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=NJgOSqoCCgXqOknLz7AdQYpr89OwA0jzXUySVyR80Xs=;
-        b=o5hgkMYn210VEXeumNZhiW2jno2tLOpjC9X9TZyCQd1UHZvhkrE9iVuXhACVGTlMV4
-         s2RQZOwru13NYDfi+wHi01Kq7JJKXjRkmh/pGTueJIjFrnJLUHfPJ0NSv5LpVT1ViwMB
-         kI6U38hsoAmpcNo4sprTjbJfEVeuWWkTquL+s7RRzYqxvRuqY0dIFDAd6q1bllrHjxSk
-         0FYy8ktcHwYcChsAKDIggmYJFInARgCg0hChtjbwhyC8Wh2IpcDIEx4EsVShHNlFlyPy
-         3u2BnVZYkpEH8ROMk8ugrgGyEISyJZKVSKki69vHzoGa7heDc/Q3hWifRgvBqWsnh7tP
-         80UQ==
-X-Gm-Message-State: AOAM530ZrrCJKch+GydJYEIPEgakia2R0opLaMzsRQb5XelQazonhvsk
-        nLSSorAFwVlQAArZRL1K5fwT+Q==
-X-Google-Smtp-Source: ABdhPJxNZ3GZnwKRx3cEfL0sobv2ozaQ3OzXMKIBQI9jkD1YsD2fOajFBkhLkC09EyiLBtdLx1KUIg==
-X-Received: by 2002:a7b:c5d8:: with SMTP id n24mr3990455wmk.51.1633604517859;
-        Thu, 07 Oct 2021 04:01:57 -0700 (PDT)
-Received: from elver.google.com ([2a00:79e0:15:13:aedf:c006:6996:1a79])
-        by smtp.gmail.com with ESMTPSA id c185sm8441412wma.8.2021.10.07.04.01.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Oct 2021 04:01:56 -0700 (PDT)
-Date:   Thu, 7 Oct 2021 13:01:51 +0200
-From:   Marco Elver <elver@google.com>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, kasan-dev@googlegroups.com,
-        Vijayanand Jitta <vjitta@codeaurora.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Oliver Glitta <glittao@gmail.com>,
-        Imran Khan <imran.f.khan@oracle.com>
-Subject: Re: [PATCH] lib/stackdepot: allow optional init and stack_table
- allocation by kvmalloc()
-Message-ID: <YV7TnygBLdHJjmRW@elver.google.com>
-References: <20211007095815.3563-1-vbabka@suse.cz>
+        id S240708AbhJGLGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 07:06:08 -0400
+Received: from mga18.intel.com ([134.134.136.126]:46080 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232732AbhJGLGG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 07:06:06 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10129"; a="213170040"
+X-IronPort-AV: E=Sophos;i="5.85,354,1624345200"; 
+   d="scan'208";a="213170040"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 04:04:12 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,354,1624345200"; 
+   d="scan'208";a="624205158"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 07 Oct 2021 04:03:59 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Thu, 07 Oct 2021 14:03:50 +0300
+Date:   Thu, 7 Oct 2021 14:03:50 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Zhangfei Gao <zhangfei.gao@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+Subject: Re: [PATCH v3 1/3] PCI: Convert to
+ device_create_managed_software_node()
+Message-ID: <YV7UFoAXb5MrkaFg@kuha.fi.intel.com>
+References: <20211006112643.77684-2-heikki.krogerus@linux.intel.com>
+ <20211006184754.GA1171384@bhelgaas>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211007095815.3563-1-vbabka@suse.cz>
-User-Agent: Mutt/2.0.5 (2021-01-21)
+In-Reply-To: <20211006184754.GA1171384@bhelgaas>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 07, 2021 at 11:58AM +0200, Vlastimil Babka wrote:
-[...] 
-> - Add a CONFIG_STACKDEPOT_ALWAYS_INIT flag to keep using the current
->   well-defined point of allocation as part of mem_init(). Make CONFIG_KASAN
->   select this flag.
-> - Other users have to call stack_depot_init() as part of their own init when
->   it's determined that stack depot will actually be used. This may depend on
->   both config and runtime conditions. Convert current users which are
->   page_owner and several in the DRM subsystem. Same will be done for SLUB
->   later.
-> - Because the init might now be called after the boot-time memblock allocation
->   has given all memory to the buddy allocator, change stack_depot_init() to
->   allocate stack_table with kvmalloc() when memblock is no longer available.
->   Also handle allocation failure by disabling stackdepot (could have
->   theoretically happened even with memblock allocation previously), and don't
->   unnecessarily align the memblock allocation to its own size anymore.
-...
-> Hi, I'd appreciate review of the DRM parts - namely that I've got correctly
-> that stack_depot_init() is called from the proper init functions and iff
-> stack_depot_save() is going to be used later. Thanks!
+On Wed, Oct 06, 2021 at 01:47:54PM -0500, Bjorn Helgaas wrote:
+> On Wed, Oct 06, 2021 at 02:26:41PM +0300, Heikki Krogerus wrote:
+> > In quirk_huawei_pcie_sva(), use device_create_managed_software_node()
+> > instead of device_add_properties() to set the "dma-can-stall"
+> > property.
+> > 
+> > This is the last user of device_add_properties() that relied on
+> > device_del() to take care of also calling device_remove_properties().
+> > After this change we can finally get rid of that
+> > device_remove_properties() call in device_del().
+> > 
+> > After that device_remove_properties() call has been removed from
+> > device_del(), the software nodes that hold the additional device
+> > properties become reusable and shareable as there is no longer a
+> > default assumption that those nodes are lifetime bound the first
+> > device they are associated with.
+> 
+> This does not help me determine whether this patch is safe.
+> device_create_managed_software_node() sets swnode->managed = true,
+> but device_add_properties() did not.  I still don't know what the
+> effect of that is.
 
-For ease of review between stackdepot and DRM changes, I thought it'd be
-nice to split into 2 patches, but not sure it'll work, because you're
-changing the semantics of the normal STACKDEPOT.
+OK. So how about this:
 
-One option would be to flip it around, and instead have
-STACKDEPOT_LAZY_INIT, but that seems counter-intuitive if the majority
-of STACKDEPOT users are LAZY_INIT users.
+        PCI: Convert to device_create_managed_software_node()
 
-On the other hand, the lazy initialization mode you're introducing
-requires an explicit stack_depot_init() call somewhere and isn't as
-straightforward as before.
+        In quirk_huawei_pcie_sva(), device_add_properties() is used to
+        inject additional device properties, but there is no
+        device_remove_properties() call anywhere to remove those
+        properties. The assumption is most likely that the device is
+        never removed, and the properties therefore do not also never
+        need to be removed.
 
-Not sure what is best. My intuition tells me STACKDEPOT_LAZY_INIT would
-be safer as it's a deliberate opt-in to the lazy initialization
-behaviour.
+        Even though it is unlikely that the device is ever removed in
+        this case, it is safer to make sure that the properties are
+        also removed if the device ever does get unregistered.
 
-Preferences?
+        To achieve this, instead of adding a separate quirk for the
+        case of device removal where device_remove_properties() is
+        called, using device_create_managed_software_node() instead of
+        device_add_properties(). Both functions create a software node
+        (a type of fwnode) that holds the device properties, which is
+        then assigned to the device very much the same way.
 
-[...]
-> --- a/drivers/gpu/drm/drm_mm.c
-> +++ b/drivers/gpu/drm/drm_mm.c
-> @@ -980,6 +980,10 @@ void drm_mm_init(struct drm_mm *mm, u64 start, u64 size)
->  	add_hole(&mm->head_node);
->  
->  	mm->scan_active = 0;
-> +
-> +#ifdef CONFIG_DRM_DEBUG_MM
-> +	stack_depot_init();
-> +#endif
+        The difference between the two functions is, that
+        device_create_managed_software_node() guarantees that the
+        software node (together with the properties) is removed when
+        the device is removed. The function device_add_property() does
+        _not_ guarantee that, so the properties added with it should
+        always be removed with device_remove_properties().
 
-DRM_DEBUG_MM implies STACKDEPOT. Not sure what is more readable to drm
-maintainers, but perhaps it'd be nicer to avoid the #ifdef here, and
-instead just keep the no-op version of stack_depot_init() in
-<linux/stackdepot.h>. I don't have a strong preference.
+        SoB...
 
->  }
->  EXPORT_SYMBOL(drm_mm_init);
->  
-> diff --git a/drivers/gpu/drm/i915/intel_runtime_pm.c b/drivers/gpu/drm/i915/intel_runtime_pm.c
-> index 0d85f3c5c526..806c32ab410b 100644
-> --- a/drivers/gpu/drm/i915/intel_runtime_pm.c
-> +++ b/drivers/gpu/drm/i915/intel_runtime_pm.c
-> @@ -68,6 +68,9 @@ static noinline depot_stack_handle_t __save_depot_stack(void)
->  static void init_intel_runtime_pm_wakeref(struct intel_runtime_pm *rpm)
->  {
->  	spin_lock_init(&rpm->debug.lock);
-> +
-> +	if (rpm->available)
-> +		stack_depot_init();
->  }
->  
->  static noinline depot_stack_handle_t
-> diff --git a/include/linux/stackdepot.h b/include/linux/stackdepot.h
-> index c34b55a6e554..60ba99a43745 100644
-> --- a/include/linux/stackdepot.h
-> +++ b/include/linux/stackdepot.h
-> @@ -15,6 +15,16 @@
->  
->  typedef u32 depot_stack_handle_t;
->  
-> +/*
-> + * Every user of stack depot has to call this during its own init when it's
-> + * decided that it will be calling stack_depot_save() later.
-> + *
-> + * The alternative is to select STACKDEPOT_ALWAYS_INIT to have stack depot
-> + * enabled as part of mm_init(), for subsystems where it's known at compile time
-> + * that stack depot will be used.
-> + */
-> +int stack_depot_init(void);
-> +
->  depot_stack_handle_t __stack_depot_save(unsigned long *entries,
->  					unsigned int nr_entries,
->  					gfp_t gfp_flags, bool can_alloc);
-> @@ -30,13 +40,4 @@ int stack_depot_snprint(depot_stack_handle_t handle, char *buf, size_t size,
->  
->  void stack_depot_print(depot_stack_handle_t stack);
->  
-> -#ifdef CONFIG_STACKDEPOT
-> -int stack_depot_init(void);
-> -#else
-> -static inline int stack_depot_init(void)
-> -{
-> -	return 0;
-> -}
-> -#endif	/* CONFIG_STACKDEPOT */
-> -
+thanks,
 
-Could we avoid the IS_ENABLED() in init/main.c by adding a wrapper here:
-
-+#ifdef CONFIG_STACKDEPOT_ALWAYS_INIT
-+static inline int stack_depot_early_init(void)	{ return stack_depot_init(); }
-+#else
-+static inline int stack_depot_early_init(void)	{ return 0; }
-+#endif	/* CONFIG_STACKDEPOT_ALWAYS_INIT */
-
->  #endif
-> diff --git a/init/main.c b/init/main.c
-> index ee4d3e1b3eb9..b6a5833d98f5 100644
-> --- a/init/main.c
-> +++ b/init/main.c
-> @@ -844,7 +844,8 @@ static void __init mm_init(void)
->  	init_mem_debugging_and_hardening();
->  	kfence_alloc_pool();
->  	report_meminit();
-> -	stack_depot_init();
-> +	if (IS_ENABLED(CONFIG_STACKDEPOT_ALWAYS_INIT))
-> +		stack_depot_init();
-
-I'd push the decision of when to call this into <linux/stackdepot.h> via
-wrapper stack_depot_early_init().
-
->  	mem_init();
->  	mem_init_print_info();
->  	/* page_owner must be initialized after buddy is ready */
-> diff --git a/lib/Kconfig b/lib/Kconfig
-> index 5e7165e6a346..df6bcf0a4cc3 100644
-> --- a/lib/Kconfig
-> +++ b/lib/Kconfig
-> @@ -671,6 +671,9 @@ config STACKDEPOT
->  	bool
->  	select STACKTRACE
->  
-> +config STACKDEPOT_ALWAYS_INIT
-> +	bool
-
-It looks like every users of STACKDEPOT_ALWAYS_INIT will also select
-STACKDEPOT, so we could just make this:
-
-+config STACKDEPOT_ALWAYS_INIT
-+	bool
-+	select STACKDEPOT
-
-And remove the redundant 'select STACKDEPOT' in Kconfig.kasan.
-
->  config STACK_HASH_ORDER
->  	int "stack depot hash size (12 => 4KB, 20 => 1024KB)"
->  	range 12 20
-> diff --git a/lib/Kconfig.kasan b/lib/Kconfig.kasan
-> index cdc842d090db..695deb603c66 100644
-> --- a/lib/Kconfig.kasan
-> +++ b/lib/Kconfig.kasan
-> @@ -39,6 +39,7 @@ menuconfig KASAN
->  		   HAVE_ARCH_KASAN_HW_TAGS
->  	depends on (SLUB && SYSFS) || (SLAB && !DEBUG_SLAB)
->  	select STACKDEPOT
-> +	select STACKDEPOT_ALWAYS_INIT
-
-[...]
->  
-> -int __init stack_depot_init(void)
-> +/*
-> + * __ref because of memblock_alloc(), which will not be actually called after
-> + * the __init code is gone
-
-The reason is that after __init code is gone, slab_is_available() will
-be true (might be worth adding to the comment).
-
-> + */
-> +__ref int stack_depot_init(void)
->  {
-> -	if (!stack_depot_disable) {
-> +	mutex_lock(&stack_depot_init_mutex);
-> +	if (!stack_depot_disable && stack_table == NULL) {
->  		size_t size = (STACK_HASH_SIZE * sizeof(struct stack_record *));
-
-Thanks,
--- Marco
+-- 
+heikki
