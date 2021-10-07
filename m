@@ -2,58 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45A7C425540
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 16:21:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3463C425547
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 16:22:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242005AbhJGOXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 10:23:40 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:37124 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S241042AbhJGOXk (ORCPT
+        id S242047AbhJGOYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 10:24:31 -0400
+Received: from mout.kundenserver.de ([212.227.126.130]:55155 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241622AbhJGOYa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 10:23:40 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 197ELfBE021443
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 7 Oct 2021 10:21:41 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 1635015C34DF; Thu,  7 Oct 2021 10:21:41 -0400 (EDT)
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     adilger.kernel@dilger.ca, Shaoying Xu <shaoyi@amazon.com>
-Cc:     "Theodore Ts'o" <tytso@mit.edu>, linux-kernel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, benh@amazon.com
-Subject: Re: [PATCH 0/1] [RESEND] ext4: fix lazy initialization next schedule time computation in more granular unit
-Date:   Thu,  7 Oct 2021 10:21:34 -0400
-Message-Id: <163361646350.569327.18128912303237466845.b4-ty@mit.edu>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210902164412.9994-1-shaoyi@amazon.com>
-References: <20210902164412.9994-1-shaoyi@amazon.com>
+        Thu, 7 Oct 2021 10:24:30 -0400
+Received: from mail-wr1-f41.google.com ([209.85.221.41]) by
+ mrelayeu.kundenserver.de (mreue011 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MfHQp-1n0QFs2hb9-00glOw; Thu, 07 Oct 2021 16:22:35 +0200
+Received: by mail-wr1-f41.google.com with SMTP id i12so7051367wrb.7;
+        Thu, 07 Oct 2021 07:22:35 -0700 (PDT)
+X-Gm-Message-State: AOAM532HJq1qfZq/HjuzVos0QZQ6IlcH8RvU+ovrPeEss8FTydMnn9aT
+        n4F2iGtZVTqMJ12M1InCyZfqIPydn09oJjuo1r0=
+X-Google-Smtp-Source: ABdhPJy3Lon0IU3ks/b058uaiy0ad95pOq5B1PqBU743qiE81z3/tuCXenWevOClGigtya7fNnV9ePq5QABgExd78xU=
+X-Received: by 2002:adf:a3da:: with SMTP id m26mr5673108wrb.336.1633616555268;
+ Thu, 07 Oct 2021 07:22:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20210928153508.101208f8@canb.auug.org.au> <20211006140451.2dcea4ea@canb.auug.org.au>
+In-Reply-To: <20211006140451.2dcea4ea@canb.auug.org.au>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Thu, 7 Oct 2021 16:22:19 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0QuZpmOikbiCxqn1VUXk-ZJwoGm6uMvfiWdp2sWYHfFg@mail.gmail.com>
+Message-ID: <CAK8P3a0QuZpmOikbiCxqn1VUXk-ZJwoGm6uMvfiWdp2sWYHfFg@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the sound-asoc tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Simon Trimmer <simont@opensource.cirrus.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:EKzOAQTmevDYMSd2sY/siJF0nEYzUmxrxRPmRxY2O6vmid3sN72
+ w37Ocyk+ZUgDODb8/sgMKJH6Zgurdci100vqdqsyb/ZImOIQ07RO6RlYojH8TcujSe7qiPp
+ 8REnW+BQL2xSDAETrxE+CKA/pmwPT4sQvjxai1eX2YETemLbv3u+rdBUheWTSAiQPf14phz
+ MLDP3ZtLWvCEhD8zqg7Nw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:GkWhAj1Gzoo=:chj4qdklkT6qaWpmLCCVcC
+ qbyrXmwoqiXLSdoJy7Eh9Ollu8GHjxzfDw74mBPeZ6Q8JK2GiARJVsHZthBZgnUD204k6bKfI
+ /BmOr56kwTm6l0Uq4Smd6qNhxkGTF5B2WKtsdCQkFjxcPAhjSxCf5pfmGXInzOQogaHo1vt7J
+ DCL1jQ39vSsivVVx1OL8JSt7d+1QJeKe0GgLbIsAXft0A2DQ9TeriRxSjIuJ9g0ad17cNKUtb
+ /HyRyQ5xsBBIctjZlpO6APkVqLZQHEPBvvHPiJWGBieg5UJQnGM66OK8Ipr6ivDksL06Iv78t
+ +R5vBIcQO8q6PCrP+mAbSzoKK0GwH5LNOdS32tAO9TFAufJNL9lNOKlGSIj3fdyY7Ef/252+T
+ 78YM6aNpN3ujXQmKqkDGv5aEzkcID/yhxZGoB0ORvpCj+n8tOtUeTVWTL1jcaCN6xl6GS5NY3
+ +QSqg8mZqQRY/U32Cn5i2whrMV6rckO8t1R6Z4Fd3CPnyPUqZizFvB/X3Lb81hRaxTGW3+zOA
+ yWU4evkdpejeciAasPq0rcBK0hUVJRYi9RomgQmOuedP36/n4XosTYvN05LwVIqt7OVKMlNId
+ gDSCcbphXOvNOLgq2dCXdj0eWdxZIoLI/6RccJzllKcK+pcudJ/VqQypkbZCpz0mgqZ2PDe8L
+ a7JNARo8OJgf68LB19taHxKvybMMI3ERsp+GJO18D3oQIVQNlQRAGy1ap6q71bBbTFhwZfYGJ
+ kX1893wdieyUqhGsOWEF6nlF89QrEx94OwsrBQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2 Sep 2021 16:44:11 +0000, Shaoying Xu wrote:
-> Description
-> ===========
-> Ext4 FS has inappropriate implementations on the next schedule time calculation
-> that use jiffies to measure the time for one request to zero out inode table. This
-> actually makes the wait time effectively dependent on CONFIG_HZ, which is
-> undesirable. We have observed on server systems with 100HZ some fairly long delays
-> in initialization as a result. Therefore, we propose to use more granular unit to
-> calculate the next schedule time.
-> 
-> [...]
+On Wed, Oct 6, 2021 at 5:04 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> >
+> >   f6bc909e7673 ("firmware: cs_dsp: add driver to support firmware loading on Cirrus Logic DSPs")
+> >
+> > I have reverted that commit for today.
+>
+> Any progress on this?  I am still reverting the above commit.
+>
 
-Applied, thanks!
+I have added my two patches for Kconfig to the asm-generic tree now, planning to
+send that as bugfixes for the next -rc.
 
-[1/1] ext4: fix lazy initialization next schedule time computation in more granular unit
-      commit: 3782027982881d2c1105ffe058aecb69cc780dfa
-
-Best regards,
--- 
-Theodore Ts'o <tytso@mit.edu>
+       Arnd
