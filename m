@@ -2,202 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BA224257B0
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 18:19:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42C764257B7
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 18:19:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242603AbhJGQU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 12:20:59 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:51580 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242714AbhJGQUr (ORCPT
+        id S242721AbhJGQVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 12:21:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54088 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242670AbhJGQVY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 12:20:47 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 8679B200EF;
-        Thu,  7 Oct 2021 16:18:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1633623532; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PaMfz9PVFXMpWIUMO3f5QL4IvLizLUlBUd3gCzvZPZ4=;
-        b=U7IeIYYDGURaXsCtsckS55wtldHDAEL0dl42zMYtZtP/bSVyDN0XLxuTnw+U/TT+30i8fx
-        5hNftnDOXpVez1vHWxOYlqQ/G+a09fUlefzI1nYxAbv7it+bbXCD/x2mxFIpw6WaQd1Fyr
-        5cUfhHLF2wXETBdKyO/Kib/Fm6gu1Xk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1633623532;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PaMfz9PVFXMpWIUMO3f5QL4IvLizLUlBUd3gCzvZPZ4=;
-        b=cSMfnsJ3A01EebhgUDnVwpgkxhFWN0NUnhWqRdzWAfebWdcZ5X6NA/rz+ROV0xJm6u8ha7
-        aY7kDSjasZanjyAw==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
-        by relay2.suse.de (Postfix) with ESMTP id 6A658A3DF0;
-        Thu,  7 Oct 2021 16:18:52 +0000 (UTC)
-Date:   Thu, 07 Oct 2021 18:18:52 +0200
-Message-ID: <s5hr1cw95ar.wl-tiwai@suse.de>
-From:   Takashi Iwai <tiwai@suse.de>
-To:     Rich Felker <dalias@libc.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Michael Forney <mforney@mforney.org>,
-        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
-        Takashi Iwai <tiwai@suse.com>,
-        Baolin Wang <baolin.wang@linaro.org>,
-        y2038 Mailman List <y2038@lists.linaro.org>,
+        Thu, 7 Oct 2021 12:21:24 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C505C061570
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 09:19:30 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id n11so3838152plf.4
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 09:19:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=as+J/lxzPZi8gSu9qHJ01le64iXMD2SD5LM3hk3uIsc=;
+        b=DBHGRrRpx6yepuXWPpvf7lZ3mR0f7CW2oCJ6H0mt9265TGxf2XhVUo4R1jwpfwnDgH
+         1DMpyy2pW0l+5fauWUFIbhYvQ59eTVqOHQYziacHWKvLuYbk4Eqe04IbN6g/rXlqniPk
+         GdyBsOKsvefJ/1ZkRyY9Xzlz0k+6qssxDz9hhMi3GBP8Djby7mNA2LBUzW4ONyqoKO5a
+         C3Sl/x7koCIryJWr4wTK0m3+YWkyC14iwOkTFLvSrET0/L/nr8N+SVYGSDxbiX1O0dQe
+         hpR8NoiQNBRFNpV4jqyLlsoIiVbTj1JOj0XMKDrk+YUihU9tzmw7PcE5HpdGruNJprKK
+         20vg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=as+J/lxzPZi8gSu9qHJ01le64iXMD2SD5LM3hk3uIsc=;
+        b=tC51gUPJklshV6wvSfUyERUHHTYMif5T7IOqqNq+RzKPE7r/xiBSgwFDxvDx96S3rL
+         itU2zONwWg50G7MPnkOFJId5uTenXwDRct/qI2k2BFUDDIVV92LzFPotryrnQkJjR/u8
+         pPlaXDa9psnHvRXp5GzngykQ+AzMBgR/bbGtS8LGz2Od6CB50IG40brXY6WZkJgTlifl
+         JdvtIR6rN+pKEil4l6CiEpKzap8VwsLbemvEnuMDPmZx7hDHMosqOOuFPW9bkoNvLsGV
+         iBy51mNjr4Oysvyegl5n8tWEgU6fx/YaWD6gfMF5ar+sNKAsp4aNEfFbfRyA4iDZmNDk
+         HR/Q==
+X-Gm-Message-State: AOAM533YiN/L9pkcE6XkQnBnteGFj7vYHHbw19RmrNH0i5Astuty7/D/
+        YgcXS1tEo83yZuByZnjzrSQ=
+X-Google-Smtp-Source: ABdhPJzbewOJtDCZjDP5RvhlMo0QEPLBCiMFAN4ehj2Dik+oT5/5Zw0grewKoWb9bq8UCf9e9WSWeA==
+X-Received: by 2002:a17:90a:bd04:: with SMTP id y4mr5843881pjr.9.1633623569470;
+        Thu, 07 Oct 2021 09:19:29 -0700 (PDT)
+Received: from smtpclient.apple (c-24-6-216-183.hsd1.ca.comcast.net. [24.6.216.183])
+        by smtp.gmail.com with ESMTPSA id d15sm74756pfu.12.2021.10.07.09.19.27
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 07 Oct 2021 09:19:28 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
+Subject: Re: [RFC PATCH 0/8] mm/madvise: support
+ process_madvise(MADV_DONTNEED)
+From:   Nadav Amit <nadav.amit@gmail.com>
+In-Reply-To: <a456a41d-c089-a639-b223-4412bad82e8d@redhat.com>
+Date:   Thu, 7 Oct 2021 09:19:26 -0700
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Baolin Wang <baolin.wang7@gmail.com>, musl@lists.openwall.com
-Subject: Re: [musl] Re: [alsa-devel] [PATCH v7 8/9] ALSA: add new 32-bit layout for snd_pcm_mmap_status/control
-In-Reply-To: <20211007160634.GB7074@brightrain.aerifal.cx>
-References: <20191211212025.1981822-1-arnd@arndb.de>
-        <20191211212025.1981822-9-arnd@arndb.de>
-        <29QBMJU8DE71E.2YZSH8IHT5HMH@mforney.org>
-        <s5hpmsh9kdx.wl-tiwai@suse.de>
-        <CAK8P3a0K3XtjiszC3XWgG0L8+AgO+xUGr_KEAnb9a5GmyecoUQ@mail.gmail.com>
-        <s5hee8x9f92.wl-tiwai@suse.de>
-        <CAK8P3a0pSZxqfk-bn+idrDYDwANSfiP9L6U1O5jLQvK+3vwyVQ@mail.gmail.com>
-        <s5hy27497eo.wl-tiwai@suse.de>
-        <20211007160634.GB7074@brightrain.aerifal.cx>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
+        Peter Xu <peterx@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Colin Cross <ccross@google.com>,
+        Suren Baghdasarya <surenb@google.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <F41F322D-111E-4260-944C-48B7DEBF5C3E@gmail.com>
+References: <20210926161259.238054-1-namit@vmware.com>
+ <7ce823c8-cfbf-cc59-9fc7-9aa3a79740c3@redhat.com>
+ <6E8A03DD-175F-4A21-BCD7-383D61344521@gmail.com>
+ <2753a311-4d5f-8bc5-ce6f-10063e3c6167@redhat.com>
+ <AE756194-07D4-4467-92CA-9E986140D85D@gmail.com>
+ <f47970f5-faa7-9d5f-f07a-9399e4626eda@redhat.com>
+ <9DE833C8-515F-4427-9867-E5BF9AD380FB@gmail.com>
+ <9b53a85c-83f4-4548-c3b5-c65bd8737670@redhat.com>
+ <C533782D-9E4B-41F5-9120-A31A4782BCE5@gmail.com>
+ <a456a41d-c089-a639-b223-4412bad82e8d@redhat.com>
+To:     David Hildenbrand <david@redhat.com>
+X-Mailer: Apple Mail (2.3654.120.0.1.13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 07 Oct 2021 18:06:36 +0200,
-Rich Felker wrote:
-> 
-> On Thu, Oct 07, 2021 at 05:33:19PM +0200, Takashi Iwai wrote:
-> > On Thu, 07 Oct 2021 15:11:00 +0200,
-> > Arnd Bergmann wrote:
-> > > 
-> > >  On Thu, Oct 7, 2021 at 2:43 PM Takashi Iwai <tiwai@suse.de> wrote:
-> > > > On Thu, 07 Oct 2021 13:48:44 +0200, Arnd Bergmann wrote:
-> > > > > On Thu, Oct 7, 2021 at 12:53 PM Takashi Iwai <tiwai@suse.de> wrote:
-> > > > > > On Wed, 06 Oct 2021 19:49:17 +0200, Michael Forney wrote:
-> > > > >
-> > > > > As far as I can tell, the broken interface will always result in
-> > > > > user space seeing a zero value for "avail_min". Can you
-> > > > > make a prediction what that would mean for actual
-> > > > > applications? Will they have no audio output, run into
-> > > > > a crash, or be able to use recover and appear to work normally
-> > > > > here?
-> > > >
-> > > > No, fortunately it's only about control->avail_min, and fiddling this
-> > > > value can't break severely (otherwise it'd be a security problem ;)
-> > > >
-> > > > In the buggy condition, it's always zero, and the kernel treated as if
-> > > > 1, i.e. wake up as soon as data is available, which is OK-ish for most
-> > > > applications.   Apps usually don't care about the wake-up condition so
-> > > > much.  There are subtle difference and may influence on the stability
-> > > > of stream processing, but the stability usually depends more strongly
-> > > > on the hardware and software configurations.
-> > > >
-> > > > That being said, the impact by this bug (from the application behavior
-> > > > POV) is likely quite small, but the contamination is large; as you
-> > > > pointed out, it's much larger than I thought.
-> > > 
-> > > Ok, got it.
-> > > 
-> > > > The definition in uapi/sound/asound.h is a bit cryptic, but IIUC,
-> > > > __snd_pcm_mmap_control64 is used for 64bit archs, right?  If so, the
-> > > > problem rather hits more widely on 64bit archs silently.  Then, the
-> > > > influence by this bug must be almost negligible, as we've had no bug
-> > > > report about the behavior change.
-> > > 
-> > > While __snd_pcm_mmap_control64 is only used on 32-bit
-> > > architectures when 64-bit time_t is used. At the moment, this
-> > > means all users of musl-1.2.x libc, but not glibc.
-> > > 
-> > > On 64-bit architectures, __snd_pcm_mmap_control and
-> > > __snd_pcm_mmap_control64 are meant to be identical,
-> > > and this is actually true regardless of the bug, since
-> > > __pad_before_uframe and __pad_after_uframe both
-> > > end up as zero-length arrays here.
-> > > 
-> > > > We may just fix it in kernel and for new library with hoping that no
-> > > > one sees the actual problem.  Or, we may provide a complete new set of
-> > > > mmap offsets and ioctl to cover both broken and fixed interfaces...
-> > > > The decision depends on how perfectly we'd like to address the bug.
-> > > > As of now, I'm inclined to go for the former, but I'm open for more
-> > > > opinions.
-> > > 
-> > > Adding the musl list to Cc for additional testers, anyone interested
-> > > please see [1] for the original report.
-> > > 
-> > > It would be good to hear from musl users that are already using
-> > > audio support with 32-bit applications on 64-bit kernels, which
-> > > is the case that has the problem today. Have you noticed any
-> > > problems with audio support here? If not, we can probably
-> > > "fix" the kernel here and make the existing binaries behave
-> > > the same way on 32-bit kernels. If there are applications that
-> > > don't work in that environment today, I think we need to instead
-> > > change the kernel to accept the currently broken format on
-> > > both 32-bit and 64-bit kernels, possibly introducing yet another
-> > > format that works as originally intended but requires a newly
-> > > built kernel.
-> > 
-> > Thanks!
-> > 
-> > And now, looking more deeply, I feel more desperate.
-> > 
-> > This bug makes the expected padding gone on little-endian.
-> > On LE 32bit, the buggy definition is:
-> > 
-> > 	char __pad1[0];
-> > 	u32 appl_ptr;
-> > 	char __pad2[0]; // this should have been [4]
-> > 	char __pad3[0];
-> > 	u32 avail_min;
-> > 	char __pad4[4];
-> > 	
-> > When an application issues SYNC_PTR64 ioctl to submit appl_ptr and
-> > avail_min updates, 64bit kernel (in compat mode) reads directly as:
-> > 
-> > 	u64 appl_ptr;
-> > 	u64 avail_min;
-> > 
-> > Hence a bogus appl_ptr would be passed if avail_min != 0.
-> > And usually application sets non-zero avail_min.
-> > That is, the bug must hit more severely if the new API were really
-> > used.  It wouldn't crash, but some weird streaming behavior can
-> > happen like noise, jumping or underruns.
-> > 
-> > (Reading back avail_min=0 to user-space is rather harmless.  Ditto for
-> >  the case of BE, then at least there is no appl_ptr corruption.)
-> > 
-> > This made me wonder which way to go:
-> > it's certainly possible to fix the new kernel to treat both buggy and
-> > sane formats (disabling compat mmap and re-define ioctls, having the
-> > code for old APIs).  The problem is, however, in the case where the
-> > application needs to run on the older kernel that expects the buggy
-> > format.  Then apps would still have to send in the old buggy format --
-> > or maybe better in the older 32bit format that won't hit the bug
-> > above.  It makes situation more complicated.
-> 
-> Can't an ioctl number just be redefined so that, on old kernels with
-> the buggy one, newly built applications get told that mmap is not
-> available and use the unaffected non-mmap fallback?
-
-The problem is that the SYNC_PTR64 ioctl itself for non-mmap fallback
-is equally buggy due to this bug, too.  So disabling mmap doesn't help
-alone.
-
-And, yes, we can redefine ioctl numbers.  But, then, application would
-have to be bilingual, as well as the kernel; it'll have to switch back
-to old API when running on older kernel, while the same binary would
-need to run in a new API for a newer kernel.
-
-Maybe we can implement it in alsa-lib, if it really worth for it.
-
-> > Do we know how widely the __USE_TIME_BITS64 is deployed nowadays?
-> 
-> Anyone using musl on 32-bit archs who's not >=2 years behind current.
-
-OK.
 
 
-Takashi
+> On Oct 4, 2021, at 10:58 AM, David Hildenbrand <david@redhat.com> =
+wrote:
+>=20
+>>>=20
+>>> Thanks for the pointer.
+>>>=20
+>>> And my question would be if something like DAMON would actually be =
+what you want.
+>> I looked into DAMON and even with the proposed future extensions it =
+sounds
+>> as a different approach with certain benefits but with many =
+limitations.
+>> The major limitation of DAMON is that you need to predefine the logic =
+you
+>> want for reclamation into the kernel. You can add programability =
+through
+>> some API or even eBPF, but it would never be as easy or as versatile =
+as
+>> what user manager can achieve. We already have pretty much all the
+>> facilities to do so from userspace, and the missing parts (at least =
+for
+>> basic userspace manager) are almost already there. In contrast, see =
+how
+>> many iterations are needed for the basic DAMON implementation.
+>=20
+> I can see what you're saying when looking at optimizing a hand full of =
+special applications. I yet fail to see how something like that could =
+work as a full replacement for in kernel swapping. I'm happy to learn.
+
+I am not arguing it is a full replacement, at least at this stage.
+
+>=20
+>> The second, also big, difference is that DAMON looks only on =
+reclamation.
+>> If you want a custom prefetch scheme or different I/O stack for =
+backing
+>> storage, you cannot have such one.
+>=20
+> I do wonder if it could be extended for prefetching. But I am =
+absolutely not a DAMON expert.
+>=20
+> [...]
+
+These are 2 different approaches. One, is to provide some logic
+for the kernel (DAMON). The other is to provide userspace full
+control over paging operations (with caveats). Obviously, due to
+the caveats, the kernel paging mechanism behaves as a backup.
+
+>=20
+>>>=20
+>>> You raise a very excellent point (and it should have been part of =
+your initial sales pitch): how does it differ to process_vm_writev().
+>>>=20
+>>> I can say that it differs in a way that you can break applications =
+in more extreme ways. Let me give you two examples:
+>>>=20
+>>> 1. longterm pinnings: you raised this yourself; this can break an =
+application silently and there is barely a safe way your tooling could =
+handle it.
+>>>=20
+>>> 2. pagemap: applications can depend on the populated(present |swap) =
+information in the pagemap for correctness. For example, there was =
+recently a discussion to use pagemap information to speed up live =
+migration of VMs, by skipping migration of !populated pages. There is =
+currently no way your tooling can fake that. In comparison, ordinary =
+swapping in the kernel can handle it.
+>> I understand (1). As for (2): the scenario that you mention sound
+>> very specific, and one can argue that ignoring UFFD-registered
+>> regions in such a case is either (1) wrong or (2) should trigger
+>> some UFFD event.
+>>>=20
+>>> Is it easy to break an application with process_vm_writev()? Yes. =
+When talking about dynamic debugging, it's expected that you break the =
+target already -- or the target is already broken. Is it easier to break =
+an application with process_madvise(MADV_DONTNEED)? I'd say yes, =
+especially when implementing something way beyond debugging as you =
+describe.
+>> If you do not know what you are doing, you can easily break anything.
+>> Note that there are other APIs that can break your application even
+>> worse, specifically ptrace().
+>>> I'm giving you "a hard time" for the reason Michal raised: we =
+discussed this in the past already at least two times IIRC and "it is a =
+free ticket to all sorts of hard to debug problem" in our opinion; =
+especially when we mess around in other process address spaces besides =
+for debugging.
+>>>=20
+>>> I'm not the person to ack/nack this, I'm just asking the questions =
+:)
+>> I see your points and I try to look for a path of least resistance.
+>> I thought that process_madvise() is a nice interface to hook into.
+>=20
+> It would be the right interface -- iff the operation wouldn't have a =
+bad smell to it. We don't really want applications to mess around in the =
+page table layout of some other process: however, that is exactly what =
+you require. By unlocking that interface for that use case we agree that =
+what you are proposing is a "sane use case", but  ...
+>=20
+>> But if you are concerned it will be misused, how about adding instead
+>> an IOCTL that will zap pages but only in UFFD-registered regions?
+>> A separate IOCTL for this matter have an advantage of being more
+>> tailored for UFFD, not to notify UFFD upon =E2=80=9Cremove=E2=80=9D =
+and to be less
+>> likely to be misused.
+>=20
+> ... that won't change the fact that with your user-space swapping =
+approach that requires this interface we can break some applications =
+silently, and that's really the major concern I have.
+>=20
+> I mean, there are more cases where you can just harm the target =
+application I think, for example if the target application uses =
+SOFTDIRTY tracking.
+>=20
+>=20
+> To judge if this is a sane use case we want to support, it would help =
+a lot if there would be actual code+evaluation when actually =
+implementing some of these advanced policies. Because you raise a lot of =
+interesting points in your reply to Michal to back your use case, and =
+naive me thinks "this sounds interesting but ... aren't we losing a lot =
+of flexibility+features when doing this in user space? Does anyone =
+actually want to do it like that?".
+>=20
+> Again, I'm not the person to ack/nack this, I'm just questioning if =
+the use case that requires this interface is actually something that =
+will get used later in real life because it has real advantages, or if =
+it's a pure research project that will get abandoned at some point and =
+we ended up exposing an interface we really didn't want to expose so far =
+(especially, because all other requests so far were bogus).
+
+I do want to release the code, but it is really
+incomplete/immature at this point. I would not that there additional
+use cases, such as workloads that have discardable cache (or memoization
+data), which want a central/another entity to discard the data when
+there is memory pressure. (You can think about it as a userspace
+shrinker).
+
+Anyhow, as a path of least resistance, I think I would do the
+following:
+
+1. Wait for the other madvise related patches to be applied.
+2. Simplify the patches, specifically removing the data structure
+   changes based on Kirill feedback.
+3. Defer the enablement of the MADV_DONTNEED until I can show
+   code/performance numbers.
+
+Regards,
+Nadav=
