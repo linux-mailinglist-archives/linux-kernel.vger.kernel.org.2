@@ -2,209 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6C6342602D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 01:06:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C65F642603F
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 01:11:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235847AbhJGXIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 19:08:22 -0400
-Received: from gate2.alliedtelesis.co.nz ([202.36.163.20]:33146 "EHLO
-        gate2.alliedtelesis.co.nz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233128AbhJGXIU (ORCPT
+        id S233780AbhJGXNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 19:13:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37308 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230120AbhJGXNR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 19:08:20 -0400
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id ED60E83651;
-        Fri,  8 Oct 2021 12:06:21 +1300 (NZDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1633647981;
-        bh=uUekCejAnirxuenb1bdmJTf1s5Qm7uQA4xDwgWAaD7U=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=1ICtPeKnDlZlbzwHsYzrtpkb5KzqqlANVZS8VfLCXDCruVlT+wR92+vNExVX3rMB1
-         z/fQLsRhpjKZGBRmpEmP5fzuqlv1YKdWkZScTW2AVYlcJ+xRvppByg0TnuqlqyxIwo
-         5hak2uu/6CFLD5ycipFP9U3qgGglBGNc+04bkHxfGnEIx89siNFWUwm/cRe2WKpLNH
-         xrgCSrGDpxdVIsWYRq6iThEVWhgFfilDYfE9I7ABShZDwRb8CYx3vCir/KCfa2k9pS
-         IMlcjYehWHTQPBolltEY/nxWiweHoGFEuGaDu0PqvfbB/jqmApniDgpljEN/S0e+UV
-         sIG4acUnpxaTQ==
-Received: from pat.atlnz.lc (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-        id <B615f7d6d0002>; Fri, 08 Oct 2021 12:06:21 +1300
-Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.26])
-        by pat.atlnz.lc (Postfix) with ESMTP id BFCEA13EE39;
-        Fri,  8 Oct 2021 12:06:21 +1300 (NZDT)
-Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
-        id BE7112A0B00; Fri,  8 Oct 2021 12:06:21 +1300 (NZDT)
-From:   Chris Packham <chris.packham@alliedtelesis.co.nz>
-To:     andrew@lunn.ch, gregory.clement@bootlin.com,
-        sebastian.hesselbarth@gmail.com, robh+dt@kernel.org,
-        kostap@marvell.com
-Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>
-Subject: [PATCH 2/2] arm/arm64: dts: Add MV88E6393X to CN9130-CRB device tree
-Date:   Fri,  8 Oct 2021 12:06:19 +1300
-Message-Id: <20211007230619.957016-3-chris.packham@alliedtelesis.co.nz>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211007230619.957016-1-chris.packham@alliedtelesis.co.nz>
-References: <20211007230619.957016-1-chris.packham@alliedtelesis.co.nz>
+        Thu, 7 Oct 2021 19:13:17 -0400
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4453BC061570
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 16:11:23 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id z40so6301329qko.7
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 16:11:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=qz/GvWMu4xNaZ0py+UnzwizlmTC8i/xol40n0Hfddl4=;
+        b=VYoKjfZnghe7QWtefdjA6KHgMUHVwGftHAF+hX7vuLWGUPVrlAl30u/WJG4K0Q6IHl
+         4MikPEHPLVT/DOWWdT6OF6X4oKmOTmGIU6p7s/CYOSu/1ici8BUyNzQ3o/U4KbGzjt3V
+         5q9r6iTcGPEvNHW7I6EpCayQgSV6nVul3o1NbgGXwkbXrHU8q+Bmi/JJ9wi8glpux+QN
+         emLuiMuSZ70b/ajJF7vcTuSIMNCNHkzAv00d/Z8KZcnPHjloycusAG70wDmOK4pD7JxO
+         dm9NMinBiSFEF+pIyLlWMPa+izWqi5wbKoxKQEAh6LkjorSocoqPFKEIzANyd7CEQ02h
+         cHHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=qz/GvWMu4xNaZ0py+UnzwizlmTC8i/xol40n0Hfddl4=;
+        b=nlE7PlC+Itl6ghSrq0b/0e3YzCLPI9XIgvGZ/VDO/QH/wmpiLC14ZjkWyr8P1yPwXO
+         pxKJSWZCTPV1uoM1Xh1iA4Y9YIs2q+L65V+2I75sE4wOLLc/RZCCW16h3x8n/5lmFzJQ
+         4r9ZD0HVh7SbIJSRnQKf1Ixqu9SDKzTroVhg+IxTF0XjJlHfObz6glIEX+pSLkKUVmNZ
+         os2AR9lXNWwaQ6Llp/tFUHjmcIQxfZRm1Smq5orM6nxDCme3JoSH2MuRbRUm1FNHKq63
+         wSu9TlYx2T3YxdG2wkWH2hbhRkdvkSxfYIz22cE/Cx5A9CXIGYzBR41Zk1ChkFHDZpme
+         aj5w==
+X-Gm-Message-State: AOAM533xMnHnv4HVf35/3fwjZhbHbGFh7lKqTi+wA6UKtQ9FYhpf5i9Q
+        imajoPiGLZS+HVF69lbJOFbXyfqyWw+XJmtp0D9R+7VqzQf1YhL0vg==
+X-Google-Smtp-Source: ABdhPJwboMclGhRaE8gg38wr+IYZBo6e3aP+cQrlOMjGfMxPeewgQiTvxfB/BWc84kFMjxTFlR68fhZnELI/8DGFDYg=
+X-Received: by 2002:a37:4116:: with SMTP id o22mr88515qka.496.1633648282330;
+ Thu, 07 Oct 2021 16:11:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=fKRHIqSe c=1 sm=1 tr=0 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=8gfv0ekSlNoA:10 a=IKpnBzii7tR9GoWT8zoA:9
-X-SEG-SpamProfiler-Score: 0
-x-atlnz-ls: pat
+From:   Ehsan Aghapour <aghapour.ehsan17@gmail.com>
+Date:   Fri, 8 Oct 2021 02:41:11 +0330
+Message-ID: <CAHjmVnroctx00OycHrbEjU51SntkSi9MkmaR9KZnnHkSvxkBHQ@mail.gmail.com>
+Subject: Enable "PMU" counters for Khadas VIM3 in the Google AOSP kernel
+To:     linux-amlogic@lists.infradead.org, mark.rutland@arm.com,
+        maz@kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The CN9130-CRB boards have a MV88E6393X switch connected to eth0.  Add
-the necessary dts nodes and properties for this.
+Hello All,
 
-Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
----
+I am working on Google AOSP kernel and require to enable PMU. PMU is
+working well in Khadas kernel for both A53 and A73 cores but it is not
+enabled in Google AOSP kernel 5.4. I try adding arm_pmu definition in
+device tree at /arch/arm64/boot/dts/amlogic/meson-g12b.dtsi as follow:
+arm_pmu {
+                compatible = "arm,armv8-pmuv3";
+                clusterb-enabled;
+                interrupts = <GIC_SPI 137 IRQ_TYPE_LEVEL_HIGH>,
+                        <GIC_SPI 171 IRQ_TYPE_LEVEL_HIGH>;
+                reg = <0x0 0xff634680 0x0 0x4>,
+                        <0x0 0xff6347c0 0x0 0x04>;
+                cpumasks = <0x3 0x3C>;
+                /* default 10ms */
+                relax-timer-ns = <10000000>;
+                /* default 10000us */
+                max-wait-cnt = <10000>;
+        };
 
-This is taken from the Marvell SDK. I've re-ordered the port entries to
-be in ascending order.
+However in this case I only see A53 performance counters in DS5
+Streamline and performance counters of A73 cores are zero yet.
 
- arch/arm64/boot/dts/marvell/cn9130-crb.dtsi | 125 ++++++++++++++++++++
- 1 file changed, 125 insertions(+)
+Would you please help me solve the problem? (If device tree need
+change or kernel config to enable pmu counters for both CPUs).
 
-diff --git a/arch/arm64/boot/dts/marvell/cn9130-crb.dtsi b/arch/arm64/boo=
-t/dts/marvell/cn9130-crb.dtsi
-index e7918f325646..171f7394948e 100644
---- a/arch/arm64/boot/dts/marvell/cn9130-crb.dtsi
-+++ b/arch/arm64/boot/dts/marvell/cn9130-crb.dtsi
-@@ -185,6 +185,131 @@ &cp0_mdio {
- 	phy0: ethernet-phy@0 {
- 		reg =3D <0>;
- 	};
-+
-+	switch6: switch0@6 {
-+		/* Actual device is MV88E6393X */
-+		compatible =3D "marvell,mv88e6190";
-+		#address-cells =3D <1>;
-+		#size-cells =3D <0>;
-+		reg =3D <6>;
-+
-+		dsa,member =3D <0 0>;
-+
-+		ports {
-+			#address-cells =3D <1>;
-+			#size-cells =3D <0>;
-+
-+			port@0 {
-+				reg =3D <0>;
-+				label =3D "notused-port0";
-+				phy-mode =3D "10gbase-kr";
-+				status =3D "disabled";
-+
-+			};
-+
-+			port@1 {
-+				reg =3D <1>;
-+				label =3D "wan1";
-+				phy-handle =3D <&switch0phy1>;
-+			};
-+
-+			port@2 {
-+				reg =3D <2>;
-+				label =3D "lan2";
-+				phy-handle =3D <&switch0phy2>;
-+			};
-+
-+			port@3 {
-+				reg =3D <3>;
-+				label =3D "lan3";
-+				phy-handle =3D <&switch0phy3>;
-+			};
-+
-+			port@4 {
-+				reg =3D <4>;
-+				label =3D "lan4";
-+				phy-handle =3D <&switch0phy4>;
-+			};
-+
-+			port@5 {
-+				reg =3D <5>;
-+				label =3D "lan5";
-+				phy-handle =3D <&switch0phy5>;
-+			};
-+
-+			port@6 {
-+				reg =3D <6>;
-+				label =3D "lan6";
-+				phy-handle =3D <&switch0phy6>;
-+			};
-+
-+			port@7 {
-+				reg =3D <7>;
-+				label =3D "lan7";
-+				phy-handle =3D <&switch0phy7>;
-+			};
-+
-+			port@8 {
-+				reg =3D <8>;
-+				label =3D "lan8";
-+				phy-handle =3D <&switch0phy8>;
-+			};
-+
-+			port@9 {
-+				reg =3D <9>;
-+				label =3D "wanp9";
-+				phy-mode =3D "10gbase-kr";
-+				fixed-link {
-+					speed =3D <10000>;
-+					full-duplex;
-+				};
-+			};
-+
-+			port@10 {
-+				reg =3D <10>;
-+				label =3D "cpu";
-+				ethernet =3D <&cp0_eth0>;
-+			};
-+
-+		};
-+
-+		mdio {
-+			#address-cells =3D <1>;
-+			#size-cells =3D <0>;
-+
-+			switch0phy1: switch0phy1@1 {
-+				reg =3D <0x1>;
-+			};
-+
-+			switch0phy2: switch0phy2@2 {
-+				reg =3D <0x2>;
-+			};
-+
-+			switch0phy3: switch0phy3@3 {
-+				reg =3D <0x3>;
-+			};
-+
-+			switch0phy4: switch0phy4@4 {
-+				reg =3D <0x4>;
-+			};
-+
-+			switch0phy5: switch0phy5@5 {
-+				reg =3D <0x5>;
-+			};
-+
-+			switch0phy6: switch0phy6@6 {
-+				reg =3D <0x6>;
-+			};
-+
-+			switch0phy7: switch0phy7@7 {
-+				reg =3D <0x7>;
-+			};
-+
-+			switch0phy8: switch0phy8@8 {
-+				reg =3D <0x8>;
-+			};
-+		};
-+	};
- };
-=20
- &cp0_xmdio {
---=20
-2.33.0
 
+This is related kernel log:
+"[    1.965309] hw perfevents: no interrupt-affinity property for
+/arm_pmu, guessing.
+[    1.970821] hw perfevents: enabled with armv8_pmuv3 PMU driver, 7
+counters available
+...
+[    7.131341] ueventd: LoadWithAliases was unable to load
+of:Narm_pmuT(null)Carm,armv8-pmuv3"
+
+
+Best regards,
+Ehsan
