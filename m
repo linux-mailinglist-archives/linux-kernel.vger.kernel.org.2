@@ -2,74 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C804A425753
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 18:03:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E2CC425757
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 18:04:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242323AbhJGQF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 12:05:27 -0400
-Received: from marcansoft.com ([212.63.210.85]:56266 "EHLO mail.marcansoft.com"
+        id S242435AbhJGQGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 12:06:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57854 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233486AbhJGQF0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 12:05:26 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: marcan@marcan.st)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id E0FED419BC;
-        Thu,  7 Oct 2021 16:03:26 +0000 (UTC)
-Subject: Re: [PATCH v5 14/14] arm64: dts: apple: j274: Expose PCI node for the
- Ethernet MAC address
-To:     Marc Zyngier <maz@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Stan Skowronek <stan@corellium.com>,
-        Mark Kettenis <kettenis@openbsd.org>,
-        Sven Peter <sven@svenpeter.dev>,
-        Robin Murphy <Robin.Murphy@arm.com>,
-        Joey Gouly <joey.gouly@arm.com>,
-        Joerg Roedel <joro@8bytes.org>, kernel-team@android.com
-References: <20210929163847.2807812-1-maz@kernel.org>
- <20210929163847.2807812-15-maz@kernel.org>
-From:   Hector Martin <marcan@marcan.st>
-Message-ID: <d49994e1-cd01-f6a4-98bf-941058543a44@marcan.st>
-Date:   Fri, 8 Oct 2021 01:03:24 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S235232AbhJGQF7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 12:05:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 58AFF60F9C;
+        Thu,  7 Oct 2021 16:04:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633622645;
+        bh=tf0G0RGsr4RO11iT0sEPjUlA9rmNBxhk4Q4mxta2poI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=E3oZ77wsEKq+YDVsHOc52CpKWU10Bh+1YziLNcD5i2qxsA2s/EFBKWpdNT4jqCmwU
+         eND46M9XEdZIMf6UcETF+n2rMBkGIgk0kg6V+QoNDczUCA7iGuyfU5wsMcDJJiYqdd
+         zrEoILcVhmVNzEJLe97agu1z1s2q+iRuTdS1aLJzzb0/yk1qt+vXS8gBpDC8lwA8bT
+         sb6BhnqW4AptFNPyhpPX6geq83YWfPlKcY4ybz3XkOxobd6Ti1fskcuY4HyuUC2of6
+         NDdAwPHrDTjlg74xhnxS9PsJ5CPCvS3ZduPGyzSShZ7Z4sM2ElJ0geE6gxTKJSksQx
+         YBJCCIDSH9nZA==
+Date:   Thu, 7 Oct 2021 09:04:04 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Richard Palethorpe <rpalethorpe@suse.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Arseny Krasnov <arseny.krasnov@kaspersky.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Deepa Dinamani <deepa.kernel@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Richard Palethorpe <rpalethorpe@richiejp.com>
+Subject: Re: [PATCH v2 2/2] vsock: Enable y2038 safe timeval for timeout
+Message-ID: <20211007090404.20e555d4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20211007123147.5780-2-rpalethorpe@suse.com>
+References: <20211007123147.5780-1-rpalethorpe@suse.com>
+        <20211007123147.5780-2-rpalethorpe@suse.com>
 MIME-Version: 1.0
-In-Reply-To: <20210929163847.2807812-15-maz@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: es-ES
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/09/2021 01.38, Marc Zyngier wrote:
-> At the moment, all the Minis running Linux have the same MAC
-> address (00:10:18:00:00:00), which is a bit annoying.
+On Thu,  7 Oct 2021 13:31:47 +0100 Richard Palethorpe wrote:
+> Reuse the timeval compat code from core/sock to handle 32-bit and
+> 64-bit timeval structures. Also introduce a new socket option define
+> to allow using y2038 safe timeval under 32-bit.
 > 
-> Expose the PCI node corresponding to the Ethernet device, and
-> declare a 'local-mac-address' property. The bootloader will update
-> it (m1n1 already has the required feature). And if it doesn't, then
-> the default value is already present in the DT.
+> The existing behavior of sock_set_timeout and vsock's timeout setter
+> differ when the time value is out of bounds. vsocks current behavior
+> is retained at the expense of not being able to share the full
+> implementation.
 > 
-> This relies on forcing the bus number for each port so that the
-> endpoints connected to them are correctly numbered (and keeps dtc
-> quiet).
+> This allows the LTP test vsock01 to pass under 32-bit compat mode.
 > 
-> Signed-off-by: Marc Zyngier <maz@kernel.org>
-> ---
->   arch/arm64/boot/dts/apple/t8103-j274.dts | 23 +++++++++++++++++++++++
->   1 file changed, 23 insertions(+)
-> 
+> Fixes: fe0c72f3db11 ("socket: move compat timeout handling into sock.c")
+> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+> Cc: Richard Palethorpe <rpalethorpe@richiejp.com>
 
-Acked-by: Hector Martin <marcan@marcan.st>
+This breaks 32bit x86 build:
 
--- 
-Hector Martin (marcan@marcan.st)
-Public Key: https://mrcn.st/pub
+ERROR: modpost: "__divdi3" [net/vmw_vsock/vsock.ko] undefined!
+
+If the 64 bit division is intention you need to use an appropriate
+helper.
