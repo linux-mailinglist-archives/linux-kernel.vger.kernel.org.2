@@ -2,64 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57D954250E5
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 12:20:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BBE14250E9
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 12:21:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240810AbhJGKWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 06:22:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54334 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232815AbhJGKWe (ORCPT
+        id S240813AbhJGKWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 06:22:54 -0400
+Received: from outbound-smtp50.blacknight.com ([46.22.136.234]:53707 "EHLO
+        outbound-smtp50.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240818AbhJGKWk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 06:22:34 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69B11C061746
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 03:20:41 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id t11so3574821plq.11
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 03:20:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=nJZ/iEmh9SeY2qK12yiLi8eUyDt6/Qj48LL8C3Pzk1U=;
-        b=FQRc8uslQPASadKUFPydHgTJGf8pG+ip1dFrHS9UfUBPlfMibaBnbbOEpuZn3IjD9y
-         lvuKz1IM+a95WqIE4+dK6F7N47/WH0BE++hea+QKcoaMdQhHJidRWIb24xyAOOIs8CFt
-         X1df0Fl9aAi9Ug3hZSTEP9Kw1HHHuj7XLppxZEXhxgxujiM2clE3deCE0aZOXt4sUKEZ
-         Q0anwHuMhYTln6dImPfC81R1dQGDmXR/IOrXTdqms4Xrg4GVmXiONS+GIv1ml3H3Jl8f
-         XMPu4GR4sjx2fYX3LXLOgNrpac3fMtA8QeuWlYEBdGH9j53vrLnK7/S+5VQ61kEw57it
-         ZTcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=nJZ/iEmh9SeY2qK12yiLi8eUyDt6/Qj48LL8C3Pzk1U=;
-        b=f9LZJK7uxgq52VqetPa6jPKH4395DULRjEdkMGhGQ8mlwDs1JidpaNb0poGcIWEnH3
-         purXCjCSW7kvI4Vfyn6xLOlUbtaPvR/6d2lTuaiDb76BhD1bYBcUjEMik6qqzKL9N+Hc
-         n+bEbhssPYkxPxbHOPVeAjQqgx7aMMRaWhj3Xr9SJl6XbBRoB1kAejikPmFbVcBGZ+zp
-         1gARS+d5gFvsY4MC0jm/ohyAR/47JsvPWQ/sMV6RoRp7CY+jInP1rkmnMg0z0T3MlQnO
-         T+rCJ1tDc3TaW4+Z/JmoH8/K5v6cCDGNkQ1D+JOun8ztcDgDE6i0cmegqdKbbB5gPkBx
-         cDwA==
-X-Gm-Message-State: AOAM532vmfbqdezung272QUgDji5oX0MZUtgmDlxs6VECyLrXpwfAGva
-        gnAR9/A2rr1dxtQR22oTP6NAVlHdyDmM+AjvMNsU8OjRjiI=
-X-Google-Smtp-Source: ABdhPJx8+jjutaQEpocpVOX0e7T4cXyIZ6knvUbxy+q/yAZ7biJSHGFvuKu91wDQ4qGPwudQuROspNgjdTNAIZ0vRy4=
-X-Received: by 2002:a17:90b:3809:: with SMTP id mq9mr3865545pjb.7.1633602041091;
- Thu, 07 Oct 2021 03:20:41 -0700 (PDT)
+        Thu, 7 Oct 2021 06:22:40 -0400
+Received: from mail.blacknight.com (pemlinmail04.blacknight.ie [81.17.254.17])
+        by outbound-smtp50.blacknight.com (Postfix) with ESMTPS id B2EA2FB6D6
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 11:20:45 +0100 (IST)
+Received: (qmail 10512 invoked from network); 7 Oct 2021 10:20:45 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.29])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 7 Oct 2021 10:20:45 -0000
+Date:   Thu, 7 Oct 2021 11:20:44 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Vasily Averin <vvs@virtuozzo.com>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        kernel@openvz.org, Mel Gorman <mgorman@suse.de>,
+        Uladzislau Rezki <urezki@gmail.com>
+Subject: Re: memcg memory accounting in vmalloc is broken
+Message-ID: <20211007102044.GR3959@techsingularity.net>
+References: <b3c232ff-d9dc-4304-629f-22cc95df1e2e@virtuozzo.com>
+ <YV6sIz5UjfbhRyHN@dhcp22.suse.cz>
+ <YV6s+ze8LzuxfvOM@dhcp22.suse.cz>
+ <953ef8e2-1221-a12c-8f71-e34e477a52e8@virtuozzo.com>
 MIME-Version: 1.0
-Received: by 2002:a17:522:3187:b0:2b6:ab1f:4356 with HTTP; Thu, 7 Oct 2021
- 03:20:40 -0700 (PDT)
-Reply-To: msmanda123@outlook.com
-From:   msmanda ram <msmanda811@gmail.com>
-Date:   Thu, 7 Oct 2021 10:20:40 +0000
-Message-ID: <CA+A_kVK3Of06BPnMqsqX5gPpWuoDMRPd9X7WuzhpJ4Dn4kyJ_Q@mail.gmail.com>
-Subject: Reply
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <953ef8e2-1221-a12c-8f71-e34e477a52e8@virtuozzo.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello
-My name is Madam Manda Ram, I really need your assistance in details
-of your response ,I will explain better. Am serious waiting for your
-response to msmanda123@outlook.com
-Regards,
-Manda Ram
+On Thu, Oct 07, 2021 at 11:50:44AM +0300, Vasily Averin wrote:
+> On 10/7/21 11:16 AM, Michal Hocko wrote:
+> > Cc Mel and Uladzislau
+> > 
+> > On Thu 07-10-21 10:13:23, Michal Hocko wrote:
+> >> On Thu 07-10-21 11:04:40, Vasily Averin wrote:
+> >>> vmalloc was switched to __alloc_pages_bulk but it does not account the memory to memcg.
+> >>>
+> >>> Is it known issue perhaps?
+> >>
+> >> No, I think this was just overlooked. Definitely doesn't look
+> >> intentional to me.
+> 
+> I use following patch as a quick fix,
+> it helps though it is far from ideal and can be optimized.
+
+Thanks Vasily.
+
+This papers over the problem but it could certainly be optimized. At
+minimum;
+
+1. Test (memcg_kmem_enabled() && (gfp & __GFP_ACCOUNT)) in the
+   function preamble and store the result in a bool
+2. Avoid the temptation to batch the accounting because if the
+   accounting fails, there is no information on how many pages could be
+   allocated before the limits were hit. I guess you could pre-charge the
+   pages and uncharging the number of pages that failed to be allocated
+   but it should be a separate patch.
+3. If an allocation fails due to memcg accounting, break
+   out of the loop because all remaining bulk allocations are
+   also likely to fail.
+
+As it's not vmalloc's fault, I would suggest the patch
+have
+Fixes: 387ba26fb1cb ("mm/page_alloc: add a bulk page allocator")
+and
+Cc: <stable@vger.kernel.org>
+
+Note the Cc should just be in the patch and not mailed directly to
+stable@ as it'll simply trigger a form letter about the patch having to
+be merged to mainline first.
+
+-- 
+Mel Gorman
+SUSE Labs
