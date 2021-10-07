@@ -2,144 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BFA1425A30
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 20:00:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD840425A3A
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 20:01:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243417AbhJGSCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 14:02:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50466 "EHLO
+        id S243443AbhJGSDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 14:03:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242977AbhJGSCm (ORCPT
+        with ESMTP id S243435AbhJGSDc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 14:02:42 -0400
-Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a01:238:4321:8900:456f:ecd6:43e:202c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF717C061570;
-        Thu,  7 Oct 2021 11:00:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=kemnade.info; s=20180802; h=Content-Transfer-Encoding:Content-Type:
-        MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=IvYUNBHe87N2UV2hqOHOkd/I2jVQb+ixxwyqeQZ6J7s=; b=ZlH8EaZGnIhsPrECEC180CTMv5
-        oiiUHk4qdo3HfcOXDxg1mBn2UG+QM58u9Has5AMqQqxmYnnDvylLdT94Sa3lWHScREXuT7n385a0L
-        4asVaIwyhu+aydftoHk2hTKS+yyfc4MTswZui3Wa0JHn+Q3jta7C8h7KO0ZsIysc2f90=;
-Received: from p200300ccff1124001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:cc:ff11:2400:1a3d:a2ff:febf:d33a] helo=aktux)
-        by mail.andi.de1.cc with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.89)
-        (envelope-from <andreas@kemnade.info>)
-        id 1mYXh9-0004VK-DM; Thu, 07 Oct 2021 20:00:39 +0200
-Date:   Thu, 7 Oct 2021 20:00:38 +0200
-From:   Andreas Kemnade <andreas@kemnade.info>
-To:     Adam Ford <aford173@gmail.com>
-Cc:     "H. Nikolaus Schaller" <hns@goldelico.com>,
-        Linux-OMAP <linux-omap@vger.kernel.org>,
-        Adam Ford-BE <aford@beaconembedded.com>,
-        =?UTF-8?B?QmVub8OudA==?= Cousson <bcousson@baylibre.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH V2] ARM: dts: omap36xx: Remove turbo mode for 1GHz
- variants
-Message-ID: <20211007200038.58833d60@aktux>
-In-Reply-To: <CAHCN7x+TdPb0UthQ9CeQL_sWwJmRK++M1kUXZVvCcj8anAFqRQ@mail.gmail.com>
-References: <20210109170103.1249838-1-aford173@gmail.com>
-        <20211001095404.41f73d88@aktux>
-        <C0A84970-0AAC-42E7-8E0F-4D165F0C9551@goldelico.com>
-        <CAHCN7x+TdPb0UthQ9CeQL_sWwJmRK++M1kUXZVvCcj8anAFqRQ@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Score: -1.0 (-)
+        Thu, 7 Oct 2021 14:03:32 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0F8CC061755
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 11:01:38 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id q193-20020a252aca000000b005ba63482993so377578ybq.0
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 11:01:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=r+cHeTTjO90PS0eai6zYLqlbbghwPCf4HX8fINZOrVo=;
+        b=Tjg2WjHfqsfjG9mnJjznbqm0FF467Q9VNpX0aEArMWSepyKbuBHLNlmMbaDi7qGYhR
+         F9Pic6KqWxOcXpUtvN52KN8qlZwlfSge+4y5rzEj5PEA3zLZZpqcSw7BUqWmjUs6QKU0
+         GZG194aZ+ZW/Sq7DWmKCCLPhKu7zv0/EQj55JY3vCfGpMb8gYGwvuEaILnWiBg0mJoMU
+         Ig8W2Dt1KZdj4HBYBef75fDxRtkEO55z6rsMJesDF8krBEt072ZNjR3yuEu6d9ruV7Zc
+         YZ0V4993yXOALPAl6pZjDoQ+ErPzYZwueMTvehX/U2aYVarIzkhjmfo1tV4oxte3QiWU
+         jhEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=r+cHeTTjO90PS0eai6zYLqlbbghwPCf4HX8fINZOrVo=;
+        b=4xbsT5A+RNvz1exSuuTNG6lNp1iClMxpBG+lznkkHikiWKa7uwRylnZVKaheoy4BSE
+         /S0mbtsKtm0XR7qMRX7E07eo4tzl5LsNkM4AINq9AcifFRho2XMTn5/52FKFJvyyp+Gd
+         LCXWZb0agUjrhF2jxZ/TOK31yhIRg+ySIkRR86WhpJK/ea/Jn+wMfJqWFLsMUZnNO/Nq
+         8rl7xB2Ux1c9Nj990IQukb6GB3N+CjlOe5IbbPxf5G/7G+xDUl6fKXyMJdbpPc2kXmFG
+         dgJErF4wjLkaWID71LspfhWjlFa97S6/WOz/QZqQ8Nx0NCdnPISq5xBcghxNlCpXsc5w
+         y0cg==
+X-Gm-Message-State: AOAM530ia4Uy0OnHLWiTPHzwaPen6kRR4qAk3Bz7kKrJ5dAczUFCNzQB
+        vNFyXCYjK+tvLetTzhIW19KhJyp558O25/s=
+X-Google-Smtp-Source: ABdhPJzWbLRRvZtWkRt5K+FUZHphlko/RfXWxtqFNHXnvPylWZf8nOuluf3xvj1LHzqYLeg9YAbmfXwpj75quVo=
+X-Received: from dimitry-linux.mtv.corp.google.com ([2620:15c:201:2:153:83c6:87f9:e276])
+ (user=dimitrysh job=sendgmr) by 2002:a25:f803:: with SMTP id
+ u3mr6344481ybd.386.1633629697804; Thu, 07 Oct 2021 11:01:37 -0700 (PDT)
+Date:   Thu,  7 Oct 2021 11:01:30 -0700
+Message-Id: <20211007180130.805401-1-dimitrysh@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.882.g93a45727a2-goog
+Subject: [PATCH] arm64: dts: meson-sm1-odroid: add cec nodes
+From:   Dmitry Shmidt <dimitrysh@google.com>
+To:     narmstrong@baylibre.com, khilman@baylibre.com,
+        jbrunet@baylibre.com, martin.blumenstingl@googlemail.com
+Cc:     linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Dmitry Shmidt <dimitrysh@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2 Oct 2021 07:12:05 -0500
-Adam Ford <aford173@gmail.com> wrote:
+Enable CEC in same way it is done for other meson odroid devices
 
-> On Fri, Oct 1, 2021 at 4:59 AM H. Nikolaus Schaller <hns@goldelico.com> wrote:
-> >
-> >
-> >  
-> > > Am 01.10.2021 um 09:54 schrieb Andreas Kemnade <andreas@kemnade.info>:
-> > >
-> > > On Sat,  9 Jan 2021 11:01:03 -0600
-> > > Adam Ford <aford173@gmail.com> wrote:
-> > >  
-> > >> Previously, the 1GHz variants were marked as a turbo,
-> > >> because that variant has reduced thermal operating range.
-> > >>
-> > >> Now that the thermal throttling is in place, it should be
-> > >> safe to remove the turbo-mode from the 1GHz variants, because
-> > >> the CPU will automatically slow if the thermal limit is reached.
-> > >>
-> > >> Signed-off-by: Adam Ford <aford173@gmail.com>
-> > >> ---
-> > >> V2:  The orignal patch had the wrong file added. Add the omap36xx.dtsi
-> > >>  
-> > > hmm, I somehow expected that there is a revert of this thing going
-> > > through. But now, the turbo-mode is still missing  
-> >
-> > tagging by turbo-mode means the OPP is *disabled* by default and
-> > needs to be enabled actively.
-> >  
-> > > and I understood the
-> > > revert is only in Nikolaus' trees.  
-> >
-> > It is just a revert for the gta04a5 because I think it is the only board
-> > which is affected (maybe it would need SmartReflex in operation to
-> > fine tune the OPPs compared to the generic table). Therefore I have
-> > a patch which adds turbo-mode to the gta04a5.dts
-> >  
-> > > The 1Ghz mode was working for some
-> > > time but does not anymore. Is it just me or do others also have the
-> > > same problems?  
-> >
-> > That would be interesting to know.
-> >  
-> 
-> What version are you seeing the break?  It's working for me on 5.15.y branch
-> 
-> # cat /sys/devices/system/cpu/cpufreq/policy0/scaling_available_frequencies
-> 300000 600000 800000 1000000
-> # uname -a
-> Linux buildroot 5.14.9-00260-g70248e7b378b-dirty #1 SMP Sat Oct 2
-> 06:56:02 CDT 2021 armv7l GNU/Linux
-> #
-> 
+Signed-off-by: Dmitry Shmidt <dimitrysh@google.com>
+---
+ arch/arm64/boot/dts/amlogic/meson-sm1-odroid.dtsi | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-I see this one: I remember there was also a discussion about proper
-handling of that but I do not remember the final result:
+diff --git a/arch/arm64/boot/dts/amlogic/meson-sm1-odroid.dtsi b/arch/arm64/boot/dts/amlogic/meson-sm1-odroid.dtsi
+index fd0ad85c165b..7eed4849233d 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-sm1-odroid.dtsi
++++ b/arch/arm64/boot/dts/amlogic/meson-sm1-odroid.dtsi
+@@ -225,6 +225,20 @@ &arb {
+ 	status = "okay";
+ };
+ 
++&cec_AO {
++	pinctrl-0 = <&cec_ao_a_h_pins>;
++	pinctrl-names = "default";
++	status = "disabled";
++	hdmi-phandle = <&hdmi_tx>;
++};
++
++&cecb_AO {
++	pinctrl-0 = <&cec_ao_b_h_pins>;
++	pinctrl-names = "default";
++	status = "okay";
++	hdmi-phandle = <&hdmi_tx>;
++};
++
+ &clkc_audio {
+ 	status = "okay";
+ };
+-- 
+2.33.0.882.g93a45727a2-goog
 
-Author: H. Nikolaus Schaller <hns@goldelico.com>
-Date:   Mon Dec 2 22:10:55 2019 +0100
-
-    Revert "ARM: OMAP2+: Fix warnings with broken omap2_set_init_voltage()"
-    
-    This reverts commit cf395f7ddb9ebc6b2d28d83b53d18aa4e7c19701.
-    
-    This patch is in conflict with 1GHz OPP.
-
-
-
-
-commit ae44b701fb6afb2be62defff590531e3b0632772
-Author: H. Nikolaus Schaller <hns@goldelico.com>
-Date:   Sat Apr 10 16:59:53 2021 +0200
-
-    ARM: DTS: gta04a5: disable 1GHz OPP again because it is not reliable
-    
-    To enable on a running system:
-    
-    echo 1 >/sys/devices/system/cpu/cpufreq/boost
-    
-    The symptom can be spurious hangs and virtual paging error,
-    kernel panics and strange things.
-
-on top of 5.13-rcX in Nikolaus trees.
-
-Regards,
-Andreas
