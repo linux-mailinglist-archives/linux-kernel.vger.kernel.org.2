@@ -2,243 +2,314 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1E7042531C
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 14:33:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E760425318
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 14:32:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241409AbhJGMez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 08:34:55 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:47332 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241347AbhJGMeu (ORCPT
+        id S241371AbhJGMeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 08:34:00 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:34868 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S241222AbhJGMd7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 08:34:50 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 5D58B200BB;
-        Thu,  7 Oct 2021 12:32:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1633609975; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=b1uiE/ufRyPT2jrfeYIG49vgmGCq2/ld6vEFtBEn1VU=;
-        b=MYXKEALmd2OE8YLN3f3zRDW3OLEfj64yCHVU3+5dXiJUfaAW3ueP8JN2knIE2CYj08PVgx
-        21Rvuwek0do64M8vaDj5xpcYbgC8W9yWx3vZ4Zsm3wdxK4nHo8YsoAlpMYPrxX87Dnbol+
-        yN3xis6Aspq+YdO1rxOgjcQ0579ywls=
-Received: from g78.suse.de (unknown [10.163.24.38])
-        by relay2.suse.de (Postfix) with ESMTP id AEA30A3B81;
-        Thu,  7 Oct 2021 12:32:54 +0000 (UTC)
-From:   Richard Palethorpe <rpalethorpe@suse.com>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Richard Palethorpe <rpalethorpe@suse.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Arseny Krasnov <arseny.krasnov@kaspersky.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Deepa Dinamani <deepa.kernel@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Richard Palethorpe <rpalethorpe@richiejp.com>
-Subject: [PATCH v2 2/2] vsock: Enable y2038 safe timeval for timeout
-Date:   Thu,  7 Oct 2021 13:31:47 +0100
-Message-Id: <20211007123147.5780-2-rpalethorpe@suse.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211007123147.5780-1-rpalethorpe@suse.com>
-References: <20211007123147.5780-1-rpalethorpe@suse.com>
+        Thu, 7 Oct 2021 08:33:59 -0400
+X-UUID: d963edc9d5364ad49636f68155f4c689-20211007
+X-UUID: d963edc9d5364ad49636f68155f4c689-20211007
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
+        (envelope-from <allen-kh.cheng@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1390015297; Thu, 07 Oct 2021 20:32:03 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 7 Oct 2021 20:32:02 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 7 Oct 2021 20:32:02 +0800
+From:   Allen-KH Cheng <Allen-KH.Cheng@mediatek.com>
+To:     Jassi Brar <jassisinghbrar@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        Allen-KH Cheng <Allen-KH.Cheng@mediatek.com>
+Subject: [PATCH] mailbox: mediatek: add support for dsp ipc
+Date:   Thu, 7 Oct 2021 20:32:00 +0800
+Message-ID: <20211007123200.16857-1-Allen-KH.Cheng@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reuse the timeval compat code from core/sock to handle 32-bit and
-64-bit timeval structures. Also introduce a new socket option define
-to allow using y2038 safe timeval under 32-bit.
+This patch is for Mediatek DSP IPC which allows applications
+implement communication using mbox.
 
-The existing behavior of sock_set_timeout and vsock's timeout setter
-differ when the time value is out of bounds. vsocks current behavior
-is retained at the expense of not being able to share the full
-implementation.
+Two mailboxes used to send notification or short message
+between processors with dsp
 
-This allows the LTP test vsock01 to pass under 32-bit compat mode.
+mbox0 is for ipc request.
+mbox1 is for ipc reply.
 
-Fixes: fe0c72f3db11 ("socket: move compat timeout handling into sock.c")
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
-Cc: Richard Palethorpe <rpalethorpe@richiejp.com>
+Signed-off-by: Allen-KH Cheng <Allen-KH.Cheng@mediatek.com>
 ---
- include/net/sock.h              |  4 ++++
- include/uapi/linux/vm_sockets.h | 13 +++++++++++-
- net/core/sock.c                 | 35 ++++++++++++++++++++++-----------
- net/vmw_vsock/af_vsock.c        | 23 +++++++++++++---------
- 4 files changed, 54 insertions(+), 21 deletions(-)
+ drivers/mailbox/Kconfig            |  10 ++
+ drivers/mailbox/Makefile           |   2 +
+ drivers/mailbox/mtk-adsp-mailbox.c | 209 +++++++++++++++++++++++++++++
+ 3 files changed, 221 insertions(+)
+ create mode 100644 drivers/mailbox/mtk-adsp-mailbox.c
 
-diff --git a/include/net/sock.h b/include/net/sock.h
-index f23cb259b0e2..b93d0ac552c1 100644
---- a/include/net/sock.h
-+++ b/include/net/sock.h
-@@ -2773,4 +2773,8 @@ void sock_set_sndtimeo(struct sock *sk, s64 secs);
+diff --git a/drivers/mailbox/Kconfig b/drivers/mailbox/Kconfig
+index c9fc06c7e685..4435af555b63 100644
+--- a/drivers/mailbox/Kconfig
++++ b/drivers/mailbox/Kconfig
+@@ -236,6 +236,16 @@ config MTK_CMDQ_MBOX
+ 	  critical time limitation, such as updating display configuration
+ 	  during the vblank.
  
- int sock_bind_add(struct sock *sk, struct sockaddr *addr, int addr_len);
- 
-+int sock_get_timeout(long timeo, void *optval, bool old_timeval);
-+int sock_copy_user_timeval(struct __kernel_sock_timeval *tv,
-+			   sockptr_t optval, int optlen, bool old_timeval);
++config MTK_ADSP_IPC_MBOX
++	tristate "MediaTek ADSP Mailbox Support"
++	depends on ARCH_MEDIATEK || COMPILE_TEST
++	help
++	  Say yes here to add support for ADSP IPC mailbox driver.
++	  This mailbox driver is used to send notification or short message
++	  between processors with dsp. It will place the
++	  message to the share buffer and will access the ADSP mailbox
++	  registers to kick dsp.
 +
- #endif	/* _SOCK_H */
-diff --git a/include/uapi/linux/vm_sockets.h b/include/uapi/linux/vm_sockets.h
-index 46918a1852d7..c60ca33eac59 100644
---- a/include/uapi/linux/vm_sockets.h
-+++ b/include/uapi/linux/vm_sockets.h
-@@ -64,7 +64,7 @@
-  * timeout for a STREAM socket.
-  */
+ config ZYNQMP_IPI_MBOX
+ 	bool "Xilinx ZynqMP IPI Mailbox"
+ 	depends on ARCH_ZYNQMP && OF
+diff --git a/drivers/mailbox/Makefile b/drivers/mailbox/Makefile
+index c2089f04887e..479a9ae56d5e 100644
+--- a/drivers/mailbox/Makefile
++++ b/drivers/mailbox/Makefile
+@@ -51,6 +51,8 @@ obj-$(CONFIG_STM32_IPCC) 	+= stm32-ipcc.o
  
--#define SO_VM_SOCKETS_CONNECT_TIMEOUT 6
-+#define SO_VM_SOCKETS_CONNECT_TIMEOUT_OLD 6
+ obj-$(CONFIG_MTK_CMDQ_MBOX)	+= mtk-cmdq-mailbox.o
  
- /* Option name for using non-blocking send/receive.  Use as the option name
-  * for setsockopt(3) or getsockopt(3) to set or get the non-blocking
-@@ -81,6 +81,17 @@
- 
- #define SO_VM_SOCKETS_NONBLOCK_TXRX 7
- 
-+#define SO_VM_SOCKETS_CONNECT_TIMEOUT_NEW 8
++obj-$(CONFIG_MTK_ADSP_IPC_MBOX)	+= mtk-adsp-mailbox.o
 +
-+#if !defined(__KERNEL__)
-+#if __BITS_PER_LONG == 64 || (defined(__x86_64__) && defined(__ILP32__))
-+#define SO_VM_SOCKETS_CONNECT_TIMEOUT SO_VM_SOCKETS_CONNECT_TIMEOUT_OLD
-+#else
-+#define SO_VM_SOCKETS_CONNECT_TIMEOUT \
-+	(sizeof(time_t) == sizeof(__kernel_long_t) ? SO_VM_SOCKETS_CONNECT_TIMEOUT_OLD : SO_VM_SOCKETS_CONNECT_TIMEOUT_NEW)
-+#endif
-+#endif
+ obj-$(CONFIG_ZYNQMP_IPI_MBOX)	+= zynqmp-ipi-mailbox.o
+ 
+ obj-$(CONFIG_SUN6I_MSGBOX)	+= sun6i-msgbox.o
+diff --git a/drivers/mailbox/mtk-adsp-mailbox.c b/drivers/mailbox/mtk-adsp-mailbox.c
+new file mode 100644
+index 000000000000..120e1be39118
+--- /dev/null
++++ b/drivers/mailbox/mtk-adsp-mailbox.c
+@@ -0,0 +1,209 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (c) 2021 MediaTek Corporation. All rights reserved.
++ * Author: Allen-KH Cheng <allen-kh.cheng@mediatek.com>
++ */
 +
- /* The vSocket equivalent of INADDR_ANY.  This works for the svm_cid field of
-  * sockaddr_vm and indicates the context ID of the current endpoint.
-  */
-diff --git a/net/core/sock.c b/net/core/sock.c
-index a3eea6e0b30a..a648fd3cc2ec 100644
---- a/net/core/sock.c
-+++ b/net/core/sock.c
-@@ -349,7 +349,7 @@ void sk_error_report(struct sock *sk)
- }
- EXPORT_SYMBOL(sk_error_report);
- 
--static int sock_get_timeout(long timeo, void *optval, bool old_timeval)
-+int sock_get_timeout(long timeo, void *optval, bool old_timeval)
- {
- 	struct __kernel_sock_timeval tv;
- 
-@@ -378,12 +378,11 @@ static int sock_get_timeout(long timeo, void *optval, bool old_timeval)
- 	*(struct __kernel_sock_timeval *)optval = tv;
- 	return sizeof(tv);
- }
-+EXPORT_SYMBOL(sock_get_timeout);
- 
--static int sock_set_timeout(long *timeo_p, sockptr_t optval, int optlen,
--			    bool old_timeval)
-+int sock_copy_user_timeval(struct __kernel_sock_timeval *tv,
-+			   sockptr_t optval, int optlen, bool old_timeval)
- {
--	struct __kernel_sock_timeval tv;
--
- 	if (old_timeval && in_compat_syscall() && !COMPAT_USE_64BIT_TIME) {
- 		struct old_timeval32 tv32;
- 
-@@ -392,8 +391,8 @@ static int sock_set_timeout(long *timeo_p, sockptr_t optval, int optlen,
- 
- 		if (copy_from_sockptr(&tv32, optval, sizeof(tv32)))
- 			return -EFAULT;
--		tv.tv_sec = tv32.tv_sec;
--		tv.tv_usec = tv32.tv_usec;
-+		tv->tv_sec = tv32.tv_sec;
-+		tv->tv_usec = tv32.tv_usec;
- 	} else if (old_timeval) {
- 		struct __kernel_old_timeval old_tv;
- 
-@@ -401,14 +400,28 @@ static int sock_set_timeout(long *timeo_p, sockptr_t optval, int optlen,
- 			return -EINVAL;
- 		if (copy_from_sockptr(&old_tv, optval, sizeof(old_tv)))
- 			return -EFAULT;
--		tv.tv_sec = old_tv.tv_sec;
--		tv.tv_usec = old_tv.tv_usec;
-+		tv->tv_sec = old_tv.tv_sec;
-+		tv->tv_usec = old_tv.tv_usec;
- 	} else {
--		if (optlen < sizeof(tv))
-+		if (optlen < sizeof(*tv))
- 			return -EINVAL;
--		if (copy_from_sockptr(&tv, optval, sizeof(tv)))
-+		if (copy_from_sockptr(tv, optval, sizeof(*tv)))
- 			return -EFAULT;
- 	}
++#include <linux/firmware/mediatek/mtk-adsp-ipc.h>
++#include <linux/interrupt.h>
++#include <linux/io.h>
++#include <linux/iopoll.h>
++#include <linux/kernel.h>
++#include <linux/mailbox_controller.h>
++#include <linux/module.h>
++#include <linux/of_device.h>
++#include <linux/slab.h>
++
++/* adsp mbox register offset */
++#define MTK_ADSP_MBOX_IN_CMD 0x00
++#define MTK_ADSP_MBOX_IN_CMD_CLR 0x04
++#define MTK_ADSP_MBOX_OUT_CMD 0x1c
++#define MTK_ADSP_MBOX_OUT_CMD_CLR 0x20
++#define MTK_ADSP_MBOX_IN_MSG0 0x08
++#define MTK_ADSP_MBOX_IN_MSG1 0x0C
++#define MTK_ADSP_MBOX_OUT_MSG0 0x24
++#define MTK_ADSP_MBOX_OUT_MSG1 0x28
++
++struct mtk_adsp_mbox_priv {
++	struct device *dev;
++	struct mbox_controller mbox;
++	phys_addr_t pa_mboxreg[MTK_ADSP_MBOX_NUM];
++	void __iomem *va_mboxreg[MTK_ADSP_MBOX_NUM];
++};
++
++static irqreturn_t mtk_adsp_ipc_irq_handler(int irq, void *data)
++{
++	struct mbox_chan *ch = (struct mbox_chan *)data;
++	struct adsp_mbox_ch_info *ch_info = ch->con_priv;
++	void __iomem *reg = ch_info->va_reg[ch_info->id];
++	u32 op = readl(reg + MTK_ADSP_MBOX_OUT_CMD);
++
++	writel(op, reg + MTK_ADSP_MBOX_OUT_CMD_CLR);
++
++	return IRQ_WAKE_THREAD;
++}
++
++static irqreturn_t mtk_adsp_ipc_handler(int irq, void *data)
++{
++	struct mbox_chan *ch = (struct mbox_chan *)data;
++	struct adsp_mbox_ch_info *ch_info = ch->con_priv;
++
++	mbox_chan_received_data(ch, ch_info);
++
++	return IRQ_HANDLED;
++}
++
++static struct mbox_chan *mtk_adsp_mbox_xlate(struct mbox_controller *mbox,
++					     const struct of_phandle_args *sp)
++{
++	return &mbox->chans[sp->args[0]];
++}
++
++static int mtk_adsp_mbox_startup(struct mbox_chan *chan)
++{
++	struct adsp_mbox_ch_info *ch_info = chan->con_priv;
++	struct platform_device *pdev;
++	struct device *dev = chan->mbox->dev;
++	char *name;
++	int ret;
++	int irq;
++
++	pdev = container_of(dev, struct platform_device, dev);
++	name = kasprintf(GFP_KERNEL, "irq_mbox%d", ch_info->id);
++	if (!name) {
++		dev_err(dev, "mtk adsp mbox startup mbox%d %s\n", ch_info->id, name);
++		return -ENOMEM;
++	}
++
++	irq = platform_get_irq_byname(pdev, name);
++	if (irq < 0) {
++		dev_err(dev, "Failed to get ipc irq\n");
++		ret = -ENODEV;
++		goto err_name_free;
++	}
++
++	ret = devm_request_threaded_irq(dev, irq,
++					mtk_adsp_ipc_irq_handler, mtk_adsp_ipc_handler,
++					IRQF_TRIGGER_NONE, name,
++					chan);
++	if (ret < 0)
++		dev_err(dev, "failed to request irq %d\n", irq);
++
++err_name_free:
++	kfree(name);
++	return ret;
++}
++
++static void mtk_adsp_mbox_shutdown(struct mbox_chan *chan)
++{
++	chan->con_priv = NULL;
++}
++
++static int mtk_adsp_mbox_send_data(struct mbox_chan *chan, void *data)
++{
++	struct adsp_mbox_ch_info *ch_info = chan->con_priv;
++	void __iomem *reg = ch_info->va_reg[ch_info->id];
++
++	spin_lock(&ch_info->lock);
++	writel(ch_info->ipc_op_val, reg + MTK_ADSP_MBOX_IN_CMD);
++	spin_unlock(&ch_info->lock);
 +
 +	return 0;
 +}
-+EXPORT_SYMBOL(sock_copy_user_timeval);
 +
-+static int sock_set_timeout(long *timeo_p, sockptr_t optval, int optlen,
-+			    bool old_timeval)
++static bool mtk_adsp_mbox_last_tx_done(struct mbox_chan *chan)
 +{
-+	struct __kernel_sock_timeval tv;
-+	int err = sock_copy_user_timeval(&tv, optval, optlen, old_timeval);
++	struct adsp_mbox_ch_info *ch_info = chan->con_priv;
++	u32 id = ch_info->id;
++	void __iomem *reg = ch_info->va_reg[id];
++	u32 op = readl(reg + MTK_ADSP_MBOX_IN_CMD);
 +
-+	if (err)
-+		return err;
++	return (op == 0) ? true : false;
++}
 +
- 	if (tv.tv_usec < 0 || tv.tv_usec >= USEC_PER_SEC)
- 		return -EDOM;
- 
-diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
-index 97d56f6a4480..1fa27cea5b2a 100644
---- a/net/vmw_vsock/af_vsock.c
-+++ b/net/vmw_vsock/af_vsock.c
-@@ -1614,9 +1614,14 @@ static int vsock_connectible_setsockopt(struct socket *sock,
- 		vsock_update_buffer_size(vsk, transport, vsk->buffer_size);
- 		break;
- 
--	case SO_VM_SOCKETS_CONNECT_TIMEOUT: {
--		struct __kernel_old_timeval tv;
--		COPY_IN(tv);
-+	case SO_VM_SOCKETS_CONNECT_TIMEOUT_NEW:
-+	case SO_VM_SOCKETS_CONNECT_TIMEOUT_OLD: {
-+		struct __kernel_sock_timeval tv;
++static const struct mbox_chan_ops adsp_mbox_chan_ops = {
++	.send_data	= mtk_adsp_mbox_send_data,
++	.startup	= mtk_adsp_mbox_startup,
++	.shutdown	= mtk_adsp_mbox_shutdown,
++	.last_tx_done	= mtk_adsp_mbox_last_tx_done,
++};
 +
-+		err = sock_copy_user_timeval(&tv, optval, optlen,
-+					     optname == SO_VM_SOCKETS_CONNECT_TIMEOUT_OLD);
-+		if (err)
-+			break;
- 		if (tv.tv_sec >= 0 && tv.tv_usec < USEC_PER_SEC &&
- 		    tv.tv_sec < (MAX_SCHEDULE_TIMEOUT / HZ - 1)) {
- 			vsk->connect_timeout = tv.tv_sec * HZ +
-@@ -1653,7 +1658,9 @@ static int vsock_connectible_getsockopt(struct socket *sock,
- 
- 	union {
- 		u64 val64;
-+		struct old_timeval32 tm32;
- 		struct __kernel_old_timeval tm;
-+		struct  __kernel_sock_timeval stm;
- 	} v;
- 
- 	int lv = sizeof(v.val64);
-@@ -1680,12 +1687,10 @@ static int vsock_connectible_getsockopt(struct socket *sock,
- 		v.val64 = vsk->buffer_min_size;
- 		break;
- 
--	case SO_VM_SOCKETS_CONNECT_TIMEOUT:
--		lv = sizeof(v.tm);
--		v.tm.tv_sec = vsk->connect_timeout / HZ;
--		v.tm.tv_usec =
--		    (vsk->connect_timeout -
--		     v.tm.tv_sec * HZ) * (1000000 / HZ);
-+	case SO_VM_SOCKETS_CONNECT_TIMEOUT_NEW:
-+	case SO_VM_SOCKETS_CONNECT_TIMEOUT_OLD:
-+		lv = sock_get_timeout(vsk->connect_timeout, &v,
-+				      optname == SO_VM_SOCKETS_CONNECT_TIMEOUT_OLD);
- 		break;
- 
- 	default:
++static int mtk_adsp_mbox_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct mbox_controller *mbox;
++	struct mtk_adsp_mbox_priv *priv;
++	struct resource *res;
++	char *name;
++	int ret;
++	int i;
++
++	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
++	if (!priv)
++		return -ENOMEM;
++
++	mbox = &priv->mbox;
++	mbox->dev = dev;
++	mbox->ops = &adsp_mbox_chan_ops;
++	mbox->txdone_irq = false;
++	mbox->txdone_poll = true;
++	mbox->of_xlate = mtk_adsp_mbox_xlate;
++	mbox->num_chans = MTK_ADSP_MBOX_NUM;
++	mbox->chans = devm_kcalloc(mbox->dev, mbox->num_chans,
++				   sizeof(*mbox->chans), GFP_KERNEL);
++	if (!mbox->chans)
++		return -ENOMEM;
++
++	for (i = 0; i < mbox->num_chans; i++) {
++		struct adsp_mbox_ch_info *ch_info;
++
++		name = kasprintf(GFP_KERNEL, "reg_mbox%d", i);
++		/* parse adsp mbox base */
++		res = platform_get_resource_byname(pdev, IORESOURCE_MEM, name);
++		if (!res) {
++			dev_err(dev, "no MBOX resource %s\n", name);
++			return -ENXIO;
++		}
++
++		priv->pa_mboxreg[i] = (phys_addr_t)res->start;
++		priv->va_mboxreg[i] = devm_ioremap_resource(dev, res);
++		if (IS_ERR(priv->va_mboxreg[i]))
++			return PTR_ERR(priv->va_mboxreg[i]);
++
++		/* set adsp mbox channel info */
++		ch_info = devm_kzalloc(mbox->dev, sizeof(*ch_info), GFP_KERNEL);
++		if (!ch_info)
++			return -ENOMEM;
++
++		spin_lock_init(&ch_info->lock);
++		ch_info->id = i;
++		ch_info->va_reg[i] = priv->va_mboxreg[i];
++		mbox->chans[i].con_priv = ch_info;
++	}
++
++	platform_set_drvdata(pdev, priv);
++	ret = devm_mbox_controller_register(dev, &priv->mbox);
++	if (ret < 0)
++		dev_err(dev, "error: failed to register mailbox:%d\n", ret);
++
++	return ret;
++}
++
++static const struct of_device_id mtk_adsp_mbox_of_match[] = {
++	{ .compatible = "mediatek,mt8195-adsp-mbox", },
++	{},
++};
++MODULE_DEVICE_TABLE(of, mtk_adsp_mbox_of_match);
++
++static struct platform_driver mtk_adsp_ipc_mbox_driver = {
++	.probe		= mtk_adsp_mbox_probe,
++	.driver = {
++		.name	= "mtk_adsp_mbox",
++		.of_match_table = mtk_adsp_mbox_of_match,
++	},
++};
++module_platform_driver(mtk_adsp_ipc_mbox_driver);
++
++MODULE_AUTHOR("Allen-KH Cheng <Allen-KH.Cheng@mediatek.com>");
++MODULE_DESCRIPTION("MTK ADSP mailbox IPC driver");
++MODULE_LICENSE("GPL v2");
 -- 
-2.33.0
+2.18.0
 
