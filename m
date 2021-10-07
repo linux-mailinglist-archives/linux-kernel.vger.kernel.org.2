@@ -2,104 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 934F44255CE
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 16:52:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E69F54255D1
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 16:52:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242202AbhJGOyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 10:54:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33110 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233341AbhJGOyM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 10:54:12 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BCF8C061570
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 07:52:18 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id q19so5076869pfl.4
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 07:52:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=XzU6oWjvmOHgCKTPrKN0uGNh1889uFEZ8Tg39EoSLKM=;
-        b=JCEpDS3KTeXpR8Z/rZUHez8x3bbvKmt/de9LG9aO7vvj1JDE9LdN50zKW3tC9Cdtvo
-         t1ioptpTk0zh1bdqaGOshS9+hMna0KS/z2RkSiaRDOivGX33cppYPs8kOpjFtU/M/Aet
-         wzxH5vkr1tslrTinXtn9k0rODukyqSeDSX9Vg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XzU6oWjvmOHgCKTPrKN0uGNh1889uFEZ8Tg39EoSLKM=;
-        b=3auOxv6C92c//TawKheLCONghUZevRR7e+pf1O/+q0Wxharw8/tFh8IaoAfI13O7zD
-         du6l/yTUpyjJ6ZSzfy1iowFp4hIZ7bDTnC2SRI3tqybhFLjksDTX8LHw7pKgMm95J08v
-         rhILtLzUeuyW2IXpDKtjf53ANMtT5otfCW3G3w6sNfx/D/VxPk8c9smGlQPwWkiHs0Z/
-         pS2IrhOA+HDIteKV9YRxaybfAk/HyEguUJvCCu0U8mrKNA2vlvO/7OtHsXOUtnyVy1dv
-         Zf8IG6Drcqh4Q78CdQs/QGM12VzkvKPootIvhGFXHgbWmWscIMv5i/1l7VgVzoiHUTrw
-         CG2w==
-X-Gm-Message-State: AOAM531iK8c49GUej0t1LlpkTHUU6+k+hTOHSMCn2EIUETX6eQC2XQ/e
-        1FWx6xAs0bp3KXLS4F7hlMy0Jw==
-X-Google-Smtp-Source: ABdhPJx02qsLlnxcSayzlm98BBxWeT7fi5YclxkRodrFmaUOuJTyiXI8sl+/+tXePSd+w1stfWO79Q==
-X-Received: by 2002:a65:6919:: with SMTP id s25mr103960pgq.14.1633618337790;
-        Thu, 07 Oct 2021 07:52:17 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id mu7sm1062709pjb.12.2021.10.07.07.52.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Oct 2021 07:52:17 -0700 (PDT)
-Date:   Thu, 7 Oct 2021 07:52:16 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     pmladek@suse.com, viro@zeniv.linux.org.uk,
-        akpm@linux-foundation.org, peterz@infradead.org,
-        valentin.schneider@arm.com, mathieu.desnoyers@efficios.com,
-        qiang.zhang@windriver.com, robdclark@chromium.org,
-        christian@brauner.io, dietmar.eggemann@arm.com, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/4] fs/exec: use strscpy instead of strlcpy in
- __set_task_comm
-Message-ID: <202110070751.929BA101@keescook>
-References: <20211007120752.5195-1-laoar.shao@gmail.com>
- <20211007120752.5195-3-laoar.shao@gmail.com>
+        id S242211AbhJGOym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 10:54:42 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:64378 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242206AbhJGOyi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 10:54:38 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1633618364; h=Date: Message-ID: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=viYmgYRwFaqRM+Qbx3Egqzt8j0aj4mHAUmADofZbvKE=;
+ b=EhYRne1BIByI7VwhbM9mYP1fn8vwhcq4SMR/9+pF13/8XLQDmw6IuEmrrKYYSJM81pC2hrGn
+ rqs9qdIO58qwYYNy8ieRjTM2yGew5Y88sMUTfBFZ3oKdK9+R8GToJogBNK/h1iFIevESTDUD
+ sSszqGZ7ARNfQdcafh2h8i/2ino=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 615f09b5ff0285fb0a08e9b4 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 07 Oct 2021 14:52:37
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 8429CC43460; Thu,  7 Oct 2021 14:52:37 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.5 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 86014C4338F;
+        Thu,  7 Oct 2021 14:52:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 86014C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211007120752.5195-3-laoar.shao@gmail.com>
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH][next] ath11k: Fix spelling mistake "incompaitiblity" ->
+ "incompatibility"
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20211006083217.349596-1-colin.king@canonical.com>
+References: <20211006083217.349596-1-colin.king@canonical.com>
+To:     Colin King <colin.king@canonical.com>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, ath11k@lists.infradead.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
+Message-ID: <163361835071.17431.1471476207950050430.kvalo@codeaurora.org>
+Date:   Thu,  7 Oct 2021 14:52:37 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 07, 2021 at 12:07:50PM +0000, Yafang Shao wrote:
-> Fix a warning by checkpatch -
-> WARNING: Prefer strscpy over strlcpy - see: https://lore.kernel.org/r/CAHk-=wgfRnXz0W3D37d01q3JFkr_i_uTL=V6A6G1oUZcprmknw@mail.gmail.com/
-> 
-> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> Cc: Kees Cook <keescook@chromium.org>
-> Cc: Al Viro <viro@zeniv.linux.org.uk>
-> Cc: Petr Mladek <pmladek@suse.com>
+Colin King <colin.king@canonical.com> wrote:
 
-Acked-by: Kees Cook <keescook@chromium.org>
+> There is a spelling mistake in an ath11k_warn message. Fix it.
+> 
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-> ---
->  fs/exec.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/exec.c b/fs/exec.c
-> index a098c133d8d7..de804c566200 100644
-> --- a/fs/exec.c
-> +++ b/fs/exec.c
-> @@ -1224,7 +1224,7 @@ void __set_task_comm(struct task_struct *tsk, const char *buf, bool exec)
->  {
->  	task_lock(tsk);
->  	trace_task_rename(tsk, buf);
-> -	strlcpy(tsk->comm, buf, sizeof(tsk->comm));
-> +	strscpy(tsk->comm, buf, sizeof(tsk->comm));
->  	task_unlock(tsk);
->  	perf_event_comm(tsk, exec);
->  }
-> -- 
-> 2.18.2
-> 
+Patch applied to ath-next branch of ath.git, thanks.
+
+567ec33a76c7 ath11k: Fix spelling mistake "incompaitiblity" -> "incompatibility"
 
 -- 
-Kees Cook
+https://patchwork.kernel.org/project/linux-wireless/patch/20211006083217.349596-1-colin.king@canonical.com/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
