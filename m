@@ -2,76 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 165164251C4
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 13:12:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09B9A4251C7
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 13:13:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233872AbhJGLOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 07:14:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230087AbhJGLOV (ORCPT
+        id S240604AbhJGLPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 07:15:15 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:52125 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232729AbhJGLPN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 07:14:21 -0400
-Received: from metanate.com (unknown [IPv6:2001:8b0:1628:5005::111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C17FCC061746;
-        Thu,  7 Oct 2021 04:12:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=metanate.com; s=stronger; h=Content-Transfer-Encoding:Message-Id:Date:
-        Subject:Cc:To:From:Content-Type:Reply-To:Content-ID:Content-Description:
-        In-Reply-To:References; bh=5IpN7IfrzRhmhVgy9bZoBoDtYZ9yheLeeNt1arFGBas=; b=yl
-        DX/LOsLypu5ktwBawKB7+BerNbhpi0ag56AiHqkQlECmbtBr9BoT3qLUjSMjMEgTDfEAxe6JdfG9Q
-        XgXry/MBKyv/eFGiiSE84UMM0zjCSa7ZwB9nLS2cFOfls9Cjw46B3KRaoFRChO0h9Ss3AYjWN//Zt
-        n6m6ZPPtdTbkFcOQX+0gmsBk6ykp6qYnsNKbqI0xfGr/H3uHnq/HdFlea06zlekXV58YF2lpDIDoP
-        1jJ8jSiF6fGh7twPdWlHj9g9O0lSOEN87R20yKCYMNvJ0i1j7tqTYFXCOKGi73pEme2dTa7G+t2RF
-        dPkMYpYtLQ78cZznoANskBc/FmsChntA==;
-Received: from [81.174.171.191] (helo=donbot.metanate.com)
-        by email.metanate.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <john@metanate.com>)
-        id 1mYRK2-0000Ri-P1; Thu, 07 Oct 2021 12:12:22 +0100
-From:   John Keeping <john@metanate.com>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     John Keeping <john@metanate.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Michael Tretter <m.tretter@pengutronix.de>,
-        Andrej Valek <andrej.valek@siemens.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] Input: st1232 - prefer asynchronous probing
-Date:   Thu,  7 Oct 2021 12:12:16 +0100
-Message-Id: <20211007111217.1935858-1-john@metanate.com>
+        Thu, 7 Oct 2021 07:15:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1633605200; x=1665141200;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=RRpGJBI0gqQD/a+Q0yDIDXC0Gv/BgyAzXYWw9kQ6ODo=;
+  b=x/wE8bnWMjc33tcRe+7OU9viCAtE79ig7sN8GU4klkEwBp84jMCVmrsR
+   0CZVOr1Y9m31MZumd1qyPjanvrx7zMZ+zP4G82n4ehzrNn+c6+kPIMNSY
+   c1YjCeAsML4YfYPf2H3xTEBKJsJMz5oI41mypJN7NEwebcgskCY4p+z3B
+   A07XhwdCpLixSLmCfwXPRYON7dGujiJNcn7qNphpMH+8Nvu37bDN4hyFT
+   Dbvvvb5+w3QcMHhwwqpvniTZnfhJT3Y16aI/rAa64GdTnlW35yjcIstl1
+   iGaMJg5EyDF5Yaov3Dqbm1OI9738PgvTPF9DZ28W/mdo2opQFG0Owu72/
+   w==;
+IronPort-SDR: ie2Ypakj3LUIJPS3EoWe2I7mHso+0GTSuaotLEJa9JhAvTUmrjkd37gDStBUIq6iXGNogwehK3
+ 4Nha9QjyuGF6EwLoRtn0y0uWmRNgFLSIjxhSJ1Gc8mHFRMz7e8X3klpQKoElOZpbEV+b6fYWRD
+ iKrC1R1PJ4w0ar4H3S0pBl5OIT7AnC9wM6AZKuk2y+DaV99aYathDNS1HxCQAgoUapuqzCl2k5
+ aHZNroI3jkCRxxfpvRYpNqdK/3KinYOVgj2rJ1m3U2PZP5r0T4copDK5l0o5i8dJUjCN4FF4Wc
+ tZwmVbGx/TjF/cW9ZliCkIv3
+X-IronPort-AV: E=Sophos;i="5.85,354,1624345200"; 
+   d="scan'208";a="138808603"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 07 Oct 2021 04:13:19 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Thu, 7 Oct 2021 04:13:18 -0700
+Received: from rob-dk-mpu01.microchip.com (10.10.115.15) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
+ 15.1.2176.14 via Frontend Transport; Thu, 7 Oct 2021 04:13:16 -0700
+From:   Claudiu Beznea <claudiu.beznea@microchip.com>
+To:     <ludovic.desroches@microchip.com>, <tudor.ambarus@microchip.com>,
+        <vkoul@kernel.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>
+Subject: [PATCH 0/4] dmaengine: at_xdmac: fixes and code enhancements
+Date:   Thu, 7 Oct 2021 14:12:26 +0300
+Message-ID: <20211007111230.2331837-1-claudiu.beznea@microchip.com>
 X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Authenticated: YES
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The device may take up to 100ms to become responsive during probe, so
-prefer asynchronous probing to avoid delaying the rest of the system.
+Hi,
 
-Suggested-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Signed-off-by: John Keeping <john@metanate.com>
----
-As suggested in [1]
+The following series adds some fixes and code enhancements for at_xdmac
+driver.
 
-[1] https://lore.kernel.org/all/YV3mNMnWmUsasZ2h@google.com/
+Thank you,
+Claudiu Beznea
 
- drivers/input/touchscreen/st1232.c | 1 +
- 1 file changed, 1 insertion(+)
+Claudiu Beznea (4):
+  dmaengine: at_xdmac: call at_xdmac_axi_config() on resume path
+  dmaengine: at_xdmac: fix AT_XDMAC_CC_PERID() macro
+  dmaengine: at_xdmac: use __maybe_unused for pm functions
+  dmaengine: at_xdmac: use pm_ptr()
 
-diff --git a/drivers/input/touchscreen/st1232.c b/drivers/input/touchscreen/st1232.c
-index 6abae665ca71..45017ed94833 100644
---- a/drivers/input/touchscreen/st1232.c
-+++ b/drivers/input/touchscreen/st1232.c
-@@ -389,6 +389,7 @@ static struct i2c_driver st1232_ts_driver = {
- 	.driver = {
- 		.name	= ST1232_TS_NAME,
- 		.of_match_table = st1232_ts_dt_ids,
-+		.probe_type	= PROBE_PREFER_ASYNCHRONOUS,
- 		.pm	= &st1232_ts_pm_ops,
- 	},
- };
+ drivers/dma/at_xdmac.c | 67 ++++++++++++++++++++----------------------
+ 1 file changed, 32 insertions(+), 35 deletions(-)
+
 -- 
-2.33.0
+2.25.1
 
