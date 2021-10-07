@@ -2,107 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1F93425F48
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 23:39:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62B85425F6F
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 23:45:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242497AbhJGVlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 17:41:15 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3943 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235665AbhJGVlM (ORCPT
+        id S242576AbhJGVr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 17:47:29 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:36684 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238388AbhJGVr2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 17:41:12 -0400
-Received: from fraeml734-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HQPlc71p7z67bcg;
-        Fri,  8 Oct 2021 05:36:28 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml734-chm.china.huawei.com (10.206.15.215) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Thu, 7 Oct 2021 23:39:15 +0200
-Received: from [10.47.80.141] (10.47.80.141) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Thu, 7 Oct 2021
- 22:39:14 +0100
-Subject: Re: [PATCH v2] scsi: core: Fix shost->cmd_per_lun calculation in
- scsi_add_host_with_dma()
-To:     Dexuan Cui <decui@microsoft.com>, <kys@microsoft.com>,
-        <sthemmin@microsoft.com>, <wei.liu@kernel.org>,
-        <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
-        <haiyangz@microsoft.com>, <ming.lei@redhat.com>,
-        <bvanassche@acm.org>, <linux-scsi@vger.kernel.org>,
-        <linux-hyperv@vger.kernel.org>, <longli@microsoft.com>,
-        <mikelley@microsoft.com>
-CC:     <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>
-References: <20211007174957.2080-1-decui@microsoft.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <8fe3959d-9462-64f6-53d8-ef7036ec0545@huawei.com>
-Date:   Thu, 7 Oct 2021 22:41:46 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        Thu, 7 Oct 2021 17:47:28 -0400
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 197KYaOp025384;
+        Thu, 7 Oct 2021 21:44:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
+ date : message-id : content-transfer-encoding : content-type :
+ mime-version; s=corp-2021-07-09;
+ bh=vOEgKMyw6ykpoZsFUoahvuPME14ABttNwK+tyYVlRCI=;
+ b=h9XQGnNecvixcme0SV0Qv1+vG7Lw7PRnw5N8xyUbrJfnbr4sM2AqGPr0USQvh68NFvhv
+ tgGf68qOCdrTvW62YG1cI6hMloX71FROoysxIZLo/boU9ZxUF9KI/yyflbtQL834M44Z
+ oCCn3GJaqHLcCpIcRCTLu+BoQGbCEcUSfs13biBFKSbXNwXcx1eCn3W/cXZmNuuq98Zc
+ l7uwvfFw+fY71pj4e2cE9maBD+SAS1cwZ3AF27d8wQQZvYgsz4gANsoBViFuSpH7BBLG
+ AXAIPB28886UZ35aFBfVj+BXTOaOk2ePsJWps9pAfs63mwSHV9jo+bs1H4ig3zW35XDO Jg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3bhy2dcdsp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 07 Oct 2021 21:44:58 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 197Le8aO113346;
+        Thu, 7 Oct 2021 21:44:58 GMT
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2103.outbound.protection.outlook.com [104.47.58.103])
+        by aserp3030.oracle.com with ESMTP id 3bev7x4uhn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 07 Oct 2021 21:44:57 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=W7PU4fSlNiXP4viXgdTkOfnRt8Hu4mY4TnlBJTYKrpEBVVFqL6vDUa4CI0d8KrO2F3JOyewNaTvvfGRAHHS1mKLWedMjcOTvrYv2gnqnrHHFFTLqvGLGHenzNjgv9hDPFRA2GKrkn8wxYT9oXAM18HH1t6Eqw3VA7tBPPlzyF3sjN0hBaMUAo59pgEeARUNMgwx9O2Jy5WTjZUNsjwqBN1XIpB5/rwXJZfpIe9DtwtslCD8+rU/l6lnOasNAbK94zIEcWdUbCrmi+8cMRW/3AE00KeVqhSU4nuTopsLoYxHHoUJr+LsN1M38favVth91ovPwwnBLpzT5YvDPnBaurA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=vOEgKMyw6ykpoZsFUoahvuPME14ABttNwK+tyYVlRCI=;
+ b=Uq/JwIT9Jlp/s5xWjtZs5MRRy3WJ8UpSe5zqJ/+qvhesU4KwdsCMdbiRXsuONk1AkVN0yWZxHppoum3RdQoSA4pcO0YbH0OeLWXiG7Yib5zMYrptvikg33NuvPfv4ur+iZsQS7au3IvuN9aRxMydqJh5EwMkQkZeGw8b8e4kgshs/g12lqedFjvfJzSgYICPNw2HaZ+oDpKZE5z2zJrzU3e6K3hODG2RjuzQB1c45SnTujsH3l5WRCHcgVrn4NGMO3OUDdHDlJK5t8bSMoy7sa0MfXbeSMbM5IVHb0ocWQWWMkvGrVZzcrkoei1bTOMDZVCQ1w4NS7RobVWYDIgNBw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vOEgKMyw6ykpoZsFUoahvuPME14ABttNwK+tyYVlRCI=;
+ b=IZTSfYQT4MAeX624wKP1QqJVDv/+NPRHzTS54E5zZ/E4rMcpbFeXPXCSyZJJNnnANtq4+4QMgSfxBULc/KVBX8pL6Cb7aZ526wx/zFOBCAKLCCTjhV/W4Gy6NNZuaAa8oY+6IlYeG8UjPtlSEGUwEYVckcvd3huaJCQkdHM4kHc=
+Authentication-Results: linux-m68k.org; dkim=none (message not signed)
+ header.d=none;linux-m68k.org; dmarc=none action=none header.from=oracle.com;
+Received: from DM5PR10MB1466.namprd10.prod.outlook.com (2603:10b6:3:b::7) by
+ DM5PR10MB1884.namprd10.prod.outlook.com (2603:10b6:3:106::16) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4566.19; Thu, 7 Oct 2021 21:44:56 +0000
+Received: from DM5PR10MB1466.namprd10.prod.outlook.com
+ ([fe80::195:7e6b:efcc:f531]) by DM5PR10MB1466.namprd10.prod.outlook.com
+ ([fe80::195:7e6b:efcc:f531%5]) with mapi id 15.20.4587.021; Thu, 7 Oct 2021
+ 21:44:56 +0000
+From:   Mike Christie <michael.christie@oracle.com>
+To:     geert@linux-m68k.org, vverma@digitalocean.com, hdanton@sina.com,
+        hch@infradead.org, stefanha@redhat.com, jasowang@redhat.com,
+        mst@redhat.com, sgarzare@redhat.com,
+        virtualization@lists.linux-foundation.org,
+        christian.brauner@ubuntu.com, axboe@kernel.dk,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH V4 0/8] Use copy_process/create_io_thread in vhost layer
+Date:   Thu,  7 Oct 2021 16:44:40 -0500
+Message-Id: <20211007214448.6282-1-michael.christie@oracle.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: DM5PR20CA0008.namprd20.prod.outlook.com
+ (2603:10b6:3:93::18) To DM5PR10MB1466.namprd10.prod.outlook.com
+ (2603:10b6:3:b::7)
 MIME-Version: 1.0
-In-Reply-To: <20211007174957.2080-1-decui@microsoft.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.80.141]
-X-ClientProxiedBy: lhreml744-chm.china.huawei.com (10.201.108.194) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Received: from localhost.localdomain (73.88.28.6) by DM5PR20CA0008.namprd20.prod.outlook.com (2603:10b6:3:93::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.18 via Frontend Transport; Thu, 7 Oct 2021 21:44:55 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ce0daf24-e039-4c80-9502-08d989dbb3e4
+X-MS-TrafficTypeDiagnostic: DM5PR10MB1884:
+X-Microsoft-Antispam-PRVS: <DM5PR10MB18841890149C27958C96459DF1B19@DM5PR10MB1884.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: fXkpXTwgtkoo7poxYNFTtcBp5LyMAywDxI2x38juOW4dwGnOq69hCwYmVnbqVm66Q79dYuuChocFKJ22Xinqdn8dNPXzUXfdjThNUHmodEbnIeVRwarskIXLsHGNxnSvFEnlLGy4aFsr/b2DBMWbfp81LstVOLbWBGGrQoT4b718KqWHHmmgf5XVcPNhspg/HeZe/z742kG/ay/yx5CtDhH+WCkGbx69g3uzzVY+Sx4q/L/fZ1na+LnXYfVmEk05r6Ftgc/8kDfnAVDC1XVV5bi9MgEje4zYx5hKAW7ARWXmh8DdrJ4XJM4Eoj8NVHdwaQLK46bpjhSgFuWLDMwyoGVKechqa+qGml6fWqNyrgoTKEvv0uA4blwBAodG1MLXPERfWvWxyEljBsf3z76oxWVtkS4XsV0WHxngX7aEBaelc55sfB0F3bGT1cAvd91cjoyB5qPU9k/ZSAEM+/QMMf4q9wbULfUK0y+wU4rqOuzxEXbyrD0/aGKU4ic97UoDHQQFlcqU/i9NX8IJHTU8T/o/WDOY350g6HOlprnRwPiVhur8r6mTnR+SCpJkN5vzJQKP6DAc2/Hup5NIEq6HFVK/TnLTh8OvspR+t1plA2sa8v5na9sgkYZKqpPsbma/i1wsWRuuvn6TGTUhnImMIUB7RGOmz2V3XkBLpZDQrAyY/8SoMrnSP3VGXgN21oaypB2LhTp0Ls54d1OpHR3HSpBLYy8Vjx6CH3XBZwTZKA/Se7ISuW+Z9hC78PgfaCfSPHqUmBwYN8LgqpC+QXrDn3n0bMJVi4qjr4Im7a8hv5w3bofHqrQgbCS/qpuZSKZV
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR10MB1466.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(52116002)(508600001)(6506007)(66556008)(26005)(6512007)(2906002)(83380400001)(921005)(1076003)(66946007)(956004)(2616005)(186003)(6666004)(8676002)(38100700002)(8936002)(86362001)(36756003)(966005)(6486002)(5660300002)(7416002)(38350700002)(66476007)(316002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?f2s4CxLy/a+ywETvQARBvja3YoX791x8bTc9pB6BjXRqGX9IDz2ZiALjapzk?=
+ =?us-ascii?Q?/uqC4DP9JkCXAyKbc0O9GDynJ7bvhNXlwy5/io25Af4yHEwmES6+DlwtzUWc?=
+ =?us-ascii?Q?gsKmCdH58DqMSMwz6muMYO6SzWgGSEZ2wlGA7SA9G2mfnRFmObRqlvz2SDjg?=
+ =?us-ascii?Q?+H2szV0+KLMEukIrSjrwbIi2ljB/Hdoa4GH2bsJ5BgtQyY/mqoP7nHiX0ipg?=
+ =?us-ascii?Q?DyIKzMCm5DSlRZwnhWTP7/1xvwxWtZUhanwjohd8IhDt5+2zfkByqEr+20n1?=
+ =?us-ascii?Q?yHHiUTwF77cOPpR9RyEpV/QYZUr/dbQhJS7mAspab67cDBz9Gs7W+6i0Bl8J?=
+ =?us-ascii?Q?UlnjwrGTuHsg8jBdFoTelAcUROq0EtZIVddC9RPQ5rMjnXIJOFbrZskQmNwH?=
+ =?us-ascii?Q?72+gL7ZxGK6E6rRd8UolxZrdzIdXWmMpNb9gVcycFX3+A1eJ6+h5WdoPck2R?=
+ =?us-ascii?Q?ZlAu1o69r5k7rT+Bi0IMQAPWCK4vS/ZgM5rcwNDTWTdVLdvNid4UZJI35Zbt?=
+ =?us-ascii?Q?zO3lS3pEqODS65eTK1yUX+oh5CAzITUyRPPKZxvUXpZ7mdV9HZMPhgFqg3C6?=
+ =?us-ascii?Q?iV+LsbARryeIvM5hUNnLK54R0dGP69ppBVPJM/UvV6CiftQ1UaqGy9K8fVf2?=
+ =?us-ascii?Q?DZS80GkCkDZNaHAHT4OK9qeqHDtX1mwSOwRucUfKUOWRavuVSwgkRWdJNxRL?=
+ =?us-ascii?Q?yI8Y9xuXSSNu1pqMdGcUbMSDYDZu3wHK3UgVRN6/TnzsgXcnoqSp0o1bJjfe?=
+ =?us-ascii?Q?BWi1tGTF0N4/42Ev5wBuwRg9qaMnCjg9vj1UglgVh4jRyuZLzUYt3ZzMGg6h?=
+ =?us-ascii?Q?BnX6N/elDdBx+CDhnhwFbqxMP6S1ZMvq0ESTaLojHXH5q4Jafy2PMC6FvTJo?=
+ =?us-ascii?Q?xP09FszoXFd4KJshxcHTQsuTf1PuBSHpL67GWUwNQK2gS9p3blwLWhMUpJtr?=
+ =?us-ascii?Q?Y3QJOcwDh+Q/MMtf87XnEdEsybPl++ZX6uUI3OCBHIxeiV3Y6PaejLt3c7Jx?=
+ =?us-ascii?Q?yRC53cCvZuiDi3iqb90HfkTdfe6ZQRTU0XZlO7nvbRP+L0VAffo/XFS+zyrS?=
+ =?us-ascii?Q?YPkd9Dh8Sq81j2QCWb7o9qyYBzoNTjHWMxzyZosqUM6EzVusxt59x6m4VGA1?=
+ =?us-ascii?Q?5GGNKZfi3ZcHcU1PBG4Jgjr1LE3PrHSn2qCfh8jx0ovHCE/sffsvaUi1KhiP?=
+ =?us-ascii?Q?PZr79pJb36fS6tXqlk6Woktn81HnXLsragEp0K67moL9QbDgPHMZNa0MWqWb?=
+ =?us-ascii?Q?Q4nd8OAxuBPmvJEnQBtXFpB0sMYwbV/beVQa5GL7jGnWd19z2xAgZU7ueni0?=
+ =?us-ascii?Q?DhdTd5K3sMctp1uifD+fuAIJ?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ce0daf24-e039-4c80-9502-08d989dbb3e4
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR10MB1466.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Oct 2021 21:44:56.0150
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Voa8s7GyBIU/182Gz/vZhqqZDKGH7fNZKQd0lTkX6CDLXBYf+mYWSwoBd8XWw/PW7b5a+54oh+iV4mSm1hCBXzdOUEioc26XeUrBLwgnWis=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR10MB1884
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10130 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=824 adultscore=0
+ bulkscore=0 suspectscore=0 malwarescore=0 spamscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109230001
+ definitions=main-2110070137
+X-Proofpoint-ORIG-GUID: 2izF_TUqEsziKzO4cSguRLzBd1Ny_C5k
+X-Proofpoint-GUID: 2izF_TUqEsziKzO4cSguRLzBd1Ny_C5k
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/10/2021 18:49, Dexuan Cui wrote:
-> After commit ea2f0f77538c, a 416-CPU VM running on Hyper-V hangs during
-> boot because scsi_add_host_with_dma() sets shost->cmd_per_lun to a
-> negative number (the below numbers may differ in different kernel versions):
-> in drivers/scsi/storvsc_drv.c, 	storvsc_drv_init() sets
-> 'max_outstanding_req_per_channel' to 352, and storvsc_probe() sets
-> 'max_sub_channels' to (416 - 1) / 4 = 103 and sets scsi_driver.can_queue to
-> 352 * (103 + 1) * (100 - 10) / 100 = 32947, which exceeds SHRT_MAX.
+The following patches apply over Linus's, Jens's or mst's trees, but were
+made over linux-next because patch 6:
 
-I think that you just need to mention that if can_queue exceeds 
-SHRT_MAX, then there is a data truncation issue.
+io_uring: switch to kernel_worker
 
-> 
-> Use min_t(int, ...) to fix the issue.
-> 
-> Fixes: ea2f0f77538c ("scsi: core: Cap scsi_host cmd_per_lun at can_queue")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Dexuan Cui <decui@microsoft.com>
+has merge conflicts with Jens Axboe's for-next branch and Paul Moore's
+selinux tree's next branch.
 
-It looks ok, I'd just like to test it a bit more.
+This is V4 of the patchset. It should handle all the review comments
+posted in V1 - V3. If I missed a comment, please let me know.
 
-Thanks,
-John
+This patchset allows the vhost layer to do a copy_process on the thread
+that does the VHOST_SET_OWNER ioctl like how io_uring does a copy_process
+against its userspace app (Jens, the patches make create_io_thread more
+generic so that's why you are cc'd). This allows the vhost layer's worker
+threads to inherit cgroups, namespaces, address space, etc and this worker
+thread will also be accounted for against that owner/parent process's
+RLIMIT_NPROC limit.
 
-> ---
-> 
-> v1 tried to fix the issue by changing the storvsc driver:
-> https://lwn.net/ml/linux-kernel/BYAPR21MB1270BBC14D5F1AE69FC31A16BFB09@BYAPR21MB1270.namprd21.prod.outlook.com/
-> 
-> v2 directly fixes the scsi core change instead as Michael Kelley and
-> John Garry suggested (refer to the above link).
+If you are not familiar with qemu and vhost here is more detailed
+problem description:
 
-To be fair, it was Michael's suggestion
+Qemu will create vhost devices in the kernel which perform network, SCSI,
+etc IO and management operations from worker threads created by the
+kthread API. Because the kthread API does a copy_process on the kthreadd
+thread, the vhost layer has to use kthread_use_mm to access the Qemu
+thread's memory and cgroup_attach_task_all to add itself to the Qemu
+thread's cgroups.
 
-> 
->   drivers/scsi/hosts.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/scsi/hosts.c b/drivers/scsi/hosts.c
-> index 3f6f14f0cafb..24b72ee4246f 100644
-> --- a/drivers/scsi/hosts.c
-> +++ b/drivers/scsi/hosts.c
-> @@ -220,7 +220,8 @@ int scsi_add_host_with_dma(struct Scsi_Host *shost, struct device *dev,
->   		goto fail;
->   	}
->   
-> -	shost->cmd_per_lun = min_t(short, shost->cmd_per_lun,
-> +	/* Use min_t(int, ...) in case shost->can_queue exceeds SHRT_MAX */
-> +	shost->cmd_per_lun = min_t(int, shost->cmd_per_lun,
->   				   shost->can_queue);
->   
->   	error = scsi_init_sense_cache(shost);
-> 
+The problem with this approach is that we then have to add new functions/
+args/functionality for every thing we want to inherit. I started doing
+that here:
+
+https://lkml.org/lkml/2021/6/23/1233
+
+for the RLIMIT_NPROC check, but it seems it might be easier to just
+inherit everything from the beginning, becuase I'd need to do something
+like that patch several times. For example, the current approach does not
+support cgroups v2 so commands like virsh emulatorpin do not work. The
+qemu process can go over its RLIMIT_NPROC. And for future vhost interfaces
+where we export the vhost thread pid we will want the namespace info.
+
+V4:
+- Drop NO_SIG patch and replaced with Christian's SIG_IGN patch.
+- Merged Christian's kernel_worker_flags_valid helpers into patch 5 that
+  added the new kernel worker functions.
+- Fixed extra "i" issue.
+- Added PF_USER_WORKER flag and added check that kernel_worker_start users
+  had that flag set. Also dropped patches that passed worker flags to
+  copy_thread and replaced with PF_USER_WORKER check.
+V3:
+- Add parentheses in p->flag and work_flags check in copy_thread.
+- Fix check in arm/arm64 which was doing the reverse of other archs
+  where it did likely(!flags) instead of unlikely(flags).
+V2:
+- Rename kernel_copy_process to kernel_worker.
+- Instead of exporting functions, make kernel_worker() a proper
+  function/API that does common work for the caller.
+- Instead of adding new fields to kernel_clone_args for each option
+  make it flag based similar to CLONE_*.
+- Drop unused completion struct in vhost.
+- Fix compile warnings by merging vhost cgroup cleanup patch and
+  vhost conversion patch.
+
+
 
