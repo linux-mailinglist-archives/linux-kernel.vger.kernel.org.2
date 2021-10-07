@@ -2,89 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6781C4257AC
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 18:18:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BA224257B0
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 18:19:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242700AbhJGQUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 12:20:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24314 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242606AbhJGQUh (ORCPT
+        id S242603AbhJGQU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 12:20:59 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:51580 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242714AbhJGQUr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 12:20:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633623523;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        Thu, 7 Oct 2021 12:20:47 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 8679B200EF;
+        Thu,  7 Oct 2021 16:18:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1633623532; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=g2BhWp9ye5wWG2ktl9BRS9ejL5FqZFg78PPEny8VjKw=;
-        b=hLmCdAqEvZWZzAQngalY8cNIQJJYQ6eIS37ZFPh70EluAbj2vj4EcAG7g5ppfzLULFtt5k
-        ZGtGwIeM9hdFLeJsimRz2lThYDTikIbppX+/pqMJG5vlwYX3Hmqz9krB01kmED4pdyC/tg
-        j+j4mSFca7tcKrG7treJSWBktNGN6CY=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-267-5pNWxzxiNYyiMeU88bL81g-1; Thu, 07 Oct 2021 12:18:41 -0400
-X-MC-Unique: 5pNWxzxiNYyiMeU88bL81g-1
-Received: by mail-qv1-f69.google.com with SMTP id kk3-20020a056214508300b00382d8d1bd71so6123621qvb.7
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 09:18:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=g2BhWp9ye5wWG2ktl9BRS9ejL5FqZFg78PPEny8VjKw=;
-        b=5yQMpufUBIxMNfyWkspU8JvUagjBAv82JfeA7cWtRmqZ59J7tzbtTJ7yTKSB7+WEPG
-         zrJLv3Zip8U5Wbt2Fc6n5VBR1hEWmx4r+IOAgbDwbZpvQ25+JyBpnvGbd//MkET+nLW6
-         kFbufKHaqtMFKKbPtWYge601nfvYS0PE0ld/jzGX5wP1q+Ouue+oQhiq9UnTLwXl89sZ
-         JFl5lnr+TJ9n7N4PZ5ZYTY2i+8CFKmuFctkHbYs2ap4sHDCO56DE41VOBibUyBSl5gQi
-         OLmpYBGzkPkAzJ5oV09svBFoeKast6LemM0t+EHv0SqP7zDOHU89Cai0V9dXtVJgjof7
-         4Tpg==
-X-Gm-Message-State: AOAM532Uu2UOv1mSHQcg114rZwfLSrsjm5Wt4sq2uklJTEfqEx1Ehr5A
-        vdnlRMgsIsk/2j+zTMZkoigMulIuRSPPL2pLPrdC0dS0QcGjE4ea7Ie2W6wZbvRBm10xgrHQ3hX
-        eWLtfNfRbrNCR4ZI48CS6NmWK
-X-Received: by 2002:ae9:d604:: with SMTP id r4mr3995160qkk.401.1633623521167;
-        Thu, 07 Oct 2021 09:18:41 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzISNgoyX8ThhELtimobeSv0obTz8WwchRnJ53hCvPdL8MPEoqR1UNazjrmPhIn7tsohgi8HA==
-X-Received: by 2002:ae9:d604:: with SMTP id r4mr3995128qkk.401.1633623520953;
-        Thu, 07 Oct 2021 09:18:40 -0700 (PDT)
-Received: from t490s ([2607:fea8:56a2:9100::bed8])
-        by smtp.gmail.com with ESMTPSA id h66sm13982024qkc.5.2021.10.07.09.18.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Oct 2021 09:18:40 -0700 (PDT)
-Date:   Thu, 7 Oct 2021 12:18:39 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Yang Shi <shy828301@gmail.com>
-Cc:     HORIGUCHI =?utf-8?B?TkFPWUEo5aCA5Y+jIOebtOS5nyk=?= 
-        <naoya.horiguchi@nec.com>, Hugh Dickins <hughd@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [v3 PATCH 3/5] mm: hwpoison: refactor refcount check handling
-Message-ID: <YV8d3ydgMcTkLwrG@t490s>
-References: <20210930215311.240774-1-shy828301@gmail.com>
- <20210930215311.240774-4-shy828301@gmail.com>
- <YV4c1dOfctEMnH2s@t490s>
- <CAHbLzkqtaF2iFwg0TmMm_1q+o+-O=CXAAPY2izxL6N=8umX_Cg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAHbLzkqtaF2iFwg0TmMm_1q+o+-O=CXAAPY2izxL6N=8umX_Cg@mail.gmail.com>
+        bh=PaMfz9PVFXMpWIUMO3f5QL4IvLizLUlBUd3gCzvZPZ4=;
+        b=U7IeIYYDGURaXsCtsckS55wtldHDAEL0dl42zMYtZtP/bSVyDN0XLxuTnw+U/TT+30i8fx
+        5hNftnDOXpVez1vHWxOYlqQ/G+a09fUlefzI1nYxAbv7it+bbXCD/x2mxFIpw6WaQd1Fyr
+        5cUfhHLF2wXETBdKyO/Kib/Fm6gu1Xk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1633623532;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PaMfz9PVFXMpWIUMO3f5QL4IvLizLUlBUd3gCzvZPZ4=;
+        b=cSMfnsJ3A01EebhgUDnVwpgkxhFWN0NUnhWqRdzWAfebWdcZ5X6NA/rz+ROV0xJm6u8ha7
+        aY7kDSjasZanjyAw==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id 6A658A3DF0;
+        Thu,  7 Oct 2021 16:18:52 +0000 (UTC)
+Date:   Thu, 07 Oct 2021 18:18:52 +0200
+Message-ID: <s5hr1cw95ar.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Rich Felker <dalias@libc.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Michael Forney <mforney@mforney.org>,
+        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+        Takashi Iwai <tiwai@suse.com>,
+        Baolin Wang <baolin.wang@linaro.org>,
+        y2038 Mailman List <y2038@lists.linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Baolin Wang <baolin.wang7@gmail.com>, musl@lists.openwall.com
+Subject: Re: [musl] Re: [alsa-devel] [PATCH v7 8/9] ALSA: add new 32-bit layout for snd_pcm_mmap_status/control
+In-Reply-To: <20211007160634.GB7074@brightrain.aerifal.cx>
+References: <20191211212025.1981822-1-arnd@arndb.de>
+        <20191211212025.1981822-9-arnd@arndb.de>
+        <29QBMJU8DE71E.2YZSH8IHT5HMH@mforney.org>
+        <s5hpmsh9kdx.wl-tiwai@suse.de>
+        <CAK8P3a0K3XtjiszC3XWgG0L8+AgO+xUGr_KEAnb9a5GmyecoUQ@mail.gmail.com>
+        <s5hee8x9f92.wl-tiwai@suse.de>
+        <CAK8P3a0pSZxqfk-bn+idrDYDwANSfiP9L6U1O5jLQvK+3vwyVQ@mail.gmail.com>
+        <s5hy27497eo.wl-tiwai@suse.de>
+        <20211007160634.GB7074@brightrain.aerifal.cx>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 06, 2021 at 07:47:20PM -0700, Yang Shi wrote:
-> Yeah, it is intentional. Before this change all me_* handlers did
-> check refcount even though it was not necessary, for example,
-> me_kernel() and me_unknown().
+On Thu, 07 Oct 2021 18:06:36 +0200,
+Rich Felker wrote:
+> 
+> On Thu, Oct 07, 2021 at 05:33:19PM +0200, Takashi Iwai wrote:
+> > On Thu, 07 Oct 2021 15:11:00 +0200,
+> > Arnd Bergmann wrote:
+> > > 
+> > >  On Thu, Oct 7, 2021 at 2:43 PM Takashi Iwai <tiwai@suse.de> wrote:
+> > > > On Thu, 07 Oct 2021 13:48:44 +0200, Arnd Bergmann wrote:
+> > > > > On Thu, Oct 7, 2021 at 12:53 PM Takashi Iwai <tiwai@suse.de> wrote:
+> > > > > > On Wed, 06 Oct 2021 19:49:17 +0200, Michael Forney wrote:
+> > > > >
+> > > > > As far as I can tell, the broken interface will always result in
+> > > > > user space seeing a zero value for "avail_min". Can you
+> > > > > make a prediction what that would mean for actual
+> > > > > applications? Will they have no audio output, run into
+> > > > > a crash, or be able to use recover and appear to work normally
+> > > > > here?
+> > > >
+> > > > No, fortunately it's only about control->avail_min, and fiddling this
+> > > > value can't break severely (otherwise it'd be a security problem ;)
+> > > >
+> > > > In the buggy condition, it's always zero, and the kernel treated as if
+> > > > 1, i.e. wake up as soon as data is available, which is OK-ish for most
+> > > > applications.   Apps usually don't care about the wake-up condition so
+> > > > much.  There are subtle difference and may influence on the stability
+> > > > of stream processing, but the stability usually depends more strongly
+> > > > on the hardware and software configurations.
+> > > >
+> > > > That being said, the impact by this bug (from the application behavior
+> > > > POV) is likely quite small, but the contamination is large; as you
+> > > > pointed out, it's much larger than I thought.
+> > > 
+> > > Ok, got it.
+> > > 
+> > > > The definition in uapi/sound/asound.h is a bit cryptic, but IIUC,
+> > > > __snd_pcm_mmap_control64 is used for 64bit archs, right?  If so, the
+> > > > problem rather hits more widely on 64bit archs silently.  Then, the
+> > > > influence by this bug must be almost negligible, as we've had no bug
+> > > > report about the behavior change.
+> > > 
+> > > While __snd_pcm_mmap_control64 is only used on 32-bit
+> > > architectures when 64-bit time_t is used. At the moment, this
+> > > means all users of musl-1.2.x libc, but not glibc.
+> > > 
+> > > On 64-bit architectures, __snd_pcm_mmap_control and
+> > > __snd_pcm_mmap_control64 are meant to be identical,
+> > > and this is actually true regardless of the bug, since
+> > > __pad_before_uframe and __pad_after_uframe both
+> > > end up as zero-length arrays here.
+> > > 
+> > > > We may just fix it in kernel and for new library with hoping that no
+> > > > one sees the actual problem.  Or, we may provide a complete new set of
+> > > > mmap offsets and ioctl to cover both broken and fixed interfaces...
+> > > > The decision depends on how perfectly we'd like to address the bug.
+> > > > As of now, I'm inclined to go for the former, but I'm open for more
+> > > > opinions.
+> > > 
+> > > Adding the musl list to Cc for additional testers, anyone interested
+> > > please see [1] for the original report.
+> > > 
+> > > It would be good to hear from musl users that are already using
+> > > audio support with 32-bit applications on 64-bit kernels, which
+> > > is the case that has the problem today. Have you noticed any
+> > > problems with audio support here? If not, we can probably
+> > > "fix" the kernel here and make the existing binaries behave
+> > > the same way on 32-bit kernels. If there are applications that
+> > > don't work in that environment today, I think we need to instead
+> > > change the kernel to accept the currently broken format on
+> > > both 32-bit and 64-bit kernels, possibly introducing yet another
+> > > format that works as originally intended but requires a newly
+> > > built kernel.
+> > 
+> > Thanks!
+> > 
+> > And now, looking more deeply, I feel more desperate.
+> > 
+> > This bug makes the expected padding gone on little-endian.
+> > On LE 32bit, the buggy definition is:
+> > 
+> > 	char __pad1[0];
+> > 	u32 appl_ptr;
+> > 	char __pad2[0]; // this should have been [4]
+> > 	char __pad3[0];
+> > 	u32 avail_min;
+> > 	char __pad4[4];
+> > 	
+> > When an application issues SYNC_PTR64 ioctl to submit appl_ptr and
+> > avail_min updates, 64bit kernel (in compat mode) reads directly as:
+> > 
+> > 	u64 appl_ptr;
+> > 	u64 avail_min;
+> > 
+> > Hence a bogus appl_ptr would be passed if avail_min != 0.
+> > And usually application sets non-zero avail_min.
+> > That is, the bug must hit more severely if the new API were really
+> > used.  It wouldn't crash, but some weird streaming behavior can
+> > happen like noise, jumping or underruns.
+> > 
+> > (Reading back avail_min=0 to user-space is rather harmless.  Ditto for
+> >  the case of BE, then at least there is no appl_ptr corruption.)
+> > 
+> > This made me wonder which way to go:
+> > it's certainly possible to fix the new kernel to treat both buggy and
+> > sane formats (disabling compat mmap and re-define ioctls, having the
+> > code for old APIs).  The problem is, however, in the case where the
+> > application needs to run on the older kernel that expects the buggy
+> > format.  Then apps would still have to send in the old buggy format --
+> > or maybe better in the older 32bit format that won't hit the bug
+> > above.  It makes situation more complicated.
+> 
+> Can't an ioctl number just be redefined so that, on old kernels with
+> the buggy one, newly built applications get told that mmap is not
+> available and use the unaffected non-mmap fallback?
 
-Would you mind add some explanation into the commit message on what kind of
-pages dropped the refcount check, and why they can be dropped, when you respin?
-Thanks a lot.
+The problem is that the SYNC_PTR64 ioctl itself for non-mmap fallback
+is equally buggy due to this bug, too.  So disabling mmap doesn't help
+alone.
 
--- 
-Peter Xu
+And, yes, we can redefine ioctl numbers.  But, then, application would
+have to be bilingual, as well as the kernel; it'll have to switch back
+to old API when running on older kernel, while the same binary would
+need to run in a new API for a newer kernel.
 
+Maybe we can implement it in alsa-lib, if it really worth for it.
+
+> > Do we know how widely the __USE_TIME_BITS64 is deployed nowadays?
+> 
+> Anyone using musl on 32-bit archs who's not >=2 years behind current.
+
+OK.
+
+
+Takashi
