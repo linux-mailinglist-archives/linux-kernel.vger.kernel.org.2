@@ -2,137 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 506614253C0
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 15:11:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A397D4253C4
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 15:12:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240542AbhJGNNR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 09:13:17 -0400
-Received: from mout.kundenserver.de ([217.72.192.73]:43479 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241197AbhJGNNN (ORCPT
+        id S241221AbhJGNOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 09:14:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37576 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232869AbhJGNN6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 09:13:13 -0400
-Received: from mail-wr1-f41.google.com ([209.85.221.41]) by
- mrelayeu.kundenserver.de (mreue106 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1M5g68-1mRJVP3bhq-0079iO for <linux-kernel@vger.kernel.org>; Thu, 07 Oct
- 2021 15:11:17 +0200
-Received: by mail-wr1-f41.google.com with SMTP id o20so18934608wro.3
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 06:11:17 -0700 (PDT)
-X-Gm-Message-State: AOAM530CsFEbf3dBUvX3mesjF8+gSIYhiAkJFymF+wePbeya01RfBOeY
-        YtIOrRglQxESakFNRvv7Om7OZHnJcxiJttyIJ3g=
-X-Google-Smtp-Source: ABdhPJz+35NXT/p5TszOUNgOpymxZVTmTArKWJKi2r6OibnWqxiqzjsuLR4U9FbC9D/iKpGK8f1e5LZYTuC8A3v+RKY=
-X-Received: by 2002:adf:a3da:: with SMTP id m26mr5182095wrb.336.1633612277427;
- Thu, 07 Oct 2021 06:11:17 -0700 (PDT)
+        Thu, 7 Oct 2021 09:13:58 -0400
+Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45071C061570;
+        Thu,  7 Oct 2021 06:12:05 -0700 (PDT)
+Received: by mail-vs1-xe32.google.com with SMTP id p2so6662067vst.10;
+        Thu, 07 Oct 2021 06:12:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Uog13Y0nxNSntLqFwQzDK1WsEsK6sCbRFGV7b22RtpA=;
+        b=h14Y3+WgcjryBj+wi/oa7fXDTLYMX6uUw9C9suUVobnKHnRetQQqAO2Hx7D2A/ssdn
+         lNEuuaorla4KgR7jzz1DLrSgsMq4VgbkMyZsnFoX4xAXMBLcl5KErl4H3BedOwTqRc5n
+         3G2Ciu+e6qbrGE/Le26bNeWKiPixaEKaAhibv8t52BYhFafQ9BxaV78bYMq2uDWuW9pE
+         7aEAR6069C6QPq2RDwvU2LIguBrrWoJ9/ZZTNwrQaXmCHblQ4mlzgs31xfr5RutoNYg1
+         RMiGT5OMXYFZlpBNWbjvT4dNyjZpi29ao0rZTkp348KCcnU2P0hj1u+p1CS4G2qmIBhJ
+         W5wg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Uog13Y0nxNSntLqFwQzDK1WsEsK6sCbRFGV7b22RtpA=;
+        b=o8zEkaJ7+x3dEShzkCyL0TcyE6JmlZkVn0CeQKowArnzMfcTQtEMoshnfvj6RSmu+7
+         dyNSXODr164CQFeQcPRC07pSGY5V2r+03V6NOtvLru9Zvm24/V9cel38WJ7dINI96Im0
+         Uixn4YXO2Aw8P2bJjZGbKwIa7aCvfndT+y/UqTD3gc12T9njExss7C35T1NzPhqsFycl
+         cpP+0h8sATGfWBeUHIXgpmkwnHicVQVApnEhsyOz7BQrHsSunT6bjldjJZnPaaUfani2
+         LYxqFJqNwV5QQnYzyb6HaZWh9Yay+mCTWH1XW5Xz5JaRNiZBPpPIp3d0g284HbnO1/Wc
+         aPgw==
+X-Gm-Message-State: AOAM530nJSlK0aAt0pKnuKQczRvmKMle9qPEdk38TOMDF7geZxQSMb1N
+        H16P+IYlo+T+euLl/IYKirPgaQIzlbC1xX5yqw==
+X-Google-Smtp-Source: ABdhPJwUo2KdAbb9C5BHv85wimBbKc/zI4J9GVcMH3XJIg5D3Uz0B+LTFtK3EtqWmXfFtmLOE6+UuNQOuFN5TpisLW0=
+X-Received: by 2002:a67:31d8:: with SMTP id x207mr3536363vsx.11.1633612322799;
+ Thu, 07 Oct 2021 06:12:02 -0700 (PDT)
 MIME-Version: 1.0
-References: <20191211212025.1981822-1-arnd@arndb.de> <20191211212025.1981822-9-arnd@arndb.de>
- <29QBMJU8DE71E.2YZSH8IHT5HMH@mforney.org> <s5hpmsh9kdx.wl-tiwai@suse.de>
- <CAK8P3a0K3XtjiszC3XWgG0L8+AgO+xUGr_KEAnb9a5GmyecoUQ@mail.gmail.com> <s5hee8x9f92.wl-tiwai@suse.de>
-In-Reply-To: <s5hee8x9f92.wl-tiwai@suse.de>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Thu, 7 Oct 2021 15:11:00 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0pSZxqfk-bn+idrDYDwANSfiP9L6U1O5jLQvK+3vwyVQ@mail.gmail.com>
-Message-ID: <CAK8P3a0pSZxqfk-bn+idrDYDwANSfiP9L6U1O5jLQvK+3vwyVQ@mail.gmail.com>
-Subject: Re: [alsa-devel] [PATCH v7 8/9] ALSA: add new 32-bit layout for snd_pcm_mmap_status/control
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Michael Forney <mforney@mforney.org>,
-        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
-        Takashi Iwai <tiwai@suse.com>,
-        Baolin Wang <baolin.wang@linaro.org>,
-        y2038 Mailman List <y2038@lists.linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Baolin Wang <baolin.wang7@gmail.com>, musl@lists.openwall.com
+References: <CALjTZvbzYfBuLB+H=fj2J+9=DxjQ2Uqcy0if_PvmJ-nU-qEgkg@mail.gmail.com>
+ <87ee8yquyi.wl-maz@kernel.org> <CALjTZvakX8Hz+ow3UeAuQiicVXtbkXEDFnHU-+n8Ts6i1LRyHQ@mail.gmail.com>
+ <87bl41qkrh.wl-maz@kernel.org> <CALjTZvbsvsD6abpw0H5D4ngUXPrgM2mDV0DX5BQi0z8cd-yxzA@mail.gmail.com>
+ <878rz5qbee.wl-maz@kernel.org>
+In-Reply-To: <878rz5qbee.wl-maz@kernel.org>
+From:   Rui Salvaterra <rsalvaterra@gmail.com>
+Date:   Thu, 7 Oct 2021 14:11:51 +0100
+Message-ID: <CALjTZvZZf25tqoQWM_HsBb84JgKpMKAxqfhUdpD_e5M-Bc_yzA@mail.gmail.com>
+Subject: Re: [REGRESSION][BISECTED] 5.15-rc1: Broken AHCI on NVIDIA ION (MCP79)
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     tglx@linutronix.de, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:uhREYKSNSgqa2/xpVY1IwqE1Goyd+RdRTYzlEEKjxRWatA3GJo/
- 3zJKMgmZtC4209dA34I6IHmXzoErneuk3OmEdeFL3yXX7b1wBKOhVBYIAfXl40e7tSkR6cu
- 8V8hyLiZNA55sBraUAU9Zko6hbcKY9C9IMgp3cAFrDIHUi5m4R+GWqPsIALvV2Bl/mE5of5
- k1+/KEtBW1Y9XHNrBW8Pg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:vUy240gKoDI=:O6bcfC6JlN4WOxNu9Au+pU
- ae8UdGC+qNWjE7F3xVlJLJTSrNQdnsQSF4xCXnkQuRNav30G+7bxrm4LLyVTV6AU0KRA92oXe
- 4homSRmOyHWJQLvb9FU26EnwXbfRpXebs25LcBU7nqFErhyTb8DaMU8Is1m2jINJmnJJXFGM8
- 7ubdQarsSkERWhxsmm2zjdyR48Fq6IKfQzl6u/4m3kLuuMTO8boR3iFBhotrHLoy9GZ2DCZR1
- pfEb/YN3TL/ES70x6XYXmYawDdUd2WpIRF1+u9VzzTMKsSGz/V2zpvbb+B4aGayChS2M+ZyQo
- GWshlcr/FUZ5u8G0trdqPQGMjBKJyQwrrlN7/B5BsOtbv8tD7G+LeRh7tYxLKniRpYtFLEzHM
- +WhxOc0msMWymAAc63LW7kJ9hNXL1g9VUJl8l0T5TLQrKKdeQPZUr4C4hxD0AKekhlEK1YyH+
- o0B7k18X3kKAWj8PnPDaK6FiyBRgD52Q/fk+bRJ+eeoI/pQ+rtYsgeKNoHRjeFM6j4g4QUDYW
- PmUM/MfliyuxrSLjS1ZMKmRLw2oHBsrWZHpB7EdxsRIKctprLv0KmedDoWrEbfF7BPAKB6WAF
- 1h6ug1T2A9qQfA2RW94bf6d2Imo+zYG+wiehMfRIe7VY7b49mq2GY01CI2xDqBV2MqUl7RhL0
- 49tge+mUJXKogWQ4qHHhfYYDEa7NLRZQj72ObiYuBCaGJkxwyiwU27d3X4i24qhbkh/jFRY63
- E8pAN9Lb1eGzk6uMQ3ss47nHrCgMMuS9RM69eAAij98Bj2ro7FzJ+6J3mwlgOoHQYE4PQBPII
- trSPE1AiuNNQVWCVGuK83NDMOiuwUNiCDPHJjT8b/JB+9TskcRkUxwR4i7WaqYGSQzlHdiofo
- s/VRSvSi3vfF8WU+uj7w==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- On Thu, Oct 7, 2021 at 2:43 PM Takashi Iwai <tiwai@suse.de> wrote:
-> On Thu, 07 Oct 2021 13:48:44 +0200, Arnd Bergmann wrote:
-> > On Thu, Oct 7, 2021 at 12:53 PM Takashi Iwai <tiwai@suse.de> wrote:
-> > > On Wed, 06 Oct 2021 19:49:17 +0200, Michael Forney wrote:
-> >
-> > As far as I can tell, the broken interface will always result in
-> > user space seeing a zero value for "avail_min". Can you
-> > make a prediction what that would mean for actual
-> > applications? Will they have no audio output, run into
-> > a crash, or be able to use recover and appear to work normally
-> > here?
+Hi again, Marc,
+
+On Thu, 7 Oct 2021 at 13:15, Marc Zyngier <maz@kernel.org> wrote:
 >
-> No, fortunately it's only about control->avail_min, and fiddling this
-> value can't break severely (otherwise it'd be a security problem ;)
+> 'Believe' is not a word I'd use. I know for a fact that all HW,
+> whether it is present, past or future is only a pile of hacks.
 >
-> In the buggy condition, it's always zero, and the kernel treated as if
-> 1, i.e. wake up as soon as data is available, which is OK-ish for most
-> applications.   Apps usually don't care about the wake-up condition so
-> much.  There are subtle difference and may influence on the stability
-> of stream processing, but the stability usually depends more strongly
-> on the hardware and software configurations.
->
-> That being said, the impact by this bug (from the application behavior
-> POV) is likely quite small, but the contamination is large; as you
-> pointed out, it's much larger than I thought.
+> Given that your report tends to indicate that we fail to enable the
+> interrupt for this device, this would be a possibility.
 
-Ok, got it.
+Heh. Guess what? The AHCI controller is lying throught its teeth. Your
+hack fixes boot for me. Everything seems to be working, even with such
+a big hammer.
 
-> The definition in uapi/sound/asound.h is a bit cryptic, but IIUC,
-> __snd_pcm_mmap_control64 is used for 64bit archs, right?  If so, the
-> problem rather hits more widely on 64bit archs silently.  Then, the
-> influence by this bug must be almost negligible, as we've had no bug
-> report about the behavior change.
-
-While __snd_pcm_mmap_control64 is only used on 32-bit
-architectures when 64-bit time_t is used. At the moment, this
-means all users of musl-1.2.x libc, but not glibc.
-
-On 64-bit architectures, __snd_pcm_mmap_control and
-__snd_pcm_mmap_control64 are meant to be identical,
-and this is actually true regardless of the bug, since
-__pad_before_uframe and __pad_after_uframe both
-end up as zero-length arrays here.
-
-> We may just fix it in kernel and for new library with hoping that no
-> one sees the actual problem.  Or, we may provide a complete new set of
-> mmap offsets and ioctl to cover both broken and fixed interfaces...
-> The decision depends on how perfectly we'd like to address the bug.
-> As of now, I'm inclined to go for the former, but I'm open for more
-> opinions.
-
-Adding the musl list to Cc for additional testers, anyone interested
-please see [1] for the original report.
-
-It would be good to hear from musl users that are already using
-audio support with 32-bit applications on 64-bit kernels, which
-is the case that has the problem today. Have you noticed any
-problems with audio support here? If not, we can probably
-"fix" the kernel here and make the existing binaries behave
-the same way on 32-bit kernels. If there are applications that
-don't work in that environment today, I think we need to instead
-change the kernel to accept the currently broken format on
-both 32-bit and 64-bit kernels, possibly introducing yet another
-format that works as originally intended but requires a newly
-built kernel.
-
-      Arnd
-
-[1] https://lore.kernel.org/all/29QBMJU8DE71E.2YZSH8IHT5HMH@mforney.org/
+Thanks,
+Rui
