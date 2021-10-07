@@ -2,55 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7261342553B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 16:21:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63B6542553D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 16:21:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233369AbhJGOXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 10:23:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54050 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233362AbhJGOXJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 10:23:09 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AD1EC061570;
-        Thu,  7 Oct 2021 07:21:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=tiebx5SSQbjjXtJ/F2ySGSH38hhd1mVLQNuptCzTj4o=; b=IgYKb46tYN5qTq6wjl3kA3p3Q8
-        aa9M6Wqp7g2OkITu6OoCZ5vivyh5lZYP1o593OGKaf/NCqnHAJeZHd8vR/cM07UV+KX4xUrBjOIvj
-        z4Md+t2eQnc0BPRTvXQ18y9067OeBzwOzV2Jl/7Y/8ZCjRbTOZkbKrzeksqcZ4DoKoTA/Va7tfWBs
-        NetpejEixd3XiroViatg+E3aWt9TrR5JHwUNi5wOLFf94zHs6lLXhQenpprZ7ZX5rOWvF001te7qI
-        elxW0X8+NlIBmPeh/k90/KcIe6g47fzIqkZNOXceSiVWJWvPChNDEVi9q1wZwhCcoJ9gfSRyG519G
-        RfXbDe7w==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mYUFF-001vQF-Co; Thu, 07 Oct 2021 14:19:52 +0000
-Date:   Thu, 7 Oct 2021 15:19:37 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Hao Sun <sunhao.th@gmail.com>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
-        linux-block@vger.kernel.org
-Subject: Re: kernel BUG in block_invalidatepage
-Message-ID: <YV8B+VGQ7TZoeJ8W@casper.infradead.org>
-References: <CACkBjsZh7DCs+N+R=0+mnNqFZW8ck5cSgV4MpGM6ySbfenUJ+g@mail.gmail.com>
- <CACkBjsb0Hxam_e5+vOOanF_BfGAcf5UY+=Cc-pyphQftETTe8Q@mail.gmail.com>
+        id S241978AbhJGOX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 10:23:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40484 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241042AbhJGOX0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 10:23:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DA10F610CC;
+        Thu,  7 Oct 2021 14:21:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1633616492;
+        bh=xTguGxb+pvfpaW8x929jVClMOsoXSvmHcgRLD9+ZJIk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FFLspULtvPRf6zffVeQl4pF5v3TsK9H33qbffAfhUHTtRE7+N3w5yENNsIMH7xUlz
+         ANAEhsEb5S+yVA9TmCVyuOpcttIqjWm7cZCMcRjBJJh7tMCyn/HYWD5zyT68lIqRQ4
+         38ypdOnelP0+T3knnMsp9mBKTlx683lZ+t9gA3zI=
+Date:   Thu, 7 Oct 2021 16:21:30 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
+Subject: Re: [PATCH] Revert "serial: 8250: Fix reporting real baudrate value
+ in c_ospeed field"
+Message-ID: <YV8CavX93a8XCSJP@kroah.com>
+References: <20211007133146.28949-1-johan@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <CACkBjsb0Hxam_e5+vOOanF_BfGAcf5UY+=Cc-pyphQftETTe8Q@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211007133146.28949-1-johan@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 07, 2021 at 02:40:29PM +0800, Hao Sun wrote:
-> Hello,
+On Thu, Oct 07, 2021 at 03:31:46PM +0200, Johan Hovold wrote:
+> This reverts commit 32262e2e429cdb31f9e957e997d53458762931b7.
 > 
-> This crash can still be triggered repeatedly on the latest kernel.
+> The commit in question claims to determine the inverse of
+> serial8250_get_divisor() but failed to notice that some drivers override
+> the default implementation using a get_divisor() callback.
+> 
+> This means that the computed line-speed values can be completely wrong
+> and results in regular TCSETS requests failing (the incorrect values
+> would also be passed to any overridden set_divisor() callback).
+> 
+> Similarly, it also failed to honour the old (deprecated) ASYNC_SPD_FLAGS
+> and would break applications relying on those when re-encoding the
+> actual line speed.
+> 
+> There are also at least two quirks, UART_BUG_QUOT and an OMAP1510
+> workaround, which were happily ignored and that are now broken.
+> 
+> Finally, even if the offending commit were to be implemented correctly,
+> this is a new feature and not something which should be backported to
+> stable.
+> 
+> Cc: Pali Rohár <pali@kernel.org>
+> Signed-off-by: Johan Hovold <johan@kernel.org>
+> ---
+>  drivers/tty/serial/8250/8250_port.c | 17 -----------------
+>  1 file changed, 17 deletions(-)
 
-I asked you three days ago to try a patch and report the results:
+Argh, sorry I missed this, good catch.  I'll go queue this up now,
+thanks.
 
-https://lore.kernel.org/linux-mm/YVtWhVNFhLbA9+Tl@casper.infradead.org/
+greg k-h
