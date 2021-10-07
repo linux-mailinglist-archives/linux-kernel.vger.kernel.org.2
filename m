@@ -2,87 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC652425382
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 14:55:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0410D42538A
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 14:57:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232749AbhJGM5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 08:57:23 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:34825 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232680AbhJGM5W (ORCPT
+        id S240692AbhJGM72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 08:59:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34170 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230091AbhJGM70 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 08:57:22 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HQBBQ5PQdz4xbR;
-        Thu,  7 Oct 2021 23:55:26 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1633611327;
-        bh=Y0KQwZsDfOdTg3GKHjg+c55QXVx0McJy0Ytp18M8szA=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=VEpEllcLwgz2G4MZA7I2RQmq2EXfGMtV2HQq4pqI8wAzGRZcL9maiLMmTv/UcjLtq
-         ukJ9T/0IuIoUMHyCcWAbHxF16I1MJRPjqV1QaCCS1MEw6qnEr7O0Mgj8EHBsQYf9yY
-         9PcsQniqwDS7oMUu42H/vDSUwnhyVj2Z5+/2W+/k9Ypk3cIusigGPt6Kw7hVA5IaJa
-         YnMeUIZMSk2hALgXA2WykJ5mOuG4sEjUD+/6GVU+mTQaOTmYBkKjsBAZegibQ/pvKz
-         RlbaFb20Ka0d4XuYWY3Eq4V8vaxxOBM3gHraOnVkS0DZWpgqQFpzYriYoSIjQpjS6Q
-         QY9V8LlCGJbiw==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Daniel Axtens <dja@axtens.net>, Kai Song <songkai01@inspur.com>,
-        linuxppc-dev@lists.ozlabs.org
-Cc:     Kai Song <songkai01@inspur.com>, linux-kernel@vger.kernel.org,
-        oohall@gmail.com, paulus@samba.org
-Subject: Re: [PATCH] powerpc/eeh:Fix some mistakes in comments
-In-Reply-To: <878rze60by.fsf@dja-thinkpad.axtens.net>
-References: <20210927023507.32564-1-songkai01@inspur.com>
- <878rze60by.fsf@dja-thinkpad.axtens.net>
-Date:   Thu, 07 Oct 2021 23:55:23 +1100
-Message-ID: <87ee8xngec.fsf@mpe.ellerman.id.au>
+        Thu, 7 Oct 2021 08:59:26 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04825C061760
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 05:57:33 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id w11so3830068plz.13
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 05:57:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=vQY2vR3JgZ7UpKkWrQZDehl7P8KiMsXS+BrIiJW4faw=;
+        b=bJomXKg/1nq3R2YS3lQKJ7igUG7a7MxOQThIPFhHbftHvmvrdGqDEIW79PQhyKvxVK
+         qPv1ngrKQOeadlDBNPyU5hcBB1bKVzqkwDZzBIyX0BemoAl5JjRQ2USYjYzBdEJIincc
+         4sCIG3uEdrnrBKtANe13OFMiEYrDpn/BuF0suYziikgWqhH0oRYIFOzbfqVjwyuwVnJE
+         5ZEFj/JJfCERacrVLTV1gn4GeLhwG4YNEtr7/92G5GKbW4FqgSL7YnX0XpXOoPZEi6gK
+         7oCCIbIhjGPLsJuHDK2v2Dcgu94pZH06MxvIuAa8sfL59IHT37o7DmILh7+JWcD+r5dQ
+         kCUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=vQY2vR3JgZ7UpKkWrQZDehl7P8KiMsXS+BrIiJW4faw=;
+        b=jT11KlvYMv5eDKjKZfbr9k9rDMBeo0J1FOC1oEfm1VkPmqWOKpBbQHrqd3qfZ1GAh3
+         +hE/hbwuw5yOVf69HqIOVavPieoBuPbLzkZXTww/vnRs6xR34i2zVfXLOfHWWnzgavfE
+         yhwwZcT3u1FwOMu9rPD8fNfcLK/mB3EHVFi/CLG+0no7eGh3F6TTBppXJbib8h2H9Nx6
+         6p6bYayYiLyEQEyb55SreNwLqmBbXRWIV6yTwK8CNXJ7h+fDbS6dLxO5T60hIZEkG9lj
+         rNs0XqzluGupQrhoKDUe21xlhstD0ZqEYG2EV4PssjVXk2WYI6+iYX79Gvrq4iwvwJtr
+         T4CQ==
+X-Gm-Message-State: AOAM531wU8H9Mgz8vMGv/JW4b1Xmf99SBZ4+ax1TZMa5K52pl7RBbLhw
+        RB6dI4zAOnRMsghQGbUsOY/M
+X-Google-Smtp-Source: ABdhPJyYuVz4xSiU1qQP1SwuVkloHPNzNlgzKo/0anLbdAkCS6A455j327vkwO03/OU8G/f5B8dbwQ==
+X-Received: by 2002:a17:902:e0c2:b0:13e:7f73:f181 with SMTP id e2-20020a170902e0c200b0013e7f73f181mr3600459pla.10.1633611452428;
+        Thu, 07 Oct 2021 05:57:32 -0700 (PDT)
+Received: from thinkpad ([117.202.189.72])
+        by smtp.gmail.com with ESMTPSA id rm6sm2881121pjb.18.2021.10.07.05.57.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Oct 2021 05:57:31 -0700 (PDT)
+Date:   Thu, 7 Oct 2021 18:27:24 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     kishon@ti.com, lorenzo.pieralisi@arm.com, bhelgaas@google.com,
+        robh@kernel.org
+Cc:     devicetree@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        hemantk@codeaurora.org, bjorn.andersson@linaro.org,
+        sallenki@codeaurora.org, skananth@codeaurora.org,
+        vpernami@codeaurora.org, vbadigan@codeaurora.org
+Subject: Re: [PATCH v8 0/3] Add Qualcomm PCIe Endpoint driver support
+Message-ID: <20211007125724.GA27987@thinkpad>
+References: <20210920065946.15090-1-manivannan.sadhasivam@linaro.org>
+ <20211004041949.GA16442@workstation>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211004041949.GA16442@workstation>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Daniel Axtens <dja@axtens.net> writes:
-> Hi Kai,
->
-> Thank you for your contribution to the powerpc kernel!
->
->> Get rid of warning:
->> arch/powerpc/kernel/eeh.c:774: warning: expecting prototype for eeh_set_pe_freset(). Prototype was for eeh_set_dev_freset() instead
->
-> You haven't said where this warning is from. I thought it might be from
-> sparse but I couldn't seem to reproduce it - is my version of sparse too
-> old or are you using a different tool?
->
->>  /**
->> - * eeh_set_pe_freset - Check the required reset for the indicated device
->> - * @data: EEH device
->> + * eeh_set_dev_freset - Check the required reset for the indicated device
->> + * @edev: EEH device
->>   * @flag: return value
->>   *
->>   * Each device might have its preferred reset type: fundamental or
->
-> This looks like a good and correct change.
->
-> I checked through git history with git blame to see when the function
-> was renamed. There are 2 commits that should have updated the comment:
-> one renamed the function and one renamed an argument. So, I think this
-> commit could have:
->
-> Fixes: d6c4932fbf24 ("powerpc/eeh: Strengthen types of eeh traversal functions")
-> Fixes: c270a24c59bd ("powerpc/eeh: Do reset based on PE")
->
-> But I don't know if an out of date comment is enough of a 'bug' to
-> justify a Fixes: tag? (mpe, I'm sure I've asked this before, sorry!)
+On Mon, Oct 04, 2021 at 09:49:49AM +0530, Manivannan Sadhasivam wrote:
+> On Mon, Sep 20, 2021 at 12:29:43PM +0530, Manivannan Sadhasivam wrote:
+> > Hello,
+> > 
+> > This series adds support for Qualcomm PCIe Endpoint controller found
+> > in platforms like SDX55. The Endpoint controller is based on the designware
+> > core with additional Qualcomm wrappers around the core.
+> > 
+> > The driver is added separately unlike other Designware based drivers that
+> > combine RC and EP in a single driver. This is done to avoid complexity and
+> > to maintain this driver autonomously.
+> > 
+> > The driver has been validated with an out of tree MHI function driver on
+> > SDX55 based Telit FN980 EVB connected to x86 host machine over PCIe.
+> > 
+> 
+> Ping on this series! Patchwork says the state is still "New". Both
+> binding and driver patches got enough reviews I believe. Are there any
+> issues pending to be addressed?
+> 
 
-It depends. If you think it's important that the fix gets backported
-then you should add the Fixes tag.
+Sorry for the noise. But not seeing any activity on this series is tempting me
+to ping this thread. This series has been under review for almost 3 releases and
+I don't want to miss this one too without any obvious reasons.
 
-In this case I would say no. The comments have been broken for years,
-and it's a pretty obscure API.
+Thanks,
+Mani
 
-cheers
+> Thanks,
+> Mani
+> 
+> > Thanks,
+> > Mani
+> > 
+> > Changes in v8:
+> > 
+> > * Added Reviewed-by tag from Rob for the driver patch
+> > * Rebased on top of v5.15-rc1
+> > 
+> > Changes in v7:
+> > 
+> > * Used existing naming convention for callback functions
+> > * Used active low state for PERST# gpio
+> > 
+> > Changes in v6:
+> > 
+> > * Removed status property in DT and added reviewed tag from Rob
+> > * Switched to _relaxed variants as suggested by Rob
+> > 
+> > Changes in v5:
+> > 
+> > * Removed the DBI register settings that are not needed
+> > * Used the standard definitions available in pci_regs.h
+> > * Added defines for all the register fields
+> > * Removed the left over code from previous iteration
+> > 
+> > Changes in v4:
+> > 
+> > * Removed the active_config settings needed for IPA integration
+> > * Switched to writel for couple of relaxed versions that sneaked in
+> > 
+> > Changes in v3:
+> > 
+> > * Lot of minor cleanups to the driver patch based on review from Bjorn and Stan.
+> > * Noticeable changes are:
+> >   - Got rid of _relaxed calls and used readl/writel
+> >   - Got rid of separate TCSR memory region and used syscon for getting the
+> >     register offsets for Perst registers
+> >   - Changed the wake gpio handling logic
+> >   - Added remove() callback and removed "suppress_bind_attrs"
+> >   - stop_link() callback now just disables PERST IRQ
+> > * Added MMIO region and doorbell interrupt to the binding
+> > * Added logic to write MMIO physicall address to MHI base address as it is
+> >   for the function driver to work
+> > 
+> > Changes in v2:
+> > 
+> > * Addressed the comments from Rob on bindings patch
+> > * Modified the driver as per binding change
+> > * Fixed the warnings reported by Kbuild bot
+> > * Removed the PERST# "enable_irq" call from probe()
+> > 
+> > Manivannan Sadhasivam (3):
+> >   dt-bindings: pci: Add devicetree binding for Qualcomm PCIe EP
+> >     controller
+> >   PCI: qcom-ep: Add Qualcomm PCIe Endpoint controller driver
+> >   MAINTAINERS: Add entry for Qualcomm PCIe Endpoint driver and binding
+> > 
+> >  .../devicetree/bindings/pci/qcom,pcie-ep.yaml | 158 ++++
+> >  MAINTAINERS                                   |  10 +-
+> >  drivers/pci/controller/dwc/Kconfig            |  10 +
+> >  drivers/pci/controller/dwc/Makefile           |   1 +
+> >  drivers/pci/controller/dwc/pcie-qcom-ep.c     | 710 ++++++++++++++++++
+> >  5 files changed, 888 insertions(+), 1 deletion(-)
+> >  create mode 100644 Documentation/devicetree/bindings/pci/qcom,pcie-ep.yaml
+> >  create mode 100644 drivers/pci/controller/dwc/pcie-qcom-ep.c
+> > 
+> > -- 
+> > 2.25.1
+> > 
