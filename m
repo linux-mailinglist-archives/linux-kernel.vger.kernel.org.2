@@ -2,83 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23C1542560D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 17:05:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BD4E425614
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 17:06:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242250AbhJGPHX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 11:07:23 -0400
-Received: from mga11.intel.com ([192.55.52.93]:55509 "EHLO mga11.intel.com"
+        id S242348AbhJGPIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 11:08:22 -0400
+Received: from marcansoft.com ([212.63.210.85]:41906 "EHLO mail.marcansoft.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242309AbhJGPHW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 11:07:22 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10130"; a="223671781"
-X-IronPort-AV: E=Sophos;i="5.85,355,1624345200"; 
-   d="scan'208";a="223671781"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 08:03:46 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,355,1624345200"; 
-   d="scan'208";a="715183567"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga005.fm.intel.com with ESMTP; 07 Oct 2021 08:03:41 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 4C989561; Thu,  7 Oct 2021 18:03:43 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Brendan Higgins <brendanhiggins@google.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kunit-dev@googlegroups.com, linux-media@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Subject: [PATCH v3 7/7] media: entity: Replace kernel.h with the necessary inclusions
-Date:   Thu,  7 Oct 2021 18:03:39 +0300
-Message-Id: <20211007150339.28910-8-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211007150339.28910-1-andriy.shevchenko@linux.intel.com>
-References: <20211007150339.28910-1-andriy.shevchenko@linux.intel.com>
+        id S242244AbhJGPIV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 11:08:21 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: marcan@marcan.st)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id 40A363FA60;
+        Thu,  7 Oct 2021 15:06:25 +0000 (UTC)
+Subject: Re: [PATCH] MAINTAINERS: add myself to ARM/APPLE MACHINE
+To:     Sven Peter <sven@svenpeter.dev>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20211007053430.51319-1-sven@svenpeter.dev>
+From:   Hector Martin <marcan@marcan.st>
+Message-ID: <6fa58793-427c-6b16-0910-38801cfba377@marcan.st>
+Date:   Fri, 8 Oct 2021 00:06:22 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211007053430.51319-1-sven@svenpeter.dev>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: es-ES
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When kernel.h is used in the headers it adds a lot into dependency hell,
-especially when there are circular dependencies are involved.
+On 07/10/2021 14.34, Sven Peter wrote:
+> Hector suggested I should add myself to help him maintain the
+> platform.
+> 
+> Signed-off-by: Sven Peter <sven@svenpeter.dev>
+> ---
+>   MAINTAINERS | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 329d3a0a9fdb..448e82566d63 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -1727,6 +1727,7 @@ F:	drivers/*/*alpine*
+>   
+>   ARM/APPLE MACHINE SUPPORT
+>   M:	Hector Martin <marcan@marcan.st>
+> +M:	Sven Peter <sven@svenpeter.dev>
+>   L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+>   S:	Maintained
+>   W:	https://asahilinux.org
 
-Replace kernel.h inclusion with the list of what is really being used.
+Acked-by: Hector Martin <marcan@marcan.st>
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- include/media/media-entity.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Thanks for signing up! :-)
 
-diff --git a/include/media/media-entity.h b/include/media/media-entity.h
-index 09737b47881f..fea489f03d57 100644
---- a/include/media/media-entity.h
-+++ b/include/media/media-entity.h
-@@ -13,10 +13,11 @@
- 
- #include <linux/bitmap.h>
- #include <linux/bug.h>
-+#include <linux/container_of.h>
- #include <linux/fwnode.h>
--#include <linux/kernel.h>
- #include <linux/list.h>
- #include <linux/media.h>
-+#include <linux/types.h>
- 
- /* Enums used internally at the media controller to represent graphs */
- 
 -- 
-2.33.0
-
+Hector Martin (marcan@marcan.st)
+Public Key: https://mrcn.st/pub
