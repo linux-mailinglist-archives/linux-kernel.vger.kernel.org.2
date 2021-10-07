@@ -2,123 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 250FE424BB8
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 04:14:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3A6A424BC2
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 04:25:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232223AbhJGCQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 22:16:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58940 "EHLO
+        id S232287AbhJGC1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 22:27:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230443AbhJGCQY (ORCPT
+        with ESMTP id S232191AbhJGC1D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 22:16:24 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EFEEC061746;
-        Wed,  6 Oct 2021 19:14:31 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id m14so3978379pfc.9;
-        Wed, 06 Oct 2021 19:14:31 -0700 (PDT)
+        Wed, 6 Oct 2021 22:27:03 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDC0EC061746;
+        Wed,  6 Oct 2021 19:25:09 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id 75so4217273pga.3;
+        Wed, 06 Oct 2021 19:25:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=zE7hlODd6NPyiXnEakuG69lfP+QvHTUKQl/iJbEFaPM=;
-        b=GD3SSn1gy0zxUJnMRAdQxxFXRtoyqFzb+PfuuIo93r/swOQI+Pxq2p0ETTrJAGEYME
-         eRJOxeDqvK1xuIaICv9ssQU9qB4InEa1eOBgDGLzaptRcOUpu0diCXIm0ZH6kQYrIlDe
-         O7bzhOuXiQJj1zcl++uBAxnavege+K2jBQ2T9PsreKjQ80RpeSbxBSUUONxbnDumjADS
-         cs+XPUxA0M61EC04lzXvTdcUSlX0wMCCow4lBbyumG+0HTSF7k4LMbfnLL6rSnK9h4K5
-         /Eup7rTxlqWGmcvOj8qHjBTx63krdk061r3stfp4tC2YdcFEspxaMg05bsYPEflTHa4M
-         ROUQ==
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=6Fbp2oLqg5VLyJhPP2UoprEyUpjt3vE+k1k8NDwLMpk=;
+        b=fVpVXChAwZh74Yak5ikdgyaoheURY4K/ccbznO6zTnIB1AbJR+bIgOAW5/cSxWFoOZ
+         cY0eBdVYRQP1/jK52zezVr0uzpqaKqL4UT7RQvBZyhmKIcoiByFnE72l/T/lAzTh60PX
+         2ZZ2YfXaMMnXi99HoWBLG5uUJUaMAp+mwPmSs0A9L0wSZq5MBqIGrLe/fQpBMPOxvPnK
+         4rfWTUo7RKXBeIwus/mUrNTfwOqbla5PIcLbJRJuwd6IvqLGvZcPe9NmM60QdmCBRqmR
+         sMF0mjWUQFOWNx2GTwfCL5Ktgovulw8+KnJ+87QvW6vVfTE6IVfRZKsoah2Gd8VJ0NWK
+         +Eww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zE7hlODd6NPyiXnEakuG69lfP+QvHTUKQl/iJbEFaPM=;
-        b=pDPexeX45v91TISINLYLa0g7qJQ5bmwwCFeqb9l3sdmKcEUBgaNXtIqDbtFPyfiz3R
-         K+xuc1jXjSyKduNCjpDQrDBoGtESQ2Ppa4oFH7B9iGiIPvTIwmQTohBNUcxJHwvNOm4L
-         zjmIQU/RbifVAIroUCaHkuIDrytUBSx/dGzQXtCLJzdPA26v+a4veGgYzRzKrC154mP8
-         ZYcziVOOMLdPWCindVG55KmGyhbJPeIQN8XStkA7vUKtjT5B8d+RpfocJl10oFpDEtMg
-         syPliY/CoryfwM7946t09w7zfLa093QLYA4S9kEQFinMNPyzQygAb3ld05j0MW/7FGQx
-         qEHA==
-X-Gm-Message-State: AOAM530zd+0dwJN/FLNVqc9mT4bq9dcuYT069HTYIcMiPcWv0kgKP9vn
-        tTkRvU+qYxASvsZohAaSIgQ=
-X-Google-Smtp-Source: ABdhPJxQqVylmn8imZ+r34wMCfcyjjPD2wtrRwePCKvKmyEhmxq2TLGobVaYx+eNuIcfRkhEMzBZ9w==
-X-Received: by 2002:a05:6a00:b4d:b0:44c:b7a7:cab2 with SMTP id p13-20020a056a000b4d00b0044cb7a7cab2mr1480805pfo.20.1633572871034;
-        Wed, 06 Oct 2021 19:14:31 -0700 (PDT)
-Received: from sol (106-69-170-56.dyn.iinet.net.au. [106.69.170.56])
-        by smtp.gmail.com with ESMTPSA id z4sm22772247pfz.99.2021.10.06.19.14.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Oct 2021 19:14:30 -0700 (PDT)
-Date:   Thu, 7 Oct 2021 10:14:24 +0800
-From:   Kent Gibson <warthog618@gmail.com>
-To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     lakshmi.sowjanya.d@intel.com,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, mgross@linux.intel.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        tamal.saha@intel.com, bala.senthil@intel.com
-Subject: Re: [RFC PATCH v1 02/20] gpio: Add GPIO polling interface to GPIO lib
-Message-ID: <20211007021424.GA13920@sol>
-References: <20210824164801.28896-1-lakshmi.sowjanya.d@intel.com>
- <20210824164801.28896-3-lakshmi.sowjanya.d@intel.com>
- <CAMpxmJWeZP-f-3BoWwX7PkWNZySn5RP=rc4cVyLEwYmSb6if+w@mail.gmail.com>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=6Fbp2oLqg5VLyJhPP2UoprEyUpjt3vE+k1k8NDwLMpk=;
+        b=dgs77bupENCFjzUry8FnJvPNsP97YcOzSZBsySEOKWw75LM8zIM4p5yU6bz3akj8X+
+         aKXVx74urTu+PtXpFAkkAhu9YJVp1paZ67os9LnhPveV5wUOI13m5G23KCFEdb9YPx42
+         y/B9dllFz4zv6V+wAADgIA+y8SMtDgVDWnQara2V5C4H36KtwpX9Af+Mzspcr743hfqX
+         lTEEXz5sIvsuI2iX2eArq0+xUDjA7O9QtJXj7XLt4/nBz9awADhajyMPjlROGuiyOG7o
+         OPNAopWnR334KM2HyoJeghXDQ4LjGci4IkuYWxCx3eCL/LKx30a7vcWO50954pr/0sIO
+         BeIA==
+X-Gm-Message-State: AOAM533TzoTodtjpZGHABOIJbcSEVHmd1zGVsts71IusFZ+099ywy3EN
+        a20eHAZlDuFtYl/gv49F1JU=
+X-Google-Smtp-Source: ABdhPJys1HdOqewyun+C+iToAvx9hnErbBSMfwtBGQraooU+JJaijDbgzG5Y0UhUonum+9KpDmz8JA==
+X-Received: by 2002:a63:ed4a:: with SMTP id m10mr1303051pgk.448.1633573509317;
+        Wed, 06 Oct 2021 19:25:09 -0700 (PDT)
+Received: from [10.230.29.137] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id g23sm22285369pfu.71.2021.10.06.19.24.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Oct 2021 19:25:08 -0700 (PDT)
+Message-ID: <1a15bbef-cf3d-33c6-b6c1-3dd607d71d1d@gmail.com>
+Date:   Wed, 6 Oct 2021 19:24:50 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMpxmJWeZP-f-3BoWwX7PkWNZySn5RP=rc4cVyLEwYmSb6if+w@mail.gmail.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.2
+Subject: Re: [PATCH 00/12] DT: CPU h/w id parsing clean-ups and cacheinfo id
+ support
+Content-Language: en-US
+To:     Rob Herring <robh@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        James Morse <james.morse@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Stafford Horne <shorne@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>, x86@kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-csky@vger.kernel.org, openrisc@lists.librecores.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-sh@vger.kernel.org, devicetree@vger.kernel.org
+References: <20211006164332.1981454-1-robh@kernel.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20211006164332.1981454-1-robh@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 12:03:53PM +0200, Bartosz Golaszewski wrote:
-> On Tue, Aug 24, 2021 at 6:48 PM <lakshmi.sowjanya.d@intel.com> wrote:
-> >
-> > From: Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>
-> >
-> > Some Intel Timed I/O devices do not implement IRQ functionality. Augment
-> > read() interface to allow polling.
-> >
-> > Add two GPIO device methods: setup_poll() and poll():
-> > - setup_poll() configures the GPIO interface e.g. capture rising edges
-> > - poll() checks for events on the interface
-> >
-> > To implement polling, the driver must implement the two functions above
-> > and should either leave to_irq() method NULL or return irq 0.
-> >
-> > setup_poll() should configure the hardware to 'listen' for input events.
-> >
-> > poll() driver implementation must return the realtime timestamp
-> > corresponding to the event and -EAGAIN if no data is available.
-> >
-> > Co-developed-by: Christopher Hall <christopher.s.hall@intel.com>
-> > Signed-off-by: Christopher Hall <christopher.s.hall@intel.com>
-> > Signed-off-by: Tamal Saha <tamal.saha@intel.com>
-> > Signed-off-by: Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>
-> > Reviewed-by: Mark Gross <mgross@linux.intel.com>
-> > ---
+
+
+On 10/6/2021 9:43 AM, Rob Herring wrote:
+> The first 10 patches add a new function, of_get_cpu_hwid(), which parses
+> CPU DT node 'reg' property, and then use it to replace all the open
+> coded versions of parsing CPU node 'reg' properties.
 > 
-> Interesting. So the idea is to allow user-space to read line events as
-> if they were generated by interrupts handled in the kernel. While this
-> whole series has a long way to go and this patch looks wrong to me in
-> several places at first glance, I find the idea interesting. Cc'ing
-> Kent who's the author of most of this code - Kent: what do you think?
+> The last 2 patches add support for populating the cacheinfo 'id' on DT
+> platforms. The minimum associated CPU hwid is used for the id. The id is
+> optional, but necessary for resctrl which is being adapted for Arm MPAM.
 > 
+> Tested on arm64. Compile tested on arm, x86 and powerpc.
 
-It is interesting that we're seeing more hardware that provides more
-detailed edge info than we get from irq.  The hte patch series can also
-provide hardware timestamps, but the Timed I/O could even provide the
-sequence numbers.
-It might be worth abstracting the edge detection so edge events could be
-more easily driven by subsystems other than irq, without festooning cdev
-with special cases.
+On ARM and ARM64:
 
-I'm not a fan of the polling here though, particularly from userspace.
-If polling can't be avoided (why did they not provide an irq??) then I
-would do the polling in kernel and place any resulting events in the
-cdev kfifo for userspace to read as per the existing events.
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
 
-Of course that is without knowing a whole lot about the hardware or use
-cases.  The Intel datasheet doesn't provide much in the way of data :|.
-
-Cheers,
-Kent.
+lscpu -C continues to work on ARM64 as before with cache properties 
+provided in the FDT.
+-- 
+Florian
