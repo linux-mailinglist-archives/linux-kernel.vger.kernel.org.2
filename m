@@ -2,94 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3649D425EF3
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 23:31:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9358F425EF8
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 23:32:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235982AbhJGVdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 17:33:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43040 "EHLO
+        id S241462AbhJGVeO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 17:34:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230120AbhJGVdQ (ORCPT
+        with ESMTP id S238226AbhJGVeM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 17:33:16 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1289EC061570;
-        Thu,  7 Oct 2021 14:31:22 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HQPdg6RD9z4xb9;
-        Fri,  8 Oct 2021 08:31:19 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1633642280;
-        bh=5/XFPcuf7C72Hw7AsZjDnLmvBgF2glmuCRaS6v7XwFc=;
-        h=Date:From:To:Cc:Subject:From;
-        b=PE3E8BKuskQXJzX7thQ5I8h9kk2IOg0GcvPMPCm1wj55fIuZv1McHhh3PsLdLs1bi
-         3pCk+fn/Bpq4Uji8FlEwzNMlp9nfSQw9fip6HHS/9SFmO9XO8rxKUAyuPP/mS3FFRt
-         s8dqZpD0kGLB75rLUvSFe8d2If5/5t18b/Jmnob4Vrx2YnK8qkdVI3vx+ALNS73K4h
-         5vXZaKSHRbYn8BRnzuOxTjcwualKIPtcK2WoLSeFaFxtpjQanD3FoZ0BqmMFJrDI0x
-         P/Hy6U/gUmiBhaCrGvOgKdwis6vs0zIiTlwodf9Kfwbc/LT8hsT2wM1TIludA8IxM0
-         t7FQ4VSCO0DfA==
-Date:   Fri, 8 Oct 2021 08:31:18 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Networking <netdev@vger.kernel.org>
-Cc:     Johan Almbladh <johan.almbladh@anyfinetworks.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the bpf-next tree
-Message-ID: <20211008083118.43f6d79f@canb.auug.org.au>
+        Thu, 7 Oct 2021 17:34:12 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BC17C061755
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 14:32:18 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id i84so16441102ybc.12
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 14:32:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zLOXetc7YBsFaoXhbAiQwjFQGKVuF+LsdrpZkpJ+Yn8=;
+        b=I7CD544nPG2Zflz/Gmzk0gLTZ7/XyNqM8T4Eficx6meLX3T7YHuRuP9RVKBBvNs/P2
+         mhyB+AAsIFAsz1EGzZuY3ezfjym+9cyyXdAXexeO5MF5zTh5JVDgUEdfeHi14X2IJ8l7
+         5lDTy2C1wHckIghEmN/nVKQeMWg6GqUrXa4AQrOs55U0gAhE+XcLoCfbJkQfpfZRI1Nu
+         dsLeERidXU0RJ4NSQYbaySX/CsVAG6TVC615Am35UMCjL6hrFjEx70Z27rFSJu7+qRzM
+         OfblfwbTiIipcqehK3HiWYnpFL3J6FGlnwT9QlijReFRI62FoG06AFMdZdDpoUIWIAZu
+         7sYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zLOXetc7YBsFaoXhbAiQwjFQGKVuF+LsdrpZkpJ+Yn8=;
+        b=Pu/Klnfmra6NI2BlXrBRYT+PdVt65MJbCJfgz8VS40D+PAdmZlvHp8uiKNHh+ubD/L
+         ueb+1lLMHhGidf445pRPnBbtqVUC2gWJPQEBe/mNk4N6kHQQ/F8ORuyi26NsDL5QEQrs
+         iiW2bLK8Bd1NJfVrVvP3nAUCLeoyGsthCLw2BTKTGiZ1yWkUQlI0NME1DphG9BlhDI0H
+         MxKxa6+ojEHJgJum2OOLO90lodjvUEd49oixHHD5jz+ZMMPHGYySPYiTarSZJp3tkSdc
+         NUtIdEsO0Dd1O+WEw/n/QwNVJJPx+0dUSNiPNunZZh97RBPcjXXXvYbz0RAPO7lR927d
+         EXvg==
+X-Gm-Message-State: AOAM530a3y4eeAzaJhzboTTrgxigojSi+GTfdfX68IgSv7hiXa0kP0zM
+        6C87CC/NpgDGAK2/AE68W4AajyhzbcmJX3z14RIuHA==
+X-Google-Smtp-Source: ABdhPJw+6Zfp/de4q4PUFURmsm27H9dUiP8PYD3C452O9dUP9v1kYwwmNSfCZmVsZsUTThCuCkm06GukPScYtl8lfN0=
+X-Received: by 2002:a25:3:: with SMTP id 3mr7689141yba.418.1633642337263; Thu,
+ 07 Oct 2021 14:32:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/aTfZNbFXbbcOWTzmiM.ECJy";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20211006175821.GA1941@duo.ucw.cz> <CAJuCfpGuuXOpdYbt3AsNn+WNbavwuEsDfRMYunh+gajp6hOMAg@mail.gmail.com>
+ <YV6rksRHr2iSWR3S@dhcp22.suse.cz> <92cbfe3b-f3d1-a8e1-7eb9-bab735e782f6@rasmusvillemoes.dk>
+ <20211007101527.GA26288@duo.ucw.cz> <CAJuCfpGp0D9p3KhOWhcxMO1wEbo-J_b2Anc-oNwdycx4NTRqoA@mail.gmail.com>
+ <YV8jB+kwU95hLqTq@dhcp22.suse.cz> <CAJuCfpG-Nza3YnpzvHaS_i1mHds3nJ+PV22xTAfgwvj+42WQNA@mail.gmail.com>
+ <YV8u4B8Y9AP9xZIJ@dhcp22.suse.cz> <CAJuCfpHAG_C5vE-Xkkrm2kynTFF-Jd06tQoCWehHATL0W2mY_g@mail.gmail.com>
+ <202110071111.DF87B4EE3@keescook> <CAJuCfpFT7qcLM0ygjbzgCj1ScPDkZvv0hcvHkc40s9wgoTov7A@mail.gmail.com>
+ <caa830de-ea66-267d-bafa-369a6175251e@nvidia.com>
+In-Reply-To: <caa830de-ea66-267d-bafa-369a6175251e@nvidia.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Thu, 7 Oct 2021 14:32:06 -0700
+Message-ID: <CAJuCfpHJmDeyTXdsO8T5tTLgcNT22b15hj41EBNCDXBAoCdpog@mail.gmail.com>
+Subject: Re: [PATCH v10 3/3] mm: add anonymous vma name refcounting
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Kees Cook <keescook@chromium.org>, Michal Hocko <mhocko@suse.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Colin Cross <ccross@google.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        vincenzo.frascino@arm.com,
+        =?UTF-8?B?Q2hpbndlbiBDaGFuZyAo5by16Yym5paHKQ==?= 
+        <chinwen.chang@mediatek.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Jann Horn <jannh@google.com>, apopple@nvidia.com,
+        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
+        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
+        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
+        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
+        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
+        Chris Hyser <chris.hyser@oracle.com>,
+        Peter Collingbourne <pcc@google.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Jens Axboe <axboe@kernel.dk>, legion@kernel.org,
+        Rolf Eike Beer <eb@emlix.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Thomas Cedeno <thomascedeno@google.com>, sashal@kernel.org,
+        cxfcosmos@gmail.com, LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-mm <linux-mm@kvack.org>,
+        kernel-team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/aTfZNbFXbbcOWTzmiM.ECJy
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, Oct 7, 2021 at 12:03 PM 'John Hubbard' via kernel-team
+<kernel-team@android.com> wrote:
+>
+> On 10/7/21 11:50, Suren Baghdasaryan wrote:
+> ...
+> >>>>>>>>>> I believe Pavel meant something as simple as
+> >>>>>>>>>> $ YOUR_FILE=$YOUR_IDS_DIR/my_string_name
+> >>>>>>>>>> $ touch $YOUR_FILE
+> >>>>>>>>>> $ stat -c %i $YOUR_FILE
+> >>>>>>>
+> >>>>>>> Ah, ok, now I understand the proposal. Thanks for the clarification!
+> >>>>>>> So, this would use filesystem as a directory for inode->name mappings.
+> >>>>>>> One rough edge for me is that the consumer would still need to parse
+> >>>>>>> /proc/$pid/maps and convert [anon:inode] into [anon:name] instead of
+> >>>>>>> just dumping the content for the user. Would it be acceptable if we
+> >>>>>>> require the ID provided by prctl() to always be a valid inode and
+> >>>>>>> show_map_vma() would do the inode-to-filename conversion when
+> >>>>>>> generating maps/smaps files? I know that inode->dentry is not
+> >>>>>>> one-to-one mapping but we can simply output the first dentry name.
+> >>>>>>> WDYT?
+> >>>>>>
+> >>>>>> No. You do not want to dictate any particular way of the mapping. The
+> >>>>>> above is just one way to do that without developing any actual mapping
+> >>>>>> yourself. You just use a filesystem for that. Kernel doesn't and
+> >>>>>> shouldn't understand the meaning of those numbers. It has no business in
+> >>>>>> that.
+> >>>>>>
+> >>>>>> In a way this would be pushing policy into the kernel.
+> >>>>>
+> >>>>> I can see your point. Any other ideas on how to prevent tools from
+> >>>>> doing this id-to-name conversion themselves?
+> >>>>
+> >>>> I really fail to understand why you really want to prevent them from that.
+> >>>> Really, the whole thing is just a cookie that kernel maintains for memory
+> >>>> mappings so that two parties can understand what the meaning of that
+> >>>> mapping is from a higher level. They both have to agree on the naming
+> >>>> but the kernel shouldn't dictate any specific convention because the
+> >>>> kernel _doesn't_ _care_. These things are not really anything actionable
+> >>>> for the kernel. It is just a metadata.
+> >>>
+> >>> The desire is for one of these two parties to be a human who can get
+> >>> the data and use it as is without additional conversions.
+> >>> /proc/$pid/maps could report FD numbers instead of pathnames, which
+> >>> could be converted to pathnames in userspace. However we do not do
+> >>> that because pathnames are more convenient for humans to identify a
+> >>> specific resource. Same logic applies here IMHO.
+> >>
+> >> Yes, please. It really seems like the folks that are interested in this
+> >> feature want strings. (I certainly do.) For those not interested in the
+> >> feature, it sounds like a CONFIG to keep it away would be sufficient.
+> >> Can we just move forward with that?
+> >
+> > Would love to if others are ok with this.
+> >
+>
+> If this doesn't get accepted, then another way forward would to continue
+> the ideas above to their logical conclusion, and create a new file system:
+> vma-fs.  Like debug-fs and other special file systems, similar policy and
+> motivation. Also protected by a CONFIG option.
 
-Hi all,
+TBH, I would prefer to have the current simple solution protected with
+a CONFIG option.
 
-In commit
-
-  065485ac5e86 ("mips, bpf: Fix Makefile that referenced a removed file")
-
-Fixes tag
-
-  Fixes: 06b339fe5450 ("mips, bpf: Remove old BPF JIT implementations")
-
-has these problem(s):
-
-  - Target SHA1 does not exist
-
-Maybe you meant
-
-Fixes: ebcbacfa50ec ("mips, bpf: Remove old BPF JIT implementations")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/aTfZNbFXbbcOWTzmiM.ECJy
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFfZyYACgkQAVBC80lX
-0GxaAgf9GJm36VIGvMepSVbgO/Yv2IfKJZt9Ou/89+kk1PiUddCqfP+ZfDe2l2k6
-BGl/32KQMCrCqKIQ/VMLUMBTStrJnlyXW2tyyQr8kyhD34iVIOnXO+P+7uuBdEd9
-6An8w8P43iWnSQbf0qH/kBbCzBHgViSaa60R0clh9Pm3ShDCjRofh4ofYc/kBJJX
-yzHOMJh642iw/dHH86J6q2nKCW7SEQ9/8yfytvxzOSyOhzNvFflW4/OGKCrT9U0K
-Y3TYx3XANlTCLRh/f6Evo07Jf2rXbpYiznGZpSxAe5dNwy/3FlmTzxKLjTbikg2r
-hwIcLGkClYXJuq0h3zj9xq13Z8a8Ig==
-=/nsQ
------END PGP SIGNATURE-----
-
---Sig_/aTfZNbFXbbcOWTzmiM.ECJy--
+>
+> Actually this seems at least as natural as the procfs approach, especially
+> given the nature of these strings, which feel more like dir+file names, than
+> simple strings.
+>
+> thanks,
+> --
+> John Hubbard
+> NVIDIA
+>
+> --
+> To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
+>
