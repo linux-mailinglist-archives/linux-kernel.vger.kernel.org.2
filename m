@@ -2,259 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77548425907
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 19:13:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A2F042590B
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 19:13:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243199AbhJGRP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 13:15:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39034 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243193AbhJGRPX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 13:15:23 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2661EC061570;
-        Thu,  7 Oct 2021 10:13:29 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id o20so21185137wro.3;
-        Thu, 07 Oct 2021 10:13:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=vLFoMp+dlaZHfsMQ3K2u0QNFyHL+HsxnT/5AaQm7BNg=;
-        b=RX/pQlBUL5wUWRsIZYj7FNselOa0r9QLUJ72MouaPravOCTozOjwEuHD3CC8b4JL2q
-         YJ1CJkz2gjw1DWnplJVhFsQ+rIZlS/hl1mXDf0rBb6PnZ/4lwW3wa/uuGSoWgeSksk5g
-         l7/mLXdZqBKH7IhdA5odSJn3OxrkDDflMCyvab7jpgm4RtBECKLyKCR3aVBJXnYcxBjO
-         sNfcyTIL2wzbHX2/XYlLwL4YLJl1KIHJkLWUq1n7SCKrVS55v24FT/H1f5PyzVGBJIa/
-         fSzhN0/saTGfVU/5A5suk6STEvOELjSIntCHKPAFTc82vjMJHc5n59t7322fL1VNzk28
-         5QnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=vLFoMp+dlaZHfsMQ3K2u0QNFyHL+HsxnT/5AaQm7BNg=;
-        b=PhCvLSo+Lnxa6zOj1E6Gatdlms+qUliDceZVorSspTaCwLL8f0Arvt9D752Jbxdvs2
-         NNN/vt0sHJTUoYy3z2J4g+6w0bjtQks7tQzviMjAlQVFolNG0K35F+pIGZUI1/mrinPE
-         YXq4Y+0UOQTYNzhW2bqCN3fTusS5ZOw0BFyfTqhjPDCTCIxOVe/iy7ZIl/pgkVUE+IA4
-         tHJmWVpXYbrPzVL3jmSK8Z7M97ENo9FASRSdD9vRGpUAhVrFUY9qGfmAUpzKPc2+/osd
-         dYL811Tig6k9EwrPMCmLyFHd5WCHJeQG9v3Rbh+LlZiZpguU/U1JKzCOQegoNjsBKZle
-         C6SQ==
-X-Gm-Message-State: AOAM5324O4Qy099olAO+Ky5rS2Vo1jJOD+drzPcZZrgIaYzQIOSLJoi0
-        RvnhzKkRcxmY6UvJvZVaL04=
-X-Google-Smtp-Source: ABdhPJzTHTG6kt6OPq07bFUSFJruW8YZ4QMMQf5MkN/9aUgfa60VV/R1Jbf4CIUi4YJBMcgwIkwoTA==
-X-Received: by 2002:adf:ab43:: with SMTP id r3mr7062988wrc.225.1633626807587;
-        Thu, 07 Oct 2021 10:13:27 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id p8sm1318wmg.15.2021.10.07.10.13.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Oct 2021 10:13:26 -0700 (PDT)
-Date:   Thu, 7 Oct 2021 19:13:25 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Nicolin Chen <nicoleotsuka@gmail.com>
-Cc:     joro@8bytes.org, will@kernel.org, vdumpa@nvidia.com,
-        jonathanh@nvidia.com, linux-tegra@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        digetx@gmail.com
-Subject: Re: [PATCH v6 6/6] iommu/tegra-smmu: Add pagetable mappings to
- debugfs
-Message-ID: <YV8qtdicr4+PcIAf@orome.fritz.box>
-References: <20210914013858.31192-1-nicoleotsuka@gmail.com>
- <20210914013858.31192-7-nicoleotsuka@gmail.com>
+        id S243219AbhJGRPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 13:15:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47628 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243187AbhJGRPj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 13:15:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3923961058;
+        Thu,  7 Oct 2021 17:13:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633626825;
+        bh=j0/YGPldZc0aZGMEp6CwCKqMygvHt12m0klDB6ibhNg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=DpjmVX8k0HHr3JN+8M54mMeTBueA9+ZASt/YCwLQwiqoaYbcBt/WRCyCIHiCk76WM
+         THX2gG2M703UyOBtGLDeR7L2jQBNFOu2lAUWaR9cy25g4w5odHhiJQzYLVjSaQnGYa
+         Qr0YOduhr/8geMTDTGlLvPWwTEryT3HV7i+U2xKyabwRmhhVhDoxfF1JDXlMuF+T2J
+         dCXku49/1TUzI9axIUmMGrLqnYCmnWwm/HG9IBMtigcnpW5mV62HEmMT5bikFk9vA+
+         Qn8fU1ZmZBeAPQRyKnBrXq2CG5eoGiIfONyngONqC1FSLfFo1kXCJb8Q0ta/likiv3
+         A4EbR7s7xsygw==
+Date:   Thu, 7 Oct 2021 19:13:41 +0200
+From:   Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: lets settle the LED `function` property regarding the netdev
+ trigger
+Message-ID: <20211007191341.0fc65dfc@thinkpad>
+In-Reply-To: <YV2dKZIwxcFkU798@lunn.ch>
+References: <YVn815h7JBtVSfwZ@lunn.ch>
+        <20211003212654.30fa43f5@thinkpad>
+        <YVsUodiPoiIESrEE@lunn.ch>
+        <20211004170847.3f92ef48@thinkpad>
+        <0b1bc2d7-6e62-5adb-5aed-48b99770d80d@gmail.com>
+        <20211005222657.7d1b2a19@thinkpad>
+        <YVy9Ho47XeVON+lB@lunn.ch>
+        <20211005234342.7334061b@thinkpad>
+        <YVzMghbt1+ZSILpQ@lunn.ch>
+        <20211006010606.15d7370b@thinkpad>
+        <YV2dKZIwxcFkU798@lunn.ch>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="D2ajDYzQb2RUipRA"
-Content-Disposition: inline
-In-Reply-To: <20210914013858.31192-7-nicoleotsuka@gmail.com>
-User-Agent: Mutt/2.1.3 (987dde4c) (2021-09-10)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 6 Oct 2021 14:57:13 +0200
+Andrew Lunn <andrew@lunn.ch> wrote:
 
---D2ajDYzQb2RUipRA
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> > > I agree with having a list, and we use the combination. If the
+> > > combination is not possible by the hardware, then -EINVAL, or
+> > > -EOPNOTSUPP.
+> > >   
+> > > > - having separate functions for different link modes
+> > > >     function = "link1000", "link100";    
+> > > 
+> > > I would suggest this, so you can use 
+> > > 
+> > > function = "link1000", "link100", "activity"  
+> > 
+> > The problem here is that LED core uses function to compose LED name:
+> >   devicename:color:function
+> > Should we use the first function? Then this LED will be named:
+> >   ethphy42:green:link1000
+> > but it also indicates link100...  
+> 
+> This makes no sense. Using function makes no sense, when the whole
+> point of using the LED framework is we have a uniform way of
+> setting/changing the function at run time.
+>
+> An LED called ethphy42:green:link1000 which is actually showing
+> activity makes no sense.
+>
+> ethphy42:green:state would be a better name.  The function of the LED
+> is to give you some idea of what the state of the PHY is. What state
+> it actually indicates is up to the user.
 
-On Mon, Sep 13, 2021 at 06:38:58PM -0700, Nicolin Chen wrote:
-> This patch dumps all active mapping entries from pagetable
-> to a debugfs directory named "mappings".
->=20
-> Attaching an example:
->=20
-> SWGROUP: hc
-> as->id: 0
-> as->attr: R|W|N
-> as->pd_dma: 0x0000000080c03000
-> {
->         [index: 1023] 0xf0080c3e (count: 2)
->         {
->                 PTE RANGE      | ATTR | PHYS               | IOVA        =
-       | SIZE
->                 [#1022, #1023] | 0x5  | 0x000000010bbf1000 | 0x00000000ff=
-ffe000 | 0x2000
->         }
-> }
-> Total PDE count: 1
-> Total PTE count: 2
->=20
-> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
-> ---
->  drivers/iommu/tegra-smmu.c | 145 +++++++++++++++++++++++++++++++++++++
->  1 file changed, 145 insertions(+)
->=20
-> diff --git a/drivers/iommu/tegra-smmu.c b/drivers/iommu/tegra-smmu.c
-> index 68c34a4a0ecc..aac977e181f6 100644
-> --- a/drivers/iommu/tegra-smmu.c
-> +++ b/drivers/iommu/tegra-smmu.c
-> @@ -46,6 +46,7 @@ struct tegra_smmu {
->  	struct list_head list;
-> =20
->  	struct dentry *debugfs;
-> +	struct dentry *debugfs_mappings;
-> =20
->  	struct iommu_device iommu;	/* IOMMU Core code handle */
->  };
-> @@ -153,6 +154,9 @@ static inline u32 smmu_readl(struct tegra_smmu *smmu,=
- unsigned long offset)
-> =20
->  #define SMMU_PDE_ATTR		(SMMU_PDE_READABLE | SMMU_PDE_WRITABLE | \
->  				 SMMU_PDE_NONSECURE)
-> +#define SMMU_PTE_ATTR		(SMMU_PTE_READABLE | SMMU_PTE_WRITABLE | \
-> +				 SMMU_PTE_NONSECURE)
-> +#define SMMU_PTE_ATTR_SHIFT	29
-> =20
->  static unsigned int iova_pd_index(unsigned long iova)
->  {
-> @@ -164,6 +168,12 @@ static unsigned int iova_pt_index(unsigned long iova)
->  	return (iova >> SMMU_PTE_SHIFT) & (SMMU_NUM_PTE - 1);
->  }
-> =20
-> +static unsigned long pd_pt_index_iova(unsigned int pd_index, unsigned in=
-t pt_index)
-> +{
-> +	return ((dma_addr_t)pd_index & (SMMU_NUM_PDE - 1)) << SMMU_PDE_SHIFT |
-> +	       ((dma_addr_t)pt_index & (SMMU_NUM_PTE - 1)) << SMMU_PTE_SHIFT;
-> +}
-> +
->  static bool smmu_dma_addr_valid(struct tegra_smmu *smmu, dma_addr_t addr)
->  {
->  	addr >>=3D 12;
-> @@ -496,6 +506,8 @@ static void tegra_smmu_as_unprepare(struct tegra_smmu=
- *smmu,
->  	mutex_unlock(&smmu->lock);
->  }
-> =20
-> +static const struct file_operations tegra_smmu_debugfs_mappings_fops;
+The LED device name is supposed to reflect what the LED was dedicated
+for by vendor. So if on the device chassis next to the LED there is an
+icon or text indicating that the LED is supposed to show link, then the
+function part of the LED name should be "link", no matter what the user
+does with the LED during runtime.
 
-Could the implementation be moved up here to avoid the forward
-declaration?
+In many cases the icon/text by the LED on the chassis says only something
+like "wan" or "lanN". On Turris Omnia for example this is so, and the LED
+is supposed to show link and blink on activity.
 
-> +
->  static void tegra_smmu_attach_as(struct tegra_smmu *smmu,
->  				 struct tegra_smmu_as *as,
->  				 unsigned int swgroup)
-> @@ -517,6 +529,12 @@ static void tegra_smmu_attach_as(struct tegra_smmu *=
-smmu,
->  			dev_warn(smmu->dev,
->  				 "overwriting group->as for swgroup: %s\n", swgrp->name);
->  		group->as =3D as;
-> +
-> +		if (smmu->debugfs_mappings)
-> +			debugfs_create_file(group->swgrp->name, 0444,
-> +					    smmu->debugfs_mappings, group,
-> +					    &tegra_smmu_debugfs_mappings_fops);
-> +
->  		break;
->  	}
-> =20
-> @@ -541,6 +559,12 @@ static void tegra_smmu_detach_as(struct tegra_smmu *=
-smmu,
->  		if (group->swgrp !=3D swgrp)
->  			continue;
->  		group->as =3D NULL;
-> +
-> +		if (smmu->debugfs_mappings) {
-> +			d =3D debugfs_lookup(group->swgrp->name, smmu->debugfs_mappings);
-> +			debugfs_remove(d);
-> +		}
-> +
->  		break;
->  	}
-> =20
-> @@ -1124,6 +1148,125 @@ static int tegra_smmu_clients_show(struct seq_fil=
-e *s, void *data)
-> =20
->  DEFINE_SHOW_ATTRIBUTE(tegra_smmu_clients);
-> =20
-> +static int tegra_smmu_debugfs_mappings_show(struct seq_file *s, void *da=
-ta)
-> +{
-> +	struct tegra_smmu_group *group =3D s->private;
-> +	const struct tegra_smmu_swgroup *swgrp;
-> +	struct tegra_smmu_as *as;
-> +	struct tegra_smmu *smmu;
-> +	unsigned int pd_index;
-> +	unsigned int pt_index;
-> +	unsigned long flags;
-> +	u64 pte_count =3D 0;
-> +	u32 pde_count =3D 0;
-> +	u32 *pd, val;
-> +
-> +	if (!group || !group->as || !group->swgrp)
-> +		return 0;
-> +
-> +	swgrp =3D group->swgrp;
-> +	smmu =3D group->smmu;
-> +	as =3D group->as;
-> +
-> +	mutex_lock(&smmu->lock);
-> +
-> +	val =3D smmu_readl(smmu, swgrp->reg) & SMMU_ASID_ENABLE;
-> +	if (!val)
-> +		goto unlock;
-> +
-> +	pd =3D page_address(as->pd);
-> +	if (!pd)
-> +		goto unlock;
-> +
-> +	seq_printf(s, "\nSWGROUP: %s\n", swgrp->name);
-> +	seq_printf(s, "as->id: %d\nas->attr: %c|%c|%s\nas->pd_dma: %pad\n", as-=
->id,
-> +		   as->attr & SMMU_PD_READABLE ? 'R' : '-',
-> +		   as->attr & SMMU_PD_WRITABLE ? 'W' : '-',
-> +		   as->attr & SMMU_PD_NONSECURE ? "NS" : "S",
-> +		   &as->pd_dma);
-> +	seq_puts(s, "{\n");
+For LEDs on ethernet ports usually the port is dedicated (i.e. it is a
+wan port or a lanN port), and the LEDs are also dedicated in some way
+(for example green for link1000, blink on activity, yellow for link100).
 
-Maybe this can be more compact by putting the name, ID, attributes and
-base address onto a single line? Maybe also use "'-' : 'S'" for the
-non-secure attribute to keep in line with what you've done for readable
-and writable attributes.
+Currently device tree binding for LEDs allows setting function and
+function-enumerator, and there are only macros
+  LED_FUNCTION_WAN	(expands to "wan")
+  LED_FUNCTION_LAN	(expands to "lan")
+So the device tree can specify:
+  color = <LED_COLOR_ID_GREEN>;
+  function = LED_FUNCTION_WAN;
+and the LED will be called
+  <devicename>:green:wan (with no devicename just green:wan)
+or
+  color = <LED_COLOR_ID_GREEN>;
+  function = LED_FUNCTION_LAN;
+  function-enumerator = <2>;
+and the LED will be called
+  <devicename>:green:lan-2
 
-Then again, this is going to be very verbose output anyway, so maybe it
-isn't worth it.
+We need to somehow keep the function part of the LED name consistent
+with what the LED was dedicated for by vendor, but also to be able to
+set more specific trigger settings (link1000, link100, link10,
+activity).
 
-Thierry
+Maybe it would make sense to keep the first string in the function
+property "lan" / "wan", and the other strings to specify more specific
+functions?
 
---D2ajDYzQb2RUipRA
-Content-Type: application/pgp-signature; name="signature.asc"
+> > No, my current ideas about the netdev trigger extension are as follows
+> > (not yet complete):
+> > 
+> > $ cd /sys/.../<LED>
+> > $ echo netdev >trigger	# To enable netdev trigger
+> > $ echo eth0 >device_name
+> > $ echo 1 >ext		# To enable extended netdev trigger.
+> > 			# This will create directory modes if there is
+> > 			# a PHY attached to the interface  
+> > $ ls modes/		
+> > 1000baseT_Full 100BaseT_Full 100BaseT_Half 10BaseT_Full 10BaseT_Half
+> >
+> > $ cd modes/1000baseT_Full
+> > $ ls
+> > brightness link rx tx interval
+> > 
+> > So basically if you enable the extended netdev trigger, you will get
+> > all the standard netdev settings for each PHY mode. (With a little
+> > change to support blinking on link.)
+> > 
+> > With this you can set the LED:
+> >   ON when linked and speed=1000m or 100m, blink on activity
+> > or
+> >   blink with 50ms interval when speed=1000m
+> >   blink with 100ms interval when speed=100m
+> >   blink with 200ms interval when speed=10m
+> > 
+> > (Note that these don't need to be supported by PHY. We are talking
+> >  about SW control. If the PHY supports some of these in HW, then the
+> >  trigger can be offloaded.)  
+> 
+> I see a number of problems with this
+> 
+> 1) Not all PHYs support software control of the LEDs. i.e. software
+> on/off. But they do support different blink modes. Just looking at the
+> data sheets i have lying around like this:
+> 
+> LAN8740 
+> KSZ8041
+> 
+> and i'm sure there are more. So these PHYs LEDs will always be in
+> offloaded mode, you cannot do software blinking. But they do support
+> multiple blinking modes, so we want to be able to control that.
 
------BEGIN PGP SIGNATURE-----
+I am aware of such LEDs. Currently the LED subsystem does not support
+such LEDs. I wanted first to extend the LED API to support offloading,
+and wanted to look at LEDs that only can be HW controlled later.
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmFfKrMACgkQ3SOs138+
-s6GirA/8Cfx05/2MiogduRWFZTD9SO62n3CnaxfIXdaSXcZYSiqlhygq0iAZXs42
-4VEauSkFFGjhS/oREagxAarQzz2P0UWCKK8N5FT3rByEVF5hrL/EPvw3UVnqLLWC
-PoiCZITRyQaAuI84r/j0ppiLoVd8p4DaGIPQc2zGgGx9R8Swvwi3+gckJvAixpDW
-86EVz4P61liUKkbqxBO4FIueZJydOJcqY3498bZiQ6bKdGItyh8fLxMScqfI5Ejw
-MZB9lR9mMdMJxEZwG6ghCH1BVuCMachdscYSWkoqJI3d3jdgecOMcLRaV0tJYSLP
-8vQIEPx/zDuYlxKgL9pIcfnhAEwydeaLJt0jS38Lff19jt8yyuJXcGuk0EwWU86f
-4YIOmIRiFMPkqbTenptIreZDY//D0EjGRs0T4/5TZ4ln/zmhXwO01RdOBG2aNj4k
-oprwCq1zKnmGmjFJTx+NqfiLwhjKX7EpH8OkFCNKXPhb7vOw9ihvKPwiriLhvXGy
-OZQbJENISYlJ1yCrRgvxoXQDX1JF6Qfz15m6yTJJT+8Tm4ujKGlNeiOmux0p/Epv
-Mpd5+a5k5YYb12+jtZjMTy3Hn75Ma/9cHwavM6xD6LmyppP4MXC6XRPWSVKCjUrs
-5H36g9nwEfIhOlYhosC/jp4jH4AQhebHInqjQLrZn0iBxLcBP8k=
-=Xb3q
------END PGP SIGNATURE-----
+> 2) Marvell PHY i have the datasheet open for at the moment has no way
+> to indicate duplex. So you cannot actually offload 100baseT_Full. You
+> need to user to configure the same blink mode for both 100baseT_Full
+> and then 100baseT_Half, so duplex is irrelevant, then you can offload
+> it, which is not very obvious.
 
---D2ajDYzQb2RUipRA--
+This was just a proposal, I have not written code for this yet. We can
+do this by speed only, if it makes more sense.
+
+> 3) phylib does not actually tell you what link mode the PHY is
+> operating in. All you get is the resolved speed and duplex. And
+> mapping speed an duplex back to a link mode is not obvious. Take for
+> example 100baseT_Full & 100baseT1_Full. Both are 100Mbps, both full
+> duplex. Currently there is no PHY which actually implements both, so
+> currently you can work it out, but in general, you cannot. But this is
+> very true for higher speeds, where the MAC is providing the PHY LED
+> control, but ideally we want the same /sysfs interface:
+> 
+>         ETHTOOL_LINK_MODE_40000baseKR4_Full_BIT = 23,
+>         ETHTOOL_LINK_MODE_40000baseCR4_Full_BIT = 24,
+>         ETHTOOL_LINK_MODE_40000baseSR4_Full_BIT = 25,
+>         ETHTOOL_LINK_MODE_40000baseLR4_Full_BIT = 26,
+> 
+> Are you suggesting 4 different directories for the same speed?
+> 
+> I think you need duplex, KR4/CR4/SR4/LR4, T1/T2 as separate
+> attributes, which the LED might support, but are not required.
+
+OK, it would make more sense to do this by speed only at first. And
+later if someone needs to do it more specific, it can be extended.
+
+$ cd /sys/class/leds/<LED>
+$ echo netdev >trigger
+$ echo speed >ext
+$ ls modes
+1000 100 10
+
+Or maybe the subdirectories can be added by request:
+
+$ cd /sys/class/leds/<LED>
+$ echo netdev >trigger
+$ cat ext
+[none] speed link_mode
+$ echo link_mode >ext
+$ ls modes
+add  delete
+$ echo 40000baseKR4_Full >modes/add
+$ ls modes
+40000baseKR4_Full  add  delete
+
+> 4) Software blinking can add quite a lot of overhead. Getting the
+> counters from the device can be expensive, particularly for Ethernet
+> switches on slow busses. If anybody sets the interval to 5ms, they
+> could saturate the MDIO bus. And blinking the LEDs is not for free.
+
+This is how the netdev trigger works currently. I just wanted first to
+extend it to support in SW things that are offloadable to some HW.
+
+You are right that MDIO bus can be slow and saturated by SW blinking,
+that is why we need offloading.
+
+Also currently netdev trigger blink on activity does not work for DSA
+switch ports (at least not for mv88e6xxx), unless the packet goes to
+CPU also, since the trigger looks at CPU interface stats...
+
+> So either we need to indicate if software or hardware is used, or we
+> should limit the choices to those which the hardware can actually do,
+> so we guarantee offload.
+
+I think we should indicate whether the trigger is offloaded and let the
+user control the LED also in SW. An utility (ledtool) can be written
+which could then list HW offloadable modes and let the user choose only
+between those.
+
+Marek
