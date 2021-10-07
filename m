@@ -2,165 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D7354250CD
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 12:13:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 967E74250D2
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 12:15:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240544AbhJGKPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 06:15:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40922 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230060AbhJGKPi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 06:15:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A6DBD6113E;
-        Thu,  7 Oct 2021 10:13:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633601625;
-        bh=kRlcvcbFuHhJuEirwDQ5X9clFRI3p9ivKRaKD8VGIhg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VYCXUey5hK0BTCSnfeqnySTGL/DG4e1RxpN1FhtP7uDqqbCmZ6D2YUqlzSTUU7kPq
-         Rzd4EvMqUzLXrWeMgxLdaNumFyFv+yTpik7V6r7maZsu6Y64jCHGd9y2/qoNPGiiLa
-         XWxENFVy8w3ToyFnZicsvN2WFbZSEe5u3/qLLAtZt/DmfWo86y8h/0RKU3SskeGdG4
-         R2LapygCf2QDX64xjjlz8Je9CLfWrM0Vmv264NewdoDNlih+60GEnFG0sb/PVQ8qWm
-         K1NwLl8VUUNI6101Y4Dp3CFMTF71hG+LtdQoslOT30Mu9aFHl3XLAc/bSLco369xJI
-         QPmK2NC3FLszg==
-Received: by pali.im (Postfix)
-        id 8AEFD81A; Thu,  7 Oct 2021 12:13:42 +0200 (CEST)
-Date:   Thu, 7 Oct 2021 12:13:42 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
-Cc:     Kalle Valo <kvalo@codeaurora.org>,
-        =?utf-8?B?SsOpcsO0bWU=?= Pouiller <jerome.pouiller@silabs.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        linux-mmc@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>
-Subject: Re: [PATCH v7 10/24] wfx: add fwio.c/fwio.h
-Message-ID: <20211007101342.fxl74ud4xra4u3cp@pali>
-References: <20210920161136.2398632-1-Jerome.Pouiller@silabs.com>
- <20210920161136.2398632-11-Jerome.Pouiller@silabs.com>
- <87sfxlj6s1.fsf@codeaurora.org>
- <2174509.SLDT7moDbM@pc-42>
- <20211001160832.ozxc7bhlwlmjeqbo@pali>
- <87pmshckrm.fsf@codeaurora.org>
+        id S240726AbhJGKRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 06:17:24 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:53276 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230060AbhJGKRX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 06:17:23 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 4515F1C0B87; Thu,  7 Oct 2021 12:15:28 +0200 (CEST)
+Date:   Thu, 7 Oct 2021 12:15:27 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        David Hildenbrand <david@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Colin Cross <ccross@google.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        vincenzo.frascino@arm.com,
+        Chinwen Chang =?utf-8?B?KOW8temMpuaWhyk=?= 
+        <chinwen.chang@mediatek.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Jann Horn <jannh@google.com>, apopple@nvidia.com,
+        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
+        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
+        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
+        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
+        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
+        Chris Hyser <chris.hyser@oracle.com>,
+        Peter Collingbourne <pcc@google.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Jens Axboe <axboe@kernel.dk>, legion@kernel.org,
+        Rolf Eike Beer <eb@emlix.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Thomas Cedeno <thomascedeno@google.com>, sashal@kernel.org,
+        cxfcosmos@gmail.com, LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-mm <linux-mm@kvack.org>,
+        kernel-team <kernel-team@android.com>
+Subject: Re: [PATCH v10 3/3] mm: add anonymous vma name refcounting
+Message-ID: <20211007101527.GA26288@duo.ucw.cz>
+References: <20211005200411.GB19804@duo.ucw.cz>
+ <CAJuCfpFZkz2c0ZWeqzOAx8KFqk1ge3K-SiCMeu3dmi6B7bK-9w@mail.gmail.com>
+ <efdffa68-d790-72e4-e6a3-80f2e194d811@nvidia.com>
+ <YV1eCu0eZ+gQADNx@dhcp22.suse.cz>
+ <6b15c682-72eb-724d-bc43-36ae6b79b91a@redhat.com>
+ <CAJuCfpEPBM6ehQXgzp=g4SqtY6iaC8wuZ-CRE81oR1VOq7m4CA@mail.gmail.com>
+ <20211006175821.GA1941@duo.ucw.cz>
+ <CAJuCfpGuuXOpdYbt3AsNn+WNbavwuEsDfRMYunh+gajp6hOMAg@mail.gmail.com>
+ <YV6rksRHr2iSWR3S@dhcp22.suse.cz>
+ <92cbfe3b-f3d1-a8e1-7eb9-bab735e782f6@rasmusvillemoes.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="DocE+STaALJfprDB"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87pmshckrm.fsf@codeaurora.org>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <92cbfe3b-f3d1-a8e1-7eb9-bab735e782f6@rasmusvillemoes.dk>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Rob! Could you look at issue below to represent antenna (pds)
-firmware file requirement for this driver in DTS file?
 
-On Thursday 07 October 2021 11:16:29 Kalle Valo wrote:
-> Pali Rohár <pali@kernel.org> writes:
-> 
-> > On Friday 01 October 2021 17:09:41 Jérôme Pouiller wrote:
-> >> On Friday 1 October 2021 13:58:38 CEST Kalle Valo wrote:
-> >> > Jerome Pouiller <Jerome.Pouiller@silabs.com> writes:
-> >> > 
-> >> > > From: Jérôme Pouiller <jerome.pouiller@silabs.com>
-> >> > >
-> >> > > Signed-off-by: Jérôme Pouiller <jerome.pouiller@silabs.com>
-> >> > 
-> >> > [...]
-> >> > 
-> >> > > +static int get_firmware(struct wfx_dev *wdev, u32 keyset_chip,
-> >> > > +                     const struct firmware **fw, int *file_offset)
-> >> > > +{
-> >> > > +     int keyset_file;
-> >> > > +     char filename[256];
-> >> > > +     const char *data;
-> >> > > +     int ret;
-> >> > > +
-> >> > > +     snprintf(filename, sizeof(filename), "%s_%02X.sec",
-> >> > > +              wdev->pdata.file_fw, keyset_chip);
-> >> > > +     ret = firmware_request_nowarn(fw, filename, wdev->dev);
-> >> > > +     if (ret) {
-> >> > > +             dev_info(wdev->dev, "can't load %s, falling back to %s.sec\n",
-> >> > > +                      filename, wdev->pdata.file_fw);
-> >> > > +             snprintf(filename, sizeof(filename), "%s.sec",
-> >> > > +                      wdev->pdata.file_fw);
-> >> > > +             ret = request_firmware(fw, filename, wdev->dev);
-> >> > > +             if (ret) {
-> >> > > +                     dev_err(wdev->dev, "can't load %s\n", filename);
-> >> > > +                     *fw = NULL;
-> >> > > +                     return ret;
-> >> > > +             }
-> >> > > +     }
-> >> > 
-> >> > How is this firmware file loading supposed to work? If I'm reading the
-> >> > code right, the driver tries to load file "wfm_wf200_??.sec" but in
-> >> > linux-firmware the file is silabs/wfm_wf200_C0.sec:
-> >> > 
-> >> > https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/tree/silabs
-> >> > 
-> >> > That can't work automatically, unless I'm missing something of course.
-> >> 
-> >> The firmware are signed. "C0" is the key used to sign this firmware. This
-> >> key must match with the key burned into the chip. Fortunately, the driver
-> >> is able to read the key accepted by the chip and automatically choose the
-> >> right firmware.
-> >> 
-> >> We could imagine to add a attribute in the DT to choose the firmware to
-> >> load. However, it would be a pity to have to specify it manually whereas
-> >> the driver is able to detect it automatically.
-> >> 
-> >> Currently, the only possible key is C0. However, it exists some internal
-> >> parts with other keys. In addition, it is theoretically possible to ask
-> >> to Silabs to burn parts with a specific key in order to improve security
-> >> of a product. 
-> >> 
-> >> Obviously, for now, this feature mainly exists for the Silabs firmware
-> >> developers who have to work with other keys.
-> >>  
-> >> > Also I would prefer to use directory name as the driver name wfx, but I
-> >> > guess silabs is also doable.
-> >> 
-> >> I have no opinion.
-> >> 
-> >> 
-> >> > Also I'm not seeing the PDS files in linux-firmware. The idea is that
-> >> > when user installs an upstream kernel and the linux-firmware everything
-> >> > will work automatically, without any manual file installations.
-> >> 
-> >> WF200 is just a chip. Someone has to design an antenna before to be able
-> >> to use.
-> >> 
-> >> However, we have evaluation boards that have antennas and corresponding
-> >> PDS files[1]. Maybe linux-firmware should include the PDS for these boards
-> >
-> > So chip vendor provides firmware and card vendor provides PDS files. In
-> > my opinion all files should go into linux-firmware repository. If Silabs
-> > has PDS files for its devel boards (which are basically cards) then I
-> > think these files should go also into linux-firmware repository.
-> 
-> I agree, all files required for normal functionality should be in
-> linux-firmware. The upstream philosophy is that a user can just install
-> the latest kernel and latest linux-firmware, and everything should work
-> out of box (without any manual work).
-> 
-> > And based on some parameter, driver should load correct PDS file. Seems
-> > like DT can be a place where to put something which indicates which PDS
-> > file should be used.
-> 
-> Again I agree.
-> 
-> > But should be in DT directly name of PDS file? Or should be in DT just
-> > additional compatible string with card vendor name and then in driver
-> > itself should be mapping table from compatible string to filename? I do
-> > not know what is better.
-> 
-> This is also what I was wondering, to me it sounds wrong to have a
-> filename in DT. I was more thinking about calling it "antenna name" (and
-> not the actually filename), but using compatible strings sounds good to
-> me as well. But of course DT maintainers know this better.
-> 
-> -- 
-> https://patchwork.kernel.org/project/linux-wireless/list/
-> 
-> https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+--DocE+STaALJfprDB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi!
+
+> >> Hmm, so the suggestion is to have some directory which contains files
+> >> representing IDs, each containing the string name of the associated
+> >> vma? Then let's say we are creating a new VMA and want to name it. We
+> >> would have to scan that directory, check all files and see if any of
+> >> them contain the name we want to reuse the same ID.
+> >=20
+> > I believe Pavel meant something as simple as
+> > $ YOUR_FILE=3D$YOUR_IDS_DIR/my_string_name
+> > $ touch $YOUR_FILE
+> > $ stat -c %i $YOUR_FILE
+>=20
+> So in terms of syscall overhead, that would be open(..., O_CREAT |
+> O_CLOEXEC), fstat(), close() - or one could optimistically start by
+
+You could get to two if you used mkdir instead of open.
+
+> > YOUR_IDS_DIR can live on a tmpfs and you can even implement a policy on
+> > top of that (who can generate new ids, gurantee uniqness etc...).
+> >=20
+> > The above is certainly not for free of course but if you really need a
+> > system wide consistency when using names then you need some sort of
+> > central authority. How you implement that is not all that important
+> > but I do not think we want to handle that in the kernel.
+>=20
+> IDK. If the whole thing could be put behind a CONFIG_ knob, with _zero_
+> overhead when not enabled (and I'm a bit worried about all the functions
+> that grow an extra argument that gets passed around), I don't mind the
+> string interface. But I don't really have a say either way.
+
+If this is ever useful outside of Android, eventually distros will
+have it enabled.
+
+Best regards,
+								Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--DocE+STaALJfprDB
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYV7IvwAKCRAw5/Bqldv6
+8ij3AKCob2c0ihsUF0OGRBWpcwK/HrL/WwCfUjg8l8NuDcUriv7uo2C8eR0uTy8=
+=1GxR
+-----END PGP SIGNATURE-----
+
+--DocE+STaALJfprDB--
