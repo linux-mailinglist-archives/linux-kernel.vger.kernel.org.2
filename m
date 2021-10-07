@@ -2,76 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3463C425547
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 16:22:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5116A42554A
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 16:22:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242047AbhJGOYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 10:24:31 -0400
-Received: from mout.kundenserver.de ([212.227.126.130]:55155 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241622AbhJGOYa (ORCPT
+        id S242062AbhJGOYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 10:24:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39899 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241688AbhJGOYj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 10:24:30 -0400
-Received: from mail-wr1-f41.google.com ([209.85.221.41]) by
- mrelayeu.kundenserver.de (mreue011 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1MfHQp-1n0QFs2hb9-00glOw; Thu, 07 Oct 2021 16:22:35 +0200
-Received: by mail-wr1-f41.google.com with SMTP id i12so7051367wrb.7;
-        Thu, 07 Oct 2021 07:22:35 -0700 (PDT)
-X-Gm-Message-State: AOAM532HJq1qfZq/HjuzVos0QZQ6IlcH8RvU+ovrPeEss8FTydMnn9aT
-        n4F2iGtZVTqMJ12M1InCyZfqIPydn09oJjuo1r0=
-X-Google-Smtp-Source: ABdhPJy3Lon0IU3ks/b058uaiy0ad95pOq5B1PqBU743qiE81z3/tuCXenWevOClGigtya7fNnV9ePq5QABgExd78xU=
-X-Received: by 2002:adf:a3da:: with SMTP id m26mr5673108wrb.336.1633616555268;
- Thu, 07 Oct 2021 07:22:35 -0700 (PDT)
+        Thu, 7 Oct 2021 10:24:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633616565;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NwNhkSSQVfpndEjPuTcMmPnedcfNAU7hCSOfVfmZyQw=;
+        b=esYsEikkXKzqjy0BB8SxKHpLnOSFF7AIF8iGUXolNeGCfpg7lVD/mNnpv5ZczsphVaEcAI
+        prlHTFqSIam5cHbX0JC7sY9LUFqmWuxANx/h5DpIzhdZhDW8FFB0/ZY/imK4fIs3GTq4l1
+        2NRIBqju94rh33upEmDCcVFJgHlsVTY=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-549-PGh8JcakPKWRvPf7OWsTgA-1; Thu, 07 Oct 2021 10:22:44 -0400
+X-MC-Unique: PGh8JcakPKWRvPf7OWsTgA-1
+Received: by mail-qv1-f71.google.com with SMTP id a16-20020a0ccdd0000000b003830ff134ccso5827442qvn.6
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 07:22:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NwNhkSSQVfpndEjPuTcMmPnedcfNAU7hCSOfVfmZyQw=;
+        b=Vswr/LuRclUzQACaS98A0CrGY0ja3kTlgdI2flRahz1izIINl/Lg2Dpan2T53pURqP
+         dK8evaMosgxdgC7+Ixn4CrOqrkS9T9MX73YpN374nnTJhOArqJ4IPlLscsylbBBUHX9I
+         bGAXLhLoj3TQNj9UXtDtnBombpIdJJFvwQoXGHLs0xxFFD604R2IfOs4kAjtGX5Vv0Q7
+         epMMnXv2e7BL+zbx1r8QsPkBg5qfeJT6jd5lSRJr9fXr5ZXv8JAcRxJDQl3bm2fhQppX
+         Dah/N9mWzQRAVMsIBMLarUjjXbUyyVTOKNuqggXjxVRBW9FNJwJj4+9cSOTT7ndsjIRO
+         Igeg==
+X-Gm-Message-State: AOAM532GZTqFntmRMOSKlfz9QlAjeXbDXNlZfuTqy8KpM+uRqpmTrbWG
+        6+hmZ6S1rgfAUGux/b807dMqdPofsjNo1es+za8XhYYxcrQ10+f3eQxqi7iWgq4BOkVZl9bWGg/
+        1XeyOdCU7z7tS/EQYj2DYoV4N
+X-Received: by 2002:ac8:42da:: with SMTP id g26mr5084724qtm.368.1633616564372;
+        Thu, 07 Oct 2021 07:22:44 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJznlZpzS7BocFG+jBouZSO4VwuwGiZhZ+UBcXSThzQVFxaLLFDyXzL3bSYYFQIwgrEoqpSV7g==
+X-Received: by 2002:ac8:42da:: with SMTP id g26mr5084691qtm.368.1633616564116;
+        Thu, 07 Oct 2021 07:22:44 -0700 (PDT)
+Received: from gator (nat-pool-brq-u.redhat.com. [213.175.37.12])
+        by smtp.gmail.com with ESMTPSA id b20sm521782qtx.89.2021.10.07.07.22.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Oct 2021 07:22:43 -0700 (PDT)
+Date:   Thu, 7 Oct 2021 16:22:39 +0200
+From:   Andrew Jones <drjones@redhat.com>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org, will@kernel.org,
+        qperret@google.com, dbrazdil@google.com,
+        Steven Price <steven.price@arm.com>,
+        Fuad Tabba <tabba@google.com>,
+        Srivatsa Vaddagiri <vatsa@codeaurora.org>,
+        Shanker R Donthineni <sdonthineni@nvidia.com>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        kernel-team@android.com
+Subject: Re: [PATCH v2 09/16] KVM: arm64: Advertise a capability for MMIO
+ guard
+Message-ID: <20211007142239.4ryz4thzgpilphya@gator>
+References: <20211004174849.2831548-1-maz@kernel.org>
+ <20211004174849.2831548-10-maz@kernel.org>
 MIME-Version: 1.0
-References: <20210928153508.101208f8@canb.auug.org.au> <20211006140451.2dcea4ea@canb.auug.org.au>
-In-Reply-To: <20211006140451.2dcea4ea@canb.auug.org.au>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Thu, 7 Oct 2021 16:22:19 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0QuZpmOikbiCxqn1VUXk-ZJwoGm6uMvfiWdp2sWYHfFg@mail.gmail.com>
-Message-ID: <CAK8P3a0QuZpmOikbiCxqn1VUXk-ZJwoGm6uMvfiWdp2sWYHfFg@mail.gmail.com>
-Subject: Re: linux-next: build failure after merge of the sound-asoc tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Simon Trimmer <simont@opensource.cirrus.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:EKzOAQTmevDYMSd2sY/siJF0nEYzUmxrxRPmRxY2O6vmid3sN72
- w37Ocyk+ZUgDODb8/sgMKJH6Zgurdci100vqdqsyb/ZImOIQ07RO6RlYojH8TcujSe7qiPp
- 8REnW+BQL2xSDAETrxE+CKA/pmwPT4sQvjxai1eX2YETemLbv3u+rdBUheWTSAiQPf14phz
- MLDP3ZtLWvCEhD8zqg7Nw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:GkWhAj1Gzoo=:chj4qdklkT6qaWpmLCCVcC
- qbyrXmwoqiXLSdoJy7Eh9Ollu8GHjxzfDw74mBPeZ6Q8JK2GiARJVsHZthBZgnUD204k6bKfI
- /BmOr56kwTm6l0Uq4Smd6qNhxkGTF5B2WKtsdCQkFjxcPAhjSxCf5pfmGXInzOQogaHo1vt7J
- DCL1jQ39vSsivVVx1OL8JSt7d+1QJeKe0GgLbIsAXft0A2DQ9TeriRxSjIuJ9g0ad17cNKUtb
- /HyRyQ5xsBBIctjZlpO6APkVqLZQHEPBvvHPiJWGBieg5UJQnGM66OK8Ipr6ivDksL06Iv78t
- +R5vBIcQO8q6PCrP+mAbSzoKK0GwH5LNOdS32tAO9TFAufJNL9lNOKlGSIj3fdyY7Ef/252+T
- 78YM6aNpN3ujXQmKqkDGv5aEzkcID/yhxZGoB0ORvpCj+n8tOtUeTVWTL1jcaCN6xl6GS5NY3
- +QSqg8mZqQRY/U32Cn5i2whrMV6rckO8t1R6Z4Fd3CPnyPUqZizFvB/X3Lb81hRaxTGW3+zOA
- yWU4evkdpejeciAasPq0rcBK0hUVJRYi9RomgQmOuedP36/n4XosTYvN05LwVIqt7OVKMlNId
- gDSCcbphXOvNOLgq2dCXdj0eWdxZIoLI/6RccJzllKcK+pcudJ/VqQypkbZCpz0mgqZ2PDe8L
- a7JNARo8OJgf68LB19taHxKvybMMI3ERsp+GJO18D3oQIVQNlQRAGy1ap6q71bBbTFhwZfYGJ
- kX1893wdieyUqhGsOWEF6nlF89QrEx94OwsrBQ==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211004174849.2831548-10-maz@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 6, 2021 at 5:04 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->
-> >
-> >   f6bc909e7673 ("firmware: cs_dsp: add driver to support firmware loading on Cirrus Logic DSPs")
-> >
-> > I have reverted that commit for today.
->
-> Any progress on this?  I am still reverting the above commit.
+On Mon, Oct 04, 2021 at 06:48:42PM +0100, Marc Zyngier wrote:
+> In order for userspace to find out whether the MMIO guard is
+> exposed to a guest, expose a capability that says so.
+> 
+> We take this opportunity to make it incompatible with the NISV
+> option, as that would be rather counter-productive!
+> 
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
+> ---
+>  arch/arm64/kvm/arm.c        | 29 ++++++++++++++++++-----------
+>  arch/arm64/kvm/hypercalls.c | 14 ++++++++++++--
+>  include/uapi/linux/kvm.h    |  1 +
+>  3 files changed, 31 insertions(+), 13 deletions(-)
+> 
+> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+> index ed9c89ec0b4f..1c9a7abe2728 100644
+> --- a/arch/arm64/kvm/arm.c
+> +++ b/arch/arm64/kvm/arm.c
+> @@ -81,32 +81,33 @@ int kvm_arch_check_processor_compat(void *opaque)
+>  int kvm_vm_ioctl_enable_cap(struct kvm *kvm,
+>  			    struct kvm_enable_cap *cap)
+>  {
+> -	int r;
+> +	int r = -EINVAL;
+>  
+>  	if (cap->flags)
+>  		return -EINVAL;
+>  
+> +	mutex_lock(&kvm->lock);
+> +
+>  	switch (cap->cap) {
+>  	case KVM_CAP_ARM_NISV_TO_USER:
+> -		r = 0;
+> -		set_bit(KVM_ARCH_FLAG_RETURN_NISV_IO_ABORT_TO_USER,
+> -			&kvm->arch.flags);
+> +		/* This is incompatible with MMIO guard */
+> +		if (!test_bit(KVM_ARCH_FLAG_MMIO_GUARD, &kvm->arch.flags)) {
+
+But KVM_ARCH_FLAG_MMIO_GUARD will never be set at VM creation time, which
+is the traditional time to probe and enable capabilities, because the
+guest hasn't run yet, so it hasn't had a chance to issue the hypercall to
+enable the mmio guard yet.
+
+> +			r = 0;
+> +			set_bit(KVM_ARCH_FLAG_RETURN_NISV_IO_ABORT_TO_USER,
+> +				&kvm->arch.flags);
+> +		}
+>  		break;
+>  	case KVM_CAP_ARM_MTE:
+> -		mutex_lock(&kvm->lock);
+> -		if (!system_supports_mte() || kvm->created_vcpus) {
+> -			r = -EINVAL;
+> -		} else {
+> +		if (system_supports_mte() && !kvm->created_vcpus) {
+>  			r = 0;
+>  			set_bit(KVM_ARCH_FLAG_MTE_ENABLED, &kvm->arch.flags);
+>  		}
+> -		mutex_unlock(&kvm->lock);
+>  		break;
+>  	default:
+> -		r = -EINVAL;
+>  		break;
+>  	}
+>  
+> +	mutex_unlock(&kvm->lock);
+>  	return r;
+>  }
+>  
+> @@ -211,13 +212,19 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
+>  	case KVM_CAP_IMMEDIATE_EXIT:
+>  	case KVM_CAP_VCPU_EVENTS:
+>  	case KVM_CAP_ARM_IRQ_LINE_LAYOUT_2:
+> -	case KVM_CAP_ARM_NISV_TO_USER:
+>  	case KVM_CAP_ARM_INJECT_EXT_DABT:
+>  	case KVM_CAP_SET_GUEST_DEBUG:
+>  	case KVM_CAP_VCPU_ATTRIBUTES:
+>  	case KVM_CAP_PTP_KVM:
+>  		r = 1;
+>  		break;
+> +	case KVM_CAP_ARM_NISV_TO_USER:
+> +		r = !test_bit(KVM_ARCH_FLAG_MMIO_GUARD, &kvm->arch.flags);
+> +		break;
+> +	case KVM_CAP_ARM_MMIO_GUARD:
+> +		r = !test_bit(KVM_ARCH_FLAG_RETURN_NISV_IO_ABORT_TO_USER,
+> +			      &kvm->arch.flags);
+> +		break;
+>  	case KVM_CAP_SET_GUEST_DEBUG2:
+>  		return KVM_GUESTDBG_VALID_MASK;
+>  	case KVM_CAP_ARM_SET_DEVICE_ADDR:
+> diff --git a/arch/arm64/kvm/hypercalls.c b/arch/arm64/kvm/hypercalls.c
+> index c39aab55ecae..e4fade6a96f6 100644
+> --- a/arch/arm64/kvm/hypercalls.c
+> +++ b/arch/arm64/kvm/hypercalls.c
+> @@ -59,6 +59,14 @@ static void kvm_ptp_get_time(struct kvm_vcpu *vcpu, u64 *val)
+>  	val[3] = lower_32_bits(cycles);
+>  }
+>  
+> +static bool mmio_guard_allowed(struct kvm_vcpu *vcpu)
+> +{
+> +	return (!test_bit(KVM_ARCH_FLAG_RETURN_NISV_IO_ABORT_TO_USER,
+> +			  &vcpu->kvm->arch.flags) &&
+> +		!vcpu_mode_is_32bit(vcpu));
+> +
+> +}
+> +
+>  int kvm_hvc_call_handler(struct kvm_vcpu *vcpu)
+>  {
+>  	u32 func_id = smccc_get_function(vcpu);
+> @@ -131,7 +139,7 @@ int kvm_hvc_call_handler(struct kvm_vcpu *vcpu)
+>  		val[0] = BIT(ARM_SMCCC_KVM_FUNC_FEATURES);
+>  		val[0] |= BIT(ARM_SMCCC_KVM_FUNC_PTP);
+>  		/* Only advertise MMIO guard to 64bit guests */
+> -		if (!vcpu_mode_is_32bit(vcpu)) {
+> +		if (mmio_guard_allowed(vcpu)) {
+>  			val[0] |= BIT(ARM_SMCCC_KVM_FUNC_MMIO_GUARD_INFO);
+>  			val[0] |= BIT(ARM_SMCCC_KVM_FUNC_MMIO_GUARD_ENROLL);
+>  			val[0] |= BIT(ARM_SMCCC_KVM_FUNC_MMIO_GUARD_MAP);
+> @@ -146,10 +154,12 @@ int kvm_hvc_call_handler(struct kvm_vcpu *vcpu)
+>  			val[0] = PAGE_SIZE;
+>  		break;
+>  	case ARM_SMCCC_VENDOR_HYP_KVM_MMIO_GUARD_ENROLL_FUNC_ID:
+> -		if (!vcpu_mode_is_32bit(vcpu)) {
+> +		mutex_lock(&vcpu->kvm->lock);
+> +		if (mmio_guard_allowed(vcpu)) {
+>  			set_bit(KVM_ARCH_FLAG_MMIO_GUARD, &vcpu->kvm->arch.flags);
+>  			val[0] = SMCCC_RET_SUCCESS;
+>  		}
+> +		mutex_unlock(&vcpu->kvm->lock);
+>  		break;
+>  	case ARM_SMCCC_VENDOR_HYP_KVM_MMIO_GUARD_MAP_FUNC_ID:
+>  		if (!vcpu_mode_is_32bit(vcpu) &&
+> diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
+> index a067410ebea5..ef171186e7be 100644
+> --- a/include/uapi/linux/kvm.h
+> +++ b/include/uapi/linux/kvm.h
+> @@ -1112,6 +1112,7 @@ struct kvm_ppc_resize_hpt {
+>  #define KVM_CAP_BINARY_STATS_FD 203
+>  #define KVM_CAP_EXIT_ON_EMULATION_FAILURE 204
+>  #define KVM_CAP_ARM_MTE 205
+> +#define KVM_CAP_ARM_MMIO_GUARD 206
+>  
+>  #ifdef KVM_CAP_IRQ_ROUTING
+>  
+> -- 
+> 2.30.2
 >
 
-I have added my two patches for Kconfig to the asm-generic tree now, planning to
-send that as bugfixes for the next -rc.
+Thanks,
+drew
 
-       Arnd
