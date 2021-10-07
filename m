@@ -2,165 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B2DF424B6C
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 02:57:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 883CD424B6D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 02:57:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240135AbhJGA6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 20:58:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41956 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231279AbhJGA6w (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 20:58:52 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9650CC061746;
-        Wed,  6 Oct 2021 17:56:59 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HPtFN1lZQz4xbP;
-        Thu,  7 Oct 2021 11:56:56 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1633568217;
-        bh=UpZEWDiRGS+OBlhuAxcpxvS6DE5buvVbtK8MzqmhPvA=;
-        h=Date:From:To:Cc:Subject:From;
-        b=nGBBkhvsc5LWgJzk+GRdEn+NlwEZLtbmDX0HNrepJ9PfSTFUEYygBcuZprP9Wkxzw
-         4uYZ628aRT8eOqkh35VB27DxrFgjRRhljCBbPsLJ3vEGeZ5lp/4YSiR8fb/EBzFoLC
-         be6ilH7b1wJMB+0X24ofqqWeHkry1dIX6digQxD/k6cHbxnpxts9o66kklMVPB1g8m
-         t50NJaK2WxoyEm/UNCALa1uxFRNyLhg4p7PjooZ6M3fY5mk1bOjcdnLkOz+r88KVxG
-         00z/ah951QeC+yZ8b0Ye02E4Pj/WF09SWJG16UZi1vpOoI3+gyofTlzSQVwhTuv/Uk
-         w2QTSA4HP/EjA==
-Date:   Thu, 7 Oct 2021 11:56:53 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Paul Moore <paul@paul-moore.com>, Jens Axboe <axboe@kernel.dk>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Pavel Begunkov <asml.silence@gmail.com>
-Subject: linux-next: manual merge of the selinux tree with the block tree
-Message-ID: <20211007115653.133463cb@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/hYJsUwdRDsF7gElQlPLj1CV";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        id S240142AbhJGA7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 20:59:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38096 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231279AbhJGA7r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 20:59:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 84C3461130;
+        Thu,  7 Oct 2021 00:57:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1633568274;
+        bh=komW+5NE27C9leEh8nNx5UfbYZzM+0OjLi9wkZGsyDU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=fG/4KRD2P5RVUleYJLQlACxIwvaPWzlLD+g2IRS2Hq0/RbBGfBDT3IJlo5AAts512
+         zAHuv14SxXX/v13yLZmyAkZXLZfBpxm7zVS7NZaFgcRJpQ2UaZiCAsTuZPzQu/vRF8
+         pYgyWKl6Qn03jmrMsg8WICZ1ST80NcjM8duwo0ck=
+Date:   Wed, 6 Oct 2021 17:57:54 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Barret Rhoden <brho@google.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: Re: [PATCH] elfcore: um: Fix CONFIG_UM typo in linux/elfcore.h
+Message-Id: <20211006175754.038332e2c358e85ea4e184ed@linux-foundation.org>
+In-Reply-To: <CAKwvOdk2tj0bzTajd6F4bPvwXComJSnS+8Jwj3t7EEP5gGoK+A@mail.gmail.com>
+References: <20211006181119.2851441-1-catalin.marinas@arm.com>
+        <CAKwvOdk2tj0bzTajd6F4bPvwXComJSnS+8Jwj3t7EEP5gGoK+A@mail.gmail.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/hYJsUwdRDsF7gElQlPLj1CV
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, 6 Oct 2021 14:57:56 -0700 Nick Desaulniers <ndesaulniers@google.com> wrote:
 
-Hi all,
+> On Wed, Oct 6, 2021 at 11:11 AM Catalin Marinas <catalin.marinas@arm.com> wrote:
+> >
+> > There is no CONFIG_UM, only UML. In addition, the arch/x86/um/elfcore.c
+> > file is only compiled if CONFIG_X86_32. Fix the #if conditions in the
+> > linux/elfcore.h header accordingly.
+> >
+> > Fixes: 6e7b64b9dd6d ("elfcore: fix building with clang")
+> > Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
+> > Cc: Arnd Bergmann <arnd@arndb.de>
+> 
+> Lukas noticed and sent a patch coincidentally just before you:
+> https://lore.kernel.org/lkml/20211006082209.417-1-lukas.bulwahn@gmail.com/
+> 
+> Let me cc' you and Arnd into that thread.
 
-Today's linux-next merge of the selinux tree got a conflict in:
+I grabbed Lukas's version, as it seemed more complete.
 
-  fs/io_uring.c
-
-between commit:
-
-  3d2b8972f292 ("io_uring: optimise plugging")
-
-from the block tree and commit:
-
-  5bd2182d58e9 ("audit,io_uring,io-wq: add some basic audit support to io_u=
-ring")
-
-from the selinux tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc fs/io_uring.c
-index 73135c5c6168,f89d00af3a67..000000000000
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@@ -903,8 -917,10 +905,10 @@@ struct io_op_def=20
-  	unsigned		buffer_select : 1;
-  	/* do prep async if is going to be punted */
-  	unsigned		needs_async_setup : 1;
- -	/* should block plug */
- -	unsigned		plug : 1;
- +	/* opcode is not supported by this kernel */
- +	unsigned		not_supported : 1;
-+ 	/* skip auditing */
-+ 	unsigned		audit_skip : 1;
-  	/* size of async data needed, if any */
-  	unsigned short		async_size;
-  };
-@@@ -6542,9 -6622,12 +6576,12 @@@ static int io_issue_sqe(struct io_kioc
-  	const struct cred *creds =3D NULL;
-  	int ret;
- =20
- -	if ((req->flags & REQ_F_CREDS) && req->creds !=3D current_cred())
- +	if (unlikely((req->flags & REQ_F_CREDS) && req->creds !=3D current_cred(=
-)))
-  		creds =3D override_creds(req->creds);
- =20
-+ 	if (!io_op_defs[req->opcode].audit_skip)
-+ 		audit_uring_entry(req->opcode);
-+=20
-  	switch (req->opcode) {
-  	case IORING_OP_NOP:
-  		ret =3D io_nop(req, issue_flags);
-@@@ -7042,10 -7071,34 +7082,15 @@@ static int io_init_req(struct io_ring_c
-  		if (!req->creds)
-  			return -EINVAL;
-  		get_cred(req->creds);
-+ 		ret =3D security_uring_override_creds(req->creds);
-+ 		if (ret) {
-+ 			put_cred(req->creds);
-+ 			return ret;
-+ 		}
-  		req->flags |=3D REQ_F_CREDS;
-  	}
- -	state =3D &ctx->submit_state;
- -
- -	/*
- -	 * Plug now if we have more than 1 IO left after this, and the target
- -	 * is potentially a read/write to block based storage.
- -	 */
- -	if (!state->plug_started && state->ios_left > 1 &&
- -	    io_op_defs[req->opcode].plug) {
- -		blk_start_plug(&state->plug);
- -		state->plug_started =3D true;
- -	}
- -
- -	if (io_op_defs[req->opcode].needs_file) {
- -		req->file =3D io_file_get(ctx, req, READ_ONCE(sqe->fd),
- -					(sqe_flags & IOSQE_FIXED_FILE));
- -		if (unlikely(!req->file))
- -			ret =3D -EBADF;
- -	}
- =20
- -	state->ios_left--;
- -	return ret;
- +	return io_req_prep(req, sqe);
-  }
- =20
-  static int io_submit_sqe(struct io_ring_ctx *ctx, struct io_kiocb *req,
-
---Sig_/hYJsUwdRDsF7gElQlPLj1CV
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFeRdUACgkQAVBC80lX
-0GyVqwf9F3Q1y9j8NbfZIhUuTDZhZPiZRxcymjeVuSDUUEHl7nORD/Ku7YyxVJy7
-RAlzn5P7XpjCECm8HbMd7KET9fqWXnmV/bg07nMk9/sOa1dN3/LM2qNMr97PBM7W
-D4qFrWSfnQ9xhu7LuZk2vxvS4Eta2dpCWXnbN/+9tEaI3ZP+UI8T4jOjFtKbGjbz
-ha1eaHOEzG+ZD1LGgjq8I19qQU96/WTq+0LLxiGcKDdp+9PJYY5psIBWuXr8loYa
-iy3P5OxJZGe9cSvkUSK/9fKwAdQBGn6AxmgDGPQFtpL+uaBNeAc6q3qoeUx8PTDE
-yeTbmFtaITsxQuUtIdIUDXoBzVD/Sg==
-=QL30
------END PGP SIGNATURE-----
-
---Sig_/hYJsUwdRDsF7gElQlPLj1CV--
+Also I added cc:stable.
