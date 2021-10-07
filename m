@@ -2,101 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0E74424B5A
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 02:46:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8A9C424B61
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 02:50:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240148AbhJGAsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 20:48:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39688 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240143AbhJGAsd (ORCPT
+        id S240103AbhJGAwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 20:52:21 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:38584 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234538AbhJGAwU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 20:48:33 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C05AEC061767
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 17:46:40 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id b197-20020a2534ce000000b005b71a4e189eso5798397yba.5
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 17:46:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=zPCs1rEpKuQz4LUSoTxaJ0G3vwf7KAFSlUITLwZs6tU=;
-        b=p7C8NObDL/qgsnHg5/TYMe/e2qJ6I/Lq4YqPZ2gUnySyfykd5F/A2vU/1m3ceyFytV
-         I/7OeC1DNhDBO/Sg1SZmblT8zSDOS20AEaXhLm2H/qlJpIU+UkrwJgwQR6ZhajMJlwdg
-         H0AQ8c2Ji4cC5UGLPFyjbyHiVLS1+KBXJaeDkVYrBsKAL2mDeRIuBNWlxuMFkZA9ZGV8
-         A7qky4OO4I/PaZtI6fTe4+d1q4NwNuqcs2UJX5Gqm7isuGeOruusB375wUngfU0n4dV1
-         v6iAo7zDuAInyEyLRn9Rt/0nvTXYRScq+aeug+gsRlashaZxAnGdEcAqgBxeJf60frPU
-         Y76A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=zPCs1rEpKuQz4LUSoTxaJ0G3vwf7KAFSlUITLwZs6tU=;
-        b=sfsE/aK/sn6d6yjWUymP7ATRUySYQcFzPu7ZxsgfUjVtV3xWCxWqfEj7i/lTvwV1yA
-         GAjWGuOneiFgePIc/4loK0Sgu7OziMrKJfZanyVdeSIxIGc7h8+vh5soVXFel9SZZCao
-         wOpkCVEFJ6VVv8zRMhgiG9zNTbEqx8rk+LGpLYEAz7uOkdccBkk+GApjZr7GqHvfTrZR
-         8gqA0PwJytNx3GcLI0m0525CyLdjhKDYkBGxF+/vLP9NHofbKY7kMZH8YdXS4VxPK5RQ
-         d+lvTmHKtU0+dMK9EO9ndjPF7zGbXmgUdbjyOc1E9Y+5CRjHPS+Gnvt170saUdp+slRX
-         zXAw==
-X-Gm-Message-State: AOAM531jCIAj3p1mANe9NY7vxu3JeLyDGsAW++csDpr2fBCbkJAJwYcL
-        kEHCr9ucqYMS+hO6lHXQeMXiX0Z/Zw==
-X-Google-Smtp-Source: ABdhPJyjO6u79sIe1Ctn1/EYwfXuBQtVGMw40kM5yChFcDVNsb4RU39eXJBDBGttGXiLTmWRzysZNXQWxg==
-X-Received: from ava-linux2.mtv.corp.google.com ([2620:15c:211:200:6ff2:347f:ac4a:8a04])
- (user=tkjos job=sendgmr) by 2002:a5b:501:: with SMTP id o1mr1359354ybp.402.1633567600035;
- Wed, 06 Oct 2021 17:46:40 -0700 (PDT)
-Date:   Wed,  6 Oct 2021 17:46:29 -0700
-In-Reply-To: <20211007004629.1113572-1-tkjos@google.com>
-Message-Id: <20211007004629.1113572-4-tkjos@google.com>
-Mime-Version: 1.0
-References: <20211007004629.1113572-1-tkjos@google.com>
-X-Mailer: git-send-email 2.33.0.800.g4c38ced690-goog
-Subject: [PATCH v4 3/3] binder: use euid from cred instead of using task
-From:   Todd Kjos <tkjos@google.com>
-To:     gregkh@linuxfoundation.org, arve@android.com, tkjos@android.com,
-        maco@android.com, christian@brauner.io, jmorris@namei.org,
-        serge@hallyn.com, paul@paul-moore.com,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        keescook@chromium.org, jannh@google.com, jeffv@google.com,
-        zohar@linux.ibm.com, linux-security-module@vger.kernel.org,
-        selinux@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Cc:     joel@joelfernandes.org, kernel-team@android.com,
-        Todd Kjos <tkjos@google.com>, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 6 Oct 2021 20:52:20 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id BC4A822595;
+        Thu,  7 Oct 2021 00:50:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1633567826; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FkN4LgNhKj4PxuOMK7Hfo8inuz6SvPxGt6pScV3hnp4=;
+        b=LXfORfH9wk5KIW+5fKfUkcT3af9vJ8rm2QMKXIy58BXB9UoeCcbfOX1fe16DI4ePLkL5i1
+        4XICBaDBqqzX7LrSAJoWg1iYXmL3J+AShuZCkFtq86Dy4nJk8VvkW7Qwzz3seYey0JutzC
+        XLJsWpXnVSxMkNy4QqiKlJfeKyfqmeo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1633567826;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FkN4LgNhKj4PxuOMK7Hfo8inuz6SvPxGt6pScV3hnp4=;
+        b=IDgCl56VFg5B6d1bpOw01J6TMqXakyoJC4bz4c84eCcZw/qU6tuthfuBkIhbxn6CQH6zJA
+        4fl/2izlRwIvGTBw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E368513A66;
+        Thu,  7 Oct 2021 00:50:24 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id TEIkKFBEXmGnAwAAMHmgww
+        (envelope-from <neilb@suse.de>); Thu, 07 Oct 2021 00:50:24 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+From:   "NeilBrown" <neilb@suse.de>
+To:     "Wei Yang" <richard.weiyang@gmail.com>
+Cc:     kuba@kernel.org, gregkh@linuxfoundation.org, mojha@codeaurora.org,
+        jkosina@suse.cz, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] hashtable: remove a redundant check in hash_for_each_xxx()
+In-reply-to: <20211007003058.uj35ekwibbrxqzku@master>
+References: <20211006152100.17795-1-richard.weiyang@gmail.com>,
+ <163355497171.31063.8329134032738647570@noble.neil.brown.name>,
+ <20211007003058.uj35ekwibbrxqzku@master>
+Date:   Thu, 07 Oct 2021 11:50:22 +1100
+Message-id: <163356782206.31063.3710696596883334978@noble.neil.brown.name>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Set a transaction's sender_euid from the 'struct cred'
-saved at binder_open() instead of looking up the euid
-from the binder proc's 'struct task'. This ensures
-the euid is associated with the security context that
-of the task that opened binder.
+On Thu, 07 Oct 2021, Wei Yang wrote:
+>=20
+> Here is a draft patch based on you comment:
+>=20
+> diff --git a/include/linux/hashtable.h b/include/linux/hashtable.h
+> index f6c666730b8c..2ff4cb5e6a22 100644
+> --- a/include/linux/hashtable.h
+> +++ b/include/linux/hashtable.h
+> @@ -116,6 +116,13 @@ static inline void hash_del_rcu(struct hlist_node *nod=
+e)
+>  	hlist_del_init_rcu(node);
+>  }
+> =20
+> +/**
+> + * Note: the following three hash_for_each[_xxx] helpers introduce a new l=
+oop
+> + * command that is constructed from 2 nested loops. It is safe to 'break' =
+out
+> + * of this loop even though it is a two nested loops.  The 'obj =3D=3D NUL=
+L' test
+> + * ensures that when the inner loop is broken, the outer loop will break t=
+oo.
+> + */
+> +
+>  /**
+>   * hash_for_each - iterate over a hashtable
+>   * @name: hashtable to iterate
+>=20
+>=20
+> If you feel good, I would like to add=20
+>=20
+> Sugguested-by: NeilBrown <neilb@suse.de>
 
-Fixes: 457b9a6f09f0 ("Staging: android: add binder driver")
-Signed-off-by: Todd Kjos <tkjos@google.com>
-Suggested-by: Stephen Smalley <stephen.smalley.work@gmail.com>
-Cc: stable@vger.kernel.org # 4.4+
----
-v3: added this patch to series
+That's definitely an improvement.
 
- drivers/android/binder.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I'd probably put it in the kernel-doc comment for hash_for_each,
+then in the other two just put the "it is safe" bit.  Something like
+the following.  But I don't feel strongly about it.
+I'm happy to say
+  Reviewed-by: NeilBrown <neilb@suse.de>
 
-diff --git a/drivers/android/binder.c b/drivers/android/binder.c
-index 989afd0804ca..26382e982c5e 100644
---- a/drivers/android/binder.c
-+++ b/drivers/android/binder.c
-@@ -2711,7 +2711,7 @@ static void binder_transaction(struct binder_proc *proc,
- 		t->from = thread;
- 	else
- 		t->from = NULL;
--	t->sender_euid = task_euid(proc->tsk);
-+	t->sender_euid = proc->cred->euid;
- 	t->to_proc = target_proc;
- 	t->to_thread = target_thread;
- 	t->code = tr->code;
--- 
-2.33.0.800.g4c38ced690-goog
+for your patch.
+
+Thanks,
+NeilBrown
+
+
+diff --git a/include/linux/hashtable.h b/include/linux/hashtable.h
+index f6c666730b8c..61db940c9501 100644
+--- a/include/linux/hashtable.h
++++ b/include/linux/hashtable.h
+@@ -122,6 +122,10 @@ static inline void hash_del_rcu(struct hlist_node *node)
+  * @bkt: integer to use as bucket loop cursor
+  * @obj: the type * to use as a loop cursor for each entry
+  * @member: the name of the hlist_node within the struct
++ *
++ * Note: It is safe to 'break' out of this loop even though it is a two
++ * nested loops.  The 'obj =3D=3D NULL' test ensures that when the inner loop
++ * is broken, the outer loop will break too.
+  */
+ #define hash_for_each(name, bkt, obj, member)				\
+ 	for ((bkt) =3D 0, obj =3D NULL; obj =3D=3D NULL && (bkt) < HASH_SIZE(name);\
+@@ -134,6 +138,8 @@ static inline void hash_del_rcu(struct hlist_node *node)
+  * @bkt: integer to use as bucket loop cursor
+  * @obj: the type * to use as a loop cursor for each entry
+  * @member: the name of the hlist_node within the struct
++ *
++ * It is safe to 'break' out of this loop.
+  */
+ #define hash_for_each_rcu(name, bkt, obj, member)			\
+ 	for ((bkt) =3D 0, obj =3D NULL; obj =3D=3D NULL && (bkt) < HASH_SIZE(name);\
+@@ -148,6 +154,8 @@ static inline void hash_del_rcu(struct hlist_node *node)
+  * @tmp: a &struct hlist_node used for temporary storage
+  * @obj: the type * to use as a loop cursor for each entry
+  * @member: the name of the hlist_node within the struct
++ *
++ * It is safe to 'break' out of this loop.
+  */
+ #define hash_for_each_safe(name, bkt, tmp, obj, member)			\
+ 	for ((bkt) =3D 0, obj =3D NULL; obj =3D=3D NULL && (bkt) < HASH_SIZE(name);\
 
