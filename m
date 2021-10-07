@@ -2,119 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23FC9425AE8
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 20:36:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4099C425B05
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 20:38:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243705AbhJGSil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 14:38:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59210 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243545AbhJGSik (ORCPT
+        id S243780AbhJGSkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 14:40:43 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:25282 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229490AbhJGSkl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 14:38:40 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DAEAC061570;
-        Thu,  7 Oct 2021 11:36:46 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id v25so21876056wra.2;
-        Thu, 07 Oct 2021 11:36:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=zLaZpWdOA9YGgfI6hvca3fqu9BEMyK7TxqjLBX/WmtY=;
-        b=j/RzlXQP+c93v98nZ12jYj5ppyjG9BB/ibRL1SJFxncDtU9ZDCLq9cwNCCZkUvJ7E2
-         rEd2/qsC4xqgSSEQkO3sf7lyuX3NgnPVlVQ/2i8GtnUdC1nhmnJ8pQohznDp6RgjhgCT
-         diDX0UP7U91QIuQcdpy+eEJ/sj/1MznM0Ewg7t0tNhXgXpwNb2WpMGu2RY0HbaQlrbpX
-         /3LhN2sLdiqUqxe7sMbNZZx0SC9GmLdSRON73Xi8dNl84BY7i0iFhK8soeBnbOteKo3b
-         nS1PPGOsoc98rJHN2RVD2Wboy6a9YnOLKDxe6bVFIKnXjqfKPYS1RGIpGhQ6Pk9fFyvi
-         vMBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=zLaZpWdOA9YGgfI6hvca3fqu9BEMyK7TxqjLBX/WmtY=;
-        b=xiFK60zWCuUaZtuDg9zeeSX2iOa3ajuMA5d/9l8z3lDrJdg8o5iRM86yRV36hjwsNZ
-         cqIfw50KIbl8gn/vu5WHA5UwLrHvz1DUWpfVPHQrpjSmyEGudY67VRqkpo8q6JQ+9uPT
-         skQnyTL4F0wciYbLird8uR6RekkOXpvA774vZkJdRkW8MLNNpSPdz+KPi4Sx/8erpYMT
-         KWgsyxIl8B4L8aro1N8+bk2HDkNlxiZ1l4xu+EkM4/pQNjlOGcvoiCjC2QqQWtbg7QRJ
-         u7r346VlgXZGZFJhYloxtBXWPHtWyXqSTL9MgPjdsgMURN5oaP46oqXLqaGiKoupfOYC
-         MCLw==
-X-Gm-Message-State: AOAM531CkTvdY+0RzYOlRPc9XluSzKt5K/OpjmhVhRK2LDParuK8DfAq
-        VfuS8nom57g5tgXJA8X3S6I=
-X-Google-Smtp-Source: ABdhPJyCexqGuOLaGmhwluMn+iXTu/n+h1tUydyY1DGlVBytxYcf/LKginmzQMflIBApP+LeVAi/8A==
-X-Received: by 2002:adf:fe0b:: with SMTP id n11mr7492271wrr.371.1633631804783;
-        Thu, 07 Oct 2021 11:36:44 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id z18sm127209wro.25.2021.10.07.11.36.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Oct 2021 11:36:43 -0700 (PDT)
-Date:   Thu, 7 Oct 2021 20:36:42 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Sameer Pujar <spujar@nvidia.com>
-Cc:     broonie@kernel.org, lgirdwood@gmail.com, robh+dt@kernel.org,
-        jonathanh@nvidia.com, catalin.marinas@arm.com, will@kernel.org,
-        perex@perex.cz, tiwai@suse.com, kuninori.morimoto.gx@renesas.com,
-        sharadg@nvidia.com, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 11/13] arm64: defconfig: Enable few Tegra210 based
- AHUB drivers
-Message-ID: <YV8+OvZnc2ETJeWZ@orome.fritz.box>
-References: <1631551342-25469-1-git-send-email-spujar@nvidia.com>
- <1631551342-25469-12-git-send-email-spujar@nvidia.com>
+        Thu, 7 Oct 2021 14:40:41 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 197HX1R0003394;
+        Thu, 7 Oct 2021 14:37:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=Ro9WtJnbWiv79sEcwQ/y9b5di6jNFvxnUqDeKfyVHDA=;
+ b=MOnw0Yt6oktVmKt65Phxc0OsQe0NDxyj5kn3l90m0LA5Ic6frzK9U3WIrtKRiRjNmglj
+ uUJTqKJxwbIvX3DlNHzZX+Flpix3dNrYYDAeuKGo8GsYHY3lMyylbnMfAQYquk7JpR7j
+ HNZlnpwkZk/An0lJLCes41GAObcmEk/NZlRYjPQ4YPX9gIJHEz8A1508X1CelHyQGjLG
+ P74z/WDX4a7FmsEfB4XYqzBvebrbZ13Z6GJG8Hn56SWygio/3XeMFL5eLQbKNl1njkJh
+ F7co/ywFQQTAxiAU1aY2BKCucTUYmdM0jVnBJwggftfJxrXZ2U6lf8VxrFKTFmV2JJf0 uQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bhkcxjb99-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 07 Oct 2021 14:37:33 -0400
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 197IQcP3029725;
+        Thu, 7 Oct 2021 14:37:32 -0400
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bhkcxjb8f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 07 Oct 2021 14:37:32 -0400
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 197IRERb003304;
+        Thu, 7 Oct 2021 18:37:29 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma06fra.de.ibm.com with ESMTP id 3beepk7kpt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 07 Oct 2021 18:37:29 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 197IbQU746989638
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 7 Oct 2021 18:37:26 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 98963A4053;
+        Thu,  7 Oct 2021 18:37:26 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B28DCA404D;
+        Thu,  7 Oct 2021 18:37:18 +0000 (GMT)
+Received: from sig-9-65-203-7.ibm.com (unknown [9.65.203.7])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu,  7 Oct 2021 18:37:18 +0000 (GMT)
+Message-ID: <7ee6ba1200b854fc6012b0cec49849f7c0789f42.camel@linux.ibm.com>
+Subject: Re: [PATCH v12 0/3] Add trusted_for(2) (was O_MAYEXEC)
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     =?ISO-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
+        Kees Cook <keescook@chromium.org>
+Cc:     bauen1 <j2468h@googlemail.com>, akpm@linux-foundation.org,
+        arnd@arndb.de, casey@schaufler-ca.com,
+        christian.brauner@ubuntu.com, christian@python.org, corbet@lwn.net,
+        cyphar@cyphar.com, deven.desai@linux.microsoft.com,
+        dvyukov@google.com, ebiggers@kernel.org, ericchiang@google.com,
+        fweimer@redhat.com, geert@linux-m68k.org, jack@suse.cz,
+        jannh@google.com, jmorris@namei.org,
+        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, luto@kernel.org,
+        madvenka@linux.microsoft.com, mjg59@google.com,
+        mszeredi@redhat.com, mtk.manpages@gmail.com,
+        nramas@linux.microsoft.com, philippe.trebuchet@ssi.gouv.fr,
+        scottsh@microsoft.com, sean.j.christopherson@intel.com,
+        sgrubb@redhat.com, shuah@kernel.org, steve.dower@python.org,
+        thibaut.sautereau@clip-os.org, vincent.strubel@ssi.gouv.fr,
+        viro@zeniv.linux.org.uk, willy@infradead.org
+Date:   Thu, 07 Oct 2021 14:37:17 -0400
+In-Reply-To: <4c4bbd74-0599-fed5-0340-eff197bafeb1@digikod.net>
+References: <20201203173118.379271-1-mic@digikod.net>
+         <d3b0da18-d0f6-3f72-d3ab-6cf19acae6eb@gmail.com>
+         <2a4cf50c-7e79-75d1-7907-8218e669f7fa@digikod.net>
+         <202110061500.B8F821C@keescook>
+         <4c4bbd74-0599-fed5-0340-eff197bafeb1@digikod.net>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: jOAagv9-Zy3caZx8ORtgWB-IBZAybLlH
+X-Proofpoint-ORIG-GUID: qojyI-7uaVr1-wTGd2steGJ3omVhfkri
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="GcftIXBv14+oi/Q/"
-Content-Disposition: inline
-In-Reply-To: <1631551342-25469-12-git-send-email-spujar@nvidia.com>
-User-Agent: Mutt/2.1.3 (987dde4c) (2021-09-10)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-10-07_03,2021-10-07_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxscore=0
+ suspectscore=0 bulkscore=0 lowpriorityscore=0 malwarescore=0
+ mlxlogscore=373 priorityscore=1501 phishscore=0 spamscore=0
+ impostorscore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2109230001 definitions=main-2110070119
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 2021-10-07 at 20:29 +0200, Mickaël Salaün wrote:
+> On 07/10/2021 00:03, Kees Cook wrote:
+> > On Fri, Apr 09, 2021 at 07:15:42PM +0200, Mickaël Salaün wrote:
+> >> There was no new reviews, probably because the FS maintainers were busy,
+> >> and I was focused on Landlock (which is now in -next), but I plan to
+> >> send a new patch series for trusted_for(2) soon.
+> > 
+> > Hi!
+> > 
+> > Did this ever happen? It looks like it's in good shape, and I think it's
+> > a nice building block for userspace to have. Are you able to rebase and
+> > re-send this?
+> 
+> I just sent it:
+> https://lore.kernel.org/all/20211007182321.872075-1-mic@digikod.net/
+> 
+> Some Signed-off-by would be appreciated. :)
+> 
 
---GcftIXBv14+oi/Q/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+From the cover letter, 
 
-On Mon, Sep 13, 2021 at 10:12:19PM +0530, Sameer Pujar wrote:
-> Enable configs for following modules:
->  * SFC (Sampling Frequency Converter)
->  * MVC (Master Volume Control)
->  * AMX (Audio Multiplexer)
->  * ADX (Audio Demultiplexer)
->  * Mixer
->=20
-> These configs are used on Tegra186 and later SoCs as well.
->=20
-> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
-> ---
->  arch/arm64/configs/defconfig | 5 +++++
->  1 file changed, 5 insertions(+)
+It is important to note that this can only enable to extend access
+control managed by the kernel.  Hence it enables current access control
+mechanism to be extended and become a superset of what they can
+currently control.  Indeed, the security policy could also be delegated
+to an LSM, either a MAC system or an integrity system.  For instance,
+this is required to close a major IMA measurement/appraisal interpreter
+integrity gap by bringing the ability to check the use of scripts [1].
+Other uses are expected, such as for magic-links [2], SGX integration
+[3], bpffs [4].
 
-Applied, thanks.
+From a quick review of the code, I don't see a new security hook being
+defined to cover these use cases.
 
-Thierry
+thanks,
 
---GcftIXBv14+oi/Q/
-Content-Type: application/pgp-signature; name="signature.asc"
+Mimi
 
------BEGIN PGP SIGNATURE-----
+> > 
+> > I've tended to aim these things at akpm if Al gets busy. (And since
+> > you've had past review from Al, that should be hopefully sufficient.)
+> > 
+> > Thanks for chasing this!
+> > 
+> > -Kees
+> > 
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmFfPjoACgkQ3SOs138+
-s6Fw0A/+OZPfwytdhahHCcLZoQcMgkys3XyM5prhnNzTZBVmRY4INEcDvLcBNzfg
-kFpK+xMdOtCPL8HGmiH31RnAblZdh6PgiQ7rZJM+0ozWmUr4+/7Uapf6ArY20TAd
-WoHDetEDyGN7sF+fnnv+ZRztfGnmCB/laBIC9TwHjYaCPG6RBfMbktsHhVgKhX9m
-pE5BDUll+ZblB1dOrjdnuu5odCqcxbrprcy5oAnC0w/POpflB6CxCoiPFrBDvOr2
-7hdcMuyybXLAto0pIxLATVP3/BASUsyqedDpUfeKK66Ar6DyvVrf3nxMxkmAjtTk
-AlMMjUvtd63ER2ARC1/DLZgl4lWWxffituU1FXCe2i6kNw8UFV7ImEzPdO/qwEEC
-Jv8g25pGK1NCqd+IIufM3JihpCSZSUzgWV09rQQwrQvsfFmyc/4KUtSQVaJ8XFM5
-s0jUYYzzT6l3nNfgnYQYxhNeUO7a0qg+KP59WIm/V+JpDuXUA4dqXYnAHgDeG/DA
-T52U62eZFV2k8+yFbOGy2i6WmI22+J2OKAYX55D9Q6FPUSZoByExkGj2wMsR5IVQ
-mDd45Z288zADqhlmXjL2wGBQ9JLWZD+dkV6r9fAARNjbA3Hf9Zva8D82m2Kre4vk
-HYOBy+7fJmZDBUeHNQwIPKdHZQ4mSMdY103jRF4K0rbO4LepXNo=
-=iDmU
------END PGP SIGNATURE-----
 
---GcftIXBv14+oi/Q/--
