@@ -2,89 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEB9C424DB5
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 09:08:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8A24424DBB
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 09:09:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240304AbhJGHKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 03:10:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38638 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233691AbhJGHKQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 03:10:16 -0400
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAEF8C061746
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 00:08:22 -0700 (PDT)
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id E4EB322234;
-        Thu,  7 Oct 2021 09:08:18 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1633590499;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=UFkVEvCjAWNe1QtX4/ziCIztrpKNnKkz4actHzZezx8=;
-        b=aKYH/nVwGDBvOfZBOVnT/4CPDNcJAjCrkss/MEKFfo5D91kH5o8NzBK19NbygfDvyetIgE
-        9sC5gFj7rWjfscWxkfICQstMZCbryJpSLEVV40cvKKHuVGDnfO9ZJTeVa+/D4zNLrB/z+v
-        UVN3+u1Jf3G7P0G+yUurU0gBdIk6FrQ=
+        id S240323AbhJGHLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 03:11:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40156 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233691AbhJGHLG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 03:11:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 67A19611C1;
+        Thu,  7 Oct 2021 07:09:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633590552;
+        bh=22EYG0VzkD8UsNZv/lkvQgFKZirveDQdUqMZZu5dRKA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Lb4b5uA0/jATIBoT6CZHxtPxISJbBZvHODIMfa3pr8tQg9ehYoPB0MMNmymv5Qw35
+         /n4Y33bMWrgNUdyZV/NF9KcOBEvC2Bfa3CJjC5nY+r/tJ+6TB5veOT+9qrctc6G6hs
+         2B1cjbV064B2cQvMfEoF26/EXRqMmYTFJ8iMm5snk53kNzFfgQQXo3zZIBaggE1gfX
+         iyTMPyrD77uBRCTPus3/oEso0dl0kKtTzOovBNoBPlFP+zbnBS3QHWnHcBz0ysHKE9
+         rwdvsS1mOM/d90XobHR2Wgzpp18o6LjwiUdKr7kNkmeTUYTXVcCDtbOkqjWi6dBxb9
+         L5n1hcdOP6L6g==
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org
+Subject: [PATCH v2 00/11] drm/msm: Add Display Stream Compression Support
+Date:   Thu,  7 Oct 2021 12:38:49 +0530
+Message-Id: <20211007070900.456044-1-vkoul@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 07 Oct 2021 09:08:18 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Cc:     Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Pratyush Yadav <p.yadav@ti.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: (EXT) Re: [PATCH 1/2] mtd: spi-nor: micron-st: sync flags of
- mt25ql02g and mt25qu02g with other mt25q
-In-Reply-To: <3258026683c916a3a42e98ba76628228cddacb23.camel@ew.tq-group.com>
-References: <c7b6c666aef9a8a2195acabe9954a417f04b6582.1627039534.git.matthias.schiffer@ew.tq-group.com>
- <f3dbab898e9f1946129e5733095bdf3c@walle.cc>
- <3258026683c916a3a42e98ba76628228cddacb23.camel@ew.tq-group.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <969e9169b77bb314aaa2e97789c76c00@walle.cc>
-X-Sender: michael@walle.cc
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2021-10-06 14:32, schrieb Matthias Schiffer:
-> On Tue, 2021-07-27 at 09:09 +0200, Michael Walle wrote:
->> Am 2021-07-23 13:27, schrieb Matthias Schiffer:
->> > All mt25q variants have the same features.
->> >
->> > Unlike the smaller variants, no n25q with 2G exists, so we don't need
->> > to
->> > match on the extended ID to distinguish n25q and mt25q series for these
->> > models.
->> 
->> But why shouldn't we? What if there will be another flash with
->> the same first three id bytes?
-> 
-> How do you suggest we proceed here? At the moment there are entries
-> matching on 0x20b[ab]22 (ignoring the extended ID) with the name
-> mt25q[lu]02g.
-> 
-> Should I change these entries to match on on the extended ID
-> 0x20b[ab]22 / 0x104400 instead when I add the bits for the features
-> specific to the variant, removing support for other 0x20b[ab]22
-> variants that may or may not actually exist? Keeping both entries (with
-> and without extended ID match) would preserve compatiblity with such
-> variants, but this approach seems problematic to me as well, as I can't
-> even give a name to the more generic entries (and there is no natural
-> extension of the n25q naming scheme to a 2G variant).
+Display Stream Compression (DSC) compresses the display stream in host which
+is later decoded by panel. This series enables this for Qualcomm msm driver.
+This was tested on Google Pixel3 phone which use LGE SW43408 panel.
+ 
+The changes include DSC data and hardware block enabling for DPU1 then
+support in encoder. We also add support in DSI and introduce required
+topology changes.
+ 
+In order for panel to set the DSC parameters we add dsc in drm_panel and set
+it from the msm driver.
+ 
+Complete changes which enable this for Pixel3 along with panel driver (not
+part of this series) and DT changes can be found at:
+git.linaro.org/people/vinod.koul/kernel.git pixel/dsc_v2
+ 
+Comments welcome!
 
-Mh, what do you think of adding three entries and make the last one,
-the one with the short id, as a fallback so to speak. This should
-retrain backwards compatibility, right? It should probably have a
-comment because the order will matter then.
+Changes since v1:
+ - Fix various issues spotted by kbuildbot
+ - Rebase to v5.15-rc3
+ - Remove unused fields and duplicate defines
+ - Enable DSC blocks only when DSC is enabled
+ - remove sdm845 feature mask, use 0
+ - Check for DSC in hw_ctl
 
--michael
+Changes since RFC:
+ - Drop the DT binding patch as we derive the configuration from panel
+ - Drop the drm api patch as we no longer need it (use pps drm api)
+ - Fix comments raised by Dimitry
+ - Add dsc parameters calculation from downstream
+
+Vinod Koul (11):
+  drm/msm/dsi: add support for dsc data
+  drm/msm/disp/dpu1: Add support for DSC
+  drm/msm/disp/dpu1: Add support for DSC in pingpong block
+  drm/msm/disp/dpu1: Add DSC support in RM
+  drm/msm/disp/dpu1: Add DSC for SDM845 to hw_catalog
+  drm/msm/disp/dpu1: Don't use DSC with mode_3d
+  drm/msm/disp/dpu1: Add DSC support in hw_ctl
+  drm/msm/disp/dpu1: Add support for DSC in encoder
+  drm/msm/disp/dpu1: Add support for DSC in topology
+  drm/msm/dsi: Add support for DSC configuration
+  drm/msm/dsi: Pass DSC params to drm_panel
+
+ drivers/gpu/drm/msm/Makefile                  |   1 +
+ drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c   | 155 +++++++++-
+ .../gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h  |  11 +
+ .../drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c  |   2 +
+ .../gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c    |  20 ++
+ .../gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h    |  13 +
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c    |  17 +-
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h    |   2 +
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_dsc.c    | 210 ++++++++++++++
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_dsc.h    |  77 +++++
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h   |  13 +
+ .../gpu/drm/msm/disp/dpu1/dpu_hw_pingpong.c   |  32 +++
+ .../gpu/drm/msm/disp/dpu1/dpu_hw_pingpong.h   |  14 +
+ drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h       |   1 +
+ drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c        |  61 ++++
+ drivers/gpu/drm/msm/disp/dpu1/dpu_rm.h        |   1 +
+ drivers/gpu/drm/msm/dsi/dsi.xml.h             |  10 +
+ drivers/gpu/drm/msm/dsi/dsi_host.c            | 269 +++++++++++++++++-
+ drivers/gpu/drm/msm/msm_drv.h                 |  18 ++
+ include/drm/drm_panel.h                       |   7 +
+ 20 files changed, 928 insertions(+), 6 deletions(-)
+ create mode 100644 drivers/gpu/drm/msm/disp/dpu1/dpu_hw_dsc.c
+ create mode 100644 drivers/gpu/drm/msm/disp/dpu1/dpu_hw_dsc.h
+
+-- 
+2.31.1
+
