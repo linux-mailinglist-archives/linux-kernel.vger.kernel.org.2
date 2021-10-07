@@ -2,113 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16377425EE1
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 23:27:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6AAC425EB2
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 23:23:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241302AbhJGV3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 17:29:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42066 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241534AbhJGV3L (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 17:29:11 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95ECAC061570
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 14:27:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
-        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To;
-        bh=IQqOSE5vPHdOcx5X8yMzuOd2At96LXK9BBhYsOqYMLM=; b=RMcoezTY5Rm8ZE0dR2D323SeKx
-        gCHWwpP5Yy0D0At4ZZ8gw62zwvK2gwhE9yVBCAzQedpIOsxtwp29IcXRquiEc/ad7VJ0yQFFSKQbw
-        sbKrdXbQDnh2SqPoj+tUs+ARkOvNZ4GEWbWIophDxJJZ3u06SVOc9BcQfL5MhHW1iY1edU+y7HVpW
-        VgT0xk61seMU0985XNz24DyFTulI+74DxqIyEuM9zFZcczRH1YXOvUGWNBlfdWdoR3zC+gKkOViPw
-        BYEWSYOdhywPC0+H+l30KxywoxEgW3T4VmT46RcLdnwTAzYcBhEkXUlWHtRN07pOoYnhs+xZr+P2b
-        4zdaYNUA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mYav2-008YHZ-0n; Thu, 07 Oct 2021 21:27:12 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BAA3730077A;
-        Thu,  7 Oct 2021 23:27:10 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 9E3772D188969; Thu,  7 Oct 2021 23:27:10 +0200 (CEST)
-Message-ID: <20211007212627.008917519@infradead.org>
-User-Agent: quilt/0.66
-Date:   Thu, 07 Oct 2021 23:22:13 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     jpoimboe@redhat.com
-Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org, mbenes@suse.cz
-Subject: [PATCH 2/2] objtool: Optimize/fix retpoline alternative generation
-References: <20211007212211.366874577@infradead.org>
+        id S241117AbhJGVZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 17:25:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43968 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240809AbhJGVZN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 17:25:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 82F77610C8;
+        Thu,  7 Oct 2021 21:23:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633641798;
+        bh=m67+Gx4edZFG0e9kSDkWEw4xwNUlK0EfQcB0SoTjt9I=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=VJOMqaIFS8KPiVv7kGoClh3ku2N9QZcf4xZXiaMyidEX706SoLnDy0U8drfaL8xOG
+         Yi6JWg38Pe4Rg804YQE6aC6VlcjlGF309PgkhAk+479MtyHtT6VPX46es7mb1FFwUe
+         D2qi7PClHiYWFaFwo+Lu9fCXwGqaWliw0Iq/QWoY9QlIi7VBGtynz9K8+OW9mYBzuN
+         APVewmcgE+KFUuaCm/m36rLMBiZKunGvlKdbWWEAvUzEvcmAerTkDGMLjiw4WVY0L5
+         X2ZIc4aOwVET80UOlyl8c0cqlzWx2ZXw8BV2ARXDOIC7nyF1GgUlJBYt0EO+ZGyu5U
+         fVuMGNmG4CM4Q==
+Date:   Thu, 7 Oct 2021 16:23:17 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Kelvin.Cao@microchip.com
+Cc:     kurt.schwemmer@microsemi.com, bhelgaas@google.com,
+        kelvincao@outlook.com, logang@deltatee.com,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+Subject: Re: [PATCH 1/5] PCI/switchtec: Error out MRPC execution when no GAS
+ access
+Message-ID: <20211007212317.GA1268429@bhelgaas>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <54263d552d05f2fae706e83aa4c2b31b1983b0e2.camel@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When re-running objtool it will generate alterantives for all
-retpoline hunks, even if they are already present.
+On Wed, Oct 06, 2021 at 09:27:49PM +0000, Kelvin.Cao@microchip.com wrote:
+> On Wed, 2021-10-06 at 15:20 -0500, Bjorn Helgaas wrote:
+> > On Wed, Oct 06, 2021 at 07:00:55PM +0000, Kelvin.Cao@microchip.com
+> > wrote:
 
-Discard the retpoline alternatives later so we can mark the
-instructions as already having alternatives and subsequently skip
-generating them. Use ->ignore_alts for this.
+> > So wait, you mean you just intentionally ask the firmware to
+> > reset, knowing that the device will be unusable until the user
+> > reboots or does a manual rescan?  And the way to improve this is
+> > for the driver to report an error to the user instead of hanging?
+> > I *guess* that might be some sort of improvement, but seems like a
+> > pretty small one.
+> 
+> Yes, however, I believe it's something our users really like to
+> have...  With this, they can do their user space
+> programming/scripting more easily in a synchronous fashion.
+> 
+> > >   - The firwmare crashes and doesn't respond, which normally is
+> > >   the reason for users to issue a firmware reset command to try
+> > >   to recover it via either the driver or a sideband interface.
+> > >   The firmware may not be able to recover by a reset in some
+> > >   extream situations like hardware errors, so that an error
+> > >   return is probably all the users can get before another level
+> > >   of recovery happens.
+> > > 
+> > > So I'd think this patch is still making the driver better in
+> > > some way.
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- tools/objtool/arch/x86/decode.c |    3 +++
- tools/objtool/check.c           |    8 ++++++++
- tools/objtool/special.c         |    8 --------
- 3 files changed, 11 insertions(+), 8 deletions(-)
+OK.  I still think the fact that all these different mechanisms can
+reset the device behind your back and make the switch and anything on
+the other side of it just stop working is ..., well, let's just say
+it's quite surprising to me.
 
---- a/tools/objtool/arch/x86/decode.c
-+++ b/tools/objtool/arch/x86/decode.c
-@@ -806,6 +806,9 @@ int arch_rewrite_retpolines(struct objto
- 		if (!strcmp(insn->sec->name, ".text.__x86.indirect_thunk"))
- 			continue;
- 
-+		if (insn->ignore_alts)
-+			continue;
-+
- 		reloc = insn->reloc;
- 
- 		sprintf(name, "__x86_indirect_alt_%s_%s",
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -1468,6 +1468,14 @@ static int add_special_section_alts(stru
- 				ret = -1;
- 				goto out;
- 			}
-+			/*
-+			 * Skip (but mark) the retpoline alternatives so that we
-+			 * don't generate them again.
-+			 */
-+			if (new_insn->func && arch_is_retpoline(new_insn->func)) {
-+				orig_insn->ignore_alts = true;
-+				continue;
-+			}
- 		}
- 
- 		if (special_alt->group) {
---- a/tools/objtool/special.c
-+++ b/tools/objtool/special.c
-@@ -109,14 +109,6 @@ static int get_alt_entry(struct elf *elf
- 			return -1;
- 		}
- 
--		/*
--		 * Skip retpoline .altinstr_replacement... we already rewrite the
--		 * instructions for retpolines anyway, see arch_is_retpoline()
--		 * usage in add_{call,jump}_destinations().
--		 */
--		if (arch_is_retpoline(new_reloc->sym))
--			return 1;
--
- 		reloc_to_sec_off(new_reloc, &alt->new_sec, &alt->new_off);
- 
- 		/* _ASM_EXTABLE_EX hack */
+Well, at least this isn't quite so much a mystery anymore and maybe we
+can improve the commit log.  E.g., maybe something like this:
 
+  A firmware hard reset may be initiated by various mechanisms
+  including a UART interface, TWI sideband interface from BMC, MRPC
+  command from userspace, etc.  The switchtec management driver is
+  unaware of these resets.
 
+  The reset clears PCI state including the BARs and Memory Space
+  Enable bits, so the device no longer responds to the MMIO accesses
+  the driver uses to operate it.
+
+  MMIO reads to the device will fail with a PCIe error.  When the root
+  complex handles that error, it typically fabricates ~0 data to
+  complete the CPU read.
+
+  Check for this sort of error by reading the device ID from MMIO
+  space.  This ID can never be ~0, so if we see that value, it
+  probably means the PCIe Memory Read failed and we should return an
+  error indication to the application using the switchtec driver.
