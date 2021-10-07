@@ -2,181 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D51F9425588
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 16:36:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4550B425590
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 16:39:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242090AbhJGOh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 10:37:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57516 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233341AbhJGOh5 (ORCPT
+        id S242121AbhJGOkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 10:40:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36690 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242064AbhJGOkv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 10:37:57 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA1E7C061570
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 07:36:03 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id l6so4028765plh.9
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 07:36:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=suBssZKyz31dGqI31WByzZWo+jlX53iGQViQd5BSvdE=;
-        b=Me/3SquNkGtIBIhMVosaFd536Awx/KVcEayi1qXmBQXVhAVrNDHkYwMouy70OUw/DF
-         dnKa0LM3cxsWjnEqFd9mZKUmMRx55PBD7VvfKbwfHwJ3YiMoZWEAX66Bb+BIgJuh5iqr
-         vzGuFlpf+m1ZjcLySvpDqvfQ4BypcyZQZEvvucYtDYNOQ9o6IsY3xAEHtbBdOqzUwlcC
-         VGLnLwBI8idfZu2jllm8cde7hKT/+FPmMwC64IwDDOZge7jKztAMSwWRVj7EFN41Kq6P
-         RE4KXr/5O+lNu2Kxe/vWLxr8B/MW9wflP28xAeqIKXq4WnYuRjyof6JypMwWHfzRHAxa
-         fInQ==
+        Thu, 7 Oct 2021 10:40:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633617537;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NGm1yWS8geF2sO0H/4Ce/J+RgIXVQpoAvhPhIp+yNF0=;
+        b=eBv43nVHJisCj5KeeiFg3sxc4ydpeSBt/22ZkCu7r+KAet2c6Cd3Mh3ddR0ueJOf2FXe0H
+        4a7ew+HNP7ABCcS07heUEVGtGOBi5XpOe2Nos7DD6DKDp0l5SGrKQIv9DymthZABXZO5Up
+        dvb7GxOXL0dvDheaMHUbSAwsV5+WeDk=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-511-BSZ7An4GMJSw9Rwc9g-GQw-1; Thu, 07 Oct 2021 10:38:55 -0400
+X-MC-Unique: BSZ7An4GMJSw9Rwc9g-GQw-1
+Received: by mail-wr1-f72.google.com with SMTP id p12-20020adfc38c000000b00160d6a7e293so2384476wrf.18
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 07:38:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=suBssZKyz31dGqI31WByzZWo+jlX53iGQViQd5BSvdE=;
-        b=ozib5txNy5cyru0OOUCGkXCqhqj6LQAqIY9t0LZ5T4/lHc6XISRd4ozrQIRMn9B6M5
-         C+ZaOWGm2kaDaYbLp8qNbD2q3Ly0XKkG3CSfhDuiZ7TezdP//PEpzpbIXWj4ckurKRae
-         d0pKJ/GBbZsvggojk10yWCoXa3f8A07Kk170SIrMegkr4VT1LpWbg2rRqd3dwX8PgfYA
-         2OQjOnPOSQ56/Phv1XnI4KX/IlC37KjddAeMT98u4TDtFQod8KzJ384QqkLaHksVg35b
-         +8Qrm6Hep5CJsbrg4oWmKNSEXIJmRWB9XS3u8QANSoSixpGXVJkiBOqS2SPqy5URUBXx
-         tEUQ==
-X-Gm-Message-State: AOAM530NSvcQ2JnpzQ/AYURXZ3CkWklfIrsVXwNGL6PUDTZ5UC3PzY6K
-        qjqMYwCoRQQoDvYrOzmfX7M3kZeE3ac=
-X-Google-Smtp-Source: ABdhPJy9I7Jq3+3O/uU1XZSjR/cqFbKwuG4iTI2kKaulySFAlOhQnT7aKvReS7dkO7B7hgI2ir19uQ==
-X-Received: by 2002:a17:90b:108d:: with SMTP id gj13mr5775436pjb.95.1633617363222;
-        Thu, 07 Oct 2021 07:36:03 -0700 (PDT)
-Received: from edumazet1.svl.corp.google.com ([2620:15c:2c4:201:d906:ac38:8e9d:2f82])
-        by smtp.gmail.com with ESMTPSA id n202sm7161743pfd.160.2021.10.07.07.36.01
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NGm1yWS8geF2sO0H/4Ce/J+RgIXVQpoAvhPhIp+yNF0=;
+        b=nrkz58iseRfehFdkE3EnQAE90tqiam0/cwwV6XU6ydD9GZpl09SjRgoKxL6S67TILq
+         +0HpxbtKazHXbt+Ba9wVOo+PZfUTRulSfWF0WurGSvMWedHEILZV3zC3CMdPnP4Qalg4
+         iBALPShqsN/pUSg/R/hkhjZKHR5tI32usYPHIFZSyK9Dbj8uosDAazdlN3nJF33seR1y
+         qKgB3IDkRrguP5PDIQwAJenF+bL1usrHzsfUm9zl/wGweRU0imxPb7QVnlxH8LcK8A9T
+         shiVF4sg6s7yrI8Y9MuANFKI7ZVe7joey84xo2izBrMv19NEqcaDoPHbjl4KoxERKi5J
+         XfTA==
+X-Gm-Message-State: AOAM533yetu1IP+5cN6+Sp9vMHXOzoUZEmIkUDj+822NM26cVUX30QaL
+        SqSJkg6S2eqbRRCmNCoKDCiz/U3NfpBFJRZsBo9xDOEOFHFufMe2EXvXnCwXfG0hSHaCJp/z/Cv
+        q62XmcoNi9xVmsPswdpFhDLe8
+X-Received: by 2002:adf:bb09:: with SMTP id r9mr6004147wrg.238.1633617534447;
+        Thu, 07 Oct 2021 07:38:54 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxO9BCo0zdcmxbDxAudW4jdTSomLkbbEHDoD+axd3gGY/vYr4NNhmBMpyQQvOrtL3YclzCczw==
+X-Received: by 2002:adf:bb09:: with SMTP id r9mr6004113wrg.238.1633617534208;
+        Thu, 07 Oct 2021 07:38:54 -0700 (PDT)
+Received: from gator (nat-pool-brq-u.redhat.com. [213.175.37.12])
+        by smtp.gmail.com with ESMTPSA id a2sm9231329wrv.15.2021.10.07.07.38.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Oct 2021 07:36:02 -0700 (PDT)
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Borislav Petkov <bp@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH v2] x86/apic: reduce cache line misses in __x2apic_send_IPI_mask()
-Date:   Thu,  7 Oct 2021 07:35:56 -0700
-Message-Id: <20211007143556.574911-1-eric.dumazet@gmail.com>
-X-Mailer: git-send-email 2.33.0.882.g93a45727a2-goog
+        Thu, 07 Oct 2021 07:38:53 -0700 (PDT)
+Date:   Thu, 7 Oct 2021 16:38:52 +0200
+From:   Andrew Jones <drjones@redhat.com>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org, will@kernel.org,
+        qperret@google.com, dbrazdil@google.com,
+        Steven Price <steven.price@arm.com>,
+        Fuad Tabba <tabba@google.com>,
+        Srivatsa Vaddagiri <vatsa@codeaurora.org>,
+        Shanker R Donthineni <sdonthineni@nvidia.com>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        kernel-team@android.com
+Subject: Re: [PATCH v2 10/16] KVM: arm64: Add some documentation for the MMIO
+ guard feature
+Message-ID: <20211007143852.pyae42sbovi4vk23@gator>
+References: <20211004174849.2831548-1-maz@kernel.org>
+ <20211004174849.2831548-11-maz@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211004174849.2831548-11-maz@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+On Mon, Oct 04, 2021 at 06:48:43PM +0100, Marc Zyngier wrote:
+> Document the hypercalls user for the MMIO guard infrastructure.
+> 
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
+> ---
+>  Documentation/virt/kvm/arm/index.rst      |  1 +
+>  Documentation/virt/kvm/arm/mmio-guard.rst | 74 +++++++++++++++++++++++
+>  2 files changed, 75 insertions(+)
+>  create mode 100644 Documentation/virt/kvm/arm/mmio-guard.rst
+> 
+> diff --git a/Documentation/virt/kvm/arm/index.rst b/Documentation/virt/kvm/arm/index.rst
+> index 78a9b670aafe..e77a0ee2e2d4 100644
+> --- a/Documentation/virt/kvm/arm/index.rst
+> +++ b/Documentation/virt/kvm/arm/index.rst
+> @@ -11,3 +11,4 @@ ARM
+>     psci
+>     pvtime
+>     ptp_kvm
+> +   mmio-guard
+> diff --git a/Documentation/virt/kvm/arm/mmio-guard.rst b/Documentation/virt/kvm/arm/mmio-guard.rst
+> new file mode 100644
+> index 000000000000..8b3c852c5d92
+> --- /dev/null
+> +++ b/Documentation/virt/kvm/arm/mmio-guard.rst
+> @@ -0,0 +1,74 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +==============
+> +KVM MMIO guard
+> +==============
+> +
+> +KVM implements device emulation by handling translation faults to any
+> +IPA range that is not contained in a memory slot. Such a translation
+> +fault is in most cases passed on to userspace (or in rare cases to the
+> +host kernel) with the address, size and possibly data of the access
+> +for emulation.
+> +
+> +Should the guest exit with an address that is not one that corresponds
+> +to an emulatable device, userspace may take measures that are not the
+> +most graceful as far as the guest is concerned (such as terminating it
+> +or delivering a fatal exception).
+> +
+> +There is also an element of trust: by forwarding the request to
+> +userspace, the kernel assumes that the guest trusts userspace to do
+> +the right thing.
+> +
+> +The KVM MMIO guard offers a way to mitigate this last point: a guest
+> +can request that only certain regions of the IPA space are valid as
+> +MMIO. Only these regions will be handled as an MMIO, and any other
+> +will result in an exception being delivered to the guest.
+> +
+> +This relies on a set of hypercalls defined in the KVM-specific range,
+> +using the HVC64 calling convention.
+> +
+> +* ARM_SMCCC_KVM_FUNC_MMIO_GUARD_INFO
+> +
+> +    ==============    ========    ================================
+> +    Function ID:      (uint32)    0xC6000002
+> +    Arguments:        none
+> +    Return Values:    (int64)     NOT_SUPPORTED(-1) on error, or
+> +                      (uint64)    Protection Granule (PG) size in
+> +                                  bytes (r0)
+> +    ==============    ========    ================================
+> +
+> +* ARM_SMCCC_KVM_FUNC_MMIO_GUARD_ENROLL
+> +
+> +    ==============    ========    ==============================
+> +    Function ID:      (uint32)    0xC6000003
+> +    Arguments:        none
+> +    Return Values:    (int64)     NOT_SUPPORTED(-1) on error, or
+> +                                  RET_SUCCESS(0) (r0)
+> +    ==============    ========    ==============================
+> +
+> +* ARM_SMCCC_KVM_FUNC_MMIO_GUARD_MAP
+> +
+> +    ==============    ========    ====================================
+> +    Function ID:      (uint32)    0xC6000004
+> +    Arguments:        (uint64)    The base of the PG-sized IPA range
+> +                                  that is allowed to be accessed as
+> +                                  MMIO. Must be aligned to the PG size
+> +                                  (r1)
+> +                      (uint64)    Index in the MAIR_EL1 register
+> +		                  providing the memory attribute that
+> +				  is used by the guest (r2)
+    ^^ some tabs got in here
 
-Using per-cpu storage for @x86_cpu_to_logical_apicid
-is not optimal.
+> +    Return Values:    (int64)     NOT_SUPPORTED(-1) on error, or
+> +                                  RET_SUCCESS(0) (r0)
+> +    ==============    ========    ====================================
+> +
+> +* ARM_SMCCC_KVM_FUNC_MMIO_GUARD_UNMAP
+> +
+> +    ==============    ========    ======================================
+> +    Function ID:      (uint32)    0xC6000005
+> +    Arguments:        (uint64)    PG-sized IPA range aligned to the PG
+> +                                  size which has been previously mapped.
+> +                                  Must be aligned to the PG size and
+> +                                  have been previously mapped (r1)
+> +    Return Values:    (int64)     NOT_SUPPORTED(-1) on error, or
+> +                                  RET_SUCCESS(0) (r0)
+> +    ==============    ========    ======================================
+> -- 
+> 2.30.2
+>
 
-Broadcast IPI will need at least one cache line
-per cpu to access this field.
+Otherwise,
 
-__x2apic_send_IPI_mask() is using standard bitmask operators.
+Reviewed-by: Andrew Jones <drjones@redhat.com>
 
-By converting x86_cpu_to_logical_apicid to an array,
-we divide by 16x number of needed cache lines, because
-we find 16 values per cache line. CPU prefetcher can
-kick nicely.
-
-Also move @cluster_masks to READ_MOSTLY section to avoid false sharing.
-
-Tested on a dual socket host with 256 cpus,
-cost for a full broadcast is now 11 usec instead of 33 usec.
-
-v2: use a dynamically allocated array, as suggested by Peter.
-
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: Borislav Petkov <bp@suse.de>
-Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
----
- arch/x86/kernel/apic/x2apic_cluster.c | 27 +++++++++++++++++++++------
- 1 file changed, 21 insertions(+), 6 deletions(-)
-
-diff --git a/arch/x86/kernel/apic/x2apic_cluster.c b/arch/x86/kernel/apic/x2apic_cluster.c
-index f4da9bb69a8859ff10824315388aeb49c2ccfad9..e696e22d0531976f7cba72ed17443592eac72c13 100644
---- a/arch/x86/kernel/apic/x2apic_cluster.c
-+++ b/arch/x86/kernel/apic/x2apic_cluster.c
-@@ -15,9 +15,15 @@ struct cluster_mask {
- 	struct cpumask	mask;
- };
- 
--static DEFINE_PER_CPU(u32, x86_cpu_to_logical_apicid);
-+/*
-+ * __x2apic_send_IPI_mask() possibly needs to read
-+ * x86_cpu_to_logical_apicid for all online cpus in a sequential way.
-+ * Using per cpu variable would cost one cache line per cpu.
-+ */
-+static u32 *x86_cpu_to_logical_apicid __read_mostly;
-+
- static DEFINE_PER_CPU(cpumask_var_t, ipi_mask);
--static DEFINE_PER_CPU(struct cluster_mask *, cluster_masks);
-+static DEFINE_PER_CPU_READ_MOSTLY(struct cluster_mask *, cluster_masks);
- static struct cluster_mask *cluster_hotplug_mask;
- 
- static int x2apic_acpi_madt_oem_check(char *oem_id, char *oem_table_id)
-@@ -27,7 +33,7 @@ static int x2apic_acpi_madt_oem_check(char *oem_id, char *oem_table_id)
- 
- static void x2apic_send_IPI(int cpu, int vector)
- {
--	u32 dest = per_cpu(x86_cpu_to_logical_apicid, cpu);
-+	u32 dest = x86_cpu_to_logical_apicid[cpu];
- 
- 	/* x2apic MSRs are special and need a special fence: */
- 	weak_wrmsr_fence();
-@@ -58,7 +64,7 @@ __x2apic_send_IPI_mask(const struct cpumask *mask, int vector, int apic_dest)
- 
- 		dest = 0;
- 		for_each_cpu_and(clustercpu, tmpmsk, &cmsk->mask)
--			dest |= per_cpu(x86_cpu_to_logical_apicid, clustercpu);
-+			dest |= x86_cpu_to_logical_apicid[clustercpu];
- 
- 		if (!dest)
- 			continue;
-@@ -94,7 +100,7 @@ static void x2apic_send_IPI_all(int vector)
- 
- static u32 x2apic_calc_apicid(unsigned int cpu)
- {
--	return per_cpu(x86_cpu_to_logical_apicid, cpu);
-+	return x86_cpu_to_logical_apicid[cpu];
- }
- 
- static void init_x2apic_ldr(void)
-@@ -103,7 +109,7 @@ static void init_x2apic_ldr(void)
- 	u32 cluster, apicid = apic_read(APIC_LDR);
- 	unsigned int cpu;
- 
--	this_cpu_write(x86_cpu_to_logical_apicid, apicid);
-+	x86_cpu_to_logical_apicid[smp_processor_id()] = apicid;
- 
- 	if (cmsk)
- 		goto update;
-@@ -166,12 +172,21 @@ static int x2apic_dead_cpu(unsigned int dead_cpu)
- 
- static int x2apic_cluster_probe(void)
- {
-+	u32 slots;
-+
- 	if (!x2apic_mode)
- 		return 0;
- 
-+	slots = max_t(u32, L1_CACHE_BYTES/sizeof(u32), nr_cpu_ids);
-+	x86_cpu_to_logical_apicid = kcalloc(slots, sizeof(u32), GFP_KERNEL);
-+	if (!x86_cpu_to_logical_apicid)
-+		return 0;
-+
- 	if (cpuhp_setup_state(CPUHP_X2APIC_PREPARE, "x86/x2apic:prepare",
- 			      x2apic_prepare_cpu, x2apic_dead_cpu) < 0) {
- 		pr_err("Failed to register X2APIC_PREPARE\n");
-+		kfree(x86_cpu_to_logical_apicid);
-+		x86_cpu_to_logical_apicid = NULL;
- 		return 0;
- 	}
- 	init_x2apic_ldr();
--- 
-2.33.0.882.g93a45727a2-goog
+Thanks,
+drew 
 
