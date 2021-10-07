@@ -2,143 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89F2F42549F
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 15:49:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CC454254A1
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 15:49:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241765AbhJGNux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 09:50:53 -0400
-Received: from mga01.intel.com ([192.55.52.88]:19008 "EHLO mga01.intel.com"
+        id S241767AbhJGNvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 09:51:11 -0400
+Received: from mga18.intel.com ([134.134.136.126]:58560 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241536AbhJGNuv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 09:50:51 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10130"; a="249571043"
+        id S241766AbhJGNu4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 09:50:56 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10130"; a="213201217"
 X-IronPort-AV: E=Sophos;i="5.85,354,1624345200"; 
-   d="scan'208";a="249571043"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 06:48:57 -0700
+   d="scan'208";a="213201217"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 06:49:02 -0700
+X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.85,354,1624345200"; 
-   d="scan'208";a="488997557"
-Received: from likanto-mobl.amr.corp.intel.com (HELO [10.209.99.172]) ([10.209.99.172])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 06:48:57 -0700
-Subject: Re: [PATCH v2 4/4] virt: Add sev_secret module to expose confidential
- computing secrets
-To:     Dov Murik <dovmurik@linux.ibm.com>, linux-efi@vger.kernel.org
-Cc:     Borislav Petkov <bp@suse.de>, Ashish Kalra <ashish.kalra@amd.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Andrew Scull <ascull@google.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@linux.ibm.com>,
-        Jim Cadden <jcadden@ibm.com>,
-        Daniele Buono <dbuono@linux.vnet.ibm.com>,
-        linux-coco@lists.linux.dev, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211007061838.1381129-1-dovmurik@linux.ibm.com>
- <20211007061838.1381129-5-dovmurik@linux.ibm.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <290c21a8-a68f-0826-2754-1480f79a081d@intel.com>
-Date:   Thu, 7 Oct 2021 06:48:54 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20211007061838.1381129-5-dovmurik@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
+   d="scan'208";a="522604051"
+Received: from orsmsx606.amr.corp.intel.com ([10.22.229.19])
+  by orsmga001.jf.intel.com with ESMTP; 07 Oct 2021 06:49:02 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX606.amr.corp.intel.com (10.22.229.19) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Thu, 7 Oct 2021 06:49:01 -0700
+Received: from orsmsx609.amr.corp.intel.com (10.22.229.22) by
+ ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Thu, 7 Oct 2021 06:49:01 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx609.amr.corp.intel.com (10.22.229.22) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12 via Frontend Transport; Thu, 7 Oct 2021 06:49:01 -0700
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.48) by
+ edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.12; Thu, 7 Oct 2021 06:49:01 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eOPmjTY2remZvE9qeG498S50LD6o5YzJ90Jue2oOhs6NksKclrob8ta7+7vOz1mQhPY/AfgX0aq0pKHE31FvwCMk+UrPbJuw3ThymfAs1wKhlfR3C9/+X+MYG5HrucsoIKEfP7bs3XCV3pBsyUWL89yGoI4bPIRQKSGQIVzEIg8XCSWw1ecXJxvBeJjJ8QHi56z9Nqf7IfkBQbNl2Eo6MxBorirUZUhWMTpzhZRrnxRDYYF6lcpvQG89aEykmiXe1ne8mee1Uhsoqf4cu7H9taHM+xfRxAfkSWCO7Pc9ACCcOmBlM0msJNdJPKh1KS5PINiNmJpc5VZ9RYoQXmJeKg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=uJ6UDAI5g9eaGzYV9KvIgPce5lfb9Kt5EwRIvLJ7U9s=;
+ b=oAyICz7SewyhhuR8TeYyp758lr17K047fNcAfUddZviVYqiGhvpSOI9vr94IdYrV6FQl0ozR0xFSFvJL11Tj9JQfijljsUM80TyllbIBfumcr2AsPZn/yky3o7Zqg/+rY/QeL4ZQhH2hb6daK5GSAf1A/YbIc6XYIK0kCgXNtSUDOfBREh8tXTzScyao+/kkMU8LHag2/deC3IFjRSs+IAbIuNwpAfeI8Vo1gGU6njaARsTvOrENoMAFYa01tE33EaCGAW9CvQV0QPYIGkjhpeeUvXzV9M+DYfCa2gOpan8at8CRs4ibxu5pZQOy6Vp4t4gHKy312GJ5OUOb4zw52A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=uJ6UDAI5g9eaGzYV9KvIgPce5lfb9Kt5EwRIvLJ7U9s=;
+ b=wQXKWljcZCrFSH+ZNvpPqPbArmPpQbiRdTlDaknN1rfUkI6mxxqXetWWOIAdk/wfFcLBqltShCm2p1mbkgBeNzIGH/q4XA5DXWvRIITQ3ApZOqwBQPjgMjvyoiyGSRIK5xacLnDBhL+YdU+yagJ6/SSvPn4E0ILjie42iZyHPoI=
+Received: from MWHPR11MB1919.namprd11.prod.outlook.com (2603:10b6:300:106::22)
+ by MWHPR1101MB2095.namprd11.prod.outlook.com (2603:10b6:301:5b::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.20; Thu, 7 Oct
+ 2021 13:49:00 +0000
+Received: from MWHPR11MB1919.namprd11.prod.outlook.com
+ ([fe80::698e:991:9d18:3727]) by MWHPR11MB1919.namprd11.prod.outlook.com
+ ([fe80::698e:991:9d18:3727%6]) with mapi id 15.20.4587.019; Thu, 7 Oct 2021
+ 13:49:00 +0000
+From:   "Lu, Brent" <brent.lu@intel.com>
+To:     "Liao, Bard" <bard.liao@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        Bard liao <yung-chuan.liao@linux.intel.com>
+CC:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        "Rojewski, Cezary" <cezary.rojewski@intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        "Kai Vehmanen" <kai.vehmanen@linux.intel.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        "Zhi, Yong" <yong.zhi@intel.com>,
+        "Gopal, Vamshi Krishna" <vamshi.krishna.gopal@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Wang, Rander" <rander.wang@intel.com>,
+        Malik_Hsu <malik_hsu@wistron.corp-partner.google.com>,
+        "Yang, Libin" <libin.yang@intel.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        "Paul Olaru" <paul.olaru@oss.nxp.com>,
+        Curtis Malainey <cujomalainey@chromium.org>,
+        "Chiang, Mac" <mac.chiang@intel.com>,
+        "Song, Gongjun" <gongjun.song@intel.com>
+Subject: RE: [PATCH 3/3] ASoC: Intel: sof_rt5682: use id_alt to enumerate
+ rt5682s
+Thread-Topic: [PATCH 3/3] ASoC: Intel: sof_rt5682: use id_alt to enumerate
+ rt5682s
+Thread-Index: AQHXus4W5/VsLw98jkS1akrmyRygKavGNrGAgAABwICAAJzyAIAAuFKQ
+Date:   Thu, 7 Oct 2021 13:49:00 +0000
+Message-ID: <MWHPR11MB1919202E2EE479BD1EF540D997B19@MWHPR11MB1919.namprd11.prod.outlook.com>
+References: <20211006161805.938950-1-brent.lu@intel.com>
+ <20211006161805.938950-4-brent.lu@intel.com>
+ <fdcdf447-352f-3dbc-f55d-b3bb3588dca3@redhat.com>
+ <ecde4150-2782-9529-3288-b1eb9e247883@linux.intel.com>
+ <DM6PR11MB40743B517390C8F04938CBBEFFB19@DM6PR11MB4074.namprd11.prod.outlook.com>
+In-Reply-To: <DM6PR11MB40743B517390C8F04938CBBEFFB19@DM6PR11MB4074.namprd11.prod.outlook.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-version: 11.6.200.16
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+authentication-results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: c2d29d3e-094d-4a3a-36b0-08d9899937b8
+x-ms-traffictypediagnostic: MWHPR1101MB2095:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MWHPR1101MB209555BAE41A19E86AAAFA0E97B19@MWHPR1101MB2095.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Aks0XjtwBzgM8ns5tU+RA6jbEa52cp8QNU/NVw1TYojc6bcNXcp0UgvDBa/3oC/pFTR3Xg0jwoTo3tiNR3pz7w1e1mmkiz/6thfEOGyItEdMjKGp5HsK8uVTrce+TkO8CrZ9rzatXIcjZN8pilW8juKPztP6xJ2/shtRm4OfT2j8PAOsStd4CYehFQU38HIcbw5r5/6qqgEBPdUZvToWayAHEP43YpNLI4IL3XstZ2hLJJuV8GhZ+Gn7rDMPx3ZhdmucXhxFROsDZ8aSSAEcqB4SZR89KGuRUtQkdgZ4nVAsTbAmkN9aIOJYuLT/eErxA+ts76EjXIlPXEpyrJORKmXAeD8Lg50vJV/mZ1D1xrP0d2OxUW/TQdDYeW0NY1oBGI9hSqzO4/7EH7Slf47CrzC5QhbJg0neaOj9SxeBD7Guw++RnGwsBrqZdxGNmfhUlrUM5vPL4jg8tgtkG31+ecb5uH1p6FLxAQ/eF6lAUJZ/p82QisSjINNPSF+qtM7UqURW/62O7nFq5hQzLcvLRwMkQsgkVoIv+JhhmM2Ub4zBSWXr3d4ecMlt6X0uWfAj8GJOiw8MQNFYQNt3QaE4BTHdlTwmN2rikXHiMhtsuQVe3qSpCjNIB1nmMT+fD6jx2RF8iwhOyLPs/vK3JA3ZjOU59vM7FvNJHFksjNy02I3V33s7MwQ/i+JWM8bHq5GmIhBG27g59zp0IgZ1YUrw39+TsTEg6ruUqoewmazza4w=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR11MB1919.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(86362001)(7696005)(6506007)(316002)(110136005)(71200400001)(8936002)(54906003)(2906002)(26005)(186003)(33656002)(122000001)(38070700005)(8676002)(4326008)(7416002)(5660300002)(38100700002)(9686003)(508600001)(4744005)(55016002)(76116006)(66446008)(52536014)(66946007)(66556008)(64756008)(66476007)(11716005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?aTZ2Z1poN2hCNCtyLzJJZU4rdHBRT0REU1lJNTY0VjYycEhKbzhBVGUwQlNp?=
+ =?utf-8?B?ZVZvb0tyMnVsRTlKVVhiMWpaN2hkQm40SERqS1JjaXo1cEhyaFh5dTNSQ0FI?=
+ =?utf-8?B?bmlaT0orU1VKd2ZzLzZubWZBWXlqUnhpMmRHOVFpYWpFa2dSZURxSnZsUlU5?=
+ =?utf-8?B?cEhFKytCR0Y1cnRhSWxkaFE5TEc1R0ordHRmVkdXbUxxREdibjZZdnJRL2tE?=
+ =?utf-8?B?RFdYdXpjQVRkYzhUUy94d2RGV2ozUkU0dENRaUN0S0ROY3B4RDdsbmFpYXdE?=
+ =?utf-8?B?a3ViSmxsa0MrTWJrbFBWNnVROWdaRUQrR3JpcnBqbFVTdTRHVmYvVkVFUVdt?=
+ =?utf-8?B?bHJjanBWM1d4cDBiR3ZSN2p0QjBsbjZzcWtVemF6RDEvWUE0U3duRExaU3Z4?=
+ =?utf-8?B?RlF4QzgrQlkvdG11SHhXNXhnbGtyYjNtMmUvU2FEZmsxQktlVnJJbjJyZE0r?=
+ =?utf-8?B?d3UvOXpqU3V6eVFZTGZtc3VLb0tnZzMyMGZjWFlJaVRvUmZxTVdSbWdqeFNS?=
+ =?utf-8?B?cHNpdG1ITHpXVVA4QzBwVUZoK05oNkxodG1kKy8yaEpla3Z5RllpQVBOazZj?=
+ =?utf-8?B?Ti9aZnRyTnRXQUFqR0lNSTI5SkFCVGZ5RllESlI3K09jc0sycnRpa2w2YTVU?=
+ =?utf-8?B?ODczWUxzcWJTQVZ4bERMN2ozWjFFcm9jYlo2SXFRdUhCN3J2d2tkK0JMR2ht?=
+ =?utf-8?B?WXoxb1BEUFRwWmVNVEdXelArNHJyRjlLNUlJMWl2czZnd2RkSmZIZWJOQ3oy?=
+ =?utf-8?B?Z3ByQnd1MzY5N29SSkR0ZVd5elJIanRKaTMxdHphSkxiSHEranQwMWtTcS9W?=
+ =?utf-8?B?VXUyYzJyNDJmWmFYakJaZytrZjQ5SzBXd0ZpOXp0ZlIvUkhRcEU0VjIyZHFl?=
+ =?utf-8?B?RFhvcXYvenNrZjJUcHZmcktwdFVYN0ZHS01oSk03V1lUNXVORGJnaVR4UHFt?=
+ =?utf-8?B?V1l3dm40eUdNM1pYNnBlS2lzbjUxN2t2ckNHMk03OWJCLzVjTGxaV1RDNU9l?=
+ =?utf-8?B?UkhQY3FzNnBMRWFVVS9Ic1Z3ckpVL1hsUHB3aFp1ZnNsZnZKaGJraDYwc3la?=
+ =?utf-8?B?ek9GSzhXSVVMQlQzOWNtazMyK285SkdnQjMvSzlKYWlEOC9URGpDSlhmVHlR?=
+ =?utf-8?B?ZkN3Vk5RMWlETEZiWjNLWlB6MGY5N090amtuYmliQXFwcWpQMUp1QW9CRGlS?=
+ =?utf-8?B?MlFBYWZMVGVGdTBHK1RCVHk0RlR0S1lhOExXRHZrNkpHOTMyNUkwRUo0anA4?=
+ =?utf-8?B?d1MrMU1kaUVpajZldm16dmZtRjdJb1Z0a1habnNaYUhROUxTbHVmUkdLRG1x?=
+ =?utf-8?B?RVl3eHArNHJJSEM4bDNnZFpQK3R1R3pjTnliVjIxRVpMZzdLaFRUUk8xQ2pL?=
+ =?utf-8?B?QmlMMUxKdkdTNEdJLzRHYVJ1RU9XaFU4TGNMMi8wanlkY1pRNVVsUjdmcU00?=
+ =?utf-8?B?SkxSc3psalUweFNVU0ovRkIxcGJnZWVQdlVXTHlzVFI1dzYxb3pibWxFV01G?=
+ =?utf-8?B?NlpFempqZW9STXZmeU9uS0ZyaEM0SWdhMDFuSC9hN1FCUEJPMkFoYmNaQmt3?=
+ =?utf-8?B?KzdabWhsQzJkQXB5RHVhdVdNRjhwY2ZZbnRqUjAxbE52OGQvUFpZN0dZcFhn?=
+ =?utf-8?B?bXVpWGllWVJNMEFyN3Y2VWZqSVVyYktUV2h2RGIyKytCdytIeVZSSk9QeG9I?=
+ =?utf-8?B?R2RFOTR1NFM2R3hqTHFWUHV1WXNmSXVzL0dMMDNpalpDakVnY3Y2NEZ5Sndm?=
+ =?utf-8?Q?1Etpy1tz5LoVKMSXFQ=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR11MB1919.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c2d29d3e-094d-4a3a-36b0-08d9899937b8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Oct 2021 13:49:00.5108
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: g4gEBaSMSZ5ZZugD/yF55VND9tFm1bcoJhhI595i4dd5Z3WiYOH43Bg2bW1x2Z50QJ66XOoUqUNlgIIZFKKy8g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1101MB2095
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/6/21 11:18 PM, Dov Murik wrote:
-> +static void wipe_memory(void *addr, size_t size)
-> +{
-> +	memzero_explicit(addr, size);
-> +	clean_cache_range(addr, size);
-> +}
-
-What's the purpose of the clean_cache_range()?  It's backed in a CLWB
-instruction on x86 which seems like an odd choice.  I guess the point is
-that the memzero_explicit() will overwrite the contents, but might have
-dirty lines in the cache.  The CLWB will ensure that the lines are
-actually written back to memory, clearing the secret out of memory.
-Without the CLWB, the secret might live in memory until the dirtied
-cachelines are written back.
-
-Could you document this, please?  It would also be nice to include some
-of this motivation in the patch that exports clean_cache_range() in the
-first place.
-
-I also think clean_cache_range() an odd choice.  If it were me, I
-probably would have just used the already-exported
-clflush_cache_range().  The practical difference between writing back
-and flushing the cachelines is basically zero.  The lines will never be
-reused.
-
-*If* we export anything from x86 code, I think it should be something
-which is specific to the task at hand, like arch_invalidate_pmem() is.
-
-Also, when you are modifying x86 code, including exports, it would be
-nice to include (all of) the x86 maintainers.  The relevant ones for
-this series would probably be:
-
-X86 ARCHITECTURE (32-BIT AND 64-BIT)
-M:      Thomas Gleixner <tglx@linutronix.de>
-M:      Ingo Molnar <mingo@redhat.com>
-M:      Borislav Petkov <bp@alien8.de>
-M:      x86@kernel.org
-
-X86 MM
-M:      Dave Hansen <dave.hansen@linux.intel.com>
-M:      Andy Lutomirski <luto@kernel.org>
-M:      Peter Zijlstra <peterz@infradead.org>
-
-There's also the handy dandy scripts/get_maintainer.pl to help.
+PiA+DQo+ID4gSW4gdGhlIHBhc3Qgd2UgdXNlZCB0aGlzIGNvbmZpZ3VyYXRpb24gZm9yIFNPRiBD
+SSB0ZXN0cyB3aXRoIHRoZQ0KPiA+IE1pbm5vd0JvYXJkDQo+ID4gKyBhbiBSVDU2ODIgZXZhbCBi
+b2FyZC4gV2UgZ3JhZHVhbGx5IGZyaWVkIG1vc3QgYm9hcmRzIGFuZCBubyBsb25nZXINCj4gPiAr
+IGNoZWNrDQo+ID4gdGhpcyBjYXBhYmlsaXR5IGZvciBlYWNoIFNPRiBQUi4NCj4gPg0KPiA+IFNv
+IEkgd291bGQgYWdyZWUgd2UgY2FuIGF2b2lkIGNoYW5naW5nIGFueXRoaW5nIGZvciBCWVQvQ0hU
+IGFuZA0KPiA+IHBvc3NpYmx5IEFQTCwgaXQnZCBiZSBhbiB1bnRlc3RlZCBjb25maWd1cmF0aW9u
+Lg0KPiA+DQo+ID4gaW4gb3RoZXIgd29yZHMsIGxldCdzIGFkZCB0aGlzIGNvbXBhdGlibGUvYWx0
+X2lkIGZvciBwbGF0Zm9ybXMgd2hlcmUNCj4gPiB3ZSBrbm93IGl0J2xsIGJlIHVzZWQuDQo+IA0K
+PiBBZ3JlZSB3aXRoIFBpZXJyZS4gIlJUTDU2ODIiIGlzIGEgbmV3IGNvZGVjIHdoaWNoIGlzIGRp
+ZmZlcmVudCBmcm9tDQo+ICIxMEVDNTY4MiIgYW5kIG5vdCB0ZXN0ZWQgb24gb2xkIHBsYXRmb3Jt
+cy4NCg0KQXMgSSBrbm93IHRoZSBwYXJ0IGlzIGludHJvZHVjZWQgdG8gSlNMIGFuZCBBREwgcHJv
+amVjdHMgc28gbWF5YmUgd2UgY2FuDQprZWVwIHRoZSBjaGFuZ2UgdG8gSlNML1RHTC9BREwgYm9h
+cmRzPw0KDQoNCg==
