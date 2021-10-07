@@ -2,138 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A97AB425EEE
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 23:29:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3649D425EF3
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 23:31:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239034AbhJGVbt convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 7 Oct 2021 17:31:49 -0400
-Received: from aposti.net ([89.234.176.197]:46020 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230120AbhJGVbs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 17:31:48 -0400
-Date:   Thu, 07 Oct 2021 22:29:42 +0100
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH v2 15/34] drm/ingenic: Migrate to aggregate driver
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Russell King <rmk+kernel@arm.linux.org.uk>,
-        Saravana Kannan <saravanak@google.com>
-Message-Id: <IDMM0R.KPFO72NRAH8T2@crapouillou.net>
-In-Reply-To: <20211006193819.2654854-16-swboyd@chromium.org>
-References: <20211006193819.2654854-1-swboyd@chromium.org>
-        <20211006193819.2654854-16-swboyd@chromium.org>
+        id S235982AbhJGVdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 17:33:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43040 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230120AbhJGVdQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 17:33:16 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1289EC061570;
+        Thu,  7 Oct 2021 14:31:22 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HQPdg6RD9z4xb9;
+        Fri,  8 Oct 2021 08:31:19 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1633642280;
+        bh=5/XFPcuf7C72Hw7AsZjDnLmvBgF2glmuCRaS6v7XwFc=;
+        h=Date:From:To:Cc:Subject:From;
+        b=PE3E8BKuskQXJzX7thQ5I8h9kk2IOg0GcvPMPCm1wj55fIuZv1McHhh3PsLdLs1bi
+         3pCk+fn/Bpq4Uji8FlEwzNMlp9nfSQw9fip6HHS/9SFmO9XO8rxKUAyuPP/mS3FFRt
+         s8dqZpD0kGLB75rLUvSFe8d2If5/5t18b/Jmnob4Vrx2YnK8qkdVI3vx+ALNS73K4h
+         5vXZaKSHRbYn8BRnzuOxTjcwualKIPtcK2WoLSeFaFxtpjQanD3FoZ0BqmMFJrDI0x
+         P/Hy6U/gUmiBhaCrGvOgKdwis6vs0zIiTlwodf9Kfwbc/LT8hsT2wM1TIludA8IxM0
+         t7FQ4VSCO0DfA==
+Date:   Fri, 8 Oct 2021 08:31:18 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Networking <netdev@vger.kernel.org>
+Cc:     Johan Almbladh <johan.almbladh@anyfinetworks.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the bpf-next tree
+Message-ID: <20211008083118.43f6d79f@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+Content-Type: multipart/signed; boundary="Sig_/aTfZNbFXbbcOWTzmiM.ECJy";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
+--Sig_/aTfZNbFXbbcOWTzmiM.ECJy
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Le mer., oct. 6 2021 at 12:38:00 -0700, Stephen Boyd 
-<swboyd@chromium.org> a écrit :
-> Use an aggregate driver instead of component ops so that we can get
-> proper driver probe ordering of the aggregate device with respect to 
-> all
-> the component devices that make up the aggregate device.
-> 
-> TODO: Move the helpers to PM in aggregate driver hooks.
-> 
-> Cc: Paul Cercueil <paul@crapouillou.net>
-> Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
-> Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-> Cc: Rob Clark <robdclark@gmail.com>
-> Cc: Russell King <rmk+kernel@arm.linux.org.uk>
-> Cc: Saravana Kannan <saravanak@google.com>
-> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-> ---
->  drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 24 
-> +++++++++++++++++------
->  1 file changed, 18 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c 
-> b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> index a5df1c8d34cd..058b7bfe5610 100644
-> --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> @@ -1150,8 +1150,10 @@ static int ingenic_drm_bind(struct device 
-> *dev, bool has_components)
->  	return ret;
->  }
-> 
-> -static int ingenic_drm_bind_with_components(struct device *dev)
-> +static int ingenic_drm_bind_with_components(struct aggregate_device 
-> *adev)
->  {
-> +	struct device *dev = adev->parent;
-> +
->  	return ingenic_drm_bind(dev, true);
->  }
-> 
-> @@ -1174,9 +1176,19 @@ static void ingenic_drm_unbind(struct device 
-> *dev)
->  	drm_atomic_helper_shutdown(&priv->drm);
->  }
-> 
-> -static const struct component_master_ops ingenic_master_ops = {
-> -	.bind = ingenic_drm_bind_with_components,
-> -	.unbind = ingenic_drm_unbind,
-> +static void ingenic_aggregate_remove(struct aggregate_device *adev)
-> +{
-> +	struct device *dev = adev->parent;
+Hi all,
 
-Space here.
+In commit
 
-With that:
+  065485ac5e86 ("mips, bpf: Fix Makefile that referenced a removed file")
 
-Acked-by: Paul Cercueil <paul@crapouillou.net>
+Fixes tag
 
+  Fixes: 06b339fe5450 ("mips, bpf: Remove old BPF JIT implementations")
+
+has these problem(s):
+
+  - Target SHA1 does not exist
+
+Maybe you meant
+
+Fixes: ebcbacfa50ec ("mips, bpf: Remove old BPF JIT implementations")
+
+--=20
 Cheers,
--Paul
+Stephen Rothwell
 
-> +	ingenic_drm_unbind(dev);
-> +}
-> +
-> +static struct aggregate_driver ingenic_aggregate_driver = {
-> +	.probe = ingenic_drm_bind_with_components,
-> +	.remove = ingenic_aggregate_remove,
-> +	.driver = {
-> +		.name = "ingenic_drm",
-> +		.owner = THIS_MODULE,
-> +	},
->  };
-> 
->  static int ingenic_drm_probe(struct platform_device *pdev)
-> @@ -1196,7 +1208,7 @@ static int ingenic_drm_probe(struct 
-> platform_device *pdev)
->  	drm_of_component_match_add(dev, &match, compare_of, np);
->  	of_node_put(np);
-> 
-> -	return component_master_add_with_match(dev, &ingenic_master_ops, 
-> match);
-> +	return component_aggregate_register(dev, &ingenic_aggregate_driver, 
-> match);
->  }
-> 
->  static int ingenic_drm_remove(struct platform_device *pdev)
-> @@ -1206,7 +1218,7 @@ static int ingenic_drm_remove(struct 
-> platform_device *pdev)
->  	if (!IS_ENABLED(CONFIG_DRM_INGENIC_IPU))
->  		ingenic_drm_unbind(dev);
->  	else
-> -		component_master_del(dev, &ingenic_master_ops);
-> +		component_aggregate_unregister(dev, &ingenic_aggregate_driver);
-> 
->  	return 0;
->  }
-> --
-> https://chromeos.dev
-> 
+--Sig_/aTfZNbFXbbcOWTzmiM.ECJy
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFfZyYACgkQAVBC80lX
+0GxaAgf9GJm36VIGvMepSVbgO/Yv2IfKJZt9Ou/89+kk1PiUddCqfP+ZfDe2l2k6
+BGl/32KQMCrCqKIQ/VMLUMBTStrJnlyXW2tyyQr8kyhD34iVIOnXO+P+7uuBdEd9
+6An8w8P43iWnSQbf0qH/kBbCzBHgViSaa60R0clh9Pm3ShDCjRofh4ofYc/kBJJX
+yzHOMJh642iw/dHH86J6q2nKCW7SEQ9/8yfytvxzOSyOhzNvFflW4/OGKCrT9U0K
+Y3TYx3XANlTCLRh/f6Evo07Jf2rXbpYiznGZpSxAe5dNwy/3FlmTzxKLjTbikg2r
+hwIcLGkClYXJuq0h3zj9xq13Z8a8Ig==
+=/nsQ
+-----END PGP SIGNATURE-----
+
+--Sig_/aTfZNbFXbbcOWTzmiM.ECJy--
