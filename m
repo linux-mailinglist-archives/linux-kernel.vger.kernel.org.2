@@ -2,184 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F239425860
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 18:49:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18871425862
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 18:49:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242823AbhJGQvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 12:51:01 -0400
-Received: from mail-vk1-f172.google.com ([209.85.221.172]:35817 "EHLO
-        mail-vk1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242827AbhJGQu5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 12:50:57 -0400
-Received: by mail-vk1-f172.google.com with SMTP id x207so3001307vke.2;
-        Thu, 07 Oct 2021 09:49:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Up6UdFwhzposbg4H9ut/JLcTL23D6e7tCieOzpeku/0=;
-        b=lCSJ/lM0nz2BFCID/H5ROFAxVsvNr7PyPBK6O6VhfHtWvi90T/FumxaTtEiPLPVyED
-         yD4hsYrMhL93eNHhOcBrnIyguZyr3Ap3zHZCmrVaMa8ey77A2vhQqtrT1sp4Ux5Ql8/Y
-         LJ8ibHhMubjFKBVCdDUTpkuVNGWZBcj9umhT7XI2ssMYWRf0Ps9Y0Oj2roxhPmt05NqI
-         uaHYHnTwAHc6r1f17SZRxBVCV6LfgW1IL25t0mljQdFn2xM3VJjfBc1qx7iBQLxhDlUo
-         SA8ACBNu+OOIo1yAO2Vw1hKp57PX0d7Nm361B1Ma6qWvhM5FavXapTVMNRZ62Zad7C7P
-         QVwQ==
-X-Gm-Message-State: AOAM533yngplMZoGmIPxwfjys2hzCosgrmW0DnlMggigwsPhaWowap8D
-        4rFlLZhORiyxPXeDbIs2kRo2317K5+f/mYQ+ugw=
-X-Google-Smtp-Source: ABdhPJyA6t3jxfMvRWdCsa+lUwNtwFfF2bxNMabGw6HaZw3e6raVQ2pEBn8DWnU8timiPkG8tLQ4KPzWvwUQzYyX0PE=
-X-Received: by 2002:a1f:3a4b:: with SMTP id h72mr4755346vka.19.1633625343334;
- Thu, 07 Oct 2021 09:49:03 -0700 (PDT)
+        id S242901AbhJGQvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 12:51:05 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:54680 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242827AbhJGQvD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 12:51:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=K1pNxZtqLLgIwOkunNdpRqqwnHYphnkviPFOPxcGXU4=; b=Rxr8aMFIyN/YJ83Sty0Iv50PAL
+        jlB1fO+QAOaN/bqBlSK9X2nUNE6Ob1i5GcgQz4dNd9ONjF9ifkB4BXRQdAgMRt3BgVDkSGMkXCOe8
+        0QC27dlh3KgoMicJ1sBIl8Q/EN7zLKxHpeK59Iij83ZHazSmeJX1kigQ3CKMkoyi0IIE=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mYWZu-009yNO-4q; Thu, 07 Oct 2021 18:49:06 +0200
+Date:   Thu, 7 Oct 2021 18:49:06 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Matthew Hagan <mnhagan88@gmail.com>
+Subject: Re: [net-next PATCH 07/13] net: dsa: qca8k: add support for
+ mac6_exchange, sgmii falling edge
+Message-ID: <YV8lAvzocfvvsA/I@lunn.ch>
+References: <20211006223603.18858-1-ansuelsmth@gmail.com>
+ <20211006223603.18858-8-ansuelsmth@gmail.com>
+ <YV472otG4JTeppou@lunn.ch>
+ <YV71nZsSDEeY97yt@Ansuel-xps.localdomain>
 MIME-Version: 1.0
-References: <20210929211350.4226-1-nikita.yoush@cogentembedded.com>
-In-Reply-To: <20210929211350.4226-1-nikita.yoush@cogentembedded.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 7 Oct 2021 18:48:52 +0200
-Message-ID: <CAMuHMdUvNM8Tu-+Ed0vjB2-_JUQe7ojUPbzJM=Vy1m_j31sNSg@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: renesas: r8a779[56]x: add MediaLB pins
-To:     Nikita Yushchenko <nikita.yoush@cogentembedded.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrey Gusakov <andrey.gusakov@cogentembedded.com>,
-        Vladimir Barinov <vladimir.barinov@cogentembedded.com>,
-        LUU HOAI <hoai.luu.ub@renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YV71nZsSDEeY97yt@Ansuel-xps.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nikita,
+On Thu, Oct 07, 2021 at 03:26:53PM +0200, Ansuel Smith wrote:
+> On Thu, Oct 07, 2021 at 02:14:18AM +0200, Andrew Lunn wrote:
+> > On Thu, Oct 07, 2021 at 12:35:57AM +0200, Ansuel Smith wrote:
+> > > Some device set the switch to exchange the mac0 port with mac6 port. Add
+> > > support for this in the qca8k driver. Also add support for SGMII rx/tx
+> > > clock falling edge. This is only present for pad0, pad5 and pad6 have
+> > > these bit reserved from Documentation.
+> > > 
+> > > Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> > > Signed-off-by: Matthew Hagan <mnhagan88@gmail.com>
+> > 
+> > Who wrote this patch? The person submitting it should be last. If
+> > Matthew actually wrote it, you want to play with git commit --author=
+> > to set the correct author.
+> > 
+> >    Andrew
+> 
+> I wrote it and Matthew did some very minor changes (binding name).
+> Should I use co-developed by ?
 
-On Wed, Sep 29, 2021 at 11:14 PM Nikita Yushchenko
-<nikita.yoush@cogentembedded.com> wrote:
-> From: Andrey Gusakov <andrey.gusakov@cogentembedded.com>
->
-> This adds pins, groups, and functions for MediaLB device on Renesas
-> H3 and M3.
->
-> Signed-off-by: Andrey Gusakov <andrey.gusakov@cogentembedded.com>
-> Signed-off-by: Vladimir Barinov <vladimir.barinov@cogentembedded.com>
-> Signed-off-by: LUU HOAI <hoai.luu.ub@renesas.com>
-> Signed-off-by: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
+In that case, just reverse the order of the two Signed-off-by, and
+leave the author information as you.
 
-Thanks for your patch!
-
-> --- a/drivers/pinctrl/renesas/pfc-r8a77950.c
-> +++ b/drivers/pinctrl/renesas/pfc-r8a77950.c
-> @@ -2369,6 +2369,14 @@ static const unsigned int intc_ex_irq5_mux[] = {
->         IRQ5_MARK,
->  };
->
-> +/* - MLB+ ------------------------------------------------------------------- */
-> +static const unsigned int mlb_3pin_pins[] = {
-> +       RCAR_GP_PIN(5, 23), RCAR_GP_PIN(5, 24), RCAR_GP_PIN(5, 25),
-> +};
-> +static const unsigned int mlb_3pin_mux[] = {
-> +       MLB_CLK_MARK, MLB_SIG_MARK, MLB_DAT_MARK,
-> +};
-> +
->  /* - MSIOF0 ----------------------------------------------------------------- */
->  static const unsigned int msiof0_clk_pins[] = {
->         /* SCK */
-> @@ -3987,6 +3995,7 @@ static const struct sh_pfc_pin_group pinmux_groups[] = {
->         SH_PFC_PIN_GROUP(intc_ex_irq3),
->         SH_PFC_PIN_GROUP(intc_ex_irq4),
->         SH_PFC_PIN_GROUP(intc_ex_irq5),
-> +       SH_PFC_PIN_GROUP(mlb_3pin),
->         SH_PFC_PIN_GROUP(msiof0_clk),
->         SH_PFC_PIN_GROUP(msiof0_sync),
->         SH_PFC_PIN_GROUP(msiof0_ss1),
-> @@ -4380,6 +4389,10 @@ static const char * const intc_ex_groups[] = {
->         "intc_ex_irq5",
->  };
->
-> +static const char * const mlb_3pin_groups[] = {
-> +       "mlb_3pin",
-> +};
-> +
->  static const char * const msiof0_groups[] = {
->         "msiof0_clk",
->         "msiof0_sync",
-> @@ -4709,6 +4722,7 @@ static const struct sh_pfc_function pinmux_functions[] = {
->         SH_PFC_FUNCTION(i2c5),
->         SH_PFC_FUNCTION(i2c6),
->         SH_PFC_FUNCTION(intc_ex),
-> +       SH_PFC_FUNCTION(mlb_3pin),
->         SH_PFC_FUNCTION(msiof0),
->         SH_PFC_FUNCTION(msiof1),
->         SH_PFC_FUNCTION(msiof2),
-
-This part looks fine to me.
-
-> diff --git a/drivers/pinctrl/renesas/pfc-r8a77951.c b/drivers/pinctrl/renesas/pfc-r8a77951.c
-> index 84c0ea5d59c1..4e4e39640df4 100644
-> --- a/drivers/pinctrl/renesas/pfc-r8a77951.c
-> +++ b/drivers/pinctrl/renesas/pfc-r8a77951.c
-> @@ -2453,6 +2453,14 @@ static const unsigned int intc_ex_irq5_mux[] = {
->         IRQ5_MARK,
->  };
->
-> +/* - MLB+ ------------------------------------------------------------------- */
-> +static const unsigned int mlb_3pin_pins[] = {
-> +       RCAR_GP_PIN(5, 23), RCAR_GP_PIN(5, 24), RCAR_GP_PIN(5, 25),
-> +};
-> +static const unsigned int mlb_3pin_mux[] = {
-> +       MLB_CLK_MARK, MLB_SIG_MARK, MLB_DAT_MARK,
-> +};
-> +
->  /* - MSIOF0 ----------------------------------------------------------------- */
->  static const unsigned int msiof0_clk_pins[] = {
->         /* SCK */
-> @@ -4233,7 +4241,7 @@ static const unsigned int vin5_clk_mux[] = {
->  };
->
->  static const struct {
-> -       struct sh_pfc_pin_group common[328];
-> +       struct sh_pfc_pin_group common[329];
-
-As MLB is not available on RZ/G2 SoCs, only on R-Car Gen3 SoCs, it should
-be added to the automotive sections instead of the common sections.
-
-This applies to pfc-r8a7796.c and pfc-r8a77965.c, too.
-
-> --- a/drivers/pinctrl/renesas/pfc-r8a7796.c
-> +++ b/drivers/pinctrl/renesas/pfc-r8a7796.c
-> @@ -2458,6 +2458,14 @@ static const unsigned int intc_ex_irq5_mux[] = {
->         IRQ5_MARK,
->  };
->
-> +/* - MLB+ ------------------------------------------------------------------- */
-> +static const unsigned int mlb_3pin_pins[] = {
-> +       RCAR_GP_PIN(5, 23), RCAR_GP_PIN(5, 24), RCAR_GP_PIN(5, 25),
-> +};
-> +static const unsigned int mlb_3pin_mux[] = {
-> +       MLB_CLK_MARK, MLB_SIG_MARK, MLB_DAT_MARK,
-> +};
-> +
->  /* - MSIOF0 ----------------------------------------------------------------- */
->  static const unsigned int msiof0_clk_pins[] = {
->         /* SCK */
-> @@ -4301,6 +4309,7 @@ static const struct {
->                 SH_PFC_PIN_GROUP(intc_ex_irq3),
->                 SH_PFC_PIN_GROUP(intc_ex_irq4),
->                 SH_PFC_PIN_GROUP(intc_ex_irq5),
-> +               SH_PFC_PIN_GROUP(mlb_3pin),
-
-error: excess elements in array initializer [-Werror]
-
->                 SH_PFC_PIN_GROUP(msiof0_clk),
->                 SH_PFC_PIN_GROUP(msiof0_sync),
->                 SH_PFC_PIN_GROUP(msiof0_ss1),
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+      Andrew
