@@ -2,223 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AEE7424CDF
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 07:44:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 255B2424CE4
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 07:52:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240167AbhJGFqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 01:46:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48144 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240157AbhJGFqL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 01:46:11 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 706F9C061746
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 22:44:18 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id c13-20020a056214224d00b00382f21b95fcso4766145qvc.5
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 22:44:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=mIj9Jk5MgblNz5q9sG/zsQIq+TdmIYSKr+8KbGGg5VE=;
-        b=gX6kWtp+Nh3tQGqYQ1MPA9e4Ad0JzGcIBSHXfkqmZoxq2JdwiIwlVfYgj0DvVyd9EW
-         H8OjRrcPU9SNcs0Yc1JQ3TDB1zM4Z0BOkuGVcfMsLzH/hbcPwOGcgvW7A0V4Jb1Cy1DE
-         Ps2O3+AA/DJLYpr4AmxWBYrStgZmz8lRTrgT8wCQXau30kp8DR894ItWMo9k+ZVutguQ
-         jXEqjdLXCQYgp8bLib57u7ZrFC63WKkh33JMn8GcZLLnKmQmA66kI7vWDXtHkVW2sSPd
-         roWw9MINXGyXpNbGO+FzRt+8rnLywLnKY04Kc7NPPRvWnySgiJs08v1YZcnrlIXTbMe5
-         3rPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=mIj9Jk5MgblNz5q9sG/zsQIq+TdmIYSKr+8KbGGg5VE=;
-        b=zW0ZlWLwb3XIz/W78Vboo7KfQ8exgjq00knw4oElH97iCzmPyjcxNEs9TlF9KPDeHr
-         3bSs87+iFZYfXrDeAk4W9MkCXteMgWXTXR9sQ0NmvBwA0KvS/xoDsjgEeSJKnBcXkJlK
-         px2hyE1PAP+JM6nMDFreDpdxNYVfj1rDe7ZiNZG/PXXXtXkpri/VM914OHRy6aKGPhzs
-         Y+g6Y2z0AlL51ZA1R99+7YGxq/ktOtOVtFd84F91+b1Huik09u7oue2sKHMD+6Pc2Z6U
-         nlS24EO8zy+exNKtldge8zCY6mLL4pqQNqdvTl/LwxoqxKYQbpKSHu/QMZSlt0cxOzu4
-         MIYg==
-X-Gm-Message-State: AOAM531AgYYu1/23Ch6ST9ZhFndccHSbJxiTYLnjVywtrFk9Fso8IWoA
-        7mXek77dV0uP3nuZG9mbSuVq6wSXAhd4iQ==
-X-Google-Smtp-Source: ABdhPJxaY1Kcgps6yP1EX2w3aIMgCkcw1hNuPT2VdXBWMBaTmNqUIXtOR+JykXPwaG2BrpMzLEhFME23e7+ZnA==
-X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:e436:7947:9f25:884c])
- (user=dlatypov job=sendgmr) by 2002:ac8:7cba:: with SMTP id
- z26mr2669082qtv.11.1633585457632; Wed, 06 Oct 2021 22:44:17 -0700 (PDT)
-Date:   Wed,  6 Oct 2021 22:44:10 -0700
-Message-Id: <20211007054410.290427-1-dlatypov@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.882.g93a45727a2-goog
-Subject: [PATCH] kunit: tool: print parsed test results fully incrementally
-From:   Daniel Latypov <dlatypov@google.com>
-To:     brendanhiggins@google.com, davidgow@google.com
-Cc:     linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org,
-        Daniel Latypov <dlatypov@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S240133AbhJGFyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 01:54:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45902 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229497AbhJGFx6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 01:53:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D2846120D;
+        Thu,  7 Oct 2021 05:52:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1633585925;
+        bh=N7JY5bAzFOPn7GNNIPP2kkoavMMDFcgaUujRxu0X9Ew=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AYWe8FoUg+elF9HRmMmKVJkxI3bkR1uvUZQNvy0nCyztML8t48+7s8NTw1BWlmWI9
+         dFLjCVz80GZSPOOypzxdPhKz+qp51sT5IXdzjh1nKVLitvwhHPFlkfMAJC7WvD/RgD
+         pMt7Oh7K6pMMOpA3uR7GynAJqEl/iL0btTnmXjQU=
+Date:   Thu, 7 Oct 2021 07:52:03 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.14 000/172] 5.14.10-rc3 review
+Message-ID: <YV6LA7Wld8R7BmW/@kroah.com>
+References: <20211006073100.650368172@linuxfoundation.org>
+ <20211007004433.GG650309@roeck-us.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211007004433.GG650309@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With the parser rework [1] and run_kernel() rework [2], this allows the
-parser to print out test results incrementally.
+On Wed, Oct 06, 2021 at 05:44:33PM -0700, Guenter Roeck wrote:
+> On Wed, Oct 06, 2021 at 10:19:58AM +0200, Greg Kroah-Hartman wrote:
+> > This is the start of the stable review cycle for the 5.14.10 release.
+> > There are 172 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> > 
+> > Responses should be made by Fri, 08 Oct 2021 07:30:34 +0000.
+> > Anything received after that time might be too late.
+> > 
+> 
+> Build results:
+> 	total: 154 pass: 154 fail: 0
+> Qemu test results:
+> 	total: 480 pass: 480 fail: 0
+> 
+> The new warnings are now gone.
 
-Currently, that's held up by the fact that the LineStream eagerly
-pre-fetches the next line when you call pop().
-This blocks parse_test_result() from returning until the line *after*
-the "ok 1 - test name" line is also printed.
+Wonderful, thanks for testing this again and letting me know!
 
-One can see this with the following example:
-$ (echo -e 'TAP version 14\n1..3\nok 1 - fake test'; sleep 2; echo -e 'ok 2 - fake test 2'; sleep 3; echo -e 'ok 3 - fake test 3') | ./tools/testing/kunit/kunit.py parse
-
-Before this patch [1]: there's a pause before 'fake test' is printed.
-After this patch: 'fake test' is printed out immediately.
-
-This patch also adds
-* a unit test to verify LineStream's behavior directly
-* a test case to ensure that it's lazily calling the generator
-* an explicit exception for when users go beyond EOF
-
-[1] https://lore.kernel.org/linux-kselftest/20211006170049.106852-1-dlatypov@google.com/
-[2] https://lore.kernel.org/linux-kselftest/20211005011340.2826268-1-dlatypov@google.com/
-
-Signed-off-by: Daniel Latypov <dlatypov@google.com>
----
- tools/testing/kunit/kunit_parser.py    | 22 ++++++++++----
- tools/testing/kunit/kunit_tool_test.py | 42 +++++++++++++++++++++++++-
- 2 files changed, 57 insertions(+), 7 deletions(-)
-
-diff --git a/tools/testing/kunit/kunit_parser.py b/tools/testing/kunit/kunit_parser.py
-index f01fd565f978..82900a5f9ad6 100644
---- a/tools/testing/kunit/kunit_parser.py
-+++ b/tools/testing/kunit/kunit_parser.py
-@@ -172,42 +172,51 @@ class TestCounts:
- class LineStream:
- 	"""
- 	A class to represent the lines of kernel output.
--	Provides a peek()/pop() interface over an iterator of
-+	Provides a lazy peek()/pop() interface over an iterator of
- 	(line#, text).
- 	"""
- 	_lines: Iterator[Tuple[int, str]]
- 	_next: Tuple[int, str]
-+	_need_next: bool
- 	_done: bool
- 
- 	def __init__(self, lines: Iterator[Tuple[int, str]]):
- 		"""Creates a new LineStream that wraps the given iterator."""
- 		self._lines = lines
- 		self._done = False
-+		self._need_next = True
- 		self._next = (0, '')
--		self._get_next()
- 
- 	def _get_next(self) -> None:
--		"""Advances the LineSteam to the next line."""
-+		"""Advances the LineSteam to the next line, if necessary."""
-+		if not self._need_next:
-+			return
- 		try:
- 			self._next = next(self._lines)
- 		except StopIteration:
- 			self._done = True
-+		finally:
-+			self._need_next = False
- 
- 	def peek(self) -> str:
- 		"""Returns the current line, without advancing the LineStream.
- 		"""
-+		self._get_next()
- 		return self._next[1]
- 
- 	def pop(self) -> str:
- 		"""Returns the current line and advances the LineStream to
- 		the next line.
- 		"""
--		n = self._next
--		self._get_next()
--		return n[1]
-+		s = self.peek()
-+		if self._done:
-+			raise ValueError(f'LineStream: going past EOF, last line was {s}')
-+		self._need_next = True
-+		return s
- 
- 	def __bool__(self) -> bool:
- 		"""Returns True if stream has more lines."""
-+		self._get_next()
- 		return not self._done
- 
- 	# Only used by kunit_tool_test.py.
-@@ -220,6 +229,7 @@ class LineStream:
- 
- 	def line_number(self) -> int:
- 		"""Returns the line number of the current line."""
-+		self._get_next()
- 		return self._next[0]
- 
- # Parsing helper methods:
-diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
-index c309ed76aef5..3cb02827c941 100755
---- a/tools/testing/kunit/kunit_tool_test.py
-+++ b/tools/testing/kunit/kunit_tool_test.py
-@@ -13,8 +13,9 @@ import tempfile, shutil # Handling test_tmpdir
- 
- import itertools
- import json
--import signal
- import os
-+import signal
-+from typing import Iterable
- 
- import kunit_config
- import kunit_parser
-@@ -320,6 +321,45 @@ class KUnitParserTest(unittest.TestCase):
- 				result.status)
- 			self.assertEqual('kunit-resource-test', result.test.subtests[0].name)
- 
-+def line_stream_from_strs(strs: Iterable[str]) -> kunit_parser.LineStream:
-+	return kunit_parser.LineStream(enumerate(strs, start=1))
-+
-+class LineStreamTest(unittest.TestCase):
-+
-+	def test_basic(self):
-+		stream = line_stream_from_strs(['hello', 'world'])
-+
-+		self.assertTrue(stream, msg='Should be more input')
-+		self.assertEqual(stream.line_number(), 1)
-+		self.assertEqual(stream.peek(), 'hello')
-+		self.assertEqual(stream.pop(), 'hello')
-+
-+		self.assertTrue(stream, msg='Should be more input')
-+		self.assertEqual(stream.line_number(), 2)
-+		self.assertEqual(stream.peek(), 'world')
-+		self.assertEqual(stream.pop(), 'world')
-+
-+		self.assertFalse(stream, msg='Should be no more input')
-+		with self.assertRaisesRegex(ValueError, 'LineStream: going past EOF'):
-+			stream.pop()
-+
-+	def test_is_lazy(self):
-+		called_times = 0
-+		def generator():
-+			nonlocal called_times
-+			for i in range(1,5):
-+				called_times += 1
-+				yield called_times, str(called_times)
-+
-+		stream = kunit_parser.LineStream(generator())
-+		self.assertEqual(called_times, 0)
-+
-+		self.assertEqual(stream.pop(), '1')
-+		self.assertEqual(called_times, 1)
-+
-+		self.assertEqual(stream.pop(), '2')
-+		self.assertEqual(called_times, 2)
-+
- class LinuxSourceTreeTest(unittest.TestCase):
- 
- 	def setUp(self):
-
-base-commit: 9b409050eaf2da929408fa60fbf535745d828e67
--- 
-2.33.0.882.g93a45727a2-goog
-
+greg k-h
