@@ -2,143 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AA5B425160
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 12:44:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CDB4425166
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 12:45:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240987AbhJGKqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 06:46:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60032 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232776AbhJGKqN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 06:46:13 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E108AC061746
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 03:44:19 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id r18so17691205wrg.6
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 03:44:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=3r67xCci0neztBxAHtXQxOTNTLTcg0zp3S6KOv2sEww=;
-        b=A/ctinh/LmGU0bsbKYZ/RJWjDQXeWNF+a+WfQF6FgnT58X7zxbi3z3nz4vcyO3uLDv
-         n0/9UMH5E07gxO9pEmd5653LWBnY41nANxUa2jmlxRcrxlXz0nXC/Lm9+uE3xKeQQMCs
-         f4rzcWofocwJStwmjb5zt11rsKtGxIS0IltojgSk1OJnIwLOpUY+sBmvJ+74pyJKGSOe
-         o0fFNMe+Q8B9//7Xe1bL/0g3DJBnvxy5dxwu6SUs2m8Gjg7M2/Xq5/s+YCGFIDYxRLle
-         mwJB5nf5rUVBRMRGVxssb5UwrglBHl+0I/4D5CapnpiVuRqG0npW4ilP6RCeqM5g59DH
-         wWkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=3r67xCci0neztBxAHtXQxOTNTLTcg0zp3S6KOv2sEww=;
-        b=48Vzy/W24wMwQdIhUHI7/jAf1WvaqviIAbJRyagCeMFd2zOxNvBdGf8UC6Tnkqk/ky
-         Y/Ibh0NYI587oJLhuH/85OFjhrTh8tXlmfRVt38nWeYSDznpA5XpfiN9Lw38osW2Oy9L
-         GLAWA9SS/o0bOXa6KmDL37Ei5vcznaQwlkq/NtU+jtbYjmLCIe+YBj9X9mAotn8BGZWx
-         Y21S4pPrlS4Okq3+zlD3SyqvR85Kk1aWK3sBfFq9twosw+sWmLNkaB3mtBhoBbpJva9Q
-         EfkT2JC6j+vawjwslLdjYe/JI46HoejSaXpTW8k7S5B0rEwew0RXea5YIH/tHWHw8Rov
-         0ccg==
-X-Gm-Message-State: AOAM533qRaART26M0F8dp3K5/0hWkxRV5edFQngDFGtspL4UR2JzWrEw
-        ckVKA9cmP+d33/ZAAyvZBSVEEg==
-X-Google-Smtp-Source: ABdhPJwQbGU7M7S6lJx3kwLHiGUmc8npWrgEkePais+zSlwLwkIT/lJ377n6zjb5ZkqiTUOpu3TsrQ==
-X-Received: by 2002:adf:a48c:: with SMTP id g12mr4379486wrb.341.1633603458528;
-        Thu, 07 Oct 2021 03:44:18 -0700 (PDT)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id c25sm5173296wml.37.2021.10.07.03.44.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Oct 2021 03:44:17 -0700 (PDT)
-Subject: Re: [PATCH v2] ASoC: dt-bindings: lpass: add binding headers for
- digital codecs
-To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
-        agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
-        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
-        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, swboyd@chromium.org,
-        judyhsiao@chromium.org
-References: <1631109831-1360-1-git-send-email-srivasam@codeaurora.org>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <04210158-e999-a3a3-ee53-ac9024ab9120@linaro.org>
-Date:   Thu, 7 Oct 2021 11:44:16 +0100
+        id S240998AbhJGKrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 06:47:09 -0400
+Received: from mail-mw2nam12on2082.outbound.protection.outlook.com ([40.107.244.82]:37184
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S240800AbhJGKrG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 06:47:06 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EbB2zjr3DSxXOk6lBre6OOJU9wNYDcUhnu8ldp6XYZw7QmcHwoXyiBR51HPXR3JbhWurCaEJ/g9sGTi/nvo0aU68Fqo55kPI7o5O/z9k3q2BMtdQf+Y746M/czQ/52ogcmyk1le78d3Q22PO8l4BFGmdyI7+KGAyNEhPYm60I6d2wXeahU54bcj0hoXd82pPl5EJHFv7gCQWHPw24rfufbV2PTjbhQkCGk8j4cV8ateF4iiq3TTBu5nu6ptR7PiOTbgmbENPC/zckZKJDInystsDZhQ8NpwAxa+R41S2aiTjM2712DTZtpFPT/zO1Bew+FHYmhRLgDfxI3q9SrMFAA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=WAro+Q+c2Aj9eEh4eCjPCo8J9JXEOE80UcAosLJalCs=;
+ b=WNt//fx+iO5pbmnaopD9Rp7xzWIpdfQk6K6lRltsu5oG5fNNiuTVbPROAlkIE2FznwUtNVqjJOwDpTlS/kSSaeNRF0thUIWZaKGYihGj/ChReuBJbmPJHqPk0tizDfI/CFxJdq+yE2shxsbFnQ0LiSAT603UT7omOjgTVd7GDbZKL2HFeoZYDZ+/jDjcwHfR4G9iThdsdiKMrefCIzAAXtji9aWwMmJcgv6+3VB9ljlaBMkkJPARoB0dWisSaoELyeQRZXBcdDwhi3UNcTVXeXW77QjkT7cbqiwI1mMFy/nLQPdnNIAE0nxR3N3/jZelY/efpZLlarMs8fC+/GRznQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WAro+Q+c2Aj9eEh4eCjPCo8J9JXEOE80UcAosLJalCs=;
+ b=GyYIVEuMNOZqo2S7hYk3sS6WGbY84vn9dvdbACFero1Aa6ao4rHinA34zVfPJtL+p6S6qTnpq3+1dGpGnkk9FFnIhW3qGO6Tm+MPC7PZ32pDQHKK0j9UE55zPHG2+dZtRqZySpGXfOlue7ew10pUPyWhXcph+8A866Rw71cu9Do=
+Authentication-Results: amazon.com; dkim=none (message not signed)
+ header.d=none;amazon.com; dmarc=none action=none header.from=amd.com;
+Received: from MWHPR1201MB0192.namprd12.prod.outlook.com
+ (2603:10b6:301:5a::14) by MWHPR1201MB0077.namprd12.prod.outlook.com
+ (2603:10b6:301:55::18) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.19; Thu, 7 Oct
+ 2021 10:45:11 +0000
+Received: from MWHPR1201MB0192.namprd12.prod.outlook.com
+ ([fe80::55c7:6fc9:b2b1:1e6a]) by MWHPR1201MB0192.namprd12.prod.outlook.com
+ ([fe80::55c7:6fc9:b2b1:1e6a%10]) with mapi id 15.20.4587.020; Thu, 7 Oct 2021
+ 10:45:11 +0000
+Subject: Re: [RFC PATCH 1/2] dma-buf: Fix pin callback comment
+To:     Gal Pressman <galpress@amazon.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Oded Gabbay <ogabbay@habana.ai>,
+        Tomer Tayar <ttayar@habana.ai>,
+        Yossi Leybovich <sleybo@amazon.com>,
+        Alexander Matushevsky <matua@amazon.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jianxin Xiong <jianxin.xiong@intel.com>,
+        Firas Jahjah <firasj@amazon.com>
+References: <20211007104301.76693-1-galpress@amazon.com>
+ <20211007104301.76693-2-galpress@amazon.com>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Message-ID: <747d423e-9073-9bed-778a-292e47adf0f6@amd.com>
+Date:   Thu, 7 Oct 2021 12:44:59 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <1631109831-1360-1-git-send-email-srivasam@codeaurora.org>
+In-Reply-To: <20211007104301.76693-2-galpress@amazon.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-ClientProxiedBy: AM0PR02CA0108.eurprd02.prod.outlook.com
+ (2603:10a6:208:154::49) To MWHPR1201MB0192.namprd12.prod.outlook.com
+ (2603:10b6:301:5a::14)
+MIME-Version: 1.0
+Received: from [192.168.178.21] (91.14.161.181) by AM0PR02CA0108.eurprd02.prod.outlook.com (2603:10a6:208:154::49) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.14 via Frontend Transport; Thu, 7 Oct 2021 10:45:05 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a0a1cc96-d16a-4219-a2f5-08d9897f895b
+X-MS-TrafficTypeDiagnostic: MWHPR1201MB0077:
+X-Microsoft-Antispam-PRVS: <MWHPR1201MB007718E36125D4757CCB0E4F83B19@MWHPR1201MB0077.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3383;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: K/4a7JLFLhpIa1MnclOzA6SfcgkcMtGLfuoIU5ZkRINv8DKd2zgbwyLuhCkeikwusTWyUyU+9fZfXGCgxlBNVKlZ5RQUm4mik9uK7/qTtzIWFIssea0pQnPjFmVMI+YDwsI4VC17tX4neqTgZ0vKn7gD3ZA+LFchNzu1VD9aq2LvPAFX2HZW0PRg6Am3x3zSTiCpQ1bQ//fxDC7pNcaHvY1NZ4Rc1HPcKSKzg9PyxSn0iFL19VxuUgRnG0ezuVrm6C53RYphPZ93lywTCWmTn0gyauTUjjBMtnxKyovsRzROe5UYXIC8HicxltV4fAcdhLnnNfK0c75gbp2lvf4LCKzvHekwzChXk0Shjbo69Yeq0y3wh9cJdo3heT8Ue9uSDrS+fZQsLwBuDQq7182vZcdO0BRx5h49YXVgJfkC4OAt9N4JOAJJYMrG5u3UqX+O6FnRFxlbNdGItSGYfdA4cOPAL7Q0o2BPQY4lzDFGvugw6VE9EsGrvD5tIUPQRf0qoJCKbMbUS6GMKgyYZF8+h0xwJtvmhLpJ/zw+bZqKqq1/FEXfVOzDzDIoR7G2iOYlI09p9fRMILoBI3U64KJjh6FJLQarSju7918rQuH5La9iDgozz0/B4gRp86wLPFIRlmDuySlbqTtFX0d7ZQpqd3U8W6D01ms+8VJOe/qUMCvhszuQwUHIygpOP5uUpkv5ZPzX5wwoIgZxJnGNXn3OMEZurxmSrcJqoWel66fIyhqScFhlc3OjcW3rbBlDAGdv
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1201MB0192.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(7416002)(66476007)(110136005)(54906003)(38100700002)(16576012)(66946007)(316002)(66556008)(4326008)(2906002)(956004)(26005)(8936002)(5660300002)(8676002)(508600001)(2616005)(86362001)(6486002)(83380400001)(31686004)(36756003)(6666004)(31696002)(186003)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?amJmeXh4cVpwMitxYVJXOW9WKy9JWGQzVkZmKzFGandjSFN5TmZwNE9sNHVD?=
+ =?utf-8?B?NjhKL1VsR3IwamJ3UStsNUl3NFJBemszcXRCNm9jUXBRNERyWHJNWnJPcWxu?=
+ =?utf-8?B?dkQwQ1lYcGt0dnFBYUFjMUZ6SlpEVE5nZHg4NnVEQTIxQ2JrRVVKNmphNXhN?=
+ =?utf-8?B?UDFVZyt5NVBlTnlkenI1OHo5aVRLcVlHQXdvZEg0cGZ4TTRBS0M4MzVDS2Rj?=
+ =?utf-8?B?MmQ4NlFBVFpGWmg2bCs1cjRRcnlQdllJZC95OWttSmN5akhuYk95L1g5QkhM?=
+ =?utf-8?B?QzR3UTlpRWhXb0xXY2QzRVQ5MXMrLzRTQUZ0SlBhQjRDdkU4MGNueTNIU2tn?=
+ =?utf-8?B?K2NHRlUxbGJ0dklLc0V6dWdINFhZNEFtNXlFOXpWM0Yrcmwrekt1MHJiZzlG?=
+ =?utf-8?B?ZlVnaTc5bjBtVjc2cEFBTERBUzBOTUJOaGJQUEhmaFJGQWpIWkhJUkwzMEF3?=
+ =?utf-8?B?OE1sK1lOQk84WUlSQm9Jc1ltdjJxWVA4MG1xeWNuRnpTbSthRnFrajYxVGlj?=
+ =?utf-8?B?SW5wNmJPTEE2RnJRaXdkcklhYUFYZ0svZytUR0ZHb0dveXoyTzVmYUNtV3d0?=
+ =?utf-8?B?b013ejg4OHpWS1hDWDZ6Y2JPQmxrMmdNTm4vZXJYNjB4NmtlZ3ZUbU5vUlBX?=
+ =?utf-8?B?dEZFb2UyeWFYejJvOEZka2ttMmpLRlNYL29FYkx6dnBqSEZGbDRqRTEzVDNp?=
+ =?utf-8?B?V0NmanJraHYwZTErN3NHdVJKTTVSUDNGTnpmdXI1UVdWdXlEekpLMnFzd0ww?=
+ =?utf-8?B?dmtMQXRkNW4rclFWVzFTeXNVZW9lNzh5bEJOeXVMNUorb1VpU3hXVUJTMFJz?=
+ =?utf-8?B?MXVhcTg2a21ZMm41VitzSXhBTS8zampEZXh1cUxuTFE4VVV3VGlSS0hrNWJw?=
+ =?utf-8?B?T3VjMHhXVDFpSXFJdXNhamRaQXU0YVJDNVhDelVCRk82QzduR3VrRFcweUFG?=
+ =?utf-8?B?blJPbFBjcmRtMVA1TVhBaXNPczh6amp0bVdDMmwvRTZYQ0labnY3NEdJcVdn?=
+ =?utf-8?B?ZHpvSU54TFJ4akE4Z21IYlI1Zks5RHUyU2NGL05DQlNkcU9RWkU3UGJRZ3Fq?=
+ =?utf-8?B?S3Bva3p2bHpaT3g4TmpqVVQvdlc4MTdLOEtjcUc4ZjRWc0p3cnlZN1VBU0Js?=
+ =?utf-8?B?V05CU1IvMjdlWWdhajRGUUxxR2Y1T2ROQlk1elRrMTRHZTJKL2R0aTh6OUhp?=
+ =?utf-8?B?K3dWTThmQ3dNWmlpaTU1RHlhTHNmOThZaytQbEJvWkhJakRzenl6aGtML0tn?=
+ =?utf-8?B?a25Jc2xLeS9XUEJuTnRCSU92VmRoVlFGQWxOeGx2ZzhRYThYTzQ1RkZySVNh?=
+ =?utf-8?B?WmhRV3lGckp0VlJPQTE5UWFiZ1FSc0JRNGFDWGEwQlNkelV0M09RVm50NVY0?=
+ =?utf-8?B?ME9lYlpvckNPbWN4NEFPRndlR1VtRnFxR09aaUM1ZzlaSWRzSWNwMUVuTlVl?=
+ =?utf-8?B?UXdGRitXRndyU2dSakFlZld1QjdEeUFNQWpJTWloczV3dUVwZk4vVElxeGVC?=
+ =?utf-8?B?b3ZQTkZ4VWl4M2I0YmhOUVlPWlZ0a2NQeGdBUi9iUFpUVjh3VEhEcjc4REdy?=
+ =?utf-8?B?MzE2SEx1eXVaOXBsVXIyM1FDeUJvZkVZMWxseUU4dnVJQVkwZGJGb2xwd3VJ?=
+ =?utf-8?B?QWFUenVjRUR2UTVVdEhnQWo0T1ZoTTBtL1lYdCtZWW52SWQwZFBHQUVEaFVL?=
+ =?utf-8?B?ZWNYSTNVT205dFFYQTRRYWI5VStuUjZGVkpmUXdkR1FlRGpZaGZVVEZMTm5a?=
+ =?utf-8?Q?TMKRMwYmnyBMozyiWvDPLyxIrW6HkJ/Ak7VMGbL?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a0a1cc96-d16a-4219-a2f5-08d9897f895b
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1201MB0192.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Oct 2021 10:45:11.0590
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: zv0if4Ywpe0RRHeP6UHVlB+dst3m28Bt02RojUaNWjR98ycBHKbtWCAwvWBzEqXi
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1201MB0077
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Srinivasa,
 
 
-On 08/09/2021 15:03, Srinivasa Rao Mandadapu wrote:
-> Add header defining for lpass internal digital codecs rx,tx and va
-> dai node id's.
-> 
-> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Am 07.10.21 um 12:42 schrieb Gal Pressman:
+> The pin callback does not necessarily have to move the memory to system
+> memory, remove the sentence from the comment.
+>
+> Signed-off-by: Gal Pressman <galpress@amazon.com>
 > ---
-> Changes since v1:
->      -- Add missing dai node ID's
-> 
->   include/dt-bindings/sound/qcom,lpass.h | 31 +++++++++++++++++++++++++++++++
->   1 file changed, 31 insertions(+)
-> 
+>   include/linux/dma-buf.h | 4 +---
+>   1 file changed, 1 insertion(+), 3 deletions(-)
+>
+> diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
+> index efdc56b9d95f..93830731a9a3 100644
+> --- a/include/linux/dma-buf.h
+> +++ b/include/linux/dma-buf.h
+> @@ -86,9 +86,7 @@ struct dma_buf_ops {
+>   	 * @pin:
+>   	 *
+>   	 * This is called by dma_buf_pin() and lets the exporter know that the
+> -	 * DMA-buf can't be moved any more. The exporter should pin the buffer
+> -	 * into system memory to make sure it is generally accessible by other
+> -	 * devices.
 
+Maybe change that to something like "Ideally the exporter should pin the 
+buffer so that it is generally accessible by all devices".
 
-Mark has already applied v1, 
-https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git/commit/include/dt-bindings/sound/qcom,lpass.h?id=bfad37c53ae6168d03ab06868ea44e77995c43d5
+Christian.
 
-Can you please rebase on top of sound-next so that we endup with correct 
-defines.
+> +	 * DMA-buf can't be moved any more.
+>   	 *
+>   	 * This is called with the &dmabuf.resv object locked and is mutual
+>   	 * exclusive with @cache_sgt_mapping.
 
---srini
-
-> diff --git a/include/dt-bindings/sound/qcom,lpass.h b/include/dt-bindings/sound/qcom,lpass.h
-> index 7b0b80b..a9404c3 100644
-> --- a/include/dt-bindings/sound/qcom,lpass.h
-> +++ b/include/dt-bindings/sound/qcom,lpass.h
-> @@ -10,6 +10,37 @@
->   
->   #define LPASS_DP_RX	5
->   
-> +#define LPASS_CDC_DMA_RX0 6
-> +#define LPASS_CDC_DMA_RX1 7
-> +#define LPASS_CDC_DMA_RX2 8
-> +#define LPASS_CDC_DMA_RX3 9
-> +#define LPASS_CDC_DMA_RX4 10
-> +#define LPASS_CDC_DMA_RX5 11
-> +#define LPASS_CDC_DMA_RX6 12
-> +#define LPASS_CDC_DMA_RX7 13
-> +#define LPASS_CDC_DMA_RX8 14
-> +#define LPASS_CDC_DMA_RX9 15
-> +
-> +#define LPASS_CDC_DMA_TX0 16
-> +#define LPASS_CDC_DMA_TX1 17
-> +#define LPASS_CDC_DMA_TX2 18
-> +#define LPASS_CDC_DMA_TX3 19
-> +#define LPASS_CDC_DMA_TX4 20
-> +#define LPASS_CDC_DMA_TX5 21
-> +#define LPASS_CDC_DMA_TX6 22
-> +#define LPASS_CDC_DMA_TX7 23
-> +#define LPASS_CDC_DMA_TX8 24
-> +
-> +#define LPASS_CDC_DMA_VA_TX0 25
-> +#define LPASS_CDC_DMA_VA_TX1 26
-> +#define LPASS_CDC_DMA_VA_TX2 27
-> +#define LPASS_CDC_DMA_VA_TX3 28
-> +#define LPASS_CDC_DMA_VA_TX4 29
-> +#define LPASS_CDC_DMA_VA_TX5 30
-> +#define LPASS_CDC_DMA_VA_TX6 31
-> +#define LPASS_CDC_DMA_VA_TX7 32
-> +#define LPASS_CDC_DMA_VA_TX8 33
-> +
->   #define LPASS_MCLK0	0
->   
->   #endif /* __DT_QCOM_LPASS_H */
-> 
