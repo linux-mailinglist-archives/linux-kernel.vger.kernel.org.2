@@ -2,76 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D2E4425935
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 19:19:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35CDE425939
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 19:19:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243281AbhJGRUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 13:20:53 -0400
-Received: from mga01.intel.com ([192.55.52.88]:40897 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243302AbhJGRUn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 13:20:43 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10130"; a="249634844"
-X-IronPort-AV: E=Sophos;i="5.85,355,1624345200"; 
-   d="scan'208";a="249634844"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 10:18:49 -0700
-X-IronPort-AV: E=Sophos;i="5.85,355,1624345200"; 
-   d="scan'208";a="590223287"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 10:18:46 -0700
-Received: from andy by smile with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mYX2Y-009byY-Pn;
-        Thu, 07 Oct 2021 20:18:42 +0300
-Date:   Thu, 7 Oct 2021 20:18:42 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Wolfram Sang <wsa@kernel.org>
-Subject: Re: [PATCH v2 3/3] gpiolib: acpi: Replace custom code with
- device_match_acpi_handle()
-Message-ID: <YV8r8rdBugAd+Ab8@smile.fi.intel.com>
-References: <20211006173125.84423-1-andriy.shevchenko@linux.intel.com>
- <20211006173125.84423-3-andriy.shevchenko@linux.intel.com>
- <CAJZ5v0iN+28gccy00_Ces9bYsLCNJaHaTZGMUwRrPA6TpY3H8A@mail.gmail.com>
- <YV8oAThCe2dR6K1n@smile.fi.intel.com>
- <CAJZ5v0hTqUnvvhEN4O-Boi-_RBFvT5mNKBn+fVdo4XWz0-XJ_Q@mail.gmail.com>
+        id S243317AbhJGRVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 13:21:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40546 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243233AbhJGRV2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 13:21:28 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 345EFC061570;
+        Thu,  7 Oct 2021 10:19:34 -0700 (PDT)
+Date:   Thu, 7 Oct 2021 19:19:29 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1633627171;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1wBNXpOyOE9HM/ZxKmlXobh0LUJjnX0lvRptKFcJ9OM=;
+        b=CplXng9MzFaWzWLGbE7dbGYVRiEz9vM+u23h7FsSuYGIATEg10B2TooG22kkSAGJ20c2tY
+        kO18pOcumb/6I9CoSGe4PnHi1cjlYlT3lQ0KMXdj13lwUEawnvhm73LHno9WpsP9L7+udR
+        CGnX7c4payqQPFfWHCx/dA3c2WpX3Fp1ELSmM5Ttnce0ypdJ8dRmqeB3xG5nzmR/MT23eF
+        vv2B85aL7V2SMTmu7yya3XqVQh3102h22WfSBEHJBqLAlSZ18I+17NWgxHMbx8aol2HDDk
+        XOJ66uvBHMXSXE7W8uK7PZv/Q1PphCbVQQ0ERi6CWaRxBdrdiCAtGA2N3PBnvg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1633627171;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1wBNXpOyOE9HM/ZxKmlXobh0LUJjnX0lvRptKFcJ9OM=;
+        b=d7CGKbpnAf0ir+dumPZAcFuOBpLbCt/4ajaYrOsBVgdTNM/oeZSOm+W1Vwr+yC6HpHdzME
+        kph48471npeMewBg==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Joe Korty <joe.korty@concurrent-rt.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Clark Williams <williams@redhat.com>,
+        Jun Miao <jun.miao@windriver.com>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 5.10-rt+] drm/i915/gt: transform irq_disable into
+ local_lock.
+Message-ID: <20211007171929.hegwwqelf46skjyw@linutronix.de>
+References: <20211007165928.GA43890@zipoli.concurrent-rt.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAJZ5v0hTqUnvvhEN4O-Boi-_RBFvT5mNKBn+fVdo4XWz0-XJ_Q@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20211007165928.GA43890@zipoli.concurrent-rt.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 07, 2021 at 07:07:19PM +0200, Rafael J. Wysocki wrote:
-> On Thu, Oct 7, 2021 at 7:02 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> > On Thu, Oct 07, 2021 at 06:50:46PM +0200, Rafael J. Wysocki wrote:
+On 2021-10-07 12:59:28 [-0400], Joe Korty wrote:
+> Convert IRQ blocking in intel_breadcrumbs_park() to a local lock.
+>=20
+> Affects 5.10-rt and all later releases, up to and including when
+> rt was merged into mainline.
 
-...
+RT was merged into mainline? Nobody tells me anything anymore=E2=80=A6=20
 
-> > Thanks for review, I will update for v3.
-> > Any other comments to the series?
-> 
-> Not really.  Patch [2/3] is correct AFAICS.
+> This problem has been reported in two other linux-rt-users postings,
+>  =20
+>    [PREEMPT_RT] i915: fix PREEMPT_RT locking splats (Clark Williams)
+>    [linux-5.12.y-rt] drm/i915/gt: Fix a lockdep warning with interrupts e=
+nabled (Jun Miao)
+>=20
+> Neither of these submit the obvious solution, nor,
+> AFAICT, has either yet been acted on.  So I muddy the
+> waters further by submitting this, a third fix.
 
-v3 on its way!
+5.12 is longer maintained. Could you please take the latest devel tree
+for testing and participate in
+  https://lore.kernel.org/all/20211005150046.1000285-1-bigeasy@linutronix.d=
+e/
 
--- 
-With Best Regards,
-Andy Shevchenko
+?
 
+If anything I would prefer those patches backported into v5.10 if it is
+affected.
 
+Sebastian
