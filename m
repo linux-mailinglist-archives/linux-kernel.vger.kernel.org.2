@@ -2,129 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 780474252FD
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 14:27:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7594425302
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 14:28:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241354AbhJGM33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 08:29:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55462 "EHLO
+        id S241362AbhJGMai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 08:30:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241288AbhJGM32 (ORCPT
+        with ESMTP id S241167AbhJGMaf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 08:29:28 -0400
-Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91A96C061755
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 05:27:34 -0700 (PDT)
-Received: by mail-vs1-xe2f.google.com with SMTP id o124so6564372vsc.6
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 05:27:34 -0700 (PDT)
+        Thu, 7 Oct 2021 08:30:35 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A0E7C061746;
+        Thu,  7 Oct 2021 05:28:42 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id b8so22535598edk.2;
+        Thu, 07 Oct 2021 05:28:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=JlKsfdmgfXs09taACmDyRZJY8EiHSnNfp8iCZ5IXTlY=;
-        b=Pq29b+ECnINLhLjebcICFPMl5kZefTp91ONzUQAF3MiFKcnUY/fr26wFSGnUQLNPtw
-         krwpnbduhJfqVIxHXtSreaczjcWiqGEkqBbnV1X8j3IlqHRu4TYSHvWaMnsHzFfS7B/y
-         B//L+TWkij04JKEW5cQ3aktGXvFOebgmq9wTQ=
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0gW5u4BhwhxG/oEIcngyv5/5SCvI3u+z/IqA8blrDDU=;
+        b=VkDn2D93CoawI9XWWfHasf5S3RWzT/k7uvP19/IBwH0XAdrAo5zRZiZ8jK4xksx0xp
+         jihJDyxYBHRfmjP9KFK//j7RJYSlGfG7pvEROd8nOAfkCE9gSr3n0S/gVzADJedwlv/R
+         dUa3lirdU94qEfOXMStWaxH1fZ9oWllmvuYPNz5G0YDcVRD/gqmDvQzhktHkCmyNr3Wd
+         aDusuaQCAHyRGrc19KG01HsCNxcjIE2QwxZSHeu/IwmyLmzQeglxg+mQXYwEgOhgSmuX
+         RXWIxkYyEpQbv5vWGyhMQPKVmI/+cMSabVP4yo1Z4eF9Z5pfLi6rp5b4d4iL6GqvNRpx
+         HAjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=JlKsfdmgfXs09taACmDyRZJY8EiHSnNfp8iCZ5IXTlY=;
-        b=pn55+gCJEKWKZ8YAx7iKmbz3exUbmQoJHc7Vv3hohbWvNi4KFghQZJs/qlKft/rCrA
-         Peash3bLSP4T5GsovjRVG6DNCwnSmK/Qp78F6bHXjKEIQ9uweSNc6OwukJ55VTU0RIEg
-         pUuW0wyWFuNgXSvD3YFOqsIT2Bw8fde5ggs45P5H7Ec1z09OZyc9h9DvxxpbG6BSEAP7
-         pLB/kf3KEL1jlg7/mAlMnUSNMYQfQ7KksJ0KGeQhryxir2QcDq0XyeJQh/gpZ6gFvl69
-         ajwMtKRNHKaKYbzkUyBTIRdBA/2AEDXElFhdcj6HMPwtkvrm5V9v1vsnJuy9Lt78Wt2U
-         5b5g==
-X-Gm-Message-State: AOAM533vGFhKVtml9ATW9yKuLesgm2XFa8QqHiRx0Xfb1GEiiVNRd+Ym
-        RsaeQbcZCpt/xKxTDrZZocLG9dP10uIdm5JSaKvOkQ==
-X-Google-Smtp-Source: ABdhPJxSHUY84YfC3qTrGfqvnuokf7y4lKDUThEZMrITfoSSdEa2Y1i9F2ps9WjZfFtDnx0KREJl8X7VoIrtlGi7hU8=
-X-Received: by 2002:a05:6102:3c3:: with SMTP id n3mr3706923vsq.19.1633609653793;
- Thu, 07 Oct 2021 05:27:33 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0gW5u4BhwhxG/oEIcngyv5/5SCvI3u+z/IqA8blrDDU=;
+        b=ktziQ+O4rEjpwYTm1M9LnYEYKXUa8N3amw5N4/Lr7do6Eztb+3Qg9ufO+iUyIy31Co
+         TIICUYGE/19firhrUfMFuY+nU3w2iD0Iu9an3hCaH0Go9i64SXlxk+dxT2FcXIQn8wfY
+         u+CsHUwC4LNzrbUvrtf9rdHzFL0vMP+qnMgYWwT+5TKtyJyL0+MfDKo9Wg9maLLHZpvh
+         mLJHutw9cffJnw5RJqFwp4qtl8wD/6bVl4s25jg1U7ci5MXLu+XshTzVLpxavKGxphU5
+         Yfhmmi0u8aosuMikZPSpKVAlNzYUPIewXfCz5K0TBa76jNo2/IebklfNXfxSdZmepx6B
+         INSg==
+X-Gm-Message-State: AOAM5337JUim52o+j2kikREe8PsdpTpSvrPKgwwF/37qfmPx8T3rRUMv
+        lVJzfUfWMGJ8+WIjL64uh6FI/NqQOjm09gvmN1E=
+X-Google-Smtp-Source: ABdhPJz4FI7itBtEDRp3CzwWLpZdPRV57fg4dHaHnuD2URnnOUp9n3b/yi2ojIx0rXn+YPlCKqV5UQ==
+X-Received: by 2002:a17:906:3cb:: with SMTP id c11mr5446794eja.404.1633609720213;
+        Thu, 07 Oct 2021 05:28:40 -0700 (PDT)
+Received: from anparri.mshome.net (host-79-49-65-228.retail.telecomitalia.it. [79.49.65.228])
+        by smtp.gmail.com with ESMTPSA id d17sm7124216edv.58.2021.10.07.05.28.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Oct 2021 05:28:39 -0700 (PDT)
+From:   "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>
+To:     linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        linux-scsi@vger.kernel.org
+Cc:     "K . Y . Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>,
+        Dexuan Cui <decui@microsoft.com>
+Subject: [PATCH v3] scsi: storvsc: Fix validation for unsolicited incoming packets
+Date:   Thu,  7 Oct 2021 14:28:28 +0200
+Message-Id: <20211007122828.469289-1-parri.andrea@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210923130814.140814-1-cgxu519@mykernel.net> <20210923130814.140814-8-cgxu519@mykernel.net>
- <CAJfpegtLi1PsfpkohJ-8kTHVazf7cZiX96OSBMn7Q39PY_PXaw@mail.gmail.com> <3b660f79-9f60-5acd-0b9a-47f9e3e6a04b@139.com>
-In-Reply-To: <3b660f79-9f60-5acd-0b9a-47f9e3e6a04b@139.com>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Thu, 7 Oct 2021 14:27:23 +0200
-Message-ID: <CAJfpegujsoyXEQR4CBH3koZdpe+qUVj3R6Okt+3k9AbvUPohJQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v5 07/10] ovl: cache dirty overlayfs' inode
-To:     Chengguang Xu <cgxu519@139.com>
-Cc:     Chengguang Xu <cgxu519@mykernel.net>, Jan Kara <jack@suse.cz>,
-        Amir Goldstein <amir73il@gmail.com>,
-        linux-fsdevel@vger.kernel.org,
-        overlayfs <linux-unionfs@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 7 Oct 2021 at 14:04, Chengguang Xu <cgxu519@139.com> wrote:
->
-> =E5=9C=A8 2021/10/7 19:09, Miklos Szeredi =E5=86=99=E9=81=93:
-> > On Thu, 23 Sept 2021 at 15:08, Chengguang Xu <cgxu519@mykernel.net> wro=
-te:
-> >> Now drop overlayfs' inode will sync dirty data,
-> >> so we change to only drop clean inode.
-> >>
-> >> The purpose of doing this is to keep compatible
-> >> behavior with before because without this change
-> >> dropping overlayfs inode will not trigger syncing
-> >> of underlying dirty inode.
-> >>
-> >> Signed-off-by: Chengguang Xu <cgxu519@mykernel.net>
-> >> ---
-> >>   fs/overlayfs/super.c | 16 +++++++++++++++-
-> >>   1 file changed, 15 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/fs/overlayfs/super.c b/fs/overlayfs/super.c
-> >> index cddae3ca2fa5..bf4000eb9be8 100644
-> >> --- a/fs/overlayfs/super.c
-> >> +++ b/fs/overlayfs/super.c
-> >> @@ -441,11 +441,25 @@ static int ovl_write_inode(struct inode *inode,
-> >>          return ret;
-> >>   }
-> >>
-> >> +/*
-> >> + * In iput_final(), clean inode will drop directly and dirty inode wi=
-ll
-> >> + * keep in the cache until write back to sync dirty data then add to =
-lru
-> >> + * list to wait reclaim.
-> >> + */
-> >> +static int ovl_drop_inode(struct inode *inode)
-> >> +{
-> >> +       struct inode *upper =3D ovl_inode_upper(inode);
-> >> +
-> >> +       if (!upper || !(inode->i_state & I_DIRTY_ALL))
-> > Could we check upper dirtyness here? That would give a more precise res=
-ult.
->
-> We keep tracking mmapped-file(shared mode) by explicitely marking
-> overlay inode dirty,
->
-> so if we drop overlay inode by checking upper dirtyness, we may lose
-> control on those mmapped upper inodes.
+The validation on the length of incoming packets performed in
+storvsc_on_channel_callback() does not apply to unsolicited
+packets with ID of 0 sent by Hyper-V.  Adjust the validation
+for such unsolicited packets.
 
-That's fine, since there are no more mmaps at this point.
+Fixes: 91b1b640b834b2 ("scsi: storvsc: Validate length of incoming packet in storvsc_on_channel_callback()")
+Reported-by: Dexuan Cui <decui@microsoft.com>
+Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
+Reviewed-by: Michael Kelley <mikelley@microsoft.com>
+---
+Changes since v2[1]:
+  - Adjust inline comments (Michael Kelley)
 
-> >
-> > Alternatively don't set .drop_inode (i.e. use generic_drop_inode())
-> > and set I_DONTCACHE on overlay inodes.  That would cause the upper
-> > inode to be always written back before eviction.
-> >
-> > The latter would result in simpler logic, and I think performance-wise
-> > it wouldn't matter.  But I may be missing something.
->
-> I think we may seperate mmapped-file(shared) inode and other inode by
->
-> clear/set I_DONTCACHE flag on overlay inode if you prefer this approach.
+Changes since v1[2]:
+  - Use sizeof(enum vstor_packet_operation) instead of 48 (Michael Kelley)
+  - Filter out FCHBA_DATA packets (Michael Kelley)
 
-Same reasoning here: after upper inode is written out, the dirtyness
-in the overlay inode doesn't matter since there cannot be any active
-mmaps.
+Changes since RFC[3]:
+  - Merge length checks (Haiyang Zhang)
 
-Thanks,
-Miklos
+[1] https://lkml.kernel.org/r/20211006132026.4089-1-parri.andrea@gmail.com
+[2] https://lkml.kernel.org/r/20211005114103.3411-1-parri.andrea@gmail.com
+[3] https://lkml.kernel.org/r/20210928163732.5908-1-parri.andrea@gmail.com
+
+ drivers/scsi/storvsc_drv.c | 32 +++++++++++++++++++++++---------
+ 1 file changed, 23 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/scsi/storvsc_drv.c b/drivers/scsi/storvsc_drv.c
+index ebbbc1299c625..9eb1b88a29dde 100644
+--- a/drivers/scsi/storvsc_drv.c
++++ b/drivers/scsi/storvsc_drv.c
+@@ -1285,11 +1285,15 @@ static void storvsc_on_channel_callback(void *context)
+ 	foreach_vmbus_pkt(desc, channel) {
+ 		struct vstor_packet *packet = hv_pkt_data(desc);
+ 		struct storvsc_cmd_request *request = NULL;
++		u32 pktlen = hv_pkt_datalen(desc);
+ 		u64 rqst_id = desc->trans_id;
++		u32 minlen = rqst_id ? sizeof(struct vstor_packet) -
++			stor_device->vmscsi_size_delta : sizeof(enum vstor_packet_operation);
+ 
+-		if (hv_pkt_datalen(desc) < sizeof(struct vstor_packet) -
+-				stor_device->vmscsi_size_delta) {
+-			dev_err(&device->device, "Invalid packet len\n");
++		if (pktlen < minlen) {
++			dev_err(&device->device,
++				"Invalid pkt: id=%llu, len=%u, minlen=%u\n",
++				rqst_id, pktlen, minlen);
+ 			continue;
+ 		}
+ 
+@@ -1302,13 +1306,23 @@ static void storvsc_on_channel_callback(void *context)
+ 			if (rqst_id == 0) {
+ 				/*
+ 				 * storvsc_on_receive() looks at the vstor_packet in the message
+-				 * from the ring buffer.  If the operation in the vstor_packet is
+-				 * COMPLETE_IO, then we call storvsc_on_io_completion(), and
+-				 * dereference the guest memory address.  Make sure we don't call
+-				 * storvsc_on_io_completion() with a guest memory address that is
+-				 * zero if Hyper-V were to construct and send such a bogus packet.
++				 * from the ring buffer.
++				 *
++				 * - If the operation in the vstor_packet is COMPLETE_IO, then
++				 *   we call storvsc_on_io_completion(), and dereference the
++				 *   guest memory address.  Make sure we don't call
++				 *   storvsc_on_io_completion() with a guest memory address
++				 *   that is zero if Hyper-V were to construct and send such
++				 *   a bogus packet.
++				 *
++				 * - If the operation in the vstor_packet is FCHBA_DATA, then
++				 *   we call cache_wwn(), and access the data payload area of
++				 *   the packet (wwn_packet); however, there is no guarantee
++				 *   that the packet is big enough to contain such area.
++				 *   Future-proof the code by rejecting such a bogus packet.
+ 				 */
+-				if (packet->operation == VSTOR_OPERATION_COMPLETE_IO) {
++				if (packet->operation == VSTOR_OPERATION_COMPLETE_IO ||
++				    packet->operation == VSTOR_OPERATION_FCHBA_DATA) {
+ 					dev_err(&device->device, "Invalid packet with ID of 0\n");
+ 					continue;
+ 				}
+-- 
+2.25.1
+
