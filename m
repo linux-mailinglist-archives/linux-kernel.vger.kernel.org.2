@@ -2,62 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A4414260B1
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 01:45:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CC9A4260B3
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 01:46:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235642AbhJGXrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 19:47:31 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:55524 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231513AbhJGXra (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 19:47:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=1Lv9ZYIcpMkYTukp7sKYhQ4VHfRciLDZTLg4KLS8D+I=; b=l4Yov2iOGpsjT6L3Hfr/FK5z+H
-        yZkLrjZXvsaxVnOoztqsJRqoxMduDCBRSZYdZ8TLnfbw6dn5pTD3p11SLms/y6XwUtt1l3YHgzaiv
-        iMb5vQyrTuEhqFmD1gdUdGy8epmH2zdOL++8z/bbz4bULcHz8ZzTwM/1jSrg5fRlNQFg=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mYd4i-00A0RM-9O; Fri, 08 Oct 2021 01:45:20 +0200
-Date:   Fri, 8 Oct 2021 01:45:20 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Chris Packham <chris.packham@alliedtelesis.co.nz>
-Cc:     gregory.clement@bootlin.com, sebastian.hesselbarth@gmail.com,
-        robh+dt@kernel.org, kostap@marvell.com,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] arm/arm64: dts: Enable 2.5G Ethernet port on
- CN9130-CRB
-Message-ID: <YV+GkHONfzvYNS4R@lunn.ch>
-References: <20211007230619.957016-1-chris.packham@alliedtelesis.co.nz>
- <20211007230619.957016-2-chris.packham@alliedtelesis.co.nz>
+        id S234255AbhJGXst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 19:48:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45268 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229778AbhJGXss (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 19:48:48 -0400
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 497E8C061755
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 16:46:54 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id v2-20020a05683018c200b0054e3acddd91so5060256ote.8
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 16:46:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=gVE/1ADkJ8MTOhXMg6RxOoE4mte4x5DusQmTFFGGsBU=;
+        b=WoVlPccxHbuRTr5ECO9lMIta1ZkIBn8OSGWFIgYT2q5pUtArA7URZdzzXp35EDfPSy
+         KEigeax+oRE1HBvTYEr4YUpbI8NLvI0ma+lLdK38aDH4lzNGWrgK6AUTcv/yalhej6S0
+         NOlhvK9kCoW2oDdzEVJoL/HY6DGgCG1vxQODk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=gVE/1ADkJ8MTOhXMg6RxOoE4mte4x5DusQmTFFGGsBU=;
+        b=QudUWa1KJpsCaJttbMOyCdTedlNV3gubkN8Z3emxKea0walr1Nwdv/z1O01NhKpv7S
+         RdQ5gyk2ZtHgffCheICmcqVQR4pCbbcs6pptSosW8OeC94A+kpyADS0Y3vP+5f9PszSc
+         LjmwUBNjamXZ6lplem8BSIrCAObDLRLbAQ8kHSIpA+cB6Y9sSkbU5v5BF+NvLYPTzE7a
+         n2cxY1FXUtYGFUAuEDP8ugn5vM0jSKFfEWvQYsTABR+hspW0ZLCK6hl38kyk0n0dQWzb
+         ADFxL2I0xsYF7vLodk5mbE+ncjqwIhuYaw+s+uuJZUphrvdBcm3tgCxzEcJN9JcbIrSG
+         9EKg==
+X-Gm-Message-State: AOAM5309fPetOoC3Acqdh3DOWzVHI2tT/Fpck92mWNa+Uf4FfFLyHdcd
+        RNNCcdZlHWKcfT6bpBywyghdGbZmZUSQ0WblyEHxdw==
+X-Google-Smtp-Source: ABdhPJxlFP1/S8B0xAWuFNOhsUPgTNfrPc0wkMbmhmTCldN7UU+Qjct3D18HQXZEaHm/3kIj7Vvs8oXLVNcbNBEbTbE=
+X-Received: by 2002:a9d:5a90:: with SMTP id w16mr21830oth.126.1633650413709;
+ Thu, 07 Oct 2021 16:46:53 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Thu, 7 Oct 2021 19:46:53 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211007230619.957016-2-chris.packham@alliedtelesis.co.nz>
+In-Reply-To: <20211007140854.1.I70615769f27bbaf7e480419d0f660f802b1fea43@changeid>
+References: <20211007140854.1.I70615769f27bbaf7e480419d0f660f802b1fea43@changeid>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Thu, 7 Oct 2021 19:46:53 -0400
+Message-ID: <CAE-0n53Ch+YYTzO31w0Gv5zvn6oUJGRMGxqdO_h4_ULaQ+7_fA@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: qcom: sc7280: Add Herobrine
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        linux-arm-msm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 08, 2021 at 12:06:18PM +1300, Chris Packham wrote:
-> Enable the 2.5G Ethernet port by setting the status to "okay" and the
-> phy-mode to "2500base-x" on the cn9130-crb boards. Tested on a
-> CN9130-CRB-A.
-> 
-> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+Quoting Matthias Kaehlcke (2021-10-07 14:09:11)
+> Herobrine is a Chrome OS board/platform based on the QCA SC7280.
+> Add a .dtsi for the platform parts and a .dts for the board
+> specific bits. Currently the .dtsi has everything except the
+> compatible strings, things will likely get shuffled around in the
+> future as we learn more about the differences between boards.
+>
+> Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
 > ---
-> 
-> The Marvell SDK adds 2500base-t and uses it in the equivalent dtsi but
-> looking at the documentation for both the SoC and the PHY I think
-> 2500base-x is correct for the system interface (the line side is
-> 2500base-t).
 
-2500base-t does not make any sense. It does not even exist in
-mainline.
-
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-
-    Andrew
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
