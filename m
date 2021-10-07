@@ -2,108 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D24BA425117
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 12:31:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E158142511B
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 12:33:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240889AbhJGKdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 06:33:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48700 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240726AbhJGKde (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 06:33:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BFC7D60FC3;
-        Thu,  7 Oct 2021 10:31:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633602701;
-        bh=rjKhAROtKEemtbK1MVWHzDSSAHwzCKKa7aWIBII+u6M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TVp1j6rPJYoLyLt69ZNT1udPquyr/jFRQSTF7wMlB1LXK+gRz7W1gztYG8NuWXV5K
-         3k+GYtqr+AHd7kjE7khwdWutNiVXOERGnxcRBRzRylGTlRseYSSAz5Ah5koaYjtfiV
-         CaJq3tPOwQ2j6tYoxFbKJj/yQKXeJEukMZ4RPdYc=
-Date:   Thu, 7 Oct 2021 12:31:39 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Zev Weiss <zev@bewilderbeest.net>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        Jeremy Kerr <jk@codeconstruct.com.au>,
-        Joel Stanley <joel@jms.id.au>,
-        Rob Herring <robh+dt@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Frank Rowand <frowand.list@gmail.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Andy Shevchenko <andy@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Francis Laniel <laniel_francis@privacyrequired.com>,
-        Kees Cook <keescook@chromium.org>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Daniel Axtens <dja@axtens.net>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>
-Subject: Re: [PATCH 0/9] Dynamic DT device nodes
-Message-ID: <YV7Miz9RMMx/17A0@kroah.com>
-References: <20211007000954.30621-1-zev@bewilderbeest.net>
- <CAHp75VdYBB_FaMr-uKswdvDBdobTYZkiE6ncoALuG+YYVoMwyw@mail.gmail.com>
- <YV64ZbcsHvBObH2j@hatter.bewilderbeest.net>
+        id S240882AbhJGKew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 06:34:52 -0400
+Received: from mail-wr1-f45.google.com ([209.85.221.45]:35651 "EHLO
+        mail-wr1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240726AbhJGKet (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 06:34:49 -0400
+Received: by mail-wr1-f45.google.com with SMTP id v25so17530521wra.2;
+        Thu, 07 Oct 2021 03:32:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=7Xmki6fF5vViToxMGr5FsbK+wRiXFgs+grhsOFW8tw8=;
+        b=a28XSEkKiz4p86tIVi7YKyczw/bYhQiaegN3iF/G3lG9K6RsEMxSl4i6sSqdJXwACA
+         SqJrRt23Mx/T838GyTAVcaSpViUWCxxPp87KUVVOXnRmQW1Qgxx0Jn8NUhc4I+flAm5u
+         xlJXuYjxU5uA/xjMCGAGleIkCKmHF7lAQduxUqUob8nPLKMc3t0/9iuhEclMQzgytHBG
+         IrbT1r3xCUa7/ZEKYhWnQ6VoPRXiCXmUC+ru7A7gwMuAlI6KDtykIrt7TsexrtezT1iH
+         Sc5BvjvcqSO7xKPn1Z2u8lFgVccvfqrr3D8dBZeKnzJv9MEfHZHS011Hkju2u6vGizAw
+         Dr9w==
+X-Gm-Message-State: AOAM531DSIXW8QsmCN7c8ZZEOaG9xhB+fP53wcWrIkdFGG10/JbUthw7
+        nEmmKnUpxJlel+OKnSo09onRrJpSmHY=
+X-Google-Smtp-Source: ABdhPJwLMoMHFNctErtMFmGemYZdEZ8XXA36zgtdDZN5fAfcY7qMGN/l5Vyo5LLTXaQCpJe5+VwrIw==
+X-Received: by 2002:a5d:64e9:: with SMTP id g9mr4364354wri.99.1633602774988;
+        Thu, 07 Oct 2021 03:32:54 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id d7sm24080006wrh.13.2021.10.07.03.32.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Oct 2021 03:32:54 -0700 (PDT)
+Date:   Thu, 7 Oct 2021 10:32:53 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Wei Liu <wei.liu@kernel.org>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>, kys@microsoft.com,
+        haiyangz@microsoft.com, decui@microsoft.com, sthemmin@microsoft.com
+Subject: [GIT PULL] Hyper-V fixes for 5.15-rc8
+Message-ID: <20211007103253.t5w5pgpmzvkffvwp@liuwe-devbox-debian-v2>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YV64ZbcsHvBObH2j@hatter.bewilderbeest.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 07, 2021 at 02:05:41AM -0700, Zev Weiss wrote:
-> On Thu, Oct 07, 2021 at 12:04:41AM PDT, Andy Shevchenko wrote:
-> > On Thu, Oct 7, 2021 at 3:10 AM Zev Weiss <zev@bewilderbeest.net> wrote:
-> > > This patch series is in some ways kind of a v2 for the "Dynamic
-> > > aspeed-smc flash chips via 'reserved' DT status" series I posted
-> > > previously [0], but takes a fairly different approach suggested by Rob
-> > > Herring [1] and doesn't actually touch the aspeed-smc driver or
-> > > anything in the MTD subsystem, so I haven't marked it as such.
-> > > 
-> > > To recap a bit of the context from that series, in OpenBMC there's a
-> > > need for certain devices (described by device-tree nodes) to be able
-> > > to be attached and detached at runtime (for example the SPI flash for
-> > > the host's firmware, which is shared between the BMC and the host but
-> > > can only be accessed by one or the other at a time).
-> > 
-> > This seems quite dangerous. Why do you need that?
-> 
-> Sometimes the host needs access to the flash (it's the host's firmware,
-> after all), sometimes the BMC needs access to it (e.g. to perform an
-> out-of-band update to the host's firmware).  To achieve the latter, the
-> flash needs to be attached to the BMC, but that requires some careful
-> coordination with the host to arbitrate which one actually has access to it
-> (that coordination is handled by userspace, which then tells the kernel
-> explicitly when the flash should be attached and detached).
-> 
-> What seems dangerous?
-> 
-> > Why can't device tree overlays be used?
-> 
-> I'm hoping to stay closer to mainline.  The OpenBMC kernel has a documented
-> policy strongly encouraging upstream-first development:
-> https://github.com/openbmc/docs/blob/master/kernel-development.md
-> 
-> I doubt Joel (the OpenBMC kernel maintainer) would be eager to start
-> carrying the DT overlay patches; I'd likewise strongly prefer to avoid
-> carrying them myself as additional downstream patches.  Hence the attempt at
-> getting a solution to the problem upstream.
+Hi Linus,
 
-Then why not work to get device tree overlays to be merged properly?
-Don't work on a half-of-a-solution when the real solution is already
-here.
+The following changes since commit dfb5c1e12c28e35e4d4e5bc8022b0e9d585b89a7:
 
-thanks,
+  x86/hyperv: remove on-stack cpumask from hv_send_ipi_mask_allbutself (2021-09-11 15:41:00 +0000)
 
-greg k-h
+are available in the Git repository at:
+
+  ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-fixes-signed-20211007
+
+for you to fetch changes up to f5c20e4a5f18677e22d8dd2846066251b006a62d:
+
+  x86/hyperv: Avoid erroneously sending IPI to 'self' (2021-10-06 15:56:45 +0000)
+
+----------------------------------------------------------------
+hyperv-fixes for 5.15
+  - Replace uuid.h with types.h in a header (Andy Shevchenko)
+  - Avoid sleeping in atomic context in PCI driver (Long Li)
+  - Avoid sending IPI to self when it shouldn't (Vitaly Kuznetsov)
+
+----------------------------------------------------------------
+Andy Shevchenko (1):
+      hyper-v: Replace uuid.h with types.h
+
+Long Li (1):
+      PCI: hv: Fix sleep while in non-sleep context when removing child devices from the bus
+
+Vitaly Kuznetsov (1):
+      x86/hyperv: Avoid erroneously sending IPI to 'self'
+
+ arch/x86/hyperv/hv_apic.c           | 20 +++++++++++++++-----
+ drivers/pci/controller/pci-hyperv.c | 13 ++++++++++---
+ include/uapi/linux/hyperv.h         |  2 +-
+ 3 files changed, 26 insertions(+), 9 deletions(-)
