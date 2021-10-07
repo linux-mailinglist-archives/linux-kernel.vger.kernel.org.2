@@ -2,71 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E2CC425757
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 18:04:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAD3442575B
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 18:04:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242435AbhJGQGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 12:06:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57854 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235232AbhJGQF7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 12:05:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 58AFF60F9C;
-        Thu,  7 Oct 2021 16:04:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633622645;
-        bh=tf0G0RGsr4RO11iT0sEPjUlA9rmNBxhk4Q4mxta2poI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=E3oZ77wsEKq+YDVsHOc52CpKWU10Bh+1YziLNcD5i2qxsA2s/EFBKWpdNT4jqCmwU
-         eND46M9XEdZIMf6UcETF+n2rMBkGIgk0kg6V+QoNDczUCA7iGuyfU5wsMcDJJiYqdd
-         zrEoILcVhmVNzEJLe97agu1z1s2q+iRuTdS1aLJzzb0/yk1qt+vXS8gBpDC8lwA8bT
-         sb6BhnqW4AptFNPyhpPX6geq83YWfPlKcY4ybz3XkOxobd6Ti1fskcuY4HyuUC2of6
-         NDdAwPHrDTjlg74xhnxS9PsJ5CPCvS3ZduPGyzSShZ7Z4sM2ElJ0geE6gxTKJSksQx
-         YBJCCIDSH9nZA==
-Date:   Thu, 7 Oct 2021 09:04:04 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Richard Palethorpe <rpalethorpe@suse.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Arseny Krasnov <arseny.krasnov@kaspersky.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Deepa Dinamani <deepa.kernel@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Richard Palethorpe <rpalethorpe@richiejp.com>
-Subject: Re: [PATCH v2 2/2] vsock: Enable y2038 safe timeval for timeout
-Message-ID: <20211007090404.20e555d4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20211007123147.5780-2-rpalethorpe@suse.com>
-References: <20211007123147.5780-1-rpalethorpe@suse.com>
-        <20211007123147.5780-2-rpalethorpe@suse.com>
+        id S242442AbhJGQGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 12:06:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50246 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242425AbhJGQGP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 12:06:15 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B742C061746
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 09:04:21 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id h2so14385393ybi.13
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 09:04:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=idsd5mctgolloTq522mlXra0iGlPTwRxJgNy/gnn+wQ=;
+        b=kXYYisjK1xNhb3JOoFrAhJNoJOkeGU9DaJyxG2fvBrDNVdaOmc6g3jNa//6kthDqeG
+         zQxMuDKUOyw9KSRu50Aj3rQlprQSM3QiPHY/4v/gfs/jtmBqZD25r1t8w2gpbY224vgR
+         xOMfkCe7Yx1sFQvabb2bpd3/Zfqv1ZftfZMd+RgN9itmzWRuej+FJ9ZqMlTnWcL0qy1E
+         MXMJUEoVQnMz3Qoxc3FVeY2vG5GGww+t6HbNg1oqLu41PlRbignDbA32LJ+u3yp3Ywe5
+         GYnqJsOJVUBfC+PJaNS6AhT4w3FcDiuVHdNrQuBDl/qY7WauvSAvbPtSzjCehbYqkNhM
+         AowA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=idsd5mctgolloTq522mlXra0iGlPTwRxJgNy/gnn+wQ=;
+        b=P7jso7u45xq5q+2pnvD7JRdo2G7kwbIvDc8ceaOqonvR7aYqkIpE6OOtrAZvX2vqqE
+         giWqz1k4Oo4+76K7BPVyiElTiQnYxfGxIiwb4LzNU+IAGr6+rILS4hWmh1lsIuJXYOZe
+         jCnKN8kBAVYYE6qUslqT3Ftg728ZxP4EkW7voVMeIIaTWXxXSei8DR+r/3IDNAU3ofuF
+         YycwIosN6mLZMhwHOFamkjGyDGF90lQ+RnRI+OUR02cgxs8TOsBRsWyooCGgLCOMzVQU
+         YcUxJSPAsgeTVzSQrJdiwtElKEaCQEVYjEJJif2Zx3ChraBS4/gtnNbx2DLeGq+vFU+I
+         jcOQ==
+X-Gm-Message-State: AOAM532D0clmly8CQ7v2uCxvjTTvuuXqZ+rMzXjJERZjV5oGlusJ7Rqb
+        LuJIM1FX2HnuvY5NkDU9nhqzZjOKBIIDdVLhTAw3tw==
+X-Google-Smtp-Source: ABdhPJxRZSNNPrKdHDus3HcjlavGjc70+r39LVG0FYYUgfxFDkbPBxwLgqcMcnfSqqkSgGqKj0vntbBJ/ETTWgkukL0=
+X-Received: by 2002:a25:5646:: with SMTP id k67mr5923693ybb.127.1633622660245;
+ Thu, 07 Oct 2021 09:04:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20211005200411.GB19804@duo.ucw.cz> <CAJuCfpFZkz2c0ZWeqzOAx8KFqk1ge3K-SiCMeu3dmi6B7bK-9w@mail.gmail.com>
+ <efdffa68-d790-72e4-e6a3-80f2e194d811@nvidia.com> <YV1eCu0eZ+gQADNx@dhcp22.suse.cz>
+ <6b15c682-72eb-724d-bc43-36ae6b79b91a@redhat.com> <CAJuCfpEPBM6ehQXgzp=g4SqtY6iaC8wuZ-CRE81oR1VOq7m4CA@mail.gmail.com>
+ <20211006175821.GA1941@duo.ucw.cz> <CAJuCfpGuuXOpdYbt3AsNn+WNbavwuEsDfRMYunh+gajp6hOMAg@mail.gmail.com>
+ <YV6rksRHr2iSWR3S@dhcp22.suse.cz> <92cbfe3b-f3d1-a8e1-7eb9-bab735e782f6@rasmusvillemoes.dk>
+ <20211007101527.GA26288@duo.ucw.cz>
+In-Reply-To: <20211007101527.GA26288@duo.ucw.cz>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Thu, 7 Oct 2021 09:04:09 -0700
+Message-ID: <CAJuCfpGp0D9p3KhOWhcxMO1wEbo-J_b2Anc-oNwdycx4NTRqoA@mail.gmail.com>
+Subject: Re: [PATCH v10 3/3] mm: add anonymous vma name refcounting
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Michal Hocko <mhocko@suse.com>,
+        David Hildenbrand <david@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Colin Cross <ccross@google.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        vincenzo.frascino@arm.com,
+        =?UTF-8?B?Q2hpbndlbiBDaGFuZyAo5by16Yym5paHKQ==?= 
+        <chinwen.chang@mediatek.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Jann Horn <jannh@google.com>, apopple@nvidia.com,
+        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
+        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
+        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
+        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
+        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
+        Chris Hyser <chris.hyser@oracle.com>,
+        Peter Collingbourne <pcc@google.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Jens Axboe <axboe@kernel.dk>, legion@kernel.org,
+        Rolf Eike Beer <eb@emlix.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Thomas Cedeno <thomascedeno@google.com>, sashal@kernel.org,
+        cxfcosmos@gmail.com, LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-mm <linux-mm@kvack.org>,
+        kernel-team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu,  7 Oct 2021 13:31:47 +0100 Richard Palethorpe wrote:
-> Reuse the timeval compat code from core/sock to handle 32-bit and
-> 64-bit timeval structures. Also introduce a new socket option define
-> to allow using y2038 safe timeval under 32-bit.
-> 
-> The existing behavior of sock_set_timeout and vsock's timeout setter
-> differ when the time value is out of bounds. vsocks current behavior
-> is retained at the expense of not being able to share the full
-> implementation.
-> 
-> This allows the LTP test vsock01 to pass under 32-bit compat mode.
-> 
-> Fixes: fe0c72f3db11 ("socket: move compat timeout handling into sock.c")
-> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
-> Cc: Richard Palethorpe <rpalethorpe@richiejp.com>
+On Thu, Oct 7, 2021 at 3:15 AM Pavel Machek <pavel@ucw.cz> wrote:
+>
+> Hi!
+>
+> > >> Hmm, so the suggestion is to have some directory which contains files
+> > >> representing IDs, each containing the string name of the associated
+> > >> vma? Then let's say we are creating a new VMA and want to name it. We
+> > >> would have to scan that directory, check all files and see if any of
+> > >> them contain the name we want to reuse the same ID.
+> > >
+> > > I believe Pavel meant something as simple as
+> > > $ YOUR_FILE=$YOUR_IDS_DIR/my_string_name
+> > > $ touch $YOUR_FILE
+> > > $ stat -c %i $YOUR_FILE
 
-This breaks 32bit x86 build:
+Ah, ok, now I understand the proposal. Thanks for the clarification!
+So, this would use filesystem as a directory for inode->name mappings.
+One rough edge for me is that the consumer would still need to parse
+/proc/$pid/maps and convert [anon:inode] into [anon:name] instead of
+just dumping the content for the user. Would it be acceptable if we
+require the ID provided by prctl() to always be a valid inode and
+show_map_vma() would do the inode-to-filename conversion when
+generating maps/smaps files? I know that inode->dentry is not
+one-to-one mapping but we can simply output the first dentry name.
+WDYT?
 
-ERROR: modpost: "__divdi3" [net/vmw_vsock/vsock.ko] undefined!
+> >
+> > So in terms of syscall overhead, that would be open(..., O_CREAT |
+> > O_CLOEXEC), fstat(), close() - or one could optimistically start by
+>
+> You could get to two if you used mkdir instead of open.
+>
+> > > YOUR_IDS_DIR can live on a tmpfs and you can even implement a policy on
+> > > top of that (who can generate new ids, gurantee uniqness etc...).
+> > >
+> > > The above is certainly not for free of course but if you really need a
+> > > system wide consistency when using names then you need some sort of
+> > > central authority. How you implement that is not all that important
+> > > but I do not think we want to handle that in the kernel.
 
-If the 64 bit division is intention you need to use an appropriate
-helper.
+Ideally it would be great if $YOUR_IDS_DIR/my_string_name entries
+could be generated by the kernel in response to userspace calling
+prctl(..., name) but I haven't looked into complexity of doing that,
+so I would not propose that at this point.
+Thanks for sharing the ideas!
+Suren.
+
+> >
+> > IDK. If the whole thing could be put behind a CONFIG_ knob, with _zero_
+> > overhead when not enabled (and I'm a bit worried about all the functions
+> > that grow an extra argument that gets passed around), I don't mind the
+> > string interface. But I don't really have a say either way.
+>
+> If this is ever useful outside of Android, eventually distros will
+> have it enabled.
+>
+> Best regards,
+>                                                                 Pavel
+> --
+> http://www.livejournal.com/~pavelmachek
