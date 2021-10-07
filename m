@@ -2,153 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79F8A4255E8
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 16:59:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71B3D4255F3
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 17:01:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242246AbhJGPBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 11:01:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53964 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233392AbhJGPBB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 11:01:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 76AFF61130;
-        Thu,  7 Oct 2021 14:59:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633618747;
-        bh=agUEa5tnymA5cLSQOimR3s7Rpv88HWpHN23UjSzV7aA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Jg/Hk1q6vizyHYdxD/J9WP3bsG8DOzxJZ76ABMmXUuxD+VzkvIwqX7aWmLDJ2Kyf3
-         esvsQUQ6KxlfDHCv4H0pgqsJcIFt2S80ugDdz6WIskyhj9P+NUdDWxcxeIhN3ynQoc
-         DiylFI/xJPBRoteYwVoIXlmXa0oM1RFzR9WozWkxYfYgnV6arqmQxvx0fQGins3fZY
-         Hx0rxC1KDb97PPZuEhlDMWts1qQ8D5gmIcTf3Ih/LX0XE7ks9NkgcM04A56FHeRvGH
-         RoKUxFZ4yG8Ln4AyMsQtL6Mj8yHGWoNw6/6WEdOjuUngEkBFPFqL7KuqWfdouPECTR
-         wgGOLLSdqM5Xw==
-Received: by mail-lf1-f53.google.com with SMTP id x27so26225877lfu.5;
-        Thu, 07 Oct 2021 07:59:07 -0700 (PDT)
-X-Gm-Message-State: AOAM530zeLuo9m8Ukf8cUVAK9eTJabVCLW2Ad2u/vKDRBY54+EG4SVWe
-        UPDjysqCV+xMevnQapSwJdpEQ+VeOmSqYXBkBDU=
-X-Google-Smtp-Source: ABdhPJxFOt0eMhJPHZ/918XuAr4MaGOYv0n7KCfJR/pXgG2VQy3spCJKj5w8b9sHNjcHJkdoYq5vHXGQ9D19vU5g3rU=
-X-Received: by 2002:a05:6512:1052:: with SMTP id c18mr4661456lfb.223.1633618745817;
- Thu, 07 Oct 2021 07:59:05 -0700 (PDT)
+        id S242257AbhJGPDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 11:03:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35290 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233392AbhJGPDn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 11:03:43 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C543C061570
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 08:01:50 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id u7so5548370pfg.13
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 08:01:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=mgxV9vofFa2JKR3OMuIjOLiE52M694+VDJIIWjcXhQw=;
+        b=m9dNvUSiolriakGCOk/N0DwqY/YGaaVeEAc6xc9IMKoL5dH9MYaH6gA5VP/XZFd1Bq
+         pmDl43BYu7lzLPzdFuYfbm+BQjC5GSshwjxS0Ui60WrFmL5fmCeSCSfH7VLYA0DiaN/E
+         hGubIh8y6P3UUYZbH8ndY0tBxizgOUeaBDpfY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mgxV9vofFa2JKR3OMuIjOLiE52M694+VDJIIWjcXhQw=;
+        b=3JrVbaAoacn00lFrmwQu65gxyr/t814VbF6bfxI3DjUSHTOdWXqi17ZvqrTyf29AHY
+         ny31dhx7M9Ln8iVym6fkUaETxQrMjwH0SPBza6W9cSBTMb/OqVAAtoqBT3KmAzBlW4Ec
+         b9ZFIU8ZzX6/WGrY/NIyaQ0qBzBtolVC0kF8OgVdfgBxAfYj0gDpcVQhC/fw1q+O4fTl
+         A0+thBjBvzQoggd6SZKXM0LBzMwTmBTtfPxdGzsnJxMC2iZ5ufhVImBjT4YujeW3xho5
+         lHqPcvu/zwLzkThvSq9VzqGlSBQvpwl00CgZQy+RzWviYmEHz/YiZq3djdPZQv1LAohZ
+         ssAg==
+X-Gm-Message-State: AOAM530Q5697smXEVc/grJ9jUxj+XfbFsGHEVtd4x4ujnonENEj5xCPO
+        22sWXucwCZaOKJgfR+IP1tniig==
+X-Google-Smtp-Source: ABdhPJxLnVlOseU08rqspnpqFtYL3QSFvbUaoRITM2OBRrImlAWs2nc6K0pqVOr+n7tYjKEAnNg6CA==
+X-Received: by 2002:a63:ff0a:: with SMTP id k10mr82399pgi.363.1633618909475;
+        Thu, 07 Oct 2021 08:01:49 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id m1sm25225382pfc.183.2021.10.07.08.01.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Oct 2021 08:01:49 -0700 (PDT)
+Date:   Thu, 7 Oct 2021 08:01:48 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     pmladek@suse.com, viro@zeniv.linux.org.uk,
+        akpm@linux-foundation.org, peterz@infradead.org,
+        valentin.schneider@arm.com, mathieu.desnoyers@efficios.com,
+        qiang.zhang@windriver.com, robdclark@chromium.org,
+        christian@brauner.io, dietmar.eggemann@arm.com, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 4/4] kernel/kthread: show a warning if kthread's comm
+ is truncated
+Message-ID: <202110070801.C425A092@keescook>
+References: <20211007120752.5195-1-laoar.shao@gmail.com>
+ <20211007120752.5195-5-laoar.shao@gmail.com>
 MIME-Version: 1.0
-References: <20210913032003.2836583-1-fengli@smartx.com> <CAHckoCyDULok_QLLh5Nmbx4qLCxKL43TgtFgCSAwuaPpRy1BFw@mail.gmail.com>
- <CAHckoCwOgpH8E9UgkRkyZitPb6X5Jp-PVKoN6QFHJMt_4h+V6g@mail.gmail.com> <CAHckoCwk1i7_vV=oweLTNYkCjMi4ReyXed2NOvZ10z2J32xGBg@mail.gmail.com>
-In-Reply-To: <CAHckoCwk1i7_vV=oweLTNYkCjMi4ReyXed2NOvZ10z2J32xGBg@mail.gmail.com>
-From:   Song Liu <song@kernel.org>
-Date:   Thu, 7 Oct 2021 07:58:54 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW5Txh_FSKCRNA8PPAwm2LesYAX5+k_bde87OsDvYpTi=Q@mail.gmail.com>
-Message-ID: <CAPhsuW5Txh_FSKCRNA8PPAwm2LesYAX5+k_bde87OsDvYpTi=Q@mail.gmail.com>
-Subject: Re: [PATCH] md: allow to set the fail_fast on RAID1/RAID10
-To:     Li Feng <fengli@smartx.com>
-Cc:     linux-raid <linux-raid@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211007120752.5195-5-laoar.shao@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 7, 2021 at 12:00 AM Li Feng <fengli@smartx.com> wrote:
->
-> Continue ping...
->
-> Thanks,
-> Feng Li
+On Thu, Oct 07, 2021 at 12:07:52PM +0000, Yafang Shao wrote:
+> Show a warning if task comm is truncated. Below is the result
+> of my test case:
+> 
+> truncated kthread comm:I-am-a-kthread-with-lon, pid:14 by 6 characters
+> 
+> Suggtested-by: Petr Mladek <pmladek@suse.com>
+> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 
-Hmm.. this is weird. I didn't see previous emails in this thread.
-Could you please
-send it again?
+I like that we get a warning now. :)
 
-Thanks,
-Song
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
->
-> Li Feng <fengli@smartx.com> =E4=BA=8E2021=E5=B9=B49=E6=9C=8827=E6=97=A5=
-=E5=91=A8=E4=B8=80 =E4=B8=8B=E5=8D=889:24=E5=86=99=E9=81=93=EF=BC=9A
-> >
-> > Hi Song,
-> >
-> > What about this feature?
-> >
-> > Thanks,
-> > Feng Li
-> >
-> > Li Feng <fengli@smartx.com> =E4=BA=8E2021=E5=B9=B49=E6=9C=8815=E6=97=A5=
-=E5=91=A8=E4=B8=89 =E4=B8=8B=E5=8D=8811:08=E5=86=99=E9=81=93=EF=BC=9A
-> > >
-> > > ping ...
-> > >
-> > > Thanks,
-> > > Feng Li
-> > >
-> > > Li Feng <fengli@smartx.com> =E4=BA=8E2021=E5=B9=B49=E6=9C=8813=E6=97=
-=A5=E5=91=A8=E4=B8=80 =E4=B8=8A=E5=8D=8811:22=E5=86=99=E9=81=93=EF=BC=9A
-> > > >
-> > > > When the running RAID1/RAID10 need to be set with the fail_fast fla=
-g,
-> > > > we have to remove each device from RAID and re-add it again with th=
-e
-> > > > --fail_fast flag.
-> > > >
-> > > > Export the fail_fast flag to the userspace to support the read and
-> > > > write.
-> > > >
-> > > > Signed-off-by: Li Feng <fengli@smartx.com>
-> > > > ---
-> > > >  drivers/md/md.c | 30 ++++++++++++++++++++++++++++++
-> > > >  1 file changed, 30 insertions(+)
-> > > >
-> > > > diff --git a/drivers/md/md.c b/drivers/md/md.c
-> > > > index ae8fe54ea358..ce63972a4555 100644
-> > > > --- a/drivers/md/md.c
-> > > > +++ b/drivers/md/md.c
-> > > > @@ -3583,6 +3583,35 @@ ppl_size_store(struct md_rdev *rdev, const c=
-har *buf, size_t len)
-> > > >  static struct rdev_sysfs_entry rdev_ppl_size =3D
-> > > >  __ATTR(ppl_size, S_IRUGO|S_IWUSR, ppl_size_show, ppl_size_store);
-> > > >
-> > > > +static ssize_t
-> > > > +fail_fast_show(struct md_rdev *rdev, char *page)
-> > > > +{
-> > > > +       return sprintf(page, "%d\n", test_bit(FailFast, &rdev->flag=
-s));
-> > > > +}
-> > > > +
-> > > > +static ssize_t
-> > > > +fail_fast_store(struct md_rdev *rdev, const char *buf, size_t len)
-> > > > +{
-> > > > +       int ret;
-> > > > +       bool bit;
-> > > > +
-> > > > +       ret =3D kstrtobool(buf, &bit);
-> > > > +       if (ret)
-> > > > +               return ret;
-> > > > +
-> > > > +       if (test_bit(FailFast, &rdev->flags) && !bit) {
-> > > > +               clear_bit(FailFast, &rdev->flags);
-> > > > +               md_update_sb(rdev->mddev, 1);
-> > > > +       } else if (!test_bit(FailFast, &rdev->flags) && bit) {
-> > > > +               set_bit(FailFast, &rdev->flags);
-> > > > +               md_update_sb(rdev->mddev, 1);
-> > > > +       }
-> > > > +       return len;
-> > > > +}
-> > > > +
-> > > > +static struct rdev_sysfs_entry rdev_fail_fast =3D
-> > > > +__ATTR(fail_fast, 0644, fail_fast_show, fail_fast_store);
-> > > > +
-> > > >  static struct attribute *rdev_default_attrs[] =3D {
-> > > >         &rdev_state.attr,
-> > > >         &rdev_errors.attr,
-> > > > @@ -3595,6 +3624,7 @@ static struct attribute *rdev_default_attrs[]=
- =3D {
-> > > >         &rdev_unack_bad_blocks.attr,
-> > > >         &rdev_ppl_sector.attr,
-> > > >         &rdev_ppl_size.attr,
-> > > > +       &rdev_fail_fast.attr,
-> > > >         NULL,
-> > > >  };
-> > > >  static ssize_t
-> > > > --
-> > > > 2.31.1
-> > > >
+-- 
+Kees Cook
