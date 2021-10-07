@@ -2,177 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B497425B24
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 20:50:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80D10425B27
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 20:51:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243786AbhJGSwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 14:52:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34152 "EHLO
+        id S243802AbhJGSxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 14:53:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233860AbhJGSwQ (ORCPT
+        with ESMTP id S243795AbhJGSxC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 14:52:16 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7603C061760
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 11:50:21 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id s64so15526566yba.11
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 11:50:21 -0700 (PDT)
+        Thu, 7 Oct 2021 14:53:02 -0400
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3077C061570
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 11:51:08 -0700 (PDT)
+Received: by mail-qt1-x82f.google.com with SMTP id b16so7174334qtt.7
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 11:51:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=E0+5wT+wrdMqcXbNJTk/9zibrUNlQPSrWQVNSFGRH0Q=;
-        b=f+jqxJIJSLt5FZwMq8HxqaGUYxnqZd2XHM9BdnYqSOU2kuqNgIW8wdNJ+eIspkoDj7
-         Y9gcKeC/pYYgB7yyLLyYx+RB+VVGInIY8fY+l7ByRtsBh75EzVZLLHUx0s/JgAaUxjSx
-         hGIwnJa6ufRLm2694PKbR8PkW8ggrSVSF19tXiQkNxjdPHqzGQENgGZtovh4JP3nyBmm
-         km/ahg3AYuRK3xJ3BxULxSYwkGBP+AaFviZfQCvWKnwo6U4m7pnW6dL83ihp8vhP+OEn
-         KjczJIjrhAJYXJHrPGk4lt9lhphV4v8E1sVoy0rsM5C4FRJOlgdvGR8HGAR7WauUTcVs
-         gaxQ==
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=9FJtnZIP2395C5y2TF1PL3Erj+3yTN6sqrxyh7Cq2Os=;
+        b=QJUaqnS0wgynwvIHHECKkUjLfX4qRTpPSoT+GixBs/V7371DoGOCcVAxAgllrEj6gi
+         zvwq3/97HbJ/jeSd7fWhueWORWIgo3w+uQ2BuS3bOSC7yAm5AGrp+yucBSBD3l6ZXIBj
+         zBWMXU4DzZ5bcNkL/0g8e4qNYBVyXjvyJT4RajTogl+PJto7Br9rNDBnZJliB8GQVw87
+         5whuXbbTIo+7g8JQPchM1cbBX2hnqP+7ddwgwzGxGu8xZqCSmOL6TNZdFUvDmxUog04e
+         Sq3a3Ocdg7a7y6K15IWcVtksNIrHMf/gMQAouUZ0mT0jZTgin2od8oXAmEAGlXIjAnby
+         o8uQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=E0+5wT+wrdMqcXbNJTk/9zibrUNlQPSrWQVNSFGRH0Q=;
-        b=4rdWr7ZtORb7NtW/woCHkJQBp8yv4PqYlDmUHYtx6Lz33JXksgMIQaMxXyRXbXlJWP
-         elZpeOBMQqwG1CYoKaItDcbhTKukFoezNqkwj3CA0EyNSzfyTpCdNhqQWm5W6tiP2WVr
-         sEBFnCwmeK/FZSuDNQKQ6EFexOwpCFn1drVQydTGd4hWA0R5d60SaNE812ndg7z9ciJb
-         +T17er3bfxDNhMQarre8ZVWzytPFprkMKiD2dN/u9vJsrBTf3TdJAUY2BzFkHMoxLVS1
-         W57y7ChV6VB06nC5oK8NF4iN+9vig3J13a+inuVdeXoit0wU7hDzwF71EcnxSUmVXyEq
-         slAw==
-X-Gm-Message-State: AOAM531fnw0P1ZkGYWGPOFUzsc61/0jbc7zJ2Bz0rY6c1unC3CLZwR2j
-        WqCRk+gTd/MhTAnjjAJThjelhNprp852pCcMGcjqUA==
-X-Google-Smtp-Source: ABdhPJwX3MSlqHYl/15/mb53bQi9n5NdlsFOxC7cfpcgUkjWDcfJbTPgeVDqsBWb3sDjKC8m87AdHD4J0DwOcD30v/I=
-X-Received: by 2002:a25:5b04:: with SMTP id p4mr6402702ybb.34.1633632620440;
- Thu, 07 Oct 2021 11:50:20 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=9FJtnZIP2395C5y2TF1PL3Erj+3yTN6sqrxyh7Cq2Os=;
+        b=63dSJotOpFYXAePjEoJvq2NjU8zk6FXO17dIwPVm7/RW5cgqiVfzvQIkspdKd/wdF0
+         Fimsbl99psEAZ5VPnAuw0LbHwRAhrxHG9kqnIelhZ4XwbNrxdTRkKRzTOsjMf8iPzh40
+         2+LhasaPhTCTDZxXA8JESVtgM48TQbi/iAIZZTWvPxXwwIvfshlGAnbEwDN/S96J0DJf
+         O4lPU0PmD6DEDq/I3KgCNi+zNoaQe+KFmgRCk6LBvH5TDSR1WLlTgjJHhTInSowYrUQ8
+         hvf13EXMbD1mUIfiXV9J+4gxi4Zvy7MWm+ojbgzeHYvYZP15iwBEqrRreyDCz1KG8nH7
+         BqJg==
+X-Gm-Message-State: AOAM533NUuW2BAiscm0Ux+uxvptSPlF+KRmaYBXnf7E21eGqVWQnlzXr
+        +54RRJVtZZpqZP99fqWZnzO0bD281/eATsG4Qfo=
+X-Google-Smtp-Source: ABdhPJyzjfbK0COMGOiXAUEN3iBt8bFQrz2Z0rthMKEP/kozYYum/Cr+FX0n9kskrhCzrTyZxBTIO+4VJdR788emuUk=
+X-Received: by 2002:ac8:24c:: with SMTP id o12mr6989676qtg.99.1633632667929;
+ Thu, 07 Oct 2021 11:51:07 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211006175821.GA1941@duo.ucw.cz> <CAJuCfpGuuXOpdYbt3AsNn+WNbavwuEsDfRMYunh+gajp6hOMAg@mail.gmail.com>
- <YV6rksRHr2iSWR3S@dhcp22.suse.cz> <92cbfe3b-f3d1-a8e1-7eb9-bab735e782f6@rasmusvillemoes.dk>
- <20211007101527.GA26288@duo.ucw.cz> <CAJuCfpGp0D9p3KhOWhcxMO1wEbo-J_b2Anc-oNwdycx4NTRqoA@mail.gmail.com>
- <YV8jB+kwU95hLqTq@dhcp22.suse.cz> <CAJuCfpG-Nza3YnpzvHaS_i1mHds3nJ+PV22xTAfgwvj+42WQNA@mail.gmail.com>
- <YV8u4B8Y9AP9xZIJ@dhcp22.suse.cz> <CAJuCfpHAG_C5vE-Xkkrm2kynTFF-Jd06tQoCWehHATL0W2mY_g@mail.gmail.com>
- <202110071111.DF87B4EE3@keescook>
-In-Reply-To: <202110071111.DF87B4EE3@keescook>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Thu, 7 Oct 2021 11:50:09 -0700
-Message-ID: <CAJuCfpFT7qcLM0ygjbzgCj1ScPDkZvv0hcvHkc40s9wgoTov7A@mail.gmail.com>
-Subject: Re: [PATCH v10 3/3] mm: add anonymous vma name refcounting
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Michal Hocko <mhocko@suse.com>, Pavel Machek <pavel@ucw.cz>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        David Hildenbrand <david@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Colin Cross <ccross@google.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        vincenzo.frascino@arm.com,
-        =?UTF-8?B?Q2hpbndlbiBDaGFuZyAo5by16Yym5paHKQ==?= 
-        <chinwen.chang@mediatek.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Jann Horn <jannh@google.com>, apopple@nvidia.com,
-        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
-        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
-        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
-        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
-        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
-        Chris Hyser <chris.hyser@oracle.com>,
-        Peter Collingbourne <pcc@google.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Jens Axboe <axboe@kernel.dk>, legion@kernel.org,
-        Rolf Eike Beer <eb@emlix.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Thomas Cedeno <thomascedeno@google.com>, sashal@kernel.org,
-        cxfcosmos@gmail.com, LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-mm <linux-mm@kvack.org>,
-        kernel-team <kernel-team@android.com>
+Received: by 2002:a05:6214:a8f:0:0:0:0 with HTTP; Thu, 7 Oct 2021 11:51:07
+ -0700 (PDT)
+Reply-To: MrsHestherThembile580@gmail.com
+From:   "Mrs. Hesther Thembile." <richardclerk220@gmail.com>
+Date:   Thu, 7 Oct 2021 19:51:07 +0100
+Message-ID: <CABbAEnA=8Cx+Uv4FpCFg3iT1N+BBLN65sJo6NE4j2NXaf4MtwQ@mail.gmail.com>
+Subject: Greeting
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 7, 2021 at 11:13 AM Kees Cook <keescook@chromium.org> wrote:
->
-> On Thu, Oct 07, 2021 at 10:50:24AM -0700, Suren Baghdasaryan wrote:
-> > On Thu, Oct 7, 2021 at 10:31 AM Michal Hocko <mhocko@suse.com> wrote:
-> > >
-> > > On Thu 07-10-21 09:58:02, Suren Baghdasaryan wrote:
-> > > > On Thu, Oct 7, 2021 at 9:40 AM Michal Hocko <mhocko@suse.com> wrote:
-> > > > >
-> > > > > On Thu 07-10-21 09:04:09, Suren Baghdasaryan wrote:
-> > > > > > On Thu, Oct 7, 2021 at 3:15 AM Pavel Machek <pavel@ucw.cz> wrote:
-> > > > > > >
-> > > > > > > Hi!
-> > > > > > >
-> > > > > > > > >> Hmm, so the suggestion is to have some directory which contains files
-> > > > > > > > >> representing IDs, each containing the string name of the associated
-> > > > > > > > >> vma? Then let's say we are creating a new VMA and want to name it. We
-> > > > > > > > >> would have to scan that directory, check all files and see if any of
-> > > > > > > > >> them contain the name we want to reuse the same ID.
-> > > > > > > > >
-> > > > > > > > > I believe Pavel meant something as simple as
-> > > > > > > > > $ YOUR_FILE=$YOUR_IDS_DIR/my_string_name
-> > > > > > > > > $ touch $YOUR_FILE
-> > > > > > > > > $ stat -c %i $YOUR_FILE
-> > > > > >
-> > > > > > Ah, ok, now I understand the proposal. Thanks for the clarification!
-> > > > > > So, this would use filesystem as a directory for inode->name mappings.
-> > > > > > One rough edge for me is that the consumer would still need to parse
-> > > > > > /proc/$pid/maps and convert [anon:inode] into [anon:name] instead of
-> > > > > > just dumping the content for the user. Would it be acceptable if we
-> > > > > > require the ID provided by prctl() to always be a valid inode and
-> > > > > > show_map_vma() would do the inode-to-filename conversion when
-> > > > > > generating maps/smaps files? I know that inode->dentry is not
-> > > > > > one-to-one mapping but we can simply output the first dentry name.
-> > > > > > WDYT?
-> > > > >
-> > > > > No. You do not want to dictate any particular way of the mapping. The
-> > > > > above is just one way to do that without developing any actual mapping
-> > > > > yourself. You just use a filesystem for that. Kernel doesn't and
-> > > > > shouldn't understand the meaning of those numbers. It has no business in
-> > > > > that.
-> > > > >
-> > > > > In a way this would be pushing policy into the kernel.
-> > > >
-> > > > I can see your point. Any other ideas on how to prevent tools from
-> > > > doing this id-to-name conversion themselves?
-> > >
-> > > I really fail to understand why you really want to prevent them from that.
-> > > Really, the whole thing is just a cookie that kernel maintains for memory
-> > > mappings so that two parties can understand what the meaning of that
-> > > mapping is from a higher level. They both have to agree on the naming
-> > > but the kernel shouldn't dictate any specific convention because the
-> > > kernel _doesn't_ _care_. These things are not really anything actionable
-> > > for the kernel. It is just a metadata.
-> >
-> > The desire is for one of these two parties to be a human who can get
-> > the data and use it as is without additional conversions.
-> > /proc/$pid/maps could report FD numbers instead of pathnames, which
-> > could be converted to pathnames in userspace. However we do not do
-> > that because pathnames are more convenient for humans to identify a
-> > specific resource. Same logic applies here IMHO.
->
-> Yes, please. It really seems like the folks that are interested in this
-> feature want strings. (I certainly do.) For those not interested in the
-> feature, it sounds like a CONFIG to keep it away would be sufficient.
-> Can we just move forward with that?
+-- 
+ A mail was sent to you sometime last week with the expectation to
+have a return mail from you but to my surprise you never bothered to
+reply.
+Kindly reply for further explanations.
 
-Would love to if others are ok with this.
+your sister in the Lord,
 
->
-> --
-> Kees Cook
+Respectfully yours,
+Mrs. Hesther Thembile.
