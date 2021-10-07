@@ -2,96 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85B4C42588E
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 18:57:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50C6D425889
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 18:57:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242934AbhJGQ70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 12:59:26 -0400
-Received: from mail-ua1-f42.google.com ([209.85.222.42]:35596 "EHLO
-        mail-ua1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242927AbhJGQ7R (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 12:59:17 -0400
-Received: by mail-ua1-f42.google.com with SMTP id q13so4748069uaq.2;
-        Thu, 07 Oct 2021 09:57:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YHGIoV7Hfbbu/9BkiOkHuK+t9qYG8/aGn3949dx2OyM=;
-        b=QLi+Fm0rweEEApstMctjejtxx2qHOoEvsmtm7CRjkOWjMJKgCUJd2XERwXo06VWoWd
-         Lz61q/AIyhx0FZdYG5jgFC2Aogm3ucWzC4G0jYSftdnO2jTcSjAFH40HaEUprkFUgpBw
-         E0uI24vXHLV8X+mY2HpM9sEV4UEHqXlxyMx39mJLy+pV0sl7zAKEvxc74en62m4pm9Iu
-         XXZ5cipFy/4EvoZ2a+KUljaqsULCTNliC9yP0SMdLUSrzELw9aR2UuQy6OIivsDE9+B/
-         uN5CuzGGXC/UgpDI7F5sAdYrMO4p1WZqMgzgpPS/qxXIJj4RsAa3n19zg+UJabPx5D5y
-         FZqA==
-X-Gm-Message-State: AOAM530L8vp6YOOjUuQFf+P/4F5UsiOk4STld67ixvdxINXOQLEVuJzd
-        +mSS68LuPCXV3KXXdfBrx1n+VfExO4niOMuW3b/QgZGhF/g=
-X-Google-Smtp-Source: ABdhPJy8M36Q04+A6uhVYWTeSIdm4xbLl8phJgcuCl+qtwaJrAjH15v35YHy4Ust53D6BLtTPq8G+zt8kC2Sr8t4Mvg=
-X-Received: by 2002:ab0:311a:: with SMTP id e26mr6017528ual.122.1633625842202;
- Thu, 07 Oct 2021 09:57:22 -0700 (PDT)
+        id S242917AbhJGQ7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 12:59:13 -0400
+Received: from mga01.intel.com ([192.55.52.88]:38489 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242890AbhJGQ7K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 12:59:10 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10130"; a="249627994"
+X-IronPort-AV: E=Sophos;i="5.85,355,1624345200"; 
+   d="scan'208";a="249627994"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 09:57:16 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,355,1624345200"; 
+   d="scan'208";a="458862079"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga002.jf.intel.com with ESMTP; 07 Oct 2021 09:57:12 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id A78E8B7; Thu,  7 Oct 2021 19:57:19 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Mark Brown <broonie@kernel.org>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v2 1/4] ASoC: Intel: bytcr_rt5640: Get platform data via dev_get_platdata()
+Date:   Thu,  7 Oct 2021 19:57:12 +0300
+Message-Id: <20211007165715.27463-2-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20211007165715.27463-1-andriy.shevchenko@linux.intel.com>
+References: <20211007165715.27463-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-References: <20210930121630.17449-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20210930121630.17449-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20210930121630.17449-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 7 Oct 2021 18:57:11 +0200
-Message-ID: <CAMuHMdVm5gYFKZa=4jSm+GAsMYRUFwXjjXNhr16Z-ROVzpsZbA@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/4] dt-bindings: pincfg-node: Add "output-impedance" property
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prabhakar,
+Access to platform data via dev_get_platdata() getter to make code cleaner.
 
-On Thu, Sep 30, 2021 at 2:17 PM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> On RZ/G2L SoC for Group-B pins, output impedance can be configured.
-> This patch documents "output-impedance" property in pincfg-node.yaml so
-> that other platforms requiring such feature can make use of this property.
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ sound/soc/intel/boards/bytcr_rt5640.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Thanks for your patch!
-
-> --- a/Documentation/devicetree/bindings/pinctrl/pincfg-node.yaml
-> +++ b/Documentation/devicetree/bindings/pinctrl/pincfg-node.yaml
-> @@ -114,6 +114,10 @@ properties:
->      description: enable output on a pin without actively driving it
->        (such as enabling an output buffer)
->
-> +  output-impedance:
-
-output-impedance-ohms (ugh, the standard suffix is plural)
-
-Yes, I know only one other property has a standard unit suffix from
-dt-schema/schemas/property-units.yaml. Should we add properties
-including standard unit suffixes, and deprecate the old ones?
-
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description: set the pins output impedance at most X ohm
-> +
->    output-low:
->      type: boolean
->      description: set the pin to output mode with low level
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index c28abe74816f..43997048a825 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -1495,12 +1495,12 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
+ {
+ 	struct device *dev = &pdev->dev;
+ 	static const char * const map_name[] = { "dmic1", "dmic2", "in1", "in3", "none" };
++	struct snd_soc_acpi_mach *mach = dev_get_platdata(dev);
+ 	__maybe_unused const char *spk_type;
+ 	const struct dmi_system_id *dmi_id;
+ 	const char *headset2_string = "";
+ 	const char *lineout_string = "";
+ 	struct byt_rt5640_private *priv;
+-	struct snd_soc_acpi_mach *mach;
+ 	const char *platform_name;
+ 	struct acpi_device *adev;
+ 	struct device *codec_dev;
+@@ -1517,7 +1517,6 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
+ 
+ 	/* register the soc card */
+ 	byt_rt5640_card.dev = &pdev->dev;
+-	mach = byt_rt5640_card.dev->platform_data;
+ 	snd_soc_card_set_drvdata(&byt_rt5640_card, priv);
+ 
+ 	/* fix index of codec dai */
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.33.0
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
