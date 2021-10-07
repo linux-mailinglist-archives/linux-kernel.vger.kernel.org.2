@@ -2,89 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3983F424C23
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 05:13:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 921E3424C25
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 05:16:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239992AbhJGDPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 23:15:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43772 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232310AbhJGDPj (ORCPT
+        id S239796AbhJGDSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 23:18:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43881 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230489AbhJGDSk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 23:15:39 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FA42C061746;
-        Wed,  6 Oct 2021 20:13:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=34yG0yolFJPz5oFr6D7PlKRd0ixiVrEKP+B9Vx2JloY=; b=XYvgeZ4KaZGtOb7G8AtpRXlI3P
-        +9Z4xIaBQ6AWojP3BdarOscDdIt9QJpja/wWOwS0Oe9gCalWO99Zit4tKviCTBVjF0UVamCyAkHO6
-        A0GbVZlo39edIgM4g+nA+rvWVNeafEnUcGdQ5y9SMez32qPcZ4D6lkhMSA8hAsMmUm/kDhouZgZLD
-        /hLpsxdGInMc5MmP4zVav76RwxJC9HZE3udFahrM5Bz7xQdXV7pug7h6IDkKpbaCWEO6zL7A+4AOb
-        A5SgjVtS4na29vcvzuK/y+euMcbfg9a/uS/xfC0R6XCx1Ar6VXkz81wWXFX8xmEBXi03nD08Y+Vi0
-        PCrRCwUg==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mYJqn-00G3cm-7t; Thu, 07 Oct 2021 03:13:41 +0000
-Subject: Re: linux-next: Tree for Oct 5 (warnings: a. trace; b. mm/migrate)
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Jackie Liu <liu.yun@linux.dev>
-References: <20211005190628.1f26b13d@canb.auug.org.au>
- <c1d9e328-ad7c-920b-6c24-9e1598a6421c@infradead.org>
- <20211006172207.11982951@gandalf.local.home>
- <6d8f22a1-5f54-aa2a-7628-1d98a7f0fb95@infradead.org>
- <20211006211000.16b2284b@rorschach.local.home>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <bbe4a9ed-f641-8bd2-8501-2ab79f0c882d@infradead.org>
-Date:   Wed, 6 Oct 2021 20:13:40 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Wed, 6 Oct 2021 23:18:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633576606;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=OI26e346o7wA+cB8PKVQ/OS+qo43Vn/vft+r1uTg9ik=;
+        b=ie0PCLetBfiwhR3j5xF+/tVh3fGy7zmAZfeqz5X/io5UPKeObnjTJ2vW/vr7NxCXGgLgL4
+        j+qIQU5VutuMznK9b1wepxdWiEbNLwK/HZuZpJaQU8dTW93+RicdXlbFC1Eh9A0S6UrMD6
+        tRlVbGJE7DcRc+qYZKSTsSkrgRmF3IQ=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-499-ATp1eocJNYWoQdcmPR40-w-1; Wed, 06 Oct 2021 23:16:45 -0400
+X-MC-Unique: ATp1eocJNYWoQdcmPR40-w-1
+Received: by mail-qv1-f71.google.com with SMTP id e6-20020a0cb446000000b0037eeb9851dfso4496279qvf.17
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 20:16:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=OI26e346o7wA+cB8PKVQ/OS+qo43Vn/vft+r1uTg9ik=;
+        b=ArpBaQU2L9J3p4oeVfcy+gSeYK1Qe7bBfOtT0XPSsbldgk0UFgW4NR+URDOMYWqD6M
+         yraqlbWnQ7WmFBaq7vjUstSgKb357XAUQH2P4/aJLbTX5bAqKVLZnkZsrLYHrAXJP6vh
+         Eq0nkfhRsJcCMN2mEqDulRmZdl+128C5zUjbDkWVHc6jVzAJyWF1Pv22l3nz9rbIiWOH
+         nci9KmZJIHnKwafD1Jha6ubWUH2dsWLFLNTccKPpotX/2DLYOzbg1qcjcJqWK7WAgnYO
+         dWoui+dIUyF2QGvPAbphr/JvA0CCyIHXojt306BuDcpui6Rma5vTcCXEjhHOCtqZ4Thb
+         pZ8Q==
+X-Gm-Message-State: AOAM532tnmyle7zEzMWPzH+2dtT5/p/cAe1S2IK0kCpFNqAwsalbK68M
+        1QSBpXuWKLOU+WBlG05xhybC8KTtuU+DDSwh6+vvK5QemM2ISFLo5w9GwJpweV1IfrsK2r07P6y
+        rGhT1uoIBMFTv7W6hPm4qmdyL
+X-Received: by 2002:a37:a13:: with SMTP id 19mr1434458qkk.497.1633576605113;
+        Wed, 06 Oct 2021 20:16:45 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw633O+CNquyw98iWbLmMKLtdUwTQpcrGkcehVm3s7c93gwRcIUYcuMFlkWP6kvKPI5OWyJ8Q==
+X-Received: by 2002:a37:a13:: with SMTP id 19mr1434446qkk.497.1633576604827;
+        Wed, 06 Oct 2021 20:16:44 -0700 (PDT)
+Received: from treble ([2600:1700:6e32:6c00::49])
+        by smtp.gmail.com with ESMTPSA id x9sm3101983qtw.84.2021.10.06.20.16.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Oct 2021 20:16:44 -0700 (PDT)
+Date:   Wed, 6 Oct 2021 20:16:41 -0700
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Michael Forney <mforney@mforney.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] objtool: Check for gelf_update_rel[a] failures
+Message-ID: <20211007031641.7byi3w6qjj7dooa4@treble>
+References: <20210509000103.11008-1-mforney@mforney.org>
+ <CAGw6cBv2NBCDrZb7ZnmAhZOJ_EwgW6tR-8AfY2v=T9OkD=6O8g@mail.gmail.com>
+ <YNmHRi+00RAAUmEt@hirez.programming.kicks-ass.net>
+ <20210629171224.jhlqyyb3lus323o3@treble>
+ <CAGw6cBs8qf-GWYS-LtrCm+ye-=K_vu1WxDPOROnya_PVod=TGg@mail.gmail.com>
+ <CAGw6cBtjGUzM+gDxGBgVuP1kwB=1qD7FOa7AMAUN3dp+yGZRhQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20211006211000.16b2284b@rorschach.local.home>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAGw6cBtjGUzM+gDxGBgVuP1kwB=1qD7FOa7AMAUN3dp+yGZRhQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/6/21 6:10 PM, Steven Rostedt wrote:
-> On Wed, 6 Oct 2021 14:32:21 -0700
-> Randy Dunlap <rdunlap@infradead.org> wrote:
+On Wed, Oct 06, 2021 at 09:58:13AM -0700, Michael Forney wrote:
+> On 2021-08-28, Michael Forney <mforney@mforney.org> wrote:
+> > On 2021-06-29, Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+> >> Looks ok to me.  Let me run them through some testing.
+> >
+> > Just wanted to check: did the testing go well? I'd really like to see
+> > these patches in 5.15 if possible.
 > 
->> On 10/6/21 2:22 PM, Steven Rostedt wrote:
->>> On Tue, 5 Oct 2021 13:46:52 -0700
->>> Randy Dunlap <rdunlap@infradead.org> wrote:
->>>    
->>>> a. randconfig: KCONFIG_SEED=0xBFBEA13C
->>>> ../kernel/trace/trace.c:1712:13: error: 'trace_create_maxlat_file' defined but not used [-Werror=unused-function]
->>>>     static void trace_create_maxlat_file(struct trace_array *tr,
->>>
->>> Does this fix it?
->>>
->>> -- Steve
->>
->> Yes, thanks.
->>
->> Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
-> 
-> Plumbers followed by Open Source Summit totally blew my brain cache. I
-> have a fix for this in my queue from Jackie Liu that I haven't
-> processed yet (just going through my queue now when I noticed it).
-> 
-> Can you test this patch instead?
-> 
->     https://lore.kernel.org/r/20210922025122.3268022-1-liu.yun@linux.dev
+> Ping again. Anything I can do to help this make 5.16?
 
+Hi Michael,
 
-Sure, done. Same good result.
+Sorry this got dropped.  I'll try to get it in.
 
-thanks.
 -- 
-~Randy
+Josh
+
