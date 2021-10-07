@@ -2,146 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D51FE425985
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 19:31:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9975C42596C
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 19:26:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242757AbhJGRdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 13:33:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43370 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242611AbhJGRc7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 13:32:59 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 889CEC061760
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 10:31:05 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id q189so15135457ybq.1
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 10:31:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SFMiH5k6bTZykMDXuEggSN9IEsmXGxbcwFTl7AqjDQA=;
-        b=LXyUtPBgoQ0wuEV8jWO3qbh1aq19+NB+Lj3QNc8iavlMTVCNb3Lk/5pepq+lRv3WYF
-         94s526BQ8dmH0rW/nFdrbOb89wLb+OWnuC+dtYRmV+1sbJrOJhY9zSecE06C9uTm4xlH
-         fdYjDMcpjNGy+xyqXbncZwjLyqXnUpnfnO7i3TsvElWM0IrdlUitVY2kmAUTtXWeO7jx
-         lw+0RiP24lrJgk6TVwzr0YwO+kywWFJCBHnCq2t6zYMHIhiqydOujR+iLK080jPLYONs
-         UVeo+0K7lnbrpeGaHWAnIRPbDndeAKwkb3Drmwgirj/J55VfQL74Zpd29efvaZAJy4Wn
-         HtiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SFMiH5k6bTZykMDXuEggSN9IEsmXGxbcwFTl7AqjDQA=;
-        b=J/TOU7sY9qSI9Zq73dinoEIebH/COTTT4pGvVvg2XGQ9Ua9BVsxZcyX49K1zgxit/5
-         pwnV/cwz2uxcgN4CaX4f2GDHpdNFzaXS0wU3J1acuLb2/jnMFvI3NqMUxL6CUJlCJhDM
-         TLoG8RQ0Lh2Dwdcv+JKH6DA0pAwPRUkszFSuqqPuXmDDY7JK271zx3W3LvgUNMYogbPG
-         tDGhsb1eWnViknYURCqeLgds2wpBHPzia/5FnoLhdyIkXEjVOLcB/DUD+gumFkG6M0oD
-         bwvwoU9V2QiR+oghcUf4/DMLoz0JwxEbSxWqyWNXSRanGoEAzf0/lbDc5m9VTOY9Weba
-         pGvQ==
-X-Gm-Message-State: AOAM5327xU62afttmLio44pxKOo7IbHBkIA/yjdfRmaVppvnhTZdNYGl
-        qKqHdYWJxyd1WaJVbw4alxntPMQ9s8j11DuzQhpnRg==
-X-Google-Smtp-Source: ABdhPJwpjKoLoBI5gOCik6Ve1waW1iJ2N/hIfjVfZ1uubfoQdCVIbn77Huwx2Za7fOFEIH/xXPzNZFvP9AfPUdJ//Pg=
-X-Received: by 2002:a25:552:: with SMTP id 79mr6071995ybf.202.1633627863712;
- Thu, 07 Oct 2021 10:31:03 -0700 (PDT)
+        id S242424AbhJGR2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 13:28:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53678 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242457AbhJGR2o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 13:28:44 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EC8BF6056B;
+        Thu,  7 Oct 2021 17:26:48 +0000 (UTC)
+Date:   Thu, 7 Oct 2021 18:30:52 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Cai Huoqing <caihuoqing@baidu.com>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>, <linux-iio@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: Re: [PATCH v2 2/2] iio: st_lsm9ds0: Make use of the helper function
+ dev_err_probe()
+Message-ID: <20211007183052.66be899b@jic23-huawei>
+In-Reply-To: <20210929180638.6ddb313b@jic23-huawei>
+References: <20210928014055.1431-1-caihuoqing@baidu.com>
+        <20210928014055.1431-2-caihuoqing@baidu.com>
+        <20210929180638.6ddb313b@jic23-huawei>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20211005200411.GB19804@duo.ucw.cz> <CAJuCfpFZkz2c0ZWeqzOAx8KFqk1ge3K-SiCMeu3dmi6B7bK-9w@mail.gmail.com>
- <efdffa68-d790-72e4-e6a3-80f2e194d811@nvidia.com> <YV1eCu0eZ+gQADNx@dhcp22.suse.cz>
- <6b15c682-72eb-724d-bc43-36ae6b79b91a@redhat.com> <CAJuCfpEPBM6ehQXgzp=g4SqtY6iaC8wuZ-CRE81oR1VOq7m4CA@mail.gmail.com>
- <YV6o3Bsb4f87FaAy@dhcp22.suse.cz> <CAJuCfpGZAWewsEzqA5=+z_CaBLcPQX+sYF-FM0o_58UMCZoJfw@mail.gmail.com>
- <YV8iXQ9npVOLEeuc@dhcp22.suse.cz> <CAJuCfpHWeK71Eh1dcKr1+_ijUJ-6LFBe0Rjk4hP7NCrnWpXFcw@mail.gmail.com>
- <YV8tlUTdsiVuACx+@dhcp22.suse.cz>
-In-Reply-To: <YV8tlUTdsiVuACx+@dhcp22.suse.cz>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Thu, 7 Oct 2021 10:30:52 -0700
-Message-ID: <CAJuCfpHM-W3iAANgudmgivz+aFMWxdVpPnZgQvibxwVE=L098g@mail.gmail.com>
-Subject: Re: [PATCH v10 3/3] mm: add anonymous vma name refcounting
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Colin Cross <ccross@google.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        vincenzo.frascino@arm.com,
-        =?UTF-8?B?Q2hpbndlbiBDaGFuZyAo5by16Yym5paHKQ==?= 
-        <chinwen.chang@mediatek.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Jann Horn <jannh@google.com>, apopple@nvidia.com,
-        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
-        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
-        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
-        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
-        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
-        chris.hyser@oracle.com, Peter Collingbourne <pcc@google.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Jens Axboe <axboe@kernel.dk>, legion@kernel.org,
-        Rolf Eike Beer <eb@emlix.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Thomas Cedeno <thomascedeno@google.com>, sashal@kernel.org,
-        cxfcosmos@gmail.com, Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-mm <linux-mm@kvack.org>,
-        kernel-team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 7, 2021 at 10:25 AM 'Michal Hocko' via kernel-team
-<kernel-team@android.com> wrote:
->
-> On Thu 07-10-21 09:43:14, Suren Baghdasaryan wrote:
-> > On Thu, Oct 7, 2021 at 9:37 AM Michal Hocko <mhocko@suse.com> wrote:
-> [...]
-> > > OK, so there is no real authority or any real naming convention. You
-> > > just hope that applications will behave so that the consumer of those
-> > > names can make proper calls. Correct?
-> > >
-> > > In that case the same applies to numbers and I do not see any strong
-> > > argument for strings other than it is more pleasing to a human eye when
-> > > reading the file. And that doesn't sound like a strong argument to make
-> > > the kernel more complicated. Functionally both approaches are equal from
-> > > a practical POV.
-> >
-> > I don't think that's correct. Names like [anon:.bss],
-> > [anon:dalvik-zygote space] and
-> > [anon:dalvik-/system/framework/boot-core-icu4j.art] provide user with
-> > actionable information about the use of that memory or the allocator
-> > using it.
->
-> No, none of the above is really actionable without a common
-> understanding. Both dalvik* are a complete gibberish to me.
+On Wed, 29 Sep 2021 18:06:38 +0100
+Jonathan Cameron <jic23@kernel.org> wrote:
 
-Ok, maybe I was unclear. Some names, as the first two in the above
-example are quite standard for Android and tools do use them to
-identify specific specialized areas. Some names are not standardized
-and can contain package names, like
-anon:dalvik-/system/framework/boot-core-icu4j.art. In this case while
-tools do not process them in any special way, they still convey enough
-information for a user to identify the corresponding component.
+> On Tue, 28 Sep 2021 09:40:54 +0800
+> Cai Huoqing <caihuoqing@baidu.com> wrote:
+> 
+> > When possible use dev_err_probe help to properly deal with the
+> > PROBE_DEFER error, the benefit is that DEFER issue will be logged
+> > in the devices_deferred debugfs file.
+> > Using dev_err_probe() can reduce code size, and the error value
+> > gets printed.
+> > 
+> > Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>  
 
-> --
-> Michal Hocko
-> SUSE Labs
->
-> --
-> To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
->
++CC Andy who wrote this particular driver.
+
+Change looks simple enough I'll apply it though and at least get 0-day building it.
+
+Applied to the togreg branch of iio.git and pushed out as testing for 0-day to
+work it's magic,
+
+Thanks,
+
+Jonathan
+
+
+> 
+> Hi Cai,
+> 
+> Picking a random patch to reply to...
+> 
+> Thanks for your hard work on these.  The ones I haven't replied to look
+> fine to me.   It might have been slightly better to slow down your initial
+> submission of these as then we could perhaps have avoided 2-3 versions
+> of every patch by identifying shared elements to improve in a smaller set.
+> Still that's the benefit of hindsight!
+> 
+> I'll not apply these quite yet so as to allow time for driver maintainers
+> and others to take a look.
+> 
+> If you could tidy up those few minor comments I have that would be great.
+> 
+> Thanks,
+> 
+> Jonathan
+> 
+> > ---
+> >  drivers/iio/imu/st_lsm9ds0/st_lsm9ds0_core.c | 12 ++++++------
+> >  1 file changed, 6 insertions(+), 6 deletions(-)
+> > 
+> > diff --git a/drivers/iio/imu/st_lsm9ds0/st_lsm9ds0_core.c b/drivers/iio/imu/st_lsm9ds0/st_lsm9ds0_core.c
+> > index b3a43a3b04ff..9fb06b7cde3c 100644
+> > --- a/drivers/iio/imu/st_lsm9ds0/st_lsm9ds0_core.c
+> > +++ b/drivers/iio/imu/st_lsm9ds0/st_lsm9ds0_core.c
+> > @@ -24,10 +24,10 @@ static int st_lsm9ds0_power_enable(struct device *dev, struct st_lsm9ds0 *lsm9ds
+> >  
+> >  	/* Regulators not mandatory, but if requested we should enable them. */
+> >  	lsm9ds0->vdd = devm_regulator_get(dev, "vdd");
+> > -	if (IS_ERR(lsm9ds0->vdd)) {
+> > -		dev_err(dev, "unable to get Vdd supply\n");
+> > -		return PTR_ERR(lsm9ds0->vdd);
+> > -	}
+> > +	if (IS_ERR(lsm9ds0->vdd))
+> > +		return dev_err_probe(dev, PTR_ERR(lsm9ds0->vdd),
+> > +				     "unable to get Vdd supply\n");
+> > +
+> >  	ret = regulator_enable(lsm9ds0->vdd);
+> >  	if (ret) {
+> >  		dev_warn(dev, "Failed to enable specified Vdd supply\n");
+> > @@ -36,9 +36,9 @@ static int st_lsm9ds0_power_enable(struct device *dev, struct st_lsm9ds0 *lsm9ds
+> >  
+> >  	lsm9ds0->vdd_io = devm_regulator_get(dev, "vddio");
+> >  	if (IS_ERR(lsm9ds0->vdd_io)) {
+> > -		dev_err(dev, "unable to get Vdd_IO supply\n");
+> >  		regulator_disable(lsm9ds0->vdd);
+> > -		return PTR_ERR(lsm9ds0->vdd_io);
+> > +		return dev_err_probe(dev, PTR_ERR(lsm9ds0->vdd_io),
+> > +				     "unable to get Vdd_IO supply\n");
+> >  	}
+> >  	ret = regulator_enable(lsm9ds0->vdd_io);
+> >  	if (ret) {  
+> 
+
