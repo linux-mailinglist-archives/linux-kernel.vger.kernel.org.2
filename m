@@ -2,235 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83D114256B7
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 17:36:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EA004256B9
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 17:37:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241738AbhJGPiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 11:38:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57980 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230060AbhJGPiE (ORCPT
+        id S241253AbhJGPjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 11:39:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43634 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230060AbhJGPi7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 11:38:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633620970;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=uAG2gSfGivkFqPdUcOcMoHWNK+3LPbOEp8js+1JX9D0=;
-        b=I0fupxoRBtmZpK+4mbolu8M7Y5WTs/pI9A+3Ok20YQScJQcq6Dz7Dhdw8rzGpnYrby4Arj
-        sUSXKzm+e3cKs7FBfV+IwOh9C8i4j1x3xKnAPP0Jse0Yv6FzwrYf+hivK3/Itkh1h0UNrz
-        U/8CmFK2O9Qh9R/CDdNismpdQRb0oUg=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-547-si8SsmTJO3uT-tHM3DdKag-1; Thu, 07 Oct 2021 11:36:06 -0400
-X-MC-Unique: si8SsmTJO3uT-tHM3DdKag-1
-Received: by mail-wr1-f72.google.com with SMTP id 41-20020adf812c000000b00160dfbfe1a2so1355138wrm.3
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 08:36:05 -0700 (PDT)
+        Thu, 7 Oct 2021 11:38:59 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA58FC061570;
+        Thu,  7 Oct 2021 08:37:05 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id j5so26595800lfg.8;
+        Thu, 07 Oct 2021 08:37:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=3oI1BPN+nka/fzeeDadlYPWTNRGu2uv1un/7jFglctU=;
+        b=hI6IAHPtxsN/zUMag/AikB2qPujAq4WmyQDQZ6or4zGzt/r2JuQ5UcFxpxPK14VFbG
+         qC6IB/grAoBRIXdRKWZLe94jlo0BL+H7Mw/2A2wiilSJmU2UMbqjZcRj4ZYMear3J9It
+         +qHolatwuCCfjYDpBJ8f0dyt5sKUIuf9EQN3tPpusw5hocpHreYiTWTIUDB8eVSKdqvS
+         CawyN0ZigfaZ5+ClhjAereXSKGWt1hfm0YKdFMBwLcHdROMl3Epe1wnhVcYZfn9GdOw6
+         VH8cwOJf9cc9UAMRIhUP5EC+ZEyhbE4ZJdpTE34PZHWH7UvcaTgV8NJ1c+41GoFbjubU
+         IF9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=uAG2gSfGivkFqPdUcOcMoHWNK+3LPbOEp8js+1JX9D0=;
-        b=mreSQ79EGPlV2UZSKK95Lie9bC0/+JRgK6b0IhnJKOqRNVMOZ7Ymx9RMno1gYKzjGz
-         mrTyVedS6TRzAtRyXZ4WIYbEZV5nlxkH0RHd7IJRt5/3KCVbe4ObKLywfDeTS1ZqiMAu
-         shQ420J17Itn7FQZXxQnk2g8DYQQIh1u8y5kYY7dUrxYSM7TpbnZYnElwQnMKcr5IBX/
-         iU/OrA3CjcgGNM/eJEki0GHsft9GZDQ7xtazkeG5zSm3NM3XB+pox/VLkaMmUui1Bhqd
-         uqbRa72h6DH/7dvy2kEHj9T4I9eOKwb/ISkv0YYsytvxoMiXMOLkyL5M6Kte6zLGzYmx
-         EuXQ==
-X-Gm-Message-State: AOAM532XDS46Bj36pVp+a4bVOZz8FQJQCfHATKF8JLODO7Ybxyr+UlgO
-        9sWk9zzUexMPiZvWpZYT1Ak+LNDBVYSNzB9gIfAGi1WwcWvigd9fAlD7xFQ4RvBkOlcoFwRp0Uj
-        ZHVor9scYu78rYep3N/y0StvZ
-X-Received: by 2002:a5d:6b03:: with SMTP id v3mr6309709wrw.226.1633620964987;
-        Thu, 07 Oct 2021 08:36:04 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzOKhb13upVjPdpIgw2cu/kQXMovUZ4V+HV98DQtzXtkqpTYLB5D5upVw8rRtM4pTWx6MSkgA==
-X-Received: by 2002:a5d:6b03:: with SMTP id v3mr6309692wrw.226.1633620964837;
-        Thu, 07 Oct 2021 08:36:04 -0700 (PDT)
-Received: from gator (nat-pool-brq-u.redhat.com. [213.175.37.12])
-        by smtp.gmail.com with ESMTPSA id z1sm20480911wrt.41.2021.10.07.08.36.03
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=3oI1BPN+nka/fzeeDadlYPWTNRGu2uv1un/7jFglctU=;
+        b=VyZK1yRyRXs1bHYvzYDvxItd0QpwzdGgMSEoIriIKkS1q0++rF4iLW2GC3XfOToV+r
+         Bm5fInSi9FjBmenpmvWjORraYwtS8Zt8qLiEfScFKpUML+1OW3p5Q6hY+PFkXpu67LUA
+         G0plVy0hZBP/1Gzl/OEYrDO/oxB/H9gyM9fBqLVSLsfSnkV7AHXsyjzcCets66czDCyb
+         xfXoL065WTJs7hiSCmiDxDjgpO3eQzJgTNTptxN6yJkNz2iwjSL8XLkJhotuowINSQCQ
+         9r2nH05C4tEKsXhX9QB3bi/omlOWXDXeZ0977ImEwE0B++T/qWph+HRJZWZpczQs6TKz
+         o8WA==
+X-Gm-Message-State: AOAM530uaEr+Wyxnarlcr655G5a9/1GxAY4dcMm0xC2IktXUHP6uyoeI
+        ttWD33ZDiqLMGIMvtydt6zU=
+X-Google-Smtp-Source: ABdhPJyARJ/nKHhgnikSZL7H8U8sQ+ssnKQmOurxR2oCACf+suwYGrpPEbIpNifyRUQ03wbT2B/UCQ==
+X-Received: by 2002:a2e:701a:: with SMTP id l26mr5074473ljc.101.1633621024016;
+        Thu, 07 Oct 2021 08:37:04 -0700 (PDT)
+Received: from penguin.lxd ([94.153.6.46])
+        by smtp.gmail.com with ESMTPSA id s4sm2577792ljp.115.2021.10.07.08.37.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Oct 2021 08:36:04 -0700 (PDT)
-Date:   Thu, 7 Oct 2021 17:36:02 +0200
-From:   Andrew Jones <drjones@redhat.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org, will@kernel.org,
-        qperret@google.com, dbrazdil@google.com,
-        Steven Price <steven.price@arm.com>,
-        Fuad Tabba <tabba@google.com>,
-        Srivatsa Vaddagiri <vatsa@codeaurora.org>,
-        Shanker R Donthineni <sdonthineni@nvidia.com>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        kernel-team@android.com
-Subject: Re: [PATCH v2 13/16] arm64: Implement ioremap/iounmap hooks calling
- into KVM's MMIO guard
-Message-ID: <20211007153602.ty72qbglrwbphokj@gator>
-References: <20211004174849.2831548-1-maz@kernel.org>
- <20211004174849.2831548-14-maz@kernel.org>
+        Thu, 07 Oct 2021 08:37:03 -0700 (PDT)
+Date:   Thu, 7 Oct 2021 18:36:53 +0300
+From:   Denis Pauk <pauk.denis@gmail.com>
+To:     Eugene Shalygin <eugene.shalygin@gmail.com>
+Cc:     andy.shevchenko@gmail.com, Ed Brindley <kernel@maidavale.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org
+Subject: Re: [PATCH v2 3/3] hwmon: (asus_wmi_sensors) Support X370 Asus WMI.
+Message-ID: <20211007183653.7f951658@penguin.lxd>
+In-Reply-To: <CAB95QASyv0MGiPGeu3ie7VSK_EjOR7x6kRsK57J5W-56dU0Nxw@mail.gmail.com>
+References: <20211006222502.645003-1-pauk.denis@gmail.com>
+        <20211006222502.645003-4-pauk.denis@gmail.com>
+        <CAB95QASyv0MGiPGeu3ie7VSK_EjOR7x6kRsK57J5W-56dU0Nxw@mail.gmail.com>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; aarch64-unknown-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211004174849.2831548-14-maz@kernel.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 04, 2021 at 06:48:46PM +0100, Marc Zyngier wrote:
-> Implement the previously defined ioremap/iounmap hooks for arm64,
-> calling into KVM's MMIO guard if available.
+Hi Eugene,
+
+On Thu, 7 Oct 2021 12:56:09 +0200
+Eugene Shalygin <eugene.shalygin@gmail.com> wrote:
+
+> Hello, Denis,
 > 
-> Signed-off-by: Marc Zyngier <maz@kernel.org>
-> ---
->  arch/arm64/mm/ioremap.c | 112 ++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 112 insertions(+)
+> On Thu, 7 Oct 2021 at 00:25, Denis Pauk <pauk.denis@gmail.com> wrote:
 > 
-> diff --git a/arch/arm64/mm/ioremap.c b/arch/arm64/mm/ioremap.c
-> index b7c81dacabf0..5334cbdc9f64 100644
-> --- a/arch/arm64/mm/ioremap.c
-> +++ b/arch/arm64/mm/ioremap.c
-> @@ -9,13 +9,125 @@
->   * Copyright (C) 2012 ARM Ltd.
->   */
->  
-> +#define pr_fmt(fmt)	"ioremap: " fmt
-> +
->  #include <linux/export.h>
->  #include <linux/mm.h>
->  #include <linux/vmalloc.h>
-> +#include <linux/slab.h>
->  #include <linux/io.h>
-> +#include <linux/arm-smccc.h>
->  
->  #include <asm/fixmap.h>
->  #include <asm/tlbflush.h>
-> +#include <asm/hypervisor.h>
-> +
-> +struct ioremap_guard_ref {
-> +	refcount_t	count;
-> +};
-> +
-> +static DEFINE_STATIC_KEY_FALSE(ioremap_guard_key);
-> +static DEFINE_XARRAY(ioremap_guard_array);
-> +static DEFINE_MUTEX(ioremap_guard_lock);
-> +
-> +void ioremap_phys_range_hook(phys_addr_t phys_addr, size_t size, pgprot_t prot)
-> +{
-> +	if (!static_branch_unlikely(&ioremap_guard_key))
-> +		return;
-> +
-> +	if (pfn_valid(__phys_to_pfn(phys_addr)))
-> +		return;
-> +
-> +	mutex_lock(&ioremap_guard_lock);
-> +
-> +	while (size) {
-> +		u64 pfn = phys_addr >> PAGE_SHIFT;
-> +		struct ioremap_guard_ref *ref;
-> +		struct arm_smccc_res res;
-> +
-> +		ref = xa_load(&ioremap_guard_array, pfn);
-> +		if (ref) {
-> +			refcount_inc(&ref->count);
-> +			goto next;
-> +		}
-> +
-> +		/*
-> +		 * It is acceptable for the allocation to fail, specially
-> +		 * if trying to ioremap something very early on, like with
-> +		 * earlycon, which happens long before kmem_cache_init.
-> +		 * This page will be permanently accessible, similar to a
-> +		 * saturated refcount.
-> +		 */
-> +		ref = kzalloc(sizeof(*ref), GFP_KERNEL);
-> +		if (ref) {
-> +			refcount_set(&ref->count, 1);
-> +			if (xa_err(xa_store(&ioremap_guard_array, pfn, ref,
-> +					    GFP_KERNEL))) {
-> +				kfree(ref);
-> +				ref = NULL;
-> +			}
-> +		}
-> +
-> +		arm_smccc_1_1_hvc(ARM_SMCCC_VENDOR_HYP_KVM_MMIO_GUARD_MAP_FUNC_ID,
-> +				  phys_addr, prot, &res);
+> > +MODULE_AUTHOR("Eugene Shalygin <eugene.shalygin@gmail.com>");  
+> 
+> No, I am not.
+I will remove.
 
-OK, I see this follows the document and passes prot in x2, even though the
-hypercall implementation doesn't look at it [yet].
+> 
+> Best regards,
+> Eugene
+> 
+> P.S. You stripped module aliases for this one too. Why? This driver
+> certainly can benefit from them, because the presence of the specific
+> WMI UUIDs unambiguously defines its condition to work.
+I looked complicated to support two kind of WMI interfaces with UUID.
+As we split big support module to two separate - I will look to such
+change also.
 
-> +		if (res.a0 != SMCCC_RET_SUCCESS) {
-> +			pr_warn_ratelimited("Failed to register %llx\n",
-> +					    phys_addr);
-> +			xa_erase(&ioremap_guard_array, pfn);
-> +			kfree(ref);
-> +			goto out;
-> +		}
-> +
-> +	next:
-> +		size -= PAGE_SIZE;
-> +		phys_addr += PAGE_SIZE;
-
-Looks like we're assuming the guard granule to be PAGE_SIZE here. Looking
-ahead at the next patch, I see it must be PAGE_SIZE, because if the info
-hypercall doesn't have a matching value, then mmio guarding doesn't
-happen at all. Maybe it should be documented that for this feature the
-host and guest must have matching page sizes.
-
-> +	}
-> +out:
-> +	mutex_unlock(&ioremap_guard_lock);
-> +}
-> +
-> +void iounmap_phys_range_hook(phys_addr_t phys_addr, size_t size)
-> +{
-> +	if (!static_branch_unlikely(&ioremap_guard_key))
-> +		return;
-> +
-> +	VM_BUG_ON(phys_addr & ~PAGE_MASK || size & ~PAGE_MASK);
-> +
-> +	mutex_lock(&ioremap_guard_lock);
-> +
-> +	while (size) {
-> +		u64 pfn = phys_addr >> PAGE_SHIFT;
-> +		struct ioremap_guard_ref *ref;
-> +		struct arm_smccc_res res;
-> +
-> +		ref = xa_load(&ioremap_guard_array, pfn);
-> +		if (!ref) {
-> +			pr_warn_ratelimited("%llx not tracked, left mapped\n",
-> +					    phys_addr);
-> +			goto next;
-> +		}
-> +
-> +		if (!refcount_dec_and_test(&ref->count))
-> +			goto next;
-> +
-> +		xa_erase(&ioremap_guard_array, pfn);
-> +		kfree(ref);
-> +
-> +		arm_smccc_1_1_hvc(ARM_SMCCC_VENDOR_HYP_KVM_MMIO_GUARD_UNMAP_FUNC_ID,
-> +				  phys_addr, &res);
-> +		if (res.a0 != SMCCC_RET_SUCCESS) {
-> +			pr_warn_ratelimited("Failed to unregister %llx\n",
-> +					    phys_addr);
-> +			goto out;
-> +		}
-> +
-> +	next:
-> +		size -= PAGE_SIZE;
-> +		phys_addr += PAGE_SIZE;
-> +	}
-> +out:
-> +	mutex_unlock(&ioremap_guard_lock);
-> +}
->  
->  static void __iomem *__ioremap_caller(phys_addr_t phys_addr, size_t size,
->  				      pgprot_t prot, void *caller)
-> -- 
-> 2.30.2
->
-
-Thanks,
-drew 
-
+Best regards,
+     Denis. 
