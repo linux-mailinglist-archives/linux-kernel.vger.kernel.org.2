@@ -2,130 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CA2D425D00
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 22:11:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D11D8425D27
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 22:22:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240916AbhJGUNg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 16:13:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53024 "EHLO
+        id S241914AbhJGUY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 16:24:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232986AbhJGUNf (ORCPT
+        with ESMTP id S232840AbhJGUY0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 16:13:35 -0400
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6813AC061570
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 13:11:41 -0700 (PDT)
-Received: by mail-ot1-x32c.google.com with SMTP id c26-20020a056830349a00b0054d96d25c1eso8913648otu.9
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 13:11:41 -0700 (PDT)
+        Thu, 7 Oct 2021 16:24:26 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E6B9C061570;
+        Thu,  7 Oct 2021 13:22:32 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id r201so900039pgr.4;
+        Thu, 07 Oct 2021 13:22:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=RQk4fZ8zAs/6aRjZB+mzOwZtqbl00fU4slehYKDsrqc=;
-        b=IHhVwmWPbTvQi99ZO+D11B1elyHaSTPHfBa98vxfDPsiU7ydHtTDkbfrw+5UWn2CIL
-         jQWGqK/pKPW/1iSVBTjlVxyLFQftacDlm45yTJ9znDdg0rSnqXGMOUPUD0Vmhi3yxtxK
-         BIPcL3MhLZC72XE6J3d8bsGziRr3hllyrkc1c=
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=HMaYYwsvFJu5yPYeNceqJv1VciF17Wkz8xL47+/e1L8=;
+        b=J4ObbtFRwTCG0JKtwfHFlWa3eyOzbC9HVmhoQwJOBNP4h+lo96nNKpk4NwBL1oM3RX
+         qEO5ahF6tAERGlLyvxmiwnjk9qZHfIG3vbKhVHFnEWwOXFElr9eRS+VkuANLU+kDVFBa
+         o6eiWzGdpvpTONifC0Kpmxm+IpNQaqtu331D3ImpmMUfB3tqGKN+jFb8hzT9mfR/KiO4
+         5XxWFBQzQGG94c7qaDOTHFpvjR1sj4cqtPmUK0yl5/4X91Lfkz5cw0E5rcyhx8qNUMed
+         xQ9qew0VfhNWkCmxZQDbZ/VYKajeVVaa7zhbgOWLzmUnpqa05KpT+tV87xMPtpA6dL3y
+         S4Eg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=RQk4fZ8zAs/6aRjZB+mzOwZtqbl00fU4slehYKDsrqc=;
-        b=riwTscfzct0SJOCGVjU9X1d7GXUloA2STLJosO13OwZeYXcFgYUz+qiJ0GjktO+yBH
-         xqLnfiUi4q/b9p9GFdxjcbyfjj6eri5v57g4gc/MkGY+xxGPABngRBO4XPlxwNm1e/c4
-         5ecHGQMjwT/Bt6iVHGRdGRUccaYmDfMyYAlXDF7tvwBUC93sEpWWodnjQzjkQ2ut9NTr
-         5+9HjWfpuIGGaMV6a4YwU3Qj3qXoLvADvnsmf+ENcB+ufSA2CFeqVRqI9/V8A0EnSsqH
-         rdxvpQ0a83K+1Z7qX4y7zU+5ya07sV0Qs0JpQgBlgPbJH1AsYHwQUL5h7gNyelZx1v1O
-         jv2Q==
-X-Gm-Message-State: AOAM532LULNrlV42ddWGApZRSh7htN/NtVuiAUmXnvhoHP14xfeQUTAM
-        f+mj8qRFc77iOCCeB+OSJFGr+DPHsZTyJnG5deqCGA==
-X-Google-Smtp-Source: ABdhPJw6F0cMIR3gHGSKrivUlJvz9nMPEORHTG5UDv1ab+eSfl1wmDgSWj65PdXu+FyfAhZ1Zixs1O4RRYobdhRF36Q=
-X-Received: by 2002:a9d:12f4:: with SMTP id g107mr1438053otg.77.1633637500801;
- Thu, 07 Oct 2021 13:11:40 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Thu, 7 Oct 2021 16:11:40 -0400
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=HMaYYwsvFJu5yPYeNceqJv1VciF17Wkz8xL47+/e1L8=;
+        b=4J5/vtW4kMFAdFaLMMYvPMfCQk0QEq4igqc69BAaosjl1XYrRd78mEZUEe6J/eqggk
+         eAfxCPRoZl9g/LfRYYb01MfpTDfY4o7+WZGqq1VCgd7mEAm/sBfHKN+tFcs4fb40VjDA
+         TiYzBNXHhTQOZpwME6Uv6eZ20s+Y/WIKdvjNZ0CC9CxSMigrLWiowk0mkDd27qTxyvnj
+         nVvXpIbAiXE3k2YEcUUCFj9KlbC8A10tBuKH58Jwd2BtNqfRsatJ5EhhYJGaJp7BW+ZE
+         GqBptpUKI5STl2SHASK33mrYcOw8YphOzCqYbiH8IITm+e4JCgL2UdUzXOYcJDDaYhI4
+         MKTw==
+X-Gm-Message-State: AOAM533wNSDLbhY86HAC6Ub9bi63l7kdqIO855IyCs1b9XAy5WvGJ9eu
+        RvW0wLUt/qveWL+0D9aAdD6xk5yoGlGgqg==
+X-Google-Smtp-Source: ABdhPJyWqbvttFSUpjAZX/J/4Z8uWkF6W0LrsVdB4sFKKLf9QDWamxebP3Su12mkH8ig8En3cJ8KGA==
+X-Received: by 2002:a63:101c:: with SMTP id f28mr1336126pgl.330.1633638151472;
+        Thu, 07 Oct 2021 13:22:31 -0700 (PDT)
+Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
+        by smtp.gmail.com with ESMTPSA id d18sm188951pgk.24.2021.10.07.13.22.30
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 07 Oct 2021 13:22:31 -0700 (PDT)
+Date:   Thu, 7 Oct 2021 13:14:56 -0700
+From:   Nicolin Chen <nicoleotsuka@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     joro@8bytes.org, will@kernel.org, vdumpa@nvidia.com,
+        jonathanh@nvidia.com, linux-tegra@vger.kernel.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        digetx@gmail.com
+Subject: Re: [PATCH v6 2/6] iommu/tegra-smmu: Rename struct
+ tegra_smmu_group_soc *soc to *group_soc
+Message-ID: <20211007201455.GA20821@Asurada-Nvidia>
+References: <20210914013858.31192-1-nicoleotsuka@gmail.com>
+ <20210914013858.31192-3-nicoleotsuka@gmail.com>
+ <YV8lbCePQet+vICa@orome.fritz.box>
 MIME-Version: 1.0
-In-Reply-To: <CAE-0n50YqKr1nKy-4WaxsfuwPiJ5kZcf46t-U_4i-TpfXzOX1g@mail.gmail.com>
-References: <20211006193819.2654854-1-swboyd@chromium.org> <20211006193819.2654854-3-swboyd@chromium.org>
- <CAGETcx9T59dHXodt9MW=tTV_hYhtNOZzYFT=35D--VN7WJ0GqQ@mail.gmail.com> <CAE-0n50YqKr1nKy-4WaxsfuwPiJ5kZcf46t-U_4i-TpfXzOX1g@mail.gmail.com>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Thu, 7 Oct 2021 16:11:40 -0400
-Message-ID: <CAE-0n532XYgT=dTTCyLcwikvxgUyGi=TcybDh=v3wQTNb=wqyw@mail.gmail.com>
-Subject: Re: [PATCH v2 02/34] component: Introduce the aggregate bus_type
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Russell King <rmk+kernel@arm.linux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YV8lbCePQet+vICa@orome.fritz.box>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Stephen Boyd (2021-10-07 11:40:07)
-> Quoting Saravana Kannan (2021-10-06 20:07:11)
-> > On Wed, Oct 6, 2021 at 12:38 PM Stephen Boyd <swboyd@chromium.org> wrote:
-> > > diff --git a/drivers/base/component.c b/drivers/base/component.c
-> > > index 0a41bbe14981..d99e99cabb99 100644
-> > > --- a/drivers/base/component.c
-> > > +++ b/drivers/base/component.c
-> [...]
-> > > +                       continue;
-> > > +
-> > > +               /* Matches put in component_del() */
-> > > +               get_device(&adev->dev);
-> > > +               c->link = device_link_add(&adev->dev, c->dev,
-> > > +                                         DL_FLAG_STATELESS | DL_FLAG_PM_RUNTIME);
-> >
-> > Remove the STATELESS flag and you'll get a bunch of other stuff done for free:
->
-> I tried that and it didn't work for me. The aggregate device never
-> probed and I was left with no display. Let me see if I can reproduce it
-> with logging to provide more details.
+On Thu, Oct 07, 2021 at 06:50:52PM +0200, Thierry Reding wrote:
 
-This patch fixes it (whitespace damaged sorry).
+> >  static const struct tegra_smmu_group_soc *
+> > -tegra_smmu_find_group(struct tegra_smmu *smmu, unsigned int swgroup)
+> > +tegra_smmu_find_group_soc(struct tegra_smmu *smmu, unsigned int swgroup)
+> 
+> This one might be okay to disambiguate, but even here I think this isn't
+> really necessary. It's already clear from the return value what's being
+> returned.
 
-----8<----
-diff --git a/drivers/base/component.c b/drivers/base/component.c
-index 65042c9f8a42..43cac9ed70b7 100644
---- a/drivers/base/component.c
-+++ b/drivers/base/component.c
-@@ -202,7 +202,7 @@ static int find_components(struct aggregate_device *adev)
- 		/* Matches put in component_del() */
- 		get_device(&adev->dev);
- 		c->link = device_link_add(&adev->dev, c->dev,
--					  DL_FLAG_STATELESS | DL_FLAG_PM_RUNTIME);
-+					  DL_FLAG_PM_RUNTIME);
- 		c->adev = adev;
- 	}
+The point here is to disambiguate "group", as there are quite a few
+places using the same naming for different structures. You may argue
+that it's clear by looking at the return value/type. But it is still
+hard to tell when reading the code of its caller, right?
 
-@@ -749,7 +749,9 @@ static int __component_add(struct device *dev,
-const struct component_ops *ops,
- 	mutex_unlock(&component_mutex);
+> > @@ -921,9 +922,9 @@ static struct iommu_group *tegra_smmu_device_group(struct device *dev)
+> >  	}
+> >  
+> >  	INIT_LIST_HEAD(&group->list);
+> > +	group->group_soc = group_soc;
+> >  	group->swgroup = swgroup;
+> >  	group->smmu = smmu;
+> > -	group->soc = soc;
+> 
+> As another example, it's pretty evident that group->soc refers to the
+> group SoC data rather than the SMMU SoC data. The latter can be obtained
+> from group->smmu->soc, which again is enough context to make it clear
+> what this is.
+> 
+> So I don't think this makes things any clearer. It only makes the names
+> more redundant and awkward to write.
 
- 	/* Try to bind */
--	return bus_rescan_devices(&aggregate_bus_type);
-+	bus_rescan_devices(&aggregate_bus_type);
-+
-+	return 0;
- }
-
- /**
-
-
-The important part is ignoring the return value of bus_rescan_devices().
-It's a cycle problem. The last component is probing and calling
-component_add() in its probe function. The call to component_add() is
-trying to probe the aggregate device now that all components are added.
-But when it tries to probe the aggregate device it sees that a supplier,
-which is this component calling compnent_add(), hasn't been probed yet,
-so it returns -EPROBE_DEFER. That is passed up to the component and it
-defers probe.
-
-I don't think the component device cares at all about the aggregate
-device being able to probe or not. We should be able to ignore the
-return value of bus_rescan_devices() in component_add(). I'll add a
-comment to the code here so it's more obvious.
+Okay. I will drop the part of s/soc/group_soc.
