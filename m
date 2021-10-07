@@ -2,154 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C3C5425B75
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 21:23:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26D15425B7B
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 21:25:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243909AbhJGTZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 15:25:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41574 "EHLO
+        id S234732AbhJGT13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 15:27:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243891AbhJGTZI (ORCPT
+        with ESMTP id S233105AbhJGT1X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 15:25:08 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF417C061570;
-        Thu,  7 Oct 2021 12:23:13 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id u18so22330092wrg.5;
-        Thu, 07 Oct 2021 12:23:13 -0700 (PDT)
+        Thu, 7 Oct 2021 15:27:23 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48DA1C061755
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 12:25:29 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id i65so3217467pfe.12
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 12:25:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=jKCYo7elbfN+8Lo9BJJiNFtvdPlRlQgGyDD+hhfOf40=;
-        b=d0dkuNNipB4R+OTaIs1kQfjnZ24jPRymUVjwKt4l6BIgSLjdhH30LPkaG6S9ik5axn
-         Biu2rz5ZCzOVw5gTs+1IZd97T7gUR1otVgyjL+ndg8/kVF3arFWi8qqVRKjhRsgF+M62
-         ketDfIfLDywghXB1AGHBlkRG4V+3h7X9vioozBPllV2YbsdaCqKv++N7Fwi4wSuiwVRc
-         ZXw5O4EfOocbF4cEIQ+CM2Vc48Ky/E5QxkAagZbsp3Qvx6Y5wOlue1pl5CASf4KA+ISW
-         CcsCkR4A5Wwnh8FLHbRLKYz+L1I+9SG+QhjF3IByCRi0bzjtfG3zhf1glEH9QGNsU2aJ
-         HQAQ==
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=/n8Me6J9c/0Aaoq12l4632VyTlikQYiCethpuj+aLbY=;
+        b=SQli1vTaGmeF3OtZ3pEx09pCBMoHEts7mbTOISN2rhw8hmBquS/IZbR87v5QBBLbqv
+         /pqrMUBoSis9z+SqnCrcggOh95LPt3XnzSnyEUY5qxiV3KUqfrJavcG97WH/T17gpSTR
+         ocgOZSBiyES6Ow7gBhMre0GdCndxIz5XD9k68=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=jKCYo7elbfN+8Lo9BJJiNFtvdPlRlQgGyDD+hhfOf40=;
-        b=Af1jiIVE4dCWfBG1QOnaH1YjIanU1OgfF8aCZ7ERqSfTlsKw5bkkxYHhf97cNXvVWT
-         0rFwpRgd0TiDMDzN9J2Uxrdkcc5eBAMaUAzLkmIiCy3Sv4PTMTVgxfnQIUcn2Wwr2CNp
-         nH4hYHcmCAsi06FWYtGXho0iQ0U/m4IY9cXmRpzqdY2MKQ0RWadfuHwCDpoUFWg4TBkA
-         reLbm8gBe7LFAz3WwZqb33knK2mzK+0MjiMVaZ2D/L4Z5gOjPsiMDRq0z3Nvt5GqSuUu
-         zBbxqoxIYzfrN27MX7ZIXJBibbYzVCT5GzeQ/xc04UKFiVmWhAjqovVINS0n1VYQGgTt
-         dQjA==
-X-Gm-Message-State: AOAM532J/trbOB9D/nRgABoN4AdEdcdavDb0Cxh6ytWCAlGuIK1y/RJW
-        BAgNHdcMKZvZSxg4a/jhLFA=
-X-Google-Smtp-Source: ABdhPJyqOVTW/HIi/ICquQaOPPDSGWhlYbd6fygN3jqI+8q43cGrGaR+0T8etAnCTt4TF7FXO+kDJg==
-X-Received: by 2002:a1c:cc0f:: with SMTP id h15mr6528641wmb.37.1633634592523;
-        Thu, 07 Oct 2021 12:23:12 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id i3sm245065wrn.34.2021.10.07.12.23.11
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=/n8Me6J9c/0Aaoq12l4632VyTlikQYiCethpuj+aLbY=;
+        b=Cz/+/g8Cc/Rdg+CWFPV90Usl8sjbFqNwXLp2lkHPR2iL7XxgUT4PaHRfeIPLlBc0oM
+         Kddfn9i49IYPNmwuAVHn+Vgdki3CFHgVeS/4f7EKGOE8fmURBWToVxoj0yejpVp9h5uY
+         a40tyQbCQQAAfsioUGJjUw158SGOmjSCZYWKP/4kZRxRR5XPEZ3x8kHDx8YrWck6F3Jo
+         KaO/XjAgdnFgKHymkqVVhI4xEAjxP1l0jLBaSGMV9S7FZ7nvNzKJ2DAOYNt23ZjufxR7
+         McYI2WCJ3hmunO+jAGTJl79aM5Cf9umb3Bl9OQToPPBu6d6XvUVEEKVDMJFF5Kt8toud
+         k1cw==
+X-Gm-Message-State: AOAM530yNfVUo8bT7EXMnTqOifh6WRFkfdw3x6mWdwOJeDV/6mogw4ra
+        +Lylp9eKtTEabXiDDtr4znOtXw==
+X-Google-Smtp-Source: ABdhPJyWbT/2wfJkhN3zmahv5/28fdw9q8dBvfcBa/rkLKicY5/v7uqqy3nFOrQlBaExCnpIUB7yjQ==
+X-Received: by 2002:a63:7118:: with SMTP id m24mr1146122pgc.332.1633634728739;
+        Thu, 07 Oct 2021 12:25:28 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id b13sm9790176pjl.15.2021.10.07.12.25.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Oct 2021 12:23:11 -0700 (PDT)
-Date:   Thu, 7 Oct 2021 21:23:10 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Rob Herring <robh@kernel.org>, linuxarm@huawei.com,
-        mauro.chehab@huawei.com, Bjorn Helgaas <bhelgaas@google.com>,
-        JC Kuo <jckuo@nvidia.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sameer Pujar <spujar@nvidia.com>,
-        Sowjanya Komatineni <skomatineni@nvidia.com>,
-        Vidya Sagar <vidyas@nvidia.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-Subject: Re: [PATCH v5 5/5] dt-bindings: arm64: tegra: fix pcie-ep DT nodes
-Message-ID: <YV9JHsFyu+zTxrcN@orome.fritz.box>
-References: <cover.1626608375.git.mchehab+huawei@kernel.org>
- <15cf5067c0567614d5b186d006ebd88395d56b63.1626608375.git.mchehab+huawei@kernel.org>
+        Thu, 07 Oct 2021 12:25:28 -0700 (PDT)
+Date:   Thu, 7 Oct 2021 12:25:27 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Christian Heimes <christian@python.org>,
+        Deven Bowers <deven.desai@linux.microsoft.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Eric Chiang <ericchiang@google.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        James Morris <jmorris@namei.org>, Jan Kara <jack@suse.cz>,
+        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        "Madhavan T . Venkataraman" <madvenka@linux.microsoft.com>,
+        Matthew Garrett <mjg59@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Philippe =?iso-8859-1?Q?Tr=E9buchet?= 
+        <philippe.trebuchet@ssi.gouv.fr>,
+        Scott Shell <scottsh@microsoft.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Steve Dower <steve.dower@python.org>,
+        Steve Grubb <sgrubb@redhat.com>,
+        Thibaut Sautereau <thibaut.sautereau@ssi.gouv.fr>,
+        Vincent Strubel <vincent.strubel@ssi.gouv.fr>,
+        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@linux.microsoft.com>
+Subject: Re: [PATCH v13 1/3] fs: Add trusted_for(2) syscall implementation
+ and related sysctl
+Message-ID: <202110071217.16C7208F@keescook>
+References: <20211007182321.872075-1-mic@digikod.net>
+ <20211007182321.872075-2-mic@digikod.net>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="hvtSaJRi+eMRsZbD"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <15cf5067c0567614d5b186d006ebd88395d56b63.1626608375.git.mchehab+huawei@kernel.org>
-User-Agent: Mutt/2.1.3 (987dde4c) (2021-09-10)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211007182321.872075-2-mic@digikod.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Oct 07, 2021 at 08:23:18PM +0200, Mickaël Salaün wrote:
+> From: Mickaël Salaün <mic@linux.microsoft.com>
+> 
+> The trusted_for() syscall enables user space tasks to check that files
+> are trusted to be executed or interpreted by user space.  This may allow
+> script interpreters to check execution permission before reading
+> commands from a file, or dynamic linkers to allow shared object loading.
+> This may be seen as a way for a trusted task (e.g. interpreter) to check
+> the trustworthiness of files (e.g. scripts) before extending its control
+> flow graph with new ones originating from these files.
+> [...]
+>  aio-nr & aio-max-nr
+> @@ -382,3 +383,52 @@ Each "watch" costs roughly 90 bytes on a 32bit kernel, and roughly 160 bytes
+>  on a 64bit one.
+>  The current default value for  max_user_watches  is the 1/25 (4%) of the
+>  available low memory, divided for the "watch" cost in bytes.
+> +
+> +
+> +trust_policy
+> +------------
 
---hvtSaJRi+eMRsZbD
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+bikeshed: can we name this "trusted_for_policy"? Both "trust" and
+"policy" are very general words, but "trusted_for" (after this series)
+will have a distinct meaning, so "trusted_for_policy" becomes more
+specific/searchable.
 
-On Sun, Jul 18, 2021 at 01:40:52PM +0200, Mauro Carvalho Chehab wrote:
-> As defined by Documentation/devicetree/bindings/pci/pci-ep.yaml,
-> PCIe endpoints match this pattern:
->=20
-> 	properties:
-> 	  $nodename:
-> 	    pattern: "^pcie-ep@"
->=20
-> Change the existing ones in order to avoid those warnings:
->=20
-> 	arch/arm64/boot/dts/nvidia/tegra194-p3509-0000+p3668-0001.dt.yaml: pcie_=
-ep@14160000: $nodename:0: 'pcie_ep@14160000' does not match '^pcie-ep@'
-> 		From schema: Documentation/devicetree/bindings/pci/snps,dw-pcie-ep.yaml
-> 	arch/arm64/boot/dts/nvidia/tegra194-p3509-0000+p3668-0001.dt.yaml: pcie_=
-ep@14180000: $nodename:0: 'pcie_ep@14180000' does not match '^pcie-ep@'
-> 		From schema: Documentation/devicetree/bindings/pci/snps,dw-pcie-ep.yaml
-> 	arch/arm64/boot/dts/nvidia/tegra194-p3509-0000+p3668-0001.dt.yaml: pcie_=
-ep@141a0000: $nodename:0: 'pcie_ep@141a0000' does not match '^pcie-ep@'
-> 		From schema: Documentation/devicetree/bindings/pci/snps,dw-pcie-ep.yaml
-> 	arch/arm64/boot/dts/nvidia/tegra194-p3509-0000+p3668-0000.dt.yaml: pcie_=
-ep@14160000: $nodename:0: 'pcie_ep@14160000' does not match '^pcie-ep@'
-> 		From schema: Documentation/devicetree/bindings/pci/snps,dw-pcie-ep.yaml
-> 	arch/arm64/boot/dts/nvidia/tegra194-p3509-0000+p3668-0000.dt.yaml: pcie_=
-ep@14180000: $nodename:0: 'pcie_ep@14180000' does not match '^pcie-ep@'
-> 		From schema: Documentation/devicetree/bindings/pci/snps,dw-pcie-ep.yaml
-> 	arch/arm64/boot/dts/nvidia/tegra194-p3509-0000+p3668-0000.dt.yaml: pcie_=
-ep@141a0000: $nodename:0: 'pcie_ep@141a0000' does not match '^pcie-ep@'
-> 		From schema: Documentation/devicetree/bindings/pci/snps,dw-pcie-ep.yaml
-> 	arch/arm64/boot/dts/nvidia/tegra194-p2972-0000.dt.yaml: pcie_ep@14160000=
-: $nodename:0: 'pcie_ep@14160000' does not match '^pcie-ep@'
-> 		From schema: Documentation/devicetree/bindings/pci/snps,dw-pcie-ep.yaml
-> 	arch/arm64/boot/dts/nvidia/tegra194-p2972-0000.dt.yaml: pcie_ep@14180000=
-: $nodename:0: 'pcie_ep@14180000' does not match '^pcie-ep@'
-> 		From schema: Documentation/devicetree/bindings/pci/snps,dw-pcie-ep.yaml
-> 	arch/arm64/boot/dts/nvidia/tegra194-p2972-0000.dt.yaml: pcie_ep@141a0000=
-: $nodename:0: 'pcie_ep@141a0000' does not match '^pcie-ep@'
-> 		From schema: Documentation/devicetree/bindings/pci/snps,dw-pcie-ep.yaml
->=20
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->  .../devicetree/bindings/pci/nvidia,tegra194-pcie.txt        | 2 +-
->  arch/arm64/boot/dts/nvidia/tegra194-p2972-0000.dts          | 2 +-
->  arch/arm64/boot/dts/nvidia/tegra194-p3509-0000.dtsi         | 2 +-
->  arch/arm64/boot/dts/nvidia/tegra194.dtsi                    | 6 +++---
->  4 files changed, 6 insertions(+), 6 deletions(-)
+With that renamed, I think it looks good! I'm looking forward to
+interpreters using this. :)
 
-Sorry for the delayed response, this fell through the cracks. Applied
-now, thanks.
+Acked-by: Kees Cook <keescook@chromium.org>
 
-Thierry
-
---hvtSaJRi+eMRsZbD
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmFfSRwACgkQ3SOs138+
-s6FMVg//VA84RbAyFnRKV7Qf21suROrf13xD4bw8a6iFEvSedSMiqMJupJ6cW5Df
-xAdQxmivmNfwEtsVgrO7bw0MR6yrIU6eRxWPV89qAoIAOFMpIupcu6I+MZSNLin/
-vDBRvVw+R+zN95mHW7W4Edf76NwVjsFcLpDyxpTgdBYGc4CmTuUi15yGcfsnLWj1
-8phTiwa/U7/cf7qWTAy2PMhtseEoVRjXZT2FtubC9Y6YSfAE3gz86rKBUxE8ZZIg
-WcqO92HeOLtXxs/TAGkEkOfQWkRe4aHHzpC61V+c4ECs0emhbrXjQmePmcEWzW9n
-9zEjUANnaEiYbYcSGx1m34TtCWVuGtaIaHQZur/ClgB0FjwWV9k4MxbWnfU/2+ww
-M3LZgDLQh5wtx2wzq304FT1Jyoo1ekrBRHh5+jqVCcHKCTUMJquwpA1oDp9PI50W
-il6Ju775R2Q/Dj6p4P2c0YU6ZJ4qMK9JFuwLb7JBxDGNTvdJh2bGv63DZ+g86Mwq
-YCAKf5aQfcWf12GdRU04ttJ/n8rW6+33dw+iELC+HvxZChX/Yp3zwn4HbDt9Do/9
-lfW4QVBrF0QneD2zqEAmknoog7dU7MOih1RND/lZPF1rwRafxRGGZm7ys3rWZkVJ
-/U1CuNlPkdeEzLBHEvDSIVxKZgA81BxWRDSiiSs+Wg+AXSomY5I=
-=8l0Y
------END PGP SIGNATURE-----
-
---hvtSaJRi+eMRsZbD--
+-- 
+Kees Cook
