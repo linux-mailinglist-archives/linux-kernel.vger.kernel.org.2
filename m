@@ -2,108 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 557BC4252C7
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 14:13:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DD514252D1
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 14:15:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241203AbhJGMPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 08:15:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41390 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241186AbhJGMPM (ORCPT
+        id S241248AbhJGMRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 08:17:00 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:48178 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241135AbhJGMQ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 08:15:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633608798;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lYg3DKnYjpKLFoiMv++O6QIhF4RIhnoeDD7AJ3wTVUk=;
-        b=WlJ9iZK5AR3ogTSnmFaG0ti1/ACCOpEyfHPv6xqAznVer0APJuNx+cItE2vUeLQ5i3jOXC
-        HSQF9z67hmsOdBEh21l/bkyjSyXb5AjM8NwIE831s5nzx66qg+hD6bDI4oob+sCV6JkA/N
-        vAFTR2yNJ13ivzZO8TXpp+Y5cT0mFpk=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-496-REGPK3QXMc6tPuurgf8Rrg-1; Thu, 07 Oct 2021 08:13:03 -0400
-X-MC-Unique: REGPK3QXMc6tPuurgf8Rrg-1
-Received: by mail-wr1-f70.google.com with SMTP id l6-20020adfa386000000b00160c4c1866eso4525856wrb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 05:13:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=lYg3DKnYjpKLFoiMv++O6QIhF4RIhnoeDD7AJ3wTVUk=;
-        b=UhtJAaozlNgQm5lQVl8MS/peOJ/xKHsvkQnFCfiiB3WoUZ/Us1FoZUv9PiNoCYQ4ot
-         6DKYB15yA5Lw8VKc9LRe5j06g9JzerwCWXWfQLAhg2uucZcF/EOvb3GOuF2MecVsq3Wc
-         u0la3V6PfplxqNRdyK3epjgF10pFIUBS7rHikIWNgbY2aRUiP9601laV/dIRySk5NN7p
-         KllANGrKgsfmN0xXQokbhMuW7FMZam1Y7UoDs7DKSzm6o4YKQsF0Wd3SnYao36BgCoSx
-         i9Ho4pV1pneXdWD2zEoy0UiDJGm9f9JHWPOKBzZMVyy7xM9x7yMdcm/6sxx4OVjiqyb2
-         mA0w==
-X-Gm-Message-State: AOAM531AZZ6uPUroEvzczkx0PZzKSCTlNAeWQnxBXlsawmIZSWU59QlH
-        FjD2NOURNyXQ4woxH0h4+g7CBG2zO5CQts971CnCgbNY9RRXbdVzDwf4676Rzjh9gf8zuZDea/c
-        kcQLR9EWXCR8HzWtvdcVb/hsA
-X-Received: by 2002:a5d:64a6:: with SMTP id m6mr5005161wrp.282.1633608781865;
-        Thu, 07 Oct 2021 05:13:01 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw1+G511oTofFcZIavyp24Pc9rD74REUvRo1Zz07AsPo9+OrEizszsrDH3N7xzVcvvCViKnSQ==
-X-Received: by 2002:a5d:64a6:: with SMTP id m6mr5005133wrp.282.1633608781695;
-        Thu, 07 Oct 2021 05:13:01 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c6886.dip0.t-ipconnect.de. [91.12.104.134])
-        by smtp.gmail.com with ESMTPSA id v16sm2403012wrq.39.2021.10.07.05.13.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Oct 2021 05:13:01 -0700 (PDT)
-Subject: Re: [PATCH 2/2] mm/mprotect: do not flush on permission promotion
-To:     Nadav Amit <nadav.amit@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>,
-        Peter Xu <peterx@redhat.com>, Nadav Amit <namit@vmware.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>,
-        Nick Piggin <npiggin@gmail.com>, x86@kernel.org
-References: <20210925205423.168858-1-namit@vmware.com>
- <20210925205423.168858-3-namit@vmware.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <5485fae5-3cd6-9dc3-0579-dc8aab8a3de1@redhat.com>
-Date:   Thu, 7 Oct 2021 14:13:00 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Thu, 7 Oct 2021 08:16:58 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 197CEew5110477;
+        Thu, 7 Oct 2021 07:14:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1633608880;
+        bh=j6adkrGlMOpYlmjotVznItdFpUqevVwAnoGcm4wqQig=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=DclmbGZVt7L9NxqWwXuV4C3/T+BbXENXCwuBUsExLT1jZKjbrjkza4Gu/xeY3wWhQ
+         O3w4Xz17VCyDqkPSC3NQ/45snQXNSl3FiJNY54z9IDS5OKMAwpkostllmAfLtDzDn2
+         Cw+bN39D1ywxTjXU6FQXnl5zYpJJiVJjamEP0Gu4=
+Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 197CEelh108154
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 7 Oct 2021 07:14:40 -0500
+Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Thu, 7
+ Oct 2021 07:14:40 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Thu, 7 Oct 2021 07:14:40 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 197CEdxL100865;
+        Thu, 7 Oct 2021 07:14:40 -0500
+Date:   Thu, 7 Oct 2021 17:44:38 +0530
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+CC:     Vinod Koul <vkoul@kernel.org>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Nikhil Devshatwar <nikhil.nd@ti.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-phy@lists.infradead.org>
+Subject: Re: [PATCH v5 2/6] phy: cdns-dphy: Add Rx support
+Message-ID: <20211007121436.jkck2cue5zd3rys4@ti.com>
+References: <20210902185543.18875-1-p.yadav@ti.com>
+ <20210902185543.18875-3-p.yadav@ti.com>
+ <YUMa/ocoQ9l3JDe6@aptenodytes>
+ <20210917172809.rjtf7ww7vjcfvey5@ti.com>
+ <YVapVLnGfSBZCDTY@matsya>
+ <YV463gUvYauhDP/l@pendragon.ideasonboard.com>
 MIME-Version: 1.0
-In-Reply-To: <20210925205423.168858-3-namit@vmware.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <YV463gUvYauhDP/l@pendragon.ideasonboard.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25.09.21 22:54, Nadav Amit wrote:
-> From: Nadav Amit <namit@vmware.com>
+On 07/10/21 03:10AM, Laurent Pinchart wrote:
+> Hi Vinod,
 > 
-> Currently, using mprotect() to unprotect a memory region or uffd to
-> unprotect a memory region causes a TLB flush. At least on x86, as
-> protection is promoted, no TLB flush is needed.
+> On Fri, Oct 01, 2021 at 11:53:16AM +0530, Vinod Koul wrote:
+> > On 17-09-21, 22:58, Pratyush Yadav wrote:
+> > > On 16/09/21 12:22PM, Paul Kocialkowski wrote:
+> > > > On Fri 03 Sep 21, 00:25, Pratyush Yadav wrote:
+> > > > > The Cadence DPHY can be used to receive image data over the CSI-2
+> > > > > protocol. Add support for Rx mode. The programming sequence differs from
+> > > > > the Tx mode so it is added as a separate set of hooks to isolate the two
+> > > > > paths. The mode in which the DPHY has to be used is selected based on
+> > > > > the compatible.
+> > > > 
+> > > > I just realized that I didn't follow-up on a previous revision on the debate
+> > > > about using the phy sub-mode to distinguish between rx/tx.
+> > > > 
+> > > > I see that you've been using a dedicated compatible, but I'm not sure this is a
+> > > > good fit either. My understanding is that the compatible should describe a group
+> > > > of register-compatible revisions of a hardware component, not how the hardware
+> > > > is used specifically. I guess the distinction between rx/tx falls under
+> > > > the latter rather than the former.
+> > > 
+> > > I am not sure if that is the case. For example, we use "ti,am654-ospi" 
+> > > for Cadence Quadspi controller. The default compatible, "cdns,qspi-nor", 
+> > > only supports Quad SPI (4 lines). The "ti,am654-ospi" compatible also 
+> > > supports Octal SPI (8 lines).
+> > 
+> > Those are hardware defaults right?
+> > 
+> > > In addition, I feel like the Rx DPHY is almost a different type of 
+> > > device from a Tx DPHY. The programming sequence is completely different, 
+> > 
+> > Is that due to direction or something else..?
+> > 
+> > > the clocks required are different, etc. So I think using a different 
+> > > compatible for Rx mode makes sense.
+> > 
+> > Is the underlaying IP not capable of both TX and RX and in the specific
+> > situations you are using it as TX and RX.
+> > 
+> > I am okay that default being TX but you can use Paul's approach of
+> > direction with this to make it better proposal
 > 
-> Add an arch-specific pte_may_need_flush() which tells whether a TLB
-> flush is needed based on the old PTE and the new one. Implement an x86
-> pte_may_need_flush().
 > 
-> For x86, PTE protection promotion or changes of software bits does
-> require a flush, also add logic that considers the dirty-bit. Changes to
-> the access-bit do not trigger a TLB flush, although architecturally they
-> should, as Linux considers the access-bit as a hint.
+> Given that the RX and TX implementations are very different (it's not a
+> matter of selecting a mode at runtime), I'm actually tempted to
+> recommend having two drivers, one for the RX PHY and one for the TX PHY.
+> This can only be done with two different compatible strings, which I
+> think would be a better approach.
 
-Is the added LOC worth the benefit? IOW, do we have some benchmark that 
-really benefits from that?
+FWIW, I think having different drivers would certainly make things 
+easier to maintain.
 
+> 
+> It's unfortunate that the original compatible string didn't contain
+> "tx". We could rename it and keep the old one in the driver for backward
+> compatibility, making things cleaner going forward.
+> 
+> -- 
+> Regards,
+> 
+> Laurent Pinchart
 
 -- 
-Thanks,
-
-David / dhildenb
-
+Regards,
+Pratyush Yadav
+Texas Instruments Inc.
