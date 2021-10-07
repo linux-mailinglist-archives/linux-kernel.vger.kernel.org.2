@@ -2,80 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D27E2425A49
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 20:03:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 271D2425A4B
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 20:04:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243383AbhJGSFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 14:05:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51212 "EHLO
+        id S243471AbhJGSFw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 14:05:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243419AbhJGSFc (ORCPT
+        with ESMTP id S243419AbhJGSFv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 14:05:32 -0400
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE949C061764
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 11:03:38 -0700 (PDT)
-Received: by mail-ot1-x330.google.com with SMTP id g15-20020a9d128f000000b0054e3d55dd81so3391653otg.12
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 11:03:38 -0700 (PDT)
+        Thu, 7 Oct 2021 14:05:51 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A83EEC061570;
+        Thu,  7 Oct 2021 11:03:57 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id s15so21722470wrv.11;
+        Thu, 07 Oct 2021 11:03:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=UqU2sc6nimwttVNTsN+KoIq0D+bxjGjE0Uy7w4zSjso=;
-        b=jLbW+7kkLTNwDo7nzsbCqMtw9ge068L0fVwd4nYZ32DtCDgR3hrMERyqPF8XokXjKM
-         gGvLUrYZf7iFOiN1n2xwIsANaEuHWtjXxisOvMsRXdB3vug5TsidLpUHrzXyRP1KVZ7S
-         nx3EaPhp3M0WGPkZEFcQG+oB01yueTwuhQ5W0=
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=LZMwmOkgk54eN1UQEPXt7V5xX9DIaJ65/jsj/DfOi4o=;
+        b=HUUz197XMFD4QIOrap8XB9wCFV+JH7BtWEeT41amx0tBVZTCIk5dcPiGAQ+ien3Az0
+         WfRt4aF0/mjIKvVR1GZXLdSPKFUyeLi4nCum5k3zvhd7ulygZZZSZvq5hYsre9hHk/3n
+         EpCrxmK0ogeMsAwZL+OA89w519fjQYP9zREk5P0Fkp4FRWElsdaR54q5BtJLbd7/s4/J
+         WtGTJCIXfkX8yP4xq7wjufuoJuuHAbwtH/jGbXXqy+wmRmAfN2BfFUfoQd1D2KMm0X6i
+         Y32kgzC7vjkSp1+MaA7LDsN/BkOzfpSS94wTzEIucqXfjJ3QokfGbqSXMykYiK4CZPX8
+         pmzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=UqU2sc6nimwttVNTsN+KoIq0D+bxjGjE0Uy7w4zSjso=;
-        b=8EpP/ZZz47LH3Uwmb2tDz3NnAujfZDdJnwvq0KQuCQNjUx00deFwInsi1niRwTplY1
-         2wTVJCtkC8YJLqJXCIi5R85UfV6F2THsg2HYiscx/NrN4zGn6TWvgrvM3P0cFzGdjoqX
-         CREYOZmGbQhTj3OspKUH2GPMoX/YgAWsoSGvksrH5LghhjHJACWUVxRMiIcghjJ7CxAo
-         4MP7VFe81+prXEFyqB0+ZU5TJdn08cINH0/8VMOdVqIj2KazLW1COPjwWQZuQyph445j
-         d2VYw+y07Try0nBRVu9eXm27DJxWMCUkV7y7DASOOLrEVjvXYP+xDkXCTpsyIWmWjwsP
-         315g==
-X-Gm-Message-State: AOAM531m8DD+oLT91A5Ps7S6RudylGKR4x2ny3dxbQeOndO6VouN78LB
-        SrwrEwu3kiRCRPbG1MsvObE2p52wyvsodpDsvjY+cQ==
-X-Google-Smtp-Source: ABdhPJzdP57QnKdUaciIKhWDyQMB6RtxGohINlseRKeMlntrQwhQiwnOaiAxp80/FctFi0Fd4EUCp1h/9sGJoPkWh6k=
-X-Received: by 2002:a9d:6a0f:: with SMTP id g15mr5000139otn.126.1633629818067;
- Thu, 07 Oct 2021 11:03:38 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Thu, 7 Oct 2021 14:03:37 -0400
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=LZMwmOkgk54eN1UQEPXt7V5xX9DIaJ65/jsj/DfOi4o=;
+        b=5ZDYkC6wAHEE0ZF/UupnJNktlUwwuuzn4bmdiYsyHO0fsu2lkyHL7Z6sqLpe1EzxOW
+         MXgg92FrkkodZkxkY5j0VO++VH+oA3Oe8xC3+gG5KYq0aOlgxIPejYEmrEMLoqR7D49Q
+         C6akPf67ar1SjEG/N3atK4dsdgaCRam5wr6vQczc1WBQf1kWlYUGleAxRagw/b+peRB8
+         dEFTf+CQbYjjoDF0riSj0NkZ05n6Job5CJn249iZYwWyX8oOQtpbN5icvb8F16DnlIDJ
+         yuetwRI64BgnxoCyd5/ESZmfsqFP7xd9wMkWmMHmjulMFEVuX3HUDqtjlxsYPZQEV1/r
+         e1BQ==
+X-Gm-Message-State: AOAM530h/L6h2i80ebfAX1qX6s0imHlLzJzio9bVjujSs+Cdqheg9XNo
+        XhMGwZi0Bw9MRoj/rbGyNZA=
+X-Google-Smtp-Source: ABdhPJyycWoJZY36EQ+xWCIw4MlCVxIs0pvtuJveS1miA3vFhtl1b5/SApCGxHqlO2rvNeK+/K7ISA==
+X-Received: by 2002:adf:bc4a:: with SMTP id a10mr7170320wrh.131.1633629836236;
+        Thu, 07 Oct 2021 11:03:56 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id n66sm123267wmn.2.2021.10.07.11.03.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Oct 2021 11:03:55 -0700 (PDT)
+Date:   Thu, 7 Oct 2021 20:03:54 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Mikko Perttunen <mperttunen@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>, dri-devel@lists.freedesktop.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] gpu: host1x: select CONFIG_DMA_SHARED_BUFFER
+Message-ID: <YV82imZcgUlYbQCw@orome.fritz.box>
+References: <20210927093705.458573-1-arnd@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <1633628923-25047-5-git-send-email-pmaliset@codeaurora.org>
-References: <1633628923-25047-1-git-send-email-pmaliset@codeaurora.org> <1633628923-25047-5-git-send-email-pmaliset@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Thu, 7 Oct 2021 14:03:37 -0400
-Message-ID: <CAE-0n51NfLevCSwDDK0pxg=zmdw7pqw-wGEV2_MxBZZvh_caOQ@mail.gmail.com>
-Subject: Re: [PATCH v12 4/5] PCI: qcom: Add a flag in match data along with ops
-To:     Prasad Malisetty <pmaliset@codeaurora.org>, agross@kernel.org,
-        bhelgaas@google.com, bjorn.andersson@linaro.org,
-        lorenzo.pieralisi@arm.com, robh+dt@kernel.org, svarbanov@mm-sol.com
-Cc:     devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dianders@chromium.org, mka@chromium.org, vbadigan@codeaurora.org,
-        sallenki@codeaurora.org, manivannan.sadhasivam@linaro.org,
-        linux-pci@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="WijDuHqqAP6ZhHfE"
+Content-Disposition: inline
+In-Reply-To: <20210927093705.458573-1-arnd@kernel.org>
+User-Agent: Mutt/2.1.3 (987dde4c) (2021-09-10)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Prasad Malisetty (2021-10-07 10:48:42)
-> Add pipe_clk_need_muxing flag in match data and configure
 
-This commit text isn't accurate. The flag isn't added in this patch
-anymore. Same goes for the commit title/subject. Can you please update
-it to say something like "Point match data to config struct"?
+--WijDuHqqAP6ZhHfE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> If the platform needs to switch pipe_clk_src.
->
-> Signed-off-by: Prasad Malisetty <pmaliset@codeaurora.org>
+On Mon, Sep 27, 2021 at 11:36:59AM +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+>=20
+> Linking fails when dma-buf is disabled:
+>=20
+> ld.lld: error: undefined symbol: dma_fence_release
+> >>> referenced by fence.c
+> >>>               gpu/host1x/fence.o:(host1x_syncpt_fence_enable_signalin=
+g) in archive drivers/built-in.a
+> >>> referenced by fence.c
+> >>>               gpu/host1x/fence.o:(host1x_fence_signal) in archive dri=
+vers/built-in.a
+> >>> referenced by fence.c
+> >>>               gpu/host1x/fence.o:(do_fence_timeout) in archive driver=
+s/built-in.a
+>=20
+> Fixes: 687db2207b1b ("gpu: host1x: Add DMA fence implementation")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 > ---
+>  drivers/gpu/host1x/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
 
-Otherwise code looks fine:
+Applied, thanks.
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Thierry
+
+--WijDuHqqAP6ZhHfE
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmFfNooACgkQ3SOs138+
+s6EkbA/+PDMiY14SV9kV644GqfM5UvlMjnXD3NUtGJ8W0AV8/PifHO7jXxUyikmd
+8Y12WgdtuRboSdf365SCGguKHgXsYaxpW4U5SipQkt/3HM4qBms5k0bwfbRYU2nF
+bsZGG4pnSH4j52LQ7CshQojnvndWOS8fDMgswz8Rw2XlRlWQqS89KGZlTiSMcWss
+ZXKCaStIeWaiJ8+03fxUDHqJlNui7WjlgkbcgIfgBDBioGtIfCi8VqXurpnbfUUQ
+TbHEwFomGSMRqya7eMO5iW0e0i8rLgvFPVK6xX9t5p5rYriWUmG/yAxQVS4RMN46
+WsLK7p80HUFtIs9KHZxdRDf50QI8q1N5eA3X0PQbtmX7uleo5Z+0/AiSUYJGcMl5
+PwOg7chuXzhlBMOkCLG2jgMNPT+CTfBByxKsrAP3y1uz/XJyo49IRb3KhxqiC1bZ
+QWifYe4wm07T07CzUpkyP4iA+I6zKfXfZ0l+1qJw2qxwuN6fKGAXu7/AujGM0rGX
+dGN10HKy9NYoNuWFUBLkccUs9FM6Molmu2LpQDd+lz17okS9QwijW87bqzu03B6A
+Vp/pisQeiDa1ME7VXWXp6egLQ43y14qb/HhQmkUnLtiDPyxh+ooeGr4OnIx35Xec
++Gh8a2bDvNXYi0A23NRSiYXIhO+aG00eV59dpHv7Ib3NselAH48=
+=OOu+
+-----END PGP SIGNATURE-----
+
+--WijDuHqqAP6ZhHfE--
