@@ -2,130 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1071942604E
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 01:16:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CED69426052
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 01:19:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234114AbhJGXSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 19:18:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38524 "EHLO
+        id S233564AbhJGXVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 19:21:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229778AbhJGXSo (ORCPT
+        with ESMTP id S230120AbhJGXVR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 19:18:44 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 846E8C061570
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 16:16:50 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 124-20020a251182000000b005a027223ed9so9982979ybr.13
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 16:16:50 -0700 (PDT)
+        Thu, 7 Oct 2021 19:21:17 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36335C061755
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 16:19:23 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id k7so23723192wrd.13
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 16:19:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=reply-to:date:message-id:mime-version:subject:from:to:cc
+        d=philpotter-co-uk.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=ywF2/rgM1bhy2sAaNDgCO3TYtTem4+JSfSFNkboo73g=;
-        b=Nl2uaV7VRRjEOm/tpJ9KZVG7uSLYTfk8nEgePBQYBAjZk1f3EiWye9NDSWsSw7PtOE
-         y91pUjSmvUwIhExZXsJnE2C3nHeRgeyoMJmuOxe8hK81N5hP+os1RkjJP704V7nSMlDV
-         KYSJQNXlZrmU4J3O4GXkEcmdApLX640FSxzOSpNBfucZUFQn645ex3fSQSF0y6jZg9YU
-         v0/K4HlgzySOEYa7YUtzKPeoV0EqUuuEY6R9QO8I13kD9lsVeXHiRCSeHZ0xzT1F0uzB
-         yzqzb1lMFJqmVu3knJes7mA5BxrrZblOg4zDOqNOkVGvROtrc2G76S8j0nX6S2Cv9HEK
-         fi1A==
+        bh=PL54Nm2ZdSuYE5V8Jc6ddvakNyQ2FlPxhtz/QwtY6KY=;
+        b=Q58cFmRu3sCSlXqMF//ykfyxgLEIm+cLlCUG12kqEKoOd7ywLq97jzL6UkuheaA33l
+         cdFEAAnSvBHQM9J2wW8c75DTo9rgncES0V0Sozm5bS6tFoiYrr6B1WYbS3Tc1xfA23K3
+         sqjrVJRtxMVJqQjsZhNEbcUTh+QDc4CClbai7bY/gY85AzHtcag9z3YPwdbj5r6WoDt+
+         /g0iSRG9gtPGKN8kVak4H7NKfybGXhkmdirh2m8YAg0j6ood8qkTOdITXYyd2/7D9U5G
+         HX8mSLaTCwHLhHpsgqnwdm1jDVo0vksa/w9jNrbYqGbV5vRBCrpYUAaDv7UIRF8vaFQr
+         DyQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
-         :from:to:cc:content-transfer-encoding;
-        bh=ywF2/rgM1bhy2sAaNDgCO3TYtTem4+JSfSFNkboo73g=;
-        b=GLZe9262xNbu1pyb8uKx8CznKWwdkZ5SRgRGCKQyzOFeB6Nn4015Dw1puKDr/F+SNG
-         lTRcLaiB0qQdu5V8tB0brj/jZD+HGjFFX6p3FG7JsC8G9lFqaad1pz0w0DZOso/A+sPV
-         pfD0yFpQ3xKtZRXHJ5rd5nDschT0dyqJREqSUuyS9z9NdxkA3IJlnqfA+jxodorfwL8p
-         BQHgyZ/k6j8wfrMIU2TcyXwdHued6u5Ul9glA9KVtG98bt2kp0Z1NV1gXa0IyN0Yajc6
-         XuJVo10lMlHA5TYjQ7zFpISJxkAmY/JgRYqrknUsOGaVGm1EqpDu2IcArD8NgJQXIPoO
-         pZcw==
-X-Gm-Message-State: AOAM530ymC+Ao1yJhIdedBooOBf+vWfK/9PkW3ju6RtafkW3MDFmg+CS
-        0v1NePON61z7Kv5s9lQdn+9IIvXnYiY=
-X-Google-Smtp-Source: ABdhPJwFiYLQxeDfIfgpJxmittGB2vzEHNxXIQU0imnuo3OfNnGuEIqL7ToIQUEBA1Eq40kG7OqhCwhiSN4=
-X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:90:200:2783:a5c0:45f5:b0ed])
- (user=seanjc job=sendgmr) by 2002:a25:6150:: with SMTP id v77mr7923658ybb.530.1633648609838;
- Thu, 07 Oct 2021 16:16:49 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Thu,  7 Oct 2021 16:16:47 -0700
-Message-Id: <20211007231647.3553604-1-seanjc@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.882.g93a45727a2-goog
-Subject: [PATCH] KVM: x86: Account for 32-bit kernels when handling address in
- TSC attrs
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Oliver Upton <oupton@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PL54Nm2ZdSuYE5V8Jc6ddvakNyQ2FlPxhtz/QwtY6KY=;
+        b=g3JGPV93a8zM1iAY3j5RsdN0Q+3dK8xSzbNQG0waEXnJ8y89cbKwxd6vqWapZMgmHP
+         s8xtENr9MrKaAv3DeGtnFzwRFlsfM6bq6wKMfqRJykdEeynvfOowoRED7HBjXbwPAMsl
+         XLi4KhX949k7OHpCnyGehs/3KDHEgseafgU8AyBjYi8HUIystuI/DESrCTO0QbS3jsqj
+         ew85y8M3FT+REosglgMdk7L3HE4q/xHTC8dLJokUVqXfrhR+us5ZK2JlFT5sJWE3OVgv
+         2WzQ1XxNUKgxVb4xQuevRcPRtnupFdKzthuzPle+6KzWOoiTTbTw+qXo4JXGHwXBL+xw
+         Q7Ow==
+X-Gm-Message-State: AOAM530Ae39tNgOmz+AjhtTOUKuTN8kaF6HlAH+45nssalnKslC6cM3W
+        UwS9J8yZpsF4is9sU2VG+858zg==
+X-Google-Smtp-Source: ABdhPJwk8KUf/L/qNZ9qZoWDgjzDEMmQ6INLkE61SPAJG25IDr6ZOY+BTuQtKI1Ib4ZRxgqnMDRxKw==
+X-Received: by 2002:a05:6000:18a2:: with SMTP id b2mr8932644wri.155.1633648761723;
+        Thu, 07 Oct 2021 16:19:21 -0700 (PDT)
+Received: from localhost.localdomain (30.34.155.90.in-addr.arpa. [90.155.34.30])
+        by smtp.gmail.com with ESMTPSA id w1sm9755292wmc.19.2021.10.07.16.19.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Oct 2021 16:19:21 -0700 (PDT)
+From:   Phillip Potter <phil@philpotter.co.uk>
+To:     axboe@kernel.dk
+Cc:     hch@infradead.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, lumip@lumip.de, rdunlap@infradead.org
+Subject: [PATCH] cdrom: docs: reformat table in Documentation/userspace-api/ioctl/cdrom.rst
+Date:   Fri,  8 Oct 2021 00:17:20 +0100
+Message-Id: <20211007231720.31997-1-phil@philpotter.co.uk>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When handling TSC attributes, cast the userspace provided virtual address
-to an unsigned long before casting it to a pointer to fix warnings on
-32-bit kernels due to casting a 64-bit integer to a 32-bit pointer.
+Add extra space to the first column of ioctl values table, and also realign
+the text in the second column, to fix a documentation build warning
+introduced by: commit 67f1e027c270 ("drivers/cdrom: improved ioctl for
+media change detection")
 
-Add a check that the truncated address matches the original address, e.g.
-to prevent userspace specifying garbage in bits 63:32.
-
-  arch/x86/kvm/x86.c: In function =E2=80=98kvm_arch_tsc_get_attr=E2=80=99:
-  arch/x86/kvm/x86.c:4947:22: error: cast to pointer from integer of differ=
-ent size
-   4947 |  u64 __user *uaddr =3D (u64 __user *)attr->addr;
-        |                      ^
-  arch/x86/kvm/x86.c: In function =E2=80=98kvm_arch_tsc_set_attr=E2=80=99:
-  arch/x86/kvm/x86.c:4967:22: error: cast to pointer from integer of differ=
-ent size
-   4967 |  u64 __user *uaddr =3D (u64 __user *)attr->addr;
-        |                      ^
-
-Cc: Oliver Upton <oupton@google.com>
-Fixes: 469fde25e680 ("KVM: x86: Expose TSC offset controls to userspace")
-Signed-off-by: Sean Christopherson <seanjc@google.com>
+Suggested-by: Randy Dunlap <rdunlap@infradead.org>
+Fixes: 67f1e027c270 ("drivers/cdrom: improved ioctl for media change detection")
+Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
 ---
- arch/x86/kvm/x86.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ Documentation/userspace-api/ioctl/cdrom.rst | 116 ++++++++++----------
+ 1 file changed, 58 insertions(+), 58 deletions(-)
 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 196ac33ef958..4a52a08707de 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -4944,9 +4944,12 @@ static int kvm_arch_tsc_has_attr(struct kvm_vcpu *vc=
-pu,
- static int kvm_arch_tsc_get_attr(struct kvm_vcpu *vcpu,
- 				 struct kvm_device_attr *attr)
- {
--	u64 __user *uaddr =3D (u64 __user *)attr->addr;
-+	u64 __user *uaddr =3D (u64 __user *)(unsigned long)attr->addr;
- 	int r;
-=20
-+	if ((u64)(unsigned long)uaddr !=3D attr->addr)
-+		return -EFAULT;
-+
- 	switch (attr->attr) {
- 	case KVM_VCPU_TSC_OFFSET:
- 		r =3D -EFAULT;
-@@ -4964,10 +4967,13 @@ static int kvm_arch_tsc_get_attr(struct kvm_vcpu *v=
-cpu,
- static int kvm_arch_tsc_set_attr(struct kvm_vcpu *vcpu,
- 				 struct kvm_device_attr *attr)
- {
--	u64 __user *uaddr =3D (u64 __user *)attr->addr;
-+	u64 __user *uaddr =3D (u64 __user *)(unsigned long)attr->addr;
- 	struct kvm *kvm =3D vcpu->kvm;
- 	int r;
-=20
-+	if ((u64)(unsigned long)uaddr !=3D attr->addr)
-+		return -EFAULT;
-+
- 	switch (attr->attr) {
- 	case KVM_VCPU_TSC_OFFSET: {
- 		u64 offset, tsc, ns;
---=20
-2.33.0.882.g93a45727a2-goog
+diff --git a/Documentation/userspace-api/ioctl/cdrom.rst b/Documentation/userspace-api/ioctl/cdrom.rst
+index bac5bbf93ca0..682948fc88a3 100644
+--- a/Documentation/userspace-api/ioctl/cdrom.rst
++++ b/Documentation/userspace-api/ioctl/cdrom.rst
+@@ -13,64 +13,64 @@ in drivers/cdrom/cdrom.c and drivers/block/scsi_ioctl.c
+ ioctl values are listed in <linux/cdrom.h>.  As of this writing, they
+ are as follows:
+ 
+-	======================	===============================================
+-	CDROMPAUSE		Pause Audio Operation
+-	CDROMRESUME		Resume paused Audio Operation
+-	CDROMPLAYMSF		Play Audio MSF (struct cdrom_msf)
+-	CDROMPLAYTRKIND		Play Audio Track/index (struct cdrom_ti)
+-	CDROMREADTOCHDR		Read TOC header (struct cdrom_tochdr)
+-	CDROMREADTOCENTRY	Read TOC entry (struct cdrom_tocentry)
+-	CDROMSTOP		Stop the cdrom drive
+-	CDROMSTART		Start the cdrom drive
+-	CDROMEJECT		Ejects the cdrom media
+-	CDROMVOLCTRL		Control output volume (struct cdrom_volctrl)
+-	CDROMSUBCHNL		Read subchannel data (struct cdrom_subchnl)
+-	CDROMREADMODE2		Read CDROM mode 2 data (2336 Bytes)
+-				(struct cdrom_read)
+-	CDROMREADMODE1		Read CDROM mode 1 data (2048 Bytes)
+-				(struct cdrom_read)
+-	CDROMREADAUDIO		(struct cdrom_read_audio)
+-	CDROMEJECT_SW		enable(1)/disable(0) auto-ejecting
+-	CDROMMULTISESSION	Obtain the start-of-last-session
+-				address of multi session disks
+-				(struct cdrom_multisession)
+-	CDROM_GET_MCN		Obtain the "Universal Product Code"
+-				if available (struct cdrom_mcn)
+-	CDROM_GET_UPC		Deprecated, use CDROM_GET_MCN instead.
+-	CDROMRESET		hard-reset the drive
+-	CDROMVOLREAD		Get the drive's volume setting
+-				(struct cdrom_volctrl)
+-	CDROMREADRAW		read data in raw mode (2352 Bytes)
+-				(struct cdrom_read)
+-	CDROMREADCOOKED		read data in cooked mode
+-	CDROMSEEK		seek msf address
+-	CDROMPLAYBLK		scsi-cd only, (struct cdrom_blk)
+-	CDROMREADALL		read all 2646 bytes
+-	CDROMGETSPINDOWN	return 4-bit spindown value
+-	CDROMSETSPINDOWN	set 4-bit spindown value
+-	CDROMCLOSETRAY		pendant of CDROMEJECT
+-	CDROM_SET_OPTIONS	Set behavior options
+-	CDROM_CLEAR_OPTIONS	Clear behavior options
+-	CDROM_SELECT_SPEED	Set the CD-ROM speed
+-	CDROM_SELECT_DISC	Select disc (for juke-boxes)
+-	CDROM_MEDIA_CHANGED	Check is media changed
+-	CDROM_TIMED_MEDIA_CHANGE	Check if media changed
+-					since given time
+-					(struct cdrom_timed_media_change_info)
+-	CDROM_DRIVE_STATUS	Get tray position, etc.
+-	CDROM_DISC_STATUS	Get disc type, etc.
+-	CDROM_CHANGER_NSLOTS	Get number of slots
+-	CDROM_LOCKDOOR		lock or unlock door
+-	CDROM_DEBUG		Turn debug messages on/off
+-	CDROM_GET_CAPABILITY	get capabilities
+-	CDROMAUDIOBUFSIZ	set the audio buffer size
+-	DVD_READ_STRUCT		Read structure
+-	DVD_WRITE_STRUCT	Write structure
+-	DVD_AUTH		Authentication
+-	CDROM_SEND_PACKET	send a packet to the drive
+-	CDROM_NEXT_WRITABLE	get next writable block
+-	CDROM_LAST_WRITTEN	get last block written on disc
+-	======================	===============================================
++	========================  ===============================================
++	CDROMPAUSE		  Pause Audio Operation
++	CDROMRESUME		  Resume paused Audio Operation
++	CDROMPLAYMSF		  Play Audio MSF (struct cdrom_msf)
++	CDROMPLAYTRKIND		  Play Audio Track/index (struct cdrom_ti)
++	CDROMREADTOCHDR		  Read TOC header (struct cdrom_tochdr)
++	CDROMREADTOCENTRY	  Read TOC entry (struct cdrom_tocentry)
++	CDROMSTOP		  Stop the cdrom drive
++	CDROMSTART		  Start the cdrom drive
++	CDROMEJECT		  Ejects the cdrom media
++	CDROMVOLCTRL		  Control output volume (struct cdrom_volctrl)
++	CDROMSUBCHNL		  Read subchannel data (struct cdrom_subchnl)
++	CDROMREADMODE2		  Read CDROM mode 2 data (2336 Bytes)
++				  (struct cdrom_read)
++	CDROMREADMODE1		  Read CDROM mode 1 data (2048 Bytes)
++				  (struct cdrom_read)
++	CDROMREADAUDIO		  (struct cdrom_read_audio)
++	CDROMEJECT_SW		  enable(1)/disable(0) auto-ejecting
++	CDROMMULTISESSION	  Obtain the start-of-last-session
++				  address of multi session disks
++				  (struct cdrom_multisession)
++	CDROM_GET_MCN		  Obtain the "Universal Product Code"
++				  if available (struct cdrom_mcn)
++	CDROM_GET_UPC		  Deprecated, use CDROM_GET_MCN instead.
++	CDROMRESET		  hard-reset the drive
++	CDROMVOLREAD		  Get the drive's volume setting
++				  (struct cdrom_volctrl)
++	CDROMREADRAW		  read data in raw mode (2352 Bytes)
++				  (struct cdrom_read)
++	CDROMREADCOOKED		  read data in cooked mode
++	CDROMSEEK		  seek msf address
++	CDROMPLAYBLK		  scsi-cd only, (struct cdrom_blk)
++	CDROMREADALL		  read all 2646 bytes
++	CDROMGETSPINDOWN	  return 4-bit spindown value
++	CDROMSETSPINDOWN	  set 4-bit spindown value
++	CDROMCLOSETRAY		  pendant of CDROMEJECT
++	CDROM_SET_OPTIONS	  Set behavior options
++	CDROM_CLEAR_OPTIONS	  Clear behavior options
++	CDROM_SELECT_SPEED	  Set the CD-ROM speed
++	CDROM_SELECT_DISC	  Select disc (for juke-boxes)
++	CDROM_MEDIA_CHANGED	  Check is media changed
++	CDROM_TIMED_MEDIA_CHANGE  Check if media changed
++				  since given time
++				  (struct cdrom_timed_media_change_info)
++	CDROM_DRIVE_STATUS	  Get tray position, etc.
++	CDROM_DISC_STATUS	  Get disc type, etc.
++	CDROM_CHANGER_NSLOTS	  Get number of slots
++	CDROM_LOCKDOOR		  lock or unlock door
++	CDROM_DEBUG		  Turn debug messages on/off
++	CDROM_GET_CAPABILITY	  get capabilities
++	CDROMAUDIOBUFSIZ	  set the audio buffer size
++	DVD_READ_STRUCT		  Read structure
++	DVD_WRITE_STRUCT	  Write structure
++	DVD_AUTH		  Authentication
++	CDROM_SEND_PACKET	  send a packet to the drive
++	CDROM_NEXT_WRITABLE	  get next writable block
++	CDROM_LAST_WRITTEN	  get last block written on disc
++	========================  ===============================================
+ 
+ 
+ The information that follows was determined from reading kernel source
+-- 
+2.31.1
 
