@@ -2,126 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6721C424FBB
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 11:09:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E8B5424FBF
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 11:09:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232646AbhJGJK7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 05:10:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37880 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231661AbhJGJK4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 05:10:56 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6573CC061746;
-        Thu,  7 Oct 2021 02:09:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=Y5xMk8StgC57MyBQhfGnYcEdOD5+0ggmDgCWfSVFI3g=; b=Eucoetdp2M0/xpchTWen3ZtRVB
-        kxQH5aB2Eqe2IZHL0TQg82/FgvAA1hMr5ZAKC9WjWRz7hCS7wR9l9S0B406gRcTtfuekLhx4ROKyf
-        P76bJUFvhRXzLgZTV5vFvqOkU94RskhT0QMKPOp8rq7FyAadipK7m9w3FtfTQFaNESqjsAcMQsPxV
-        4W9qBQBeV+dE85uHjTgR3Vd7HRRr3vsjnvqxHXKqgq7s+Ak0BjPm9TOZH17IkM5VmF+gBguegR5u5
-        cyQeR/kZZLH1qQfO7Qf+c/7UaRG8OtHR6qSGYdCp8YNF66UdUDyjdtoj9evs459Drh7Fdmj28aJMf
-        oEkBPq/g==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mYPOI-008RlV-HZ; Thu, 07 Oct 2021 09:08:38 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 1125498623C; Thu,  7 Oct 2021 11:08:38 +0200 (CEST)
-Date:   Thu, 7 Oct 2021 11:08:37 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Zack Weinberg <zack@owlfolio.org>
-Cc:     libc-alpha@sourceware.org,
-        =?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@collabora.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
+        id S240370AbhJGJLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 05:11:50 -0400
+Received: from mga14.intel.com ([192.55.52.115]:5182 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231661AbhJGJLs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 05:11:48 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10129"; a="226515996"
+X-IronPort-AV: E=Sophos;i="5.85,354,1624345200"; 
+   d="scan'208";a="226515996"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 02:09:55 -0700
+X-IronPort-AV: E=Sophos;i="5.85,354,1624345200"; 
+   d="scan'208";a="657317449"
+Received: from cleane-mobl.ger.corp.intel.com (HELO [10.213.249.175]) ([10.213.249.175])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 02:09:53 -0700
+Subject: Re: [RFC 1/8] sched: Add nice value change notifier
+From:   Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
+To:     Barry Song <21cnbao@gmail.com>
+Cc:     "Wanghui (John)" <john.wanghui@huawei.com>,
+        Intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
         Ingo Molnar <mingo@redhat.com>,
-        Darren Hart <dvhart@infradead.org>,
-        linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        kernel@collabora.com, krisman@collabora.com,
-        linux-api@vger.kernel.org, mtk.manpages@gmail.com,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v2 16/22] futex: Implement sys_futex_waitv()
-Message-ID: <20211007090837.GQ174703@worktop.programming.kicks-ass.net>
-References: <20210923171111.300673-1-andrealmeid@collabora.com>
- <20210923171111.300673-17-andrealmeid@collabora.com>
- <20211006115022.GH174703@worktop.programming.kicks-ass.net>
- <47b13460-27a4-474c-879b-ed1c668e5923@www.fastmail.com>
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+References: <20211004143650.699120-1-tvrtko.ursulin@linux.intel.com>
+ <20211004143650.699120-2-tvrtko.ursulin@linux.intel.com>
+ <562d45e1-4a27-3252-f615-3ab1ef531f2b@huawei.com>
+ <CAGsJ_4w5Y4=v93YmTrXJ6hDgjKshxiAZ-ox-Nz_7uRwe4ECtdw@mail.gmail.com>
+ <8381e87d-ef7f-4759-569b-f6dabeb02939@linux.intel.com>
+ <CAGsJ_4wF1SmDL6eoEXRB-NwGLALkwhj9wLC5JKaQJpaQx1=5ZA@mail.gmail.com>
+ <382a4bd5-bb74-5928-be67-afbdc7aa3663@linux.intel.com>
+Organization: Intel Corporation UK Plc
+Message-ID: <6818e34e-d41c-67b7-85dd-76d2e47bc078@linux.intel.com>
+Date:   Thu, 7 Oct 2021 10:09:51 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <382a4bd5-bb74-5928-be67-afbdc7aa3663@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <47b13460-27a4-474c-879b-ed1c668e5923@www.fastmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-Hi Zack,
-
-Please use reply-all; I've restored the Cc's
-
-On Wed, Oct 06, 2021 at 09:48:43AM -0400, Zack Weinberg wrote:
-> On Wed, Oct 6, 2021, at 7:50 AM, Peter Zijlstra wrote:
-> > On Thu, Sep 23, 2021 at 02:11:05PM -0300, André Almeida wrote:
-> >> Returns the array index of one of the awakened futexes. There’s no given
-> >> information of how many were awakened, or any particular attribute of it
-> >> (if it’s the first awakened, if it is of the smaller index...).
-> >
-> > As per some native speakers on IRC, awaken isn't the right word. I've
-> > changed it like the below.
+On 07/10/2021 09:50, Tvrtko Ursulin wrote:
 > 
-> "woken" and "awoken" are also not the right word (my brain flags both
-> as spelling errors).  Suggestions below:
+> On 06/10/2021 21:21, Barry Song wrote:
+>> On Thu, Oct 7, 2021 at 2:44 AM Tvrtko Ursulin
+>> <tvrtko.ursulin@linux.intel.com> wrote:
+>>>
+>>>
+>>> Hi,
+>>>
+>>> On 06/10/2021 08:58, Barry Song wrote:
+>>>> On Wed, Oct 6, 2021 at 5:15 PM Wanghui (John) 
+>>>> <john.wanghui@huawei.com> wrote:
+>>>>>
+>>>>> HI Tvrtko
+>>>>>
+>>>>> On 2021/10/4 22:36, Tvrtko Ursulin wrote:
+>>>>>>     void set_user_nice(struct task_struct *p, long nice)
+>>>>>>     {
+>>>>>>         bool queued, running;
+>>>>>> -     int old_prio;
+>>>>>> +     int old_prio, ret;
+>>>>>>         struct rq_flags rf;
+>>>>>>         struct rq *rq;
+>>>>>>
+>>>>>> @@ -6915,6 +6947,9 @@ void set_user_nice(struct task_struct *p, 
+>>>>>> long nice)
+>>>>>>
+>>>>>>     out_unlock:
+>>>>>>         task_rq_unlock(rq, p, &rf);
+>>>>>> +
+>>>>>> +     ret = atomic_notifier_call_chain(&user_nice_notifier_list, 
+>>>>>> nice, p);
+>>>>>> +     WARN_ON_ONCE(ret != NOTIFY_DONE);
+>>>>>>     }
+>>>>> How about adding a new "io_nice" to task_struct，and move the call 
+>>>>> chain to
+>>>>> sched_setattr/getattr, there are two benefits:
+>>>>
+>>>> We already have an ionice for block io scheduler. hardly can this 
+>>>> new io_nice
+>>>> be generic to all I/O. it seems the patchset is trying to link
+>>>> process' nice with
+>>>> GPU's scheduler, to some extent, it makes more senses than having a
+>>>> common ionice because we have a lot of IO devices in the systems, we 
+>>>> don't
+>>>> know which I/O the ionice of task_struct should be applied to.
+>>>>
+>>>> Maybe we could have an ionice dedicated for GPU just like ionice for 
+>>>> CFQ
+>>>> of bio/request scheduler.
+>>>
+>>> Thought crossed my mind but I couldn't see the practicality of a 3rd
+>>> nice concept. I mean even to start with I struggle a bit with the
+>>> usefulness of existing ionice vs nice. Like coming up with practical
+>>> examples of usecases where it makes sense to decouple the two 
+>>> priorities.
+>>>
+>>>   From a different angle I did think inheriting CPU nice makes sense for
+>>> GPU workloads. This is because today, and more so in the future,
+>>> computations on a same data set do flow from one to the other.
+>>>
+>>> Like maybe a simple example of batch image processing where CPU decodes,
+>>> GPU does a transform and then CPU encodes. Or a different mix, doesn't
+>>> really matter, since the main point it is one computing pipeline from
+>>> users point of view.
+>>>
+>>
+>> I am on it. but I am also seeing two problems here:
+>> 1. nice is not global in linux. For example, if you have two cgroups, 
+>> cgroup A
+>> has more quota then cgroup B. Tasks in B won't win even if it has a 
+>> lower nice.
+>> cgroups will run proportional-weight time-based division of CPU.
+>>
+>> 2. Historically, we had dynamic nice which was adjusted based on the 
+>> average
+>> sleep/running time; right now, we don't have dynamic nice, but virtual 
+>> time
+>> still make tasks which sleep more preempt other tasks with the same nice
+>> or even lower nice.
+>> virtual time += physical time/weight by nice
+>> so, static nice number doesn't always make sense to decide preemption.
+>>
+>> So it seems your patch only works under some simple situation for example
+>> no cgroups, tasks have similar sleep/running time.
 > 
-> > - * Returns the array index of one of the awaken futexes. There's no given
-> > - * information of how many were awakened, or any particular attribute of it (if
-> > - * it's the first awakened, if it is of the smaller index...).
-> > + * Returns the array index of one of the woken futexes. There's no given
-> > + * information of how many were woken, or any particular attribute of it (if
-> > + * it's the first woken, if it is of the smaller index...).
+> Yes, I broadly agree with your assessment. Although there are plans for 
+> adding cgroup support to i915 scheduling, I doubt as fine grained 
+> control and exact semantics as there are on the CPU side will happen.
 > 
-> "awakened" was the correct word in all three places here.  The
-> sentences are awkward, I might suggest
-
-Afaict it's a bit of a mess. I googled the thing and there's apparently
-2 verbs with identical meaning but different inflections:
-
-  awake (irregular): awake, awoke (awaked), awoken (awaken)
-  awaken (regular):  awaken, awakened, awakened.
-
-Now the thing is, the futex operation is FUTEX_WAKE, not FUTEX_AWAKEN,
-therefore I think we should be going with the first (irregular) verb,
-which then gets me 'woken'.
-
-( also, 'awaked' gets me the mental image of a hillbilly, but that might
-  just be me -- the forms were all suggested by meriam-webster:
-
-  https://www.merriam-webster.com/words-at-play/usage-awaken-awoken-awakened
-
-  for further confusion also see:
-
-  https://www.grammar.com/awake-awaken-wake-waken
-)
-
-> # Returns the array index of one of the awakened futexes.
-> # No further information is provided: any number of other
-> # futexes may also have been awakened by the same event, and
-> # if more than one futex was awakened, the returned index may
-> # refer to any one of them.  (It is not necessarily the futex
-> # with the smallest index, nor the one most recently awakened,
-> # nor ...)
-
-Aside of the whole wake mess, I do like that better, let me go make that
-happen.
-
-> > -	 * absorb any awake events, which cannot be done before the
-> > +	 * loose any wake events, which cannot be done before the
+> Mostly because the drive seems to be for more micro-controller managed 
+> scheduling which adds further challenges in connecting the two sides 
+> together.
 > 
-> 'wake events' is correct here, but you introduced an unrelated error:
-> 'loose' is the opposite of 'tight', you want 'lose' with only one O.
+> But when you say it is a problem, I would characterize it more a 
+> weakness in terms of being only a subset of possible control. It is 
+> still richer (better?) than what currently exists and as demonstrated 
+> with benchmarks in my cover letter it can deliver improvements in user 
+> experience. If in the mid term future we can extend it with cgroup 
+> support then the concept should still apply and get closer to how you 
+> described nice works in the CPU world.
+> 
+> Main question in my mind is whether the idea of adding the 
+> sched_attr/priority notifier to the kernel can be justified. Because as 
+> mentioned before, everything apart from adjusting currently running GPU 
+> jobs could be done purely in userspace. Stack changes would be quite 
+> extensive and all, but that is not usually a good enough reason to put 
+> something in the kernel. That's why it is an RFC an invitation to discuss.
+> 
+> Even ionice inherits from nice (see task_nice_ioprio()) so I think 
+> argument can be made for drivers as well.
 
-I shall forever make that mistake :-(
+Now that I wrote this, I had a little bit of a light bulb moment. If I 
+abandon the idea of adjusting the priority of already submitted work 
+items, then I can do much of what I want purely from within the confines 
+of i915.
+
+I simply add code to inherit from current task nice on every new work 
+item submission. This should probably bring the majority of the benefit 
+I measured.
+
+Regards,
+
+Tvrtko
