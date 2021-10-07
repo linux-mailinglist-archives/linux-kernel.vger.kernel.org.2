@@ -2,197 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1D00424FF1
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 11:19:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ABDA424FF8
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 11:21:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240541AbhJGJV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 05:21:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40280 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240544AbhJGJVW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 05:21:22 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5418C061767
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 02:19:25 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id z11so14024726lfj.4
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 02:19:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=lm42Xwh2Jm/bg7CFlkLuIvFq/6TymtSrcpKOF86TZ4E=;
-        b=kHtkBo9ZhQK5B1g4gzDepRMdzKt0BA7KDm9S+bG1ZgKaspEmsSEi4cACZ4QVhoSXMX
-         LAfkFrgrWPpYUQwgbd/jFB/KmVdrQAyHi9LRYCkY0mLjcj0rcs/pG+L9ji8mf5hkwZWm
-         oCET0LSGZwPR2S/Po4ecuyfXN/LJokwrNRtgoDL7jxNUmhQLR1EDjkk9LPBIRez4RyVc
-         eTHY3LyShSYeeYkfxXuXf+koCknCWj8EK3Cs9ygH5Mk1jcwi12qvbyJ7fIHV9isXv1Us
-         jGyfzeq8NNyvrlER3/UOZSyUDyr38dWbguKbn5rCOcG20K3+07f6jhOEXzDPnPAMKvBl
-         2ylg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=lm42Xwh2Jm/bg7CFlkLuIvFq/6TymtSrcpKOF86TZ4E=;
-        b=wlsJbI9RF5QqXcL94Jm0iCteNapQA22ujTKtIKaEzjiX++OozsJNr1inLh7vOJ8yDN
-         ldUvpj9gE4Lwhb9Gd5MPa/dN7HLMoBnOfp4t6JYCB3WYm7nrOK2sk3AqM20Da5pExBw3
-         nIrWzB2M506ZM/AMDNA0YNePryIvsLTOi6GW8MsAEe07b1b6bytFoM4U9TQ1ypL18FqN
-         RzeovEGgENM5BjrGAeMuQfXMq7l+/SpiXQxzwMoAA5jqK3Z6RD4Fxoj2gT57lKaQbTgT
-         ZlQ8nmC4MGOBKE9T6KZrKg3sUJAw2EVLfVc/JC6MNmzENRd6y6sSSYn4tMuj0zqqh92o
-         9HIw==
-X-Gm-Message-State: AOAM5308I21oh2psF8b+pvrVJNqY3HGXZKj2Ctu+5ijcSSnhlPbvlp6V
-        3duqJRXtsxqOr/2GzAvdd5dQYoYpi1AySCJ99TZ+Cw==
-X-Google-Smtp-Source: ABdhPJyLVYNwO6wH7UjbrvAKZXt6rP/z5UNYySvnmg5CD1b+EuFOoKR5sbXNeY4a58mDR28IUl9i55ImMkilW9q3b14=
-X-Received: by 2002:a05:6512:3095:: with SMTP id z21mr3161687lfd.167.1633598363639;
- Thu, 07 Oct 2021 02:19:23 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210926224058.1252-1-digetx@gmail.com> <20210926224058.1252-7-digetx@gmail.com>
- <CAPDyKFq+LS4Jr1GyC-a-tGWPzGH0JxfJ9wKY=uQEBGYm952azw@mail.gmail.com>
- <24101cd6-d3f5-1e74-db39-145ecd30418b@gmail.com> <CAPDyKFreK7976PJL-1zySoza_yXM7rMQ64aODWUZ+U3L-uCa0w@mail.gmail.com>
- <4bdba8a2-4b9b-ed7d-e6ca-9218d8200a85@gmail.com> <74a47158-e2e4-5fd0-3f37-0b50d4ead4d9@gmail.com>
- <CAPDyKFr2-f1wM+6jF9vWJ-Nq80Zg1Z3qFP6saULOrBi1270HGw@mail.gmail.com>
- <b06bf794-b8b3-417b-58ef-4d815ca86c95@gmail.com> <4c7b1a4c-c136-3650-8f77-9f98caa506f7@gmail.com>
- <2dd6bffc-9817-f4b1-0b92-f82f22fcf79a@gmail.com>
-In-Reply-To: <2dd6bffc-9817-f4b1-0b92-f82f22fcf79a@gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 7 Oct 2021 11:18:47 +0200
-Message-ID: <CAPDyKFox6THcxDouW2T7F2W__ZcoJP5GeG+H_a4NQmSqAFZ_oQ@mail.gmail.com>
-Subject: Re: [PATCH v13 06/35] clk: tegra: Support runtime PM and power domain
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Peter Chen <peter.chen@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Nishanth Menon <nm@ti.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        linux-staging@lists.linux.dev, linux-pwm@vger.kernel.org,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Richard Weinberger <richard@nod.at>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
+        id S240593AbhJGJXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 05:23:20 -0400
+Received: from mga11.intel.com ([192.55.52.93]:29344 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240304AbhJGJXJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 05:23:09 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10129"; a="223604774"
+X-IronPort-AV: E=Sophos;i="5.85,354,1624345200"; 
+   d="scan'208";a="223604774"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 02:21:11 -0700
+X-IronPort-AV: E=Sophos;i="5.85,354,1624345200"; 
+   d="scan'208";a="439457666"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 02:21:02 -0700
+Received: from andy by smile with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mYPaE-009TlL-CK;
+        Thu, 07 Oct 2021 12:20:58 +0300
+Date:   Thu, 7 Oct 2021 12:20:58 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, kunit-dev@googlegroups.com,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
         Mauro Carvalho Chehab <mchehab@kernel.org>,
-        David Heidelberg <david@ixit.cz>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Steven Rostedt <rostedt@goodmis.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Thomas Graf <tgraf@suug.ch>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Subject: Re: [PATCH v1 3/3] kernel.h: Split out container_of() and
+ typeof_memeber() macros
+Message-ID: <YV67+vrn3MxpXABy@smile.fi.intel.com>
+References: <20210713084541.7958-1-andriy.shevchenko@linux.intel.com>
+ <20210713084541.7958-3-andriy.shevchenko@linux.intel.com>
+ <YO1s+rHEqC9RjMva@kroah.com>
+ <YO12ARa3i1TprGnJ@smile.fi.intel.com>
+ <YO13lSUdPfNGOnC3@kroah.com>
+ <CANiq72=vs8-88h3Z+BON=qA4CZQ1pS1nggnCFHDEHYyG+Y+3JQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANiq72=vs8-88h3Z+BON=qA4CZQ1pS1nggnCFHDEHYyG+Y+3JQ@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 7 Oct 2021 at 01:21, Dmitry Osipenko <digetx@gmail.com> wrote:
->
-> 07.10.2021 01:01, Dmitry Osipenko =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> > 07.10.2021 00:14, Dmitry Osipenko =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> >> 06.10.2021 15:43, Ulf Hansson =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> >>> On Wed, 6 Oct 2021 at 00:43, Dmitry Osipenko <digetx@gmail.com> wrote=
-:
-> >>>>
-> >>>> 06.10.2021 01:19, Dmitry Osipenko =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> >>>> ...
-> >>>>> I reproduced the OFF problem by removing the clk prepare/unprepare =
-from
-> >>>>> the suspend/resume of the clk driver and making some extra changes =
-to
-> >>>>> clock tree topology and etc to trigger the problem on Nexus 7.
-> >>>>>
-> >>>>> tegra-pmc 7000e400.pmc: failed to turn off PM domain heg: -13
-> >>>>>
-> >>>>> It happens from genpd_suspend_noirq() -> tegra_genpd_power_off() ->=
- clk
-> >>>>> -> GENPD -> I2C -> runtime-pm.
-> >>>>>
-> >>>>> -13 is EACCES, it comes from the runtime PM of I2C device. RPM is
-> >>>>> prohibited/disabled during late (NOIRQ) suspend by the drivers core=
-.
-> >>>>
-> >>>> My bad, I double-checked and it's not I2C RPM that is failing now, b=
-ut
-> >>>> the clock's RPM [1], which is also unavailable during NOIRQ.
-> >>>
-> >>> Yes, that sounds reasonable.
-> >>>
-> >>> You would then need a similar patch for the tegra clock driver as I
-> >>> suggested for tegra I2C driver. That should solve the problem, I
-> >>> think.
-> >>>
-> >>>>
-> >>>> [1]
-> >>>> https://elixir.free-electrons.com/linux/v5.15-rc4/source/drivers/clk=
-/clk.c#L116
-> >>>>
-> >>>> Previously it was I2C RPM that was failing in a similar way, but cod=
-e
-> >>>> changed a tad since that time.
-> >>>
-> >>> Alright. In any case, as long as the devices gets suspended in the
-> >>> correct order, I think it should be fine to cook a patch along the
-> >>> lines of what I suggest for the I2C driver as well.
-> >>>
-> >>> It should work, I think. Although, maybe you want to avoid runtime
-> >>> resuming the I2C device, unless it's the device belonging to the PMIC
-> >>> interface, if there is a way to distinguish that for the driver.
-> >>
-> >> Ulf, thank you very much for the suggestions! I was thinking about thi=
-s
-> >> all once again and concluded that the simplest variant will be to just
-> >> remove the suspend ops from the clk driver since neither of PLLs requi=
-re
-> >> high voltage. We now have voltage bumped to a nominal level during
-> >> suspend by Tegra's regulator-coupler driver and it's much higher than
-> >> voltage needed by PLLs. So the problem I was trying to work around
-> >> doesn't really exist anymore.
+On Tue, Jul 13, 2021 at 08:39:22PM +0200, Miguel Ojeda wrote:
+> On Tue, Jul 13, 2021 at 1:23 PM Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
 > >
-> > I hurried a bit with the conclusion, keep forgetting that I need to
-> > change the clock tree in order to test it all properly :/ It's not fixe=
-d
-> > yet.
-> >
->
-> Please let me iterate once again. The problem we currently have is that
-> clock may be enabled during NOIRQ time. In order to enable clock, it
-> needs to be prepared. In order to prepare clock, the clock's device
-> needs to be runtime-resumed. The runtime PM is unavailable at the NOIRQ
-> time.
->
-> To solve this problem we need to prepare clock beforehand.
->
-> The clock will stay prepared during suspend, but this is not a problem
-> since all the clocks we care about don't require high voltage and
-> voltage is guaranteed to be bumped high during suspend by Tegra's
-> regulator-coupler driver anyways.
->
-> So everything we need to do is to keep clocks prepared. There are two
-> options how to do that:
->
-> [1] this patch which explicitly prepares clocks using clk API.
->
-> [2] Use runtime PM API, like this:
->
-> static const struct dev_pm_ops tegra_clock_pm =3D {
->         SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_resume_and_get, pm_runtime_put=
-)
-> };
->
-> Ulf, are you now okay with the current variant [1] of the patch or you
-> prefer the second [2] option more?
+> > Life is messy and can not easily be partitioned into tiny pieces.  That
+> > way usually ends up being even messier in the end...
+> 
+> I agree measurements would be ideal.
+> 
+> Having said that, even if it makes no performance difference, I think
+> it is reasonable to split things (within reason) and makes a bunch of
+> other things easier, plus sometimes one can enforce particular
+> conventions in the separate header (like I did when introducing
+> `compiler_attributes.h`).
 
-I prefer option [2]. The clock_prepare|unprepare() thingy in option
-[1], looks more like an odd workaround to me.
+It does almost 2% (steady) speedup. I will send a v2 with methodology
+and numbers of testing.
 
-Does that make sense to you as well?
+-- 
+With Best Regards,
+Andy Shevchenko
 
-Kind regards
-Uffe
+
