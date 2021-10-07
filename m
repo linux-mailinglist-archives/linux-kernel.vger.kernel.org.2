@@ -2,195 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE574425483
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 15:45:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94093425485
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 15:45:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241641AbhJGNrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 09:47:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56945 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241536AbhJGNrM (ORCPT
+        id S241679AbhJGNr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 09:47:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45480 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241536AbhJGNr1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 09:47:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633614318;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6usspG94A1kNlqd/WFrWFDCc16P7tAqSAi+n+Gy8zoU=;
-        b=FWPeX95ARzuRE9XEbWHMuNFqAJYLUonkIFEyZKI5tOn3MQvTRDjPixBbLtYS1Xs4o1mIZ/
-        kG00kwnIOVqJ+0GbJjEveQ8EDBuP0KLkXQQ1y8lrybsv0FvBF9NxGXR/uDZGPIPEHnQ4UO
-        r5xRo2R3y3N7PimRROL2hVvy7gl+yUA=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-220-R14SYCegMfmYK7caeXJXYQ-1; Thu, 07 Oct 2021 09:45:16 -0400
-X-MC-Unique: R14SYCegMfmYK7caeXJXYQ-1
-Received: by mail-wr1-f71.google.com with SMTP id r16-20020adfbb10000000b00160958ed8acso4728394wrg.16
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 06:45:16 -0700 (PDT)
+        Thu, 7 Oct 2021 09:47:27 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B2B5C061570;
+        Thu,  7 Oct 2021 06:45:33 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id t16so1458122eds.9;
+        Thu, 07 Oct 2021 06:45:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=E+L+Wf7T2Owcsoh/9oeTRFjF2XYJmuQTubfTOTv8RUQ=;
+        b=dna3fPOCY61Yr8YaGu45UfNQl7yiPxRWlcy/YaJ7DuckrOuxhhlEzZELPt/GX4eZYR
+         mHJjvWpdIAygYQ23eAlM7tK6Fdv4eE3rM9jzB3hXRnTlQmTBA04/Y88+LTPxB7NA/C3T
+         WYHeUghL5MuZZDleEVFFcAt4juIRdyApwcOUU3H57dVm44U98WmmHupEC+hVw8F+0Ltc
+         U+f4jFwBSQ/35bNBN5nLFw/mc1gICZwKjHIvDeWenrMv3SBYX16CvAxpwQpsNAkQpi7W
+         BNIpCyd//9LEi08LHMINTNSnZgwXo7UNsSNTM5nieHVmgx5dKdE6/pirSKzcNQDstQE/
+         EuOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=6usspG94A1kNlqd/WFrWFDCc16P7tAqSAi+n+Gy8zoU=;
-        b=r5aMyyEm+FJlxrHaTms6wdXGQ7dpMLbXBkR8r2KAlc0Vb4BIBvMiUW+vSqy5NQz1GH
-         VyKhhj7qdPGpLdV46oI/9tl7gOr99PBTmZTjW0gW1gYk/xDuaUslap29h2mVX4bpueoC
-         uzhYQmo0PTXf6ob4wnB/YAGmZDdbmNlM5cQkVq5N/i9sCojNRQ2MLsE1CvR5bSeB2C02
-         khZ1cAjjc7xZDNqG32sjkK4v2vbdOOngrYlxiZ2iHOFRfR2p938rW5KZPbvxOqlhgxVF
-         YFDGjdlZ/xKf3wn1p3sYuoKxrLchAwopYvaPKh232UM5jOmiVd92I6ZuZRvi7H3jPghc
-         m7wQ==
-X-Gm-Message-State: AOAM532cG4AJyHJe3zM+TvC/CdAeTJFDJQ66t4/Nqsr4G/u/GwuBOsiF
-        5zzx52pflVQC2GZ+eDn0XD8dYX0bJVIUFB53LEE1OMdoioI9ts8o4LwJLHBvhFyt79sSoVHgP3E
-        SvhXAwjr/Xh5n4Ta1vv0nJtJH
-X-Received: by 2002:adf:bb08:: with SMTP id r8mr5750704wrg.222.1633614315041;
-        Thu, 07 Oct 2021 06:45:15 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx5grJqb2V1AulhcQfdWUkwxLsq/AzMT1s5kA3HVmlm1/7Jko50u59wnpZfc6iu0gGMemasiQ==
-X-Received: by 2002:adf:bb08:: with SMTP id r8mr5750665wrg.222.1633614314742;
-        Thu, 07 Oct 2021 06:45:14 -0700 (PDT)
-Received: from [192.168.100.42] ([82.142.3.114])
-        by smtp.gmail.com with ESMTPSA id a81sm1300665wmd.30.2021.10.07.06.45.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Oct 2021 06:45:14 -0700 (PDT)
-Message-ID: <1bc32339-b786-99bd-d49c-ad19ac7ce29b@redhat.com>
-Date:   Thu, 7 Oct 2021 15:45:13 +0200
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=E+L+Wf7T2Owcsoh/9oeTRFjF2XYJmuQTubfTOTv8RUQ=;
+        b=BFvvLvrVaNwOxdUie3E+UXs2CwIzc5jOmG6MqLo+NxQGxEgmwnyTNf+bqh0DWWWaX6
+         4KigFjGwkQ3Oyn/1uLBLunUaXH8Dq6vYWcDSbtZbFRg5m/roJFi7c+DyIAYG20ZuKtg8
+         V6lLjNJQZ/fsbLJXdR24btdentlzqi2Ws1ceeO28xdYx6a8n/pxNCTEfGeYuPK5c9eP2
+         kU8ComzJP+7chjnl1Ox7bMlbaZfaW2nZhB+ND/x+8humRZWBC5LBjBhoRe5i1imSjZwG
+         cg5VLziNL/qvoaTAmRAAAp5tEBQqyMgZPfPCcxxRBAH+QQwVuNik8vPMyiRDrfpGe4xG
+         zyUw==
+X-Gm-Message-State: AOAM533gU0rMk8gEzpuBo6abppZcZoT+EWuX1rCOyec3U4QrarblzBKb
+        NXfRhgJn+/rJX2I+zSCEO7UxjllTH+c=
+X-Google-Smtp-Source: ABdhPJwsGFQPWm0CvXOPf+vGxUP6xJfYlgkwyA1BUukCw39e7fBUgMnp5hjDJ2X0eo/05VCws5STqQ==
+X-Received: by 2002:a17:906:71d4:: with SMTP id i20mr5809591ejk.390.1633614327933;
+        Thu, 07 Oct 2021 06:45:27 -0700 (PDT)
+Received: from Ansuel-xps.localdomain (93-42-71-246.ip85.fastwebnet.it. [93.42.71.246])
+        by smtp.gmail.com with ESMTPSA id r6sm356647edv.42.2021.10.07.06.45.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Oct 2021 06:45:27 -0700 (PDT)
+Date:   Thu, 7 Oct 2021 15:45:25 +0200
+From:   Ansuel Smith <ansuelsmth@gmail.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [net-next PATCH 12/13] drivers: net: dsa: qca8k: add support for
+ pws config reg
+Message-ID: <YV759SSdKu0w83UB@Ansuel-xps.localdomain>
+References: <20211006223603.18858-1-ansuelsmth@gmail.com>
+ <20211006223603.18858-13-ansuelsmth@gmail.com>
+ <YV5CJvb2k1/61IU2@lunn.ch>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH] KVM: PPC: Defer vtime accounting 'til after IRQ handling
-Content-Language: en-US
-To:     Greg Kurz <groug@kaod.org>
-Cc:     kvm-ppc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linux-kernel@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>
-References: <20211006073745.82109-1-lvivier@redhat.com>
- <20211006124204.4741bb5c@bahia.huguette>
-From:   Laurent Vivier <lvivier@redhat.com>
-In-Reply-To: <20211006124204.4741bb5c@bahia.huguette>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YV5CJvb2k1/61IU2@lunn.ch>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/10/2021 12:42, Greg Kurz wrote:
-> On Wed,  6 Oct 2021 09:37:45 +0200
-> Laurent Vivier <lvivier@redhat.com> wrote:
+On Thu, Oct 07, 2021 at 02:41:10AM +0200, Andrew Lunn wrote:
+> > +static int
+> > +qca8k_setup_of_pws_reg(struct qca8k_priv *priv)
+> > +{
+> > +	struct device_node *node = priv->dev->of_node;
+> > +	u32 val = 0;
+> > +
+> > +	if (priv->switch_id == QCA8K_ID_QCA8327)
+> > +		if (of_property_read_bool(node, "qca,package48"))
+> > +			val |= QCA8327_PWS_PACKAGE48_EN;
 > 
->> Commit 61bd0f66ff92 has moved guest_enter() out of the interrupt
->> protected area to be able to have updated tick counters, but
->> commit 112665286d08 moved back to this area to avoid wrong
->> context warning (or worse).
->>
->> None of them are correct, to fix the problem port to POWER
->> the x86 fix 160457140187 ("KVM: x86: Defer vtime accounting 'til
->> after IRQ handling"):
->>
->> "Defer the call to account guest time until after servicing any IRQ(s)
->>   that happened in the guest or immediately after VM-Exit.  Tick-based
->>   accounting of vCPU time relies on PF_VCPU being set when the tick IRQ
->>   handler runs, and IRQs are blocked throughout the main sequence of
->>   vcpu_enter_guest(), including the call into vendor code to actually
->>   enter and exit the guest."
->>
->> Link: https://bugzilla.redhat.com/show_bug.cgi?id=2009312
->> Fixes: 61bd0f66ff92 ("KVM: PPC: Book3S HV: Fix guest time accounting with VIRT_CPU_ACCOUNTING_GEN")
-> 
-> This patch was merged in linux 4.16 and thus is on the 4.16.y
-> stable branch and it was backported to stable 4.14.y. It would
-> make sense to Cc: stable # v4.14 also, but...
-> 
->> Fixes: 112665286d08 ("KVM: PPC: Book3S HV: Context tracking exit guest context before enabling irqs")
-> 
-> ... this one, which was merged in linux 5.12, was never backported
-> anywhere because it wasn't considered as a fix, as commented here:
-> 
-> https://lore.kernel.org/linuxppc-dev/1610793296.fjhomer31g.astroid@bobo.none/
-> 
-> AFAICT commit 61bd0f66ff92 was never mentioned anywhere in a bug. The
-> first Fixes: tag thus looks a bit misleading. I'd personally drop it
-> and Cc: stable # v5.12.
+> What does this actually do? How is PACKAGE48 different to normal mode?
 >
 
-Ok, I update the comment.
+I actually made a typo.
+Anyway the difference is that they made 2 different package version of
+the qca8327. One with 176 pin and one with 148 pin. Setting the wrong
+layout cause the switch malfunction (no traffic, we found this on one
+xiaomi device). This is from Documenation and it does toggle the MAC
+interface configuration for the 2 different package.
 
->> Cc: npiggin@gmail.com
->>
->> Signed-off-by: Laurent Vivier <lvivier@redhat.com>
->> ---
->>   arch/powerpc/kvm/book3s_hv.c | 10 ++++++----
->>   1 file changed, 6 insertions(+), 4 deletions(-)
->>
->> diff --git a/arch/powerpc/kvm/book3s_hv.c b/arch/powerpc/kvm/book3s_hv.c
->> index 2acb1c96cfaf..43e1ce853785 100644
->> --- a/arch/powerpc/kvm/book3s_hv.c
->> +++ b/arch/powerpc/kvm/book3s_hv.c
->> @@ -3695,6 +3695,8 @@ static noinline void kvmppc_run_core(struct kvmppc_vcore *vc)
->>   
->>   	srcu_read_unlock(&vc->kvm->srcu, srcu_idx);
->>   
->> +	context_tracking_guest_exit();
->> +
->>   	set_irq_happened(trap);
->>   
->>   	spin_lock(&vc->lock);
->> @@ -3726,9 +3728,8 @@ static noinline void kvmppc_run_core(struct kvmppc_vcore *vc)
->>   
->>   	kvmppc_set_host_core(pcpu);
->>   
->> -	guest_exit_irqoff();
->> -
+> > +
+> > +	if (of_property_read_bool(node, "qca,power-on-sel"))
+> > +		val |= QCA8K_PWS_POWER_ON_SEL;
 > 
-> 
-> Change looks ok but it might be a bit confusing for the
-> occasional reader that guest_enter_irqoff() isn't matched
-> by a guest_exit_irqoff().
-> 
->>   	local_irq_enable();
->> +	vtime_account_guest_exit();
->>   
-> 
-> Maybe add a comment like in x86 ?
+> What happens if you unconditionally do this? Why is a DT property
+> required?
 > 
 
-done
+This is needed to bypass the power on strapping and use the regs config.
+The switch can use hardware pin to set eeprom presence and leds open
+drain. Setting this bit on bypass the hardware strapping and sets these
+2 thing based on the regs. We didn't add the eeprom binding as we didn't
+find any switch using it and we don't have any support for it.
 
->>   	/* Let secondaries go back to the offline loop */
->>   	for (i = 0; i < controlled_threads; ++i) {
->> @@ -4506,13 +4507,14 @@ int kvmhv_run_single_vcpu(struct kvm_vcpu *vcpu, u64 time_limit,
->>   
->>   	srcu_read_unlock(&kvm->srcu, srcu_idx);
->>   
->> +	context_tracking_guest_exit();
->> +
->>   	set_irq_happened(trap);
->>   
->>   	kvmppc_set_host_core(pcpu);
->>   
->> -	guest_exit_irqoff();
->> -
->>   	local_irq_enable();
->> +	vtime_account_guest_exit();
->>   
->>   	cpumask_clear_cpu(pcpu, &kvm->arch.cpu_in_guest);
->>   
+> > +
+> > +	if (of_property_read_bool(node, "qca,led-open-drain"))
+> > +		/* POWER_ON_SEL needs to be set when configuring led to open drain */
+> > +		val |= QCA8K_PWS_LED_OPEN_EN_CSR | QCA8K_PWS_POWER_ON_SEL;
 > 
-> Same remarks. FWIW a followup was immediately added to x86 to
-> encapsulate the enter/exit logic in common helpers :
+> This is getting into territory of adding LED support for PHYs, which
+> we want to do via the LED subsystem.
 > 
-> ommit bc908e091b3264672889162733020048901021fb
-> Author: Sean Christopherson <seanjc@google.com>
-> Date:   Tue May 4 17:27:35 2021 -0700
-> 
->      KVM: x86: Consolidate guest enter/exit logic to common helpers
-> 
-> This makes the code nicer. Maybe do something similar for POWER ?
 
-I don't like to modify kernel code when it's not needed. I just want to fix a bug, if 
-someone wants this nicer I let this to him...
+Don't know if it would be the correct way. Without this the switch leds
+chaese to work. I think this should be handled in a dedicated way than
+defined in a binding in the leds configuration. But I could be wrong.
 
-Thanks,
-Laurent
+>    Andrew
 
+-- 
+	Ansuel
