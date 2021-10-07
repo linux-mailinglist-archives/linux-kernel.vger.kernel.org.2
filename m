@@ -2,173 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6991242561F
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 17:08:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB4A442562D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 17:09:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242356AbhJGPKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 11:10:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36850 "EHLO
+        id S242377AbhJGPLt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 11:11:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242302AbhJGPKA (ORCPT
+        with ESMTP id S242312AbhJGPLr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 11:10:00 -0400
-Received: from mail-oo1-xc34.google.com (mail-oo1-xc34.google.com [IPv6:2607:f8b0:4864:20::c34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15584C061760
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 08:08:07 -0700 (PDT)
-Received: by mail-oo1-xc34.google.com with SMTP id y16-20020a4ade10000000b002b5dd6f4c8dso1980955oot.12
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 08:08:07 -0700 (PDT)
+        Thu, 7 Oct 2021 11:11:47 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 115F5C061570
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 08:09:54 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id ls18-20020a17090b351200b001a00250584aso6650795pjb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 08:09:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=f2IEE2E4YHMVJEM5MQhvt3XmAUfnTsdYPx8v3MA4L2s=;
-        b=m4PzpRc+xMfv6d0tmbyjSiiE6f6chCnHuTBcaFnzvTdWfe5DKRBF2dUiSN6rFOXHnh
-         XRQTyab0VAr+zGfGlrBoV8oygk90Z87oqI8XmKNLMRXAqMGzZoL482PFlgnRaLs3dAXZ
-         CbY0kBoc7esmzMsfxNzyM+g8OgZ03e4HNWyHhxgcr6QfjHzV2P2nv0mDMe6sTMmFhWXo
-         AAiXwZR0OAu9Y8D8ZTuYfWZf4bhSK8Yj5d5R4VxRUituwyNAhVdCHK2YHo09ANJpITu2
-         KiuO8CXL/Dj/SNOY07hIvZ1rPdMabIWMQiQgAwogEIcDMBqZTaZOiWlbT1UvFKyp6oSD
-         5MwA==
+        bh=EwBFVgL0rWbgcfbyCDG1TsRp9Ifys2zsPzP9eEcQnP8=;
+        b=Lt2MndVhQ6hEVWM3iH8Kh6Tp3WCXCBYbRdJJD8TrlN5XO4q9z1/5o39ICKHnf+oO/p
+         Ug5Vv2y8LHjMCYy6uVFN03eFh0AyYJsueTHlrT7Fo+UGvzUwDY4310poHgxXfOtOTTTN
+         tilWf03y6mHUBEzx9gTWv+ASxy76ndmGWfKqc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=f2IEE2E4YHMVJEM5MQhvt3XmAUfnTsdYPx8v3MA4L2s=;
-        b=gFiLij3+PwxZ0qyUokoFCPb6UNc3GGm96K2E0Wj8f0fIT1gNvY1biMC0h1IRfXwqIt
-         X3KdJYF/U2mjShecBxeKtx9osExKjd0iHAlUhgBXv2XvFkDF23Fp6pITlhwqtK2mKRt1
-         w/88n5N6hfPTsPI2I46YFUS3DgeF2Hv9UyGlZzx92FDHRTQfiO6oe/8IrmRYJNFl2bGL
-         bDOc5KjtFvpie4zUaG4DYvejgqKFzC9tiW+x3Z7TqlJ3O3bwcJ/Z+49rivlqBidkuz2T
-         mccpCclG2YTyZ6bUfLhkxVPFyK9j5M9oqZDarxluBnxaRbrmiBCsphHeYOnrLfiq/Svs
-         lMBQ==
-X-Gm-Message-State: AOAM530LbtP1rCoDrDdBhj6XFT2Qm6r8QQVorAR9AnfgmaYoSMnFjv61
-        SOIAMUfyDt4+ZCooYRT1cnjOTw==
-X-Google-Smtp-Source: ABdhPJyv4HAG1yrz2NFpdFEebej0KM8Fmqp1jTDYgGE4mHhwFS6GiaodYZLoQDgFhA462a2jXpWOPQ==
-X-Received: by 2002:a4a:d151:: with SMTP id o17mr3698904oor.63.1633619285911;
-        Thu, 07 Oct 2021 08:08:05 -0700 (PDT)
-Received: from ripper ([2600:1700:a0:3dc8:205:1bff:fec0:b9b3])
-        by smtp.gmail.com with ESMTPSA id r4sm4638927oiw.36.2021.10.07.08.08.05
+        bh=EwBFVgL0rWbgcfbyCDG1TsRp9Ifys2zsPzP9eEcQnP8=;
+        b=huZI59jEn4EJcxG3BhLGtZhUG4OPq2AkA7/em6ULiLNygHkZK0sHkeVH2JWtNINLNv
+         h5GUHFbAxrIrrSuP2rrPyyrsMOnUJEP1OmePqs8CKMc0TW49i6vZ5SwAF81X4/4uJWMl
+         85piDAl3A4j8q1nWJAiwZHXdMoRFV8YlNKmkk5F0jgdqjlzIWWFpDcNiNS/c0p8Vpydl
+         1vR0XMQF0vaMb4l59odAZMzMLacEqKlHordGWi5BAQCHxSU65Zlm5LbuECqR6yZR/D7N
+         f4yfU2VHhN9rRam/9sZgpuYwQzE5lkSf4ojbLXohv8c2P4hTLEZSMPgWPDNVptq7CKI+
+         jh/A==
+X-Gm-Message-State: AOAM531z0g5kE/2lCLH6aD24gX77ayGIrnX5iBJtdyX696wUFuwVE6Tc
+        I3L81G6yS7jGs0Sc+MqzS4ladA==
+X-Google-Smtp-Source: ABdhPJwgJRDpyE4ODOGMol25UhHL7pnQaUCFbPzPAocJvk3WdlZI3UQNRLhj6geomI4URbu2NaOb6Q==
+X-Received: by 2002:a17:90a:9f91:: with SMTP id o17mr6036386pjp.225.1633619393507;
+        Thu, 07 Oct 2021 08:09:53 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id n207sm15374608pfd.143.2021.10.07.08.09.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Oct 2021 08:08:05 -0700 (PDT)
-Date:   Thu, 7 Oct 2021 08:09:45 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Taniya Das <tdas@codeaurora.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-clk@vger.kernel.org,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 3/8] clk: qcom: dispcc-sm8250: use runtime PM for the
- clock controller
-Message-ID: <YV8NudkKvURyNqg7@ripper>
-References: <20210829154757.784699-1-dmitry.baryshkov@linaro.org>
- <20210829154757.784699-4-dmitry.baryshkov@linaro.org>
+        Thu, 07 Oct 2021 08:09:53 -0700 (PDT)
+Date:   Thu, 7 Oct 2021 08:09:52 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     pmladek@suse.com, viro@zeniv.linux.org.uk,
+        akpm@linux-foundation.org, peterz@infradead.org,
+        valentin.schneider@arm.com, mathieu.desnoyers@efficios.com,
+        qiang.zhang@windriver.com, robdclark@chromium.org,
+        christian@brauner.io, dietmar.eggemann@arm.com, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, linux-kernel@vger.kernel.org,
+        Vladimir Zapolskiy <vzapolskiy@gmail.com>
+Subject: Re: [PATCH v2 1/4] cn_proc.h: use TASK_COMM_LEN instread of 16 in
+ struct proc_event
+Message-ID: <202110070808.43B5AAEB9@keescook>
+References: <20211007120752.5195-1-laoar.shao@gmail.com>
+ <20211007120752.5195-2-laoar.shao@gmail.com>
+ <202110070750.8754AA33@keescook>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210829154757.784699-4-dmitry.baryshkov@linaro.org>
+In-Reply-To: <202110070750.8754AA33@keescook>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun 29 Aug 08:47 PDT 2021, Dmitry Baryshkov wrote:
-
-> On sm8250 dispcc and videocc registers are powered up by the MMCX power
-> domain. Use runtime PM calls to make sure that required power domain is
-> powered on while we access clock controller's registers.
+On Thu, Oct 07, 2021 at 07:51:35AM -0700, Kees Cook wrote:
+> On Thu, Oct 07, 2021 at 12:07:49PM +0000, Yafang Shao wrote:
+> > struct comm_proc_event was introduced in commit
+> > f786ecba4158 ("connector: add comm change event report to proc connector").
+> > It seems that there is no strong reason we must define the comm as a
+> > hardcode 16 bytes. So we can use TASK_COMM_LEN instead.
+> > 
+> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> > Cc: Vladimir Zapolskiy <vzapolskiy@gmail.com>
+> > Cc: Kees Cook <keescook@chromium.org>
+> > Cc: Al Viro <viro@zeniv.linux.org.uk>
+> > Cc: Petr Mladek <pmladek@suse.com>
+> > ---
+> >  include/uapi/linux/cn_proc.h | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/include/uapi/linux/cn_proc.h b/include/uapi/linux/cn_proc.h
+> > index db210625cee8..351d02786350 100644
+> > --- a/include/uapi/linux/cn_proc.h
+> > +++ b/include/uapi/linux/cn_proc.h
+> > @@ -110,7 +110,7 @@ struct proc_event {
+> >  		struct comm_proc_event {
+> >  			__kernel_pid_t process_pid;
+> >  			__kernel_pid_t process_tgid;
+> > -			char           comm[16];
+> > +			char           comm[TASK_COMM_LEN];
+> >  		} comm;
 > 
+> Hrmm. This is UAPI -- we can't change it without potentially breaking
+> things (i.e. userspace binaries have this size built in, so we can't
+> just change the size). This will either need to stay truncated, or may
+> need a new interface with a variable-sized structure...
 
-As I said on previous iterations, the clock framework will ensure that
-the power domain is powered up around all calls back into the clock
-driver, so for clocks this isn't needed.
-
-But after digging some more, the gdsc registration needs this and I
-don't mind keeping it on for the duration of the registration, rather
-than having the clock framework turn it on and off.
-
-As far as I can see the reset_controller won't actually access the
-hardware during registration.
-
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Specifically, this is needed for this series:
 
 
+diff --git a/drivers/connector/cn_proc.c b/drivers/connector/cn_proc.c
+index 646ad385e490..34bcba25c488 100644
+--- a/drivers/connector/cn_proc.c
++++ b/drivers/connector/cn_proc.c
+@@ -230,7 +230,9 @@ void proc_comm_connector(struct task_struct *task)
+ 	ev->what = PROC_EVENT_COMM;
+ 	ev->event_data.comm.process_pid  = task->pid;
+ 	ev->event_data.comm.process_tgid = task->tgid;
+-	get_task_comm(ev->event_data.comm.comm, task);
++	/* This may get truncated. */
++	__get_task_comm(ev->event_data.comm.comm,
++			sizeof(ev->event_data.comm.comm), task);
+ 
+ 	memcpy(&msg->id, &cn_proc_event_id, sizeof(msg->id));
+ 	msg->ack = 0; /* not used */
 
-That said, qcom_reset_{assert,deassert}() doesn't seem to be performed
-under a pm_runtime_get() section, so I believe that should be addressed
-as well.  I don't see that we have a problem with this in practice as of
-today, but it seems worthy to correct - unless I'm just missing
-something.
-
-Regards,
-Bjorn
-
-> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> ---
->  drivers/clk/qcom/dispcc-sm8250.c | 27 +++++++++++++++++++++++++--
->  1 file changed, 25 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/clk/qcom/dispcc-sm8250.c b/drivers/clk/qcom/dispcc-sm8250.c
-> index 601c7c0ba483..108dd1249b6a 100644
-> --- a/drivers/clk/qcom/dispcc-sm8250.c
-> +++ b/drivers/clk/qcom/dispcc-sm8250.c
-> @@ -6,6 +6,7 @@
->  #include <linux/clk-provider.h>
->  #include <linux/module.h>
->  #include <linux/platform_device.h>
-> +#include <linux/pm_runtime.h>
->  #include <linux/regmap.h>
->  #include <linux/reset-controller.h>
->  
-> @@ -1226,13 +1227,31 @@ static const struct of_device_id disp_cc_sm8250_match_table[] = {
->  };
->  MODULE_DEVICE_TABLE(of, disp_cc_sm8250_match_table);
->  
-> +static void disp_cc_sm8250_pm_runtime_disable(void *data)
-> +{
-> +	pm_runtime_disable(data);
-> +}
-> +
->  static int disp_cc_sm8250_probe(struct platform_device *pdev)
->  {
->  	struct regmap *regmap;
-> +	int ret;
-> +
-> +	pm_runtime_enable(&pdev->dev);
-> +
-> +	ret = devm_add_action_or_reset(&pdev->dev, disp_cc_sm8250_pm_runtime_disable, &pdev->dev);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = pm_runtime_resume_and_get(&pdev->dev);
-> +	if (ret)
-> +		return ret;
->  
->  	regmap = qcom_cc_map(pdev, &disp_cc_sm8250_desc);
-> -	if (IS_ERR(regmap))
-> +	if (IS_ERR(regmap)) {
-> +		pm_runtime_put(&pdev->dev);
->  		return PTR_ERR(regmap);
-> +	}
->  
->  	/* note: trion == lucid, except for the prepare() op */
->  	BUILD_BUG_ON(CLK_ALPHA_PLL_TYPE_TRION != CLK_ALPHA_PLL_TYPE_LUCID);
-> @@ -1257,7 +1276,11 @@ static int disp_cc_sm8250_probe(struct platform_device *pdev)
->  	/* DISP_CC_XO_CLK always-on */
->  	regmap_update_bits(regmap, 0x605c, BIT(0), BIT(0));
->  
-> -	return qcom_cc_really_probe(pdev, &disp_cc_sm8250_desc, regmap);
-> +	ret = qcom_cc_really_probe(pdev, &disp_cc_sm8250_desc, regmap);
-> +
-> +	pm_runtime_put(&pdev->dev);
-> +
-> +	return ret;
->  }
->  
->  static struct platform_driver disp_cc_sm8250_driver = {
-> -- 
-> 2.33.0
-> 
+-- 
+Kees Cook
