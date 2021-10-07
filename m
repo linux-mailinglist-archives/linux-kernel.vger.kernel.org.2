@@ -2,118 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EB93424BF6
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 04:53:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3986424BFA
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 04:57:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240016AbhJGCzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 22:55:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45800 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239889AbhJGCzh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 22:55:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 07A2161177;
-        Thu,  7 Oct 2021 02:53:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1633575224;
-        bh=S1b6BfNXTnYn99oV3r2hF6nTfU3qu7id07vNeo0dX5w=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=YFNKHhelEKjbA4XqN33VsZKu56RyL7QHiTH4RmFZxW9Hdv8ZK3wXQZmVqFnkZgAjG
-         p7PRlhvDnembO12u3F6qCHm5nHTHUiU2yhYd0euxccRhMA5M7eJb7LAE7uamjWu8nj
-         njE18CPPkCyKlhDMFUalDCkL1suG3syPAcsJyGrc=
-Date:   Wed, 6 Oct 2021 19:53:42 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Michal Hocko <mhocko@suse.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Pavel Machek <pavel@ucw.cz>, Colin Cross <ccross@google.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        vincenzo.frascino@arm.com,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Jann Horn <jannh@google.com>, apopple@nvidia.com,
-        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
-        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
-        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
-        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
-        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
-        Chris Hyser <chris.hyser@oracle.com>,
-        Peter Collingbourne <pcc@google.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Jens Axboe <axboe@kernel.dk>, legion@kernel.org,
-        Rolf Eike Beer <eb@emlix.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Thomas Cedeno <thomascedeno@google.com>, sashal@kernel.org,
-        cxfcosmos@gmail.com, Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-mm <linux-mm@kvack.org>,
-        kernel-team <kernel-team@android.com>,
-        Tim Murray <timmurray@google.com>
-Subject: Re: [PATCH v10 3/3] mm: add anonymous vma name refcounting
-Message-Id: <20211006195342.0503b3a3cbcd2c3c3417df46@linux-foundation.org>
-In-Reply-To: <CAJuCfpGLQK5aVe5zQfdkP=K4NBZXPjtG=ycjk3E4D64CAvVPsg@mail.gmail.com>
-References: <20211001205657.815551-1-surenb@google.com>
-        <20211001205657.815551-3-surenb@google.com>
-        <20211005184211.GA19804@duo.ucw.cz>
-        <CAJuCfpE5JEThTMhwKPUREfSE1GYcTx4YSLoVhAH97fJH_qR0Zg@mail.gmail.com>
-        <20211005200411.GB19804@duo.ucw.cz>
-        <CAJuCfpFZkz2c0ZWeqzOAx8KFqk1ge3K-SiCMeu3dmi6B7bK-9w@mail.gmail.com>
-        <efdffa68-d790-72e4-e6a3-80f2e194d811@nvidia.com>
-        <YV1eCu0eZ+gQADNx@dhcp22.suse.cz>
-        <6b15c682-72eb-724d-bc43-36ae6b79b91a@redhat.com>
-        <CAJuCfpEPBM6ehQXgzp=g4SqtY6iaC8wuZ-CRE81oR1VOq7m4CA@mail.gmail.com>
-        <192438ab-a095-d441-6843-432fbbb8e38a@redhat.com>
-        <CAJuCfpH4KT=fOAWsYhaAb_LLg-VwPvL4Bmv32NYuUtZ3Ceo+PA@mail.gmail.com>
-        <20211006192927.f7a735f1afe4182bf4693838@linux-foundation.org>
-        <CAJuCfpGLQK5aVe5zQfdkP=K4NBZXPjtG=ycjk3E4D64CAvVPsg@mail.gmail.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S239961AbhJGC7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 22:59:06 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:57134 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S239796AbhJGC7F (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 22:59:05 -0400
+X-UUID: 23a9fe624ca14001ac777cca9e1593f6-20211007
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=puAeYVHv80gaLD3QPUVP0U9ZlM4HRv166FTTO6hr2Lk=;
+        b=LqzMu5O1Ak1GXXXZIGexmWg/0ZCTwsSG5We2XLOH6iO7Ba4RPqZF5ht9oZZ69+uMg+JklvO1wEOXebFap0K1/ydqHp0no/CJKw0h7AA/w2OoRanFVNXcLOl70D13Lna3urZ/5YBRsjcFc+CPP8WM5CE1JtRZPqAeGH5mq87dze0=;
+X-UUID: 23a9fe624ca14001ac777cca9e1593f6-20211007
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
+        (envelope-from <yong.wu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 722450187; Thu, 07 Oct 2021 10:57:01 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3;
+ Thu, 7 Oct 2021 10:57:00 +0800
+Received: from mhfsdcap04 (10.17.3.154) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 7 Oct 2021 10:56:58 +0800
+Message-ID: <7703076927822fc31d1af37f8fd3bfe5e0513d29.camel@mediatek.com>
+Subject: Re: [PATCH v8 09/12] media: mtk-vcodec: Get rid of
+ mtk_smi_larb_get/put
+From:   Yong Wu <yong.wu@mediatek.com>
+To:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        David Airlie <airlied@linux.ie>,
+        "Mauro Carvalho Chehab" <mchehab@kernel.org>
+CC:     Evan Green <evgreen@chromium.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Will Deacon <will.deacon@arm.com>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <iommu@lists.linux-foundation.org>, <youlin.pei@mediatek.com>,
+        Matthias Kaehlcke <mka@chromium.org>, <anan.sun@mediatek.com>,
+        <yi.kuo@mediatek.com>, <acourbot@chromium.org>,
+        <linux-media@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        "Daniel Vetter" <daniel@ffwll.ch>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        "Philipp Zabel" <p.zabel@pengutronix.de>,
+        Tiffany Lin <tiffany.lin@mediatek.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Eizan Miyamoto <eizan@chromium.org>,
+        <anthony.huang@mediatek.com>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        Irui Wang <irui.wang@mediatek.com>
+Date:   Thu, 7 Oct 2021 10:57:01 +0800
+In-Reply-To: <f9829a5a-984c-bced-0286-53f9edc8ae3d@collabora.com>
+References: <20210929013719.25120-1-yong.wu@mediatek.com>
+         <20210929013719.25120-10-yong.wu@mediatek.com>
+         <02f444d5-9633-3f9c-2d1f-97ce073d1180@collabora.com>
+         <79cbf64491273797f218f417234b8c95936bd3b1.camel@mediatek.com>
+         <f9829a5a-984c-bced-0286-53f9edc8ae3d@collabora.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+MIME-Version: 1.0
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 6 Oct 2021 19:46:57 -0700 Suren Baghdasaryan <surenb@google.com> wrote:
-
-> > > > > I wish it was that simple and for some names like [anon:.bss] or
-> > > > > [anon:dalvik-zygote space] reserving a unique id would work, however
-> > > > > some names like [anon:dalvik-/system/framework/boot-core-icu4j.art]
-> > > > > are generated dynamically at runtime and include package name.
-> > > >
-> > > > Valuable information
-> > >
-> > > Yeah, I should have described it clearer the first time around.
-> >
-> > If it gets this fancy then the 80 char limit is likely to become a
-> > significant limitation and the choice should be explained & justified.
-> >
-> > Why not 97?  1034?  Why not just strndup_user() and be done with it?
-> 
-> The original patch from 8 years ago used 256 as the limit but Rasmus
-> argued that the string content should be human-readable, so 80 chars
-> seems to be a reasonable limit (see:
-> https://lore.kernel.org/all/d8619a98-2380-ca96-001e-60fe9c6204a6@rasmusvillemoes.dk),
-> which makes sense to me. We should be able to handle the 80 char limit
-> by trimming it before calling prctl().
-
-What's the downside to making it unlimited?
-
+T24gVGh1LCAyMDIxLTA5LTMwIGF0IDEyOjU3ICswMjAwLCBEYWZuYSBIaXJzY2hmZWxkIHdyb3Rl
+Og0KPiANCj4gT24gMzAuMDkuMjEgMDU6MjgsIFlvbmcgV3Ugd3JvdGU6DQo+ID4gSGkgRGFmbmEs
+DQo+ID4gDQo+ID4gVGhhbmtzIHZlcnkgbXVjaCBmb3IgdGhlIHJldmlldy4NCj4gPiANCj4gPiBP
+biBXZWQsIDIwMjEtMDktMjkgYXQgMTQ6MTMgKzAyMDAsIERhZm5hIEhpcnNjaGZlbGQgd3JvdGU6
+DQo+ID4gPiANCj4gPiA+IE9uIDI5LjA5LjIxIDAzOjM3LCBZb25nIFd1IHdyb3RlOg0KPiA+ID4g
+PiBNZWRpYVRlayBJT01NVSBoYXMgYWxyZWFkeSBhZGRlZCB0aGUgZGV2aWNlX2xpbmsgYmV0d2Vl
+biB0aGUNCj4gPiA+ID4gY29uc3VtZXINCj4gPiA+ID4gYW5kIHNtaS1sYXJiIGRldmljZS4gSWYg
+dGhlIHZjb2RlYyBkZXZpY2UgY2FsbCB0aGUNCj4gPiA+ID4gcG1fcnVudGltZV9nZXRfc3luYywN
+Cj4gPiA+ID4gdGhlIHNtaS1sYXJiJ3MgcG1fcnVudGltZV9nZXRfc3luYyBhbHNvIGJlIGNhbGxl
+ZA0KPiA+ID4gPiBhdXRvbWF0aWNhbGx5Lg0KPiA+ID4gPiANCj4gPiA+ID4gQ0M6IFRpZmZhbnkg
+TGluIDx0aWZmYW55LmxpbkBtZWRpYXRlay5jb20+DQo+ID4gPiA+IENDOiBJcnVpIFdhbmcgPGly
+dWkud2FuZ0BtZWRpYXRlay5jb20+DQo+ID4gPiA+IFNpZ25lZC1vZmYtYnk6IFlvbmcgV3UgPHlv
+bmcud3VAbWVkaWF0ZWsuY29tPg0KPiA+ID4gPiBSZXZpZXdlZC1ieTogRXZhbiBHcmVlbiA8ZXZn
+cmVlbkBjaHJvbWl1bS5vcmc+DQo+ID4gPiA+IEFja2VkLWJ5OiBUaWZmYW55IExpbiA8dGlmZmFu
+eS5saW5AbWVkaWF0ZWsuY29tPg0KPiA+ID4gPiBSZXZpZXdlZC1ieTogRGFmbmEgSGlyc2NoZmVs
+ZCA8ZGFmbmEuaGlyc2NoZmVsZEBjb2xsYWJvcmEuY29tPg0KPiA+ID4gPiAtLS0NCj4gPiA+ID4g
+ICAgLi4uL3BsYXRmb3JtL210ay12Y29kZWMvbXRrX3Zjb2RlY19kZWNfcG0uYyAgIHwgMzcgKysr
+LS0tLQ0KPiA+ID4gPiAtLS0tLS0tDQo+ID4gPiA+IC0tDQo+ID4gPiA+ICAgIC4uLi9wbGF0Zm9y
+bS9tdGstdmNvZGVjL210a192Y29kZWNfZHJ2LmggICAgICB8ICAzIC0tDQo+ID4gPiA+ICAgIC4u
+Li9wbGF0Zm9ybS9tdGstdmNvZGVjL210a192Y29kZWNfZW5jLmMgICAgICB8ICAxIC0NCj4gPiA+
+ID4gICAgLi4uL3BsYXRmb3JtL210ay12Y29kZWMvbXRrX3Zjb2RlY19lbmNfcG0uYyAgIHwgNDQg
+KysrLS0tLQ0KPiA+ID4gPiAtLS0tLS0tDQoNCltzbmlwXQ0KDQo+ID4gPiA+ICAgIHZvaWQgbXRr
+X3Zjb2RlY19yZWxlYXNlX2RlY19wbShzdHJ1Y3QgbXRrX3Zjb2RlY19kZXYgKmRldikNCj4gPiA+
+ID4gICAgew0KPiA+ID4gPiAgICAJcG1fcnVudGltZV9kaXNhYmxlKGRldi0+cG0uZGV2KTsNCj4g
+PiA+ID4gLQlwdXRfZGV2aWNlKGRldi0+cG0ubGFyYnZkZWMpOw0KPiA+ID4gPiAgICB9DQo+ID4g
+PiANCj4gPiA+IE5vdyB0aGF0IGZ1bmN0aW9ucyBvbmx5IGRvICAncG1fcnVudGltZV9kaXNhYmxl
+KGRldi0+cG0uZGV2KTsnIHNvDQo+ID4gPiBpdA0KPiA+ID4gd2lsbCBiZSBtb3JlDQo+ID4gPiBy
+ZWFkYWJsZSB0byByZW1vdmUgdGhlIGZ1bmN0aW9uIG10a192Y29kZWNfcmVsZWFzZV9kZWNfcG0N
+Cj4gPiA+IGFuZCByZXBsYWNlIHdpdGggcG1fcnVudGltZV9kaXNhYmxlKGRldi0+cG0uZGV2KTsN
+Cj4gPiA+IFNhbWUgZm9yIHRoZSAnZW5jJyBlcXVpdmFsZW50Lg0KPiA+IA0KPiA+IE1ha2Ugc2Vu
+c2UuIEJ1dCBJdCBtYXkgYmUgbm90IHByb3BlciBpZiB1c2luZyBwbV9ydW50aW1lX2Rpc2FibGUN
+Cj4gPiBhcyB0aGUgc3ltbWV0cnkgd2l0aCBtdGtfdmNvZGVjX2luaXRfZGVjX3BtIGluIHRoZQ0K
+PiA+IG10a192Y29kZWNfcHJvYmUuDQo+ID4gDQo+ID4gTWF5YmUgd2Ugc2hvdWxkIG1vdmUgcG1f
+cnVudGltZV9lbmFibGUgb3V0IGZyb20NCj4gPiBtdGtfdmNvZGVjX2luaXRfZGVjX3BtDQo+ID4g
+aW50byBtdGtfdmNvZGVjX3Byb2JlLiBJIGNvdWxkIGRvIGEgbmV3IHBhdGNoIGZvciB0aGlzLiBJ
+cyB0aGlzIG9rDQo+ID4gZm9yDQo+ID4geW91Pw0KPiANCj4geWVzLCB0aGVyZSBpcyBhbHNvIGFz
+eW1ldHRyeSB3aGVuIGNhbGxpbmcgcG1fcnVudGltZSogaW4gZ2VuZXJhbCwNCj4gSSBzZWUgaW4g
+dGhlIGRlY29kZXIgaXQgaXMgY2FsbGVkIGZyb20gbXRrX3Zjb2RlY19kZWNfcG0uYw0KPiBidXQg
+aW4gdGhlIGVuY29kZXIgaXQgaXMgY2FsbGVkIGZyb20gbXRrX3Zjb2RlY19lbmMuYywNCj4gDQo+
+IEkgdGhpbmsgYWxsIGNhbGxzIHRvIHBtX3J1bnRpbWUqIHNob3VsZCBiZSBvdXQgb2YgdGhlICpf
+cG0uYyBmaWxlcw0KDQpPSy4gSSB3aWxsIHRyeSB0aGlzLg0KDQo+IHNpbmNlIGZvciBleGFtcGxl
+ICdtdGtfdmNvZGVjX2RlY19wd19vbicgYWxzbyBkbyBqdXN0IG9uZSBjYWxsIHRvDQo+IHBtX3J1
+bnRpbWVfcmVzdW1lX2FuZF9nZXQgc28gdGhpcyBmdW5jdGlvbiBjYW4gYWxzbyBiZSByZW1vdmVk
+Lg0KDQpJIGd1ZXNzIHRoaXMgb25lIHNob3VsZCBiZSByZXNlcnZlZCB0byB2Y29kZWMgZ3V5cy4g
+SSBzZWUgdGhpcyBmdW5jdGlvbg0KaXMgY2hhbmdlZCBhdCBbMV0uIExldCdzIGtlZXAgdGhpcyBw
+YXRjaHNldCBjbGVhbi4NCg0KWzFdIA0KaHR0cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9wcm9q
+ZWN0L2xpbnV4LW1lZGlhdGVrL3BhdGNoLzIwMjEwOTAxMDgzMjE1LjI1OTg0LTEwLXl1bmZlaS5k
+b25nQG1lZGlhdGVrLmNvbS8NCg0KPiANCj4gdGhhbmtzLA0KPiBEYWZuYQ0KPiANCj4gPiANCj4g
+PiA+IA0KPiA+ID4gVGhhbmtzLA0KPiA+ID4gRGFmbmENCj4gPiANCj4gPiBbc25pcF0NCj4gPiBf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXw0KPiA+IExpbnV4
+LW1lZGlhdGVrIG1haWxpbmcgbGlzdA0KPiA+IExpbnV4LW1lZGlhdGVrQGxpc3RzLmluZnJhZGVh
+ZC5vcmcNCj4gPiBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xp
+bnV4LW1lZGlhdGVrDQo+ID4gDQo=
 
