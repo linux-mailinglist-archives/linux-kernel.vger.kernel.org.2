@@ -2,146 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C847E425895
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 18:57:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 062CB4258AC
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 18:59:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242984AbhJGQ7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 12:59:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35092 "EHLO
+        id S243073AbhJGRA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 13:00:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242953AbhJGQ72 (ORCPT
+        with ESMTP id S243071AbhJGRAc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 12:59:28 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78181C061767;
-        Thu,  7 Oct 2021 09:57:34 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id o20so21042637wro.3;
-        Thu, 07 Oct 2021 09:57:34 -0700 (PDT)
+        Thu, 7 Oct 2021 13:00:32 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 464D2C0617AB
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 09:58:14 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id v195so14997431ybb.0
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 09:58:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=El2GgWjzGT3viL2Ka9TGbi2wzgQQNq0vXUAM3RTl7rM=;
-        b=NgX7hfYeaa3E/yEBbPOQByUrqiYE/qI824xs4ToqrJj1fTGpxW9OXRkBDDGIuBzxpp
-         01OTm5/FyD37etzeiJWIz9o90MT0ztqEHYa4Bok3tTouLKs3c7WBapKz5439tMFYLA6w
-         NAqT+9pmb2tNEdpf12np7W4TIijC2wFgLon/tnsF82lJ4uH146LP5dqU0YuPVeyKS53+
-         Ys33ILup66XiUjWAI5hnZlqLh9K8Pajia0xShDz0LqW1Ha6ilBAQvSWMPVlVa4eroDjw
-         cVbke7jP/DglmKoFE3YE1KbPtmrqWPzkMDPP3A4Smbi7pVAXWolyCizb+8OXX508OoLm
-         WNLA==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2roo7N2Af5V9MyzmKYbaAyLkAjMNad5Lcx6Zw/2fkDw=;
+        b=BF0V/P/RYBknF8eb0/OEKCvyMrXtCN7yOB7aYUc4Q3DSSVccbU6hU/Vp3GE1apQlPk
+         yCJ8FILh3vBMaV6UMR98Yk3R4LESqkJXOfzMJaNq0J0xcwQGKjybrHz82zAE8253QF5U
+         UrA5n5kz5BEOAOfEt3IxCgvGcTkEactWfmwFQmOlC7i/x7fr1gPnCZ7mMOkUCHBS1wKq
+         yGHPEL/dsN/yQHOPLxhwKxMAycOQ+wJsUwhCYd69xxjg/5jpc96uh6B5AzXr6x1nAaGb
+         4rMpmaLh9nnsuLiqWx8SDbHEao2TjWbvV54xGDaNALD9X/dQX8cczg3tkrOzgwrRUkVc
+         BbSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=El2GgWjzGT3viL2Ka9TGbi2wzgQQNq0vXUAM3RTl7rM=;
-        b=Cnkn8n9Qdo7BbN2XK2r6oGSWw2oJY62pw6vMLfr1OLVwME5m4E09YqX/8zds0paBBk
-         Xnk38docWHXBLV06RDOa9AUMXGv6rUsWB6jDNXN5MsiBf9rAHX4OeohH6wUIyiTb2JH1
-         sIrXXicPnEvhz8bu0Ag+nUDbFBHQ7PCiUKRYgGpx950IoXn5A5jhvMvAhl3ceTRoHpAF
-         v0QhCIggUQMA78wIVBApmOXv30TO81ZZQNPHZGhvZgLQatgk9ICBdvxkCqsh7ySeRCyg
-         joHiWTiiHLqMQBD5Qaos5i1IauzPyJQzycloFXE7NPkii6hu5j852aiySdT4AsLSUXtO
-         fljw==
-X-Gm-Message-State: AOAM530h9+mo+0EerqFQi7ED4DcR1UuCl8tpJeOe0E6uJQFwPtRxfeQJ
-        uHbw24hp5fT2DkubHpCrOIY=
-X-Google-Smtp-Source: ABdhPJx4XwYRlso76dDdIc3k2apWPUAjSpgjJfpK+bS23C8zb7IRv85ldfWBS1S3aUXBTU4EGI+i0g==
-X-Received: by 2002:a1c:9d97:: with SMTP id g145mr5894307wme.78.1633625853047;
-        Thu, 07 Oct 2021 09:57:33 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id n1sm2800731wmi.30.2021.10.07.09.57.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Oct 2021 09:57:32 -0700 (PDT)
-Date:   Thu, 7 Oct 2021 18:57:31 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Nicolin Chen <nicoleotsuka@gmail.com>
-Cc:     joro@8bytes.org, will@kernel.org, vdumpa@nvidia.com,
-        jonathanh@nvidia.com, linux-tegra@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        digetx@gmail.com
-Subject: Re: [PATCH v6 3/6] iommu/tegra-smmu: Rename struct
- tegra_smmu_swgroup *group to *swgrp
-Message-ID: <YV8m+0qP2ibQBvNs@orome.fritz.box>
-References: <20210914013858.31192-1-nicoleotsuka@gmail.com>
- <20210914013858.31192-4-nicoleotsuka@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2roo7N2Af5V9MyzmKYbaAyLkAjMNad5Lcx6Zw/2fkDw=;
+        b=h77RBGmeU6fMSTCK6mgtE3At/PbeFWiX05Z3eabMHChskTPnWtCsMPptfSbAsaHZ2U
+         60yQ1aTs2Us8HLHmDpxTuVcVviJZM8/vKJ9ww0jbNXos3MX/JaMzE5kX84qsdj+sv1VD
+         wcfuwfhyRQCGqFmfqq2zkUf2ENxQcxzcN88Dqsy760mlwKGvS2ycAMTe2aAdH9A8Vfm9
+         HYNgm+6UN6hFPgijNPBNO8Rhuh/VJJxWAE7o1zmi0JV+rV0MZh0pAxfhlnBVwikbiejE
+         dyCkYpCG7ZrxD8eGzXS/hBF2PfxBLsNYEHoKoa+bfiet5qGdEo7FE0Oof5pfmBFcE8sM
+         PHvg==
+X-Gm-Message-State: AOAM533YnncimjTks+Irkr3K9mYJh0mMUOaDqbtjvoRdBng6pkw2dF12
+        xrdqoiKEfBTeyS2dStKJr8vZ+FetSf2DoRk7L5hnvA==
+X-Google-Smtp-Source: ABdhPJym4VvtqHVKv+9+eKS28MNi7rcedM8+dLIhB+DoihLZf7xpYPXypfIrigb2ZhFzcnC3Vpr6i8o5c+Pf4K2R0w0=
+X-Received: by 2002:a25:d1d3:: with SMTP id i202mr6456843ybg.487.1633625893118;
+ Thu, 07 Oct 2021 09:58:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="z5TfhxvQFdT1ZzDp"
-Content-Disposition: inline
-In-Reply-To: <20210914013858.31192-4-nicoleotsuka@gmail.com>
-User-Agent: Mutt/2.1.3 (987dde4c) (2021-09-10)
+References: <efdffa68-d790-72e4-e6a3-80f2e194d811@nvidia.com>
+ <YV1eCu0eZ+gQADNx@dhcp22.suse.cz> <6b15c682-72eb-724d-bc43-36ae6b79b91a@redhat.com>
+ <CAJuCfpEPBM6ehQXgzp=g4SqtY6iaC8wuZ-CRE81oR1VOq7m4CA@mail.gmail.com>
+ <20211006175821.GA1941@duo.ucw.cz> <CAJuCfpGuuXOpdYbt3AsNn+WNbavwuEsDfRMYunh+gajp6hOMAg@mail.gmail.com>
+ <YV6rksRHr2iSWR3S@dhcp22.suse.cz> <92cbfe3b-f3d1-a8e1-7eb9-bab735e782f6@rasmusvillemoes.dk>
+ <20211007101527.GA26288@duo.ucw.cz> <CAJuCfpGp0D9p3KhOWhcxMO1wEbo-J_b2Anc-oNwdycx4NTRqoA@mail.gmail.com>
+ <YV8jB+kwU95hLqTq@dhcp22.suse.cz>
+In-Reply-To: <YV8jB+kwU95hLqTq@dhcp22.suse.cz>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Thu, 7 Oct 2021 09:58:02 -0700
+Message-ID: <CAJuCfpG-Nza3YnpzvHaS_i1mHds3nJ+PV22xTAfgwvj+42WQNA@mail.gmail.com>
+Subject: Re: [PATCH v10 3/3] mm: add anonymous vma name refcounting
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Pavel Machek <pavel@ucw.cz>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        David Hildenbrand <david@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Colin Cross <ccross@google.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        vincenzo.frascino@arm.com,
+        =?UTF-8?B?Q2hpbndlbiBDaGFuZyAo5by16Yym5paHKQ==?= 
+        <chinwen.chang@mediatek.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Jann Horn <jannh@google.com>, apopple@nvidia.com,
+        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
+        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
+        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
+        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
+        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
+        Chris Hyser <chris.hyser@oracle.com>,
+        Peter Collingbourne <pcc@google.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Jens Axboe <axboe@kernel.dk>, legion@kernel.org,
+        Rolf Eike Beer <eb@emlix.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Thomas Cedeno <thomascedeno@google.com>, sashal@kernel.org,
+        cxfcosmos@gmail.com, LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-mm <linux-mm@kvack.org>,
+        kernel-team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Oct 7, 2021 at 9:40 AM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Thu 07-10-21 09:04:09, Suren Baghdasaryan wrote:
+> > On Thu, Oct 7, 2021 at 3:15 AM Pavel Machek <pavel@ucw.cz> wrote:
+> > >
+> > > Hi!
+> > >
+> > > > >> Hmm, so the suggestion is to have some directory which contains files
+> > > > >> representing IDs, each containing the string name of the associated
+> > > > >> vma? Then let's say we are creating a new VMA and want to name it. We
+> > > > >> would have to scan that directory, check all files and see if any of
+> > > > >> them contain the name we want to reuse the same ID.
+> > > > >
+> > > > > I believe Pavel meant something as simple as
+> > > > > $ YOUR_FILE=$YOUR_IDS_DIR/my_string_name
+> > > > > $ touch $YOUR_FILE
+> > > > > $ stat -c %i $YOUR_FILE
+> >
+> > Ah, ok, now I understand the proposal. Thanks for the clarification!
+> > So, this would use filesystem as a directory for inode->name mappings.
+> > One rough edge for me is that the consumer would still need to parse
+> > /proc/$pid/maps and convert [anon:inode] into [anon:name] instead of
+> > just dumping the content for the user. Would it be acceptable if we
+> > require the ID provided by prctl() to always be a valid inode and
+> > show_map_vma() would do the inode-to-filename conversion when
+> > generating maps/smaps files? I know that inode->dentry is not
+> > one-to-one mapping but we can simply output the first dentry name.
+> > WDYT?
+>
+> No. You do not want to dictate any particular way of the mapping. The
+> above is just one way to do that without developing any actual mapping
+> yourself. You just use a filesystem for that. Kernel doesn't and
+> shouldn't understand the meaning of those numbers. It has no business in
+> that.
+>
+> In a way this would be pushing policy into the kernel.
 
---z5TfhxvQFdT1ZzDp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I can see your point. Any other ideas on how to prevent tools from
+doing this id-to-name conversion themselves?
+Aside from the obvious inefficiency of requiring tools to parse
+maps/smaps and convert ids to names it also creates a tool->system
+dependency. Tools would have to know how the system interprets these
+IDs and on the systems where the ID is an inode they would have to
+know where the soflinks proposed by Rasmus reside and convert them. If
+I'm a tool developer who wants the tool to work on multiple systems
+this becomes quite messy.
 
-On Mon, Sep 13, 2021 at 06:38:55PM -0700, Nicolin Chen wrote:
-> There are both tegra_smmu_swgroup and tegra_smmu_group structs
-> using "group" for their pointer instances. This gets confusing
-> to read the driver sometimes.
->=20
-> So this patch renames "group" of struct tegra_smmu_swgroup to
-> "swgrp" as a cleanup. Also renames its "find" function.
->=20
-> Note that we already have "swgroup" being used for an unsigned
-> int type variable that is inside struct tegra_smmu_swgroup, so
-> it's not able to use "swgroup" but only something like "swgrp".
->=20
-> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
-> ---
->  drivers/iommu/tegra-smmu.c | 34 +++++++++++++++++-----------------
->  1 file changed, 17 insertions(+), 17 deletions(-)
->=20
-> diff --git a/drivers/iommu/tegra-smmu.c b/drivers/iommu/tegra-smmu.c
-> index a32ed347e25d..0f3883045ffa 100644
-> --- a/drivers/iommu/tegra-smmu.c
-> +++ b/drivers/iommu/tegra-smmu.c
-> @@ -334,35 +334,35 @@ static void tegra_smmu_domain_free(struct iommu_dom=
-ain *domain)
->  }
-> =20
->  static const struct tegra_smmu_swgroup *
-> -tegra_smmu_find_swgroup(struct tegra_smmu *smmu, unsigned int swgroup)
-> +tegra_smmu_find_swgrp(struct tegra_smmu *smmu, unsigned int swgroup)
-
-This makes things inconsistent now. The tegra_smmu_find_swgroup() name
-indicates that we're looking for some "swgroup" entity within an "smmu"
-object. The entity that we're looking for is a struct tegra_smmu_swgroup
-so I think it makes sense to use that full name in the function name.
-
->  {
-> -	const struct tegra_smmu_swgroup *group =3D NULL;
-> +	const struct tegra_smmu_swgroup *swgrp =3D NULL;
-
-I don't think the existing naming is confusing. The variable name
-"group" is consistently used for tegra_smmu_swgroup structures and there
-are no cases where we would confuse them with struct tegra_smmu_group
-instances.
-
-However, I don't feel strongly about it, so I'm fine with changing the
-variable names to "swgrp" if you think that makes things less confusing.
-
-Thierry
-
---z5TfhxvQFdT1ZzDp
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmFfJvsACgkQ3SOs138+
-s6FH1g//bwitjmhtyJUDK/UWfxLfuFwOjEu/eNLJf0O23uMNI90/z2dGywyDoXgu
-QYpUdBr3dSr6mO1uQjFSnftlgad6AK7CReY0ZeHKu3SiGmpIbXI84vSJRKVHpoWu
-Hc4daNzWEAQS2SnBvzpwa8rnLPoxsbpA4x2EqI5nN+Zh1bmaeIcEMF/BQHoGJWj9
-o55XUIwRXKa500tP3JG7qNa0LhwYHnaDI+R8mYVTee88wD2nCwTGuxghWiJk7aKI
-NvLTq7Y1/lHHzAEpP1a+fEXsjDUKTOTU6FuZyd8Fx16N/O0FigyQXl4SU3WPmMfg
-tvRZtn/Y/gdB7uodJRhLmLCAhTc1NZSxZWU5TXupPAIVohIWHtecEKTD5aKBXNhv
-btbQxyPz0WLT34CqPCdl5+8+2U3v3OyhjdP3Z+v37mPYav85ejuySiBfTuyDcvb7
-4T6QgAIEOaOIGPQGBmchEoe5MUlPDN3U2ZN9wmiw/kZdH0k13MhVRHPe5wK6kMJ7
-bYLAH+Am3+sTgdnPJsKQ/ILyXbaI1jj11CZko/FmKKK0Tr72ue7npLSHf41m74TU
-B7tOnybngivbPWz4R8hANp0/fIP0PLuIS6mYd5+8Gs/qb1J7gx82RIbLrZcP/N8t
-e5XgdrCf+8sezq8ADDn4o+JrGb8vE0c/rrNQImyTOsAOwXfDHeE=
-=z04X
------END PGP SIGNATURE-----
-
---z5TfhxvQFdT1ZzDp--
+>
+> --
+> Michal Hocko
+> SUSE Labs
