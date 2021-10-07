@@ -2,121 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 271D2425A4B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 20:04:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C2B0425A56
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 20:06:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243471AbhJGSFw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 14:05:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51300 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243419AbhJGSFv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 14:05:51 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A83EEC061570;
-        Thu,  7 Oct 2021 11:03:57 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id s15so21722470wrv.11;
-        Thu, 07 Oct 2021 11:03:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=LZMwmOkgk54eN1UQEPXt7V5xX9DIaJ65/jsj/DfOi4o=;
-        b=HUUz197XMFD4QIOrap8XB9wCFV+JH7BtWEeT41amx0tBVZTCIk5dcPiGAQ+ien3Az0
-         WfRt4aF0/mjIKvVR1GZXLdSPKFUyeLi4nCum5k3zvhd7ulygZZZSZvq5hYsre9hHk/3n
-         EpCrxmK0ogeMsAwZL+OA89w519fjQYP9zREk5P0Fkp4FRWElsdaR54q5BtJLbd7/s4/J
-         WtGTJCIXfkX8yP4xq7wjufuoJuuHAbwtH/jGbXXqy+wmRmAfN2BfFUfoQd1D2KMm0X6i
-         Y32kgzC7vjkSp1+MaA7LDsN/BkOzfpSS94wTzEIucqXfjJ3QokfGbqSXMykYiK4CZPX8
-         pmzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=LZMwmOkgk54eN1UQEPXt7V5xX9DIaJ65/jsj/DfOi4o=;
-        b=5ZDYkC6wAHEE0ZF/UupnJNktlUwwuuzn4bmdiYsyHO0fsu2lkyHL7Z6sqLpe1EzxOW
-         MXgg92FrkkodZkxkY5j0VO++VH+oA3Oe8xC3+gG5KYq0aOlgxIPejYEmrEMLoqR7D49Q
-         C6akPf67ar1SjEG/N3atK4dsdgaCRam5wr6vQczc1WBQf1kWlYUGleAxRagw/b+peRB8
-         dEFTf+CQbYjjoDF0riSj0NkZ05n6Job5CJn249iZYwWyX8oOQtpbN5icvb8F16DnlIDJ
-         yuetwRI64BgnxoCyd5/ESZmfsqFP7xd9wMkWmMHmjulMFEVuX3HUDqtjlxsYPZQEV1/r
-         e1BQ==
-X-Gm-Message-State: AOAM530h/L6h2i80ebfAX1qX6s0imHlLzJzio9bVjujSs+Cdqheg9XNo
-        XhMGwZi0Bw9MRoj/rbGyNZA=
-X-Google-Smtp-Source: ABdhPJyycWoJZY36EQ+xWCIw4MlCVxIs0pvtuJveS1miA3vFhtl1b5/SApCGxHqlO2rvNeK+/K7ISA==
-X-Received: by 2002:adf:bc4a:: with SMTP id a10mr7170320wrh.131.1633629836236;
-        Thu, 07 Oct 2021 11:03:56 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id n66sm123267wmn.2.2021.10.07.11.03.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Oct 2021 11:03:55 -0700 (PDT)
-Date:   Thu, 7 Oct 2021 20:03:54 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Mikko Perttunen <mperttunen@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>, dri-devel@lists.freedesktop.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] gpu: host1x: select CONFIG_DMA_SHARED_BUFFER
-Message-ID: <YV82imZcgUlYbQCw@orome.fritz.box>
-References: <20210927093705.458573-1-arnd@kernel.org>
+        id S243480AbhJGSHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 14:07:55 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:54798 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233770AbhJGSHy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 14:07:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=uqZhubrZS0AC3XCDxYOs5HijLXlbSUCH28Z8t+sc3d0=; b=loExcZsc/YaIjMqkO/RpnyxTf2
+        Ouop7cKYoMODlVT0BhuhEZ+4sSV5CkVylC0KAeGrR588aM4gpRU9JptqndcNyZ2AYq9YfDm4L/UPp
+        9V8jrzl41TZXWP+Ni96CKAaVtaM3N/LiWppIg+ixvxz6+V67MiXvYZuYqBly1251YJSY=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mYXmG-009ykS-Dh; Thu, 07 Oct 2021 20:05:56 +0200
+Date:   Thu, 7 Oct 2021 20:05:56 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [net-next PATCH 10/13] net: dsa: qca8k: add explicit SGMII PLL
+ enable
+Message-ID: <YV83BAmhHfmDyCjv@lunn.ch>
+References: <20211006223603.18858-1-ansuelsmth@gmail.com>
+ <20211006223603.18858-11-ansuelsmth@gmail.com>
+ <YV4/ehy9aYJyozvy@lunn.ch>
+ <YV73umYovC0wh5hz@Ansuel-xps.localdomain>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="WijDuHqqAP6ZhHfE"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210927093705.458573-1-arnd@kernel.org>
-User-Agent: Mutt/2.1.3 (987dde4c) (2021-09-10)
+In-Reply-To: <YV73umYovC0wh5hz@Ansuel-xps.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---WijDuHqqAP6ZhHfE
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Thu, Oct 07, 2021 at 03:35:54PM +0200, Ansuel Smith wrote:
+> On Thu, Oct 07, 2021 at 02:29:46AM +0200, Andrew Lunn wrote:
+> > On Thu, Oct 07, 2021 at 12:36:00AM +0200, Ansuel Smith wrote:
+> > > Support enabling PLL on the SGMII CPU port. Some device require this
+> > > special configuration or no traffic is transmitted and the switch
+> > > doesn't work at all. A dedicated binding is added to the CPU node
+> > > port to apply the correct reg on mac config.
+> > 
+> > Why not just enable this all the time when the CPU port is in SGMII
+> > mode?
+> 
+> I don't know if you missed the cover letter with the reason. Sgmii PLL
+> is a mess. Some device needs it and some doesn't. With a wrong
+> configuration the result is not traffic. As it's all messy we decided to
+> set the PLL to be enabled with a dedicated binding and set it disabled
+> by default. We enouncer more device that require it disabled than device
+> that needs it enabled. (in the order of 70 that doesn't needed it and 2
+> that requires it enabled or port instability/no traffic/leds problem)
 
-On Mon, Sep 27, 2021 at 11:36:59AM +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
->=20
-> Linking fails when dma-buf is disabled:
->=20
-> ld.lld: error: undefined symbol: dma_fence_release
-> >>> referenced by fence.c
-> >>>               gpu/host1x/fence.o:(host1x_syncpt_fence_enable_signalin=
-g) in archive drivers/built-in.a
-> >>> referenced by fence.c
-> >>>               gpu/host1x/fence.o:(host1x_fence_signal) in archive dri=
-vers/built-in.a
-> >>> referenced by fence.c
-> >>>               gpu/host1x/fence.o:(do_fence_timeout) in archive driver=
-s/built-in.a
->=20
-> Fixes: 687db2207b1b ("gpu: host1x: Add DMA fence implementation")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/gpu/host1x/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
+What exactly does this PLL do? Clock recovery of the SGMII clock, and
+then using it in the opposite direction? What combinations of PHYs
+need it, and which don't?
 
-Applied, thanks.
+> > Is it also needed for 1000BaseX?
+> > 
+> 
+> We assume it really depends on the device.
 
-Thierry
+That i find surprising. 1000BaseX and SGMII are very similar. I would
+expect a device with requires the PLL enabled for SGMII also needs it
+for 1000BaseX.
 
---WijDuHqqAP6ZhHfE
-Content-Type: application/pgp-signature; name="signature.asc"
+> > DT properties like this are hard to use. It would be better if the
+> > switch can decide for itself if it needs the PLL enabled.
+> 
+> Again reason in the cover letter sgmii part. Some qca driver have some
+> logic based on switch revision. We tried that and it didn't work since
+> some device had no traffic with pll enabled (and with the revision set
+> to enable pll)
 
------BEGIN PGP SIGNATURE-----
+This is my main problem with this patchset. You are adding lots of
+poorly documented properties which are proprietary to this switch. And
+you are saying, please try all 2^N combinations and see what works
+best. That is not very friendly at all.
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmFfNooACgkQ3SOs138+
-s6EkbA/+PDMiY14SV9kV644GqfM5UvlMjnXD3NUtGJ8W0AV8/PifHO7jXxUyikmd
-8Y12WgdtuRboSdf365SCGguKHgXsYaxpW4U5SipQkt/3HM4qBms5k0bwfbRYU2nF
-bsZGG4pnSH4j52LQ7CshQojnvndWOS8fDMgswz8Rw2XlRlWQqS89KGZlTiSMcWss
-ZXKCaStIeWaiJ8+03fxUDHqJlNui7WjlgkbcgIfgBDBioGtIfCi8VqXurpnbfUUQ
-TbHEwFomGSMRqya7eMO5iW0e0i8rLgvFPVK6xX9t5p5rYriWUmG/yAxQVS4RMN46
-WsLK7p80HUFtIs9KHZxdRDf50QI8q1N5eA3X0PQbtmX7uleo5Z+0/AiSUYJGcMl5
-PwOg7chuXzhlBMOkCLG2jgMNPT+CTfBByxKsrAP3y1uz/XJyo49IRb3KhxqiC1bZ
-QWifYe4wm07T07CzUpkyP4iA+I6zKfXfZ0l+1qJw2qxwuN6fKGAXu7/AujGM0rGX
-dGN10HKy9NYoNuWFUBLkccUs9FM6Molmu2LpQDd+lz17okS9QwijW87bqzu03B6A
-Vp/pisQeiDa1ME7VXWXp6egLQ43y14qb/HhQmkUnLtiDPyxh+ooeGr4OnIx35Xec
-+Gh8a2bDvNXYi0A23NRSiYXIhO+aG00eV59dpHv7Ib3NselAH48=
-=OOu+
------END PGP SIGNATURE-----
+So it would be good to explain each one in detail. Maybe given the
+explanation, we can figure out a way to detect at runtime, and not
+need the option. If not, you can add it to the DT binding to help
+somebody pick a likely starting point for the 2^N search.
 
---WijDuHqqAP6ZhHfE--
+	 Andrew
