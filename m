@@ -2,70 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84BA5424E61
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 09:57:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B64BF424E64
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 09:58:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232502AbhJGH65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 03:58:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55146 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240316AbhJGH64 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 03:58:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C04B861029;
-        Thu,  7 Oct 2021 07:57:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633593422;
-        bh=EUlwA4dsoXeeKLviFdk42tbmlamxNeb1B3c2EGU0Mhs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EAJNopuYrLItO+XEKtnfkTRAloz9GOXNkovZYuxxQabEa8YAYliAqHwCee8rFCsjr
-         a9jjfvvhR9Cr8xKNHpl5jgN4fboQQVr6vixK8vDYFuiSUtjADqhLELfCKuGFhoXnXF
-         ZCeOOM4bbbT1AS6CKoikB/VauRkmgvfBoZX6tYiYfOX7Ss9pm4M6HGFu6vcNnwAsO5
-         jOjDd6f6EnRn9fCLfzu19zKAkcDmxC7eimmIhOgOT8QnBMTL2OIdq2qVPl4s869GWa
-         ngLfz/hS75alb8EE4YrzHeEWzcUby44PvfORD62JajwVv19gWeaZRMsJ/AJPRVH4uZ
-         3Y8vjGKgBsK/Q==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1mYOGz-0006jn-Gv; Thu, 07 Oct 2021 09:57:01 +0200
-Date:   Thu, 7 Oct 2021 09:57:01 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Yu-Tung Chang <mtwget@gmail.com>
-Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] USB: serial: option: add Quectel EC200S-CN module
- support
-Message-ID: <YV6oTZae5zbgX8cV@hovoldconsulting.com>
-References: <20210930021112.330396-1-mtwget@gmail.com>
- <YV6mD02BVLXXcTr8@hovoldconsulting.com>
+        id S240349AbhJGIAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 04:00:31 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:59204 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232593AbhJGIAa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 04:00:30 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: kholk11)
+        with ESMTPSA id 6C4A81F44EA8
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+To:     robh+dt@kernel.org
+Cc:     airlied@linux.ie, daniel@ffwll.ch, seanpaul@chromium.org,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Subject: [PATCH] dt-bindings: display/bridge: ptn3460: Convert to YAML binding
+Date:   Thu,  7 Oct 2021 09:58:22 +0200
+Message-Id: <20211007075822.62411-1-angelogioacchino.delregno@collabora.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YV6mD02BVLXXcTr8@hovoldconsulting.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 07, 2021 at 09:47:28AM +0200, Johan Hovold wrote:
-> On Thu, Sep 30, 2021 at 10:11:12AM +0800, Yu-Tung Chang wrote:
-> > Add usb product id of the Quectel EC200S-CN module.
-> > 
-> > usb-devices output for 0x6002:
-> > T:  Bus=01 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#=  3 Spd=480 MxCh= 0
-> > D:  Ver= 2.00 Cls=ef(misc ) Sub=02 Prot=01 MxPS=64 #Cfgs=  1
-> > P:  Vendor=2c7c ProdID=6002 Rev=03.18
-> > S:  Manufacturer=Android
-> > S:  Product=Android
-> > S:  SerialNumber=0000
-> > C:  #Ifs= 5 Cfg#= 1 Atr=e0 MxPwr=500mA
-> > I:  If#=0x0 Alt= 0 #EPs= 1 Cls=02(commc) Sub=06 Prot=00 Driver=cdc_ether
-> > I:  If#=0x1 Alt= 1 #EPs= 2 Cls=0a(data ) Sub=00 Prot=00 Driver=cdc_ether
-> > I:  If#=0x2 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=00 Prot=00 Driver=(none)
-> > I:  If#=0x3 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=(none)
-> > I:  If#=0x4 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=(none)
-> 
-> Looks good now, but for completeness, could you also mention here what
-> the three ports are used for (and which is which)?
+Convert the NXP PTN3460 eDP to LVDS bridge documentation to YAML.
 
-I've applied the patch now, so no need to resend, but please list the
-three ports in a reply if you have that information.
+Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+---
+ .../bindings/display/bridge/nxp,ptn3460.yaml  | 106 ++++++++++++++++++
+ .../bindings/display/bridge/ptn3460.txt       |  39 -------
+ 2 files changed, 106 insertions(+), 39 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/display/bridge/nxp,ptn3460.yaml
+ delete mode 100644 Documentation/devicetree/bindings/display/bridge/ptn3460.txt
 
-Johan
+diff --git a/Documentation/devicetree/bindings/display/bridge/nxp,ptn3460.yaml b/Documentation/devicetree/bindings/display/bridge/nxp,ptn3460.yaml
+new file mode 100644
+index 000000000000..107dd138e6c6
+--- /dev/null
++++ b/Documentation/devicetree/bindings/display/bridge/nxp,ptn3460.yaml
+@@ -0,0 +1,106 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/display/bridge/nxp,ptn3460.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: NXP PTN3460 eDP to LVDS bridge
++
++maintainers:
++  - Sean Paul <seanpaul@chromium.org>
++
++properties:
++  compatible:
++    const: nxp,ptn3460
++
++  reg:
++    description: I2C address of the bridge
++    maxItems: 1
++
++  edid-emulation:
++    $ref: "/schemas/types.yaml#/definitions/uint32"
++    description:
++      The EDID emulation entry to use
++      Value  Resolution  Description
++        0     1024x768   NXP Generic
++        1     1920x1080  NXP Generic
++        2     1920x1080  NXP Generic
++        3     1600x900   Samsung LTM200KT
++        4     1920x1080  Samsung LTM230HT
++        5     1366x768   NXP Generic
++        6     1600x900   ChiMei M215HGE
++    enum: [0, 1, 2, 3, 4, 5, 6]
++
++  powerdown-gpios:
++    description: GPIO connected to the PD_N signal.
++    maxItems: 1
++
++  reset-gpios:
++    description: GPIO connected to the RST_N signal.
++    maxItems: 1
++
++  ports:
++    $ref: /schemas/graph.yaml#/properties/ports
++
++    properties:
++      port@0:
++        $ref: /schemas/graph.yaml#/properties/port
++        description:
++          Video port for LVDS output
++
++      port@1:
++        $ref: /schemas/graph.yaml#/properties/port
++        description:
++          Video port for eDP input
++
++    required:
++      - port@0
++      - port@1
++
++required:
++  - compatible
++  - reg
++  - edid-emulation
++  - powerdown-gpios
++  - reset-gpios
++  - ports
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++
++    i2c1 {
++      #address-cells = <1>;
++      #size-cells = <0>;
++
++      bridge@20 {
++        compatible = "nxp,ptn3460";
++        reg = <0x20>;
++        edid-emulation = <5>;
++        powerdown-gpios = <&gpy2 5 GPIO_ACTIVE_HIGH>;
++        reset-gpios = <&gpx1 5 GPIO_ACTIVE_LOW>;
++
++        ports {
++          #address-cells = <1>;
++          #size-cells = <0>;
++
++          port@0 {
++            reg = <0>;
++            bridge_out: endpoint {
++              remote-endpoint = <&panel_in>;
++            };
++          };
++
++          port@1 {
++            reg = <1>;
++            bridge_in: endpoint {
++              remote-endpoint = <&dp_out>;
++            };
++          };
++        };
++      };
++    };
++
++...
+diff --git a/Documentation/devicetree/bindings/display/bridge/ptn3460.txt b/Documentation/devicetree/bindings/display/bridge/ptn3460.txt
+deleted file mode 100644
+index 361971ba104d..000000000000
+--- a/Documentation/devicetree/bindings/display/bridge/ptn3460.txt
++++ /dev/null
+@@ -1,39 +0,0 @@
+-ptn3460 bridge bindings
+-
+-Required properties:
+-	- compatible: "nxp,ptn3460"
+-	- reg: i2c address of the bridge
+-	- powerdown-gpio: OF device-tree gpio specification  for PD_N pin.
+-	- reset-gpio: OF device-tree gpio specification for RST_N pin.
+-	- edid-emulation: The EDID emulation entry to use
+-		+-------+------------+------------------+
+-		| Value | Resolution | Description      |
+-		|   0   |  1024x768  | NXP Generic      |
+-		|   1   |  1920x1080 | NXP Generic      |
+-		|   2   |  1920x1080 | NXP Generic      |
+-		|   3   |  1600x900  | Samsung LTM200KT |
+-		|   4   |  1920x1080 | Samsung LTM230HT |
+-		|   5   |  1366x768  | NXP Generic      |
+-		|   6   |  1600x900  | ChiMei M215HGE   |
+-		+-------+------------+------------------+
+-
+-	- video interfaces: Device node can contain video interface port
+-			    nodes for panel according to [1].
+-
+-[1]: Documentation/devicetree/bindings/media/video-interfaces.txt
+-
+-Example:
+-	lvds-bridge@20 {
+-		compatible = "nxp,ptn3460";
+-		reg = <0x20>;
+-		powerdown-gpio = <&gpy2 5 1 0 0>;
+-		reset-gpio = <&gpx1 5 1 0 0>;
+-		edid-emulation = <5>;
+-		ports {
+-			port@0 {
+-				bridge_out: endpoint {
+-					remote-endpoint = <&panel_in>;
+-				};
+-			};
+-		};
+-	};
+-- 
+2.33.0
+
