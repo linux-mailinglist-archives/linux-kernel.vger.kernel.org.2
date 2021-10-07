@@ -2,178 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E8B5424FBF
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 11:09:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFA1B425040
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 11:42:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240370AbhJGJLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 05:11:50 -0400
-Received: from mga14.intel.com ([192.55.52.115]:5182 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231661AbhJGJLs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 05:11:48 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10129"; a="226515996"
-X-IronPort-AV: E=Sophos;i="5.85,354,1624345200"; 
-   d="scan'208";a="226515996"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 02:09:55 -0700
-X-IronPort-AV: E=Sophos;i="5.85,354,1624345200"; 
-   d="scan'208";a="657317449"
-Received: from cleane-mobl.ger.corp.intel.com (HELO [10.213.249.175]) ([10.213.249.175])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 02:09:53 -0700
-Subject: Re: [RFC 1/8] sched: Add nice value change notifier
-From:   Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
-To:     Barry Song <21cnbao@gmail.com>
-Cc:     "Wanghui (John)" <john.wanghui@huawei.com>,
-        Intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-References: <20211004143650.699120-1-tvrtko.ursulin@linux.intel.com>
- <20211004143650.699120-2-tvrtko.ursulin@linux.intel.com>
- <562d45e1-4a27-3252-f615-3ab1ef531f2b@huawei.com>
- <CAGsJ_4w5Y4=v93YmTrXJ6hDgjKshxiAZ-ox-Nz_7uRwe4ECtdw@mail.gmail.com>
- <8381e87d-ef7f-4759-569b-f6dabeb02939@linux.intel.com>
- <CAGsJ_4wF1SmDL6eoEXRB-NwGLALkwhj9wLC5JKaQJpaQx1=5ZA@mail.gmail.com>
- <382a4bd5-bb74-5928-be67-afbdc7aa3663@linux.intel.com>
-Organization: Intel Corporation UK Plc
-Message-ID: <6818e34e-d41c-67b7-85dd-76d2e47bc078@linux.intel.com>
-Date:   Thu, 7 Oct 2021 10:09:51 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S240698AbhJGJoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 05:44:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24231 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232665AbhJGJoO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 05:44:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633599740;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=yF185G3CUaIimxEtaF4EwIKwxKpiut8yc194c2IfaRo=;
+        b=bYhUAHMfOtZhGub/bhhmNSxo9Qfy6XSqFWLc+BRVT/aoagrn/HVZFGZ/YoUfGq5R0ehGsi
+        g0lNekRMecFfdY3u5owy1NGnb1K/gSPgzUgELYIQ9anOomefv4gAnhTQShGq5Dwd5BUam/
+        ++RlLes1YQQ0f03xxH7Nt0LjxHZscnU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-231-n9J6L_YaNQykxgpnhNy_4g-1; Thu, 07 Oct 2021 05:42:19 -0400
+X-MC-Unique: n9J6L_YaNQykxgpnhNy_4g-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6CE968010ED;
+        Thu,  7 Oct 2021 09:42:18 +0000 (UTC)
+Received: from fuller.cnet (ovpn-112-2.gru2.redhat.com [10.97.112.2])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 33E7E5C1B4;
+        Thu,  7 Oct 2021 09:42:05 +0000 (UTC)
+Received: by fuller.cnet (Postfix, from userid 1000)
+        id D53BF416D862; Thu,  7 Oct 2021 06:10:03 -0300 (-03)
+Date:   Thu, 7 Oct 2021 06:10:03 -0300
+From:   Marcelo Tosatti <mtosatti@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Song Liu <song@kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Nitesh Narayan Lal <nitesh@redhat.com>,
+        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Xu <peterx@redhat.com>,
+        Andrii Nakryiko <andrii@kernel.org>
+Subject: Re: [PATCH bpf-next] bpf: introduce helper bpf_raw_read_cpu_clock
+Message-ID: <20211007091003.GA337010@fuller.cnet>
+References: <20211006175106.GA295227@fuller.cnet>
+ <CAPhsuW5Uq78wqK_waeLPpyY6PNgzgtCZkZ4-FFWcF00Pez6cmw@mail.gmail.com>
+ <20211007071856.GM174703@worktop.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <382a4bd5-bb74-5928-be67-afbdc7aa3663@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211007071856.GM174703@worktop.programming.kicks-ass.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Peter, Song,
 
-On 07/10/2021 09:50, Tvrtko Ursulin wrote:
+On Thu, Oct 07, 2021 at 09:18:56AM +0200, Peter Zijlstra wrote:
+> On Wed, Oct 06, 2021 at 02:37:09PM -0700, Song Liu wrote:
+> > On Wed, Oct 6, 2021 at 10:52 AM Marcelo Tosatti <mtosatti@redhat.com> wrote:
+> > >
+> > >
+> > >
+> > > Add bpf_raw_read_cpu_clock helper, to read architecture specific
+> > > CPU clock. In x86's case, this is the TSC.
+> > >
+> > > This is necessary to synchronize bpf traces from host and guest bpf-programs
+> > > (after subtracting guest tsc-offset from guest timestamps).
+> > 
+> > Trying to understand the use case. So in a host-guest scenario,
+> > bpf_ktime_get_ns()
+> > will return different values in host and guest, but rdtsc() will give
+> > the same value.
+> > Is this correct?
 > 
-> On 06/10/2021 21:21, Barry Song wrote:
->> On Thu, Oct 7, 2021 at 2:44 AM Tvrtko Ursulin
->> <tvrtko.ursulin@linux.intel.com> wrote:
->>>
->>>
->>> Hi,
->>>
->>> On 06/10/2021 08:58, Barry Song wrote:
->>>> On Wed, Oct 6, 2021 at 5:15 PM Wanghui (John) 
->>>> <john.wanghui@huawei.com> wrote:
->>>>>
->>>>> HI Tvrtko
->>>>>
->>>>> On 2021/10/4 22:36, Tvrtko Ursulin wrote:
->>>>>>     void set_user_nice(struct task_struct *p, long nice)
->>>>>>     {
->>>>>>         bool queued, running;
->>>>>> -     int old_prio;
->>>>>> +     int old_prio, ret;
->>>>>>         struct rq_flags rf;
->>>>>>         struct rq *rq;
->>>>>>
->>>>>> @@ -6915,6 +6947,9 @@ void set_user_nice(struct task_struct *p, 
->>>>>> long nice)
->>>>>>
->>>>>>     out_unlock:
->>>>>>         task_rq_unlock(rq, p, &rf);
->>>>>> +
->>>>>> +     ret = atomic_notifier_call_chain(&user_nice_notifier_list, 
->>>>>> nice, p);
->>>>>> +     WARN_ON_ONCE(ret != NOTIFY_DONE);
->>>>>>     }
->>>>> How about adding a new "io_nice" to task_struct，and move the call 
->>>>> chain to
->>>>> sched_setattr/getattr, there are two benefits:
->>>>
->>>> We already have an ionice for block io scheduler. hardly can this 
->>>> new io_nice
->>>> be generic to all I/O. it seems the patchset is trying to link
->>>> process' nice with
->>>> GPU's scheduler, to some extent, it makes more senses than having a
->>>> common ionice because we have a lot of IO devices in the systems, we 
->>>> don't
->>>> know which I/O the ionice of task_struct should be applied to.
->>>>
->>>> Maybe we could have an ionice dedicated for GPU just like ionice for 
->>>> CFQ
->>>> of bio/request scheduler.
->>>
->>> Thought crossed my mind but I couldn't see the practicality of a 3rd
->>> nice concept. I mean even to start with I struggle a bit with the
->>> usefulness of existing ionice vs nice. Like coming up with practical
->>> examples of usecases where it makes sense to decouple the two 
->>> priorities.
->>>
->>>   From a different angle I did think inheriting CPU nice makes sense for
->>> GPU workloads. This is because today, and more so in the future,
->>> computations on a same data set do flow from one to the other.
->>>
->>> Like maybe a simple example of batch image processing where CPU decodes,
->>> GPU does a transform and then CPU encodes. Or a different mix, doesn't
->>> really matter, since the main point it is one computing pipeline from
->>> users point of view.
->>>
->>
->> I am on it. but I am also seeing two problems here:
->> 1. nice is not global in linux. For example, if you have two cgroups, 
->> cgroup A
->> has more quota then cgroup B. Tasks in B won't win even if it has a 
->> lower nice.
->> cgroups will run proportional-weight time-based division of CPU.
->>
->> 2. Historically, we had dynamic nice which was adjusted based on the 
->> average
->> sleep/running time; right now, we don't have dynamic nice, but virtual 
->> time
->> still make tasks which sleep more preempt other tasks with the same nice
->> or even lower nice.
->> virtual time += physical time/weight by nice
->> so, static nice number doesn't always make sense to decide preemption.
->>
->> So it seems your patch only works under some simple situation for example
->> no cgroups, tasks have similar sleep/running time.
-> 
-> Yes, I broadly agree with your assessment. Although there are plans for 
-> adding cgroup support to i915 scheduling, I doubt as fine grained 
-> control and exact semantics as there are on the CPU side will happen.
-> 
-> Mostly because the drive seems to be for more micro-controller managed 
-> scheduling which adds further challenges in connecting the two sides 
-> together.
-> 
-> But when you say it is a problem, I would characterize it more a 
-> weakness in terms of being only a subset of possible control. It is 
-> still richer (better?) than what currently exists and as demonstrated 
-> with benchmarks in my cover letter it can deliver improvements in user 
-> experience. If in the mid term future we can extend it with cgroup 
-> support then the concept should still apply and get closer to how you 
-> described nice works in the CPU world.
-> 
-> Main question in my mind is whether the idea of adding the 
-> sched_attr/priority notifier to the kernel can be justified. Because as 
-> mentioned before, everything apart from adjusting currently running GPU 
-> jobs could be done purely in userspace. Stack changes would be quite 
-> extensive and all, but that is not usually a good enough reason to put 
-> something in the kernel. That's why it is an RFC an invitation to discuss.
-> 
-> Even ionice inherits from nice (see task_nice_ioprio()) so I think 
-> argument can be made for drivers as well.
+> No, it will not. 
 
-Now that I wrote this, I had a little bit of a light bulb moment. If I 
-abandon the idea of adjusting the priority of already submitted work 
-items, then I can do much of what I want purely from within the confines 
-of i915.
+No, but we can find out the delta between host and guest TSCs.
 
-I simply add code to inherit from current task nice on every new work 
-item submission. This should probably bring the majority of the benefit 
-I measured.
+On x86, you can read the offset through debugfs file:
 
-Regards,
+        debugfs_create_file("tsc-offset", 0444, debugfs_dentry, vcpu,
+                            &vcpu_tsc_offset_fops);
 
-Tvrtko
+Other architectures can expose that offset.
+
+> Also, please explain if any of this stands a chance of
+> working for anything other than x86. 
+
+Yes, the same pattern repeats
+
+ARM:
+
+With offset between guest and host:
+https://developer.arm.com/documentation/ddi0595/2020-12/AArch64-Registers/CNTVCT-EL0--Counter-timer-Virtual-Count-register?lang=en
+
+Without offset:
+commit 051ff581ce70e822729e9474941f3c206cbf7436
+
+PPC:
+https://yhbt.net/lore/all/5f267a8aec5b8199a580c96ab2b1a3c27de4eb09.camel@gmail.com/T/
+
+(Time Base Register is read through mftb instruction).
+
+> Or even on x86 in the face of
+> guest migration.
+
+It won't, but honestly we don't care about tracing at this level across
+migration.
+
+> Also, please explain, again, what's wrong with dumping snapshots of
+> CLOCK_MONOTONIC{,_RAW} from host and guest and correlating time that
+> way?
+
+You can't read the guest and the host clock at the same time (there will always
+be some variable delay between reading the two clocks). And that delay
+is not fixed, but variable (depending on scheduling of the guest vcpus, 
+for example). So you will need an algorithm to estimate their differences, 
+with non zero error bounds:
+
+"
+ Add a driver with gettime method returning hosts realtime clock.
+ This allows Chrony to synchronize host and guest clocks with 
+ high precision (see results below).
+ 
+ chronyc> sources
+ MS Name/IP address         Stratum Poll Reach LastRx Last sample
+ ===============================================================================
+ #* PHC0                          0   3   377     6     +4ns[   +4ns] +/-    3ns
+"
+
+Now with the hardware clock (which is usually the base for CLOCK_MONOTONIC_RAW),
+there are no errors (offset will be 0 ns, rather than 3/4ns).
+
+> And also explain why BPF needs to do this differently than all the other
+> tracers.
+
+For x86 we use:
+
+echo "x86-tsc" > /sys/kernel/debug/tracing/trace_clock
+
+For this purpose, on x86, so its not like anything different is being
+done?
+
