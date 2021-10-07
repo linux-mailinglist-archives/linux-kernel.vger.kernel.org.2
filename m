@@ -2,218 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5683424B67
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 02:53:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDD5D424B68
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 02:55:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240079AbhJGAzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 20:55:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41110 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231279AbhJGAzC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 20:55:02 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4497C061746
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 17:53:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=ObkHVuygR1MWUSVNqUghO5lJjpIVaNYJHto7C1tku98=; b=TZ2JYyRRjk1qjDDPT8KiRUOAvw
-        5qHZ94m3SEcov4PXCg1ekjNOx0CwjVMyJzPnXbh/9MbqpNpRWK7ZPhw/Tk0/Cik+1Y6cyVyIxg0CI
-        zVvScf7iQfFsn7bVufxomoszpo4evII6vbwRbHpmY5P7e6RGrmTrw4d1XPewDO76IPNhQw0yBrznX
-        WghCm4gUD3AofAkGWU71qHPIwVNx3d0D2RAykLq8/WGkP/mWr46zEUToV8ON/e4zBkQCz2bss7dWB
-        Vm5VEgJOkIZUtN+evNUfh9sEyUj3Q/b08fXSIWSVI7qbRrof7t2bwxxiQss5fpPNSQhmy/4H/lG6j
-        2v+kCEjg==;
-Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mYHek-00FwHH-OC; Thu, 07 Oct 2021 00:53:06 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org,
-        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
-        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
-        <ville.syrjala@linux.intel.com>,
-        Boris Brezillon <boris.brezillon@bootlin.com>,
-        Derek Basehore <dbasehore@chromium.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>
-Subject: [PATCH -next] drm/connector: fix all kernel-doc warnings
-Date:   Wed,  6 Oct 2021 17:53:05 -0700
-Message-Id: <20211007005305.15171-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.31.1
+        id S240107AbhJGA5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 20:57:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37276 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231279AbhJGA5e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 20:57:34 -0400
+Received: from rorschach.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5EA19610CE;
+        Thu,  7 Oct 2021 00:55:41 +0000 (UTC)
+Date:   Wed, 6 Oct 2021 20:55:40 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     "Robin H. Johnson" <robbat2@gentoo.org>
+Cc:     linux-kernel@vger.kernel.org, mingo@redhat.com,
+        rjohnson@digitalocean.com, Peter Zijlstra <peterz@infradead.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Frederic Weisbecker <fweisbec@gmail.com>
+Subject: Re: [PATCH 1/2] tracing: show size of requested buffer
+Message-ID: <20211006205540.14ea13e0@rorschach.local.home>
+In-Reply-To: <robbat2-20211006T224617-864445788Z@orbis-terrarum.net>
+References: <20210831043723.13481-1-robbat2@gentoo.org>
+        <20211006182652.6c11ce1b@gandalf.local.home>
+        <robbat2-20211006T224617-864445788Z@orbis-terrarum.net>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Clean up all of the kernel-doc issues in drm_connector.c:
+On Wed, 6 Oct 2021 22:48:35 +0000
+"Robin H. Johnson" <robbat2@gentoo.org> wrote:
 
-drivers/gpu/drm/drm_connector.c:2611: warning: Excess function parameter 'connector' description in 'drm_connector_oob_hotplug_event'
-drivers/gpu/drm/drm_connector.c:2611: warning: Function parameter or member 'connector_fwnode' not described in 'drm_connector_oob_hotplug_event'
+> On Wed, Oct 06, 2021 at 06:26:52PM -0400, Steven Rostedt wrote:
+> > On Mon, 30 Aug 2021 21:37:22 -0700
+> > "Robin H. Johnson" <robbat2@gentoo.org> wrote:
+> > 
+> > Sorry for the late reply, I was on holiday when this was sent, and I'm just
+> > getting to looking at this email now (as my OoO email should have suggested ;-)
+> > 
+> > Anyway, this needs to be reviewed by the Perf maintainers (Cc'd)
+> > 
+> > (Lore link for patch 2: 
+> >   https://lore.kernel.org/all/20210831043723.13481-2-robbat2@gentoo.org/ )  
+> 
+> You already CC'd them on Sept 7th, no response yet.
 
-drm_connector.c:630: warning: No description found for return value of 'drm_get_connector_status_name'
-drm_connector.c:715: warning: No description found for return value of 'drm_connector_list_iter_next'
-drm_connector.c:785: warning: No description found for return value of 'drm_get_subpixel_order_name'
-drm_connector.c:816: warning: No description found for return value of 'drm_display_info_set_bus_formats'
-drm_connector.c:1331: warning: No description found for return value of 'drm_mode_create_dvi_i_properties'
-drm_connector.c:1412: warning: No description found for return value of 'drm_connector_attach_content_type_property'
-drm_connector.c:1492: warning: No description found for return value of 'drm_mode_create_tv_margin_properties'
-drm_connector.c:1534: warning: No description found for return value of 'drm_mode_create_tv_properties'
-drm_connector.c:1627: warning: No description found for return value of 'drm_mode_create_scaling_mode_property'
-drm_connector.c:1944: warning: No description found for return value of 'drm_mode_create_suggested_offset_properties'
+Oh good, that means I'm not the one that dropped the ball on this ;-)
 
-drm_connector.c:2315: warning: missing initial short description on line:
- * drm_connector_set_panel_orientation_with_quirk -
+> 
+> Does MAINTAINERS need an update for kernel/trace/trace_event_perf.c?
+> It points to Ingo & yourself for that directory, and not to the Perf
+> maintainers.
 
-[The last warning listed is probably a quirk/bug in scripts/kernel-doc.]
+Well, it is maintained by both of us. I usually just ask them to review
+before taking it, but if there's no response from them by the end of
+the week, I'll add it to my "for-next" queue.
 
-Fixes: 613051dac40d ("drm: locking&new iterators for connector_list")
-Fixes: 522171951761 ("drm: Extract drm_connector.[hc]")
-Fixes: b3c6c8bfe378 ("drm: document drm_display_info")
-Fixes: 50525c332b55 ("drm: content-type property for HDMI connector")
-Fixes: 6c4f52dca36f ("drm/connector: Allow creation of margin props alone")
-Fixes: 69654c632d80 ("drm/connector: Split out orientation quirk detection (v2)")
-Fixes: 72ad49682dde ("drm/connector: Add support for out-of-band hotplug notification (v3)")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: David Airlie <airlied@linux.ie>
-Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: dri-devel@lists.freedesktop.org
-Cc: Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>
-Cc: Ville Syrjälä <ville.syrjala@linux.intel.com>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Derek Basehore <dbasehore@chromium.org>
-Cc: Hans de Goede <hdegoede@redhat.com>
-Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Cc: Maxime Ripard <mripard@kernel.org>
-Cc: Thomas Zimmermann <tzimmermann@suse.de>
----
-72ad49682dde ("drm/connector: Add support for out-of-band hotplug notification (v3)")
-  is only in linux-next. The others are in mainline.
+-- Steve
 
- drivers/gpu/drm/drm_connector.c |   30 ++++++++++++++++++++++++++----
- 1 file changed, 26 insertions(+), 4 deletions(-)
-
---- linux-next-20211006.orig/drivers/gpu/drm/drm_connector.c
-+++ linux-next-20211006/drivers/gpu/drm/drm_connector.c
-@@ -625,6 +625,8 @@ int drm_connector_register_all(struct dr
-  *
-  * In contrast to the other drm_get_*_name functions this one here returns a
-  * const pointer and hence is threadsafe.
-+ *
-+ * Returns: connector status string
-  */
- const char *drm_get_connector_status_name(enum drm_connector_status status)
- {
-@@ -707,7 +709,7 @@ __drm_connector_put_safe(struct drm_conn
-  * drm_connector_list_iter_next - return next connector
-  * @iter: connector_list iterator
-  *
-- * Returns the next connector for @iter, or NULL when the list walk has
-+ * Returns: the next connector for @iter, or NULL when the list walk has
-  * completed.
-  */
- struct drm_connector *
-@@ -780,6 +782,8 @@ static const struct drm_prop_enum_list d
-  *
-  * Note you could abuse this and return something out of bounds, but that
-  * would be a caller error.  No unscrubbed user data should make it here.
-+ *
-+ * Returns: string describing an enumerated subpixel property
-  */
- const char *drm_get_subpixel_order_name(enum subpixel_order order)
- {
-@@ -809,6 +813,9 @@ static const struct drm_prop_enum_list d
-  * Store the supported bus formats in display info structure.
-  * See MEDIA_BUS_FMT_* definitions in include/uapi/linux/media-bus-format.h for
-  * a full list of available formats.
-+ *
-+ * Returns:
-+ * Zero on success, negative errno on failure.
-  */
- int drm_display_info_set_bus_formats(struct drm_display_info *info,
- 				     const u32 *formats,
-@@ -1326,6 +1333,8 @@ int drm_connector_create_standard_proper
-  * @dev: DRM device
-  *
-  * Called by a driver the first time a DVI-I connector is made.
-+ *
-+ * Returns: %0
-  */
- int drm_mode_create_dvi_i_properties(struct drm_device *dev)
- {
-@@ -1407,6 +1416,8 @@ EXPORT_SYMBOL(drm_connector_attach_dp_su
-  * @connector: connector to attach content type property on.
-  *
-  * Called by a driver the first time a HDMI connector is made.
-+ *
-+ * Returns: %0
-  */
- int drm_connector_attach_content_type_property(struct drm_connector *connector)
- {
-@@ -1487,6 +1498,9 @@ EXPORT_SYMBOL(drm_connector_attach_tv_ma
-  * creates the TV margin properties for a given device. No need to call this
-  * function for an SDTV connector, it's already called from
-  * drm_mode_create_tv_properties().
-+ *
-+ * Returns:
-+ * Zero on success, negative errno on failure.
-  */
- int drm_mode_create_tv_margin_properties(struct drm_device *dev)
- {
-@@ -1527,6 +1541,9 @@ EXPORT_SYMBOL(drm_mode_create_tv_margin_
-  * the TV specific connector properties for a given device.  Caller is
-  * responsible for allocating a list of format names and passing them to
-  * this routine.
-+ *
-+ * Returns:
-+ * Zero on success, negative errno on failure.
-  */
- int drm_mode_create_tv_properties(struct drm_device *dev,
- 				  unsigned int num_modes,
-@@ -1622,6 +1639,8 @@ EXPORT_SYMBOL(drm_mode_create_tv_propert
-  * Atomic drivers should use drm_connector_attach_scaling_mode_property()
-  * instead to correctly assign &drm_connector_state.scaling_mode
-  * in the atomic state.
-+ *
-+ * Returns: %0
-  */
- int drm_mode_create_scaling_mode_property(struct drm_device *dev)
- {
-@@ -1939,6 +1958,9 @@ EXPORT_SYMBOL(drm_mode_create_content_ty
-  * @dev: DRM device
-  *
-  * Create the suggested x/y offset property for connectors.
-+ *
-+ * Returns:
-+ * Zero on success, negative errno on failure.
-  */
- int drm_mode_create_suggested_offset_properties(struct drm_device *dev)
- {
-@@ -2312,8 +2334,8 @@ int drm_connector_set_panel_orientation(
- EXPORT_SYMBOL(drm_connector_set_panel_orientation);
- 
- /**
-- * drm_connector_set_panel_orientation_with_quirk -
-- *	set the connector's panel_orientation after checking for quirks
-+ * drm_connector_set_panel_orientation_with_quirk - set the
-+ *	connector's panel_orientation after checking for quirks
-  * @connector: connector for which to init the panel-orientation property.
-  * @panel_orientation: drm_panel_orientation value to set
-  * @width: width in pixels of the panel, used for panel quirk detection
-@@ -2597,7 +2619,7 @@ struct drm_connector *drm_connector_find
- 
- /**
-  * drm_connector_oob_hotplug_event - Report out-of-band hotplug event to connector
-- * @connector: connector to report the event on
-+ * @connector_fwnode: fwnode_handle to report the event on
-  *
-  * On some hardware a hotplug event notification may come from outside the display
-  * driver / device. An example of this is some USB Type-C setups where the hardware
